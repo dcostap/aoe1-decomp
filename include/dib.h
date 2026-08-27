@@ -33,8 +33,6 @@ typedef char dib_line_info_size_check[
 typedef char dib_trans_info_line_offset_check[
     (sizeof(TRANSINFO) == 0x18) ? 1 : -1];
 
-extern long SrcXTbl[];
-
 void __cdecl DibBlt(BITMAPINFO256*, uchar*, RECT*, long, long, long, long,
     BITMAPINFO256*, uchar*, long, long, long, long, int, int, int);
 void __cdecl TransDibBlt(BITMAPINFO256*, uchar*, RECT*, long, long, long, long,

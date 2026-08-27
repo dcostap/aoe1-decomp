@@ -7,34 +7,15 @@
 #include <memory.h>
 #include <stdlib.h>
 #include <string.h>
+#include <io.h>
 
-// The bitmap utility source calls these imported kernel entry points through
-// the compiler's normal Win32 declarations.
-typedef int (__stdcall *_OpenFileFn)(char* name, void* buf, int mode);
-typedef void* (__stdcall *_GlobalHandleFn)(void* mem);
-typedef int (__stdcall *_GlobalUnlockFn)(void* handle);
-typedef void* (__stdcall *_GlobalFreeFn)(void* handle);
-typedef int (__stdcall *_HreadFn)(int file, void* buf, int count);
-typedef int (__stdcall *_LcloseFn)(int file);
-typedef int (__stdcall *_GetObjectAT)(void* hgdiobj, int cb, void* lpvObj);
-typedef void* (__stdcall *_LocalAllocT)(int flags, int size);
-typedef int (__stdcall *_GetPaletteEntriesT)(void* hpal, int start, int count,
-    void* entries);
-typedef void* (__stdcall *_LocalFreeT)(void* mem);
+#include "../include/rge_base_game_global.h"
 
-extern _OpenFileFn _OpenFile;
-extern _GlobalHandleFn _GlobalHandle;
-extern _GlobalUnlockFn _GlobalUnlock;
-extern _GlobalFreeFn _GlobalFree;
-extern _HreadFn _Hread;
-extern _LcloseFn _Lclose;
-extern _GetObjectAT _GetObjectA;
-extern _LocalAllocT _LocalAlloc;
-extern _GetPaletteEntriesT _GetPaletteEntries;
-extern _LocalFreeT _LocalFree;
+// The target reserves 0x1400 bytes from SrcXTbl to the next global.
+static long SrcXTbl[0x500];
 
-extern "C" void* (__stdcall* const _CreatePalette)(const tagLOGPALETTE*);
-extern "C" unsigned char shape_file_first;
+// This global has no shared declaration yet. Keep the target's C++ linkage.
+extern unsigned char shape_file_first;
 
 struct PAL_TABLE {
     int index;
@@ -47,25 +28,20 @@ struct PAL_TABLE {
 extern PAL_TABLE System_color_Table[];
 extern unsigned char DAT_005841e5;
 
-struct DrawSystem {
+struct DibDrawSystemView {
     char gap_000[0x478];
     unsigned char DrawType;
     unsigned char ScreenMode;
 };
 
-struct RGEBaseGame {
+struct DibRgeBaseGameView {
+    // draw_system is the only field used here. Its offset is 0x48.
     char gap_000[0x48];
-    DrawSystem* draw_system;
+    DibDrawSystemView* draw_system;
 };
 
-extern RGEBaseGame* rge_base_game;
-
-extern "C" int __cdecl _open(char*, int);
-extern "C" int __cdecl _lseek(int, int, int);
-extern "C" int __cdecl _tell(int);
-extern "C" int __cdecl _read(int, void*, int);
-extern "C" int __cdecl _close(int);
-extern "C" unsigned char* __cdecl RESFILE_load(unsigned long, long, void**, int*);
+extern unsigned char* __cdecl RESFILE_load(unsigned long type,
+    unsigned long id, int& load_type, int& data_size);
 extern "C" char* __cdecl strtok(char*, const char*);
 extern "C" long __cdecl atol(const char*);
 extern "C" int __cdecl atoi(const char*);
@@ -89,7 +65,8 @@ void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
             return;
     }
     GetDibDim(dest_info, DestTotWid, DestTotHgt, DestOrien);
-    GetDibDim(src_info, dy, (long&)dest_rect, SrcOrien);
+    long src_total_height;
+    GetDibDim(src_info, dy, src_total_height, SrcOrien);
 
     if (flip_y != 0)
         SrcOrien = -SrcOrien;
@@ -108,7 +85,7 @@ void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
         if (SrcOrien == 1) {
             src_row = src_y * dy;
         } else {
-            src_row = ((long)dest_rect - src_y - 1) * dy;
+            src_row = (src_total_height - src_y - 1) * dy;
         }
         BYTE* src = src_bits + src_row + src_x;
         DestTotWid = DestOrien * DestTotWid;
@@ -153,7 +130,7 @@ void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
         do {
             int source_row = source_y >> 8;
             if (SrcOrien != 1)
-                source_row = (long)dest_rect - 1 - source_row;
+                source_row = src_total_height - 1 - source_row;
 
             if (dest_width > 0) {
                 int i = 0;
@@ -179,15 +156,6 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
                          long sx, long sy, long sw, long sh,
                          int doClip, int flipX, int flipY, int transparent)
 {
-    long SrcTotHgt;
-    long DestTotHgt;
-    long DestOrien;
-    long sySkip;
-    int local_4;
-    long* p;
-    long n;
-    long acc;
-
     if (trans != 0 && trans->AnyTrans == 0) {
         DibBlt(dstInfo, dst, dstRect, dx, dy, dw, dh, srcInfo, src, sx, sy, sw, sh, doClip, flipX, flipY);
         return;
@@ -197,124 +165,129 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
         transparent = 0;
 
     int clipFlipY = flipY;
-    BITMAPINFO256* clipInfo = dstInfo;
     if (doClip == 0 ||
-        ClipDibBlt(clipInfo, dstRect, dx, dy, dw, dh, sx, sy, sw, sh, flipX, clipFlipY)) {
-    int xStep = (sw << 8) / dw;
-    DestOrien = (sh << 8) / dh;
+        ClipDibBlt(dstInfo, dstRect, dx, dy, dw, dh, sx, sy, sw, sh, flipX, clipFlipY)) {
+        int xStep = (sw << 8) / dw;
+        long yStep = (sh << 8) / dh;
+        long dstStride;
+        long dstHeight;
+        long dstOrientation;
+        long srcStride;
+        long srcHeight;
+        long srcOrientation;
 
-    GetDibDim(clipInfo, (long&)doClip, (long&)local_4, DestTotHgt);
-    GetDibDim(srcInfo, (long&)dstInfo, sySkip, (long&)flipY);
-    if (clipFlipY)
-        flipY = -flipY;
+        GetDibDim(dstInfo, dstStride, dstHeight, dstOrientation);
+        GetDibDim(srcInfo, srcStride, srcHeight, srcOrientation);
+        if (clipFlipY)
+            srcOrientation = -srcOrientation;
 
-    dstRect = (RECT*)((dw << 8) / sw);
-    if (DestTotHgt == 1)
-        flipX = doClip * dy;
-    else
-        flipX = (local_4 - dy - 1) * doClip;
+        long xScale = (dw << 8) / sw;
+        long destY;
+        if (dstOrientation == 1)
+            destY = dy;
+        else
+            destY = dstHeight - dy - 1;
+        uchar* destLine = dst + dstStride * destY + dx;
 
-    uchar* destLine = dst + flipX + dx;
-
-    acc = sx;
-    if (!flipX) {
-        if (dw > 0) {
-            p = SrcXTbl;
-            n = dw;
-            do {
-                *p++ = acc >> 8;
-                acc += xStep;
-            } while (--n);
+        long sourcePosition = sx;
+        if (flipX == 0) {
+            if (dw > 0) {
+                long* xEntry = SrcXTbl;
+                long remaining = dw;
+                do {
+                    *xEntry++ = sourcePosition >> 8;
+                    sourcePosition += xStep;
+                    --remaining;
+                } while (remaining != 0);
+            }
+        } else {
+            long remaining = dw - 1;
+            if (remaining >= 0) {
+                long* xEntry = SrcXTbl + remaining;
+                ++remaining;
+                do {
+                    *xEntry-- = sourcePosition >> 8;
+                    sourcePosition += xStep;
+                    --remaining;
+                } while (remaining != 0);
+            }
         }
-    } else {
-        n = dw - 1;
-        if (n > -1) {
-            p = SrcXTbl + n;
-            ++n;
-            do {
-                *p-- = acc >> 8;
-                acc += xStep;
-            } while (--n);
-        }
-    }
 
-    if (!flipX && trans != 0 &&
-        (srcInfo = (BITMAPINFO256*)trans->LineInfo, srcInfo != 0)) {
-        LINEINFO* lineInfo = (LINEINFO*)srcInfo;
-        doClip = DestTotHgt * doClip;
-        trans = (TRANSINFO*)(sy << 8);
-        flipX = 0;
-        if (dh > 0) {
-            do {
-                long syi = ((long)trans) >> 8;
-                long srcOff;
-                if (flipY == 1) {
-                    srcOff = syi * (long)dstInfo + sx;
-                } else {
-                    srcOff = (sySkip - syi - 1) * (long)dstInfo + sx;
-                }
-
-                LINEINFO* li = &lineInfo[syi];
-                if (li->skip == 0) {
-                    long first;
-                    if (li->first < sx)
-                        first = 0;
+        if (flipX == 0 && trans != 0 && trans->LineInfo != 0) {
+            long dstStep = dstOrientation * dstStride;
+            long sourceY = sy << 8;
+            int row = 0;
+            if (dh > 0) {
+                do {
+                    long sourceRow = sourceY >> 8;
+                    long sourceOffset;
+                    if (srcOrientation == 1)
+                        sourceOffset = sourceRow * srcStride + sx;
                     else
-                        first = ((li->first - sx) * (long)dstRect) >> 8;
-                    long last = (((li->last - sx) + 1) * (long)dstRect) >> 8;
-                    if (last > dw)
-                        last = dw;
-                    if (last > first) {
-                        if ((long)dstRect == 0x100 && li->copy != 0) {
-                            memcpy(destLine + first, src + first + srcOff, last - first);
-                        } else if (first < last) {
-                            long i = first;
-                            long* tbl = SrcXTbl + first;
-                            while (i < last) {
-                                uchar c = src[*tbl + srcOff];
-                                if ((unsigned)c != (unsigned)transparent)
-                                    destLine[i] = c;
-                                ++i;
-                                ++tbl;
+                        sourceOffset = (srcHeight - sourceRow - 1) * srcStride + sx;
+
+                    LINEINFO* lineInfo = &trans->LineInfo[sourceRow];
+                    if (lineInfo->skip == 0) {
+                        long first;
+                        if (lineInfo->first < sx)
+                            first = 0;
+                        else
+                            first = ((lineInfo->first - sx) * xScale) >> 8;
+                        long last = (((lineInfo->last - sx) + 1) * xScale) >> 8;
+                        if (last > dw)
+                            last = dw;
+                        if (last > first) {
+                            if (xScale == 0x100 && lineInfo->copy != 0) {
+                                memcpy(destLine + first, src + first + sourceOffset,
+                                    last - first);
+                            } else {
+                                long i = first;
+                                long* table = SrcXTbl + first;
+                                while (i < last) {
+                                    uchar c = src[*table + sourceOffset];
+                                    if ((unsigned)c != (unsigned)transparent)
+                                        destLine[i] = c;
+                                    ++i;
+                                    ++table;
+                                }
                             }
                         }
                     }
-                }
-                destLine += doClip;
-                trans = (TRANSINFO*)((long)trans + DestOrien);
-                ++flipX;
-            } while (flipX < dh);
+                    destLine += dstStep;
+                    sourceY += yStep;
+                    ++row;
+                } while (row < dh);
+            }
             return;
         }
-    } else {
-        flipX = 0;
-        long yacc = sy << 8;
+
+        long sourceY = sy << 8;
+        int row = 0;
         if (dh > 0) {
             do {
-                long syi;
-                if (flipY == 1)
-                    syi = yacc >> 8;
+                long sourceRow;
+                if (srcOrientation == 1)
+                    sourceRow = sourceY >> 8;
                 else
-                    syi = sySkip - (yacc >> 8) - 1;
+                    sourceRow = srcHeight - (sourceY >> 8) - 1;
 
-                long base = syi * (long)dstInfo + sx;
+                long sourceBase = sourceRow * srcStride + sx;
                 long i = 0;
                 if (dw > 0) {
-                    long* tbl = SrcXTbl;
+                    long* table = SrcXTbl;
                     do {
-                        uchar c = src[*tbl + base];
+                        uchar c = src[*table + sourceBase];
                         if ((unsigned)c != (unsigned)transparent)
                             destLine[i] = c;
                         ++i;
-                        ++tbl;
+                        ++table;
                     } while (i < dw);
                 }
-                destLine += DestTotHgt * doClip;
-                yacc += DestOrien;
-                ++flipX;
-            } while (flipX < dh);
+                destLine += dstOrientation * dstStride;
+                sourceY += yStep;
+                ++row;
+            } while (row < dh);
         }
-    }
     }
 }
 
@@ -488,28 +461,27 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
     } else {
         iVar1 = param_18;
         iVar3 = param_19;
-        param_12 = (TRANSINFO*)param_5;
+        long dest_y = param_5 + SrcBotHgt;
         if (0 < param_7) {
             param_17 = param_7;
             do {
-                param_5 = (long)param_12 + SrcBotHgt;
                 if (0 < param_6) {
                     param_19 = param_6;
                     lVar15 = param_4;
                     do {
                         if (SrcBotHgt != 0) {
-                            if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,param_5,iVar12,SrcBotHgt,param_10,param_11,param_13,param_14,DestBotHgt,SrcLtWid,1,iVar1,iVar3);
-                            if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12,param_5,SrcRtWid,SrcBotHgt,param_10,param_11,iVar9,param_14,iVar7,SrcLtWid,1,iVar1,iVar3);
+                            if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,dest_y,iVar12,SrcBotHgt,param_10,param_11,param_13,param_14,DestBotHgt,SrcLtWid,1,iVar1,iVar3);
+                            if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12,dest_y,SrcRtWid,SrcBotHgt,param_10,param_11,iVar9,param_14,iVar7,SrcLtWid,1,iVar1,iVar3);
                         }
                         if (SrcTopHgt != 0) {
-                            if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,param_5,iVar12,SrcTopHgt,param_10,param_11,param_13,iVar10,DestBotHgt,iVar11,1,iVar1,iVar3);
-                            if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12,param_5,SrcRtWid,SrcTopHgt,param_10,param_11,iVar9,iVar10,iVar7,iVar11,1,iVar1,iVar3);
+                            if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,dest_y,iVar12,SrcTopHgt,param_10,param_11,param_13,iVar10,DestBotHgt,iVar11,1,iVar1,iVar3);
+                            if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12,dest_y,SrcRtWid,SrcTopHgt,param_10,param_11,iVar9,iVar10,iVar7,iVar11,1,iVar1,iVar3);
                         }
                         lVar15 += param_8;
                         --param_19;
                     } while (param_19 != 0);
                 }
-                param_12 = (TRANSINFO*)((int)param_12 + param_9);
+                dest_y += param_9;
                 --param_17;
             } while (param_17 != 0);
         }
@@ -619,9 +591,10 @@ void* __cdecl ReadPalette(char* filename, long res_id, int do_gamma)
 {
     unsigned char* data;
     void* own_mem = 0;
-    void* hpal = (void*)-1;
     void* result = 0;
-    int local_4;
+    int load_type = -1;
+    int data_size;
+    int owns_memory = 0;
     char* tok = 0;
     int n = 0;
     struct LOGPAL { unsigned short ver; unsigned short cnt; unsigned char e[1]; };
@@ -637,19 +610,21 @@ void* __cdecl ReadPalette(char* filename, long res_id, int do_gamma)
             if (own_mem) {
                 _lseek(fd, 0, 0);
                 _read(fd, own_mem, size);
-                hpal = (void*)1;
+                owns_memory = 1;
             }
             _close(fd);
         }
     }
     if (!own_mem && res_id != -1) {
-        data = RESFILE_load(0x62696e61, res_id, &hpal, &local_4);
-        if (!hpal) {
-            own_mem = malloc(local_4);
-            memcpy(own_mem, data, local_4);
-            hpal = (void*)1;
+        data = RESFILE_load(0x62696e61, (unsigned long)res_id,
+            load_type, data_size);
+        if (load_type == 0) {
+            own_mem = malloc(data_size);
+            memcpy(own_mem, data, data_size);
+            owns_memory = 1;
         } else {
             own_mem = data;
+            owns_memory = (load_type == 1);
         }
     }
     if (!own_mem) return 0;
@@ -694,17 +669,19 @@ palette_entries_done:
             }
         }
         if (res_id) {
-            result = _CreatePalette((const tagLOGPALETTE*)lp);
+            result = CreatePalette((const tagLOGPALETTE*)lp);
             if (do_gamma) {
-                if (rge_base_game->draw_system->DrawType == 1 ||
-                    rge_base_game->draw_system->ScreenMode == 1)
+                DibRgeBaseGameView* game =
+                    (DibRgeBaseGameView*)rge_base_game;
+                if (game->draw_system->DrawType == 1 ||
+                    game->draw_system->ScreenMode == 1)
                     CreateIdentityPalette(result);
             }
         }
         free(lp);
     }
 cleanup:
-    if (hpal == (void*)1) free(own_mem);
+    if (owns_memory) free(own_mem);
     return result;
 }
 
@@ -764,23 +741,23 @@ BITMAPINFOHEADER* __cdecl DibOpenFile(char* name)
 // VA: 00439B50 ReadDibBits | Dib.cpp:1011-1035
 unsigned char* __cdecl ReadDibBits(char* param_1)
 {
-    char of[0x88];
+    OFSTRUCT of;
     unsigned char* result = 0;
 
-    int hf = _OpenFile(param_1, of, 0);
-    if (hf == -1) return 0;
+    HFILE hf = OpenFile(param_1, &of, OF_READ);
+    if (hf == HFILE_ERROR) return 0;
 
-    void* info = DibReadBitmapInfo(hf);
+    BITMAPINFOHEADER* info = DibReadBitmapInfo(hf);
     if (info) {
-        _GlobalHandleFn gh = _GlobalHandle;
-        int size = *(int*)((char*)info + 0x14);
-        _GlobalUnlock(gh(info));
-        _GlobalFree(gh(info));
+        DWORD size = info->biSizeImage;
+        HGLOBAL handle = GlobalHandle(info);
+        GlobalUnlock(handle);
+        GlobalFree(GlobalHandle(info));
         result = (unsigned char*)malloc(size);
         if (result)
-            _Hread(hf, result, size);
+            _hread(hf, (char*)result, size);
     }
-    _Lclose(hf);
+    _lclose(hf);
     return result;
 }
 
@@ -1613,18 +1590,18 @@ void* __cdecl CopyPalette(void* param_1)
 
     if (!param_1) return 0;
 
-    _GetObjectA(param_1, 4, &nNumEntries);
+    GetObjectA((HGDIOBJ)param_1, 4, &nNumEntries);
     if (!nNumEntries) return 0;
 
-    void* pal = _LocalAlloc(0x40, nNumEntries * 4 + 8);
+    void* pal = LocalAlloc(0x40, nNumEntries * 4 + 8);
     if (!pal) return 0;
 
     *(short*)pal = 0x300;
     *(short*)((char*)pal + 2) = (short)nNumEntries;
 
-    _GetPaletteEntries(param_1, 0, nNumEntries, (char*)pal + 4);
-    void* result = _CreatePalette((const tagLOGPALETTE*)pal);
-    _LocalFree(pal);
+    GetPaletteEntries((HPALETTE)param_1, 0, nNumEntries, (PALETTEENTRY*)((char*)pal + 4));
+    void* result = CreatePalette((const tagLOGPALETTE*)pal);
+    LocalFree((HLOCAL)pal);
     return result;
 }
 
