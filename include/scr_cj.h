@@ -1,12 +1,9 @@
-#ifndef SCR_CJ_GROUP_CONTEXT_H
-#define SCR_CJ_GROUP_CONTEXT_H
+#ifndef AOE1_SCR_CJ_H
+#define AOE1_SCR_CJ_H
 
-// Complete scr_cj.cpp translation-unit context.
-// It overlays the proven +0x20 render-area
-// and +0x40 parent fields with the shared TPanel +0xD8 error layout. The
-// source owners use the same class and vtable surfaces in the grouped build.
-#define SCR_CJ_CONTEXT_H 1
-
+// Declarations owned by scr_cj.cpp.
+// It overlays the proven +0x20 render-area and +0x40 parent fields with the
+// shared TPanel +0xD8 error layout.
 #include <stdio.h>
 #include <string.h>
 
@@ -131,7 +128,7 @@ class TListPanel : public TTextPanel {
 class TScrollBarPanel : public TPanel {
 };
 
-// The candidate constructor source proves a direct TPanel edit child.
+// BINARY NOTE: TEditPanel is a direct TPanel child.
 class TEditPanel : public TPanel {
 public:
     int is_blank();

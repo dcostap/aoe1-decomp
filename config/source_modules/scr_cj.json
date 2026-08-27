@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "name": "scr_cj",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_cj.cpp",
+  "source": "src/scr_cj.cpp",
+  "header": "include/scr_cj.h",
+  "functions": {
+    "00491650": { "status": "matching", "note_path": "recovery_notes/scr_cj_module.md" },
+    "00491990": { "status": "matching", "note_path": "recovery_notes/scr_cj_module.md" },
+    "00491A80": { "status": "matching", "note_path": "recovery_notes/scr_cj_module.md" },
+    "00491B20": { "status": "matching", "note_path": "recovery_notes/scr_cj_module.md" },
+    "00491C70": { "status": "matching", "note_path": "recovery_notes/scr_cj_module.md" },
+    "00491E20": { "status": "scratch", "note_path": "recovery_notes/scr_cj_module.md" },
+    "004920C0": { "status": "accepted_drift", "note_path": "recovery_notes/scr_cj_module.md" },
+    "00492330": { "status": "matching", "note_path": "recovery_notes/scr_cj_module.md" },
+    "004923C0": { "status": "scratch", "note_path": "recovery_notes/scr_cj_module.md" }
+  }
+}

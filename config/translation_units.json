@@ -4849,15 +4849,16 @@
     },
     {
       "name": "scr_cj",
-      "source": "src/scr_cj_tu.cpp",
+      "source": "src/scr_cj.cpp",
+      "module": "scr_cj",
       "flags": "config/flags/00491E20_action.rsp",
       "owners": {
-        "00491650": "src/matching/00491650_TribeJoinScreen.cpp",
-        "00491990": "src/matching/00491990_TribeJoinScreen.cpp",
-        "00491A80": "src/matching/00491A80_handle_idle.cpp",
-        "00491B20": "src/matching/00491B20_handle_user_command.cpp",
-        "00491C70": "src/matching/00491C70_fillList.cpp",
-        "00492330": "src/matching/00492330_TribeMPCreateDialog.cpp"
+        "00491650": "src/scr_cj.cpp",
+        "00491990": "src/scr_cj.cpp",
+        "00491A80": "src/scr_cj.cpp",
+        "00491B20": "src/scr_cj.cpp",
+        "00491C70": "src/scr_cj.cpp",
+        "00492330": "src/scr_cj.cpp"
       },
       "symbols": {
         "00491650": "??0TribeJoinScreen@@QAE@XZ",
