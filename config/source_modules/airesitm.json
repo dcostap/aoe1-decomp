@@ -7,7 +7,7 @@
   "functions": {
     "00411EC0": { "status": "matching" },
     "00411F10": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/00411F10_ResourceItem.md"
     },
     "00411F80": {
@@ -25,11 +25,11 @@
     "004120B0": { "status": "matching" },
     "004120C0": { "status": "matching" },
     "00412100": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/00412100_operator.md"
     },
     "00412140": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/00412140_operator.md"
     },
     "00412180": { "status": "matching" },
@@ -39,7 +39,7 @@
     "00412200": { "status": "matching" },
     "00412210": { "status": "matching" },
     "00412240": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/00412240_sortLarge.md"
     }
   }

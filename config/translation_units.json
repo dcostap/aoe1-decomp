@@ -7498,35 +7498,27 @@
       "flags": "config/flags/airesitm.rsp",
       "owners": {
         "00411EC0": "src/airesitm.cpp",
-        "00411F10": "src/airesitm.cpp",
         "00411FF0": "src/airesitm.cpp",
         "004120B0": "src/airesitm.cpp",
         "004120C0": "src/airesitm.cpp",
-        "00412100": "src/airesitm.cpp",
-        "00412140": "src/airesitm.cpp",
         "00412180": "src/airesitm.cpp",
         "004121A0": "src/airesitm.cpp",
         "004121C0": "src/airesitm.cpp",
         "004121E0": "src/airesitm.cpp",
         "00412200": "src/airesitm.cpp",
-        "00412210": "src/airesitm.cpp",
-        "00412240": "src/airesitm.cpp"
+        "00412210": "src/airesitm.cpp"
       },
       "symbols": {
         "00411EC0": "??0ResourceItem@@QAE@XZ",
-        "00411F10": "??0ResourceItem@@QAE@H@Z",
         "00411FF0": "??0ResourceItem@@QAE@ABV0@@Z",
         "004120B0": "??1ResourceItem@@UAE@XZ",
         "004120C0": "??YResourceItem@@QAEAAV0@ABV0@@Z",
-        "00412100": "??8@YAHABVResourceItem@@0@Z",
-        "00412140": "??9@YAHABVResourceItem@@0@Z",
         "00412180": "?value@ResourceItem@@QBEHH@Z",
         "004121A0": "?setValue@ResourceItem@@QAEXHH@Z",
         "004121C0": "?incrementValue@ResourceItem@@QAEXHH@Z",
         "004121E0": "?setAllValues@ResourceItem@@QAEXH@Z",
         "00412200": "?number@ResourceItem@@QBEHXZ",
-        "00412210": "?largestValueIndex@ResourceItem@@QAEHH@Z",
-        "00412240": "?sortLarge@ResourceItem@@IAEHXZ"
+        "00412210": "?largestValueIndex@ResourceItem@@QAEHH@Z"
       }
     },
     {
