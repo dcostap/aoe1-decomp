@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "name": "tpnl_pop",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tpnl_pop.cpp",
+  "source": "src/tpnl_pop.cpp",
+  "header": "include/tpnl_pop.h",
+  "functions": {
+    "0051CCA0": {
+      "status": "matching",
+      "note_path": "recovery_notes/tpnl_pop_module.md"
+    },
+    "0051CDB0": {
+      "status": "matching",
+      "note_path": "recovery_notes/tpnl_pop_module.md"
+    },
+    "0051CE40": {
+      "status": "matching",
+      "note_path": "recovery_notes/tpnl_pop_module.md"
+    },
+    "0051CFD0": {
+      "status": "matching",
+      "note_path": "recovery_notes/tpnl_pop_module.md"
+    },
+    "0051D040": {
+      "status": "matching",
+      "note_path": "recovery_notes/tpnl_pop_module.md"
+    },
+    "0051D060": {
+      "status": "matching",
+      "note_path": "recovery_notes/tpnl_pop_module.md"
+    },
+    "0051D470": {
+      "status": "matching",
+      "note_path": "recovery_notes/tpnl_pop_module.md"
+    },
+    "0051D4E0": {
+      "status": "matching",
+      "note_path": "recovery_notes/tpnl_pop_module.md"
+    },
+    "0051D4F0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tpnl_pop_module.md"
+    }
+  }
+}

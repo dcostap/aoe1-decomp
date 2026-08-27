@@ -1,8 +1,5 @@
-#ifndef AOE1_TPNL_POP_CONTEXT_H
-#define AOE1_TPNL_POP_CONTEXT_H
-
-// Authentic declaration surface for C:\\msdev\\work\\age1_x1\\tpnl_pop.cpp.
-// The owner wrapper includes source bodies in PDB line order.
+#ifndef AOE1_TPNL_POP_H
+#define AOE1_TPNL_POP_H
 
 #include <windows.h>
 #include <stdio.h>

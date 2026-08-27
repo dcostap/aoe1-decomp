@@ -4243,16 +4243,17 @@
     },
     {
       "name": "tpnl_pop",
-      "source": "src/tpnl_pop_tu.cpp",
+      "source": "src/tpnl_pop.cpp",
+      "module": "tpnl_pop",
       "flags": "config/flags/0051CDB0_TRIBE_Panel_Pop.rsp",
       "owners": {
-        "0051CCA0": "src/matching/0051CCA0_TRIBE_Panel_Pop.cpp",
-        "0051CDB0": "src/matching/0051CDB0_TRIBE_Panel_Pop.cpp",
-        "0051CFD0": "src/matching/0051CFD0_startup.cpp",
-        "0051D040": "src/matching/0051D040_get_player_id.cpp",
-        "0051D060": "src/matching/0051D060_draw.cpp",
-        "0051D470": "src/matching/0051D470_get_true_render_rect.cpp",
-        "0051D4E0": "src/matching/0051D4E0_handle_idle.cpp"
+        "0051CCA0": "src/tpnl_pop.cpp",
+        "0051CDB0": "src/tpnl_pop.cpp",
+        "0051CFD0": "src/tpnl_pop.cpp",
+        "0051D040": "src/tpnl_pop.cpp",
+        "0051D060": "src/tpnl_pop.cpp",
+        "0051D470": "src/tpnl_pop.cpp",
+        "0051D4E0": "src/tpnl_pop.cpp"
       },
       "symbols": {
         "0051D060": "?draw@TRIBE_Panel_Pop@@UAEXXZ"
