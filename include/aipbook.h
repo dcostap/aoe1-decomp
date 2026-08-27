@@ -4,7 +4,8 @@
 // Declarations for the original aipbook.cpp source module.
 // PDB type records prove each aggregate size and field offset below.
 
-class RGE_Static_Object;
+#include "aiplaybook.h"
+
 class RGE_Game_World;
 class AIPlayStatus;
 
@@ -180,42 +181,6 @@ public:
     void resetHitPoints(int groupNumber, RGE_Game_World* world);
 };
 
-class AIPlayBook {
-public:
-    virtual ~AIPlayBook();
-    virtual int convertTargetNameToIntType(char* name) const;
-    virtual int convertTargetCharacteristicNameToIntType(char* name) const;
-    virtual int convertUnitNameToIntType(char* name) const;
-    virtual int convertUnitToIntType(RGE_Static_Object* object) const;
-
-    int numberPlaysValue;                // +0x04
-    char nameValue[65];                  // +0x08
-    unsigned char pad_49[3];             // +0x49
-    AIPlay* plays;                       // +0x4C
-
-    AIPlayBook();
-    int loadPlays(char* filename);
-    AIPlay* play(int index);
-    AIPlay* play(char* name);
-    int playNumber(char* name);
-};
-
-class RGE_Static_Object {
-public:
-    unsigned char gap_00[0x30];
-    float hitPointsValue;                // +0x30
-    unsigned char gap_34[0x14];
-    unsigned char object_state;          // +0x48
-};
-
-class RGE_Game_World {
-public:
-    unsigned char gap_00[0xA0];
-    AIPlayBook* playbook;                // +0xA0
-
-    RGE_Static_Object* object(int id);
-};
-
 typedef char aipbook_xyz_size[(sizeof(XYZ) == 0x0C) ? 1 : -1];
 typedef char aipbook_command_size[(sizeof(AIPlayPhaseCommand) == 0x10) ? 1 : -1];
 typedef char aipbook_trigger_size[(sizeof(AIPlayPhaseTrigger) == 0x14) ? 1 : -1];
@@ -224,6 +189,5 @@ typedef char aipbook_group_size[(sizeof(AIPlayGroup) == 0x0C) ? 1 : -1];
 typedef char aipbook_play_size[(sizeof(AIPlay) == 0x608) ? 1 : -1];
 typedef char aipbook_grouping_size[(sizeof(AIPlayStatus::GroupingStruct) == 0x08) ? 1 : -1];
 typedef char aipbook_status_size[(sizeof(AIPlayStatus) == 0x1C8) ? 1 : -1];
-typedef char aipbook_book_size[(sizeof(AIPlayBook) == 0x50) ? 1 : -1];
 
 #endif
