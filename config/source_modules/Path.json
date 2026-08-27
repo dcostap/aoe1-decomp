@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "name": "Path",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Path.cpp",
+  "source": "src/Path.cpp",
+  "header": "include/path.h",
+  "functions": {
+    "0046A740": { "status": "matching" },
+    "0046A7F0": { "status": "matching" },
+    "0046A810": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Path_module.md"
+    },
+    "0046A8E0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Path_module.md"
+    },
+    "0046A9E0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Path_module.md"
+    },
+    "0046AAE0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/Path_module.md"
+    },
+    "0046AB60": { "status": "matching" },
+    "0046AC10": { "status": "matching" },
+    "0046ACE0": { "status": "matching" },
+    "0046ADA0": { "status": "matching" },
+    "0046ADB0": { "status": "matching" },
+    "0046ADC0": { "status": "matching" },
+    "0046ADD0": { "status": "matching" },
+    "0046ADE0": { "status": "matching" },
+    "0046ADF0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Path_module.md"
+    },
+    "0046AE50": { "status": "matching" },
+    "0046AE60": { "status": "matching" },
+    "0046AE70": { "status": "matching" },
+    "0046AEA0": { "status": "matching" },
+    "0046AEC0": { "status": "matching" },
+    "0046AED0": { "status": "matching" },
+    "0046AEE0": { "status": "matching" },
+    "0046AF10": { "status": "matching" },
+    "0046AF40": { "status": "matching" },
+    "0046AF60": { "status": "matching" },
+    "0046AF80": { "status": "matching" },
+    "0046AF90": { "status": "matching" },
+    "0046AFA0": { "status": "matching" },
+    "0046AFC0": { "status": "matching" },
+    "0046AFE0": { "status": "matching" }
+  }
+}

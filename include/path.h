@@ -1,9 +1,5 @@
-#ifndef AOE1_PATH_CONTEXT_H
-#define AOE1_PATH_CONTEXT_H
-
-// Compiler-facing context for the original C:\\msdev\\work\\age1_x1\\Path.cpp
-// module.  Path has no virtual base in this source module and occupies 0x34
-// bytes.  The wrapper includes the owners in PDB address and line order.
+#ifndef AOE1_PATH_H
+#define AOE1_PATH_H
 
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* value);
@@ -16,6 +12,10 @@ struct Waypoint {
     unsigned char pad[3];
 };
 
+typedef char path_waypoint_size_check[(sizeof(Waypoint) == 0x10) ? 1 : -1];
+
+class ostream;
+
 class Path {
 public:
     unsigned long timeStampValue;
@@ -27,6 +27,7 @@ public:
     int currentWaypointValue;
 
     Path(int max_size);
+
     int growMaxSize(int new_maximum) {
         if (new_maximum == 0) {
             return maxSizeValue += maxSizeValue;
@@ -34,6 +35,7 @@ public:
             return maxSizeValue += new_maximum;
         }
     }
+
     void setMaxSize(int new_maximum) {
         if (new_maximum == 0 || maxSizeValue <= new_maximum) {
             if (new_maximum == 0) {
@@ -54,11 +56,11 @@ public:
             pathValue = new_path;
         }
     }
+
     Path& operator=(const Path& other);
     int insertAtEnd(Waypoint wp);
     ~Path();
     Path operator+(const Path& other) const;
-
     int operator==(const Path& other) const;
     int insertAtCurrent(const Waypoint& wp);
     int contains(const Waypoint& wp) const;
@@ -84,5 +86,9 @@ public:
     int moveToLastWaypoint();
     float distanceToNextWaypoint() const;
 };
+
+typedef char path_size_check[(sizeof(Path) == 0x34) ? 1 : -1];
+
+ostream& __cdecl operator<<(ostream& os, const Path& path);
 
 #endif
