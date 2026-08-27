@@ -163,33 +163,6 @@
       }
     },
     {
-      "name": "panel_create_button",
-      "source": "src/panel_create_button_tu.cpp",
-      "flags": "config/flags/00468530_create_button.rsp",
-      "owners": {
-        "00467560": "src/matching/00467560_draw_setup.cpp",
-        "00467A50": "src/matching/00467A50_set_ideal_size.cpp",
-        "00467A70": "src/matching/00467A70_set_background.cpp",
-        "00467BE0": "src/matching/00467BE0_set_background2.cpp",
-        "00468530": "src/matching/00468530_create_button.cpp",
-        "00468760": "src/matching/00468760_create_check_box.cpp",
-        "004689C0": "src/matching/004689C0_create_radio_button.cpp",
-        "00468CB0": "src/matching/00468CB0_create_text.cpp",
-        "00468E50": "src/matching/00468E50_create_text.cpp",
-        "00469000": "src/matching/00469000_create_input.cpp",
-        "004691C0": "src/matching/004691C0_create_edit.cpp",
-        "00469380": "src/matching/00469380_create_drop_down.cpp",
-        "00469910": "src/matching/00469910_create_scrollbar.cpp",
-        "00469AD0": "src/matching/00469AD0_create_vert_slider.cpp",
-        "00469C40": "src/matching/00469C40_create_horz_slider.cpp"
-      },
-      "symbols": {
-        "00467A70": "?set_background@TEasy_Panel@@QAEHPADJ@Z",
-        "00468CB0": "?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@PADJJJJJHHH@Z",
-        "00468E50": "?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@PAPADJJJJJJHH@Z"
-      }
-    },
-    {
       "name": "fractal_arrays",
       "source": "src/fractal.cpp",
       "module": "fractal",
