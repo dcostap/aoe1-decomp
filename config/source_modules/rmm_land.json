@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "name": "rmm_land",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rmm_land.cpp",
+  "source": "src/rmm_land.cpp",
+  "header": "include/rmm_land.h",
+  "functions": {
+    "00485200": { "status": "matching" },
+    "00485240": {
+      "status": "scratch",
+      "note_path": "recovery_notes/rmm_land_module.md"
+    },
+    "004852D0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/rmm_land_module.md"
+    },
+    "00485480": {
+      "status": "scratch",
+      "note_path": "recovery_notes/rmm_land_module.md"
+    },
+    "00485520": {
+      "status": "scratch",
+      "note_path": "recovery_notes/rmm_land_module.md"
+    }
+  }
+}

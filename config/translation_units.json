@@ -4474,15 +4474,12 @@
     },
     {
       "name": "rmm_land",
-      "source": "src/rmm_land_tu.cpp",
+      "source": "src/rmm_land.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00485200": "src/matching/00485200_RGE_RMM_Land_Generator.cpp",
-        "00485240": "src/matching/00485240_generate.cpp"
+        "00485200": "src/rmm_land.cpp"
       },
-      "symbols": {
-        "00485240": "?generate@RGE_RMM_Land_Generator@@UAEEXZ"
-      }
+      "symbols": {}
     },
     {
       "name": "pnl_dlg",
