@@ -18,6 +18,12 @@
 // 13: Restored typed ownership with RGE_Master_Action_Object::work_rate and
 //     RGE_Player::world->world_time_delta_seconds; this fixed the remaining register-color
 //     permutation while preserving the natural direct-member source. Exact 446/446 match.
+// 14: Canonicalized RGE_Action_Object's x/y field order (+0x38/+0x3C) and the
+//     right-to-left display conversion operands. This preserves standalone exactness
+//     and matches the same-TU shared context.
+// BINARY NOTE: The success path loads +0x3C before +0x38 for the cdecl display
+//     arguments. With canonical x at +0x38 and y at +0x3C, source order x, y
+//     preserves that emitted order.
 
 #ifndef TACT_MOB_SHARED_CONTEXT
 extern void* rge_base_game;
@@ -38,7 +44,7 @@ public:
 
 struct RGE_Master_Static_Object { char gap[0x15a]; short train_time; };
 struct RGE_Static_Object { void* vfptr; int id; char gap08[0x30]; float y; float x; };
-struct RGE_Action_Object { void* vfptr; int id; RGE_Master_Action_Object* master; TRIBE_Player* owner; char gap10[0x28]; float y; float x; };
+struct RGE_Action_Object { void* vfptr; int id; RGE_Master_Action_Object* master; TRIBE_Player* owner; char gap10[0x28]; float x; float y; };
 
 class RGE_Base_Game_Hack {
 public:
@@ -166,7 +172,7 @@ unsigned char TRIBE_Action_Make_Obj::update()
                 ((RGE_Action_Object_Hack*)this->obj)->slot148(this->obj->id, this->obj->id, 0x1f9, 0x26b, 0, 0);
                 return 1;
             } else {
-                ((RGE_Base_Game_Hack*)rge_base_game)->display_message(0x66, this->obj->owner->player_id, (int)this->obj_id, (long)this->obj->y, (long)this->obj->x);
+                ((RGE_Base_Game_Hack*)rge_base_game)->display_message(0x66, this->obj->owner->player_id, (int)this->obj_id, (long)this->obj->x, (long)this->obj->y);
                 this->obj->owner->placement_success((int)this->obj_id, this->obj->id, this->unique_id, newObject->id);
                 ((RGE_Action_Object_Hack*)this->obj)->slot148(this->obj->id, this->obj->id, 0x1fa, 0x26b, 0, 0);
                 return 1;

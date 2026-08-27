@@ -69,18 +69,30 @@
 //   reached 184 bytes with 29 edit bytes. H15/H16 const and final_x forms
 //   reached 175 bytes. H17/H18/H19 top old_x plus context reached 184 bytes
 //   with 25 edit bytes. H20 reversed y operands was a codegen duplicate.
-// - Fresh exact-finish revisit: restored the smallest no-header source with a
-//   local old_x and direct x/y publication. Block-scoped and register-qualified
-//   candidate locals, old_y, declaration-order, operand-order, and post-update
-//   snapshot probes were duplicates. Direct-x upper-bound and candidate forms
-//   regressed to the 319-byte basin. No policy-valid natural exact basin was
-//   found.
-// BLOCKER: the executable's final tail rereads x, publishes x before y, and
-// reloads NumNodes between point stores. The current natural rebuild now keeps
-// that order. The remaining first candidate-x hunk is not exact, so this
-// function remains scratch.
+// - Before the final repair, exact-finish probes restored the smallest
+//   no-header source with a local old_x and direct x/y publication.
+//   Block-scoped and register-qualified candidate locals, old_y,
+//   declaration-order, operand-order, and post-update snapshot probes were
+//   duplicates. Direct-x upper-bound and candidate forms regressed to the
+//   319-byte basin.
+// - Exact transition: direct x reads in both horizontal guards, with no old_x
+//   snapshot, restored the target's mov/add candidate schedule. Walkback kept
+//   exactness when the snapshot was used only by the first guard, but the
+//   second-guard snapshot regressed. The direct form is the smaller source.
+// - Exact-finish context walkback: <stdlib.h> is required in this translation
+//   unit. <string.h> is not required. Removing both headers regressed the
+//   prologue and body to 330 bytes.
+// BINARY NOTE: The final tail rereads x, publishes x before y, and reloads
+// NumNodes between point stores. The source keeps this order.
+// Context pass: PDB source module is fractal.cpp, lines 355-373, with 11
+// records. The address sequence is 0044B950-0044BA9F and follows MakeNewLink
+// before DrawPrimaryIntoProbabilityArray. Exact anchors are the four direct
+// debug_rand calls at 0044B960/0044B97C/0044B99E/0044B9BA, the 0044B9D2
+// direction load, and the 0044BA88 tail store. The owning class is PointMaker.
 
 extern int __cdecl debug_rand(char* param_1, int param_2);
+
+#include <stdlib.h>
 
 #ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PrimaryPt {
@@ -140,16 +152,15 @@ int PointMaker::MakeSatelliteLink() {
     r = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x166);
     if (r % 2) dy = -dy;
 
-    int old_x = x;
     dx += DirX;
     dy += DirY;
 
-    if (dx + old_x < 3) {
+    if (dx + x < 3) {
         dx = -dx;
         DirX = -DirX;
     }
 
-    if (dx + old_x >= Width - 3) {
+    if (dx + x >= Width - 3) {
         dx = -dx;
         DirX = -DirX;
     }

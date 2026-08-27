@@ -1,7 +1,5 @@
-// ACCEPTED_DRIFT: 1-byte SIB addressing-order drift only: cmp byte [eax+esi],0 vs [esi+eax],0; same address, flags, stores, loop bounds, and return behavior.
-// first pass: scan ProbabilityArray and mirror hits into PlacementArray, then add the hit count
-// first close build only drifted on the indexed-byte compare encoding; a later local-pointer probe was worse and got rolled back
-// next probe: keep the simple field-based loop but spell the index expression from the other operand side
+// BINARY NOTE: The direct indexed-array form now matches in the authentic
+// fractal.cpp wrapper. It preserves the scan, stores, and hit-count update.
 
 #ifndef FRACTAL_ARRAYS_CONTEXT_H
 class PointMaker {

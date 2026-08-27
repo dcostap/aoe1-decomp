@@ -220,6 +220,8 @@
         "0044B320": "src/matching/0044B320_CreateShape.cpp",
         "0044B540": "src/matching/0044B540_Branch.cpp",
         "0044B610": "src/matching/0044B610_MakeFirstLink.cpp",
+        "0044B950": "src/matching/0044B950_MakeSatelliteLink.cpp",
+        "0044C1B0": "src/matching/0044C1B0_CreateMapBasedOnProbabilityArray.cpp",
         "0044C200": "src/matching/0044C200_SetPoint.cpp",
         "0044C220": "src/matching/0044C220_SetMaxNumberOfBranches.cpp",
         "0044C230": "src/matching/0044C230_SetChanceOfNextNode.cpp",
@@ -5453,12 +5455,14 @@
         "00480DA0": "src/matching/00480DA0_pop_stack.cpp",
         "00480DE0": "src/matching/00480DE0_add_stack_node.cpp",
         "00480E20": "src/matching/00480E20_remove_stack_node.cpp",
+        "00480E50": "src/matching/00480E50_clear_stack.cpp",
         "00480EA0": "src/matching/00480EA0_check_stack.cpp",
         "00480FB0": "src/matching/00480FB0_find_path.cpp"
       },
       "symbols": {
         "00480CC0": "?init_stack@RGE_Random_Map_Module@@IAEXAAUMap_Stack@@@Z",
-        "00480FB0": "?find_path@RGE_Random_Map_Module@@IAEEJJAAJ0PAM@Z"
+        "00480FB0": "?find_path@RGE_Random_Map_Module@@IAEEJJAAJ0PAM@Z",
+        "00480E50": "?clear_stack@RGE_Random_Map_Module@@IAEXXZ"
       }
     },
     {
@@ -6235,10 +6239,19 @@
         "004D0EF0": "src/matching/004D0EF0_TRIBE_Action_Make_Obj.cpp",
         "004D0F70": "src/matching/004D0F70_save.cpp",
         "004D10E0": "src/matching/004D10E0_set_state.cpp",
-        "004D1550": "src/matching/004D1550_stop.cpp"
+        "004D10F0": "src/matching/004D10F0_update.cpp",
+        "004D12B0": "src/matching/004D12B0_place_obj.cpp",
+        "004D1550": "src/matching/004D1550_stop.cpp",
+        "004D15F0": "src/matching/004D15F0_get_info.cpp"
       },
       "symbols": {
-        "004D0DD0": "??0TRIBE_Action_Make_Obj@@QAE@HPAVRGE_Action_Object@@@Z"
+        "004D0DD0": "??0TRIBE_Action_Make_Obj@@QAE@HPAVRGE_Action_Object@@@Z",
+        "004D0EF0": "??1TRIBE_Action_Make_Obj@@UAE@XZ",
+        "004D0F70": "?save@TRIBE_Action_Make_Obj@@UAEXH@Z",
+        "004D10E0": "?set_state@TRIBE_Action_Make_Obj@@MAEXE@Z",
+        "004D10F0": "?update@TRIBE_Action_Make_Obj@@UAEEXZ",
+        "004D1550": "?stop@TRIBE_Action_Make_Obj@@UAEHXZ",
+        "004D15F0": "?get_info@TRIBE_Action_Make_Obj@@QAEXAAF0PADF@Z"
       }
     },
     {

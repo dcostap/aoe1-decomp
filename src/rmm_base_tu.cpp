@@ -27,7 +27,7 @@
 #include "matching/00480DA0_pop_stack.cpp"
 #include "matching/00480DE0_add_stack_node.cpp"
 #include "matching/00480E20_remove_stack_node.cpp"
-#include "accepted_drift/00480E50_clear_stack.cpp"
+#include "matching/00480E50_clear_stack.cpp"
 #include "matching/00480EA0_check_stack.cpp"
 #include "accepted_drift/00480EC0_randomize_stack.cpp"
 #include "matching/00480FB0_find_path.cpp"

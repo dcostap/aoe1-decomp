@@ -63,6 +63,13 @@
 // created pointer before all four register pops. VC5 moves that store after the
 // EDI, ESI, and EBP pops here. Authentic same-TU compilation remains the useful
 // next test because source-only publication forms now share one codegen basin.
+// 15: Recovered the natural top-tested outer retry loop, `while (expand < 3)`.
+//     An exact 004C6400 donor supports this VC5 layout. The inner retry loop
+//     and expansion updates remain unchanged. This moves publication before
+//     the saved-register pops and produces MATCH in the standalone and authentic
+//     tact_mob.cpp wrapper checks.
+// Walkback: restoring the earlier do-while form returned the seven-byte mismatch;
+// no other source change is required for the exact result.
 
 #include "../../include/game_globals.h"
 
@@ -150,7 +157,7 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
     ry = this->obj->master_obj->radius_y + proto->radius_y - DAT_00575190;
     r2y = ry + ry;
     short tries;
-    do {
+    while (expand < 3) {
         tries = 0;
         do {
             short dir;
@@ -195,6 +202,6 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
         r2x = r2x + (proto->radius_x * 4.0f);
         r2y = r2y + (proto->radius_y * 4.0f);
         ++expand;
-    } while (expand < 3);
+    }
     return 0;
 }

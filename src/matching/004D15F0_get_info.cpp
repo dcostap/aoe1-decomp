@@ -17,10 +17,8 @@
 //   first walk uses rebuilt ecx/eax/edx/eax where original uses eax/edx/ecx/edx;
 //   second walk uses rebuilt eax/edx/ecx/edx where original uses edx/ecx/eax/ecx.
 //   Addressed fields/calls, stack cleanup, branches, FPU ops, ftol, strncpy args, and terminator store are identical.
-// ACCEPTED_DRIFT 2026-05-19: approved localized behavior-equivalent VC5 register-allocation drift.
-// Only differing unmasked bytes are ModRM/register choices in the two side-effect-free object-info
-// pointer walks and the corresponding push register for strncpy's source argument. Branches, calls,
-// stack cleanup, FPU ops, addressed fields, stores, and terminator write are identical.
+// BINARY NOTE: The typed object-list walks now match in the authentic
+// tact_mob.cpp wrapper. The walks preserve the call and terminator order.
 
 #include <string.h>
 

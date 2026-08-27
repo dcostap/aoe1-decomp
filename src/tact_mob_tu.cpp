@@ -33,8 +33,8 @@
 #include "accepted_drift/004D0FC0_first_in_stack.cpp"
 #include "matching/004D10E0_set_state.cpp"
 #include "matching/004D10F0_update.cpp"
-#include "scratch/004D12B0_place_obj.cpp"
+#include "matching/004D12B0_place_obj.cpp"
 #include "matching/004D1550_stop.cpp"
-#include "accepted_drift/004D15F0_get_info.cpp"
+#include "matching/004D15F0_get_info.cpp"
 
 #undef TACT_MOB_SHARED_CONTEXT
