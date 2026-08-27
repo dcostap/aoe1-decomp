@@ -2462,20 +2462,20 @@
     },
     {
       "name": "sound",
-      "source": "src/sound_tu.cpp",
+      "source": "src/Sound.cpp",
       "flags": "config/flags/004BBF30_RGE_Sound.rsp",
       "owners": {
-        "004BBE40": "src/matching/004BBE40_RGE_Sound.cpp",
-        "004BC070": "src/matching/004BC070_RGE_Sound.cpp",
-        "004BC080": "src/matching/004BC080_RGE_Sound.cpp",
-        "004BC0F0": "src/matching/004BC0F0_save.cpp",
-        "004BC190": "src/matching/004BC190_restart_sound.cpp",
-        "004BC2D0": "src/matching/004BC2D0_set_cache_time.cpp",
-        "004BC2E0": "src/matching/004BC2E0_play_at_update.cpp",
-        "004BC2F0": "src/matching/004BC2F0_update_play.cpp",
-        "004BC470": "src/matching/004BC470_get_file_name.cpp",
-        "004BC4F0": "src/matching/004BC4F0_stop.cpp",
-        "004BC540": "src/matching/004BC540_is_playing.cpp"
+        "004BBE40": "src/Sound.cpp",
+        "004BC070": "src/Sound.cpp",
+        "004BC080": "src/Sound.cpp",
+        "004BC0F0": "src/Sound.cpp",
+        "004BC190": "src/Sound.cpp",
+        "004BC2D0": "src/Sound.cpp",
+        "004BC2E0": "src/Sound.cpp",
+        "004BC2F0": "src/Sound.cpp",
+        "004BC470": "src/Sound.cpp",
+        "004BC4F0": "src/Sound.cpp",
+        "004BC540": "src/Sound.cpp"
       },
       "symbols": {
         "004BBE40": "??0RGE_Sound@@QAE@PAU_iobuf@@F@Z",
