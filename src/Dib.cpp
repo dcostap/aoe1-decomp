@@ -226,17 +226,17 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
                         sourceOffset = (srcHeight - sourceRow - 1) * srcStride + sx;
 
                     LINEINFO* lineInfo = &trans->LineInfo[sourceRow];
-                    if (lineInfo->skip == 0) {
+                    if (lineInfo->AllTrans == 0) {
                         long first;
-                        if (lineInfo->first < sx)
+                        if (lineInfo->StartX < sx)
                             first = 0;
                         else
-                            first = ((lineInfo->first - sx) * xScale) >> 8;
-                        long last = (((lineInfo->last - sx) + 1) * xScale) >> 8;
+                            first = ((lineInfo->StartX - sx) * xScale) >> 8;
+                        long last = (((lineInfo->EndX - sx) + 1) * xScale) >> 8;
                         if (last > dw)
                             last = dw;
                         if (last > first) {
-                            if (xScale == 0x100 && lineInfo->copy != 0) {
+                            if (xScale == 0x100 && lineInfo->MidSolid != 0) {
                                 memcpy(destLine + first, src + first + sourceOffset,
                                     last - first);
                             } else {
