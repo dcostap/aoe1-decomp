@@ -4378,13 +4378,15 @@
         "004D21B0": "src/matching/004D21B0_TRIBE_Action_Make_Tech.cpp",
         "004D2370": "src/matching/004D2370_save.cpp",
         "004D23B0": "src/matching/004D23B0_first_in_stack.cpp",
-        "004D2440": "src/matching/004D2440_set_state.cpp"
+        "004D2440": "src/matching/004D2440_set_state.cpp",
+        "004D2550": "src/matching/004D2550_stop.cpp"
       },
       "symbols": {
         "004D21B0": "??0TRIBE_Action_Make_Tech@@QAE@HPAVRGE_Action_Object@@@Z",
         "004D2370": "?save@TRIBE_Action_Make_Tech@@UAEXH@Z",
         "004D23B0": "?first_in_stack@TRIBE_Action_Make_Tech@@UAEXE@Z",
-        "004D2440": "?set_state@TRIBE_Action_Make_Tech@@MAEXE@Z"
+        "004D2440": "?set_state@TRIBE_Action_Make_Tech@@MAEXE@Z",
+        "004D2550": "?stop@TRIBE_Action_Make_Tech@@UAEHXZ"
       }
     },
     {

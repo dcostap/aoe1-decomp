@@ -14,7 +14,7 @@
 #include "matching/004D23B0_first_in_stack.cpp"
 #include "matching/004D2440_set_state.cpp"
 #include "scratch/004D2450_update.cpp"
-#include "scratch/004D2550_stop.cpp"
+#include "matching/004D2550_stop.cpp"
 #include "accepted_drift/004D25E0_get_info.cpp"
 
 #undef AOE1_TACT_TEK_TU_CONTEXT
