@@ -7566,20 +7566,21 @@
     },
     {
       "name": "tact_rep",
-      "source": "src/tact_rep_tu.cpp",
+      "source": "src/tact_rep.cpp",
+      "module": "tact_rep",
       "flags": "config/flags/004CD210_TRIBE_Action_Build.rsp",
       "owners": {
-        "004D1680": "src/matching/004D1680_TRIBE_Action_Repair.cpp",
-        "004D1720": "src/matching/004D1720_TRIBE_Action_Repair.cpp",
-        "004D17B0": "src/matching/004D17B0_TRIBE_Action_Repair.cpp",
-        "004D1800": "src/matching/004D1800_setup.cpp",
-        "004D1850": "src/matching/004D1850_save.cpp",
-        "004D1880": "src/matching/004D1880_first_in_stack.cpp",
-        "004D18B0": "src/matching/004D18B0_set_state.cpp",
-        "004D1F50": "src/matching/004D1F50_stop.cpp",
-        "004D1F60": "src/matching/004D1F60_move_to.cpp",
-        "004D1FA0": "src/matching/004D1FA0_work.cpp",
-        "004D2020": "src/matching/004D2020_meet_target.cpp"
+        "004D1680": "src/tact_rep.cpp",
+        "004D1720": "src/tact_rep.cpp",
+        "004D17B0": "src/tact_rep.cpp",
+        "004D1800": "src/tact_rep.cpp",
+        "004D1850": "src/tact_rep.cpp",
+        "004D1880": "src/tact_rep.cpp",
+        "004D18B0": "src/tact_rep.cpp",
+        "004D1F50": "src/tact_rep.cpp",
+        "004D1F60": "src/tact_rep.cpp",
+        "004D1FA0": "src/tact_rep.cpp",
+        "004D2020": "src/tact_rep.cpp"
       },
       "symbols": {
         "004D1680": "??0TRIBE_Action_Repair@@QAE@HPAVRGE_Action_Object@@H@Z",

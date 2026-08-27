@@ -1,7 +1,7 @@
-#ifndef TACT_REP_CONTEXT_H
-#define TACT_REP_CONTEXT_H
+#ifndef AOE1_TACT_REP_H
+#define AOE1_TACT_REP_H
 
-// Canonical declarations for the tact_rep.cpp source module.
+// Canonical declarations for C:\\msdev\\work\\age1_x1\\tact_rep.cpp.
 //
 // The action hierarchy and the virtual methods below follow the reviewed
 // tactical-action surfaces.  These declarations supply the inherited ABI for
@@ -408,9 +408,6 @@ extern "C" void __cdecl rge_write(int, void*, int);
 extern RGE_Base_Game* rge_base_game;
 extern float DAT_0057526c;
 extern double DAT_00575270;
-extern float DAT_00575278;
 extern float DAT_0086bc08;
-extern float DAT_005750e0;
-extern double DAT_005750e8;
 
 #endif
