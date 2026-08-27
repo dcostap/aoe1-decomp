@@ -2732,19 +2732,20 @@
     },
     {
       "name": "ani_obj",
-      "source": "src/ani_obj_tu.cpp",
+      "module": "ani_obj",
+      "source": "src/ani_obj.cpp",
       "flags": "config/flags/0041A150_RGE_Animated_Object.rsp",
       "owners": {
-        "0041A150": "src/matching/0041A150_RGE_Animated_Object.cpp",
-        "0041A210": "src/matching/0041A210_RGE_Animated_Object.cpp",
-        "0041A280": "src/matching/0041A280_recycle_in_to_game.cpp",
-        "0041A2C0": "src/matching/0041A2C0_setup.cpp",
-        "0041A310": "src/matching/0041A310_setup.cpp",
-        "0041A350": "src/matching/0041A350_update.cpp",
-        "0041A3D0": "src/matching/0041A3D0_save.cpp",
-        "0041A400": "src/matching/0041A400_transform.cpp",
-        "0041A410": "src/matching/0041A410_set_being_worked_on.cpp",
-        "0041A430": "src/matching/0041A430_release_being_worked_on.cpp"
+        "0041A150": "src/ani_obj.cpp",
+        "0041A210": "src/ani_obj.cpp",
+        "0041A280": "src/ani_obj.cpp",
+        "0041A2C0": "src/ani_obj.cpp",
+        "0041A310": "src/ani_obj.cpp",
+        "0041A350": "src/ani_obj.cpp",
+        "0041A3D0": "src/ani_obj.cpp",
+        "0041A400": "src/ani_obj.cpp",
+        "0041A410": "src/ani_obj.cpp",
+        "0041A430": "src/ani_obj.cpp"
       },
       "symbols": {
         "0041A150": "??0RGE_Animated_Object@@QAE@PAVRGE_Master_Animated_Object@@PAVRGE_Player@@MMMH@Z",
