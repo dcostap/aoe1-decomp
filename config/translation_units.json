@@ -1960,14 +1960,18 @@
       }
     },
     {
-      "name": "rmm_shal_prefix",
-      "source": "src/rmm_shal_tu.cpp",
+      "name": "rmm_shal",
+      "module": "rmm_shal",
+      "source": "src/rmm_shal.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00487010": "src/matching/00487010_RGE_RMM_Shallows_Generator.cpp",
-        "00487050": "src/matching/00487050_generate.cpp"
+        "00487010": "src/rmm_shal.cpp",
+        "00487050": "src/rmm_shal.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "00487010": "??0RGE_RMM_Shallows_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@PAURGE_Shallows_Info@@@Z",
+        "00487050": "?generate@RGE_RMM_Shallows_Generator@@UAEEXZ"
+      }
     },
     {
       "name": "tpnl_inv_prefix",

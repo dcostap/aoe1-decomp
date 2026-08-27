@@ -1,41 +1,85 @@
-// VA: 00487200 make_tribe_connections
-// rmm_shal.cpp lines 106-245
+// Authentic PDB-ordered source module for C:\\msdev\\work\\age1_x1\\rmm_shal.cpp.
+// The three handwritten owners follow the original source-line and address order.
+// map.h is source-private because the public module header needs only pointer
+// and base declarations.
 
-// Attempt log:
-// - Baseline first-pass decompiler translation had exact size but 1153 differing bytes.
-// - Correct map-row ownership and local stack size restored the 0xE0 frame and improved shape.
-// - Switch order alone regressed; original fall-through cases 8->4 and 10->5 were required.
-// - Canonical Map_Stack plus a single natural pop loop reached exact size and 964 differing bytes.
-// - Calls remain 14/14 ordered and the current source keeps named map and stack ownership.
-// - Paused: frame was 0xD8 versus 0xE0, with broad register and block-layout drift remaining.
-// - Main-agent ABI audit restored typed Map_Stack helper calls and a separate
-//   pop cost output. The frame improved to 0xDC and positional drift fell to 956 bytes.
-// - Tried keeping the water-area row bound live across both natural loops; size grew
-//   by 88 bytes and drift worsened, so restored the prior clean source.
-// - Hoisted the initial y/ty2 carry before the bounds guard; this improved the
-//   structural diff from 956 to 935 bytes and matched more loop blocks.
-// - Reordered stack_cost before Map_Stack to model the original separate cost
-//   home; VC5 kept the same frame and bytes, so the lead was rolled back.
-// - Follow-up probes corrected the water-area upper bound and retained the
-//   binary's stack.y helper surface. The clean bounded result is 1224 bytes,
-//   frame 0xE0, shape 74.20%, and 991 differing bytes. The older 1144-byte
-//   result had a known wrong outer-loop bound and is not the final behavior model.
-// - A byte-offset row-table cursor reduced the result to 1172 bytes and 905
-//   differing bytes. Main review rejected that metric-only cursor and kept
-//   typed row ownership. The frame remains four bytes short without padding.
-// - Binary assembly uses integer bounds for the random water-area loops;
-//   changing in_zone from float to long removed an x87 sequence and restored
-//   the 1172-byte size. The frame remains 0xDC versus the original 0xE0.
-// - Repeating the inner water-tile member read improved resynchronization
-//   (edit cost 621 versus 708) without changing the strict 906-byte drift.
-// - A typed row-table pointer restored the 0xE0 frame but increased strict
-//   drift and was rejected. Explicit pop-result, zero-local, declaration-order,
-//   and next-row-local probes were neutral or worse and were restored.
-
-#include "..\..\include\rmm_shal.h"
+#include "../include/rmm_shal.h"
+#include "../include/map.h"
 
 extern "C" int __cdecl debug_rand(char*, int);
 
+// 00487010 RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator
+// PDB source lines 34-38, size 59 bytes.
+RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(
+    RGE_Map* in_map, RGE_Random_Map_Module* parent_module,
+    RGE_Shallows_Info* in_info)
+    : RGE_Random_Map_Module(in_map, parent_module, 1)
+{
+    this->schedule = 1.1f;
+    this->info = *in_info;
+}
+
+// 00487050 RGE_RMM_Shallows_Generator::generate
+// PDB source lines 42-102, size 418 bytes.
+// The nested for loops follow the PDB line map: outer loop at line 56,
+// inner loop at line 57, and connection call at line 58.
+uchar RGE_RMM_Shallows_Generator::generate()
+{
+    this->clear_stack();
+
+    long i, j;
+    long x, y;
+    for (i = 0; i < this->info.shallows_num; ++i) {
+        for (j = i + 1; j < this->info.shallows_num; ++j) {
+            this->make_tribe_connections(i, j);
+        }
+    }
+
+    long count = 2;
+    this->info.shallows_num += 2;
+    long index1 = this->info.shallows_num - 1;
+    long index2 = this->info.shallows_num - 2;
+
+    do {
+        int found = 0;
+        do {
+            x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0x45) *
+                 (this->map_width - 1)) / 0x7FFF;
+            y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0x46) *
+                 (this->map_height - 1)) / 0x7FFF;
+            uchar terrain = this->map_row_offset[y][x].terrain_type & 0x1f;
+            if (terrain != 1 && terrain != 0x16 && terrain != 4) {
+                this->info.shallows[index1].x = x;
+                found = 1;
+                this->info.shallows[index1].y = y;
+            }
+        } while (!found);
+
+        found = 0;
+        do {
+            x = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0x54) *
+                 (this->map_width - 1)) / 0x7FFF;
+            y = (debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0x55) *
+                 (this->map_height - 1)) / 0x7FFF;
+            uchar terrain = this->map_row_offset[y][x].terrain_type & 0x1f;
+            if (terrain != 1 && terrain != 0x16 && terrain != 4) {
+                this->info.shallows[index2].x = x;
+                found = 1;
+                this->info.shallows[index2].y = y;
+            }
+        } while (!found);
+
+        this->make_tribe_connections(index1, index2);
+        --count;
+    } while (count != 0);
+
+    return 1;
+}
+
+// 00487200 RGE_RMM_Shallows_Generator::make_tribe_connections
+// PDB source lines 106-245, size 1172 bytes.
+// The source preserves the current reviewed scratch reconstruction.
+// Its scratch status and measured result remain unchanged by this move.
 void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param_2) {
     int iVar2;
     int iVar4;
@@ -72,8 +116,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
     tx1 = iVar2;
     ty = iVar9;
 
-    // BINARY NOTE: The shipped caller passes the sentinel through stack.y.
-    this->init_stack((Map_Stack*)&stack.y);
+    this->init_stack(stack);
 
     terrain[1] = 1.0f;
     terrain[3] = 1.0f;
@@ -81,7 +124,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
     terrain[0x17] = 14.0f;
     terrain[5] = 2.0f;
 
-    this->find_path(end_x, done, &tx1, &ty, &terrain[1]);
+    this->find_path(stack, end_x, done, tx1, ty, &terrain[1]);
 
     if (tx1 != iVar2 || ty != iVar9) return;
 
@@ -135,22 +178,21 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
         }
 
         if (tx2 != 0) {
-            // Pop from stack and modify terrain tiles
-            // BINARY NOTE: pop_stack receives stack.y, but its cost output aliases stack.
-            while (this->pop_stack((Map_Stack*)&stack.y, &y, &ty2, (float*)&stack) != 0) {
+            // Pop from stack and modify terrain tiles.
+            while (this->pop_stack(stack, y, ty2, stack.cost) != 0) {
                 RGE_Tile& tile = this->map_row_offset[ty2][y];
-                tile.terrain = (tile.terrain & 0xE4) | 4;
+                tile.terrain_type = 4;
             }
-            this->deinit_stack((Map_Stack*)&stack.y);
+            this->deinit_stack(stack);
             return;
         }
 
-        // Check current tile terrain
+        // Check current tile terrain.
         RGE_Tile** rows3 = this->map_row_offset;
-        unsigned char terrain_type = rows3[ty2][y].terrain & 0x1F;
+        unsigned char terrain_type = rows3[ty2][y].terrain_type & 0x1F;
 
         if (terrain_type == 1 || terrain_type == 0x16) {
-            // Water tile - generate random area around it
+            // Water tile - generate random area around it.
             iVar2 = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xC6);
             end_y = (y - (iVar2 * 2) / 0x7FFF) - 1;
             if (end_y < 0) end_y = 0;
@@ -177,9 +219,9 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
                         iVar9 = end_y;
                         done = lVar8;
                         do {
-                            if ((this->map_row_offset[iVar2][iVar9].terrain & 0x1F) == 1 ||
-                                (this->map_row_offset[iVar2][iVar9].terrain & 0x1F) == 0x16) {
-                                this->push_stack((Map_Stack*)&stack.y, lVar6, lVar8, 0.0f, 0.0f);
+                            if ((this->map_row_offset[iVar2][iVar9].terrain_type & 0x1F) == 1 ||
+                                (this->map_row_offset[iVar2][iVar9].terrain_type & 0x1F) == 0x16) {
+                                this->push_stack(stack, lVar6, lVar8, 0.0f, 0.0f);
                                 lVar8 = done;
                             }
                             lVar6++;
@@ -193,38 +235,38 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
                 } while (lVar8 <= end_x);
             }
         } else {
-            // Land tile - push adjacent water tiles to stack
+            // Land tile - push adjacent water tiles to stack.
             if (y > 0) {
                 RGE_Tile** rows5 = this->map_row_offset;
-                unsigned char adj = rows5[ty2][y - 1].terrain & 0x1F;
+                unsigned char adj = rows5[ty2][y - 1].terrain_type & 0x1F;
                 if (adj == 1 || adj == 0x16) {
-                    this->push_stack((Map_Stack*)&stack.y, y - 1, ty2, 0.0f, 0.0f);
+                    this->push_stack(stack, y - 1, ty2, 0.0f, 0.0f);
                 }
             }
             if (y < this->map_width - 1) {
                 RGE_Tile** rows5 = this->map_row_offset;
-                unsigned char adj = rows5[ty2][y + 1].terrain & 0x1F;
+                unsigned char adj = rows5[ty2][y + 1].terrain_type & 0x1F;
                 if (adj == 1 || adj == 0x16) {
-                    this->push_stack((Map_Stack*)&stack.y, y + 1, ty2, 0.0f, 0.0f);
+                    this->push_stack(stack, y + 1, ty2, 0.0f, 0.0f);
                 }
             }
             if (ty2 > 0) {
                 RGE_Tile** rows5 = this->map_row_offset;
-                unsigned char adj = rows5[ty2 - 1][y].terrain & 0x1F;
+                unsigned char adj = rows5[ty2 - 1][y].terrain_type & 0x1F;
                 if (adj == 1 || adj == 0x16) {
-                    this->push_stack((Map_Stack*)&stack.y, y, ty2 - 1, 0.0f, 0.0f);
+                    this->push_stack(stack, y, ty2 - 1, 0.0f, 0.0f);
                 }
             }
             if (ty2 < this->map_height - 1) {
                 RGE_Tile** rows5 = this->map_row_offset;
-                unsigned char adj = rows5[ty2 + 1][y].terrain & 0x1F;
+                unsigned char adj = rows5[ty2 + 1][y].terrain_type & 0x1F;
                 if (adj == 1 || adj == 0x16) {
-                    this->push_stack((Map_Stack*)&stack.y, y, ty2 + 1, 0.0f, 0.0f);
+                    this->push_stack(stack, y, ty2 + 1, 0.0f, 0.0f);
                 }
             }
         }
 
-        // Mark current tile on block map
+        // Mark current tile on block map.
         unsigned char** block_rows = (unsigned char**)this->search_map_rows;
         block_rows[ty][tx1] = 0xFF;
 
