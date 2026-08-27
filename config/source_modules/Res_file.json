@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "name": "Res_file",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Res_file.cpp",
+  "source": "src/Res_file.cpp",
+  "header": "include/Res_file.h",
+  "functions": {
+    "0047EE90": { "status": "scratch", "note_path": "recovery_notes/res_file_module.md" },
+    "0047F180": { "status": "matching", "note_path": "recovery_notes/res_file_module.md" },
+    "0047F230": { "status": "matching", "note_path": "recovery_notes/res_file_module.md" },
+    "0047F320": { "status": "verified_logic", "note_path": "recovery_notes/res_file_module.md" },
+    "0047F480": { "status": "matching", "note_path": "recovery_notes/res_file_module.md" },
+    "0047F580": { "status": "matching", "note_path": "recovery_notes/res_file_module.md" },
+    "0047F590": { "status": "matching", "note_path": "recovery_notes/res_file_module.md" },
+    "0047F5C0": { "status": "scratch", "note_path": "recovery_notes/res_file_module.md" },
+    "0047FC50": { "status": "matching", "note_path": "recovery_notes/res_file_module.md" }
+  }
+}
