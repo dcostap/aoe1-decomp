@@ -2,7 +2,7 @@
 // Definitions follow the original source and address order.
 
 #include "../include/fractal.h"
-#include "trig_tu_context.h"
+#include "../include/trig.h"
 
 #include <stdlib.h>
 #include <string.h>

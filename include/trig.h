@@ -1,8 +1,6 @@
-#ifndef AOE1_TRIG_TU_CONTEXT_H
-#define AOE1_TRIG_TU_CONTEXT_H
+#ifndef AOE1_TRIG_H
+#define AOE1_TRIG_H
 
-// Authentic trig.cpp class surface.  The two restriction helpers are private
-// in the shipped class; the table accessors and constructor are public.
 class TRIGONOMETRY {
 private:
     int RestrictAngle(int param_1);
@@ -30,4 +28,4 @@ public:
     float atan360(int param_1);
 };
 
-#endif
+#endif  // AOE1_TRIG_H
