@@ -51,23 +51,19 @@ protected:
 public:
     RGE_Sprite* fight_sprite;
     unsigned char base_armor;
-    unsigned char _pad_101[1];
     short armor_num;
     RGE_Armor_Weapon_Info* armor;
     short weapon_num;
-    unsigned char _pad_10A[2];
     RGE_Armor_Weapon_Info* weapon;
     short defense_terrain_bonus;
-    unsigned char _pad_112[2];
+    // PDB and tact_rep prove a float at +0x114.
     float weapon_range;
     float area_effect_range;
     unsigned char area_effect_level;
-    unsigned char _pad_11D[3];
     float speed_of_attack;
     short missile_id;
     short base_hit_chance;
     unsigned char break_off_combat;
-    unsigned char _pad_129[1];
     short fire_missile_at_frame;
     float weapon_offset_x;
     float weapon_offset_y;
