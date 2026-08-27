@@ -22,6 +22,8 @@
 // - Tested aliases, accessors, literal forms, condition forms, and local scopes.
 // - Those forms duplicated this basin or changed valid behavior and layout.
 // - Needed evidence is the original 4757 call spelling or fuller header context.
+// - Captain probe: direct currentOrder rereads in case 506 were codegen-identical
+//   to the saved local form. The natural local remains authoritative.
 
 #include <stdio.h>
 typedef unsigned long ulong;

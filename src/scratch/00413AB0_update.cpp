@@ -49,6 +49,9 @@
 //   it does not retest the attacking-unit loop.
 // - Current reduced check: 1372 bytes, 37 calls, 463 versus 461 instructions,
 //   97.62% shape, 88.29% exact-block coverage, and 256 strict diff bytes.
+// - Captain repair: the target-killed retry calls moveTo with force flag 1.
+//   This matches the original push at +0142 and reduces the grouped diff to
+//   226 bytes with 95.23% exact-block coverage.
 //   BINARY NOTE: the first remaining block is +03A2. The oracle adds the
 //   secondary and look-around timers, tests notify size, then stores all three
 //   timers. The current source stores idle first and clears the offset register
@@ -149,7 +152,7 @@ int UnitAIModule::update(unsigned long param_1)
                                                  this->currentTargetYValue,
                                                  this->currentTargetZValue,
                                                  this->objectValue->weaponRange(),
-                                                 0) == 0) {
+                                                 1) == 0) {
                                     this->removeCurrentTarget();
                                     if (actionFile != 0) {
                                         if (this->objectValue != 0) {

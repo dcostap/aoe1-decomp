@@ -1,6 +1,10 @@
 // VA: 004195F0 UnitAIModule::processIdle
 // aiuaimod.cpp lines 5255-5282; protected virtual owner (PDB symbol MAEHH).
 // Body boundary: 004195F0-00419642; processGroupNotify ends at 004195E0.
+// BLOCKER: The isolated view below emits the three original virtual calls.
+// In the complete wrapper, the canonical class supplies get_type, find_unit,
+// and do_stuff as direct helpers. A shared ABI repair is required before this
+// owner can match in the complete TU.
 
 #ifndef AOE1_AIUAIMOD_COMPLETE_TU
 class UnitAIModule {

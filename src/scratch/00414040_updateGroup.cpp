@@ -62,6 +62,8 @@
 // calls in the oracle order. The full prefix through 00414800 keeps this body
 // in the same code-generation basin. Do not change 00413AB0 queue indexing
 // or its timer and current-order publication while testing this owner.
+// - Captain probe: a separate initial-target local was codegen-identical and
+//   was restored. The grouped result remains 1520 differing bytes, 0xF8 frame.
 
 #include "../../include/aiuaimod_context.h"
 
