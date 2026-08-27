@@ -90,7 +90,7 @@ int RGE_Communications_Synchronize::ValidateChecksums(
         if (bad) {
             this->LogChecksums(turn, wRandom, checksum1, chatCrc, dataCrc,
                                a7, a8, a9, checksum2);
-            this->comm->NotifyWindowParam(0x17B0, checksum1);
+            this->comm->NotifyWindowParam((COMMMESSAGES)0x17B0, checksum1);
             this->LastResult = 0;
             return 0;
         }
