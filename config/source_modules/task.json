@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "name": "task",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\task.cpp",
+  "source": "src/task.cpp",
+  "header": "include/task.h",
+  "functions": {
+    "00508670": { "status": "matching" },
+    "005086F0": { "status": "matching" },
+    "00508700": { "status": "matching" },
+    "005087C0": { "status": "matching" },
+    "00508A20": { "status": "matching" },
+    "00508BB0": { "status": "matching" }
+  }
+}
