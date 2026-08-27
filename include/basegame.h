@@ -160,6 +160,9 @@ public:
     RGE_Player* get_player();
     void get_mouse_pos(tagPOINT*);
     RGE_Font* get_font(int);
+    void reset_countdown_timer(long);
+    void set_countdown_timer(long, long);
+    void get_countdown_timer(long, long&);
     TShape* get_shape(int);
     TDigital* get_sound(int);
     void increment_view_update_count();
