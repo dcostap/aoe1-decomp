@@ -3554,13 +3554,14 @@
       }
     },
     {
-      "name": "tpnl_txl_cpp",
-      "source": "src/tpnl_txl_tu.cpp",
+      "name": "tpnl_txl",
+      "source": "src/tpnl_txl.cpp",
+      "module": "tpnl_txl",
       "flags": "config/flags/00520D70_TRIBE_Panel_Text_Line.rsp",
       "owners": {
-        "00520D70": "src/matching/00520D70_TRIBE_Panel_Text_Line.cpp",
-        "00520E30": "src/matching/00520E30_set_info.cpp",
-        "00520ED0": "src/matching/00520ED0_draw.cpp"
+        "00520D70": "src/tpnl_txl.cpp",
+        "00520E30": "src/tpnl_txl.cpp",
+        "00520ED0": "src/tpnl_txl.cpp"
       },
       "symbols": {
         "00520D70": "??0TRIBE_Panel_Text_Line@@QAE@PAVTDrawArea@@PAVTPanel@@PAX@Z",

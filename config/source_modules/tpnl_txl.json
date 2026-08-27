@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "name": "tpnl_txl",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tpnl_txl.cpp",
+  "source": "src/tpnl_txl.cpp",
+  "header": "include/tpnl_txl.h",
+  "functions": {
+    "00520D70": { "status": "matching", "note_path": "recovery_notes/tpnl_txl_module.md" },
+    "00520E30": { "status": "matching", "note_path": "recovery_notes/tpnl_txl_module.md" },
+    "00520ED0": { "status": "matching", "note_path": "recovery_notes/tpnl_txl_module.md" }
+  }
+}
