@@ -7,6 +7,7 @@
 // Twenty-four owners match. insertItem (00409950) remains scratch.
 
 #include "../include/aibldmod.h"
+#include <string.h>
 
 // 004086B0 BuildAIModule::BuildAIModule
 // BINARY NOTE: The canonical member initializers own the BuildItem,
@@ -26,7 +27,6 @@ BuildAIModule::BuildAIModule(void* param_1, int param_2)
 // 00408840 BuildAIModule::BuildAIModule
 // BINARY NOTE: The serialized fields, local declaration order, and name
 // buffer size preserve the original constructor frame and call sequence.
-#include <string.h>
 #include <stdlib.h>
 BuildAIModule::BuildAIModule(int p1, int fd)
     : AIModule("Build AI", 0x3e9, p1, 0), buildList(),
@@ -52,7 +52,7 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     float ySize;
     int skipCycles;
     int typeID;
-    uchar permanentSkip;
+    unsigned char permanentSkip;
     int terrainSet;
     int placeOnElevation;
     int buildFrom;
@@ -143,63 +143,56 @@ BuildAIModule::~BuildAIModule()
 }
 
 // 00408DF0 BuildAIModule::save
-#include <string.h>
-#define WRITE_STRING(SRC) { strcpy(tempString, (SRC)); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString)); }
-#define WRITE_I(EXPR) { tempInt = (EXPR); rge_write(file, &tempInt, 4); }
-#define WRITE_I_TO(VAR, EXPR) { VAR = (EXPR); rge_write(file, &VAR, 4); }
 int BuildAIModule::save(int file) {
     char tempString[257];
-    int tempInt; float tempFloat; int tempBOOL; int iStack_110; unsigned char tempBYTE; unsigned char local_109;
+    int tempInt; float tempFloat; int iStack_110; unsigned char local_109;
     rge_write(file, &this->buildListLengthValue, 4);
-    WRITE_STRING(this->buildListNameValue);
-    WRITE_STRING(this->lastBuildItemRequestedValue);
-    WRITE_STRING(this->currentBuildItemRequestedValue);
-    WRITE_STRING(this->nextBuildItemRequestedValue);
+    strcpy(tempString, this->buildListNameValue); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString));
+    strcpy(tempString, this->lastBuildItemRequestedValue); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString));
+    strcpy(tempString, this->currentBuildItemRequestedValue); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString));
+    strcpy(tempString, this->nextBuildItemRequestedValue); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString));
     rge_write(file, &this->numberItemsIntoBuildListValue, 4);
     BuildItem* item = this->buildList.next;
     BuildItem* end = &this->buildList;
     while (item != end) {
         if (item == 0) return 1;
-        WRITE_STRING(item->name());
-        WRITE_I(item->typeID());
-        WRITE_I(item->gameID());
-        WRITE_I(item->uniqueID());
+        strcpy(tempString, item->name()); tempInt = strlen(tempString); rge_write(file, &tempInt, 4); rge_write(file, tempString, strlen(tempString));
+        tempInt = item->typeID(); rge_write(file, &tempInt, 4);
+        tempInt = item->gameID(); rge_write(file, &tempInt, 4);
+        tempInt = item->uniqueID(); rge_write(file, &tempInt, 4);
         tempFloat = item->x(); rge_write(file, &tempFloat, 4);
         tempFloat = item->y(); rge_write(file, &tempFloat, 4);
         tempFloat = item->z(); rge_write(file, &tempFloat, 4);
         tempFloat = item->xSize(); rge_write(file, &tempFloat, 4);
         tempFloat = item->ySize(); rge_write(file, &tempFloat, 4);
         tempFloat = item->zSize(); rge_write(file, &tempFloat, 4);
-        WRITE_I_TO(iStack_110, item->skip());
-        WRITE_I(item->buildCategory());
-        WRITE_I_TO(iStack_110, item->inProgress());
-        WRITE_I_TO(iStack_110, item->built());
-        WRITE_I(item->buildAttempts());
-        WRITE_I(item->buildFrom());
-        WRITE_I(item->terrainSet());
-        WRITE_I(item->terrainAdjacency(1));
-        WRITE_I(item->terrainAdjacency(2));
-        WRITE_I_TO(iStack_110, item->placeOnElevation());
-        WRITE_I(item->numberBuilds());
-        WRITE_I(item->buildCap());
-        WRITE_I(item->skipCycles());
+        iStack_110 = item->skip(); rge_write(file, &iStack_110, 4);
+        tempInt = item->buildCategory(); rge_write(file, &tempInt, 4);
+        iStack_110 = item->inProgress(); rge_write(file, &iStack_110, 4);
+        iStack_110 = item->built(); rge_write(file, &iStack_110, 4);
+        tempInt = item->buildAttempts(); rge_write(file, &tempInt, 4);
+        tempInt = item->buildFrom(); rge_write(file, &tempInt, 4);
+        tempInt = item->terrainSet(); rge_write(file, &tempInt, 4);
+        tempInt = item->terrainAdjacency(1); rge_write(file, &tempInt, 4);
+        tempInt = item->terrainAdjacency(2); rge_write(file, &tempInt, 4);
+        iStack_110 = item->placeOnElevation(); rge_write(file, &iStack_110, 4);
+        tempInt = item->numberBuilds(); rge_write(file, &tempInt, 4);
+        tempInt = item->buildCap(); rge_write(file, &tempInt, 4);
+        tempInt = item->skipCycles(); rge_write(file, &tempInt, 4);
         local_109 = item->permanentSkip();
         rge_write(file, &local_109, 1);
         item = (BuildItem*)item->next;
     }
     return 1;
 }
-#undef WRITE_STRING
-#undef WRITE_I
-#undef WRITE_I_TO
 
 // 004092F0 BuildAIModule::displayBuildList
 void BuildAIModule::displayBuildList()
 {
     this->logCommonHistory("Build list '%s':", buildListNameValue);
 
-    BuildItem2* item = (BuildItem2*)((BuildItem2*)&buildList)->next;
-    BuildItem2* sentinel = (BuildItem2*)&buildList;
+    BuildItem* item = this->buildList.next;
+    BuildItem* sentinel = &this->buildList;
 
     while (item != sentinel && item != 0) {
         if (item->built() == 1) {
@@ -220,7 +213,7 @@ void BuildAIModule::displayBuildList()
                 (unsigned int)item->permanentSkip(), item->skipCycles());
         }
 
-        item = (BuildItem2*)item->next;
+        item = item->next;
     }
 }
 
@@ -228,7 +221,6 @@ void BuildAIModule::displayBuildList()
 // ORIGINAL BUG: This source retains the executable's dead NULL test against
 // the in-object buildListNameValue array.
 #include <stdio.h>
-#include <string.h>
 #include <io.h>
 int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
 {
@@ -315,14 +307,8 @@ int BuildAIModule::loadBuildList(char* filename, RGE_Player* player)
         }
 
         if (buildCategory == 0) {
-            int i;
-            for (i = 0; i < this->typesToIgnore.numberValue; ++i) {
-                if (i >= this->typesToIgnore.maximumSizeValue) {
-                    break;
-                }
-                if (this->typesToIgnore.value[i] == quantity) {
-                    goto next_line;
-                }
+            if (this->typesToIgnore.contains(quantity)) {
+                goto next_line;
             }
         }
 
@@ -377,7 +363,6 @@ int BuildAIModule::buildListLength() const { return this->buildListLengthValue; 
 char* BuildAIModule::buildListName() { return this->buildListNameValue; }
 
 // 004098C0 BuildAIModule::haveBuildList
-#pragma intrinsic(strcmp)
 int BuildAIModule::haveBuildList() const {
     char* name = (char*)this->buildListNameValue;
     if (name != 0 && strcmp(name, "NONE") != 0 && strcmp(name, "NULL") != 0) return 1;
