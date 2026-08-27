@@ -62,6 +62,9 @@
 // - A common facet call collapsed the target branch topology. Direct narrow
 //   writes into dead parameter homes reached 425B and remained nonexact.
 //   That raw-home form is not retained as canonical source.
+// - Coordinator-approved map.cpp ABI now uses short references and short map
+//   coordinates. Acquiring map before the radius locals reduces the grouped
+//   mismatch to 126B; AddGDINode remains on its current shared surface.
 
 #include "..\..\include\game_globals.h"
 #include "..\..\include\tm_b_obj_context.h"
@@ -186,9 +189,9 @@ void TRIBE_Master_Building_Object::draw(TDrawArea* area, short x, short y,
 
         if (param_7 != 0) {
             RGE_Game_World* world = rge_base_game->world;
+            RGE_Map* map = world->map;
             float rx1 = object->radius_x;
             float ry1 = object->radius_y;
-            RGE_Map* map = world->map;
             short x1;
             short y1;
             short x2;
