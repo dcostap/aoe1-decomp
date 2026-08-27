@@ -27,9 +27,10 @@ the authority. Header bodies remain proposals until the owner accepts them.
 - `RGE_Moving_Object` size is `0x180`. Source: `inventory/types/all_types.csv`.
 - `RGE_Action_Object` size is `0x194`. Source: the same inventory.
 - The animated base size is `0x8C`. Its speed is at `+0x88`.
-- The moving virtual order after the inherited surface is teleport, destructor,
-  two protected setup overloads, stop_moving, waitingToMove, turn_towards,
-  facetToNextWaypoint, setWaitingToMove, userDefinedWaypoint,
+- The new moving slots after the inherited static and animated surface are
+  stop_moving, turn_towards, and the moving setup overload. The moving class
+  overrides const waitingToMove and facetToNextWaypoint in inherited slots.
+  Its other new slots are setWaitingToMove, userDefinedWaypoint,
   addUserDefinedWaypoint, removeAllUserDefinedWaypoints,
   removeUserDefinedWaypoint, rotate, get_waypoint_checksum, findAvoidancePath,
   passableTile, maximumSpeed, two canPath overloads, canBidirectionPath,

@@ -63,9 +63,6 @@ public:
     RGE_Moving_Object(int, RGE_Game_World*, int);
     virtual ~RGE_Moving_Object();
     void destroy();
-protected:
-    virtual int setup(int, RGE_Game_World*);
-    virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
 public:
     void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     void save(int);
@@ -78,6 +75,11 @@ public:
     virtual unsigned char waitingToMove() const;
     float angle_to_object(RGE_Static_Object*, float, float);
     virtual unsigned char turn_towards(RGE_Static_Object*, float, float);
+protected:
+    // Keep both setup overloads after stop and turn for the PDB vtable order.
+    virtual int setup(int, RGE_Game_World*);
+    virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
+public:
     void set_velocity(float, float, float);
     void new_angle(float);
     const Path& getPath() const;

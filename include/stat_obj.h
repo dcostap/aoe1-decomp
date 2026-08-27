@@ -113,11 +113,11 @@ public:
     virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
     virtual LOSTBL* get_los_table();
     virtual int inAttackRange(RGE_Static_Object*);
-    virtual unsigned char underAttack();
+    virtual unsigned char underAttack() const;
     virtual void setUnderAttack(unsigned char);
     virtual float calc_attack_modifier(RGE_Static_Object*);
-    virtual float getSpeed();
-    virtual float getAngle();
+    virtual float getSpeed() const;
+    virtual float getAngle() const;
     virtual float maximumSpeed();
     virtual float rateOfFire();
     virtual float damageCapability(RGE_Static_Object*);
@@ -125,14 +125,14 @@ public:
     virtual float weaponRange();
     virtual float minimumWeaponRange();
     virtual int passableTile(float, float, int);
-    virtual unsigned char facetToNextWaypoint();
+    virtual unsigned char facetToNextWaypoint() const;
     virtual int currentTargetID();
     virtual float currentTargetX();
     virtual float currentTargetY();
     virtual float currentTargetZ();
     virtual void setWaitingToMove(unsigned char);
-    virtual unsigned char waitingToMove();
-    virtual unsigned char actionState();
+    virtual unsigned char waitingToMove() const;
+    virtual unsigned char actionState() const;
     virtual unsigned char keepGatheringWhenObjectIsOut(int);
     virtual unsigned char produceWhenKilledBy(int);
     virtual unsigned char useSameZoneDropsite();
@@ -172,12 +172,14 @@ public:
     virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
     virtual void removeAllUserDefinedWaypoints(int);
     virtual void removeUserDefinedWaypoint(int);
-    virtual int numberUserDefinedWaypoints();
+    virtual int numberUserDefinedWaypoints() const;
     virtual Path* findAvoidancePath(XYZPoint&, float, int);
     virtual long get_action_checksum();
     virtual long get_waypoint_checksum();
-    virtual int setup(int, RGE_Game_World*);
+    // VC5 reverses this adjacent overload group. The PDB vtable has the int
+    // overload at +0x1D8 and the master overload at +0x1DC.
     virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
+    virtual int setup(int, RGE_Game_World*);
     virtual RGE_Object_List* create_object_list();
     virtual RGE_Active_Sprite_List* create_sprite_list();
 

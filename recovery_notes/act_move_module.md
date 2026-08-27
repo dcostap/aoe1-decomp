@@ -68,6 +68,19 @@ The candidate proposal is:
 The lead must add the direct source-module manifest and then compile the
 proposal. This captain did not run a compiler or validator.
 
+## Shared ABI correction
+
+The vslot repair follows the original PDB-backed vtable. The executable's
+`RGE_Action_Object` table at `0056E420` places static setup at `+0x1D8` and
+`+0x1DC`, then animated setup at `+0x1E8`, moving stop at `+0x1EC`, moving turn
+at `+0x1F0`, and moving setup at `+0x1F4`. The PDB marks static
+`waitingToMove`, `facetToNextWaypoint`, `actionState`, `getSpeed`, `getAngle`,
+`underAttack`, and `numberUserDefinedWaypoints` as const. The canonical headers
+now use those const qualifiers, reverse the static setup declarations for
+VC5's adjacent-overload order, and place both moving setup declarations after
+stop and turn. This removes the synthetic setup and const slots without a
+local carrier or vtable workaround.
+
 ## Open validation
 
 The accepted-drift `00405850 update` retains its reviewed state. The lead must
