@@ -66,8 +66,14 @@ The notification order, terrain checks, and state transitions remain unchanged.
 The latest lead branch was merged before validation. It includes the cleaned
 `m_an_obj.h` owner header from `873a50686`.
 
-The candidate validator stopped during proposal checks. The live config still
-points at the old wrapper and source-bank paths. No compiler ran.
+The first candidate validator stopped during proposal checks. The live config
+then pointed at the old wrapper and source-bank paths.
+
+After direct registration, compilation reached the canonical header closure.
+It stopped because `move_obj.h` includes `zone_map.h`. That header still
+defines copied `RGE_Tile` and `RGE_Map` records, which conflict with `map.h`.
+The next owner task is a clean `zone_map.h` composition over canonical map
+types. This module does not alter that shared owner header.
 
 The candidate proposal is `build/candidate_tus/act_tran.json`. It uses
 `src/act_tran.cpp`, the `/GX` response file, nine exact owner claims, one
