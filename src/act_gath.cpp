@@ -12,13 +12,14 @@
 // 00403590 (383-752), 00403C60 (758-767), 00403C90 (773-780),
 // 00403CD0 (786-789), 00403CE0 (796-831), and 00403D90 (837-887).
 //
-// Direct owner dependencies are included below.  Sound and Base Game remain
-// blockers because no canonical owner header publishes their needed surfaces.
+// Direct owner dependencies are included below.  Sound remains a blocker
+// because no canonical owner header publishes its needed surface.
 
 #include "../include/act_gath.h"
 #include "../include/act_list.h"
 #include "../include/act_obj.h"
 #include "../include/act_move.h"
+#include "../include/basegame.h"
 #include "../include/m_ac_obj.h"
 #include "../include/m_s_obj.h"
 #include "../include/move_obj.h"
