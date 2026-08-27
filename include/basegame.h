@@ -95,7 +95,9 @@ public:
     virtual int processCheatCode(int, char*);
     virtual int setup_music_system();
     virtual void shutdown_music_system();
+protected:
     virtual int setup();
+public:
     virtual int setup_cmd_options();
     virtual int setup_class();
     virtual int setup_main_window();
@@ -156,6 +158,12 @@ public:
     virtual void set_interface_messages();
 
     RGE_Base_Game(RGE_Prog_Info*, int);
+protected:
+    int check_expiration();
+    int check_multi_copies();
+public:
+    int check_for_cd(int);
+    unsigned char check_prog_argument(char*);
     void add_to_timing(int, unsigned long);
     unsigned long get_accum_time(int);
     int get_paused();
