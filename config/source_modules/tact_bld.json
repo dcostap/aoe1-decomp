@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "name": "tact_bld",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_bld.cpp",
+  "source": "src/tact_bld.cpp",
+  "header": "include/tact_bld.h",
+  "functions": {
+    "004CD1B0": { "status": "matching" },
+    "004CD210": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tact_bld_module.md"
+    },
+    "004CD2A0": { "status": "matching" },
+    "004CD2E0": { "status": "matching" },
+    "004CD310": { "status": "matching" },
+    "004CD5E0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tact_bld_module.md"
+    },
+    "004CD910": { "status": "matching" },
+    "004CD920": { "status": "matching" },
+    "004CD960": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tact_bld_module.md"
+    }
+  }
+}

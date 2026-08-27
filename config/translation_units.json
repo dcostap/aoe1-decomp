@@ -1036,22 +1036,25 @@
       }
     },
     {
-      "name": "tact_bld_prefix",
-      "source": "src/tact_bld_tu.cpp",
+      "name": "tact_bld",
+      "source": "src/tact_bld.cpp",
+      "module": "tact_bld",
       "flags": "config/flags/004CD210_TRIBE_Action_Build.rsp",
       "owners": {
-        "004CD1B0": "src/matching/004CD1B0_TRIBE_Action_Build.cpp",
-        "004CD210": "src/matching/004CD210_TRIBE_Action_Build.cpp",
-        "004CD2A0": "src/matching/004CD2A0_TRIBE_Action_Build.cpp",
-        "004CD2E0": "src/matching/004CD2E0_first_in_stack.cpp",
-        "004CD310": "src/matching/004CD310_set_state.cpp",
-        "004CD910": "src/matching/004CD910_stop.cpp",
-        "004CD920": "src/matching/004CD920_move_to.cpp"
+        "004CD1B0": "src/tact_bld.cpp",
+        "004CD2A0": "src/tact_bld.cpp",
+        "004CD2E0": "src/tact_bld.cpp",
+        "004CD310": "src/tact_bld.cpp",
+        "004CD910": "src/tact_bld.cpp",
+        "004CD920": "src/tact_bld.cpp"
       },
       "symbols": {
         "004CD1B0": "??0TRIBE_Action_Build@@QAE@HPAVRGE_Action_Object@@@Z",
-        "004CD210": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
-        "004CD2A0": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
+        "004CD2A0": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z",
+        "004CD2E0": "?first_in_stack@TRIBE_Action_Build@@UAEXE@Z",
+        "004CD310": "?set_state@TRIBE_Action_Build@@MAEXE@Z",
+        "004CD910": "?stop@TRIBE_Action_Build@@UAEHXZ",
+        "004CD920": "?move_to@TRIBE_Action_Build@@UAEHPAVRGE_Static_Object@@MMM@Z"
       }
     },
     {
