@@ -33,8 +33,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <windows.h>
-#include "../../include/main.h"
-#include "../../include/tribegam.h"
+#include "../include/main.h"
+#include "../include/tribegam.h"
 
 void* __cdecl operator new(unsigned int size);
 

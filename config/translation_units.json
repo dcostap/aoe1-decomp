@@ -5598,10 +5598,11 @@
     },
     {
       "name": "main",
-      "source": "src/main_tu.cpp",
+      "source": "src/main.cpp",
+      "module": "main",
       "flags": "config/flags/004549E0_WinMain_16.rsp",
       "owners": {
-        "004549E0": "src/matching/004549E0_WinMain_16.cpp"
+        "004549E0": "src/main.cpp"
       },
       "symbols": {}
     },

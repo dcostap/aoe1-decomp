@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "name": "main",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\main.cpp",
+  "source": "src/main.cpp",
+  "header": "include/main.h",
+  "functions": {
+    "004549E0": { "status": "matching" }
+  }
+}
