@@ -2,6 +2,7 @@
 
 #include "game_globals.h"
 #include "action.h"
+#include "act_move.h"
 #include "act_list.h"
 #include "m_s_obj.h"
 #include "m_ac_obj.h"
@@ -12,27 +13,7 @@
 #include "sprite.h"
 #include "task.h"
 #include "world.h"
-
-// map.h includes the legacy obj_list surface, so this module uses the
-// canonical object-list method surface without importing that fallback.
-class RGE_Object_List {
-public:
-    RGE_Static_Object* find_by_master_ids(long, long, float, float,
-                                          unsigned char, unsigned char,
-                                          RGE_Static_Object*);
-};
-
-// No canonical owner header exists for RGE_Action_Move_To yet.  This local
-// declaration contains only the constructors and field used by tact_trd.
-class RGE_Action_Move_To : public RGE_Action {
-public:
-    RGE_Action_Move_To(RGE_Action_Object*, float, float, float, float,
-                       RGE_Sprite*);
-    RGE_Action_Move_To(RGE_Action_Object*, RGE_Static_Object*, float,
-                       RGE_Sprite*);
-
-    float range;
-};
+#include "obj_list.h"
 
 class TRIBE_Action_Trade : public RGE_Action {
 public:
