@@ -1,54 +1,55 @@
 # teffects.cpp source-module recovery
 
 - PDB source: `C:\\msdev\\work\\age1_x1\\teffects.cpp`.
-- Source: `src/teffects.cpp`.
-- Header: `include/teffects.h`.
-- Flags: `config/flags/default.rsp`.
-- PDB source lines: 22 to 114.
+- Held source wrapper: `src/teffects_tu.cpp`.
+- Held owners remain in PDB order: `0050D460`, `0050D4B0`, `0050D4D0`, and `0050D550`.
+- The original addresses and direct targets are recorded in the four matching owner files.
 
-## Ownership and order
+## Canonical dependency review
 
-The module has four normal owners.  Their PDB source order is:
+- `include/effects.h` is now the canonical non-context owner for
+  `RGE_Effect_Command`, `RGE_Effect`, and `RGE_Effects`.
+- `include/tplayer.h` is the canonical `TRIBE_Player` owner. It declares
+  `tech_abling(long, unsigned char)` and includes `include/player.h`.
+- This module does not copy an effects record, player, world, or base-game
+  layout.
+- `include/effects_context.h` and `include/teffects_context.h` remain context
+  headers. This module must not include either header.
 
-1. `0050D460` `TRIBE_Effects::TRIBE_Effects(int)`, lines 22-23.
-2. `0050D4B0` `TRIBE_Effects::TRIBE_Effects(char*)`, lines 29-30.
-3. `0050D4D0` `TRIBE_Effects::do_effect(short, RGE_Player*)`, lines 36-77.
-4. `0050D550` `TRIBE_Effects::do_tech_effect(short, RGE_Player*)`, lines 83-114.
+## Derived ABI checkpoint
 
-The nearby `0050D480` vector-deleting destructor is compiler-generated.  It is
-not a normal source owner.
+The PDB class inventory proves `TRIBE_Effects` derives from `RGE_Effects` and
+has no fields of its own:
 
-All four owners were matching-bank sources before this migration. The direct
-module keeps constructor owners `0050D460` and `0050D4B0` exact.
+- `inventory/classes/dumps/TRIBE_Effects.txt` reports `LayoutBase` and
+  `DonorBase` as `RGE_Effects`, with `FieldCount: 0` and size `0x0C`.
+- `inventory/types/dumps/TRIBE_Effects.txt` reports `Base: RGE_Effects`, size
+  `0x0C`, and an empty class body.
+- `inventory/classes/dumps/RGE_Effects.txt` reports the three virtual slots at
+  `0x00`, `0x04`, and `0x08`.
+- `inventory/types/dumps/RGE_Effects.txt` reports the base size as `0x0C`.
 
-Canonical tplayer.h composition changes the codegen for `0050D4D0` and
-`0050D550`. They are scratch. Do not claim them exact until repair.
+The PDB source map assigns the derived owners to `teffects.cpp` in this order:
+`0050D460` (lines 22-23), `0050D4B0` (29-30), `0050D4D0` (36-77), and
+`0050D550` (83-114). The first constructor calls `RGE_Effects` at `0050D468`;
+the second calls it at `0050D4B8`. Each then writes the `TRIBE_Effects`
+vftable at object offset `0x00`. No constructor writes any offset after the
+base call except that vtable pointer.
 
-The direct fanout candidate has exact constructor owners `0050D460` and
-`0050D4B0`. Both report `MATCH` with `0.0000%` difference.
+The legal owner header is therefore a thin derived declaration that includes
+`include/effects.h`, declares no data fields, and checks
+`sizeof(TRIBE_Effects) == 0x0C`. It must not include an effects context header
+or copy the base effect records.
 
-## Layout and call surface
+## Minimal VC5 probe
 
-`RGE_Effects` uses the reviewed `effects_context.h` declaration.  This keeps
-the `effects` pointer at `+0x04`, `effect_num` at `+0x08`, and the object size
-at `0x0C` without copying that layout into this module header.
+Probe source: `build/header_probes/teffects_size.cpp`.
 
-The effect loop keeps the binary-proven record stride of `0x2C`, command stride
-of `0x0C`, and kind values `0x65` and `0x66`.  The `0x66` arm converts the
-record float through `__ftol` and calls `TRIBE_Player::tech_abling` with zero.
+Command:
 
-The header declares only the direct `TRIBE_Player::tech_abling(long,
-unsigned char)` call surface.  It does not copy the complete player layout.
+`CL.EXE @config/flags/default.rsp /Iinclude /Fobuild/header_probes/teffects_size.obj build/header_probes/teffects_size.cpp`
 
-## Cross-shard request
-
-No shared layout file was changed.  The coordinator should later expose one
-reviewed `TRIBE_Player::tech_abling(long, unsigned char)` declaration from the
-canonical player ABI header.  Current evidence is the direct target
-`00513DA0`, the `__thiscall` receiver in `ECX`, and matching calls from this
-module and `tscenaro.cpp`.
-
-Affected modules are `teffects.cpp`, `tplayer.cpp`, and `tscenaro.cpp`.
-Validate the change by rebuilding those modules, checking the decorated direct
-target `?tech_abling@TRIBE_Player@@QAEXJE@Z`, and rerunning their registered
-owners.  Do not add a copied player layout to this module as a shortcut.
+The probe checked both `sizeof(RGE_Effects) == 0x0C` and
+`sizeof(TRIBE_Effects) == 0x0C`. VC5 returned code `0`.
+The object SHA-256 is
+`f76aadf8d05d57419ded7b0457973ad74701d15fd840b0106722f384e74a066e`.

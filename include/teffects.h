@@ -1,16 +1,7 @@
 #ifndef AOE1_TEFFECTS_H
 #define AOE1_TEFFECTS_H
 
-#include "effects_context.h"
-
-class RGE_Player;
-
-// This module only needs the direct tech_abling call surface.  The complete
-// TRIBE_Player layout belongs to the player source modules.
-class TRIBE_Player {
-public:
-    void tech_abling(long tech_value, unsigned char enable);
-};
+#include "effects.h"
 
 class TRIBE_Effects : public RGE_Effects {
 public:
