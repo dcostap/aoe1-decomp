@@ -200,18 +200,15 @@ void RGE_Visible_Map::explore_all(void) {
 
     int y = 0;
     if (this->heightValue > 0) {
-        int rowOffset = 0;
         do {
             int x = 0;
             if (this->widthValue > 0) {
                 do {
-                    unsigned char** slot = (unsigned char**)((char*)this->map_offsets + rowOffset);
-                    unsigned char* row = *slot;
+                    unsigned char* row = this->map_offsets[y];
                     if (row[x] == 0xFF) {
-                        slot = slot;
                         row[x] = 0;
                         this->numberTilesExploredValue++;
-                        unsigned long* explored = *(unsigned long**)((char*)unified_map_offsets + rowOffset);
+                        unsigned long* explored = unified_map_offsets[y];
                         explored[x] |= this->PlayerExploredMaskValue;
                         this->player->tile_list.add_node(x, y);
                     }
@@ -219,7 +216,6 @@ void RGE_Visible_Map::explore_all(void) {
                 } while (x < this->widthValue);
             }
             y++;
-            rowOffset += 4;
         } while (y < this->heightValue);
     }
     this->player->tile_list.collapse_list = 1;
@@ -872,8 +868,7 @@ void __cdecl dump_vismap_log() {
     }
 
     do {
-        int esi = idx * 36;
-        int action = *(int*)(0x87D808 + 8 + esi);
+        int action = VCALL_LOG[idx].action;
 
         switch (action) {
         case 1:
@@ -901,14 +896,14 @@ void __cdecl dump_vismap_log() {
 
         fprintf(f,
             " wt = %d, plyr = %d, id = %d, x1=%d, y1=%d, x2=%d, y2=%d, wt=%d",
-            *(int*)(0x87D808 + 0 + esi),
-            *(int*)(0x87D808 + 4 + esi),
-            *(int*)(0x87D808 + 0xC + esi),
-            *(int*)(0x87D808 + 0x10 + esi),
-            *(int*)(0x87D808 + 0x14 + esi),
-            *(int*)(0x87D808 + 0x18 + esi),
-            *(int*)(0x87D808 + 0x1C + esi),
-            *(int*)(0x87D808 + 0x20 + esi));
+            VCALL_LOG[idx].world_time,
+            VCALL_LOG[idx].player_id,
+            VCALL_LOG[idx].object_id,
+            VCALL_LOG[idx].x1,
+            VCALL_LOG[idx].y1,
+            VCALL_LOG[idx].x2,
+            VCALL_LOG[idx].y2,
+            VCALL_LOG[idx].supress);
 
         if (idx == VCALL_LOG_HEAD) {
             done = 1;

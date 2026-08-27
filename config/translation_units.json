@@ -4873,7 +4873,6 @@
       "module": "visible",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0053C290": "src/visible.cpp",
         "0053C3C0": "src/visible.cpp",
         "0053C400": "src/visible.cpp",
         "0053C490": "src/visible.cpp",
@@ -4892,7 +4891,6 @@
       "symbols": {
         "0053C400": "?save@RGE_Visible_Map@@QAEXH@Z",
         "0053C490": "?get_visible@RGE_Visible_Map@@QBEEHH@Z",
-        "0053C290": "??0RGE_Visible_Map@@QAE@HPAVRGE_Game_World@@@Z",
         "0053C3C0": "??1RGE_Visible_Map@@QAE@XZ",
         "0053C4D0": "?set_all@RGE_Visible_Map@@QAEXE@Z",
         "0053C6C0": "?get_los_table@RGE_Visible_Map@@QAEPAULOSTBL@@HH@Z",

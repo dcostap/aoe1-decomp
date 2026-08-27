@@ -5,8 +5,14 @@
   "source": "src/visible.cpp",
   "header": "include/visible.h",
   "functions": {
-    "0053C1B0": { "status": "matching" },
-    "0053C290": { "status": "matching" },
+    "0053C1B0": {
+      "status": "matching",
+      "note_path": "recovery_notes/visible.md"
+    },
+    "0053C290": {
+      "status": "matching",
+      "note_path": "recovery_notes/visible.md"
+    },
     "0053C3C0": { "status": "matching" },
     "0053C400": { "status": "matching" },
     "0053C490": { "status": "matching" },

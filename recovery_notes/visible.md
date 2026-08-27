@@ -1,51 +1,105 @@
 # `visible.cpp` source-module migration
 
+## Ownership
+
 - PDB source: `C:\\msdev\\work\\age1_x1\\visible.cpp`.
 - Source: `src/visible.cpp`.
 - Header: `include/visible.h`.
 - Flags: `config/flags/default.rsp`.
 
-The PDB owns 27 normal functions in this order:
+The source owns 27 normal PDB functions. Their order follows the PDB. The
+source has one compiler-facing owner for each function.
 
-- `0053C1B0` `RGE_Visible_Map::RGE_Visible_Map(RGE_Map*, RGE_Player*)`, lines 226 to 256.
-- `0053C290` `RGE_Visible_Map::RGE_Visible_Map(int, RGE_Game_World*)`, lines 265 to 307.
-- `0053C3C0` `RGE_Visible_Map::~RGE_Visible_Map`, lines 313 to 329.
-- `0053C400` `RGE_Visible_Map::save`, lines 336 to 350.
-- `0053C490` `RGE_Visible_Map::get_visible`, lines 361 to 382.
-- `0053C4D0` `RGE_Visible_Map::set_all`, lines 389 to 436.
-- `0053C5D0` `RGE_Visible_Map::explore_all`, lines 442 to 467.
-- `0053C670` `RGE_Visible_Map::percentExplored`, lines 474 to 476.
-- `0053C680` `RGE_Visible_Map::recomputeExplored`, lines 483 to 497.
-- `0053C6C0` `RGE_Visible_Map::get_los_table`, lines 504 to 514.
-- `0053C6F0` `RGE_Visible_Map::explore_terrain`, lines 521 to 658.
-- `0053C920` `RGE_Visible_Map::unexplore_terrain`, lines 665 to 767.
-- `0053CAC0` `RGE_Visible_Map::explore_terrain_sq`, lines 775 to 883.
-- `0053CCF0` `RGE_Visible_Map::unexplore_terrain_sq`, lines 891 to 975.
-- `0053CE70` `RGE_Visible_Map::checksum_visible_inputs`, lines 983 to 990.
-- `0053CE80` `RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int, int)`, lines 1005 to 1026.
-- `0053CEE0` `RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int, RGE_Game_World*)`, lines 1032 to 1042.
-- `0053CF10` `RGE_Unified_Visible_Map::load`, lines 1046 to 1074.
-- `0053CFC0` `RGE_Unified_Visible_Map::~RGE_Unified_Visible_Map`, lines 1079 to 1084.
-- `0053CFF0` `RGE_Unified_Visible_Map::save`, lines 1088 to 1095.
-- `0053D040` `RGE_Unified_Visible_Map::reset`, lines 1099 to 1106.
-- `0053D070` `RGE_Unified_Visible_Map::Set_Map_Offsets`, lines 1111 to 1119.
-- `0053D0C0` `RGE_Unified_Visible_Map::suppress_updates`, lines 1123 to 1125.
-- `0053D0D0` `RGE_Visible_Map::checksumVisible`, lines 1132 to 1140.
-- `0053D110` `RGE_Visible_Map::checksumUnifiedVisible`, lines 1146 to 1154.
-- `0053D150` `log_map_call`, lines 1162 to 1196.
-- `0053D200` `dump_vismap_log`, lines 1199 to 1249.
+The old wrapper, source-bank fragments, fallback declarations, and context
+header are removed. The source uses no wrapper include or recovery macro.
 
-The complete source keeps this PDB order. The former wrapper, source-bank
-fragments, fallback declarations, and context header were removed. The bodies
-were moved without byte-tuning changes.
+The module metadata status names the reviewed source bank. It is not a byte
+match claim. Exact claims live in `config/translation_units.json`.
 
-The source-bank states are 19 matching, four accepted-drift, and four scratch
-owners. The accepted-drift owners are `0053C5D0`, `0053C680`, `0053D0D0`, and
-`0053D200`. The terrain owners `0053C6F0`, `0053C920`, `0053CAC0`, and
-`0053CCF0` remain scratch because their prior sources have broad codegen drift.
+## Current exact claims
 
-The prior accepted-drift evidence is local. `0053C680` differs by one SIB
-address-encoding byte. `0053D0D0` differs by one SIB addressing-order byte.
-`0053C5D0` retains equivalent row-pointer traversal with inner-loop scheduling
-drift. `0053D200` retains equivalent log output and differs in its final
-register-pop and close-call order.
+The merged source has 14 registered exact owners. `0053C290` is not an exact
+owner. Its old registration became stale after the full source context changed
+its emitted code. The old registration and symbol entry were removed.
+
+A candidate full-TU check compiled all 27 owners. It found 17 `MATCH` rows and
+10 `MISMATCH` rows. Every row has a PDB-qualified owner symbol. The observed
+status is:
+
+| VA | Bank | Current result | Current mismatch |
+| --- | --- | --- | --- |
+| `0053C1B0` | matching | MISMATCH | 2 bytes; merged-context register order |
+| `0053C290` | matching | MISMATCH | 171 bytes; 296 rebuilt bytes, one boundary escape |
+| `0053C5D0` | accepted_drift | MISMATCH | 89 bytes; 149 rebuilt bytes, inner-loop lowering |
+| `0053C680` | accepted_drift | MISMATCH | 26 bytes; one extra SIB displacement and branch shifts |
+| `0053C6F0` | scratch | MISMATCH | 555 bytes; 571 rebuilt bytes, broad codegen drift |
+| `0053C920` | scratch | MISMATCH | 385 bytes; 376 rebuilt bytes, broad frame and loop drift |
+| `0053CAC0` | scratch | MISMATCH | 554 bytes; 582 rebuilt bytes, broad codegen drift |
+| `0053CCF0` | scratch | MISMATCH | 361 bytes; 356 rebuilt bytes, broad frame and loop drift |
+| `0053D0D0` | accepted_drift | MISMATCH | 1 register-order byte |
+| `0053D200` | accepted_drift | MISMATCH | 11 bytes in one final epilogue span |
+
+The full-TU result is a migration check. It does not promote or demote a
+source bank by itself. It records the exactness regressions caused by the
+natural module context.
+
+## Accepted drift review
+
+`0053C5D0` keeps the original action log, row and column bounds, explored count,
+visible-map writes, explored-mask writes, tile-list call, and collapse flag.
+The remaining difference is inner-loop address and register scheduling. The
+source uses the reviewed row-pointer form. It is not an exact claim.
+
+`0053C680` keeps the same rows, columns, byte test, count update, and return.
+The original reads `[eax+ebp]`. VC5 emits `[ebp+eax+0]` in the merged source.
+The extra displacement shifts later branch bytes. The address is equivalent.
+
+`0053D0D0` keeps the same row and column loops and checksum result. One memory
+operand uses the opposite SIB register order. The address and read are equal.
+
+`0053D200` keeps the same file path, action text, log fields, loop bounds,
+wraparound, and close call. The final 11-byte mismatch is one epilogue span.
+The jump-table and data references have the same relocated targets.
+
+These four owners remain accepted drift. The notes do not call them `MATCH`.
+Their status is narrow, behavior-equivalent drift. New evidence must reopen the
+status if it shows a changed call, bound, write, return, error, or fault order.
+
+## Scratch review
+
+`0053C6F0` explores a clipped LOS radius. It updates the explored count, tile
+lists, tile flags, visible bytes, and unified explored and visible masks. Its
+current merged-TU build is 571 bytes against the 546-byte original. The main
+unresolved differences are the suppression branch, checksum home, and late
+loop schedule. No changed call target or field ownership is known.
+
+`0053C920` reverses visibility for a clipped LOS radius. It updates tile flags
+and clears the player visible mask when the byte reaches zero. Its current
+merged-TU build is 376 bytes against the 401-byte original. The unresolved
+points are the original local frame, saved `this`, and parameter-home reuse.
+
+`0053CAC0` explores a clipped rectangle. It updates the explored count, tile
+lists, tile flags, visible bytes, and unified masks. Its current merged-TU build
+is 582 bytes against the 550-byte original. The unresolved points are local-slot
+and hash scheduling, bounds-return layout, and the late tile tail.
+
+`0053CCF0` reverses visibility for a clipped rectangle. It updates tile flags
+and clears the player visible mask when the byte reaches zero. Its current
+merged-TU build is 356 bytes against the 381-byte original. The unresolved
+points are the original local frame, saved `this`, and parameter-home layout.
+
+These four owners stay scratch. Their source is behavior-focused and typed. No
+exact or accepted-drift claim exists for them.
+
+## Matching regressions
+
+`0053C1B0` remains matching source-bank material. The full source context now
+changes two bytes in the mask tail. It has no exact registration.
+
+`0053C290` remains matching source-bank material. The full source context now
+changes 171 bytes and escapes the original boundary. It has no exact
+registration. This regression caused the removal of its stale exact claim.
+
+The other registered owners retain fresh `MATCH` results in the current module
+check. The constructor and helper owners without registrations have no exact
+claim.
