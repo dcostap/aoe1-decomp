@@ -7410,7 +7410,6 @@
         "004CDB70": "src/tact_cnv.cpp",
         "004CDBB0": "src/tact_cnv.cpp",
         "004CDE10": "src/tact_cnv.cpp",
-        "004CE070": "src/tact_cnv.cpp",
         "004CE450": "src/tact_cnv.cpp",
         "004CE4B0": "src/tact_cnv.cpp"
       },
@@ -7419,7 +7418,6 @@
         "004CDB20": "??0TRIBE_Action_Convert@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z",
         "004CDB70": "?save@TRIBE_Action_Convert@@UAEXH@Z",
         "004CDE10": "?set_state@TRIBE_Action_Convert@@MAEXE@Z",
-        "004CE070": "?update@TRIBE_Action_Convert@@UAEEXZ",
         "004CE4B0": "?martyrdom@TRIBE_Action_Convert@@QAEXXZ",
         "004CDA90": "??0TRIBE_Action_Convert@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"
       }
