@@ -48,5 +48,10 @@ Known unresolved owners are:
 - `00465A70 handle_paint` (accepted drift)
 - `00465DC0 handle_mouse_move` (accepted drift)
 
+The merged module does not emit the prior exact symbols for `00464150 setup`,
+`004641B0 findPanelNode`, or `00464260 setCurrentPanel`. The direct entry and
+module metadata now mark these owners as scratch. This preserves the natural
+module source rather than retaining unsupported declaration machinery.
+
 The direct module source was compiled as a syntax and layout check. Full
 registered validation is required after this migration.

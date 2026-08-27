@@ -73,13 +73,16 @@
       "status": "matching"
     },
     "00464150": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/Panel_module.md"
     },
     "004641B0": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/Panel_module.md"
     },
     "00464260": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/Panel_module.md"
     },
     "004642C0": {
       "status": "accepted_drift",
