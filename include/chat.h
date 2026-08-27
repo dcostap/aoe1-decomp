@@ -2,7 +2,7 @@
 #define AOE1_CHAT_H
 
 #include "rge_base_game_global.h"
-#include "taunt_context.h"
+#include "taunt.h"
 
 class TChat {
 public:
