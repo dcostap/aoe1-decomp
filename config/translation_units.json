@@ -2847,10 +2847,11 @@
     },
     {
       "name": "colorlog",
-      "source": "src/colorlog_tu.cpp",
+      "source": "src/colorlog.cpp",
+      "module": "colorlog",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00424810": "src/matching/00424810_color_log.cpp"
+        "00424810": "src/colorlog.cpp"
       },
       "symbols": {}
     },
