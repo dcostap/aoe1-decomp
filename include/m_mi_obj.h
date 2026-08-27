@@ -329,10 +329,7 @@ public:
     virtual RGE_Task_List* create_task_list();
 
     unsigned char missile_type;
-    union {
-        unsigned char targetting_type;
-        unsigned char field_149;
-    };
+    unsigned char targetting_type;
     unsigned char missile_hit_info;
     unsigned char missile_die_info;
     unsigned char area_effect_specials;
