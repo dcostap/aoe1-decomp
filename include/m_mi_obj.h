@@ -1,5 +1,5 @@
-#ifndef M_MI_OBJ_CONTEXT_H
-#define M_MI_OBJ_CONTEXT_H
+#ifndef AOE1_M_MI_OBJ_H
+#define AOE1_M_MI_OBJ_H
 
 #include <stdio.h>
 
@@ -60,10 +60,7 @@ public:
     long get_hotkey();
     void make_available(unsigned char);
 
-    union {
-        unsigned char master_type;
-        unsigned char field_4;
-    };
+    unsigned char master_type;
     char pad_05[3];
     char* name;
     short string_id;
@@ -120,10 +117,7 @@ public:
     long help_string_id;
     long help_page_id;
     long hotkey_id;
-    union {
-        unsigned char recyclable;
-        unsigned char field_a4;
-    };
+    unsigned char recyclable;
     unsigned char track_as_resource;
     unsigned char create_doppleganger_on_death;
     unsigned char resource_group;

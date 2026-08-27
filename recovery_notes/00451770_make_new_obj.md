@@ -1,0 +1,13 @@
+# 00451770 `RGE_Master_Missile_Object::make_new_obj`
+
+- PDB source: `m_mi_obj.cpp`, lines 129 to 143.
+- Original size: 201 bytes.
+
+The function uses the player recycle pool when `recyclable` is set. Each
+recycled object gets the master, player, and position.
+
+If no object is available, it creates an `RGE_Missile_Object`. The constructor
+gets `1` for setup.
+
+Fragment source had an exact match. Module source keeps the recycle-or-create
+behavior without fragment scaffolding.
