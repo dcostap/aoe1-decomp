@@ -1,7 +1,7 @@
 #ifndef AOE1_M_MO_OBJ_H
 #define AOE1_M_MO_OBJ_H
 
-#include "m_s_obj_context.h"
+#include "m_s_obj.h"
 
 class RGE_Master_Animated_Object : public RGE_Master_Static_Object {
 public:
