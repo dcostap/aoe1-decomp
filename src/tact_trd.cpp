@@ -5,7 +5,21 @@
 // handwritten source owner.  The ten exact owners, the accepted-drift
 // set_state owner, and the scratch update owner share this source module.
 
+#include "../include/game_globals.h"
+#include "../include/rge_fio.h"
 #include "../include/tact_trd.h"
+#include "../include/act_move.h"
+#include "../include/act_list.h"
+#include "../include/m_s_obj.h"
+#include "../include/m_ac_obj.h"
+#include "../include/stat_obj.h"
+#include "../include/move_obj.h"
+#include "../include/act_obj.h"
+#include "../include/player.h"
+#include "../include/sprite.h"
+#include "../include/task.h"
+#include "../include/world.h"
+#include "../include/obj_list.h"
 
 // PDB lines 42-47; VA 004D2660.
 TRIBE_Action_Trade::TRIBE_Action_Trade(int file, RGE_Action_Object* obj)

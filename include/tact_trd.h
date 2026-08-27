@@ -1,20 +1,11 @@
 #pragma once
 
-#include "game_globals.h"
-#include "rge_fio.h"
 #include "action.h"
-#include "act_move.h"
-#include "act_list.h"
-#include "m_s_obj.h"
-#include "m_ac_obj.h"
-#include "stat_obj.h"
-#include "move_obj.h"
-#include "act_obj.h"
-#include "player.h"
-#include "sprite.h"
-#include "task.h"
-#include "world.h"
-#include "obj_list.h"
+
+class RGE_Action_Object;
+class RGE_Sprite;
+class RGE_Static_Object;
+class RGE_Task;
 
 class TRIBE_Action_Trade : public RGE_Action {
 public:
