@@ -43,3 +43,30 @@ source-bank fragments are removed.
 The module metadata records every normal owner, including the accepted-drift
 status. The generated scalar deleting destructor remains an emitted class
 artifact and is not listed as a source owner.
+
+## Final validation
+
+The direct source module was applied from Terra 1 commit `e60e6f6a1` after
+rebasing onto main commit `a3c4a35b6`. The source, header, source-module
+metadata, and translation-unit entry now name the same `taicrule` owner.
+
+The complete candidate report is
+`build/candidate_tus/taicrule_module_final/report.json`. It compiled all four
+exact owners, the accepted-drift owner, and the generated destructor.
+
+| VA | result | bytes | owner | relocations | boundary escapes |
+| --- | --- | ---: | --- | ---: | ---: |
+| `004D68D0` | MATCH | 9 | `??0CombatRuleSystem@@QAE@XZ` | 0 | 0 |
+| `004D6900` | MATCH | 7 | `??1CombatRuleSystem@@UAE@XZ` | 0 | 0 |
+| `004D6910` | accepted drift | 386 | `?loadRules@CombatRuleSystem@@QAEHPAD@Z` | 0 | 0 |
+| `004D6AA0` | MATCH | 6 | `?bestUnitTypeToAttack@CombatRuleSystem@@QAEHH@Z` | 0 | 0 |
+| `004D6AB0` | MATCH | 6 | `?bestUnitTypeToDefendAgainst@CombatRuleSystem@@QAEHH@Z` | 0 | 0 |
+| `004D68E0` | MATCH, generated | 30 | `??_GCombatRuleSystem@@UAEPAXI@Z` | 0 | 0 |
+
+The grouped translation-unit validation passed for `taicrule`. The four
+standalone exact checks returned `Result: MATCH` and `0.0000%`. `loadRules`
+returned `MISMATCH` with 12 bytes and `3.1088%`; it remains accepted drift.
+Its frame, calls, owner, relocations, and boundary all match the original.
+
+No source change improved the accepted-drift result. The remaining difference
+is the known VC5 `lea edi` scheduling hunk before the table fill.
