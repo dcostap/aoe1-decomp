@@ -47,6 +47,11 @@ protected:
 };
 
 class TRIBE_Task_List : public RGE_Task_List {
+public:
+    virtual RGE_Task* get_target_task(RGE_Action_Object* action_object,
+                                      RGE_Static_Object* target, float x,
+                                      float y, float z);
+    virtual int is_attack_task(RGE_Task* task);
 };
 
 class RGE_Static_Object {
