@@ -3323,9 +3323,11 @@
         "00451760": "src/matching/00451760_RGE_Master_Missile_Object.cpp",
         "00451770": "src/matching/00451770_make_new_obj.cpp",
         "00451840": "src/matching/00451840_make_new_master.cpp",
+        "004518B0": "src/matching/004518B0_copy_obj.cpp",
         "00451910": "src/matching/00451910_modify.cpp",
         "00451940": "src/matching/00451940_modify_delta.cpp",
-        "00451970": "src/matching/00451970_modify_percent.cpp"
+        "00451970": "src/matching/00451970_modify_percent.cpp",
+        "004519A0": "src/matching/004519A0_save.cpp"
       },
       "symbols": {
         "00451440": "??0RGE_Master_Missile_Object@@QAE@PAV0@H@Z",
@@ -3337,7 +3339,11 @@
         "00451760": "??1RGE_Master_Missile_Object@@UAE@XZ",
         "00451910": "?modify@RGE_Master_Missile_Object@@UAEXME@Z",
         "00451940": "?modify_delta@RGE_Master_Missile_Object@@UAEXME@Z",
-        "00451970": "?modify_percent@RGE_Master_Missile_Object@@UAEXME@Z"
+        "00451970": "?modify_percent@RGE_Master_Missile_Object@@UAEXME@Z",
+        "00451770": "?make_new_obj@RGE_Master_Missile_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z",
+        "00451840": "?make_new_master@RGE_Master_Missile_Object@@UAEPAVRGE_Master_Static_Object@@XZ",
+        "004518B0": "?copy_obj@RGE_Master_Missile_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
+        "004519A0": "?save@RGE_Master_Missile_Object@@UAEXH@Z"
       }
     },
     {
