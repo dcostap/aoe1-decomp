@@ -77,6 +77,12 @@
 // - Preserve the canonical short AddGDINode ABI, float get_point ABI, field
 //   loads, map fault order, and final coordinate publication. The source was
 //   restored to its pinned clean reconstruction after the probes.
+// COORDINATOR ABI REVIEW (2026-08-27):
+// - PDB symbols prove get_point has short-reference outputs and short map
+//   coordinates.
+// - PDB symbols also prove that all 13 AddGDINode parameters are int.
+// - These canonical declarations replace the earlier pointer and narrow-call
+//   hypotheses. The complete m_s_obj wrapper is the validation authority.
 
 class TDrawArea;
 class RGE_Color_Table;
@@ -117,8 +123,8 @@ public:
     virtual void map_generate2(RGE_Game_World* world, long w, long h,
                                unsigned char flag, long value);
     virtual void save(int file);
-    void get_point(short* out_x, short* out_y, float param_3, float param_4,
-                   float param_5, int param_6, int param_7);
+    void get_point(short& out_x, short& out_y, float param_3, float param_4,
+                   float param_5, short param_6, short param_7);
 };
 
 class RGE_Game_World {
@@ -202,10 +208,10 @@ public:
 
 class DClipInfo_List {
 public:
-    DClipInfo_Node* AddGDINode(int param_1, int param_2, short param_3,
-                               short param_4, short param_5, short param_6,
-                               short param_7, short param_8, short param_9,
-                               short param_10, int param_11, int param_12,
+    DClipInfo_Node* AddGDINode(int param_1, int param_2, int param_3,
+                               int param_4, int param_5, int param_6,
+                               int param_7, int param_8, int param_9,
+                               int param_10, int param_11, int param_12,
                                int param_13);
 };
 
@@ -336,11 +342,11 @@ void RGE_Master_Static_Object::draw(TDrawArea* draw_area, short x, short y,
             short x4;
             short y4;
 
-            map->get_point(&x1, &y1, rx1, -ry1, 0.0f, x, y);
-            map->get_point(&x2, &y2, rx1, ry1, 0.0f, x, y);
+            map->get_point(x1, y1, rx1, -ry1, 0.0f, x, y);
+            map->get_point(x2, y2, rx1, ry1, 0.0f, x, y);
             rx1 = -rx1;
-            map->get_point(&x3, &y3, rx1, ry1, 0.0f, x, y);
-            map->get_point(&x4, &y4, rx1, -ry1, 0.0f, x, y);
+            map->get_point(x3, y3, rx1, ry1, 0.0f, x, y);
+            map->get_point(x4, y4, rx1, -ry1, 0.0f, x, y);
 
             SDI_List->AddGDINode(1, (int)y, x1, y1, x2, y2, x3, y3, x4, y4,
                                  10, (int)(param_8 & 0xFF), SDI_Object_ID);

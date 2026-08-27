@@ -164,14 +164,13 @@ public:
     char gap_8D90[0x0A];
     short tile_half_height;
     short tile_half_width;
-    void get_point(short*, short*, float, float, float, int, int);
+    void get_point(short&, short&, float, float, float, short, short);
 };
 
 class DClipInfo_List {
 public:
-    DClipInfo_Node* AddGDINode(int, int, short, short, short, short,
-                               short, short, short, short,
-                               int, int, int);
+    DClipInfo_Node* AddGDINode(int, int, int, int, int, int, int, int,
+                               int, int, int, int, int);
 };
 
 class RGE_Base_Game {
