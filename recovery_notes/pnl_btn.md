@@ -18,8 +18,17 @@ The constructor, destructor, setup, accessors, state, input, drawing, notificati
 
 Before migration, the registered wrapper check for `00472030` reported `MATCH` and `0.0000%`. The migration changes source ownership and TU context. Re-run the grouped module checks after integration. Any byte or boundary change is a structural migration regression, not evidence to restore wrappers or fragments.
 
-The module packet reports 50 registered exact owners, 54 matching-bank owners, one accepted-drift owner (`00472240`), and one scratch owner (`004728C0`). The remaining four matching-bank owners were not registered before migration: `00471EC0`, `00472690`, `004727B0`, and `00473120`. Their status remains matching in this module metadata.
+The module packet reports 50 registered exact owners, 54 matching-bank owners,
+one accepted-drift owner (`00472240`), and one scratch owner (`004728C0`). The
+four formerly unregistered matching-bank owners are `00471EC0`, `00472690`,
+`004727B0`, and `00473120`.
 
-The post-migration direct-TU sweep checked all 54 registered exact owners. It returned 49 `MATCH` results. Five owners differ: `00471EC0` has a constructor scheduling and vptr-store drift after the natural base-constructor declaration; `00472690` calls the reviewed `set_redraw` slot at `+0x20` instead of the executable `+0xE0`; `004727B0` uses the current `active` field at `+0x6C` while the executable stores at `+0x80`; `00473120` uses the current inherited virtual surface instead of the executable direct and virtual targets; and `00473930` has a changed coordinate-load order. The first four were not registered exact owners in the packet. `00473930` was previously registered exact and is a migration regression. Do not hide these differences with wrappers, fragments, synthetic declarations, or manual vtables.
+The post-migration direct-TU sweep checked 54 registered owners. It returned 49
+`MATCH` results. Five owners differ: `00471EC0` has a constructor scheduling and
+vptr-store drift; `00472690` calls `set_redraw` at `+0x20` instead of `+0xE0`;
+`004727B0` stores to `active` at `+0x6C` instead of `+0x80`; `00473120` has
+different inherited virtual targets; and `00473930` changes coordinate-load
+order. All five are scratch. The direct entry removes them. Do not hide these
+differences with wrappers, fragments, synthetic declarations, or manual vtables.
 
 The orchestrator contract named in the assignment was not present at the requested path. The available workflow documents and generated PDB packet supplied the context evidence.
