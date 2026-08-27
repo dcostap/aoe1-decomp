@@ -2,6 +2,7 @@
 #define AOE1_M_S_OBJ_H
 
 #include <stdio.h>
+#include "rge_damage_sprite_info.h"
 
 class DClipInfo_List;
 class RGE_Color_Table;
@@ -13,7 +14,6 @@ class RGE_Sound;
 class RGE_Sprite;
 class RGE_Static_Object;
 class TDrawArea;
-struct RGE_Damage_Sprite_Info;
 
 class RGE_Master_Static_Object {
 public:
