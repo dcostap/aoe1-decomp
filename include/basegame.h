@@ -2,7 +2,6 @@
 #define AOE1_BASEGAME_H
 
 class RGE_Base_Game;
-class RGE_Font;
 class RGE_Game_Info;
 class RGE_Game_World;
 class RGE_Player;
@@ -23,6 +22,14 @@ class TSound_Driver;
 class TDigital;
 struct tagMSG;
 struct tagPOINT;
+
+struct RGE_Font {
+    void* font;
+    long font_wid;
+    long font_hgt;
+};
+
+typedef char rge_font_size_check[(sizeof(RGE_Font) == 0x0C) ? 1 : -1];
 
 class RGE_Timing_Info {
 public:
@@ -152,6 +159,7 @@ public:
     int get_paused();
     RGE_Player* get_player();
     void get_mouse_pos(tagPOINT*);
+    RGE_Font* get_font(int);
     TShape* get_shape(int);
     TDigital* get_sound(int);
     void increment_view_update_count();

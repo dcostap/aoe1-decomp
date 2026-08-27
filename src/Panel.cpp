@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdio.h>
 
+extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
+
 // 00463BB0 $E1, Panel.cpp lines 31-31.
 void $E1(void) {
     panel_system.TPanelSystem::TPanelSystem();

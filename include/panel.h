@@ -30,7 +30,6 @@ extern RGE_Base_Game* rge_base_game;
 extern void* AppWnd;
 extern char DAT_0062E670[0x200];
 extern "C" void* __cdecl ReadPalette(char*, long, int);
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
 class TPanelSystem {
 public:
