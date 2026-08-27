@@ -342,72 +342,61 @@ void RGE_Action::copy_obj(RGE_Master_Action_Object* param_1)
 void RGE_Action::copy_obj_sprites(RGE_Master_Action_Object *, RGE_Task *, RGE_Task *) {
 }
 
-// Accepted drift: the two strcpy tails retain a four-byte register swap.
 void RGE_Action::get_state_name(char* buf)
 {
-    const char* s;
-
     switch (this->state) {
     case 0:
-        s = "None";
-        goto even_copy;
+        strcpy(buf, "None");
+        return;
     case 1:
-        s = "Done";
-        goto odd_copy;
+        strcpy(buf, "Done");
+        return;
     case 2:
-        s = "Wait";
-        goto even_copy;
+        strcpy(buf, "Wait");
+        return;
     case 3:
-        s = "Search";
-        goto odd_copy;
+        strcpy(buf, "Search");
+        return;
     case 4:
-        s = "Goto";
-        goto even_copy;
+        strcpy(buf, "Goto");
+        return;
     case 5:
-        s = "Goto2";
-        goto odd_copy;
+        strcpy(buf, "Goto2");
+        return;
     case 6:
-        s = "Work";
-        goto even_copy;
+        strcpy(buf, "Work");
+        return;
     case 7:
-        s = "Work2";
-        goto odd_copy;
+        strcpy(buf, "Work2");
+        return;
     case 8:
-        s = "Return";
-        goto even_copy;
+        strcpy(buf, "Return");
+        return;
     case 9:
-        s = "Turn";
-        goto odd_copy;
+        strcpy(buf, "Turn");
+        return;
     case 10:
-        s = "Delay";
-        goto even_copy;
+        strcpy(buf, "Delay");
+        return;
     case 11:
-        s = "Move";
-        goto odd_copy;
+        strcpy(buf, "Move");
+        return;
     case 12:
-        s = "Attack";
-        goto even_copy;
+        strcpy(buf, "Attack");
+        return;
     case 13:
-        s = "Failed";
-        goto odd_copy;
+        strcpy(buf, "Failed");
+        return;
     case 14:
-        s = "Invalidated";
-        goto even_copy;
+        strcpy(buf, "Invalidated");
+        return;
     case 15:
-        s = "MoveNoSearch";
-        goto odd_copy;
+        strcpy(buf, "MoveNoSearch");
+        return;
     default:
-        s = "Unknown";
-        goto even_copy;
+        strcpy(buf, "Unknown");
+        return;
     }
-
-odd_copy:
-    strcpy(buf, s);
-    return;
-
-even_copy:
-    strcpy(buf, s);
-    return;
 }
 
 float RGE_Action::targetX() const {

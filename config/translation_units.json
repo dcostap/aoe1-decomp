@@ -7013,6 +7013,7 @@
     },
     {
       "name": "action",
+      "module": "action",
       "source": "src/action.cpp",
       "flags": "config/flags/004076D0_create_action_list.rsp",
       "owners": {

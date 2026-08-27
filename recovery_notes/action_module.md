@@ -85,6 +85,23 @@ to `src/action.cpp`. After direct ownership registration, the grouped candidate
 reports all 28 normal owners as `MATCH` with `0.0000%` difference, zero
 relocation mismatches, and zero boundary escapes.
 
-The compiler-generated owner `004074A0` matches its 30-byte range. The
-accepted-drift owner `00407C10` remains a 4-byte mismatch in a 216-byte range.
-It has zero relocation mismatches and zero boundary escapes.
+The compiler-generated owner `004074A0` matches its 30-byte range. Before the
+repair below, accepted-drift owner `00407C10` had a 4-byte mismatch in a
+216-byte range. It had zero relocation mismatches and zero boundary escapes.
+
+## `00407C10 get_state_name` exact repair
+
+The original body uses one direct `strcpy` call and return in each switch arm.
+The former shared `strcpy` tails produced the same 216-byte body except for
+four register-encoding bytes. The direct switch-arm form emits the original
+register colors without overlays, wrappers, or inline assembly.
+
+Evidence and validation:
+
+- Baseline label-and-goto form: 4-byte mismatch at offsets `+0x97`, `+0xA4`,
+  `+0xC0`, and `+0xCD`; all four bytes were a consistent EAX/EDX recolor.
+- Reordered labels: duplicate codegen; the mismatch remained unchanged.
+- Direct switch-arm `strcpy` form: `MATCH`, `0.0000%`, 216/216 bytes,
+  matching owner symbol, zero relocation mismatches, and zero boundary escapes.
+- Action grouped observed-function audit: all 29 included normal functions
+  matched, including the repaired target and all 28 registered neighbors.
