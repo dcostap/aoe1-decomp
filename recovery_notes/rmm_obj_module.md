@@ -21,6 +21,16 @@ the canonical random-map base in `include/rmm_base.h`. The source passes
 It consumes `RGE_Master_Static_Object` from `m_s_obj.h`. It does not retain a
 local master-object vtable view.
 
+## Canonical Map and World fanout
+
+The source now consumes `map.h`, `world.h`, `player.h`, and `zone_map.h`.
+It uses owner names for the old local views: `map_zones`, `terrain_type`,
+`check_placement`, and `make_new_object`.
+
+`zone_map.h` now consumes `map.h`. `obj_list.h` now owns only its node and
+list records. Neither header copies Map, World, Player, Static, Master, or
+derived object classes.
+
 ## Migration
 
 - Merged all 13 source-bank bodies into `src/rmm_obj.cpp` in PDB order.
@@ -69,10 +79,10 @@ The pinned VC5 compiler built `src/rmm_obj.cpp` with
 `build/candidate_tus/rmm_obj_module/rmm_obj.obj`. A direct checker comparison
 covered all 13 owners and recorded the table above.
 
-The source policy check passed. `git diff --check` passed. The full mechanical
-translation-unit validator cannot run until the parent updates the shared
-`config/translation_units.json` entry from `src/rmm_obj_tu.cpp` to
-`src/rmm_obj.cpp`.
+The source policy check passed. `git diff --check` passed. The direct
+translation-unit entry now uses `src/rmm_obj.cpp`. It retains the eight matching
+owners. `00485E50` is scratch after the documented two-byte residual.
 
-The current shard does not edit that shared registry by contract. The parent
-integration pass must update it and rerun the complete configured TU checks.
+After the canonical Map and World headers landed, the registered `rmm_obj`
+candidate for `00485DC0` compiled and returned `MATCH`, `0.0000%`. This check
+does not revalidate the remaining recorded owners.

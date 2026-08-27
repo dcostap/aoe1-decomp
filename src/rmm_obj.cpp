@@ -1,5 +1,9 @@
 #include <string.h>
 #include "../include/rmm_obj.h"
+#include "../include/map.h"
+#include "../include/player.h"
+#include "../include/world.h"
+#include "../include/zone_map.h"
 
 // PDB source order for C:\\msdev\\work\\age1_x1\\rmm_obj.cpp.
 
@@ -68,7 +72,7 @@ unsigned char RGE_RMM_Object_Generator::generate() {
         this->generate_objects(this->info.objects[i]);
     }
 
-    this->map->zone_map_list->delete_zone_maps();
+    this->map->map_zones->delete_zone_maps();
 
     return 1;
 }
@@ -214,8 +218,8 @@ void RGE_RMM_Object_Generator::set_search_area(
 
     if (sx < 0) sx = 0;
     if (sy < 0) sy = 0;
-    if (end_x >= self->width) end_x = self->width - 1;
-    if (end_y >= self->height) end_y = self->height - 1;
+    if (end_x >= self->map_width) end_x = self->map_width - 1;
+    if (end_y >= self->map_height) end_y = self->map_height - 1;
 
     long y_cur = sy;
     if (y_cur <= end_y) {
@@ -224,7 +228,7 @@ void RGE_RMM_Object_Generator::set_search_area(
             if (cx <= end_x) {
                 do {
                     ++cx;
-                    self->rows[y_cur][cx - 1] = fill;
+                    self->search_map_rows[y_cur][cx - 1] = fill;
                 } while (cx <= end_x);
             }
             ++y_cur;
@@ -300,7 +304,7 @@ void RGE_RMM_Object_Generator::place_avoid_objects(
 
     while (this->pop_stack(obj_stack, x, y, zone) && count > 0) {
         if (info.terrain >= 0) {
-            if ((this->map_row_offset[y][x].terrain & 0x1f) !=
+            if ((this->map_row_offset[y][x].terrain_type & 0x1f) !=
                 (unsigned int)info.terrain) {
                 goto next;
             }
@@ -318,12 +322,12 @@ void RGE_RMM_Object_Generator::place_avoid_objects(
             tile_y = tile_y - -0.5f;
         }
 
-        if (!master->can_place(player, tile_x, tile_y,
-                               0, 0, 1, 1, 1, 0, 1)) {
+        if (!master->check_placement(player, tile_x, tile_y,
+                                     0, 0, 1, 1, 1, 0, 1)) {
             this->remove_area_from_lists(x, y, info.object_exclusion_zone);
             switch (info.group_flag) {
             case 0:
-                player->place_object(info.obj_id, tile_x, tile_y, 0, 1);
+                player->make_new_object(info.obj_id, tile_x, tile_y, 0, 1);
                 break;
             case 1:
                 this->place_group(info, x, y, player);
@@ -366,7 +370,7 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
 
     while (pop_stack(obj_stack, x, y, zone) && count > 0) {
         if (info.terrain < 0 ||
-            ((this->map_row_offset[y][x].terrain & 0x1f) ==
+            ((this->map_row_offset[y][x].terrain_type & 0x1f) ==
              (unsigned int)info.terrain)) {
             tile_x = (float)x;
             tile_y = (float)y;
@@ -380,12 +384,12 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
             if (0.0f < master->radius_y - (float)radius) {
                 tile_y = tile_y - -0.5f;
             }
-            if (!master->can_place(player, tile_x, tile_y,
-                                   0, 0, 1, 1, 1, 0, 1)) {
+            if (!master->check_placement(player, tile_x, tile_y,
+                                         0, 0, 1, 1, 1, 0, 1)) {
                 remove_area_from_lists(x, y, info.object_exclusion_zone);
                 switch (info.group_flag) {
                 case 0:
-                    player->place_object(info.obj_id, tile_x, tile_y, 0, 1);
+                    player->make_new_object(info.obj_id, tile_x, tile_y, 0, 1);
                     break;
                 case 1:
                     place_group(info, x, y, player);
@@ -462,7 +466,7 @@ void RGE_RMM_Object_Generator::place_land_objects(
             if ((unsigned char)zone ==
                     zone_map->get_zone_info(y1, min_x0) &&
                 (object->terrain < 0 ||
-                 (this->map_row_offset[min_x0][y1].terrain & 0x1f) ==
+                 (this->map_row_offset[min_x0][y1].terrain_type & 0x1f) ==
                      object->terrain) &&
                 (y1 <= min_x || y1 >= max_x ||
                  min_x0 <= min_y || min_x0 >= max_y)) {
@@ -480,13 +484,13 @@ void RGE_RMM_Object_Generator::place_land_objects(
                     fy -= -0.5f;
                 }
 
-                if (!placement_master->can_place(player, fx, fy,
+                if (!placement_master->check_placement(player, fx, fy,
                     0, 0, 1, 1, 1, 1, 1)) {
                     this->remove_area_from_lists(y1, min_x0,
                         object->object_exclusion_zone);
                     switch (object->group_flag) {
                     case 0:
-                        player->place_object(object->obj_id, fx, fy, 0, 1);
+                        player->make_new_object(object->obj_id, fx, fy, 0, 1);
                         break;
                     case 1:
                         this->place_group(*object, y1, min_x0, player);
@@ -498,7 +502,7 @@ void RGE_RMM_Object_Generator::place_land_objects(
                     --count;
                 } else if (object->group_flag == 0 &&
                            obj_stack.next == 0) {
-                    player->place_object(object->obj_id, fx, fy, 0, 1);
+                    player->make_new_object(object->obj_id, fx, fy, 0, 1);
                 }
             }
         }
@@ -534,7 +538,7 @@ void RGE_RMM_Object_Generator::place_group(
 
     while (pop_stack(obj_stack, col, x, cost) && count > 0) {
         if (info.terrain < 0 ||
-            ((this->map_row_offset[x][col].terrain & 0x1f) ==
+            ((this->map_row_offset[x][col].terrain_type & 0x1f) ==
              (unsigned int)info.terrain)) {
             fx = (float)col;
             fy = (float)x;
@@ -548,8 +552,9 @@ void RGE_RMM_Object_Generator::place_group(
             if (0.0f < master->radius_y - (float)zone) {
                 fy = fy - -0.5f;
             }
-            if (!master->can_place(player, fx, fy, 0, 0, 1, 1, 1, 0, 1)) {
-                player->place_object(info.obj_id, fx, fy, 0, 1);
+            if (!master->check_placement(player, fx, fy,
+                                         0, 0, 1, 1, 1, 0, 1)) {
+                player->make_new_object(info.obj_id, fx, fy, 0, 1);
                 count--;
             }
         }
@@ -617,7 +622,7 @@ void RGE_RMM_Object_Generator::place_cluster(
         master->alignment(tile_y_float, tile_x, this->world, 1);
         if (master->check_placement(player, tile_y_float, tile_x,
                 0, 0, 1, 1, 1, 0, 1) == 0) {
-            player->place_object(info.obj_id, tile_y_float, tile_x, 0, 1);
+            player->make_new_object(info.obj_id, tile_y_float, tile_x, 0, 1);
             --count;
             this->search_map_rows[x1][tile_y] = 0;
 
