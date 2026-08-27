@@ -5,6 +5,21 @@
 // The action, player, object, task, and virtual surfaces come from the
 // tact_trd module context. The unresolved code shape remains observed.
 // BINARY NOTE: the original frame is 0x8 with ESI and EDI only.
+//
+// Attempt log:
+// Baseline grouped check: 982 differing bytes, 36 calls, matching frame and
+// boundary. The first structural mismatch is the action-object turn call.
+// The old context emitted slot +0x1E8. The executable calls slot +0x1F0.
+// Coordinator repair db5baaa1 now restores the moving hierarchy and emits
+// slot +0x1F0. The call target count is now exact, but bytes still differ.
+// Operand-order, alias, timer-expression, narrow-facet, and shared-tail
+// probes were neutral or worse. All failed source forms were restored.
+// BINARY NOTE: tact_trd.cpp lines 281-626 own this complete body. The address
+// sequence is 004D2CB0-004D3243. Existing exact anchors surround this body at
+// 004D2660-004D2830 and 004D32C0-004D33C0.
+// Remaining source drift is structural: 982 bytes, 517 versus 514
+// instructions, and 94.44% ordered-call alignment. No shared-header change is
+// part of this source owner.
 
 #ifndef TACT_TRD_SHARED_CONTEXT
 #include "..\..\include\tact_trd_context.h"
