@@ -2,10 +2,10 @@
 
 The module now owns all 29 normal PDB functions in source order.
 
-Twenty-three functions remain exact owners. The focused grouped build before
-migration reported `MATCH` and zero byte drift for each exact owner.
+Twenty-two functions remain exact owners. The composed grouped build reported
+`MATCH` and zero byte drift for each exact owner.
 
-Five functions remain accepted drift. Their current focused results are:
+The current nonexact results include:
 
 - `004BDEA0 AddShape`: current source-bank result needs a typed selected-shape
   walk. The migration keeps its accepted source shape.
@@ -27,5 +27,8 @@ remain aligned. It stays accepted drift. The prior exact-owner claim is removed.
 reconstruction. The focused grouped build reports 589 differing bytes and a
 922-byte rebuild against the 916-byte original.
 
-The migration removes the source-bank fragments and the wrapper. The public
-header owns span declarations only. Shape and Drawarea views stay private.
+The migration removes the source-bank fragments and the wrapper. `drawarea.h`
+owns the shared span declarations. `spanlist.h` consumes the canonical
+Drawarea and Shape headers. The composed fanout retained 48/48 Drawarea and
+22/22 spanlist exact owners. Shape retained 10/11 checked owners;
+`004BAAF0` remains scratch for its documented two-byte difference.
