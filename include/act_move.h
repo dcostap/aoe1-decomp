@@ -2,7 +2,6 @@
 #define AOE1_ACT_MOVE_H
 
 #include "action.h"
-#include "act_obj.h"
 
 class RGE_Action_Object;
 class RGE_Sprite;
