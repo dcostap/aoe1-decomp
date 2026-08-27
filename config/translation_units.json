@@ -2942,15 +2942,16 @@
     },
     {
       "name": "task_cpp",
-      "source": "src/task_tu.cpp",
+      "source": "src/task.cpp",
+      "module": "task",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00508670": "src/matching/00508670_RGE_Task.cpp",
-        "005086F0": "src/matching/005086F0_RGE_Task.cpp",
-        "00508700": "src/matching/00508700_copy.cpp",
-        "005087C0": "src/matching/005087C0_load.cpp",
-        "00508A20": "src/matching/00508A20_load.cpp",
-        "00508BB0": "src/matching/00508BB0_save.cpp"
+        "00508670": "src/task.cpp",
+        "005086F0": "src/task.cpp",
+        "00508700": "src/task.cpp",
+        "005087C0": "src/task.cpp",
+        "00508A20": "src/task.cpp",
+        "00508BB0": "src/task.cpp"
       },
       "symbols": {
         "005087C0": "?load@RGE_Task@@QAEXHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
