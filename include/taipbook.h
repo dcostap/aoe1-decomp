@@ -1,11 +1,9 @@
 // Compiler-facing declarations for the original taipbook.cpp module.
-// The RGE_Static_Object surface is the reviewed class declaration.  Its
-// weaponRange slot is 67 (vtable offset 0x10c), not a synthetic slot list.
 #ifndef AOE1_TAIPBOOK_H
 #define AOE1_TAIPBOOK_H
 
 #include <string.h>
-#include "stat_obj_context.h"
+#include "stat_obj.h"
 
 class AIPlay;
 
