@@ -6335,16 +6335,38 @@
       "owners": {
         "0044F070": "src/matching/0044F070_RGE_Master_Action_Object.cpp",
         "0044F0F0": "src/matching/0044F0F0_RGE_Master_Action_Object.cpp",
+        "0044F160": "src/matching/0044F160_RGE_Master_Action_Object.cpp",
+        "0044F1E0": "src/matching/0044F1E0_setup.cpp",
+        "0044F290": "src/matching/0044F290_setup.cpp",
+        "0044F3C0": "src/matching/0044F3C0_setup.cpp",
+        "0044F4D0": "src/matching/0044F4D0_RGE_Master_Action_Object.cpp",
         "0044F540": "src/matching/0044F540_create_task_list.cpp",
         "0044F5A0": "src/matching/0044F5A0_make_new_obj.cpp",
         "0044F670": "src/matching/0044F670_make_new_master.cpp",
         "0044F6E0": "src/matching/0044F6E0_get_task.cpp",
         "0044F710": "src/matching/0044F710_getTaskByTaskID.cpp",
-        "0044F880": "src/matching/0044F880_save.cpp"
+        "0044F760": "src/matching/0044F760_copy_obj.cpp",
+        "0044F7F0": "src/matching/0044F7F0_modify.cpp",
+        "0044F820": "src/matching/0044F820_modify_delta.cpp",
+        "0044F850": "src/matching/0044F850_modify_percent.cpp",
+        "0044F880": "src/matching/0044F880_save.cpp",
+        "0044F980": "src/matching/0044F980_play_command_sound.cpp",
+        "0044F9A0": "src/matching/0044F9A0_play_move_sound.cpp"
       },
       "symbols": {
         "0044F070": "??0RGE_Master_Action_Object@@QAE@PAV0@H@Z",
-        "0044F0F0": "??0RGE_Master_Action_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z"
+        "0044F0F0": "??0RGE_Master_Action_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z",
+        "0044F160": "??0RGE_Master_Action_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
+        "0044F1E0": "?setup@RGE_Master_Action_Object@@IAEHPAV1@@Z",
+        "0044F290": "?setup@RGE_Master_Action_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
+        "0044F3C0": "?setup@RGE_Master_Action_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
+        "0044F4D0": "??1RGE_Master_Action_Object@@UAE@XZ",
+        "0044F760": "?copy_obj@RGE_Master_Action_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
+        "0044F7F0": "?modify@RGE_Master_Action_Object@@UAEXME@Z",
+        "0044F820": "?modify_delta@RGE_Master_Action_Object@@UAEXME@Z",
+        "0044F850": "?modify_percent@RGE_Master_Action_Object@@UAEXME@Z",
+        "0044F980": "?play_command_sound@RGE_Master_Action_Object@@UAEXXZ",
+        "0044F9A0": "?play_move_sound@RGE_Master_Action_Object@@UAEXXZ"
       }
     },
     {
