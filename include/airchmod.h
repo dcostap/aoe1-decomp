@@ -1,5 +1,5 @@
-#ifndef AOE1_AIRCHMOD_CONTEXT_H
-#define AOE1_AIRCHMOD_CONTEXT_H
+#ifndef AOE1_AIRCHMOD_H
+#define AOE1_AIRCHMOD_H
 
 #include "aitchitm.h"
 
@@ -39,7 +39,5 @@ protected:
     void removeOldTechTree();
     TechnologyItem* item(int id);
 };
-
-void rge_write(int file, void* data, int size);
 
 #endif
