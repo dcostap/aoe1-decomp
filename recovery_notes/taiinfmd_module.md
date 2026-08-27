@@ -42,9 +42,12 @@ Run the registered translation-unit checks after each source-shape repair.
 A clean compile reported one existing uninitialized-local warning in the
 recovered `loadLearnInfo` path. No inline assembly or synthetic owner is used.
 
-## Cross-shard blocker
+## Legacy wrapper cleanup
 
-`src/information_dropsites_tu.cpp` still names the deleted taiinfmd fragment
-files and uses `include/taiinfmd_prefix_context.h`. This wrapper is outside the
-assigned direct module entry. The parent integration pass must remove or
-repoint it before a repository-wide source build.
+The legacy `src/information_dropsites_tu.cpp` wrapper included the taiinfmd
+fragment set. The two context headers,
+`include/information_dropsites_context.h` and
+`include/taiinfmd_prefix_context.h`, had no consumers outside this wrapper
+chain. `rg` found no translation-unit entry or other source consumer. The
+wrapper and both headers were removed after all included owners moved to this
+module.
