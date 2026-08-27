@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "name": "tobj_lst",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tobj_lst.cpp",
+  "source": "src/tobj_lst.cpp",
+  "header": "include/tobj_lst.h",
+  "functions": {
+    "00511B00": { "status": "matching" }
+  }
+}
