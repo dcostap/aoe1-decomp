@@ -1,9 +1,5 @@
-#ifndef AOE1_PNL_PIC_CONTEXT_H
-#define AOE1_PNL_PIC_CONTEXT_H
-
-// Recovered Pnl_pic.cpp translation-unit declarations.  The panel members and
-// virtual order match the reviewed TPanel surface.  Function bodies include
-// this context so one source owner exists for TPicturePanel.
+#ifndef AOE1_PNL_PIC_H
+#define AOE1_PNL_PIC_H
 
 #include <windows.h>
 

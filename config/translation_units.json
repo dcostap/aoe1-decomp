@@ -2891,15 +2891,16 @@
       "symbols": {}
     },
     {
-      "name": "pnl_pic_prefix",
-      "source": "src/pnl_pic_tu.cpp",
+      "name": "pnl_pic",
+      "source": "src/Pnl_pic.cpp",
+      "module": "pnl_pic",
       "flags": "config/flags/0047A250_TPicturePanel.rsp",
       "owners": {
-        "0047A250": "src/matching/0047A250_TPicturePanel.cpp",
-        "0047A2A0": "src/matching/0047A2A0_setup.cpp",
-        "0047A3A0": "src/matching/0047A3A0_set_picture.cpp",
-        "0047A5B0": "src/matching/0047A5B0_free_pic.cpp",
-        "0047A630": "src/matching/0047A630_draw.cpp"
+        "0047A250": "src/Pnl_pic.cpp",
+        "0047A2A0": "src/Pnl_pic.cpp",
+        "0047A3A0": "src/Pnl_pic.cpp",
+        "0047A5B0": "src/Pnl_pic.cpp",
+        "0047A630": "src/Pnl_pic.cpp"
       },
       "symbols": {
         "0047A630": "?draw@TPicturePanel@@UAEXXZ"
