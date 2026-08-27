@@ -32,7 +32,7 @@
 #include "matching/004543C0_make_available.cpp"
 #include "scratch/004543D0_alignment.cpp"
 #include "matching/00454690_alignment_box.cpp"
-#include "scratch/004547F0_draw.cpp"
+#include "matching/004547F0_draw.cpp"
 #include "matching/00454950_get_help_message.cpp"
 #include "matching/00454960_get_help_page.cpp"
 #include "matching/00454970_get_hotkey.cpp"

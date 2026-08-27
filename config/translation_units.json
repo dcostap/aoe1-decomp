@@ -781,6 +781,7 @@
         "004536D0": "src/matching/004536D0_save.cpp",
         "004543C0": "src/matching/004543C0_make_available.cpp",
         "00454690": "src/matching/00454690_alignment_box.cpp",
+        "004547F0": "src/matching/004547F0_draw.cpp",
         "00454950": "src/matching/00454950_get_help_message.cpp",
         "00454960": "src/matching/00454960_get_help_page.cpp",
         "00454970": "src/matching/00454970_get_hotkey.cpp",
@@ -792,7 +793,21 @@
         "004521A0": "??0RGE_Master_Static_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
         "004521E0": "?setup@RGE_Master_Static_Object@@IAEHPAV1@@Z",
         "004524E0": "?setup@RGE_Master_Static_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
-        "004534A0": "?modify@RGE_Master_Static_Object@@UAEXME@Z"
+        "004534A0": "?modify@RGE_Master_Static_Object@@UAEXME@Z",
+        "00452FA0": "??1RGE_Master_Static_Object@@UAE@XZ",
+        "00452FE0": "?make_new_obj@RGE_Master_Static_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z",
+        "004530B0": "?make_new_master@RGE_Master_Static_Object@@UAEPAV1@XZ",
+        "00453120": "?copy_obj@RGE_Master_Static_Object@@UAEXPAV1@@Z",
+        "00453540": "?modify_delta@RGE_Master_Static_Object@@UAEXME@Z",
+        "004535F0": "?modify_percent@RGE_Master_Static_Object@@UAEXME@Z",
+        "004536D0": "?save@RGE_Master_Static_Object@@UAEXH@Z",
+        "004543C0": "?make_available@RGE_Master_Static_Object@@QAEXE@Z",
+        "00454690": "?alignment_box@RGE_Master_Static_Object@@QAEEPAVRGE_Game_World@@MMAAF1111111@Z",
+        "004547F0": "?draw@RGE_Master_Static_Object@@UAEXPAVTDrawArea@@FFPAVRGE_Color_Table@@JJHE@Z",
+        "00454950": "?get_help_message@RGE_Master_Static_Object@@QAEJXZ",
+        "00454960": "?get_help_page@RGE_Master_Static_Object@@QAEJXZ",
+        "00454970": "?get_hotkey@RGE_Master_Static_Object@@QAEJXZ",
+        "00454980": "?calc_base_damage_ability@RGE_Master_Static_Object@@UAEJPAVRGE_Master_Combat_Object@@@Z"
       }
     },
     {
