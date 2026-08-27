@@ -5,10 +5,10 @@
 // owner.  Thirty-two normal owners match.  TribeStrategyAIModule::update stays
 // in scratch because its natural VC5 register schedule remains unresolved.
 //
-// BINARY NOTE: The target module spans PDB lines 34-1626.  The shared context
-// header owns the proved class layouts and virtual surfaces used by this file.
+// BINARY NOTE: The target module spans PDB lines 34-1626.  The module header
+// owns the proved class layouts and virtual surfaces used by this file.
 
-#include "../include/taistrmd_context.h"
+#include "../include/taistrmd.h"
 
 // PDB lines 34-265; VA 004E6E10.
 // 004E6E10 VictoryConditionRuleSystem::VictoryConditionRuleSystem
@@ -261,7 +261,7 @@ VictoryConditionRuleSystem::~VictoryConditionRuleSystem() {}
 //   It matched all bytes except four parsed-character stack displacements.
 // - Separate ruleIndex and ruleValue integers with a 256-byte line buffer recover
 //   the original dword homes. They also keep first and second `%c` semantics.
-// - The authentic taistrmd.cpp prefix loads taistrmd_context.h before this body.
+// - The authentic taistrmd.cpp module loads taistrmd.h before this body.
 //   A second shard-local include rotates the two byte homes under VC5.
 // - Exact-finish walkback proved that both changes are required as one group.
 //   Either the old buffer overlay or the repeated include restores the four-byte drift.

@@ -3,7 +3,7 @@
   "name": "taistrmd",
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taistrmd.cpp",
   "source": "src/taistrmd.cpp",
-  "header": "include/taistrmd_context.h",
+  "header": "include/taistrmd.h",
   "functions": {
     "004E6E10": { "status": "matching" },
     "004E7430": { "status": "matching" },

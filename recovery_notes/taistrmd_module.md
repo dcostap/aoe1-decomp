@@ -7,7 +7,7 @@ Their source lines run from 34 through 1626. Their addresses are monotonic.
 The two deleting destructors at 004E7410 and 004E9240 are compiler-generated.
 They have no handwritten owner.
 
-The source uses `include/taistrmd_context.h` for the reviewed class layouts.
+The source uses `include/taistrmd.h` for the reviewed class layouts.
 The header proves `VictoryConditionRuleSystem`, `TribeStrategyAIModule`, and the
 main-decision and victory-entry access surfaces used by this module.
 
@@ -27,5 +27,5 @@ EBP, then reads `victoryConditionChangeTimeout`. The rebuild clears EBX and EBP,
 reads the member, then saves EDI. This changes invalid-`this` fault order and
 keeps exact matching unresolved.
 
-No byte forcing, inline assembly, wrapper, context macro, or duplicate owner is
-used in the reunified source.
+No byte forcing, inline assembly, wrapper, or duplicate owner is used in the
+reunified source.

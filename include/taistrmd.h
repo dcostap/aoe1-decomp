@@ -1,7 +1,7 @@
-#ifndef TAISTRMD_CONTEXT_H
-#define TAISTRMD_CONTEXT_H
+#ifndef TAISTRMD_H
+#define TAISTRMD_H
 
-// Shared declarations for the authentic taistrmd.cpp source prefix.
+// Declarations for the authentic taistrmd.cpp source module.
 // PDB types prove the two owning class layouts used below.
 
 class AIModuleMessage;
