@@ -1,12 +1,7 @@
-#ifndef AOE1_TSCENARO_CONTEXT_H
-#define AOE1_TSCENARO_CONTEXT_H
+#ifndef AOE1_TSCENARO_H
+#define AOE1_TSCENARO_H
 
-// Canonical declarations for the tscenaro.cpp owner sequence.
-//
-// PDB ownership is tscenaro.cpp, lines 48-1093.  The four virtual slots and
-// the 0x1990/0x514C class sizes come from the reviewed class inventory and
-// the original constructor/save access ranges.  Keep this header local to
-// this source module until the complete shared game headers are recovered.
+// Declarations for the scenario source module.
 
 typedef unsigned char uchar;
 
