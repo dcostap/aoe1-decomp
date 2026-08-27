@@ -1,0 +1,361 @@
+{
+  "schema": 1,
+  "name": "aiuaimod",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp",
+  "source": "src/aiuaimod.cpp",
+  "header": "include/aiuaimod.h",
+  "functions": {
+    "00412F00": {
+      "status": "matching"
+    },
+    "00413090": {
+      "status": "matching"
+    },
+    "00413150": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/aiuaimod_module.md"
+    },
+    "00413450": {
+      "status": "matching"
+    },
+    "00413810": {
+      "status": "matching"
+    },
+    "00413820": {
+      "status": "matching"
+    },
+    "00413830": {
+      "status": "matching"
+    },
+    "00413840": {
+      "status": "matching"
+    },
+    "00413850": {
+      "status": "matching"
+    },
+    "00413860": {
+      "status": "matching"
+    },
+    "00413870": {
+      "status": "matching"
+    },
+    "00413880": {
+      "status": "matching"
+    },
+    "00413890": {
+      "status": "matching"
+    },
+    "004138A0": {
+      "status": "matching"
+    },
+    "004138C0": {
+      "status": "matching"
+    },
+    "004138D0": {
+      "status": "matching"
+    },
+    "004138E0": {
+      "status": "matching"
+    },
+    "00413910": {
+      "status": "matching"
+    },
+    "00413920": {
+      "status": "matching"
+    },
+    "00413930": {
+      "status": "matching"
+    },
+    "00413940": {
+      "status": "matching"
+    },
+    "00413950": {
+      "status": "matching"
+    },
+    "00413960": {
+      "status": "matching"
+    },
+    "00413970": {
+      "status": "matching"
+    },
+    "00413980": {
+      "status": "matching"
+    },
+    "00413990": {
+      "status": "matching"
+    },
+    "004139A0": {
+      "status": "matching"
+    },
+    "004139B0": {
+      "status": "matching"
+    },
+    "004139C0": {
+      "status": "matching"
+    },
+    "004139D0": {
+      "status": "matching"
+    },
+    "004139E0": {
+      "status": "matching"
+    },
+    "004139F0": {
+      "status": "matching"
+    },
+    "00413A00": {
+      "status": "matching"
+    },
+    "00413A10": {
+      "status": "matching"
+    },
+    "00413A20": {
+      "status": "matching"
+    },
+    "00413AA0": {
+      "status": "matching"
+    },
+    "00413AB0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/aiuaimod_module.md"
+    },
+    "00414040": {
+      "status": "scratch",
+      "note_path": "recovery_notes/aiuaimod_module.md"
+    },
+    "00414800": {
+      "status": "scratch",
+      "note_path": "recovery_notes/aiuaimod_module.md"
+    },
+    "00414D40": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/aiuaimod_module.md"
+    },
+    "00414E80": {
+      "status": "matching"
+    },
+    "00414F40": {
+      "status": "matching"
+    },
+    "00414F70": {
+      "status": "matching"
+    },
+    "00415040": {
+      "status": "matching"
+    },
+    "00415120": {
+      "status": "matching"
+    },
+    "00415150": {
+      "status": "matching"
+    },
+    "00415160": {
+      "status": "matching"
+    },
+    "004151B0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/aiuaimod_module.md"
+    },
+    "00415A10": {
+      "status": "matching"
+    },
+    "00415AD0": {
+      "status": "matching"
+    },
+    "00415B50": {
+      "status": "matching"
+    },
+    "00415CA0": {
+      "status": "matching"
+    },
+    "00415E50": {
+      "status": "matching"
+    },
+    "00415F40": {
+      "status": "matching"
+    },
+    "004161D0": {
+      "status": "matching"
+    },
+    "004161E0": {
+      "status": "matching"
+    },
+    "004161F0": {
+      "status": "matching"
+    },
+    "00416240": {
+      "status": "matching"
+    },
+    "00416290": {
+      "status": "matching"
+    },
+    "004162A0": {
+      "status": "matching"
+    },
+    "004162B0": {
+      "status": "matching"
+    },
+    "004162C0": {
+      "status": "matching"
+    },
+    "00416340": {
+      "status": "matching"
+    },
+    "004163C0": {
+      "status": "matching"
+    },
+    "00416470": {
+      "status": "matching"
+    },
+    "00416550": {
+      "status": "matching"
+    },
+    "004165F0": {
+      "status": "matching"
+    },
+    "00416690": {
+      "status": "matching"
+    },
+    "00416730": {
+      "status": "matching"
+    },
+    "004167D0": {
+      "status": "matching"
+    },
+    "00416870": {
+      "status": "matching"
+    },
+    "00416910": {
+      "status": "matching"
+    },
+    "00416980": {
+      "status": "matching"
+    },
+    "004169E0": {
+      "status": "matching"
+    },
+    "00416A50": {
+      "status": "matching"
+    },
+    "00416AF0": {
+      "status": "matching"
+    },
+    "00416B80": {
+      "status": "matching"
+    },
+    "00416C10": {
+      "status": "matching"
+    },
+    "00416C80": {
+      "status": "matching"
+    },
+    "00416F30": {
+      "status": "scratch",
+      "note_path": "recovery_notes/aiuaimod_module.md"
+    },
+    "004171F0": {
+      "status": "matching"
+    },
+    "00417360": {
+      "status": "matching"
+    },
+    "004173D0": {
+      "status": "matching"
+    },
+    "00417440": {
+      "status": "matching"
+    },
+    "004174A0": {
+      "status": "matching"
+    },
+    "00417510": {
+      "status": "matching"
+    },
+    "00417580": {
+      "status": "matching"
+    },
+    "004175B0": {
+      "status": "matching"
+    },
+    "00417600": {
+      "status": "matching"
+    },
+    "00417640": {
+      "status": "matching"
+    },
+    "00417680": {
+      "status": "matching"
+    },
+    "004176B0": {
+      "status": "matching"
+    },
+    "00417700": {
+      "status": "matching"
+    },
+    "00417730": {
+      "status": "matching"
+    },
+    "00417770": {
+      "status": "matching"
+    },
+    "004177B0": {
+      "status": "matching"
+    },
+    "004177C0": {
+      "status": "matching"
+    },
+    "004177D0": {
+      "status": "matching"
+    },
+    "00417860": {
+      "status": "matching"
+    },
+    "00417920": {
+      "status": "matching"
+    },
+    "00417960": {
+      "status": "matching"
+    },
+    "00417B50": {
+      "status": "scratch",
+      "note_path": "recovery_notes/aiuaimod_module.md"
+    },
+    "004180C0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/aiuaimod_module.md"
+    },
+    "00419510": {
+      "status": "matching"
+    },
+    "004195F0": {
+      "status": "matching"
+    },
+    "00419650": {
+      "status": "matching"
+    },
+    "00419BC0": {
+      "status": "matching"
+    },
+    "00419C30": {
+      "status": "matching"
+    },
+    "00419C70": {
+      "status": "matching"
+    },
+    "00419ED0": {
+      "status": "matching"
+    },
+    "00419F00": {
+      "status": "matching"
+    },
+    "0041A020": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/aiuaimod_module.md"
+    },
+    "0041A0D0": {
+      "status": "matching"
+    },
+    "0041A100": {
+      "status": "matching"
+    }
+  }
+}

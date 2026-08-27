@@ -1,5 +1,5 @@
-#ifndef AOE1_AIUAIMOD_CONTEXT_H
-#define AOE1_AIUAIMOD_CONTEXT_H
+#ifndef AOE1_AIUAIMOD_H
+#define AOE1_AIUAIMOD_H
 
 // Shared declarations for the PDB aiuaimod.cpp source module.
 // PDB and exact owners prove the 0x134-byte UnitAIModule layout.
@@ -582,9 +582,7 @@ public:
     unsigned char lookupZone(int, int);
     float distance_to_object(RGE_Static_Object* object);
     float distance_to_position(float x, float y, float z);
-#if defined(AOE1_AIUAIMOD_PROCESS_NOTIFY_CONTEXT) || defined(AOE1_AIUAIMOD_COMPLETE_TU)
     int commanderRemoveFromGroup(int objectID);
-#endif
 };
 
 class __declspec(novtable) UnitAIModule {
@@ -651,7 +649,6 @@ protected:
     virtual int processRetryableOrder();
     virtual int bestUnitToHeal(int, float*);
     virtual int bestUnitToConvert(float*);
-#if defined(AOE1_AIUAIMOD_COMPLETE_TU)
     int get_type();
     int find_unit(int, int, int);
     int do_stuff(int, int);
@@ -659,7 +656,6 @@ protected:
     int call40(int, int, int, int, int);
     int call64(int, int);
     int call68(int, int);
-#endif
 
 public:
     RGE_Static_Object* objectValue;
