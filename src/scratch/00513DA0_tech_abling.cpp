@@ -1,20 +1,16 @@
-class Tech_Tree_tab {
-public:
-    void enable_tech(int tech_id);
-    void disable_tech(int tech_id);
-};
+// VA: 00513DA0, TRIBE_Player::tech_abling
+// PDB: tplayer.cpp:1496-1501
+// BINARY NOTE: tech_tree is read at +0x220. The two direct calls are
+// TRIBE_Player_Tech::enable (0050D383) and disable (0050D306).
 
-class TRIBE_Player_tab {
-public:
-    void tech_abling(int tech_id, unsigned char enable);
-    char gap_00[0x220];
-    Tech_Tree_tab* tech_tree;
-};
+#include "../../include/tech.h"
+#include "../../include/tplayer.h"
 
-void TRIBE_Player_tab::tech_abling(int tech_id, unsigned char enable) {
+void TRIBE_Player::tech_abling(long tech_id, unsigned char enable)
+{
     if (enable) {
-        this->tech_tree->enable_tech(tech_id);
+        tech_tree->enable(tech_id);
     } else {
-        this->tech_tree->disable_tech(tech_id);
+        tech_tree->disable(tech_id);
     }
 }
