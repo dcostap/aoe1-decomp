@@ -13,7 +13,7 @@
 RGE_Animated_Object::RGE_Animated_Object(
     RGE_Master_Animated_Object* master, RGE_Player* player,
     float x, float y, float z, int do_setup)
-    : RGE_Static_Object((RGE_Master_Static_Object*)master, player, x, y, z, 0)
+    : RGE_Static_Object(master, player, x, y, z, 0)
 {
     if (do_setup != 0) {
         setup(master, player, x, y, z);
@@ -45,8 +45,7 @@ int RGE_Animated_Object::setup(
     RGE_Master_Animated_Object* master, RGE_Player* player,
     float x, float y, float z)
 {
-    RGE_Static_Object::setup(
-        (RGE_Master_Static_Object*)master, player, x, y, z);
+    RGE_Static_Object::setup(master, player, x, y, z);
     this->type = 0x14;
     this->speed = 0.0f;
     RGE_Static_Object::set_sleep_flag(0);
