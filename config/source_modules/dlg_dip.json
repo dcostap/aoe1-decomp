@@ -6,12 +6,12 @@
   "header": "include/dlg_dip.h",
   "functions": {
     "0043C930": { "status": "scratch", "note_path": "recovery_notes/dlg_dip_module.md" },
-    "0043D6E0": { "status": "matching", "note_path": "recovery_notes/dlg_dip_module.md" },
+    "0043D6E0": { "status": "scratch", "note_path": "recovery_notes/dlg_dip_module.md" },
     "0043D8A0": { "status": "scratch", "note_path": "recovery_notes/dlg_dip_module.md" },
     "0043E530": { "status": "matching", "note_path": "recovery_notes/dlg_dip_module.md" },
     "0043E5C0": { "status": "matching", "note_path": "recovery_notes/dlg_dip_module.md" },
-    "0043E650": { "status": "matching", "note_path": "recovery_notes/dlg_dip_module.md" },
-    "0043E6E0": { "status": "matching", "note_path": "recovery_notes/dlg_dip_module.md" },
+    "0043E650": { "status": "scratch", "note_path": "recovery_notes/dlg_dip_module.md" },
+    "0043E6E0": { "status": "scratch", "note_path": "recovery_notes/dlg_dip_module.md" },
     "0043E770": { "status": "accepted_drift", "note_path": "recovery_notes/dlg_dip_module.md" }
   }
 }

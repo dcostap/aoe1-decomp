@@ -59,8 +59,9 @@ target mismatches. The action differed by 2,953 bytes with two relocation target
 mismatches. The draw differed by 165 bytes. The check report is in
 `build/candidate_tus/dlg_dip_natural/report.json`.
 
-The old exact claims are therefore not fresh exact claims after migration. The
-module keeps their reviewed statuses for later exact repair.
+The old exact claims are not fresh exact claims after migration. Only
+`0043E530` and `0043E5C0` remain registered exact owners. `0043D6E0`,
+`0043E650`, and `0043E6E0` are scratch.
 
 ## Evidence blocker
 
