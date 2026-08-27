@@ -129,7 +129,7 @@ void RGE_Action_Gather::set_state(unsigned char param_1) {
     switch (param_1) {
     case 3:
         this->obj->notify((int)this->obj->id, (int)this->obj->id,
-                          0x202, 0x261, this->targetType, 0);
+                          (int)0x202, 0x261L, (long)this->targetType, 0L);
         this->timer = -10.0f;
         break;
 
@@ -249,7 +249,7 @@ gather_action_tail:
 
 gather_no_target:
         this->obj->notify((int)this->obj->id, (int)this->obj->id,
-                          0x203, 0x261, 0, 0);
+                          (int)0x203, 0x261L, 0L, 0L);
         this->set_state(13);
         return;
 
@@ -302,7 +302,7 @@ unsigned char RGE_Action_Gather::update() {
         check_obj->owner->id != this->obj->owner->id) {
         this->set_state(1);
         this->obj->notify((int)this->obj->id, (int)this->obj->id,
-                          0x1FB, 0x261, 0, 0);
+                          (int)0x1FB, 0x261L, 0L, 0L);
         return 4;
     }
 
@@ -313,7 +313,8 @@ unsigned char RGE_Action_Gather::update() {
             if (this->timer > DAT_0056e280) {
                 this->timer = -10.0f;
                 this->obj->notify((int)this->obj->id, (int)this->obj->id,
-                                  0x202, 0x261, this->targetType, 0);
+                                  (int)0x202, 0x261L,
+                                  (long)this->targetType, 0L);
                 return 0;
             }
         }
@@ -406,7 +407,7 @@ unsigned char RGE_Action_Gather::update() {
         if (attr == -1) {
             modifier = 1.0f;
         } else {
-            modifier = this->obj->owner->attribute_table[attr];
+            modifier = this->obj->owner->attributes[attr];
         }
         max_hold = modifier * (float)this->obj->master_obj->attribute_max_amount -
                    this->obj->attribute_amount_held;
@@ -463,7 +464,7 @@ unsigned char RGE_Action_Gather::update() {
                 {
                     short attr = this->task->attribute_type3;
                     if (attr == -1) {
-                        attr = this->obj->owner->fallback_attribute;
+                        attr = this->obj->owner->attribute_num;
                     }
                     this->obj->owner->add_attribute_num(
                         attr, this->obj->attribute_amount_held, 0);
@@ -508,7 +509,7 @@ computer_check:
 
     case 13:
         this->obj->notify((int)this->obj->id, (int)this->obj->id,
-                          0x1F9, 0x261, 0, 0);
+                          (int)0x1F9, 0x261L, 0L, 0L);
         if (this->obj->owner->computerPlayer() == 1) {
             this->set_state(1);
         } else {

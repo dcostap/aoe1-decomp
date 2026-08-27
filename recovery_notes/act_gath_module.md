@@ -62,6 +62,11 @@ the accessed `attribute_table` and `fallback_attribute` fields. Its current
 `notify` overloads are ambiguous at source lines 132, 252, 305, 316, and 511.
 This module adds no local file, player, or World surface.
 
+The canonical file interfaces now include their own `FILE` declaration.
+The player owner names are `attributes` at `+0x50` and `attribute_num` at
+`+0x4C`. The notify calls use three `int` arguments and three `long` arguments
+to select the proven six-argument virtual slot at `+0x148`.
+
 The source casts an action object's canonical `master_obj` pointer to
 `RGE_Master_Action_Object` where the action-master fields are used. It uses
 `attribute_max_amount` for the proven +0x7C field. It uses `work_rate` for the
