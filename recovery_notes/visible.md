@@ -103,3 +103,25 @@ registration. This regression caused the removal of its stale exact claim.
 The other registered owners retain fresh `MATCH` results in the current module
 check. The constructor and helper owners without registrations have no exact
 claim.
+
+## Header cleanup candidate
+
+The grouped candidate maps both overloaded `save` symbols explicitly:
+
+- `0053C400`: `?save@RGE_Visible_Map@@QAEXH@Z`
+- `0053CFF0`: `?save@RGE_Unified_Visible_Map@@QAEXH@Z`
+
+The second grouped run compiled the cleaned source and compared all 14
+registered owners. All 14 owners returned `MATCH`, with zero relocation target
+mismatches and zero boundary escapes.
+
+The observed rows remain separate from exact claims. `0053C1B0` differs by 2
+bytes. `0053C290` differs by 171 bytes and escapes its boundary. `0053C5D0`,
+`0053C680`, `0053D0D0`, and `0053D200` retain their reviewed drift. `0053C680`
+also escapes its boundary. `0053CCF0` differs by 361 bytes. The overloaded
+scratch rows `0053C6F0`, `0053C920`, and `0053CAC0` have comparison errors
+because the candidate proposal has no unique symbol mapping for those methods.
+They are not treated as matches.
+
+Validation report: `build/candidate_tus/visible_header_cleanup/run02/report.txt`.
+Report SHA-256: `21ab51c8bfb35720de12d693ce96104fc9a92360f5ebd525bb4043bc2ed9cce1`.
