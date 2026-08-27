@@ -13,6 +13,19 @@ branches, allocation effects, fault order, and return behavior. The remaining
 bytes come from the VC5 allocation and register schedule. The function has no
 SEH frame.
 
+## Reunification audit
+
+The 2026-08-27 grouped compile rebuilt the owner at 656 bytes. It has 227
+strict positional differences. It has no relocation or boundary error.
+
+The audit confirms 28 ordered calls, the serialized field destinations, both
+allocation guards, and the three-entry sound-slot loop. The source keeps the
+same null paths, allocation effects, and fault order. The register and
+allocation schedule remains the only reviewed difference.
+
+Decision: keep `accepted_drift`. This is not a fresh exact claim. Reopen only
+with new evidence about the VC5 allocation or register schedule.
+
 ## Module merge
 
 The body moved into `src/sprite.cpp` in PDB order. The merge removes the

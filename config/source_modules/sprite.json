@@ -29,7 +29,10 @@
     },
     "004C04F0": { "status": "matching" },
     "004C0620": { "status": "matching" },
-    "004C0720": { "status": "matching" },
+    "004C0720": {
+      "status": "matching",
+      "note_path": "recovery_notes/sprite_module.md"
+    },
     "004C0840": { "status": "matching" },
     "004C0960": { "status": "matching" },
     "004C0B70": {
@@ -37,7 +40,10 @@
       "note_path": "recovery_notes/004C0B70_get_frame_min_max.md"
     },
     "004C0C50": { "status": "matching" },
-    "004C0C90": { "status": "matching" },
+    "004C0C90": {
+      "status": "matching",
+      "note_path": "recovery_notes/sprite_module.md"
+    },
     "004C0D80": {
       "status": "accepted_drift",
       "note_path": "recovery_notes/004C0D80_shape_hit_test.md"

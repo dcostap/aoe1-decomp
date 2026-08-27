@@ -13,6 +13,20 @@ allocation order, publication order, fault order, and return behavior. The
 remaining drift is the draw-record address schedule. The natural typed source
 is retained.
 
+## Reunification audit
+
+The 2026-08-27 grouped compile rebuilt the owner at 701 bytes. It has 142
+strict positional differences. It has no relocation or boundary error.
+
+The final scan destination is the constructor's `sprite_id` home. This is a
+binary-supported parameter-home reuse. It preserves the shipped behavior when
+the final scan conversion is missing. The audit confirms three `fscanf` calls,
+two `calloc` calls, the conversion call, publication order, and fault order.
+
+Decision: keep `accepted_drift`. The remaining difference is the private
+draw-record address schedule. Do not promote this owner without a fresh exact
+check.
+
 ## Module merge
 
 The body moved into `src/sprite.cpp` in PDB order. The merge removes duplicate

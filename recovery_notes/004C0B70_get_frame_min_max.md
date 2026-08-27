@@ -10,6 +10,17 @@ The source keeps the two helper calls, branch predicates, short stores, and
 success and failure returns. The remaining bytes are register and liveness
 choices after the second call. The natural direct-output source is retained.
 
+## Reunification audit
+
+The 2026-08-27 grouped compile rebuilt the owner at 216 bytes. It has 37 strict
+positional differences. The frame, saved registers, two ordered calls,
+relocations, and boundary all match the original.
+
+The audit confirms the facet swap, four bound predicates, four short stores,
+and both return paths. The remaining bytes are register and liveness coloring
+after the second call. Keep `accepted_drift`; do not promote without a fresh
+exact check.
+
 ## Module merge
 
 The body moved into `src/sprite.cpp` in PDB order. The merge removes the old

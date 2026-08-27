@@ -149,7 +149,6 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
     short temp_loop_once;
     short sound_id;
     short sound_frame;
-    short temp_micro_man_sound;
     short sound_facet = (short)-1;
     int local_4;
 
@@ -178,7 +177,9 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
         &this->pause_between_loops,
         draw_count,
         &temp_color_flag,
-        &temp_micro_man_sound);
+        // BINARY NOTE: the final count reuses sprite_id's parameter home.
+        // Keep this alias so a partial scan keeps the shipped value.
+        &sprite_id);
 
     if (result == -1) {
         return;
@@ -206,7 +207,7 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
     this->color_flag = (unsigned char)temp_transparent_picking_flag;
     this->draw_level = (unsigned char)temp_animated;
     this->transparent_picking_flag = (unsigned char)temp_directional;
-    this->micro_man_sound = (unsigned char)(0 < temp_micro_man_sound);
+    this->micro_man_sound = (unsigned char)(0 < sprite_id);
 
     this->flags = (unsigned char)(0 < temp_randomize_on_start);
     if (temp_loop_once != 0) {
@@ -259,8 +260,8 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
         }
 
         local_4 = 0;
-        if ((short)temp_micro_man_sound > 0) {
-            int sound_count = temp_micro_man_sound;
+        if (sprite_id > 0) {
+            int sound_count = sprite_id;
             do {
                 short index1;
                 short local_e;
@@ -286,7 +287,7 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
                     }
                 }
                 ++local_4;
-            } while ((short)local_4 < temp_micro_man_sound);
+            } while ((short)local_4 < sprite_id);
         }
     } else {
         this->sound_list = 0;
