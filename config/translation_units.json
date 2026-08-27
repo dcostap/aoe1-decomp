@@ -3390,16 +3390,17 @@
     },
     {
       "name": "t_tre_ob",
-      "source": "src/t_tre_ob_tu.cpp",
+      "source": "src/t_tre_ob.cpp",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
-        "004CCA60": "src/matching/004CCA60_TRIBE_Tree_Object.cpp",
-        "004CCB20": "src/matching/004CCB20_TRIBE_Tree_Object.cpp",
-        "004CCB90": "src/matching/004CCB90_set_object_state.cpp"
+        "004CCA60": "src/t_tre_ob.cpp",
+        "004CCB20": "src/t_tre_ob.cpp",
+        "004CCB90": "src/t_tre_ob.cpp"
       },
       "symbols": {
         "004CCA60": "??0TRIBE_Tree_Object@@QAE@PAVTRIBE_Master_Tree_Object@@PAVRGE_Player@@MMMH@Z",
-        "004CCB20": "??0TRIBE_Tree_Object@@QAE@HPAVRGE_Game_World@@H@Z"
+        "004CCB20": "??0TRIBE_Tree_Object@@QAE@HPAVRGE_Game_World@@H@Z",
+        "004CCB90": "?set_object_state@TRIBE_Tree_Object@@UAEXE@Z"
       }
     },
     {
@@ -4903,14 +4904,14 @@
     },
     {
       "name": "tm_tre_o",
-      "source": "src/tm_tre_o_tu.cpp",
+      "source": "src/tm_tre_o.cpp",
       "flags": "config/flags/0050F3A0_make_new_master.rsp",
       "owners": {
-        "0050F180": "src/matching/0050F180_TRIBE_Master_Tree_Object.cpp",
-        "0050F220": "src/matching/0050F220_TRIBE_Master_Tree_Object.cpp",
-        "0050F2A0": "src/matching/0050F2A0_TRIBE_Master_Tree_Object.cpp",
-        "0050F320": "src/matching/0050F320_make_new_obj.cpp",
-        "0050F3A0": "src/matching/0050F3A0_make_new_master.cpp"
+        "0050F180": "src/tm_tre_o.cpp",
+        "0050F220": "src/tm_tre_o.cpp",
+        "0050F2A0": "src/tm_tre_o.cpp",
+        "0050F320": "src/tm_tre_o.cpp",
+        "0050F3A0": "src/tm_tre_o.cpp"
       },
       "symbols": {
         "0050F180": "??0TRIBE_Master_Tree_Object@@QAE@PAV0@H@Z",
