@@ -1,7 +1,5 @@
-#ifndef OBJ_LIST_TU_CONTEXT_H
-#define OBJ_LIST_TU_CONTEXT_H
-
-#include <stdlib.h>
+#ifndef OBJ_LIST_H
+#define OBJ_LIST_H
 
 class TDrawArea;
 class RGE_Color_Table;
@@ -10,7 +8,6 @@ class RGE_Player;
 class RGE_Object_List;
 struct RGE_Object_Node;
 
-// Canonical obj_list.cpp master-object fields used by the list owners.
 class RGE_Master_Static_Object {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -29,8 +26,6 @@ public:
     unsigned char gap_66[0x52];
 };
 
-// The list owners use the proven object virtual slots and fields. The tail
-// keeps the complete PDB object size (0x88) without inventing fields.
 class RGE_Static_Object {
 public:
     virtual void destroy(int);
@@ -109,8 +104,6 @@ struct RGE_Object_Node {
 
 typedef RGE_Object_Node RGE_Object_List_Node;
 
-// Proven draw-only overlay. Its +0x90 color pointer is used by draw(); the
-// normal object type remains the canonical 0x88-byte RGE_Static_Object.
 class RGE_Object_Draw_View {
 public:
     virtual void destroy(int);
@@ -183,8 +176,8 @@ public:
     RGE_Static_Object* find_by_master_ids(long, long, float, float,
                                           unsigned char, unsigned char,
                                           RGE_Static_Object*);
-    RGE_Static_Object* find_by_type(unsigned char, float, float, unsigned char,
-                                    unsigned char);
+    RGE_Static_Object* find_by_type(unsigned char, float, float,
+                                    unsigned char, unsigned char);
     void save(int);
     void load_list(int, RGE_Game_World*);
     void rehook_list();
@@ -195,26 +188,31 @@ public:
     unsigned char tail[4];
     RGE_Animated_Object(int, RGE_Game_World*, int);
 };
+
 class RGE_Doppleganger_Object : public RGE_Static_Object {
 public:
     unsigned char tail[0x28];
     RGE_Doppleganger_Object(int, RGE_Game_World*, int);
 };
+
 class RGE_Moving_Object : public RGE_Static_Object {
 public:
     unsigned char tail[0xF8];
     RGE_Moving_Object(int, RGE_Game_World*, int);
 };
+
 class RGE_Missile_Object : public RGE_Static_Object {
 public:
     unsigned char tail[0x140];
     RGE_Missile_Object(int, RGE_Game_World*, int);
 };
+
 class RGE_Action_Object : public RGE_Static_Object {
 public:
     unsigned char tail[0x10C];
     RGE_Action_Object(int, RGE_Game_World*, int);
 };
+
 class RGE_Combat_Object : public RGE_Static_Object {
 public:
     unsigned char tail[0x13C];
