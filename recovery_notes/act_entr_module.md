@@ -1,68 +1,73 @@
-# act_entr.cpp owner-header checkpoint
+# act_entr.cpp direct-source checkpoint
 
 ## Scope
-
-This checkpoint publishes only `include/act_entr.h` and this note. The held
-`src/act_entr_tu.cpp` source is unchanged. The old
-`include/act_entr_context.h` file is not restored or changed.
-
-The header owns only `RGE_Action_Enter`. It includes canonical `action.h` for
-its complete `RGE_Action` base. It forward declares `RGE_Action_Object`,
-`RGE_Task`, and `RGE_Static_Object` for pointer parameters. It defines no Task,
-Static Object, Moving Object, Action Object, Map, World, Player, or other
-foreign layout.
-
-## PDB, source-order, and virtual evidence
 
 The PDB source is
 `C:\\msdev\\work\\age1_x1\\act_entr.cpp`.
 
-The normal owner sequence is:
+`src/act_entr.cpp` is the direct source for the five matching handwritten
+owners. It uses `include/act_entr.h` and the canonical owner headers. It does
+not use `include/act_entr_context.h`, a function-fragment include, or a local
+carrier. The independent `00402740` reconstruction remains in
+`src/scratch/00402740_update.cpp`.
 
-- `004023C0` `RGE_Action_Enter(int, RGE_Action_Object*)`;
-- `00402410` `RGE_Action_Enter(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*)`;
-- `004025F0` `RGE_Action_Enter::~RGE_Action_Enter()`;
-- `00402600` `RGE_Action_Enter::first_in_stack(unsigned char)`;
-- `00402610` `RGE_Action_Enter::set_state(unsigned char)`; and
-- `00402740` `RGE_Action_Enter::update()`.
+The six PDB normal owners stay in source and address order:
 
-`004023F0` is the compiler-generated scalar deleting destructor. It has no
-source body in `act_entr.cpp`.
+1. `004023C0` `RGE_Action_Enter(int, RGE_Action_Object*)`;
+2. `00402410` `RGE_Action_Enter(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*)`;
+3. `004025F0` `RGE_Action_Enter::~RGE_Action_Enter()`;
+4. `00402600` `RGE_Action_Enter::first_in_stack(unsigned char)`;
+5. `00402610` `RGE_Action_Enter::set_state(unsigned char)`; and
+6. `00402740` `RGE_Action_Enter::update()`.
 
-`inventory/types/dumps/RGE_Action_Enter.txt` records an empty class body with
-base `RGE_Action`, zero fields, zero gaps, and size `0x40`. Canonical
-`include/action.h` owns the complete `0x40`-byte base and its virtual order.
-The derived class adds no fields, so natural VC5 alignment keeps
-`sizeof(RGE_Action_Enter) == 0x40`.
+`004023F0` is the compiler-generated scalar deleting destructor. It is not a
+PDB normal owner and has no source body. The direct source defines the
+non-deleting destructor at `004025F0`; VC5 also emits the generated deleting
+destructor from that class.
 
-The constructor and destructor symbols, the `first_in_stack` symbol, the
-protected `set_state` symbol, and the `update` symbol prove the declared
-virtual surface. The access split follows the recovered class declaration:
-`first_in_stack` and `update` are public, while `set_state` is protected.
+## Canonical dependency closure
 
-## Terra 1 tact_lst dependency
+The direct source composes these reviewed owners:
 
-Terra 1 `tact_lst.cpp` waits for this owner header. Its
-`TRIBE_Action_List::create_action` and `create_task_action` owners construct
-`RGE_Action_Enter`, so the direct source must include `act_entr.h` when that
-module is reunified. This checkpoint does not change `tact_lst` source or its
-held context header.
+- `include/act_entr.h` owns `RGE_Action_Enter`;
+- `include/action.h` owns the complete `RGE_Action` base;
+- `include/act_list.h` owns `RGE_Action_List`;
+- `include/act_move.h` owns `RGE_Action_Move_To`;
+- `include/act_obj.h` owns `RGE_Action_Object` and its inheritance chain;
+- `include/player.h` owns `RGE_Player` and `computerPlayer`;
+- `include/task.h` owns `RGE_Task` and its accessed fields;
+- `include/world.h` owns `RGE_Game_World` and `object`/time fields; and
+- `include/game_globals.h` owns the shared float constants.
 
-## Minimal VC5 size probe
+The action-object chain supplies the canonical `RGE_Static_Object` surface.
+The derived class has no fields, so `sizeof(RGE_Action_Enter) == 0x40`.
 
-Probe source: `build/header_probes/act_entr_size.cpp`.
+The Terra 3 audit and the canonical `include/stat_obj.h` place the float
+`moveTo(float, float, float, float, int)` virtual at `+0x154`. This removes the
+two-byte mismatch from the direct second constructor. No manual vtable or
+foreign carrier is used.
 
-Command:
+## Candidate validation
 
-`CL.EXE @config/flags/default.rsp /Iinclude /Fobuild/header_probes/act_entr_size.obj build/header_probes/act_entr_size.cpp`
+Proposal: `build/candidate_tus/act_entr.json`.
 
-The probe asserts `sizeof(RGE_Action_Enter) == 0x40`.
+The grouped candidate compiles `src/act_entr.cpp` with
+`config/flags/00402410_RGE_Action_Enter.rsp`. It reports `MATCH` and `0.0000%`
+for all five direct owners:
 
-Result:
+- `004023C0`: 40 bytes, zero difference;
+- `00402410`: 477 bytes, zero difference;
+- `004025F0`: 11 bytes, zero difference;
+- `00402600`: 10 bytes, zero difference; and
+- `00402610`: 254 bytes, zero difference.
 
-- return code: `0`;
-- compiler output: `act_entr_size.cpp`; and
-- object SHA-256: `e3e7a93f76f8350f5e21a0a85d6e0bdfc33b1b51aca54bb6fd6e8c2f90c188a8`.
+The generated `004023F0` deleting destructor also reports `MATCH` with zero
+difference. The candidate has zero relocation mismatches and zero boundary
+escapes.
 
-No source-module compile or function validator ran. The probe object and
-source remain ignored build artifacts and are not part of the commit.
+## Independent update status
+
+`00402740` stays `scratch` in the source-module metadata and is not in the
+direct-owner proposal. Its independent source remains unchanged. The last
+recorded reconstruction result is a 663-byte mismatch and it still lacks the
+binary `+0xD0` `enter_obj` call. Do not promote or register this owner.
