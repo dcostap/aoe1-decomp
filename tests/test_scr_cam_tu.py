@@ -1,52 +1,61 @@
 from __future__ import annotations
 
-import csv
+import sys
 import unittest
 from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
+TOOLS_DIR = REPO_ROOT / "tools"
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
+
+from common import compiler_source_path, function_record_by_va  # noqa: E402
 
 
-class ScrCamTranslationUnitTests(unittest.TestCase):
-    def test_wrapper_follows_pdb_source_order(self) -> None:
-        with (REPO_ROOT / "inventory" / "all_functions.csv").open(
-            encoding="utf-8", newline=""
-        ) as handle:
-            owners = [
-                row
-                for row in csv.DictReader(handle)
-                if row["pdb_source_file"].lower() == "scr_cam.cpp"
-            ]
-        owners.sort(key=lambda row: int(row["va"], 16))
-        self.assertEqual(len(owners), 13)
+class ScrCamSourceModuleTests(unittest.TestCase):
+    VAS = (
+        0x0048F5D0, 0x0048FA40, 0x0048FBC0, 0x0048FD20, 0x0048FE80,
+        0x0048FF00, 0x0048FF80, 0x00490120, 0x00490380, 0x00490400,
+        0x00490480, 0x00490520, 0x004905D0,
+    )
 
-        wrapper = (REPO_ROOT / "src" / "scr_cam_tu.cpp").read_text(encoding="utf-8")
-        include_names = [
-            line.split('"', 2)[1]
-            for line in wrapper.splitlines()
-            if line.startswith('#include "matching/')
-            or line.startswith('#include "accepted_drift/')
-        ]
-        expected = []
-        for row in owners:
-            matches = list((REPO_ROOT / "src").glob(f"**/{row['va']}_*.cpp"))
-            self.assertEqual(len(matches), 1)
-            expected.append(str(matches[0].relative_to(REPO_ROOT / "src")).replace("\\", "/"))
-        self.assertEqual(include_names, expected)
+    def test_module_owns_all_pdb_functions_in_order(self) -> None:
+        source = REPO_ROOT / "src" / "scr_cam.cpp"
+        text = source.read_text(encoding="utf-8")
+        definitions = (
+            "TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen",
+            "TRIBE_Campaign_Editor_Screen::~TRIBE_Campaign_Editor_Screen",
+            "TRIBE_Campaign_Editor_Screen::fill_campaign_drop",
+            "TRIBE_Campaign_Editor_Screen::fill_scenario_list",
+            "TRIBE_Campaign_Editor_Screen::fill_campaign_scenario_list",
+            "TRIBE_Campaign_Editor_Screen::check_lists",
+            "TRIBE_Campaign_Editor_Screen::load_campaign",
+            "TRIBE_Campaign_Editor_Screen::make_campaign",
+            "TRIBE_Campaign_Editor_Screen::add_scenario",
+            "TRIBE_Campaign_Editor_Screen::remove_scenario",
+            "TRIBE_Campaign_Editor_Screen::move_scenario_up",
+            "TRIBE_Campaign_Editor_Screen::move_scenario_down",
+            "TRIBE_Campaign_Editor_Screen::action",
+        )
 
-    def test_scr_cam_owners_use_one_context_header(self) -> None:
-        for va in (
-            "0048F5D0", "0048FA40", "0048FBC0", "0048FD20", "0048FE80",
-            "0048FF00", "0048FF80", "00490120", "00490380", "00490400",
-            "00490480", "00490520", "004905D0",
-        ):
-            matches = list((REPO_ROOT / "src").glob(f"**/{va}_*.cpp"))
-            self.assertEqual(len(matches), 1)
-            text = matches[0].read_text(encoding="utf-8")
-            self.assertIn('#include "../../include/scr_cam_context.h"', text)
+        positions = [text.index(definition) for definition in definitions]
+        self.assertEqual(positions, sorted(positions))
+        self.assertEqual(
+            {compiler_source_path(function_record_by_va(va)) for va in self.VAS},
+            {source},
+        )
 
-        header = (REPO_ROOT / "include" / "scr_cam_context.h").read_text(encoding="utf-8")
+    def test_module_uses_its_normal_header_without_fragments(self) -> None:
+        source = (REPO_ROOT / "src" / "scr_cam.cpp").read_text(encoding="utf-8")
+        header = (REPO_ROOT / "include" / "scr_cam.h").read_text(encoding="utf-8")
+
+        self.assertIn('#include "../include/scr_cam.h"', source)
+        self.assertNotIn('#include "matching/', source)
+        self.assertFalse((REPO_ROOT / "src" / "scr_cam_tu.cpp").exists())
+        for va in self.VAS:
+            self.assertEqual(list((REPO_ROOT / "src").glob(f"**/{va:08X}_*.cpp")), [])
+
         for token in (
             "class TPanel",
             "class TEasy_Panel",

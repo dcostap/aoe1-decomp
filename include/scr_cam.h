@@ -1,5 +1,5 @@
-#ifndef SCR_CAM_CONTEXT_H
-#define SCR_CAM_CONTEXT_H
+#ifndef AOE1_SCR_CAM_H
+#define AOE1_SCR_CAM_H
 
 struct tagRECT {
     long left;
