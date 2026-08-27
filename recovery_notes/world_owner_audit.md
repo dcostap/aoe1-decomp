@@ -85,11 +85,10 @@ These facts block one natural compiler-facing `World.cpp`:
    The PDB owners are `00460FD0`, `004610C0`, `004611D0`, `00461530`, and
    `00461560` in `mst_play.cpp`.
 
-3. `RGE_Effects` has no current canonical `effects.h`. Its proven size is
-   `0x0C`: vptr +0x00, `effects +0x04`, and `effect_num +0x08`. World calls
-   the `int` and `char*` constructors. `include/effects_context.h` is a
-   context copy, and `include/teffects.h` includes the missing `effects.h`.
-   Use the real owner, not the context copy.
+3. Resolved on current main by `fad6eff19`: `include/effects.h` is the
+   canonical `RGE_Effects` owner. Its proven size is `0x0C`: vptr +0x00,
+   `effects +0x04`, and `effect_num +0x08`. World calls the `int` and
+   `char*` constructors. Use this owner, not `effects_context.h`.
 
 4. `TCommunications_Handler` has no clean current owner. World calls
    `GetRandomSeed() -> uint`, `GetPlayerHumanity(int) -> int`,
@@ -169,9 +168,9 @@ The direct calls in `orig/ghidra_decomp/world.cpp.asm` resolve as follows:
   foreign owners. `RGE_Scenario` calls are `update`, `save`,
   `Get_conquest_victory`, `GetPlayerPosture`, `Get_player_AI`, `Get_CityPlan`,
   and `Get_BuildList`.
-- `RGE_Master_Player`, `RGE_Effects`, and `TCommunications_Handler`: use
-  the missing clean owners described above. World currently reaches these
-  calls through context headers.
+- `RGE_Master_Player` and `TCommunications_Handler`: use the missing clean
+  owners described above. World currently reaches these calls through
+  context headers. `RGE_Effects` is resolved by `include/effects.h`.
 - `RGE_Doppleganger_Creator`: `include/dpl_obj.h` is the clean current owner.
   World calls `perform_doppleganger_checks()` at `0054310E`; the PDB owner is
   `00442390` in `dpl_obj.cpp`, and the object size is `0x1C`.
