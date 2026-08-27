@@ -1,8 +1,8 @@
-#ifndef ASP_LIST_CONTEXT_H
-#define ASP_LIST_CONTEXT_H
+#ifndef AOE1_ASP_LIST_H
+#define AOE1_ASP_LIST_H
 
-// Canonical local declaration context for asp_list.cpp.
-// The same period-plausible surface serves focused owner checks and the full TU.
+// Compiler-facing declarations for the original asp_list.cpp module.
+// Layouts and virtual slots follow the reviewed PDB and binary evidence.
 
 class RGE_Color_Table;
 class TDrawArea;
@@ -33,6 +33,7 @@ public:
     virtual unsigned char get_frame(short* param_1, short* param_2, short* param_3,
                                     short* param_4, long param_5);
     virtual void setToFirstFrame();
+    void destroy(int flags);
     RGE_Sprite* sprite;
     unsigned char type;
     char gap_09[0x3];

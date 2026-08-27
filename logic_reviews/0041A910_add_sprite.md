@@ -4,7 +4,7 @@
 
 The main agent suspended ordinary exact matching after numerous independent passes, 27 meaningful target-session hypotheses, additional May experiments, and three variant-lab runs repeatedly converged on the same exact-size register/CFG basin. An independent phase-readiness audit found no credible high-value exact lead and no unresolved behavior, ABI, layout, call, ownership, or memory-effect fact.
 
-The candidate remains `src/scratch/0041A910_add_sprite.cpp`. Before phase entry, matching-era traversal labels/gotos were normalized to ordinary typed `while` loops; emitted code and metrics were unchanged.
+Before phase entry, the candidate was `src/scratch/0041A910_add_sprite.cpp`. Matching-era traversal labels/gotos were normalized to ordinary typed `while` loops; emitted code and metrics were unchanged. The verified-logic owner now resides in `src/asp_list.cpp`, with status recorded in `config/source_modules/asp_list.json`.
 
 Current validated checker state:
 
@@ -66,6 +66,6 @@ edge.
 
 ## Final decision
 
-Promote the normalized candidate to `src/verified_logic`. Exact matching remains
-suspended with a stable 36-byte register/list-predecessor topology difference;
-semantic review found no unresolved behavior.
+Preserve the normalized candidate as the `verified_logic` owner in `src/asp_list.cpp`.
+Exact matching remains suspended with a stable 36-byte register/list-predecessor
+topology difference; semantic review found no unresolved behavior.

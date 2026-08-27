@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "name": "asp_list",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\asp_list.cpp",
+  "source": "src/asp_list.cpp",
+  "header": "include/asp_list.h",
+  "functions": {
+    "0041A640": { "status": "matching" },
+    "0041A680": { "status": "matching" },
+    "0041A690": { "status": "matching" },
+    "0041A6F0": { "status": "matching" },
+    "0041A820": { "status": "matching" },
+    "0041A860": { "status": "matching" },
+    "0041A8B0": { "status": "matching" },
+    "0041A8F0": { "status": "matching" },
+    "0041A910": {
+      "status": "verified_logic",
+      "note_path": "recovery_notes/asp_list_module.md"
+    },
+    "0041A9B0": { "status": "matching" },
+    "0041AA20": { "status": "matching" },
+    "0041AA50": { "status": "matching" },
+    "0041AAA0": { "status": "matching" },
+    "0041AAE0": { "status": "matching" },
+    "0041AB20": { "status": "matching" },
+    "0041AB60": { "status": "matching" },
+    "0041AB90": { "status": "matching" },
+    "0041ABC0": { "status": "matching" },
+    "0041AC00": { "status": "matching" },
+    "0041AC30": { "status": "matching" },
+    "0041AC70": { "status": "matching" },
+    "0041ACC0": { "status": "matching" },
+    "0041ACF0": { "status": "matching" }
+  }
+}
