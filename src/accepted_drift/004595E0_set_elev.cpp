@@ -1,35 +1,9 @@
 // VA: 004595E0 RGE_Map::set_elev
-// map.cpp:2466-2557.
-//
-// Standalone exact-finish result: the natural VC5 source matches all 792
-// bytes. The standalone checker also proves the boundary, owner symbol,
-// frame, CFG, and five ordered calls.
-//
-// Canonical-TU check: this source was compiled through src/map_tu.cpp with
-// the shared map context. It rebuilt to 789 bytes with 178 positional
-// differences. The shared world, tile-list, and object-list surfaces select
-// different member offsets for this owner. Keep this row in accepted_drift;
-// standalone exactness does not prove canonical-TU exactness.
-//
-// BINARY NOTE: The map stores 24-byte tiles behind a row-offset table. The
-// relative update rereads the terrain byte for its low bits after the clamp.
-// The expanded pass refreshes tile type, teleports tile objects, queues tiles,
-// and updates the screen and redraw rectangles.
-//
-// BINARY NOTE: The three-bit height field makes the post-write guard inert.
-//
-// Exact transition from the accepted-drift clean source:
-// - Direct terrain rereads replaced the cached byte local. This recovered the
-//   original tile address, row stride, load order, and store order.
-// - The natural height field recovered the original byte compare without a
-//   packed-byte carrier.
-// - <windows.h> is required by the authentic map.cpp context. Removing it
-//   changed the complete function layout. Exact map.cpp anchors
-//   004568C0 and 00458600 support this context.
-//
-// Prior walkback checks: caching the low terrain bits produced 787 bytes and
-// 555 changed bytes. Removing <windows.h> produced 790 bytes and 555 changed
-// bytes.
+// Owner: RGE_Map::set_elev, map.cpp:2466-2557.
+// Natural fields: RGE_Tile::terrain_type and RGE_Tile::height.
+// Current canonical-TU result: 789 / 792 bytes, 178 positional differences,
+// zero relocation-target mismatches, and zero boundary escapes.
+// Classification: accepted drift. Standalone source remains MATCH.
 
 #include <windows.h>
 

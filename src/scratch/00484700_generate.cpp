@@ -1,13 +1,9 @@
-// 00484700 RGE_RMM_Elevation_Generator::generate
-// PDB: rmm_elev.cpp lines 29-59
-// The tile elevation is owned by RGE_Tile::height at byte +0x05.
-// Attempt log:
-// - Natural generator loops walk the base map tile rows, copy the base
-//   elevation value, then clean the generated map rectangle.
-// - Do-while/indexed row loops retain the original outer CFG. The current
-//   natural bitfield write rebuilds to 187 bytes and remains unresolved.
-// - The former exact candidate used a volatile line pointer to steer stack
-//   homes. That form is not retained in this natural scratch source.
+// VA: 00484700 RGE_RMM_Elevation_Generator::generate
+// Owner: rmm_elev.cpp:29-59.
+// Natural field: RGE_Tile::height at byte +0x05.
+// Current natural-module result: 187 / 191 bytes and 154 positional
+// differences.
+// Classification: scratch.
 
 #include "..\..\include\rmm_elev_context.h"
 
