@@ -6,8 +6,9 @@ The source module now has one compiler-facing owner at `src/tact_wnd.cpp`.
 The definitions follow PDB source order. The former context header and source
 fragments are removed.
 
-This packet did not run a compiler, candidate validator, or grouped validator.
-The wave budget forbids those checks. No cached `check_function.py` check ran.
+The final grouped candidate compiles after Base Game published its countdown
+methods. The three matching owners remain exact. The scratch owners stay
+scratch pending a separate promotion review.
 
 ## PDB order and status
 
@@ -54,20 +55,15 @@ The old list scan used local `RGE_Action_List`, `RGE_Action_Node`, and
 `RGE_Master_Static_Object::id`. The world checks use canonical
 `game_end_condition` and `world[1].world_time` fields.
 
-## Held header gap
+## Final grouped result
 
-`include/basegame.h` does not declare these called owners:
+`include/basegame.h` now owns `reset_countdown_timer(long)` and
+`set_countdown_timer(long, long)`. The module uses those declarations directly.
 
-- `RGE_Base_Game::reset_countdown_timer(long)`;
-- `RGE_Base_Game::set_countdown_timer(long, long)`.
-
-Only the candidate fallback at `src/basegame_candidate_context.h` declares
-these methods. That fallback is not a canonical owner header. The module does
-not copy it or add a Base Game layout shim. The destructor, `set_state`, and
-`update` therefore remain scratch until the canonical Base Game header
-publishes these declarations.
-
-The constructors and `first_in_stack` retain their prior matching status.
+The final candidate reports `MATCH` for constructors `004D3470` and `004D34C0`
+and `first_in_stack` `004D3690`. Scratch `004D36B0 set_state` and `004D3810
+update` also rebuild exactly. Scratch `004D34F0` destructor differs by 178
+bytes and has two boundary escapes. No scratch owner is promoted in this pass.
 
 ## Files
 

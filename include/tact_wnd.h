@@ -1,6 +1,7 @@
 #ifndef AOE1_TACT_WND_H
 #define AOE1_TACT_WND_H
 
+#include <stdio.h>
 #include "action.h"
 #include "act_list.h"
 #include "act_obj.h"
