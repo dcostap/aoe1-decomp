@@ -147,4 +147,27 @@ public:
 typedef char tribe_player_size_check[
     (sizeof(TRIBE_Player) == 0x848) ? 1 : -1];
 
+class TRIBE_Gaia : public TRIBE_Player {
+public:
+    TRIBE_Gaia(int, TRIBE_World*, unsigned char);
+    TRIBE_Gaia(TRIBE_World*, RGE_Master_Player*, unsigned char, char*,
+               unsigned char);
+
+    virtual ~TRIBE_Gaia();
+    virtual void update();
+    virtual void save(int);
+    virtual void random_start();
+
+    void load_master_object(int, short, unsigned char, RGE_Sprite**,
+                            RGE_Sound**);
+
+    float update_time;                         // +0x848
+    long update_nature;                        // +0x84C
+    long last_count;                           // +0x850
+    long animal_max;                           // +0x854
+};
+
+typedef char tribe_gaia_size_check[
+    (sizeof(TRIBE_Gaia) == 0x858) ? 1 : -1];
+
 #endif
