@@ -8,16 +8,7 @@
 
 typedef unsigned char uchar;
 
-class RGE_Color_Table {
-public:
-    virtual ~RGE_Color_Table();
-    char color_table_name[30];
-    short resource_id;
-    unsigned char type;
-    unsigned char map_color;
-    short id;
-    unsigned char table[256];
-};
+class RGE_Color_Table;
 
 #include <ddraw.h>
 

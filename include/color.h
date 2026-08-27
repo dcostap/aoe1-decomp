@@ -9,14 +9,7 @@
 struct _iobuf;
 typedef struct _iobuf FILE;
 
-class TDrawSystem;
-
-class TDrawArea {
-public:
-    TDrawSystem* DrawSystem;
-    void GetPalette(tagPALETTEENTRY* entries);
-    void SetPalette(tagPALETTEENTRY* entries);
-};
+class TDrawArea;
 
 class RGE_Color_Table {
 public:

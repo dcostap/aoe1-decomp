@@ -2,7 +2,26 @@
 
 The module now uses `src/drawarea.cpp` in PDB source order. The former
 per-function files supplied the current source bodies. The module header owns
-the proven DirectDraw, GDI, bitmap, span-list, and draw-area layouts.
+the proven DirectDraw, GDI, bitmap, span-list, and draw-area layouts. The
+`RGE_Color_Table` declaration is owned by `color.h`; `drawarea.h` only
+forward-declares it. `src/drawarea.cpp` includes `color.h` for the table fields
+used by `TDrawArea::SetShadowTable`.
+
+The paired grouped checks ran after this header repair. The Color check passed
+all six exact owners and its generated destructor. Its two accepted-drift
+owners remained mismatches of 437 and 10 bytes. The report is
+`build/candidate_tus/color_header_boundary/report.txt`.
+
+The Drawarea check used the reviewed temporary proposal and passed all 48
+exact owners. The six overloaded observed symbols were present. It reported
+zero comparison errors. Its 13 observed rows had positional differences of
+453, 326, 7, 1, 218, 21, 718, 328, 0, 3, 4, 68, and 326 bytes, in VA order
+`00442A90` through `004463B0`. Boundary escapes were 0, 1, 0, 0, 0, 0, 0,
+2, 0, 0, 0, 1, and 0. The report is
+`build/candidate_tus/drawarea_header_boundary/report.txt`.
+
+The exact rows and comparison-error gate passed. The full-module flag remains
+false because accepted-drift and scratch rows are not exact.
 
 ## Observed non-matching owners
 

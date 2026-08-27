@@ -1,4 +1,5 @@
 #include "../include/drawarea.h"
+#include "../include/color.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
