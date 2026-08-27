@@ -14,3 +14,10 @@ not prove exactness.
 
 Do not add a method-only declaration or a partial Unit AI layout. Act Attack
 must consume a genuine AIUA owner header after ManagedArray ABI fanout passes.
+
+The current broad `include/aiuaimod.h` surface collides with foreign owners in
+the Act Attack compiler context. Do not consume it. Keep this work held until
+the owner-only AIUA header lands after the ManagedArray ABI fanout passes.
+
+When the gate reopens, direct validation must require the canonical target and
+relocation identity. A byte `MATCH` alone is not sufficient.
