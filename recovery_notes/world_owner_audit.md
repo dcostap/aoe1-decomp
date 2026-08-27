@@ -41,20 +41,23 @@ replace these owners with raw offset classes.
 The type dump and donor owner use `long`. Both are four bytes in this ABI, but
 `long` is the recovered source type.
 
-## World virtual-slot correction
+## World virtual-slot ABI
 
 The `RGE_Game_World` vtable starts at `0x00577910`. The assembly XREFs identify
 slot `0xF0` at `0x00577A00` as `scenario_init(RGE_Game_World*)` and slot
-`0xF4` at `0x00577A04` as `scenario_init(int,RGE_Game_World*)`. The generated
-class interface gives the same order for slots 60 and 61.
+`0xF4` at `0x00577A04` as `scenario_init(int,RGE_Game_World*)`. The overload
+implementations are `00541BC0` and `00541B60`.
 
-`include/world.h:97-98` and `include/tworld.h:51-52` list these two overloads
-in the opposite order. This is a durable declaration error. The overload
-implementations are `00541BC0` and `00541B60`, respectively. `logStatus` is
-`protected` in the PDB (`world.cpp.asm`, `00540A10`), but `include/world.h:76`
-places it in the public section. Fix the access and slot-order declarations
-before publishing the natural owner. Access does not alter the decorated name,
-but it records the original class surface.
+The PDB source order is pointer form, then integer form. Pinned VC5 reverses
+same-name virtual overload entries in this group. The current int-first
+declarations in `world.h` and `tworld.h` emit pointer `+0xF0`, then integer
+`+0xF4`. This matches the original vtable. Do not reorder these declarations.
+
+The VC5 probe and World, TRIBE, and three registered consumer checks report
+`MATCH`, `0.0000%`. `logStatus` is `protected` in the PDB
+(`world.cpp.asm`, `00540A10`), but `include/world.h:76` places it in the public
+section. Correct that access separately. Access does not alter the decorated
+name, but it records the original class surface.
 
 All other World slots are supported by the current declarations: slots 0-39
 cover the protected loader/init surface, slots 41-59 cover the public game
