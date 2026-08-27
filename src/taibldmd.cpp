@@ -1,3 +1,9 @@
+#include "../include/aibitm.h"
+#include "../include/aiblditm.h"
+#include "../include/aimodule.h"
+#include "../include/aibldmod.h"
+#include "../include/utmarray.h"
+#include "../include/airesitm.h"
 #include "../include/taibldmd.h"
 
 // PDB source order: taibldmd.cpp lines 62-1773.
@@ -132,10 +138,10 @@ void TribeBuildAIModule::initialize()
         int step;
         int first;
         if (warshipCount != -1) {
-            step = (this->buildListLength - warshipCount) / (remaining * 2);
+            step = (this->buildListLengthValue - warshipCount) / (remaining * 2);
             first = count;
         } else if (count != -1) {
-            step = (this->buildListLength - count) / (remaining * 2);
+            step = (this->buildListLengthValue - count) / (remaining * 2);
             first = -1;
         } else {
             step = 10;
@@ -404,8 +410,10 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                                     }
                                 }
 
-                                if (this->md->player->attributes[0x0B] <
-                                        this->md->player->attributes[0x20] ||
+                                TaibldmdPlayerAttributesView* player =
+                                    (TaibldmdPlayerAttributesView*)this->md->player;
+                                if (player->attributes[0x0B] <
+                                        player->attributes[0x20] ||
                                     item->buildCategory() != 2) {
                                     ++count;
                                 }
@@ -662,8 +670,8 @@ int TribeBuildAIModule::addBuiltItem(RGE_Static_Object* object, int id)
             if (item->typeID() == 0x114) {
                 this->md->tacticalAI.wonderBuiltValue = found;
             }
-            strncpy(this->builtName, item->name(), 0x3F);
-            this->builtID = item->uniqueID();
+            strncpy(this->lastBuildItemRequestedValue, item->name(), 0x3F);
+            this->numberItemsIntoBuildListValue = item->uniqueID();
         } else {
             item = (BuildItem*)item->next;
         }
@@ -705,7 +713,7 @@ int TribeBuildAIModule::cancelBuildItem(int action, int objId, int objectTypeId,
     if (taskId != -1) this->md->detask(taskId);
     int moving = 0;
     int lotStatus = moving;
-    uchar newLotStatus = 2;
+    unsigned char newLotStatus = 2;
     switch (action) {
     case -1:
         lotStatus = 1;
@@ -813,15 +821,15 @@ int TribeBuildAIModule::addResearch(int param1, int param2, int param3)
 int TribeBuildAIModule::cancelResearch(int p1, int p2, int p3, int p4)
 {
     int val = *(int*)(*(int*)(*(int*)((char*)this->md + 0xF0) + 0x3C) + 4);
-    ::logCommonHistory(this, "Canceling research (WT=%ld) for item of type %d, %d", val, p2, p3);
+    this->logCommonHistory("Canceling research (WT=%ld) for item of type %d, %d", val, p2, p3);
 
     BuildItem* item = (BuildItem*)this->specificBuildListItem(p4);
 
     if (item) {
-        ::logCommonHistory(this, "  Setting build item #%d in progress to FALSE", item->uniqueID());
+        this->logCommonHistory("  Setting build item #%d in progress to FALSE", item->uniqueID());
         item->setInProgress(0);
     } else {
-        ::logCommonHistory(this, "  ERROR!  Invalid build item.");
+        this->logCommonHistory("  ERROR!  Invalid build item.");
     }
 
     this->displayBuildList();
