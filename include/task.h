@@ -7,15 +7,11 @@ typedef struct _iobuf FILE;
 class RGE_Sprite;
 class RGE_Sound;
 
-extern "C" void __cdecl rge_read(int fd, void* buffer, int size);
-extern "C" void __cdecl rge_write(int fd, void* buffer, int size);
-
 class RGE_Task {
 public:
     short task_type;
     short id;
     unsigned char is_default;
-    unsigned char pad_05;
     short action_type;
     short object_group;
     short object_id;
@@ -25,7 +21,6 @@ public:
     unsigned char owner_type;
     unsigned char holding_attr;
     unsigned char state_building;
-    unsigned char pad_13;
     short attribute_type;
     short attribute_type2;
     short attribute_type3;
@@ -34,7 +29,6 @@ public:
     float work_val2;
     float work_range;
     unsigned char search_flag;
-    unsigned char pad_29[3];
     float search_wait_time;
     short work_flag;
     short work_flag2;
