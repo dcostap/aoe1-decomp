@@ -3,7 +3,7 @@
 
 // Compiler-facing surface for the aiblditm.cpp source module.
 // The BaseItem layout and constructors come from the reviewed aibitm surface.
-#include "aibitm_context.h"
+#include "aibitm.h"
 
 typedef unsigned char uchar;
 

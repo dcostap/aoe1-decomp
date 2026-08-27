@@ -1,28 +1,21 @@
-#ifndef AOE1_AIBITM_CONTEXT_H
-#define AOE1_AIBITM_CONTEXT_H
-
-// Authentic compiler-facing surface for C:\\msdev\\work\\age1_x1\\aibitm.cpp.
-// The PDB source order is recorded by src/aibitm_tu.cpp.
-
-#include <string.h>
-
-extern const char default_item_name[];
+#ifndef AOE1_AIBITM_H
+#define AOE1_AIBITM_H
 
 class BaseItem {
 public:
     virtual ~BaseItem();
 
-    int typeIDValue;              // +0x04
-    int gameIDValue;              // +0x08
-    int uniqueIDValue;            // +0x0C
-    char nameValue[64];           // +0x10
-    float xValue;                 // +0x50
-    float yValue;                 // +0x54
-    float zValue;                 // +0x58
-    float xSizeValue;             // +0x5C
-    float ySizeValue;             // +0x60
-    float zSizeValue;             // +0x64
-    int skipValue;                // +0x68
+    int typeIDValue;
+    int gameIDValue;
+    int uniqueIDValue;
+    char nameValue[64];
+    float xValue;
+    float yValue;
+    float zValue;
+    float xSizeValue;
+    float ySizeValue;
+    float zSizeValue;
+    int skipValue;
 
     BaseItem();
     BaseItem(int typeID, int gameID, int uniqueID, char* name,
