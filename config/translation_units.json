@@ -3001,14 +3001,14 @@
     },
     {
       "name": "aitrdmod_cpp",
-      "source": "src/aitrdmod_tu.cpp",
+      "source": "src/aitrdmod.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00412E40": "src/matching/00412E40_TradeAIModule.cpp",
-        "00412EA0": "src/matching/00412EA0_TradeAIModule.cpp",
-        "00412ED0": "src/matching/00412ED0_TradeAIModule.cpp",
-        "00412EE0": "src/matching/00412EE0_setMainDecisionAI.cpp",
-        "00412EF0": "src/matching/00412EF0_save.cpp"
+        "00412E40": "src/aitrdmod.cpp",
+        "00412EA0": "src/aitrdmod.cpp",
+        "00412ED0": "src/aitrdmod.cpp",
+        "00412EE0": "src/aitrdmod.cpp",
+        "00412EF0": "src/aitrdmod.cpp"
       },
       "symbols": {
         "00412E40": "??0TradeAIModule@@QAE@PAXH@Z",

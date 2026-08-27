@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "name": "aitrdmod",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aitrdmod.cpp",
+  "source": "src/aitrdmod.cpp",
+  "header": "include/aitrdmod.h",
+  "functions": {
+    "00412E40": { "status": "matching" },
+    "00412EA0": { "status": "matching" },
+    "00412ED0": { "status": "matching" },
+    "00412EE0": { "status": "matching" },
+    "00412EF0": { "status": "matching" }
+  }
+}
