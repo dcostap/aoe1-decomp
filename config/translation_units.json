@@ -7844,19 +7844,20 @@
     },
     {
       "name": "scr_name",
-      "source": "src/scr_name_tu.cpp",
+      "source": "src/scr_name.cpp",
+      "module": "scr_name",
       "flags": "config/flags/scr_name.rsp",
       "owners": {
-        "004A63D0": "src/matching/004A63D0_TRIBE_Screen_Name.cpp",
-        "004A66E0": "src/matching/004A66E0_TRIBE_Screen_Name.cpp",
-        "004A67C0": "src/matching/004A67C0_init_vars.cpp",
-        "004A6800": "src/matching/004A6800_get_player_names.cpp",
-        "004A68C0": "src/matching/004A68C0_setup_tab_order.cpp",
-        "004A6980": "src/matching/004A6980_handle_idle.cpp",
-        "004A69B0": "src/matching/004A69B0_action.cpp",
-        "004A6F60": "src/matching/004A6F60_TRIBE_Dialog_Name.cpp",
-        "004A6FF0": "src/matching/004A6FF0_action.cpp",
-        "004A71D0": "src/matching/004A71D0_wnd_proc.cpp"
+        "004A63D0": "src/scr_name.cpp",
+        "004A66E0": "src/scr_name.cpp",
+        "004A67C0": "src/scr_name.cpp",
+        "004A6800": "src/scr_name.cpp",
+        "004A68C0": "src/scr_name.cpp",
+        "004A6980": "src/scr_name.cpp",
+        "004A69B0": "src/scr_name.cpp",
+        "004A6F60": "src/scr_name.cpp",
+        "004A6FF0": "src/scr_name.cpp",
+        "004A71D0": "src/scr_name.cpp"
       },
       "symbols": {
         "004A69B0": "?action@TRIBE_Screen_Name@@UAEJPAVTPanel@@JKK@Z",
