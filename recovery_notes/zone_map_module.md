@@ -8,8 +8,7 @@
 - The class owners are `RGE_Zone_Map` through `00547080`, then
   `RGE_Zone_Map_List` from `00547180` through `005474D0`.
 - The reviewed declaration surface is `include/zone_map.h`.
-- The queue record is shared through the existing
-  `include/rge_zone_queue_context.h` declaration.
+- `include/zone_map.h` owns the zone queue record used by this module.
 
 ## Status
 

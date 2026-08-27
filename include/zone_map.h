@@ -1,11 +1,15 @@
 #ifndef AOE1_ZONE_MAP_H
 #define AOE1_ZONE_MAP_H
 
-#include "rge_zone_queue_context.h"
-
 typedef unsigned char uchar;
 
 void rge_read(int handle, void* buffer, int count);
+
+struct Zone_Queue {
+    long x;
+    long y;
+    Zone_Queue* next;
+};
 
 struct RGE_Tile {
     short sx;
