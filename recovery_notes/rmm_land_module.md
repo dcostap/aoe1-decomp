@@ -14,7 +14,7 @@ contains the five owners in original order:
 | `00485520` | 213-353 | 1833 | 1860 | scratch |
 
 Only `00485200` is registered as matching. The other four rows remain scratch.
-No CNTR, DBCT, or TDBC fanout was run for this held Land chain.
+CNTR, DBCT, and TDBC fanout was not part of this Land integration.
 
 ## Canonical ownership and offset audit
 
@@ -132,4 +132,4 @@ positional diff `0 bytes (0.0000%)`, owner match, and zero target mismatch.
 The candidate summary reports one exact match, four scratch mismatches, and zero
 comparison errors.
 
-This is a held, self-contained Land chain. It is not integrated.
+This self-contained Land chain is the integrated direct module baseline.
