@@ -1,5 +1,15 @@
 #include "../include/game_globals.h"
 #include "../include/task_lst.h"
+#include "../include/act_obj.h"
+#include "../include/map.h"
+#include "../include/player.h"
+#include "../include/world.h"
+
+extern "C" int __cdecl rge_read(int fd, void* buffer, int size);
+extern "C" void __cdecl rge_write(int fd, void* buffer, int size);
+extern void* __cdecl calloc(int count, int size);
+extern void __cdecl free(void* block);
+extern int __cdecl fscanf(FILE* file, const char* format, ...);
 
 RGE_Task_List::RGE_Task_List()
 {
