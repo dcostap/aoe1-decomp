@@ -1,12 +1,9 @@
-#ifndef TIMELINE_CONTEXT_H
-#define TIMELINE_CONTEXT_H
+#ifndef AOE1_TIMELINE_H
+#define AOE1_TIMELINE_H
 
-// Authentic local declaration surface for C:\\msdev\\work\\age1_x1\\Timeline.cpp.
-//
-// PDB order is the file-loading constructor, the default constructor, the
-// destructor, save/update/mock_update, the list helpers, and sub.  The class
-// layout is 0x14 bytes.  The event record is 0x30 bytes with the proven field
-// offsets used by every owner in this translation unit.
+// Reviewed declarations for C:\\msdev\\work\\age1_x1\\Timeline.cpp.
+// The class layouts and virtual slots below cover the fields and calls used by
+// this module.
 
 class RGE_Game_World;
 class RGE_Player;
@@ -31,11 +28,11 @@ class RGE_Player {
 public:
     virtual ~RGE_Player();
     char gap_04[0x1e];
-    short master_object_num;              // +0x22
-    RGE_Master_Static_Object** master_objects; // +0x24
-    RGE_Object_List* objects;             // +0x28
+    short master_object_num;
+    RGE_Master_Static_Object** master_objects;
+    RGE_Object_List* objects;
     char gap_2c[0x1e];
-    short id;                              // +0x4a
+    short id;
 };
 
 typedef char timeline_player_layout[
@@ -44,9 +41,9 @@ typedef char timeline_player_layout[
 class RGE_Game_World {
 public:
     virtual ~RGE_Game_World();
-    unsigned long world_time;             // +0x04
+    unsigned long world_time;
     char gap_08[0x38];
-    RGE_Player** players;                 // +0x40
+    RGE_Player** players;
 };
 
 class RGE_Master_Static_Object {
@@ -58,6 +55,9 @@ public:
     virtual void modify_percent(float, unsigned char);
     virtual void save(int);
     virtual RGE_Static_Object* make_new_obj(RGE_Player*, float, float, float);
+
+    char gap_04[0x0c];
+    short id;
 };
 
 class RGE_Static_Object {
@@ -109,41 +109,40 @@ public:
     virtual void stop();
     virtual void set_attack(RGE_Static_Object*);
 
-    long id;                              // +0x04
-    RGE_Master_Static_Object* master_obj; // +0x08
-    RGE_Player* owner;                    // +0x0c
+    long id;
+    RGE_Master_Static_Object* master_obj;
+    RGE_Player* owner;
     char gap_10[0x28];
-    float world_x;                        // +0x38
-    float world_y;                        // +0x3c
-    float world_z;                        // +0x40
+    float world_x;
+    float world_y;
+    float world_z;
     char gap_44[4];
-    unsigned char object_state;           // +0x48
+    unsigned char object_state;
 };
 
 struct RGE_Time_Entry {
-    float time;                           // +0x00
-    unsigned char command;                // +0x04
-    unsigned char gap_05[1];              // +0x05
-    short obj_type;                       // +0x06
-    unsigned char player;                 // +0x08
-    unsigned char gap_09[3];              // +0x09
-    float x;                               // +0x0c
-    float y;                               // +0x10
-    float z;                               // +0x14
-    short task;                            // +0x18
-    unsigned char gap_1a[2];              // +0x1a
-    RGE_Static_Object* this_obj;          // +0x1c
-    short this_obj_id;                     // +0x20
-    unsigned char gap_22[2];              // +0x22
-    RGE_Static_Object* target_obj;        // +0x24
-    short target_obj_id;                   // +0x28
-    unsigned char gap_2a[2];              // +0x2a
-    RGE_Time_Entry* next;                  // +0x2c
+    float time;
+    unsigned char command;
+    unsigned char gap_05[1];
+    short obj_type;
+    unsigned char player;
+    unsigned char gap_09[3];
+    float x;
+    float y;
+    float z;
+    short task;
+    unsigned char gap_1a[2];
+    RGE_Static_Object* this_obj;
+    short this_obj_id;
+    unsigned char gap_22[2];
+    RGE_Static_Object* target_obj;
+    short target_obj_id;
+    unsigned char gap_2a[2];
+    RGE_Time_Entry* next;
 };
 
 typedef char timeline_entry_layout[
     (sizeof(RGE_Time_Entry) == 0x30) ? 1 : -1];
-
 typedef char timeline_entry_next_offset[
     ((char*)&((RGE_Time_Entry*)0)->next - (char*)0 == 0x2c) ? 1 : -1];
 
@@ -172,16 +171,15 @@ public:
     RGE_Time_Entry* add_delete(float time, RGE_Static_Object* this_obj);
     void sub(RGE_Time_Entry* entry);
 
-    RGE_Game_World* world;                 // +0x04
-    RGE_Time_Entry* time_list;             // +0x08
-    short list_num;                        // +0x0c
-    short avail_id;                        // +0x0e
-    float old_time;                        // +0x10
+    RGE_Game_World* world;
+    RGE_Time_Entry* time_list;
+    short list_num;
+    short avail_id;
+    float old_time;
 };
 
 typedef char timeline_object_layout[
     (sizeof(RGE_Timeline) == 0x14) ? 1 : -1];
-
 typedef char timeline_world_offset[
     ((char*)&((RGE_Timeline*)0)->world - (char*)0 == 0x04) ? 1 : -1];
 typedef char timeline_list_offset[
