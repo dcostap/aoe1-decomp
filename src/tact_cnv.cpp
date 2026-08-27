@@ -9,9 +9,12 @@
 #include "../include/act_move.h"
 #include "../include/act_obj.h"
 #include "../include/basegame.h"
+#include "../include/m_ac_obj.h"
+#include "../include/m_co_obj.h"
 #include "../include/m_s_obj.h"
 #include "../include/player.h"
 #include "../include/rge_base_game_global.h"
+#include "../include/sound.h"
 #include "../include/task.h"
 #include "../include/world.h"
 
@@ -106,7 +109,9 @@ void TRIBE_Action_Convert::first_in_stack(uchar param_1)
         if (object_group == 3) {
             this->requiredRange = 1.0f;
         } else {
-            this->requiredRange = object->master_obj->weapon_range;
+            this->requiredRange =
+                static_cast<RGE_Master_Combat_Object*>(object->master_obj)
+                    ->weapon_range;
         }
         if (object_group == 0x1e) {
             this->set_state(0x0d);
@@ -152,7 +157,10 @@ void TRIBE_Action_Convert::set_state(uchar param_1)
     this->state = param_1;
     switch (param_1) {
     case 3:
-        this->obj->notify(this->obj->id, this->obj->id, 0x202, 0x25C, 0, 0);
+        this->obj->notify(
+            static_cast<int>(this->obj->id),
+            static_cast<int>(this->obj->id), 0x202,
+            static_cast<long>(0x25C), 0L, 0L);
         goto master_sprite;
 
     case 11: {
@@ -228,16 +236,16 @@ void TRIBE_Action_Convert::set_state(uchar param_1)
 
 uchar TRIBE_Action_Convert::update()
 {
-    if (this->target_id != -1) {
-        if (this->obj->owner->world->object(this->target_id) == 0) {
+    if (this->targetID != -1) {
+        if (this->obj->owner->world->object(this->targetID) == 0) {
             this->set_target_obj(0);
             this->set_state(3);
             return 0;
         }
     }
 
-    if (this->target2_id != -1) {
-        if (this->obj->owner->world->object(this->target2_id) == 0) {
+    if (this->target2ID != -1) {
+        if (this->obj->owner->world->object(this->target2ID) == 0) {
             this->set_target_obj2(0);
         }
     }
@@ -254,8 +262,10 @@ uchar TRIBE_Action_Convert::update()
             this->obj->set_attribute(0x22, 0);
         }
         this->set_state(1);
-        this->obj->notify(this->obj->id, this->obj->id,
-                          0x1fb, 0x25c, 0, 0);
+        this->obj->notify(
+            static_cast<int>(this->obj->id),
+            static_cast<int>(this->obj->id), 0x1fb,
+            static_cast<long>(0x25c), 0L, 0L);
         return 4;
     }
 
@@ -311,8 +321,11 @@ uchar TRIBE_Action_Convert::update()
             return 0;
         }
         this->target_obj->notify(
-            this->obj->id, this->target_obj->id, 500, this->obj->id,
-            this->target_obj->hp, this->target_obj->master_obj->hp);
+            static_cast<int>(this->obj->id),
+            static_cast<int>(this->target_obj->id), 500,
+            static_cast<long>(this->obj->id),
+            static_cast<long>(this->target_obj->hp),
+            static_cast<long>(this->target_obj->master_obj->hp));
         this->timer = this->timer -
                       this->obj->owner->world->world_time_delta_seconds;
         if (this->timer <= 0.0f) {
@@ -338,7 +351,8 @@ uchar TRIBE_Action_Convert::update()
             }
             // BINARY NOTE: Direct field ownership preserves the original x87 order.
             if (chance <= this->task->work_val1 *
-                           this->obj->master_obj->work_rate) {
+                           static_cast<RGE_Master_Action_Object*>(
+                               this->obj->master_obj)->work_rate) {
                 rge_base_game->notification(0x7b, this->obj->owner->id,
                                              this->target_obj->owner->id, 0, 0);
                 this->target_obj->change_ownership(this->obj->owner);
@@ -356,8 +370,10 @@ uchar TRIBE_Action_Convert::update()
         return 1;
 
     case 13:
-        this->obj->notify(this->obj->id, this->obj->id,
-                          0x1f9, 0x25c, 0, 0);
+        this->obj->notify(
+            static_cast<int>(this->obj->id),
+            static_cast<int>(this->obj->id), 0x1f9,
+            static_cast<long>(0x25c), 0L, 0L);
         this->set_state(2);
         return 3;
     }

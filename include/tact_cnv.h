@@ -27,8 +27,7 @@ protected:
 
 public:
     unsigned char was_same_owner;
-    char gap_41[3];
-    float requiredRange;
+    float requiredRange; // Natural alignment places this field at +0x44.
 
     void martyrdom();
 };
