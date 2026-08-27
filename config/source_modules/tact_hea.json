@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "name": "tact_hea",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_hea.cpp",
+  "source": "src/tact_hea.cpp",
+  "header": "include/tact_hea.h",
+  "functions": {
+    "004CE930": { "status": "matching" },
+    "004CE990": { "status": "matching" },
+    "004CEA10": { "status": "matching" },
+    "004CEA50": { "status": "matching" },
+    "004CEA90": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tact_hea_module.md"
+    },
+    "004CECF0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tact_hea_module.md"
+    },
+    "004CF030": { "status": "matching" }
+  }
+}

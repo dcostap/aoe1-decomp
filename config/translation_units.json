@@ -6819,22 +6819,19 @@
     },
     {
       "name": "tact_hea",
-      "source": "src/tact_hea_tu.cpp",
+      "module": "tact_hea",
+      "source": "src/tact_hea.cpp",
       "flags": "config/flags/004CE990_TRIBE_Action_Heal.rsp",
       "owners": {
-        "004CE930": "src/matching/004CE930_TRIBE_Action_Heal.cpp",
-        "004CE990": "src/matching/004CE990_TRIBE_Action_Heal.cpp",
-        "004CEA10": "src/matching/004CEA10_TRIBE_Action_Heal.cpp",
-        "004CEA50": "src/matching/004CEA50_first_in_stack.cpp",
-        "004CEA90": "src/matching/004CEA90_set_state.cpp",
-        "004CECF0": "src/matching/004CECF0_update.cpp",
-        "004CF030": "src/matching/004CF030_work.cpp"
+        "004CE930": "src/tact_hea.cpp",
+        "004CE990": "src/tact_hea.cpp",
+        "004CEA10": "src/tact_hea.cpp",
+        "004CEA50": "src/tact_hea.cpp",
+        "004CF030": "src/tact_hea.cpp"
       },
       "symbols": {
         "004CE930": "??0TRIBE_Action_Heal@@QAE@HPAVRGE_Action_Object@@@Z",
         "004CE990": "??0TRIBE_Action_Heal@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
-        "004CEA90": "?set_state@TRIBE_Action_Heal@@MAEXE@Z",
-        "004CECF0": "?update@TRIBE_Action_Heal@@UAEEXZ",
         "004CF030": "?work@TRIBE_Action_Heal@@UAEHPAVRGE_Static_Object@@MMM@Z",
         "004CEA10": "??0TRIBE_Action_Heal@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
       }
