@@ -1,9 +1,10 @@
-#include "../include/m_mi_obj.h"
+#include <stdio.h>
 
-extern "C" {
-    void rge_read(int fd, void* buffer, int size);
-    void rge_write(int fd, void* buffer, int size);
-}
+#include "../include/m_mi_obj.h"
+#include "../include/misl_obj.h"
+#include "../include/player.h"
+#include "../include/rge_fio.h"
+#include "../include/world.h"
 
 RGE_Master_Missile_Object::RGE_Master_Missile_Object(
     RGE_Master_Missile_Object* source, int do_setup)
