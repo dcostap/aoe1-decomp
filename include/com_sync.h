@@ -1,7 +1,7 @@
 #ifndef AOE1_COM_SYNC_H
 #define AOE1_COM_SYNC_H
 
-#include "com_hand.h"
+class TCommunications_Handler;
 
 // Canonical declarations owned by the com_sync.cpp source module.
 
