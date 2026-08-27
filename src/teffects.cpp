@@ -1,4 +1,6 @@
+#include "../include/effects.h"
 #include "../include/teffects.h"
+#include "../include/tplayer.h"
 
 // PDB source order for C:\\msdev\\work\\age1_x1\\teffects.cpp.
 
@@ -14,30 +16,24 @@ void TRIBE_Effects::do_effect(short param_1, RGE_Player* player) {
         return;
     }
 
-    unsigned char* base = (unsigned char*)this->effects;
-    int scaled = index + index * 4;
-    int recIndex = index + scaled * 2;
-    unsigned char* record = base + recIndex * 4;
+    RGE_Effect* record = &this->effects[index];
     if (record == 0) {
         return;
     }
 
     int i = 0;
-    if (*(short*)(record + 0x24) > 0) {
-        int offset = 0;
+    if (record->effect_list_num > 0) {
         do {
-            unsigned char* effect = *(unsigned char**)(record + 0x28) + offset;
-            unsigned int kind = *effect;
-            switch (kind) {
+            RGE_Effect_Command* effect = &record->effect_list[i];
+            switch (effect->command) {
             case 0x65:
                 break;
             case 0x66:
-                ((TRIBE_Player*)player)->tech_abling((long)*(float*)(effect + 8), 0);
+                ((TRIBE_Player*)player)->tech_abling((long)effect->change_amount, 0);
                 break;
             }
             i++;
-            offset += 0x0C;
-        } while (i < *(short*)(record + 0x24));
+        } while (i < record->effect_list_num);
     }
 
     RGE_Effects::do_effect(param_1, player);
@@ -45,26 +41,20 @@ void TRIBE_Effects::do_effect(short param_1, RGE_Player* player) {
 
 void TRIBE_Effects::do_tech_effect(short tech_id, RGE_Player* player) {
     int index = tech_id;
-    unsigned char* base = (unsigned char*)this->effects;
-    int scaled = index + index * 4;
-    int recIndex = index + scaled * 2;
-    unsigned char* record = base + recIndex * 4;
+    RGE_Effect* record = &this->effects[index];
     int i = 0;
 
-    if (*(short*)(record + 0x24) > 0) {
-        int offset = 0;
+    if (record->effect_list_num > 0) {
         do {
-            unsigned char* effect = *(unsigned char**)(record + 0x28) + offset;
-            unsigned int kind = *effect;
-            switch (kind) {
+            RGE_Effect_Command* effect = &record->effect_list[i];
+            switch (effect->command) {
             case 0x65:
                 break;
             case 0x66:
-                ((TRIBE_Player*)player)->tech_abling((long)*(float*)(effect + 8), 0);
+                ((TRIBE_Player*)player)->tech_abling((long)effect->change_amount, 0);
                 break;
             }
             i++;
-            offset += 0x0C;
-        } while (i < *(short*)(record + 0x24));
+        } while (i < record->effect_list_num);
     }
 }

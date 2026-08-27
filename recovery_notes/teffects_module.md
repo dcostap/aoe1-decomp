@@ -1,55 +1,46 @@
 # teffects.cpp source-module recovery
 
 - PDB source: `C:\\msdev\\work\\age1_x1\\teffects.cpp`.
-- Held source wrapper: `src/teffects_tu.cpp`.
-- Held owners remain in PDB order: `0050D460`, `0050D4B0`, `0050D4D0`, and `0050D550`.
-- The original addresses and direct targets are recorded in the four matching owner files.
+- Source: `src/teffects.cpp`.
+- Headers: `include/effects.h`, `include/teffects.h`, and `include/tplayer.h`.
+- PDB source lines: 22 to 114.
 
-## Canonical dependency review
+## Ownership and order
 
-- `include/effects.h` is now the canonical non-context owner for
-  `RGE_Effect_Command`, `RGE_Effect`, and `RGE_Effects`.
-- `include/tplayer.h` is the canonical `TRIBE_Player` owner. It declares
-  `tech_abling(long, unsigned char)` and includes `include/player.h`.
-- This module does not copy an effects record, player, world, or base-game
-  layout.
-- `include/effects_context.h` and `include/teffects_context.h` remain context
-  headers. This module must not include either header.
+The module has four normal owners. Their PDB source order is:
 
-## Derived ABI checkpoint
+1. `0050D460` `TRIBE_Effects::TRIBE_Effects(int)`, lines 22-23.
+2. `0050D4B0` `TRIBE_Effects::TRIBE_Effects(char*)`, lines 29-30.
+3. `0050D4D0` `TRIBE_Effects::do_effect(short, RGE_Player*)`, lines 36-77.
+4. `0050D550` `TRIBE_Effects::do_tech_effect(short, RGE_Player*)`, lines 83-114.
 
-The PDB class inventory proves `TRIBE_Effects` derives from `RGE_Effects` and
-has no fields of its own:
+The nearby `0050D480` vector-deleting destructor is compiler-generated. It is
+not a normal source owner.
 
-- `inventory/classes/dumps/TRIBE_Effects.txt` reports `LayoutBase` and
-  `DonorBase` as `RGE_Effects`, with `FieldCount: 0` and size `0x0C`.
-- `inventory/types/dumps/TRIBE_Effects.txt` reports `Base: RGE_Effects`, size
-  `0x0C`, and an empty class body.
-- `inventory/classes/dumps/RGE_Effects.txt` reports the three virtual slots at
-  `0x00`, `0x04`, and `0x08`.
-- `inventory/types/dumps/RGE_Effects.txt` reports the base size as `0x0C`.
+The four owner bodies now occur in `src/teffects.cpp` in this order. The old
+wrapper and per-function source files are removed. The source uses the
+canonical headers directly. No context header, wrapper include, or partial
+carrier declaration remains.
 
-The PDB source map assigns the derived owners to `teffects.cpp` in this order:
-`0050D460` (lines 22-23), `0050D4B0` (29-30), `0050D4D0` (36-77), and
-`0050D550` (83-114). The first constructor calls `RGE_Effects` at `0050D468`;
-the second calls it at `0050D4B8`. Each then writes the `TRIBE_Effects`
-vftable at object offset `0x00`. No constructor writes any offset after the
-base call except that vtable pointer.
+## Layout and call surface
 
-The legal owner header is therefore a thin derived declaration that includes
-`include/effects.h`, declares no data fields, and checks
-`sizeof(TRIBE_Effects) == 0x0C`. It must not include an effects context header
-or copy the base effect records.
+`include/effects.h` owns `RGE_Effect_Command`, `RGE_Effect`, and `RGE_Effects`.
+`include/teffects.h` owns the empty `TRIBE_Effects` derivation and includes the
+effects owner. `include/tplayer.h` owns `TRIBE_Player` and declares
+`tech_abling(long, unsigned char)`.
 
-## Minimal VC5 probe
+The module copies no effects record, player, world, or base-game layout. The
+PDB class inventory proves that `TRIBE_Effects` derives from `RGE_Effects`, has
+no fields of its own, and has size `0x0C`. The source now accesses the effect
+array through `RGE_Effect`, its `effect_list_num` and `effect_list` fields, and
+the command array through `RGE_Effect_Command`. The proven command values are
+`0x65` and `0x66`. The `0x66` arm converts `change_amount` through `__ftol` and
+calls `TRIBE_Player::tech_abling` with zero.
 
-Probe source: `build/header_probes/teffects_size.cpp`.
+## Candidate status
 
-Command:
-
-`CL.EXE @config/flags/default.rsp /Iinclude /Fobuild/header_probes/teffects_size.obj build/header_probes/teffects_size.cpp`
-
-The probe checked both `sizeof(RGE_Effects) == 0x0C` and
-`sizeof(TRIBE_Effects) == 0x0C`. VC5 returned code `0`.
-The object SHA-256 is
-`f76aadf8d05d57419ded7b0457973ad74701d15fd840b0106722f384e74a066e`.
+This commit is a source migration candidate. It was not compiled or checked.
+The global translation-unit and source-module metadata remain coordinator
+owned and are unchanged in this commit. The lead must review the direct
+metadata before building or validating the candidate. The lead can then check
+all four owners, boundaries, relocations, and direct targets.
