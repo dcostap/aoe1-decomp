@@ -1,9 +1,8 @@
-#ifndef AOE1_PNL_SCBR_CONTEXT_H
-#define AOE1_PNL_SCBR_CONTEXT_H
+#ifndef AOE1_PNL_SCBR_H
+#define AOE1_PNL_SCBR_H
 
-// Recovered Pnl_scbr.cpp translation-unit context.  The complete panel and
-// scrollbar surfaces keep one compiler-facing declaration set for the owners
-// in this module.  The bodies remain in their assigned owner files.
+// Pnl_scbr.cpp declaration surface.
+// The class layout and inherited virtual slots follow the shipped binary.
 
 #include <windows.h>
 
@@ -236,8 +235,6 @@ public:
 
     TScrollBarPanel();
     virtual ~TScrollBarPanel();
-    // BINARY NOTE: PDB declares this public member as nonvirtual. Its final
-    // parameter is the nested Orientation enum, which is part of its symbol.
     long setup(TDrawArea*, TPanel*, long, long, long, long,
                char*, char*, char*, char*, long, long, TPanel*, long, Orientation);
     virtual void set_rect(long, long, long, long);
