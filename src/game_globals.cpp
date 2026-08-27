@@ -1583,6 +1583,12 @@ unsigned int DAT_00592610 = 0x00000009u;
 unsigned int DAT_00592820 = 0x7525C460u;
 // 00592824 [.data]
 unsigned int DAT_00592824 = 0x00000000u;
+// 0062C4FC [.data] shared debug log pointer.
+TDebuggingLog* L = 0;
+// 0062C5EC [.data] shared DirectPlay interface pointer.
+IDirectPlay4A* DAT_0062c5ec = 0;
+// 0062CF04 [.data] local DirectPlay player identifier.
+unsigned long DAT_0062cf04 = 0;
 // 0088C000 [THIS_DAT]
 unsigned int DAT_0088c000 = 0x00000000u;
 // 0088C004 [THIS_DAT]

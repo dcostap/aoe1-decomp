@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include "game_types.h"
 
+class IDirectPlay4A;
+class TDebuggingLog;
+
 // 0056E0B8 [.rdata]
 extern float DAT_0056e0b8;
 // 0056E0CC [.rdata]
@@ -1599,6 +1602,8 @@ extern unsigned char DAT_0062c49c;
 extern unsigned int DAT_0062c4b4;
 // 0062C4BC [.data]
 extern unsigned int DAT_0062c4bc;
+// 0062C4FC [.data] shared debug log pointer.
+extern TDebuggingLog* L;
 // 0062C558 [.data]
 extern unsigned int DAT_0062c558;
 // 0062C578 [.data]
@@ -1618,11 +1623,11 @@ extern unsigned char DAT_0062c5e4;
 // 0062C5E8 [.data]
 extern unsigned int DAT_0062c5e8;
 // 0062C5EC [.data]
-extern unsigned int DAT_0062c5ec;
+extern IDirectPlay4A* DAT_0062c5ec;
 // 0062CEF0 [.data]
 extern unsigned int DAT_0062cef0;
 // 0062CF04 [.data]
-extern unsigned int DAT_0062cf04;
+extern unsigned long DAT_0062cf04;
 // 0062CF10 [.data]
 extern unsigned int DAT_0062cf10;
 // 0062CF14 [.data]
