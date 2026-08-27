@@ -1,8 +1,6 @@
-#ifndef AOE1_CDAUDIO_CONTEXT_H
-#define AOE1_CDAUDIO_CONTEXT_H
+#ifndef AOE1_CDAUDIO_H
+#define AOE1_CDAUDIO_H
 
-// Canonical Cdaudio.cpp declarations.  The class is 0x18 bytes in the shipped
-// image; the MCI play record begins at offset 0x0C.
 #include <windows.h>
 #include <mmsystem.h>
 
@@ -35,6 +33,6 @@ private:
     unsigned long DisplayErrorMsg(unsigned long error);
 };
 
-typedef char cdaudio_context_size_check[(sizeof(CCDAudio) == 0x18) ? 1 : -1];
+typedef char cdaudio_size_check[(sizeof(CCDAudio) == 0x18) ? 1 : -1];
 
 #endif
