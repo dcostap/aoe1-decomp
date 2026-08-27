@@ -84,13 +84,20 @@ and `config/translation_units.json`. The grouped candidate report is
 `build/candidate_tus/act_move_direct/report.txt`.
 
 The candidate compiled all eight exact owners and the generated destructor.
-Seven exact owners match. The generated destructor also matches. The only
-exact-owner regression is `004056E0`, with one byte changed because the
-canonical moving-object surface emits `stop_moving` through vslot `+0x1F0`
-instead of the executable's `+0x1EC`. The accepted-drift `00405850 update`
-remains observed and has 728 changed bytes in the direct source context.
-Do not change canonical virtual ownership to force this temporary migration
-regression. The candidate needs lead review before exact registration.
+All eight exact owners match. The generated destructor also matches. The
+accepted-drift `00405850 update` remains observed and has 728 changed bytes in
+the direct source context.
+
+The vslot repair follows the original PDB-backed vtable. The executable's
+`RGE_Action_Object` table at `0056E420` places static setup at `+0x1D8` and
+`+0x1DC`, then animated setup at `+0x1E8`, moving stop at `+0x1EC`, moving turn
+at `+0x1F0`, and moving setup at `+0x1F4`. The PDB marks static
+`waitingToMove`, `facetToNextWaypoint`, `actionState`, `getSpeed`, `getAngle`,
+`underAttack`, and `numberUserDefinedWaypoints` as const. The canonical headers
+now use those const qualifiers, reverse the static setup declarations for
+VC5's adjacent-overload order, and place both moving setup declarations after
+stop and turn. This removes the synthetic setup and const slots without a
+local carrier or vtable workaround.
 
 ## Shared ABI correction
 
