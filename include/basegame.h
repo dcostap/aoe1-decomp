@@ -73,7 +73,7 @@ public:
 
     virtual ~RGE_Base_Game();
     virtual int run();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual long __stdcall wnd_proc(void*, unsigned int, unsigned int, long);
     virtual void set_prog_mode(int);
     virtual void set_game_mode(int, int);
     virtual void set_player(short);
