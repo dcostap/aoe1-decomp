@@ -6,7 +6,7 @@
 - The module has 19 normal owners and 4,997 normal bytes.
 - Owners follow PDB source-line order from lines 36-599.
 - The owning class is `ConstructionAIModule` for all 19 owners.
-- The reviewed module header is `include/aiconmod_context.h`.
+- The reviewed module header is `include/aiconmod.h`.
 - The registered source uses `config/flags/0040AA90_ConstructionAIModule.rsp`.
   The constructor and destructor require the `/GX` exception frame.
 - The scalar deleting destructor at `0040AB90` is compiler generated. It has no
@@ -35,6 +35,7 @@ These are localized code-generation differences. They do not change behavior.
 
 ## Cross-module context
 
-`aiconmod_context.h` also supplies the reviewed ConstructionAIModule surface to
-the adjacent `aidipmod` wrapper. This migration does not change that shared
-header. The source module owns only the 19 PDB owners listed in its metadata.
+`aiconmod.h` also supplies the reviewed ConstructionAIModule surface to the
+adjacent `aidipmod` module. It reuses the canonical `BaseItem` and `AIModule`
+declarations and retains only the narrow PDB-proven player and world views.
+The source module owns only the 19 PDB owners listed in its metadata.

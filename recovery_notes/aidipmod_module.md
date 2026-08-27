@@ -17,10 +17,13 @@
 ## Source ownership
 
 `src/aidipmod.cpp` is the sole compiler-facing source owner. It contains all 21
-normal definitions in PDB source order. It uses the reviewed `AIModule`, player,
-world, and virtual-call declarations from `include/aiconmod_context.h`. The
-module-local `MainDecisionAIModule` declaration preserves its proven player
+normal definitions in PDB source order. It uses canonical `AIModule` plus the
+reviewed player, world, and virtual-call declarations from `include/aiconmod.h`.
+The module-local `MainDecisionAIModule` declaration preserves its proven player
 member at offset `+0xF0`.
+
+The canonical `AIModule` replacement preserves the reviewed 0xF0 layout and
+virtual slots. Focused module validation found no ABI conflict.
 
 The old wrapper and per-function fragments were structural owners only. The
 migration removes them after the direct module entry points to `src/aidipmod.cpp`.

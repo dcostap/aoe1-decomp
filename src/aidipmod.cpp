@@ -1,4 +1,4 @@
-#include "../include/aiconmod_context.h"
+#include "../include/aiconmod.h"
 
 class MainDecisionAIModule : public AIModule {
 public:

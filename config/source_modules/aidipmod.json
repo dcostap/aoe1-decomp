@@ -3,7 +3,7 @@
   "name": "aidipmod",
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aidipmod.cpp",
   "source": "src/aidipmod.cpp",
-  "header": "include/aiconmod_context.h",
+  "header": "include/aiconmod.h",
   "functions": {
     "0040BEC0": { "status": "matching" },
     "0040BF40": { "status": "matching" },

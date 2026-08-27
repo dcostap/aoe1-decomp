@@ -3,7 +3,7 @@
 // The scalar deleting destructor at 0040AB90 is compiler generated and has no
 // PDB source line, so it is not a source owner here.
 
-#include "../include/aiconmod_context.h"
+#include "../include/aiconmod.h"
 #include <stdio.h>
 #include <string.h>
 

@@ -1,60 +1,18 @@
-#ifndef AOE1_AICONMOD_CONTEXT_H
-#define AOE1_AICONMOD_CONTEXT_H
+#ifndef AOE1_AICONMOD_H
+#define AOE1_AICONMOD_H
 
-// Shared compiler-facing declarations for the original aiconmod.cpp module.
-// The PDB source order is recorded by src/aiconmod_tu.cpp.  The class layouts
-// below are the reviewed 32-bit surfaces used by the module's owners.
+// Reviewed compiler-facing declarations for aiconmod.cpp and aidipmod.cpp.
+// BaseItem and AIModule are owned by their canonical headers.  The player and
+// world declarations below remain narrow local views proven by the PDB users.
 
-class AIModuleMessage;
+#include "aibitm.h"
+#include "aimodule.h"
+
 class BuildItem;
 class ConstructionItem;
 class RGE_Player;
 class RGE_Game_World;
 class RGE_Victory_Conditions;
-
-class AIModuleID {
-public:
-    virtual ~AIModuleID();
-
-    int id;
-    char name[64];
-};
-
-class BaseItem {
-public:
-    virtual ~BaseItem();
-
-    int typeIDValue;              // +0x04
-    int gameIDValue;              // +0x08
-    int uniqueIDValue;            // +0x0C
-    char nameValue[64];           // +0x10
-    float xValue;                 // +0x50
-    float yValue;                 // +0x54
-    float zValue;                 // +0x58
-    float xSizeValue;             // +0x5C
-    float ySizeValue;             // +0x60
-    float zSizeValue;             // +0x64
-    int skipValue;                // +0x68
-
-    char* name();
-    int typeID() const;
-    int gameID() const;
-    int uniqueID() const;
-    float x() const;
-    float y() const;
-    float z() const;
-    float xSize() const;
-    float ySize() const;
-    float zSize() const;
-    int skip() const;
-
-    void setGameID(int value);
-    void setUniqueID(int value);
-    void setSkip(int value);
-    void setX(float value);
-    void setY(float value);
-    void setZ(float value);
-};
 
 class ConstructionItem : public BaseItem {
 public:
@@ -78,41 +36,6 @@ public:
     void setBuildAttempts(int value);
     void decrementBuildAttempts();
     void incrementBuildAttempts();
-};
-
-class AIModule {
-public:
-    virtual ~AIModule();
-    virtual int loggingHistory();
-    virtual void setLogHistory(int value);
-    virtual void toggleLogHistory();
-    virtual void setHistoryFilename(char* value);
-    virtual int loggingCommonHistory();
-    virtual void setLogCommonHistory(int value);
-    virtual void toggleLogCommonHistory();
-    virtual int loadState(char* value);
-    virtual int saveState(char* value);
-    virtual int gleanState(int value);
-    virtual int processMessage(AIModuleMessage* message);
-    virtual int update(int value);
-    virtual void setCallbackMessage(AIModuleMessage* message);
-    virtual int filterOutMessage(AIModuleMessage* message);
-
-    AIModuleID idValue;            // +0x04
-    int playerNumberValue;         // +0x4C
-    char playerNameValue[64];      // +0x50
-    int runningValue;              // +0x90
-    int pausedValue;               // +0x94
-    int logHistoryValue;           // +0x98
-    int logCommonHistoryValue;     // +0x9C
-    void* historyLogFile;          // +0xA0
-    char historyLogFilename[64];   // +0xA4
-    int intelligenceLevelValue;    // +0xE4
-    int priorityValue;             // +0xE8
-    int processFrameValue;         // +0xEC
-
-    AIModule(char* name, int id, int player, void* parameter);
-    void logCommonHistory(char* format, ...);
 };
 
 class RGE_Game_World {
