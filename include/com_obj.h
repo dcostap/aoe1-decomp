@@ -26,8 +26,6 @@ public:
     virtual ~RGE_Combat_Object();
 
 protected:
-    virtual int setup(RGE_Master_Combat_Object*, RGE_Player*, float, float,
-                      float);
     virtual int setup(int, RGE_Game_World*);
 
 public:
@@ -91,6 +89,8 @@ public:
                                   RGE_Player*, RGE_Static_Object*);
 
 protected:
+    virtual int setup(RGE_Master_Combat_Object*, RGE_Player*, float, float,
+                      float);
     float base_teleport(float, float, float);
     uchar attack(RGE_Static_Object*, float, RGE_Combat_Object*, float, float);
 
