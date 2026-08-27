@@ -364,7 +364,7 @@ state_default:
             give_amount = holder->attribute_amount_held;
         short attr = this->task->attribute_type2;
         if (attr == -1) modifier = 1.0f;
-        else modifier = this->obj->owner->attribute_table[attr];
+        else modifier = this->obj->owner->attributes[attr];
         max_hold = (float)static_cast<RGE_Master_Static_Object*>(this->obj->master_obj)->attribute_max_amount * modifier - this->obj->attribute_amount_held;
         if (max_hold < modifier * give_amount)
             give_amount = give_amount - (modifier * give_amount - max_hold) / modifier;
@@ -394,7 +394,7 @@ state_default:
                     return 0;
                 }
                 if (this->task->work_sound2 != 0) this->task->work_sound2->play(1);
-                { short attr = this->task->attribute_type3; if (attr == -1) attr = this->obj->owner->fallback_attribute;
+                { short attr = this->task->attribute_type3; if (attr == -1) attr = this->obj->attribute_type_held;
                   this->obj->owner->add_attribute_num(attr, this->obj->attribute_amount_held, 0); }
                 this->obj->owner->trackUnitGather(this->obj->id, this->obj->id, (int)this->obj->attribute_amount_held);
                 this->obj->set_attribute(-1, 0.0f);
