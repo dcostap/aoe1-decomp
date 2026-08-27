@@ -347,14 +347,6 @@ int RGE_Moving_Object::setup(RGE_Master_Moving_Object* master_obj,
 // Path::inittostart, and Path::movetonextwaypoint. The raw 0x47C35000 store
 // stays an int bit pattern. The standalone owner matched before reunification.
 
-extern "C" void rge_read(int fd, void* dst, int size);
-
-extern float savegame_version;
-extern float version_570B54;
-extern float version_570B58;
-extern float version_570B5C;
-
-
 int RGE_Moving_Object::setup(int fd, RGE_Game_World* world)
 {
     RGE_Animated_Object::setup(fd, world);
@@ -443,9 +435,6 @@ int RGE_Moving_Object::setup(int fd, RGE_Game_World* world)
 // typed XYZBYTEPoint indexing: exact 639B match with direct count access.
 // Width audit: 4-byte scalars and records use 4/0x10, points use 8, and byte
 // flags use 1. Final source keeps named fields and natural typed loops.
-
-extern "C" void __cdecl rge_write(int handle, const void* buffer, int size);
-
 
 void RGE_Moving_Object::save(int handle) {
     RGE_Animated_Object::save(handle);
@@ -583,15 +572,6 @@ float RGE_Moving_Object::angle_to_object(RGE_Static_Object* target, float tx, fl
 //   turn_speed, sprite->facet_num, angle/turn_towards_time, direct
 //   angle_to_object and set_angle calls, and the original parameter-home reuse
 //   topology through a natural angle local.
-
-class RGE_Master_Static_Object;
-class RGE_Master_Animated_Object;
-class RGE_Master_Moving_Object;
-class RGE_Player;
-class RGE_Game_World;
-class RGE_Sprite;
-class RGE_Static_Object;
-
 
 unsigned char RGE_Moving_Object::turn_towards(RGE_Static_Object* object,
                                                float x, float y) {
@@ -747,6 +727,9 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
                 float distance;
                 float dx;
                 float dy;
+                // ORIGINAL BUG: The original adds trail_remainder to distance
+                // at 0045D458, then adds it again in the count <= 0 branch at
+                // 0045D55A. Preserve this doubled remainder.
                 dx = x - this->world_x;
                 dy = y - this->world_y;
                 dz = z - this->world_z;
@@ -1759,6 +1742,9 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         return 0;
     }
 
+    // ORIGINAL BUG: The waypoint-snap branch above jumps to moved without
+    // initializing destinationZ. The original tail at 0045F704 reads this
+    // stale stack value for deltaZ and speedMultiplier. Preserve that read.
     float destinationZ;
     Waypoint* waypoint = path->currentWaypoint();
     if (waypoint == 0) {
@@ -2284,6 +2270,8 @@ int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
     while (i < path->numberOfWaypoints()) {
         if (this->firstTileAlongLine(&p1, &p2, &rVal,
                                      terrain, terrain, 1) == 1) {
+            // ORIGINAL BUG: The original 00460210 body writes the x-derived
+            // result to both output pointers at 0046038D-0046039E.
             float result = (float)rVal.x - DAT_00570B80;
             *result_x = result;
             *result_y = result;
@@ -2544,7 +2532,7 @@ unsigned char RGE_Moving_Object::waitingToMove(void) const {
 void RGE_Moving_Object::setWaitingToMove(unsigned char v) { this->waitingToMoveValue = v; }
 
 // VA: 00460940 userDefinedWaypoint (35B)
-// Returns pointer into waypoint array, each element 12 bytes (3 * 4)
+// Returns pointer into waypoint array; each XYZBYTEPoint element is 3 bytes.
 // Remaining 9-byte diff (25%): VC5 reverses LEA/MOV order in the address math
 // (LEA EDX,[EAX+EAX*2]/MOV EAX,[ECX+0x168] vs MOV EDX,[ECX+0x168]/LEA EAX,[EAX+EAX*2])
 // Both sequences are semantically identical with same register pressure.
