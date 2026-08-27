@@ -19,7 +19,6 @@ The module now uses `src/task_lst.cpp` and `include/task_lst.h`. The former
 wrapper, per-function matching files, and temporary context header were
 removed. The bodies were moved without byte-tuning changes.
 
-Before migration, the registered grouped evidence had nine positional matches.
-The destructor differed at two bytes. `is_attack_task` had zero positional
-byte differences but a non-MATCH result. Natural source consolidation can cause
-temporary exactness regressions. Exact repair resumes after source migration.
+The current focused checks report 11/11 exact owners. Every owner reports
+`Result: MATCH` and `0.0000%` positional difference. Exact repair is complete
+after source migration.
