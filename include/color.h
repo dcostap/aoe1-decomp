@@ -1,10 +1,8 @@
-#ifndef AOE1_COLOR_CONTEXT_H
-#define AOE1_COLOR_CONTEXT_H
+#ifndef AOE1_COLOR_H
+#define AOE1_COLOR_H
 
-// Shared declarations for the authentic color.cpp owner order.
-// COLOR_TU_CONTEXT is defined only by src/color_tu.cpp.
-
-#ifdef COLOR_TU_CONTEXT
+// Compiler-facing declarations for the complete color.cpp source module.
+// The source file keeps its handwritten owners in PDB order.
 
 #include <windows.h>
 
@@ -40,5 +38,6 @@ public:
     void save(int param1);
 };
 
-#endif  // COLOR_TU_CONTEXT
-#endif  // AOE1_COLOR_CONTEXT_H
+typedef char color_table_size_check[(sizeof(RGE_Color_Table) == 0x128) ? 1 : -1];
+
+#endif  // AOE1_COLOR_H

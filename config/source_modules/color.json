@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "name": "color",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\color.cpp",
+  "source": "src/color.cpp",
+  "header": "include/color.h",
+  "functions": {
+    "00423EE0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/color_module.md"
+    },
+    "004240B0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/color_module.md"
+    },
+    "00424350": {
+      "status": "matching",
+      "note_path": "recovery_notes/color_module.md"
+    },
+    "00424440": {
+      "status": "matching",
+      "note_path": "recovery_notes/color_module.md"
+    },
+    "004244F0": {
+      "status": "matching",
+      "note_path": "recovery_notes/color_module.md"
+    },
+    "004245F0": {
+      "status": "matching",
+      "note_path": "recovery_notes/color_module.md"
+    },
+    "004247A0": {
+      "status": "matching",
+      "note_path": "recovery_notes/color_module.md"
+    },
+    "004247B0": {
+      "status": "matching",
+      "note_path": "recovery_notes/color_module.md"
+    }
+  }
+}
