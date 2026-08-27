@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "name": "zone_map",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\zone_map.cpp",
+  "source": "src/zone_map.cpp",
+  "header": "include/zone_map.h",
+  "functions": {
+    "00546720": { "status": "matching" },
+    "00546770": { "status": "matching" },
+    "005467B0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/zone_map_module.md"
+    },
+    "005468C0": { "status": "matching" },
+    "005469C0": { "status": "matching" },
+    "00546A00": { "status": "matching" },
+    "00546A90": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/zone_map_module.md"
+    },
+    "00546BB0": { "status": "matching" },
+    "00546E50": { "status": "matching" },
+    "00546EB0": { "status": "matching" },
+    "00546ED0": { "status": "matching" },
+    "00546F00": { "status": "matching" },
+    "00547000": { "status": "matching" },
+    "00547080": { "status": "matching" },
+    "00547180": { "status": "matching" },
+    "00547240": { "status": "matching" },
+    "00547260": { "status": "matching" },
+    "00547270": { "status": "matching" },
+    "005472B0": { "status": "matching" },
+    "005473B0": { "status": "matching" },
+    "005474B0": { "status": "matching" },
+    "005474D0": { "status": "matching" }
+  }
+}
