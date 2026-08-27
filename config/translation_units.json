@@ -3453,6 +3453,7 @@
         "00447C60": "src/matching/00447C60_DSParseWaveResource.c",
         "00447D50": "src/matching/00447D50_WaveOpenFile.c",
         "00447F40": "src/matching/00447F40_WaveReadFile.c",
+        "00448040": "src/matching/00448040_WaveCloseReadFile.cpp",
         "00448080": "src/matching/00448080_WaveCreateFile.c",
         "00448250": "src/matching/00448250_WaveCloseWriteFile.c",
         "00448340": "src/matching/00448340_WaveCopyUselessChunks.c",
@@ -3468,6 +3469,7 @@
       },
       "symbols": {
         "00447D50": "_WaveOpenFile",
+        "00448040": "_WaveCloseReadFile",
         "00448340": "_WaveCopyUselessChunks"
       }
     },

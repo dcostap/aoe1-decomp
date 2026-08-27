@@ -16,7 +16,7 @@
 #include "matching/00447D50_WaveOpenFile.c"
 #include "scratch/00447EF0_WaveStartDataRead.cpp"
 #include "matching/00447F40_WaveReadFile.c"
-#include "scratch/00448040_WaveCloseReadFile.cpp"
+#include "matching/00448040_WaveCloseReadFile.cpp"
 #include "matching/00448080_WaveCreateFile.c"
 #include "scratch/004481A0_WaveStartDataWrite.cpp"
 #include "accepted_drift/004481E0_WaveWriteFile.c"
