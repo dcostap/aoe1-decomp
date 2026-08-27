@@ -6,7 +6,7 @@
 #include "../include/scr_cj.h"
 
 TribeJoinScreen::TribeJoinScreen()
-    : TScreenPanel((char*)0x0058617C)
+    : TScreenPanel("Join Screen")
 {
     this->startedSession = 0;
     this->listFilled = 0;
@@ -21,7 +21,7 @@ TribeJoinScreen::TribeJoinScreen()
         comm->SetPlayerHumanity(player, 0);
     }
 
-    if (this->setup(rge_base_game->draw_area, (char*)0x00586174,
+    if (this->setup(rge_base_game->draw_area, "scr3",
                     0xC385, 1) == 0) {
         this->setup_error = 1;
         return;

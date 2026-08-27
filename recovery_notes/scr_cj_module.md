@@ -53,6 +53,22 @@ source and records module name `scr_cj`.
 The source uses `config/flags/00491E20_action.rsp`, which is
 `/nologo /c /O2 /Oy /GX`. `/GX` is supported by the original EH registration.
 
+## String address recovery
+
+The original `.data` bytes at `0x00586174` are `73 63 72 33 00`, which is
+`"scr3"`. The bytes at `0x0058617C` are
+`4A 6F 69 6E 20 53 63 72 65 65 6E 00`, which is `"Join Screen"`.
+`objdump -s -j .data` on
+`orig/_original_empiresx_from_beta_that_was_decompiled.exe` shows both
+addresses. The original listing also names these operands `s_scr3` at
+`004916E8` and `s_Join_Screen` at `0049166E`.
+
+The constructor now uses the natural literals. The raw address casts are gone.
+The focused constructor check still returns `Result: MATCH` and `0.0000%`.
+Its original boundary, owner symbol, direct calls, and relocation targets all
+match. The diagnostic reports six emitted bytes changed in two spans, but no
+strict byte difference.
+
 Before migration, the wrapper had six registered exact owners:
 `00491650`, `00491990`, `00491A80`, `00491B20`, `00491C70`, and `00492330`.
 The three observed owners were `00491E20`, `004920C0`, and `004923C0`.
