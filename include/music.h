@@ -3,7 +3,7 @@
 
 #include <windows.h>
 #include <mmsystem.h>
-#include "sounddrv_context.h"
+#include "sounddrv.h"
 
 class TMusic_System {
 public:
