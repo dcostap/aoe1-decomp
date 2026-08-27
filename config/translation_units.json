@@ -2470,6 +2470,7 @@
     {
       "name": "sound",
       "source": "src/Sound.cpp",
+      "module": "sound",
       "flags": "config/flags/004BBF30_RGE_Sound.rsp",
       "owners": {
         "004BBE40": "src/Sound.cpp",
