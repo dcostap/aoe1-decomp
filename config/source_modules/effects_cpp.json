@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "name": "effects_cpp",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\effects.cpp",
+  "source": "src/effects.cpp",
+  "header": "include/effects.h",
+  "functions": {
+    "004490E0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/effects_module.md"
+    },
+    "00449260": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/effects_module.md"
+    },
+    "00449440": { "status": "matching" },
+    "004494B0": { "status": "matching" },
+    "004495C0": { "status": "matching" }
+  }
+}
