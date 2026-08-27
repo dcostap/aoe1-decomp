@@ -847,7 +847,7 @@ Do not retain thousands of files only to preserve investigation history.
 
 ### Module state manifest
 
-Use `config/source_modules.json` for each consolidated module.
+Use one file under `config/source_modules/` for each consolidated module.
 
 The manifest maps each VA to its module source and recovery state.
 

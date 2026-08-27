@@ -13,7 +13,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_DIR = REPO_ROOT / "config"
 TRANSLATION_UNITS_PATH = CONFIG_DIR / "translation_units.json"
-SOURCE_MODULES_PATH = CONFIG_DIR / "source_modules.json"
+SOURCE_MODULES_DIR = CONFIG_DIR / "source_modules"
 INVENTORY_DIR = REPO_ROOT / "inventory"
 BUILD_DIR = REPO_ROOT / "build"
 PDB_INVENTORY_DIR = INVENTORY_DIR / "pdb"
@@ -338,21 +338,20 @@ def load_source_modules() -> list[dict[str, object]]:
     only for its listed VAs.  This lets one normal source file hold functions
     in different recovery states.
     """
-    if not SOURCE_MODULES_PATH.exists():
+    if not SOURCE_MODULES_DIR.exists():
         return []
-    payload = load_json(SOURCE_MODULES_PATH)
-    if payload.get("schema") != 1:
-        raise ValueError("config/source_modules.json: schema must be 1")
-    raw_modules = payload.get("modules")
-    if not isinstance(raw_modules, list):
-        raise ValueError("config/source_modules.json: modules must be a list")
+    module_paths = sorted(SOURCE_MODULES_DIR.glob("*.json"))
 
     modules: list[dict[str, object]] = []
     seen_names: set[str] = set()
     seen_vas: set[str] = set()
-    for raw_module in raw_modules:
+    for module_path in module_paths:
+        raw_module = load_json(module_path)
+        label = module_path.relative_to(REPO_ROOT).as_posix()
+        if raw_module.get("schema") != 1:
+            raise ValueError(f"{label}: schema must be 1")
         if not isinstance(raw_module, dict):
-            raise ValueError("config/source_modules.json: each module must be an object")
+            raise ValueError(f"{label}: module must be an object")
         name = str(raw_module.get("name") or "").strip()
         source = str(raw_module.get("source") or "").replace("\\", "/").strip()
         pdb_source_path = str(raw_module.get("pdb_source_path") or "").strip()
@@ -360,19 +359,19 @@ def load_source_modules() -> list[dict[str, object]]:
         raw_functions = raw_module.get("functions")
         if not name or not source or not pdb_source_path or not isinstance(raw_functions, dict) or not raw_functions:
             raise ValueError(
-                "config/source_modules.json: each module needs name, source, pdb_source_path, and functions"
+                f"{label}: module needs name, source, pdb_source_path, and functions"
             )
         if name in seen_names:
-            raise ValueError(f"config/source_modules.json: duplicate module name {name!r}")
+            raise ValueError(f"{label}: duplicate module name {name!r}")
         seen_names.add(name)
 
         functions: dict[str, dict[str, str]] = {}
         for raw_va, raw_entry in raw_functions.items():
             va = str(raw_va).upper()
             if len(va) != 8 or any(character not in "0123456789ABCDEF" for character in va):
-                raise ValueError(f"config/source_modules.json: invalid function VA {raw_va!r}")
+                raise ValueError(f"{label}: invalid function VA {raw_va!r}")
             if va in seen_vas:
-                raise ValueError(f"config/source_modules.json: VA {va} appears in multiple modules")
+                raise ValueError(f"{label}: VA {va} appears in multiple modules")
             if isinstance(raw_entry, str):
                 status = raw_entry.strip()
                 note_path = ""
@@ -380,13 +379,13 @@ def load_source_modules() -> list[dict[str, object]]:
                 status = str(raw_entry.get("status") or "").strip()
                 note_path = str(raw_entry.get("note_path") or "").replace("\\", "/").strip()
             else:
-                raise ValueError(f"config/source_modules.json: {va} must be a status or object")
+                raise ValueError(f"{label}: {va} must be a status or object")
             if status not in _SOURCE_MODULE_STATUSES:
                 raise ValueError(
-                    f"config/source_modules.json: {va} has invalid status {status!r}"
+                    f"{label}: {va} has invalid status {status!r}"
                 )
             if note_path and Path(note_path).suffix.casefold() != ".md":
-                raise ValueError(f"config/source_modules.json: {va} note_path must name a Markdown file")
+                raise ValueError(f"{label}: {va} note_path must name a Markdown file")
             seen_vas.add(va)
             functions[va] = {"status": status, "note_path": note_path}
         modules.append(

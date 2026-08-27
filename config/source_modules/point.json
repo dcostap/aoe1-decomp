@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "name": "point",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\point.cpp",
+  "source": "src/point.cpp",
+  "header": "include/point.h",
+  "functions": {
+    "0047E480": { "status": "matching" },
+    "0047E490": { "status": "matching" },
+    "0047E4B0": { "status": "scratch" },
+    "0047E4E0": { "status": "scratch" },
+    "0047E510": { "status": "scratch" },
+    "0047E530": {
+      "status": "scratch",
+      "note_path": "recovery_notes/0047E530_operator.md"
+    },
+    "0047E580": { "status": "scratch" },
+    "0047E5D0": {
+      "status": "matching",
+      "note_path": "recovery_notes/0047E5D0_rotateXYByFacet.md"
+    }
+  }
+}
