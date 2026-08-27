@@ -8,8 +8,6 @@
 // in one module-owned declaration.
 // Foreign owner headers stay private to victory.cpp.
 
-#include "rge_fio.h"
-
 class RGE_Game_World;
 class RGE_Player;
 class RGE_Static_Object;
