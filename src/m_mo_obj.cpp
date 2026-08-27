@@ -1,4 +1,9 @@
 #include "../include/m_mo_obj.h"
+#include "../include/move_obj.h"
+#include "../include/player.h"
+#include "../include/sprite.h"
+#include "../include/stat_obj.h"
+#include "../include/world.h"
 
 extern "C" void rge_read(int file, void* data, int size);
 extern "C" void rge_write(int file, void* data, int size);
@@ -138,7 +143,7 @@ RGE_Static_Object* RGE_Master_Moving_Object::make_new_obj(
         RGE_Static_Object* recycled =
             player->world->recycle_object_in_to_game(master_type);
         if (recycled) {
-            recycled->copy_obj(this, player, x, y, z);
+            recycled->recycle_in_to_game(this, player, x, y, z);
             return recycled;
         }
     }

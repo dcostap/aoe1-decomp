@@ -23,6 +23,7 @@ protected:
     int setup(int, RGE_Sprite**, RGE_Sound**);
     int setup(FILE*, RGE_Sprite**, RGE_Sound**, short);
 
+public:
     RGE_Sprite* move_sprite;
     RGE_Sprite* run_sprite;
     float turn_speed;
