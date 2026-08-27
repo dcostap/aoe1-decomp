@@ -1,5 +1,5 @@
-#ifndef SCR_SET_CONTEXT_H
-#define SCR_SET_CONTEXT_H
+#ifndef AOE1_SCR_SET_H
+#define AOE1_SCR_SET_H
 
 #include <stdio.h>
 #include <stdlib.h>
