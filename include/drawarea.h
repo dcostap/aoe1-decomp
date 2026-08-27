@@ -31,17 +31,14 @@ extern "C" __declspec(dllimport) int __stdcall DeleteObject(void*);
 extern "C" __declspec(dllimport) int __stdcall DeleteDC(void*);
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 
-struct DrawBitmapInfoHeader {
-    unsigned long biSize;
-    long biWidth;
-    long biHeight;
-};
-
 struct BITMAPINFO256 {
-    DrawBitmapInfoHeader bmiHeader;
+    BITMAPINFOHEADER bmiHeader;
+    RGBQUAD bmiColors[256];
 };
 
 typedef BITMAPINFO256 BitmapInfo;
+typedef char draw_bitmap_info_256_size_check[
+    (sizeof(BITMAPINFO256) == 0x428) ? 1 : -1];
 
 class TDrawSystem;
 class TDrawArea;

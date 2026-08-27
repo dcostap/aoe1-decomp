@@ -292,7 +292,7 @@ int TDrawSystem::Init(void* inst, void* wnd, void* pal,
             this->ErrorCode = 1;
             return 0;
         }
-        if (ddsd.dwHeight != 8) {
+        if (ddsd.ddpfPixelFormat.dwRGBBitCount != 8) {
             this->ErrorCode = 2;
             return 0;
         }

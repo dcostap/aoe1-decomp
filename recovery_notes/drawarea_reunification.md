@@ -19,10 +19,10 @@ the proven DirectDraw, GDI, bitmap, span-list, and draw-area layouts.
 - `00444C30 TDrawArea::SetClipRect`: accepted drift. The source preserves span
   manager ownership, seven calls, region setup, and row construction. The
   remaining differences are local compare and argument scheduling.
-- `00444D50 TDrawArea::Copy`: accepted drift. Both low-memory and DirectDraw
+- `00444D50 TDrawArea::Copy`: scratch. Both low-memory and DirectDraw
   paths preserve six calls, clipping, transparent flags, global status stores,
   and return behavior. The current module build has 716 differing bytes from
-  local address lowering.
+  local address lowering. This drift is too broad for accepted drift.
 - `004459A0 TDrawArea::DrawRect(long, long, long, long, uchar)`: accepted
   drift. The member source preserves the four line calls. The prior source used
   a calling-convention shim; this module uses the PDB member owner. A temporary
@@ -34,10 +34,10 @@ the proven DirectDraw, GDI, bitmap, span-list, and draw-area layouts.
 - `00445AF0 TDrawArea::DrawVertLine`: accepted drift. Clipping and pixel stores
   are preserved. The current module build has four register-coloring bytes of
   drift.
-- `004463B0 TDrawArea::take_snapshot`: accepted drift. Palette conversion,
+- `004463B0 TDrawArea::take_snapshot`: scratch. Palette conversion,
   numbered file retry, lock/write/unlock flow, bottom-up row copy, and cleanup
   are preserved. The current module build has 326 differing bytes from header
-  and retry-tail scheduling.
+  and retry-tail scheduling. This drift is too broad for accepted drift.
 - `00446230 TDrawArea::DrawShadowBox`: source reunification introduced one
   positional byte of register-map drift. The body, call, frame, and boundaries
   remain aligned. The exact-owner claim was removed.

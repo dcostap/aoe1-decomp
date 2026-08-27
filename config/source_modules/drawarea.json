@@ -46,7 +46,7 @@
     "00444B40": { "status": "matching" },
     "00444B50": { "status": "matching" },
     "00444C30": { "status": "accepted_drift", "note_path": "recovery_notes/drawarea_reunification.md" },
-    "00444D50": { "status": "accepted_drift", "note_path": "recovery_notes/drawarea_reunification.md" },
+    "00444D50": { "status": "scratch", "note_path": "recovery_notes/drawarea_reunification.md" },
     "00445710": { "status": "matching" },
     "00445780": { "status": "matching" },
     "004457E0": { "status": "matching" },
@@ -65,6 +65,6 @@
     "00446230": { "status": "accepted_drift", "note_path": "recovery_notes/drawarea_reunification.md" },
     "00446340": { "status": "matching" },
     "00446370": { "status": "matching" },
-    "004463B0": { "status": "accepted_drift", "note_path": "recovery_notes/drawarea_reunification.md" }
+    "004463B0": { "status": "scratch", "note_path": "recovery_notes/drawarea_reunification.md" }
   }
 }
