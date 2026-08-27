@@ -6384,26 +6384,22 @@
     },
     {
       "name": "tact_mob_cpp",
-      "source": "src/tact_mob_tu.cpp",
-      "flags": "config/flags/004D0DD0_TRIBE_Action_Make_Obj.rsp",
+      "source": "src/tact_mob.cpp",
+      "flags": "config/flags/default_gx.rsp",
       "owners": {
-        "004D0DD0": "src/matching/004D0DD0_TRIBE_Action_Make_Obj.cpp",
-        "004D0EF0": "src/matching/004D0EF0_TRIBE_Action_Make_Obj.cpp",
-        "004D0F70": "src/matching/004D0F70_save.cpp",
-        "004D10E0": "src/matching/004D10E0_set_state.cpp",
-        "004D10F0": "src/matching/004D10F0_update.cpp",
-        "004D12B0": "src/matching/004D12B0_place_obj.cpp",
-        "004D1550": "src/matching/004D1550_stop.cpp",
-        "004D15F0": "src/matching/004D15F0_get_info.cpp"
+        "004D0DD0": "src/tact_mob.cpp",
+        "004D0EF0": "src/tact_mob.cpp",
+        "004D0F70": "src/tact_mob.cpp",
+        "004D10E0": "src/tact_mob.cpp",
+        "004D12B0": "src/tact_mob.cpp",
+        "004D1550": "src/tact_mob.cpp"
       },
       "symbols": {
         "004D0DD0": "??0TRIBE_Action_Make_Obj@@QAE@HPAVRGE_Action_Object@@@Z",
         "004D0EF0": "??1TRIBE_Action_Make_Obj@@UAE@XZ",
         "004D0F70": "?save@TRIBE_Action_Make_Obj@@UAEXH@Z",
         "004D10E0": "?set_state@TRIBE_Action_Make_Obj@@MAEXE@Z",
-        "004D10F0": "?update@TRIBE_Action_Make_Obj@@UAEEXZ",
-        "004D1550": "?stop@TRIBE_Action_Make_Obj@@UAEHXZ",
-        "004D15F0": "?get_info@TRIBE_Action_Make_Obj@@QAEXAAF0PADF@Z"
+        "004D1550": "?stop@TRIBE_Action_Make_Obj@@UAEHXZ"
       }
     },
     {
