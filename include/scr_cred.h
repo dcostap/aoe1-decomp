@@ -1,5 +1,5 @@
-#ifndef SCR_CRED_CONTEXT_H
-#define SCR_CRED_CONTEXT_H
+#ifndef SCR_CRED_H
+#define SCR_CRED_H
 
 // Canonical scr_cred.cpp screen surface.  The class order follows the PDB
 // source order.  The virtual declarations preserve the period UI slots.
