@@ -45,7 +45,9 @@
 // BINARY NOTE: RESFILE_load uses its C++ cdecl owner at 0047F320.
 // BINARY NOTE: The reviewed full Panel_ez context is used for standalone and grouped builds.
 
+#ifndef AOE1_PANEL_EZ_CONTEXT_H
 #include "../../include/panel_ez_full_context.h"
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
