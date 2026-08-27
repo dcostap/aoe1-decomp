@@ -5,9 +5,6 @@
 // - id pointer at function scope for unconditional edi save/setup
 // - counter inside the if block for conditional ebp save
 // - object local inside the loop for conditional esi save
-// BINARY NOTE: The packet stores its first object ID at byte offset +2.
-// The complete TU header uses an aligned view, so this owner keeps a local
-// packed view for that proven wire layout.
 
 #ifndef COMMAND_TU_CONTEXT
 class RGE_Static_Object;
@@ -69,16 +66,8 @@ public:
 #endif
 
 void RGE_Command::do_command_stop(RGE_Command_Stop* stop) {
-#pragma pack(push, 1)
-    struct RGE_Command_Stop_Packed {
-        unsigned char command;
-        unsigned char unit_num;
-        RGE_Obj_Info object_ids[1];
-    };
-#pragma pack(pop)
-    RGE_Command_Stop_Packed* packet = (RGE_Command_Stop_Packed*)stop;
-    int count = packet->unit_num;
-    RGE_Obj_Info* id = packet->object_ids;
+    int count = stop->unit_num;
+    RGE_Obj_Info* id = (RGE_Obj_Info*)stop->object_ids;
     if (count > 0) {
         int cnt = count;
         do {

@@ -1,4 +1,6 @@
 #ifndef COMMAND_TU_CONTEXT
+void __cdecl operator_delete(void* p);
+
 class RGE_Command {
 public:
     virtual ~RGE_Command();
@@ -6,25 +8,24 @@ public:
     void* field_08;
     char gap_0C[0x08];
     int field_14;
+
+    ~RGE_Command();
 };
 #endif
-
-extern "C" void __cdecl free(void* p);
 
 // ABI NOTE: 00433D70 is a compiler-generated scalar deleting destructor.
 // VC5 defines ??_G here and leaves ??_E as a weak external. The original
 // FPO record calls the same body vector deleting, but cvdump and the original
 // vtable assign ownership to scalar deleting. Do not add synthetic new[] use.
 // TU NOTE: Binding cleanup to CRT free makes this owner exact, but a fresh
-// grouped sweep regresses one registered Command.cpp owner. Keep this form
-// until the shared compiler context explains that regression.
-// BINARY NOTE: The direct cleanup target is CRT free, not operator_delete.
+// grouped sweep regresses four registered Command.cpp owners. Keep the
+// operator-delete form until the shared compiler context explains that drift.
 
 RGE_Command::~RGE_Command() {
     this->field_04 = 0;
     this->field_14 = 0;
     void* p = this->field_08;
     if (p != 0) {
-        free(p);
+        operator_delete(p);
     }
 }
