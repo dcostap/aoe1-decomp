@@ -1,11 +1,5 @@
-#ifndef PNL_SLD_CONTEXT_H
-#define PNL_SLD_CONTEXT_H
-
-// Pnl_sld.cpp owner context.
-//
-// The module uses one panel hierarchy.  Keep the proven panel offsets in this
-// header so all source owners compile as one translation unit.
-// This is a module candidate, not a reviewed cross-module ABI declaration.
+#ifndef PNL_SLD_H
+#define PNL_SLD_H
 
 class TDrawArea;
 class TPanel;
@@ -25,7 +19,11 @@ public:
 
 class TScrollBarPanel : public TPanel {
 public:
-    char gap_F4[0x108 - 0xF4];
+    TPanel* list_panel;
+    long list_len;
+    long one_step;
+    long page_step;
+    long list_num;
     TShape* button_pics;
     int back_frame;
     int up_frame;
@@ -45,10 +43,13 @@ public:
     long right2;
     char gap_180[0x1C4 - 0x180];
 
+    enum Orientation { Vertical = 0, Horizontal = 1 };
+
     virtual ~TScrollBarPanel();
     TScrollBarPanel();
     long setup(TDrawArea*, TPanel*, long, long, long, long,
-               char*, char*, char*, char*, int, long, void*, long, int);
+               char*, char*, char*, char*, long, long, TPanel*, long,
+               Orientation);
     virtual void set_rect(long, long, long, long);
     virtual void draw();
     void calc_item_rects();
