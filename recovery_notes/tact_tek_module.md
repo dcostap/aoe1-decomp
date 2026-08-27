@@ -8,14 +8,14 @@ source and address order:
 
 | VA | PDB lines | Owner | State |
 | --- | --- | --- | --- |
-| 004D21B0 | 29-34 | `TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(int, RGE_Action_Object*)` | matching |
+| 004D21B0 | 29-34 | `TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(int, RGE_Action_Object*)` | scratch |
 | 004D2250 | 41-45 | `TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(RGE_Action_Object*, short, int)` | accepted drift |
 | 004D2290 | 49-64 | `TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech()` | scratch |
 | 004D2370 | 68-73 | `TRIBE_Action_Make_Tech::save(int)` | matching |
-| 004D23B0 | 76-98 | `TRIBE_Action_Make_Tech::first_in_stack(unsigned char)` | matching |
+| 004D23B0 | 76-98 | `TRIBE_Action_Make_Tech::first_in_stack(unsigned char)` | scratch |
 | 004D2440 | 102-106 | `TRIBE_Action_Make_Tech::set_state(unsigned char)` | matching |
 | 004D2450 | 109-134 | `TRIBE_Action_Make_Tech::update()` | scratch |
-| 004D2550 | 138-147 | `TRIBE_Action_Make_Tech::stop()` | matching |
+| 004D2550 | 138-147 | `TRIBE_Action_Make_Tech::stop()` | scratch |
 | 004D25E0 | 151-164 | `TRIBE_Action_Make_Tech::get_info(short&, short&, char*, short)` | accepted drift |
 
 The nearby VA 004D2230 vector-deleting destructor is compiler generated. It is
@@ -52,7 +52,7 @@ computes research work, calls `research`, and reports completed research. The
 current natural source preserves these paths. Its grouped code shape and
 register allocation remain unresolved.
 
-The fresh consolidated-module sweep compiles all nine owners. The five
+The prior consolidated-module sweep compiled all nine owners. The five
 registered matching owners remain `MATCH` with zero positional diff. The
 004D2250 accepted-drift owner has a nine-byte positional mismatch. The
 004D25E0 accepted-drift owner has a one-byte positional mismatch. The destructor
@@ -60,6 +60,12 @@ at 004D2290 emits an exact grouped body, but remains scratch until a reviewed
 promotion changes its durable state. The update owner remains a 235-byte
 positional mismatch. All nine owners have matching PDB ownership, relocations,
 and boundaries.
+
+After canonical `tplayer.h` and `tech.h` cleanup, a grouped candidate reports
+exact `MATCH` only for `004D2370` and `004D2440`. `004D21B0` differs by 111
+bytes, `004D23B0` by 83 bytes, and `004D2550` by 95 bytes. All three retain
+matching owner, relocation, and boundary data. They are scratch. The existing
+drift and scratch owners remain unpromoted.
 
 This consolidation removes wrapper-only includes, context macros, fallback
 class declarations, and per-function source fragments. It does not change the

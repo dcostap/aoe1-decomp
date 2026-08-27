@@ -4431,18 +4431,12 @@
       "module": "tact_tek",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
-        "004D21B0": "src/tact_tek.cpp",
         "004D2370": "src/tact_tek.cpp",
-        "004D23B0": "src/tact_tek.cpp",
-        "004D2440": "src/tact_tek.cpp",
-        "004D2550": "src/tact_tek.cpp"
+        "004D2440": "src/tact_tek.cpp"
       },
       "symbols": {
-        "004D21B0": "??0TRIBE_Action_Make_Tech@@QAE@HPAVRGE_Action_Object@@@Z",
         "004D2370": "?save@TRIBE_Action_Make_Tech@@UAEXH@Z",
-        "004D23B0": "?first_in_stack@TRIBE_Action_Make_Tech@@UAEXE@Z",
-        "004D2440": "?set_state@TRIBE_Action_Make_Tech@@MAEXE@Z",
-        "004D2550": "?stop@TRIBE_Action_Make_Tech@@UAEHXZ"
+        "004D2440": "?set_state@TRIBE_Action_Make_Tech@@MAEXE@Z"
       }
     },
     {
