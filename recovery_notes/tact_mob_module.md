@@ -51,7 +51,7 @@ offset and complete size without explicit padding fields.
 `src/tact_mob.cpp` now uses that owner for both +0x15A reads. It does not use a
 local field carrier or a raw offset.
 
-The six prior exact owners remain registered in `config/translation_units.json`.
+The seven exact owners are now registered in `config/translation_units.json`.
 The two accepted-drift owners remain reviewed in
 `config/source_modules/tact_mob.json`. 004D10F0 remains scratch pending a
 separate owner review. 004D15F0 is now promoted only after its final target
@@ -60,9 +60,9 @@ check; this does not promote the rest of the Tact Mob chain.
 The old wrapper, context, per-owner source fragments, and per-owner response
 files are removed. The header cleanup invalidates the previous grouped object.
 
-The scoped candidate check used `build/candidate_tus/tact_mob.json` and the six
-exact owners, the two accepted-drift owners, the two scratch owners, and
-generated 004D0E90. The canonical owner change produced these results:
+The scoped candidate check used all seven exact owners, the two accepted-drift
+owners, the remaining scratch owner, and generated 004D0E90. The canonical
+owner change produced these results:
 
 - 004D15F0 `get_info`: `MATCH`, 0 bytes, owner match, 0 relocation target
   mismatches, and 0 boundary escapes. The rebuilt size is 140 bytes.
@@ -96,10 +96,10 @@ generated 004D0E90. The canonical owner change produced these results:
   The post-rebase candidate report records an overload-selection comparison
   error for accepted-drift 004D0EB0. Its accepted-drift status is unchanged.
 
-The post-rebase full candidate report has 6/6 registered exact-owner matches,
-1/4 observed matches, and 1/1 generated matches. One observed row is a
+The post-rebase full candidate report has 7/7 registered exact-owner matches,
+0/3 observed matches, and 1/1 generated matches. One observed row is a
 comparison error. The full candidate group is not exact because 004D0FC0 and
-004D10F0 remain observed mismatches.
+004D10F0 remain observed mismatches, while 004D0EB0 has the comparison error.
 
 The final target checks report exact 004D12B0, 004D1550, and 004D15F0 results.
 Only 004D15F0 changed status in this promotion. Current main contains the
