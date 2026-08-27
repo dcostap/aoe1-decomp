@@ -6,7 +6,13 @@
 // default per-function checks.  The unregistered TU wrapper selects this
 // complete period source context instead.
 
-typedef int COMMMESSAGES;
+// The PDB-qualified 00428280 call is
+// TCommunications_Handler::NotifyWindowParam(enum COMMMESSAGES, long).
+// Keep the enum type in this owner context so its direct target keeps the
+// original decorated ABI.
+enum COMMMESSAGES {
+    COMMMESSAGE_SYNC_ERROR = 0x17B0
+};
 
 class TCommunications_Handler {
 public:
@@ -24,7 +30,8 @@ public:
 
 class TDebuggingLog {
 public:
-    void Log(const char* format, ...);
+    // PDB names the shipped vararg member as Log(char*, ...).
+    void Log(char* format, ...);
     void FlushLog();
 };
 
