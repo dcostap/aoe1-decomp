@@ -10,7 +10,7 @@
     "00480400": { "status": "matching" },
     "00480460": { "status": "matching" },
     "00480480": {
-      "status": "verified_logic",
+      "status": "scratch",
       "note_path": "recovery_notes/rge_tslc.md"
     },
     "00480510": { "status": "matching" },

@@ -99,6 +99,9 @@ char* RGE_TimeSinceLastCall::GetHiLoMaxInfo(int count)
     unsigned long minimum;
     int original_count = count;
 
+    // ORIGINAL BUG: Invalid counts leave these automatic values unset, but the
+    // shipped function still reads them through sprintf below. The executable
+    // obtains all three values from the incoming count home.
     if (count >= 1 && count <= 100) {
         int index = Offset;
 
@@ -139,6 +142,9 @@ char* RGE_TimeSinceLastCall::GetHiLoInfo(int count)
     unsigned long maximum;
     unsigned long minimum;
 
+    // ORIGINAL BUG: Invalid counts leave these automatic values unset, but the
+    // shipped function still reads them through sprintf below. The executable
+    // obtains all three values from the incoming count home.
     if (count >= 1 && count <= 100) {
         int index = Offset;
 
