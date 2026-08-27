@@ -33,7 +33,10 @@
 #ifndef MAP_CONTEXT_H
 struct RGE_Tile {
     char gap_00[5];
-    unsigned char terrain_elev;
+    unsigned char terrain_type : 5;
+    unsigned char height : 3;
+    unsigned char border_type : 4;
+    unsigned char border_shape : 4;
     char gap_06[0x12];
 };
 
@@ -60,7 +63,6 @@ unsigned char RGE_Map::postclean_elevation(long x0, long y0, long x1, long y1,
     bool bad;
     bool neighbor_bad;
     int x;
-    unsigned char tile_byte;
     unsigned short next_elevation;
     RGE_Tile* tile;
     long changed;
@@ -91,65 +93,63 @@ unsigned char RGE_Map::postclean_elevation(long x0, long y0, long x1, long y1,
         for (x = (int)x0; x <= x1; ++x) {
             neighbor_bad = false;
             bad = false;
-            tile_byte = tile->terrain_elev;
-            next_elevation = (unsigned short)(tile_byte >> 5);
+            next_elevation = tile->height;
 
             if (next_elevation < elevation) {
                 ++next_elevation;
-                if (y0 > 0 && next_elevation < (unsigned short)(tile[offset1].terrain_elev >> 5))
+                if (y0 > 0 && next_elevation < tile[offset1].height)
                     neighbor_bad = true;
                 last_row = this->map_height - 1;
-                if (y0 < last_row && next_elevation < (unsigned short)(tile[width].terrain_elev >> 5))
+                if (y0 < last_row && next_elevation < tile[width].height)
                     neighbor_bad = true;
-                if (x > 0 && next_elevation < (unsigned short)(tile[-1].terrain_elev >> 5))
+                if (x > 0 && next_elevation < tile[-1].height)
                     neighbor_bad = true;
                 last_col = this->map_width - 1;
-                if (x < last_col && next_elevation < (unsigned short)(tile[1].terrain_elev >> 5))
+                if (x < last_col && next_elevation < tile[1].height)
                     neighbor_bad = true;
                 bad = neighbor_bad;
                 if (y0 > 0) {
-                    if (x > 0 && next_elevation < (unsigned short)(tile[offset3].terrain_elev >> 5))
+                    if (x > 0 && next_elevation < tile[offset3].height)
                         neighbor_bad = true;
                     bad = neighbor_bad;
-                    if (x < last_col && next_elevation < (unsigned short)(tile[offset2].terrain_elev >> 5))
+                    if (x < last_col && next_elevation < tile[offset2].height)
                         bad = true;
                 }
                 if (y0 < last_row) {
-                    if (x > 0 && next_elevation < (unsigned short)(tile[width - 1].terrain_elev >> 5))
+                    if (x > 0 && next_elevation < tile[width - 1].height)
                         bad = true;
-                    if (x < last_col && next_elevation < (unsigned short)(tile[width + 1].terrain_elev >> 5))
+                    if (x < last_col && next_elevation < tile[width + 1].height)
                         bad = true;
                 }
             } else if (elevation < next_elevation) {
                 next_elevation = (unsigned short)(next_elevation - 1);
-                if (y0 > 0 && (short)(unsigned short)(tile[offset1].terrain_elev >> 5) < (short)next_elevation)
+                if (y0 > 0 && (short)tile[offset1].height < (short)next_elevation)
                     bad = true;
                 last_row = this->map_height - 1;
-                if (y0 < last_row && (short)(unsigned short)(tile[width].terrain_elev >> 5) < (short)next_elevation)
+                if (y0 < last_row && (short)tile[width].height < (short)next_elevation)
                     bad = true;
-                if (x > 0 && (short)(unsigned short)(tile[-1].terrain_elev >> 5) < (short)next_elevation)
+                if (x > 0 && (short)tile[-1].height < (short)next_elevation)
                     bad = true;
                 last_col = this->map_width - 1;
-                if (x < last_col && (short)(unsigned short)(tile[1].terrain_elev >> 5) < (short)next_elevation)
+                if (x < last_col && (short)tile[1].height < (short)next_elevation)
                     bad = true;
                 if (y0 > 0) {
-                    if (x > 0 && (short)(unsigned short)(tile[offset3].terrain_elev >> 5) < (short)next_elevation)
+                    if (x > 0 && (short)tile[offset3].height < (short)next_elevation)
                         bad = true;
-                    if (x < last_col && (short)(unsigned short)(tile[offset2].terrain_elev >> 5) < (short)next_elevation)
+                    if (x < last_col && (short)tile[offset2].height < (short)next_elevation)
                         bad = true;
                 }
                 if (y0 < last_row) {
-                    if (x > 0 && (short)(unsigned short)(tile[width - 1].terrain_elev >> 5) < (short)next_elevation)
+                    if (x > 0 && (short)tile[width - 1].height < (short)next_elevation)
                         bad = true;
-                    if (x < last_col && (short)(unsigned short)(tile[width + 1].terrain_elev >> 5) < (short)next_elevation)
+                    if (x < last_col && (short)tile[width + 1].height < (short)next_elevation)
                         bad = true;
                 }
             }
 
             if (bad) {
                 changed = 1;
-                tile->terrain_elev = (unsigned char)((next_elevation << 5) |
-                                                     (tile->terrain_elev & 0x1f));
+                tile->height = (unsigned char)next_elevation;
             }
             ++tile;
         }

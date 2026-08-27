@@ -72,18 +72,18 @@ void RGE_Map::get_border_type(short x, short y)
     RGE_Tile** rows = this->map_row_offset;
     xi = x;
     RGE_Tile* cur = rows[y] + xi;
-    ter_top_lft = cur->terrain_elevation & 0x1f;
+    ter_top_lft = cur->terrain_type;
 
-    if (y > 0) ter_lft = rows[y - 1][xi].terrain_elevation & 0x1f; else ter_lft = ter_top_lft;
+    if (y > 0) ter_lft = rows[y - 1][xi].terrain_type; else ter_lft = ter_top_lft;
     yMax = this->map_height - 1;
-    if (y < yMax) tile = rows[y + 1][xi].terrain_elevation & 0x1f; else tile = ter_top_lft;
-    if (x > 0) ter_rgt = rows[y][xi - 1].terrain_elevation & 0x1f; else ter_rgt = ter_top_lft;
+    if (y < yMax) tile = rows[y + 1][xi].terrain_type; else tile = ter_top_lft;
+    if (x > 0) ter_rgt = rows[y][xi - 1].terrain_type; else ter_rgt = ter_top_lft;
     xMax = this->map_width - 1;
-    if (xi < xMax) ter_bot = rows[y][xi + 1].terrain_elevation & 0x1f; else ter_bot = ter_top_lft;
-    if (y > 0 && x > 0) ter_bot_lft = rows[y - 1][xi - 1].terrain_elevation & 0x1f; else ter_bot_lft = ter_top_lft;
-    if (y > 0 && xi < xMax) ter_top = rows[y - 1][xi + 1].terrain_elevation & 0x1f; else ter_top = ter_top_lft;
-    if (y < yMax && x > 0) ter_bot_rgt = rows[y + 1][xi - 1].terrain_elevation & 0x1f; else ter_bot_rgt = ter_top_lft;
-    if (y < yMax && xi < xMax) ter_final = rows[y + 1][xi + 1].terrain_elevation & 0x1f; else ter_final = ter_top_lft;
+    if (xi < xMax) ter_bot = rows[y][xi + 1].terrain_type; else ter_bot = ter_top_lft;
+    if (y > 0 && x > 0) ter_bot_lft = rows[y - 1][xi - 1].terrain_type; else ter_bot_lft = ter_top_lft;
+    if (y > 0 && xi < xMax) ter_top = rows[y - 1][xi + 1].terrain_type; else ter_top = ter_top_lft;
+    if (y < yMax && x > 0) ter_bot_rgt = rows[y + 1][xi - 1].terrain_type; else ter_bot_rgt = ter_top_lft;
+    if (y < yMax && xi < xMax) ter_final = rows[y + 1][xi + 1].terrain_type; else ter_final = ter_top_lft;
 
     check_for_border(ter_top_lft, ter_lft);
     check_for_border(ter_top_lft, tile);

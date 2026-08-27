@@ -18,8 +18,10 @@ public:
     short screen_xpos;
     short screen_ypos;
     unsigned char tile_type;
-    unsigned char terrain_type;
-    unsigned char border_type;
+    unsigned char terrain_type : 5;
+    unsigned char height : 3;
+    unsigned char border_type : 4;
+    unsigned char border_shape : 4;
     unsigned char last_drawn_as;
     unsigned char last_drawn_shape;
     unsigned char draw_as;
@@ -77,7 +79,7 @@ void RGE_Map::set_map_screen_pos(int col0, int row0, int col1, int row1)
         for (int col = col0; col <= col1; ++tile, ++col) {
             tile->screen_xpos = (short)(row0 + col) * this->tile_half_width;
             tile->screen_ypos = (short)(row0 - col) * this->tile_half_height
-                              - (short)(tile->terrain_type >> 5) * this->elev_height;
+                              - (short)tile->height * this->elev_height;
 
             switch (tile->tile_type) {
             case 2:

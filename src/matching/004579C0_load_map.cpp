@@ -68,8 +68,10 @@ public:
     short screen_xpos;
     short screen_ypos;
     unsigned char tile_type;
-    unsigned char terrain_type;
-    unsigned char border_type;
+    unsigned char terrain_type : 5;
+    unsigned char height : 3;
+    unsigned char border_type : 4;
+    unsigned char border_shape : 4;
     unsigned char last_drawn_as;
     unsigned char last_drawn_shape;
     unsigned char draw_as;
@@ -135,20 +137,14 @@ void RGE_Map::load_map(int file)
                         rge_read(file, &tile->tile_type, 1);
 
                         rge_read(file, &value, 1);
-                        tile->terrain_type = (unsigned char)
-                            (((value ^ tile->terrain_type) & 0x1f) ^
-                             tile->terrain_type);
+                        tile->terrain_type = value;
                         rge_read(file, &value, 1);
-                        tile->terrain_type = (unsigned char)
-                            ((value << 5) | (tile->terrain_type & 0x1f));
+                        tile->height = value;
 
                         rge_read(file, &value, 1);
-                        tile->border_type = (unsigned char)
-                            (((value ^ tile->border_type) & 0x0f) ^
-                             tile->border_type);
+                        tile->border_type = value;
                         rge_read(file, &value, 1);
-                        tile->border_type = (unsigned char)
-                            ((value << 4) | (tile->border_type & 0x0f));
+                        tile->border_shape = value;
                         tile->last_drawn_as = 0;
                         tile->last_drawn_shape = 0xff;
 

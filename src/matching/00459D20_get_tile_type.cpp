@@ -19,7 +19,8 @@ typedef unsigned char uchar;
 #ifndef MAP_CONTEXT_H
 struct RGE_Tile {
     char gap0[5];
-    uchar terrain_type;
+    uchar terrain_type : 5;
+    uchar height : 3;
     char rest[0x12];
 };
 
@@ -55,18 +56,18 @@ uchar RGE_Map::get_tile_type(short x, short y)
     rows = this->map_rows;
     row = rows[y];
     tile = row + x;
-    c = (unsigned short)(rows[y][x].terrain_type >> 5);
+    c = (unsigned short)rows[y][x].height;
     cp1 = c + 1;
     cm1 = c - 1;
 
-    if (y > 0 && (long)x < width - 1) nw = (unsigned short)(rows[y - 1][x + 1].terrain_type >> 5); else nw = c;
-    if (y > 0) n = (unsigned short)(rows[y - 1][x].terrain_type >> 5); else n = c;
-    if ((long)x < width - 1) e = (unsigned short)(tile[1].terrain_type >> 5); else e = c;
-    if (x > 0 && (long)y < height - 1) sw = (unsigned short)(rows[y + 1][x - 1].terrain_type >> 5); else sw = c;
-    if (x > 0) w = (unsigned short)(tile[-1].terrain_type >> 5); else w = c;
-    if ((long)y < height - 1) s = (unsigned short)(rows[y + 1][x].terrain_type >> 5); else s = c;
-    if (y > 0 && x > 0) ne = (unsigned short)(rows[y - 1][x - 1].terrain_type >> 5); else ne = c;
-    if ((long)y < height - 1 && (long)x < width - 1) se = (unsigned short)(rows[y + 1][x + 1].terrain_type >> 5); else se = c;
+    if (y > 0 && (long)x < width - 1) nw = (unsigned short)rows[y - 1][x + 1].height; else nw = c;
+    if (y > 0) n = (unsigned short)rows[y - 1][x].height; else n = c;
+    if ((long)x < width - 1) e = (unsigned short)tile[1].height; else e = c;
+    if (x > 0 && (long)y < height - 1) sw = (unsigned short)rows[y + 1][x - 1].height; else sw = c;
+    if (x > 0) w = (unsigned short)tile[-1].height; else w = c;
+    if ((long)y < height - 1) s = (unsigned short)rows[y + 1][x].height; else s = c;
+    if (y > 0 && x > 0) ne = (unsigned short)rows[y - 1][x - 1].height; else ne = c;
+    if ((long)y < height - 1 && (long)x < width - 1) se = (unsigned short)rows[y + 1][x + 1].height; else se = c;
 
     if (n == cp1 && e == cp1) return 0x0e;
     if (w == cp1 && s == cp1) return 0x0d;

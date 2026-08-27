@@ -1,5 +1,10 @@
 #ifndef MAP_CONTEXT_H
-struct Tile { char gap[5]; unsigned char terrain; char rest[18]; };
+struct Tile {
+    char gap[5];
+    unsigned char terrain_type : 5;
+    unsigned char height : 3;
+    char rest[18];
+};
 class RGE_Map {
 public:
     char gap_00[0x8C];
@@ -10,7 +15,7 @@ public:
 };
 #endif
 unsigned char RGE_Map::get_terrain(short x, short y) {
-    unsigned char id = this->map_row_offset[y][x].terrain & 0x1F;
+    unsigned char id = this->map_row_offset[y][x].terrain_type;
     if (id <= 0x20) {
         unsigned int idx = id;
         char* t = (char*)this + idx * 0x198;

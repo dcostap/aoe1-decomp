@@ -112,10 +112,8 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                     (unsigned char)line.spacing) != 0) {
                 this->remove_area_from_lists(y, x, clump_size);
 
-                *((unsigned char*)this->map_row_offset[x] + y * 0x18 + 5) =
-                    (unsigned char)(line.elevation << 5)
-                    | (*((unsigned char*)this->map_row_offset[x]
-                        + y * 0x18 + 5) & 0x1F);
+                RGE_Tile* tile = &this->map_row_offset[x][y];
+                tile->height = (unsigned char)line.elevation;
 
                 if (y > 0) {
                     this->push_stack(&stack[i], y - 1, x, 0.0f, 0.0f);
@@ -152,9 +150,7 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                             s_C__msdev_work_age1_x1_rmm_elev_c, 0x171) * 100)
                             / 0x7FFF;
                         if (*mark <= random_value) {
-                            unsigned char* tile =
-                                (unsigned char*)this->map_row_offset[x]
-                                + y * 0x18;
+                            RGE_Tile* tile = &this->map_row_offset[x][y];
                             long raw_ok = this->check_elevation(
                                 (unsigned char)line.elevation, y, x,
                                 line.spacing,
@@ -162,15 +158,14 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 (unsigned char)line.base_elevation);
                             ok = (unsigned char)raw_ok;
 
-                            if (((tile[5] >> 5)
-                                == (unsigned char)line.base_elevation)
+                            if (tile->height
+                                == (unsigned char)line.base_elevation
                                 && raw_ok > 0) {
                                 local_chance = this->fig_chance(ok, y, x);
-                                tile[5] = (unsigned char)(line.elevation << 5)
-                                    | (tile[5] & 0x1F);
+                                tile->height = (unsigned char)line.elevation;
 
                                 if (y > 0) {
-                                    if ((tile[-0x13] >> 5)
+                                    if (tile[-1].height
                                         == (unsigned char)line.base_elevation) {
                                         long random_value = (debug_rand(
                                             s_C__msdev_work_age1_x1_rmm_elev_c,
@@ -181,7 +176,7 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                                     }
                                 }
                                 if (y < this->map_width - 1) {
-                                    if ((tile[0x1D] >> 5)
+                                    if (tile[1].height
                                         == (unsigned char)line.base_elevation) {
                                         long random_value = (debug_rand(
                                             s_C__msdev_work_age1_x1_rmm_elev_c,
@@ -192,7 +187,7 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                                     }
                                 }
                                 if (x > 0) {
-                                    if ((tile[-this->map_width * 0x18 + 5] >> 5)
+                                    if (tile[-this->map_width].height
                                         == (unsigned char)line.base_elevation) {
                                         long random_value = (debug_rand(
                                             s_C__msdev_work_age1_x1_rmm_elev_c,
@@ -203,7 +198,7 @@ unsigned char RGE_RMM_Elevation_Generator::base_elevation_generate(
                                     }
                                 }
                                 if (x < this->map_height - 1) {
-                                    if ((tile[this->map_width * 0x18 + 5] >> 5)
+                                    if (tile[this->map_width].height
                                         == (unsigned char)line.base_elevation) {
                                         long random_value = (debug_rand(
                                             s_C__msdev_work_age1_x1_rmm_elev_c,

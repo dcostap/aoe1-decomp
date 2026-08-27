@@ -61,8 +61,10 @@ public:
     short screen_xpos;
     short screen_ypos;
     unsigned char tile_type;
-    unsigned char terrain_type;
-    unsigned char border_type;
+    unsigned char terrain_type : 5;
+    unsigned char height : 3;
+    unsigned char border_type : 4;
+    unsigned char border_shape : 4;
     char gap_07[0x11];
 };
 
@@ -122,13 +124,13 @@ void RGE_Map::save_map(int file)
                     rge_write(handle, &tile->screen_ypos, 2);
                     rge_write(handle, &tile->tile_type, 1);
 
-                    unsigned char value = tile->terrain_type & 0x1f;
+                    unsigned char value = tile->terrain_type;
                     rge_write(handle, &value, 1);
-                    value = tile->terrain_type >> 5;
+                    value = tile->height;
                     rge_write(handle, &value, 1);
-                    value = tile->border_type & 0x0f;
+                    value = tile->border_type;
                     rge_write(handle, &value, 1);
-                    value = tile->border_type >> 4;
+                    value = tile->border_shape;
                     rge_write(handle, &value, 1);
 
                     ++tile;

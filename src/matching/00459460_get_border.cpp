@@ -5,7 +5,8 @@
 #ifndef MAP_CONTEXT_H
 struct RGE_Map_Tile {
     char gap_00[6];
-    unsigned char border;
+    unsigned char border_type : 4;
+    unsigned char border_shape : 4;
     char gap_07[17];
 };
 
@@ -26,7 +27,7 @@ public:
 #endif
 
 unsigned char RGE_Map::get_border(short x, short y) {
-    unsigned char border = this->map_row_offset[y][x].border & 0x0F;
+    unsigned char border = this->map_row_offset[y][x].border_type;
     if (border > 0x10 || this->border_types[border].loaded == 0) {
         border = 0;
     }

@@ -10,7 +10,8 @@ extern "C" void __cdecl rge_write(int file, void* data, int size);
 #ifndef MAP_CONTEXT_H
 struct RGE_Tile {
     char gap_00[5];
-    unsigned char terrain_info;
+    unsigned char terrain_type : 5;
+    unsigned char height : 3;
     char gap_06[18];
 };
 
@@ -46,8 +47,8 @@ void RGE_Map::scenario_save(int file)
             short x = 0;
             if (height_count > 0) {
                 do {
-                    overlay_info = map->map_row_offset[y][x].terrain_info & 0x1f;
-                    height_info = map->map_row_offset[y][x].terrain_info >> 5;
+                    overlay_info = map->map_row_offset[y][x].terrain_type;
+                    height_info = map->map_row_offset[y][x].height;
                     local_bytes[0] = height_info;
                     local_bytes[1] = 0;
                     rge_write(file, &overlay_info, 1);

@@ -156,7 +156,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
                 long xx = x1;
                 do {
                     if (terrain == 0xFF || cell->terrain_type != terrain
-                        || cell->elevation < min_elev) {
+                        || cell->height < min_elev) {
                         return 0;
                     }
                     ++xx;
@@ -199,7 +199,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(uchar elev, long x, long y, l
                 RGE_Tile* cell = row_base2;
                 long cols_left = x2 - x1 + 1;
                 do {
-                    if (cell->elevation == elev) {
+                    if (cell->height == elev) {
                         ++count;
                     }
                     ++cell;

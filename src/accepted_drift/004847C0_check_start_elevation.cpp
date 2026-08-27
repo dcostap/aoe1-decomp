@@ -283,7 +283,7 @@ unsigned char RGE_RMM_Elevation_Generator::check_start_elevation(long x, long y,
             do {
                 if (terrain == 0xFF
                     || cell->terrain_type != terrain
-                    || cell->elevation < elevation) {
+                    || cell->height < elevation) {
                     return 0;
                 }
                 col++;

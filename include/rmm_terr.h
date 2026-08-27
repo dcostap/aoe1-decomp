@@ -26,7 +26,7 @@ struct RGE_Tile {
     short screen_ypos;
     uchar tile_type;
     uchar terrain_type : 5;
-    uchar elevation : 3;
+    uchar height : 3;
     uchar border_type : 4;
     uchar border_shape : 4;
     uchar last_drawn_as;

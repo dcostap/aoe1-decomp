@@ -28,7 +28,8 @@ class RGE_Game_World;
 
 struct RGE_Tile {
     char gap_00[5];
-    unsigned char terrain_info;
+    unsigned char terrain_type : 5;
+    unsigned char height : 3;
     char gap_06[18];
 };
 
@@ -82,14 +83,8 @@ void RGE_Map::scenario_load(int file, unsigned char* param2)
                     rge_read(iVar3, &height_info, 1);
                     rge_read(iVar3, &unused_info, 1);
 
-                    this->map_row_offset[x][i].terrain_info =
-                        (unsigned char)((overlay_info ^
-                                         this->map_row_offset[x][i].terrain_info) &
-                                        0x1F) ^
-                        this->map_row_offset[x][i].terrain_info;
-                    this->map_row_offset[x][i].terrain_info =
-                        (unsigned char)(height_info << 5) |
-                        (this->map_row_offset[x][i].terrain_info & 0x1F);
+                    this->map_row_offset[x][i].terrain_type = overlay_info;
+                    this->map_row_offset[x][i].height = height_info;
 
                     y = y + 1;
                     i = (int)(short)y;

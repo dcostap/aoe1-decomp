@@ -3,8 +3,7 @@
 
 // PDB source: C:\\msdev\\work\\age1_x1\\map.cpp.
 // This surface covers the RGE_Map owners in src/map_tu.cpp.
-// The field aliases retain the proven map offsets while supporting the
-// historical declaration spellings used across this source module.
+// RGE_Tile uses the proven CodeView bitfield names and offsets.
 
 class TShape;
 class RGE_Sound;
@@ -42,18 +41,10 @@ struct RGE_Tile {
     };
     short screen_ypos;
     unsigned char tile_type;
-    union {
-        unsigned char terrain_type;
-        unsigned char terrain_elevation;
-        unsigned char terrain_elev;
-        unsigned char terrain_info;
-        unsigned char terrain;
-        unsigned char elev_and_terrain;
-    };
-    union {
-        unsigned char border_type;
-        unsigned char border;
-    };
+    unsigned char terrain_type : 5;
+    unsigned char height : 3;
+    unsigned char border_type : 4;
+    unsigned char border_shape : 4;
     unsigned char last_drawn_as;
     unsigned char last_drawn_shape;
     unsigned char draw_as;

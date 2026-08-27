@@ -114,33 +114,33 @@ void RGE_Map::clean_elevation(long x1, long y1, long x2, long y2,
                 short south = 0;
                 short south_west = 0;
                 short west = 0;
-                short current = (short)(tile->terrain_elevation >> 5);
+                short current = (short)tile->height;
 
-                if (row > 0 && (tile[offset_n].terrain_elevation >> 5) > current) {
+                if (row > 0 && tile[offset_n].height > current) {
                     north = 1;
                 }
-                if (row < this->map_height - 1 && (tile[width].terrain_elevation >> 5) > current) {
+                if (row < this->map_height - 1 && tile[width].height > current) {
                     south = 1;
                 }
-                if (col > 0 && (tile[-1].terrain_elevation >> 5) > current) {
+                if (col > 0 && tile[-1].height > current) {
                     west = 1;
                 }
-                if (col < this->map_width - 1 && (tile[1].terrain_elevation >> 5) > current) {
+                if (col < this->map_width - 1 && tile[1].height > current) {
                     east = 1;
                 }
                 if (row > 0) {
-                    if (col > 0 && (tile[offset_nw].terrain_elevation >> 5) > current) {
+                    if (col > 0 && tile[offset_nw].height > current) {
                         north_west = 1;
                     }
-                    if (col < this->map_width - 1 && (tile[offset_ne].terrain_elevation >> 5) > current) {
+                    if (col < this->map_width - 1 && tile[offset_ne].height > current) {
                         north_east = 1;
                     }
                 }
                 if (row < this->map_height - 1) {
-                    if (col > 0 && (tile[offset_sw].terrain_elevation >> 5) > current) {
+                    if (col > 0 && tile[offset_sw].height > current) {
                         south_west = 1;
                     }
-                    if (col < this->map_width - 1 && (tile[offset_se].terrain_elevation >> 5) > current) {
+                    if (col < this->map_width - 1 && tile[offset_se].height > current) {
                         south_east = 1;
                     }
                 }
@@ -184,50 +184,31 @@ void RGE_Map::clean_elevation(long x1, long y1, long x2, long y2,
                 if (fix) {
                     if (current >= elevation) {
                         if (north_west) {
-                            (tile + offset_nw)->terrain_elevation =
-                                (unsigned char)(current << 5) |
-                                ((tile + offset_nw)->terrain_elevation & 0x1f);
+                            (tile + offset_nw)->height = (unsigned char)current;
                         }
                         if (north) {
-                            (tile + offset_n)->terrain_elevation =
-                                (unsigned char)(current << 5) |
-                                ((tile + offset_n)->terrain_elevation & 0x1f);
+                            (tile + offset_n)->height = (unsigned char)current;
                         }
                         if (north_east) {
-                            (tile + offset_ne)->terrain_elevation =
-                                (unsigned char)(current << 5) |
-                                ((tile + offset_ne)->terrain_elevation & 0x1f);
+                            (tile + offset_ne)->height = (unsigned char)current;
                         }
                         if (east) {
-                            tile[1].terrain_elevation =
-                                (unsigned char)(current << 5) |
-                                (tile[1].terrain_elevation & 0x1f);
+                            tile[1].height = (unsigned char)current;
                         }
                         if (south_east) {
-                            unsigned char high = (unsigned char)(current << 5);
-                            (tile + offset_se)->terrain_elevation =
-                                high |
-                                ((tile + offset_se)->terrain_elevation & 0x1f);
+                            (tile + offset_se)->height = (unsigned char)current;
                         }
                         if (south) {
-                            (tile + width)->terrain_elevation =
-                                (unsigned char)(current << 5) |
-                                ((tile + width)->terrain_elevation & 0x1f);
+                            (tile + width)->height = (unsigned char)current;
                         }
                         if (south_west) {
-                            (tile + offset_sw)->terrain_elevation =
-                                (unsigned char)(current << 5) |
-                                ((tile + offset_sw)->terrain_elevation & 0x1f);
+                            (tile + offset_sw)->height = (unsigned char)current;
                         }
                         if (west) {
-                            tile[-1].terrain_elevation =
-                                (unsigned char)(current << 5) |
-                                (tile[-1].terrain_elevation & 0x1f);
+                            tile[-1].height = (unsigned char)current;
                         }
                     } else {
-                        tile->terrain_elevation =
-                            (unsigned char)((current + 1) << 5) ^
-                            (tile->terrain_elevation & 0x1f);
+                        tile->height = (unsigned char)(current + 1);
                     }
                     change_flag = 1;
                 }

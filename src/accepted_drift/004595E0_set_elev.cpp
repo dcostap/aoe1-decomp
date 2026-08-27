@@ -10,22 +10,20 @@
 // The expanded pass refreshes tile type, teleports tile objects, queues tiles,
 // and updates the screen and redraw rectangles.
 //
-// BINARY NOTE: The unsigned-char cast on the post-write guard is required for
-// the original byte-width lowering. The guard is inert because a byte shifted
-// right by five cannot exceed seven.
+// BINARY NOTE: The three-bit height field makes the post-write guard inert.
 //
 // Exact transition from the accepted-drift clean source:
 // - Direct terrain rereads replaced the cached byte local. This recovered the
 //   original tile address, row stride, load order, and store order.
-// - The unsigned-char guard cast recovered the original byte compare and
-//   removed the 13-byte structural tail.
+// - The natural height field recovered the original byte compare without a
+//   packed-byte carrier.
 // - <windows.h> is required by the authentic map.cpp context. Removing it
 //   changed the complete function layout. Exact map.cpp anchors
 //   004568C0 and 00458600 support this context.
 //
-// Walkback checks: removing the guard cast produced 805 bytes and 506 changed
-// bytes. Caching the low terrain bits produced 787 bytes and 555 changed
-// bytes. Removing <windows.h> produced 790 bytes and 555 changed bytes.
+// Prior walkback checks: caching the low terrain bits produced 787 bytes and
+// 555 changed bytes. Removing <windows.h> produced 790 bytes and 555 changed
+// bytes.
 
 #include <windows.h>
 
@@ -77,8 +75,10 @@ public:
     short screen_xpos;
     short screen_ypos;
     unsigned char tile_type;
-    unsigned char terrain_type;
-    unsigned char border_type;
+    unsigned char terrain_type : 5;
+    unsigned char height : 3;
+    unsigned char border_type : 4;
+    unsigned char border_shape : 4;
     unsigned char last_drawn_as;
     unsigned char last_drawn_shape;
     unsigned char draw_as;
@@ -173,19 +173,16 @@ void RGE_Map::set_elev(short col0, short row0, short col1, short row1,
             for (row_i = row0; row_i <= row1; ++row_i) {
                 for (col_i = col0; col_i <= col1; ++col_i) {
                     tile = &this->map_row_offset[row_i][col_i];
-                    short new_elevation =
-                        (tile->terrain_type >> 5) + delta;
+                    short new_elevation = tile->height + delta;
 
                     if (new_elevation < 0)
                         new_elevation = 0;
                     else if (new_elevation > 0xFF)
                         new_elevation = 0xFF;
 
-                    tile->terrain_type =
-                        (unsigned char)(new_elevation << 5) |
-                        (tile->terrain_type & 0x1F);
-                    if ((unsigned char)(tile->terrain_type >> 5) > 8)
-                        tile->terrain_type &= 0x1F;
+                    tile->height = (unsigned char)new_elevation;
+                    if (tile->height > 8)
+                        tile->height = 0;
                 }
             }
         } else {
@@ -195,9 +192,7 @@ void RGE_Map::set_elev(short col0, short row0, short col1, short row1,
             for (row_i = row0; row_i <= row1; ++row_i) {
                 for (col_i = col0; col_i <= col1; ++col_i) {
                     tile = &this->map_row_offset[row_i][col_i];
-                    tile->terrain_type =
-                        (unsigned char)(elevation << 5) |
-                        (tile->terrain_type & 0x1F);
+                    tile->height = elevation;
                 }
             }
         }
