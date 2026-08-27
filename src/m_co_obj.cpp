@@ -14,12 +14,6 @@
 
 extern float save_game_version;
 
-class RGE_Armor_Weapon_Info {
-public:
-    short type;
-    short value;
-};
-
 // m_co_obj.cpp lines 27-30.
 RGE_Master_Combat_Object::RGE_Master_Combat_Object(
     RGE_Master_Combat_Object* source, int do_setup)

@@ -13,7 +13,15 @@ class RGE_Sprite;
 class RGE_Static_Object;
 class TDrawArea;
 class RGE_Color_Table;
-struct RGE_Armor_Weapon_Info;
+
+class RGE_Armor_Weapon_Info {
+public:
+    short type;
+    short value;
+};
+
+typedef char rge_armor_weapon_info_size_check[
+    (sizeof(RGE_Armor_Weapon_Info) == 0x04) ? 1 : -1];
 
 // The combat master owns the fields after RGE_Master_Action_Object.
 class RGE_Master_Combat_Object : public RGE_Master_Action_Object {
