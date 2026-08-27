@@ -3080,20 +3080,22 @@
     },
     {
       "name": "taction",
-      "source": "src/taction_tu.cpp",
+      "source": "src/taction.cpp",
+      "module": "taction",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
-        "004D38E0": "src/matching/004D38E0_TRIBE_Action.cpp",
-        "004D3980": "src/matching/004D3980_TRIBE_Action.cpp",
-        "004D39E0": "src/matching/004D39E0_setup.cpp",
-        "004D3A00": "src/matching/004D3A00_setup.cpp",
-        "004D3A10": "src/matching/004D3A10_create_action_list.cpp"
+        "004D38E0": "src/taction.cpp",
+        "004D3980": "src/taction.cpp",
+        "004D39E0": "src/taction.cpp",
+        "004D3A00": "src/taction.cpp",
+        "004D3A10": "src/taction.cpp"
       },
       "symbols": {
         "004D38E0": "??0TRIBE_Action@@QAE@HPAVRGE_Action_Object@@H@Z",
         "004D3980": "??0TRIBE_Action@@QAE@PAVRGE_Action_Object@@H@Z",
         "004D39E0": "?setup@TRIBE_Action@@UAEHHPAVRGE_Action_Object@@@Z",
-        "004D3A00": "?setup@TRIBE_Action@@UAEHPAVRGE_Action_Object@@@Z"
+        "004D3A00": "?setup@TRIBE_Action@@UAEHPAVRGE_Action_Object@@@Z",
+        "004D3A10": "?create_action_list@TRIBE_Action@@UAEPAVRGE_Action_List@@PAVRGE_Action_Object@@@Z"
       }
     },
     {

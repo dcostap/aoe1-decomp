@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "name": "taction",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\TACTION.cpp",
+  "source": "src/taction.cpp",
+  "header": "include/taction.h",
+  "functions": {
+    "004D38E0": {
+      "status": "matching",
+      "note_path": "recovery_notes/taction_module.md"
+    },
+    "004D3980": {
+      "status": "matching",
+      "note_path": "recovery_notes/taction_module.md"
+    },
+    "004D39E0": {
+      "status": "matching",
+      "note_path": "recovery_notes/taction_module.md"
+    },
+    "004D3A00": {
+      "status": "matching",
+      "note_path": "recovery_notes/taction_module.md"
+    },
+    "004D3A10": {
+      "status": "matching",
+      "note_path": "recovery_notes/taction_module.md"
+    }
+  }
+}
