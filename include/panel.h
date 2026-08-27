@@ -2,29 +2,10 @@
 #define AOE1_PANEL_H
 
 #include <windows.h>
+#include "drawarea.h"
 
 struct PanelNode;
 class TPanel;
-
-struct TDrawSystem {
-    char gap_00[0x479];
-    unsigned char ScreenMode;
-    void Paint(tagRECT* rect);
-};
-
-class TDrawArea {
-public:
-    TDrawSystem* DrawSystem;
-    void* Wnd;
-    char gap_08[0x10];
-    long Width;
-    long Height;
-    char gap_20[0x18];
-    void* DrawDc;
-
-    void Clear(tagRECT* rect, unsigned int color);
-    void SetClipRect(tagRECT* rect);
-};
 
 class RGE_Base_Game {
 public:

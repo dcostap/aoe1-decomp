@@ -1,6 +1,8 @@
 #ifndef AOE1_SHAPE_H
 #define AOE1_SHAPE_H
 
+#include "drawarea.h"
+
 typedef unsigned char byte;
 
 typedef struct Shape_Header {
@@ -52,66 +54,6 @@ struct Byte_Table {
 
 struct Shape_Byte_Table {
     byte table[256];
-};
-
-struct tagRECT {
-    long left;
-    long top;
-    long right;
-    long bottom;
-};
-
-class TSpan_List_Manager {
-public:
-    char gap_00[0x3c];
-    void* Line_Head_Ptrs;
-    void* Line_Tail_Ptrs;
-    char gap_44[0x0c];
-    int Num_Lines;
-    char gap_54[8];
-    int Max_Span_Px;
-};
-
-class TDrawArea {
-public:
-    void* DrawSystem;
-    void* Wnd;
-    byte* Bits;
-    void* BitmapInfo;
-    void* Bitmap;
-    void* OldBitmap;
-    int Width;
-    int Height;
-    int Pitch;
-    int Orien;
-    tagRECT ClipRect;
-    void* DrawDc;
-    void* DrawSurface;
-    char SurfaceDesc[0x6C];
-    void* Node;
-    char* Name;
-    byte* LastBits;
-    int LastPitch;
-    void** DisplayOffsets;
-    void** CurDisplayOffsets;
-    void** FloatOffsets;
-    void* shadow_color_table;
-    TSpan_List_Manager* SpanList;
-    TSpan_List_Manager* CurSpanList;
-    int Float_X_Delta;
-    int Float_Y_Delta;
-    int DisplayOffsetsSz;
-    int FloatOffsetsSz;
-    int SystemMemOnly;
-    int UsingVidMem;
-    int UseTrans;
-    int IsPrimarySurface;
-    int Restored;
-    int ExtendedLines;
-    byte TransColor;
-    byte gap_FD[3];
-
-    long AlignedWidth();
 };
 
 typedef tagRECT Rect;
