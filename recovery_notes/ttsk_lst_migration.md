@@ -73,5 +73,10 @@ source-module ownership records were not edited by this worker.
 The unregistered candidate proposal is
 `build/candidate_tus/ttsk_lst.json`. It names `src/ttsk_lst.cpp`, uses
 `config/flags/default.rsp`, and lists both normal owners in PDB order. It has
-not been compiled or validated. The lead can apply the matching source-module
-and translation-unit metadata changes after reviewing this source.
+one exact owner and one observed owner. The first validation preflight stopped
+before compilation because metadata named the old source-bank owners.
+
+After direct registration, the grouped candidate compiled successfully.
+`0052C8D0` is `MATCH` with zero differences, relocations, and boundary escapes.
+`0052C3F0` remains observed and mismatches 1,047 bytes with one boundary
+escape. It has no exact claim. The module is not full-module exact.
