@@ -1,7 +1,7 @@
-#ifndef AOE1_TVICTORY_CONTEXT_H
-#define AOE1_TVICTORY_CONTEXT_H
+#ifndef AOE1_TVICTORY_H
+#define AOE1_TVICTORY_H
 
-// Canonical declarations for the tvictory.cpp PDB module.
+// Module-local declarations for the tvictory.cpp PDB module.
 //
 // The six owners below are one source module. Their address order is also the
 // PDB order: 0052C8F0, 0052C920, 0052C940, 0052C950, 0052C970, and 0052C9B0.

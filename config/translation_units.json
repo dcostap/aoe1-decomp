@@ -7250,15 +7250,16 @@
     },
     {
       "name": "tvictory",
-      "source": "src/tvictory_tu.cpp",
+      "source": "src/tvictory.cpp",
+      "module": "tvictory",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0052C8F0": "src/matching/0052C8F0_TRIBE_Victory_Conditions.cpp",
-        "0052C920": "src/matching/0052C920_TRIBE_Victory_Conditions.cpp",
-        "0052C940": "src/matching/0052C940_TRIBE_Victory_Conditions.cpp",
-        "0052C950": "src/matching/0052C950_handle_condition.cpp",
-        "0052C970": "src/matching/0052C970_handle_tech.cpp",
-        "0052C9B0": "src/matching/0052C9B0_add_tech.cpp"
+        "0052C8F0": "src/tvictory.cpp",
+        "0052C920": "src/tvictory.cpp",
+        "0052C940": "src/tvictory.cpp",
+        "0052C950": "src/tvictory.cpp",
+        "0052C970": "src/tvictory.cpp",
+        "0052C9B0": "src/tvictory.cpp"
       },
       "symbols": {
         "0052C8F0": "??0TRIBE_Victory_Conditions@@QAE@PAVRGE_Player@@HPAJE@Z",
