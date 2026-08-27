@@ -3,7 +3,19 @@
 // deleting destructor is not a handwritten owner here.
 
 #include "../include/tact_dar.h"
+#include "../include/act_obj.h"
+#include "../include/stat_obj.h"
+#include "../include/m_s_obj.h"
+#include "../include/map.h"
+#include "../include/world.h"
+#include "../include/obj_list.h"
+#include "../include/player.h"
+#include "../include/rge_fio.h"
+#include "../include/game_globals.h"
 #include <stdlib.h>
+
+// 00575078 is an unnamed read-only float used by the original map scan.
+extern float DAT_00575078;
 
 // VA 004CE530; tact_dar.cpp lines 32-37; matching before reunification.
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
@@ -96,42 +108,41 @@ unsigned char TRIBE_Action_Discovery_Artifact::update()
 // VA 004CE7A0; tact_dar.cpp lines 125-165; matching before reunification.
 void TRIBE_Action_Discovery_Artifact::check_objects()
 {
-    RGE_Action_Object* object = this->obj;
-    RGE_Master_Static_Object* master = object->master_obj;
+    RGE_Action_Object* obj = this->obj;
+    RGE_Master_Static_Object* master = obj->master_obj;
 
-    short x1 = (short)(object->world_x - DAT_00575078 - master->radius_x);
-    short y1 = (short)(object->world_y - DAT_00575078 - master->radius_y);
-    short x2 = (short)(master->radius_x + object->world_x - DAT_0057507c);
-    short y2 = (short)(master->radius_y + object->world_y - DAT_0057507c);
+    short map_x = (short)(obj->world_x - DAT_00575078 - master->radius_x);
+    short map_y = (short)(obj->world_y - DAT_00575078 - master->radius_y);
+    short x0 = (short)(master->radius_x + obj->world_x - DAT_0057507c);
+    short y0 = (short)(master->radius_y + obj->world_y - DAT_0057507c);
 
-    RGE_Map* map = object->owner->world->map;
+    RGE_Map* map = obj->owner->world->map;
 
-    if (x1 < 0) {
-        x1 = 0;
+    if (map_x < 0) {
+        map_x = 0;
     }
-    if (y1 < 0) {
-        y1 = 0;
+    if (map_y < 0) {
+        map_y = 0;
     }
-    if (x2 >= map->map_width) {
-        x2 = (short)map->map_width - 1;
+    if (x0 >= map->map_width) {
+        x0 = (short)map->map_width - 1;
     }
-    if (y2 >= map->map_height) {
-        y2 = (short)map->map_height - 1;
+    if (y0 >= map->map_height) {
+        y0 = (short)map->map_height - 1;
     }
 
-    for (short y = y1; y <= y2; ++y) {
-        for (short x = x1; x <= x2; ++x) {
+    for (short y = map_y; y <= y0; ++y) {
+        for (short x = map_x; x <= x0; ++x) {
             RGE_Object_Node* node = map->map_row_offset[y][x].objects.list;
             while (node != 0) {
-                RGE_Static_Object* other = node->node;
-                if (other->owner != this->obj->owner &&
-                    this->flags[other->owner->id] == 0) {
-                    this->flags[other->owner->id] = 1;
-                    other->owner->master_objects[162]->make_new_obj(
-                        other->owner,
-                        other->world_x,
-                        other->world_y,
-                        other->world_z);
+                if (node->node->owner != this->obj->owner &&
+                    this->flags[node->node->owner->id] == 0) {
+                    this->flags[node->node->owner->id] = 1;
+                    node->node->owner->master_objects[162]->make_new_obj(
+                        node->node->owner,
+                        node->node->world_x,
+                        node->node->world_y,
+                        node->node->world_z);
                 }
                 node = node->next;
             }

@@ -1036,25 +1036,22 @@
       }
     },
     {
-      "name": "tact_bld",
-      "source": "src/tact_bld.cpp",
-      "module": "tact_bld",
+      "name": "tact_bld_prefix",
+      "source": "src/tact_bld_tu.cpp",
       "flags": "config/flags/004CD210_TRIBE_Action_Build.rsp",
       "owners": {
-        "004CD1B0": "src/tact_bld.cpp",
-        "004CD2A0": "src/tact_bld.cpp",
-        "004CD2E0": "src/tact_bld.cpp",
-        "004CD310": "src/tact_bld.cpp",
-        "004CD910": "src/tact_bld.cpp",
-        "004CD920": "src/tact_bld.cpp"
+        "004CD1B0": "src/matching/004CD1B0_TRIBE_Action_Build.cpp",
+        "004CD210": "src/matching/004CD210_TRIBE_Action_Build.cpp",
+        "004CD2A0": "src/matching/004CD2A0_TRIBE_Action_Build.cpp",
+        "004CD2E0": "src/matching/004CD2E0_first_in_stack.cpp",
+        "004CD310": "src/matching/004CD310_set_state.cpp",
+        "004CD910": "src/matching/004CD910_stop.cpp",
+        "004CD920": "src/matching/004CD920_move_to.cpp"
       },
       "symbols": {
         "004CD1B0": "??0TRIBE_Action_Build@@QAE@HPAVRGE_Action_Object@@@Z",
-        "004CD2A0": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z",
-        "004CD2E0": "?first_in_stack@TRIBE_Action_Build@@UAEXE@Z",
-        "004CD310": "?set_state@TRIBE_Action_Build@@MAEXE@Z",
-        "004CD910": "?stop@TRIBE_Action_Build@@UAEHXZ",
-        "004CD920": "?move_to@TRIBE_Action_Build@@UAEHPAVRGE_Static_Object@@MMM@Z"
+        "004CD210": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
+        "004CD2A0": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
       }
     },
     {
@@ -2032,22 +2029,19 @@
       }
     },
     {
-      "name": "act_misl",
-      "source": "src/act_misl.cpp",
+      "name": "act_misl_prefix",
+      "source": "src/act_misl_tu.cpp",
       "flags": "config/flags/00404BB0_RGE_Action_Missile.rsp",
       "owners": {
-        "00404BB0": "src/act_misl.cpp",
-        "00404C90": "src/act_misl.cpp",
-        "00404D10": "src/act_misl.cpp",
-        "00404D50": "src/act_misl.cpp",
-        "004054B0": "src/act_misl.cpp"
+        "00404BB0": "src/matching/00404BB0_RGE_Action_Missile.cpp",
+        "00404C90": "src/matching/00404C90_RGE_Action_Missile.cpp",
+        "00404D10": "src/matching/00404D10_first_in_stack.cpp",
+        "00404D50": "src/matching/00404D50_intercept.cpp",
+        "004054B0": "src/matching/004054B0_save.cpp"
       },
       "symbols": {
         "00404BB0": "??0RGE_Action_Missile@@QAE@HPAVRGE_Action_Object@@@Z",
-        "00404C90": "??0RGE_Action_Missile@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@1MMM@Z",
-        "00404D10": "?first_in_stack@RGE_Action_Missile@@UAEXE@Z",
-        "00404D50": "?intercept@RGE_Action_Missile@@IAEXAAM00@Z",
-        "004054B0": "?save@RGE_Action_Missile@@UAEXH@Z"
+        "00404C90": "??0RGE_Action_Missile@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@1MMM@Z"
       }
     },
     {
@@ -4301,6 +4295,7 @@
     {
       "name": "tact_dar",
       "source": "src/tact_dar.cpp",
+      "module": "tact_dar",
       "flags": "config/flags/004CE530_TRIBE_Action_Discovery_Artifact.rsp",
       "owners": {
         "004CE530": "src/tact_dar.cpp",
@@ -4309,7 +4304,6 @@
         "004CE6D0": "src/tact_dar.cpp",
         "004CE700": "src/tact_dar.cpp",
         "004CE720": "src/tact_dar.cpp",
-        "004CE740": "src/tact_dar.cpp",
         "004CE7A0": "src/tact_dar.cpp"
       },
       "symbols": {
@@ -4319,7 +4313,6 @@
         "004CE6D0": "?save@TRIBE_Action_Discovery_Artifact@@UAEXH@Z",
         "004CE700": "?first_in_stack@TRIBE_Action_Discovery_Artifact@@UAEXE@Z",
         "004CE720": "?set_state@TRIBE_Action_Discovery_Artifact@@MAEXE@Z",
-        "004CE740": "?update@TRIBE_Action_Discovery_Artifact@@UAEEXZ",
         "004CE7A0": "?check_objects@TRIBE_Action_Discovery_Artifact@@IAEXXZ"
       }
     },
@@ -4442,12 +4435,18 @@
       "module": "tact_tek",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
+        "004D21B0": "src/tact_tek.cpp",
         "004D2370": "src/tact_tek.cpp",
-        "004D2440": "src/tact_tek.cpp"
+        "004D23B0": "src/tact_tek.cpp",
+        "004D2440": "src/tact_tek.cpp",
+        "004D2550": "src/tact_tek.cpp"
       },
       "symbols": {
+        "004D21B0": "??0TRIBE_Action_Make_Tech@@QAE@HPAVRGE_Action_Object@@@Z",
         "004D2370": "?save@TRIBE_Action_Make_Tech@@UAEXH@Z",
-        "004D2440": "?set_state@TRIBE_Action_Make_Tech@@MAEXE@Z"
+        "004D23B0": "?first_in_stack@TRIBE_Action_Make_Tech@@UAEXE@Z",
+        "004D2440": "?set_state@TRIBE_Action_Make_Tech@@MAEXE@Z",
+        "004D2550": "?stop@TRIBE_Action_Make_Tech@@UAEHXZ"
       }
     },
     {
@@ -4726,9 +4725,7 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "0050D460": "src/teffects.cpp",
-        "0050D4B0": "src/teffects.cpp",
-        "0050D4D0": "src/teffects.cpp",
-        "0050D550": "src/teffects.cpp"
+        "0050D4B0": "src/teffects.cpp"
       },
       "symbols": {
         "0050D460": "??0TRIBE_Effects@@QAE@H@Z",
@@ -5613,11 +5610,10 @@
     },
     {
       "name": "main",
-      "source": "src/main.cpp",
-      "module": "main",
+      "source": "src/main_tu.cpp",
       "flags": "config/flags/004549E0_WinMain_16.rsp",
       "owners": {
-        "004549E0": "src/main.cpp"
+        "004549E0": "src/matching/004549E0_WinMain_16.cpp"
       },
       "symbols": {}
     },
@@ -7266,16 +7262,15 @@
     },
     {
       "name": "tvictory",
-      "source": "src/tvictory.cpp",
-      "module": "tvictory",
+      "source": "src/tvictory_tu.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0052C8F0": "src/tvictory.cpp",
-        "0052C920": "src/tvictory.cpp",
-        "0052C940": "src/tvictory.cpp",
-        "0052C950": "src/tvictory.cpp",
-        "0052C970": "src/tvictory.cpp",
-        "0052C9B0": "src/tvictory.cpp"
+        "0052C8F0": "src/matching/0052C8F0_TRIBE_Victory_Conditions.cpp",
+        "0052C920": "src/matching/0052C920_TRIBE_Victory_Conditions.cpp",
+        "0052C940": "src/matching/0052C940_TRIBE_Victory_Conditions.cpp",
+        "0052C950": "src/matching/0052C950_handle_condition.cpp",
+        "0052C970": "src/matching/0052C970_handle_tech.cpp",
+        "0052C9B0": "src/matching/0052C9B0_add_tech.cpp"
       },
       "symbols": {
         "0052C8F0": "??0TRIBE_Victory_Conditions@@QAE@PAVRGE_Player@@HPAJE@Z",

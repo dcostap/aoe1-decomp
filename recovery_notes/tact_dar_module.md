@@ -2,13 +2,13 @@
 
 ## Result
 
-The source module now has one compiler-facing owner at `src/tact_dar.cpp`.
-The source follows the PDB order. No compiler or validator ran in this pass.
-The task forbade those checks.
+The source module has one compiler-facing owner at `src/tact_dar.cpp`.
+The source follows the PDB order. This packet does not change function status.
 
-The old context header copied the action, object, map, world, player, list, and
-master layouts. The new module header uses the canonical owners instead. It does
-not add fake virtual slots or foreign class copies.
+The old context header copied action, object, map, world, player, list, and
+master layouts. The owner header now includes only `action.h` and forwards the
+pointer types used by its public declarations. Full dependencies are private
+to `src/tact_dar.cpp`.
 
 ## PDB order and statuses
 
@@ -31,48 +31,26 @@ owner.
 
 ## Canonical ownership
 
-`include/tact_dar.h` includes these canonical owner headers:
+`include/tact_dar.h` owns only `TRIBE_Action_Discovery_Artifact`. The base
+action and all referenced game classes come from canonical owner headers in the
+source file. The module adds only its `flags` pointer at `+0x40`.
 
-- `action.h` for `RGE_Action` and its virtual order;
-- `act_list.h` for `RGE_Action_List`;
-- `act_obj.h` for `RGE_Action_Object`;
-- `stat_obj.h` for `RGE_Static_Object`;
-- `m_s_obj.h` for `RGE_Master_Static_Object`;
-- `m_ac_obj.h` for `RGE_Master_Action_Object`;
-- `move_obj.h` for the moving-object base;
-- `map.h` for `RGE_Map` and `RGE_Tile`;
-- `world.h` for `RGE_Game_World`;
-- `obj_list.h` for `RGE_Object_List` and `RGE_Object_Node`;
-- `player.h` for `RGE_Player`;
-- `basegame.h` for `RGE_Base_Game`.
+The map scan uses `RGE_Object_Node::node`, which is the canonical list-node
+member. No discovery-specific layout remains.
 
-The module-owned `TRIBE_Action_Discovery_Artifact` declaration adds only its
-`flags` pointer at `+0x40` and its own methods. The inherited data and virtual
-slots come from `RGE_Action`.
-
-The old `DiscoveryMaster`, `DiscoveryInfo`, and `DiscoverySizeInfo` structs
-were not proven discovery classes. Their copied gaps only described canonical
-pointer paths:
-
-- `RGE_Action_Object::owner` at `+0x0C`;
-- `RGE_Player::world` at `+0x3C`;
-- `RGE_Game_World::player_num` at `+0x3C`;
-- `RGE_Game_World::world_time_delta_seconds` at `+0x84`.
-
-The source now uses those canonical members. The map scan uses
-`RGE_Object_Node::node`, which is the canonical list-node member. No
- discovery-specific layout remains. This closes the conditional discovery
-header gap without adding a layout shim.
-
-`rge_read` and `rge_write` remain narrow local declarations for the imported C
-file-I/O helpers. The three referenced constants remain narrow external global
-declarations. They are not class or layout owners.
+The two named globals use `game_globals.h`. `DAT_00575078` has no named shared
+owner and remains a narrow source-local declaration for its shipped read-only
+reference. File I/O uses the canonical `rge_fio.h` declarations.
 
 ## Migration effects
 
-The former `tact_dar_context.h` is removed. The former wrapper and eight source
-bank bodies are removed. The eight definitions now live in `src/tact_dar.cpp`.
-`config/source_modules/tact_dar.json` records all eight honest statuses.
+The former `tact_dar_context.h` and wrapper are removed. The eight handwritten
+definitions now live in `src/tact_dar.cpp`. The source-module configuration
+records all eight original statuses. The translation-unit registry records the
+seven matching owners; accepted drift remains source-module-owned but is not an
+exact owner.
 
-No header gap remains for this source module. The accepted drift at `004CE740`
-remains accepted drift. It was not promoted to matching without a fresh check.
+## Scoped validation
+
+Final scoped checks for `004CE530`, `004CE5F0`, and `004CE7A0` returned
+`MATCH` with `0.0000%`. No grouped or repository-wide validation ran.
