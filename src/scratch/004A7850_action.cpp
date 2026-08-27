@@ -45,19 +45,21 @@
 // probes 45/H23, 53/H27, and 59/H30: game/prog_info alias variants worsened to
 // diff 1221 or 919; rolled back. Probe 47/H24 conditional directory selection
 // worsened to diff 1699. These tests do not prove a canonical alias shape.
+// attempt 39: a typed Mode local plus one RGE_Base_Game alias after the first
+// unlink reduced the grouped diff from 1676 to 665. The four exact anchors and
+// the compiler-generated deleting destructor stayed exact.
 // AUTHENTIC MODULE: The checked source is included by src/scr_save_tu.cpp after
 // the exact constructor, destructor, and fillList owners. The reviewed
 // scr_save_context.h supplies the shared class and global declarations.
-// CONTEXT RESULT: In this wrapper, the natural game2/prog2 aliases preserve
-// the 0x334 frame and 71 ordered calls. Direct and branch-local variants did
-// not change emitted code or moved the first mismatch.
+// CONTEXT RESULT: In this wrapper, a typed Mode local and one game2 alias
+// preserve the 0x334 frame and 71 ordered calls. Direct and prog2 variants do
+// not preserve the best grouped result.
 // BLOCKER EVIDENCE: After the first unlink, the executable loads mode at
 // 004A7945, loads rge_base_game at 004A794B, and delays the list load until
-// each extension arm. The current canonical build loads the global first and
-// emits an extra destination setup in both extension arms.
-// BLOCKER: After the first _unlink, the executable reads the screen member at
-// +0x69C before rge_base_game. The rebuild reads rge_base_game first. Fault and
-// concurrent-mutation order differ before the same later calls.
+// each extension arm. The candidate loads mode and the global, then loads the
+// list before cleanup and the mode test. It also reloads prog_info in each arm.
+// BLOCKER: The target uses EDX for the global and ESI for prog_info. The
+// candidate keeps the global in ESI and uses EDX for each prog_info reload.
 
 #include <stdio.h>
 #include <string.h>
@@ -174,14 +176,13 @@ long TribeSaveGameScreen::action(TPanel* panel, long msg, unsigned long p3, unsi
                     sprintf(tempFileName + 4, "%s%s.scn", dir, this->list->currentLine());
                 }
                 _unlink(tempFileName + 4);
-                int mode2 = this->modeValue;
+                Mode mode2 = this->modeValue;
                 RGE_Base_Game* game2 = rge_base_game;
-                RGE_Prog_Info* prog2 = game2->prog_info;
                 // BINARY NOTE: Each extension arm fetches the current list line before formatting.
-                if (mode2 == 0) {
-                    sprintf(tempFileName + 4, "%s%s.gmx", prog2->save_dir, this->list->currentLine());
+                if (mode2 == SaveGame) {
+                    sprintf(tempFileName + 4, "%s%s.gmx", game2->prog_info->save_dir, this->list->currentLine());
                 } else {
-                    sprintf(tempFileName + 4, "%s%s.scx", prog2->scenario_dir, this->list->currentLine());
+                    sprintf(tempFileName + 4, "%s%s.scx", game2->prog_info->scenario_dir, this->list->currentLine());
                 }
                 _unlink(tempFileName + 4);
                 this->list->delete_line(this->list->get_line());
