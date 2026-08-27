@@ -17,10 +17,10 @@ The old source used two wrappers for one PDB module. The migration gives every
 normal owner one compiler-facing source: `src/Panel_ez.cpp`. The old wrappers,
 fragment files, fallback declarations, and context macros are removed.
 
-The old registry had 68 registered exact owners. The direct registry keeps the
-same 68 exact owners and points each owner to `src/Panel_ez.cpp`. The remaining
-three matching owners are present in the direct source but remain unregistered.
-The two accepted-drift owners and three scratch owners keep their prior status.
+The old registry had 68 registered exact owners. The direct registry keeps 65
+owners after three merged-context regressions. The remaining matching owners
+are present in the direct source but remain unregistered. The two accepted-drift
+owners and six scratch owners remain nonexact.
 
 ## Context evidence
 
@@ -56,6 +56,9 @@ No raw string-address cast remains.
 - A focused `check_function --no-build` check was attempted after final source
   cleanup. The registered cached object was stale, so no final exact claim is
   made from that check.
+- The grouped direct audit retained 65 registered matches. `00468CB0`,
+  `00468E50`, and `00469380` differ by two, two, and one bytes. They are
+  scratch and are removed from the direct exact registry.
 
 ## Open exactness state
 
