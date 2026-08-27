@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "name": "aiconitm",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aiconitm.cpp",
+  "source": "src/aiconitm.cpp",
+  "header": "include/aiconitm.h",
+  "functions": {
+    "0040A820": { "status": "matching" },
+    "0040A870": { "status": "matching" },
+    "0040A8D0": {
+      "status": "matching",
+      "note_path": "recovery_notes/0040A8D0_ConstructionItem.md"
+    },
+    "0040A910": {
+      "status": "matching",
+      "note_path": "recovery_notes/0040A910_ConstructionItem.md"
+    },
+    "0040A950": { "status": "matching" },
+    "0040A960": { "status": "matching" },
+    "0040A990": { "status": "matching" },
+    "0040A9C0": { "status": "matching" },
+    "0040A9E0": { "status": "matching" },
+    "0040AA00": { "status": "matching" },
+    "0040AA10": { "status": "matching" },
+    "0040AA20": { "status": "matching" },
+    "0040AA30": { "status": "matching" },
+    "0040AA40": { "status": "matching" },
+    "0040AA50": { "status": "matching" },
+    "0040AA60": { "status": "matching" },
+    "0040AA80": { "status": "matching" }
+  }
+}

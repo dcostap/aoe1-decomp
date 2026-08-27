@@ -1,12 +1,5 @@
-#ifndef AICONITM_CONTEXT_H
-#define AICONITM_CONTEXT_H
-
-// Authentic local declaration surface for C:\\msdev\\work\\age1_x1\\aiconitm.cpp.
-//
-// The PDB order is four ConstructionItem constructors, its virtual destructor,
-// four free comparison operators, and the eight small member methods.  The
-// BaseItem prefix is 0x6c bytes; ConstructionItem adds its list links and
-// three state fields at offsets 0x6c through 0x7c.
+#ifndef AOE1_AICONITM_H
+#define AOE1_AICONITM_H
 
 class BaseItem {
 public:
@@ -25,7 +18,7 @@ public:
     int skipValue;
 
     BaseItem();
-    BaseItem(int typeID, int gameID, int uniqueID, const char* name,
+    BaseItem(int typeID, int gameID, int uniqueID, char* name,
              float x, float y, float z, float xSize, float ySize, float zSize);
     BaseItem(BaseItem* other);
     BaseItem(const BaseItem& other);
@@ -42,11 +35,11 @@ public:
     ConstructionItem(const ConstructionItem& other);
     virtual ~ConstructionItem();
 
-    ConstructionItem* next;
-    ConstructionItem* prev;
-    int inProgressValue;
-    int builtValue;
-    int buildAttemptsValue;
+    ConstructionItem* next;      // +0x6c
+    ConstructionItem* prev;      // +0x70
+    int inProgressValue;         // +0x74
+    int builtValue;              // +0x78
+    int buildAttemptsValue;      // +0x7c
 
     int inProgress() const;
     int built() const;
