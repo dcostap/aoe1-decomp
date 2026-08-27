@@ -1,6 +1,8 @@
 #ifndef AOE1_M_S_OBJ_H
 #define AOE1_M_S_OBJ_H
 
+#include <stdio.h>
+
 class DClipInfo_List;
 class RGE_Color_Table;
 class RGE_Game_World;
@@ -12,7 +14,6 @@ class RGE_Sprite;
 class RGE_Static_Object;
 class TDrawArea;
 struct RGE_Damage_Sprite_Info;
-struct _iobuf;
 
 class RGE_Master_Static_Object {
 public:
@@ -38,12 +39,12 @@ public:
 
     RGE_Master_Static_Object(RGE_Master_Static_Object*, int);
     RGE_Master_Static_Object(int, RGE_Sprite**, RGE_Sound**, int);
-    RGE_Master_Static_Object(_iobuf*, RGE_Sprite**, RGE_Sound**, short, int);
+    RGE_Master_Static_Object(FILE*, RGE_Sprite**, RGE_Sound**, short, int);
 
 protected:
     int setup(RGE_Master_Static_Object*);
     int setup(int, RGE_Sprite**, RGE_Sound**);
-    int setup(_iobuf*, RGE_Sprite**, RGE_Sound**, short);
+    int setup(FILE*, RGE_Sprite**, RGE_Sound**, short);
 
 public:
     void make_available(unsigned char);
