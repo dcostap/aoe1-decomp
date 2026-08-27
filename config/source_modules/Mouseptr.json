@@ -27,7 +27,7 @@
     "0045BF40": { "status": "matching" },
     "0045BF80": { "status": "matching" },
     "0045BF90": { "status": "matching" },
-    "0045C010": { "status": "matching" },
+    "0045C010": { "status": "scratch", "note_path": "recovery_notes/mouseptr_module.md" },
     "0045C300": { "status": "matching" }
   }
 }

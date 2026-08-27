@@ -1307,7 +1307,6 @@
         "0045BF40": "src/Mouseptr.cpp",
         "0045BF80": "src/Mouseptr.cpp",
         "0045BF90": "src/Mouseptr.cpp",
-        "0045C010": "src/Mouseptr.cpp",
         "0045C300": "src/Mouseptr.cpp"
       },
       "symbols": {
@@ -1327,7 +1326,6 @@
         "0045BF40": "?on@TMousePointer@@QAEXXZ",
         "0045BF80": "?reset@TMousePointer@@QAEXXZ",
         "0045BF90": "?center@TMousePointer@@QAEXXZ",
-        "0045C010": "?Poll@TMousePointer@@QAEXXZ",
         "0045C300": "?GetDDBltError@TMousePointer@@QAEHJ@Z",
         "0045B760": "?update_mouse_position@TMousePointer@@QAEHXZ",
         "0045BE20": "?set_facet@TMousePointer@@QAEXH@Z"

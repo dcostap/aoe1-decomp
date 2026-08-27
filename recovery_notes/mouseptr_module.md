@@ -25,7 +25,8 @@ The migration keeps the constructor as scratch. It keeps `delete_surfaces`,
 `delete`, canonical DirectDraw member calls, and canonical draw-area types.
 
 The candidate grouped build found 19 of 20 exact owners. `Poll` regressed from
-exact to a 10-byte positional mismatch. The constructor remains 338 bytes
+exact to a 10-byte positional mismatch. It stays scratch and is removed from
+direct exact ownership. The constructor remains 338 bytes
 different, `delete_surfaces` is 93 bytes different, `draw` is 53 bytes
 different, and `set_game_facet` is 13 bytes different. These are stale exact
 claims for the unified source until the integration owner repairs or removes

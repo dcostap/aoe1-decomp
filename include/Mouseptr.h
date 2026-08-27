@@ -2,40 +2,9 @@
 #define AOE1_MOUSEPTR_H
 
 #include "drawarea.h"
+#include "Shape.h"
 
 typedef unsigned long ulong;
-
-struct Shape_Info {
-    unsigned long Shape_Data_Offsets;
-    unsigned long Shape_Outline_Offset;
-    long Reserved1;
-    long Reserved2;
-    long Width;
-    long Height;
-    long Hotspot_X;
-    long Hotspot_Y;
-};
-
-struct SLhape_File_Header;
-
-class TShape {
-public:
-    unsigned char* shape;
-    int load_type;
-    int load_size;
-    void* shape_header;
-    void* head;
-    void* offsets;
-    SLhape_File_Header* FShape;
-    Shape_Info* shape_info;
-
-    TShape(char* filename, int file_id);
-    ~TShape();
-    int is_loaded();
-    long shape_count();
-    unsigned char shape_draw(TDrawArea*, long, long, long, unsigned char,
-                             unsigned char*);
-};
 
 class TMousePointer {
 public:
