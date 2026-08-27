@@ -3102,13 +3102,17 @@
     },
     {
       "name": "aiinfmod",
-      "source": "src/aiinfmod_tu.cpp",
+      "source": "src/aiinfmod.cpp",
+      "module": "aiinfmod",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0040CD90": "src/matching/0040CD90_InformationAIModule.cpp",
-        "0040CDE0": "src/matching/0040CDE0_InformationAIModule.cpp"
+        "0040CD90": "src/aiinfmod.cpp",
+        "0040CDE0": "src/aiinfmod.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "0040CD90": "??0InformationAIModule@@QAE@PAXH@Z",
+        "0040CDE0": "??1InformationAIModule@@UAE@XZ"
+      }
     },
     {
       "name": "aistrmod",
