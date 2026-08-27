@@ -1,11 +1,7 @@
-#ifndef AOE1_AIBLDMOD_CONTEXT_H
-#define AOE1_AIBLDMOD_CONTEXT_H
+#ifndef AOE1_AIBLDMOD_H
+#define AOE1_AIBLDMOD_H
 
 // Canonical declarations for the original aibldmod.cpp source module.
-// The wrapper defines AIBLDMOD_SHARED_CONTEXT before including this header.
-// Standalone owner files keep their local declaration fallback.
-
-#ifdef AIBLDMOD_SHARED_CONTEXT
 
 typedef unsigned char uchar;
 typedef unsigned int uint;
@@ -234,9 +230,8 @@ public:
     RGE_Master_Static_Object** master_objects; // +0x24
 };
 
-// displayBuildList.cpp used numbered local aliases before the module context
-// was restored.  These aliases retain its source line order while selecting
-// the canonical class surfaces and decorated owner name.
+// The display source uses these original local type names.  Removing them
+// changes VC5's loadBuildList local allocation in the complete module.
 typedef BaseItem BaseItem2;
 typedef BuildItem BuildItem2;
 typedef AIModule AIModule2;
@@ -245,5 +240,4 @@ typedef BuildAIModule BuildAIModule2;
 typedef char aibldmod_build_item_size[(sizeof(BuildItem) == 0xB0) ? 1 : -1];
 typedef char aibldmod_module_size[(sizeof(BuildAIModule) == 0x5BC) ? 1 : -1];
 
-#endif  // AIBLDMOD_SHARED_CONTEXT
-#endif  // AOE1_AIBLDMOD_CONTEXT_H
+#endif  // AOE1_AIBLDMOD_H

@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "name": "aibldmod",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aibldmod.cpp",
+  "source": "src/aibldmod.cpp",
+  "header": "include/aibldmod.h",
+  "functions": {
+    "004086B0": { "status": "matching" },
+    "00408840": { "status": "matching" },
+    "00408D50": { "status": "matching" },
+    "00408DF0": { "status": "matching" },
+    "004092F0": { "status": "matching" },
+    "00409430": {
+      "status": "matching",
+      "note_path": "recovery_notes/00409430_loadBuildList.md"
+    },
+    "004098A0": { "status": "matching" },
+    "004098B0": { "status": "matching" },
+    "004098C0": { "status": "matching" },
+    "00409950": {
+      "status": "scratch",
+      "note_path": "recovery_notes/00409950_insertItem.md"
+    },
+    "00409B70": { "status": "matching" },
+    "00409BB0": { "status": "matching" },
+    "00409BF0": { "status": "matching" },
+    "00409C30": { "status": "matching" },
+    "00409C40": { "status": "matching" },
+    "00409C50": { "status": "matching" },
+    "00409C60": { "status": "matching" },
+    "00409C70": { "status": "matching" },
+    "00409CD0": { "status": "matching" },
+    "00409D40": { "status": "matching" },
+    "00409DB0": { "status": "matching" },
+    "00409E20": { "status": "matching" },
+    "00409E90": { "status": "matching" },
+    "00409EE0": { "status": "matching" },
+    "00409F50": { "status": "matching" }
+  }
+}
