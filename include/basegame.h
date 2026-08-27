@@ -148,6 +148,7 @@ public:
 
     RGE_Base_Game(RGE_Prog_Info*, int);
     void add_to_timing(int, unsigned long);
+    unsigned long get_accum_time(int);
     int get_paused();
     RGE_Player* get_player();
     void get_mouse_pos(tagPOINT*);
