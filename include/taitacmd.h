@@ -1,9 +1,8 @@
-#ifndef AOE1_TAITACMD_CONTEXT_H
-#define AOE1_TAITACMD_CONTEXT_H
+#ifndef AOE1_TAITACMD_H
+#define AOE1_TAITACMD_H
 
-// Canonical local declarations for the original taitacmd.cpp source module.
-// PDB types prove the two main layouts below. Keep this header local until the
-// shared AI class surfaces have complete review.
+// Canonical declarations for the original taitacmd.cpp source module.
+// PDB types prove the main layouts below.
 
 typedef unsigned char uchar;
 typedef unsigned long ulong;
@@ -26,6 +25,12 @@ struct XYZPoint {
     int z;
 };
 
+struct XYZBYTEPoint {
+    unsigned char x;
+    unsigned char y;
+    unsigned char z;
+};
+
 struct Waypoint {
 public:
     float x;
@@ -39,7 +44,15 @@ struct AttackWaypoint {
     char data[16];
 };
 
-class Path;
+class Path {
+public:
+    float length();
+    void initToStart();
+    float distanceToNextWaypoint();
+    int moveToNextWaypoint();
+    int numberOfWaypoints();
+    Waypoint* currentWaypoint();
+};
 class BuildItem;
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
@@ -53,9 +66,11 @@ class TribeStrategyAIModule;
 class UnitAIModule;
 class ObjectMemory;
 class AIModuleMessage;
+class ResourceItem;
 class InfluenceMap {
 public:
     int setValue(int, int, int, int, unsigned char);
+    int setValue(int, int);
     int decrementValue(int, int, int, int, unsigned char);
 };
 
@@ -91,10 +106,10 @@ public:
 template <class T>
 class ManagedArray {
 public:
-    T* value;
+    union { T* value; T* playersToAttackValue; };
     int numberValue;
     int desiredNumberValue;
-    int maximumSizeValue;
+    union { int maximumSizeValue; int maximumSize; };
 
     ManagedArray(int desired_number = 0)
         : value(0), numberValue(0), desiredNumberValue(desired_number),
@@ -223,9 +238,10 @@ class ResourceItem {
 public:
     virtual ~ResourceItem();
     char bytes[0x6C];
-    ResourceItem(int count);
+    ResourceItem(int count = 0);
     int value(int index);
     int value(int index) const;
+    void setValue(int, int);
     static void setValue(ResourceItem* self, int index, int value);
 };
 
@@ -281,6 +297,31 @@ public:
 
 #include "rge_player_context.h"
 
+class TribeAIPlayer : public RGE_Player {
+public:
+    void builderTask(int, int, float, float, int);
+    void taskResourceGatherer(int, int, int, float, float);
+    void trainUnit(int, int, int);
+    void research(int, int, int);
+    unsigned char command_delete_object(RGE_Static_Object*);
+    void objectCost(int, int, ResourceItem*, int);
+    int objectAvailable(int);
+    unsigned char command_give_attribute(int, int, float, float);
+    unsigned char command_trade_attribute(int, int);
+    unsigned char command_trade_attribute(int, int, float, float);
+    float* resources;
+};
+
+class TRIBE_World : public RGE_Game_World {
+public:
+    unsigned long time;
+    unsigned char coop_tribute_player;
+    unsigned char pad_tribe_world[3];
+    int player_count;
+    int controllingComputerPlayer;
+    TribeAIPlayer* players[9];
+};
+
 class AIPlayStatus {};
 class RGE_Action {
 public:
@@ -301,7 +342,10 @@ public:
     int currentOrder();
     int currentTarget();
     int currentTargetType();
+    float currentTargetX();
+    float currentTargetY();
     int currentOrderPriority();
+    int hasOrderOnQueue(int);
 };
 class MasterObject {
 public:
@@ -313,6 +357,7 @@ public:
     char gap_16[0x12];
     float los;
     unsigned char obj_max;
+    char* name();
 };
 
 class RGE_Master_Static_Object : public MasterObject {
@@ -496,6 +541,8 @@ class BuildAIModule {
 public:
     char gap_000[0x05BC];
     int buildListLength();
+    int numberUnbuiltItemsOfType(int, int);
+    int numberItemsOfType(int, int);
 };
 
 class BaseItem {
@@ -505,8 +552,23 @@ public:
     char* name();
 };
 
-class BuildItem : public BaseItem {};
-class ConstructionItem;
+class BuildItem : public BaseItem {
+public:
+    int buildFrom();
+    int typeID();
+    int uniqueID();
+    float x();
+    float y();
+    void setInProgress(int);
+    void setBuilt(int);
+};
+class ConstructionItem {
+public:
+    virtual ~ConstructionItem();
+    int typeID();
+    float x();
+    float y();
+};
 
 class TribeBuildAIModule : public BuildAIModule {
 public:
@@ -517,6 +579,12 @@ public:
     void unskipBuildList(int, int);
     int loadBuildList(char*, RGE_Player*);
     int numberBuiltOrInProgressItemsOfType(int, int);
+    int mostNeededResource(ResourceItem*, int);
+    int readyToResearch(int, int);
+    int numberUnbuiltItemsOfType(int, int);
+    int numberItemsOfType(int, int);
+    int allBuilt(int, int);
+    BuildItem* buildItem(int, int, int);
 };
 
 class TribeConstructionAIModule {
@@ -533,6 +601,7 @@ public:
     TribeMainDecisionAIModule* md;
     int numberResourcesValue;
     int resource(int);
+    int resourcesAvailable(ResourceItem*);
 };
 
 class DiplomacyAIModule {
@@ -567,6 +636,20 @@ public:
     int findGatherPosition(XYPoint&, int, int, int, int, RGE_Static_Object*, XYPoint&);
     int numberGameIDsOwnedBy(int player, int gameID);
     int gameIDOfResourceObject(int, int, float&, float&, int&, int*, int);
+    int gameIDOfResourceObject(int, int, float*, float*, int*, int*, int);
+    void setResourceObjectValid(int, int, int);
+    int acceptablePotentialDropsiteArea(int, int);
+    int numberAvailableStoragePits(int);
+    int numberAvailableGranaries(int);
+    int numberAvailableGranaries();
+    int setTileExplored(int, int);
+    int unexploredPlayerLocation(int, int);
+    int unexploredPlayerLocation(int, XYPoint*);
+    int tileUncovered(int, int);
+    int mapXSize();
+    int mapYSize();
+    int numberUnitsWithinXTiles(RGE_Static_Object*, int, int, int, int, int);
+    int numberUnitsWithinXTiles(int, int, int, int);
     ObjectMemory* objectToTradeWith(int);
     RGE_Static_Object* findClosestReturnDropsite(RGE_Static_Object*);
     ObjectMemory* objectToDefend(int commander_id);
@@ -598,6 +681,8 @@ public:
     int currentVictoryCondition();
     Waypoint* targetPoint1();
     Waypoint* targetPoint2();
+    int targetID();
+    int secondTargetID();
 };
 
 class MainDecisionAIModule : public AIModule {
@@ -605,6 +690,7 @@ public:
     RGE_Player* player;
     ManagedArray<int> objects;
     RGE_Static_Object* object(int id);
+    RGE_Static_Object* object(int, int, int, int, int, int);
     RGE_Static_Object* object(int, int, int, int, int, int, int, int, int, int);
     int numberObjectsWithAction(int);
     RGE_Static_Object* mostDamaged(int, int);
@@ -620,7 +706,7 @@ public:
     TribeResourceAIModule resourceAI;
     TribeStrategyAIModule strategyAI;
     char gap_1146C[0x1100];
-    RGE_Player* aiPlayer;
+    TribeAIPlayer* aiPlayer;
     int isEnemy(int player_id);
     int isMoveable(int id);
     void updateBuildAIWithObjects();
@@ -959,6 +1045,7 @@ public:
     void setGroupInfluences(InfluenceMap&);
     int selectBestCommander(TacticalAIGroup*);
     int selectBestCommander(ManagedArray<int>&);
+    int selectBestCommander(ManagedArray<int>*);
     int inAge(int);
     int resourceDifference(int);
     int actualGathererCount(int);
@@ -971,7 +1058,9 @@ public:
     int requiredGatherAmount(int);
     int deleteUnit(int);
     int numberAvailableStoragePits(int&, int&, int);
+    int numberAvailableStoragePits(RGE_Static_Object**, int*, int);
     int numberAvailableGranaries(int&, int&);
+    int numberAvailableGranaries(RGE_Static_Object**, int*);
     void checkForBuildInsertion(int, int, int);
     int isFarmer(RGE_Static_Object*);
     int numberFarmers();
