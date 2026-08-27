@@ -82,6 +82,20 @@ Repository source roles are:
 - `logic_reviews\`: versioned semantic-review ledgers;
 - `LESSONS.md`: reusable VC5 matching knowledge.
 
+The active source-reunification phase moves recovered functions into their
+final, original-like source modules. For a migrated PDB compiland:
+
+- one normal `.c` or `.cpp` file owns all handwritten functions in source order;
+- normal headers own shared declarations;
+- `config/source_modules/<module>.json` records each function status;
+- recovery notes live under `recovery_notes/` when they do not belong in source;
+- wrapper files, function-fragment includes, context-selection macros, and
+  duplicate fallback declarations are removed.
+
+During this structural phase, a temporary exactness regression does not block a
+natural module migration. Record every regression. Do not change behavior to
+cause or hide one. Exact repair resumes on the final source tree.
+
 A VA has one compiler-facing source owner. Never keep duplicate owners across
 source banks.
 
