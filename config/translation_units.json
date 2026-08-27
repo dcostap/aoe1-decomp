@@ -7263,16 +7263,17 @@
     },
     {
       "name": "pnl_msg",
-      "source": "src/pnl_msg_tu.cpp",
+      "source": "src/Pnl_msg.cpp",
+      "module": "pnl_msg",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00479270": "src/matching/00479270_set_justification.cpp",
-        "004792A0": "src/matching/004792A0_show_message.cpp",
-        "004793C0": "src/matching/004793C0_show_message2.cpp",
-        "00479540": "src/matching/00479540_remove_message.cpp",
-        "00479A10": "src/matching/00479A10_get_true_render_rect.cpp",
-        "00479A80": "src/matching/00479A80_handle_idle.cpp",
-        "0047A190": "src/matching/0047A190_set_font.cpp"
+        "00479270": "src/Pnl_msg.cpp",
+        "004792A0": "src/Pnl_msg.cpp",
+        "004793C0": "src/Pnl_msg.cpp",
+        "00479540": "src/Pnl_msg.cpp",
+        "00479A10": "src/Pnl_msg.cpp",
+        "00479A80": "src/Pnl_msg.cpp",
+        "0047A190": "src/Pnl_msg.cpp"
       },
       "symbols": {
         "00479270": "?set_justification@TMessagePanel@@QAEXW4JustType@1@0H@Z",

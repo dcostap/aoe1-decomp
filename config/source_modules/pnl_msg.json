@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "name": "pnl_msg",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp",
+  "source": "src/Pnl_msg.cpp",
+  "header": "include/pnl_msg.h",
+  "functions": {
+    "00478F40": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/pnl_msg_module.md"
+    },
+    "00479050": {
+      "status": "matching",
+      "note_path": "recovery_notes/pnl_msg_module.md"
+    },
+    "004790E0": {
+      "status": "matching",
+      "note_path": "recovery_notes/pnl_msg_module.md"
+    },
+    "00479270": {
+      "status": "matching",
+      "note_path": "recovery_notes/pnl_msg_module.md"
+    },
+    "004792A0": {
+      "status": "matching",
+      "note_path": "recovery_notes/pnl_msg_module.md"
+    },
+    "004793C0": {
+      "status": "matching",
+      "note_path": "recovery_notes/pnl_msg_module.md"
+    },
+    "00479540": {
+      "status": "matching",
+      "note_path": "recovery_notes/pnl_msg_module.md"
+    },
+    "00479590": {
+      "status": "scratch",
+      "note_path": "recovery_notes/pnl_msg_module.md"
+    },
+    "00479A10": {
+      "status": "matching",
+      "note_path": "recovery_notes/pnl_msg_module.md"
+    },
+    "00479A80": {
+      "status": "matching",
+      "note_path": "recovery_notes/pnl_msg_module.md"
+    },
+    "00479AE0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/pnl_msg_module.md"
+    },
+    "0047A190": {
+      "status": "matching",
+      "note_path": "recovery_notes/pnl_msg_module.md"
+    }
+  }
+}

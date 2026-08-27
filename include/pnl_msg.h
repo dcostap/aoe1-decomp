@@ -1,9 +1,5 @@
-#ifndef AOE1_PNL_MSG_CONTEXT_H
-#define AOE1_PNL_MSG_CONTEXT_H
-
-// Recovered source context for C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp.
-// The owner files include this header before their local fallback declarations.
-// The layout uses the executable's TPanel size (0xF4) and message-panel fields.
+#ifndef AOE1_PNL_MSG_H
+#define AOE1_PNL_MSG_H
 
 #include <windows.h>
 #include "rge_base_game_global.h"
@@ -27,20 +23,20 @@ extern RGE_Base_Game* rge_base_game;
 
 class TDrawArea {
 public:
-    TDrawSystem* DrawSystem;       // +0x00
-    void* Wnd;                     // +0x04
-    unsigned char* Bits;           // +0x08
-    void* BitmapInfo;              // +0x0C
-    void* Bitmap;                  // +0x10
-    void* OldBitmap;               // +0x14
-    long Width;                    // +0x18
-    long Height;                   // +0x1C
-    long Pitch;                    // +0x20
-    long Orien;                    // +0x24
-    tagRECT ClipRect;              // +0x28
-    HDC DrawDc;                    // +0x38
-    void* DrawSurface;             // +0x3C
-    char size_tail[0xC0];           // +0x40; complete allocation size is 0x100
+    TDrawSystem* DrawSystem;
+    void* Wnd;
+    unsigned char* Bits;
+    void* BitmapInfo;
+    void* Bitmap;
+    void* OldBitmap;
+    long Width;
+    long Height;
+    long Pitch;
+    long Orien;
+    tagRECT ClipRect;
+    HDC DrawDc;
+    void* DrawSurface;
+    char size_tail[0xC0];
 
     TDrawArea(char*, int);
     ~TDrawArea();
@@ -74,9 +70,6 @@ public:
 
 class TPanel {
 public:
-    // The period panel surface has the RECT overload before the four-long
-    // overload. The executable maps set_active to +0x14 and set_redraw to
-    // +0x20 in the message-panel callers.
     virtual ~TPanel();
     virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
                        unsigned char);
@@ -138,67 +131,66 @@ public:
 
     TPanel();
 
-    TPanel* previous_panel;          // +0x04
-    TPanel* previous_modal_panel;    // +0x08
-    long pnl_x;                      // +0x0C
-    long pnl_y;                      // +0x10
-    long pnl_wid;                    // +0x14
-    long pnl_hgt;                    // +0x18
-    char* panel_name;                // +0x1C
-    TDrawArea* render_area;          // +0x20
-    tagRECT clip_rect;               // +0x24
-    int position_mode;               // +0x34
-    int need_redraw;                 // +0x38
-    TPanel* curr_child;              // +0x3C
-    TPanel* parent_panel;            // +0x40
-    TPanel* left_panel;              // +0x44
-    TPanel* top_panel;               // +0x48
-    TPanel* right_panel;             // +0x4C
-    TPanel* bottom_panel;            // +0x50
-    void* node;                      // +0x54
-    void* first_child_node;          // +0x58
-    void* last_child_node;           // +0x5C
-    TPanel* tab_prev_panel;           // +0x60
-    TPanel* tab_next_panel;           // +0x64
-    int mouse_captured;              // +0x68
-    int active;                      // +0x6C
-    int visible;                     // +0x70
-    int tab_stop;                    // +0x74
-    int have_focus;                  // +0x78
-    int overlapping_children;         // +0x7C
-    int handle_mouse_input;          // +0x80
-    int just_drawn;                  // +0x84
-    void* clip_rgn;                  // +0x88
-    tagRECT render_rect;              // +0x8C
-    long left_border;                // +0x9C
-    long top_border;                 // +0xA0
-    long right_border;                // +0xA4
-    long bottom_border;              // +0xA8
-    long min_wid;                    // +0xAC
-    long max_wid;                    // +0xB0
-    long min_hgt;                    // +0xB4
-    long max_hgt;                    // +0xB8
-    long mouse_hold_interval;         // +0xBC
-    long mouse_move_tolerance;        // +0xC0
-    long mouse_down_x;                // +0xC4
-    long mouse_down_y;                // +0xC8
-    int mouse_down_ctrl;              // +0xCC
-    int mouse_down_shift;             // +0xD0
-    unsigned long mouse_down_time;    // +0xD4
-    int error_code;                   // +0xD8
-    int z_order;                      // +0xDC
-    int display_changed_count;        // +0xE0
-    long help_string_id;              // +0xE4
-    long help_page_id;                // +0xE8
-    unsigned char mouse_action;       // +0xEC
-    unsigned char mouse_down_button;  // +0xED
-    unsigned char panel_type;         // +0xEE
-    unsigned char color;              // +0xEF
-    unsigned char fill_in_background; // +0xF0
-    unsigned char clip_to_parent;     // +0xF1
-    unsigned char draw_rect2_flag;    // +0xF2
-    unsigned char need_restore;       // +0xF3
-
+    TPanel* previous_panel;
+    TPanel* previous_modal_panel;
+    long pnl_x;
+    long pnl_y;
+    long pnl_wid;
+    long pnl_hgt;
+    char* panel_name;
+    TDrawArea* render_area;
+    tagRECT clip_rect;
+    int position_mode;
+    int need_redraw;
+    TPanel* curr_child;
+    TPanel* parent_panel;
+    TPanel* left_panel;
+    TPanel* top_panel;
+    TPanel* right_panel;
+    TPanel* bottom_panel;
+    void* node;
+    void* first_child_node;
+    void* last_child_node;
+    TPanel* tab_prev_panel;
+    TPanel* tab_next_panel;
+    int mouse_captured;
+    int active;
+    int visible;
+    int tab_stop;
+    int have_focus;
+    int overlapping_children;
+    int handle_mouse_input;
+    int just_drawn;
+    void* clip_rgn;
+    tagRECT render_rect;
+    long left_border;
+    long top_border;
+    long right_border;
+    long bottom_border;
+    long min_wid;
+    long max_wid;
+    long min_hgt;
+    long max_hgt;
+    long mouse_hold_interval;
+    long mouse_move_tolerance;
+    long mouse_down_x;
+    long mouse_down_y;
+    int mouse_down_ctrl;
+    int mouse_down_shift;
+    unsigned long mouse_down_time;
+    int error_code;
+    int z_order;
+    int display_changed_count;
+    long help_string_id;
+    long help_page_id;
+    unsigned char mouse_action;
+    unsigned char mouse_down_button;
+    unsigned char panel_type;
+    unsigned char color;
+    unsigned char fill_in_background;
+    unsigned char clip_to_parent;
+    unsigned char draw_rect2_flag;
+    unsigned char need_restore;
 };
 
 typedef char pnl_msg_tpanel_size_check[(sizeof(TPanel) == 0xF4) ? 1 : -1];
@@ -221,35 +213,35 @@ public:
         CenterJust = 4
     };
 
-    MessageType message_type;        // +0xF4
-    char text[0x200];                // +0xF8
-    int showing_message;             // +0x2F8
-    int start_time;                  // +0x2FC
-    int show_message_interval;       // +0x300
-    void* font;                      // +0x304
-    long font_wid;                   // +0x308
-    long font_hgt;                   // +0x30C
-    unsigned char font_color;        // +0x310
-    unsigned char back_color;        // +0x311
-    unsigned char gap_312[2];        // +0x312
-    int index_color;                 // +0x314
-    unsigned long font_color1;       // +0x318
-    unsigned long font_color2;       // +0x31C
-    JustType horz_just;              // +0x320
-    JustType vert_just;              // +0x324
-    int word_wrap;                   // +0x328
-    void* image_clip_region;         // +0x32C
-    TDrawArea* ImageBuffer;          // +0x330
-    tagRECT ImageRect;               // +0x334
-    tagRECT UsedImageRect;           // +0x344
-    tagRECT UsedScreenRect;          // +0x354
-    int LastIBWidth;                 // +0x364
-    int LastIBHeight;                // +0x368
-    int ImageTextActive;             // +0x36C
-    TShape* Icon1;                   // +0x370
-    TShape* Icon2;                   // +0x374
-    int IconFrame1;                  // +0x378
-    int IconFrame2;                  // +0x37C
+    MessageType message_type;
+    char text[0x200];
+    int showing_message;
+    int start_time;
+    int show_message_interval;
+    void* font;
+    long font_wid;
+    long font_hgt;
+    unsigned char font_color;
+    unsigned char back_color;
+    unsigned char gap_312[2];
+    int index_color;
+    unsigned long font_color1;
+    unsigned long font_color2;
+    JustType horz_just;
+    JustType vert_just;
+    int word_wrap;
+    void* image_clip_region;
+    TDrawArea* ImageBuffer;
+    tagRECT ImageRect;
+    tagRECT UsedImageRect;
+    tagRECT UsedScreenRect;
+    int LastIBWidth;
+    int LastIBHeight;
+    int ImageTextActive;
+    TShape* Icon1;
+    TShape* Icon2;
+    int IconFrame1;
+    int IconFrame2;
 
     TMessagePanel(void*, long, long);
     virtual ~TMessagePanel();
