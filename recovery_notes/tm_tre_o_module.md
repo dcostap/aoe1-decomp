@@ -44,17 +44,24 @@ surface. The parent must confirm both generated destructor entries.
 
 ## Proposed declarations
 
-`include/tm_tre_o.h` includes the reviewed master/static object declaration
-surface. It adds no copied base layout. `TRIBE_Master_Tree_Object` declares
-its virtual destructor, three constructors, and the two factory overrides.
-It only forward-declares `TRIBE_Tree_Object`. The source includes
+`include/tm_tre_o.h` includes canonical `include/m_s_obj.h` directly. It adds
+no copied base layout. `TRIBE_Master_Tree_Object` declares its virtual
+destructor, three constructors, and the two factory overrides. It includes
+`<stdio.h>` so its public `FILE*` constructor declaration is self-sufficient;
+the typedef produces the PDB `PAU_iobuf` constructor name. It only
+forward-declares `TRIBE_Tree_Object`. The source includes
 `include/t_tre_ob.h` for the `new TRIBE_Tree_Object` expression. That class
 remains owned by `t_tre_ob.cpp`.
 
+Direct dependency closure reviewed: `tm_tre_o.cpp` includes `tm_tre_o.h` and
+`t_tre_ob.h`; `tm_tre_o.h` includes `<stdio.h>` and canonical `m_s_obj.h`;
+and `t_tre_ob.h` uses canonical `stat_obj.h`, which includes `utmarray.h`.
+No `_context.h` file appears in this closure.
+
 The source uses normal C++ constructors, base initializers, protected setup
 calls, the canonical `master_type` member, and natural `new` expressions. It
-contains no C++ source includes, recovery macros, manual vptr stores, raw
-cursor accesses, fallback classes, or inline assembly.
+contains no recovery macros, manual vptr stores, raw cursor accesses, fallback
+classes, or inline assembly.
 
 ## Migration
 
@@ -71,9 +78,9 @@ cursor accesses, fallback classes, or inline assembly.
 - Did not edit translation-unit config, global config, globals, shared headers,
   metrics, or inventories.
 
-The metadata keeps all five prior statuses as `matching`. It does not claim a
-new post-move byte result. The generated destructor status remains a parent
-integration concern because this captain did not run a compiler or validator.
+The metadata keeps all five prior statuses as `matching`. The candidate
+compile uses the canonical base header and keeps the five normal owners exact.
+The generated destructor status remains a parent integration concern.
 
 ## Candidate proposal
 
@@ -87,29 +94,35 @@ The direct source change affects only `tm_tre_o.cpp`. The base declaration
 surface also affects future reunification of `m_s_obj.cpp` and `tm_co_ob.cpp`.
 The tree constructor and generated destructor fan out to `t_tre_ob.cpp`.
 
-The current branch has no canonical standalone `m_s_obj.h`. The new header
-therefore consumes `m_s_obj_context.h`, which is existing ABI evidence. The
-coordinator should publish or select one reviewed canonical master/static
-header before final cross-module integration. Do not create a second base
-layout in this module. The `t_tre_ob` captain should use the same static-object
-ABI after its own reunification.
+The canonical standalone `include/m_s_obj.h` supplies the reviewed
+master/static declaration and layout. This module includes it directly and
+does not include any context header or create a second base layout. The
+`t_tre_ob` captain should use the same static-object ABI after its own
+reunification.
 
 No Map, View, global, or shared declaration substitute was added.
 
 ## Validation fanout
 
-This captain did not run compiler or validator tools, as assigned. The parent
-should run these checks after updating the registered translation-unit entry:
+The grouped candidate validation was run with:
 
-1. Run `python tools/validate_candidate_tu.py --proposal build/candidate_tus/tm_tre_o.json`.
-2. Build and check the registered `tm_tre_o` group from tracked source.
-3. Check all five normal owners for `MATCH`, zero difference, boundaries,
-   relocations, and direct targets.
-4. Check generated `0050F1F0` and `0050F210`, plus the `0050F20E` padding boundary.
-5. Run grouped checks for `t_tre_ob`, `m_s_obj`, and `tm_co_ob` after selecting
-   the canonical shared ABI declaration.
-6. Run the Terra-6 structural and shard checks at the integration checkpoint.
+`python tools/validate_candidate_tu.py --proposal build/candidate_tus/tm_tre_o.json`
 
-The old split source had five exact owners. No post-move regression measurement
-exists yet. Any difference found after regrouping must be recorded as a migration
-regression, not silently corrected in the source.
+Results:
+
+- `0050F180`, `0050F220`, `0050F2A0`, `0050F320`, and `0050F3A0`: `MATCH`,
+  `0.0000%`, zero byte differences, correct owners, relocations, and
+  boundaries.
+- Generated scalar-deleting destructor `0050F1F0`: `MATCH`, zero byte
+  differences and zero relocation or boundary mismatches. Its owner is
+  compiler-generated and therefore unverified by the normal owner check.
+- Generated destructor `0050F210`: unresolved. The object has no defined
+  `??1TRIBE_Master_Tree_Object@@UAE@XZ` body for this five-byte tail-jump
+  comparison.
+
+The grouped candidate status is not full-module exact because the known
+generated destructor remains unresolved. The parent must confirm that generated
+status before registration. The `0050F20E` padding-only boundary remains
+outside this source module.
+
+## Integration result
