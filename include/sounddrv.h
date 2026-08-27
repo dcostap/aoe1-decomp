@@ -4,6 +4,7 @@
 #include <windows.h>
 #include <mmsystem.h>
 #include <dsound.h>
+#include <stddef.h>
 
 typedef unsigned char uchar;
 
@@ -13,7 +14,6 @@ class TSound_Driver {
 public:
     unsigned char ready;
     unsigned char mute;
-    unsigned char gap_02[2];
     void* main_wnd;
     LPDIRECTSOUND direct_sound;
     LPDIRECTSOUNDBUFFER primary_buffer;
@@ -61,7 +61,6 @@ public:
     unsigned char loaded;
     unsigned char failed;
     char sound_file[13];
-    unsigned char gap_17;
     long resource_id;
     long volume;
     unsigned long pitch;
@@ -88,5 +87,14 @@ public:
     int is_playing();
     int add_to_play_list();
 };
+
+typedef char sounddrv_tsound_driver_size_check[
+    (sizeof(TSound_Driver) == 0x69C) ? 1 : -1];
+typedef char sounddrv_tdigital_size_check[
+    (sizeof(TDigital) == 0x3C) ? 1 : -1];
+typedef char sounddrv_tsound_driver_main_wnd_offset_check[
+    (offsetof(TSound_Driver, main_wnd) == 0x04) ? 1 : -1];
+typedef char sounddrv_tdigital_resource_id_offset_check[
+    (offsetof(TDigital, resource_id) == 0x18) ? 1 : -1];
 
 #endif
