@@ -1,5 +1,5 @@
-#ifndef AOE1_TACT_TEK_CONTEXT_H
-#define AOE1_TACT_TEK_CONTEXT_H
+#ifndef AOE1_TACT_TEK_H
+#define AOE1_TACT_TEK_H
 
 // Authentic declaration surface for C:\\msdev\\work\\age1_x1\\tact_tek.cpp.
 // The source and address order is 004D21B0, 004D2250, 004D2290,

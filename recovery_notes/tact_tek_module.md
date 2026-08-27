@@ -22,7 +22,7 @@ The nearby VA 004D2230 vector-deleting destructor is compiler generated. It is
 not a normal source owner.
 
 The class inventory proves `TRIBE_Action_Make_Tech` size `0x48`, base
-`RGE_Action`, and virtual `set_state` slot `0x5C`. The context header records the
+`RGE_Action`, and virtual `set_state` slot `0x5C`. The module header records the
 reviewed declarations and field offsets used by this module.
 
 ## State evidence
@@ -63,7 +63,7 @@ and boundaries.
 
 This consolidation removes wrapper-only includes, context macros, fallback
 class declarations, and per-function source fragments. It does not change the
-shared context header or the reviewed state labels.
+module header or the reviewed state labels.
 
 The former destructor-only `/GX` response file was stale after consolidation
 and is removed. The module uses the tracked `config/flags/default_gx.rsp`
