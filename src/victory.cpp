@@ -1,6 +1,17 @@
 // Authentic complete owner for C:\\msdev\\work\\age1_x1\\victory.cpp.
 // Normal owners stay in PDB source order.
 #include "../include/victory.h"
+#include "../include/rge_fio.h"
+#include "../include/player.h"
+#include "../include/stat_obj.h"
+#include "../include/m_s_obj.h"
+#include "../include/visible.h"
+#include "../include/world.h"
+#include "../include/obj_list.h"
+
+extern "C" void* calloc(unsigned int count, unsigned int size);
+extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
+extern "C" void __cdecl getstring(char** destination, char* source);
 extern "C" void __cdecl free(void* block);
 
 

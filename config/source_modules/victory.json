@@ -4,6 +4,10 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\victory.cpp",
   "source": "src/victory.cpp",
   "header": "include/victory.h",
+  "header_composition": {
+    "status": "repaired",
+    "summary": "The owner-only header includes rge_fio.h, declares only victory types, and keeps all game-owner headers private to victory.cpp."
+  },
   "functions": {
     "00531750": { "status": "scratch", "note_path": "recovery_notes/victory_module.md" },
     "00531AF0": { "status": "matching", "note_path": "recovery_notes/victory_module.md" },

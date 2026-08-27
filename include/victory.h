@@ -6,98 +6,20 @@
 // The PDB identifies one RGE_Victory_Conditions class for the complete
 // victory.cpp source module. Keep the proven field offsets and virtual slots
 // in one module-owned declaration.
+// Foreign owner headers stay private to victory.cpp.
 
-extern "C" void rge_read(int handle, void* data, int size);
-extern "C" void rge_write(int handle, void* data, int size);
-extern "C" void* calloc(unsigned int count, unsigned int size);
-extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
-extern "C" void __cdecl getstring(char** destination, char* source);
+#include "rge_fio.h"
 
 class RGE_Game_World;
 class RGE_Player;
-class RGE_Master_Static_Object;
 class RGE_Static_Object;
-class RGE_Object_List;
 struct RGE_Victory_Entry;
 struct RGE_Victory_Point_Entry;
-class RGE_Visible_Map;
 class RGE_Victory_Conditions;
-
-class RGE_Object_List {
-protected:
-    virtual void load(unsigned char flag, int file, RGE_Game_World* world);
-
-public:
-    class RGE_Object_Node* list; // +0x04
-    RGE_Static_Object* find_by_id(long id);
-};
-
-class RGE_Object_Node {
-public:
-    RGE_Static_Object* node; // +0x00
-    RGE_Object_Node* next; // +0x04
-};
-
-class RGE_Game_World {
-public:
-    virtual unsigned char data_load_world(void* file);
-    char gap_04[0x38];
-    short player_num; // +0x3C
-    char gap_3E[2];
-    RGE_Player** players; // +0x40
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_04[0x20];
-    RGE_Master_Static_Object** master_objects; // +0x24
-    RGE_Object_List* objects; // +0x28
-    char gap_2C[8];
-    RGE_Victory_Conditions* victory_conditions; // +0x34
-    RGE_Visible_Map* visible; // +0x38
-    RGE_Game_World* world; // +0x3C
-    char gap_40[0x0A];
-    short id; // +0x4A
-    char gap_4C[4];
-    float* attributes; // +0x50
-    char gap_54[0x2C];
-    unsigned char game_status; // +0x80
-    char gap_81[3];
-    unsigned char* relations; // +0x84
-    char gap_88[0x7C];
-    unsigned char allied_victory; // +0x104
-};
-
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap_04[4];
-    char* name; // +0x08
-    char gap_0C[6];
-    short copy_id; // +0x12
-    char gap_14[0x1C];
-    float radius_x; // +0x30
-    float radius_y; // +0x34
-};
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    long id; // +0x04
-    RGE_Master_Static_Object* master_obj; // +0x08
-    RGE_Player* owner; // +0x0C
-    char gap_10[0x28];
-    float world_x; // +0x38
-    float world_y; // +0x3C
-    char gap_40[8];
-    unsigned char object_state; // +0x48
-};
 
 struct RGE_Victory_Entry {
 public:
     unsigned char command; // +0x00
-    char gap_01[3];
     long obj_type; // +0x04
     RGE_Player* target_player; // +0x08
     float x0; // +0x0C
@@ -128,6 +50,11 @@ public:
     float curr_attribute_amount; // +0x14
     RGE_Victory_Point_Entry* next; // +0x18
 };
+
+typedef char rge_victory_entry_size_check[
+    (sizeof(RGE_Victory_Entry) == 0x34) ? 1 : -1];
+typedef char rge_victory_point_entry_size_check[
+    (sizeof(RGE_Victory_Point_Entry) == 0x1C) ? 1 : -1];
 
 class RGE_Victory_Conditions {
 // BINARY NOTE: victory.cpp FPO records use protected handlers and struct-tagged
@@ -221,16 +148,13 @@ public:
     long list_num; // +0x08
     RGE_Player* player; // +0x0C
     unsigned char victory; // +0x10
-    char gap_11[3];
     RGE_Victory_Point_Entry* victory_point_list; // +0x14
     long point_list_num; // +0x18
     long tot_victory_points; // +0x1C
 };
 
-class RGE_Visible_Map {
-public:
-    float percentExplored();
-};
+typedef char rge_victory_conditions_size_check[
+    (sizeof(RGE_Victory_Conditions) == 0x20) ? 1 : -1];
 
 typedef RGE_Victory_Point_Entry VP_Entry;
 
