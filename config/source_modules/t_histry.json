@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "name": "t_histry",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\t_histry.cpp",
+  "source": "src/t_histry.cpp",
+  "header": "include/t_histry.h",
+  "functions": {
+    "004CC730": { "status": "matching" },
+    "004CC760": { "status": "matching" },
+    "004CC7A0": {
+      "status": "matching",
+      "note_path": "recovery_notes/004CC7A0_save.md"
+    },
+    "004CC840": {
+      "status": "matching",
+      "note_path": "recovery_notes/004CC840_load.md"
+    },
+    "004CC8E0": {
+      "status": "matching",
+      "note_path": "recovery_notes/004CC8E0_add_history_entry.md"
+    },
+    "004CC950": { "status": "matching" },
+    "004CC960": { "status": "matching" },
+    "004CC990": { "status": "matching" },
+    "004CC9E0": { "status": "matching" },
+    "004CC9F0": {
+      "status": "matching",
+      "note_path": "recovery_notes/004CC9F0_get_history_event.md"
+    },
+    "004CCA30": { "status": "matching" }
+  }
+}

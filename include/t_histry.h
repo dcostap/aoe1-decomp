@@ -1,26 +1,19 @@
-#ifndef AOE1_T_HISTRY_CONTEXT_H
-#define AOE1_T_HISTRY_CONTEXT_H
+#ifndef AOE1_T_HISTRY_H
+#define AOE1_T_HISTRY_H
 
-class RGE_Game_World {
+class TRIBE_History_Entry {
 public:
-    virtual unsigned char data_load_world(void* file);
-    unsigned long world_time;
-};
-
-struct TRIBE_History_Entry {
     unsigned char population;
 };
 
-struct TRIBE_History_Events {
+class TRIBE_History_Events {
+public:
     unsigned char event;
-    unsigned char gap_01[3];
+    unsigned char _pad_0[3];
     long time;
     long world_time;
     TRIBE_History_Events* next;
 };
-
-typedef TRIBE_History_Entry HistoryEntry;
-typedef TRIBE_History_Events TRIBE_History_Step;
 
 class TRIBE_History_Info {
 public:
@@ -44,7 +37,9 @@ public:
     unsigned char get_history_event(long time, unsigned char& event);
 };
 
-typedef char t_histry_context_size_check[
+typedef char t_histry_info_size_check[
     (sizeof(TRIBE_History_Info) == 0x14) ? 1 : -1];
+typedef char t_histry_events_size_check[
+    (sizeof(TRIBE_History_Events) == 0x10) ? 1 : -1];
 
 #endif

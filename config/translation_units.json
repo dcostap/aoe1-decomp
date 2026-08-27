@@ -2698,20 +2698,21 @@
     },
     {
       "name": "t_histry",
-      "source": "src/t_histry_tu.cpp",
+      "source": "src/t_histry.cpp",
+      "module": "t_histry",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004CC730": "src/matching/004CC730_TRIBE_History_Info.cpp",
-        "004CC760": "src/matching/004CC760_TRIBE_History_Info.cpp",
-        "004CC7A0": "src/matching/004CC7A0_save.cpp",
-        "004CC840": "src/matching/004CC840_load.cpp",
-        "004CC8E0": "src/matching/004CC8E0_add_history_entry.cpp",
-        "004CC950": "src/matching/004CC950_get_history_entry_num.cpp",
-        "004CC960": "src/matching/004CC960_get_history_entry.cpp",
-        "004CC990": "src/matching/004CC990_add_history_event.cpp",
-        "004CC9E0": "src/matching/004CC9E0_get_history_event_num.cpp",
-        "004CC9F0": "src/matching/004CC9F0_get_history_event.cpp",
-        "004CCA30": "src/matching/004CCA30_get_history_event.cpp"
+        "004CC730": "src/t_histry.cpp",
+        "004CC760": "src/t_histry.cpp",
+        "004CC7A0": "src/t_histry.cpp",
+        "004CC840": "src/t_histry.cpp",
+        "004CC8E0": "src/t_histry.cpp",
+        "004CC950": "src/t_histry.cpp",
+        "004CC960": "src/t_histry.cpp",
+        "004CC990": "src/t_histry.cpp",
+        "004CC9E0": "src/t_histry.cpp",
+        "004CC9F0": "src/t_histry.cpp",
+        "004CCA30": "src/t_histry.cpp"
       },
       "symbols": {
         "004CC960": "?get_history_entry@TRIBE_History_Info@@QAEEEJ@Z",

@@ -1,0 +1,7 @@
+# 004CC9F0 `TRIBE_History_Info::get_history_event`
+
+- PDB source: `t_histry.cpp`, lines 198 to 211.
+- Original size: 54 bytes.
+- Status: registered exact owner.
+
+The recovered loop has the form `while (node != 0)`. A prior `while (1)` form changed the loop branch. The method returns the first event only when `index` is zero.
