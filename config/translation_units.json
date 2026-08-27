@@ -2025,19 +2025,22 @@
       }
     },
     {
-      "name": "act_misl_prefix",
-      "source": "src/act_misl_tu.cpp",
+      "name": "act_misl",
+      "source": "src/act_misl.cpp",
       "flags": "config/flags/00404BB0_RGE_Action_Missile.rsp",
       "owners": {
-        "00404BB0": "src/matching/00404BB0_RGE_Action_Missile.cpp",
-        "00404C90": "src/matching/00404C90_RGE_Action_Missile.cpp",
-        "00404D10": "src/matching/00404D10_first_in_stack.cpp",
-        "00404D50": "src/matching/00404D50_intercept.cpp",
-        "004054B0": "src/matching/004054B0_save.cpp"
+        "00404BB0": "src/act_misl.cpp",
+        "00404C90": "src/act_misl.cpp",
+        "00404D10": "src/act_misl.cpp",
+        "00404D50": "src/act_misl.cpp",
+        "004054B0": "src/act_misl.cpp"
       },
       "symbols": {
         "00404BB0": "??0RGE_Action_Missile@@QAE@HPAVRGE_Action_Object@@@Z",
-        "00404C90": "??0RGE_Action_Missile@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@1MMM@Z"
+        "00404C90": "??0RGE_Action_Missile@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@1MMM@Z",
+        "00404D10": "?first_in_stack@RGE_Action_Missile@@UAEXE@Z",
+        "00404D50": "?intercept@RGE_Action_Missile@@IAEXAAM00@Z",
+        "004054B0": "?save@RGE_Action_Missile@@UAEXH@Z"
       }
     },
     {
