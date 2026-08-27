@@ -473,6 +473,8 @@ extern float DAT_00573af0;
 extern double DAT_00573af8;
 // 00574524 [.rdata]
 extern float DAT_00574524;
+// 00574528 [.rdata] double zero used by RGE_Sprite::update.
+extern double DAT_00574528;
 // 00574718 [.rdata]
 extern double DAT_00574718;
 // 00574724 [.rdata]
