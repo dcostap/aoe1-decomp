@@ -11,8 +11,10 @@
 // Probe 1 (baseline): natural typed switch and declaration-only Move_To
 // constructors; exact 566/566-byte match under the pinned VC5 toolchain.
 // FLAGS: /nologo /c /O2 /Oy /GX
+// Canonical-owner cleanup candidate: 566-byte output with 456 positional
+// differences. The prior exact result depended on the legacy context.
 
-#include "../../include/tact_hea_context.h"
+#include "../../include/tact_hea.h"
 
 void TRIBE_Action_Heal::set_state(unsigned char param_1)
 {

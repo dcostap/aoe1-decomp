@@ -3,20 +3,37 @@
 // Source module: C:\\msdev\\work\\age1_x1\\tact_hea.cpp
 // PDB owner lines: 41, 51, 67, 80, 98, 175, and 371.
 //
-// The module context supplies the reviewed tactical-action hierarchy and keeps
-// the source bodies in one compiler context.  The nearby scalar deleting
-// destructor at 004CE960 is compiler-generated and is selected in the proposal.
+// The source-only context supplies the reviewed tactical-action hierarchy from
+// canonical owner headers.  The legacy context remains for the old fragments,
+// but this owner no longer consumes it.  The nearby scalar deleting destructor
+// at 004CE960 is compiler-generated and is selected in the proposal.
 //
-// Baseline validation: 004CE930, 004CE990, 004CEA10, 004CEA90, 004CECF0, and
-// 004CF030 match.  004CEA50 differs by one byte in the shared context and
-// remains observed.
-// Candidate validation reports 6 exact owners, 1 observed owner, and 1 exact
-// compiler-generated scalar deleting destructor for this complete wrapper.
-// No exact-codegen tuning was done in this pass.
-// The module context now uses the reviewed tactical hierarchy and named virtual
-// surfaces.  Candidate validation and dry-run registration pass.
+// Candidate validation rows after this cleanup:
+// 004CE930 MATCH, 004CE990 MATCH, 004CEA10 MATCH, 004CEA50 MATCH,
+// 004CEA90 MISMATCH (456 bytes), 004CECF0 MISMATCH (568 bytes),
+// 004CF030 MATCH, and generated 004CE960 MATCH.
+// The two mismatches are structural regressions from replacing the copied
+// context with canonical owners.  No exact-codegen tuning was done here.
 
-#include "../include/tact_hea_context.h"
+#include "../include/tact_hea.h"
+#include "../include/action.h"
+#include "../include/act_list.h"
+#include "../include/act_move.h"
+#include "../include/act_obj.h"
+#include "../include/stat_obj.h"
+#include "../include/move_obj.h"
+#include "../include/m_s_obj.h"
+#include "../include/m_ac_obj.h"
+#include "../include/com_obj.h"
+#include "../include/t_c_obj.h"
+#include "../include/t_b_obj.h"
+#include "../include/basegame.h"
+#include "../include/game_globals.h"
+#include "../include/player.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/sound.h"
+#include "../include/task.h"
+#include "../include/world.h"
 
 #include "matching/004CE930_TRIBE_Action_Heal.cpp"
 #include "matching/004CE990_TRIBE_Action_Heal.cpp"

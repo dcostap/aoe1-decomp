@@ -1,4 +1,4 @@
-#include "../../include/tact_hea_context.h"
+#include "../../include/tact_hea.h"
 int TRIBE_Action_Heal::work(RGE_Static_Object* target, float, float, float) {
     if (target != 0) {
         if (target == this->target_obj) {

@@ -1,4 +1,4 @@
-#include "../../include/tact_hea_context.h"
+#include "../../include/tact_hea.h"
 
 TRIBE_Action_Heal::TRIBE_Action_Heal(RGE_Action_Object* obj, RGE_Task* task,
                                      float x, float y, float z)

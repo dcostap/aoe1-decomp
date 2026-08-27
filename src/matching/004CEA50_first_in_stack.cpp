@@ -1,4 +1,4 @@
-#include "../../include/tact_hea_context.h"
+#include "../../include/tact_hea.h"
 
 // BINARY NOTE: the target object is the RGE_Action field at +0x10.
 // Its master object supplies the short kind field at +0x14.

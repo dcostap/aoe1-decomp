@@ -79,13 +79,15 @@
 // Expanded assignment, double casts, a branch-local product, a float reference,
 // and a conditional expression were duplicate nine-byte mismatches.
 // The reduced source uses ordinary compound multiplication and direct fields.
+// Canonical-owner cleanup candidate: 739-byte output with 568 positional
+// differences. The prior exact result depended on the legacy context.
 
-#include "../../include/tact_hea_context.h"
+#include "../../include/tact_hea.h"
 
 extern float DAT_005750e0;
 extern double DAT_005750e8;
 
-#include "../../include/tact_hea_context.h"
+#include "../../include/tact_hea.h"
 
 uchar TRIBE_Action_Heal::update()
 {
@@ -172,7 +174,7 @@ uchar TRIBE_Action_Heal::update()
         if (this->target_obj->world_x != this->target_x ||
             this->target_y != this->target_obj->world_y) {
             float distance = this->obj->distance_to_object(this->target_obj);
-            if (this->task->range < distance && DAT_005750e8 < distance) {
+            if (this->task->work_range < distance && DAT_005750e8 < distance) {
                 this->set_state(3);
                 return 0;
             }
@@ -182,7 +184,8 @@ uchar TRIBE_Action_Heal::update()
             return 0;
         }
 
-        work = this->task->work_rate * this->obj->master_obj->work_rate;
+        work = this->task->work_val1 *
+               ((RGE_Master_Action_Object*)this->obj->master_obj)->work_rate;
         work *= this->obj->owner->world->world_time_delta_seconds;
         if (this->obj->owner->attributes[0x38] > DAT_005750e0) {
             work *= this->obj->owner->attributes[0x38];
