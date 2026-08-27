@@ -13,4 +13,5 @@ carrier.
 
 The grouped candidate reports all five normal owners as `MATCH` with `0.0000%`
 difference, zero relocation mismatches, and zero boundary escapes. Both
-generated destructors also match.
+generated destructors also match. The same result passed after direct metadata
+registration.
