@@ -1,6 +1,8 @@
 #ifndef AOE1_AIRCHMOD_CONTEXT_H
 #define AOE1_AIRCHMOD_CONTEXT_H
 
+#include "aitchitm.h"
+
 class MainDecisionAIModule;
 class BuildItem;
 
@@ -11,39 +13,6 @@ public:
     void __cdecl logCommonHistory(char*, ...);
 
     char gap[0xEC];
-};
-
-class ResourceItem {
-public:
-    virtual ~ResourceItem();
-    ResourceItem(int count, int* values);
-    ResourceItem(ResourceItem const& other);
-
-    ResourceItem* next;
-    ResourceItem* prev;
-    int valueValue[8];
-    int sortedValue[8];
-    int sortedIndexValue[8];
-    int numberValue;
-
-    int value(int index) const;
-};
-
-class TechnologyItem {
-public:
-    virtual ~TechnologyItem();
-    TechnologyItem();
-    TechnologyItem(int id, char* name, ResourceItem cost);
-
-    TechnologyItem* next;
-    TechnologyItem* prev;
-    int idValue;
-    char nameValue[0x40];
-    ResourceItem* resourceCostValue;
-
-    int id() const;
-    char* name();
-    ResourceItem* resourceCost();
 };
 
 class ResearchAIModule : public AIModule {

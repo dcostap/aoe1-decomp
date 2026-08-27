@@ -7,6 +7,9 @@ class ResourceItem {
 public:
     virtual ~ResourceItem();
 
+    ResourceItem();
+    ResourceItem(int count);
+    ResourceItem(int count, int* values);
     ResourceItem* next;
     ResourceItem* prev;
     int valueValue[8];
@@ -16,6 +19,7 @@ public:
 
     ResourceItem(const ResourceItem&);
     ResourceItem(ResourceItem*);
+    int value(int index) const;
 };
 
 typedef char aitchitm_resource_item_size[(sizeof(ResourceItem) == 0x70) ? 1 : -1];
