@@ -1,9 +1,7 @@
-#ifndef AOE1_SCR_MPS_CONTEXT_H
-#define AOE1_SCR_MPS_CONTEXT_H
+#ifndef AOE1_SCR_MPS_H
+#define AOE1_SCR_MPS_H
 
-// Authentic shared declaration surface for C:\\msdev\\work\\age1_x1\\scr_mps.cpp.
-// Owner bodies keep their isolated declarations for standalone checks.  The
-// wrapper defines SCR_MPS_TU_CONTEXT so this surface joins them in PDB order.
+// Canonical declarations for the scr_mps.cpp source module.
 
 #include <windows.h>
 #include <stdio.h>
