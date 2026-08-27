@@ -41,6 +41,7 @@ The derived-to-base destructor thunk is at 00402F30.
 - `task.h` for task fields, sprites, and sounds;
 - `world.h` for `RGE_Game_World::object` and `world_time_delta_seconds`;
 - `basegame.h` for the canonical `RGE_Base_Game::quick_build` field;
+- `rge_fio.h` for the canonical C++ `rge_read` and `rge_write` symbols;
 - `rge_base_game_global.h` for the reviewed `rge_base_game` symbol.
 - `act_move.h` for the canonical `RGE_Action_Move_To` owner.
 - `sound.h` for the canonical `RGE_Sound::play` owner.

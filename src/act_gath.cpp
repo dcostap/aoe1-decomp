@@ -24,6 +24,7 @@
 #include "../include/m_s_obj.h"
 #include "../include/move_obj.h"
 #include "../include/player.h"
+#include "../include/rge_fio.h"
 #include "../include/sound.h"
 #include "../include/stat_obj.h"
 #include "../include/task.h"
