@@ -59,3 +59,13 @@
   receiver and index lifetime.
 - These facts are diagnostics. They do not justify a carrier, raw overlay, or
   compiler-only alias.
+
+## Current classification
+
+`0053B9A0` is scratch, not matching. The previous exact body used forbidden
+inline assembly. It is absent from direct owner registration.
+
+The full 13-owner direct candidate reports nine exact matches. Observed rows
+are `0053B730` (9 bytes), `0053B7E0` (284 bytes), `0053B9A0` (371 bytes), and
+`0053C050` (308 bytes). Their relocation mismatches are zero. Boundary escapes
+are zero, two, one, and zero respectively.
