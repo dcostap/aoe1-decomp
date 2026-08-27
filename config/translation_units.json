@@ -4909,6 +4909,8 @@
         "00408470": "src/matching/00408470_BuildItem.cpp",
         "00408480": "src/matching/00408480_operator.cpp",
         "004084A0": "src/matching/004084A0_operator.cpp",
+        "004084C0": "src/matching/004084C0_operator.cpp",
+        "004084E0": "src/matching/004084E0_operator.cpp",
         "00408500": "src/matching/00408500_buildCategory.cpp",
         "00408510": "src/matching/00408510_number.cpp",
         "00408520": "src/matching/00408520_priority.cpp",
@@ -4949,7 +4951,9 @@
         "00408610": "?numberBuilds@BuildItem@@QAEHXZ",
         "00408640": "?buildCap@BuildItem@@QAEHXZ",
         "00408660": "?skipCycles@BuildItem@@QAEHXZ",
-        "00408690": "?permanentSkip@BuildItem@@QAEEXZ"
+        "00408690": "?permanentSkip@BuildItem@@QAEEXZ",
+        "004084C0": "??M@YAHABVBuildItem@@0@Z",
+        "004084E0": "??O@YAHABVBuildItem@@0@Z"
       }
     },
     {

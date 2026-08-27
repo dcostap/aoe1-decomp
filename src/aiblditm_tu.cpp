@@ -4,11 +4,8 @@
 // destructor. It does not write a vtable, add a fake slot, or add a stub.
 // Binary evidence fixes next/prev at +0x6C/+0x70, buildFrom at +0x8C, and
 // terrainSet plus two adjacency values at +0x90 through +0x98.
-// Candidate result: 29 exact owners match at 0 bytes, and the generated
-// deleting destructor at 00408200 matches with ??_GBuildItem@@UAEPAXI@Z.
-// Five operator/destructor entries remain observed: 00408470 matches; the
-// four comparison operators have 0-byte code diffs but unverified owner kind.
-// Blocked generated entries: none. Exact decorated symbols are in the packet.
+// The vector deleting destructor at 00408200 is compiler-generated from the
+// natural virtual destructor surface.
 #include "../include/aiblditm_context.h"
 
 #include "matching/00408190_BuildItem.cpp"
@@ -18,8 +15,8 @@
 #include "matching/00408470_BuildItem.cpp"
 #include "matching/00408480_operator.cpp"
 #include "matching/004084A0_operator.cpp"
-#include "scratch/004084C0_operator.cpp"
-#include "scratch/004084E0_operator.cpp"
+#include "matching/004084C0_operator.cpp"
+#include "matching/004084E0_operator.cpp"
 #include "matching/00408500_buildCategory.cpp"
 #include "matching/00408510_number.cpp"
 #include "matching/00408520_priority.cpp"
