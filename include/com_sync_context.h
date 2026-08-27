@@ -1,6 +1,8 @@
 #ifndef COM_SYNC_CONTEXT_H
 #define COM_SYNC_CONTEXT_H
 
+#include "debuglog.h"
+
 // Canonical declarations used by the com_sync.cpp owner sequence.
 // The individual owners keep their narrow standalone declarations for the
 // default per-function checks.  The unregistered TU wrapper selects this
@@ -26,13 +28,6 @@ public:
     int IsPlayerComputer(unsigned int player);
     int GetPlayerHumanity(unsigned int player);
     char* GetPlayerName(unsigned int player);
-};
-
-class TDebuggingLog {
-public:
-    // PDB names the shipped vararg member as Log(char*, ...).
-    void Log(char* format, ...);
-    void FlushLog();
 };
 
 extern TDebuggingLog* L;
