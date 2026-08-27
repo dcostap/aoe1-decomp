@@ -1231,9 +1231,11 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
         if (IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)DAT_00888490,
             DAT_0088849c, DAT_00888498, (void**)&lpWrite1, &dwLen1,
             (void**)&lpWrite2, &dwLen2, 0)) goto done;
-        if (lpWrite1 && ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
+        if (lpWrite1 && _wiWave != 0 &&
+            ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
             memset(lpWrite1, 0x80, dwLen1);
-        else if (lpWrite1 && ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
+        else if (lpWrite1 && _wiWave != 0 &&
+                 ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
             memset(lpWrite1, 0, dwLen1);
         IDirectSoundBuffer_Unlock((LPDIRECTSOUNDBUFFER)DAT_00888490,
             lpWrite1, dwLen1, lpWrite2, dwLen2);
@@ -1249,9 +1251,11 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
 
     if (dwLen1 == 0 || DAT_008884a8 != 0) {
         if (dwLen1 != 0 && DAT_008884a8 != 0) {
-            if (lpWrite1 && ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
+            if (lpWrite1 && _wiWave != 0 &&
+                ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
                 memset(lpWrite1, 0x80, dwLen1);
-            else if (lpWrite1 && ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
+            else if (lpWrite1 && _wiWave != 0 &&
+                     ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
                 memset(lpWrite1, 0, dwLen1);
         }
     } else {
@@ -1259,9 +1263,11 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
                      &uChkErr);
         if (uChkErr < dwLen1) {
             if (DAT_008884ac == 0) {
-                if (lpWrite1 && ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
+                if (lpWrite1 && _wiWave != 0 &&
+                    ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
                     memset(lpWrite1 + uChkErr, 0x80, dwLen1 - uChkErr);
-                else if (lpWrite1 && ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
+                else if (lpWrite1 && _wiWave != 0 &&
+                         ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
                     memset(lpWrite1 + uChkErr, 0, dwLen1 - uChkErr);
                 if (DAT_0088849c <= dwLen2)
                     DAT_008884b4 = (DAT_00888494 + DAT_0088849c - dwLen2) / DAT_00888498;
@@ -1287,9 +1293,11 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
                      &uChkErr);
         if (uChkErr < dwLen2) {
             if (DAT_008884ac == 0) {
-                if (lpWrite2 && ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
+                if (lpWrite2 && _wiWave != 0 &&
+                    ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
                     memset(lpWrite2 + uChkErr, 0x80, dwLen2 - uChkErr);
-                else if (lpWrite2 && ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
+                else if (lpWrite2 && _wiWave != 0 &&
+                         ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
                     memset(lpWrite2 + uChkErr, 0, dwLen2 - uChkErr);
                 if (DAT_0088849c <= dwLen2)
                     DAT_008884b4 = (DAT_00888494 + DAT_0088849c - dwLen2) / DAT_00888498;
@@ -1309,9 +1317,11 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
             }
         }
     } else if (dwLen2 != 0 && DAT_008884a8 != 0) {
-        if (lpWrite2 && ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
+        if (lpWrite2 && _wiWave != 0 &&
+            ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
             memset(lpWrite2, 0x80, dwLen2);
-        else if (lpWrite2 && ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
+        else if (lpWrite2 && _wiWave != 0 &&
+                 ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
             memset(lpWrite2, 0, dwLen2);
     }
 

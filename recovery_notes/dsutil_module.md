@@ -56,3 +56,14 @@ Standalone checks also report `MATCH` and `0.0000%` for `004477E0`
 (`DSLoadSoundBuffer`), `00447D50` (`WaveOpenFile`), and `00448B30`
 (`ds_stream_messages`). Their owners, boundaries, calls, and relocations
 match the original executable.
+
+## Review repair
+
+The `ds_stream_time_func` source now tests `_wiWave` before each silence
+`memset`. The original tests this pointer before each format-width access.
+This preserves the original no-wave fault behavior. The function remains
+scratch until its boundary and byte differences are recovered.
+
+After this repair, `00448BA0` rebuilds at 1422 bytes. The original is 1332
+bytes. It has 1321 strict differences (92.8973%) and a 90-byte boundary
+escape. The ordered calls still differ by one `memset` call.
