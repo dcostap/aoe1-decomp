@@ -1,7 +1,7 @@
 # Tmap canonical owner gate
 
-Status: HOLD. This note records the owner gates after rebase onto
-`dc7820b95`. It does not repair source or foreign headers.
+Status: HOLD. This note records the owner gates after canonical Tile and Object
+integration. It does not repair source or foreign headers.
 
 ## PDB facts
 
