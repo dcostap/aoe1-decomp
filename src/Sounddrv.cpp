@@ -22,9 +22,9 @@ extern "C" int __cdecl close(int fd);
 extern "C" unsigned int __cdecl read(int fd, void* buffer, unsigned int count);
 extern "C" int __cdecl strncmp(const char* left, const char* right,
                                unsigned int count);
-extern "C" void __cdecl color_log(unsigned char a, unsigned char b, int c);
-extern "C" uchar* __cdecl RESFILE_load(unsigned long type, int id,
-                                        int* load_type, int* data_size);
+extern void __cdecl color_log(unsigned char a, unsigned char b, int c);
+extern uchar* __cdecl RESFILE_load(unsigned long type, unsigned long id,
+                                   int& load_type, int& data_size);
 extern uchar sound_file_first;
 
 struct WAVHEADER {
