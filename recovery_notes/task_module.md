@@ -28,28 +28,16 @@ longer uses raw cursor casts. The named accesses preserve the proven offsets.
 All six owners remain `matching`. No owner changed status during the move.
 The lead must rerun the grouped check after it updates the registered source.
 
-## ABI request
+## Header dependency hold
 
-This module needs no action declaration. It uses only opaque sprite and sound
-pointers. It defines no `RGE_Action`, `RGE_Action_Object`, or task-list
-substitute.
+`task.cpp` owns `RGE_Task` through `include/task.h`.
+The task header uses natural compiler alignment for its `0x4C` layout.
+It no longer publishes `rge_read` or `rge_write`.
 
-The action.cpp captain must publish the canonical action header. That header
-should provide the proven action and action-object declarations used by
-`action.cpp` and its consumers. It should include `task.h` for `RGE_Task`
-rather than define another task class.
+`src/task.cpp` remains unchanged and unvalidated after that header cleanup.
+It needs shared declarations for `rge_read` and `rge_write`.
+It also needs its existing sprite and sound owner header.
 
-The current `include/action_context.h` is temporary codegen evidence. It
-contains an incomplete `RGE_Task` and task-list surface. The task-list module
-also has a local `RGE_Task` declaration in `include/task_lst.h`. Do not use
-`include/act_list.h` as a canonical declaration. The coordinator should replace
-these duplicate surfaces after the action header is available.
-
-The task-list context also declares `rge_read` as returning `int`. This module
-uses the binary-supported `void` declaration in `task.h`. The coordinator must
-choose one shared declaration before headers are combined.
-
-Affected modules are `action.cpp` and `task_lst.cpp`, plus consumers of their
-current context headers. The proposed change is declaration-only. Validate the
-fanout with the action, task-list, and task grouped checks, then run the normal
-shard checkpoint. This request is non-blocking for task.cpp.
+`task_lst.cpp` now includes `task.h` and owns only `RGE_Task_List`.
+Its separate dependency hold is in `recovery_notes/task_lst_abi_packet.md`.
+Validate task, task-list, and action consumers after the shared I/O surface lands.
