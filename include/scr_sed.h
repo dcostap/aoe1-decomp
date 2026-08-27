@@ -1,5 +1,5 @@
-#ifndef SCR_SED_CONTEXT_H
-#define SCR_SED_CONTEXT_H
+#ifndef SCR_SED_H
+#define SCR_SED_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -412,15 +412,6 @@ public:
 class TRegistry {
 public:
     int RegGetInt(int, char*);
-};
-
-class RGE_Base_Game_Dispatch {
-public:
-    virtual void v00();
-    virtual void v04();
-    virtual void v08();
-    virtual void v0C();
-    virtual void redraw(long, long);
 };
 
 class TEasy_Panel : public TPanel {
