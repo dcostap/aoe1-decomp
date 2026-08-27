@@ -1,5 +1,5 @@
-#ifndef RGE_MO_OBJ_CONTEXT_H
-#define RGE_MO_OBJ_CONTEXT_H
+#ifndef AOE1_M_MO_OBJ_H
+#define AOE1_M_MO_OBJ_H
 
 #include "m_s_obj_context.h"
 
@@ -18,13 +18,12 @@ public:
     RGE_Master_Animated_Object(int, RGE_Sprite**, RGE_Sound**, int);
     RGE_Master_Animated_Object(FILE*, RGE_Sprite**, RGE_Sound**, short, int);
 
+protected:
     int setup(RGE_Master_Animated_Object*);
-    int setup(RGE_Master_Static_Object*);
     int setup(int, RGE_Sprite**, RGE_Sound**);
-    int setup(int, RGE_Sprite**, RGE_Sound**, short);
     int setup(FILE*, RGE_Sprite**, RGE_Sound**, short);
-    int setup(void*, void**, void**, int, int);
 
+public:
     float speed;
 };
 
@@ -45,7 +44,6 @@ public:
 
 protected:
     int setup(RGE_Master_Moving_Object*);
-    int setup(void*, void**, void**, int);
     int setup(int, RGE_Sprite**, RGE_Sound**);
     int setup(FILE*, RGE_Sprite**, RGE_Sound**, short);
 
@@ -63,8 +61,14 @@ protected:
 class RGE_Moving_Object : public RGE_Static_Object {
 public:
     char gap_88[0xF8];
+
     RGE_Moving_Object(RGE_Master_Moving_Object*, RGE_Player*,
                       float, float, float, int);
 };
+
+typedef char rge_master_moving_object_size_check[
+    (sizeof(RGE_Master_Moving_Object) == 0xD8) ? 1 : -1];
+typedef char rge_moving_object_size_check[
+    (sizeof(RGE_Moving_Object) == 0x180) ? 1 : -1];
 
 #endif

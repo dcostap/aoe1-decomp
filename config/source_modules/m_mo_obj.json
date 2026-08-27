@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "name": "m_mo_obj",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\m_mo_obj.cpp",
+  "source": "src/m_mo_obj.cpp",
+  "header": "include/m_mo_obj.h",
+  "functions": {
+    "00451A20": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00451AA0": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00451B10": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00451B90": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00451C10": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00451D10": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00451DE0": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00451DF0": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00451EC0": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00451F30": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00451FB0": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00451FE0": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00452010": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    },
+    "00452040": {
+      "status": "matching",
+      "note_path": "recovery_notes/m_mo_obj_module.md"
+    }
+  }
+}
