@@ -17,9 +17,10 @@ handwritten source owner.
 ## Migration
 
 `src/aistrmod.cpp` is the direct compiler-facing owner for both normal
-functions. It follows PDB order and uses `include/aistrmod.h` for the real
-`AIModule` and `StrategyAIModule` class declarations. The constructor passes
-the original name, ID, parameter, and object to the base constructor.
+functions. It follows PDB order and uses canonical `include/aimodule.h` for
+the real `AIModule` declaration. The module header retains only the
+`StrategyAIModule` declaration. The constructor passes the original name, ID,
+parameter, and object to the base constructor.
 
 The derived destructor uses the real virtual base surface. VC5 restores the
 derived vptr and emits the tail jump to `AIModule::~AIModule`.
