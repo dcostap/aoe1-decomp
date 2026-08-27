@@ -16,15 +16,7 @@
 #include "../include/player.h"
 #include "../include/world.h"
 #include "../include/rge_fio.h"
-
-// No compatible owner-only header publishes this three-byte waypoint record.
-// Keep the proven record source-local. The canonical movement owner publishes
-// move_sprite as a public member.
-struct XYZBYTEPoint {
-    unsigned char x;
-    unsigned char y;
-    unsigned char z;
-};
+#include "../include/command_waypoint.h"
 
 // 00405510 RGE_Action_Move_To::RGE_Action_Move_To(int, RGE_Action_Object*)
 RGE_Action_Move_To::RGE_Action_Move_To(int handle, RGE_Action_Object* object)
@@ -52,7 +44,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(
 
     if (sprite_value == 0) {
         RGE_Master_Action_Object* master =
-            (RGE_Master_Action_Object*)this->obj->master_obj;
+            static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
         if (master->move_sprite == 0) {
             sprite = master->sprite;
         } else {
@@ -85,7 +77,7 @@ RGE_Action_Move_To::RGE_Action_Move_To(
 
     if (sprite_value == 0) {
         RGE_Master_Action_Object* master =
-            (RGE_Master_Action_Object*)this->obj->master_obj;
+            static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
         if (master->move_sprite == 0) {
             sprite = master->sprite;
         } else {

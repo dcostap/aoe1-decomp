@@ -1,6 +1,8 @@
 #ifndef AOE1_COMMAND_H
 #define AOE1_COMMAND_H
 
+#include "command_waypoint.h"
+
 // Declarations used by the original Command.cpp translation unit.
 
 template<class T> class ManagedArray {
@@ -30,12 +32,6 @@ struct RGE_Command_Order {
         RGE_Obj_Info units[1];
         RGE_Obj_Info ids[1];
     };
-};
-
-struct XYZBYTEPoint {
-    unsigned char x;
-    unsigned char y;
-    unsigned char z;
 };
 
 struct WayPacket {

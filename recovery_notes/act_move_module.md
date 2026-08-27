@@ -49,12 +49,11 @@ owned by `RGE_Game_World` indirectly through the complete world declaration.
 and static-object owners. No local class layout, context header, source-bank
 include, wrapper macro, raw overlay, or manual vtable remains.
 
-`rge_fio.h` supplies the `rge_read` and `rge_write` declarations. The canonical
-movement owner only forward-declares `XYZBYTEPoint`; no owner-only header
-defines its proven three-byte record. The direct source keeps that record
-source-local as a temporary hold. Do not publish `Command.h` for this purpose:
-it carries incompatible duplicate owner layouts. `ManagedArray::zeroNumber()`
-is the canonical owner method for the proven pathing-group count store.
+`rge_fio.h` supplies the `rge_read` and `rge_write` declarations.
+`command_waypoint.h` publishes the proven three-byte `XYZBYTEPoint` record from
+the shared Command owner. The direct source includes this narrow header, not
+duplicate-heavy `Command.h`. `ManagedArray::zeroNumber()` is the canonical
+owner method for the proven pathing-group count store.
 `m_mo_obj.h` publishes the inherited `move_sprite` member. No local owner or
 access workaround is needed. The original first constructor's action-type
 store is expressed as a member assignment; the compiler owns the derived vptr
@@ -97,19 +96,6 @@ context header, accepted-drift fragment, and eight matching fragments. It
 registers `src/act_move.cpp` directly in `config/source_modules/act_move.json`
 and `config/translation_units.json`. No shared header changes are part of this
 chain.
-
-The vslot repair follows the original PDB-backed vtable. The executable's
-`RGE_Action_Object` table at `0056E420` places static setup at `+0x1D8` and
-`+0x1DC`, then animated setup at `+0x1E8`, moving stop at `+0x1EC`, moving turn
-at `+0x1F0`, and moving setup at `+0x1F4`. The PDB marks static
-`waitingToMove`, `facetToNextWaypoint`, `actionState`, `getSpeed`, `getAngle`,
-`underAttack`, and `numberUserDefinedWaypoints` as const. The canonical headers
-now use those const qualifiers, reverse the static setup declarations for
-VC5's adjacent-overload order, and place both moving setup declarations after
-stop and turn. This removes the synthetic setup and const slots without a
-local carrier or vtable workaround.
-
-## Shared ABI correction
 
 The vslot repair follows the original PDB-backed vtable. The executable's
 `RGE_Action_Object` table at `0056E420` places static setup at `+0x1D8` and
@@ -170,10 +156,3 @@ the existing direct source lacks several complete canonical dependencies,
 including `RGE_Sprite`, `Path` helpers, and the moving setup base surface. No
 owner, relocation, boundary, or generated result was produced for either
 compile failure.
-
-## Open validation
-
-The accepted-drift `00405850 update` retains its reviewed state. The lead must
-check all nine normal boundaries, symbols, relocations, and direct call targets
-from the direct source after module registration. The response file is
-`config/flags/00405620_RGE_Action_Move_To.rsp`.

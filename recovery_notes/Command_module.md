@@ -15,6 +15,10 @@ The complete source keeps all 51 bodies in that order. It removes the old
 wrapper, source-bank includes, fallback declarations, and context macros. The
 header now owns the shared Command declarations and layouts.
 The dispatcher uses typed packet views for its direct helper calls.
+The shared three-byte `XYZBYTEPoint` record is published by the narrow
+`include/command_waypoint.h` header. `Command.h` includes that header so
+consumers can use the Command-owned record without importing this full packet
+surface.
 
 ## ABI correction
 
