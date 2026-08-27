@@ -1,23 +1,14 @@
 #ifndef AOE1_M_AC_OBJ_H
 #define AOE1_M_AC_OBJ_H
 
-#include <stdio.h>
-
 #include "m_mo_obj.h"
 
-extern void __cdecl operator_delete(void* object);
-extern "C" void rge_read(int file, void* buffer, int size);
-extern "C" void rge_write(int file, void* buffer, int size);
-
-extern float save_game_version;
-extern float DAT_00570484;
+struct _iobuf;
 
 class RGE_Sprite;
 class RGE_Sound;
 class RGE_Static_Object;
-class RGE_Action_Object;
 class RGE_Player;
-class RGE_Game_World;
 class RGE_Task;
 class RGE_Task_List;
 
@@ -37,7 +28,7 @@ public:
     RGE_Master_Action_Object(RGE_Master_Action_Object* source, int do_setup);
     RGE_Master_Action_Object(int id, RGE_Sprite** sprites,
                              RGE_Sound** sounds, int do_setup);
-    RGE_Master_Action_Object(FILE* file, RGE_Sprite** sprites,
+    RGE_Master_Action_Object(_iobuf* file, RGE_Sprite** sprites,
                              RGE_Sound** sounds, short id, int do_setup);
 
     virtual ~RGE_Master_Action_Object();
@@ -59,7 +50,7 @@ public:
 protected:
     int setup(RGE_Master_Action_Object* source);
     int setup(int file, RGE_Sprite** sprites, RGE_Sound** sounds);
-    int setup(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short id);
+    int setup(_iobuf* file, RGE_Sprite** sprites, RGE_Sound** sounds, short id);
 };
 
 typedef char m_ac_obj_action_size[
