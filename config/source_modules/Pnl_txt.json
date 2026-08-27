@@ -1,0 +1,269 @@
+{
+  "schema": 1,
+  "name": "Pnl_txt",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Pnl_txt.cpp",
+  "source": "src/Pnl_txt.cpp",
+  "header": "include/Pnl_txt.h",
+  "functions": {
+    "0047BF40": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047C0B0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047C120": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047C1E0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047C2F0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047C3B0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047C4D0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047C520": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047C560": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047C640": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CA70": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CAB0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CB10": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CB50": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CB70": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CB90": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CBB0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CBD0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CBF0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CC10": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CCF0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CD40": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CE00": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CE20": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047CE70": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047D060": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047D120": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047D200": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047D2C0": {
+      "status": "verified_logic",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047D3D0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047D570": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047D760": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047D9E0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DC10": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DC30": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DC40": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DC50": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DC60": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DC70": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DC80": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DCA0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DCD0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DCF0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DD10": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DD30": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DD50": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DD70": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DF90": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047DFE0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E050": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E0B0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E110": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E1E0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E200": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E230": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E290": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E2A0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E2E0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E2F0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E330": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E340": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E370": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E380": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E3F0": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    },
+    "0047E410": {
+      "status": "matching",
+      "note_path": "recovery_notes/Pnl_txt_module.md"
+    }
+  }
+}
