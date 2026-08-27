@@ -1,0 +1,81 @@
+# rmm_obj.cpp source-module recovery
+
+- PDB source: `C:\\msdev\\work\\age1_x1\\rmm_obj.cpp`.
+- Source: `src/rmm_obj.cpp`.
+- Header: `include/rmm_obj.h`.
+- The module owns 13 normal functions in PDB order from lines 28 through 638.
+- The packet reports 4,953 normal-owner bytes.
+
+## Context and ownership
+
+The owner address sequence is:
+
+`00485C50`, `00485CB0`, `00485DC0`, `00485E50`, `00485F10`, `00486110`,
+`00486180`, `00486210`, `004862B0`, `004864F0`, `00486700`, `00486A60`,
+`00486C40`.
+
+The module header owns the generator and object-info declarations. The
+PDB-backed random-map base surface remains in `include/rmm_obj_base_context.h`.
+That header has two other consumers: `rmm_shal_context.h` and
+`00481980_RGE_RMM_Cliffs_Generator.cpp`. It is a cross-shard ABI declaration,
+so this migration does not rename or remove it.
+
+The module header owns the narrow `RGE_RMM_Cluster_Master_View` surface for the
+proven adjacent placement and alignment virtual slots. It is not a second
+owner for any executable VA.
+
+## Migration
+
+- Merged all 13 source-bank bodies into `src/rmm_obj.cpp` in PDB order.
+- Replaced the wrapper and split context with `include/rmm_obj.h`.
+- Removed the `RMM_OBJ_TU_COMBINED_CONTEXT` selection macro.
+- Removed all source-bank `.cpp` includes, fallback class declarations, and
+  branch-specific pointer/reference forms.
+- Removed the old `src/rmm_obj_tu.cpp` wrapper.
+- Removed the nine matching fragments, one accepted-drift fragment, and three
+  scratch fragments owned by this module.
+- Kept the source forms that have binary evidence or exact results, including
+  the reference stack local, narrow cluster vtable view, register variance
+  local, and proven typed local aliases.
+- Kept `rmm_obj_base_context.h` because other shards include it. No shared
+  declaration or translation-unit registry changed.
+
+## Status and regressions
+
+The manifest records nine matching owners, one accepted-drift owner, and three
+scratch owners. The migration does not promote drift or scratch functions.
+Before migration, the nine matching owners were registered under the temporary
+`src/rmm_obj_tu.cpp` wrapper. The direct merged-source comparison found eight
+matching owners. It found one source-reunification regression:
+
+| VA | Owner | Result | Difference | Rebuilt size |
+| --- | --- | --- | ---: | ---: |
+| `00485E50` | `generate_objects` | MISMATCH | 2 bytes | 184 |
+
+The other eight matching owners remain `MATCH` with `0.0000%`. All 13 checked
+owners have the correct normalized owner symbol. The comparison found no
+relocation target mismatch and no boundary escape. `00485F10` extracts 503
+rebuilt bytes from its 507-byte section in both the old wrapper and the merged
+source; this is not a migration regression.
+
+`004862B0 place_avoid_objects` remains accepted drift. Its reviewed residual is
+limited to private setup register and scheduling differences.
+
+`00485F10 make_placement_stack`, `004864F0 place_objects`, and `00486C40
+place_cluster` remain scratch. Their source notes describe the unresolved local
+liveness or setup scheduling differences.
+
+## Validation
+
+The pinned VC5 compiler built `src/rmm_obj.cpp` with
+`config/flags/default.rsp`. The object is
+`build/candidate_tus/rmm_obj_module/rmm_obj.obj`. A direct checker comparison
+covered all 13 owners and recorded the table above.
+
+The source policy check passed. `git diff --check` passed. The full mechanical
+translation-unit validator cannot run until the parent updates the shared
+`config/translation_units.json` entry from `src/rmm_obj_tu.cpp` to
+`src/rmm_obj.cpp`.
+
+The current shard does not edit that shared registry by contract. The parent
+integration pass must update it and rerun the complete configured TU checks.
