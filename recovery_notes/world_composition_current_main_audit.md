@@ -7,7 +7,7 @@ translation unit. The audit uses the original PDB, the original executable,
 `orig/ghidra_decomp/world.cpp.asm`, `inventory/pdb/function_source_map.csv`,
 and the current canonical headers.
 
-The branch was rebased on current `main` at `ca4da75ce`. The post-rebase
+The branch was rebased on current `main` at `2042b1445`. The post-rebase
 checks below use this commit.
 
 ## Current composition
@@ -31,7 +31,9 @@ companions:
 `world_complete`. Current `main` commit `62fc92839` changed this source to
 the canonical map, tile, object-list, player, and master-object owners. Its
 standalone check now reports `MATCH`, `0.0000%`. The owner still needs grouped
-registration.
+registration. The active `world_complete` wrapper includes this source while
+it still includes `world_phase2_context.h`; a direct compile now fails with
+class redefinition errors. The grouped entry is not a valid current check.
 
 The current wrappers and owner bodies still use context headers:
 
@@ -159,13 +161,20 @@ work with absolute dereference macros or context declarations.
 
 ## Validation record
 
-Post-rebase checks ran at `76417128d`:
+Post-rebase checks ran at `2042b1445`:
 
-- `00540750` and `0052DF60` report `MATCH`, `0.0000%`, with context-derived
-  objects. Their checks mask 28 and 10 relocations. They are not natural-owner
-  claims.
+- `0052DF60` reports `MATCH`, `0.0000%`, with a context-derived object. Its
+  check masks 10 relocations. It is not a natural-owner claim.
+- `00540750` had a context `MATCH` before `62fc92839`. No fresh check can run
+  after that commit because the active World wrapper now fails to compile.
 - `00545C00` reports `MATCH`, `0.0000%`, and 166 equal bytes. The source uses
   canonical typed owners, but the owner is not in `world_complete`.
+- A direct VC5 compile of `src/world_cpp_phase2_tu.cpp` fails before code
+  generation. The context redeclares `RGE_Game_World`, `RGE_Map`,
+  `RGE_Player`, `RGE_Static_Object`, `RGE_Master_Static_Object`,
+  `RGE_Object_List`, and `RGE_Tile_List` before the canonical
+  `00545C00` includes. The source then cannot find canonical `map_row_offset`
+  or `owner`. This confirms the active grouped wrapper is blocked.
 - `00542BF0` reports 221 strict bytes. `0052EF30` reports 4,372 strict bytes
   and a call-surface difference.
 - The grouped observed audit stopped before compile because
@@ -219,9 +228,9 @@ Resume natural World source work only when all gates below pass:
    Replace every context-only field and call spelling listed above.
 4. Publish and use one reviewed global declaration surface. Keep
    `rge_base_game` as `RGE_Base_Game*` and retain direct storage identity.
-5. Add `00545C00` to the candidate owner set after its typed map and object
-   source is repaired. Record both generated deleting destructors. Do not
-   register an owner from a folder name or a masked relocation result.
+5. Add `00545C00` to the candidate owner set after the context-free wrapper
+   compiles. Record both generated deleting destructors. Do not register an
+   owner from a folder name or a masked relocation result.
 6. Run fresh grouped candidate validation and focused checks. Require
    `MATCH`, `0.0000%`, original boundaries, owning symbols, relocation identity,
    and direct-control target identity.
