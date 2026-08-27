@@ -5,7 +5,7 @@ class RGE_Base_Game;
 class RGE_Game_Info;
 class RGE_Game_World;
 class RGE_Player;
-class RGE_Prog_Info;
+struct RGE_Prog_Info;
 class RGE_Scenario;
 class RGE_Scenario_File_Info;
 class RGE_Scenario_Header;
