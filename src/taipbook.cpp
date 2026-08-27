@@ -4,6 +4,8 @@
 // The vector-deleting destructor at 004E68D0 is compiler generated.
 
 #include "../include/taipbook.h"
+#include "../include/m_s_obj.h"
+#include "../include/stat_obj.h"
 #include <string.h>
 
 // Compiler-emitted destructor body at 004E68F0.

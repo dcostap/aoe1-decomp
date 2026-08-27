@@ -2,10 +2,8 @@
 #ifndef AOE1_TAIPBOOK_H
 #define AOE1_TAIPBOOK_H
 
-#include "m_s_obj.h"
-#include "stat_obj.h"
-
 class AIPlay;
+class RGE_Static_Object;
 
 class AIPlayBook {
 public:
