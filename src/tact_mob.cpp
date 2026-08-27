@@ -287,10 +287,9 @@ void TRIBE_Action_Make_Obj::get_info(short& param_1, short& param_2, char* param
     if (this->state == 1) {
         param_2 = 100;
     } else {
-        TRIBE_Master_Combat_Object* info =
-            static_cast<TRIBE_Master_Combat_Object*>(
-                this->obj->owner->master_objects[this->obj_id]);
-        short divisor = info->build_pts_required;
+        short divisor = static_cast<TRIBE_Master_Combat_Object*>(
+                            this->obj->owner->master_objects[this->obj_id])
+                            ->build_pts_required;
         int pc = (int)((this->work_done * DAT_005751a0) /
                        (float)divisor);
         param_2 = (short)pc;

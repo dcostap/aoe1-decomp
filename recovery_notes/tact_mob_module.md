@@ -65,6 +65,8 @@ generated 004D0E90. The canonical owner change produced these results:
 
 - 004D15F0 `get_info`: `MATCH`, 0 bytes, owner match, 0 relocation target
   mismatches, and 0 boundary escapes. The rebuilt size is 140 bytes.
+  An exact-finish walkback removed the named master pointer without changing
+  the bytes, so the direct owner expression is retained.
 - 004D10F0 `update`: `MISMATCH`, 281 bytes, owner match, 0 relocation target
   mismatches, and 0 boundary escapes. The rebuilt size is 442 versus 446.
 - Prior exact owners 004D0DD0, 004D0EF0, 004D0F70, and 004D10E0 remain
