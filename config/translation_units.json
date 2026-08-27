@@ -2685,20 +2685,21 @@
     },
     {
       "name": "chat",
-      "source": "src/chat_tu.cpp",
+      "source": "src/Chat.cpp",
+      "module": "Chat",
       "flags": "config/flags/00423C30_TChat.rsp",
       "owners": {
-        "00423C30": "src/matching/00423C30_TChat.cpp",
-        "00423CD0": "src/matching/00423CD0_TChat.cpp",
-        "00423D00": "src/matching/00423D00_AddChatMsg.cpp",
-        "00423DF0": "src/matching/00423DF0_GetChatMsg.cpp",
-        "00423E10": "src/matching/00423E10_ClearChat.cpp",
-        "00423E50": "src/matching/00423E50_MaxArraySize.cpp",
-        "00423E60": "src/matching/00423E60_setWindowHandle.cpp",
-        "00423E70": "src/matching/00423E70_setInChatGroup.cpp",
-        "00423E90": "src/matching/00423E90_inChatGroup.cpp",
-        "00423EB0": "src/matching/00423EB0_StopSoundSystem.cpp",
-        "00423EC0": "src/matching/00423EC0_RestartSoundSystem.cpp"
+        "00423C30": "src/Chat.cpp",
+        "00423CD0": "src/Chat.cpp",
+        "00423D00": "src/Chat.cpp",
+        "00423DF0": "src/Chat.cpp",
+        "00423E10": "src/Chat.cpp",
+        "00423E50": "src/Chat.cpp",
+        "00423E60": "src/Chat.cpp",
+        "00423E70": "src/Chat.cpp",
+        "00423E90": "src/Chat.cpp",
+        "00423EB0": "src/Chat.cpp",
+        "00423EC0": "src/Chat.cpp"
       },
       "symbols": {
         "00423E90": "?inChatGroup@TChat@@QAEHH@Z"
