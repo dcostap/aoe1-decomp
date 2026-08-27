@@ -3,6 +3,8 @@
 // The compiler emits the nearby vector-deleting destructor at 0041A660.
 
 #include "../include/asp_list.h"
+#include "../include/sprite.h"
+#include "../include/stat_obj.h"
 
 extern "C" void __cdecl rge_read(int handle, void* buffer, int size);
 extern "C" void __cdecl rge_write(int handle, void* buffer, int size);
@@ -258,7 +260,7 @@ short RGE_Active_Sprite_List::frame(RGE_Sprite* param_1) {
 
     while (node) {
         if (node->node->sprite == param_1) {
-            return node->node->frame();
+            return node->node->what_frame();
         }
         node = node->next;
     }
@@ -342,7 +344,7 @@ unsigned char RGE_Active_Sprite_List::get_frame(short& param_1, short& param_2,
 
     while (node) {
         if (node->node->sprite == param_5) {
-            return node->node->get_frame(&param_1, &param_2, &param_3, &param_4, param_6);
+            return node->node->get_frame(param_1, param_2, param_3, param_4, param_6);
         }
         node = node->next;
     }
