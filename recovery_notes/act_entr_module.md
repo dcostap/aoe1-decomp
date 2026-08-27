@@ -63,7 +63,7 @@ for all five direct owners:
 
 The generated `004023F0` deleting destructor also reports `MATCH` with zero
 difference. The candidate has zero relocation mismatches and zero boundary
-escapes.
+escapes. The result passed again after direct ownership registration.
 
 ## Independent update status
 
