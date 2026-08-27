@@ -27,6 +27,7 @@ public:
     unsigned char start_research(short, unsigned char, short*);
     unsigned char cancel_research(short, unsigned char);
     unsigned char check_for_new_tech();
+    short get_tech_state(short);
     short get_progress(short);
     char* get_name(short);
     void disable(short);
