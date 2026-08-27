@@ -1,0 +1,7 @@
+# 0050EAE0 setup
+
+PDB owner: `tm_co_ob.cpp:51-69`.
+
+Body: `[0050EAE0,0050EB60)`.
+
+The function calls `RGE_Master_Combat_Object::setup` first. It then sets `master_type` and copies the three six-byte `Attribute_Cost` records and the four trailing fields.

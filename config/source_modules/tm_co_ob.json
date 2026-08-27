@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "name": "tm_co_ob",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tm_co_ob.cpp",
+  "source": "src/tm_co_ob.cpp",
+  "header": "include/tm_co_ob.h",
+  "functions": {
+    "0050E970": {
+      "status": "matching",
+      "note_path": "recovery_notes/0050E970_TRIBE_Master_Combat_Object.md"
+    },
+    "0050E9F0": {
+      "status": "matching",
+      "note_path": "recovery_notes/0050E9F0_TRIBE_Master_Combat_Object.md"
+    },
+    "0050EA60": {
+      "status": "matching",
+      "note_path": "recovery_notes/0050EA60_TRIBE_Master_Combat_Object.md"
+    },
+    "0050EAE0": {
+      "status": "matching",
+      "note_path": "recovery_notes/0050EAE0_setup.md"
+    },
+    "0050EB60": {
+      "status": "matching",
+      "note_path": "recovery_notes/0050EB60_setup.md"
+    },
+    "0050EC90": {
+      "status": "matching",
+      "note_path": "recovery_notes/0050EC90_setup.md"
+    },
+    "0050EDA0": { "status": "matching" },
+    "0050EDB0": {
+      "status": "matching",
+      "note_path": "recovery_notes/0050EDB0_create_task_list.md"
+    },
+    "0050EE00": { "status": "matching" },
+    "0050EE80": {
+      "status": "matching",
+      "note_path": "recovery_notes/0050EE80_modify.md"
+    },
+    "0050EF70": { "status": "matching" },
+    "0050EFC0": { "status": "matching" },
+    "0050F010": { "status": "matching" },
+    "0050F090": { "status": "matching" },
+    "0050F110": { "status": "matching" }
+  }
+}

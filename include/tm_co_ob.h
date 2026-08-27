@@ -1,12 +1,9 @@
-#ifndef AOE1_TM_CO_OB_CONTEXT_H
-#define AOE1_TM_CO_OB_CONTEXT_H
+#ifndef AOE1_TM_CO_OB_H
+#define AOE1_TM_CO_OB_H
 
 #include <stdio.h>
 
-// Canonical declarations for the PDB source module tm_co_ob.cpp.
-// The fields and virtual slots below come from the generated class layout and
-// the qualified symbols in the original executable.  Owner fragments keep
-// their standalone declarations when this header is not included.
+// Declarations for the PDB source module tm_co_ob.cpp.
 
 class RGE_Sprite;
 class RGE_Sound;
@@ -17,6 +14,9 @@ class RGE_Game_World;
 class RGE_Armor_Weapon_Info;
 class RGE_Damage_Sprite_Info;
 class RGE_Master_Static_Object;
+class RGE_Task;
+class RGE_Action_Object;
+class RGE_Static_Object;
 class RGE_Master_Combat_Object;
 class TRIBE_Master_Combat_Object;
 
@@ -26,28 +26,27 @@ public:
     short value;
 };
 
-struct RGE_Master_Combat_Object_copy {
-    char base[0x148];
-    void copy_obj(void* source);
-};
-
-struct RGE_Master_Combat_Object_save {
-    char base[0x148];
-    void save(int file);
-};
-
+// The executable uses the four-slot RGE task-list virtual surface.
 class RGE_Task_List {
 public:
-    virtual void destroy();
-    int list;
-    short list_num;
-
     RGE_Task_List();
+    ~RGE_Task_List();
+
+    virtual RGE_Task* create_task(short task_type, short object_id);
+    virtual RGE_Task* get_target_task(RGE_Action_Object* action_object,
+                                      RGE_Static_Object* target, float x,
+                                      float y, float z);
+    virtual int is_attack_task(RGE_Task* task);
+
+protected:
+    virtual int check_task(RGE_Task* task, RGE_Action_Object* action_object,
+                           RGE_Static_Object* target);
+
+    RGE_Task** list;
+    short list_num;
 };
 
 class TRIBE_Task_List : public RGE_Task_List {
-public:
-    virtual void destroy();
 };
 
 class RGE_Static_Object {
@@ -322,8 +321,4 @@ extern "C" {
 extern float save_game_version;
 extern float DAT_0057677c;
 
-void* __cdecl operator new(unsigned int size);
-
-#define TM_CO_OB_SHARED_CONTEXT 1
-
-#endif  // AOE1_TM_CO_OB_CONTEXT_H
+#endif  // AOE1_TM_CO_OB_H
