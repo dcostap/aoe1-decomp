@@ -38,3 +38,13 @@ forms read the same storage and keep the same control flow.
 The module header declares protected virtual `get_object_pointer` and public
 virtual `rehook`. Their PDB owners belong to `scenario.h`, not `scenario.cpp`.
 The direct scenario object uses the shipped virtual slots.
+
+## TPicture ownership
+
+The PDB assigns all `TPicture` bodies to `Picture.cpp`. `include/Picture.h`
+owns the complete 0x20-byte class. `scenario.h` stores only a `TPicture*`, so
+it keeps a forward declaration. `scenario.cpp` includes `Picture.h` before it
+constructs or destroys a picture. `diam_map.h` uses the same owner.
+
+The old partial `TPicture` body is removed from `scenario.h`. Focused registered
+checks report `MATCH` for Scenario, Picture, and Diamond Map owners.

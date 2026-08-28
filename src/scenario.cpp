@@ -2,6 +2,7 @@
 // The definitions follow the original source order.
 
 #include "../include/scenario.h"
+#include "../include/Picture.h"
 #include "../include/basegame.h"
 #include "../include/main.h"
 #include "../include/rge_base_game_global.h"

@@ -12,6 +12,7 @@ class RGE_Game_World;
 class RGE_Scenario;
 class RGE_Scenario_Header;
 class RGE_Scenario_File_Info;
+class TPicture;
 
 class RGE_Timeline {
 public:
@@ -25,22 +26,6 @@ public:
     RGE_Timeline(int file, RGE_Game_World* world);
     void update();
     void save(int file);
-};
-
-class TPicture {
-public:
-    void* Dib;
-    void* BitmapInfo;
-    unsigned char* Bits;
-    void* TransInfo;
-    int OwnMemory;
-    int Width;
-    int Height;
-    short Orien;
-    TPicture(char* name, long a, int b, void* c, int d);
-    TPicture(int file_handle, int param_2);
-    ~TPicture();
-    void Save(int file);
 };
 
 class RGE_Scenario_Header {
