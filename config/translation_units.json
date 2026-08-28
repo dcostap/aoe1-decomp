@@ -6934,14 +6934,22 @@
       "module": "scr_main",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
+        "0049EC00": "src/scr_main.cpp",
         "0049ECD0": "src/scr_main.cpp",
+        "0049ED00": "src/scr_main.cpp",
+        "0049F0D0": "src/scr_main.cpp",
+        "0049F240": "src/scr_main.cpp",
         "0049F2B0": "src/scr_main.cpp",
         "0049F2D0": "src/scr_main.cpp",
         "0049F2F0": "src/scr_main.cpp",
         "0049F340": "src/scr_main.cpp"
       },
       "symbols": {
+        "0049EC00": "??1TRIBE_Screen_Main_Menu@@UAE@XZ",
         "0049ECD0": "?handle_idle@TRIBE_Screen_Main_Menu@@UAEJXZ",
+        "0049ED00": "?key_down_action@TRIBE_Screen_Main_Menu@@UAEJJFHHH@Z",
+        "0049F0D0": "??0TRIBE_Screen_Main_Error@@QAE@XZ",
+        "0049F240": "??1TRIBE_Screen_Main_Error@@UAE@XZ",
         "0049F2B0": "?set_text@TRIBE_Screen_Main_Error@@QAEXPAD@Z",
         "0049F2D0": "?set_text@TRIBE_Screen_Main_Error@@QAEXJ@Z",
         "0049F2F0": "?action@TRIBE_Screen_Main_Error@@UAEJPAVTPanel@@JKK@Z",

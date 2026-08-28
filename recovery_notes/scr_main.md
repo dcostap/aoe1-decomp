@@ -89,9 +89,9 @@ with symbol `?load_db_files@TRIBE_Game@@QAEHXZ`. The main source includes
 Do not add local declarations or change the global pointer type.
 
 After rebase, the canonical candidate compiled all eleven normal owners. The
-five registered exact owners report `MATCH`, `0.0000%`, no relocation-target
-mismatch, and no boundary escape. The other four matching owners also report
-`MATCH`. See `build/candidate_tus/scr_main_canonical/out/report.json`.
+nine registered exact owners report `MATCH`, `0.0000%`, no relocation-target
+mismatch, and no boundary escape. See
+`build/candidate_tus/scr_main_canonical/out/report.json`.
 
 The two scratch owners remain observed. `0049E6D0` has 1,140 differing bytes.
 `0049EE00` has 435 differing bytes. Neither result has a relocation-target
