@@ -1,10 +1,21 @@
+// PDB source module: C:\\msdev\\work\\age1_x1\\m_ac_obj.cpp.
+// Definitions follow the original source order.
+
 #include "../include/m_ac_obj.h"
+#include "../include/act_obj.h"
+#include "../include/game_globals.h"
+#include "../include/player.h"
+#include "../include/rge_fio.h"
+#include "../include/sound.h"
+#include "../include/stat_obj.h"
+#include "../include/task_lst.h"
+#include "../include/world.h"
 
 RGE_Master_Action_Object::RGE_Master_Action_Object(
     RGE_Master_Action_Object* source, int do_setup)
     : RGE_Master_Moving_Object(source, 0)
 {
-    if (do_setup != 0) {
+    if (do_setup) {
         setup(source);
     }
 }
@@ -13,7 +24,7 @@ RGE_Master_Action_Object::RGE_Master_Action_Object(
     int id, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
     : RGE_Master_Moving_Object(id, sprites, sounds, 0)
 {
-    if (do_setup != 0) {
+    if (do_setup) {
         setup(id, sprites, sounds);
     }
 }
@@ -23,7 +34,7 @@ RGE_Master_Action_Object::RGE_Master_Action_Object(
     int do_setup)
     : RGE_Master_Moving_Object(file, sprites, sounds, id, 0)
 {
-    if (do_setup != 0) {
+    if (do_setup) {
         setup(file, sprites, sounds, id);
     }
 }
@@ -98,11 +109,9 @@ int RGE_Master_Action_Object::setup(FILE* file, RGE_Sprite** sprites,
     short command_sound_id;
     short move_sound_id;
     short run_pattern_value;
-    RGE_Sound* selected_command_sound;
-    RGE_Sound* selected_move_sound;
+    RGE_Sound* selected_sound;
     int index;
     int task_count;
-    RGE_Task** task;
 
     RGE_Master_Moving_Object::setup(file, sprites, sounds, id);
     master_type = 0x28;
@@ -116,30 +125,28 @@ int RGE_Master_Action_Object::setup(FILE* file, RGE_Sprite** sprites,
     run_pattern = (unsigned char)run_pattern_value;
 
     if (command_sound_id >= 0) {
-        selected_command_sound = sounds[command_sound_id];
+        selected_sound = sounds[command_sound_id];
     } else {
-        selected_command_sound = 0;
+        selected_sound = 0;
     }
-    command_sound = selected_command_sound;
+    command_sound = selected_sound;
 
     if (move_sound_id >= 0) {
-        selected_move_sound = sounds[move_sound_id];
+        selected_sound = sounds[move_sound_id];
     } else {
-        selected_move_sound = 0;
+        selected_sound = 0;
     }
-    move_sound = selected_move_sound;
+    move_sound = selected_sound;
 
     tasks = create_task_list();
     tasks->load(file, sprites, sounds);
     default_task = -1;
     index = 0;
-    task_count = (int)tasks->list_num;
+    task_count = tasks->list_num;
     if (task_count > 0) {
-        task = tasks->list;
         do {
-            if ((*task)->is_default == 0) {
+            if (tasks->list[index]->is_default == 0) {
                 index++;
-                task++;
             } else {
                 default_task = (short)index;
                 break;
@@ -151,11 +158,8 @@ int RGE_Master_Action_Object::setup(FILE* file, RGE_Sprite** sprites,
 
 RGE_Master_Action_Object::~RGE_Master_Action_Object()
 {
-    RGE_Task_List* task_list = tasks;
-
-    if (task_list != 0) {
-        task_list->~RGE_Task_List();
-        operator_delete(task_list);
+    if (tasks) {
+        delete tasks;
         tasks = 0;
     }
 }
@@ -199,10 +203,9 @@ RGE_Task* RGE_Master_Action_Object::getTaskByTaskID(int task_id) const
         return 0;
     }
 
-    RGE_Task_List* task_list = tasks;
-    for (int index = 0; index < task_list->list_num; index++) {
-        if (task_id == task_list->list[index]->action_type) {
-            return task_list->list[index];
+    for (int index = 0; index < tasks->list_num; index++) {
+        if (task_id == tasks->list[index]->action_type) {
+            return tasks->list[index];
         }
     }
     return 0;

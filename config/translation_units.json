@@ -6463,7 +6463,7 @@
       }
     },
     {
-      "name": "m_ac_obj_cpp_proposal",
+      "name": "m_ac_obj",
       "source": "src/m_ac_obj.cpp",
       "module": "m_ac_obj",
       "flags": "config/flags/0044F070_RGE_Master_Action_Object.rsp",
