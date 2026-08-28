@@ -2106,6 +2106,7 @@
     {
       "name": "rmm_clif_constructor",
       "source": "src/rmm_clif.cpp",
+      "module": "rmm_clif",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00481980": "src/rmm_clif.cpp",
