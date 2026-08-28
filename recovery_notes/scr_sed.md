@@ -25,13 +25,15 @@ registers only exact owners. Non-exact statuses retain a source note here.
 `scenario_default_file_name` is the named 260-byte module buffer used by the
 default-save path. The event ABI carries an unsigned long, but this screen
 consumes its selection value through the typed `ScenarioEditorEventValue`.
+The diplomacy controls use one typed two-dimensional array. The action uses
+separate selection coordinates, save-seed state, and text storage.
 `command_new_map` passes the complete `RGE_Map_Gen_Info` record to
-`RGE_Player_Info`.
+`RGE_Player_Info` and compares the tribe against `master_player_num`.
 
 `set_unit_player` owns its `List_Info` and string storage with C++ arrays. The
 destructor releases the arrays with matching `delete[]` operations. No source
-body uses a raw global address, an integer-to-pointer cast, or the old map-info
-record overlay.
+body uses a raw global address, an integer-to-pointer cast, a diplomacy union,
+an action random-value overlay, or the old map-info record overlay.
 
 ## Recovery states
 
@@ -51,7 +53,8 @@ functions, and six scratch functions:
 - `004ABCD0 action`: source behavior is recovered, but its large codegen gap
   remains open.
 - `004AD340 command_new_map`: canonical map and world providers change the
-  natural body.
+  natural body. The `&map_info` record is correct. The complete canonical
+  record moves `land.clump_num` by two bytes, so the body remains scratch.
 - `004AD630 command_outline`: VC5 changes zero extension and register
   allocation.
 
@@ -73,7 +76,7 @@ no panel copies or size-only fallback classes.
 ## Candidate validation
 
 Candidate: `build/scr_sed_canonical_candidate.json`.
-Report: `build/candidate_tus/scr_sed_hardened_final/report.json`.
+Report: `build/candidate_tus/scr_sed_field_fix/report.json`.
 
 The grouped candidate compiled all 47 normal bodies and the generated vector
 deleting destructor. It reports zero comparison errors. It reports zero

@@ -1805,10 +1805,8 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
     long x1;
     long y1;
     long y2;
-    union {
-        char text[28];
-        long value[7];
-    } random_val;
+    char random_seed_text[28];
+    long saved_random_map_seed;
     float f1;
     float f2;
     RGE_Player* player;
@@ -1976,9 +1974,9 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
     } }
                 else if (param_1 == this->victory_button_go_to_dest && line != 1) {
                     this->main_view->get_selection_area(y1, y2, x1,
-                                                        random_val.value[0], 1);
+                                                        x2, 1);
                     f1 = (float)x1;
-                    f2 = (float)random_val.value[0];
+                    f2 = (float)x2;
                     this->px1 = (float)y1;
                     this->py1 = (float)y2;
                     this->SelectRegionFlag = SelectOff;
@@ -2082,6 +2080,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                         break;
                     }
                 } else {
+                    saved_random_map_seed = rge_base_game->random_map_seed;
                     if (this->map_type == MapTypeSeedValue) {
                         rge_base_game->random_map_seed = atoi(this->random_seed_input->currentLine());
                     } else {
@@ -2091,9 +2090,9 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                     this->world->map->map_generate2(
                         this->world, map_size, map_size,
                         static_cast<unsigned char>(f1), line + 1);
-                    rge_base_game->random_map_seed = random_val.value[1];
-                    itoa(rge_base_game->save_random_map_seed, random_val.text, 10);
-                    this->random_seed_used_text->set_text(random_val.text);
+                    rge_base_game->random_map_seed = saved_random_map_seed;
+                    itoa(rge_base_game->save_random_map_seed, random_seed_text, 10);
+                    this->random_seed_used_text->set_text(random_seed_text);
                     debug_rand(s_C__msdev_work_age1_x1_scr_sed_cp, 0xB58);
                 }
                 center = map_size / 2;
@@ -2408,7 +2407,7 @@ int TRIBE_Screen_Sed::command_new_map(char* scenario_name_in, int is_multi_playe
     int i;
     for (i = 0; i < 8; i++) {
         tribe++;
-        if (tribe >= this->world->player_num) {
+        if (tribe >= this->world->master_player_num) {
             tribe = 1;
         }
         this->set_string(player_info.name[i], 0x2865 + i, 0x41);
