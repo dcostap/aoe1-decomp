@@ -95,3 +95,11 @@ Natural alignment preserves `sizeof(TRIBE_Screen_Game) == 0x7C4`.
 
 The layout audit compiled all 96 bodies, matched 66, and found no comparison
 errors. No current `matching` row regressed.
+
+## Policy cleanup
+
+The policy cleanup removed stack overlays, synthetic carriers, raw globals, and
+cursor forms. It compiled all 96 bodies and matched 65.
+
+`0049B000` changed by 112 bytes. Its status is now `scratch`. Its exact owner
+registration was removed.

@@ -27,14 +27,6 @@ static const TRIBE_Screen_Game::AnimPalEntry s_anim_pal_colors[7] = {
     {0x17, 0x27, 0x7B}
 };
 
-struct Speed_Message {
-    union {
-        float new_speed;
-        char msg[256];
-    };
-    char padding[4];
-};
-
 /* PDB owner: TRIBE_Screen_Game::TRIBE_Screen_Game */
 TRIBE_Screen_Game::TRIBE_Screen_Game()
     : TScreenPanel(s_Game_Screen)
@@ -384,6 +376,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     }
 
     {
+    char* initial_text = 0;
     font = rge_base_game->get_font(0xb);
     this->age_panel = new TTextPanel;
     if (this->age_panel == 0 || this->age_panel->error_code != 0) {
@@ -392,7 +385,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     }
     if (!this->age_panel->setup(this->render_area, this, 0, 0, 0, 0,
                                 font->font, font->font_wid, font->font_hgt,
-                                0, 0, 0, 0, 0, 0, static_cast<char*>(0))) {
+                                0, 0, 0, 0, 0, 0, initial_text)) {
         this->error_code = 1;
         return;
     }
@@ -411,7 +404,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     }
     if (!this->fps_panel->setup(this->render_area, this, 0, 0, 0, 0,
                                 font->font, font->font_wid, font->font_hgt,
-                                0, 1, 0, 0, 0, 0, static_cast<char*>(0))) {
+                                0, 1, 0, 0, 0, 0, initial_text)) {
         this->error_code = 1;
         return;
     }
@@ -2825,16 +2818,15 @@ void TRIBE_Screen_Game::setup_buttons()
                         int queued = 0;
 
                         if (show_queue) {
-                            Production_Queue_Record* queue =
-                                building->production_queue;
-                            short queue_count = building->production_queue_count;
-                            do {
-                                if (queue->master_id == master->id) {
-                                    queued += queue->unit_count;
+                            for (short queue_index = 0;
+                                 queue_index < building->production_queue_count;
+                                 ++queue_index) {
+                                Production_Queue_Record& queue =
+                                    building->production_queue[queue_index];
+                                if (queue.master_id == master->id) {
+                                    queued += queue.unit_count;
                                 }
-                                ++queue;
-                                --queue_count;
-                            } while (queue_count != 0);
+                            }
                         }
 
                         if ((!show_queue) || (queued > 0)) {
@@ -3015,14 +3007,6 @@ finish_disable_buttons:
 }
 
 // Managed pass 2026-08-17 notes:
-// Baseline: 4268 differing bytes, 4129 rebuilt bytes, and 80 calls.
-// The reviewed work_status reference ABI emitted the same bytes as pointers.
-// The pointer spelling was not canonical, so this source uses references.
-// The original passes tech_count_local to interface_tech_avail without a store.
-// Removing its zero initializer added one exact block in a valid source model.
-// Late disable labels for null-object and queue exits were codegen-neutral.
-// Byte culture changed compare width. Other tested aliases and guards were worse.
-
 /* PDB owner: TRIBE_Screen_Game::disable_unused_buttons */
 void TRIBE_Screen_Game::disable_unused_buttons(void) {
     for (int button_index = 0; button_index < 12; ++button_index) {
@@ -3225,7 +3209,8 @@ void TRIBE_Screen_Game::reset_clocks() {
             long countdown_timer;
             rge_base_game->get_countdown_timer(player_id, countdown_timer);
             if (countdown_timer > 0) {
-                this->countdown_clock[clock_count++]->set_clock_type(4, player_id);
+                this->countdown_clock[clock_count]->set_clock_type(4, player_id);
+                ++clock_count;
                 if (clock_count > 9) {
                     break;
                 }
@@ -3251,7 +3236,8 @@ void TRIBE_Screen_Game::reset_clocks() {
                 }
 
                 if (countdown == 0) {
-                    this->countdown_clock[clock_count++]->set_clock_type(5, player_id);
+                    this->countdown_clock[clock_count]->set_clock_type(5, player_id);
+                    ++clock_count;
                     if (clock_count > 9) {
                         break;
                     }
@@ -3278,7 +3264,8 @@ void TRIBE_Screen_Game::reset_clocks() {
                 }
 
                 if (countdown == 0) {
-                    this->countdown_clock[clock_count++]->set_clock_type(6, player_id);
+                    this->countdown_clock[clock_count]->set_clock_type(6, player_id);
+                    ++clock_count;
                     if (clock_count > 9) {
                         break;
                     }
@@ -3298,9 +3285,6 @@ void TRIBE_Screen_Game::reset_clocks() {
 
 /* PDB owner: scr_game_score_compare */
 int scr_game_score_compare(const void* param_b, const void* param_a) {
-    score_compare_first = param_a;
-    score_compare_second = param_b;
-
     const PLAYER_SCORE* a = static_cast<const PLAYER_SCORE*>(param_a);
     const PLAYER_SCORE* b = static_cast<const PLAYER_SCORE*>(param_b);
 
@@ -3339,48 +3323,43 @@ void TRIBE_Screen_Game::reset_score_display()
     }
 
     i = 0;
-    icon_num2 = 1;
-    PLAYER_SCORE* score = player_score;
-    while (icon_num2 <= rge_base_game->numberPlayers()) {
+    for (icon_num2 = 1; icon_num2 <= rge_base_game->numberPlayers(); ++icon_num2) {
+        PLAYER_SCORE& score = player_score[icon_num2 - 1];
         int player_id = rge_base_game->playerID(icon_num2);
         if (player_id != 0 && player_id < this->world->player_num) {
-            if (score->team_id == 0) {
+            if (score.team_id == 0) {
                 ++i;
-                score->team_id = i;
+                score.team_id = i;
             }
-            score->comm_id = icon_num2;
-            score->player_id = player_id;
-            score->player_score =
+            score.comm_id = icon_num2;
+            score.player_id = player_id;
+            score.player_score =
                 this->world->players[player_id]->victory_conditions->get_victory_points();
-            score->team_score = score->player_score;
+            score.team_score = score.player_score;
             local_2d4 = 1;
 
             if (this->world->players[player_id]->allied_victory != 0) {
-                int team_player = 1;
-                PLAYER_SCORE* team_score = player_score;
-                while (team_player <= rge_base_game->numberPlayers()) {
+                for (int team_player = 1;
+                     team_player <= rge_base_game->numberPlayers(); ++team_player) {
                     if (team_player != icon_num2) {
+                        PLAYER_SCORE& team_score = player_score[team_player - 1];
                         int player_id2 = rge_base_game->playerID(team_player);
                         if (player_id2 != 0 && player_id2 < this->world->player_num &&
                             this->world->players[player_id]->relation(player_id2) == 0 &&
                             this->world->players[player_id2]->relation(player_id) == 0 &&
                             this->world->players[player_id2]->allied_victory != 0) {
-                            if (team_score->team_id == 0) {
-                                team_score->team_id = score->team_id;
+                            if (team_score.team_id == 0) {
+                                team_score.team_id = score.team_id;
                             }
-                            score->team_score +=
+                            score.team_score +=
                                 this->world->players[player_id2]->victory_conditions->get_victory_points();
                             ++local_2d4;
                         }
                     }
-                    ++team_player;
-                    ++team_score;
                 }
             }
-            score->team_score /= local_2d4;
+            score.team_score /= local_2d4;
         }
-        ++icon_num2;
-        ++score;
     }
 
     qsort(player_score, rge_base_game->numberPlayers(), sizeof(PLAYER_SCORE),
@@ -3388,10 +3367,10 @@ void TRIBE_Screen_Game::reset_score_display()
     low_fps_player = 0;
     if (rge_base_game->multiplayerGame() != 0) {
         int low_fps = 11;
-        PLAYER_SCORE* p = player_score;
-        for (j = 0; j < 8; ++j, ++p) {
-            if (p->player_id != 0 && comm->GetPlayerHumanity(p->comm_id) == 2) {
-                unsigned long average = comm->Speed->PlayerAvgFramesMsec[p->comm_id];
+        for (j = 0; j < 8; ++j) {
+            PLAYER_SCORE& score = player_score[j];
+            if (score.player_id != 0 && comm->GetPlayerHumanity(score.comm_id) == 2) {
+                unsigned long average = comm->Speed->PlayerAvgFramesMsec[score.comm_id];
                 int frame_rate;
                 if (average > 999) {
                     frame_rate = 1;
@@ -3401,7 +3380,7 @@ void TRIBE_Screen_Game::reset_score_display()
                     frame_rate = 1000 / average;
                 }
                 if (frame_rate < low_fps) {
-                    low_fps_player = p->comm_id;
+                    low_fps_player = score.comm_id;
                     low_fps = frame_rate;
                 }
             }
@@ -3542,20 +3521,18 @@ void TRIBE_Screen_Game::draw()
 /* PDB owner: TRIBE_Screen_Game::handle_anim_pal */
 void TRIBE_Screen_Game::handle_anim_pal()
 {
-    union {
-        unsigned long time;
-        PALETTEENTRY pal_entries[8];
-    } locals;
+    unsigned long time;
+    PALETTEENTRY pal_entries[7];
 
-    locals.time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x11EB);
-    if (locals.time - this->last_anim_pal_time >= this->anim_pal_interval) {
+    time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x11EB);
+    if (time - this->last_anim_pal_time >= this->anim_pal_interval) {
         short index = this->last_anim_pal_index;
 
         for (int i = 0; i < 7; ++i) {
-            locals.pal_entries[i + 1].peRed = this->anim_pal_table[index].red;
-            locals.pal_entries[i + 1].peGreen = this->anim_pal_table[index].green;
-            locals.pal_entries[i + 1].peBlue = this->anim_pal_table[index].blue;
-            locals.pal_entries[i + 1].peFlags = 0;
+            pal_entries[i].peRed = this->anim_pal_table[index].red;
+            pal_entries[i].peGreen = this->anim_pal_table[index].green;
+            pal_entries[i].peBlue = this->anim_pal_table[index].blue;
+            pal_entries[i].peFlags = 0;
 
             ++index;
             if (index == 7) {
@@ -3569,8 +3546,8 @@ void TRIBE_Screen_Game::handle_anim_pal()
             --this->last_anim_pal_index;
         }
 
-        this->render_area->DrawSystem->ModifyPalette(0xF8, 7, locals.pal_entries + 1);
-        this->last_anim_pal_time = locals.time;
+        this->render_area->DrawSystem->ModifyPalette(0xF8, 7, pal_entries);
+        this->last_anim_pal_time = time;
     }
 }
 
@@ -3925,7 +3902,7 @@ void TRIBE_Screen_Game::command_fps() {
 /* PDB owner: TRIBE_Screen_Game::command_game_speed */
 void TRIBE_Screen_Game::command_game_speed(int param_1) {
     float cur_speed;
-    Speed_Message speed_message;
+    float old_speed;
 
     unsigned long t = debug_timeGetTime(
         "C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x13FE);
@@ -3938,44 +3915,45 @@ void TRIBE_Screen_Game::command_game_speed(int param_1) {
     this->last_game_speed_change = t;
     if (rge_base_game->prog_mode != 5) {
         cur_speed = 0.0f;
-        speed_message.new_speed = this->world->game_speed;
+        old_speed = this->world->game_speed;
 
         if (param_1 != 0) {
-            if (speed_message.new_speed == 1.0f) {
+            if (old_speed == 1.0f) {
                 cur_speed = 1.5f;
-            } else if (speed_message.new_speed == 1.5f) {
+            } else if (old_speed == 1.5f) {
                 cur_speed = 2.0f;
             } else {
                 if (rge_base_game->singlePlayerGame() != 0 &&
                     rge_base_game->gameDeveloperMode() != 0) {
-                    if (speed_message.new_speed == 2.0f) {
+                    if (old_speed == 2.0f) {
                         cur_speed = 4.0f;
-                    } else if (speed_message.new_speed == 4.0f) {
+                    } else if (old_speed == 4.0f) {
                         cur_speed = 8.0f;
-                    } else if (speed_message.new_speed == 8.0f) {
+                    } else if (old_speed == 8.0f) {
                         cur_speed = 16.0f;
                     }
                 }
             }
         } else {
-            if (speed_message.new_speed == 16.0f) {
+            if (old_speed == 16.0f) {
                 cur_speed = 8.0f;
-            } else if (speed_message.new_speed == 8.0f) {
+            } else if (old_speed == 8.0f) {
                 cur_speed = 4.0f;
-            } else if (speed_message.new_speed == 4.0f) {
+            } else if (old_speed == 4.0f) {
                 cur_speed = 2.0f;
-            } else if (speed_message.new_speed == 2.0f) {
+            } else if (old_speed == 2.0f) {
                 cur_speed = 1.5f;
-            } else if (speed_message.new_speed == 1.5f) {
+            } else if (old_speed == 1.5f) {
                 cur_speed = 1.0f;
             }
         }
 
         if (cur_speed != 0.0f) {
             if (rge_base_game->multiplayerGame() != 0) {
+                char message[256];
                 const char* text = this->get_string(0xBF3);
-                sprintf(speed_message.msg + 4, text);
-                comm->SendChatMsgAll(speed_message.msg + 4);
+                sprintf(message, text);
+                comm->SendChatMsgAll(message);
             }
 
             static_cast<TRIBE_Command*>(this->world->commands)

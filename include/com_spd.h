@@ -84,10 +84,6 @@ public:
 
 typedef char com_spd_size_check[(sizeof(RGE_Communications_Speed) == 0x240) ? 1 : -1];
 
-extern char DAT_0062d070[256];
-extern char DAT_0062cf70[256];
-extern char DAT_0062d170[152];
-
 extern TDebuggingLog* L;
 
 #endif

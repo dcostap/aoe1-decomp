@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+static char s_self_player_optimal_speed_text[152];
+static char s_player_speed_status_text[256];
+static char s_machine_speed_info_text[256];
+
 RGE_Communications_Speed::RGE_Communications_Speed(
     TCommunications_Handler* handler)
 {
@@ -265,14 +269,14 @@ char* RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr()
     frames = this->GetRecommendedBufferFrames();
     granularity = this->GetRecommendedBufferGranularity();
     sprintf(
-        DAT_0062d170,
+        s_self_player_optimal_speed_text,
         "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d Latency=%3d",
         frames,
         granularity,
         1000 / (int)granularity,
         granularity * frames
     );
-    return DAT_0062d170;
+    return s_self_player_optimal_speed_text;
 }
 
 char* RGE_Communications_Speed::GetPlayerSpeedStatusStr(int player)
@@ -289,7 +293,7 @@ char* RGE_Communications_Speed::GetPlayerSpeedStatusStr(int player)
     frames = this->CurrentBufferFrames;
     hi_lo_info = this->FrameTSLC->GetHiLoInfo(0x32);
     sprintf(
-        DAT_0062cf70,
+        s_player_speed_status_text,
         "Buf=%3d / %3d * Gran=%3dms = turn %4dms  %s",
         this->TotalBufferFramesRemaining,
         frames,
@@ -297,23 +301,23 @@ char* RGE_Communications_Speed::GetPlayerSpeedStatusStr(int player)
         frames * granularity,
         hi_lo_info
     );
-    return DAT_0062cf70;
+    return s_player_speed_status_text;
 }
 
 char* RGE_Communications_Speed::GetMachineSpeedInfo()
 {
     char buf[24];
 
-    strcpy(DAT_0062d070, "PlrSpeed> ");
+    strcpy(s_machine_speed_info_text, "PlrSpeed> ");
     for (int i = 1; i <= 9; i++) {
         if (Comm->IsPlayerHuman(i)) {
             sprintf(buf, "P#%1d(fr%d lat%d) ", i,
                     PlayerAvgFramesMsec[i], PlayerHighLatencyMsec[i]);
-            strcat(DAT_0062d070, buf);
+            strcat(s_machine_speed_info_text, buf);
         }
     }
 
-    return DAT_0062d070;
+    return s_machine_speed_info_text;
 }
 
 unsigned int RGE_Communications_Speed::GetRecommendedBufferFrames()

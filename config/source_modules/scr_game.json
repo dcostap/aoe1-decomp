@@ -43,7 +43,7 @@
     "0049AB10": { "status": "matching" },
     "0049AB60": { "status": "scratch" },
     "0049ADA0": { "status": "accepted_drift" },
-    "0049B000": { "status": "matching" },
+    "0049B000": { "status": "scratch" },
     "0049B080": { "status": "scratch" },
     "0049B560": { "status": "scratch" },
     "0049B830": { "status": "matching" },
