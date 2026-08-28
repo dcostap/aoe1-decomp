@@ -62,8 +62,8 @@ void TCommunications_Services::SetServiceActive(int index, int active) {
     }
 }
 
-int __stdcall DPEnumCallback(_GUID* guid, char* name, unsigned long flags,
-                             unsigned long reserved, void* context) {
+BOOL __stdcall DPEnumCallback(LPGUID guid, LPSTR name, DWORD flags,
+                              DWORD reserved, LPVOID context) {
     TCommunications_Services* services =
         (TCommunications_Services*)context;
     int count = services->GetServiceCount();
@@ -71,7 +71,7 @@ int __stdcall DPEnumCallback(_GUID* guid, char* name, unsigned long flags,
     services->EnumServiceGUID(count, guid);
 
     IDirectPlay* directPlay;
-    int result = DirectPlayCreate(guid, (void**)&directPlay, 0);
+    int result = DirectPlayCreate(guid, (LPDIRECTPLAY*)&directPlay, 0);
 
     if (result == 0) {
         services->SetServiceActive(count, 1);

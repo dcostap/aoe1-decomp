@@ -3,7 +3,6 @@
 
 #include <string.h>
 #include <io.h>
-#define GUID_DEFINED
 #include "../include/com_serv.h"
 #include "../include/scr_mp.h"
 #include "../include/Pnl_btn.h"
@@ -15,7 +14,6 @@
 #include "../include/basegame.h"
 #include "../include/scr_main.h"
 #include "../include/scr_cj.h"
-#undef GUID_DEFINED
 
 extern TRegistry* Regs;
 extern TCommunications_Handler* comm;

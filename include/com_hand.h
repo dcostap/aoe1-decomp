@@ -32,6 +32,8 @@ class RGE_Communications_Synchronize;
 class RGE_Communications_Addresses;
 class RGE_TimeSinceLastCall;
 class RGE_Prog_Info;
+class TCommunications_Sessions;
+class TribeMPCreateDialog;
 
 class NAME {
 public:
@@ -178,6 +180,8 @@ typedef char comm_hand_options_size_check[
     (sizeof(COMMPLAYEROPTIONS) == 0x1D0) ? 1 : -1];
 
 class TCommunications_Handler {
+    friend class TCommunications_Sessions;
+    friend class TribeMPCreateDialog;
     friend int __stdcall EnumPlayersCallback2(unsigned long, unsigned long,
                                               DPNAME*, unsigned long, void*);
 protected:
