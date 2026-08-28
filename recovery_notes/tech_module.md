@@ -14,6 +14,8 @@ The CodeView type dumps prove these records:
 - `TRIBE_Tech` is a class of size `0x0C`.
 - `TRIBE_Player_Tech` is a class of size `0x10`.
 
+The four records use public access. They have no vptr or virtual slot.
+
 `include/tech.h` owns the four records. `src/tech.cpp` owns all normal
 functions in contribution order. It uses `RGE_Player`, `TRIBE_World`,
 `RGE_Effects`, and `TRIBE_History_Info` from their providers.
