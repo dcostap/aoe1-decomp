@@ -66,7 +66,6 @@ public:
     void notify_of_scenario_complete();
     void find_campaigns();
     void campaign_open_scenario();
-    void reload_scenarios_info();
 };
 class RGE_Scenario;
 class RGE_Scenario_Header {
@@ -90,6 +89,7 @@ public:
     char gap_00[0x10C];
     RGE_Scenario_File_Info(char* filename);
     ~RGE_Scenario_File_Info();
+    void reload_scenarios();
 };
 struct RGE_Prog_Info {
 public:

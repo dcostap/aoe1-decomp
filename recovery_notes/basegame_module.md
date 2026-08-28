@@ -92,6 +92,11 @@ The old `v_mouse_move` and `handle_mouse_click` context names had no PDB support
 The PDB maps that slot to `handle_query_new_palette`.
 The old `base_handle_palette_changed` context name had no PDB support.
 
+`00422FD0` loads `scenario_info` at `+0x08` and tail-jumps to
+`RGE_Scenario_File_Info::reload_scenarios`.
+The call has no null check.
+It does not call an `RGE_Game_Info` method.
+
 ## Complete composition gate
 
 The current PDB plan has 202 normal owners.
@@ -118,7 +123,7 @@ Do not add copied contexts or raw access to bypass this gate.
 
 `0041C270` now uses `TDrawSystem::ScreenWidth`.
 It uses `RGE_Prog_Info::mouse_scroll_interval`.
-The 164 registered candidate owners remain exact.
+The wrapper has 165 exact candidate owners.
 
 `0041CDA0` now uses canonical World and Scenario providers.
 It reads `world->scenario` at `+0x5C`.

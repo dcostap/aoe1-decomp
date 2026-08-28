@@ -200,7 +200,7 @@
 #include "matching/00422ed0_get_single_player_difficulty.cpp"
 #include "matching/00422ee0_set_single_player_difficulty.cpp"
 #include "matching/00422EF0_setup_map_save_area.cpp"
-#include "scratch/00422FD0_reload_scenarios_info.cpp"
+#include "matching/00422FD0_reload_scenarios_info.cpp"
 #include "matching/00422fe0_set_interface_messages.cpp"
 #include "scratch/00422FF0_set_render_all.cpp"
 #include "matching/00423010_debug_random_reset.cpp"
