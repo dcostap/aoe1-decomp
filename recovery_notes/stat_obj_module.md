@@ -37,7 +37,7 @@ The source compiles with the pinned VC5 compiler and
 - 82 normal owners match with zero relocation mismatches and no boundary
   escapes.
 - `004C11C0`, the scalar deleting destructor, matches.
-- 8 accepted-drift owners remain accepted drift.
+- 4 accepted-drift owners remain accepted drift.
 - 24 owners remain scratch. `004C7030` remains verified logic.
 - The report has zero comparison errors.
 
@@ -63,3 +63,17 @@ The direct source promotes these prior scratch owners after grouped matches:
 `004C1420`, `004C1590`, `004C16B0`, `004C41D0`, `004C4C40`, `004C50F0`,
 `004C58E0`, `004C5D80`, `004C7430`, `004C74B0`, `004C7530`, and
 `004C7CE0`.
+
+## Accepted-drift recheck
+
+The fresh direct-module audit is `build/candidate_tus/audit_stat_obj_final`.
+It demotes `004C22C0 capture_square_frame`: the natural body differs by 219
+bytes and the checker reports a width and signedness mismatch across the main
+draw block. The source keeps the executable's repeated screen-Y offset bug.
+
+The same audit demotes `004C2110 draw_front_frame` because two direct targets
+name the wrong helper, `004C2B50 draw_frame_3d_square_front` because its body
+escapes the original boundary, and `004C58C0 more_room` because its body
+escapes the original boundary. The other accepted rows remain observed. Their
+current results have no relocation or boundary error, and their differences
+are localized register, width, or instruction-order changes.

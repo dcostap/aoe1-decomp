@@ -40,16 +40,15 @@ ABI boundary.
 
 ## Recovery states
 
-The natural module validation reports 36 exact functions, four accepted-drift
-functions, and seven scratch functions:
+The natural module validation reports 36 exact functions, two accepted-drift
+functions, and nine scratch functions:
 
 - `004A8A60 create_drop_down`: the structured source differs from the shipped
   decompiler control-flow shape.
 - `004A94A0 ~TRIBE_Screen_Sed`: direct typed child deletion changes the body
   and escapes its owner boundary.
-- `004A9CC0 set_scenario_mode`: one cursor register allocation differs.
-- `004AA730 set_paint_object_mode`: player and world loads use different
-  registers.
+- `004A9CC0 set_scenario_mode`: scratch; the rebuilt body escapes its boundary.
+- `004AA730 set_paint_object_mode`: scratch; the expected symbol is not emitted.
 - `004AAB60 set_paint_type`: the virtual game-mode calls now match the
   recovered body. The row remains scratch by review status.
 - `004AB300 set_unit_player`: canonical providers and zeroed CRT allocation
@@ -65,7 +64,7 @@ functions, and seven scratch functions:
 - `004AD630 command_outline`: VC5 changes zero extension and register
   allocation.
 
-The accepted-drift functions retain their reviewed status. The seven scratch
+The two accepted-drift functions retain their reviewed status. The nine scratch
 functions remain scratch until new executable evidence or a behavior review
 resolves their natural differences.
 
@@ -90,3 +89,13 @@ deleting destructor. It reports zero comparison errors. The 36 registered
 exact bodies have zero relocation target mismatches and zero boundary escapes.
 The seven scratch body boundary values are recorded in the recovery states
 above.
+
+The fresh grouped recheck in `build/audit_accepted_drift_final2/report.txt`
+demotes `004A9CC0 set_scenario_mode` because its
+rebuilt body escapes the original boundary at two offsets. It also demotes
+`004AA730 set_paint_object_mode`: the current canonical source emits no
+function with its expected symbol. `004AB670 set_unit` remains accepted drift
+with 60 differing bytes and no relocation or boundary mismatch. `004AD630
+command_outline` remains accepted drift with 53 differing bytes, the original
+size, and no relocation or boundary mismatch. Its difference is the known
+byte-extension and register schedule basin.

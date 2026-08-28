@@ -30,7 +30,7 @@
     "00480E50": { "status": "matching" },
     "00480EA0": { "status": "matching" },
     "00480EC0": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/rmm_base_module.md"
     },
     "00480FB0": { "status": "matching" },

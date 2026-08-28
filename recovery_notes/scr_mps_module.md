@@ -33,8 +33,10 @@ changed three former exact owners as follows: `004A1300` 853 bytes,
 `004A6050` 106 bytes, and `004A6290` 43 bytes. The natural `showNetInfo`
 cleanup restores `004A2910` to an exact match. The structured victory rewrite
 widened scratch `004A4190` from 2 to 1495 bytes and demoted former exact
-`004A5610` at 1412 bytes. The former accepted-drift owner `004A2D50` now reports 360 bytes
-and remains scratch because the old review covered a different source form.
+`004A5610` at 1412 bytes. The former accepted-drift owner `004A2D50` now reports 360 bytes and remains
+scratch. The fresh canonical check has the original 2,551-byte size but three
+missing calls, a four-byte larger frame, and two direct target mismatches. The
+old review covered a different source form.
 The other accepted-drift results remain recorded.
 Do not change recovered behavior to hide these results.
 
@@ -58,3 +60,9 @@ The original image proves every former `CSTR` value. At `00584610`, the bytes ar
   `004A6290`.
 - The two accepted-drift owners retain their reviewed localized drift:
   `004A2060` and `004A27A0`.
+
+The fresh grouped audit is `build/audit_accepted_drift_final2/report.txt`. It confirms
+that `004A2060 startGame` has 67 differing bytes and that `004A27A0
+calcRandomPositions` has one differing byte. Both keep their owning symbols,
+boundaries, calls, and relocations. Pending TPlayer `taiinfmd` and `taibldmd`
+rows were not included in this audit.

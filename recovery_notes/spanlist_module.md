@@ -9,14 +9,17 @@ The current nonexact results include:
 
 - `004BDEA0 AddShape`: current source-bank result needs a typed selected-shape
   walk. The migration keeps its accepted source shape.
-- `004BE090 AddLine_Align`: 184 differing bytes in the focused grouped build.
+- `004BE090 AddLine_Align`: scratch after the fresh grouped build reported 184
+  differing bytes and one boundary escape.
   The five AddSpan calls and loop behavior remain aligned.
 - `004BE1F0 AddMiniList`: scratch. The old source swapped its span fields.
   The repaired source uses Y_delta as the sentinel and calls AddSpan with
   X_start, X_end, and Y_delta in that order.
 - `004BEAD0 DecodeLine`: 12 differing bytes in the focused grouped build.
   The node walk, byte updates, and count behavior remain aligned.
-- `004BEB10 take_snapshot`: 351 differing bytes in the focused grouped build.
+- `004BEB10 take_snapshot`: scratch after the fresh grouped build reported 351
+  differing bytes. Its calls and frame match, but its return and block shape
+  do not.
   The file, palette, scanline, overlay, and cleanup behavior remain aligned.
 
 The natural module build adds a temporary three-byte register-color drift to
@@ -32,3 +35,11 @@ owns the shared span declarations. `spanlist.h` consumes the canonical
 Drawarea and Shape headers. The composed fanout retained 48/48 Drawarea and
 22/22 spanlist exact owners. Shape retained 10/11 checked owners;
 `004BAAF0` remains scratch for its documented two-byte difference.
+
+The fresh grouped audit is `build/audit_accepted_drift_final2/report.txt`. It confirms
+that `004BE090` has the owning symbol but escapes its original boundary, so it
+is not accepted drift. It also confirms that `004BEB10` has 14 aligned calls and
+no relocation or boundary mismatch, but its 351-byte difference includes a
+return and block-shape change. `004BDEA0 AddShape`, `004BE4B0 DeleteShape`, and
+`004BEAD0 DecodeLine` remain accepted drift because their differences are 3, 3,
+and 12 bytes without boundary or relocation errors.

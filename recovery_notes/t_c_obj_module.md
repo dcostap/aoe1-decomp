@@ -67,3 +67,12 @@ Its type has 25 records of 32 bytes. `game_globals` owns the table.
 
 `game_globals.cpp` preserves all 800 original bytes. The probe object has
 the same 800 bytes. `higher_check_for_cliff` now uses this table directly.
+
+The fresh direct-module audit is `build/candidate_tus/audit_t_c_obj_final`.
+It demotes `004CBEF0 higher_than_target`. Its 641
+rebuilt bytes differ from the 701-byte original by 656 bytes. The checker
+reports a missing virtual slot `+0x248`, an extra slot `+0x270`, a smaller
+frame, and broad block drift. `004CAC10 get_armor` remains accepted drift with
+88 differing bytes and no relocation or boundary mismatch. The disambiguated
+`004CC4C0 heal(float)` remains accepted drift with 9 differing bytes and no
+relocation or boundary mismatch.

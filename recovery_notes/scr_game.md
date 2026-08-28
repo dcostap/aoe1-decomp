@@ -129,4 +129,20 @@ It compiled all 96 owners. It found 64 matches and no comparison errors.
 The 20 unregistered `matching` rows all report `MATCH` and `0.0000%`. Their
 owner symbols, boundaries, and relocations also match. They remain unregistered
 until a registration review selects them. The screen group still registers its
-31 reviewed exact owners only.
+30 reviewed exact owners only.
+
+## Accepted-drift recheck
+
+The fresh grouped audit is `build/audit_accepted_drift_final2/report.txt`. It uses
+the current canonical screen and communications declarations. `00495AE0
+handle_size` is scratch: the grouped check reports 774 differing bytes after
+the module context is included. `0049ADA0 reset_clocks` is scratch with 561
+differing bytes and a different frame and block structure. `0049C0B0
+command_comm_info` is scratch with 124 differing bytes and two missing virtual
+calls. `0049A8F0 calc_text_msg` is also scratch. The fresh grouped audit did not
+emit its expected decorated symbol, so it cannot remain an exact owner.
+
+`00496550 handle_paint` remains accepted drift. Its fresh standalone check has
+34 differing bytes, the original 425-byte boundary, 13 aligned calls, matching
+control-flow counts, and 93.28% exact-block coverage. The difference is a
+localized scheduling and register-order change.

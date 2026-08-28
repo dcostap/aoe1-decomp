@@ -399,8 +399,8 @@ uchar RGE_Random_Map_Module::check_stack(Map_Stack* stack)
     return 1;
 }
 
-// ACCEPTED DRIFT: The five randomization calls, list edits, loop counts, and
-// returns match.  The remaining difference is a private local/register basin.
+// SCRATCH: The five randomization calls and list edits remain aligned, but the
+// natural body has a frame-size and control-flow mismatch.
 void RGE_Random_Map_Module::randomize_stack(Map_Stack* param_1)
 {
     Map_Stack sub_stacks[100];

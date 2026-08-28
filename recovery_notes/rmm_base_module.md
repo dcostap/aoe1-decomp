@@ -11,9 +11,16 @@ The focused candidate build is the migration gate.
 return values, boundary, and protected owner symbol match. The 13 differing
 bytes are register-color and address-source choices in the list walk.
 
-`randomize_stack` at 00480EC0 remains accepted drift. Its five randomization
-calls, list edits, loop counts, and returns match. The remaining difference is
-a private local/register basin.
+`randomize_stack` at 00480EC0 is scratch. The fresh grouped audit in
+`build/audit_accepted_drift_final2/report.txt` reports a
+219-byte rebuild against the 237-byte original and 106 differing bytes. The
+frame differs by four bytes, the instruction count differs by four, and the
+checker reports a control-flow difference. The calls and list effects remain
+aligned, but this is broader than localized accepted drift.
+
+`remove_module` at 00480A20 remains accepted drift. Its fresh grouped result
+has 13 differing bytes, the original boundary, the owning symbol, and no
+relocation or boundary mismatch.
 
 `find_path(Map_Stack&, ...)` at 00481000 remains scratch. The source preserves
 the eight-neighbor search and ten ordered helper calls. Its frame, FPU local

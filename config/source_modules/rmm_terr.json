@@ -10,12 +10,12 @@
     "004889D0": { "status": "matching" },
     "004889F0": { "status": "matching" },
     "00488B90": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/rmm_terr_module.md"
     },
     "00488D50": { "status": "matching" },
     "00488E40": { "status": "matching" },
-    "00488E60": { "status": "matching" },
+    "00488E60": { "status": "scratch", "note_path": "recovery_notes/rmm_terr_module.md" },
     "00488EA0": { "status": "matching" },
     "00488F90": { "status": "matching" },
     "00489030": { "status": "matching" }

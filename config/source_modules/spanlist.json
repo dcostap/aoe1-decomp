@@ -28,7 +28,7 @@
     },
     "004BDFA0": { "status": "matching" },
     "004BE090": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/spanlist_module.md"
     },
     "004BE1F0": {
@@ -52,7 +52,7 @@
       "note_path": "recovery_notes/spanlist_module.md"
     },
     "004BEB10": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/spanlist_module.md"
     }
   }

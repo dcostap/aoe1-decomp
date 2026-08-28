@@ -34,6 +34,7 @@ class RGE_TimeSinceLastCall;
 struct RGE_Prog_Info;
 class TCommunications_Sessions;
 class TribeMPCreateDialog;
+class TRIBE_Screen_Game;
 
 class NAME {
 public:
@@ -182,6 +183,7 @@ typedef char comm_hand_options_size_check[
 class TCommunications_Handler {
     friend class TCommunications_Sessions;
     friend class TribeMPCreateDialog;
+    friend class TRIBE_Screen_Game;
     friend int __stdcall EnumPlayersCallback2(unsigned long, unsigned long,
                                               DPNAME*, unsigned long, void*);
 protected:

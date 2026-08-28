@@ -39,7 +39,7 @@
     "004CB8D0": { "status": "matching" },
     "004CBD30": { "status": "matching" },
     "004CBD40": { "status": "scratch", "note_path": "recovery_notes/t_c_obj_module.md" },
-    "004CBEF0": { "status": "accepted_drift", "note_path": "recovery_notes/t_c_obj_module.md" },
+    "004CBEF0": { "status": "scratch", "note_path": "recovery_notes/t_c_obj_module.md" },
     "004CC1B0": { "status": "scratch", "note_path": "recovery_notes/t_c_obj_module.md" },
     "004CC4C0": { "status": "accepted_drift", "note_path": "recovery_notes/t_c_obj_module.md" },
     "004CC570": { "status": "matching" },

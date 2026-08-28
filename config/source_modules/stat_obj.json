@@ -70,7 +70,7 @@
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C2110": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C21A0": {
@@ -82,7 +82,7 @@
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C22C0": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C23F0": {
@@ -98,7 +98,7 @@
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C2B50": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C2DF0": {
@@ -222,7 +222,7 @@
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C58C0": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C58E0": {

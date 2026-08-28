@@ -52,7 +52,7 @@ offset and complete size without explicit padding fields.
 local field carrier or a raw offset.
 
 The seven exact owners are now registered in `config/translation_units.json`.
-The two accepted-drift owners remain reviewed in
+The two former accepted-drift owners are scratch in
 `config/source_modules/tact_mob.json`. 004D10F0 remains scratch pending a
 separate owner review. 004D15F0 is now promoted only after its final target
 check; this does not promote the rest of the Tact Mob chain.
@@ -86,7 +86,7 @@ owner change produced these results:
   retained as the natural source form.
 - Generated 004D0E90 remains `MATCH`, with 0 bytes, 0 relocation target
   mismatches, and 0 boundary escapes.
-- Observed 004D0FC0 remains a 268-byte accepted-drift mismatch. Observed
+- Observed 004D0FC0 remains a 268-byte scratch mismatch. Observed
   004D10F0 remains a 281-byte scratch mismatch. 004D15F0 is promoted to
   matching after its final target check: `MATCH`, 0 bytes, owner match, 0
   relocation target mismatches, and 0 boundary escapes. The final check proves
@@ -94,12 +94,17 @@ owner change produced these results:
   `?get_info@TRIBE_Action_Make_Obj@@QAEXAAF0PADF@Z`, the PDB owner
   `tact_mob.cpp:255-268`, and the body boundary `004D15F0-004D167B`.
   The post-rebase candidate report records an overload-selection comparison
-  error for accepted-drift 004D0EB0. Its accepted-drift status is unchanged.
+  error for former accepted-drift 004D0EB0. Its status is now scratch.
 
-The post-rebase full candidate report has 7/7 registered exact-owner matches,
-0/3 observed matches, and 1/1 generated matches. One observed row is a
-comparison error. The full candidate group is not exact because 004D0FC0 and
-004D10F0 remain observed mismatches, while 004D0EB0 has the comparison error.
+The fresh direct-module audit is
+`build/candidate_tus/audit_tact_mob_final/report.txt`. The post-rebase full
+candidate report has 7/7 registered exact-owner matches,
+0/3 observed matches, and 1/1 generated matches. The old observed comparison
+error for 004D0EB0 is resolved only by selecting its decorated constructor
+symbol. The fresh direct-module audit then reports 31 differing bytes for
+004D0EB0 and 268 differing bytes for 004D0FC0. Both remain scratch because
+the former row required a comparison-error exception and the latter has a
+missing virtual call and broad call-surface drift.
 
 The final target checks report exact 004D12B0, 004D1550, and 004D15F0 results.
 Only 004D15F0 changed status in this promotion. Current main contains the

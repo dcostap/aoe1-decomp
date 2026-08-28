@@ -12,7 +12,6 @@
 #include "../include/rge_fio.h"
 #include <string.h>
 
-extern "C" int __cdecl debug_rand(char*, int);
 extern float save_game_version;
 
 // Authentic source module for C:\\msdev\\work\\age1_x1\\tact_mob.cpp.
@@ -21,10 +20,10 @@ extern float save_game_version;
 //
 // The module uses the canonical tribal master-object build-time field.
 // 004D0DD0  lines 31-41   matching
-// 004D0EB0  lines 48-54   accepted_drift
+// 004D0EB0  lines 48-54   scratch
 // 004D0EF0  lines 60-65   matching
 // 004D0F70  lines 69-76   matching
-// 004D0FC0  lines 79-116  accepted_drift
+// 004D0FC0  lines 79-116  scratch
 // 004D10E0  lines 120-123 matching
 // 004D10F0  lines 126-167 scratch (canonical owner available)
 // 004D12B0  lines 171-233 matching
@@ -48,9 +47,9 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int param_1, RGE_Action_Object* par
     }
 }
 
-// VA 004D0EB0; PDB tact_mob.cpp:48-54; accepted drift.
-// The constructor preserves the base state and all four shipped field values.
-// VC5 selects a dword load for obj_id where the original uses a word load.
+// VA 004D0EB0; PDB tact_mob.cpp:48-54; scratch.
+// The disambiguated constructor still differs by 31 bytes in its natural
+// register and field-width schedule.
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj,
                                              short obj_id,
                                              int unique_id,
@@ -82,9 +81,8 @@ void TRIBE_Action_Make_Obj::save(int handle) {
     rge_write(handle, &this->pre_paid, 1);
 }
 
-// VA 004D0FC0; PDB tact_mob.cpp:79-116; accepted drift.
-// The VC5 build uses a different register for obj_id and loads this->obj
-// earlier. The calls, cleanup, branches, and memory effects are unchanged.
+// VA 004D0FC0; PDB tact_mob.cpp:79-116; scratch.
+// The natural body misses one virtual call and has broad call-surface drift.
 void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1)
 {
     if (param_1 == 0) return;

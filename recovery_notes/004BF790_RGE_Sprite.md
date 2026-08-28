@@ -26,6 +26,11 @@ allocation schedule remains the only reviewed difference.
 Decision: keep `accepted_drift`. This is not a fresh exact claim. Reopen only
 with new evidence about the VC5 allocation or register schedule.
 
+The fresh direct-module audit in
+`build/candidate_tus/audit_sprite_final/report.txt` reconfirms 227 differing bytes, the owning
+constructor symbol, and no relocation or boundary error. The source remains a
+natural constructor with aligned allocation, sound, parser, and return effects.
+
 ## Module merge
 
 The body moved into `src/sprite.cpp` in PDB order. The merge removes the

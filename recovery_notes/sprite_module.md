@@ -38,3 +38,7 @@ update` remains `verified_logic`; its grouped rebuild is 125 bytes with 75
 strict differences and a two-byte reachable boundary escape. Its old shared
 double-zero declaration is absent from the current global surface. The main
 agent must review that cross-shard dependency before exact repair.
+
+The fresh direct-module audit is `build/candidate_tus/audit_sprite_final`.
+It reconfirms all five accepted-drift rows with matching owner symbols and no
+relocation or boundary errors. The existing natural bodies remain unchanged.

@@ -39,11 +39,6 @@ extern int logDebugID;
 extern FILE* debugOut;
 extern char STR_STAT_OBJ[];
 
-extern "C" {
-int __cdecl debug_rand(char*, int);
-void __cdecl debug_srand(char*, int, int);
-}
-
 // 004C1100 RGE_Static_Object::RGE_Static_Object
 
 
