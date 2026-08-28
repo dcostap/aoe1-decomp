@@ -6406,6 +6406,7 @@
     {
       "name": "ACT_GATH_cpp",
       "source": "src/act_gath.cpp",
+      "module": "act_gath",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "00402EA0": "src/act_gath.cpp",
