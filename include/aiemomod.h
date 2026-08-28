@@ -1,31 +1,9 @@
 #ifndef AOE1_AIEMOMOD_H
 #define AOE1_AIEMOMOD_H
 
-class AIModuleMessage;
+#include "aimodule.h"
+
 class MainDecisionAIModule;
-
-class AIModule {
-public:
-    char gap_04[0xEC];
-
-    virtual ~AIModule();
-    virtual int loggingHistory();
-    virtual void setLogHistory(int);
-    virtual void toggleLogHistory();
-    virtual void setHistoryFilename(char*);
-    virtual int loggingCommonHistory();
-    virtual void setLogCommonHistory(int);
-    virtual void toggleLogCommonHistory();
-    virtual int loadState(char*);
-    virtual int saveState(char*);
-    virtual int gleanState(int);
-    virtual int processMessage(AIModuleMessage*);
-    virtual int update(int);
-    virtual void setCallbackMessage(AIModuleMessage*);
-    virtual int filterOutMessage(AIModuleMessage*);
-
-    AIModule(char* name, int size, int param2, void* param1);
-};
 
 class EmotionalAIModule : public AIModule {
 public:
@@ -49,7 +27,6 @@ public:
     int defaultState() const;
 };
 
-typedef char aiemomod_ai_module_size_check[(sizeof(AIModule) == 0xF0) ? 1 : -1];
 typedef char aiemomod_emotional_ai_module_size_check[(sizeof(EmotionalAIModule) == 0x1C0) ? 1 : -1];
 
 #endif
