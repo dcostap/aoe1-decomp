@@ -37,8 +37,8 @@ public:
     virtual void copy_obj_sprites(RGE_Master_Action_Object*, RGE_Task*,
                                   RGE_Task*);
     virtual void get_state_name(char*);
-    virtual RGE_Static_Object* get_target_obj();
-    virtual RGE_Static_Object* get_target_obj2();
+    virtual RGE_Static_Object* get_target_obj() { return this->target_obj; }
+    virtual RGE_Static_Object* get_target_obj2() { return this->target_obj2; }
     virtual void set_target_obj(RGE_Static_Object*);
     virtual void set_target_obj2(RGE_Static_Object*);
 

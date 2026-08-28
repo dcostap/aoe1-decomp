@@ -2,6 +2,8 @@
 # These bytes remain in the executable inventory. Reproduce them through the
 # owning class or translation unit. Do not create ordinary function sources.
 # Format: VA reason
+00401130 compiler_generated_inline_action_get_target_obj
+00401140 compiler_generated_inline_action_get_target_obj2
 00401150 compiler_generated_deleting_destructor
 00402010 compiler_generated_deleting_destructor
 004023F0 compiler_generated_deleting_destructor
