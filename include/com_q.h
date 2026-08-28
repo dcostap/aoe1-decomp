@@ -3,18 +3,13 @@
 
 // PDB source: C:\msdev\work\age1_x1\com_q.cpp.
 
-void* __cdecl operator new(unsigned int size);
-void __cdecl operator delete(void* ptr);
-typedef void (*MsgQueueDestructor)(void*);
-extern "C" void __stdcall eh_vector_destructor_iterator(
-    void* ptr, unsigned int size, int count, MsgQueueDestructor destructor);
+#include <new.h>
 
 class MsgQueue {
 public:
     unsigned int Code;
     unsigned int ExecTurn;
     unsigned char SeqNo;
-    char gap_09[3];
     char* msgptr;
     unsigned int From;
     unsigned int Size;
@@ -52,10 +47,8 @@ public:
     unsigned int HighQueueDepth;
     unsigned int MaxQSize;
     char TBuff[255];
-    unsigned char _pad_0[1];
     unsigned long LastCurrentTurn;
     unsigned char Sequence;
-    unsigned char _pad_1[3];
     MsgQueue* Queue;
 
     RGE_Communications_Queue(int param_1);

@@ -4,7 +4,7 @@
 
 extern void* DAT_0062cf34;
 extern void* DAT_0062cf38;
-extern unsigned int DAT_0062cf3c;
+extern void* DAT_0062cf3c;
 extern unsigned char DAT_0062cf40;
 extern TDebuggingLog* L;
 
@@ -103,14 +103,7 @@ unsigned char RGE_Communications_Queue::ExpectedNextSequence(
         i++;
     } while (i <= this->HighQueueDepth);
 
-    {
-        unsigned int c = (unsigned int)this;
-        c |= 0xff;
-        if ((unsigned char)c >= seq) {
-        return DAT_0062cf40;
-        }
-        return 0;
-    }
+    return DAT_0062cf40;
 }
 
 // PDB source: com_q.cpp, lines 168-178.
@@ -238,7 +231,7 @@ int RGE_Communications_Queue::AddItem(
     MsgQueue* slot = this->Queue + i;
     this->HighQueueDepth = high_depth;
 
-    char* message = (char*)operator new(size + 1);
+    char* message = static_cast<char*>(operator new(size + 1));
     slot->msgptr = message;
 
     if (message != 0) {
@@ -287,7 +280,7 @@ void* RGE_Communications_Queue::GetSpecificItem(
 
 found:
     *size = this->Queue[idx].Size;
-    DAT_0062cf3c = (unsigned int)this->Queue[idx].msgptr;
+    DAT_0062cf3c = this->Queue[idx].msgptr;
     this->Queue[idx].msgptr = 0;
 
     {
@@ -300,7 +293,7 @@ found:
         p->ControlCommand = 0;
     }
 
-    return (void*)DAT_0062cf3c;
+    return DAT_0062cf3c;
 }
 
 // PDB source: com_q.cpp, lines 327-346.

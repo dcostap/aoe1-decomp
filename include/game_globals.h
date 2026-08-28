@@ -1647,10 +1647,6 @@ extern unsigned int DAT_0062cf28;
 extern unsigned char DAT_0062cf2c;
 // 0062CF30 [.data]
 extern unsigned int DAT_0062cf30;
-// 0062CF38 [.data]
-extern unsigned int DAT_0062cf38;
-// 0062CF3C [.data]
-extern unsigned int DAT_0062cf3c;
 // 0062CF68 [.data]
 extern unsigned int DAT_0062cf68;
 // 0062D208 [.data]
