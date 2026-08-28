@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "name": "com_q",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_q.cpp",
+  "source": "src/com_q.cpp",
+  "header": "include/com_q.h",
+  "functions": {
+    "00431720": { "status": "matching" },
+    "00431760": { "status": "matching" },
+    "00431810": { "status": "matching" },
+    "004319E0": { "status": "scratch", "note_path": "recovery_notes/com_q_module.md" },
+    "00431A40": {
+      "status": "scratch",
+      "note_path": "recovery_notes/com_q_module.md"
+    },
+    "00431A70": { "status": "matching" },
+    "00431A80": { "status": "scratch", "note_path": "recovery_notes/com_q_module.md" },
+    "00431B10": { "status": "scratch", "note_path": "recovery_notes/com_q_module.md" },
+    "00431BD0": { "status": "matching" },
+    "00431BE0": { "status": "matching" },
+    "00431BF0": { "status": "scratch", "note_path": "recovery_notes/com_q_module.md" },
+    "00431D10": { "status": "matching" },
+    "00431D20": { "status": "matching" },
+    "00431D30": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/com_q_module.md"
+    },
+    "00431DD0": { "status": "matching" },
+    "00431E40": { "status": "matching" },
+    "00431F10": {
+      "status": "scratch",
+      "note_path": "recovery_notes/com_q_module.md"
+    },
+    "00431F50": { "status": "matching" }
+  }
+}

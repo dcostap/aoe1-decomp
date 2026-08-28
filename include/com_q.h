@@ -1,13 +1,13 @@
-#ifndef AOE1_COM_Q_CONTEXT_H
-#define AOE1_COM_Q_CONTEXT_H
+#ifndef AOE1_COM_Q_H
+#define AOE1_COM_Q_H
 
-// Authentic shared surface for com_q.cpp.
-// The executable stores QueueDepth at +0 and Queue at +0x114.
+// PDB source: C:\msdev\work\age1_x1\com_q.cpp.
 
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* ptr);
+typedef void (*MsgQueueDestructor)(void*);
 extern "C" void __stdcall eh_vector_destructor_iterator(
-    void* ptr, unsigned int size, int count, void (*destructor)(void*));
+    void* ptr, unsigned int size, int count, MsgQueueDestructor destructor);
 
 class MsgQueue {
 public:
@@ -46,18 +46,6 @@ public:
 
 typedef MsgQueue MsgQueueEntry;
 
-extern void* DAT_0062cf34;
-extern void* DAT_0062cf38;
-extern unsigned int DAT_0062cf3c;
-extern int DAT_0062cf40;
-
-class TDebuggingLog {
-public:
-    void Log(const char* format, ...);
-};
-
-#define L (*(TDebuggingLog**)0x62C4FC)
-
 class RGE_Communications_Queue {
 public:
     unsigned int QueueDepth;
@@ -95,5 +83,10 @@ public:
     unsigned char GetNextSequence(unsigned long turn);
     void TestShowQueue();
 };
+
+typedef char com_q_msg_queue_size_check[
+    (sizeof(MsgQueue) == 0x1C) ? 1 : -1];
+typedef char com_q_size_check[
+    (sizeof(RGE_Communications_Queue) == 0x118) ? 1 : -1];
 
 #endif
