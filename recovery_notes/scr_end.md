@@ -26,13 +26,10 @@ three child panel types. `include/basegame.h` and
 `include/rge_base_game_global.h` provide the Base Game surface and global.
 
 The type record gives `TribeEndScreen` a `TScreenPanel` base, four child
-fields, and size `0x488`. It gives `TribeAchievementsScreen` size `0x5F8` and
-its complete field list.
+fields, and size `0x488`.
 
-`scr_ach.h` still has an older copied panel surface. It cannot share a source
-unit with canonical panel headers. `scr_end.h` therefore has a narrow typed
-construction declaration for `TribeAchievementsScreen`. It uses only PDB type
-record fields and method declarations. It defines no method or manual vtable.
+`include/scr_ach.h` owns `TribeAchievementsScreen`. The end-screen source
+includes that canonical header before it constructs the screen.
 
 ## Exact finish
 
@@ -49,6 +46,9 @@ source keeps `PositionCentered`, `AlignCenter`, `DrawPicture`, and
 
 `new TribeAchievementsScreen` matches without a local `operator_new`
 declaration. The old declaration was not required.
+
+The canonical text-panel surface has three `setup` overloads. A plain `0` is
+ambiguous. `static_cast<char*>(0)` selects the original `char*` target.
 
 ## Validation
 

@@ -6,6 +6,7 @@
 #include "../include/pnl_lst.h"
 #include "../include/pnl_pic.h"
 #include "../include/rge_base_game_global.h"
+#include "../include/scr_ach.h"
 #include <string.h>
 
 TribeEndScreen::TribeEndScreen(char* title_text, char** text_list,
@@ -74,7 +75,7 @@ TribeEndScreen::TribeEndScreen(char* title_text, char** text_list,
         pnl_wid * 600 / 0x280,
         pnl_hgt * 0x154 / 0x1E0,
         font->font, font->font_wid, font->font_hgt,
-        0, 0, 0, 0, 0, 0, (char*)0);
+        0, 0, 0, 0, 0, 0, static_cast<char*>(0));
     text->set_text(text_list, (short)text_count);
     text->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignCenter);
     text->scroll(6, 0, 1);
