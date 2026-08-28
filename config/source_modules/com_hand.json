@@ -2,7 +2,7 @@
   "schema": 1,
   "name": "com_hand",
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Com_hand.cpp",
-  "source": "src/Com_hand.cpp",
+  "source": "src/com_hand.cpp",
   "header": "include/com_hand.h",
   "functions": {
     "00425750": {
