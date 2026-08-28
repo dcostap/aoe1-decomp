@@ -32,3 +32,13 @@ natural module without false exact claims.
 The stale `map_context.h` and `map_tile_context.h` headers had no Map consumer.
 The RMM terrain header now includes the complete canonical `map.h` owner. Both
 stale headers were removed after this consumer audit.
+
+## Compile-blocker repair
+
+`debug_rand` and `debug_srand` use the canonical C++ declarations from
+`basegame.h`. The old `old_map_cutoff` label had no owner. `load_map` uses the
+canonical `DAT_005706a8` owner at `005706A8`.
+
+The full direct-module candidate build now compiles without diagnostics. Both
+configured exact owners, `004550A0` and `0045A6D0`, report `MATCH`, `0.0000%`,
+correct ownership, relocations, and boundaries.

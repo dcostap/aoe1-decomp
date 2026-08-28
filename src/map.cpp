@@ -24,10 +24,9 @@ extern "C" void __cdecl rge_read(int file, void* data, int size);
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 extern "C" void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" void __cdecl convert_us(char* text);
-extern "C" int __cdecl debug_rand(char* file, int line);
-extern "C" void __cdecl debug_srand(char* file, int line, unsigned int seed);
+int __cdecl debug_rand(char* file, int line);
+void __cdecl debug_srand(char* file, int line, unsigned int seed);
 extern float save_game_version;
-extern float old_map_cutoff;
 extern float DAT_005706a8;
 extern float DAT_005706ac;
 extern double DAT_005706c0;
@@ -1300,7 +1299,7 @@ void RGE_Map::load_map(int file)
     rge_read(file, &this->map_visible_flag, 1);
     rge_read(file, &this->fog_flag, 1);
 
-    if (!(save_game_version < old_map_cutoff)) {
+    if (!(save_game_version < DAT_005706a8)) {
         long h = 0;
         if (this->map_height > 0) {
             do {
