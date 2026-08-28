@@ -4330,13 +4330,17 @@
     },
     {
       "name": "rmm_cntr",
-      "source": "src/rmm_cntr_tu.cpp",
+      "source": "src/rmm_cntr.cpp",
+      "module": "rmm_cntr",
       "flags": "config/flags/004821A0_RGE_RMM_Controller.rsp",
       "owners": {
-        "004821A0": "src/matching/004821A0_RGE_RMM_Controller.cpp",
-        "00482260": "src/matching/00482260_generate.cpp"
+        "004821A0": "src/rmm_cntr.cpp",
+        "00482260": "src/rmm_cntr.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "004821A0": "??0RGE_RMM_Controller@@QAE@PAVRGE_Map@@PAVRGE_Game_World@@EJ@Z",
+        "00482260": "?generate@RGE_RMM_Controller@@UAEEXZ"
+      }
     },
     {
       "name": "pnl_scr",

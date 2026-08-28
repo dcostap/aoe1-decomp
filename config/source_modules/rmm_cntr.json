@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "name": "rmm_cntr",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rmm_cntr.cpp",
+  "source": "src/rmm_cntr.cpp",
+  "header": "include/rmm_cntr.h",
+  "functions": {
+    "004821A0": { "status": "matching" },
+    "00482260": { "status": "matching" },
+    "00482270": { "status": "scratch", "note_path": "recovery_notes/rmm_cntr_module.md" },
+    "004826E0": { "status": "scratch", "note_path": "recovery_notes/rmm_cntr_module.md" },
+    "004828A0": { "status": "scratch", "note_path": "recovery_notes/rmm_cntr_module.md" },
+    "004828B0": { "status": "scratch", "note_path": "recovery_notes/rmm_cntr_module.md" }
+  }
+}
