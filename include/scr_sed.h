@@ -26,13 +26,6 @@ class TRIBE_World;
 // The scenario editor shares this 260-byte default-save-name buffer.
 extern char scenario_default_file_name[260];
 
-// The panel ABI carries this selection event value in an unsigned long.
-// The scenario editor consumes the same value as a static-object pointer.
-union ScenarioEditorEventValue {
-    unsigned long value;
-    RGE_Static_Object* object;
-};
-
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
     TRIBE_Screen_Sed(char*, int);
