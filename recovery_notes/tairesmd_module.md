@@ -8,9 +8,10 @@ the source order in `src/tairesmd.cpp`. The nearby `004E6B80` scalar deleting
 destructor is compiler-generated and is not a handwritten owner.
 
 The module header is `include/tairesmd.h`. It imports the canonical AIModule
-and ResourceItem declarations. It retains only the PDB-proven local
-TribeMainDecisionAIModule, ResourceTable, and TribeResourceAIModule views.
-No synthetic function, inline assembly, or ABI shim is used.
+and ResourceItem declarations. It forward-declares the canonical
+TribeMainDecisionAIModule. The source privately consumes the canonical Main
+Decision and Player providers. No synthetic function, inline assembly, or ABI
+shim is used.
 
 PDB owner order and spans are:
 
@@ -27,9 +28,7 @@ PDB owner order and spans are:
 | `004E6D40` | 115-128 | 134 | `unavailableResource` |
 | `004E6DD0` | 133-143 | 60 | `resourceName` |
 
-The exact anchors are the nine prior matching owners in this sequence. The
-accepted-drift anchor is `004E6CA0`; its source retains the prior reviewed
-implementation and status.
+The exact anchors are the nine prior matching owners in this sequence.
 
 ## Statuses
 
@@ -37,15 +36,13 @@ The module preserves the prior reviewed state:
 
 - `matching`: `004E6B40`, `004E6BA0`, `004E6C20`, `004E6C30`, `004E6C40`,
   `004E6C60`, `004E6C70`, `004E6D40`, and `004E6DD0`.
-- `accepted_drift`: `004E6CA0`.
+- `scratch`: `004E6CA0`.
 
-`004E6CA0` has the original 147-byte boundary. Its rebuilt body is 146 bytes.
-Its reviewed difference is limited to equivalent register allocation: the
-rebuilt source selects EBX for the available-resource pointer and EBP for
-`this`, while the executable makes the opposite allocation. The calls,
-predicate, memory effects, branch paths, and return values remain equivalent.
-The compare uses an equivalent encoding, with the resulting one-byte padding
-difference.
+`004E6CA0` has the original 147-byte boundary. Before canonical composition,
+its 146-byte source had a reviewed one-byte accepted drift. The canonical Main
+Decision and Player source changes this row to a 56-byte mismatch. Its direct
+targets and boundary remain clean. It is scratch until a fresh semantic review
+can assess the new emitted body.
 
 ## Migration effects
 

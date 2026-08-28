@@ -3,6 +3,8 @@
 // The nearby 004E6B80 scalar deleting destructor is compiler-generated.
 
 #include "../include/tairesmd.h"
+#include "../include/taimdmd.h"
+#include "../include/player.h"
 
 extern const char s_Resource_AI[];
 void rge_read(int handle, void* buffer, int size);
@@ -62,7 +64,7 @@ int TribeResourceAIModule::numberResources() const
 int TribeResourceAIModule::resource(int index) const
 {
     if ((index >= 0) && (index < this->numberResourcesValue)) {
-        return (int)this->md->player->values[index];
+        return (int)this->md->player->attributes[index];
     }
     return -1;
 }
@@ -83,7 +85,7 @@ int TribeResourceAIModule::resourcesAvailable(ResourceItem* item)
     int i = 0;
     int n = item->number();
     while (i < n) {
-        float* available = *(float**)((char*)*(void**)((char*)md + 0xF0) + 0x50);
+        float* available = this->md->player->attributes;
         int needed = item->value(i);
         if ((float)needed > available[i])
             return 0;
@@ -104,7 +106,7 @@ int TribeResourceAIModule::unavailableResource(ResourceItem* item)
     if (this->numberResourcesValue == item->number()) {
         int i = 0;
         while (i < item->number()) {
-            float* amounts = *(float**)((char*)this->md->player + 0x50);
+            float* amounts = this->md->player->attributes;
             if (amounts[i] < (float)item->value(i)) {
                 return i;
             }

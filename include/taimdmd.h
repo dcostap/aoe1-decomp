@@ -8,6 +8,7 @@
 #include "aiemomod.h"
 #include "aitrdmod.h"
 #include "taiconmd.h"
+#include "tairesmd.h"
 
 class TribeMainDecisionAIModule;
 class TRIBE_Player;
@@ -21,11 +22,6 @@ public:
 class InformationAIModule : public AIModule {
 public:
     virtual int update(int);
-};
-
-class ResourceAIModule : public AIModule {
-public:
-    virtual int save(int);
 };
 
 class StrategyAIModule : public AIModule {
@@ -83,21 +79,6 @@ public:
 
 typedef char taimdmd_information_size[
     (sizeof(TribeInformationAIModule) == 0x10090) ? 1 : -1];
-
-class TribeResourceAIModule : public ResourceAIModule {
-public:
-    char bytes[0xF8 - sizeof(ResourceAIModule)];
-
-    TribeResourceAIModule(void*, int, int, int, int, int);
-    TribeResourceAIModule(int, int);
-    virtual ~TribeResourceAIModule();
-    void setMainDecisionAI(TribeMainDecisionAIModule*);
-    void setPlayer(int, char*);
-    void setLogHistory(int);
-    void setup(MainDecisionAIModule*);
-};
-
-typedef char taimdmd_resource_size[(sizeof(TribeResourceAIModule) == 0xF8) ? 1 : -1];
 
 class TribeStrategyAIModule : public StrategyAIModule {
 public:

@@ -8,17 +8,7 @@
 // The module contains two TribeResourceAIModule constructors and its virtual
 // destructor before the remaining helpers.
 
-class ResourceTable {
-public:
-    char gap_00[0x50];
-    float* values;
-};
-
-class TribeMainDecisionAIModule {
-public:
-    char gap_00[0xF0];
-    ResourceTable* player;
-};
+class TribeMainDecisionAIModule;
 
 class TribeResourceAIModule : public AIModule {
 public:
