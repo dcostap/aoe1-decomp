@@ -14,13 +14,15 @@ foreign class, manual vptr, raw Tile layout, or field alias.
 The pinned VC5 compiler builds `src/tmap.cpp` with
 `config/flags/0050F410_TRIBE_Map.rsp`.
 
-Candidate validation at `build/candidate_tus/tmap_natural` compiled all 29
-owners. Twelve rows matched byte-for-byte. Seven overloaded rows need explicit
-symbol selection. Ten rows remain nonexact. This checkpoint registers no exact
-rows.
+Candidate validation at `build/candidate_tus/tmap_natural_exact` compiled all
+29 owners. The following 12 exact claims have explicit PDB symbols, matching
+owners, relocations, and boundaries:
 
-The natural source keeps each row in scratch. This avoids claims from the old
-wrapper. It also records normal source-composition regressions.
+`0050F7A0`, `0050F7B0`, `0050F800`, `0050FD40`, `0050FDD0`, `0050FE90`,
+`00510110`, `00510410`, `00510C10`, `00510C90`, `00510CB0`, and `00511000`.
+
+The other 17 rows remain scratch. This records normal source-composition
+regressions without claims from the old wrapper.
 
 ## External owner needs
 

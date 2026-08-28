@@ -6404,8 +6404,34 @@
       "name": "tmap_cpp",
       "source": "src/tmap.cpp",
       "flags": "config/flags/0050F410_TRIBE_Map.rsp",
-      "owners": {},
-      "symbols": {},
+      "owners": {
+        "0050F7A0": "src/tmap.cpp",
+        "0050F7B0": "src/tmap.cpp",
+        "0050F800": "src/tmap.cpp",
+        "0050FD40": "src/tmap.cpp",
+        "0050FDD0": "src/tmap.cpp",
+        "0050FE90": "src/tmap.cpp",
+        "00510110": "src/tmap.cpp",
+        "00510410": "src/tmap.cpp",
+        "00510C10": "src/tmap.cpp",
+        "00510C90": "src/tmap.cpp",
+        "00510CB0": "src/tmap.cpp",
+        "00511000": "src/tmap.cpp"
+      },
+      "symbols": {
+        "0050F7A0": "??1TRIBE_Map@@UAE@XZ",
+        "0050F7B0": "?save@TRIBE_Map@@UAEXH@Z",
+        "0050F800": "?data_load_random_map@TRIBE_Map@@UAEXH@Z",
+        "0050FD40": "?do_terrain_brush_stroke@TRIBE_Map@@UAEEJJJJJE@Z",
+        "0050FDD0": "?do_elevation_brush_stroke@TRIBE_Map@@UAEEJJJJJE@Z",
+        "0050FE90": "?setup_cliff_type@TRIBE_Map@@QAEXJJJJJJJJMM@Z",
+        "00510110": "?make_new_cliff@TRIBE_Map@@QAEPAVRGE_Static_Object@@JJUTRIBE_Cliff_Info@@@Z",
+        "00510410": "?reverse_cliff_direction@TRIBE_Map@@QAEJJ@Z",
+        "00510C10": "?do_cliff_brush_stroke@TRIBE_Map@@UAEEJJJJEE@Z",
+        "00510C90": "?water@TRIBE_Map@@QAEEE@Z",
+        "00510CB0": "?clean_borders@TRIBE_Map@@QAEXJJJJE@Z",
+        "00511000": "?do_terrain_brush_check@TRIBE_Map@@QAEEJJ@Z"
+      },
       "module": "tmap_cpp"
     },
     {
