@@ -111,22 +111,10 @@ int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* src) {
     outline_radius_y = src->outline_radius_y;
     outline_radius_z = src->outline_radius_z;
 
-    // BINARY NOTE: VC5 emits this exact relative parallel-array copy loop.
-    {
-        unsigned char* fp = attribute_flag;
-        float* ap = attribute_amount_held;
-        short* tp = attribute_type_held;
-        int diff = (int)src - (int)(RGE_Master_Static_Object*)this;
-        int cnt = 3;
-        do {
-            *tp = *(short*)((int)tp + diff);
-            *ap = *(float*)((int)ap + diff);
-            *fp = *(unsigned char*)((int)fp + diff);
-            tp++;
-            ap++;
-            fp++;
-            cnt--;
-        } while (cnt != 0);
+    for (int i = 0; i < 3; ++i) {
+        attribute_type_held[i] = src->attribute_type_held[i];
+        attribute_amount_held[i] = src->attribute_amount_held[i];
+        attribute_flag[i] = src->attribute_flag[i];
     }
 
     {
@@ -794,6 +782,7 @@ void RGE_Master_Static_Object::save(int fd) {
         if (self->damage_sprite_num > 0) {
             do {
                 rge_write(fd, (void*)(&self->damage_sprites[j].sprite->id), 2);
+                // ORIGINAL BUG: The beta save stream writes two bytes here.
                 rge_write(fd, (void*)(&self->damage_sprites[j].damage_percent), 2);
                 rge_write(fd, (void*)(&self->damage_sprites[j].flag), 1);
                 j++;

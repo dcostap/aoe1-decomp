@@ -8,7 +8,7 @@
     "00452120": { "status": "matching" },
     "00452170": { "status": "matching" },
     "004521A0": { "status": "matching" },
-    "004521E0": { "status": "matching" },
+    "004521E0": { "status": "scratch", "note_path": "recovery_notes/m_s_obj_module.md" },
     "004524E0": { "status": "matching" },
     "00452B00": { "status": "scratch", "note_path": "recovery_notes/m_s_obj_module.md" },
     "00452FA0": { "status": "matching" },
