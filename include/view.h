@@ -20,8 +20,6 @@ struct Tile_BlackEdge_Table;
 struct Blit_Queue_Entry;
 struct DisplaySelectedObjRec;
 struct Ov_Sprite_Draw_Rec;
-struct RGE_Pick_Info;
-struct RGE_Pick_Obj_Info;
 struct RGE_SPick_Info;
 class RGE_Map;
 class RGE_Game_World;
@@ -29,6 +27,28 @@ class RGE_Player;
 class RGE_Static_Object;
 struct RGE_Tile;
 class RGE_Base_Game;
+
+// The View and Main View modules share these PDB-owned pick records.
+class RGE_Pick_Info {
+public:
+    float x;
+    float y;
+    short scr_x;
+    short scr_y;
+    RGE_Static_Object* object;
+    RGE_Tile* tile;
+};
+
+class RGE_Pick_Obj_Info {
+public:
+    int object_id;
+    short confidence;
+    short draw_level;
+    short draw_x;
+    short draw_y;
+};
+
+extern RGE_Pick_Obj_Info Picked_Objects[];
 
 // view.cpp owns the DClip capture list used by View and Shape.
 struct DClipInfo_Node {
