@@ -474,7 +474,31 @@
         "00503E30": "src/taiuaimd.cpp",
         "00503F20": "src/taiuaimd.cpp",
         "005040A0": "src/taiuaimd.cpp",
-        "005040B0": "src/taiuaimd.cpp"
+        "005040B0": "src/taiuaimd.cpp",
+        "00504170": "src/taiuaimd.cpp",
+        "005042E0": "src/taiuaimd.cpp",
+        "00504470": "src/taiuaimd.cpp",
+        "00504700": "src/taiuaimd.cpp",
+        "00504880": "src/taiuaimd.cpp",
+        "00504B60": "src/taiuaimd.cpp",
+        "00504C90": "src/taiuaimd.cpp",
+        "00504CC0": "src/taiuaimd.cpp",
+        "00504D40": "src/taiuaimd.cpp",
+        "00504D50": "src/taiuaimd.cpp",
+        "00504D80": "src/taiuaimd.cpp",
+        "00505A10": "src/taiuaimd.cpp",
+        "00505FD0": "src/taiuaimd.cpp",
+        "00506240": "src/taiuaimd.cpp",
+        "005067D0": "src/taiuaimd.cpp",
+        "00506B70": "src/taiuaimd.cpp",
+        "00506C70": "src/taiuaimd.cpp",
+        "00506FE0": "src/taiuaimd.cpp",
+        "005071A0": "src/taiuaimd.cpp",
+        "005071C0": "src/taiuaimd.cpp",
+        "005071F0": "src/taiuaimd.cpp",
+        "00507880": "src/taiuaimd.cpp",
+        "00507F60": "src/taiuaimd.cpp",
+        "00508170": "src/taiuaimd.cpp"
       },
       "symbols": {
         "00503BB0": "??0TribeHuntedAnimalUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z",
@@ -482,7 +506,20 @@
         "00503E30": "?processIdle@TribeHuntedAnimalUnitAIModule@@MAEHH@Z",
         "00503F20": "??0TribePreditorUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z",
         "005040A0": "?canAttackUnitAtNeutrality@TribePreditorUnitAIModule@@UAEHH@Z",
-        "005040B0": "?processNotify@TribePreditorUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"
+        "005040B0": "?processNotify@TribePreditorUnitAIModule@@MAEHPAUNotifyEvent@@K@Z",
+        "00504470": "?canAttackUnitAtNeutrality@TribeLionUnitAIModule@@UAEHH@Z",
+        "00504C90": "?importantWhenDead@TribeCivilianUnitAIModule@@UAEHH@Z",
+        "00504CC0": "?attackObject@TribeCivilianUnitAIModule@@UAEHHH@Z",
+        "00504D40": "?canAttackUnitAtNeutrality@TribeCivilianUnitAIModule@@UAEHH@Z",
+        "00504D50": "?retryableOrder@TribeCivilianUnitAIModule@@UAEHH@Z",
+        "00504D80": "?convertToLOSResourceType@TribeCivilianUnitAIModule@@UAEHH@Z",
+        "00505A10": "?retryableOrder@TribePriestUnitAIModule@@UAEHH@Z",
+        "00505FD0": "?processIdle@TribePriestUnitAIModule@@MAEHH@Z",
+        "00506C70": "?importantWhenDead@TribeFishingShipUnitAIModule@@UAEHH@Z",
+        "00506FE0": "??0TribeSoldierUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z",
+        "005071A0": "?canAttackUnit@TribeSoldierUnitAIModule@@UAEHPAVRGE_Static_Object@@@Z",
+        "005071C0": "?canAttackUnitAtNeutrality@TribeSoldierUnitAIModule@@UAEHH@Z",
+        "005071F0": "?processNotify@TribeSoldierUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"
       }
     },
     {
@@ -2296,24 +2333,6 @@
         "004114E0": "?convertTargetCharacteristicNameToIntType@AIPlayBook@@UBEHPAD@Z",
         "00411650": "?convertUnitNameToIntType@AIPlayBook@@UBEHPAD@Z",
         "00411660": "?convertUnitToIntType@AIPlayBook@@UBEHPAVRGE_Static_Object@@@Z"
-      }
-    },
-    {
-      "name": "taiuaimd_soldier_segment",
-      "source": "src/taiuaimd.cpp",
-      "module": "taiuaimd",
-      "flags": "config/flags/00506FE0_TribeSoldierUnitAIModule.rsp",
-      "owners": {
-        "00506FE0": "src/taiuaimd.cpp",
-        "005071A0": "src/taiuaimd.cpp",
-        "005071C0": "src/taiuaimd.cpp",
-        "005071F0": "src/taiuaimd.cpp"
-      },
-      "symbols": {
-        "00506FE0": "??0TribeSoldierUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z",
-        "005071A0": "?canAttackUnit@TribeSoldierUnitAIModule@@UAEHPAVRGE_Static_Object@@@Z",
-        "005071C0": "?canAttackUnitAtNeutrality@TribeSoldierUnitAIModule@@UAEHH@Z",
-        "005071F0": "?processNotify@TribeSoldierUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"
       }
     },
     {
@@ -6227,45 +6246,6 @@
         "0046A670": "?set_system_colors@TEasy_Panel@@QAEXXZ"
       },
       "module": "panel_ez"
-    },
-    {
-      "name": "taiuaimd_cpp_complete",
-      "source": "src/taiuaimd.cpp",
-      "module": "taiuaimd",
-      "flags": "config/flags/00503BB0_TribeHuntedAnimalUnitAIModule.rsp",
-      "owners": {
-        "00504170": "src/taiuaimd.cpp",
-        "005042E0": "src/taiuaimd.cpp",
-        "00504470": "src/taiuaimd.cpp",
-        "00504700": "src/taiuaimd.cpp",
-        "00504880": "src/taiuaimd.cpp",
-        "00504B60": "src/taiuaimd.cpp",
-        "00504C90": "src/taiuaimd.cpp",
-        "00504CC0": "src/taiuaimd.cpp",
-        "00504D40": "src/taiuaimd.cpp",
-        "00504D50": "src/taiuaimd.cpp",
-        "00504D80": "src/taiuaimd.cpp",
-        "00505A10": "src/taiuaimd.cpp",
-        "00505FD0": "src/taiuaimd.cpp",
-        "00506240": "src/taiuaimd.cpp",
-        "005067D0": "src/taiuaimd.cpp",
-        "00506B70": "src/taiuaimd.cpp",
-        "00506C70": "src/taiuaimd.cpp",
-        "00507880": "src/taiuaimd.cpp",
-        "00507F60": "src/taiuaimd.cpp",
-        "00508170": "src/taiuaimd.cpp"
-      },
-      "symbols": {
-        "00504470": "?canAttackUnitAtNeutrality@TribeLionUnitAIModule@@UAEHH@Z",
-        "00504C90": "?importantWhenDead@TribeCivilianUnitAIModule@@UAEHH@Z",
-        "00504CC0": "?attackObject@TribeCivilianUnitAIModule@@UAEHHH@Z",
-        "00504D40": "?canAttackUnitAtNeutrality@TribeCivilianUnitAIModule@@UAEHH@Z",
-        "00504D50": "?retryableOrder@TribeCivilianUnitAIModule@@UAEHH@Z",
-        "00504D80": "?convertToLOSResourceType@TribeCivilianUnitAIModule@@UAEHH@Z",
-        "00505A10": "?retryableOrder@TribePriestUnitAIModule@@UAEHH@Z",
-        "00506C70": "?importantWhenDead@TribeFishingShipUnitAIModule@@UAEHH@Z",
-        "00505FD0": "?processIdle@TribePriestUnitAIModule@@MAEHH@Z"
-      }
     },
     {
       "name": "Pnl_txt_cpp",
