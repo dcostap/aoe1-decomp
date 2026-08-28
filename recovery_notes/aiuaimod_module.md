@@ -10,6 +10,16 @@
 - The module header proves the 0x134-byte `UnitAIModule` layout.
 - The source uses `/O2 /Oy /GX` from `00412F00_UnitAIModule.rsp`.
 
+## Unit AI root virtual prefix
+
+PDB field list `0x28CE` defines the public virtual prefix in this order:
+destructor, `save`, `load`, `owner`, `order`, and `notify`. `notify` is
+`int (int, int, int, long, long, long)` at vslot `+0x14`.
+
+The prior three-int `notify` declaration is not a real overload. It appears in
+no PDB UnitAIModule method, source definition, or function inventory. Do not
+restore it for caller convenience.
+
 ## Source result
 
 The module now has one compiler-facing source file: `src/aiuaimod.cpp`.

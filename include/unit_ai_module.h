@@ -6,14 +6,21 @@
 
 class RGE_Static_Object;
 class RGE_Master_Object;
+class RGE_Player;
 class NotifyEvent;
 class OrderEvent;
 struct RGE_Visible_Map;
 
 class UnitAIModule {
 public:
-    // vfptr at +0x00 (implicit, requires at least one virtual function)
+    // PDB virtual order: +0x00 through +0x14.
     virtual ~UnitAIModule();
+    virtual void save(int fd);
+    virtual void load(int fd);
+    virtual RGE_Player* owner() const;
+    virtual int order(int, int, int, int, float, float, float, float,
+                      int, int, int);
+    virtual int notify(int, int, int, long, long, long);
 
     RGE_Static_Object* objectValue;                     // +0x04
     int moodValue;                                      // +0x08
@@ -112,23 +119,19 @@ public:
     int lastTarget();
     int lastTargetType();
     unsigned long lastUpdateTime();
-    void load(int fd);
     void logDebug(char* param_1, ...);
     void lookAround();
     int mood();
     int mostDangerousEnemy();
     int moveTo(float param_1, float param_2, float param_3, float param_4, int param_5);
-    int notify(int a1, int a2, int a3);
     int notifyCommander(NotifyEvent* event);
     int notifyCommander(int a1, int a2, int a3);
     int numberAttackingUnits();
     void* object();
     int objectCategory();
     int objectID();
-    void order(int a1, int a2, int a3);
     void* orderQueueElement(int index);
     int orderQueueSize();
-    int owner();
     void processGroupNotify(int a1, int a2);
     int processIdle(int param);
     void processOrder(int a1, int a2);
@@ -136,7 +139,6 @@ public:
     void purgeOrderQueue();
     int retryableOrder(int);
     void runAwayFromAttackers();
-    void save(int fd);
     void search();
     unsigned long secondaryTimer();
     int seekAndDestroy(int param_1, int param_2, int param_3, int param_4);
