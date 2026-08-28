@@ -263,6 +263,8 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 ## Constructors, destructors, allocation, and EH
 
 - Use real constructors, initializer lists, members, destructors, `new`, and `delete`.
+- VC5 lowers `new char[n]` and `delete[] char*` to scalar operator targets.
+- Keep the natural array source. Do not add allocator aliases to force those targets.
 - Match allocation size before tuning surrounding code.
 - A derived allocation can be required for the derived-vptr store.
 - Direct `new T(args)` can trigger `/GX` new-object state around the constructor.
