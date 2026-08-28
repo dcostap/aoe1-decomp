@@ -26,7 +26,7 @@ The plan packet reports 34 normal owners and 24,639 normal bytes. The natural
 provider candidate registers 24 exact owners. The address sequence and PDB line
 ranges establish source order.
 
-Migration is structural. The old grouped wrapper was the pre-migration validation baseline. The natural provider candidate compiles all 34 owners in one TU. The 24 registered owners report `MATCH`, `0.0000%`, zero relocation mismatches, and zero boundary escapes.
+Migration is structural. The old grouped wrapper was the pre-migration validation baseline. The natural provider candidate compiles all 34 owners in one TU. The final report is `build/candidate_tus/final_rebase_scr_mps/report.txt`. The 24 registered owners report `MATCH`, `0.0000%`, zero relocation mismatches, and zero boundary escapes.
 
 The ten unregistered owners remain observed, not exact claims. Natural cleanup
 changed the five former exact owners as follows: `004A1300` 853 bytes,

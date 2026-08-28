@@ -29,7 +29,7 @@ body at lines 258-365 consumes the complete `TribeJoinScreen` owner from
 
 ## Validation
 
-The grouped candidate is `build/candidate_tus/final_natural_scr_mp4/report.txt`.
+The grouped candidate is `build/candidate_tus/final_rebase_scr_mp/report.txt`.
 It reports `MATCH`, `0.0000%`, correct owner symbols, zero relocation-target
 mismatches, and zero boundary escapes for four exact bodies.
 

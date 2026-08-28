@@ -79,7 +79,7 @@ destructor owners are now scratch because this source form changes their
 emitted bytes.
 
 The candidate TU report is
-`build/candidate_tus/natural_scr_cj2/report.{json,txt}`. It matches four
+`build/candidate_tus/final_rebase_scr_cj/report.{json,txt}`. It matches four
 normal owners and both compiler-generated deleting destructors, `00491970` and
 `00492310`. The five scratch owners report 167, 12, 31, 102, and 38 differing
 bytes.
