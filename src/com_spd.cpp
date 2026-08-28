@@ -324,20 +324,15 @@ unsigned int RGE_Communications_Speed::GetRecommendedBufferFrames()
 {
     unsigned int high_latency;
     unsigned int player;
-    unsigned int* latency;
 
     high_latency = 0;
-    player = 1;
-    latency = &this->ActualLatency[1];
-    do {
+    for (player = 1; player <= 9; ++player) {
         if (this->Comm->IsPlayerHuman(player) != 0) {
-            if (high_latency <= *latency) {
-                high_latency = *latency;
+            if (high_latency <= this->ActualLatency[player]) {
+                high_latency = this->ActualLatency[player];
             }
         }
-        player++;
-        latency++;
-    } while ((int)player <= 9);
+    }
 
     high_latency = high_latency / this->CurrentBufferGranularity;
     this->OptimalBufferFrames = high_latency;
@@ -377,8 +372,6 @@ unsigned int RGE_Communications_Speed::GetRecommendedBufferGranularity()
 int RGE_Communications_Speed::AnalyzeGameSpeed(
     unsigned int* out_granularity, unsigned int* out_frames, int param_3)
 {
-    // BINARY NOTE: The shipped code reads current_turn and the packed command
-    // increment from the communication handler before its first threshold.
     if (!Comm->IsHost()) return 0;
     if (NextLatencyChangeTurn != 0) return 0;
 
@@ -391,29 +384,26 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(
 
     unsigned int min_avg;
     unsigned int max_high;
-    unsigned long* ptr;
     int i;
     unsigned long SyncTurn;
     unsigned int cur_frames;
     min_avg = 10;
     max_high = 30;
-    i = 1;
-    ptr = PlayerHighLatencyMsec + 1;
-    do {
+    for (i = 1; i <= 9; ++i) {
         if (Comm->IsPlayerHuman(i)) {
-            unsigned long avg = *(ptr - 10);
+            unsigned long avg = PlayerAvgFramesMsec[i];
             if (min_avg <= avg) min_avg = avg;
-            if (max_high <= *ptr) max_high = *ptr;
+            if (max_high <= PlayerHighLatencyMsec[i]) {
+                max_high = PlayerHighLatencyMsec[i];
+            }
         }
-        i++;
-        ptr++;
-    } while (i <= 9);
+    }
 
     unsigned int new_gran = ((min_avg + 5) / 10) * 10;
     if (new_gran > 150) new_gran = 150;
 
     SyncTurn = CurrentBufferGranularity;
-    unsigned long gran_diff = abs((int)(new_gran - SyncTurn));
+    unsigned long gran_diff = abs(static_cast<int>(new_gran - SyncTurn));
     if (gran_diff < 10) new_gran = SyncTurn;
 
     unsigned int new_frames = max_high / new_gran + 2;
@@ -426,8 +416,8 @@ int RGE_Communications_Speed::AnalyzeGameSpeed(
 
     cur_frames = CurrentBufferFrames;
     unsigned long throughput_diff =
-        abs((int)(new_gran * new_frames) -
-            (int)(cur_frames * SyncTurn));
+        abs(static_cast<int>(new_gran * new_frames) -
+            static_cast<int>(cur_frames * SyncTurn));
     if (throughput_diff <= 10) return 0;
 
     if (new_gran * new_frames < cur_frames * SyncTurn &&

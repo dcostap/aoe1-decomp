@@ -72,3 +72,14 @@ The prior worker recorded these results before module migration:
 
 The context gate proved the PDB module, lines 451-577, class owner, body range
 00432DE0-00432FA6, field anchors, and four direct call targets.
+## Policy cleanup
+
+`GetRecommendedBufferFrames` now uses typed indexing into `ActualLatency`.
+It differs by one byte at `00432D52`. Its status is `scratch`, and its exact
+owner registration was removed.
+
+`AnalyzeGameSpeed` now indexes its latency arrays directly. Its status was
+already `accepted_drift`.
+
+The grouped policy audit matched all 25 registered exact owners. It found no
+comparison errors.

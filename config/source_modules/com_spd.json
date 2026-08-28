@@ -26,7 +26,7 @@
     "00432BD0": { "status": "matching" },
     "00432C10": { "status": "matching" },
     "00432C70": { "status": "matching" },
-    "00432D20": { "status": "matching" },
+    "00432D20": { "status": "scratch" },
     "00432D90": { "status": "matching" },
     "00432DA0": { "status": "matching" },
     "00432DE0": { "status": "accepted_drift", "note_path": "recovery_notes/com_spd_module.md" },
