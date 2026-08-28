@@ -39,10 +39,10 @@
 
 ## Recovery state
 
-The source module keeps 19 `matching` owners and the approved
-`verified_logic` owner `0040CDF0`. The verified-logic constructor retains its
-logic-review ledger at `logic_reviews/0040CDF0_MainDecisionAIModule.md`.
-Its broad FS-first exception-frame difference is not promoted to exactness.
+The source module keeps nine `matching` owners, ten `scratch` owners, and the
+approved `verified_logic` owner `0040CDF0`. The verified-logic constructor
+retains its ledger at `logic_reviews/0040CDF0_MainDecisionAIModule.md`. Its
+FS-first exception-frame difference is not an exact result.
 
 The former `src/aimdmod_tu.cpp` wrapper and source-bank owner fragments were
 replaced by the one source module. The former context header was renamed to the
@@ -77,12 +77,16 @@ entry caused that failure.
 
 ## Canonical engine dependencies
 
-`aimdmod.h` consumes canonical Player, World, static-object, master-object,
-and `ManagedArray` providers. It owns only `MainDecisionAIModule`.
+`aimdmod.h` includes only canonical `AIModule` and `ManagedArray` providers.
+It forward declares its pointer types. `aimdmod.cpp` privately includes the
+canonical Player, World, object, master-object, Unit AI, and file-I/O headers.
 
-The Unit AI declaration has only the three direct methods this module calls.
-It has no local fields or object layout.
+The source uses the PDB field `player` at `+0xF0`. It has no `game` alias. It
+uses `ManagedArray` methods and indexing. It has no manual array allocation,
+capacity expansion, or parameter type alias.
 
-The direct candidate retains 19 registered `MATCH`, `0.0000%` rows. It has no
-registered ownership, relocation, or boundary error. The known constructor
-remains verified logic.
+This natural source change demoted `0040CE90`, `0040D0A0`, `0040D2D0`,
+`0040D480`, `0040D580`, `0040D660`, `0040D780`, `0040D9D0`, `0040DB50`, and
+`0040DC30` to scratch. The direct candidate keeps the other nine registered
+rows at `MATCH`, `0.0000%`. It has no comparison, ownership, relocation, or
+boundary error for a registered row.
