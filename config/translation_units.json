@@ -6744,6 +6744,7 @@
     {
       "name": "act_entr_cpp",
       "source": "src/act_entr.cpp",
+      "module": "act_entr",
       "flags": "config/flags/00402410_RGE_Action_Enter.rsp",
       "owners": {
         "004023C0": "src/act_entr.cpp",
