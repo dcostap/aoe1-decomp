@@ -1,6 +1,10 @@
 // Authentic taitacmd.cpp translation unit.
 // Definitions follow the original PDB source order.
 #include "../include/taitacmd.h"
+#include "../include/taimdmd.h"
+#include "../include/aiblditm.h"
+#include "../include/tplayer.h"
+#include "../include/command_waypoint.h"
 #include "../include/game_globals.h"
 #include <math.h>
 #include <stddef.h>
@@ -10158,7 +10162,7 @@ int TribeTacticalAIModule::taskBuilder(int id, BuildItem* item, ConstructionItem
     this->unitsTaskedThisUpdate.numberValue++;
 have:
     if (con->typeID() == 0x114) this->wonderInProgressValue = 1;
-    this->md->aiPlayer->builderTask(id, con->typeID(), con->x(), con->y(), item->uniqueID());
+    this->md->aiPlayer->buildObject(id, con->typeID(), con->x(), con->y(), item->uniqueID());
     if (con != 0) delete con;
     return 1;
 }
@@ -16048,7 +16052,7 @@ void TribeTacticalAIModule::checkForCoopTributeGift()
             if (bestCP != -1) {
                 float amount =
                     (float)(this->md->resourceAI.resource(i) - *minimum);
-                TribeAIPlayer* aiPlayer = this->md->aiPlayer;
+                TRIBE_Player* aiPlayer = this->md->aiPlayer;
                 float current = aiPlayer->attributes[0x2e];
                 aiPlayer->command_give_attribute(
                     bestCP, i,

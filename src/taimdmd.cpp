@@ -25,7 +25,6 @@ extern int rgeLog;
 extern float g_time;
 extern float g_cut1;
 extern float g_cut2;
-extern "C" int __cdecl debug_rand(char*, int);
 
 // PDB lines 89-151; VA 004E4800.
 // BINARY NOTE: The shipped constructor stores the derived vptr at +0x155,

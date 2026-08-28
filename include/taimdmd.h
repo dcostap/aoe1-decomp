@@ -9,6 +9,9 @@
 #include "aitrdmod.h"
 #include "taiconmd.h"
 #include "tairesmd.h"
+#define AOE1_TAITACMD_TACTICAL_ONLY
+#include "taitacmd.h"
+#undef AOE1_TAITACMD_TACTICAL_ONLY
 
 class TribeMainDecisionAIModule;
 class TRIBE_Player;
@@ -18,6 +21,8 @@ class BuildAIModule : public AIModule {
 public:
     virtual int save(int);
     virtual void displayBuildList();
+    int numberUnbuiltItemsOfType(int, int);
+    int numberItemsOfType(int, int);
 };
 
 class InformationAIModule : public AIModule {
@@ -30,13 +35,6 @@ public:
     virtual int save(int);
     virtual int update(int);
 };
-
-class TacticalAIModule : public AIModule {
-public:
-    virtual int save(int);
-    virtual int update(int);
-};
-
 
 class TribeBuildAIModule : public BuildAIModule {
 public:
@@ -53,6 +51,16 @@ public:
     void skipNextBuildListItem();
     void removeBuiltItem(int);
     int insert(int, int, int);
+    int haveBuildList();
+    BuildItem* nextBuildableItem(int);
+    void unskipBuildList(int, int);
+    int numberBuiltOrInProgressItemsOfType(int, int);
+    int mostNeededResource(ResourceItem*, int);
+    int readyToResearch(int, int);
+    int numberUnbuiltItemsOfType(int, int);
+    int numberItemsOfType(int, int);
+    int allBuilt(int, int);
+    BuildItem* buildItem(int, int, int);
     int addItem(RGE_Static_Object*, int);
     int addBuiltItem(RGE_Static_Object*, int);
     char* buildListName();
@@ -73,7 +81,10 @@ typedef char taimdmd_build_size[(sizeof(TribeBuildAIModule) == 0x5C0) ? 1 : -1];
 
 class TribeInformationAIModule : public InformationAIModule {
 public:
-    char bytes[0x10090 - sizeof(InformationAIModule)];
+    ManagedArray<int> farmsTaskedThisUpdate;
+    char bytes[0x10090 - sizeof(InformationAIModule) - sizeof(ManagedArray<int>) - 0x14];
+    int closestDropsiteValue[4];
+    int numberFoundForestTilesValue;
 
     TribeInformationAIModule(void*, int);
     TribeInformationAIModule(int, int);
@@ -89,6 +100,49 @@ public:
     void removeObject(int);
     void lookAtMap();
     int update(int);
+    int groupInfluenceDimension(int);
+    int isBoat(int);
+    ObjectMemory* artifactToCapture(int);
+    ObjectMemory* ruinToCapture(int);
+    int isBoat(RGE_Static_Object*);
+    int findGatherPosition(XYPoint&, int, int, int, int, RGE_Static_Object*, XYPoint&);
+    int numberGameIDsOwnedBy(int, int);
+    int gameIDOfResourceObject(int, int, float&, float&, int&, int*, int);
+    int gameIDOfResourceObject(int, int, float*, float*, int*, int*, int);
+    void setResourceObjectValid(int, int, int);
+    int acceptablePotentialDropsiteArea(int, int);
+    int numberAvailableStoragePits(int);
+    int numberAvailableGranaries(int);
+    int numberAvailableGranaries();
+    int setTileExplored(int, int);
+    int unexploredPlayerLocation(int, int);
+    int unexploredPlayerLocation(int, XYPoint*);
+    int tileUncovered(int, int);
+    int mapXSize();
+    int mapYSize();
+    int numberUnitsWithinXTiles(RGE_Static_Object*, int, int, int, int, int);
+    int numberUnitsWithinXTiles(int, int, int, int);
+    ObjectMemory* objectToTradeWith(int);
+    RGE_Static_Object* findClosestReturnDropsite(RGE_Static_Object*);
+    ObjectMemory* objectToDefend(int);
+    ObjectMemory* objectMemory(int);
+    ObjectMemory* objectToAttack(int, int, int, int, int&);
+    ObjectMemory* objectToAttackByGroup(int, TacticalAIGroup*, AttackState*, ulong);
+    ObjectMemory* objectToAttackWithPlay(int, int*, int, int*, int*, int*, int*);
+    ObjectMemory* higherPriorityObjectToDefend(int, int, int);
+    void blotExploredMap(int, int, int, int);
+    void addEnemyInfluences(int, int);
+    void addPriorAttackInfluences(int, int);
+    int findStagingPoint(XYPoint, XYPoint*, int, int, int, int, int);
+    int withinXTilesOfObject(RGE_Static_Object*, int, int, int, int, int);
+    void mapBound(XYPoint*);
+    void setSaveLearnInformation(int);
+    void storeAttackMemory(int, unsigned char, unsigned char, unsigned char, unsigned char,
+                           unsigned char, unsigned char, int, int, int, int);
+    void storeAttackMemory(int, unsigned char, unsigned char, unsigned char, unsigned char,
+                           unsigned char, unsigned char, int, unsigned char);
+    int closestDropsiteResID(int);
+    void updateResourceDropsites(int);
     ConstructionItem* placeDock(BuildItem*, float, float, int, int);
     int influenceCanPlaceStructure(BuildItem*);
     ConstructionItem* influencePlaceStructure(
@@ -118,6 +172,11 @@ public:
     void setLogHistory(int);
     void setup(MainDecisionAIModule*);
     int update(int);
+    int currentVictoryCondition();
+    Waypoint* targetPoint1();
+    Waypoint* targetPoint2();
+    int targetID();
+    int secondTargetID();
     int loadRules(char*);
     void setDifficultyLevel(int);
     int rule(int);
@@ -127,57 +186,6 @@ public:
 };
 
 typedef char taimdmd_strategy_size[(sizeof(TribeStrategyAIModule) == 0x5F8) ? 1 : -1];
-
-class TribeTacticalAIModule : public TacticalAIModule {
-public:
-    char bytes[0xE18 - sizeof(TacticalAIModule)];
-
-    TribeTacticalAIModule(void*, int);
-    TribeTacticalAIModule(int, int);
-    virtual ~TribeTacticalAIModule();
-    void setMainDecisionAI(TribeMainDecisionAIModule*);
-    void setPlayer(int, char*);
-    void setLogHistory(int);
-    void setup(MainDecisionAIModule*);
-    int strategicNumber(int);
-    void setStrategicNumber(int, int);
-    int processCoopAttack(int, int, int, int);
-    void addObject(RGE_Static_Object*);
-    void removeObject(int);
-    int update(int);
-    void detask(int);
-    int neededResource(int) const;
-    int neededResourceAmount(int) const;
-    int actualGathererCount(int);
-    int desiredGathererCount(int);
-    int numberGatherers() const;
-    int desiredNumberGatherers() const;
-    int numberCivilianExplorers() const;
-    int desiredNumberCivilianExplorers() const;
-    int numberCivilians() const;
-    int numberSoldiers() const;
-    int numberBoats() const;
-    int resourceDifference(int);
-    char* updateAreaName();
-    TacticalAIGroup* groupUnitIsIn(int);
-    int removeGroup(int);
-    int taskExplorer(int, float, float);
-    void trackUnitGather(int, int, int);
-    void notify(int, int, int, long, long, long);
-    int attackEnabledValue; // +0xE18
-    char bytes_after_attack_enabled[0xFFC - 0xE1C];
-    int lastUpdateAreaTimeValue; // +0xFFC
-    int averageUpdateAreaTimeValue; // +0x1000
-    char bytes_after_average_update_area[0x100C - 0x1004];
-};
-
-typedef char taimdmd_tactical_size[(sizeof(TribeTacticalAIModule) == 0x100C) ? 1 : -1];
-typedef char taimdmd_tactical_attack_enabled_offset[
-    (((char*)&((TribeTacticalAIModule*)0)->attackEnabledValue - (char*)0) == 0xE18) ? 1 : -1];
-typedef char taimdmd_tactical_last_update_area_offset[
-    (((char*)&((TribeTacticalAIModule*)0)->lastUpdateAreaTimeValue - (char*)0) == 0xFFC) ? 1 : -1];
-typedef char taimdmd_tactical_average_update_area_offset[
-    (((char*)&((TribeTacticalAIModule*)0)->averageUpdateAreaTimeValue - (char*)0) == 0x1000) ? 1 : -1];
 
 class TribeMainDecisionAIModule : public MainDecisionAIModule {
 public:

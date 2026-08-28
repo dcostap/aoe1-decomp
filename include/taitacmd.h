@@ -10,6 +10,7 @@
 #include "infmap.h"
 #include "tactical_old_unit_data.h"
 #include "tactical_unit_data.h"
+#include "utmarray.h"
 #include "waypoint.h"
 
 typedef unsigned char uchar;
@@ -22,16 +23,12 @@ extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" void* __cdecl operator_new(unsigned int);
 extern "C" void __cdecl operator_delete(void*);
 
+class Path;
+#ifndef AOE1_TAITACMD_TACTICAL_ONLY
 struct XYZPoint {
     int x;
     int y;
     int z;
-};
-
-struct XYZBYTEPoint {
-    unsigned char x;
-    unsigned char y;
-    unsigned char z;
 };
 
 class Path {
@@ -43,8 +40,10 @@ public:
     int numberOfWaypoints();
     Waypoint* currentWaypoint();
 };
+#endif
 
 class BuildItem;
+class ConstructionItem;
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
 class RGE_Player;
@@ -58,124 +57,17 @@ class UnitAIModule;
 class ObjectMemory;
 TacticalAIGroup* createGroup(void* self, int arg);
 
-template <class T>
-class ManagedArray {
-public:
-    union { T* value; T* playersToAttackValue; };
-    int numberValue;
-    int desiredNumberValue;
-    union { int maximumSizeValue; int maximumSize; };
-
-    ManagedArray(int desired_number = 0)
-        : value(0), numberValue(0), desiredNumberValue(desired_number),
-          maximumSizeValue(0) {}
-
-    ~ManagedArray()
-    {
-        if (this->value != 0) {
-            delete[] this->value;
-            this->value = 0;
-        }
-        this->numberValue = 0;
-        this->desiredNumberValue = 0;
-        this->maximumSizeValue = 0;
-    }
-
-    T& operator[](int index)
-    {
-        if (index > this->maximumSizeValue - 1) {
-            int new_size = index + 1;
-            T* new_value = (T*)operator_new(new_size * sizeof(T));
-            if (new_value != 0) {
-                int i = 0;
-                for (; i < this->maximumSizeValue && i < new_size; i++)
-                    new_value[i] = this->value[i];
-                operator_delete(this->value);
-                this->value = new_value;
-                this->maximumSizeValue = new_size;
-            }
-        }
-        return this->value[index];
-    }
-
-    int add(T item)
-    {
-        int i;
-        for (i = 0; i < this->numberValue; i++) {
-            if (i >= this->maximumSizeValue)
-                break;
-            if (this->value[i] == item)
-                return 0;
-        }
-        if (this->numberValue > this->maximumSizeValue - 1)
-            this->resize(this->numberValue + 1);
-        this->value[this->numberValue] = item;
-        this->numberValue++;
-        return 1;
-    }
-
-    int contains(const T& item) const
-    {
-        int i;
-        T wanted;
-        T current;
-        for (i = 0; i < this->numberValue; i++) {
-            if (i >= this->maximumSizeValue)
-                return 0;
-            current = this->value[i];
-            wanted = item;
-            if (current == wanted)
-                return 1;
-        }
-        return 0;
-    }
-
-    int remove(T item)
-    {
-        int i = 0;
-        int maximum = this->maximumSizeValue;
-        for (; i < maximum; i++) {
-            if (this->value[i] == item)
-                break;
-        }
-        if (i >= maximum)
-            return 0;
-        maximum--;
-        if (i < maximum) {
-            do {
-                this->value[i] = this->value[i + 1];
-                i++;
-            } while (i < this->maximumSizeValue - 1);
-        }
-        this->numberValue--;
-        if (this->numberValue < 0)
-            this->numberValue = 0;
-        return 1;
-    }
-
-    const int number() const { return this->numberValue; }
-
-    void zeroNumber()
-    {
-        this->numberValue = 0;
-    }
-
-    void setDesiredNumber(int number)
-    {
-        this->desiredNumberValue = number;
-    }
-
-    int resize(int new_size);
-};
-
 typedef ManagedArray<int> ManagedArray_int;
 typedef ManagedArray<int> ManagedIntArray;
 typedef ManagedArray<int> ManagedArrayInt;
 
+#ifndef AOE1_TAITACMD_TACTICAL_ONLY
 class RGE_Visible_Map {
 public:
     float percentExplored();
 };
+
+#include "player.h"
 
 class RGE_Game_World {
 public:
@@ -191,8 +83,6 @@ public:
     RGE_Static_Object* object(int);
     RGE_Player* players[9];
 };
-
-#include "player.h"
 
 class TribeAIPlayer : public RGE_Player {
 public:
@@ -256,7 +146,6 @@ public:
     unsigned char obj_max;
     char* name();
 };
-
 class RGE_Master_Static_Object : public MasterObject {
 public:
     virtual ~RGE_Master_Static_Object();
@@ -433,183 +322,7 @@ public:
     char gap_0E[2];
     int attackAttempts;
 };
-
-class BuildAIModule {
-public:
-    char gap_000[0x05BC];
-    int buildListLength();
-    int numberUnbuiltItemsOfType(int, int);
-    int numberItemsOfType(int, int);
-};
-
-class BaseItem {
-public:
-    virtual ~BaseItem();
-    char gap_04[0x68];
-    char* name();
-};
-
-class BuildItem : public BaseItem {
-public:
-    int buildFrom();
-    int typeID();
-    int uniqueID();
-    float x();
-    float y();
-    void setInProgress(int);
-    void setBuilt(int);
-};
-class ConstructionItem {
-public:
-    virtual ~ConstructionItem();
-    int typeID();
-    float x();
-    float y();
-};
-
-class TribeBuildAIModule : public BuildAIModule {
-public:
-    TribeMainDecisionAIModule* md;
-    int haveBuildList();
-    int insert(int, int, int);
-    BuildItem* nextBuildableItem(int);
-    void unskipBuildList(int, int);
-    int loadBuildList(char*, RGE_Player*);
-    int numberBuiltOrInProgressItemsOfType(int, int);
-    int mostNeededResource(ResourceItem*, int);
-    int readyToResearch(int, int);
-    int numberUnbuiltItemsOfType(int, int);
-    int numberItemsOfType(int, int);
-    int allBuilt(int, int);
-    BuildItem* buildItem(int, int, int);
-};
-
-class TribeConstructionAIModule {
-public:
-    char gap_000[0x314];
-    TribeMainDecisionAIModule* md;
-    ConstructionItem* placeStructure(BuildItem*, int, PlacementState&,
-                                     unsigned long);
-};
-
-class TribeResourceAIModule {
-public:
-    char gap_000[0xF0];
-    TribeMainDecisionAIModule* md;
-    int numberResourcesValue;
-    int resource(int);
-    int resourcesAvailable(ResourceItem*);
-};
-
-class DiplomacyAIModule {
-public:
-    char bytes[0x150];
-    int mostHated(int, int, int, int);
-    int mostLiked(int, int);
-    int isEnemy(int);
-    int isChangeable(int);
-    int stance(int, int);
-    int isAlly(int);
-    int isNeutral(int);
-    void setRelation(int, int);
-    void setChangeable(int, int);
-    void setStance(int, int);
-    void changeStance(int, int);
-    void setStance(int, int, int);
-    void changeStance(int, int, int);
-};
-
-class TribeInformationAIModule {
-public:
-    char gap_00000[0xF0];
-    ManagedArray<int> farmsTaskedThisUpdate;
-    char gap_00100[0x10090 - 0x100];
-    int fullyExploredZone(int zone);
-    int groupInfluenceDimension(int);
-    int isBoat(int);
-    ObjectMemory* artifactToCapture(int);
-    ObjectMemory* ruinToCapture(int);
-    int isBoat(RGE_Static_Object*);
-    int findGatherPosition(XYPoint&, int, int, int, int, RGE_Static_Object*, XYPoint&);
-    int numberGameIDsOwnedBy(int player, int gameID);
-    int gameIDOfResourceObject(int, int, float&, float&, int&, int*, int);
-    int gameIDOfResourceObject(int, int, float*, float*, int*, int*, int);
-    void setResourceObjectValid(int, int, int);
-    int acceptablePotentialDropsiteArea(int, int);
-    int numberAvailableStoragePits(int);
-    int numberAvailableGranaries(int);
-    int numberAvailableGranaries();
-    int setTileExplored(int, int);
-    int unexploredPlayerLocation(int, int);
-    int unexploredPlayerLocation(int, XYPoint*);
-    int tileUncovered(int, int);
-    int mapXSize();
-    int mapYSize();
-    int numberUnitsWithinXTiles(RGE_Static_Object*, int, int, int, int, int);
-    int numberUnitsWithinXTiles(int, int, int, int);
-    ObjectMemory* objectToTradeWith(int);
-    RGE_Static_Object* findClosestReturnDropsite(RGE_Static_Object*);
-    ObjectMemory* objectToDefend(int commander_id);
-    ObjectMemory* objectMemory(int id);
-    ObjectMemory* objectToAttack(int, int, int, int, int&);
-    ObjectMemory* objectToAttackByGroup(int, TacticalAIGroup*, AttackState*, ulong);
-    ObjectMemory* objectToAttackWithPlay(int, int*, int, int*, int*, int*, int*);
-    ObjectMemory* higherPriorityObjectToDefend(int, int, int);
-    void blotExploredMap(int, int, int, int);
-    void addEnemyInfluences(int, int);
-    void addPriorAttackInfluences(int, int);
-    int findStagingPoint(XYPoint, XYPoint*, int, int, int, int, int);
-    int withinXTilesOfObject(RGE_Static_Object*, int, int, int, int, int);
-    void mapBound(XYPoint*);
-    void setSaveLearnInformation(int);
-    void storeAttackMemory(int, unsigned char, unsigned char, unsigned char, unsigned char,
-                           unsigned char, unsigned char, int, int, int, int);
-    void storeAttackMemory(int, unsigned char, unsigned char, unsigned char, unsigned char,
-                           unsigned char, unsigned char, int, unsigned char);
-    int closestDropsiteResID(int);
-    void updateResourceDropsites(int);
-    int closestDropsiteValue[4];
-    int numberFoundForestTilesValue;
-};
-
-class TribeStrategyAIModule {
-public:
-    char gap_000[0x5F8];
-    int currentVictoryCondition();
-    Waypoint* targetPoint1();
-    Waypoint* targetPoint2();
-    int targetID();
-    int secondTargetID();
-};
-
-class MainDecisionAIModule : public AIModule {
-public:
-    RGE_Player* player;
-    ManagedArray<int> objects;
-    RGE_Static_Object* object(int id);
-    RGE_Static_Object* object(int, int, int, int, int, int);
-    RGE_Static_Object* object(int, int, int, int, int, int, int, int, int, int);
-    int numberObjectsWithAction(int);
-    RGE_Static_Object* mostDamaged(int, int);
-};
-
-class TribeMainDecisionAIModule : public MainDecisionAIModule {
-public:
-    TribeBuildAIModule buildAI;
-    TribeConstructionAIModule constructionAI;
-    DiplomacyAIModule diplomacyAI;
-    char emotionalAI[0x1C0];
-    TribeInformationAIModule informationAI;
-    TribeResourceAIModule resourceAI;
-    TribeStrategyAIModule strategyAI;
-    char gap_1146C[0x1100];
-    TribeAIPlayer* aiPlayer;
-    int isEnemy(int player_id);
-    int isMoveable(int id);
-    void updateBuildAIWithObjects();
-    void revokeTributeAlliance(int);
-    void revokeTributeAlliance();
-};
+#endif
 
 #include "tactical_group.h"
 

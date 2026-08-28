@@ -139,7 +139,7 @@ public:
         }
     }
 
-protected:
+public:
     int resize(int new_size)
     {
         T* new_value = new T[new_size];

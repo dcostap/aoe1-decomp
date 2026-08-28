@@ -1769,10 +1769,6 @@ extern unsigned char DAT_0086b6b3;
 extern unsigned int DAT_0086bab0;
 // 0086BC08 [.data]
 extern float DAT_0086bc08;
-// 0086BC88 [.data]
-extern unsigned int DAT_0086bc88;
-// 0086BC8C [.data]
-extern unsigned int DAT_0086bc8c;
 // 0086BCA0 [.data]
 extern unsigned char DAT_0086bca0;
 // 0086BCAC [.data]
@@ -1821,48 +1817,21 @@ extern unsigned int DAT_0087d824;
 extern unsigned int DAT_0087d828;
 // 0088680C [.data]
 extern unsigned int DAT_0088680c;
-// 00886C1C [.data]
-extern unsigned int DAT_00886c1c;
-// 00886C20 [.data]
-extern unsigned int DAT_00886c20;
-// 00886C24 [.data]
-extern unsigned int DAT_00886c24;
-// 00886C28 [.data]
-extern unsigned int DAT_00886c28;
-// 00886C2C [.data]
-extern unsigned int DAT_00886c2c;
-// 00886C30 [.data]
-extern unsigned int DAT_00886c30;
-// 00886C34 [.data]
-extern unsigned int DAT_00886c34;
-// 00886C38 [.data]
-extern unsigned int DAT_00886c38;
-// 00886C3C [.data]
-extern unsigned int DAT_00886c3c;
-// 00886C40 [.data]
-extern unsigned int DAT_00886c40;
-// 00886C44 [.data]
-extern unsigned int DAT_00886c44;
-// 00886C48 [.data]
-extern unsigned int DAT_00886c48;
-
-// TPlayer uses these executable globals as long-lived selection statistics.
-// The aliases keep the storage owner in this canonical global provider.
 namespace tplayer_globals {
-static unsigned int& selectedObjectId = DAT_0086bc88;
-static unsigned int& selectedObjectCount = DAT_0086bc8c;
-static unsigned int& buildListCategoryCount1 = DAT_00886c1c;
-static unsigned int& buildListCategoryCount2 = DAT_00886c20;
-static unsigned int& buildListCategoryCount3 = DAT_00886c24;
-static unsigned int& buildListCategoryCount4 = DAT_00886c28;
-static unsigned int& buildListCategoryCount5 = DAT_00886c2c;
-static unsigned int& buildListCategoryCount6 = DAT_00886c30;
-static unsigned int& buildListCategoryCount7 = DAT_00886c34;
-static unsigned int& attackTimingCategoryCount = DAT_00886c38;
-static unsigned int& fastAttackListCount = DAT_00886c3c;
-static unsigned int& defaultAttackListCount = DAT_00886c40;
-static unsigned int& selectedBuildListCount = DAT_00886c44;
-static unsigned int& aggressiveBuildListCount = DAT_00886c48;
+extern unsigned int selectedObjectId;
+extern unsigned int selectedObjectCount;
+extern unsigned int buildListCategoryCount1;
+extern unsigned int buildListCategoryCount2;
+extern unsigned int buildListCategoryCount3;
+extern unsigned int buildListCategoryCount4;
+extern unsigned int buildListCategoryCount5;
+extern unsigned int buildListCategoryCount6;
+extern unsigned int buildListCategoryCount7;
+extern unsigned int attackTimingCategoryCount;
+extern unsigned int fastAttackListCount;
+extern unsigned int defaultAttackListCount;
+extern unsigned int selectedBuildListCount;
+extern unsigned int aggressiveBuildListCount;
 }
 // 00886C60 [.data]
 extern unsigned int DAT_00886c60;

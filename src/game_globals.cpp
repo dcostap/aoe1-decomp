@@ -4,6 +4,23 @@
 // Generated once by tools\generate_working_scaffold.py.
 // After the first scaffold pass, this file becomes editable project source.
 
+namespace tplayer_globals {
+unsigned int selectedObjectId = 0;
+unsigned int selectedObjectCount = 0;
+unsigned int buildListCategoryCount1 = 0;
+unsigned int buildListCategoryCount2 = 0;
+unsigned int buildListCategoryCount3 = 0;
+unsigned int buildListCategoryCount4 = 0;
+unsigned int buildListCategoryCount5 = 0;
+unsigned int buildListCategoryCount6 = 0;
+unsigned int buildListCategoryCount7 = 0;
+unsigned int attackTimingCategoryCount = 0;
+unsigned int fastAttackListCount = 0;
+unsigned int defaultAttackListCount = 0;
+unsigned int selectedBuildListCount = 0;
+unsigned int aggressiveBuildListCount = 0;
+}
+
 // 0056E0B8 [.rdata]
 float DAT_0056e0b8 = 0.0f;
 // 0056E0CC [.rdata]
