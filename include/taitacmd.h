@@ -4,6 +4,7 @@
 // Declarations for the original taitacmd.cpp source module.
 
 #include "ai_attack_state.h"
+#include "aitacmod.h"
 #include "waypoint.h"
 
 typedef unsigned char uchar;
@@ -55,7 +56,6 @@ class TribeInformationAIModule;
 class TribeStrategyAIModule;
 class UnitAIModule;
 class ObjectMemory;
-class AIModuleMessage;
 class ResourceItem;
 class InfluenceMap {
 public:
@@ -65,33 +65,6 @@ public:
 };
 
 TacticalAIGroup* createGroup(void* self, int arg);
-
-class AIModule {
-public:
-    virtual ~AIModule();
-    virtual int loggingHistory();
-    virtual void setLogHistory(int);
-    virtual void toggleLogHistory();
-    virtual void setHistoryFilename(char*);
-    virtual int loggingCommonHistory();
-    virtual void setLogCommonHistory(int);
-    virtual void toggleLogCommonHistory();
-    virtual int loadState(char*);
-    virtual int saveState(char*);
-    virtual int gleanState(int);
-    virtual int processMessage(AIModuleMessage*);
-    virtual int update(int);
-    virtual void setCallbackMessage(AIModuleMessage*);
-    virtual int filterOutMessage(AIModuleMessage*);
-    char gap_004[0xEC];
-    void logCommonHistory(char*, ...);
-};
-
-class TacticalAIModule : public AIModule {
-public:
-    virtual ~TacticalAIModule();
-    TacticalAIModule(void* owner, int player);
-};
 
 template <class T>
 class ManagedArray {

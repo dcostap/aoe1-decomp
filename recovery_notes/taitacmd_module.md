@@ -9,6 +9,8 @@ The two compiler-generated scalar deleting destructors remain outside this list.
 The source reunification selects the full body from each former source-bank file.
 It removes bank guards, fallback bodies, and `.cpp` includes.
 The module header owns the reviewed class and layout declarations.
+It consumes the canonical `TacticalAIModule` and `AIModule` base surface from
+`aitacmod.h`.
 
 Current status:
 
