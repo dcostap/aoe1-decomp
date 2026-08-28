@@ -8,6 +8,7 @@
 #include "game_types.h"
 
 class IDirectPlay4A;
+class ResFileHdr;
 class TDebuggingLog;
 
 // 0056E0B8 [.rdata]
@@ -1671,7 +1672,7 @@ extern unsigned int DAT_0086b244;
 // 0086B24C [.data]
 extern unsigned char DAT_0086b24c;
 // 0086B254 [.data]
-extern unsigned int DAT_0086b254;
+extern ResFileHdr* DAT_0086b254;
 // 0086B25C [.data]
 extern unsigned int DAT_0086b25c;
 // 0086B260 [.data]
