@@ -5,14 +5,12 @@
 // Time_Line_Panel owns this layout. Its base and foreign members use their
 // reviewed source-module owners.
 #include "panel_ez.h"
-#include "pnl_lst.h"
-#include "Shape.h"
-#include "basegame.h"
-#include "rge_base_game_global.h"
-#include "world.h"
-#include "tplayer.h"
-#include "t_histry.h"
-#include "color.h"
+
+class TShape;
+class TTextPanel;
+class TRIBE_History_Info;
+class TRIBE_Player;
+class RGE_Game_World;
 
 struct Special_Events {
     long time_slice;

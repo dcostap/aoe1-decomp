@@ -21,19 +21,15 @@
 extern int confirmed_close;
 
 // 0048D530 TribeAchievementsScreen::TribeAchievementsScreen(char*, int)
-// BINARY NOTE: The constructor writes a zero tail at the unaligned temptxt
-// stack home. The partial memset preserves this shipped local effect.
 TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_flag)
     : TScreenPanel("Achievements Screen")
 {
     unsigned long color;
     int local_1dc;
     TPanel* tabList[8];
-    char temptxt[50];
     char str[100];
     char info_file[260];
 
-    memset(temptxt + 35, 0, 15);
     this->title = 0;
     this->time = 0;
     this->summary_text = 0;
@@ -51,7 +47,6 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     this->instruction_bar = 0;
     this->win_loss_text_bar = 0;
     this->summary_text_bar = 0;
-    str[1] = 0;
     this->end_game_flag = end_game_flag;
 
     this->achievement_choice[0] = 0;
@@ -61,20 +56,12 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     this->achievement_choice[4] = 0;
 
     memset(this->title_bar, 0, sizeof(this->title_bar));
-    TTextPanel** player_names = this->player_names;
-    TTextPanel** statistics = this->statistics[0];
-    int player_count = 8;
-    do {
-        *player_names = 0;
-        int statistic_count = 7;
-        do {
-            *statistics = 0;
-            ++statistics;
-            --statistic_count;
-        } while (statistic_count != 0);
-        ++player_names;
-        --player_count;
-    } while (player_count != 0);
+    for (int player_slot = 0; player_slot < 8; ++player_slot) {
+        this->player_names[player_slot] = 0;
+        for (int column = 0; column < 7; ++column) {
+            this->statistics[player_slot][column] = 0;
+        }
+    }
 
     long info_id;
     if (this->end_game_flag != 0) {
@@ -174,8 +161,6 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     create_text(this, this->achievement_choice + 4, 0, 0x184, 0x6F, 0x79, 0x121, 0x0B, 0, 0, 0);
 
     int player_index = 0;
-    TTextPanel** player_name = this->player_names;
-    TTextPanel** row = this->statistics[0] + 2;
     int y = 0xAB;
     // BINARY NOTE: The shipped loop creates eight player rows.
     do {
@@ -187,15 +172,23 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
         } else {
             name = 0;
         }
-        create_text(this, player_name, name, 0x16, y, 0x96, 0x1D,
+        create_text(this, &this->player_names[player_index], name, 0x16, y,
+                    0x96, 0x1D,
                     0x0B, 0, 1, 0);
-        create_text(this, row - 2, 0, 0xB2, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
-        create_text(this, row - 1, 0, 0xE7, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
-        create_text(this, row,     0, 0x11B, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
-        create_text(this, row + 1, 0, 0x150, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
-        create_text(this, row + 2, 0, 0x185, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
-        create_text(this, row + 3, 0, 0x1BA, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
-        create_text(this, row + 4, 0, 0x1EE, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
+        create_text(this, &this->statistics[player_index][0], 0, 0xB2, y,
+                    0x33, 0x1D, 0x0B, 1, 1, 0);
+        create_text(this, &this->statistics[player_index][1], 0, 0xE7, y,
+                    0x33, 0x1D, 0x0B, 1, 1, 0);
+        create_text(this, &this->statistics[player_index][2], 0, 0x11B, y,
+                    0x33, 0x1D, 0x0B, 1, 1, 0);
+        create_text(this, &this->statistics[player_index][3], 0, 0x150, y,
+                    0x33, 0x1D, 0x0B, 1, 1, 0);
+        create_text(this, &this->statistics[player_index][4], 0, 0x185, y,
+                    0x33, 0x1D, 0x0B, 1, 1, 0);
+        create_text(this, &this->statistics[player_index][5], 0, 0x1BA, y,
+                    0x33, 0x1D, 0x0B, 1, 1, 0);
+        create_text(this, &this->statistics[player_index][6], 0, 0x1EE, y,
+                    0x33, 0x1D, 0x0B, 1, 1, 0);
 
         if (player_index + 1 < rge_base_game->world->player_num) {
             RGE_Player* player =
@@ -211,19 +204,13 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
             case 7: color = 0x808040; break;
             default: color = 0xFFFFFF; break;
             }
-            player_name[0]->set_text_color(color, 0);
-            TTextPanel** colored = row - 2;
-            int color_count = 7;
-            do {
-                colored[0]->set_text_color(color, 0);
-                ++colored;
-                --color_count;
-            } while (color_count != 0);
+            this->player_names[player_index]->set_text_color(color, 0);
+            for (int column = 0; column < 7; ++column) {
+                this->statistics[player_index][column]->set_text_color(color, 0);
+            }
         }
 
         y += 0x1E;
-        ++player_name;
-        row += 7;
         ++player_index;
     } while (player_index < 8);
 
@@ -361,44 +348,28 @@ TribeAchievementsScreen::~TribeAchievementsScreen()
         this->close_button = 0;
     }
 
-    TTextPanel** title_bar = this->title_bar;
-    int title_count = 7;
-    do {
-        if (*title_bar != 0) {
-            delete *title_bar;
+    for (int column = 0; column < 7; ++column) {
+        if (this->title_bar[column] != 0) {
+            delete this->title_bar[column];
         }
-        title_bar++;
-        title_count--;
-    } while (title_count != 0);
+    }
 
-    TTextPanel** choices = this->achievement_choice;
-    int choice_count = 5;
-    do {
-        if (*choices != 0) {
-            delete *choices;
+    for (int choice = 0; choice < 5; ++choice) {
+        if (this->achievement_choice[choice] != 0) {
+            delete this->achievement_choice[choice];
         }
-        choices++;
-        choice_count--;
-    } while (choice_count != 0);
+    }
 
-    TTextPanel** statistics = this->statistics[0];
-    TTextPanel** player_names = this->player_names;
-    int player_count = 8;
-    do {
-        if (*player_names != 0) {
-            delete *player_names;
+    for (int player_slot = 0; player_slot < 8; ++player_slot) {
+        if (this->player_names[player_slot] != 0) {
+            delete this->player_names[player_slot];
         }
-        int statistic_count = 7;
-        do {
-            if (*statistics != 0) {
-                delete *statistics;
+        for (int column = 0; column < 7; ++column) {
+            if (this->statistics[player_slot][column] != 0) {
+                delete this->statistics[player_slot][column];
             }
-            statistics++;
-            statistic_count--;
-        } while (statistic_count != 0);
-        player_names++;
-        player_count--;
-    } while (player_count != 0);
+        }
+    }
 }
 
 // 0048E400 TribeAchievementsScreen::set_mode(long)
@@ -408,7 +379,6 @@ void TribeAchievementsScreen::set_mode(long mode)
 {
     int player_num = (int)rge_base_game->world->player_num - 1;
     char temptxt[50];
-    memset(&temptxt[31], 0, sizeof(temptxt) - 31);
 
     rge_base_game->disable_input();
 
@@ -472,37 +442,35 @@ void TribeAchievementsScreen::set_mode(long mode)
         this->title_bar[6]->set_text((long)0x26B1);
 
         if (player_num > 0) {
-            int player_index = 1;
-            TTextPanel** row = this->statistics[0] + 1;
+            int player_index = 0;
             int remaining = player_num;
             while (remaining != 0) {
                 RGE_Player* player;
-                player = rge_base_game->world->players[player_index];
+                player = rge_base_game->world->players[player_index + 1];
 
                 itoa(player->victory_conditions->get_victory_points_group(0), temptxt, 10);
-                row[-1]->set_text(temptxt);
+                this->statistics[player_index][0]->set_text(temptxt);
                 itoa(player->victory_conditions->get_victory_points_group(1), temptxt, 10);
-                row[0]->set_text(temptxt);
+                this->statistics[player_index][1]->set_text(temptxt);
                 itoa(player->victory_conditions->get_victory_points_group(2), temptxt, 10);
-                row[1]->set_text(temptxt);
+                this->statistics[player_index][2]->set_text(temptxt);
                 itoa(player->victory_conditions->get_victory_points_group(3), temptxt, 10);
-                row[2]->set_text(temptxt);
+                this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(0x16) > 0) {
-                    row[3]->set_text((long)0xFA3);
+                    this->statistics[player_index][4]->set_text((long)0xFA3);
                 } else {
-                    row[3]->set_text("");
+                    this->statistics[player_index][4]->set_text("");
                 }
                 if (player->victory_conditions->get_victory_points_id(0x17) > 0) {
-                    row[4]->set_text((long)0xFA3);
+                    this->statistics[player_index][5]->set_text((long)0xFA3);
                 } else {
-                    row[4]->set_text("");
+                    this->statistics[player_index][5]->set_text("");
                 }
 
                 itoa(player->victory_conditions->get_victory_points(), temptxt, 10);
-                row[5]->set_text(temptxt);
+                this->statistics[player_index][6]->set_text(temptxt);
                 ++player_index;
-                row += 7;
                 --remaining;
             }
         }
@@ -520,33 +488,31 @@ void TribeAchievementsScreen::set_mode(long mode)
         this->title_bar[5]->set_text((long)0x26B5);
 
         if (player_num > 0) {
-            int player_index = 1;
-            TTextPanel** row = this->statistics[0] + 1;
+            int player_index = 0;
             int remaining = player_num;
             while (remaining != 0) {
                 RGE_Player* player;
-                player = rge_base_game->world->players[player_index];
+                player = rge_base_game->world->players[player_index + 1];
 
                 itoa(player->victory_conditions->get_attribute_id(0), temptxt, 10);
-                row[-1]->set_text(temptxt);
+                this->statistics[player_index][0]->set_text(temptxt);
                 itoa(player->victory_conditions->get_attribute_id(1), temptxt, 10);
-                row[0]->set_text(temptxt);
+                this->statistics[player_index][1]->set_text(temptxt);
                 itoa((long)(player->attributes[19] - player->attributes[11]), temptxt, 10);
-                row[1]->set_text(temptxt);
+                this->statistics[player_index][2]->set_text(temptxt);
 
                 itoa(player->victory_conditions->get_attribute_id(2), temptxt, 10);
-                row[2]->set_text(temptxt);
+                this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(3) > 0) {
-                    row[3]->set_text((long)0xFA3);
+                    this->statistics[player_index][4]->set_text((long)0xFA3);
                 } else {
-                    row[3]->set_text("");
+                    this->statistics[player_index][4]->set_text("");
                 }
 
                 itoa(player->victory_conditions->get_victory_points_group(0), temptxt, 10);
-                row[4]->set_text(temptxt);
+                this->statistics[player_index][5]->set_text(temptxt);
                 ++player_index;
-                row += 7;
                 --remaining;
             }
         }
@@ -565,39 +531,37 @@ void TribeAchievementsScreen::set_mode(long mode)
         this->title_bar[6]->set_text((long)0x26B5);
 
         if (player_num > 0) {
-            int player_index = 1;
-            TTextPanel** row = this->statistics[0] + 2;
+            int player_index = 0;
             int remaining = player_num;
             while (remaining != 0) {
                 RGE_Player* player;
-                player = rge_base_game->world->players[player_index];
+                player = rge_base_game->world->players[player_index + 1];
 
                 itoa(player->victory_conditions->get_attribute_id(4), temptxt, 10);
-                row[-2]->set_text(temptxt);
+                this->statistics[player_index][0]->set_text(temptxt);
                 itoa(player->victory_conditions->get_attribute_id(5), temptxt, 10);
-                row[-1]->set_text(temptxt);
+                this->statistics[player_index][1]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(6) > 0) {
-                    row[0]->set_text((long)0xFA3);
+                    this->statistics[player_index][2]->set_text((long)0xFA3);
                 } else {
-                    row[0]->set_text("");
+                    this->statistics[player_index][2]->set_text("");
                 }
 
                 sprintf(temptxt, "%d", player->victory_conditions->get_attribute_id(7));
-                row[1]->set_text(temptxt);
+                this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(8) > 0) {
-                    row[2]->set_text((long)0xFA3);
+                    this->statistics[player_index][4]->set_text((long)0xFA3);
                 } else {
-                    row[2]->set_text("");
+                    this->statistics[player_index][4]->set_text("");
                 }
 
                 itoa(player->victory_conditions->get_attribute_id(9), temptxt, 10);
-                row[3]->set_text(temptxt);
+                this->statistics[player_index][5]->set_text(temptxt);
                 itoa(player->victory_conditions->get_victory_points_group(1), temptxt, 10);
-                row[4]->set_text(temptxt);
+                this->statistics[player_index][6]->set_text(temptxt);
                 ++player_index;
-                row += 7;
                 --remaining;
             }
         }
@@ -616,37 +580,35 @@ void TribeAchievementsScreen::set_mode(long mode)
         this->title_bar[6]->set_text((long)0x26B5);
 
         if (player_num > 0) {
-            int player_index = 1;
-            TTextPanel** row = this->statistics[0] + 1;
+            int player_index = 0;
             int remaining = player_num;
             while (remaining != 0) {
                 RGE_Player* player;
-                player = rge_base_game->world->players[player_index];
+                player = rge_base_game->world->players[player_index + 1];
 
                 this->time_line->set_active(0);
                 itoa(player->victory_conditions->get_attribute_id(10), temptxt, 10);
-                row[-1]->set_text(temptxt);
+                this->statistics[player_index][0]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(11) > 0) {
-                    row[0]->set_text((long)0xFA3);
+                    this->statistics[player_index][1]->set_text((long)0xFA3);
                 } else {
-                    row[0]->set_text("");
+                    this->statistics[player_index][1]->set_text("");
                 }
 
                 itoa(player->victory_conditions->get_attribute_id(12), temptxt, 10);
-                row[1]->set_text(temptxt);
+                this->statistics[player_index][2]->set_text(temptxt);
                 itoa(player->victory_conditions->get_attribute_id(13), temptxt, 10);
-                row[2]->set_text(temptxt);
+                this->statistics[player_index][3]->set_text(temptxt);
                 itoa(player->victory_conditions->get_attribute_id(14), temptxt, 10);
-                row[3]->set_text(temptxt);
+                this->statistics[player_index][4]->set_text(temptxt);
 
                 itoa(player->victory_conditions->get_victory_points_id(15) +
                      player->victory_conditions->get_victory_points_id(16), temptxt, 10);
-                row[4]->set_text(temptxt);
+                this->statistics[player_index][5]->set_text(temptxt);
                 itoa(player->victory_conditions->get_victory_points_group(2), temptxt, 10);
-                row[5]->set_text(temptxt);
+                this->statistics[player_index][6]->set_text(temptxt);
                 ++player_index;
-                row += 7;
                 --remaining;
             }
         }
@@ -663,34 +625,32 @@ void TribeAchievementsScreen::set_mode(long mode)
         this->title_bar[4]->set_text((long)0x26B5);
 
         if (player_num > 0) {
-            int player_index = 1;
-            TTextPanel** row = this->statistics[0] + 1;
+            int player_index = 0;
             int remaining = player_num;
             while (remaining != 0) {
                 RGE_Player* player;
-                player = rge_base_game->world->players[player_index];
+                player = rge_base_game->world->players[player_index + 1];
 
                 itoa(player->victory_conditions->get_attribute_id(17), temptxt, 10);
-                row[-1]->set_text(temptxt);
+                this->statistics[player_index][0]->set_text(temptxt);
                 if (player->victory_conditions->get_victory_points_id(18) > 0) {
-                    row[0]->set_text((long)0xFA3);
+                    this->statistics[player_index][1]->set_text((long)0xFA3);
                 } else {
-                    row[0]->set_text("");
+                    this->statistics[player_index][1]->set_text("");
                 }
                 if (player->victory_conditions->get_victory_points_id(19) > 0) {
-                    row[1]->set_text((long)0xFA3);
+                    this->statistics[player_index][2]->set_text((long)0xFA3);
                 } else {
-                    row[1]->set_text("");
+                    this->statistics[player_index][2]->set_text("");
                 }
                 if (player->victory_conditions->get_victory_points_id(20) > 0) {
-                    row[2]->set_text((long)0xFA3);
+                    this->statistics[player_index][3]->set_text((long)0xFA3);
                 } else {
-                    row[2]->set_text("");
+                    this->statistics[player_index][3]->set_text("");
                 }
                 itoa(player->victory_conditions->get_victory_points_group(3), temptxt, 10);
-                row[3]->set_text(temptxt);
+                this->statistics[player_index][4]->set_text(temptxt);
                 ++player_index;
-                row += 7;
                 --remaining;
             }
         }

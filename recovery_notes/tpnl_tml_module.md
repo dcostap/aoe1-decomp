@@ -32,18 +32,19 @@ function-fragment include, fallback class declaration, recovery context macro,
 or helper macro. The prior focused files and `src/tpnl_tml_tu.cpp` are removed
 after direct validation.
 
-The header owns `Time_Line_Panel` and `Special_Events`. It imports the
-canonical Panel, Easy Panel, draw-area, Shape, text-panel, Base Game, world,
-TRIBE player, history, and color providers. It does not copy those classes.
+The header owns `Time_Line_Panel` and `Special_Events`. It includes the
+canonical easy-panel provider. It forward declares its pointer-only Shape,
+text-panel, history, player, and world types. The source imports their complete
+canonical providers. It does not copy those classes.
 
 The header relies on natural alignment. Size checks prove `Special_Events` is
 `0xB0` and `Time_Line_Panel` is `0x52C`.
 
 The source uses canonical `set_redraw`, Shape bounds, draw-system palette,
 typed player indexing, TRIBE player history, color-table, and master-player
-fields. It uses `new` and `delete` for `Special_Events`. It has no recovery
-experiment comments, raw player cursor, absolute string address, C-style
-pointer cast, or byte alias.
+fields. It uses `new` and `delete` for `Special_Events` and typed deletion for
+legend entries. It has no recovery experiment comments, raw player cursor,
+absolute string address, C-style scalar or pointer cast, or byte alias.
 
 ## Prior state and expected migration effect
 
@@ -62,7 +63,8 @@ Grouped mismatches are not exactness or behavior claims.
 - Candidate validation: all 17 registered exact owners and generated owner
   `0051E770` match. Each match has zero differing bytes, no relocation-target
   mismatch, and no boundary escape.
-- `0051E790` now differs by three bytes and has one relocation-target mismatch.
+- `0051E790` differs by 177 bytes, has one relocation-target mismatch, and
+  has two boundary escapes after typed legend-entry deletion.
   `0051F4E0` differs by 120 bytes. `0051F560` differs by 123 bytes.
   `00520220` differs by 372 bytes. These owners are scratch.
 - The verified constructor differs by 125 bytes. The other scratch owners

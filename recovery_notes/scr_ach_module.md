@@ -29,42 +29,39 @@ module uses `include/scr_ach.h` for its declarations and has no wrapper,
 function-fragment include, context macro, or fallback declaration block.
 
 The constructor and `set_mode` retain the reviewed typed panel, player, world,
-and victory-condition surfaces. They also retain the shipped partial `memset`
-tails and ordered mode-3 victory-ID calls. These facts preserve observed local
-state and fault order.
+and victory-condition surfaces. They use indexed statistics storage and retain
+the ordered mode-3 victory-ID calls. These facts preserve observed local state
+and fault order.
 
 The constructor uses the period `set_positioning` and `set_tab_order` virtual
 surfaces. The call arguments and slots are proved by the original calls at
 `0048DA18`, `0048E17E`, and `0048E18C`. The previous `vf_*` declarations were
 codegen-only residue and are removed.
 
-The accepted-drift owner `0048E400` remains observed. The scratch constructor
-`0048D530` remains unresolved. The destructor `0048E210` is scratch after the
-natural typed close-button deletion. The other five owners remain registered
-matching owners.
+The constructor `0048D530`, destructor `0048E210`, and `set_mode` owner
+`0048E400` are scratch. The other five owners remain registered matching
+owners.
 
 ## Function notes
 
 The constructor uses 260-byte `info_file` storage. A 256-byte probe matched
-the frame but lacks packet support. The natural 50-byte `temptxt` and its
-15-byte tail clear are retained. The player loop uses a zero-based row index
+the frame but lacks packet support. The player loop uses a zero-based row index
 and reads `world->players[player_index + 1]`. It preserves the eight player
 slots and their original player-array positions. The source has the explicit
 mode-selection branch and the panel surface proved by the translation-unit
 packet.
 
-The constructor remains scratch at the current 2830-byte difference and one
-boundary escape. A rejected 48-byte local variant matched the frame but used
-compiler steering. An uninitialized temporary was also rejected because VC5
-removed it and changed the frame. The next useful evidence is a fresh exact
-constructor context check after the module move.
+The constructor remains scratch at the current 2830-byte difference. A
+rejected 48-byte local variant matched the frame but used compiler steering. An
+uninitialized temporary was also rejected because VC5 removed it and changed
+the frame. The next useful evidence is a fresh exact constructor context check
+after the module move.
 
-`set_mode` retains the accepted typed-index reconstruction. The five setup
-hunks differ only by initial index-store placement, and the accepted audit
-found no call, memory, or control-flow difference. A raw two-byte player
-cursor can recover the five setup blocks but reverses the mode-3 victory-ID
-calls at `0048ED20` and `0048ED2A`; that form is rejected because it changes
-fault order. The natural source keeps explicit sequencing.
+`set_mode` uses `statistics[player][column]`. It does not use a row cursor or
+negative array indexes. A raw two-byte player cursor can recover setup blocks
+but reverses the mode-3 victory-ID calls at `0048ED20` and `0048ED2A`. That
+form is rejected because it changes fault order. The natural source keeps
+explicit sequencing and is scratch after this cleanup.
 
 ## Validation and regressions
 
@@ -77,11 +74,8 @@ The constrained grouped audit was run once as
 `python tools/audit_translation_unit_observed.py --group scr_ach --jobs 1
 --output-dir build/audits/scr_ach_final --print-full`. It compiled all eight
 owners and found six registered exact owners with zero positional differences,
-zero relocation mismatches, and zero boundary escapes. The scratch constructor
-was observed at 2877 differing bytes with two boundary escapes. The accepted
-drift owner was first listed as registered by the temporary config and was then
-removed from the exact-owner list. The final config registers only the six
-matching owners.
+zero relocation mismatches, and zero boundary escapes. This result predates
+the typed cleanup. Current status comes from the later candidate validation.
 
 The three cached standalone checks attempted for `0048E210`, `0048F0B0`, and
 `0048F280` rejected stale artifacts after the final source/config cleanup.
@@ -89,7 +83,9 @@ They did not rebuild because the assignment permits cached checks only. The
 module test passes with two tests.
 
 The natural typed close-button deletion differs by 435 bytes and has two
-boundary escapes. `0048E210` is no longer an exact owner.
+boundary escapes. `0048E210` is no longer an exact owner. The indexed
+statistics cleanup changes `0048E400` by 2970 bytes. It is scratch, not
+accepted drift.
 
 ## Canonical panel-provider cleanup
 
@@ -109,6 +105,6 @@ declaration.
 
 Candidate validation reports all five registered owners as `MATCH` with zero
 differences. The generated deleting destructor also matches. The constructor
-remains scratch with 2830 differing bytes and one boundary escape. The
-destructor remains scratch with 435 differing bytes and two boundary escapes.
-`set_mode` remains accepted drift with 45 differing bytes.
+remains scratch with 2830 differing bytes. The destructor remains scratch with
+435 differing bytes and two boundary escapes. `set_mode` remains scratch with
+2970 differing bytes.
