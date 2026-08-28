@@ -6402,38 +6402,11 @@
     },
     {
       "name": "tmap_cpp",
-      "source": "src/tmap_tu.cpp",
+      "source": "src/tmap.cpp",
       "flags": "config/flags/0050F410_TRIBE_Map.rsp",
-      "owners": {
-        "0050F410": "src/matching/0050F410_TRIBE_Map.cpp",
-        "0050F760": "src/matching/0050F760_TRIBE_Map.cpp",
-        "0050F7B0": "src/matching/0050F7B0_save.cpp",
-        "0050F7F0": "src/matching/0050F7F0_map_generate.cpp",
-        "0050F800": "src/matching/0050F800_data_load_random_map.cpp",
-        "0050F860": "src/matching/0050F860_load_random_map.cpp",
-        "0050FD40": "src/matching/0050FD40_do_terrain_brush_stroke.cpp",
-        "0050FDD0": "src/matching/0050FDD0_do_elevation_brush_stroke.cpp",
-        "0050FE90": "src/matching/0050FE90_setup_cliff_type.cpp",
-        "0050FF20": "src/matching/0050FF20_find_cliff.cpp",
-        "00510020": "src/matching/00510020_get_cliff_info.cpp",
-        "005100D0": "src/matching/005100D0_check_cliff_valid.cpp",
-        "00510110": "src/matching/00510110_make_new_cliff.cpp",
-        "00510410": "src/matching/00510410_reverse_cliff_direction.cpp",
-        "00510960": "src/matching/00510960_delete_cliff.cpp",
-        "00510A50": "src/matching/00510A50_do_cliff_brush.cpp",
-        "00510C10": "src/matching/00510C10_do_cliff_brush_stroke.cpp",
-        "00510C90": "src/matching/00510C90_water.cpp",
-        "00510CB0": "src/matching/00510CB0_clean_borders.cpp",
-        "00511000": "src/matching/00511000_do_terrain_brush_check.cpp"
-      },
-      "symbols": {
-        "0050F410": "??0TRIBE_Map@@QAE@HPAPAVRGE_Sound@@E@Z",
-        "0050F760": "??0TRIBE_Map@@QAE@PAD000FFFPAPAVRGE_Sound@@@Z",
-        "0050F7F0": "?map_generate@TRIBE_Map@@QAEXPAURGE_Player_Info@@@Z",
-        "0050F860": "?load_random_map@TRIBE_Map@@UAEXPAD000@Z",
-        "00510A50": "?do_cliff_brush@TRIBE_Map@@UAEEJJEE@Z",
-        "00510CB0": "?clean_borders@TRIBE_Map@@QAEXJJJJE@Z"
-      }
+      "owners": {},
+      "symbols": {},
+      "module": "tmap_cpp"
     },
     {
       "name": "spnl_obj_cpp",

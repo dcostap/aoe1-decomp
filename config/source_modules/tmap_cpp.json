@@ -1,0 +1,125 @@
+{
+  "schema": 1,
+  "name": "tmap_cpp",
+  "pdb_source_path": "C:msdevworkage1_x1\tmap.cpp",
+  "source": "src/tmap.cpp",
+  "header": "include/tmap.h",
+  "functions": {
+    "0050F410": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050F760": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050F7A0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050F7B0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050F7C0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050F7F0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050F800": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050F860": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050F8D0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050FA90": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050FC40": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050FD40": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050FDD0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050FE90": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "0050FF20": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "00510020": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "005100D0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "00510110": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "005102A0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "00510410": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "00510430": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "00510960": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "00510A50": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "00510C10": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "00510C90": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "00510CB0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "00511000": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "005110E0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    },
+    "005111A0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
+    }
+  }
+}
