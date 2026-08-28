@@ -72,6 +72,10 @@ extern long world_update_counter;
 extern int computerPlayerSetup[13];
 extern FILE* DVlogf;
 extern int debug_random_on;
+extern int allowAIToCheat;
+extern "C" int __cdecl debug_rand(char*, int);
+extern "C" void __cdecl debug_srand(char*, int, unsigned int);
+extern char s_592A40[];
 extern int debug_timeGetTime_on;
 extern int debug_timeGetTime_cnt;
 extern int debug_timeGetTime_time;
@@ -1764,6 +1768,8 @@ extern unsigned char DAT_0086b6b3;
 extern unsigned int DAT_0086bab0;
 // 0086BC08 [.data]
 extern float DAT_0086bc08;
+// 0086BC88 [.data]
+extern unsigned int DAT_0086bc88;
 // 0086BC8C [.data]
 extern unsigned int DAT_0086bc8c;
 // 0086BCA0 [.data]
@@ -1818,6 +1824,8 @@ extern unsigned int DAT_0088680c;
 extern unsigned int DAT_00886c1c;
 // 00886C20 [.data]
 extern unsigned int DAT_00886c20;
+// 00886C24 [.data]
+extern unsigned int DAT_00886c24;
 // 00886C28 [.data]
 extern unsigned int DAT_00886c28;
 // 00886C2C [.data]
@@ -1828,12 +1836,33 @@ extern unsigned int DAT_00886c30;
 extern unsigned int DAT_00886c34;
 // 00886C38 [.data]
 extern unsigned int DAT_00886c38;
+// 00886C3C [.data]
+extern unsigned int DAT_00886c3c;
 // 00886C40 [.data]
 extern unsigned int DAT_00886c40;
 // 00886C44 [.data]
 extern unsigned int DAT_00886c44;
 // 00886C48 [.data]
 extern unsigned int DAT_00886c48;
+
+// TPlayer uses these executable globals as long-lived selection statistics.
+// The aliases keep the storage owner in this canonical global provider.
+namespace tplayer_globals {
+static unsigned int& selectedObjectId = DAT_0086bc88;
+static unsigned int& selectedObjectCount = DAT_0086bc8c;
+static unsigned int& buildListCategoryCount1 = DAT_00886c1c;
+static unsigned int& buildListCategoryCount2 = DAT_00886c20;
+static unsigned int& buildListCategoryCount3 = DAT_00886c24;
+static unsigned int& buildListCategoryCount4 = DAT_00886c28;
+static unsigned int& buildListCategoryCount5 = DAT_00886c2c;
+static unsigned int& buildListCategoryCount6 = DAT_00886c30;
+static unsigned int& buildListCategoryCount7 = DAT_00886c34;
+static unsigned int& attackTimingCategoryCount = DAT_00886c38;
+static unsigned int& fastAttackListCount = DAT_00886c3c;
+static unsigned int& defaultAttackListCount = DAT_00886c40;
+static unsigned int& selectedBuildListCount = DAT_00886c44;
+static unsigned int& aggressiveBuildListCount = DAT_00886c48;
+}
 // 00886C60 [.data]
 extern unsigned int DAT_00886c60;
 // 00886C6C [.data]

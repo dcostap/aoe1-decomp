@@ -7,7 +7,7 @@
 
 typedef unsigned char uchar;
 
-extern const double DAT_00577330;
+extern double DAT_00577330;
 
 class TRIBE_Player;
 

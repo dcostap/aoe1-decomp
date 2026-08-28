@@ -1,7 +1,7 @@
 # tplayer.cpp source module
 
 The module now has one compiler-facing owner at `src/tplayer.cpp`.
-The source order follows the 103 normal PDB owners from lines 232 through 5335.
+The source order follows all 103 normal PDB owners.
 The owner header is `include/tplayer.h`.
 
 The module uses the canonical Player, World, Tech, AI, Victory, Command, and
@@ -14,13 +14,20 @@ The natural source rebuild passes the six reviewed tplayer context anchors:
 checks.
 
 A full candidate pass compiled all 103 normal owners and both generated
-destructors. It reported 35 exact results among 58 matching-status owners and
-26 exact results among 45 observed owners. It reported no symbol or comparison
-errors. The remaining differences are temporary migration drift.
+destructors. The final comparison pass carried 36 exact candidates and 67
+observed candidates. It reported 36 exact results and 23 observed exact
+results. It reported no symbol or comparison errors. Twenty-two former
+matching owners were demoted after natural-source cleanup exposed compiland
+drift.
 
-The source-module state keeps the prior recovery states. Matching owners remain
-matching. Narrow equivalent owners remain accepted drift. Unresolved owners
-remain scratch. Exact repair continues on the final source tree.
+The source-module state keeps matching status only for the 36 exact owners.
+Natural but non-exact owners use accepted drift. Unresolved owners remain
+scratch. Exact repair continues on the final source tree.
+
+The source uses canonical semantic global aliases and supported literals. It
+does not use raw `DAT_*` names. Local command payloads use stack storage. The
+three dialog result arrays retain C allocation because the dialog provider
+releases them with `free()`.
 
 The complete source file compiles with the pinned VC5 host compiler and default
 flags. The global translation-unit audit still reports unrelated pre-existing
