@@ -102,10 +102,10 @@ void TRIBE_Panel_Button::draw()
         parent_panel->draw_rect(&clip_rect);
 
     if ((tribe_button_type == 1 || tribe_button_type == 3) && text1[0] != 0) {
-        HDC dc = (HDC)render_area->GetDc(s_tpnl_btn_draw);
+        HDC dc = static_cast<HDC>(render_area->GetDc(s_tpnl_btn_draw));
         if (dc != 0) {
             SelectClipRgn(dc, clip_rgn);
-            old_font = SelectObject(dc, (HGDIOBJ)font);
+            old_font = SelectObject(dc, static_cast<HGDIOBJ>(font));
             SetBkMode(dc, 1);
 
             int center_x = pnl_wid / 2;
@@ -117,7 +117,7 @@ void TRIBE_Panel_Button::draw()
                 text = text1[0];
 
             if (text != 0) {
-                text_length = strlen(text);
+                text_length = static_cast<short>(strlen(text));
                 GetTextExtentPoint32A(dc, text, text_length, &text_size);
 
                 x = center_x - text_size.cx / 2 + pnl_x;
@@ -143,7 +143,7 @@ void TRIBE_Panel_Button::draw()
                     text = text2[0];
 
                 if (text != 0) {
-                    short second_length = strlen(text);
+                    short second_length = static_cast<short>(strlen(text));
                     GetTextExtentPoint32A(dc, text, second_length, &text_size);
 
                     x = center_x - text_size.cx / 2 + pnl_x;
@@ -225,7 +225,7 @@ void TRIBE_Panel_Button::draw()
     }
 
     if (display_garrison && garrsion_number > 0) {
-        HDC dc = (HDC)render_area->GetDc(s_tpnl_btn_draw2);
+        HDC dc = static_cast<HDC>(render_area->GetDc(s_tpnl_btn_draw2));
         if (dc != 0) {
             char message[10];
             sprintf(message, "%d", garrsion_number);
@@ -234,7 +234,8 @@ void TRIBE_Panel_Button::draw()
             SetBkMode(render_area->DrawDc, 1);
             SetTextColor(render_area->DrawDc, 0xCCCCCC);
             TextOutA(render_area->DrawDc, pnl_x + 3 + (is_down != 0),
-                     pnl_y + 2 + (is_down != 0), message, strlen(message));
+                     pnl_y + 2 + (is_down != 0), message,
+                     static_cast<int>(strlen(message)));
             SelectClipRgn(render_area->DrawDc, 0);
             render_area->ReleaseDc(s_tpnl_btn_draw2);
         }

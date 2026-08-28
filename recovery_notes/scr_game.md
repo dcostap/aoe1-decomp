@@ -71,3 +71,11 @@ The following former matching rows are now scratch:
 
 The provider changes removed copied foreign layouts and raw source forms.
 They did not establish new exact claims.
+
+## Source cleanup audit
+
+The source cleanup removed opaque globals, raw palette writes, C-style casts,
+and cursor loops. It kept the existing exact rows except `0049A8A0`.
+
+The `scr_game_source_cleanup_audit` observed `0049A8A0` as a 76-byte mismatch.
+It also found one direct-target mismatch. Its status is now `scratch`.

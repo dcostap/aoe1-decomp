@@ -350,7 +350,7 @@ extern int out_of_sync2;
 extern unsigned char die_die_die;
 extern unsigned char do_color_log;
 extern unsigned char production_queues_is_use;
-extern int DAT_0086bac8;
+extern int memory_dump_sequence;
 extern char Save_Game_Screen[];
 extern char s_Save_Game_Screen[];
 extern char s_Game_Screen[];
@@ -371,12 +371,12 @@ extern char s_[];
 extern char s_PAUSE[];
 extern const char s_Writing_out_memory_info[];
 extern const char s_memory_filename[];
-extern const char s_ALLOWCTRLU[];
-extern const char s_force_ctrl_u[];
+extern char s_ALLOWCTRLU[];
+extern char s_force_ctrl_u[];
 
 extern unsigned char byte_62C584;
-extern void* DAT_0086babc;
-extern void* DAT_0086bac0;
+extern const void* score_compare_first;
+extern const void* score_compare_second;
 extern char close_confirmation_text[];
 
 #endif
