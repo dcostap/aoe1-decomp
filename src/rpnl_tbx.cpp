@@ -225,7 +225,7 @@ long RGE_Panel_Tool_Box::action(TPanel* panel, long code,
         if ((panel == this->object_mode_button) && (code == 1)) {
             this->dialog = new RGE_Dialog_List("Object List Dialog");
             if (this->dialog != 0) {
-                if (((RGE_Dialog_List*)this->dialog)->setup(
+                if (static_cast<RGE_Dialog_List*>(this->dialog)->setup(
                         this->screen_panel,
                         this->screen_panel->get_popup_info_file(),
                         this->screen_panel->get_popup_info_id(),
@@ -267,7 +267,7 @@ long RGE_Panel_Tool_Box::action(TPanel* panel, long code,
                 if (strcmp(this->dialog->panelName(), "Object List Dialog") == 0) {
                     if (code == 1) {
                         rge_base_game->master_obj_id =
-                            ((RGE_Dialog_List*)this->dialog)->get_list_id();
+                            static_cast<RGE_Dialog_List*>(this->dialog)->get_list_id();
                         rge_base_game->delete_dialog(&this->dialog);
                         rge_base_game->set_game_mode(1, 0);
                         rge_base_game->get_player()->unselect_object();
@@ -284,7 +284,7 @@ long RGE_Panel_Tool_Box::action(TPanel* panel, long code,
                                 "Terrain List Dialog") == 0) {
                     if (code == 1) {
                         rge_base_game->terrain_id =
-                            ((RGE_Dialog_List*)this->dialog)->get_list_id();
+                            static_cast<RGE_Dialog_List*>(this->dialog)->get_list_id();
                         rge_base_game->delete_dialog(&this->dialog);
                         rge_base_game->set_game_mode(2, 0);
                         return 1;
