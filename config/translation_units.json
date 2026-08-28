@@ -5628,6 +5628,7 @@
     {
       "name": "ttsk_lst",
       "source": "src/ttsk_lst.cpp",
+      "module": "ttsk_lst",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0052C8D0": "src/ttsk_lst.cpp"
