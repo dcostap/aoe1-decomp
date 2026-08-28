@@ -33,25 +33,28 @@ owners. The source uses the real enum values and dialog-name string literals.
 `src/dlg_menu.cpp` contains all three normal bodies in PDB order. The old
 `src/dlg_menu_tu.cpp` wrapper, `include/dlg_menu_context.h`, and three matching
 fragments are removed. `config/source_modules/dlg_menu.json` records the three
-owners. `config/translation_units.json` maps all three owners to the direct
-source and records their decorated symbols.
+owners. `config/translation_units.json` registers the exact action owner and
+leaves the two accepted-drift owners out of the exact-owner map.
 
 ## Validation
 
-The grouped candidate proposal compiles the direct source with
-`config/flags/0043F340_TribeMenuDialog.rsp`. It reports `MATCH` and zero
-positional difference for all three normal owners:
+The typed-array candidate compiles the direct source with
+`config/flags/0043F340_TribeMenuDialog.rsp`. The constructor and destructor
+remain semantically equivalent, but their source-safe array forms produce
+accepted local codegen drift:
 
-- `0043F340`: `MATCH`, 838 bytes, zero relocations and boundary escapes;
-- `0043F6B0`: `MATCH`, 103 bytes, zero relocations and boundary escapes; and
+- `0043F340`: 776 differing bytes, 860 rebuilt bytes, and 2 boundary escapes;
+- `0043F6B0`: 96 differing bytes, 121 rebuilt bytes, and 1 boundary escape;
 - `0043F720`: `MATCH`, 1,349 bytes, zero relocations and boundary escapes.
 
-The generated `0043F690` owner also reports `MATCH`, zero positional
-difference, and zero relocations. The candidate result is full-module exact.
+The generated `0043F690` owner still reports `MATCH`, zero positional
+difference, and zero relocations. The constructor and destructor are marked
+`accepted_drift`; the action remains `matching`.
 
-The direct owner checks also report `MATCH` and `0.0000%` for all three normal
-owners. The final source uses typed `static_cast` expressions for the proven
-panel and parent relationships. It has no C-style cast or `goto`. The generated
+The final source builds a local `TPanel* tab_order[11]` before calling
+`set_tab_order`. Its destructor copies each `TButtonPanel*` to a typed
+`TPanel*`, deletes through `delete_panel(&panel)`, and clears the button slot.
+It uses no pointer-array type punning, C-style cast, or `goto`. The generated
 `dlg_menu.i` listing is under ignored `build/`, not the repository root.
 
 The final source keeps canonical enum and string types. It does not use the

@@ -99,21 +99,19 @@ TribeMenuDialog::TribeMenuDialog(TScreenPanel* parent)
     p->hotkey = 0x1B;
 
     this->set_curr_child(this->button[0]);
-    this->set_tab_order(
-        static_cast<TPanel**>(static_cast<void*>(this->button)),
-        static_cast<short>(bi));
+    TPanel* tab_order[11];
+    for (i = 0; i < 11; ++i)
+        tab_order[i] = this->button[i];
+    this->set_tab_order(tab_order, static_cast<short>(bi));
 }
 
 TribeMenuDialog::~TribeMenuDialog()
 {
-    int count = 11;
-    TPanel** pp = static_cast<TPanel**>(static_cast<void*>(this->button));
-
-    do {
-        this->delete_panel(pp);
-        pp++;
-        count--;
-    } while (count != 0);
+    for (int i = 0; i < 11; ++i) {
+        TPanel* panel = this->button[i];
+        this->delete_panel(&panel);
+        this->button[i] = 0;
+    }
 }
 
 long TribeMenuDialog::action(TPanel* panel, long id, unsigned long param3,
