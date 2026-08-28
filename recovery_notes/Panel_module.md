@@ -55,3 +55,11 @@ module source rather than retaining unsupported declaration machinery.
 
 The direct module source was compiled as a syntax and layout check. Full
 registered validation is required after this migration.
+
+## Compile-blocker repair
+
+`debug_timeGetTime` uses the canonical C++ declaration from `basegame.h`.
+The full direct-module candidate build now compiles without diagnostics. Of
+the 105 configured exact owners, 104 report `MATCH`, `0.0000%`, correct
+ownership, relocations, and boundaries. `004666C0` remains a known three-byte
+codegen mismatch; this repair does not change its source or status.
