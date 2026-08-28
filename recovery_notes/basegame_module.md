@@ -38,6 +38,14 @@ The constructor calls the BaseGame option setters.
 Their PDB source rows are `004226B0` through `004228B0`.
 `include/basegame.h` now publishes their exact parameter types.
 
+## Scenario-header overload
+
+The PDB declares the integer overload before the pointer overload.
+The integer owner is `0041CE00`.
+The pointer owner is `0041CE60`.
+VC5 emits the pointer slot at `+0x34`.
+It emits the integer slot at `+0x38`.
+
 ## Hold
 
 `0041BAA0 RGE_Base_Game::setup`, lines 491-871, remains an accepted-drift hold.

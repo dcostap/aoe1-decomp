@@ -85,8 +85,9 @@ public:
     virtual char* get_string2(int, long, long, char*, int);
     virtual TPanel* get_view_panel();
     virtual TPanel* get_map_panel();
-    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario*);
+    // BINARY NOTE: VC5 reverses this adjacent overload pair in the vtable.
     virtual RGE_Scenario_Header* new_scenario_header(int);
+    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario*);
     virtual RGE_Scenario* new_scenario_info(int);
     virtual void notification(int, long, long, long, long);
     virtual int reset_comm();

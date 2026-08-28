@@ -6540,14 +6540,14 @@
       }
     },
     {
-      "name": "sceninfo_cpp",
-      "source": "src/sceninfo_tu.cpp",
+      "name": "sceninfo",
+      "source": "src/sceninfo.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0048CEA0": "src/matching/0048CEA0_RGE_Scenario_File_Info.cpp",
-        "0048CFD0": "src/matching/0048CFD0_RGE_Scenario_File_Info.cpp",
-        "0048D4D0": "src/matching/0048D4D0_get_scenario_name.cpp",
-        "0048D500": "src/matching/0048D500_get_scenario_info.cpp"
+        "0048CEA0": "src/sceninfo.cpp",
+        "0048CFD0": "src/sceninfo.cpp",
+        "0048D4D0": "src/sceninfo.cpp",
+        "0048D500": "src/sceninfo.cpp"
       },
       "symbols": {
         "0048CEA0": "??0RGE_Scenario_File_Info@@QAE@PAD@Z",
