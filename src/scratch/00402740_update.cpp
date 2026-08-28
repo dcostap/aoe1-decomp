@@ -50,7 +50,15 @@
 //   redundant target guard and reversed comparison were worse. The final
 //   source is restored and validated at 663 differing bytes.
 
-#include "../../include/act_entr_context.h"
+#include "../../include/act_entr.h"
+#include "../../include/act_list.h"
+#include "../../include/act_move.h"
+#include "../../include/act_obj.h"
+#include "../../include/game_globals.h"
+#include "../../include/player.h"
+#include "../../include/task.h"
+#include "../../include/world.h"
+#include "../../include/xy_point.h"
 
 unsigned char RGE_Action_Enter::update(void) {
     RGE_Action* action;

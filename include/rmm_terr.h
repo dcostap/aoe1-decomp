@@ -16,28 +16,8 @@ class RGE_Zone_Map;
 class RGE_Zone_Map_List;
 struct RGE_Random_Map_Module_List;
 
-#include "map_context.h"
+#include "map.h"
 #include "rmm_terrain_info.h"
-
-// RGE_Tile is the PDB RGE_Tile record. The terrain/elevation byte is +0x05,
-// the border byte is +0x06, and the record stride is 0x18.
-struct RGE_Tile {
-    short screen_xpos;
-    short screen_ypos;
-    uchar tile_type;
-    uchar terrain_type : 5;
-    uchar height : 3;
-    uchar border_type : 4;
-    uchar border_shape : 4;
-    uchar last_drawn_as;
-    uchar last_drawn_shape;
-    uchar draw_as;
-    uchar draw_attribute;
-    uchar last_drawn_shape2;
-    uchar objects[12];
-};
-
-typedef char rmm_terr_tile_size_check[(sizeof(RGE_Tile) == 0x18) ? 1 : -1];
 
 struct Map_Stack {
     long x;
