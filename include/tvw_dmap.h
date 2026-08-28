@@ -1,15 +1,9 @@
 #ifndef AOE1_TVW_DMAP_H
 #define AOE1_TVW_DMAP_H
 
-// PDB owners: vw_dimap.cpp and tvw_dmap.cpp.
+// PDB owner: tvw_dmap.cpp.
 
-#include "diam_map.h"
-
-class RGE_Diamond_Map_View : public RGE_Diamond_Map {
-public:
-    RGE_Diamond_Map_View();
-    virtual ~RGE_Diamond_Map_View();
-};
+#include "vw_dimap.h"
 
 class TRIBE_Diamond_Map_View : public RGE_Diamond_Map_View {
 public:

@@ -13,7 +13,6 @@ public:
     int display_garrison;
     int garrsion_number;
     unsigned char tribe_button_type;
-    unsigned char pad_2c1[3];
     TShape* border_pic;
     unsigned char* color_table;
     int border_frame;

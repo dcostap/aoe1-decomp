@@ -11,7 +11,6 @@ static char s_tpnl_btn_draw[] = "tpnl_btn::draw";
 static char s_tpnl_btn_draw2[] = "tpnl_btn::draw2";
 static char s_tpnl_btn_draw3[] = "tpnl_btn::draw3";
 
-extern int fog_next_shape;
 extern "C" void __cdecl _ASMSet_Shadowing(int, int, int, int);
 extern "C" void __cdecl _ASMSet_Color_Xform(int);
 
