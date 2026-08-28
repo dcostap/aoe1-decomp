@@ -11,6 +11,8 @@
 
 The source includes `sceninfo.h`, `scenario.h`, `basegame.h`, and `main.h`.
 It uses the pinned VC5 `<io.h>` CRT interface.
+The destructor uses `delete` for scenario headers.
+Both entry allocations use `sizeof(RGE_Scenario_File_Entry)`.
 
 ## Overload evidence
 

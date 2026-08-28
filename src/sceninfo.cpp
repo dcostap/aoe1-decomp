@@ -19,8 +19,6 @@ void rge_write_uncompressed(int fd, void* buffer, int count);
 int rge_close(int fd);
 }
 
-extern void __cdecl operator_delete(void* block);
-
 // 0048CEA0 RGE_Scenario_File_Info::RGE_Scenario_File_Info(char*)
 RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* path)
 {
@@ -34,7 +32,8 @@ RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* path)
         i = 0;
 
         if (this->scenario_num > 0) {
-            this->scenarios = (RGE_Scenario_File_Entry*)calloc(this->scenario_num, 0x10C);
+            this->scenarios = (RGE_Scenario_File_Entry*)calloc(
+                this->scenario_num, sizeof(RGE_Scenario_File_Entry));
             for (i = 0; i < this->scenario_num; i++) {
                 rge_read_uncompressed(fd, &this->scenarios[i].time, 4);
                 rge_read_uncompressed(fd, this->scenarios[i].name, 0x104);
@@ -64,8 +63,7 @@ RGE_Scenario_File_Info::~RGE_Scenario_File_Info() {
         for (int i = 0; i < scenario_num; i++) {
             RGE_Scenario_Header* hdr = scenarios[i].scenario_header;
             if (hdr != 0) {
-                hdr->~RGE_Scenario_Header();
-                operator_delete(hdr);
+                delete hdr;
             }
         }
         free(scenarios);
@@ -142,7 +140,8 @@ void RGE_Scenario_File_Info::reload_scenarios()
     if (count == -1)
         return;
 
-    new_scenarios = (RGE_Scenario_File_Entry*)calloc(total, 0x10C);
+    new_scenarios = (RGE_Scenario_File_Entry*)calloc(
+        total, sizeof(RGE_Scenario_File_Entry));
     current = new_scenarios;
 
     do {
