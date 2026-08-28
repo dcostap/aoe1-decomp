@@ -5,6 +5,7 @@
 
 #include "../include/scr_cred.h"
 #include "../include/music.h"
+#include "../include/scr_main.h"
 #include <fcntl.h>
 #include <io.h>
 #include <new.h>
@@ -20,6 +21,7 @@ extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
 
 extern const char s_scr_cred_draw_005862e0[];
 
+extern float DAT_00572968;
 extern float DAT_0057297c;
 
 extern float DAT_0086b290;
@@ -68,14 +70,14 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
 
     RGE_Font* font = rge_base_game->get_font(4);
     char* file_buf = 0;
-    int fd = _open("data2\\list.cr", 0x8000);
+    int fd = _open("data2\\list.cr", _O_BINARY);
     int size = 0;
     if (fd != -1) {
-        _lseek(fd, 0, 2);
+        _lseek(fd, 0, SEEK_END);
         size = _tell(fd);
         file_buf = (char*)calloc(size + 1, 0x400);
         if (file_buf != 0) {
-            _lseek(fd, 0, 0);
+            _lseek(fd, 0, SEEK_SET);
             _read(fd, file_buf, size);
         }
         _close(fd);
@@ -285,17 +287,17 @@ long TRIBE_Credits_Screen::action(TPanel* param_1, long param_2,
 
 void TRIBE_Credits_Screen::close_screen()
 {
-    if (panel_system.panel((char*)0x5842CC)) {
+    if (panel_system.panel("Game Screen")) {
         if (rge_base_game->singlePlayerGame() == 1 &&
             rge_base_game->save_paused == 0) {
             rge_base_game->set_paused(0, 0);
         }
-        panel_system.setCurrentPanel((char*)0x5842CC, 0);
+        panel_system.setCurrentPanel("Game Screen", 0);
     } else {
         new TRIBE_Screen_Main_Menu();
-        panel_system.setCurrentPanel((char*)0x5842E8, 0);
+        panel_system.setCurrentPanel("Main Menu", 0);
     }
-    panel_system.destroyPanel((char*)0x5842BC);
+    panel_system.destroyPanel("Credits Screen");
 }
 
 TScrollTextPanel::TScrollTextPanel(TPanel* parent, TDrawArea* draw_area,
@@ -309,8 +311,9 @@ TScrollTextPanel::TScrollTextPanel(TPanel* parent, TDrawArea* draw_area,
     this->last_time = 0;
     this->done = 0;
 
+    char* no_text = 0;
     if (this->setup(draw_area, parent, x, y, width, height, font, font_wid,
-                    font_hgt, 0, 0, 0, 0, 0, 0, (char*)0) != 0) {
+                    font_hgt, 0, 0, 0, 0, 0, 0, no_text) != 0) {
         this->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignCenter);
         this->set_word_wrap(1);
         this->set_text(text);
@@ -333,11 +336,13 @@ void TScrollTextPanel::set_text(char* text) {
 long TScrollTextPanel::handle_idle()
 {
     if (this->last_time == 0) {
-        this->last_time = debug_timeGetTime((char*)0x5862BC, 0x1DC);
+        this->last_time = debug_timeGetTime(
+            "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x1DC);
     } else {
-        unsigned long now = debug_timeGetTime((char*)0x5862BC, 0x1DF);
+        unsigned long now = debug_timeGetTime(
+            "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x1DF);
         __int64 elapsed = (unsigned long)(now - this->last_time);
-        int amount = (long)(((double)elapsed * *(float*)0x572968) * this->speed);
+        int amount = (long)(((double)elapsed * DAT_00572968) * this->speed);
         if (amount > 0) {
             this->scroll += amount;
             this->set_redraw(TPanel::RedrawNormal);

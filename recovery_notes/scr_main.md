@@ -32,3 +32,29 @@ shape migration. Exact repair resumes on the final source tree.
 
 The nearby entries `0049EBE0` scalar deleting destructor and `0049F220` vector
 deleting destructor are compiler-generated. They are not normal source owners.
+
+## Canonical owner header
+
+`include/scr_main.h` now owns only `TRIBE_Screen_Main_Menu` and
+`TRIBE_Screen_Main_Error`. The PDB gives their sizes as `0x4B0` and `0x484`.
+The header consumes canonical panel, screen, text, button, picture, drawing,
+and Base Game owners.
+
+`src/scr_cred.cpp` now includes this header for the complete
+`TRIBE_Screen_Main_Menu` fallback. No copied menu screen layout remains.
+
+`src/scr_main.cpp` includes the canonical Credits Screen header privately.
+The other constructed screens remain opaque until their owners publish
+composable headers.
+
+## Current compile hold
+
+A focused compile stopped at these foreign owners:
+
+- `RGE_Base_Game::gameDeveloperMode()`, `load_db_files()`, and `close()`;
+- `TribeSPMenuScreen`;
+- `TribeMPStartupScreen`; and
+- `TRIBE_Screen_Sed_Menu`.
+
+The PDB assigns the three Base Game methods to `basegame.cpp`. Do not add local
+declarations. No comparison ran after compilation stopped.

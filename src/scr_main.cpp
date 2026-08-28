@@ -3,6 +3,7 @@
 // 426, 435, 443, 451, 480).
 
 #include "../include/scr_main.h"
+#include "../include/scr_cred.h"
 #include <string.h>
 
 // VA: 0049E6D0 TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu
@@ -27,7 +28,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     memset(this->button, 0, sizeof(this->button));
 
     if (this->setup(rge_base_game->draw_area, s_scr1, 0xC383, 1) == 0) {
-        this->setup_error = 1;
+        this->error_code = 1;
         return;
     }
 
@@ -262,7 +263,7 @@ TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error()
     this->cancel_button = 0;
 
     if (this->setup(rge_base_game->draw_area, "scr1", 0xC383, 0) == 0) {
-        this->setup_error = 1;
+        this->error_code = 1;
         return;
     }
 
@@ -276,7 +277,8 @@ TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error()
     if (this->create_button((TPanel*)this, &this->close_button, 0x3EA, 0,
                             0, 0, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0) != 0) {
         this->close_button->set_active(1);
-        this->close_button->set_positioning(9, 4, 4, 4, 4, 0x11, 0x11,
+        this->close_button->set_positioning(TPanel::PositionRightTop,
+                                            4, 4, 4, 4, 0x11, 0x11,
                                             0x11, 0x11, 0, 0, 0, 0);
     }
 }
@@ -297,7 +299,7 @@ void TRIBE_Screen_Main_Error::set_text(char* param) {
 // VA: 0049F2D0 TRIBE_Screen_Main_Error::set_text(long)
 // PDB source: Scr_main.cpp lines 443-445.
 void TRIBE_Screen_Main_Error::set_text(long param) {
-    this->message->set_text_long(param);
+    this->message->set_text(param);
 }
 
 // VA: 0049F2F0 TRIBE_Screen_Main_Error::action

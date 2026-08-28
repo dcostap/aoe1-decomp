@@ -55,8 +55,18 @@ The fallback in `TRIBE_Credits_Screen::close_screen` constructs
 `TRIBE_Screen_Main_Menu` at `0049E6D0`. The original allocates `0x4B0` bytes
 at `00492E0B`. This provider belongs to `scr_main.cpp`.
 
-`scr_cred` must wait for a composable `scr_main` owner header. Do not add a
-local menu layout or allocation substitute.
+`include/scr_main.h` now publishes the complete canonical class. The credits
+source includes that owner header privately. No local menu layout or allocation
+substitute remains.
+
+## Source cleanup
+
+The source now uses panel-name and debug-file literals. It uses `_O_BINARY`,
+`SEEK_END`, and `SEEK_SET` for the credits file. It also uses the named
+`DAT_00572968` global rather than an absolute float dereference.
+
+The text setup uses a typed null local. This selects the `char*` overload
+without a cast.
 
 ## Status
 
@@ -67,10 +77,9 @@ reviewed status.
 The prior grouped exact audit used the old copied panel header. It is useful
 codegen evidence only. It does not validate this canonical composition.
 
-A focused canonical compile stopped only at these two provider boundaries:
+A focused canonical compile stopped only at this provider boundary:
 
 - `RGE_Base_Game::set_paused(int, int)` is not declared in `basegame.h`.
-- `TRIBE_Screen_Main_Menu` is incomplete at its fallback construction.
 
 No comparison ran after those compile errors. Re-run the grouped module check
-when both provider headers are available.
+after the Base Game owner publishes the pause method.
