@@ -182,7 +182,7 @@ public:
     unsigned long get_accum_time(int);
     int get_paused();
     RGE_Player* get_player();
-    void get_mouse_pos(tagPOINT*);
+    void get_mouse_pos(tagPOINT&);
     RGE_Font* get_font(int);
     unsigned char GetWorldChecksums(long&, long&, long&);
     long GetChecksum(long);
