@@ -45,6 +45,14 @@
 
 char scenario_default_file_name[260];
 
+// BINARY NOTE: The panel ABI transports this selection as a pointer-sized
+// unsigned value. Copy its representation into the typed event pointer.
+static RGE_Static_Object* selection_object_from_event(unsigned long value) {
+    RGE_Static_Object* object;
+    memcpy(&object, &value, sizeof(object));
+    return object;
+}
+
 extern char s_space[];
 extern char s_percent_d[];
 extern char s_btnbldg_d_shp[];
@@ -1857,12 +1865,12 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
     if (param_1 == this->main_view) {
         if (param_2 == 0x10) {
             rge_base_game->get_player()->unselect_object();
-            ScenarioEditorEventValue event_value;
-            event_value.value = param_3;
+            RGE_Static_Object* event_object =
+                selection_object_from_event(param_3);
             if (this->SelectRegionFlag == SelectObject)
-                this->SelectedObject = event_value.object;
+                this->SelectedObject = event_object;
             if (this->SelectRegionFlag == SelectDestinationObject)
-                this->DestinationObject = event_value.object;
+                this->DestinationObject = event_object;
             {
         RGE_Static_Object* selected_object = this->SelectedObject;
         if (selected_object != 0) {

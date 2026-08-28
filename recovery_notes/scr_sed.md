@@ -24,7 +24,8 @@ registers only exact owners. Non-exact statuses retain a source note here.
 
 `scenario_default_file_name` is the named 260-byte module buffer used by the
 default-save path. The event ABI carries an unsigned long, but this screen
-consumes its selection value through the typed `ScenarioEditorEventValue`.
+consumes its selection value through the typed `selection_object_from_event`
+helper.
 The diplomacy controls use one typed two-dimensional array. The action uses
 separate selection coordinates, save-seed state, and text storage.
 `command_new_map` passes the complete `RGE_Map_Gen_Info` record to
@@ -76,7 +77,7 @@ no panel copies or size-only fallback classes.
 ## Candidate validation
 
 Candidate: `build/scr_sed_canonical_candidate.json`.
-Report: `build/candidate_tus/scr_sed_field_fix/report.json`.
+Report: `build/candidate_tus/scr_sed_no_unions/report.json`.
 
 The grouped candidate compiled all 47 normal bodies and the generated vector
 deleting destructor. It reports zero comparison errors. It reports zero
