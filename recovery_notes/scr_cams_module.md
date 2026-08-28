@@ -40,18 +40,22 @@ source-module manifest and translation-unit registry now point every owner at
 
 ## Status and validation
 
-Seven normal owners remain `matching`. `00490EA0` is an honest
-`accepted_drift` owner because natural deletion replaces the old
-`delete_panel(TPanel**)` address casts. The generated destructor remains
-compiler generated and is not a normal source owner.
+Six normal owners remain `matching`. `00490EA0` is an honest `accepted_drift`
+owner because natural deletion replaces the old `delete_panel(TPanel**)`
+address casts. `00491350` is an honest `accepted_drift` owner because one
+natural `TRIBE_Game* game` local replaces repeated global loads and the old
+`self` alias. The generated destructor remains compiler generated and is not a
+normal source owner.
 
 The grouped candidate is
-`build/candidate_tus/scr_cams_natural_cast_cleanup3/report.json`. It compiled
-all eight direct owners and the generated destructor. The seven matching rows
+`build/candidate_tus/scr_cams_natural_final_cleanup2/report.json`. It compiled
+all eight direct owners and the generated destructor. The six matching rows
 report `MATCH` and `0.0000%`. `00490EA0` reports an accepted 212-byte drift
 with correct ownership and zero relocation errors. Natural deletion changes two
-body boundaries. The generated destructor reports `MATCH` and `0.0000%`.
-The candidate reports the accepted drift without comparison errors.
+body boundaries. `00491350` reports an accepted 717-byte drift with one
+relocation and zero boundary errors. The generated destructor reports `MATCH`
+and `0.0000%`. The candidate reports both accepted drifts without comparison
+errors.
 
 The candidate proposal is `build/scr_cams_natural_proposal.json`. The natural
 source was also validated before and after removal of the old wrapper and

@@ -282,13 +282,12 @@ long TRIBE_Screen_Name::action(TPanel* panel, long event, unsigned long p3,
 }
 
 // 004A6D50 TRIBE_Dialog_Name::TRIBE_Dialog_Name (scr_name.cpp:329-361)
-// BINARY NOTE: The original uses the three-word, address-taken tab window.
-// Its first home remains unused by the source logic but is kept for the
-// shipped stack and register schedule.
+// BINARY NOTE: The shipped constructor differs from this natural two-entry
+// tab order because its stack window takes an unused first home.
 TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
     : TDialogPanel("New Name Dialog")
 {
-    TPanel* tab_list[3];
+    TPanel* tab_list[2];
     this->title = 0;
     this->name_text = 0;
     this->name_input = 0;
@@ -318,9 +317,9 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
 
     this->cancel_button->hotkey = 0x1b;
     this->cancel_button->hotkey_shift = 0;
-    tab_list[1] = this->name_input;
-    tab_list[2] = this->ok_button;
-    this->set_tab_order(&tab_list[1], 3);
+    tab_list[0] = this->name_input;
+    tab_list[1] = this->ok_button;
+    this->set_tab_order(tab_list, 2);
     this->set_curr_child(this->name_input);
 }
 

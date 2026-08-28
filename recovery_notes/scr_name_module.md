@@ -42,13 +42,13 @@ Eight normal owners remain `matching`. The two destructors and
 source-module manifest records these statuses.
 
 The grouped provider candidate is
-`build/candidate_tus/scr_name_natural_delete_cleanup3/report.json`. It compiled the canonical
+`build/candidate_tus/scr_name_natural_final_cleanup2/report.json`. It compiled the canonical
 source and reports `MATCH` and `0.0000%` for all eight matching owners. The two
 compiler-generated deleting destructors also report `MATCH` and `0.0000%`, with
 zero boundary errors. The two natural-delete destructors report accepted drift
 with matching ownership and zero relocation errors. The accepted-drift
-constructor remains an 86-byte mismatch with matching ownership and zero
-relocation and boundary errors.
+constructor remains an 89-byte mismatch with matching ownership and zero
+relocation and boundary errors after the natural two-entry tab array cleanup.
 
 The candidate proposal is `build/scr_name_natural_proposal.json`. It does not
 change global translation-unit registration. The direct source is registered
