@@ -435,14 +435,19 @@
     },
     {
       "name": "scr_end",
-      "source": "src/scr_end_tu.cpp",
+      "source": "src/scr_end.cpp",
+      "module": "scr_end",
       "flags": "config/flags/004936D0_TribeEndScreen.rsp",
       "owners": {
-        "004936D0": "src/matching/004936D0_TribeEndScreen.cpp",
-        "00493C00": "src/matching/00493C00_TribeEndScreen.cpp",
-        "00493C90": "src/matching/00493C90_action.cpp"
+        "004936D0": "src/scr_end.cpp",
+        "00493C00": "src/scr_end.cpp",
+        "00493C90": "src/scr_end.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "004936D0": "??0TribeEndScreen@@QAE@PADPAPADH@Z",
+        "00493C00": "??1TribeEndScreen@@UAE@XZ",
+        "00493C90": "?action@TribeEndScreen@@MAEJPAVTPanel@@JKK@Z"
+      }
     },
     {
       "name": "scr_info",
