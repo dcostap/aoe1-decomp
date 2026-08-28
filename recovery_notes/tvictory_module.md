@@ -31,8 +31,9 @@ typedef char tribe_victory_conditions_size_check[
 The nonvirtual derived QAE destructor declaration remains. The PDB owner
 restores the derived vtable before it jumps to the base destructor.
 
-`include/victory_context.h` was not changed. It is no longer included by
-`tvictory.h`.
+`tvictory.h` now uses the canonical `victory.h` owner. The stale
+`victory_context.h` and `tvictory_context.h` headers had no source or
+configuration consumers and were removed.
 
 ## Validation
 

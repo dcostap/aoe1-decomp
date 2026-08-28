@@ -143,8 +143,8 @@ reported measurements are preserved from the prior scratch owner.
   coordinate lifetimes, a right-bound local, and the reviewed random-map
   base header. These tests did not improve the 168-byte residue. The last
   non-exact source was restored before validation.
-- The reviewed rmm_base_context.h and protected access are retained. They
-  match the PDB class surface and emit the same 243-byte code. The remaining
+- The reviewed rmm_base.h and protected access are retained. They match the
+  PDB class surface and emit the same 243-byte code. The remaining
   evidence gap is early ESI/EBP/EBX/EAX allocation and one missing `mov ebx,
   eax` after the inner scan. No natural source lead recovered these bytes.
 - Accepted-drift audit: the retained source now matches the original 0x08

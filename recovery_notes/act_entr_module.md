@@ -7,8 +7,8 @@ The PDB source is
 
 `src/act_entr.cpp` is the direct source for the five matching handwritten
 owners. It uses `include/act_entr.h` and the canonical owner headers. It does
-not use `include/act_entr_context.h`, a function-fragment include, or a local
-carrier. The independent `00402740` reconstruction remains in
+not use a context header, a function-fragment include, or a local carrier. The
+independent `00402740` reconstruction remains in
 `src/scratch/00402740_update.cpp`.
 
 The six PDB normal owners stay in source and address order:

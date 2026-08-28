@@ -27,9 +27,10 @@ normal VAs. `include/m_co_obj.h` owns the combat-master declarations and uses
 the existing action-master declarations from `include/m_ac_obj.h`.
 
 The old wrapper `src/m_co_obj_tu.cpp`, per-function includes, and per-function
-fallback declarations are no longer used. `include/m_co_obj_context.h` remains
-because the unrelated `0053B7E0` scratch owner uses its temporary combat-object
-view. It is not included by the reunified module.
+fallback declarations are no longer used. The context audit found no source or
+configuration consumer for `include/m_co_obj_context.h`. The canonical
+`m_co_obj.h` and `com_obj.h` owners provide the complete combat declarations,
+so the stale context was removed.
 
 ## Validation state
 

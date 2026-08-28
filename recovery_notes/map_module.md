@@ -29,6 +29,6 @@ It now differs by 56 bytes. This is a source composition regression.
 All rows except `004550A0` and `0045A6D0` remain scratch. This preserves the
 natural module without false exact claims.
 
-`map_context.h` and `map_tile_context.h` remain for foreign legacy consumers.
-`rmm_terr.h` still includes the former. Map no longer uses either file. The
-RMM owner must replace that include before the legacy headers can be removed.
+The stale `map_context.h` and `map_tile_context.h` headers had no Map consumer.
+The RMM terrain header now includes the complete canonical `map.h` owner. Both
+stale headers were removed after this consumer audit.
