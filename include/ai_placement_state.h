@@ -5,8 +5,7 @@
 
 class BuildItem;
 
-class PlacementState {
-public:
+struct PlacementState {
     int buildingTypeID;
     float buildingSize;
     char buildingName[256];
