@@ -52,9 +52,16 @@ The other 29 normal functions pass direct-source validation with `MATCH` and
 
 ## No-line PDB validation
 
-`pdb_no_line_info` records the PDB condition. Validation requires an empty
-PDB function source path and an explicit decorated symbol for every exact
-owner. This preserves direct owner validation without inventing line data.
+`inventory/pdb/module_streams/0027_tech.json` records the original PDB
+module stream. The PDB hash is
+`3acf0034af3aae3636c37746d3336d76f737855963fabf64e66b22e3c3e46e40`.
+The raw `cvdump -s -M039` dump identifies `Release\tech.obj`. It has zero
+`S_GPROC32` records.
+
+This proves only that the PDB has a Tech compiland. It does not identify an
+owning function or decorated symbol for any VA. The 29 byte-equal functions
+are observed. They are not registered as exact owners.
 
 `validate_candidate_tu.py` compiled the complete direct source. Its report
-has 29 exact matches, four observed mismatches, and no generated entry.
+has 29 observed byte matches, four observed mismatches, and no generated
+entry.

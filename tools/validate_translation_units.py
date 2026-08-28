@@ -22,6 +22,7 @@ from common import (
     load_functions,
     load_pdb_function_source_map,
     load_translation_units,
+    pdb_module_stream_procedure_for_va,
     preferred_source_path,
     source_module_for_name,
     slugify_name,
@@ -332,10 +333,6 @@ def validate_translation_units(
         if not isinstance(owners, dict) or not owners:
             issues.append(_issue("missing-owners", f"{group_label} has no owners"))
             continue
-        configured_symbols = group.get("symbols")
-        exact_symbols = configured_symbols if isinstance(configured_symbols, dict) else {}
-        no_line_info = bool(source_module and source_module.get("pdb_no_line_info"))
-
         owner_records: list[tuple[str, Path, dict[str, str] | None]] = []
         for raw_va, raw_owner in owners.items():
             va = str(raw_va).upper()
@@ -406,15 +403,25 @@ def validate_translation_units(
             has_pdb_symbol = bool(
                 str((pdb_sources.get(va) or {}).get("symbol_name") or "").strip()
             )
-            has_exact_symbol = bool(str(exact_symbols.get(va) or "").strip())
-            if no_line_info and not has_exact_symbol:
-                issues.append(
-                    _issue(
-                        "missing-exact-symbol",
-                        f"{group_label} owner {va} needs an explicit symbol for a no-line PDB compiland",
+            if source_module is not None and source_module.get("pdb_no_line_info"):
+                stream_owner = pdb_module_stream_procedure_for_va(source_module, va)
+                if stream_owner is None:
+                    issues.append(
+                        _issue(
+                            "missing-pdb-module-owner",
+                            f"{group_label} owner {va} has no PDB module-stream ownership",
+                        )
                     )
-                )
-            if not has_pdb_symbol and not (no_line_info and has_exact_symbol):
+                elif str(stream_owner.get("name") or "") != str(
+                    (pdb_sources.get(va) or {}).get("symbol_name") or ""
+                ).strip():
+                    issues.append(
+                        _issue(
+                            "pdb-owner-mismatch",
+                            f"{group_label} owner {va} PDB module-stream symbol does not match PDB ownership",
+                        )
+                    )
+            if not has_pdb_symbol:
                 issues.append(
                     _issue(
                         "missing-pdb-symbol",

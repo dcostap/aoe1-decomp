@@ -15,6 +15,7 @@ from common import (
     function_record_by_va,
     load_compiler_generated_functions,
     load_pdb_function_source_map,
+    pdb_module_stream_procedure_for_va,
     preferred_source_path,
     repo_path,
     slugify_name,
@@ -427,25 +428,38 @@ def validate_proposal(payload: dict[str, object]) -> list[str]:
         pdb = pdb_map.get(va, {})
         pdb_module = str(pdb.get("primary_source_path") or pdb.get("primary_source_file") or "")
         pdb_name = Path(pdb_module.replace("\\", "/")).name.casefold()
-        no_line_info = bool(source_module and source_module.get("pdb_no_line_info"))
-        declared_compiland = ""
-        if source_module is not None:
-            declared_compiland = _normalized_module(str(source_module["pdb_source_path"]))
-        if no_line_info and va in owners:
-            symbols = payload["symbols"]
-            assert isinstance(symbols, dict)
-            if not str(symbols.get(va) or "").strip():
-                issues.append(
-                    f"{va} needs an explicit symbol for a no-line PDB compiland"
-                )
+        pdb_symbol = str(pdb.get("symbol_name") or "").strip()
+        if va in owners and not pdb_symbol:
+            issues.append(f"{va} has no PDB-qualified symbol ownership")
+        stream_owner = None
+        if source_module is not None and source_module.get("pdb_no_line_info"):
+            stream_owner = pdb_module_stream_procedure_for_va(source_module, va)
+        if va in owners and source_module is not None and source_module.get("pdb_no_line_info"):
+            if stream_owner is None:
+                issues.append(f"{va} has no PDB module-stream ownership")
+            elif str(stream_owner.get("name") or "") != pdb_symbol:
+                issues.append(f"{va} PDB module-stream symbol does not match PDB ownership")
+        no_line_observation = bool(
+            source_module
+            and source_module.get("pdb_no_line_info")
+            and va not in owners
+            and not pdb_module
+            and _normalized_module(str(source_module["pdb_source_path"])) == proposal_module
+        )
+        no_line_owner = bool(
+            source_module
+            and source_module.get("pdb_no_line_info")
+            and va in owners
+            and stream_owner is not None
+            and pdb_symbol
+            and str(stream_owner.get("name") or "") == pdb_symbol
+            and _normalized_module(str(source_module["pdb_source_path"])) == proposal_module
+        )
         if (
             _normalized_module(pdb_module) != proposal_module
             and pdb_name != proposal_name
-            and not (
-                no_line_info
-                and not pdb_module
-                and declared_compiland == proposal_module
-            )
+            and not no_line_observation
+            and not no_line_owner
         ):
             issues.append(f"{va} PDB module {pdb_module!r} does not match {payload['module']!r}")
         try:

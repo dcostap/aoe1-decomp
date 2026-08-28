@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import difflib
+import hashlib
 import json
 import os
 import struct
@@ -356,6 +357,9 @@ def load_source_modules() -> list[dict[str, object]]:
         source = str(raw_module.get("source") or "").replace("\\", "/").strip()
         pdb_source_path = str(raw_module.get("pdb_source_path") or "").strip()
         pdb_no_line_info = raw_module.get("pdb_no_line_info", False)
+        pdb_module_stream_evidence = str(
+            raw_module.get("pdb_module_stream_evidence") or ""
+        ).replace("\\", "/").strip()
         header = str(raw_module.get("header") or "").replace("\\", "/").strip()
         raw_functions = raw_module.get("functions")
         if not name or not source or not pdb_source_path or not isinstance(raw_functions, dict) or not raw_functions:
@@ -364,6 +368,10 @@ def load_source_modules() -> list[dict[str, object]]:
             )
         if not isinstance(pdb_no_line_info, bool):
             raise ValueError(f"{label}: pdb_no_line_info must be Boolean")
+        if pdb_no_line_info and not pdb_module_stream_evidence:
+            raise ValueError(
+                f"{label}: pdb_no_line_info needs pdb_module_stream_evidence"
+            )
         if name in seen_names:
             raise ValueError(f"{label}: duplicate module name {name!r}")
         seen_names.add(name)
@@ -398,6 +406,7 @@ def load_source_modules() -> list[dict[str, object]]:
                 "header": header,
                 "pdb_source_path": pdb_source_path,
                 "pdb_no_line_info": pdb_no_line_info,
+                "pdb_module_stream_evidence": pdb_module_stream_evidence,
                 "functions": functions,
             }
         )
@@ -422,6 +431,78 @@ def source_module_entry_for_va(va: int | str) -> dict[str, object] | None:
     return None
 
 
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _pdb_module_stream_evidence_issues(module: dict[str, object]) -> list[str]:
+    """Validate one immutable PDB stream dump for a no-line compiland."""
+    name = str(module["name"])
+    evidence_path = repo_path(str(module["pdb_module_stream_evidence"]))
+    if not evidence_path.is_file():
+        return [f"{name}: PDB module-stream evidence is missing: {evidence_path}"]
+    try:
+        evidence = load_json(evidence_path)
+    except (OSError, json.JSONDecodeError) as error:
+        return [f"{name}: invalid PDB module-stream evidence: {error}"]
+    if evidence.get("schema") != 1:
+        return [f"{name}: PDB module-stream evidence has invalid schema"]
+
+    binaries = load_binaries()
+    pdb_path = repo_path(str(binaries["original_pdb"]))
+    evidence_pdb = repo_path(str(evidence.get("pdb_path") or ""))
+    if evidence_pdb.resolve() != pdb_path.resolve():
+        return [f"{name}: PDB module-stream evidence uses another PDB"]
+    if str(evidence.get("pdb_sha256") or "") != _sha256(pdb_path):
+        return [f"{name}: PDB module-stream evidence hash does not match the original PDB"]
+
+    expected_object = str(module["pdb_source_path"]).replace("/", "\\").casefold()
+    object_path = str(evidence.get("object_path") or "").replace("/", "\\").casefold()
+    if object_path != expected_object:
+        return [f"{name}: PDB module-stream evidence has another object path"]
+
+    raw_path = repo_path(str(evidence.get("raw_dump") or ""))
+    if not raw_path.is_file():
+        return [f"{name}: PDB module-stream raw dump is missing: {raw_path}"]
+    if str(evidence.get("raw_dump_sha256") or "") != _sha256(raw_path):
+        return [f"{name}: PDB module-stream raw dump hash does not match"]
+    raw_dump = raw_path.read_text(encoding="utf-8")
+    expected_header = f'** Module: "{evidence.get("object_path")}"'
+    if expected_header not in raw_dump:
+        return [f"{name}: PDB module-stream raw dump has another object path"]
+
+    procedures = evidence.get("procedures")
+    procedure_count = evidence.get("procedure_count")
+    if not isinstance(procedures, list) or procedure_count != len(procedures):
+        return [f"{name}: PDB module-stream procedure metadata is invalid"]
+    if raw_dump.count("S_GPROC32:") != len(procedures):
+        return [f"{name}: PDB module-stream procedure metadata does not match the raw dump"]
+    return []
+
+
+def pdb_module_stream_procedure_for_va(
+    module: dict[str, object], va: str
+) -> dict[str, object] | None:
+    """Return one verified no-line module-stream procedure record."""
+    if _pdb_module_stream_evidence_issues(module):
+        return None
+    evidence_path = repo_path(str(module["pdb_module_stream_evidence"]))
+    evidence = load_json(evidence_path)
+    procedures = evidence["procedures"]
+    assert isinstance(procedures, list)
+    target = str(va).upper()
+    for procedure in procedures:
+        if not isinstance(procedure, dict):
+            continue
+        if str(procedure.get("va") or "").upper() == target:
+            return procedure
+    return None
+
+
 def validate_source_modules() -> list[str]:
     """Return durable configuration problems for migrated source modules."""
     records = {row["va"].upper(): row for row in load_functions()}
@@ -437,6 +518,8 @@ def validate_source_modules() -> list[str]:
             issues.append(f"{name}: module header is missing: {repo_path(header_value)}")
         expected_pdb_path = str(module["pdb_source_path"]).replace("/", "\\").casefold()
         no_line_info = bool(module.get("pdb_no_line_info"))
+        if no_line_info:
+            issues.extend(_pdb_module_stream_evidence_issues(module))
         functions = module["functions"]
         assert isinstance(functions, dict)
         for va, entry in functions.items():
