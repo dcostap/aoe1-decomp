@@ -99,7 +99,6 @@ public:
     virtual void shutdown_music_system();
 protected:
     virtual int setup();
-public:
     virtual int setup_cmd_options();
     virtual int setup_class();
     virtual int setup_main_window();
@@ -149,8 +148,10 @@ public:
     virtual int action_exit_menu();
     virtual int action_size();
     virtual int action_close();
+public:
     void disable_input();
     void enable_input();
+protected:
     virtual void calc_timings();
     virtual void calc_timing_text();
     virtual void show_timings();
@@ -166,6 +167,8 @@ protected:
 public:
     int check_for_cd(int);
     void close();
+    int create_dialog(TPanel**, TPanel*);
+    void delete_dialog(TPanel**);
     unsigned char check_prog_argument(char*);
     void add_to_timing(int, unsigned long);
     int multiplayerGame() const;

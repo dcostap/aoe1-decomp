@@ -24,10 +24,10 @@ int RGE_Base_Game::handle_size(void* p1, unsigned int p2, unsigned int p3, long 
         TPanel* panel = panel_system.currentPanel();
         if (panel != 0) {
             panel = panel_system.currentPanel();
-            panel->HandleSize(this->prog_info->main_wid, this->prog_info->main_hgt);
+            panel->handle_size(this->prog_info->main_wid, this->prog_info->main_hgt);
         }
     }
 
-    this->endMethod();
+    this->action_size();
     return 1;
 }

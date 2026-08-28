@@ -213,7 +213,7 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
     case 0x105:
         if (wparam == 0x12 && panel_system.currentPanel() != 0) {
             panel = panel_system.currentPanel();
-            panel->activate_panel();
+            panel->handle_reactivate();
         }
         goto default_window_proc;
 

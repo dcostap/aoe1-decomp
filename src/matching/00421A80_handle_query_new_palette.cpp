@@ -36,7 +36,7 @@ int RGE_Base_Game::handle_query_new_palette(void* hwnd, unsigned int msg, unsign
 
     void* dc = GetDC(hwnd);
     if (panel_system.currentPanel() != 0) {
-        TPanel* panel = panel_system.currentPanel();
+        TEasy_Panel* panel = static_cast<TEasy_Panel*>(panel_system.currentPanel());
         if (panel->get_palette() != 0)
             SelectPalette(dc, panel->get_palette(), 0);
     } else {

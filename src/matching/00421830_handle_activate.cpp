@@ -31,9 +31,9 @@ int RGE_Base_Game::handle_activate(void* param_1, unsigned int param_2,
         TPanel* panel = panel_system.currentPanel();
         if (panel != 0) {
             panel = panel_system.currentPanel();
-            panel->activate_panel();
+            panel->handle_reactivate();
         }
-        this->activate_dispatch();
+        this->action_activate();
     } else {
         if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 7) {
             if (this->singlePlayerGame() == 1 && this->get_paused() == 0) {
@@ -41,7 +41,7 @@ int RGE_Base_Game::handle_activate(void* param_1, unsigned int param_2,
                 this->set_paused(1, 0);
             }
         }
-        this->deactivate_dispatch();
+        this->action_deactivate();
     }
 
     return 1;
