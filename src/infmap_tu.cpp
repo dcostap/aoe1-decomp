@@ -20,7 +20,7 @@
 // All owners use config/flags/default.rsp. No owner has a reviewed custom flag.
 
 #define INFMAP_SHARED_CONTEXT 1
-#include "../include/infmap_context.h"
+#include "../include/infmap.h"
 
 #include "matching/0044DF80_InfluenceMap.cpp"
 #include "matching/0044E050_InfluenceMap.cpp"

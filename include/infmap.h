@@ -1,5 +1,5 @@
-#ifndef AOE1_INFMAP_CONTEXT_H
-#define AOE1_INFMAP_CONTEXT_H
+#ifndef AOE1_INFMAP_H
+#define AOE1_INFMAP_H
 
 // Canonical infmap.cpp class surface.
 //
