@@ -87,3 +87,14 @@ The direct source must replace them with canonical API and field access.
 
 Keep the candidate wrapper until those provider owners repair their interfaces.
 Do not add copied contexts or raw access to bypass this gate.
+
+## Canonical field cleanup
+
+`0041C270` now uses `TDrawSystem::ScreenWidth`.
+It uses `RGE_Prog_Info::mouse_scroll_interval`.
+The 160 registered candidate owners remain exact.
+
+The next source-shape repair is `0041CDA0`.
+It reads `world->scenario` at `+0x5C`.
+It calls the pointer `new_scenario_header` overload at `+0x34`.
+It calls `RGE_Scenario_Header::save` at `+0x4`.

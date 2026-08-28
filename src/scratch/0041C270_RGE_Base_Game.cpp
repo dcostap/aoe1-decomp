@@ -119,7 +119,7 @@ RGE_Base_Game::~RGE_Base_Game()
     }
 
     if (this->draw_system != 0) {
-        this->registry->RegSetInt(1, "Screen Size", this->draw_system->screen_size);
+        this->registry->RegSetInt(1, "Screen Size", this->draw_system->ScreenWidth);
     }
 
     this->registry->RegSetInt(1, "Rollover Text",
@@ -135,7 +135,8 @@ RGE_Base_Game::~RGE_Base_Game()
     this->registry->RegSetInt(1, "Difficulty", this->single_player_difficulty);
     this->registry->RegSetInt(1, "Path Finding", this->pathFinding() + 1);
     this->registry->RegSetInt(1, "MP Path Finding", this->mpPathFinding() + 1);
-    this->registry->RegSetInt(1, "Scroll Speed", this->prog_info->scroll_speed);
+    this->registry->RegSetInt(
+        1, "Scroll Speed", this->prog_info->mouse_scroll_interval);
 
     if (actionFile != 0) {
         fclose(actionFile);
