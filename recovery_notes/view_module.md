@@ -32,7 +32,7 @@ complete definitions.
 
 ## Validation
 
-`validate_candidate_tu.py` compiled the direct source on current main. The 48
+`validate_candidate_tu.py` compiled the direct source on current main. The 47
 registered owners report `MATCH`, `0.0000%`, correct ownership, boundaries,
 and relocations.
 
@@ -44,3 +44,18 @@ The candidate records decorated names for the five overloaded rows. It has no
 comparison errors.
 
 Direct source compilation succeeds with the pinned VC5 compiler.
+
+## Natural-source audit
+
+The direct source has no wrapper, fragment include, context macro, absolute
+address, field-alias macro, alias union, `volatile`, or `register` form.
+
+It uses the PDB field names for DClip, selected-display records, pick records,
+tile object lists, and queued blits. It uses `TDrawArea::Wnd` for cursor
+placement. File relocation work uses byte pointers only for the loaded tile
+edge buffers.
+
+The audit demoted `005381C0` to scratch. `Update_Render_Pointers` now uses
+the canonical pixel buffer and pitch. Its direct candidate result is a
+164-byte mismatch with one boundary escape. The remaining 47 exact rows still
+report `MATCH`, `0.0000%`.

@@ -85,7 +85,7 @@ union, or manual vptr.
 canonical `TPanel`, `TDrawArea`, `TShape`, `DClipInfo_List`, and `RGE_View`
 declarations.
 
-The direct candidate validates 48 exact owners with `MATCH` and zero
+The direct candidate validates 47 exact owners with `MATCH` and zero
 relocation or boundary failures. The other rows keep their source-bank status.
 
 The candidate records decorated symbols for the five overloaded rows. This

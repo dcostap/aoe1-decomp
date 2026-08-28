@@ -127,7 +127,8 @@
       "note_path": "recovery_notes/view_module.md"
     },
     "005381C0": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/view_module.md"
     },
     "00538280": {
       "status": "matching"
