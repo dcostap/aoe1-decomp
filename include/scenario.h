@@ -2,6 +2,7 @@
 #define AOE1_SCENARIO_H
 
 // Declarations for the original scenario.cpp source module.
+#include "Picture.h"
 
 typedef unsigned char uchar;
 typedef unsigned int uint;

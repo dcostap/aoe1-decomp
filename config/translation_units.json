@@ -2830,19 +2830,20 @@
     },
     {
       "name": "scr_vc_prefix",
-      "source": "src/scr_vc_tu.cpp",
+      "source": "src/scr_vc.cpp",
       "flags": "config/flags/004B8100_TRIBE_Mission_Screen.rsp",
       "owners": {
-        "004B8100": "src/matching/004B8100_TRIBE_Mission_Screen.cpp",
-        "004B87D0": "src/matching/004B87D0_TRIBE_Mission_Screen.cpp",
-        "004B88B0": "src/matching/004B88B0_handle_idle.cpp",
-        "004B88E0": "src/matching/004B88E0_draw.cpp",
-        "004B89A0": "src/matching/004B89A0_action.cpp",
-        "004B8AE0": "src/matching/004B8AE0_key_down_action.cpp"
+        "004B8100": "src/scr_vc.cpp",
+        "004B87D0": "src/scr_vc.cpp",
+        "004B88B0": "src/scr_vc.cpp",
+        "004B88E0": "src/scr_vc.cpp",
+        "004B89A0": "src/scr_vc.cpp",
+        "004B8AE0": "src/scr_vc.cpp"
       },
       "symbols": {
         "004B89A0": "?action@TRIBE_Mission_Screen@@UAEJPAVTPanel@@JKK@Z"
-      }
+      },
+      "module": "scr_vc"
     },
     {
       "name": "scr_stms",
