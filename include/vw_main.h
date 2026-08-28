@@ -4,15 +4,6 @@
 #include "view.h"
 #include "sprite.h"
 
-struct RGE_Pick_Info {
-    float x;
-    float y;
-    short scr_x;
-    short scr_y;
-    RGE_Static_Object* object;
-    RGE_Tile* tile;
-};
-
 struct DisplaySelectedObjRec {
     int active;
     int id;
@@ -21,17 +12,6 @@ struct DisplaySelectedObjRec {
     int select_type;
 };
 
-struct RGE_Pick_Obj_Info {
-    int object_id;
-    short confidence;
-    short draw_level;
-    short sx;
-    short sy;
-};
-
-typedef RGE_Pick_Obj_Info PickedInfo;
-
-extern RGE_Pick_Obj_Info Picked_Objects[];
 extern int allow_user_commands;
 extern int do_draw_log;
 extern const float DAT_00577900;

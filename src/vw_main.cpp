@@ -1,10 +1,8 @@
 // Authentic source module for C:\\msdev\\work\\age1_x1\\vw_main.cpp.
 // Definitions follow the PDB source order.
 //
-// Migration note: 24 owners retain matching status. The three clean
-// reconstructions at 0053DEB0, 0053E910, and 0053FBD0 remain scratch.
-// Their former grouped byte claims are stale until the main agent registers
-// this direct source and runs a fresh grouped check.
+// Migration note: 18 direct owners retain matching status. Nine normal owners
+// remain scratch. They are not registered exact claims.
 //
 // The nearby 0053DB10 scalar deleting destructor is compiler-generated and is
 // not a normal source owner. The 0053E8E9 three-byte padding entry is also not
@@ -22,6 +20,7 @@
 #include "../include/asp_list.h"
 #include "../include/visible.h"
 #include "../include/m_ac_obj.h"
+#include "../include/act_obj.h"
 #include "../include/task_lst.h"
 #include "../include/vw_main.h"
 
@@ -473,6 +472,8 @@ long RGE_Main_View::mouse_left_move_action(long x, long y, int key, int flags) {
 long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
     int mode = rge_base_game->prog_mode;
     int game_mode;
+    RGE_Static_Object** selected_objects;
+    short selected_count;
     RGE_Pick_Info pick_info;
 
     if (mode != 4 && mode != 6 && mode != 7 && mode != 5)
@@ -591,7 +592,8 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
                         this->player->selected_obj, 1) == 0x34) {
             if (this->parent_panel) {
                 this->parent_panel->action(
-                    (TPanel*)this, 0x10, (unsigned long)pick_info.object, 0);
+                    static_cast<TPanel*>(this), 0x10,
+                    (unsigned long)pick_info.object, 0);
                 this->player->select_one_object(pick_info.object, 1);
                 this->set_redraw(TPanel::RedrawNormal);
             }
@@ -723,9 +725,9 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
                 if (this->command_make_do(x, y, 1, -1) == 0)
                     goto done;
             } else if (this->player->get_selected_objects_to_command(
-                           (RGE_Static_Object***)&flags, (short*)&key,
+                           &selected_objects, &selected_count,
                            -1, -1, -1, -1) != 0) {
-                free((void*)flags);
+                free(selected_objects);
                 if (allow_user_commands) {
                     this->fixup_pick_info(&pick_info);
                     this->player->command_add_waypoint(
@@ -801,7 +803,8 @@ long RGE_Main_View::mouse_right_move_action(long x, long y, int key, int flags) 
 }
 
 long RGE_Main_View::mouse_right_up_action(long x, long y, int key, int flags) {
-    RGE_Static_Object** list;
+    RGE_Static_Object** selected_objects;
+    short selected_count;
     RGE_Pick_Info pick_info;
     int mode = rge_base_game->prog_mode;
 
@@ -834,9 +837,9 @@ long RGE_Main_View::mouse_right_up_action(long x, long y, int key, int flags) {
                             if (flags == 0) {
                                 this->command_make_do(x, y, 1, -1);
                             } else if (this->player->get_selected_objects_to_command(
-                                           &list, (short*)&flags,
+                                           &selected_objects, &selected_count,
                                            -1, -1, -1, -1)) {
-                                free(list);
+                                free(selected_objects);
                                 if (allow_user_commands != 0) {
                                     if (this->pick1(0x28, 0, x, y,
                                                     &pick_info, 0, 1) == 0x33) {
@@ -1073,7 +1076,7 @@ unsigned char RGE_Main_View::pick1(unsigned char command, unsigned char small_ob
             short bestx = 0;
             short besty = 0;
             x = 0;
-            PickedInfo* info = Picked_Objects;
+            RGE_Pick_Obj_Info* info = Picked_Objects;
             for (int i = 0; i < y; ++i, ++info) {
                 if (info->object_id >= 0) {
                     RGE_Static_Object* object =
@@ -1088,8 +1091,8 @@ unsigned char RGE_Main_View::pick1(unsigned char command, unsigned char small_ob
                             int score = this->pick_weight(
                                 object, info->confidence);
                             if (score > x) {
-                                bestx = this->TPanel::render_rect.left + info->sx;
-                                besty = this->TPanel::render_rect.top + info->sy;
+                                bestx = this->TPanel::render_rect.left + info->draw_x;
+                                besty = this->TPanel::render_rect.top + info->draw_y;
                                 best = object;
                                 x = score;
                             }
@@ -1112,7 +1115,7 @@ unsigned char RGE_Main_View::pick1(unsigned char command, unsigned char small_ob
         RGE_Static_Object* chosen = 0;
         short chosen_x = 0;
         short chosen_y = 0;
-        PickedInfo* info = Picked_Objects;
+        RGE_Pick_Obj_Info* info = Picked_Objects;
         for (int i = 0; i < y; ++i, ++info) {
             if (info->object_id >= 0) {
                 RGE_Static_Object* object =
@@ -1131,13 +1134,13 @@ unsigned char RGE_Main_View::pick1(unsigned char command, unsigned char small_ob
                         } else if (!seen_exclude) {
                             if (chosen == 0) {
                                 chosen = object;
-                                chosen_x = this->TPanel::render_rect.left + info->sx;
-                                chosen_y = this->TPanel::render_rect.top + info->sy;
+                                chosen_x = this->TPanel::render_rect.left + info->draw_x;
+                                chosen_y = this->TPanel::render_rect.top + info->draw_y;
                             }
                         } else {
                             chosen = object;
-                            chosen_x = this->TPanel::render_rect.left + info->sx;
-                            chosen_y = this->TPanel::render_rect.top + info->sy;
+                            chosen_x = this->TPanel::render_rect.left + info->draw_x;
+                            chosen_y = this->TPanel::render_rect.top + info->draw_y;
                             break;
                         }
                     }
@@ -1146,8 +1149,8 @@ unsigned char RGE_Main_View::pick1(unsigned char command, unsigned char small_ob
         }
         if (seen_exclude && chosen == 0) {
             chosen = exclude;
-            chosen_x = this->TPanel::render_rect.left + Picked_Objects[y].sx;
-            chosen_y = this->TPanel::render_rect.top + Picked_Objects[y].sy;
+            chosen_x = this->TPanel::render_rect.left + Picked_Objects[y].draw_x;
+            chosen_y = this->TPanel::render_rect.top + Picked_Objects[y].draw_y;
         }
         if (chosen != 0) {
             out->object = chosen;
@@ -1202,8 +1205,8 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(
     int target_count;
     int master_obj;
     RGE_Master_Action_Object* cur_target;
-    PickedInfo* info;
-    PickedInfo* info2;
+    RGE_Pick_Obj_Info* info;
+    RGE_Pick_Obj_Info* info2;
     int valid_target_count[64];
     int attacking[64];
 
@@ -1229,7 +1232,8 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(
     if (selected_count > 0) {
         do {
             target_count = 0;
-            cur_target = (RGE_Master_Action_Object*)selected_objects[j]->master_obj;
+            cur_target = static_cast<RGE_Master_Action_Object*>(
+                selected_objects[j]->master_obj);
             if (master_obj > 0) {
                 info = Picked_Objects;
                 do {
@@ -1239,8 +1243,8 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(
                             this->world->objectsValue[picked];
                         if (object != 0 && object->object_state < 7) {
                             RGE_Task* action = cur_target->tasks->get_target_task(
-                                (RGE_Action_Object*)selected_objects[j], object,
-                                0, 0, 0);
+                                static_cast<RGE_Action_Object*>(selected_objects[j]),
+                                object, 0, 0, 0);
                             if (action != 0) {
                                 if (action_filter != -1 &&
                                     action->action_type != action_filter)
@@ -1258,7 +1262,8 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(
                                 int k = 0;
                                 while (k < this->player->master_object_num) {
                                     RGE_Master_Action_Object* object2 =
-                                        (RGE_Master_Action_Object*)this->player->master_objects[k];
+                                        static_cast<RGE_Master_Action_Object*>(
+                                            this->player->master_objects[k]);
                                     if (object2 != 0 &&
                                         object2->object_group ==
                                             cur_target->object_group &&
@@ -1266,7 +1271,8 @@ RGE_Static_Object* RGE_Main_View::pick_best_target(
                                         object2->task_by_group == cur_target->task_by_group) {
                                         RGE_Task* action2 =
                                             object2->tasks->get_target_task(
-                                                (RGE_Action_Object*)selected_objects[j],
+                                                static_cast<RGE_Action_Object*>(
+                                                    selected_objects[j]),
                                                 object, 0, 0, 0);
                                         if (action2 != 0) {
                                             if (action_filter != -1 &&

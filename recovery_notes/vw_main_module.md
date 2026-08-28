@@ -10,7 +10,8 @@
 
 `RGE_Main_View` owns this module. It uses canonical View, Player, World, Map,
 Sprite, Static Object, visibility, task-list, and master-action headers.
-`RGE_Pick_Info` stays in `vw_main.h` with its owning view consumer.
+View owns `RGE_Pick_Info`, `RGE_Pick_Obj_Info`, and `Picked_Objects`.
+`vw_main.h` consumes that surface through `view.h`.
 
 The source has no View-local compatibility class, context header, wrapper, raw
 vtable, or copied Sprite class. `0053DB10` is the compiler-generated deleting
@@ -25,14 +26,18 @@ These direct owners remain exact: `0053DAB0`, `0053DB40`, `0053DBA0`,
 
 `0053DEB0`, `0053E340`, `0053E7F0`, `0053E910`, `0053F220`, `0053F2F0`,
 `0053F3D0`, `0053FBD0`, and `00540010` are scratch. Their direct sources have
-correct owners and relocation targets. `0053E910` has one relocation mismatch.
+correct owners and relocation targets. `0053E910` has relocation mismatches.
 No source is retained for its byte score.
+
+The policy repair replaced stack-slot aliases in the two mouse-up handlers with
+named `selected_objects` and `selected_count` locals. It also uses canonical
+hierarchy casts. These changes leave all registered exact owners unchanged.
 
 ## Validation
 
 `python tools/validate_candidate_tu.py --proposal
 build/vw_main_natural_proposal.json --output-dir
-build/candidate_tus/vw_main_natural` compiled the direct source.
+build/candidate_tus/vw_main_natural_policy_repair` compiled the repaired source.
 
 All 18 matching owners report `MATCH`, `0.0000%`, correct ownership,
 relocations, and boundaries. The generated deleting destructor also reports
