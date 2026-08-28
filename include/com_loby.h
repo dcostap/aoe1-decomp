@@ -3,17 +3,8 @@
 
 #include <windows.h>
 #include "com_err.h"
-
-#ifndef __DPLAY_INCLUDED__
-struct IDirectPlay2;
-struct IDirectPlay3;
-struct DPSESSIONDESC2;
-struct DPLCONNECTION;
-#endif
-#ifndef __DPLOBBY_INCLUDED__
-struct IDirectPlayLobby;
-struct IDirectPlayLobby2;
-#endif
+#include "../third_party/directplay/include/dplay.h"
+#include "../third_party/directplay/include/dplobby.h"
 
 class RGE_Lobby {
 protected:
