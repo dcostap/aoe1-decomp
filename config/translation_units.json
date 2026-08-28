@@ -3605,13 +3605,14 @@
     },
     {
       "name": "scr_sing",
-      "source": "src/scr_sing_tu.cpp",
+      "source": "src/scr_sing.cpp",
+      "module": "scr_sing",
       "flags": "config/flags/004B69A0_TribeSPMenuScreen.rsp",
       "owners": {
-        "004B69A0": "src/matching/004B69A0_TribeSPMenuScreen.cpp",
-        "004B6C00": "src/matching/004B6C00_TribeSPMenuScreen.cpp",
-        "004B6C90": "src/matching/004B6C90_handle_idle.cpp",
-        "004B6CC0": "src/matching/004B6CC0_action.cpp"
+        "004B69A0": "src/scr_sing.cpp",
+        "004B6C00": "src/scr_sing.cpp",
+        "004B6C90": "src/scr_sing.cpp",
+        "004B6CC0": "src/scr_sing.cpp"
       },
       "symbols": {
         "004B69A0": "??0TribeSPMenuScreen@@QAE@XZ",
