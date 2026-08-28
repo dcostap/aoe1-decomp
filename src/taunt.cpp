@@ -2,7 +2,7 @@
 // Normal owners follow the PDB source-line order.
 
 #include "../include/taunt.h"
-#include "../include/sounddrv_context.h"
+#include "../include/sounddrv.h"
 
 #include <stdio.h>
 #include <stdlib.h>
