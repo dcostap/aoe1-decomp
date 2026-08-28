@@ -38,3 +38,44 @@ Remove the local `TDrawArea`, `TShape`, and `TPanel` bodies only after these
 owner headers provide the listed members. Then run one grouped View candidate
 and up to three cached focused checks. Keep the two documented Shape regressions
 nonexact.
+
+## 2026-08-28 owner repairs
+
+The current View wrapper cannot become a direct natural compiland.
+It still supplies copied `TPanel`, `TDrawArea`, and `TShape` bodies.
+The held migration commit `744ab00cd` is not a solution.
+It uses alias unions and context suppression.
+
+`drawarea.h` now exposes these Drawarea.cpp methods:
+
+- `TDrawArea::PtrSpanCopy` at `00445250`;
+- `TDrawArea::OverlayMemCopy` at `00445580`.
+
+View calls them from `00536B40` and `00534AE0`.
+The PDB symbols prove these declarations:
+
+```cpp
+void PtrSpanCopy(TDrawArea*, long, long, tagRECT*, unsigned char**);
+void OverlayMemCopy(tagRECT&, tagRECT&, int, int, int, int);
+```
+
+`TDrawArea::SpanList` and `CurSpanList` are the canonical `+0xCC` and
+`+0xD0` fields. View source must use them. Do not add `SavedMask` or
+`CurrentMask` aliases.
+
+`Shape.h` no longer declares a partial `DClipInfo_List` class. View owns the
+PDB `DClipInfo_List` and
+`DClipInfo_Node` definitions. The node is `0x40` bytes. `Node_Type` is at
+`+0x2C`. The list is `0x70` bytes. `AddGDINode` returns a node pointer and
+takes thirteen `int` values.
+
+`src/Shape.cpp` includes `view.h` for the complete list type. The public Shape
+header keeps only a forward declaration. Do not use a partial compatibility
+class.
+
+Now convert View source to `panel.h`, `drawarea.h`,
+and `Shape.h`. Use the real field names. In particular, use
+`render_rect`, `first_child_node`, `have_focus`, `pnl_wid`, `pnl_hgt`, and
+`cur_render_area`. Route any remaining Player, World, Visible, Map, or object
+surface gap to that type owner. Do not restore a View context, carrier, alias
+union, or manual vptr.

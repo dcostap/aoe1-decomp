@@ -2,6 +2,7 @@
 // Definitions follow the original PDB source order.
 
 #include "../include/Shape.h"
+#include "../include/view.h"
 #include <string.h>
 #include <memory.h>
 

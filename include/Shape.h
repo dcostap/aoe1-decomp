@@ -61,13 +61,7 @@ typedef tagRECT Rect;
 typedef Shape_File_Header ShapeFile;
 typedef Shape_Header TShapeHeader;
 
-class DClipInfo_List {
-public:
-    void AddDrawNode(void* shape_base, Shape_Info* shape, int yline,
-                     int draw_x, int draw_y, int draw_flag,
-                     byte* color_table, int xform_mask,
-                     int draw_level, int object_id);
-};
+class DClipInfo_List;
 
 class TShape {
 public:

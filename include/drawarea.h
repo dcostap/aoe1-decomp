@@ -187,6 +187,10 @@ public:
     void PtrClear(tagRECT*, int);
     long AlignedWidth();
     void Copy(TDrawArea*, long, long, RECT*, int);
+    // Drawarea.cpp:00445250. View.cpp calls this during the span blit.
+    void PtrSpanCopy(TDrawArea*, long, long, tagRECT*, unsigned char**);
+    // Drawarea.cpp:00445580. View.cpp calls this during scroll copying.
+    void OverlayMemCopy(tagRECT&, tagRECT&, int, int, int, int);
     void SetTrans(int, unsigned char);
     void SetOverlayTrans(int, unsigned char);
     void SetPixel(long, long, unsigned char);
