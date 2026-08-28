@@ -246,7 +246,8 @@
       "status": "matching"
     },
     "004F0D70": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/taitacmd_module.md"
     },
     "004F1090": {
       "status": "matching"
@@ -384,7 +385,8 @@
       "note_path": "recovery_notes/taitacmd_module.md"
     },
     "004F99B0": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/taitacmd_module.md"
     },
     "004F9AD0": {
       "status": "matching"

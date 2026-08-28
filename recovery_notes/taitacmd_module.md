@@ -12,9 +12,9 @@ The module header owns the reviewed class and layout declarations.
 
 Current status:
 
-- 180 owners are `matching`.
+- 178 owners are `matching`.
 - 10 owners are `accepted_drift`.
-- 24 owners are `scratch`.
+- 26 owners are `scratch`.
 - 2 owners are `verified_logic`.
 
 The 36 non-matching owners keep their current status.
@@ -28,3 +28,18 @@ claims before migration.
 
 Migration validation must check source order, one compiler-facing owner, and the
 registered exact owners after the module config points to this source.
+
+## Tactical group provider checkpoint
+
+`include/tactical_group.h` now owns the PDB-proven `0x330`
+`TacticalAIGroup` layout. It uses canonical `Waypoint` from
+`include/waypoint.h`. The owner has named fields and no alias unions or byte
+carriers. `taitacmd.h` and `taiinfmd.h` consume this provider.
+
+The Tactical grouped candidate kept 109 of 111 registered rows exact. The
+Tactical Group owner band remains exact. `004F0D70 addObject` regressed to a
+778-byte mismatch with five boundary escapes. `004F99B0 taskPlay` regressed by
+one byte. Both bodies remain in their natural source and are now scratch.
+The provider move changed declaration context and Tactical Group member
+spelling. The two source bodies are unchanged. Repair them after the next
+Tactical ownership surface is complete.

@@ -1,17 +1,10 @@
 #ifndef AOE1_PATH_H
 #define AOE1_PATH_H
 
+#include "waypoint.h"
+
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* value);
-
-struct Waypoint {
-    float x;
-    float y;
-    float z;
-    unsigned char facetToNextWaypoint;
-};
-
-typedef char path_waypoint_size_check[(sizeof(Waypoint) == 0x10) ? 1 : -1];
 
 class ostream;
 

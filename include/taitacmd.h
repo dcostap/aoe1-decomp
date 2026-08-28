@@ -1,8 +1,9 @@
 #ifndef AOE1_TAITACMD_H
 #define AOE1_TAITACMD_H
 
-// Canonical declarations for the original taitacmd.cpp source module.
-// PDB types prove the main layouts below.
+// Declarations for the original taitacmd.cpp source module.
+
+#include "waypoint.h"
 
 typedef unsigned char uchar;
 typedef unsigned long ulong;
@@ -31,19 +32,6 @@ struct XYZBYTEPoint {
     unsigned char z;
 };
 
-struct Waypoint {
-public:
-    float x;
-    float y;
-    float z;
-    unsigned char facetToNextWaypoint;
-    unsigned char pad_0D[3];
-};
-
-struct AttackWaypoint {
-    char data[16];
-};
-
 class Path {
 public:
     float length();
@@ -53,6 +41,7 @@ public:
     int numberOfWaypoints();
     Waypoint* currentWaypoint();
 };
+
 class BuildItem;
 class RGE_Static_Object;
 class RGE_Master_Static_Object;
@@ -714,143 +703,7 @@ public:
     void revokeTributeAlliance();
 };
 
-class TacticalAIGroup {
-public:
-    virtual ~TacticalAIGroup();
-    TacticalAIGroup* next;
-    TacticalAIGroup* prev;
-    union { int idValue; int id_; int field_0C; };
-    union { int inUseValue; int inUse_; int field_10; };
-    union { int typeValue; int type_; int field_14; };
-    union { int subTypeValue; int subType_; int field_18; };
-    union { int unitsValue[40]; int members[40]; };
-    union { int unitsOriginalHitPointsValue[40]; int companion[40]; };
-    union { int numberUnitsValue; int numberUnits_; int field_15C; };
-    union { int desiredNumberUnitsValue; int desiredNumberUnits_; int field_160; };
-    union { int commanderValue; int commander_; int field_164; };
-    union { int originalHitPointsValue; int originalHitPoints_; int field_168; };
-    union { int originalUnitNumberValue; int originalUnitNumber_; int field_16C; };
-    union {
-        Waypoint locationValue;
-        Waypoint location_;
-        char data_170[0x10];
-        struct { int field_170; int field_174; int field_178; };
-    };
-    union { int actionValue; int action_; int field_180; };
-    union { int targetValue; int target_; int field_184; };
-    union { int targetTypeValue; int targetType_; int field_188; };
-    union {
-        Waypoint targetLocationValue;
-        Waypoint targetLocation_;
-        char data_18C[0x10];
-        struct { int field_18C; int field_190; int field_194; };
-    };
-    union {
-        Waypoint gatherLocationValue;
-        Waypoint gatherLocation_;
-        char data_19C[0x10];
-        struct { int field_19C; int field_1A0; int field_1A4; };
-        struct { float gatherX; float gatherY; float gatherZ; };
-    };
-    union {
-        Waypoint retreatLocationValue;
-        Waypoint retreatLocation_;
-        char data_1AC[0x10];
-        struct { int field_1AC; int field_1B0; int field_1B4; };
-    };
-    union { int priorityValue; int priority_; int field_1BC; };
-    union { int waitCodeValue; int waitCode_; int field_1C0; };
-    union { int assistGroupIDValue; int assistGroupID_; int field_1C4; };
-    union { int assistGroupTypeValue; int assistGroupType_; int field_1C8; };
-    union { unsigned long consecutiveIdleUnitCountValue; unsigned long consecutiveIdleUnitCount_; int field_1CC; };
-    union { int playNumberValue; int field_1D0; };
-    union { unsigned char numberAttackWaypointsValue; unsigned char numberAttackWaypoints_; unsigned char byte_1D4; };
-    union { unsigned char currentAttackWaypointValue; unsigned char currentAttackWaypoint_; unsigned char byte_1D5; };
-    unsigned char pad_1D6[2];
-    union { Waypoint attackWaypoints[15]; AttackWaypoint waypoints[15]; char data_1D8[0xF0]; };
-    union { unsigned char consecutiveGatherAttemptsValue; unsigned char byte_2C8; };
-    unsigned char pad_2C9[3];
-    union { int numberObjectsToDestroyValue; int numberObjectsToDestroy; int field_2CC; };
-    union { int objectsToDestroyValue[20]; int objectsToDestroy[20]; int arr_[20]; char data_2D0[0x50]; };
-    union { int objectsToDestroyOwnerValue; int field_320; };
-    union { int objectsToDestroyCommanderZoneValue; int field_324; };
-    union { unsigned long lastAttackRoundupTime; int field_328; };
-    union { unsigned long lastAddedUnitTimeValue; int field_32C; };
-
-    TacticalAIGroup();
-    static void load(TacticalAIGroup* self, int file);
-    int load(int);
-    int save(int);
-    int id() const;
-    void setID(int);
-    int inUse() const;
-    void setInUse(int);
-    int type() const;
-    void setType(int);
-    int subType() const;
-    void setSubType(int);
-    int addUnit(int, TribeMainDecisionAIModule*);
-    int removeUnit(int, TribeMainDecisionAIModule*);
-    int removeUnitByIndex(int, TribeMainDecisionAIModule*);
-    void removeUnits(TribeMainDecisionAIModule*);
-    int removeExtraUnits(TribeMainDecisionAIModule*);
-    int removeUnboardedUnits(TribeTacticalAIModule*, TribeMainDecisionAIModule*);
-    int containsUnit(int);
-    int numberUnits();
-    int unit(int);
-    int unitOriginalHitPoints(int);
-    int desiredNumberUnits() const;
-    void setDesiredNumberUnits(int);
-    int commander() const;
-    void setSpecificCommander(int, TribeMainDecisionAIModule*);
-    int currentHitPoints(TribeMainDecisionAIModule*) const;
-    int originalHitPoints() const;
-    void setOriginalHitPoints(int);
-    int originalUnitNumber() const;
-    void setOriginalUnitNumber(int);
-    const Waypoint& location() const;
-    void setCurrentAttackWaypoint(unsigned char);
-    void setLocation(float, float, float);
-    void setLocation(int, int, int);
-    int action() const;
-    void setAction(int);
-    int target() const;
-    void setTarget(int);
-    int targetType() const;
-    void setTargetType(int);
-    const Waypoint& targetLocation() const;
-    void setAllLocations(float, float, float);
-    void setTargetLocation(float, float, float);
-    void setTargetLocation(int, int, int);
-    const Waypoint& gatherLocation() const;
-    void setGatherLocation(float, float, float);
-    void setGatherLocation(int, int, int);
-    const Waypoint& retreatLocation() const;
-    void setRetreatLocation(float, float, float);
-    void setRetreatLocation(int, int, int);
-    int priority() const;
-    void setPriority(int);
-    int waitCode() const;
-    void setWaitCode(int);
-    int assistGroupID() const;
-    void setAssistGroupID(int);
-    int assistGroupType() const;
-    void setAssistGroupType(int);
-    int isGathered(TribeTacticalAIModule*, TribeMainDecisionAIModule*);
-    int isTightGathered(TribeTacticalAIModule*, TribeMainDecisionAIModule*);
-    int allUnitsIdle(TribeMainDecisionAIModule*, int);
-    unsigned long consecutiveIdleUnitCount() const;
-    void setConsecutiveIdleUnitCount(unsigned long);
-    void incrementConsecutiveIdleUnitCount(unsigned long);
-    unsigned char numberAttackWaypoints() const;
-    unsigned char currentAttackWaypoint() const;
-    void addAttackWaypoint(float, float);
-    Waypoint* attackWaypoint(unsigned char);
-    int firstIdleUnit(TribeMainDecisionAIModule*);
-    int objectToDestroy(int);
-    int addObjectToDestroy(int);
-    int task(TribeTacticalAIModule*, TribeMainDecisionAIModule*, int, int, int);
-};
+#include "tactical_group.h"
 
 class TribeTacticalAIModule : public TacticalAIModule {
 public:

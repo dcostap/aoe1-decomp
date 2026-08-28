@@ -6,6 +6,7 @@
 
 #include "aiplaybook.h"
 #include "infmap.h"
+#include "tactical_group.h"
 
 typedef unsigned char uchar;
 typedef unsigned long ulong;
@@ -759,18 +760,6 @@ public:
     int inProgressValue;
     int builtValue;
     int buildAttemptsValue;
-};
-
-class TacticalAIGroup {
-public:
-    int numberUnits();
-    int commander();
-    int numberObjectsToDestroyValue;
-    int objectsToDestroyOwnerValue;
-    int objectsToDestroyCommanderZoneValue;
-    int objectToDestroy(int index);
-    int addObjectToDestroy(int index);
-    int unit(int index);
 };
 
 class ConstructionAIModule {

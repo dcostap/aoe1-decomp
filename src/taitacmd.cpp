@@ -96,10 +96,10 @@ extern float DAT_005756ec;
 
 int TacticalAIGroup::load(int fd)
 {
-    rge_read(fd, &this->field_0C, 4);
-    rge_read(fd, &this->field_10, 4);
+    rge_read(fd, &this->idValue, 4);
+    rge_read(fd, &this->inUseValue, 4);
 
-    int* ptr = this->companion;
+    int* ptr = this->unitsOriginalHitPointsValue;
     int count = 40;
     do {
         rge_read(fd, ptr - 40, 4);
@@ -107,51 +107,51 @@ int TacticalAIGroup::load(int fd)
         ++ptr;
     } while (--count != 0);
 
-    rge_read(fd, &this->field_15C, 4);
-    rge_read(fd, &this->field_160, 4);
-    rge_read(fd, &this->field_164, 4);
-    rge_read(fd, &this->field_168, 4);
-    rge_read(fd, &this->field_16C, 4);
-    rge_read(fd, &this->data_170, 0x10);
-    rge_read(fd, &this->field_180, 4);
-    rge_read(fd, &this->field_184, 4);
-    rge_read(fd, &this->field_188, 4);
-    rge_read(fd, &this->data_18C, 0x10);
-    rge_read(fd, &this->data_19C, 0x10);
-    rge_read(fd, &this->data_1AC, 0x10);
-    rge_read(fd, &this->field_1BC, 4);
-    rge_read(fd, &this->field_1C0, 4);
-    rge_read(fd, &this->field_1C4, 4);
-    rge_read(fd, &this->field_1C8, 4);
-    rge_read(fd, &this->field_14, 4);
-    rge_read(fd, &this->field_18, 4);
-    rge_read(fd, &this->field_1CC, 4);
-    rge_read(fd, &this->byte_1D4, 1);
-    rge_read(fd, &this->byte_1D5, 1);
-    rge_read(fd, &this->data_1D8, 0xF0);
-    rge_read(fd, &this->field_1D0, 4);
+    rge_read(fd, &this->numberUnitsValue, 4);
+    rge_read(fd, &this->desiredNumberUnitsValue, 4);
+    rge_read(fd, &this->commanderValue, 4);
+    rge_read(fd, &this->originalHitPointsValue, 4);
+    rge_read(fd, &this->originalUnitNumberValue, 4);
+    rge_read(fd, &this->locationValue, 0x10);
+    rge_read(fd, &this->actionValue, 4);
+    rge_read(fd, &this->targetValue, 4);
+    rge_read(fd, &this->targetTypeValue, 4);
+    rge_read(fd, &this->targetLocationValue, 0x10);
+    rge_read(fd, &this->gatherLocationValue, 0x10);
+    rge_read(fd, &this->retreatLocationValue, 0x10);
+    rge_read(fd, &this->priorityValue, 4);
+    rge_read(fd, &this->waitCodeValue, 4);
+    rge_read(fd, &this->assistGroupIDValue, 4);
+    rge_read(fd, &this->assistGroupTypeValue, 4);
+    rge_read(fd, &this->typeValue, 4);
+    rge_read(fd, &this->subTypeValue, 4);
+    rge_read(fd, &this->consecutiveIdleUnitCountValue, 4);
+    rge_read(fd, &this->numberAttackWaypointsValue, 1);
+    rge_read(fd, &this->currentAttackWaypointValue, 1);
+    rge_read(fd, &this->attackWaypoints, 0xF0);
+    rge_read(fd, &this->playNumberValue, 4);
 
     // Version detection: conditional field reads based on float version comparison
     // Asm pattern: fld [58EBCCh]; fcomp [5756E0h]; test ah,1; jne â†’ if (ver < threshold)
     if (DAT_0058ebcc >= DAT_005756e0) {
-        rge_read(fd, &this->byte_2C8, 1);
+        rge_read(fd, &this->consecutiveGatherAttemptsValue, 1);
     } else {
-        this->byte_2C8 = 0;
+        this->consecutiveGatherAttemptsValue = 0;
     }
 
     if (DAT_0058ebcc >= DAT_005756e4) {
-        rge_read(fd, &this->field_2CC, 4);
-        rge_read(fd, &this->data_2D0, 0x50);
-        rge_read(fd, &this->field_320, 4);
-        rge_read(fd, &this->field_324, 4);
+        rge_read(fd, &this->numberObjectsToDestroyValue, 4);
+        rge_read(fd, &this->objectsToDestroyValue, 0x50);
+        rge_read(fd, &this->objectsToDestroyOwnerValue, 4);
+        rge_read(fd, &this->objectsToDestroyCommanderZoneValue, 4);
     }
 
     if (DAT_0058ebcc >= DAT_005756e8) {
-        rge_read(fd, &this->field_328, 4);
+        rge_read(fd, &this->lastAttackRoundupTime, 4);
     }
 
     if (DAT_0058ebcc >= DAT_005756ec) {
-        rge_read(fd, &this->field_32C, 4);
+        rge_read(fd, &this->lastAddedUnitTimeValue, 4);
     }
 
     return 1;
@@ -250,37 +250,37 @@ int TacticalAIGroup::id() const
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EAF30_setID.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setID(int val) { this->id_ = val; }
+void TacticalAIGroup::setID(int val) { this->idValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EAF40_inUse.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::inUse() const { return this->inUse_; }
+int TacticalAIGroup::inUse() const { return this->inUseValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EAF50_setInUse.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setInUse(int val) { this->inUse_ = val; }
+void TacticalAIGroup::setInUse(int val) { this->inUseValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EAF60_type.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::type() const { return this->type_; }
+int TacticalAIGroup::type() const { return this->typeValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EAF70_setType.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setType(int val) { this->type_ = val; }
+void TacticalAIGroup::setType(int val) { this->typeValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EAF80_subType.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::subType() const { return this->subType_; }
+int TacticalAIGroup::subType() const { return this->subTypeValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EAF90_setSubType.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setSubType(int val) { this->subType_ = val; }
+void TacticalAIGroup::setSubType(int val) { this->subTypeValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EAFA0_addUnit.cpp
@@ -535,7 +535,7 @@ int TacticalAIGroup::containsUnit(int unitId) {
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB2C0_numberUnits.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::numberUnits() { return this->numberUnits_; }
+int TacticalAIGroup::numberUnits() { return this->numberUnitsValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB2D0_unit.cpp
@@ -593,17 +593,17 @@ int TacticalAIGroup::unitOriginalHitPoints(int unit_index) {
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB370_desiredNumberUnits.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::desiredNumberUnits() const { return this->desiredNumberUnits_; }
+int TacticalAIGroup::desiredNumberUnits() const { return this->desiredNumberUnitsValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB380_setDesiredNumberUnits.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setDesiredNumberUnits(int val) { this->desiredNumberUnits_ = val; }
+void TacticalAIGroup::setDesiredNumberUnits(int val) { this->desiredNumberUnitsValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB390_commander.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::commander() const { return this->commander_; }
+int TacticalAIGroup::commander() const { return this->commanderValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB3A0_setSpecificCommander.cpp
@@ -682,27 +682,27 @@ int TacticalAIGroup::currentHitPoints(TribeMainDecisionAIModule* module) const {
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB470_originalHitPoints.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::originalHitPoints() const { return this->originalHitPoints_; }
+int TacticalAIGroup::originalHitPoints() const { return this->originalHitPointsValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB480_setOriginalHitPoints.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setOriginalHitPoints(int val) { this->originalHitPoints_ = val; }
+void TacticalAIGroup::setOriginalHitPoints(int val) { this->originalHitPointsValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB490_originalUnitNumber.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::originalUnitNumber() const { return this->originalUnitNumber_; }
+int TacticalAIGroup::originalUnitNumber() const { return this->originalUnitNumberValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB4A0_setOriginalUnitNumber.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setOriginalUnitNumber(int val) { this->originalUnitNumber_ = val; }
+void TacticalAIGroup::setOriginalUnitNumber(int val) { this->originalUnitNumberValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB4B0_location.cpp
 // ---------------------------------------------------------------------------
-const Waypoint & TacticalAIGroup::location() const { return this->location_; }
+const Waypoint & TacticalAIGroup::location() const { return this->locationValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB4C0_setLocation.cpp
@@ -717,37 +717,37 @@ void TacticalAIGroup::setLocation(float a, float b, float c) {
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB4F0_action.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::action() const { return this->action_; }
+int TacticalAIGroup::action() const { return this->actionValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB500_setAction.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setAction(int val) { this->action_ = val; }
+void TacticalAIGroup::setAction(int val) { this->actionValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB510_target.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::target() const { return this->target_; }
+int TacticalAIGroup::target() const { return this->targetValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB520_setTarget.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setTarget(int val) { this->target_ = val; }
+void TacticalAIGroup::setTarget(int val) { this->targetValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB530_targetType.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::targetType() const { return this->targetType_; }
+int TacticalAIGroup::targetType() const { return this->targetTypeValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB540_setTargetType.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setTargetType(int val) { this->targetType_ = val; }
+void TacticalAIGroup::setTargetType(int val) { this->targetTypeValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB550_targetLocation.cpp
 // ---------------------------------------------------------------------------
-const Waypoint & TacticalAIGroup::targetLocation() const { return this->targetLocation_; }
+const Waypoint & TacticalAIGroup::targetLocation() const { return this->targetLocationValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB560_setAllLocations.cpp
@@ -783,7 +783,7 @@ void TacticalAIGroup::setTargetLocation(float a, float b, float c) {
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB5F0_gatherLocation.cpp
 // ---------------------------------------------------------------------------
-const Waypoint & TacticalAIGroup::gatherLocation() const { return this->gatherLocation_; }
+const Waypoint & TacticalAIGroup::gatherLocation() const { return this->gatherLocationValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB600_setGatherLocation.cpp
@@ -798,7 +798,7 @@ void TacticalAIGroup::setGatherLocation(float a, float b, float c) {
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB630_retreatLocation.cpp
 // ---------------------------------------------------------------------------
-const Waypoint & TacticalAIGroup::retreatLocation() const { return this->retreatLocation_; }
+const Waypoint & TacticalAIGroup::retreatLocation() const { return this->retreatLocationValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB640_setRetreatLocation.cpp
@@ -813,42 +813,42 @@ void TacticalAIGroup::setRetreatLocation(float a, float b, float c) {
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB670_priority.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::priority() const { return this->priority_; }
+int TacticalAIGroup::priority() const { return this->priorityValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB680_setPriority.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setPriority(int val) { this->priority_ = val; }
+void TacticalAIGroup::setPriority(int val) { this->priorityValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB690_waitCode.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::waitCode() const { return this->waitCode_; }
+int TacticalAIGroup::waitCode() const { return this->waitCodeValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB6A0_setWaitCode.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setWaitCode(int val) { this->waitCode_ = val; }
+void TacticalAIGroup::setWaitCode(int val) { this->waitCodeValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB6B0_assistGroupID.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::assistGroupID() const { return this->assistGroupID_; }
+int TacticalAIGroup::assistGroupID() const { return this->assistGroupIDValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB6C0_setAssistGroupID.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setAssistGroupID(int val) { this->assistGroupID_ = val; }
+void TacticalAIGroup::setAssistGroupID(int val) { this->assistGroupIDValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB6D0_assistGroupType.cpp
 // ---------------------------------------------------------------------------
-int TacticalAIGroup::assistGroupType() const { return this->assistGroupType_; }
+int TacticalAIGroup::assistGroupType() const { return this->assistGroupTypeValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB6E0_setAssistGroupType.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setAssistGroupType(int val) { this->assistGroupType_ = val; }
+void TacticalAIGroup::setAssistGroupType(int val) { this->assistGroupTypeValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EB6F0_task.cpp
@@ -1820,7 +1820,7 @@ int TacticalAIGroup::isGathered(TribeTacticalAIModule* tactical, TribeMainDecisi
                 this->removeUnitByIndex(i, md);
             }
             else {
-                dist = obj->distance_to_position(this->gatherX, this->gatherY, this->gatherZ);
+                dist = obj->distance_to_position(this->gatherLocationValue.x, this->gatherLocationValue.y, this->gatherLocationValue.z);
                 dist = dist - 1.0f;
                 if (dist < 0.0f) {
                     dist = 0.0f;
@@ -1874,7 +1874,7 @@ int TacticalAIGroup::isTightGathered(TribeTacticalAIModule* tactical, TribeMainD
                 this->removeUnitByIndex(i, md);
             }
             else {
-                dist = obj->distance_to_position(this->gatherX, this->gatherY, this->gatherZ);
+                dist = obj->distance_to_position(this->gatherLocationValue.x, this->gatherLocationValue.y, this->gatherLocationValue.z);
                 dist = dist - 2.0f;
                 if (dist < 0.0f) {
                     dist = 0.0f;
@@ -1953,30 +1953,30 @@ next:
 // ---------------------------------------------------------------------------
 // PDB source owner: 004ECFE0_consecutiveIdleUnitCount.cpp
 // ---------------------------------------------------------------------------
-unsigned long TacticalAIGroup::consecutiveIdleUnitCount() const { return this->consecutiveIdleUnitCount_; }
+unsigned long TacticalAIGroup::consecutiveIdleUnitCount() const { return this->consecutiveIdleUnitCountValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004ECFF0_setConsecutiveIdleUnitCount.cpp
 // ---------------------------------------------------------------------------
-void TacticalAIGroup::setConsecutiveIdleUnitCount(unsigned long val) { this->consecutiveIdleUnitCount_ = val; }
+void TacticalAIGroup::setConsecutiveIdleUnitCount(unsigned long val) { this->consecutiveIdleUnitCountValue = val; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004ED000_incrementConsecutiveIdleUnitCount.cpp
 // ---------------------------------------------------------------------------
 
 void TacticalAIGroup::incrementConsecutiveIdleUnitCount(unsigned long value) {
-    this->field_1CC += value;
+    this->consecutiveIdleUnitCountValue += value;
 }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004ED020_numberAttackWaypoints.cpp
 // ---------------------------------------------------------------------------
-unsigned char TacticalAIGroup::numberAttackWaypoints() const { return this->numberAttackWaypoints_; }
+unsigned char TacticalAIGroup::numberAttackWaypoints() const { return this->numberAttackWaypointsValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004ED030_currentAttackWaypoint.cpp
 // ---------------------------------------------------------------------------
-unsigned char TacticalAIGroup::currentAttackWaypoint() const { return this->currentAttackWaypoint_; }
+unsigned char TacticalAIGroup::currentAttackWaypoint() const { return this->currentAttackWaypointValue; }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004ED040_setCurrentAttackWaypoint.cpp
@@ -2070,16 +2070,16 @@ int TacticalAIGroup::firstIdleUnit(TribeMainDecisionAIModule* md)
 // ---------------------------------------------------------------------------
 int TacticalAIGroup::objectToDestroy(int index) {
     if (index < 0 || index >= 20) return -1;
-    return this->arr_[index];
+    return this->objectsToDestroyValue[index];
 }
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004ED190_addObjectToDestroy.cpp
 // ---------------------------------------------------------------------------
 int TacticalAIGroup::addObjectToDestroy(int objectId) {
-    if (this->numberObjectsToDestroy < 0x13) {
-        this->objectsToDestroy[this->numberObjectsToDestroy] = objectId;
-        this->numberObjectsToDestroy = this->numberObjectsToDestroy + 1;
+    if (this->numberObjectsToDestroyValue < 0x13) {
+        this->objectsToDestroyValue[this->numberObjectsToDestroyValue] = objectId;
+        this->numberObjectsToDestroyValue = this->numberObjectsToDestroyValue + 1;
         return 1;
     }
     return 0;
@@ -7604,7 +7604,7 @@ void TribeTacticalAIModule::evaluateOpenTasks()
                     group->setRetreatLocation(-1.0f, -1.0f, -1.0f);
                     group->setInUse(0);
                     group->setWaitCode(minusOne);
-                    group->field_1D0 = minusOne;
+                    group->playNumberValue = minusOne;
                 } else {
                     int commander = group->commander();
                     RGE_Static_Object* object = this->md->object(commander);
@@ -7757,7 +7757,7 @@ int TribeTacticalAIModule::numberBoats() const {
 
 int TribeTacticalAIModule::neededResource(int index) const {
     if (index < 0 || index >= 4) return -1;
-    return this->arr_[index];
+    return this->neededResourceValue[index];
 }
 
 // ---------------------------------------------------------------------------
