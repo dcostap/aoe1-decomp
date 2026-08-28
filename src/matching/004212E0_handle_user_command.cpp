@@ -10,9 +10,9 @@ int RGE_Base_Game::handle_user_command(void* param_1, unsigned int param_2, unsi
 {
     if (this->comm_handler->MultiplayerGameStart() != 0 && out_of_sync == 0) {
         if (command == 0x17B3) {
-            this->world->players[this->playerID(param)]->set_chat_flag(param, 1);
+            this->world->players[this->playerID(param)]->command_resign((int)param, 1);
         } else if (command == 0x17B4) {
-            this->world->players[this->playerID(param)]->set_chat_flag(param, 0);
+            this->world->players[this->playerID(param)]->command_resign((int)param, 0);
         }
     }
 

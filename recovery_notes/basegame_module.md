@@ -56,14 +56,20 @@ It emits the integer slot at `+0x38`.
 It has no exact registration in the direct prefix.
 The next exact source move must not cross this owner without separate review.
 
-## World pause call
+## Command calls
 
 `004212E0` calls World vtable slot `+0xEC`.
-The PDB identifies this slot as `RGE_Game_World::pause(unsigned char)`.
-The owner is `00540D30`.
+The PDB owner is `00540D30 RGE_Game_World::pause(unsigned char)`.
+The old `set_world_chat_flag` name was false.
 
-The old `set_world_chat_flag` candidate name was false.
-The candidate body now calls `pause` with an unsigned byte.
+`004212E0` calls Player vtable slot `+0xD4`.
+The PDB owner is `00471A70 RGE_Player::command_resign(int, int)`.
+Its decorated symbol is `?command_resign@RGE_Player@@UAEEHH@Z`.
+It is a public virtual member at slot 53.
+
+The RGE and TRIBE Player vtables both use that owner at slot `+0xD4`.
+The PDB and CodeView evidence contain no `set_chat_flag` member.
+Do not add that unsupported declaration to `include/player.h`.
 
 ## Complete composition gate
 
@@ -78,8 +84,7 @@ It does not include `basegame_candidate_context.h`.
 
 The probe does not compile. It exposed these provider gaps:
 
-- `TPanel` lacks the needed activation and palette callback interface.
-- `RGE_Player` lacks `set_chat_flag`.
+- The direct probe still uses a stale local `TPanel` declaration.
 - BaseGame header-owned helpers lack reviewed canonical declarations.
 
 Some candidate bodies also use raw IAT addresses and false field aliases.
