@@ -1,7 +1,7 @@
 # Terra 3 handoff: Scenario owners for Tworld
 
-Version: 1  
-Date: 2026-08-28  
+Version: 1
+Date: 2026-08-28
 Status: blocked; audit only
 
 ## Scope
