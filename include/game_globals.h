@@ -1,6 +1,3 @@
-#ifndef AOE1_GAME_GLOBALS_H
-#define AOE1_GAME_GLOBALS_H
-
 #pragma once
 // Generated once by tools\generate_working_scaffold.py.
 // After the first scaffold pass, this file becomes editable project source.
@@ -1985,5 +1982,3 @@ extern unsigned int DAT_0088c084;
 extern unsigned int DAT_0088c088;
 // 0088C08C [THIS_DAT]
 extern unsigned int DAT_0088c08c;
-
-#endif
