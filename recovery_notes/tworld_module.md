@@ -12,3 +12,7 @@ claims.
 The seven accepted-drift bodies retain their reviewed status. Exact owners are
 registered only for the 20 matching bodies. The old prefix and phase wrappers
 are migration scaffolds and must not be restored.
+
+The unified source uses typed fields, canonical globals, named string data,
+standard CRT declarations, and structured control flow. It has no absolute
+address expressions or C-style casts.

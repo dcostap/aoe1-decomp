@@ -910,7 +910,7 @@ float DAT_00577328 = 1.12f;
 // 0057732C [.rdata]
 float DAT_0057732c = 1.04999995f;
 // 00577330 [.rdata]
-double DAT_00577330 = 0.0;
+const double DAT_00577330 = 0.0;
 // 00577338 [.rdata]
 float DAT_00577338 = 0.0f;
 // 0057733C [.rdata]
