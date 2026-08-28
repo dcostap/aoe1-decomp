@@ -7,6 +7,7 @@
 #include "aiplaybook.h"
 #include "ai_play_phase_command.h"
 #include "ai_play_phase_trigger.h"
+#include "ai_play_group.h"
 
 class RGE_Game_World;
 class AIPlayStatus;
@@ -33,21 +34,6 @@ public:
     AIPlayPhaseTrigger* trigger(int index);
     int addCommand(AIPlayPhaseCommand& commandValue);
     int addTrigger(AIPlayPhaseTrigger& triggerValue);
-
-protected:
-    void initialize();
-};
-
-class AIPlayGroup {
-public:
-    unsigned char minimumValues[6];     // +0x00
-    unsigned char maximumValues[6];     // +0x06
-
-    AIPlayGroup();
-    unsigned char minimum(int index) const;
-    void setMinimum(int index, int value);
-    unsigned char maximum(int index) const;
-    void setMaximum(int index, int value);
 
 protected:
     void initialize();

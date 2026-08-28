@@ -9,6 +9,7 @@
 - `include/aipbook.h` owns the reviewed module layouts.
 - `include/ai_play_phase_command.h` owns AIPlayPhaseCommand.
 - `include/ai_play_phase_trigger.h` owns AIPlayPhaseTrigger.
+- `include/ai_play_group.h` owns AIPlayGroup.
 
 PDB field list `0x2629` puts the command fields in `protected` access. The
 owner header supplies the PDB public accessors. The module uses those accessors
@@ -18,6 +19,10 @@ outside AIPlayPhaseCommand member functions. The grouped candidate keeps all
 The trigger record is 0x14. Its PDB fields are protected. PDB nested enum
 `0x262B` defines its twelve trigger values. Natural alignment supplies its
 internal gaps. Aipbook consumes its public accessors.
+
+The group record is 0x0C. It has two six-byte arrays with natural alignment.
+PDB public accessors provide its range operations. Its `PAVAIPlayGroup` return
+from `AIPlay::group` proves its class identity.
 
 ## Status
 
