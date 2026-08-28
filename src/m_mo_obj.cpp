@@ -161,7 +161,7 @@ void RGE_Master_Moving_Object::copy_obj(RGE_Master_Static_Object* source)
     RGE_Master_Animated_Object::copy_obj(source);
 
     RGE_Master_Moving_Object* moving_source =
-        (RGE_Master_Moving_Object*)source;
+        static_cast<RGE_Master_Moving_Object*>(source);
     move_sprite = moving_source->move_sprite;
     run_sprite = moving_source->run_sprite;
     turn_speed = moving_source->turn_speed;
