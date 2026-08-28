@@ -964,7 +964,16 @@
         "004177D0": "src/aiuaimod.cpp",
         "00417860": "src/aiuaimod.cpp",
         "00417920": "src/aiuaimod.cpp",
-        "00417960": "src/aiuaimod.cpp"
+        "00417960": "src/aiuaimod.cpp",
+        "00419510": "src/aiuaimod.cpp",
+        "00419650": "src/aiuaimod.cpp",
+        "00419BC0": "src/aiuaimod.cpp",
+        "00419C30": "src/aiuaimod.cpp",
+        "00419C70": "src/aiuaimod.cpp",
+        "00419ED0": "src/aiuaimod.cpp",
+        "00419F00": "src/aiuaimod.cpp",
+        "0041A0D0": "src/aiuaimod.cpp",
+        "0041A100": "src/aiuaimod.cpp"
       },
       "symbols": {
         "00413450": "?load@UnitAIModule@@UAEXH@Z",
@@ -990,6 +999,7 @@
         "00414E80": "?notify@UnitAIModule@@UAEHHHHJJJ@Z",
         "00414F40": "?notifyCommander@UnitAIModule@@UAEHPAUNotifyEvent@@@Z",
         "00414F70": "?notifyCommander@UnitAIModule@@UAEHHHHJJJ@Z",
+        "00415150": "?retryableOrder@UnitAIModule@@UAEHH@Z",
         "00415CA0": "?closestObject@UnitAIModule@@UAEHHHHHPAH@Z",
         "00415E50": "?closestResourceObject@UnitAIModule@@UAEHHPAH@Z",
         "00415F40": "?closestUndiscoveredTile@UnitAIModule@@UAEHPAH0H@Z",
@@ -1004,7 +1014,16 @@
         "004175B0": "?setCurrentTarget@UnitAIModule@@QAEXHMMM@Z",
         "00417600": "?setCurrentTarget@UnitAIModule@@QAEXHHMMM@Z",
         "00417640": "?importantObject@UnitAIModule@@UAEHH@Z",
-        "00417730": "?visibleStatus@UnitAIModule@@QAEEPAVRGE_Visible_Map@@HH@Z"
+        "00417730": "?visibleStatus@UnitAIModule@@QAEEPAVRGE_Visible_Map@@HH@Z",
+        "00419510": "?processGroupNotify@UnitAIModule@@MAEXPAUNotifyEvent@@@Z",
+        "00419650": "?processMisc@UnitAIModule@@MAEHXZ",
+        "00419BC0": "?processRetryableOrder@UnitAIModule@@MAEHXZ",
+        "00419C30": "?addToOrderQueue@UnitAIModule@@IAEHPAUOrderEvent@@H@Z",
+        "00419C70": "?addToOrderQueue@UnitAIModule@@IAEHHHHHMMMMHH@Z",
+        "00419ED0": "?addToNotifyQueue@UnitAIModule@@IAEHPAUNotifyEvent@@@Z",
+        "00419F00": "?addToNotifyQueue@UnitAIModule@@IAEHHHHJJJ@Z",
+        "0041A0D0": "?lookupObject@UnitAIModule@@IAEPAVRGE_Static_Object@@H@Z",
+        "0041A100": "?logDebug@UnitAIModule@@UAAXPADZZ"
       }
     },
     {
@@ -5634,34 +5653,6 @@
         "0052C8D0": "src/ttsk_lst.cpp"
       },
       "symbols": {}
-    },
-    {
-      "name": "aiuaimod_complete_fresh",
-      "source": "src/aiuaimod.cpp",
-      "module": "aiuaimod",
-      "flags": "config/flags/00412F00_UnitAIModule.rsp",
-      "owners": {
-        "00419510": "src/aiuaimod.cpp",
-        "00419650": "src/aiuaimod.cpp",
-        "00419BC0": "src/aiuaimod.cpp",
-        "00419C30": "src/aiuaimod.cpp",
-        "00419C70": "src/aiuaimod.cpp",
-        "00419ED0": "src/aiuaimod.cpp",
-        "00419F00": "src/aiuaimod.cpp",
-        "0041A0D0": "src/aiuaimod.cpp",
-        "0041A100": "src/aiuaimod.cpp"
-      },
-      "symbols": {
-        "00419510": "?processGroupNotify@UnitAIModule@@MAEXPAUNotifyEvent@@@Z",
-        "00419650": "?processMisc@UnitAIModule@@MAEHXZ",
-        "00419BC0": "?processRetryableOrder@UnitAIModule@@MAEHXZ",
-        "00419C30": "?addToOrderQueue@UnitAIModule@@IAEHPAUOrderEvent@@H@Z",
-        "00419C70": "?addToOrderQueue@UnitAIModule@@IAEHHHHHMMMMHH@Z",
-        "00419ED0": "?addToNotifyQueue@UnitAIModule@@IAEHPAUNotifyEvent@@@Z",
-        "00419F00": "?addToNotifyQueue@UnitAIModule@@IAEHHHHJJJ@Z",
-        "0041A0D0": "?lookupObject@UnitAIModule@@IAEPAVRGE_Static_Object@@H@Z",
-        "0041A100": "?logDebug@UnitAIModule@@UAAXPADZZ"
-      }
     },
     {
       "name": "t_c_obj_complete_fresh",
