@@ -5743,13 +5743,15 @@
         "0041B620": "src/basegame.cpp",
         "0041B650": "src/basegame.cpp",
         "0041E7A0": "src/basegame.cpp",
-        "0041B6A0": "src/basegame.cpp"
+        "0041B6A0": "src/basegame.cpp",
+        "0041CDA0": "src/basegame.cpp"
       },
       "symbols": {
         "0041B620": "?write_draw_log@@YAXPAD@Z",
         "0041B650": "?write_draw_log2@@YAXPAD@Z",
         "0041E7A0": "?rge_base_game_wnd_proc@@YGKIIII@Z",
-        "0041B6A0": "??0RGE_Base_Game@@QAE@PAURGE_Prog_Info@@H@Z"
+        "0041B6A0": "??0RGE_Base_Game@@QAE@PAURGE_Prog_Info@@H@Z",
+        "0041CDA0": "?write_scenario_header@RGE_Base_Game@@QAEXH@Z"
       }
     },
     {

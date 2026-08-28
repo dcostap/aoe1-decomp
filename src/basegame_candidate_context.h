@@ -818,6 +818,10 @@ public:
     virtual int get_palette(void*, unsigned long);
     virtual void* get_palette();
     virtual int wnd_proc(void*, unsigned int, unsigned int, long);
+    // Candidate-only declarations for observed BaseGame callers. The direct
+    // source uses the canonical TPanel declaration in include/panel.h.
+    virtual long handle_size(long width, long height);
+    virtual void handle_reactivate();
 };
 class TEasy_Panel : public TPanel {
 public:
@@ -1209,7 +1213,6 @@ public:
     void set_mouse_facet(long facet);
     int v_mouse_move(int y, int local4, int x, int left, int right, int ctrl);
     void handle_mouse_click();
-    int default_handle_user_command(unsigned int command, long param);
     int activate_dispatch();
     int deactivate_dispatch();
     int endMethod();

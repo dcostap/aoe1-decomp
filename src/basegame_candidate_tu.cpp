@@ -34,7 +34,6 @@
 #include "matching/0041CA10_get_string2.cpp"
 #include "matching/0041CB80_get_scenario_info.cpp"
 #include "matching/0041CCA0_get_scenario_header.cpp"
-#include "matching/0041CDA0_write_scenario_header.cpp"
 #include "matching/0041CE00_new_scenario_header.cpp"
 #include "matching/0041CE60_new_scenario_header.cpp"
 #include "matching/0041CEC0_new_scenario_info.cpp"

@@ -222,3 +222,22 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)
 }
 
 // 0041BAA0 RGE_Base_Game::setup remains an accepted-drift hold.
+
+#include "../include/rge_fio.h"
+#include "../include/scenario.h"
+#include "../include/world.h"
+
+// 0041CDA0 RGE_Base_Game::write_scenario_header, basegame.cpp:1503-1518
+// (89 bytes).
+void RGE_Base_Game::write_scenario_header(int file)
+{
+    RGE_Scenario_Header* header = new_scenario_header(world->scenario);
+
+    if (header != 0) {
+        header->save(file);
+        delete header;
+    } else {
+        int header_size = 0;
+        rge_write_uncompressed(file, &header_size, sizeof(header_size));
+    }
+}
