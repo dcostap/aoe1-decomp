@@ -23,6 +23,7 @@ class TDigital;
 struct tagMSG;
 struct tagPOINT;
 
+// PDB owner: basegame.cpp, 004231E0.
 unsigned long __cdecl debug_timeGetTime(char*, int);
 
 struct RGE_Font {
@@ -399,8 +400,5 @@ typedef char rge_game_options_size_check[
     (sizeof(RGE_Base_Game::RGE_Game_Options) == 0xA8) ? 1 : -1];
 typedef char rge_base_game_size_check[
     (sizeof(RGE_Base_Game) == 0xA24) ? 1 : -1];
-
-// PDB owner: basegame.cpp, 004231E0.
-unsigned long __cdecl debug_timeGetTime(char*, int);
 
 #endif
