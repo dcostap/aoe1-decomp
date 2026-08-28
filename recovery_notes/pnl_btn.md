@@ -32,3 +32,43 @@ order. All five are scratch. The direct entry removes them. Do not hide these
 differences with wrappers, fragments, synthetic declarations, or manual vtables.
 
 The orchestrator contract named in the assignment was not present at the requested path. The available workflow documents and generated PDB packet supplied the context evidence.
+
+## Current-main exact candidate
+
+The direct module now composes `TButtonPanel` over the canonical `TPanel`
+header. Complete `TShape` and `TDigital` declarations stay in source includes.
+The public button header owns only the button class and its fields.
+
+The current source retains three observed scratch owners: `00471EC0`,
+`00472690`, and `004728C0`. The accepted one-byte drift at `00472240` remains
+observed. No observed row is presented as exact.
+
+The natural repairs are:
+
+- `004727B0` writes `handle_mouse_input` at `+0x80` in both branches.
+- `00473120` checks `active == 0`, `mouse_captured != 0`, and virtual
+  `hit_button`, then calls the inherited mouse handler.
+- `00473930` keeps the direct `is_inside` and `shape_check` calls. Canonical
+  `TShape` declarations restore the original coordinate-load order.
+
+The grouped candidate is `build/candidate_tus/pnl_btn_current.json`, built with
+`config/flags/default.rsp`. All 52 exact owners report `MATCH`, `0.0000%`,
+matching boundaries, zero relocation-target mismatches, and their expected
+decorated symbols. The generated deleting destructor at `00472010` also reports
+`MATCH`, with zero differences, relocations, and boundary escapes. The four
+observed rows remain nonexact: `00471EC0` 60 bytes, `00472240` 1 byte,
+`00472690` 55 bytes, and `004728C0` 1997 bytes.
+
+Final direct checks report `MATCH` and `0.0000%` for `004727B0` (58/58),
+`00473120` (95/95), and `00473930` (124/124). Their direct targets are,
+respectively, the virtual `set_redraw` slot `+0x20`; virtual `hit_button` slot
+`+0xE4` plus direct `handle_mouse_down`; and virtual `is_inside` slot `+0xBC`
+plus direct `shape_check`.
+
+The first exact transition was reduced to canonical foreign declarations and
+three source repairs. Reverting the `handle_mouse_input` field restores the
+22-byte `004727B0` mismatch. Reverting the mouse gate restores the 92-byte
+`00473120` mismatch and the wrong virtual targets. Omitting canonical `Shape`
+and `sounddrv` source includes prevents the canonical compile or restores the
+`00473930` coordinate mismatch. The retained source uses no wrapper, fragment,
+manual vtable, inline assembly, or codegen-only declaration.

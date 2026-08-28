@@ -4,6 +4,10 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Pnl_lst.cpp",
   "source": "src/pnl_lst.cpp",
   "header": "include/pnl_lst.h",
+  "header_composition": {
+    "status": "repaired",
+    "summary": "Consumes canonical panel, drawarea, and Shape owners; declares only the Pnl_lst text and list surfaces."
+  },
   "functions": {
     "004782A0": {
       "status": "matching",
@@ -25,7 +29,7 @@
     "00478610": { "status": "matching" },
     "00478660": { "status": "matching" },
     "004786B0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/pnl_lst.md"
     },
     "00478700": { "status": "matching" },

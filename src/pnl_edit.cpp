@@ -1,58 +1,8 @@
 #include "../include/pnl_edit.h"
+#include "../include/game_globals.h"
 #include <stdlib.h>
 #include <string.h>
 
-extern "C" __declspec(dllimport) long __stdcall GetWindowLongA(
-    HWND, int);
-extern "C" __declspec(dllimport) HWND __stdcall CreateWindowExA(
-    unsigned long, const char*, const char*, unsigned long, int, int, int,
-    int, HWND, HMENU, HINSTANCE, void*);
-extern "C" __declspec(dllimport) long __stdcall SetWindowLongA(HWND, int, long);
-extern "C" __declspec(dllimport) HGDIOBJ __stdcall GetStockObject(int);
-extern "C" __declspec(dllimport) int __stdcall GetWindowTextA(
-    HWND, char*, int);
-extern "C" __declspec(dllimport) int __stdcall SetWindowTextA(
-    HWND, const char*);
-extern "C" __declspec(dllimport) long __stdcall SendMessageA(
-    HWND, unsigned int, unsigned int, long);
-extern "C" __declspec(dllimport) int __stdcall ShowWindow(HWND, int);
-extern "C" __declspec(dllimport) int __stdcall DestroyWindow(HWND);
-extern "C" __declspec(dllimport) HWND __stdcall GetFocus(void);
-extern "C" int __stdcall ImmNotifyIME(
-    unsigned long, unsigned int, unsigned int, unsigned int);
-extern "C" int __stdcall ImmReleaseContext(
-    HWND, unsigned long);
-extern "C" unsigned long __stdcall ImmGetContext(HWND);
-extern "C" unsigned long __stdcall ImmAssociateContext(HWND, unsigned long);
-extern "C" int __stdcall ImmSetOpenStatus(unsigned long, int);
-extern "C" __declspec(dllimport) void __stdcall MoveWindow(
-    HWND, int, int, int, int, int);
-extern "C" __declspec(dllimport) int __stdcall GetSystemMetrics(int);
-extern "C" __declspec(dllimport) int __stdcall InvalidateRect(
-    HWND, const tagRECT*, int);
-extern "C" __declspec(dllimport) unsigned long __stdcall SetBkColor(
-    HDC, unsigned long);
-extern "C" __declspec(dllimport) int __stdcall SetBkMode(HDC, int);
-extern "C" __declspec(dllimport) unsigned long __stdcall SetTextColor(
-    HDC, unsigned long);
-extern "C" __declspec(dllimport) int __stdcall SelectClipRgn(HDC, HRGN);
-extern "C" __declspec(dllimport) HGDIOBJ __stdcall SelectObject(HDC, HGDIOBJ);
-extern "C" __declspec(dllimport) int __stdcall DrawTextExA(
-    HDC, const char*, int, tagRECT*, unsigned int, void*);
-extern "C" __declspec(dllimport) unsigned int __stdcall GetNearestPaletteIndex(
-    HPALETTE, COLORREF);
-extern "C" __declspec(dllimport) int __stdcall FillRect(
-    HDC, const tagRECT*, HBRUSH);
-extern "C" __declspec(dllimport) int __stdcall GetClientRect(HWND, tagRECT*);
-extern "C" __declspec(dllimport) short __stdcall GetKeyState(int);
-extern "C" __declspec(dllimport) int __stdcall PostMessageA(
-    HWND, unsigned int, unsigned int, long);
-extern "C" __declspec(dllimport) HWND __stdcall SetFocus(HWND);
-extern "C" __declspec(dllimport) long __stdcall CallWindowProcA(
-    FARPROC, HWND, unsigned int, unsigned int, long);
-extern "C" __declspec(dllimport) int __stdcall UpdateWindow(HWND);
-extern "C" int (__stdcall* const MessageBeep)(unsigned int);
-extern "C" int (__stdcall* const IsDBCSLeadByte)(unsigned int);
 extern "C" int __cdecl _mbscmp(const unsigned char*, const unsigned char*);
 extern "C" unsigned char* __cdecl _mbschr(const unsigned char*, unsigned int);
 extern "C" int __cdecl __ismbcspace(int);
@@ -60,7 +10,7 @@ extern "C" unsigned char* __cdecl __mbsinc(const unsigned char*);
 extern "C" unsigned char* __cdecl __mbsdec(const unsigned char*, const unsigned char*);
 extern "C" unsigned char* __cdecl _mbsncpy(
     unsigned char*, const unsigned char*, int);
-extern "C" char* __cdecl strcpy(char*, const char*);
+extern int MouseCursorInChildContol;
 extern int imc_retval;
 
 static long __stdcall pnl_sub_wnd_proc(
@@ -130,7 +80,7 @@ TEditPanel::~TEditPanel()
 long TEditPanel::setup(
     TDrawArea* param_1, TPanel* param_2, long param_3, long param_4,
     long param_5, long param_6, void* param_7, short param_8, char* param_9,
-    int param_10, int param_11)
+    TEditPanel::FormatType param_10, int param_11)
 {
     long result;
 
@@ -489,7 +439,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
         switch (msg) {
         case 0x200:
             if (rge_base_game->windows_mouse == 0) {
-                DAT_0062c4c4 = 1;
+                MouseCursorInChildContol = 1;
                 rge_base_game->mouse_off();
             }
             break;

@@ -1,17 +1,18 @@
 #include "../include/pnl_lst.h"
 
 extern "C" int __cdecl toupper(int c);
+extern "C" unsigned long __cdecl debug_timeGetTime(const char*, int);
 
 TListPanel::TListPanel() : drawHighlightBar(1) {
-    field_C0 = 0;
+    mouse_move_tolerance = 0;
     mouse_scroll_last_time = 0;
     mouse_scroll_up = 0;
     mouse_scroll_down = 0;
     auto_track = 0;
-    field_EE = 4;
-    field_170 = 1;
+    panel_type = 4;
+    bevel_type = 1;
     mouse_scroll_interval = 0x32;
-    field_80 = 1;
+    handle_mouse_input = 1;
     spacer_size = 1;
     border_size = 1;
 }
@@ -87,10 +88,10 @@ long TListPanel::mouse_move_action(long param_1, long param_2, int, int) {
     }
 
     short item = this->item_at(param_1, param_2);
-    if (item < this->item_min) {
+    if (item < this->top_line) {
         return 1;
     }
-    if (item > this->item_max) {
+    if (item > this->bot_line) {
         return 1;
     }
     this->goto_item(param_1, param_2);
@@ -205,7 +206,7 @@ long TListPanel::key_down_action(long vk, short param_2, int param_3, int param_
 
 long TListPanel::char_action(long param_1, short param_2) {
     int ch = toupper((int)param_1);
-    TextNode* node = this->list;
+    TTextPanel::TextNode* node = this->list;
     int i = 0;
 
     while (node != 0) {
@@ -214,7 +215,7 @@ long TListPanel::char_action(long param_1, short param_2) {
                 goto found;
         }
         i++;
-        node = node->next;
+        node = node->next_node;
     }
 
     if ((int)(short)this->cur_line > 0) {
@@ -226,7 +227,7 @@ long TListPanel::char_action(long param_1, short param_2) {
             i++;
             if (i >= (int)(short)this->cur_line)
                 return 0;
-            node = node->next;
+            node = node->next_node;
         }
     }
 
@@ -329,7 +330,7 @@ void TListPanel::scroll_cur_line(unsigned char action, short line, int flag) {
         break;
     }
 
-    this->set_redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
 
     if (this->cur_line != old_cur) {
         if (this->parent_panel != 0 && this->cur_line > -1 && this->cur_line < this->num_lines) {

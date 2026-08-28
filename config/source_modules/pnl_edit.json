@@ -4,6 +4,19 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\pnl_edit.cpp",
   "source": "src/pnl_edit.cpp",
   "header": "include/pnl_edit.h",
+  "header_composition": {
+    "status": "repaired",
+    "summary": "Consumes canonical panel, drawarea, and basegame owners; declares only the PDB-proven TEditPanel surface."
+  },
+  "blockers": [
+    {
+      "id": "canonical_pnl_edit_globals",
+      "status": "open",
+      "owner": "unknown",
+      "note_path": "recovery_notes/pnl_edit_module.md",
+      "summary": "Canonical global declarations for MouseCursorInChildContol and imc_retval are not published; the source keeps local ABI declarations."
+    }
+  ],
   "functions": {
     "00475930": { "status": "matching", "note_path": "recovery_notes/pnl_edit_module.md" },
     "004755C0": { "status": "matching", "note_path": "recovery_notes/pnl_edit_module.md" },

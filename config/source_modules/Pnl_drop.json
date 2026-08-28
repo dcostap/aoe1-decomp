@@ -4,6 +4,11 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Pnl_drop.cpp",
   "source": "src/Pnl_drop.cpp",
   "header": "include/pnl_drop.h",
+  "header_composition": {
+    "status": "repaired",
+    "note_path": "recovery_notes/Pnl_drop_module.md",
+    "summary": "Consumes canonical panel, drawarea, Shape, pnl_btn, pnl_lst, and Pnl_scbr owners; declares only Pnl_drop classes."
+  },
   "functions": {
     "00473ED0": { "status": "matching", "note_path": "recovery_notes/Pnl_drop_module.md" },
     "00473F50": { "status": "matching", "note_path": "recovery_notes/Pnl_drop_module.md" },

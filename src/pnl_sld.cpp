@@ -96,15 +96,15 @@ void THorizontalSliderPanel::set_rect(long param_1, long param_2, long param_3,
 {
     TScrollBarPanel::set_rect(param_1, param_2, param_3, param_4);
 
-    long left = field_0C;
-    long right = left + width - 1;
-    left1 = left;
-    left2 = left;
-    right1 = right;
-    right2 = right;
-    min_right = left + 1;
-    span = right - height + 2;
-    min_left = left + 1;
+    long left = pnl_x;
+    long right = left + pnl_wid - 1;
+    up_rect.left = left;
+    up_rect.right = left;
+    down_rect.left = right;
+    down_rect.right = right;
+    tab_min_x = left + 1;
+    tab_max_x = right - pnl_hgt + 2;
+    tab_x = left + 1;
     TScrollBarPanel::calc_item_rects();
 }
 

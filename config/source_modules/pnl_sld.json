@@ -4,6 +4,10 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\pnl_sld.cpp",
   "source": "src/pnl_sld.cpp",
   "header": "include/pnl_sld.h",
+  "header_composition": {
+    "status": "repaired",
+    "summary": "Consumes the canonical Pnl_scbr, pnl_lst, panel, drawarea, Shape, and color owners; declares only the Pnl_sld slider surfaces."
+  },
   "functions": {
     "0047BCE0": { "status": "matching", "note_path": "recovery_notes/pnl_sld_module.md" },
     "0047BD30": { "status": "matching", "note_path": "recovery_notes/pnl_sld_module.md" },

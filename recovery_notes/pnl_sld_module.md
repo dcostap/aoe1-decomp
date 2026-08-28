@@ -22,8 +22,19 @@ are compiler-generated and are not handwritten owners.
 
 The constructor anchors, setup anchors, and virtual method anchors identify the
 owning classes and their order. The module header records the proven
-`TPanel`, `TScrollBarPanel`, `TVerticalSliderPanel`, and
-`THorizontalSliderPanel` surfaces and sizes.
+`TVerticalSliderPanel` and `THorizontalSliderPanel` surfaces and sizes.
+
+## Header composition repair
+
+`include/pnl_sld.h` now consumes `include/Pnl_scbr.h` for the canonical
+`TScrollBarPanel` owner. That header composes the canonical `pnl_lst.h`,
+`panel.h`, `drawarea.h`, `Shape.h`, and `color.h` owners. The slider header
+declares only the PDB-owned `TVerticalSliderPanel` and
+`THorizontalSliderPanel` classes and their size records.
+
+The copied `TPanel` and `TScrollBarPanel` layouts and their size checks are
+removed. No canonical owner is missing. No compiler or validator command ran
+in this header-composition wave.
 
 ## Migration
 
@@ -32,28 +43,27 @@ functions. It follows PDB order and has no `.cpp` includes, context macros,
 fallback declarations, raw address fields, inline assembly, or manual vtables.
 The setup methods use the named `one_step` and `page_step` members at offsets
 `0xFC` and `0x100`. The horizontal rectangle method uses the named inherited
-fields for the proven rectangle calculations.
+fields `pnl_x`, `pnl_wid`, and `pnl_hgt`, then writes the canonical `RECT` and
+tab fields for the proven rectangle calculations. The former local aliases
+`left1`, `left2`, `right1`, `right2`, `min_right`, `span`, and `min_left` are
+removed.
 
 The old `src/pnl_sld_tu.cpp` wrapper, ten source-bank fragments, and
 `include/pnl_sld_context.h` are removed. The module-local header is now
 `include/pnl_sld.h`. The source-module manifest records all ten normal owners as
-`matching`. The two scalar deleting destructors remain outside the handwritten
-owner list.
+`matching` and records the repaired header composition. The two scalar deleting
+destructors remain outside the handwritten owner list.
 
 ## Validation
 
-The candidate translation-unit validation uses `config/flags/default.rsp` and
-compares all ten normal owners plus both compiler-generated destructors. Its
-report is under `build/candidate_tus/pnl_sld/`.
+The grouped candidate translation-unit validation uses
+`config/flags/default.rsp` and compares all ten normal owners plus both
+compiler-generated destructors. The first compile exposed the stale aliases
+in the horizontal rectangle method. After replacing them with canonical
+inherited fields, the final run reported `MATCH` for all twelve rows, with
+zero positional difference, boundary escapes, and relocation target
+mismatches. Its report is under `build/candidate_tus/pnl_sld/`.
 
-That run reported `MATCH` with zero positional difference, boundary escapes,
-and relocation target mismatches for all ten normal owners. The generated
-`0047BD10` destructor also matched. The `0047BE10` row reported an error from
-the proposal's initial misspelling of its expected weak symbol. The proposal
-now uses the correct `??_ETHorizontalSliderPanel@@UAEPAXI@Z` symbol. No second
-candidate run was made because this assignment allows one grouped validation.
-
-The global translation-unit registry still names the removed wrapper and source
-bank fragments. This captain did not edit `config/translation_units.json` or
-other ownership data. The main integration owner must replace that registered
-entry with `src/pnl_sld.cpp` and keep the same qualified symbols.
+The global translation-unit registry already points all ten normal owners to
+`src/pnl_sld.cpp` and keeps the qualified symbols. No registry update is
+needed for this module.

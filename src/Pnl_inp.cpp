@@ -1,8 +1,5 @@
 #include "../include/Pnl_inp.h"
 
-extern "C" __declspec(dllimport) unsigned long __stdcall GetCaretBlinkTime();
-extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
-extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 extern "C" short __cdecl __mbslen(const char*);
 extern "C" int __cdecl _mbslen(const char*);
 extern "C" int __cdecl __mbscmp(const char*, const char*);
@@ -13,19 +10,8 @@ extern "C" void* __cdecl _mbsninc(void*, int);
 extern "C" void* __cdecl _mbsinc(void*);
 extern "C" void* __cdecl _mbsdec(void*, void*);
 extern "C" int __cdecl __ismbcspace(unsigned int);
-extern "C" int __cdecl memset(void*, int, unsigned int);
-extern "C" char* __cdecl strcpy(char*, const char*);
-extern "C" void (__stdcall* const MessageBeep)(unsigned int);
 extern void operator delete(void*);
-typedef void* (__stdcall *SelectObjectFn)(void*, void*);
-extern SelectObjectFn g_SelectObject;
 extern char pnl_inp_draw[];
-extern "C" __declspec(dllimport) int __stdcall IsClipboardFormatAvailable(unsigned int);
-extern "C" __declspec(dllimport) int __stdcall OpenClipboard(HWND);
-extern "C" __declspec(dllimport) HANDLE __stdcall GetClipboardData(unsigned int);
-extern "C" __declspec(dllimport) void* __stdcall GlobalLock(HANDLE);
-extern "C" __declspec(dllimport) int __stdcall GlobalUnlock(HANDLE);
-extern "C" __declspec(dllimport) int __stdcall CloseClipboard(void);
 
 TInputPanel::TInputPanel() : TTextPanel()
 {
@@ -44,7 +30,7 @@ TInputPanel::TInputPanel() : TTextPanel()
     this->max_len = 0;
     this->input_pos = 0;
     this->panel_type = 7;
-    this->horz_align = 5;
+    this->horz_align = TTextPanel::AlignHorizontalScroll;
 }
 
 TInputPanel::~TInputPanel()
@@ -63,13 +49,14 @@ TInputPanel::~TInputPanel()
 
 long TInputPanel::setup(TDrawArea* da, TPanel* parent, long p3, long p4,
                         long p5, long p6, void* p7, long p8, long p9,
-                        char* p10, int p11, uchar p12, int p13, uchar p14,
-                        uchar p15, short maxChars, TDigital* digital,
+                        char* p10, int p11, unsigned char p12, int p13,
+                        unsigned char p14, unsigned char p15,
+                        short maxChars, TDigital* digital,
                         char* text, FormatType format)
 {
     long setupMax = (format == FormatMultiLine) ? 0 : maxChars;
     if (TTextPanel::setup(da, parent, p3, p4, p5, p6, p7, p8, p9, p10,
-                          p11, p12, p13, p14, setupMax, 0) == 0) {
+                          p11, p12, p13, p14, setupMax, (char*)0) == 0) {
         return 0;
     }
     this->caret_color = p15;
@@ -83,10 +70,11 @@ long TInputPanel::setup(TDrawArea* da, TPanel* parent, long p3, long p4,
     else
         this->overLengthSound = 0;
     if (this->format_type == FormatMultiLine) {
-        this->set_alignment(3, 1);
+        this->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignLeft);
         this->set_word_wrap(1);
     } else {
-        this->set_alignment(0, 5);
+        this->set_alignment(TTextPanel::AlignCenter,
+                            TTextPanel::AlignHorizontalScroll);
     }
     this->input_buffer1 = (char*)calloc((unsigned int)((int)maxChars + (int)maxChars + 1), 1);
     if (this->input_buffer1 == 0) return 0;
@@ -119,7 +107,7 @@ long TInputPanel::handle_idle()
         unsigned long now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Pnl_inp.cpp", 158);
         if ((now - this->caret_last_time) >= this->caret_interval) {
             this->draw_caret = (this->draw_caret == 0) ? 1 : 0;
-            this->set_redraw(1);
+            this->set_redraw(TPanel::RedrawNormal);
             now = debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\Pnl_inp.cpp", 163);
             this->caret_last_time = now;
         }
@@ -198,7 +186,7 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
             col--;
             this->cur_col = col;
             this->calc_input_pos();
-            this->set_redraw(1);
+            this->set_redraw(TPanel::RedrawNormal);
             return 1;
         } else {
             col = this->cur_line;
@@ -209,7 +197,7 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
         }
         this->cur_col = col;
         this->calc_input_pos();
-        this->set_redraw(1);
+        this->set_redraw(TPanel::RedrawNormal);
         return 1;
 
     case 0x27:
@@ -219,13 +207,13 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
         if (col < len) {
             this->cur_col = col + 1;
             this->calc_input_pos();
-            this->set_redraw(1);
+            this->set_redraw(TPanel::RedrawNormal);
         } else {
             if (this->cur_line >= this->num_lines - 1) return 1;
             this->cur_line++;
             this->cur_col = 0;
             this->calc_input_pos();
-            this->set_redraw(1);
+            this->set_redraw(TPanel::RedrawNormal);
         }
         return 1;
 
@@ -236,7 +224,7 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
             if (this->cur_col > __mbslen(this->get_text(this->cur_line)))
                 this->cur_col = __mbslen(this->get_text(this->cur_line));
             this->calc_input_pos();
-            this->set_redraw(1);
+            this->set_redraw(TPanel::RedrawNormal);
             return 1;
         }
         break;
@@ -255,12 +243,12 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
             this->cur_col = 0;
             this->cur_line = 0;
             this->calc_input_pos();
-            this->set_redraw(1);
+            this->set_redraw(TPanel::RedrawNormal);
             return 1;
         }
         if (this->cur_col == 0) break;
         this->cur_col = 0;
-        this->set_redraw(1);
+        this->set_redraw(TPanel::RedrawNormal);
         this->calc_input_pos();
         return 1;
 
@@ -278,7 +266,7 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
             if (this->cur_col == len) break;
             this->cur_col = __mbslen(this->get_text(this->cur_line));
         }
-        this->set_redraw(1);
+        this->set_redraw(TPanel::RedrawNormal);
         this->calc_input_pos();
         return 1;
 
@@ -308,7 +296,7 @@ page_update:
         if (this->cur_col > len)
             this->cur_col = __mbslen(this->get_text(this->cur_line));
         this->calc_input_pos();
-        this->set_redraw(1);
+        this->set_redraw(TPanel::RedrawNormal);
         return 1;
 
     case 0x2E:
@@ -365,16 +353,16 @@ void TInputPanel::draw()
     this->draw_setup(0);
     void* dc = this->render_area->GetDc(pnl_inp_draw);
     if (dc != 0) {
-        SelectObjectFn select_object = g_SelectObject;
+        void* (__stdcall *select_object)(void*, void*) = SelectObject;
         void* old_font = select_object(dc, this->font);
         tagRECT line_rect;
-        int cursor_x_offset;
+        long cursor_x_offset;
         short cur = this->cur_line;
         short diff = cur - this->top_line;
         this->calc_line_pos(dc, diff, cur, &line_rect, &cursor_x_offset);
         select_object(dc, old_font);
         this->render_area->ReleaseDc(pnl_inp_draw);
-        uchar* locked = this->render_area->Lock(pnl_inp_draw, 1);
+        unsigned char* locked = this->render_area->Lock(pnl_inp_draw, 1);
         if (locked != 0) {
             int x = cursor_x_offset + line_rect.left;
             int y = line_rect.top;
@@ -462,18 +450,18 @@ int TInputPanel::insert_character(long ch)
 int TInputPanel::delete_character()
 {
     int bVar1;
-    uchar* pcVar2;
-    uchar* pcVar3;
-    uchar* pcVar4;
+    unsigned char* pcVar2;
+    unsigned char* pcVar3;
+    unsigned char* pcVar4;
     int move_back_one;
     if (this->input_pos >= this->input_len) return 0;
-    pcVar3 = (uchar*)this->input_buffer1;
+    pcVar3 = (unsigned char*)this->input_buffer1;
     bVar1 = 0;
     if (this->input_buffer == (char*)pcVar3) {
         pcVar4 = pcVar3;
-        pcVar3 = (uchar*)this->input_buffer2;
+        pcVar3 = (unsigned char*)this->input_buffer2;
     } else {
-        pcVar4 = (uchar*)this->input_buffer2;
+        pcVar4 = (unsigned char*)this->input_buffer2;
     }
     this->input_buffer = (char*)pcVar3;
     *pcVar3 = 0;
@@ -481,34 +469,34 @@ int TInputPanel::delete_character()
     move_back_one = (int)pcVar3;
     if (this->input_pos > 0) {
         _mbsncpy(pcVar3, pcVar4, (int)this->input_pos);
-        pcVar2 = (uchar*)_mbsninc(pcVar4, (int)this->input_pos);
+        pcVar2 = (unsigned char*)_mbsninc(pcVar4, (int)this->input_pos);
         move_back_one = (int)_mbsninc(pcVar3, (int)this->input_pos);
     }
     if (*pcVar2 == '\r') {
-        pcVar3 = (uchar*)_mbsinc(pcVar2);
-        pcVar4 = (uchar*)1;
+        pcVar3 = (unsigned char*)_mbsinc(pcVar2);
+        pcVar4 = (unsigned char*)1;
         if (*pcVar3 == '\n') {
-            pcVar3 = (uchar*)_mbsinc(pcVar3);
-            pcVar4 = (uchar*)2;
+            pcVar3 = (unsigned char*)_mbsinc(pcVar3);
+            pcVar4 = (unsigned char*)2;
         }
     } else {
         if ((*pcVar2 == '\n') && (pcVar2 > pcVar4)) {
-            pcVar4 = (uchar*)_mbsdec(pcVar4, pcVar2);
+            pcVar4 = (unsigned char*)_mbsdec(pcVar4, pcVar2);
             if (*pcVar4 == '\r') {
-                move_back_one = (int)_mbsdec(pcVar3, (uchar*)move_back_one);
-                pcVar3 = (uchar*)_mbsninc(pcVar4, 2);
-                pcVar4 = (uchar*)2;
+                move_back_one = (int)_mbsdec(pcVar3, (unsigned char*)move_back_one);
+                pcVar3 = (unsigned char*)_mbsninc(pcVar4, 2);
+                pcVar4 = (unsigned char*)2;
                 bVar1 = 1;
                 goto do_copy;
             }
-            pcVar3 = (uchar*)_mbsninc(pcVar4, 2);
+            pcVar3 = (unsigned char*)_mbsninc(pcVar4, 2);
         } else {
-            pcVar3 = (uchar*)_mbsinc(pcVar2);
+            pcVar3 = (unsigned char*)_mbsinc(pcVar2);
         }
-        pcVar4 = (uchar*)1;
+        pcVar4 = (unsigned char*)1;
     }
 do_copy:
-    _mbsncpy((uchar*)move_back_one, pcVar3,
+    _mbsncpy((unsigned char*)move_back_one, pcVar3,
              ((int)this->input_len - (int)this->input_pos) + 1);
     if (bVar1) --this->input_pos;
     this->input_len -= (short)(int)pcVar4;
@@ -603,13 +591,13 @@ void TInputPanel::reformat()
     if (cur >= n) cur = n - 1;
     this->cur_line = cur;
     if (top >= n) this->top_line = n - 1;
-    this->scroll(1, (uchar)top, 1);
-    this->set_redraw(1);
+    this->scroll(1, (unsigned char)top, 1);
+    this->set_redraw(TPanel::RedrawNormal);
 }
 
 void TInputPanel::calc_input_pos()
 {
-    TextNode* node;
+    TTextPanel::TextNode* node;
     short i;
     short len;
     node = this->list;
@@ -646,7 +634,7 @@ void TInputPanel::calc_input_pos()
 
 void TInputPanel::calc_cur_line_col()
 {
-    TextNode* node;
+    TTextPanel::TextNode* node;
     short offset;
     short len;
     node = this->list;
@@ -694,25 +682,25 @@ blank:
 char* TInputPanel::get_trimmed_str(char* dst, int maxlen)
 {
     char temp_str[256];
-    uchar* base;
-    uchar* p;
-    uchar* cur;
+    unsigned char* base;
+    unsigned char* p;
+    unsigned char* cur;
     memset(temp_str, 0, sizeof(temp_str));
     strcpy(temp_str, this->currentLine());
     memset(dst, 0, maxlen);
-    base = (uchar*)dst;
+    base = (unsigned char*)dst;
     p = base;
-    cur = (uchar*)temp_str;
-    while (__ismbcspace(*cur & 0xFF)) cur = (uchar*)_mbsinc(cur);
+    cur = (unsigned char*)temp_str;
+    while (__ismbcspace(*cur & 0xFF)) cur = (unsigned char*)_mbsinc(cur);
     while (*cur) {
         _mbsncpy(p, cur, 1);
-        p = (uchar*)_mbsinc(p);
-        cur = (uchar*)_mbsinc(cur);
+        p = (unsigned char*)_mbsinc(p);
+        cur = (unsigned char*)_mbsinc(cur);
     }
     while (1) {
         *p = 0;
         if (p == base) break;
-        p = (uchar*)_mbsdec(base, p);
+        p = (unsigned char*)_mbsdec(base, p);
         if (__ismbcspace(*p)) continue;
         break;
     }

@@ -1,6 +1,8 @@
 // Recovered direct owner module for C:\msdev\work\age1_x1\Pnl_btn.cpp.
 // Definitions follow the PDB source order.
 #include "../include/pnl_btn.h"
+#include "../include/Shape.h"
+#include "../include/sounddrv.h"
 // 00471EC0_TButtonPanel.cpp
 // VA: 00471EC0 TButtonPanel constructor
 // PDB source: Pnl_btn.cpp
@@ -155,7 +157,7 @@ void TButtonPanel::set_text_info(long string_id, void* font, long width, long he
 void TButtonPanel::set_text_pos(long a, long b) {
     this->text_x = a;
     this->text_y = b;
-    this->set_redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
 }
 
 // 00472240_set_radio_info.cpp
@@ -207,7 +209,7 @@ void TButtonPanel::set_id(short param_1, long param_2, long param_3) {
 void TButtonPanel::set_picture(short param_1, TShape* param_2, short param_3) {
     this->pic[param_1] = param_2;
     this->pic_index[param_1] = param_3;
-    this->set_redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
 }
 
 // 00472330_set_text.cpp
@@ -251,7 +253,7 @@ void TButtonPanel::set_text(short state, char* text) {
             }
         }
     }
-    set_redraw(1);
+    set_redraw(TPanel::RedrawNormal);
 }
 
 // 00472440_set_text.cpp
@@ -285,7 +287,7 @@ void TButtonPanel::set_text(short state, char* text1_arg, char* text2_arg) {
             }
         }
     }
-        set_redraw(1);
+        set_redraw(TPanel::RedrawNormal);
 }
 
 // 00472540_set_text.cpp
@@ -311,7 +313,7 @@ void TButtonPanel::set_font(void* param_1, long param_2, long param_3) {
     this->font = param_1;
     this->font_wid = param_2;
     this->font_hgt = param_3;
-    this->set_redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
 }
 
 // 00472620_set_text_color.cpp
@@ -319,7 +321,7 @@ void TButtonPanel::set_text_color(int state, unsigned long color1, unsigned long
     if (state >= 0 && state <= 8) {
         text_color1[state] = color1;
         text_color2[state] = color2;
-        set_redraw(1);
+        set_redraw(TPanel::RedrawNormal);
     }
 }
 
@@ -328,7 +330,7 @@ void TButtonPanel::set_highlight_text_color(int state, unsigned long color1, uns
     if (state >= 0 && state <= 8) {
         highlight_text_color1[state] = color1;
         highlight_text_color2[state] = color2;
-        set_redraw(1);
+        set_redraw(TPanel::RedrawNormal);
     }
 }
 
@@ -341,18 +343,18 @@ void TButtonPanel::set_radio_button(void) {
 
     for (i = 0; i < num_radio_buttons; i++) {
         radio_buttons[i]->is_down = 0;
-        radio_buttons[i]->set_redraw(0);
+        radio_buttons[i]->set_redraw(TPanel::RedrawNone);
     }
     if (drawTypeValue == 3 || drawTypeValue == 5) {
         is_down = 1;
     }
-    set_redraw(1);
+    set_redraw(TPanel::RedrawNormal);
 }
 
 // 00472700_set_state.cpp
 void TButtonPanel::set_state(short param_1) {
     this->cur_state = param_1;
-    this->set_redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
 }
 
 // 00472720_set_state_by_id.cpp
@@ -362,7 +364,7 @@ void TButtonPanel::set_state_by_id(long target_id) {
     for (i = 0; i < num_states; i++) {
         if (id[i] == target_id) {
             cur_state = (short)i;
-            set_redraw(1);
+            set_redraw(TPanel::RedrawNormal);
             return;
         }
     }
@@ -380,14 +382,15 @@ void TButtonPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int 
 }
 
 // 004727B0_set_disabled.cpp
+// BINARY NOTE: The shipped setter changes handle_mouse_input, not active.
 void TButtonPanel::set_disabled(int is_disabled) {
     disabled = is_disabled;
-        set_redraw(1);
+        set_redraw(TPanel::RedrawNormal);
     if (disabled != 0) {
-        active = 0;
+        handle_mouse_input = 0;
         return;
     }
-    active = 1;
+    handle_mouse_input = 1;
 }
 
 // 004727F0_set_rect.cpp
@@ -451,8 +454,8 @@ void TButtonPanel::get_text_color(short state, unsigned long* color1, unsigned l
 
 #include <string.h>
 
-extern const char s_pnl_btn_draw[];    // "pnl_btn::draw" @ 0x5852F8
-extern const char s_pnl_btn_draw2[];   // "pnl_btn::draw2" @ 0x5852E8
+extern char s_pnl_btn_draw[];    // "pnl_btn::draw" @ 0x5852F8
+extern char s_pnl_btn_draw2[];   // "pnl_btn::draw2" @ 0x5852E8
 
 extern "C" {
 __declspec(dllimport) void* __stdcall SelectObject(void* hdc, void* object);
@@ -498,7 +501,7 @@ void TButtonPanel::draw()
             TShape* pic = this->pic[this->cur_state];
             if (pic != 0) {
                 if (this->auto_pic_pos != 0) {
-                    pic->shape_minmax(&x_min, &y_min, &x_max, &y_max,
+                    pic->shape_minmax(x_min, y_min, x_max, y_max,
                                       this->pic_index[this->cur_state]);
                     this->pic_x = (short)((this->pnl_wid / 2) -
                                           (((x_max - x_min) + 1) / 2) - x_min);
@@ -685,17 +688,19 @@ void TButtonPanel::draw()
 }
 
 // 00473120_handle_mouse_down.cpp
+// BINARY NOTE: The input gate checks active and mouse_captured, then uses the
+// virtual hit_button test before dispatching to TPanel::handle_mouse_down.
 long TButtonPanel::handle_mouse_down(unsigned char button, long x, long y, int ctrl, int shift) {
-    if (visible == 0) {
+    if (active == 0) {
         return 0;
     }
-    if (active != 0) {
+    if (mouse_captured != 0) {
         return 0;
     }
-    if (is_inside(x, y) == 0) {
+    if (hit_button(x, y) == 0) {
         return 0;
     }
-    return ((TPanel*)this)->handle_mouse_down(button, x, y, ctrl, shift);
+    return TPanel::handle_mouse_down(button, x, y, ctrl, shift);
 }
 
 // 00473180_mouse_left_dbl_click_action.cpp
@@ -717,7 +722,7 @@ long TButtonPanel::mouse_left_down_action(long x, long y, int ctrl, int shift) {
     capture_mouse();
     is_down = 1;
     button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x372);
-    set_redraw(1);
+    set_redraw(TPanel::RedrawNormal);
     if (parent_panel != 0) {
         parent_panel->action(this, 2, id[cur_state], id2[cur_state]);
     }
@@ -737,7 +742,7 @@ long TButtonPanel::mouse_left_move_action(long x, long y, int ctrl, int shift) {
         if (new_state != 0) {
             this->button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x389);
         }
-        this->set_redraw(1);
+        this->set_redraw(TPanel::RedrawNormal);
         TPanel* target = this->parent_panel;
         if (this->is_down != 0) {
             if (target != 0) {
@@ -761,14 +766,14 @@ long TButtonPanel::mouse_left_up_action(long x, long y, int ctrl, int shift) {
         if (buttonTypeValue != 2) {
             is_down = 0;
         }
-        set_redraw(1);
+        set_redraw(TPanel::RedrawNormal);
         SendMessageA(render_area->Wnd, 0x0F, 0, 0);
         do_action();
         return 1;
     }
     if (buttonTypeValue == 2 && cur_state == 1) {
         is_down = 1;
-        set_redraw(1);
+        set_redraw(TPanel::RedrawNormal);
     }
     return 1;
 }
@@ -792,7 +797,7 @@ long TButtonPanel::mouse_right_down_action(long x, long y, int ctrl, int shift) 
     capture_mouse();
     is_down = 1;
     button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x3CC);
-    set_redraw(1);
+    set_redraw(TPanel::RedrawNormal);
     if (parent_panel != 0) {
         parent_panel->action(this, 5, id[cur_state], id2[cur_state]);
     }
@@ -814,7 +819,7 @@ long TButtonPanel::mouse_right_move_action(long x, long y, int ctrl, int shift) 
             this->button_down_time = debug_timeGetTime(
                 "C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x3E3);
         }
-        this->set_redraw(1);
+        this->set_redraw(TPanel::RedrawNormal);
         if (this->is_down != 0) {
             if (this->parent_panel != 0) {
                 this->parent_panel->action(
@@ -840,14 +845,14 @@ long TButtonPanel::mouse_right_up_action(long x, long y, int ctrl, int shift) {
         if (buttonTypeValue != 2) {
             is_down = 0;
         }
-        set_redraw(1);
+        set_redraw(TPanel::RedrawNormal);
         SendMessageA(render_area->Wnd, 0x0F, 0, 0);
         do_right_action(shift);
         return 1;
     }
     if (buttonTypeValue == 2 && cur_state == 1) {
         is_down = 1;
-        set_redraw(1);
+        set_redraw(TPanel::RedrawNormal);
     }
     return 1;
 }
@@ -874,7 +879,7 @@ long TButtonPanel::handle_key_down(long key, short ch, int a3, int a4, int a5) {
         key_down = key;
         is_down = 1;
         button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x421);
-        set_redraw(1);
+        set_redraw(TPanel::RedrawNormal);
         if (parent_panel != 0) {
             parent_panel->action(this, 2, id[cur_state], id2[cur_state]);
         }
@@ -929,7 +934,7 @@ long TButtonPanel::key_down_action(long key, short ch, int a3, int a4, int a5) {
         key_down = key;
         is_down = 1;
         button_down_time = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp", 0x44B);
-        set_redraw(1);
+        set_redraw(TPanel::RedrawNormal);
         if (parent_panel != 0) {
             parent_panel->action(this, 2, id[cur_state], id2[cur_state]);
         }
@@ -957,7 +962,7 @@ long TButtonPanel::wnd_proc(void* hwnd, unsigned msg, unsigned wp, long lp) {
         if (buttonType != 2) {
             this->is_down = 0;
         }
-        this->set_redraw(1);
+        this->set_redraw(TPanel::RedrawNormal);
         SendMessageA(this->render_area->Wnd, 0x0F, 0, 0);
         this->do_action();
         return 1;
@@ -1071,7 +1076,7 @@ void TButtonPanel::reset(void) {
         if (buttonTypeValue != 2) {
             is_down = 0;
         }
-        set_redraw(1);
+        set_redraw(TPanel::RedrawNormal);
     }
 }
 

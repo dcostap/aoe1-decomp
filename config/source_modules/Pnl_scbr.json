@@ -4,6 +4,10 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp",
   "source": "src/Pnl_scbr.cpp",
   "header": "include/Pnl_scbr.h",
+  "header_composition": {
+    "status": "repaired",
+    "summary": "Consumes canonical pnl_lst, panel, drawarea, Shape, and color owners; declares only the Pnl_scbr scrollbar surface."
+  },
   "functions": {
     "0047A700": { "status": "matching", "note_path": "recovery_notes/Pnl_scbr_module.md" },
     "0047A8A0": { "status": "matching", "note_path": "recovery_notes/Pnl_scbr_module.md" },

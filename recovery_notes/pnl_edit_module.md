@@ -18,10 +18,10 @@ this source order:
 `00476AB0`, `00476BB0`, `00476BE0`.
 
 The owners are all `TEditPanel` members except `00475930`, the file-local
-`pnl_sub_wnd_proc` callback. The module-local header owns the proven `TPanel`,
-`TDrawArea`, and `TEditPanel` surfaces. It preserves the `TPanel` size of
-`0xF4`, the `TEditPanel` size of `0x16C`, and the member offsets used by the
-owners.
+`pnl_sub_wnd_proc` callback. The module header owns only the proven
+`TEditPanel` surface. It consumes canonical `TPanel`, `TDrawArea`, and
+`TDrawSystem` declarations. It preserves the `TPanel` size of `0xF4`, the
+`TEditPanel` size of `0x16C`, and the member offsets used by the owners.
 
 The nearby `00475670` vector deleting destructor is compiler-generated. The
 consolidated object emits `??_GTEditPanel@@UAEPAXI@Z`; it is not a normal owner.
@@ -37,9 +37,72 @@ alternate-name directives.
 
 The source module manifest records every normal owner. The two accepted-drift
 owners remain observed module members; this migration does not promote them.
-The two scratch owners remain scratch.
+The two scratch owners remain scratch holds.
 
-## Direct validation
+## Header composition repair
+
+`include/pnl_edit.h` now consumes `include/panel.h`, `include/drawarea.h`, and
+`include/basegame.h`. Those owners provide `TPanel`, `PanelNode`,
+`TPanelSystem`, `TDrawArea`, `TDrawSystem`, `RGE_Base_Game`, and the Windows
+types used by the edit panel. The header declares only `TEditPanel` and its
+nested `FormatType` enum. It keeps no copied Panel, BaseGame, DrawArea,
+DirectDraw, Windows, vtable, or fallback declarations.
+
+The PDB type record proves `TEditPanel` size `0x16C` and fields from `+0xF4`
+through `+0x168` (`inventory/types/dumps/TEditPanel.txt`, source lines
+5100-5136). The class record proves the inherited 56-slot virtual surface and
+the nonvirtual `setup` helper. The header keeps the `FormatType` field at
+`+0x128`, uses the canonical `WNDPROC`, `HWND`, `HBRUSH`, `HGDIOBJ`, and
+`tagRECT` types, and does not mark `setup` virtual.
+
+`src/pnl_edit.cpp` is the only current consumer of `pnl_edit.h`. It consumes
+`TPanel` and `TPanelSystem` at lines 147, 303, 495, and 589-592, and
+`TDrawArea` and `TDrawSystem` at lines 158, 303, 547, and 688-793. The source
+does not use `TShape`, `RGE_Color_Table`, `TTextPanel`, `TInputPanel`,
+`TDigital`, or `TSound_Driver`; it therefore does not include `Shape.h`,
+`color.h`, `pnl_lst.h`, `Pnl_inp.h`, or a sound-owner header.
+
+### Missing canonical globals
+
+The source still needs two globals that have no published canonical owner:
+
+- `MouseCursorInChildContol` is the PDB symbol at `0062C4C4`. The original
+  listing shows consumers in `basegame.cpp` (`004206D0`, source lines
+  3585-3597) and `pnl_edit.cpp` (`00476040`, current source line 494; PDB
+  source line 711). The generated
+  global inventory has no owner record. The source keeps one local `extern`
+  declaration and does not copy a global definition.
+- `imc_retval` is the PDB symbol at `0086B23C`. The original listing and
+  `00475B60_set_focus.txt` show writes at `00475BF9` and `00475C08` (current
+  source lines 297 and 299). No canonical global header publishes it. The
+  source keeps one local `extern`
+  declaration and does not copy a global definition.
+
+These globals have no header fanout beyond `src/pnl_edit.cpp` for this module.
+The first global also fans out to the basegame `wnd_proc` owner. Publish both
+through the reviewed global owner before removing the source-local declarations.
+
+## Current candidate validation
+
+After rebasing onto `source-reunification/terra-2`, the direct source needed
+the Windows and IMM declarations supplied by the canonical headers. VC5
+rejected the old local redeclarations of `ImmNotifyIME`, `MoveWindow`,
+`DrawTextExA`, `MessageBeep`, and `IsDBCSLeadByte`. Removing those duplicate
+declarations is source cleanup only; it preserves the exact owners.
+
+The grouped `validate_candidate_tu.py` check compiled all 27 normal owners and
+the nearby generated destructor. It reported 23 exact owners, one generated
+match, and four observed mismatches. The observed results were:
+
+- `00475770` setup: 447-byte boundary and 92 differing bytes.
+- `00475E50` set_bevel_info: 168-byte boundary and 26 differing bytes.
+- `00476040` sub_wnd_proc: 994-byte boundary and 789 differing bytes.
+- `00476680` draw: 940-byte boundary and 30 differing bytes.
+
+All candidate rows had zero relocation-target mismatches and zero boundary
+escapes. The four nonexact results remain recorded rather than promoted.
+
+## Earlier direct validation
 
 The direct source was built with the pinned VC5 compiler and module flags. Fresh
 `tools/check_function.py --rebuild --no-history --detail concise` checks reported:
@@ -63,20 +126,12 @@ The direct source was built with the pinned VC5 compiler and module flags. Fresh
 Thus the direct module preserves the packet's 23 exact owners and four observed
 owners. The four nonexact results are recorded rather than hidden.
 
-## Integration blocker
+## Integration state
 
-The assigned `build/source_reunification/terra_system/orchestrator_contract.md`
-was absent from this checkout. The module packet was also absent before the
-captain generated the current packet at
-`build/tu_plans/pnl_edit_cpp/pnl_edit_cpp/packet.txt` and `packet.json`.
+`config/translation_units.json` registers `src/pnl_edit.cpp` as the direct
+owner for the 23 matching functions. The four observed owners remain outside
+the exact owner list, with their scratch or accepted-drift status recorded in
+`config/source_modules/pnl_edit.json`.
 
-This captain did not edit `config/translation_units.json`, in line with the
-assignment restriction against ownership edits. The main integration owner must
-replace the registered `pnl_edit_tu.cpp` group with `src/pnl_edit.cpp`, add the
-`pnl_edit` module key, map the approved registered owners to the direct source,
-and add the qualified symbols for `00476040` and `00476680` when it integrates
-this module. The temporary local registry edits used for direct checks were
-restored before commit.
-
-A strict source-module inventory invocation did not finish within five minutes
-and produced no report. No global audit result is claimed for this module.
+The two canonical globals remain open. Publish them through reviewed global
+owners before removing the source-local declarations.

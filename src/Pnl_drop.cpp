@@ -1,4 +1,7 @@
 #include "../include/pnl_drop.h"
+#include "../include/Pnl_scbr.h"
+
+extern char s_[];
 
 TDropDownPanel::TDropDownPanel() : TPanel() {
     this->val_panel = 0;
@@ -49,7 +52,8 @@ long TDropDownPanel::setup(TDrawArea* area, TPanel* parent, void* p3, long p4, l
         (result = this->val_panel->setup(area, this, 0, 0, this->val_wid, this->val_hgt,
                                          p3, p4, p5, (char*)0, p6, p7, p8, outline, p14,
                                          vals[(short)this->val_num])) != 0) {
-        this->val_panel->set_alignment(0, 1);
+        this->val_panel->set_alignment(TTextPanel::AlignCenter,
+                                       TTextPanel::AlignLeft);
 
         this->btn_panel = new TDropDownButtonPanel(this);
         result = (long)this->btn_panel;
@@ -188,7 +192,7 @@ void TDropDownPanel::set_draw_val_rect(int value) {
     this->draw_val_rect = value;
     if (this->val_panel != 0) {
         this->val_panel->set_outline(value, this->outline_color);
-        this->set_redraw(1);
+        this->set_redraw(TPanel::RedrawNormal);
     }
 }
 
@@ -285,20 +289,20 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
             if (this->clip_rect.left < parent_x || this->clip_rect.top < parent_y ||
                 this->clip_rect.right > parent_w + parent_x - 1 ||
                 this->clip_rect.bottom > parent_h + parent_y - 1) {
-                this->parent_panel->parent_panel->set_redraw(2);
+                this->parent_panel->parent_panel->set_redraw(TPanel::RedrawImmediate);
             }
         }
         this->list_panel->set_active(0);
         this->scbar_panel->set_active(0);
         if (this->draw_style == 1) {
-            this->btn_panel->set_positioning(PositionLeftTop, 0, 0, 1, 0, this->btn_wid, this->btn_wid,
+            this->btn_panel->set_positioning(TPanel::PositionLeftTop, 0, 0, 1, 0, this->btn_wid, this->btn_wid,
                                              this->btn_hgt, this->btn_hgt, 0, 0, 0, 0);
-            this->val_panel->set_positioning(PositionLeftTop, 1, 0, 0, 0, this->val_wid, this->val_wid,
+            this->val_panel->set_positioning(TPanel::PositionLeftTop, 1, 0, 0, 0, this->val_wid, this->val_wid,
                                              this->val_hgt, this->val_hgt, this->btn_panel, 0, 0, 0);
         } else {
-            this->val_panel->set_positioning(PositionLeftTop, 0, 0, 1, 0, this->val_wid, this->val_wid,
+            this->val_panel->set_positioning(TPanel::PositionLeftTop, 0, 0, 1, 0, this->val_wid, this->val_wid,
                                              this->val_hgt, this->val_hgt, 0, 0, 0, 0);
-            this->btn_panel->set_positioning(PositionLeftTop, 1, 0, 0, 0, this->btn_wid, this->btn_wid,
+            this->btn_panel->set_positioning(TPanel::PositionLeftTop, 1, 0, 0, 0, this->btn_wid, this->btn_wid,
                                              this->btn_hgt, this->btn_hgt, this->val_panel, 0, 0, 0);
         }
         this->clip_to_parent = 1;
@@ -314,9 +318,9 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
                                      value_wid, value_hgt);
         }
         if (this->parent_panel) {
-            this->parent_panel->set_redraw(1);
+            this->parent_panel->set_redraw(TPanel::RedrawNormal);
         } else {
-            this->set_redraw(1);
+            this->set_redraw(TPanel::RedrawNormal);
         }
         this->set_curr_child(this->val_panel);
         if (old_mode == ModeList) {
@@ -349,19 +353,19 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
             this->scbar_panel->set_active(0);
         }
         if (this->draw_style == 1) {
-            this->btn_panel->set_positioning(PositionLeftTop, 0, 0, 1, 0, this->btn_wid, this->btn_wid,
+            this->btn_panel->set_positioning(TPanel::PositionLeftTop, 0, 0, 1, 0, this->btn_wid, this->btn_wid,
                                              this->btn_hgt, this->btn_hgt, 0, 0, 0, 0);
-            this->val_panel->set_positioning(PositionLeftTop, 1, 0, 0, 0, this->val_wid, this->val_wid,
+            this->val_panel->set_positioning(TPanel::PositionLeftTop, 1, 0, 0, 0, this->val_wid, this->val_wid,
                                              this->val_hgt, this->val_hgt, this->btn_panel, 0, 0, 0);
         } else {
-            this->val_panel->set_positioning(PositionLeftTop, 0, 0, 1, 0, this->val_wid, this->val_wid,
+            this->val_panel->set_positioning(TPanel::PositionLeftTop, 0, 0, 1, 0, this->val_wid, this->val_wid,
                                              this->val_hgt, this->val_hgt, 0, 0, 0, 0);
-            this->btn_panel->set_positioning(PositionLeftTop, 1, 0, 0, 0, this->btn_wid, this->btn_wid,
+            this->btn_panel->set_positioning(TPanel::PositionLeftTop, 1, 0, 0, 0, this->btn_wid, this->btn_wid,
                                              this->btn_hgt, this->btn_hgt, this->val_panel, 0, 0, 0);
         }
-        this->scbar_panel->set_positioning(PositionRightBottom, 1, 1, 0, 0, this->scbar_wid, this->scbar_wid,
+        this->scbar_panel->set_positioning(TPanel::PositionRightBottom, 1, 1, 0, 0, this->scbar_wid, this->scbar_wid,
                                            0, 0, 0, this->val_panel, 0, 0);
-        this->list_panel->set_positioning(PositionLeftBottom, 0, 1, 1, 0, 0, 0, 0, 0, 0,
+        this->list_panel->set_positioning(TPanel::PositionLeftBottom, 0, 1, 1, 0, 0, 0, 0, 0, 0,
                                           this->val_panel, this->scbar_panel, 0);
         this->clip_to_parent = 0;
         long calc_wid = this->list_wid;
@@ -396,19 +400,19 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
                     }
                 }
                 if (this->draw_style == 1) {
-                    this->btn_panel->set_positioning(PositionLeftTop, 0, 0, 1, 0, this->btn_wid, this->btn_wid,
+                    this->btn_panel->set_positioning(TPanel::PositionLeftTop, 0, 0, 1, 0, this->btn_wid, this->btn_wid,
                                                      this->btn_hgt, this->btn_hgt, 0, 0, 0, 0);
-                    this->val_panel->set_positioning(PositionLeftTop, 1, 0, 0, 0, this->val_wid, this->val_wid,
+                    this->val_panel->set_positioning(TPanel::PositionLeftTop, 1, 0, 0, 0, this->val_wid, this->val_wid,
                                                      this->val_hgt, this->val_hgt, this->btn_panel, 0, 0, 0);
                 } else {
-                    this->val_panel->set_positioning(PositionLeftTop, 0, 0, 1, 0, this->val_wid, this->val_wid,
+                    this->val_panel->set_positioning(TPanel::PositionLeftTop, 0, 0, 1, 0, this->val_wid, this->val_wid,
                                                      this->val_hgt, this->val_hgt, 0, 0, 0, 0);
-                    this->btn_panel->set_positioning(PositionLeftTop, 1, 0, 0, 0, this->btn_wid, this->btn_wid,
+                    this->btn_panel->set_positioning(TPanel::PositionLeftTop, 1, 0, 0, 0, this->btn_wid, this->btn_wid,
                                                      this->btn_hgt, this->btn_hgt, this->val_panel, 0, 0, 0);
                 }
-                this->scbar_panel->set_positioning(PositionRightTop, 1, 1, 0, 0, this->scbar_wid, this->scbar_wid,
+                this->scbar_panel->set_positioning(TPanel::PositionRightTop, 1, 1, 0, 0, this->scbar_wid, this->scbar_wid,
                                                    0, 0, 0, 0, 0, this->val_panel);
-                this->list_panel->set_positioning(PositionLeftTop, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+                this->list_panel->set_positioning(TPanel::PositionLeftTop, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
                                                   this->scbar_panel, this->val_panel);
                 this->set_fixed_position(this->pnl_x - parent_x,
                                          this->pnl_y - parent_y - this->list_hgt - 1,
@@ -434,14 +438,14 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
                     if (number_lines > this->list_panel->numberDrawLines()) {
                         this->scbar_panel->set_active(1);
                     }
-                    this->list_panel->set_positioning(PositionLeftBottom, 0, 1, 1, 0, 0, 0, 0, 0, 0,
+                    this->list_panel->set_positioning(TPanel::PositionLeftBottom, 0, 1, 1, 0, 0, 0, 0, 0, 0,
                                                       this->val_panel, this->scbar_panel, 0);
                 }
                 this->set_fixed_position(this->pnl_x - parent_x, this->pnl_y - parent_y,
                                          calc_wid, this->list_hgt + this->val_hgt + 1);
             }
         }
-        this->set_redraw(1);
+        this->set_redraw(TPanel::RedrawNormal);
         this->set_z_order(1, 0);
         this->set_curr_child(this->list_panel);
         panel_system.setModalPanel(this);
