@@ -4945,14 +4945,15 @@
     },
     {
       "name": "scr_trb",
-      "source": "src/scr_trb_tu.cpp",
+      "source": "src/scr_trb.cpp",
+      "module": "scr_trb",
       "flags": "config/flags/004B75A0_TribeSelectTribeScreen.rsp",
       "owners": {
-        "004B75A0": "src/matching/004B75A0_TribeSelectTribeScreen.cpp",
-        "004B7DF0": "src/matching/004B7DF0_TribeSelectTribeScreen.cpp",
-        "004B7EE0": "src/matching/004B7EE0_action.cpp",
-        "004B7F70": "src/matching/004B7F70_fillTribeText.cpp",
-        "004B8070": "src/matching/004B8070_tribeName.cpp"
+        "004B75A0": "src/scr_trb.cpp",
+        "004B7DF0": "src/scr_trb.cpp",
+        "004B7EE0": "src/scr_trb.cpp",
+        "004B7F70": "src/scr_trb.cpp",
+        "004B8070": "src/scr_trb.cpp"
       },
       "symbols": {}
     },
