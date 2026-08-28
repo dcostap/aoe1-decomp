@@ -1,4 +1,4 @@
-#include "../third_party/directplay/include/dplay.h"
+#include "../include/com_hand.h"
 #include "../include/tribegam.h"
 #include "../include/main.h"
 #include "../include/game_globals.h"
@@ -22,7 +22,8 @@
 #include "../include/scr_sed.h"
 #include "../include/scr_ach.h"
 #include "../include/scr_vc.h"
-#include "../include/scr_mps_types.h"
+#include "../include/scr_mps.h"
+#include "../include/scr_cj.h"
 #include "../include/act_obj.h"
 #include "../include/action.h"
 #include "../include/act_list.h"
@@ -35,7 +36,6 @@
 #include "../include/aiplaybook.h"
 #include "../include/tcommand.h"
 #include "../include/chat.h"
-#include "../include/com_hand.h"
 #include "../include/debuglog.h"
 #include "../include/registry.h"
 #include "../include/Mouseptr.h"
@@ -100,6 +100,8 @@ extern _iobuf* run_log_file;   // 0x86BDF8
 
 void __cdecl run_log(char* param_1, int param_2)
 {
+    char stime[26];
+
     if (!do_run_log)
         return;
 
@@ -114,11 +116,9 @@ void __cdecl run_log(char* param_1, int param_2)
         return;
 
     if (param_2) {
-        long timestamp = param_2;
-        time(&timestamp);
-        char stime[26];
+        time(reinterpret_cast<long*>(&param_2));
         memset(stime, 0, sizeof(stime));
-        strncpy(stime, ctime(&timestamp), 0x18);
+        strncpy(stime, ctime(reinterpret_cast<const long*>(&param_2)), 0x18);
         fprintf(run_log_file, "%s - %s\n", stime, param_1);
     } else {
         fprintf(run_log_file, "%s\n", param_1);
@@ -2448,7 +2448,7 @@ extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 
 int TRIBE_Game::start_scenario(char* scenario)
 {
-    char scenario_file2[256];
+    char scenario_file2[260];
     _finddata_t file_info;
     int first_any_player;
     int player_count;
