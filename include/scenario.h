@@ -3,10 +3,6 @@
 
 // Declarations for the original scenario.cpp source module.
 
-#include "basegame.h"
-#include "main.h"
-#include "rge_base_game_global.h"
-
 typedef unsigned char uchar;
 typedef unsigned int uint;
 

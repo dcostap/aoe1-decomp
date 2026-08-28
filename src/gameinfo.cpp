@@ -1,8 +1,20 @@
 #include "../include/gameinfo.h"
 
+#include "../include/basegame.h"
+#include "../include/debuglog.h"
+#include "../include/game_globals.h"
+#include "../include/main.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/rge_fio.h"
+
 #include <io.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+extern "C" void __cdecl getstring(char** destination, char* source);
+extern "C" void __cdecl operator_delete(void* pointer);
+extern int version_marker;
 
 RGE_Campaign_Info::RGE_Campaign_Info(int fd, RGE_Campaign** camps, long cnum) {
     rge_read(fd, this, 0xFF);

@@ -15,6 +15,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+unsigned long __cdecl debug_timeGetTime(char*, int);
+
 // PDB source order for C:\\msdev\\work\\age1_x1\\Command.cpp.
 
 struct RGE_Command_Work {

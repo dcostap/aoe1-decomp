@@ -1,13 +1,6 @@
 #ifndef AOE1_GAMEINFO_H
 #define AOE1_GAMEINFO_H
 
-#include "basegame.h"
-#include "debuglog.h"
-#include "game_globals.h"
-#include "main.h"
-#include "rge_base_game_global.h"
-#include "rge_fio.h"
-
 struct RGE_Scenario_Info {
     unsigned char scenario_status;
 };
@@ -16,15 +9,6 @@ class RGE_Campaign;
 class RGE_Campaign_Info;
 class RGE_Person_Info;
 class RGE_Game_Info;
-
-extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
-extern "C" void __cdecl free(void* pointer);
-extern "C" char* __cdecl strcpy(char* destination, const char* source);
-extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
-extern "C" void __cdecl getstring(char** destination, char* source);
-extern "C" void __cdecl operator_delete(void* pointer);
-
-extern int version_marker;
 
 class RGE_Campaign {
 public:

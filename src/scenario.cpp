@@ -2,6 +2,10 @@
 // The definitions follow the original source order.
 
 #include "../include/scenario.h"
+#include "../include/basegame.h"
+#include "../include/main.h"
+#include "../include/rge_base_game_global.h"
+
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
