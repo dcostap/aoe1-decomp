@@ -484,7 +484,7 @@ class Visible_Resource_Manager;
 class Visible_Unit_Manager;
 class WSAData;
 class Waypoint;
-class XYPoint;
+struct XYPoint;
 class XYZ;
 class XYZBYTEPoint;
 class XYZPoint;

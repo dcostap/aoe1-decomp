@@ -1,6 +1,8 @@
 #ifndef ACT_ENTR_CONTEXT_H
 #define ACT_ENTR_CONTEXT_H
 
+#include "xy_point.h"
+
 class RGE_Sprite;
 class RGE_Task;
 class RGE_Action_List;
@@ -18,12 +20,6 @@ class XYZBYTEPoint;
 class Path;
 class RGE_Object_List;
 class RGE_Active_Sprite_List;
-
-class XYPoint {
-public:
-    int x;
-    int y;
-};
 
 class RGE_Game_World {
 public:

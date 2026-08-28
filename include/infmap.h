@@ -1,20 +1,14 @@
 #ifndef AOE1_INFMAP_H
 #define AOE1_INFMAP_H
 
+#include "xy_point.h"
+
 // Canonical infmap.cpp class surface.
 //
 // PDB source order and the type inventory identify one 0x28-byte polymorphic
 // InfluenceMap. The vptr is compiler-owned. The source owners below include
 // this header through the grouped wrapper; their private fallback declarations
 // remain available for isolated work.
-
-#ifndef AOE1_XYPOINT_DEFINED
-#define AOE1_XYPOINT_DEFINED
-struct XYPoint {
-    int x;
-    int y;
-};
-#endif
 
 class InfluenceMap {
 public:

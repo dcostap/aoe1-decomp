@@ -12,8 +12,9 @@
 
 ## Status
 
-The module keeps 20 matching owners and two accepted-drift owners. The source
-now owns all 22 normal owners in one PDB-ordered file.
+The module keeps 19 matching owners, two accepted-drift owners, and one
+scratch owner. The source now owns all 22 normal owners in one PDB-ordered
+file.
 
 `005467B0` (`RGE_Zone_Map::RGE_Zone_Map(int, RGE_Map*)`) stays accepted drift.
 The constructor size, allocation calls, serialized read order, row setup, and
@@ -28,9 +29,13 @@ uses an equivalent `cmp edx, esi`, and hoists the y-zero store before the
 conditional jump. The difference is localized to equivalent instruction
 selection and scheduling.
 
+`005468C0` (`RGE_Zone_Map::RGE_Zone_Map(RGE_Map*, float*, long)`) is scratch.
+Fresh validation found two changed bytes in its first allocation size product.
+The body keeps the correct owner, size, calls, and boundaries. No natural
+source repair is known.
+
 All other normal owners are matching. Their exact claims use the grouped
-`zone_map` translation unit and the module source. No status changed during
-source reunification.
+`zone_map` translation unit and the module source.
 
 ## Ownership and deletion
 
