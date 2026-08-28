@@ -13,7 +13,6 @@
 
 extern VISIBLE_UNIT_REC* VisibleUnitList[5];
 extern int VisibleUnitList_Size[5];
-extern void* VisibleUnitManager;
 extern int* NormalLOS;
 extern int* PTR_Edge_Offsets_N16;
 extern RGE_Static_Object** VIS_UNIT_objectsValue;
@@ -23,6 +22,8 @@ extern double DAT_005776D0;
 extern double DAT_005776D8;
 extern void rge_read(int handle, void* buffer, int size);
 extern void rge_write(int handle, void* buffer, int size);
+
+Visible_Unit_Manager* VisibleUnitManager;
 
 Visible_Unit_Manager::Visible_Unit_Manager(int player_count, int category_count)
 {

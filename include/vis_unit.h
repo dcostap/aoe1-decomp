@@ -12,8 +12,7 @@ class RGE_Tile_List;
 
 extern RGE_Static_Object** VIS_UNIT_objectsValue;
 
-class VISIBLE_UNIT_REC {
-public:
+struct VISIBLE_UNIT_REC {
     int object_id;
     unsigned char distance;
     unsigned char player;
@@ -24,8 +23,7 @@ public:
 typedef char aoe1_visible_unit_rec_size_check[
     (sizeof(VISIBLE_UNIT_REC) == 0x08) ? 1 : -1];
 
-class VISIBLE_UNIT_PTR {
-public:
+struct VISIBLE_UNIT_PTR {
     VISIBLE_UNIT_REC* unit_list;
     short list_size;
     short used;
@@ -51,6 +49,8 @@ public:
     int GetVisibleUnits(int x, int y, int distance, int player,
                         int* categories, int category_count, int* player_map);
 };
+
+extern Visible_Unit_Manager* VisibleUnitManager;
 
 typedef char aoe1_visible_unit_manager_size_check[
     (sizeof(Visible_Unit_Manager) == 0x24) ? 1 : -1];

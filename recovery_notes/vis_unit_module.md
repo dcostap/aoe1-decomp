@@ -26,6 +26,21 @@
 - No source include, context macro, manual vtable, inline assembly, or raw
   offset overlay remains in the direct source.
 
+## Global provider
+
+`vis_unit.cpp` owns `VisibleUnitManager` at `0087D800`.
+The PDB symbol is `?VisibleUnitManager@@3PAVVisible_Unit_Manager@@A`.
+
+`vis_unit.h` declares it as a C++ `extern` pointer.
+`vis_unit.cpp` provides the one typed definition. It has no local `void*` view.
+
+`VISIBLE_UNIT_REC` and `VISIBLE_UNIT_PTR` are structures. Their public fields
+and sizes stay `0x08`. `Update_Unit_Info` emits
+`PAPAUVISIBLE_UNIT_REC@@`, as required by the PDB.
+
+The probe object defines the PDB global symbol. It also emits the expected
+`Update_Unit_Info` and `GetVisibleUnits` decorated symbols.
+
 ## Validation
 
 - Direct grouped builds use `src/vis_unit.cpp` and the `vis_unit` source module.
@@ -46,6 +61,10 @@
   308 differing bytes and the correct 0x10 frame. The oracle reads
   `VR_ListUsed[type]` before `VR_List[type]`; the source keeps the typed scan
   and its behavior, but the receiver-save and allocation basin remain open.
+
+- The full 13-row visibility candidate still has nine exact owner matches.
+  The focused Map constructor `004550A0` and combat consumers `0042FA50`,
+  `00430610`, and `00430680` remain exact.
 
 ## Binary evidence for open drift
 
