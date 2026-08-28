@@ -2956,14 +2956,19 @@
     },
     {
       "name": "dlg_menu",
-      "source": "src/dlg_menu_tu.cpp",
+      "source": "src/dlg_menu.cpp",
+      "module": "dlg_menu",
       "flags": "config/flags/0043F340_TribeMenuDialog.rsp",
       "owners": {
-        "0043F340": "src/matching/0043F340_TribeMenuDialog.cpp",
-        "0043F6B0": "src/matching/0043F6B0_TribeMenuDialog.cpp",
-        "0043F720": "src/matching/0043F720_action.cpp"
+        "0043F340": "src/dlg_menu.cpp",
+        "0043F6B0": "src/dlg_menu.cpp",
+        "0043F720": "src/dlg_menu.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "0043F340": "??0TribeMenuDialog@@QAE@PAVTScreenPanel@@@Z",
+        "0043F6B0": "??1TribeMenuDialog@@UAE@XZ",
+        "0043F720": "?action@TribeMenuDialog@@MAEJPAVTPanel@@JKK@Z"
+      }
     },
     {
       "name": "rpnl_tim",

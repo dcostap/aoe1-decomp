@@ -1,60 +1,58 @@
-# dlg_menu.cpp canonical dependency hold
+# dlg_menu.cpp source recovery
 
-The PDB module owns three `TribeMenuDialog` methods. Its source range is
-`0043F340` through `0043FC64`.
+The PDB module is `C:\\msdev\\work\\age1_x1\\dlg_menu.cpp`. It owns three
+normal `TribeMenuDialog` methods in this order:
 
-Do not replace `dlg_menu_context.h` with local class copies. The direct source
-constructs these complete foreign types:
+1. `0043F340` constructor, lines 74-142, 838 bytes;
+2. `0043F6B0` destructor, lines 148-153, 103 bytes; and
+3. `0043F720` action, lines 159-326, 1,349 bytes.
 
-- `TribeSaveGameScreen` at 0x6A4 bytes;
-- `TribeConfigDialog` at 0x564 bytes;
-- `TribeAchievementsScreen` at 0x5F8 bytes;
-- `TribeAboutDialog` at 0x4C4 bytes; and
-- `TRIBE_Mission_Screen` at 0x49C bytes.
+The normal bodies total 2,290 bytes. The scalar deleting destructor at
+`0043F690` is compiler generated. Its VC5 weak vector-destructor symbol is
+`??_ETribeMenuDialog@@UAEPAXI@Z`.
 
-The canonical Panel, Easy Panel, Dialog Panel, Screen Panel, button, drawing,
-scenario, and Base Game providers are available in `panel.h`, `panel_ez.h`,
-`pnl_dlg.h`, `Pnl_scr.h`, `pnl_btn.h`, `drawarea.h`, `scenario.h`, and
-`basegame.h`. `basegame.h` also publishes the required `multiplayerGame()`,
-`singlePlayerGame()`, `get_player()`, `set_paused(int, int)`, `world`, and
-`prog_window` surface.
+## Context and ownership
 
-`dlg_conf.h`, `dlg_abt.h`, `scr_ach.h`, and `scr_vc.h` now compose with those
-providers on main. The remaining foreign owner is not yet composable:
+The PDB source module, line bands, class ownership, address order, and exact
+anchors are proved by the packet and original listing. The button setup,
+count-down child deletion, and ordered action dispatch link each body to this
+module.
 
-- `TribeSaveGameScreen` remains in `scr_save_context.h` and `scr_sed.h` with
-  copied Panel and Screen hierarchies. No `scr_save.h` owner header exists.
+`include/dlg_menu.h` owns only `TribeMenuDialog`. It uses the canonical
+`pnl_dlg.h`, `Pnl_scr.h`, and `pnl_btn.h` providers. The source uses canonical
+Panel, Base Game, Player, World, Scenario, and foreign screen owners. It has no
+foreign class declaration, explicit layout, wrapper, fragment include, context
+macro, manual vtable, or absolute address.
 
-The constructor and action use `TribeSaveGameScreen` with `new`. A forward
-declaration cannot compile this expression. Importing its legacy headers would
-redefine the canonical Panel hierarchy. A caller-side size-only or partial
-class would violate ownership and ABI rules.
+The source uses canonical `scr_save.h`, `scr_ach.h`, and `scr_vc.h` providers.
+The canonical `dlg_conf.h` and `dlg_abt.h` providers supply the other dialog
+owners. The source uses the real enum values and dialog-name string literals.
 
-## Natural source checkpoint
+## Migration
 
-`src/dlg_menu.cpp` now contains all three normal bodies in PDB order:
-constructor `0043F340`, destructor `0043F6B0`, and action `0043F720`. The
-generated scalar deleting destructor at `0043F690` remains compiler generated.
-`include/dlg_menu.h` owns only `TribeMenuDialog` and uses the canonical Panel,
-Dialog, Screen, and button headers.
+`src/dlg_menu.cpp` contains all three normal bodies in PDB order. The old
+`src/dlg_menu_tu.cpp` wrapper, `include/dlg_menu_context.h`, and three matching
+fragments are removed. `config/source_modules/dlg_menu.json` records the three
+owners. `config/translation_units.json` maps all three owners to the direct
+source and records their decorated symbols.
 
-The source includes one pending construction provider: `scr_save.h`. The
-current VC5 compile reaches this include and stops because
-`include/scr_save.h` is not present. The `scr_ach.h` and `scr_vc.h` includes
-now resolve to the canonical providers on main.
-No foreign local class, wrapper, fragment include, context macro, raw layout,
-or manual vtable was added.
+## Validation
 
-The packet inventory records 3 normal owners and 1 nearby generated owner. The
-normal bodies total 2,290 bytes. Do not register or move the source until the
-three provider headers reach main and the complete natural module validates.
+The grouped candidate proposal compiles the direct source with
+`config/flags/0043F340_TribeMenuDialog.rsp`. It reports `MATCH` and zero
+positional difference for all three normal owners:
 
-The action also directly calls `RGE_Base_Game::set_paused(int, int)`. Canonical
-`basegame.h` now publishes this nonvirtual method. PDB basegame.cpp lines
-3299-3311 and `00420220` prove `?set_paused@RGE_Base_Game@@QAEXHH@Z`.
-Do not add a local Base Game class or a compatibility overload.
+- `0043F340`: `MATCH`, 838 bytes, zero relocations and boundary escapes;
+- `0043F6B0`: `MATCH`, 103 bytes, zero relocations and boundary escapes; and
+- `0043F720`: `MATCH`, 1,349 bytes, zero relocations and boundary escapes.
 
-Recover `scr_save` leaf-first. Compose it with the canonical owners, then
-publish its owner-only header. Revisit this module after that provider lands.
-The existing three matching fragments remain the validated source checkpoint
-until then.
+The generated `0043F690` owner also reports `MATCH`, zero positional
+difference, and zero relocations. The candidate result is full-module exact.
+
+The direct owner checks also report `MATCH` and `0.0000%` for all three normal
+owners. The final source uses typed `static_cast` expressions for the proven
+panel and parent relationships. It has no C-style cast or `goto`. The generated
+`dlg_menu.i` listing is under ignored `build/`, not the repository root.
+
+The final source keeps canonical enum and string types. It does not use the
+integer or absolute-address forms from the earlier local matching fragments.

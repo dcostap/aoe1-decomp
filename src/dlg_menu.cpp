@@ -99,13 +99,15 @@ TribeMenuDialog::TribeMenuDialog(TScreenPanel* parent)
     p->hotkey = 0x1B;
 
     this->set_curr_child(this->button[0]);
-    this->set_tab_order((TPanel**)this->button, bi);
+    this->set_tab_order(
+        static_cast<TPanel**>(static_cast<void*>(this->button)),
+        static_cast<short>(bi));
 }
 
 TribeMenuDialog::~TribeMenuDialog()
 {
     int count = 11;
-    TPanel** pp = (TPanel**)this->button;
+    TPanel** pp = static_cast<TPanel**>(static_cast<void*>(this->button));
 
     do {
         this->delete_panel(pp);
@@ -135,7 +137,8 @@ long TribeMenuDialog::action(TPanel* panel, long id, unsigned long param3,
             }
 
             if (param3 == 3) {
-                TScreenPanel* ep = (TScreenPanel*)this->parent_panel;
+                TScreenPanel* ep =
+                    static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
                 ep->popupYesNoDialog(0xC1C, "QuitAndLoadDialog", 0x1C2, 100);
@@ -155,7 +158,8 @@ long TribeMenuDialog::action(TPanel* panel, long id, unsigned long param3,
 
             if (param3 == 4) {
                 confirmed_close = 1;
-                TScreenPanel* ep = (TScreenPanel*)this->parent_panel;
+                TScreenPanel* ep =
+                    static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
                 ep->popupYesNoDialog(0xC1D, "QuitGameDialog", 0x1C2, 100);
@@ -163,7 +167,8 @@ long TribeMenuDialog::action(TPanel* panel, long id, unsigned long param3,
             }
 
             if (param3 == 5) {
-                TScreenPanel* ep = (TScreenPanel*)this->parent_panel;
+                TScreenPanel* ep =
+                    static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
                 TribeConfigDialog* obj =
@@ -180,7 +185,8 @@ long TribeMenuDialog::action(TPanel* panel, long id, unsigned long param3,
             }
 
             if (param3 == 10) {
-                TScreenPanel* ep = (TScreenPanel*)this->parent_panel;
+                TScreenPanel* ep =
+                    static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
                 TribeAboutDialog* obj = new TribeAboutDialog(ep);
@@ -188,7 +194,8 @@ long TribeMenuDialog::action(TPanel* panel, long id, unsigned long param3,
             }
 
             if (param3 == 11) {
-                TScreenPanel* ep = (TScreenPanel*)this->parent_panel;
+                TScreenPanel* ep =
+                    static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
                 ep->popupYesNoDialog(0xC1E, "RestartDialog", 0x1C2, 100);
@@ -214,18 +221,16 @@ long TribeMenuDialog::action(TPanel* panel, long id, unsigned long param3,
             }
 
             if (param3 == 12) {
-                TScreenPanel* ep = (TScreenPanel*)this->parent_panel;
+                TScreenPanel* ep =
+                    static_cast<TScreenPanel*>(this->parent_panel);
                 panel_system.destroyPanel("Menu Dialog");
                 panel_system.setCurrentPanel("Game Screen", 0);
                 ep->popupYesNoDialog(0xC1F, "ResignDialog", 0x1C2, 100);
-            } else {
-                goto default_handler;
+                return 1;
             }
 
-            return 1;
         }
     }
 
-default_handler:
     return TEasy_Panel::action(panel, id, param3, param4);
 }
