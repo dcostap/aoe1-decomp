@@ -29,5 +29,5 @@ int RGE_Base_Game::handle_user_command(void* param_1, unsigned int param_2, unsi
         break;
     }
 
-    return this->default_handle_user_command(command, param) != 0;
+    return this->action_user_command(command, param) != 0;
 }

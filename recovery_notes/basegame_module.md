@@ -71,6 +71,10 @@ The RGE and TRIBE Player vtables both use that owner at slot `+0xD4`.
 The PDB and CodeView evidence contain no `set_chat_flag` member.
 Do not add that unsupported declaration to `include/player.h`.
 
+The final self call uses BaseGame vtable slot `+0x104`.
+The PDB virtual order identifies it as `action_user_command(unsigned long, unsigned long)`.
+The old `default_handle_user_command` context name was false.
+
 ## Complete composition gate
 
 The current PDB plan has 202 normal owners.
