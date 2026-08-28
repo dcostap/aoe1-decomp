@@ -1,4 +1,6 @@
 #include "../include/aipbook.h"
+#include "../include/stat_obj.h"
+#include "../include/world.h"
 #include <stdio.h>
 #include <string.h>
 

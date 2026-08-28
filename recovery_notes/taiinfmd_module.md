@@ -14,13 +14,14 @@ compiler-facing source owner and one module-local header. The old wrapper,
 fragment includes, fallback declarations, context macro, and per-function
 source owners were removed.
 
-The source module manifest records all 123 normal owners. It preserves the
-prior source-bank status: 98 matching, 9 accepted drift, and 16 scratch.
+The source module manifest records all 123 normal owners. It now has 95
+matching, 9 accepted-drift, and 19 scratch owners.
 Compiler-generated entries `004D6B20`, `004D7050`, `004DE980`, and `004DE9D0`
 remain outside the normal owner manifest.
 
-The merged source retains 58 exact registered owners. Owner `004E0FD0` has an
-11-byte merged-context regression. It is not in the direct exact-owner entry.
+The merged source retains 56 exact registered owners. Owners `004D9110` and
+`004D9160` each have a one-byte natural-context recolor. Owner `004E0FD0` has
+an 11-byte merged-context regression. These owners remain scratch.
 
 ## Context evidence
 
@@ -42,7 +43,9 @@ accessors without a local copy.
 Taicon continues to forward-declare PlacementState in its public signatures.
 
 The record owner uses natural alignment. It has no manual padding carriers.
-The Taiinf grouped candidate remains 58/58 exact after the move.
+The Taiinf grouped candidate keeps 56/56 registered exact owners at `MATCH`.
+`004D9110` and `004D9160` remain observed scratch with one differing byte
+each. Both keep their owner, boundary, and direct targets.
 
 ## Validation
 

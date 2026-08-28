@@ -6,9 +6,8 @@
 
 #include "aiplaybook.h"
 #include "ai_play_phase_command.h"
-#include "stat_obj.h"
-#include "world.h"
 
+class RGE_Game_World;
 class AIPlayStatus;
 
 class XYZ {

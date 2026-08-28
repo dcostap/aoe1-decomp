@@ -2,6 +2,19 @@
 #define AOE1_AI_PLAY_PHASE_COMMAND_H
 
 class AIPlayPhaseCommand {
+public:
+    enum {
+        InvalidCommand = 0,
+        MoveCommand = 1,
+        AttackCommand = 2,
+        AttackSavedTargetCommand = 3,
+        RetreatCommand = 4,
+        HealCommand = 5,
+        ResetHitPointsCommand = 6,
+        ResetAliveCountCommand = 7,
+        WaitCommand = 8
+    };
+
 protected:
     unsigned char groupValue;  // +0x00
     unsigned char typeValue;   // +0x01
