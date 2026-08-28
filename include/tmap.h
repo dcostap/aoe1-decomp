@@ -26,7 +26,7 @@ struct TRIBE_Master_Cliff_Info {
 };
 
 class TRIBE_Map : public RGE_Map {
-public:
+private:
     TRIBE_Game* Game;
     RGE_Player* rge_player;
     RGE_Game_World* rge_game_world;
@@ -39,6 +39,7 @@ public:
     long old_cliff_direction;
     TRIBE_Master_Cliff_Info cliff_master_table[256];
 
+public:
     TRIBE_Map(int, RGE_Sound**, unsigned char);
     TRIBE_Map(char*, char*, char*, char*, short, short, short, RGE_Sound**);
     virtual ~TRIBE_Map();
