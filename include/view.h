@@ -114,6 +114,26 @@ private:
 typedef char view_clip_list_size_check[
     (sizeof(DClipInfo_List) == 0x70) ? 1 : -1];
 
+// view.cpp rendering and DClip state. The PDB records these external symbols.
+extern DClipInfo_List* SDI_List;
+extern int SDI_Capture_Info;
+extern int SDI_Draw_Line;
+extern int SDI_Draw_Level;
+extern int SDI_Object_ID;
+extern long fog_next_shape;
+
+extern int view_debug_redraw_all;
+extern int view_debug_ObstructionMap;
+extern int view_debug_Objects;
+extern int view_debug_palette;
+extern int view_debug_spans;
+extern long frame_count;
+extern long tiles_drawn;
+extern int View_Grid_Mode;
+extern int Clip_draw;
+extern int Clip_remove;
+
+extern unsigned long* unified_map_offsets[];
 class RGE_View : public TPanel {
 public:
     RGE_View();
