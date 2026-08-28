@@ -1478,7 +1478,7 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
             calloc(this->unit_list_size, sizeof(char*)));
         if (strings == 0) return;
         is_error = 0;
-        short selected = 0; // BINARY NOTE: the selected row uses a short home.
+        short selected = 0;
         for (i = 0; i < this->unit_list_size; i++) {
             char* s = static_cast<char*>(calloc(100, sizeof(char)));
             strings[i] = s;
