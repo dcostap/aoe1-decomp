@@ -19,12 +19,12 @@ int RGE_Base_Game::handle_user_command(void* param_1, unsigned int param_2, unsi
     switch (command) {
     case 0x17A2:
         if (this->world != 0) {
-            this->world->set_world_chat_flag(1);
+            this->world->pause((unsigned char)1);
         }
         break;
     case 0x17A3:
         if (this->world != 0) {
-            this->world->set_world_chat_flag(0);
+            this->world->pause((unsigned char)0);
         }
         break;
     }

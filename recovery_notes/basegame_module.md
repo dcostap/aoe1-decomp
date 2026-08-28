@@ -56,6 +56,15 @@ It emits the integer slot at `+0x38`.
 It has no exact registration in the direct prefix.
 The next exact source move must not cross this owner without separate review.
 
+## World pause call
+
+`004212E0` calls World vtable slot `+0xEC`.
+The PDB identifies this slot as `RGE_Game_World::pause(unsigned char)`.
+The owner is `00540D30`.
+
+The old `set_world_chat_flag` candidate name was false.
+The candidate body now calls `pause` with an unsigned byte.
+
 ## Complete composition gate
 
 The current PDB plan has 202 normal owners.
@@ -70,7 +79,6 @@ It does not include `basegame_candidate_context.h`.
 The probe does not compile. It exposed these provider gaps:
 
 - `TPanel` lacks the needed activation and palette callback interface.
-- `RGE_Game_World` lacks `set_world_chat_flag`.
 - `RGE_Player` lacks `set_chat_flag`.
 - BaseGame header-owned helpers lack reviewed canonical declarations.
 
