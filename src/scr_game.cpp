@@ -1330,14 +1330,20 @@ void TRIBE_Screen_Game::handle_game_update(void)
                             if (rge_base_game->get_paused() == 0) {
                                 this->pause_text->set_active(0);
                             }
-                                rge_base_game->set_map_visible(1);
-                                rge_base_game->set_map_fog(0);
-                                this->main_view->set_redraw(TPanel::RedrawImmediate);
-                                this->map_view->set_redraw(TPanel::RedrawImmediate);
-                                this->quit_message_panel->set_active(1);
-                                this->pop_panel->set_active(0);
+                            rge_base_game->set_map_visible(1);
+                            rge_base_game->set_map_fog(0);
+                            this->main_view->set_redraw(TPanel::RedrawImmediate);
+                            this->map_view->set_redraw(TPanel::RedrawImmediate);
+                            this->quit_message_panel->set_active(1);
+                            this->pop_panel->set_active(0);
                         } else {
-                            goto game_over;
+                            this->main_view->end_scroll_view();
+                            this->main_view->set_selection_area(-1, -1, -1, -1);
+                            rge_base_game->set_game_mode(0, 0);
+                            this->command_unselect();
+                            static_cast<TRIBE_Game*>(rge_base_game)->do_game_over();
+                            color_log(0x24, 0x5F, 5);
+                            return;
                         }
                         }
                     } else {
@@ -1355,7 +1361,9 @@ void TRIBE_Screen_Game::handle_game_update(void)
                 static_cast<TRIBE_Game*>(rge_base_game)->auto_exit_time != 0 &&
                 static_cast<unsigned long>(this->world->world_time) >=
                     static_cast<unsigned long>(static_cast<TRIBE_Game*>(rge_base_game)->auto_exit_time)) {
-                goto L_close;
+                rge_base_game->close();
+                color_log(0x24, 0x5F, 5);
+                return;
             }
             update_counter += this->world->world_time_delta;
             loop_i++;
@@ -1364,58 +1372,44 @@ void TRIBE_Screen_Game::handle_game_update(void)
         }
     }
 
-    if (panel_system.currentPanel() != this) {
-        goto L_exit;
-    }
-    color_log(0x16, 0x4C, 5);
-    now = debug_timeGetTime(s_scr_game_cpp, 0x79C);
-    if (update_counter > 0) {
-        RGE_Player* p = rge_base_game->get_player();
-        if (static_cast<int>(p->attributes[6]) != this->save_age) {
-            this->age_changed();
+    if (panel_system.currentPanel() == this) {
+        color_log(0x16, 0x4C, 5);
+        now = debug_timeGetTime(s_scr_game_cpp, 0x79C);
+        if (update_counter > 0) {
+            RGE_Player* p = rge_base_game->get_player();
+            if (static_cast<int>(p->attributes[6]) != this->save_age) {
+                this->age_changed();
+            }
+            if (this->score_panel[0] != 0 &&
+                this->score_panel[0]->active != 0 &&
+                now - this->last_score_time >= this->score_interval) {
+                this->reset_score_display();
+                this->last_score_time = debug_timeGetTime(s_scr_game_cpp, 0x7A8);
+            }
         }
-        if (this->score_panel[0] != 0 &&
-            this->score_panel[0]->active != 0 &&
-            now - this->last_score_time >= this->score_interval) {
-            this->reset_score_display();
-            this->last_score_time = debug_timeGetTime(s_scr_game_cpp, 0x7A8);
-        }
-    }
-    if (this->main_view->get_focus() != 0 ||
-        this->curr_child == panel_system.panel(s_Send_Quick_Message_Dialog) ||
-        this->curr_child == panel_system.panel(s_Help_Dialog)) {
-        color_log(0x16, 0x54, 5);
-        if (update_counter > 0 ||
-            now - this->last_view_time >= this->view_interval) {
-            this->main_view->set_redraw(TPanel::RedrawNormal);
-            this->last_view_time = now;
-        }
-        if (update_counter > 0 &&
-            now - this->last_map_redraw_time >= this->map_redraw_interval) {
-            this->map_view->set_redraw(TPanel::RedrawNormal);
-            this->last_map_redraw_time = now;
-        }
-        color_log(0x16, 0x24, 5);
-        if (this->main_view->need_redraw != 0) {
-            rge_base_game->draw_window();
+        if (this->main_view->get_focus() != 0 ||
+            this->curr_child == panel_system.panel(s_Send_Quick_Message_Dialog) ||
+            this->curr_child == panel_system.panel(s_Help_Dialog)) {
+            color_log(0x16, 0x54, 5);
+            if (update_counter > 0 ||
+                now - this->last_view_time >= this->view_interval) {
+                this->main_view->set_redraw(TPanel::RedrawNormal);
+                this->last_view_time = now;
+            }
+            if (update_counter > 0 &&
+                now - this->last_map_redraw_time >= this->map_redraw_interval) {
+                this->map_view->set_redraw(TPanel::RedrawNormal);
+                this->last_map_redraw_time = now;
+            }
+            color_log(0x16, 0x24, 5);
+            if (this->main_view->need_redraw != 0) {
+                rge_base_game->draw_window();
+            }
         }
     }
 
-L_exit:
     color_log(0x24, 0x5F, 5);
     return;
-
-game_over:
-    this->main_view->end_scroll_view();
-    this->main_view->set_selection_area(-1, -1, -1, -1);
-    rge_base_game->set_game_mode(0, 0);
-    this->command_unselect();
-    static_cast<TRIBE_Game*>(rge_base_game)->do_game_over();
-    goto L_exit;
-
-L_close:
-    rge_base_game->close();
-    goto L_exit;
 }
 
 /* PDB owner: TRIBE_Screen_Game::wnd_proc */
@@ -1874,38 +1868,34 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             break;
         }
     } else {
-        if (rge_base_game->game_mode == 6) {
-            if (rge_base_game->sub_game_mode == 1) {
-                goto normal_mode_switch;
+        if (rge_base_game->game_mode != 6 ||
+            rge_base_game->sub_game_mode != 1) {
+            // BINARY NOTE: a matched work key returns; a miss reaches the next switch.
+            if (this->work_hotkey != 0 && param_1 == this->work_hotkey &&
+                game_over == 0) {
+                if (allow_user_commands != 0) {
+                    this->command_work();
+                }
+                return 0;
+            } else if (this->move_hotkey != 0 && param_1 == this->move_hotkey &&
+                       game_over == 0) {
+                if (allow_user_commands != 0) {
+                    this->command_move();
+                }
+                return 0;
+            } else if (this->attack_hotkey != 0 && param_1 == this->attack_hotkey &&
+                       game_over == 0) {
+                if (allow_user_commands != 0) {
+                    this->command_attack();
+                }
+                return 0;
+            } else if (this->ungroup_hotkey != 0 && param_1 == this->ungroup_hotkey) {
+                this->command_ungroup();
+                return 0;
             }
         }
 
-        // BINARY NOTE: a matched work key returns; a miss reaches the next switch.
-        if (this->work_hotkey != 0 && param_1 == this->work_hotkey &&
-            game_over == 0) {
-            if (allow_user_commands != 0) {
-                this->command_work();
-            }
-            return 0;
-        } else if (this->move_hotkey != 0 && param_1 == this->move_hotkey &&
-                   game_over == 0) {
-            if (allow_user_commands != 0) {
-                this->command_move();
-            }
-            return 0;
-        } else if (this->attack_hotkey != 0 && param_1 == this->attack_hotkey &&
-                   game_over == 0) {
-            if (allow_user_commands != 0) {
-                this->command_attack();
-            }
-            return 0;
-        } else if (this->ungroup_hotkey != 0 && param_1 == this->ungroup_hotkey) {
-            this->command_ungroup();
-            return 0;
-        }
-
-    // BINARY NOTE: this switch is after the work-key fall-through blocks.
-    normal_mode_switch:
+        // BINARY NOTE: this switch is after the work-key fall-through blocks.
         switch (param_1) {
         case 0x30:
         case 0x31:
@@ -2008,14 +1998,11 @@ long TRIBE_Screen_Game::char_action(long action, short param_2) {
 long TRIBE_Screen_Game::action(TPanel* panel, long id,
                                unsigned long p3, unsigned long p4)
 {
-    RGE_Panel_Tool_Box* tool_box;
-    RGE_Base_Game* cleanup_game;
-
     if (panel == 0) {
-        goto null_base_action;
+        return TEasy_Panel::action(panel, id, p3, p4);
     }
 
-    tool_box = this->tool_box;
+    RGE_Panel_Tool_Box* tool_box = this->tool_box;
     if (panel != tool_box && tool_box->active != 0 &&
         tool_box->action(panel, id, p3, p4) != 0) {
         return 1;
@@ -2035,18 +2022,20 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
             return 1;
         }
 
-    if (panel->panelName() == 0) {
-        goto named_base_action;
-    }
+    if (panel->panelName() == 0)
+        return TEasy_Panel::action(panel, id, p3, p4);
 
     if (strcmp(panel->panelName(), "RestartDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("RestartDialog");
-        cleanup_game = rge_base_game;
         if (id != 0) {
-            goto pause_loaded;
+            if (rge_base_game->singlePlayerGame() == 1 &&
+                rge_base_game->save_paused == 0) {
+                rge_base_game->set_paused(0, 0);
+            }
+            return 1;
         }
-        static_cast<TRIBE_Game*>(cleanup_game)->restart_game();
+        static_cast<TRIBE_Game*>(rge_base_game)->restart_game();
         return 1;
     } else if (strcmp(panel->panelName(), "QuitGameDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
@@ -2055,7 +2044,12 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
             static_cast<TRIBE_Game*>(rge_base_game)->do_game_over();
             return 1;
         }
-        goto clear_cleanup;
+        confirmed_close = 0;
+        if (rge_base_game->singlePlayerGame() == 1 &&
+            rge_base_game->save_paused == 0) {
+            rge_base_game->set_paused(0, 0);
+        }
+        return 1;
     } else if (strcmp(panel->panelName(), "CloseProgramDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("CloseProgramDialog");
@@ -2063,7 +2057,12 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
             rge_base_game->close();
             return 1;
         }
-        goto clear_cleanup;
+        confirmed_close = 0;
+        if (rge_base_game->singlePlayerGame() == 1 &&
+            rge_base_game->save_paused == 0) {
+            rge_base_game->set_paused(0, 0);
+        }
+        return 1;
     } else if (strcmp(panel->panelName(), "ResignDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("ResignDialog");
@@ -2073,7 +2072,11 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
             player->command_resign(comm->WhoAmI(), id);
             return 1;
         }
-        goto pause_cleanup;
+        if (rge_base_game->singlePlayerGame() == 1 &&
+            rge_base_game->save_paused == 0) {
+            rge_base_game->set_paused(0, 0);
+        }
+        return 1;
     } else if (strcmp(panel->panelName(), "QuitAndLoadDialog") == 0) {
         panel_system.setCurrentPanel("Game Screen", 0);
         panel_system.destroyPanel("QuitAndLoadDialog");
@@ -2082,38 +2085,13 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
             panel_system.setCurrentPanel("Load Saved Game Screen", 0);
             return 1;
         }
-        goto pause_cleanup;
-    } else {
-        goto named_base_action;
-    }
-
-pause_cleanup:
-    cleanup_game = rge_base_game;
-pause_loaded:
-    // BINARY NOTE: Restart has a receiver. Other dialogs reload it above.
-    // The later accesses reload the global after singlePlayerGame.
-    if (cleanup_game->singlePlayerGame() == 1 &&
-        rge_base_game->save_paused == 0) {
-        rge_base_game->set_paused(0, 0);
-    }
-    goto finish;
-
-clear_cleanup:
-    confirmed_close = 0;
-    if (rge_base_game->singlePlayerGame() == 1 &&
-        rge_base_game->save_paused == 0) {
-        rge_base_game->set_paused(0, 0);
+        if (rge_base_game->singlePlayerGame() == 1 &&
+            rge_base_game->save_paused == 0) {
+            rge_base_game->set_paused(0, 0);
+        }
         return 1;
     }
 
-finish:
-
-    return 1;
-
-null_base_action:
-    return TEasy_Panel::action(panel, id, p3, p4);
-
-named_base_action:
     return TEasy_Panel::action(panel, id, p3, p4);
 }
 

@@ -236,7 +236,7 @@ unsigned char RGE_Communications_Speed::GetHighLatencyCenti()
     if (high_latency >= 0xFF) {
         high_latency = 0xFF;
     }
-    return (unsigned char)high_latency;
+    return static_cast<unsigned char>(high_latency);
 }
 
 unsigned long RGE_Communications_Speed::GetPlayerLatency(unsigned int player)
