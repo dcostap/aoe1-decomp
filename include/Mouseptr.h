@@ -91,4 +91,7 @@ public:
 typedef char mouseptr_tmousepointer_size[
     (sizeof(TMousePointer) == 0x254) ? 1 : -1];
 
+// Original symbol: ?MouseSystem@@3PAVTMousePointer@@A.
+extern TMousePointer* MouseSystem;
+
 #endif
