@@ -78,9 +78,10 @@ public:
     virtual void set_game_mode(int, int);
     virtual void set_player(short);
     virtual int get_error_code();
-    virtual char* get_string(int, long, char*, int);
-    virtual char* get_string(long, char*, int);
+    // BINARY NOTE: VC5 reverses this adjacent overload group in the vtable.
     virtual char* get_string(long);
+    virtual char* get_string(long, char*, int);
+    virtual char* get_string(int, long, char*, int);
     virtual char* get_string2(int, long, long, char*, int);
     virtual TPanel* get_view_panel();
     virtual TPanel* get_map_panel();
