@@ -31,7 +31,7 @@ It remains scratch with a 135-byte difference and one boundary escape.
 ## Candidate validation
 
 Candidate: `build/scr_save_natural_candidate.json`.
-Report: `build/candidate_tus/scr_save_final_rebased/report.json`.
+Report: `build/candidate_tus/scr_save_final_bb0574f4b/report.json`.
 
 The grouped candidate compiled all five normal bodies and the generated
 vector deleting destructor. The constructor, `fillList`, and scenario-editor

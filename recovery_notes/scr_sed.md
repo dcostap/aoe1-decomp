@@ -79,7 +79,7 @@ no panel copies or size-only fallback classes.
 ## Candidate validation
 
 Candidate: `build/scr_sed_canonical_candidate.json`.
-Report: `build/candidate_tus/scr_sed_final_cleanup/report.json`.
+Report: `build/candidate_tus/scr_sed_final_bb0574f4b/report.json`.
 
 The grouped candidate compiled all 47 normal bodies and the generated vector
 deleting destructor. It reports zero comparison errors. It reports zero
