@@ -1271,7 +1271,6 @@ public:
     void set_single_player_difficulty(int value);
     void reload_scenarios_info();
     void set_render_all();
-    int reset_comm_tail();
     void set_game_options(RGE_Game_Options* options);
     void get_game_options(RGE_Game_Options* options);
 };

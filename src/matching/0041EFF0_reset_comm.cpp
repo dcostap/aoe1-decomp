@@ -11,5 +11,5 @@ int RGE_Base_Game::reset_comm() {
         comm_handler = 0;
         comm = 0;
     }
-    return reset_comm_tail();
+    return setup_comm();
 }

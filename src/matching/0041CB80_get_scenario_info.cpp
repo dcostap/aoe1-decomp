@@ -15,9 +15,9 @@
 // already the binary's effective +4 address; removing the redundant source offset is exact.
 
 extern int sprintf(char* buf, const char* fmt, ...);
-extern int rge_open(const char* path, int flags);
-extern int rge_read_uncompressed(int fd, void* buf, int len);
-extern int rge_read(int fd, void* buf, int len);
+extern int rge_open(char* path, int flags);
+extern void rge_read_uncompressed(int fd, void* buf, int len);
+extern void rge_read(int fd, void* buf, int len);
 extern int rge_close(int fd);
 extern void* malloc(int size);
 extern "C" void free(void* p);

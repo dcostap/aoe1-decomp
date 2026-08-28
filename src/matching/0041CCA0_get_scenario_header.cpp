@@ -18,8 +18,8 @@
 // code remains exact.
 
 extern int sprintf(char* buf, const char* fmt, ...);
-extern int rge_open(const char* path, int flags);
-extern int rge_read_uncompressed(int fd, void* buf, int len);
+extern int rge_open(char* path, int flags);
+extern void rge_read_uncompressed(int fd, void* buf, int len);
 extern int rge_close(int fd);
 
 

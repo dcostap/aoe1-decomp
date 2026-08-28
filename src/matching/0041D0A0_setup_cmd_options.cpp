@@ -42,8 +42,9 @@ char* __cdecl _mbsncat(char* dst, const char* src, unsigned int count);
 }
 
 // Game function declarations matching original asm calls
+void __cdecl RESFILE_Set_Missing_Flag(int flag);
+
 extern "C" {
-void __cdecl RESFILE_Set_Missing_Flag(int flag);          // 0047F580
 TDebuggingLog* g_L;                                       // 62C4FC â€” global debugLog pointer
 }
 
