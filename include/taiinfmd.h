@@ -6,6 +6,7 @@
 
 #include "aiplaybook.h"
 #include "ai_attack_state.h"
+#include "ai_placement_state.h"
 #include "infmap.h"
 #include "taiinf_records.h"
 #include "tactical_group.h"
@@ -155,20 +156,6 @@ struct ResourceTypeBlock {
 class TribeMainDecisionAIModule;
 class BuildItem;
 class ConstructionItem;
-struct PlacementState {
-    int buildingTypeID;
-    float buildingSize;
-    char buildingName[0x100];
-    int builderID;
-    int minimumDistance;
-    int maximumDistance;
-    int active;
-    XYPoint bestPoint;
-    int bestPointValue;
-    int iterationX;
-    int randomInfluence;
-    BuildItem* buildItem;
-};
 struct GameInfo;
 class PathingSystem {
 public:

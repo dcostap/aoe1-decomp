@@ -13,6 +13,7 @@ It consumes the canonical `TacticalAIModule` and `AIModule` base surface from
 `aitacmod.h`.
 It consumes canonical `ResourceItem` from `airesitm.h`.
 It consumes canonical `InfluenceMap` and `XYPoint` from `infmap.h`.
+It consumes canonical `PlacementState` from `ai_placement_state.h`.
 
 Current status:
 

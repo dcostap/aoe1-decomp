@@ -4,6 +4,7 @@
 // Declarations for the original taitacmd.cpp source module.
 
 #include "ai_attack_state.h"
+#include "ai_placement_state.h"
 #include "airesitm.h"
 #include "aitacmod.h"
 #include "infmap.h"
@@ -184,21 +185,6 @@ struct OldUnitData {
     int data3;
     int data4;
     int data5;
-};
-
-struct PlacementState {
-    int buildingTypeID;
-    float buildingSize;
-    char buildingName[256];
-    int builderID;
-    int minimumDistance;
-    int maximumDistance;
-    int active;
-    XYPoint bestPoint;
-    int bestPointValue;
-    int iterationX;
-    int randomInfluence;
-    BuildItem* buildItem;
 };
 
 class RGE_Visible_Map {
