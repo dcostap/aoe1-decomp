@@ -10,6 +10,11 @@
 class IDirectPlay4A;
 class ResFileHdr;
 class TDebuggingLog;
+class DriveInformation;
+class TChat;
+class TCommunications_Handler;
+class TRegistry;
+class TSound_Driver;
 
 // PDB type 0x18A9 names this 25-record table at 00587258.
 struct TRIBE_Cliff_Higher_Check_Record {
@@ -40,6 +45,25 @@ extern int do_fixed_update;
 extern long fixed_update_time;
 extern float save_game_version;
 extern int allow_user_commands;
+
+// BaseGame process globals. The executable stores these values at the named
+// addresses. The types follow their direct uses in BaseGame and its clients.
+extern HINSTANCE basegame_instance;
+extern HMODULE StringTable;
+extern TRegistry* Regs;
+extern TSound_Driver* sound_driver;
+extern TChat* chat;
+extern TCommunications_Handler* comm;
+extern DriveInformation* driveInfo;
+extern HWND AppWnd;
+extern RGE_Base_Game* rge_base_game;
+extern int system_ignore_size_messages;
+extern int basegame_is_active;
+extern int MouseCursorInChildContol;
+extern HWND save_active_wnd;
+extern int do_restore_palette;
+extern unsigned long restore_palette_timer;
+extern int restore_mouse_after_paint;
 
 // 0056E0B8 [.rdata]
 extern float DAT_0056e0b8;

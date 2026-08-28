@@ -605,7 +605,7 @@ extern TDebuggingLog* L;
 extern RGE_Communications* comm;
 extern TRIBE_Game* rge_base_game;
 extern TPanelSystem panel_system;
-extern void* AppWnd;
+extern HWND AppWnd;
 extern char s_Multiplayer_Disconnect_Screen[];
 extern char s_scr3[];
 extern char s_Status_Screen[];

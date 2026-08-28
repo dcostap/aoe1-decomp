@@ -1597,6 +1597,22 @@ unsigned int DAT_00592610 = 0x00000009u;
 unsigned int DAT_00592820 = 0x7525C460u;
 // 00592824 [.data]
 unsigned int DAT_00592824 = 0x00000000u;
+HINSTANCE basegame_instance = 0;
+HMODULE StringTable = 0;
+TRegistry* Regs = 0;
+TSound_Driver* sound_driver = 0;
+TChat* chat = 0;
+TCommunications_Handler* comm = 0;
+DriveInformation* driveInfo = 0;
+HWND AppWnd = 0;
+RGE_Base_Game* rge_base_game = 0;
+int system_ignore_size_messages = 0;
+int basegame_is_active = 0;
+int MouseCursorInChildContol = 0;
+HWND save_active_wnd = 0;
+int do_restore_palette = 0;
+unsigned long restore_palette_timer = 0;
+int restore_mouse_after_paint = 0;
 // 005B2164 [.data] BaseGame Shift-key state.
 unsigned int basegame_shift_key_down = 0;
 // 005B2368 [.data] BaseGame key message.

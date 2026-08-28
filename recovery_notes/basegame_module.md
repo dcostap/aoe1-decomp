@@ -4,37 +4,15 @@ The PDB module is `C:\msdev\work\age1_x1\basegame.cpp`.
 
 ## Direct owners
 
-`src/basegame.cpp` owns this PDB source-order prefix:
-
-- `0041B620 write_draw_log`, lines 199-205, 44 bytes.
-- `0041B650 write_draw_log2`, lines 208-215, 67 bytes.
-- `0041E7A0 rge_base_game_wnd_proc`, lines 230-235, 43 bytes.
-- `0041B6A0 RGE_Base_Game::RGE_Base_Game`, lines 247-481, 988 bytes.
-- `0041CDA0 RGE_Base_Game::write_scenario_header`, lines 1503-1518, 89 bytes.
-
-The direct candidate uses `config/flags/0041BAA0_setup.rsp`.
-
-This is a partial provider checkpoint.
-`src/basegame_candidate_tu.cpp` still owns the remaining bodies.
-It does not complete the BaseGame module.
-
-The direct owners use these PDB symbols:
-
-- `?write_draw_log@@YAXPAD@Z`
-- `?write_draw_log2@@YAXPAD@Z`
-- `?rge_base_game_wnd_proc@@YGKIIII@Z`
-- `??0RGE_Base_Game@@QAE@PAURGE_Prog_Info@@H@Z`
-- `?write_scenario_header@RGE_Base_Game@@QAEXH@Z`
-
-The direct candidate report is
-`build/candidate_tus/basegame_direct_0041CDA0/report.json`.
-All five rows report `MATCH` and `0.0000%`.
+`src/basegame.cpp` owns all 202 normal BaseGame bodies in PDB order.
+The group uses `config/flags/0041BAA0_setup.rsp`.
+No candidate source or context owns a BaseGame body.
 
 ## Provider evidence
 
-`0041E7A0` calls virtual slot `+8` as `__stdcall`.
-The PDB symbol is `?wnd_proc@RGE_Base_Game@@UAGJPAXIIJ@Z`.
-`include/basegame.h` declares that calling convention.
+`0041E7A0` is the process window callback.
+The PDB uses the untyped callback symbol `?rge_base_game_wnd_proc@@YGKIIII@Z`.
+The recovered source uses the natural `WNDPROC` ABI and stays scratch.
 
 `0041B6A0` reads `RGE_Prog_Info::instance`.
 `src/basegame.cpp` includes the canonical owner `include/main.h`.
@@ -104,27 +82,31 @@ The current PDB plan has 202 normal owners.
 It uses canonical provider headers.
 It does not include a candidate context.
 
-The direct audit reports 186 exact owners.
+The direct audit reports 185 exact owners.
 Each reports `MATCH` and `0.0000%`.
 
-The remaining sixteen owners are nonexact.
+The remaining seventeen owners are nonexact.
 They remain in the module source without a false exact claim.
 `0041BAA0`, `0041E920`, and `00421BF0` remain accepted drift.
 
 `0041F560` remains verified logic.
 The scratch owners are `0041C270`, `0041CCA0`, `0041CFD0`, `0041E700`,
-`0041E7D0`, `0041F9F0`, `0041FDE0`, `004206D0`, `00421110`, `00421FA0`,
-`00422960`, and `00422B10`.
+`0041E7A0`, `0041E7D0`, `0041F9F0`, `0041FDE0`, `004206D0`, `00421110`,
+`00421FA0`, `00422960`, and `00422B10`.
 
 ## Canonical field cleanup
 
 `0041C270` now uses `TDrawSystem::ScreenWidth`.
 It uses `RGE_Prog_Info::mouse_scroll_interval`.
-The direct module registers 186 exact owners.
+The direct module registers 185 exact owners.
 
 The direct source now uses fields, literals, normal Win32 calls, and `delete`.
 It has no raw data addresses, manual lifetime calls, local IAT wrappers, or
 matching-history comments.
+
+`include/game_globals.h` declares the shared BaseGame globals.
+`src/game_globals.cpp` defines their typed storage.
+The source no longer uses BaseGame address aliases.
 
 `RGE_Game_Options` is a nested `struct`.
 The PDB symbol for the option setter uses the struct tag form.
