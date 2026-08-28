@@ -33,7 +33,7 @@ methods provide external access.
 
 ## Status
 
-The module keeps 64 matching owners, two scratch owners, and two accepted-drift owners.
+The module keeps 64 matching owners, three scratch owners, and one accepted-drift owner.
 The source now owns every normal owner in one PDB-ordered file.
 
 `0040F530` (`AIPlay::fillGroups`) stays scratch. Its natural source keeps the shipped
@@ -44,9 +44,10 @@ Its prior matching notes remain in the pre-migration source history.
 array construction, `/GX` lifetime requirement, and 72 ordered calls. The current
 candidate is not byte exact. The remaining drift is compiler local-home and EH shape.
 
-`0040F9B0` (`groupGivenCommandOnPhase`) stays accepted drift. Its calls, bounds,
-predicates, memory effects, and return values match. The remaining difference is
-register allocation before the command scan.
+`0040F9B0` (`groupGivenCommandOnPhase`) is scratch. Its current grouped result
+differs by 64 bytes and escapes the original boundary once. The calls, bounds,
+predicates, memory effects, and return values match, but the boundary escape
+prevents an accepted-drift claim.
 
 `00410050` (`AIPlayStatus::copy`) stays accepted drift. The copy order and memory
 effects match. The remaining difference is a seven-byte setup register-order drift.

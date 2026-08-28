@@ -20,9 +20,8 @@ an external declaration and emits the weak vector-destructor fallback.
 The source order and line bands are facts from
 `inventory/pdb/function_source_map.csv`, `inventory/pdb/function_line_changes.csv`,
 and the original ACT_make listing. The four existing exact source-bank owners
-are `004049B0`, `00404A10`, `00404A40`, and `00404A70`. `00404A90` remains the
-reviewed accepted-drift owner. Its original range is `00404A90-00404BA4` and
-its size is 277 bytes.
+are `004049B0`, `00404A10`, `00404A40`, and `00404A70`. `00404A90` is scratch.
+Its original range is `00404A90-00404BA4` and its size is 277 bytes.
 
 ## Canonical dependency closure
 
@@ -66,7 +65,7 @@ canonical owner declaration order. The direct source uses the reviewed
 ## Candidate
 
 The natural source is `src/act_make.cpp`. It keeps the five normal owners in
-PDB order and the accepted-drift update in the same compiler-facing source.
+PDB order and the scratch update in the same compiler-facing source.
 The candidate proposal is `build/act_make_candidate_proposal.json`.
 It uses `config/flags/default.rsp` and includes generated owner `004049E0`.
 
@@ -75,15 +74,15 @@ owners as `MATCH` with `0.0000%` difference. Generated `004049E0` matches.
 
 ## Open exactness issue
 
-The accepted-drift update has matching body blocks and ordered calls, but its
-isolated rebuild retains a 41-byte mismatch and three extra bytes. The current
-review attributes this to the original split callee-save schedule. The direct
-source preserves the natural body and does not add register steering.
+The update has matching ordered calls but broad structural drift. Its current
+rebuild differs by 41 bytes and escapes its original boundary twice. This
+fails the accepted-drift boundary gate. The direct source preserves the
+natural body and does not add register steering.
 
 The direct source compiled with the pinned VC5 compiler and
 `config/flags/default.rsp`. The object was written to
 `build/act_make_direct/act_make.obj`. A read-only object comparison found
 `MATCH` with zero byte differences for `004049B0`, `00404A10`, `00404A40`,
-`00404A70`, and generated `004049E0`. The accepted-drift `00404A90` retained
+`00404A70`, and generated `004049E0`. The observed `00404A90` result retained
 41 differing bytes, two boundary escapes, and zero incompatible relocation
-targets. The grouped validator preserves that accepted-drift status.
+targets. Its source status is scratch, and no exact registration exists.

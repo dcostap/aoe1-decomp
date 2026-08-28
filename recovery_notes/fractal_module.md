@@ -24,11 +24,11 @@ Thirty owners remain `matching`. They were the former registered exact set.
 A fresh direct-owner check after migration gave `MATCH` and `0.0000%` for all
 30. No exact owner regressed.
 
-Ten owners remain `accepted_drift`: `0044AB90`, `0044B2B0`, `0044B470`,
-`0044B760`, `0044BAA0`, `0044BB60`, `0044BCD0`, `0044BD80`, `0044BF90`, and
-`0044C510`. Their prior source remains the behavior candidate. The old records
-place their differences in VC5 scheduling, register allocation, x87 order, or
-address calculation. They do not prove a new exact result.
+Eight owners remain `accepted_drift`: `0044AB90`, `0044B2B0`, `0044B470`,
+`0044B760`, `0044BB60`, `0044BCD0`, `0044BF90`, and `0044C510`. Their prior
+source remains the behavior candidate. The old records place their differences
+in VC5 scheduling, register allocation, x87 order, or address calculation.
+They do not prove a new exact result.
 
 `0044AFE0 DrawMask` remains `scratch`. It preserves the proven mask selection,
 clipping, signed sample, saturation, and loop behavior. Its current source is
@@ -44,16 +44,21 @@ register shape.
 | `0044B2B0` | accepted drift | VC5 reverses the independent Width and Height load schedule. |
 | `0044B470` | accepted drift | VC5 swaps the two input register roles before the initial stores. |
 | `0044B760` | accepted drift | VC5 uses another direction-register coloring and clamp schedule. |
-| `0044BAA0` | accepted drift | The `AddingRect` setup uses equivalent but different private registers. |
+| `0044BAA0` | scratch | The current check has broad control-flow and frame drift. |
 | `0044BB60` | accepted drift | The post-ring probability tail has a local register-allocation drift. |
 | `0044BCD0` | accepted drift | The saturation tail keeps the byte pointer and byte value in other registers. |
-| `0044BD80` | accepted drift | The vertical-edge cursor and countdown schedule differ. |
+| `0044BD80` | scratch | The current check has broad control-flow drift and one extra jump. |
 | `0044BF90` | accepted drift | Five x87 bytes differ. A volatile width local matches, but PDB evidence rejects it. |
 | `0044C510` | accepted drift | The inner placement-cell address calculation uses another register schedule. |
 
 The accepted rows retain their proven calls, predicates, writable addresses,
-values, cleanup, and observable faults. The scratch row has no such exactness
-claim.
+values, cleanup, and observable faults. The two scratch rows retain their
+natural bodies but do not have a localized code-generation difference.
+
+Fresh checks show `0044BAA0` differs by 163 bytes with only 22.86% exact-block
+coverage, a 15-byte size deficit, and a frame mismatch. `0044BD80` differs by
+273 bytes with an 11-byte size deficit, a high-severity control-flow
+difference, and one extra jump. Neither row is accepted-drift safe.
 
 ## Shipped behavior
 

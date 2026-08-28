@@ -22,14 +22,14 @@ No inline assembly, fake vtable, absolute API pointer, or wrapper owner remains.
 
 ## Recovery states
 
-The module keeps the prior source-bank states:
-
-- 23 `matching` owners;
-- 4 `accepted_drift` owners;
-- 5 `scratch` owners.
-
+The module keeps 21 `matching` owners and 11 `scratch` owners. The former
+accepted-drift rows `00447B70`, `004481E0`, `00448660`, and `00448A60` are now
+scratch because their fresh checks show structural instruction drift. The two
+current-main SDK regressions, `00448250` and `00448340`, are also scratch.
 These states describe source recovery. They do not claim grouped byte equality
-after the source move. The prior grouped exact owners need fresh checks against
+after the source move.
+
+The prior grouped exact owners need fresh checks against
 `src/Dsutil.c`.
 
 ## Transition
@@ -45,11 +45,12 @@ that source file. No generated owner was present.
 `build/dsutil_candidate_tu.c` includes `src/Dsutil.c` once. The pinned VC5
 candidate check uses `config/flags/00448BA0_ds_stream_time_func.rsp`.
 
-The candidate compiled all 32 owners. It matched 27 owners with zero byte,
-relocation, and boundary differences. The 23 prior `matching` owners all
-remain exact. The four accepted-drift owners remain nonexact. The five
-scratch owners include the prior exact observations for `00447890`,
-`00447A20`, `00447EF0`, and `004481A0`; `00448BA0` remains nonexact.
+The pre-SDK candidate compiled all 32 owners. It matched 27 owners with zero
+byte, relocation, and boundary differences. The 23 prior `matching` owners
+were exact in that source context. The four accepted-drift owners remained
+nonexact. The five scratch owners included the prior exact observations for
+`00447890`, `00447A20`, `00447EF0`, and `004481A0`; `00448BA0` remained
+nonexact.
 
 The candidate report is `build/candidate_tus/dsutil_compile_std/report.txt`.
 
@@ -68,6 +69,27 @@ scratch until its boundary and byte differences are recovered.
 After this repair, `00448BA0` rebuilds at 1422 bytes. The original is 1332
 bytes. It has 1321 strict differences (92.8973%) and a 90-byte boundary
 escape. The ordered calls still differ by one `memset` call.
+
+## Current-main SDK naturalization
+
+The natural source now uses the period SDK declarations and the shared Dsutil
+globals. The fresh grouped audit is
+`build/audits/dsutil_current_main/report.txt`.
+
+The pre-status-change audit reported 21 registered matches, four
+accepted-drift observations, four unregistered grouped matches, two
+registered regressions, and one boundary problem. `00448250`
+(`_WaveCloseWriteFile`) differed by 160 bytes. `00448340`
+(`_WaveCopyUselessChunks`) differed by two bytes. Both kept their owner
+symbols, zero relocation-target mismatches, and zero boundary escapes, but
+neither passed the exact gate. Their exact registrations were removed, and
+both are now scratch. The natural bodies remain unchanged.
+
+The final status review also demoted `00447B70` (`_SndObjStop`), `004481E0`
+(`_WaveWriteFile`), `00448660` (`ds_stream_init`), and `00448A60`
+(`ds_stream_pause`). Their fresh checks report high-severity structural
+instruction differences of 38, 96, 16, and 6 bytes. Dsutil has no remaining
+accepted-drift row in this source module.
 
 ## Canonical provider repair
 

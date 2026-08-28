@@ -6,7 +6,7 @@
   "header": "include/color.h",
   "functions": {
     "00423EE0": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/color_module.md"
     },
     "004240B0": {

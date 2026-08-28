@@ -24,6 +24,13 @@ The migration keeps the constructor as scratch. It keeps `delete_surfaces`,
 `draw`, and `set_game_facet` as accepted drift. Their source now uses natural
 `delete`, canonical DirectDraw member calls, and canonical draw-area types.
 
+The current policy audit retains `delete_surfaces` as accepted drift. Its fresh
+check has 93 positional differences but only 35 edit bytes. The frame, five
+calls, CFG, owner symbol, relocations, and boundary all match. The medium
+instruction-scheduling difference is limited to entry register and block
+order, so it remains localized equivalent drift. The other two rows remain
+accepted drift pending their own fresh checks.
+
 The candidate grouped build found 19 of 20 exact owners. `Poll` regressed from
 exact to a 10-byte positional mismatch. It stays scratch and is removed from
 direct exact ownership. The constructor remains 338 bytes

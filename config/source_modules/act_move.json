@@ -13,7 +13,7 @@
     "00405780": { "status": "matching" },
     "004057E0": { "status": "matching" },
     "00405850": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/act_move_module.md"
     },
     "00405BF0": { "status": "matching" }

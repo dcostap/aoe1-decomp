@@ -37,7 +37,7 @@ order:
    85 bytes, matching.
 5. `00404DB0` `RGE_Action_Missile::set_state(unsigned char)`, 805 bytes,
    scratch.
-6. `004050F0` `RGE_Action_Missile::update()`, 955 bytes, accepted drift.
+6. `004050F0` `RGE_Action_Missile::update()`, 955 bytes, scratch.
 7. `004054B0` `RGE_Action_Missile::save(int)`, 94 bytes, matching.
 
 `004050D5` is a three-byte padding/data-dispatch neighborhood inside
@@ -45,8 +45,7 @@ order:
 compiler-generated destructor COMDATs. They have no source-bank body here.
 
 The current source owner is `src/act_misl.cpp`. The source module keeps the
-five matching owners, the scratch `00404DB0` owner, and the accepted-drift
-`004050F0` owner in PDB order.
+five matching owners and the two scratch owners in PDB order.
 
 ## Available canonical dependencies
 
@@ -146,3 +145,8 @@ The grouped candidate result is:
 - generated: `00404C60` and `00404C80` both matched with zero diff bytes;
 - compiled: 7 of 9 rows matched; comparison errors: 0;
 - full-module exact: false because the two observed rows are not exact.
+
+The fresh `004050F0` check reports a high-severity call-surface difference.
+The rebuilt body uses virtual slots `+0x220` and `+0x22C`; the executable uses
+`+0x21C` and `+0x228`. It also has one fewer jump and is 16 bytes short. The
+body remains natural source, but this is not localized equivalent drift.

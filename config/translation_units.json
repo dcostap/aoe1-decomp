@@ -3520,8 +3520,6 @@
         "00447F40": "src/Dsutil.c",
         "00448040": "src/Dsutil.c",
         "00448080": "src/Dsutil.c",
-        "00448250": "src/Dsutil.c",
-        "00448340": "src/Dsutil.c",
         "00448400": "src/Dsutil.c",
         "004484D0": "src/Dsutil.c",
         "004485C0": "src/Dsutil.c",
@@ -3534,8 +3532,7 @@
       },
       "symbols": {
         "00447D50": "_WaveOpenFile",
-        "00448040": "_WaveCloseReadFile",
-        "00448340": "_WaveCopyUselessChunks"
+        "00448040": "_WaveCloseReadFile"
       }
     },
     {

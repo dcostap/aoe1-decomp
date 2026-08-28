@@ -13,8 +13,8 @@
   `DibCreate`, `xlatClut8`, `xlatClut4`, `xlatRle8`, `xlatRle4`, `memmove`,
   `DibMapToPalette`, `CreateIdentityPalette`, `CopyPalette`, `DibFree`.
 - Exact anchors are the 19 owners registered by the former `dib_prefix`
-  group. `DibFromBitmap` also has a target-only exact source. The four
-  accepted-drift owners and four scratch owners have documented local evidence
+  group. `DibFromBitmap` also has a target-only exact source. The two
+  accepted-drift owners and six scratch owners have documented local evidence
   in their former source headers.
 - The final owner is `src/Dib.cpp`; the former wrapper and function fragments
   are not compiler-facing sources.
@@ -51,10 +51,14 @@ compiled all 28 owners with no compile error.
 - The canonical resource-header fanout also regressed `DibOpenFile` by 22
   bytes and `DibSetUsage` by 7 bytes. Both owners are scratch and are not
   registered as exact.
-- `DibBlt` remains accepted drift at 325 differing bytes.
+- `DibBlt` is scratch at 325 differing bytes. Its current natural source has
+  broad private-home, multiplication, and loop-lowering drift. The natural
+  body remains unchanged.
 - `TransDibBlt` remains scratch at 919 differing bytes.
 - `TileDibBlt` remains scratch at 1106 differing bytes.
-- `DibCheckTrans` remains accepted drift at 197 differing bytes.
+- `DibCheckTrans` is scratch at 197 differing bytes. Its fresh check reports
+  high-severity control-flow drift, a different prologue, and only 40.31%
+  exact-block coverage. The natural body remains unchanged.
 - `xlatClut4` remains accepted drift at 36 differing bytes.
 - `xlatRle8` remains accepted drift at 3 differing bytes.
 - `DibMapToPalette` remains scratch at 926 differing bytes and has one

@@ -29,5 +29,12 @@ methods. Focused checks match `00466A20` and `0046A410` exactly.
 The original calls `+0x100`. It differs by two bytes and has no relocation or
 boundary issue. Do not reorder PDB declarations to restore this old byte result.
 
-The known natural observed rows remain in their recorded status banks. Exact
-repair resumes from this canonical source tree.
+`004675C0 draw_background` remains accepted drift. Its fresh check differs by
+756 positional bytes but only 169 raw edit-cost bytes. The frame, 20 calls,
+CFG, owner symbol, relocations, and boundary all match. The low-severity
+diagnostic identifies private center-coordinate scheduling, matching the
+written behavior review. The natural body remains unchanged.
+
+`00468000 set_popup_info_file` remains accepted drift. Its fresh grouped result
+differs by two bytes with matching ownership, relocation, and boundary checks.
+Exact repair resumes from this canonical source tree.

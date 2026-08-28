@@ -15,7 +15,11 @@ The direct module reports `MATCH` and `0.0000%` for these registered owners:
 - `00431D10`, `00431D20`, `00431DD0`, `00431E40`, `00431F50`.
 
 `004319E0`, `00431A40`, `00431A80`, `00431B10`, `00431BF0`, and `00431F10`
-are scratch. `00431D30` remains accepted drift.
+are scratch. `00431D30` remains accepted drift. Its fresh check has equal size,
+frame, saved registers, calls, CFG, and owner symbol. The first 75 bytes match;
+the residual starts with one local `pop edi` scheduling move and has a 4.49%
+edit cost. It has no relocation or boundary mismatch, so the difference remains
+localized.
 
 The direct typed forms changed code generation for several former leaf exact
 owners. Do not restore raw pointer arithmetic to promote them.

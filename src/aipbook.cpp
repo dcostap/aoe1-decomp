@@ -601,8 +601,7 @@ CountDeviation:
 }
 
 // 0040F9B0 AIPlay::groupGivenCommandOnPhase
-// ACCEPTED_DRIFT: behavior-equivalent. The original and rebuilt code differ
-// only in register allocation before the command scan.
+// Scratch status: the current natural result escapes its original boundary.
 int AIPlay::groupGivenCommandOnPhase(int groupValue, int typeValue,
                                      int phaseIndex) {
     int type = typeValue;

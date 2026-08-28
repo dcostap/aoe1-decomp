@@ -136,9 +136,9 @@ void RGE_Action_Move_To::set_state(unsigned char param_1) {
 }
 
 // 00405850 RGE_Action_Move_To::update()
-// ACCEPTED_DRIFT: This source keeps the proven calls, field ownership, state
-// transitions, and return values. Its residual drift is local to switch-table
-// relocation, equivalent stack homes, cold case placement, and return setup.
+// Scratch status: the natural source keeps the proven calls, field ownership,
+// state transitions, and return values. Its current result has a broad CFG
+// difference with one missing cold block.
 unsigned char RGE_Action_Move_To::update() {
     XYZBYTEPoint waypoint;
     int move_result;

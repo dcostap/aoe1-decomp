@@ -40,14 +40,18 @@ It contains all 114 normal owners in PDB order.
 It has no wrapper source or `.cpp` include.
 The module header is `include/aiuaimod.h`.
 
-The prior source banks supplied 104 matching owners, seven scratch owners, and
-three accepted-drift owners. The migration keeps these statuses.
+The prior source banks supplied 104 matching owners, eight scratch owners, and
+two accepted-drift owners. The migration keeps these statuses.
 
 The accepted-drift owners are:
 
 - `00413150` `save`: 30 bytes differ in the attacking-unit grow loop.
-- `00414D40` `order`: status remains accepted drift from the prior source.
 - `0041A020` `purgeNotifyQueue`: three loop-tail bytes differ.
+
+`00414D40` `order` is scratch. Its current source has a 277-byte structural
+drift over a 306-byte body. The original delays the EDI save until the `p9`
+path; the rebuild saves it at entry. This broad stack and block-layout drift
+does not support accepted drift.
 
 The scratch owners are:
 
@@ -65,7 +69,7 @@ These owners remain observed, not exact claims.
 
 The direct module object emits 114 defined `UnitAIModule` owner symbols.
 The 103 prior registered exact owners remain byte exact after relocation checks.
-The seven scratch owners and three accepted-drift owners remain nonexact.
+The eight scratch owners and two accepted-drift owners remain nonexact.
 The unregistered `004195F0` `processIdle` owner also differs in the direct TU.
 Its source-bank status remains `matching` until the coordinator reviews the
 natural module context.

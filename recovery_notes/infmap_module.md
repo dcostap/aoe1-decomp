@@ -43,8 +43,9 @@ ownership, zero relocation mismatches, and zero boundary escapes:
 
 Generated `0044E030` also matches exactly.
 
-`0044E250` and `0044ED20` remain accepted drift.
-The migration does not reopen their reviewed status.
+`0044E250` remains accepted drift. `0044ED20` is scratch. Its fresh check
+reports 541 differing bytes, 84.56% block-shape similarity, and a high-severity
+control-flow difference. The natural body remains unchanged.
 
 `0044E600` remains scratch. Its candidate row has two boundary escapes.
 `0044E9E0` remains scratch. `0044EC00` remains verified logic.

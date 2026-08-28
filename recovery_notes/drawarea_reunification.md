@@ -44,9 +44,11 @@ Both reports had zero comparison errors.
   preserves palette loading, zero initialization, and the ModifyPalette call.
 - `00444040 TDrawArea::Init`: accepted drift. The one-byte difference is an
   equivalent list-walk base load. Calls, stores, and control flow match.
-- `00444680 TDrawArea::Clear`: accepted drift. The source preserves the
-  PtrClear fallback, software fill, DirectDraw fill, clipping, and five calls.
-  Remaining differences are private register and block lowering.
+- `00444680 TDrawArea::Clear`: scratch. The source preserves the PtrClear
+  fallback, software fill, DirectDraw fill, clipping, and five calls. Its
+  current natural result has 218 differing bytes from private register and
+  block lowering. This is broad structural drift, not localized equivalent
+  drift.
 - `00444C30 TDrawArea::SetClipRect`: accepted drift. The source preserves span
   manager ownership, seven calls, region setup, and row construction. The
   remaining differences are local compare and argument scheduling.
@@ -69,9 +71,9 @@ Both reports had zero comparison errors.
   numbered file retry, lock/write/unlock flow, bottom-up row copy, and cleanup
   are preserved. The current module build has 326 differing bytes from header
   and retry-tail scheduling. This drift is too broad for accepted drift.
-- `00446230 TDrawArea::DrawShadowBox`: source reunification introduced one
-  positional byte of register-map drift. The body, call, frame, and boundaries
-  remain aligned. The exact-owner claim was removed.
+- `00446230 TDrawArea::DrawShadowBox`: scratch. The current grouped audit
+  reports 68 differing bytes and one boundary escape. The body keeps the
+  natural source, but the boundary escape blocks accepted drift.
 
 `00443520 TDrawSystem::Paint` and `00445840 TDrawArea::DrawLine` remain scratch.
 Their source preserves the recovered behavior, but broad code-generation drift

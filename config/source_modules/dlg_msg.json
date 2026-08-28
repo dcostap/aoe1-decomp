@@ -5,9 +5,9 @@
   "source": "src/dlg_msg.cpp",
   "header": "include/dlg_msg.h",
   "functions": {
-    "0043FC70": { "status": "accepted_drift", "note_path": "recovery_notes/dlg_msg_module.md" },
+    "0043FC70": { "status": "scratch", "note_path": "recovery_notes/dlg_msg_module.md" },
     "0043FCD0": { "status": "matching", "note_path": "recovery_notes/dlg_msg_module.md" },
-    "0043FD50": { "status": "accepted_drift", "note_path": "recovery_notes/dlg_msg_module.md" },
+    "0043FD50": { "status": "scratch", "note_path": "recovery_notes/dlg_msg_module.md" },
     "0043FFF0": { "status": "matching", "note_path": "recovery_notes/dlg_msg_module.md" },
     "00440070": { "status": "matching", "note_path": "recovery_notes/dlg_msg_module.md" },
     "00440100": { "status": "matching", "note_path": "recovery_notes/dlg_msg_module.md" },

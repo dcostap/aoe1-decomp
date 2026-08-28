@@ -23,7 +23,7 @@ Normal owners, in source and address order:
 5. `00405750` `save(int)` — matching.
 6. `00405780` `first_in_stack(unsigned char)` — matching.
 7. `004057E0` `set_state(unsigned char)` — matching.
-8. `00405850` `update()` — accepted drift.
+8. `00405850` `update()` — scratch.
 9. `00405BF0` `is_in_range()` — matching.
 
 ## Canonical dependency closure
@@ -63,7 +63,7 @@ store.
 
 The former source wrapper included one fragment per owner and selected
 `include/act_move_context.h` with `ACT_MOVE_CANONICAL_TU`. The direct source
-now owns all normal definitions in PDB order. The accepted-drift update remains
+now owns all normal definitions in PDB order. The scratch update remains
 in the same source module. The generated deleting destructor remains
 source-free.
 
@@ -85,8 +85,9 @@ and `config/translation_units.json`. The grouped candidate report is
 Against current `main` `ddd2ec833`, which includes the shared Static/Moving
 ABI repair from `ad4b69dab`, the candidate compiled all eight exact owners and
 the generated destructor. All eight exact owners match. The generated
-destructor also matches. The accepted-drift `00405850 update` remains
-observed and has 728 changed bytes in the direct source context. Every exact
+destructor also matches. The scratch `00405850 update` remains observed and
+has 212 changed bytes in the current source context. Its current check has a
+high-severity control-flow difference and one missing cold block. Every exact
 and observed row has owner status `match`, zero relocation mismatches, and
 zero boundary escapes. The generated destructor is `unverified` with zero
 relocations and zero boundary escapes.
@@ -119,9 +120,10 @@ The broader fanout rows below were measured against `298cc2a47` and remain
 historical. The current-main `act_move` result is recorded above.
 
 The grouped `act_move` candidate has 8/8 exact owners matching and generated
-`00405580` matching. Observed `00405850` differs by 728 bytes. All rows have
-zero relocation mismatches and zero boundary escapes. Every exact owner has
-owner status `match`.
+`00405580` matching. Observed `00405850` differs by 212 bytes. Its current
+check reports one missing cold CFG block, so it is scratch rather than
+accepted drift. All rows have zero relocation mismatches and zero boundary
+escapes. Every exact owner has owner status `match`.
 
 The grouped `ani_obj` candidate has 10/10 exact owners matching and generated
 `0041A1E0` matching. The current registered Action candidate, including

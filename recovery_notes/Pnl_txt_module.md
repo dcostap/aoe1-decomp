@@ -29,7 +29,8 @@ its source now points directly to `src/Pnl_txt.cpp`.
 The authentic wrapper check covered 65 included normal functions. It reported
 56 registered matches, three accepted-drift observations, three grouped
 mismatches, two boundary problems, and one relocation problem. The known
-observations were retained as source bodies.
+observations were retained as source bodies. The current source records the
+boundary-crossing `0047D9E0` row as scratch.
 
 ## Post-migration check
 
@@ -50,10 +51,16 @@ Observed direct checks from the rebuilt module gave these results:
 - `0047D2C0`: `MISMATCH`, 18 positional bytes, matching size and calls.
 - `0047D760`: `MISMATCH`, 232 positional bytes, 636 rebuilt bytes versus 634;
   the rebuilt range crosses the original boundary.
-- `0047D9E0`: `MISMATCH`, 518 positional bytes, 564 rebuilt bytes versus 555;
-  the rebuilt range crosses the original boundary.
+- `0047D9E0`: `MISMATCH`, 523 positional bytes in the current audit; the
+  rebuilt range crosses the original boundary. Its source status is scratch.
 - `0047DD70`: `MISMATCH`, 184 positional bytes, 538 rebuilt bytes versus 541.
 - `0047E2A0`: `MISMATCH`, 3 positional bytes, matching size and calls.
+
+`0047DD70` remains accepted drift. The current direct comparison keeps the
+first 321 bytes, size, frame, and all ten calls aligned. The residual is in
+private registers and equivalent list-loop lowering. Both paths read the same
+links and write the same node, links, count, redraw state, and return values.
+No call, allocation, free, memory access, or fault order moves.
 
 The direct all-owner comparison in `build/audits/Pnl_txt_direct_all.json`
 reported 56 `MATCH` results and these nine known observations. It used the

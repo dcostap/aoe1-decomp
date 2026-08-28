@@ -11,7 +11,7 @@
 
 | VA | PDB lines | bytes | owner | state |
 | --- | --- | ---: | --- | --- |
-| `00423EE0` | 23-67 | 449 | `RGE_translate_palette` | accepted drift |
+| `00423EE0` | 23-67 | 449 | `RGE_translate_palette` | scratch |
 | `004240B0` | 71-157 | 661 | `RGE_fade_palette` | accepted drift |
 | `00424350` | 162-186 | 203 | `RGE_Color_Table::RGE_Color_Table(int)` | matching |
 | `00424440` | 191-209 | 169 | `RGE_Color_Table::RGE_Color_Table(FILE*, short)` | matching |
@@ -85,10 +85,11 @@ owners and the generated destructor in one direct translation unit.
 | `004247B0` | MATCH | 88 | 0 | 0 | 0 |
 | `00424420` | MATCH | 30 | 0 | 0 | 0 |
 
-The six exact owners and generated destructor remain exact. The two accepted
-drift observations retain their pre-migration gaps. `RGE_translate_palette`
-has one boundary escape from its known structural overflow. No relocation
-target mismatch exists.
+The six exact owners and generated destructor remain exact. The
+`RGE_translate_palette` observation retains a 437-byte difference and one
+boundary escape from its known structural overflow. No relocation target
+mismatch exists. Its source status is scratch; the natural body remains
+unchanged.
 
 The grouped candidate validation is the authoritative migration check. A
 focused cached check was attempted with `--no-build --no-history`, but the
@@ -102,12 +103,12 @@ The paired grouped checks ran after this header repair. Color used
 `build/candidate_tus/color_header_boundary/report.txt`.
 
 Color passed its six exact owners and generated destructor. Each had zero byte
-differences, zero relocation mismatches, and zero boundary escapes. The two
-accepted-drift owners remained mismatches: `00423EE0` differed by 437 bytes
-with one boundary escape, and `004240B0` differed by 10 bytes with no boundary
-escape. The color summary was 6/6 exact, 1/1 generated, 0/2 observed, and
-zero comparison errors. Its full-module flag remained false because observed
-drift is not exact.
+differences, zero relocation mismatches, and zero boundary escapes. The
+scratch `00423EE0` observation differed by 437 bytes with one boundary escape.
+The accepted-drift `004240B0` observation differed by 10 bytes with no
+boundary escape. The color summary was 6/6 exact, 1/1 generated, 0/2 observed,
+and zero comparison errors. Its full-module flag remained false because
+observed drift is not exact.
 
 The Drawarea grouped check used the temporary proposal
 `C:\Users\Darius\AppData\Local\Temp\pi-subagents\sa-16e9b1db\drawarea_header_boundary.json`

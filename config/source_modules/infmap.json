@@ -23,7 +23,7 @@
     "0044E900": { "status": "matching" },
     "0044E9E0": { "status": "scratch", "note_path": "recovery_notes/infmap_module.md" },
     "0044EC00": { "status": "verified_logic", "note_path": "recovery_notes/infmap_module.md" },
-    "0044ED20": { "status": "accepted_drift", "note_path": "recovery_notes/infmap_module.md" },
+    "0044ED20": { "status": "scratch", "note_path": "recovery_notes/infmap_module.md" },
     "0044F030": { "status": "matching" },
     "0044F040": { "status": "matching" }
   }

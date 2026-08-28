@@ -82,6 +82,8 @@ change is the expected effect of removing the scheduling-only volatile read.
 
 - `0047A910` still has an early EBP and register-topology mismatch.
 - `0047AFD0` still needs a source or compiler-context reconstruction.
-- `0047AA80` and `0047AB20` retain accepted-drift status pending final-source
-  exact repair and review.
+- `0047AA80` and `0047AB20` are scratch pending final-source exact repair and
+  review. `0047AA80` has 139 differing bytes and 55.26% instruction-shape
+  similarity in the current natural source. `0047AB20` has 192 differing
+  bytes and one boundary escape. Neither row is accepted-drift safe.
 - The Terra orchestrator contract path is absent from this worktree.

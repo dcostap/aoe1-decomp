@@ -9,9 +9,13 @@ global headers. It has no copied panel layout or manual vtable store.
 The deleting destructor at `0043FCB0` is compiler generated. It has no
 handwritten source body.
 
-The constructor and main setup retain their prior accepted-drift status. The
-other five PDB owners retain matching status pending direct module validation.
+The constructor and main setup remain nonexact. The constructor is scratch
+because its current check has a structural instruction difference. The main
+setup is scratch because its 526-byte drift is broad and its current grouped
+comparison has no valid exact proof. The other five PDB owners retain matching
+status pending direct module validation.
 
 The direct grouped check matches the five matching owners and the generated
 deleting destructor. The constructor differs by 44 bytes. Main setup differs
-by 526 bytes. Neither accepted-drift owner escapes its original boundary.
+by 526 bytes. The constructor has a high-severity structural difference. Main
+setup remains a broad unresolved body. Neither source body was changed.

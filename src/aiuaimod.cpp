@@ -1539,7 +1539,7 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
     return 1;
 }
 
-// --- accepted_drift/00414D40_order.cpp ---
+// --- scratch/00414D40_order.cpp ---
 // VA: 00414D40 UnitAIModule::order(int,int,int,int,float,float,float,float,int,int,int)
 // aiuaimod.cpp
 // Attempt log:
@@ -1585,14 +1585,8 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
 //   boundary and eight ordered calls. The only structural gap is VC5's entry
 //   push edi versus the original branch-local push edi; no policy-valid source
 //   lead was found.
-// ACCEPTED DRIFT: the original saves EDI only on the nonzero-p9 path. The
-// rebuild saves it at entry. This shifts parameter displacements but each of
-// the three addToOrderQueue calls receives the same typed arguments. The only
-// other instruction difference replaces a dead p10 register load with a direct
-// stack compare. All eight calls, predicates, queue effects, logging, virtual
-// dispatches, return values, register restoration, and fault order match.
-// Size and CFG match. Each path balances its own saved registers and arguments.
-// This function has no SEH.
+// Scratch status: the original saves EDI only on the nonzero-p9 path, while
+// the rebuild saves it at entry. This is broad stack and block-layout drift.
 // A fresh early-invalid-state return probe reproduced the same allocation.
 // Canonical-context pass: this owner now uses the shared aiuaimod.cpp surface.
 // Its 306-byte boundary, eight calls, symbol, and 277-byte drift stay unchanged.

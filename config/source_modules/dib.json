@@ -6,7 +6,7 @@
   "header": "include/dib.h",
   "functions": {
     "00438820": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/Dib_module.md"
     },
     "00438AA0": {
@@ -20,7 +20,7 @@
       "note_path": "recovery_notes/Dib_module.md"
     },
     "004395A0": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/Dib_module.md"
     },
     "00439700": { "status": "matching" },

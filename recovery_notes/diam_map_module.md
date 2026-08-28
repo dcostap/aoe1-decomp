@@ -34,7 +34,9 @@ The generated deleting destructor at `00436910` also matches.
 
 ## Retained nonexact bodies
 
-- `00436A10 set_bitmap`: accepted drift. 359 bytes, 66.3586%.
+- `00436A10 set_bitmap`: accepted drift. 359 bytes, 66.3586%. Its exact
+  frame, calls, CFG, and complete register-recolor classification remain
+  written evidence for this narrow local drift.
 - `00436C30 set_world`: scratch. 148 bytes, 13.6910%.
 - `004374C0 clear_image`: scratch. 210 bytes, 62.5000%.
   The rebuilt body crosses the original boundary twice.
@@ -42,7 +44,9 @@ The generated deleting destructor at `00436910` also matches.
 - `00437760 draw_tile`: scratch. 1065 bytes, 93.0131%.
 - `00437EC0 draw_visible_object`: scratch. 336 bytes, 84.6348%.
 - `00438060 draw_object`: scratch. 10 bytes, 2.7397%.
-- `004381D0 draw_clipped_horz_line`: accepted drift. 40 bytes, 32.5203%.
+- `004381D0 draw_clipped_horz_line`: scratch. 40 bytes, 32.5203%. The fresh
+  check reports a high-severity register-map conflict across the opening
+  block, so this is not localized equivalent drift.
 - `00438250 draw_view_rect`: scratch. 662 bytes, 89.5805%.
   The rebuilt body crosses the original boundary once.
 - `00438530 pick_tile`: accepted drift. 10 bytes, 4.0650%.

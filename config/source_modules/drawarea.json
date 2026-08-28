@@ -40,7 +40,7 @@
     "00444340": { "status": "matching" },
     "00444390": { "status": "matching" },
     "004443D0": { "status": "matching" },
-    "00444680": { "status": "accepted_drift", "note_path": "recovery_notes/drawarea_reunification.md" },
+    "00444680": { "status": "scratch", "note_path": "recovery_notes/drawarea_reunification.md" },
     "00444990": { "status": "matching" },
     "00444A60": { "status": "matching" },
     "00444B10": { "status": "matching" },
@@ -63,7 +63,7 @@
     "00445FE0": { "status": "matching" },
     "004460C0": { "status": "matching" },
     "00446220": { "status": "matching" },
-    "00446230": { "status": "accepted_drift", "note_path": "recovery_notes/drawarea_reunification.md" },
+    "00446230": { "status": "scratch", "note_path": "recovery_notes/drawarea_reunification.md" },
     "00446340": { "status": "matching" },
     "00446370": { "status": "matching" },
     "004463B0": { "status": "scratch", "note_path": "recovery_notes/drawarea_reunification.md" }

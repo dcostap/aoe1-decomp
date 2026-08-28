@@ -54,7 +54,7 @@ Before migration, the packet reported these eight registered exact owners:
 
 `00423730` was in `src/accepted_drift` and had no registered exact result.
 After migration, `config/source_modules/campaign.json` records the same eight
-owners as `matching` and keeps `00423730` as `accepted_drift`. No status was
+owners as `matching` and records `00423730` as `scratch`. No status was
 promoted by this structural move. No generated entry was present before or
 after.
 
@@ -84,9 +84,11 @@ The eight exact owners (`00423230`, `00423330`, `00423480`, `004234B0`,
 This proves that the canonical `prog_info` and `campaign_dir` access now close
 for the matching owners.
 
-The candidate also checks `00423730` as its accepted-drift observed owner.
-It remains a 94-byte mismatch (rebuilt size 98 versus original size 100), with
-matching ownership and no relocation or boundary errors. This is not promoted.
+The candidate also checks `00423730` as a scratch observed owner. It remains a
+94-byte mismatch (rebuilt size 98 versus original size 100), with matching
+ownership and no relocation or boundary errors. The fresh standalone check
+reports a high-severity control-flow difference and 0% exact-block coverage.
+This is broad structural drift, not accepted drift.
 
 The first compile exposed two canonical ABI requirements: `basegame.h` needs
 the struct tag and `__stdcall` on `wnd_proc`, and the period `calloc`
@@ -95,8 +97,8 @@ canonical declarations. No context header or foreign layout is used.
 
 Historical evidence for `00423730` remains unresolved. Its former note records
 an accepted-drift result with a code-size overshoot in one early form and a
-remaining LEA-byte difference in the later form. The natural typed index form
-in this source has not been independently checked.
+remaining LEA-byte difference in the later form. The current natural typed
+index form is now scratch after the fresh structural check.
 
 ## ABI requests
 
