@@ -132,7 +132,7 @@ public:
     void processGroupNotify(int a1, int a2);
     int processIdle(int param);
     void processOrder(int a1, int a2);
-    void purgeNotifyQueue();
+    void purgeNotifyQueue(unsigned long);
     void purgeOrderQueue();
     int retryableOrder(int);
     void runAwayFromAttackers();
