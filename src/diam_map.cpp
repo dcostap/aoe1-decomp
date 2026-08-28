@@ -3,11 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern const float DAT_0056f5fc;
-extern const float DAT_0056f600;
-extern const float DAT_0056f604;
-extern char s_draw_explored_tiles[];
-
 RGE_Diamond_Map::RGE_Diamond_Map() {
   world = 0;
   player = 0;
@@ -205,8 +200,7 @@ void RGE_Diamond_Map::set_world(RGE_Game_World *world) {
         }
 
         col_step = (float)row_len_tiles / (float)line_len;
-        float draw_step =
-            DAT_0056f604 / ((float)row_len_tiles / (float)line_len);
+        float draw_step = 1.0f / ((float)row_len_tiles / (float)line_len);
         draw_wid = (short)draw_step;
         if ((float)draw_wid != draw_step) {
           ++draw_wid;
@@ -222,9 +216,7 @@ void RGE_Diamond_Map::set_world(RGE_Game_World *world) {
             (short)((float)line_len / draw_step);
         this->map_tile_rows[row].ratio = draw_step / (float)line_len;
         this->map_tile_rows[row].col_extra =
-            this->map_tile_rows[row].ratio < DAT_0056f604
-                ? col_step * DAT_0056f600
-                : DAT_0056f5fc;
+            this->map_tile_rows[row].ratio < 1.0f ? col_step * 0.5f : 0.0f;
 
         if (row < this->map_wid) {
           this->map_tile_rows[row].map_row = 0;
@@ -241,7 +233,7 @@ void RGE_Diamond_Map::set_world(RGE_Game_World *world) {
       } while (line < this->map_image_hgt);
     }
 
-    float draw_height = DAT_0056f604 / this->map_row_step;
+    float draw_height = 1.0f / this->map_row_step;
     this->map_tile_draw_hgt = (short)draw_height;
     if ((float)this->map_tile_draw_hgt != draw_height) {
       ++this->map_tile_draw_hgt;
@@ -323,11 +315,7 @@ int RGE_Diamond_Map::create_surfaces() {
     }
     if (!da->Init(this->render_area->DrawSystem, this->pnl_wid, this->pnl_hgt,
                   0, 0)) {
-      TDrawArea *to_delete = this->save_area;
-      if (to_delete != 0) {
-        to_delete->TDrawArea::~TDrawArea();
-        operator delete(to_delete);
-      }
+      delete this->save_area;
       this->save_area = 0;
       return 0;
     }
@@ -478,8 +466,6 @@ void RGE_Diamond_Map::draw_all_tiles() {
   this->save_area->Unlock("diam_map::draw_all_tiles");
 }
 
-extern char s_draw_explored_tiles[];
-
 void RGE_Diamond_Map::draw_explored_tiles() {
   RGE_Tile_List_Node *list;
   int count;
@@ -487,14 +473,14 @@ void RGE_Diamond_Map::draw_explored_tiles() {
   this->player->diam_tile_list.get_list_info(list, count);
 
   if (count > 0) {
-    if (this->save_area->Lock(s_draw_explored_tiles, 1)) {
+    if (this->save_area->Lock("diam_map::draw_explored_tiles", 1)) {
       int i;
       i = 0;
       while (i < count) {
         this->draw_tile((short)list[i].col, (short)list[i].row, 0, 0);
         i++;
       }
-      this->save_area->Unlock(s_draw_explored_tiles);
+      this->save_area->Unlock("diam_map::draw_explored_tiles");
     }
   }
 }
@@ -527,7 +513,7 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2, int param_3,
     max_coord = param_1;
   }
 
-  if (!(row->ratio >= DAT_0056f604)) {
+  if (!(row->ratio >= 1.0f)) {
     float scaled = (float)max_coord * row->ratio;
     x_offset = (short)scaled;
     if (scaled - (float)x_offset < row->ratio) {
@@ -822,7 +808,8 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *object,
     if (visibility == 0x0F)
       return;
 
-    RGE_Doppleganger_Object *dopple = (RGE_Doppleganger_Object *)object;
+    RGE_Doppleganger_Object *dopple =
+        static_cast<RGE_Doppleganger_Object *>(object);
     if (player->mutualAlly[object->owner->id] == 1 &&
         (this->cur_player_bit & dopple->CantSeeBits) == 0) {
       level = dopple->map_draw_level;
@@ -868,7 +855,7 @@ void RGE_Diamond_Map::draw_object(short param_1, short param_2,
     max_coord = param_1;
 
   short x_offset;
-  if (row->ratio < DAT_0056f604) {
+  if (row->ratio < 1.0f) {
     x_offset = (short)((float)max_coord * row->ratio);
   } else {
     x_offset = (short)((float)max_coord * row->draw_step);
@@ -946,7 +933,7 @@ void RGE_Diamond_Map::draw_view_rect() {
       row = view_x;
     }
     long x_offset;
-    if (tile_row->ratio < DAT_0056f604) {
+    if (tile_row->ratio < 1.0f) {
       x_offset = (long)((float)row * tile_row->ratio);
     } else {
       x_offset = (long)((float)row * tile_row->draw_step);
@@ -959,7 +946,7 @@ void RGE_Diamond_Map::draw_view_rect() {
 
     short vhgt;
     short map_row;
-    ((RGE_View *)this->main_view)->get_max_size(&vhgt, &map_row);
+    this->main_view->get_max_size(&vhgt, &map_row);
 
     int half_width = (int)vhgt / 2;
     this->view_rect.left =

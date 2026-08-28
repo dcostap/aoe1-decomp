@@ -15,6 +15,10 @@ draw-line symbol has the required `PAU` parameter identity.
 `include/diam_map.h` uses the canonical Map, View, DrawArea, panel,
 Picture, player, world, and object providers. No Player or UI header changed.
 
+The map calculations use the proven `0.0f`, `0.5f`, and `1.0f` literals.
+The old `DAT_0056f600` placeholder has no canonical definition. Failed
+`TDrawArea` initialization uses normal `delete` cleanup.
+
 ## Direct-source validation
 
 The direct candidate compile has 17 exact owners. Each has `MATCH` and
