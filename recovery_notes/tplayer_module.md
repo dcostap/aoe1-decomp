@@ -15,7 +15,7 @@ checks.
 
 A full candidate pass compiled all 103 normal owners and both generated
 destructors. The final `/GX` comparison pass carried 35 exact candidates and
-68 observed candidates. It reported 35 exact results and 30 observed exact
+68 observed candidates. It reported 35 exact results and 32 observed exact
 results. It reported no symbol or comparison errors. Twenty-three former
 matching owners were demoted to scratch after natural-source cleanup exposed
 compiland drift.
@@ -25,11 +25,11 @@ Fourteen earlier accepted-drift owners remain accepted drift. Twenty-three
 former accepted-drift owners now remain scratch. Exact repair continues on the
 final source tree.
 
-The source uses canonical semantic global aliases and supported literals. It
+The source uses canonical semantic globals and supported literals. It
 does not use raw `DAT_*` names. Local command payloads use stack storage. The
 three dialog result arrays retain C allocation because the dialog provider
 releases them with `free()`. Object-group property storage has an owned
-definition and the three tactical fields use their proven PDB offsets.
+definition. The tactical module uses the canonical `taitacmd.h` layout.
 
 The complete source file compiles with the pinned VC5 host compiler and module
 `/GX` flags. The global translation-unit audit still reports unrelated
