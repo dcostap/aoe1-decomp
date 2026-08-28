@@ -32,6 +32,14 @@ The PDB records `IDirectPlay2`, `IDirectPlay3`, `IDirectPlayLobby`, and
 interfaces. This fact selects the VC98 pair over the larger sibling-project
 pair.
 
+`Com_hand.cpp` also uses the old `IDirectPlay` interface for
+`DirectPlayCreate`. Do not define `IDIRECTPLAY2_OR_GREATER` globally. The
+approved header must emit both the old interface and the later interfaces.
+
+The PDB marks five `IDirectPlay3` methods as non-pure virtual methods. The
+approved header agrees. The later sibling header marks them as pure. This
+metadata difference proves that the sibling header is not the period source.
+
 A pinned VC5 probe compiled both approved headers. It confirmed the PDB record
 sizes for `GUID`, `DPNAME`, `DPSESSIONDESC2`, `DPLCONNECTION`, and `DPCAPS`.
 
@@ -48,6 +56,11 @@ The game callback functions `EnumPlayersCallback2` and
 `EnumPlayersCallbackLobby` use `DPNAME*` in the PDB. VC5 does not convert these
 functions to the SDK callback type. Preserve their game signatures. Add an
 explicit adaptation only at each SDK call site.
+
+The original callback symbols are:
+
+- `?EnumPlayersCallback2@@YGHKKPAUDPNAME@@KPAX@Z`
+- `?EnumPlayersCallbackLobby@@YGHKKPAUDPNAME@@KPAX@Z`
 
 The approved import library provides `_DirectPlayCreate@12` and
 `_DirectPlayLobbyCreateA@20`. These names agree with the executable.
