@@ -6,7 +6,13 @@
 - Normal owners: 68.
 - PDB order runs from `0040E930` through `00411660`.
 - The compiler-generated vector deleting destructor at `004101D0` is not a normal owner.
-- The reviewed layouts are in `include/aipbook.h`.
+- `include/aipbook.h` owns the reviewed module layouts.
+- `include/ai_play_phase_command.h` owns AIPlayPhaseCommand.
+
+PDB field list `0x2629` puts the command fields in `protected` access. The
+owner header supplies the PDB public accessors. The module uses those accessors
+outside AIPlayPhaseCommand member functions. The grouped candidate keeps all
+64 registered matching owners at `MATCH`, `0.0000%`.
 
 ## Status
 

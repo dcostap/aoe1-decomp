@@ -37,7 +37,8 @@ AttackMemory, QuadrantLog, and ResourceMemory record layouts.
 `include/ai_placement_state.h` owns the PDB-proven PlacementState layout.
 `include/ai_play_phase_command.h` owns the PDB-proven 0x10 class record.
 The `PAVAIPlayPhaseCommand` return from `AIPlayPhase::command` proves its
-class identity. Taiinf consumes this record without a local copy.
+class identity. Its PDB fields are protected. Taiinf consumes its public
+accessors without a local copy.
 Taicon continues to forward-declare PlacementState in its public signatures.
 
 The record owner uses natural alignment. It has no manual padding carriers.

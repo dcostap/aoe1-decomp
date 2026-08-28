@@ -235,19 +235,17 @@ AIPlayPhaseTrigger* AIPlayPhase::trigger(int index) {
 
 int AIPlayPhase::addCommand(AIPlayPhaseCommand& command) {
     int i = 0;
-    unsigned char* p = &this->commands[0].typeValue;
     while (i < 5) {
-        if (*p == 0) {
+        if (this->commands[i].type() == 0) {
             AIPlayPhaseCommand* dest = &this->commands[i];
-            dest->groupValue = command.groupValue;
-            dest->typeValue = command.typeValue;
-            dest->value1Value = command.value1Value;
-            dest->value2Value = command.value2Value;
-            dest->value3Value = command.value3Value;
+            dest->setGroup(command.group());
+            dest->setType(command.type());
+            dest->setValue1(command.value1());
+            dest->setValue2(command.value2());
+            dest->setValue3(command.value3());
             return 1;
         }
         i++;
-        p += 0x10;
     }
     return 0;
 }
@@ -615,9 +613,9 @@ int AIPlay::groupGivenCommandOnPhase(int groupValue, int typeValue,
     AIPlayPhase* phase = &this->phases[phaseIndex];
     for (int i = 0; i < 5; i++) {
         AIPlayPhaseCommand* cmd = phase->command(i);
-        if ((unsigned int)cmd->groupValue == (unsigned int)groupValue) {
+        if ((unsigned int)cmd->group() == (unsigned int)groupValue) {
             AIPlayPhaseCommand* cmd2 = phase->command(i);
-            *(unsigned char*)&groupValue = cmd2->typeValue;
+            *(unsigned char*)&groupValue = cmd2->type();
             if ((groupValue & 0xff) == type) {
                 return i;
             }
@@ -657,9 +655,9 @@ int AIPlay::locationsOnMap(int x1, int y1, int x2, int y2) {
         int cmdIdx = 0;
         while (cmdIdx < 5) {
             AIPlayPhaseCommand* cmd = phase->command(cmdIdx);
-            if (cmd->typeValue == 1) {
-                int px = cmd->value1Value + x1;
-                int py = cmd->value2Value + y1;
+            if (cmd->type() == 1) {
+                int px = cmd->value1() + x1;
+                int py = cmd->value2() + y1;
                 if (px < 0 || py < 0 || px >= x2 || py >= y2) {
                     return 0;
                 }
@@ -903,7 +901,7 @@ void AIPlayStatus::resetHitPoints(int param_1, RGE_Game_World* world) {
             if (p->groupings[0].groupID == param_1) {
                 RGE_Static_Object* obj = world->object(id);
                 if (obj != 0) {
-                    total += (int)obj->hitPointsValue;
+                    total += (int)obj->hp;
                 }
             }
         }
@@ -1210,16 +1208,16 @@ int AIPlayBook::loadPlays(char* filename) {
                         do {
                             AIPlayPhaseCommand* command =
                                 sourcePhase->command(currentPlay);
-                            if (command->typeValue == 1) {
+                            if (command->type() == 1) {
                                 XYZ origin(0, 0, 0);
                                 XYZ rotatedPoint;
-                                XYZ originalPoint(command->value1Value,
-                                                  command->value2Value,
-                                                  command->value3Value);
+                                XYZ originalPoint(command->value1(),
+                                                  command->value2(),
+                                                  command->value3());
                                 originalPoint.rotateXYByFacet(
                                     origin, rotatedPoint, (unsigned char)temp8);
                                 AIPlayPhaseCommand newCommand(
-                                    command->groupValue, command->typeValue,
+                                    command->group(), command->type(),
                                     rotatedPoint.yValue, rotatedPoint.zValue,
                                     originalPoint.xValue);
                                 command = &newCommand;

@@ -2,7 +2,6 @@
 // Definitions follow the original PDB source order.
 
 #include "../include/taiinfmd.h"
-#include "../include/ai_play_phase_command.h"
 #include <math.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -2604,6 +2603,8 @@ void TribeInformationAIModule::removeObject(int param_1)
     }
 }
 
+#include "../include/ai_play_phase_command.h"
+
 // PDB-order owner 004DC490.
 extern int debug_rand(char* file, int line);
 
@@ -2660,9 +2661,9 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                     }
                     AIPlayPhaseCommand* command =
                         play->phase(worldNumber)->command(phase);
-                    if (command->typeValue == 1) {
-                        int x = (int)target->x + command->value1Value;
-                        int y = (int)target->y + command->value2Value;
+                    if (command->type() == 1) {
+                        int x = (int)target->x + command->value1();
+                        int y = (int)target->y + command->value2();
                         if (x < 0 || y < 0 ||
                             x >= this->mapXSizeValue ||
                             y >= this->mapYSizeValue) {

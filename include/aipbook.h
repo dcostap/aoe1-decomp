@@ -5,8 +5,10 @@
 // PDB type records prove each aggregate size and field offset below.
 
 #include "aiplaybook.h"
+#include "ai_play_phase_command.h"
+#include "stat_obj.h"
+#include "world.h"
 
-class RGE_Game_World;
 class AIPlayStatus;
 
 class XYZ {
@@ -19,27 +21,6 @@ public:
     XYZ(int x, int y, int z);
     void rotateXYByFacet(const XYZ& facet, XYZ& output,
                          unsigned char facetIndex);
-};
-
-class AIPlayPhaseCommand {
-public:
-    unsigned char groupValue;           // +0x00
-    unsigned char typeValue;            // +0x01
-    unsigned char pad_02[2];            // +0x02
-    int value1Value;                    // +0x04
-    int value2Value;                    // +0x08
-    int value3Value;                    // +0x0C
-
-    AIPlayPhaseCommand();
-    AIPlayPhaseCommand(unsigned char group, unsigned char type,
-                       int value1, int value2, int value3);
-    AIPlayPhaseCommand(unsigned char group, char* type,
-                       int value1, int value2, int value3);
-    char* nameType() const;
-
-protected:
-    unsigned char convertToIntType(char* name) const;
-    char* convertToNameType(unsigned char type) const;
 };
 
 class AIPlayPhaseTrigger {

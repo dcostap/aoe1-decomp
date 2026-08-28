@@ -11,8 +11,8 @@
 - The source uses `/O2 /Oy /GX` from `00412F00_UnitAIModule.rsp`.
 
 `include/ai_play_phase_command.h` owns the PDB-proven 0x10
-`AIPlayPhaseCommand` record. The module header consumes it without a local
-copy.
+`AIPlayPhaseCommand` record. Its PDB fields are protected. The module header
+consumes its public accessors without a local copy.
 
 ## Unit AI root virtual prefix
 

@@ -1145,11 +1145,11 @@ foundTrigger:
                                         if (member != 0) {
                                             gatherDistance =
                                                 member->distance_to_position(
-                                                    (float)phaseCommand->value1Value +
+                                                    (float)phaseCommand->value1() +
                                                         target->world_x,
-                                                    (float)phaseCommand->value2Value +
+                                                    (float)phaseCommand->value2() +
                                                         target->world_y,
-                                                    (float)phaseCommand->value2Value +
+                                                    (float)phaseCommand->value2() +
                                                         target->world_z);
                                             if (gatherDistance >
                                                 (float)trigger->value1Value) {
@@ -1373,17 +1373,17 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
     phase = 0;
     do {
         AIPlayPhaseCommand* command = phaseObject->command(phase);
-        if (command != 0 && command->typeValue != 0) {
-            if ((command->typeValue == 6 || command->typeValue == 7) &&
+        if (command != 0 && command->type() != 0) {
+            if ((command->type() == 6 || command->type() == 7) &&
                 param_2 == 0) {
-                switch (command->typeValue) {
+                switch (command->type()) {
                 case 6:
                     this->playStatus->resetHitPoints(
-                        command->groupValue, this->objectValue->owner->world);
+                        command->group(), this->objectValue->owner->world);
                     break;
                 case 7:
                     this->playStatus->removeDeadUnits(
-                        command->groupValue, this->objectValue->owner->world);
+                        command->group(), this->objectValue->owner->world);
                     break;
                 }
             } else {
@@ -1398,7 +1398,7 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                         member = this->lookupObject(
                             member->groupMembers.value[i]);
                         if (member != 0 && member->unitAI() != 0) {
-                            param_1 = command->groupValue;
+                            param_1 = command->group();
                             if (this->playStatus->group(member->id) !=
                                 (unsigned char)param_1) {
                                 goto next_member;
@@ -1414,24 +1414,24 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                             float orderZ;
                             UnitAIModule* memberAI;
 
-                            switch (command->typeValue) {
+                            switch (command->type()) {
                             case 1: {
                                 int distance = (int)member->distance_to_position(
-                                    (float)command->value1Value + target->world_x,
-                                    (float)command->value2Value + target->world_y,
-                                    (float)command->value3Value + target->world_z);
+                                    (float)command->value1() + target->world_x,
+                                    (float)command->value2() + target->world_y,
+                                    (float)command->value3() + target->world_z);
                                 unsigned char currentPhase =
                                     this->playStatus->currentPhaseValue;
                                 if (distance > play->gatherTolerance(
-                                        command->groupValue,
+                                        command->group(),
                                         currentPhase)) {
                                     memberAI = member->unitAI();
                                     orderAction = 0x2C6;
                                     param_1 = -1;
                                     orderTargetOwner = -1;
-                                    orderX = (float)command->value1Value + target->world_x;
-                                    orderY = (float)command->value2Value + target->world_y;
-                                    orderZ = (float)command->value3Value + target->world_z;
+                                    orderX = (float)command->value1() + target->world_x;
+                                    orderY = (float)command->value2() + target->world_y;
+                                    orderZ = (float)command->value3() + target->world_z;
                                     break;
                                 }
                                 goto next_member;
@@ -1476,7 +1476,7 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                 while (groupingOffset < 0x190) {
                                     AIPlayGrouping* grouping =
                                         (AIPlayGrouping*)((char*)this->playStatus + groupingOffset);
-                                    if (grouping->groupValue == command->value1Value) {
+                                    if (grouping->groupValue == command->value1()) {
                                         RGE_Static_Object* found =
                                             this->lookupObject(grouping->id);
                                         if (found != 0 &&
@@ -1500,9 +1500,9 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                 break;
                             }
                             case 8: {
-                                int commandX = command->value1Value;
-                                int commandY = command->value2Value;
-                                int commandZ = command->value3Value;
+                                int commandX = command->value1();
+                                int commandY = command->value2();
+                                int commandZ = command->value3();
                                 memberAI = member->unitAI();
                                 orderAction = 0x2D8;
                                 param_1 = -1;
