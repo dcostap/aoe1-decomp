@@ -41,8 +41,8 @@ nonexact.
 
 ## 2026-08-28 owner repairs
 
-The current View wrapper cannot become a direct natural compiland.
-It still supplies copied `TPanel`, `TDrawArea`, and `TShape` bodies.
+The former View wrapper could not become a direct natural compiland.
+It supplied copied `TPanel`, `TDrawArea`, and `TShape` bodies.
 The held migration commit `744ab00cd` is not a solution.
 It uses alias unions and context suppression.
 
@@ -79,3 +79,38 @@ and `Shape.h`. Use the real field names. In particular, use
 `cur_render_area`. Route any remaining Player, World, Visible, Map, or object
 surface gap to that type owner. Do not restore a View context, carrier, alias
 union, or manual vptr.
+## Direct View checkpoint
+
+`src/view.cpp` owns the 79 View and DClip definitions. It compiles against the
+canonical `TPanel`, `TDrawArea`, `TShape`, `DClipInfo_List`, and `RGE_View`
+declarations.
+
+The direct candidate validates 48 exact owners with `MATCH` and zero
+relocation or boundary failures. The other rows keep their source-bank status.
+
+The candidate records decorated symbols for the five overloaded rows. This
+lets it classify each row without a false comparison error.
+
+## Direct source construction
+
+`src/view.cpp` has 79 View and DClip definitions in PDB order. It includes
+canonical headers only. It has no fragment include, TU context, or copied type.
+The registered exact rows point to this direct source.
+
+## Current direct compile
+
+The direct source consumes the canonical Mouse, Sprite, Message Panel, and
+Base Game providers. It compiles on main after `569981402` changed
+`get_mouse_pos` to use a reference.
+
+CodeView type `0x24BA` and `004202E0` prove this declaration:
+
+```cpp
+void RGE_Base_Game::get_mouse_pos(tagPOINT&);
+```
+
+The target symbol is `?get_mouse_pos@RGE_Base_Game@@QAEXAAUtagPOINT@@@Z`.
+
+The former `rollover_info` source name was not an owner gap. View now calls
+`RGE_Player::get_mouse_pointer_action_vars(int, int&, int&)`. It is virtual
+at `+0x9C`, has PDB type `0x1E5A`, and resolves to `00471530`.

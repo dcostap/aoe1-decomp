@@ -13,14 +13,14 @@ class TShape;
 class TSpan_List_Manager;
 class TMessagePanel;
 class DClipInfo_List;
-struct DClipInfo_Node;
+class DClipInfo_Node;
 struct Shape_Info;
-struct Tile_FogEdge_Table;
-struct Tile_BlackEdge_Table;
-struct Blit_Queue_Entry;
-struct DisplaySelectedObjRec;
-struct Ov_Sprite_Draw_Rec;
-struct RGE_SPick_Info;
+class Tile_FogEdge_Table;
+class Tile_BlackEdge_Table;
+class Blit_Queue_Entry;
+class DisplaySelectedObjRec;
+class Ov_Sprite_Draw_Rec;
+class RGE_SPick_Info;
 class RGE_Map;
 class RGE_Game_World;
 class RGE_Player;
@@ -56,7 +56,8 @@ typedef char view_pick_object_info_size_check[
 extern RGE_Pick_Obj_Info Picked_Objects[];
 
 // view.cpp owns the DClip capture list used by View and Shape.
-struct DClipInfo_Node {
+class DClipInfo_Node {
+public:
     DClipInfo_Node* Next;
     DClipInfo_Node* NextOnLevel;
     int Object_ID;
