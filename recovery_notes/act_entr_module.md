@@ -5,13 +5,8 @@
 The PDB source is
 `C:\\msdev\\work\\age1_x1\\act_entr.cpp`.
 
-`src/act_entr.cpp` is the direct source for the five matching handwritten
-owners. It uses `include/act_entr.h` and the canonical owner headers. It does
-not use a context header, a function-fragment include, or a local carrier. The
-independent `00402740` reconstruction remains in
-`src/scratch/00402740_update.cpp`.
-
-The six PDB normal owners stay in source and address order:
+`src/act_entr.cpp` is the compiler-facing owner for all six handwritten normal
+functions. The functions stay in PDB address order:
 
 1. `004023C0` `RGE_Action_Enter(int, RGE_Action_Object*)`;
 2. `00402410` `RGE_Action_Enter(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*)`;
@@ -20,58 +15,46 @@ The six PDB normal owners stay in source and address order:
 5. `00402610` `RGE_Action_Enter::set_state(unsigned char)`; and
 6. `00402740` `RGE_Action_Enter::update()`.
 
+`00402740` remains `scratch` and unregistered in
+`config/source_modules/act_entr.json`. It has no separate source owner.
+`src/scratch/00402740_update.cpp` was removed.
+
 `004023F0` is the compiler-generated scalar deleting destructor. It is not a
-PDB normal owner and has no source body. The direct source defines the
-non-deleting destructor at `004025F0`; VC5 also emits the generated deleting
-destructor from that class.
+PDB normal owner and has no source body.
 
-## Canonical dependency closure
+## Canonical source and update reconstruction
 
-The direct source composes these reviewed owners:
+The direct source uses the reviewed action, action-object, player, task, world,
+and static-object declarations. `RGE_Action_Enter` has no fields beyond its
+`RGE_Action` base, so its size remains `0x40`.
 
-- `include/act_entr.h` owns `RGE_Action_Enter`;
-- `include/action.h` owns the complete `RGE_Action` base;
-- `include/act_list.h` owns `RGE_Action_List`;
-- `include/act_move.h` owns `RGE_Action_Move_To`;
-- `include/act_obj.h` owns `RGE_Action_Object` and its inheritance chain;
-- `include/player.h` owns `RGE_Player` and `computerPlayer`;
-- `include/task.h` owns `RGE_Task` and its accessed fields;
-- `include/world.h` owns `RGE_Game_World` and `object`/time fields; and
-- `include/game_globals.h` owns the shared float constants.
+The update source uses typed `RGE_Static_Object*` targets and a
+`static_cast<RGE_Action_Object*>` for the action-list lookup. It has no
+attempt-log text, decompiler carrier declarations, or decompiler pointer casts.
 
-The action-object chain supplies the canonical `RGE_Static_Object` surface.
-The derived class has no fields, so `sizeof(RGE_Action_Enter) == 0x40`.
+Both proven state-4 and state-2 `enter_obj` call sites remain. They use the
+inherited `RGE_Static_Object::enter_obj` virtual at vslot `+0xD0`. Both sites
+continue to the shared entered tail, which emits the optional notification,
+sets state `1`, and returns `2`.
 
-The Terra 3 audit and the canonical `include/stat_obj.h` place the float
-`moveTo(float, float, float, float, int)` virtual at `+0x154`. This removes the
-two-byte mismatch from the direct second constructor. No manual vtable or
-foreign carrier is used.
+The target-ID checks, target ownership check, state switch, path update, action
+coordinate lookup, state changes, notifications, and return values remain in
+source. The update remains scratch because its reconstruction is not exact.
 
-## Candidate validation
+The moved update candidate compiled as `?update@RGE_Action_Enter@@UAEEXZ`.
+It is 1012 rebuilt bytes versus 954 original bytes, with 957 differing bytes
+and one boundary escape. It remains an observed mismatch, not an exact claim.
 
-Proposal: `build/candidate_tus/act_entr.json`.
+## Exact-owner checkpoint
 
-The grouped candidate compiles `src/act_entr.cpp` with
-`config/flags/00402410_RGE_Action_Enter.rsp`. It reports `MATCH` and `0.0000%`
-for all five direct owners:
+The five existing registered owners must remain exact in the authentic
+`act_entr.cpp` translation unit:
 
-- `004023C0`: 40 bytes, zero difference;
-- `00402410`: 477 bytes, zero difference;
-- `004025F0`: 11 bytes, zero difference;
-- `00402600`: 10 bytes, zero difference; and
-- `00402610`: 254 bytes, zero difference.
+- `004023C0`: `MATCH`, 40 bytes;
+- `00402410`: `MATCH`, 477 bytes;
+- `004025F0`: `MATCH`, 11 bytes;
+- `00402600`: `MATCH`, 10 bytes; and
+- `00402610`: `MATCH`, 254 bytes.
 
-The generated `004023F0` deleting destructor also reports `MATCH` with zero
-difference. The candidate has zero relocation mismatches and zero boundary
-escapes. The result passed again after direct ownership registration.
-
-The state-11 path uses natural `static_cast<RGE_Action_Object*>` values. No
-C-style downcast remains. The five exact owners and generated destructor remain
-`MATCH` after this cleanup.
-
-## Independent update status
-
-`00402740` stays `scratch` in the source-module metadata and is not in the
-direct-owner proposal. Its independent source remains unchanged. The last
-recorded reconstruction result is a 663-byte mismatch and it still lacks the
-binary `+0xD0` `enter_obj` call. Do not promote or register this owner.
+The generated deleting destructor at `004023F0` must also remain exact. The
+update at `00402740` is an observed scratch owner only and is not registered.
