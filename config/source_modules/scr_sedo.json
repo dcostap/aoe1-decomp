@@ -9,14 +9,17 @@
       "status": "matching",
       "note_path": "recovery_notes/004B33D0_TRIBE_Screen_Sed_Open.md"
     },
-    "004B36A0": { "status": "matching" },
-    "004B3740": {
+    "004B36A0": {
       "status": "matching",
-      "note_path": "recovery_notes/004B3740_fillList.md"
+      "note_path": "recovery_notes/scr_sedo_module.md"
+    },
+    "004B3740": {
+      "status": "scratch",
+      "note_path": "recovery_notes/scr_sedo_module.md"
     },
     "004B38A0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/004B38A0_action.md"
+      "note_path": "recovery_notes/scr_sedo_module.md"
     }
   }
 }

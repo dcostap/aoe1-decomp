@@ -2,6 +2,13 @@
 // Normal owners stay in PDB source order (45, 104, 116, 155).
 
 #include "../include/scr_sedo.h"
+#include "../include/main.h"
+#include "../include/tribegam.h"
+#include "../include/pnl_btn.h"
+#include "../include/pnl_lst.h"
+#include "../include/Pnl_scbr.h"
+#include "../include/scr_sedm.h"
+#include "../include/rge_base_game_global.h"
 #include <io.h>
 #include <new.h>
 #include <stdio.h>
@@ -27,11 +34,11 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     tabList[0] = panel_system.currentPanel();
     strcpy(info_file, ((TEasy_Panel*)tabList[0])->get_info_file());
 
-    void* draw_area = rge_base_game->draw_area;
+    TDrawArea* draw_area = rge_base_game->draw_area;
 
     if (!setup(draw_area, info_file,
                    ((TEasy_Panel*)tabList[0])->get_info_id(), 1)) {
-        setup_error = 1;
+        error_code = 1;
         return;
     }
 
@@ -220,7 +227,8 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
                         }
                     }
                     sprintf(fileName + 4, file_format, line);
-                    rge_base_game->start_scenario_editor(fileName + 4, 0);
+                    ((TRIBE_Game*)rge_base_game)->start_scenario_editor(
+                        fileName + 4, 0);
                     return 1;
                 }
                 return 1;

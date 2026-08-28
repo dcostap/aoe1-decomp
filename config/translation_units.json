@@ -765,8 +765,8 @@
       "module": "scr_sedo",
       "flags": "config/flags/scr_sedo.rsp",
       "owners": {
-        "004B36A0": "src/scr_sedo.cpp",
-        "004B3740": "src/scr_sedo.cpp"
+        "004B33D0": "src/scr_sedo.cpp",
+        "004B36A0": "src/scr_sedo.cpp"
       },
       "symbols": {}
     },

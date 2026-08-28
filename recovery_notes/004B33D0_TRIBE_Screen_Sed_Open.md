@@ -7,14 +7,11 @@
 ## Migration record
 
 The constructor body moved from its matching bank fragment into the complete
-`scr_sedo.cpp` source module. The merge keeps the PDB order and the reviewed
-panel layout from `include/scr_sedo.h`.
+`scr_sedo.cpp` source module. The merge keeps the PDB order and uses the
+canonical panel and screen providers.
 
-The `TRIBE_Screen_Sed_Menu` use now has the recovered polymorphic declaration
-with its `TScreenPanel` base and panel fields. The declaration is also used by
-the `scr_sedm` module. A future `scr_sedm` header migration must move this
-declaration to a shared header and remove the duplicate from
-`include/scr_sedo.h`. Do not restore a size-only byte-array declaration or
+`TRIBE_Screen_Sed_Menu` now comes from its owner header,
+`include/scr_sedm.h`. Do not restore a size-only byte-array declaration or
 invent missing fields in this module.
 
 The former standalone source recorded a 683-byte exact result. The focused
