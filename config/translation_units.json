@@ -4989,15 +4989,19 @@
     },
     {
       "name": "tvw_dmap",
-      "source": "src/tvw_dmap_tu.cpp",
+      "module": "tvw_dmap",
+      "source": "src/tvw_dmap.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0052C9E0": "src/matching/0052C9E0_TRIBE_Diamond_Map_View.cpp",
-        "0052CA30": "src/matching/0052CA30_set_redraw.cpp",
-        "0052CA60": "src/matching/0052CA60_draw_objects.cpp",
-        "0052CAB0": "src/matching/0052CAB0_draw_object.cpp"
+        "0052C9E0": "src/tvw_dmap.cpp",
+        "0052CA30": "src/tvw_dmap.cpp",
+        "0052CA60": "src/tvw_dmap.cpp",
+        "0052CAB0": "src/tvw_dmap.cpp"
       },
       "symbols": {
+        "0052C9E0": "??0TRIBE_Diamond_Map_View@@QAE@XZ",
+        "0052CA30": "?set_redraw@TRIBE_Diamond_Map_View@@UAEXW4RedrawMode@TPanel@@@Z",
+        "0052CA60": "?draw_objects@TRIBE_Diamond_Map_View@@MAEXXZ",
         "0052CAB0": "?draw_object@TRIBE_Diamond_Map_View@@MAEXFFEFPAVRGE_Static_Object@@@Z"
       }
     },

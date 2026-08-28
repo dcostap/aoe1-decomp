@@ -1,55 +1,52 @@
-# TVW diamond map provider block
+# TVW diamond map module
 
-## Result
+## Context
 
-Do not register a direct `tvw_dmap.cpp` source yet.
+The PDB source module is `C:\msdev\work\age1_x1\tvw_dmap.cpp`.
 
-The four normal owners remain in their existing source-bank files.
-The old wrapper remains the compiler-facing source.
+The four normal owners follow PDB line and address order:
 
-## Required providers
+1. `0052C9E0`, lines 38 to 41, constructor.
+2. `0052CA30`, lines 47 to 54, `set_redraw`.
+3. `0052CA60`, lines 60 to 73, `draw_objects`.
+4. `0052CAB0`, lines 79 to 95, `draw_object`.
 
-A direct source must use these declarations:
+`0052CA00` is the compiler-generated scalar deleting destructor.
+The empty virtual destructor at `0052CA20` is emitted by the module source.
 
-- `RGE_Diamond_Map` from `include/diam_map.h`.
-- `RGE_Diamond_Map_View` from `include/vw_dimap.h`.
-- `TRIBE_Screen_Game` from its owner, `include/scr_game.h`.
-- `debug_timeGetTime` from its canonical C++ provider.
+## Header evidence
 
-The redraw body needs this typed call:
+`TRIBE_Diamond_Map_View` is a class derived from `RGE_Diamond_Map_View`.
+The PDB type is 0x174 bytes and has two public fields:
 
-```cpp
-static_cast<TRIBE_Screen_Game*>(this->parent_panel)
-    ->set_map_buttons_redraw(mode);
-```
+- `unsigned long last_attack_time`.
+- `int flash_on`.
 
-## Provider result
+The fields follow the inherited `RGE_Diamond_Map_View` object.
+The PDB virtual order keeps `set_redraw` at the panel redraw slot.
+It keeps `draw_objects` and `draw_object` at the map slots.
 
-`include/vw_dimap.h` now includes `include/diam_map.h`. It owns only
-`RGE_Diamond_Map_View`.
+`include/tvw_dmap.h` uses the canonical `vw_dimap.h` provider.
+It does not copy the base class or use placeholder fields.
 
-The complete `vw_dimap.cpp` candidate matches its twelve normal owners. Its
-generated deleting destructor also matches.
+## Provider chain
 
-`include/basegame.h` now declares the C++ `debug_timeGetTime` function.
+`include/scr_game.h` owns `TRIBE_Screen_Game`.
+`include/vw_dimap.h` owns `RGE_Diamond_Map_View`.
+`include/diam_map.h` owns `RGE_Diamond_Map`.
+`include/basegame.h` owns the C++ `debug_timeGetTime` declaration.
 
-## Current block
+The module includes `scr_game.h` and `tvw_dmap.h`.
+This order supplies the complete screen provider for the redraw call.
 
-`include/scr_game.h` still defines `TPanel`, `RGE_View`, `RGE_Diamond_Map`,
-`RGE_Player`, `RGE_Game_World`, and `RGE_Base_Game`. It defines
-`TRIBE_Screen_Game` after those duplicate declarations.
+## Validation
 
-Including `scr_game.h` with `diam_map.h` causes class redefinitions. Its
-`debug_timeGetTime` declaration also has C linkage and a mutable path.
+`src/tvw_dmap.cpp` is the only compiler-facing owner.
+The old wrapper, context header, and four source-bank fragments are removed.
 
-A partial `TRIBE_Screen_Game` declaration would make the call compile. It
-would not be a canonical owner declaration. Do not add it.
+The candidate module check reports `MATCH` for all four normal owners.
+Each result has zero positional bytes, boundary escapes, and relocation target
+mismatches. The generated deleting destructor also reports `MATCH`.
 
-## Next work
-
-Split or compose `scr_game.h` without duplicate panel, map, view, world, and
-player classes. Replace its time-function declaration with the Base Game
-provider.
-
-After that work, recreate the direct source and validate all four normal
-owners and the generated deleting destructor.
+The focused checks report `MATCH` and `0.0000%` for all four normal owners.
+Their direct call targets and relocation counts match the original.
