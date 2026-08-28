@@ -343,10 +343,10 @@ public:
     void ShowSyncChatMsgs(int value);
     char* WaitingOnNamedInfo(unsigned int player);
     char* WaitingOnInfo(unsigned int player);
+    int TXDebugPing();
 
 protected:
     int TXPing(unsigned int player);
-    int TXDebugPing();
     int GetWasKicked(unsigned int player);
     unsigned long GetCurrentTurn();
     unsigned long GetRXPacketSize();
