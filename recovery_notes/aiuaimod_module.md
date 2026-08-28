@@ -47,6 +47,28 @@ The unregistered `004195F0` `processIdle` owner also differs in the direct TU.
 Its source-bank status remains `matching` until the coordinator reviews the
 natural module context.
 
+## `004195F0` repair evidence
+
+PDB assigns `004195F0` to `UnitAIModule::processIdle(int)` at lines 5255
+through 5282. Its decorated symbol is `?processIdle@UnitAIModule@@MAEHH@Z`.
+The original boundary is `004195F0` through `00419641`, 82 bytes.
+
+The original expression order is:
+
+1. `processRetryableOrder()` through virtual slot `+0xDC`.
+2. `bestUnitToAttack(1, 0, 0)` through virtual slot `+0x30`.
+3. `attackObject(index, 1)` through virtual slot `+0x5C`.
+
+The current private placeholders emit three wrong direct targets and a 78-byte
+body. A scratch-only natural replacement with the three canonical virtual calls
+emits the exact 82-byte, 33-instruction body under the authentic `/O2 /Oy /GX`
+translation-unit context. The focused result is `MATCH` with zero target
+relocations.
+
+Do not edit AIUA yet. `00413070` deleting-destructor ownership and natural
+emission remain a separate gate. One future sole editor must apply both
+source-supported repairs, then run the full AIUA group.
+
 ## Generated and no-line entries
 
 The scalar deleting destructor at `00413070` is compiler generated.
