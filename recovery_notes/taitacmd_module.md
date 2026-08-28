@@ -11,6 +11,7 @@ It removes bank guards, fallback bodies, and `.cpp` includes.
 The module header owns the reviewed class and layout declarations.
 It consumes the canonical `TacticalAIModule` and `AIModule` base surface from
 `aitacmod.h`.
+It consumes canonical `ResourceItem` from `airesitm.h`.
 
 Current status:
 

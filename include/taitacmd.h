@@ -4,6 +4,7 @@
 // Declarations for the original taitacmd.cpp source module.
 
 #include "ai_attack_state.h"
+#include "airesitm.h"
 #include "aitacmod.h"
 #include "waypoint.h"
 
@@ -56,7 +57,6 @@ class TribeInformationAIModule;
 class TribeStrategyAIModule;
 class UnitAIModule;
 class ObjectMemory;
-class ResourceItem;
 class InfluenceMap {
 public:
     int setValue(int, int, int, int, unsigned char);
@@ -195,17 +195,6 @@ struct OldUnitData {
     int data3;
     int data4;
     int data5;
-};
-
-class ResourceItem {
-public:
-    virtual ~ResourceItem();
-    char bytes[0x6C];
-    ResourceItem(int count = 0);
-    int value(int index);
-    int value(int index) const;
-    void setValue(int, int);
-    static void setValue(ResourceItem* self, int index, int value);
 };
 
 struct PlacementState {

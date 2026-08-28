@@ -3079,7 +3079,7 @@ LAB_004ee6c3:
   iVar1 = 0;
   do {
     rge_read(file,&local_2c,4);
-    ResourceItem::setValue(&this->neededResources,iVar1,local_2c);
+    this->neededResources.setValue(iVar1, local_2c);
     iVar1 = iVar1 + 1;
   } while (iVar1 < 4);
   rge_read(file,&this->groupIDValue,4);
