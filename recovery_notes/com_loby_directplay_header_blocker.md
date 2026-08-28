@@ -40,3 +40,26 @@ The target uses `IDirectPlayLobby::SendLobbyMessage` at slot `+0x2C`.
 The pinned VC5 legacy `IDirectPlay` header places `EnumPlayers` at `+0x34`.
 Its `EnableNewPlayers` method causes this slot difference. The modern VC98
 headers provide the target slot order, but their use remains unapproved.
+
+## Rejected local ABI provider
+
+Commit `cef3346dd` is evidence only. Do not integrate it.
+
+The PDB proves the required DirectPlay record layouts, inheritance, and virtual
+slot counts. It does not prove SDK source ownership, the `GUID` and `DPID`
+aliases, callback typedef names, or the `DirectPlayLobbyCreateA` prototype.
+
+The candidate callback type also differs from the PDB interface type. The PDB
+type uses `const DPNAME*`. The candidate type uses `DPNAME*`.
+
+The candidate object emits C++ names for DirectPlay GUIDs and
+`DirectPlayLobbyCreateA`. The target uses C symbols and the import
+`_DirectPlayLobbyCreateA@20`.
+
+The source calls local `operator_new` and `operator_delete` aliases. The target
+calls the standard C++ operators `??2@YAPAXI@Z` and `??3@YAXPAX@Z`.
+
+Focused checks masked these relocation target differences. Therefore, their
+reported byte matches do not meet the direct-target exactness rule.
+
+An approved SDK or reviewed external ABI provider must resolve these issues.
