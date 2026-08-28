@@ -15,7 +15,7 @@ checks.
 
 A full candidate pass compiled all 103 normal owners and both generated
 destructors. The final `/GX` comparison pass carried 35 exact candidates and
-68 observed candidates. It reported 35 exact results and 31 observed exact
+68 observed candidates. It reported 35 exact results and 30 observed exact
 results. It reported no symbol or comparison errors. Twenty-three former
 matching owners were demoted to scratch after natural-source cleanup exposed
 compiland drift.
