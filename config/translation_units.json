@@ -3563,6 +3563,7 @@
     {
       "name": "act_bird_cpp",
       "source": "src/act_bird.cpp",
+      "module": "act_bird",
       "flags": "config/flags/00402180_update.rsp",
       "owners": {
         "00401FE0": "src/act_bird.cpp",
