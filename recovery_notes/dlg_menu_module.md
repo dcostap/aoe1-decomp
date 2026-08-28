@@ -35,6 +35,25 @@ declarations cannot compile these expressions. Importing their legacy headers
 would redefine the canonical Panel hierarchy. A caller-side size-only or
 partial class would violate ownership and ABI rules.
 
+## Natural source checkpoint
+
+`src/dlg_menu.cpp` now contains all three normal bodies in PDB order:
+constructor `0043F340`, destructor `0043F6B0`, and action `0043F720`. The
+generated scalar deleting destructor at `0043F690` remains compiler generated.
+`include/dlg_menu.h` owns only `TribeMenuDialog` and uses the canonical Panel,
+Dialog, Screen, and button headers.
+
+The source includes exactly three pending construction providers:
+`scr_save.h`, `scr_ach.h`, and `scr_vc.h`. The current VC5 compile reaches the
+first pending include and stops because `include/scr_save.h` is not present.
+The other two are isolated in the source and await their provider commits.
+No foreign local class, wrapper, fragment include, context macro, raw layout,
+or manual vtable was added.
+
+The packet inventory records 3 normal owners and 1 nearby generated owner. The
+normal bodies total 2,290 bytes. Do not register or move the source until the
+three provider headers reach main and the complete natural module validates.
+
 The action also directly calls `RGE_Base_Game::set_paused(int, int)`. Canonical
 `basegame.h` now publishes this nonvirtual method. PDB basegame.cpp lines
 3299-3311 and `00420220` prove `?set_paused@RGE_Base_Game@@QAEXHH@Z`.
