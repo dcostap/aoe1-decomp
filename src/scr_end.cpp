@@ -76,7 +76,7 @@ TribeEndScreen::TribeEndScreen(char* title_text, char** text_list,
         pnl_hgt * 0x154 / 0x1E0,
         font->font, font->font_wid, font->font_hgt,
         0, 0, 0, 0, 0, 0, static_cast<char*>(0));
-    text->set_text(text_list, (short)text_count);
+    text->set_text(text_list, static_cast<short>(text_count));
     text->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignCenter);
     text->scroll(6, 0, 1);
 

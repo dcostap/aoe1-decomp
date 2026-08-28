@@ -25,7 +25,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     : TScreenPanel("Achievements Screen")
 {
     unsigned long color;
-    int local_1dc;
+    int tab_count;
     TPanel* tabList[8];
     char str[100];
     char info_file[260];
@@ -263,18 +263,18 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
         this->win_decal = new TShape("defcheck.slp", 0xCB22);
     }
 
-    local_1dc = 0;
+    tab_count = 0;
     if (this->aftermathButton != 0) {
-        tabList[local_1dc++] = this->aftermathButton;
+        tabList[tab_count++] = this->aftermathButton;
     }
     if (this->timelineButton != 0) {
-        tabList[local_1dc++] = this->timelineButton;
+        tabList[tab_count++] = this->timelineButton;
     }
     if (this->restartButton != 0) {
-        tabList[local_1dc++] = this->restartButton;
+        tabList[tab_count++] = this->restartButton;
     }
-    tabList[local_1dc++] = this->okButton;
-    set_tab_order(tabList, (short)local_1dc);
+    tabList[tab_count++] = this->okButton;
+    set_tab_order(tabList, static_cast<short>(tab_count));
     set_curr_child(this->okButton);
     this->backButton->set_tab_order(static_cast<TPanel*>(0),
                                     static_cast<TPanel*>(0));
@@ -372,12 +372,12 @@ TribeAchievementsScreen::~TribeAchievementsScreen()
     }
 }
 
-// 0048E400 TribeAchievementsScreen::set_mode(long)
+// 0048E400 TribeAchievementsScreen::set_mode
 // BINARY NOTE: Mode 6 is emitted before mode 5 in the original handler
 // order. Mode 3 calls victory IDs 15 and 16 in that order.
 void TribeAchievementsScreen::set_mode(long mode)
 {
-    int player_num = (int)rge_base_game->world->player_num - 1;
+    int player_num = static_cast<int>(rge_base_game->world->player_num) - 1;
     char temptxt[50];
 
     rge_base_game->disable_input();
@@ -432,14 +432,14 @@ void TribeAchievementsScreen::set_mode(long mode)
         }
 
         this->instruction->set_active(1);
-        this->summary_text->set_text((long)0x26D9);
-        this->title_bar[0]->set_text((long)0x26AC);
-        this->title_bar[1]->set_text((long)0x26AD);
-        this->title_bar[2]->set_text((long)0x26AE);
-        this->title_bar[3]->set_text((long)0x26AF);
-        this->title_bar[4]->set_text((long)0x26D6);
-        this->title_bar[5]->set_text((long)0x26D7);
-        this->title_bar[6]->set_text((long)0x26B1);
+        this->summary_text->set_text(static_cast<long>(0x26D9));
+        this->title_bar[0]->set_text(static_cast<long>(0x26AC));
+        this->title_bar[1]->set_text(static_cast<long>(0x26AD));
+        this->title_bar[2]->set_text(static_cast<long>(0x26AE));
+        this->title_bar[3]->set_text(static_cast<long>(0x26AF));
+        this->title_bar[4]->set_text(static_cast<long>(0x26D6));
+        this->title_bar[5]->set_text(static_cast<long>(0x26D7));
+        this->title_bar[6]->set_text(static_cast<long>(0x26B1));
 
         if (player_num > 0) {
             int player_index = 0;
@@ -458,12 +458,14 @@ void TribeAchievementsScreen::set_mode(long mode)
                 this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(0x16) > 0) {
-                    this->statistics[player_index][4]->set_text((long)0xFA3);
+                    this->statistics[player_index][4]->set_text(
+                        static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][4]->set_text("");
                 }
                 if (player->victory_conditions->get_victory_points_id(0x17) > 0) {
-                    this->statistics[player_index][5]->set_text((long)0xFA3);
+                    this->statistics[player_index][5]->set_text(
+                        static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][5]->set_text("");
                 }
@@ -479,13 +481,13 @@ void TribeAchievementsScreen::set_mode(long mode)
 
     case 1: {
         this->size = 6;
-        this->summary_text->set_text((long)0x26AC);
-        this->title_bar[0]->set_text((long)0x26B6);
-        this->title_bar[1]->set_text((long)0x26B7);
-        this->title_bar[2]->set_text((long)0x26B9);
-        this->title_bar[3]->set_text((long)0x26B8);
-        this->title_bar[4]->set_text((long)0x26BA);
-        this->title_bar[5]->set_text((long)0x26B5);
+        this->summary_text->set_text(static_cast<long>(0x26AC));
+        this->title_bar[0]->set_text(static_cast<long>(0x26B6));
+        this->title_bar[1]->set_text(static_cast<long>(0x26B7));
+        this->title_bar[2]->set_text(static_cast<long>(0x26B9));
+        this->title_bar[3]->set_text(static_cast<long>(0x26B8));
+        this->title_bar[4]->set_text(static_cast<long>(0x26BA));
+        this->title_bar[5]->set_text(static_cast<long>(0x26B5));
 
         if (player_num > 0) {
             int player_index = 0;
@@ -498,14 +500,17 @@ void TribeAchievementsScreen::set_mode(long mode)
                 this->statistics[player_index][0]->set_text(temptxt);
                 itoa(player->victory_conditions->get_attribute_id(1), temptxt, 10);
                 this->statistics[player_index][1]->set_text(temptxt);
-                itoa((long)(player->attributes[19] - player->attributes[11]), temptxt, 10);
+                itoa(static_cast<long>(
+                         player->attributes[19] - player->attributes[11]),
+                     temptxt, 10);
                 this->statistics[player_index][2]->set_text(temptxt);
 
                 itoa(player->victory_conditions->get_attribute_id(2), temptxt, 10);
                 this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(3) > 0) {
-                    this->statistics[player_index][4]->set_text((long)0xFA3);
+                    this->statistics[player_index][4]->set_text(
+                        static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][4]->set_text("");
                 }
@@ -521,14 +526,14 @@ void TribeAchievementsScreen::set_mode(long mode)
 
     case 2: {
         this->size = 7;
-        this->summary_text->set_text((long)0x26AD);
-        this->title_bar[0]->set_text((long)0x26BE);
-        this->title_bar[1]->set_text((long)0x26BF);
-        this->title_bar[2]->set_text((long)0x26C0);
-        this->title_bar[3]->set_text((long)0x26C1);
-        this->title_bar[4]->set_text((long)0x26C2);
-        this->title_bar[5]->set_text((long)0x26C3);
-        this->title_bar[6]->set_text((long)0x26B5);
+        this->summary_text->set_text(static_cast<long>(0x26AD));
+        this->title_bar[0]->set_text(static_cast<long>(0x26BE));
+        this->title_bar[1]->set_text(static_cast<long>(0x26BF));
+        this->title_bar[2]->set_text(static_cast<long>(0x26C0));
+        this->title_bar[3]->set_text(static_cast<long>(0x26C1));
+        this->title_bar[4]->set_text(static_cast<long>(0x26C2));
+        this->title_bar[5]->set_text(static_cast<long>(0x26C3));
+        this->title_bar[6]->set_text(static_cast<long>(0x26B5));
 
         if (player_num > 0) {
             int player_index = 0;
@@ -543,7 +548,8 @@ void TribeAchievementsScreen::set_mode(long mode)
                 this->statistics[player_index][1]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(6) > 0) {
-                    this->statistics[player_index][2]->set_text((long)0xFA3);
+                    this->statistics[player_index][2]->set_text(
+                        static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][2]->set_text("");
                 }
@@ -552,7 +558,8 @@ void TribeAchievementsScreen::set_mode(long mode)
                 this->statistics[player_index][3]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(8) > 0) {
-                    this->statistics[player_index][4]->set_text((long)0xFA3);
+                    this->statistics[player_index][4]->set_text(
+                        static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][4]->set_text("");
                 }
@@ -570,14 +577,14 @@ void TribeAchievementsScreen::set_mode(long mode)
 
     case 3: {
         this->size = 7;
-        this->summary_text->set_text((long)0x26AE);
-        this->title_bar[0]->set_text((long)0x26C6);
-        this->title_bar[1]->set_text((long)0x26C7);
-        this->title_bar[2]->set_text((long)0x26C8);
-        this->title_bar[3]->set_text((long)0x26C9);
-        this->title_bar[4]->set_text((long)0x26CA);
-        this->title_bar[5]->set_text((long)0x26DC);
-        this->title_bar[6]->set_text((long)0x26B5);
+        this->summary_text->set_text(static_cast<long>(0x26AE));
+        this->title_bar[0]->set_text(static_cast<long>(0x26C6));
+        this->title_bar[1]->set_text(static_cast<long>(0x26C7));
+        this->title_bar[2]->set_text(static_cast<long>(0x26C8));
+        this->title_bar[3]->set_text(static_cast<long>(0x26C9));
+        this->title_bar[4]->set_text(static_cast<long>(0x26CA));
+        this->title_bar[5]->set_text(static_cast<long>(0x26DC));
+        this->title_bar[6]->set_text(static_cast<long>(0x26B5));
 
         if (player_num > 0) {
             int player_index = 0;
@@ -591,7 +598,8 @@ void TribeAchievementsScreen::set_mode(long mode)
                 this->statistics[player_index][0]->set_text(temptxt);
 
                 if (player->victory_conditions->get_victory_points_id(11) > 0) {
-                    this->statistics[player_index][1]->set_text((long)0xFA3);
+                    this->statistics[player_index][1]->set_text(
+                        static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][1]->set_text("");
                 }
@@ -617,12 +625,12 @@ void TribeAchievementsScreen::set_mode(long mode)
 
     case 4: {
         this->size = 5;
-        this->summary_text->set_text((long)0x26AF);
-        this->title_bar[0]->set_text((long)0x26CE);
-        this->title_bar[1]->set_text((long)0x26D1);
-        this->title_bar[2]->set_text((long)0x26CF);
-        this->title_bar[3]->set_text((long)0x26D0);
-        this->title_bar[4]->set_text((long)0x26B5);
+        this->summary_text->set_text(static_cast<long>(0x26AF));
+        this->title_bar[0]->set_text(static_cast<long>(0x26CE));
+        this->title_bar[1]->set_text(static_cast<long>(0x26D1));
+        this->title_bar[2]->set_text(static_cast<long>(0x26CF));
+        this->title_bar[3]->set_text(static_cast<long>(0x26D0));
+        this->title_bar[4]->set_text(static_cast<long>(0x26B5));
 
         if (player_num > 0) {
             int player_index = 0;
@@ -634,17 +642,20 @@ void TribeAchievementsScreen::set_mode(long mode)
                 itoa(player->victory_conditions->get_attribute_id(17), temptxt, 10);
                 this->statistics[player_index][0]->set_text(temptxt);
                 if (player->victory_conditions->get_victory_points_id(18) > 0) {
-                    this->statistics[player_index][1]->set_text((long)0xFA3);
+                    this->statistics[player_index][1]->set_text(
+                        static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][1]->set_text("");
                 }
                 if (player->victory_conditions->get_victory_points_id(19) > 0) {
-                    this->statistics[player_index][2]->set_text((long)0xFA3);
+                    this->statistics[player_index][2]->set_text(
+                        static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][2]->set_text("");
                 }
                 if (player->victory_conditions->get_victory_points_id(20) > 0) {
-                    this->statistics[player_index][3]->set_text((long)0xFA3);
+                    this->statistics[player_index][3]->set_text(
+                        static_cast<long>(0xFA3));
                 } else {
                     this->statistics[player_index][3]->set_text("");
                 }
@@ -660,13 +671,13 @@ void TribeAchievementsScreen::set_mode(long mode)
     case 6:
         this->size = 0;
         this->time_line->set_active(1);
-        this->summary_text->set_text((long)0x26D8);
+        this->summary_text->set_text(static_cast<long>(0x26D8));
         this->time->set_active(1);
         break;
 
     case 5:
         this->size = 0;
-        this->summary_text->set_text((long)0x26B2);
+        this->summary_text->set_text(static_cast<long>(0x26B2));
         if (this->win_loss_text != 0) {
             this->win_loss_text->set_active(1);
         }
