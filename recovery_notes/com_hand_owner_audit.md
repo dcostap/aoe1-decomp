@@ -135,3 +135,45 @@ owner.
 - No exact source module can be built from the current pinned inputs without
   either an approved DirectX SDK exception or a reviewed canonical local
   declaration surface. This audit does not grant that exception.
+
+## Reassessment: 2026-08-28
+
+The current translation-unit packet still assigns 146 normal owners to
+`Com_hand.cpp`. It reports 107 matching, 12 accepted-drift, one verified-logic,
+and 26 scratch sources. Only 84 owners are registered as exact.
+
+A fresh candidate check used the tracked `src/com_hand_tu.cpp` wrapper and
+`config/flags/com_hand.rsp` (`/nologo /c /O2 /Oy /GX`) with the pinned VC5
+compiler. The wrapper compiled, and all 84 registered owners returned
+`MATCH`, with zero relocation-target mismatches and zero boundary escapes.
+Only 6 of 62 observed non-registered owners matched. Six observed comparisons
+returned symbol-selection errors. The two nearby generated destructors were
+not emitted. The candidate therefore did not provide a complete exact module.
+
+The ABI facts are now clear, but they do not provide an approved header. The
+PDB lists 32 virtual entries for `IDirectPlay2` and 47 for `IDirectPlay3`.
+It names the complete `IDirectPlay3` method list and records
+`IDirectPlay3` as derived from `IDirectPlay2`, which is derived from
+`IUnknown`. The executable uses `GetMessageCount` at `+0x44`, `Open` at
+`+0x60`, `Receive` at `+0x64`, `Send` at `+0x68`, and `SetPlayerName` at
+`+0x78`. These are DirectPlay 2/3 facts, not an `IDirectPlay4A` owner.
+
+Two fresh pinned compiler probes confirm the source boundary:
+
+- Including `<dplay.h>` and the natural `include/com_hand.h` compiles its
+  object layout, but a call through `IDirectPlay3*` fails because the type is
+  incomplete.
+- Including `<dplay.h>` and `include/com_hand_context.h` fails with
+  redefinitions of `IDirectPlay` and `DPCAPS`.
+
+The pinned `DPLAY.H` cannot supply the required DirectPlay 2/3 declarations.
+The PDB does not identify the historical SDK file or its include path. A new
+local interface declaration would be a guessed source boundary unless the
+project reviews it as a canonical ABI header. VC98 and sibling-project
+headers remain unapproved and unused.
+
+**Hold:** do not reunify this module or replace its wrapper with a natural
+source file. Reopen only after an approved period DirectPlay header or a
+reviewed canonical DirectPlay 2/3 declaration surface is available. Do not
+resolve this hold with a partial vtable, raw vtable access, absolute global
+access, or a local `IDirectPlay4A` alias.
