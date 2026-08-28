@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "name": "getdxver",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\getdxver.cpp",
+  "source": "src/getdxver.cpp",
+  "header": "include/getdxver.h",
+  "functions": {
+    "0044DAC0": { "status": "matching", "note_path": "recovery_notes/getdxver_module.md" },
+    "0044DEE0": { "status": "matching", "note_path": "recovery_notes/getdxver_module.md" }
+  }
+}

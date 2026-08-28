@@ -1,71 +1,10 @@
-// getdxver.cpp:54-338, 1053 bytes
-// attempt 1: 880/1053 bytes - stack too small, missing proper structs
-// attempt 2: 992/1053 bytes - closer but still short
-// attempt 3: 1008/1053 bytes - still 45 bytes short
-//   FOUND: param_1 = DX version output, param_2 = OS type output (was swapped)
-//   Also: OSVERSIONINFOA uses the SDK order size/major/minor/build/platform/CSD.
-// attempt 4: fix param order, correct OSVERSIONINFOA field order
-// attempt 5: fix CoInitialize logic (orig: CoUninit only if result != 0, backwards bug)
-//   Still 1008/1053 bytes. 45-byte structural gap:
-//   1. Original uses esi (saved reg) for coInitResult, mine uses stack local
-//   2. Original has interleaved prologue: lea eax,[esp+8Ch] between push esi and push edi
-//   3. Original uses rep stosd for desc zeroing + neg;sbb;neg;add idiom for IsDPlay501a
-//   4. Core logic correct: GetVersionExA, WinNT/Win9x paths, LoadLibraryA, GetProcAddress,
-//      CoInitialize, CoCreateInstance, IsDPlay501a, COM QI, Release, SetCooperativeLevel,
-//      CreateSurface, all error paths with OutputDebugStringA
-// probe 6 (ABI/context): changed the Windows/OLE imports to period declarations and
-//   enabled the VC5 string intrinsic surface for the proven 0x6c clear.
-// probe 7 (behavior/layout): restored the DirectX SDK-shaped local ownership and
-//   typed COM __stdcall calls visible in the stack-self calls. Also restored
-//   the DX1/DX2/DX3 version stores, pDDraw ownership, and DDSURFACEDESC field offsets.
-// Exact recovery: the source now reaches the 0x114 frame, 1053-byte boundary,
-//   all 47 call sites, and exact positional bytes. It uses period API declarations,
-//   typed COM calls, canonical OSVERSIONINFOA and DDSURFACEDESC layouts, and all
-//   observed error paths. No inline asm or opaque offsets.
-// probe 13 (control-flow): made the CoCreateInstance failure an early negative-result guard;
-//   this places its CoUninitialize block before the success path, matching the original first
-//   call-map hunk and improving the ordered call prefix from 8 to 27.
-// probe 15 (control-flow): made the surface QI failure an explicit cleanup path;
-//   typed pDDraw ownership now emits both missing Release/FreeLibrary calls and restores
-//   the original 47-call surface, but the separate path adds 16 bytes past the boundary.
-// probe 20 (abi): modeled the DirectX GUIDs as const objects and passed their addresses;
-//   this removes the pointer-variable loads, keeps 47-call parity, and reduces the size
-//   gap to 8 bytes. Positional diff worsens from register and local-slot reassignment.
-// probe 21 (control-flow, rolled back): shared the surface-QI success cleanup tail;
-//   VC5 also tail-merged the DInput-load failure cleanup and lost two target calls.
-// probe 22 (restore): retained the explicit surface-QI failure cleanup to preserve the
-//   target's duplicated DInput error-path calls; current source remains typed and natural.
-// BINARY NOTE: The executable uses five contiguous pointer homes.
-//   The source models them as separate typed locals.
-// BINARY NOTE: The executable zeros pDDraw, pDDraw2, pSurf, and pSurf3.
-//   The WinNT-only dp3 local has no startup initializer.
-// BINARY NOTE: The WinNT DirectInput local ends before dp3 starts.
-//   The DDraw path is a separate scope. VC5 then reuses the dead temporary home.
-// Exact source shape: separate typed locals and ordinary sibling scopes produce
-//   the target homes without an aggregate, union, or incompatible pointer cast.
+// PDB source module: C:\\msdev\\work\\age1_x1\\getdxver.cpp.
+// Definitions follow the original source order.
 
-// Period Windows and DirectX headers provide the imported API declarations.
+#include "../include/getdxver.h"
 #include <string.h>
-#include <windows.h>
-#include <objbase.h>
-#define IID_IDirectDraw2 IID_IDirectDraw2_header
-#include <ddraw.h>
-#undef IID_IDirectDraw2
-#include <dplay.h>
 
-// The pinned VC5 headers predate the DX3 interface declarations.  These two
-// outputs use only IUnknown::Release, so the period base interface is enough.
-// BINARY NOTE: The legacy header calls keep the target's COM argument order
-// and vtable slots.  The GUID declarations retain the target's C++ symbols.
-typedef HRESULT (__stdcall* DIRECTDRAWCREATE)( void*, LPDIRECTDRAW*, void* );
-extern const GUID CLSID_DirectPlay;
-extern const GUID IID_IDirectPlay3;
-extern const GUID IID_IDirectDraw2;
-extern const GUID IID_IDirectDrawSurface3;
-
-int IsDPlay501a();
-
-// param_1 = out DX version, param_2 = out OS type
+// getdxver.cpp:54-338.
 void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
     int hr;
     void* DDHinst = 0;
@@ -235,4 +174,39 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
         pDDraw->Release();
         FreeLibrary( DDHinst );
     }
+}
+
+// getdxver.cpp:342-389.
+int IsDPlay501a() {
+    DWORD lpDummy;
+    UINT verSize = GetFileVersionInfoSizeA("dplayx.dll", &lpDummy);
+    VS_FIXEDFILEINFO* verInfo;
+    unsigned int verInfoLen;
+    BOOL result;
+
+    if (verSize == 0) {
+        GetLastError();
+        return 0;
+    }
+    BYTE* pv = new BYTE[verSize];
+    if (pv) {
+        if (!GetFileVersionInfoA("dplayx.dll", 0, verSize, pv)) {
+            GetLastError();
+            return 0;
+        }
+        result = VerQueryValueA(pv, "\\", (void**)&verInfo, &verInfoLen);
+        if (result) {
+            unsigned int a = verInfo->dwFileVersionMS;
+            unsigned int b = verInfo->dwFileVersionLS;
+            if (a != 0x40005) goto check;
+            if (b >= 0x1062F) goto yes;
+        check:
+            if (a <= 0x40005) goto no;
+        yes:
+            return 1;
+        no:
+            ;
+        }
+    }
+    return 0;
 }

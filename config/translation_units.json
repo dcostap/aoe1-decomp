@@ -2063,11 +2063,12 @@
     },
     {
       "name": "getdxver",
-      "source": "src/getdxver_tu.cpp",
+      "source": "src/getdxver.cpp",
+      "module": "getdxver",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0044DAC0": "src/matching/0044DAC0_GetDXVersion.cpp",
-        "0044DEE0": "src/matching/0044DEE0_IsDPlay501a.cpp"
+        "0044DAC0": "src/getdxver.cpp",
+        "0044DEE0": "src/getdxver.cpp"
       },
       "symbols": {}
     },
