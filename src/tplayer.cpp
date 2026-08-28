@@ -3171,9 +3171,6 @@ void TRIBE_Player::add_attribute_num(short first, float second, unsigned char th
 }
 
 
-extern unsigned long tribe_group_properties[];
-extern int tribe_group_properties_num;
-
 void TRIBE_Player::analyize_selected_objects()
 {
     int i = 0;
