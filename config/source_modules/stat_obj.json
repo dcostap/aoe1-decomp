@@ -166,7 +166,7 @@
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C4E00": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C4E90": {
@@ -314,7 +314,7 @@
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C6400": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C66C0": {

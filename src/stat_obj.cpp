@@ -151,7 +151,7 @@ RGE_Static_Object::~RGE_Static_Object() {
     }
 
     if (this->unitAIValue != 0) {
-        delete (UnitAIModule*)this->unitAIValue;
+        delete this->unitAIValue;
         this->unitAIValue = 0;
     }
 }
@@ -206,7 +206,7 @@ void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* master, RGE
 
     this->player_object_node = this->owner->addObject(this, this->sleep_flag, this->dopple_flag);
 
-    int seed = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x183);
+    int seed = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x183);
     int old_debug = debug_random_on;
     debug_random_on = 0;
 
@@ -216,7 +216,7 @@ void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* master, RGE
     }
 
     debug_random_on = old_debug;
-    debug_srand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x18D, seed);
+    debug_srand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x18D, seed);
 }
 
 
@@ -329,14 +329,14 @@ int RGE_Static_Object::setup(RGE_Master_Static_Object* master, RGE_Player* playe
 
     this->player_object_node = this->owner->addObject(this, this->sleep_flag, this->dopple_flag);
 
-    seed = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x22A);
+    seed = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x22A);
     old_debug = debug_random_on;
     debug_random_on = 0;
     if (this->master_obj->created_sound != 0 && this->owner->id == this->owner->world->curr_player) {
         this->master_obj->created_sound->play(1);
     }
     debug_random_on = old_debug;
-    debug_srand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x235, seed);
+    debug_srand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0x235, seed);
     return 1;
 }
 
@@ -344,11 +344,6 @@ int RGE_Static_Object::setup(RGE_Master_Static_Object* master, RGE_Player* playe
 // 004C1840 RGE_Static_Object::setup
 // BINARY NOTE: this loader entry is a protected virtual setup member.
 
-
-extern void* operator new(unsigned int size);
-extern void operator delete(void* ptr);
-
-extern float save_game_version;
 
 int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     int save_file = file;
@@ -386,7 +381,7 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     rge_read(save_file, &this->hp, 4);
     rge_read(save_file, &this->object_state, 1);
     rge_read(save_file, &this->sleep_flag, 1);
-    if (save_game_version >= DAT_00574724) {
+    if (save_game_version >= 7.09f) {
         rge_read(save_file, &this->dopple_flag, 1);
     }
     rge_read(save_file, &this->goto_sleep_flag, 1);
@@ -409,7 +404,7 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     rge_read(save_file, &this->groupCommanderValue, 4);
     rge_read(save_file, &this->groupRangeValue, 4);
 
-    if (save_game_version == DAT_00574728) {
+    if (save_game_version == 6.991f) {
         rge_read(save_file, &numberUnits, 4);
         rge_read(save_file, &numberUnits, 4);
         rge_read(save_file, &numberUnits, 4);
@@ -435,14 +430,14 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
             }
             if (number > this->groupMembers.maximumSizeValue - 1) {
                 int newNumber = number + 1;
-                int* values = (int*)operator new(newNumber * 4);
+                int* values = new int[newNumber];
                 if (values != 0) {
                     index = 0;
                     for (; index < this->groupMembers.maximumSizeValue && index < newNumber;
                          index = index + 1) {
                         values[index] = this->groupMembers.value[index];
                     }
-                    operator delete(this->groupMembers.value);
+                    delete[] this->groupMembers.value;
                     this->groupMembers.value = values;
                     this->groupMembers.maximumSizeValue = newNumber;
                 }
@@ -470,14 +465,14 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
             }
             if (number > this->pathingGroupMembers.maximumSizeValue - 1) {
                 int newNumber = number + 1;
-                int* values = (int*)operator new(newNumber * 4);
+                int* values = new int[newNumber];
                 if (values != 0) {
                     index = 0;
                     for (; index < this->pathingGroupMembers.maximumSizeValue && index < newNumber;
                          index = index + 1) {
                         values[index] = this->pathingGroupMembers.value[index];
                     }
-                    operator delete(this->pathingGroupMembers.value);
+                    delete[] this->pathingGroupMembers.value;
                     this->pathingGroupMembers.value = values;
                     this->pathingGroupMembers.maximumSizeValue = newNumber;
                 }
@@ -696,9 +691,9 @@ void RGE_Static_Object::normal_draw(TDrawArea* param_1, short param_2, short par
 
 
 void RGE_Static_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) {
-    int gm = *(int*)((int)rge_base_game + 0x1B4);
+    int gm = rge_base_game->game_mode;
     if (gm == 1) { this->draw_frame_3d_cube_front(param_1, param_2, param_3); return; }
-    unsigned int ot = (unsigned int)*(unsigned char*)((int)rge_base_game + 0x50);
+    unsigned int ot = rge_base_game->outline_type;
     if (ot > 3) return;
     switch (ot) {
     case 0: this->draw_frame(param_1, param_2, param_3); return;
@@ -823,7 +818,7 @@ void RGE_Static_Object::capture_frame_3d_cube(TDrawArea* p0, short p1, short p2)
 
 
 void RGE_Static_Object::capture_frame_3d_square(
-    TDrawArea* param_2, short param_3, short param_4)
+    TDrawArea*, short param_3, short param_4)
 {
     RGE_Master_Static_Object* pRVar1;
     RGE_Map* this_00;
@@ -837,19 +832,12 @@ void RGE_Static_Object::capture_frame_3d_square(
     int sVar9;
     unsigned char draw_color;
     unsigned char y2;
-    float rx1;
     float x3_radius;
-    short x4;
-    short y3;
     float ry1;
     float radius_y;
-    int local_3c;
-    short y1;
-    int local_34;
     int tot_hp;
     float radius_z;
     float neg_x3;
-    TShape* group_num_shape;
     short x0;
     short y0;
     short corner1_x;
@@ -865,6 +853,7 @@ void RGE_Static_Object::capture_frame_3d_square(
     int idv[6];
     RGE_Base_Game* base;
     unsigned char outline_type;
+    int digit_x;
 
     base = rge_base_game;
     outline_type = base->outline_type;
@@ -903,6 +892,7 @@ void RGE_Static_Object::capture_frame_3d_square(
 
     sVar9 = param_4 + this->screen_y_offset;
     sVar8 = param_3 + this->screen_x_offset;
+    digit_x = param_3;
     ry1 = -radius_y;
     this_00->get_point(corner1_x, corner1_y,
                        x3_radius, ry1, 0.0f, sVar8, sVar9);
@@ -932,44 +922,47 @@ void RGE_Static_Object::capture_frame_3d_square(
             0, 0, 0, 0x1E, SDI_Object_ID);
     }
 
+    int health = (int)this->hp;
     if ((this->selected & 1) == 1 && (pRVar1->draw_flag & 2) == 0 &&
-        (local_3c = (int)this->hp, local_3c > 0)) {
+        health > 0) {
         this_00->get_point(health_x, health_y, x3_radius, ry1, radius_z,
                            sVar8, sVar9);
-        if ((int)local_3c < 1) {
-            local_3c = 0;
-        }
         int max_hp = pRVar1->hp;
         if (max_hp > 0) {
-            group_num_shape = (TShape*)(health_x - 0x0C);
-            rx1 = (float)(health_y - 1);
-            param_3 = health_x + 0x0B;
-            local_34 = health_y - 2;
-            if (local_3c == max_hp) {
-                ry1 = 1.4013e-45f;
-                y3 = (short)0xFFFF;
-                param_2 = 0;
-                x4 = param_3;
+            int health_left = health_x - 12;
+            int health_top = health_y - 2;
+            int health_right = health_x + 11;
+            int health_bottom = health_y - 1;
+            int health_fill_end;
+            int health_fill_style;
+            int health_fill_start;
+            int health_draw;
+
+            digit_x = health_right;
+            if (health == max_hp) {
+                health_fill_end = health_right;
+                health_fill_style = 1;
+                health_fill_start = -1;
+                health_draw = 0;
             } else {
-                if (local_3c == 0) {
-                    x4 = -1;
-                    ry1 = 0.0f;
-                    y3 = (short)group_num_shape;
+                if (health == 0) {
+                    health_fill_end = -1;
+                    health_fill_style = 0;
+                    health_fill_start = health_left;
                 } else {
-                    ry1 = 1.4013e-45f;
-                    x4 = (short)(local_34 + ((int)local_3c * 0x18) /
-                                 max_hp);
-                    if ((short)param_3 <= (short)x4) {
-                        x4 = health_x + 10;
+                    health_fill_style = 1;
+                    health_fill_end = health_top + (health * 24) / max_hp;
+                    if (health_right <= health_fill_end) {
+                        health_fill_end = health_x + 10;
                     }
-                    y3 = x4 + 1;
+                    health_fill_start = health_fill_end + 1;
                 }
-                param_2 = (TDrawArea*)1;
+                health_draw = 1;
             }
             SDI_List->AddGDINode(
-                2, iVar4, (short)group_num_shape, (short)local_34,
-                param_3, *(short*)&rx1, x4, *(short*)&ry1, y3,
-                *(short*)&param_2, 0x1E, tot_hp, SDI_Object_ID);
+                2, iVar4, health_left, health_top, health_right,
+                health_bottom, health_fill_end, health_fill_style,
+                health_fill_start, health_draw, 0x1E, tot_hp, SDI_Object_ID);
         }
     }
 
@@ -998,28 +991,28 @@ void RGE_Static_Object::capture_frame_3d_square(
             uVar6 = 4;
         }
         if (iVar7 < 0) {
-            param_3 = param_3 + 7;
+            digit_x += 7;
             SDI_List->AddGDINode(
-                4, iVar4, (short)param_3 + 1, *(short*)&rx1 + 3,
-                (short)param_3 + 5, *(short*)&rx1 + 3,
+                4, iVar4, digit_x + 1, health_y + 2,
+                digit_x + 5, health_y + 2,
                 0, 0, 0, 0, 0x1E, 0x97, SDI_Object_ID);
         }
         if (uVar6 < 5) {
             piVar5 = idv + uVar6 + 1;
             iVar7 = 5 - uVar6;
             do {
-                param_3 = param_3 + 7;
-                sVar8 = (short)param_3;
+                digit_x += 7;
+                sVar8 = (short)digit_x;
                 if (*piVar5 != 0) {
                     SDI_List->AddDrawNode(
                         pTVar2->FShape,
                         pTVar2->shape_info + *piVar5,
-                        iVar4, (int)sVar8, *(short*)&rx1,
+                        iVar4, (int)sVar8, health_y - 1,
                         0, 0, 0, 0x1E, SDI_Object_ID);
                 } else {
                     SDI_List->AddGDINode(
-                        4, iVar4, sVar8 + 1, *(short*)&rx1,
-                        sVar8 + 5, *(short*)&rx1 + 5,
+                        4, iVar4, sVar8 + 1, health_y - 1,
+                        sVar8 + 5, health_y + 4,
                         0, 0, 0, 0, 0x1E, 0xFF, SDI_Object_ID);
                 }
                 ++piVar5;
@@ -1667,10 +1660,6 @@ RGE_Sprite* RGE_Static_Object::get_sprite_pointer(short index) {
 // 004C4360 RGE_Static_Object::save
 
 
-void* __cdecl operator new(unsigned int size);
-void __cdecl operator delete(void* value);
-
-
 void RGE_Static_Object::save(int file)
 {
     short sprite_id;
@@ -2041,7 +2030,7 @@ void RGE_Static_Object::change_ownership(RGE_Player* player)
 
 // 004C4D80 RGE_Static_Object::modify
 
-void RGE_Static_Object::modify(volatile float value, unsigned char type) {
+void RGE_Static_Object::modify(float value, unsigned char type) {
     switch (type) {
     case 0:
         {
@@ -2077,9 +2066,8 @@ void RGE_Static_Object::modify_delta(float delta, unsigned char type)
         return;
     case 0: {
         RGE_Master_Static_Object* master = this->master_obj;
-        float original_delta = delta;
-        *(int*)&delta = (int)master->hp;
-        this->hp = (float)(int)(short)((original_delta + (float)*(int*)&delta) * this->hp / (float)*(int*)&delta);
+        float max_hp = (float)master->hp;
+        this->hp = (float)(int)(short)((delta + max_hp) * this->hp / max_hp);
         break;
     }
     default:
@@ -2290,10 +2278,6 @@ void RGE_Static_Object::create_doppleganger_when_dying() {
 
 // 004C52F0 RGE_Static_Object::set_object_state
 
-void* __cdecl operator_new(unsigned int size);
-void __cdecl operator_delete(void* ptr);
-
-
 void RGE_Static_Object::set_object_state(unsigned char state)
 {
     if (this->object_state != state) {
@@ -2375,10 +2359,10 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
     radius_x = this->master_obj->radius_x;
     radius_y = this->master_obj->radius_y;
     if (!(radius_x <= 0.0f && radius_y <= 0.0f)) {
-        x1 = (short)(int)(this->world_x - DAT_00574748);
-        y1 = (short)(int)(this->world_y - DAT_00574748);
-        x2 = (short)(int)(this->world_x - DAT_0057474c);
-        y2 = (short)(int)(this->world_y - DAT_0057474c);
+        x1 = (short)(int)(this->world_x - 3.0f);
+        y1 = (short)(int)(this->world_y - 3.0f);
+        x2 = (short)(int)(this->world_x + 3.0f);
+        y2 = (short)(int)(this->world_y + 3.0f);
         RGE_Map* map = this->owner->world->map;
         if (x1 < 0) x1 = 0;
         if (x2 >= map->map_width) x2 = (short)map->map_width - 1;
@@ -2641,7 +2625,7 @@ void RGE_Static_Object::set_attribute(short param1, float param2) {
 void RGE_Static_Object::set_attribute_amount(float amount, unsigned char add, unsigned char clamp)
 {
     if (add != 0) {
-        this->attribute_amount_held = *(volatile float*)&amount + this->attribute_amount_held;
+        this->attribute_amount_held = amount + this->attribute_amount_held;
     }
     else {
         this->attribute_amount_held = amount;
@@ -2658,9 +2642,9 @@ void RGE_Static_Object::set_attribute_amount(float amount, unsigned char add, un
 // 004C5CB0 RGE_Static_Object::heal
 
 unsigned char RGE_Static_Object::heal(float amount) {
-    float fVar1 = *(volatile float*)&amount + this->hp;
+    float fVar1 = amount + this->hp;
     this->hp = fVar1;
-    if (*(volatile float*)&amount < 0.0f) {
+    if (amount < 0.0f) {
         if (fVar1 < 1.0f) this->hp = 1.0f;
     }
     int maxHp = this->master_obj->hp;
@@ -2958,9 +2942,6 @@ unsigned char RGE_Static_Object::drop_held_objects(int mode)
 // 004C6400 RGE_Static_Object::find_drop_location
 // BINARY NOTE: the x and y outputs are float references in the shipped symbol.
 
-extern float DAT_00574764;
-
-
 unsigned char RGE_Static_Object::find_drop_location(
     int terrain, float& x, float& y, RGE_Master_Static_Object* master,
     RGE_Static_Object* object, float drop_x, float drop_y,
@@ -2975,30 +2956,30 @@ unsigned char RGE_Static_Object::find_drop_location(
     while (outer < 2) {
         short attempt = 0;
         do {
-            switch ((debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3a) * 4) / 0x7fff) {
+            switch ((debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3a) * 4) / 0x7fff) {
             case 0: {
                 x = radius_x + drop_x;
-                int value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3e);
-                y = (float)value * radius_2y * DAT_00574764 - radius_y + drop_y;
+                int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3e);
+                y = (float)value * radius_2y * 0.0000305185094f - radius_y + drop_y;
                 break;
             }
             case 1: {
                 x = drop_x - radius_x;
-                int value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf42);
+                int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf42);
                 y = drop_y +
-                     ((float)value * radius_2y * DAT_00574764 - radius_y);
+                     ((float)value * radius_2y * 0.0000305185094f - radius_y);
                 break;
             }
             case 2: {
                 y = radius_y + drop_y;
-                int value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf46);
-                x = (float)value * radius_2x * DAT_00574764 - radius_x + drop_x;
+                int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf46);
+                x = (float)value * radius_2x * 0.0000305185094f - radius_x + drop_x;
                 break;
             }
             case 3: {
                 y = drop_y - radius_y;
-                int value = debug_rand((char*)"C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf4a);
-                x = (float)value * radius_2x * DAT_00574764 - radius_x + drop_x;
+                int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf4a);
+                x = (float)value * radius_2x * 0.0000305185094f - radius_x + drop_x;
                 break;
             }
             }
@@ -3057,7 +3038,7 @@ RGE_Check_List::~RGE_Check_List() {
 // 004C6700 RGE_Check_List::add_node
 
 void RGE_Check_List::add_node(RGE_Static_Object* object, float dx, float dy, unsigned char flag) {
-    RGE_Check_Node* node = (RGE_Check_Node*)calloc(1, 0x14);
+    RGE_Check_Node* node = static_cast<RGE_Check_Node*>(calloc(1, sizeof(RGE_Check_Node)));
     node->next = this->list;
     node->node = object;
     node->dx = dx;
@@ -3084,14 +3065,14 @@ RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float max_dist) {
     radius_x = this->master_obj->radius_x;
     radius_y = this->master_obj->radius_y;
     if (radius_x <= 0.0f || radius_y <= 0.0f ||
-        this->master_obj->radius_z <= DAT_00574718) {
+        this->master_obj->radius_z <= 0.0f) {
         return 0;
     }
 
-    x1 = (short)(this->world_x - DAT_00574748);
-    y1 = (short)(this->world_y - DAT_00574748);
-    x2 = (short)(this->world_x - DAT_0057474c);
-    y2 = (short)(this->world_y - DAT_0057474c);
+    x1 = (short)(this->world_x - 3.0f);
+    y1 = (short)(this->world_y - 3.0f);
+    x2 = (short)(this->world_x + 3.0f);
+    y2 = (short)(this->world_y + 3.0f);
 
     map = this->owner->world->map;
     check_list = new RGE_Check_List;
@@ -3170,8 +3151,7 @@ RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float max_dist) {
 
     if (check_list->list == 0) {
         if (check_list != 0) {
-            check_list->~RGE_Check_List();
-            operator delete(check_list);
+            delete check_list;
         }
         result = 0;
     }
@@ -3250,9 +3230,6 @@ void RGE_Static_Object::setUnderAttack(unsigned char v) { this->underAttackValue
 // BINARY NOTE: PDB-qualified owner is RGE_Static_Object::addToObstructionMap(int).
 // BINARY NOTE: The body is [004C6B80, 004C6C8A); 004C6C90 starts the next symbol.
 
-extern float DAT_00574768;
-
-
 int RGE_Static_Object::addToObstructionMap(int mode)
 {
     if (this->master_obj->radius_z <= 0.0f) {
@@ -3262,16 +3239,16 @@ int RGE_Static_Object::addToObstructionMap(int mode)
         return 0;
     }
 
-    int obMapMinX = (int)((this->world_x - this->master_obj->radius_x) * DAT_00574768);
+    int obMapMinX = (int)((this->world_x - this->master_obj->radius_x) * 4.0f);
     if (obMapMinX < 0) {
         obMapMinX = 0;
     }
-    int obMapMinY = (int)((this->world_y - this->master_obj->radius_y) * DAT_00574768);
+    int obMapMinY = (int)((this->world_y - this->master_obj->radius_y) * 4.0f);
     if (obMapMinY < 0) {
         obMapMinY = 0;
     }
-    int obMapMaxX = (int)((this->master_obj->radius_x + this->world_x) * DAT_00574768);
-    int obMapMaxY = (int)((this->master_obj->radius_y + this->world_y) * DAT_00574768);
+    int obMapMaxX = (int)((this->master_obj->radius_x + this->world_x) * 4.0f);
+    int obMapMaxY = (int)((this->master_obj->radius_y + this->world_y) * 4.0f);
 
     for (int x = obMapMinX; x < obMapMaxX; x++) {
         for (int y = obMapMinY; y < obMapMaxY; y++) {
@@ -3294,9 +3271,6 @@ int RGE_Static_Object::addToObstructionMap(int mode)
 // BINARY NOTE: PDB-qualified owner is RGE_Static_Object::removeFromObstructionMap(int).
 // BINARY NOTE: The owned body is [004C6C90, 004C6D9A); 004C6DA0 starts changeInfluenceMap.
 
-extern float DAT_00574768;
-
-
 int RGE_Static_Object::removeFromObstructionMap(int mode)
 {
     if (this->master_obj->radius_z <= 0.0f) {
@@ -3306,16 +3280,16 @@ int RGE_Static_Object::removeFromObstructionMap(int mode)
         return 0;
     }
 
-    int obMapMinX = (int)((this->world_x - this->master_obj->radius_x) * DAT_00574768);
+    int obMapMinX = (int)((this->world_x - this->master_obj->radius_x) * 4.0f);
     if (obMapMinX < 0) {
         obMapMinX = 0;
     }
-    int obMapMinY = (int)((this->world_y - this->master_obj->radius_y) * DAT_00574768);
+    int obMapMinY = (int)((this->world_y - this->master_obj->radius_y) * 4.0f);
     if (obMapMinY < 0) {
         obMapMinY = 0;
     }
-    int obMapMaxX = (int)((this->master_obj->radius_x + this->world_x) * DAT_00574768);
-    int obMapMaxY = (int)((this->master_obj->radius_y + this->world_y) * DAT_00574768);
+    int obMapMaxX = (int)((this->master_obj->radius_x + this->world_x) * 4.0f);
+    int obMapMaxY = (int)((this->master_obj->radius_y + this->world_y) * 4.0f);
 
     for (int x = obMapMinX; x < obMapMaxX; x++) {
         for (int y = obMapMinY; y < obMapMaxY; y++) {
@@ -3391,7 +3365,7 @@ void RGE_Static_Object::changeInfluenceMap(InfluenceMap* map, int mode, int grad
                 if (objectMinY > (float)xTile) top = objectMinY;
                 float bottom = (float)(xTile + 1);
                 if (objectMaxY < bottom) bottom = objectMaxY;
-                int value = (int)((right - left) * (bottom - top) * *(float*)0x00574774);
+                int value = (int)((right - left) * (bottom - top) * 255.0f);
                 if (mode == 1) {
                     map->incrementValue(yTile, xTile, value);
                 } else {
@@ -3745,11 +3719,6 @@ int RGE_Static_Object::commanderCreateGroup(int* list, int count, int param3, fl
 
 // 004C7920 RGE_Static_Object::addToGroup
 
-void* __cdecl operator_new(unsigned int size);
-void __cdecl operator_delete(void* p);
-
-
-
 int RGE_Static_Object::addToGroup(int groupIndex, float unused)
 {
     if (this->groupMembers.numberValue >= 25) {
@@ -3771,12 +3740,12 @@ int RGE_Static_Object::addToGroup(int groupIndex, float unused)
 
         if (count > this->groupMembers.maximumSizeValue - 1) {
             int newMax = count + 1;
-            int* newArray = (int*)operator_new(newMax * 4);
+            int* newArray = new int[newMax];
             if (newArray != 0) {
                 for (i = 0; i < this->groupMembers.maximumSizeValue && i < newMax; i++) {
                     newArray[i] = this->groupMembers.value[i];
                 }
-                operator_delete(this->groupMembers.value);
+                delete[] this->groupMembers.value;
                 this->groupMembers.value = newArray;
                 this->groupMembers.maximumSizeValue = newMax;
             }
@@ -3968,11 +3937,6 @@ int RGE_Static_Object::commanderDestroyGroup(){ this->destroyGroup(); return 1; 
 // 004C7DB0 RGE_Static_Object::addToPathingGroup
 
 
-void* operator new(unsigned int size);
-void operator delete(void* ptr);
-
-
-
 void RGE_Static_Object::addToPathingGroup(int groupIndex)
 {
     int i = 0;
@@ -3993,7 +3957,7 @@ void RGE_Static_Object::addToPathingGroup(int groupIndex)
 
     if (count > this->pathingGroupMembers.maximumSizeValue - 1) {
         int newMax = count + 1;
-        int* newMembers = (int*)operator new(newMax * 4);
+        int* newMembers = new int[newMax];
         if (newMembers != 0) {
             int max = this->pathingGroupMembers.maximumSizeValue;
             int j = 0;
@@ -4005,7 +3969,7 @@ void RGE_Static_Object::addToPathingGroup(int groupIndex)
                     max = this->pathingGroupMembers.maximumSizeValue;
                 }
             }
-            operator delete(this->pathingGroupMembers.value);
+            delete[] this->pathingGroupMembers.value;
             this->pathingGroupMembers.value = newMembers;
             this->pathingGroupMembers.maximumSizeValue = newMax;
         }
