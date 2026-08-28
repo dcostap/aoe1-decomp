@@ -46,9 +46,9 @@ that entry and ordinary source must not contain inline assembly.
 ## Status and checks
 
 The source-module manifest is `config/source_modules/scr_cj.json`. It records
-six matching owners, two scratch owners, and one accepted-drift owner. The
-translation-unit registry points its six exact owners to the direct module
-source and records module name `scr_cj`.
+six matching owners and three scratch owners. The translation-unit registry
+points its six exact owners to the direct module source and records module
+name `scr_cj`.
 
 The source uses `config/flags/00491E20_action.rsp`, which is
 `/nologo /c /O2 /Oy /GX`. `/GX` is supported by the original EH registration.
@@ -82,15 +82,9 @@ targets, and direct calls.
 The candidate TU report is
 `build/candidate_tus/scr_cj_natural/report.{json,txt}`. It also matched both
 compiler-generated deleting destructors, `00491970` and `00492310`. Its three
-observed normal owners stayed nonexact: `00491E20` differs by 14 bytes,
+observed normal owners stayed nonexact: `00491E20` differs by 12 bytes,
 `004920C0` differs by 31 bytes, and `004923C0` differs by 38 bytes. All three
 have zero relocation-target mismatches and zero boundary escapes.
-
-The candidate validator requires source-bank paths for exact proposal owners.
-The report therefore lists all nine normal owners as observed while the
-registered configuration keeps only the six exact owners. The candidate used
-the generated `build/tmp/scr_cj_candidate.cpp` include bridge only for that
-validator limitation; the compiler-facing source has no `.cpp` include.
 
 ## Regressions and blockers
 
@@ -108,6 +102,33 @@ Open evidence blockers from the prior owner records:
   difference. Its ordinary-path body, calls, frame, and CFG remain
   behavior-ready but not exact.
 - `004920C0` retains a 31-byte constructor schedule difference. Its calls,
-  frame, CFG, and post-initialization body match. It remains accepted drift.
+  frame, CFG, and post-initialization body match. It remains scratch.
 - `004923C0` retains a 38-byte grouped EH-tail and shared-return difference.
   It remains scratch until that review.
+
+## Current provider hold
+
+The former copied hierarchy is removed from `include/scr_cj.h`. The header now
+consumes canonical Panel, screen, dialog, control, BaseGame, registry, drawing,
+and logging owners. `src/scr_cj.cpp` keeps all nine normal bodies in PDB order.
+
+`com_sess.h` now consumes the canonical communication-handler declaration.
+The source uses typed communication enums, typed GUID values, natural dialog
+strings, typed parent conversion, and typed child deletion. The child deletion
+helper calls the canonical Panel deletion entry without a source-level child
+pointer cast. The six established exact owners and both generated destructors
+retain their prior exact results in the canonical-provider candidate.
+
+This branch carries the canonical `scr_mps.h` provider form only so the full
+`scr_cj.cpp` candidate can compile. The `scr_mps.cpp` source owner is not part
+of this change. Do not integrate this branch alone. Pair it with the
+canonical `scr_mps` source from the `scr_sing` wave.
+
+The two source bodies that construct `TribeMPSetupScreen` remain present. Do
+not copy or partially redeclare `TribeMPSetupScreen` here.
+
+The canonical-provider candidate uses the branch-only `scr_mps.h` provider
+form. It reports six exact normal owners and two generated destructors as
+`MATCH`, `0.0000%`, with zero relocation-target mismatches and zero boundary
+escapes. The three observed bodies report 12, 31, and 38 differing bytes.
+Their statuses are scratch.

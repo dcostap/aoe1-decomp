@@ -3,6 +3,54 @@
 
 #include "../include/scr_mps.h"
 #include "../include/scr_set_screen.h"
+#include "../include/scr_main.h"
+#include "../include/scr_sing.h"
+#include "../include/scr_sels.h"
+#include "../include/scr_cj.h"
+#include "../include/main.h"
+#include "../include/pnl_dlg.h"
+#include "../include/panel_ez.h"
+#include "../include/panel.h"
+#include "../include/basegame.h"
+#include "../include/tribegam.h"
+#include "../include/drawarea.h"
+#include "../include/Shape.h"
+#include "../include/Picture.h"
+#include "../include/pnl_btn.h"
+#include "../include/pnl_lst.h"
+#include "../include/Pnl_txt.h"
+#include "../include/Pnl_scbr.h"
+#include "../include/pnl_drop.h"
+#include "../include/pnl_edit.h"
+#include "../include/chat.h"
+#include "../include/debuglog.h"
+#include "../include/com_hand.h"
+#include "../include/com_addr.h"
+#include "../include/scenario.h"
+#include "../include/tscenaro.h"
+#include "../include/player.h"
+#include "../include/world.h"
+#include "../include/rge_base_game_global.h"
+#include <io.h>
+
+class TribeSelectScenarioScreen;
+class TribeJoinScreen;
+
+extern TChat* chat;
+extern TDebuggingLog* L;
+extern TCommunications_Handler* comm;
+extern char s_Multiplayer_Disconnect_Screen[];
+extern char s_scr3[];
+extern char s_Status_Screen[];
+extern const char s_C__msdev_work_age1_x1_scr_mps_cp[];
+
+extern "C" int __cdecl sprintf(char*, const char*, ...);
+extern "C" char* __cdecl strcat(char*, const char*);
+extern "C" char* __cdecl strcpy(char*, const char*);
+extern "C" unsigned long __cdecl debug_timeGetTime(const char*, int);
+extern "C" void __cdecl debug_srand(char*, int, unsigned long);
+extern "C" int __cdecl debug_rand(char*, int);
+extern "C" void __cdecl Log(TDebuggingLog*, const char*, ...);
 
 // PDB-order owner source: 004A00B0_TribeMPSetupScreen.cpp.
 

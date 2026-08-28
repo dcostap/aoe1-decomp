@@ -6671,14 +6671,15 @@
     },
     {
       "name": "scr_mp_cpp",
-      "source": "src/scr_mp_tu.cpp",
+      "source": "src/scr_mp.cpp",
+      "module": "scr_mp",
       "flags": "config/flags/0049F370_TribeMPStartupScreen.rsp",
       "owners": {
-        "0049F890": "src/matching/0049F890_TribeMPStartupScreen.cpp",
-        "0049F9A0": "src/matching/0049F9A0_handle_idle.cpp",
-        "0049F9D0": "src/matching/0049F9D0_action.cpp",
-        "0049FED0": "src/matching/0049FED0_fillList.cpp",
-        "004A00A0": "src/matching/004A00A0_handle_user_command.cpp"
+        "0049F890": "src/scr_mp.cpp",
+        "0049F9A0": "src/scr_mp.cpp",
+        "0049F9D0": "src/scr_mp.cpp",
+        "0049FED0": "src/scr_mp.cpp",
+        "004A00A0": "src/scr_mp.cpp"
       },
       "symbols": {
         "0049F890": "??1TribeMPStartupScreen@@UAE@XZ",

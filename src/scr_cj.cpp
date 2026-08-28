@@ -4,6 +4,20 @@
 // 00491C42 is padding inside handle_user_command, not a source function.
 // BINARY NOTE: /GX is required for the constructor and action EH frames.
 #include "../include/scr_cj.h"
+#include "../include/com_hand.h"
+#include "../include/com_sess.h"
+#include "../include/scr_mps.h"
+
+extern const GUID DPSPGUID_TCPIP;
+
+// PROVIDER HOLD: scr_mps publishes the setup-screen owner in a separate
+// canonicalization wave. Do not copy that class into this source.
+
+template<class T>
+static void delete_child(TPanel* owner, T** panel)
+{
+    owner->delete_panel(reinterpret_cast<TPanel**>(panel));
+}
 
 TribeJoinScreen::TribeJoinScreen()
     : TScreenPanel("Join Screen")
@@ -16,14 +30,14 @@ TribeJoinScreen::TribeJoinScreen()
     this->joinTime = 0;
     this->close_button = 0;
 
-    comm->SetPlayerHumanity(1, 2);
+    comm->SetPlayerHumanity(1, ME_HUMAN);
     for (int player = 2; player <= 9; ++player) {
-        comm->SetPlayerHumanity(player, 0);
+        comm->SetPlayerHumanity(player, ME_ABSENT);
     }
 
     if (this->setup(rge_base_game->draw_area, "scr3",
                     0xC385, 1) == 0) {
-        this->setup_error = 1;
+        this->error_code = 1;
         return;
     }
 
@@ -39,7 +53,7 @@ TribeJoinScreen::TribeJoinScreen()
             if (this->create_auto_scrollbar(&this->scrollbar,
                                             this->list, 0x14)) {
                 this->listFilled = 1;
-                this->list->set_string(0x25AB);
+                this->list->set_text(0x25AB);
                 if (this->create_button(this, &this->refreshButton,
                                         0x25A1, 0, 0xD2, 0x172,
                                         0xDC, 0x1E, 0, 0, 0)) {
@@ -63,7 +77,8 @@ TribeJoinScreen::TribeJoinScreen()
                                                         0, -1, -1, 0)) {
                                     this->close_button->set_active(1);
                                     this->close_button->set_positioning(
-                                        9, 4, 4, 4, 4, 0x11, 0x11,
+                                        TPanel::PositionRightTop, 4, 4, 4, 4,
+                                        0x11, 0x11,
                                         0x11, 0x11, 0, 0, 0, 0);
                                     this->set_curr_child(this->refreshButton);
 
@@ -87,18 +102,17 @@ TribeJoinScreen::TribeJoinScreen()
 TribeJoinScreen::~TribeJoinScreen() {
     TCommunications_Sessions* p = Sess;
     if (p != 0) {
-        p->~TCommunications_Sessions();
-        operator_delete(p);
+        delete p;
     }
-    this->delete_panel((TPanel**)&this->title);
-    this->delete_panel((TPanel**)&this->listTitle);
-    this->delete_panel((TPanel**)&this->list);
-    this->delete_panel((TPanel**)&this->scrollbar);
-    this->delete_panel((TPanel**)&this->refreshButton);
-    this->delete_panel((TPanel**)&this->joinButton);
-    this->delete_panel((TPanel**)&this->createButton);
-    this->delete_panel((TPanel**)&this->cancelButton);
-    this->delete_panel((TPanel**)&this->close_button);
+    delete_child(this, &this->title);
+    delete_child(this, &this->listTitle);
+    delete_child(this, &this->list);
+    delete_child(this, &this->scrollbar);
+    delete_child(this, &this->refreshButton);
+    delete_child(this, &this->joinButton);
+    delete_child(this, &this->createButton);
+    delete_child(this, &this->cancelButton);
+    delete_child(this, &this->close_button);
 }
 
 long TribeJoinScreen::handle_idle() {
@@ -112,7 +126,7 @@ long TribeJoinScreen::handle_idle() {
     }
     unsigned long now = debug_timeGetTime("scr_cj.cpp", 0xAA);
     if (10000 < now - this->joinTime) {
-        comm->UnlinkToLevel(5);
+        comm->UnlinkToLevel(static_cast<COMMSTATUS>(5));
         this->waitingToStart = 0;
         rge_base_game->enable_input();
         TEasy_Panel::popupOKDialog(0x25A3, 0, 0x1C2, 100);
@@ -138,7 +152,7 @@ long TribeJoinScreen::handle_user_command(unsigned int cmd, long param) {
         case 0x17AA:
         case 0x17B2:
             if (this->waitingToStart != 0) {
-                comm->UnlinkToLevel(5);
+                comm->UnlinkToLevel(static_cast<COMMSTATUS>(5));
                 this->waitingToStart = 0;
                 rge_base_game->enable_input();
                 TEasy_Panel::popupOKDialog(0x25A3, 0, 0x1C2, 100);
@@ -155,13 +169,13 @@ void TribeJoinScreen::fillList() {
     rge_base_game->disable_input();
     this->listFilled = 0;
     this->game_count = 0;
-    this->list->set_string(0x25A9);
+    this->list->set_text(0x25A9);
     rge_base_game->draw_window();
 
     if (this->startedSession == 0) {
         Sess = new TCommunications_Sessions(comm);
         if (Sess == 0) {
-            this->list->set_string(0x25AB);
+            this->list->set_text(0x25AB);
             return;
         }
         this->startedSession = 1;
@@ -186,7 +200,7 @@ void TribeJoinScreen::fillList() {
         }
         this->set_curr_child(this->list);
     } else {
-        this->list->set_string(0x25AB);
+        this->list->set_text(0x25AB);
     }
 
     this->listFilled = 1;
@@ -208,7 +222,7 @@ long TribeJoinScreen::action(TPanel* panel, long command,
             if (command == 1) {
                 if (this->game_count > 0) {
                     int line = this->list->currentLineNumber();
-                    _GUID* guid = Sess->GetSessionGUID(line);
+                    GUID* guid = Sess->GetSessionGUID(line);
                     int join_result = comm->JoinMultiplayerGame(guid);
                     if (join_result == 0) {
                         char temp[256];
@@ -235,7 +249,7 @@ long TribeJoinScreen::action(TPanel* panel, long command,
         } else if (panel == this->cancelButton) {
             if (command == 1) {
                 rge_base_game->disable_input();
-                comm->UnlinkToLevel(2);
+                comm->UnlinkToLevel(static_cast<COMMSTATUS>(2));
                 new TribeMPStartupScreen;
                 panel_system.setCurrentPanel("MP Startup Screen", 0);
                 panel_system.destroyPanel("Join Screen");
@@ -275,7 +289,7 @@ done:
 }
 
 TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
-    : TDialogPanel((char*)0x586208)
+    : TDialogPanel("Create Dialog")
 {
     TEditPanel** inputGamename = &this->inputGamename;
     this->title = 0;
@@ -285,16 +299,18 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
     this->cancelButton = 0;
 
     if (this->setup(parent->renderArea(), parent, 500, 230,
-                    ((TEasy_Panel*)parent)->get_popup_info_file(),
-                    ((TEasy_Panel*)parent)->get_popup_info_id(), 1)) {
+                    static_cast<TEasy_Panel*>(parent)->get_popup_info_file(),
+                    static_cast<TEasy_Panel*>(parent)->get_popup_info_id(), 1)) {
         if (this->create_text(this, &this->title, 0x25a6,
                               20, 20, 0x1cc, 0x1e, 1, 1, 1, 0)) {
             if (this->create_text(this, &this->input_title, 0x25aa,
                                   40, 0x55, 0x1a4, 20, 4, 0, 1, 0)) {
                 char str[256];
-                char* s = Regs->RegGetAscii(1, (char*)0x5861e4);
+                char* s = Regs->RegGetAscii(
+                    1, "Default Age Of Empires MP Gamename");
                 if (s) {
-                    strcpy(str, Regs->RegGetAscii(1, (char*)0x5861e4));
+                    strcpy(str, Regs->RegGetAscii(
+                        1, "Default Age Of Empires MP Gamename"));
                 } else {
                     str[0] = 0;
                 }
@@ -325,11 +341,11 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
 }
 
 TribeMPCreateDialog::~TribeMPCreateDialog() {
-    this->delete_panel((TPanel**)&this->title);
-    this->delete_panel((TPanel**)&this->input_title);
-    this->delete_panel((TPanel**)&this->inputGamename);
-    this->delete_panel((TPanel**)&this->okButton);
-    this->delete_panel((TPanel**)&this->cancelButton);
+    delete_child(this, &this->title);
+    delete_child(this, &this->input_title);
+    delete_child(this, &this->inputGamename);
+    delete_child(this, &this->okButton);
+    delete_child(this, &this->cancelButton);
 }
 
 long TribeMPCreateDialog::action(TPanel* panel, long command,
@@ -348,7 +364,8 @@ long TribeMPCreateDialog::action(TPanel* panel, long command,
 
             rge_base_game->disable_input();
             Regs->RegSetAscii(1, "Default Age Of Empires MP Gamename",
-                              (unsigned char*)this->inputGamename->currentLine(),
+                              reinterpret_cast<unsigned char*>(
+                                  this->inputGamename->currentLine()),
                               strlen(this->inputGamename->currentLine()) + 1);
             comm->SetGameTitle(this->inputGamename->currentLine());
 
@@ -359,9 +376,11 @@ long TribeMPCreateDialog::action(TPanel* panel, long command,
 
             _GUID service_guid = comm->ServiceGUID;
             if (memcmp(&service_guid, &DPSPGUID_TCPIP, sizeof(_GUID)) == 0)
-                rge_base_game->show_status_message(0x4C3, "scr3", 0xC385);
+                static_cast<TRIBE_Game*>(rge_base_game)->show_status_message(
+                    0x4C3, "scr3", 0xC385);
             else
-                rge_base_game->show_status_message(0x4C2, "scr3", 0xC385);
+                static_cast<TRIBE_Game*>(rge_base_game)->show_status_message(
+                    0x4C2, "scr3", 0xC385);
             rge_base_game->draw_window();
             WinExec("data\\closedpw.exe", 0);
 
@@ -388,7 +407,8 @@ long TribeMPCreateDialog::action(TPanel* panel, long command,
                 goto done;
             }
 
-            TEasy_Panel* parent = (TEasy_Panel*)this->parent_panel;
+            TEasy_Panel* parent = static_cast<TEasy_Panel*>(
+                this->parent_panel);
             panel_system.destroyPanel("Create Dialog");
             panel_system.setCurrentPanel("Join Screen", 0);
             panel_system.destroyPanel("Status Screen");

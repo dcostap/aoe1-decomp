@@ -1,17 +1,7 @@
 #ifndef AOE1_COM_SESS_H
 #define AOE1_COM_SESS_H
 
-#include <windows.h>
-#include "../third_party/directplay/include/dplay.h"
-
-class TCommunications_Handler {
-public:
-    char data_0000[0x12DC];
-    GUID ServiceGUID;
-    GUID ApplicationGUID;
-
-    IDirectPlay3* GetDPInterface();
-};
+#include "com_hand.h"
 
 struct SEs {
     char Name[255];
