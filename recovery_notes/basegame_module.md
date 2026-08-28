@@ -55,3 +55,27 @@ It emits the integer slot at `+0x38`.
 `0041BAA0 RGE_Base_Game::setup`, lines 491-871, remains an accepted-drift hold.
 It has no exact registration in the direct prefix.
 The next exact source move must not cross this owner without separate review.
+
+## Complete composition gate
+
+The current PDB plan has 202 normal owners.
+The direct prefix owns four of them.
+The old candidate holds the other 198 bodies.
+
+The probe is `build/basegame_composition_probe.cpp`.
+It contains all 198 bodies in PDB order.
+It uses canonical provider headers.
+It does not include `basegame_candidate_context.h`.
+
+The probe does not compile. It exposed these provider gaps:
+
+- `TPanel` lacks the needed activation and palette callback interface.
+- `RGE_Game_World` lacks `set_world_chat_flag`.
+- `RGE_Player` lacks `set_chat_flag`.
+- BaseGame header-owned helpers lack reviewed canonical declarations.
+
+Some candidate bodies also use raw IAT addresses and false field aliases.
+The direct source must replace them with canonical API and field access.
+
+Keep the candidate wrapper until those provider owners repair their interfaces.
+Do not add copied contexts or raw access to bypass this gate.
