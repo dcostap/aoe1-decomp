@@ -25,11 +25,19 @@ The following owners remain exact in the direct compiland: `00403EA0`,
 `00404790`, `004047C0`, `004047F0`, `00404810`, `00404840`, `00404850`,
 `00404860`, `00404890`, and `004048C0`.
 
-`00404200` remains accepted drift. Its canonical typed task-action factory has
-489 differing bytes and one boundary escape. `00404590` remains accepted drift.
-It has two differing bytes. `00404610` remains scratch. It has 179 differing
-bytes. The scratch source keeps the typed allocation, type scan, queue insert,
-and notification behavior. It does not retain codegen-only source forms.
+`00404200` is scratch. Its canonical typed task-action factory has 489
+differing bytes and one boundary escape. A boundary escape prevents an
+accepted-drift claim. `00404590` remains accepted drift. Its direct candidate
+has two differing bytes, zero relocation-target mismatches, and zero boundary
+escapes. Its front guard, allocation, tail insert, and notification match the
+executable. `00404610` remains scratch. It has 179 differing bytes. The scratch
+sources keep typed allocation, scans, inserts, and notification behavior. They
+do not retain codegen-only source forms.
+
+`create_task_action` reads `minimum_weapon_range`, `missile_id`, and
+`fire_missile_at_frame` through the Action Object master. The PDB constructor
+and the matching combat-master header prove this `RGE_Master_Combat_Object`
+downcast. The source uses one typed `static_cast` at that boundary.
 
 ## Validation
 
@@ -40,7 +48,3 @@ build/candidate_tus/act_list_natural` compiled the direct source.
 All 22 matching owners report `MATCH`, `0.0000%`, correct ownership,
 relocations, and boundaries. The three nonexact owners have correct owner and
 relocation identity. The source-module manifest records their honest status.
-
-The shared `config/translation_units.json` entry still names the removed
-wrapper. The parent integration pass must update it to `src/act_list.cpp` and
-register the direct owners.

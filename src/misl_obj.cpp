@@ -51,8 +51,8 @@ int RGE_Missile_Object::setup(int file, RGE_Game_World* world) {
     if (save_game_version > 7.09f) {
         rge_read(file, &this->max_range, 4);
     } else {
-        this->max_range =
-            ((RGE_Master_Combat_Object*)this->master_obj)->weapon_range;
+        this->max_range = static_cast<RGE_Master_Combat_Object*>(
+            this->master_obj)->weapon_range;
     }
     return 1;
 }
@@ -73,7 +73,7 @@ unsigned char RGE_Missile_Object::update() {
 void RGE_Missile_Object::init_missile(
     RGE_Combat_Object* target, RGE_Static_Object* source, float range) {
     RGE_Action_Missile* action = new RGE_Action_Missile(
-        (RGE_Action_Object*)this, target, source,
+        static_cast<RGE_Action_Object*>(this), target, source,
         source->world_x, source->world_y, source->world_z);
     if (action != 0) {
         this->actions->add_action(action);
@@ -84,7 +84,7 @@ void RGE_Missile_Object::init_missile(
 void RGE_Missile_Object::init_missile(
     RGE_Combat_Object* target, float x, float y, float z, float range) {
     RGE_Action_Missile* action = new RGE_Action_Missile(
-        (RGE_Action_Object*)this, target, 0, x, y, z);
+        static_cast<RGE_Action_Object*>(this), target, 0, x, y, z);
     if (action != 0) {
         this->actions->add_action(action);
     }

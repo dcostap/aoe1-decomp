@@ -31,6 +31,11 @@ The direct compiland keeps these exact owners: `0045A740`, `0045A800`,
 It has the correct symbol, boundary, and relocation targets. Do not retain the
 old raw row and tile cursors for byte score alone.
 
+The file-load setup reads `weapon_range` through `master_obj`. The PDB owner
+type and the matched `RGE_Master_Combat_Object::weapon_range` field prove the
+combat-master downcast. The missile action constructors take an Action Object
+base pointer. The source uses normal `static_cast` upcasts for that conversion.
+
 ## Validation
 
 `python tools/validate_candidate_tu.py --proposal

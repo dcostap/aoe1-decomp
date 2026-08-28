@@ -45,7 +45,8 @@ void RGE_Action_List::load(int file) {
         }
 
         action = this->create_action(file, action_type);
-        node = (RGE_Action_Node*)calloc(1, sizeof(RGE_Action_Node));
+        node = static_cast<RGE_Action_Node*>(
+            calloc(1, sizeof(RGE_Action_Node)));
         node->action = action;
         node->next = 0;
         if (tail != 0) {
@@ -137,7 +138,8 @@ RGE_Action* RGE_Action_List::create_task_action(
             }
         }
 
-        master = (RGE_Master_Combat_Object*)this->obj->master_obj;
+        // The Action Object master is a combat master on the attack path.
+        master = static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj);
         if (target != 0) {
             attack_action = new RGE_Action_Attack(
                 this->obj, target, task->work_sprite, task->move_sprite, 0,
@@ -249,7 +251,7 @@ void RGE_Action_List::add_action(RGE_Action* action) {
         return;
     }
 
-    node = (RGE_Action_Node*)calloc(1, sizeof(RGE_Action_Node));
+    node = static_cast<RGE_Action_Node*>(calloc(1, sizeof(RGE_Action_Node)));
     node->action = action;
     node->next = this->list;
     this->list = node;
@@ -267,7 +269,7 @@ void RGE_Action_List::add_action_at_end(RGE_Action* action) {
         return;
     }
 
-    node = (RGE_Action_Node*)calloc(1, sizeof(RGE_Action_Node));
+    node = static_cast<RGE_Action_Node*>(calloc(1, sizeof(RGE_Action_Node)));
     node->next = 0;
     node->action = action;
 
@@ -300,7 +302,7 @@ void RGE_Action_List::add_action_at_end_of_action_queue(RGE_Action* action) {
         return;
     }
 
-    node = (RGE_Action_Node*)calloc(1, sizeof(RGE_Action_Node));
+    node = static_cast<RGE_Action_Node*>(calloc(1, sizeof(RGE_Action_Node)));
     node->action = action;
 
     if (this->list != 0) {
