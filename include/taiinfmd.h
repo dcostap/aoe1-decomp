@@ -283,9 +283,6 @@ public:
     void addResourceType(int resourceIndex, int typeValue);
 };
 
-typedef RGE_Static_Object RGE_Obj;
-typedef RGE_Master_Static_Object RGE_Master_Object;
-
 typedef char taiinfmd_information_size[
     (sizeof(TribeInformationAIModule) == 0x10090) ? 1 : -1];
 

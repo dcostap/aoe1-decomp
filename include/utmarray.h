@@ -8,7 +8,6 @@
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* ptr);
 
-#ifndef TAIINFMD_PREFIX_CONTEXT
 template <class T>
 class ManagedArray {
 public:
@@ -165,15 +164,9 @@ public:
     int desiredNumberValue;
     int maximumSizeValue;
 };
-#endif
 
 template <class T>
-#ifdef TAIINFMD_PREFIX_CONTEXT
-// BINARY NOTE: taiinfmd's FPO record uses the non-const member decoration.
-int ManagedArray<T>::contains(const T& item)
-#else
 int ManagedArray<T>::contains(const T& item) const
-#endif
 {
     int i;
     T wanted;

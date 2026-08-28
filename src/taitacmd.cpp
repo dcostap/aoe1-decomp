@@ -28,8 +28,6 @@ typedef unsigned char uchar;
 typedef unsigned long ulong;
 
 extern "C" double __cdecl ceil(double);
-extern unsigned long debug_timeGetTime(const char*, int);
-extern "C" unsigned long debug_timeGetTime(char*, int);
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" void* __cdecl operator_new(unsigned int);
 extern "C" void __cdecl operator_delete(void*);
@@ -6159,7 +6157,7 @@ inactive_post_setup:
                                 targetPoint.x = (int)loc->x;
                                 loc = &cur->targetLocation();
                                 targetPoint.y = (int)loc->y;
-                                if (this->md->informationAI.findStagingPoint(targetPoint, &staging, 1, 1, cur->target(), 0x0f, cur->commander()) == 0) {
+                                if (this->md->informationAI.findStagingPoint(targetPoint, staging, 1, 1, cur->target(), 0x0f, cur->commander()) == 0) {
                                     loc = &cur->targetLocation();
                                     staging.x = (int)loc->x;
                                     loc = &cur->targetLocation();
@@ -6222,8 +6220,8 @@ inactive_post_setup:
                                                 UnitAIModule* attackAI;
                                                 attackAI = unitObj2->unitAI();
                                                 if (attackAI->currentTarget() != cur->target()) {
-                                                    if (unitObj2->unitAI()->canAttackUnit(
-                                                            cur->target()) == 1) {
+                                                if (unitObj2->unitAI()->canAttackUnit(
+                                                            targetObj) == 1) {
                                                         this->taskAttacker(cur->unit(i),
                                                             cur->targetLocation().x,
                                                             cur->targetLocation().y,
@@ -6271,12 +6269,15 @@ inactive_post_setup:
                                 }
                                 if (cur->type() == 100) {
                                     RGE_Static_Object* commanderObjT;
+                                    RGE_Static_Object* attackTarget;
                                     commanderObjT = this->md->object(cur->commander());
                                     if (commanderObjT == 0) {
                                         goto action10_attack_failure;
                                     } else {
-                                        if (commanderObjT->unitAI()->canAttackUnit(
-                                                cur->target()) == 1) {
+                                        attackTarget = this->md->object(cur->target());
+                                        if (attackTarget != 0 &&
+                                            commanderObjT->unitAI()->canAttackUnit(
+                                                attackTarget) == 1) {
                                             this->lastGroupAttackTime = this->md->player->world->world_time;
                                             if (this->sn[0x47] == 1) {
                                                 this->lastAttackResponseTime = this->md->player->world->world_time;
@@ -6564,8 +6565,8 @@ action7_done:
                             float my;
                             float mz;
                             cur->addUnit(targetObj2->id, this->md);
-                            p1 = *this->md->strategyAI.targetPoint1();
-                            p2 = *this->md->strategyAI.targetPoint2();
+                            p1 = this->md->strategyAI.targetPoint1();
+                            p2 = this->md->strategyAI.targetPoint2();
                             mx = (p1.x + p2.x) * 0.5f;
                             my = (p1.y + p2.y) * 0.5f;
                             mz = (p1.z + p2.z) * 0.5f;
@@ -6617,12 +6618,16 @@ action7_done:
                                 if (commanderObj4 == 0) {
                                     this->attackStateValue.active = 0;
                                     goto ContinueLoop;
-                                } else if (commanderObj4->unitAI()->canAttackUnit(
-                                               cur->target()) == 1) {
+                                } else {
+                                    RGE_Static_Object* attackTarget =
+                                        this->md->object(cur->target());
+                                    if (attackTarget != 0 &&
+                                        commanderObj4->unitAI()->canAttackUnit(
+                                            attackTarget) == 1) {
                                     cur->task(this, this->md, 0x14, 0, 1);
                                     this->attackStateValue.active = 0;
                                     goto ContinueLoop;
-                                } else {
+                                    }
                                     cur->setGatherLocation(commanderObj4->world_x,
                                                            commanderObj4->world_y,
                                                            commanderObj4->world_z);
@@ -6869,8 +6874,8 @@ void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1,
             playToRun = -1;
             targetObj = this->md->informationAI.objectToAttackWithPlay(
                 this->playersToAttack[0], unplayedSoldiers + 1,
-                countUnplayedSoldiers, unplayedSoldiers, playUnits + 1,
-                &playCommander, &playToRun);
+                countUnplayedSoldiers, unplayedSoldiers[0], playUnits + 1,
+                playCommander, playToRun);
             if (targetObj != 0) {
                 RGE_Static_Object* playObj = this->md->object(playToRun);
                 if (playObj != 0) {
@@ -9476,7 +9481,7 @@ void TribeTacticalAIModule::updateNeededResources()
     int bestDifference;
     int offset;
 
-    this->md->buildAI.mostNeededResource(&this->neededResources, this->sn[0x93]);
+    this->md->buildAI.mostNeededResource(this->neededResources, this->sn[0x93]);
 
     i = 0;
     tempResourceDifference[0] = -1;
@@ -10427,7 +10432,7 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
             if (p5 == 0 || p5[resourceType] != 1) {
                 numStorage = -1;
                 i = this->md->informationAI.gameIDOfResourceObject(
-                        resourceType, p1, &drop1, &drop2, &numStorage, exclusions + 1, 0);
+                        resourceType, p1, drop1, drop2, numStorage, exclusions + 1, 0);
                 if (i != -1) {
                     if (numStorage == -1)
                         gathererObj->canPath(i, 1.0f, 0, 1, -1, -1);
@@ -10445,7 +10450,7 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
         for (; maximumResourceDistance < 3; ++maximumResourceDistance) {
             numStorage = -1;
             i = this->md->informationAI.gameIDOfResourceObject(
-                    resourceType, p1, &drop1, &drop2, &numStorage, exclusions + 1, index);
+                    resourceType, p1, drop1, drop2, numStorage, exclusions + 1, index);
             if (i == -1) return 0;
             int result = (numStorage == -1)
                 ? gathererObj->canPath(i, 1.0f, 0, 1, -1, -1)
@@ -14706,9 +14711,6 @@ int TribeTacticalAIModule::selectBestCommander(TacticalAIGroup* group)
 
 extern void* operator new(unsigned int);
 extern void operator delete(void*);
-extern "C" int __cdecl _ftol();
-
-
 int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>& a)
 {
     int bestScore = -1;
@@ -14934,7 +14936,7 @@ int TribeTacticalAIModule::unexploredArea(int player, XYPoint& out)
         this->md->informationAI.setTileExplored(bestPoint.x, bestPoint.y);
         return 1;
     }
-    return this->md->informationAI.unexploredPlayerLocation(player, &out) != 0;
+    return this->md->informationAI.unexploredPlayerLocation(player, out) != 0;
 }
 
 // ---------------------------------------------------------------------------
@@ -16718,7 +16720,6 @@ int TribeTacticalAIModule::numberWaterExplorers()
 // - Final validation: MATCH, 1450/1450 bytes, 52/52 calls, 0x24 frame.
 
 
-extern "C" ulong debug_timeGetTime(char* file, int line);
 extern int __ftol();
 extern void* operator_new(unsigned int size);
 extern void operator_delete(void* block);

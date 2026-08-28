@@ -1856,7 +1856,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
         difficultyLevel = -1;
         mostBuiltUnit = -1;
         this->playerAI->informationAI.loadUnitHistory();
-        this->playerAI->informationAI.unitsThatAreMostBuilt(&difficultyLevel, &mostBuiltUnit);
+        this->playerAI->informationAI.unitsThatAreMostBuilt(difficultyLevel, mostBuiltUnit);
         switch (difficultyLevel) {
         case 0:
             weights[(7) - 1] += 25;

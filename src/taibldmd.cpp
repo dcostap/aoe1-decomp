@@ -763,10 +763,10 @@ int TribeBuildAIModule::cancelBuildItem(int action, int objId, int objectTypeId,
                                                 x - -2.0f, y - -2.0f);
             }
         } else {
-            this->md->constructionAI.cancel(x, y, 10);
+            this->md->constructionAI.unplaceStructure(x, y, 10);
         }
     }
-    this->md->constructionAI.removeLot(x, y, lotStatus);
+    this->md->constructionAI.decrementBuildAttempts(x, y, lotStatus);
     item = this->specificBuildListItem(uniqueBuildId);
     if (item) {
         item->setInProgress(0);

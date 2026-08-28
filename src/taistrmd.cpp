@@ -9,6 +9,7 @@
 // owns the proved class layouts and virtual surfaces used by this file.
 
 #include "../include/taistrmd.h"
+#include "../include/taimdmd.h"
 #include "../include/basegame.h"
 #include "../include/player.h"
 #include "../include/tplayer.h"
@@ -1238,27 +1239,6 @@ TribeStrategyAIModule::~TribeStrategyAIModule() {
 extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);
 
-
-template <class T>
-T& ManagedArray<T>::operator[](int index)
-{
-    if (index > this->maximumSizeValue - 1) {
-        int newSize = index + 1;
-        T* newValue = (T*)operator new(newSize * 4);
-        if (newValue != 0) {
-            int j;
-            for (j = 0;
-                 j < this->maximumSizeValue && j < newSize;
-                 ++j) {
-                newValue[j] = this->value[j];
-            }
-            operator delete(this->value);
-            this->value = newValue;
-            this->maximumSizeValue = newSize;
-        }
-    }
-    return this->value[index];
-}
 
 int TribeStrategyAIModule::update(int parameter)
 {

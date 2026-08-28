@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include "utmarray.h"
+#include "waypoint.h"
+
 class RGE_Static_Object;
 class RGE_Master_Object;
 class RGE_Player;
@@ -45,11 +48,8 @@ public:
     int lastActionValue;                                // +0x54
     int lastTargetValue;                                // +0x58
     int lastTargetTypeValue;                            // +0x5C
-    int* attackingUnitsValue_value;                     // +0x60
-    int attackingUnitsValue_numberValue;                // +0x64
-    int attackingUnitsValue_desiredNumberValue;         // +0x68
-    int attackingUnitsValue_maximumSizeValue;           // +0x6C
-    char waypointGap[0x80];                             // +0x70 to +0xEF
+    ManagedArray<int> attackingUnitsValue;              // +0x60
+    Waypoint waypointQueue[8];                          // +0x70
     int waypointQueueSizeValue;                         // +0xF0
     unsigned long lastUpdateTimeValue;                  // +0xF4
     unsigned long idleTimerValue;                       // +0xF8
@@ -58,15 +58,12 @@ public:
     unsigned long secondaryTimerValue;                  // +0x104
     unsigned long lookAroundTimerValue;                 // +0x108
     unsigned long lookAroundTimeoutValue;               // +0x10C
-    float lastWorldPositionX;                           // +0x110
-    float lastWorldPositionY;                           // +0x114
-    float lastWorldPositionZ;                           // +0x118
-    char gap_11C[4];                                    // +0x11C
+    Waypoint lastWorldPositionValue;                    // +0x110
     float defenseBufferValue;                           // +0x120
     int* importantObjects;                              // +0x124
     int numberImportantObjects;                         // +0x128
     void* playStatus;                                   // +0x12C (AIPlayStatus*)
-    char stopAfterTargetKilledValue;                    // +0x130
+    unsigned char stopAfterTargetKilledValue;           // +0x130
 
 
     // Method declarations (auto-generated)
@@ -79,7 +76,7 @@ public:
     void askForHelp();
     int attackRoundupObject(int obj);
     int bestUnitToAttack();
-    int canAttackUnit(int);
+    virtual int canAttackUnit(RGE_Static_Object*);
     int canAttackUnitAtNeutrality(int);
     int canConvert(int p0);
     void clearWaypointQueue();
@@ -122,7 +119,7 @@ public:
     void logDebug(char* param_1, ...);
     void lookAround();
     int mood();
-    int mostDangerousEnemy();
+    virtual int mostDangerousEnemy(float*);
     int moveTo(float param_1, float param_2, float param_3, float param_4, int param_5);
     int notifyCommander(NotifyEvent* event);
     int notifyCommander(int a1, int a2, int a3);
@@ -141,7 +138,8 @@ public:
     void runAwayFromAttackers();
     void search();
     unsigned long secondaryTimer();
-    int seekAndDestroy(int param_1, int param_2, int param_3, int param_4);
+    virtual int seekAndDestroy(int param_1, int param_2, int param_3,
+                               int param_4);
     void setAdjustedIdleTimeout(void);
     void setCurrentAction(int value);
     void setCurrentOrder(int value);
@@ -165,7 +163,5 @@ public:
     void processMisc();
     void setTaskedByPlayer();
 };
-// Total size check: vfptr(4) + 0x04..0x130 = 4 + 0x130 = 0x134 bytes
-// But last field is at +0x130 which is a byte, so sizeof = 0x131
-// With vfptr adjustment: vfptr(4) + 0x130 = 0x134... hmm
-// Actually this might have padding at the end
+typedef char unit_ai_module_size_check[
+    (sizeof(UnitAIModule) == 0x134) ? 1 : -1];
