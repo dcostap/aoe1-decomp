@@ -1,6 +1,9 @@
 // PDB source: C:\msdev\work\age1_x1\rmm_cntr.cpp.
 
 #include "../include/rmm_cntr.h"
+#include "../include/rmm_land.h"
+#include "../include/rmm_obj.h"
+#include "../include/rmm_terrain_generator.h"
 #include <math.h>
 #include <new.h>
 

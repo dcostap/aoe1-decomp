@@ -6,11 +6,10 @@
 // declarations stay with their canonical owners.
 
 #include "rmm_base.h"
-#include "rmm_land.h"
-#include "rmm_terrain_generator.h"
-#include "rmm_obj.h"
 
 class RGE_Game_World;
+struct RGE_Land_Info;
+struct RGE_Terrain_Info;
 
 class RGE_RMM_Controller : public RGE_Random_Map_Module {
 public:
