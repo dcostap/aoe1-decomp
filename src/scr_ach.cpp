@@ -4,8 +4,21 @@
 // The vector-deleting destructor at 0048E1F0 is compiler generated.
 
 #include "../include/scr_ach.h"
+#include "../include/pnl_btn.h"
+#include "../include/Pnl_scbr.h"
+#include "../include/Shape.h"
+#include "../include/basegame.h"
+#include "../include/color.h"
+#include "../include/player.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/scenario.h"
+#include "../include/tribegam.h"
+#include "../include/victory.h"
+#include "../include/world.h"
 #include <stdio.h>
 #include <string.h>
+
+extern int confirmed_close;
 
 // 0048D530 TribeAchievementsScreen::TribeAchievementsScreen(char*, int)
 // BINARY NOTE: The constructor writes a zero tail at the unaligned temptxt
@@ -98,7 +111,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     sprintf(str, "%02ld:%02ld:%02ld", hours, minutes, seconds);
 
     create_text(this, &this->time, str + 4, 0x1E0, 10, 0x6E, 0x14, 0x0B, 0, 0, 0);
-    this->time->set_alignment(2, 3);
+    this->time->set_alignment(TTextPanel::AlignRight, TTextPanel::AlignTop);
     create_text(this, &this->title, 0x269E, 0, 5, 0x280, 0x1E, 1, 1, 0, 0);
     create_text(this, &this->summary_text, 0, 10, 0x23, 0x26C, 0x1E, 1, 1, 0, 0);
     create_text(this, &this->instruction, 0x26DB, 10, 0x19A, 0x26C, 0x14, 0x0B, 1, 0, 0);
@@ -117,25 +130,28 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
             if (this->win_loss_text != 0) {
                 create_auto_scrollbar(&this->win_loss_text_bar,
                                       this->win_loss_text, 0x14);
-                this->win_loss_text->textExtra(4, desc[0], desc[1], desc[2],
-                                               desc[3], desc[4], desc[5]);
-                this->win_loss_text->setText(message);
+                this->win_loss_text->set_bevel_info(
+                    4, bevel_color1, bevel_color2, bevel_color3,
+                    bevel_color4, bevel_color5, bevel_color6);
+                this->win_loss_text->set_text(message);
             }
         }
     }
 
     this->time_line->create_timeline(this, &this->time_line, 10, 0x55,
                                      0x26C, 0x14A, 0x0B, 9, 0x280, 0x1E0);
-    this->time_line->set_bevel_info(3, desc[0], desc[1], desc[2], desc[3],
-                                    desc[4], desc[5]);
+    this->time_line->set_bevel_info(
+        3, bevel_color1, bevel_color2, bevel_color3,
+        bevel_color4, bevel_color5, bevel_color6);
     this->time_line->set_special_events("timeline.slp");
 
     if (create_button(this, &this->close_button, 0x3EA, 0, 0, 0, 0, 0, 0, -1, -1) == 0) {
         return;
     }
     this->close_button->set_active(1);
-    this->close_button->set_positioning(9, 4, 4, 4, 4, 0x11, 0x11, 0x11,
-                                        0x11, 0, 0, 0, 0);
+    this->close_button->set_positioning(
+        TPanel::PositionRightTop, 4, 4, 4, 4, 0x11, 0x11, 0x11,
+        0x11, 0, 0, 0, 0);
 
     create_text(this, this->title_bar, 0, 0x62, 0x97, 200, 0x1E, 0x0B, 0, 0, 0);
     create_text(this, this->title_bar + 1, 0, 0x98, 0x83, 200, 0x1E, 0x0B, 0, 0, 0);
@@ -144,9 +160,12 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     create_text(this, this->title_bar + 4, 0, 0x16C, 0x6F, 0x91, 0x1E, 0x0B, 0, 0, 0);
     create_text(this, this->title_bar + 5, 0, 0x172, 0x83, 200, 0x1E, 0x0B, 0, 0, 0);
     create_text(this, this->title_bar + 6, 0, 0x1A8, 0x97, 200, 0x1E, 0x0B, 0, 0, 0);
-    this->title_bar[4]->set_alignment(2, 3);
-    this->title_bar[5]->set_alignment(2, 3);
-    this->title_bar[6]->set_alignment(2, 3);
+    this->title_bar[4]->set_alignment(TTextPanel::AlignRight,
+                                      TTextPanel::AlignTop);
+    this->title_bar[5]->set_alignment(TTextPanel::AlignRight,
+                                      TTextPanel::AlignTop);
+    this->title_bar[6]->set_alignment(TTextPanel::AlignRight,
+                                      TTextPanel::AlignTop);
 
     create_text(this, this->achievement_choice, 0, 100, 0x97, 0x82, 0xFA, 0x0B, 0, 0, 0);
     create_text(this, this->achievement_choice + 1, 0, 0x9A, 0x83, 0x80, 0x112, 0x0B, 0, 0, 0);
@@ -181,7 +200,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
 
         if (player_index < rge_base_game->world->player_num) {
             RGE_Player* player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
-            switch (player->civilization->color) {
+            switch (player->color_table->id) {
             case 0: color = 0xC40000; break;
             case 1: color = 200; break;
             case 2: color = 0xEAEA; break;
@@ -733,7 +752,7 @@ void TribeAchievementsScreen::draw()
                 int remaining;
                 int player_index = 0;
                 for (remaining = count; remaining != 0; --remaining) {
-                    if (world->players[player_index + 1]->active == 1) {
+                    if (world->players[player_index + 1]->game_status == 1) {
                         this->win_decal->shape_draw(
                             this->render_area,
                             this->player_names[player_index]->xPosition() - 0x14,
@@ -787,7 +806,7 @@ long TribeAchievementsScreen::action(TPanel* panel, long id,
 {
     if (panel == this->okButton && id == 1) {
         if (this->end_game_flag != 0) {
-            rge_base_game->quit_game();
+            static_cast<TRIBE_Game*>(rge_base_game)->quit_game();
         } else {
             if (rge_base_game->singlePlayerGame() == 1 &&
                 rge_base_game->save_paused == 0) {
@@ -800,7 +819,7 @@ long TribeAchievementsScreen::action(TPanel* panel, long id,
     }
 
     if (panel == this->restartButton && id == 1) {
-        rge_base_game->restart_game();
+        static_cast<TRIBE_Game*>(rge_base_game)->restart_game();
         return id;
     }
 
@@ -887,7 +906,7 @@ long TribeAchievementsScreen::wnd_proc(void* h1, unsigned int msg,
         confirmed_close = 1;
         int mode = rge_base_game->prog_mode;
         if (mode == 5 || mode == 4 || mode == 6 || mode == 7) {
-            if (IsIconic(draw_surface->hwnd) == 0) {
+            if (IsIconic(render_area->Wnd) == 0) {
                 popupYesNoDialog(get_string(0xC1D), 0, 0x1C2, 100);
                 return 1;
             }

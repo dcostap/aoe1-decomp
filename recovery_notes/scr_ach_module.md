@@ -96,3 +96,25 @@ The candidate-TU validator expects exact owners in `src/matching` and one
 wrapper include for each owner. It cannot validate this direct module source
 until it supports registered source-module owners. Use the focused grouped
 check as the constrained validation for this migration.
+
+## Canonical panel-provider cleanup
+
+`include/scr_ach.h` now includes `Pnl_scr.h`. It owns only
+`TribeAchievementsScreen` and its typed fields. It no longer defines copied
+Panel, Easy Panel, Screen Panel, child panel, Draw Area, Base Game, game, or
+world types.
+
+`src/scr_ach.cpp` privately includes the canonical child-panel, Shape, Base
+Game, game, player, world, victory, scenario, and color providers. The source
+uses `color_table->id`, `game_status`, `render_area->Wnd`, and a `TRIBE_Game`
+cast. These names map to the original field offsets and direct targets.
+
+`tpnl_tml.h` has not yet moved to the canonical panel surface. The owner header
+keeps a narrow caller declaration for its three used methods. It does not
+construct `Time_Line_Panel` or declare its layout.
+
+Candidate validation after this cleanup reports all six registered owners as
+`MATCH` with zero differences. The generated deleting destructor also matches.
+The constructor remains scratch with 2903 differing bytes and one boundary
+escape. `set_mode` remains accepted drift with 45 differing bytes. Their status
+did not change.
