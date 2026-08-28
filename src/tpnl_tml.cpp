@@ -1,83 +1,10 @@
-// PDB source module: C:/msdev/work/age1_x1/tpnl_tml.cpp.
-// Definitions follow the original PDB source order.
 
 #include "../include/tpnl_tml.h"
 #include <new.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 extern "C" int __cdecl stricmp(const char*, const char*);
-extern "C" void* __cdecl calloc(unsigned int, unsigned int);
-extern "C" void __cdecl free(void*);
-
-
-// 0051E650 Time_Line_Panel::Time_Line_Panel (tpnl_tml.cpp:98-109)
-//
-// Attempt log:
-// baseline: offset-backed TPanel constructor; exact size/instruction count but
-//   wrong base-call symbol and several delayed constant stores.
-// probe 2: period TEasy_Panel hierarchy and virtual class surface fixed the
-//   direct call target, but VC5 placed the derived vtable immediately after the
-//   base call and moved the constant stores.
-// probes 3/7/10: the natural member-initializer-list form is the best basin
-//   (276 bytes, 1 aligned TEasy_Panel call, 125 strict-diff bytes); it still
-//   emits highlightTextColor1 before text_style and delays the vtable/back
-//   color/timeline tail relative to the oracle.
-// probes 4/5/6: body-only, reduced virtual surface, and complete PDB layout
-//   variants did not improve the emitted code.
-// probe 9: a focused constructor-form lab found no exact variant; the
-//   remaining blocker is VC5 store/vtable scheduling, not size or call shape.
-// current session: body-assignment, full TPanel/TEasy_Panel vtable, member-width,
-// declaration-order, implicit-base, and narrowed initializer/body variants were
-// compiled and restored; none beat the 276-byte/125-diff initializer-list basin.
-//   The body forms moved the compiler vtable store to entry (200-209 diff), while
-//   the full virtual surface and ground-truth widths emitted unchanged bytes.
-// order lead: moving text_style to the first initializer-list entry emitted
-// identical 276-byte/125-diff code; moving it to the first body statement was
-// worse (276 bytes/221 diff), so restore the canonical initializer-list source.
-// paused: ordered base call and all 47 instructions/size match, but the first
-// mismatch remains +000C (highlightTextColor1 before text_style) with delayed
-// vtable/back-color/tail stores; next lead is original TU/header scheduling.
-// layout hypothesis: use the canonical 0xF4 TPanel and 0x478 TEasy_Panel
-// ownership from the type dumps and the exact 0051E9E0 setup donor.
-// layout probe: the full canonical declarations and handle_mouse_input name
-// emitted the same 276-byte/125-diff constructor; retain them as source truth.
-// BINARY NOTE: this owner shares the complete tpnl_tml.cpp class declarations
-// with the later destructor and create_timeline owners.
-// context probe: the authentic ordered group keeps this owner at 276 bytes with
-// the same 125 strict-diff bytes; the shared context does not repair this owner.
-// context audit: the grouped constructor has the PDB-qualified constructor
-// symbol, one matching TEasy_Panel call, and the same stores to every proven
-// field with the same values. Only independent store order and vtable timing
-// differ. It has no branch or side-effect call after the base constructor.
-// Source-order permutations and ground-truth member widths stayed in the same
-// 125-byte basin. Treat this as localized equivalent compiler drift, not an
-// ownership or behavior defect. The group remains valid context for 0051E860,
-// but it is not an all-exact owner set.
-// exact-finish retry: implicit-base plus style-first initialization, signed and
-//   narrow constant spellings, field access, member access, source-line bands,
-//   /G5, and class declaration order all kept the same 125-byte schedule.
-// Moving highlightTextColor1 into the body changed the schedule but put that
-//   store after the derived vptr. Member-derived color values added loads and
-//   moved the vptr to entry. The remaining blocker is authentic header context
-//   or another natural initializer model that preserves partial construction.
-// fresh exact-finish baseline: PDB owner Time_Line_Panel::Time_Line_Panel in
-//   tpnl_tml.cpp:98-109; 276 bytes, 47 instructions, one direct TEasy_Panel
-//   call, no frame, and saved ESI. The canonical source preserves all proven
-//   field widths, values, the derived-vptr publication, and UI tail stores.
-// fresh probe: reordering the initializer-list entries to follow the original
-//   emitted stores was a duplicate 125-byte schedule.
-// fresh probe: replacing the first initializer group with body assignments kept
-//   the 276-byte boundary but widened the strict diff to 209 bytes and moved
-//   the derived vptr to entry.
-// fresh probe: moving only back_color to the body produced 126 bytes and put
-//   its store after the derived vptr; restore the initializer form.
-// fresh probe: adding the period allocation headers changed no schedule and
-//   was not retained. No natural context probe produced exact bytes.
-// BLOCKED: the remaining 125-byte difference is independent store scheduling
-//   and block order. Keep the canonical source and do not alter tpnl_tim.cpp.
-
 
 Time_Line_Panel::Time_Line_Panel()
     : TEasy_Panel(),
@@ -123,28 +50,13 @@ Time_Line_Panel::Time_Line_Panel()
     legend_entry_text[2] = 0;
 }
 
-// 0051E790 ~Time_Line_Panel (tpnl_tml.cpp:116-141)
-// PDB source: tpnl_tml.cpp (Time_Line_Panel::~Time_Line_Panel)
-//
-// Attempt log:
-// attempt 1: manual dtor+op delete; 192/206b, no EH frame.
-// attempt 2: delete operator + virtual dtors for EH frame. EXACT MATCH.
-// Key: virtual destructors in TPanel/TEasy_Panel/Time_Line_Panel force VC5
-//   to emit EH frame (push -1; push handler; mov [fs:0],esp). Automatic base
-//   dtor call (not explicit), proper linked-list walk using p->next before free.
-//   Offsets: TPanel vtable at +0x00 (compiler-managed). 12 relocations masked.
-// BINARY NOTE: this owner shares the complete tpnl_tml.cpp class declarations
-// with the earlier constructor and the later create_timeline owner.
-// context probe: the authentic ordered group remains an exact 206-byte owner.
-
-
 Time_Line_Panel::~Time_Line_Panel() {
     Special_Events* p;
 
     while (this->time_slice_events != NULL) {
         p = this->time_slice_events;
         this->time_slice_events = p->next;
-        free(p);
+        delete p;
     }
 
     if (this->background_pic != NULL) {
@@ -158,39 +70,10 @@ Time_Line_Panel::~Time_Line_Panel() {
     }
 
     for (int i = 0; i < 3; i++) {
-        this->delete_panel((TPanel**)&this->legend_entry_text[i]);
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->legend_entry_text[i]));
     }
 
 }
-
-// VA: 0051E860 Time_Line_Panel::create_timeline
-// Source: tpnl_tml.cpp lines 149-190
-// Attempt log:
-// 1: natural reconstruction from packet/decompiler; /GX for new Time_Line_Panel cleanup: close, but font default branches inverted vs original.
-// 2: spell font selection as nonnegative fast path to match jl-to-default layout.
-// 3: goto/result still duplicated success epilogue.
-// 4: structured single-return result variable regressed early liveness; rolled back.
-// 5: spell setup success as positive branch before failure block: branch right but success epilogue duplicated.
-// 6: uninitialized result with structured if/else still duplicated epilogue.
-// 7: explicit label order matching original fail/success/initial-fail/zero blocks regressed to 54-byte diff; rolled back to best 35-byte structured form.
-// 8: volatile result forced stack spill and regressed; /O1 and no-/GX too small. Current best has only tail/epilogue block layout drift.
-// The isolated build had reviewed localized SEH tail-layout drift. Setup calls,
-// failure stores, side effects, returns, stack offsets, and object sizes matched.
-// BINARY NOTE: this owner shares the complete tpnl_tml.cpp class declarations
-// with the earlier constructor and destructor owners.
-// BINARY NOTE: the authentic source-line order is constructor, destructor,
-// then create_timeline. That group emits this owner as an exact 377-byte body.
-// The constructor owner still has a proven 125-byte mismatch, so the group is
-// not a complete exact owner set yet.
-// Exact-finish: a fresh build remained an exact 377-byte owner with 11 ordered
-// calls, no frame, four saved registers, the original boundary, and the PDB
-// Time_Line_Panel symbol.
-// Exact-finish walkback: removing the result local and using direct returns
-// kept the exact bytes. Removing the outer and setup else scopes also kept them.
-// Retain those reductions. The shared tpnl_tml header, /GX EH context, extern
-// rge_base_game, natural new, publication before validation, and call order
-// remain required by the current exact build.
-
 
 long Time_Line_Panel::create_timeline(TPanel* parent, Time_Line_Panel** out, long x1, long y1, long x2, long y2, long axis_font_id, long body_font_id, long xden, long yden)
 {
@@ -232,12 +115,6 @@ long Time_Line_Panel::create_timeline(TPanel* parent, Time_Line_Panel** out, lon
     return 1;
 }
 
-// 0051E9E0 Time_Line_Panel::setup (tpnl_tml.cpp:202-227)
-// Attempt 3: fix TPanel.layout - render_area at +0x20
-// BINARY NOTE: this owner uses the shared tpnl_tml.cpp timeline surface.
-
-
-
 long Time_Line_Panel::setup(
     TDrawArea* param_1,
     TPanel* param_2,
@@ -276,21 +153,11 @@ long Time_Line_Panel::setup(
     this->set_special_events(param_14);
 
     unsigned char pal_idx = (unsigned char)GetNearestPaletteIndex(
-        *(void**)((*(char**)this->render_area) + 8), 0);
+        this->render_area->DrawSystem->Pal, 0);
     this->set_back_color(1, pal_idx);
 
     return 1;
 }
-
-// 0051EAB0 Time_Line_Panel::set_bevel_info (tpnl_tml.cpp:234-242)
-// BINARY NOTE: this owner uses the shared tpnl_tml.cpp timeline surface.
-// PDB-qualified owner: ?set_bevel_info@Time_Line_Panel@@QAEXHHHHHHH@Z.
-// The body ends at 0051EAF8 after ret 1Ch; padding starts at 0051EAF9.
-// Fresh exact validation used the authentic ordered module, with
-// Time_Line_Panel::setup at 0051E9E0 immediately before this owner.
-// Exact-finish: implicit int-to-byte member conversion is sufficient; removing
-// explicit casts preserved all 73 bytes.
-
 
 void Time_Line_Panel::set_bevel_info(int param_1, int param_2, int param_3, int param_4, int param_5, int param_6, int param_7) {
     bevel_type = param_1;
@@ -301,10 +168,6 @@ void Time_Line_Panel::set_bevel_info(int param_1, int param_2, int param_3, int 
     bevel_color5 = param_6;
     bevel_color6 = param_7;
 }
-
-// 0051EB00 Time_Line_Panel::set_background (tpnl_tml.cpp:248-268)
-// BINARY NOTE: this owner uses the shared tpnl_tml.cpp timeline and TShape surfaces.
-
 
 int Time_Line_Panel::set_background(char* name) {
     long x_max;
@@ -324,15 +187,11 @@ int Time_Line_Panel::set_background(char* name) {
     }
 
     this->background_pic = new TShape(name, -1);
-    this->background_pic->shape_minmax(&x_max, &x_min, &y_max, &y_min, (long)0);
+    this->background_pic->shape_minmax(x_max, x_min, y_max, y_min, (long)0);
     this->background_pic_wid = (short)(y_max - x_max + 1);
     this->background_pic_hgt = (short)(y_min - x_min + 1);
     return 1;
 }
-
-// 0051EC10 Time_Line_Panel::set_background (tpnl_tml.cpp:275-314)
-// BINARY NOTE: this owner uses the shared tpnl_tml.cpp timeline and TShape surfaces.
-
 
 int Time_Line_Panel::set_background(char* name, long id)
 {
@@ -366,20 +225,14 @@ int Time_Line_Panel::set_background(char* name, long id)
     }
 
     if (this->background_pic != 0) {
-        this->background_pic->shape_minmax(&x_max, &x_min, &y_max, &y_min, (long)0);
+        this->background_pic->shape_minmax(x_max, x_min, y_max, y_min,
+                                           (long)0);
         this->background_pic_wid = (short)(y_max - x_max + 1);
         this->background_pic_hgt = (short)(y_min - x_min + 1);
         return 1;
     }
     return 0;
 }
-
-// VA: 0051EDD0 Time_Line_Panel::set_special_events (258 B, EXACT MATCH)
-// PDB source: tpnl_tml.cpp lines 321-341
-// Key insight: function-scope locals force the 16-byte sub area to be fully
-// occupied, leaving the param_1 slot available for the allocation result.
-// Must use /GX flag for EH prologue (delete + new with throwing constructor).
-// BINARY NOTE: this owner uses the shared tpnl_tml.cpp timeline and TShape surfaces.
 
 int Time_Line_Panel::set_special_events(char* param_1) {
     long x_min;
@@ -394,18 +247,13 @@ int Time_Line_Panel::set_special_events(char* param_1) {
     }
     if (param_1 && *param_1) {
         this->special_events_pic = new TShape(param_1, -1);
-        this->special_events_pic->shape_minmax(&y_max, &loc, &x_min, &y_min, 0);
+        this->special_events_pic->shape_minmax(y_max, loc, x_min, y_min, 0);
         this->special_events_pic_wid = (short)(x_min - y_max + 1);
         this->special_events_pic_hgt = (short)(y_min - loc + 1);
         return 1;
     }
     return 0;
 }
-
-// 0051EEE0 Time_Line_Panel::set_special_events
-// Source: tpnl_tml.cpp lines 348-387
-// attempt 1: cloned exact 0051EC10 set_background pattern with special_events offsets.
-
 
 int Time_Line_Panel::set_special_events(char* name, long id)
 {
@@ -439,7 +287,8 @@ int Time_Line_Panel::set_special_events(char* name, long id)
     }
 
     if (this->special_events_pic != 0) {
-        this->special_events_pic->shape_minmax(&x_max, &x_min, &y_max, &y_min, (long)0);
+        this->special_events_pic->shape_minmax(x_max, x_min, y_max, y_min,
+                                               (long)0);
         this->special_events_pic_wid = (short)(y_max - x_max + 1);
         this->special_events_pic_hgt = (short)(y_min - x_min + 1);
         return 1;
@@ -447,46 +296,29 @@ int Time_Line_Panel::set_special_events(char* name, long id)
     return 0;
 }
 
-// 0051F0A0 Time_Line_Panel::set_axis_font (tpnl_tml.cpp:394-399)
-// BINARY NOTE: the shared timeline surface preserves the redraw slot at +20.
-
-
 void Time_Line_Panel::set_axis_font(void* font, long width, long height) {
     this->axis_font = font;
     this->axis_font_wid = width;
     this->axis_font_hgt = height;
-    this->redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
 }
-
-// 0051F0D0 Time_Line_Panel::set_body_font (tpnl_tml.cpp:407-412)
-// BINARY NOTE: the shared timeline surface preserves the redraw slot at +20.
-
 
 void Time_Line_Panel::set_body_font(void* font, long width, long height) {
     this->body_font = font;
     this->body_font_wid = width;
     this->body_font_hgt = height;
-    this->redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
 }
-
-// 0051F100 Time_Line_Panel::set_back_color (tpnl_tml.cpp:419-422)
-// BINARY NOTE: this owner uses the shared tpnl_tml.cpp timeline surface.
-
 
 void Time_Line_Panel::set_back_color(int a, unsigned char b) {
     this->fill_back = a;
     this->back_color = b;
 }
 
-// 0051F120 Time_Line_Panel::draw_border (tpnl_tml.cpp:429-467)
-// BINARY NOTE: this owner uses the shared TPanel and TDrawArea surfaces.
-// The panel coordinate names map to the proven +0x0C..+0x18 homes.
-
-
 void Time_Line_Panel::draw_border()
 {
     if (this->bevel_type != 0) {
-        if (this->render_area->Lock((char*)0x58b770, 1) != 0) {
+        if (this->render_area->Lock("tpnl_tml::draw_border", 1) != 0) {
             switch (this->bevel_type) {
             case 1:
                 this->render_area->DrawRect(this->pnl_x, this->pnl_y, this->pnl_wid + this->pnl_x - 1, this->pnl_hgt + this->pnl_y - 1, this->outline_color);
@@ -511,35 +343,9 @@ void Time_Line_Panel::draw_border()
                 break;
             }
         }
-        this->render_area->Unlock((char*)0x58b770);
+        this->render_area->Unlock("tpnl_tml::draw_border");
     }
 }
-
-// VA: 0051F310, Time_Line_Panel::init_timeline, 455 bytes
-// Source: tpnl_tml.cpp lines 476-538
-// Attempt log:
-// - v1: natural reconstruction from packet/decompiler with local layout fields and direct TPanel methods.
-// - v2: modeled rge_base_game->world (+0x3f4), world->player_num (+0x3c), players (+0x40), player history_info (+0x83c).
-// - v3: used explicit int stack temps for FILD conversions and exact field offsets from type dump/asm.
-// - v4: split usable_X assignment/subtraction to probe width-result register allocation.
-// - v5: changed usable_X to long to probe local register choice.
-// - v6: hoisted entries local before width call; worsened first mismatch to +0x62, rolled back.
-// - v7: delayed entries local until after FILD setup, using member load for temp2 to probe edx/ecx swap.
-// - v8: changed TPanel position/size return declarations from long to int; no change.
-// - v9: spell usable_X as `-0x31 + width()` single expression; no change.
-// - v10: reversed line-max assignments to probe late load/store order; edit diff improved to 8.79%.
-// - v11: routed width result through temp1; worsened first mismatch/size family, rolled back.
-// - v12: inverted float compare spelling to `1.0f > bar_thickness`; worsened edit diff, rolled back.
-// - v13: paused in scratch with a 455-byte near-match; the remaining ECX/EDX
-//   lifetime swap was traced to persistent entries/diff/temp copies.
-// - v14: removed those compiler-steering copies and used direct member arithmetic;
-//   the emitted function became an exact 455-byte match.
-// - v15: removed the unused player_off increment scaffold; typed players[i+1]
-//   traversal remained exact and is the cleaner source model.
-// - v16: removed the unused explicit _ftol declaration; natural casts remained exact.
-// Exact: 455/455 bytes, 0 strict diff, exact frame/call/CFG/relocation identity.
-// BINARY NOTE: this owner uses the shared tpnl_tml.cpp timeline and world surfaces.
-
 
 extern RGE_Base_Game* rge_base_game;
 
@@ -551,7 +357,8 @@ void Time_Line_Panel::init_timeline()
     int count = (int)world->player_num - 1;
     if (count > 0) {
         do {
-            int n = world->players[i + 1]->history_info->get_history_entry_num();
+            int n = static_cast<TRIBE_Player*>(world->players[i + 1])
+                        ->history->get_history_entry_num();
             if (this->num_history_entries < n) {
                 this->num_history_entries = n;
             }
@@ -598,34 +405,8 @@ void Time_Line_Panel::init_timeline()
     }
 }
 
-// VA: 0051F4E0 Time_Line_Panel::add_pop_total_special_event()
-// Source: tpnl_tml.cpp lines 544-575
-// Size: 124 bytes, __thiscall, ret 10h (4 params)
-//
-// Attempt log:
-// Probe 1: Natural struct with field-order assignments — 6 bytes diff
-//   Pure register allocation: original uses edx=pop_total, ecx=icon_flag
-//   Rebuilt reverses: ecx=pop_total, edx=icon_flag
-// Probe 2: Moved pop_total assignment up (before zero-fill) — worse (21 bytes)
-// Probe 3: Swapped icon_flag before pop_total in source — fixed reg alloc, reversed store order
-// Probe 4: Exact struct types from type dump — still 6 bytes (edx/ecx swap)
-// Probe 5: const locals for pop_total/icon_flag — still 6 bytes
-// Probe 6: Renamed params (pt/iflg) + icon_flag first in source — fixed regs, wrong store order
-//
-// Probe 7: Moved event=3 and pop_total=pop_total before the remaining zero-fill.
-//   This produced the original register colors, late event/pop/icon stores, and
-//   the exact 124-byte target. Walkback of only this source-order change restored
-//   the 6-byte permutation.
-// Exact: 124/124 bytes, 0 strict diff, exact frame/call/CFG/relocation identity.
-// BINARY NOTE: the target allocates a zeroed 0xB0-byte Special_Events record,
-// writes the four parameters and event value 3, then prepends the record at
-// Time_Line_Panel::time_slice_events (+0x518).
-// BINARY NOTE: event and pop_total are assigned before the remaining zero
-// stores in source; VC5 schedules their final stores in the original late group.
-
-
 void Time_Line_Panel::add_pop_total_special_event(long time_slice, long pop_total, long X_line_pos, int icon_flag) {
-    Special_Events* se = (Special_Events*)calloc(1, 0xB0);
+    Special_Events* se = new Special_Events();
 
     se->time_slice = time_slice;
     se->X_line_pos = X_line_pos;
@@ -652,74 +433,41 @@ void Time_Line_Panel::add_pop_total_special_event(long time_slice, long pop_tota
     this->time_slice_events = se;
 }
 
-void* __cdecl calloc(int,int);
-void Time_Line_Panel::record_special_event(unsigned char param_1,TRIBE_History_Info* param_2,unsigned char param_3,long param_4,long param_5,long param_6,long param_7){
-    long t=param_4;
-    if (!param_2->get_history_event(t, *(unsigned char*)&param_4)) return;
-    Special_Events* p=(Special_Events*)calloc(1,0xB0);
-    p->X_line_pos=param_5; p->Y_line_pos=param_6; p->intermediate_y_line_segment=param_7; p->time_slice=t;
-    p->player_id=param_1; p->player_color=param_3; p->event=(unsigned char)param_4;
-    p->pop_total=0;
-    p->integer_value_1=0; p->integer_value_2=0; p->start_x=0; p->start_y=0; p->start_txt_x1=0; p->start_txt_y1=0; p->start_txt_x2=0; p->start_txt_y2=0; p->text_length1=0; p->text1[0]=0; p->text_length2=0; p->text2[0]=0; p->icon_flag=0;
-    p->next=time_slice_events; time_slice_events=p;
+void Time_Line_Panel::record_special_event(
+    unsigned char player_id, TRIBE_History_Info* history,
+    unsigned char player_color, long time_slice, long x_line_pos,
+    long y_line_pos, long segment)
+{
+    unsigned char event;
+    if (!history->get_history_event(time_slice, event)) {
+        return;
+    }
+
+    Special_Events* special_event = new Special_Events();
+    special_event->X_line_pos = x_line_pos;
+    special_event->Y_line_pos = y_line_pos;
+    special_event->intermediate_y_line_segment = segment;
+    special_event->time_slice = time_slice;
+    special_event->player_id = player_id;
+    special_event->player_color = player_color;
+    special_event->event = event;
+    special_event->pop_total = 0;
+    special_event->integer_value_1 = 0;
+    special_event->integer_value_2 = 0;
+    special_event->start_x = 0;
+    special_event->start_y = 0;
+    special_event->start_txt_x1 = 0;
+    special_event->start_txt_y1 = 0;
+    special_event->start_txt_x2 = 0;
+    special_event->start_txt_y2 = 0;
+    special_event->text_length1 = 0;
+    special_event->text1[0] = 0;
+    special_event->text_length2 = 0;
+    special_event->text2[0] = 0;
+    special_event->icon_flag = 0;
+    special_event->next = time_slice_events;
+    time_slice_events = special_event;
 }
-
-// 0051F600 Time_Line_Panel::calculate_icon_location
-// Attempt log:
-// try 1-10 (prior worker): decompiler-shaped reconstruction with an incomplete
-// Special_Events/Time_Line_Panel surface and a two-argument ABI; exact size was
-// padded but the emitted body was broad drift.
-// baseline candidate: restored the ground-truth Special_Events and
-// Time_Line_Panel ownership/layout, the three-argument __thiscall ABI, the
-// typed TShape reference surface, and direct strlen/switch source shape.
-// probe 2: changed the valid flag to period-style `ok = 1` with an explicit
-// null test; this recovered the original prologue and reduced the strict diff.
-// probe 3: reversed the ordinary zero-initialized local declaration order;
-// this recovered the +20/+1c/+18 initialization homes exactly.
-// probe 4: reversed the centered-icon bound predicate; only the compare
-// allocation changed, but the original operand polarity remained supported.
-// probe 5: a named centered-x temporary was codegen-duplicate and rolled back.
-// probe 7: a named right-bound temporary was codegen-duplicate and rolled back.
-// probe 8: delayed case-2's text-x store with a scoped case local; this kept
-// separate case-0/case-2 handlers and improved emitted size by 20 bytes.
-// probe 9: named max-x/product-first truncation predicates were effectively
-// duplicate; retained only as the cleaner phase-local source form.
-// probe 10: swapping semantic start-x/start-y local ownership regressed the
-// proven initialization homes; restored the probe-9 source.
-// current claim probe: a separate natural left-x temporary was codegen-
-// duplicate; restored the clean source.
-// current claim probe: reversed the three text-fit predicates so the overflow
-// arm stays inline and the fit arm branches to the later block; this reduced
-// the strict diff by one byte and improved block topology, so it is retained.
-// current claim probe: nested the post-shape-bounds ok guard as suggested by
-// the decompiler's proven nested source structure; it worsened size by 8 bytes
-// and lost the exact block at +00a4, so it was restored.
-// Paused blocker: the typed ABI/layout, frame, saved-register set, and three
-// direct calls are exact, but VC5 still chooses the wrong centered-bound
-// register/reload topology and omits the oracle's case-0 stack stores and
-// modes-6/8 parameter-home spill.  The remaining branch/case placement and
-// final temporary coloring are structural/source-shape leads, not a safe blind
-// register tweak.  No inline asm or opaque address plumbing was used.
-// claim probes 1-27: case-local mode bounds recovered the exact function size
-// and several exact handler blocks.  A reversed case-1 Y predicate and a
-// case-0 text-X local improved the clean source, but did not change the first
-// centered-bound mismatch.  Nested geometry guards, inherited panel context,
-// Windows and standard-library header variants, and an eight-variant source
-// lab produced no exact result.  The nested guard had better metrics, but the
-// extra ok test is not in the oracle and was not retained.
-// BINARY NOTE: the oracle writes case-0 text results to a local stack home and
-// reuses the dead parameter-2 home in modes 6 and 8.  The clean source still
-// misses both stores while preserving the proven behavior and ABI.
-// LIKELY INTENT: the source uses one centered icon bound and separate text
-// placement paths for event modes 0, 1, 2, 6, and 8.
-// claim probes 29-44: source operand and field-order variants did not change
-// the first centered-bound register basin.  Repeating the mode-6/8 bound
-// expression recovered the oracle's dead parameter-2 home store and two
-// exact truncation blocks.  Reversing the vertical clip predicate recovered
-// its cmp/jcc polarity.  Reversing the vertical temporary declarations
-// improved block shape without changing the strict diff.  The final source
-// keeps those natural, binary-supported forms.  It remains unresolved.
-
 
 int Time_Line_Panel::calculate_icon_location(
     Special_Events* param_1, short param_2, uchar param_3)
@@ -928,11 +676,6 @@ store_location:
     return ok;
 }
 
-// attempt 1: direct Time_Line_Panel draw path using the panel dump offsets and the known helper sequence
-// target shape: base draw, clear +0x38, gate on +0x20/+0x70/+0x6C, then vcall +0x28, helpers, and vcall +0x2C
-// BINARY NOTE: the panel setup and finish calls use the inherited draw_setup and draw_finish slots.
-
-
 void Time_Line_Panel::draw(void) {
     TPanel::draw();
     this->need_redraw = 0;
@@ -948,25 +691,7 @@ void Time_Line_Panel::draw(void) {
     }
 }
 
-// VA: 0051FA90 Time_Line_Panel::draw_axis
-// Attempt log:
-// - The prior rough source used a raw palette pointer, wrong GDI calls, wrong
-//   string helper, and four-argument FillRect calls. It was not a valid source
-//   reconstruction.
-// - Rebuilt the panel geometry from the exact tpnl_tml.cpp donors and the
-//   original call order. The palette belongs to DrawSystem::Pal. The axis is
-//   four typed FillRect calls with the saved palette index as the fifth arg.
-// - Baseline: this typed source reached 744 bytes with all 38 calls ordered,
-//   but the third and fourth top edges lacked Y_axis_length.
-// - Added the proven Y_axis_length terms. The result reached 762 bytes and
-//   exposed the original centered-label load order.
-// - Split centered-label x placement into ordered statements. This restored
-//   the X_start_line_pos reload before strlen and produced an exact match.
-// Exact: 760/760 bytes, 0 strict diff, exact frame/call/CFG/relocation identity.
-
-
 extern char s_tpnl_tml_draw_axis[];
-
 
 void Time_Line_Panel::draw_axis()
 {
@@ -1041,63 +766,6 @@ void Time_Line_Panel::draw_axis()
     }
 }
 
-// 0051FD90 Time_Line_Panel::draw_special_events (tpnl_tml.cpp:923-1055)
-// Attempt log:
-// - Existing baseline used an incorrect EventNode layout, IsLocked/TextOut switch,
-//   and a sub-esp frame; it was 674 bytes but only 73.7% call-site aligned.
-// - Reconstructed the period TDrawSystem/TDrawArea palette ownership, exact
-//   Special_Events offsets, Lock->Unlock->GetDc lifecycle, and the two switch
-//   families from the executable packet.  The first compile is the current
-//   structural hypothesis; further probes will focus on switch duplication and
-//   text-expression source order.
-// - Correct palette ownership changed the two calls to load TDrawSystem::Pal
-//   ([draw_area]->[0]->[8]) and brought the ordered call set to 19/19.
-// - Direct per-case draw_icon calls preserved a clean natural source but left
-//   four duplicated pushes for the -1 position; the shared-local/goto variants
-//   added a stack home and were rolled back as less plausible and farther.
-// - Removing named x/y temporaries from the type-3 text path kept the frame
-//   smaller and improved the resynchronized diff; the nearest-pointer scope
-//   and shared iterator/lifetime probes emitted duplicate code.
-// - Independent named strlen temporaries caused a larger frame.  The final
-//   natural expression keeps the two binary-observed strlen scans inline, so
-//   VC5 pushes the TextOut length before yPosition and rescans for centering.
-// - Grouping event types 0..3 at one draw_icon body with the shared -1
-//   position is the current best source reconstruction: exact size/frame,
-//   19/19 ordered calls, 95.53% shape, 86.18% exact blocks. Main-agent string
-//   normalization improved the strict diff from 570 to 569 bytes. The
-//   remaining drift begins in the first switch's byte-load/jump-table shape;
-//   budget exhausted without a source-plausible exact lead.
-// - Tried one natural loop-local event code for the draw switch; it improved
-//   strict diff to 479 bytes but added 74 bytes and lost block parity, so it
-//   was rolled back as a nonviable lifetime hypothesis.
-// - Tried source-order-separated constant draw_icon cases.  This reproduced
-//   the original xor/mov-al jump-table load and improved strict diff to 419,
-//   but duplicated the shared call tail, added 74 bytes, and crossed the
-//   function boundary.  Rolled back.
-// - Tried shared draw_icon tails with int locals, mixed-width locals, and the
-//   function-scope short/uchar variables suggested by the decompiler.  These
-//   all changed the prologue or added 102-142 bytes.  Rolled back; the clean
-//   grouped switch remains the source-authoritative candidate.
-// - Revisit probes: period Windows/import and decorated string declarations
-//   changed the call basin without improving the target; explicit constant
-//   cases, a decompiler-shaped goto tail, and named lower-y locals added
-//   74-146 bytes or an ESP frame.  Reversing the lower y expression recovered
-//   the binary yPosition-before-height call order at unchanged whole metrics.
-//   Local declaration order, an explicit int switch cast, a separate first-loop
-//   pointer, and an explicit default edge were unchanged.  An 8-state variant
-//   lab confirmed only two code groups: the grouped source kept 674 bytes and
-//   the constant-case source grew to 756 bytes.  No exact lead was found.
-// - This claim's focused probes established that first-switch source case order
-//   0, 1, 2, 4, 5, 6, 7, 8, 3 reproduces the target's immediate pushes and
-//   shared -1 tail from +0055 through +00A6.  It reached 419 strict-diff bytes
-//   and 91.46% exact-block coverage, but VC5 emitted 74 bytes of switch-table
-//   data after the function boundary.  Separate second-scan pointers and
-//   declaration-order variants did not change that output.  Repeated ternary
-//   expressions moved the second event pointer to EBX but lost the target's
-//   evaluation order and broad block parity.  The clean grouped source remains
-//   authoritative; the late first-switch case order is the next lead.
-
-
 void Time_Line_Panel::draw_special_events()
 {
     Special_Events* event;
@@ -1106,7 +774,7 @@ void Time_Line_Panel::draw_special_events()
     if (this->timeline_flag != 0) {
         {
             unsigned int (__stdcall* nearest)(void*,
-                                              unsigned int) =
+                                              unsigned long) =
                 GetNearestPaletteIndex;
             nearest(this->render_area->DrawSystem->Pal, 0xFFFFFF);
             nearest(this->render_area->DrawSystem->Pal, 0);
@@ -1212,46 +880,6 @@ void Time_Line_Panel::draw_special_events()
     }
 }
 
-// 00520080 Time_Line_Panel::draw_background
-// Source: tpnl_tml.cpp lines 1062-1120
-// Attempt log:
-// 1: natural decompiler-shaped tiling/fill/bevel paths; behavior/call set close, edit diff ~86B.
-// 2: fixed the height tile-count source to match the original's odd uninitialized-local fallthrough when pic_h < panel_h; edit diff improved to 76B.
-// 3: tried y-coordinate named local before shape_draw; VC5 optimized to the same scheduling.
-// 4: tried reversed x/y expression term order; no codegen change.
-// 5: tried void return for TShape::shape_draw; no codegen change.
-// 6: tried narrow unsigned-char zero args for shape_draw tail parameters; no codegen change.
-// 7: tried explicit draw_x/draw_y locals; no codegen change.
-// 8: tried compound assignment draw_y/draw_x spelling to force original register sequence; no codegen change.
-// 9: tried swapping local declaration order; no codegen change.
-// 10: tried short locals and for-loop spelling; worsened diff, reverted.
-// 11: corrected TShape::shape_draw to the executable unsigned-char/long/uchar ABI;
-//     emitted code was unchanged, but the living declaration now has the exact symbol surface.
-// 12: mirrored the same-TU donor's y-then-x named temporaries; VC5 emitted the
-//     same tiled loop, so the direct canonical expressions were restored.
-// 13: made both tile-count locals short without casts; this worsened the height
-//     branch and was restored to the int locals that preserve the observed stack stores.
-// 14: fresh pass reversed the coordinate terms to the exact Pnl_txt donor form;
-//     VC5 emitted the unchanged tiled loop.
-// 15: fresh pass materialized long draw_y/draw_x locals with compound additions;
-//     VC5 optimized them to the unchanged loop.
-// 16: fresh pass declared draw_x before draw_y, following exact terrain-shape
-//     register-coloring evidence; the emitted code was unchanged.
-// 17: fresh pass declared typed int draw_y before draw_x in shape_draw, following
-//     the exact Pnl_txt donor's source order; emitted code was unchanged.
-// 18: natural typed lead from the exact Pnl_txt timeline donor: expose the
-// period TShape data surface and SDK context while retaining the target ABI.
-//    This moved the tiled loop to exact shape and reduced strict drift to 15
-//    register-encoding bytes; the remaining hunk is count-setup register color.
-// 19: narrowed the width tile-count local to short; VC5 emitted the same 15-byte
-//     register-color drift, so the change was not retained as a codegen lead.
-// 20: narrowed the height tile-count local to short; this added four bytes and
-//     changed the loop shape, so it was restored.
-// 21: removed temporary width/height locals and used direct panel members, as in
-//     the exact Pnl_txt donor; this produced an exact 412-byte match.
-
-
-
 void Time_Line_Panel::draw_background()
 {
     int pic_rows;
@@ -1326,27 +954,6 @@ void Time_Line_Panel::draw_background()
     }
 }
 
-// VA: 00520220 Time_Line_Panel::draw_civilization_names
-// Attempt log:
-// try 1: natural reconstruction from packet/Ghidra with GDI IAT function-pointer surface, game/world/player/history minimal layouts.
-// try 2: initial source compiled exact-size 626 but broad drift: frame 0x148 vs original 0x144 and this kept in EBX instead of EBP.
-// try 3: nested-control-flow form instead of early returns; still frame 0x148 and this kept in EBX.
-// try 4: raw byte-offset player indexing for the population scan; reduced output to 624 bytes but did not recover original prologue/register allocation.
-// try 5: raw byte-offset player indexing for the draw loop; same family, original wants EBX as player-array byte offset only after 00520333.
-// try 6: /GX tested; no useful change, removed.
-// try 7: /Od tested; exact size but completely wrong debug-basin codegen, removed.
-// try 8: corrected RGE_Base_Game get_string virtual slot to +0x28; call surface now matches original vtable offset but size/register drift remains.
-// try 9: kept GDI calls as extern function pointers to preserve indirect IAT call style.
-// try 10: leaving in scratch: clean behavioral source was 624B vs 626B with immediate prologue/frame/register mismatch.
-// try 11: corrected get_history_entry to its unsigned-char/long ABI; bytes were unchanged.
-// try 12: added the period Windows/TPanel/TEasy_Panel surface and exact DrawDc ownership; size stayed 613B but the edit alignment improved.
-// try 13: removed the cached second-loop player alias and restored the binary-proven repeated player-array reloads; exact 626B match.
-// BINARY NOTE: the five-argument call at vtable +0x28 is RGE_Base_Game::get_string2.
-// Exact: 626/626 bytes, 0 strict diff, exact frame/call/CFG/relocation identity.  The two named byte cursors are retained because the
-// oracle has independent [players+offset] induction registers in both scans and the repeated player loads are observable; this is a
-// period-plausible pointer-array traversal rather than an opaque address or register-forcing alias.
-
-
 void Time_Line_Panel::draw_civilization_names()
 {
     char temp_str[100];
@@ -1364,29 +971,37 @@ void Time_Line_Panel::draw_civilization_names()
             SetBkMode(this->render_area->DrawDc, 1);
             old_font = SelectObject(this->render_area->DrawDc, this->body_font);
             pop_total = 0.0f;
-            int i = 0;
+            int player_index = 0;
             if (rge_base_game->world->player_num - 1 > 0) {
-                int off = 4;
                 do {
-                    pop_total += (float)((*(RGE_Player**)((char*)rge_base_game->world->players + off))->history_info->get_history_entry(0,0) & 0xff);
-                    i++;
-                    off += 4;
-                } while (i < rge_base_game->world->player_num - 1);
+                    TRIBE_Player* player = static_cast<TRIBE_Player*>(
+                        rge_base_game->world->players[player_index + 1]);
+                    pop_total += (float)(
+                        player->history->get_history_entry(0, 0) & 0xff);
+                    player_index++;
+                } while (player_index < rge_base_game->world->player_num - 1);
             }
             if (pop_total != 0.0f) {
                 X_line_pos = this->X_start_line_pos + 3;
                 Y_line_pos = this->Y_start_line_pos;
                 if (rge_base_game->world->player_num - 1 > 0) {
                     y_line_segment_length = 0;
-                    int off2 = 4;
+                    player_index = 0;
                     do {
-                        int seg = (int)(((float)((*(RGE_Player**)((char*)rge_base_game->world->players + off2))->history_info->get_history_entry(0,0) & 0xff) / pop_total) * (float)this->Y_line_max_length);
-                        rge_base_game->get_string2(0x69, (*(RGE_Player**)((char*)rge_base_game->world->players + off2))->civilization, 0, civ_str, 100);
-                        strcpy(name_str, (*(RGE_Player**)((char*)rge_base_game->world->players + off2))->name);
+                        TRIBE_Player* player = static_cast<TRIBE_Player*>(
+                            rge_base_game->world->players[player_index + 1]);
+                        int seg = (int)(((float)(
+                            player->history->get_history_entry(0, 0) & 0xff) /
+                            pop_total) * (float)this->Y_line_max_length);
+                        rge_base_game->get_string2(
+                            0x69, player->master_player_id, 0, civ_str, 100);
+                        strcpy(name_str, player->name);
                         sprintf(temp_str, "%s - %s", name_str, civ_str);
-                TextOutA(this->render_area->DrawDc, X_line_pos, Y_line_pos + (seg / 2 - this->body_font_hgt / 2), temp_str, strlen(temp_str));
+                        TextOutA(this->render_area->DrawDc, X_line_pos,
+                                 Y_line_pos + (seg / 2 - this->body_font_hgt / 2),
+                                 temp_str, strlen(temp_str));
                         Y_line_pos += seg;
-                        off2 += 4;
+                        player_index++;
                         y_line_segment_length++;
                     } while (y_line_segment_length < rge_base_game->world->player_num - 1);
                 }
@@ -1396,46 +1011,6 @@ void Time_Line_Panel::draw_civilization_names()
         }
     }
 }
-
-// VA: 005204A0 Time_Line_Panel::draw_timeline (1565 bytes)
-// Source: tpnl_tml.cpp lines 1191-1427
-// Attempt log:
-// - Initial bounded reconstruction from packet/Ghidra, preserving the original nested player scans,
-//   switch color dispatch, x87 conversion expressions, and early-return behavior.
-// - Probe: removed the decompiler-only special-event counter; original increment has no later read.
-// - Probe: restored the packet's overlapping pop_total/event local and its zero initialization.
-// - Structural probe: restored donor-proven byte-cursor scans and the original fractional segment
-//   correction/local counter topology; replaced diagnostic _ftol stubs with typed conversions.
-// - Probe: promoted the repeated segment temporary to the named local lifetime used by the draw loop.
-// - Probe: typed conversion and outer-temporary variants preserved the 19-call set but did not
-//   reduce the 0x64 frame; the prior clean result was 1565 bytes and 56.5% shape.
-// - Probe: the binary's repeated player guard is `player_num - 1 > 0`; the simpler guard improved
-//   CFG parity from 37/41 to 37/38 conditions.
-// - Probe: direct repeated world/player expressions remove cached object homes and improve shape
-//   to 65.5%; the candidate is 1616 bytes with a 0x5C frame and 19 aligned calls.
-// - Probe: reusing local_38 as the inner player cursor is codegen-duplicate evidence.
-// - Probe: modeled history samples as a float time_slice and kept the returned sample in a signed dword temp;
-//   this reached the original 0x50/0x54 frame basin and reduced strict drift to 1337 bytes.
-// - Probe: separated the 32-bit switch palette input from the byte palette-index result; this preserved the
-//   original EAX switch constants and reduced strict drift to 1300 bytes with 73.7% shape similarity.
-// - Probe: ordered the Y-line total load before the explicit sample conversion; the current clean source is
-//   1600 bytes with a 0x50 frame, 19 aligned calls, and 1299-byte strict drift.
-// - Current claim probes 1-20: tested loop forms, local types and order, interpolation groupings,
-//   canonical class context, and Windows header context. Header context and alternate loop forms did not
-//   improve strict output. Duplicate codegen ruled out several declaration and cast variants.
-// - Binary-supported recovery: the inner bar loop has independent intermediate_x_pos and special_event_flag
-//   counters. The stack uses [esp+4Ch] for interpolation and [esp+48h] for first-column event gating.
-//   Restoring both counters reaches the original 0x54 frame and 19-call set, but remains nonexact at 1620
-//   bytes, 70.04% shape, and 1310 strict-drift bytes. The pinned final source keeps this natural model.
-// - Unresolved: initial local-home permutation, early page/history CFG layout, and x87 sample conversion
-//   scheduling still differ. The separate bar_length local is retained because its source form is closer
-//   than the binary-overlapped reuse variant; no unsupported register steering or inline assembly was used.
-// - Follow-up claim probes 21-33 tested outer-loop forms, local scope and width, operand order, accumulator
-//   forms, x87 interpolation ownership, and address-taken sample storage. No probe improved the clean bytes.
-// - Final clean result: 1620 emitted bytes versus 1565, 0x54 frame, 19 ordered calls, 70.04% shape,
-//   and 1310 strict-drift bytes. Keep the simplest two-counter source until new binary evidence appears.
-
-
 
 void Time_Line_Panel::draw_timeline()
 {
@@ -1447,7 +1022,7 @@ void Time_Line_Panel::draw_timeline()
     float float_remainder;
     float cntr_droped_slice_rate;
     long pop_sample_cntr;
-    int local_38;
+    int player_index;
     int local_34;
     long error_correction_drop_time_slice_rate;
     long time_slice_cntr;
@@ -1464,10 +1039,10 @@ void Time_Line_Panel::draw_timeline()
 
     if (this->timeline_flag == 0) return;
 
-    if (this->render_area->Lock((char*)0x58B820, 1) == 0) return;
+    if (this->render_area->Lock("tpnl_tml::draw_timeline", 1) == 0) return;
 
     this->X_line_pos = this->X_start_line_pos;
-    local_38 = 0;
+    player_index = 0;
     local_10 = 0;
     time_slice_cntr = 0;
     pop_sample_cntr = 0;
@@ -1481,21 +1056,21 @@ void Time_Line_Panel::draw_timeline()
 
             temp_pop_num = 0.0f;
             error_correction_time_slice_thickness = 0;
-            int i = 0;
+            player_index = 0;
             if ((int)rge_base_game->world->player_num - 1 > 0) {
-                int player_offset = 4;
                 do {
-                    temp_color = (*(TRIBE_Player**)((char*)rge_base_game->world->players + player_offset))
-                        ->history_info->get_history_entry(0, (long)next_pop_total);
+                    TRIBE_Player* player = static_cast<TRIBE_Player*>(
+                        rge_base_game->world->players[player_index + 1]);
+                    temp_color = player->history->get_history_entry(
+                        0, (long)next_pop_total);
                     time_slice = (float)temp_color;
-                    if ((*(TRIBE_Player**)((char*)rge_base_game->world->players + player_offset))
-                            ->history_info->get_history_event((long)next_pop_total, event) != 0) {
+                    if (player->history->get_history_event(
+                            (long)next_pop_total, event) != 0) {
                         error_correction_time_slice_thickness = 1;
                     }
                     temp_pop_num = time_slice + temp_pop_num;
-                    i++;
-                    player_offset += 4;
-                } while (i < (int)rge_base_game->world->player_num - 1);
+                    player_index++;
+                } while (player_index < (int)rge_base_game->world->player_num - 1);
             }
 
             if (temp_pop_num == 0.0f) return;
@@ -1514,16 +1089,17 @@ void Time_Line_Panel::draw_timeline()
                     float_remainder = temp_pop_num;
                 } else {
                     float_remainder = 0.0f;
-                    i = 0;
+                    player_index = 0;
                     if ((int)rge_base_game->world->player_num - 1 > 0) {
-                        int player_offset = 4;
                         do {
-                            temp_color = (*(TRIBE_Player**)((char*)rge_base_game->world->players + player_offset))
-                                ->history_info->get_history_entry(0, next_pop_total + 1);
+                            TRIBE_Player* player = static_cast<TRIBE_Player*>(
+                                rge_base_game->world->players[player_index + 1]);
+                            temp_color = player->history->get_history_entry(
+                                0, next_pop_total + 1);
                             float_remainder = (float)temp_color + float_remainder;
-                            i++;
-                            player_offset += 4;
-                        } while (i < (int)rge_base_game->world->player_num - 1);
+                            player_index++;
+                        } while (player_index <
+                                 (int)rge_base_game->world->player_num - 1);
                     }
                     if (float_remainder == 0.0f) return;
                 }
@@ -1553,12 +1129,13 @@ void Time_Line_Panel::draw_timeline()
                         cntr_droped_slice_rate = 0;
                         local_34 = 0;
                         if ((int)rge_base_game->world->player_num - 1 > 0) {
-                            local_38 = 4;
+                            player_index = 0;
                             do {
                                 unsigned long palette_color;
                                 unsigned char color;
-                                switch ((*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))
-                                            ->details->civilization) {
+                                TRIBE_Player* player = static_cast<TRIBE_Player*>(
+                                    rge_base_game->world->players[player_index + 1]);
+                                switch (player->color_table->id) {
                                 case 0: palette_color = 0x00C40000; break;
                                 case 1: palette_color = 0x000000C8; break;
                                 case 2: palette_color = 0x0000EAEA; break;
@@ -1569,9 +1146,11 @@ void Time_Line_Panel::draw_timeline()
                                 case 7: palette_color = 0x00808040; break;
                                 default: palette_color = 0x00FFFFFF; break;
                                 }
-                                color = GetNearestPaletteIndex((*(void***)this->render_area)[2], palette_color);
-                                temp_color = (long)(*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))
-                                    ->history_info->get_history_entry(0, next_pop_total);
+                                color = GetNearestPaletteIndex(
+                                    this->render_area->DrawSystem->Pal,
+                                    palette_color);
+                                temp_color = (long)player->history->get_history_entry(
+                                    0, next_pop_total);
                                 Y_line_total = this->Y_line_max_length;
                                 time_slice = (float)temp_color;
                                 temp_pop_num = (time_slice / temp_pop_num) *
@@ -1581,8 +1160,8 @@ void Time_Line_Panel::draw_timeline()
 
                                 if (this->bar_thickness != 1.0f) {
                                     if (next_pop_total != this->num_entries_page - 1) {
-                                        time_slice = (float)(*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))
-                                            ->history_info->get_history_entry(0, y_line_segment_length);
+                                        time_slice = (float)player->history->get_history_entry(
+                                            0, y_line_segment_length);
                                     }
                                     Y_line_total = this->Y_line_max_length;
                                     long next_segment = (long)(time_slice /
@@ -1608,15 +1187,15 @@ void Time_Line_Panel::draw_timeline()
 
                                 this->render_area->DrawVertLine(this->X_line_pos, this->Y_line_pos, segment, (unsigned char)color);
                                 if (special_event_flag == 0) {
-                                this->record_special_event((unsigned char)(local_34 + 1),
-                                    (*(TRIBE_Player**)((char*)rge_base_game->world->players + local_38))->history_info,
+                                    this->record_special_event((unsigned char)(local_34 + 1),
+                                    player->history,
                                         (unsigned char)color, next_pop_total, this->X_line_pos,
                                         this->Y_line_pos, segment);
                                 }
                                 this->Y_line_pos += segment;
                                 cntr2 += segment;
                                 local_34++;
-                                local_38 += 4;
+                                player_index++;
                             } while (local_34 < (int)rge_base_game->world->player_num - 1);
                         }
                         intermediate_x_pos++;
@@ -1633,33 +1212,8 @@ void Time_Line_Panel::draw_timeline()
         } while (next_pop_total < this->num_history_entries);
     }
 
-    this->render_area->Unlock((char*)0x58B820);
+    this->render_area->Unlock("tpnl_tml::draw_timeline");
 }
-
-// Attempt log for 00520AE0 Time_Line_Panel::draw_icon
-// try 1: natural reconstruction from packet/decompiler with minimal surfaces; too small 528B.
-// try 2: add all post-location draw cases and closer decompiler fields; exact size but EBP=this, no IAT ptr local, wrong palette +8 load.
-// try 3: use self local, explicit GetNearestPaletteIndex function-pointer local, and palette[2] expression; edit diff improved to 31.5%, but EBP=this instead of EBX=this.
-// try 4: predeclare minute/hour locals at top to encourage EBP as arithmetic local; no codegen change.
-// try 5: /O1 flag probe; too small 422B, rolled back.
-// try 6: /Oy- flag probe; worse from offset 0, rolled back.
-// try 7: remove self local and use direct this to probe EBX allocation; no change.
-// try 8: remove getNearest local and call import pointer directly; worse (75.7%/33.9%), rolled back.
-// try 9: restore getNearest local best form.
-// try 10: reviewed switch vs if-chain; switch dispatch matches original jump-table family, so kept.
-// BLOCKER: exact 581B size, call set and much of structure plausible, but register allocation remains wrong from prologue (rebuilt EBP=this, original EBX=this with EBP used later for hour quotient). This shifts all this-relative encodings and broad positional diff. Not accepted_drift-safe.
-// worker probe 2: corrected Special_Events ownership/layout, inherited TPanel/TEasy_Panel context, and the six-argument TShape ABI; 315B diff, exact size/frame/call set.
-// worker probe 3: replaced gap-only panel declarations with the ground-truth typed member surfaces; emitted code was unchanged.
-// worker probes 4-5: reordered/widened time-format locals; emitted code was unchanged.
-// worker probe 7: restored the binary-proven seconds -> zero-minute -> optional-hour source semantics; 8 differing bytes remain, all temp_str+4 stack displacement bytes.
-// worker probes 6/8: declaration-order variant families for arithmetic and local declarations collapsed to one emitted group.
-// worker probe 9: minimal RECT/header-context variant emitted the same 8-byte drift.
-// worker probe 10: a synthetic union overlay reduced no bytes and changed the frame to 0x34; rolled back as implausible.
-// worker probe 11: scoped temp_str to the event switch as a natural lifetime/scheduling lead; emitted code stayed unchanged at 8 bytes, rolled back.
-// current worker probe 1: stored the palette result in typed temp_str[0]; the frame fell to 0x34 while the same eight displacement bytes remained.
-// current worker probe 2: widened temp_str to 54 bytes for its four-byte palette prefix and 0x32-byte text destination; exact 581-byte match.
-// Best current reconstruction is the typed period-style source below. The 54-byte temporary models the four-byte palette prefix and 0x32-byte text destination.
-
 
 void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3)
 {
@@ -1668,7 +1222,7 @@ void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3
     long hi_top;
     long q_top;
     unsigned int (__stdcall* getNearest)(void*,
-                                         unsigned int) =
+                                         unsigned long) =
         GetNearestPaletteIndex;
     getNearest(this->render_area->DrawSystem->Pal, 0xffffff);
     temp_str[0] = (char)getNearest(this->render_area->DrawSystem->Pal, 0);
@@ -1686,7 +1240,6 @@ void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3
     case 8:
         sprintf(temp_str + 4, "%ld/%1d", ev->integer_value_1, ev->integer_value_2);
         sprintf(ev->text1, "%s", temp_str + 4);
-        // fall through
     case 3: {
         sprintf(ev->text1, "%ld", ev->pop_total);
         hi_top = 0;
@@ -1723,7 +1276,7 @@ void Time_Line_Panel::draw_icon(Special_Events* ev, short param_2, uchar param_3
     default:
         if (ok) {
             this->special_events_pic->shape_draw(this->render_area, ev->start_x, ev->start_y,
-                                    (int)param_2, 0, (uchar*)0);
+                                    (int)param_2, 0, 0);
         }
         return;
     }

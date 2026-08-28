@@ -173,17 +173,16 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     create_text(this, this->achievement_choice + 3, 0, 0x11A, 0x5B, 0x9C, 0x135, 0x0B, 0, 0, 0);
     create_text(this, this->achievement_choice + 4, 0, 0x184, 0x6F, 0x79, 0x121, 0x0B, 0, 0, 0);
 
-    int player_index = 1;
+    int player_index = 0;
     TTextPanel** player_name = this->player_names;
     TTextPanel** row = this->statistics[0] + 2;
-    int player_offset;
     int y = 0xAB;
-    player_offset = 4;
-    // BINARY NOTE: The shipped loop compares the decremented index with 8.
+    // BINARY NOTE: The shipped loop creates eight player rows.
     do {
         char* name;
-        if (player_index < rge_base_game->world->player_num) {
-            RGE_Player* named_player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
+        if (player_index + 1 < rge_base_game->world->player_num) {
+            RGE_Player* named_player =
+                rge_base_game->world->players[player_index + 1];
             name = named_player->name;
         } else {
             name = 0;
@@ -198,8 +197,9 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
         create_text(this, row + 3, 0, 0x1BA, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
         create_text(this, row + 4, 0, 0x1EE, y, 0x33, 0x1D, 0x0B, 1, 1, 0);
 
-        if (player_index < rge_base_game->world->player_num) {
-            RGE_Player* player = *(RGE_Player**)((char*)rge_base_game->world->players + player_offset);
+        if (player_index + 1 < rge_base_game->world->player_num) {
+            RGE_Player* player =
+                rge_base_game->world->players[player_index + 1];
             switch (player->color_table->id) {
             case 0: color = 0xC40000; break;
             case 1: color = 200; break;
@@ -222,11 +222,10 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
         }
 
         y += 0x1E;
-        player_offset += 4;
         ++player_name;
         row += 7;
         ++player_index;
-    } while (player_index <= 8);
+    } while (player_index < 8);
 
     long ok_x;
     long ok_width;
@@ -290,8 +289,10 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     tabList[local_1dc++] = this->okButton;
     set_tab_order(tabList, (short)local_1dc);
     set_curr_child(this->okButton);
-    this->backButton->set_tab_order((TPanel*)0, (TPanel*)0);
-    this->backButton2->set_tab_order((TPanel*)0, (TPanel*)0);
+    this->backButton->set_tab_order(static_cast<TPanel*>(0),
+                                    static_cast<TPanel*>(0));
+    this->backButton2->set_tab_order(static_cast<TPanel*>(0),
+                                     static_cast<TPanel*>(0));
 
     if (this->win_loss_text != 0) {
         set_mode(5);
@@ -355,7 +356,10 @@ TribeAchievementsScreen::~TribeAchievementsScreen()
         delete this->instruction_bar;
     }
 
-    this->delete_panel((TPanel**)&this->close_button);
+    if (this->close_button != 0) {
+        delete this->close_button;
+        this->close_button = 0;
+    }
 
     TTextPanel** title_bar = this->title_bar;
     int title_count = 7;
@@ -744,7 +748,7 @@ void TribeAchievementsScreen::draw()
         this->draw_setup(0);
 
         if (this->win_decal != 0 &&
-            this->render_area->Lock((char*)"scr_ach::draw", 1) != 0) {
+            this->render_area->Lock("scr_ach::draw", 1) != 0) {
             RGE_Game_World* world = rge_base_game->world;
             int count = world->player_num - 1;
 
@@ -763,7 +767,7 @@ void TribeAchievementsScreen::draw()
                 }
             }
 
-            this->render_area->Unlock((char*)"scr_ach::draw");
+            this->render_area->Unlock("scr_ach::draw");
         }
 
         this->draw_finish();

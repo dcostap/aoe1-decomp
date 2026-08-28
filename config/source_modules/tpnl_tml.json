@@ -4,9 +4,13 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tpnl_tml.cpp",
   "source": "src/tpnl_tml.cpp",
   "header": "include/tpnl_tml.h",
+  "header_composition": {
+    "status": "repaired",
+    "summary": "Owns Time_Line_Panel and Special_Events. Consumes canonical Panel, draw-area, Shape, text-panel, Base Game, world, player, history, and color providers."
+  },
   "functions": {
     "0051E650": { "status": "verified_logic", "note_path": "recovery_notes/tpnl_tml_module.md" },
-    "0051E790": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
+    "0051E790": { "status": "scratch", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "0051E860": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "0051E9E0": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "0051EAB0": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
@@ -19,14 +23,14 @@
     "0051F100": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "0051F120": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "0051F310": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
-    "0051F4E0": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
-    "0051F560": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
+    "0051F4E0": { "status": "scratch", "note_path": "recovery_notes/tpnl_tml_module.md" },
+    "0051F560": { "status": "scratch", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "0051F600": { "status": "scratch", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "0051FA30": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "0051FA90": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "0051FD90": { "status": "scratch", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "00520080": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
-    "00520220": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
+    "00520220": { "status": "scratch", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "005204A0": { "status": "scratch", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "00520AE0": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" },
     "00520D50": { "status": "matching", "note_path": "recovery_notes/tpnl_tml_module.md" }

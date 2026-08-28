@@ -237,7 +237,6 @@
       "module": "tpnl_tml",
       "flags": "config/flags/0051E860_create_timeline.rsp",
       "owners": {
-        "0051E790": "src/tpnl_tml.cpp",
         "0051E860": "src/tpnl_tml.cpp",
         "0051E9E0": "src/tpnl_tml.cpp",
         "0051EAB0": "src/tpnl_tml.cpp",
@@ -250,26 +249,20 @@
         "0051F100": "src/tpnl_tml.cpp",
         "0051F120": "src/tpnl_tml.cpp",
         "0051F310": "src/tpnl_tml.cpp",
-        "0051F4E0": "src/tpnl_tml.cpp",
-        "0051F560": "src/tpnl_tml.cpp",
         "0051FA30": "src/tpnl_tml.cpp",
         "0051FA90": "src/tpnl_tml.cpp",
         "00520080": "src/tpnl_tml.cpp",
-        "00520220": "src/tpnl_tml.cpp",
         "00520AE0": "src/tpnl_tml.cpp",
         "00520D50": "src/tpnl_tml.cpp"
       },
       "symbols": {
-        "0051E790": "??1Time_Line_Panel@@UAE@XZ",
         "0051E860": "?create_timeline@Time_Line_Panel@@QAEJPAVTPanel@@PAPAV1@JJJJJJJJ@Z",
         "0051EB00": "?set_background@Time_Line_Panel@@QAEHPAD@Z",
         "0051EC10": "?set_background@Time_Line_Panel@@QAEHPADJ@Z",
         "0051EDD0": "?set_special_events@Time_Line_Panel@@QAEHPAD@Z",
         "0051EEE0": "?set_special_events@Time_Line_Panel@@QAEHPADJ@Z",
-        "0051F4E0": "?add_pop_total_special_event@Time_Line_Panel@@QAEXJJJH@Z",
         "0051FA90": "?draw_axis@Time_Line_Panel@@QAEXXZ",
         "00520080": "?draw_background@Time_Line_Panel@@QAEXXZ",
-        "00520220": "?draw_civilization_names@Time_Line_Panel@@QAEXXZ",
         "00520AE0": "?draw_icon@Time_Line_Panel@@QAEXPAUSpecial_Events@@FE@Z",
         "00520D50": "?draw_legend@Time_Line_Panel@@QAEXXZ",
         "0051E9E0": "?setup@Time_Line_Panel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJ2JJPAD3HEHE@Z",
@@ -279,7 +272,6 @@
         "0051F100": "?set_back_color@Time_Line_Panel@@QAEXHE@Z",
         "0051F120": "?draw_border@Time_Line_Panel@@QAEXXZ",
         "0051F310": "?init_timeline@Time_Line_Panel@@QAEXXZ",
-        "0051F560": "?record_special_event@Time_Line_Panel@@QAEXEPAVTRIBE_History_Info@@EJJJJ@Z",
         "0051FA30": "?draw@Time_Line_Panel@@UAEXXZ"
       }
     },
@@ -1862,7 +1854,6 @@
       "module": "scr_ach",
       "flags": "config/flags/0048D530_TribeAchievementsScreen.rsp",
       "owners": {
-        "0048E210": "src/scr_ach.cpp",
         "0048F0B0": "src/scr_ach.cpp",
         "0048F190": "src/scr_ach.cpp",
         "0048F280": "src/scr_ach.cpp",

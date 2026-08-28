@@ -39,19 +39,22 @@ surfaces. The call arguments and slots are proved by the original calls at
 codegen-only residue and are removed.
 
 The accepted-drift owner `0048E400` remains observed. The scratch constructor
-`0048D530` remains unresolved. The other six owners remain registered matching
-owners.
+`0048D530` remains unresolved. The destructor `0048E210` is scratch after the
+natural typed close-button deletion. The other five owners remain registered
+matching owners.
 
 ## Function notes
 
 The constructor uses 260-byte `info_file` storage. A 256-byte probe matched
 the frame but lacks packet support. The natural 50-byte `temptxt` and its
-15-byte tail clear are retained. The player loop keeps its observed decremented
-index comparison with eight. The source has the explicit mode-selection branch
-and the panel surface proved by the translation-unit packet.
+15-byte tail clear are retained. The player loop uses a zero-based row index
+and reads `world->players[player_index + 1]`. It preserves the eight player
+slots and their original player-array positions. The source has the explicit
+mode-selection branch and the panel surface proved by the translation-unit
+packet.
 
-The constructor remains scratch at the current 2877-byte difference and two
-boundary escapes. A rejected 48-byte local variant matched the frame but used
+The constructor remains scratch at the current 2830-byte difference and one
+boundary escape. A rejected 48-byte local variant matched the frame but used
 compiler steering. An uninitialized temporary was also rejected because VC5
 removed it and changed the frame. The next useful evidence is a fresh exact
 constructor context check after the module move.
@@ -85,17 +88,8 @@ The three cached standalone checks attempted for `0048E210`, `0048F0B0`, and
 They did not rebuild because the assignment permits cached checks only. The
 module test passes with two tests.
 
-The constructor natural-name cleanup and protected `set_mode` declaration occur
-only in the unregistered observed owners or their local target identity. No
-registered owner was changed after the grouped exact results, but a fresh
-standalone cache is still required for final confirmation.
-
-## Evidence blocker
-
-The candidate-TU validator expects exact owners in `src/matching` and one
-wrapper include for each owner. It cannot validate this direct module source
-until it supports registered source-module owners. Use the focused grouped
-check as the constrained validation for this migration.
+The natural typed close-button deletion differs by 435 bytes and has two
+boundary escapes. `0048E210` is no longer an exact owner.
 
 ## Canonical panel-provider cleanup
 
@@ -109,12 +103,12 @@ Game, game, player, world, victory, scenario, and color providers. The source
 uses `color_table->id`, `game_status`, `render_area->Wnd`, and a `TRIBE_Game`
 cast. These names map to the original field offsets and direct targets.
 
-`tpnl_tml.h` has not yet moved to the canonical panel surface. The owner header
-keeps a narrow caller declaration for its three used methods. It does not
-construct `Time_Line_Panel` or declare its layout.
+`include/tpnl_tml.h` now owns the complete `Time_Line_Panel` class. The
+achievements header includes it directly. It has no caller-side timeline
+declaration.
 
-Candidate validation after this cleanup reports all six registered owners as
-`MATCH` with zero differences. The generated deleting destructor also matches.
-The constructor remains scratch with 2903 differing bytes and one boundary
-escape. `set_mode` remains accepted drift with 45 differing bytes. Their status
-did not change.
+Candidate validation reports all five registered owners as `MATCH` with zero
+differences. The generated deleting destructor also matches. The constructor
+remains scratch with 2830 differing bytes and one boundary escape. The
+destructor remains scratch with 435 differing bytes and two boundary escapes.
+`set_mode` remains accepted drift with 45 differing bytes.

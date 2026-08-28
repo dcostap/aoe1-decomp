@@ -3,22 +3,12 @@
 
 // PDB source module: C:\msdev\work\age1_x1\scr_ach.cpp.
 #include "Pnl_scr.h"
+#include "tpnl_tml.h"
 
 class TShape;
 class TTextPanel;
 class TButtonPanel;
 class TScrollBarPanel;
-
-// tpnl_tml.h has not yet adopted the canonical panel surface. This caller
-// needs only the PDB-proved methods below. It does not construct this type.
-class Time_Line_Panel : public TEasy_Panel {
-public:
-    virtual ~Time_Line_Panel();
-    long create_timeline(TPanel*, Time_Line_Panel**, long, long, long, long,
-                         long, long, long, long);
-    void set_bevel_info(int, int, int, int, int, int, int);
-    int set_special_events(char*);
-};
 
 class TribeAchievementsScreen : public TScreenPanel {
 public:
