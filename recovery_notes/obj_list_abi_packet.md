@@ -18,15 +18,14 @@ The canonical Node layout is `0x10`: payload `node` at `+0x00`, `next` at
 
 The header does not own view, master, static, player, world, or derived object classes.
 
-## Source hold
+## Source resolution
 
-Do not compile or integrate `obj_list.cpp` yet.
-The old draw path uses a fake view support class.
-Do not move that class into source.
+`obj_list.cpp` now includes the canonical object, master, player, world, and
+derived-object providers. It no longer declares the old draw-view overlay.
 
-The source needs canonical `stat_obj.h` for static fields and virtual calls.
-It needs canonical `m_s_obj.h` for `fog_flag`.
-It needs the full player owner header for `color_table`, `world`, and `id`.
-It needs `world.h` for `curr_player` and `players`.
+The draw path uses `RGE_Static_Object` for object fields and virtual calls.
+Ally color comes from `RGE_Doppleganger_Object::draw_color`, which owns the
+binary field at `+0x90`.
 
-The source must call canonical static-object virtual methods after these headers land.
+The player relation test uses `RGE_Player::mutualAlly`. Destruction uses the
+canonical virtual destructor through `delete`.

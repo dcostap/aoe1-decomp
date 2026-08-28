@@ -1,4 +1,13 @@
+#include "../include/act_obj.h"
+#include "../include/ani_obj.h"
+#include "../include/dpl_obj.h"
+#include "../include/m_s_obj.h"
+#include "../include/misl_obj.h"
+#include "../include/Mouseptr.h"
 #include "../include/obj_list.h"
+#include "../include/player.h"
+#include "../include/stat_obj.h"
+#include "../include/world.h"
 
 #include <stdlib.h>
 
@@ -13,8 +22,9 @@ RGE_Object_List::~RGE_Object_List() {
     node = this->list;
     while (node != 0) {
         RGE_Object_Node* next = node->next;
-        if (node->object != 0) {
-            node->object->destroy(1);
+        RGE_Static_Object* object = node->node;
+        if (object != 0) {
+            delete object;
         }
         node = next;
     }
@@ -34,8 +44,9 @@ void RGE_Object_List::removeAllObjects() {
 
     while (node != 0) {
         RGE_Object_Node* next = node->next;
-        if (node->object != 0) {
-            node->object->destroy(1);
+        RGE_Static_Object* object = node->node;
+        if (object != 0) {
+            delete object;
         }
         node = next;
     }
@@ -111,11 +122,11 @@ void RGE_Object_List::draw(TDrawArea* draw_area, short x, short y,
         return;
     }
     do {
-        RGE_Object_Draw_View* object = (RGE_Object_Draw_View*)node->node;
+        RGE_Static_Object* object = node->node;
         if (object) {
             RGE_Player* owner = object->owner;
             unsigned char should_draw = 1;
-            void* color_table = owner->color_table;
+            RGE_Color_Table* color_table = owner->color_table;
             switch (object->master_obj->fog_flag) {
             case 0:
                 if (fog) {
@@ -136,8 +147,9 @@ void RGE_Object_List::draw(TDrawArea* draw_area, short x, short y,
                     short player_id = owner->id;
                     short current_player = world->curr_player;
                     RGE_Player* current = world->players[current_player];
-                    if (*(int*)((unsigned char*)current + player_id * 4 + 0xAC)) {
-                        color_table = object->ally_color_table;
+                    if (current->mutualAlly[player_id]) {
+                        color_table =
+                            ((RGE_Doppleganger_Object*)object)->draw_color;
                         should_draw = 1;
                     }
                 }
@@ -217,13 +229,6 @@ void RGE_Object_List::normal_draw(TDrawArea* draw_area, short x, short y,
     }
 }
 
-class TMousePointer {
-public:
-    void Poll();
-};
-
-extern TMousePointer* MouseSystem;
-
 void RGE_Object_List::update() {
     RGE_Object_Node* node = this->list;
     int count = 0;
@@ -295,9 +300,9 @@ RGE_Static_Object* RGE_Object_List::find_by_group(long group) {
     }
 
     while (node != 0) {
-        if (node->object != 0) {
-            if ((long)node->object->master_obj->object_group == group) {
-                return node->object;
+        if (node->node != 0) {
+            if ((long)node->node->master_obj->object_group == group) {
+                return node->node;
             }
         }
         node = node->next;
@@ -319,26 +324,26 @@ RGE_Static_Object* RGE_Object_List::find_by_group(
         zone = -1;
     }
 
-    node = this->first;
+    node = this->list;
     found = 0;
     best_distance = -1.0f;
     while (node != 0) {
-        RGE_Static_Object* object = node->object;
+        RGE_Static_Object* object = node->node;
         if (object != 0) {
             if ((long)object->master_obj->object_group == group) {
-                if (!check_player || object->player_id == player_id) {
+                if (!check_player || object->object_state == player_id) {
                     if (x == -1.0f || y == -1.0f) {
-                        return node->object;
+                        return node->node;
                     }
                     if (zone > -1) {
-                        if ((zone_object->lookupZone((int)object->x,
-                                                    (int)object->y) & 0xff) != zone) {
+                        if ((zone_object->lookupZone((int)object->world_x,
+                                                    (int)object->world_y) & 0xff) != zone) {
                             goto next_group_node;
                         }
                     }
-                    RGE_Static_Object* current = node->object;
-                    float dx = x - current->x;
-                    float dy = y - current->y;
+                    RGE_Static_Object* current = node->node;
+                    float dx = x - current->world_x;
+                    float dy = y - current->world_y;
                     float distance = dx * dx + dy * dy;
                     if (best_distance == -1.0f || best_distance > distance) {
                         best_distance = distance;
@@ -388,12 +393,12 @@ RGE_Static_Object* RGE_Object_List::find_by_master_id(
     found = 0;
     best_distance = -1.0f;
     while (node != 0) {
-        RGE_Static_Object* object = node->object;
+        RGE_Static_Object* object = node->node;
         if (object != 0) {
-            if (object->master->id == master_id) {
+            if (object->master_obj->id == master_id) {
                 if (!use_state || object->object_state == state) {
                     if (x == -1.0f || y == -1.0f) {
-                        return node->object;
+                        return node->node;
                     }
                     if (zone > -1) {
                         if ((zone_object->lookupZone((int)object->world_x,
@@ -401,7 +406,7 @@ RGE_Static_Object* RGE_Object_List::find_by_master_id(
                             goto next_master_node;
                         }
                     }
-                    RGE_Static_Object* current = node->object;
+                    RGE_Static_Object* current = node->node;
                     float dx = x - current->world_x;
                     float dy = y - current->world_y;
                     float distance = dx * dx + dy * dy;
@@ -434,27 +439,27 @@ RGE_Static_Object* RGE_Object_List::find_by_master_ids(
         zone = -1;
     }
 
-    node = this->first;
+    node = this->list;
     found = 0;
     best_distance = -1.0f;
     while (node != 0) {
-        RGE_Static_Object* object = node->object;
+        RGE_Static_Object* object = node->node;
         long master_id = object->master_obj->id;
         if (object != 0) {
             if (master_id == first_id || master_id == second_id) {
-                if (!check_player || object->player_id == player_id) {
+                if (!check_player || object->object_state == player_id) {
                     if (x == -1.0f && y == -1.0f) {
-                        return node->object;
+                        return node->node;
                     }
                     if (zone > -1) {
-                        if ((zone_object->lookupZone((int)object->x,
-                                                    (int)object->y) & 0xff) != zone) {
+                        if ((zone_object->lookupZone((int)object->world_x,
+                                                    (int)object->world_y) & 0xff) != zone) {
                             goto next_master_ids_node;
                         }
                     }
-                    RGE_Static_Object* current = node->object;
-                    float dx = x - current->x;
-                    float dy = y - current->y;
+                    RGE_Static_Object* current = node->node;
+                    float dx = x - current->world_x;
+                    float dy = y - current->world_y;
                     float distance = dx * dx + dy * dy;
                     if (best_distance == -1.0f || best_distance > distance) {
                         best_distance = distance;
@@ -478,11 +483,11 @@ RGE_Static_Object* RGE_Object_List::find_by_type(
     RGE_Object_Node* node = this->list;
 
     while (node != 0) {
-        RGE_Static_Object* object = node->obj;
+        RGE_Static_Object* object = node->node;
         if (object != 0 && object->type == type &&
             (!check_state || object->object_state == state)) {
             if (x == -1.0f && y == -1.0f) {
-                return node->obj;
+                return node->node;
             }
 
             float dx = x - object->world_x;
