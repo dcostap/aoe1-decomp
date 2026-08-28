@@ -4939,6 +4939,7 @@
     {
       "name": "tm_tre_o",
       "source": "src/tm_tre_o.cpp",
+      "module": "tm_tre_o",
       "flags": "config/flags/0050F3A0_make_new_master.rsp",
       "owners": {
         "0050F180": "src/tm_tre_o.cpp",
