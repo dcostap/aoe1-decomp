@@ -1820,7 +1820,7 @@
       "name": "tplayer",
       "source": "src/tplayer.cpp",
       "module": "tplayer",
-      "flags": "config/flags/default.rsp",
+      "flags": "config/flags/tplayer.rsp",
       "owners": {
         "00512620": "src/tplayer.cpp",
         "00514510": "src/tplayer.cpp",
