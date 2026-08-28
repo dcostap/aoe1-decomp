@@ -6,6 +6,7 @@ class RGE_Static_Object;
 class TDrawArea;
 
 struct RGE_Object_Node {
+public:
     RGE_Static_Object* node;
     RGE_Object_Node* next;
     RGE_Object_Node* prev;

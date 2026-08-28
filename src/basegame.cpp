@@ -233,7 +233,8 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)
 
 
 
-extern void __cdecl debug_srand(char* file, int line, unsigned int seed);
+extern "C" void __cdecl debug_srand(char* file, int line,
+                                     unsigned int seed);
 extern "C" void __cdecl GetDXVersion(unsigned long* version, unsigned long* platform);
 extern int debugActions;
 extern FILE* actionFile;
@@ -4717,7 +4718,8 @@ extern char debug_random_log[5000][100];
 
 
 
-void __cdecl debug_srand(char* param_1, int param_2, unsigned int param_3)
+extern "C" void __cdecl debug_srand(char* param_1, int param_2,
+                                     unsigned int param_3)
 {
     if (do_debug_random && debug_random_on) {
         char buf[9]; param_1 += 10; char* d = buf; char* end = param_1 + 8; char c = *param_1;

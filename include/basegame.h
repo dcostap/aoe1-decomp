@@ -7,6 +7,8 @@ class RGE_Base_Game;
 class RGE_Game_Info;
 class RGE_Game_World;
 class RGE_Player;
+class TRIBE_Player;
+class TribeInformationAIModule;
 struct RGE_Prog_Info;
 class RGE_Scenario;
 class RGE_Scenario_File_Info;
@@ -35,7 +37,7 @@ class TRIBE_Screen_Disconnect;
 // PDB owner: basegame.cpp, 004231E0.
 unsigned long __cdecl debug_timeGetTime(char*, int);
 int __cdecl debug_rand(char*, int);
-void __cdecl debug_srand(char*, int, unsigned int);
+extern "C" void __cdecl debug_srand(char*, int, unsigned int);
 
 struct RGE_Font {
     HFONT font;
@@ -64,6 +66,8 @@ class RGE_Base_Game {
     friend int __cdecl debug_rand(char*, int);
     friend void __cdecl debug_srand(char*, int, unsigned int);
     friend class RGE_Player;
+    friend class TRIBE_Player;
+    friend class TribeInformationAIModule;
     friend class TCommunications_Handler;
     friend class RGE_Communications_Synchronize;
     friend class RGE_Main_View;

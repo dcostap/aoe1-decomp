@@ -3,6 +3,7 @@
 
 #include "../include/taiinfmd.h"
 #include "../include/taimdmd.h"
+#include "../include/game_globals.h"
 #include "../include/aipbook.h"
 #include "../include/ai_play_phase_command.h"
 #include "../include/ai_play_phase.h"
@@ -2976,7 +2977,6 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
 }
 
 // PDB-order owner 004DCF10.
-#include "../include/game_globals.h"
 #include <math.h>
 
 void* operator new(unsigned int size);
@@ -3299,7 +3299,6 @@ done:
 }
 
 // PDB-order owner 004DDD40.
-#include "../include/game_globals.h"
 #include <math.h>
 
 extern int debug_rand(char* file, int line);
