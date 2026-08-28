@@ -24,6 +24,8 @@ class TRIBE_Screen_Game;
 
 class TRIBE_Game : public RGE_Base_Game {
 public:
+    using RGE_Base_Game::get_string;
+
     enum MapSize {
         Tiny = 0,
         Small,
