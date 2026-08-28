@@ -1,7 +1,10 @@
 #include "../include/sprite.h"
 #include "../include/sprite_records.h"
 #include "../include/sound.h"
-#include "../include/game_globals.h"
+#include "../include/view.h"
+#include "../include/Shape.h"
+#include "../include/basegame.h"
+#include "../include/color.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +18,9 @@ extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 extern "C" void __cdecl _ASMSet_Color_Xform(int value);
 extern void __cdecl write_draw_log(char* text);
 extern void __cdecl write_draw_log2(char* text);
+extern int do_draw_log;
+extern int safe_draw_log;
+extern double DAT_00574528;
 
 static const char sprite_format[] =
     " %s %s %d %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %f %hd %hd %hd";
@@ -785,7 +791,7 @@ int RGE_Sprite::get_size(long& min_x, long& min_y, long& max_x,
         }
     }
 
-    return this->shape->shape_minmax(&min_x, &min_y, &max_x, &max_y, facet);
+    return this->shape->shape_minmax(min_x, min_y, max_x, max_y, facet);
 }
 
 // PDB order: sprite.cpp lines 711-759.
@@ -1002,8 +1008,8 @@ unsigned char RGE_Sprite::shape_hit_test(short x, short y, long facet,
 
     case 2:
         if (this->shape != 0) {
-            this->shape->shape_minmax(&min_x, &min_y, &max_x,
-                                      &max_y, shape_frame);
+            this->shape->shape_minmax(min_x, min_y, max_x, max_y,
+                                      shape_frame);
             int x_value = x;
             if (facet_index != 0) {
                 if (x_value < -max_x) {
