@@ -6,6 +6,7 @@
 
 #include "aiplaybook.h"
 #include "ai_play_phase_command.h"
+#include "ai_play_phase_trigger.h"
 
 typedef unsigned char uchar;
 
@@ -211,18 +212,6 @@ struct AIPlayGrouping {
     unsigned char groupValue;
     unsigned char typeValue;
     char gap_06[2];
-};
-
-class AIPlayPhaseTrigger {
-public:
-    unsigned char typeValue;
-    char gap_01[3];
-    int value1Value;
-    int value2Value;
-    unsigned char phaseValue;
-    unsigned char nextPhaseValue;
-    char gap_0E[2];
-    int randomnessValue;
 };
 
 class AIPlayPhase {

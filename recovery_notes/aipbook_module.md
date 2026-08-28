@@ -8,11 +8,15 @@
 - The compiler-generated vector deleting destructor at `004101D0` is not a normal owner.
 - `include/aipbook.h` owns the reviewed module layouts.
 - `include/ai_play_phase_command.h` owns AIPlayPhaseCommand.
+- `include/ai_play_phase_trigger.h` owns AIPlayPhaseTrigger.
 
 PDB field list `0x2629` puts the command fields in `protected` access. The
 owner header supplies the PDB public accessors. The module uses those accessors
 outside AIPlayPhaseCommand member functions. The grouped candidate keeps all
 64 registered matching owners at `MATCH`, `0.0000%`.
+
+The trigger record is 0x14. Its PDB fields are protected. Natural alignment
+supplies its internal gaps. Aipbook consumes its public accessors.
 
 ## Status
 

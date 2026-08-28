@@ -255,13 +255,13 @@ int AIPlayPhase::addCommand(AIPlayPhaseCommand& command) {
 int AIPlayPhase::addTrigger(AIPlayPhaseTrigger& trigger) {
     int i = 0;
     while (i < 3) {
-        if (this->triggers[i].typeValue == 0) {
-            this->triggers[i].typeValue = trigger.typeValue;
-            this->triggers[i].value1Value = trigger.value1Value;
-            this->triggers[i].value2Value = trigger.value2Value;
-            this->triggers[i].phaseValue = trigger.phaseValue;
-            this->triggers[i].nextPhaseValue = trigger.nextPhaseValue;
-            this->triggers[i].randomnessValue = trigger.randomnessValue;
+        if (this->triggers[i].type() == 0) {
+            this->triggers[i].setType(trigger.type());
+            this->triggers[i].setValue1(trigger.value1());
+            this->triggers[i].setValue2(trigger.value2());
+            this->triggers[i].setPhase(trigger.phase());
+            this->triggers[i].setNextPhase(trigger.nextPhase());
+            this->triggers[i].setRandomness(trigger.randomness());
             return 1;
         }
         i++;
@@ -406,8 +406,8 @@ int AIPlay::gatherTolerance(int, int param_2) {
     int i = 0;
     while (i < 3) {
         AIPlayPhaseTrigger* trigger_0 = phase_0->trigger(i);
-        if (trigger_0 != 0 && trigger_0->typeValue == 1) {
-            return trigger_0->value1Value;
+        if (trigger_0 != 0 && trigger_0->type() == 1) {
+            return trigger_0->value1();
         }
         i++;
     }

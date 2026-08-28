@@ -1122,8 +1122,8 @@ foundTrigger:
             int i = 0;
             do {
                 trigger = phase->trigger(i);
-                if (trigger != 0 && trigger->typeValue != 0) {
-                    switch (trigger->typeValue) {
+                if (trigger != 0 && trigger->type() != 0) {
+                    switch (trigger->type()) {
                     case 1: {
                         triggerSatisfied = 1;
                         a = 0;
@@ -1152,7 +1152,7 @@ foundTrigger:
                                                     (float)phaseCommand->value2() +
                                                         target->world_z);
                                             if (gatherDistance >
-                                                (float)trigger->value1Value) {
+                                                (float)trigger->value1()) {
                                                 triggerSatisfied = 0;
                                             }
                                         }
@@ -1176,7 +1176,7 @@ foundTrigger:
                                 (AIPlayGrouping*)((char*)this->playStatus +
                                                   groupingOffset);
                             if ((unsigned int)grouping->groupValue ==
-                                (unsigned int)trigger->value1Value) {
+                                (unsigned int)trigger->value1()) {
                                 ++matchingGroups;
                                 RGE_Static_Object* member =
                                     this->lookupObject(grouping->id);
@@ -1187,7 +1187,7 @@ foundTrigger:
                             groupingOffset += 8;
                         } while (groupingOffset < 400);
                         if (matchingGroups != 0 &&
-                            trigger->value2Value <= (deadGroups * 100) /
+                            trigger->value2() <= (deadGroups * 100) /
                                 matchingGroups) {
                             triggerSatisfied = 1;
                         }
@@ -1201,7 +1201,7 @@ foundTrigger:
                                 (AIPlayGrouping*)((char*)this->playStatus +
                                                   groupingOffset);
                             if ((unsigned int)grouping->typeValue ==
-                                (unsigned int)trigger->value1Value) {
+                                (unsigned int)trigger->value1()) {
                                 RGE_Static_Object* member =
                                     this->lookupObject(grouping->id);
                                 if (member != 0) {
@@ -1211,11 +1211,11 @@ foundTrigger:
                             groupingOffset += 8;
                         } while (groupingOffset < 400);
                         int original = this->playStatus->originalHitPoints(
-                            trigger->value1Value);
-                        if (trigger->value2Value <=
+                            trigger->value1());
+                        if (trigger->value2() <=
                             ((original - lostHitPoints) * 100) /
                                 this->playStatus->originalHitPoints(
-                                    trigger->value1Value)) {
+                                    trigger->value1())) {
                             triggerSatisfied = 1;
                         }
                         break;
@@ -1231,7 +1231,7 @@ foundTrigger:
                                 (AIPlayGrouping*)((char*)this->playStatus +
                                                   groupingOffset);
                             if ((unsigned int)grouping->groupValue ==
-                                    (unsigned int)trigger->value1Value) {
+                                    (unsigned int)trigger->value1()) {
                                 RGE_Static_Object* member =
                                     this->lookupObject(grouping->id);
                                 if (member != 0 && member->object_state == 2) {
@@ -1253,7 +1253,7 @@ foundTrigger:
                                 (AIPlayGrouping*)((char*)this->playStatus +
                                                   groupingOffset);
                             if ((unsigned int)grouping->typeValue ==
-                                    (unsigned int)trigger->value1Value) {
+                                    (unsigned int)trigger->value1()) {
                                 RGE_Static_Object* member =
                                     this->lookupObject(grouping->id);
                                 if (member != 0 &&
@@ -1270,7 +1270,7 @@ foundTrigger:
                         triggerSatisfied = 1;
                         break;
                     case 11:
-                        if (trigger->value1Value <
+                        if (trigger->value1() <
                             (this->objectValue->owner->world->world_time -
                              this->playStatus->lastPhaseChangeTimeValue) /
                                 1000) {
@@ -1282,7 +1282,7 @@ foundTrigger:
                     }
 
                     if (triggerSatisfied &&
-                        this->selectNewPlayPhase(trigger->nextPhaseValue, 0) == 1) {
+                        this->selectNewPlayPhase(trigger->nextPhase(), 0) == 1) {
                         return;
                     }
                 }
@@ -4625,7 +4625,7 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 //   offsets and direct-call set; replacing the stale unrelated placeholder.
 // - Hoisted the natural play/phase locals and used the packet's do-while trigger scan;
 //   those spellings alone stayed in the same 199-byte basin.
-// - Materializing trigger->value1Value before the AIPlayStatus::group call preserved
+// - Materializing trigger->value1() before the AIPlayStatus::group call preserved
 //   its live EDI compare value, triggered the original delayed callee-save layout,
 //   and produced an exact 209-byte match under the default flags.
 
@@ -4644,13 +4644,13 @@ void UnitAIModule::processGroupNotify(NotifyEvent* param_1)
         int i = 0;
         do {
             AIPlayPhaseTrigger* trigger = phase->trigger(i);
-            if (trigger != 0 && trigger->typeValue != 0) {
-                if (trigger->typeValue == 5) {
-                    this->selectNewPlayPhase(trigger->nextPhaseValue, 0);
-                } else if (trigger->typeValue == 4) {
-                    int value1 = trigger->value1Value;
+            if (trigger != 0 && trigger->type() != 0) {
+                if (trigger->type() == 5) {
+                    this->selectNewPlayPhase(trigger->nextPhase(), 0);
+                } else if (trigger->type() == 4) {
+                    int value1 = trigger->value1();
                     if (value1 == this->playStatus->group(param_1->recipient)) {
-                        this->selectNewPlayPhase(trigger->nextPhaseValue, 0);
+                        this->selectNewPlayPhase(trigger->nextPhase(), 0);
                     }
                 }
             }

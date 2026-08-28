@@ -6,6 +6,7 @@
 
 #include "aiplaybook.h"
 #include "ai_play_phase_command.h"
+#include "ai_play_phase_trigger.h"
 
 class RGE_Game_World;
 class AIPlayStatus;
@@ -20,31 +21,6 @@ public:
     XYZ(int x, int y, int z);
     void rotateXYByFacet(const XYZ& facet, XYZ& output,
                          unsigned char facetIndex);
-};
-
-class AIPlayPhaseTrigger {
-public:
-    unsigned char typeValue;            // +0x00
-    unsigned char pad_01[3];            // +0x01
-    int value1Value;                    // +0x04
-    int value2Value;                    // +0x08
-    unsigned char phaseValue;           // +0x0C
-    unsigned char nextPhaseValue;       // +0x0D
-    unsigned char pad_0E[2];            // +0x0E
-    int randomnessValue;                // +0x10
-
-    AIPlayPhaseTrigger();
-    AIPlayPhaseTrigger(unsigned char type, int value1, int value2,
-                       unsigned char phase, unsigned char nextPhase,
-                       int randomness);
-    AIPlayPhaseTrigger(char* type, int value1, int value2,
-                       unsigned char phase, unsigned char nextPhase,
-                       int randomness);
-    char* nameType() const;
-
-protected:
-    unsigned char convertToIntType(char* name) const;
-    char* convertToNameType(unsigned char type) const;
 };
 
 class AIPlayPhase {
