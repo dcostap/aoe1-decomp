@@ -1,75 +1,61 @@
-# scr_name.cpp source recovery
+# scr_name.cpp source composition
 
-## Module
+## PDB plan
 
-- PDB source: `C:\\msdev\\work\\age1_x1\\scr_name.cpp`.
-- Source: `src/scr_name.cpp`.
-- Header: `include/scr_name.h`.
-- Flags: `config/flags/scr_name.rsp`.
-- Normal owners: 11, in PDB source-line and address order.
-- Generated entries: `004A66C0` vector deleting destructor and `004A6F40`
-  scalar deleting destructor. They have no handwritten source owners.
+The packet for `C:\\msdev\\work\\age1_x1\\scr_name.cpp` identifies 11
+normal owners in source order:
 
-## Context gate
+`004A63D0`, `004A66E0`, `004A67C0`, `004A6800`, `004A68C0`, `004A6980`,
+`004A69B0`, `004A6D50`, `004A6F60`, `004A6FF0`, and `004A71D0`.
 
-- PDB source module: proved by `build/tu_plans/scr_name_cpp/packet.json`.
-- Source lines and order: proved by the packet. The normal owners span lines
-  50-440 in increasing address and source order.
-- Owning classes: proved by PDB symbols as `TRIBE_Screen_Name` for
-  `004A63D0` through `004A69B0`, and `TRIBE_Dialog_Name` for `004A6D50`
-  through `004A71D0`.
-- Address sequence: proved by the packet:
-  `004A63D0`, `004A66E0`, `004A67C0`, `004A6800`, `004A68C0`, `004A6980`,
-  `004A69B0`, `004A6D50`, `004A6F60`, `004A6FF0`, and `004A71D0`.
-- Exact anchors: proved by the screen constructor, screen destructor, screen
-  action, dialog destructor, dialog action, and the two generated destructors.
-  The constructor and both actions use the `/GX` exception frame in the
-  module response file.
+The source-line bands are 50-96, 102-114, 120-130, 136-163, 169-197,
+204-219, 225-322, 329-361, 367-373, 379-423, and 429-440. The screen owns
+the first seven bodies. The dialog owns the last four bodies. `004A66C0` and
+`004A6F40` are compiler-generated deleting destructors.
 
-## Migration
+The constructor, screen action, dialog constructor, dialog action, and both
+generated destructors are exact anchors. The module uses
+`config/flags/scr_name.rsp` with `/O2 /Oy /GX`.
 
-The old wrapper was `src/scr_name_tu.cpp`. It selected declarations with
-`SCR_NAME_TU_CONTEXT` and included one source-bank fragment for each owner.
-The new `src/scr_name.cpp` owns all 11 handwritten definitions in PDB order.
-`include/scr_name.h` owns the module declaration and proven panel layouts.
+## Canonical ownership
 
-The source has no wrapper, source-bank include, function-fragment include,
-fallback declaration, context macro, fake virtual slot, raw vptr, inline
-assembly, or codegen-only function. The two deleting destructors remain
-compiler-generated. The module header retains the three-word tab window in
-the dialog constructor because the original stack and register schedule prove
-that shape.
+`include/scr_name.h` owns only `TRIBE_Screen_Name` and `TRIBE_Dialog_Name`.
+It consumes the canonical `Pnl_scr.h` and `pnl_dlg.h` bases. It no longer
+redeclares `TPanel`, `TEasy_Panel`, `TScreenPanel`, `TDialogPanel`,
+`RGE_Game_Info`, or `RGE_Base_Game`. It has no copied foreign screen layout.
+The owner-only `include/scr_cams.h` surface supplies the complete campaign
+selection type needed by the two natural allocation expressions.
 
-The constructor string operands are natural literals. The original data bytes
-identify `"Name Selection Screen"`, `"scr2"`, `"New Name Dialog"`,
-`"Campaign Selection Screen"`, `"Single Player Menu"`, and `"YesNoDialog"`.
-The source uses literals and has no raw address casts.
+`src/scr_name.cpp` privately includes the canonical panel, screen, child-panel,
+game-info, Base Game, global, campaign-selection, and single-player screen
+providers. It uses the canonical `error_code`, `sorted`, and
+`TPanel::PositionRightTop` fields and enum. Cleanup calls the canonical
+`delete_panel(TPanel**)` surface with typed derived-panel addresses. The source
+keeps all 11 handwritten bodies in PDB order. It has no wrapper, fragment
+include, context macro, fallback declaration, raw vptr, inline assembly, raw
+address, or private-symbol alias.
 
-## Validation
+## Status and validation
 
-The constrained candidate translation-unit proposal is
-`build/candidate_tus/scr_name_natural/proposal.json`. Its report is
-`build/candidate_tus/scr_name_natural/report.{json,txt}`.
+The existing honest status is unchanged: ten normal owners remain `matching`,
+and `004A6D50 TRIBE_Dialog_Name` remains `accepted_drift`. The source-module
+manifest keeps those statuses.
 
-- All 10 existing exact owners returned `MATCH` and `0.0000%`.
-- Both generated deleting destructors returned `MATCH` and `0.0000%`.
-- `004A6D50` remains an accepted-drift owner. It differs by 86 bytes,
-  with zero relocation-target mismatches and zero boundary escapes.
-- The candidate compiled the direct source module. It did not alter global
-  translation-unit registration.
+The grouped provider candidate is
+`build/candidate_tus/scr_name_natural/report.json`. It compiled the canonical
+source and reports `MATCH` and `0.0000%` for all ten matching owners. Both
+compiler-generated deleting destructors also report `MATCH` and `0.0000%`, with
+zero boundary errors. The accepted-drift constructor remains an 86-byte
+mismatch with matching ownership and zero relocation and boundary errors.
 
-## Regressions and blockers
+The candidate proposal is `build/scr_name_natural_proposal.json`. It does not
+change global translation-unit registration. The direct source is ready for
+registration after the accepted-drift constructor receives separate review.
 
-The migration has no new exact-owner regression. The accepted-drift
-constructor retains its prior 86-byte difference. Its frame, calls, and
-boundary remain stable.
+## Reopen condition
 
-The repository translation-unit registry still names the old wrapper and
-source-bank paths. The coordinator must register `src/scr_name.cpp` as the
-module source and direct owner for all 10 exact owners after integration. This
-captain did not edit global ownership under the module assignment contract.
-
-The requested orchestrator contract at
-`build/source_reunification/terra_system/orchestrator_contract.md` is absent
-from this checkout. The generated module packet is the available contract
-record.
+The campaign-selection consumer can now include `scr_name.h` without a copied
+hierarchy. Add the complete natural `scr_cams.cpp` owner over the canonical
+Panel, screen, Base Game, game-info, campaign, game, communications, and
+scenario providers. Then validate both direct modules with grouped candidate
+checks before removing the campaign-selection wrapper and context surface.

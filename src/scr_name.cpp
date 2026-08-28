@@ -2,6 +2,15 @@
 // Definitions follow the original PDB source order.
 
 #include "../include/scr_name.h"
+#include "../include/scr_cams.h"
+#include "../include/scr_sing.h"
+#include "../include/pnl_btn.h"
+#include "../include/pnl_lst.h"
+#include "../include/Pnl_scbr.h"
+#include "../include/pnl_edit.h"
+#include "../include/gameinfo.h"
+#include "../include/basegame.h"
+#include "../include/rge_base_game_global.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,7 +26,7 @@ TRIBE_Screen_Name::TRIBE_Screen_Name()
 
     if (!this->TEasy_Panel::setup(rge_base_game->draw_area, 0, setup_info_file,
                                   0xC384, 1, 0, 0, 0, 0, 1)) {
-        this->setup_error = 1;
+        this->error_code = 1;
         return;
     }
 
@@ -74,7 +83,7 @@ TRIBE_Screen_Name::TRIBE_Screen_Name()
                              0, 0, 0, 0, 0, -1, -1, 0)) {
         return;
     }
-    this->close_button->set_positioning(9, 4, 4, 4, 4, 0x11, 0x11,
+    this->close_button->set_positioning(TPanel::PositionRightTop, 4, 4, 4, 4, 0x11, 0x11,
                                         0x11, 0x11, 0, 0, 0, 0);
     this->setup_tab_order();
     this->get_player_names();
@@ -86,15 +95,15 @@ TRIBE_Screen_Name::~TRIBE_Screen_Name()
 {
     panel_system.setCurrentPanel("New Name Dialog", 0);
 
-    this->delete_panel(&this->title);
-    this->delete_panel(&this->name_text);
-    this->delete_panel(&this->name_list);
-    this->delete_panel(&this->name_scrollbar);
-    this->delete_panel(&this->new_button);
-    this->delete_panel(&this->remove_button);
-    this->delete_panel(&this->ok_button);
-    this->delete_panel(&this->cancel_button);
-    this->delete_panel(&this->close_button);
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->name_text);
+    this->delete_panel((TPanel**)&this->name_list);
+    this->delete_panel((TPanel**)&this->name_scrollbar);
+    this->delete_panel((TPanel**)&this->new_button);
+    this->delete_panel((TPanel**)&this->remove_button);
+    this->delete_panel((TPanel**)&this->ok_button);
+    this->delete_panel((TPanel**)&this->cancel_button);
+    this->delete_panel((TPanel**)&this->close_button);
 }
 
 // 004A67C0 init_vars (scr_name.cpp:120-130)
@@ -123,7 +132,7 @@ void TRIBE_Screen_Name::get_player_names()
     long count = info->get_people_list(&players, current_player);
 
     if (count != 0) {
-        this->name_list->flag_15c = 1;
+        this->name_list->sorted = 1;
 
         {
             int i;
@@ -318,11 +327,11 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
 // 004A6F60 TRIBE_Dialog_Name::~TRIBE_Dialog_Name (scr_name.cpp:367-373)
 TRIBE_Dialog_Name::~TRIBE_Dialog_Name()
 {
-    this->delete_panel(&this->title);
-    this->delete_panel(&this->name_text);
-    this->delete_panel(&this->name_input);
-    this->delete_panel(&this->ok_button);
-    this->delete_panel(&this->cancel_button);
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->name_text);
+    this->delete_panel((TPanel**)&this->name_input);
+    this->delete_panel((TPanel**)&this->ok_button);
+    this->delete_panel((TPanel**)&this->cancel_button);
 }
 
 // 004A6FF0 TRIBE_Dialog_Name::action (scr_name.cpp:379-423)
