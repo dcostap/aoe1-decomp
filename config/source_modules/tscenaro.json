@@ -10,8 +10,14 @@
     "0052AA70": { "status": "matching" },
     "0052AA80": { "status": "matching" },
     "0052AAC0": { "status": "matching" },
-    "0052AB90": { "status": "matching" },
-    "0052AF20": { "status": "matching" },
+    "0052AB90": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tscenaro_module.md"
+    },
+    "0052AF20": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tscenaro_module.md"
+    },
     "0052B080": { "status": "matching" },
     "0052B100": { "status": "matching" },
     "0052B120": { "status": "matching" },
@@ -25,7 +31,10 @@
     "0052B200": { "status": "matching" },
     "0052B210": { "status": "matching" },
     "0052B230": { "status": "matching" },
-    "0052B240": { "status": "matching" },
+    "0052B240": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tscenaro_module.md"
+    },
     "0052B280": { "status": "matching" },
     "0052B2B0": { "status": "matching" },
     "0052B2D0": { "status": "matching" },
@@ -47,14 +56,8 @@
     "0052B560": { "status": "matching" },
     "0052B590": { "status": "matching" },
     "0052B5C0": { "status": "matching" },
-    "0052B5F0": {
-      "status": "accepted_drift",
-      "note_path": "recovery_notes/tscenaro_module.md"
-    },
-    "0052B630": {
-      "status": "accepted_drift",
-      "note_path": "recovery_notes/tscenaro_module.md"
-    },
+    "0052B5F0": { "status": "matching" },
+    "0052B630": { "status": "matching" },
     "0052B670": { "status": "matching" },
     "0052B6A0": { "status": "matching" },
     "0052B6C0": { "status": "matching" },
@@ -86,7 +89,10 @@
     "0052BA70": { "status": "matching" },
     "0052BA80": { "status": "matching" },
     "0052BA90": { "status": "matching" },
-    "0052BBC0": { "status": "matching" },
+    "0052BBC0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tscenaro_module.md"
+    },
     "0052C070": { "status": "matching" },
     "0052C080": { "status": "matching" },
     "0052C0A0": { "status": "matching" },
