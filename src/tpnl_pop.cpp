@@ -2,10 +2,6 @@
 #include "../include/tribegam.h"
 #include "../include/tplayer.h"
 #include "../include/tworld.h"
-#include <new.h>
-
-extern char s_tpnl_tim_draw[];
-extern char s_tpnl_tim_render_to_image_buffer[];
 
 TRIBE_Panel_Pop::TRIBE_Panel_Pop(TDrawArea* area, TPanel* parent) {
     RGE_Font* f;
@@ -42,8 +38,7 @@ TRIBE_Panel_Pop::~TRIBE_Panel_Pop() {
     }
     buf = this->ImageBuffer;
     if (buf != 0) {
-        buf->~TDrawArea();
-        operator delete(buf);
+        delete buf;
         this->ImageBuffer = 0;
     }
 }
@@ -66,8 +61,7 @@ need_realloc:
 
         TDrawArea* buf = this->ImageBuffer;
         if (buf != 0) {
-            buf->~TDrawArea();
-            operator delete(buf);
+            delete buf;
             this->ImageBuffer = 0;
         }
 
@@ -190,7 +184,7 @@ void TRIBE_Panel_Pop::draw() {
         goto finish;
     }
 
-    if (this->render_area->GetDc(s_tpnl_tim_draw) != 0) {
+    if (this->render_area->GetDc("tpnl_tim::draw") != 0) {
         SelectClipRgn(this->render_area->DrawDc, this->clip_rgn);
         old_font = SelectObject(this->render_area->DrawDc, this->font);
         SetBkMode(this->render_area->DrawDc, 1);
@@ -227,7 +221,7 @@ void TRIBE_Panel_Pop::draw() {
 
         SelectObject(this->render_area->DrawDc, old_font);
         SelectClipRgn(this->render_area->DrawDc, 0);
-        this->render_area->ReleaseDc(s_tpnl_tim_draw);
+        this->render_area->ReleaseDc("tpnl_tim::draw");
     }
 
 finish:
@@ -255,7 +249,7 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
 
     if (this->ImageBuffer == 0) return 0;
     this->ImageBuffer->PtrClear(&this->ImageRect, 1);
-    if (this->ImageBuffer->GetDc(s_tpnl_tim_render_to_image_buffer) == 0)
+    if (this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer") == 0)
         return 0;
     this->ImageBuffer->SetClipRect(&this->ImageRect);
     SelectClipRgn(this->ImageBuffer->DrawDc, this->image_clip_region);
@@ -282,7 +276,7 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
     DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
     SelectObject(this->ImageBuffer->DrawDc, old_font);
     SelectClipRgn(this->ImageBuffer->DrawDc, 0);
-    this->ImageBuffer->ReleaseDc(s_tpnl_tim_render_to_image_buffer);
+    this->ImageBuffer->ReleaseDc("tpnl_tim::render_to_image_buffer");
 
     int right = this->pnl_wid - 1;
     int bottom = this->pnl_hgt - 1;

@@ -3,12 +3,6 @@
 #include "../include/tplayer.h"
 #include "../include/tworld.h"
 
-char s_time_message_panel[] = "time message panel";
-char s_tpnl_tim_draw[] = "tpnl_tim::draw";
-char s_tpnl_tim_render_to_image_buffer[] =
-    "tpnl_tim::render_to_image_buffer";
-const char s_clock_hms_fmt[] = "%02ld:%02ld:%02ld (%3.1f)";
-
 TRIBE_Panel_Time::TRIBE_Panel_Time(TDrawArea* draw_area, TPanel* parent)
     : TPanel()
 {
@@ -48,8 +42,7 @@ TRIBE_Panel_Time::~TRIBE_Panel_Time()
 
     image_buffer = this->ImageBuffer;
     if (image_buffer != 0) {
-        image_buffer->~TDrawArea();
-        operator delete(image_buffer);
+        delete image_buffer;
         this->ImageBuffer = 0;
     }
 }
@@ -75,12 +68,11 @@ void TRIBE_Panel_Time::set_rect(long x, long y, long width, long height)
 
     image_buffer = this->ImageBuffer;
     if (image_buffer != 0) {
-        image_buffer->~TDrawArea();
-        operator delete(image_buffer);
+        delete image_buffer;
         this->ImageBuffer = 0;
     }
 
-    image_buffer = new TDrawArea(s_time_message_panel, 0);
+    image_buffer = new TDrawArea("time message panel", 0);
     this->ImageBuffer = image_buffer;
     image_buffer->Init(this->render_area->DrawSystem, this->pnl_wid,
                        this->pnl_hgt, 0, 0);
@@ -249,7 +241,7 @@ void TRIBE_Panel_Time::draw()
         goto finish;
     }
 
-    old_font = this->render_area->GetDc(s_tpnl_tim_draw);
+    old_font = this->render_area->GetDc("tpnl_tim::draw");
     if (old_font == 0) {
         goto finish;
     }
@@ -272,7 +264,7 @@ void TRIBE_Panel_Time::draw()
         }
         {
             float game_speed = rge_base_game->world->game_speed;
-            sprintf(str, s_clock_hms_fmt, hours, minutes, seconds,
+            sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", hours, minutes, seconds,
                     game_speed);
         }
         text_flags = 0x20;
@@ -326,7 +318,7 @@ void TRIBE_Panel_Time::draw()
 
     SelectObject(this->render_area->DrawDc, old_font);
     SelectClipRgn(this->render_area->DrawDc, 0);
-    this->render_area->ReleaseDc(s_tpnl_tim_draw);
+    this->render_area->ReleaseDc("tpnl_tim::draw");
 finish:
     this->draw_finish();
 }
@@ -408,7 +400,8 @@ int TRIBE_Panel_Time::render_to_image_buffer()
     }
 
     this->ImageBuffer->PtrClear(&this->ImageRect, 1);
-    old_font = this->ImageBuffer->GetDc(s_tpnl_tim_render_to_image_buffer);
+    old_font =
+        this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer");
     if (old_font == 0) {
         return 0;
     }
@@ -430,7 +423,7 @@ int TRIBE_Panel_Time::render_to_image_buffer()
                 minutes = minutes - hours * 0x3C;
             }
         }
-        sprintf(str, s_clock_hms_fmt, hours, minutes, seconds,
+        sprintf(str, "%02ld:%02ld:%02ld (%3.1f)", hours, minutes, seconds,
                 rge_base_game->world->game_speed);
         text_flags = 0x20;
     } else {
@@ -474,7 +467,7 @@ int TRIBE_Panel_Time::render_to_image_buffer()
 
     SelectObject(this->ImageBuffer->DrawDc, old_font);
     SelectClipRgn(this->ImageBuffer->DrawDc, 0);
-    this->ImageBuffer->ReleaseDc(s_tpnl_tim_render_to_image_buffer);
+    this->ImageBuffer->ReleaseDc("tpnl_tim::render_to_image_buffer");
 
     this->UsedImageRect.left = 0;
     this->UsedImageRect.top = 0;

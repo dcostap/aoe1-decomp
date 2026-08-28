@@ -55,8 +55,19 @@ The source uses typed population attribute indices and the derived game queue
 owner. It uses the derived player and world types at their proven calls. The
 panel fields use their original names and rely on natural alignment.
 
-The candidate module check was run with
+The canonical candidate module check was run with
 `python tools/validate_candidate_tu.py --proposal build/candidate_tus/tpnl_pop_canonical/proposal.json --output-dir build/candidate_tus/tpnl_pop_canonical`.
 All eight registered normal owners and the compiler-generated scalar deleting
 destructor match. The observed `render_to_image_buffer` owner remains scratch:
 it differs by 430 bytes and has a 0x120 frame versus the original 0x114 frame.
+
+The source now uses natural `delete` for each draw-area allocation. The PDB
+has no named global data symbol for either `tpnl_tim` debug string. Its data
+labels are compiler string-literal records, so the pop owner uses local
+literals instead of imported carriers. The PDB handle typedef and the
+`CreateRectRgn`/`DeleteObject` API use confirm `image_clip_region` as `HRGN`.
+
+The natural-delete and owner-local-literal candidate was also checked with
+`python tools/validate_candidate_tu.py --proposal build/candidate_tus/tpnl_pop_canonical/proposal.json --output-dir build/candidate_tus/tpnl_pop_natural_owner_literals`.
+It has the same eight exact normal owners, generated destructor match, and
+430-byte scratch mismatch. No owner was demoted.

@@ -23,7 +23,7 @@ public:
     unsigned long last_game_time;
     unsigned long display_time;
     unsigned long last_display_time;
-    void* image_clip_region;
+    HRGN image_clip_region;
     TDrawArea* ImageBuffer;
     tagRECT ImageRect;
     tagRECT UsedImageRect;

@@ -19,7 +19,7 @@ public:
     int max_pop;
     unsigned char mode;
     float timer;
-    void* image_clip_region;
+    HRGN image_clip_region;
     TDrawArea* ImageBuffer;
     tagRECT ImageRect;
     tagRECT UsedImageRect;
