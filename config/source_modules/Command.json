@@ -55,7 +55,7 @@
     "00435A30": { "status": "matching" },
     "00435A80": { "status": "matching" },
     "00435AE0": { "status": "scratch", "note_path": "recovery_notes/Command_module.md" },
-    "00435BB0": { "status": "accepted_drift" },
+    "00435BB0": { "status": "matching" },
     "00435C50": { "status": "matching" },
     "00435CD0": { "status": "matching" },
     "00435D40": { "status": "matching" },

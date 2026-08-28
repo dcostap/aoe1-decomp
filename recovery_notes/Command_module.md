@@ -40,9 +40,9 @@ Formation, Group AI Order, and Group Waypoint have no typed tail member.
 Command source locates serialized `RGE_Obj_Info` values after each typed header.
 
 The complete grouped report at
-`build/command_complete_audit/result_natural_records_final/report.json` checks all
-51 normal owners. The registered report at
-`build/candidate_tus/Command/report.json` has 20 exact owners. Every registered
+`build/command_complete_audit/result_release_final/report.json` checks all 51
+normal owners. The registered report at `build/candidate_tus/Command/report.json`
+has 21 exact owners. Every registered
 owner reports `MATCH` and `0.0000%`.
 
 The fresh natural-record build demotes these 15 rows to scratch:
@@ -54,5 +54,5 @@ The fresh natural-record build demotes these 15 rows to scratch:
 The grouped report has a boundary escape for `00435320`, `00435620`, and
 `00436150`. No row without fresh grouped exact evidence remains matching.
 
-The module has 20 matching, 24 scratch, and seven accepted-drift owners. The
+The module has 21 matching, 24 scratch, and six accepted-drift owners. The
 complete audit records each nonexact result.
