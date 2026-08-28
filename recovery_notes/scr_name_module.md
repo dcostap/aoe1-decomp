@@ -29,28 +29,30 @@ selection type needed by the two natural allocation expressions.
 `src/scr_name.cpp` privately includes the canonical panel, screen, child-panel,
 game-info, Base Game, global, campaign-selection, and single-player screen
 providers. It uses the canonical `error_code`, `sorted`, and
-`TPanel::PositionRightTop` fields and enum. Cleanup calls the canonical
-`delete_panel(TPanel**)` surface with typed derived-panel addresses. The source
-keeps all 11 handwritten bodies in PDB order. It has no wrapper, fragment
+`TPanel::PositionRightTop` fields and enum. Cleanup uses natural `delete`
+expressions for derived-panel fields. The source keeps all 11 handwritten
+bodies in PDB order. It has no wrapper, fragment
 include, context macro, fallback declaration, raw vptr, inline assembly, raw
 address, or private-symbol alias.
 
 ## Status and validation
 
-The existing honest status is unchanged: ten normal owners remain `matching`,
-and `004A6D50 TRIBE_Dialog_Name` remains `accepted_drift`. The source-module
-manifest keeps those statuses.
+Eight normal owners remain `matching`. The two destructors and
+`004A6D50 TRIBE_Dialog_Name` are honest `accepted_drift` owners. The
+source-module manifest records these statuses.
 
 The grouped provider candidate is
-`build/candidate_tus/scr_name_natural/report.json`. It compiled the canonical
-source and reports `MATCH` and `0.0000%` for all ten matching owners. Both
+`build/candidate_tus/scr_name_natural_delete_cleanup3/report.json`. It compiled the canonical
+source and reports `MATCH` and `0.0000%` for all eight matching owners. The two
 compiler-generated deleting destructors also report `MATCH` and `0.0000%`, with
-zero boundary errors. The accepted-drift constructor remains an 86-byte
-mismatch with matching ownership and zero relocation and boundary errors.
+zero boundary errors. The two natural-delete destructors report accepted drift
+with matching ownership and zero relocation errors. The accepted-drift
+constructor remains an 86-byte mismatch with matching ownership and zero
+relocation and boundary errors.
 
 The candidate proposal is `build/scr_name_natural_proposal.json`. It does not
-change global translation-unit registration. The direct source is ready for
-registration after the accepted-drift constructor receives separate review.
+change global translation-unit registration. The direct source is registered
+with the accepted-drift constructor and destructors.
 
 ## Consumer handoff
 

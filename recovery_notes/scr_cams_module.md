@@ -27,10 +27,11 @@ natural screen constructor, nested panel setup, named panel fields, game-info
 calls, game option setters, scenario player setup, and communication calls.
 The source uses recovered string and language literals. It uses `comm` as the
 reviewed communications global because the executable loads that global at
-`004915CD`, `004915E5`, and `00491603`. Derived game calls use the canonical
-`TRIBE_Game` owner surface. No wrapper, fragment include, context macro,
-fallback declaration, copied class, raw address, raw vptr, inline assembly, or
-private-symbol alias remains.
+`004915CD`, `004915E5`, and `00491603`. Derived game calls use canonical
+`TRIBE_Game` static casts. Panel fields use natural `delete` expressions. No
+wrapper, fragment include, context macro, fallback declaration, copied class,
+raw address, raw vptr, inline assembly, C-style pointer cast, or private-symbol
+alias remains.
 
 The old `src/scr_cams_tu.cpp`, `include/scr_cams_context.h`, and eight matching
 source-bank owners were removed after the complete candidate passed. The
@@ -39,23 +40,27 @@ source-module manifest and translation-unit registry now point every owner at
 
 ## Status and validation
 
-The eight normal owners remain `matching`. The generated destructor remains
+Seven normal owners remain `matching`. `00490EA0` is an honest
+`accepted_drift` owner because natural deletion replaces the old
+`delete_panel(TPanel**)` address casts. The generated destructor remains
 compiler generated and is not a normal source owner.
 
 The grouped candidate is
-`build/candidate_tus/scr_cams_natural_after_cleanup/report.json`. It compiled
-all eight direct owners and the generated destructor. Every row reports
-`MATCH` and `0.0000%`, with correct ownership and zero relocation, direct-target,
-and boundary errors. The candidate reports `full_module_exact: true`.
+`build/candidate_tus/scr_cams_natural_cast_cleanup3/report.json`. It compiled
+all eight direct owners and the generated destructor. The seven matching rows
+report `MATCH` and `0.0000%`. `00490EA0` reports an accepted 212-byte drift
+with correct ownership and zero relocation errors. Natural deletion changes two
+body boundaries. The generated destructor reports `MATCH` and `0.0000%`.
+The candidate reports the accepted drift without comparison errors.
 
 The candidate proposal is `build/scr_cams_natural_proposal.json`. The natural
 source was also validated before and after removal of the old wrapper and
-context files. No status promotion or unrelated provider change was made.
+context files. The cast-cleanup candidate was validated after the rebase. No
+status promotion or unrelated provider change was made.
 
 ## Provider handoff
 
 The canonical `scr_name.h` owner now consumes the canonical Panel, dialog, and
-screen providers. Its ten exact normal owners and two generated destructors
-still report `MATCH` and `0.0000%`. `004A6D50 TRIBE_Dialog_Name` remains the
-honest 86-byte accepted-drift owner, with matching ownership and zero
-relocation and boundary errors.
+screen providers. Its eight exact normal owners and two generated destructors
+still report `MATCH` and `0.0000%`. Its two natural-delete destructors and
+`004A6D50 TRIBE_Dialog_Name` are honest accepted-drift owners.

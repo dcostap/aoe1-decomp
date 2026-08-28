@@ -95,15 +95,15 @@ TRIBE_Screen_Name::~TRIBE_Screen_Name()
 {
     panel_system.setCurrentPanel("New Name Dialog", 0);
 
-    this->delete_panel((TPanel**)&this->title);
-    this->delete_panel((TPanel**)&this->name_text);
-    this->delete_panel((TPanel**)&this->name_list);
-    this->delete_panel((TPanel**)&this->name_scrollbar);
-    this->delete_panel((TPanel**)&this->new_button);
-    this->delete_panel((TPanel**)&this->remove_button);
-    this->delete_panel((TPanel**)&this->ok_button);
-    this->delete_panel((TPanel**)&this->cancel_button);
-    this->delete_panel((TPanel**)&this->close_button);
+    delete this->title;
+    delete this->name_text;
+    delete this->name_list;
+    delete this->name_scrollbar;
+    delete this->new_button;
+    delete this->remove_button;
+    delete this->ok_button;
+    delete this->cancel_button;
+    delete this->close_button;
 }
 
 // 004A67C0 init_vars (scr_name.cpp:120-130)
@@ -327,11 +327,11 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
 // 004A6F60 TRIBE_Dialog_Name::~TRIBE_Dialog_Name (scr_name.cpp:367-373)
 TRIBE_Dialog_Name::~TRIBE_Dialog_Name()
 {
-    this->delete_panel((TPanel**)&this->title);
-    this->delete_panel((TPanel**)&this->name_text);
-    this->delete_panel((TPanel**)&this->name_input);
-    this->delete_panel((TPanel**)&this->ok_button);
-    this->delete_panel((TPanel**)&this->cancel_button);
+    delete this->title;
+    delete this->name_text;
+    delete this->name_input;
+    delete this->ok_button;
+    delete this->cancel_button;
 }
 
 // 004A6FF0 TRIBE_Dialog_Name::action (scr_name.cpp:379-423)

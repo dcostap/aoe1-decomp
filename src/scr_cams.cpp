@@ -139,18 +139,18 @@ void TRIBE_Screen_Campaign_Selection::init_vars()
 // 00490EA0 TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection
 TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection()
 {
-    delete_panel((TPanel**)&this->title);
-    delete_panel((TPanel**)&this->campaignTitle);
-    delete_panel((TPanel**)&this->campaignList);
-    delete_panel((TPanel**)&this->campaignScrollbar);
-    delete_panel((TPanel**)&this->scenarioTitle);
-    delete_panel((TPanel**)&this->scenarioList);
-    delete_panel((TPanel**)&this->scenarioScrollbar);
-    delete_panel((TPanel**)&this->difficultyTitle);
-    delete_panel((TPanel**)&this->difficultyDrop);
-    delete_panel((TPanel**)&this->okButton);
-    delete_panel((TPanel**)&this->cancelButton);
-    delete_panel((TPanel**)&this->close_button);
+    delete this->title;
+    delete this->campaignTitle;
+    delete this->campaignList;
+    delete this->campaignScrollbar;
+    delete this->scenarioTitle;
+    delete this->scenarioList;
+    delete this->scenarioScrollbar;
+    delete this->difficultyTitle;
+    delete this->difficultyDrop;
+    delete this->okButton;
+    delete this->cancelButton;
+    delete this->close_button;
 }
 
 // 00490F90 TRIBE_Screen_Campaign_Selection::handle_idle
@@ -279,26 +279,27 @@ void TRIBE_Screen_Campaign_Selection::startGame()
     rge_base_game->setScenarioGame(1);
     rge_base_game->setCampaignGame(1);
     rge_base_game->setSavedGame(0);
-    ((TRIBE_Game*)rge_base_game)->setVictoryType(
+    static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(
         TRIBE_Game::VictoryType_Unknown, 0);
     rge_base_game->setDifficulty(self->difficultyDrop->get_id());
     rge_base_game->set_single_player_difficulty(
         self->difficultyDrop->get_id());
-    ((TRIBE_Game*)rge_base_game)->setDeathMatch(0);
-    ((TRIBE_Game*)rge_base_game)->setQuickStartGame(0);
-    ((TRIBE_Game*)rge_base_game)->setAnimals(1);
-    ((TRIBE_Game*)rge_base_game)->setPredators(1);
+    static_cast<TRIBE_Game*>(rge_base_game)->setDeathMatch(0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setQuickStartGame(0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setAnimals(1);
+    static_cast<TRIBE_Game*>(rge_base_game)->setPredators(1);
     rge_base_game->setFullVisibility(0);
     rge_base_game->setFogOfWar(1);
     rge_base_game->setAllowCheatCodes(1);
-    ((TRIBE_Game*)rge_base_game)->setRandomizePositions(0);
-    ((TRIBE_Game*)rge_base_game)->setLongCombat(0);
-    ((TRIBE_Game*)rge_base_game)->setAllowTrading(1);
-    ((TRIBE_Game*)rge_base_game)->setFullTechTree(0);
-    ((TRIBE_Game*)rge_base_game)->setResourceLevel(
+    static_cast<TRIBE_Game*>(rge_base_game)->setRandomizePositions(0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setLongCombat(0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setAllowTrading(1);
+    static_cast<TRIBE_Game*>(rge_base_game)->setFullTechTree(0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(
         TRIBE_Game::ResourceLevel_Unknown);
-    ((TRIBE_Game*)rge_base_game)->setStartingAge(TRIBE_Game::Age_Unknown);
-    ((TRIBE_Game*)rge_base_game)->setStartingUnits(0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(
+        TRIBE_Game::Age_Unknown);
+    static_cast<TRIBE_Game*>(rge_base_game)->setStartingUnits(0);
 
     int first_human = -1;
     int first_color = 0;
@@ -311,9 +312,11 @@ void TRIBE_Screen_Campaign_Selection::startGame()
     player_count = 0;
     for (int i = 0; i < 9; ++i) {
         if (scen->Get_player_Active(i)) {
-            ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(player_count, i);
+            static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
+                player_count, i);
             int color = i + 1;
-            ((TRIBE_Game*)rge_base_game)->setPlayerColor(player_count, color);
+            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
+                player_count, color);
             rge_base_game->setPlayerTeam(player_count, 1);
             ++player_count;
             if (first_human == -1 && scen->Get_player_Type(i) == 1) {
@@ -332,16 +335,18 @@ void TRIBE_Screen_Campaign_Selection::startGame()
     if (first_human != -1) {
         int j;
         for (j = 1; j < player_count; ++j) {
-            if (((TRIBE_Game*)rge_base_game)->scenarioPlayer(j) == first_human) {
-                ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(
-                    j, ((TRIBE_Game*)rge_base_game)->scenarioPlayer(0));
-                ((TRIBE_Game*)rge_base_game)->setPlayerColor(
-                    j, ((TRIBE_Game*)rge_base_game)->playerColor(0));
+            if (static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(j) ==
+                first_human) {
+                static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
+                    j, static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(0));
+                static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
+                    j, static_cast<TRIBE_Game*>(rge_base_game)->playerColor(0));
                 break;
             }
         }
-        ((TRIBE_Game*)rge_base_game)->setScenarioPlayer(0, first_human);
-        ((TRIBE_Game*)rge_base_game)->setPlayerColor(0, first_color);
+        static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
+            0, first_human);
+        static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(0, first_color);
     }
 
     comm->SetPlayerHumanity(1, ME_HUMAN);
@@ -352,7 +357,7 @@ void TRIBE_Screen_Campaign_Selection::startGame()
         comm->SetPlayerHumanity(q + 1, ME_ABSENT);
     }
 
-    if (!((TRIBE_Game*)rge_base_game)->start_game(0)) {
+    if (!static_cast<TRIBE_Game*>(rge_base_game)->start_game(0)) {
         self->popupOKDialog(0x961, 0, 0x1c2, 100);
     }
 }

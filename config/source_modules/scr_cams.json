@@ -7,7 +7,7 @@
   "functions": {
     "004909D0": { "status": "matching", "note_path": "recovery_notes/scr_cams_module.md" },
     "00490E30": { "status": "matching", "note_path": "recovery_notes/scr_cams_module.md" },
-    "00490EA0": { "status": "matching", "note_path": "recovery_notes/scr_cams_module.md" },
+    "00490EA0": { "status": "accepted_drift", "note_path": "recovery_notes/scr_cams_module.md" },
     "00490F90": { "status": "matching", "note_path": "recovery_notes/scr_cams_module.md" },
     "00490FF0": { "status": "matching", "note_path": "recovery_notes/scr_cams_module.md" },
     "004911A0": { "status": "matching", "note_path": "recovery_notes/scr_cams_module.md" },
