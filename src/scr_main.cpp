@@ -147,10 +147,10 @@ TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu() {
         this->delete_panel((TPanel**)&this->button[i]);
     }
 
-    if (this->circle_p_pic != (TPanel*)0x0) {
+    if (this->circle_p_pic != 0) {
         delete this->circle_p_pic;
     }
-    if (this->ms_title_text != (TPanel*)0x0) {
+    if (this->ms_title_text != 0) {
         delete this->ms_title_text;
     }
 }
@@ -279,12 +279,12 @@ TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error()
 
     this->set_ideal_size(0x280, 0x1E0);
 
-    this->create_text((TPanel*)this, &this->message, "", 0x28, 0x28,
+    this->create_text(this, &this->message, "", 0x28, 0x28,
                       0x230, 0x190, 4, 1, 1, 1);
-    this->create_button((TPanel*)this, &this->cancel_button, 0xFA1, 0,
+    this->create_button(this, &this->cancel_button, 0xFA1, 0,
                         0xC8, 0x1B8, 0xF0, 0x1E, 0, 0, 0);
 
-    if (this->create_button((TPanel*)this, &this->close_button, 0x3EA, 0,
+    if (this->create_button(this, &this->close_button, 0x3EA, 0,
                             0, 0, 0, 0, 0xFFFFFFFF, 0xFFFFFFFF, 0) != 0) {
         this->close_button->set_active(1);
         this->close_button->set_positioning(TPanel::PositionRightTop,
@@ -327,12 +327,12 @@ long TRIBE_Screen_Main_Error::action(TPanel* param_1, long param_2,
         goto call_parent;
     }
 
-    if (panel == (TPanel*)this->cancel_button && state == 1) {
+    if (panel == this->cancel_button && state == 1) {
         rge_base_game->close();
         return 1;
     }
 
-    if (panel == (TPanel*)this->close_button && state == 1) {
+    if (panel == this->close_button && state == 1) {
         rge_base_game->close();
         return 1;
     }

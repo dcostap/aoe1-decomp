@@ -8,7 +8,6 @@
 #include "../include/scr_main.h"
 #include <fcntl.h>
 #include <io.h>
-#include <new.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

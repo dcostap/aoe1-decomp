@@ -24,7 +24,6 @@ public:
     TScrollBarPanel* scrollbar;
     char zone_exec[255];
     char browser_exec[255];
-    unsigned char _pad_end[2];
 
     virtual ~TribeMPStartupScreen();
     TribeMPStartupScreen();
