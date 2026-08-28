@@ -4488,6 +4488,7 @@
     {
       "name": "rmm_land",
       "source": "src/rmm_land.cpp",
+      "module": "rmm_land",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00485200": "src/rmm_land.cpp"
