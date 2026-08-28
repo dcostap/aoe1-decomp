@@ -292,29 +292,29 @@ AIPlayGroup::AIPlayGroup() {
 
 unsigned char AIPlayGroup::minimum(int index) const {
     if (index < 0 || index >= 6) return 0;
-    return this->minimumValues[index];
+    return this->minValue[index];
 }
 
 void AIPlayGroup::setMinimum(int index, int val) {
     if (index < 0 || index >= 6) return;
-    this->minimumValues[index] = val;
+    this->minValue[index] = val;
 }
 
 unsigned char AIPlayGroup::maximum(int index) const {
     if (index >= 0 && index < 6)
-        return maximumValues[index];
+        return maxValue[index];
     return 0xFF;
 }
 
 void AIPlayGroup::setMaximum(int index, int val) {
     if (index < 0 || index >= 6) return;
-    this->maximumValues[index] = val;
+    this->maxValue[index] = val;
 }
 
 void AIPlayGroup::initialize() {
     for (int i = 0; i < 6; ++i) {
-        this->minimumValues[i] = 0;
-        this->maximumValues[i] = 0xFE;
+        this->minValue[i] = 0;
+        this->maxValue[i] = 0xFE;
     }
 }
 

@@ -20,9 +20,10 @@ The trigger record is 0x14. Its PDB fields are protected. PDB nested enum
 `0x262B` defines its twelve trigger values. Natural alignment supplies its
 internal gaps. Aipbook consumes its public accessors.
 
-The group record is 0x0C. It has two six-byte arrays with natural alignment.
-PDB public accessors provide its range operations. Its `PAVAIPlayGroup` return
-from `AIPlay::group` proves its class identity.
+The group record is 0x0C. PDB field list `0x2A15` names its protected arrays
+`minValue` and `maxValue`. PDB nested enum `0x2A12` defines `MaxUnitTypes = 6`
+and `InvalidGroup = 255`. PDB public accessors provide its range operations.
+Its `PAVAIPlayGroup` return from `AIPlay::group` proves its class identity.
 
 ## Status
 

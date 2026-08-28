@@ -2,9 +2,15 @@
 #define AOE1_AI_PLAY_GROUP_H
 
 class AIPlayGroup {
+public:
+    enum {
+        MaxUnitTypes = 6,
+        InvalidGroup = 255
+    };
+
 protected:
-    unsigned char minimumValues[6];  // +0x00
-    unsigned char maximumValues[6];  // +0x06
+    unsigned char minValue[6];  // +0x00
+    unsigned char maxValue[6];  // +0x06
 
 public:
     AIPlayGroup();
