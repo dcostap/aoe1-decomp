@@ -2,42 +2,18 @@
 #define AOE1_AICONMOD_H
 
 // Reviewed compiler-facing declarations for the aiconmod.cpp source module.
-// BaseItem and AIModule are owned by their canonical headers.  This header
-// owns only ConstructionItem and ConstructionAIModule.
+// AIModule and ConstructionItem use their canonical source-module headers.
 
-#include "aibitm.h"
+#include "aiconitm.h"
 #include "aimodule.h"
 
 class BuildItem;
 
-class ConstructionItem : public BaseItem {
-public:
-    ConstructionItem* next;       // +0x6C
-    ConstructionItem* prev;       // +0x70
-    int inProgressValue;          // +0x74
-    int builtValue;               // +0x78
-    int buildAttemptsValue;       // +0x7C
-
-    ConstructionItem();
-    ConstructionItem(float x, float y, float z,
-                     float xSize, float ySize, float zSize,
-                     int typeID, char* name);
-    virtual ~ConstructionItem();
-
-    int inProgress();
-    int built();
-    int buildAttempts();
-    void setInProgress(int value);
-    void setBuilt(int value);
-    void setBuildAttempts(int value);
-    void decrementBuildAttempts();
-    void incrementBuildAttempts();
-};
-
 class ConstructionAIModule : public AIModule {
 public:
     enum PlacementResult {
-        PlacementOk = 0
+        PlacementOk = 0,
+        PlacementFailed = 5
     };
 
     virtual ~ConstructionAIModule();

@@ -36,6 +36,6 @@ These are localized code-generation differences. They do not change behavior.
 ## Cross-module context
 
 `aiconmod.h` also supplies the reviewed ConstructionAIModule surface to the
-adjacent `aidipmod` module. It reuses the canonical `BaseItem` and `AIModule`
-declarations and retains only the narrow PDB-proven player and world views.
-The source module owns only the 19 PDB owners listed in its metadata.
+adjacent `aidipmod` module. It reuses the canonical `BaseItem`,
+`ConstructionItem`, and `AIModule` declarations. The source module owns only
+the 19 PDB owners listed in its metadata.

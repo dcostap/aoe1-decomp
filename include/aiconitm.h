@@ -1,30 +1,7 @@
 #ifndef AOE1_AICONITM_H
 #define AOE1_AICONITM_H
 
-class BaseItem {
-public:
-    virtual ~BaseItem();
-
-    int typeIDValue;
-    int gameIDValue;
-    int uniqueIDValue;
-    char nameValue[64];
-    float xValue;
-    float yValue;
-    float zValue;
-    float xSizeValue;
-    float ySizeValue;
-    float zSizeValue;
-    int skipValue;
-
-    BaseItem();
-    BaseItem(int typeID, int gameID, int uniqueID, char* name,
-             float x, float y, float z, float xSize, float ySize, float zSize);
-    BaseItem(BaseItem* other);
-    BaseItem(const BaseItem& other);
-};
-
-typedef char aiconitm_baseitem_size[(sizeof(BaseItem) == 0x6c) ? 1 : -1];
+#include "aibitm.h"
 
 class ConstructionItem : public BaseItem {
 public:
