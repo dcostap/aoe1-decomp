@@ -30,17 +30,23 @@ Sources:
 ## Current nonexact functions
 
 `0050C730` keeps ordinary local variables. The prior exact form used a
-synthetic local record. It is not a source fact.
+synthetic local record. It is not a source fact. Direct-source validation
+gives 27 differing bytes, or 3.0752%.
 
 `0050CA9E` keeps ordinary scan variables. The prior exact form used a
-synthetic local record. It is not a source fact.
+synthetic local record. It is not a source fact. Direct-source validation
+gives 33 differing bytes, or 8.4399%.
 
 `0050CC25` remains accepted drift. The remaining difference is stack-slot
-allocation for the integer attribute and float cost locals.
+allocation for the integer attribute and float cost locals. Direct-source
+validation gives 22 differing bytes, or 6.5868%.
 
 `0050CE68` keeps ordinary scan variables. The prior exact form used a
 synthetic local record. The executable proves that `changed` is cleared and
-never set.
+never set. Direct-source validation gives 28 differing bytes, or 5.2830%.
+
+The other 29 normal functions pass direct-source validation with `MATCH` and
+`0.0000%`. The compiled object has no compiler-generated entry in this range.
 
 ## Validation blocker
 
