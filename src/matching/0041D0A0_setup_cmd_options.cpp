@@ -55,7 +55,7 @@ extern int do_run_log;
 extern int do_debug_timeGetTime;
 extern int do_fixed_update;
 extern int debug_timeGetTime_interval;
-extern int fixed_update_time;
+extern long fixed_update_time;
 extern int useComputerPlayers;
 extern int startLoggingAI;
 extern int logStatusOn;

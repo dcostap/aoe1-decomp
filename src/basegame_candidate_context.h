@@ -804,6 +804,12 @@ public:
 
 class TPanel {
 public:
+    enum RedrawMode {
+        RedrawNone = 0,
+        RedrawNormal = 1,
+        RedrawImmediate = 2
+    };
+
     virtual ~TPanel();
     char gap_04[0xF0];
     int error_code;

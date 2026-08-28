@@ -107,7 +107,7 @@ paint_done:
         color_log(0x16, 0x16, 1);
         if (this->render_all != 0) {
             panel = panel_system.currentPanel();
-            panel->set_redraw(2);
+            panel->set_redraw(TPanel::RedrawImmediate);
         }
         panel = panel_system.currentPanel();
         panel->handle_paint();
