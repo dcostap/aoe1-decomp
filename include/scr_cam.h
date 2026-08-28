@@ -17,7 +17,6 @@ class RGE_Campaign;
 class TRIBE_Campaign_Editor_Screen : public TScreenPanel {
 public:
     unsigned char need_to_save;
-    char gap_479[3];
     TTextPanel* title;
     TTextPanel* filename_title;
     TTextPanel* scenarios_title;

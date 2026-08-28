@@ -11,21 +11,13 @@
 #include "../include/campaign.h"
 #include "../include/scr_sedm.h"
 #include "../include/main.h"
+#include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-struct FindDataLocal {
-    char gap_00[0x10];
-    char name[260];
-    char pad_114[4];
-};
-
-extern "C" long __cdecl _findfirst(const char*, void*);
-extern "C" int __cdecl _findnext(long, void*);
-
 TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
-    : TScreenPanel((char*)"Campaign Editor Screen")
+    : TScreenPanel("Campaign Editor Screen")
 {
     this->title = 0;
     this->scenarios_title = 0;
@@ -46,7 +38,7 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     this->move_scenario_up_button = 0;
     this->move_scenario_down_button = 0;
 
-    if (!this->setup(rge_base_game->draw_area, (char*)"scr4", 0xC386, 1)) {
+    if (!this->setup(rge_base_game->draw_area, "scr4", 0xC386, 1)) {
         this->error_code = 1;
         return;
     }
@@ -145,7 +137,7 @@ TRIBE_Campaign_Editor_Screen::~TRIBE_Campaign_Editor_Screen()
 void TRIBE_Campaign_Editor_Screen::fill_campaign_drop()
 {
     char file_name[256];
-    FindDataLocal file_info;
+    _finddata_t file_info;
     long handle;
     int len;
 
@@ -155,8 +147,8 @@ void TRIBE_Campaign_Editor_Screen::fill_campaign_drop()
     sprintf(file_name, "%s*.cpn", rge_base_game->prog_info->campaign_dir);
     handle = _findfirst(file_name, &file_info);
     while (handle != -1) {
-        len = strlen(file_info.name + 4) - 4;
-        strncpy(file_name, file_info.name + 4, len);
+        len = strlen(file_info.name) - 4;
+        strncpy(file_name, file_info.name, len);
         file_name[len] = 0;
         this->filename_drop->append_line(file_name, 0);
         if (_findnext(handle, &file_info) == -1) {
@@ -167,8 +159,8 @@ void TRIBE_Campaign_Editor_Screen::fill_campaign_drop()
     sprintf(file_name, "%s*.cpx", rge_base_game->prog_info->campaign_dir);
     handle = _findfirst(file_name, &file_info);
     while (handle != -1) {
-        len = strlen(file_info.name + 4) - 4;
-        strncpy(file_name, file_info.name + 4, len);
+        len = strlen(file_info.name) - 4;
+        strncpy(file_name, file_info.name, len);
         file_name[len] = 0;
         this->filename_drop->append_line(file_name, 0);
         if (_findnext(handle, &file_info) == -1) {
@@ -180,7 +172,7 @@ void TRIBE_Campaign_Editor_Screen::fill_campaign_drop()
 void TRIBE_Campaign_Editor_Screen::fill_scenario_list()
 {
     char file_name[256];
-    FindDataLocal file_info;
+    _finddata_t file_info;
     long handle;
     int len;
 
@@ -190,8 +182,8 @@ void TRIBE_Campaign_Editor_Screen::fill_scenario_list()
     sprintf(file_name, "%s*.scn", rge_base_game->prog_info->scenario_dir);
     handle = _findfirst(file_name, &file_info);
     while (handle != -1) {
-        len = strlen(file_info.name + 4) - 4;
-        strncpy(file_name, file_info.name + 4, len);
+        len = strlen(file_info.name) - 4;
+        strncpy(file_name, file_info.name, len);
         file_name[len] = 0;
         this->scenarios->append_line(file_name, 0);
         if (_findnext(handle, &file_info) == -1) {
@@ -202,8 +194,8 @@ void TRIBE_Campaign_Editor_Screen::fill_scenario_list()
     sprintf(file_name, "%s*.scx", rge_base_game->prog_info->scenario_dir);
     handle = _findfirst(file_name, &file_info);
     while (handle != -1) {
-        len = strlen(file_info.name + 4) - 4;
-        strncpy(file_name, file_info.name + 4, len);
+        len = strlen(file_info.name) - 4;
+        strncpy(file_name, file_info.name, len);
         file_name[len] = 0;
         this->scenarios->append_line(file_name, 0);
         if (_findnext(handle, &file_info) == -1) {
@@ -258,16 +250,16 @@ void TRIBE_Campaign_Editor_Screen::load_campaign()
 {
     char* text = 0;
     char* text2 = 0;
-    char file_info[0x118];
+    _finddata_t file_info;
 
-    addstring(&text, this->filename->get_text(), (char*)".cpn");
+    addstring(&text, this->filename->get_text(), ".cpn");
     addstring(&text2, rge_base_game->prog_info->campaign_dir, text);
-    long found = _findfirst(text2, file_info);
+    long found = _findfirst(text2, &file_info);
     unsigned char ok;
     if (found == -1) {
-        addstring(&text, this->filename->get_text(), (char*)".cpx");
+        addstring(&text, this->filename->get_text(), ".cpx");
         addstring(&text2, rge_base_game->prog_info->campaign_dir, text);
-        found = _findfirst(text2, file_info);
+        found = _findfirst(text2, &file_info);
     }
 
     if (found != -1) {
@@ -298,7 +290,7 @@ void TRIBE_Campaign_Editor_Screen::make_campaign()
     char** campaign_filename;
     char** scenarios_text;
     char test[260];
-    char file_info[280];
+    _finddata_t file_info;
     int count;
     int i;
     RGE_Campaign* new_campaign;
@@ -310,25 +302,25 @@ void TRIBE_Campaign_Editor_Screen::make_campaign()
             // BINARY NOTE: An invalid name returns without clearing need_to_save.
             return;
         } else {
-            addstring(&text, name, (char*)".cpx");
+            addstring(&text, name, ".cpx");
             count = this->campaign_scenarios->numberLines();
             if (count > 0) {
-                scenarios_text = (char**)calloc(count, 4);
-                campaign_filename = (char**)calloc(count, 4);
+                scenarios_text = static_cast<char**>(calloc(count, 4));
+                campaign_filename = static_cast<char**>(calloc(count, 4));
                 for (i = 0; i < count; ++i) {
                     getstring(&scenarios_text[i],
                               this->campaign_scenarios->get_text(i));
                     getstring(&campaign_filename[i],
                               this->campaign_scenarios->get_text(i));
-                    sprintf(test, (char*)"%s%s.scn",
+                    sprintf(test, "%s%s.scn",
                             rge_base_game->prog_info->scenario_dir,
                             campaign_filename[i]);
-                    if (_findfirst(test, file_info) == -1) {
+                    if (_findfirst(test, &file_info) == -1) {
                         addstring(&campaign_filename[i], campaign_filename[i],
-                                  (char*)".scx");
+                                  ".scx");
                     } else {
                         addstring(&campaign_filename[i], campaign_filename[i],
-                                  (char*)".scn");
+                                  ".scn");
                     }
                 }
 
@@ -371,7 +363,7 @@ void TRIBE_Campaign_Editor_Screen::add_scenario()
         this->scenarios->delete_line(line2);
 
         this->campaign_scenarios->scroll_cur_line(
-            (unsigned char)1, (int)this->campaign_scenarios->get_line(), 1);
+            1, this->campaign_scenarios->get_line(), 1);
     }
 
     this->need_to_save = 1;
@@ -387,7 +379,7 @@ void TRIBE_Campaign_Editor_Screen::remove_scenario()
         line = this->campaign_scenarios->get_line();
         this->campaign_scenarios->delete_line(line);
         this->scenarios->scroll_cur_line(
-            (int)1, (short)this->scenarios->get_line(), 1);
+            1, this->scenarios->get_line(), 1);
     }
     this->need_to_save = 1;
 }
@@ -409,8 +401,8 @@ void TRIBE_Campaign_Editor_Screen::move_scenario_up()
         this->campaign_scenarios->set_line(
             this->campaign_scenarios->get_line() - 1);
 
-        ((TListPanel*)this->campaign_scenarios)->scroll_cur_line(
-            (unsigned char)1, (short)this->campaign_scenarios->get_line(), 1);
+        this->campaign_scenarios->scroll_cur_line(
+            1, this->campaign_scenarios->get_line(), 1);
     }
 
     this->need_to_save = 1;
@@ -431,7 +423,7 @@ void TRIBE_Campaign_Editor_Screen::move_scenario_down()
             this->campaign_scenarios->set_line(
                 this->campaign_scenarios->get_line() + 1);
             this->campaign_scenarios->scroll_cur_line(
-                (unsigned char)1, (short)this->campaign_scenarios->get_line(), 1);
+                1, this->campaign_scenarios->get_line(), 1);
         }
         this->need_to_save = 1;
     }
