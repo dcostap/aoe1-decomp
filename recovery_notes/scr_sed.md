@@ -3,80 +3,67 @@
 ## Source context
 
 PDB source: `C:\msdev\work\age1_x1\scr_sed.cpp`.
-
-The module has 47 normal owners. The PDB line order is 249 through 3670.
-The nearby `004A8750` vector deleting destructor is compiler generated.
-It has no source body in this module.
-
+The module has 47 normal owners. Their source lines run from 249 through 3670.
+`004A8750` is the compiler-generated vector deleting destructor.
 `TRIBE_Screen_Sed` owns 46 methods. `004AB2D0` is the module free comparator.
-The final owner is `TRIBE_Screen_Sed::set_focus`.
+
+## Migration
+
+`include/scr_sed.h` now owns only `TRIBE_Screen_Sed` and its nested `List_Info`
+record. `Pnl_scr.h` owns the screen base. The source consumes canonical panel,
+control, game, world, player, scenario, map, view, object, sprite, technology,
+dialog, save-screen, open-screen, registry, and sound headers. It has no
+wrapper, context-selection macro, fragment include, copied foreign layout,
+local vtable, or raw panel cursor. Three former alignment gaps are now compiler
+alignment. The size check remains `0x948`.
+
+The source owns all 47 normal bodies in PDB order. The translation-unit entry
+registers only exact owners. Non-exact statuses retain a source note here.
 
 ## Recovery states
 
-The module has 41 matching functions, five accepted-drift functions, and one scratch function.
+The natural module validation reports 36 exact functions, five accepted-drift
+functions, and six scratch functions:
 
-- `004A8A60 create_drop_down`: one SIB operand order differs. Its address and effects match.
-- `004A9CC0 set_scenario_mode`: one cursor register allocation differs. Its calls and effects match.
-- `004AA730 set_paint_object_mode`: the player and world loads use different registers.
+- `004A8A60 create_drop_down`: one SIB operand order differs.
+- `004A94A0 ~TRIBE_Screen_Sed`: direct typed child deletion changes the body
+  and escapes its owner boundary.
+- `004A9CC0 set_scenario_mode`: one cursor register allocation differs.
+- `004AA730 set_paint_object_mode`: player and world loads use different
+  registers.
+- `004AAB60 set_player`: canonical provider calls change the natural body.
+- `004AB300 set_unit_player`: canonical provider calls change the natural body.
 - `004AB670 set_unit`: VC5 exchanges ESI and EDI.
-- `004AD630 command_outline`: VC5 changes zero extension and register allocation.
-- `004ABCD0 action`: source behavior is recovered. Its large control-flow and codegen gap remains open.
+- `004AB7D0 handle_idle`: canonical provider calls change the natural body.
+- `004ABCD0 action`: source behavior is recovered, but its large codegen gap
+  remains open.
+- `004AD340 command_new_map`: canonical map and world providers change the
+  natural body.
+- `004AD630 command_outline`: VC5 changes zero extension and register
+  allocation.
 
-Keep accepted-drift status unless new executable evidence shows a behavior difference.
+The accepted-drift functions retain their reviewed status. The six scratch
+functions remain scratch until new executable evidence or a behavior review
+resolves their natural differences.
 
-## Migration record
+## Provider composition
 
-The old `scr_sed_prefix` and `scr_sed_save_as` wrappers joined the 47 bodies with context macros and field aliases.
-The migration moved each body into `src/scr_sed.cpp` in PDB order.
-`include/scr_sed.h` now owns the module declarations.
+The source composes `vw_main.h`, `vw_dimap.h`, `spnl_obj.h`, `scr_sedo.h`,
+`scr_save.h`, and `dlg_sedm.h`. The source uses `RGE_Map::map_generate2`,
+`RGE_Scenario::save_scenario`, and the canonical `T_Scenario` API. It uses
+direct typed deletion for the scenario-editor child panels.
 
-The module source uses real panel, game, scenario, and world declarations.
-It does not use wrapper macros, `.cpp` includes, fake layouts, raw vptrs, or manual virtual dispatch.
+The temporary `scr_save.h` and `dlg_sedm.h` declarations provide canonical
+consumer surfaces while their source modules finish migration. They contain
+no panel copies or size-only fallback classes.
 
-The final `/GX` candidate TU matched 33 exact owners. It retained all 30 prior exact owners.
-It added `004AD270`, `004AD590`, and `004AD700` as exact owners.
-The 14 observed owners stayed nonexact. No status changed during the migration.
+## Candidate validation
 
-The source-shape regression set has eight matching-status owners:
-`004A81E0`, `004A94A0`, `004AA7A0`, `004AA8F0`, `004AAB60`, `004AAE20`, `004AB300`, and `004AD680`.
-Their candidate differences are 428, 1191, 5, 17, 231, 1, 2, and 1 bytes.
-The five accepted-drift owners and the scratch `004ABCD0` stayed nonexact as expected.
+Candidate: `build/scr_sed_canonical_candidate.json`.
+Report: `build/candidate_tus/scr_sed_canonical/report.json`.
 
-Run a candidate TU check before new exact claims. Check direct call targets and boundaries for every claimed match.
-
-## Canonical provider hold
-
-A rebase probe kept all `src/scr_sed.cpp` bodies unchanged. It used the
-canonical panel, screen, control, BaseGame, map, world, Tech, and
-message-panel headers. It also used `diam_map.h`, `tpnl_obj.h`, and
-`spnl_obj.h` from current main.
-
-`RGE_Diamond_Map` and `TRIBE_Scenario_Editor_Panel_Object` now compose. They
-are not provider gaps. The source's `object_panel->slot0` call has no canonical
-`spnl_obj.h` declaration. Resolve its real method from PDB and binary evidence.
-
-`TRIBE_Main_View` remains incomplete. `vw_main.h` owns only `RGE_Main_View`.
-Current `scr_game.h` still copies `TPanel`. Wait for the active `scr_game`
-provider chain. Do not copy its hierarchy here.
-
-`RGE_Diamond_Map_View` remains incomplete. Current `vw_dimap.h` still copies
-`TPanel`. The active `vw_dimap` and `tvw_dmap` chains own this gap. Do not use
-their private declarations before they reach main.
-
-The probe exposes a current `TPicture` redefinition. `diam_map.h` includes
-`Picture.h`, while `scenario.h` also defines `TPicture`. The scenario-picture
-owner boundary must compose before this screen can include both headers.
-
-The source constructs `TRIBE_Screen_Sed_Open`, `TribeSaveGameScreen`, and
-`TRIBE_Dialog_Sed_Menu`. Their current headers still copy the panel hierarchy.
-Wait for the active `scr_save` provider chain and the dialog-provider work.
-
-The unchanged bodies also need source recovery. Canonical panel types expose
-`error_code`, typed `delete_panel`, and different control overloads. The bodies
-use `setup_error`, untyped pointer conversions, and old control calls. The
-Tech loop uses `Tech_Entry` and a BaseGame world pointer without a canonical
-TRIBE world conversion.
-
-Do not change `scr_sed.h` alone. Keep the current header and all 47 bodies.
-The restored module compiles with `build_function.py --va 004AD6A0 --force`.
-Reopen after the listed provider chains and source evidence are ready.
+The grouped candidate compiled all 47 normal bodies and the generated vector
+deleting destructor. It reports zero comparison errors. It reports zero
+relocation target mismatches for every normal body. The 36 exact bodies have
+zero boundary escapes. The six scratch body boundary values are recorded in
+the recovery states above.
