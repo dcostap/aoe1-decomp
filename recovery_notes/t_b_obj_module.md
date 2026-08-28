@@ -60,5 +60,5 @@ entries are observed mismatches or accepted source states. The generated
 `004C8090` destructor also matched through its VC5 weak `??_G` fallback.
 
 The grouped result is diagnostic. Source recovery did not byte-tune the scratch
-owners. Exactness must be rechecked after the main agent registers the direct
-module in `config/translation_units.json`.
+owners. The direct module now registers its seven exact owners in
+`config/translation_units.json`.
