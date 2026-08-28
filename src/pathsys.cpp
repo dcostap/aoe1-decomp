@@ -1057,14 +1057,12 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
             return 0;
 
         if (minY <= maxY) {
-            int tileOffset = minX * (int)sizeof(RGE_Tile);
             uchar row = minY;
             do {
                 uchar col = minX;
                 if (col <= maxX) {
-                    RGE_Tile* tile = (RGE_Tile*)
-                        ((char*)this->mapValue->map_row_offset[row] +
-                         tileOffset);
+                    RGE_Tile* tile =
+                        &this->mapValue->map_row_offset[row][minX];
                     do {
                         local_14 = col;
                         if (this->initialTile.x != local_14 ||
