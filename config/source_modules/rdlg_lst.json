@@ -4,9 +4,13 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rdlg_lst.cpp",
   "source": "src/rdlg_lst.cpp",
   "header": "include/rdlg_lst.h",
+  "header_composition": {
+    "status": "owner_clean",
+    "summary": "RGE_Dialog_List and rdlg_list_info stay local. The source uses canonical panel, dialog, screen, base-game, player, and master-object owners."
+  },
   "functions": {
     "0047E670": { "status": "matching", "note_path": "recovery_notes/rdlg_lst_module.md" },
-    "0047E6B0": { "status": "matching", "note_path": "recovery_notes/rdlg_lst_module.md" },
+    "0047E6B0": { "status": "scratch", "note_path": "recovery_notes/rdlg_lst_module.md" },
     "0047E830": { "status": "matching", "note_path": "recovery_notes/rdlg_lst_module.md" },
     "0047E8C0": { "status": "matching", "note_path": "recovery_notes/rdlg_lst_module.md" },
     "0047E8F0": { "status": "matching", "note_path": "recovery_notes/rdlg_lst_module.md" },

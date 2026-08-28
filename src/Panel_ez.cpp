@@ -1,4 +1,18 @@
 #include "../include/panel_ez.h"
+#include "../include/basegame.h"
+#include "../include/drawarea.h"
+#include "../include/Shape.h"
+#include "../include/color.h"
+#include "../include/pnl_btn.h"
+#include "../include/pnl_lst.h"
+#include "../include/Pnl_inp.h"
+#include "../include/pnl_edit.h"
+#include "../include/Pnl_scbr.h"
+#include "../include/pnl_drop.h"
+#include "../include/pnl_sld.h"
+#include "../include/Mouseptr.h"
+#include "../include/dlg_msg.h"
+#include "../include/dlg_help.h"
 #include <fcntl.h>
 #include <io.h>
 #include <new.h>
@@ -6,6 +20,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+static char s_space[] = " ";
+static char s_X[] = "X";
 
 extern unsigned char shape_file_first;
 extern unsigned char* __cdecl RESFILE_load(unsigned long type, unsigned long id, int& size, int& param_4);
@@ -74,24 +91,24 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
     char popup_info_file_name_in[260];
 
     f2g = -1;
-    *(long*)((char*)this + 0x470) = allow_shadow;
+    this->allow_shadow_area = allow_shadow;
     set_info_file(info_file, info_id);
     if (use_area_size != 0) {
         x = 0;
         y = 0;
         if (area != 0) {
-            w = area->width;
-            h = area->height;
+            w = area->Width;
+            h = area->Height;
         } else {
             w = 0;
             h = 0;
         }
     } else if (w > 0 && h > 0 && area != 0) {
         if (x == -1) {
-            x = area->width / 2 - w / 2;
+            x = area->Width / 2 - w / 2;
         }
         if (y == -1) {
-            y = area->height / 2 - h / 2;
+            y = area->Height / 2 - h / 2;
         }
     }
     if (TPanel::setup(area, parent, x, y, w, h, 0) == 0) {
@@ -99,14 +116,14 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
     }
     this->set_ideal_size(w, h);
     if (use_area_size != 0) {
-        this->set_positioning(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        this->set_positioning((TPanel::PositionMode)1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     unsigned char* data = 0;
-    if (shape_file_first != 0 && (char*)this + 0xFC != 0 && *((char*)this + 0xFC) != 0) {
-        if (strchr((char*)this + 0xFC, '.') == 0) {
-            sprintf(temp_label + 0xFC, "%s.sin", (char*)this + 0xFC);
+    if (shape_file_first != 0 && this->info_file_name != 0 && this->info_file_name[0] != 0) {
+        if (strchr(this->info_file_name, '.') == 0) {
+            sprintf(temp_label + 0xFC, "%s.sin", this->info_file_name);
         } else {
-            sprintf(temp_label + 0xFC, "%s", (char*)this + 0xFC);
+            sprintf(temp_label + 0xFC, "%s", this->info_file_name);
         }
         int fd = _open(temp_label + 0xFC, _O_BINARY);
         if (fd != -1) {
@@ -122,8 +139,8 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
         }
     }
     if (data == 0) {
-        if (*(long*)((char*)this + 0x200) != -1) {
-            data = RESFILE_load(0x62696E61, *(long*)((char*)this + 0x200), own_mem, back_pic_id_b1);
+        if (this->info_id != -1) {
+            data = RESFILE_load(0x62696E61, this->info_id, own_mem, back_pic_id_b1);
         }
         if (data == 0) {
             return 1;
@@ -155,11 +172,11 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
         &resDataSize, &t2b, &bc2, &bc4,
         &resDataSize, &bc6, &background_pos_in, &pal_id) != -1) {
         set_use_bevels(1);
-        if (this->render_area->width < 800 || stricmp(info_file_name2 + 0x100, "none") == 0) {
+        if (this->render_area->Width < 800 || stricmp(info_file_name2 + 0x100, "none") == 0) {
             set_background(button_pics_file_name + 0x100, bc3);
             f2r = f1g;
             background2_file_name = background_pic_file_name_c2 + 0x100;
-        } else if (this->render_area->width < 0x400) {
+        } else if (this->render_area->Width < 0x400) {
             set_background(info_file_name2 + 0x100, shad_amt);
             background2_file_name = palette_file_name + 0x100;
         } else {
@@ -172,15 +189,14 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
         set_palette(background_pic_file_name_a2 + 0x100, f1r);
         set_cursor(background_pic_file_name_b2 + 0x100, bc1);
         set_background_pos(s2b);
-        set_background_colors((unsigned char)t1b, (unsigned char)t1b);
-        set_bevel_colors((unsigned char)back_pic_id_a1, (unsigned char)s1b, (unsigned char)bc5,
-                         (unsigned char)s2r, (unsigned char)f2b, (unsigned char)s2g);
-        set_text_colors((unsigned char)back_pic_id_c1 << 16 | (unsigned char)button_pic_id << 8 | (unsigned char)background_color1_in,
-                        (unsigned char)s1g << 16 | (unsigned char)cursor_id << 8 | (unsigned char)s1r);
-        set_focus_colors((unsigned char)back_pic_id_b2 << 16 | (unsigned char)back_pic_id_c2 << 8 | (unsigned char)back_pic_id_a2,
-                         (unsigned char)popup_info_id << 16 | (unsigned char)own_mem << 8 | (unsigned char)f2g);
-        set_state_colors((unsigned char)bc4 << 16 | (unsigned char)bc2 << 8 | (unsigned char)t2b,
-                         (unsigned char)pal_id << 16 | (unsigned char)background_pos_in << 8 | (unsigned char)bc6);
+        set_background_colors(t1b, t1b);
+        set_bevel_colors(back_pic_id_a1, s1b, bc5, s2r, f2b, s2g);
+        set_text_colors(back_pic_id_c1 << 16 | button_pic_id << 8 | background_color1_in,
+                        s1g << 16 | cursor_id << 8 | s1r);
+        set_focus_colors(back_pic_id_b2 << 16 | back_pic_id_c2 << 8 | back_pic_id_a2,
+                         popup_info_id << 16 | own_mem << 8 | f2g);
+        set_state_colors(bc4 << 16 | bc2 << 8 | t2b,
+                         pal_id << 16 | background_pos_in << 8 | bc6);
         set_button_pics(background_pic_file_name_c1 + 0x100, t2r);
         set_popup_info_file(background_pic_file_name_a1 + 0x100, t1g);
     }
@@ -285,43 +301,41 @@ void TEasy_Panel::setup_shadow_area(int force)
 {
     char area_name[260];
 
-    TDrawArea*& shadow_area = *(TDrawArea**)((char*)this + 0x46c);
-    TShape*& background_pic = *(TShape**)((char*)this + 0x204);
-    TDrawArea* area = shadow_area;
+    TDrawArea* area = this->shadow_area;
     if ((area == 0 || force != 0) &&
-        background_pic != 0 && this->shadow_color_table != 0) {
+        this->background_pic != 0 && this->shadow_color_table != 0) {
         int old_flags = this->render_area->DrawSystem->Flags;
 
         if (area == 0) {
             this->render_area->DrawSystem->Flags &= 1;
-            sprintf(area_name + 4, "%s Shadow Panel", this->panelNameValue);
-            shadow_area = new TDrawArea(area_name + 4, 0);
+            sprintf(area_name + 4, "%s Shadow Panel", this->panel_name);
+            this->shadow_area = new TDrawArea(area_name + 4, 0);
         }
 
-        if (shadow_area != 0) {
+        if (this->shadow_area != 0) {
             long y_max;
             long x_min;
+            long y_min;
             long x_max;
 
-            background_pic->shape_minmax(
-                x_max, y_max, *(long*)area_name, x_min, 0);
+            this->background_pic->shape_minmax(x_min, y_min, x_max, y_max, 0);
 
-            int width = *(long*)area_name - x_max + 1;
-            int height = x_min - y_max + 1;
+            int width = x_max - x_min + 1;
+            int height = y_max - y_min + 1;
             if (width > this->pnl_wid)
                 width = this->pnl_wid;
             if (height > this->pnl_hgt)
                 height = this->pnl_hgt;
 
-            if (shadow_area->Init(this->render_area->DrawSystem,
+            if (this->shadow_area->Init(this->render_area->DrawSystem,
                                         width, height, 0, 0)) {
-                shadow_area->Clear(0, this->background_color1);
-                if (shadow_area->Lock("panel_ez::setup_shadow_area", 1)) {
-                    background_pic->shape_draw(shadow_area,
+                this->shadow_area->Clear(0, this->background_color1);
+                if (this->shadow_area->Lock("panel_ez::setup_shadow_area", 1)) {
+                    this->background_pic->shape_draw(this->shadow_area,
                                                      0, 0, 0, 0, 0);
-                    shadow_area->SetShadowTable(this->shadow_color_table);
-                    shadow_area->DrawShadowBox(0, 0, width - 1, height - 1);
-                    shadow_area->Unlock("panel_ez::setup_shadow_area");
+                    this->shadow_area->SetShadowTable(this->shadow_color_table);
+                    this->shadow_area->DrawShadowBox(0, 0, width - 1, height - 1);
+                    this->shadow_area->Unlock("panel_ez::setup_shadow_area");
                 }
             }
         }
@@ -408,7 +422,7 @@ void TEasy_Panel::draw_background(int use_alt)
     }
 
     if (this->render_area->Lock("panel_ez::draw_background", 1)) {
-        pic->shape_minmax(&x_min, &y_min, &x_max, &y_max, 0);
+        pic->shape_minmax(x_min, y_min, x_max, y_max, 0);
         long pic_w = x_max - x_min + 1;
         pic_hgt = y_max - y_min + 1;
         switch (this->background_pos) {
@@ -474,11 +488,11 @@ long TEasy_Panel::handle_mouse_down(unsigned char button, long x, long y, int fl
 
 void TEasy_Panel::set_info_file(char* fname, long id) {
     if (fname) {
-        strcpy((char*)this + 0xFC, fname);
+        strcpy(this->info_file_name, fname);
     } else {
-        *((char*)this + 0xFC) = '\0';
+        this->info_file_name[0] = '\0';
     }
-    *(long*)((char*)this + 0x200) = id;
+    this->info_id = id;
 }
 
 void TEasy_Panel::set_ideal_size(long width, long height) {
@@ -489,11 +503,10 @@ void TEasy_Panel::set_ideal_size(long width, long height) {
 int TEasy_Panel::set_background(char* filename, long id) {
     char file_name2[260];
 
-    TShape*& background_pic = *(TShape**)((char*)this + 0x204);
-    TShape* old = background_pic;
+    TShape* old = this->background_pic;
     if (old != 0) {
         delete old;
-        background_pic = 0;
+        this->background_pic = 0;
     }
 
     if (filename != 0 && *filename != 0 && stricmp(filename, "none") != 0) {
@@ -502,29 +515,28 @@ int TEasy_Panel::set_background(char* filename, long id) {
         } else {
             sprintf(file_name2, "%s", filename);
         }
-        background_pic = new TShape(file_name2, id);
+        this->background_pic = new TShape(file_name2, id);
     } else if (id != -1) {
-        background_pic = new TShape("", id);
+        this->background_pic = new TShape("", id);
     }
 
-    if (background_pic != 0 && background_pic->is_loaded() == 0) {
-        TShape* shape = background_pic;
+    if (this->background_pic != 0 && this->background_pic->is_loaded() == 0) {
+        TShape* shape = this->background_pic;
         if (shape != 0) {
             delete shape;
         }
-        background_pic = 0;
+        this->background_pic = 0;
     }
-    return background_pic != 0;
+    return this->background_pic != 0;
 }
 
 int TEasy_Panel::set_background2(char* filename, long id) {
     char file_name2[260];
 
-    TShape*& background_pic2 = *(TShape**)((char*)this + 0x208);
-    TShape* old = background_pic2;
+    TShape* old = this->background_pic2;
     if (old != 0) {
         delete old;
-        background_pic2 = 0;
+        this->background_pic2 = 0;
     }
 
     if (filename != 0 && *filename != 0 && stricmp(filename, "none") != 0) {
@@ -533,27 +545,27 @@ int TEasy_Panel::set_background2(char* filename, long id) {
         } else {
             sprintf(file_name2, "%s", filename);
         }
-        background_pic2 = new TShape(file_name2, id);
+        this->background_pic2 = new TShape(file_name2, id);
     } else if (id != -1) {
-        background_pic2 = new TShape("", id);
+        this->background_pic2 = new TShape("", id);
     }
 
-    if (background_pic2 != 0 && background_pic2->is_loaded() == 0) {
-        TShape* shape = background_pic2;
+    if (this->background_pic2 != 0 && this->background_pic2->is_loaded() == 0) {
+        TShape* shape = this->background_pic2;
         if (shape != 0) {
             delete shape;
         }
-        background_pic2 = 0;
+        this->background_pic2 = 0;
     }
-    return background_pic2 != 0;
+    return this->background_pic2 != 0;
 }
 
 void TEasy_Panel::set_background_colors(unsigned char color1, unsigned char color2) {
     this->set_color(color1);
     background_color1 = color1;
     background_color2 = color2;
-    background_brush = GetStockObject(4);
-    fill_in_background = 1;
+    this->brush = GetStockObject(4);
+    this->stock_brush = 1;
     brush_color = 0;
 }
 
@@ -587,8 +599,8 @@ int TEasy_Panel::set_palette(char* param_1, long param_2)
 
     tagPALETTEENTRY palette_entries[256];
     if (GetPaletteEntries(p, 0, 0x100, palette_entries) != 0) {
-        this->shadow_color_table = new RGE_Color_Table(
-            *(TDrawArea**)((char*)this + 0x20),
+            this->shadow_color_table = new RGE_Color_Table(
+            this->render_area,
             this->shadow_amount,
             0,
             palette_entries);
@@ -602,9 +614,9 @@ int TEasy_Panel::set_cursor(char* cursor_name, long cursor_id_value) {
     return 1;
 }
 
-void TEasy_Panel::set_use_bevels(int v) { this->field_31C = v; }
+void TEasy_Panel::set_use_bevels(int v) { this->use_bevels = v; }
 
-void TEasy_Panel::set_background_pos(int v) { this->field_318 = v; }
+void TEasy_Panel::set_background_pos(int v) { this->background_pos = v; }
 
 void TEasy_Panel::set_bevel_colors(unsigned char a, unsigned char b, unsigned char c, unsigned char d, unsigned char e, unsigned char f) {
     this->bevel_color1 = a;
@@ -616,18 +628,18 @@ void TEasy_Panel::set_bevel_colors(unsigned char a, unsigned char b, unsigned ch
 }
 
 void TEasy_Panel::set_text_colors(unsigned long a, unsigned long b) {
-    this->field_328 = a;
-    this->field_32C = b;
+    this->text_color1 = a;
+    this->text_color2 = b;
 }
 
 void TEasy_Panel::set_focus_colors(unsigned long a, unsigned long b) {
-    this->field_330 = a;
-    this->field_334 = b;
+    this->focus_color1 = a;
+    this->focus_color2 = b;
 }
 
 void TEasy_Panel::set_state_colors(unsigned long a, unsigned long b) {
-    this->field_338 = a;
-    this->field_33C = b;
+    this->state_color1 = a;
+    this->state_color2 = b;
 }
 
 void TEasy_Panel::set_popup_info_file(char* filename, long id) {
@@ -685,18 +697,18 @@ void TEasy_Panel::set_shadow_amount(long amount) {
 
     if (this->palette != 0 && this->shadow_amount > 0) {
         if (GetPaletteEntries(this->palette, 0, 0x100, palette_entries)) {
-            this->shadow_color_table = new RGE_Color_Table(this->draw_area, this->shadow_amount, 0, palette_entries);
+            this->shadow_color_table = new RGE_Color_Table(this->render_area, this->shadow_amount, 0, palette_entries);
         }
     }
 
-    if (this->panel_window != 0) {
-        this->set_redraw((TPanel::RedrawMode)2);
+    if (this->have_focus != 0) {
+        this->set_redraw(TPanel::RedrawImmediate);
     }
 }
 
 void TEasy_Panel::set_enable_ime(int value) {
     this->enable_ime = value;
-    if (this->field_78 != 0) {
+    if (this->have_focus != 0) {
         if (value != 0) {
             panel_system.EnableIME();
             return;
@@ -705,21 +717,21 @@ void TEasy_Panel::set_enable_ime(int value) {
     }
 }
 
-char* TEasy_Panel::get_info_file() { return this->field_FC; }
+char* TEasy_Panel::get_info_file() { return this->info_file_name; }
 
-long TEasy_Panel::get_info_id() { return this->field_200; }
+long TEasy_Panel::get_info_id() { return this->info_id; }
 
-TShape* TEasy_Panel::get_background() { return (TShape*)this->field_204; }
+TShape* TEasy_Panel::get_background() { return this->background_pic; }
 
-TShape* TEasy_Panel::get_background2() { return (TShape*)this->field_208; }
+TShape* TEasy_Panel::get_background2() { return this->background_pic2; }
 
-void* TEasy_Panel::get_palette() { return (void*)this->field_20C; }
+void* TEasy_Panel::get_palette() { return this->palette; }
 
-char* TEasy_Panel::get_cursor() { return this->field_210; }
+char* TEasy_Panel::get_cursor() { return this->cursor_file; }
 
-int TEasy_Panel::get_use_bevels() { return this->field_31C; }
+int TEasy_Panel::get_use_bevels() { return this->use_bevels; }
 
-int TEasy_Panel::get_background_pos() { return this->field_318; }
+int TEasy_Panel::get_background_pos() { return this->background_pos; }
 
 void TEasy_Panel::get_bevel_colors(unsigned char& c1, unsigned char& c2, unsigned char& c3, unsigned char& c4, unsigned char& c5, unsigned char& c6) {
     c1 = this->bevel_color1;
@@ -731,31 +743,31 @@ void TEasy_Panel::get_bevel_colors(unsigned char& c1, unsigned char& c2, unsigne
 }
 
 void TEasy_Panel::get_text_colors(unsigned long& out1, unsigned long& out2) {
-    out1 = this->field_328;
-    out2 = this->field_32C;
+    out1 = this->text_color1;
+    out2 = this->text_color2;
 }
 
 void TEasy_Panel::get_focus_colors(unsigned long& out1, unsigned long& out2) {
-    out1 = this->field_330;
-    out2 = this->field_334;
+    out1 = this->focus_color1;
+    out2 = this->focus_color2;
 }
 
-long TEasy_Panel::get_shadow_amount() { return this->field_450; }
+long TEasy_Panel::get_shadow_amount() { return this->shadow_amount; }
 
 void TEasy_Panel::get_state_colors(unsigned long& out1, unsigned long& out2) {
-    out1 = this->field_338;
-    out2 = this->field_33C;
+    out1 = this->state_color1;
+    out2 = this->state_color2;
 }
 
-char* TEasy_Panel::get_popup_info_file() { return this->field_340; }
+char* TEasy_Panel::get_popup_info_file() { return this->popup_info_file_name; }
 
-long TEasy_Panel::get_popup_info_id() { return this->field_444; }
+long TEasy_Panel::get_popup_info_id() { return this->popup_info_id; }
 
-TShape* TEasy_Panel::get_button_pics() { return (TShape*)this->field_448; }
+TShape* TEasy_Panel::get_button_pics() { return this->button_pics; }
 
-RGE_Color_Table* TEasy_Panel::get_shadow_color_table() { return (RGE_Color_Table*)this->field_44C; }
+RGE_Color_Table* TEasy_Panel::get_shadow_color_table() { return this->shadow_color_table; }
 
-int TEasy_Panel::get_enable_ime() { return this->field_458; }
+int TEasy_Panel::get_enable_ime() { return this->enable_ime; }
 
 int TEasy_Panel::create_button(TPanel* parent, TButtonPanel** out, long id1, long id2, long p5, long p6, long p7, long p8, long p9, long p10, long p11) {
     char text2[120];
@@ -776,19 +788,21 @@ int TEasy_Panel::create_button(TPanel* panel, TButtonPanel** out, char* text, ch
     int i;
 
     sound = 0;
-    sx = (x * this->width) / this->ideal_width;
-    sy = (y * this->height) / this->ideal_height;
-    sw = (w * this->width) / this->ideal_width;
-    sh = (h * this->height) / this->ideal_height;
+    sx = (x * this->pnl_wid) / this->ideal_width;
+    sy = (y * this->pnl_hgt) / this->ideal_height;
+    sw = (w * this->pnl_wid) / this->ideal_width;
+    sh = (h * this->pnl_hgt) / this->ideal_height;
 
     TButtonPanel* button = new TButtonPanel;
     *out = button;
-    if (*out != 0 && (*out)->failed == 0) {
+    if (*out != 0 && (*out)->error_code == 0) {
         if (sound_id >= 0) {
             sound = rge_base_game->get_sound(sound_id);
         }
 
-        if ((*out)->setup(this->draw_area, panel, sx, sy, sw, sh, 3, sound, 1, user) != 0) {
+        if ((*out)->setup(this->render_area, panel, sx, sy, sw, sh,
+                          TButtonPanel::DrawPicture, sound,
+                          TButtonPanel::NotifyAction, user) != 0) {
             (*out)->set_sound_number(sound_id);
             RGE_Font* font;
             if (font_id >= 0) {
@@ -813,11 +827,11 @@ int TEasy_Panel::create_button(TPanel* panel, TButtonPanel** out, char* text, ch
             (*out)->set_highlight_text_color(1, this->focus_color1, this->focus_color2);
             i = 1;
         } else {
-            this->failed = 1;
+            this->error_code = 1;
             i = 0;
         }
     } else {
-        this->failed = 1;
+        this->error_code = 1;
         i = 0;
     }
     return i;
@@ -832,26 +846,28 @@ int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, lon
     long sh;
 
     snd = 0;
-    sx = x * this->width / this->ideal_width;
-    sy = y * this->height / this->ideal_height;
-    sw = w * this->width / this->ideal_width;
-    sh = h * this->height / this->ideal_height;
+    sx = x * this->pnl_wid / this->ideal_width;
+    sy = y * this->pnl_hgt / this->ideal_height;
+    sw = w * this->pnl_wid / this->ideal_width;
+    sh = h * this->pnl_hgt / this->ideal_height;
     TButtonPanel* b = new TButtonPanel;
     *out = b;
-    if (b != 0 && b->error_flag == 0) {
+    if (b != 0 && b->error_code == 0) {
         if (sound >= 0) snd = rge_base_game->get_sound(sound);
-        if ((*out)->setup(this->draw_area, panel, sx, sy, sw, sh, 6, snd, 1, id)) {
+        if ((*out)->setup(this->render_area, panel, sx, sy, sw, sh,
+                          TButtonPanel::DrawBevelPicture, snd,
+                          TButtonPanel::NotifyAction, id)) {
             (*out)->set_sound_number(sound);
             (*out)->set_state_info(2);
             if (this->button_pics) {
-                (*out)->setDrawType(6);
+                (*out)->setDrawType(TButtonPanel::DrawBevelPicture);
                 (*out)->set_picture(0, this->button_pics, 0);
                 (*out)->set_picture(1, this->button_pics, 2);
             } else {
-                FontInfo* f = rge_base_game->get_font(0);
+                RGE_Font* f = rge_base_game->get_font(0);
                 (*out)->set_text_info(s_space, f->font, f->font_wid, f->font_hgt, -1, -1);
                 (*out)->set_text(1, s_X);
-                (*out)->setDrawType(3);
+                (*out)->setDrawType(TButtonPanel::DrawPicture);
             }
             if (this->use_bevels) {
                 (*out)->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
@@ -863,7 +879,7 @@ int TEasy_Panel::create_check_box(TPanel* panel, TButtonPanel** out, long x, lon
             return 1;
         }
     }
-    this->error_flag = 1;
+    this->error_code = 1;
     return 0;
 }
 
@@ -878,29 +894,31 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** out, long x,
     long sh;
 
     sound = 0;
-    sx = (ideal_x * this->width) / this->ideal_width;
-    sy = (y * this->height) / this->ideal_height;
-    sw = (w * this->width) / this->ideal_width;
-    sh = (h * this->height) / this->ideal_height;
+    sx = (ideal_x * this->pnl_wid) / this->ideal_width;
+    sy = (y * this->pnl_hgt) / this->ideal_height;
+    sw = (w * this->pnl_wid) / this->ideal_width;
+    sh = (h * this->pnl_hgt) / this->ideal_height;
 
     button = new TButtonPanel;
     *out = button;
-    if (*out != 0 && (*out)->error == 0) {
+    if (*out != 0 && (*out)->error_code == 0) {
         if (sound_id >= 0) {
             sound = rge_base_game->get_sound(sound_id);
         }
 
-        if ((*out)->setup(this->draw_area, parent, sx, sy, sw, sh, 2, sound, 1, param8)) {
+        if ((*out)->setup(this->render_area, parent, sx, sy, sw, sh,
+                          TButtonPanel::DrawText, sound,
+                          TButtonPanel::NotifyAction, param8)) {
             (*out)->set_sound_number(sound_id);
 
             if (this->button_pics != 0) {
-                (*out)->setDrawType(6);
+                (*out)->setDrawType(TButtonPanel::DrawBevelPicture);
                 (*out)->set_picture(0, this->button_pics, 4);
                 (*out)->set_picture(1, this->button_pics, 6);
             }
             else {
                 RGE_Font* font;
-                (*out)->setDrawType(3);
+                (*out)->setDrawType(TButtonPanel::DrawPicture);
                 font = rge_base_game->get_font(0);
                 (*out)->set_text_info(s_space, font->font, font->font_wid, font->font_hgt, -1, -1);
                 (*out)->set_text(1, s_X);
@@ -916,7 +934,7 @@ int TEasy_Panel::create_radio_button(TPanel* parent, TButtonPanel** out, long x,
             return 1;
         }
     }
-    this->error = 1;
+    this->error_code = 1;
     return 0;
 }
 
@@ -928,28 +946,28 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, int string_id, lo
 }
 
 int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, char* text, long p4, long p5, long p6, long p7, long font_id, int center_h, int center_v, int word_wrap) {
-    long ideal_x = (p4 * this->base_width) / this->ideal_width;
-    long ideal_y = (p5 * this->base_height) / this->ideal_height;
-    long ideal_w = (p6 * this->base_width) / this->ideal_width;
-    long ideal_h = (p7 * this->base_height) / this->ideal_height;
+    long ideal_x = (p4 * this->pnl_wid) / this->ideal_width;
+    long ideal_y = (p5 * this->pnl_hgt) / this->ideal_height;
+    long ideal_w = (p6 * this->pnl_wid) / this->ideal_width;
+    long ideal_h = (p7 * this->pnl_hgt) / this->ideal_height;
 
     *out = new TTextPanel;
-    if (*out != 0 && (*out)->field_D8 == 0) {
+    if (*out != 0 && (*out)->error_code == 0) {
         RGE_Font* font;
         if (font_id >= 0) {
             font = rge_base_game->get_font(font_id);
         } else {
             font = rge_base_game->get_font(10);
         }
-        if ((*out)->setup(this->draw_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, font->font, font->font_wid, font->font_hgt, 0, 0, 0, 0, 0, 0, 0) != 0) {
+        if ((*out)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, font->font, font->font_wid, font->font_hgt, 0, 0, 0, 0, 0, 0, (char*)0) != 0) {
             if (center_h != 0 && center_v != 0) {
-                (*out)->set_alignment(0, 0);
+                (*out)->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignCenter);
             } else if (center_h != 0) {
-                (*out)->set_alignment(3, 0);
+                (*out)->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignCenter);
             } else if (center_v != 0) {
-                (*out)->set_alignment(0, 1);
+                (*out)->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignLeft);
             } else {
-                (*out)->set_alignment(3, 1);
+                (*out)->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignLeft);
             }
             (*out)->set_word_wrap(word_wrap);
             (*out)->set_text(text);
@@ -982,17 +1000,17 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, char** text, long
         }
         if ((*out)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h,
                           font->font, font->font_wid, font->font_hgt,
-                          0, 0, 0, 0, 0, 0, 0) != 0) {
-            (*out)->set_text_list(text, text_id);
+                          0, 0, 0, 0, 0, 0, (char*)0) != 0) {
+            (*out)->set_text(text, text_id);
             (*out)->scroll(6, 0, 1);
             if (center_h != 0 && center_v != 0) {
-                (*out)->set_alignment(0, 0);
+                (*out)->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignCenter);
             } else if (center_h != 0) {
-                (*out)->set_alignment(3, 0);
+                (*out)->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignCenter);
             } else if (center_v != 0) {
-                (*out)->set_alignment(0, 1);
+                (*out)->set_alignment(TTextPanel::AlignCenter, TTextPanel::AlignLeft);
             } else {
-                (*out)->set_alignment(3, 1);
+                (*out)->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignLeft);
             }
             (*out)->set_text_color(this->text_color1, this->text_color2);
             (*out)->set_highlight_text_color(this->focus_color1, this->focus_color2);
@@ -1003,25 +1021,26 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, char** text, long
     return 0;
 }
 
-int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, TInputPanel::FormatType format,
+int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, int format,
                               long x, long y, long w, long h, long font_id)
 {
-    long ideal_x = (x * this->base_width) / this->ideal_width;
-    long ideal_y = (y * this->base_height) / this->ideal_height;
-    long ideal_w = (w * this->base_width) / this->ideal_width;
-    long ideal_h = (h * this->base_height) / this->ideal_height;
+    long ideal_x = (x * this->pnl_wid) / this->ideal_width;
+    long ideal_y = (y * this->pnl_hgt) / this->ideal_height;
+    long ideal_w = (w * this->pnl_wid) / this->ideal_width;
+    long ideal_h = (h * this->pnl_hgt) / this->ideal_height;
 
     *out = new TInputPanel;
-    if (*out != 0 && (*out)->field_D8 == 0) {
+    if (*out != 0 && (*out)->error_code == 0) {
         RGE_Font* font;
         if (font_id >= 0) {
             font = rge_base_game->get_font(font_id);
         } else {
             font = rge_base_game->get_font(10);
         }
-        if ((*out)->setup(this->draw_area, parent, ideal_x, ideal_y, ideal_w, ideal_h,
+        if ((*out)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h,
                           font->font, font->font_wid, font->font_hgt,
-                          0, 0, 0, 1, 0xff, 0xff, max_len, 0, text, format) != 0) {
+                          0, 0, 0, 1, 0xff, 0xff, max_len, 0, text,
+                          (TInputPanel::FormatType)format) != 0) {
             if (this->use_bevels != 0) {
                 (*out)->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
                                        this->bevel_color3, this->bevel_color4,
@@ -1033,20 +1052,20 @@ int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, sho
         }
     }
 
-    this->error_flag = 1;
+    this->error_code = 1;
     return 0;
 }
 
-int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, TEditPanel::FormatType p5,
+int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, int p5,
                               long p6, long p7, long p8, long p9, long p10,
                               int p11, int p12)
 {
-    int x = (p6 * this->width) / this->ideal_width;
-    int y = (this->height * p7) / this->ideal_height;
-    int width = (p8 * this->width) / this->ideal_width;
+    int x = (p6 * this->pnl_wid) / this->ideal_width;
+    int y = (this->pnl_hgt * p7) / this->ideal_height;
+    int width = (p8 * this->pnl_wid) / this->ideal_width;
 
     *p2 = new TEditPanel;
-    if (*p2 != 0 && (*p2)->error == 0) {
+    if (*p2 != 0 && (*p2)->error_code == 0) {
         RGE_Font* font;
         if (p10 >= 0) {
             font = rge_base_game->get_font(p10);
@@ -1056,8 +1075,9 @@ int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, TE
 
         int multiline = (p5 != 7) ? 1 : 0;
 
-        if ((*p2)->setup(this->draw_area, p1, x, y, width, p9,
-                         font->font, p4, p3, p5, multiline)) {
+        if ((*p2)->setup(this->render_area, p1, x, y, width, p9,
+                         font->font, p4, p3,
+                         (TEditPanel::FormatType)p5, multiline)) {
 
             if (this->use_bevels) {
                 (*p2)->set_bevel_info(3,
@@ -1075,7 +1095,7 @@ int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, TE
         }
     }
 
-    this->error = 1;
+    this->error_code = 1;
     return 0;
 }
 
@@ -1083,27 +1103,27 @@ int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** drop_panel,
                                   long list_width, long list_height, long x,
                                   long y, long width, long height, long font_num)
 {
-    long ideal_x = x * this->width / this->ideal_width;
-    long ideal_y = y * this->height / this->ideal_height;
-    long ideal_w = width * this->width / this->ideal_width;
-    long ideal_h = height * this->height / this->ideal_height;
-    long button_size = (this->width * 18) / this->ideal_width;
-    long list_w = list_width * this->width / this->ideal_width;
-    long list_h = list_height * this->height / this->ideal_height;
+    long ideal_x = x * this->pnl_wid / this->ideal_width;
+    long ideal_y = y * this->pnl_hgt / this->ideal_height;
+    long ideal_w = width * this->pnl_wid / this->ideal_width;
+    long ideal_h = height * this->pnl_hgt / this->ideal_height;
+    long button_size = (this->pnl_wid * 18) / this->ideal_width;
+    long list_w = list_width * this->pnl_wid / this->ideal_width;
+    long list_h = list_height * this->pnl_hgt / this->ideal_height;
     if (font_num >= 0)
         rge_base_game->get_font(font_num);
     else
         rge_base_game->get_font(10);
     char** list = (char**)calloc(1,4);
-    if (list == 0) { this->error = 1; return 0; }
+    if (list == 0) { this->error_code = 1; return 0; }
     list[0] = (char*)calloc(0x14,1);
     if (list[0] == 0) return 0;
     strcpy(list[0], " ");
-    if (this->error == 0) {
+    if (this->error_code == 0) {
         *drop_panel = new TDropDownPanel;
-        if (*drop_panel != 0 && (*drop_panel)->error == 0) {
+        if (*drop_panel != 0 && (*drop_panel)->error_code == 0) {
             RGE_Font* font = rge_base_game->get_font(font_num);
-            if ((*drop_panel)->setup(this->draw_area,parent,font->font,font->font_wid,font->font_hgt,0,0,1,0xff,ideal_x,ideal_y,ideal_w,ideal_h,0,0,button_size,ideal_h,0,list_w,list_h,list,1,button_size,0,0,0,0,button_size,button_size)) {
+            if ((*drop_panel)->setup(this->render_area,parent,font->font,font->font_wid,font->font_hgt,0,0,1,0xff,ideal_x,ideal_y,ideal_w,ideal_h,0,0,button_size,ideal_h,0,list_w,list_h,list,1,button_size,0,0,0,0,button_size,button_size)) {
                 if (this->button_pics) (*drop_panel)->set_buttons(this->button_pics,0xe,-1,8,10,0xc);
                 if (this->use_bevels) (*drop_panel)->set_bevel_info(3,bevel_color1,bevel_color2,bevel_color3,bevel_color4,bevel_color5,bevel_color6);
                 (*drop_panel)->set_val_text_color(text_color1,text_color2);
@@ -1114,7 +1134,7 @@ int TEasy_Panel::create_drop_down(TPanel* parent, TDropDownPanel** drop_panel,
                 goto cleanup;
             }
         }
-        this->error = 1;
+        this->error_code = 1;
     }
 cleanup:
     {
@@ -1127,18 +1147,18 @@ cleanup:
         } while (count != 0);
         free(list);
     }
-    return this->error == 0;
+    return this->error_code == 0;
 }
 
 int TEasy_Panel::create_list(TPanel* parent, TListPanel** out, long x, long y, long w, long h, long font_id)
 {
-    long ideal_x = (x * this->width) / this->ideal_width;
-    long ideal_y = (y * this->height) / this->ideal_height;
+    long ideal_x = (x * this->pnl_wid) / this->ideal_width;
+    long ideal_y = (y * this->pnl_hgt) / this->ideal_height;
     char** list_items;
     RGE_Font* font;
 
-    w = (w * this->width) / this->ideal_width;
-    h = (h * this->height) / this->ideal_height;
+    w = (w * this->pnl_wid) / this->ideal_width;
+    h = (h * this->pnl_hgt) / this->ideal_height;
 
     if (font_id >= 0) {
         rge_base_game->get_font(font_id);
@@ -1148,7 +1168,7 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** out, long x, long y, l
 
     list_items = (char**)calloc(1, sizeof(char*));
     if (list_items == 0) {
-        this->error = 1;
+        this->error_code = 1;
         return 0;
     }
     list_items[0] = (char*)calloc(0x14, 1);
@@ -1157,17 +1177,17 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** out, long x, long y, l
     }
     strcpy(list_items[0], " ");
 
-    if (this->error == 0) {
+    if (this->error_code == 0) {
         TListPanel* list = new TListPanel;
         *out = list;
-        if (list != 0 && list->error == 0) {
+        if (list != 0 && list->error_code == 0) {
             font = rge_base_game->get_font(font_id);
-            if ((*out)->setup(this->draw_area, parent, ideal_x, ideal_y, w, h, font->font, font->font_wid, font->font_hgt, 0, 0, 0, 1, 0xFF, 0, list_items, 1) != 0) {
+            if ((*out)->setup(this->render_area, parent, ideal_x, ideal_y, w, h, font->font, font->font_wid, font->font_hgt, 0, 0, 0, 1, 0xFF, 0, list_items, 1) != 0) {
                 (*out)->scroll_cur_line(1, 0, 1);
                 goto cleanup_success;
             }
         }
-        this->error = 1;
+        this->error_code = 1;
     }
 
 cleanup_success:
@@ -1197,15 +1217,15 @@ cleanup_fail:
 }
 
 int TEasy_Panel::create_scrollbar(TPanel* parent, TScrollBarPanel** out, TTextPanel* text, long param_4, long param_5, long param_6, long param_7, long param_8) {
-    long x = (this->field_14 * param_5) / this->ideal_width;
-    long y = (param_6 * this->field_18) / this->ideal_height;
-    long h = (param_8 * this->field_18) / this->ideal_height;
+    long x = (this->pnl_wid * param_5) / this->ideal_width;
+    long y = (param_6 * this->pnl_hgt) / this->ideal_height;
+    long h = (param_8 * this->pnl_hgt) / this->ideal_height;
     TScrollBarPanel* sb = new TScrollBarPanel;
     *out = sb;
 
     if (sb != 0) {
-        if (sb->field_D8 == 0) {
-            if (sb->setup(this->draw_area, parent, x, y, param_7, h, 0, 0, 0, 0, param_7, param_7, (TPanel*)text, param_4, 0) != 0) {
+        if (sb->error_code == 0) {
+            if (sb->setup(this->render_area, parent, x, y, param_7, h, 0, 0, 0, 0, param_7, param_7, text, param_4, TScrollBarPanel::Vertical) != 0) {
                 if (text != 0) {
                     text->set_scrollbar(*out, 0);
                 }
@@ -1227,7 +1247,7 @@ int TEasy_Panel::create_scrollbar(TPanel* parent, TScrollBarPanel** out, TTextPa
 }
 
 int TEasy_Panel::create_auto_scrollbar(TScrollBarPanel** scrollbar_out, TTextPanel* text, long param_3) {
-    if (this->create_auto_scrollbar_impl(text->field_40, scrollbar_out, text, 0, 0, 0, param_3, 0) == 0) {
+    if (this->create_scrollbar(text->parent_panel, scrollbar_out, text, 0, 0, 0, param_3, 0) == 0) {
         return 0;
     }
 
@@ -1236,14 +1256,14 @@ int TEasy_Panel::create_auto_scrollbar(TScrollBarPanel** scrollbar_out, TTextPan
 }
 
 int TEasy_Panel::create_vert_slider(TPanel* parent, TVerticalSliderPanel** out, long p3, long p4, long p5, long p6, long p7, long p8, long p9) {
-    long ideal_x = (p6 * this->base_width) / this->ideal_width;
-    long ideal_y = (p7 * this->base_height) / this->ideal_height;
-    long ideal_w = (p8 * this->base_width) / this->ideal_width;
-    long ideal_h = (p9 * this->base_height) / this->ideal_height;
+    long ideal_x = (p6 * this->pnl_wid) / this->ideal_width;
+    long ideal_y = (p7 * this->pnl_hgt) / this->ideal_height;
+    long ideal_w = (p8 * this->pnl_wid) / this->ideal_width;
+    long ideal_h = (p9 * this->pnl_hgt) / this->ideal_height;
 
     *out = new TVerticalSliderPanel;
-    if (*out != 0 && (*out)->field_D8 == 0 &&
-        (*out)->setup(this->draw_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, 0, 0, 0, p3, p4, p5, 1, 0) != 0) {
+    if (*out != 0 && (*out)->error_code == 0 &&
+        (*out)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, 0, 0, 0, p3, p4, p5, 1, 0) != 0) {
         if (this->button_pics != 0) {
             (*out)->set_buttons(this->button_pics, -1, 8, 10, 12);
         }
@@ -1259,15 +1279,15 @@ int TEasy_Panel::create_vert_slider(TPanel* parent, TVerticalSliderPanel** out, 
 }
 
 int TEasy_Panel::create_horz_slider(TPanel* parent, THorizontalSliderPanel** out, long p3, long p4, long p5, long p6, long p7, long p8, long p9) {
-    long ideal_x = (p6 * this->base_width) / this->ideal_width;
-    long ideal_y = (p7 * this->base_height) / this->ideal_height;
-    long ideal_w = (p8 * this->base_width) / this->ideal_width;
-    long ideal_h = (p9 * this->base_height) / this->ideal_height;
+    long ideal_x = (p6 * this->pnl_wid) / this->ideal_width;
+    long ideal_y = (p7 * this->pnl_hgt) / this->ideal_height;
+    long ideal_w = (p8 * this->pnl_wid) / this->ideal_width;
+    long ideal_h = (p9 * this->pnl_hgt) / this->ideal_height;
 
     int result;
     *out = new THorizontalSliderPanel;
-    if (*out != 0 && (*out)->field_D8 == 0 &&
-        (*out)->setup(this->draw_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, 0, 0, 0, p3, p4, p5, 1, 0) != 0) {
+    if (*out != 0 && (*out)->error_code == 0 &&
+        (*out)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h, 0, 0, 0, p3, p4, p5, 1, 0) != 0) {
         if (this->button_pics != 0) {
             (*out)->set_buttons(this->button_pics, -1, 8, 10, 12);
         }
@@ -1284,36 +1304,36 @@ int TEasy_Panel::create_horz_slider(TPanel* parent, THorizontalSliderPanel** out
 
 void TEasy_Panel::position_panel(TPanel* panel, long x, long y, long w, long h) {
     panel->set_fixed_position(
-        (x * this->base_width) / this->ideal_width,
-        (y * this->base_height) / this->ideal_height,
-        (w * this->base_width) / this->ideal_width,
-        (h * this->base_height) / this->ideal_height);
+        (x * this->pnl_wid) / this->ideal_width,
+        (y * this->pnl_hgt) / this->ideal_height,
+        (w * this->pnl_wid) / this->ideal_width,
+        (h * this->pnl_hgt) / this->ideal_height);
 }
 
 void TEasy_Panel::set_focus(int focus) {
     TPanel::set_focus(focus);
 
-    if (this->focused != 0) {
+    if (this->have_focus != 0) {
         if ((this->cursor_file[0] != 0 || this->cursor_id >= 0) && rge_base_game->mouse_pointer != 0) {
             rge_base_game->mouse_pointer->LoadCursors(this->cursor_file, this->cursor_id, 0);
         }
 
-        if (this->draw_area != 0 && this->draw_area->DrawSystem != 0) {
+        if (this->render_area != 0 && this->render_area->DrawSystem != 0) {
             void* pal = this->palette;
             if (pal == 0) {
                 pal = rge_base_game->prog_palette;
             }
-            if (pal != 0 && this->draw_area->DrawSystem->Pal != pal) {
-                this->draw_area->Clear(0, 0);
-                this->draw_area->DrawSystem->Paint(0);
-                this->draw_area->DrawSystem->SetPalette(pal);
-                this->set_redraw((TPanel::RedrawMode)2);
+            if (pal != 0 && this->render_area->DrawSystem->Pal != pal) {
+                this->render_area->Clear(0, 0);
+                this->render_area->DrawSystem->Paint(0);
+                this->render_area->DrawSystem->SetPalette(pal);
+                this->set_redraw(TPanel::RedrawImmediate);
             }
         }
     }
 
     if (this->enable_ime != 0) {
-        if (this->focused != 0) {
+        if (this->have_focus != 0) {
             panel_system.EnableIME();
         } else {
             panel_system.DisableIME();
@@ -1399,7 +1419,7 @@ void TEasy_Panel::command_help(char* title, char* text, long a, long b, long c) 
 
 void TEasy_Panel::setup_popup_help(void) {
     this->help_mode = 1;
-    rge_base_game->set_mouse_cursor(LoadCursorA(0, (const char*)0x7F8B));
+    rge_base_game->set_mouse_cursor(LoadCursorA(0, MAKEINTRESOURCEA(0x7F8B)));
     rge_base_game->set_mouse_facet(6);
     this->saved_mouse_mode = rge_base_game->mouse_pointer->get_game_enable();
     rge_base_game->mouse_pointer->set_game_enable(0);
@@ -1407,7 +1427,7 @@ void TEasy_Panel::setup_popup_help(void) {
 
 void TEasy_Panel::clear_popup_help(void) {
     this->help_mode = 0;
-    rge_base_game->set_mouse_cursor(LoadCursorA(0, (const char*)0x7F00));
+    rge_base_game->set_mouse_cursor(LoadCursorA(0, MAKEINTRESOURCEA(0x7F00)));
     rge_base_game->set_mouse_facet(0);
     rge_base_game->mouse_pointer->set_game_enable(this->saved_mouse_mode);
 }
@@ -1420,12 +1440,12 @@ long TEasy_Panel::command_do_popup_help(unsigned char clicked, long x, long y) {
     temp = help_string2;
     if (this->help_mode == 1) {
         this->help_mode = 0;
-        rge_base_game->set_mouse_cursor(LoadCursorA(0, (const char*)0x7F00));
+        rge_base_game->set_mouse_cursor(LoadCursorA(0, MAKEINTRESOURCEA(0x7F00)));
         rge_base_game->set_mouse_facet(0);
         rge_base_game->mouse_pointer->set_game_enable(this->saved_mouse_mode);
         if (clicked == 1) {
-            if (this->get_help_info(&temp, &help_page, x, y)) {
-                this->command_help(this->help_title, help_string2, help_page, x, y);
+            if (this->get_help_info(temp, help_page, x, y)) {
+                this->command_help(this->panel_name, help_string2, help_page, x, y);
             }
         }
         return 1;
@@ -1463,13 +1483,13 @@ void TEasy_Panel::set_system_colors() {
     PALETTEENTRY pe;
     PALETTEENTRY entry;
 
-    GetPaletteEntries(this->palette, this->color_index, 1, &entry);
-    color = ((unsigned long)entry.peBlue << 16) | ((unsigned long)entry.peGreen << 8) | entry.peRed;
+    GetPaletteEntries(this->palette, this->color, 1, &entry);
+    color = (entry.peBlue << 16) | (entry.peGreen << 8) | entry.peRed;
     element = 5;
     SetSysColors(1, &element, &color);
 
     GetPaletteEntries(this->palette, this->text_color1, 1, &entry);
-    color = ((unsigned long)entry.peBlue << 16) | ((unsigned long)entry.peGreen << 8) | entry.peRed;
+    color = (entry.peBlue << 16) | (entry.peGreen << 8) | entry.peRed;
     element = 8;
     SetSysColors(1, &element, &color);
 }

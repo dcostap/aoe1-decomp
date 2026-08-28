@@ -4340,25 +4340,24 @@
     },
     {
       "name": "pnl_scr",
-      "source": "src/pnl_scr_tu.cpp",
+      "source": "src/Pnl_scr.cpp",
+      "module": "Pnl_scr",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0047BA70": "src/matching/0047BA70_TScreenPanel.cpp",
-        "0047BAB0": "src/matching/0047BAB0_TScreenPanel.cpp",
-        "0047BAD0": "src/matching/0047BAD0_TScreenPanel.cpp",
-        "0047BAE0": "src/matching/0047BAE0_setup.cpp",
-        "0047BB10": "src/matching/0047BB10_setup.cpp",
-        "0047BB40": "src/matching/0047BB40_draw.cpp",
-        "0047BB50": "src/matching/0047BB50_handle_paint.cpp",
-        "0047BB60": "src/matching/0047BB60_set_focus.cpp"
+        "0047BA70": "src/Pnl_scr.cpp",
+        "0047BAB0": "src/Pnl_scr.cpp",
+        "0047BAD0": "src/Pnl_scr.cpp",
+        "0047BAE0": "src/Pnl_scr.cpp",
+        "0047BB10": "src/Pnl_scr.cpp",
+        "0047BB40": "src/Pnl_scr.cpp",
+        "0047BB50": "src/Pnl_scr.cpp"
       },
       "symbols": {
         "0047BA70": "??0TScreenPanel@@QAE@XZ",
         "0047BAB0": "??0TScreenPanel@@QAE@PAD@Z",
         "0047BAE0": "?setup@TScreenPanel@@QAEJPAVTDrawArea@@PADJH@Z",
         "0047BB10": "?setup@TScreenPanel@@QAEJPAVTDrawArea@@PADJEH@Z",
-        "0047BB40": "?draw@TScreenPanel@@UAEXXZ",
-        "0047BB60": "?set_focus@TScreenPanel@@UAEXH@Z"
+        "0047BB40": "?draw@TScreenPanel@@UAEXXZ"
       }
     },
     {
@@ -4482,17 +4481,18 @@
     },
     {
       "name": "pnl_dlg",
-      "source": "src/pnl_dlg_tu.cpp",
+      "source": "src/pnl_dlg.cpp",
+      "module": "pnl_dlg",
       "flags": "config/flags/00473E40_TDialogPanel.rsp",
       "owners": {
-        "00473C10": "src/matching/00473C10_TDialogPanel.cpp",
-        "00473C80": "src/matching/00473C80_setup.cpp",
-        "00473E40": "src/matching/00473E40_TDialogPanel.cpp",
-        "00473EC0": "src/matching/00473EC0_set_focus.cpp"
+        "00473C10": "src/pnl_dlg.cpp",
+        "00473D60": "src/pnl_dlg.cpp",
+        "00473E40": "src/pnl_dlg.cpp",
+        "00473EC0": "src/pnl_dlg.cpp"
       },
       "symbols": {
         "00473C10": "??0TDialogPanel@@QAE@PAD@Z",
-        "00473C80": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z",
+        "00473D60": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJEH@Z",
         "00473EC0": "?set_focus@TDialogPanel@@UAEXH@Z",
         "00473E40": "??1TDialogPanel@@UAE@XZ"
       }
@@ -6110,7 +6110,6 @@
         "00468530": "src/Panel_ez.cpp",
         "00468760": "src/Panel_ez.cpp",
         "004689C0": "src/Panel_ez.cpp",
-        "00468C20": "src/Panel_ez.cpp",
         "00469000": "src/Panel_ez.cpp",
         "004691C0": "src/Panel_ez.cpp",
         "00469910": "src/Panel_ez.cpp",
@@ -6179,7 +6178,6 @@
         "00468460": "?get_button_pics@TEasy_Panel@@QAEPAVTShape@@XZ",
         "00468470": "?get_shadow_color_table@TEasy_Panel@@QAEPAVRGE_Color_Table@@XZ",
         "00468480": "?get_enable_ime@TEasy_Panel@@QAEHXZ",
-        "00468C20": "?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@HJJJJJHHH@Z",
         "00469DB0": "?position_panel@TEasy_Panel@@MAEXPAVTPanel@@JJJJ@Z",
         "0046A360": "?setup_popup_help@TEasy_Panel@@QAEXXZ",
         "0046A3C0": "?clear_popup_help@TEasy_Panel@@QAEXXZ",
@@ -6343,7 +6341,6 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "0047E670": "src/rdlg_lst.cpp",
-        "0047E6B0": "src/rdlg_lst.cpp",
         "0047E830": "src/rdlg_lst.cpp",
         "0047E8C0": "src/rdlg_lst.cpp",
         "0047E8F0": "src/rdlg_lst.cpp",
@@ -7490,19 +7487,18 @@
     },
     {
       "name": "dlg_list",
-      "source": "src/dlg_list_tu.cpp",
+      "source": "src/dlg_list.cpp",
+      "module": "dlg_list",
       "flags": "config/flags/dlg_list.rsp",
       "owners": {
-        "0043EE70": "src/matching/0043EE70_TListDialog.cpp",
-        "0043EEE0": "src/matching/0043EEE0_TListDialog.cpp",
-        "0043EF80": "src/matching/0043EF80_setup.cpp",
-        "0043F130": "src/matching/0043F130_setup.cpp",
-        "0043F210": "src/matching/0043F210_key_down_action.cpp",
-        "0043F220": "src/matching/0043F220_action.cpp"
+        "0043EE70": "src/dlg_list.cpp",
+        "0043EEE0": "src/dlg_list.cpp",
+        "0043F130": "src/dlg_list.cpp",
+        "0043F210": "src/dlg_list.cpp",
+        "0043F220": "src/dlg_list.cpp"
       },
       "symbols": {
         "0043EEE0": "??1TListDialog@@UAE@XZ",
-        "0043EF80": "?setup@TListDialog@@QAEJPAVTPanel@@PADJJJJJJJ1JJJJPAPADFFJJJJJ@Z",
         "0043F130": "?setup@TListDialog@@QAEJPAVTPanel@@PADJJJJJJJHJJJJPAPADFFJJJJJ@Z",
         "0043F210": "?key_down_action@TListDialog@@UAEJJFHHH@Z",
         "0043F220": "?action@TListDialog@@UAEJPAVTPanel@@JKK@Z",

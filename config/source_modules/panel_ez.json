@@ -4,6 +4,11 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Panel_ez.cpp",
   "source": "src/Panel_ez.cpp",
   "header": "include/panel_ez.h",
+  "header_composition": {
+    "status": "owner_clean",
+    "compile_status": "ready",
+    "summary": "TEasy_Panel owns this header. It uses canonical panel, control, drawing, color, and dialog owners."
+  },
   "functions": {
     "00466A20": {
       "status": "matching",
@@ -206,7 +211,7 @@
       "note_path": "recovery_notes/Panel_ez_module.md"
     },
     "00468C20": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/Panel_ez_module.md"
     },
     "00468CB0": {
