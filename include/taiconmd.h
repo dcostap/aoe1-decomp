@@ -4,6 +4,7 @@
 #include "aiconmod.h"
 
 class TribeMainDecisionAIModule;
+class RGE_Static_Object;
 struct PlacementState;
 
 class TribeConstructionAIModule : public ConstructionAIModule {

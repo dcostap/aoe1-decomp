@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "name": "taiconmd",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taiconmd.cpp",
+  "source": "src/taiconmd.cpp",
+  "header": "include/taiconmd.h",
+  "functions": {
+    "004D5E60": { "status": "matching" },
+    "004D5EB0": { "status": "matching" },
+    "004D5EE0": { "status": "matching" },
+    "004D5EF0": { "status": "matching" },
+    "004D5F00": { "status": "matching" },
+    "004D60E0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/taiconmd_module.md"
+    },
+    "004D6780": { "status": "matching" },
+    "004D6800": { "status": "matching" },
+    "004D68A0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/taiconmd_module.md"
+    }
+  }
+}

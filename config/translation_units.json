@@ -3511,16 +3511,17 @@
     },
     {
       "name": "taiconmd",
-      "source": "src/taiconmd_tu.cpp",
+      "source": "src/taiconmd.cpp",
+      "module": "taiconmd",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
-        "004D5E60": "src/matching/004D5E60_TribeConstructionAIModule.cpp",
-        "004D5EB0": "src/matching/004D5EB0_TribeConstructionAIModule.cpp",
-        "004D5EE0": "src/matching/004D5EE0_TribeConstructionAIModule.cpp",
-        "004D5EF0": "src/matching/004D5EF0_setMainDecisionAI.cpp",
-        "004D5F00": "src/matching/004D5F00_canPlace.cpp",
-        "004D6780": "src/matching/004D6780_placeDock.cpp",
-        "004D6800": "src/matching/004D6800_setBuilt.cpp"
+        "004D5E60": "src/taiconmd.cpp",
+        "004D5EB0": "src/taiconmd.cpp",
+        "004D5EE0": "src/taiconmd.cpp",
+        "004D5EF0": "src/taiconmd.cpp",
+        "004D5F00": "src/taiconmd.cpp",
+        "004D6780": "src/taiconmd.cpp",
+        "004D6800": "src/taiconmd.cpp"
       },
       "symbols": {
         "004D5E60": "??0TribeConstructionAIModule@@QAE@PAXH@Z",

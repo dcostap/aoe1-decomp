@@ -75,6 +75,12 @@ public:
     void removeObject(int);
     void lookAtMap();
     int update(int);
+    ConstructionItem* placeDock(BuildItem*, float, float, int, int);
+    int influenceCanPlaceStructure(BuildItem*);
+    ConstructionItem* influencePlaceStructure(
+        BuildItem*, int, int, float, char*, int, int, int, int,
+        PlacementState&, unsigned long);
+    void storeLot(int, unsigned char, unsigned char, unsigned char);
 };
 
 typedef char taimdmd_information_size[
