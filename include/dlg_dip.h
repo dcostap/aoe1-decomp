@@ -1,25 +1,33 @@
 #ifndef AOE1_DLG_DIP_H
 #define AOE1_DLG_DIP_H
 
-// PDB owner: dlg_dip.cpp.
-// BLOCKER: dlg_dip.cpp needs canonical call and field normalization.
-
+// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_dip.cpp.
+// TribeDiplomacyDialog is the only class owned by this header. Shared dialog,
+// panel, screen, control, drawing, shape, base-game, player, and world types
+// come from their canonical owners.
 #include "pnl_dlg.h"
+#include "Pnl_scr.h"
+#include "Pnl_txt.h"
 #include "pnl_btn.h"
-#include "pnl_lst.h"
+#include "panel.h"
+#include "drawarea.h"
 #include "Shape.h"
+#include "color.h"
 #include "basegame.h"
 #include "player.h"
 #include "tplayer.h"
+#include "tech.h"
 #include "world.h"
-#include "tworld.h"
-#include "tcommand.h"
-#include "com_hand.h"
-#include "color.h"
-
-class TScreenPanel;
+#include "obj_list.h"
+#include "rge_base_game_global.h"
 
 class TribeDiplomacyDialog : public TDialogPanel {
+public:
+    virtual ~TribeDiplomacyDialog();
+
+protected:
+    virtual long action(TPanel*, long, unsigned long, unsigned long);
+
 public:
     TTextPanel* title[8];
     TTextPanel* playerName[8];
@@ -54,10 +62,8 @@ public:
     int tribute_flag;
 
     TribeDiplomacyDialog(TScreenPanel*);
-    virtual ~TribeDiplomacyDialog();
 
 protected:
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
     int check_gold();
     int check_wood();
     int check_food();

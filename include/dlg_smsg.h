@@ -1,14 +1,18 @@
 #ifndef AOE1_DLG_SMSG_H
 #define AOE1_DLG_SMSG_H
 
-// PDB owner: dlg_smsg.cpp.
-// BLOCKER: dlg_smsg.cpp needs canonical call and field normalization.
-
+// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_smsg.cpp.
+// This header owns the two send-message dialog classes. The dialog base comes
+// from its canonical owner. Other UI, game, and communication types are used
+// through pointers and stay forward-declared here.
 #include "pnl_dlg.h"
-#include "pnl_btn.h"
-#include "pnl_edit.h"
-#include "pnl_lst.h"
-#include "Shape.h"
+
+class TPanel;
+class TTextPanel;
+class TEditPanel;
+class TButtonPanel;
+class TShape;
+class TScreenPanel;
 
 class TribeSendMessageDialog : public TDialogPanel {
 public:
@@ -35,6 +39,9 @@ protected:
     void checkButtons();
 };
 
+typedef char dlg_smsg_message_size[
+    (sizeof(TribeSendMessageDialog) == 0x54C) ? 1 : -1];
+
 class TribeSendQuickMessageDialog : public TDialogPanel {
 public:
     enum Mode { AsChat = 0, AsTaunt = 1 };
@@ -49,8 +56,6 @@ public:
     virtual long handle_mouse_down(unsigned char, long, long, int, int);
 };
 
-typedef char dlg_smsg_message_size[
-    (sizeof(TribeSendMessageDialog) == 0x54C) ? 1 : -1];
 typedef char dlg_smsg_quick_size[
     (sizeof(TribeSendQuickMessageDialog) == 0x49C) ? 1 : -1];
 
