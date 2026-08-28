@@ -1012,7 +1012,7 @@ TPanel* TRIBE_Game::get_view_panel()
 {
     if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
         if (this->game_screen != 0)
-            return this->game_screen->main_view;
+            return this->game_screen->get_view_panel();
     }
 
     if (this->prog_mode == 7) {
@@ -1029,7 +1029,7 @@ TPanel* TRIBE_Game::get_view_panel()
 TPanel* TRIBE_Game::get_map_panel(void) {
     if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
         if (this->game_screen != 0) {
-            return this->game_screen->map_view;
+            return this->game_screen->get_map_panel();
         }
     }
 

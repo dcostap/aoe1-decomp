@@ -21,12 +21,6 @@ static char s_game_a_format[] = "gamea%d.shp";
 static char s_game_b_format[] = "gameb%d.shp";
 static char s_game_c_format[] = "gamec%d.shp";
 
-static const TRIBE_Screen_Game::AnimPalEntry s_anim_pal_colors[7] = {
-    {0x17, 0x27, 0x7C}, {0x27, 0x3F, 0x90}, {0x3F, 0x5F, 0x9F},
-    {0x57, 0x7B, 0xB4}, {0x3F, 0x5F, 0xA0}, {0x27, 0x3F, 0x91},
-    {0x17, 0x27, 0x7B}
-};
-
 /* PDB owner: TRIBE_Screen_Game::TRIBE_Screen_Game */
 TRIBE_Screen_Game::TRIBE_Screen_Game()
     : TScreenPanel(s_Game_Screen)
@@ -270,11 +264,11 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->button_panel[15]->setDrawType(TButtonPanel::DrawPicture);
     this->button_panel[15]->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->button_panel[15]->tribe_button_type = 3;
-    this->button_panel[15]->set_text(0, this->get_string(0x0FA9));
+    this->button_panel[15]->set_text(0, 0x0FA9L);
     this->button_panel[16]->setDrawType(TButtonPanel::DrawPicture);
     this->button_panel[16]->set_bevel_info(4, this->bevel_color1, this->bevel_color2, this->bevel_color3, this->bevel_color4, this->bevel_color5, this->bevel_color6);
     this->button_panel[16]->tribe_button_type = 3;
-    this->button_panel[16]->set_text(0, this->get_string(0x1023));
+    this->button_panel[16]->set_text(0, 0x1023L);
     this->get_string(0x1024, str, 0x200);
     this->button_panel[16]->set_text_msg(str);
 
@@ -493,9 +487,27 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->last_anim_pal_index = 0;
     this->last_anim_pal_index2 = 0;
     this->last_anim_pal_index3 = 0;
-    for (i = 0; i < 7; ++i) {
-        this->anim_pal_table[i] = s_anim_pal_colors[i];
-    }
+    this->anim_pal_table[0].red = 0x17;
+    this->anim_pal_table[0].green = 0x27;
+    this->anim_pal_table[0].blue = 0x7C;
+    this->anim_pal_table[1].red = 0x27;
+    this->anim_pal_table[1].green = 0x3F;
+    this->anim_pal_table[1].blue = 0x90;
+    this->anim_pal_table[2].red = 0x3F;
+    this->anim_pal_table[2].green = 0x5F;
+    this->anim_pal_table[2].blue = 0x9F;
+    this->anim_pal_table[3].red = 0x57;
+    this->anim_pal_table[3].green = 0x7B;
+    this->anim_pal_table[3].blue = 0xB4;
+    this->anim_pal_table[4].red = 0x3F;
+    this->anim_pal_table[4].green = 0x5F;
+    this->anim_pal_table[4].blue = 0xA0;
+    this->anim_pal_table[5].red = 0x27;
+    this->anim_pal_table[5].green = 0x3F;
+    this->anim_pal_table[5].blue = 0x91;
+    this->anim_pal_table[6].red = 0x17;
+    this->anim_pal_table[6].green = 0x27;
+    this->anim_pal_table[6].blue = 0x7B;
 
     this->time_panel->startup();
     this->time_panel->set_clock_type(0, 0);
@@ -1181,7 +1193,7 @@ void TRIBE_Screen_Game::handle_game_update(void)
         }
         {
             int who = comm->WhoAmI();
-            unsigned long avg = comm->Speed->PlayerAvgFramesMsec[who];
+            unsigned long avg = comm->Speed->GetPlayerAvgFramesMsec(who);
             calc_game_time = 2;
             if (multi_updates == 0 || avg < 0x43 || avg > 0x7D ||
                 static_cast<float>(per) / static_cast<float>(static_cast<int>(sum)) > 2.0f) {
@@ -3370,7 +3382,8 @@ void TRIBE_Screen_Game::reset_score_display()
         for (j = 0; j < 8; ++j) {
             PLAYER_SCORE& score = player_score[j];
             if (score.player_id != 0 && comm->GetPlayerHumanity(score.comm_id) == 2) {
-                unsigned long average = comm->Speed->PlayerAvgFramesMsec[score.comm_id];
+                unsigned long average =
+                    comm->Speed->GetPlayerAvgFramesMsec(score.comm_id);
                 int frame_rate;
                 if (average > 999) {
                     frame_rate = 1;

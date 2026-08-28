@@ -6,7 +6,7 @@
 #include "rge_tslc.h"
 
 class RGE_Communications_Speed {
-public:
+private:
     char TBuff[255];                            // +0x00
     RGE_TimeSinceLastCall* TurnTSLC;            // +0x100
     RGE_TimeSinceLastCall* FrameTSLC;           // +0x104
@@ -44,42 +44,57 @@ public:
     unsigned long AdjustmentCount;               // +0x238
     int LastFrameHadTime;                        // +0x23C
 
+public:
     RGE_Communications_Speed(TCommunications_Handler* handler);
     ~RGE_Communications_Speed();
 
-    void SetPlayerTurnSpeed(unsigned int player, unsigned char avg_frames_msec,
-                            unsigned char high_latency);
-    void SetActualLatency(unsigned int player, unsigned long latency);
+    int AnalyzeGameSpeed(unsigned int* out_granularity,
+                         unsigned int* out_frames, int param_3);
+    unsigned int BufferFramesRemaining();
+    unsigned int BufferTimeToUse(unsigned long value);
+    char* GetSelfPlayerOptimalSpeedStr();
+    char* GetPlayerSpeedStatusStr(int player);
+    char* GetLatencyInfo();
+    char* GetMachineSpeedInfo();
+    unsigned int WaitingOnAcknowledgement();
+    void SendDefaultSpeedChange();
+    void Skip();
+    unsigned int GetBufferGranularity();
+    unsigned int GetBufferGranularityAdjusted();
+    unsigned int GetRecommendedBufferFrames();
+    unsigned int GetRecommendedBufferGranularity();
+    unsigned long GetPlayerLatency(unsigned int player);
+    unsigned int GetPlayerRecommendedMsec(unsigned int player);
+    unsigned int GetAvgFrameRate();
+    unsigned char GetHighLatencyCenti();
     void SetFutureSpeedChange(unsigned int buffer_frames,
                               unsigned int granularity,
                               unsigned long turn_change);
+    void SetBufferFrames(unsigned int frames);
+    void SetBufferGranularity(unsigned int granularity);
     void EnableSpeedControl(int value);
-    unsigned int GetBufferGranularity();
+    void ReloadBufferFrames();
+    void SetActualLatency(unsigned int player, unsigned long latency);
+    void SetPlayerTurnSpeed(unsigned int player, unsigned char avg_frames_msec,
+                            unsigned char high_latency);
     unsigned long GetAdjustmentCount();
-    unsigned int GetBufferGranularityAdjusted();
-    unsigned int BufferFramesRemaining();
-    unsigned int WaitingOnAcknowledgement();
+    void SetV1(unsigned long value);
+    void SetV2(unsigned long value);
+
+    unsigned long GetPlayerAvgFramesMsec(unsigned int player) {
+        if (player < 1 || player > 9) return 0;
+        return this->PlayerAvgFramesMsec[player];
+    }
+    unsigned long GetPlayerHighLatencyMsec(unsigned int player) {
+        if (player < 1 || player > 9) return 0;
+        return this->PlayerHighLatencyMsec[player];
+    }
+    unsigned long GetHighestLatencyMsec() {
+        return this->HighestLatencyMsec;
+    }
 
 protected:
     void AdjustLocalSpeed();
-
-public:
-    void ReloadBufferFrames();
-    unsigned int BufferTimeToUse(unsigned long value);
-    void Skip();
-    unsigned char GetHighLatencyCenti();
-    unsigned long GetPlayerLatency(unsigned int player);
-    char* GetLatencyInfo();
-    char* GetSelfPlayerOptimalSpeedStr();
-    char* GetPlayerSpeedStatusStr(int player);
-    char* GetMachineSpeedInfo();
-    unsigned int GetRecommendedBufferFrames();
-    unsigned int GetAvgFrameRate();
-    unsigned int GetRecommendedBufferGranularity();
-    int AnalyzeGameSpeed(unsigned int* out_granularity,
-                         unsigned int* out_frames, int param_3);
-    void SetV1(unsigned long value);
-    void SetV2(unsigned long value);
 };
 
 typedef char com_spd_size_check[(sizeof(RGE_Communications_Speed) == 0x240) ? 1 : -1];

@@ -83,3 +83,8 @@ already `accepted_drift`.
 
 The grouped policy audit matched all 25 registered exact owners. It found no
 comparison errors.
+
+## Interface correction
+
+All `RGE_Communications_Speed` fields are private. The public method list has
+33 methods in PDB order. `AdjustLocalSpeed` is protected and follows that list.

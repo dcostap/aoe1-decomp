@@ -103,3 +103,12 @@ cursor forms. It compiled all 96 bodies and matched 65.
 
 `0049B000` changed by 112 bytes. Its status is now `scratch`. Its exact owner
 registration was removed.
+
+## Interface correction
+
+The PDB class surface keeps all `TRIBE_Screen_Game` fields protected. Its three
+panel getters are public inline methods. `PortInfo::player_id` and `money` are
+`short` fields at offsets 0 and 12.
+
+The palette colors now initialize `anim_pal_table` directly. The constructor
+uses the string-ID `TButtonPanel::set_text(short, long)` overload.

@@ -54,7 +54,7 @@ int TRIBE_Panel_Button::is_inside(long x, long y)
     if (tribe_button_type == 2 || tribe_button_type == 3) {
         TRIBE_Screen_Game* screen =
             static_cast<TRIBE_Screen_Game*>(parent_panel);
-        TRIBE_Diamond_Map_View* map_view = screen->map_view;
+        TRIBE_Diamond_Map_View* map_view = screen->get_map_panel();
         if (map_view != 0 && map_view->is_inside(x, y))
             return 0;
     }

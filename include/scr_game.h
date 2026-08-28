@@ -55,10 +55,10 @@ struct PLAYER_SCORE {
 class TRIBE_Screen_Game : public TScreenPanel {
 public:
     struct PortInfo {
-        int player_id;
+        short player_id;
         RGE_Player* player;
         RGE_Static_Object* port;
-        int money;
+        short money;
     };
 
     struct AnimPalEntry {
@@ -67,6 +67,7 @@ public:
         unsigned char blue;
     };
 
+protected:
     TShape* game_screen_pic;
     TShape* button_border1_pic;
     TShape* button_other_pic;
@@ -161,6 +162,11 @@ public:
     TDigital* game_over_sound;
     unsigned long last_game_speed_change;
     unsigned long last_pause_change;
+
+public:
+    TRIBE_Main_View* get_view_panel() { return this->main_view; }
+    TRIBE_Diamond_Map_View* get_map_panel() { return this->map_view; }
+    TMessagePanel* get_text_line_panel() { return this->text_line_panel; }
 
     TRIBE_Screen_Game();
     virtual ~TRIBE_Screen_Game();
