@@ -762,7 +762,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                 comm->SendSharedData(1);
                 return 1;
             }
-            goto L_1F6B;
+            return 1;
         }
 
         if (param_1 == this->gameSettingsButton && param_2 == 1) {
@@ -808,7 +808,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                         this->myPlayerColor = this->playerColor[i]->get_id();
                         return 1;
                     }
-                    goto L_1F6B;
+                    return 1;
                 }
                 if (param_1 == this->playerTeam[i]) {
                     rge_base_game->setPlayerTeam(i, this->playerTeam[i]->get_state() + 1);
@@ -816,7 +816,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                         this->myPlayerTeam = this->playerTeam[i]->get_state() + 1;
                         return 1;
                     }
-                    goto L_1F6B;
+                    return 1;
                 }
             }
         }
@@ -883,7 +883,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                         this->myCivilization = this->playerCivDrop[i]->get_id();
                         return 1;
                     }
-                    goto L_1F6B;
+                    return 1;
                 }
                 if (param_1 == this->scenarioPlayerDrop[i]) {
                     if (rge_base_game->multiplayerGame()) {
@@ -892,7 +892,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                             this->myScenarioPlayer = this->scenarioPlayerDrop[i]->get_id();
                             return 1;
                         }
-                        goto L_1F6B;
+                        return 1;
                     }
                     static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(0, this->scenarioPlayerDrop[0]->get_id());
                     int sp = 1;
@@ -905,18 +905,15 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                             if (sp >= rge_base_game->numberPlayers()) break;
                         }
                         player++;
-                    } while (player < 8);
+                        } while (player < 8);
                     this->fillPlayers();
-                    goto L_1F6B;
+                    return 1;
                 }
                 i++;
             } while (i < rge_base_game->numberPlayers());
         }
         return this->TEasy_Panel::action(param_1, param_2, param_3, param_4);
-L_1F6B:
-        return 1;
     }
-L_1F72:
     return this->TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 
@@ -2063,21 +2060,24 @@ void TribeMPSetupScreen::updateSummary()
     ++setting;
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
-    case 1:
-        strcpy(str1, this->get_string(0x10E1));
-        goto victory_plain;
     case 7:
         strcpy(str1, this->get_string(0x10E9));
-        goto victory_amount;
-    case 8:
-        strcpy(str1, this->get_string(0x10EA));
-victory_amount:
         sprintf(str2, this->get_string(0x25BE), str1,
                 static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount());
-        goto victory_done;
+        break;
+    case 8:
+        strcpy(str1, this->get_string(0x10EA));
+        sprintf(str2, this->get_string(0x25BE), str1,
+                static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount());
+        break;
+    case 1:
+        strcpy(str1, this->get_string(0x10E1));
+        sprintf(str2, this->get_string(0x25BC), str1);
+        break;
     case 9:
         strcpy(str1, this->get_string(0x10EC));
-        goto victory_plain;
+        sprintf(str2, this->get_string(0x25BC), str1);
+        break;
     case 2:
     case 3:
     case 4:
@@ -2089,10 +2089,7 @@ victory_amount:
         } else {
             strcpy(str1, this->get_string(0x10E7));
         }
-        goto victory_plain;
-    victory_plain:
         sprintf(str2, this->get_string(0x25BC), str1);
-victory_done:
         break;
     }
     this->settingText[setting]->set_text(str2);
@@ -2585,30 +2582,31 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     i++;
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
-    case 1:                            // Conquest
-        strcpy(str1, get_string(0x10E1));
-        goto victory_plain;
     case 7:                            // Time
         strcpy(str1, get_string(0x10E9));
-        goto victory_amount;
-    case 8:                            // Score
-        strcpy(str1, get_string(0x10EA));
-    victory_amount:
         sprintf(str2, get_string(0x25BE), str1,
                 static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount()); // "Victory: %s (%d)"
-        goto victory_done;
+        break;
+    case 8:                            // Score
+        strcpy(str1, get_string(0x10EA));
+        sprintf(str2, get_string(0x25BE), str1,
+                static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount()); // "Victory: %s (%d)"
+        break;
+    case 1:                            // Conquest
+        strcpy(str1, get_string(0x10E1));
+        sprintf(str2, get_string(0x25BC), str1);            // "Victory: %s"
+        break;
+    case 9:                            // Standard
+        strcpy(str1, get_string(0x10E7));
+        sprintf(str2, get_string(0x25BC), str1);            // "Victory: %s"
+        break;
     default:
         if (rge_base_game->randomGame()) {
             strcpy(str1, get_string(0x10EC));
         } else {
             strcpy(str1, get_string(0x10E7));
         }
-        goto victory_plain;
-    case 9:                            // Standard
-        strcpy(str1, get_string(0x10E7));
-    victory_plain:
         sprintf(str2, get_string(0x25BC), str1);            // "Victory: %s"
-    victory_done:
         break;
     }
     this->settingText[i]->set_text(str2);

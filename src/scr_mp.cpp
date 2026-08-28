@@ -192,99 +192,91 @@ long TribeMPStartupScreen::action(TPanel* panel, long event,
         }
 
         if (panel == this->close_button && event == 1) {
-            goto close_action;
-        } else {
-            if (panel == this->okButton && event == 1) {
-                rge_base_game->setMultiplayerGame(1);
-                if (*this->input->get_text() == 0) {
-                    this->popupOKDialog(0x258F, "Name Error", 0x1C2, 100);
-                    return event;
-                } else if (this->list->numberLines() == 0) {
-                    this->popupOKDialog(0x2592, "List Error", 0x1C2, 100);
-                    return 1;
-                } else if (this->zone_exec[0] == 0 || this->list->get_id() != -1) {
-                    rge_base_game->disable_input();
-                    Regs->RegSetAscii(
-                        1, "Default Age Of Empires Player Name",
-                        static_cast<unsigned char*>(static_cast<void*>(
-                            this->input->currentLine())),
-                        strlen(this->input->currentLine()) + 1);
-                    Regs->RegSetAscii(
-                        1, "Default Age Of Empires Multiplayer Service",
-                        static_cast<unsigned char*>(static_cast<void*>(
-                            this->list->get_text())),
-                        strlen(this->list->get_text()) + 1);
-                    comm->SetMyPlayerName(this->input->currentLine());
+            rge_base_game->close();
+            return 1;
+        }
 
-                    TCommunications_Services services;
-                    comm->SetServiceGUID(
-                        services.GetServiceGUID(this->list->get_id()));
-                    comm->InitJoinGame();
-
-                    new TribeJoinScreen;
-                    panel_system.setCurrentPanel("Join Screen", 0);
-                    panel_system.destroyPanel("MP Startup Screen");
-                    return 1;
-                } else {
-                    this->popupYesNoDialog(0x2593, "Start Zone", 0x1C2, 100);
-                    return 1;
-                }
-            }
-
-            if ((panel == this->cancelButton && event == 1) ||
-                (panel == this->input && event == 1)) {
+        if (panel == this->okButton && event == 1) {
+            rge_base_game->setMultiplayerGame(1);
+            if (*this->input->get_text() == 0) {
+                this->popupOKDialog(0x258F, "Name Error", 0x1C2, 100);
+                return event;
+            } else if (this->list->numberLines() == 0) {
+                this->popupOKDialog(0x2592, "List Error", 0x1C2, 100);
+                return 1;
+            } else if (this->zone_exec[0] == 0 || this->list->get_id() != -1) {
                 rge_base_game->disable_input();
-                comm->UnlinkToLevel(SINGLE_PLAYER);
-                new TRIBE_Screen_Main_Menu;
-                panel_system.setCurrentPanel("Main Menu", 0);
+                Regs->RegSetAscii(
+                    1, "Default Age Of Empires Player Name",
+                    static_cast<unsigned char*>(static_cast<void*>(
+                        this->input->currentLine())),
+                    strlen(this->input->currentLine()) + 1);
+                Regs->RegSetAscii(
+                    1, "Default Age Of Empires Multiplayer Service",
+                    static_cast<unsigned char*>(static_cast<void*>(
+                        this->list->get_text())),
+                    strlen(this->list->get_text()) + 1);
+                comm->SetMyPlayerName(this->input->currentLine());
+
+                TCommunications_Services services;
+                comm->SetServiceGUID(
+                    services.GetServiceGUID(this->list->get_id()));
+                comm->InitJoinGame();
+
+                new TribeJoinScreen;
+                panel_system.setCurrentPanel("Join Screen", 0);
                 panel_system.destroyPanel("MP Startup Screen");
                 return 1;
+            } else {
+                this->popupYesNoDialog(0x2593, "Start Zone", 0x1C2, 100);
+                return 1;
             }
+        }
 
-            if (panel == this->help_button && event == 1) {
-                this->setup_popup_help();
-                return event;
-            }
+        if ((panel == this->cancelButton && event == 1) ||
+            (panel == this->input && event == 1)) {
+            rge_base_game->disable_input();
+            comm->UnlinkToLevel(SINGLE_PLAYER);
+            new TRIBE_Screen_Main_Menu;
+            panel_system.setCurrentPanel("Main Menu", 0);
+            panel_system.destroyPanel("MP Startup Screen");
+            return 1;
+        }
 
-            if (panel->panelName() != 0 &&
-                strcmp(panel->panelName(), "List Error") == 0) {
-                panel_system.destroyPanel("List Error");
-                this->set_curr_child(this->list);
-                event = 1;
-                return event;
-            }
+        if (panel == this->help_button && event == 1) {
+            this->setup_popup_help();
+            return event;
+        }
 
-            if (panel->panelName() != 0 &&
-                strcmp(panel->panelName(), "Name Error") == 0) {
-                panel_system.destroyPanel("Name Error");
-                this->set_curr_child(this->input);
-                event = 1;
-                return event;
-            }
+        if (panel->panelName() != 0 &&
+            strcmp(panel->panelName(), "List Error") == 0) {
+            panel_system.destroyPanel("List Error");
+            this->set_curr_child(this->list);
+            event = 1;
+            return event;
+        }
 
-            if (panel->panelName() != 0 &&
-                strcmp(panel->panelName(), "Start Zone") == 0) {
-                panel_system.destroyPanel("Start Zone");
-                this->set_curr_child(this->list);
-                if (event == 0) {
-                    rge_base_game->disable_input();
-                    WinExec(this->zone_exec, 3);
-                    goto close_action;
-                }
-                goto success;
+        if (panel->panelName() != 0 &&
+            strcmp(panel->panelName(), "Name Error") == 0) {
+            panel_system.destroyPanel("Name Error");
+            this->set_curr_child(this->input);
+            event = 1;
+            return event;
+        }
+
+        if (panel->panelName() != 0 &&
+            strcmp(panel->panelName(), "Start Zone") == 0) {
+            panel_system.destroyPanel("Start Zone");
+            this->set_curr_child(this->list);
+            if (event == 0) {
+                rge_base_game->disable_input();
+                WinExec(this->zone_exec, 3);
+                rge_base_game->close();
             }
+            return 1;
         }
     }
 
-    goto fallback;
-
-close_action:
-    rge_base_game->close();
-
-success:
-    return 1;
-
-fallback:
     return this->TEasy_Panel::action(panel, event, param3, param4);
 }
 
