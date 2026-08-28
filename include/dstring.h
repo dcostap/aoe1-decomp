@@ -1,7 +1,7 @@
-#ifndef AOE1_DSTRING_CONTEXT_H
-#define AOE1_DSTRING_CONTEXT_H
+#ifndef AOE1_DSTRING_H
+#define AOE1_DSTRING_H
 
-// Authentic source-module surface for C:\\msdev\\work\\age1_x1\\dstring.cpp.
+// Shared declarations for the dstring.cpp source module.
 // The executable stores stringValue at offset 0 and four int state fields after it.
 class DString {
 public:
@@ -42,6 +42,12 @@ public:
     DString asLowercase();
     void change(char from, char to);
 };
+
+class istream;
+class ostream;
+
+ostream& __cdecl operator<<(ostream& stream, const DString& value);
+istream& __cdecl operator>>(istream& stream, DString& value);
 
 int __cdecl operator==(const DString& lhs, const DString& rhs);
 int __cdecl operator==(const DString& lhs, const char* rhs);
