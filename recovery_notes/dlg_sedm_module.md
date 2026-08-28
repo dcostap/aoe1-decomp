@@ -21,8 +21,8 @@ The current `scr_sed.h` has a private copy of `TPanel`, `TEasy_Panel`, and
 cannot appear with `pnl_dlg.h` in one translation unit.
 
 Do not convert `scr_sed.h` alone. Its 47-body `scr_sed.cpp` module needs
-composable Main View, Diamond Map View, editor-panel, save-screen, and dialog
-providers. See `recovery_notes/scr_sed.md` for the tested provider gaps.
+composable Main View, Diamond Map View, save-screen, and dialog providers.
+See `recovery_notes/scr_sed.md` for the tested provider gaps.
 
 Keep the wrapper and matching fragments until that provider work completes.
 The action uses natural dialog-name literals. It has no private
