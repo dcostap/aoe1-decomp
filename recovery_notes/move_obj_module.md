@@ -25,39 +25,30 @@ checks before exact promotion.
 ## Remaining reviewed status
 
 - `0045D150`, `00460940`, and `00460F40` remain accepted drift.
-- `0045D3D0`, `0045DB90`, and `0045E970` remain scratch.
-- All other normal owners retain their reviewed source-bank status.
+- `0045C700`, `0045C790`, `0045D3D0`, `0045D6C0`, `0045DB90`, and
+  `0045E970` remain scratch.
+- `00460210`, `004608D0`, `00460900`, and `00460B20` also remain scratch.
+- All other normal owners retain matching status.
 
 ## Structural audit
 
-The observed translation-unit audit compiled all 51 owners from
-`src/move_obj.cpp`. It found 15 registered exact owners and 17 additional
-grouped matches. The following owners regressed in the full source context:
+The canonical provider pass compiles all 51 owners from `src/move_obj.cpp`.
+The current report is `build/audits/move_obj_final/report.json`. It records 38
+matching, 10 scratch, and three accepted-drift source entries.
 
-- 0045C700: 3 bytes, direct destructor target differs.
-- 0045C790: 2 bytes, direct relocation target differs.
-- 0045D150: 10 bytes, accepted drift remains closed.
-- 0045D3D0: 113 bytes, boundary escape.
-- 0045D6C0: 1117 bytes.
-- 0045DB90: 3037 bytes, direct relocation targets differ.
-- 0045E970: 2799 bytes, direct relocation target differs.
-- 0045F820: 365 bytes, boundary escape.
-- 0045F9D0: 390 bytes, boundary escape.
-- 0045FBC0: 637 bytes, boundary escape.
-- 0045FED0: 431 bytes, boundary escape.
-- 004600F0: 228 bytes, boundary escape.
-- 00460210: 2 bytes.
-- 004603B0: 1 byte.
-- 00460570: 1 byte.
-- 00460710: 243 bytes, boundary escape.
-- 004608D0: 29 bytes.
-- 00460900: 34 bytes.
-- 00460940: 9 bytes, accepted drift remains closed.
-- 00460970: 1 byte.
-- 00460C00: 249 bytes, boundary escape.
-- 00460F40: 16 bytes, accepted drift remains closed.
+The pass uses source-only includes for the reviewed sprite, player, moving
+master, command waypoint, path system, UnitAIModule, world, game globals,
+BaseGame, and file-I/O providers. `include/xyz_point.h` owns the three-int
+`XYZPoint` record.
 
-Removing the incorrect `RGE_Static_Object::stopObject` virtual declaration
-from the module header fixed the inherited new-angle slot. It restored exact
-output for 00460EB0 and reduced the grouped mismatch set. The current audit
-report is `build/audits/move_obj_observed2/report.json`.
+The source now uses `RGE_Sprite::flags`, `Path::initToStart`,
+`Path::moveToNextWaypoint`, `RGE_Master_Static_Object::sprite`, and the
+aggregate initial-point members. It uses the canonical C++ declarations for
+`rge_read`, `rge_write`, and `debug_rand`. Version checks use
+`save_game_version` and the lower-case `DAT_00570b54`, `DAT_00570b58`, and
+`DAT_00570b5c` globals. No scratch behavior or shared layout changed.
+
+Canonical providers changed the emitted result for ten former matching
+claims. The changed owners are now scratch in the module manifest. Their
+current grouped differences are 3, 2, 113, 1122, 2977, 2912, 1, 29, 34, and
+5 bytes in address order. The three accepted-drift entries remain closed.
