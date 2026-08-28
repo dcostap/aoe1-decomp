@@ -7493,7 +7493,8 @@
         "004E6250": "src/taimdmd.cpp",
         "004E6490": "src/taimdmd.cpp",
         "004E6580": "src/taimdmd.cpp",
-        "004E6600": "src/taimdmd.cpp"
+        "004E6600": "src/taimdmd.cpp",
+        "004E6870": "src/taimdmd.cpp"
       },
       "symbols": {
         "004E4FA0": "?setLogHistory@TribeMainDecisionAIModule@@UAEXH@Z",
@@ -7507,7 +7508,8 @@
         "004E6250": "?tributeNotify@TribeMainDecisionAIModule@@QAEXHHH@Z",
         "004E6490": "?revokeTributeAlliance@TribeMainDecisionAIModule@@QAEXXZ",
         "004E6580": "?setTributeChat@TribeMainDecisionAIModule@@IAEXXZ",
-        "004E6600": "?processAICommand@TribeMainDecisionAIModule@@QAEHHHHHH@Z"
+        "004E6600": "?processAICommand@TribeMainDecisionAIModule@@QAEHHHHHH@Z",
+        "004E6870": "?currentScore@TribeMainDecisionAIModule@@QAEHH@Z"
       }
     },
     {

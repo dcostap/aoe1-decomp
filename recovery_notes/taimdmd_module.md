@@ -14,7 +14,7 @@ compiler-facing source owner and one module-local header. The old wrapper,
 fragment includes, context macro, fallback declarations, and per-function
 source owners were removed.
 
-The module manifest records all 19 normal owners. It has 14 matching and five
+The module manifest records all 19 normal owners. It has 15 matching and four
 scratch owners. The compiler-generated scalar
 deleting destructor at `004E4B60` remains outside the normal owner manifest.
 
@@ -53,16 +53,18 @@ Engine ABI views also remain blocked. Use `world.h`, `player.h`, `tplayer.h`,
 world, player, victory, map, static-object, and DecisionScore carriers cannot
 remain.
 
-`004E6870 currentScore` is scratch. Its current local carrier names are not
-source evidence. Do not add or retain a DecisionScore provider.
-
-The executable reads canonical objects. It loads `this->player`, then
+`004E6870 currentScore` reads canonical objects. It loads `this->player`, then
 `player->world`, checks `world->player_num`, loads `world->players[index]`,
 and calls `player->victory_conditions->get_victory_points()`. The PDB range
-and the direct target at `00533480` prove this sequence. Replace the held
-body only when the Taimd header consumes the canonical Main Decision, Player,
-World, and victory providers. The normal body remains in `src/taimdmd.cpp`
-until that atomic source change.
+and the direct target at `00533480` prove this sequence. The source now uses
+that path. It has no DecisionScore carrier.
+
+`taimdmd.h` consumes the canonical Main Decision, Diplomacy, Emotional, and
+Trade providers. `taimdmd.cpp` privately consumes canonical Player, World,
+Victory, map, static-object, Tribe Game, Tribe World, and Tribe Command types.
+The remaining embedded Tribe Build, Construction, Information, Resource,
+Strategy, and Tactical declarations stay local only until their owner headers
+are complete. Do not use their byte carriers as a provider surface.
 
 ## Exactness regressions
 
@@ -110,6 +112,5 @@ added.
 - `004E6580`: The named random result is required for the exact standalone
   emission. A single expression and register probes were tested before the
   current natural declaration was retained.
-- `004E6870`: Existing emitted bytes follow the recovered field path, but its
-  local carrier source is not natural. It is held as scratch until canonical
-  composition replaces the source spelling.
+- `004E6870`: The canonical field path emits `MATCH`, `0.0000%`, with matching
+  ownership and zero relocation and boundary errors. It is registered exact.

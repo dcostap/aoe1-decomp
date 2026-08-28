@@ -35,9 +35,6 @@
     "004E6490": { "status": "matching" },
     "004E6580": { "status": "matching" },
     "004E6600": { "status": "matching" },
-    "004E6870": {
-      "status": "scratch",
-      "note_path": "recovery_notes/taimdmd_module.md"
-    }
+    "004E6870": { "status": "matching" }
   }
 }

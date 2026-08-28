@@ -2,7 +2,30 @@
 // Definitions follow the original PDB source order.
 
 #include "../include/taimdmd.h"
+#include "../include/m_s_obj.h"
+#include "../include/map.h"
+#include "../include/obj_list.h"
+#include "../include/player.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/rge_fio.h"
+#include "../include/stat_obj.h"
+#include "../include/tcommand.h"
+#include "../include/tribegam.h"
+#include "../include/tplayer.h"
+#include "../include/tworld.h"
+#include "../include/victory.h"
+#include "../include/world.h"
 #include <stdlib.h>
+#include <string.h>
+
+typedef unsigned char uchar;
+
+extern int startLoggingAI;
+extern int rgeLog;
+extern float g_time;
+extern float g_cut1;
+extern float g_cut2;
+extern "C" int __cdecl debug_rand(char*, int);
 
 // PDB lines 89-151; VA 004E4800.
 // BINARY NOTE: The shipped constructor stores the derived vptr at +0x155,
@@ -753,32 +776,32 @@ void TribeMainDecisionAIModule::updateBuildAIWithObjects()
     int i;
 
     i = 0;
-    if (this->objects_numberValue > 0) {
+    if (this->objects.numberValue > 0) {
         do {
-            if (i > this->objects_maximumSizeValue - 1) {
+            if (i > this->objects.maximumSizeValue - 1) {
                 int limit = i + 1;
                 newList = new int[limit];
                 if (newList != 0) {
                     j = 0;
-                    if (this->objects_maximumSizeValue > 0) {
-                        while (j < this->objects_maximumSizeValue && j < limit) {
-                            newList[j] = this->objects_value[j];
+                    if (this->objects.maximumSizeValue > 0) {
+                        while (j < this->objects.maximumSizeValue && j < limit) {
+                            newList[j] = this->objects.value[j];
                             ++j;
                         }
                     }
-                    delete[] this->objects_value;
-                    this->objects_value = newList;
-                    this->objects_maximumSizeValue = limit;
+                    delete[] this->objects.value;
+                    this->objects.value = newList;
+                    this->objects.maximumSizeValue = limit;
                 }
             }
 
-            object = this->object(this->objects_value[i]);
+            object = this->object(this->objects.value[i]);
             if (object != 0) {
                 this->buildAI.addItem(object, 0);
                 if (object->master_obj->id == 0x6d) {
                     this->constructionAI.setReferencePoint(
-                        this->player->world->mapValue->xSizeValue,
-                        this->player->world->mapValue->ySizeValue,
+                        this->player->world->map->map_width,
+                        this->player->world->map->map_height,
                         object->world_x,
                         object->world_y,
                         object->world_z);
@@ -786,7 +809,7 @@ void TribeMainDecisionAIModule::updateBuildAIWithObjects()
             }
 
             ++i;
-        } while (i < this->objects_numberValue);
+        } while (i < this->objects.numberValue);
     }
 }
 
@@ -934,18 +957,21 @@ int TribeMainDecisionAIModule::processAICommand(int player, int command,
             this->diplomacyAI.setRelation(value, 0);
             if (rge_base_game->difficulty() == 4) {
                 if (this->player->world->players[value]->computerPlayer() == 0) {
-                    this->player->world->commands->command_allied_victory(
+                    static_cast<TRIBE_Command*>(this->player->world->commands)
+                        ->command_allied_victory(
                         this->player->id, 1);
                     this->diplomacyAI.setChangeable(value, 0);
                     return 1;
                 } else {
-                    this->player->world->commands->command_allied_victory(
+                    static_cast<TRIBE_Command*>(this->player->world->commands)
+                        ->command_allied_victory(
                         this->player->id, 0);
                     this->diplomacyAI.setChangeable(value, 0);
                     return 1;
                 }
             } else {
-                this->player->world->commands->command_allied_victory(
+                static_cast<TRIBE_Command*>(this->player->world->commands)
+                    ->command_allied_victory(
                     this->player->id, 1);
                 this->diplomacyAI.setChangeable(value, 0);
                 return 1;
@@ -968,11 +994,8 @@ int TribeMainDecisionAIModule::processAICommand(int player, int command,
 // PDB lines 1175-1181; VA 004E6870.
 int TribeMainDecisionAIModule::currentScore(int index)
 {
-    if (index >= 1) {
-        DecisionScoreTable* table = this->info->table;
-        if (index <= table->count) {
-            return table->entries[index]->victory->get_victory_points();
-        }
-    }
+    if (index >= 1 && index <= this->player->world->player_num)
+        return this->player->world->players[index]
+            ->victory_conditions->get_victory_points();
     return -1;
 }
