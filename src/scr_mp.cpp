@@ -13,6 +13,7 @@
 #include "../include/registry.h"
 #include "../include/com_hand.h"
 #include "../include/basegame.h"
+#include "../include/scr_main.h"
 #include "../include/scr_cj.h"
 #undef GUID_DEFINED
 

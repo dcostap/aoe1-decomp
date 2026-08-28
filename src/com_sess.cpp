@@ -1,5 +1,7 @@
 #include <dplay.h>
+#define DPSESSIONDESC2 AOE1_COM_HAND_DPSESSIONDESC2
 #include "../include/com_hand.h"
+#undef DPSESSIONDESC2
 #include "../include/com_sess.h"
 #include <string.h>
 

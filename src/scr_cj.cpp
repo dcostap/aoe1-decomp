@@ -1,6 +1,10 @@
 #include <dplay.h>
 #include "../include/scr_cj.h"
+#define GUID_LOCAL _GUID
+#define DPSESSIONDESC2 AOE1_COM_HAND_DPSESSIONDESC2
 #include "../include/com_hand.h"
+#undef GUID_LOCAL
+#undef DPSESSIONDESC2
 #include "../include/com_sess.h"
 #include "../include/scr_mp.h"
 #include "../include/scr_mps.h"
