@@ -23,6 +23,8 @@ class TDigital;
 struct tagMSG;
 struct tagPOINT;
 
+unsigned long __cdecl debug_timeGetTime(char*, int);
+
 struct RGE_Font {
     void* font;
     long font_wid;

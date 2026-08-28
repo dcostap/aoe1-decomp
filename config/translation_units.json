@@ -7679,7 +7679,6 @@
         "0051B160": "src/tpnl_obj.cpp",
         "0051B180": "src/tpnl_obj.cpp",
         "0051C220": "src/tpnl_obj.cpp",
-        "0051CA10": "src/tpnl_obj.cpp",
         "0051CC80": "src/tpnl_obj.cpp",
         "0051CC90": "src/tpnl_obj.cpp"
       },
@@ -7691,7 +7690,6 @@
         "0051B160": "?set_mode@TRIBE_Panel_Object@@QAEXE@Z",
         "0051B180": "?get_mode@TRIBE_Panel_Object@@QAEEXZ",
         "0051C220": "?draw_item@TRIBE_Panel_Object@@MAEXHHW4ValueType@1@HH@Z",
-        "0051CA10": "?save_object_info@TRIBE_Panel_Object@@IAEXXZ",
         "0051CC80": "?mouse_left_down_action@TRIBE_Panel_Object@@UAEJJJHH@Z",
         "0051CC90": "?mouse_left_up_action@TRIBE_Panel_Object@@UAEJJJHH@Z"
       }

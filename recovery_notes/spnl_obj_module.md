@@ -31,9 +31,9 @@
   unverified by design.
 - Scratch `004BEE70` reports 120 differing bytes of 1577 (7.6094%). It has
   the correct owner, no relocation mismatch, and no boundary escape.
-- Scratch `004BF6C0` reports 18 differing bytes. The current compiler drops
-  the unused `prog_mode` read. The original read can fault. This is not an
-  accepted drift.
+- Scratch `004BF6C0` reports 18 differing bytes. The original reads
+  `prog_mode` after `release_mouse`. No source condition supports this read.
+  The natural body does not model it. This is not accepted drift.
 - `0051ADF0` remains `MATCH` after the base-panel provider composition.
 
 ## Open work
