@@ -17,10 +17,8 @@ struct RGE_Command_Header {
 
 struct RGE_Command_Order {
     unsigned char command;
-    unsigned char gap_01[3];
     RGE_Obj_Info target;
     unsigned char unit_num;
-    unsigned char gap_09[3];
     float location_x;
     float location_y;
     RGE_Obj_Info units[1];
@@ -52,16 +50,13 @@ struct RGE_Command_Add_Attribute {
     unsigned char command;
     unsigned char player_id;
     unsigned char attr_id;
-    unsigned char gap_03;
     float amount;
 };
 
 struct RGE_Command_Create {
     unsigned char command;
-    unsigned char gap_01;
     short obj_catagory;
     unsigned char player_id;
-    unsigned char gap_05[3];
     float location_x;
     float location_y;
     float location_z;
@@ -70,7 +65,6 @@ struct RGE_Command_Create {
 struct RGE_Command_Add_Waypoint {
     unsigned char command;
     unsigned char player_id;
-    unsigned char gap_02[2];
     int recipient;
     unsigned char numberWaypoints;
     XYZBYTEPoint waypoint[5];
@@ -80,21 +74,17 @@ struct RGE_Command_AI_Order {
     unsigned char command;
     unsigned char player_id;
     unsigned char issuer;
-    unsigned char gap_03;
     int recipient;
     short orderType;
     unsigned char orderPriority;
-    unsigned char gap_0B;
     int target;
     unsigned char targetOwner;
-    unsigned char gap_11[3];
     float targetX;
     float targetY;
     float targetZ;
     float range;
     unsigned char immediate;
     unsigned char inFront;
-    unsigned char gap_26[2];
 };
 
 struct RGE_Command_Group_AI_Order {
@@ -104,17 +94,14 @@ struct RGE_Command_Group_AI_Order {
     unsigned char recipient_count;
     short orderType;
     unsigned char orderPriority;
-    unsigned char gap_07;
     int target;
     unsigned char targetOwner;
-    unsigned char gap_0D[3];
     float targetX;
     float targetY;
     float targetZ;
     float range;
     unsigned char immediate;
     unsigned char inFront;
-    unsigned char gap_22[2];
     RGE_Obj_Info recipients[1];
 };
 
@@ -128,7 +115,6 @@ struct RGE_Command_Resign {
 struct RGE_Command_Create_Group {
     unsigned char command;
     unsigned char player_id;
-    unsigned char gap_02[2];
     int groupCommander;
     float groupRange;
     int unitsToGroup[25];
@@ -138,7 +124,6 @@ struct RGE_Command_Create_Group {
 struct RGE_Command_Add_To_Group {
     unsigned char command;
     unsigned char player_id;
-    unsigned char gap_02[2];
     int groupCommander;
     float group_range;
     int newUnit;
@@ -147,7 +132,6 @@ struct RGE_Command_Add_To_Group {
 struct RGE_Command_Remove_From_Group {
     unsigned char command;
     unsigned char player_id;
-    unsigned char gap_02[2];
     int groupCommander;
     int unit;
 };
@@ -155,13 +139,11 @@ struct RGE_Command_Remove_From_Group {
 struct RGE_Command_Destroy_Group {
     unsigned char command;
     unsigned char player_id;
-    unsigned char gap_02[2];
     int groupCommander;
 };
 
 struct RGE_Command_Formation {
     unsigned char command;
-    unsigned char gap_01[3];
     int unitNum;
     int formationID;
     RGE_Obj_Info units[1];

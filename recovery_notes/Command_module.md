@@ -35,9 +35,9 @@ uses the proven `free` target at `0054B7D0`.
 
 ## Migration check
 
-The pinned VC5 compiler builds the complete source. Focused checks retain 14
-registered exact owners. The canonical source emits nonexact code for
-`00434DC0` and `004350E0`. Both rows are scratch. The other 24 former
+The pinned VC5 compiler builds the complete source. The grouped report at
+`build/command_rebased_preflight/result_natural/report.json` has 11 exact
+owners. Every owner reports `MATCH` and `0.0000%`. The other 24 former
 matching-bank owners remain in the module manifest as matching recovery status,
 but are not registered as exact owners after source consolidation:
 
@@ -49,6 +49,9 @@ but are not registered as exact owners after source consolidation:
 These are source-shape regressions from the former isolated owners. The merged
 source preserves the reviewed behavior and call surfaces. Exact repair resumes
 on the final source tree.
+
+The canonical World cleanup keeps `00434DC0` and `004350E0` scratch. Typed
+packet source keeps `004351B0`, `004354F0`, and `00435720` scratch.
 
 The seven accepted-drift bodies remain accepted drift. The four scratch bodies
 remain scratch. The complete audit also reports the expected relocation and
