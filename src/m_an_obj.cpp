@@ -1,4 +1,8 @@
 #include "../include/m_an_obj.h"
+#include "../include/ani_obj.h"
+#include "../include/player.h"
+#include "../include/rge_fio.h"
+#include "../include/world.h"
 
 RGE_Master_Animated_Object::RGE_Master_Animated_Object(
     RGE_Master_Animated_Object* source, int do_setup)
@@ -57,7 +61,7 @@ RGE_Static_Object* RGE_Master_Animated_Object::make_new_obj(
         RGE_Static_Object* object =
             player->world->recycle_object_in_to_game(master_type);
         if (object) {
-            object->copy_obj(this, player, x, y, z);
+            object->recycle_in_to_game(this, player, x, y, z);
             return object;
         }
     }
