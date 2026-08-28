@@ -4,6 +4,8 @@
 // Declarations for the authentic taistrmd.cpp source module.
 // PDB types prove the two owning class layouts used below.
 
+#include "aivcrule.h"
+
 class AIModuleMessage;
 class TribeMainDecisionAIModule;
 class TRIBE_Player;
@@ -162,22 +164,6 @@ public:
         this->numberValue++;
         return 1;
     }
-};
-
-class VictoryConditionRuleSystem {
-public:
-    virtual ~VictoryConditionRuleSystem();
-    int sn[226];
-
-    VictoryConditionRuleSystem();
-    int loadRules(char* filename);
-    void setRule(int index, int value);
-    int rule(int index);
-    int evaluateAsInProgress(TRIBE_Player* player, int rule);
-    int evaluateAsNonInProgress(TRIBE_Player* player, int rule);
-    int stopExecution(TRIBE_Player* player, int rule);
-    int execute(TRIBE_Player* player, int state, int command);
-    void modifyForDifficultyLevel(int level);
 };
 
 struct Waypoint {

@@ -7,9 +7,9 @@ Their source lines run from 34 through 1626. Their addresses are monotonic.
 The two deleting destructors at 004E7410 and 004E9240 are compiler-generated.
 They have no handwritten owner.
 
-The source uses `include/taistrmd.h` for the reviewed class layouts.
-The header proves `VictoryConditionRuleSystem`, `TribeStrategyAIModule`, and the
-main-decision and victory-entry access surfaces used by this module.
+The source uses `include/taistrmd.h` for `TribeStrategyAIModule` and its
+module-local access surfaces. `include/aivcrule.h` owns
+`VictoryConditionRuleSystem`. It has only its PDB-proven data and methods.
 
 ## Status
 
