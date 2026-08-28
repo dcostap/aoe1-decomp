@@ -8,7 +8,6 @@
       "owners": {
         "00546720": "src/zone_map.cpp",
         "00546770": "src/zone_map.cpp",
-        "005468C0": "src/zone_map.cpp",
         "005469C0": "src/zone_map.cpp",
         "00546A00": "src/zone_map.cpp",
         "00546BB0": "src/zone_map.cpp",
@@ -39,7 +38,6 @@
         "005473B0": "?get_zone_map@RGE_Zone_Map_List@@QAEPAVRGE_Zone_Map@@PAMJAAH@Z",
         "005474B0": "?get_zone_map@RGE_Zone_Map_List@@QAEPAVRGE_Zone_Map@@J@Z",
         "005474D0": "?delete_zone_maps@RGE_Zone_Map_List@@QAEXXZ",
-        "005468C0": "??0RGE_Zone_Map@@QAE@PAVRGE_Map@@PAMJ@Z",
         "00546BB0": "?do_zone_map_area@RGE_Zone_Map@@AAEXJJEE@Z"
       }
     },
