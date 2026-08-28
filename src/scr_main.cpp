@@ -3,13 +3,22 @@
 // 426, 435, 443, 451, 480).
 
 #include "../include/scr_main.h"
+#include "../include/Pnl_btn.h"
+#include "../include/pnl_lst.h"
+#include "../include/pnl_pic.h"
+#include "../include/basegame.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/tribegam.h"
 #include "../include/scr_cred.h"
+#include "../include/scr_sing.h"
+#include "../include/scr_mp.h"
+#include "../include/scr_sedm.h"
 #include <string.h>
 
 // VA: 0049E6D0 TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu
 // PDB source: Scr_main.cpp lines 85-193.
 TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
-    : TScreenPanel(s_Main_Menu) {
+    : TScreenPanel("Main Menu") {
     RECT rect;
     TPanel* tab_list[5];
     char temp_str[0x200];
@@ -27,7 +36,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
 
     memset(this->button, 0, sizeof(this->button));
 
-    if (this->setup(rge_base_game->draw_area, s_scr1, 0xC383, 1) == 0) {
+    if (this->setup(rge_base_game->draw_area, "scr1", 0xC383, 1) == 0) {
         this->error_code = 1;
         return;
     }
@@ -37,7 +46,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     TButtonPanel** clear_button = button_base;
     for (long button_width = 0xB2; button_width < 0x1AC;
          button_width += 0x32, ++clear_button) {
-        if (this->create_button(this, clear_button, s_empty, 0, 0xAA,
+        if (this->create_button(this, clear_button, "", 0, 0xAA,
                                 button_width, 0x12C, 0x28, 0, 0, 0) == 0) {
             return;
         }
@@ -69,7 +78,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
                 this->circle_p_pic->setup(this->render_area, this,
                                rect.right - this->pnl_x + 3,
                                rect.top + 1, 0x0F, 0x0E,
-                               s_circlep2, 0xC4E6, 0, 1);
+                               "circlep2", 0xC4E6, 0, 1);
 
                 long x = this->circle_p_pic->xPosition() - this->pnl_x +
                          this->circle_p_pic->width();
@@ -102,7 +111,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     } else {
         strcpy(temp_str, this->get_string(0x241B));
         strcat(temp_str, this->get_string(0x2424));
-        strcat(temp_str, s_space);
+        strcat(temp_str, " ");
         strcat(temp_str, this->get_string(0x241C));
 
         this->create_text(this, &this->ms_copy_text1, temp_str, 5,
@@ -164,7 +173,8 @@ long TRIBE_Screen_Main_Menu::key_down_action(long key, short param_2,
         case 0x4C:
             {
                 if (rge_base_game->gameDeveloperMode() != 0) {
-                    if (rge_base_game->load_db_files() == 0) {
+                    if (static_cast<TRIBE_Game*>(rge_base_game)->load_db_files()
+                        == 0) {
                         TEasy_Panel::popupOKDialog(0x7D7, 0, 0x1C2, 100);
                     }
                 }

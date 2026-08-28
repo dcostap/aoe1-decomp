@@ -68,6 +68,8 @@ The source now uses panel-name and debug-file literals. It uses `_O_BINARY`,
 The text setup uses a typed null local. This selects the `char*` overload
 without a cast.
 
+The source also removes unnecessary panel downcasts and debug-string casts.
+
 ## Status
 
 The source now has one natural compiler-facing owner for this PDB module.

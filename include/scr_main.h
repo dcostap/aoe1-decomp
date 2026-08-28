@@ -4,16 +4,10 @@
 // PDB source module: C:\msdev\work\age1_x1\Scr_main.cpp.
 // This header owns only the two screen classes from this module.
 #include "Pnl_scr.h"
-#include "pnl_btn.h"
-#include "pnl_lst.h"
-#include "pnl_pic.h"
-#include "basegame.h"
-#include "rge_base_game_global.h"
 
-class TribeSPMenuScreen;
-class TribeMPStartupScreen;
-class TRIBE_Screen_Sed_Menu;
-class TRIBE_Credits_Screen;
+class TTextPanel;
+class TButtonPanel;
+class TPicturePanel;
 
 class TRIBE_Screen_Main_Menu : public TScreenPanel {
 public:
@@ -52,11 +46,5 @@ public:
 
 typedef char scr_main_error_size_check[
     (sizeof(TRIBE_Screen_Main_Error) == 0x484) ? 1 : -1];
-
-extern char s_Main_Menu[];
-extern char s_scr1[];
-extern char s_empty[];
-extern char s_circlep2[];
-extern char s_space[];
 
 #endif

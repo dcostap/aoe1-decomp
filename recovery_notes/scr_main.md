@@ -37,24 +37,54 @@ deleting destructor are compiler-generated. They are not normal source owners.
 
 `include/scr_main.h` now owns only `TRIBE_Screen_Main_Menu` and
 `TRIBE_Screen_Main_Error`. The PDB gives their sizes as `0x4B0` and `0x484`.
-The header consumes canonical panel, screen, text, button, picture, drawing,
-and Base Game owners.
+It includes only the complete `TScreenPanel` base. The three panel pointer
+types are forward declarations. Its source consumes panel, screen, drawing,
+Base Game, global, and provider headers privately.
 
 `src/scr_cred.cpp` now includes this header for the complete
 `TRIBE_Screen_Main_Menu` fallback. No copied menu screen layout remains.
 
 `src/scr_main.cpp` includes the canonical Credits Screen header privately.
-The other constructed screens remain opaque until their owners publish
-composable headers.
+
+## Constructed-screen providers
+
+The PDB layouts now have owner headers. They replace the former opaque
+construction types in `scr_main.cpp`.
+
+- `include/scr_sing.h` owns `TribeSPMenuScreen` from `Scr_sing.cpp`. Its
+  size is `0x49C`.
+- `include/scr_mp.h` owns `TribeMPStartupScreen` from `scr_mp.cpp`. Its size
+  is `0x6A0`.
+- `include/scr_sedm.h` owns `TRIBE_Screen_Sed_Menu` from `scr_sedm.cpp`. Its
+  size is `0x490`.
+
+Each header includes only `Pnl_scr.h` and forwards pointer-only panel types.
+Focused checks compiled their current provider TUs:
+
+- `004B69A0 TribeSPMenuScreen`: `MATCH`, `0.0000%`;
+- `004B2EF0 TRIBE_Screen_Sed_Menu`: `MATCH`, `0.0000%`; and
+- `0049F890 ~TribeMPStartupScreen`: `MATCH`, `0.0000%`.
 
 ## Current compile hold
 
-A focused compile stopped at these foreign owners:
+A focused `scr_main` compile now stops only at Base Game declarations:
 
-- `RGE_Base_Game::gameDeveloperMode()`, `load_db_files()`, and `close()`;
-- `TribeSPMenuScreen`;
-- `TribeMPStartupScreen`; and
-- `TRIBE_Screen_Sed_Menu`.
+- `int RGE_Base_Game::gameDeveloperMode() const;`
+  - VA `00422490`, `basegame.cpp:5176-5178`;
+  - symbol `?gameDeveloperMode@RGE_Base_Game@@QBEHXZ`.
+- `void RGE_Base_Game::close();`
+  - VA `004200B0`, `basegame.cpp:3182-3184`;
+  - symbol `?close@RGE_Base_Game@@QAEXXZ`.
 
-The PDB assigns the three Base Game methods to `basegame.cpp`. Do not add local
-declarations. No comparison ran after compilation stopped.
+`RGE_Base_Game::set_paused(int, int)` remains the Credits hold. It is VA
+`00420220`, `basegame.cpp:3299-3311`, and has symbol
+`?set_paused@RGE_Base_Game@@QAEXHH@Z`.
+
+`load_db_files` is not a Base Game method. The sole owner is nonvirtual
+`int TRIBE_Game::load_db_files()` at `00524530`, `tribegam.cpp:1850-1879`,
+with symbol `?load_db_files@TRIBE_Game@@QAEHXZ`. The main source includes
+`tribegam.h` privately and uses the reviewed `rge_base_game` pointer through
+`static_cast<TRIBE_Game*>`.
+
+Do not add local declarations or change the global pointer type. No comparison
+ran after compilation stopped.

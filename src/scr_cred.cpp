@@ -19,7 +19,7 @@ extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
 
 extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
 
-extern const char s_scr_cred_draw_005862e0[];
+extern char s_scr_cred_draw_005862e0[];
 
 extern float DAT_00572968;
 extern float DAT_0057297c;
@@ -95,7 +95,7 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
     }
 
     int id = 0xC3EB;
-    this->back_pics[0] = (TShape*)this->background_pic;
+    this->back_pics[0] = this->background_pic;
     TShape** shape_slot = &this->back_pics[1];
     for (; id - 0xC3EA < 7; ++id) {
         char temp_file_name[13];
@@ -147,7 +147,7 @@ long TRIBE_Credits_Screen::handle_idle()
             goto set_time_f1;
         }
 
-        if (debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0xF5)
+        if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0xF5)
                 - this->last_picture_time < 10000) {
             goto tail;
         }
@@ -184,11 +184,11 @@ long TRIBE_Credits_Screen::handle_idle()
     } else if (current_mode == 4) {
         if (this->last_pause_time == 0) {
             this->last_pause_time = debug_timeGetTime(
-                (char*)"C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x11A);
+                "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x11A);
             goto tail;
         }
 
-        debug_timeGetTime((char*)"C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x11E);
+        debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x11E);
         this->mode = 5;
         ++this->picture_set;
         if (this->picture_set > 7) {
@@ -220,17 +220,17 @@ long TRIBE_Credits_Screen::handle_idle()
 
 set_time_f1:
     this->last_picture_time = debug_timeGetTime(
-        (char*)"C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0xF1);
+        "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0xF1);
     goto tail;
 
 set_time_138:
     this->last_picture_time = debug_timeGetTime(
-        (char*)"C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x138);
+        "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x138);
     goto tail;
 
 set_time_142:
     this->last_picture_time = debug_timeGetTime(
-        (char*)"C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x142);
+        "C:\\msdev\\work\\age1_x1\\scr_cred.cpp", 0x142);
 
 tail:
     if (this->text_done != 0) {
@@ -275,8 +275,7 @@ long TRIBE_Credits_Screen::action(TPanel* param_1, long param_2,
                                   unsigned long param_4) {
     long lVar1;
 
-    if (((param_1 != (TPanel*)0x0) &&
-         ((TScrollTextPanel*)param_1 == this->text_panel)) &&
+    if (param_1 != 0 && param_1 == this->text_panel &&
         (param_2 == 1)) {
         this->text_done = 1;
         return 1;
@@ -364,7 +363,7 @@ void TScrollTextPanel::draw()
     {
         this->draw_background();
         this->draw_setup(0);
-        void* dc = this->render_area->GetDc((char*)s_scr_cred_draw_005862e0);
+        void* dc = this->render_area->GetDc(s_scr_cred_draw_005862e0);
         if (dc != 0)
         {
             SelectClipRgn(dc, this->clip_rgn);
@@ -377,7 +376,7 @@ void TScrollTextPanel::draw()
             }
             SelectObject(dc, old_font);
             SelectClipRgn(dc, 0);
-            this->render_area->ReleaseDc((char*)s_scr_cred_draw_005862e0);
+            this->render_area->ReleaseDc(s_scr_cred_draw_005862e0);
         }
         this->draw_border();
         this->draw_finish();
