@@ -2840,15 +2840,16 @@
       }
     },
     {
-      "name": "scr_stms_prefix",
-      "source": "src/scr_stms_tu.cpp",
+      "name": "scr_stms",
+      "source": "src/scr_stms.cpp",
+      "module": "scr_stms",
       "flags": "config/flags/004B7140_TRIBE_Screen_Status_Message.rsp",
       "owners": {
-        "004B7140": "src/matching/004B7140_TRIBE_Screen_Status_Message.cpp",
-        "004B7330": "src/matching/004B7330_TRIBE_Screen_Status_Message.cpp",
-        "004B7500": "src/matching/004B7500_TRIBE_Screen_Status_Message.cpp",
-        "004B7560": "src/matching/004B7560_set_text.cpp",
-        "004B7580": "src/matching/004B7580_set_text.cpp"
+        "004B7140": "src/scr_stms.cpp",
+        "004B7330": "src/scr_stms.cpp",
+        "004B7500": "src/scr_stms.cpp",
+        "004B7560": "src/scr_stms.cpp",
+        "004B7580": "src/scr_stms.cpp"
       },
       "symbols": {
         "004B7140": "??0TRIBE_Screen_Status_Message@@QAE@PAD00J@Z",
