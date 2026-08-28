@@ -2995,22 +2995,17 @@
     {
       "name": "tact_wnd",
       "source": "src/tact_wnd.cpp",
+      "module": "tact_wnd",
       "flags": "config/flags/tact_wnd.rsp",
       "owners": {
         "004D3470": "src/tact_wnd.cpp",
         "004D34C0": "src/tact_wnd.cpp",
-        "004D34F0": "src/tact_wnd.cpp",
-        "004D3690": "src/tact_wnd.cpp",
-        "004D36B0": "src/tact_wnd.cpp",
-        "004D3810": "src/tact_wnd.cpp"
+        "004D3690": "src/tact_wnd.cpp"
       },
       "symbols": {
         "004D3470": "??0TRIBE_Action_Wonder@@QAE@HPAVRGE_Action_Object@@@Z",
         "004D34C0": "??0TRIBE_Action_Wonder@@QAE@PAVRGE_Action_Object@@@Z",
-        "004D34F0": "??1TRIBE_Action_Wonder@@UAE@XZ",
-        "004D3690": "?first_in_stack@TRIBE_Action_Wonder@@UAEXE@Z",
-        "004D36B0": "?set_state@TRIBE_Action_Wonder@@MAEXE@Z",
-        "004D3810": "?update@TRIBE_Action_Wonder@@UAEEXZ"
+        "004D3690": "?first_in_stack@TRIBE_Action_Wonder@@UAEXE@Z"
       }
     },
     {
