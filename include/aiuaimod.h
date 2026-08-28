@@ -5,10 +5,11 @@
 // PDB and exact owners prove the 0x134-byte UnitAIModule layout.
 
 #include "aiplaybook.h"
-#include "ai_play_phase_command.h"
-#include "ai_play_phase_trigger.h"
 
 typedef unsigned char uchar;
+
+class AIPlayPhaseCommand;
+class AIPlayPhaseTrigger;
 
 struct OrderEvent {
     int issuer;

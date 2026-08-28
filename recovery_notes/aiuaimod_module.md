@@ -16,7 +16,8 @@ consumes its public accessors without a local copy.
 `include/ai_play_phase_trigger.h` owns the PDB-proven 0x14
 `AIPlayPhaseTrigger` record. Its PDB fields are protected. The
 `PAVAIPlayPhaseTrigger` return from `AIPlayPhase::trigger` proves its class
-identity. The module uses its public accessors without a local copy.
+identity. The module uses its public accessors without a local copy. Its public
+header forward-declares the two phase records. The source includes their owners.
 
 ## Unit AI root virtual prefix
 

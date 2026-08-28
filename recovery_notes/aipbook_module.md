@@ -15,8 +15,9 @@ owner header supplies the PDB public accessors. The module uses those accessors
 outside AIPlayPhaseCommand member functions. The grouped candidate keeps all
 64 registered matching owners at `MATCH`, `0.0000%`.
 
-The trigger record is 0x14. Its PDB fields are protected. Natural alignment
-supplies its internal gaps. Aipbook consumes its public accessors.
+The trigger record is 0x14. Its PDB fields are protected. PDB nested enum
+`0x262B` defines its twelve trigger values. Natural alignment supplies its
+internal gaps. Aipbook consumes its public accessors.
 
 ## Status
 

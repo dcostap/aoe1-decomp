@@ -1,4 +1,6 @@
 #include "../include/aiuaimod.h"
+#include "../include/ai_play_phase_command.h"
+#include "../include/ai_play_phase_trigger.h"
 #include "../include/game_globals.h"
 #include "../include/rge_base_game_global.h"
 #include <math.h>

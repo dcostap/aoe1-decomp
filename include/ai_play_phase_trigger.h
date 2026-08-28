@@ -2,6 +2,22 @@
 #define AOE1_AI_PLAY_PHASE_TRIGGER_H
 
 class AIPlayPhaseTrigger {
+public:
+    enum {
+        InvalidTrigger = 0,
+        GatherTrigger = 1,
+        DeathTrigger = 2,
+        HealthLostTrigger = 3,
+        DamageToGroupTrigger = 4,
+        DamageToAnyGroupTrigger = 5,
+        Level1EnemySightedTrigger = 6,
+        Level2EnemySightedTrigger = 7,
+        DeathOfGroupTrigger = 8,
+        HealOfGroupTrigger = 9,
+        ImmediateTrigger = 10,
+        TimeTrigger = 11
+    };
+
 protected:
     unsigned char typeValue;  // +0x00
     int value1Value;          // +0x04
