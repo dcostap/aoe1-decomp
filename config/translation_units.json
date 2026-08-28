@@ -1160,14 +1160,14 @@
     },
     {
       "name": "scr_load",
-      "source": "src/scr_load_tu.cpp",
+      "source": "src/scr_load.cpp",
+      "module": "scr_load",
       "flags": "config/flags/0049DD40_TribeLoadSavedGameScreen.rsp",
       "owners": {
-        "0049DD40": "src/matching/0049DD40_TribeLoadSavedGameScreen.cpp",
-        "0049E0A0": "src/matching/0049E0A0_TribeLoadSavedGameScreen.cpp",
-        "0049E150": "src/matching/0049E150_fillList.cpp",
-        "0049E2B0": "src/matching/0049E2B0_handle_idle.cpp",
-        "0049E2E0": "src/matching/0049E2E0_action.cpp"
+        "0049DD40": "src/scr_load.cpp",
+        "0049E0A0": "src/scr_load.cpp",
+        "0049E150": "src/scr_load.cpp",
+        "0049E2B0": "src/scr_load.cpp"
       },
       "symbols": {}
     },
