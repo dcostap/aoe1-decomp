@@ -267,21 +267,20 @@ void TribeSelectTribeScreen::fillTribeText(int tribeIdx) {
     this->tribeText->scroll(6, 0, 1);
 }
 
-// VA: 004B8070 TribeSelectTribeScreen::tribeName (96B)
-// The executable returns the named static strings at 00586F18-00586F7B.
-// Direct assembly names prove these addresses are the required identities.
+// VA: 004B8070 TribeSelectTribeScreen::tribeName
+// PDB source: scr_trb.cpp lines 238-261.
 
 char* TribeSelectTribeScreen::tribeName(int param_1) {
     switch (param_1) {
-    case 0: return (char*)0x586F78;
-    case 1: return (char*)0x586F6C;
-    case 2: return (char*)0x586F60;
-    case 3: return (char*)0x586F58;
-    case 4: return (char*)0x586F50;
-    case 5: return (char*)0x586F44;
-    case 6: return (char*)0x586F3C;
-    case 7: return (char*)0x586F30;
-    case 8: return (char*)0x586F24;
-    default: return (char*)0x586F18;
+    case 0: return "Assyrian";
+    case 1: return "Babylonian";
+    case 2: return "Egyptian";
+    case 3: return "Greek";
+    case 4: return "Hittite";
+    case 5: return "Isrealite";
+    case 6: return "Minoan";
+    case 7: return "Phoenician";
+    case 8: return "Sumerian";
+    default: return "No Culture";
     }
 }
