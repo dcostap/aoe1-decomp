@@ -52,6 +52,40 @@ The header does not prove source-module closure. `src/tplayer_tu.cpp` and
 The source module still needs a later closure pass against all direct owners,
 including the Gaia boundary and compiler-generated destructor entries.
 
+## Direct-source closure audit
+
+The current `tworld.h`, `tech.h`, `tvictory.h`, `t_histry.h`, `tobj_lst.h`,
+and object owners supply valid direct surfaces for part of `tplayer.cpp`.
+They do not close the complete PDB module.
+
+`tech.h` lacks these PDB-owned `TRIBE_Player_Tech` declarations:
+
+- `TRIBE_Player_Tech(int, TRIBE_Tech*, RGE_Player*, unsigned char)` at
+  `0050C3A5`;
+- `TRIBE_Player_Tech(TRIBE_Tech*, RGE_Player*, unsigned char)` at
+  `0050C4FC`; and
+- `~TRIBE_Player_Tech()` at `0050C562`.
+
+The source needs all three owners. Add them to the Tech owner header. Do not
+add a Player-local substitute.
+
+`taimdmd.h` declares `TribeMainDecisionAIModule`, but it also defines copied
+RGE Player, World, Map, object, and Victory classes. It cannot compose with
+`player.h`, `world.h`, and the object owner headers. Publish a no-copy AI
+owner surface before the Player source uses that class.
+
+`TRIBE_Master_Fish_Object`, `TRIBE_Master_Projectile_Object`, and
+`Trade_Avail` have no canonical headers. `TRIBE_Player::load_master_object`
+and `interface_trade_avail` need those declarations. Route them to their
+owners.
+
+`TRIBE_Command` remains held. It needs the canonical Master Building owner.
+Do not use `tcommand_context.h` from `tplayer.cpp`.
+
+Do not create direct `src/tplayer.cpp` until these providers land. The old
+candidate needs local carriers and raw layouts. It is not a valid source
+owner.
+
 The natural pinned-VC5 header probe passed for the class size and all 16 field
 offsets. A fresh standalone `00513DA0` check returned `MATCH` at `0.0000%`.
 
