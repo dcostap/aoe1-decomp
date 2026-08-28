@@ -9,29 +9,27 @@ TRegistry::TRegistry(const char* name)
     this->ghMachineKey = 0;
     this->ghUserKey = 0;
     this->ghMachineKeyRead = 0;
-    RegCreateKeyExA((HKEY)0x80000001, name, 0, 0, 0, 0xf003f, 0,
+    RegCreateKeyExA(HKEY_CURRENT_USER, name, 0, 0, 0, KEY_ALL_ACCESS, 0,
                     &this->ghUserKey, &this->gdwDisp);
-    RegCreateKeyExA((HKEY)0x80000002, name, 0, 0, 0, 0xf003f, 0,
+    RegCreateKeyExA(HKEY_LOCAL_MACHINE, name, 0, 0, 0, KEY_ALL_ACCESS, 0,
                     &this->ghMachineKey, &this->gdwDisp);
-    RegCreateKeyExA((HKEY)0x80000002, name, 0, 0, 0, 1, 0,
+    RegCreateKeyExA(HKEY_LOCAL_MACHINE, name, 0, 0, 0, KEY_QUERY_VALUE, 0,
                     &this->ghMachineKeyRead, &this->gdwDisp);
 }
 
 // PDB lines 63-83; VA 0047EC00.
 TRegistry::~TRegistry()
 {
-    LONG (WINAPI *closeKey)(HKEY) = RegCloseKey;
-
     if (this->ghUserKey != 0) {
-        closeKey(this->ghUserKey);
+        RegCloseKey(this->ghUserKey);
         this->ghUserKey = 0;
     }
     if (this->ghMachineKey != 0) {
-        closeKey(this->ghMachineKey);
+        RegCloseKey(this->ghMachineKey);
         this->ghMachineKey = 0;
     }
     if (this->ghMachineKeyRead != 0) {
-        closeKey(this->ghMachineKeyRead);
+        RegCloseKey(this->ghMachineKeyRead);
         this->ghMachineKeyRead = 0;
     }
 }
