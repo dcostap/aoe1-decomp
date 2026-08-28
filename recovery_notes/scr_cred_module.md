@@ -3,64 +3,74 @@
 ## Source context
 
 The PDB source is `C:\\msdev\\work\\age1_x1\\scr_cred.cpp`.
-The sixteen normal owners span lines 46 through 753 and keep this address order:
+
+It owns sixteen normal functions in this address order:
 
 `004926E0`, `00492970`, `00492A40`, `00492A50`, `00492CC0`, `00492D50`,
 `00492D70`, `00492DB0`, `00492E70`, `00492F70`, `00492F80`, `00492FB0`,
-`00493070`, `00493160`, `00493420`, `00493540`.
+`00493070`, `00493160`, `00493420`, and `00493540`.
 
-`TRIBE_Credits_Screen` owns the first eight methods. `TScrollTextPanel` owns
-`00492E70` through `00493160`. The two palette functions are free functions.
-The scalar deleting destructor at `00492950` and vector deleting destructor at
-`00492F50` are compiler generated. They have no PDB source-line owners.
+`TRIBE_Credits_Screen` owns the first eight methods.
+`TScrollTextPanel` owns the next six methods. The last two owners are palette
+functions. The scalar deleting destructor at `00492950` and vector deleting
+destructor at `00492F50` are compiler generated.
 
-The exact constructor, destructor, event, panel, and palette symbols anchor the
-source sequence. The merged source has one compiler-facing owner for every
-normal function in this PDB compiland.
+The PDB gives `TScrollTextPanel` size `0x198` and
+`TRIBE_Credits_Screen` size `0x8B8`. The canonical bases are `TTextPanel`
+and `TScreenPanel`.
 
-## Migration
+## Canonical ownership
 
-`src/scr_cred.cpp` now contains all sixteen function bodies in PDB order.
-`include/scr_cred.h` is the module-local declaration header. The old
-`src/scr_cred_tu.cpp` wrapper and all per-function bank sources were removed.
-The source has no `.cpp` includes, context macros, inline assembly, raw vtable
-field, or fallback declaration block.
+`include/scr_cred.h` owns only `TScrollTextPanel` and
+`TRIBE_Credits_Screen`. It consumes the canonical panel, screen, text,
+drawing, shape, font, Base Game, and control surfaces.
 
-The accepted-drift body at `00492FB0` remains unchanged in behavior. Its x87
-multiply uses the equivalent VC5 `fimul` encoding rather than the original
-`fild` plus `fmulp` pair.
+`src/scr_cred.cpp` uses canonical field and virtual names. It includes
+`music.h` privately for `TMusic_System`. It has no copied foreign layout,
+local vtable, context macro, or raw cursor.
 
-## Validation
+The source keeps `TRIBE_Screen_Main_Menu` opaque. That class belongs to
+`scr_main.cpp`. Its current header copies the screen hierarchy.
 
-The final grouped audit was:
+## Provider handoffs
 
-`python tools/audit_translation_unit_observed.py --group scr_cred --jobs 1 --output-dir build/audits/scr_cred_final --print-full`
+### Base Game pause method
 
-It compiled `src/scr_cred.cpp` with the existing `/GX` response file and found
-all sixteen normal owners. Fourteen registered exact owners stayed `MATCH` with
-zero positional differences, zero relocation target mismatches, and zero
-boundary escapes. Standalone checks also report `MATCH` and `0.0000%` for the
-fourteen exact owners.
+The owner is `RGE_Base_Game::set_paused(int, int)` at `00420220`.
 
-The grouped observed result for `00492FB0` is 184 bytes with 84 differing bytes,
-zero relocation mismatches, and zero boundary escapes. This is the recorded
-accepted drift. The direct checker cannot select this owner alone because the
-merged source also defines `TRIBE_Credits_Screen::handle_idle`.
+The PDB places it in `basegame.cpp`, lines 3299 through 3311. Its symbol is
+`?set_paused@RGE_Base_Game@@QAEXHH@Z`. The current matching body is
+`src/matching/00420220_set_paused.cpp`. A focused check returns `MATCH` and
+`0.0000%`.
 
-The grouped observed result for scratch owner `00493160` is 666 bytes with 614
-differing bytes, one missing ordered `TextOutA` call, zero relocation mismatches,
-and zero boundary escapes. The full source keeps the natural 23-call body, but
-VC5 merges one tail call in the authentic prefix context. The owner remains
-scratch.
+`include/basegame.h` does not yet publish this nonvirtual method. The Base Game
+owner must add that one declaration beside `get_paused()`. Do not add it here.
 
-The generated destructor checks remain compiler-generated and are not source
-owners. Source policy inspection found no wrapper include, context macro, inline
-assembly, placeholder virtual slot, or raw vtable field.
+`RGE_Base_Game::singlePlayerGame() const` is already published. It calls
+`004223F0` from the same `basegame.cpp` provider.
 
-## Evidence blocker
+### Main-menu screen
 
-`tools/validate_candidate_tu.py` still requires exact proposal owners to be in
-`src/matching` and requires each owner as one wrapper include. It rejects a
-valid direct module proposal whose exact owners map to `src/scr_cred.cpp`.
-The final direct-source audit and standalone checks provide the validation until
-that tool supports registered source modules.
+The fallback in `TRIBE_Credits_Screen::close_screen` constructs
+`TRIBE_Screen_Main_Menu` at `0049E6D0`. The original allocates `0x4B0` bytes
+at `00492E0B`. This provider belongs to `scr_main.cpp`.
+
+`scr_cred` must wait for a composable `scr_main` owner header. Do not add a
+local menu layout or allocation substitute.
+
+## Status
+
+The source now has one natural compiler-facing owner for this PDB module.
+The accepted-drift owner `00492FB0` and scratch owner `00493160` retain their
+reviewed status.
+
+The prior grouped exact audit used the old copied panel header. It is useful
+codegen evidence only. It does not validate this canonical composition.
+
+A focused canonical compile stopped only at these two provider boundaries:
+
+- `RGE_Base_Game::set_paused(int, int)` is not declared in `basegame.h`.
+- `TRIBE_Screen_Main_Menu` is incomplete at its fallback construction.
+
+No comparison ran after those compile errors. Re-run the grouped module check
+when both provider headers are available.

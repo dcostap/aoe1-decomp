@@ -4,6 +4,7 @@
 // The deleting destructors at 00492950 and 00492F50 are compiler generated.
 
 #include "../include/scr_cred.h"
+#include "../include/music.h"
 #include <fcntl.h>
 #include <io.h>
 #include <new.h>
@@ -14,6 +15,30 @@
 extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
     void* hpal, unsigned int start, unsigned int count,
     tagPALETTEENTRY* entries);
+
+extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
+
+extern const char s_scr_cred_draw_005862e0[];
+
+extern float DAT_0057297c;
+
+extern float DAT_0086b290;
+extern unsigned int DAT_0086b294;
+extern int DAT_0086b298;
+extern int DAT_0086b29c;
+extern int DAT_0086b2a0;
+extern unsigned char DAT_0086b2a4;
+extern tagPALETTEENTRY DAT_0086b2a8;
+extern float DAT_0086b2ac;
+extern tagPALETTEENTRY DAT_0086b2b0[];
+extern tagPALETTEENTRY DAT_0086b6b0[256];
+extern TDrawArea* DAT_0086bab0;
+
+void RGE_translate_palette(tagPALETTEENTRY*, tagPALETTEENTRY*,
+                           tagPALETTEENTRY, long, int, int);
+void RGE_fade_palette_start(TDrawArea*, tagPALETTEENTRY, float,
+                            unsigned char, tagPALETTEENTRY*, int, int);
+int RGE_fade_palette_step();
 
 TRIBE_Credits_Screen::TRIBE_Credits_Screen()
     : TScreenPanel("Credits Screen")
@@ -58,7 +83,7 @@ TRIBE_Credits_Screen::TRIBE_Credits_Screen()
 
     TScrollTextPanel* scroll_panel = new TScrollTextPanel(
         this, this->render_area,
-        (this->width / 2) - 0xFA, (this->height / 2) - 0x96,
+        (this->pnl_wid / 2) - 0xFA, (this->pnl_hgt / 2) - 0x96,
         0x1F4, 0x12C, 0x1E,
         font->font, font->font_wid, font->font_hgt, file_buf);
     this->text_panel = scroll_panel;
@@ -92,7 +117,7 @@ TRIBE_Credits_Screen::~TRIBE_Credits_Screen()
         }
     }
 
-    this->field_204 = 0;
+    this->background_pic = 0;
 
     if (this->text_panel != 0) {
         delete this->text_panel;
@@ -105,7 +130,7 @@ TRIBE_Credits_Screen::~TRIBE_Credits_Screen()
     }
 }
 
-long TRIBE_Credits_Screen::handle_mouse_down(uchar, long, long, int, int)
+long TRIBE_Credits_Screen::handle_mouse_down(unsigned char, long, long, int, int)
 {
     this->close_screen();
     return 1;
@@ -132,10 +157,10 @@ long TRIBE_Credits_Screen::handle_idle()
             this->color.peGreen = 0;
             this->color.peBlue = 0;
 
-            if (this->palette_handle == 0) {
+            if (this->palette == 0) {
                 this->render_area->GetPalette(this->color_table);
             } else {
-                GetPaletteEntries(this->palette_handle, 0, 0x100,
+                GetPaletteEntries(this->palette, 0, 0x100,
                                   this->color_table);
             }
 
@@ -149,8 +174,8 @@ long TRIBE_Credits_Screen::handle_idle()
         if (RGE_fade_palette_step() != 0) {
             this->mode = 4;
             this->last_pause_time = 0;
-            this->set_redraw(1);
-            this->draw();
+            this->set_redraw(TPanel::RedrawNormal);
+            this->handle_paint();
             this->render_area->DrawSystem->Paint((tagRECT*)0);
         }
         goto tail;
@@ -168,8 +193,8 @@ long TRIBE_Credits_Screen::handle_idle()
             this->picture_set = 1;
         }
         this->background_pic = this->back_pics[this->picture_set - 1];
-        this->set_redraw(1);
-        this->draw();
+        this->set_redraw(TPanel::RedrawNormal);
+        this->handle_paint();
         this->render_area->DrawSystem->Paint((tagRECT*)0);
 
         if (this->render_area->DrawSystem->ScreenMode == 2 ||
@@ -215,20 +240,20 @@ tail:
 
 void TRIBE_Credits_Screen::draw() {
     if (this->mode == 4) {
-        uchar* check = (uchar*)*(int*)this->field_20;
-        if (check[0x479] == 2 || check[0x478] == 1) {
-            ((TDrawArea*)this->field_20)->Clear(&this->field_24, 0);
+        TDrawSystem* draw_system = this->render_area->DrawSystem;
+        if (draw_system->ScreenMode == 2 || draw_system->DrawType == 1) {
+            this->render_area->Clear(&this->clip_rect, 0);
             return;
         }
     }
 
     if (this->first_draw != 0) {
         for (int i = 0; i < 7; i++) {
-            this->field_204 = this->back_pics[i];
+            this->background_pic = this->back_pics[i];
             TScreenPanel::draw();
         }
         this->first_draw = 0;
-        this->field_204 = this->back_pics[0];
+        this->background_pic = this->back_pics[0];
     }
 
     TScreenPanel::draw();
@@ -244,7 +269,8 @@ long TRIBE_Credits_Screen::key_down_action(long key, short, int, int, int)
 }
 
 long TRIBE_Credits_Screen::action(TPanel* param_1, long param_2,
-                                  ulong param_3, ulong param_4) {
+                                  unsigned long param_3,
+                                  unsigned long param_4) {
     long lVar1;
 
     if (((param_1 != (TPanel*)0x0) &&
@@ -284,8 +310,8 @@ TScrollTextPanel::TScrollTextPanel(TPanel* parent, TDrawArea* draw_area,
     this->done = 0;
 
     if (this->setup(draw_area, parent, x, y, width, height, font, font_wid,
-                    font_hgt, 0, 0, 0, 0, 0, 0, 0) != 0) {
-        this->set_alignment(3, 0);
+                    font_hgt, 0, 0, 0, 0, 0, 0, (char*)0) != 0) {
+        this->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignCenter);
         this->set_word_wrap(1);
         this->set_text(text);
         this->set_text_color(this->text_color1, this->text_color2);
@@ -314,13 +340,13 @@ long TScrollTextPanel::handle_idle()
         int amount = (long)(((double)elapsed * *(float*)0x572968) * this->speed);
         if (amount > 0) {
             this->scroll += amount;
-            this->set_redraw(1);
+            this->set_redraw(TPanel::RedrawNormal);
             this->last_time = now;
         }
     }
     if (this->done != 0) {
-        if (this->child != 0) {
-            ((TPanelActionTarget*)this->child)->action(this, 1, 0, 0);
+        if (this->curr_child != 0) {
+            this->curr_child->action(this, 1, 0, 0);
         }
     }
     return this->TPanel::handle_idle();
@@ -329,7 +355,7 @@ long TScrollTextPanel::handle_idle()
 void TScrollTextPanel::draw()
 {
     this->need_redraw = 0;
-    if (this->render_area != 0 && this->field_70 != 0 && this->active != 0)
+    if (this->render_area != 0 && this->visible != 0 && this->active != 0)
     {
         this->draw_background();
         this->draw_setup(0);
@@ -339,7 +365,7 @@ void TScrollTextPanel::draw()
             SelectClipRgn(dc, this->clip_rgn);
             void* old_font = SelectObject(dc, this->font);
             SetBkMode(dc, 1);
-            for (short i = 0; i < this->line_count; i++)
+            for (short i = 0; i < this->num_lines; i++)
             {
                 this->draw_scrolled_line(dc, i, i,
                                          this->text_color1, this->text_color2);
@@ -354,8 +380,9 @@ void TScrollTextPanel::draw()
 }
 
 void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
-                                          short line_index, ulong color1,
-                                          ulong color2) {
+                                          short line_index,
+                                          unsigned long color1,
+                                          unsigned long color2) {
     char* text;
     short text_len;
     char* temp_text2;
@@ -380,21 +407,21 @@ void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
     this->calc_line_pos(hdc, draw_index, line_index, &line_rect, 0);
 
     text_x = line_rect.left;
-    if ((this->align != 0) && (this->align != 6)) {
+    if ((this->horz_align != 0) && (this->horz_align != 6)) {
         text_x += 5;
     }
-    text_x = this->line_offset + text_x;
+    text_x = this->second_column_pos + text_x;
     text_y = this->pnl_hgt - this->scroll + line_rect.top;
-    if ((line_index == (short)this->line_count - 1) &&
-        (this->line_height + text_y < this->pnl_y)) {
+    if ((line_index == (short)this->num_lines - 1) &&
+        (this->font_hgt + text_y < this->pnl_y)) {
         this->done = 1;
     }
 
-    if (this->clip_region != 0) {
-        SelectClipRgn(hdc, this->clip_region);
+    if (this->clip_rgn2 != 0) {
+        SelectClipRgn(hdc, this->clip_rgn2);
     }
 
-    switch (this->draw_mode) {
+    switch (this->text_style) {
     case 0:
         SetTextColor(hdc, color1);
         if (text != 0) {
@@ -427,11 +454,11 @@ void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
 
     if (temp_text2 == 0) return;
 
-    if (this->clip_region != 0) {
+    if (this->clip_rgn2 != 0) {
         SelectClipRgn(hdc, this->clip_rgn);
     }
 
-    switch (this->draw_mode) {
+    switch (this->text_style) {
     case 0:
         SetTextColor(hdc, color1);
         TextOutA(hdc, text_x, text_y, temp_text2, (int)text2_length);
