@@ -25,6 +25,7 @@ class TDigital;
 
 // PDB owner: basegame.cpp, 004231E0.
 unsigned long __cdecl debug_timeGetTime(char*, int);
+int __cdecl debug_rand(char*, int);
 
 struct RGE_Font {
     HFONT font;

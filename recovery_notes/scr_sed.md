@@ -24,8 +24,8 @@ registers only exact owners. Non-exact statuses retain a source note here.
 
 `scenario_default_file_name` is the named 260-byte module buffer used by the
 default-save path. The event ABI carries an unsigned long, but this screen
-consumes its selection value through the typed `selection_object_from_event`
-helper.
+consumes its selection value as an object pointer at one documented ABI
+boundary.
 The diplomacy controls use one typed two-dimensional array. The action uses
 separate selection coordinates, save-seed state, and text storage.
 `command_new_map` passes the complete `RGE_Map_Gen_Info` record to
@@ -33,15 +33,17 @@ separate selection coordinates, save-seed state, and text storage.
 
 `set_unit_player` owns its `List_Info` and string storage with C++ arrays. The
 destructor releases the arrays with matching `delete[]` operations. No source
-body uses a raw global address, an integer-to-pointer cast, a diplomacy union,
-an action random-value overlay, or the old map-info record overlay.
+body uses a raw global address, a diplomacy union, an action random-value
+overlay, or the old map-info record overlay. The action keeps one documented
+integer-to-pointer cast at the PDB-proven event ABI boundary.
 
 ## Recovery states
 
-The natural module validation reports 36 exact functions, five accepted-drift
-functions, and six scratch functions:
+The natural module validation reports 36 exact functions, four accepted-drift
+functions, and seven scratch functions:
 
-- `004A8A60 create_drop_down`: one SIB operand order differs.
+- `004A8A60 create_drop_down`: the structured source differs from the shipped
+  decompiler control-flow shape.
 - `004A94A0 ~TRIBE_Screen_Sed`: direct typed child deletion changes the body
   and escapes its owner boundary.
 - `004A9CC0 set_scenario_mode`: one cursor register allocation differs.
@@ -77,7 +79,7 @@ no panel copies or size-only fallback classes.
 ## Candidate validation
 
 Candidate: `build/scr_sed_canonical_candidate.json`.
-Report: `build/candidate_tus/scr_sed_no_unions/report.json`.
+Report: `build/candidate_tus/scr_sed_cleanup_flat/report.json`.
 
 The grouped candidate compiled all 47 normal bodies and the generated vector
 deleting destructor. It reports zero comparison errors. It reports zero

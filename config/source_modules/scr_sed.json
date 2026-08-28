@@ -14,7 +14,7 @@
     "004A8960": { "status": "matching" },
     "004A89B0": { "status": "matching" },
     "004A8A00": { "status": "matching" },
-    "004A8A60": { "status": "accepted_drift", "note_path": "recovery_notes/scr_sed.md" },
+    "004A8A60": { "status": "scratch", "note_path": "recovery_notes/scr_sed.md" },
     "004A9320": { "status": "matching" },
     "004A93C0": { "status": "matching" },
     "004A94A0": { "status": "scratch", "note_path": "recovery_notes/scr_sed.md" },
