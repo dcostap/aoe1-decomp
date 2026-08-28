@@ -282,8 +282,6 @@ long TRIBE_Screen_Name::action(TPanel* panel, long event, unsigned long p3,
 }
 
 // 004A6D50 TRIBE_Dialog_Name::TRIBE_Dialog_Name (scr_name.cpp:329-361)
-// BINARY NOTE: The shipped constructor differs from this natural two-entry
-// tab order because its stack window takes an unused first home.
 TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
     : TDialogPanel("New Name Dialog")
 {

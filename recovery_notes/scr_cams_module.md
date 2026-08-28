@@ -42,20 +42,23 @@ source-module manifest and translation-unit registry now point every owner at
 
 Six normal owners remain `matching`. `00490EA0` is an honest `accepted_drift`
 owner because natural deletion replaces the old `delete_panel(TPanel**)`
-address casts. `00491350` is an honest `accepted_drift` owner because one
-natural `TRIBE_Game* game` local replaces repeated global loads and the old
-`self` alias. The generated destructor remains compiler generated and is not a
-normal source owner.
+address casts. `00491350` remains `scratch`: its natural `TRIBE_Game* game`
+local replaces repeated global loads and the old `self` alias, but that change
+causes a non-local 717-byte mismatch and one relocation mismatch. This is not
+localized drift. The generated destructor remains compiler generated and is
+not a normal source owner.
 
 The grouped candidate is
 `build/candidate_tus/scr_cams_natural_final_cleanup2/report.json`. It compiled
 all eight direct owners and the generated destructor. The six matching rows
 report `MATCH` and `0.0000%`. `00490EA0` reports an accepted 212-byte drift
 with correct ownership and zero relocation errors. Natural deletion changes two
-body boundaries. `00491350` reports an accepted 717-byte drift with one
-relocation and zero boundary errors. The generated destructor reports `MATCH`
-and `0.0000%`. The candidate reports both accepted drifts without comparison
-errors.
+body boundaries. `00491350` reports a 717-byte scratch mismatch with one
+relocation mismatch and zero boundary errors. The generated destructor reports
+`MATCH` and `0.0000%`. The cached report predates the scratch
+reclassification. It recorded the 717-byte row as accepted drift with no
+comparison errors. The metadata now classifies that non-local mismatch as
+scratch. No rebuild was needed for this status fix.
 
 The candidate proposal is `build/scr_cams_natural_proposal.json`. The natural
 source was also validated before and after removal of the old wrapper and

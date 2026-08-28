@@ -12,6 +12,6 @@
     "00490FF0": { "status": "matching", "note_path": "recovery_notes/scr_cams_module.md" },
     "004911A0": { "status": "matching", "note_path": "recovery_notes/scr_cams_module.md" },
     "00491290": { "status": "matching", "note_path": "recovery_notes/scr_cams_module.md" },
-    "00491350": { "status": "accepted_drift", "note_path": "recovery_notes/scr_cams_module.md" }
+    "00491350": { "status": "scratch", "note_path": "recovery_notes/scr_cams_module.md" }
   }
 }
