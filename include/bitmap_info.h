@@ -1,7 +1,8 @@
 #ifndef AOE1_BITMAP_INFO_H
 #define AOE1_BITMAP_INFO_H
 
-struct BITMAPINFO256 {
+class BITMAPINFO256 {
+public:
     BITMAPINFOHEADER bmiHeader;
     RGBQUAD bmiColors[256];
 };
