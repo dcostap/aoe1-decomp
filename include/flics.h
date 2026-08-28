@@ -1,7 +1,7 @@
 #ifndef AOE1_FLICS_H
 #define AOE1_FLICS_H
 
-#include "drawarea_context.h"
+#include "drawarea.h"
 
 extern "C" int __cdecl open(const char* path, int access);
 extern "C" int __cdecl lseek(int handle, long offset, int origin);
@@ -47,14 +47,6 @@ public:
 };
 
 typedef char frame_head_size_check[(sizeof(FrameHead) == 0x10) ? 1 : -1];
-
-class tagRGBQUAD {
-public:
-    unsigned char rgbBlue;
-    unsigned char rgbGreen;
-    unsigned char rgbRed;
-    unsigned char rgbReserved;
-};
 
 class PalettePacket {
 public:
