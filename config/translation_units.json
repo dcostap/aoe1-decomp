@@ -4296,17 +4296,25 @@
     },
     {
       "name": "tpnl_btn",
-      "source": "src/tpnl_btn_tu.cpp",
+      "source": "src/tpnl_btn.cpp",
       "flags": "config/flags/00519DA0_TRIBE_Panel_Button.rsp",
       "owners": {
-        "00519DA0": "src/matching/00519DA0_TRIBE_Panel_Button.cpp",
-        "00519EA0": "src/matching/00519EA0_set_text_msg.cpp",
-        "00519EE0": "src/matching/00519EE0_is_inside.cpp",
-        "0051A570": "src/matching/0051A570_set_display_garrison.cpp",
-        "0051A590": "src/matching/0051A590_set_garrison_number.cpp",
-        "0051A5B0": "src/matching/0051A5B0_get_garrison_number.cpp"
+        "00519DA0": "src/tpnl_btn.cpp",
+        "00519EA0": "src/tpnl_btn.cpp",
+        "00519EE0": "src/tpnl_btn.cpp",
+        "0051A570": "src/tpnl_btn.cpp",
+        "0051A590": "src/tpnl_btn.cpp",
+        "0051A5B0": "src/tpnl_btn.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "00519DA0": "??0TRIBE_Panel_Button@@QAE@PAVTDrawArea@@PAVTPanel@@PAVTDigital@@PAXJJPAVTShape@@@Z",
+        "00519EA0": "?set_text_msg@TRIBE_Panel_Button@@QAEXPAD@Z",
+        "00519EE0": "?is_inside@TRIBE_Panel_Button@@UAEHJJ@Z",
+        "0051A570": "?set_display_garrison@TRIBE_Panel_Button@@QAEXH@Z",
+        "0051A590": "?set_garrison_number@TRIBE_Panel_Button@@QAEXH@Z",
+        "0051A5B0": "?get_garrison_number@TRIBE_Panel_Button@@QAEHXZ"
+      },
+      "module": "tpnl_btn"
     },
     {
       "name": "tpnl_pop",
