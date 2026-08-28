@@ -88,3 +88,9 @@ comparison errors.
 
 All `RGE_Communications_Speed` fields are private. The public method list has
 33 methods in PDB order. `AdjustLocalSpeed` is protected and follows that list.
+
+## Rebased integration proof
+
+The fresh grouped proof is `build/candidate_tus/com_spd_integration_proof`.
+All 25 registered exact owners report `MATCH` and `0.0000%`. The two
+unregistered rows remain the recorded scratch and accepted-drift results.

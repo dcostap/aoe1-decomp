@@ -37,3 +37,10 @@ The prior review proves the draw calls, arguments, panel stores, GDI state,
 unlock calls, and returns. The residual is limited to private local homes,
 register allocation, and a small CFG layout difference. Do not reopen this
 status without new executable evidence.
+
+## Rebased integration proof
+
+The fresh grouped proof is `build/candidate_tus/tpnl_btn_integration_proof`.
+All six registered exact owners report `MATCH` and `0.0000%`. The generated
+deleting destructor also matches. The accepted-drift `draw` result remains
+unregistered.

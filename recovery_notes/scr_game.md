@@ -120,3 +120,13 @@ The broad `handle_game_update` and `action` results remain scratch.
 `0049B910 handle_terrain_sound` is scratch because its prior accepted-drift
 review covered the old goto-shaped source. The translation-unit registration
 still contains exact owners only.
+
+## Rebased integration proof
+
+The fresh grouped proof is `build/candidate_tus/scr_game_integration_proof`.
+It compiled all 96 owners. It found 64 matches and no comparison errors.
+
+The 20 unregistered `matching` rows all report `MATCH` and `0.0000%`. Their
+owner symbols, boundaries, and relocations also match. They remain unregistered
+until a registration review selects them. The screen group still registers its
+31 reviewed exact owners only.

@@ -50,3 +50,6 @@ mismatches. The generated deleting destructor also reports `MATCH`.
 
 The focused checks report `MATCH` and `0.0000%` for all four normal owners.
 Their direct call targets and relocation counts match the original.
+
+The rebased grouped proof is `build/candidate_tus/tvw_dmap_integration_proof`.
+It confirms all four registered owners with no comparison errors.

@@ -88,3 +88,12 @@ The source-module metadata records the complete normal owner set. The
   `MATCH` and `0.0000%`, with matching ownership, boundaries, relocations, and
   direct targets.
 - Keep the generated destructor as a separate generated-entry check.
+
+## Screen integration boundary
+
+The screen integration changes only the two `TRIBE_Game` getter calls in
+`src/tribegam.cpp`. The existing source debt above remains open. This change
+does not repair the held `tribegam` source context or its missing declarations.
+A fresh getter proof was blocked by that debt before comparison. It reported
+the existing `setMapSize`, `panel_system`, `RGE_Prog_Info`, and related missing
+declarations. The two getter owners remain unclaimed and unproven.
