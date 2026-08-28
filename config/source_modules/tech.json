@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "name": "tech",
+  "pdb_source_path": ".\\Release\\tech.obj",
+  "source": "src/tech.cpp",
+  "header": "include/tech.h",
+  "functions": {
+    "0050B840": { "status": "matching" },
+    "0050BB84": { "status": "matching" },
+    "0050BF28": { "status": "matching" },
+    "0050BF9C": { "status": "matching" },
+    "0050BFED": { "status": "matching" },
+    "0050C2FA": { "status": "matching" },
+    "0050C333": { "status": "matching" },
+    "0050C36C": { "status": "matching" },
+    "0050C3A5": { "status": "matching" },
+    "0050C4FC": { "status": "matching" },
+    "0050C562": { "status": "matching" },
+    "0050C58C": { "status": "matching" },
+    "0050C5A7": { "status": "matching" },
+    "0050C5E5": { "status": "matching" },
+    "0050C6AD": { "status": "matching" },
+    "0050C730": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tech_module.md"
+    },
+    "0050CA9E": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tech_module.md"
+    },
+    "0050CC25": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tech_module.md"
+    },
+    "0050CD73": { "status": "matching" },
+    "0050CE68": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tech_module.md"
+    },
+    "0050D07A": { "status": "matching" },
+    "0050D0FA": { "status": "matching" },
+    "0050D178": { "status": "matching" },
+    "0050D197": { "status": "matching" },
+    "0050D1B8": { "status": "matching" },
+    "0050D1D9": { "status": "matching" },
+    "0050D1F9": { "status": "matching" },
+    "0050D281": { "status": "matching" },
+    "0050D306": { "status": "matching" },
+    "0050D383": { "status": "matching" },
+    "0050D400": { "status": "matching" },
+    "0050D41D": { "status": "matching" },
+    "0050D43A": { "status": "matching" }
+  }
+}
