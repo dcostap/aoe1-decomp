@@ -69,8 +69,8 @@ void TRIBE_Main_View::draw_multi_object_outline() {
     if (master_id == -1)
         return;
 
-    master = (TRIBE_Master_Building_Object*)
-        this->player->master_objects[(int)master_id];
+    master = static_cast<TRIBE_Master_Building_Object*>(
+        this->player->master_objects[master_id]);
     if (master == 0)
         return;
 
@@ -88,9 +88,9 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             return;
 
         this->fixup_pick_info(&pick_info);
-        start_col = (int)pick_info.x;
+        start_col = static_cast<long>(pick_info.x);
         main_row = start_col;
-        start_row = (int)pick_info.y;
+        start_row = static_cast<long>(pick_info.y);
         end_row = start_row;
     }
 
@@ -271,18 +271,19 @@ int TRIBE_Main_View::draw_wall_outline(
     short local_4[2];
 
     if (this->get_tile_screen_coords(
-            (short)x, (short)y, &x3, &scr_x, 0) != 0) {
-        float coordinate_x = (float)x + 0.5f;
+            static_cast<short>(x), static_cast<short>(y), &x3, &scr_x, 0) != 0) {
+        float coordinate_x = static_cast<float>(x) + 0.5f;
         master->alignment_box(
-            this->world, coordinate_x, (float)y + 0.5f,
+            this->world, coordinate_x, static_cast<float>(y) + 0.5f,
             x4, local_12, scr_y, y3, y4, y1, x2, local_4[0]);
 
         if (master->check_placement(
-                this->player, coordinate_x, (float)y + 0.5f,
+                this->player, coordinate_x, static_cast<float>(y) + 0.5f,
                 0, 1, master->elevation_flag, 0, 1, 1, 1) == 0) {
             fog_next_shape = 5;
         } else {
-            unsigned int time = ((unsigned int)this->world->world_time >> 7) & 7;
+            unsigned int time =
+                (static_cast<unsigned int>(this->world->world_time) >> 7) & 7;
             if (time < 4)
                 time += 0x24;
             else
@@ -291,11 +292,10 @@ int TRIBE_Main_View::draw_wall_outline(
         }
 
         if (master->sprite != 0) {
-            x3 = (short)((int)x3 +
-                ((int)x4 - (int)y4) / 2 + y4);
-            scr_x = (short)((int)scr_x +
-                ((int)y3 - (int)local_4[0]) / 2 + local_4[0]);
-            SDI_Draw_Line = (int)scr_x;
+            x3 = static_cast<short>(x3 + (x4 - y4) / 2 + y4);
+            scr_x = static_cast<short>(scr_x +
+                (y3 - local_4[0]) / 2 + local_4[0]);
+            SDI_Draw_Line = scr_x;
             master->draw(
                 this->render_area,
                 x3, scr_x,
@@ -354,50 +354,50 @@ int TRIBE_Main_View::command_place_multi_object(
     if (rge_base_game->prog_mode == 7) {
         if (master_id != -1) {
         TRIBE_Master_Building_Object* master =
-            (TRIBE_Master_Building_Object*)
-                ((TRIBE_Player*)this->player)->master_objects[master_id];
+            static_cast<TRIBE_Master_Building_Object*>(
+                static_cast<TRIBE_Player*>(this->player)->master_objects[master_id]);
 
         if (master != 0) {
-            int end_y = (int)param_4;
-            int start_y = (int)param_2;
-            int end_x = (int)param_3;
-            int start_x = (int)param_1;
+            int end_y = static_cast<int>(param_4);
+            int start_y = static_cast<int>(param_2);
+            int end_x = static_cast<int>(param_3);
+            int start_x = static_cast<int>(param_1);
 
             int row_distance = abs(end_y - start_y);
             int col_distance = abs(end_x - start_x);
 
             if (row_distance == col_distance) {
                 this->place_line_of_walls(
-                    (TRIBE_Player*)this->player, master,
+                    static_cast<TRIBE_Player*>(this->player), master,
                     start_x, start_y, end_x, end_y);
             } else if (row_distance >= col_distance) {
                 this->place_line_of_walls(
-                    (TRIBE_Player*)this->player, master,
+                    static_cast<TRIBE_Player*>(this->player), master,
                     start_x, start_y, start_x, end_y);
 
                 if (end_x > start_x) {
                     this->place_line_of_walls(
-                        (TRIBE_Player*)this->player, master,
+                        static_cast<TRIBE_Player*>(this->player), master,
                         start_x + 1, end_y, end_x, end_y);
                     result = 1;
                 } else if (start_x > end_x) {
                     this->place_line_of_walls(
-                        (TRIBE_Player*)this->player, master,
+                        static_cast<TRIBE_Player*>(this->player), master,
                         start_x - 1, end_y, end_x, end_y);
                 }
             } else {
                 this->place_line_of_walls(
-                    (TRIBE_Player*)this->player, master,
+                    static_cast<TRIBE_Player*>(this->player), master,
                     start_x, start_y, end_x, start_y);
 
                 if (end_y > start_y) {
                     this->place_line_of_walls(
-                        (TRIBE_Player*)this->player, master,
+                        static_cast<TRIBE_Player*>(this->player), master,
                         end_x, start_y + 1, end_x, end_y);
                     result = 1;
                 } else if (start_y > end_y) {
                     this->place_line_of_walls(
-                        (TRIBE_Player*)this->player, master,
+                        static_cast<TRIBE_Player*>(this->player), master,
                         end_x, start_y - 1, end_x, end_y);
                 }
             }
@@ -407,8 +407,8 @@ int TRIBE_Main_View::command_place_multi_object(
         }
     } else {
         if (master_id != -1 &&
-            ((TRIBE_Player*)this->player)->master_objects[master_id] != 0) {
-            if (((TRIBE_Player*)this->player)->command_make_wall(
+            static_cast<TRIBE_Player*>(this->player)->master_objects[master_id] != 0) {
+            if (static_cast<TRIBE_Player*>(this->player)->command_make_wall(
                     master_id, param_1, param_2, param_3, param_4) != 0)
                 result = 1;
         }
@@ -437,21 +437,21 @@ void TRIBE_Main_View::place_line_of_walls(
     if (x1 == x2) {
         y_skip = 0;
     } else {
-        y_skip = (((int)(x2 <= x1) - 1) & 2) - 1;
+        y_skip = ((static_cast<int>(x2 <= x1) - 1) & 2) - 1;
     }
 
     if (y1 == y2) {
         x_skip = 0;
     } else {
-        x_skip = (((int)(y2 <= y1) - 1) & 2) - 1;
+        x_skip = ((static_cast<int>(y2 <= y1) - 1) & 2) - 1;
     }
 
     x = x1;
     y = y1;
 
     for (;;) {
-        float coordinate_x = (float)x + 0.5f;
-        float coordinate_y = (float)y + 0.5f;
+        float coordinate_x = static_cast<float>(x) + 0.5f;
+        float coordinate_y = static_cast<float>(y) + 0.5f;
         if (master->check_placement(
                 player,
                 coordinate_x,
@@ -464,7 +464,7 @@ void TRIBE_Main_View::place_line_of_walls(
                 1,
                 1) == 0) {
             player->make_new_object(
-                (int)(short)master->id,
+                static_cast<int>(static_cast<short>(master->id)),
                 coordinate_x,
                 coordinate_y,
                 0,
@@ -791,7 +791,7 @@ long TRIBE_Main_View::mouse_left_dbl_click_action(long x, long y,
             short object_id = pick_info.object->master_obj->id;
             unsigned char unit_level = pick_info.object->master_obj->unit_level;
             if (unit_level != 3) {
-                unit_level = (unsigned char)-1;
+                unit_level = static_cast<unsigned char>(-1);
             }
 
             RGE_Object_Node* node = this->player->objects->list;
