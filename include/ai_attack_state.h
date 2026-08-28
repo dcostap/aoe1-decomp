@@ -1,8 +1,7 @@
 #ifndef AOE1_AI_ATTACK_STATE_H
 #define AOE1_AI_ATTACK_STATE_H
 
-class AttackState {
-public:
+struct AttackState {
     int bestTargetID;
     float bestTargetValue;
     int bestTargetMemoryIndex;
