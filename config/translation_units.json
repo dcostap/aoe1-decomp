@@ -3426,6 +3426,7 @@
     {
       "name": "t_tre_ob",
       "source": "src/t_tre_ob.cpp",
+      "module": "t_tre_ob",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "004CCA60": "src/t_tre_ob.cpp",
