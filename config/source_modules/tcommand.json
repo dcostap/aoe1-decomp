@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "name": "tcommand",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tcommand.cpp",
+  "source": "src/tcommand.cpp",
+  "header": "include/tcommand.h",
+  "functions": {
+    "00509720": { "status": "matching" },
+    "00509770": { "status": "matching" },
+    "00509910": { "status": "matching" },
+    "00509980": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tcommand_module.md"
+    },
+    "00509AF0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tcommand_module.md"
+    },
+    "00509C60": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tcommand_module.md"
+    },
+    "00509E10": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tcommand_module.md"
+    },
+    "0050A010": { "status": "matching" },
+    "0050A140": { "status": "matching" },
+    "0050A1D0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tcommand_module.md"
+    },
+    "0050A490": {
+      "status": "scratch",
+      "note_path": "recovery_notes/tcommand_module.md"
+    },
+    "0050A4C0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tcommand_module.md"
+    },
+    "0050A510": { "status": "matching" },
+    "0050A6A0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tcommand_module.md"
+    },
+    "0050A6E0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tcommand_module.md"
+    },
+    "0050A730": { "status": "matching" },
+    "0050A7B0": { "status": "matching" },
+    "0050A7F0": { "status": "matching" },
+    "0050A860": { "status": "matching" },
+    "0050A8D0": { "status": "matching" },
+    "0050A940": { "status": "matching" },
+    "0050A9B0": { "status": "matching" },
+    "0050AA90": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tcommand_module.md"
+    },
+    "0050AB30": { "status": "matching" },
+    "0050AC70": { "status": "matching" },
+    "0050AD00": { "status": "matching" },
+    "0050AD70": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tcommand_module.md"
+    },
+    "0050ADF0": { "status": "matching" },
+    "0050AE40": { "status": "matching" },
+    "0050AE80": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/tcommand_module.md"
+    },
+    "0050AEE0": { "status": "matching" },
+    "0050AF30": { "status": "matching" },
+    "0050AF80": { "status": "matching" },
+    "0050AFD0": { "status": "matching" },
+    "0050B020": { "status": "matching" },
+    "0050B0D0": { "status": "matching" },
+    "0050B130": { "status": "matching" },
+    "0050B190": { "status": "matching" },
+    "0050B230": { "status": "matching" },
+    "0050B290": { "status": "matching" },
+    "0050B330": { "status": "matching" },
+    "0050B3E0": { "status": "matching" }
+  }
+}

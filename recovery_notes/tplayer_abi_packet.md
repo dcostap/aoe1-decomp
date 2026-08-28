@@ -82,8 +82,9 @@ PDB owner `00512A90` uses existing canonical master types. Type `'F'` allocates
 `0x17C` bytes and calls `TRIBE_Master_Building_Object`. Do not create Fish or
 Projectile types for these cases.
 
-`TRIBE_Command` remains held until its owner header lands. Master Building now
-has `tm_b_obj.h`. Do not use `tcommand_context.h` from `tplayer.cpp`.
+`TRIBE_Command` now has the canonical `tcommand.h` owner header. Master
+Building has `tm_b_obj.h`. TPlayer source still waits for the no-copy AI root.
+Do not use `tcommand_context.h` from `tplayer.cpp`.
 
 Do not create direct `src/tplayer.cpp` until these providers land. The old
 candidate needs local carriers and raw layouts. It is not a valid source

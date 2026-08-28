@@ -199,6 +199,8 @@ public:
     void mouse_on();
     void set_mouse_cursor(void*);
     void set_mouse_facet(long);
+    void draw_window();
+    void set_render_all();
 
     RGE_Game_Info* player_game_info;
     RGE_Scenario_File_Info* scenario_info;
