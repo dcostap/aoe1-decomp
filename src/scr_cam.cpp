@@ -1,5 +1,28 @@
 #include "../include/scr_cam.h"
+#include "../include/basegame.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/pnl_btn.h"
+#include "../include/pnl_lst.h"
+#include "../include/Pnl_scbr.h"
+#include "../include/Pnl_txt.h"
+#include "../include/pnl_drop.h"
+#include "../include/pnl_edit.h"
+#include "../include/mystring.h"
+#include "../include/campaign.h"
+#include "../include/scr_sedm.h"
+#include "../include/main.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
+struct FindDataLocal {
+    char gap_00[0x10];
+    char name[260];
+    char pad_114[4];
+};
+
+extern "C" long __cdecl _findfirst(const char*, void*);
+extern "C" int __cdecl _findnext(long, void*);
 
 TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     : TScreenPanel((char*)"Campaign Editor Screen")
@@ -24,7 +47,7 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
     this->move_scenario_down_button = 0;
 
     if (!this->setup(rge_base_game->draw_area, (char*)"scr4", 0xC386, 1)) {
-        this->setup_error = 1;
+        this->error_code = 1;
         return;
     }
 
@@ -37,7 +60,7 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
                       0x14, 0x28, 0x104, 0x14, 4, 0, 0, 0);
     this->create_drop_down(this, &this->filename_drop,
                            0x17C, 0xC8, 0x14, 0x3C, 0x17C,
-                           (this->ideal_width * 30) / this->height, 0xB);
+                           (this->ideal_height * 30) / this->pnl_hgt, 0xB);
 
     this->create_edit(this->filename_drop, &this->filename,
                       this->get_string(0x2BCA),
