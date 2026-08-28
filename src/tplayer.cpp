@@ -41,7 +41,15 @@
 #include <string.h>
 #include <stdarg.h>
 
-struct BuildListPacket { int weights[125]; int mostBuiltUnit; };
+// TPlayer owns the object-group selection property table at 0058ABA0.
+unsigned long tribe_group_properties[0x28] = {
+    7, 0, 4, 0, 0x67, 0, 7, 0,
+    0, 0, 0, 0, 7, 7, 0, 0,
+    0, 0, 0x10, 0x96, 0, 0, 1, 7,
+    7, 7, 7, 0, 7, 0, 0, 0,
+    0, 7, 0, 0, 0, 0, 0, 7
+};
+int tribe_group_properties_num = 0x28;
 
 static char tplayerSourceName[] = "C:/msdev/work/age1_x1/tplayer.cpp";
 static char tplayerEmptyName[] = "";
@@ -282,6 +290,7 @@ void TRIBE_Player::update()
     if (attributes[0] < 0.0) attributes[0] = 0.0f;
     int seed = debug_rand(tplayerSourceName, 0x25f);
     int old = debug_random_on;
+    global_save_debug_random_on1 = old;
     debug_random_on = 0;
     if (this->playerAI && comm->ComputerPlayerGameStart() == 1) {
         if (this->world->currentUpdateComputerPlayer == -1) this->world->selectNextComputerPlayer(3);
@@ -433,33 +442,84 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1,
                              short& t2, short& a2, short& t3, short& a3,
                              float factor)
 {
-    short* types[3] = { &t1, &t2, &t3 };
-    short* amounts[3] = { &a1, &a2, &a3 };
-    RGE_Master_Static_Object* master = this->master_objects[static_cast<unsigned short>(obj)];
-    TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(master);
+    short* amount_output;
+    short available;
+    short total = 0;
     t1 = t2 = t3 = -1;
     a1 = a2 = a3 = 0;
-    if (nameOut != 0) *nameOut = master == 0 ? 0 : master->name;
+
+    unsigned char canUseAvailableResources =
+        this->check_obj_cost(obj, 0, 1.0f, 0);
+    RGE_Master_Static_Object* master =
+        this->master_objects[static_cast<unsigned short>(obj)];
     if (master == 0 || master->master_type < 0x46) return;
+    if (nameOut != 0) *nameOut = master->name;
+
+    TRIBE_Master_Combat_Object* combat =
+        static_cast<TRIBE_Master_Combat_Object*>(master);
     for (int i = 0; i < 3; ++i) {
-        *types[i] = combat->build_inventory[i].type;
-        if (*types[i] >= 0)
-            *amounts[i] = static_cast<short>(combat->build_inventory[i].amount * factor);
+        Attribute_Cost& cost = combat->build_inventory[i];
+        short* type_output = i == 0 ? &t1 : (i == 1 ? &t2 : &t3);
+        short* cost_output = i == 0 ? &a1 : (i == 1 ? &a2 : &a3);
+        if (cost.flag != 0) {
+            *type_output = cost.type;
+            if (*type_output >= 0) {
+                short amount = static_cast<short>(cost.amount * factor);
+                *cost_output = amount;
+                if (static_cast<float>(amount) > this->attributes[*type_output] &&
+                    canUseAvailableResources != 0) {
+                    available = static_cast<short>(this->attributes[*type_output]);
+                    total = static_cast<short>(total + amount - available);
+                    *cost_output = available;
+                }
+            }
+        }
     }
+
+    if (total > 0) {
+        if (t1 == 3 || t1 == -1) {
+            t1 = 3;
+            amount_output = &a1;
+        } else if (t2 == 3 || t2 == -1) {
+            t2 = 3;
+            amount_output = &a2;
+        } else if (t3 == 3 || t3 == -1) {
+            t3 = 3;
+            a3 = total;
+            amount_output = 0;
+        } else {
+            amount_output = 0;
+        }
+        if (amount_output != 0) *amount_output = static_cast<short>(*amount_output + total);
+    }
+
+    if (a1 < 1) t1 = -1;
+    if (a2 < 1) t2 = -1;
+    if (a3 < 1) t3 = -1;
 }
 
 
 RGE_Static_Object* TRIBE_Player::find_obj(short id, RGE_Static_Object* after)
 {
+    if (after != 0) {
+        bool found = false;
+        RGE_Object_Node* node = this->objects->list;
+        while (node != 0) {
+            RGE_Static_Object* object = node->node;
+            if (object != 0) {
+                if (found && object->master_obj->id == id && object->object_state < 3)
+                    return object;
+                if (!found && object == after) found = true;
+            }
+            node = node->next;
+        }
+    }
+
     RGE_Object_Node* node = this->objects->list;
-    bool found = after == 0;
     while (node != 0) {
         RGE_Static_Object* object = node->node;
-        if (object != 0) {
-            if (found && object->master_obj->id == id && object->object_state <= 2)
-                return object;
-            if (object == after) found = true;
-        }
+        if (object != 0 && object->master_obj->id == id && object->object_state < 3)
+            return object;
         node = node->next;
     }
     return 0;
@@ -940,7 +1000,7 @@ void TRIBE_Player::reimburse_obj_cost(short obj_idx)
     for (int i = 0; i < 3; ++i) {
         int type = combat->build_inventory[i].type;
         if (type >= 0 && combat->build_inventory[i].flag != 0)
-            this->attributes[type] += object->attribute_amount_held[i];
+            this->attributes[type] += combat->build_inventory[i].amount;
     }
 }
 
@@ -1502,6 +1562,7 @@ void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* persona
     int save_debug_random_on;
     saveRand = debug_rand(tplayerSourceName, 0x863);
     save_debug_random_on = debug_random_on;
+    global_save_debug_random_on2 = save_debug_random_on;
     debug_random_on = 0;
 
     if (this->playerAI) {
@@ -1708,7 +1769,8 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
 {
     int difficultyLevel;
     int gameDifficulty;
-    BuildListPacket packet;
+    int weights[125];
+    int mostBuiltUnit;
     char tempString[256];
 
     if (this->playerAI == 0) {
@@ -1716,25 +1778,25 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     }
 
     gameDifficulty = rge_base_game->difficulty();
-    memset(packet.weights, 0, sizeof(packet.weights));
+    memset(weights, 0, sizeof(weights));
 
     switch (this->culture) {
-    case 1:  this->setupEgyptian(packet.weights, mapType, victoryType, mapSize); break;
-    case 2:  this->setupGreek(packet.weights, mapType, victoryType, mapSize); break;
-    case 3:  this->setupBabylonian(packet.weights, mapType, victoryType, mapSize); break;
-    case 4:  this->setupAssyrian(packet.weights, mapType, victoryType, mapSize); break;
-    case 5:  this->setupMinoan(packet.weights, mapType, victoryType, mapSize); break;
-    case 6:  this->setupHittite(packet.weights, mapType, victoryType, mapSize); break;
-    case 7:  this->setupPhoenician(packet.weights, mapType, victoryType, mapSize); break;
-    case 8:  this->setupSumerian(packet.weights, mapType, victoryType, mapSize); break;
-    case 9:  this->setupPersian(packet.weights, mapType, victoryType, mapSize); break;
-    case 10: this->setupShang(packet.weights, mapType, victoryType, mapSize); break;
-    case 11: this->setupYamato(packet.weights, mapType, victoryType, mapSize); break;
-    case 12: this->setupChoson(packet.weights, mapType, victoryType, mapSize); break;
-    case 13: this->setupRoman(packet.weights, mapType, victoryType, mapSize); break;
-    case 14: this->setupCarthaginian(packet.weights, mapType, victoryType, mapSize); break;
-    case 15: this->setupPalmyran(packet.weights, mapType, victoryType, mapSize); break;
-    case 16: this->setupMacedonian(packet.weights, mapType, victoryType, mapSize); break;
+    case 1:  this->setupEgyptian(weights, mapType, victoryType, mapSize); break;
+    case 2:  this->setupGreek(weights, mapType, victoryType, mapSize); break;
+    case 3:  this->setupBabylonian(weights, mapType, victoryType, mapSize); break;
+    case 4:  this->setupAssyrian(weights, mapType, victoryType, mapSize); break;
+    case 5:  this->setupMinoan(weights, mapType, victoryType, mapSize); break;
+    case 6:  this->setupHittite(weights, mapType, victoryType, mapSize); break;
+    case 7:  this->setupPhoenician(weights, mapType, victoryType, mapSize); break;
+    case 8:  this->setupSumerian(weights, mapType, victoryType, mapSize); break;
+    case 9:  this->setupPersian(weights, mapType, victoryType, mapSize); break;
+    case 10: this->setupShang(weights, mapType, victoryType, mapSize); break;
+    case 11: this->setupYamato(weights, mapType, victoryType, mapSize); break;
+    case 12: this->setupChoson(weights, mapType, victoryType, mapSize); break;
+    case 13: this->setupRoman(weights, mapType, victoryType, mapSize); break;
+    case 14: this->setupCarthaginian(weights, mapType, victoryType, mapSize); break;
+    case 15: this->setupPalmyran(weights, mapType, victoryType, mapSize); break;
+    case 16: this->setupMacedonian(weights, mapType, victoryType, mapSize); break;
     }
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 0) {
@@ -1746,43 +1808,43 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
             if (mapType == 0) {
                 if (selectedBuildLists > 0) {
                     if (aggressiveSelections == 0) {
-                        packet.weights[(0x0E) - 1] += 300;
-                        packet.weights[(0x0F) - 1] += 300;
+                        weights[(0x0E) - 1] += 300;
+                        weights[(0x0F) - 1] += 300;
                     } else {
-                        packet.weights[(0x0E) - 1] += 100;
-                        packet.weights[(0x0F) - 1] += 100;
+                        weights[(0x0E) - 1] += 100;
+                        weights[(0x0F) - 1] += 100;
                     }
                 } else {
-                    packet.weights[(0x0E) - 1] = 0;
-                    packet.weights[(0x0F) - 1] = 0;
+                    weights[(0x0E) - 1] = 0;
+                    weights[(0x0F) - 1] = 0;
                 }
             }
             if (mapType == 1) {
                 if (selectedBuildLists > 0) {
                     if (aggressiveSelections == 0) {
-                        packet.weights[(0x0E) - 1] += 250;
-                        packet.weights[(0x0F) - 1] += 250;
+                        weights[(0x0E) - 1] += 250;
+                        weights[(0x0F) - 1] += 250;
                     } else {
-                        packet.weights[(0x0E) - 1] += 75;
-                        packet.weights[(0x0F) - 1] += 75;
+                        weights[(0x0E) - 1] += 75;
+                        weights[(0x0F) - 1] += 75;
                     }
                 } else {
-                    packet.weights[(0x0E) - 1] = 0;
-                    packet.weights[(0x0F) - 1] = 0;
+                    weights[(0x0E) - 1] = 0;
+                    weights[(0x0F) - 1] = 0;
                 }
             }
             if (mapType == 2 || mapType == 6 || mapType == 8) {
                 if (selectedBuildLists > 0) {
                     if (aggressiveSelections == 0) {
-                        packet.weights[(0x0E) - 1] += 200;
-                        packet.weights[(0x0F) - 1] += 200;
+                        weights[(0x0E) - 1] += 200;
+                        weights[(0x0F) - 1] += 200;
                     } else {
-                        packet.weights[(0x0E) - 1] += 50;
-                        packet.weights[(0x0F) - 1] += 50;
+                        weights[(0x0E) - 1] += 50;
+                        weights[(0x0F) - 1] += 50;
                     }
                 } else {
-                    packet.weights[(0x0E) - 1] = 0;
-                    packet.weights[(0x0F) - 1] = 0;
+                    weights[(0x0E) - 1] = 0;
+                    weights[(0x0F) - 1] = 0;
                 }
             }
         }
@@ -1792,64 +1854,64 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 0) {
         difficultyLevel = -1;
-        packet.mostBuiltUnit = -1;
+        mostBuiltUnit = -1;
         this->playerAI->informationAI.loadUnitHistory();
-        this->playerAI->informationAI.unitsThatAreMostBuilt(&difficultyLevel, &packet.mostBuiltUnit);
+        this->playerAI->informationAI.unitsThatAreMostBuilt(&difficultyLevel, &mostBuiltUnit);
         switch (difficultyLevel) {
         case 0:
-            packet.weights[(7) - 1] += 25;
-            packet.weights[(8) - 1] += 25;
+            weights[(7) - 1] += 25;
+            weights[(8) - 1] += 25;
             break;
         case 1:
-            packet.weights[(7) - 1] += 30;
-            packet.weights[(8) - 1] += 30;
+            weights[(7) - 1] += 30;
+            weights[(8) - 1] += 30;
             break;
         case 2:
-            packet.weights[(0x12) - 1] += 20;
-            packet.weights[(0x13) - 1] += 20;
-            packet.weights[(4) - 1] += 40;
-            packet.weights[(5) - 1] += 40;
+            weights[(0x12) - 1] += 20;
+            weights[(0x13) - 1] += 20;
+            weights[(4) - 1] += 40;
+            weights[(5) - 1] += 40;
             break;
         case 3:
-            packet.weights[(1) - 1] += 40;
-            packet.weights[(2) - 1] += 20;
-            packet.weights[(0x14) - 1] += 20;
-            packet.weights[(0x15) - 1] += 20;
-            packet.weights[(0x12) - 1] -= 60;
-            packet.weights[(0x13) - 1] -= 60;
+            weights[(1) - 1] += 40;
+            weights[(2) - 1] += 20;
+            weights[(0x14) - 1] += 20;
+            weights[(0x15) - 1] += 20;
+            weights[(0x12) - 1] -= 60;
+            weights[(0x13) - 1] -= 60;
             break;
         case 4:
-            packet.weights[(7) - 1] += 15;
-            packet.weights[(8) - 1] += 15;
-            packet.weights[(0x14) - 1] += 20;
-            packet.weights[(0x15) - 1] += 20;
+            weights[(7) - 1] += 15;
+            weights[(8) - 1] += 15;
+            weights[(0x14) - 1] += 20;
+            weights[(0x15) - 1] += 20;
             break;
         case 5:
-            packet.weights[(7) - 1] += 15;
-            packet.weights[(8) - 1] += 15;
-            packet.weights[(1) - 1] += 10;
-            packet.weights[(2) - 1] += 10;
+            weights[(7) - 1] += 15;
+            weights[(8) - 1] += 15;
+            weights[(1) - 1] += 10;
+            weights[(2) - 1] += 10;
             break;
         case 6:
-            packet.weights[(7) - 1] += 15;
-            packet.weights[(8) - 1] += 15;
+            weights[(7) - 1] += 15;
+            weights[(8) - 1] += 15;
             break;
         case 7:
         case 10:
-            packet.weights[(0x14) - 1] -= 60;
-            packet.weights[(0x15) - 1] -= 60;
+            weights[(0x14) - 1] -= 60;
+            weights[(0x15) - 1] -= 60;
             break;
         case 8:
-            packet.weights[(0x14) - 1] += 40;
-            packet.weights[(0x15) - 1] += 40;
+            weights[(0x14) - 1] += 40;
+            weights[(0x15) - 1] += 40;
             if (tplayer_globals::selectedBuildListCount > 0) {
-                packet.weights[(0x0E) - 1] += 50;
-                packet.weights[(0x0F) - 1] += 50;
+                weights[(0x0E) - 1] += 50;
+                weights[(0x0F) - 1] += 50;
             }
             break;
         case 9:
-            packet.weights[(0x14) - 1] += 100;
-            packet.weights[(0x15) - 1] += 100;
+            weights[(0x14) - 1] += 100;
+            weights[(0x15) - 1] += 100;
             break;
         }
     }
@@ -1858,84 +1920,84 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     do {
         switch (difficultyLevel) {
         case 0:
-            if (0 < (packet.weights[(0x14) - 1])) (packet.weights[(0x14) - 1]) = (packet.weights[(0x14) - 1]) / 3;
-            if (0 < (packet.weights[(0x15) - 1])) (packet.weights[(0x15) - 1]) = (packet.weights[(0x15) - 1]) / 3;
-            if (0 < (packet.weights[(0x16) - 1])) (packet.weights[(0x16) - 1]) = (packet.weights[(0x16) - 1]) / 3;
+            if (0 < (weights[(0x14) - 1])) (weights[(0x14) - 1]) = (weights[(0x14) - 1]) / 3;
+            if (0 < (weights[(0x15) - 1])) (weights[(0x15) - 1]) = (weights[(0x15) - 1]) / 3;
+            if (0 < (weights[(0x16) - 1])) (weights[(0x16) - 1]) = (weights[(0x16) - 1]) / 3;
             break;
         case 1:
-            if (0 < (packet.weights[(7) - 1])) (packet.weights[(7) - 1]) = (packet.weights[(7) - 1]) / 3;
-            if (0 < (packet.weights[(8) - 1])) (packet.weights[(8) - 1]) = (packet.weights[(8) - 1]) / 3;
-            if (0 < (packet.weights[(9) - 1])) (packet.weights[(9) - 1]) = (packet.weights[(9) - 1]) / 3;
-            if (0 < (packet.weights[(0x3C) - 1])) (packet.weights[(0x3C) - 1]) = (packet.weights[(0x3C) - 1]) / 3;
-            if (0 < (packet.weights[(0x3B) - 1])) (packet.weights[(0x3B) - 1]) = (packet.weights[(0x3B) - 1]) / 3;
-            if (0 < (packet.weights[(0x37) - 1])) (packet.weights[(0x37) - 1]) = (packet.weights[(0x37) - 1]) / 3;
-            if (0 < (packet.weights[(0x38) - 1])) (packet.weights[(0x38) - 1]) = (packet.weights[(0x38) - 1]) / 3;
-            if (0 < (packet.weights[(0x69) - 1])) (packet.weights[(0x69) - 1]) = (packet.weights[(0x69) - 1]) / 3;
+            if (0 < (weights[(7) - 1])) (weights[(7) - 1]) = (weights[(7) - 1]) / 3;
+            if (0 < (weights[(8) - 1])) (weights[(8) - 1]) = (weights[(8) - 1]) / 3;
+            if (0 < (weights[(9) - 1])) (weights[(9) - 1]) = (weights[(9) - 1]) / 3;
+            if (0 < (weights[(0x3C) - 1])) (weights[(0x3C) - 1]) = (weights[(0x3C) - 1]) / 3;
+            if (0 < (weights[(0x3B) - 1])) (weights[(0x3B) - 1]) = (weights[(0x3B) - 1]) / 3;
+            if (0 < (weights[(0x37) - 1])) (weights[(0x37) - 1]) = (weights[(0x37) - 1]) / 3;
+            if (0 < (weights[(0x38) - 1])) (weights[(0x38) - 1]) = (weights[(0x38) - 1]) / 3;
+            if (0 < (weights[(0x69) - 1])) (weights[(0x69) - 1]) = (weights[(0x69) - 1]) / 3;
             break;
         case 2:
-            if (0 < (packet.weights[(0x11) - 1])) (packet.weights[(0x11) - 1]) = (packet.weights[(0x11) - 1]) / 3;
-            if (0 < (packet.weights[(0x32) - 1])) (packet.weights[(0x32) - 1]) = (packet.weights[(0x32) - 1]) / 3;
-            if (0 < (packet.weights[(0x6D) - 1])) (packet.weights[(0x6D) - 1]) = (packet.weights[(0x6D) - 1]) / 3;
+            if (0 < (weights[(0x11) - 1])) (weights[(0x11) - 1]) = (weights[(0x11) - 1]) / 3;
+            if (0 < (weights[(0x32) - 1])) (weights[(0x32) - 1]) = (weights[(0x32) - 1]) / 3;
+            if (0 < (weights[(0x6D) - 1])) (weights[(0x6D) - 1]) = (weights[(0x6D) - 1]) / 3;
             break;
         case 3:
-            if (0 < (packet.weights[(0x2F) - 1])) (packet.weights[(0x2F) - 1]) = (packet.weights[(0x2F) - 1]) / 3;
-            if (0 < (packet.weights[(0x36) - 1])) (packet.weights[(0x36) - 1]) = (packet.weights[(0x36) - 1]) / 3;
-            if (0 < (packet.weights[(0x12) - 1])) (packet.weights[(0x12) - 1]) = (packet.weights[(0x12) - 1]) / 3;
-            if (0 < (packet.weights[(0x13) - 1])) (packet.weights[(0x13) - 1]) = (packet.weights[(0x13) - 1]) / 3;
-            if (0 < (packet.weights[(100) - 1])) (packet.weights[(100) - 1]) = (packet.weights[(100) - 1]) / 3;
-            if (0 < (packet.weights[(0x67) - 1])) (packet.weights[(0x67) - 1]) = (packet.weights[(0x67) - 1]) / 3;
-            if (0 < (packet.weights[(0x6E) - 1])) (packet.weights[(0x6E) - 1]) = (packet.weights[(0x6E) - 1]) / 3;
-            if (0 < (packet.weights[(0x13) - 1])) (packet.weights[(0x13) - 1]) = (packet.weights[(0x13) - 1]) / 3;
+            if (0 < (weights[(0x2F) - 1])) (weights[(0x2F) - 1]) = (weights[(0x2F) - 1]) / 3;
+            if (0 < (weights[(0x36) - 1])) (weights[(0x36) - 1]) = (weights[(0x36) - 1]) / 3;
+            if (0 < (weights[(0x12) - 1])) (weights[(0x12) - 1]) = (weights[(0x12) - 1]) / 3;
+            if (0 < (weights[(0x13) - 1])) (weights[(0x13) - 1]) = (weights[(0x13) - 1]) / 3;
+            if (0 < (weights[(100) - 1])) (weights[(100) - 1]) = (weights[(100) - 1]) / 3;
+            if (0 < (weights[(0x67) - 1])) (weights[(0x67) - 1]) = (weights[(0x67) - 1]) / 3;
+            if (0 < (weights[(0x6E) - 1])) (weights[(0x6E) - 1]) = (weights[(0x6E) - 1]) / 3;
+            if (0 < (weights[(0x13) - 1])) (weights[(0x13) - 1]) = (weights[(0x13) - 1]) / 3;
             break;
         case 4:
-            if (0 < (packet.weights[(4) - 1])) (packet.weights[(4) - 1]) = (packet.weights[(4) - 1]) / 3;
-            if (0 < (packet.weights[(5) - 1])) (packet.weights[(5) - 1]) = (packet.weights[(5) - 1]) / 3;
-            if (0 < (packet.weights[(6) - 1])) (packet.weights[(6) - 1]) = (packet.weights[(6) - 1]) / 3;
-            if (0 < (packet.weights[(10) - 1])) (packet.weights[(10) - 1]) = (packet.weights[(10) - 1]) / 3;
-            if (0 < (packet.weights[(0x0B) - 1])) (packet.weights[(0x0B) - 1]) = (packet.weights[(0x0B) - 1]) / 3;
-            if (0 < (packet.weights[(0x0C) - 1])) (packet.weights[(0x0C) - 1]) = (packet.weights[(0x0C) - 1]) / 3;
-            if (0 < (packet.weights[(0x0D) - 1])) (packet.weights[(0x0D) - 1]) = (packet.weights[(0x0D) - 1]) / 3;
-            if (0 < (packet.weights[(0x2B) - 1])) (packet.weights[(0x2B) - 1]) = (packet.weights[(0x2B) - 1]) / 3;
-            if (0 < (packet.weights[(0x2D) - 1])) (packet.weights[(0x2D) - 1]) = (packet.weights[(0x2D) - 1]) / 3;
-            if (0 < (packet.weights[(0x2E) - 1])) (packet.weights[(0x2E) - 1]) = (packet.weights[(0x2E) - 1]) / 3;
-            if (0 < (packet.weights[(0x30) - 1])) (packet.weights[(0x30) - 1]) = (packet.weights[(0x30) - 1]) / 3;
-            if (0 < (packet.weights[(0x31) - 1])) (packet.weights[(0x31) - 1]) = (packet.weights[(0x31) - 1]) / 3;
-            if (0 < (packet.weights[(0x39) - 1])) (packet.weights[(0x39) - 1]) = (packet.weights[(0x39) - 1]) / 3;
-            if (0 < (packet.weights[(0x4B) - 1])) (packet.weights[(0x4B) - 1]) = (packet.weights[(0x4B) - 1]) / 3;
-            if (0 < (packet.weights[(99) - 1])) (packet.weights[(99) - 1]) = (packet.weights[(99) - 1]) / 3;
-            if (0 < (packet.weights[(0x68) - 1])) (packet.weights[(0x68) - 1]) = (packet.weights[(0x68) - 1]) / 3;
-            if (0 < (packet.weights[(0x71) - 1])) (packet.weights[(0x71) - 1]) = (packet.weights[(0x71) - 1]) / 3;
-            if (0 < (packet.weights[(0x72) - 1])) (packet.weights[(0x72) - 1]) = (packet.weights[(0x72) - 1]) / 3;
+            if (0 < (weights[(4) - 1])) (weights[(4) - 1]) = (weights[(4) - 1]) / 3;
+            if (0 < (weights[(5) - 1])) (weights[(5) - 1]) = (weights[(5) - 1]) / 3;
+            if (0 < (weights[(6) - 1])) (weights[(6) - 1]) = (weights[(6) - 1]) / 3;
+            if (0 < (weights[(10) - 1])) (weights[(10) - 1]) = (weights[(10) - 1]) / 3;
+            if (0 < (weights[(0x0B) - 1])) (weights[(0x0B) - 1]) = (weights[(0x0B) - 1]) / 3;
+            if (0 < (weights[(0x0C) - 1])) (weights[(0x0C) - 1]) = (weights[(0x0C) - 1]) / 3;
+            if (0 < (weights[(0x0D) - 1])) (weights[(0x0D) - 1]) = (weights[(0x0D) - 1]) / 3;
+            if (0 < (weights[(0x2B) - 1])) (weights[(0x2B) - 1]) = (weights[(0x2B) - 1]) / 3;
+            if (0 < (weights[(0x2D) - 1])) (weights[(0x2D) - 1]) = (weights[(0x2D) - 1]) / 3;
+            if (0 < (weights[(0x2E) - 1])) (weights[(0x2E) - 1]) = (weights[(0x2E) - 1]) / 3;
+            if (0 < (weights[(0x30) - 1])) (weights[(0x30) - 1]) = (weights[(0x30) - 1]) / 3;
+            if (0 < (weights[(0x31) - 1])) (weights[(0x31) - 1]) = (weights[(0x31) - 1]) / 3;
+            if (0 < (weights[(0x39) - 1])) (weights[(0x39) - 1]) = (weights[(0x39) - 1]) / 3;
+            if (0 < (weights[(0x4B) - 1])) (weights[(0x4B) - 1]) = (weights[(0x4B) - 1]) / 3;
+            if (0 < (weights[(99) - 1])) (weights[(99) - 1]) = (weights[(99) - 1]) / 3;
+            if (0 < (weights[(0x68) - 1])) (weights[(0x68) - 1]) = (weights[(0x68) - 1]) / 3;
+            if (0 < (weights[(0x71) - 1])) (weights[(0x71) - 1]) = (weights[(0x71) - 1]) / 3;
+            if (0 < (weights[(0x72) - 1])) (weights[(0x72) - 1]) = (weights[(0x72) - 1]) / 3;
             break;
         case 5:
-            if (0 < (packet.weights[(0x2A) - 1])) (packet.weights[(0x2A) - 1]) = (packet.weights[(0x2A) - 1]) / 3;
-            if (0 < (packet.weights[(1) - 1])) (packet.weights[(1) - 1]) = (packet.weights[(1) - 1]) / 3;
-            if (0 < (packet.weights[(2) - 1])) (packet.weights[(2) - 1]) = (packet.weights[(2) - 1]) / 3;
-            if (0 < (packet.weights[(3) - 1])) (packet.weights[(3) - 1]) = (packet.weights[(3) - 1]) / 3;
-            if (0 < (packet.weights[(0x2A) - 1])) (packet.weights[(0x2A) - 1]) = (packet.weights[(0x2A) - 1]) / 3;
-            if (0 < (packet.weights[(0x33) - 1])) (packet.weights[(0x33) - 1]) = (packet.weights[(0x33) - 1]) / 3;
-            if (0 < (packet.weights[(0x34) - 1])) (packet.weights[(0x34) - 1]) = (packet.weights[(0x34) - 1]) / 3;
-            if (0 < (packet.weights[(0x49) - 1])) (packet.weights[(0x49) - 1]) = (packet.weights[(0x49) - 1]) / 3;
-            if (0 < (packet.weights[(0x4A) - 1])) (packet.weights[(0x4A) - 1]) = (packet.weights[(0x4A) - 1]) / 3;
-            if (0 < (packet.weights[(0x33) - 1])) (packet.weights[(0x33) - 1]) = (packet.weights[(0x33) - 1]) / 3;
-            if (0 < (packet.weights[(0x34) - 1])) (packet.weights[(0x34) - 1]) = (packet.weights[(0x34) - 1]) / 3;
-            if (0 < (packet.weights[(0x51) - 1])) (packet.weights[(0x51) - 1]) = (packet.weights[(0x51) - 1]) / 3;
-            if (0 < (packet.weights[(0x52) - 1])) (packet.weights[(0x52) - 1]) = (packet.weights[(0x52) - 1]) / 3;
-            if (0 < (packet.weights[(0x53) - 1])) (packet.weights[(0x53) - 1]) = (packet.weights[(0x53) - 1]) / 3;
-            if (0 < (packet.weights[(0x6C) - 1])) (packet.weights[(0x6C) - 1]) = (packet.weights[(0x6C) - 1]) / 3;
+            if (0 < (weights[(0x2A) - 1])) (weights[(0x2A) - 1]) = (weights[(0x2A) - 1]) / 3;
+            if (0 < (weights[(1) - 1])) (weights[(1) - 1]) = (weights[(1) - 1]) / 3;
+            if (0 < (weights[(2) - 1])) (weights[(2) - 1]) = (weights[(2) - 1]) / 3;
+            if (0 < (weights[(3) - 1])) (weights[(3) - 1]) = (weights[(3) - 1]) / 3;
+            if (0 < (weights[(0x2A) - 1])) (weights[(0x2A) - 1]) = (weights[(0x2A) - 1]) / 3;
+            if (0 < (weights[(0x33) - 1])) (weights[(0x33) - 1]) = (weights[(0x33) - 1]) / 3;
+            if (0 < (weights[(0x34) - 1])) (weights[(0x34) - 1]) = (weights[(0x34) - 1]) / 3;
+            if (0 < (weights[(0x49) - 1])) (weights[(0x49) - 1]) = (weights[(0x49) - 1]) / 3;
+            if (0 < (weights[(0x4A) - 1])) (weights[(0x4A) - 1]) = (weights[(0x4A) - 1]) / 3;
+            if (0 < (weights[(0x33) - 1])) (weights[(0x33) - 1]) = (weights[(0x33) - 1]) / 3;
+            if (0 < (weights[(0x34) - 1])) (weights[(0x34) - 1]) = (weights[(0x34) - 1]) / 3;
+            if (0 < (weights[(0x51) - 1])) (weights[(0x51) - 1]) = (weights[(0x51) - 1]) / 3;
+            if (0 < (weights[(0x52) - 1])) (weights[(0x52) - 1]) = (weights[(0x52) - 1]) / 3;
+            if (0 < (weights[(0x53) - 1])) (weights[(0x53) - 1]) = (weights[(0x53) - 1]) / 3;
+            if (0 < (weights[(0x6C) - 1])) (weights[(0x6C) - 1]) = (weights[(0x6C) - 1]) / 3;
             break;
         case 6:
-            if (0 < (packet.weights[(0x29) - 1])) (packet.weights[(0x29) - 1]) = (packet.weights[(0x29) - 1]) / 3;
-            if (0 < (packet.weights[(0x3A) - 1])) (packet.weights[(0x3A) - 1]) = (packet.weights[(0x3A) - 1]) / 3;
-            if (0 < (packet.weights[(0x73) - 1])) (packet.weights[(0x73) - 1]) = (packet.weights[(0x73) - 1]) / 3;
-            if (0 < (packet.weights[(0x55) - 1])) (packet.weights[(0x55) - 1]) = (packet.weights[(0x55) - 1]) / 3;
+            if (0 < (weights[(0x29) - 1])) (weights[(0x29) - 1]) = (weights[(0x29) - 1]) / 3;
+            if (0 < (weights[(0x3A) - 1])) (weights[(0x3A) - 1]) = (weights[(0x3A) - 1]) / 3;
+            if (0 < (weights[(0x73) - 1])) (weights[(0x73) - 1]) = (weights[(0x73) - 1]) / 3;
+            if (0 < (weights[(0x55) - 1])) (weights[(0x55) - 1]) = (weights[(0x55) - 1]) / 3;
             break;
         }
         ++difficultyLevel;
     } while (difficultyLevel < 7);
 
     int total = 0;
-    int* cursor = packet.weights;
+    int* cursor = weights;
     int count = 125;
     do {
         if (*cursor < 0) {
@@ -1945,7 +2007,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
         --count;
     } while (count != 0);
     total = 0;
-    cursor = packet.weights;
+    cursor = weights;
     count = 125;
     do {
         total += *cursor;
@@ -1959,7 +2021,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     int cumulative = 0;
     int selectionIndex = 0;
     for (; selectionIndex < 125; ++selectionIndex) {
-        cumulative += packet.weights[selectionIndex];
+        cumulative += weights[selectionIndex];
         if (cumulative > remainder) {
             selectedBuildList = selectionIndex;
             break;

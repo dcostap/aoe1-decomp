@@ -72,6 +72,8 @@ extern long world_update_counter;
 extern int computerPlayerSetup[13];
 extern FILE* DVlogf;
 extern int debug_random_on;
+extern int global_save_debug_random_on1;
+extern int global_save_debug_random_on2;
 extern int allowAIToCheat;
 extern "C" int __cdecl debug_rand(char*, int);
 extern "C" void __cdecl debug_srand(char*, int, unsigned int);

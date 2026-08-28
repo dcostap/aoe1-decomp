@@ -130,7 +130,7 @@ typedef char taimdmd_strategy_size[(sizeof(TribeStrategyAIModule) == 0x5F8) ? 1 
 
 class TribeTacticalAIModule : public TacticalAIModule {
 public:
-    char bytes[0x100C - sizeof(TacticalAIModule) - 12];
+    char bytes[0xE18 - sizeof(TacticalAIModule)];
 
     TribeTacticalAIModule(void*, int);
     TribeTacticalAIModule(int, int);
@@ -164,12 +164,20 @@ public:
     int taskExplorer(int, float, float);
     void trackUnitGather(int, int, int);
     void notify(int, int, int, long, long, long);
-    int attackEnabledValue;
-    int lastUpdateAreaTimeValue;
-    int averageUpdateAreaTimeValue;
+    int attackEnabledValue; // +0xE18
+    char bytes_after_attack_enabled[0xFFC - 0xE1C];
+    int lastUpdateAreaTimeValue; // +0xFFC
+    int averageUpdateAreaTimeValue; // +0x1000
+    char bytes_after_average_update_area[0x100C - 0x1004];
 };
 
 typedef char taimdmd_tactical_size[(sizeof(TribeTacticalAIModule) == 0x100C) ? 1 : -1];
+typedef char taimdmd_tactical_attack_enabled_offset[
+    (((char*)&((TribeTacticalAIModule*)0)->attackEnabledValue - (char*)0) == 0xE18) ? 1 : -1];
+typedef char taimdmd_tactical_last_update_area_offset[
+    (((char*)&((TribeTacticalAIModule*)0)->lastUpdateAreaTimeValue - (char*)0) == 0xFFC) ? 1 : -1];
+typedef char taimdmd_tactical_average_update_area_offset[
+    (((char*)&((TribeTacticalAIModule*)0)->averageUpdateAreaTimeValue - (char*)0) == 0x1000) ? 1 : -1];
 
 class TribeMainDecisionAIModule : public MainDecisionAIModule {
 public:

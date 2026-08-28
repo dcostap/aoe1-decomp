@@ -9,7 +9,7 @@ class TribeMainDecisionAIModule;
 class TRIBE_History_Info;
 class ResourceItem;
 
-extern unsigned long tribe_group_properties[];
+extern unsigned long tribe_group_properties[0x28];
 extern int tribe_group_properties_num;
 
 struct Item_Avail {
