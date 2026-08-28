@@ -1,7 +1,6 @@
 #ifndef AOE1_CHAT_H
 #define AOE1_CHAT_H
 
-#include "rge_base_game_global.h"
 #include "taunt.h"
 
 class TChat {

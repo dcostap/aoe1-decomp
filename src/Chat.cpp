@@ -2,25 +2,18 @@
 // PDB owners below follow the shipped source-line order.
 
 #include "../include/chat.h"
+#include "../include/basegame.h"
+#include "../include/game_globals.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
 
-// Chat.cpp only proves the sound_system member at offset 0x60.  Keep this
-// incomplete view private until the complete RGE_Base_Game surface is shared.
-class ChatBaseGameView {
-public:
-    unsigned char gap_00[0x60];
-    TSound_Driver* sound_system;
-};
-
 TChat::TChat(void* host_wnd) {
     int i;
 
-    taunt = new TTaunt(
-        reinterpret_cast<ChatBaseGameView*>(rge_base_game)->sound_system);
+    taunt = new TTaunt(rge_base_game->sound_system);
     HostWnd = host_wnd;
 
     for (i = 0; i < 0x33; ++i) {
