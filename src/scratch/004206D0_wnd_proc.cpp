@@ -224,7 +224,7 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
         goto panel_return_after_exit_menu;
 
     case 0x112:
-        if (wparam == 0xF100 && self->prog_info->field_894 != 0 &&
+        if (wparam == 0xF100 && self->prog_info->skip_startup != 0 &&
             IsIconic(self->prog_window) == 0)
             return 0;
         goto default_window_proc;

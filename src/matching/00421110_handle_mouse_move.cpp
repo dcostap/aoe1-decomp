@@ -29,7 +29,8 @@ int RGE_Base_Game::handle_mouse_move(void* p1, unsigned int p2, unsigned int p3,
     }
 
     this->get_mouse_info(p3, p4, &f.point.y, &f.point.x, &f.left_btn, &f.right_btn, &f.ctrl_key);
-    this->v_mouse_move(f.point.y, f.shift_key, f.point.x, f.left_btn, f.right_btn, f.ctrl_key);
-    this->handle_mouse_click();
+    this->action_mouse_move(
+        f.point.y, f.shift_key, f.point.x, f.left_btn, f.right_btn, f.ctrl_key);
+    this->handle_idle();
     return 1;
 }

@@ -1211,8 +1211,6 @@ public:
     void set_windows_mouse(int value);
     void set_mouse_cursor(void* cursor);
     void set_mouse_facet(long facet);
-    int v_mouse_move(int y, int local4, int x, int left, int right, int ctrl);
-    void handle_mouse_click();
     int activate_dispatch();
     int deactivate_dispatch();
     int endMethod();
