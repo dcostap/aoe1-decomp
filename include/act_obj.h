@@ -26,15 +26,14 @@ public:
     virtual void do_command(RGE_Static_Object*, float, float, float);
     virtual void move_to(RGE_Static_Object*, float, float, float);
     virtual void work(RGE_Static_Object*, float, float, float);
-    virtual void work2(RGE_Static_Object*, float, float, float,
-                       unsigned char);
+    void work2(RGE_Static_Object*, float, float, float, unsigned char);
     virtual unsigned char update();
     virtual void set_attack(RGE_Static_Object*);
     virtual void play_command_sound();
     virtual void play_move_sound();
     virtual RGE_Master_Static_Object* get_command_master(
         RGE_Static_Object*, float, float, float);
-    virtual void set_task(short);
+    void set_task(short);
     virtual void setTaskByTaskID(int);
     virtual void set_action(RGE_Action*);
     virtual void set_only_action(RGE_Action*);
