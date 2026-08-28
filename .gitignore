@@ -2,6 +2,8 @@ build/
 orig/
 __pycache__/
 .pytest_cache/
+.pi/
+/scratch/
 *.pyc
 *.pyo
 *.stackdump
