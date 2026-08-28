@@ -55,7 +55,7 @@ and `0049D530`. The canonical audit below supersedes this older summary.
 
 ## Canonical-provider audit
 
-The 2026-08-28 canonical audit compiled all 96 module bodies. It matched 59.
+The first 2026-08-28 canonical audit compiled all 96 module bodies. It matched 59.
 It found 29 mismatches and eight comparison errors.
 
 The audit source is `build/candidate_tus/scr_game_canonical_audit.json`.
@@ -71,6 +71,13 @@ The following former matching rows are now scratch:
 
 The provider changes removed copied foreign layouts and raw source forms.
 They did not establish new exact claims.
+
+The local symbol map resolved all eight name ambiguities. The final provider
+audit compiled all 96 bodies, matched 65, and had no comparison errors.
+
+`004982E0`, `0049AB60`, `0049B560`, `0049BD20`, `0049BD70`, `0049C540`,
+and `0049CEA0` matched as observations. `0049BEA0` mismatched by one byte.
+All eight rows remain nonexact.
 
 ## Source cleanup audit
 
