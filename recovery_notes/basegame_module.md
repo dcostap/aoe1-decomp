@@ -88,6 +88,10 @@ The old `reset_comm_tail` context name had no PDB support.
 The PDB maps them to `action_mouse_move` and `handle_idle`.
 The old `v_mouse_move` and `handle_mouse_click` context names had no PDB support.
 
+`004219F0` calls BaseGame virtual slot `+0xEC`.
+The PDB maps that slot to `handle_query_new_palette`.
+The old `base_handle_palette_changed` context name had no PDB support.
+
 ## Complete composition gate
 
 The current PDB plan has 202 normal owners.
@@ -114,7 +118,7 @@ Do not add copied contexts or raw access to bypass this gate.
 
 `0041C270` now uses `TDrawSystem::ScreenWidth`.
 It uses `RGE_Prog_Info::mouse_scroll_interval`.
-The 163 registered candidate owners remain exact.
+The 164 registered candidate owners remain exact.
 
 `0041CDA0` now uses canonical World and Scenario providers.
 It reads `world->scenario` at `+0x5C`.

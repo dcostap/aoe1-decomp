@@ -27,7 +27,7 @@ unsigned char RGE_Base_Game::GetWorldChecksums(long& checksum1, long& checksum2,
     if (w != 0) {
         if (w->player_num > 0) {
             do {
-                w->players[i]->get_checksums(&locals.c1, &locals.c2, &locals.c3);
+                w->players[i]->get_checksums(locals.c1, locals.c2, locals.c3);
                 checksum1 += locals.c1;
                 checksum2 += locals.c2;
                 checksum3 += locals.c3;

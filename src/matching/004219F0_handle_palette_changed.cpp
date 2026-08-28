@@ -20,7 +20,7 @@ int RGE_Base_Game::handle_palette_changed(void* p1, unsigned int p2, unsigned in
     if ((void*)p3 != p1) {
         TDrawSystem* ds = this->draw_system;
         if (ds->DrawType == 1 || ds->ScreenMode == 1 || ds == 0) {
-            this->base_handle_palette_changed(p1, p2, p3, p4);
+            this->handle_query_new_palette(p1, p2, p3, p4);
         }
         else if (this->prog_mode != 1) {
             ds->ModifyPalette(0, 0x100, ds->palette);

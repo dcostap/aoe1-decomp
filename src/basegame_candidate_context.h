@@ -526,7 +526,7 @@ public:
     virtual void set_game_status(unsigned char);
     void set_chat_flag(long player, int flag);
     long get_checksum();
-    void get_checksums(long* c1, long* c2, long* c3);
+    void get_checksums(long& c1, long& c2, long& c3);
     virtual void do_resign(int);
     virtual void changeToHumanPlayer();
     virtual void changeToComputerPlayer();
@@ -1220,7 +1220,6 @@ public:
     int activate_dispatch();
     int deactivate_dispatch();
     int endMethod();
-    int base_handle_palette_changed(void* p1, unsigned int p2, unsigned int p3, long p4);
     int scenarioGame() const;
     float version() const;
     int randomGame() const;
