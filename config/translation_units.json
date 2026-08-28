@@ -2794,10 +2794,8 @@
       "owners": {
         "004B3C90": "src/Scr_sels.cpp",
         "004B4120": "src/Scr_sels.cpp",
-        "004B4190": "src/Scr_sels.cpp",
         "004B4280": "src/Scr_sels.cpp",
         "004B42E0": "src/Scr_sels.cpp",
-        "004B44F0": "src/Scr_sels.cpp",
         "004B4720": "src/Scr_sels.cpp",
         "004B4770": "src/Scr_sels.cpp",
         "004B47D0": "src/Scr_sels.cpp",
@@ -4903,19 +4901,15 @@
       "flags": "config/flags/00491E20_action.rsp",
       "owners": {
         "00491650": "src/scr_cj.cpp",
-        "00491990": "src/scr_cj.cpp",
         "00491A80": "src/scr_cj.cpp",
         "00491B20": "src/scr_cj.cpp",
-        "00491C70": "src/scr_cj.cpp",
-        "00492330": "src/scr_cj.cpp"
+        "00491C70": "src/scr_cj.cpp"
       },
       "symbols": {
         "00491650": "??0TribeJoinScreen@@QAE@XZ",
-        "00491990": "??1TribeJoinScreen@@UAE@XZ",
         "00491A80": "?handle_idle@TribeJoinScreen@@UAEJXZ",
         "00491B20": "?handle_user_command@TribeJoinScreen@@UAEJIJ@Z",
-        "00491C70": "?fillList@TribeJoinScreen@@IAEXXZ",
-        "00492330": "??1TribeMPCreateDialog@@UAE@XZ"
+        "00491C70": "?fillList@TribeJoinScreen@@IAEXXZ"
       }
     },
     {
@@ -6675,14 +6669,12 @@
       "module": "scr_mp",
       "flags": "config/flags/0049F370_TribeMPStartupScreen.rsp",
       "owners": {
-        "0049F890": "src/scr_mp.cpp",
         "0049F9A0": "src/scr_mp.cpp",
         "0049F9D0": "src/scr_mp.cpp",
         "0049FED0": "src/scr_mp.cpp",
         "004A00A0": "src/scr_mp.cpp"
       },
       "symbols": {
-        "0049F890": "??1TribeMPStartupScreen@@UAE@XZ",
         "0049F9A0": "?handle_idle@TribeMPStartupScreen@@UAEJXZ",
         "0049F9D0": "?action@TribeMPStartupScreen@@UAEJPAVTPanel@@JKK@Z",
         "0049FED0": "?fillList@TribeMPStartupScreen@@IAEXXZ",
@@ -8029,15 +8021,12 @@
       "flags": "config/flags/scr_mps.rsp",
       "owners": {
         "004A0D80": "src/scr_mps.cpp",
-        "004A1300": "src/scr_mps.cpp",
         "004A1640": "src/scr_mps.cpp",
         "004A16D0": "src/scr_mps.cpp",
-        "004A2910": "src/scr_mps.cpp",
         "004A2BA0": "src/scr_mps.cpp",
         "004A37C0": "src/scr_mps.cpp",
         "004A37D0": "src/scr_mps.cpp",
         "004A4100": "src/scr_mps.cpp",
-        "004A4190": "src/scr_mps.cpp",
         "004A4FC0": "src/scr_mps.cpp",
         "004A5020": "src/scr_mps.cpp",
         "004A5060": "src/scr_mps.cpp",
@@ -8046,13 +8035,11 @@
         "004A5440": "src/scr_mps.cpp",
         "004A54C0": "src/scr_mps.cpp",
         "004A5610": "src/scr_mps.cpp",
-        "004A6050": "src/scr_mps.cpp",
         "004A60E0": "src/scr_mps.cpp",
         "004A6100": "src/scr_mps.cpp",
         "004A6120": "src/scr_mps.cpp",
         "004A6170": "src/scr_mps.cpp",
         "004A61A0": "src/scr_mps.cpp",
-        "004A6290": "src/scr_mps.cpp",
         "004A62F0": "src/scr_mps.cpp",
         "004A6310": "src/scr_mps.cpp",
         "004A6330": "src/scr_mps.cpp",
@@ -8060,15 +8047,12 @@
       },
       "symbols": {
         "004A0D80": "?init_vars@TribeMPSetupScreen@@IAEXXZ",
-        "004A1300": "??1TribeMPSetupScreen@@UAE@XZ",
         "004A1640": "?handle_idle@TribeMPSetupScreen@@UAEJXZ",
         "004A16D0": "?key_down_action@TribeMPSetupScreen@@UAEJJFHHH@Z",
-        "004A2910": "?showNetInfo@TribeMPSetupScreen@@IAEXXZ",
         "004A2BA0": "?cancelScreen@TribeMPSetupScreen@@IAEXH@Z",
         "004A37C0": "?handle_timer_command@TribeMPSetupScreen@@UAEJIJ@Z",
         "004A37D0": "?fillPlayers@TribeMPSetupScreen@@QAEXXZ",
         "004A4100": "?fillChat@TribeMPSetupScreen@@IAEXH@Z",
-        "004A4190": "?updateSummary@TribeMPSetupScreen@@QAEXXZ",
         "004A4FC0": "?kickPlayer@TribeMPSetupScreen@@IAEXH@Z",
         "004A5020": "?handleKickedPlayer@TribeMPSetupScreen@@IAEXH@Z",
         "004A5060": "?activateVictoryPanels@TribeMPSetupScreen@@IAEXXZ",
@@ -8077,13 +8061,11 @@
         "004A5440": "?fillNumberPlayers@TribeMPSetupScreen@@IAEXXZ",
         "004A54C0": "?fillPlayerColors@TribeMPSetupScreen@@IAEXXZ",
         "004A5610": "??0TRIBE_Screen_Wait@@QAE@XZ",
-        "004A6050": "??1TRIBE_Screen_Wait@@UAE@XZ",
         "004A60E0": "?set_text@TRIBE_Screen_Wait@@QAEXPAD@Z",
         "004A6100": "?set_text@TRIBE_Screen_Wait@@QAEXJ@Z",
         "004A6120": "?action@TRIBE_Screen_Wait@@UAEJPAVTPanel@@JKK@Z",
         "004A6170": "?handle_idle@TRIBE_Screen_Wait@@UAEJXZ",
         "004A61A0": "??0TRIBE_Screen_Disconnect@@QAE@H@Z",
-        "004A6290": "??1TRIBE_Screen_Disconnect@@UAE@XZ",
         "004A62F0": "?set_text@TRIBE_Screen_Disconnect@@QAEXPAD@Z",
         "004A6310": "?set_text@TRIBE_Screen_Disconnect@@QAEXJ@Z",
         "004A6330": "?action@TRIBE_Screen_Disconnect@@UAEJPAVTPanel@@JKK@Z",

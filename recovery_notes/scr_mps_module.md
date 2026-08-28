@@ -16,15 +16,31 @@
 - The obsolete unregistered `src/screen_disconnect_tu.cpp` wrapper was also removed; it included two owners now owned by this module.
 - The old module context header `include/scr_mps_context.h` was replaced by `include/scr_mps.h`.
 - `config/source_modules/scr_mps.json` records all 34 normal owners and this note.
-- The registered exact owners remain the 29 owners that were exact before migration. The two scratch owners and three accepted-drift owners are not exact-owner claims.
+- The registered exact owners remain the natural owners that still match after
+  provider cleanup. The scratch and accepted-drift owners are not exact-owner
+  claims.
 
 ## Evidence and validation
 
-The plan packet reports 34 normal owners, 24,639 normal bytes, and 29 registered exact owners. The address sequence and PDB line ranges establish source order. The constructor and method declarations in `scr_mps.h` preserve the class and field layouts used by the prior grouped checks.
+The plan packet reports 34 normal owners and 24,639 normal bytes. The natural
+provider candidate registers 24 exact owners. The address sequence and PDB line
+ranges establish source order.
 
-Migration is structural. The old grouped wrapper was the pre-migration validation baseline. The merged object audit compiled all 34 owners in one TU. All 29 registered owners still report `MATCH`, `0.0000%`, zero relocation mismatches, and zero boundary escapes.
+Migration is structural. The old grouped wrapper was the pre-migration validation baseline. The natural provider candidate compiles all 34 owners in one TU. The 24 registered owners report `MATCH`, `0.0000%`, zero relocation mismatches, and zero boundary escapes.
 
-The five unregistered owners remain observed, not exact claims. Their merged-TU results are: `004A00B0` 1,478 differing bytes; `004A16E0` 2,215 differing bytes with two relocation-target mismatches and two boundary escapes; `004A2060` 69 differing bytes; `004A27A0` 1 differing byte; and `004A2D50` 344 differing bytes with two relocation-target mismatches. These are recorded regressions or unresolved results, not hidden by source changes. Do not change recovered behavior to hide them.
+The ten unregistered owners remain observed, not exact claims. Natural cleanup
+changed the five former exact owners as follows: `004A1300` 853 bytes,
+`004A2910` 38 bytes, `004A4190` 2 bytes, `004A6050` 106 bytes, and `004A6290`
+43 bytes. The existing scratch and accepted-drift results remain recorded.
+Do not change recovered behavior to hide these results.
+
+## Natural source cleanup
+
+The compiler-facing source keeps typed fields, literals, canonical calls, and
+ordinary `new` and `delete` expressions. It has no pointer-offset overlay,
+manual deallocation, absolute string address, source-shape tuning log, or stack
+home reconstruction note. The removed tuning history remains in the earlier
+recovery records and is not part of the source contract.
 
 ## Format literals
 

@@ -23,19 +23,20 @@ communications providers. Its natural candidate has 154 differing bytes.
 This remains `scratch`. No reviewed semantic ledger proves localized
 equivalence, so the byte difference is not an accepted-drift claim.
 
-The action body at lines 258-365 now consumes the complete `TribeJoinScreen`
-owner from `include/scr_cj.h`. It retains the original join, cancel, help,
-dialog, Zone, and base-action paths.
+The source uses direct child deletion and typed registry buffers. The action
+body at lines 258-365 consumes the complete `TribeJoinScreen` owner from
+`include/scr_cj.h`.
 
 ## Validation
 
-The grouped candidate is `build/candidate_tus/scr_mp_natural/report.txt`.
+The grouped candidate is `build/candidate_tus/final_natural_scr_mp4/report.txt`.
 It reports `MATCH`, `0.0000%`, correct owner symbols, zero relocation-target
-mismatches, and zero boundary escapes for all five non-constructor bodies.
+mismatches, and zero boundary escapes for four exact bodies.
 
 The compiler-generated `0049F870` destructor also reports `MATCH` and
-`0.0000%`. The scratch constructor reports the 154-byte difference above. It
-is not part of the exact registration.
+`0.0000%`. The scratch constructor reports 154 differing bytes. The scratch
+destructor reports 223 differing bytes. Neither is part of the exact
+registration.
 
-The translation-unit registry lists all five exact bodies. The source-module
+The translation-unit registry lists four exact bodies. The source-module
 manifest records all six normal owners and their current statuses.

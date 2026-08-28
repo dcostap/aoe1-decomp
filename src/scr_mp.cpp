@@ -19,17 +19,7 @@
 extern TRegistry* Regs;
 extern TCommunications_Handler* comm;
 
-template<class T>
-static void delete_child(TPanel* owner, T** panel)
-{
-    owner->delete_panel(reinterpret_cast<TPanel**>(panel));
-}
-
 // VA: 0049F370 TribeMPStartupScreen constructor (1278B)
-// PDB: scr_mp.cpp:68-220
-// Scratch reconstruction. The period screen factory sequence, named panel
-// ownership, registry buffers, and browser/Zone setup are preserved. The
-// candidate differs by 154 bytes and has no reviewed equivalence claim.
 // FLAGS: config/flags/0049F370_TribeMPStartupScreen.rsp (/GX for EH cleanup).
 
 TribeMPStartupScreen::TribeMPStartupScreen()
@@ -117,7 +107,7 @@ TribeMPStartupScreen::TribeMPStartupScreen()
                                 dwSize = 0xFF;
                                 int result = RegQueryValueExA(
                                     ghUserKey, 0, 0, &dwType,
-                                    reinterpret_cast<unsigned char*>(Data),
+                                    static_cast<unsigned char*>(static_cast<void*>(Data)),
                                     &dwSize);
                                 if (ghUserKey != 0) {
                                     RegCloseKey(ghUserKey);
@@ -162,20 +152,19 @@ TribeMPStartupScreen::TribeMPStartupScreen()
 }
 
 // VA: 0049F890 ~TribeMPStartupScreen dtor (257B)
-// PDB: scr_mp.cpp:225-241
 // FLAGS: config/flags/0049F890_TribeMPStartupScreen.rsp.
 
 TribeMPStartupScreen::~TribeMPStartupScreen() {
-    delete_child(this, &this->title);
-    delete_child(this, &this->inputTitle);
-    delete_child(this, &this->input);
-    delete_child(this, &this->connectionTitle);
-    delete_child(this, &this->list);
-    delete_child(this, &this->scrollbar);
-    delete_child(this, &this->okButton);
-    delete_child(this, &this->cancelButton);
-    delete_child(this, &this->help_button);
-    delete_child(this, &this->close_button);
+    delete this->title;
+    delete this->inputTitle;
+    delete this->input;
+    delete this->connectionTitle;
+    delete this->list;
+    delete this->scrollbar;
+    delete this->okButton;
+    delete this->cancelButton;
+    delete this->help_button;
+    delete this->close_button;
 
     panel_system.destroyPanel("Create Dialog");
     panel_system.destroyPanel("OKDialog");
@@ -183,7 +172,6 @@ TribeMPStartupScreen::~TribeMPStartupScreen() {
 }
 
 // VA: 0049F9A0 TribeMPStartupScreen::handle_idle (33B)
-// PDB: scr_mp.cpp:247-252
 
 long TribeMPStartupScreen::handle_idle() {
     if (!rge_base_game->input_enabled)
@@ -192,7 +180,6 @@ long TribeMPStartupScreen::handle_idle() {
 }
 
 // VA: 0049F9D0 TribeMPStartupScreen::action (1265B)
-// PDB: scr_mp.cpp:258-365
 
 long TribeMPStartupScreen::action(TPanel* panel, long event,
                                   unsigned long param3, unsigned long param4)
@@ -218,12 +205,13 @@ long TribeMPStartupScreen::action(TPanel* panel, long event,
                     rge_base_game->disable_input();
                     Regs->RegSetAscii(
                         1, "Default Age Of Empires Player Name",
-                        reinterpret_cast<unsigned char*>(
-                            this->input->currentLine()),
+                        static_cast<unsigned char*>(static_cast<void*>(
+                            this->input->currentLine())),
                         strlen(this->input->currentLine()) + 1);
                     Regs->RegSetAscii(
                         1, "Default Age Of Empires Multiplayer Service",
-                        reinterpret_cast<unsigned char*>(this->list->get_text()),
+                        static_cast<unsigned char*>(static_cast<void*>(
+                            this->list->get_text())),
                         strlen(this->list->get_text()) + 1);
                     comm->SetMyPlayerName(this->input->currentLine());
 
@@ -245,7 +233,7 @@ long TribeMPStartupScreen::action(TPanel* panel, long event,
             if ((panel == this->cancelButton && event == 1) ||
                 (panel == this->input && event == 1)) {
                 rge_base_game->disable_input();
-                comm->UnlinkToLevel(static_cast<COMMSTATUS>(2));
+                comm->UnlinkToLevel(SINGLE_PLAYER);
                 new TRIBE_Screen_Main_Menu;
                 panel_system.setCurrentPanel("Main Menu", 0);
                 panel_system.destroyPanel("MP Startup Screen");
@@ -300,7 +288,6 @@ fallback:
 }
 
 // VA: 0049FED0 TribeMPStartupScreen::fillList (461B)
-// PDB: scr_mp.cpp:370-410
 
 void TribeMPStartupScreen::fillList() {
     int lastServiceNumber;
@@ -344,7 +331,6 @@ void TribeMPStartupScreen::fillList() {
 }
 
 // VA: 004A00A0 TribeMPStartupScreen::handle_user_command (8B)
-// PDB: scr_mp.cpp:415-424
 
 long TribeMPStartupScreen::handle_user_command(unsigned int p0, long p1) {
     return 1;

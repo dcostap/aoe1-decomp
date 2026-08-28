@@ -7,10 +7,10 @@
   "functions": {
     "004B3C90": { "status": "matching" },
     "004B4120": { "status": "matching" },
-    "004B4190": { "status": "matching" },
+    "004B4190": { "status": "scratch" },
     "004B4280": { "status": "matching" },
     "004B42E0": { "status": "matching" },
-    "004B44F0": { "status": "matching" },
+    "004B44F0": { "status": "scratch" },
     "004B4720": {
       "status": "matching",
       "note_path": "recovery_notes/004B4720_fillMissionText.md"

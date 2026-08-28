@@ -1,8 +1,3 @@
-// Authentic source order for C:\msdev\work\age1_x1\scr_cj.cpp.
-// PDB lines 62-513 contain nine normal owners. The deleting destructors at
-// 00491970 and 00492310 are compiler-generated and have no source owner.
-// 00491C42 is padding inside handle_user_command, not a source function.
-// BINARY NOTE: /GX is required for the constructor and action EH frames.
 #include "../include/scr_cj.h"
 #include "../include/com_hand.h"
 #include "../include/com_sess.h"
@@ -10,14 +5,6 @@
 
 extern const GUID DPSPGUID_TCPIP;
 
-// PROVIDER HOLD: scr_mps publishes the setup-screen owner in a separate
-// canonicalization wave. Do not copy that class into this source.
-
-template<class T>
-static void delete_child(TPanel* owner, T** panel)
-{
-    owner->delete_panel(reinterpret_cast<TPanel**>(panel));
-}
 
 TribeJoinScreen::TribeJoinScreen()
     : TScreenPanel("Join Screen")
@@ -104,15 +91,15 @@ TribeJoinScreen::~TribeJoinScreen() {
     if (p != 0) {
         delete p;
     }
-    delete_child(this, &this->title);
-    delete_child(this, &this->listTitle);
-    delete_child(this, &this->list);
-    delete_child(this, &this->scrollbar);
-    delete_child(this, &this->refreshButton);
-    delete_child(this, &this->joinButton);
-    delete_child(this, &this->createButton);
-    delete_child(this, &this->cancelButton);
-    delete_child(this, &this->close_button);
+    delete this->title;
+    delete this->listTitle;
+    delete this->list;
+    delete this->scrollbar;
+    delete this->refreshButton;
+    delete this->joinButton;
+    delete this->createButton;
+    delete this->cancelButton;
+    delete this->close_button;
 }
 
 long TribeJoinScreen::handle_idle() {
@@ -126,7 +113,7 @@ long TribeJoinScreen::handle_idle() {
     }
     unsigned long now = debug_timeGetTime("scr_cj.cpp", 0xAA);
     if (10000 < now - this->joinTime) {
-        comm->UnlinkToLevel(static_cast<COMMSTATUS>(5));
+        comm->UnlinkToLevel(SERVICE_AVAILABLE);
         this->waitingToStart = 0;
         rge_base_game->enable_input();
         TEasy_Panel::popupOKDialog(0x25A3, 0, 0x1C2, 100);
@@ -152,7 +139,7 @@ long TribeJoinScreen::handle_user_command(unsigned int cmd, long param) {
         case 0x17AA:
         case 0x17B2:
             if (this->waitingToStart != 0) {
-                comm->UnlinkToLevel(static_cast<COMMSTATUS>(5));
+                comm->UnlinkToLevel(SERVICE_AVAILABLE);
                 this->waitingToStart = 0;
                 rge_base_game->enable_input();
                 TEasy_Panel::popupOKDialog(0x25A3, 0, 0x1C2, 100);
@@ -249,7 +236,7 @@ long TribeJoinScreen::action(TPanel* panel, long command,
         } else if (panel == this->cancelButton) {
             if (command == 1) {
                 rge_base_game->disable_input();
-                comm->UnlinkToLevel(static_cast<COMMSTATUS>(2));
+                comm->UnlinkToLevel(SINGLE_PLAYER);
                 new TribeMPStartupScreen;
                 panel_system.setCurrentPanel("MP Startup Screen", 0);
                 panel_system.destroyPanel("Join Screen");
@@ -341,11 +328,11 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
 }
 
 TribeMPCreateDialog::~TribeMPCreateDialog() {
-    delete_child(this, &this->title);
-    delete_child(this, &this->input_title);
-    delete_child(this, &this->inputGamename);
-    delete_child(this, &this->okButton);
-    delete_child(this, &this->cancelButton);
+    delete this->title;
+    delete this->input_title;
+    delete this->inputGamename;
+    delete this->okButton;
+    delete this->cancelButton;
 }
 
 long TribeMPCreateDialog::action(TPanel* panel, long command,
@@ -364,8 +351,8 @@ long TribeMPCreateDialog::action(TPanel* panel, long command,
 
             rge_base_game->disable_input();
             Regs->RegSetAscii(1, "Default Age Of Empires MP Gamename",
-                              reinterpret_cast<unsigned char*>(
-                                  this->inputGamename->currentLine()),
+                              static_cast<unsigned char*>(static_cast<void*>(
+                                  this->inputGamename->currentLine())),
                               strlen(this->inputGamename->currentLine()) + 1);
             comm->SetGameTitle(this->inputGamename->currentLine());
 
