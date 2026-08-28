@@ -18,7 +18,7 @@
       "status": "matching"
     },
     "00533AF0": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/view_module.md"
     },
     "00533E10": {
@@ -88,7 +88,7 @@
       "status": "matching"
     },
     "00535A80": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/view_module.md"
     },
     "00535C70": {
@@ -169,7 +169,7 @@
       "note_path": "recovery_notes/view_module.md"
     },
     "00539510": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/view_module.md"
     },
     "005396F0": {

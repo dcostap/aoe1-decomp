@@ -36,7 +36,7 @@ complete definitions.
 registered owners report `MATCH`, `0.0000%`, correct ownership, boundaries,
 and relocations.
 
-The other 31 rows keep their existing scratch,
+The other 32 rows keep their existing scratch,
 accepted-drift, or verified-logic status. This merge does not claim new
 behavior for them.
 
@@ -75,3 +75,29 @@ has only that form. `draw_tile` passes its four result variables as lvalues.
 
 The final direct candidate retains all 47 exact `MATCH`, `0.0000%` rows. It
 has no comparison errors, relocation errors, or boundary errors.
+
+## Independent accepted-drift audit
+
+The audit used the original executable listing and fresh current-main checks.
+It did not reopen any exact owner. Natural bodies remain in `src/view.cpp`.
+
+The audit demoted three broad or unsupported rows to `scratch`:
+
+| VA | Evidence | Decision |
+| --- | --- | --- |
+| `00533AF0` | 799 original bytes, 781 rebuilt bytes, 645 strict differences, and a broad table and edge-map loop drift. The 14 calls align, but the whole pointer-rebase and edge-table body differs. | `scratch` |
+| `00539510` | 413 original bytes, 408 rebuilt bytes, 274 strict differences, and 142 versus 164 instructions. The decoder cases match in effect, but the drift spans the complete packet loop and switch lowering. | `scratch` |
+| `00535A80` | The rebuilt body has 495 bytes and 39 strict differences. The original calls virtual slots `+0xE0` and `+0xE4` at offsets `+0x157` and `+0x18F`. The rebuilt body calls `+0xF0` and `+0xF4`. This changes virtual targets for derived views. | `scratch` |
+
+The following four rows retain `accepted_drift` because the evidence is local
+and proves the same calls, bounds, writes, returns, and state effects:
+
+| VA | Narrow evidence |
+| --- | --- |
+| `00533E10` | The one call, six conditions, loop bounds, object lookup, expiry test, and selected-byte updates match. The 7-byte overshoot contains only load/modify/store lowering for the selected byte. |
+| `00533EC0` | The scan, reset-time subtraction, one call, field writes, and size increment match. `found` is true exactly when `slot` is non-null, so the extra final null test is redundant. |
+| `00539030` | The function reads the same tile row, screen coordinates, tile type, and tile sizes. It writes the same three outputs and clears `tile_half_hgt`, `tile_half_wid`, and `elev_hgt` in the same order. |
+| `0053B300` | The 103-byte bodies have the same 47 instructions and no calls. The only 2-byte hunk moves `mov edx,eax` across the bound branch. |
+
+These four claims remain non-exact. New evidence must reopen them if it shows
+a changed call, bound, write, return, target, or fault order.
