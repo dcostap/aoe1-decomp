@@ -350,8 +350,6 @@ extern char s_ALLOWCTRLU[];
 extern char s_force_ctrl_u[];
 
 extern unsigned char byte_62C584;
-extern const void* score_compare_first;
-extern const void* score_compare_second;
 extern char close_confirmation_text[];
 
 #endif
