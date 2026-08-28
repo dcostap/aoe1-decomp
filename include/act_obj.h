@@ -37,7 +37,6 @@ public:
     virtual void set_task(short);
     virtual void setTaskByTaskID(int);
     virtual void set_action(RGE_Action*);
-    virtual void add_action(RGE_Action*);
     virtual void set_only_action(RGE_Action*);
     virtual void set_end_action(RGE_Action*);
     virtual void stop();

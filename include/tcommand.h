@@ -19,8 +19,8 @@ typedef char tribe_command_header_size_check[
 struct TRIBE_Command_Make {
     unsigned char command;
     int unit_id;
-    unsigned char player_index;
-    short train_id;
+    unsigned char unit_player_id;
+    short obj_id;
     int unique_id;
 };
 
@@ -30,7 +30,7 @@ typedef char tribe_command_make_size_check[
 struct TRIBE_Command_Research {
     unsigned char command;
     int unit_id;
-    unsigned char player_index;
+    unsigned char unit_player_id;
     short tech_id;
     int unique_id;
 };
@@ -40,45 +40,42 @@ typedef char tribe_command_research_size_check[
 
 struct TRIBE_Command_Build {
     unsigned char command;
-    unsigned char count;
-    unsigned char player_id;
-    float x;
-    float y;
+    unsigned char unit_num;
+    unsigned char unit_player_id;
+    float location_x;
+    float location_y;
     short obj_id;
     int unique_id;
-    RGE_Obj_Info unit_ids[1];
 };
 
 typedef char tribe_command_build_size_check[
-    (sizeof(TRIBE_Command_Build) == 0x18) ? 1 : -1];
+    (sizeof(TRIBE_Command_Build) == 0x14) ? 1 : -1];
 
 struct TRIBE_Command_Build_Wall {
     unsigned char command;
-    unsigned char count;
-    unsigned char player_id;
+    unsigned char unit_num;
+    unsigned char unit_player_id;
     unsigned char x1;
     unsigned char y1;
     unsigned char x2;
     unsigned char y2;
     short obj_id;
     int unique_id;
-    RGE_Obj_Info unit_ids[1];
 };
 
 typedef char tribe_command_build_wall_size_check[
-    (sizeof(TRIBE_Command_Build_Wall) == 0x14) ? 1 : -1];
+    (sizeof(TRIBE_Command_Build_Wall) == 0x10) ? 1 : -1];
 
 struct TRIBE_Command_Explore {
     unsigned char command;
-    unsigned char unit_num;
+    unsigned char numUnits;
     unsigned char unit_player_id;
-    float target_x;
-    float target_y;
-    RGE_Obj_Info unit_ids[1];
+    float targetXPosition;
+    float targetYPosition;
 };
 
 typedef char tribe_command_explore_size_check[
-    (sizeof(TRIBE_Command_Explore) == 0x10) ? 1 : -1];
+    (sizeof(TRIBE_Command_Explore) == 0x0C) ? 1 : -1];
 
 struct TRIBE_Command_Game {
     unsigned char command;
@@ -105,11 +102,10 @@ struct TRIBE_Command_Attack_Ground {
     unsigned char unit_num;
     float location_x;
     float location_y;
-    RGE_Obj_Info unit_ids[1];
 };
 
 typedef char tribe_command_attack_ground_size_check[
-    (sizeof(TRIBE_Command_Attack_Ground) == 0x10) ? 1 : -1];
+    (sizeof(TRIBE_Command_Attack_Ground) == 0x0C) ? 1 : -1];
 
 struct TRIBE_Command_Give_Attribute {
     unsigned char command;
@@ -127,36 +123,33 @@ struct TRIBE_Command_Trade_Attribute {
     unsigned char command;
     unsigned char unit_num;
     long attribute;
-    RGE_Obj_Info unit_ids[1];
 };
 
 typedef char tribe_command_trade_attribute_size_check[
-    (sizeof(TRIBE_Command_Trade_Attribute) == 0x0C) ? 1 : -1];
+    (sizeof(TRIBE_Command_Trade_Attribute) == 0x08) ? 1 : -1];
 
 struct TRIBE_Command_Repair {
     unsigned char command;
     unsigned char unit_num;
     RGE_Obj_Info target;
-    RGE_Obj_Info unit_ids[1];
 };
 
 typedef char tribe_command_repair_size_check[
-    (sizeof(TRIBE_Command_Repair) == 0x0C) ? 1 : -1];
+    (sizeof(TRIBE_Command_Repair) == 0x08) ? 1 : -1];
 
 struct TRIBE_Command_Unload {
     unsigned char command;
     unsigned char unit_num;
     float location_x;
     float location_y;
-    RGE_Obj_Info unit_ids[1];
 };
 
 typedef char tribe_command_unload_size_check[
-    (sizeof(TRIBE_Command_Unload) == 0x10) ? 1 : -1];
+    (sizeof(TRIBE_Command_Unload) == 0x0C) ? 1 : -1];
 
 struct TRIBE_Command_Queue {
     unsigned char command;
-    int building_id;
+    long bldg_id;
     short train_id;
     short train_count;
 };

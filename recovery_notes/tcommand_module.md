@@ -7,12 +7,14 @@ and Status Message providers.
 
 The source has no context header, wrapper, fragment include, copied foreign
 class, manual vptr, or raw packet buffer. Its wire records use natural alignment.
-Each record has a size check. Variable packets use named `unit_ids` tails.
+Each record has a size check. Variable packets locate serialized IDs after their
+fixed typed header.
 
 ## Current direct result
 
-`build/tcommand_rebased_preflight/result_natural/report.json` reports 22 exact
-owners. Every registered owner reports `MATCH` and `0.0000%`.
+`build/tcommand_complete_audit/result_natural_records_final/report.json`
+checks all 42 normal owners. It reports 22 exact owners. Every registered owner
+reports `MATCH` and `0.0000%`.
 
 The exact owners are:
 
@@ -30,13 +32,14 @@ Natural packet records change these owners. They stay `scratch`:
 - `00509980`, `00509AF0`, `00509C60`, `00509E10`, `0050A1D0`, and `0050A490`;
   and
 - `0050A9B0`, `0050AB30`, `0050AC70`, `0050B020`, `0050B190`, `0050B230`,
-  `0050B290`, and `0050B330`.
+  `0050B290`, and `0050B330`; and
+- `0050AA90`.
 
-The first source-shape report gives 150, 94, 19, 59, 96, 61, 68, and 59 byte
-differences for the second group, in that order.
+The five reviewed accepted-drift owners remain `accepted_drift`:
+`0050A4C0`, `0050A6A0`, `0050A6E0`, `0050AD70`, and `0050AE80`.
 
-The six reviewed accepted-drift owners remain `accepted_drift`:
-`0050A4C0`, `0050A6A0`, `0050A6E0`, `0050AA90`, `0050AD70`, and `0050AE80`.
+`0050AA90` is scratch. The grouped report has a boundary escape. No reviewed
+equivalence proof supports accepted drift.
 
 `0050A1D0` calls `RGE_Effects::do_effect(short, RGE_Player*)`. Original code
 calls the Effects vslot at `+0x08`. Do not add `show_effect`.
@@ -49,6 +52,9 @@ privately.
 
 `00509C60` and `00509E10` use `TRIBE_Master_Building_Object`. The source gets
 that type from `tm_b_obj.h`.
+
+`00509980` and `00509AF0` install actions through `set_only_action`. That
+virtual slot is `+0x208`. `RGE_Action_List` owns `add_action`.
 
 `0050A1D0` constructs `TRIBE_Screen_Status_Message` at `004B7140`. The source
 uses `scr_stms.h`.
