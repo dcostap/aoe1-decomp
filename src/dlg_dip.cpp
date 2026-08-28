@@ -8,10 +8,7 @@
 #include "../include/chat.h"
 #include "../include/debuglog.h"
 #include "../include/pnl_lst.h"
-#include <new.h>
 #include <stdio.h>
-
-extern "C" int __cdecl _ASMSet_Color_Xform(int);
 
 TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     : TDialogPanel("Diplomacy Dialog")
@@ -79,10 +76,9 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
         return;
     }
 
+    rge_base_game->get_font(1);
     if (this->create_text(this, &this->title[0], 0x267B,
-                          0x48, 5, 0x1F4, 0x1E,
-                          reinterpret_cast<long>(rge_base_game->get_font(1)),
-                          1, 1, 0) == 0) {
+                          0x48, 5, 0x1F4, 0x1E, 1, 1, 1, 0) == 0) {
         return;
     }
     if (this->create_text(this, &this->needMarket, 0x2687,
@@ -112,7 +108,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
 
     sprintf(temp_str, this->get_string(0x2680),
             static_cast<long>(rge_base_game->get_player()->attributes[46] *
-                              DAT_0056f880));
+                              100.0f));
     if (this->create_text(this, &this->title[6], temp_str,
                           0x1B8, 0x32, 0xB4, 0x1E, 0x0B, 0, 1, 0) == 0) {
         return;
@@ -444,14 +440,8 @@ TribeDiplomacyDialog::~TribeDiplomacyDialog()
         delete this->needMarket;
     }
 
-    if (this->buttonPics != 0) {
-        this->buttonPics->~TShape();
-        operator delete(this->buttonPics);
-    }
-    if (this->backgroundPics != 0) {
-        this->backgroundPics->~TShape();
-        operator delete(this->backgroundPics);
-    }
+    delete this->buttonPics;
+    delete this->backgroundPics;
 }
 
 long TribeDiplomacyDialog::action(TPanel* panel, long event,
@@ -498,7 +488,7 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                                         static_cast<short>(relation));
                                 }
 
-                                if (this->goldTributeAmount[row] > DAT_0056f884) {
+                                if (this->goldTributeAmount[row] > 0.0f) {
                                     static_cast<TRIBE_Player*>(
                                         rge_base_game->get_player())
                                         ->command_give_attribute(
@@ -506,7 +496,7 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                                             this->goldTributeAmount[row],
                                             rge_base_game->get_player()->attributes[0x2e]);
                                 }
-                                if (this->woodTributeAmount[row] > DAT_0056f884) {
+                                if (this->woodTributeAmount[row] > 0.0f) {
                                     static_cast<TRIBE_Player*>(
                                         rge_base_game->get_player())
                                         ->command_give_attribute(
@@ -514,7 +504,7 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                                             this->woodTributeAmount[row],
                                             rge_base_game->get_player()->attributes[0x2e]);
                                 }
-                                if (this->foodTributeAmount[row] > DAT_0056f884) {
+                                if (this->foodTributeAmount[row] > 0.0f) {
                                     static_cast<TRIBE_Player*>(
                                         rge_base_game->get_player())
                                         ->command_give_attribute(
@@ -522,7 +512,7 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                                             this->foodTributeAmount[row],
                                             rge_base_game->get_player()->attributes[0x2e]);
                                 }
-                                if (this->stoneTributeAmount[row] > DAT_0056f884) {
+                                if (this->stoneTributeAmount[row] > 0.0f) {
                                     static_cast<TRIBE_Player*>(
                                         rge_base_game->get_player())
                                         ->command_give_attribute(
@@ -603,7 +593,7 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
             }
 
             float cost = 0.0f;
-            if (rge_base_game->get_player()->attributes[0x2e] > DAT_0056f888) {
+            if (rge_base_game->get_player()->attributes[0x2e] > 0.0) {
                 cost = rge_base_game->get_player()->attributes[0x2e];
             }
 
@@ -613,13 +603,13 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
 
                 if (panel == this->goldTributeButton[index]) {
                     if (this->check_gold() == 0) {
-                        cost = cost - DAT_0056f890;
+                        cost = cost - -1.0f;
                         if (rge_base_game->get_player()->attributes[3] -
-                                this->goldTotal >= cost * DAT_0056f880) {
+                                this->goldTotal >= cost * 100.0f) {
                             this->goldTributeAmount[index] =
-                                this->goldTributeAmount[index] - DAT_0056f894;
+                                this->goldTributeAmount[index] - -100.0f;
                             this->goldTotal =
-                                this->goldTotal - cost * DAT_0056f894;
+                                this->goldTotal - cost * -100.0f;
                         } else {
                             float amount =
                                 (rge_base_game->get_player()->attributes[3] -
@@ -650,13 +640,13 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
 
                 if (panel == this->woodTributeButton[index]) {
                     if (this->check_wood() == 0) {
-                        cost = cost - DAT_0056f890;
+                        cost = cost - -1.0f;
                         if (rge_base_game->get_player()->attributes[4] -
-                                this->woodTotal >= cost * DAT_0056f880) {
+                                this->woodTotal >= cost * 100.0f) {
                             this->woodTributeAmount[index] =
-                                this->woodTributeAmount[index] - DAT_0056f894;
+                                this->woodTributeAmount[index] - -100.0f;
                             this->woodTotal =
-                                this->woodTotal - cost * DAT_0056f894;
+                                this->woodTotal - cost * -100.0f;
                         } else {
                             float amount =
                                 (rge_base_game->get_player()->attributes[4] -
@@ -687,13 +677,13 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
 
                 if (panel == this->foodTributeButton[index]) {
                     if (this->check_food() == 0) {
-                        cost = cost - DAT_0056f890;
+                        cost = cost - -1.0f;
                         if (rge_base_game->get_player()->attributes[0] -
-                                this->foodTotal >= cost * DAT_0056f880) {
+                                this->foodTotal >= cost * 100.0f) {
                             this->foodTributeAmount[index] =
-                                this->foodTributeAmount[index] - DAT_0056f894;
+                                this->foodTributeAmount[index] - -100.0f;
                             this->foodTotal =
-                                this->foodTotal - cost * DAT_0056f894;
+                                this->foodTotal - cost * -100.0f;
                         } else {
                             float amount =
                                 (rge_base_game->get_player()->attributes[0] -
@@ -724,13 +714,13 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
 
                 if (panel == this->stoneTributeButton[index]) {
                     if (this->check_stone() == 0) {
-                        cost = cost - DAT_0056f890;
+                        cost = cost - -1.0f;
                         if (rge_base_game->get_player()->attributes[2] -
-                                this->stoneTotal >= cost * DAT_0056f880) {
+                                this->stoneTotal >= cost * 100.0f) {
                             this->stoneTributeAmount[index] =
-                                this->stoneTributeAmount[index] - DAT_0056f894;
+                                this->stoneTributeAmount[index] - -100.0f;
                             this->stoneTotal =
-                                this->stoneTotal - cost * DAT_0056f894;
+                                this->stoneTotal - cost * -100.0f;
                         } else {
                             float amount =
                                 (rge_base_game->get_player()->attributes[2] -

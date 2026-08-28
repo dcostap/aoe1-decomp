@@ -11,6 +11,9 @@ typedef struct _iobuf FILE;
 
 class TDrawArea;
 
+// ASM owner: bucket_056C.asm. The routine updates the process color transform.
+extern "C" void __cdecl _ASMSet_Color_Xform(int);
+
 class RGE_Color_Table {
 public:
     virtual ~RGE_Color_Table();

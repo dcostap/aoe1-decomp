@@ -3808,8 +3808,6 @@
       "module": "dlg_smsg",
       "flags": "config/flags/004407A0_TribeSendMessageDialog.rsp",
       "owners": {
-        "00440E20": "src/dlg_smsg.cpp",
-        "00440F20": "src/dlg_smsg.cpp",
         "00441410": "src/dlg_smsg.cpp",
         "00441460": "src/dlg_smsg.cpp",
         "00441530": "src/dlg_smsg.cpp",
@@ -3818,7 +3816,6 @@
         "00441840": "src/dlg_smsg.cpp"
       },
       "symbols": {
-        "00440F20": "?action@TribeSendMessageDialog@@MAEJPAVTPanel@@JKK@Z",
         "004416C0": "?action@TribeSendQuickMessageDialog@@UAEJPAVTPanel@@JKK@Z"
       }
     },
