@@ -6743,14 +6743,15 @@
     },
     {
       "name": "rpnl_tbx_cpp",
-      "source": "src/rpnl_tbx_tu.cpp",
+      "source": "src/rpnl_tbx.cpp",
+      "module": "rpnl_tbx",
       "flags": "config/flags/004898D0_RGE_Panel_Tool_Box.rsp",
       "owners": {
-        "004898D0": "src/matching/004898D0_RGE_Panel_Tool_Box.cpp",
-        "00489E90": "src/matching/00489E90_RGE_Panel_Tool_Box.cpp",
-        "00489F50": "src/matching/00489F50_action.cpp",
-        "0048A520": "src/matching/0048A520_game_mode_changed.cpp",
-        "0048A640": "src/matching/0048A640_draw.cpp"
+        "004898D0": "src/rpnl_tbx.cpp",
+        "00489E90": "src/rpnl_tbx.cpp",
+        "00489F50": "src/rpnl_tbx.cpp",
+        "0048A520": "src/rpnl_tbx.cpp",
+        "0048A640": "src/rpnl_tbx.cpp"
       },
       "symbols": {
         "004898D0": "??0RGE_Panel_Tool_Box@@QAE@PAVTDrawArea@@PAVTPanel@@JJJJPAXJJPAVTDigital@@PAVTScreenPanel@@PAVRGE_View@@PAVRGE_Diamond_Map@@@Z",

@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "name": "rpnl_tbx",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rpnl_tbx.cpp",
+  "source": "src/rpnl_tbx.cpp",
+  "header": "include/rpnl_tbx.h",
+  "header_composition": {
+    "status": "owner_clean",
+    "summary": "RGE_Panel_Tool_Box consumes canonical Panel, button, screen, and list-dialog providers."
+  },
+  "functions": {
+    "004898D0": { "status": "matching" },
+    "00489E90": { "status": "matching" },
+    "00489F50": { "status": "matching" },
+    "0048A320": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/rpnl_tbx_module.md"
+    },
+    "0048A520": { "status": "matching" },
+    "0048A640": { "status": "matching" }
+  }
+}
