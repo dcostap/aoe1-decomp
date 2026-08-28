@@ -38,8 +38,11 @@ public:
     VISIBLE_UNIT_REC* Return_Buffer[5];
     int Player_Count;
     int Category_Count;
+
+protected:
     unsigned char* distanceTable;
 
+public:
     Visible_Unit_Manager(int player_count, int category_count);
     ~Visible_Unit_Manager();
     void Build_Distance_Table();
