@@ -193,6 +193,8 @@ public:
     void increment_view_update_count();
     void mouse_off();
     void mouse_on();
+    void set_mouse_cursor(void*);
+    void set_mouse_facet(long);
 
     RGE_Game_Info* player_game_info;
     RGE_Scenario_File_Info* scenario_info;
