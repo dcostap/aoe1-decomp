@@ -7,28 +7,16 @@
 #include "../include/scenario.h"
 #include "../include/sceninfo.h"
 
+#include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-// Keep this CRT record private.  The old SDK declaration is not a project
-// provider, and its members are used only by reload_scenarios().
-struct _finddata_t {
-    unsigned attrib;
-    long time_create;
-    long time_access;
-    long time_write;
-    unsigned long size;
-    char name[260];
-};
 
 extern "C" {
 int rge_open(char* filename, int mode, ...);
 void rge_read_uncompressed(int fd, void* buffer, int count);
 void rge_write_uncompressed(int fd, void* buffer, int count);
 int rge_close(int fd);
-long _findfirst(const char* pattern, struct _finddata_t* file_info);
-int _findnext(long handle, struct _finddata_t* file_info);
 }
 
 extern void __cdecl operator_delete(void* block);
@@ -74,8 +62,7 @@ RGE_Scenario_File_Info::~RGE_Scenario_File_Info() {
     save();
     if (scenario_num > 0) {
         for (int i = 0; i < scenario_num; i++) {
-            RGE_Scenario_Header* hdr =
-                *(RGE_Scenario_Header**)((char*)scenarios + i * 0x10C + 4);
+            RGE_Scenario_Header* hdr = scenarios[i].scenario_header;
             if (hdr != 0) {
                 hdr->~RGE_Scenario_Header();
                 operator_delete(hdr);
@@ -99,16 +86,12 @@ void RGE_Scenario_File_Info::save()
     cnt = 0;
 
     if (this->scenario_num > 0) {
-        int off = 0;
         do {
-            rge_write_uncompressed(fd, (char*)this->scenarios + off, 4);
-            rge_write_uncompressed(fd, (char*)this->scenarios + 8 + off, 0x104);
-
-            RGE_Scenario_Header* h = *(RGE_Scenario_Header**)((char*)this->scenarios + off + 4);
-            h->save(fd);
+            rge_write_uncompressed(fd, &this->scenarios[cnt].time, 4);
+            rge_write_uncompressed(fd, this->scenarios[cnt].name, 0x104);
+            this->scenarios[cnt].scenario_header->save(fd);
 
             cnt++;
-            off += 0x10C;
         } while (cnt < this->scenario_num);
     }
 

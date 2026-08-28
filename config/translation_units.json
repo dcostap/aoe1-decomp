@@ -6542,15 +6542,20 @@
     {
       "name": "sceninfo",
       "source": "src/sceninfo.cpp",
+      "module": "sceninfo",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0048CEA0": "src/sceninfo.cpp",
         "0048CFD0": "src/sceninfo.cpp",
+        "0048D040": "src/sceninfo.cpp",
         "0048D4D0": "src/sceninfo.cpp",
         "0048D500": "src/sceninfo.cpp"
       },
       "symbols": {
         "0048CEA0": "??0RGE_Scenario_File_Info@@QAE@PAD@Z",
+        "0048CFD0": "??1RGE_Scenario_File_Info@@QAE@XZ",
+        "0048D040": "?save@RGE_Scenario_File_Info@@QAEXXZ",
+        "0048D4D0": "?get_scenario_name@RGE_Scenario_File_Info@@QAEPADJ@Z",
         "0048D500": "?get_scenario_info@RGE_Scenario_File_Info@@QAEPAVRGE_Scenario_Header@@J@Z"
       }
     },
