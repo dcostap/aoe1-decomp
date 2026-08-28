@@ -1,6 +1,10 @@
 # com_loby DirectPlay header blocker
 
-Status: blocked and unapproved.
+Status: SDK provider approved; module recovery pending.
+
+The approved provider is documented in
+`recovery_notes/directplay_sdk_provider.md`. The earlier candidates below
+remain evidence only.
 
 No VC98 header was added to the pinned VC5 include set. No VC98 build was run
 for this hold. The hashes below record evidence only. They do not approve use.
@@ -62,4 +66,5 @@ calls the standard C++ operators `??2@YAPAXI@Z` and `??3@YAXPAX@Z`.
 Focused checks masked these relocation target differences. Therefore, their
 reported byte matches do not meet the direct-target exactness rule.
 
-An approved SDK or reviewed external ABI provider must resolve these issues.
+The approved SDK provider resolves the external ownership boundary. A new
+module candidate must still fix the source and linkage issues above.

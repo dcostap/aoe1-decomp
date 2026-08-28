@@ -1,7 +1,10 @@
 # Com_hand owner audit
 
-Status: held. This note records evidence only. It does not approve a
-`Com_hand` source module.
+Status: SDK provider approved; natural source recovery pending.
+
+The approved provider is documented in
+`recovery_notes/directplay_sdk_provider.md`. This note does not approve any
+older source candidate.
 
 ## Source ownership
 
@@ -117,7 +120,7 @@ GetPlayerCaps `+0x4C`, GetPlayerName `+0x54`, GetSessionDesc `+0x58`, Open
 SetPlayerName `+0x78`. These slots do not make `IDirectPlay4A` a valid PDB
 owner.
 
-## Hard blockers
+## Historical blockers
 
 - The pinned VC5 `DPLAY.H` is the 1994-95 DirectPlay1 header. It has no
   `IDirectPlay2`, `IDirectPlay3`, `DPSESSIONDESC2`, `DPNAME`, or
@@ -177,3 +180,13 @@ source file. Reopen only after an approved period DirectPlay header or a
 reviewed canonical DirectPlay 2/3 declaration surface is available. Do not
 resolve this hold with a partial vtable, raw vtable access, absolute global
 access, or a local `IDirectPlay4A` alias.
+
+## Approved provider
+
+The project approved the tracked Microsoft 1997 VC98 DirectPlay header pair.
+It provides the PDB DirectPlay 2, DirectPlay 3, Lobby, and Lobby2 surfaces.
+The pinned VC5 compiler successfully compiled the reviewed ABI probe.
+
+The historical hold is now open for natural source recovery. The source must
+still remove partial vtables, duplicate SDK types, raw global addresses, and
+local interface aliases.
