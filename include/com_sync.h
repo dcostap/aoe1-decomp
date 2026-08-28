@@ -19,6 +19,7 @@ public:
         unsigned long Random;
     };
 
+private:
     TCommunications_Handler* Comm;
     unsigned long CheckTime;
     unsigned long CheckTurn;
@@ -33,6 +34,7 @@ public:
     unsigned long GameWorldChecksum;
     CHECKSUMARRAY Check[0x37];
 
+public:
     RGE_Communications_Synchronize(TCommunications_Handler* comm);
     ~RGE_Communications_Synchronize();
     int Add(unsigned int turn, unsigned long wRandom,

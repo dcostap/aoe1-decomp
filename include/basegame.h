@@ -22,6 +22,15 @@ class TRegistry;
 class TShape;
 class TSound_Driver;
 class TDigital;
+class RGE_Communications_Synchronize;
+class RGE_Main_View;
+class TRIBE_Main_View;
+class TribeJoinScreen;
+class TribeMPCreateDialog;
+class TribeMPSetupScreen;
+class TribeMPStartupScreen;
+class TRIBE_Screen_Wait;
+class TRIBE_Screen_Disconnect;
 
 // PDB owner: basegame.cpp, 004231E0.
 unsigned long __cdecl debug_timeGetTime(char*, int);
@@ -52,6 +61,20 @@ typedef char rge_timing_info_size_check[
     (sizeof(RGE_Timing_Info) == 0x20) ? 1 : -1];
 
 class RGE_Base_Game {
+    friend int __cdecl debug_rand(char*, int);
+    friend void __cdecl debug_srand(char*, int, unsigned int);
+    friend class RGE_Player;
+    friend class TCommunications_Handler;
+    friend class RGE_Communications_Synchronize;
+    friend class RGE_Main_View;
+    friend class TRIBE_Main_View;
+    friend class TribeJoinScreen;
+    friend class TribeMPCreateDialog;
+    friend class TribeMPSetupScreen;
+    friend class TribeMPStartupScreen;
+    friend class TRIBE_Screen_Wait;
+    friend class TRIBE_Screen_Disconnect;
+
 public:
     struct RGE_Game_Options {
     public:
@@ -299,6 +322,7 @@ public:
     void set_single_player_difficulty(int);
     void reload_scenarios_info();
 
+protected:
     RGE_Game_Info* player_game_info;
     RGE_Scenario_File_Info* scenario_info;
     RGE_Prog_Info* prog_info;

@@ -4,8 +4,8 @@
 class RGE_Player;
 class TRIBE_World;
 
-// CodeView record: class Tech_Tree, size 0x3C.
-class Tech_Tree {
+// CodeView record: struct Tech_Tree, size 0x3C.
+struct Tech_Tree {
 public:
     char* name;
     short pre_reqs[4];
@@ -28,8 +28,8 @@ public:
 
 typedef char tech_tree_size_check[(sizeof(Tech_Tree) == 0x3C) ? 1 : -1];
 
-// CodeView record: class Tech_Player_Tree, size 0x08.
-class Tech_Player_Tree {
+// CodeView record: struct Tech_Player_Tree, size 0x08.
+struct Tech_Player_Tree {
 public:
     float research_done;
     short state;

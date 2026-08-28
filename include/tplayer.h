@@ -9,7 +9,7 @@ class TribeMainDecisionAIModule;
 class TRIBE_History_Info;
 class ResourceItem;
 
-class Item_Avail {
+struct Item_Avail {
 public:
     char* name;                  // +0x00
     short id;                    // +0x04
@@ -27,7 +27,7 @@ public:
 typedef char item_avail_size_check[
     (sizeof(Item_Avail) == 0x28) ? 1 : -1];
 
-class Trade_Avail {
+struct Trade_Avail {
 public:
     RGE_Player* player;             // +0x00
     RGE_Static_Object* dock;        // +0x04

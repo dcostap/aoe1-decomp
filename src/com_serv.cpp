@@ -8,8 +8,8 @@ TCommunications_Services::TCommunications_Services() {
         strcpy(Service[i].Name, "");
         Service[i].GUID = 0;
         Service[i].Active = 0;
-        Service[i].field_58 = 0;
-        Service[i].field_54 = 0;
+        Service[i].MinVersion = 0;
+        Service[i].MajVersion = 0;
     }
 
     DirectPlayEnumerateA(DPEnumCallback, this);

@@ -33,8 +33,8 @@ extern int do_draw_log;
 extern const float DAT_00577900;
 extern const float DAT_00577904;
 extern const float DAT_00577908;
-extern "C" void __cdecl color_log(unsigned char, unsigned char, int);
-extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
+extern void __cdecl color_log(unsigned char, unsigned char, int);
+extern unsigned long __cdecl debug_timeGetTime(char*, int);
 extern void __cdecl write_draw_log2(char*);
 
 RGE_Main_View::RGE_Main_View() : RGE_View() {

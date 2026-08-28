@@ -18,12 +18,13 @@ struct SEs {
 };
 
 class TCommunications_Sessions {
-public:
+private:
     int SessionCount;
     SEs Session[501];
     GUID glpGuid;
     IDirectPlay2* glpIDC;
 
+public:
     TCommunications_Sessions(TCommunications_Handler* handler);
     ~TCommunications_Sessions();
 

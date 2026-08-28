@@ -3,19 +3,25 @@
 
 #include "../third_party/directplay/include/dplay.h"
 
-struct Service_Entry {
+struct SPs {
     char Name[80];
     _GUID* GUID;
-    int field_54;
-    int field_58;
+    unsigned long MajVersion;
+    unsigned long MinVersion;
     int Active;
 };
 
+typedef char com_serv_sp_size_check[
+    (sizeof(SPs) == 0x60) ? 1 : -1];
+
 class TCommunications_Services {
-public:
-    Service_Entry Service[100];
+protected:
+    SPs Service[100];
+
+private:
     int ServiceCount;
 
+public:
     TCommunications_Services();
     ~TCommunications_Services();
     int GetServiceCount();
@@ -31,8 +37,6 @@ public:
 BOOL __stdcall DPEnumCallback(LPGUID guid, LPSTR name, DWORD flags,
                                DWORD reserved, LPVOID context);
 
-typedef char com_serv_service_entry_size_check[
-    (sizeof(Service_Entry) == 0x60) ? 1 : -1];
 typedef char com_serv_services_size_check[
     (sizeof(TCommunications_Services) == 0x2584) ? 1 : -1];
 

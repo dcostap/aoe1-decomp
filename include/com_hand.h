@@ -31,7 +31,7 @@ class RGE_Communications_Speed;
 class RGE_Communications_Synchronize;
 class RGE_Communications_Addresses;
 class RGE_TimeSinceLastCall;
-class RGE_Prog_Info;
+struct RGE_Prog_Info;
 class TCommunications_Sessions;
 class TribeMPCreateDialog;
 
@@ -147,7 +147,7 @@ struct MSGFORMAT_KILL_PLAYER {
     unsigned long CurrentTurn;
 };
 
-class COMMPLAYEROPTIONS {
+struct COMMPLAYEROPTIONS {
 public:
     unsigned char NeedsToBeSent;
     unsigned long LastSentTime;
@@ -165,7 +165,7 @@ public:
     unsigned long User5[10];
     unsigned long User6[10];
     unsigned long User7[10];
-    int Humanity[10];
+    PLAYERHUMANITY Humanity[10];
     unsigned char InvalidPlayer[10];
     unsigned long Initialized;
     unsigned long RandomSeed;

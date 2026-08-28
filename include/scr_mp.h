@@ -11,7 +11,7 @@ class TListPanel;
 class TScrollBarPanel;
 
 class TribeMPStartupScreen : public TScreenPanel {
-public:
+protected:
     TTextPanel* title;
     TTextPanel* inputTitle;
     TEditPanel* input;
@@ -25,6 +25,7 @@ public:
     char zone_exec[255];
     char browser_exec[255];
 
+public:
     virtual ~TribeMPStartupScreen();
     TribeMPStartupScreen();
     virtual long action(TPanel*, long, unsigned long, unsigned long);

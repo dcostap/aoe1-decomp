@@ -7,6 +7,7 @@
 extern char s_[];
 
 class TCommunications_Handler;
+class TribeMPSetupScreen;
 
 class IPAD {
 public:
@@ -21,7 +22,9 @@ public:
 };
 
 class RGE_Communications_Addresses {
-public:
+    friend class TribeMPSetupScreen;
+
+private:
     TCommunications_Handler* comm;   // +0x00
     WSADATA wsaData;                 // +0x04
     char hostname[0x80];             // +0x194
@@ -30,6 +33,7 @@ public:
     unsigned int AliasesAvailable;   // +0x21C
     IPAD* pIPAD;                     // +0x220
 
+public:
     RGE_Communications_Addresses(TCommunications_Handler* handler);
     ~RGE_Communications_Addresses();
     char* GetHostName();

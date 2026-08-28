@@ -2107,7 +2107,7 @@ void TCommunications_Handler::EvaluateSystemMessage(unsigned long unused_1, char
                                          create_player.dpnName.lpszShortNameA,
                                          create_player.dpnName.lpszLongNameA);
             this->PlayerOptions.dcoID[i] = message_id_home;
-            this->PlayerOptions.Humanity[i] = 2;
+            this->PlayerOptions.Humanity[i] = ME_HUMAN;
             this->PlayerOptions.NeedsToBeSent = 1;
             this->PlayerOptions.InvalidPlayer[i] = 0;
             this->CalculatePlayerRange();
@@ -4705,7 +4705,7 @@ char* TCommunications_Handler::GetReadyPlayerStr() {
 
     unsigned int i = 1;
     if (i <= this->MaxGamePlayers) {
-        int* humanity = this->PlayerOptions.Humanity + 1;
+        PLAYERHUMANITY* humanity = this->PlayerOptions.Humanity + 1;
         unsigned long* ack = this->LastTurnAck + 1;
         char defc;
         defc = '?';
@@ -4942,7 +4942,7 @@ int TCommunications_Handler::LaunchLobbyGame()
 
 
         unsigned int& me = this->Me;
-        PlayerOptions.Humanity[me] = 2;
+        PlayerOptions.Humanity[me] = ME_HUMAN;
         HaveHostInit = 1;
         PlayerOptions.ProgramState = COMM_STATE_JOINNOW;
         SetRandomSeed(rge_base_game->random_game_seed);
@@ -4975,7 +4975,7 @@ void TCommunications_Handler::InitPlayerInformation(unsigned int param_1, unsign
     PlayerOptions.User7[param_1] = 0;
     PlayerOptions.InvalidPlayer[param_1] = 0;
     LastTurnAck[param_1] = 0;
-    PlayerOptions.Humanity[param_1] = 0;
+    PlayerOptions.Humanity[param_1] = ME_ABSENT;
     PlayerOptions.dcoID[param_1] = param_2;
     PlayerHighSerialNumber[param_1] = 0;
 
@@ -5124,7 +5124,7 @@ int TCommunications_Handler::CreateMultiplayerGame(void)
     this->Me = one;
     this->PlayerOptions.HostPlayerNumber = one;
     this->PlayerOptions.dcoID[this->Me] = local_player_dpid;
-    this->PlayerOptions.Humanity[this->Me] = 2;
+    this->PlayerOptions.Humanity[this->Me] = ME_HUMAN;
     this->HaveHostInit = one;
     this->PlayerOptions.ProgramState = COMM_STATE_JOINNOW;
     this->GTDSerialNo = 0x7D1;

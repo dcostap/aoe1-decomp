@@ -184,6 +184,7 @@ public:
         short*, short, short, short, short);
     void select_area(short, short, short, short);
 
+protected:
     int computerPlayerValue;
     int pathingAttemptCapValue;
     int pathingDelayCapValue;
@@ -192,6 +193,8 @@ public:
     long position_checksum;
     long action_checksum;
     unsigned char checksum_created_this_update;
+
+public:
     short master_object_num;
     RGE_Master_Static_Object** master_objects;
     RGE_Object_List* objects;

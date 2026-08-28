@@ -42,8 +42,12 @@ public:
                         RGE_Pick_Info*, RGE_Static_Object*, int);
     int pick_objects1(long, long, RGE_Static_Object**, int);
     RGE_Static_Object* pick_best_target(long, long, int*, short);
+
+protected:
     virtual unsigned char get_help_info(char*&, long&, long, long);
     void fixup_pick_info(RGE_Pick_Info*);
+
+public:
     void reset_display_object_selection(int);
 
     TPanel* map_view;

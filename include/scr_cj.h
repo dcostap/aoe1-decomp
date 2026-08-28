@@ -24,7 +24,7 @@ extern TRegistry* Regs;
 extern TDebuggingLog* L;
 
 class TribeJoinScreen : public TScreenPanel {
-public:
+protected:
     int startedSession;
     int listFilled;
     TTextPanel* title;
@@ -40,6 +40,7 @@ public:
     int waitingToStart;
     unsigned long joinTime;
 
+public:
     TribeJoinScreen();
     virtual ~TribeJoinScreen();
     virtual long handle_idle();
@@ -54,13 +55,14 @@ typedef char scr_cj_join_screen_size_check[
     (sizeof(TribeJoinScreen) == 0x4B0) ? 1 : -1];
 
 class TribeMPCreateDialog : public TDialogPanel {
-public:
+protected:
     TTextPanel* title;
     TTextPanel* input_title;
     TEditPanel* inputGamename;
     TButtonPanel* okButton;
     TButtonPanel* cancelButton;
 
+public:
     virtual ~TribeMPCreateDialog();
     TribeMPCreateDialog(TPanel* parent);
 

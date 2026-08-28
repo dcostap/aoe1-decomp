@@ -14,7 +14,7 @@ class TScrollBarPanel;
 class T_Scenario;
 
 class TribeMPSetupScreen : public TScreenPanel {
-public:
+protected:
     TTextPanel* title;
     TTextPanel* playerTitle;
     TTextPanel* civTitle;
@@ -84,6 +84,7 @@ public:
     unsigned long last_send_shared;
     int resend_game_options;
 
+public:
     TribeMPSetupScreen();
     virtual ~TribeMPSetupScreen();
 
