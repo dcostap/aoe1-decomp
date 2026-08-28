@@ -20,35 +20,31 @@ manual vptr store.
 
 ## Canonical ownership
 
-`TRIBE_Building_Object` now composes the canonical `TRIBE_Combat_Object` header.
-Its queue fields start at `+0x1C8` and the object size is `0x204`.
-`tm_co_ob.h` supplies the canonical master-combat base and `RGE_Master_Static_Object`
-fields. The building-master fields at `+0x164` through `+0x178` are declared in
-`t_b_obj.h` because the repository has no published `m_b_obj.h` owner header.
+`TRIBE_Building_Object` now composes canonical `TRIBE_Combat_Object` and
+`TRIBE_Master_Building_Object` owners. Its queue fields start at `+0x1C8` and
+the object size is `0x204`. The building-master fields at `+0x164` through
+`+0x178` live in `include/tm_b_obj.h`.
 
-The canonical `tplayer.h` header supplies `TRIBE_Player`, including the cost
-methods, `registerBuild`, and the `tech_tree` owner at `+0x220`.
-The canonical `world.h` header supplies `RGE_Game_World`, and `map.h` supplies
-`RGE_Map` and `RGE_Tile`. `TRIBE_World::check_destructables` is still absent
-from the canonical world header. The direct source has a method-only declaration
-for that owner. It adds no fields or vtable slots.
-
-`TRIBE_Player_Tech::do_tech` and `undo_tech` are also absent from the small
-canonical `tech.h` surface. The t_b header keeps only these two method
-signatures. This is a declaration gap, not a copied object layout.
+The canonical `tplayer.h` header supplies `TRIBE_Player`, including cost
+methods, `registerBuild`, and `tech_tree` at `+0x220`. The canonical
+`tworld.h` header supplies `TRIBE_World::check_destructables`. The canonical
+`tech.h` header declares `do_tech` and `undo_tech`. No local class carrier
+remains.
 
 ## Status ledger
 
-The module keeps the existing reviewed source statuses:
+The direct candidate keeps these source statuses:
 
-- `matching`: 33 owners;
+- `matching`: 7 owners (`004C8370`, `004C8B80`, `004C8E60`, `004C9480`,
+  `004C9760`, `004C9D90`, and `004CA0B0`);
 - `accepted_drift`: 5 owners (`004C85D0`, `004C86C0`, `004C8CB0`, `004C9870`,
   and `004C9C80`);
-- `scratch`: 2 owners (`004C8A60` and `004C8E90`);
+- `scratch`: 28 owners, including `004C8A60` and `004C8E90`;
 - `verified_logic`: 0 owners.
 
-The direct source contains all 40 normal bodies. The statuses remain source
-recovery states. They do not claim grouped exactness after context migration.
+The direct source contains all 40 normal bodies. The migration moves the 26
+former fragment matches that did not remain exact into scratch. It does not
+claim grouped exactness for them.
 
 ## Candidate validation
 

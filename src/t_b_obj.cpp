@@ -15,8 +15,10 @@
 #include "../include/sound.h"
 #include "../include/tact_mob.h"
 #include "../include/tact_tek.h"
+#include "../include/tech.h"
 #include "../include/tplayer.h"
 #include "../include/tribegam.h"
+#include "../include/tworld.h"
 #include "../include/world.h"
 
 #include <stdlib.h>
@@ -31,28 +33,20 @@ extern unsigned long world_update_counter;
 extern unsigned long* unified_map_offsets[];
 extern float save_game_version;
 
-// TRIBE_World is the owner of this method, but its reviewed public header is
-// not yet in the canonical header bank.  The declaration adds no layout or
-// virtual surface; the object is supplied by RGE_Game_World::players/world.
-class TRIBE_World : public RGE_Game_World {
-public:
-    void check_destructables(short, long, float, float, int);
-};
-
 static TRIBE_Player* tribe_player(RGE_Player* player)
 {
-    return (TRIBE_Player*)player;
+    return static_cast<TRIBE_Player*>(player);
 }
 
 static TRIBE_Master_Building_Object* building_master(
     TRIBE_Building_Object* object)
 {
-    return (TRIBE_Master_Building_Object*)object->master_obj;
+    return static_cast<TRIBE_Master_Building_Object*>(object->master_obj);
 }
 
 static TRIBE_Game* tribe_game()
 {
-    return (TRIBE_Game*)rge_base_game;
+    return static_cast<TRIBE_Game*>(rge_base_game);
 }
 
 static void adjust_pop_waiting(RGE_Player* player, int delta)
@@ -198,7 +192,7 @@ int TRIBE_Building_Object::setup(TRIBE_Master_Building_Object* master,
     facet = (unsigned char)building_master(this)->building_facet;
     culture = player->culture;
 
-    ((TRIBE_World*)owner->world)->check_destructables(
+    static_cast<TRIBE_World*>(owner->world)->check_destructables(
         player->id, building_master(this)->id, world_y, world_x, 0);
     production_queue_actions = create_action_list();
     return 1;
@@ -217,8 +211,8 @@ int TRIBE_Building_Object::setup(int fd, RGE_Game_World* world_arg)
     if (save_game_version >= 7.21f) {
         rge_read(fd, &production_queue_size, 2);
         if (production_queue_size > 0) {
-            production_queue = (Production_Queue_Record*)calloc(
-                production_queue_size, sizeof(Production_Queue_Record));
+            production_queue = static_cast<Production_Queue_Record*>(calloc(
+                production_queue_size, sizeof(Production_Queue_Record)));
             for (short i = 0; i < production_queue_size; ++i) {
                 rge_read(fd, &production_queue[i].master_id, 2);
                 rge_read(fd, &production_queue[i].unit_count, 2);
@@ -510,8 +504,8 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
     long count = 0;
 
     if (y > 0) {
-        out[0] = (TRIBE_Building_Object*)map->map_row_offset[y - 1][x].objects
-            .find_by_master_id(building_master(this)->id, -1.0f, -1.0f, 0, 0, 0);
+        out[0] = static_cast<TRIBE_Building_Object*>(map->map_row_offset[y - 1][x].objects
+            .find_by_master_id(building_master(this)->id, -1.0f, -1.0f, 0, 0, 0));
         if (out[0] != 0 && out[0]->owner == owner) {
             ++count;
         } else {
@@ -522,8 +516,8 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
     }
 
     if (x > 0) {
-        out[1] = (TRIBE_Building_Object*)map->map_row_offset[y][x - 1].objects
-            .find_by_master_id(building_master(this)->id, -1.0f, -1.0f, 0, 0, 0);
+        out[1] = static_cast<TRIBE_Building_Object*>(map->map_row_offset[y][x - 1].objects
+            .find_by_master_id(building_master(this)->id, -1.0f, -1.0f, 0, 0, 0));
         if (out[1] != 0 && out[1]->owner == owner) {
             ++count;
         } else {
@@ -534,8 +528,8 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
     }
 
     if (x < max_x) {
-        out[2] = (TRIBE_Building_Object*)map->map_row_offset[y][x + 1].objects
-            .find_by_master_id(building_master(this)->id, -1.0f, -1.0f, 0, 0, 0);
+        out[2] = static_cast<TRIBE_Building_Object*>(map->map_row_offset[y][x + 1].objects
+            .find_by_master_id(building_master(this)->id, -1.0f, -1.0f, 0, 0, 0));
         if (out[2] != 0 && out[2]->owner == owner) {
             ++count;
         } else {
@@ -546,8 +540,8 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
     }
 
     if (y < max_y) {
-        out[3] = (TRIBE_Building_Object*)map->map_row_offset[y + 1][x].objects
-            .find_by_master_id(building_master(this)->id, -1.0f, -1.0f, 0, 0, 0);
+        out[3] = static_cast<TRIBE_Building_Object*>(map->map_row_offset[y + 1][x].objects
+            .find_by_master_id(building_master(this)->id, -1.0f, -1.0f, 0, 0, 0));
         if (out[3] != 0 && out[3]->owner == owner) {
             return count + 1;
         }
@@ -755,11 +749,11 @@ int TRIBE_Building_Object::work_status(short& type_out, short& p2,
     }
 
     if (type_out == 0x66) {
-        ((TRIBE_Action_Make_Obj*)action)->get_info(p2, p3, p4, p5);
+        static_cast<TRIBE_Action_Make_Obj*>(action)->get_info(p2, p3, p4, p5);
         return 1;
     }
     if (type_out == 0x67) {
-        ((TRIBE_Action_Make_Tech*)action)->get_info(p2, p3, p4, p5);
+        static_cast<TRIBE_Action_Make_Tech*>(action)->get_info(p2, p3, p4, p5);
         return 1;
     }
     p2 = -1;
@@ -780,7 +774,7 @@ short TRIBE_Building_Object::get_construction_progress()
 void TRIBE_Building_Object::copy_obj(RGE_Master_Static_Object* source)
 {
     TRIBE_Master_Building_Object* master =
-        (TRIBE_Master_Building_Object*)source;
+        static_cast<TRIBE_Master_Building_Object*>(source);
     if (sprite == master->construction_sprite) {
         new_sprite(master->construction_sprite);
     }
@@ -862,8 +856,8 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id,
 
     if (production_queue_count == production_queue_size) {
         Production_Queue_Record* new_queue =
-            (Production_Queue_Record*)calloc(production_queue_size + 10,
-                                               sizeof(Production_Queue_Record));
+            static_cast<Production_Queue_Record*>(calloc(
+                production_queue_size + 10, sizeof(Production_Queue_Record)));
         if (new_queue == 0) return;
         for (short i = 0; i < production_queue_size; ++i) {
             new_queue[i] = production_queue[i];
@@ -1034,8 +1028,8 @@ int TRIBE_Building_Object::production_queue_status(short& type_out,
     type_out = -1;
     count_out = 0;
 
-    TRIBE_Action_Make_Obj* action =
-        (TRIBE_Action_Make_Obj*)production_queue_actions->get_action();
+    TRIBE_Action_Make_Obj* action = static_cast<TRIBE_Action_Make_Obj*>(
+        production_queue_actions->get_action());
     if (action != 0 && action->action_type == 0x66) {
         action->get_info(type_out, count_out, 0, 0);
         return 1;

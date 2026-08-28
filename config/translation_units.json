@@ -7810,12 +7810,17 @@
     },
     {
       "name": "t_b_obj",
-      "source": "src/t_b_obj_tu.cpp",
+      "module": "t_b_obj",
+      "source": "src/t_b_obj.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004C8E60": "src/matching/004C8E60_modify.cpp",
-        "004C9480": "src/matching/004C9480_cancel_object.cpp",
-        "004C9760": "src/matching/004C9760_rotate.cpp"
+        "004C8370": "src/t_b_obj.cpp",
+        "004C8B80": "src/t_b_obj.cpp",
+        "004C8E60": "src/t_b_obj.cpp",
+        "004C9480": "src/t_b_obj.cpp",
+        "004C9760": "src/t_b_obj.cpp",
+        "004C9D90": "src/t_b_obj.cpp",
+        "004CA0B0": "src/t_b_obj.cpp"
       },
       "symbols": {}
     },

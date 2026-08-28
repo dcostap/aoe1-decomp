@@ -36,6 +36,8 @@ public:
     char* get_name(short);
     void disable(short);
     void enable(short);
+    unsigned char do_tech(short);
+    unsigned char undo_tech(short);
 };
 
 typedef char tribe_player_tech_size_check[
