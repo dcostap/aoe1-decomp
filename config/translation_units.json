@@ -6587,6 +6587,7 @@
     {
       "name": "act_make_cpp",
       "source": "src/act_make.cpp",
+      "module": "act_make",
       "flags": "config/flags/default.rsp",
       "owners": {
         "004049B0": "src/act_make.cpp",
