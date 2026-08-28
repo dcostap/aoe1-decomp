@@ -50,6 +50,24 @@ or Diamond Map classes.
 The PDB size check confirms `sizeof(TRIBE_Screen_Game) == 0x7C4`.
 The screen keeps all 96 normal `scr_game.cpp` bodies.
 
-Focused checks still match `004954A0`, `004959A0`, `00497210`, `0049B560`,
-and `0049D530`. The existing grouped regression list already includes
-`00498A10`, `00498A50`, and `0049BAF0`. They remain nonexact.
+Earlier focused checks matched `004954A0`, `004959A0`, `00497210`,
+and `0049D530`. The canonical audit below supersedes this older summary.
+
+## Canonical-provider audit
+
+The 2026-08-28 canonical audit compiled all 96 module bodies. It matched 59.
+It found 29 mismatches and eight comparison errors.
+
+The audit source is `build/candidate_tus/scr_game_canonical_audit.json`.
+The report is `build/candidate_tus/scr_game_canonical_audit/report.txt`.
+
+The following former matching rows are now scratch:
+
+- `00497330`, `00498A10`, `004992E0`, `0049AB60`, `0049B560`.
+- `0049BAF0`, `0049BD20`, `0049BD70`, `0049BDB0`, `0049BEA0`.
+- `0049BF50`, `0049C010`, `0049C230`, `0049C540`, `0049C650`.
+- `0049C800`, `0049C890`, `0049CAF0`, `0049CCB0`, `0049CEA0`.
+- `0049CEC0`, `0049CFF0`, `0049D090`, `0049D100`, `0049D1B0`, `0049D200`.
+
+The provider changes removed copied foreign layouts and raw source forms.
+They did not establish new exact claims.
