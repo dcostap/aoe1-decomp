@@ -7,11 +7,7 @@
 #include <string.h>
 
 void* __cdecl operator new(size_t size);
-
-extern "C" {
-    void* __cdecl operator_new(size_t size);
-    void __cdecl operator_delete(void* ptr);
-}
+void __cdecl operator delete(void* ptr);
 
 // VA: 00409FA0 BaseObject::BaseObject
 // PDB source: aibobj.cpp lines 43-45.
@@ -44,7 +40,7 @@ BaseObject::BaseObject(int a, int category, int type, int game, char* name,
       currentTargetTypeValue(-1), currentTargetXPositionValue(0.0f),
       currentTargetYPositionValue(0.0f), currentTargetZPositionValue(0.0f)
 {
-    groupIDValue = new int;
+    groupIDValue = new int[1];
     groupIDValue[0] = a;
 
     strncpy(nameValue, name, 63);
@@ -68,7 +64,7 @@ BaseObject::BaseObject(BaseObject* src)
       currentTargetYPositionValue(src->currentTargetYPositionValue),
       currentTargetZPositionValue(src->currentTargetZPositionValue)
 {
-    groupIDValue = (int*)operator_new(numberGroupsValue * 4);
+    groupIDValue = new int[numberGroupsValue];
 
     int i;
     for (i = 0; i < numberGroupsValue; i++)
@@ -95,7 +91,7 @@ BaseObject::BaseObject(const BaseObject& src)
       currentTargetYPositionValue(src.currentTargetYPositionValue),
       currentTargetZPositionValue(src.currentTargetZPositionValue)
 {
-    groupIDValue = (int*)operator_new(numberGroupsValue * 4);
+    groupIDValue = new int[numberGroupsValue];
 
     int i;
     for (i = 0; i < numberGroupsValue; i++)
@@ -108,7 +104,7 @@ BaseObject::BaseObject(const BaseObject& src)
 // PDB source: aibobj.cpp lines 153-155.
 BaseObject::~BaseObject()
 {
-    operator_delete(groupIDValue);
+    delete[] groupIDValue;
 }
 
 // VA: 0040A370 operator==
@@ -176,7 +172,7 @@ int BaseObject::addGroup(int group_id)
     if (inGroup(group_id))
         return 0;
 
-    int* new_array = (int*)operator_new(numberGroupsValue * 4 + 4);
+    int* new_array = new int[numberGroupsValue + 1];
     if (!new_array)
         return 0;
 
@@ -186,7 +182,7 @@ int BaseObject::addGroup(int group_id)
 
     new_array[numberGroupsValue] = group_id;
     numberGroupsValue++;
-    operator_delete(groupIDValue);
+    delete[] groupIDValue;
     groupIDValue = new_array;
     return 1;
 }
@@ -198,7 +194,7 @@ int BaseObject::removeGroup(int group_id)
     if (!inGroup(group_id))
         return 0;
 
-    int* new_array = (int*)operator_new(numberGroupsValue * 4 - 4);
+    int* new_array = new int[numberGroupsValue - 1];
     if (!new_array)
         return 0;
 
@@ -215,7 +211,7 @@ int BaseObject::removeGroup(int group_id)
     }
 
     numberGroupsValue--;
-    operator_delete(groupIDValue);
+    delete[] groupIDValue;
     groupIDValue = new_array;
     return 1;
 }

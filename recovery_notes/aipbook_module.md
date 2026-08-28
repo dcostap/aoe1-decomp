@@ -53,3 +53,8 @@ effects match. The remaining difference is a seven-byte setup register-order dri
 
 No status changed during source reunification. The old wrapper and all 68 fragment
 owners are removed. The compiler-generated destructor remains outside this module.
+
+`AIPlayBook::plays` uses natural `new[]` and `delete[]` expressions. The current
+VC5 build keeps the original scalar allocator target and array byte count. The
+destructor cleanup is exact. `loadPlays` keeps its existing provider-sensitive
+structural drift.

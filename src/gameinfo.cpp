@@ -14,7 +14,6 @@
 #include <string.h>
 
 extern "C" void __cdecl getstring(char** destination, char* source);
-extern "C" void __cdecl operator_delete(void* pointer);
 extern int version_marker;
 
 RGE_Campaign_Info::RGE_Campaign_Info(int fd, RGE_Campaign** camps, long cnum) {
@@ -232,8 +231,7 @@ RGE_Person_Info::~RGE_Person_Info() {
         for (int i = 0; i < campaign_info_num; i++) {
             RGE_Campaign_Info* ci = campaign_info[i];
             if (ci != 0) {
-                ci->~RGE_Campaign_Info();
-                operator_delete(ci);
+                delete ci;
             }
         }
         free(campaign_info);
@@ -393,8 +391,7 @@ RGE_Game_Info::~RGE_Game_Info() {
         for (int i = 0; i < campaign_num; i++) {
             RGE_Campaign* cp = campaigns[i];
             if (cp) {
-                cp->~RGE_Campaign();
-                operator_delete(cp);
+                delete cp;
             }
         }
         free(campaigns);
@@ -404,8 +401,7 @@ RGE_Game_Info::~RGE_Game_Info() {
         for (int i = 0; i < people_num; i++) {
             RGE_Person_Info* pi = people_info[i];
             if (pi) {
-                pi->~RGE_Person_Info();
-                operator_delete(pi);
+                delete pi;
             }
         }
         free(people_info);
@@ -442,8 +438,7 @@ void RGE_Game_Info::find_campaigns() {
             do {
                 RGE_Campaign* campaign = campaigns[i];
                 if (campaign != 0) {
-                    campaign->~RGE_Campaign();
-                    operator_delete(campaign);
+                    delete campaign;
                 }
                 ++i;
             } while (i < campaign_num);
@@ -640,8 +635,7 @@ void RGE_Game_Info::remove_player(long person_index) {
 
     RGE_Person_Info* person = people_info[person_index];
     if (person != 0) {
-        person->~RGE_Person_Info();
-        operator_delete(person);
+        delete person;
     }
 
     long idx = person_index;

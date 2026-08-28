@@ -31,6 +31,10 @@ prior scratch sources could not produce a checker record because the extractor
 could not select a defined operator name. The final source emits the four
 expected decorated symbols and matches each original 24-byte body.
 
+The group ID buffers use natural `new[]` and `delete[]` forms. VC5 emits byte
+counts as multiples of four and keeps the original calls to `0054B6F0` and
+`0054B660`, including the null checks.
+
 ## Migration validation
 
 The final source uses `config/flags/default.rsp` and the registered

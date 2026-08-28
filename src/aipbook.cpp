@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 
-extern void __cdecl operator_delete(void*);
 extern void rge_read(int file, void* data, int size);
 extern void rge_write(int file, void* data, int size);
 
@@ -922,7 +921,7 @@ AIPlayBook::AIPlayBook()
 AIPlayBook::~AIPlayBook() {
     if (this->plays) {
         this->numberPlaysValue = 0;
-        operator_delete(this->plays);
+        delete[] this->plays;
         this->plays = 0;
     }
 }
@@ -961,7 +960,7 @@ int AIPlayBook::loadPlays(char* filename) {
     }
 
     if (this->plays != 0) {
-        operator_delete(this->plays);
+        delete[] this->plays;
         this->plays = 0;
     }
     this->numberPlaysValue = 0;
