@@ -35,11 +35,11 @@ uses the proven `free` target at `0054B7D0`.
 
 ## Migration check
 
-The pinned VC5 compiler builds the complete source. The direct module audit
-found 16 exact registered owners. Their claims remain registered in the Command
-translation-unit entry. The other 24 former matching-bank owners remain in the
-module manifest as matching recovery status, but are not registered as exact
-owners after source consolidation:
+The pinned VC5 compiler builds the complete source. Focused checks retain 14
+registered exact owners. The canonical source emits nonexact code for
+`00434DC0` and `004350E0`. Both rows are scratch. The other 24 former
+matching-bank owners remain in the module manifest as matching recovery status,
+but are not registered as exact owners after source consolidation:
 
 `00433D40`, `00434290`, `00434320`, `00434400`, `004348B0`, `004348F0`,
 `00434920`, `00434A00`, `00434D40`, `00435020`, `00435060`, `004350A0`,

@@ -1638,9 +1638,6 @@ unsigned int DAT_0088c08c = 0x00000000u;
 // recovery_notes/world_global_owner_audit.md.
 long world_update_counter = 0;
 int computerPlayerSetup[13] = {0};
-short visible_combats = 0;
-FILE* logStatusFile = 0;
-unsigned long lastStatusLogTime = 0;
 FILE* DVlogf = 0;
 int debug_random_on = 0;
 int debug_timeGetTime_on = 0;

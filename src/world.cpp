@@ -22,7 +22,7 @@
 #include "../include/basegame.h"
 #include "../include/scenario.h"
 #include "../include/gameinfo.h"
-#include "../include/rge_command.h"
+#include "../include/Command.h"
 #include "../include/sound.h"
 #include "../include/sprite.h"
 #include "../include/color.h"
@@ -48,6 +48,13 @@ static const char version_108[] = "1.08";
 static const char version_109[] = "1.09";
 static const char version_110[] = "1.10";
 static const char version_111[] = "1.11";
+static const char world_data_format[] =
+    "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %hd %hd %hd";
+static char base_save_version[] = "VER 3.7";
+
+static short visible_combats = 0;
+static FILE* logStatusFile = 0;
+static unsigned long lastStatusLogTime = 0;
 
 void* __cdecl operator new(unsigned int);
 extern "C" FILE* __cdecl fopen(const char*, const char*);
@@ -392,18 +399,19 @@ void RGE_Game_World::data_load_players_type(short player_id, short flag, FILE* f
 
 unsigned char RGE_Game_World::data_load_players(char* param_1) {
     FILE* fp;
-    int type;
-    int id;
+    short master_player_count;
+    short type;
+    short id;
 
     fp = fopen(param_1, "r");
     if (fp == NULL)
         goto done;
 
-    if (fscanf(fp, "%hd %hd", &this->master_player_num, (short*)&param_1) != -1) {
+    if (fscanf(fp, "%hd %hd", &this->master_player_num, &master_player_count) != -1) {
         this->master_players = (RGE_Master_Player**)calloc(this->master_player_num, 4);
-        for (short i = 0; i < *(short*)&param_1; i++) {
+        for (short i = 0; i < master_player_count; i++) {
             if (fscanf(fp, "%hd %hd", &type, &id) != -1) {
-                this->data_load_players_type((short)type, (short)id, fp);
+                this->data_load_players_type(type, id, fp);
             }
         }
         fclose(fp);
@@ -411,7 +419,7 @@ unsigned char RGE_Game_World::data_load_players(char* param_1) {
     }
 
     this->master_player_num = 0;
-    this->master_players = (RGE_Master_Player**)0;
+    this->master_players = 0;
     fclose(fp);
 
 done:
@@ -424,11 +432,12 @@ unsigned char RGE_Game_World::data_load_objects(char* filename) {
         short player_count;
         short object_id;
         short player_idx;
+        short master_player_index;
         if (fscanf(fp, "%hd", &player_count) != -1 && (player_idx = 0, player_count > 0)) {
             do {
-                if (fscanf(fp, "%hd", (short*)&filename) != -1) {
+                if (fscanf(fp, "%hd", &master_player_index) != -1) {
                     fscanf(fp, "%hd", &object_id);
-                    master_players[*(short*)&filename]->create_master_object_space(object_id);
+                    master_players[master_player_index]->create_master_object_space(object_id);
 
                     fscanf(fp, "%hd", &object_id);
                     short j = 0;
@@ -436,7 +445,7 @@ unsigned char RGE_Game_World::data_load_objects(char* filename) {
                         short v1, v2;
                         do {
                             if (fscanf(fp, "%hd %hd", &v2, &v1) != -1) {
-                                master_players[*(short*)&filename]->load_object(fp, v2, sprites, sounds, v1);
+                                master_players[master_player_index]->load_object(fp, v2, sprites, sounds, v1);
                             }
                             ++j;
                         } while (j < object_id);
@@ -473,40 +482,46 @@ void RGE_Game_World::data_load_random_map(char* a, char* b, char* c, char* d) {
 }
 
 unsigned char RGE_Game_World::data_load_world(FILE* file) {
-    char local[0x18C];
+    short elev_height;
+    short tile_width;
+    short tile_height;
+    char effects_file[23];
+    char map_file[23];
+    char color_file[23];
+    char terrain_file[23];
+    char sprite_file[23];
+    char overlay_file[23];
+    char object_file[23];
+    char border_file[23];
+    char terrain_object_file[23];
+    char rmm_object_file[23];
+    char player_file[23];
+    char rmm_terrain_file[23];
+    char sound_file[23];
+    char rmm_land_file[23];
+    char terrain_table_file[23];
+    char rmm_map_file[23];
 
-    fscanf(file, (const char*)0x58EBE4,
-        local + 0x15C,  // terrain_table_file + 4
-        local + 0x3C,   // color_file + 4
-        local + 0x12C,  // sound_file + 4
-        local + 0xB4,   // border_file + 4
-        local + 0x84,   // overlay_file + 4
-        local + 0x54,   // terrain_file + 4
-        local + 0x24,   // map_file + 4
-        local + 0x6C,   // sprite_file + 4
-        local + 0xFC,   // player_file + 4
-        local + 0x9C,   // obj_file + 4
-        local + 0x0C,   // effects_file + 4
-        local + 0xCC,   // terr_obj_file + 4
-        local + 0x174,  // rmm_map_file + 4
-        local + 0x144,  // rmm_land_file + 4
-        local + 0x114,  // rmm_terr_file + 4
-        local + 0xE4,   // rmm_obj_file + 4
-        local + 0x08,   // effects_file
-        local + 0x00,   // elev_height
-        local + 0x04);  // tile_width
+    fscanf(file, world_data_format,
+        terrain_table_file + 4, color_file + 4, sound_file + 4,
+        border_file + 4, overlay_file + 4, terrain_file + 4, map_file + 4,
+        sprite_file + 4, player_file + 4, object_file + 4, effects_file + 4,
+        terrain_object_file + 4, rmm_map_file + 4, rmm_land_file + 4,
+        rmm_terrain_file + 4, rmm_object_file + 4, &tile_height,
+        &elev_height, &tile_width);
 
-    this->data_load_terrain_tables(local + 0x15C);
-    this->data_load_color_tables(local + 0x3C);
-    this->data_load_sounds(local + 0x12C);
-    this->data_load_sprites(local + 0x6C);
-    this->data_load_players(local + 0xFC);
-    this->data_load_objects(local + 0x9C);
-    this->data_load_effects(local + 0x0C);
-    this->data_load_map(local + 0xB4, local + 0x84, local + 0x54, local + 0x24,
-        *(short*)(local + 0x08), *(short*)(local + 0x00), *(short*)(local + 0x04),
-        this->sounds, local + 0xCC);
-    this->data_load_random_map(local + 0x174, local + 0x144, local + 0x114, local + 0xE4);
+    this->data_load_terrain_tables(terrain_table_file + 4);
+    this->data_load_color_tables(color_file + 4);
+    this->data_load_sounds(sound_file + 4);
+    this->data_load_sprites(sprite_file + 4);
+    this->data_load_players(player_file + 4);
+    this->data_load_objects(object_file + 4);
+    this->data_load_effects(effects_file + 4);
+    this->data_load_map(border_file + 4, overlay_file + 4, terrain_file + 4,
+        map_file + 4, tile_height, elev_height, tile_width, this->sounds,
+        terrain_object_file + 4);
+    this->data_load_random_map(rmm_map_file + 4, rmm_land_file + 4,
+        rmm_terrain_file + 4, rmm_object_file + 4);
     return 1;
 }
 
@@ -637,9 +652,6 @@ void RGE_Game_World::master_player_init(int val) {
 
 void RGE_Game_World::command_init(int param1, TCommunications_Handler* param2) {
     RGE_Command* p = new RGE_Command(this, param2);
-    if ((void*)p == 0) {
-        p = (RGE_Command*)0;
-    }
     this->commands = p;
 }
 
@@ -992,7 +1004,7 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int mode)
 {
     char randomString[256];
     int mapTeam;
-    volatile unsigned char retval;
+    unsigned char retval;
     int i, j, id1, id2;
 
     world_update_counter = 0;
@@ -1020,21 +1032,21 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int mode)
     debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x50c, this->random_seed);
     rge_base_game->random_map_seed = this->random_seed;
     this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x50f);
-    ((TDebuggingLog*)L)->Log("World: new_game (rand=%d)", this->random_seed);
+    L->Log("World: new_game (rand=%d)", this->random_seed);
 
     this->player_num = info.player_num + 1;
     this->map->new_map(info.map_width, info.map_height);
     this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x516);
-    ((TDebuggingLog*)L)->Log("  World: after_new_map (rand=%d)", this->random_seed);
+    L->Log("  World: after_new_map (rand=%d)", this->random_seed);
 
     this->player_num = info.player_num + 1;
     this->players = (RGE_Player**)calloc(4, (int)this->player_num);
     this->setup_gaia();
     this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x520);
-    ((TDebuggingLog*)L)->Log("  World: after_gaia (rand=%d)", this->random_seed);
+    L->Log("  World: after_gaia (rand=%d)", this->random_seed);
     this->setup_players(info);
     this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x526);
-    ((TDebuggingLog*)L)->Log("  World: after_players (rand=%d)", this->random_seed);
+    L->Log("  World: after_players (rand=%d)", this->random_seed);
 
     for (i = 1; i < 9; i++) {
         int h = this->commands->com_hand->GetPlayerHumanity(i);
@@ -1106,7 +1118,7 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int mode)
     if (retval) this->game_state = 0;
 
     this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5b2);
-    ((TDebuggingLog*)L)->Log("  World: end_of_new_game (rand=%d)", this->random_seed);
+    L->Log("  World: end_of_new_game (rand=%d)", this->random_seed);
     RGE_Base_Game* base_game = rge_base_game;
     base_game->get_string(0x277b, randomString, 0x100);
     if (mapTeam == 1) {
@@ -1339,7 +1351,7 @@ unsigned char RGE_Game_World::update()
             if (statusFile == 0) {
                 sprintf(fileName, "AILog\\%s.log",
                         rge_base_game->player_game_info->get_current_player_name());
-                statusFile = (FILE*)fopen(fileName, "a");
+                statusFile = fopen(fileName, "a");
                 logStatusFile = statusFile;
                 if (statusFile == 0) return this->game_state;
             }
@@ -1531,7 +1543,7 @@ unsigned char RGE_Game_World::save_game(char* name) {
 void RGE_Game_World::base_save(int file) {
     int i;
 
-    rge_write(file, (void*)0x58EC20, 8);
+    rge_write(file, base_save_version, 8);
     rge_write(file, &this->terrain_num, 2);
     rge_write(file, &this->terrain_size, 2);
 
@@ -1690,7 +1702,7 @@ byte RGE_Game_World::save_scenario(char* name)
 unsigned char RGE_Game_World::load_scenario(char* name, RGE_Player_Info& info)
 {
     char scenario_name[300];
-    int header_size;
+    char scenario_version[5];
     int version;
     int file;
     world_update_counter = 0;
@@ -1698,15 +1710,16 @@ unsigned char RGE_Game_World::load_scenario(char* name, RGE_Player_Info& info)
     if (name != 0) {
         file = rge_open(scenario_name, 0x8000);
         if (file != -1) {
-            rge_read_uncompressed(file, &header_size, 4);
-            if (header_size == *(const int*)version_101) {
+            rge_read_uncompressed(file, scenario_version, 4);
+            scenario_version[4] = 0;
+            if (strcmp(scenario_version, version_101) == 0) {
                 this->load_scenario1(file, info);
                 goto success;
             }
-            if (header_size == *(const int*)version_102) {
+            if (strcmp(scenario_version, version_102) == 0) {
                 goto version2;
             }
-            if (header_size == *(const int*)version_103) {
+            if (strcmp(scenario_version, version_103) == 0) {
                 rge_read_uncompressed(file, &version, 4);
                 if (version <= 0) {
                     goto version2;
@@ -1719,29 +1732,29 @@ unsigned char RGE_Game_World::load_scenario(char* name, RGE_Player_Info& info)
                 free(buf);
                 goto version2;
             }
-            if (header_size == *(const int*)version_104) {
+            if (strcmp(scenario_version, version_104) == 0) {
                 this->load_scenario3(file, info);
                 goto success;
             }
-            if (header_size == *(const int*)version_105) {
+            if (strcmp(scenario_version, version_105) == 0) {
                 this->load_scenario4(file, info);
                 goto success;
             }
-            if (header_size == *(const int*)version_106) {
+            if (strcmp(scenario_version, version_106) == 0) {
                 this->load_scenario5(file, info);
                 goto success;
             }
-            if (header_size == *(const int*)version_107) {
+            if (strcmp(scenario_version, version_107) == 0) {
                 this->load_scenario6(file, info);
                 goto success;
             }
-            if (header_size == *(const int*)version_108) {
+            if (strcmp(scenario_version, version_108) == 0) {
                 this->load_scenario7(file, info);
                 goto success;
             }
-            if (header_size != *(const int*)version_109 &&
-                header_size != *(const int*)version_111 &&
-                header_size != *(const int*)version_110) {
+            if (strcmp(scenario_version, version_109) != 0 &&
+                strcmp(scenario_version, version_111) != 0 &&
+                strcmp(scenario_version, version_110) != 0) {
                 goto close_failed;
             }
             this->load_scenario8(file, info);
@@ -1760,7 +1773,7 @@ version2:
 }
 
 unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
-    int header_size;
+    char scenario_version[5];
     int version;
     int file;
 
@@ -1770,18 +1783,19 @@ unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
         goto cleanup;
     }
 
-    rge_read_uncompressed(file, &header_size, 4);
+    rge_read_uncompressed(file, scenario_version, 4);
+    scenario_version[4] = 0;
 
-    if (header_size == *(const int*)version_101) {
+    if (strcmp(scenario_version, version_101) == 0) {
         this->load_scenario1(file, info);
         goto success;
     }
 
-    if (header_size == *(const int*)version_102) {
+    if (strcmp(scenario_version, version_102) == 0) {
         goto shared_80;
     }
 
-    if (header_size == *(const int*)version_103) {
+    if (strcmp(scenario_version, version_103) == 0) {
         rge_read_uncompressed(file, &version, 4);
         if (version > 0) {
             void* buffer = malloc(version);
@@ -1794,29 +1808,29 @@ unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
         goto shared_80;
     }
 
-    if (header_size == *(const int*)version_104) {
+    if (strcmp(scenario_version, version_104) == 0) {
         this->load_scenario3(file, info);
         goto success;
     }
-    if (header_size == *(const int*)version_105) {
+    if (strcmp(scenario_version, version_105) == 0) {
         this->load_scenario4(file, info);
         goto success;
     }
-    if (header_size == *(const int*)version_106) {
+    if (strcmp(scenario_version, version_106) == 0) {
         this->load_scenario5(file, info);
         goto success;
     }
-    if (header_size == *(const int*)version_107) {
+    if (strcmp(scenario_version, version_107) == 0) {
         this->load_scenario6(file, info);
         goto success;
     }
-    if (header_size == *(const int*)version_108) {
+    if (strcmp(scenario_version, version_108) == 0) {
         this->load_scenario7(file, info);
         goto success;
     }
-    if (header_size == *(const int*)version_109 ||
-        header_size == *(const int*)version_111 ||
-        header_size == *(const int*)version_110) {
+    if (strcmp(scenario_version, version_109) == 0 ||
+        strcmp(scenario_version, version_111) == 0 ||
+        strcmp(scenario_version, version_110) == 0) {
         this->load_scenario8(file, info);
         goto success;
     } else {
@@ -3161,8 +3175,6 @@ RGE_Static_Object* RGE_Game_World::recycle_object_in_to_game(unsigned char param
 
     return result;
 }
-
-extern FILE* DVlogf;
 
 static const char s_update_visibilities[] =
     "updating player visibilities @ wt=%d\n";

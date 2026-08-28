@@ -5,16 +5,20 @@
 
 `src/world.cpp` holds all 91 bodies in PDB source order. It uses canonical
 World, Map, Player, Scenario, Object, Command, and BaseGame owners. It has no
-World context include, local class carrier, absolute-address macro, or wrapper
+World context include, local class carrier, absolute-address access, or wrapper
 include.
 
 `RGE_Player_Info` uses its PDB fields `player_num` and `map_type`. BaseGame
 uses `prog_info`. Object-list nodes use `node`. Moving objects provide `angle`.
 Scenario version values are source-private strings.
 
-The migration adds a clean `RGE_Command` owner header. It also uses canonical
-GameInfo, Scenario, global, and visible-unit declarations. No TPlayer surface
-is required.
+`visible_combats`, `logStatusFile`, and `lastStatusLogTime` are World-only
+globals. The source keeps them private. Shared World globals remain in
+`game_globals` because other source files use them.
+
+`RGE_Command` comes from its canonical owner, `include/Command.h`. The source
+uses canonical GameInfo, Scenario, global, and visible-unit declarations. No
+TPlayer surface is required.
 
 The candidate at `build/candidate_tus/world_natural_final/report.json`
 compiles with the pinned VC5 toolchain and World flags. It observes all 91

@@ -144,6 +144,8 @@ public:
     void setCurrentAction(int value);
     void setCurrentOrder(int value);
     void setCurrentOrderPriority(int v);
+    void setCurrentTarget(int target, int target_type, float x, float y,
+                          float z);
     void setCurrentTarget(int id, int x, int y, int z);
     void setCurrentTarget(int target, float x, float y, float z);
     void setDefenseBuffer(float v);

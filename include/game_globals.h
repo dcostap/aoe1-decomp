@@ -14,9 +14,6 @@ class TDebuggingLog;
 // World.cpp process globals. PDB storage and type records prove this surface.
 extern long world_update_counter;
 extern int computerPlayerSetup[13];
-extern short visible_combats;
-extern FILE* logStatusFile;
-extern unsigned long lastStatusLogTime;
 extern FILE* DVlogf;
 extern int debug_random_on;
 extern int debug_timeGetTime_on;

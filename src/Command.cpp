@@ -1,10 +1,43 @@
 #include "../include/Command.h"
+#include "../include/basegame.h"
+#include "../include/com_hand.h"
+#include "../include/debuglog.h"
+#include "../include/game_globals.h"
+#include "../include/m_s_obj.h"
+#include "../include/map.h"
+#include "../include/player.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/stat_obj.h"
+#include "../include/unit_ai_module.h"
+#include "../include/world.h"
 
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 // PDB source order for C:\\msdev\\work\\age1_x1\\Command.cpp.
+
+struct RGE_Command_Work {
+    unsigned char command;
+    unsigned char gap_01[3];
+    int target;
+    unsigned char recipient_count;
+    unsigned char gap_09[3];
+    float target_x;
+    float target_y;
+};
+
+struct WayPacket {
+    unsigned char cmd;
+    unsigned char player;
+    char pad2[2];
+    int rec;
+    unsigned char one;
+    unsigned char p3;
+    unsigned char p4;
+    unsigned char p5;
+    char rest[12];
+};
 
 RGE_Command::RGE_Command(RGE_Game_World* world, TCommunications_Handler* com_hand) {
     this->world = world;
@@ -14,9 +47,9 @@ RGE_Command::RGE_Command(RGE_Game_World* world, TCommunications_Handler* com_han
 }
 
 RGE_Command::~RGE_Command() {
-    this->field_04 = 0;
-    this->field_14 = 0;
-    void* p = this->field_08;
+    this->world = 0;
+    this->com_hand = 0;
+    void* p = this->last_order;
     if (p != 0) {
         free(p);
     }
@@ -297,7 +330,7 @@ void RGE_Command::do_command_work(RGE_Command_Order* order)
 
 void RGE_Command::do_command_move(RGE_Command_Order* order) {
     int n = order->unit_num;
-    RGE_Obj_Info* ids = order->ids;
+    RGE_Obj_Info* ids = order->units;
     RGE_Static_Object* target = this->get_obj(order->target);
     if (n > 1) {
         float minx = 10000.0f;
@@ -336,17 +369,17 @@ void RGE_Command::do_command_move(RGE_Command_Order* order) {
                 float ny = (obj->world_y - totaly) + order->location_y;
                 if (nx < DAT_0056f4e0) nx = 1.0f;
                 else {
-                    float width = (float)obj->owner->world->map->width;
+                    float width = (float)obj->owner->world->map->map_width;
                     if (nx >= width) nx = width - DAT_0056f4e8;
                 }
                 if (ny < DAT_0056f4e0) ny = 1.0f;
                 else {
-                    float height = (float)obj->owner->world->map->height;
+                    float height = (float)obj->owner->world->map->map_height;
                     if (ny >= height) ny = height - DAT_0056f4e8;
                 }
                 if (target != 0 &&
-                    (target->master->radius_x > DAT_0056f4e0 ||
-                     target->master->radius_y > DAT_0056f4e0))
+                    (target->master_obj->radius_x > DAT_0056f4e0 ||
+                     target->master_obj->radius_y > DAT_0056f4e0))
                 obj->move_to(target, nx, ny, 0);
                 else
                 obj->move_to(0, nx, ny, 0);
@@ -354,9 +387,9 @@ void RGE_Command::do_command_move(RGE_Command_Order* order) {
                 if (ai) {
                     obj->unitAI()->setCurrentOrder(0x2c6); obj->unitAI()->setCurrentAction(0x262);
                     if (target != 0 &&
-                        (target->master->radius_x > DAT_0056f4e0 ||
-                         target->master->radius_y > DAT_0056f4e0))
-                        obj->unitAI()->setCurrentTarget(target->id, target->master->object_group, nx, ny, 0.0f);
+                        (target->master_obj->radius_x > DAT_0056f4e0 ||
+                         target->master_obj->radius_y > DAT_0056f4e0))
+                        obj->unitAI()->setCurrentTarget(target->id, target->master_obj->object_group, nx, ny, 0.0f);
                     else obj->unitAI()->setCurrentTarget(-1, -1, nx, ny, 0.0f);
                 }
             }
@@ -380,9 +413,9 @@ simple:
                 if (ai) {
                     obj->unitAI()->setCurrentOrder(0x2c6); obj->unitAI()->setCurrentAction(0x262);
                     if (target != 0 &&
-                        (target->master->radius_x > DAT_0056f4e0 ||
-                         target->master->radius_y > DAT_0056f4e0))
-                        obj->unitAI()->setCurrentTarget(target->id, target->master->object_group, order->location_x, order->location_y, 0.0f);
+                        (target->master_obj->radius_x > DAT_0056f4e0 ||
+                         target->master_obj->radius_y > DAT_0056f4e0))
+                        obj->unitAI()->setCurrentTarget(target->id, target->master_obj->object_group, order->location_x, order->location_y, 0.0f);
                     else obj->unitAI()->setCurrentTarget(-1, -1, order->location_x, order->location_y, 0.0f);
                 }
             }
@@ -708,10 +741,10 @@ unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* para
 
     if (n == last_n) {
 
-        if ((short)(int)last_order->pos_x == (short)(int)param_1->pos_x) {
-            if ((short)(int)last_order->pos_y == (short)(int)param_1->pos_y) {
-                long target_id = last_order->target_id;
-                if (target_id == param_1->target_id) {
+        if ((short)(int)last_order->location_x == (short)(int)param_1->location_x) {
+            if ((short)(int)last_order->location_y == (short)(int)param_1->location_y) {
+                long target_id = last_order->target.id;
+                if (target_id == param_1->target.id) {
                     for (int i = 0; i < (int)n; i++) {
                         if (p1[i] != p2[i])
                             goto fail;
