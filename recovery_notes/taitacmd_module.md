@@ -14,6 +14,8 @@ It consumes the canonical `TacticalAIModule` and `AIModule` base surface from
 It consumes canonical `ResourceItem` from `airesitm.h`.
 It consumes canonical `InfluenceMap` and `XYPoint` from `infmap.h`.
 It consumes canonical `PlacementState` from `ai_placement_state.h`.
+`include/tactical_unit_data.h` owns the PDB-proven UnitData record. It is a
+`struct`; `gatherer` encodes `PAUUnitData` in its matching symbol.
 
 Current status:
 
