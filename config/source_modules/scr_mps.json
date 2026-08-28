@@ -27,7 +27,7 @@
     "004A5210": { "status": "matching", "note_path": "recovery_notes/scr_mps_module.md" },
     "004A5440": { "status": "matching", "note_path": "recovery_notes/scr_mps_module.md" },
     "004A54C0": { "status": "matching", "note_path": "recovery_notes/scr_mps_module.md" },
-    "004A5610": { "status": "matching", "note_path": "recovery_notes/scr_mps_module.md" },
+    "004A5610": { "status": "scratch", "note_path": "recovery_notes/scr_mps_module.md" },
     "004A6050": { "status": "scratch", "note_path": "recovery_notes/scr_mps_module.md" },
     "004A60E0": { "status": "matching", "note_path": "recovery_notes/scr_mps_module.md" },
     "004A6100": { "status": "matching", "note_path": "recovery_notes/scr_mps_module.md" },
