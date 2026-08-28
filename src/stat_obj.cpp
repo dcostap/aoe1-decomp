@@ -2778,7 +2778,7 @@ float RGE_Static_Object::distance_to_object(RGE_Static_Object* other) {
 float RGE_Static_Object::distance_to_position(float x, float y, float z)
 {
     float dx = world_x - x;
-    volatile float dy = world_y - y;
+    float dy = world_y - y;
 
     if (dx < 0.0f)
         dx = -dx;
@@ -2960,26 +2960,26 @@ unsigned char RGE_Static_Object::find_drop_location(
             case 0: {
                 x = radius_x + drop_x;
                 int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3e);
-                y = (float)value * radius_2y * 0.0000305185094f - radius_y + drop_y;
+                y = (float)value * radius_2y * (1.0f / 32767.0f) - radius_y + drop_y;
                 break;
             }
             case 1: {
                 x = drop_x - radius_x;
                 int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf42);
                 y = drop_y +
-                     ((float)value * radius_2y * 0.0000305185094f - radius_y);
+                     ((float)value * radius_2y * (1.0f / 32767.0f) - radius_y);
                 break;
             }
             case 2: {
                 y = radius_y + drop_y;
                 int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf46);
-                x = (float)value * radius_2x * 0.0000305185094f - radius_x + drop_x;
+                x = (float)value * radius_2x * (1.0f / 32767.0f) - radius_x + drop_x;
                 break;
             }
             case 3: {
                 y = drop_y - radius_y;
                 int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf4a);
-                x = (float)value * radius_2x * 0.0000305185094f - radius_x + drop_x;
+                x = (float)value * radius_2x * (1.0f / 32767.0f) - radius_x + drop_x;
                 break;
             }
             }

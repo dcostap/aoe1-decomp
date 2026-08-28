@@ -32,13 +32,13 @@ time delta. It does not keep local master, player, World, or visibility views.
 
 The source compiles with the pinned VC5 compiler and
 `config/flags/default.rsp`. The full candidate is
-`build/candidate_tus/stat_obj_cleanup/report.txt`.
+`build/candidate_tus/stat_obj_cleanup_followup/report.txt`.
 
 - 83 normal owners match with zero relocation mismatches and no boundary
   escapes.
 - `004C11C0`, the scalar deleting destructor, matches.
-- 9 accepted-drift owners remain accepted drift.
-- 22 owners remain scratch. `004C7030` remains verified logic.
+- 8 accepted-drift owners remain accepted drift.
+- 23 owners remain scratch. `004C7030` remains verified logic.
 - The report has zero comparison errors.
 
 The current direct source classifies these prior exact owners as scratch:
@@ -49,6 +49,9 @@ The current direct source classifies these prior exact owners as scratch:
 The cleanup removes raw field views, stack aliases, value punning, fake
 volatility, and manual array allocation. `004C4E00` and `004C6400` remain
 natural source, but no longer match exactly. They are scratch.
+
+`004C5F00` is scratch. Removing its unsupported volatile local increased its
+drift from 24 to 127 bytes. The remaining source is natural.
 
 The direct source promotes these prior scratch owners after grouped matches:
 `004C1420`, `004C1590`, `004C16B0`, `004C41D0`, `004C4C40`, `004C50F0`,
