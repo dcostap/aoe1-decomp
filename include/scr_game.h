@@ -9,6 +9,12 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "Pnl_scr.h"
+#include "pnl_btn.h"
+#include "tpnl_btn.h"
+#include "diam_map.h"
+#include "tvw_dmap.h"
+
 typedef unsigned char uchar;
 typedef unsigned long ulong;
 
@@ -111,314 +117,7 @@ struct RGE_Prog_Info {
     int use_sound;
 };
 
-struct TPanelBaseFields {
-    TPanel* previousPanelValue;
-    TPanel* previousModalPanelValue;
-    long pnl_x;
-    long pnl_y;
-    long pnl_wid;
-    long pnl_hgt;
-    char* panelNameValue;
-    union {
-        TDrawArea* render_area;
-        TDrawArea* draw_surface;
-    };
-    tagRECT clip_rect;
-    int position_mode;
-    union {
-        int need_redraw;
-        int mode;
-        int panel_mode;
-    };
-    union {
-        TPanel* curr_child;
-        TPanel* panel_state;
-    };
-    union {
-        TPanel* parent_panel;
-        TPanel* panel_40;
-    };
-    TPanel* left_panel;
-    TPanel* top_panel;
-    TPanel* right_panel;
-    TPanel* bottom_panel;
-    void* node;
-    union {
-        void* first_child_node;
-        PanelNode* child_list;
-    };
-    void* last_child_node;
-    TPanel* tab_prev_panel;
-    TPanel* tab_next_panel;
-    int mouse_captured;
-    union {
-        int active;
-        int field_6C;
-    };
-    union {
-        int visible;
-        int field_70;
-    };
-    int tab_stop;
-    union {
-        int have_focus;
-        void* input_window;
-    };
-    union {
-        int overlapping_children;
-        int field_7C;
-    };
-    int handle_mouse_input;
-    union {
-        int just_drawn;
-        int redraw_needed;
-    };
-    void* clip_rgn;
-    tagRECT render_rect;
-    long left_border;
-    long top_border;
-    long right_border;
-    long bottom_border;
-    long min_wid;
-    long max_wid;
-    long min_hgt;
-    long max_hgt;
-    long mouse_hold_interval;
-    long mouse_move_tolerance;
-    long mouse_down_x;
-    long mouse_down_y;
-    int mouse_down_ctrl;
-    int mouse_down_shift;
-    unsigned long mouse_down_time;
-    int error_code;
-    int z_order;
-    int display_changed_count;
-    long help_string_id;
-    long help_page_id;
-    unsigned char mouse_action;
-    unsigned char mouse_down_button;
-    unsigned char panel_type;
-    unsigned char color;
-    unsigned char fill_in_background;
-    unsigned char clip_to_parent;
-    unsigned char draw_rect2_flag;
-    unsigned char need_restore;
-};
-
-struct scr_tagPALETTEENTRY {
-    unsigned char peRed;
-    unsigned char peGreen;
-    unsigned char peBlue;
-    unsigned char peFlags;
-};
-
-class TDrawSystem {
-public:
-    void ModifyPalette(int, int, scr_tagPALETTEENTRY*);
-};
-
-class TDrawArea {
-public:
-    TDrawSystem* DrawSystem;
-    void* hwnd;
-    void LockWindow(void*);
-    unsigned char* Lock(char*, int);
-    void Unlock(char*);
-    void FillRect(long, long, long, long, unsigned char);
-    void SetClipRect(tagRECT*);
-};
-
-struct PanelNode {
-    TPanel* panel;
-    char gap_04[4];
-    PanelNode* next;
-};
-
-class TPanel {
-public:
-    enum RedrawMode {
-        RedrawNormal = 0
-    };
-
-    virtual ~TPanel();
-    virtual long setup(TDrawArea*, TPanel*, long, long, long, long,
-                       unsigned char);
-    virtual void set_rect(tagRECT);
-    virtual void set_rect(long, long, long, long);
-    virtual void set_color(unsigned char);
-    virtual void set_active(int);
-    virtual void set_positioning(int, long, long, long, long, long, long,
-                                 long, long, TPanel*, TPanel*, TPanel*, TPanel*);
-    void set_positioning(int, long, long, long, long, long, long, long, long);
-    virtual void set_fixed_position(long, long, long, long);
-    virtual void set_redraw(int);
-    virtual void set_overlapped_redraw(TPanel*, TPanel*, int);
-    virtual void draw_setup(int);
-    virtual void draw_finish();
-    virtual void draw();
-    virtual void draw_rect(tagRECT*);
-    virtual void draw_offset(long, long, tagRECT*);
-    virtual void draw_rect2(tagRECT*);
-    virtual void draw_offset2(long, long, tagRECT*);
-    virtual void paint();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
-    virtual long handle_idle();
-    virtual long handle_size(long, long);
-    virtual long handle_paint();
-    virtual long handle_key_down(long, short, int, int, int);
-    virtual long handle_char(long, short);
-    virtual long handle_command(unsigned int, long);
-    virtual long handle_user_command(unsigned int, long);
-    virtual long handle_timer_command(unsigned int, long);
-    virtual long handle_scroll(long, long);
-    virtual long handle_mouse_down(unsigned char, long, long, int, int);
-    virtual long handle_mouse_move(long, long, int, int);
-    virtual long handle_mouse_up(unsigned char, long, long, int, int);
-    virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
-    virtual long mouse_move_action(long, long, int, int);
-    virtual long mouse_left_down_action(long, long, int, int);
-    virtual long mouse_left_hold_action(long, long, int, int);
-    virtual long mouse_left_move_action(long, long, int, int);
-    virtual long mouse_left_up_action(long, long, int, int);
-    virtual long mouse_left_dbl_click_action(long, long, int, int);
-    virtual long mouse_right_down_action(long, long, int, int);
-    virtual long mouse_right_hold_action(long, long, int, int);
-    virtual long mouse_right_move_action(long, long, int, int);
-    virtual long mouse_right_up_action(long, long, int, int);
-    virtual long mouse_right_dbl_click_action(long, long, int, int);
-    virtual long key_down_action(long, short, int, int, int);
-    virtual long char_action(long, short);
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
-    virtual void get_true_render_rect(tagRECT*);
-    virtual int is_inside(long, long);
-    virtual void set_focus(int);
-    virtual void set_tab_order(TPanel*, TPanel*);
-    virtual void set_tab_order(TPanel**, short);
-    virtual unsigned char get_help_info(char**, long*, long, long);
-    virtual void stop_sound_system();
-    virtual int restart_sound_system();
-    virtual void take_snapshot();
-    virtual void handle_reactivate();
-
-    TPanel* previousPanelValue;
-    TPanel* previousModalPanelValue;
-    long pnl_x;
-    long pnl_y;
-    long pnl_wid;
-    long pnl_hgt;
-    char* panelNameValue;
-    union {
-        TDrawArea* render_area;
-        TDrawArea* draw_surface;
-    };
-    tagRECT clip_rect;
-    int position_mode;
-    union {
-        int need_redraw;
-        int mode;
-        int panel_mode;
-    };
-    union {
-        TPanel* curr_child;
-        TPanel* panel_state;
-    };
-    union {
-        TPanel* parent_panel;
-        TPanel* panel_40;
-    };
-    TPanel* left_panel;
-    TPanel* top_panel;
-    TPanel* right_panel;
-    TPanel* bottom_panel;
-    void* node;
-    union {
-        void* first_child_node;
-        PanelNode* child_list;
-    };
-    void* last_child_node;
-    TPanel* tab_prev_panel;
-    TPanel* tab_next_panel;
-    int mouse_captured;
-    union {
-        int active;
-        int field_6C;
-    };
-    union {
-        int visible;
-        int field_70;
-    };
-    int tab_stop;
-    union {
-        int have_focus;
-        void* input_window;
-    };
-    union {
-        int overlapping_children;
-        int field_7C;
-    };
-    int handle_mouse_input;
-    union {
-        int just_drawn;
-        int redraw_needed;
-    };
-    void* clip_rgn;
-    tagRECT render_rect;
-    long left_border;
-    long top_border;
-    long right_border;
-    long bottom_border;
-    long min_wid;
-    long max_wid;
-    long min_hgt;
-    long max_hgt;
-    long mouse_hold_interval;
-    long mouse_move_tolerance;
-    long mouse_down_x;
-    long mouse_down_y;
-    int mouse_down_ctrl;
-    int mouse_down_shift;
-    unsigned long mouse_down_time;
-    union {
-        int error_code;
-        int field_D8;
-    };
-    int field_DC;
-    int display_changed_count;
-    long help_string_id;
-    long help_page_id;
-    unsigned char mouse_action;
-    unsigned char mouse_down_button;
-    unsigned char panel_type;
-    unsigned char color;
-    unsigned char fill_in_background;
-    unsigned char clip_to_parent;
-    unsigned char draw_rect2_flag;
-    unsigned char need_restore;
-
-
-    char* panelName();
-    void target_func(int);
-    int pick_tile(long, long, short*, short*, RGE_Tile**);
-    void update();
-    void update(int);
-    void show_message(int, char*, int, int, int, int, int);
-    void set_text(char*);
-    void set_text(int, char*, int);
-    void set_text_color(int, int);
-    void set_text_color(int, int, int);
-    void set_player(RGE_Player*);
-    char* get_string(int);
-    int get_string(int, char*, int);
-    char* get_string(int, int, int, int, int, int);
-    void set_curr_child(TPanel*);
-    void set_help_info(int, int);
-    void set_z_order(unsigned char, int);
-    int get_focus();
-    void release_mouse();
-    void set_object(RGE_Static_Object*);
-    void remove_message();
-    void set_visible(int);
-};
+typedef tagPALETTEENTRY scr_tagPALETTEENTRY;
 
 class RGE_Command {
 public:
@@ -470,79 +169,6 @@ public:
     TribeMenuDialog(TPanel*);
 };
 
-class TEasy_Panel : public TPanel {
-public:
-    char gap_F4[0x22c];
-    unsigned char bevel_color1;
-    unsigned char bevel_color2;
-    unsigned char bevel_color3;
-    unsigned char bevel_color4;
-    unsigned char bevel_color5;
-    unsigned char bevel_color6;
-    char gap_326[0x122];
-    TShape* button_pics;
-    char gap_44C[0x10];
-    unsigned char field_45c;
-    char gap_45d[0x1b];
-
-    virtual ~TEasy_Panel();
-    virtual void draw_background(int);
-    virtual void set_ideal_size(long, long);
-    virtual int create_button(TPanel*, TButtonPanel**, long, long, long,
-                               long, long, long, long, long, long);
-    virtual int create_button(TPanel*, TButtonPanel**, char*, char*, long,
-                               long, long, long, long, long, long);
-    virtual int create_check_box(TPanel*, TButtonPanel**, long, long, long,
-                                 long, long, long);
-    virtual int create_radio_button(TPanel*, TButtonPanel**, long, long, long,
-                                    long, long, long);
-    virtual int create_text(TPanel*, TTextPanel**, int, long, long, long,
-                            long, long, int, int, int);
-    virtual int create_text(TPanel*, TTextPanel**, char**, long, long, long,
-                            long, long, long, int, int);
-    virtual int create_text(TPanel*, TTextPanel**, char*, long, long, long,
-                            long, long, int, int, int);
-    virtual int create_input(TPanel*, TInputPanel**, char*, short, int, long,
-                             long, long, long, long);
-    virtual int create_edit(TPanel*, TEditPanel**, char*, short, int, long,
-                            long, long, long, long, int, int);
-    virtual int create_drop_down(TPanel*, TDropDownPanel**, long, long, long,
-                                 long, long, long, long);
-    virtual int create_list(TPanel*, TListPanel**, long, long, long, long,
-                            long);
-    virtual int create_scrollbar(TPanel*, TScrollBarPanel*, TTextPanel*, long,
-                                 long, long, long, long);
-    virtual int create_auto_scrollbar(TScrollBarPanel**, TTextPanel*, long);
-    virtual int create_vert_slider(TPanel*, TVerticalSliderPanel**, long, long,
-                                   long, long, long, long, long);
-    virtual int create_horz_slider(TPanel*, THorizontalSliderPanel**, long,
-                                   long, long, long, long, long, long);
-    virtual void position_panel(TPanel*, long, long, long, long);
-    virtual long action(TPanel*, long, unsigned long, unsigned long);
-
-    void setup_popup_help();
-    void popupYesNoDialog(char*, void*, int, int);
-    void popupYesNoDialog(long, char*, int, int);
-    void popupYesNoCancelDialog(char*, char*, int, int);
-};
-
-class TScreenPanel : public TEasy_Panel {
-public:
-    TScreenPanel(char*);
-    virtual ~TScreenPanel();
-    int setup(TDrawArea*, char*, long, int);
-    long setup(TDrawArea*, TPanel*, int, int, int, int, int);
-    int create_text(TPanel*, TTextPanel**, int, int, int, int, int, int,
-                    int, int, int, int);
-    int create_text(TPanel*, TTextPanel**, int, int, int, int, int, int,
-                    int, int, int);
-    int create_text(TPanel*, TTextPanel**, char*, int, int, int, int, int,
-                    int, int, int, int);
-    int create_text(TPanel*, TTextPanel**, char*, int, int, int, int, int,
-                    int, int, int);
-    virtual void set_focus(int);
-};
-
 class TShape {
 public:
     char gap_00[0x20];
@@ -555,14 +181,50 @@ public:
                              unsigned char*);
 };
 
-class TFont {
+class TMessagePanel : public TPanel {
+public:
+    enum MessageType {
+        MessageNormal = 0
+    };
+
+    char gap_F4[0x28c];
+    TMessagePanel(void*, int, int);
+    long setup(TDrawArea*, TPanel*, int, int, int, int, int);
+    void set_justification(int, int, int);
+    void remove_message();
+    void show_message2(int, char*, unsigned long, unsigned long, void*, long,
+                       long, void*, int, void*, int);
+    void show_message(int, char*);
+    void show_message(int, char*, int, int, int, int, int);
+    void show_message(MessageType, char*, int, int, int, int, int);
+    void show_message(int, const char*);
 };
 
-class RGE_Font {
+class TTextPanel : public TPanel {
 public:
-    TFont* font;
-    int font_wid;
-    int font_hgt;
+    char gap_F4[0x94];
+    TTextPanel();
+    long setup(TDrawArea*, TPanel*, int, int, int, int, void*, int, int,
+               char*, int, unsigned char, int, unsigned char, int, char*);
+    void set_alignment(int, int);
+    void set_back_pic(char*);
+    void set_fill_back(int, unsigned char);
+    void set_style(int);
+    void set_text_color(int, int);
+    virtual void set_text(char*);
+    virtual void set_text(long);
+    virtual void set_text(char**, short);
+    void empty_list();
+    int pause_flag;
+    char* get_text();
+};
+
+class TScrollBarPanel : public TPanel {
+public:
+    void set_bevel_info(int, int, int, int, int, int, int);
+};
+
+class TFont {
 };
 
 class TDigital {
@@ -634,137 +296,20 @@ public:
     void update(int);
 };
 
-class RGE_Diamond_Map : public TPanel {
-public:
-    char gap_DC[0x74];
-    TRIBE_Main_View* main_view;
-    char gap_154[0x20];
-    long setup(TDrawArea*, TPanel*, int, int, int, int, unsigned char, int,
-               void*);
-    void set_world(RGE_Game_World*);
-    void set_bitmap(char*, int);
-    void set_player(RGE_Player*);
-    int pick_tile(long, long, short*, short*);
-    int pick_tile(long, long, short*, short*, RGE_Tile**);
-    void update();
-    void update(int);
-};
-
-class TRIBE_Diamond_Map_View : public RGE_Diamond_Map {
-public:
-    TRIBE_Diamond_Map_View();
-};
-
 class TRIBE_Panel_Inven : public TPanel {
 public:
     char gap_DC[0x3c];
-    TRIBE_Panel_Inven(TDrawArea*, TPanel*, TFont*, RGE_Player*);
+    TRIBE_Panel_Inven(TDrawArea*, TPanel*, void*, RGE_Player*);
+    void set_player(TRIBE_Player*);
 };
 
 class TRIBE_Panel_Object : public TPanel {
 public:
     char gap_DC[0x138];
-    TRIBE_Panel_Object(TDrawArea*, TPanel*, TFont*, int, int, TShape*,
+    TRIBE_Panel_Object(TDrawArea*, TPanel*, void*, int, int, TShape*,
                        TShape**, RGE_Player*);
     void set_object(RGE_Static_Object*);
     void set_player(RGE_Player*);
-};
-
-class TButtonPanel : public TPanel {
-public:
-    char gap_F4[0x1cc];
-    union {
-        unsigned char draw_type_byte;
-        unsigned char draw_type;
-    };
-    int enabled;
-    char gap_2C1[0x113];
-    long hotkey;
-    long hotkey_shift;
-
-    virtual ~TButtonPanel();
-    void set_text_color(int, int, int);
-    void set_text_color(int, unsigned long, unsigned long);
-    void set_sound_number(int);
-    void set_id(short, long, long);
-    void setDrawType(int);
-    long get_id();
-    void set_text(int, char*);
-    void set_text(int, char*, char*);
-    void set_text(char*);
-    void set_bevel_info(int, int, int, int, int, int, int);
-    void set_picture(short, TShape*, short);
-    int button_action(long, long);
-    char* help_text;
-};
-
-class TRIBE_Panel_Button : public TButtonPanel {
-public:
-    int display_garrison;
-    int garrison_number;
-    unsigned char tribe_button_type;
-    char gap_2C1[3];
-    TShape* border_pic;
-    char gap_2C8[0x108];
-    int in_use;
-    int disabled;
-    unsigned char* color_table;
-    int border_frame;
-
-    TRIBE_Panel_Button(TDrawArea*, TPanel*, TDigital*, TFont*, int, int,
-                       TShape*);
-    void set_text_msg(char*);
-    void set_text(int, char*, char*);
-    void set_display_garrison(int);
-    void set_garrison_number(int);
-    void set_active(int);
-    void set_disabled(int);
-    int get_id2();
-    void reset();
-    void set_text(int, char*, int);
-};
-
-class TMessagePanel : public TPanel {
-public:
-    enum MessageType {
-        MessageNormal = 0
-    };
-
-    char gap_F4[0x28c];
-    TMessagePanel(TFont*, int, int);
-    long setup(TDrawArea*, TPanel*, int, int, int, int, int);
-    void set_justification(int, int, int);
-    void remove_message();
-    void show_message2(int, char*, unsigned long, unsigned long, void*, long,
-                       long, void*, int, void*, int);
-    void show_message(int, char*);
-    void show_message(int, char*, int, int, int, int, int);
-    void show_message(MessageType, char*, int, int, int, int, int);
-    void show_message(int, const char*);
-};
-
-class TTextPanel : public TPanel {
-public:
-    char gap_F4[0x94];
-    TTextPanel();
-    long setup(TDrawArea*, TPanel*, int, int, int, int, TFont*, int, int,
-               char*, int, unsigned char, int, unsigned char, int, char*);
-    void set_alignment(int, int);
-    void set_back_pic(char*);
-    void set_fill_back(int, unsigned char);
-    void set_style(int);
-    void set_text_color(int, int);
-    virtual void set_text(char*);
-    virtual void set_text(long);
-    virtual void set_text(char**, short);
-    void empty_list();
-    int pause_flag;
-    char* get_text();
-};
-
-class TScrollBarPanel : public TPanel {
-public:
-    void set_bevel_info(int, int, int, int, int, int, int);
 };
 
 class TRIBE_Panel_Time : public TPanel {
@@ -785,7 +330,7 @@ public:
 
 class RGE_Panel_Tool_Box : public TEasy_Panel {
 public:
-    RGE_Panel_Tool_Box(TDrawArea*, TPanel*, int, int, int, int, TFont*, int,
+    RGE_Panel_Tool_Box(TDrawArea*, TPanel*, int, int, int, int, void*, int,
                        int, TDigital*, TScreenPanel*, RGE_View*,
                        RGE_Diamond_Map*);
     void game_mode_changed(int, int);
@@ -976,108 +521,6 @@ public:
     void send_zone_score_info();
 };
 
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    virtual int run();
-    virtual long wnd_proc(void*, unsigned int, unsigned int, long);
-    virtual void set_prog_mode(int);
-    virtual void set_game_mode(int, int);
-    void set_game_mode(int);
-    virtual void set_player(short);
-    virtual int get_error_code();
-    virtual char* get_string(int, long, char*, int);
-    char* get_string(int, int, int, char*, int);
-    virtual char* get_string(long, char*, int);
-    virtual char* get_string(long);
-    virtual char* get_string2(int, long, long, char*, int);
-    virtual TPanel* get_view_panel();
-    virtual TPanel* get_map_panel();
-    virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario*);
-    virtual RGE_Scenario_Header* new_scenario_header(int);
-    virtual RGE_Scenario* new_scenario_info(int);
-    virtual void notification(int, long, long, long, long);
-    virtual int reset_comm();
-    virtual void send_game_options();
-    virtual void receive_game_options();
-    virtual char* gameSummary();
-    virtual int processCheatCode(int, char*);
-
-    char gap_04[8];
-    RGE_Prog_Info* prog_info;
-    char gap_10[0x0c];
-    int prog_active;
-    char gap_1c[0x34];
-    union {
-        TDrawArea* draw_area;
-        unsigned char outline_type;
-    };
-    char gap_54[0x0c];
-    TSound_Driver* sound_system;
-    char gap_64[0x14c];
-    int prog_mode;
-    int game_mode;
-    int sub_game_mode;
-    char gap_1c0[0x18];
-    int input_enabled;
-    char gap_1dc[0x220];
-    RGE_Game_World* world;
-    char gap_3fc[0x5d8];
-    int display_selected_ids;
-    char gap_9dc[0x24];
-    int save_paused;
-    char gap_a04[0x1c];
-    void* map_save_area;
-    int quick_build;
-
-    int multiplayerGame();
-    int allowCheatCodes();
-    void enable_input();
-    void set_font(int, int);
-    void request_pause(int);
-    void request_pause();
-    void set_game_speed(float);
-    void build_mode(int, int);
-    int language(int);
-    char* language(int, int, int, char*, int);
-    int singlePlayerGame();
-    int numberPlayers();
-    int playerID(int);
-    unsigned long get_last_single_time(int);
-    int get_last_world_update_count();
-    unsigned long get_last_time(int);
-    void set_last_single_time(int, unsigned long);
-    void add_to_timing(int, unsigned long);
-    void increment_world_update_count();
-    TRIBE_Player* get_player();
-    RGE_Player* get_player(void***, short*, int, int, int, int);
-    TRIBE_Player* get_player(int, short*);
-    TRIBE_Player* get_player(int);
-    RGE_Font* get_font(int);
-    int get_paused();
-    void set_windows_mouse(int);
-    void set_map_visible(int);
-    void set_map_fog(int);
-    void set_paused(int, int);
-    void close();
-    void draw_window();
-    void close_game_screens(int);
-    void do_game_over();
-    TDigital* get_sound(int);
-    int gameDeveloperMode();
-    unsigned char check_prog_argument(const char*);
-    void dump_memory_usage(char*);
-    void goto_notification_loc();
-    void* prog_window;
-    void get_mouse_pos(tagPOINT);
-    void set_font(int);
-    int master_obj_id;
-    int do_show_timings;
-    int do_show_comm;
-    int do_show_ai;
-    int get_countdown_timer(int, int*);
-};
-
 class TRIBE_Game : public RGE_Base_Game {
 public:
     char gap_A24[0x200];
@@ -1088,16 +531,6 @@ public:
     void show_status_message(char*, char*, long);
     void close_status_message();
     void quit_game();
-};
-
-class TPanelSystem {
-public:
-    TPanel* currentPanel();
-    TPanel* mouseOwner();
-    TPanel* panel(char*);
-    TPanel* modalPanel();
-    int setCurrentPanel(char*, int);
-    int destroyPanel(char*);
 };
 
 class TCommunications_Speed {
@@ -1156,14 +589,6 @@ public:
 };
 
 typedef Item_Avail BuildingEntry;
-
-class RGE_Color_Table {
-public:
-    virtual ~RGE_Color_Table();
-    char gap_00[0x26];
-    short id;
-    unsigned char table[0x100];
-};
 
 class RGE_Victory_Conditions {
 public:
@@ -1478,6 +903,8 @@ public:
                 TDigital* game_over_sound;
                 TDigital* sound_system;
             };
+            unsigned long last_game_speed_change;
+            unsigned long last_pause_change;
         };
         struct {
             char gap_710[0x24];
@@ -1604,7 +1031,6 @@ protected:
     void command_convert();
     void command_diplomacy();
     void command_research(int);
-    int popup_help_flag;
     void clear_popup_help();
     void command_save_game();
     void command_save_scenario();
@@ -1619,10 +1045,6 @@ protected:
     void command_more();
     void command_menu();
     void command_group();
-    int field_5E4;
-    int field_7B4;
-    unsigned long last_pause_time;
-    unsigned long last_game_speed_time;
     void command_attack_ground();
     void command_stand_ground();
     void command_trade_attribute(long);
@@ -1635,9 +1057,10 @@ protected:
 public:
     void add_log(char*);
     virtual void set_focus(int);
-    int field_14;
-    int field_18;
 };
+
+typedef char scr_game_size_check[
+    (sizeof(TRIBE_Screen_Game) == 0x7C4) ? 1 : -1];
 
 extern RGE_Base_Game* rge_base_game;
 extern int disable_terrain_sounds;

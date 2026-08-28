@@ -40,3 +40,16 @@ It shows boundary errors for `00498A50`, `00499680`, `0049ADA0`, `0049BAF0`,
 `0049D440 any_selected_have_action` was previously registered exact. Its
 merged result differs by 60 bytes and crosses two boundary bytes. The direct
 entry and module status now record it as scratch.
+
+## Provider composition
+
+`include/scr_game.h` now uses the `Pnl_scr`, `pnl_btn`, `tpnl_btn`,
+`diam_map`, and `tvw_dmap` providers. It no longer defines Panel, button,
+or Diamond Map classes.
+
+The PDB size check confirms `sizeof(TRIBE_Screen_Game) == 0x7C4`.
+The screen keeps all 96 normal `scr_game.cpp` bodies.
+
+Focused checks still match `004954A0`, `004959A0`, `00497210`, `0049B560`,
+and `0049D530`. The existing grouped regression list already includes
+`00498A10`, `00498A50`, and `0049BAF0`. They remain nonexact.
