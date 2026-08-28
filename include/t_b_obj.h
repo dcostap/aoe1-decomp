@@ -4,11 +4,41 @@
 // Declarations owned by the PDB source module t_b_obj.cpp.
 // The TRIBE combat hierarchy comes from its canonical owner header.
 #include "t_c_obj.h"
+#include "tm_co_ob.h"
 
-struct Production_Queue_Record;
+struct Production_Queue_Record {
+    short master_id;
+    short unit_count;
+};
 
-class TRIBE_Master_Building_Object;
+typedef char production_queue_record_size_check[
+    (sizeof(Production_Queue_Record) == 0x04) ? 1 : -1];
+
+// The master-building owner has no published canonical header yet. Keep its
+// derived fields here and compose its canonical combat base from tm_co_ob.h.
+class TRIBE_Master_Building_Object : public TRIBE_Master_Combat_Object {
+public:
+    RGE_Sound* construction_sound;
+    RGE_Sprite* construction_sprite;
+    unsigned char building_connect_flag;
+    short building_facet;
+    unsigned char build_and_go_away;
+    short on_build_make_obj;
+    short on_build_make_tile;
+    short on_build_make_overlay;
+    short on_build_make_tech;
+};
+
+typedef char tribe_master_building_object_size_check[
+    (sizeof(TRIBE_Master_Building_Object) == 0x17C) ? 1 : -1];
+
 class TRIBE_Building_Object;
+
+class TRIBE_Player_Tech {
+public:
+    unsigned char do_tech(short);
+    unsigned char undo_tech(short);
+};
 
 class TRIBE_Building_Object : public TRIBE_Combat_Object {
 public:
