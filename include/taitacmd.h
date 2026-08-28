@@ -8,6 +8,7 @@
 #include "airesitm.h"
 #include "aitacmod.h"
 #include "infmap.h"
+#include "tactical_old_unit_data.h"
 #include "tactical_unit_data.h"
 #include "waypoint.h"
 
@@ -170,14 +171,6 @@ public:
 typedef ManagedArray<int> ManagedArray_int;
 typedef ManagedArray<int> ManagedIntArray;
 typedef ManagedArray<int> ManagedArrayInt;
-
-struct OldUnitData {
-    int data1;
-    int data2;
-    int data3;
-    int data4;
-    int data5;
-};
 
 class RGE_Visible_Map {
 public:

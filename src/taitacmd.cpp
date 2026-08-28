@@ -2407,8 +2407,10 @@ TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
   int local_2c;
   int local_28;
   OldUnitData tempUD;
+  int oldData3;
+  int oldTarget;
 
-  tempUD.data1 = (int)this;
+  tempUD.id = (int)this;
   TacticalAIGroup *group = &this->groups;
   this->groups.next = group;
   this->groups.prev = group;
@@ -2521,11 +2523,13 @@ LAB_004ed92c:
     iVar6 = 0x32;
     if (save_game_version < 7.17f) {
       do {
+        // BINARY NOTE: The shipped old-format read starts at data1 and uses
+        // the adjacent oldData3 local as its fourth dword.
         rge_read(file,&tempUD.data1,0x10);
         ((UnitData *)(piVar2 + -1))->id = tempUD.data1;
         *piVar2 = tempUD.data2;
         piVar2[1] = tempUD.data3;
-        piVar2[2] = tempUD.data4;
+        piVar2[2] = oldData3;
         piVar2[3] = -1;
         piVar2[4] = 0;
         piVar2 = piVar2 + 6;
@@ -2534,12 +2538,13 @@ LAB_004ed92c:
     }
     else {
       do {
+        // BINARY NOTE: This newer old-format read also uses oldTarget.
         rge_read(file,&tempUD.data1,0x14);
         ((UnitData *)(piVar2 + -1))->id = tempUD.data1;
         *piVar2 = tempUD.data2;
         piVar2[1] = tempUD.data3;
-        piVar2[2] = tempUD.data4;
-        piVar2[3] = tempUD.data5;
+        piVar2[2] = oldData3;
+        piVar2[3] = oldTarget;
         piVar2[4] = 0;
         piVar2 = piVar2 + 6;
         iVar6 = iVar6 + -1;

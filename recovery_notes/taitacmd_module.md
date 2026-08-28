@@ -16,6 +16,12 @@ It consumes canonical `InfluenceMap` and `XYPoint` from `infmap.h`.
 It consumes canonical `PlacementState` from `ai_placement_state.h`.
 `include/tactical_unit_data.h` owns the PDB-proven UnitData record. It is a
 `struct`; `gatherer` encodes `PAUUnitData` in its matching symbol.
+`include/tactical_old_unit_data.h` owns the 0x10 PDB OldUnitData class. The
+scratch loading constructor reads legacy records from `tempUD.data1` into the
+two following locals. Its PDB stack records prove that contiguous window.
+The normalized `004ED4F0` source is observed scratch at 5,206 differing bytes,
+with three direct-target mismatches and two boundary escapes. Do not promote it
+or treat this record cleanup as a behavior claim.
 
 Current status:
 
