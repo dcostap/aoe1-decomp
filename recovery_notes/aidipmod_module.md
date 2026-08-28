@@ -28,21 +28,18 @@ migration removes them after the direct module entry points to `src/aidipmod.cpp
 
 ## Status
 
-- 19 owners remain `matching`.
+- 20 owners remain `matching`.
 - `0040C100 stance` is `scratch`.
-- `0040C5B0 mostLiked` remains `accepted_drift`.
-- Its approved difference is a two-byte commutative address-formation swap.
-  The behavior, size, branches, direct call, cleanup, and boundary remain equal.
-- No source change attempts to force bytes or alter the accepted-drift state.
+- `0040C5B0 mostLiked` is `matching`.
 
 ## Validation
 
-The direct candidate validates 19 registered `MATCH`, `0.0000%` rows. It has
+The direct candidate validates 20 registered `MATCH`, `0.0000%` rows. It has
 no comparison, ownership, relocation, or boundary error for a registered row.
 
 `0040C100` differs by 19 bytes after canonical typed Player and World access.
 It has correct ownership, relocations, and boundaries. The natural source is
 kept. The matching claim is removed.
 
-`0040C5B0` now emits `MATCH`, `0.0000%`. It remains accepted drift. This audit
-does not reopen its reviewed status.
+`0040C5B0` emits `MATCH`, `0.0000%`, with matching ownership and zero
+relocation and boundary errors. This direct-source result promotes the owner.
