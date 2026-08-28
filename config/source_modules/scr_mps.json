@@ -13,7 +13,7 @@
     "004A16E0": { "status": "scratch", "note_path": "recovery_notes/scr_mps_module.md" },
     "004A2060": { "status": "accepted_drift", "note_path": "recovery_notes/scr_mps_module.md" },
     "004A27A0": { "status": "accepted_drift", "note_path": "recovery_notes/scr_mps_module.md" },
-    "004A2910": { "status": "scratch", "note_path": "recovery_notes/scr_mps_module.md" },
+    "004A2910": { "status": "matching", "note_path": "recovery_notes/scr_mps_module.md" },
     "004A2BA0": { "status": "matching", "note_path": "recovery_notes/scr_mps_module.md" },
     "004A2D50": { "status": "scratch", "note_path": "recovery_notes/scr_mps_module.md" },
     "004A37C0": { "status": "matching", "note_path": "recovery_notes/scr_mps_module.md" },

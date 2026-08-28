@@ -23,15 +23,15 @@
 ## Evidence and validation
 
 The plan packet reports 34 normal owners and 24,639 normal bytes. The natural
-provider candidate registers 24 exact owners. The address sequence and PDB line
+provider candidate registers 25 exact owners. The address sequence and PDB line
 ranges establish source order.
 
-Migration is structural. The old grouped wrapper was the pre-migration validation baseline. The natural provider candidate compiles all 34 owners in one TU. The final report is `build/candidate_tus/final_rebase_scr_mps2/report.txt`. The 24 registered owners report `MATCH`, `0.0000%`, zero relocation mismatches, and zero boundary escapes.
+Migration is structural. The old grouped wrapper was the pre-migration validation baseline. The natural provider candidate compiles all 34 owners in one TU. The final report is `build/candidate_tus/final3_scr_mps/report.txt`. The 25 registered owners report `MATCH`, `0.0000%`, zero relocation mismatches, and zero boundary escapes.
 
-The ten unregistered owners remain observed, not exact claims. Natural cleanup
-changed the five former exact owners as follows: `004A1300` 853 bytes,
-`004A2910` 38 bytes, `004A4190` 2 bytes, `004A6050` 106 bytes, and `004A6290`
-43 bytes. The former accepted-drift owner `004A2D50` now reports 360 bytes
+The nine unregistered owners remain observed, not exact claims. Natural cleanup
+changed four former exact owners as follows: `004A1300` 853 bytes,
+`004A4190` 2 bytes, `004A6050` 106 bytes, and `004A6290` 43 bytes.
+The natural `showNetInfo` cleanup restores `004A2910` to an exact match. The former accepted-drift owner `004A2D50` now reports 360 bytes
 and remains scratch because the old review covered a different source form.
 The other accepted-drift results remain recorded.
 Do not change recovered behavior to hide these results.
@@ -51,7 +51,7 @@ The original image proves every former `CSTR` value. At `00584610`, the bytes ar
 ## Open blockers
 
 - The requested Terra contract file was absent from this worktree at `build/source_reunification/terra_system/orchestrator_contract.md`; an equivalent contract was read from the sibling Terra checkout.
-- The eight scratch owners remain unresolved: `004A00B0`, `004A1300`,
-  `004A16E0`, `004A2910`, `004A2D50`, `004A4190`, `004A6050`, and `004A6290`.
+- The seven scratch owners remain unresolved: `004A00B0`, `004A1300`,
+  `004A16E0`, `004A2D50`, `004A4190`, `004A6050`, and `004A6290`.
 - The two accepted-drift owners retain their reviewed localized drift:
   `004A2060` and `004A27A0`.
