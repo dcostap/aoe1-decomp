@@ -1981,21 +1981,28 @@
       }
     },
     {
-      "name": "tpnl_inv_prefix",
-      "source": "src/tpnl_inv_tu.cpp",
+      "name": "tpnl_inv",
+      "module": "tpnl_inv",
+      "source": "src/tpnl_inv.cpp",
       "flags": "config/flags/0051A5C0_TRIBE_Panel_Inven.rsp",
       "owners": {
-        "0051A5C0": "src/matching/0051A5C0_TRIBE_Panel_Inven.cpp",
-        "0051A6B0": "src/matching/0051A6B0_set_text_color.cpp",
-        "0051A6D0": "src/matching/0051A6D0_TRIBE_Panel_Inven.cpp",
-        "0051A770": "src/matching/0051A770_draw.cpp",
-        "0051AAD0": "src/matching/0051AAD0_handle_idle.cpp",
-        "0051ABF0": "src/matching/0051ABF0_set_player.cpp",
-        "0051AC10": "src/matching/0051AC10_save_info.cpp",
-        "0051ACA0": "src/matching/0051ACA0_get_help_info.cpp"
+        "0051A5C0": "src/tpnl_inv.cpp",
+        "0051A6B0": "src/tpnl_inv.cpp",
+        "0051A6D0": "src/tpnl_inv.cpp",
+        "0051A770": "src/tpnl_inv.cpp",
+        "0051AAD0": "src/tpnl_inv.cpp",
+        "0051ABF0": "src/tpnl_inv.cpp",
+        "0051AC10": "src/tpnl_inv.cpp",
+        "0051ACA0": "src/tpnl_inv.cpp"
       },
       "symbols": {
+        "0051A5C0": "??0TRIBE_Panel_Inven@@QAE@PAVTDrawArea@@PAVTPanel@@PAXPAVTRIBE_Player@@@Z",
+        "0051A6B0": "?set_text_color@TRIBE_Panel_Inven@@QAEXKK@Z",
+        "0051A6D0": "??1TRIBE_Panel_Inven@@UAE@XZ",
         "0051A770": "?draw@TRIBE_Panel_Inven@@UAEXXZ",
+        "0051AAD0": "?handle_idle@TRIBE_Panel_Inven@@UAEJXZ",
+        "0051ABF0": "?set_player@TRIBE_Panel_Inven@@QAEXPAVTRIBE_Player@@@Z",
+        "0051AC10": "?save_info@TRIBE_Panel_Inven@@IAEXXZ",
         "0051ACA0": "?get_help_info@TRIBE_Panel_Inven@@UAEEAAPADAAJJJ@Z"
       }
     },
