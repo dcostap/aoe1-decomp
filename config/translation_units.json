@@ -1672,31 +1672,6 @@
       }
     },
     {
-      "name": "stat_obj_sparse",
-      "source": "src/stat_obj_tu.cpp",
-      "flags": "config/flags/default.rsp",
-      "owners": {
-        "004C21A0": "src/matching/004C21A0_draw_back_frame.cpp",
-        "004C2220": "src/matching/004C2220_capture_frame.cpp",
-        "004C23F0": "src/matching/004C23F0_capture_frame_3d_cube.cpp",
-        "004C4E00": "src/matching/004C4E00_modify_delta.cpp",
-        "004C5850": "src/matching/004C5850_is_moving.cpp",
-        "004C5BE0": "src/matching/004C5BE0_calculateDamage.cpp",
-        "004C5D10": "src/matching/004C5D10_notify_of_relation.cpp",
-        "004C6260": "src/matching/004C6260_new_angle.cpp",
-        "004C66C0": "src/matching/004C66C0_RGE_Check_List.cpp",
-        "004C66D0": "src/matching/004C66D0_RGE_Check_List.cpp",
-        "004C6700": "src/matching/004C6700_add_node.cpp",
-        "004C78B0": "src/matching/004C78B0_commanderCreateGroup.cpp",
-        "004C7F30": "src/matching/004C7F30_get_action_checksum.cpp",
-        "004C7F40": "src/matching/004C7F40_get_waypoint_checksum.cpp"
-      },
-      "symbols": {
-        "004C2220": "?capture_frame@RGE_Static_Object@@QAEXPAVTDrawArea@@FF@Z",
-        "004C4E00": "?modify_delta@RGE_Static_Object@@UAEXME@Z"
-      }
-    },
-    {
       "name": "tcommand",
       "module": "tcommand",
       "source": "src/tcommand.cpp",
@@ -2311,42 +2286,6 @@
         "00411650": "?convertUnitNameToIntType@AIPlayBook@@UBEHPAD@Z",
         "00411660": "?convertUnitToIntType@AIPlayBook@@UBEHPAVRGE_Static_Object@@@Z"
       }
-    },
-    {
-      "name": "stat_obj_number_facets",
-      "source": "src/stat_obj_number_facets_tu.cpp",
-      "flags": "config/flags/default.rsp",
-      "owners": {
-        "004C6B50": "src/matching/004C6B50_numberFacets.cpp"
-      },
-      "symbols": {}
-    },
-    {
-      "name": "stat_obj_under_attack",
-      "source": "src/stat_obj_under_attack_tu.cpp",
-      "flags": "config/flags/default.rsp",
-      "owners": {
-        "004C6B60": "src/matching/004C6B60_underAttack.cpp"
-      },
-      "symbols": {}
-    },
-    {
-      "name": "stat_obj_set_under_attack",
-      "source": "src/stat_obj_set_under_attack_tu.cpp",
-      "flags": "config/flags/default.rsp",
-      "owners": {
-        "004C6B70": "src/matching/004C6B70_setUnderAttack.cpp"
-      },
-      "symbols": {}
-    },
-    {
-      "name": "stat_obj_obstruction_map",
-      "source": "src/stat_obj_obstruction_map_tu.cpp",
-      "flags": "config/flags/default.rsp",
-      "owners": {
-        "004C6B80": "src/matching/004C6B80_addToObstructionMap.cpp"
-      },
-      "symbols": {}
     },
     {
       "name": "taiuaimd_soldier_segment",

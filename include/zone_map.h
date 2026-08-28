@@ -11,10 +11,13 @@ struct Zone_Queue {
     Zone_Queue* next;
 };
 
+#ifndef AOE1_XYPOINT_DEFINED
+#define AOE1_XYPOINT_DEFINED
 struct XYPoint {
     int x;
     int y;
 };
+#endif
 
 class RGE_Zone_Map {
 public:

@@ -8,10 +8,13 @@
 // this header through the grouped wrapper; their private fallback declarations
 // remain available for isolated work.
 
+#ifndef AOE1_XYPOINT_DEFINED
+#define AOE1_XYPOINT_DEFINED
 struct XYPoint {
     int x;
     int y;
 };
+#endif
 
 class InfluenceMap {
 public:

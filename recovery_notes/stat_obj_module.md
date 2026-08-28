@@ -1,0 +1,52 @@
+# stat_obj.cpp module merge
+
+- PDB source: `C:\\msdev\\work\\age1_x1\\stat_obj.cpp`.
+- Source: `src/stat_obj.cpp`.
+- Header: `include/stat_obj.h`.
+- Normal owners: 115.
+- PDB order: `004C1100` through `004C7F40`.
+- Owner class: `RGE_Static_Object`, with `RGE_Check_List` at `004C66C0` through `004C6700`.
+- Nearby generated owner: `004C11C0` scalar deleting destructor. It has no source body.
+
+## Context evidence
+
+The packet lists one PDB source path for all 115 owners. The owner line bands increase
+from 132 through 5080. The address sequence is strictly increasing. The source keeps
+this packet order. The source uses one canonical `RGE_Static_Object` class surface.
+
+The header models the inventory `RGE_Master_Static_Object` size of `0xB8`.
+The executable proves `recyclable` at `+0xA4`, `damage_sprite_num` at `+0x93`,
+and `damage_sprites` at `+0x94`. It also proves the static object size of `0x88`.
+
+## Transition
+
+The merge removes the wrapper TU, four small diagnostic wrappers, source-bank
+fragments, context macros, and fallback class declarations. The source uses
+canonical master, object, player, World, visibility, zone-map, and pathing
+providers. It has no inline assembly or manual vptr setup.
+
+The source uses direct map rows, object-list nodes, zone-map calls, and World
+time delta. It does not keep local master, player, World, or visibility views.
+
+## Validation
+
+The source compiles with the pinned VC5 compiler and
+`config/flags/default.rsp`. The full candidate is
+`build/candidate_tus/stat_obj_direct/report.txt`.
+
+- 85 normal owners match with zero relocation mismatches and no boundary
+  escapes.
+- `004C11C0`, the scalar deleting destructor, matches.
+- 9 accepted-drift owners remain accepted drift.
+- 20 owners remain scratch. `004C7030` remains verified logic.
+- The report has zero comparison errors.
+
+The direct source demotes these prior exact owners to scratch:
+`004C1100`, `004C11E0`, `004C1D60`, `004C1DC0`, `004C3C70`, `004C4D80`,
+`004C4F10`, `004C5210`, `004C52F0`, `004C6DA0`, `004C7920`, and
+`004C7D00`.
+
+The direct source promotes these prior scratch owners after grouped matches:
+`004C1420`, `004C1590`, `004C16B0`, `004C41D0`, `004C4C40`, `004C50F0`,
+`004C58E0`, `004C5D80`, `004C7430`, `004C74B0`, `004C7530`, and
+`004C7CE0`.
