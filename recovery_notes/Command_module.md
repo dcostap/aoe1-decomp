@@ -35,25 +35,24 @@ uses the proven `free` target at `0054B7D0`.
 
 ## Migration check
 
-The pinned VC5 compiler builds the complete source. The grouped report at
-`build/command_rebased_preflight/result_natural/report.json` has 11 exact
-owners. Every owner reports `MATCH` and `0.0000%`. The other 24 former
-matching-bank owners remain in the module manifest as matching recovery status,
-but are not registered as exact owners after source consolidation:
+The PDB records use fixed headers. Stop and Pause are two-byte headers. Order,
+Formation, Group AI Order, and Group Waypoint have no typed tail member.
+Command source locates serialized `RGE_Obj_Info` values after each typed header.
 
-`00433D40`, `00434290`, `00434320`, `00434400`, `004348B0`, `004348F0`,
-`00434920`, `00434A00`, `00434D40`, `00435020`, `00435060`, `004350A0`,
+The complete grouped report at
+`build/command_complete_audit/result_natural_records_final/report.json` checks all
+51 normal owners. The registered report at
+`build/candidate_tus/Command/report.json` has 20 exact owners. Every registered
+owner reports `MATCH` and `0.0000%`.
+
+The fresh natural-record build demotes these 15 rows to scratch:
+
+`00433D40`, `004348B0`, `004348F0`, `00435020`, `00435060`, `004350A0`,
 `00435110`, `00435320`, `00435420`, `00435620`, `00435810`, `00435900`,
-`00435AE0`, `00435CD0`, `00435D90`, `00435EA0`, `004360D0`, `00436150`.
+`00435AE0`, `00435EA0`, and `00436150`.
 
-These are source-shape regressions from the former isolated owners. The merged
-source preserves the reviewed behavior and call surfaces. Exact repair resumes
-on the final source tree.
+The grouped report has a boundary escape for `00435320`, `00435620`, and
+`00436150`. No row without fresh grouped exact evidence remains matching.
 
-The canonical World cleanup keeps `00434DC0` and `004350E0` scratch. Typed
-packet source keeps `004351B0`, `004354F0`, and `00435720` scratch.
-
-The seven accepted-drift bodies remain accepted drift. The four scratch bodies
-remain scratch. The complete audit also reports the expected relocation and
-boundary differences for those nonexact bodies. No new exact claim is made by
-this migration.
+The module has 20 matching, 24 scratch, and seven accepted-drift owners. The
+complete audit records each nonexact result.

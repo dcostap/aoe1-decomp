@@ -21,22 +21,17 @@ struct RGE_Command_Order {
     unsigned char unit_num;
     float location_x;
     float location_y;
-    RGE_Obj_Info units[1];
 };
 
-#pragma pack(push, 1)
 struct RGE_Command_Stop {
     unsigned char command;
     unsigned char unit_num;
-    RGE_Obj_Info object_ids[1];
 };
 
 struct RGE_Command_Pause {
     unsigned char command;
     unsigned char unit_num;
-    RGE_Obj_Info object_ids[1];
 };
-#pragma pack(pop)
 
 struct RGE_Command_Give_Attribute {
     unsigned char command;
@@ -102,7 +97,6 @@ struct RGE_Command_Group_AI_Order {
     float range;
     unsigned char immediate;
     unsigned char inFront;
-    RGE_Obj_Info recipients[1];
 };
 
 struct RGE_Command_Resign {
@@ -146,7 +140,6 @@ struct RGE_Command_Formation {
     unsigned char command;
     int unitNum;
     int formationID;
-    RGE_Obj_Info units[1];
 };
 
 struct RGE_Command_Group_Waypoint {
@@ -154,8 +147,20 @@ struct RGE_Command_Group_Waypoint {
     unsigned char unit_num;
     unsigned char x;
     unsigned char y;
-    RGE_Obj_Info unit_ids[1];
 };
+
+typedef char rge_command_order_size_check[
+    (sizeof(RGE_Command_Order) == 0x14) ? 1 : -1];
+typedef char rge_command_stop_size_check[
+    (sizeof(RGE_Command_Stop) == 0x02) ? 1 : -1];
+typedef char rge_command_pause_size_check[
+    (sizeof(RGE_Command_Pause) == 0x02) ? 1 : -1];
+typedef char rge_command_group_ai_order_size_check[
+    (sizeof(RGE_Command_Group_AI_Order) == 0x24) ? 1 : -1];
+typedef char rge_command_formation_size_check[
+    (sizeof(RGE_Command_Formation) == 0x0C) ? 1 : -1];
+typedef char rge_command_group_waypoint_size_check[
+    (sizeof(RGE_Command_Group_Waypoint) == 0x04) ? 1 : -1];
 
 class RGE_Command {
 protected:

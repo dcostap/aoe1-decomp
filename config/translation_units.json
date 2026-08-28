@@ -8146,6 +8146,12 @@
         "00433DB0": "src/Command.cpp",
         "00433DC0": "src/Command.cpp",
         "00433DE0": "src/Command.cpp",
+        "00434290": "src/Command.cpp",
+        "00434320": "src/Command.cpp",
+        "00434400": "src/Command.cpp",
+        "00434920": "src/Command.cpp",
+        "00434A00": "src/Command.cpp",
+        "00434D40": "src/Command.cpp",
         "00434F70": "src/Command.cpp",
         "00435260": "src/Command.cpp",
         "004352C0": "src/Command.cpp",
@@ -8153,15 +8159,27 @@
         "00435A30": "src/Command.cpp",
         "00435A80": "src/Command.cpp",
         "00435C50": "src/Command.cpp",
-        "00435D40": "src/Command.cpp"
+        "00435CD0": "src/Command.cpp",
+        "00435D40": "src/Command.cpp",
+        "00435D90": "src/Command.cpp",
+        "004360D0": "src/Command.cpp"
       },
       "symbols": {
+        "00434290": "?do_command_stop@RGE_Command@@IAEXPAURGE_Command_Stop@@@Z",
+        "00434320": "?do_command_work@RGE_Command@@IAEXPAURGE_Command_Order@@@Z",
+        "00434400": "?do_command_move@RGE_Command@@IAEXPAURGE_Command_Order@@@Z",
+        "00434920": "?do_command_give_attribute@RGE_Command@@MAEXPAURGE_Command_Give_Attribute@@@Z",
+        "00434A00": "?do_command_formation@RGE_Command@@IAEXPAURGE_Command_Formation@@@Z",
+        "00434D40": "?do_command_ai_order@RGE_Command@@IAEXPAURGE_Command_AI_Order@@@Z",
         "00435260": "?check_for_duplicate_orders@RGE_Command@@IAEEPAEJ@Z",
         "004359C0": "?command_create@RGE_Command@@QAEXFFMMM@Z",
         "00435A30": "?command_add_attribute@RGE_Command@@QAEXHHM@Z",
         "00435A80": "?command_give_attribute@RGE_Command@@UAEXHHHM@Z",
         "00435C50": "?command_add_to_group@RGE_Command@@QAEXHHHM@Z",
-        "00435D40": "?command_destroy_group@RGE_Command@@QAEXHH@Z"
+        "00435CD0": "?command_remove_from_group@RGE_Command@@QAEXHHH@Z",
+        "00435D40": "?command_destroy_group@RGE_Command@@QAEXHH@Z",
+        "00435D90": "?command_ai_order@RGE_Command@@QAEXHHHHHHMMMMEEE@Z",
+        "004360D0": "?command_add_waypoint@RGE_Command@@QAEXHHEEE@Z"
       }
     },
     {

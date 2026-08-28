@@ -124,7 +124,8 @@ void RGE_Command::do_command(void* cmd)
 void RGE_Command::do_command_order(RGE_Command_Order* command)
 {
     int unit_num = command->unit_num;
-    RGE_Obj_Info* units = command->units;
+    RGE_Obj_Info* units = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(command) + sizeof(*command));
     RGE_Static_Object* target = this->get_obj(command->target);
 
     if (unit_num > 1) {
@@ -251,7 +252,8 @@ void RGE_Command::do_command_order(RGE_Command_Order* command)
 
 void RGE_Command::do_command_stop(RGE_Command_Stop* stop) {
     int count = stop->unit_num;
-    RGE_Obj_Info* id = stop->object_ids;
+    RGE_Obj_Info* id = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(stop) + sizeof(*stop));
     if (count > 0) {
         int cnt = count;
         do {
@@ -268,7 +270,8 @@ void RGE_Command::do_command_stop(RGE_Command_Stop* stop) {
 
 void RGE_Command::do_command_pause(RGE_Command_Pause* pause) {
     int count = pause->unit_num;
-    RGE_Obj_Info* id = pause->object_ids;
+    RGE_Obj_Info* id = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(pause) + sizeof(*pause));
     if (count > 0) {
         int cnt = count;
         do {
@@ -285,7 +288,8 @@ void RGE_Command::do_command_pause(RGE_Command_Pause* pause) {
 void RGE_Command::do_command_work(RGE_Command_Order* order)
 {
     int unit_num = order->unit_num;
-    RGE_Obj_Info* units = order->units;
+    RGE_Obj_Info* units = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(order) + sizeof(*order));
     RGE_Static_Object* target = this->get_obj(order->target);
     int index = 0;
 
@@ -315,7 +319,8 @@ void RGE_Command::do_command_work(RGE_Command_Order* order)
 
 void RGE_Command::do_command_move(RGE_Command_Order* order) {
     int n = order->unit_num;
-    RGE_Obj_Info* ids = order->units;
+    RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(order) + sizeof(*order));
     RGE_Static_Object* target = this->get_obj(order->target);
     if (n > 1) {
         float minx = 10000.0f;
@@ -445,7 +450,8 @@ void RGE_Command::do_command_give_attribute(RGE_Command_Give_Attribute* cmd)
 void RGE_Command::do_command_formation(RGE_Command_Formation* command)
 {
     int unit_num = command->unitNum;
-    RGE_Obj_Info* units = command->units;
+    RGE_Obj_Info* units = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(command) + sizeof(*command));
 
     if (unit_num > 1) {
         RGE_Static_Object* reference_unit = 0;
@@ -491,7 +497,8 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* command)
 
         int index = 0;
         if (index < unit_num) {
-            units = command->units;
+            units = reinterpret_cast<RGE_Obj_Info*>(
+                reinterpret_cast<unsigned char*>(command) + sizeof(*command));
             do {
                 RGE_Static_Object* object = this->get_obj(*units);
                 if (object != 0) {
@@ -499,7 +506,10 @@ void RGE_Command::do_command_formation(RGE_Command_Formation* command)
                     object->setWaitingToMove(1);
 
                     int other_index = 0;
-                    RGE_Obj_Info* other_unit = command->units;
+                    RGE_Obj_Info* other_unit =
+                        reinterpret_cast<RGE_Obj_Info*>(
+                            reinterpret_cast<unsigned char*>(command) +
+                            sizeof(*command));
                     do {
                         if (other_index != index)
                             object->addToPathingGroup(other_unit->id);
@@ -584,7 +594,8 @@ void RGE_Command::do_command_group_ai_order(RGE_Command_Group_AI_Order* command)
 {
     RGE_Command* self = this;
     int count = command->recipient_count;
-    RGE_Obj_Info* recipient_base = command->recipients;
+    RGE_Obj_Info* recipient_base = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(command) + sizeof(*command));
 
     if (count > 0) {
         RGE_Obj_Info* recipients = recipient_base;
@@ -659,7 +670,8 @@ void RGE_Command::do_command_group_waypoint(RGE_Command_Group_Waypoint* packet) 
     XYZBYTEPoint waypoint;
 
     c = packet->unit_num;
-    ids = packet->unit_ids;
+    ids = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
     if (c > 0) {
         int count = c;
         do {
@@ -717,11 +729,13 @@ void RGE_Command::do_command_destroy_group(RGE_Command_Destroy_Group* cmd) {
 unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* param_1)
 {
     unsigned int n = (unsigned char)param_1->unit_num;
-    RGE_Obj_Info* p1 = param_1->units;
+    RGE_Obj_Info* p1 = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(param_1) + sizeof(*param_1));
     RGE_Command_Order* last_order =
         reinterpret_cast<RGE_Command_Order*>(this->last_order);
     unsigned int last_n = (unsigned char)last_order->unit_num;
-    RGE_Obj_Info* p2 = last_order->units;
+    RGE_Obj_Info* p2 = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(last_order) + sizeof(*last_order));
 
     if (n == last_n) {
 
@@ -744,10 +758,12 @@ fail:
 
 unsigned char RGE_Command::duplicate_check_command_stop(RGE_Command_Stop* param1) {
     int n = param1->unit_num;
-    RGE_Obj_Info* p = param1->object_ids;
+    RGE_Obj_Info* p = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(param1) + sizeof(*param1));
     RGE_Command_Stop* last =
         reinterpret_cast<RGE_Command_Stop*>(this->last_order);
-    RGE_Obj_Info* l = last->object_ids;
+    RGE_Obj_Info* l = reinterpret_cast<RGE_Obj_Info*>(
+        reinterpret_cast<unsigned char*>(last) + sizeof(*last));
 
     if (n != last->unit_num) {
         return 0;
@@ -818,15 +834,17 @@ void RGE_Command::command_order(RGE_Static_Object** list, short list_num,
 {
     if (list != 0 && list_num >= 1) {
         int size = sizeof(RGE_Command_Order) +
-                   (list_num - 1) * sizeof(RGE_Obj_Info);
+                   list_num * sizeof(RGE_Obj_Info);
         RGE_Command_Order* packet = static_cast<RGE_Command_Order*>(
             calloc(1, size));
         if (packet != 0) {
+            RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
+                reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
             for (int i = 0; i < list_num; ++i) {
                 if (list[i] != 0) {
-                    packet->units[i].id = list[i]->id;
+                    ids[i].id = list[i]->id;
                 } else {
-                    packet->units[i].id = -1;
+                    ids[i].id = -1;
                 }
             }
 
@@ -870,13 +888,15 @@ void RGE_Command::command_stop(RGE_Static_Object** list, short list_num)
 {
     if (list != 0 && list_num >= 1) {
         int size = sizeof(RGE_Command_Stop) +
-                   (list_num - 1) * sizeof(RGE_Obj_Info);
+                   list_num * sizeof(RGE_Obj_Info);
         RGE_Command_Stop* packet = static_cast<RGE_Command_Stop*>(
             calloc(1, size));
         if (packet != 0) {
+            RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
+                reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
             for (int i = 0; i < list_num; ++i) {
-                if (list[i] != 0) packet->object_ids[i].id = list[i]->id;
-                else packet->object_ids[i].id = -1;
+                if (list[i] != 0) ids[i].id = list[i]->id;
+                else ids[i].id = -1;
             }
             packet->command = 1;
             packet->unit_num = static_cast<unsigned char>(list_num);
@@ -906,12 +926,14 @@ void RGE_Command::command_stop(int player, int* arr, int count)
 {
     if (arr != 0 && count >= 1) {
         int size = sizeof(RGE_Command_Stop) +
-                   (count - 1) * sizeof(RGE_Obj_Info);
+                   count * sizeof(RGE_Obj_Info);
         RGE_Command_Stop* packet = static_cast<RGE_Command_Stop*>(
             calloc(1, size));
         if (packet != 0) {
+            RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
+                reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
             for (int i = 0; i < count; ++i)
-                packet->object_ids[i].id = arr[i];
+                ids[i].id = arr[i];
             packet->command = 1;
             packet->unit_num = static_cast<unsigned char>(count);
             RGE_Static_Object* obj = this->world->object(arr[0]);
@@ -927,12 +949,14 @@ void RGE_Command::command_stop(int player, int* arr, int count)
 void RGE_Command::command_pause(int param_1, int* data, int count) {
     if (data != 0 && count >= 1) {
         int size = sizeof(RGE_Command_Pause) +
-                   (count - 1) * sizeof(RGE_Obj_Info);
+                   count * sizeof(RGE_Obj_Info);
         RGE_Command_Pause* packet = static_cast<RGE_Command_Pause*>(
             calloc(1, size));
         if (packet != 0) {
+            RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
+                reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
             for (int i = 0; i < count; ++i)
-                packet->object_ids[i].id = data[i];
+                ids[i].id = data[i];
             packet->command = 0x0D;
             packet->unit_num = static_cast<unsigned char>(count);
             L->Log("      >SEND CMD PAUSE");
@@ -946,15 +970,17 @@ void RGE_Command::command_work(RGE_Static_Object** list, short list_num,
 {
     if (list != 0 && list_num >= 1) {
         int size = sizeof(RGE_Command_Order) +
-                   (list_num - 1) * sizeof(RGE_Obj_Info);
+                   list_num * sizeof(RGE_Obj_Info);
         RGE_Command_Order* packet = static_cast<RGE_Command_Order*>(
             calloc(1, size));
         if (packet != 0) {
+            RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
+                reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
             for (int i = 0; i < list_num; ++i) {
                 if (list[i] != 0) {
-                    packet->units[i].id = list[i]->id;
+                    ids[i].id = list[i]->id;
                 } else {
-                    packet->units[i].id = -1;
+                    ids[i].id = -1;
                 }
             }
 
@@ -999,12 +1025,14 @@ void RGE_Command::command_work(int player, int* arr, int count, int target, int 
 {
     if (arr != 0 && count >= 1) {
         int size = sizeof(RGE_Command_Order) +
-                   (count - 1) * sizeof(RGE_Obj_Info);
+                   count * sizeof(RGE_Obj_Info);
         RGE_Command_Order* packet = static_cast<RGE_Command_Order*>(
             calloc(1, size));
         if (packet != 0) {
+            RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
+                reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
             for (int i = 0; i < count; ++i)
-                packet->units[i].id = arr[i];
+                ids[i].id = arr[i];
             packet->location_x = x;
             packet->command = 2;
             packet->unit_num = static_cast<unsigned char>(count);
@@ -1029,15 +1057,17 @@ void RGE_Command::command_move(RGE_Static_Object** list, short list_num,
 {
     if (list != 0 && list_num >= 1) {
         int size = sizeof(RGE_Command_Order) +
-                   (list_num - 1) * sizeof(RGE_Obj_Info);
+                   list_num * sizeof(RGE_Obj_Info);
         RGE_Command_Order* packet = static_cast<RGE_Command_Order*>(
             calloc(1, size));
         if (packet != 0) {
+            RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
+                reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
             for (int i = 0; i < list_num; ++i) {
                 if (list[i] != 0) {
-                    packet->units[i].id = list[i]->id;
+                    ids[i].id = list[i]->id;
                 } else {
-                    packet->units[i].id = -1;
+                    ids[i].id = -1;
                 }
             }
 
@@ -1075,11 +1105,13 @@ void RGE_Command::command_move(int player, int* arr, int count, int param4, int 
 {
     if (arr != 0 && count >= 1) {
         int size = sizeof(RGE_Command_Order) +
-                   (count - 1) * sizeof(RGE_Obj_Info);
+                   count * sizeof(RGE_Obj_Info);
         RGE_Command_Order* packet = static_cast<RGE_Command_Order*>(
             calloc(1, size));
         if (packet != 0) {
-            for (int i = 0; i < count; ++i) packet->units[i].id = arr[i];
+            RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
+                reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
+            for (int i = 0; i < count; ++i) ids[i].id = arr[i];
             packet->command = 3;
             packet->unit_num = static_cast<unsigned char>(count);
             packet->target.id = param4;
@@ -1138,15 +1170,17 @@ void RGE_Command::command_formation(RGE_Static_Object** list, int list_num,
 {
     if (list != 0 && list_num >= 1) {
         int size = sizeof(RGE_Command_Formation) +
-                   (list_num - 1) * sizeof(RGE_Obj_Info);
+                   list_num * sizeof(RGE_Obj_Info);
         RGE_Command_Formation* packet = static_cast<RGE_Command_Formation*>(
             calloc(1, size));
         if (packet != 0) {
+            RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
+                reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
             for (int i = 0; i < list_num; ++i) {
                 if (list[i] != 0) {
-                    packet->units[i].id = list[i]->id;
+                    ids[i].id = list[i]->id;
                 } else {
-                    packet->units[i].id = -1;
+                    ids[i].id = -1;
                 }
             }
 
@@ -1321,15 +1355,17 @@ void RGE_Command::command_group_ai_order(
 {
     if (list != 0 && list_num >= 1) {
         int size = sizeof(RGE_Command_Group_AI_Order) +
-                   (list_num - 1) * sizeof(RGE_Obj_Info);
+                   list_num * sizeof(RGE_Obj_Info);
         RGE_Command_Group_AI_Order* packet =
             static_cast<RGE_Command_Group_AI_Order*>(calloc(1, size));
         if (packet != 0) {
+            RGE_Obj_Info* recipients = reinterpret_cast<RGE_Obj_Info*>(
+                reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
             for (int i = 0; i < list_num; ++i) {
                 if (list[i] != 0) {
-                    packet->recipients[i].id = list[i]->id;
+                    recipients[i].id = list[i]->id;
                 } else {
-                    packet->recipients[i].id = -1;
+                    recipients[i].id = -1;
                 }
             }
 
@@ -1435,15 +1471,17 @@ void RGE_Command::command_group_waypoint(RGE_Static_Object** list,
 {
     if (list != 0 && list_num >= 1) {
         int size = sizeof(RGE_Command_Group_Waypoint) +
-                   (list_num - 1) * sizeof(RGE_Obj_Info);
+                   list_num * sizeof(RGE_Obj_Info);
         RGE_Command_Group_Waypoint* packet =
             static_cast<RGE_Command_Group_Waypoint*>(calloc(1, size));
         if (packet != 0) {
+            RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
+                reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
             for (int i = 0; i < list_num; ++i) {
                 if (list[i] != 0) {
-                    packet->unit_ids[i].id = list[i]->id;
+                    ids[i].id = list[i]->id;
                 } else {
-                    packet->unit_ids[i].id = -1;
+                    ids[i].id = -1;
                 }
             }
 
