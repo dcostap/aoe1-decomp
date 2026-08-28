@@ -216,7 +216,6 @@ public:
     int addToObstructionMap(int);
     float get_terrain_speed(unsigned char);
     void notify(RGE_Player*);
-    void notify(long, long, int, int, int, int);
     void setDamage(float);
     void setHealth(float);
     void setDamage(RGE_Player*, int, int);
