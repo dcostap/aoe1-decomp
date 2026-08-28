@@ -3259,7 +3259,35 @@ int TRIBE_Player::get_mouse_pointer_action_vars(int id, int& action, int& var)
     RGE_Static_Object* object = this->world->object(id);
     if (object == 0) return 0;
     this->analyize_selected_objects();
-    return 0;
+
+    TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
+    MouseClickInfo* table = game->MouseRightClickTable;
+    int table_count = game->MouseRightClickTableSize;
+    if (this->sel_object_properties != 0) {
+        table = game->MouseLeftClickTable;
+        table_count = game->MouseLeftClickTableSize;
+    }
+    int group = object->master_obj->object_group;
+    if (table == 0 || group < 0 || group >= table_count) return 0;
+
+    MouseClickInfo* info = &table[group];
+    if (object->owner == this) {
+        action = info->self_action;
+        var = info->self_text_id;
+    } else if (object->owner == 0 || object->owner->id == 0) {
+        action = info->gaia_action;
+        var = info->gaia_text_id;
+    } else if (this->isAlly(object->owner->id) != 0) {
+        action = info->ally_action;
+        var = info->ally_text_id;
+    } else if (this->isNeutral(object->owner->id) != 0) {
+        action = info->neutral_action;
+        var = info->neutral_text_id;
+    } else {
+        action = info->enemy_action;
+        var = info->enemy_text_id;
+    }
+    return action >= 0;
 }
 
 
