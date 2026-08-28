@@ -28,7 +28,4 @@ public:
 typedef char vw_dimap_view_size_check[
     (sizeof(RGE_Diamond_Map_View) == 0x16C) ? 1 : -1];
 
-extern int allow_user_commands;
-extern float FLOAT_005777e8;
-
 #endif

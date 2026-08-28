@@ -3,11 +3,11 @@
 - PDB source: `vw_dimap.cpp`, lines 206 to 261.
 - Original size: 368 bytes.
 
-## Recovery record
+The right-click action calls `command_make_do`. The waypoint action uses
+`command_add_waypoint`.
 
-A first pass used the packet behavior and typed offsets. A later pass corrected
-the map base and the view-location argument order. The right-click failure path
-uses the shared final return path.
+The source uses `mouse_action` and separate `short` tile coordinates. It has
+no stack aliases or replacement panel fields.
 
-The merged module has 191 differing bytes. The source remains `matching` because
-this was its reviewed bank state. The merge does not claim a new exact result.
+The full `vw_dimap.cpp` candidate matches this owner and all twelve normal
+owners. The generated deleting destructor also matches.

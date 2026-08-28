@@ -3,11 +3,7 @@
 - PDB source: `vw_dimap.cpp`, lines 95 to 148.
 - Original size: 284 bytes.
 
-## Recovery record
+The body uses the canonical Diamond Map View hierarchy.
 
-A prior recovery used padded virtual declarations and ordinary switch and branch
-source. The final body removed the padding. It uses the module-local view
-surface instead.
-
-The merged module has 97 differing bytes. The source remains `matching` because
-this was its reviewed bank state. The merge does not claim a new exact result.
+The full `vw_dimap.cpp` candidate matches this owner and all twelve normal
+owners. The generated deleting destructor also matches.

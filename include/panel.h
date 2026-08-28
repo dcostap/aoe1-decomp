@@ -236,10 +236,7 @@ public:
     long min_hgt;
     long max_hgt;
     long mouse_hold_interval;
-    union {
-        long mouse_move_tolerance;
-        long field_C0;
-    };
+    long mouse_move_tolerance;
     long mouse_down_x;
     long mouse_down_y;
     int mouse_down_ctrl;
@@ -250,10 +247,7 @@ public:
     int display_changed_count;
     long help_string_id;
     long help_page_id;
-    union {
-        unsigned char mouse_action;
-        unsigned char field_EC;
-    };
+    unsigned char mouse_action;
     unsigned char mouse_down_button;
     unsigned char panel_type;
     unsigned char color;

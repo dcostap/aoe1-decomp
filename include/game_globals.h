@@ -39,6 +39,7 @@ extern int logStatusOn;
 extern int do_fixed_update;
 extern long fixed_update_time;
 extern float save_game_version;
+extern int allow_user_commands;
 
 // 0056E0B8 [.rdata]
 extern float DAT_0056e0b8;

@@ -1662,3 +1662,5 @@ int logStatusOn = 0;
 int do_fixed_update = 0;
 long fixed_update_time = 0;
 float save_game_version = 0.0f;
+// 0058631C [.data]
+int allow_user_commands = 1;

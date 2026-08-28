@@ -1,8 +1,9 @@
 #include "../include/vw_dimap.h"
+#include "../include/game_globals.h"
 #include "../include/main.h"
 
 RGE_Diamond_Map_View::RGE_Diamond_Map_View() : RGE_Diamond_Map() {
-    this->field_C0 = 0;
+    this->mouse_move_tolerance = 0;
 }
 
 long RGE_Diamond_Map_View::handle_mouse_down(unsigned char button, long x, long y, int ctrl, int shift) {
@@ -151,7 +152,7 @@ long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int param_3, in
         return 0;
     }
 
-    if (this->field_EC != 1 && this->field_EC != 2) {
+    if (this->mouse_action != 1 && this->mouse_action != 2) {
         return 0;
     }
 
@@ -165,9 +166,11 @@ long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int param_3, in
             }
             return 1;
         }
-        if (this->pick_tile(x, y, (short*)&x, (short*)&y, &tile) != 0) {
+        short tile_x;
+        short tile_y;
+        if (this->pick_tile(x, y, &tile_x, &tile_y, &tile) != 0) {
             this->player->command_add_waypoint(
-                (float)(short)x - -0.5f, (float)(short)y - -0.5f, 1.0f);
+                (float)tile_x + 0.5f, (float)tile_y + 0.5f, 1.0f);
         }
         return 1;
     }
@@ -202,8 +205,8 @@ int RGE_Diamond_Map_View::command_make_do(long a1, long a2) {
     if (allow_user_commands == 0) return 0;
     result = 0;
     if (this->pick_tile(a1, a2, &col, &row, &tile) != 0) {
-        float x = (float)row - FLOAT_005777e8;
-        float y = (float)col - FLOAT_005777e8;
+        float x = (float)row + 0.5f;
+        float y = (float)col + 0.5f;
         result = this->player->command_make_do(0, y, x) & 0xff;
     }
     return result;
@@ -219,8 +222,8 @@ int RGE_Diamond_Map_View::command_make_move(long a1, long a2) {
     if (allow_user_commands == 0) return 0;
     result = 0;
     if (this->pick_tile(a1, a2, &col, &row, &tile) != 0) {
-        float x = (float)row - FLOAT_005777e8;
-        float y = (float)col - FLOAT_005777e8;
+        float x = (float)row + 0.5f;
+        float y = (float)col + 0.5f;
         result = this->player->command_make_move(0, y, x) & 0xff;
     }
     rge_base_game->set_game_mode(0, 0);
@@ -237,8 +240,8 @@ int RGE_Diamond_Map_View::command_make_work(long a1, long a2) {
     if (allow_user_commands == 0) return 0;
     result = 0;
     if (this->pick_tile(a1, a2, &col, &row, &tile) != 0) {
-        float x = (float)row - FLOAT_005777e8;
-        float y = (float)col - FLOAT_005777e8;
+        float x = (float)row + 0.5f;
+        float y = (float)col + 0.5f;
         result = this->player->command_make_work(0, y, x) & 0xff;
     }
     rge_base_game->set_game_mode(0, 0);
