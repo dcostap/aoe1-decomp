@@ -7,6 +7,7 @@
 #include "aidipmod.h"
 #include "aiemomod.h"
 #include "aitrdmod.h"
+#include "taiconmd.h"
 
 class TribeMainDecisionAIModule;
 class TRIBE_Player;
@@ -15,11 +16,6 @@ class BuildAIModule : public AIModule {
 public:
     virtual int save(int);
     virtual void displayBuildList();
-};
-
-class ConstructionAIModule : public AIModule {
-public:
-    virtual int save(int);
 };
 
 class InformationAIModule : public AIModule {
@@ -64,23 +60,6 @@ public:
 };
 
 typedef char taimdmd_build_size[(sizeof(TribeBuildAIModule) == 0x5C0) ? 1 : -1];
-
-class TribeConstructionAIModule : public ConstructionAIModule {
-public:
-    char bytes[0x318 - sizeof(ConstructionAIModule)];
-
-    TribeConstructionAIModule(void*, int);
-    TribeConstructionAIModule(int, int);
-    virtual ~TribeConstructionAIModule();
-    void setMainDecisionAI(TribeMainDecisionAIModule*);
-    void setPlayer(int, char*);
-    void setLogHistory(int);
-    void setup(MainDecisionAIModule*);
-    void setReferencePoint(int, int, float, float, float);
-};
-
-typedef char taimdmd_construction_size[
-    (sizeof(TribeConstructionAIModule) == 0x318) ? 1 : -1];
 
 class TribeInformationAIModule : public InformationAIModule {
 public:

@@ -60,10 +60,11 @@ and the direct target at `00533480` prove this sequence. The source now uses
 that path. It has no DecisionScore carrier.
 
 `taimdmd.h` consumes the canonical Main Decision, Diplomacy, Emotional, and
-Trade providers. `taimdmd.cpp` privately consumes canonical Player, World,
+Trade providers and the canonical Tribe Construction provider.
+`taimdmd.cpp` privately consumes canonical Player, World,
 Victory, map, static-object, Tribe Game, Tribe World, and Tribe Command types.
-The remaining embedded Tribe Build, Construction, Information, Resource,
-Strategy, and Tactical declarations stay local only until their owner headers
+The remaining embedded Tribe Build, Information, Resource, Strategy, and
+Tactical declarations stay local only until their owner headers
 are complete. Do not use their byte carriers as a provider surface.
 
 ## Exactness regressions
