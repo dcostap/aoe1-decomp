@@ -1,4 +1,8 @@
-# scr_cams.cpp provider hold
+# scr_cams.cpp provider hold (superseded)
+
+This hold ended after the canonical `scr_name.h` provider and the direct
+`scr_cams.cpp` consumer passed grouped validation. See
+`recovery_notes/scr_name_module.md` and `recovery_notes/scr_cams_module.md`.
 
 ## Context
 
@@ -47,4 +51,3 @@ owner.
 Require `MATCH`, `0.0000%`, correct ownership and boundaries, zero relocation
 and direct-target errors, and a clean generated-function result before
 registering the direct module.
-

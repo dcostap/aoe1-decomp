@@ -1,8 +1,0 @@
-#include "matching/004909D0_TRIBE_Screen_Campaign_Selection.cpp"
-#include "matching/00490E30_init_vars.cpp"
-#include "matching/00490EA0_TRIBE_Screen_Campaign_Selection.cpp"
-#include "matching/00490F90_handle_idle.cpp"
-#include "matching/00490FF0_action.cpp"
-#include "matching/004911A0_fillCampaigns.cpp"
-#include "matching/00491290_fillScenarios.cpp"
-#include "matching/00491350_startGame.cpp"

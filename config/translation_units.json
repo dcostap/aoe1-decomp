@@ -338,18 +338,19 @@
       }
     },
     {
-      "name": "screen_campaign_selection",
-      "source": "src/scr_cams_tu.cpp",
+      "name": "scr_cams",
+      "source": "src/scr_cams.cpp",
+      "module": "scr_cams",
       "flags": "config/flags/004909D0_TRIBE_Screen_Campaign_Selection.rsp",
       "owners": {
-        "004909D0": "src/matching/004909D0_TRIBE_Screen_Campaign_Selection.cpp",
-        "00490E30": "src/matching/00490E30_init_vars.cpp",
-        "00490EA0": "src/matching/00490EA0_TRIBE_Screen_Campaign_Selection.cpp",
-        "00490F90": "src/matching/00490F90_handle_idle.cpp",
-        "00490FF0": "src/matching/00490FF0_action.cpp",
-        "004911A0": "src/matching/004911A0_fillCampaigns.cpp",
-        "00491290": "src/matching/00491290_fillScenarios.cpp",
-        "00491350": "src/matching/00491350_startGame.cpp"
+        "004909D0": "src/scr_cams.cpp",
+        "00490E30": "src/scr_cams.cpp",
+        "00490EA0": "src/scr_cams.cpp",
+        "00490F90": "src/scr_cams.cpp",
+        "00490FF0": "src/scr_cams.cpp",
+        "004911A0": "src/scr_cams.cpp",
+        "00491290": "src/scr_cams.cpp",
+        "00491350": "src/scr_cams.cpp"
       },
       "symbols": {
         "004909D0": "??0TRIBE_Screen_Campaign_Selection@@QAE@XZ",

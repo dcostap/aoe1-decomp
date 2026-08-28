@@ -15,17 +15,17 @@ class TButtonPanel;
 class TRIBE_Screen_Campaign_Selection : public TScreenPanel {
 public:
     TTextPanel* title;
-    long campaignListX;
-    long campaignListY;
-    long campaignListWidth;
-    long campaignListHeight;
+    int campaignListX;
+    int campaignListY;
+    int campaignListWidth;
+    int campaignListHeight;
     TTextPanel* campaignTitle;
     TListPanel* campaignList;
     TScrollBarPanel* campaignScrollbar;
-    long scenarioListX;
-    long scenarioListY;
-    long scenarioListWidth;
-    long scenarioListHeight;
+    int scenarioListX;
+    int scenarioListY;
+    int scenarioListWidth;
+    int scenarioListHeight;
     TTextPanel* scenarioTitle;
     TListPanel* scenarioList;
     TScrollBarPanel* scenarioScrollbar;

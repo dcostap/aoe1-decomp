@@ -52,10 +52,10 @@ The candidate proposal is `build/scr_name_natural_proposal.json`. It does not
 change global translation-unit registration. The direct source is ready for
 registration after the accepted-drift constructor receives separate review.
 
-## Reopen condition
+## Consumer handoff
 
-The campaign-selection consumer can now include `scr_name.h` without a copied
-hierarchy. Add the complete natural `scr_cams.cpp` owner over the canonical
-Panel, screen, Base Game, game-info, campaign, game, communications, and
-scenario providers. Then validate both direct modules with grouped candidate
-checks before removing the campaign-selection wrapper and context surface.
+The campaign-selection consumer now includes `scr_name.h` without a copied
+hierarchy. Its complete natural source uses the canonical Panel, screen,
+Base Game, game-info, campaign, game, communications, and scenario providers.
+The direct consumer validation is recorded in
+`recovery_notes/scr_cams_module.md`.
