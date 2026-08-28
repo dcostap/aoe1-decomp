@@ -69,6 +69,25 @@ Do not edit AIUA yet. `00413070` deleting-destructor ownership and natural
 emission remain a separate gate. One future sole editor must apply both
 source-supported repairs, then run the full AIUA group.
 
+## `00413070` emission hold
+
+`00413070` is compiler generated. It has no PDB source line or handwritten
+source owner. The original boundary is `00413070` through `0041308D`, 30 bytes.
+The defined body is `??_GUnitAIModule@@UAEPAXI@Z`. It calls `00413090`, then
+calls `0054B660` when the deleting flag has bit one set. It returns `this` with
+`ret 4`.
+
+The original vtable at `0056EAD8` has this thunk in slot zero. VC5 uses weak
+`??_EUnitAIModule@@UAEPAXI@Z` only as the vector-deleting identity. The
+validator must compare the defined `??_G` fallback body.
+
+Current AIUA uses `__declspec(novtable)` and manual delayed vptr stores. Its
+object emits no `??_G`, `??_E`, or `??_7UnitAIModule@@6B@Z`. Removing those
+forms would naturally emit the thunk and vtable, but would change the proven
+constructor and destructor vptr order. It is not an exact source repair.
+
+Do not add a dummy reference or standalone generated body. AIUA stays held.
+
 ## Generated and no-line entries
 
 The scalar deleting destructor at `00413070` is compiler generated.
