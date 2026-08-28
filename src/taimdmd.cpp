@@ -99,13 +99,13 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
       tacticalAI(p1, file),
       tradeAI(p1, file)
 {
-    this->field_12570 = 0;
-    this->field_12574 = 0;
-    this->name = (char*)p1;
-    this->field_1257C = 0;
-    this->field_12580 = 0;
-    this->field_1259C = 0;
-    this->field_125A0 = 0;
+    this->firstUpdate = 0;
+    this->veryFirstUpdate = 0;
+    this->updateDelay = p1;
+    this->lastDiplomacyUpdateTime = 0;
+    this->lastTacticalUpdateTime = 0;
+    this->decidedInitialDiplomacy = 0;
+    this->requiredDiplomacyTributeAmount = 0;
     this->aiPlayer = p3;
     this->setPlayer(p1, p2);
     if (rgeLog != 0) {
@@ -134,24 +134,24 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     this->tacticalAI.setPlayer(p1, p2);
     this->tradeAI.setPlayer(p1, p2);
 
-    rge_read(file, &this->name, 4);
-    rge_read(file, &this->field_1257C, 4);
-    rge_read(file, &this->field_12580, 4);
+    rge_read(file, &this->updateDelay, 4);
+    rge_read(file, &this->lastDiplomacyUpdateTime, 4);
+    rge_read(file, &this->lastTacticalUpdateTime, 4);
 
     if (g_time >= g_cut1) {
-        rge_read(file, &this->field_12584, 4);
-        rge_read(file, &this->field_12588, 4);
-        rge_read(file, &this->field_1258C, 4);
-        rge_read(file, &this->field_12590, 4);
-        rge_read(file, &this->field_12594, 4);
-        rge_read(file, &this->field_12598, 4);
+        rge_read(file, &this->lastTributeChatTime, 4);
+        rge_read(file, &this->tributeChatTimeout, 4);
+        rge_read(file, &this->waitingOnTribute, 4);
+        rge_read(file, &this->tributeExpirationTimeout, 4);
+        rge_read(file, &this->tributeAddressed, 4);
+        rge_read(file, &this->tributeAmount, 4);
     }
     if (g_time >= g_cut2) {
-        rge_read(file, &this->field_1259C, 4);
-        rge_read(file, &this->field_125A0, 4);
-        rge_read(file, this->array_125A4, 0x24);
+        rge_read(file, &this->decidedInitialDiplomacy, 4);
+        rge_read(file, &this->requiredDiplomacyTributeAmount, 4);
+        rge_read(file, this->tributeGiven, 0x24);
     } else {
-        memset(this->array_125A4, 0, 0x24);
+        memset(this->tributeGiven, 0, 0x24);
     }
 }
 
