@@ -1,0 +1,371 @@
+{
+  "schema": 1,
+  "name": "player",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\player.cpp",
+  "source": "src/player.cpp",
+  "header": "include/player.h",
+  "functions": {
+    "0046E4B0": {
+      "status": "matching"
+    },
+    "0046E770": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/player_module.md"
+    },
+    "0046EB00": {
+      "status": "matching"
+    },
+    "0046ECE0": {
+      "status": "matching"
+    },
+    "0046ED50": {
+      "status": "matching"
+    },
+    "0046ED90": {
+      "status": "matching"
+    },
+    "0046EDA0": {
+      "status": "matching"
+    },
+    "0046EDB0": {
+      "status": "matching"
+    },
+    "0046EDC0": {
+      "status": "matching"
+    },
+    "0046EE00": {
+      "status": "matching"
+    },
+    "0046EE40": {
+      "status": "matching"
+    },
+    "0046EE80": {
+      "status": "matching"
+    },
+    "0046EED0": {
+      "status": "matching"
+    },
+    "0046EEE0": {
+      "status": "matching"
+    },
+    "0046EEF0": {
+      "status": "matching"
+    },
+    "0046EF40": {
+      "status": "matching"
+    },
+    "0046EFB0": {
+      "status": "matching"
+    },
+    "0046EFE0": {
+      "status": "matching"
+    },
+    "0046F010": {
+      "status": "matching"
+    },
+    "0046F050": {
+      "status": "matching"
+    },
+    "0046F140": {
+      "status": "matching"
+    },
+    "0046F200": {
+      "status": "matching"
+    },
+    "0046F210": {
+      "status": "matching"
+    },
+    "0046F220": {
+      "status": "matching"
+    },
+    "0046F230": {
+      "status": "matching"
+    },
+    "0046F240": {
+      "status": "matching"
+    },
+    "0046F250": {
+      "status": "matching"
+    },
+    "0046F290": {
+      "status": "matching"
+    },
+    "0046F2A0": {
+      "status": "matching"
+    },
+    "0046F3A0": {
+      "status": "matching"
+    },
+    "0046F410": {
+      "status": "matching"
+    },
+    "0046F420": {
+      "status": "scratch",
+      "note_path": "recovery_notes/player_module.md"
+    },
+    "0046F6B0": {
+      "status": "matching"
+    },
+    "0046F7A0": {
+      "status": "matching"
+    },
+    "0046FA60": {
+      "status": "matching"
+    },
+    "0046FC40": {
+      "status": "matching"
+    },
+    "0046FF00": {
+      "status": "matching"
+    },
+    "0046FF40": {
+      "status": "matching"
+    },
+    "0046FF60": {
+      "status": "matching"
+    },
+    "0046FF90": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/player_module.md"
+    },
+    "004700B0": {
+      "status": "matching"
+    },
+    "004700D0": {
+      "status": "matching"
+    },
+    "00470100": {
+      "status": "matching"
+    },
+    "00470120": {
+      "status": "matching"
+    },
+    "00470180": {
+      "status": "matching"
+    },
+    "004701B0": {
+      "status": "matching"
+    },
+    "00470380": {
+      "status": "matching"
+    },
+    "00470490": {
+      "status": "matching"
+    },
+    "004704A0": {
+      "status": "matching"
+    },
+    "004704C0": {
+      "status": "matching"
+    },
+    "00470570": {
+      "status": "matching"
+    },
+    "00470580": {
+      "status": "matching"
+    },
+    "004705A0": {
+      "status": "matching"
+    },
+    "004705C0": {
+      "status": "matching"
+    },
+    "004705E0": {
+      "status": "matching"
+    },
+    "00470600": {
+      "status": "matching"
+    },
+    "00470690": {
+      "status": "matching"
+    },
+    "004706B0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/player_module.md"
+    },
+    "00470750": {
+      "status": "matching"
+    },
+    "00470840": {
+      "status": "matching"
+    },
+    "00470940": {
+      "status": "matching"
+    },
+    "00470A40": {
+      "status": "matching"
+    },
+    "00470B40": {
+      "status": "matching"
+    },
+    "00470BB0": {
+      "status": "matching"
+    },
+    "00470BC0": {
+      "status": "matching"
+    },
+    "00470BD0": {
+      "status": "matching"
+    },
+    "00470BE0": {
+      "status": "matching"
+    },
+    "00470C70": {
+      "status": "matching"
+    },
+    "00470CB0": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/player_module.md"
+    },
+    "00470D20": {
+      "status": "matching"
+    },
+    "00470D80": {
+      "status": "matching"
+    },
+    "00470E30": {
+      "status": "matching"
+    },
+    "00470E80": {
+      "status": "matching"
+    },
+    "00470ED0": {
+      "status": "matching"
+    },
+    "00470F80": {
+      "status": "matching"
+    },
+    "004710C0": {
+      "status": "matching"
+    },
+    "00471120": {
+      "status": "matching"
+    },
+    "00471170": {
+      "status": "matching"
+    },
+    "004711D0": {
+      "status": "matching"
+    },
+    "00471230": {
+      "status": "matching"
+    },
+    "00471290": {
+      "status": "matching"
+    },
+    "004712F0": {
+      "status": "matching"
+    },
+    "00471430": {
+      "status": "matching"
+    },
+    "00471480": {
+      "status": "matching"
+    },
+    "004714C0": {
+      "status": "matching"
+    },
+    "004714E0": {
+      "status": "matching"
+    },
+    "00471520": {
+      "status": "matching"
+    },
+    "00471530": {
+      "status": "matching"
+    },
+    "00471550": {
+      "status": "scratch",
+      "note_path": "recovery_notes/player_module.md"
+    },
+    "004715D0": {
+      "status": "matching"
+    },
+    "004716D0": {
+      "status": "matching"
+    },
+    "00471760": {
+      "status": "scratch",
+      "note_path": "recovery_notes/player_module.md"
+    },
+    "004717D0": {
+      "status": "matching"
+    },
+    "00471820": {
+      "status": "matching"
+    },
+    "00471860": {
+      "status": "matching"
+    },
+    "004718C0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/player_module.md"
+    },
+    "00471940": {
+      "status": "scratch",
+      "note_path": "recovery_notes/player_module.md"
+    },
+    "004719D0": {
+      "status": "matching"
+    },
+    "00471A00": {
+      "status": "matching"
+    },
+    "00471A30": {
+      "status": "matching"
+    },
+    "00471A50": {
+      "status": "matching"
+    },
+    "00471A70": {
+      "status": "matching"
+    },
+    "00471AA0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/player_module.md"
+    },
+    "00471B20": {
+      "status": "matching"
+    },
+    "00471B70": {
+      "status": "matching"
+    },
+    "00471BD0": {
+      "status": "matching"
+    },
+    "00471BE0": {
+      "status": "matching"
+    },
+    "00471BF0": {
+      "status": "matching"
+    },
+    "00471C00": {
+      "status": "matching"
+    },
+    "00471C90": {
+      "status": "accepted_drift",
+      "note_path": "recovery_notes/player_module.md"
+    },
+    "00471D00": {
+      "status": "matching"
+    },
+    "00471D70": {
+      "status": "matching"
+    },
+    "00471DF0": {
+      "status": "matching"
+    },
+    "00471E40": {
+      "status": "matching"
+    },
+    "00471E70": {
+      "status": "matching"
+    },
+    "00471E90": {
+      "status": "matching"
+    },
+    "00471EB0": {
+      "status": "matching"
+    }
+  }
+}
