@@ -33,16 +33,36 @@ public:
         Humongous
     };
     enum MapType {
-        MapType_Unknown = 0
+        AllWater = 0,
+        MostlyWater = 1,
+        WaterAndLand = 2,
+        MostlyLand = 3,
+        AllLand = 4,
+        Continental = 5,
+        Lake = 6,
+        Hilly = 7,
+        Isthmas = 8
     };
     enum VictoryType {
-        VictoryType_Unknown = 0
+        VictoryDefault = 0,
+        VictoryConquest = 1,
+        VictoryTime = 7,
+        VictoryScore = 8,
+        VictoryStandard = 9
     };
     enum ResourceLevel {
-        ResourceLevel_Unknown = 0
+        DefaultResources = 0,
+        LowResources = 1,
+        MediumResources = 2,
+        HighResources = 3
     };
     enum Age {
-        Age_Unknown = 0
+        DefaultAge = 0,
+        NomadAge = 1,
+        StoneAge = 2,
+        ToolAge = 3,
+        BronzeAge = 4,
+        IronAge = 5
     };
 
     struct TRIBE_Game_Options {
@@ -107,8 +127,6 @@ public:
     int start_video(int mode, char* file);
     void shutdown_video_system();
     char* game_over_msg();
-    long video_sub_wnd_proc(void* window, unsigned int message,
-                            unsigned int wparam, long lparam);
     void stop_video(unsigned char mode);
     int start_campaign_menu();
     int start_menu();
@@ -134,7 +152,7 @@ protected:
 
 public:
     int create_game_screen();
-    int processCheatCode(char* code);
+    virtual int processCheatCode(int player, char* code);
 
 protected:
     void let_game_begin();
@@ -187,6 +205,7 @@ public:
     int randomStartValue();
     void setRandomStartValue(int value);
     void resetRandomComputerName();
+    int randomComputerName(int civilization);
     void SetClickTables(MouseClickInfo* right, int right_count,
                         MouseClickInfo* left, int left_count);
     virtual int action_close();
@@ -207,12 +226,15 @@ public:
     void goto_notification_loc();
     virtual char* gameSummary();
 
+public:
     MouseClickInfo* MouseRightClickTable;
     int MouseRightClickTableSize;
     MouseClickInfo* MouseLeftClickTable;
     int MouseLeftClickTableSize;
     long queue_is_waiting_on_pop_counter[9];
     int random_civ[9];
+
+protected:
     TRIBE_Game_Options tribe_game_options;
     char testing_scenario[260];
     void* video_window;
@@ -247,6 +269,16 @@ public:
     void* handleIdleLock;
     int inHandleIdle;
 };
+
+// The communications packet contains the base options followed by the tribe
+// options. This record names that wire layout without a byte-offset view.
+struct TRIBE_Game_Combined_Options {
+    RGE_Base_Game::RGE_Game_Options base;
+    TRIBE_Game::TRIBE_Game_Options tribe;
+};
+
+typedef char tribe_game_combined_options_size_check[
+    (sizeof(TRIBE_Game_Combined_Options) == 0x114) ? 1 : -1];
 
 typedef char mouse_click_info_size_check[
     (sizeof(MouseClickInfo) == 0x2C) ? 1 : -1];

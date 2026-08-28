@@ -1769,12 +1769,20 @@ extern unsigned char DAT_0086b6b3;
 extern unsigned int DAT_0086bab0;
 // 0086BC08 [.data]
 extern float DAT_0086bc08;
+// 0086BC8C [.data]
+extern unsigned int DAT_0086bc8c;
 // 0086BCA0 [.data]
 extern unsigned char DAT_0086bca0;
 // 0086BCAC [.data]
-extern unsigned int DAT_0086bcac;
+extern unsigned int DAT_0086bcac[8];
 // 0086BCD0 [.data]
 extern unsigned char DAT_0086bcd0;
+// 0086BCD8 [.data]
+extern unsigned long DAT_0086bcd8;
+// 0086BCE0 [.data]
+extern char DAT_0086BCE0[256];
+// 0086BE00 [.data]
+extern unsigned int DAT_0086be00;
 // 0086BE04 [.data]
 extern unsigned int DAT_0086be04;
 // 0087D4A6 [.data]

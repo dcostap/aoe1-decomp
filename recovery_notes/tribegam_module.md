@@ -43,22 +43,24 @@ for `RGE_Prog_Info`, `RGE_Game_Info`, `RGE_Game_World`, `TRIBE_World`,
 `T_Scenario`, `TPanel` and its screen types, `TMusic_System`, `TSound_Driver`,
 and `TCommunications_Handler`.
 
-The direct owner candidates are `world.h`, `player.h`, `music.h`,
-`sounddrv_context.h`, `panel.h`, `panel_ez.h`, `scr_*`, and `scenario.h`.
-Several of these headers still copy `RGE_Base_Game` or related foreign
-layouts, so the source cannot include them beside canonical `basegame.h`.
-`RGE_Prog_Info`, `RGE_Game_Info`, `TRIBE_World`, the scenario and panel screen
-families, and the communication handler have no conflict-free canonical owner.
+The source now consumes `main.h`, `gameinfo.h`, `world.h`, `tworld.h`,
+`player.h`, `scenario.h`, `tscenaro.h`, `music.h`, `sounddrv.h`, `panel.h`,
+`panel_ez.h`, `scr_*`, and `com_hand.h`. These providers share the canonical
+Base Game layout without local fallback declarations.
 
-The old header also supplied source-only global and API declarations. The
-source still needs owners for `DAT_0086BCE0`, `video_codec_available`, the
-resource-file imports, `ICInfo`, `L`, `Log`, and its run-log globals. The
-Base Game owner must also publish the inherited helper surface used here,
-including player-count, map-visibility, game-mode, and option helpers.
+The source still uses external PDB data symbols for `DAT_0086BCE0`, the two
+click-table families, `video_codec_available`, and the run-log state. Their
+storage definitions are not present in this worktree. The resource-file and
+Video for Windows imports remain external SDK interfaces. The canonical Base
+Game, panel, world, sound, scenario, player, and communications headers now
+publish the helper surface used here.
+
+`include/game_globals.h` now declares the eight-entry `DAT_0086bcac` palette
+table. This changes a scalar placeholder into its proven array provider.
 
 ## Evidence
 
-- The packet lists 107 matching, two accepted-drift, eight scratch, and one verified-logic owner.
+- The fresh module status lists 21 matching, 96 scratch, and one verified-logic owner.
 - The packet lists the compiler-generated vector-deleting destructor at `00521380`, symbol `??_ETRIBE_Game@@UAEPAXI@Z`, size 30. It is emitted by the natural `TRIBE_Game` virtual destructor surface. It is not a normal source owner.
 - The pre-migration wrapper and final source object both emit the weak `??_E` identity and the defined `??_G` fallback body. The generated body has the same four relocation-placeholder differences in both objects.
 - The grouped source order is the packet order. It is not VA order at the start because `video_sub_wnd_proc` precedes the constructor in the PDB line stream.
@@ -97,3 +99,37 @@ does not repair the held `tribegam` source context or its missing declarations.
 A fresh getter proof was blocked by that debt before comparison. It reported
 the existing `setMapSize`, `panel_system`, `RGE_Prog_Info`, and related missing
 declarations. The two getter owners remain unclaimed and unproven.
+
+## Natural provider cleanup
+
+The module now includes the canonical Base Game, world, scenario, panel, sound,
+player, object, and communications declarations. It no longer declares local
+provider layouts or carrier classes. The source uses named fields and virtual
+providers for world loading, scenario cinematics, player commands, panel
+selection, sound mute state, and the window procedure.
+
+The `wnd_proc` override uses `__stdcall`. The SDK `CALLBACK` declaration in
+`basegame.h` and the PDB `UAG` symbol agree on this convention.
+
+The old address overlays are replaced with canonical global declarations and
+the named click-table records. The original encoded cheat strings and sound
+file names are source literals recovered from the original data image.
+
+All gotos, C-style casts, raw object-offset views, absolute-address macros,
+provider copies, and fake carrier declarations were removed from the source.
+The source still owns all 118 normal bodies in PDB order.
+
+## Fresh status checkpoint
+
+The registered `tribegam_prefix` group was validated after this cleanup. It
+reports `MATCH` and `0.0000%` for all 21 exact owners. The source module keeps
+only those 21 proven `matching` rows. The other 88 old matching or accepted
+drift rows moved to `scratch` with this note. Their bodies remain in the
+natural module and need fresh evidence before promotion.
+
+The canonical providers expose no complete `TribeMPSetupScreen` owner in this
+worktree. `scr_mps_types.h` records its PDB field surface for the two screen
+constructors used by this module. The load-game debug path cannot use the old
+decompiler carrier for doppleganger movement fields, so it records only fields
+owned by the canonical object classes. Reopen this work when a complete PDB
+provider for that debug surface is available.
