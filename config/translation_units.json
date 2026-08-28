@@ -2037,6 +2037,7 @@
     {
       "name": "act_misl",
       "source": "src/act_misl.cpp",
+      "module": "act_misl",
       "flags": "config/flags/00404BB0_RGE_Action_Missile.rsp",
       "owners": {
         "00404BB0": "src/act_misl.cpp",
