@@ -527,6 +527,8 @@ public:
     int show_object_id;
     unsigned long auto_exit_time;
     void restart_game();
+    void close_game_screens(int);
+    void do_game_over();
     void goto_notification_loc();
     void show_status_message(char*, char*, long);
     void close_status_message();

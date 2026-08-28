@@ -175,7 +175,7 @@ public:
     void close();
     int create_dialog(TPanel**, TPanel*);
     void delete_dialog(TPanel**);
-    unsigned char check_prog_argument(const char*);
+    unsigned char check_prog_argument(char*);
     void add_to_timing(int, unsigned long);
     int multiplayerGame() const;
     int randomGame() const;
@@ -202,11 +202,6 @@ public:
     RGE_Font* get_font(int);
     void set_game_mode(int);
     char* get_string(int, int, int, char*, int);
-    char* language(int, int, int, char*, int);
-    void get_countdown_timer(int, int*);
-    void close_game_screens(int);
-    void do_game_over();
-    void goto_notification_loc();
     void setScenarioGame(int);
     void setVersion(float);
     void setScenarioName(char*);

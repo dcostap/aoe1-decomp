@@ -503,7 +503,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->command_score((unsigned int)this->world->score_displayed);
 
     confirmed_close = 0;
-    if (rge_base_game->check_prog_argument(s_PAUSE)) {
+    if (rge_base_game->check_prog_argument((char*)s_PAUSE)) {
         start_paused = 1;
         rge_base_game->set_game_mode(6);
         rge_base_game->world->temp_pause = 1;
@@ -1293,7 +1293,7 @@ void TRIBE_Screen_Game::handle_game_update(void)
                     }
                     panel_system.setCurrentPanel((char*)s_Game_Screen, 0);
                     this->set_curr_child(this->main_view);
-                    rge_base_game->close_game_screens(0);
+                    ((TRIBE_Game*)rge_base_game)->close_game_screens(0);
                     this->pause_text->set_active(1);
                     {
                         RGE_Player* p = rge_base_game->get_player();
@@ -1420,7 +1420,7 @@ game_over:
     this->main_view->set_selection_area(-1, -1, -1, -1);
     rge_base_game->set_game_mode(0, 0);
     this->command_unselect();
-    rge_base_game->do_game_over();
+    ((TRIBE_Game*)rge_base_game)->do_game_over();
     goto L_exit;
 
 L_close:
@@ -1461,7 +1461,7 @@ long TRIBE_Screen_Game::wnd_proc(void* window, unsigned int message,
             }
         }
     } else if (message == 0x208) {
-        rge_base_game->goto_notification_loc();
+        ((TRIBE_Game*)rge_base_game)->goto_notification_loc();
     }
 
     return TPanel::wnd_proc(window, message, wparam, lparam);
@@ -1849,7 +1849,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             break;
         case 0x55:
             if (rge_base_game->gameDeveloperMode() != 0 &&
-                rge_base_game->check_prog_argument(s_ALLOWCTRLU) != 0) {
+                rge_base_game->check_prog_argument((char*)s_ALLOWCTRLU) != 0) {
                 TDebuggingLog::Log(L, s_force_ctrl_u);
                 displayPathingFlags = (displayPathingFlags == 0);
             }
@@ -3243,8 +3243,8 @@ void TRIBE_Screen_Game::reset_clocks() {
         int player_offset = 4;
 
         do {
-            int countdown_timer;
-            rge_base_game->get_countdown_timer(player_id, &countdown_timer);
+            long countdown_timer;
+            rge_base_game->get_countdown_timer(player_id, countdown_timer);
             if (countdown_timer > 0) {
                 ++clock_count;
                 (*clock++)->set_clock_type(4, player_id);
@@ -4213,7 +4213,7 @@ void TRIBE_Screen_Game::command_research(int player_id) {
             rge_base_game->get_player(player_id)->command_building_make_tech();
             return;
         }
-        rge_base_game->language(0x67, 1, (int)attr, msg, 0x200);
+        rge_base_game->get_string2(0x67, 1, (int)attr, msg, 0x200);
         self->message_panel->show_message(1, msg, 0x56, 0, 0, 0, 0);
     }
 }
@@ -4330,7 +4330,7 @@ void TRIBE_Screen_Game::command_train(int player_id, short train_id) {
             rge_base_game->get_player()->command_building_make_obj((short)player_id);
             return;
         }
-        rge_base_game->language(0x67, 1, (int)attr, msg, 0x200);
+        rge_base_game->get_string2(0x67, 1, (int)attr, msg, 0x200);
         this->message_panel->show_message(1, msg, 0x56, 0, 0, 0, 0);
     }
 }
