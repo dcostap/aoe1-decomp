@@ -249,8 +249,6 @@ protected:
     void clear_window();
 
 public:
-    int create_dialog(TPanel**, TPanel*);
-    void delete_dialog(TPanel**);
     void request_pause();
     void get_mouse_info(unsigned int, long, tagPOINT&, int&, int&, int&, int&);
     void get_mouse_info(unsigned int, unsigned long, long*, long*, int*, int*, int*);
