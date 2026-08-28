@@ -65,9 +65,9 @@ Focused checks compiled their current provider TUs:
 - `004B2EF0 TRIBE_Screen_Sed_Menu`: `MATCH`, `0.0000%`; and
 - `0049F890 ~TribeMPStartupScreen`: `MATCH`, `0.0000%`.
 
-## Current compile hold
+## Base Game provider and grouped validation
 
-A focused `scr_main` compile now stops only at Base Game declarations:
+The Base Game provider landed on `e64411bcb`. It publishes these declarations:
 
 - `int RGE_Base_Game::gameDeveloperMode() const;`
   - VA `00422490`, `basegame.cpp:5176-5178`;
@@ -76,8 +76,8 @@ A focused `scr_main` compile now stops only at Base Game declarations:
   - VA `004200B0`, `basegame.cpp:3182-3184`;
   - symbol `?close@RGE_Base_Game@@QAEXXZ`.
 
-`RGE_Base_Game::set_paused(int, int)` remains the Credits hold. It is VA
-`00420220`, `basegame.cpp:3299-3311`, and has symbol
+It also publishes `RGE_Base_Game::set_paused(int, int)` for Credits. Its VA is
+`00420220`, its source is `basegame.cpp:3299-3311`, and its symbol is
 `?set_paused@RGE_Base_Game@@QAEXHH@Z`.
 
 `load_db_files` is not a Base Game method. The sole owner is nonvirtual
@@ -86,5 +86,13 @@ with symbol `?load_db_files@TRIBE_Game@@QAEHXZ`. The main source includes
 `tribegam.h` privately and uses the reviewed `rge_base_game` pointer through
 `static_cast<TRIBE_Game*>`.
 
-Do not add local declarations or change the global pointer type. No comparison
-ran after compilation stopped.
+Do not add local declarations or change the global pointer type.
+
+After rebase, the canonical candidate compiled all eleven normal owners. The
+five registered exact owners report `MATCH`, `0.0000%`, no relocation-target
+mismatch, and no boundary escape. The other four matching owners also report
+`MATCH`. See `build/candidate_tus/scr_main_canonical/out/report.json`.
+
+The two scratch owners remain observed. `0049E6D0` has 1,140 differing bytes.
+`0049EE00` has 435 differing bytes. Neither result has a relocation-target
+mismatch or boundary escape.
