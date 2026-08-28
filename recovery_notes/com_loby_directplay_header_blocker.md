@@ -1,6 +1,6 @@
 # com_loby DirectPlay header blocker
 
-Status: SDK provider approved; module recovery pending.
+Status: SDK provider approved; natural module recovered.
 
 The approved provider is documented in
 `recovery_notes/directplay_sdk_provider.md`. The earlier candidates below
@@ -68,3 +68,11 @@ reported byte matches do not meet the direct-target exactness rule.
 
 The approved SDK provider resolves the external ownership boundary. A new
 module candidate must still fix the source and linkage issues above.
+
+## Natural module result
+
+`src/com_loby.cpp` now uses the approved headers and module-only include path.
+It has no local DirectPlay declarations or allocator aliases.
+The valid `void*` QueryInterface output locals are retained.
+The callback adaptation is the only function-pointer cast.
+Eleven owners are exact and two owners remain scratch.

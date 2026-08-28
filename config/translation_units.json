@@ -3227,21 +3227,21 @@
     },
     {
       "name": "com_loby",
-      "source": "src/com_loby_tu.cpp",
-      "flags": "config/flags/default_gx.rsp",
+      "source": "src/com_loby.cpp",
+      "module": "com_loby",
+      "flags": "config/flags/com_loby.rsp",
       "owners": {
-        "0042F290": "src/matching/0042F290_RGE_Lobby.cpp",
-        "0042F300": "src/matching/0042F300_RGE_Lobby.cpp",
-        "0042F330": "src/matching/0042F330_ClearLobbyInfo.cpp",
-        "0042F370": "src/matching/0042F370_IsLobbyLaunched.cpp",
-        "0042F3A0": "src/matching/0042F3A0_EnumPlayersCallbackLobby.cpp",
-        "0042F430": "src/matching/0042F430_CheckForLobbyLaunch.cpp",
-        "0042F640": "src/matching/0042F640_IsThisHost.cpp",
-        "0042F660": "src/matching/0042F660_GetPlayerInfo.cpp",
-        "0042F6B0": "src/matching/0042F6B0_SendZoneHandshakeResponse.cpp",
-        "0042F6C0": "src/matching/0042F6C0_GameIsOver.cpp",
-        "0042F6D0": "src/matching/0042F6D0_ReceiveZoneMessages.cpp",
-        "0042F830": "src/matching/0042F830_SendZoneMessage.cpp"
+        "0042F290": "src/com_loby.cpp",
+        "0042F300": "src/com_loby.cpp",
+        "0042F330": "src/com_loby.cpp",
+        "0042F370": "src/com_loby.cpp",
+        "0042F3A0": "src/com_loby.cpp",
+        "0042F640": "src/com_loby.cpp",
+        "0042F660": "src/com_loby.cpp",
+        "0042F680": "src/com_loby.cpp",
+        "0042F6B0": "src/com_loby.cpp",
+        "0042F6C0": "src/com_loby.cpp",
+        "0042F6D0": "src/com_loby.cpp"
       },
       "symbols": {
         "0042F290": "??0RGE_Lobby@@QAE@PAX@Z",
@@ -3249,13 +3249,12 @@
         "0042F330": "?ClearLobbyInfo@RGE_Lobby@@QAEXXZ",
         "0042F370": "?IsLobbyLaunched@RGE_Lobby@@QAEHXZ",
         "0042F3A0": "?EnumPlayersCallbackLobby@@YGHKKPAUDPNAME@@KPAX@Z",
-        "0042F430": "?CheckForLobbyLaunch@RGE_Lobby@@QAEEAAPAUIDirectPlay3@@@Z",
         "0042F640": "?IsThisHost@RGE_Lobby@@QAEEXZ",
         "0042F660": "?GetPlayerInfo@RGE_Lobby@@QAEEPAPAD@Z",
+        "0042F680": "?GetSessionInfo@RGE_Lobby@@QAEEAAUDPSESSIONDESC2@@@Z",
         "0042F6B0": "?SendZoneHandshakeResponse@RGE_Lobby@@QAEJXZ",
         "0042F6C0": "?GameIsOver@RGE_Lobby@@QAEHXZ",
-        "0042F6D0": "?ReceiveZoneMessages@RGE_Lobby@@QAEJXZ",
-        "0042F830": "?SendZoneMessage@RGE_Lobby@@QAEJPADKU_GUID@@@Z"
+        "0042F6D0": "?ReceiveZoneMessages@RGE_Lobby@@QAEJXZ"
       }
     },
     {
