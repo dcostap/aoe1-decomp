@@ -19,21 +19,16 @@ scenario, and Base Game providers are available in `panel.h`, `panel_ez.h`,
 `singlePlayerGame()`, `get_player()`, `set_paused(int, int)`, `world`, and
 `prog_window` surface.
 
-`dlg_conf.h` and `dlg_abt.h` now compose with those providers. The remaining
-foreign owners are not yet composable on this branch:
+`dlg_conf.h`, `dlg_abt.h`, `scr_ach.h`, and `scr_vc.h` now compose with those
+providers on main. The remaining foreign owner is not yet composable:
 
 - `TribeSaveGameScreen` remains in `scr_save_context.h` and `scr_sed.h` with
   copied Panel and Screen hierarchies. No `scr_save.h` owner header exists.
-- `TribeAchievementsScreen` remains in `scr_ach.h` with copied Panel, Easy
-  Panel, Screen, Panel System, and Base Game declarations.
-- `TRIBE_Mission_Screen` remains in `scr_vc_context.h` with copied Panel,
-  Screen, Panel System, and Base Game declarations. No `scr_vc.h` owner header
-  exists.
 
-The constructor and action use all three blocked types with `new`. Forward
-declarations cannot compile these expressions. Importing their legacy headers
-would redefine the canonical Panel hierarchy. A caller-side size-only or
-partial class would violate ownership and ABI rules.
+The constructor and action use `TribeSaveGameScreen` with `new`. A forward
+declaration cannot compile this expression. Importing its legacy headers would
+redefine the canonical Panel hierarchy. A caller-side size-only or partial
+class would violate ownership and ABI rules.
 
 ## Natural source checkpoint
 
@@ -43,10 +38,10 @@ generated scalar deleting destructor at `0043F690` remains compiler generated.
 `include/dlg_menu.h` owns only `TribeMenuDialog` and uses the canonical Panel,
 Dialog, Screen, and button headers.
 
-The source includes exactly three pending construction providers:
-`scr_save.h`, `scr_ach.h`, and `scr_vc.h`. The current VC5 compile reaches the
-first pending include and stops because `include/scr_save.h` is not present.
-The other two are isolated in the source and await their provider commits.
+The source includes one pending construction provider: `scr_save.h`. The
+current VC5 compile reaches this include and stops because
+`include/scr_save.h` is not present. The `scr_ach.h` and `scr_vc.h` includes
+now resolve to the canonical providers on main.
 No foreign local class, wrapper, fragment include, context macro, raw layout,
 or manual vtable was added.
 
@@ -59,7 +54,7 @@ The action also directly calls `RGE_Base_Game::set_paused(int, int)`. Canonical
 3299-3311 and `00420220` prove `?set_paused@RGE_Base_Game@@QAEXHH@Z`.
 Do not add a local Base Game class or a compatibility overload.
 
-Recover `scr_save`, `scr_ach`, and `scr_vc` leaf-first. Compose each provider
-with the canonical owners, then publish its owner-only header. Revisit this
-module after those three providers are available. The existing three matching
-fragments remain the validated source checkpoint until then.
+Recover `scr_save` leaf-first. Compose it with the canonical owners, then
+publish its owner-only header. Revisit this module after that provider lands.
+The existing three matching fragments remain the validated source checkpoint
+until then.
