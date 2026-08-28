@@ -345,22 +345,18 @@
       "owners": {
         "004909D0": "src/scr_cams.cpp",
         "00490E30": "src/scr_cams.cpp",
-        "00490EA0": "src/scr_cams.cpp",
         "00490F90": "src/scr_cams.cpp",
         "00490FF0": "src/scr_cams.cpp",
         "004911A0": "src/scr_cams.cpp",
-        "00491290": "src/scr_cams.cpp",
-        "00491350": "src/scr_cams.cpp"
+        "00491290": "src/scr_cams.cpp"
       },
       "symbols": {
         "004909D0": "??0TRIBE_Screen_Campaign_Selection@@QAE@XZ",
         "00490E30": "?init_vars@TRIBE_Screen_Campaign_Selection@@IAEXXZ",
-        "00490EA0": "??1TRIBE_Screen_Campaign_Selection@@UAE@XZ",
         "00490F90": "?handle_idle@TRIBE_Screen_Campaign_Selection@@UAEJXZ",
         "00490FF0": "?action@TRIBE_Screen_Campaign_Selection@@MAEJPAVTPanel@@JKK@Z",
         "004911A0": "?fillCampaigns@TRIBE_Screen_Campaign_Selection@@IAEXXZ",
-        "00491290": "?fillScenarios@TRIBE_Screen_Campaign_Selection@@IAEXXZ",
-        "00491350": "?startGame@TRIBE_Screen_Campaign_Selection@@IAEXXZ"
+        "00491290": "?fillScenarios@TRIBE_Screen_Campaign_Selection@@IAEXXZ"
       }
     },
     {
@@ -7858,13 +7854,11 @@
       "flags": "config/flags/scr_name.rsp",
       "owners": {
         "004A63D0": "src/scr_name.cpp",
-        "004A66E0": "src/scr_name.cpp",
         "004A67C0": "src/scr_name.cpp",
         "004A6800": "src/scr_name.cpp",
         "004A68C0": "src/scr_name.cpp",
         "004A6980": "src/scr_name.cpp",
         "004A69B0": "src/scr_name.cpp",
-        "004A6F60": "src/scr_name.cpp",
         "004A6FF0": "src/scr_name.cpp",
         "004A71D0": "src/scr_name.cpp"
       },
