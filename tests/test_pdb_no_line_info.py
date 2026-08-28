@@ -128,6 +128,25 @@ class PdbNoLineInfoTests(unittest.TestCase):
             issues = candidate_module.validate_proposal(payload)
         self.assertIn(f"{VA} has no PDB-qualified symbol ownership", issues)
 
+    def test_candidate_observation_requires_stream_evidence(self) -> None:
+        source_module = _source_module()
+        source_module["pdb_module_stream_evidence"] = ""
+        payload = {
+            "module": ".\\Release\\tech.obj",
+            "source": "src/tech.cpp",
+            "flags": "config/flags/tech.rsp",
+            "owners": {},
+            "observed": {VA: {"source": "src/tech.cpp", "status": "observed"}},
+            "generated": {},
+            "symbols": {VA: SYMBOL},
+        }
+        entry = {"module": source_module, "status": "scratch", "note_path": ""}
+        with patch.object(
+            candidate_module, "source_module_entry_for_va", return_value=entry
+        ), patch.object(candidate_module, "load_pdb_function_source_map", return_value={VA: {}}):
+            issues = candidate_module.validate_proposal(payload)
+        self.assertTrue(any("PDB module '' does not match" in issue for issue in issues))
+
     def test_group_rejects_config_symbol_without_pdb_owner(self) -> None:
         source_module = _source_module("matching")
         group = {

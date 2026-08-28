@@ -15,6 +15,7 @@ from common import (
     function_record_by_va,
     load_compiler_generated_functions,
     load_pdb_function_source_map,
+    pdb_module_stream_evidence_issues,
     pdb_module_stream_procedure_for_va,
     preferred_source_path,
     repo_path,
@@ -444,6 +445,7 @@ def validate_proposal(payload: dict[str, object]) -> list[str]:
             and source_module.get("pdb_no_line_info")
             and va not in owners
             and not pdb_module
+            and not pdb_module_stream_evidence_issues(source_module)
             and _normalized_module(str(source_module["pdb_source_path"])) == proposal_module
         )
         no_line_owner = bool(

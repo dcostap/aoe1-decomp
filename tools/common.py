@@ -439,7 +439,7 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _pdb_module_stream_evidence_issues(module: dict[str, object]) -> list[str]:
+def pdb_module_stream_evidence_issues(module: dict[str, object]) -> list[str]:
     """Validate one immutable PDB stream dump for a no-line compiland."""
     name = str(module["name"])
     evidence_path = repo_path(str(module["pdb_module_stream_evidence"]))
@@ -488,7 +488,7 @@ def pdb_module_stream_procedure_for_va(
     module: dict[str, object], va: str
 ) -> dict[str, object] | None:
     """Return one verified no-line module-stream procedure record."""
-    if _pdb_module_stream_evidence_issues(module):
+    if pdb_module_stream_evidence_issues(module):
         return None
     evidence_path = repo_path(str(module["pdb_module_stream_evidence"]))
     evidence = load_json(evidence_path)
@@ -519,7 +519,7 @@ def validate_source_modules() -> list[str]:
         expected_pdb_path = str(module["pdb_source_path"]).replace("/", "\\").casefold()
         no_line_info = bool(module.get("pdb_no_line_info"))
         if no_line_info:
-            issues.extend(_pdb_module_stream_evidence_issues(module))
+            issues.extend(pdb_module_stream_evidence_issues(module))
         functions = module["functions"]
         assert isinstance(functions, dict)
         for va, entry in functions.items():
