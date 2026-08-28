@@ -16,8 +16,9 @@ The source keeps this order. The module uses C mode and the reviewed
 `/Oi- /TC` flags from `config/flags/00448BA0_ds_stream_time_func.rsp`.
 
 The source keeps the proven DirectSound C-interface and WinMM call surfaces.
-The private records model the observed MMCKINFO, MMIOINFO, sound-buffer, and
-wave-format layouts. No inline assembly, fake vtable, or wrapper owner remains.
+It uses the period SDK `MMCKINFO`, `MMIOINFO`, `PCMWAVEFORMAT`, and
+`WAVEFORMATEX` declarations. The shared Dsutil header owns the stream globals.
+No inline assembly, fake vtable, absolute API pointer, or wrapper owner remains.
 
 ## Recovery states
 
@@ -67,3 +68,16 @@ scratch until its boundary and byte differences are recovered.
 After this repair, `00448BA0` rebuilds at 1422 bytes. The original is 1332
 bytes. It has 1321 strict differences (92.8973%) and a 90-byte boundary
 escape. The ordered calls still differ by one `memset` call.
+
+## Canonical provider repair
+
+The source no longer declares target-address API pointer views. Calls use the
+period Win32 and WinMM declarations. The former `DAT_00888464` through
+`DAT_008884B4` overlays now use named Dsutil globals in `include/dsutil.h`.
+Their definitions are owned by `src/game_globals.cpp`.
+
+The direct checks remain exact for `00447D50`, `00447950`, `00448040`,
+`004484D0`, `004486F0`, and `00448B30`. Direct API declarations change the
+instruction layout of `00448250`, `00448340`, and `00448400`, while preserving
+their observed API call sequence and behavior. The module needs a fresh grouped
+audit after integration because the local worktree lacks the FPO reference file.

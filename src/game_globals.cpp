@@ -1,4 +1,5 @@
 #include "..\include\game_globals.h"
+#include "../include/dsutil.h"
 
 // Generated once by tools\generate_working_scaffold.py.
 // After the first scaffold pass, this file becomes editable project source.
@@ -1597,6 +1598,38 @@ unsigned int DAT_00592610 = 0x00000009u;
 unsigned int DAT_00592820 = 0x7525C460u;
 // 00592824 [.data]
 unsigned int DAT_00592824 = 0x00000000u;
+
+// Dsutil process globals. The names and types follow the period SDK surface
+// and the direct uses in the stream helpers.
+unsigned int _uLastPercent = 0;
+LPDIRECTSOUNDBUFFER _lpDSBStreamBuffer = 0;
+int _bFileOpen = 0;
+int _bPlaying = 0;
+int _bTimerInstalled = 0;
+unsigned int _uTimerID = 0;
+HWND _main_wnd = 0;
+unsigned int _lpBuffer = 0;
+LPDIRECTSOUND _lpDS = 0;
+int _ds_ready = 0;
+int _stream_paused = 0;
+LPWAVEFORMATEX _wiWave = 0;
+HMMIO ds_wave_file = 0;
+MMCKINFO ds_wave_data_chunk = {0};
+MMCKINFO ds_wave_riff_chunk = {0};
+LPDIRECTSOUNDBUFFER ds_stream_buffer = 0;
+unsigned int ds_buffer_size = 0;
+unsigned int ds_chunk_size = 0;
+unsigned int ds_write_cursor = 0;
+unsigned int ds_last_play_cursor = 0;
+unsigned long ds_stream_position = 0;
+int ds_stream_stop_requested = 0;
+unsigned int ds_stream_loop = 0;
+int ds_stream_at_end = 0;
+unsigned int ds_silence_chunks = 0;
+unsigned long ds_buffer_bytes = 0;
+long ds_last_percent = 0;
+int ds_stream_callback_active = 0;
+
 HINSTANCE basegame_instance = 0;
 HMODULE StringTable = 0;
 TRegistry* Regs = 0;

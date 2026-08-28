@@ -1942,30 +1942,6 @@ extern unsigned int DAT_00888438;
 extern unsigned int DAT_0088843c;
 // 00888448 [.data]
 extern unsigned int DAT_00888448;
-// 00888464 [.data]
-extern unsigned int DAT_00888464;
-// 00888480 [.data]
-extern unsigned int DAT_00888480;
-// 00888490 [.data]
-extern unsigned int DAT_00888490;
-// 00888494 [.data]
-extern unsigned int DAT_00888494;
-// 00888498 [.data]
-extern unsigned int DAT_00888498;
-// 0088849C [.data]
-extern unsigned int DAT_0088849c;
-// 008884A0 [.data]
-extern unsigned int DAT_008884a0;
-// 008884A4 [.data]
-extern unsigned int DAT_008884a4;
-// 008884A8 [.data]
-extern unsigned int DAT_008884a8;
-// 008884AC [.data]
-extern unsigned int DAT_008884ac;
-// 008884B0 [.data]
-extern unsigned int DAT_008884b0;
-// 008884B4 [.data]
-extern unsigned int DAT_008884b4;
 // 008884E4 [.data]
 extern unsigned int DAT_008884e4;
 // 0088C000 [THIS_DAT]
