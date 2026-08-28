@@ -23,6 +23,16 @@ class RGE_Diamond_Map_View;
 class TRIBE_Scenario_Editor_Panel_Object;
 class TRIBE_World;
 
+// The scenario editor shares this 260-byte default-save-name buffer.
+extern char scenario_default_file_name[260];
+
+// The panel ABI carries this selection event value in an unsigned long.
+// The scenario editor consumes the same value as a static-object pointer.
+union ScenarioEditorEventValue {
+    unsigned long value;
+    RGE_Static_Object* object;
+};
+
 class TRIBE_Screen_Sed : public TScreenPanel {
 public:
     TRIBE_Screen_Sed(char*, int);
@@ -225,10 +235,7 @@ public:
     TTextPanel* Diplomacy_player_text[8];
     TDropDownPanel* Diplomacy_player_list;
     TTextPanel* Diplomacy_status_label[4];
-    union {
-        TButtonPanel* Diplomacy_friend_box[8][3];
-        TButtonPanel* Diplomacy_friend_box_flat[24];
-    };
+    TButtonPanel* Diplomacy_friend_box[8][3];
     TButtonPanel* Diplomacy_AlliedVictory[8];
     TRIBE_World* world;
     unsigned long update_interval;

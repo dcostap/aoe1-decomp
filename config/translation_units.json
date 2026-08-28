@@ -1937,6 +1937,7 @@
         "004AAA90": "src/scr_sed.cpp",
         "004AAD50": "src/scr_sed.cpp",
         "004AADF0": "src/scr_sed.cpp",
+        "004AAE20": "src/scr_sed.cpp",
         "004AB2B0": "src/scr_sed.cpp",
         "004AB2D0": "src/scr_sed.cpp",
         "004AB6E0": "src/scr_sed.cpp",
@@ -7324,17 +7325,16 @@
     },
     {
       "name": "scr_save",
-      "source": "src/scr_save_tu.cpp",
+      "source": "src/scr_save.cpp",
+      "module": "scr_save",
       "flags": "config/flags/scr_save.rsp",
       "owners": {
-        "004A71F0": "src/matching/004A71F0_TribeSaveGameScreen.cpp",
-        "004A75C0": "src/matching/004A75C0_TribeSaveGameScreen.cpp",
-        "004A7670": "src/matching/004A7670_fillList.cpp",
-        "004A8060": "src/matching/004A8060_save_for_scenario_editor.cpp"
+        "004A71F0": "src/scr_save.cpp",
+        "004A7670": "src/scr_save.cpp",
+        "004A8060": "src/scr_save.cpp"
       },
       "symbols": {
         "004A71F0": "??0TribeSaveGameScreen@@QAE@W4Mode@0@PADH@Z",
-        "004A75C0": "??1TribeSaveGameScreen@@UAE@XZ",
         "004A7670": "?fillList@TribeSaveGameScreen@@IAEXXZ",
         "004A8060": "?save_for_scenario_editor@TribeSaveGameScreen@@IAEXXZ"
       }

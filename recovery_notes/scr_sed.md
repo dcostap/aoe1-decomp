@@ -20,6 +20,19 @@ alignment. The size check remains `0x948`.
 The source owns all 47 normal bodies in PDB order. The translation-unit entry
 registers only exact owners. Non-exact statuses retain a source note here.
 
+## Hardening
+
+`scenario_default_file_name` is the named 260-byte module buffer used by the
+default-save path. The event ABI carries an unsigned long, but this screen
+consumes its selection value through the typed `ScenarioEditorEventValue`.
+`command_new_map` passes the complete `RGE_Map_Gen_Info` record to
+`RGE_Player_Info`.
+
+`set_unit_player` owns its `List_Info` and string storage with C++ arrays. The
+destructor releases the arrays with matching `delete[]` operations. No source
+body uses a raw global address, an integer-to-pointer cast, or the old map-info
+record overlay.
+
 ## Recovery states
 
 The natural module validation reports 36 exact functions, five accepted-drift
@@ -53,14 +66,14 @@ The source composes `vw_main.h`, `vw_dimap.h`, `spnl_obj.h`, `scr_sedo.h`,
 `RGE_Scenario::save_scenario`, and the canonical `T_Scenario` API. It uses
 direct typed deletion for the scenario-editor child panels.
 
-The temporary `scr_save.h` and `dlg_sedm.h` declarations provide canonical
-consumer surfaces while their source modules finish migration. They contain
+`scr_save.h` is the full owner header for all five normal `scr_save.cpp`
+bodies. `dlg_sedm.h` is the full owner header for its dialog class. They contain
 no panel copies or size-only fallback classes.
 
 ## Candidate validation
 
 Candidate: `build/scr_sed_canonical_candidate.json`.
-Report: `build/candidate_tus/scr_sed_canonical/report.json`.
+Report: `build/candidate_tus/scr_sed_hardened_final/report.json`.
 
 The grouped candidate compiled all 47 normal bodies and the generated vector
 deleting destructor. It reports zero comparison errors. It reports zero

@@ -43,6 +43,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+char scenario_default_file_name[260];
+
 extern char s_space[];
 extern char s_percent_d[];
 extern char s_btnbldg_d_shp[];
@@ -76,7 +78,6 @@ extern char s_Scenario_Menu_Dialog[];
 extern char s_Scenario_Editor_Screen[];
 extern char s_Scenario_Editor_Open[];
 extern char s_C__msdev_work_age1_x1_scr_sed_cp[];
-extern char DAT_0086bad8[];
 
 extern int View_Grid_Mode;
 extern "C" unsigned long __cdecl debug_timeGetTime(const char*, int);
@@ -718,7 +719,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     delete this->unit_list;
     delete this->unit_scrollbar;
     if (this->unit_list_info != 0) {
-        free(this->unit_list_info);
+        delete[] this->unit_list_info;
         this->unit_list_info = 0;
     }
     if (this->object_panel != 0) {
@@ -1521,7 +1522,7 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
     this->unit_player_list->setCurrentLineNumber((int)p);
     this->unit_list->empty_list();
     if (this->unit_list_info != 0) {
-        free(this->unit_list_info);
+        delete[] this->unit_list_info;
         this->unit_list_info = 0;
     }
     if (player != 0) {
@@ -1536,8 +1537,7 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
             }
         }
         if (this->unit_list_size == 0) return;
-        this->unit_list_info = static_cast<List_Info*>(
-            calloc(static_cast<unsigned int>(this->unit_list_size), 0x66));
+        this->unit_list_info = new List_Info[this->unit_list_size];
         if (this->unit_list_info == 0) return;
         this->unit_list_info[0].id = -1;
         this->set_string(this->unit_list_info[0].text, 0x2775, 0x14);
@@ -1564,13 +1564,12 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
         }
 
         qsort(this->unit_list_info, (int)this->unit_list_size, 0x66, TRIBE_Screen_Sed_unit_list_compare);
-        char** strings = static_cast<char**>(
-            calloc(static_cast<unsigned int>(this->unit_list_size), 4));
+        char** strings = new char*[this->unit_list_size];
         if (strings == 0) return;
         is_error = 0;
         short selected = 0; // BINARY NOTE: the selected row uses a short home.
         for (i = 0; i < this->unit_list_size; i++) {
-            char* s = static_cast<char*>(calloc(100, 1));
+            char* s = new char[100];
             strings[i] = s;
             if (s == 0) { is_error = 1; break; }
             strcpy(s, this->unit_list_info[i].text);
@@ -1581,9 +1580,9 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
             this->unit_list->scroll_cur_line(1, (short)selected, 1);
         }
         for (i = 0; i < this->unit_list_size; i++) {
-            if (strings[i] != 0) free(strings[i]);
+            if (strings[i] != 0) delete[] strings[i];
         }
-        free(strings);
+        delete[] strings;
     }
 }
 
@@ -1860,10 +1859,12 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
     if (param_1 == this->main_view) {
         if (param_2 == 0x10) {
             rge_base_game->get_player()->unselect_object();
+            ScenarioEditorEventValue event_value;
+            event_value.value = param_3;
             if (this->SelectRegionFlag == SelectObject)
-                this->SelectedObject = reinterpret_cast<RGE_Static_Object*>(param_3);
+                this->SelectedObject = event_value.object;
             if (this->SelectRegionFlag == SelectDestinationObject)
-                this->DestinationObject = reinterpret_cast<RGE_Static_Object*>(param_3);
+                this->DestinationObject = event_value.object;
             {
         RGE_Static_Object* selected_object = this->SelectedObject;
         if (selected_object != 0) {
@@ -2397,7 +2398,7 @@ int TRIBE_Screen_Sed::command_new_map(char* scenario_name_in, int is_multi_playe
     }
 
     player_info.scenario = scenario_name_in;
-    player_info.map_info = reinterpret_cast<RGE_Map_Gen_Info*>(&map_info.land);
+    player_info.map_info = &map_info;
     player_info.map_width = (short)width;
     player_info.map_height = (short)height;
     player_info.ai_info = 0;
@@ -2590,17 +2591,17 @@ char* TRIBE_Screen_Sed::scenario_save_defaulted() {
     }
 
     static_cast<TRIBE_Game*>(rge_base_game)->show_status_message(0x450, 0, -1);
-    sprintf(DAT_0086bad8, "default%d.scx",
+    sprintf(scenario_default_file_name, "default%d.scx",
             rge_base_game->registry->RegGetInt(0, "Game File Number"));
-    if (this->world->save_scenario(DAT_0086bad8) == 0) {
+    if (this->world->save_scenario(scenario_default_file_name) == 0) {
         static_cast<TRIBE_Game*>(rge_base_game)->close_status_message();
         this->popupOKDialog(0x963, 0, 0x1c2, 100);
         return 0;
     }
 
-    sprintf(DAT_0086bad8, "default%d",
+    sprintf(scenario_default_file_name, "default%d",
             rge_base_game->registry->RegGetInt(0, "Game File Number"));
-    return DAT_0086bad8;
+    return scenario_default_file_name;
 }
 
 unsigned char TRIBE_Screen_Sed::need_to_save() { return this->need_to_save_flag; }
