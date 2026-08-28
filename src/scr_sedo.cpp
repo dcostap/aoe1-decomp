@@ -32,12 +32,13 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     deleteButton = 0;
 
     tabList[0] = panel_system.currentPanel();
-    strcpy(info_file, ((TEasy_Panel*)tabList[0])->get_info_file());
+    strcpy(info_file,
+           static_cast<TEasy_Panel*>(tabList[0])->get_info_file());
 
     TDrawArea* draw_area = rge_base_game->draw_area;
 
     if (!setup(draw_area, info_file,
-                   ((TEasy_Panel*)tabList[0])->get_info_id(), 1)) {
+                   static_cast<TEasy_Panel*>(tabList[0])->get_info_id(), 1)) {
         error_code = 1;
         return;
     }
@@ -89,12 +90,18 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
 // VA: 004B36A0 ~TRIBE_Screen_Sed_Open
 // PDB source: scr_sedo.cpp lines 104-111.
 TRIBE_Screen_Sed_Open::~TRIBE_Screen_Sed_Open() {
-    this->delete_panel((TPanel**)&this->title);
-    this->delete_panel((TPanel**)&this->list);
-    this->delete_panel((TPanel**)&this->scrollbar);
-    this->delete_panel((TPanel**)&this->okButton);
-    this->delete_panel((TPanel**)&this->cancelButton);
-    this->delete_panel((TPanel**)&this->deleteButton);
+    delete title;
+    title = 0;
+    delete list;
+    list = 0;
+    delete scrollbar;
+    scrollbar = 0;
+    delete okButton;
+    okButton = 0;
+    delete cancelButton;
+    cancelButton = 0;
+    delete deleteButton;
+    deleteButton = 0;
 }
 
 // VA: 004B3740 TRIBE_Screen_Sed_Open::fillList
@@ -142,14 +149,14 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
                                    unsigned long param_3,
                                    unsigned long param_4)
 {
-    char of[252];
-    char fileName[260];
+    OFSTRUCT of;
+    char file_name[260];
+    char format[256];
     char text[560];
     char* line;
     RGE_Prog_Info* prog_info;
     long curr_line;
-    char* file_format;
-    int (__stdcall *open_file)(const char*, OFSTRUCT*, unsigned int);
+    const char* file_format;
 
     if (param_1 != 0) {
         if (param_1->panelName() != 0 &&
@@ -158,21 +165,21 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
             if (param_2 == 0) {
                 prog_info = rge_base_game->prog_info;
                 char* scenario_dir = prog_info->scenario_dir;
-                sprintf(of, "%s%s.scn",
-                        scenario_dir, ((TTextPanel*)list)->currentLine());
-                _unlink(of);
+                sprintf(file_name, "%s%s.scn",
+                        scenario_dir, list->currentLine());
+                _unlink(file_name);
 
                 prog_info = rge_base_game->prog_info;
                 char* scenario_dir_scx = prog_info->scenario_dir;
-                line = ((TTextPanel*)list)->currentLine();
-                sprintf(of, "%s%s.scx",
+                line = list->currentLine();
+                sprintf(file_name, "%s%s.scx",
                         scenario_dir_scx, line);
-                _unlink(of);
+                _unlink(file_name);
 
-                curr_line = ((TTextPanel*)list)->get_line();
-                ((TTextPanel*)list)->delete_line(curr_line);
+                curr_line = list->get_line();
+                list->delete_line(curr_line);
 
-                line = ((TTextPanel*)list)->currentLine();
+                line = list->currentLine();
                 if (line[0] == 0) {
                     okButton->set_disabled(1);
                     deleteButton->set_disabled(1);
@@ -182,43 +189,41 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
             return 1;
         }
 
-        if (param_1 == (TPanel*)deleteButton && param_2 == 1) {
-            line = ((TTextPanel*)list)->currentLine();
+        if (param_1 == deleteButton && param_2 == 1) {
+            line = list->currentLine();
             if (line[0] != 0) {
-                get_string(0x24CA, of, 0x100);
-                sprintf(text + 4, of,
-                        ((TTextPanel*)list)->currentLine());
-                popupYesNoDialog(text + 4, "Cancel Dialog", 0x1C2, 100);
+                get_string(0x24CA, format, 0x100);
+                sprintf(text, format, list->currentLine());
+                popupYesNoDialog(text, "Cancel Dialog", 0x1C2, 100);
             }
         }
 
-        if (param_1 == (TPanel*)list) {
+        if (param_1 == list) {
             if (param_2 == 3) {
-                ((TPanel*)this)->action((TPanel*)okButton, 1, 0, 0);
+                action(okButton, 1, 0, 0);
                 return 1;
             }
         }
-        else if (param_1 == (TPanel*)okButton) {
+        else if (param_1 == okButton) {
             if (param_2 == 1) {
-                if (((TTextPanel*)list)->numberLines() > 0) {
+                if (list->numberLines() > 0) {
                     prog_info = rge_base_game->prog_info;
                     char* scenario_dir_open = prog_info->scenario_dir;
-                    line = ((TTextPanel*)list)->currentLine();
-                    sprintf(fileName + 4, "%s%s.scn",
+                    line = list->currentLine();
+                    sprintf(file_name, "%s%s.scn",
                             scenario_dir_open, line);
 
-                    open_file = OpenFile;
-                    if (open_file(fileName + 4, (OFSTRUCT*)of, 0x4000) != -1) {
-                        line = ((TTextPanel*)list)->currentLine();
+                    if (OpenFile(file_name, &of, 0x4000) != -1) {
+                        line = list->currentLine();
                         file_format = "%s.scn";
                     }
                     else {
                         prog_info = rge_base_game->prog_info;
-                        line = ((TTextPanel*)list)->currentLine();
-                        sprintf(fileName + 4, "%s%s.scx",
+                        line = list->currentLine();
+                        sprintf(file_name, "%s%s.scx",
                                 prog_info->scenario_dir, line);
-                        if (open_file(fileName + 4, (OFSTRUCT*)of, 0x4000) != -1) {
-                            line = ((TTextPanel*)list)->currentLine();
+                        if (OpenFile(file_name, &of, 0x4000) != -1) {
+                            line = list->currentLine();
                             file_format = "%s.scx";
                         }
                         else {
@@ -226,15 +231,15 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
                             return 1;
                         }
                     }
-                    sprintf(fileName + 4, file_format, line);
-                    ((TRIBE_Game*)rge_base_game)->start_scenario_editor(
-                        fileName + 4, 0);
+                    sprintf(file_name, file_format, line);
+                    static_cast<TRIBE_Game*>(rge_base_game)
+                        ->start_scenario_editor(file_name, 0);
                     return 1;
                 }
                 return 1;
             }
         }
-        else if (param_1 == (TPanel*)cancelButton && param_2 == 1) {
+        else if (param_1 == cancelButton && param_2 == 1) {
             TPanel* target = panel_system.panel("Scenario Editor Screen");
             if (target != 0) {
                 panel_system.setCurrentPanel("Scenario Editor Screen", 0);

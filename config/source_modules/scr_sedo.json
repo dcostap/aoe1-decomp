@@ -10,7 +10,7 @@
       "note_path": "recovery_notes/scr_sedo_module.md"
     },
     "004B36A0": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/scr_sedo_module.md"
     },
     "004B3740": {
@@ -18,7 +18,7 @@
       "note_path": "recovery_notes/scr_sedo_module.md"
     },
     "004B38A0": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/scr_sedo_module.md"
     }
   }

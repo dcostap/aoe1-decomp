@@ -28,18 +28,26 @@ canonical `RGE_Base_Game` global to `TRIBE_Game` only for the proven
 
 ## Candidate validation
 
-Candidate: `build/scr_sedo_candidate.json`.
-Report: `build/candidate_tus/scr_sedo_canonical/report.json`.
+Candidate: `build/scr_sedo_natural_candidate.json`.
+Report: `build/candidate_tus/scr_sedo_natural/report.json`.
 
 - `004B33D0`: `MATCH`, 683 bytes, zero relocations, zero boundary escapes.
-- `004B36A0`: `MATCH`, 156 bytes, zero relocations, zero boundary escapes.
+- `004B36A0`: 176 differing bytes, 206 rebuilt bytes, two boundary escapes,
+  and zero relocations.
 - `004B3680`: generated `MATCH`, 30 bytes.
 - `004B3740`: four differing bytes, 352 rebuilt bytes, zero relocations, zero
   boundary escapes.
-- `004B38A0`: 124 differing bytes, 1003 rebuilt bytes, zero relocations, zero
+- `004B38A0`: 569 differing bytes, 997 rebuilt bytes, zero relocations, zero
   boundary escapes.
 
-The constructor and destructor are registered exact owners. `fillList` remains
-scratch because its natural canonical output differs by four local stack bytes.
-`action` remains accepted drift. All four normal bodies stay in the complete
-natural source module and preserve PDB order.
+The constructor remains an exact registered owner. The destructor is scratch
+because direct typed deletion changes its emitted body and boundary. `fillList`
+remains scratch because its natural canonical output differs by four local stack
+bytes. `action` is scratch because stack overlap removal causes a larger
+natural codegen change, and its changed overflow and fault behavior needs
+review. All four normal bodies stay in the complete source module and preserve
+PDB order.
+
+The natural source removes pointer casts, child-pointer address casts, the
+`OFSTRUCT` buffer overlay, and `+4` stack shaping. It uses direct list and
+control calls, independent arrays, and a typed `OFSTRUCT` local.
