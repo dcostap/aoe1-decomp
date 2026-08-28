@@ -4621,10 +4621,11 @@
     },
     {
       "name": "dlg_conf",
-      "source": "src/dlg_conf_tu.cpp",
+      "source": "src/dlg_conf.cpp",
+      "module": "dlg_conf",
       "flags": "config/flags/0043B560_TribeConfigDialog.rsp",
       "owners": {
-        "0043C0C0": "src/matching/0043C0C0_TribeConfigDialog.cpp"
+        "0043C0C0": "src/dlg_conf.cpp"
       },
       "symbols": {
         "0043C0C0": "??1TribeConfigDialog@@UAE@XZ"
