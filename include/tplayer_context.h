@@ -1012,18 +1012,6 @@ extern "C" void __cdecl debug_srand(char*, int, int);
 #define tribe_game ((TRIBE_Game*)rge_base_game)
 
 extern int computerPlayerSetup;
-extern int DAT_00886c1c;
-extern int DAT_00886c20;
-extern int DAT_00886c24;
-extern int DAT_00886c28;
-extern int DAT_00886c2c;
-extern int DAT_00886c30;
-extern int DAT_00886c34;
-extern int DAT_00886c38;
-extern int DAT_00886c3c;
-extern int DAT_00886c40;
-extern int DAT_00886c44;
-extern int DAT_00886c48;
 extern int allowAIToCheat;
 
 
