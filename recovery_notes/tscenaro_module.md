@@ -2,62 +2,44 @@
 
 The module owns 82 normal functions in PDB source order.
 
-The direct translation unit keeps 79 matching owners. The following owners stay accepted drift:
+Before canonical composition, the direct translation unit had 79 matching rows
+and three accepted-drift rows.
 
-- `0052B5F0` has an 8-byte grouped difference.
-- `0052B630` has an 8-byte grouped difference.
-- `0052C0B0` has a 7-byte scheduling difference.
+## Canonical composition
 
-The source merge does not change their recovery status.
+`include/tscenaro.h` now includes `scenario.h`. It owns T_Scenario and its
+scenario records only. It has no copied Player, World, Tech, Effects, Victory,
+or base Scenario declaration.
 
-`tscenaro.h` includes `tplayer.h`. It no longer defines a local TRIBE_Player
-or TRIBE_Player_Tech surface. Calls use tech_abling(long, unsigned char).
-tscenaro.cpp includes tech.h for check_for_new_tech().
-The fanout candidate has 79 exact matches.
+`src/tscenaro.cpp` includes the required canonical private owners: Player,
+Tplayer, World, static object, Effects, Tech, and Tribal Victory. It uses the
+published `TRIBE_Victory_Conditions::add_tech(unsigned char, long)` owner.
+`RGE_Player::victory_conditions` is the derived Tribal Victory pointer.
 
-## Composition hold
+The module uses typed scenario fields for saves and single-player victory
+records. It no longer uses a union overlay, raw object-ID array, byte cursor,
+or `this + offset` layout.
 
-The canonical-owner candidate is held. `include/tscenaro.h` cannot remove its
-foreign bodies until these owner edges compose.
+### Validation
 
-### Tribal Victory `add_tech`
+`python tools/check_function.py --va 0052A990 --no-history --detail concise`
+reports `MATCH` and `0.0000%` for the first constructor.
 
-`T_Scenario::Save_victory_conditions_into_players` calls `add_tech` for the
-technology condition. The old T_Scenario header incorrectly puts that method
-on `RGE_Victory_Conditions`.
+The grouped candidate is in
+`build/candidate_tus/tscenaro_owner_composition/result/report.json`.
+It compiles the module with canonical owners. It keeps 75 of 79 prior exact
+rows. The natural source changes these exact rows, which need scratch status:
 
-The PDB names the real method
-`?add_tech@TRIBE_Victory_Conditions@@QAEEEJ@Z`. It is `unsigned char
-__thiscall TRIBE_Victory_Conditions::add_tech(unsigned char, long)` at
-`0052C9B0`, in `tvictory.cpp:71`. `TRIBE_Victory_Conditions` derives from
-`RGE_Victory_Conditions`. Both types are `0x20` bytes. The derived class adds
-no fields.
+- `0052AB90` T_Scenario file constructor: 31 differing bytes.
+- `0052AF20` T_Scenario::save: 316 differing bytes.
+- `0052B240` T_Scenario::InitializeVictoryValues: 52 differing bytes and one
+  boundary escape.
+- `0052BBC0` T_Scenario::Save_victory_conditions_into_players: 476 differing
+  bytes and one boundary escape.
 
-Route the method through the canonical `include/tvictory.h` owner. Do not add
-it to `include/victory.h`. The Player victory-condition declaration must prove
-the derived static type before T_Scenario can call the derived-only method.
+`0052B5F0` and `0052B630` now match. `0052C0B0` remains nonexact in the
+natural form. The configuration owner must reconcile these results before
+promotion.
 
-### Base Game `prog_mode`
-
-`T_Scenario::set_player_tech` reads `rge_base_game->prog_mode`. The old
-T_Scenario header declares a local `RGE_Base_Game` body only for that field.
-
-The PDB type is `0xA24`. It has `prog_info` at `+0x0C` and `prog_mode` at
-`+0x1B0`. The canonical owner is `include/basegame.h`; the global owner is
-`include/rge_base_game_global.h`. Terra 5 owns both surfaces.
-
-`include/scenario.h` currently declares another partial `RGE_Base_Game`. It
-conflicts with `basegame.h` when T_Scenario consumes the canonical owner.
-Terra 5 must remove that Scenario-local Base Game body and preserve the
-canonical 0xA24 layout. T_Scenario must then include the canonical owner. Do
-not add a local field, cast, overlay, or compatibility declaration.
-
-### Validation and reopening
-
-The owner-composition candidate retained the proven `T_Scenario` size `0x514C`,
-base slots, constructors, and derived offsets. Its grouped validation stopped
-at the two owner errors above. Evidence is in
-`build/candidate_tus/tscenaro_owner_composition/composition_report.json`.
-
-Keep Tworld held. Reopen the T_Scenario owner only after the canonical Tribal
-Victory and Base Game surfaces compose with `include/scenario.h`.
+Tworld can consume this canonical TScenario surface. Its own provider gates
+still apply.
