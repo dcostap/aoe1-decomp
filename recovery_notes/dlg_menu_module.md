@@ -34,14 +34,14 @@ owners. The source uses the real enum values and dialog-name string literals.
 `src/dlg_menu_tu.cpp` wrapper, `include/dlg_menu_context.h`, and three matching
 fragments are removed. `config/source_modules/dlg_menu.json` records the three
 owners. `config/translation_units.json` registers the exact action owner and
-leaves the two accepted-drift owners out of the exact-owner map.
+leaves the two scratch owners out of the exact-owner map.
 
 ## Validation
 
 The typed-array candidate compiles the direct source with
 `config/flags/0043F340_TribeMenuDialog.rsp`. The constructor and destructor
 remain semantically equivalent, but their source-safe array forms produce
-accepted local codegen drift:
+broad codegen drift:
 
 - `0043F340`: 776 differing bytes, 860 rebuilt bytes, and 2 boundary escapes;
 - `0043F6B0`: 96 differing bytes, 121 rebuilt bytes, and 1 boundary escape;
@@ -49,7 +49,7 @@ accepted local codegen drift:
 
 The generated `0043F690` owner still reports `MATCH`, zero positional
 difference, and zero relocations. The constructor and destructor are marked
-`accepted_drift`; the action remains `matching`.
+`scratch`; the action remains `matching`.
 
 The final source builds a local `TPanel* tab_order[11]` before calling
 `set_tab_order`. Its destructor copies each `TButtonPanel*` to a typed
