@@ -66,17 +66,15 @@
 // - Specialist follow-up: natural unsigned `a - (0 - b)` preserved the same
 //   two-byte hunk, while the donor-supported timings union worsened two late
 //   logger displacements.  Both probes were restored.
-// - Context gate: config/translation_units.json registers basegame_prefix only
-//   through 0041EBF0; 00421BF0 is not registered.  No config edit was used.
-// - Later-module audit: src/basegame_late_tu.cpp records the PDB owner order
-//   from 0041ED00 through 00421FA0 and groups the real 00421FA0 next owner;
-//   0041E7A0 remains an independently checked prefix anchor.  Its default and
-//   /GX grouped builds preserve size, frame, six calls, publication, rollover,
-//   and fault order, but retain the two quotient-load bytes.  Authentic later
-//   owner context therefore does not resolve the gap.
+// - Context gate: the direct BaseGame source stops at 0041B6A0. 00421BF0 is
+//   not registered. No config edit was used.
+// - PDB inventory orders owners from 0041ED00 through 00421FA0. 0041E7A0
+//   remains an independently checked prefix anchor. The grouped later checks
+//   preserve size, frame, six calls, publication, rollover, and fault order.
+//   They retain the two quotient-load bytes. The context does not resolve it.
 // - Fresh grouped checks: 0041E7A0 and 00421FA0 both report MATCH with their
 //   PDB-qualified owners; 00421BF0 still reports MISMATCH at two bytes.  The
-//   later owner wrapper is an evidence boundary test, not an exact claim.
+//   later owner segment is an evidence boundary test, not an exact claim.
 // BLOCKER: Owners after 0041EBF0 use incompatible local RGE_Base_Game
 //   declarations. Including them all would require unsupported ABI substitution
 //   or broad source edits. Keep the registered prefix and config unchanged until
