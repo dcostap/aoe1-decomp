@@ -1,9 +1,12 @@
 #include "../include/pnl_msg.h"
+#include "../include/Shape.h"
+#include "../include/basegame.h"
+#include "../include/rge_base_game_global.h"
 #include <string.h>
 
 extern "C" int strncmp(const char*, const char*, unsigned int);
 extern "C" char* strncpy(char*, const char*, unsigned int);
-long debug_timeGetTime(const char* file, int line);
+long __cdecl debug_timeGetTime(const char*, int);
 
 TMessagePanel::TMessagePanel(void* font, long font_wid, long font_hgt)
     : TPanel() {
@@ -62,7 +65,8 @@ void TMessagePanel::set_rect(long x, long y, long w, long h) {
 
         image_buffer = new TDrawArea("message panel", 0);
         this->ImageBuffer = image_buffer;
-        image_buffer->Init(*(void**)this->render_area, this->pnl_wid, this->pnl_hgt, 0, 0);
+        image_buffer->Init(this->render_area->DrawSystem, this->pnl_wid,
+                           this->pnl_hgt, 0, 0);
         this->LastIBWidth = this->pnl_wid;
         this->LastIBHeight = this->pnl_hgt;
 
@@ -83,7 +87,7 @@ void TMessagePanel::set_rect(long x, long y, long w, long h) {
     }
 
     this->need_restore = 1;
-    this->set_redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
 }
 
 void TMessagePanel::set_justification(TMessagePanel::JustType a,
@@ -131,9 +135,9 @@ void TMessagePanel::show_message(TMessagePanel::MessageType message_type,
     }
 
     this->set_active(1);
-    this->set_redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
     if (this->parent_panel) {
-        this->parent_panel->set_redraw(1);
+        this->parent_panel->set_redraw(TPanel::RedrawNormal);
     }
 }
 
@@ -182,9 +186,9 @@ void TMessagePanel::show_message2(
     }
 
     this->set_active(1);
-    this->set_redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
     if (this->parent_panel) {
-        this->parent_panel->set_redraw(1);
+        this->parent_panel->set_redraw(TPanel::RedrawNormal);
     }
 }
 
@@ -192,9 +196,9 @@ void TMessagePanel::remove_message(void) {
     if (this->showing_message != 0) {
         this->showing_message = 0;
         this->set_active(0);
-        this->set_redraw(1);
+        this->set_redraw(TPanel::RedrawNormal);
         if (this->parent_panel != 0) {
-            this->parent_panel->set_redraw(1);
+            this->parent_panel->set_redraw(TPanel::RedrawNormal);
         }
     }
     this->ImageTextActive = 0;
@@ -533,6 +537,6 @@ void TMessagePanel::set_font(void* param_1, long param_2, long param_3) {
         this->font_wid = param_2;
         this->font_hgt = param_3;
         this->need_restore = 1;
-        this->set_redraw(1);
+        this->set_redraw(TPanel::RedrawNormal);
     }
 }

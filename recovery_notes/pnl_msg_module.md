@@ -11,10 +11,11 @@ This module has 12 normal owners in PDB source order. The owner range is
 00478F40 through 0047A1C9. The scalar deleting destructor at 00479030 is a
 compiler-generated owner and is not a source function.
 
-The source keeps the original class and field ownership. The module header now
-owns the declarations for `TPanel`, `TMessagePanel`, `TDrawArea`, and `TShape`.
-The merged source removes the wrapper, bank fragments, fallback declarations,
-context guards, and `.cpp` includes.
+The source keeps the original class and field ownership. The module header owns
+only `TMessagePanel`; `TPanel`, `TDrawArea`, `TDrawSystem`, `TShape`,
+`Shape_Info`, and `RGE_Base_Game` come from their canonical owners. The merged
+source removes the wrapper, bank fragments, copied layouts, fallback
+declarations, context guards, and `.cpp` includes.
 
 The source keeps the prior natural bodies. It does not add byte-tuning forms.
 The complete module build can differ from the old isolated owner results because
