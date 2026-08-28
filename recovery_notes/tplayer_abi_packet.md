@@ -1,7 +1,8 @@
 # tplayer.h ABI packet
 
-Status: owner-header completion only. The `tplayer.cpp` source module remains
-held. This header does not move or rebuild any tplayer source owner.
+Status: owner-header and source-module closure complete. `src/tplayer.cpp`
+owns all 103 normal PDB bodies in source order. The module uses the `/GX`
+context required by its exception-bearing owners.
 
 ## Ownership and layout
 
@@ -47,10 +48,9 @@ This header uses forward declarations for `TRIBE_Player_Tech`,
 the pointer-only method types. It does not define Map, World, static-object,
 master-object, list, node, AI, history, or TRIBE-derived victory types.
 
-The header does not prove source-module closure. `src/tplayer_tu.cpp` and
-`src/tplayer_postpad_tu.cpp` still use the held `tplayer_context.h` surface.
-The source module still needs a later closure pass against all direct owners,
-including the Gaia boundary and compiler-generated destructor entries.
+The source module no longer uses `tplayer_tu.cpp`, `tplayer_postpad_tu.cpp`,
+or the held `tplayer_context.h` surface. The unused build-list packet view and
+stale TPlayer global declarations are removed.
 
 ## Direct-source closure audit
 
@@ -69,10 +69,9 @@ They do not close the complete PDB module.
 The source needs all three owners. Add them to the Tech owner header. Do not
 add a Player-local substitute.
 
-`taimdmd.h` declares `TribeMainDecisionAIModule`, but it also defines copied
-RGE Player, World, Map, object, and Victory classes. It cannot compose with
-`player.h`, `world.h`, and the object owner headers. Publish a no-copy AI
-owner surface before the Player source uses that class.
+`taimdmd.h` supplies the AI root used by the Player source. Its provider
+headers must remain composable with `player.h`, `world.h`, and object-owner
+headers. Do not add Player-local fallback classes.
 
 `Trade_Avail` is a `tplayer.cpp` record. `tplayer.h` owns its three fields:
 `RGE_Player*`, `RGE_Static_Object*`, and `float`. Its size is `0x0C`.
@@ -86,9 +85,8 @@ Projectile types for these cases.
 Building has `tm_b_obj.h`. TPlayer source still waits for the no-copy AI root.
 Do not use `tcommand_context.h` from `tplayer.cpp`.
 
-Do not create direct `src/tplayer.cpp` until these providers land. The old
-candidate needs local carriers and raw layouts. It is not a valid source
-owner.
+The direct `src/tplayer.cpp` owner is now valid. The remaining integration gate
+is canonical provider composition. Keep provider ownership in its own headers.
 
 The natural pinned-VC5 header probe passed for the class size and all 16 field
 offsets. A fresh standalone `00513DA0` check returned `MATCH` at `0.0000%`.
