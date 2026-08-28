@@ -21,8 +21,9 @@ source method.
 Current status:
 
 - `0050B450`, `0050B4A0`, `0050B4D0`, `0050B5E0`, and `0050B700` match.
-- `0050B820` remains accepted drift. The direct module has a 15-byte control-flow
-  mismatch and two bytes after its original boundary.
+- `0050B820` is scratch. The direct module has a 15-byte control-flow mismatch
+  and emits two bytes after its original boundary. The boundary escape
+  disqualifies accepted drift.
 
 The constructor now matches after the canonical inherited headers replaced the
 local context class. It calls `0047E670` and stores the derived vtable.
