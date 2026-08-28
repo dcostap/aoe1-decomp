@@ -34,12 +34,12 @@ after the main-chain provider integration:
 The complete open-screen declaration is available from `include/scr_sedo.h`.
 Do not replace these providers with size-only classes in `include` or `src`.
 
-The five matching symbols are:
+The module symbols are:
 
-- `??0TRIBE_Screen_Sed_Menu@@QAE@XZ`;
-- `??1TRIBE_Screen_Sed_Menu@@UAE@XZ`;
-- `?handle_idle@TRIBE_Screen_Sed_Menu@@MAEJXZ`;
-- `?action@TRIBE_Screen_Sed_Menu@@MAEJPAVTPanel@@JKK@Z`;
+- `??0TRIBE_Screen_Sed_Menu@@QAE@XZ` (constructor, scratch after cast removal);
+- `??1TRIBE_Screen_Sed_Menu@@UAE@XZ` (destructor, scratch after cast removal);
+- `?handle_idle@TRIBE_Screen_Sed_Menu@@MAEJXZ` (matching);
+- `?action@TRIBE_Screen_Sed_Menu@@MAEJPAVTPanel@@JKK@Z` (matching);
 - `??_ETRIBE_Screen_Sed_Menu@@UAEPAXI@Z` (generated scalar deleting
   destructor; the compared fallback is `??_GTRIBE_Screen_Sed_Menu@@UAEPAXI@Z`).
 
@@ -64,22 +64,24 @@ keeps all four normal bodies in PDB order. The scalar deleting destructor at
 
 The pinned VC5 build of `src/scr_sedm.cpp` produced these results:
 
-- `004B2EF0`: `MATCH`, 504 of 504 bytes;
-- `004B3110`: `MATCH`, 129 of 129 bytes;
+- `004B2EF0`: `MISMATCH`, 439 differing bytes, 539 rebuilt bytes, three
+  boundary escapes;
+- `004B3110`: `MISMATCH`, 158 differing bytes, 185 rebuilt bytes, two
+  boundary escapes;
 - `004B31A0`: `MATCH`, 33 of 33 bytes;
 - `004B31D0`: `MATCH`, 502 of 502 bytes;
 - generated `004B30F0`: `MATCH`, 30 of 30 bytes.
 
-The comparison reports zero boundary escapes and zero byte differences for
-all five entries. The four normal symbols are registered in
-`config/translation_units.json` and `config/source_modules/scr_sedm.json`.
+The two exact normal symbols are registered in `config/translation_units.json`
+and `config/source_modules/scr_sedm.json`. The constructor and destructor stay
+honest `scratch` rows.
 
-Direct authoritative checks for `004B2EF0`, `004B31A0`, and `004B31D0` also
-report `MATCH` and `0.0000%`. The grouped check covers all four normal bodies
-and the generated destructor in one VC5 object.
+Direct authoritative checks for `004B31A0` and `004B31D0` report `MATCH` and
+`0.0000%`. The grouped check covers all four normal bodies and the generated
+destructor in one VC5 object.
 
-The canonical `TPanel` API takes `TPanel**` for tab order and child deletion.
-The source uses explicit pointer reinterpretation only at those two API
-boundaries because the owned fields have their proven derived pointer types.
-No temporary records, fake vtables, packed layouts, or copied generated bodies
-remain in the compiler-facing source.
+The constructor uses a local `TPanel* tab_order[4]` array. The destructor uses
+a local `TPanel* panel` and clears each typed member after deletion. This removes
+all pointer-array and member address casts. The resulting code drift is
+documented above; no temporary records, fake vtables, packed layouts, or copied
+generated bodies remain in the compiler-facing source.

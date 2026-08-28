@@ -4,6 +4,7 @@
 #include "../include/scr_sedm.h"
 #include "../include/pnl_btn.h"
 #include "../include/Pnl_txt.h"
+#include "../include/pnl_lst.h"
 #include "../include/basegame.h"
 #include "../include/tribegam.h"
 #include "../include/scr_sedo.h"
@@ -63,16 +64,30 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
     cancel->hotkey = 0x1B;
     cancel->hotkey_shift = 0;
 
-    set_tab_order(reinterpret_cast<TPanel**>(button), 4);
+    TPanel* tab_order[4];
+    for (int k = 0; k < 4; k++)
+        tab_order[k] = button[k];
+    set_tab_order(tab_order, 4);
     set_curr_child(button[0]);
 }
 
 TRIBE_Screen_Sed_Menu::~TRIBE_Screen_Sed_Menu()
 {
-    delete_panel(reinterpret_cast<TPanel**>(&title));
-    for (int i = 0; i < 4; i++)
-        delete_panel(reinterpret_cast<TPanel**>(&button[i]));
-    delete_panel(reinterpret_cast<TPanel**>(&close_button));
+    TPanel* panel;
+
+    panel = title;
+    delete_panel(&panel);
+    title = 0;
+
+    for (int i = 0; i < 4; i++) {
+        panel = button[i];
+        delete_panel(&panel);
+        button[i] = 0;
+    }
+
+    panel = close_button;
+    delete_panel(&panel);
+    close_button = 0;
 }
 
 long TRIBE_Screen_Sed_Menu::handle_idle()
