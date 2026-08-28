@@ -404,6 +404,7 @@ def validate_proposal(payload: dict[str, object]) -> list[str]:
             issues.append(f"{va} is not the canonical source: {source_value}")
         module_entry = source_module_entry_for_va(va)
         direct_module = False
+        source_module = None
         if module_entry is not None and source.resolve() == wrapper.resolve():
             source_module = module_entry["module"]
             assert isinstance(source_module, dict)
@@ -426,9 +427,25 @@ def validate_proposal(payload: dict[str, object]) -> list[str]:
         pdb = pdb_map.get(va, {})
         pdb_module = str(pdb.get("primary_source_path") or pdb.get("primary_source_file") or "")
         pdb_name = Path(pdb_module.replace("\\", "/")).name.casefold()
+        no_line_info = bool(source_module and source_module.get("pdb_no_line_info"))
+        declared_compiland = ""
+        if source_module is not None:
+            declared_compiland = _normalized_module(str(source_module["pdb_source_path"]))
+        if no_line_info and va in owners:
+            symbols = payload["symbols"]
+            assert isinstance(symbols, dict)
+            if not str(symbols.get(va) or "").strip():
+                issues.append(
+                    f"{va} needs an explicit symbol for a no-line PDB compiland"
+                )
         if (
             _normalized_module(pdb_module) != proposal_module
             and pdb_name != proposal_name
+            and not (
+                no_line_info
+                and not pdb_module
+                and declared_compiland == proposal_module
+            )
         ):
             issues.append(f"{va} PDB module {pdb_module!r} does not match {payload['module']!r}")
         try:

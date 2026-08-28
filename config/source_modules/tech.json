@@ -2,6 +2,7 @@
   "schema": 1,
   "name": "tech",
   "pdb_source_path": ".\\Release\\tech.obj",
+  "pdb_no_line_info": true,
   "source": "src/tech.cpp",
   "header": "include/tech.h",
   "functions": {

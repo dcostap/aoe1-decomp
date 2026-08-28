@@ -50,9 +50,11 @@ never set. Direct-source validation gives 28 differing bytes, or 5.2830%.
 The other 29 normal functions pass direct-source validation with `MATCH` and
 `0.0000%`. The compiled object has no compiler-generated entry in this range.
 
-## Validation blocker
+## No-line PDB validation
 
-`validate_candidate_tu.py` requires one PDB source path for every owner.
-The PDB rows for this contribution have empty source paths and symbols. It
-cannot validate or register this module until new CodeView source evidence is
-available. The direct VC5 compile remains valid build evidence.
+`pdb_no_line_info` records the PDB condition. Validation requires an empty
+PDB function source path and an explicit decorated symbol for every exact
+owner. This preserves direct owner validation without inventing line data.
+
+`validate_candidate_tu.py` compiled the complete direct source. Its report
+has 29 exact matches, four observed mismatches, and no generated entry.

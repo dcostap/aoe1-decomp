@@ -332,6 +332,9 @@ def validate_translation_units(
         if not isinstance(owners, dict) or not owners:
             issues.append(_issue("missing-owners", f"{group_label} has no owners"))
             continue
+        configured_symbols = group.get("symbols")
+        exact_symbols = configured_symbols if isinstance(configured_symbols, dict) else {}
+        no_line_info = bool(source_module and source_module.get("pdb_no_line_info"))
 
         owner_records: list[tuple[str, Path, dict[str, str] | None]] = []
         for raw_va, raw_owner in owners.items():
@@ -400,7 +403,18 @@ def validate_translation_units(
                             f"{group_label} owner {va} must map to direct module source {source_value}",
                         )
                     )
-            if not str((pdb_sources.get(va) or {}).get("symbol_name") or "").strip():
+            has_pdb_symbol = bool(
+                str((pdb_sources.get(va) or {}).get("symbol_name") or "").strip()
+            )
+            has_exact_symbol = bool(str(exact_symbols.get(va) or "").strip())
+            if no_line_info and not has_exact_symbol:
+                issues.append(
+                    _issue(
+                        "missing-exact-symbol",
+                        f"{group_label} owner {va} needs an explicit symbol for a no-line PDB compiland",
+                    )
+                )
+            if not has_pdb_symbol and not (no_line_info and has_exact_symbol):
                 issues.append(
                     _issue(
                         "missing-pdb-symbol",

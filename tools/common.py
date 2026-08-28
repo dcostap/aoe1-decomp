@@ -355,12 +355,15 @@ def load_source_modules() -> list[dict[str, object]]:
         name = str(raw_module.get("name") or "").strip()
         source = str(raw_module.get("source") or "").replace("\\", "/").strip()
         pdb_source_path = str(raw_module.get("pdb_source_path") or "").strip()
+        pdb_no_line_info = raw_module.get("pdb_no_line_info", False)
         header = str(raw_module.get("header") or "").replace("\\", "/").strip()
         raw_functions = raw_module.get("functions")
         if not name or not source or not pdb_source_path or not isinstance(raw_functions, dict) or not raw_functions:
             raise ValueError(
                 f"{label}: module needs name, source, pdb_source_path, and functions"
             )
+        if not isinstance(pdb_no_line_info, bool):
+            raise ValueError(f"{label}: pdb_no_line_info must be Boolean")
         if name in seen_names:
             raise ValueError(f"{label}: duplicate module name {name!r}")
         seen_names.add(name)
@@ -394,6 +397,7 @@ def load_source_modules() -> list[dict[str, object]]:
                 "source": source,
                 "header": header,
                 "pdb_source_path": pdb_source_path,
+                "pdb_no_line_info": pdb_no_line_info,
                 "functions": functions,
             }
         )
@@ -432,13 +436,23 @@ def validate_source_modules() -> list[str]:
         if header_value and not repo_path(header_value).is_file():
             issues.append(f"{name}: module header is missing: {repo_path(header_value)}")
         expected_pdb_path = str(module["pdb_source_path"]).replace("/", "\\").casefold()
+        no_line_info = bool(module.get("pdb_no_line_info"))
         functions = module["functions"]
         assert isinstance(functions, dict)
         for va, entry in functions.items():
             if va not in records:
                 issues.append(f"{name}: function {va} is absent from inventory")
                 continue
-            pdb_path = str((pdb_sources.get(va) or {}).get("primary_source_path") or "")
+            pdb_entry = pdb_sources.get(va)
+            pdb_path = str((pdb_entry or {}).get("primary_source_path") or "")
+            if no_line_info:
+                if pdb_entry is None:
+                    issues.append(f"{name}: function {va} has no PDB function record")
+                elif pdb_entry.get("has_line_info") != "0" or pdb_path:
+                    issues.append(
+                        f"{name}: function {va} has PDB line/source data despite pdb_no_line_info"
+                    )
+                continue
             if pdb_path.replace("/", "\\").casefold() != expected_pdb_path:
                 issues.append(
                     f"{name}: function {va} PDB source {pdb_path!r} does not match {module['pdb_source_path']!r}"
