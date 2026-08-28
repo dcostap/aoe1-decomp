@@ -992,11 +992,6 @@ public:
     void scenario_postload(int, long*, float);
 };
 
-struct BuildListPacket_00515E00 {
-    int weights[125];
-    int mostBuiltUnit;
-};
-
 extern "C" int __cdecl debug_rand(char*, int);
 extern "C" void __cdecl debug_srand(char*, int, int);
 
