@@ -100,30 +100,31 @@ It does not call an `RGE_Game_Info` method.
 ## Complete composition gate
 
 The current PDB plan has 202 normal owners.
-The direct source owns five of them.
-The candidate wrapper holds the other 197 bodies.
-
-The probe is `build/basegame_composition_probe.cpp`.
-It contains all 202 bodies in PDB order.
+`src/basegame.cpp` now owns all 202 bodies in PDB order.
 It uses canonical provider headers.
-It does not include `basegame_candidate_context.h`.
+It does not include a candidate context.
 
-The probe does not compile. It exposed these provider gaps:
+The direct audit reports 191 exact owners.
+Each reports `MATCH` and `0.0000%`.
 
-- The direct probe still uses a stale local `TPanel` declaration.
-- BaseGame header-owned helpers lack reviewed canonical declarations.
+The remaining eleven owners are nonexact.
+They remain in the module source without a false exact claim.
+`0041BAA0`, `0041E920`, and `00421BF0` remain accepted drift.
 
-Some candidate bodies also use raw IAT addresses and false field aliases.
-The direct source must replace them with canonical API and field access.
-
-Keep the candidate wrapper until those provider owners repair their interfaces.
-Do not add copied contexts or raw access to bypass this gate.
+`0041E7D0` has an 11-byte direct-source codegen difference.
+It stays scratch.
+The other unresolved owners are `0041C270`, `0041E920`, `0041F560`,
+`0041FDE0`, `004206D0`, `00421FA0`, `00422B10`, and `00422FF0`.
 
 ## Canonical field cleanup
 
 `0041C270` now uses `TDrawSystem::ScreenWidth`.
 It uses `RGE_Prog_Info::mouse_scroll_interval`.
-The wrapper has 165 exact candidate owners.
+The direct module registers 191 exact owners.
+
+`RGE_Game_Options` is a nested `struct`.
+The PDB symbol for the option setter uses the struct tag form.
+This preserves the owner symbol for `00422130` and `00422260`.
 
 `0041CDA0` now uses canonical World and Scenario providers.
 It reads `world->scenario` at `+0x5C`.

@@ -51,7 +51,7 @@ typedef char rge_timing_info_size_check[
 
 class RGE_Base_Game {
 public:
-    class RGE_Game_Options {
+    struct RGE_Game_Options {
     public:
         float versionValue;
         unsigned char scenarioGameValue;
