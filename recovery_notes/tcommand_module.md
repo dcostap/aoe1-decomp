@@ -12,7 +12,7 @@ fixed typed header.
 
 ## Current direct result
 
-`build/tcommand_complete_audit/result_release_final/report.json`
+`build/tcommand_complete_audit/result_submission_final/report.json`
 checks all 42 normal owners. It reports 22 exact owners. Every registered owner
 reports `MATCH` and `0.0000%`.
 

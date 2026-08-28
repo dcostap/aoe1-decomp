@@ -40,7 +40,7 @@ Formation, Group AI Order, and Group Waypoint have no typed tail member.
 Command source locates serialized `RGE_Obj_Info` values after each typed header.
 
 The complete grouped report at
-`build/command_complete_audit/result_release_final/report.json` checks all 51
+`build/command_complete_audit/result_submission_final/report.json` checks all 51
 normal owners. The registered report at `build/candidate_tus/Command/report.json`
 has 21 exact owners. Every registered
 owner reports `MATCH` and `0.0000%`.
