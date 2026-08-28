@@ -628,7 +628,7 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     delete this->unit_list;
     delete this->unit_scrollbar;
     if (this->unit_list_info != 0) {
-        delete[] this->unit_list_info;
+        free(this->unit_list_info);
         this->unit_list_info = 0;
     }
     if (this->object_panel != 0) {
@@ -1476,7 +1476,11 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
         qsort(this->unit_list_info, this->unit_list_size, 0x66, TRIBE_Screen_Sed_unit_list_compare);
         char** strings = static_cast<char**>(
             calloc(this->unit_list_size, sizeof(char*)));
-        if (strings == 0) return;
+        if (strings == 0) {
+            free(this->unit_list_info);
+            this->unit_list_info = 0;
+            return;
+        }
         is_error = 0;
         short selected = 0;
         for (i = 0; i < this->unit_list_size; i++) {
