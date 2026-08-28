@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "name": "spnl_obj",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\spnl_obj.cpp",
+  "source": "src/spnl_obj.cpp",
+  "header": "include/spnl_obj.h",
+  "functions": {
+    "004BEDC0": { "status": "matching" },
+    "004BEE30": { "status": "matching" },
+    "004BEE40": { "status": "matching" },
+    "004BEE70": {
+      "status": "scratch",
+      "note_path": "recovery_notes/spnl_obj_module.md"
+    },
+    "004BF4D0": { "status": "matching" },
+    "004BF6C0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/spnl_obj_module.md"
+    },
+    "004BF6E0": { "status": "matching" }
+  }
+}

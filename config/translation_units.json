@@ -6453,15 +6453,23 @@
     },
     {
       "name": "spnl_obj_cpp",
-      "source": "src/spnl_obj_tu.cpp",
+      "module": "spnl_obj",
+      "source": "src/spnl_obj.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "004BEDC0": "src/matching/004BEDC0_TRIBE_Scenario_Editor_Panel_Object.cpp",
-        "004BEE40": "src/matching/004BEE40_set_master_info.cpp",
-        "004BF4D0": "src/matching/004BF4D0_draw_item.cpp",
-        "004BF6E0": "src/matching/004BF6E0_get_pierce_armor.cpp"
+        "004BEDC0": "src/spnl_obj.cpp",
+        "004BEE30": "src/spnl_obj.cpp",
+        "004BEE40": "src/spnl_obj.cpp",
+        "004BF4D0": "src/spnl_obj.cpp",
+        "004BF6E0": "src/spnl_obj.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "004BEDC0": "??0TRIBE_Scenario_Editor_Panel_Object@@QAE@PAVTDrawArea@@PAVTPanel@@PAXJJPAVTShape@@PAPAV3@PAVTRIBE_Player@@@Z",
+        "004BEE30": "??1TRIBE_Scenario_Editor_Panel_Object@@UAE@XZ",
+        "004BEE40": "?set_master_info@TRIBE_Scenario_Editor_Panel_Object@@QAEXPAVRGE_Master_Static_Object@@PAVTRIBE_Player@@@Z",
+        "004BF4D0": "?draw_item@TRIBE_Scenario_Editor_Panel_Object@@UAEXHHW4ValueType@TRIBE_Panel_Object@@HH@Z",
+        "004BF6E0": "?get_pierce_armor@TRIBE_Scenario_Editor_Panel_Object@@QAEJXZ"
+      }
     },
     {
       "name": "m_ac_obj_cpp_proposal",
