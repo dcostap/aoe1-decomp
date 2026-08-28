@@ -5,7 +5,10 @@
   "source": "src/Path.cpp",
   "header": "include/path.h",
   "functions": {
-    "0046A740": { "status": "matching" },
+    "0046A740": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Path_module.md"
+    },
     "0046A7F0": { "status": "matching" },
     "0046A810": {
       "status": "scratch",

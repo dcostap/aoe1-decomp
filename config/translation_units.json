@@ -4154,7 +4154,6 @@
       "module": "Path",
       "flags": "config/flags/0046A8E0_operator.rsp",
       "owners": {
-        "0046A740": "src/Path.cpp",
         "0046A7F0": "src/Path.cpp",
         "0046AB60": "src/Path.cpp",
         "0046AC10": "src/Path.cpp",

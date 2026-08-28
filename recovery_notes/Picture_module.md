@@ -50,8 +50,8 @@ direct exact registry. No focused rebuild was run after this candidate check.
 `include/Picture.h` uses `include/drawarea.h` for Windows bitmap records,
 `BITMAPINFO256`, and `TDrawArea`. It no longer copies these owner types.
 
-`LINEINFO`, `TRANSINFO`, and `TPicture` remain Picture module types. Their
-PDB sizes are 0x10, 0x18, and 0x20 bytes.
+`include/picture_types.h` owns the shared `LINEINFO` and `TRANSINFO` records.
+`Picture.h` owns `TPicture`. Their PDB sizes are 0x10, 0x18, and 0x20 bytes.
 
 Source-local declarations now own the DIB and file helper declarations used
 by `Picture.cpp`. This keeps foreign declarations out of the public header.

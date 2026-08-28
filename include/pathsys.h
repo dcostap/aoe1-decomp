@@ -18,21 +18,12 @@ typedef unsigned int uint;
 extern int MapPathsDisplay;
 extern int numberPathingIterations;
 
-struct MGP_FloatHeap {
-    uchar x;
-    uchar y;
-    unsigned short next;
-    int total;
-};
-
 struct PathTileWork {
     XYPoint current;
     XYPoint next;
     XYPoint copied;
 };
 
-typedef char pathsys_mgp_float_heap_size_check[
-    (sizeof(MGP_FloatHeap) == 0x08) ? 1 : -1];
 typedef char pathsys_tile_work_size_check[
     (sizeof(PathTileWork) == 0x18) ? 1 : -1];
 typedef char pathsys_managed_array_size_check[
@@ -40,6 +31,14 @@ typedef char pathsys_managed_array_size_check[
 
 class PathingSystem {
 public:
+    class MGP_FloatHeap {
+    public:
+        uchar x;
+        uchar y;
+        unsigned short next;
+        int total;
+    };
+
     virtual ~PathingSystem();
 
     int xSizeValue;
@@ -121,6 +120,8 @@ public:
 
 typedef char pathsys_size_check[
     (sizeof(PathingSystem) == 0x11DCF8) ? 1 : -1];
+typedef char pathsys_mgp_float_heap_size_check[
+    (sizeof(PathingSystem::MGP_FloatHeap) == 0x08) ? 1 : -1];
 
 extern PathingSystem pathSystem;
 extern PathingSystem aiPathSystem;

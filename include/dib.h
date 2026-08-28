@@ -2,32 +2,10 @@
 #define AOE1_DIB_H
 
 #include <windows.h>
+#include "bitmap_info.h"
+#include "picture_types.h"
 
 typedef unsigned char uchar;
-
-#ifndef AOE1_BITMAPINFO256_DEFINED
-#define AOE1_BITMAPINFO256_DEFINED
-struct BITMAPINFO256 {
-    BITMAPINFOHEADER bmiHeader;
-    RGBQUAD bmiColors[256];
-};
-#endif
-
-struct LINEINFO {
-    int AllTrans;
-    int MidSolid;
-    long StartX;
-    long EndX;
-};
-
-struct TRANSINFO {
-    int AnyTrans;
-    long x;
-    long y;
-    long w;
-    long h;
-    LINEINFO* LineInfo;
-};
 
 typedef char dib_bitmap_info_256_size_check[
     (sizeof(BITMAPINFO256) == 0x428) ? 1 : -1];

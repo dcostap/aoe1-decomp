@@ -21,9 +21,11 @@
 
 ## Reunification
 
-The module now has one normal source file and one normal header. The header owns
-DIB, transparency-line, and palette-blit layouts. The source keeps each body in
-PDB order and keeps the natural period declarations needed by these functions.
+The module now has one normal source file and one normal header. The shared
+`bitmap_info.h` and `picture_types.h` headers own the bitmap and transparency
+records. The DIB header consumes those records without duplicate definitions.
+The source keeps each body in PDB order and keeps the natural period
+declarations needed by these functions.
 
 The source owns the evidence-bounded `SrcXTbl[0x500]` table. It uses the
 canonical `RGE_Base_Game` and `TDrawSystem` declarations, plus the canonical

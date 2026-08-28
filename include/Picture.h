@@ -2,26 +2,7 @@
 #define AOE1_PICTURE_H
 
 #include "drawarea.h"
-
-struct LINEINFO {
-    int AllTrans;
-    int MidSolid;
-    long StartX;
-    long EndX;
-};
-
-typedef char picture_line_info_size_check[(sizeof(LINEINFO) == 0x10) ? 1 : -1];
-
-struct TRANSINFO {
-    int AnyTrans;
-    long x;
-    long y;
-    long w;
-    long h;
-    LINEINFO* LineInfo;
-};
-
-typedef char picture_trans_info_size_check[(sizeof(TRANSINFO) == 0x18) ? 1 : -1];
+#include "picture_types.h"
 
 class TPicture {
 public:

@@ -32,10 +32,10 @@ unregistered observed owners.
 
 ## Recovery state
 
-The manifest records 27 matching owners, two scratch owners, and one accepted
+The manifest records 26 matching owners, three scratch owners, and one accepted
 source drift owner. The accepted owner is `0046AAE0`. The scratch owners are
-`0046A810` and `0046A9E0`. These are source-bank classifications from the
-reviewed pre-migration work. They are not grouped exact claims.
+`0046A740`, `0046A810`, and `0046A9E0`. These are source-bank classifications
+from the reviewed pre-migration work. They are not grouped exact claims.
 
 The merged candidate audit checked all 30 owners. The three byte-equal operator
 bodies are unregistered ownership problems because the generic audit does not
@@ -68,12 +68,12 @@ exactness regressions caused by the complete natural source module. Compile and
 exact checks after migration are evidence only; this task does not perform byte
 tuning.
 
-The constructor is a registered-owner regression in the merged source. It still
-emits 162 bytes with matching frame, calls, CFG, owner, and relocations, but has
-four positional byte differences. At offsets `+005A`, `+0066`, `+0070`, and
-`+007A`, the original byte is `02` and the rebuilt byte is `10`. These bytes are
-the displacement in the four copied-waypoint stores. The difference is a
-register-map drift, not a source behavior change.
+The constructor is a source-module regression. It still emits 162 bytes with
+matching frame, calls, CFG, owner, and relocations, but has four positional byte
+differences. At offsets `+005A`, `+0066`, `+0070`, and `+007A`, the original byte
+is `02` and the rebuilt byte is `10`. These bytes are the displacement in the
+four copied-waypoint stores. The difference is a register-map drift, not a
+source behavior change. It is scratch and is not a grouped exact claim.
 
 Focused checks after the merge compiled the complete module. `0046A7F0` and
 `0046AFE0` still report `MATCH` with `0.0000%` difference. The source-module
