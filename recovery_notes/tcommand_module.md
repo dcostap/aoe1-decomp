@@ -11,8 +11,8 @@ Each record has a size check. Variable packets use named `unit_ids` tails.
 
 ## Current direct result
 
-`build/tcommand_shape_preflight/result_exact22_reconciled/report.json` reports
-22 exact owners. Every registered owner reports `MATCH` and `0.0000%`.
+`build/tcommand_rebased_preflight/result_natural/report.json` reports 22 exact
+owners. Every registered owner reports `MATCH` and `0.0000%`.
 
 The exact owners are:
 
