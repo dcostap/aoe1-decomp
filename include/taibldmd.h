@@ -13,10 +13,6 @@ class ConstructionItem;
 
 class TribeBuildAIModule : public BuildAIModule {
 public:
-    // PDB: the only TribeBuildAIModule data member is the main-decision
-    // pointer at +0x5BC.
-    TribeMainDecisionAIModule* md;
-
     TribeBuildAIModule(void* owner, int player);
     TribeBuildAIModule(int file, int player);
     virtual ~TribeBuildAIModule();
@@ -47,6 +43,11 @@ public:
     void unskipBuildList(int limit67, int limit44);
     BuildItem* buildItem(int type, int category1, int category2);
     int allBuilt(int param1, int param2);
+
+protected:
+    // PDB: the only TribeBuildAIModule data member is the main-decision
+    // pointer at +0x5BC.
+    TribeMainDecisionAIModule* md;
 };
 
 typedef char taibldmd_tribe_build_size[

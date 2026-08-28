@@ -84,42 +84,4 @@ public:
 typedef char taimdmd_tribe_main_size[
     (sizeof(TribeMainDecisionAIModule) == 0x125C8) ? 1 : -1];
 
-typedef char taimdmd_build_ai_offset[
-    (((char*)&((TribeMainDecisionAIModule*)0)->buildAI - (char*)0) == 0x104)
-        ? 1
-        : -1];
-typedef char taimdmd_construction_ai_offset[
-    (((char*)&((TribeMainDecisionAIModule*)0)->constructionAI - (char*)0) ==
-     0x6C4)
-        ? 1
-        : -1];
-typedef char taimdmd_information_ai_offset[
-    (((char*)&((TribeMainDecisionAIModule*)0)->informationAI - (char*)0) ==
-     0xCEC)
-        ? 1
-        : -1];
-typedef char taimdmd_resource_ai_offset[
-    (((char*)&((TribeMainDecisionAIModule*)0)->resourceAI - (char*)0) ==
-     0x10D7C)
-        ? 1
-        : -1];
-typedef char taimdmd_strategy_ai_offset[
-    (((char*)&((TribeMainDecisionAIModule*)0)->strategyAI - (char*)0) ==
-     0x10E74)
-        ? 1
-        : -1];
-typedef char taimdmd_tactical_ai_offset[
-    (((char*)&((TribeMainDecisionAIModule*)0)->tacticalAI - (char*)0) ==
-     0x1146C)
-        ? 1
-        : -1];
-typedef char taimdmd_trade_ai_offset[
-    (((char*)&((TribeMainDecisionAIModule*)0)->tradeAI - (char*)0) == 0x12478)
-        ? 1
-        : -1];
-typedef char taimdmd_ai_player_offset[
-    (((char*)&((TribeMainDecisionAIModule*)0)->aiPlayer - (char*)0) == 0x1256C)
-        ? 1
-        : -1];
-
 #endif  // AOE1_TAIMDMD_H
