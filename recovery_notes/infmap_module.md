@@ -43,8 +43,9 @@ ownership, zero relocation mismatches, and zero boundary escapes:
 
 Generated `0044E030` also matches exactly.
 
-`0044E250`, `0044E600`, and `0044ED20` remain accepted drift.
+`0044E250` and `0044ED20` remain accepted drift.
 The migration does not reopen their reviewed status.
 
+`0044E600` remains scratch. Its candidate row has two boundary escapes.
 `0044E9E0` remains scratch. `0044EC00` remains verified logic.
 The candidate records their current results.

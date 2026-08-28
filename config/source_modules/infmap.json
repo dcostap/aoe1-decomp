@@ -16,7 +16,7 @@
     "0044E4E0": { "status": "matching" },
     "0044E510": { "status": "matching" },
     "0044E560": { "status": "matching" },
-    "0044E600": { "status": "accepted_drift", "note_path": "recovery_notes/infmap_module.md" },
+    "0044E600": { "status": "scratch", "note_path": "recovery_notes/infmap_module.md" },
     "0044E680": { "status": "matching" },
     "0044E790": { "status": "matching" },
     "0044E800": { "status": "matching" },
