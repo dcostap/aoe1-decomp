@@ -271,6 +271,7 @@ public:
     int GetRestoreErrorNum(long);
     int GetSetDispModeErrorNum(long);
     int GetLockErrorNum(long);
+    int GetDCErrorNum(long);
     int GetBlitErrorNum(long);
     int GetCreateErrorNum(long);
     int GetColorKeyErrorNum(long);

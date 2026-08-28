@@ -736,6 +736,32 @@ int TDrawSystem::GetLockErrorNum(long hr)
     }
 }
 
+int TDrawSystem::GetDCErrorNum(long hr)
+{
+    switch (hr) {
+    case 0:
+        return 0;
+    case -2147467259L:
+        return 0x834;
+    case -2147467263L:
+        return 0x83A;
+    case -2147024809L:
+        return 0x837;
+    case -2005532542L:
+        return 0x836;
+    case -2005532222L:
+        return 0x839;
+    case -2005532132L:
+        return 0x83B;
+    case -2005532080L:
+        return 0x838;
+    case -2005532052L:
+        return 0x835;
+    default:
+        return 0x897;
+    }
+}
+
 int TDrawSystem::GetBlitErrorNum(long hr)
 {
     switch (hr) {

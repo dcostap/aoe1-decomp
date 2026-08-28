@@ -129,6 +129,8 @@ RGE_Game_World::RGE_Game_World()
     }
 }
 
+void RGE_Game_World::logStatus(FILE*, int) {}
+
 RGE_Game_World::~RGE_Game_World()
 {
     delete this->commands;

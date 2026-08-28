@@ -4,9 +4,10 @@
 // Migration note: 18 direct owners retain matching status. Nine normal owners
 // remain scratch. They are not registered exact claims.
 //
-// The nearby 0053DB10 scalar deleting destructor is compiler-generated and is
+// The nearby 0053DB10 vector deleting destructor is compiler-generated and is
 // not a normal source owner. The 0053E8E9 three-byte padding entry is also not
 // a source owner. No unrelated declaration or cross-shard ownership changed.
+// The natural destructor below emits the compiler-generated 0053DB30 symbol.
 // The natural module uses the canonical view, action-master, task-list, map,
 // player, world, static-object, and visibility headers directly.
 
@@ -36,6 +37,8 @@ extern const float DAT_00577908;
 extern void __cdecl color_log(unsigned char, unsigned char, int);
 extern unsigned long __cdecl debug_timeGetTime(char*, int);
 extern void __cdecl write_draw_log2(char*);
+
+RGE_Main_View::~RGE_Main_View() {}
 
 RGE_Main_View::RGE_Main_View() : RGE_View() {
     this->map_view = 0;
