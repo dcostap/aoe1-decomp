@@ -86,3 +86,12 @@ and cursor loops. It kept the existing exact rows except `0049A8A0`.
 
 The `scr_game_source_cleanup_audit` observed `0049A8A0` as a 76-byte mismatch.
 It also found one direct-target mismatch. Its status is now `scratch`.
+
+## PDB field layout
+
+The direct PDB field list replaces synthetic gaps and aliases with named
+message panels, `port_info`, three palette tables, and the cheat input string.
+Natural alignment preserves `sizeof(TRIBE_Screen_Game) == 0x7C4`.
+
+The layout audit compiled all 96 bodies, matched 66, and found no comparison
+errors. No current `matching` row regressed.

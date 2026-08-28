@@ -1,76 +1,16 @@
 #ifndef AOE1_COM_SPD_H
 #define AOE1_COM_SPD_H
 
-#include <stddef.h>
-#include "com_types.h"
+#include "com_hand.h"
+#include "debuglog.h"
 #include "rge_tslc.h"
-
-#pragma pack(push, 1)
-struct COMMPLAYEROPTIONS {
-    unsigned char NeedsToBeSent;
-    unsigned char _pad_0[3];
-    unsigned long LastSentTime;
-    COMMSTATES ProgramState;
-    unsigned long CurrentTurn;
-    unsigned char TurnSpeedMsec;
-    unsigned char _pad_1[3];
-    unsigned long dcoID[10];
-    unsigned long AcknowledgeAfterMsec;
-    unsigned char CommandTurnIncrement;
-    unsigned char _pad_2[3];
-    int PlayerReady[10];
-    unsigned long User1[10];
-    unsigned long User2[10];
-    unsigned long User3[10];
-    unsigned long User4[10];
-    unsigned long User5[10];
-    unsigned long User6[10];
-    unsigned long User7[10];
-    int Humanity[10];
-    unsigned char InvalidPlayer[10];
-    unsigned char _pad_3[2];
-    unsigned long Initialized;
-    unsigned long RandomSeed;
-    unsigned short HighPlayerNumber;
-    unsigned short LowPlayerNumber;
-    unsigned int HostPlayerNumber;
-    int GameHasStarted;
-    unsigned long DataSizeToFollow;
-};
-#pragma pack(pop)
-
-class TCommunications_Handler {
-public:
-    int OptionsChanged;
-    char* OptionsData;
-    int Steps;
-    unsigned long TickStart;
-    unsigned long TickCount;
-    unsigned long TimeSinceLastCall;
-    void* Chat;
-    int MeHost;
-    int HaveHostInit;
-    char InCommBuff[4001];
-    char TBuff[257];
-    unsigned char _pad_10C6[2];
-    unsigned long current_turn;
-    unsigned char gap_10CC[0x484];
-    COMMPLAYEROPTIONS PlayerOptions;
-
-    int IsHost();
-    int IsPlayerHuman(unsigned int player_index);
-    int AllPlayersAcknowledged();
-    void SendSpeedChange(unsigned int buffer_frames, unsigned int granularity);
-};
 
 class RGE_Communications_Speed {
 public:
     char TBuff[255];                            // +0x00
-    unsigned char _pad_0[1];                    // +0xFF
     RGE_TimeSinceLastCall* TurnTSLC;            // +0x100
     RGE_TimeSinceLastCall* FrameTSLC;           // +0x104
     TCommunications_Handler* Comm;              // +0x108
-    unsigned char _pad_1[4];                    // +0x10C
     double AccumDiff;                           // +0x110
     int SpeedControlEnabled;                    // +0x118
     unsigned int CurrentBufferFrames;           // +0x11C
@@ -143,18 +83,10 @@ public:
 };
 
 typedef char com_spd_size_check[(sizeof(RGE_Communications_Speed) == 0x240) ? 1 : -1];
-typedef char com_spd_options_size_check[(sizeof(COMMPLAYEROPTIONS) == 0x1D0) ? 1 : -1];
-typedef char com_spd_handler_options_check[
-    (offsetof(TCommunications_Handler, PlayerOptions) == 0x1550) ? 1 : -1];
 
 extern char DAT_0062d070[256];
 extern char DAT_0062cf70[256];
 extern char DAT_0062d170[152];
-
-class TDebuggingLog {
-public:
-    void Log(const char* format, ...);
-};
 
 extern TDebuggingLog* L;
 

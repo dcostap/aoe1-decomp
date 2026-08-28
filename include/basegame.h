@@ -195,13 +195,8 @@ public:
     int get_paused();
     void set_paused(int paused, int non_user_pause);
     RGE_Player* get_player();
-    RGE_Player* get_player(void***, short*, int, int, int, int);
-    TRIBE_Player* get_player(int, short*);
-    TRIBE_Player* get_player(int);
     void get_mouse_pos(tagPOINT&);
     RGE_Font* get_font(int);
-    void set_game_mode(int);
-    char* get_string(int, int, int, char*, int);
     void setScenarioGame(int);
     void setVersion(float);
     void setScenarioName(char*);

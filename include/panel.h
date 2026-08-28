@@ -191,14 +191,9 @@ public:
     void delete_panel(TPanel** panel);
     int get_string(int string_id, char* buffer, int length);
     char* get_string(int string_id);
-    char* get_string(int, int, int, int, int, int);
     long get_help_message();
     long get_help_page();
     void set_help_info(long a, long b);
-    void set_visible(int);
-    void set_text_color(int, int);
-    void set_text_color(int, int, int);
-    void set_text(char*);
 
     TPanel* previous_panel;
     TPanel* previous_modal_panel;

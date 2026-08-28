@@ -230,6 +230,12 @@ public:
     void SetSpeedV1(unsigned long value);
     void SetSpeedV2(unsigned long value);
     void CheckPingTime(int value);
+
+protected:
+    int TXPing(unsigned int player);
+
+public:
+    int TXDebugPing();
     long FastSend(unsigned long to, void* data, unsigned long size,
                   int value, int flags);
     void Step(int amount);
@@ -343,10 +349,8 @@ public:
     void ShowSyncChatMsgs(int value);
     char* WaitingOnNamedInfo(unsigned int player);
     char* WaitingOnInfo(unsigned int player);
-    int TXDebugPing();
 
 protected:
-    int TXPing(unsigned int player);
     int GetWasKicked(unsigned int player);
     unsigned long GetCurrentTurn();
     unsigned long GetRXPacketSize();

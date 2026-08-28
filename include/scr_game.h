@@ -35,7 +35,7 @@
 #include "tpnl_pop.h"
 #include "rpnl_tbx.h"
 #include "com_hand.h"
-#include "com_speed.h"
+#include "com_spd.h"
 #include "chat.h"
 #include "debuglog.h"
 #include "dlg_smsg.h"
@@ -43,9 +43,6 @@
 #include "dlg_menu.h"
 #include "scr_save.h"
 #include "scr_load.h"
-
-typedef unsigned char uchar;
-typedef unsigned long ulong;
 
 struct PLAYER_SCORE {
     int comm_id;
@@ -57,6 +54,19 @@ struct PLAYER_SCORE {
 
 class TRIBE_Screen_Game : public TScreenPanel {
 public:
+    struct PortInfo {
+        int player_id;
+        RGE_Player* player;
+        RGE_Static_Object* port;
+        int money;
+    };
+
+    struct AnimPalEntry {
+        unsigned char red;
+        unsigned char green;
+        unsigned char blue;
+    };
+
     TShape* game_screen_pic;
     TShape* button_border1_pic;
     TShape* button_other_pic;
@@ -70,7 +80,6 @@ public:
     short more_frame;
     short cancel_frame;
     short unselect_frame;
-    char gap_4b6[2];
     TRIBE_Main_View* main_view;
     TRIBE_Diamond_Map_View* map_view;
     TRIBE_Panel_Inven* inven_panel;
@@ -81,41 +90,12 @@ public:
     TRIBE_Panel_Time* time_panel;
     TRIBE_Panel_Time* countdown_clock[10];
     TRIBE_Panel_Pop* pop_panel;
-    union {
-        struct {
-            TMessagePanel* message_panel;
-            TMessagePanel* message_panel2;
-            TMessagePanel* message_panel3;
-            TMessagePanel* message_panel4;
-            TMessagePanel* message_panel5;
-            TMessagePanel* message_panel6;
-        };
-        struct {
-            TMessagePanel* msg_panel_0;
-            TMessagePanel* msg_panel_1;
-            TMessagePanel* msg_panel_2;
-            TMessagePanel* msg_panel_3;
-            TMessagePanel* msg_panel_4;
-            TMessagePanel* msg_panel_5;
-        };
-        struct {
-            TMessagePanel* message_panel1;
-            TMessagePanel* message_panel2_alt;
-            TMessagePanel* message_panel3_alt;
-            TMessagePanel* message_panel4_alt;
-            TMessagePanel* message_panel5_alt;
-            TMessagePanel* message_panel6_alt;
-        };
-        struct {
-            TMessagePanel* ai_panel_1;
-            TMessagePanel* ai_panel_2;
-            TMessagePanel* ai_panel_3;
-            TMessagePanel* ai_panel_4;
-            TMessagePanel* ai_panel_5;
-            TMessagePanel* ai_panel_6;
-        };
-        TMessagePanel* message_panels_at_544[6];
-    };
+    TMessagePanel* message_panel;
+    TMessagePanel* message_panel2;
+    TMessagePanel* message_panel3;
+    TMessagePanel* message_panel4;
+    TMessagePanel* message_panel5;
+    TMessagePanel* message_panel6;
     TMessagePanel* chat_panel[8];
     RGE_Panel_Tool_Box* tool_box;
     TTextPanel* age_panel;
@@ -131,7 +111,6 @@ public:
     unsigned long last_map_redraw_time;
     RGE_Static_Object* game_obj;
     short sel_count;
-    char gap_5ce[2];
     Item_Avail* tech_list;
     Item_Avail* make_list;
     Item_Avail* bldg_list;
@@ -139,7 +118,7 @@ public:
     short item_cnt;
     short start_item;
     short last_item;
-    char gap_5e6[0x92];
+    PortInfo port_info[9];
     unsigned long terrain_sound_interval;
     unsigned long last_terrain_sound_time;
     RGE_Sound* terrain_sound;
@@ -151,13 +130,9 @@ public:
     short last_anim_pal_index;
     short last_anim_pal_index2;
     short last_anim_pal_index3;
-    struct AnimPalEntry {
-        unsigned char red;
-        unsigned char green;
-        unsigned char blue;
-    };
     AnimPalEntry anim_pal_table[7];
-    char anim_pal_tail[0x55];
+    AnimPalEntry anim_pal_table2[16];
+    AnimPalEntry anim_pal_table3[12];
     long mouse_last_x;
     long mouse_last_y;
     int save_age;
@@ -169,8 +144,8 @@ public:
     unsigned long view_interval;
     unsigned long last_view_time;
     int player_quit;
-    int cheat_code_entry;
-    char key_buffer[0x34];
+    long cheat_code_entry;
+    char cheat_code_entry_str[52];
     long view_town_center_hotkey;
     long work_hotkey;
     long move_hotkey;
