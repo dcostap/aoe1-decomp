@@ -11,8 +11,6 @@
 
 #include "basegame_candidate_context.h"
 
-#include "matching/0041E7A0_rge_base_game_wnd_proc.cpp"
-#include "matching/0041B6A0_RGE_Base_Game.cpp"
 #include "accepted_drift/0041BAA0_setup.cpp"
 #include "scratch/0041C270_RGE_Base_Game.cpp"
 #include "matching/0041C7D0_reset_timings.cpp"

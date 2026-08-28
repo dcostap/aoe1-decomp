@@ -5775,11 +5775,15 @@
       "flags": "config/flags/0041BAA0_setup.rsp",
       "owners": {
         "0041B620": "src/basegame.cpp",
-        "0041B650": "src/basegame.cpp"
+        "0041B650": "src/basegame.cpp",
+        "0041E7A0": "src/basegame.cpp",
+        "0041B6A0": "src/basegame.cpp"
       },
       "symbols": {
         "0041B620": "?write_draw_log@@YAXPAD@Z",
-        "0041B650": "?write_draw_log2@@YAXPAD@Z"
+        "0041B650": "?write_draw_log2@@YAXPAD@Z",
+        "0041E7A0": "?rge_base_game_wnd_proc@@YGKIIII@Z",
+        "0041B6A0": "??0RGE_Base_Game@@QAE@PAURGE_Prog_Info@@H@Z"
       }
     },
     {
@@ -5787,8 +5791,6 @@
       "source": "src/basegame_candidate_tu.cpp",
       "flags": "config/flags/0041BAA0_setup.rsp",
       "owners": {
-        "0041E7A0": "src/matching/0041E7A0_rge_base_game_wnd_proc.cpp",
-        "0041B6A0": "src/matching/0041B6A0_RGE_Base_Game.cpp",
         "0041C7D0": "src/matching/0041C7D0_reset_timings.cpp",
         "0041C830": "src/matching/0041C830_add_to_timing.cpp",
         "0041C870": "src/matching/0041c870_increment_world_update_count.cpp",
@@ -5991,8 +5993,6 @@
         "00422D60": "?check_scenario_checksum@RGE_Base_Game@@QAEEPADJ@Z",
         "00422DE0": "?set_countdown_timer@RGE_Base_Game@@QAEXJJ@Z",
         "00422660": "?playerTeam@RGE_Base_Game@@QAEHH@Z",
-        "0041E7A0": "?rge_base_game_wnd_proc@@YGKIIII@Z",
-        "0041B6A0": "??0RGE_Base_Game@@QAE@PAURGE_Prog_Info@@H@Z",
         "0041C7D0": "?reset_timings@RGE_Base_Game@@QAEXXZ",
         "0041C830": "?add_to_timing@RGE_Base_Game@@QAEXHK@Z",
         "0041C870": "?increment_world_update_count@RGE_Base_Game@@QAEXXZ",
