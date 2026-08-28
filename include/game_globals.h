@@ -95,8 +95,7 @@ extern float save_game_version;
 extern int allow_user_commands;
 
 extern unsigned char die_die_die;
-extern "C" int useComputerPlayers;
-extern "C" int __cdecl debug_rand(char*, int);
+extern int useComputerPlayers;
 
 // BaseGame process globals. The executable stores these values at the named
 // addresses. The types follow their direct uses in BaseGame and its clients.
@@ -1001,7 +1000,7 @@ extern float DAT_00577328;
 // 0057732C [.rdata]
 extern float DAT_0057732c;
 // 00577330 [.rdata]
-extern const double DAT_00577330;
+extern double DAT_00577330;
 // 00577338 [.rdata]
 extern float DAT_00577338;
 // 0057733C [.rdata]

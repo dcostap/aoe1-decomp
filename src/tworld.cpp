@@ -481,7 +481,7 @@ static __inline int count_ruins(TRIBE_World* world) {
 }
 
 static __inline void append_line(char* description, char* temp, const char* fmt, int text_id, char* value) {
-    sprintf(temp, static_cast<TRIBE_Game*>(rge_base_game)->get_string(text_id), value);
+    sprintf(temp, rge_base_game->get_string(text_id), value);
     sprintf(description, newline_join_format, description, temp);
 }
 
@@ -532,26 +532,26 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
     }
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->mapSize()) {
-    case 0: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x2973)); break;
-    case 1: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x2974)); break;
-    case 2: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x2975)); break;
-    case 3: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x2976)); break;
-    case 4: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x2977)); break;
-    case 5: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x2978)); break;
+    case 0: strcpy(str1, rge_base_game->get_string(0x2973)); break;
+    case 1: strcpy(str1, rge_base_game->get_string(0x2974)); break;
+    case 2: strcpy(str1, rge_base_game->get_string(0x2975)); break;
+    case 3: strcpy(str1, rge_base_game->get_string(0x2976)); break;
+    case 4: strcpy(str1, rge_base_game->get_string(0x2977)); break;
+    case 5: strcpy(str1, rge_base_game->get_string(0x2978)); break;
     }
     append_line(description, str2, "%s", 0x25da, str1);
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->randomGame()) {
         switch (static_cast<TRIBE_Game*>(rge_base_game)->mapType()) {
-        case 0: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x296a)); break;
-        case 1: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x296b)); break;
-        case 2: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x296c)); break;
-        case 3: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x296d)); break;
-        case 4: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x296e)); break;
-        case 5: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x296f)); break;
-        case 6: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x2970)); break;
-        case 7: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x2971)); break;
-        case 8: strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x2972)); break;
+        case 0: strcpy(str1, rge_base_game->get_string(0x296a)); break;
+        case 1: strcpy(str1, rge_base_game->get_string(0x296b)); break;
+        case 2: strcpy(str1, rge_base_game->get_string(0x296c)); break;
+        case 3: strcpy(str1, rge_base_game->get_string(0x296d)); break;
+        case 4: strcpy(str1, rge_base_game->get_string(0x296e)); break;
+        case 5: strcpy(str1, rge_base_game->get_string(0x296f)); break;
+        case 6: strcpy(str1, rge_base_game->get_string(0x2970)); break;
+        case 7: strcpy(str1, rge_base_game->get_string(0x2971)); break;
+        case 8: strcpy(str1, rge_base_game->get_string(0x2972)); break;
         }
         append_line(description, str2, "%s", 0x25b6, str1);
     }
@@ -587,9 +587,9 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
     }
     append_line(description, str2, "%s", 0x25e9, str1);
     if (static_cast<TRIBE_Game*>(rge_base_game)->fullVisibility() == 0) {
-        strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x0fa4));
+        strcpy(str1, rge_base_game->get_string(0x0fa4));
     } else {
-        strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x0fa3));
+        strcpy(str1, rge_base_game->get_string(0x0fa3));
     }
     append_line(description, str2, "%s", 0x25b8, str1);
     if (static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree() == 0) {
@@ -601,9 +601,9 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame()) {
         if (static_cast<TRIBE_Game*>(rge_base_game)->allowCheatCodes() == 0) {
-            strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x0fa4));
+            strcpy(str1, rge_base_game->get_string(0x0fa4));
         } else {
-            strcpy(str1, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x0fa3));
+            strcpy(str1, rge_base_game->get_string(0x0fa3));
         }
         append_line(description, str2, "%s", 0x25bb, str1);
     }
@@ -611,7 +611,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
     static_cast<TRIBE_Game*>(rge_base_game)->get_string((static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame() ? static_cast<TRIBE_Game*>(rge_base_game)->mpPathFinding() : static_cast<TRIBE_Game*>(rge_base_game)->pathFinding()) + 0x260e, str1, 0x100);
     append_line(description, str2, "%s", 0x25f1, str1);
 
-    sprintf(str2, static_cast<TRIBE_Game*>(rge_base_game)->get_string(0x25f0),
+    sprintf(str2, rge_base_game->get_string(0x25f0),
         static_cast<int>(static_cast<TRIBE_Game*>(rge_base_game)->popLimit()));
     sprintf(description, newline_join_format, description, str2);
         static_cast<T_Scenario*>(this->scenario)->add_description(description);
