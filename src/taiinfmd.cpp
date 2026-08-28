@@ -2,6 +2,7 @@
 // Definitions follow the original PDB source order.
 
 #include "../include/taiinfmd.h"
+#include "../include/ai_play_phase_command.h"
 #include <math.h>
 #include <stddef.h>
 #include <stdio.h>

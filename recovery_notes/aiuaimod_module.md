@@ -10,6 +10,10 @@
 - The module header proves the 0x134-byte `UnitAIModule` layout.
 - The source uses `/O2 /Oy /GX` from `00412F00_UnitAIModule.rsp`.
 
+`include/ai_play_phase_command.h` owns the PDB-proven 0x10
+`AIPlayPhaseCommand` record. The module header consumes it without a local
+copy.
+
 ## Unit AI root virtual prefix
 
 PDB field list `0x28CE` defines the public virtual prefix in this order:

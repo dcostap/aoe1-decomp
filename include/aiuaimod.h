@@ -5,6 +5,7 @@
 // PDB and exact owners prove the 0x134-byte UnitAIModule layout.
 
 #include "aiplaybook.h"
+#include "ai_play_phase_command.h"
 
 typedef unsigned char uchar;
 
@@ -222,16 +223,6 @@ public:
     unsigned char nextPhaseValue;
     char gap_0E[2];
     int randomnessValue;
-};
-
-class AIPlayPhaseCommand {
-public:
-    unsigned char groupValue;
-    unsigned char typeValue;
-    char gap_02[2];
-    int value1Value;
-    int value2Value;
-    int value3Value;
 };
 
 class AIPlayPhase {

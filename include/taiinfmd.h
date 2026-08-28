@@ -566,14 +566,7 @@ public:
     void copyUnits(int* units, int& count);
 };
 
-class AIPlayPhaseCommand {
-public:
-    unsigned char groupValue;
-    unsigned char typeValue;
-    unsigned char gap_02[2];
-    int value1Value;
-    int value2Value;
-};
+class AIPlayPhaseCommand;
 
 class AIPlayPhase {
 public:
