@@ -7,7 +7,10 @@
 // layouts remain in their own owner headers.
 
 class RGE_Player;
+class RGE_Static_Object;
 class RGE_Tile_List;
+
+extern RGE_Static_Object** VIS_UNIT_objectsValue;
 
 class VISIBLE_UNIT_REC {
 public:

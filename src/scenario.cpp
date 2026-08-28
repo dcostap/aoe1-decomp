@@ -28,7 +28,6 @@ void __cdecl getstring(char** destination, char* source);
 void __cdecl addstring(char** destination, char* old_text, char* append);
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* block);
-extern unsigned long (__stdcall* const GetTempPathA)(unsigned long, char*);
 extern float g_version;
 
 // 0048AB10 RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario*)

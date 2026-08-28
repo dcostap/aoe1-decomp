@@ -11,6 +11,23 @@ class IDirectPlay4A;
 class ResFileHdr;
 class TDebuggingLog;
 
+// World.cpp process globals. PDB storage and type records prove this surface.
+extern long world_update_counter;
+extern int computerPlayerSetup[13];
+extern short visible_combats;
+extern FILE* logStatusFile;
+extern unsigned long lastStatusLogTime;
+extern FILE* DVlogf;
+extern int debug_random_on;
+extern int debug_timeGetTime_on;
+extern int debug_timeGetTime_cnt;
+extern int debug_timeGetTime_time;
+extern int all_cp;
+extern int logStatusOn;
+extern int do_fixed_update;
+extern long fixed_update_time;
+extern float save_game_version;
+
 // 0056E0B8 [.rdata]
 extern float DAT_0056e0b8;
 // 0056E0CC [.rdata]

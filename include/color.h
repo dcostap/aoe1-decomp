@@ -33,4 +33,6 @@ public:
 
 typedef char color_table_size_check[(sizeof(RGE_Color_Table) == 0x128) ? 1 : -1];
 
+void __cdecl color_log(unsigned char, unsigned char, int);
+
 #endif  // AOE1_COLOR_H

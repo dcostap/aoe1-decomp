@@ -1,0 +1,373 @@
+{
+  "schema": 1,
+  "name": "world_cpp",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\World.cpp",
+  "source": "src/world.cpp",
+  "header": "include/world.h",
+  "functions": {
+    "00540750": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00540A40": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00540CF0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00540D30": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00540D60": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00540D80": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00540DA0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00540EB0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00540FD0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005410E0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541240": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005412B0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541380": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005414A0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541500": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541590": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005415B0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541720": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541770": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541800": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541880": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541930": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005419E0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541A80": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541B60": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541BC0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541C20": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541C90": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541CF0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541D00": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541D60": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541DB0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541E70": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541EA0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541EB0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00541EE0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00542060": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005420F0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00542360": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00542470": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00542480": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005424F0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005425B0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005426E0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00542750": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00542BF0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00542D10": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00542E50": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00542E90": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00542ED0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00543380": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005433A0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005433B0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005433C0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00543540": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00543770": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00543850": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005439C0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00543A00": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00543E00": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00544090": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00544250": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005442E0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00544300": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005445C0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00544880": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00544B90": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00544E70": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005451A0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005454D0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545800": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545B30": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545BC0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545BF0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545C00": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545CB0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545CE0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545CF0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545D00": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545D10": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545D20": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545D30": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545D80": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545D90": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545DD0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545E00": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00545FD0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00546030": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00546070": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "00546180": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    },
+    "005462D0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/world_module.md"
+    }
+  }
+}

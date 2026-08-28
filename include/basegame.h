@@ -301,4 +301,9 @@ typedef char rge_game_options_size_check[
 typedef char rge_base_game_size_check[
     (sizeof(RGE_Base_Game) == 0xA24) ? 1 : -1];
 
+void __cdecl debug_random_reset();
+int __cdecl debug_rand(char*, int);
+void __cdecl debug_srand(char*, int, unsigned int);
+unsigned long __cdecl debug_timeGetTime(char*, int);
+
 #endif

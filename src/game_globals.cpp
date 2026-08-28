@@ -1633,3 +1633,21 @@ unsigned int DAT_0088c084 = 0x00000000u;
 unsigned int DAT_0088c088 = 0x00000000u;
 // 0088C08C [THIS_DAT]
 unsigned int DAT_0088c08c = 0x00000000u;
+
+// World.cpp process globals. PDB storage records are documented in
+// recovery_notes/world_global_owner_audit.md.
+long world_update_counter = 0;
+int computerPlayerSetup[13] = {0};
+short visible_combats = 0;
+FILE* logStatusFile = 0;
+unsigned long lastStatusLogTime = 0;
+FILE* DVlogf = 0;
+int debug_random_on = 0;
+int debug_timeGetTime_on = 0;
+int debug_timeGetTime_cnt = 0;
+int debug_timeGetTime_time = 0;
+int all_cp = 0;
+int logStatusOn = 0;
+int do_fixed_update = 0;
+long fixed_update_time = 0;
+float save_game_version = 0.0f;

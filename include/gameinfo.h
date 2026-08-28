@@ -1,6 +1,13 @@
 #ifndef AOE1_GAMEINFO_H
 #define AOE1_GAMEINFO_H
 
+#include "basegame.h"
+#include "debuglog.h"
+#include "game_globals.h"
+#include "main.h"
+#include "rge_base_game_global.h"
+#include "rge_fio.h"
+
 struct RGE_Scenario_Info {
     unsigned char scenario_status;
 };
@@ -10,10 +17,6 @@ class RGE_Campaign_Info;
 class RGE_Person_Info;
 class RGE_Game_Info;
 
-extern "C" int __cdecl rge_read(int fd, void* buffer, int size);
-extern "C" int __cdecl rge_write(int fd, void* buffer, int size);
-extern "C" int __cdecl rge_open(char* path, int mode, ...);
-extern "C" int __cdecl rge_close(int fd);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* pointer);
 extern "C" char* __cdecl strcpy(char* destination, const char* source);
@@ -21,12 +24,6 @@ extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" void __cdecl getstring(char** destination, char* source);
 extern "C" void __cdecl operator_delete(void* pointer);
 
-class TDebuggingLog {
-public:
-    void __cdecl Log(char* format, ...);
-};
-
-extern TDebuggingLog* L;
 extern int version_marker;
 
 class RGE_Campaign {
@@ -42,21 +39,6 @@ public:
     ~RGE_Campaign();
     void dtor();
 };
-
-class RGE_Prog_Info {
-public:
-    char gap_00[0xD1C];
-    char campaign_dir[256];
-};
-
-class RGE_Base_Game {
-public:
-    virtual ~RGE_Base_Game();
-    char gap_04[8];
-    RGE_Prog_Info* prog_info;
-};
-
-extern RGE_Base_Game* rge_base_game;
 
 class RGE_Campaign_Info {
 public:

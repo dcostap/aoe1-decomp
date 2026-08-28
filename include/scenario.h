@@ -4,6 +4,7 @@
 // Declarations for the original scenario.cpp source module.
 
 #include "basegame.h"
+#include "main.h"
 #include "rge_base_game_global.h"
 
 typedef unsigned char uchar;
@@ -15,14 +16,6 @@ class RGE_Game_World;
 class RGE_Scenario;
 class RGE_Scenario_Header;
 class RGE_Scenario_File_Info;
-
-class RGE_Prog_Info {
-public:
-    char gap_000[0xC17];
-    char scenario_dir[0x100];
-    char gap_D17[0x314];
-    char ai_dir[0x100];
-};
 
 class RGE_Timeline {
 public:
