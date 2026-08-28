@@ -2,7 +2,19 @@
 // Definitions follow the original source order.
 
 #include "../include/getdxver.h"
+#include <windows.h>
+#include <objbase.h>
+#include <winver.h>
+#include <ddraw.h>
+#include <dplay.h>
 #include <string.h>
+
+// The pinned headers do not declare these legacy API GUIDs. The module uses
+// the imported constants but does not define them.
+typedef HRESULT (__stdcall* DIRECTDRAWCREATE)(void*, LPDIRECTDRAW*, void*);
+extern const GUID CLSID_DirectPlay;
+extern const GUID IID_IDirectPlay3;
+extern const GUID IID_IDirectDrawSurface3;
 
 // getdxver.cpp:54-338.
 void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
