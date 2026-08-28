@@ -4600,18 +4600,20 @@
     },
     {
       "name": "tmplayer",
-      "source": "src/tmplayer_tu.cpp",
+      "module": "tmplayer",
+      "source": "src/tmplayer.cpp",
       "flags": "config/flags/00511830_load_master_object.rsp",
       "owners": {
-        "005117C0": "src/matching/005117C0_TRIBE_Master_Player.cpp",
-        "00511800": "src/matching/00511800_TRIBE_Master_Player.cpp",
-        "00511820": "src/matching/00511820_TRIBE_Master_Player.cpp",
-        "00511830": "src/matching/00511830_load_master_object.cpp",
-        "00511990": "src/matching/00511990_load_object.cpp"
+        "005117C0": "src/tmplayer.cpp",
+        "00511800": "src/tmplayer.cpp",
+        "00511820": "src/tmplayer.cpp",
+        "00511830": "src/tmplayer.cpp",
+        "00511990": "src/tmplayer.cpp"
       },
       "symbols": {
         "005117C0": "??0TRIBE_Master_Player@@QAE@PAU_iobuf@@@Z",
         "00511800": "??0TRIBE_Master_Player@@QAE@H@Z",
+        "00511820": "??1TRIBE_Master_Player@@UAE@XZ",
         "00511830": "?load_master_object@TRIBE_Master_Player@@UAEXHEPAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
         "00511990": "?load_object@TRIBE_Master_Player@@UAEXPAU_iobuf@@EPAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"
       }
