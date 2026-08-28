@@ -3,6 +3,9 @@
 
 // Declarations for the scenario source module.
 
+#include "basegame.h"
+#include "rge_base_game_global.h"
+
 typedef unsigned char uchar;
 
 extern const double DAT_00577330;
@@ -61,14 +64,6 @@ class TRIBE_Player_Tech {
 public:
     unsigned char check_for_new_tech();
 };
-
-class RGE_Base_Game {
-public:
-    char gap_00[0x1B0];
-    int prog_mode;
-};
-
-extern RGE_Base_Game* rge_base_game;
 
 class TPicture;
 
