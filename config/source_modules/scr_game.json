@@ -47,7 +47,7 @@
     "0049B080": { "status": "scratch" },
     "0049B560": { "status": "scratch" },
     "0049B830": { "status": "matching" },
-    "0049B910": { "status": "accepted_drift" },
+    "0049B910": { "status": "scratch" },
     "0049BAF0": { "status": "scratch" },
     "0049BC60": { "status": "scratch" },
     "0049BCA0": { "status": "matching" },

@@ -112,3 +112,9 @@ panel getters are public inline methods. `PortInfo::player_id` and `money` are
 
 The palette colors now initialize `anim_pal_table` directly. The constructor
 uses the string-ID `TButtonPanel::set_text(short, long)` overload.
+
+The natural control-flow cleanup replaces the decompiler gotos in
+`setup_buttons`, `handle_terrain_sound`, and `command_tab_selected`.
+`0049B910 handle_terrain_sound` is scratch because its prior accepted-drift
+review covered the old goto-shaped source. The translation-unit registration
+still contains exact owners only.

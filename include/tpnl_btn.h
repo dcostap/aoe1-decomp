@@ -7,9 +7,12 @@
 
 class TShape;
 class TDigital;
+class TRIBE_Screen_Game;
 
 class TRIBE_Panel_Button : public TButtonPanel {
-public:
+protected:
+    friend class TRIBE_Screen_Game;
+
     int display_garrison;
     int garrsion_number;
     unsigned char tribe_button_type;
@@ -19,6 +22,7 @@ public:
     char text_msg[0x100];
     int in_use;
 
+public:
     TRIBE_Panel_Button(TDrawArea*, TPanel*, TDigital*, void*, long, long,
                        TShape*);
     virtual ~TRIBE_Panel_Button();

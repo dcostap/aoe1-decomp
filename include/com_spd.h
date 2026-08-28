@@ -64,7 +64,7 @@ public:
     unsigned int GetRecommendedBufferFrames();
     unsigned int GetRecommendedBufferGranularity();
     unsigned long GetPlayerLatency(unsigned int player);
-    unsigned int GetPlayerRecommendedMsec(unsigned int player);
+    unsigned long GetPlayerRecommendedMsec(unsigned int player);
     unsigned int GetAvgFrameRate();
     unsigned char GetHighLatencyCenti();
     void SetFutureSpeedChange(unsigned int buffer_frames,

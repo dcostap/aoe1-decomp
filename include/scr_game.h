@@ -164,8 +164,8 @@ protected:
     unsigned long last_pause_change;
 
 public:
-    TRIBE_Main_View* get_view_panel() { return this->main_view; }
-    TRIBE_Diamond_Map_View* get_map_panel() { return this->map_view; }
+    TPanel* get_view_panel() { return this->main_view; }
+    TPanel* get_map_panel() { return this->map_view; }
     TMessagePanel* get_text_line_panel() { return this->text_line_panel; }
 
     TRIBE_Screen_Game();
@@ -261,15 +261,6 @@ public:
 protected:
     void command_game_speed(int);
 
-public:
-    void set_info_file(char*);
-    void set_info_file(char*, long);
-    void set_popup_info_file(char*);
-    void set_popup_info_file(char*, long);
-    void set_button_pics();
-    void set_button_pics(char*, long);
-    void set_bevel_colors(int, int, int, int, int, int);
-
 protected:
     void command_build();
     void command_chat();
@@ -278,7 +269,6 @@ protected:
     void command_convert();
     void command_diplomacy();
     void command_research(int);
-    void clear_popup_help();
     void command_save_game();
     void command_save_scenario();
     void command_stop();

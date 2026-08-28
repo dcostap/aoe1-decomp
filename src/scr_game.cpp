@@ -2566,6 +2566,7 @@ void TRIBE_Screen_Game::setup_buttons()
     short final_frame;
     long final_type;
     TRIBE_Player* player;
+    int set_final_button = 0;
 
     this->item_cnt = 0;
     this->last_item = -1;
@@ -2577,11 +2578,8 @@ void TRIBE_Screen_Game::setup_buttons()
     this->mouse_last_x = -1;
     this->mouse_last_y = -1;
 
-    if (this->game_obj == 0) {
-        goto finish_disable_buttons;
-    }
-
-    player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
+    if (this->game_obj != 0) {
+        player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
     culture = player->culture;
     if (culture > 5) {
         culture = 0;
@@ -2651,10 +2649,12 @@ void TRIBE_Screen_Game::setup_buttons()
         final_pic = this->more_cancel_pic;
         final_frame = this->cancel_frame;
         final_type = 0x0B;
+        set_final_button = 1;
     } else if ((rge_base_game->game_mode == 0) &&
                (rge_base_game->prog_mode != 5)) {
         if (this->game_obj->owner == player) {
             unsigned char level = player->unit_level_selected();
+            int continue_setup = 1;
 
             if (level == 3) {
                 this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
@@ -2794,13 +2794,15 @@ void TRIBE_Screen_Game::setup_buttons()
                     final_pic = this->more_cancel_pic;
                     final_frame = this->unselect_frame;
                     final_type = 6;
-                    goto finish_normal_buttons;
+                    set_final_button = 1;
+                    continue_setup = 0;
                 } else if ((object_state == 2) && (work_type == 0x67)) {
                     this->set_button(this->button_cmd_pic, 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
                     final_pic = this->more_cancel_pic;
                     final_frame = this->unselect_frame;
                     final_type = 6;
-                    goto finish_normal_buttons;
+                    set_final_button = 1;
+                    continue_setup = 0;
                 } else if ((object_state == 2) &&
                            ((work_type != 0x66) ||
                             (production_queues_is_use != 0))) {
@@ -2866,155 +2868,166 @@ void TRIBE_Screen_Game::setup_buttons()
 
                     int tech_disabled = 0;
                     if (show_queue) {
-                        goto finish_disable_buttons;
-                    }
-
-                    if ((building->master_obj->id == 0x6D) &&
-                        (tech_count_local == 0) &&
-                        (static_cast<int>(rge_base_game->get_player()->attributes[6]) < 4)) {
-                        short tech_id =
-                            static_cast<short>(
-                                static_cast<int>(rge_base_game->get_player()->attributes[6]) + 100);
-                        if (player->tech_tree->get_tech_state(tech_id) != -1) {
-                            if (this->tech_list != 0) {
-                                free(this->tech_list);
+                        continue_setup = 0;
+                    } else {
+                        if ((building->master_obj->id == 0x6D) &&
+                            (tech_count_local == 0) &&
+                            (static_cast<int>(rge_base_game->get_player()->attributes[6]) < 4)) {
+                            short tech_id =
+                                static_cast<short>(
+                                    static_cast<int>(rge_base_game->get_player()->attributes[6]) + 100);
+                            if (player->tech_tree->get_tech_state(tech_id) != -1) {
+                                if (this->tech_list != 0) {
+                                    free(this->tech_list);
+                                }
+                                this->tech_list = static_cast<Item_Avail*>(
+                                    calloc(1, sizeof(Item_Avail)));
+                                if (this->tech_list != 0) {
+                                    tech_count_local = 1;
+                                    tech_disabled = 1;
+                                    short inv_1;
+                                    short amt_1;
+                                    short inv_2;
+                                    short amt_2;
+                                    short inv_3;
+                                    short amt_3;
+                                    player->tech_tree->tech_cost(
+                                        tech_id, &inv_1, &amt_1, &inv_2,
+                                        &amt_2, &inv_3, &amt_3);
+                                    Tech_Tree* tech =
+                                        &this->world->tech->tech_tree[tech_id];
+                                    this->tech_list->id = tech_id;
+                                    this->tech_list->name = tech->name;
+                                    this->tech_list->pict = tech->icon;
+                                    this->tech_list->inventory_item_1 = inv_1;
+                                    this->tech_list->inventory_cost_1 = static_cast<float>(amt_1);
+                                    this->tech_list->inventory_item_2 = inv_2;
+                                    this->tech_list->inventory_cost_2 = static_cast<float>(amt_2);
+                                    this->tech_list->inventory_item_3 = inv_3;
+                                    this->tech_list->inventory_cost_3 = static_cast<float>(amt_3);
+                                    this->tech_list->help_string_id =
+                                        player->tech_tree->get_help_message(tech_id);
+                                    this->tech_list->help_page_id =
+                                        player->tech_tree->get_help_page(tech_id);
+                                }
                             }
-                            this->tech_list = static_cast<Item_Avail*>(
-                                calloc(1, sizeof(Item_Avail)));
-                            if (this->tech_list != 0) {
-                                tech_count_local = 1;
-                                tech_disabled = 1;
-                                short inv_1;
-                                short amt_1;
-                                short inv_2;
-                                short amt_2;
-                                short inv_3;
-                                short amt_3;
-                                player->tech_tree->tech_cost(
-                                    tech_id, &inv_1, &amt_1, &inv_2,
-                                    &amt_2, &inv_3, &amt_3);
-                                Tech_Tree* tech =
-                                    &this->world->tech->tech_tree[tech_id];
-                                this->tech_list->id = tech_id;
-                                this->tech_list->name = tech->name;
-                                this->tech_list->pict = tech->icon;
-                                this->tech_list->inventory_item_1 = inv_1;
-                                this->tech_list->inventory_cost_1 = static_cast<float>(amt_1);
-                                this->tech_list->inventory_item_2 = inv_2;
-                                this->tech_list->inventory_cost_2 = static_cast<float>(amt_2);
-                                this->tech_list->inventory_item_3 = inv_3;
-                                this->tech_list->inventory_cost_3 = static_cast<float>(amt_3);
-                                this->tech_list->help_string_id =
-                                    player->tech_tree->get_help_message(tech_id);
-                                this->tech_list->help_page_id =
-                                    player->tech_tree->get_help_page(tech_id);
+                        }
+
+                        for (int i4 = 0; i4 < tech_count_local; ++i4) {
+                            Item_Avail* item = &this->tech_list[i4];
+                            short string_id =
+                                player->tech_tree->get_string_id(item->id);
+                            rge_base_game->get_string(string_id, name + 4,
+                                                      0x200);
+                            short string_id2 =
+                                player->tech_tree->get_string_id2(item->id);
+                            this->calc_text_msg(msg_str + 4, item, 0x11,
+                                                string_id2);
+                            unsigned char button_location =
+                                player->tech_tree->get_button_location(item->id);
+                            short index = this->calc_button_loc(button_location);
+                            this->set_button(this->button_tech_pic, index,
+                                             item->pict, 0x11, item->id,
+                                             item->help_string_id,
+                                             item->help_page_id,
+                                             player->tech_tree->get_hotkey(item->id),
+                                             player->color_table->table,
+                                             name + 4, msg_str + 4,
+                                             tech_disabled);
+                        }
+
+                        if ((make_count != 0) || (tech_count_local != 0)) {
+                            final_pic = this->more_cancel_pic;
+                            final_frame = this->unselect_frame;
+                            final_type = 6;
+                            set_final_button = 1;
+                            continue_setup = 0;
+                        }
+                    }
+                }
+
+            }
+
+            if (continue_setup != 0) {
+                bool special_selection =
+                    (level == 0) && (player->sel_count > 1);
+                bool all_known = true;
+                bool have_action = false;
+                if (special_selection) {
+                    short selected = 0;
+                    for (short i5 = 0;
+                         (i5 < 25) && (selected < player->sel_count); ++i5) {
+                        RGE_Action_Object* object =
+                            static_cast<RGE_Action_Object*>(player->sel_list[i5]);
+                        if (object != 0) {
+                            unsigned char object_level = object->master_obj->unit_level;
+                            if ((object_level != 3) &&
+                                (object_level != 9) &&
+                                (object_level != 4) &&
+                                (object_level != 5) &&
+                                (object_level != 6) &&
+                                (object_level != 7) &&
+                                (object_level != 8)) {
+                                all_known = false;
+                                break;
                             }
+                            if (!have_action) {
+                                have_action = object->have_action() != 0;
+                            }
+                            ++selected;
                         }
                     }
+                }
 
-                    for (int i4 = 0; i4 < tech_count_local; ++i4) {
-                        Item_Avail* item = &this->tech_list[i4];
-                        short string_id =
-                            player->tech_tree->get_string_id(item->id);
-                        rge_base_game->get_string(string_id, name + 4,
-                                                  0x200);
-                        short string_id2 =
-                            player->tech_tree->get_string_id2(item->id);
-                        this->calc_text_msg(msg_str + 4, item, 0x11,
-                                            string_id2);
-                        unsigned char button_location =
-                            player->tech_tree->get_button_location(item->id);
-                        short index = this->calc_button_loc(button_location);
-                        this->set_button(this->button_tech_pic, index,
-                                         item->pict, 0x11, item->id,
-                                         item->help_string_id,
-                                         item->help_page_id,
-                                         player->tech_tree->get_hotkey(item->id),
-                                         player->color_table->table,
-                                         name + 4, msg_str + 4,
-                                         tech_disabled);
+                int group;
+                if (special_selection && all_known) {
+                    group = player->is_group_selected(4);
+                    if (group != 0) {
+                        this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
                     }
-
-                    if ((make_count != 0) || (tech_count_local != 0)) {
-                        final_pic = this->more_cancel_pic;
-                        final_frame = this->unselect_frame;
-                        final_type = 6;
-                        goto finish_normal_buttons;
+                    if (have_action) {
+                        this->set_button(this->button_cmd_pic, group != 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
+                    }
+                } else {
+                    group = player->is_group_selected(4);
+                    if (group != 0) {
+                        this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
+                    }
+                    if (this->any_selected_have_action()) {
+                        this->set_button(this->button_cmd_pic, group != 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
                     }
                 }
-
+                if (player->sel_count > 1) {
+                    this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
+                    this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x4E43, -1, 0, 0, 0, 0, 0);
+                } else if (this->game_obj->selected_group != 0) {
+                    this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
+                }
+                final_pic = this->more_cancel_pic;
+                final_frame = this->unselect_frame;
+                final_type = 6;
+                set_final_button = 1;
             }
-
-            bool special_selection =
-                (level == 0) && (player->sel_count > 1);
-            bool all_known = true;
-            bool have_action = false;
-            if (special_selection) {
-                short selected = 0;
-                for (short i5 = 0;
-                     (i5 < 25) && (selected < player->sel_count); ++i5) {
-                    RGE_Action_Object* object =
-                        static_cast<RGE_Action_Object*>(player->sel_list[i5]);
-                    if (object != 0) {
-                        unsigned char object_level = object->master_obj->unit_level;
-                        if ((object_level != 3) &&
-                            (object_level != 9) &&
-                            (object_level != 4) &&
-                            (object_level != 5) &&
-                            (object_level != 6) &&
-                            (object_level != 7) &&
-                            (object_level != 8)) {
-                            all_known = false;
-                            break;
-                        }
-                        if (!have_action) {
-                            have_action = object->have_action() != 0;
-                        }
-                        ++selected;
-                    }
-                }
-            }
-
-            int group;
-            if (special_selection && all_known) {
-                group = player->is_group_selected(4);
-                if (group != 0) {
-                    this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
-                }
-                if (have_action) {
-                    this->set_button(this->button_cmd_pic, group != 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
-                }
-            } else {
-                group = player->is_group_selected(4);
-                if (group != 0) {
-                    this->set_button(this->button_cmd_pic, 0, 2, 3, 0, 0x1D4DF, -1, 0, 0, 0, 0, 0);
-                }
-                if (this->any_selected_have_action()) {
-                    this->set_button(this->button_cmd_pic, group != 0, 3, 5, 0, 0x1D4DD, -1, 0, 0, 0, 0, 0);
-                }
-            }
-            if (player->sel_count > 1) {
-                this->set_button(this->button_cmd_pic, 6, 7, 8, 0, 0x1D4E1, -1, 0, 0, 0, 0, 0);
-                this->set_button(this->button_cmd_pic, 7, 8, 9, 0, 0x4E43, -1, 0, 0, 0, 0, 0);
-            } else if (this->game_obj->selected_group != 0) {
-                this->set_button(this->button_cmd_pic, 6, 8, 9, 0, 0x1D4E3, -1, 0, 0, 0, 0, 0);
-            }
+        } else {
+            final_pic = this->more_cancel_pic;
+            final_frame = this->unselect_frame;
+            final_type = 6;
+            set_final_button = 1;
         }
 
-        final_pic = this->more_cancel_pic;
-        final_frame = this->unselect_frame;
-        final_type = 6;
     } else {
         final_pic = this->more_cancel_pic;
         final_frame = this->cancel_frame;
         final_type = 0x0B;
+        set_final_button = 1;
     }
 
-finish_normal_buttons:
-    this->set_button(final_pic, 0x0B, final_frame, final_type, 0,
-                     0x1D4D9, -1, 0, 0, 0, 0, 0);
+    }
 
-finish_disable_buttons:
+    if (set_final_button != 0) {
+        this->set_button(final_pic, 0x0B, final_frame, final_type, 0,
+                         0x1D4D9, -1, 0, 0, 0, 0, 0);
+    }
     this->disable_unused_buttons();
 }
 
@@ -3575,27 +3588,28 @@ void TRIBE_Screen_Game::handle_terrain_sound() {
             debug_timeGetTime(s_scr_game_cpp, 0x121D);
 
         if (this->terrain_playing != 0) {
-            if (now - this->last_terrain_sound_time < 1000) {
-                goto early_return;
-            }
+            if (now - this->last_terrain_sound_time < 1000)
+                return;
+
             this->last_terrain_sound_time = now;
 
             if (_bPlaying != 0) {
                 if (now - this->terrain_sound_start_time < 6000) {
-                    goto done;
+                    color_log(0x54, 0x5F, 4);
+                    return;
                 }
                 rge_base_game->sound_system->stop_stream();
             }
 
             this->terrain_playing = 0;
             color_log(0x54, 0x5F, 4);
-            goto done_return;
+            return;
         }
 
         if (now - this->last_terrain_sound_time <
-            this->terrain_sound_interval) {
-            goto early_return;
-        }
+            this->terrain_sound_interval)
+            return;
+
         TRIBE_World* world = this->world;
         this->last_terrain_sound_time = now;
 
@@ -3614,30 +3628,29 @@ void TRIBE_Screen_Game::handle_terrain_sound() {
             }
         }
 
-        if (best_index == -1) {
-            goto done;
+        if (best_index != -1) {
+            char* file_name =
+                map->terrain_types[best_index].sound->get_file_name();
+            if (file_name != 0) {
+                color_log(0x54, 0x4C, 4);
+                debug_timeGetTime(s_scr_game_cpp, 0x125B);
+                rge_base_game->sound_system->stop_stream();
+                rge_base_game->sound_system->stream_file(file_name, 0, 0);
+                color_log(0x54, 0x32, 4);
+                this->terrain_playing = 1;
+                this->terrain_sound_start_time =
+                    debug_timeGetTime(s_scr_game_cpp, 0x1262);
+            } else {
+                color_log(0x54, 0x5F, 4);
+                return;
+            }
+        } else {
+            color_log(0x54, 0x5F, 4);
+            return;
         }
-
-        char* file_name = map->terrain_types[best_index].sound->get_file_name();
-        if (file_name == 0) {
-            goto done;
-        }
-
-        color_log(0x54, 0x4C, 4);
-        debug_timeGetTime(s_scr_game_cpp, 0x125B);
-        rge_base_game->sound_system->stop_stream();
-        rge_base_game->sound_system->stream_file(file_name, 0, 0);
-        color_log(0x54, 0x32, 4);
-        this->terrain_playing = 1;
-        this->terrain_sound_start_time =
-            debug_timeGetTime(s_scr_game_cpp, 0x1262);
     }
 
-done:
     color_log(0x54, 0x5F, 4);
-
-early_return:
-done_return:
     return;
 }
 
@@ -4486,7 +4499,7 @@ void TRIBE_Screen_Game::command_tab_selected(int value) {
                     if (current != 0) {
                         if (current == player->selected_obj) {
                             if (candidate != 0) {
-                                goto update_selected;
+                                break;
                             }
                         } else {
                             candidate = current;
@@ -4498,7 +4511,6 @@ void TRIBE_Screen_Game::command_tab_selected(int value) {
             }
 
             if (candidate != 0) {
-            update_selected:
                 player->selected_obj = candidate;
             }
         }

@@ -273,7 +273,7 @@ char* RGE_Communications_Speed::GetSelfPlayerOptimalSpeedStr()
         "MeOptimal: Buf=%3d Gran=%3d  Target FPS=%3d Latency=%3d",
         frames,
         granularity,
-        1000 / (int)granularity,
+        1000 / static_cast<int>(granularity),
         granularity * frames
     );
     return s_self_player_optimal_speed_text;
