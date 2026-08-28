@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "name": "tdlg_lst",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tdlg_lst.cpp",
+  "source": "src/tdlg_lst.cpp",
+  "header": "include/tdlg_lst.h",
+  "functions": {
+    "0050B450": { "status": "matching", "note_path": "recovery_notes/tdlg_lst_module.md" },
+    "0050B4A0": { "status": "matching", "note_path": "recovery_notes/tdlg_lst_module.md" },
+    "0050B4D0": { "status": "matching", "note_path": "recovery_notes/tdlg_lst_module.md" },
+    "0050B5E0": { "status": "matching", "note_path": "recovery_notes/tdlg_lst_module.md" },
+    "0050B700": { "status": "matching", "note_path": "recovery_notes/tdlg_lst_module.md" },
+    "0050B820": { "status": "accepted_drift", "note_path": "recovery_notes/tdlg_lst_module.md" }
+  }
+}

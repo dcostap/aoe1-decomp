@@ -3457,15 +3457,19 @@
     },
     {
       "name": "tdlg_lst",
-      "source": "src/tdlg_lst_tu.cpp",
+      "source": "src/tdlg_lst.cpp",
+      "module": "tdlg_lst",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0050B4A0": "src/matching/0050B4A0_create_list.cpp",
-        "0050B4D0": "src/matching/0050B4D0_create_build_list.cpp",
-        "0050B5E0": "src/matching/0050B5E0_create_train_list.cpp",
-        "0050B700": "src/matching/0050B700_create_research_list.cpp"
+        "0050B450": "src/tdlg_lst.cpp",
+        "0050B4A0": "src/tdlg_lst.cpp",
+        "0050B4D0": "src/tdlg_lst.cpp",
+        "0050B5E0": "src/tdlg_lst.cpp",
+        "0050B700": "src/tdlg_lst.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "0050B450": "??0TRIBE_Dialog_List@@QAE@PAD@Z"
+      }
     },
     {
       "name": "dsutil",
