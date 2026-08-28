@@ -190,12 +190,6 @@ public:
 
 extern TRIBE_Game* rge_base_game;
 
-extern char s_Scenario_Editor_Screen[];
-extern char s_Scenario_Menu_Dialog[];
-extern char s_New_Dialog[];
-extern char s_Open_Dialog[];
-extern char s_Scenario_Editor_Open[];
-
 class TRIBE_Dialog_Sed_Menu : public TDialogPanel {
 public:
     TRIBE_Screen_Sed* scenario_editor; // +0x490

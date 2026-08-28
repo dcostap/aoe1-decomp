@@ -114,12 +114,6 @@ public:
 extern TPanelSystem panel_system;
 extern TRIBE_Game* rge_base_game;
 
-extern char s_Scenario_Editor_Screen[];
-extern char s_Scenario_Menu_Dialog[];
-extern char s_New_Dialog[];
-extern char s_Open_Dialog[];
-extern char s_Scenario_Editor_Open[];
-
 class TRIBE_Dialog_Sed_Menu : public TDialogPanel {
 public:
     TRIBE_Screen_Sed* scenario_editor; // +0x490
@@ -138,61 +132,61 @@ long TRIBE_Dialog_Sed_Menu::action(
 
     if (event == 1) {
         if (panel == this->buttons[0]) {
-            panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
-            panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+            panel_system.setCurrentPanel("Scenario Editor Screen", 0);
+            panel_system.destroyPanel("Scenario Menu Dialog");
             sed->command_quit();
             result = 1;
             goto action_done;
         }
 
         if (panel == this->buttons[1]) {
-            panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
-            panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+            panel_system.setCurrentPanel("Scenario Editor Screen", 0);
+            panel_system.destroyPanel("Scenario Menu Dialog");
             sed->command_save(1, 0);
             result = 1;
             goto action_done;
         }
 
         if (panel == this->buttons[2]) {
-            panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
-            panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+            panel_system.setCurrentPanel("Scenario Editor Screen", 0);
+            panel_system.destroyPanel("Scenario Menu Dialog");
             sed->command_save_as(0);
             result = 1;
             goto action_done;
         }
 
         if (panel == this->buttons[3]) {
-            panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
-            panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+            panel_system.setCurrentPanel("Scenario Editor Screen", 0);
+            panel_system.destroyPanel("Scenario Menu Dialog");
             sed->command_open();
             result = 1;
             goto action_done;
         }
 
         if (panel == this->buttons[4]) {
-            panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
-            panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+            panel_system.setCurrentPanel("Scenario Editor Screen", 0);
+            panel_system.destroyPanel("Scenario Menu Dialog");
             sed->command_new();
             result = 1;
             goto action_done;
         }
 
         if (panel == this->buttons[5]) {
-            panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
-            panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+            panel_system.setCurrentPanel("Scenario Editor Screen", 0);
+            panel_system.destroyPanel("Scenario Menu Dialog");
             char* scenario = sed->scenario_save_defaulted();
             if (scenario != 0) {
                 rge_base_game->test_scenario(scenario);
             } else {
-                panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+                panel_system.destroyPanel("Scenario Menu Dialog");
             }
             result = 1;
             goto action_done;
         }
 
         else if (panel == this->buttons[6]) {
-            panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
-            panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+            panel_system.setCurrentPanel("Scenario Editor Screen", 0);
+            panel_system.destroyPanel("Scenario Menu Dialog");
             result = 1;
             goto action_done;
         }
@@ -200,30 +194,30 @@ long TRIBE_Dialog_Sed_Menu::action(
 
     if (panel != 0) {
         if (panel->panelName() != 0 &&
-            strcmp(panel->panelName(), s_New_Dialog) == 0) {
-            panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
-            panel_system.destroyPanel(s_New_Dialog);
-            panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+            strcmp(panel->panelName(), "New Dialog") == 0) {
+            panel_system.setCurrentPanel("Scenario Editor Screen", 0);
+            panel_system.destroyPanel("New Dialog");
+            panel_system.destroyPanel("Scenario Menu Dialog");
 
             if (event == 0) {
                 sed->command_quick_save();
             }
             if (event == 0 || event == 1) {
-                panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+                panel_system.destroyPanel("Scenario Menu Dialog");
                 rge_base_game->start_scenario_editor(0, 0);
             }
             if (event == 2) {
-                panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+                panel_system.destroyPanel("Scenario Menu Dialog");
             }
             result = 1;
             goto action_done;
         }
 
         if (panel->panelName() != 0 &&
-            strcmp(panel->panelName(), s_Open_Dialog) == 0) {
-            panel_system.setCurrentPanel(s_Scenario_Editor_Screen, 0);
-            panel_system.destroyPanel(s_Open_Dialog);
-            panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+            strcmp(panel->panelName(), "Open Dialog") == 0) {
+            panel_system.setCurrentPanel("Scenario Editor Screen", 0);
+            panel_system.destroyPanel("Open Dialog");
+            panel_system.destroyPanel("Scenario Menu Dialog");
 
             if (event == 0) {
                 sed->command_quick_save();
@@ -231,11 +225,11 @@ long TRIBE_Dialog_Sed_Menu::action(
             if (event == 0 || event == 1) {
                 TRIBE_Screen_Sed_Open* open = new TRIBE_Screen_Sed_Open;
                 (void)open;
-                panel_system.setCurrentPanel(s_Scenario_Editor_Open, 0);
-                panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+                panel_system.setCurrentPanel("Scenario Editor Open", 0);
+                panel_system.destroyPanel("Scenario Menu Dialog");
             }
             if (event == 2) {
-                panel_system.destroyPanel(s_Scenario_Menu_Dialog);
+                panel_system.destroyPanel("Scenario Menu Dialog");
             }
             result = 1;
             goto action_done;

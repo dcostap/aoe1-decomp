@@ -5,7 +5,7 @@
 // Probe 1: close but esi/edi registers swapped for this vs loop pointer
 // Probe 2: reorder locals to influence register allocation
 
-#include "..\..\include\game_globals.h"
+#include "../../include/game_globals.h"
 
 #ifndef DLG_SEDM_SHARED_CONTEXT
 class TRIBE_Screen_Sed;
