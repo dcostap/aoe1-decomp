@@ -60,7 +60,6 @@ public:
     virtual int repair(int, int);
     virtual int build(int, int);
     virtual int trade(int, int);
-    virtual RGE_Task* make_action(RGE_Static_Object*, float, float, float);
 
 protected:
     virtual void initUnitAI();

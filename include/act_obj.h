@@ -35,10 +35,10 @@ public:
     virtual RGE_Master_Static_Object* get_command_master(
         RGE_Static_Object*, float, float, float);
     virtual void set_task(short);
-    virtual void setTaskByTaskID(int);
+    void setTaskByTaskID(int);
     virtual void set_action(RGE_Action*);
     virtual void set_only_action(RGE_Action*);
-    virtual void set_end_action(RGE_Action*);
+    void set_end_action(RGE_Action*);
     virtual void stop();
     virtual void change_ownership(RGE_Player*);
     virtual void copy_obj(RGE_Master_Static_Object*);

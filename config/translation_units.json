@@ -5732,20 +5732,36 @@
     {
       "name": "t_c_obj_complete_fresh",
       "source": "src/t_c_obj.cpp",
+      "module": "t_c_obj",
       "flags": "config/flags/004CA0F0_TRIBE_Combat_Object.rsp",
       "owners": {
-        "004CA0F0": "src/matching/004CA0F0_TRIBE_Combat_Object.cpp",
-        "004CA1A0": "src/matching/004CA1A0_TRIBE_Combat_Object.cpp",
-        "004CA510": "src/matching/004CA510_create_action_list.cpp",
-        "004CA780": "src/matching/004CA780_cancel_object.cpp",
-        "004CB860": "src/matching/004CB860_keepGatheringWhenObjectIsOut.cpp",
-        "004CB8B0": "src/matching/004CB8B0_useSameZoneDropsite.cpp",
-        "004CBD30": "src/matching/004CBD30_lines_intersect.cpp"
+        "004CA0F0": "src/t_c_obj.cpp",
+        "004CA1A0": "src/t_c_obj.cpp",
+        "004CA210": "src/t_c_obj.cpp",
+        "004CA510": "src/t_c_obj.cpp",
+        "004CA5F0": "src/t_c_obj.cpp",
+        "004CA740": "src/t_c_obj.cpp",
+        "004CA780": "src/t_c_obj.cpp",
+        "004CA790": "src/t_c_obj.cpp",
+        "004CA8C0": "src/t_c_obj.cpp",
+        "004CAA50": "src/t_c_obj.cpp",
+        "004CB060": "src/t_c_obj.cpp",
+        "004CB1B0": "src/t_c_obj.cpp",
+        "004CB300": "src/t_c_obj.cpp",
+        "004CB450": "src/t_c_obj.cpp",
+        "004CB5C0": "src/t_c_obj.cpp",
+        "004CB710": "src/t_c_obj.cpp",
+        "004CB8D0": "src/t_c_obj.cpp",
+        "004CBD30": "src/t_c_obj.cpp",
+        "004CC570": "src/t_c_obj.cpp"
       },
       "symbols": {
         "004CA0F0": "??0TRIBE_Combat_Object@@QAE@PAVTRIBE_Master_Combat_Object@@PAVRGE_Player@@MMMH@Z",
         "004CA1A0": "??0TRIBE_Combat_Object@@QAE@HPAVRGE_Game_World@@H@Z",
         "004CA510": "?create_action_list@TRIBE_Combat_Object@@UAEPAVRGE_Action_List@@XZ",
+        "004CAA50": "?attack@TRIBE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAVRGE_Combat_Object@@@Z",
+        "004CB300": "?heal@TRIBE_Combat_Object@@UAEHHH@Z",
+        "004CB450": "?repair@TRIBE_Combat_Object@@UAEHHH@Z",
         "004CBD30": "?lines_intersect@@YAHMMMMMMMM@Z"
       }
     },

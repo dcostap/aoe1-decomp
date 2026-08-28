@@ -140,7 +140,6 @@ canonical owners.
 | `src/tribegam.cpp:3138` | Raw `RGE_Info_Line` bytes | Field ownership and `clump_num` type are lost. |
 | `src/tribegam.cpp:3142` | Map Gen Info with `land` at offset zero | Wrong field offsets. |
 | `src/tribegam.cpp:3147` | `class RGE_Player_Info` | PDB UDT kind and decorated references use `struct`. |
-| `include/t_c_obj_context.h:151` | Gap through `+0x270` and one pointer | Partial record; size and fields do not match. |
 
 `include/game_types.h:193`, `:204`, and `:231`, plus several matching and
 candidate files, use `class RGE_Info_Line`, `class RGE_Map_Gen_Info`, or

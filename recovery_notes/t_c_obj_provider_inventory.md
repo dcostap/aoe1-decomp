@@ -15,6 +15,7 @@ headers, and focused dossiers for `004CA300`, `004CA5F0`, `004CA8C0`,
 | object ID, master, owner, sprite, holder, state, health, selection, coordinates, held attribute, type, and Unit AI pointer | `RGE_Static_Object` in `stat_obj.h` | CodeView `RGE_Static_Object`; direct accesses in all focused dossiers |
 | actions, command state, and task lookup | `RGE_Action_Object` in `act_obj.h` | CodeView class and `t_c_obj.cpp` calls to `actions`, `set_only_action`, and `getTask` |
 | combat VUR records, attack timer, and capture flag | `RGE_Combat_Object` in `com_obj.h` | CodeView: `VUR_Ptrs +0x194`, `Unified_Map_Value +0x1B8`, `attack_timer +0x1BC`, `capture_flag +0x1C0`; `004CA8C0` reads `+0x194` |
+| action publication and task lookup | `RGE_Action_Object::set_action(RGE_Action*)` and `getTask(...)` in `act_obj.h` | `004CB060`, `004CB450`, and `004CC5B0` call virtual slots `+0x208` and `+0x210`; raw `add_action` and `make_action` labels were aliases |
 | owned-master flag | `TRIBE_Combat_Object` in `t_c_obj.h` | CodeView: `own_master +0x1C4`; `004CA300` writes `+0x1C4` |
 | static master IDs, group, placement, radii, health, and action task list | `RGE_Master_Static_Object` in `m_s_obj.h` | PDB layout and direct calls in setup, artifact placement, area attack, and repair |
 | combat master armor and weapon records | `RGE_Master_Combat_Object` in `m_co_obj.h` | `004CAC10` reads `base_armor +0x100`, `armor_num +0x102`, and `armor +0x104`; `004CAAA0` reads `weapon_num +0x108` and `weapon +0x10C` |
@@ -26,8 +27,9 @@ headers, and focused dossiers for `004CA300`, `004CA5F0`, `004CA8C0`,
 ## Unit AI provider work
 
 `UnitAIModule` belongs to `unit_ai_module.h`. `004CA8C0` directly calls
-`UnitAIModule::purgeNotifyQueue(unsigned long)` with `world_time`. The header
-now declares that proven arity.
+`UnitAIModule::purgeNotifyQueue(unsigned long)` with `world_time`. `004CC5B0`
+uses the five-argument `setCurrentTarget` overload and `setTaskedByPlayer`.
+The header declares those proven members.
 
 The following PDB provider classes are empty `UnitAIModule` derivatives of size
 `0x134`: Artifact, Civilian, Priest, Hunted Animal, Elephant, Lion, Preditor,
@@ -45,15 +47,15 @@ Do not edit Player headers in Terra 6.
 | --- | --- | --- | --- | --- |
 | player ID, master-object array, world, attributes, selection, add/remove object, and unselect | `RGE_Player` | `short id +0x4A`; `RGE_Master_Static_Object** master_objects +0x24`; `RGE_Game_World* world +0x3C`; `float* attributes +0x50` | CodeView `RGE_Player`; setup, ownership, artifact, and repair paths | Already published in `player.h` |
 | tribe resource cost checks and payments | `TRIBE_Player` | `check_obj_cost(short, short*, float, int)` and `pay_obj_cost(short, float, int)` | heal and canRepair source paths; current `tplayer.h` | Already published in `tplayer.h` |
-| action pointer formerly written as `owner->info->field_270` | Player provider, exact owner unknown | Old local carrier claimed `RGE_Player_Info*` then `void* +0x270`; CodeView disproves that type: `RGE_Player_Info +0x270` is `long player_id_hash[9]` | historical raw source line 689; repair path `004CB450` | Do not publish. Terra 5 must identify the actual Player-owned pointer and its target type before a natural repair body can use it. |
+| repair transform master | `RGE_Player` | `RGE_Master_Static_Object* master_objects[0x9C]`; array base `+0x24`, element byte offset `+0x270` | Terra 5: `004CB450` and `004CC5B0` load the element, test it, then call `TRIBE_Combat_Object::transform` at virtual slot `+0x54` | Resolved. The natural source uses the typed array element. |
 
 ## Unresolved canonical owners
 
 The old direct attempt uses `field_08`, `field_44`, `field_48`, `field_4C`,
 `object_info`, `context`, `sub`, `owner_data`, and raw offsets. These are not
 canonical declarations. The focused assembly instead proves many were aliases
-for inherited `master_obj`, `owner`, `id`, or virtual calls. The remaining
-uses need per-function reconstruction. Do not add a carrier or padding object.
+for inherited `master_obj`, `owner`, `id`, or virtual calls. Do not add a
+carrier or padding object.
 
 The `004CAAA0` assembly is a model example. It proves direct use of
 `master_obj`, `owner`, the base-game quick-build member, Master Combat weapon

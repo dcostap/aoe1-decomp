@@ -162,6 +162,7 @@ public:
     int selectNewPlayPhase(int playNumber, int param2);
     int processNotify(void* notifyEvent);
     void processMisc();
+    void setTaskedByPlayer();
 };
 // Total size check: vfptr(4) + 0x04..0x130 = 4 + 0x130 = 0x134 bytes
 // But last field is at +0x130 which is a byte, so sizeof = 0x131
