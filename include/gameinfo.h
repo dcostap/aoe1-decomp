@@ -10,20 +10,6 @@ class RGE_Campaign_Info;
 class RGE_Person_Info;
 class RGE_Game_Info;
 
-class RGE_Campaign {
-public:
-    char gap_00[0x20C];
-
-    char* get_name();
-    long scenario_number();
-    char* get_scenario_name(long index);
-    int open_scenario(long index);
-
-    RGE_Campaign(char* filename);
-    ~RGE_Campaign();
-    void dtor();
-};
-
 class RGE_Campaign_Info {
 public:
     char name[256];

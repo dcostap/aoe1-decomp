@@ -1,4 +1,5 @@
 #include "../include/gameinfo.h"
+#include "../include/campaign.h"
 
 #include "../include/basegame.h"
 #include "../include/debuglog.h"
