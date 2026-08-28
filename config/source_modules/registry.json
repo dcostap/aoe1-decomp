@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "name": "registry",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\registry.cpp",
+  "source": "src/registry.cpp",
+  "header": "include/registry.h",
+  "functions": {
+    "0047EB80": { "status": "matching", "note_path": "recovery_notes/registry_module.md" },
+    "0047EC00": { "status": "matching", "note_path": "recovery_notes/registry_module.md" },
+    "0047EC40": { "status": "matching", "note_path": "recovery_notes/registry_module.md" },
+    "0047ECA0": { "status": "matching", "note_path": "recovery_notes/registry_module.md" },
+    "0047ED00": { "status": "matching", "note_path": "recovery_notes/registry_module.md" },
+    "0047ED60": { "status": "matching", "note_path": "recovery_notes/registry_module.md" },
+    "0047EDD0": { "status": "scratch", "note_path": "recovery_notes/registry_module.md" },
+    "0047EE20": { "status": "matching", "note_path": "recovery_notes/registry_module.md" }
+  }
+}

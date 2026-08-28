@@ -2710,21 +2710,20 @@
     },
     {
       "name": "registry",
-      "source": "src/registry_tu.cpp",
+      "source": "src/registry.cpp",
+      "module": "registry",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0047EB80": "src/matching/0047EB80_TRegistry.cpp",
-        "0047EC00": "src/matching/0047EC00_TRegistry.cpp",
-        "0047EC40": "src/matching/0047EC40_RegSet.cpp",
-        "0047ECA0": "src/matching/0047ECA0_RegSetInt.cpp",
-        "0047ED00": "src/matching/0047ED00_RegSetAscii.cpp",
-        "0047ED60": "src/matching/0047ED60_RegGetAscii.cpp",
-        "0047EDD0": "src/matching/0047EDD0_RegGet.cpp",
-        "0047EE20": "src/matching/0047EE20_RegGetInt.cpp"
+        "0047EB80": "src/registry.cpp",
+        "0047EC00": "src/registry.cpp",
+        "0047EC40": "src/registry.cpp",
+        "0047ECA0": "src/registry.cpp",
+        "0047ED00": "src/registry.cpp",
+        "0047ED60": "src/registry.cpp",
+        "0047EE20": "src/registry.cpp"
       },
       "symbols": {
-        "0047EC40": "?RegSet@TRegistry@@QAEHHPBDPAEK@Z",
-        "0047EDD0": "?RegGet@TRegistry@@QAEJHPBDPAEPAK@Z"
+        "0047EC40": "?RegSet@TRegistry@@QAEHHPBDPAEK@Z"
       }
     },
     {
