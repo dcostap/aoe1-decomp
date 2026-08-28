@@ -12,12 +12,16 @@
 
 `include/ai_play_phase_command.h` owns the PDB-proven 0x10
 `AIPlayPhaseCommand` record. Its PDB fields are protected. The module header
-consumes its public accessors without a local copy.
+does not define a local copy. The source includes its owner and uses public
+accessors.
 `include/ai_play_phase_trigger.h` owns the PDB-proven 0x14
 `AIPlayPhaseTrigger` record. Its PDB fields are protected. The
 `PAVAIPlayPhaseTrigger` return from `AIPlayPhase::trigger` proves its class
-identity. The module uses its public accessors without a local copy. Its public
-header forward-declares the two phase records. The source includes their owners.
+identity. The module uses its public accessors without a local copy. The source
+includes its owner.
+`include/ai_play_phase.h` owns the PDB-proven 0x8C `AIPlayPhase` record. Its
+public header forward-declares the phase. The source includes its owner and
+uses its public methods.
 
 ## Unit AI root virtual prefix
 

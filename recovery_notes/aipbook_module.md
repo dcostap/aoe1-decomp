@@ -10,6 +10,7 @@
 - `include/ai_play_phase_command.h` owns AIPlayPhaseCommand.
 - `include/ai_play_phase_trigger.h` owns AIPlayPhaseTrigger.
 - `include/ai_play_group.h` owns AIPlayGroup.
+- `include/ai_play_phase.h` owns AIPlayPhase.
 
 PDB field list `0x2629` puts the command fields in `protected` access. The
 owner header supplies the PDB public accessors. The module uses those accessors
@@ -24,6 +25,11 @@ The group record is 0x0C. PDB field list `0x2A15` names its protected arrays
 `minValue` and `maxValue`. PDB nested enum `0x2A12` defines `MaxUnitTypes = 6`
 and `InvalidGroup = 255`. PDB public accessors provide its range operations.
 Its `PAVAIPlayGroup` return from `AIPlay::group` proves its class identity.
+
+The phase record is 0x8C. PDB field list `0x2A1B` makes its `commands` and
+`triggers` arrays protected. It consumes their providers by value. PDB nested
+enum `0x2A17` defines `MaxCommands = 5` and `MaxTriggers = 3`. Its PDB public
+methods provide external access.
 
 ## Status
 

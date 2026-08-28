@@ -8,9 +8,6 @@
 
 typedef unsigned char uchar;
 
-class AIPlayPhaseCommand;
-class AIPlayPhaseTrigger;
-
 struct OrderEvent {
     int issuer;
     int orderType;
@@ -213,12 +210,6 @@ struct AIPlayGrouping {
     unsigned char groupValue;
     unsigned char typeValue;
     char gap_06[2];
-};
-
-class AIPlayPhase {
-public:
-    AIPlayPhaseTrigger* trigger(int index);
-    AIPlayPhaseCommand* command(int index);
 };
 
 class AIPlay {

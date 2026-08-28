@@ -566,12 +566,7 @@ public:
     void copyUnits(int* units, int& count);
 };
 
-class AIPlayPhaseCommand;
-
-class AIPlayPhase {
-public:
-    AIPlayPhaseCommand* command(int index);
-};
+class AIPlayPhase;
 
 class AIPlay {
 public:

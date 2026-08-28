@@ -3,6 +3,7 @@
 
 #include "../include/taiinfmd.h"
 #include "../include/ai_play_phase_command.h"
+#include "../include/ai_play_phase.h"
 #include <math.h>
 #include <stddef.h>
 #include <stdio.h>

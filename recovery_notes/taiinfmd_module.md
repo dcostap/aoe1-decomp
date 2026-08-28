@@ -40,6 +40,9 @@ AttackMemory, QuadrantLog, and ResourceMemory record layouts.
 The `PAVAIPlayPhaseCommand` return from `AIPlayPhase::command` proves its
 class identity. Its PDB fields are protected. Taiinf consumes its public
 accessors without a local copy.
+`include/ai_play_phase.h` owns the PDB-proven 0x8C `AIPlayPhase` record.
+Taiinf forward-declares it in the public header. The source includes its owner
+and uses its public `command` method.
 Taicon continues to forward-declare PlacementState in its public signatures.
 
 The record owner uses natural alignment. It has no manual padding carriers.
