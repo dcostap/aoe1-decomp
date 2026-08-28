@@ -160,6 +160,7 @@ protected:
     virtual int setup_map_save_area();
     virtual void set_interface_messages();
 
+public:
     RGE_Base_Game(RGE_Prog_Info*, int);
 protected:
     int check_expiration();
