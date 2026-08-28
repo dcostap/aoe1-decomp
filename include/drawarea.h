@@ -22,10 +22,13 @@ extern "C" __declspec(dllimport) int __stdcall DeleteObject(void*);
 extern "C" __declspec(dllimport) int __stdcall DeleteDC(void*);
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 
+#ifndef AOE1_BITMAPINFO256_DEFINED
+#define AOE1_BITMAPINFO256_DEFINED
 struct BITMAPINFO256 {
     BITMAPINFOHEADER bmiHeader;
     RGBQUAD bmiColors[256];
 };
+#endif
 
 typedef BITMAPINFO256 BitmapInfo;
 typedef char draw_bitmap_info_256_size_check[

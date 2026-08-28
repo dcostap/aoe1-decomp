@@ -5,10 +5,13 @@
 
 typedef unsigned char uchar;
 
+#ifndef AOE1_BITMAPINFO256_DEFINED
+#define AOE1_BITMAPINFO256_DEFINED
 struct BITMAPINFO256 {
     BITMAPINFOHEADER bmiHeader;
     RGBQUAD bmiColors[256];
 };
+#endif
 
 struct LINEINFO {
     int AllTrans;

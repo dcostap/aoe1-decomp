@@ -26,9 +26,9 @@ DIB, transparency-line, and palette-blit layouts. The source keeps each body in
 PDB order and keeps the natural period declarations needed by these functions.
 
 The source owns the evidence-bounded `SrcXTbl[0x500]` table. It uses the
-canonical `rge_base_game` declaration and C++ linkage for `shape_file_first`.
-Win32 calls use the reviewed SDK declarations. `RESFILE_load` uses its reviewed
-C++ declaration with typed output references.
+canonical `RGE_Base_Game` and `TDrawSystem` declarations, plus the canonical
+`rge_base_game` declaration. Win32 calls use the reviewed SDK declarations.
+`RESFILE_load` uses its reviewed C++ declaration with typed output references.
 
 The module removes the old wrapper, per-function includes, context-only header,
 and duplicate source-bank owners. The registered translation-unit entry points
@@ -80,8 +80,8 @@ valid migration check.
 - `DibFromBitmap` remains exact in the repaired natural module.
 - The current grouped audit records all six exact-owner regressions. Do not
   promote those owners until their final source context is repaired.
-- The module-local `DibRgeBaseGameView` models only the proven `draw_system`
-  offset. It does not declare a second global type or symbol.
+- `DibRgeBaseGameView` and `DibDrawSystemView` are removed. `DibCreatePalette`
+  now uses the canonical `RGE_Base_Game` and `TDrawSystem` providers.
 - No shared header currently owns `shape_file_first` or `RESFILE_load`. Their
   module-local declarations use the target's reviewed C++ symbols. A coordinator
   may move them to shared headers when their global owners are reunified.

@@ -2,6 +2,8 @@
 // Functions follow the original source order from lines 72 through 2031.
 
 #include "../include/dib.h"
+#include "../include/drawarea.h"
+#include "../include/basegame.h"
 #include "../include/Res_file.h"
 #include <windowsx.h>
 #include <stdio.h>
@@ -28,18 +30,6 @@ struct PAL_TABLE {
 
 extern PAL_TABLE System_color_Table[];
 extern unsigned char DAT_005841e5;
-
-struct DibDrawSystemView {
-    char gap_000[0x478];
-    unsigned char DrawType;
-    unsigned char ScreenMode;
-};
-
-struct DibRgeBaseGameView {
-    // draw_system is the only field used here. Its offset is 0x48.
-    char gap_000[0x48];
-    DibDrawSystemView* draw_system;
-};
 
 extern "C" char* __cdecl strtok(char*, const char*);
 extern "C" long __cdecl atol(const char*);
@@ -670,8 +660,7 @@ palette_entries_done:
         if (res_id) {
             result = CreatePalette((const tagLOGPALETTE*)lp);
             if (do_gamma) {
-                DibRgeBaseGameView* game =
-                    (DibRgeBaseGameView*)rge_base_game;
+                RGE_Base_Game* game = rge_base_game;
                 if (game->draw_system->DrawType == 1 ||
                     game->draw_system->ScreenMode == 1)
                     CreateIdentityPalette(result);
