@@ -27,10 +27,9 @@ static void delete_child(TPanel* owner, T** panel)
 
 // VA: 0049F370 TribeMPStartupScreen constructor (1278B)
 // PDB: scr_mp.cpp:68-220
-// Accepted-drift reconstruction. The period screen factory sequence, named
-// panel ownership, registry buffers, and browser/Zone setup are preserved.
-// The remaining reviewed drift is limited to local-buffer placement, the
-// equivalent constructor-this EH home, and VC5 register selection.
+// Scratch reconstruction. The period screen factory sequence, named panel
+// ownership, registry buffers, and browser/Zone setup are preserved. The
+// candidate differs by 154 bytes and has no reviewed equivalence claim.
 // FLAGS: config/flags/0049F370_TribeMPStartupScreen.rsp (/GX for EH cleanup).
 
 TribeMPStartupScreen::TribeMPStartupScreen()

@@ -1,7 +1,32 @@
 #include "../include/scr_sels.h"
+#include "../include/panel.h"
+#include "../include/panel_ez.h"
+#include "../include/pnl_btn.h"
+#include "../include/pnl_lst.h"
+#include "../include/Pnl_scbr.h"
+#include "../include/basegame.h"
+#include "../include/tribegam.h"
+#include "../include/scenario.h"
+#include "../include/sceninfo.h"
+#include "../include/tscenaro.h"
+#include "../include/scr_mps.h"
+#include "../include/scr_sing.h"
+#include "../include/rge_base_game_global.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+// These module globals are private to the source owner. Their storage belongs
+// to the game-global owner.
+extern char s_Select_Scenario_Screen[];
+extern char s_scr2[];
+extern char s_scr3[];
+extern char s_592A40[];
+extern RGE_Base_Game* rge_base_game;
+extern TPanelSystem panel_system;
+
+// The base-game global is RGE_Base_Game*. Tribe-only game options and the
+// extended scenario header use their canonical derived owner types.
 
 static const char s_fmt_range[] = "%d - %d";
 static const char s_fmt_num[] = "%d";
@@ -26,7 +51,7 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                                   (rge_base_game->multiplayerGame() != 0) +
                                       0xC384,
                                   1, 0, 0, 0, 0, 1)) {
-        this->setup_error = 1;
+        this->error_code = 1;
         return;
     }
 
@@ -61,7 +86,9 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                                               this->scenarioListX,
                                           this->scenarioListY - 0x14,
                                           0xC8, 0x14, 4, 0, 0, 0)) {
-                        this->scenarioPlayersTitle->set_alignment(3, 2);
+                        this->scenarioPlayersTitle->set_alignment(
+                            (TTextPanel::Alignment)3,
+                            (TTextPanel::Alignment)2);
 
                         this->missionTextX = this->scenarioListX;
                         this->missionTextY = this->scenarioListHeight +
@@ -81,9 +108,9 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                                     this->missionTextHeight,
                                     0x0B, 0, 0, 1)) {
                                 this->missionText->set_bevel_info(
-                                    3, this->desc[0], this->desc[1],
-                                    this->desc[2], this->desc[3],
-                                    this->desc[4], this->desc[5]);
+                                    3, this->bevel_color1, this->bevel_color2,
+                                    this->bevel_color3, this->bevel_color4,
+                                    this->bevel_color5, this->bevel_color6);
 
                                 if (this->create_auto_scrollbar(
                                         &this->missionScrollbar,
@@ -115,7 +142,8 @@ TribeSelectScenarioScreen::TribeSelectScenarioScreen()
                                                     -1, -1, 0)) {
                                                 this->close_button->set_active(1);
                                                 this->close_button->set_positioning(
-                                                    9, 4, 4, 4, 4, 0x11,
+                                                    (TPanel::PositionMode)9,
+                                                    4, 4, 4, 4, 0x11,
                                                     0x11, 0x11, 0x11, 0, 0,
                                                     0, 0);
                                                 this->fillScenarios();
@@ -238,7 +266,7 @@ void TribeSelectScenarioScreen::fillScenarios()
     scenario_info_file = rge_base_game->scenario_info;
     scenario_info_file->reload_scenarios();
     this->scenarioList->empty_list();
-    this->scenarioList->field_15c = 1;
+    this->scenarioList->sorted = 1;
     this->scenarioCount = 0;
     while (1) {
         name = scenario_info_file->get_scenario_name(this->scenarioCount);
@@ -256,14 +284,15 @@ void TribeSelectScenarioScreen::fillScenarios()
     if (this->scenarioCount <= 0) return;
     do {
         long id = this->scenarioList->get_id(i);
-        RGE_Scenario_Header* hdr = scenario_info_file->get_scenario_info(id);
+        TRIBE_Scenario_Header* hdr = (TRIBE_Scenario_Header*)
+            scenario_info_file->get_scenario_info(id);
         if (hdr != 0) {
             this->scenarioMission[i] = (char*)calloc(0x1000, 1);
             if (this->scenarioMission[i] != 0 && hdr->description != 0) {
                 strcpy(this->scenarioMission[i], hdr->description);
             }
-            this->scenarioFixed[i] = hdr->fixed;
-            int players = hdr->num_players;
+            this->scenarioFixed[i] = hdr->any_sp_victory;
+            int players = hdr->active_player_count;
             if (players > 0) {
                 if (this->scenarioFixed[i] == 0 && players >= 3) {
                     sprintf(player_str, s_fmt_range, 2, players);
@@ -306,7 +335,7 @@ void TribeSelectScenarioScreen::getSettings() {
 void TribeSelectScenarioScreen::sendSettings(void) {
     rge_base_game->setScenarioGame(1);
     rge_base_game->setScenarioName(this->scenarioList->get_text());
-    rge_base_game->setDeathMatch(0);
+    ((TRIBE_Game*)rge_base_game)->setDeathMatch(0);
 }
 
 void TribeSelectScenarioScreen::activatePanels() {
@@ -320,8 +349,7 @@ void TribeSelectScenarioScreen::activatePanels() {
 
     this->set_tab_order(tabList, 3);
 
-    TPanelState* state = this->field_3C;
-    if (state == 0 || state->child == 0) {
+    if (this->curr_child == 0 || this->curr_child->active == 0) {
         this->set_curr_child(this->okButton);
     }
 }
