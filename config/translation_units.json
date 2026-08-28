@@ -4287,21 +4287,14 @@
     },
     {
       "name": "rmm_tdbc",
-      "source": "src/rmm_tdbc_tu.cpp",
+      "source": "src/rmm_tdbc.cpp",
+      "module": "rmm_tdbc",
       "flags": "config/flags/00487710_init.rsp",
       "owners": {
-        "004876C0": "src/matching/004876C0_TRIBE_RMM_Database_Controller.cpp",
-        "00487710": "src/matching/00487710_init.cpp",
-        "00488700": "src/matching/00488700_add_elevation_module.cpp",
-        "004887A0": "src/matching/004887A0_add_shallows_module.cpp",
-        "00488870": "src/matching/00488870_generate.cpp"
+        "004876C0": "src/rmm_tdbc.cpp"
       },
       "symbols": {
-        "004876C0": "??0TRIBE_RMM_Database_Controller@@QAE@PAD000@Z",
-        "00487710": "?init@TRIBE_RMM_Database_Controller@@UAEEPAVRGE_Map@@PAVRGE_Game_World@@EJE@Z",
-        "00488700": "?add_elevation_module@TRIBE_RMM_Database_Controller@@MAEXXZ",
-        "004887A0": "?add_shallows_module@TRIBE_RMM_Database_Controller@@IAEXXZ",
-        "00488870": "?generate@TRIBE_RMM_Database_Controller@@UAEEXZ"
+        "004876C0": "??0TRIBE_RMM_Database_Controller@@QAE@PAD000@Z"
       }
     },
     {
