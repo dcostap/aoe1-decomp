@@ -12,13 +12,13 @@ fixed typed header.
 
 ## Current direct result
 
-`build/tcommand_complete_audit/result_submission_final/report.json`
-checks all 42 normal owners. It reports 22 exact owners. Every registered owner
-reports `MATCH` and `0.0000%`.
+`build/audits/integration_tcommand_submission/report.json` checks all 42 normal
+owners. It reports 23 exact owners. Every registered owner reports `MATCH` and
+`0.0000%`.
 
 The exact owners are:
 
-- `00509720`, `00509770`, `00509910`, `0050A010`, and `0050A140`;
+- `00509720`, `00509770`, `00509910`, `00509C60`, `0050A010`, and `0050A140`;
 - `0050A510`, `0050A730`, `0050A7B0`, `0050A7F0`, `0050A860`, `0050A8D0`,
   and `0050A940`;
 - `0050AD00`, `0050ADF0`, `0050AE40`, `0050AEE0`, `0050AF30`, `0050AF80`,
@@ -29,7 +29,7 @@ The exact owners are:
 
 Natural packet records change these owners. They stay `scratch`:
 
-- `00509980`, `00509AF0`, `00509C60`, `00509E10`, `0050A1D0`, and `0050A490`;
+- `00509980`, `00509AF0`, `00509E10`, `0050A1D0`, and `0050A490`;
   and
 - `0050A9B0`, `0050AB30`, `0050AC70`, `0050B020`, `0050B190`, `0050B230`,
   `0050B290`, and `0050B330`; and
@@ -52,9 +52,9 @@ privately.
 `00509C60` and `00509E10` use `TRIBE_Master_Building_Object`. The source gets
 that type from `tm_b_obj.h`.
 
-The explicit `00509C60` comparison in the release report is a 43-byte
-mismatch. It remains scratch. An older isolated exact source used copied
-provider types. It is not valid canonical evidence.
+The integrated report compares `00509C60` with the explicit PDB symbol. It
+reports `MATCH`, `0.0000%`, correct ownership, and no relocation or boundary
+error.
 
 `00509980` and `00509AF0` install actions through `set_only_action`. That
 virtual slot is `+0x208`. `RGE_Action_List` owns `add_action`.
