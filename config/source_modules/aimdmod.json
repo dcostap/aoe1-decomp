@@ -5,7 +5,7 @@
   "source": "src/aimdmod.cpp",
   "header": "include/aimdmod.h",
   "functions": {
-    "0040CDF0": { "status": "verified_logic", "note_path": "recovery_notes/aimdmod_module.md" },
+    "0040CDF0": { "status": "matching", "note_path": "recovery_notes/aimdmod_module.md" },
     "0040CE90": { "status": "scratch", "note_path": "recovery_notes/aimdmod_module.md" },
     "0040D020": { "status": "matching", "note_path": "recovery_notes/aimdmod_module.md" },
     "0040D090": { "status": "matching", "note_path": "recovery_notes/aimdmod_module.md" },

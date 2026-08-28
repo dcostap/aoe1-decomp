@@ -34,21 +34,19 @@
   context-selection macros, or fallback declaration blocks.
 - The module keeps the existing grouped `/GX` flags. Per-function records mix
   default flags and `/GX` overlays, so the repository flag audit reports that
-  one module flag set is not proved. The grouped compile is the current module
-  evidence and remains exact for the 19 registered owners.
+  one module flag set is not proved.
 
 ## Recovery state
 
-The source module keeps nine `matching` owners, ten `scratch` owners, and the
-approved `verified_logic` owner `0040CDF0`. The verified-logic constructor
-retains its ledger at `logic_reviews/0040CDF0_MainDecisionAIModule.md`. Its
-FS-first exception-frame difference is not an exact result.
+The natural source module keeps ten `matching` owners and ten `scratch`
+owners. The current grouped compile emits exact code for `0040CDF0`. Its old
+verified-logic ledger remains useful historical evidence.
 
 The former `src/aimdmod_tu.cpp` wrapper and source-bank owner fragments were
 replaced by the one source module. The former context header was renamed to the
 module-owned `include/aimdmod.h` header and its context guard was removed.
 
-## Migration validation
+## Historical migration validation
 
 The pre-migration wrapper recorded exact grouped results for the 19 matching
 owners and an observed mismatch for the verified-logic constructor. The final
@@ -67,8 +65,7 @@ source-module grouped results are recorded below after the focused audit:
   one constructor from the complete TU because both overloaded constructors
   are defined; the grouped audit selected its exact decorated symbol.
 
-Temporary grouped regressions do not change the metadata status. Re-run exact
-checks from the final source tree before any status promotion.
+These results predate the natural `ManagedArray` and canonical-owner repair.
 
 The repository-wide strict source-module inventory was also attempted. It is
 blocked by pre-existing duplicate compiler ownership in `taiuaimd.cpp` and
@@ -87,6 +84,6 @@ capacity expansion, or parameter type alias.
 
 This natural source change demoted `0040CE90`, `0040D0A0`, `0040D2D0`,
 `0040D480`, `0040D580`, `0040D660`, `0040D780`, `0040D9D0`, `0040DB50`, and
-`0040DC30` to scratch. The direct candidate keeps the other nine registered
-rows at `MATCH`, `0.0000%`. It has no comparison, ownership, relocation, or
-boundary error for a registered row.
+`0040DC30` to scratch. The current grouped audit compiled all 20 normal rows.
+It reports `MATCH`, `0.0000%` for the other ten rows, including `0040CDF0`.
+Each registered row has the correct owner, symbol, boundary, and relocations.

@@ -5261,6 +5261,7 @@
       "module": "aimdmod",
       "flags": "config/flags/group_009_gx.rsp",
       "owners": {
+        "0040CDF0": "src/aimdmod.cpp",
         "0040D020": "src/aimdmod.cpp",
         "0040D090": "src/aimdmod.cpp",
         "0040D180": "src/aimdmod.cpp",
@@ -5272,6 +5273,7 @@
         "0040DB40": "src/aimdmod.cpp"
       },
       "symbols": {
+        "0040CDF0": "??0MainDecisionAIModule@@QAE@PAXHPAVRGE_Player@@@Z",
         "0040D760": "?object@MainDecisionAIModule@@QAEPAVRGE_Static_Object@@H@Z",
         "0040D2C0": "?numberObjects@MainDecisionAIModule@@QAEHXZ",
         "0040DB40": "?canPerformAction@MainDecisionAIModule@@UAEHHH@Z",
