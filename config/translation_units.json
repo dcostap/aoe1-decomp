@@ -6627,15 +6627,16 @@
       }
     },
     {
-      "name": "dlg_msg_cpp",
-      "source": "src/dlg_msg_tu.cpp",
+      "name": "dlg_msg",
+      "source": "src/dlg_msg.cpp",
+      "module": "dlg_msg",
       "flags": "config/flags/0043FCD0_TMessageDialog.rsp",
       "owners": {
-        "0043FCD0": "src/matching/0043FCD0_TMessageDialog.cpp",
-        "0043FFF0": "src/matching/0043FFF0_setup.cpp",
-        "00440070": "src/matching/00440070_action.cpp",
-        "00440100": "src/matching/00440100_key_down_action.cpp",
-        "00440110": "src/matching/00440110_handle_idle.cpp"
+        "0043FCD0": "src/dlg_msg.cpp",
+        "0043FFF0": "src/dlg_msg.cpp",
+        "00440070": "src/dlg_msg.cpp",
+        "00440100": "src/dlg_msg.cpp",
+        "00440110": "src/dlg_msg.cpp"
       },
       "symbols": {
         "0043FCD0": "??1TMessageDialog@@UAE@XZ",
