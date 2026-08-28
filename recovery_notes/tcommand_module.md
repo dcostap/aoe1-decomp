@@ -12,7 +12,7 @@ fixed typed header.
 
 ## Current direct result
 
-`build/tcommand_complete_audit/result_natural_records_final/report.json`
+`build/tcommand_complete_audit/result_release_final/report.json`
 checks all 42 normal owners. It reports 22 exact owners. Every registered owner
 reports `MATCH` and `0.0000%`.
 
@@ -35,11 +35,10 @@ Natural packet records change these owners. They stay `scratch`:
   `0050B290`, and `0050B330`; and
 - `0050AA90`.
 
-The five reviewed accepted-drift owners remain `accepted_drift`:
-`0050A4C0`, `0050A6A0`, `0050A6E0`, `0050AD70`, and `0050AE80`.
-
-`0050AA90` is scratch. The grouped report has a boundary escape. No reviewed
-equivalence proof supports accepted drift.
+The module has no accepted-drift owner. `0050A4C0`, `0050A6A0`, `0050A6E0`,
+`0050AA90`, `0050AD70`, and `0050AE80` are scratch. No durable localized
+equivalence proof supports accepted drift. The grouped report has boundary
+escapes for `0050AA90`, `0050AD70`, and `0050AE80`.
 
 `0050A1D0` calls `RGE_Effects::do_effect(short, RGE_Player*)`. Original code
 calls the Effects vslot at `+0x08`. Do not add `show_effect`.
@@ -52,6 +51,10 @@ privately.
 
 `00509C60` and `00509E10` use `TRIBE_Master_Building_Object`. The source gets
 that type from `tm_b_obj.h`.
+
+The explicit `00509C60` comparison in the release report is a 43-byte
+mismatch. It remains scratch. An older isolated exact source used copied
+provider types. It is not valid canonical evidence.
 
 `00509980` and `00509AF0` install actions through `set_only_action`. That
 virtual slot is `+0x208`. `RGE_Action_List` owns `add_action`.

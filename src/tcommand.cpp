@@ -505,7 +505,6 @@ void TRIBE_Command::do_command_cancel_build(TRIBE_Command_Cancel_Build* cmd)
 }
 
 // PDB order: lines 688-703.
-// ACCEPTED_DRIFT: natural shared-closure reconstruction.
 void TRIBE_Command::do_command_attack_ground(TRIBE_Command_Attack_Ground* packet)
 {
     RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
@@ -562,7 +561,6 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
 }
 
 // PDB order: lines 776-789.
-// ACCEPTED_DRIFT: natural shared-closure reconstruction.
 void TRIBE_Command::do_command_trade_attribute(TRIBE_Command_Trade_Attribute* packet)
 {
     int count = packet->unit_num;
@@ -580,7 +578,6 @@ void TRIBE_Command::do_command_trade_attribute(TRIBE_Command_Trade_Attribute* pa
 }
 
 // PDB order: lines 795-815.
-// ACCEPTED_DRIFT: natural shared-closure reconstruction.
 void TRIBE_Command::do_command_repair(TRIBE_Command_Repair* packet)
 {
     int target_id = packet->target.id;
@@ -913,7 +910,6 @@ void TRIBE_Command::command_allied_victory(short player_id, unsigned char flag)
 }
 
 // PDB order: lines 1256-1281.
-// ACCEPTED_DRIFT: natural shared-closure reconstruction.
 void TRIBE_Command::command_relation(short player_id, short target_player_id, short relation)
 {
     TRIBE_Command_Game* cmd = static_cast<TRIBE_Command_Game*>(
@@ -963,7 +959,6 @@ void TRIBE_Command::command_save_game()
 }
 
 // PDB order: lines 1340-1363.
-// ACCEPTED_DRIFT: natural shared-closure reconstruction.
 void TRIBE_Command::command_inventory(short player_id, short inventory_id, float amount)
 {
     TRIBE_Command_Game* cmd = static_cast<TRIBE_Command_Game*>(

@@ -35,16 +35,16 @@
       "note_path": "recovery_notes/tcommand_module.md"
     },
     "0050A4C0": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/tcommand_module.md"
     },
     "0050A510": { "status": "matching" },
     "0050A6A0": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/tcommand_module.md"
     },
     "0050A6E0": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/tcommand_module.md"
     },
     "0050A730": { "status": "matching" },
@@ -71,13 +71,13 @@
     },
     "0050AD00": { "status": "matching" },
     "0050AD70": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/tcommand_module.md"
     },
     "0050ADF0": { "status": "matching" },
     "0050AE40": { "status": "matching" },
     "0050AE80": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/tcommand_module.md"
     },
     "0050AEE0": { "status": "matching" },
