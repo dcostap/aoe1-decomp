@@ -13,17 +13,14 @@ public:
     short attribute[3];
     short attribute_cost[3];
     unsigned char attribute_used[3];
-    unsigned char _pad_1d;
     short research;
     short effect;
     short track;
     short icon;
     unsigned char button_location;
-    unsigned char _pad_27;
     short build_obj_id;
     short string_id;
     short string_id2;
-    unsigned char _pad_2e[2];
     long help_string_id;
     long help_page_id;
     long hotkey_id;
@@ -36,7 +33,6 @@ class Tech_Player_Tree {
 public:
     float research_done;
     short state;
-    unsigned char _pad_end[2];
 };
 
 typedef char tech_player_tree_size_check[
