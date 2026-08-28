@@ -42,3 +42,11 @@ The old prefix and phase wrappers are migration scaffolds and must not be
 restored. The unified source uses typed fields, canonical globals, named string
 data, standard CRT declarations, and structured control flow. It has no
 absolute address expressions or C-style casts.
+
+## Communications access
+
+The PDB marks `TCommunications_Handler::WasKicked` private. It does not record
+friend declarations. Exact bytes for `00531350 send_zone_score_info` prove that
+`TRIBE_World` reads this field directly. `TCommunications_Handler` therefore
+declares `TRIBE_World` as a friend and keeps `WasKicked` private. No getter or
+raw access shim is present.

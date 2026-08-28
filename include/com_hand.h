@@ -35,6 +35,7 @@ struct RGE_Prog_Info;
 class TCommunications_Sessions;
 class TribeMPCreateDialog;
 class TRIBE_Screen_Game;
+class TRIBE_World;
 
 class NAME {
 public:
@@ -181,6 +182,7 @@ typedef char comm_hand_options_size_check[
     (sizeof(COMMPLAYEROPTIONS) == 0x1D0) ? 1 : -1];
 
 class TCommunications_Handler {
+    friend class TRIBE_World;
     friend class TCommunications_Sessions;
     friend class TribeMPCreateDialog;
     friend class TRIBE_Screen_Game;
@@ -358,7 +360,6 @@ protected:
     long SendPlayerName();
     void LogRXMsg(unsigned int param_1, unsigned int param_2, unsigned long param_3, unsigned char param_4, unsigned char param_5);
 public:
-    int GetWasKicked(unsigned int player);
     unsigned long GetCurrentTurn();
     unsigned long GetRXPacketSize();
     unsigned long GetTXPacketSize();
