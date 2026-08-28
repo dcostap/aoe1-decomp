@@ -460,14 +460,15 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1,
     short* types[3] = { &t1, &t2, &t3 };
     short* amounts[3] = { &a1, &a2, &a3 };
     RGE_Master_Static_Object* master = this->master_objects[(unsigned short)obj];
+    TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(master);
     t1 = t2 = t3 = -1;
     a1 = a2 = a3 = 0;
     if (nameOut != 0) *nameOut = master == 0 ? 0 : master->name;
     if (master == 0 || master->master_type < 0x46) return;
     for (int i = 0; i < 3; ++i) {
-        *types[i] = master->attribute_type_held[i];
+        *types[i] = combat->build_inventory[i].type;
         if (*types[i] >= 0)
-            *amounts[i] = (short)(master->attribute_amount_held[i] * factor);
+            *amounts[i] = (short)(combat->build_inventory[i].amount * factor);
     }
 }
 
@@ -900,15 +901,16 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* out, float facto
                                              int skip_farm)
 {
     RGE_Master_Static_Object* object = this->master_objects[(unsigned short)obj_id];
+    TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
     if (out != 0) *out = -1;
     if (object == 0 || object->master_type < 0x46) return 0;
     float population = this->attributes[3];
     bool population_available = this->attributes[29] >= 1.0f;
     if (!population_available) population = 0.0f;
     for (int i = 0; i < 3; ++i) {
-        int type = object->attribute_type_held[i];
+        int type = combat->build_inventory[i].type;
         if (type < 0) continue;
-        float amount = object->attribute_amount_held[i] * factor;
+        float amount = combat->build_inventory[i].amount * factor;
         if (type == 4 && skip_farm == 0 &&
             this->attributes[11] >= this->attributes[32]) {
             if (out != 0) *out = 0x20;
@@ -923,7 +925,7 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* out, float facto
         }
         if (this->attributes[type] < amount &&
             (type != 4 || skip_farm == 0)) {
-            if (object->attribute_flag[i] == 0 ||
+            if (combat->build_inventory[i].flag == 0 ||
                 population + this->attributes[type] < amount) {
                 if (out != 0) *out = (short)type;
                 return 0;
@@ -938,12 +940,13 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* out, float facto
 unsigned char TRIBE_Player::pay_obj_cost(short obj_id, float factor, int skip_farm)
 {
     RGE_Master_Static_Object* object = this->master_objects[(unsigned short)obj_id];
+    TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
     if (!check_obj_cost(obj_id, 0, factor, skip_farm) || object == 0) return 0;
     for (int i = 0; i < 3; ++i) {
-        int type = object->attribute_type_held[i];
-        if (type >= 0 && object->attribute_flag[i] != 0 &&
+        int type = combat->build_inventory[i].type;
+        if (type >= 0 && combat->build_inventory[i].flag != 0 &&
             (skip_farm == 0 || type != 4)) {
-            float amount = object->attribute_amount_held[i] * factor;
+            float amount = combat->build_inventory[i].amount * factor;
             if (amount > this->attributes[type]) {
                 this->attributes[3] -= amount - this->attributes[type];
                 this->attributes[type] = 0.0f;
@@ -959,10 +962,11 @@ unsigned char TRIBE_Player::pay_obj_cost(short obj_id, float factor, int skip_fa
 void TRIBE_Player::reimburse_obj_cost(short obj_idx)
 {
     RGE_Master_Static_Object* object = this->master_objects[(unsigned short)obj_idx];
+    TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
     if (object == 0 || object->master_type < 0x46) return;
     for (int i = 0; i < 3; ++i) {
-        int type = object->attribute_type_held[i];
-        if (type >= 0 && object->attribute_flag[i] != 0)
+        int type = combat->build_inventory[i].type;
+        if (type >= 0 && combat->build_inventory[i].flag != 0)
             this->attributes[type] += object->attribute_amount_held[i];
     }
 }
