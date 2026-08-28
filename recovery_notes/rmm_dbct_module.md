@@ -1,80 +1,49 @@
 # rmm_dbct.cpp source module
 
-The natural source is `src/rmm_dbct.cpp`. It owns all 12 PDB owners in source
-order. It includes canonical world.h, map.h, obj_list.h, and rmm_base.h.
+`src/rmm_dbct.cpp` owns all twelve PDB functions in source order.
+`include/rmm_dbct.h` owns the controller and database records.
 
-The direct candidate validates eight exact owners. Each reports `MATCH` with
-`0.0000%` difference. They are `00483020`, `00483200`, `004832E0`,
-`00483430`, `00483540`, `004835A0`, `00484160`, and `00484320`.
+The source uses canonical Map, Land, Terrain, Object, Elevation, World, and
+base-module headers. It has no local context header, wrapper, copied class,
+raw byte cursor, integer cursor, or alias union.
 
-`00482B70`, `00483600`, and `00483A20` remain scratch. Their current direct
-differences are 790, 544, and 1554 bytes. The first and third have two
-boundary escapes. `00484470` remains accepted drift with a 15-byte difference.
+## Current validation
 
-## Scratch history
+The grouped source compile succeeds with
+`config/flags/00483020_RGE_RMM_Database_Controller.rsp`.
 
-`00482B70` keeps the typed map-record reconstruction. It has 28 ordered calls
-and a `0x34` frame. The unresolved basin is EBX and ESI register coloring.
+These direct owners report `MATCH` and `0.0000%`:
 
-`00483600` keeps the typed retry loop. It has the target size, `0x30` frame,
-and 16 ordered calls. The unresolved basin is saved-register and local-home
-placement.
+- `00483020` constructor from file
+- `00483200` destructor
+- `004832E0` save
+- `00483430` generate
+- `00483540` init
+- `004835A0` de_init
 
-`00483A20` keeps typed land records and cursor-based team grouping. It has a
-`0x190` frame and three ordered calls. The target uses a different saved-this
-home and local-array topology.
+`00482B70`, `00483600`, and `00483A20` remain scratch. Their direct source
+uses typed records and explicit field access.
 
-`00484470` stays accepted drift. The complete module context now differs by
-15 bytes. Do not restore its earlier isolated exact claim.
+`00484160` remains scratch. Its direct record-load order changes fault order.
 
-The source has no local RGE_Map, RGE_Game_World, RGE_Object_List, fake vtable,
-assembly, or function-fragment include.
+`00484320` remains scratch. A typed `RGE_Land_Point_Info_Line` cursor has a
+10-byte register and address difference. The old exact form used a forbidden
+pointer to the `y` field.
 
-## Evidence
+`00484470` remains accepted drift. It uses typed elevation and land records.
 
-- `inventory/functions/0048/00482B70_RGE_RMM_Database_Controller.txt`
-- `inventory/functions/0048/00483020_RGE_RMM_Database_Controller.txt`
-- `inventory/functions/0048/00484470_add_elevation_module.txt`
-- `inventory/types/dumps/RGE_RMM_Database_Controller.txt`
+## Header evidence
 
-## Owner header
+The controller size is `0x4F5C`. Its `world`, `map_type`, and player count are
+at `+0x30`, `+0x34`, and `+0x38`. Database records use their measured widths.
 
-`include/rmm_dbct.h` now owns the complete controller and its database record
-types. It includes only canonical `rmm_base.h`; Map, World, ObjectList, Tile,
-Stack, and vtable declarations remain in their owning headers. Record padding
-uses natural alignment, and the controller has one `RGE_Map_Data map_info`
-member.
+The direct header includes the canonical Land, Terrain, Object, and Elevation
+record owners. It does not copy their declarations.
 
-The amended VC5 layout probe compiled with `config/flags/default.rsp` and
-reported:
+## Reopen conditions
 
-| item | value |
-| --- | --- |
-| `sizeof(RGE_RMM_Database_Controller)` | `0x4F5C` |
-| `world` | `+0x30` |
-| `map_type` | `+0x34` |
-| `number_of_players` | `+0x38` |
-| `land_info` | `+0x3C` |
-| `terrain_info` | `+0x1474` |
-| `object_info` | `+0x270C` |
-| `elevation_info` | `+0x3FD4` |
-| `map_info` | `+0x4F54` |
+Reopen `00484320` only with a natural typed source form that retains the
+typed record cursor and removes its final ten-byte difference.
 
-The probe also confirmed the `0x2C` land entry, `0x48` map entry,
-`0x1438` land info, `0x1298` terrain info, `0x18C8` object info, and
-`0xF80` elevation info sizes.
-
-## Blocker addendum
-
-Policy review blocks publication of commit `a4c813a80`. This commit is held
-and is not publishable.
-
-- The legacy `include/rmm_dbct_context.h` remains in the repository.
-- `00482B70` and `00483A20` retain raw byte, integer, and interior-field
-  cursors in the natural reconstruction.
-- `00484320` retains an interior-field cursor despite its exact binary result.
-- `save` retains aliases for the controller and map-data objects.
-
-These findings are policy blockers. They do not change the recorded byte
-results. Do not publish this commit until the blockers receive review and the
-source and header ownership rules are satisfied.
+Reopen `00484160` only with evidence that proves its full-width load order and
+fault behavior.

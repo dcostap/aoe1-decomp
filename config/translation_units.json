@@ -4807,17 +4807,16 @@
     },
     {
       "name": "rmm_dbct",
-      "source": "src/rmm_dbct_tu.cpp",
+      "source": "src/rmm_dbct.cpp",
+      "module": "rmm_dbct",
       "flags": "config/flags/00483020_RGE_RMM_Database_Controller.rsp",
       "owners": {
-        "00483020": "src/matching/00483020_RGE_RMM_Database_Controller.cpp",
-        "00483200": "src/matching/00483200_RGE_RMM_Database_Controller.cpp",
-        "004832E0": "src/matching/004832E0_save.cpp",
-        "00483430": "src/matching/00483430_generate.cpp",
-        "00483540": "src/matching/00483540_init.cpp",
-        "004835A0": "src/matching/004835A0_de_init.cpp",
-        "00484160": "src/matching/00484160_add_terrain_module.cpp",
-        "00484320": "src/matching/00484320_add_object_module.cpp"
+        "00483020": "src/rmm_dbct.cpp",
+        "00483200": "src/rmm_dbct.cpp",
+        "004832E0": "src/rmm_dbct.cpp",
+        "00483430": "src/rmm_dbct.cpp",
+        "00483540": "src/rmm_dbct.cpp",
+        "004835A0": "src/rmm_dbct.cpp"
       },
       "symbols": {
         "00483020": "??0RGE_RMM_Database_Controller@@QAE@H@Z",
@@ -4825,9 +4824,7 @@
         "004832E0": "?save@RGE_RMM_Database_Controller@@QAEEH@Z",
         "00483430": "?generate@RGE_RMM_Database_Controller@@UAEEXZ",
         "00483540": "?init@RGE_RMM_Database_Controller@@UAEEPAVRGE_Map@@PAVRGE_Game_World@@EJE@Z",
-        "004835A0": "?de_init@RGE_RMM_Database_Controller@@UAEEXZ",
-        "00484160": "?add_terrain_module@RGE_RMM_Database_Controller@@MAEXXZ",
-        "00484320": "?add_object_module@RGE_RMM_Database_Controller@@MAEXXZ"
+        "004835A0": "?de_init@RGE_RMM_Database_Controller@@UAEEXZ"
       }
     },
     {

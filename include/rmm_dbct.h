@@ -3,11 +3,15 @@
 
 // Compiler-facing declarations for the complete
 // C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp source module.
-// The random-map base and its ABI come from the canonical base owner.
+// The random-map base and generated-info records stay with their canonical
+// owners. This controller owns only its database records and controller ABI.
 #include "rmm_base.h"
+#include "rmm_land.h"
+#include "rmm_terrain_info.h"
+#include "rmm_obj.h"
+#include "rmm_elev.h"
 
 class RGE_Game_World;
-class RGE_Player;
 
 struct RGE_Land_Data_Entry {
     long land_id;
@@ -126,144 +130,6 @@ struct RGE_Map_Data {
 
 typedef char rmm_dbct_map_data_size_check[
     (sizeof(RGE_Map_Data) == 0x08) ? 1 : -1];
-
-struct RGE_Terrain_Info_Line {
-    long terrain_size;
-    long terrain_generated;
-    long terrain_type;
-    long clumps;
-    long spacing;
-    long base_terrain_type;
-    long clumpiness_factor;
-    long avoid_hot_spots;
-};
-
-typedef char rmm_dbct_terrain_info_line_size_check[
-    (sizeof(RGE_Terrain_Info_Line) == 0x20) ? 1 : -1];
-
-struct RGE_Terrain_Hot_Spots {
-    long x;
-    long y;
-    long radius;
-    long fade;
-};
-
-typedef char rmm_dbct_terrain_hot_spot_size_check[
-    (sizeof(RGE_Terrain_Hot_Spots) == 0x10) ? 1 : -1];
-
-struct RGE_Terrain_Info {
-    RGE_Terrain_Info_Line terrain[99];
-    long terrain_num;
-    RGE_Terrain_Hot_Spots hot_spots[99];
-    long hot_spot_num;
-};
-
-typedef char rmm_dbct_terrain_info_size_check[
-    (sizeof(RGE_Terrain_Info) == 0x1298) ? 1 : -1];
-
-struct RGE_Object_Info_Line {
-    long obj_id;
-    long terrain;
-    uchar group_flag;
-    uchar scale_flag;
-    long object_number_per_group;
-    long object_number_varience;
-    long number_of_groups;
-    long group_area;
-    long player_id;
-    long land_id;
-    long land_inner_radius;
-    long land_outer_radius;
-    long object_exclusion_zone;
-};
-
-typedef char rmm_dbct_object_info_line_size_check[
-    (sizeof(RGE_Object_Info_Line) == 0x30) ? 1 : -1];
-
-struct RGE_Land_Point_Info_Line {
-    long x;
-    long y;
-    long id;
-    long player_id;
-};
-
-typedef char rmm_dbct_land_point_size_check[
-    (sizeof(RGE_Land_Point_Info_Line) == 0x10) ? 1 : -1];
-
-struct RGE_Object_Info {
-    RGE_Object_Info_Line objects[99];
-    long object_num;
-    RGE_Land_Point_Info_Line lands[99];
-    long land_num;
-};
-
-typedef char rmm_dbct_object_info_size_check[
-    (sizeof(RGE_Object_Info) == 0x18C8) ? 1 : -1];
-
-struct RGE_Land_Info_Line {
-    long land_size;
-    long terrain_type;
-    long x;
-    long y;
-    long base_size;
-    long area;
-    uchar zone;
-    long clumpiness_factor;
-    long wall_1_avoidance_line;
-    long wall_2_avoidance_line;
-    long wall_3_avoidance_line;
-    long wall_4_avoidance_line;
-    uchar wall_fade;
-};
-
-typedef char rmm_dbct_land_info_line_size_check[
-    (sizeof(RGE_Land_Info_Line) == 0x34) ? 1 : -1];
-
-struct RGE_Land_Info {
-    RGE_Land_Info_Line land[99];
-    long land_num;
-    uchar base_terrain;
-    long wall_1_avoidance_line;
-    long wall_2_avoidance_line;
-    long wall_3_avoidance_line;
-    long wall_4_avoidance_line;
-    uchar wall_fade;
-};
-
-typedef char rmm_dbct_land_info_size_check[
-    (sizeof(RGE_Land_Info) == 0x1438) ? 1 : -1];
-
-struct RGE_Elevation_Info_Line {
-    long elevation_size;
-    long elevation;
-    long clumps;
-    long spacing;
-    long base_elevation;
-    long base_terrain_type;
-};
-
-typedef char rmm_dbct_elevation_info_line_size_check[
-    (sizeof(RGE_Elevation_Info_Line) == 0x18) ? 1 : -1];
-
-struct RGE_Elevation_Hot_Spots {
-    long x;
-    long y;
-    long radius;
-    long fade;
-};
-
-typedef char rmm_dbct_elevation_hot_spot_size_check[
-    (sizeof(RGE_Elevation_Hot_Spots) == 0x10) ? 1 : -1];
-
-struct RGE_Elevation_Info {
-    RGE_Elevation_Info_Line elevation[99];
-    long elevation_num;
-    RGE_Elevation_Hot_Spots hot_spots[99];
-    long hot_spot_num;
-};
-
-typedef char rmm_dbct_elevation_info_size_check[
-    (sizeof(RGE_Elevation_Info) == 0xF80) ? 1 : -1];
 
 class RGE_RMM_Database_Controller : public RGE_Random_Map_Module {
 public:
