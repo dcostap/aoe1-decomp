@@ -19,6 +19,30 @@ The constructor proves `title` at `+0x478`, `button[0..3]` at
 open-screen construction, campaign-screen construction, main-menu
 construction, and panel transitions.
 
+## Missing canonical declarations
+
+The action has two missing canonical provider declarations:
+
+- `TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()` with
+  `??0TRIBE_Campaign_Editor_Screen@@QAE@XZ`. The provider needs the real
+  `TScreenPanel` base and complete `0x4C4` object size.
+- `TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()` with
+  `??0TRIBE_Screen_Main_Menu@@QAE@XZ`. The provider needs the real
+  `TScreenPanel` base and complete `0x4B0` object size.
+
+The complete open-screen declaration is available from `include/scr_sedo.h`.
+Do not replace the two missing providers with a size-only class in `include`
+or `src`.
+
+The five matching symbols are:
+
+- `??0TRIBE_Screen_Sed_Menu@@QAE@XZ`;
+- `??1TRIBE_Screen_Sed_Menu@@UAE@XZ`;
+- `?handle_idle@TRIBE_Screen_Sed_Menu@@MAEJXZ`;
+- `?action@TRIBE_Screen_Sed_Menu@@MAEJPAVTPanel@@JKK@Z`;
+- `??_ETRIBE_Screen_Sed_Menu@@UAEPAXI@Z` (generated scalar deleting
+  destructor; the compared fallback is `??_GTRIBE_Screen_Sed_Menu@@UAEPAXI@Z`).
+
 ## Temporary recovery
 
 `build/scr_sedm_natural.cpp` is a build-only complete source study. It uses
