@@ -1,7 +1,7 @@
 # 004324F0 `TCommunications_Sessions::Refresh`
 
 - PDB source: `com_sess.cpp`, lines 161 to 186.
-- Flags: `config/flags/default.rsp`.
+- Flags: `config/flags/com_sess.rsp`.
 - Original size: 103 bytes.
 
 The function clears its session list.

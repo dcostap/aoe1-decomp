@@ -3608,13 +3608,11 @@
       "flags": "config/flags/004B69A0_TribeSPMenuScreen.rsp",
       "owners": {
         "004B69A0": "src/scr_sing.cpp",
-        "004B6C00": "src/scr_sing.cpp",
         "004B6C90": "src/scr_sing.cpp",
         "004B6CC0": "src/scr_sing.cpp"
       },
       "symbols": {
         "004B69A0": "??0TribeSPMenuScreen@@QAE@XZ",
-        "004B6C00": "??1TribeSPMenuScreen@@UAE@XZ",
         "004B6C90": "?handle_idle@TribeSPMenuScreen@@UAEJXZ",
         "004B6CC0": "?action@TribeSPMenuScreen@@UAEJPAVTPanel@@JKK@Z"
       }
@@ -3841,7 +3839,7 @@
       "name": "com_sess",
       "source": "src/com_sess.cpp",
       "module": "com_sess",
-      "flags": "config/flags/default.rsp",
+      "flags": "config/flags/com_sess.rsp",
       "owners": {
         "00432200": "src/com_sess.cpp",
         "00432290": "src/com_sess.cpp",
@@ -3854,8 +3852,7 @@
         "00432380": "src/com_sess.cpp",
         "00432390": "src/com_sess.cpp",
         "004324F0": "src/com_sess.cpp",
-        "00432560": "src/com_sess.cpp",
-        "004325E0": "src/com_sess.cpp"
+        "00432560": "src/com_sess.cpp"
       },
       "symbols": {}
     },

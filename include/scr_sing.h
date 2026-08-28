@@ -2,19 +2,13 @@
 #define AOE1_SCR_SING_H
 
 // PDB source module: C:\\msdev\\work\\age1_x1\\Scr_sing.cpp.
-// TribeSPMenuScreen is the only class owned by this header. Shared panel,
-// screen, game, list, button, and settings surfaces come from their owners.
+// TribeSPMenuScreen is the only class owned by this header. Its screen base
+// comes from the canonical screen owner.
 
 #include "Pnl_scr.h"
-#include "panel.h"
-#include "panel_ez.h"
-#include "basegame.h"
-#include "tribegam.h"
-#include "gameinfo.h"
-#include "pnl_lst.h"
-#include "pnl_btn.h"
-#include "scr_set_screen.h"
-#include "rge_base_game_global.h"
+
+class TTextPanel;
+class TButtonPanel;
 
 class TribeSPMenuScreen : public TScreenPanel {
 public:

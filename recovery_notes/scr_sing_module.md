@@ -6,7 +6,7 @@
 - Source: `src/scr_sing.cpp`.
 - Header: `include/scr_sing.h`.
 - Flags: `config/flags/004B69A0_TribeSPMenuScreen.rsp` (`/GX`).
-- Owners: four normal functions in PDB source order.
+- Owners: four normal functions in PDB source order; three are exact claims.
 - Generated entry: `004B6BE0`, vector-deleting destructor. It has no handwritten source owner.
 
 The source-line bands and address sequence are:
@@ -39,6 +39,10 @@ button creation, labels, hotkey fields, current child, and tab order. The
 action preserves button order, game state updates, people-list cleanup, child
 construction, panel transitions, and fallback dispatch.
 
+The destructor uses a `TPanel*` temporary for each derived member and calls
+`delete_panel` with that temporary. This avoids pointer-address casts. Its
+natural form is `scratch`: the current build reports a 159-byte difference.
+
 ## Validation
 
 Candidate validation:
@@ -53,8 +57,9 @@ Candidate validation:
 | `004B6CC0` | exact | matching | `MATCH` | 0 | 0 | 0 |
 | `004B6BE0` | generated | compiler_generated | `MATCH` | 0 | 0 | 0 |
 
-The direct module has four exact normal owners. The generated destructor also
-matches. All owners have the original boundary, relocations, and direct calls.
+The earlier candidate had four exact normal owners. The generated destructor
+also matched. The typed destructor is now scratch and is excluded from the
+current exact registration.
 
 ## Exact finish
 

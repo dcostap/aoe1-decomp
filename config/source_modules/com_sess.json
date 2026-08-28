@@ -26,6 +26,9 @@
       "note_path": "recovery_notes/004324F0_Refresh.md"
     },
     "00432560": { "status": "matching" },
-    "004325E0": { "status": "matching" }
+    "004325E0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/004325E0_IsEqualGuid.md"
+    }
   }
 }

@@ -1,3 +1,5 @@
+#include <dplay.h>
+#include "../include/com_hand.h"
 #include "../include/com_sess.h"
 #include <string.h>
 
@@ -94,9 +96,10 @@ int TCommunications_Sessions::Refresh() {
     desc.guidApplication = gAppGUID;
     desc.dwSize = sizeof(desc);
 
-    return glpSERV->EnumSessions(&desc, 0,
-                                 (LPDPENUMSESSIONSCALLBACK2)EnumSessionCallback,
-                                 this, 1);
+    return glpSERV->EnumSessions(
+        &desc, 0,
+        reinterpret_cast<LPDPENUMSESSIONSCALLBACK2>(EnumSessionCallback),
+        this, 1);
 }
 
 int __stdcall EnumSessionCallback(DPSESSIONDESC2* desc,
@@ -107,7 +110,7 @@ int __stdcall EnumSessionCallback(DPSESSIONDESC2* desc,
         return 0;
     }
 
-    ((TCommunications_Sessions*)context)->AddSession(
+    static_cast<TCommunications_Sessions*>(context)->AddSession(
         desc->guidInstance,
         desc->guidApplication,
         desc->dwMaxPlayers,
@@ -123,9 +126,16 @@ int __stdcall EnumSessionCallback(DPSESSIONDESC2* desc,
 
 int TCommunications_Sessions::IsEqualGuid(GUID* guid1, GUID* guid2) {
     if (guid1->Data1 == guid2->Data1) {
-        if (*(unsigned long*)&guid1->Data2 == *(unsigned long*)&guid2->Data2) {
-            if (*(unsigned long*)&guid1->Data4[0] == *(unsigned long*)&guid2->Data4[0]) {
-                if (*(unsigned long*)&guid1->Data4[4] == *(unsigned long*)&guid2->Data4[4]) {
+        if (guid1->Data2 == guid2->Data2) {
+            if (guid1->Data3 == guid2->Data3) {
+                if (guid1->Data4[0] == guid2->Data4[0] &&
+                    guid1->Data4[1] == guid2->Data4[1] &&
+                    guid1->Data4[2] == guid2->Data4[2] &&
+                    guid1->Data4[3] == guid2->Data4[3] &&
+                    guid1->Data4[4] == guid2->Data4[4] &&
+                    guid1->Data4[5] == guid2->Data4[5] &&
+                    guid1->Data4[6] == guid2->Data4[6] &&
+                    guid1->Data4[7] == guid2->Data4[7]) {
                     return 1;
                 }
             }

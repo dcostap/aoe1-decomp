@@ -2,30 +2,21 @@
 #define AOE1_SCR_CJ_H
 
 // PDB source module: C:\\msdev\\work\\age1_x1\\scr_cj.cpp.
-// This header owns the join screen and create-game dialog. Shared panel,
-// screen, dialog, control, drawing, BaseGame, registry, and logging surfaces
-// come from their canonical owners.
+// This header owns the join screen and create-game dialog. Shared screen and
+// dialog bases come from their canonical owners.
 #include "pnl_dlg.h"
 #include "Pnl_scr.h"
-#include "panel.h"
-#include "panel_ez.h"
-#include "pnl_btn.h"
-#include "pnl_lst.h"
-#include "Pnl_scbr.h"
-#include "pnl_edit.h"
-#include "basegame.h"
-#include "tribegam.h"
-#include "drawarea.h"
-#include "Shape.h"
-#include "Picture.h"
-#include "registry.h"
-#include "debuglog.h"
-#include "scr_mp.h"
-#include "scr_main.h"
 
 class TCommunications_Handler;
 class TCommunications_Sessions;
 class TribeMPSetupScreen;
+class TTextPanel;
+class TListPanel;
+class TScrollBarPanel;
+class TButtonPanel;
+class TEditPanel;
+class TRegistry;
+class TDebuggingLog;
 
 extern TCommunications_Handler* comm;
 extern TCommunications_Sessions* Sess;

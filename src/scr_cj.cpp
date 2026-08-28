@@ -1,9 +1,23 @@
+#include <dplay.h>
 #include "../include/scr_cj.h"
 #include "../include/com_hand.h"
 #include "../include/com_sess.h"
+#include "../include/scr_mp.h"
 #include "../include/scr_mps.h"
-
-extern const GUID DPSPGUID_TCPIP;
+#include "../include/basegame.h"
+#include "../include/tribegam.h"
+#include "../include/pnl_btn.h"
+#include "../include/pnl_lst.h"
+#include "../include/Pnl_scbr.h"
+#include "../include/pnl_edit.h"
+#include "../include/drawarea.h"
+#include "../include/Shape.h"
+#include "../include/Picture.h"
+#include "../include/registry.h"
+#include "../include/debuglog.h"
+#include "../include/scr_main.h"
+#include <stdio.h>
+#include <string.h>
 
 
 TribeJoinScreen::TribeJoinScreen()

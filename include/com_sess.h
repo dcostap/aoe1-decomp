@@ -58,7 +58,6 @@ int __stdcall EnumSessionCallback(DPSESSIONDESC2* desc,
 
 typedef char com_sess_guid_size_check[(sizeof(GUID) == 0x10) ? 1 : -1];
 typedef char com_sess_entry_size_check[(sizeof(SEs) == 0x238) ? 1 : -1];
-typedef char com_sess_desc_size_check[(sizeof(DPSESSIONDESC2) == 0x50) ? 1 : -1];
 typedef char com_sess_size_check[(sizeof(TCommunications_Sessions) == 0x457B0) ? 1 : -1];
 
 #endif

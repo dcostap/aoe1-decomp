@@ -8,6 +8,11 @@
 #include "../include/scr_name.h"
 #include "../include/scr_load.h"
 #include "../include/scr_main.h"
+#include "../include/basegame.h"
+#include "../include/tribegam.h"
+#include "../include/gameinfo.h"
+#include "../include/pnl_btn.h"
+#include "../include/pnl_lst.h"
 #include <stdlib.h>
 
 // Scr_sing.cpp:55-106.
@@ -68,15 +73,19 @@ TribeSPMenuScreen::TribeSPMenuScreen()
 // Scr_sing.cpp:111-117.
 TribeSPMenuScreen::~TribeSPMenuScreen()
 {
-    delete_panel((TPanel**)&title);
+    TPanel* panel = title;
+    delete_panel(&panel);
+    title = 0;
 
-    TPanel** panel = (TPanel**)&button[0];
     for (int i = 0; i < 7; i++) {
-        delete_panel(panel);
-        panel++;
+        panel = button[i];
+        delete_panel(&panel);
+        button[i] = 0;
     }
 
-    delete_panel((TPanel**)&close_button);
+    panel = close_button;
+    delete_panel(&panel);
+    close_button = 0;
 }
 
 // Scr_sing.cpp:123-128.

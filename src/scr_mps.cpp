@@ -31,21 +31,13 @@
 #include "../include/player.h"
 #include "../include/world.h"
 #include "../include/rge_base_game_global.h"
+#include <stdio.h>
+#include <string.h>
 #include <io.h>
-
-class TribeSelectScenarioScreen;
-class TribeJoinScreen;
 
 extern TChat* chat;
 extern TDebuggingLog* L;
 extern TCommunications_Handler* comm;
-
-extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" char* __cdecl strcat(char*, const char*);
-extern "C" char* __cdecl strcpy(char*, const char*);
-extern "C" unsigned long __cdecl debug_timeGetTime(const char*, int);
-extern "C" void __cdecl debug_srand(char*, int, unsigned long);
-extern "C" int __cdecl debug_rand(char*, int);
 
 // PDB-order owner source: 004A00B0_TribeMPSetupScreen.cpp.
 
@@ -1274,7 +1266,6 @@ void TribeMPSetupScreen::showNetInfo()
         } else {
             this->TEasy_Panel::popupOKDialog(0x238d, 0, 0x1c2, 100);
         }
-        addresses->~RGE_Communications_Addresses();
         delete addresses;
     }
 }

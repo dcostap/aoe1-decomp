@@ -1,7 +1,7 @@
 # 00432200 `TCommunications_Sessions::TCommunications_Sessions`
 
 - PDB source: `com_sess.cpp`, lines 19 to 35.
-- Flags: `config/flags/default.rsp`.
+- Flags: `config/flags/com_sess.rsp`.
 - Original size: 134 bytes.
 
 The constructor copies two 16-byte `GUID` values from the communications handler.
