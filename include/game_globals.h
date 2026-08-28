@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include "game_types.h"
 
-class IDirectPlay4A;
+class IDirectPlay3;
 class ResFileHdr;
 class TDebuggingLog;
 class DriveInformation;
@@ -15,6 +15,42 @@ class TChat;
 class TCommunications_Handler;
 class TRegistry;
 class TSound_Driver;
+
+struct COMM_DEBUG_PING {
+    unsigned char Command;
+    unsigned char Reserved[3];
+    unsigned long Timestamp;
+    unsigned long Turn;
+};
+
+extern unsigned char comm_rate_initialized;
+extern unsigned long comm_last_rate_update;
+extern unsigned long comm_last_rx_bytes;
+extern unsigned long comm_last_tx_bytes;
+extern unsigned long comm_last_dump_time;
+extern unsigned long comm_last_sent_time;
+extern char* comm_receive_message;
+extern unsigned long comm_receive_base;
+extern unsigned long comm_drop_count;
+extern unsigned long comm_resent_bytes;
+extern unsigned long comm_resend_last_time;
+extern unsigned long comm_highest_acknowledged_turn;
+extern int comm_resend_min_delay;
+extern int comm_resend_latency_base;
+extern float comm_resend_rate_limit;
+extern unsigned char comm_messages_initialized;
+extern COMM_DEBUG_PING comm_debug_ping;
+extern COMM_DEBUG_PING comm_ping_packet;
+extern unsigned char guid_format_positions[20];
+extern unsigned short guid_hex_digits[16];
+extern char comm_enum_buffer[0x100];
+extern char comm_info_buffers[0x700];
+extern char g_status_buffer[0x20];
+extern unsigned long comm_ping_sequence_turn;
+extern unsigned char comm_ping_sequence;
+extern char ready_player_buffer[64];
+extern char ready_player_template[64];
+extern char com_hand_source_path[];
 
 // PDB type 0x18A9 names this 25-record table at 00587258.
 struct TRIBE_Cliff_Higher_Check_Record {
@@ -1654,42 +1690,10 @@ extern unsigned int DAT_0062c558;
 extern unsigned int basegame_palette_restore_time;
 // 0062C57C [.data] BaseGame palette restore flag.
 extern unsigned int basegame_palette_restore_pending;
-// 0062C5A8 [.data]
-extern unsigned int DAT_0062c5a8;
-// 0062C5B7 [.data]
-extern unsigned char DAT_0062c5b7;
-// 0062C5B8 [.data]
-extern unsigned char DAT_0062c5b8;
-// 0062C5D0 [.data]
-extern unsigned char DAT_0062c5d0;
-// 0062C5E4 [.data]
-extern unsigned char DAT_0062c5e4;
-// 0062C5E8 [.data]
-extern unsigned int DAT_0062c5e8;
-// 0062C5EC [.data]
-extern IDirectPlay4A* DAT_0062c5ec;
-// 0062CEF0 [.data]
-extern unsigned int DAT_0062cef0;
-// 0062CF04 [.data]
-extern unsigned long DAT_0062cf04;
-// 0062CF10 [.data]
-extern unsigned int DAT_0062cf10;
-// 0062CF14 [.data]
-extern unsigned int DAT_0062cf14;
-// 0062CF18 [.data]
-extern unsigned int DAT_0062cf18;
-// 0062CF1C [.data]
-extern unsigned int DAT_0062cf1c;
-// 0062CF20 [.data]
-extern unsigned int DAT_0062cf20;
-// 0062CF24 [.data]
-extern unsigned int DAT_0062cf24;
-// 0062CF28 [.data]
-extern unsigned int DAT_0062cf28;
-// 0062CF2C [.data]
-extern unsigned char DAT_0062cf2c;
-// 0062CF30 [.data]
-extern unsigned int DAT_0062cf30;
+// Shared DirectPlay interface pointer.
+extern IDirectPlay3* direct_play_interface;
+// Shared DirectPlay player identifier.
+extern unsigned long local_player_dpid;
 // 0062CF68 [.data]
 extern unsigned int DAT_0062cf68;
 // 0062D208 [.data]

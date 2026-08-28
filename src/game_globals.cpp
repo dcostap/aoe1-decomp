@@ -1630,10 +1630,43 @@ unsigned int basegame_palette_restore_time = 0;
 unsigned int basegame_palette_restore_pending = 0;
 // 0062C4FC [.data] shared debug log pointer.
 TDebuggingLog* L = 0;
-// 0062C5EC [.data] shared DirectPlay interface pointer.
-IDirectPlay4A* DAT_0062c5ec = 0;
-// 0062CF04 [.data] local DirectPlay player identifier.
-unsigned long DAT_0062cf04 = 0;
+// Shared DirectPlay identity.
+IDirectPlay3* direct_play_interface = 0;
+unsigned long local_player_dpid = 0;
+unsigned char comm_rate_initialized = 0;
+unsigned long comm_last_rate_update = 0;
+unsigned long comm_last_rx_bytes = 0;
+unsigned long comm_last_tx_bytes = 0;
+unsigned long comm_last_dump_time = 0;
+unsigned long comm_last_sent_time = 0;
+char* comm_receive_message = 0;
+unsigned long comm_receive_base = 0;
+unsigned long comm_drop_count = 0;
+unsigned long comm_resent_bytes = 0;
+unsigned long comm_resend_last_time = 0;
+unsigned long comm_highest_acknowledged_turn = 0;
+int comm_resend_min_delay = 0;
+int comm_resend_latency_base = 0;
+float comm_resend_rate_limit = 0.0f;
+unsigned char comm_messages_initialized = 0;
+COMM_DEBUG_PING comm_debug_ping = {0};
+COMM_DEBUG_PING comm_ping_packet = {0};
+unsigned char guid_format_positions[20] = {
+    3, 2, 1, 0, '-', 5, 4, '-', 7, 6, '-', 8, 9, '-',
+    10, 11, 12, 13, 14, 15
+};
+unsigned short guid_hex_digits[16] = {
+    '0', '1', '2', '3', '4', '5', '6', '7',
+    '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+};
+char comm_enum_buffer[0x100] = {0};
+char comm_info_buffers[0x700] = {0};
+char g_status_buffer[0x20] = {0};
+unsigned long comm_ping_sequence_turn = 0;
+unsigned char comm_ping_sequence = 1;
+char ready_player_buffer[64] = {0};
+char ready_player_template[64] = "Ready=                         ";
+char com_hand_source_path[] = "C:\\msdev\\work\\age1_x1\\Com_hand.cpp";
 // 0088C000 [THIS_DAT]
 unsigned int DAT_0088c000 = 0x00000000u;
 // 0088C004 [THIS_DAT]

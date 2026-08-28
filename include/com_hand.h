@@ -2,31 +2,154 @@
 #define AOE1_COM_HAND_H
 
 #include <windows.h>
-#include <stddef.h>
 #include "com_types.h"
 
-// Declarations recovered from the Com_hand.cpp PDB.
-// TCommunications_Handler has no base class or virtual source members.
-// Its PDB UDT size is 0x1774.  The method order below follows the UDT order.
-// The PDB changes access from public to protected at TXPing.
+typedef unsigned int uint;
+typedef unsigned long ulong;
+typedef unsigned char uchar;
+struct IDirectPlay2;
+struct IDirectPlay3;
+struct _GUID;
+#ifndef __DPLAY_INCLUDED__
+struct DPSESSIONDESC2;
+struct DPNAME;
+#endif
+
+// Canonical Com_hand.cpp context for six grouped owners.
+// Evidence: exact 00425A40, 00426350, and 00426530, plus behavior-reviewed
+// 004261E0, 00426650, and 00426FC0. The constructor anchor uses Com_hand.cpp
+// lines 268-332 with /GX.
+// The original FPO/PDB symbol proves protected CommOut(unsigned long,
+// unsigned char, void*, int, unsigned char):
+// ?CommOut@TCommunications_Handler@@IAEJKEPAXHE@Z.
+// The field offsets follow the executable and the exact constructor source.
 
 class TChat;
 class TCommunications_Handler;
 class RGE_Communications_Queue;
 class RGE_Comm_Error;
+class RGE_Base_Game;
 class RGE_Lobby;
-class RGE_TimeSinceLastCall;
 class RGE_Communications_Speed;
 class RGE_Communications_Synchronize;
 class RGE_Communications_Addresses;
+class RGE_TimeSinceLastCall;
 class RGE_Prog_Info;
-struct IDirectPlay2;
-struct IDirectPlay3;
-struct IDirectPlay4A;
-struct DPSESSIONDESC2;
-struct GUID_LOCAL;
 
-struct COMMPLAYEROPTIONS {
+class NAME {
+public:
+    char Text[128];
+};
+
+class RESENDER {
+public:
+    unsigned int TimeSent;
+    unsigned int Serial;
+    char* ResendMsg;
+    unsigned int Length;
+    unsigned int DestMap[10];
+    RESENDER();
+    ~RESENDER();
+};
+
+class HOLDER {
+public:
+    char* HoldMsg;
+    unsigned int Serial;
+    unsigned int Length;
+    unsigned long dcoFromID;
+    unsigned long dcoReceiveID;
+    unsigned int fromPlayer;
+    HOLDER();
+    ~HOLDER();
+};
+
+struct MSGFORMAT_ONTURN {
+    unsigned long ExecuteOnTurn;
+};
+
+struct MSGFORMAT_SPEEDCHANGE {
+    unsigned short BufferFrames;
+    unsigned short FrameSizeMsec;
+};
+
+struct MSGFORMAT_ACKNOWLEDGE_GUARANTEED {
+    unsigned char Command;
+    unsigned int Serialno;
+};
+
+struct MSGFORMAT_LATENCY {
+    unsigned char Command;
+    unsigned long Initiated;
+    unsigned long CurrentTurn;
+};
+
+struct MSGFORMAT_ALL_DONE {
+    unsigned char Command;
+    unsigned long ExecuteOnTurn;
+    unsigned char HighLatencyCenti;
+    unsigned char FrameRateMsec;
+};
+
+struct MSGFORMAT_SETREADYOPTIONS {
+    unsigned char Command;
+    unsigned char Ready;
+    unsigned long User1;
+    unsigned long User2;
+    unsigned long User3;
+    unsigned long User4;
+    unsigned long User5;
+    unsigned long User6;
+    unsigned long User7;
+    unsigned long Reserved20;
+    unsigned long CommunicationsVersionCode;
+};
+
+struct MSGFORMAT_CHAT {
+    unsigned char FromGamerID;
+    unsigned char DestPlayers[10];
+    unsigned long TextSize;
+    unsigned char Pregame;
+    char ChatMsg[256];
+};
+
+struct MSGFORMAT_CHECKSUM {
+    unsigned long WorldTime;
+    unsigned long WorldTurn;
+    unsigned int Random;
+    long cs1;
+    long cs2;
+    long cs3;
+    long cs4;
+    long cs5;
+    unsigned long PingInitiated;
+};
+
+struct MSGFORMAT_MISSING_PLAYER {
+    unsigned char Command;
+    unsigned int PlayerID;
+};
+
+struct MSGFORMAT_RESEND {
+    unsigned char Command;
+    unsigned int Serialno;
+};
+
+struct MSGFORMAT_HEADER_GUARANTEED {
+    unsigned char Command;
+    unsigned char Sequence;
+    unsigned long ExecuteOnTurn;
+    unsigned long Serialno;
+};
+
+struct MSGFORMAT_KILL_PLAYER {
+    unsigned int PlayerNo;
+    unsigned long dcoID;
+    unsigned long CurrentTurn;
+};
+
+class COMMPLAYEROPTIONS {
+public:
     unsigned char NeedsToBeSent;
     unsigned long LastSentTime;
     COMMSTATES ProgramState;
@@ -43,7 +166,7 @@ struct COMMPLAYEROPTIONS {
     unsigned long User5[10];
     unsigned long User6[10];
     unsigned long User7[10];
-    PLAYERHUMANITY Humanity[10];
+    int Humanity[10];
     unsigned char InvalidPlayer[10];
     unsigned long Initialized;
     unsigned long RandomSeed;
@@ -57,50 +180,10 @@ struct COMMPLAYEROPTIONS {
 typedef char comm_hand_options_size_check[
     (sizeof(COMMPLAYEROPTIONS) == 0x1D0) ? 1 : -1];
 
-class NAME {
-public:
-    char Text[128];
-};
-
-typedef char comm_hand_name_size_check[(sizeof(NAME) == 0x80) ? 1 : -1];
-
-class RESENDER {
-public:
-    unsigned long TimeSent;
-    unsigned int Serial;
-    char* ResendMsg;
-    unsigned int Length;
-    unsigned int DestMap[10];
-
-    RESENDER();
-    ~RESENDER();
-    void Store(char* message, unsigned int length);
-    void Clear();
-};
-
-typedef char comm_hand_resender_size_check[
-    (sizeof(RESENDER) == 0x38) ? 1 : -1];
-
-class HOLDER {
-public:
-    char* HoldMsg;
-    unsigned int Serial;
-    unsigned int Length;
-    unsigned long dcoFromID;
-    unsigned long dcoReceiveID;
-    unsigned int fromPlayer;
-
-    HOLDER();
-    ~HOLDER();
-    void Store(char* message, unsigned int length);
-    void Clear();
-};
-
-typedef char comm_hand_holder_size_check[
-    (sizeof(HOLDER) == 0x18) ? 1 : -1];
-
 class TCommunications_Handler {
-public:
+    friend int __stdcall EnumPlayersCallback2(unsigned long, unsigned long,
+                                              DPNAME*, unsigned long, void*);
+protected:
     int OptionsChanged;
     char* OptionsData;
     int Steps;
@@ -139,6 +222,8 @@ public:
     int PauseChangePending;
     unsigned long CommunicationsVersionCode;
     int ShuttingDown;
+
+private:
     unsigned long ReturnElapsed;
     unsigned long ReturnRXPacketSize;
     unsigned long ReturnTXPacketSize;
@@ -151,13 +236,13 @@ public:
     unsigned long LastTimeoutMessageTime;
     COMMSTATUS CommunicationsStatus;
     unsigned short MaxGamePlayers;
-    _GUID ServiceGUID;
-    _GUID ApplicationGUID;
-    _GUID SessionGUID;
+    GUID ServiceGUID;
+    GUID ApplicationGUID;
+    GUID SessionGUID;
     void* HostHWND;
     int LobbyLaunched;
     unsigned long MaxReceiveLatency;
-    _GUID NullGUID;
+    GUID NullGUID;
     unsigned long ResendAcknowledgements;
     unsigned long ResentToOther;
     unsigned long DroppedPacketCount;
@@ -169,9 +254,9 @@ public:
     unsigned long LastPlayerWarning[10];
     unsigned long LastTXPing[10];
     unsigned long PlayerStopTurn[10];
-    unsigned int LastSerialRequestedTX[10];
+    unsigned long LastSerialRequestedTX[10];
     unsigned long LastRequestHonoredTX[10];
-    unsigned int LastSerialRepliedTX[10];
+    unsigned long LastSerialRepliedTX[10];
     unsigned long LastRequestRepliedTX[10];
     unsigned long dwFlags;
     unsigned long dwMaxBufferSize;
@@ -202,226 +287,201 @@ public:
     unsigned int HoldCount;
     int WasKicked[10];
 
-    TCommunications_Handler(void* host_hwnd, unsigned char max_game_players,
-                            TChat* chat, _GUID application_guid);
-    ~TCommunications_Handler();
-
-    int RXAcknowledgeStoredMessage(unsigned int serial, unsigned int player);
-    int TXAcknowledgeMessage(unsigned int serial, unsigned int player);
-    unsigned int CheckResendStoredMessages();
-    int SendStoredMessages();
-    int StoreForResend(unsigned int serial, char* message,
-                       unsigned int length, unsigned int* dest_map);
-    unsigned char GetNextSequence(unsigned long turn);
-    int TXResendRequest(unsigned int serial, unsigned int player);
-    int TXResendReply(unsigned int serial, unsigned int player);
-    int StoreIncoming(unsigned int serial, char* message, unsigned int length,
-                      unsigned long from, unsigned long receive);
-    unsigned int ExecuteIncoming();
-    int PurgeAcknowledgedStoredMessages();
-    int IsPaused();
-    void RequestPauseGame(int player);
-    void RequestResumeGame(int player);
-    int TogglePauseGame();
-    void ForceSpeedControl(COMMSPEEDS speed, COMMSPEEDS frames);
-    void SetSpeedControl(int value);
-    void SendSpeedRequest(COMMSPEEDS speed);
-    void SendSpeedChange(unsigned int frames, unsigned int granularity);
-    void SetSpeedV1(unsigned long value);
-    void SetSpeedV2(unsigned long value);
-    void CheckPingTime(int value);
-
-protected:
-    int TXPing(unsigned int player);
-
 public:
-    int TXDebugPing();
-    long FastSend(unsigned long to, void* data, unsigned long size,
-                  int value, int flags);
-    void Step(int amount);
-    void StopIfSyncFail(int value);
-    void SetStepMode(int value);
-    void DebugSessionInformation(DPSESSIONDESC2* desc);
-    void DropPacketsIntentionally(int value);
-    void OutOfSync(int value, unsigned long turn);
-    void ForcePlayerEnumeration();
-    void ForcePlayerDestroyAndCreate();
-    void ForceNameChange();
-    int OpenMultiplayerConnection();
-    int CreateMultiplayerGame();
-    int JoinMultiplayerGame(GUID_LOCAL* guid);
-    long InitJoinGame();
-    void LaunchMultiplayerGame();
-    void SendJoinMsg();
-    void SetPlayerHumanity(unsigned int player, PLAYERHUMANITY humanity);
-    void SetRandomSeed(int value);
-    void SetPlayerName(unsigned int player, char* name);
-    void SetMyPlayerName(char* name);
-    int SetGameTitle(char* title);
-    int IsLobbyLaunched();
-    int LaunchLobbyGame();
-    int SendZoneMessage(char* data, unsigned long size);
-    int MultiplayerGameStart();
+    TCommunications_Handler(void* hwnd, unsigned char maxPlayers,
+                            TChat* chat, GUID appGUID);
+    ~TCommunications_Handler();
+    void GameOver();
     void ClearAllSerialNumbers();
     void ClearRXandTX();
-    void ClearPlayerStopTurn();
-    _GUID GetServiceGUID();
-    _GUID GetApplicationGUID();
-    void SetServiceGUID(_GUID guid);
-    void SetApplicationGUID(_GUID guid);
-    void* SetWindowHandle(void* window_handle);
-    void SetSessionGUID(_GUID guid);
-    int ComputerPlayerGameStart();
-    int SetMyGameOptions(char* data, unsigned long size);
-    void* GetMyGameOptions(unsigned long* size);
-    int SetMyReadiness(int ready, unsigned long user1, unsigned long user2,
-                       unsigned long user3, unsigned long user4,
-                       unsigned long user5, unsigned long user6,
-                       unsigned long user7);
-    int GetClientReadiness(unsigned int player, int* ready,
-                           unsigned long* user1, unsigned long* user2,
-                           unsigned long* user3, unsigned long* user4,
-                           unsigned long* user5, unsigned long* user6,
-                           unsigned long* user7);
-    int IsPlayerReady(unsigned int player);
-    int AllPlayersReady();
-    void SendReadiness();
-    long SendSharedData(int value);
-    void DestroyMultiplayerGame();
-    void ReleaseSettings();
-    COMMSTATUS UnlinkCurrentLevel();
-    COMMSTATUS GetCommunicationsStatus();
-    COMMSTATUS UnlinkToLevel(COMMSTATUS level);
-    COMMSTATUS AnalyzeCommunicationsStatus();
-    void GameOver();
-    void DropDeadPlayer(unsigned int player, unsigned long turn);
-    void DropAllHostedPlayers();
     void ResetLastCommunicationTimes();
-    void UpdatePlayerInformation(unsigned long player_id, char* name,
-                                 char* formal_name);
-    void SendGroupChatMsg(char* message);
-    void SendChatMsg(unsigned int player, unsigned int to, char* text);
-    void SendChatMsgAll(char* message);
-    long TXChat(unsigned int player, unsigned char* dest_map, char* text);
-    void UpdatePlayers();
-    void UpdatePlayer(unsigned int player, int timeout);
-    void LastWorldRandom(int value);
-    int Kick(unsigned int player);
-    void SendIResignMsg();
-    void GetDPLAYMessages();
-    unsigned char new_command(void* command, int size);
-    int NewCommand(void* command, int size, int ordered);
-    void* get_command();
-    int DoCycle(unsigned long now);
+    void StopIfSyncFail(int flag);
+    void DropPacketsIntentionally(int flag);
+
+    void DestroyMultiplayerGame();
+protected:
+    long ReleaseComm();
+public:
+    void FreeOptions();
+    char* GetCommInfo(unsigned char index);
     void ReceiveGameMessages();
     void ShutdownGameMessages();
-    IDirectPlay3* GetDPInterface();
-    void AllowPlayerJoins(int value);
-    void NotifyWindow(COMMMESSAGES message);
-    void NotifyWindowParam(COMMMESSAGES message, long param);
-    long SendChecksumMessage(unsigned long world_time, unsigned int random,
-                             long cs1, long cs2, long cs3, long cs4, long cs5);
-    long CommResendAll(unsigned long serial, unsigned long player);
-    unsigned int GetRandomSeed();
-    unsigned long GetPlayerTurn(unsigned int player);
-    unsigned long GetSyncTurn();
-    char* GetCommStateStr();
+    void GetDPLAYMessages();
     char* GetPlayerName(unsigned int player);
-    char* GetReadyPlayerStr();
-    int GetPlayerHumanity(unsigned int player);
+    int AllPlayersAcknowledged();
+    void CheckPingTime(int param);
+    void SendChatMsgAll(char* msg);
+    int Kick(unsigned int player);
+    void UpdatePlayers();
+
     int IsPlayerHuman(unsigned int player);
     int IsPlayerComputer(unsigned int player);
-    int GetActivePlayerCount();
-    int WhoAmI();
-    int host();
-    int IsHost();
-    unsigned int GetHostPlayerNumber();
-    unsigned int GetPlayerNumber(unsigned long dco_id);
-    int AllPlayersAcknowledged();
-    unsigned long HiTurnAcknowledged();
-    int CountWaitingMessages();
-    unsigned long GetPlayerAvgFramesMsec(unsigned int player);
-    unsigned long GetPlayerHighLatencyMsec(unsigned int player);
-    unsigned long GetPlayerLatency(unsigned int player);
-    int IsPlayerOutOfSync(unsigned int player, unsigned long turn);
-    int HasKicked(unsigned int player);
-    char* GetCommInfo(unsigned char index);
-    void ShowSyncChatMsgs(int value);
-    char* WaitingOnNamedInfo(unsigned int player);
-    char* WaitingOnInfo(unsigned int player);
-
+    int GetPlayerHumanity(unsigned int player);
+    int IsLobbyLaunched();
 protected:
+    long CloseSession();
+    long CommOut(unsigned long to, unsigned char type, void* data,
+                 int length, unsigned char flags);
+    void KillAnyMissingPlayers();
+    void InitPlayerInformation(unsigned int player, unsigned long param_2,
+                               char* param_3, char* param_4);
+    void CheckPlayerStopTurn(unsigned long turn);
+    void EvaluateSystemMessage(unsigned long size, char* msg,
+                               unsigned long from, unsigned long to);
+    int PreprocessMessages(unsigned long size, char* msg,
+                           unsigned long from, unsigned long to, int cached);
+public:
+    void DropDeadPlayer(unsigned int player, unsigned long dcoID);
+    void NotifyWindowParam(COMMMESSAGES msg, long param);
+    int AddCommand(unsigned long a, void* b, unsigned long c, int d,
+                   unsigned char e, int f);
+    int NewCommand(void* command, int size, int ordered);
+    int DoCycle(unsigned long param_1);
+    // Module-local declarations for the complete PDB method sequence.
+    char* WaitingOnNamedInfo(unsigned int playerIndex);
+    char* WaitingOnInfo(unsigned int param_1);
+    void ShowSyncChatMsgs(int param);
+    void SetStepMode(int v);
+    void SetSpeedControl(int param);
+protected:
+    int CalculatePlayerRange(void);
+public:
+    void Step(int amount);
+    void* get_command(void);
+    unsigned char new_command(void* command, int size);
+    void LastWorldRandom(int param);
+    int HasKicked(unsigned int idx);
+protected:
+    long SendPlayerName();
+    void LogRXMsg(unsigned int param_1, unsigned int param_2, unsigned long param_3, unsigned char param_4, unsigned char param_5);
+public:
     int GetWasKicked(unsigned int player);
     unsigned long GetCurrentTurn();
     unsigned long GetRXPacketSize();
     unsigned long GetTXPacketSize();
-    void ResetAll();
-    int AddSelfPlayer();
+protected:
+    int TXPing(unsigned int param_1);
+public:
+    int TXDebugPing(void);
+    long FastSend(unsigned long to, void* data, unsigned long size, int param_4, int param_5);
+    void NotifyWindow(COMMMESSAGES message);
+    int EvaluatePlayerMessage(unsigned long a1, unsigned int player, unsigned long a3, unsigned char opcode, unsigned char p5, char* data, unsigned int p7, unsigned long p8, unsigned long p9);
+protected:
+    void SetPlayerStopTurn(unsigned int i, unsigned long v);
+public:
+    void ReleaseSettings();
+    long SendSharedData(int force);
+protected:
+    int TEST();
+public:
+protected:
     void SetSelfPlayer();
-    unsigned int GetNextNewPlayer();
-    void SetHostPlayerNumber(unsigned int player);
-    int CalculatePlayerRange();
-    long SendPlayerName();
-    long CommGetCaps();
-    long DPlayGetSessionDesc();
-    long CreateDirectPlayConversation();
-    void InitializePlayers();
-    void InitPlayerInformation(unsigned int player, unsigned long dpid,
-                               char* friendly_name, char* formal_name);
-    void PackPlayersDown();
-    long CloseSession();
-    long DestroyMyPlayer();
-    long ReleaseComm();
-    long GetMyMultiPlayerCaps();
-    int SetPlayerReadiness(unsigned int player, int ready);
-    void FreeOptions();
-    void ClearPlayersAcknowledged();
-    long EnableNewPlayers(IDirectPlay2* direct_play, int enable);
-    void SetPlayerStopTurn(unsigned int player, unsigned long turn);
-    void CheckPlayerStopTurn(unsigned long turn);
-    void SendPauseGame(int value);
-    void LocalPauseGame(unsigned int player);
-    void LocalResumeGame(unsigned int player);
-    void SendSyncMsg(long value);
-    void SendLatentMsg();
-    void SendEchoMsg();
-    void TEST();
-    void LogRXMsg(unsigned int player, unsigned int serial,
-                  unsigned long turn, unsigned char type,
-                  unsigned char flags);
-    long CommOut(unsigned long to, unsigned char type, void* data,
-                 int length, unsigned char flags);
-    int EvaluatePlayerMessage(unsigned long size, unsigned int player,
-                              unsigned long from, unsigned char opcode,
-                              unsigned char flags, char* data,
-                              unsigned int length, unsigned long arg1,
-                              unsigned long arg2);
-    void EvaluateSystemMessage(unsigned long size, char* data,
-                               unsigned long from, unsigned long to);
-    void CommResend(unsigned long serial, unsigned long player,
-                    unsigned char type);
-    void EvaluateGuaranteedAcknowledge(unsigned long serial,
-                                       unsigned int player,
-                                       unsigned long turn,
-                                       unsigned char type);
-    int IsMessageWaiting();
-    int PreprocessMessages(unsigned long size, char* data,
-                           unsigned long from, unsigned long to,
-                           int cached);
+public:
+    void SendGroupChatMsg(char* param_1);
+    void SendChatMsg(unsigned int player, unsigned int to, char* text);
+    void SendIResignMsg();
+    long TXChat(unsigned int player, unsigned char* destMap, char* text);
+    void SendSpeedChange(unsigned int param_1, unsigned int param_2);
+    unsigned long HiTurnAcknowledged();
+    long SendChecksumMessage(unsigned long param_1, unsigned int param_2, long param_3, long param_4, long param_5, long param_6, long param_7);
+    uint ExecuteIncoming();
+protected:
     void ClearRXForPlayer(unsigned int player);
-    void ClearTXForPlayer(unsigned int player);
     void ClearRXTXForPlayer(unsigned int player);
-    void KillAnyMissingPlayers();
-    int AddCommand(unsigned long turn, void* data, unsigned long size,
-                   int from, unsigned char sequence, int control);
-    long SendAllDoneMsg(unsigned long turn);
+public:
+    void ClearTXForPlayer(unsigned int player);
+    int CountWaitingMessages();
+    int StoreIncoming(uint SerialNumber, char* InBuff, uint Length, ulong dcoFromID, ulong dcoReceiveID);
+    int StoreForResend(unsigned int param_1, char* param_2, unsigned int param_3, unsigned int* param_4);
+    int TXAcknowledgeMessage(uint param_1, uint param_2);
+    int RXAcknowledgeStoredMessage(unsigned int param_1, unsigned int param_2);
+    int PurgeAcknowledgedStoredMessages();
+    int SendStoredMessages();
+    int TXResendReply(uint serial, uint player);
+    int TXResendRequest(unsigned int serial, unsigned int player);
+    unsigned char GetNextSequence(unsigned long value);
+    COMMSTATUS GetCommunicationsStatus();
+    COMMSTATUS UnlinkCurrentLevel();
+    COMMSTATUS UnlinkToLevel(COMMSTATUS param_1);
+    COMMSTATUS AnalyzeCommunicationsStatus(void);
+    void DropAllHostedPlayers(void);
+protected:
+    void LocalResumeGame(unsigned int player);
+    void LocalPauseGame(unsigned int player);
+public:
+    void SendPauseGame(int param_1);
+    int TogglePauseGame();
+    void RequestPauseGame(int);
+    void RequestResumeGame(int);
+    void SetRandomSeed(int seed);
+    unsigned int GetRandomSeed();
+    int WhoAmI();
+    int IsHost(void);
+    char* GetCommStateStr();
+    char* GetReadyPlayerStr();
+    void SetPlayerHumanity(unsigned int player, PLAYERHUMANITY humanity);
+    int GetActivePlayerCount();
+    void UpdatePlayerInformation(unsigned long player_id, char* name, char* formal_name);
+    int LaunchLobbyGame();
+    void SetMyPlayerName(char* name);
+    void SetPlayerName(unsigned int player, char* name);
+    void* SetWindowHandle(void* v);
+protected:
+    long CreateDirectPlayConversation();
+public:
+    int OpenMultiplayerConnection();
+    int CreateMultiplayerGame(void);
+protected:
+    void PackPlayersDown();
+public:
+protected:
+    int AddSelfPlayer();
+public:
+    int JoinMultiplayerGame(_GUID* guid);
+    void LaunchMultiplayerGame();
+    long InitJoinGame();
+    int IsPlayerReady(unsigned int player);
+    int ComputerPlayerGameStart();
+    int MultiplayerGameStart();
+    long GetMyMultiPlayerCaps();
+    void SetApplicationGUID(_GUID guid);
+    IDirectPlay3* GetDPInterface();
+    void SetServiceGUID(_GUID guid);
+    void SetSessionGUID(_GUID guid);
+    void UpdatePlayer(unsigned int player, int do_update);
+    int SetMyReadiness(int ready, ulong user1, ulong user2, ulong user3, ulong user4, ulong user5, ulong user6, ulong user7);
+    int GetClientReadiness(unsigned int index, int* out0, unsigned long* out1, unsigned long* out2, unsigned long* out3, unsigned long* out4, unsigned long* out5, unsigned long* out6, unsigned long* out7);
+    int AllPlayersReady();
+protected:
+    long DPlayGetSessionDesc();
+    HRESULT CommGetCaps();
+    long DestroyMyPlayer();
+public:
+    int SetMyGameOptions(char* param_1, unsigned long param_2);
+    void* GetMyGameOptions(unsigned long* param);
+protected:
+    void SetHostPlayerNumber(unsigned int v);
+public:
+    unsigned int GetHostPlayerNumber();
+    void DebugSessionInformation(DPSESSIONDESC2* desc);
+protected:
+    long EnableNewPlayers(IDirectPlay2* dp, int enable);
+public:
+    void OutOfSync(int a, unsigned long b);
+    int SendZoneMessage(char* msg, unsigned long param_2);
+    void ForcePlayerDestroyAndCreate();
+    void ForcePlayerEnumeration();
+    int SetGameTitle(char* title);
+    void ForceNameChange(void);
+    void SetSpeedV1(unsigned long param);
+    void SetSpeedV2(unsigned long param);
+    int IsPlayerOutOfSync(unsigned int player, unsigned long turn);
+    int IsPaused();
+
+
 };
 
 typedef char comm_hand_size_check[
     (sizeof(TCommunications_Handler) == 0x1774) ? 1 : -1];
-typedef char comm_hand_current_turn_offset_check[
-    (offsetof(TCommunications_Handler, current_turn) == 0x10C8) ? 1 : -1];
-typedef char comm_hand_options_offset_check[
-    (offsetof(TCommunications_Handler, PlayerOptions) == 0x1550) ? 1 : -1];
 
 #endif
