@@ -51,3 +51,14 @@ PDB order.
 The natural source removes pointer casts, child-pointer address casts, the
 `OFSTRUCT` buffer overlay, and `+4` stack shaping. It uses direct list and
 control calls, independent arrays, and a typed `OFSTRUCT` local.
+
+## Rebase validation
+
+The provider commits were rebased onto main `6d8915d72`. The fresh candidate
+is `build/candidate_tus/scr_sedo_natural_rebased/report.json`.
+
+The rebased build gives the same results: the constructor and generated
+destructor match. The natural destructor differs by 176 bytes and has two
+boundary escapes. `fillList` differs by four bytes. `action` differs by 569
+bytes. All four normal bodies remain in `src/scr_sedo.cpp`, and the registered
+translation-unit owners contain only `004B33D0`.
