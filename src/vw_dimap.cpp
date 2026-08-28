@@ -1,4 +1,5 @@
 #include "../include/vw_dimap.h"
+#include "../include/main.h"
 
 RGE_Diamond_Map_View::RGE_Diamond_Map_View() : RGE_Diamond_Map() {
     this->field_C0 = 0;
@@ -11,7 +12,7 @@ long RGE_Diamond_Map_View::handle_mouse_down(unsigned char button, long x, long 
     if (this->pick_tile(x, y, &tile_x, &tile_y, &tile) == 0) {
         return 0;
     }
-    return ((TPanel*)this)->handle_mouse_down(button, x, y, ctrl, shift);
+    return TPanel::handle_mouse_down(button, x, y, ctrl, shift);
 }
 
 long RGE_Diamond_Map_View::mouse_left_down_action(long x, long y, int key, int flags) {
@@ -159,13 +160,14 @@ long RGE_Diamond_Map_View::mouse_right_up_action(long x, long y, int param_3, in
             return 0;
         }
         if (param_4 == 0) {
-            if (this->right_click2(x, y) == 0) {
+            if (this->command_make_do(x, y) == 0) {
                 goto fail;
             }
             return 1;
         }
         if (this->pick_tile(x, y, (short*)&x, (short*)&y, &tile) != 0) {
-            this->player->set_view_loc((float)(short)x - -0.5f, (float)(short)y - -0.5f, 1.0f);
+            this->player->command_add_waypoint(
+                (float)(short)x - -0.5f, (float)(short)y - -0.5f, 1.0f);
         }
         return 1;
     }
