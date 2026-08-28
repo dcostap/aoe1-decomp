@@ -2,15 +2,17 @@
 
 ## Candidate evidence
 
-The owner-header candidate reported these two rows as mismatches:
+The earlier owner-header candidate reported these two rows as mismatches:
 
 - `004CF090`: 98 differing bytes; original size 103, rebuilt size 55.
 - `004CF300`: 1186 differing bytes; original and rebuilt size 1312.
 
 Both rows had matching owner symbols, zero relocation target mismatches, and
-zero boundary escapes. The candidate did not prove exactness for either row.
+zero boundary escapes. The merged source was then revalidated with the current
+binary. Both owners report `MATCH`, `0.0000%`, correct boundaries, relocations,
+and direct targets in the grouped module and in standalone checks.
 
-Keep both rows in `scratch`. Do not promote them from the sound-header rebase.
+Both rows now use `matching` status and remain registered exact owners.
 
 The candidate also reported these exact owners:
 

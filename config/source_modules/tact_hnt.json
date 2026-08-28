@@ -6,7 +6,7 @@
   "header": "include/tact_hnt.h",
   "functions": {
     "004CF090": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/tact_hnt_module.md"
     },
     "004CF130": { "status": "matching" },
@@ -14,7 +14,7 @@
     "004CF210": { "status": "matching" },
     "004CF240": { "status": "matching" },
     "004CF300": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/tact_hnt_module.md"
     },
     "004CF860": {
