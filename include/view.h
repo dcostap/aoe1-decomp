@@ -58,7 +58,7 @@ typedef char view_clip_node_size_check[
     (sizeof(DClipInfo_Node) == 0x40) ? 1 : -1];
 
 class DClipInfo_List {
-public:
+private:
     DClipInfo_Node** Zone_Ptrs;
     int* Zone_Size_Ptrs;
     int Used_Zones;
@@ -81,6 +81,8 @@ public:
     int Max_Draw_Levels;
     int Accept_Min_Level;
     int Accept_Max_Level;
+
+public:
     DClipInfo_Node** Draw_Clip_Nodes;
     DClipInfo_Node** Draw_Level_Head;
     DClipInfo_Node** Draw_Level_Tail;
