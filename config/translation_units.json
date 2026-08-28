@@ -3314,14 +3314,15 @@
     },
     {
       "name": "dlg_sedm",
-      "source": "src/dlg_sedm_tu.cpp",
+      "source": "src/dlg_sedm.cpp",
+      "module": "dlg_sedm",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
-        "00440140": "src/matching/00440140_TRIBE_Dialog_Sed_Menu.cpp",
-        "00440360": "src/matching/00440360_TRIBE_Dialog_Sed_Menu.cpp",
-        "00440400": "src/matching/00440400_action.cpp"
+        "00440140": "src/dlg_sedm.cpp",
+        "00440400": "src/dlg_sedm.cpp"
       },
       "symbols": {
+        "00440140": "??0TRIBE_Dialog_Sed_Menu@@QAE@PAVTRIBE_Screen_Sed@@@Z",
         "00440400": "?action@TRIBE_Dialog_Sed_Menu@@UAEJPAVTPanel@@JKK@Z"
       }
     },
