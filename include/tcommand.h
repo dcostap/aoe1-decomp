@@ -9,37 +9,48 @@ class TRIBE_Master_Building_Object;
 class TRIBE_Player;
 class TRIBE_World;
 
+struct TRIBE_Command_Header {
+    unsigned char command;
+};
+
+typedef char tribe_command_header_size_check[
+    (sizeof(TRIBE_Command_Header) == 0x01) ? 1 : -1];
+
 struct TRIBE_Command_Make {
     unsigned char command;
-    unsigned char gap_01[3];
     int unit_id;
     unsigned char player_index;
-    unsigned char gap_09;
     short train_id;
     int unique_id;
 };
 
+typedef char tribe_command_make_size_check[
+    (sizeof(TRIBE_Command_Make) == 0x10) ? 1 : -1];
+
 struct TRIBE_Command_Research {
     unsigned char command;
-    unsigned char gap_01[3];
     int unit_id;
     unsigned char player_index;
-    unsigned char gap_09;
     short tech_id;
     int unique_id;
 };
+
+typedef char tribe_command_research_size_check[
+    (sizeof(TRIBE_Command_Research) == 0x10) ? 1 : -1];
 
 struct TRIBE_Command_Build {
     unsigned char command;
     unsigned char count;
     unsigned char player_id;
-    unsigned char gap_03;
     float x;
     float y;
     short obj_id;
-    short gap_0E;
     int unique_id;
+    RGE_Obj_Info unit_ids[1];
 };
+
+typedef char tribe_command_build_size_check[
+    (sizeof(TRIBE_Command_Build) == 0x18) ? 1 : -1];
 
 struct TRIBE_Command_Build_Wall {
     unsigned char command;
@@ -49,46 +60,56 @@ struct TRIBE_Command_Build_Wall {
     unsigned char y1;
     unsigned char x2;
     unsigned char y2;
-    unsigned char gap_07;
     short obj_id;
-    short gap_0A;
     int unique_id;
+    RGE_Obj_Info unit_ids[1];
 };
+
+typedef char tribe_command_build_wall_size_check[
+    (sizeof(TRIBE_Command_Build_Wall) == 0x14) ? 1 : -1];
 
 struct TRIBE_Command_Explore {
     unsigned char command;
     unsigned char unit_num;
     unsigned char unit_player_id;
-    unsigned char gap_03;
     float target_x;
     float target_y;
     RGE_Obj_Info unit_ids[1];
 };
+
+typedef char tribe_command_explore_size_check[
+    (sizeof(TRIBE_Command_Explore) == 0x10) ? 1 : -1];
 
 struct TRIBE_Command_Game {
     unsigned char command;
     unsigned char game_command;
     short var1;
     short var2;
-    char gap_06[2];
     float var3;
     short var4;
-    char gap_0E[2];
 };
+
+typedef char tribe_command_game_size_check[
+    (sizeof(TRIBE_Command_Game) == 0x10) ? 1 : -1];
 
 struct TRIBE_Command_Cancel_Build {
     unsigned char command;
-    char gap_01[3];
     int unit_id;
 };
+
+typedef char tribe_command_cancel_build_size_check[
+    (sizeof(TRIBE_Command_Cancel_Build) == 0x08) ? 1 : -1];
 
 struct TRIBE_Command_Attack_Ground {
     unsigned char command;
     unsigned char unit_num;
-    char gap_02[2];
     float location_x;
     float location_y;
+    RGE_Obj_Info unit_ids[1];
 };
+
+typedef char tribe_command_attack_ground_size_check[
+    (sizeof(TRIBE_Command_Attack_Ground) == 0x10) ? 1 : -1];
 
 struct TRIBE_Command_Give_Attribute {
     unsigned char command;
@@ -99,35 +120,49 @@ struct TRIBE_Command_Give_Attribute {
     float attr_cost;
 };
 
+typedef char tribe_command_give_attribute_size_check[
+    (sizeof(TRIBE_Command_Give_Attribute) == 0x0C) ? 1 : -1];
+
 struct TRIBE_Command_Trade_Attribute {
     unsigned char command;
     unsigned char unit_num;
-    char gap_02[2];
     long attribute;
+    RGE_Obj_Info unit_ids[1];
 };
+
+typedef char tribe_command_trade_attribute_size_check[
+    (sizeof(TRIBE_Command_Trade_Attribute) == 0x0C) ? 1 : -1];
 
 struct TRIBE_Command_Repair {
     unsigned char command;
     unsigned char unit_num;
-    char gap_02[2];
     RGE_Obj_Info target;
+    RGE_Obj_Info unit_ids[1];
 };
+
+typedef char tribe_command_repair_size_check[
+    (sizeof(TRIBE_Command_Repair) == 0x0C) ? 1 : -1];
 
 struct TRIBE_Command_Unload {
     unsigned char command;
     unsigned char unit_num;
-    char gap_02[2];
     float location_x;
     float location_y;
     RGE_Obj_Info unit_ids[1];
 };
 
+typedef char tribe_command_unload_size_check[
+    (sizeof(TRIBE_Command_Unload) == 0x10) ? 1 : -1];
+
 struct TRIBE_Command_Queue {
-    char gap_00[4];
+    unsigned char command;
     int building_id;
     short train_id;
     short train_count;
 };
+
+typedef char tribe_command_queue_size_check[
+    (sizeof(TRIBE_Command_Queue) == 0x0C) ? 1 : -1];
 
 class TRIBE_Command : public RGE_Command {
 public:
