@@ -1,40 +1,11 @@
 #ifndef AOE1_AIRCHMOD_H
 #define AOE1_AIRCHMOD_H
 
+#include "aimodule.h"
 #include "aitchitm.h"
 
 class MainDecisionAIModule;
 class BuildItem;
-class AIModuleMessage;
-
-class AIModule {
-public:
-    virtual ~AIModule();
-
-    // Keep the inherited slots in the original order.  The executable puts
-    // ResearchAIModule::save after these slots, not after the destructor.
-    virtual int loggingHistory() const;
-    virtual void setLogHistory(int);
-    virtual void toggleLogHistory();
-    virtual void setHistoryFilename(char*);
-    virtual int loggingCommonHistory() const;
-    virtual void setLogCommonHistory(int);
-    virtual void toggleLogCommonHistory();
-    virtual int loadState(char*);
-    virtual int saveState(char*);
-    virtual int gleanState(int);
-    virtual int processMessage(AIModuleMessage*);
-    virtual int update(int);
-    virtual void setCallbackMessage(AIModuleMessage*);
-
-    AIModule(char* name, int line, int arg, void* ptr);
-    void __cdecl logCommonHistory(char*, ...);
-
-protected:
-    virtual int filterOutMessage(AIModuleMessage*);
-
-    char gap[0xEC];
-};
 
 class ResearchAIModule : public AIModule {
 public:

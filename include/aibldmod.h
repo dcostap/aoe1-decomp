@@ -5,10 +5,9 @@
 #include "aibitm.h"
 #include "aiblditm.h"
 #include "aimodule.h"
+#include "m_s_obj.h"
+#include "player.h"
 #include "utmarray.h"
-
-class RGE_Player;
-class RGE_Master_Static_Object;
 
 extern "C" void __cdecl rge_read(int file, void* destination, int size);
 extern "C" void __cdecl rge_write(int file, void* source, int size);
@@ -60,26 +59,6 @@ protected:
     void removeOldList();
     BuildItem* anyBuildListItem(int type, int mode, int state);
     BuildItem* specificBuildListItem(int uniqueID);
-};
-
-// This module uses the proven field prefix of these input records.  The
-// complete class declarations belong to their owning source modules.
-class RGE_Master_Static_Object {
-public:
-    virtual ~RGE_Master_Static_Object();
-    char gap_004[4];
-    char* name;                         // +0x08
-    char gap_00C[0x24];
-    float radius_x;                     // +0x30
-    float radius_y;                     // +0x34
-};
-
-class RGE_Player {
-public:
-    virtual ~RGE_Player();
-    char gap_004[0x1E];
-    short master_object_num;            // +0x22
-    RGE_Master_Static_Object** master_objects; // +0x24
 };
 
 typedef char aibldmod_module_size[(sizeof(BuildAIModule) == 0x5BC) ? 1 : -1];

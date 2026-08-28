@@ -1,28 +1,9 @@
 #ifndef AOE1_AITCHITM_H
 #define AOE1_AITCHITM_H
 
+#include "airesitm.h"
+
 extern char s_592A40[];
-
-class ResourceItem {
-public:
-    virtual ~ResourceItem();
-
-    ResourceItem();
-    ResourceItem(int count);
-    ResourceItem(int count, int* values);
-    ResourceItem* next;
-    ResourceItem* prev;
-    int valueValue[8];
-    int sortedValue[8];
-    int sortedIndexValue[8];
-    int numberValue;
-
-    ResourceItem(const ResourceItem&);
-    ResourceItem(ResourceItem*);
-    int value(int index) const;
-};
-
-typedef char aitchitm_resource_item_size[(sizeof(ResourceItem) == 0x70) ? 1 : -1];
 
 class TechnologyItem {
 public:

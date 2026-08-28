@@ -7,21 +7,10 @@
 #include "aiplaybook.h"
 #include "ai_play_group.h"
 #include "ai_play_phase.h"
+#include "point.h"
 
 class RGE_Game_World;
 class AIPlayStatus;
-
-class XYZ {
-public:
-    int xValue;                         // +0x00
-    int yValue;                         // +0x04
-    int zValue;                         // +0x08
-
-    XYZ();
-    XYZ(int x, int y, int z);
-    void rotateXYByFacet(const XYZ& facet, XYZ& output,
-                         unsigned char facetIndex);
-};
 
 class AIPlay {
 public:
