@@ -4,7 +4,14 @@
 #include "../include/aibldmod.h"
 #include "../include/utmarray.h"
 #include "../include/airesitm.h"
+#include "../include/aiconitm.h"
+#include "../include/m_s_obj.h"
+#include "../include/player.h"
+#include "../include/stat_obj.h"
+#include "../include/tplayer.h"
 #include "../include/taibldmd.h"
+#include "../include/taimdmd.h"
+#include <string.h>
 
 // PDB source order: taibldmd.cpp lines 62-1773.
 // 004D3AB0 is the compiler-generated vector deleting destructor. It is not a
@@ -410,10 +417,8 @@ BuildItem* TribeBuildAIModule::nextBuildableItem(int category)
                                     }
                                 }
 
-                                TaibldmdPlayerAttributesView* player =
-                                    (TaibldmdPlayerAttributesView*)this->md->player;
-                                if (player->attributes[0x0B] <
-                                        player->attributes[0x20] ||
+                                if (this->md->player->attributes[0x0B] <
+                                        this->md->player->attributes[0x20] ||
                                     item->buildCategory() != 2) {
                                     ++count;
                                 }
