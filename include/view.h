@@ -48,6 +48,11 @@ public:
     short draw_y;
 };
 
+typedef char view_pick_info_size_check[
+    (sizeof(RGE_Pick_Info) == 0x14) ? 1 : -1];
+typedef char view_pick_object_info_size_check[
+    (sizeof(RGE_Pick_Obj_Info) == 0x0C) ? 1 : -1];
+
 extern RGE_Pick_Obj_Info Picked_Objects[];
 
 // view.cpp owns the DClip capture list used by View and Shape.
