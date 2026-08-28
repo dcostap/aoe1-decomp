@@ -15,7 +15,8 @@ headers, and focused dossiers for `004CA300`, `004CA5F0`, `004CA8C0`,
 | object ID, master, owner, sprite, holder, state, health, selection, coordinates, held attribute, type, and Unit AI pointer | `RGE_Static_Object` in `stat_obj.h` | CodeView `RGE_Static_Object`; direct accesses in all focused dossiers |
 | actions, command state, and task lookup | `RGE_Action_Object` in `act_obj.h` | CodeView class and `t_c_obj.cpp` calls to `actions`, `set_only_action`, and `getTask` |
 | combat VUR records, attack timer, and capture flag | `RGE_Combat_Object` in `com_obj.h` | CodeView: `VUR_Ptrs +0x194`, `Unified_Map_Value +0x1B8`, `attack_timer +0x1BC`, `capture_flag +0x1C0`; `004CA8C0` reads `+0x194` |
-| action publication and task lookup | `RGE_Action_Object::set_action(RGE_Action*)` and `getTask(...)` in `act_obj.h` | `004CB060`, `004CB450`, and `004CC5B0` call virtual slots `+0x208` and `+0x210`; raw `add_action` and `make_action` labels were aliases |
+| action publication and task lookup | `RGE_Action_Object::set_only_action(RGE_Action*)` and `getTask(...)` in `act_obj.h` | `004CB060`, `004CB450`, and `004CC5B0` call virtual slots `+0x208` and `+0x210`; raw `add_action` and `make_action` labels were aliases |
+| cliff angle limits and line segments | `TRIBE_Cliff_Higher_Check_Table[25]` in `game_globals.h` | PDB global at `00587258`, type `0x18A9`, and `004CBD40` stride `0x20` |
 | owned-master flag | `TRIBE_Combat_Object` in `t_c_obj.h` | CodeView: `own_master +0x1C4`; `004CA300` writes `+0x1C4` |
 | static master IDs, group, placement, radii, health, and action task list | `RGE_Master_Static_Object` in `m_s_obj.h` | PDB layout and direct calls in setup, artifact placement, area attack, and repair |
 | combat master armor and weapon records | `RGE_Master_Combat_Object` in `m_co_obj.h` | `004CAC10` reads `base_armor +0x100`, `armor_num +0x102`, and `armor +0x104`; `004CAAA0` reads `weapon_num +0x108` and `weapon +0x10C` |

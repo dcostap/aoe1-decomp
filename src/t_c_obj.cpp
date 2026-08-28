@@ -4,8 +4,10 @@
 #include "../include/t_c_obj.h"
 
 #include "../include/basegame.h"
+#include "../include/game_globals.h"
 #include "../include/map.h"
 #include "../include/player.h"
+#include "../include/rge_fio.h"
 #include "../include/tact_bld.h"
 #include "../include/tact_cnv.h"
 #include "../include/tact_hea.h"
@@ -34,27 +36,6 @@ extern float DAT_00574ca0;
 extern float DAT_00574c98;
 extern float DAT_00574ca4;
 extern double DAT_00574ca8;
-struct RGE_Cliff_Facet_Values {
-    float first_x;
-    float first_y;
-    float second_x;
-    float second_y;
-    float unused[4];
-};
-
-struct RGE_Cliff_Facet_Angles {
-    float first;
-    float second;
-    float third;
-    float fourth;
-    float unused[4];
-};
-
-extern RGE_Cliff_Facet_Values DAT_00587268[];
-extern RGE_Cliff_Facet_Angles DAT_0058725c[];
-
-extern "C" void __cdecl rge_read(int, void*, int);
-extern "C" void __cdecl rge_write(int, void*, int);
 extern "C" int __cdecl debug_rand(const char*, int);
 int __cdecl lines_intersect(float, float, float, float, float, float, float,
                             float);
@@ -524,7 +505,7 @@ int TRIBE_Combat_Object::hunt(int object_id, int force)
     if (action == 0) return 0;
 
     this->actions->delete_list();
-    this->set_action(action);
+    this->set_only_action(action);
     return 1;
 }
 
@@ -552,7 +533,7 @@ int TRIBE_Combat_Object::convert(int object_id, int force)
     if (action == 0) return 0;
 
     this->actions->delete_list();
-    this->set_action(action);
+    this->set_only_action(action);
     return 1;
 }
 
@@ -580,7 +561,7 @@ int TRIBE_Combat_Object::heal(int id, int force)
     if (action == 0) return 0;
 
     this->actions->delete_list();
-    this->set_action(action);
+    this->set_only_action(action);
     return 1;
 }
 
@@ -614,7 +595,7 @@ int TRIBE_Combat_Object::repair(int id, int force)
     if (action == 0) return 0;
 
     this->actions->delete_list();
-    this->set_action(action);
+    this->set_only_action(action);
     return 1;
 }
 
@@ -642,7 +623,7 @@ int TRIBE_Combat_Object::build(int id, int force)
     if (action == 0) return 0;
 
     this->actions->delete_list();
-    this->set_action(action);
+    this->set_only_action(action);
     return 1;
 }
 
@@ -670,7 +651,7 @@ int TRIBE_Combat_Object::trade(int id, int force)
     if (action == 0) return 0;
 
     this->actions->delete_list();
-    this->set_action(action);
+    this->set_only_action(action);
     return 1;
 }
 
@@ -786,15 +767,15 @@ int TRIBE_Combat_Object::higher_check_for_cliff(
             }
 
             if (lines_intersect(x1, y1, x2, y2,
-                                DAT_00587268[cliff->facet].first_x + x1,
-                                DAT_00587268[cliff->facet].first_y + y1,
-                                DAT_00587268[cliff->facet].second_x + x2,
-                                DAT_00587268[cliff->facet].second_y + y2)) {
+                                TRIBE_Cliff_Higher_Check_Table[cliff->facet].line_x1 + x1,
+                                TRIBE_Cliff_Higher_Check_Table[cliff->facet].line_y1 + y1,
+                                TRIBE_Cliff_Higher_Check_Table[cliff->facet].line_x2 + x2,
+                                TRIBE_Cliff_Higher_Check_Table[cliff->facet].line_y2 + y2)) {
                 if ((cliff->facet >= 0x19 ||
-                     angle < DAT_0058725c[cliff->facet].first ||
-                     DAT_0058725c[cliff->facet].second > angle) &&
-                    (angle < DAT_0058725c[cliff->facet].third ||
-                     DAT_0058725c[cliff->facet].fourth > angle)) {
+                     angle < TRIBE_Cliff_Higher_Check_Table[cliff->facet].from_angle1 ||
+                     TRIBE_Cliff_Higher_Check_Table[cliff->facet].to_angle1 > angle) &&
+                    (angle < TRIBE_Cliff_Higher_Check_Table[cliff->facet].from_angle2 ||
+                     TRIBE_Cliff_Higher_Check_Table[cliff->facet].to_angle2 > angle)) {
                     --direction;
                 } else {
                     ++direction;
@@ -1015,7 +996,7 @@ void TRIBE_Combat_Object::do_repair(RGE_Static_Object* target)
                                               target->world_z);
         if (action != 0) {
             action_type = action->type();
-            this->set_action(action);
+            this->set_only_action(action);
         }
     }
 

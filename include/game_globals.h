@@ -11,6 +11,21 @@ class IDirectPlay4A;
 class ResFileHdr;
 class TDebuggingLog;
 
+// PDB type 0x18A9 names this 25-record table at 00587258.
+struct TRIBE_Cliff_Higher_Check_Record {
+    float from_angle1;
+    float to_angle1;
+    float from_angle2;
+    float to_angle2;
+    float line_x1;
+    float line_y1;
+    float line_x2;
+    float line_y2;
+};
+
+typedef char tribe_cliff_higher_check_record_size_check[
+    (sizeof(TRIBE_Cliff_Higher_Check_Record) == 0x20) ? 1 : -1];
+
 // World.cpp process globals. PDB storage and type records prove this surface.
 extern long world_update_counter;
 extern int computerPlayerSetup[13];
@@ -1361,20 +1376,8 @@ extern const char s_nSaveDialog_00586d0b[12];
 extern unsigned char DAT_00586d19;
 // 00586D1B [.data]
 extern const char s_tSaveDialog_00586d1b[12];
-// 0058725C [.data]
-extern float DAT_0058725c;
-// 00587260 [.data]
-extern float DAT_00587260;
-// 00587264 [.data]
-extern float DAT_00587264;
-// 00587268 [.data]
-extern float DAT_00587268;
-// 0058726C [.data]
-extern float DAT_0058726c;
-// 00587270 [.data]
-extern float DAT_00587270;
-// 00587274 [.data]
-extern float DAT_00587274;
+// 00587258 [.data]
+extern TRIBE_Cliff_Higher_Check_Record TRIBE_Cliff_Higher_Check_Table[25];
 // 00587A55 [.data]
 extern unsigned char DAT_00587a55;
 // 00587A5D [.data]

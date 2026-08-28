@@ -5745,12 +5745,6 @@
         "004CA790": "src/t_c_obj.cpp",
         "004CA8C0": "src/t_c_obj.cpp",
         "004CAA50": "src/t_c_obj.cpp",
-        "004CB060": "src/t_c_obj.cpp",
-        "004CB1B0": "src/t_c_obj.cpp",
-        "004CB300": "src/t_c_obj.cpp",
-        "004CB450": "src/t_c_obj.cpp",
-        "004CB5C0": "src/t_c_obj.cpp",
-        "004CB710": "src/t_c_obj.cpp",
         "004CB8D0": "src/t_c_obj.cpp",
         "004CBD30": "src/t_c_obj.cpp",
         "004CC570": "src/t_c_obj.cpp"
@@ -5760,8 +5754,6 @@
         "004CA1A0": "??0TRIBE_Combat_Object@@QAE@HPAVRGE_Game_World@@H@Z",
         "004CA510": "?create_action_list@TRIBE_Combat_Object@@UAEPAVRGE_Action_List@@XZ",
         "004CAA50": "?attack@TRIBE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAVRGE_Combat_Object@@@Z",
-        "004CB300": "?heal@TRIBE_Combat_Object@@UAEHHH@Z",
-        "004CB450": "?repair@TRIBE_Combat_Object@@UAEHHH@Z",
         "004CBD30": "?lines_intersect@@YAHMMMMMMMM@Z"
       }
     },
