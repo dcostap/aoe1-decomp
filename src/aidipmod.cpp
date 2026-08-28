@@ -1,43 +1,9 @@
-#include "../include/aiconmod.h"
+#include "../include/aidipmod.h"
+
 #include "../include/player.h"
-#include "../include/world.h"
+#include "../include/rge_fio.h"
 #include "../include/victory.h"
-
-class MainDecisionAIModule : public AIModule {
-public:
-    RGE_Player* player;
-};
-
-class DiplomacyAIModule : public AIModule {
-public:
-    MainDecisionAIModule* md;          // +0xF0
-    int dislikeTable[10];              // +0xF4
-    int likeTable[10];                 // +0x11C
-    unsigned char changeableTable[10]; // +0x144
-
-    virtual ~DiplomacyAIModule();
-    virtual int save(int file);
-    virtual int update(int value);
-
-    DiplomacyAIModule(void* param, int value);
-    DiplomacyAIModule(int value, int file);
-    void setMainDecisionAI(MainDecisionAIModule* value);
-    int stance(int player_id, int type) const;
-    void changeStance(int player, int type, int value);
-    void setStance(int player, int type, int value);
-    int isDisliked(int player) const;
-    int isAmbivalent(int player) const;
-    int isLiked(int player) const;
-    int isChangeable(int player) const;
-    void setChangeable(int index, unsigned char value);
-    int mostHated(int param1, int param2, int param3, int param4) const;
-    int mostLiked(int param1, int param2) const;
-    int isEnemy(int player) const;
-    int isNeutral(int player) const;
-    int isAlly(int player) const;
-    int isAlliedWithMe(int player) const;
-    void setRelation(int player_id, int stance);
-};
+#include "../include/world.h"
 
 DiplomacyAIModule::DiplomacyAIModule(void* param, int value)
     : AIModule("Diplomacy AI", 0x3EB, value, param)
@@ -49,8 +15,6 @@ DiplomacyAIModule::DiplomacyAIModule(void* param, int value)
         this->changeableTable[i] = 1;
     }
 }
-
-extern int __cdecl rge_read(int handle, void* buf, int size);
 
 DiplomacyAIModule::DiplomacyAIModule(int value, int file)
     : AIModule("Diplomacy AI", 0x3EB, value, 0), md(0)
@@ -80,11 +44,11 @@ void DiplomacyAIModule::setMainDecisionAI(MainDecisionAIModule* value)
 int DiplomacyAIModule::update(int)
 {
     int i = 1;
-    char* player = *(char**)((char*)this->md + 0xF0);
-    char* world = *(char**)(player + 0x3C);
-    if (*(short*)(world + 0x3C) > i) {
+    RGE_Player* player = this->md->player;
+    RGE_Game_World* world = player->world;
+    if (world->player_num > i) {
         do {
-            if (i != *(short*)(player + 0x4A)) {
+            if (i != player->id) {
                 if (isAlly(i)) {
                     if (!isAlliedWithMe(i))
                         changeStance(i, 0, 1);
@@ -94,15 +58,13 @@ int DiplomacyAIModule::update(int)
                         changeStance(i, 2, 1);
                 }
             }
-            player = *(char**)((char*)this->md + 0xF0);
+            player = this->md->player;
             ++i;
-            world = *(char**)(player + 0x3C);
-        } while (i < *(short*)(world + 0x3C));
+            world = player->world;
+        } while (i < world->player_num);
     }
     return 1;
 }
-
-extern "C" int __cdecl rge_write(int handle, void* buffer, int count);
 
 int DiplomacyAIModule::save(int param_1) {
     unsigned char* changeableTable = this->changeableTable;
@@ -122,8 +84,9 @@ int DiplomacyAIModule::save(int param_1) {
 
 int DiplomacyAIModule::stance(int player_id, int type) const
 {
-    // BINARY NOTE: this access form preserves the original VC5 register basin.
-    if ((0 < player_id) && (player_id < *(short*)(*(char**)(*(char**)((char*)this->md + 0xF0) + 0x3C) + 0x3C))) {
+    RGE_Player* player = this->md->player;
+
+    if (player_id > 0 && player_id < player->world->player_num) {
         switch (type) {
         case 0:
             return this->dislikeTable[player_id];
@@ -311,43 +274,28 @@ int DiplomacyAIModule::mostHated(int param1, int param2, int param3, int param4)
 
 int DiplomacyAIModule::mostLiked(int param1, int param2) const
 {
-    int result;
-    int delta;
-    int i;
-    int highest;
-    int* like;
-    int player;
-    int world;
-    int obj;
-    int base;
+    int result = -1;
+    int highest = -1;
+    int i = 1;
+    RGE_Player* player = this->md->player;
+    RGE_Game_World* world = player->world;
 
-    i = 1;
-    highest = -1;
-    result = -1;
-    player = *(int*)(*(int*)((char*)this + 0xF0) + 0xF0);
-    world = *(int*)(player + 0x3C);
-    if (i < *(short*)(world + 0x3C)) {
-        delta = 0xFFFFFEE4 - (int)this;
-        like = (int*)((char*)this + 0x120);
+    if (i < world->player_num) {
         do {
-            if (i != *(short*)(player + 0x4A)) {
-                base = delta + *(int*)(world + 0x40);
-                obj = *(int*)((int)like + base);
-                if (*(unsigned char*)(obj + 0x80) != 2) {
+            if (i != player->id) {
+                if (world->players[i]->game_status != 2) {
                     if (param1 <= 0 || param2 != i || isEnemy(i) == 0) {
-                        if (*like > highest) {
+                        if (this->likeTable[i] > highest) {
                             result = i;
-                            highest = *like;
+                            highest = this->likeTable[i];
                         }
                     }
                 }
             }
-            world = *(int*)((char*)this + 0xF0);
+            player = this->md->player;
             ++i;
-            ++like;
-            player = *(int*)(world + 0xF0);
-            world = *(int*)(player + 0x3C);
-        } while (i < *(short*)(world + 0x3C));
+            world = player->world;
+        } while (i < world->player_num);
     }
     return result;
 }

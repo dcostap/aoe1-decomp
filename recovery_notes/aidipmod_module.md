@@ -17,20 +17,19 @@
 ## Source ownership
 
 `src/aidipmod.cpp` is the sole compiler-facing source owner. It contains all 21
-normal definitions in PDB source order. It uses canonical `AIModule` plus the
-reviewed player, world, and virtual-call declarations from `include/aiconmod.h`.
-The module-local `MainDecisionAIModule` declaration preserves its proven player
-member at offset `+0xF0`.
+normal definitions in PDB source order. `include/aidipmod.h` owns only
+`DiplomacyAIModule`. It consumes canonical `MainDecisionAIModule`.
 
-The canonical `AIModule` replacement preserves the reviewed 0xF0 layout and
-virtual slots. Focused module validation found no ABI conflict.
+The source privately consumes the canonical Player, World, victory, and file
+I/O providers. It has no local Main Decision, Player, World, or object layout.
 
 The old wrapper and per-function fragments were structural owners only. The
 migration removes them after the direct module entry points to `src/aidipmod.cpp`.
 
 ## Status
 
-- 20 owners remain `matching`.
+- 19 owners remain `matching`.
+- `0040C100 stance` is `scratch`.
 - `0040C5B0 mostLiked` remains `accepted_drift`.
 - Its approved difference is a two-byte commutative address-formation swap.
   The behavior, size, branches, direct call, cleanup, and boundary remain equal.
@@ -38,6 +37,12 @@ migration removes them after the direct module entry points to `src/aidipmod.cpp
 
 ## Validation
 
-The pre-migration grouped wrapper produced `MATCH` for all 20 registered owners
-and the accepted-drift result for `0040C5B0`. Reunified validation must repeat
-these checks after the direct source-owner update.
+The direct candidate validates 19 registered `MATCH`, `0.0000%` rows. It has
+no comparison, ownership, relocation, or boundary error for a registered row.
+
+`0040C100` differs by 19 bytes after canonical typed Player and World access.
+It has correct ownership, relocations, and boundaries. The natural source is
+kept. The matching claim is removed.
+
+`0040C5B0` now emits `MATCH`, `0.0000%`. It remains accepted drift. This audit
+does not reopen its reviewed status.
