@@ -191,7 +191,7 @@ void TRIBE_Mission_Screen::draw()
             this->render_area->Clear(&this->clip_rect, this->background_color1);
         }
 
-        unsigned char* locked = this->render_area->Lock((char*)"scr_vc::draw", 1);
+        unsigned char* locked = this->render_area->Lock("scr_vc::draw", 1);
         if (locked != 0) {
             if (this->pnl_wid <= 0x280) {
                 this->vc_back_bmp->Draw(this->render_area,
@@ -206,7 +206,7 @@ void TRIBE_Mission_Screen::draw()
                                         this->pnl_x + 0xC5,
                                         this->pnl_y + 0x16B, 0, 0);
             }
-            this->render_area->Unlock((char*)"scr_vc::draw");
+            this->render_area->Unlock("scr_vc::draw");
         }
 
         this->draw_finish();
@@ -234,16 +234,16 @@ long TRIBE_Mission_Screen::action(TPanel* sender, long actionType,
 
         if (sender == this->ok_button) {
             if (this->game_flag != 0) {
-                panel_system.setCurrentPanel((char*)"Game Screen", 0);
+                panel_system.setCurrentPanel("Game Screen", 0);
                 if (rge_base_game->singlePlayerGame() == 1 &&
                     rge_base_game->save_paused == 0) {
                     rge_base_game->set_paused(0, 0);
                 }
             } else {
-                ((TRIBE_Game*)rge_base_game)->create_game_screen();
+                static_cast<TRIBE_Game*>(rge_base_game)->create_game_screen();
             }
 
-            panel_system.destroyPanel((char*)"Mission Dialog");
+            panel_system.destroyPanel("Mission Dialog");
             return 1;
         }
     }
@@ -263,7 +263,7 @@ long TRIBE_Mission_Screen::key_down_action(long param_1, short param_2,
 
     if (this->game_flag == 0 && rge_base_game->prog_info->use_sound != 0 &&
         rge_base_game->sound_system != 0) {
-        rge_base_game->sound_system->stream_file((char*)"voice.wav", 0, 0);
+        rge_base_game->sound_system->stream_file("voice.wav", 0, 0);
     }
     return 1;
 }
