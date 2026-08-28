@@ -274,21 +274,18 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     if (!this->create_text(this, this->pathFindingTitle, 0x260D, 0x1CC,
                            0xBE, 0xD2, 0x1E, 0x0B, 0, 1, 0))
         return;
-    TButtonPanel** path_finding_button = this->pathFindingButton;
     y = 0xE1;
-    for (i = 0; y < 0x14A; ++i, ++path_finding_button) {
+    for (i = 0; i < 3; ++i) {
         string_id = 0x260E + i;
-        // BINARY NOTE: the label array is three words before the button cursor.
-        if (!this->create_text(this,
-                               (TTextPanel**)(path_finding_button - 3),
+        if (!this->create_text(this, &this->pathFindingTitle[i + 1],
                                string_id, 0x1EF, y, 0x78, 0x1E,
                                0x0B, 0, 1, 0))
             return;
-        if (!this->create_radio_button(this, path_finding_button,
+        if (!this->create_radio_button(this, &this->pathFindingButton[i],
                                        0x1CC, y, 0x1E, 0x1E, 0, 0))
             return;
         if (rge_base_game->multiplayerGame())
-            (*path_finding_button)->set_disabled(1);
+            this->pathFindingButton[i]->set_disabled(1);
         y += 0x23;
     }
     for (i = 0; i < 3; ++i)
@@ -462,7 +459,7 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 } else {
                     rge_base_game->prog_info->interface_style = param_3;
                 }
-                ((TRIBE_Game*)rge_base_game)->set_interface_messages();
+                static_cast<TRIBE_Game*>(rge_base_game)->set_interface_messages();
 
                 if (this->rolloverButton[0]->get_state() == 0) {
                     rge_base_game->rollover = 0;
@@ -499,7 +496,8 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                                 comm->GetPlayerName(comm->WhoAmI()));
                             comm->SendChatMsgAll(msg + 4);
                         }
-                        ((TRIBE_Command*)rge_base_game->world->commands)->command_game_speed(new_speed);
+                        static_cast<TRIBE_Command*>(rge_base_game->world->commands)
+                            ->command_game_speed(new_speed);
                         if (rge_base_game->singlePlayerGame() != 0) {
                             rge_base_game->set_game_speed(new_speed);
                         }

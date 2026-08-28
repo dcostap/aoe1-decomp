@@ -36,9 +36,8 @@ unresolved `?s_*@@3PADA` references and adds no string provider.
 
 The statuses remain unchanged:
 
-- `0043B560`: accepted drift. Fresh standalone check rebuilds 2,879 bytes
-  against 2,880 original bytes, with 411 differing bytes, frame `0x2C`, and
-  65 aligned calls.
+- `0043B560`: accepted drift. The fresh grouped check rebuilds 2,879 bytes
+  against 2,880 original bytes, with 313 differing bytes.
 - `0043C0C0`: matching. Fresh standalone check reports `MATCH`, `0.0000%`,
   485 bytes, correct owner symbol, boundaries, relocations, and direct calls.
 - `0043C2B0`: scratch. Fresh standalone check rebuilds 1,601 bytes against
@@ -60,3 +59,10 @@ The constructor and action checks remain documented mismatches:
 python tools/check_function.py --va 0043B560 --rebuild --detail concise
 python tools/check_function.py --va 0043C2B0 --rebuild --detail concise
 ```
+
+## Natural-source correction
+
+The path-finding controls use their typed title and button arrays. They do not
+depend on cross-array cursor arithmetic. The derived game and command calls
+use proven `static_cast` conversions. This keeps the constructor as accepted
+drift and keeps the action as scratch.
