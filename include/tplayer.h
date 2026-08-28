@@ -67,6 +67,9 @@ public:
         long, float, float, float, int);                          // vt[37]
     virtual void analyize_selected_objects();                     // vt[38]
     virtual int get_mouse_pointer_action_vars(int, int&, int&);   // vt[39]
+    virtual RGE_Object_Node* addObject(RGE_Static_Object*, int, int); // vt[55]
+    virtual void removeObject(RGE_Static_Object*, int, int,
+                              RGE_Object_Node*);                  // vt[56]
     virtual void __cdecl logMessage(char*, ...);                  // vt[57]
     virtual void notify(int, int, int, long, long, long);         // vt[58]
     virtual void logStatus(FILE*, int);                           // vt[59]
@@ -98,8 +101,7 @@ public:
 
     void load_master_object(int, short, unsigned char, RGE_Sprite**,
                             RGE_Sound**);
-    void tech_cost(short, short&, short&, short&, short&, short&, short&,
-                   short&);
+    void tech_cost(short, short&, short&, short&, short&, short&, short&);
     void obj_cost(short, char**, short&, short&, short&, short&, short&,
                   short&, float);
     RGE_Static_Object* find_obj(short, RGE_Static_Object*);

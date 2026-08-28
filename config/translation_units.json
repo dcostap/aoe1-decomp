@@ -1817,19 +1817,24 @@
       }
     },
     {
-      "name": "tplayer_civilization",
-      "source": "src/tplayer_tu.cpp",
+      "name": "tplayer",
+      "source": "src/tplayer.cpp",
+      "module": "tplayer",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "00512620": "src/matching/00512620_update_dopplegangers.cpp",
-        "00514510": "src/matching/00514510_objectCost.cpp",
-        "00514700": "src/matching/00514700_changeToHumanPlayer.cpp",
-        "00514710": "src/matching/00514710_changeToComputerPlayer.cpp",
-        "00515DF0": "src/matching/00515DF0_intelligentCivSelection.cpp",
-        "00519D40": "src/matching/00519D40_random_start.cpp"
+        "00512620": "src/tplayer.cpp",
+        "00514510": "src/tplayer.cpp",
+        "00514700": "src/tplayer.cpp",
+        "00514710": "src/tplayer.cpp",
+        "00515DF0": "src/tplayer.cpp",
+        "00519D40": "src/tplayer.cpp"
       },
       "symbols": {
+        "00512620": "?update_dopplegangers@TRIBE_Player@@UAEXXZ",
         "00514510": "?objectCost@TRIBE_Player@@QAEXHHPAVResourceItem@@H@Z",
+        "00514700": "?changeToHumanPlayer@TRIBE_Player@@UAEXXZ",
+        "00514710": "?changeToComputerPlayer@TRIBE_Player@@UAEXXZ",
+        "00515DF0": "?intelligentCivSelection@TRIBE_Player@@QAEHHHH@Z",
         "00519D40": "?random_start@TRIBE_Gaia@@UAEXXZ"
       }
     },

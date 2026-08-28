@@ -12,6 +12,7 @@
 
 class TribeMainDecisionAIModule;
 class TRIBE_Player;
+class TacticalAIGroup;
 
 class BuildAIModule : public AIModule {
 public:
@@ -53,6 +54,19 @@ public:
     void removeBuiltItem(int);
     int insert(int, int, int);
     int addItem(RGE_Static_Object*, int);
+    int addBuiltItem(RGE_Static_Object*, int);
+    char* buildListName();
+    int buildListLength();
+    int numberItemsIntoBuildList();
+    char* lastBuildItemRequested();
+    char* currentBuildItemRequested();
+    char* nextBuildItemRequested();
+    void cancelBuildItem(int, int, int, float, float, int, int);
+    int loadBuildList(char*, RGE_Player*);
+    int addTrainedUnit(int, int, int, int);
+    int cancelTrainUnit(int, int, int, int);
+    int addResearch(int, int, int);
+    int cancelResearch(int, int, int, int);
 };
 
 typedef char taimdmd_build_size[(sizeof(TribeBuildAIModule) == 0x5C0) ? 1 : -1];
@@ -81,6 +95,12 @@ public:
         BuildItem*, int, int, float, char*, int, int, int, int,
         PlacementState&, unsigned long);
     void storeLot(int, unsigned char, unsigned char, unsigned char);
+    void loadLearnInfo(char*);
+    void loadUnitHistory();
+    void unitsThatAreMostBuilt(int*, int*);
+    int fullyExploredZone(int);
+    int closestUnexploredTile(int, float, float, float*, float*);
+    int addImportantObject(int);
 };
 
 typedef char taimdmd_information_size[
@@ -98,13 +118,19 @@ public:
     void setLogHistory(int);
     void setup(MainDecisionAIModule*);
     int update(int);
+    int loadRules(char*);
+    void setDifficultyLevel(int);
+    int rule(int);
+    void setRule(int, int);
+    char* ruleSetName();
+    int strategicNumber(int);
 };
 
 typedef char taimdmd_strategy_size[(sizeof(TribeStrategyAIModule) == 0x5F8) ? 1 : -1];
 
 class TribeTacticalAIModule : public TacticalAIModule {
 public:
-    char bytes[0x100C - sizeof(TacticalAIModule)];
+    char bytes[0x100C - sizeof(TacticalAIModule) - 12];
 
     TribeTacticalAIModule(void*, int);
     TribeTacticalAIModule(int, int);
@@ -120,6 +146,27 @@ public:
     void removeObject(int);
     int update(int);
     void detask(int);
+    int neededResource(int) const;
+    int neededResourceAmount(int) const;
+    int actualGathererCount(int);
+    int desiredGathererCount(int);
+    int numberGatherers() const;
+    int desiredNumberGatherers() const;
+    int numberCivilianExplorers() const;
+    int desiredNumberCivilianExplorers() const;
+    int numberCivilians() const;
+    int numberSoldiers() const;
+    int numberBoats() const;
+    int resourceDifference(int);
+    char* updateAreaName();
+    TacticalAIGroup* groupUnitIsIn(int);
+    int removeGroup(int);
+    int taskExplorer(int, float, float);
+    void trackUnitGather(int, int, int);
+    void notify(int, int, int, long, long, long);
+    int attackEnabledValue;
+    int lastUpdateAreaTimeValue;
+    int averageUpdateAreaTimeValue;
 };
 
 typedef char taimdmd_tactical_size[(sizeof(TribeTacticalAIModule) == 0x100C) ? 1 : -1];
