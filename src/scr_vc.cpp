@@ -6,7 +6,7 @@
 #include "../include/scr_vc.h"
 #include "../include/pnl_lst.h"
 #include "../include/pnl_btn.h"
-#include "../include/pnl_scbr.h"
+#include "../include/Pnl_scbr.h"
 #include "../include/Picture.h"
 #include "../include/basegame.h"
 #include "../include/tribegam.h"

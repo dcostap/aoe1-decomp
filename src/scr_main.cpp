@@ -3,7 +3,7 @@
 // 426, 435, 443, 451, 480).
 
 #include "../include/scr_main.h"
-#include "../include/Pnl_btn.h"
+#include "../include/pnl_btn.h"
 #include "../include/pnl_lst.h"
 #include "../include/pnl_pic.h"
 #include "../include/basegame.h"

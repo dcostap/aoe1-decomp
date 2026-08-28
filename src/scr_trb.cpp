@@ -3,7 +3,7 @@
 
 #include <string.h>
 #include "../include/scr_trb.h"
-#include "../include/Pnl_btn.h"
+#include "../include/pnl_btn.h"
 #include "../include/pnl_lst.h"
 #include "../include/pnl_pic.h"
 #include "../include/basegame.h"
