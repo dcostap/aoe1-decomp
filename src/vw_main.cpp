@@ -21,11 +21,21 @@
 #include "../include/visible.h"
 #include "../include/m_ac_obj.h"
 #include "../include/act_obj.h"
+#include "../include/sprite.h"
 #include "../include/task_lst.h"
 #include "../include/vw_main.h"
 
 #include <stdlib.h>
 #include <string.h>
+
+extern int allow_user_commands;
+extern int do_draw_log;
+extern const float DAT_00577900;
+extern const float DAT_00577904;
+extern const float DAT_00577908;
+extern "C" void __cdecl color_log(unsigned char, unsigned char, int);
+extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
+extern void __cdecl write_draw_log2(char*);
 
 RGE_Main_View::RGE_Main_View() : RGE_View() {
     this->map_view = 0;

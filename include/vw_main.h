@@ -2,7 +2,6 @@
 #define AOE1_VW_MAIN_H
 
 #include "view.h"
-#include "sprite.h"
 
 struct DisplaySelectedObjRec {
     int active;
@@ -11,12 +10,6 @@ struct DisplaySelectedObjRec {
     unsigned long duration;
     int select_type;
 };
-
-extern int allow_user_commands;
-extern int do_draw_log;
-extern const float DAT_00577900;
-extern const float DAT_00577904;
-extern const float DAT_00577908;
 
 class RGE_Main_View : public RGE_View {
 public:
@@ -62,9 +55,5 @@ public:
 
 typedef char vw_main_main_view_size_check[
     (sizeof(RGE_Main_View) == 0x380) ? 1 : -1];
-
-extern "C" void __cdecl color_log(unsigned char, unsigned char, int);
-extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
-extern void __cdecl write_draw_log2(char*);
 
 #endif
