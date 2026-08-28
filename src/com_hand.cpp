@@ -1,4 +1,4 @@
-#include <dplay.h>
+#include "../third_party/directplay/include/dplay.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,6 +20,7 @@
 #include "../include/main.h"
 #include "../include/taunt.h"
 #include "../include/world.h"
+#include "../include/tworld.h"
 
 
 
@@ -136,12 +137,12 @@ int TCommunications_Handler::CalculatePlayerRange(void) {
 
     while (static_cast<int>(i) <= static_cast<int>(maxPlayers)) {
         if (this->IsPlayerHuman(i) || this->IsPlayerComputer(i)) {
-            int high = static_cast<int>(this->PlayerOptions).HighPlayerNumber;
+            int high = static_cast<int>(this->PlayerOptions.HighPlayerNumber);
             if (high <= static_cast<int>(i))
                 high = i;
             this->PlayerOptions.HighPlayerNumber = static_cast<unsigned short>(high);
 
-            int low = static_cast<int>(this->PlayerOptions).LowPlayerNumber;
+            int low = static_cast<int>(this->PlayerOptions.LowPlayerNumber);
             if (low >= static_cast<int>(i))
                 low = i;
             this->PlayerOptions.LowPlayerNumber = static_cast<unsigned short>(low);
@@ -547,7 +548,7 @@ void* TCommunications_Handler::get_command(void) {
 }
 
 unsigned char TCommunications_Handler::new_command(void* command, int size) {
-    return static_cast<unsigned char>(NewCommand)(command, size, 0);
+    return static_cast<unsigned char>(NewCommand(command, size, 0));
 }
 
 
@@ -721,7 +722,7 @@ int TCommunications_Handler::DoCycle(ulong param_1)
     this->ReceiveGameMessages();
     this->LastPlayerCommunication[this->Me] = now;
 
-    uint doneTurn = static_cast<uint>(this->PlayerOptions).CommandTurnIncrement + this->current_turn;
+    uint doneTurn = static_cast<uint>(this->PlayerOptions.CommandTurnIncrement) + this->current_turn;
     uint turn = this->current_turn;
     if (this->Multiplayer != 0 && this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW &&
         this->LastTurnAck[this->Me] != turn) {
@@ -729,9 +730,10 @@ int TCommunications_Handler::DoCycle(ulong param_1)
         MSGFORMAT_ALL_DONE doneMsg;
         if (this->current_turn > 6) {
             
-            doneMsg.Speed[0] = this->Speed->GetHighLatencyCenti();
-            doneMsg.Speed[1] = static_cast<uchar>(this->Speed)->GetAvgFrameRate();
-            this->Speed->SetPlayerTurnSpeed(this->Me, doneMsg.Speed[1], doneMsg.Speed[0]);
+            doneMsg.HighLatencyCenti = this->Speed->GetHighLatencyCenti();
+            doneMsg.FrameRateMsec = this->Speed->GetAvgFrameRate();
+            this->Speed->SetPlayerTurnSpeed(this->Me, doneMsg.FrameRateMsec,
+                                            doneMsg.HighLatencyCenti);
         }
     comm_last_sent_time = debug_timeGetTime(com_hand_source_path, 0xBF9);
         doneMsg.Command = 'D';
@@ -847,7 +849,7 @@ int TCommunications_Handler::DoCycle(ulong param_1)
                     wk++;
                 } while (i <= static_cast<uint>(this->MaxGamePlayers));
             }
-            rge_base_game->world->send_zone_score_info();
+            static_cast<TRIBE_World*>(rge_base_game->world)->send_zone_score_info();
             L->Log("Initialize Player List");   
             i = 1;
             if (this->MaxGamePlayers >= i) {
@@ -1676,8 +1678,7 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long size,
         memcpy(&checksum, data, sizeof(checksum));
         this->Sync->Add(player, checksum.WorldTime, checksum.WorldTurn,
                         checksum.Random, checksum.cs1, checksum.cs2,
-                        checksum.cs3, checksum.cs4, checksum.cs5,
-                        checksum.PingInitiated);
+                        checksum.cs3, checksum.cs4, checksum.cs5);
         return 1;
     }
     case 0x3E:
@@ -1959,14 +1960,14 @@ void TCommunications_Handler::DropDeadPlayer(unsigned int player, unsigned long 
                 i++;
             } while (i <= this->MaxGamePlayers);
         }
-        rge_base_game->world->send_zone_score_info();
+        static_cast<TRIBE_World*>(rge_base_game->world)->send_zone_score_info();
         L->Log("Initialize Player List");
         i = 1;
         if (this->MaxGamePlayers >= 1) {
             do {
                 this->InitPlayerInformation(i, 0, " ", " ");
                 i++;
-            } while (static_cast<int>(i) <= static_cast<int>(static_cast)<unsigned int>this->MaxGamePlayers);
+                } while (static_cast<int>(i) <= static_cast<int>(this->MaxGamePlayers));
         }
         this->PlayerOptions.NeedsToBeSent = 0;
         this->PlayerOptions.LastSentTime = 0;
@@ -1981,7 +1982,7 @@ void TCommunications_Handler::DropDeadPlayer(unsigned int player, unsigned long 
         this->CalculatePlayerRange();
         return;
     }
-    if (static_cast<int>(this->PlayerOptions).ProgramState >= 5 && this->current_turn >= 6) {
+    if (static_cast<int>(this->PlayerOptions.ProgramState) >= 5 && this->current_turn >= 6) {
         L->Log("Player quit the game.");
         rge_base_game->get_string(0x4BD, msg_str, 0x32);
         sprintf(this->TBuff, msg_str, player, this->FriendlyName[player].Text);
@@ -2102,7 +2103,7 @@ void TCommunications_Handler::EvaluateSystemMessage(unsigned long unused_1, char
         if (i > this->MaxGamePlayers)
             i = 0;
         if (i != 0 && this->PlayerOptions.ProgramState == 3) {
-            this->InitPlayerInformation(i, static_cast<int>(create_player).dpId,
+            this->InitPlayerInformation(i, static_cast<int>(create_player.dpId),
                                          create_player.dpnName.lpszShortNameA,
                                          create_player.dpnName.lpszLongNameA);
             this->PlayerOptions.dcoID[i] = message_id_home;
@@ -2350,7 +2351,7 @@ long TCommunications_Handler::TXChat(unsigned int player, unsigned char* destMap
 {
     MSGFORMAT_CHAT cht;
     if (this->Multiplayer == 0) {
-        this->Chat->AddChatMsg(this->FriendlyName[player], text, 1);
+        this->Chat->AddChatMsg(this->FriendlyName[player].Text, text, 1);
         L->Log("Local chat single player add: %s", text);
         return 0;
     }
@@ -2372,7 +2373,7 @@ long TCommunications_Handler::TXChat(unsigned int player, unsigned char* destMap
     }
 
     if (cht.DestPlayers[this->Me] == 'Y') {
-        this->Chat->AddChatMsg(this->FriendlyName[player], text, 1);
+        this->Chat->AddChatMsg(this->FriendlyName[player].Text, text, 1);
         L->Log("Local chat add: %s", text);
     }
 
@@ -2750,6 +2751,7 @@ int TCommunications_Handler::CountWaitingMessages() {
         RESENDER* entry = &this->Resend[slot];
         if (entry->Serial != 0) {
             L->Log(
+                "GTD: Ser #%d Slot=%d Cmd='%c' Len=%d not acknowledged",
                 entry->Serial,
                 slot,
                 static_cast<int>(static_cast<signed char>(entry->ResendMsg[0])),
@@ -2859,7 +2861,7 @@ int TCommunications_Handler::StoreIncoming(uint SerialNumber, char* InBuff, uint
         do {
             HOLDER* scan_h = &this->OnHold[i];
             if (scan_h->Length != 0) {
-                L->Log("S#%d  Ser#%d FromID=%d Len=%d  CMD='%c' B0=%d B1=%d", i, scan_h->Serial, scan_h->dcoFromID, scan_h->Length, static_cast<int>(scan_h)->HoldMsg[0], static_cast<int>(scan_h)->HoldMsg[0], static_cast<int>(scan_h)->HoldMsg[1]);
+                L->Log("S#%d  Ser#%d FromID=%d Len=%d  CMD='%c' B0=%d B1=%d", i, scan_h->Serial, scan_h->dcoFromID, scan_h->Length, static_cast<int>(scan_h->HoldMsg[0]), static_cast<int>(scan_h->HoldMsg[0]), static_cast<int>(scan_h->HoldMsg[1]));
             }
             i++;
         } while (i < 501);
@@ -3187,7 +3189,7 @@ int TCommunications_Handler::SendStoredMessages()
     RESENDER* selected;
     unsigned int* map;
     unsigned int* dest;
-    unsigned int* dco;
+    unsigned long* dco;
     unsigned int slot;
     unsigned int count;
     unsigned int elapsed;
@@ -3258,7 +3260,7 @@ int TCommunications_Handler::SendStoredMessages()
             return 0;
         }
     } else {
-        limit = comm_resend_latency_base + this->Speed->HighestLatencyMsec * 2;
+        limit = comm_resend_latency_base + this->Speed->GetHighestLatencyMsec() * 2;
         if (limit < comm_resend_min_delay + 500U) {
             limit = comm_resend_min_delay + 500U;
         }
@@ -3705,7 +3707,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
     out->Sequence = 0;
     out->Command = 0;
     sync_turn = this->current_turn +
-                static_cast<uint>(this->PlayerOptions).CommandTurnIncrement;
+                static_cast<uint>(this->PlayerOptions.CommandTurnIncrement);
     out->ExecuteOnTurn = sync_turn;
 
     uint* dest_map = this->DestMap;
@@ -4606,7 +4608,7 @@ int TCommunications_Handler::TogglePauseGame() {
 
 
 
-void TCommunications_Handler::RequestPauseGamestatic_cast<int> {
+void TCommunications_Handler::RequestPauseGame(int param_1) {
     if (this->Multiplayer == 0) {
         this->LocalPauseGame(this->Me);
         return;
@@ -4630,7 +4632,7 @@ void TCommunications_Handler::RequestPauseGamestatic_cast<int> {
 
 
 
-void TCommunications_Handler::RequestResumeGamestatic_cast<int> {
+void TCommunications_Handler::RequestResumeGame(int param_1) {
     if (this->Multiplayer == 0) {
         L->Log("Resume requested");
         this->LocalResumeGame(this->Me);
@@ -4912,7 +4914,7 @@ int TCommunications_Handler::LaunchLobbyGame()
     char* pn = 0;
     int r;
 
-    r = Lobby->CheckForLobbyLaunch(&np);
+    r = Lobby->CheckForLobbyLaunch(np);
     if (r == 0) {
         LobbyLaunched = r;
         return r;
@@ -6133,7 +6135,7 @@ int TCommunications_Handler::SendZoneMessage(char* msg, unsigned long param_2) {
 
     GUID zone_guid = rge_base_game->prog_info->zone_guid;
 
-    long result = this->Lobby->SendZoneMessage(msg, param_2, &zone_guid);
+    long result = this->Lobby->SendZoneMessage(msg, param_2, zone_guid);
 
     if (result == 0) {
         return 1;

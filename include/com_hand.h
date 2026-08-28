@@ -3,6 +3,7 @@
 
 #include <windows.h>
 #include "com_types.h"
+#include "../third_party/directplay/include/dplay.h"
 
 typedef unsigned int uint;
 typedef unsigned long ulong;
@@ -10,10 +11,6 @@ typedef unsigned char uchar;
 struct IDirectPlay2;
 struct IDirectPlay3;
 struct _GUID;
-#ifndef __DPLAY_INCLUDED__
-struct DPSESSIONDESC2;
-struct DPNAME;
-#endif
 
 // Canonical Com_hand.cpp context for six grouped owners.
 // Evidence: exact 00425A40, 00426350, and 00426530, plus behavior-reviewed

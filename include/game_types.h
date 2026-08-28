@@ -40,16 +40,22 @@ class DIDEVICEOBJECTDATA;
 class DIDEVICEOBJECTINSTANCEA;
 class DIPROPHEADER;
 class DKeyString;
+#ifndef __DPLAY_INCLUDED__
 class DPCAPS;
 class DPCHAT;
+#endif
 class DPCOMPOUNDADDRESSELEMENT;
+#ifndef __DPLAY_INCLUDED__
 class DPCREDENTIALS;
+#endif
 class DPLAPPINFO;
+#ifndef __DPLAY_INCLUDED__
 class DPLCONNECTION;
 class DPNAME;
 class DPSECURITYDESC;
 class DPSESSIONDESC;
 class DPSESSIONDESC2;
+#endif
 class DString;
 class DiplomacyAIModule;
 class DisplaySelectedObjRec;

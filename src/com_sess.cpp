@@ -94,7 +94,9 @@ int TCommunications_Sessions::Refresh() {
     desc.guidApplication = gAppGUID;
     desc.dwSize = sizeof(desc);
 
-    return glpSERV->EnumSessions(&desc, 0, EnumSessionCallback, this, 1);
+    return glpSERV->EnumSessions(&desc, 0,
+                                 (LPDPENUMSESSIONSCALLBACK2)EnumSessionCallback,
+                                 this, 1);
 }
 
 int __stdcall EnumSessionCallback(DPSESSIONDESC2* desc,

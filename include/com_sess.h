@@ -1,51 +1,8 @@
 #ifndef AOE1_COM_SESS_H
 #define AOE1_COM_SESS_H
 
-struct _GUID {
-    unsigned long Data1;
-    unsigned short Data2;
-    unsigned short Data3;
-    unsigned char Data4[8];
-};
-
-typedef _GUID GUID;
-
-struct DPSESSIONDESC2;
-typedef int (__stdcall *DPENUMSESSIONSCALLBACK)(DPSESSIONDESC2*,
-                                                  unsigned long*,
-                                                  unsigned long,
-                                                  void*);
-
-class IUnknown {
-public:
-    virtual long __stdcall QueryInterface(const GUID* iid, void** object) = 0;
-    virtual unsigned long __stdcall AddRef() = 0;
-    virtual unsigned long __stdcall Release() = 0;
-};
-
-class IDirectPlay2 : public IUnknown {
-public:
-    virtual long __stdcall AddPlayerToGroup(unsigned long group,
-                                            unsigned long player) = 0;
-    virtual long __stdcall Close() = 0;
-    virtual long __stdcall CreateGroup() = 0;
-    virtual long __stdcall CreatePlayer() = 0;
-    virtual long __stdcall DeletePlayerFromGroup(unsigned long group,
-                                                 unsigned long player) = 0;
-    virtual long __stdcall DestroyGroup(unsigned long group) = 0;
-    virtual long __stdcall DestroyPlayer(unsigned long player) = 0;
-    virtual long __stdcall EnumGroupPlayers() = 0;
-    virtual long __stdcall EnumGroups() = 0;
-    virtual long __stdcall EnumPlayers() = 0;
-    virtual long __stdcall EnumSessions(DPSESSIONDESC2* desc,
-                                        unsigned long timeout,
-                                        DPENUMSESSIONSCALLBACK callback,
-                                        void* context,
-                                        unsigned long flags) = 0;
-};
-
-class IDirectPlay3 : public IDirectPlay2 {
-};
+#include <windows.h>
+#include "../third_party/directplay/include/dplay.h"
 
 class TCommunications_Handler {
 public:
@@ -59,7 +16,7 @@ public:
 struct SEs {
     char Name[255];
     char Password[255];
-    unsigned char pad_01FE[2];
+    unsigned char Reserved[2];
     GUID AppGUID;
     GUID SessGUID;
     unsigned long CurrentPlayers;
@@ -68,23 +25,6 @@ struct SEs {
     unsigned long User2;
     unsigned long User3;
     unsigned long User4;
-};
-
-struct DPSESSIONDESC2 {
-    unsigned long dwSize;
-    unsigned long dwFlags;
-    GUID guidInstance;
-    GUID guidApplication;
-    unsigned long dwMaxPlayers;
-    unsigned long dwCurrentPlayers;
-    char* lpszSessionNameA;
-    char* lpszPasswordA;
-    unsigned long dwReserved1;
-    unsigned long dwReserved2;
-    unsigned long dwUser1;
-    unsigned long dwUser2;
-    unsigned long dwUser3;
-    unsigned long dwUser4;
 };
 
 class TCommunications_Sessions {
@@ -122,9 +62,9 @@ extern GUID gAppGUID;
 extern TCommunications_Handler* g_com_handler;
 
 int __stdcall EnumSessionCallback(DPSESSIONDESC2* desc,
-                                 unsigned long* timeout,
-                                 unsigned long flags,
-                                 void* context);
+                                   unsigned long* timeout,
+                                   unsigned long flags,
+                                   void* context);
 
 typedef char com_sess_guid_size_check[(sizeof(GUID) == 0x10) ? 1 : -1];
 typedef char com_sess_entry_size_check[(sizeof(SEs) == 0x238) ? 1 : -1];
