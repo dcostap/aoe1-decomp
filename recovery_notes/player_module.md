@@ -48,4 +48,15 @@ The scratch rows have these byte differences.
 `00471760`: 43 and two boundary escapes. `004718C0`: 1.
 `00471940`: 1. `00471AA0`: 1.
 
+## Selection-count source repair
+
+The command methods use one natural `short count` output local.
+They pass that local to `get_selected_objects_to_command` without casts.
+
+This repair covers `command_make_move`, `command_make_work`, and `command_make_do`.
+It also covers `command_stop`, `command_formation`, and `command_stand_ground`.
+
+The full 117-body candidate still matches all 106 registered exact owners.
+The remaining eleven rows keep their recorded status and mismatch data.
+
 The removed wrapper and its context had no remaining consumers.

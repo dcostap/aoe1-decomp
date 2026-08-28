@@ -1844,11 +1844,10 @@ int RGE_Player::get_mouse_pointer_action_vars(int param1, int& param2, int& para
 
 unsigned char RGE_Player::command_make_move(RGE_Static_Object* target, float x, float y) {
     RGE_Static_Object** list;
-    // BINARY NOTE: The selection helper writes a short count into a dword home.
-    int list_num;
-    if (get_selected_objects_to_command(&list, (short*)&list_num, -1, -1, -1, -1)) {
+    short count;
+    if (get_selected_objects_to_command(&list, &count, -1, -1, -1, -1)) {
         list[0]->play_move_sound();
-        this->world->commands->command_order(list, list_num, target, x, y);
+        this->world->commands->command_order(list, count, target, x, y);
         free(list);
         return 1;
     }
@@ -1857,25 +1856,25 @@ unsigned char RGE_Player::command_make_move(RGE_Static_Object* target, float x, 
 
 unsigned char RGE_Player::command_make_work(RGE_Static_Object* target, float x, float y) {
     RGE_Static_Object** list;
-    short local_4[2];
+    short count;
     int i;
 
-    if (this->get_selected_objects_to_command(&list, local_4, -1, -1, -1, -1)) {
+    if (this->get_selected_objects_to_command(&list, &count, -1, -1, -1, -1)) {
         RGE_Master_Static_Object* master = list[0]->get_command_master(target, x, y, 0);
         if (master != 0) {
             master->play_command_sound();
         }
-        this->world->commands->command_work(list, local_4[0], target, x, y);
+        this->world->commands->command_work(list, count, target, x, y);
         if (target != 0) {
             i = 0;
-            if (local_4[0] > 0) {
+            if (count > 0) {
                 do {
                     this->sendUnitAIOrder((int)this->id, list[i]->id, 0x2bd,
                         target->id, (int)target->owner->id,
                         target->world_x, target->world_y, 1.0f,
                         target->master_obj->los * 0.5f, 0, 0, 100);
                     ++i;
-                } while (i < local_4[0]);
+                } while (i < count);
             }
         }
         free(list);
@@ -1886,15 +1885,13 @@ unsigned char RGE_Player::command_make_work(RGE_Static_Object* target, float x, 
 
 unsigned char RGE_Player::command_make_do(RGE_Static_Object* target, float x, float y) {
     RGE_Static_Object** list;
-    // BINARY NOTE: The helper writes a short count into a dword home.
-    // The command call forwards that complete home.
-    int local_count;
-    if (get_selected_objects_to_command(&list, (short*)&local_count, -1, -1, -1, -1)) {
+    short count;
+    if (get_selected_objects_to_command(&list, &count, -1, -1, -1, -1)) {
         RGE_Master_Static_Object* master = list[0]->get_command_master(target, x, y, 0);
         if (master != 0) {
             master->play_command_sound();
         }
-        this->world->commands->command_order(list, local_count, target, x, y);
+        this->world->commands->command_order(list, count, target, x, y);
         free(list);
         return 1;
     }
@@ -1903,11 +1900,11 @@ unsigned char RGE_Player::command_make_do(RGE_Static_Object* target, float x, fl
 
 unsigned char RGE_Player::command_stop(void) {
     RGE_Static_Object** list;
-    short local_4[2];
+    short count;
 
-    if (this->get_selected_objects_to_command(&list, local_4, 3, -1, -1, -1)) {
+    if (this->get_selected_objects_to_command(&list, &count, 3, -1, -1, -1)) {
         (*list)->play_move_sound();
-        this->world->commands->command_order(list, local_4[0], 0, 0.0f, 0.0f);
+        this->world->commands->command_order(list, count, 0, 0.0f, 0.0f);
         free(list);
         return 1;
     }
@@ -1946,9 +1943,10 @@ unsigned char RGE_Player::command_formation(int formation) {
 
     if (formation >= 0 && formation <= 5) {
         int iVar1 = formation;
-        if (this->get_selected_objects_to_command(&list, (short*)&formation, -1, -1, -1, -1)) {
+        short count;
+        if (this->get_selected_objects_to_command(&list, &count, -1, -1, -1, -1)) {
             (*list)->play_move_sound();
-            this->world->commands->command_formation(list, *(short*)&formation, iVar1);
+            this->world->commands->command_formation(list, count, iVar1);
             free(list);
             return 1;
         }
@@ -1959,11 +1957,11 @@ unsigned char RGE_Player::command_formation(int formation) {
 
 unsigned char RGE_Player::command_stand_ground() {
     RGE_Static_Object** list;
-    int listNum;
+    short count;
 
-    if (get_selected_objects_to_command(&list, (short*)&listNum, -1, -1, -1, -1)) {
+    if (get_selected_objects_to_command(&list, &count, -1, -1, -1, -1)) {
         list[0]->play_move_sound();
-        this->world->commands->command_group_ai_order(this->id, this->id, list, (short)listNum, 0x2d5, -1, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
+        this->world->commands->command_group_ai_order(this->id, this->id, list, count, 0x2d5, -1, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
         free(list);
         return 1;
     }
