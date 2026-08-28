@@ -1,6 +1,8 @@
 #ifndef AOE1_PICTURE_H
 #define AOE1_PICTURE_H
 
+#include "drawarea.h"
+
 struct LINEINFO {
     int AllTrans;
     int MidSolid;
@@ -20,52 +22,6 @@ struct TRANSINFO {
 };
 
 typedef char picture_trans_info_size_check[(sizeof(TRANSINFO) == 0x18) ? 1 : -1];
-
-struct tagBITMAPINFOHEADER {
-    unsigned long biSize;
-    long biWidth;
-    long biHeight;
-    unsigned short biPlanes;
-    unsigned short biBitCount;
-    unsigned long biCompression;
-    unsigned long biSizeImage;
-    long biXPelsPerMeter;
-    long biYPelsPerMeter;
-    unsigned long biClrUsed;
-    unsigned long biClrImportant;
-};
-
-struct tagRGBQUAD {
-    unsigned char rgbBlue;
-    unsigned char rgbGreen;
-    unsigned char rgbRed;
-    unsigned char rgbReserved;
-};
-
-struct BITMAPINFO256 {
-    tagBITMAPINFOHEADER bmiHeader;
-    tagRGBQUAD bmiColors[256];
-};
-
-typedef char picture_bitmap_info_size_check[
-    (sizeof(BITMAPINFO256) == 0x428) ? 1 : -1];
-
-class TDrawArea {
-public:
-    void* DrawSystem;
-    void* Wnd;
-    unsigned char* Bits;
-    BITMAPINFO256* BitmapInfo;
-    void* Bitmap;
-    void* OldBitmap;
-    int Width;
-    int Height;
-    int Pitch;
-    int Orien;
-    char ClipRect[0x10];
-};
-
-typedef char picture_draw_area_size_check[(sizeof(TDrawArea) == 0x38) ? 1 : -1];
 
 class TPicture {
 public:
@@ -97,13 +53,5 @@ public:
 };
 
 typedef char picture_size_check[(sizeof(TPicture) == 0x20) ? 1 : -1];
-
-void __cdecl rge_read(int file_handle, void* buffer, int size);
-extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
-extern "C" void* __cdecl malloc(unsigned int size);
-extern "C" void __cdecl free(void* block);
-extern "C" void __cdecl DibFree(void* dib);
-void __cdecl DibCheckTrans(BITMAPINFO256* dib, TRANSINFO* info,
-    unsigned char* bits);
 
 #endif

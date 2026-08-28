@@ -1,5 +1,4 @@
 #include "../include/pnl_pic.h"
-#include "../include/game_globals.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -10,7 +9,7 @@ TPicturePanel::TPicturePanel() : TPanel() {
     this->keep_loaded = 1;
     this->size_from_pic = 0;
     this->own_pic = 0;
-    this->pic_type = 0;
+    this->pic_type = Picture;
     this->pic = 0;
     this->shape = 0;
     this->handle_mouse_input = 0;
@@ -64,7 +63,7 @@ void TPicturePanel::set_picture(TShape* new_shape, long new_res_id) {
     this->shape = new_shape;
     this->res_id = new_res_id;
     this->own_pic = 0;
-    this->set_redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
 }
 
 // PDB: Pnl_pic.cpp:105-147
@@ -85,7 +84,7 @@ int TPicturePanel::load_pic()
 
     if (this->shape) {
         if (this->shape->is_loaded()) {
-            this->pic_type = 1;
+            this->pic_type = Shape;
             this->own_pic = 1;
             return 1;
         }
@@ -102,7 +101,7 @@ int TPicturePanel::load_pic()
 
     if (this->pic) {
         if (this->pic->Dib) {
-            this->pic_type = 0;
+            this->pic_type = Picture;
             this->own_pic = 1;
             return 1;
         }

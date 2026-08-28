@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 extern unsigned char shape_file_first;
+extern void __cdecl rge_read(int file_handle, void* buffer, int size);
 extern unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 extern void __cdecl rge_write(int fd, void* buffer, int size);
 tagBITMAPINFOHEADER* __cdecl DibOpenFile(char* name);
@@ -15,6 +16,9 @@ int __cdecl RESFILE_Extract_to_File(unsigned long type, unsigned long id,
     char* name, FILE*& file);
 void __cdecl DibMapToPalette(tagBITMAPINFOHEADER* dib, void* palette,
     int palette_id, int palette_flags);
+void __cdecl DibFree(tagBITMAPINFOHEADER* dib);
+int __cdecl DibCheckTrans(BITMAPINFO256* dib, TRANSINFO* info,
+    unsigned char* bits);
 extern void __cdecl TransDibBlt(void* dst_info, void* dst_bits, void* clip,
     long x, long y, int width, int height, void* src_info, void* src_bits,
     void* trans_info, int sx, int sy, int sw, int sh, int flag, int dst_x,

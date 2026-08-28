@@ -6,7 +6,7 @@
   "header": "include/pnl_pic.h",
   "functions": {
     "0047A1D0": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/0047A1D0_TPicturePanel.md"
     },
     "0047A250": { "status": "matching" },

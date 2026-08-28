@@ -44,3 +44,18 @@ indexing cleanup. The known accepted six-byte drift remained at `0046E270`.
 The other eight exact owners returned `MATCH`, with zero relocation target
 mismatches. `0046DE30` and `0046E3E0` are scratch and are removed from the
 direct exact registry. No focused rebuild was run after this candidate check.
+
+## Header ownership repair
+
+`include/Picture.h` uses `include/drawarea.h` for Windows bitmap records,
+`BITMAPINFO256`, and `TDrawArea`. It no longer copies these owner types.
+
+`LINEINFO`, `TRANSINFO`, and `TPicture` remain Picture module types. Their
+PDB sizes are 0x10, 0x18, and 0x20 bytes.
+
+Source-local declarations now own the DIB and file helper declarations used
+by `Picture.cpp`. This keeps foreign declarations out of the public header.
+
+Focused checks of constructor, destructor, load, aligned width, draw, and tile
+all report `MATCH` after this header change. The existing scratch and
+accepted-drift rows remain unchanged.

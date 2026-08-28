@@ -2901,10 +2901,16 @@
         "0047A250": "src/Pnl_pic.cpp",
         "0047A2A0": "src/Pnl_pic.cpp",
         "0047A3A0": "src/Pnl_pic.cpp",
+        "0047A3E0": "src/Pnl_pic.cpp",
         "0047A5B0": "src/Pnl_pic.cpp",
         "0047A630": "src/Pnl_pic.cpp"
       },
       "symbols": {
+        "0047A250": "??1TPicturePanel@@UAE@XZ",
+        "0047A2A0": "?setup@TPicturePanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPADJHH@Z",
+        "0047A3A0": "?set_picture@TPicturePanel@@QAEXPAVTShape@@J@Z",
+        "0047A3E0": "?load_pic@TPicturePanel@@IAEHXZ",
+        "0047A5B0": "?free_pic@TPicturePanel@@IAEXXZ",
         "0047A630": "?draw@TPicturePanel@@UAEXXZ"
       }
     },
