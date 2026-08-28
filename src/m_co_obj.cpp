@@ -20,7 +20,6 @@ RGE_Master_Combat_Object::RGE_Master_Combat_Object(
     RGE_Master_Combat_Object* source, int do_setup)
     : RGE_Master_Action_Object(source, 0)
 {
-    *(void**)this = (void*)0x5704C0;
     if (do_setup != 0) {
         setup(source);
     }
