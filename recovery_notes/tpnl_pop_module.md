@@ -45,3 +45,18 @@ for the original 668-byte body and differs by 430 positional bytes. Its frame
 is 0x120 instead of 0x114, and 13 bytes escape the original boundary. All 23
 calls align, and the protected owner symbol matches. The current natural source
 has no supported module-local repair for the frame and API lowering basin.
+
+## Canonical owner validation
+
+The panel header owns only `TRIBE_Panel_Pop`. The source uses the canonical
+panel, draw-area, base-game, player, world, and tribe-game owners.
+
+The source uses typed population attribute indices and the derived game queue
+owner. It uses the derived player and world types at their proven calls. The
+panel fields use their original names and rely on natural alignment.
+
+The candidate module check was run with
+`python tools/validate_candidate_tu.py --proposal build/candidate_tus/tpnl_pop_canonical/proposal.json --output-dir build/candidate_tus/tpnl_pop_canonical`.
+All eight registered normal owners and the compiler-generated scalar deleting
+destructor match. The observed `render_to_image_buffer` owner remains scratch:
+it differs by 430 bytes and has a 0x120 frame versus the original 0x114 frame.

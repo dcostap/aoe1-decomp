@@ -1,15 +1,7 @@
 #ifndef AOE1_TPNL_POP_H
 #define AOE1_TPNL_POP_H
 
-// PDB owner: tpnl_pop.cpp.
-// BLOCKER: tpnl_pop.cpp still uses its former copied field aliases.
-// Normalize that source before its next exact validation.
-
 #include "panel.h"
-#include "drawarea.h"
-#include "basegame.h"
-#include "player.h"
-#include "world.h"
 
 class TRIBE_Player;
 class TRIBE_World;
@@ -26,16 +18,15 @@ public:
     int pop;
     int max_pop;
     unsigned char mode;
-    unsigned char pad_119[3];
     float timer;
-    HRGN image_clip_region;
-    TDrawArea* image_buffer;
-    tagRECT image_rect;
-    tagRECT used_image_rect;
-    tagRECT used_screen_rect;
-    int image_text_active;
-    long last_ib_width;
-    long last_ib_height;
+    void* image_clip_region;
+    TDrawArea* ImageBuffer;
+    tagRECT ImageRect;
+    tagRECT UsedImageRect;
+    tagRECT UsedScreenRect;
+    int ImageTextActive;
+    int LastIBWidth;
+    int LastIBHeight;
 
     TRIBE_Panel_Pop(TDrawArea*, TPanel*);
     virtual ~TRIBE_Panel_Pop();
@@ -50,7 +41,7 @@ protected:
     int render_to_image_buffer();
 };
 
-typedef char tribe_panel_pop_size_check[
+typedef char tpnl_pop_panel_size_check[
     (sizeof(TRIBE_Panel_Pop) == 0x164) ? 1 : -1];
 
 #endif

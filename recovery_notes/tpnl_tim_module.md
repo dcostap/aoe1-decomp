@@ -32,3 +32,19 @@ by 439 positional bytes. The original body has a `0x114` frame. The current
 source is the simplest typed reconstruction retained after prior ABI, layout,
 local, and declaration-order probes. This source-shape migration does not
 attempt byte tuning.
+
+## Canonical owner validation
+
+The panel header owns only `TRIBE_Panel_Time`. The source uses the canonical
+panel, draw-area, base-game, player, world, color, and tribe-player owners.
+
+The source uses the original game-time and image-cache field names. It uses
+typed world-player indexing, the canonical color-table identifier, and the
+canonical countdown and held-time fields. String declarations remain in this
+source owner only.
+
+The candidate module check was run with
+`python tools/validate_candidate_tu.py --proposal build/candidate_tus/tpnl_tim_canonical/proposal.json --output-dir build/candidate_tus/tpnl_tim_canonical`.
+All ten registered normal owners and the compiler-generated scalar deleting
+destructor match. The observed `render_to_image_buffer` owner remains scratch:
+it differs by 439 bytes and has a 0x11c frame versus the original 0x114 frame.
