@@ -796,23 +796,23 @@
       "symbols": {}
     },
     {
-      "name": "act_atak_prefix",
-      "source": "src/act_atak_tu.cpp",
+      "name": "act_atak",
+      "source": "src/act_atak.cpp",
+      "module": "act_atak",
       "flags": "config/flags/00401170_RGE_Action_Attack.rsp",
       "owners": {
-        "00401000": "src/matching/00401000_RGE_Action_Attack.cpp",
-        "004013A0": "src/matching/004013A0_RGE_Action_Attack.cpp",
-        "004013B0": "src/matching/004013B0_save.cpp",
-        "004014B0": "src/matching/004014B0_first_in_stack.cpp",
-        "00401540": "src/matching/00401540_stop.cpp",
-        "00401550": "src/matching/00401550_set_state.cpp",
-        "00401AD0": "src/matching/00401AD0_work.cpp",
-        "00401EC0": "src/matching/00401EC0_do_attack.cpp",
-        "00401F00": "src/matching/00401F00_copy_obj_sprites.cpp"
+        "00401000": "src/act_atak.cpp",
+        "004013A0": "src/act_atak.cpp",
+        "004013B0": "src/act_atak.cpp",
+        "00401540": "src/act_atak.cpp",
+        "00401AD0": "src/act_atak.cpp"
       },
       "symbols": {
         "00401000": "??0RGE_Action_Attack@@QAE@HPAVRGE_Action_Object@@@Z",
-        "004013A0": "??1RGE_Action_Attack@@UAE@XZ"
+        "004013A0": "??1RGE_Action_Attack@@UAE@XZ",
+        "004013B0": "?save@RGE_Action_Attack@@UAEXH@Z",
+        "00401540": "?stop@RGE_Action_Attack@@UAEHXZ",
+        "00401AD0": "?work@RGE_Action_Attack@@UAEHPAVRGE_Static_Object@@MMM@Z"
       }
     },
     {

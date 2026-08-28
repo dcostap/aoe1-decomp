@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "name": "act_atak",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Act_atak.cpp",
+  "source": "src/act_atak.cpp",
+  "header": "include/act_atak.h",
+  "functions": {
+    "00401000": { "status": "matching" },
+    "00401170": { "status": "accepted_drift" },
+    "004012B0": { "status": "accepted_drift" },
+    "004013A0": { "status": "matching" },
+    "004013B0": { "status": "matching" },
+    "004014B0": { "status": "scratch" },
+    "00401540": { "status": "matching" },
+    "00401550": { "status": "scratch" },
+    "00401780": { "status": "scratch" },
+    "00401AD0": { "status": "matching" },
+    "00401B30": { "status": "scratch" },
+    "00401EC0": { "status": "scratch" },
+    "00401F00": { "status": "scratch" }
+  }
+}

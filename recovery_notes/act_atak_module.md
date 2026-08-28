@@ -1,77 +1,58 @@
-# Act_atak header checkpoint
+# Act Attack module recovery
 
 ## Scope
 
-This checkpoint changes only `include/act_atak.h` and this note. The held
-`src/act_atak.cpp` source is unchanged.
+`src/act_atak.cpp` owns the normal `Act_atak.cpp` bodies in PDB order.
+It replaces the fragment wrapper and all per-function owners.
 
-The header owns only `RGE_Action_Attack`. It includes `action.h`. It forward
-declares the pointer types used by the class. It does not define Combat,
-Master Combat, Move Action, Visible Map, or UnitAIModule.
+The PDB source path is `C:\msdev\work\age1_x1\Act_atak.cpp`.
+`RGE_Action_Attack` owns the body sequence from `00401000` through `00401F00`.
+`00401150` is a compiler-generated vector deleting destructor.
 
-## PDB and type evidence
+## Canonical dependencies
 
-The PDB source is
-`C:\\msdev\\work\\age1_x1\\Act_atak.cpp`.
+The module uses `act_atak.h` for derived action fields and virtual methods.
+It uses `action.h` through that header for the base action owner.
 
-The class owner is `RGE_Action_Attack`. Its normal owner sequence is:
+It uses canonical action, combat, master, object, player, sprite, task, visible,
+world, and Unit AI headers. It uses `rge_fio.h` for binary stream calls.
 
-- `00401000` constructor from a file handle;
-- `00401170` target constructor;
-- `004012B0` coordinate constructor;
-- `004013A0` destructor;
-- `004013B0` `save`;
-- `004014B0` `first_in_stack`;
-- `00401540` `stop`;
-- `00401550` `set_state`;
-- `00401780` `update`;
-- `00401AD0` `work`;
-- `00401B30` `ready_to_attack`;
-- `00401EC0` `do_attack`; and
-- `00401F00` `copy_obj_sprites`.
+The source defines no local class, field overlay, virtual shim, or raw offset.
+Combat and master conversions use their reviewed inheritance chains.
 
-`00401150` is the compiler-generated vector deleting destructor. It has no
-source body.
+`do_attack` is private. Its PDB symbol is
+`?do_attack@RGE_Action_Attack@@AAEXXZ`.
+`ready_to_attack` remains protected.
 
-`RGE_Action` owns the first `0x40` bytes and its virtual order. The derived
-fields start at `+0x40`:
-
-- `move_sprite` at `+0x40`;
-- `fight_sprite` at `+0x44`;
-- `wait_sprite` at `+0x48`;
-- `range` at `+0x4C`;
-- `min_range` at `+0x50`;
-- `missile_id` at `+0x54`;
-- `fire_missile_at_frame` at `+0x56`;
-- `need_to_attack` at `+0x58`;
-- `was_same_owner` at `+0x59`; and
-- `indirect_fire_flag` at `+0x5A`.
-
-The three byte fields end at `+0x5B`. VC5 aligns the complete class size to
-`0x5C`, so the header has no explicit end-padding member.
-
-The PDB virtual owners match the declarations for `save`, `first_in_stack`,
-`update`, `stop`, `work`, `copy_obj_sprites`, and `set_state`. The constructors
-match the observed parameter lists. The coordinate constructor has eleven
-parameters after `this`: an action object, three coordinates, three sprites,
-two ranges, and two shorts.
-
-## Minimal VC5 probe
-
-Probe source: `build/header_probes/act_atak_size.cpp`.
+## Focused candidate gate
 
 Command:
 
-`CL.EXE @config/flags/default.rsp /Iinclude /Fobuild/header_probes/act_atak_size.obj build/header_probes/act_atak_size.cpp`
+`python tools/validate_candidate_tu.py --proposal build/act_atak_natural_proposal.json --output-dir build/candidate_tus/act_atak_natural`
 
-The probe contains this compile-time assertion:
+The final report has five exact owner rows. Each has `MATCH`, `0.0000%`,
+matching ownership, zero relocation mismatches, and zero boundary escapes:
 
-`sizeof(RGE_Action_Attack) == 0x5C`
+- `00401000` file constructor;
+- `004013A0` destructor;
+- `004013B0` save;
+- `00401540` stop; and
+- `00401AD0` work.
 
-Result:
+The generated `00401150` row also matches exactly.
 
-- return code: `0`;
-- compiler output: `act_atak_size.cpp`; and
-- object SHA-256: `fa4fe866df120e0d5deebe6da8fbc2c2a8cfa0b4c5f7ee921f5397d868aadb00`.
+## Retained status
 
-No source-module compile or function validator ran.
+`00401170` and `004012B0` remain accepted drift. The migration does not reopen
+their review status.
+
+`004014B0`, `00401550`, `00401780`, `00401B30`, `00401EC0`, and `00401F00`
+remain scratch. The focused candidate records their current mismatches.
+
+`004014B0` and `00401B30` read canonical `UnitAIModule::currentOrderValue`.
+The executable calls the const `currentOrder()` owner instead. The current
+owner-only Unit AI header lacks that const declaration. These rows cannot claim
+exactness until that ABI surface is published.
+
+Do not restore the old local Unit AI or visible-map declarations. They target
+the wrong direct symbols.
