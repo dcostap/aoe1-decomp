@@ -6,6 +6,7 @@
 // and master object. Combat is not referenced by this module.
 
 #include "../include/act_bird.h"
+#include "../include/act_obj.h"
 #include "../include/act_list.h"
 #include "../include/act_move.h"
 #include "../include/map.h"
