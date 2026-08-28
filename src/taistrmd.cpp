@@ -9,6 +9,12 @@
 // owns the proved class layouts and virtual surfaces used by this file.
 
 #include "../include/taistrmd.h"
+#include "../include/basegame.h"
+#include "../include/player.h"
+#include "../include/tplayer.h"
+#include "../include/stat_obj.h"
+#include "../include/m_s_obj.h"
+#include "../include/victory.h"
 
 // PDB lines 34-265; VA 004E6E10.
 // 004E6E10 VictoryConditionRuleSystem::VictoryConditionRuleSystem
@@ -269,10 +275,10 @@ VictoryConditionRuleSystem::~VictoryConditionRuleSystem() {}
 extern "C" int __cdecl strcmp(const char* left, const char* right);
 extern "C" unsigned int __cdecl strlen(const char* text);
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
-extern "C" void* __cdecl fopen(const char* filename, const char* mode);
-extern "C" char* __cdecl fgets(char* buffer, int count, void* stream);
+extern "C" FILE* __cdecl fopen(const char* filename, const char* mode);
+extern "C" char* __cdecl fgets(char* buffer, int count, FILE* stream);
 extern "C" int __cdecl sscanf(const char* buffer, const char* format, ...);
-extern "C" int __cdecl fclose(void* stream);
+extern "C" int __cdecl fclose(FILE* stream);
 extern "C" char* __cdecl strstr(const char* text, const char* search);
 extern "C" int __cdecl _unlink(const char* filename);
 
@@ -286,7 +292,7 @@ int VictoryConditionRuleSystem::loadRules(char* filename)
     int ruleIndex;
     int ruleValue;
     char temp[256];
-    void* file;
+    FILE* file;
 
     if (strcmp(filename, "NONE") != 0 &&
         filename != 0 &&
@@ -713,14 +719,6 @@ int VictoryConditionRuleSystem::stopExecution(TRIBE_Player*, int) {
 // float-argument ftol wrapper, and top-level initialized locals; those forms
 // changed the call set, introduced stack arguments, or allocated the frame too
 // early and were not retained.
-
-class RGE_Base_Game {
-public:
-    int scenarioGame();
-};
-
-extern RGE_Base_Game* rge_base_game;
-
 
 struct ScaleLocals {
     float scale1;
@@ -1560,7 +1558,7 @@ int TribeStrategyAIModule::save(int fd)
 
 // PDB lines 1405-1407; VA 004EA130.
 char* TribeStrategyAIModule::ruleSetName() {
-    return this->ruleSetName_;
+    return this->ruleSetNameValue;
 }
 
 // PDB lines 1412-1420; VA 004EA140.
@@ -1575,12 +1573,8 @@ int TribeStrategyAIModule::loadRules(char* name) {
     return ((VictoryConditionRuleSystem*)((char*)this + 0x268))->loadRules(this->ruleSetNameValue);
 }
 
-// PDB lines 1425-1428; VA 004EA180.
-void logCommonHistory(AIModule* ai, const char* fmt, int value1, int value2);
-
-
 void TribeStrategyAIModule::setRule(int rule, int value) {
-    logCommonHistory((AIModule*)this, "Setting SN[%d] to %d.", rule, value);
+    this->logCommonHistory((char*)"Setting SN[%d] to %d.", rule, value);
     this->vcRules.setRule(rule, value);
 }
 
@@ -1596,47 +1590,47 @@ void TribeStrategyAIModule::setDifficultyLevel(int param) {
 
 // PDB lines 1449-1451; VA 004EA1F0.
 int TribeStrategyAIModule::currentVictoryCondition() const {
-    return this->currentVictoryCondition_;
+    return this->currentVictoryConditionValue;
 }
 
 // PDB lines 1456-1458; VA 004EA200.
 int TribeStrategyAIModule::targetID() const {
-    return this->targetID_;
+    return this->targetIDValue;
 }
 
 // PDB lines 1463-1465; VA 004EA210.
 int TribeStrategyAIModule::targetType() const {
-    return this->targetType_;
+    return this->targetTypeValue;
 }
 
 // PDB lines 1470-1472; VA 004EA220.
 int TribeStrategyAIModule::secondTargetID() const {
-    return this->secondTargetID_;
+    return this->secondTargetIDValue;
 }
 
 // PDB lines 1477-1479; VA 004EA230.
 int TribeStrategyAIModule::secondTargetType() const {
-    return this->secondTargetType_;
+    return this->secondTargetTypeValue;
 }
 
 // PDB lines 1484-1486; VA 004EA240.
 const Waypoint& TribeStrategyAIModule::targetPoint1() const {
-    return this->targetPoint1_;
+    return this->targetPoint1Value;
 }
 
 // PDB lines 1491-1493; VA 004EA250.
 const Waypoint& TribeStrategyAIModule::targetPoint2() const {
-    return this->targetPoint2_;
+    return this->targetPoint2Value;
 }
 
 // PDB lines 1498-1500; VA 004EA260.
 int TribeStrategyAIModule::targetAttribute() const {
-    return this->targetAttribute_;
+    return this->targetAttributeValue;
 }
 
 // PDB lines 1505-1507; VA 004EA270.
 int TribeStrategyAIModule::targetNumber() const {
-    return this->targetNumber_;
+    return this->targetNumberValue;
 }
 
 // PDB lines 1512-1608; VA 004EA280.
