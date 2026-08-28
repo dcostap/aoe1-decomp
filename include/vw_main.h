@@ -3,6 +3,9 @@
 
 #include "view.h"
 
+class TRIBE_Player;
+class TRIBE_Master_Building_Object;
+
 struct DisplaySelectedObjRec {
     int active;
     int id;
@@ -55,5 +58,28 @@ public:
 
 typedef char vw_main_main_view_size_check[
     (sizeof(RGE_Main_View) == 0x380) ? 1 : -1];
+
+// tvw_main.cpp owns the derived game-view input and wall-placement methods.
+// The base layout and virtual surface remain owned by vw_main.cpp/view.cpp.
+class TRIBE_Main_View : public RGE_Main_View {
+public:
+    virtual long mouse_left_up_action(long, long, int, int);
+    virtual long mouse_left_dbl_click_action(long, long, int, int);
+    virtual long mouse_right_up_action(long, long, int, int);
+    virtual int pick_through_fog(RGE_Static_Object*);
+    virtual int pick_weight(RGE_Static_Object*, int);
+    virtual void draw_multi_object_outline();
+    virtual int command_place_object(long, long, int);
+    virtual int command_make_do(long, long, int, short);
+    virtual int command_place_multi_object(long, long, long, long, int);
+
+protected:
+    int draw_wall_outline(long, long, TRIBE_Master_Building_Object*, long);
+    void place_line_of_walls(TRIBE_Player*, TRIBE_Master_Building_Object*,
+                             int, int, int, int);
+};
+
+typedef char vw_main_tribe_main_view_size_check[
+    (sizeof(TRIBE_Main_View) == 0x380) ? 1 : -1];
 
 #endif

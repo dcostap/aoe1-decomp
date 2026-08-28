@@ -7790,19 +7790,29 @@
     },
     {
       "name": "tvw_main",
-      "source": "src/tvw_main_tu.cpp",
+      "source": "src/tvw_main.cpp",
+      "module": "tvw_main",
       "flags": "config/flags/default.rsp",
       "owners": {
-        "0052D060": "src/matching/0052D060_draw_wall_outline.cpp",
-        "0052D1F0": "src/matching/0052D1F0_command_place_object.cpp",
-        "0052D320": "src/matching/0052D320_command_place_multi_object.cpp",
-        "0052D4F0": "src/matching/0052D4F0_place_line_of_walls.cpp",
-        "0052DCE0": "src/matching/0052DCE0_pick_through_fog.cpp",
-        "0052DD10": "src/matching/0052DD10_pick_weight.cpp",
-        "0052DE20": "src/matching/0052DE20_command_make_do.cpp",
-        "0052DE40": "src/matching/0052DE40_mouse_left_dbl_click_action.cpp"
+        "0052D060": "src/tvw_main.cpp",
+        "0052D1F0": "src/tvw_main.cpp",
+        "0052D320": "src/tvw_main.cpp",
+        "0052D4F0": "src/tvw_main.cpp",
+        "0052DCE0": "src/tvw_main.cpp",
+        "0052DD10": "src/tvw_main.cpp",
+        "0052DE20": "src/tvw_main.cpp",
+        "0052DE40": "src/tvw_main.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "0052D060": "?draw_wall_outline@TRIBE_Main_View@@IAEHJJPAVTRIBE_Master_Building_Object@@J@Z",
+        "0052D1F0": "?command_place_object@TRIBE_Main_View@@UAEHJJH@Z",
+        "0052D320": "?command_place_multi_object@TRIBE_Main_View@@UAEHJJJJH@Z",
+        "0052D4F0": "?place_line_of_walls@TRIBE_Main_View@@IAEXPAVTRIBE_Player@@PAVTRIBE_Master_Building_Object@@HHHH@Z",
+        "0052DCE0": "?pick_through_fog@TRIBE_Main_View@@UAEHPAVRGE_Static_Object@@@Z",
+        "0052DD10": "?pick_weight@TRIBE_Main_View@@UAEHPAVRGE_Static_Object@@H@Z",
+        "0052DE20": "?command_make_do@TRIBE_Main_View@@UAEHJJHF@Z",
+        "0052DE40": "?mouse_left_dbl_click_action@TRIBE_Main_View@@UAEJJJHH@Z"
+      }
     },
     {
       "name": "com_q",
