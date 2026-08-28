@@ -42,6 +42,22 @@ Run the registered translation-unit checks after each source-shape repair.
 A clean compile reported one existing uninitialized-local warning in the
 recovered `loadLearnInfo` path. No inline assembly or synthetic owner is used.
 
+## Ownership hold
+
+Keep the rejected owner-clean packet out of main. It embeds complete
+`ConstructionAIModule` at `TribeMainDecisionAIModule +0x6C4`. The full type is
+`0x314`. The prior context preserves the PDB-proven later offsets
+`tacticalAI +0x1146C` and `aiPlayer +0x1256C`. The rejected header shifts them
+to `+0x11780` and `+0x12880`.
+
+The shift causes ABI regressions for `004D9970`, `004D9A90`, `004D9B20`,
+`004DA190`, `004DA1C0`, `004DE1F0`, and `004DE4A0`. The first two remaining
+rows, `004D9110` and `004D9160`, differ by one SIB recolor byte each.
+
+Do not use a size-one local view or any offset-preserving carrier. It is a
+foreign layout. Taiinf resumes only after the Taimd dependency chain supplies
+canonical Main Decision and Tactical ownership.
+
 ## Legacy wrapper cleanup
 
 The legacy `src/information_dropsites_tu.cpp` wrapper included the taiinfmd
