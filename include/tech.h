@@ -23,6 +23,10 @@ public:
     TRIBE_Tech* base_tech;
     RGE_Player* owner;
 
+    TRIBE_Player_Tech(int, TRIBE_Tech*, RGE_Player*, unsigned char);
+    TRIBE_Player_Tech(TRIBE_Tech*, RGE_Player*, unsigned char);
+    ~TRIBE_Player_Tech();
+
     unsigned char research(short, float);
     unsigned char start_research(short, unsigned char, short*);
     unsigned char cancel_research(short, unsigned char);

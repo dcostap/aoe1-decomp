@@ -8,7 +8,6 @@ class TRIBE_Player_Tech;
 class TribeMainDecisionAIModule;
 class TRIBE_History_Info;
 class ResourceItem;
-class Trade_Avail;
 
 class Item_Avail {
 public:
@@ -27,6 +26,16 @@ public:
 
 typedef char item_avail_size_check[
     (sizeof(Item_Avail) == 0x28) ? 1 : -1];
+
+class Trade_Avail {
+public:
+    RGE_Player* player;             // +0x00
+    RGE_Static_Object* dock;        // +0x04
+    float inventory;                // +0x08
+};
+
+typedef char trade_avail_size_check[
+    (sizeof(Trade_Avail) == 0x0C) ? 1 : -1];
 
 class TRIBE_Player : public RGE_Player {
 public:

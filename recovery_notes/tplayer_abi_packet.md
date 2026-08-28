@@ -74,13 +74,16 @@ RGE Player, World, Map, object, and Victory classes. It cannot compose with
 `player.h`, `world.h`, and the object owner headers. Publish a no-copy AI
 owner surface before the Player source uses that class.
 
-`TRIBE_Master_Fish_Object`, `TRIBE_Master_Projectile_Object`, and
-`Trade_Avail` have no canonical headers. `TRIBE_Player::load_master_object`
-and `interface_trade_avail` need those declarations. Route them to their
-owners.
+`Trade_Avail` is a `tplayer.cpp` record. `tplayer.h` owns its three fields:
+`RGE_Player*`, `RGE_Static_Object*`, and `float`. Its size is `0x0C`.
 
-`TRIBE_Command` remains held. It needs the canonical Master Building owner.
-Do not use `tcommand_context.h` from `tplayer.cpp`.
+PDB owner `00512A90` uses existing canonical master types. Type `'F'` allocates
+`0x164` bytes and calls `TRIBE_Master_Combat_Object`. Type `'P'` allocates
+`0x17C` bytes and calls `TRIBE_Master_Building_Object`. Do not create Fish or
+Projectile types for these cases.
+
+`TRIBE_Command` remains held until its owner header lands. Master Building now
+has `tm_b_obj.h`. Do not use `tcommand_context.h` from `tplayer.cpp`.
 
 Do not create direct `src/tplayer.cpp` until these providers land. The old
 candidate needs local carriers and raw layouts. It is not a valid source
