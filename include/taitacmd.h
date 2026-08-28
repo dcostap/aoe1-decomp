@@ -6,6 +6,7 @@
 #include "ai_attack_state.h"
 #include "airesitm.h"
 #include "aitacmod.h"
+#include "infmap.h"
 #include "waypoint.h"
 
 typedef unsigned char uchar;
@@ -17,11 +18,6 @@ extern "C" unsigned long debug_timeGetTime(char*, int);
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" void* __cdecl operator_new(unsigned int);
 extern "C" void __cdecl operator_delete(void*);
-
-struct XYPoint {
-    int x;
-    int y;
-};
 
 struct XYZPoint {
     int x;
@@ -57,13 +53,6 @@ class TribeInformationAIModule;
 class TribeStrategyAIModule;
 class UnitAIModule;
 class ObjectMemory;
-class InfluenceMap {
-public:
-    int setValue(int, int, int, int, unsigned char);
-    int setValue(int, int);
-    int decrementValue(int, int, int, int, unsigned char);
-};
-
 TacticalAIGroup* createGroup(void* self, int arg);
 
 template <class T>

@@ -12,6 +12,7 @@ The module header owns the reviewed class and layout declarations.
 It consumes the canonical `TacticalAIModule` and `AIModule` base surface from
 `aitacmod.h`.
 It consumes canonical `ResourceItem` from `airesitm.h`.
+It consumes canonical `InfluenceMap` and `XYPoint` from `infmap.h`.
 
 Current status:
 
