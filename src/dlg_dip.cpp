@@ -603,13 +603,11 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
 
                 if (panel == this->goldTributeButton[index]) {
                     if (this->check_gold() == 0) {
-                        cost = cost - -1.0f;
+                        cost += 1.0f;
                         if (rge_base_game->get_player()->attributes[3] -
                                 this->goldTotal >= cost * 100.0f) {
-                            this->goldTributeAmount[index] =
-                                this->goldTributeAmount[index] - -100.0f;
-                            this->goldTotal =
-                                this->goldTotal - cost * -100.0f;
+                            this->goldTributeAmount[index] += 100.0f;
+                            this->goldTotal += cost * 100.0f;
                         } else {
                             float amount =
                                 (rge_base_game->get_player()->attributes[3] -
@@ -640,13 +638,11 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
 
                 if (panel == this->woodTributeButton[index]) {
                     if (this->check_wood() == 0) {
-                        cost = cost - -1.0f;
+                        cost += 1.0f;
                         if (rge_base_game->get_player()->attributes[4] -
                                 this->woodTotal >= cost * 100.0f) {
-                            this->woodTributeAmount[index] =
-                                this->woodTributeAmount[index] - -100.0f;
-                            this->woodTotal =
-                                this->woodTotal - cost * -100.0f;
+                            this->woodTributeAmount[index] += 100.0f;
+                            this->woodTotal += cost * 100.0f;
                         } else {
                             float amount =
                                 (rge_base_game->get_player()->attributes[4] -
@@ -677,13 +673,11 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
 
                 if (panel == this->foodTributeButton[index]) {
                     if (this->check_food() == 0) {
-                        cost = cost - -1.0f;
+                        cost += 1.0f;
                         if (rge_base_game->get_player()->attributes[0] -
                                 this->foodTotal >= cost * 100.0f) {
-                            this->foodTributeAmount[index] =
-                                this->foodTributeAmount[index] - -100.0f;
-                            this->foodTotal =
-                                this->foodTotal - cost * -100.0f;
+                            this->foodTributeAmount[index] += 100.0f;
+                            this->foodTotal += cost * 100.0f;
                         } else {
                             float amount =
                                 (rge_base_game->get_player()->attributes[0] -
@@ -714,13 +708,11 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
 
                 if (panel == this->stoneTributeButton[index]) {
                     if (this->check_stone() == 0) {
-                        cost = cost - -1.0f;
+                        cost += 1.0f;
                         if (rge_base_game->get_player()->attributes[2] -
                                 this->stoneTotal >= cost * 100.0f) {
-                            this->stoneTributeAmount[index] =
-                                this->stoneTributeAmount[index] - -100.0f;
-                            this->stoneTotal =
-                                this->stoneTotal - cost * -100.0f;
+                            this->stoneTributeAmount[index] += 100.0f;
+                            this->stoneTotal += cost * 100.0f;
                         } else {
                             float amount =
                                 (rge_base_game->get_player()->attributes[2] -
