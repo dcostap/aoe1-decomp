@@ -3,6 +3,7 @@
 
 // Declarations for the original taitacmd.cpp source module.
 
+#include "ai_attack_state.h"
 #include "waypoint.h"
 
 typedef unsigned char uchar;
@@ -247,21 +248,6 @@ struct PlacementState {
     int iterationX;
     int randomInfluence;
     BuildItem* buildItem;
-};
-
-struct AttackState {
-    int bestTargetID;
-    float bestTargetValue;
-    int bestTargetMemoryIndex;
-    int iterationIndex;
-    int attackGroupID;
-    int playID;
-    unsigned char phase;
-    unsigned char pad_19[3];
-    int bestNonWallTargetID;
-    float bestNonWallTargetValue;
-    int bestNonWallTargetMemoryIndex;
-    int active;
 };
 
 class RGE_Visible_Map {

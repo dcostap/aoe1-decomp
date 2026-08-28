@@ -33,6 +33,7 @@ The module header keeps the reviewed `InformationAIModule`, `ManagedArray`,
 `InfluenceMap`, world/player, and `TribeInformationAIModule` layouts.
 `include/taiinf_records.h` owns the PDB-proven ObjectMemory, BuildingLot,
 AttackMemory, QuadrantLog, and ResourceMemory record layouts.
+`include/ai_attack_state.h` owns the PDB-proven AttackState layout.
 
 The record owner uses natural alignment. It has no manual padding carriers.
 The Taiinf grouped candidate remains 58/58 exact after the move.

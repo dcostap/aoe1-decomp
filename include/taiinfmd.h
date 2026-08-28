@@ -5,6 +5,7 @@
 // The PDB order is 004D6AD0, 004D6B70, then 004D7070.
 
 #include "aiplaybook.h"
+#include "ai_attack_state.h"
 #include "infmap.h"
 #include "taiinf_records.h"
 #include "tactical_group.h"
@@ -167,20 +168,6 @@ struct PlacementState {
     int iterationX;
     int randomInfluence;
     BuildItem* buildItem;
-};
-struct AttackState {
-    int bestTargetID;
-    float bestTargetValue;
-    int bestTargetMemoryIndex;
-    int iterationIndex;
-    int attackGroupID;
-    int playID;
-    unsigned char phase;
-    unsigned char _pad_0[3];
-    int bestNonWallTargetID;
-    float bestNonWallTargetValue;
-    int bestNonWallTargetMemoryIndex;
-    int active;
 };
 struct GameInfo;
 class PathingSystem {
