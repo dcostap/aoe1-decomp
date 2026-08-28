@@ -331,8 +331,6 @@ protected:
     short get_border_picture(unsigned char, unsigned char, unsigned char,
                              short, short);
     int get_border_edge_pictures(unsigned char, unsigned char, unsigned char,
-                                 short, short, int*, int*, int*, int*);
-    int get_border_edge_pictures(unsigned char, unsigned char, unsigned char,
                                  short, short, int&, int&, int&, int&);
     RGE_Static_Object* hit_object(RGE_Tile*, short, short, short, short,
                                   tagPOINT*, tagPOINT*, short*, short*,

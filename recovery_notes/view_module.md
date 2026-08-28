@@ -59,3 +59,19 @@ The audit demoted `005381C0` to scratch. `Update_Render_Pointers` now uses
 the canonical pixel buffer and pitch. Its direct candidate result is a
 164-byte mismatch with one boundary escape. The remaining 47 exact rows still
 report `MATCH`, `0.0000%`.
+
+## Final source repair
+
+The source uses C++ `new` and `delete` for View-owned objects. It keeps the
+explicit `TPanel::~TPanel()` call. The original View destructor has two panel
+destructor calls.
+
+The source uses the CRT, I/O, and Windows headers. It has no local CRT, I/O,
+Windows API, allocation, or deallocation declarations.
+
+PDB records only the reference form of `get_border_edge_pictures`. The header
+has only that form. `draw_tile` passes its four result variables as lvalues.
+`set_player` uses `-9999.0f` for both cached view coordinates.
+
+The final direct candidate retains all 47 exact `MATCH`, `0.0000%` rows. It
+has no comparison errors, relocation errors, or boundary errors.

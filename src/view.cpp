@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <io.h>
+#include <fcntl.h>
 
 #include "../include/asp_list.h"
 #include "../include/basegame.h"
@@ -76,13 +78,6 @@ public:
     RGE_SPick_Info* next;
     RGE_SPick_Info* prev;
 };
-
-extern "C" void* __cdecl operator_new(unsigned int size);
-extern "C" void __cdecl operator_delete(void* ptr);
-
-
-extern "C" void* __cdecl calloc(unsigned int, unsigned int);
-
 
 RGE_View::RGE_View()
 {
@@ -161,17 +156,11 @@ RGE_View::RGE_View()
         (DisplaySelectedObjRec*)calloc(8, sizeof(DisplaySelectedObjRec));
 }
 
-
-extern "C" void __cdecl free(void*);
-extern "C" void __cdecl operator_delete(void*);
-
-
 RGE_View::~RGE_View()
 {
     TShape* shape = this->border_line_shape;
     if (shape != 0) {
-        shape->~TShape();
-        operator_delete(shape);
+        delete shape;
         this->border_line_shape = 0;
     }
 
@@ -188,18 +177,15 @@ RGE_View::~RGE_View()
 
     TSpan_List_Manager* span = this->Terrain_Clip_Mask;
     if (span != 0) {
-        span->~TSpan_List_Manager();
-        operator_delete(span);
+        delete span;
     }
     span = this->Terrain_Fog_Clip_Mask;
     if (span != 0) {
-        span->~TSpan_List_Manager();
-        operator_delete(span);
+        delete span;
     }
     span = this->Master_Clip_Mask;
     if (span != 0) {
-        span->~TSpan_List_Manager();
-        operator_delete(span);
+        delete span;
     }
 
     if (this->Tile_Edge_Tables != 0) free(this->Tile_Edge_Tables);
@@ -209,13 +195,11 @@ RGE_View::~RGE_View()
 
     DClipInfo_List* clip = this->prior_objs;
     if (clip != 0) {
-        clip->~DClipInfo_List();
-        operator_delete(clip);
+        delete clip;
     }
     clip = this->futur_objs;
     if (clip != 0) {
-        clip->~DClipInfo_List();
-        operator_delete(clip);
+        delete clip;
     }
 
     for (int i = 0; i < 5; ++i) {
@@ -234,11 +218,6 @@ RGE_View::~RGE_View()
     this->reset_overlay_sprites();
     this->TPanel::~TPanel();
 }
-
-
-extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" void* __cdecl calloc(unsigned int, unsigned int);
-
 
 long RGE_View::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h, unsigned char flag, int calc_count, char* shape_name)
 {
@@ -285,14 +264,6 @@ void RGE_View::set_focus(int focus) {
     }
 }
 
-
-extern "C" int __cdecl _open(const char*, int);
-extern "C" int __cdecl _lseek(int, int, int);
-extern "C" int __cdecl _tell(int);
-extern "C" int __cdecl _read(int, void*, unsigned int);
-extern "C" int __cdecl _close(int);
-extern "C" void* __cdecl calloc(unsigned int, unsigned int);
-
 static const char s_tile_file[] = "DATA2\\TILEEDGE.DAT";
 static const char s_black_tile_file[] = "DATA2\\BLKEDGE.DAT";
 
@@ -307,9 +278,9 @@ void RGE_View::Init_Tile_Edge_Tables()
     int ok;
     Tile_BlackEdge_Table** black_roots;
 
-    fd = _open(s_tile_file, 0x8000);
+    fd = _open(s_tile_file, _O_BINARY);
     if (fd != -1) {
-        _lseek(fd,0,2); len = _tell(fd); this->Tile_Edge_Tables = (Tile_FogEdge_Table**)calloc(1,len); _lseek(fd,0,0); _read(fd,this->Tile_Edge_Tables,len); _close(fd);
+        _lseek(fd,0,SEEK_END); len = _tell(fd); this->Tile_Edge_Tables = (Tile_FogEdge_Table**)calloc(1,len); _lseek(fd,0,SEEK_SET); _read(fd,this->Tile_Edge_Tables,len); _close(fd);
         base = (int)this->Tile_Edge_Tables;
         unsigned char* tile_edge_data = (unsigned char*)this->Tile_Edge_Tables;
         for (i=0;i<0x44;i+=4)
@@ -324,9 +295,9 @@ void RGE_View::Init_Tile_Edge_Tables()
             }
         }
     }
-    fd = _open(s_black_tile_file, 0x8000);
+    fd = _open(s_black_tile_file, _O_BINARY);
     if (fd != -1) {
-        _lseek(fd,0,2); len = _tell(fd); this->Black_Edge_Tables = (Tile_BlackEdge_Table**)calloc(1,len); _lseek(fd,0,0); _read(fd,this->Black_Edge_Tables,len); _close(fd);
+        _lseek(fd,0,SEEK_END); len = _tell(fd); this->Black_Edge_Tables = (Tile_BlackEdge_Table**)calloc(1,len); _lseek(fd,0,SEEK_SET); _read(fd,this->Black_Edge_Tables,len); _close(fd);
         base = (int)this->Black_Edge_Tables;
         unsigned char* black_edge_data = (unsigned char*)this->Black_Edge_Tables;
         black_roots = this->Black_Edge_Tables;
@@ -454,11 +425,6 @@ void RGE_View::display_object_selection(int param_1, int param_2, int param_3, i
 }
 
 
-
-extern "C" void __cdecl operator_delete(void* ptr);
-extern "C" void* __cdecl operator_new(unsigned int size);
-
-
 void RGE_View::set_rect(long a, long b, long c, long d)
 {
     this->TPanel::set_rect(a, b, c, d);
@@ -490,8 +456,7 @@ void RGE_View::delete_surfaces(void) {
 
     area = save_area1;
     if (area != 0) {
-        area->TDrawArea::~TDrawArea();
-        operator_delete(area);
+        delete area;
         save_area1 = 0;
     }
 }
@@ -598,8 +563,8 @@ void RGE_View::set_world(RGE_Game_World* world) {
 
 void RGE_View::set_player(RGE_Player* player) {
     this->player = player;
-    last_view_x = (int)0xC61C3C00;
-    last_view_y = (int)0xC61C3C00;
+    last_view_x = -9999.0f;
+    last_view_y = -9999.0f;
     redraw(2);
 }
 
@@ -670,11 +635,6 @@ int RGE_View::get_selection_area(long& col1, long& row1, long& col2, long& row2,
 
     return 1;
 }
-
-
-
-extern "C" void* __cdecl calloc(unsigned int, unsigned int);
-extern "C" void __cdecl free(void*);
 
 
 void RGE_View::CreateBlitQueue(tagRECT& param_1, tagRECT& param_2, int param_3, int param_4)
@@ -2825,8 +2785,8 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
                 if (this->get_border_edge_pictures(
                         border_type, tile->tile_type,
                         (unsigned char)(border_info >> 4), map_x, map_y,
-                        &left_index, &bottom_index,
-                        &right_index, &retval) != 0) {
+                        left_index, bottom_index,
+                        right_index, retval) != 0) {
                     overlay_available = 1;
                     terrain_draw = 1;
                 }
@@ -2892,8 +2852,8 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
                 if (this->get_border_edge_pictures(
                         border_type, tile->tile_type,
                         (unsigned char)(border_info >> 4), map_x, map_y,
-                        &left_index, &bottom_index,
-                        &right_index, &retval) == 0) {
+                        left_index, bottom_index,
+                        right_index, retval) == 0) {
                     goto mark_neighbors;
                 }
                 if (left_index != -1) {
@@ -3727,9 +3687,6 @@ int RGE_View::hit_tile(RGE_Tile* tile, short sx, short sy,
 }
 
 
-
-extern "C" void __cdecl free(void*);
-
 RGE_Static_Object* RGE_View::hit_object(RGE_Tile* tile, short x, short y, short a, short b,
                                         tagPOINT* p1, tagPOINT* p2, short* out_x, short* out_y,
                                         RGE_Static_Object* skip, unsigned char through_fog)
@@ -3853,10 +3810,6 @@ int RGE_View::start_scroll_view(unsigned char action, long x, long y,
 
     return result;
 }
-
-
-extern "C" __declspec(dllimport) int __stdcall ClientToScreen(void* hWnd, tagPOINT* point);
-extern "C" __declspec(dllimport) int __stdcall SetCursorPos(int x, int y);
 
 int RGE_View::handle_scroll_view(long param_1, long param_2)
 {
@@ -4035,10 +3988,6 @@ int RGE_View::handle_scroll_view(long param_1, long param_2)
     return 0;
 }
 
-
-extern "C" __declspec(dllimport) int __stdcall ClientToScreen(void* hWnd, tagPOINT* point);
-extern "C" __declspec(dllimport) int __stdcall SetCursorPos(int x, int y);
-
 void RGE_View::end_scroll_view() {
     long min_x, max_x, min_y, max_y;
 
@@ -4160,7 +4109,7 @@ void RGE_View::reset_overlay_sprites(void) {
     sprite = extra_sprites;
     while (sprite != 0) {
         next = sprite->next;
-        operator_delete(sprite);
+        delete sprite;
         sprite = next;
     }
     extra_sprites = 0;
@@ -4184,7 +4133,7 @@ void RGE_View::reset_cyclic_overlay_sprites(void) {
                 extra_sprites = sprite->next;
             }
             next = sprite->next;
-            operator_delete(sprite);
+            delete sprite;
             sprite = next;
         } else {
             sprite = sprite->next;
@@ -4197,7 +4146,7 @@ void RGE_View::add_overlay_sprite(TShape* shape, int facet, int world_x, int wor
     Ov_Sprite_Draw_Rec* sprite;
     Ov_Sprite_Draw_Rec* head;
 
-    sprite = (Ov_Sprite_Draw_Rec*)operator_new(0x30);
+    sprite = new Ov_Sprite_Draw_Rec;
     if (sprite != 0) {
         head = extra_sprites;
         sprite->prev = 0;
@@ -4233,10 +4182,6 @@ bool RGE_View::Object_Was_Displayed(int id, bool allow_flagged) {
     return true;
 }
 
-
-extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
-
-
 DClipInfo_List::DClipInfo_List(int init_zone_size, int default_grow_size,
                                int element_size, int ymin, int ymax,
                                int max_draw_levels) {
@@ -4271,10 +4216,6 @@ DClipInfo_List::DClipInfo_List(int init_zone_size, int default_grow_size,
     InitNewZone(init_zone_size);
     Select_Box = 0;
 }
-
-extern "C" void __cdecl free(void* block);
-
-
 DClipInfo_List::~DClipInfo_List(void) {
     int i;
 
@@ -4322,11 +4263,6 @@ void DClipInfo_List::SetCaptureLevel(int min_level, int max_level) {
     Accept_Min_Level = min_level;
     Accept_Max_Level = max_level;
 }
-
-extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
-extern "C" void __cdecl free(void* block);
-
-
 void DClipInfo_List::SetNumZones(int num_zones) {
     DClipInfo_Node** new_zone_ptrs;
     int* new_zone_sizes;
@@ -4352,10 +4288,6 @@ void DClipInfo_List::SetNumZones(int num_zones) {
         Max_Zones = num_zones;
     }
 }
-
-extern "C" void* __cdecl malloc(unsigned int size);
-
-
 void DClipInfo_List::InitNewZone(int zone_size) {
     int zone_index;
     unsigned int alloc_size;
@@ -4675,10 +4607,6 @@ int DClipInfo_List::FreeThread(DClipInfo_Node* head, DClipInfo_Node* tail) {
     this->Free_Head = head;
     return count;
 }
-
-extern "C" void* __cdecl memset(void* dest, int value, unsigned int count);
-
-
 void DClipInfo_List::ReclaimAllNodes(void) {
     memset(Draw_Clip_Nodes, 0, YLine_Size * 4);
     memset(Draw_Level_Head, 0, (Max_Draw_Levels * 4) + 4);
