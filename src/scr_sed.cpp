@@ -90,11 +90,11 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel("Scenari
     char name[260];
     char temp_name[260];
     this->is_multi_player = 0;
-    this->scenario_mode = 0;
-    this->map_type = 0;
-    this->mp_victory_type = 2;
+    this->scenario_mode = ScenarioModeNone;
+    this->map_type = MapTypeNone;
+    this->mp_victory_type = VictoryTypeConquestValue;
     this->brush_size = BrushSizeNone;
-    this->paint_type = 0;
+    this->paint_type = PaintTypeNone;
     this->player_num = 1;
     this->message_type = MessageTypeNone;
     this->SelectedObject = 0;
@@ -1245,9 +1245,9 @@ void TRIBE_Screen_Sed::set_paint_type(PaintType type, int redraw)
             this->paint_terrain_label->set_active(active);
             if (active != 0) {
                 this->set_terrain(static_cast<short>(this->paint_terrain_list->currentLineNumber()));
-                rge_base_game->redraw(9, 0);
+                rge_base_game->set_game_mode(9, 0);
             } else {
-                rge_base_game->redraw(0, 0);
+                rge_base_game->set_game_mode(0, 0);
             }
             break;
         case 2:
@@ -1255,9 +1255,9 @@ void TRIBE_Screen_Sed::set_paint_type(PaintType type, int redraw)
             this->paint_terrain_label->set_active(active);
             if (active != 0) {
                 this->set_elevation(static_cast<short>(this->paint_elevation_list->currentLineNumber()));
-                rge_base_game->redraw(10, 0);
+                rge_base_game->set_game_mode(10, 0);
             } else {
-                rge_base_game->redraw(0, 0);
+                rge_base_game->set_game_mode(0, 0);
             }
             break;
         case 3:
@@ -1271,9 +1271,9 @@ void TRIBE_Screen_Sed::set_paint_type(PaintType type, int redraw)
             }
             if (active != 0) {
                 this->set_elevation(static_cast<short>(this->paint_elevation_list->currentLineNumber()));
-                rge_base_game->redraw(0x13, 0);
+                rge_base_game->set_game_mode(0x13, 0);
             } else {
-                rge_base_game->redraw(0, 0);
+                rge_base_game->set_game_mode(0, 0);
             }
             break;
         }
@@ -1431,7 +1431,7 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
     this->unit_player_list->setCurrentLineNumber(p);
     this->unit_list->empty_list();
     if (this->unit_list_info != 0) {
-        delete[] this->unit_list_info;
+        free(this->unit_list_info);
         this->unit_list_info = 0;
     }
     if (player != 0) {
@@ -1446,7 +1446,8 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
             }
         }
         if (this->unit_list_size == 0) return;
-        this->unit_list_info = new List_Info[this->unit_list_size];
+        this->unit_list_info = static_cast<List_Info*>(
+            calloc(this->unit_list_size, sizeof(List_Info)));
         if (this->unit_list_info == 0) return;
         this->unit_list_info[0].id = -1;
         this->set_string(this->unit_list_info[0].text, 0x2775, 0x14);
@@ -1473,12 +1474,13 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
         }
 
         qsort(this->unit_list_info, this->unit_list_size, 0x66, TRIBE_Screen_Sed_unit_list_compare);
-        char** strings = new char*[this->unit_list_size];
+        char** strings = static_cast<char**>(
+            calloc(this->unit_list_size, sizeof(char*)));
         if (strings == 0) return;
         is_error = 0;
         short selected = 0; // BINARY NOTE: the selected row uses a short home.
         for (i = 0; i < this->unit_list_size; i++) {
-            char* s = new char[100];
+            char* s = static_cast<char*>(calloc(100, sizeof(char)));
             strings[i] = s;
             if (s == 0) { is_error = 1; break; }
             strcpy(s, this->unit_list_info[i].text);
@@ -1489,9 +1491,9 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
             this->unit_list->scroll_cur_line(1, selected, 1);
         }
         for (i = 0; i < this->unit_list_size; i++) {
-            if (strings[i] != 0) delete[] strings[i];
+            if (strings[i] != 0) free(strings[i]);
         }
-        delete[] strings;
+        free(strings);
     }
 }
 
@@ -2317,7 +2319,7 @@ int TRIBE_Screen_Sed::command_new_map(char* scenario_name_in, int is_multi_playe
         player_info.player_id_hash[i] = i;
     }
     player_info.player_id_hash[i] = i;
-    map_info.land.clump_num = 0;
+    map_info.base_terrain = 0;
 
     if (rge_base_game->sound_system != 0) {
         rge_base_game->sound_system->mute = 1;

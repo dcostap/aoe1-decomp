@@ -31,11 +31,12 @@ separate selection coordinates, save-seed state, and text storage.
 `command_new_map` passes the complete `RGE_Map_Gen_Info` record to
 `RGE_Player_Info` and compares the tribe against `master_player_num`.
 
-`set_unit_player` owns its `List_Info` and string storage with C++ arrays. The
-destructor releases the arrays with matching `delete[]` operations. No source
-body uses a raw global address, a diplomacy union, an action random-value
-overlay, or the old map-info record overlay. The action keeps one documented
-integer-to-pointer cast at the PDB-proven event ABI boundary.
+`set_unit_player` owns its `List_Info` and string storage with zeroed
+`calloc` storage and matching `free` operations. It cleans each string after
+partial allocation. No source body uses a raw global address, a diplomacy
+union, an action random-value overlay, or the old map-info record overlay. The
+action keeps one documented integer-to-pointer cast at the PDB-proven event
+ABI boundary.
 
 ## Recovery states
 
@@ -49,19 +50,22 @@ functions, and seven scratch functions:
 - `004A9CC0 set_scenario_mode`: one cursor register allocation differs.
 - `004AA730 set_paint_object_mode`: player and world loads use different
   registers.
-- `004AAB60 set_player`: canonical provider calls change the natural body.
-- `004AB300 set_unit_player`: canonical provider calls change the natural body.
+- `004AAB60 set_paint_type`: the virtual game-mode calls now match the
+  recovered body. The row remains scratch by review status.
+- `004AB300 set_unit_player`: canonical providers and zeroed CRT allocation
+  change the natural body.
 - `004AB670 set_unit`: VC5 exchanges ESI and EDI.
-- `004AB7D0 handle_idle`: canonical provider calls change the natural body.
+- `004AB7D0 key_down_action`: canonical provider calls change the natural body.
 - `004ABCD0 action`: source behavior is recovered, but its large codegen gap
   remains open.
 - `004AD340 command_new_map`: canonical map and world providers change the
-  natural body. The `&map_info` record is correct. The complete canonical
-  record moves `land.clump_num` by two bytes, so the body remains scratch.
+  natural body. The `&map_info` record is correct. It initializes the
+  canonical `base_terrain` field at record offset zero and now matches the
+  grouped candidate. The row remains scratch by review status.
 - `004AD630 command_outline`: VC5 changes zero extension and register
   allocation.
 
-The accepted-drift functions retain their reviewed status. The six scratch
+The accepted-drift functions retain their reviewed status. The seven scratch
 functions remain scratch until new executable evidence or a behavior review
 resolves their natural differences.
 
@@ -79,10 +83,10 @@ no panel copies or size-only fallback classes.
 ## Candidate validation
 
 Candidate: `build/scr_sed_canonical_candidate.json`.
-Report: `build/candidate_tus/scr_sed_final_bb0574f4b/report.json`.
+Report: `build/candidate_tus/scr_sed_repair_17118d4ef_final/report.json`.
 
 The grouped candidate compiled all 47 normal bodies and the generated vector
-deleting destructor. It reports zero comparison errors. It reports zero
-relocation target mismatches for every normal body. The 36 exact bodies have
-zero boundary escapes. The six scratch body boundary values are recorded in
-the recovery states above.
+deleting destructor. It reports zero comparison errors. The 36 registered
+exact bodies have zero relocation target mismatches and zero boundary escapes.
+The seven scratch body boundary values are recorded in the recovery states
+above.

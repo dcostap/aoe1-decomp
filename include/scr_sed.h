@@ -101,12 +101,12 @@ public:
     float py2;
     int CurrentVictory;
     int CurrentPlayer;
-    int SelectRegionFlag;
-    int scenario_mode;
-    int map_type;
-    int mp_victory_type;
+    SelectRegionMode SelectRegionFlag;
+    ScenarioMode scenario_mode;
+    MapType map_type;
+    VictoryType mp_victory_type;
     BrushSize brush_size;
-    int paint_type;
+    PaintType paint_type;
     short player_num;
     MessageType message_type;
     unsigned char need_to_save_flag;

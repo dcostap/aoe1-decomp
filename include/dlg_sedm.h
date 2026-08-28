@@ -8,12 +8,13 @@
 
 class TPanel;
 class TButtonPanel;
+class TTextPanel;
 class TRIBE_Screen_Sed;
 
 class TRIBE_Dialog_Sed_Menu : public TDialogPanel {
 public:
     TRIBE_Screen_Sed* scenario_editor;
-    TPanel* title;
+    TTextPanel* title;
     TButtonPanel* buttons[7];
 
     TRIBE_Dialog_Sed_Menu(TRIBE_Screen_Sed*);

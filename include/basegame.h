@@ -232,8 +232,6 @@ public:
     void set_mouse_cursor(HCURSOR);
     void set_mouse_facet(long);
     void draw_window();
-    void redraw(int, int);
-    void redraw(long, long);
     void set_render_all();
 
     void reset_timings();
