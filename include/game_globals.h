@@ -64,6 +64,7 @@ extern HWND save_active_wnd;
 extern int do_restore_palette;
 extern unsigned long restore_palette_timer;
 extern int restore_mouse_after_paint;
+extern "C" HCURSOR last_mouse_cursor;
 
 // 0056E0B8 [.rdata]
 extern float DAT_0056e0b8;

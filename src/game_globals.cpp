@@ -1613,6 +1613,7 @@ HWND save_active_wnd = 0;
 int do_restore_palette = 0;
 unsigned long restore_palette_timer = 0;
 int restore_mouse_after_paint = 0;
+extern "C" HCURSOR last_mouse_cursor = 0;
 // 005B2164 [.data] BaseGame Shift-key state.
 unsigned int basegame_shift_key_down = 0;
 // 005B2368 [.data] BaseGame key message.

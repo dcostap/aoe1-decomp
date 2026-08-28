@@ -123,8 +123,7 @@
       "note_path": "recovery_notes/basegame_module.md"
     },
     "0041E7D0": {
-      "status": "scratch",
-      "note_path": "recovery_notes/basegame_module.md"
+      "status": "matching"
     },
     "0041E920": {
       "status": "accepted_drift",
@@ -547,8 +546,7 @@
       "status": "matching"
     },
     "00422B10": {
-      "status": "scratch",
-      "note_path": "recovery_notes/basegame_module.md"
+      "status": "matching"
     },
     "00422CC0": {
       "status": "matching"

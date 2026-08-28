@@ -476,16 +476,6 @@ int RGE_Base_Game::setup()
 
 extern void __cdecl debug_random_write(void);
 extern void __cdecl dump_vismap_log(void);
-extern "C" void __cdecl free(void*);
-
-extern "C" __declspec(dllimport) int __stdcall SystemParametersInfoA(
-    unsigned int action, unsigned int param, void* value, unsigned int flags);
-extern "C" __declspec(dllimport) int __stdcall CloseHandle(void* handle);
-extern "C" __declspec(dllimport) int __stdcall DestroyWindow(void* window);
-extern "C" __declspec(dllimport) void* __stdcall FindWindowA(
-    const char* class_name, const char* window_name);
-extern "C" __declspec(dllimport) long __stdcall SendMessageA(
-    void* window, unsigned int message, unsigned int wparam, long lparam);
 extern int do_debug_random;
 extern int wrote_debug_random_log;
 extern FILE* actionFile;
@@ -638,7 +628,7 @@ RGE_Base_Game::~RGE_Base_Game()
 
     this->get_string(0x3EB, str, 0x100);
     if (str[0] != 0) {
-        void* help_window = FindWindowA("MS_WINHELP", str);
+        HWND help_window = FindWindowA("MS_WINHELP", str);
         if (help_window != 0)
             SendMessageA(help_window, 0x10, 0, 0);
     }
@@ -834,13 +824,10 @@ char* RGE_Base_Game::get_string2(int param_1, long param_2, long param_3, char* 
 
 
 
-extern int sprintf(char* buf, const char* fmt, ...);
 extern int rge_open(char* path, int flags);
 extern void rge_read_uncompressed(int fd, void* buf, int len);
 extern void rge_read(int fd, void* buf, int len);
 extern int rge_close(int fd);
-extern void* malloc(int size);
-extern "C" void free(void* p);
 
 
 
@@ -890,7 +877,6 @@ RGE_Scenario* RGE_Base_Game::get_scenario_info(char* param1, int param2)
 
 
 
-extern int sprintf(char* buf, const char* fmt, ...);
 extern int rge_open(char* path, int flags);
 extern void rge_read_uncompressed(int fd, void* buf, int len);
 extern int rge_close(int fd);
@@ -1042,20 +1028,13 @@ int RGE_Base_Game::run()
 
 
 
+void __cdecl RESFILE_Set_Missing_Flag(int flag);
+
 extern "C" {
-char* __cdecl strstr(const char* str, const char* substr);
-char* __cdecl strncpy(char* dest, const char* src, unsigned int count);
-long __cdecl atol(const char* str);
 char* __cdecl _mbsstr(const char* str, const char* substr);
 char* __cdecl _mbsninc(const char* str, unsigned int count);
 int __cdecl _ismbcspace(unsigned int c);
 char* __cdecl _mbsncat(char* dst, const char* src, unsigned int count);
-}
-
-void __cdecl RESFILE_Set_Missing_Flag(int flag);
-
-extern "C" {
-TDebuggingLog* g_L;                                       // 62C4FC â€” global debugLog pointer
 }
 
 extern "C" {
@@ -1591,14 +1570,14 @@ int RGE_Base_Game::setup_cmd_options()
     }
 
     if (((strstr(cmdLine, "LOGCOMM") != 0) || (strstr(cmdLine, "LOG COMM") != 0) || (strstr(cmdLine, "LOG_COMM") != 0)) &&
-        (this->log_comm = 1, g_L != 0)) {
-        g_L->LogFile(1);
-        g_L->LogTimestamp(1);
+        (this->log_comm = 1, L != 0)) {
+        L->LogFile(1);
+        L->LogTimestamp(1);
     }
 
     if (((strstr(cmdLine, "LOGOUTPUT") != 0) || (strstr(cmdLine, "LOG OUTPUT") != 0) || (strstr(cmdLine, "LOG_OUTPUT") != 0)) &&
-        (log_output = 1, g_L != 0)) {
-        g_L->LogOutput(1);
+        (log_output = 1, L != 0)) {
+        L->LogOutput(1);
     }
 
     if (strstr(cmdLine, "DEVELOPER")) {
@@ -1814,8 +1793,8 @@ init_step:
         goto init_fail;
 
     panel_system.release_palette(this->prog_palette);
-    this->prog_palette = panel_system.get_palette(
-        this->prog_info->pal_file, 0xC544);
+    this->prog_palette = static_cast<HPALETTE>(panel_system.get_palette(
+        this->prog_info->pal_file, 0xC544));
 
     this->draw_area = this->draw_system->DrawArea;
     this->draw_area->Clear(0, 0);
@@ -1833,7 +1812,8 @@ init_fail:
 
 int RGE_Base_Game::setup_palette()
 {
-    void* result = panel_system.get_palette(this->prog_info->pal_file, 0xC544);
+    HPALETTE result = static_cast<HPALETTE>(
+        panel_system.get_palette(this->prog_info->pal_file, 0xC544));
     this->prog_palette = result;
     return result != 0;
 }
@@ -1885,36 +1865,6 @@ int RGE_Base_Game::setup_chat() {
     chat = new_chat;
     return new_chat != 0;
 }
-
-TChat::TChat(void* host_wnd) {
-    int i;
-
-    taunt = new TTaunt(rge_base_game->sound_system);
-    HostWnd = host_wnd;
-
-    for (i = 0; i < 0x33; ++i) {
-        Chat[i] = 0;
-    }
-
-    CurrentMsgNo = 0;
-
-    for (i = 0; i <= 9; ++i) {
-        setInChatGroup(i, 0);
-    }
-}
-
-TChat::~TChat() {
-    if (taunt != 0) {
-        delete taunt;
-    }
-}
-
-
-
-
-
-
-
 
 int RGE_Base_Game::setup_registry()
 {
@@ -2137,10 +2087,10 @@ int RGE_Base_Game::setup_sounds()
 int RGE_Base_Game::setup_fonts()
 {
     RGE_Font* font_array;
-    void* dc;
+    HDC dc;
     HGDIOBJ old_font;
     short i;
-    void* font;
+    HFONT font;
     int font_index;
     TEXTMETRICA tm;
 
@@ -2150,14 +2100,14 @@ int RGE_Base_Game::setup_fonts()
     if (font_array == 0)
         return 0;
 
-    dc = this->draw_area->GetDc("basegame::setup_fonts");
+    dc = static_cast<HDC>(this->draw_area->GetDc("basegame::setup_fonts"));
     if (dc == 0)
         return 0;
 
     i = 0;
     if (this->font_num > 0) {
         do {
-            tm.tmHeight = (long)i;
+            tm.tmHeight = static_cast<LONG>(i);
             switch (tm.tmHeight) {
             case 0:
                 font = this->make_font(dc, 0x6E, 0);
@@ -2192,15 +2142,14 @@ int RGE_Base_Game::setup_fonts()
             }
 
             if (font != 0) {
-                old_font = SelectObject((HDC)dc, (HGDIOBJ)font);
-                GetTextMetricsA((HDC)dc,
-                                (LPTEXTMETRICA)&tm.tmAscent);
+                old_font = SelectObject(dc, font);
+                GetTextMetricsA(dc, &tm);
                 font_index = tm.tmHeight;
                 this->fonts[font_index].font = font;
                 this->fonts[font_index].font_wid = tm.tmMaxCharWidth;
                 this->fonts[font_index].font_hgt =
                     tm.tmAscent + tm.tmAveCharWidth;
-                SelectObject((HDC)dc, old_font);
+                SelectObject(dc, old_font);
             }
 
             i = i + 1;
@@ -2248,8 +2197,6 @@ void RGE_Base_Game::setup_timings(void) {
     this->timings[4].is_summary = val;
 }
 
-
-extern "C" void __cdecl free(void* block);
 
 void RGE_Base_Game::stop_sound_system(void) {
     if (chat != 0)
@@ -2364,11 +2311,7 @@ void RGE_Base_Game::shutdown_music_system() {
 
 
 
-extern "C" int __cdecl atoi(const char*);
-extern "C" char* __cdecl strstr(const char*, const char*);
-
-
-void* RGE_Base_Game::make_font(void* param1, long id, int italic)
+HFONT RGE_Base_Game::make_font(HDC dc, long id, int italic)
 {
     char face_name[256];
     char point_size_str[10];
@@ -2389,16 +2332,11 @@ void* RGE_Base_Game::make_font(void* param1, long id, int italic)
     else
         weight = 400;
 
-    return this->make_font(param1, face_name, point_size, weight, italic);
+    return this->make_font(dc, face_name, point_size, weight, italic);
 }
 
 
-extern "C" int __cdecl atoi(const char*);
-extern "C" __declspec(dllimport) int __stdcall MulDiv(int, int, int);
-
-
-
-void* RGE_Base_Game::make_font(void* dc, char* name, int size, int weight, int strikeout)
+HFONT RGE_Base_Game::make_font(HDC dc, char* name, int size, int weight, int strikeout)
 {
     char str[256];
     LOGFONTA logfont;
@@ -2426,7 +2364,6 @@ void* RGE_Base_Game::make_font(void* dc, char* name, int size, int weight, int s
 
 
 extern int force_cd;
-extern "C" int __cdecl stricmp(const char* left, const char* right);
 
 
 
@@ -2494,15 +2431,12 @@ int RGE_Base_Game::check_expiration() {
 
 
 
-extern "C" __declspec(dllimport) void* __stdcall FindWindowA(
-    const char* class_name, const char* window_name);
-
 int RGE_Base_Game::check_multi_copies()
 {
     this->prog_mutex = CreateMutexA(0, 1, this->prog_info->prog_name);
     if (GetLastError() == 0xB7) {
-        void* window = FindWindowA(this->prog_info->prog_name,
-                                   this->prog_info->prog_title);
+        HWND window = FindWindowA(this->prog_info->prog_name,
+                                  this->prog_info->prog_title);
         if (window != 0) {
             if (this->check_prog_argument("LOBBY") != 0) {
                 SendMessageA(window, 0x10, 0, 0);
@@ -2578,8 +2512,8 @@ int RGE_Base_Game::check_paint()
 
 void RGE_Base_Game::clear_window() {
     RECT rect;
-    void* dc;
-    void* brush;
+    HDC dc;
+    HBRUSH brush;
 
     if (this->prog_window != 0) {
         dc = GetDC(this->prog_window);
@@ -2594,9 +2528,6 @@ void RGE_Base_Game::clear_window() {
 RGE_Game_World* RGE_Base_Game::create_world() {
     return new RGE_Game_World;
 }
-
-
-extern "C" __declspec(dllimport) int __stdcall PostMessageA(void* hWnd, unsigned int Msg, unsigned int wParam, long lParam);
 
 
 void RGE_Base_Game::close()
@@ -2715,9 +2646,9 @@ void RGE_Base_Game::set_paused(int paused, int non_user_pause) {
 
 
 
-void RGE_Base_Game::get_mouse_info(unsigned int flags, long lparam, tagPOINT& point, int& lbtn, int& rbtn, int& mbtn, int& wheel) {
+void RGE_Base_Game::get_mouse_info(WPARAM flags, LPARAM lparam, tagPOINT& point, int& lbtn, int& rbtn, int& mbtn, int& wheel) {
     int x = lparam & 0xFFFF;
-    int y = (unsigned long)lparam >> 0x10;
+    int y = static_cast<unsigned long>(lparam) >> 0x10;
     point.x = x;
     point.y = y;
     if (60000 < x) {
@@ -2760,12 +2691,6 @@ void RGE_Base_Game::draw_window() {
     UpdateWindow(this->prog_window);
 }
 
-
-
-
-extern "C" __declspec(dllimport) void* __stdcall SetCursor(void*);
-
-
 void RGE_Base_Game::mouse_on() {
     if (this->is_mouse_on == 0) {
         if ((this->custom_mouse != 0) && (this->windows_mouse == 0)) {
@@ -2774,16 +2699,11 @@ void RGE_Base_Game::mouse_on() {
             return;
         }
         SetCursor(this->mouse_cursor);
-        SetClassLongA(this->prog_window, -12, (long)this->mouse_cursor);
+        SetClassLongA(this->prog_window, GCL_HCURSOR,
+                      reinterpret_cast<LONG>(this->mouse_cursor));
         this->is_mouse_on = 1;
     }
 }
-
-
-extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* hcur);
-
-
-
 void RGE_Base_Game::mouse_off() {
     if (is_mouse_on) {
         if (custom_mouse && !windows_mouse) {
@@ -2796,13 +2716,6 @@ void RGE_Base_Game::mouse_off() {
         is_mouse_on = 0;
     }
 }
-
-
-
-extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* hcur);
-
-
-
 void RGE_Base_Game::set_windows_mouse(int value) {
     if (this->custom_mouse != 0) {
         this->windows_mouse = value;
@@ -2824,23 +2737,14 @@ void RGE_Base_Game::set_windows_mouse(int value) {
     this->mouse_pointer->off();
     if (this->is_mouse_on != 0) {
         SetCursor(this->mouse_cursor);
-        SetClassLongA(this->prog_window, -12, (long)this->mouse_cursor);
+        SetClassLongA(this->prog_window, GCL_HCURSOR,
+                      reinterpret_cast<LONG>(this->mouse_cursor));
     } else {
         SetCursor(0);
         SetClassLongA(this->prog_window, -12, 0);
     }
 }
-
-
-
-
-
-
-extern "C" void* last_mouse_cursor;
-
-extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* hCursor);
-
-void RGE_Base_Game::set_mouse_cursor(void* new_cursor) {
+void RGE_Base_Game::set_mouse_cursor(HCURSOR new_cursor) {
     this->mouse_cursor = new_cursor;
 
     if (new_cursor != 0) {
@@ -2859,7 +2763,7 @@ void RGE_Base_Game::set_mouse_cursor(void* new_cursor) {
 
     SetCursor(this->mouse_cursor);
     SetClassLongA(this->prog_window, GCL_HCURSOR,
-                  (unsigned long)this->mouse_cursor);
+                  reinterpret_cast<LONG>(this->mouse_cursor));
 }
 
 
@@ -2905,8 +2809,6 @@ int __stdcall close_thread_windows(void* wnd, long unused) {
 
 
 
-extern "C" int __cdecl strcmp(const char* a, const char* b);
-
 int __stdcall close_child_windows(void* hwnd, long param)
 {
     char str[256];
@@ -2930,8 +2832,7 @@ extern void color_log(unsigned char a, unsigned char b, int c);
 
 
 
-long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
-                                       unsigned int wparam, long lparam)
+LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     RGE_Base_Game* self = this;
     color_log(0x24, 0x24, 3);
@@ -2983,7 +2884,7 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
             goto wparam_return;
         color_log(0x4C, 0x5F, 4);
         color_log(0x24, 0x5F, 3);
-        return (long)wparam;
+        return static_cast<LRESULT>(wparam);
         }
 
     case 6:
@@ -3126,7 +3027,7 @@ panel_return_after_exit_menu:
         if (mouse_down != 0)
             color_log(0x4C, 0x5F, 4);
         color_log(0x24, 0x5F, 3);
-        return (long)wparam;
+        return static_cast<LRESULT>(wparam);
 
     case 0x218:
         if (wparam == 0)
@@ -3161,7 +3062,7 @@ panel_return_after_exit_menu:
                     color_log(0x4C, 0x5F, 4);
                 color_log(0x24, 0x5F, 3);
                 debug_timeGetTime_on = old_time;
-                return (long)panel_result;
+                return static_cast<LRESULT>(panel_result);
             }
             debug_timeGetTime_on = old_time;
         }
@@ -3177,7 +3078,7 @@ close_message:
     if (panel_result != 0) {
         color_log(0x4C, 0x5F, 4);
         color_log(0x24, 0x5F, 3);
-        return (long)panel_result;
+        return static_cast<LRESULT>(panel_result);
     }
     goto panel_return_alt;
 
@@ -3190,7 +3091,7 @@ music_done_message:
     if (mouse_down != 0)
         color_log(0x4C, 0x5F, 4);
     color_log(0x24, 0x5F, 3);
-    return (long)wparam;
+    return static_cast<LRESULT>(wparam);
     }
 
     default:
@@ -3199,20 +3100,20 @@ music_done_message:
 
  wparam_return:
     color_log(0x24, 0x5F, 3);
-    return (long)wparam;
+    return static_cast<LRESULT>(wparam);
 
 panel_return:
     if (mouse_down == 0)
         goto panel_return_alt;
     color_log(0x4C, 0x5F, 4);
     color_log(0x24, 0x5F, 3);
-    return (long)wparam;
+    return static_cast<LRESULT>(wparam);
 
 panel_return_alt:
     if (mouse_down != 0)
         color_log(0x4C, 0x5F, 4);
     color_log(0x24, 0x5F, 3);
-    return (long)wparam;
+    return static_cast<LRESULT>(wparam);
 
 default_window_proc:
     {
@@ -3231,16 +3132,6 @@ default_window_proc:
 extern void color_log(unsigned char a, unsigned char b, int c);
 
 
-
-
-typedef int PositionMode;
-typedef int RedrawMode;
-
-
-
-
-
-
 int RGE_Base_Game::handle_idle()
 {
     if (!this->prog_ready || !this->prog_window)
@@ -3254,7 +3145,7 @@ int RGE_Base_Game::handle_idle()
             delay = 0x1F4;
 
         unsigned long t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\basegame.cpp", 0xF9A);
-        if ((t - restore_palette_timer) >= (unsigned long)delay) {
+        if ((t - restore_palette_timer) >= static_cast<unsigned long>(delay)) {
             if (this->draw_system) {
                 this->draw_system->ModifyPalette(0, 0x100,
                     this->draw_system->palette);
@@ -3310,7 +3201,7 @@ int RGE_Base_Game::handle_idle()
 
 
 
-int RGE_Base_Game::handle_mouse_move(void* p1, unsigned int p2, unsigned int p3, long p4)
+int RGE_Base_Game::handle_mouse_move(HWND p1, UINT p2, WPARAM p3, LPARAM p4)
 {
     int ctrl_key;
     int right_btn;
@@ -3350,8 +3241,7 @@ extern int snapshot_number;
 
 
 
-int RGE_Base_Game::handle_key_down(void* param_1, unsigned int param_2,
-                                   unsigned int param_3, long param_4)
+int RGE_Base_Game::handle_key_down(HWND param_1, UINT param_2, WPARAM param_3, LPARAM param_4)
 {
     if (this->prog_ready == 0) {
         return 1;
@@ -3392,7 +3282,7 @@ extern int out_of_sync;
 
 
 
-int RGE_Base_Game::handle_user_command(void* param_1, unsigned int param_2, unsigned int command, long param)
+int RGE_Base_Game::handle_user_command(HWND param_1, UINT param_2, WPARAM command, LPARAM param)
 {
     if (this->comm_handler->MultiplayerGameStart() != 0 && out_of_sync == 0) {
         if (command == 0x17B3) {
@@ -3421,41 +3311,22 @@ int RGE_Base_Game::handle_user_command(void* param_1, unsigned int param_2, unsi
 
 
 
-int RGE_Base_Game::handle_command(void* a, unsigned int b, unsigned int c, long d)
+int RGE_Base_Game::handle_command(HWND a, UINT b, WPARAM c, LPARAM d)
 {
-    return this->action_command((unsigned long)c, (unsigned long)d) != 0;
+    return this->action_command(static_cast<unsigned long>(c),
+                                static_cast<unsigned long>(d)) != 0;
 }
 
 
 
 
-int RGE_Base_Game::handle_music_done(void* p0, unsigned int p1,
-                                     unsigned int p2, long p3) {
+int RGE_Base_Game::handle_music_done(HWND p0, UINT p1, WPARAM p2, LPARAM p3) {
     return this->action_music_done() != 0;
 }
 
 
-
-
-
-typedef int PositionMode;
-typedef int RedrawMode;
-
-
 extern void color_log(unsigned char a, unsigned char b, int c);
-extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* cursor);
-
-
-
-
-
-
-
-
-
-
-int RGE_Base_Game::handle_paint(void* param_1, unsigned int param_2,
-                                unsigned int param_3, long param_4)
+int RGE_Base_Game::handle_paint(HWND param_1, UINT param_2, WPARAM param_3, LPARAM param_4)
 {
     unsigned long time_a;
     unsigned long time_b;
@@ -3581,8 +3452,8 @@ paint_done:
             if (this->is_mouse_on != 0) {
                 if (this->custom_mouse == 0 || this->windows_mouse != 0) {
                     SetCursor(this->mouse_cursor);
-                    SetClassLongA(this->prog_window, -12,
-                                  (long)this->mouse_cursor);
+                    SetClassLongA(this->prog_window, GCL_HCURSOR,
+                                  reinterpret_cast<LONG>(this->mouse_cursor));
                 } else {
                     this->mouse_pointer->on();
                     this->mouse_pointer->draw(1);
@@ -3604,8 +3475,7 @@ paint_done:
 
 
 
-int RGE_Base_Game::handle_activate(void* param_1, unsigned int param_2,
-                                   unsigned int param_3, long param_4)
+int RGE_Base_Game::handle_activate(HWND param_1, UINT param_2, WPARAM param_3, LPARAM param_4)
 {
     if (param_3 != 0) {
         this->prog_active = 1;
@@ -3642,16 +3512,14 @@ int RGE_Base_Game::handle_activate(void* param_1, unsigned int param_2,
 
 
 
-int RGE_Base_Game::handle_init_menu(void* p0, unsigned int p1,
-                                    unsigned int p2, long p3) {
+int RGE_Base_Game::handle_init_menu(HWND p0, UINT p1, WPARAM p2, LPARAM p3) {
     return this->action_init_menu() != 0;
 }
 
 
 
 
-int RGE_Base_Game::handle_exit_menu(void* p0, unsigned int p1,
-                                    unsigned int p2, long p3) {
+int RGE_Base_Game::handle_exit_menu(HWND p0, UINT p1, WPARAM p2, LPARAM p3) {
     return this->action_exit_menu() != 0;
 }
 
@@ -3663,7 +3531,7 @@ int RGE_Base_Game::handle_exit_menu(void* p0, unsigned int p1,
 
 
 
-int RGE_Base_Game::handle_size(void* p1, unsigned int p2, unsigned int p3, long p4)
+int RGE_Base_Game::handle_size(HWND p1, UINT p2, WPARAM p3, LPARAM p4)
 {
     if (p3 == 1) return 1;
 
@@ -3690,7 +3558,7 @@ int RGE_Base_Game::handle_size(void* p1, unsigned int p2, unsigned int p3, long 
 
 
 
-int RGE_Base_Game::handle_palette_changed(void* p1, unsigned int p2, unsigned int p3, long p4) {
+int RGE_Base_Game::handle_palette_changed(HWND p1, UINT p2, WPARAM p3, LPARAM p4) {
     if (this->draw_system != 0) {
         this->draw_system->HandlePaletteChanged(p1, p2, p3, p4);
     }
@@ -3717,7 +3585,7 @@ int RGE_Base_Game::handle_palette_changed(void* p1, unsigned int p2, unsigned in
 
 
 
-int RGE_Base_Game::handle_query_new_palette(void* hwnd, unsigned int msg, unsigned int wparam, long lparam)
+int RGE_Base_Game::handle_query_new_palette(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     TDrawSystem* ds = this->draw_system;
     if (ds != 0 && ds->DrawType != 1 && ds->ScreenMode != 1) {
@@ -3725,7 +3593,7 @@ int RGE_Base_Game::handle_query_new_palette(void* hwnd, unsigned int msg, unsign
         return this->draw_system->HandleQueryNewPalette(hwnd, msg, wparam, lparam);
     }
 
-    void* dc = GetDC(hwnd);
+    HDC dc = GetDC(hwnd);
     if (panel_system.currentPanel() != 0) {
         TEasy_Panel* panel = static_cast<TEasy_Panel*>(panel_system.currentPanel());
         if (panel->get_palette() != 0)
@@ -3748,7 +3616,7 @@ int RGE_Base_Game::handle_query_new_palette(void* hwnd, unsigned int msg, unsign
 
 
 
-int RGE_Base_Game::handle_close(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) {
+int RGE_Base_Game::handle_close(HWND param_1, UINT param_2, WPARAM param_3, LPARAM param_4) {
     if (this->action_close() == 0) {
         return 0;
     }
@@ -3758,13 +3626,7 @@ int RGE_Base_Game::handle_close(void* param_1, unsigned int param_2, unsigned in
     }
     return 1;
 }
-
-
-extern "C" __declspec(dllimport) int __stdcall KillTimer(void* hWnd, unsigned int idEvent);
-extern "C" __declspec(dllimport) void __stdcall PostQuitMessage(int nExitCode);
-
-
-int RGE_Base_Game::handle_destroy(void* param1, unsigned int param2, unsigned int param3, long param4) {
+int RGE_Base_Game::handle_destroy(HWND param1, UINT param2, WPARAM param3, LPARAM param4) {
     this->prog_ready = 0;
     if (this->is_timer != 0) {
         KillTimer(this->prog_window, 1);
@@ -3927,10 +3789,6 @@ void RGE_Base_Game::calc_timings()
     this->world_update_count = 0;
     this->view_update_count = 0;
 }
-
-
-extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
-
 void RGE_Base_Game::calc_timing_text()
 {
     unsigned long divisor = this->frame_count;
@@ -3950,29 +3808,15 @@ void RGE_Base_Game::calc_timing_text()
         this->timings[1].start_time / divisor,
         this->timings[0].last_single_time / divisor);
 }
-
-
-extern "C" __declspec(dllimport) int __stdcall SetWindowTextA(void* hWnd, const char* lpString);
-
 void RGE_Base_Game::show_timings()
 {
     SetWindowTextA(this->prog_window, this->timing_text);
 }
-
-
-extern "C" int sprintf(char*, const char*, ...);
-extern "C" __declspec(dllimport) int __stdcall SetWindowTextA(void*, const char*);
-
 void RGE_Base_Game::show_comm(void) {
     char str[256];
     sprintf(str, "%s", this->comm_handler->GetCommInfo(1));
     SetWindowTextA(this->prog_window, str);
 }
-
-
-extern "C" int sprintf(char*, const char*, ...);
-extern "C" __declspec(dllimport) int __stdcall SetWindowTextA(void*, const char*);
-
 void RGE_Base_Game::show_ai(void) {
     char str[256];
     sprintf(str, "No AI Information for Player #%d.",
@@ -4278,8 +4122,6 @@ void RGE_Base_Game::setVersion(float v) {
 }
 
 
-extern "C" char* __cdecl strncpy(char*, const char*, unsigned int);
-
 void RGE_Base_Game::setScenarioName(char* name) {
     strncpy(this->rge_game_options.scenarioNameValue, name, 0x80);
     this->rge_game_options.scenarioNameValue[0x7F] = 0;
@@ -4526,7 +4368,7 @@ long RGE_Base_Game::GetWorldChecksum(void) {
 
 void RGE_Base_Game::disable_input() {
     if (this->is_mouse_on != 0) {
-        void* cursor = LoadCursorA(0, IDC_WAIT);
+        HCURSOR cursor = LoadCursorA(0, IDC_WAIT);
         set_mouse_cursor(cursor);
     }
     panel_system.DisableInput();
@@ -4552,7 +4394,7 @@ void RGE_Base_Game::enable_input() {
     panel_system.EnableInput();
     this->input_enabled = 1;
     if (this->is_mouse_on != 0) {
-        void* cursor = LoadCursorA(0, IDC_ARROW);
+        HCURSOR cursor = LoadCursorA(0, IDC_ARROW);
         set_mouse_cursor(cursor);
     }
 }
@@ -4579,7 +4421,7 @@ void RGE_Base_Game::set_screen_size(long width, long height)
 
         int display_width = 0;
         int display_height = 0;
-        void* dc = CreateICA("DISPLAY", 0, 0, 0);
+        HDC dc = CreateICA("DISPLAY", 0, 0, 0);
         if (dc != 0) {
             display_width = GetDeviceCaps(dc, 8);
             display_height = GetDeviceCaps(dc, 10);
@@ -4611,14 +4453,6 @@ void RGE_Base_Game::set_screen_size(long width, long height)
         }
     }
 }
-
-
-
-extern "C" __declspec(dllimport) char* __stdcall CharUpperA(char* lpString);
-extern "C" char* __cdecl strstr(const char* str, const char* substr);
-extern "C" char* __cdecl strncpy(char* dest, const char* src, unsigned int count);
-
-
 
 unsigned char RGE_Base_Game::check_prog_argument(char* param_1) {
     char buffer[256];
@@ -4896,10 +4730,6 @@ void __cdecl debug_srand(char* param_1, int param_2, unsigned int param_3)
     }
     srand(param_3);
 }
-
-
-extern "C" __declspec(dllimport) unsigned long __stdcall timeGetTime(void);
-
 extern int do_debug_timeGetTime;
 extern int debug_timeGetTime_cnt;
 extern int debug_timeGetTime_interval;

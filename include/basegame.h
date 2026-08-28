@@ -1,6 +1,8 @@
 #ifndef AOE1_BASEGAME_H
 #define AOE1_BASEGAME_H
 
+#include <windows.h>
+
 class RGE_Base_Game;
 class RGE_Game_Info;
 class RGE_Game_World;
@@ -20,14 +22,12 @@ class TRegistry;
 class TShape;
 class TSound_Driver;
 class TDigital;
-struct tagMSG;
-struct tagPOINT;
 
 // PDB owner: basegame.cpp, 004231E0.
 unsigned long __cdecl debug_timeGetTime(char*, int);
 
 struct RGE_Font {
-    void* font;
+    HFONT font;
     long font_wid;
     long font_hgt;
 };
@@ -76,7 +76,7 @@ public:
 
     virtual ~RGE_Base_Game();
     virtual int run();
-    virtual long __stdcall wnd_proc(void*, unsigned int, unsigned int, long);
+    virtual LRESULT CALLBACK wnd_proc(HWND, UINT, WPARAM, LPARAM);
     virtual void set_prog_mode(int);
     virtual void set_game_mode(int, int);
     virtual void set_player(short);
@@ -125,20 +125,20 @@ protected:
     virtual RGE_Game_World* create_world();
     virtual int handle_message(tagMSG*);
     virtual int handle_idle();
-    virtual int handle_mouse_move(void*, unsigned int, unsigned int, long);
-    virtual int handle_key_down(void*, unsigned int, unsigned int, long);
-    virtual int handle_user_command(void*, unsigned int, unsigned int, long);
-    virtual int handle_command(void*, unsigned int, unsigned int, long);
-    virtual int handle_music_done(void*, unsigned int, unsigned int, long);
-    virtual int handle_paint(void*, unsigned int, unsigned int, long);
-    virtual int handle_activate(void*, unsigned int, unsigned int, long);
-    virtual int handle_init_menu(void*, unsigned int, unsigned int, long);
-    virtual int handle_exit_menu(void*, unsigned int, unsigned int, long);
-    virtual int handle_size(void*, unsigned int, unsigned int, long);
-    virtual int handle_palette_changed(void*, unsigned int, unsigned int, long);
-    virtual int handle_query_new_palette(void*, unsigned int, unsigned int, long);
-    virtual int handle_close(void*, unsigned int, unsigned int, long);
-    virtual int handle_destroy(void*, unsigned int, unsigned int, long);
+    virtual int handle_mouse_move(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_key_down(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_user_command(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_command(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_music_done(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_paint(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_activate(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_init_menu(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_exit_menu(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_size(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_palette_changed(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_query_new_palette(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_close(HWND, UINT, WPARAM, LPARAM);
+    virtual int handle_destroy(HWND, UINT, WPARAM, LPARAM);
     virtual int action_update();
     virtual int action_mouse_move(long, long, int, int, int, int);
     virtual int action_key_down(unsigned long, int, int, int, int);
@@ -227,7 +227,7 @@ public:
     void increment_view_update_count();
     void mouse_off();
     void mouse_on();
-    void set_mouse_cursor(void*);
+    void set_mouse_cursor(HCURSOR);
     void set_mouse_facet(long);
     void draw_window();
     void set_render_all();
@@ -247,15 +247,15 @@ public:
     RGE_Scenario_Header* get_scenario_header(char*, int);
 
 protected:
-    void* make_font(void*, long, int);
-    void* make_font(void*, char*, int, int, int);
+    HFONT make_font(HDC, long, int);
+    HFONT make_font(HDC, char*, int, int, int);
     int check_paint();
     void clear_window();
 
 public:
     void request_pause();
-    void get_mouse_info(unsigned int, long, tagPOINT&, int&, int&, int&, int&);
-    void get_mouse_info(unsigned int, unsigned long, long*, long*, int*, int*, int*);
+    void get_mouse_info(WPARAM, LPARAM, tagPOINT&, int&, int&, int&, int&);
+    void get_mouse_info(WPARAM, LPARAM, long*, long*, int*, int*, int*);
     void set_windows_mouse(int);
     void set_game_options(RGE_Game_Options*);
     void get_game_options(RGE_Game_Options*);
@@ -300,11 +300,11 @@ public:
     RGE_Game_Info* player_game_info;
     RGE_Scenario_File_Info* scenario_info;
     RGE_Prog_Info* prog_info;
-    void* prog_window;
+    HWND prog_window;
     int prog_ready;
     int prog_active;
-    void* prog_palette;
-    void* prog_mutex;
+    HPALETTE prog_palette;
+    HANDLE prog_mutex;
     long window_style;
     int random_game_seed;
     int random_map_seed;
@@ -349,9 +349,9 @@ public:
     int mouse_blit_sync;
     int is_mouse_on;
     int windows_mouse;
-    void* mouse_cursor;
+    HCURSOR mouse_cursor;
     int input_enabled;
-    void* input_disabled_window;
+    HWND input_disabled_window;
     short font_num;
     RGE_Font* fonts;
     char work_dir[261];
