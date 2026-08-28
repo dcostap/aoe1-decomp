@@ -15,7 +15,6 @@ class RGE_Sprite;
 class RGE_Static_Object;
 class RGE_Tile_List;
 class RGE_Victory_Conditions;
-class TRIBE_Victory_Conditions;
 class RGE_Visible_Map;
 class Visible_Resource_Manager;
 struct RGE_Object_Node;
@@ -198,7 +197,7 @@ public:
     RGE_Object_List* objects;
     RGE_Object_List* sleeping_objects;
     RGE_Object_List* doppleganger_objects;
-    TRIBE_Victory_Conditions* victory_conditions;
+    RGE_Victory_Conditions* victory_conditions;
     RGE_Visible_Map* visible;
     RGE_Game_World* world;
     RGE_Doppleganger_Creator* doppleganger_creator;

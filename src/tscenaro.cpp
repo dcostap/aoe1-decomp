@@ -570,7 +570,8 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
             world = this->world;
             for (int player = one; player < (int)world->player_num; ++player) {
                 TRIBE_Victory_Conditions* conditions =
-                    world->players[player]->victory_conditions;
+                    static_cast<TRIBE_Victory_Conditions*>(
+                        world->players[player]->victory_conditions);
                 if (this->victory.MP_Exploration != 0) {
                     conditions->add_explore(8, this->victory.MP_Exploration, one);
                 }
@@ -594,7 +595,8 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
             world = this->world;
             for (int player = one; player < (int)world->player_num; ++player) {
                 TRIBE_Victory_Conditions* conditions =
-                    world->players[player]->victory_conditions;
+                    static_cast<TRIBE_Victory_Conditions*>(
+                        world->players[player]->victory_conditions);
                 if (this->victory.MP_Exploration != 0) {
                     conditions->add_explore(8, this->victory.MP_Exploration, one);
                 }
@@ -624,7 +626,8 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
     save_attrs = 0x72;
     do {
         TRIBE_Victory_Conditions* conditions =
-            this->world->players[row + 1]->victory_conditions;
+            static_cast<TRIBE_Victory_Conditions*>(
+                this->world->players[row + 1]->victory_conditions);
         int condition_index = 0;
         do {
             SP_Victory_Info* condition = &this->sp_victory[row][condition_index];

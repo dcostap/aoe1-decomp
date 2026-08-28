@@ -23,6 +23,21 @@ uses virtual slot `+0x18`.
 The same body in the grouped Player candidate is not exact. It is 88/89. The
 single difference uses slot `+0x1C`. Keep `00470C70` unregistered.
 
+## Victory field type
+
+`RGE_Player::victory_conditions` has canonical type
+`RGE_Victory_Conditions*` at `+0x34`. The PDB dump records it at
+`inventory/types/dumps/RGE_Player.txt:29` and `:97`. CodeView record type
+`0x2861` in `build/age1_types.txt` gives the same base pointer type.
+PDB maps `00471C90` and `00471D00` to `RGE_Player::load_victory` and
+`RGE_Player::new_victory`. Both allocate the base Victory class.
+
+PDB maps `0052ECF0 TRIBE_World::scenario_make_player` to `tworld.cpp`, lines
+458-470. That owner constructs `TRIBE_Player` objects for Tribal world slots.
+`TRIBE_Player` overrides the Victory methods to allocate the derived class.
+TScenario casts each loaded base field only where it needs `add_tech`, the
+Tribal-only method.
+
 ## Direct-source hold
 
 The required path is one PDB-order Player source that consumes canonical
