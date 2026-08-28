@@ -17,9 +17,10 @@ legacy context headers. `scr_ach.h` also copies panel and Base Game surfaces.
 None is a composable canonical provider.
 
 The action also directly calls `RGE_Base_Game::set_paused(int, int)`. Canonical
-`basegame.h` does not publish this method. Do not add it here or add a local
-Base Game class.
+`basegame.h` now publishes this nonvirtual method. PDB basegame.cpp lines
+3299-3311 and `00420220` prove `?set_paused@RGE_Base_Game@@QAEXHH@Z`.
+Do not add a local Base Game class or a compatibility overload.
 
 Recover these providers leaf-first. Compose each provider with canonical owners.
-Then publish its owner-only header. Revisit `dlg_menu` after all five providers
-and the Base Game method are available.
+Then publish its owner-only header. Revisit `dlg_menu` after the five remaining
+providers are available.

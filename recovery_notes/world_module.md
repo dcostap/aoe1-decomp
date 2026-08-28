@@ -12,6 +12,9 @@ include.
 uses `prog_info`. Object-list nodes use `node`. Moving objects provide `angle`.
 Scenario version values are source-private strings.
 
+The owned object-pointer arrays use `new[]` and `delete[]`. No local
+allocation or file-open declaration remains.
+
 `visible_combats`, `logStatusFile`, and `lastStatusLogTime` are World-only
 globals. The source keeps them private. Shared World globals remain in
 `game_globals` because other source files use them.
@@ -20,11 +23,19 @@ globals. The source keeps them private. Shared World globals remain in
 uses canonical GameInfo, Scenario, global, and visible-unit declarations. No
 TPlayer surface is required.
 
-The candidate at `build/candidate_tus/world_natural_final/report.json`
-compiles with the pinned VC5 toolchain and World flags. It observes all 91
-normal owners.
-It has no registered exact owner. All rows remain scratch during this structural
-migration. Some observed rows match. They do not establish an exact claim.
+The candidate at `build/candidate_tus/world_exact_final/report.json` compiles
+76 registered direct owners with the pinned VC5 toolchain and World flags. All
+76 report `MATCH`, `0.0000%`, matching symbols, valid boundaries, and valid
+direct relocation targets.
+
+The grouped audit at `build/audits/world_grouped_final/report.json` compiles
+all 91 owners. It confirms the 76 registered matches. No matching row remains
+scratch.
+
+The remaining 15 rows stay scratch. Five rows have code differences:
+`005412B0`, `005415B0`, `005420F0`, `00542BF0`, and `005462D0`. Ten rows have
+boundary escapes: `00540A40`, `005414A0`, `00541B60`, `00541BC0`, `00541C20`,
+`00541C90`, `00542480`, `00542750`, `00543E00`, and `00544090`.
 
 The prior World wrappers and context headers had duplicate foreign owners.
 They are migration scaffolds. The natural source replaces them.

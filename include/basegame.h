@@ -164,12 +164,14 @@ protected:
     int check_multi_copies();
 public:
     int check_for_cd(int);
+    void close();
     unsigned char check_prog_argument(char*);
     void add_to_timing(int, unsigned long);
     int multiplayerGame() const;
     int randomGame() const;
     int campaignGame() const;
     int singlePlayerGame() const;
+    int gameDeveloperMode() const;
     int playerTeam(int);
     int playerID(int);
     int difficulty();
@@ -181,6 +183,7 @@ public:
     void set_campaign_win();
     unsigned long get_accum_time(int);
     int get_paused();
+    void set_paused(int paused, int non_user_pause);
     RGE_Player* get_player();
     void get_mouse_pos(tagPOINT&);
     RGE_Font* get_font(int);

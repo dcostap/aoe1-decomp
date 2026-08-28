@@ -56,9 +56,6 @@ static short visible_combats = 0;
 static FILE* logStatusFile = 0;
 static unsigned long lastStatusLogTime = 0;
 
-void* __cdecl operator new(unsigned int);
-extern "C" FILE* __cdecl fopen(const char*, const char*);
-
 RGE_Game_World::RGE_Game_World()
     : objectsValue(0),
       numberObjectsValue(0),
@@ -72,8 +69,8 @@ RGE_Game_World::RGE_Game_World()
       difficultyLevelValue(-1)
 {
     world_update_counter = 0;
-    objectsValue = static_cast<RGE_Static_Object**>(operator new(maxNumberObjectsValue * 4));
-    negativeObjectsValue = static_cast<RGE_Static_Object**>(operator new(maxNumberNegativeObjectsValue * 4));
+    objectsValue = new RGE_Static_Object*[maxNumberObjectsValue];
+    negativeObjectsValue = new RGE_Static_Object*[maxNumberNegativeObjectsValue];
     VIS_UNIT_objectsValue = objectsValue;
     playbook = 0;
     sound_num = 0;
@@ -201,13 +198,13 @@ RGE_Game_World::~RGE_Game_World()
     }
 
     if (this->objectsValue != 0) {
-        delete this->objectsValue;
+        delete[] this->objectsValue;
         this->objectsValue = 0;
         VIS_UNIT_objectsValue = 0;
     }
 
     if (this->negativeObjectsValue != 0) {
-        delete this->negativeObjectsValue;
+        delete[] this->negativeObjectsValue;
         this->negativeObjectsValue = 0;
     }
 
@@ -2966,8 +2963,6 @@ long RGE_Game_World::get_next_reusable_object_id() {
     return this->next_reusable_object_id--;
 }
 
-extern "C" void* __cdecl operator_new(unsigned int);
-extern "C" void __cdecl operator_delete(void*);
 int RGE_Game_World::addObject(RGE_Static_Object* obj)
 {
     int newMax;
@@ -2980,7 +2975,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* obj)
             if (newMax < id) {
                 newMax = (float)id * 1.5f;
             }
-            newList = (RGE_Static_Object**)operator_new(newMax * 4);
+            newList = new RGE_Static_Object*[newMax];
             if (newList == 0) return 0;
             i = 0;
             if (this->maxNumberObjectsValue > 0) {
@@ -2994,7 +2989,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* obj)
                     newList[i] = 0;
                 }
             }
-            operator_delete(this->objectsValue);
+            delete[] this->objectsValue;
             this->objectsValue = newList;
             VIS_UNIT_objectsValue = newList;
             this->maxNumberObjectsValue = newMax;
@@ -3014,7 +3009,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* obj)
             if (newMax < slot) {
                 newMax = (float)slot * 1.5f;
             }
-            newList = (RGE_Static_Object**)operator_new(newMax * 4);
+            newList = new RGE_Static_Object*[newMax];
             if (newList == 0) return 0;
             i = 0;
             if (this->maxNumberNegativeObjectsValue > 0) {
@@ -3028,7 +3023,7 @@ int RGE_Game_World::addObject(RGE_Static_Object* obj)
                     newList[i] = 0;
                 }
             }
-            operator_delete(this->negativeObjectsValue);
+            delete[] this->negativeObjectsValue;
             this->negativeObjectsValue = newList;
             this->maxNumberNegativeObjectsValue = newMax;
         }
