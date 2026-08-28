@@ -189,8 +189,8 @@ int MainDecisionAIModule::numberObjectsWithAction(int action) {
                 }
             }
 
-            void* world = *(void**)((char*)this->player + 0x3C);
-            RGE_Static_Object* obj = ((RGE_Game_World*)world)->object(this->objects.value[i]);
+            RGE_Game_World* world = this->player->world;
+            RGE_Static_Object* obj = world->object(this->objects.value[i]);
             if (obj != NULL) {
                 UnitAIModule* ai = obj->unitAI();
                 if (ai != NULL) {
@@ -230,12 +230,11 @@ int MainDecisionAIModule::numberObjectsWithGroup(int groupId) {
                 }
             }
 
-            void* world = *(void**)((char*)this->player + 0x3C);
-            RGE_Static_Object* obj = ((RGE_Game_World*)world)->object(this->objects.value[i]);
+            RGE_Game_World* world = this->player->world;
+            RGE_Static_Object* obj = world->object(this->objects.value[i]);
 
             if (obj != NULL) {
-                void* master_obj = *(void**)((char*)obj + 8);
-                if (*(short*)((char*)master_obj + 0x14) == groupId) {
+                if (obj->master_obj->object_group == groupId) {
                     count++;
                 }
             }
@@ -270,8 +269,8 @@ int MainDecisionAIModule::numberObjectsWithActionAndTarget(int action, int targe
                 }
             }
 
-            void* world_ptr = *(void**)((char*)this->player + 0x3C);
-            RGE_Static_Object* obj = ((RGE_Game_World*)world_ptr)->object(this->objects.value[i]);
+            RGE_Game_World* world = this->player->world;
+            RGE_Static_Object* obj = world->object(this->objects.value[i]);
             if (obj != NULL) {
                 if (obj->unitAI() != NULL) {
                     if (obj->unitAI()->currentAction() == action) {
@@ -314,8 +313,8 @@ int MainDecisionAIModule::numberObjectsWithTargetType(int targetType) {
 
             {
                 int id = this->objects.value[i];
-                void* world = *(void**)((char*)this->player + 0x3C);
-                RGE_Static_Object* obj = ((RGE_Game_World*)world)->object(id);
+                RGE_Game_World* world = this->player->world;
+                RGE_Static_Object* obj = world->object(id);
                 if (obj != NULL) {
                     if (obj->unitAI()) {
                         if (obj->unitAI()->currentTargetType() == targetType) {
@@ -356,8 +355,8 @@ int MainDecisionAIModule::numberObjectsWithActionAndTargetType(int action,
                 }
             }
 
-            void* world_ptr = *(void**)((char*)this->player + 0x3C);
-            RGE_Static_Object* obj = ((RGE_Game_World*)world_ptr)->object(this->objects.value[i]);
+            RGE_Game_World* world = this->player->world;
+            RGE_Static_Object* obj = world->object(this->objects.value[i]);
             if (obj != NULL) {
                 if (obj->unitAI() != NULL) {
                     if (obj->unitAI()->currentAction() == action) {
@@ -395,10 +394,10 @@ RGE_Static_Object* MainDecisionAIModule::object(int object_id, int type, int cla
             if (object_id != -1 && obj->id != object_id) {
                 goto next_object;
             }
-            if (type != -1 && obj->master->id != type) {
+            if (type != -1 && obj->master_obj->id != type) {
                 goto next_object;
             }
-            if (class_id != -1 && obj->master->object_group != class_id) {
+            if (class_id != -1 && obj->master_obj->object_group != class_id) {
                 goto next_object;
             }
             if (action != -1 && obj->unitAI()->currentAction() != action) {
@@ -537,13 +536,12 @@ RGE_Static_Object* MainDecisionAIModule::mostDamaged(int class_id, int type_id) 
             }
             RGE_Static_Object* obj = this->game->world->object(this->objects.value[i]);
             if (obj && obj->unitAI() && obj->object_state) {
-                RGE_Static_Object_Type* type = obj->type;
-                if ((int)type->class_id == class_id) {
-                    int maxhp = type->max_hp;
-                    if ((float)maxhp > obj->hit_points && obj->canRepair() == 1) {
-                        if (type_id == -1 || type_id == (int)obj->type->type_id) {
-                            int hp = obj->type->max_hp;
-                            int pct = ((long)((float)hp - obj->hit_points) * 100) / hp;
+                if ((int)obj->master_obj->object_group == class_id) {
+                    int maxhp = obj->master_obj->hp;
+                    if ((float)maxhp > obj->hp && obj->canRepair() == 1) {
+                        if (type_id == -1 || type_id == (int)obj->master_obj->id) {
+                            int hp = obj->master_obj->hp;
+                            int pct = ((long)((float)hp - obj->hp) * 100) / hp;
                             if (pct > damagePercentage) {
                                 mDB = obj;
                                 damagePercentage = pct;

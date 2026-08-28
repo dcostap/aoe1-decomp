@@ -4,14 +4,14 @@
 #include <new.h>
 #include <stdlib.h>
 #include "aimodule.h"
+#include "m_s_obj.h"
+#include "player.h"
+#include "stat_obj.h"
 #include "utmarray.h"
+#include "world.h"
 
 typedef unsigned char uchar;
 
-class RGE_Static_Object;
-class RGE_Player;
-class RGE_Game_World;
-class RGE_Master_Static_Object;
 class RGE_Action_Object;
 class RGE_Sprite;
 class RGE_Color_Table;
@@ -21,23 +21,8 @@ class RGE_Active_Sprite_List;
 class RGE_Active_Sprite;
 class LOSTBL;
 
-void* operator new(unsigned int);
-void operator delete(void*);
-extern "C" void* __cdecl operator_new(unsigned int);
-extern "C" void __cdecl operator_delete(void*);
 extern "C" void __cdecl rge_read(int, void*, int);
 void rge_write(int, const void*, int);
-
-class RGE_Player {
-public:
-    char gap_00[0x3C];
-    RGE_Game_World* world;
-};
-
-class RGE_Game_World {
-public:
-    RGE_Static_Object* object(int);
-};
 
 class UnitAIModule {
 public:
@@ -46,90 +31,13 @@ public:
     int currentTargetType();
 };
 
-class RGE_Master_Static_Object {
-public:
-    char gap_00[0x10];
-    union { short id; short type_id; };
-    short copy_id;
-    union { short object_group; short class_id; };
-    char gap_16[0x10];
-    short max_hp;
-};
-typedef RGE_Master_Static_Object RGE_Static_Object_Type;
-
-class RGE_Static_Object {
-public:
-    virtual ~RGE_Static_Object();
-    virtual void recycle_in_to_game(void*, void*, float, float, float);
-    virtual void recycle_out_of_game();
-    virtual void draw(void*, short, short, void*);
-    virtual void shadow_draw(void*, short, short, uchar);
-    virtual void normal_draw(void*, short, short);
-    virtual void draw_front_frame(void*, short, short);
-    virtual void draw_back_frame(void*, short, short);
-    virtual void draw_frame(void*, short, short);
-    virtual uchar update();
-    virtual void check_damage_sprites();
-    virtual void rehook();
-    virtual void save(int);
-    virtual float teleport(float, float, float);
-    virtual void new_sprite(void*);
-    virtual void add_overlay_sprite(void*, uchar);
-    virtual void remove_overlay_sprite(void*);
-    virtual void change_ownership(void*);
-    virtual void modify(float, uchar);
-    virtual void modify_delta(float, uchar);
-    virtual void modify_percent(float, uchar);
-    virtual void transform(void*);
-    virtual void copy_obj(void*);
-    virtual void set_object_state(uchar);
-    virtual void remove_visible_resource();
-    virtual void create_doppleganger_when_dying();
-    virtual void destroy_obj();
-    virtual void die_die_die();
-    virtual void damage(int, void*, float, void*, RGE_Static_Object* = 0);
-    virtual float calculateDamage(int, void*, float, void*, RGE_Static_Object* = 0);
-    virtual void rotate(long);
-    virtual uchar can_attack();
-    virtual void set_attribute(short, float);
-    virtual void set_attribute_amount(float, uchar, uchar);
-    virtual int heal(int, int);
-    virtual uchar heal(float);
-    virtual int canRepair();
-
-    int id;                                      // +0x04
-    union {
-        RGE_Master_Static_Object* master;
-        RGE_Master_Static_Object* master_obj;
-        RGE_Static_Object_Type* type;
-    };                                           // +0x08
-    char gap_0C[0x24];                           // +0x0C .. +0x2F
-    float hit_points;                            // +0x30
-    char gap_34[0x10];                           // +0x34 .. +0x43
-    float attribute_amount_held;                 // +0x44
-    uchar object_state;                          // +0x48
-    char gap_49[3];
-
-    UnitAIModule* unitAI();
-};
-
-// The original module directly updates this ManagedArray's proven four-word
-// state.  Re-export those protected fields without redefining the template.
-class MainDecisionObjectArray : public ManagedArray<int> {
-public:
-    using ManagedArray<int>::value;
-    using ManagedArray<int>::numberValue;
-    using ManagedArray<int>::desiredNumberValue;
-    using ManagedArray<int>::maximumSizeValue;
-};
-
 class MainDecisionAIModule : public AIModule {
 public:
     union {
         RGE_Player* player;
         RGE_Player* game;
     };                                             // +0xF0
-    MainDecisionObjectArray objects;                // +0xF4
+    ManagedArray<int> objects;                       // +0xF4
 
     MainDecisionAIModule(void*, int, RGE_Player*);
     MainDecisionAIModule(int, RGE_Player*, int);

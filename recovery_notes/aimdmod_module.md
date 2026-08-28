@@ -74,3 +74,15 @@ The repository-wide strict source-module inventory was also attempted. It is
 blocked by pre-existing duplicate compiler ownership in `taiuaimd.cpp` and
 `aiuaimod.cpp` (`taiuaimd_preditor_prefix` and `aiuaimod_prefix`). No aimdmod
 entry caused that failure.
+
+## Canonical engine dependencies
+
+`aimdmod.h` consumes canonical Player, World, static-object, master-object,
+and `ManagedArray` providers. It owns only `MainDecisionAIModule`.
+
+The Unit AI declaration has only the three direct methods this module calls.
+It has no local fields or object layout.
+
+The direct candidate retains 19 registered `MATCH`, `0.0000%` rows. It has no
+registered ownership, relocation, or boundary error. The known constructor
+remains verified logic.
