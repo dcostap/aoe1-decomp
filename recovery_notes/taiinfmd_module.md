@@ -30,7 +30,12 @@ sequence listed in the generated packet. The class owner is
 constructor/destructor band preceding its methods. The original FPO dump and
 nearby compiler-generated entries provide the boundary and ownership anchors.
 The module header keeps the reviewed `InformationAIModule`, `ManagedArray`,
-`InfluenceMap`, world/player, record, and `TribeInformationAIModule` layouts.
+`InfluenceMap`, world/player, and `TribeInformationAIModule` layouts.
+`include/taiinf_records.h` owns the PDB-proven ObjectMemory, BuildingLot,
+AttackMemory, QuadrantLog, and ResourceMemory record layouts.
+
+The record owner uses natural alignment. It has no manual padding carriers.
+The Taiinf grouped candidate remains 58/58 exact after the move.
 
 ## Validation
 

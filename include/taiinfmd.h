@@ -6,6 +6,7 @@
 
 #include "aiplaybook.h"
 #include "infmap.h"
+#include "taiinf_records.h"
 #include "tactical_group.h"
 
 typedef unsigned char uchar;
@@ -139,69 +140,6 @@ typedef ManagedArray<int> ManagedArray_int;
 extern InfluenceMap* const iMap;
 extern InfluenceMap* const losMap;
 extern InfluenceMap* const attackMap;
-
-struct ObjectMemory {
-    int id;
-    short type;
-    short group;
-    unsigned char x;
-    unsigned char y;
-    unsigned char z;
-    unsigned char owner;
-    short hitPoints;
-    unsigned char _pad_0[2];
-    int attackAttempts;
-    unsigned char kills;
-    unsigned char _pad_1[3];
-    float damageCapability;
-    float rateOfFire;
-    float range;
-};
-
-struct BuildingLot {
-    int typeID;
-    unsigned char status;
-    unsigned char x;
-    unsigned char y;
-    unsigned char _pad_end[1];
-};
-
-struct AttackMemory {
-    int id;
-    unsigned char type;
-    unsigned char minX;
-    unsigned char minY;
-    unsigned char maxX;
-    unsigned char maxY;
-    unsigned char attackingOwner;
-    unsigned char targetOwner;
-    unsigned char _pad_0[1];
-    short kills;
-    unsigned char success;
-    unsigned char _pad_1[1];
-    unsigned long timeStamp;
-    int play;
-};
-
-struct QuadrantLog {
-    int numberExploredTiles;
-    int numberAttacksOnUs;
-    int numberAttacksByUs;
-};
-
-struct ResourceMemory {
-    int id;
-    unsigned char x;
-    unsigned char y;
-    unsigned char gatherAttempts;
-    unsigned char _pad_0[1];
-    int gatherValue;
-    unsigned char valid;
-    unsigned char gone;
-    unsigned char dropDistance;
-    unsigned char resourceType;
-    int dropsiteID;
-};
 
 struct ResourceTypeBlock {
     ResourceMemory* resArray;
