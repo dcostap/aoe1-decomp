@@ -13,6 +13,10 @@ The PDB module is `C:\msdev\work\age1_x1\basegame.cpp`.
 
 The direct candidate uses `config/flags/0041BAA0_setup.rsp`.
 
+This is a partial provider checkpoint.
+`src/basegame_candidate_tu.cpp` still owns the remaining bodies.
+It does not complete the BaseGame module.
+
 The four owners use these PDB symbols:
 
 - `?write_draw_log@@YAXPAD@Z`
