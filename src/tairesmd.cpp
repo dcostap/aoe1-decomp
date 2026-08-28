@@ -70,11 +70,10 @@ int TribeResourceAIModule::resource(int index) const
 }
 
 // 004E6CA0 TribeResourceAIModule::resourcesAvailable
-// PDB: tairesmd.cpp lines 82-110. Status: accepted_drift.
-// ACCEPTED_DRIFT_CANDIDATE: The rebuilt code keeps the original calls,
-// predicate, memory effects, and return values. The remaining difference is
-// an EBX/EBP allocation swap, equivalent compare encoding, and one byte of
-// emitted padding.
+// PDB: tairesmd.cpp lines 82-110. Status: scratch.
+// BINARY NOTE: Canonical Main Decision and Player composition emits a 56-byte
+// mismatch. The direct targets and boundary match, but no current drift claim
+// is valid.
 int TribeResourceAIModule::resourcesAvailable(ResourceItem* item)
 {
     if (item == 0)

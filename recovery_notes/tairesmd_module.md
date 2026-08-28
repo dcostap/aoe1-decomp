@@ -49,7 +49,7 @@ can assess the new emitted body.
 The old `src/tairesmd_tu.cpp` wrapper and ten source-bank fragments are no
 longer compiler-facing owners. The direct translation-unit entry points to
 `src/tairesmd.cpp` and registers the nine matching owners. The module metadata
-records all ten normal statuses, including the accepted-drift owner.
+records all ten normal statuses, including the scratch owner.
 
 The compiler-generated `004E6B80` entry remains outside the handwritten owner
 list. It is emitted by the virtual destructor surface.
