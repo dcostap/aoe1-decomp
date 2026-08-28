@@ -75,9 +75,10 @@ All four registered owners passed standalone checks with `Result: MATCH` and
 Isolated grouped validation passed with the grouped COFF object and symbol
 checks.
 
-The attempted `0042F290` deletion was restored in commit `756499677`.
-The standalone check cannot compile because the repository has no `dplobby.h`.
-The owner-specific response file therefore remains.
+The audit branch restored the attempted `0042F290` deletion.
+That worktree did not expose the approved DirectPlay include path during the
+standalone check. The owner-specific response file therefore remains pending
+module validation.
 
 ## Unresolved `incompatible_custom_overlay`
 
