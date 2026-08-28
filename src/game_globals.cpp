@@ -1597,6 +1597,20 @@ unsigned int DAT_00592610 = 0x00000009u;
 unsigned int DAT_00592820 = 0x7525C460u;
 // 00592824 [.data]
 unsigned int DAT_00592824 = 0x00000000u;
+// 005B2164 [.data] BaseGame Shift-key state.
+unsigned int basegame_shift_key_down = 0;
+// 005B2368 [.data] BaseGame key message.
+unsigned int basegame_key_message = 0;
+// 005B2370 [.data] BaseGame key parameter.
+unsigned int basegame_key_parameter = 0;
+// 0062C4B4 [.data] BaseGame Alt-key state.
+unsigned int basegame_alt_key_down = 0;
+// 0062C4BC [.data] BaseGame Control-key state.
+unsigned int basegame_control_key_down = 0;
+// 0062C578 [.data] BaseGame palette restore time.
+unsigned int basegame_palette_restore_time = 0;
+// 0062C57C [.data] BaseGame palette restore flag.
+unsigned int basegame_palette_restore_pending = 0;
 // 0062C4FC [.data] shared debug log pointer.
 TDebuggingLog* L = 0;
 // 0062C5EC [.data] shared DirectPlay interface pointer.

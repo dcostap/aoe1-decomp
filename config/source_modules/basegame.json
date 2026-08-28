@@ -86,7 +86,8 @@
       "status": "matching"
     },
     "0041CCA0": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/basegame_module.md"
     },
     "0041CDA0": {
       "status": "matching"
@@ -110,13 +111,15 @@
       "status": "matching"
     },
     "0041CFD0": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/basegame_module.md"
     },
     "0041D0A0": {
       "status": "matching"
     },
     "0041E700": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/basegame_module.md"
     },
     "0041E7D0": {
       "status": "scratch",
@@ -179,7 +182,8 @@
       "status": "matching"
     },
     "0041F9F0": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/basegame_module.md"
     },
     "0041FA90": {
       "status": "matching"
@@ -292,7 +296,8 @@
       "status": "matching"
     },
     "00421110": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/basegame_module.md"
     },
     "004211D0": {
       "status": "matching"
@@ -528,7 +533,8 @@
       "status": "matching"
     },
     "00422960": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/basegame_module.md"
     },
     "00422A10": {
       "status": "matching"
@@ -604,8 +610,7 @@
       "status": "matching"
     },
     "00422FF0": {
-      "status": "scratch",
-      "note_path": "recovery_notes/basegame_module.md"
+      "status": "matching"
     },
     "00423010": {
       "status": "matching"

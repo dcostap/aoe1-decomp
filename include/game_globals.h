@@ -1609,26 +1609,26 @@ extern unsigned int DAT_00592610;
 extern unsigned int DAT_00592820;
 // 00592824 [.data]
 extern unsigned int DAT_00592824;
-// 005B2164 [.data]
-extern unsigned int DAT_005b2164;
-// 005B2368 [.data]
-extern unsigned int DAT_005b2368;
-// 005B2370 [.data]
-extern unsigned int DAT_005b2370;
+// 005B2164 [.data] BaseGame Shift-key state.
+extern unsigned int basegame_shift_key_down;
+// 005B2368 [.data] BaseGame key message.
+extern unsigned int basegame_key_message;
+// 005B2370 [.data] BaseGame key parameter.
+extern unsigned int basegame_key_parameter;
 // 0062C49C [.data]
 extern unsigned char DAT_0062c49c;
-// 0062C4B4 [.data]
-extern unsigned int DAT_0062c4b4;
-// 0062C4BC [.data]
-extern unsigned int DAT_0062c4bc;
+// 0062C4B4 [.data] BaseGame Alt-key state.
+extern unsigned int basegame_alt_key_down;
+// 0062C4BC [.data] BaseGame Control-key state.
+extern unsigned int basegame_control_key_down;
 // 0062C4FC [.data] shared debug log pointer.
 extern TDebuggingLog* L;
 // 0062C558 [.data]
 extern unsigned int DAT_0062c558;
-// 0062C578 [.data]
-extern unsigned int DAT_0062c578;
-// 0062C57C [.data]
-extern unsigned int DAT_0062c57c;
+// 0062C578 [.data] BaseGame palette restore time.
+extern unsigned int basegame_palette_restore_time;
+// 0062C57C [.data] BaseGame palette restore flag.
+extern unsigned int basegame_palette_restore_pending;
 // 0062C5A8 [.data]
 extern unsigned int DAT_0062c5a8;
 // 0062C5B7 [.data]

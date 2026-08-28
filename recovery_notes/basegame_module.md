@@ -104,23 +104,27 @@ The current PDB plan has 202 normal owners.
 It uses canonical provider headers.
 It does not include a candidate context.
 
-The direct audit reports 191 exact owners.
+The direct audit reports 186 exact owners.
 Each reports `MATCH` and `0.0000%`.
 
-The remaining eleven owners are nonexact.
+The remaining sixteen owners are nonexact.
 They remain in the module source without a false exact claim.
 `0041BAA0`, `0041E920`, and `00421BF0` remain accepted drift.
 
-`0041E7D0` has an 11-byte direct-source codegen difference.
-It stays scratch.
-The other unresolved owners are `0041C270`, `0041E920`, `0041F560`,
-`0041FDE0`, `004206D0`, `00421FA0`, `00422B10`, and `00422FF0`.
+`0041F560` remains verified logic.
+The scratch owners are `0041C270`, `0041CCA0`, `0041CFD0`, `0041E700`,
+`0041E7D0`, `0041F9F0`, `0041FDE0`, `004206D0`, `00421110`, `00421FA0`,
+`00422960`, and `00422B10`.
 
 ## Canonical field cleanup
 
 `0041C270` now uses `TDrawSystem::ScreenWidth`.
 It uses `RGE_Prog_Info::mouse_scroll_interval`.
-The direct module registers 191 exact owners.
+The direct module registers 186 exact owners.
+
+The direct source now uses fields, literals, normal Win32 calls, and `delete`.
+It has no raw data addresses, manual lifetime calls, local IAT wrappers, or
+matching-history comments.
 
 `RGE_Game_Options` is a nested `struct`.
 The PDB symbol for the option setter uses the struct tag form.
