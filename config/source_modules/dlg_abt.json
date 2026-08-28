@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "name": "dlg_abt",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\dlg_abt.cpp",
+  "source": "src/dlg_abt.cpp",
+  "header": "include/dlg_abt.h",
+  "functions": {
+    "0043AD70": { "status": "matching", "note_path": "recovery_notes/dlg_abt_module.md" },
+    "0043B300": { "status": "matching", "note_path": "recovery_notes/dlg_abt_module.md" },
+    "0043B400": { "status": "matching", "note_path": "recovery_notes/dlg_abt_module.md" },
+    "0043B550": { "status": "matching", "note_path": "recovery_notes/dlg_abt_module.md" }
+  }
+}

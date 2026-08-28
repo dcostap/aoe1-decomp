@@ -2786,17 +2786,21 @@
       }
     },
     {
-      "name": "dlg_abt_prefix",
-      "source": "src/dlg_abt_tu.cpp",
+      "name": "dlg_abt",
+      "source": "src/dlg_abt.cpp",
+      "module": "dlg_abt",
       "flags": "config/flags/0043AD70_TribeAboutDialog.rsp",
       "owners": {
-        "0043AD70": "src/matching/0043AD70_TribeAboutDialog.cpp",
-        "0043B300": "src/matching/0043B300_TribeAboutDialog.cpp",
-        "0043B400": "src/matching/0043B400_action.cpp",
-        "0043B550": "src/matching/0043B550_draw.cpp"
+        "0043AD70": "src/dlg_abt.cpp",
+        "0043B300": "src/dlg_abt.cpp",
+        "0043B400": "src/dlg_abt.cpp",
+        "0043B550": "src/dlg_abt.cpp"
       },
       "symbols": {
-        "0043B300": "??1TribeAboutDialog@@UAE@XZ"
+        "0043AD70": "??0TribeAboutDialog@@QAE@PAVTScreenPanel@@@Z",
+        "0043B300": "??1TribeAboutDialog@@UAE@XZ",
+        "0043B400": "?action@TribeAboutDialog@@MAEJPAVTPanel@@JKK@Z",
+        "0043B550": "?draw@TribeAboutDialog@@UAEXXZ"
       }
     },
     {
