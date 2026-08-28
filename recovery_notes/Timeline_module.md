@@ -28,9 +28,10 @@ destructor at `0050D790` is compiler-generated and has no ordinary owner.
 
 The source contains all 13 handwritten owners in PDB order. It uses one
 module-local header and no wrapper, function-fragment include, context macro, or
-fallback declaration. The four accepted-drift owners remain observed:
-`0050D5B0`, `0050D7E0`, `0050DD70`, and `0050DFD0`. The other nine owners remain
-registered matching owners.
+fallback declaration. Three accepted-drift owners remain observed:
+`0050D5B0`, `0050D7E0`, and `0050DD70`. `0050DFD0` is scratch because its
+natural code has broad control-flow and call-surface drift. The other nine
+owners remain registered matching owners.
 
 ## Recovery notes
 
@@ -47,6 +48,22 @@ the executable listing.
 `ORIGINAL BUG:` supported by the two calls to `find_id(this, object)` in the
 executable listing.
 
+`0050D5B0` remains accepted drift. The fresh grouped candidate has the original
+471-byte boundary, matching owner symbol, zero relocation-target mismatches,
+and zero boundary escapes. All 18 direct calls, six conditional branches, two
+unconditional branches, and the saved-register set match. The 16 differing
+bytes start only in the final link/index update at offset `+0x19D`; the source
+and executable perform the same pointer stores, count update, loop test, and
+return. This is a narrow register and instruction-order difference.
+
+`0050DD70` remains accepted drift. The fresh grouped candidate has the original
+136-byte boundary, matching owner symbol, zero relocation-target mismatches,
+and zero boundary escapes. All three `calloc` calls, three conditional
+branches, three returns, and the saved-register set match. The six differing
+bytes only reorder the new node's time store, next-pointer store, and stack
+cleanup in the append path. The list topology, count update, and return paths
+remain the same.
+
 ## Validation and regressions
 
 The pre-migration wrapper used `src/Timeline_tu.cpp`, included one fragment per
@@ -58,29 +75,36 @@ source check. Registered exact owners require `MATCH`, `0.0000%`, correct
 boundaries, relocations, and direct targets. Accepted-drift owners are not
 registered exact claims.
 
-- Candidate proposal: `build/candidate_tus/Timeline.json`.
-- The candidate validator was attempted before the source-bank move. It rejected
-  the proposal because the current canonical owner paths still pointed to the
-  old fragments. The final source was then checked by the grouped audit.
-- Group audit: `build/audits/Timeline_final`.
+- Candidate proposal: `build/Timeline_recheck_proposal.json`.
+- Candidate report: `build/candidate_tus/Timeline_recheck/report.txt`.
+- The candidate compiles all 13 normal owners and the generated destructor in
+  one direct module source. It selects the overloaded constructors and `add`
+  with their decorated symbols.
 
-The final grouped audit compiled all 13 normal owners. The nine registered
-matching owners remain `MATCH` with zero positional differences, zero
-relocation-target mismatches, and zero boundary escapes. Their standalone
-checks also report `Result: MATCH` and `0.0000%`.
+The fresh grouped candidate compiled all 13 normal owners and the generated
+destructor. The nine registered matching owners report `MATCH` with zero
+positional differences, zero relocation-target mismatches, and zero boundary
+escapes. The generated destructor also reports `MATCH` and `0.0000%`.
 
 The accepted-drift constructor `0050D5B0` remains a 16-byte mismatch
 (3.3970%), with no relocation or boundary mismatch. `0050DD70` remains a
-6-byte mismatch (4.4118%), with no relocation or boundary mismatch. `0050DFD0`
-remains a 99-byte mismatch (99.0000%); its natural body has one fewer saved
-register and does not preserve the original internal tail. These owners remain
-observed and are not promoted by this structural migration.
+6-byte mismatch (4.4118%), with no relocation or boundary mismatch.
 
-The accepted-drift destructor `0050D7E0` now reports `MATCH` and `0.0000%` in
-both grouped and standalone checks after removing the volatile alias. It is
-still not registered exact. Main-agent ownership review is the blocker for any
-status promotion because the accepted-drift source bank is closed without a
-separate promotion decision.
+`0050DFD0` is now scratch. The fresh candidate compares the 100-byte original
+with a 94-byte natural body and reports 99 differing bytes (99.0000%). The
+original saves only `esi` and `edi`, while the rebuilt body also saves `ebx`.
+The original has seven conditional branches and one unconditional branch; the
+rebuilt body has six conditional branches and no unconditional branch. The
+original has an internal self-call at `+0x4D`; the rebuilt body calls the named
+`sub` symbol at `+0x46`. The natural body does not preserve the original
+internal tail or its duplicated null-test/list-walk shape. Calls, cleanup, and
+the final count decrement alone do not prove equivalence for this broad drift.
+Keep the natural body, but do not call it accepted drift.
+
+The accepted-drift destructor `0050D7E0` reports `MATCH` and `0.0000%` in the
+fresh grouped candidate. It remains an observed accepted-drift row and is not
+registered as an exact owner. A later ownership decision can promote it with a
+matching source-module status and registered decorated symbol.
 
 The generated vector deleting destructor at `0050D790` remains compiler
 generated and has no ordinary source owner. The grouped audit reported no

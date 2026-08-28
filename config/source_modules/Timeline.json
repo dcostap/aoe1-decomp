@@ -17,6 +17,6 @@
     "0050DE50": { "status": "matching", "note_path": "recovery_notes/Timeline_module.md" },
     "0050DEF0": { "status": "matching", "note_path": "recovery_notes/Timeline_module.md" },
     "0050DF40": { "status": "matching", "note_path": "recovery_notes/Timeline_module.md" },
-    "0050DFD0": { "status": "accepted_drift", "note_path": "recovery_notes/Timeline_module.md" }
+    "0050DFD0": { "status": "scratch", "note_path": "recovery_notes/Timeline_module.md" }
   }
 }
