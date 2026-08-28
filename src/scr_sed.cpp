@@ -1719,29 +1719,20 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
     float f1;
     float f2;
     RGE_Player* player;
-    char* panel_name;
-    unsigned char* scan;
-    unsigned char* lit;
-    unsigned char ch;
-    int cmp_value;
 
     if (param_1 == 0) {
         return 0;
     }
 
     if (param_1 != this->main_view) {
-        {
         RGE_Static_Object* selected_object = this->SelectedObject;
         if (selected_object != 0) {
             rge_base_game->get_player()->select_one_object(selected_object, 0);
         }
-    }
-        {
-        RGE_Static_Object* selected_object = this->DestinationObject;
-        if (selected_object != 0) {
-            rge_base_game->get_player()->select_one_object(selected_object, 0);
+        RGE_Static_Object* destination_object = this->DestinationObject;
+        if (destination_object != 0) {
+            rge_base_game->get_player()->select_one_object(destination_object, 0);
         }
-    }
     }
 
     if (param_2 == 0) {
@@ -1774,18 +1765,14 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 this->SelectedObject = event_object;
             if (this->SelectRegionFlag == SelectDestinationObject)
                 this->DestinationObject = event_object;
-            {
-        RGE_Static_Object* selected_object = this->SelectedObject;
-        if (selected_object != 0) {
-            rge_base_game->get_player()->select_one_object(selected_object, 0);
-        }
-    }
-            {
-        RGE_Static_Object* selected_object = this->DestinationObject;
-        if (selected_object != 0) {
-            rge_base_game->get_player()->select_one_object(selected_object, 0);
-        }
-    }
+            RGE_Static_Object* selected_object = this->SelectedObject;
+            if (selected_object != 0) {
+                rge_base_game->get_player()->select_one_object(selected_object, 0);
+            }
+            RGE_Static_Object* destination_object = this->DestinationObject;
+            if (destination_object != 0) {
+                rge_base_game->get_player()->select_one_object(destination_object, 0);
+            }
             rge_base_game->set_game_mode(0, 0);
             return 1;
         }
@@ -1865,25 +1852,32 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 if (param_1 == this->victory_drop_down) { rge_base_game->set_game_mode(0, 0); this->DestinationObject = 0; this->SelectedObject = 0; rge_base_game->get_player()->unselect_object(); }
                 if (line == 2) { this->DestinationObject = 0; rge_base_game->get_player()->unselect_object(); }
                 // BINARY NOTE: both object-selection arms use redraw mode 0x10.
-                if (param_1 == this->victory_button_set_object) { this->SelectRegionFlag = SelectObject; rge_base_game->set_game_mode(0x10, 0); rge_base_game->get_player()->unselect_object(); {
-        RGE_Static_Object* selected_object = this->DestinationObject;
-        if (selected_object != 0) {
-            rge_base_game->get_player()->select_one_object(selected_object, 0);
-        }
-    } }
-                else if (param_1 == this->victory_button_set_destination && line != 1) { this->SelectRegionFlag = SelectArea; rge_base_game->get_player()->unselect_object(); {
-        RGE_Static_Object* selected_object = this->SelectedObject;
-        if (selected_object != 0) {
-            rge_base_game->get_player()->select_one_object(selected_object, 0);
-        }
-    } rge_base_game->set_game_mode(0, 0); return 1; }
-                else if (param_1 == this->victory_button_set_destination) { this->SelectRegionFlag = SelectDestinationObject; rge_base_game->set_game_mode(0x10, 0); rge_base_game->get_player()->unselect_object(); {
-        RGE_Static_Object* selected_object = this->SelectedObject;
-        if (selected_object != 0) {
-            rge_base_game->get_player()->select_one_object(selected_object, 0);
-        }
-    } }
-                else if (param_1 == this->victory_button_go_to_dest && line != 1) {
+                if (param_1 == this->victory_button_set_object) {
+                    this->SelectRegionFlag = SelectObject;
+                    rge_base_game->set_game_mode(0x10, 0);
+                    rge_base_game->get_player()->unselect_object();
+                    RGE_Static_Object* destination_object = this->DestinationObject;
+                    if (destination_object != 0) {
+                        rge_base_game->get_player()->select_one_object(destination_object, 0);
+                    }
+                } else if (param_1 == this->victory_button_set_destination && line != 1) {
+                    this->SelectRegionFlag = SelectArea;
+                    rge_base_game->get_player()->unselect_object();
+                    RGE_Static_Object* selected_object = this->SelectedObject;
+                    if (selected_object != 0) {
+                        rge_base_game->get_player()->select_one_object(selected_object, 0);
+                    }
+                    rge_base_game->set_game_mode(0, 0);
+                    return 1;
+                } else if (param_1 == this->victory_button_set_destination) {
+                    this->SelectRegionFlag = SelectDestinationObject;
+                    rge_base_game->set_game_mode(0x10, 0);
+                    rge_base_game->get_player()->unselect_object();
+                    RGE_Static_Object* selected_object = this->SelectedObject;
+                    if (selected_object != 0) {
+                        rge_base_game->get_player()->select_one_object(selected_object, 0);
+                    }
+                } else if (param_1 == this->victory_button_go_to_dest && line != 1) {
                     this->main_view->get_selection_area(y1, y2, x1,
                                                         x2, 1);
                     f1 = static_cast<float>(x1);
@@ -1914,18 +1908,14 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                             this->activate_victory_panel(1);
                             line = this->victory_drop_down->get_line();
                             this->activate_victory_proper_fields(line, 1);
-                            {
-        RGE_Static_Object* selected_object = this->SelectedObject;
-        if (selected_object != 0) {
-            rge_base_game->get_player()->select_one_object(selected_object, 0);
-        }
-    }
-                            {
-        RGE_Static_Object* selected_object = this->DestinationObject;
-        if (selected_object != 0) {
-            rge_base_game->get_player()->select_one_object(selected_object, 0);
-        }
-    }
+                            RGE_Static_Object* selected_object = this->SelectedObject;
+                            if (selected_object != 0) {
+                                rge_base_game->get_player()->select_one_object(selected_object, 0);
+                            }
+                            RGE_Static_Object* destination_object = this->DestinationObject;
+                            if (destination_object != 0) {
+                                rge_base_game->get_player()->select_one_object(destination_object, 0);
+                            }
                         }
                     }
                 }

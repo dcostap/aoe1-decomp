@@ -1970,6 +1970,8 @@
         "004A8A00": "?create_edit@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTEditPanel@@PADFW4FormatType@3@HH@Z",
         "004A9320": "?SetupListOfTerrain@TRIBE_Screen_Sed@@IAEHPAVTListPanel@@@Z",
         "004A93C0": "?create_list@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTListPanel@@PAPAVTScrollBarPanel@@@Z",
+        "004AAE20": "?set_player@TRIBE_Screen_Sed@@IAEXFEE@Z",
+        "004AB670": "?set_unit@TRIBE_Screen_Sed@@IAEXF@Z",
         "004AAA90": "?set_brush_size@TRIBE_Screen_Sed@@IAEXW4BrushSize@1@@Z",
         "004AAD50": "?set_terrain@TRIBE_Screen_Sed@@IAEXF@Z",
         "004AADF0": "?set_elevation@TRIBE_Screen_Sed@@IAEXF@Z",
