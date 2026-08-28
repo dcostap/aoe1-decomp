@@ -697,9 +697,8 @@ int __cdecl WaveCopyUselessChunks(HMMIO* hmmio, MMCKINFO* ck,
 }
 
 #define CLEANUP_DATA() do { \
-    HGLOBAL handle = GlobalHandle(data); \
-    GlobalUnlock(handle); \
-    GlobalFree(handle); \
+    GlobalUnlock(GlobalHandle(data)); \
+    GlobalFree(GlobalHandle(data)); \
 } while (0)
 
 int __cdecl riffCopyChunk(HMMIO hmmioSrc, HMMIO hmmioDst,

@@ -77,7 +77,7 @@ period Win32 and WinMM declarations. The former `DAT_00888464` through
 Their definitions are owned by `src/game_globals.cpp`.
 
 The direct checks remain exact for `00447D50`, `00447950`, `00448040`,
-`004484D0`, `004486F0`, and `00448B30`. Direct API declarations change the
-instruction layout of `00448250`, `00448340`, and `00448400`, while preserving
+`00448400`, `004484D0`, `004486F0`, and `00448B30`. Direct API declarations
+change the instruction layout of `00448250` and `00448340`, while preserving
 their observed API call sequence and behavior. The module needs a fresh grouped
 audit after integration because the local worktree lacks the FPO reference file.
