@@ -2899,17 +2899,21 @@
       }
     },
     {
-      "name": "scr_sedm_prefix",
-      "source": "src/scr_sedm_tu.cpp",
+      "name": "scr_sedm",
+      "source": "src/scr_sedm.cpp",
+      "module": "scr_sedm",
       "flags": "config/flags/004B2EF0_TRIBE_Screen_Sed_Menu.rsp",
       "owners": {
-        "004B2EF0": "src/matching/004B2EF0_TRIBE_Screen_Sed_Menu.cpp",
-        "004B3110": "src/matching/004B3110_TRIBE_Screen_Sed_Menu.cpp",
-        "004B31A0": "src/matching/004B31A0_handle_idle.cpp",
-        "004B31D0": "src/matching/004B31D0_action.cpp"
+        "004B2EF0": "src/scr_sedm.cpp",
+        "004B3110": "src/scr_sedm.cpp",
+        "004B31A0": "src/scr_sedm.cpp",
+        "004B31D0": "src/scr_sedm.cpp"
       },
       "symbols": {
-        "004B31A0": "?handle_idle@TRIBE_Screen_Sed_Menu@@MAEJXZ"
+        "004B2EF0": "??0TRIBE_Screen_Sed_Menu@@QAE@XZ",
+        "004B3110": "??1TRIBE_Screen_Sed_Menu@@UAE@XZ",
+        "004B31A0": "?handle_idle@TRIBE_Screen_Sed_Menu@@MAEJXZ",
+        "004B31D0": "?action@TRIBE_Screen_Sed_Menu@@MAEJPAVTPanel@@JKK@Z"
       }
     },
     {

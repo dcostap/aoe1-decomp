@@ -30,12 +30,15 @@ header owns only `TRIBE_Dialog_Sed_Menu`.
 ## Validation
 
 Candidate: `build/dlg_sedm_natural_candidate.json`.
-Report: `build/candidate_tus/dlg_sedm_natural_after/report.json`.
+Latest grouped report: `build/candidate_tus/dlg_sedm_rebased/report.json`.
 
 The candidate compiles all three normal bodies and the generated
 `00440340` destructor. The constructor (`00440140`, 505 bytes) and action
 (`00440400`, 919 bytes) report `MATCH` with zero positional differences.
 The generated destructor also reports `MATCH`.
+
+The direct authoritative checks for `00440140` and `00440400` also report
+`MATCH` and `0.0000%` after the rebase onto main.
 
 The action keeps `MATCH` after removing the decompiler result tail. It uses
 direct returns for each handled action. The open-screen allocation is a
