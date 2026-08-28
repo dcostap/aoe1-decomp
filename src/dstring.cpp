@@ -1,25 +1,9 @@
 #include "../include/dstring.h"
 
+#include <iostream.h>
 #include <stdlib.h>
 #include <string.h>
-
-extern "C" void* __cdecl malloc(unsigned int size);
-extern "C" void __cdecl free(void* block);
-extern "C" unsigned int __cdecl strlen(const char* string);
-extern "C" char* __cdecl strcpy(char* destination, const char* source);
-extern "C" int __cdecl strcmp(const char* string1, const char* string2);
-extern "C" char* __cdecl strstr(const char* string, const char* substring);
-extern "C" int __cdecl atoi(const char* string);
-extern "C" double __cdecl atof(const char* string);
-extern "C" int __cdecl isspace(int character);
-extern "C" int __cdecl toupper(int character);
-extern "C" int __cdecl tolower(int character);
-
-// BINARY NOTE: These declarations model only the stream members used here.
-class ostream {
-public:
-    ostream& operator<<(const char* value);
-};
+#include <ctype.h>
 
 DString::DString() {
     this->stringValue = 0;
@@ -69,10 +53,6 @@ ostream& __cdecl operator<<(ostream& stream, const DString& value) {
     }
     return stream;
 }
-
-// BINARY NOTE: The shipped operator uses the stream's line counter and a
-// fixed 256-byte extraction buffer before assigning the extracted text.
-istream& __cdecl operator>>(istream& stream, DString& value);
 
 DString& DString::operator=(const char* value) {
     if (this->stringValue != 0) {
@@ -292,23 +272,10 @@ next_index:
     return DString("");
 }
 
-// BINARY NOTE: These declarations model only the stream members used here.
-class istream {
-public:
-    int state;
-    int fGline;
-
-protected:
-    istream& get(char* buffer, int size, int delimiter);
-
-    friend istream& __cdecl operator>>(istream& stream, DString& value);
-};
-
 istream& __cdecl operator>>(istream& stream, DString& value) {
     char buffer[256];
 
-    stream.fGline = stream.fGline + 1;
-    stream.get(buffer, 0x100, 10);
+    stream.get(buffer, 0x100);
     value = buffer;
     return stream;
 }

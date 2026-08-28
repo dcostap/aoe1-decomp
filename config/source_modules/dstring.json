@@ -118,9 +118,15 @@
     },
     "00447400": { "status": "matching" },
     "00447410": { "status": "matching" },
-    "00447420": { "status": "matching" },
+    "00447420": {
+      "status": "scratch",
+      "note_path": "recovery_notes/dstring.md"
+    },
     "00447460": { "status": "matching" },
-    "004474E0": { "status": "matching" },
+    "004474E0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/dstring.md"
+    },
     "00447520": { "status": "matching" },
     "004475A0": { "status": "matching" },
     "004475D0": { "status": "matching" },

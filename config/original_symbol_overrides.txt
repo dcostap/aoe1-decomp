@@ -17,8 +17,6 @@
 # Their original packets preserve the complete decorated identities.
 00407F80 ??8@YAHABVBaseItem@@0@Z
 0040A960 ??8@YAHABVConstructionItem@@0@Z
-# dstring.cpp operator>> calls the protected stream extraction member.
-0055AE30 ?get@istream@@IAEAAV1@PADHH@Z
 # dstring.cpp assigns the extracted buffer through DString::operator=.
 00446780 ??4DString@@QAEAAV0@PBD@Z
 # dstring.cpp word helpers assign through DString::operator=(const DString&).
