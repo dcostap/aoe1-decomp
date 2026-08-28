@@ -63,3 +63,18 @@ reported:
 The probe also confirmed the `0x2C` land entry, `0x48` map entry,
 `0x1438` land info, `0x1298` terrain info, `0x18C8` object info, and
 `0xF80` elevation info sizes.
+
+## Blocker addendum
+
+Policy review blocks publication of commit `a4c813a80`. This commit is held
+and is not publishable.
+
+- The legacy `include/rmm_dbct_context.h` remains in the repository.
+- `00482B70` and `00483A20` retain raw byte, integer, and interior-field
+  cursors in the natural reconstruction.
+- `00484320` retains an interior-field cursor despite its exact binary result.
+- `save` retains aliases for the controller and map-data objects.
+
+These findings are policy blockers. They do not change the recorded byte
+results. Do not publish this commit until the blockers receive review and the
+source and header ownership rules are satisfied.
