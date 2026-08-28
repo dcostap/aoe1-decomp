@@ -30,16 +30,25 @@
     "004350A0": { "status": "matching" },
     "004350E0": { "status": "scratch", "note_path": "recovery_notes/Command_module.md" },
     "00435110": { "status": "matching" },
-    "004351B0": { "status": "matching" },
+    "004351B0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Command_module.md"
+    },
     "00435210": { "status": "accepted_drift" },
     "00435260": { "status": "matching" },
     "004352C0": { "status": "matching" },
     "00435320": { "status": "matching" },
     "00435420": { "status": "matching" },
-    "004354F0": { "status": "matching" },
+    "004354F0": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Command_module.md"
+    },
     "004355A0": { "status": "accepted_drift" },
     "00435620": { "status": "matching" },
-    "00435720": { "status": "matching" },
+    "00435720": {
+      "status": "scratch",
+      "note_path": "recovery_notes/Command_module.md"
+    },
     "00435810": { "status": "matching" },
     "00435900": { "status": "matching" },
     "004359C0": { "status": "matching" },

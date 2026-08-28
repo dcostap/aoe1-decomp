@@ -11,6 +11,10 @@ struct RGE_Obj_Info {
     int id;
 };
 
+struct RGE_Command_Header {
+    unsigned char command;
+};
+
 struct RGE_Command_Order {
     unsigned char command;
     unsigned char gap_01[3];
@@ -22,12 +26,19 @@ struct RGE_Command_Order {
     RGE_Obj_Info units[1];
 };
 
+#pragma pack(push, 1)
 struct RGE_Command_Stop {
     unsigned char command;
     unsigned char unit_num;
-    unsigned char gap_02[2];
-    int object_ids[1];
+    RGE_Obj_Info object_ids[1];
 };
+
+struct RGE_Command_Pause {
+    unsigned char command;
+    unsigned char unit_num;
+    RGE_Obj_Info object_ids[1];
+};
+#pragma pack(pop)
 
 struct RGE_Command_Give_Attribute {
     unsigned char command;
@@ -104,6 +115,7 @@ struct RGE_Command_Group_AI_Order {
     unsigned char immediate;
     unsigned char inFront;
     unsigned char gap_22[2];
+    RGE_Obj_Info recipients[1];
 };
 
 struct RGE_Command_Resign {
@@ -128,7 +140,7 @@ struct RGE_Command_Add_To_Group {
     unsigned char player_id;
     unsigned char gap_02[2];
     int groupCommander;
-    int groupRange;
+    float group_range;
     int newUnit;
 };
 
@@ -160,12 +172,7 @@ struct RGE_Command_Group_Waypoint {
     unsigned char unit_num;
     unsigned char x;
     unsigned char y;
-};
-
-struct RGE_Command_Pause {
-    char gap_00;
-    unsigned char unit_num;
-    int object_ids[1];
+    RGE_Obj_Info unit_ids[1];
 };
 
 class RGE_Command {
