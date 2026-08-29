@@ -38,9 +38,9 @@ status is:
 
 - 102 `matching` owners in the source manifest after removing the two
   natural-shape regressions below.
-- 3 `accepted_drift` owners: `00413150`, `00414D40`, and `0041A020`.
-- 9 `scratch` owners: the seven prior scratch owners plus `00412F00` and
-  `00413450`.
+- 2 `accepted_drift` owners: `00413150` and `0041A020`.
+- 10 `scratch` owners: the seven prior scratch owners, `00414D40`, and the
+  natural-shape regressions `00412F00` and `00413450`.
 
 The current exact TU registration excludes all accepted-drift and scratch
 owners. It contains 101 owners. `004195F0` remains a matching source owner but
