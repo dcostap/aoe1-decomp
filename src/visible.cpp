@@ -5,10 +5,10 @@
 #include "../include/map.h"
 #include "../include/player.h"
 #include "../include/world.h"
+#include "../include/game_globals.h"
 #include <stdio.h>
 #include <string.h>
 
-extern "C" unsigned long __cdecl _rotl(unsigned long value, int shift);
 #pragma intrinsic(_rotl)
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
@@ -16,16 +16,6 @@ extern "C" void __cdecl free(void* block);
 extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
 extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
 
-extern float save_game_version;
-extern int Map_Update_Suppresion;
-extern unsigned long* unified_map_offsets[256];
-extern LOSTBL* NormalLOS[17];
-extern LOSTBL* SquareLOS[17];
-extern LOSTBL* Edge_Offsets_T16[17];
-extern LOSTBL* Edge_Offsets_N16[17];
-extern int VCALL_LOG_HEAD;
-extern int VCALL_LOG_TAIL;
-extern VC_LOG VCALL_LOG[1024];
 extern void __cdecl log_map_call(int world_time, int player_id, int type,
                                  int p6, int x1, int y1, int x2, int y2,
                                  int suppression);
@@ -288,9 +278,9 @@ LOSTBL* RGE_Visible_Map::get_los_table(int distance, int diagonal) {
         distance = 0;
     }
     if (diagonal != 0) {
-        return Edge_Offsets_T16[distance];
+        return SquareLOS[distance];
     }
-    return Edge_Offsets_N16[distance];
+    return NormalLOS[distance];
 }
 
 // VA: 0053C6F0 RGE_Visible_Map::explore_terrain

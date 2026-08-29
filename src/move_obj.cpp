@@ -15,7 +15,6 @@
 #include <stdlib.h>
 
 // PDB source order for C:\msdev\work\age1_x1\move_obj.cpp.
-extern FILE* actionFile;
 extern int displayPathingFlags;
 extern int displayPathObjectID;
 

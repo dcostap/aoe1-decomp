@@ -11,13 +11,6 @@ class RGE_Static_Object;
 class RGE_Tile_List;
 struct VISIBLE_UNIT_REC;
 
-extern RGE_Static_Object** VIS_UNIT_objectsValue;
-
-// GetVisibleUnits publishes its five category buffers through this shared
-// result surface.  The arrays are owned by vis_unit.cpp.
-extern VISIBLE_UNIT_REC* VisibleUnitList[5];
-extern int VisibleUnitList_Size[5];
-
 struct VISIBLE_UNIT_REC {
     int object_id;
     unsigned char distance;
@@ -58,8 +51,6 @@ public:
     int GetVisibleUnits(int x, int y, int distance, int player,
                         int* categories, int category_count, int* player_map);
 };
-
-extern Visible_Unit_Manager* VisibleUnitManager;
 
 typedef char aoe1_visible_unit_manager_size_check[
     (sizeof(Visible_Unit_Manager) == 0x24) ? 1 : -1];

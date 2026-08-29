@@ -11,6 +11,7 @@
 #include "../include/rge_fio.h"
 #include "../include/stat_obj.h"
 #include "../include/world.h"
+#include "../include/game_globals.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,8 +19,6 @@
 
 #pragma intrinsic(memcpy)
 
-extern unsigned long* unified_map_offsets[];
-extern float save_game_version;
 extern float DAT_00570418;
 extern FILE* DDlogf;
 

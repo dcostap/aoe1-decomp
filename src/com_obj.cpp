@@ -27,8 +27,6 @@
 #include <stddef.h>
 #include <stdio.h>
 
-extern FILE* actionFile;
-extern unsigned long* unified_map_offsets[];
 extern "C" {
     float g_attack_modifier;
     int __cdecl debug_rand(const char*, int);

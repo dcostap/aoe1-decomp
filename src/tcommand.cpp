@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 #include "../include/basegame.h"
+#include "../include/game_globals.h"
 #include "../include/com_hand.h"
 #include "../include/debuglog.h"
 #include "../include/effects.h"
@@ -23,12 +24,9 @@
 #include "../include/tworld.h"
 #include "../include/unit_ai_module.h"
 
-extern FILE* actionFile;
-extern FILE* DVlogf;
 extern FILE* DDlogf;
 extern int do_debug_random;
 extern int out_of_sync2;
-extern TCommunications_Handler* comm;
 extern void __cdecl debug_random_write();
 extern void __cdecl dump_vismap_log();
 

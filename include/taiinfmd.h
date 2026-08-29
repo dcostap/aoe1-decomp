@@ -14,6 +14,7 @@
 #include "tactical_group.h"
 #include "utmarray.h"
 #include "xy_point.h"
+#include "game_globals.h"
 
 #ifndef uchar
 typedef unsigned char uchar;
@@ -46,7 +47,6 @@ class RGE_Action_List;
 extern InfluenceMap* const iMap;
 extern InfluenceMap* const losMap;
 extern InfluenceMap* const attackMap;
-extern PathingSystem aiPathSystem;
 
 void* operator new(unsigned int size);
 void operator delete(void* pointer);
@@ -313,6 +313,4 @@ extern float DAT_005755B8;
 extern float DAT_005755BC;
 extern float _flt_5755B8;
 extern float _flt_5755BC;
-extern RGE_Base_Game* rge_base_game;
-
 #endif

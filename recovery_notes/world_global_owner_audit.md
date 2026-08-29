@@ -31,7 +31,7 @@ exact data types and storage addresses:
 | `logStatusFile` | `00886C50` | `_iobuf*` (`FILE*`) | `include/game_globals.h`; `src/game_globals.cpp` |
 | `lastStatusLogTime` | `00886C54` | `unsigned long` | `include/game_globals.h`; `src/game_globals.cpp` |
 | `DVlogf` | `00886C58` | `_iobuf*` (`FILE*`) | `include/game_globals.h`; `src/game_globals.cpp` |
-| `VIS_UNIT_objectsValue` | `0087D7FC` | `RGE_Static_Object**` | `include/vis_unit.h`; `src/vis_unit.cpp` |
+| `VIS_UNIT_objectsValue` | `0087D7FC` | `RGE_Static_Object**` | `include/game_globals.h`; `src/game_globals.cpp` |
 | `rge_write_error` | `0086B284` | `int` | `include/rge_fio.h`; `src/rge_fio.cpp` |
 | `do_fixed_update` | `0062C4E0` | `int` | `include/game_globals.h`; `src/game_globals.cpp` |
 | `debug_random_on` | `0062C4D4` | `int` | `include/game_globals.h`; `src/game_globals.cpp` |
@@ -42,9 +42,9 @@ exact data types and storage addresses:
 | `logStatusOn` | `0062C524` | `int` | `include/game_globals.h`; `src/game_globals.cpp` |
 | `L` | `0062C4FC` | `TDebuggingLog*` | `include/game_globals.h`; `src/game_globals.cpp` (already present) |
 | `MouseSystem` | `0062E660` | `TMousePointer*` | `include/Mouseptr.h`; `src/Mouseptr.cpp` |
-| `rge_base_game` | `0062C574` | `RGE_Base_Game*` | `include/rge_base_game_global.h`; definition `src/game_globals.cpp` |
-| `aiPathSystem` | `0062F348` | `PathingSystem` (size `0x11DCF8`) | `include/pathsys.h`; future `src/pathsys.cpp` |
-| `pathSystem` | `0074D440` | `PathingSystem` (size `0x11DCF8`) | `include/pathsys.h`; future `src/pathsys.cpp` |
+| `rge_base_game` | `0062C574` | `RGE_Base_Game*` | `include/game_globals.h`; definition `src/game_globals.cpp` |
+| `aiPathSystem` | `0062F348` | `PathingSystem` (size `0x11DCF8`) | `include/game_globals.h`; future `src/pathsys.cpp` |
+| `pathSystem` | `0074D440` | `PathingSystem` (size `0x11DCF8`) | `include/game_globals.h`; future `src/pathsys.cpp` |
 | `fixed_update_time` | `0057F9E4` | `long` | `include/game_globals.h`; `src/game_globals.cpp` |
 | `save_game_version` | `0058EBCC` | `float` | `include/game_globals.h`; `src/game_globals.cpp` |
 
@@ -53,9 +53,9 @@ current context headers use `int`. The width is the same on this target, but
 the declaration is not exact.
 
 `L` already has the reviewed declaration and definition. The reviewed evidence
-is `config/shared_abi_evidence.json`. `rge_base_game` already has the reviewed
-header declaration. Its definition is absent from the current
-`src/game_globals.cpp` checkout. `rge_write_error` has a declaration in
+is `config/shared_abi_evidence.json`. `rge_base_game` has the reviewed
+declaration in the shared global header and its definition in
+`src/game_globals.cpp`. `rge_write_error` has a declaration in
 `include/rge_fio.h`, but no current definition.
 
 `pathSystem` and `aiPathSystem` are real objects. The PDB `$E9` and `$E14`
@@ -133,6 +133,27 @@ source form that preserves the observed loads.
 
 ## Result
 
-No production header or source changed. This note records the exact storage,
-type, direct World consumers, and owner proposals needed before context headers
-and raw aliases leave natural `World.cpp`.
+The following World globals now have one compiler-facing owner:
+
+- `world_update_counter`, `computerPlayerSetup`, `DVlogf`, the debug flags,
+  `all_cp`, `logStatusOn`, `do_fixed_update`, `fixed_update_time`,
+  `save_game_version`, and `allow_user_commands` use
+  `include/game_globals.h` and `src/game_globals.cpp`.
+- `visible_combats`, `logStatusFile`, and `lastStatusLogTime` use the same
+  declaration and definition. Their old `World.cpp` static definitions are
+  removed.
+- `allowAIToCheat`, `useComputerPlayers`, and `die_die_die` use the same
+  declaration and definition.
+- `VIS_UNIT_objectsValue`, `VisibleUnitList`, `VisibleUnitList_Size`,
+  `VisibleUnitManager`, and `unified_map_offsets` use the same declaration and
+  definition.
+
+The PDB `S_GDATA32` records and the original relocations prove each name and
+type. The retained World checks for `00540750` and `00542ED0` report `MATCH`
+and `0.0000%`. The old World destructor remains nonexact for an unrelated
+cleanup target difference.
+
+The remaining `NormalLOS`, `SquareLOS`, edge-table, `pathSystem`, and
+`aiPathSystem` storage needs a separate source-owner pass. Their PDB records
+prove storage, but their current initialization bodies are not safe to move to
+the plain global definition file. Do not add address aliases for these values.

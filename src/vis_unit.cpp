@@ -8,22 +8,16 @@
 #include "../include/stat_obj.h"
 #include "../include/m_s_obj.h"
 #include "../include/com_obj.h"
+#include "../include/visible.h"
+#include "../include/game_globals.h"
 #include <stdlib.h>
 #include <string.h>
 
-VISIBLE_UNIT_REC* VisibleUnitList[5];
-int VisibleUnitList_Size[5];
-extern int* NormalLOS;
-extern int* PTR_Edge_Offsets_N16;
-extern RGE_Static_Object** VIS_UNIT_objectsValue;
-extern float save_game_version;
 extern float DAT_005776c8;
 extern double DAT_005776D0;
 extern double DAT_005776D8;
 extern void rge_read(int handle, void* buffer, int size);
 extern void rge_write(int handle, void* buffer, int size);
-
-Visible_Unit_Manager* VisibleUnitManager;
 
 Visible_Unit_Manager::Visible_Unit_Manager(int player_count, int category_count)
 {
@@ -104,13 +98,13 @@ void Visible_Unit_Manager::Build_Distance_Table()
     }
 
     int distance = 0;
-    int** offsets = &NormalLOS;
+    LOSTBL** offsets = NormalLOS;
     do {
-        int* entry = *offsets;
-        int row = entry[0];
+        LOSTBL* entry = *offsets;
+        int row = entry->y;
         while (row != 999) {
-            int first = entry[1];
-            int last = entry[2];
+            int first = entry->x1;
+            int last = entry->x2;
             if (row >= 0 && row <= 15) {
                 if (first < 0) {
                     first = 0;
@@ -131,12 +125,12 @@ void Visible_Unit_Manager::Build_Distance_Table()
                     } while (count);
                 }
             }
-            entry += 3;
-            row = entry[0];
+            ++entry;
+            row = entry->y;
         }
         offsets++;
         distance++;
-    } while ((int)offsets <= (int)&PTR_Edge_Offsets_N16);
+    } while (offsets <= &NormalLOS[16]);
 }
 
 void Visible_Unit_Manager::Update_Unit_Info(

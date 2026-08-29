@@ -5,8 +5,13 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include "game_types.h"
 
+class RGE_Base_Game;
+class RGE_Static_Object;
+class Visible_Unit_Manager;
+class LOSTBL;
+class VC_LOG;
+struct VISIBLE_UNIT_REC;
 class IDirectPlay3;
 class ResFileHdr;
 class TDebuggingLog;
@@ -15,6 +20,7 @@ class TChat;
 class TCommunications_Handler;
 class TRegistry;
 class TSound_Driver;
+class PathingSystem;
 
 // Shared action and UnitAIModule update state.
 extern FILE* actionFile;
@@ -22,6 +28,25 @@ extern int taskedThisUpdate;
 extern int searchedThisUpdate;
 extern int numberVisibleObjects;
 extern int numberDifferentPlayerObjectsVisible;
+extern short visible_combats;
+extern FILE* logStatusFile;
+extern unsigned long lastStatusLogTime;
+
+// Visible-unit and map process storage. The PDB records these as globals,
+// not as source-local aliases.
+extern RGE_Static_Object** VIS_UNIT_objectsValue;
+extern VISIBLE_UNIT_REC* VisibleUnitList[5];
+extern int VisibleUnitList_Size[5];
+extern Visible_Unit_Manager* VisibleUnitManager;
+extern unsigned long* unified_map_offsets[1024];
+extern LOSTBL* NormalLOS[17];
+extern LOSTBL* SquareLOS[17];
+extern int Map_Update_Suppresion;
+extern int VCALL_LOG_HEAD;
+extern int VCALL_LOG_TAIL;
+extern VC_LOG VCALL_LOG[1024];
+extern PathingSystem pathSystem;
+extern PathingSystem aiPathSystem;
 
 struct COMM_DEBUG_PING {
     unsigned char Command;
@@ -97,9 +122,13 @@ extern int allow_user_commands;
 extern unsigned char die_die_die;
 extern int useComputerPlayers;
 
+// Main and BaseGame process storage.
+extern void* AppInst;
+extern "C" GUID TRIBE_GUID;
+extern "C" GUID ZONE_GUID;
+
 // BaseGame process globals. The executable stores these values at the named
 // addresses. The types follow their direct uses in BaseGame and its clients.
-extern HINSTANCE basegame_instance;
 extern HMODULE StringTable;
 extern TRegistry* Regs;
 extern TSound_Driver* sound_driver;

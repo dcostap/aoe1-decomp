@@ -1,6 +1,7 @@
 #ifndef AOE1_SCR_GAME_H
 #define AOE1_SCR_GAME_H
 
+#include "game_globals.h"
 // PDB owner: scr_game.cpp.
 // This header owns only TRIBE_Screen_Game and its score record.
 
@@ -297,15 +298,9 @@ public:
 typedef char scr_game_size_check[
     (sizeof(TRIBE_Screen_Game) == 0x7C4) ? 1 : -1];
 
-extern RGE_Base_Game* rge_base_game;
 extern int disable_terrain_sounds;
 extern int _bPlaying;
-extern TCommunications_Handler* comm;
-extern TChat* chat;
-extern TDebuggingLog* L;
 extern int start_paused;
-extern int allow_user_commands;
-extern int do_fixed_update;
 extern int displayPathingFlags;
 extern int MapPathsDisplay;
 extern int view_debug_spans;
@@ -318,7 +313,6 @@ extern int View_Grid_Mode;
 extern int confirmed_close;
 extern int multi_updates;
 extern int out_of_sync2;
-extern unsigned char die_die_die;
 extern unsigned char do_color_log;
 extern unsigned char production_queues_is_use;
 extern int memory_dump_sequence;

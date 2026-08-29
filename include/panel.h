@@ -2,13 +2,13 @@
 #define AOE1_PANEL_H
 
 #include <windows.h>
+#include "game_globals.h"
 #include "basegame.h"
 #include "rge_base_game_global.h"
 #include "drawarea.h"
 
 struct PanelNode;
 class TPanel;
-extern HWND AppWnd;
 extern char DAT_0062E670[0x200];
 void* __cdecl ReadPalette(char*, long, int);
 

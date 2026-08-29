@@ -123,7 +123,4 @@ typedef char pathsys_size_check[
 typedef char pathsys_mgp_float_heap_size_check[
     (sizeof(PathingSystem::MGP_FloatHeap) == 0x08) ? 1 : -1];
 
-extern PathingSystem pathSystem;
-extern PathingSystem aiPathSystem;
-
 #endif

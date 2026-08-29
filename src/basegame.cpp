@@ -193,7 +193,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)
     this->do_show_ai = 0;
     this->save_check_for_cd = 1;
     L = 0;
-    basegame_instance = this->prog_info->instance;
+    AppInst = this->prog_info->instance;
     AppWnd = 0;
     chat = 0;
     comm = 0;
@@ -237,7 +237,6 @@ void __cdecl debug_srand(char* file, int line,
                                      unsigned int seed);
 extern "C" void __cdecl GetDXVersion(unsigned long* version, unsigned long* platform);
 extern int debugActions;
-extern FILE* actionFile;
 extern int do_draw_log;
 extern char draw_log_name[260];
 extern FILE* draw_log;
@@ -479,7 +478,6 @@ extern void __cdecl debug_random_write(void);
 extern void __cdecl dump_vismap_log(void);
 extern int do_debug_random;
 extern int wrote_debug_random_log;
-extern FILE* actionFile;
 extern FILE* fps_log;
 extern FILE* draw_log;
 
@@ -1039,16 +1037,10 @@ char* __cdecl _mbsncat(char* dst, const char* src, unsigned int count);
 }
 
 extern "C" {
-extern int all_cp;
 extern int do_run_log;
 extern int do_debug_timeGetTime;
-extern int do_fixed_update;
 extern int debug_timeGetTime_interval;
-extern long fixed_update_time;
-extern int useComputerPlayers;
 extern int startLoggingAI;
-extern int logStatusOn;
-extern int allowAIToCheat;
 extern int chatCheatCodes;
 extern int logUpdateChanges;
 extern int useInfluencePlacement;

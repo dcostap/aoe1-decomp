@@ -3,6 +3,7 @@
 
 #include <windows.h>
 
+#include "game_globals.h"
 #include "panel.h"
 
 typedef unsigned char uchar;
@@ -159,7 +160,6 @@ extern int View_Grid_Mode;
 extern int Clip_draw;
 extern int Clip_remove;
 
-extern unsigned long* unified_map_offsets[];
 class RGE_View : public TPanel {
 public:
     RGE_View();

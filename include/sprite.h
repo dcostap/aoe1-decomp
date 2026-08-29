@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "asp_list.h"
+#include "game_globals.h"
 
 class DClipInfo_Node;
 class DClipInfo_List;
@@ -101,7 +102,6 @@ public:
 
 typedef char sprite_size_check[(sizeof(RGE_Sprite) == 0x78) ? 1 : -1];
 
-extern RGE_Base_Game* rge_base_game;
 extern DClipInfo_List* SDI_List;
 extern int SDI_Draw_Level;
 extern int do_draw_log;

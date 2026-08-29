@@ -383,11 +383,11 @@ int TMessagePanel::render_to_image_buffer() {
     old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
 
     if (this->index_color != 0) {
-        GetPaletteEntries(rge_base_game_at_storage()->draw_system->Pal,
+        GetPaletteEntries(rge_base_game->draw_system->Pal,
                           this->font_color, 1, &p);
         font_rgb = ((unsigned long)p.peBlue << 16) |
                    ((unsigned long)p.peGreen << 8) | p.peRed;
-        GetPaletteEntries(rge_base_game_at_storage()->draw_system->Pal,
+        GetPaletteEntries(rge_base_game->draw_system->Pal,
                           this->back_color, 1, &p);
         back_rgb = ((unsigned long)p.peBlue << 16) |
                    ((unsigned long)p.peGreen << 8) | p.peRed;

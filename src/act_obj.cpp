@@ -13,8 +13,6 @@
 #include "../include/world.h"
 #include <stdio.h>
 
-extern FILE* actionFile;
-
 // act_obj.cpp lines 47-56.
 RGE_Action_Object::RGE_Action_Object(RGE_Master_Action_Object* master,
                                      RGE_Player* player,

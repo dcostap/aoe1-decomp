@@ -1,11 +1,25 @@
 #include "..\include\game_globals.h"
 #include "../include/dsutil.h"
+#include "../include/visible.h"
 
 FILE* actionFile = 0;
 int taskedThisUpdate = 0;
 int searchedThisUpdate = 0;
 int numberVisibleObjects = 0;
 int numberDifferentPlayerObjectsVisible = 0;
+short visible_combats = 0;
+FILE* logStatusFile = 0;
+unsigned long lastStatusLogTime = 0;
+
+RGE_Static_Object** VIS_UNIT_objectsValue = 0;
+VISIBLE_UNIT_REC* VisibleUnitList[5] = {0};
+int VisibleUnitList_Size[5] = {0};
+Visible_Unit_Manager* VisibleUnitManager = 0;
+unsigned long* unified_map_offsets[1024] = {0};
+int Map_Update_Suppresion = 0;
+int VCALL_LOG_HEAD = -1;
+int VCALL_LOG_TAIL = -1;
+VC_LOG VCALL_LOG[1024] = {0};
 
 // Generated once by tools\generate_working_scaffold.py.
 // After the first scaffold pass, this file becomes editable project source.
@@ -1653,7 +1667,7 @@ unsigned long ds_buffer_bytes = 0;
 long ds_last_percent = 0;
 int ds_stream_callback_active = 0;
 
-HINSTANCE basegame_instance = 0;
+void* AppInst = 0;
 HMODULE StringTable = 0;
 TRegistry* Regs = 0;
 TSound_Driver* sound_driver = 0;
@@ -1670,6 +1684,14 @@ int do_restore_palette = 0;
 unsigned long restore_palette_timer = 0;
 int restore_mouse_after_paint = 0;
 extern "C" HCURSOR last_mouse_cursor = 0;
+extern "C" GUID TRIBE_GUID = {
+    0xF2E846A8, 0xEBE2, 0x11D1,
+    { 0x83, 0x9B, 0x00, 0x60, 0x97, 0x07, 0xF5, 0x08 }
+};
+extern "C" GUID ZONE_GUID = {
+    0xF2E846AA, 0xEBE2, 0x11D1,
+    { 0x83, 0x9B, 0x00, 0x60, 0x97, 0x07, 0xF5, 0x08 }
+};
 // 005B2164 [.data] BaseGame Shift-key state.
 unsigned int basegame_shift_key_down = 0;
 // 005B2368 [.data] BaseGame key message.
@@ -1776,6 +1798,7 @@ FILE* DVlogf = 0;
 int debug_random_on = 0;
 int global_save_debug_random_on1 = 0;
 int global_save_debug_random_on2 = 0;
+int allowAIToCheat = 1;
 int debug_timeGetTime_on = 0;
 int debug_timeGetTime_cnt = 0;
 int debug_timeGetTime_time = 0;
@@ -1786,3 +1809,5 @@ long fixed_update_time = 0;
 float save_game_version = 0.0f;
 // 0058631C [.data]
 int allow_user_commands = 1;
+unsigned char die_die_die = 0;
+int useComputerPlayers = 1;

@@ -53,10 +53,6 @@ static const char world_data_format[] =
     "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %hd %hd %hd";
 static char base_save_version[] = "VER 3.7";
 
-static short visible_combats = 0;
-static FILE* logStatusFile = 0;
-static unsigned long lastStatusLogTime = 0;
-
 void __cdecl debug_random_reset();
 int __cdecl debug_rand(char*, int);
 void __cdecl debug_srand(char*, int, unsigned int);

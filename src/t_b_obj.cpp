@@ -25,13 +25,8 @@
 
 extern "C" {
     int debug_rand(const char*, int);
-    void debug_srand(const char*, int, int);
 }
 
-extern int debug_random_on;
-extern unsigned long world_update_counter;
-extern unsigned long* unified_map_offsets[];
-extern float save_game_version;
 
 static TRIBE_Player* tribe_player(RGE_Player* player)
 {

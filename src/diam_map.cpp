@@ -1,4 +1,5 @@
 #include "../include/diam_map.h"
+#include "../include/game_globals.h"
 
 #include <stdlib.h>
 #include <string.h>

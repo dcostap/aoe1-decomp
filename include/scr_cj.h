@@ -6,6 +6,7 @@
 // dialog bases come from their canonical owners.
 #include "pnl_dlg.h"
 #include "Pnl_scr.h"
+#include "game_globals.h"
 
 class TCommunications_Handler;
 class TCommunications_Sessions;
@@ -18,10 +19,7 @@ class TEditPanel;
 class TRegistry;
 class TDebuggingLog;
 
-extern TCommunications_Handler* comm;
 extern TCommunications_Sessions* Sess;
-extern TRegistry* Regs;
-extern TDebuggingLog* L;
 
 class TribeJoinScreen : public TScreenPanel {
 protected:
