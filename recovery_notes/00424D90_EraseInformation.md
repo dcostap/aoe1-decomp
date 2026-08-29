@@ -6,4 +6,4 @@
 ## Recovery record
 
 The raw-gap source matched the body. The canonical class layout also matched.
-The merged source keeps the shared empty string copy and counter reset order.
+The merged source keeps the natural empty string copy and counter reset order.

@@ -14,3 +14,8 @@
    constructor exact; the restored `IPAD` body also matches independently.
 
 The merged source keeps the proven class layout and call order.
+
+The `IPAD` header constructor now uses natural `""` literals for both fields.
+No PDB GDATA or real source symbol proves the old `s_` name. The standalone
+`IPAD` constructor and the complete com_addr candidate still report
+`MATCH`, `0.0000%`, with no boundary or relocation-target errors.

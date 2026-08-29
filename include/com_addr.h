@@ -4,8 +4,6 @@
 #include <winsock.h>
 #include <string.h>
 
-extern char s_[];
-
 class TCommunications_Handler;
 class TribeMPSetupScreen;
 
@@ -15,8 +13,8 @@ public:
     char Alias[0x80];
 
     IPAD() {
-        strcpy(this->DottedIPAddress, s_);
-        strcpy(this->Alias, s_);
+        strcpy(this->DottedIPAddress, "");
+        strcpy(this->Alias, "");
     }
     ~IPAD() {}
 };

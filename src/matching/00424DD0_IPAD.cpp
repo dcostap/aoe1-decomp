@@ -3,12 +3,10 @@
 // the next PDB sibling, IPAD::~IPAD at 00424E30.
 // BINARY NOTE: RGE_Communications_Addresses::pIPAD owns 0xA0-byte IPAD records:
 // DottedIPAddress is at +0x00 and Alias is at +0x20.
-// BINARY NOTE: Both copies use the shared empty string at 0x592A40. VC5 inlines
+// BINARY NOTE: Both fields use natural empty string literals. VC5 inlines
 // strcpy here, so the body has no direct calls.
 
 #include <string.h>
-
-extern char s_[];
 
 class IPAD {
 public:
@@ -19,6 +17,6 @@ public:
 };
 
 IPAD::IPAD() {
-    strcpy(DottedIPAddress, s_);
-    strcpy(Alias, s_);
+    strcpy(DottedIPAddress, "");
+    strcpy(Alias, "");
 }
