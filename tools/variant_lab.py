@@ -111,10 +111,9 @@ Variant lab template reference
 
 variant_lab compiles a full C/C++ source template many times, compares each
 emitted object against one original function, and groups variants by emitted
-machine code. It never edits any compiler-facing source bank; generated files go to
-build/variant_lab/<slug>/<run-id>/. Compile runs add repo-root, include/, and
-src/{scratch,matching,accepted_drift,verified_logic}/ include roots so normal repo includes and
-copied scratch-relative includes usually work unchanged.
+machine code. It never edits the natural source module. Generated files go to
+build/variant_lab/<slug>/<run-id>/. Compile runs add the repository, include/,
+src/, and legacy source-bank include roots.
 
 Use it for late-stage VC5 source-shape/codegen-basin work after behavior is
 mostly understood. Matches still need normal review, reduction, and local

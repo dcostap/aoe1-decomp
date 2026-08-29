@@ -49,6 +49,20 @@ class TargetSessionTests(unittest.TestCase):
         self.assertEqual(target_session.session_claim_count(first), 1)
         self.assertEqual(target_session.session_claim_count(second), 1)
 
+    def test_active_translation_unit_rejects_another_target(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            shared_source = root / "src" / "module.cpp"
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(target_session, "compiler_source_path", return_value=shared_source),
+                patch.object(target_session, "function_record_by_va", return_value=self.record),
+            ):
+                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                with self.assertRaisesRegex(RuntimeError, "translation unit"):
+                    target_session.start_session(other_record, "AgentB", 4, 2.0)
+
     def test_compact_summary_preserves_status_aggregates(self) -> None:
         session = {
             "va": "00001000",

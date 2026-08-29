@@ -108,6 +108,26 @@ class QueryProjectStatusLeaseTests(unittest.TestCase):
         self.assertEqual(row["work_best_current_diff"], "8/9")
         self.assertEqual(row["work_last_gain"], "#6@2026-08-02")
 
+    def test_annotation_marks_every_function_in_the_leased_translation_unit(self) -> None:
+        rows = [{"va": "00001000"}, {"va": "00003000"}]
+
+        def record_for_va(va: int) -> dict[str, str]:
+            return {"va": f"{va:08X}", "name": "demo"}
+
+        with (
+            patch.object(query_project_status, "function_record_by_va", side_effect=record_for_va),
+            patch.object(
+                query_project_status,
+                "compiler_source_path",
+                return_value=Path("C:/repo/src/module.cpp"),
+            ),
+        ):
+            annotated = annotate_leases(rows, self.sessions())
+
+        self.assertEqual(annotated[1]["lease_active"], "yes")
+        self.assertEqual(annotated[1]["lease_owner"], "AgentA")
+        self.assertEqual(annotated[1]["lease_target_va"], "00001000")
+
     def test_filters_support_unleased_active_and_owner(self) -> None:
         rows = annotate_leases([{"va": "00001000"}, {"va": "00002000"}, {"va": "00003000"}], self.sessions())
         self.assertNotIn("lease_claim_total", rows[0])

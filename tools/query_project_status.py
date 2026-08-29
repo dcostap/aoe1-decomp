@@ -7,7 +7,7 @@ import re
 import sys
 from pathlib import Path
 
-from common import REPO_ROOT, load_functions
+from common import REPO_ROOT, compiler_source_path, function_record_by_va, load_functions
 from status_core import (
     build_status_rows,
     enrich_status_rows,
@@ -81,8 +81,8 @@ def parse_args() -> argparse.Namespace:
     blockers.add_argument("--blockers", action="store_true", help="Only rows with a parsed top-header BLOCKER note")
 
     leases = parser.add_mutually_exclusive_group()
-    leases.add_argument("--unleased", action="store_true", help="Only functions without an unexpired active target lease")
-    leases.add_argument("--active-leases", action="store_true", help="Only functions with an unexpired active target lease")
+    leases.add_argument("--unleased", action="store_true", help="Only functions whose translation unit has no active lease")
+    leases.add_argument("--active-leases", action="store_true", help="Only functions in an actively leased translation unit")
     parser.add_argument("--owner", help="Only active leases owned by this exact agent/session name")
     parser.add_argument("--leases", action="store_true", help="Include lease owner/state/probe columns in table output")
     parser.add_argument(
@@ -222,14 +222,31 @@ def annotate_leases(
 ) -> list[dict[str, str]]:
     source_sessions = load_target_sessions() if sessions is None else sessions
     by_va = {str(session.get("va", "")).upper(): session for session in source_sessions}
+    active_by_source: dict[Path, dict] = {}
+    for session in source_sessions:
+        if not session_is_active(session):
+            continue
+        try:
+            record = function_record_by_va(int(str(session.get("va") or ""), 16))
+            active_by_source[compiler_source_path(record).resolve()] = session
+        except (KeyError, TypeError, ValueError):
+            continue
     for row in rows:
         session = by_va.get(row.get("va", "").upper())
-        active = bool(session and session_is_active(session))
+        lease_session = session if session and session_is_active(session) else None
+        if lease_session is None:
+            try:
+                record = function_record_by_va(int(row.get("va", ""), 16))
+                lease_session = active_by_source.get(compiler_source_path(record).resolve())
+            except (KeyError, TypeError, ValueError):
+                lease_session = None
+        active = lease_session is not None
         total_probes = meaningful_probe_count(session or {}, current_claim_only=False)
         row["lease_active"] = "yes" if active else "no"
-        row["lease_owner"] = str((session or {}).get("owner", "")) if active else ""
+        row["lease_owner"] = str((lease_session or {}).get("owner", "")) if active else ""
+        row["lease_target_va"] = str((lease_session or {}).get("va", "")) if active else ""
         row["lease_state"] = "active" if active else str((session or {}).get("state", ""))
-        row["lease_expires_at"] = str((session or {}).get("lease_expires_at", "")) if active else ""
+        row["lease_expires_at"] = str((lease_session or {}).get("lease_expires_at", "")) if active else ""
         row["lease_probes"] = str(meaningful_probe_count(session or {})) if session else ""
         row["lease_probe_total"] = str(total_probes) if session else ""
         row["clean_pinned"] = "yes" if session and session.get("clean_baseline") else ""
@@ -288,16 +305,6 @@ def lease_prefilter_vas(
     """Return safe VA filters that can run before source files are read."""
     include_vas: set[str] | None = None
     exclude_vas: set[str] = set()
-    active_sessions = [session for session in sessions if session_is_active(session)]
-
-    if args.active_leases or args.owner:
-        include_vas = {
-            str(session.get("va", "")).upper()
-            for session in active_sessions
-            if not args.owner or session.get("owner") == args.owner
-        }
-    elif args.unleased:
-        exclude_vas.update(str(session.get("va", "")).upper() for session in active_sessions)
 
     if args.max_lifetime_probes is not None:
         exclude_vas.update(
@@ -443,6 +450,7 @@ def table_columns(args: argparse.Namespace) -> list[tuple[str, str, int]]:
     if args.leases or args.work_history or args.unleased or args.active_leases or args.owner:
         cols.extend([
             ("lease_owner", "lease_owner", 20),
+            ("lease_va", "lease_target_va", 10),
             ("lease", "lease_state", 10),
             ("claim", "lease_probes", 7),
             ("total", "lease_probe_total", 7),
@@ -510,9 +518,7 @@ def main() -> None:
         or args.max_lifetime_probes is not None
         or args.max_claims is not None
     )
-    sessions = load_target_sessions({args.va}) if needs_sessions and args.va else (
-        load_target_sessions() if needs_sessions else []
-    )
+    sessions = load_target_sessions() if needs_sessions else []
     include_vas, exclude_vas = lease_prefilter_vas(args, sessions) if needs_sessions else (None, set())
     rows = load_rows(args, include_vas=include_vas, exclude_vas=exclude_vas)
     if needs_sessions:

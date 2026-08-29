@@ -18,7 +18,8 @@ There are extra reusable documents that contain specific instructions. Read the 
 - Use the repo-local original files under
   `orig\original_full_game_files_rise_of_romes_beta_17_7_1998`.
 - Use the pinned VC5 host toolchain from `config\toolchain.json`.
-- Baseline compiler flags come from `config\flags\default.rsp`. Use the configured target or translation-unit response file when one exists
+- Baseline compiler flags come from `config\flags\default.rsp`. Use the configured
+  target or translation-unit response file when one exists.
 - Exactness requires positional byte equality.
 - Exactness also requires the original boundary, provable owning symbol, and known direct call or tail-jump symbol identity.
 - Never infer exactness from folder placement, old metrics, or relocation masking.
@@ -27,7 +28,7 @@ There are extra reusable documents that contain specific instructions. Read the 
 - Require `MATCH`, `0.0000%`, correct ownership, boundaries, relocations, and direct targets.
 - A valid exact result says `Result: MATCH` and `0.0000%`.
 
-Inline assembly is forbidden for real functions unless explictly allowed.
+Inline assembly is forbidden for real functions unless explicitly allowed.
 This includes `__asm`, `_asm`, naked functions, and handwritten wrappers.
 
 Padding-only pseudo-functions may use byte filler when the complete body has no
@@ -75,10 +76,10 @@ Repository source roles are:
 - `inventory\`: generated reference material; do not edit it;
 - `include\`: reviewed shared declarations and layouts;
 - `src\game_globals.cpp`: reviewed shared global definitions;
-- `src\scratch\`: unresolved normal functions;
-- `src\accepted_drift\`: rare reviewed localized equivalent drift;
-- `src\verified_logic\`: reviewed semantic reconstructions that are not exact;
-- `src\matching\`: current exact functions;
+- natural `src\*.c` and `src\*.cpp` modules: compiler-facing handwritten owners;
+- `config\source_modules\`: current per-function status in natural modules;
+- `src\scratch`, `src\matching`, `src\accepted_drift`, and `src\verified_logic`:
+  legacy standalone sources for functions not yet moved into natural modules;
 - `logic_reviews\`: versioned semantic-review ledgers;
 - `LESSONS.md`: reusable VC5 matching knowledge.
 
@@ -99,6 +100,9 @@ cause or hide one. Exact repair resumes on the final source tree.
 A VA has one compiler-facing source owner. Never keep duplicate owners across
 source banks.
 
+For a migrated function, edit only its natural module. A legacy standalone file
+does not establish current ownership or exactness.
+
 Do not reopen accepted drift without specific new evidence. Folder placement is
 the current reviewed status.
 
@@ -107,9 +111,9 @@ the current reviewed status.
 Preserve unrelated changes. Never clean, reset, normalize, or overwrite another
 participant's work.
 
-Commit validated progress in small logical commits. Do not hold completed work
-for one final commit. After each module or wave passes its focused gates, stage
-the reviewed files explicitly and commit them. Use later commits for repairs.
+Only the assigned integrator commits shared-worktree progress. Other workers do
+not stage or commit unless their assignment explicitly permits it. The
+integrator stages reviewed paths and makes small logical commits.
 
 Send untracked cleanup files and directories to the Windows Recycle Bin. Do not
 use permanent filesystem deletion for cleanup. Tracked deletions stay recoverable

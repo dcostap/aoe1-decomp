@@ -105,7 +105,7 @@ def classify(
         if registered_here:
             category = "registered_owner_match"
             action = "none"
-            reason = "The registered owner remains exact in its authentic wrapper."
+            reason = "The registered owner remains exact in its natural translation unit."
         elif registered_anywhere:
             category = "registered_elsewhere_match"
             action = "none"
@@ -146,7 +146,7 @@ def classify(
         else:
             category = "grouped_mismatch"
             action = "assign_tu_captain"
-            reason = "The function is in an authentic wrapper but still differs."
+            reason = "The function is in its natural translation unit but still differs."
     elif result == "NOT_EMITTED":
         if registered_here:
             category = "registered_owner_regression"
@@ -163,7 +163,7 @@ def classify(
         else:
             category = "missing_grouped_symbol"
             action = "repair_missing_symbol"
-            reason = "The authentic wrapper does not emit the expected normal symbol."
+            reason = "The natural translation unit does not emit the expected normal symbol."
     else:
         category = "grouped_comparison_error"
         action = "investigate_comparison_error"

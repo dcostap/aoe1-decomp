@@ -17,6 +17,7 @@ from common import (
     REPO_ROOT,
     compiler_artifact_slug,
     compiler_source_path,
+    compiler_translation_unit_for_va,
     function_recovery_note_relative_path,
     function_record_by_va,
     function_slug,
@@ -555,6 +556,22 @@ def start_session(
                 f"{record['va']} is actively leased by {prior.get('owner')} until {prior.get('lease_expires_at')}; "
                 "coordinate with that owner or use --force for a deliberate takeover"
             )
+        target_source = compiler_source_path(record).resolve()
+        for other in _all_sessions():
+            other_va = str(other.get("va") or "").upper()
+            if other_va == record["va"].upper() or not _lease_active(other):
+                continue
+            try:
+                other_record = function_record_by_va(int(other_va, 16))
+                other_source = compiler_source_path(other_record).resolve()
+            except (KeyError, TypeError, ValueError):
+                continue
+            if other_source == target_source:
+                raise RuntimeError(
+                    f"translation unit {target_source.relative_to(REPO_ROOT)} is actively leased "
+                    f"through {other_va} by {other.get('owner')} until "
+                    f"{other.get('lease_expires_at')}; pause or release that target first"
+                )
         session = _new_session(record, checked_owner, budget, lease_hours, prior)
         _write_session(record, session)
     return session
@@ -656,7 +673,7 @@ def _validate_grouped_checkpoint(
         raise RuntimeError("grouped checkpoint PDB-qualified owner differs from the current mapping")
 
     if _context_input_hashes(saved_context) != _context_input_hashes(current_context):
-        raise RuntimeError("grouped checkpoint wrapper, owner, flags, or declaration inputs changed")
+        raise RuntimeError("translation-unit source, owner, flags, or declaration inputs changed")
 
     artifact_path = checkpoint.get("artifact_path")
     context_root = REPO_ROOT / str(artifact_path or "") / "context"
@@ -960,7 +977,7 @@ def require_final_validation(record: dict[str, str], session: dict) -> None:
     if latest.get("kind") != "validation":
         raise RuntimeError(
             "cannot pause after recorded checks until the last check is --kind validation; "
-            f"update the attempt log first, then run: {command}"
+            f"update the function journal first, then run: {command}"
         )
     current_inputs = current_input_snapshot(record)
     if latest.get("inputs") != current_inputs:
@@ -984,7 +1001,7 @@ def require_final_validation(record: dict[str, str], session: dict) -> None:
         if not clean_baseline_is_current(record, session):
             raise RuntimeError(
                 "cannot pause while the living source differs from the pinned clean reconstruction. "
-                "Run restore-clean, update the attempt log, validate, then pin-clean; or, if the current "
+                "Run restore-clean, update the function journal, validate, then pin-clean; or, if the current "
                 "source is now the defensible natural reconstruction, explicitly pin-clean it after validation"
             )
 
@@ -1373,6 +1390,14 @@ def format_brief(record: dict[str, str], session: dict | None, note_limit: int) 
     """Return a bounded worker handoff without raw checkpoint/session payloads."""
     status_lines = format_session(record, session).split("\n\nUseful commands:", 1)[0]
     lines = [status_lines]
+    translation_unit = compiler_translation_unit_for_va(int(record["va"], 16))
+    if translation_unit is not None:
+        lines.extend(
+            [
+                f"Translation unit: {translation_unit['name']} / {translation_unit['source']}",
+                f"Registered exact neighbors: {len(translation_unit.get('owners') or {})}",
+            ]
+        )
     if session is None:
         lines.extend(["", "Prior evidence: <no target session>"])
         return "\n".join(lines)
@@ -1418,7 +1443,7 @@ def format_brief(record: dict[str, str], session: dict | None, note_limit: int) 
     lines.extend(
         [
             "",
-            "Read the living source attempt log next. Search LESSONS.md only for narrow blocker terms.",
+            "Read the tracked function journal next. Search LESSONS.md only for narrow blocker terms.",
             "Do not load raw target-session JSON. Use bounded history only for a specific open question.",
         ]
     )
