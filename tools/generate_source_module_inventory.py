@@ -24,6 +24,7 @@ from common import (
     load_toolchain,
     slugify_name,
     source_module_for_name,
+    validate_auxiliary_contributions,
     validate_source_modules,
     load_translation_units,
 )
@@ -350,6 +351,9 @@ def build_source_module_inventory(
     manifest_issues = validate_translation_units(configured_groups)
     if manifest_issues:
         raise ValueError("; ".join(str(issue) for issue in manifest_issues))
+    auxiliary_issues = validate_auxiliary_contributions()
+    if auxiliary_issues:
+        raise ValueError("; ".join(auxiliary_issues))
     source_map = load_pdb_function_source_map()
     line_changes = load_pdb_function_line_changes()
     all_vas: set[str] = set()

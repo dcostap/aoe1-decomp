@@ -15,6 +15,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_DIR = REPO_ROOT / "config"
 TRANSLATION_UNITS_PATH = CONFIG_DIR / "translation_units.json"
 SOURCE_MODULES_DIR = CONFIG_DIR / "source_modules"
+AUXILIARY_CONTRIBUTIONS_DIR = CONFIG_DIR / "auxiliary_contributions"
 INVENTORY_DIR = REPO_ROOT / "inventory"
 BUILD_DIR = REPO_ROOT / "build"
 PDB_INVENTORY_DIR = INVENTORY_DIR / "pdb"
@@ -330,6 +331,8 @@ _SOURCE_MODULE_STATUSES = {
     "scratch",
 }
 
+_AUXILIARY_CONTRIBUTION_STATUSES = {"observed"}
+
 
 @lru_cache(maxsize=1)
 def load_source_modules() -> list[dict[str, object]]:
@@ -429,6 +432,77 @@ def source_module_entry_for_va(va: int | str) -> dict[str, object] | None:
         if isinstance(entry, dict):
             return {"module": module, **entry}
     return None
+
+
+@lru_cache(maxsize=1)
+def load_auxiliary_contributions() -> list[dict[str, object]]:
+    """Load reviewed executable contributions without C/C++ source modules."""
+    if not AUXILIARY_CONTRIBUTIONS_DIR.exists():
+        return []
+
+    contributions: list[dict[str, object]] = []
+    seen_names: set[str] = set()
+    seen_vas: set[str] = set()
+    for contribution_path in sorted(AUXILIARY_CONTRIBUTIONS_DIR.glob("*.json")):
+        raw = load_json(contribution_path)
+        label = contribution_path.relative_to(REPO_ROOT).as_posix()
+        if not isinstance(raw, dict) or raw.get("schema") != 1:
+            raise ValueError(f"{label}: schema must be 1")
+        name = str(raw.get("name") or "").strip()
+        kind = str(raw.get("kind") or "").strip()
+        source = str(raw.get("source") or "").replace("\\", "/").strip()
+        header = str(raw.get("header") or "").replace("\\", "/").strip()
+        pdb_source_path = str(raw.get("pdb_source_path") or "").strip()
+        no_line_info = raw.get("pdb_no_line_info")
+        evidence = str(raw.get("pdb_module_stream_evidence") or "").replace("\\", "/").strip()
+        raw_functions = raw.get("functions")
+        if (
+            not name
+            or kind != "no_line_compiland"
+            or not source
+            or not pdb_source_path
+            or not isinstance(raw_functions, dict)
+            or not raw_functions
+        ):
+            raise ValueError(
+                f"{label}: no-line contribution needs name, kind, source, pdb_source_path, and functions"
+            )
+        if no_line_info is not True:
+            raise ValueError(f"{label}: pdb_no_line_info must be true")
+        if not evidence:
+            raise ValueError(f"{label}: pdb_no_line_info needs pdb_module_stream_evidence")
+        if name in seen_names:
+            raise ValueError(f"{label}: duplicate contribution name {name!r}")
+        seen_names.add(name)
+
+        functions: dict[str, dict[str, str]] = {}
+        for raw_va, raw_entry in raw_functions.items():
+            va = str(raw_va).upper()
+            if len(va) != 8 or any(character not in "0123456789ABCDEF" for character in va):
+                raise ValueError(f"{label}: invalid function VA {raw_va!r}")
+            if va in seen_vas:
+                raise ValueError(f"{label}: VA {va} appears in multiple contributions")
+            if not isinstance(raw_entry, dict):
+                raise ValueError(f"{label}: {va} must be an object")
+            status = str(raw_entry.get("status") or "").strip()
+            if status not in _AUXILIARY_CONTRIBUTION_STATUSES:
+                raise ValueError(f"{label}: {va} has invalid status {status!r}")
+            seen_vas.add(va)
+            functions[va] = {"status": status}
+
+        contributions.append(
+            {
+                "name": name,
+                "kind": kind,
+                "source": source,
+                "header": header,
+                "pdb_source_path": pdb_source_path,
+                "pdb_no_line_info": True,
+                "pdb_module_stream_evidence": evidence,
+                "functions": functions,
+            }
+        )
+    return contributions
 
 
 def _sha256(path: Path) -> str:
@@ -543,6 +617,37 @@ def validate_source_modules() -> list[str]:
             note_path = str(entry.get("note_path") or "")
             if note_path and not repo_path(note_path).is_file():
                 issues.append(f"{name}: function {va} note is missing: {repo_path(note_path)}")
+    return issues
+
+
+def validate_auxiliary_contributions() -> list[str]:
+    """Return durable problems in no-line executable contribution manifests."""
+    records = {row["va"].upper(): row for row in load_functions()}
+    pdb_sources = load_pdb_function_source_map()
+    issues: list[str] = []
+    for contribution in load_auxiliary_contributions():
+        name = str(contribution["name"])
+        source = repo_path(str(contribution["source"]))
+        if not source.is_file():
+            issues.append(f"{name}: contribution source is missing: {source}")
+        header_value = str(contribution.get("header") or "")
+        if header_value and not repo_path(header_value).is_file():
+            issues.append(f"{name}: contribution header is missing: {repo_path(header_value)}")
+        issues.extend(pdb_module_stream_evidence_issues(contribution))
+        functions = contribution["functions"]
+        assert isinstance(functions, dict)
+        for va in functions:
+            if va not in records:
+                issues.append(f"{name}: function {va} is absent from inventory")
+                continue
+            pdb_entry = pdb_sources.get(va)
+            if pdb_entry and any(
+                str(pdb_entry.get(field) or "").strip()
+                for field in ("primary_source_path", "symbol_name")
+            ):
+                issues.append(f"{name}: function {va} has PDB source or symbol ownership")
+            if pdb_entry and pdb_entry.get("has_line_info") not in (None, "0"):
+                issues.append(f"{name}: function {va} has PDB line information")
     return issues
 
 

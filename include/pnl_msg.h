@@ -61,9 +61,9 @@ public:
     virtual void draw();
     virtual void get_true_render_rect(tagRECT&);
     virtual long handle_idle();
-    virtual long handle_mouse_down(unsigned char, long, long, int, int);
-    virtual long handle_mouse_move(long, long, int, int);
-    virtual long handle_mouse_up(unsigned char, long, long, int, int);
+    virtual long handle_mouse_down(unsigned char, long, long, int, int) { return 0; }
+    virtual long handle_mouse_move(long, long, int, int) { return 0; }
+    virtual long handle_mouse_up(unsigned char, long, long, int, int) { return 0; }
     void set_justification(JustType, JustType, int);
     void show_message(MessageType, char*, unsigned char, unsigned char,
                       void*, long, long);

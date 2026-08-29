@@ -16,9 +16,13 @@ The CodeView type dumps prove these records:
 
 The four records use public access. They have no vptr or virtual slot.
 
-`include/tech.h` owns the four records. `src/tech.cpp` owns all normal
-functions in contribution order. It uses `RGE_Player`, `TRIBE_World`,
-`RGE_Effects`, and `TRIBE_History_Info` from their providers.
+`include/tech.h` owns the four records. `src/tech.cpp` carries the 33
+reconstructed bodies in contribution order. It is not a proven PDB source
+owner. The bodies use `RGE_Player`, `TRIBE_World`, `RGE_Effects`, and
+`TRIBE_History_Info` from their providers.
+
+The contribution manifest is `config/auxiliary_contributions/tech.json`.
+Every body has status `observed`. No body has a PDB source or symbol owner.
 
 Sources:
 

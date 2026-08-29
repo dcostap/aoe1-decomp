@@ -55,6 +55,14 @@ def _source_module_config(payload: dict[str, object]):
 
 
 class PdbNoLineInfoTests(unittest.TestCase):
+    def test_tech_is_an_auxiliary_no_line_contribution(self) -> None:
+        contributions = common.load_auxiliary_contributions()
+        self.assertEqual([item["name"] for item in contributions], ["tech"])
+        tech = contributions[0]
+        self.assertEqual(tech["kind"], "no_line_compiland")
+        self.assertEqual(len(tech["functions"]), 33)
+        self.assertEqual([], common.validate_auxiliary_contributions())
+
     def test_common_rejects_non_boolean_no_line_flag(self) -> None:
         payload = _source_module()
         payload["pdb_no_line_info"] = "true"
@@ -101,6 +109,10 @@ class PdbNoLineInfoTests(unittest.TestCase):
             candidate_module, "source_module_entry_for_va", return_value=entry
         ), patch.object(
             candidate_module,
+            "preferred_source_path",
+            return_value=REPO_ROOT / "src" / "tech.cpp",
+        ), patch.object(
+            candidate_module,
             "load_pdb_function_source_map",
             return_value={VA: {"symbol_name": pdb_symbol}},
         ), patch.object(
@@ -124,6 +136,10 @@ class PdbNoLineInfoTests(unittest.TestCase):
         entry = {"module": source_module, "status": "matching", "note_path": ""}
         with patch.object(
             candidate_module, "source_module_entry_for_va", return_value=entry
+        ), patch.object(
+            candidate_module,
+            "preferred_source_path",
+            return_value=REPO_ROOT / "src" / "tech.cpp",
         ), patch.object(candidate_module, "load_pdb_function_source_map", return_value={VA: {}}):
             issues = candidate_module.validate_proposal(payload)
         self.assertIn(f"{VA} has no PDB-qualified symbol ownership", issues)
@@ -143,6 +159,10 @@ class PdbNoLineInfoTests(unittest.TestCase):
         entry = {"module": source_module, "status": "scratch", "note_path": ""}
         with patch.object(
             candidate_module, "source_module_entry_for_va", return_value=entry
+        ), patch.object(
+            candidate_module,
+            "preferred_source_path",
+            return_value=REPO_ROOT / "src" / "tech.cpp",
         ), patch.object(candidate_module, "load_pdb_function_source_map", return_value={VA: {}}):
             issues = candidate_module.validate_proposal(payload)
         self.assertTrue(any("PDB module '' does not match" in issue for issue in issues))
@@ -159,6 +179,10 @@ class PdbNoLineInfoTests(unittest.TestCase):
         }
         with patch.object(
             tu_module, "source_module_for_name", return_value=copy.deepcopy(source_module)
+        ), patch.object(
+            tu_module,
+            "preferred_source_path",
+            return_value=REPO_ROOT / "src" / "tech.cpp",
         ), patch.object(tu_module, "load_pdb_function_source_map", return_value={VA: {}}):
             issues = tu_module.validate_translation_units([group])
         self.assertIn("missing-pdb-symbol", {issue.code for issue in issues})
@@ -176,6 +200,10 @@ class PdbNoLineInfoTests(unittest.TestCase):
         pdb_symbol = common.function_record_by_va(int(VA, 16))["name"]
         with patch.object(
             tu_module, "source_module_for_name", return_value=copy.deepcopy(source_module)
+        ), patch.object(
+            tu_module,
+            "preferred_source_path",
+            return_value=REPO_ROOT / "src" / "tech.cpp",
         ), patch.object(
             tu_module,
             "load_pdb_function_source_map",

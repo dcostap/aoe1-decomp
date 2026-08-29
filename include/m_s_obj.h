@@ -32,8 +32,8 @@ public:
     virtual unsigned char alignment(float&, float&, RGE_Game_World*,
                                     unsigned char);
     virtual long calc_base_damage_ability(RGE_Master_Combat_Object*);
-    virtual void play_command_sound();
-    virtual void play_move_sound();
+    virtual void play_command_sound() {}
+    virtual void play_move_sound() {}
     virtual void draw(TDrawArea*, short, short, RGE_Color_Table*, long, long,
                       int, unsigned char);
 

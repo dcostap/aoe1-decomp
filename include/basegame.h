@@ -237,7 +237,7 @@ public:
     virtual ~RGE_Base_Game();
     virtual int run();
     virtual LRESULT CALLBACK wnd_proc(HWND, UINT, WPARAM, LPARAM);
-    virtual void set_prog_mode(int);
+    virtual void set_prog_mode(int value) { this->prog_mode = value; }
     virtual void set_game_mode(int, int);
     virtual void set_player(short);
     virtual int get_error_code();
@@ -246,18 +246,18 @@ public:
     virtual char* get_string(long, char*, int);
     virtual char* get_string(int, long, char*, int);
     virtual char* get_string2(int, long, long, char*, int);
-    virtual TPanel* get_view_panel();
-    virtual TPanel* get_map_panel();
+    virtual TPanel* get_view_panel() { return 0; }
+    virtual TPanel* get_map_panel() { return 0; }
     // BINARY NOTE: VC5 reverses this adjacent overload pair in the vtable.
     virtual RGE_Scenario_Header* new_scenario_header(int);
     virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario*);
     virtual RGE_Scenario* new_scenario_info(int);
-    virtual void notification(int, long, long, long, long);
+    virtual void notification(int, long, long, long, long) {}
     virtual int reset_comm();
     virtual void send_game_options();
     virtual void receive_game_options();
     virtual char* gameSummary();
-    virtual int processCheatCode(int, char*);
+    virtual int processCheatCode(int, char*) { return 0; }
     virtual int setup_music_system();
     virtual void shutdown_music_system();
 protected:
@@ -283,7 +283,7 @@ protected:
     virtual void stop_music_system();
     virtual int restart_music_system();
     virtual RGE_Game_World* create_world();
-    virtual int handle_message(tagMSG*);
+    virtual int handle_message(tagMSG*) { return 1; }
     virtual int handle_idle();
     virtual int handle_mouse_move(HWND, UINT, WPARAM, LPARAM);
     virtual int handle_key_down(HWND, UINT, WPARAM, LPARAM);
@@ -299,18 +299,18 @@ protected:
     virtual int handle_query_new_palette(HWND, UINT, WPARAM, LPARAM);
     virtual int handle_close(HWND, UINT, WPARAM, LPARAM);
     virtual int handle_destroy(HWND, UINT, WPARAM, LPARAM);
-    virtual int action_update();
-    virtual int action_mouse_move(long, long, int, int, int, int);
-    virtual int action_key_down(unsigned long, int, int, int, int);
-    virtual int action_user_command(unsigned long, unsigned long);
-    virtual int action_command(unsigned long, unsigned long);
-    virtual int action_music_done();
-    virtual int action_activate();
-    virtual int action_deactivate();
-    virtual int action_init_menu();
-    virtual int action_exit_menu();
-    virtual int action_size();
-    virtual int action_close();
+    virtual int action_update() { return 1; }
+    virtual int action_mouse_move(long, long, int, int, int, int) { return 1; }
+    virtual int action_key_down(unsigned long, int, int, int, int) { return 1; }
+    virtual int action_user_command(unsigned long, unsigned long) { return 1; }
+    virtual int action_command(unsigned long, unsigned long) { return 1; }
+    virtual int action_music_done() { return 1; }
+    virtual int action_activate() { return 1; }
+    virtual int action_deactivate() { return 1; }
+    virtual int action_init_menu() { return 1; }
+    virtual int action_exit_menu() { return 1; }
+    virtual int action_size() { return 1; }
+    virtual int action_close() { return 1; }
 public:
     void disable_input();
     void enable_input();
