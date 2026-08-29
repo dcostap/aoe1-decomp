@@ -48,6 +48,17 @@ Final grouped validation uses the emitted `struct RGE_Tile` symbol encoding for
 
 Direct source compilation succeeds with the pinned VC5 compiler.
 
+## Incomplete record tags
+
+The full CodeView definitions for `RGE_Pick_Info` and `DClipInfo_Node` are
+classes. Original function symbols encode pointers to these records with the
+struct tag. The headers therefore use struct forward declarations and retain
+the full class definitions. This matches both evidence sources.
+
+The correction repairs original owner symbols at `005359E0`, `00538280`,
+`00538420`, `0053B000`, `0053B220`, `0053B490`, and `0053B4B0`. It does not
+change their emitted instructions.
+
 ## Natural-source audit
 
 The direct source has no wrapper, fragment include, context macro, absolute

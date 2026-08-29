@@ -100,6 +100,24 @@ class TranslationUnitTests(unittest.TestCase):
         )
         self.assertEqual([], validate_translation_units([point]))
 
+    def test_view_owner_symbols_keep_original_incomplete_record_tags(self) -> None:
+        view = next(group for group in load_translation_units() if group["name"] == "view")
+        symbols = view["symbols"]
+        assert isinstance(symbols, dict)
+
+        self.assertEqual(
+            "?pick@RGE_View@@QAEEEEJJPAURGE_Pick_Info@@PAVRGE_Static_Object@@@Z",
+            symbols["005359E0"],
+        )
+        self.assertEqual(
+            "?Add_GDI_Clip_Mask@RGE_View@@IAEXPAUDClipInfo_Node@@PAVTSpan_List_Manager@@@Z",
+            symbols["00538280"],
+        )
+        self.assertEqual(
+            "?GetNode@DClipInfo_List@@QAEPAUDClipInfo_Node@@XZ",
+            symbols["0053B000"],
+        )
+
     def test_each_group_has_unique_owner_vas(self) -> None:
         seen: set[str] = set()
         for group in load_translation_units():

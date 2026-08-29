@@ -5,7 +5,7 @@
 #include "asp_list.h"
 #include "game_globals.h"
 
-class DClipInfo_Node;
+struct DClipInfo_Node;
 class DClipInfo_List;
 class RGE_Active_Sprite;
 class RGE_Base_Game;
