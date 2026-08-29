@@ -11,29 +11,57 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+The PDB module is `tmap.cpp`, and the natural owner is `src/tmap.cpp`.
+The function is `TRIBE_Map::check_cliff_valid`, at source lines 519-527.
+The function follows `get_cliff_info` and precedes `make_new_cliff` in the
+natural source order. Its original body is one 49-byte block with no calls,
+and it saves `esi`.
+
+The current source uses the reviewed `TRIBE_Map::cliff_master_table` field and
+the four `TRIBE_Cliff_Info::info` values. The index is formed as four radix-4
+steps, then the entry `id` is tested for non-negative status.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+Fresh baseline and final checks both emit 49 bytes and preserve the original
+frame, `esi` save, no-call shape, and function boundary. The original reads
+`[ecx+eax*8+0x9B40]`; the natural source emits
+`[ecx+eax*8+0x8DF8]`. This is a two-byte displacement difference at function
+offset `+0x22`, so the strict diff is 2 bytes (4.0816%).
+
+The source fingerprint was stale before the rebuild. The stale exact result
+came from a standalone source that used a raw `this + 0x9B40` access. The
+current natural source does not use that artificial form.
 
 ## Recovered attempt history
 
-
-No function-specific cleanup block was mapped automatically. Review the earlier note and Git history before work.
+- Fresh natural translation-unit baseline: `MISMATCH`, 2 bytes, 4.0816%,
+  first mismatch `+0x22` (`2026-08-29T17:39:57Z`).
+- The assigned translation-unit audit retained the same 2-byte mismatch for
+  this function. It reported 16 registered owner matches, 9 grouped
+  mismatches, 3 boundary problems, and 1 registered-owner regression.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+The old standalone exact source used `char gap_00[0x9B40]` and a raw pointer
+read. It is not a natural source reconstruction and is not retained.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+The reviewed current `TRIBE_Map` layout places `cliff_master_table` at
+`0x8DF8`, while the original instruction proves a field displacement of
+`0x9B40`. The evidence needed to resolve this is a canonical period-correct
+`TRIBE_Map` base layout or a permitted shared-layout repair. This function
+cannot fix that shared layout under the assigned source-only scope.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+Revisit the `TRIBE_Map` base and member layout with the tmap translation-unit
+owner. Do not add a raw offset or wrapper solely to recover the stale exact
+result.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+- `wave10-tmap`: Rebuilt the stale result and retained the current natural
+  function source unchanged. Final result remains `MISMATCH`, 2 bytes
+  (4.0816%), caused only by the `cliff_master_table` displacement.

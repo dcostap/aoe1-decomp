@@ -4,8 +4,8 @@
 - Module source: `src/Com_hand.cpp`
 - Normal owners: 146
 - Source order: 146 of 146 owners retained in PDB order.
-- Current source states: 90 matching, 0 accepted drift, 1 verified logic, 55 scratch.
-- Registered exact owners: 90.
+- Current source states: 100 matching, 0 accepted drift, 1 verified logic, 45 scratch.
+- Registered exact owners: 100.
 
 The module now owns one compiler-facing source file. The old TU wrapper, 146
 source-bank fragments, and four helper context headers were removed. The module
@@ -36,3 +36,10 @@ Validation on 2026-08-27:
 - Candidate result: 90 exact owner matches and 19 exact observed matches.
 - `check_function.py --va 00425750 --rebuild`: `Result: MATCH`, `0.0000%`.
 - `git diff --check`: pass.
+
+## FreeOptions owner repair
+
+The PDB proves that `0042EC10 FreeOptions` is protected. The canonical header
+now places it beside protected `ReleaseComm`. The natural body then emits the
+original protected symbol and all 38 original bytes. Its delete target,
+boundary, cleanup order, and 99 prior registered neighbors also match.

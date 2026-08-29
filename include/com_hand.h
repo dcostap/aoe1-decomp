@@ -301,8 +301,8 @@ public:
     void DestroyMultiplayerGame();
 protected:
     long ReleaseComm();
-public:
     void FreeOptions();
+public:
     char* GetCommInfo(unsigned char index);
     void ReceiveGameMessages();
     void ShutdownGameMessages();

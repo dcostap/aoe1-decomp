@@ -10,7 +10,7 @@
     "00446690": { "status": "matching" },
     "00446700": { "status": "matching" },
     "00446710": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/dstring.md"
     },
     "00446730": {

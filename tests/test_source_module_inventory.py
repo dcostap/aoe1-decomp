@@ -51,7 +51,7 @@ class SourceModuleInventoryTests(unittest.TestCase):
 
         self.assertEqual(point["translation_unit_source"], "src/point.cpp")
         self.assertEqual(point["owner_count"], 8)
-        self.assertEqual(point["registered_owner_count"], 4)
+        self.assertEqual(point["registered_owner_count"], 5)
         self.assertEqual(
             {owner["owner_path"] for owner in owners.values()},
             {"src/point.cpp"},
@@ -63,7 +63,7 @@ class SourceModuleInventoryTests(unittest.TestCase):
                 "0047E490": "matching",
                 "0047E4B0": "matching",
                 "0047E4E0": "matching",
-                "0047E510": "scratch",
+                "0047E510": "matching",
                 "0047E530": "scratch",
                 "0047E580": "scratch",
                 "0047E5D0": "scratch",

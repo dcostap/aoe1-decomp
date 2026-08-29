@@ -670,7 +670,8 @@ unsigned char TRIBE_Combat_Object::produceWhenKilledBy(int cause) const
 unsigned char TRIBE_Combat_Object::useSameZoneDropsite() const
 {
     const int group = this->master_obj->object_group;
-    return group != 0x15 && group != 2;
+    if (group == 0x15 || group == 2) return 0;
+    return 1;
 }
 
 void TRIBE_Combat_Object::initUnitAI()

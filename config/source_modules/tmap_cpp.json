@@ -68,7 +68,8 @@
       "note_path": "recovery_notes/tmap_module.md"
     },
     "00510110": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/tmap_module.md"
     },
     "005102A0": {
       "status": "scratch",

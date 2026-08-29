@@ -241,7 +241,7 @@ void TRIBE_Building_Object::give_building_attribute_to_owner()
 
 void TRIBE_Building_Object::destroy_obj()
 {
-    die_die_die();
+    take_building_attribute_from_owner();
     RGE_Action_Object::destroy_obj();
     owner->doppleganger_creator->remove_doppleganger_check(this);
     DoppleInstalled = 0;

@@ -42,8 +42,10 @@ The exact owners are `004CA0F0`, `004CA1A0`, `004CA210`, `004CA510`,
 `004CA5F0`, `004CA740`, `004CA780`, `004CA790`, `004CA8C0`, `004CAA50`,
 `004CB8D0`, `004CBD30`, and `004CC570`.
 
-The remaining 23 normal bodies are scratch. Three retain reviewed
-accepted-drift status. Do not register either group as exact.
+The current registry has 20 matching bodies, 17 scratch bodies, and two
+accepted-drift bodies. The shared-worktree wave recovered
+`004CB8B0 useSameZoneDropsite` with the natural explicit rejection branches.
+Its focused and complete-module checks report `MATCH` and `0.0000%`.
 
 ## ABI repair after review
 

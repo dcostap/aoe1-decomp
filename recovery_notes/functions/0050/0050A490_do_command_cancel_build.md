@@ -11,11 +11,20 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+PDB module: `tcommand.cpp`; owner: `TRIBE_Command`; source order is the natural
+`src/tcommand.cpp` definition at lines 483-489. The original body uses the
+world object lookup, a null test, and one virtual call at slot `+0x240`.
+
+The current canonical hierarchy places `TRIBE_Combat_Object::cancel_object()`
+at slot `+0x250`. The old context-header source used `RGE_Static_Object::cancel_object()`
+and matched, but that declaration is not present in the current shared header.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+Fresh baseline after the natural module rebuild: size `33/33`, frame none,
+11 instructions, and `1` strict byte difference (`3.0303%`) at offset `+0x1A`.
+The lookup call aligns. The rebuilt virtual call is `+0x250`, while the
+original is `+0x240`; boundaries and CFG match.
 
 ## Recovered attempt history
 
@@ -33,16 +42,32 @@ Mapping: `strong`. next mapped function definition is do_command_cancel_build at
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+Casting the result to `TRIBE_Building_Object*` is natural for this command, but
+it emits the same `+0x250` call and gives no improvement. Do not add a local
+flat class, raw vtable access, or inline assembly to force the old slot.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+The shared canonical ABI needs a reviewed explanation for the original
+`RGE_Static_Object`-surface cancellation slot at `+0x240`. This function alone
+cannot add that surface under the wave lease.
+
+Target-session operations saw global `sessions.lock` contention. Some start and
+check attempts timed out. The fresh baseline later completed; no force or lock
+deletion was used.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+Review the canonical object vtable ownership and the original class surface.
+If a shared ABI repair is approved, rebuild this target before further source
+tuning.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave10-tcommand
+
+Retained the natural `TRIBE_Combat_Object*` call because the `TRIBE_Building_Object*`
+variant produced identical code. Fresh result remains `MISMATCH`, `1` byte,
+with only the virtual-slot replacement. No status change or exact claim was made.

@@ -11,11 +11,22 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+- PDB module: `tdlg_lst.cpp`; owning class: `TRIBE_Dialog_List`.
+- Natural source order is the six-method `src/tdlg_lst.cpp` module.
+- Target range: `0050B820-0050B83A` (27 bytes), with a direct tail jump to
+  `RGE_Dialog_List::get_cur_id` at `0047EB60`.
+- The typed inherited member `list_type` is at `this+0x4AC`.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Fresh baseline and retained source use no frame and no local calls.
+- Original code is 27 bytes: `mov`, `sub 100`, two `dec` instructions, three
+  short equality branches, the tail jump, `or ax,-1`, and `ret`.
+- The best natural rebuild is 29 bytes. It matches the load, subtract, first two
+  decrement branches, return value, and owner symbol, but emits an extra `test`
+  and places the tail jump after the local return block.
+- The remaining strict difference is 15 bytes (55.1724%); shape similarity is
+  72.73%, with 70.00% exact-block coverage. The boundary has two extra bytes.
 
 ## Recovered attempt history
 
@@ -34,16 +45,33 @@ Mapping: `exact`. historical standalone source path names this target VA.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+- Direct typed comparisons and the inequality chain emit `cmp` instructions.
+- A typed `switch` emits range-style comparisons and does not reproduce the
+  subtract/decrement chain.
+- Sequential statement-split decrements add branches and are much farther from
+  the original.
+- Short-circuit arithmetic and explicit if/else or label ordering remain in the
+  same `dec; test; branch` code-generation basin.
+- Raw field/padding stubs are not retained. They violate the natural typed
+  panel access requirement.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+- The original source form that makes VC5 place the tail jump before the shared
+  `-1` return block remains unknown.
+- The mismatch is localized to the third decrement branch and block layout.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+- If more work is approved, test only period-plausible arithmetic source forms
+  that preserve typed `list_type` access and the known tail-call target.
+- Do not reopen direct comparisons, switches, or raw-layout stubs without new
+  compiler evidence.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+- `wave10-tdlg`: Tested typed comparisons, switch, arithmetic short-circuit,
+  nested and split decrement forms. Retained the natural arithmetic decrement
+  chain because it gives the closest code and correct behavior. Final
+  validation checkpoint: `MISMATCH`, 15 bytes (51.7241%), 72.73% shape, 29
+  rebuilt bytes versus 27 original bytes. No exact match.

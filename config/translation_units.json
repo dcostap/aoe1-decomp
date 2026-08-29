@@ -5234,13 +5234,15 @@
         "0047E480": "src/point.cpp",
         "0047E490": "src/point.cpp",
         "0047E4B0": "src/point.cpp",
-        "0047E4E0": "src/point.cpp"
+        "0047E4E0": "src/point.cpp",
+        "0047E510": "src/point.cpp"
       },
       "symbols": {
         "0047E480": "??0XYZ@@QAE@XZ",
         "0047E490": "??0XYZ@@QAE@HHH@Z",
         "0047E4B0": "??8@YAHABVXYZ@@0@Z",
-        "0047E4E0": "??9@YAHABVXYZ@@0@Z"
+        "0047E4E0": "??9@YAHABVXYZ@@0@Z",
+        "0047E510": "??4XYZ@@QAEAAV0@ABV0@@Z"
       }
     },
     {
@@ -5265,6 +5267,7 @@
         "00446620": "src/dstring.cpp",
         "00446690": "src/dstring.cpp",
         "00446700": "src/dstring.cpp",
+        "00446710": "src/dstring.cpp",
         "00446D30": "src/dstring.cpp",
         "00446D40": "src/dstring.cpp",
         "00446D50": "src/dstring.cpp",
@@ -5308,6 +5311,7 @@
         "00446620": "??0DString@@QAE@ABV0@@Z",
         "00446690": "??0DString@@QAE@PBD@Z",
         "00446700": "??1DString@@QAE@XZ",
+        "00446710": "??6@YAAAVostream@@AAV0@ABVDString@@@Z",
         "00446D30": "??BDString@@QBEPADXZ",
         "00446D40": "?length@DString@@QBEHXZ",
         "00446D50": "?index@DString@@QBEHXZ",
@@ -6370,6 +6374,7 @@
         "004CA790": "src/t_c_obj.cpp",
         "004CA8C0": "src/t_c_obj.cpp",
         "004CAA50": "src/t_c_obj.cpp",
+        "004CB8B0": "src/t_c_obj.cpp",
         "004CB8D0": "src/t_c_obj.cpp",
         "004CBD30": "src/t_c_obj.cpp",
         "004CC570": "src/t_c_obj.cpp",
@@ -6391,7 +6396,8 @@
         "004CB300": "?heal@TRIBE_Combat_Object@@UAEHHH@Z",
         "004CB450": "?repair@TRIBE_Combat_Object@@UAEHHH@Z",
         "004CB5C0": "?build@TRIBE_Combat_Object@@UAEHHH@Z",
-        "004CB710": "?trade@TRIBE_Combat_Object@@UAEHHH@Z"
+        "004CB710": "?trade@TRIBE_Combat_Object@@UAEHHH@Z",
+        "004CB8B0": "?useSameZoneDropsite@TRIBE_Combat_Object@@UBEEXZ"
       }
     },
     {
@@ -7132,7 +7138,6 @@
         "0050FD40": "src/tmap.cpp",
         "0050FDD0": "src/tmap.cpp",
         "0050FE90": "src/tmap.cpp",
-        "00510110": "src/tmap.cpp",
         "00510410": "src/tmap.cpp",
         "00510C10": "src/tmap.cpp",
         "00510C90": "src/tmap.cpp",
@@ -7151,7 +7156,6 @@
         "0050FD40": "?do_terrain_brush_stroke@TRIBE_Map@@UAEEJJJJJE@Z",
         "0050FDD0": "?do_elevation_brush_stroke@TRIBE_Map@@UAEEJJJJJE@Z",
         "0050FE90": "?setup_cliff_type@TRIBE_Map@@QAEXJJJJJJJJMM@Z",
-        "00510110": "?make_new_cliff@TRIBE_Map@@QAEPAVRGE_Static_Object@@JJUTRIBE_Cliff_Info@@@Z",
         "00510410": "?reverse_cliff_direction@TRIBE_Map@@QAEJJ@Z",
         "00510C10": "?do_cliff_brush_stroke@TRIBE_Map@@UAEEJJJJEE@Z",
         "00510C90": "?water@TRIBE_Map@@QAEEE@Z",
@@ -8715,6 +8719,7 @@
         "0042EB10": "src/com_hand.cpp",
         "0042EB60": "src/com_hand.cpp",
         "0042EBF0": "src/com_hand.cpp",
+        "0042EC10": "src/com_hand.cpp",
         "0042EC40": "src/com_hand.cpp",
         "0042ECC0": "src/com_hand.cpp",
         "0042ECD0": "src/com_hand.cpp",
@@ -8815,6 +8820,7 @@
         "0042EB10": "?DestroyMyPlayer@TCommunications_Handler@@IAEJXZ",
         "0042EB60": "?SetMyGameOptions@TCommunications_Handler@@QAEHPADK@Z",
         "0042EBF0": "?GetMyGameOptions@TCommunications_Handler@@QAEPAXPAK@Z",
+        "0042EC10": "?FreeOptions@TCommunications_Handler@@IAEXXZ",
         "0042ECC0": "?SetHostPlayerNumber@TCommunications_Handler@@IAEXI@Z",
         "0042ECD0": "?GetHostPlayerNumber@TCommunications_Handler@@QAEIXZ",
         "0042EF60": "?OutOfSync@TCommunications_Handler@@QAEXHK@Z",

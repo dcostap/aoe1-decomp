@@ -24,6 +24,17 @@ owners, relocations, and boundaries:
 The other 17 rows remain scratch. This records normal source-composition
 regressions without claims from the old wrapper.
 
+## Ten-worker wave audit
+
+The fresh `tmap_cpp` audit keeps 16 registered owners exact. It disproves the
+stale exact claim for `00510110 make_new_cliff`, which differs by three bytes.
+That owner is now scratch and is not registered as exact. The module has 16
+matching bodies and 13 scratch bodies.
+
+The assigned `005100D0 check_cliff_valid` body also remains scratch. Its two
+differing bytes come from the canonical `cliff_master_table` offset `0x8DF8`.
+The original instruction uses `0x9B40`. The natural body remains unchanged.
+
 ## External owner needs
 
 `TRIBE_Map` is a Tmap-owned class. `TRIBE_World` remains the external owner of
