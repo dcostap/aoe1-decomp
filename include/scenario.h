@@ -3,6 +3,8 @@
 
 // Declarations for the original scenario.cpp source module.
 
+#include "Timeline.h"
+
 typedef unsigned char uchar;
 typedef unsigned int uint;
 
@@ -13,20 +15,6 @@ class RGE_Scenario;
 class RGE_Scenario_Header;
 class RGE_Scenario_File_Info;
 class TPicture;
-
-class RGE_Timeline {
-public:
-    virtual ~RGE_Timeline();
-    RGE_Game_World* world;
-    void* time_list;
-    short list_num;
-    short avail_id;
-    float old_time;
-    RGE_Timeline(RGE_Game_World* world);
-    RGE_Timeline(int file, RGE_Game_World* world);
-    void update();
-    void save(int file);
-};
 
 class RGE_Scenario_Header {
 public:

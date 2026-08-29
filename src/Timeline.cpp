@@ -1,4 +1,11 @@
 #include "../include/Timeline.h"
+#include "../include/obj_list.h"
+#include "../include/player.h"
+#include "../include/rge_fio.h"
+#include "../include/stat_obj.h"
+#include "../include/m_s_obj.h"
+#include "../include/world.h"
+
 #include <stdlib.h>
 
 // PDB source order: Timeline.cpp lines 25-530.

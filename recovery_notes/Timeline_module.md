@@ -33,11 +33,19 @@ fallback declaration. Three accepted-drift owners remain observed:
 natural code has broad control-flow and call-surface drift. The other nine
 owners remain registered matching owners.
 
+`scenario.h` now includes `Timeline.h` instead of carrying a second partial
+`RGE_Timeline` declaration. This gives scenario code the same canonical class
+ownership without creating another compiler-facing owner.
+
 ## Recovery notes
 
-The constructors, save, update, mock-update, list helpers, and event helpers
-use the reviewed typed declarations. `RGE_Master_Static_Object::id` is modeled
-at offset 0x10 for `add_delete` instead of using a raw offset expression.
+The source now includes the canonical object-list, player, static-object,
+master-object, world, and file-I/O headers. `Timeline.h` owns only the timeline
+record and class declarations. The event record uses its natural field order;
+its ABI checks still prove size 0x30 and `next` at offset 0x2c. The canonical
+headers provide the player, world, master-object, static-object, and object-list
+layouts used by this module. `RGE_Master_Static_Object::id` is modeled at offset
+0x10 for `add_delete` instead of using a raw offset expression.
 
 `0050D5B0` retains the shipped target-player lookup behavior: the second object
 lookup uses `target_player_id`, although the stream also contains `player_id`.
@@ -75,16 +83,23 @@ source check. Registered exact owners require `MATCH`, `0.0000%`, correct
 boundaries, relocations, and direct targets. Accepted-drift owners are not
 registered exact claims.
 
-- Candidate proposal: `build/Timeline_recheck_proposal.json`.
-- Candidate report: `build/candidate_tus/Timeline_recheck/report.txt`.
+- Candidate proposal: `build/Timeline_polish_proposal.json`.
+- Candidate report: `build/candidate_tus/Timeline_polish/report.txt`.
 - The candidate compiles all 13 normal owners and the generated destructor in
   one direct module source. It selects the overloaded constructors and `add`
   with their decorated symbols.
 
 The fresh grouped candidate compiled all 13 normal owners and the generated
-destructor. The nine registered matching owners report `MATCH` with zero
-positional differences, zero relocation-target mismatches, and zero boundary
-escapes. The generated destructor also reports `MATCH` and `0.0000%`.
+destructor. Eight of the nine registered matching owners report `MATCH` with
+zero positional differences, zero relocation-target mismatches, and zero
+boundary escapes. `0050DE50` retains matching status, but canonical provider
+composition causes a 12-byte register and instruction-order regression
+(8.0537%) with zero relocation-target mismatches and zero boundary escapes. The
+generated destructor reports `MATCH` and `0.0000%`.
+
+The `0050DE50` regression changes no call target, branch count, boundary, or
+relocation target. Keep its source natural and its reviewed matching status.
+Exact repair remains open after this provider cleanup.
 
 The accepted-drift constructor `0050D5B0` remains a 16-byte mismatch
 (3.3970%), with no relocation or boundary mismatch. `0050DD70` remains a
