@@ -1,6 +1,6 @@
 # Compiler flag metadata audit
 
-Date: 2026-08-28
+Date: 2026-08-29
 
 This note records the flag audit after the stale-flag cleanup wave. The audit
 uses `tools/audit_translation_unit_flags.py`. It compares current grouped flags,
@@ -12,23 +12,23 @@ It does not compare source bodies.
 Command:
 
 ```text
-python tools/audit_translation_unit_flags.py --output build/flag_audit_final.json
+python tools/audit_translation_unit_flags.py --output build/audits/final_release_flag_audit.json
 ```
 
-The command found 5,401 owners in 224 current groups and 241 proposed source
-modules. It found 252 findings:
+The command found 5,395 owners in 221 current groups and 241 proposed source
+modules. It found 251 findings:
 
 | Finding | Count | Classification |
 | --- | ---: | --- |
-| `incompatible_custom_overlay` | 138 | Unresolved proposed-module flag overlays. Keep the owner-specific files. |
-| `target_named_tu_flags` | 102 | Naming warnings. Keep the existing grouped response files. |
-| `mixed_frame_need` | 9 | Unresolved mixed original EBP and FPO evidence. Keep grouped flags. |
-| `mixed_language` | 1 | Unresolved mixed PDB language evidence. Do not change source language. |
-| `frame_flag_conflict` | 1 | One original EBP owner in the `/Oy` Path group. The compiler can retain EBP. |
-| `stale_per_function_exception` | 1 | Lobby owner `0042F290`; retained pending a standalone check. |
+| `incompatible_custom_overlay` | 138 | Proposed-module migration evidence. Keep the owner-specific files. |
+| `target_named_tu_flags` | 98 | Naming warnings. Keep the existing grouped response files. |
+| `mixed_frame_need` | 10 | Mixed original EBP and FPO evidence. Keep grouped flags. |
+| `mixed_language` | 1 | Proposed-module language evidence. Do not change source language. |
+| `frame_flag_conflict` | 4 | Current compiler warnings for `Path` and `map`. Keep grouped flags. |
 
-The report exits with a non-zero status because the unresolved error findings
-remain. This is expected. No C or C++ body changed in this audit.
+The report has zero blocking issues and exits with status zero. Proposed-module
+errors remain migration evidence. They do not block valid current groups.
+The audit reports no stale per-function exception.
 
 ## Verified repairs
 
@@ -75,10 +75,13 @@ All four registered owners passed standalone checks with `Result: MATCH` and
 Isolated grouped validation passed with the grouped COFF object and symbol
 checks.
 
-The audit branch restored the attempted `0042F290` deletion.
-That worktree did not expose the approved DirectPlay include path during the
-standalone check. The owner-specific response file therefore remains pending
-module validation.
+The old `0042F290` stale exception no longer exists. The final metadata cleanup
+also removed these obsolete response files:
+
+- `config/flags/00476D80_setup.rsp`
+- `config/flags/00503600_saveTheTown.rsp`
+- `config/flags/00512630_scenario_save.rsp`
+- `config/flags/00519CA0_update.rsp`
 
 ## Unresolved `incompatible_custom_overlay`
 
@@ -99,14 +102,14 @@ act_list.cpp, act_move.cpp, act_obj.cpp, act_tran.cpp, action.cpp,
 aibldmod.cpp, aiconmod.cpp, aidipmod.cpp, aiemomod.cpp, aimdmod.cpp,
 aimodule.cpp, aipbook.cpp, airchmod.cpp, airesmod.cpp, aitchitm.cpp,
 aiuaimod.cpp, ani_obj.cpp, asp_list.cpp, asprite.cpp, basegame.cpp,
-com_addr.cpp, com_loby.cpp, com_obj.cpp, com_spd.cpp, diam_map.cpp,
+com_addr.cpp, com_obj.cpp, com_spd.cpp, diam_map.cpp,
 dlg_abt.cpp, dlg_conf.cpp, dlg_dip.cpp, dlg_help.cpp, dlg_smsg.cpp,
 dpl_obj.cpp, dstring.cpp, gameinfo.cpp, m_ac_obj.cpp, m_an_obj.cpp,
 m_co_obj.cpp, m_dg_obj.cpp, m_mi_obj.cpp, m_mo_obj.cpp, m_s_obj.cpp,
 map.cpp, misl_obj.cpp, move_obj.cpp, mst_play.cpp, obj_list.cpp,
 pathsys.cpp, player.cpp, pnl_dlg.cpp, pnl_edit.cpp, rmm_cntr.cpp,
 rmm_dbct.cpp, rmm_tdbc.cpp, rpnl_tbx.cpp, rpnl_tim.cpp, scenario.cpp,
-scr_ach.cpp, scr_cam.cpp, scr_cams.cpp, scr_cred.cpp, scr_end.cpp,
+scr_ach.cpp, scr_cam.cpp, scr_cams.cpp, scr_cj.cpp, scr_cred.cpp, scr_end.cpp,
 scr_game.cpp, scr_info.cpp, scr_load.cpp, scr_mp.cpp, scr_mps.cpp,
 scr_sed.cpp, scr_sed2.cpp, scr_sedm.cpp, scr_sedo.cpp, scr_set.cpp,
 scr_stms.cpp, scr_trb.cpp, scr_vc.cpp, spanlist.cpp, sprite.cpp,
@@ -128,7 +131,7 @@ calling context, and exact bytes. Do not remove them from an ungrouped owner.
 
 ## Unresolved `target_named_tu_flags`
 
-The 102 warnings identify current groups with more than one owner and a flags
+The 98 warnings identify current groups with more than one owner and a flags
 path whose stem starts with one VA. These paths are grouped response files, not
 proven function exceptions. They remain unchanged. The warning alone does not
 justify deleting or renaming a response file.
@@ -137,19 +140,19 @@ Affected current groups:
 
 ```text
 zone_map, tscenaro, act_move, tpnl_tml, scr_cams, taistrmd, scr_end,
-scr_info, taiuaimd_preditor_prefix, scr_cam, tworld_prefix, scenario,
-m_s_obj, act_atak, aiconmod_prefix, aiuaimod_prefix, tact_bld, tact_hnt,
+scr_info, taiuaimd, scr_cam, tworld_cpp, scenario,
+m_s_obj, act_atak, aiconmod_prefix, aiuaimod, tact_bld, tact_hnt,
 scr_load, m_mo_obj, view, taitacmd, tcommand, tribegam_prefix, scr_game,
 scr_ach, tpnl_inv, obj_list, act_misl, aipbook_prefix,
-taiuaimd_soldier_segment, player, sound, move_obj, airchmod, chat, dlg_abt,
+player, sound, move_obj, airchmod, chat, dlg_abt,
 ani_obj, Scr_sels, com_addr, act_expl, scr_vc_prefix, scr_stms,
-scr_sedm_prefix, pnl_pic, dlg_menu, rpnl_tim, dlg_dip, dsutil, act_bird_cpp,
+scr_sedm, pnl_pic, rpnl_tim, dlg_dip, dsutil, act_bird_cpp,
 scr_sing, tpnl_txl, act_list, act_tran, aiemomod, dlg_smsg, dpl_obj,
 mst_play, Path, tact_art, taunt, tpnl_btn, tpnl_pop, tpnl_tim, tact_dar,
-rmm_cntr, pnl_dlg, tmplayer, dstring, pathsys, tact_lst, pnl_edit, scr_cred,
-rmm_dbct, scr_cj, scr_trb, tm_tre_o, aiuaimod_complete_fresh,
+rmm_tdbc, rmm_cntr, pnl_dlg, tmplayer, dstring, pathsys, tact_lst, pnl_edit,
+scr_cred, rmm_dbct, scr_trb, tm_tre_o,
 t_c_obj_complete_fresh, sprite_cpp, basegame_cpp, panel_ez,
-taiuaimd_cpp_complete, tmap_cpp, m_ac_obj_cpp_proposal, com_spd, dlg_msg,
+tmap_cpp, m_ac_obj, com_spd, dlg_msg,
 scr_mp_cpp, rpnl_tbx_cpp, act_entr_cpp, tm_b_obj, tact_hea, m_co_obj,
 taibldmd, action, dlg_help, tact_trd, taimdmd, pnl_scbr, tact_rep,
 misl_obj, taiinfmd
@@ -164,9 +167,9 @@ Path.cpp, Res_file.cpp, map.cpp, move_obj.cpp, pathsys.cpp,
 tribegam.cpp, vis_unit.cpp, visible.cpp
 ```
 
-The current `Path` group also reports `mixed_frame_need`. Owner `0046ACE0`
-has an original EBP frame while the group requests `/Oy`. The audit states
-that the compiler can retain EBP when required. Keep the current grouped flags.
+The current `Path` and `map` groups also report `mixed_frame_need`.
+Owner `0046ACE0` has an original EBP frame while `Path` requests `/Oy`.
+The compiler can retain EBP when required. Keep the current grouped flags.
 Do not split or add a function flag without grouped and direct checks.
 
 `mixed_language` affects `player.h`. Eight owners have mixed `c` and `cpp` PDB
