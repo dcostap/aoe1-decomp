@@ -18,7 +18,7 @@ class AIPlayStatus;
 class AttackMemory;
 class AttackState;
 class Attribute_Cost;
-class BITMAPINFO256;
+struct BITMAPINFO256;
 class BaseItem;
 class BaseObject;
 class Blit_Queue_Entry;

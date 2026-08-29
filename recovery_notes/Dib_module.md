@@ -1,5 +1,9 @@
 # Dib.cpp source reunification
 
+`BITMAPINFO256` uses the `struct` tag. The original `ClipDibBlt` and
+`GetDibDim` symbols encode this record with `U`. This direct symbol evidence
+overrides the generated type dump's `class` label.
+
 ## Context gate
 
 - PDB source: `C:\\msdev\\work\\age1_x1\\Dib.cpp`.
@@ -83,9 +87,11 @@ valid migration check.
 - The old exact group used a wrapper with declarations interleaved between
   function bodies. A normal header moves those declarations to module scope.
   This is the required source shape, but it alters VC5 register scheduling.
-- `DibFromBitmap` remains exact in the repaired natural module.
-- The current grouped audit records all six exact-owner regressions. Do not
-  promote those owners until their final source context is repaired.
+- `ClipDibBlt` and `GetDibDim` are exact with the symbol-proven
+  `BITMAPINFO256` `struct` tag.
+- `DibFromBitmap` is scratch. Its natural module body is eight bytes shorter
+  and differs by 183 positional bytes. Calls and branch counts match, but the
+  structural drift is not an exact claim.
 - `DibRgeBaseGameView` and `DibDrawSystemView` are removed. `DibCreatePalette`
   now uses the canonical `RGE_Base_Game` and `TDrawSystem` providers.
 - No shared header currently owns `shape_file_first` or `RESFILE_load`. Their
