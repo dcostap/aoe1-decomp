@@ -14,6 +14,7 @@ struct RGE_Prog_Info;
 class RGE_Scenario;
 class RGE_Scenario_File_Info;
 class RGE_Scenario_Header;
+class T_Scenario;
 class TCommunications_Handler;
 class TDebuggingLog;
 class TDrawArea;
@@ -75,6 +76,8 @@ class RGE_Base_Game {
     friend class RGE_Communications_Synchronize;
     friend class RGE_Main_View;
     friend class TRIBE_Main_View;
+    friend class RGE_Scenario;
+    friend class T_Scenario;
     friend class TribeJoinScreen;
     friend class TribeMPCreateDialog;
     friend class TribeMPSetupScreen;

@@ -54,7 +54,7 @@ public:
 
     RGE_Timeline* time_line;
     RGE_Game_World* world;
-    char victory_conquest;
+    unsigned char victory_conquest;
     char player_name[16][0x100];
     char pad_100D[3];
     char* scenario_name;

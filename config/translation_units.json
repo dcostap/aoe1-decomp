@@ -52,6 +52,8 @@
         "0052AA70": "src/tscenaro.cpp",
         "0052AA80": "src/tscenaro.cpp",
         "0052AAC0": "src/tscenaro.cpp",
+        "0052AB90": "src/tscenaro.cpp",
+        "0052AF20": "src/tscenaro.cpp",
         "0052B080": "src/tscenaro.cpp",
         "0052B100": "src/tscenaro.cpp",
         "0052B120": "src/tscenaro.cpp",
@@ -65,6 +67,7 @@
         "0052B200": "src/tscenaro.cpp",
         "0052B210": "src/tscenaro.cpp",
         "0052B230": "src/tscenaro.cpp",
+        "0052B240": "src/tscenaro.cpp",
         "0052B280": "src/tscenaro.cpp",
         "0052B2B0": "src/tscenaro.cpp",
         "0052B2D0": "src/tscenaro.cpp",
@@ -119,9 +122,11 @@
         "0052BA70": "src/tscenaro.cpp",
         "0052BA80": "src/tscenaro.cpp",
         "0052BA90": "src/tscenaro.cpp",
+        "0052BBC0": "src/tscenaro.cpp",
         "0052C070": "src/tscenaro.cpp",
         "0052C080": "src/tscenaro.cpp",
         "0052C0A0": "src/tscenaro.cpp",
+        "0052C0B0": "src/tscenaro.cpp",
         "0052C1E0": "src/tscenaro.cpp",
         "0052C230": "src/tscenaro.cpp"
       },
@@ -130,9 +135,14 @@
         "0052A9F0": "??0TRIBE_Scenario_Header@@QAE@H@Z",
         "0052AA80": "?save@TRIBE_Scenario_Header@@UAEXH@Z",
         "0052AAC0": "??0T_Scenario@@QAE@PAVRGE_Game_World@@@Z",
+        "0052AB90": "??0T_Scenario@@QAE@HPAVRGE_Game_World@@@Z",
+        "0052AF20": "?save@T_Scenario@@UAEXH@Z",
+        "0052B240": "?InitializeVictoryValues@T_Scenario@@QAEXXZ",
+        "0052BBC0": "?Save_victory_conditions_into_players@T_Scenario@@QAEXH@Z",
         "0052B5F0": "?SetSPObject@T_Scenario@@QAEXHPAVRGE_Static_Object@@@Z",
         "0052B630": "?SetSPDestObjectID@T_Scenario@@QAEXHPAVRGE_Static_Object@@@Z",
-        "0052BA00": "?GetSPObject@T_Scenario@@QAEPAVRGE_Static_Object@@H@Z"
+        "0052BA00": "?GetSPObject@T_Scenario@@QAEPAVRGE_Static_Object@@H@Z",
+        "0052C0B0": "?WriteDisabledTechnologiesToMainSystem@T_Scenario@@AAEXXZ"
       }
     },
     {

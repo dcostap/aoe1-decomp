@@ -1,8 +1,10 @@
 #include <string.h>
 
 #include "../include/tscenaro.h"
+#include "../include/basegame.h"
 #include "../include/effects.h"
 #include "../include/player.h"
+#include "../include/rge_base_game_global.h"
 #include "../include/stat_obj.h"
 #include "../include/tech.h"
 #include "../include/tplayer.h"
@@ -149,24 +151,40 @@ T_Scenario::T_Scenario(int file, RGE_Game_World* world) : RGE_Scenario(file, wor
 }
 
 void T_Scenario::save(int file) {
-    int checksum = -99;
+    int checksum;
+    Player_Start_Info* player;
+    SP_Victory_Info (*sp_player)[12];
+    int i;
+
+    checksum = -99;
     WriteDisabledTechnologiesToMainSystem();
     RGE_Scenario::save(file);
 
-    rge_write(file, player_info, sizeof(player_info));
+    player = player_info;
+    for (i = 0x10; i != 0; --i) {
+        rge_write(file, player, 0x10);
+        ++player;
+    }
+
     rge_write(file, &checksum, 4);
-    rge_write(file, &victory, sizeof(victory));
-    rge_write(file, &victory_all_flag, sizeof(victory_all_flag));
-    rge_write(file, &mp_victory_type, sizeof(mp_victory_type));
-    rge_write(file, &victory_score, sizeof(victory_score));
-    rge_write(file, &victory_time, sizeof(victory_time));
-    rge_write(file, Opponent, sizeof(Opponent));
-    rge_write(file, sp_victory, sizeof(sp_victory));
+    rge_write(file, &victory, 0x18);
+    rge_write(file, &victory_all_flag, 4);
+    rge_write(file, &mp_victory_type, 4);
+    rge_write(file, &victory_score, 4);
+    rge_write(file, &victory_time, 4);
+    rge_write(file, Opponent, 0x400);
+
+    sp_player = sp_victory;
+    for (i = 0x10; i != 0; --i) {
+        rge_write(file, sp_player, 0x2D0);
+        ++sp_player;
+    }
+
     rge_write(file, &checksum, 4);
-    rge_write(file, AlliedVictory, sizeof(AlliedVictory));
-    rge_write(file, DisabledTechnology, sizeof(DisabledTechnology));
-    rge_write(file, ScenarioOptions, sizeof(ScenarioOptions));
-    rge_write(file, PlayerAge, sizeof(PlayerAge));
+    rge_write(file, AlliedVictory, 0x40);
+    rge_write(file, DisabledTechnology, 0x500);
+    rge_write(file, ScenarioOptions, 0x0C);
+    rge_write(file, PlayerAge, 0x40);
     rge_write(file, &checksum, 4);
 }
 
@@ -252,6 +270,9 @@ int T_Scenario::GetSPWhich() {
 }
 
 void T_Scenario::InitializeVictoryValues() {
+    int* victory_values;
+    int i;
+
     this->victory.MP_Conquest = 1;
     this->victory.MP_Ruins = 0;
     this->victory.MP_Artifacts = 0;
@@ -259,7 +280,10 @@ void T_Scenario::InitializeVictoryValues() {
     this->victory.MP_Exploration = 0;
     this->victory.MP_Gold = 0;
 
-    memset(this->sp_victory, 0, sizeof(this->sp_victory));
+    victory_values = &this->sp_victory[0][0].ObjType;
+    for (i = 0; i < 0xB40; ++i) {
+        victory_values[i] = 0;
+    }
 }
 
 void T_Scenario::ClearSPVictoryCondition(int sp_index) {
@@ -631,28 +655,30 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
         int condition_index = 0;
         do {
             SP_Victory_Info* condition = &this->sp_victory[row][condition_index];
-            int type = condition->VictoryType;
+            // BINARY NOTE: The shipped record walk is anchored at AttribType.
+            int* attribute_field = &condition->AttribType;
+            int type = attribute_field[-2];
             if (type != 0) {
                 if (type == 4) {
-                    int attribute = condition->AttribType;
+                    int attribute = *attribute_field;
                     if (attribute == 6) {
-                        conditions->add_explore(1, condition->Amount, 1);
+                        conditions->add_explore(1, attribute_field[-1], 1);
                     } else if (attribute == 4) {
-                        conditions->add_attributes(1, 11, condition->Amount, 0);
+                        conditions->add_attributes(1, 11, attribute_field[-1], 0);
                     } else if (attribute == 3) {
-                        conditions->add_attributes(1, 0, condition->Amount, 0);
+                        conditions->add_attributes(1, 0, attribute_field[-1], 0);
                     } else if (attribute == 2) {
-                        conditions->add_attributes(1, 2, condition->Amount, 0);
+                        conditions->add_attributes(1, 2, attribute_field[-1], 0);
                     } else if (attribute == 1) {
-                        conditions->add_attributes(1, 1, condition->Amount, 0);
+                        conditions->add_attributes(1, 1, attribute_field[-1], 0);
                     } else if (attribute == 0) {
-                        conditions->add_attributes(1, 3, condition->Amount, 0);
+                        conditions->add_attributes(1, 3, attribute_field[-1], 0);
                     } else if (attribute == 5) {
-                        conditions->add_attributes(1, 6, condition->Amount, 0);
+                        conditions->add_attributes(1, 6, attribute_field[-1], 0);
                     }
                 } else if (type == 6) {
-                    conditions->add_attributes(1, condition->AttribType,
-                                               condition->Amount, 0);
+                    conditions->add_attributes(1, *attribute_field,
+                                               attribute_field[-1], 0);
                 } else if (type == 5) {
                     conditions->add_capture(1,
                                             this->get_object_pointer(condition->obj_ID), 1);
@@ -736,34 +762,36 @@ void T_Scenario::WriteDisabledTechnologiesToMainSystem()
         return;
 
     int player_index = 1;
+    // BINARY NOTE: The shipped loop reads the low byte of each typed field.
+    int* disabled = &this->DisabledTechnology[0][1];
     do {
         TRIBE_Player* player =
             static_cast<TRIBE_Player*>(world->players[player_index]);
-        int* disabled = this->DisabledTechnology[player_index - 1];
 
         if (this->ScenarioOptions[0] != 0) {
             world->effects->do_effect(100, player);
         }
 
-        player->tech_abling(0x58, (uchar)disabled[0]);
-        player->tech_abling(0x59, (uchar)disabled[1]);
-        player->tech_abling(0x5A, (uchar)disabled[2]);
-        player->tech_abling(0x5B, (uchar)disabled[3]);
-        player->tech_abling(0x5E, (uchar)disabled[4]);
-        player->tech_abling(0x5F, (uchar)disabled[5]);
-        player->tech_abling(0x61, (uchar)disabled[6]);
-        player->tech_abling(0x62, (uchar)disabled[7]);
-        player->tech_abling(0x5D, (uchar)disabled[8]);
-        player->tech_abling(0x60, (uchar)disabled[9]);
-        player->tech_abling(0x5C, (uchar)disabled[10]);
-        player->tech_abling(0x65, (uchar)disabled[11]);
-        player->tech_abling(0x66, (uchar)disabled[12]);
-        player->tech_abling(0x67, (uchar)disabled[13]);
-        player->tech_abling(0x73, (uchar)disabled[14]);
-        player->tech_abling(0x74, (uchar)disabled[15]);
+        player->tech_abling(0x58, (uchar)disabled[-1]);
+        player->tech_abling(0x59, (uchar)disabled[0]);
+        player->tech_abling(0x5A, (uchar)disabled[1]);
+        player->tech_abling(0x5B, (uchar)disabled[2]);
+        player->tech_abling(0x5E, (uchar)disabled[3]);
+        player->tech_abling(0x5F, (uchar)disabled[4]);
+        player->tech_abling(0x61, (uchar)disabled[5]);
+        player->tech_abling(0x62, (uchar)disabled[6]);
+        player->tech_abling(0x5D, (uchar)disabled[7]);
+        player->tech_abling(0x60, (uchar)disabled[8]);
+        player->tech_abling(0x5C, (uchar)disabled[9]);
+        player->tech_abling(0x65, (uchar)disabled[10]);
+        player->tech_abling(0x66, (uchar)disabled[11]);
+        player->tech_abling(0x67, (uchar)disabled[12]);
+        player->tech_abling(0x73, (uchar)disabled[13]);
+        player->tech_abling(0x74, (uchar)disabled[14]);
 
         ++player_index;
         world = this->world;
+        disabled += 20;
     } while (player_index < (int)world->player_num);
 }
 
