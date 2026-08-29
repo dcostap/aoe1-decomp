@@ -32,7 +32,7 @@
     "004486B0": { "status": "matching", "note_path": "recovery_notes/dsutil_module.md" },
     "004486F0": { "status": "matching", "note_path": "recovery_notes/dsutil_module.md" },
     "00448A40": { "status": "matching", "note_path": "recovery_notes/dsutil_module.md" },
-    "00448A60": { "status": "scratch", "note_path": "recovery_notes/dsutil_module.md" },
+    "00448A60": { "status": "matching", "note_path": "recovery_notes/dsutil_module.md" },
     "00448A70": { "status": "matching", "note_path": "recovery_notes/dsutil_module.md" },
     "00448A80": { "status": "matching", "note_path": "recovery_notes/dsutil_module.md" },
     "00448B30": { "status": "matching", "note_path": "recovery_notes/dsutil_module.md" },

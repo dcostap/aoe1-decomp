@@ -104,14 +104,16 @@ unsigned char RGE_Communications_Queue::ExpectedNextSequence(
 
 unsigned int RGE_Communications_Queue::QueuedForTurn(unsigned long turn) {
     unsigned int count = 0;
-    unsigned int i = 0;
+    unsigned int* execTurn = &this->Queue->ExecTurn;
+    int remaining = this->HighQueueDepth + 1;
 
     do {
-        if (this->Queue[i].ExecTurn == turn) {
+        if (*execTurn == turn) {
             ++count;
         }
-        ++i;
-    } while (i <= this->HighQueueDepth);
+        execTurn += sizeof(MsgQueue) / sizeof(*execTurn);
+        --remaining;
+    } while (remaining != 0);
 
     return count;
 }

@@ -25,12 +25,12 @@ treat this record cleanup as a behavior claim.
 
 Current status:
 
-- 168 owners are `matching`.
+- 169 owners are `matching`.
 - 10 owners are `accepted_drift`.
-- 36 owners are `scratch`.
+- 35 owners are `scratch`.
 - 2 owners are `verified_logic`.
 
-The 48 non-matching owners keep their current status.
+The 47 non-matching owners keep their current status.
 The two `verified_logic` owners keep their existing ledgers.
 
 Fresh grouped evidence proves `00502FC0`, `00502FF0`, `00503040`, and
@@ -76,10 +76,15 @@ existing `TacticalAIGroup::task`, time, and tribute source forms. No absolute
 data address remains in `src/taitacmd.cpp`.
 
 The final full-module build uses `config/flags/004ED4F0_TribeTacticalAIModule.rsp`.
-The registered grouped gate passes. The module has 168 matching, 10
-accepted-drift, 36 scratch, and 2 verified-logic normal owners. Fresh checks
+The registered grouped gate passes. The module has 169 matching, 10
+accepted-drift, 35 scratch, and 2 verified-logic normal owners. Fresh checks
 prove `004EA9C0`, `004EEE40`, `00501660`, `00502100`, `00501C70`, and
 `00502200` as `MATCH` with `0.0000%` positional difference. `00502920` and
 `00502D50` remain scratch after fresh grouped-context mismatches. `004F8E20`
 also remains scratch; its typed provider cleanup keeps behavior but changes its
 current code size from 1369 to 1365 bytes.
+
+The shared-worktree trial recovered `00500AD0 numberItemsToDefend` as the
+natural forwarding call to `md->informationAI.numberItemsToDefend()`. Focused
+and complete-module checks report `MATCH` and `0.0000%`, including the correct
+relocated tail target. All 169 registered owners match.

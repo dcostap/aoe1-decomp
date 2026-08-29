@@ -10,7 +10,7 @@
     "00431810": { "status": "matching" },
     "004319E0": { "status": "scratch", "note_path": "recovery_notes/com_q_module.md" },
     "00431A40": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_q_module.md"
     },
     "00431A70": { "status": "matching" },

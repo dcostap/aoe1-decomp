@@ -549,7 +549,7 @@
       "status": "matching"
     },
     "00500AD0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/taitacmd_module.md"
     },
     "00500AF0": {

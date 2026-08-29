@@ -73,5 +73,6 @@ with no relocation mismatch or boundary escape.
 The same candidate keeps 104 of 105 registered owners exact. `004705A0`
 `set_color_table` changes by 20 bytes and one boundary escape after the
 header body closure. Its register-color change is recorded as a structural
-migration regression. The owner remains registered and no source body was
-changed to hide it.
+migration regression. Twenty natural variants emitted the same 28-byte basin.
+The original is 27 bytes. The owner is now scratch and is not registered as
+exact. The direct natural source remains unchanged.

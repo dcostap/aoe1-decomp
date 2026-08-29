@@ -1698,6 +1698,7 @@
         "005009A0": "src/taitacmd.cpp",
         "00500A30": "src/taitacmd.cpp",
         "00500A80": "src/taitacmd.cpp",
+        "00500AD0": "src/taitacmd.cpp",
         "00500AF0": "src/taitacmd.cpp",
         "00500B30": "src/taitacmd.cpp",
         "00500DE0": "src/taitacmd.cpp",
@@ -1868,6 +1869,7 @@
         "005009A0": "?numberItemsToAttack@TribeTacticalAIModule@@QAEHXZ",
         "00500A30": "?itemToCapture@TribeTacticalAIModule@@QAEHXZ",
         "00500A80": "?itemToBringToArea@TribeTacticalAIModule@@QAEHXZ",
+        "00500AD0": "?numberItemsToDefend@TribeTacticalAIModule@@QAEHXZ",
         "00500AF0": "?attackLimiterTime@TribeTacticalAIModule@@QAEKH@Z",
         "00500B30": "?resetAttackSeparationTime@TribeTacticalAIModule@@QAEXXZ",
         "00500DE0": "?setGroupInfluences@TribeTacticalAIModule@@QAEXAAVInfluenceMap@@@Z",
@@ -2917,7 +2919,6 @@
         "004704A0": "src/player.cpp",
         "004704C0": "src/player.cpp",
         "00470570": "src/player.cpp",
-        "004705A0": "src/player.cpp",
         "004705C0": "src/player.cpp",
         "004705E0": "src/player.cpp",
         "00470600": "src/player.cpp",
@@ -4116,6 +4117,7 @@
         "004486B0": "src/Dsutil.c",
         "004486F0": "src/Dsutil.c",
         "00448A40": "src/Dsutil.c",
+        "00448A60": "src/Dsutil.c",
         "00448A70": "src/Dsutil.c",
         "00448A80": "src/Dsutil.c",
         "00448B30": "src/Dsutil.c",
@@ -4130,7 +4132,8 @@
         "00447890": "_DSReloadSoundBuffer",
         "00447A20": "_SndObjDestroy",
         "00447EF0": "_WaveStartDataRead",
-        "004481A0": "_WaveStartDataWrite"
+        "004481A0": "_WaveStartDataWrite",
+        "00448A60": "_ds_stream_pause"
       }
     },
     {
@@ -8574,6 +8577,7 @@
         "00431720": "src/com_q.cpp",
         "00431760": "src/com_q.cpp",
         "00431810": "src/com_q.cpp",
+        "00431A40": "src/com_q.cpp",
         "00431A70": "src/com_q.cpp",
         "00431BD0": "src/com_q.cpp",
         "00431BE0": "src/com_q.cpp",
@@ -8586,6 +8590,7 @@
         "00431F10": "src/com_q.cpp"
       },
       "symbols": {
+        "00431A40": "?QueuedForTurn@RGE_Communications_Queue@@IAEIK@Z",
         "00431BF0": "?AddItem@RGE_Communications_Queue@@QAEHKPAXKIEH@Z",
         "00431F10": "?GetNextSequence@RGE_Communications_Queue@@QAEEK@Z"
       }

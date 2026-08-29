@@ -11,11 +11,18 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+- PDB module: `com_q.cpp`; owner: `RGE_Communications_Queue`.
+- Source order: `00431A40` follows `004319E0` and precedes `00431A70`.
+- Original body: 35 bytes, no frame, saves `esi`, and makes no calls.
+- Original loop starts at `&this->Queue->ExecTurn`, advances by 7 `unsigned int`
+  elements, and visits `HighQueueDepth + 1` records.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Baseline: 40 rebuilt bytes versus 35 original bytes (100.0000% positional
+  difference), with extra `edi` save and three additional instructions.
+- Final: 35 rebuilt bytes versus 35 original bytes; `MATCH`, `0.0000%`, no
+  frame, saved registers `esi`, no calls, and matching owner and boundary.
 
 ## Recovered attempt history
 
@@ -33,16 +40,29 @@ Mapping: `exact`. historical standalone source path names this target VA.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+- The index-based `Queue[i].ExecTurn` loop generated an extra saved register and
+  40 bytes. It does not match the original loop shape.
+- An `unsigned long*` pointer does not compile because `ExecTurn` is declared as
+  `unsigned int`; the typed `unsigned int*` pointer is the supported form.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+- None for this target. The direct pointer form matches all original bytes.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+- Preserve the direct pointer loop and verify the complete `com_q` translation
+  unit after concurrent worker edits.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### 2026-08-29 `trial-com-q`
+
+Reconstructed the loop with a typed `unsigned int*` to `ExecTurn`, an `int`
+  remaining count initialized to `HighQueueDepth + 1`, and a record-sized pointer
+  increment. The focused check is exact. The complete `com_q` audit also shows
+  this target as `MATCH` with zero diff, correct owner, relocations, and
+  boundary. The audit output is under
+  `build/audits/workers/trial-com-q/com_q/`.

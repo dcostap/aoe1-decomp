@@ -11,11 +11,22 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+The PDB owner is `TribeTacticalAIModule` in `taitacmd.cpp`, at source line
+11542. The 17-byte body is a forwarding thunk to the exact
+`TribeInformationAIModule::numberItemsToDefend` owner at `004DEA70`.
+
+The original sequence is `mov ecx,[ecx+0xF0]`, `add ecx,0xCEC`, and a direct
+tail jump to `004DEA70`. The first load selects `md`; the second selects its
+embedded `informationAI` member.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+The fresh baseline was 17 bytes versus 3 bytes, with a 17-byte mismatch.
+The zero-return stub had no jump and returned zero. The natural direct member
+call now builds 17 bytes with no frame, one relocated tail target, and exact
+boundary and direct-target identity.
+
+Fresh result: `MATCH`, `0.0000%`, 17/17 bytes equal.
 
 ## Recovered attempt history
 
@@ -46,16 +57,32 @@ Mapping: `exact`. historical standalone source path names this target VA.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+The `return 0;` owner stub is rejected. It emits `xor eax,eax; ret` and does
+not preserve the proven information-AI forwarding behavior.
+
+The old standalone placeholder is also rejected. It omitted the shared
+`TribeInformationAIModule` declaration instead of expressing the natural
+member call.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+No behavior or code-generation blocker remains. The complete grouped audit
+passed for all 168 registered owners.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+No further source work is needed. The main agent can review this exact result
+for promotion.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+### `trial-taitacmd`
+
+Rebuilt the stale baseline, which was a 17-byte mismatch from the zero-return
+stub. Replaced only the assigned body with the natural embedded information-AI
+member call. Focused validation is `MATCH`, `0.0000%`, with 17/17 bytes equal.
+
+The complete `taitacmd` audit reports 168/168 registered owners matching. It
+also confirms this target as `MATCH` with no relocation or boundary issue.
+Audit reports are under
+`build/audits/workers/trial-taitacmd/taitacmd/`.

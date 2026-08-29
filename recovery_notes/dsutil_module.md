@@ -22,10 +22,10 @@ No inline assembly, fake vtable, absolute API pointer, or wrapper owner remains.
 
 ## Recovery states
 
-The module keeps 21 `matching` owners and 11 `scratch` owners. The former
-accepted-drift rows `00447B70`, `004481E0`, `00448660`, and `00448A60` are now
-scratch because their fresh checks show structural instruction drift. The two
-current-main SDK regressions, `00448250` and `00448340`, are also scratch.
+The module now keeps 26 `matching` owners and 6 `scratch` owners. The former
+accepted-drift rows `00447B70`, `004481E0`, and `00448660` are scratch because
+their fresh checks show structural instruction drift. The two current-main SDK
+regressions, `00448250` and `00448340`, are also scratch.
 These states describe source recovery. They do not claim grouped byte equality
 after the source move.
 
@@ -86,10 +86,14 @@ neither passed the exact gate. Their exact registrations were removed, and
 both are now scratch. The natural bodies remain unchanged.
 
 The final status review also demoted `00447B70` (`_SndObjStop`), `004481E0`
-(`_WaveWriteFile`), `00448660` (`ds_stream_init`), and `00448A60`
-(`ds_stream_pause`). Their fresh checks report high-severity structural
-instruction differences of 38, 96, 16, and 6 bytes. Dsutil has no remaining
+(`_WaveWriteFile`), and `00448660` (`ds_stream_init`). Their fresh checks report
+high-severity structural instruction differences. Dsutil has no remaining
 accepted-drift row in this source module.
+
+The shared-worktree trial recovered `00448A60 ds_stream_pause` as an integer
+function that stores and returns `1`. This preserves the return value used by
+the tail-jump caller. Focused and complete-module checks report `MATCH` and
+`0.0000%`. All 26 registered owners match.
 
 ## Canonical provider repair
 

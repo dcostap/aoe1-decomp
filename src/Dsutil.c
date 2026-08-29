@@ -980,9 +980,10 @@ int __cdecl ds_stream_volume(int volume)
     return result == 0;
 }
 
-void __cdecl ds_stream_pause(void)
+int __cdecl ds_stream_pause(void)
 {
     _stream_paused = 1;
+    return 1;
 }
 
 int __cdecl ds_stream_resume(void)

@@ -10707,7 +10707,7 @@ int TribeTacticalAIModule::itemToBringToArea()
 
 int TribeTacticalAIModule::numberItemsToDefend()
 {
-    return 0;
+    return this->md->informationAI.numberItemsToDefend();
 }
 
 // TribeTacticalAIModule::attackLimiterTime

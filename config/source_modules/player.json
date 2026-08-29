@@ -165,7 +165,8 @@
       "status": "matching"
     },
     "004705A0": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/player_module.md"
     },
     "004705C0": {
       "status": "matching"
