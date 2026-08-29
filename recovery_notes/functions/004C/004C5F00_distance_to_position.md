@@ -1,0 +1,65 @@
+# Recovery journal: 004C5F00 `distance_to_position`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/stat_obj.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\stat_obj.cpp`.
+- Earlier recovery note: `recovery_notes/stat_obj_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:19763d38c4c8bd2cfde8 -->
+### `a9a8fe10cd56` `src/scratch/004C5F00_distance_to_position.cpp:1-19`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004C5F00 RGE_Static_Object::distance_to_position (152 B)
+// PDB source: stat_obj.cpp lines 3700-3722
+// Default flags: /nologo /c /O2 /Oy
+//
+// Attempt log:
+// 1: Initial rewrite from scratch (was wrong — Manhattan distance only)
+// 2: Ternary abs → 144B, inline fsqrt, FPU spill pattern differs
+// 3: Volatile pointer hack → no change
+// 4: <math.h> + sqrt → correct sqrt but library call (144B)
+// 5-9: Various FPU stack approaches (self-contained if blocks, Ghidra pattern)
+//   → all 144B, same FPU stack management (fxch) instead of store-reload
+// 10: Volatile floats → 152B but completely different FPU layout
+//
+// Left in scratch: FPU register allocation pattern differs from original.
+// Original uses fstp/fld store-reload for dy while testing dx.
+// Rebuilt uses fxch/fchs/fxch to keep both in FPU stack.
+// 144 bytes (8 short of 152) due to optimized FPU pattern.
+// sqrt is inlined as fsqrt with <math.h> + /O2.
+// Not proposing accepted_drift: 144 vs 152 size mismatch.
+```
+<!-- end-recovered:19763d38c4c8bd2cfde8 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

@@ -1,0 +1,176 @@
+# Recovery journal: 005196E0 `get_mouse_pointer_action_vars`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/tplayer.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\tplayer.cpp`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:bc79e7c447462b219471 -->
+### `target-session` `build/target_sessions/005196E0_get_mouse_pointer_action_vars.json:1-67`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 liveness; result=MISMATCH; diff=907; shape=73.60594795539033: Hypothesis 1: separate zero local for output initialization should preserve ESI zero while current owns EBP.
+probe 3 liveness; result=MISMATCH; diff=907; shape=73.60594795539033: Hypothesis 2: use one ordinary player alias for every this-member access; original saves this before reusing EDI for the table. [same emitted code as probe 1]
+probe 5 control-flow; result=MISMATCH; diff=907; shape=73.60594795539033: Hypothesis 3: positive selected-table guard should emit original CMP word, MOV flags, TEST, then normal fallthrough.
+probe 7 liveness; result=MISMATCH; diff=929; shape=73.0909090909091: Hypothesis 4: cache current_action_flags in a local before table selection to reproduce original MOV flags/TEST sequence.
+probe 9 liveness; result=MISMATCH; diff=907; shape=73.60594795539033: Hypothesis 5: register-qualified player receiver should force a period-style register color closer to original EDI ownership. [same emitted code as probe 3]
+probe 11 control-flow; result=MISMATCH; diff=910; shape=73.70370370370371: Hypothesis 6: move shared set_action_5 label before case 5, matching the original case-2 jump to the shared handler at 005199C6.
+probe 13 liveness; result=MISMATCH; diff=894; shape=73.13432835820896: Hypothesis 7: initialize current after the two output stores, changing zero-register liveness and the initial two-XOR schedule.
+probe 15 liveness; result=MISMATCH; diff=894; shape=73.97769516728624: Hypothesis 8: initialize current immediately after object lookup, but before output stores, to preserve two live zero values.
+probe 16 liveness; result=MISMATCH; diff=894; shape=73.97769516728624: Hypothesis 9: separate zero and current assignments after lookup should reproduce original ESI/EBP zero pair and output stores.
+probe 18 liveness; result=MISMATCH; diff=925; shape=70.5223880597015: Hypothesis 10: narrow volatility on object_player should diagnose whether original scan reloads its key home each iteration.
+probe 20 control-flow; result=MISMATCH; diff=904; shape=73.97769516728624: Hypothesis 11: use a pretested while scan instead of do/while to match the original count-guarded cursor loop.
+probe 21 liveness; result=MISMATCH; diff=891; shape=74.34944237918215: Hypothesis 12: combine post-lookup current initialization with the pretested while scan; test interaction of zero liveness and scan rotation.
+probe 22 layout; result=MISMATCH; diff=891; shape=73.97769516728624: Hypothesis 13: address-take object_player through a key pointer to reproduce the original per-iteration stack-home reload.
+probe 24 control-flow; result=MISMATCH; diff=914; shape=75.74626865671642: Hypothesis 14: place shared action-5 handler immediately after case 2 so case 2 and case 4 both target one source label.
+probe 26 layout; result=MISMATCH; diff=907; shape=73.60594795539033: Hypothesis 15: carry a named thisObj alias through action tests to recover the original object stack home used by range/state loads. [same emitted code as probe 9]
+probe 28 layout; result=MISMATCH; diff=907; shape=73.60594795539033: Hypothesis 16: use one named thisObj pointer from lookup through branch classification, testing canonical object ownership and home allocation. [same emitted code as probe 26]
+probe 30 abi; result=MISMATCH; diff=907; shape=73.60594795539033: Hypothesis 17: model the decompiler's char* entry cursor with explicit RightClickEntry casts; test pointer type impact on dispatch register coloring.
+probe 32 abi; result=MISMATCH; diff=917; shape=73.80073800738008: Hypothesis 18: represent flags as the proven byte-tested field with explicit padding, testing direct byte tests versus int promotion.
+probe 34 control-flow; result=MISMATCH; diff=910; shape=73.13432835820896: Hypothesis 19: rewrite case 7 as the decompiler-supported positive compound condition to preserve its redundant comparison and handler layout.
+probe 36 control-flow; result=MISMATCH; diff=921; shape=75.09293680297398: Hypothesis 20: use positive case-4 nesting with one hp local, matching the decompiler's compound flag/global/ftol condition.
+probe 37 variant; result=MISMATCH; diff=921; shape=75.09293680297398: variant lab build\variant_lab\005196E0_get_mouse_pointer_action_vars\20260817_142839: 32 variants, 32 invariant-eligible, 0 exact
+probe 39 layout; result=MISMATCH; diff=907; shape=73.60594795539033: Hypothesis 21: address-take object_type to force the original early stack home and frame pressure. [same emitted code as probe 28]
+probe 41 control-flow; result=MISMATCH; diff=891; shape=74.34944237918215: Best clean-source candidate H12: post-lookup current initialization plus pretested count scan; revalidated as a natural source model. [same emitted code as probe 21]
+probe 42 liveness; result=MISMATCH; diff=891; shape=74.34944237918215: Hypothesis 23: use a reference alias to the player object, testing whether C++ reference lifetime changes the saved-this register basin.
+probe 44 context; result=MISMATCH; diff=891; shape=74.34944237918215: Hypothesis 24: replace neutral virtual names with the canonical same-TU RGE_Player surface, including destructor, while preserving all proven offsets.
+probe 45 layout; result=MISMATCH; diff=891; shape=74.34944237918215: Hypothesis 25: use a one-element scalar array for object_type to force its original candidate stack slot without changing width. [same emitted code as probe 44]
+probe 46 context; result=MISMATCH; diff=897; shape=75.0: Hypothesis 26: bind rge_base_game to a scoped game receiver in each table arm, matching original direct receiver scheduling.
+probe 48 liveness; result=MISMATCH; diff=891; shape=74.34944237918215: Hypothesis 27: register-qualify table_count to favor the original ECX count register while retaining typed table ownership. [same emitted code as probe 41]
+probe 50 liveness; result=MISMATCH; diff=891; shape=74.34944237918215: Hypothesis 28: register-qualify entry to favor original ESI entry-pointer ownership across dispatch. [same emitted code as probe 48]
+probe 52 liveness; result=MISMATCH; diff=855; shape=74.18181818181819: Hypothesis 29: combine the best H12 scan/zero schedule with a flags cache to test frame recovery interaction.
+probe 54 liveness; result=MISMATCH; diff=855; shape=74.18181818181819: Hypothesis 30: move the flags cache to the first local declaration, testing declaration-order control of the exact 0x1C frame and saved-this home. [same emitted code as probe 52]
+probe 56 control-flow; result=MISMATCH; diff=891; shape=74.34944237918215: Hypothesis 31: positive selection guard on the improved H12 source may alter the branch polarity and selected/normal arm layout.
+probe 60 behavior; result=MISMATCH; diff=894; shape=78.73134328358209: Hypothesis 1: original action dispatch indexes this->mouse_actions by the bounded owner/special-player value at +0x14, not by master right_click_table at +0x20. The original switch reloads [esp+14], while the clean source used right_click_table.
+probe 61 liveness; result=MISMATCH; diff=894; shape=78.73134328358209: Hypothesis 2: preserve a natural TRIBE_Player* player = this alias across the lookup, table dispatch, action switch, and retry. With the corrected owner-indexed mouse_actions behavior, this tests whether original saved-this stack ownership comes from a named receiver rather than implicit this.
+probe 62 layout; result=MISMATCH; diff=894; shape=78.73134328358209: Hypothesis 3: swap the declaration order of object_player and bounded object_type. Original homes place object_player at entry -0x1c and object_type at -0x18; the corrected source had these two homes one slot later. [same emitted code as probe 61]
+probe 63 liveness; result=MISMATCH; diff=930; shape=77.12177121771218: Hypothesis 4: remove the retry-label entry=0 reset. The original zeroes ESI before output initialization, then uses ESI as the null entry pointer through the indexed and fallback lookup; the clean source reset may delay or erase that early zero.
+probe 64 control-flow; result=MISMATCH; diff=930; shape=77.12177121771218: Hypothesis 5: model the original retry state. Initialize the table entry once before object lookup, then omit entry reset at retry_table. The original ESI is zeroed before the null-object guard and remains the entry pointer across the retry jump. [same emitted code as probe 63]
+probe 65 liveness; result=MISMATCH; diff=930; shape=77.12177121771218: Hypothesis 6: retain the original no-reset retry state and mark the entry pointer register-qualified. The binary keeps the entry pointer in ESI from its initial zero through lookup; this tests whether a natural register declaration selects that pointer instead of object_player. [same emitted code as probe 64]
+probe 66 layout; result=MISMATCH; diff=894; shape=78.73134328358209: Hypothesis 7: declare the proven object pointer and master-derived scalar locals before the object-player/type locals. The original FPO homes order object_player, object_type, object, max_hp, table, selection, then saved this; declaration order may recover that stack allocation basin. [same emitted code as probe 62]
+probe 67 liveness; result=MISMATCH; diff=894; shape=78.73134328358209: Hypothesis 8: register-qualify object_player so the bounded table key does not occupy ESI. Original keeps ESI as the entry pointer while object_player is repeatedly reloaded from its stack home. [same emitted code as probe 66]
+probe 68 layout; result=MISMATCH; diff=894; shape=78.73134328358209: Hypothesis 9: move the initialized entry pointer to the first local declaration. Its early zero and later reuse are binary-proven; this tests whether declaration order assigns ESI to entry and shifts the saved-this home to the original top slot. [same emitted code as probe 67]
+probe 69 liveness; result=MISMATCH; diff=894; shape=78.73134328358209: Hypothesis 10: explicitly zero entry immediately after the object lookup, before current and output initialization. Original emits xor ESI after object() and before the output stores; this tests whether that binary-visible zero is the entry initializer. [same emitted code as probe 68]
+probe 70 control-flow; result=MISMATCH; diff=894; shape=79.4776119402985: Hypothesis 11: spell the case-1/8 object-state guard as object_state <= 2. Original emits cmp byte,2 followed by JBE; the clean source used < 3 and emitted cmp byte,3/JB.
+probe 71 liveness; result=MISMATCH; diff=909; shape=78.22878228782288: Hypothesis 12: keep entry initialized once with no retry reset, but place the explicit zero after output initialization. This preserves the original no-reset retry behavior while testing whether the post-object zero can stay in ESI rather than spill before object().
+probe 72 liveness; result=MISMATCH; diff=909; shape=78.22878228782288: Hypothesis 13: no-reset retry state with an uninitialized entry local explicitly set after object(). This separates the binary's post-call zero from declaration placement and tests whether ESI can hold the entry pointer without a pre-call stack store. [same emitted code as probe 71]
+probe 73 control-flow; result=MISMATCH; diff=900; shape=79.4776119402985: Hypothesis 14: schedule the retry fallthrough updates in source order. Original case 8/9 emit current=50 before loading action_code 7/1; the clean do-switch emitted the assignment after action_code at the shared loop tail.
+probe 74 context; result=MISMATCH; diff=882; shape=80.22388059701493: Hypothesis 15: bind rge_base_game to a scoped TRIBE_Game* in each selection arm. Original loads one global receiver then both fields; this natural receiver expression tests the extra current mov/copy sequence and saved-this allocation.
+probe 75 control-flow; result=MISMATCH; diff=914; shape=79.25925925925925: Hypothesis 16: combine the improved scoped game receiver and retry-fallthrough order with the binary-supported no-reset entry state. The original has no entry zero at retry_table; this tests the corrected state machine in the improved codegen basin.
+probe 76 liveness; result=MISMATCH; diff=914; shape=79.25925925925925: Hypothesis 17: combine no-reset entry lifetime with a named receiver alias. Original preserves EDI as this while ESI carries the initialized entry pointer; this tests whether explicit receiver ownership resolves the no-reset register basin.
+probe 78 layout; result=MISMATCH; diff=882; shape=80.22388059701493: Hypothesis 1: swap object_player and object_type declaration order to reproduce the original narrow homes: object_player before object_type, with object/object max/right-click following. This tests source lifetime coloring without behavior or context changes. [same emitted code as probe 77]
+probe 79 liveness; result=MISMATCH; diff=935; shape=78.88888888888889: Hypothesis 2: retain one function-scope entry initialization and remove the retry reset. Original zeroes ESI before the object lookup and rereads the stale entry across retry; this tests the binary-observed entry lifetime and retry null behavior.
+probe 81 liveness; result=MISMATCH; diff=935; shape=78.88888888888889: Hypothesis 3: use one function-scope entry initialization before object lookup, with no retry reset, and declare the entry pointer first. This tests whether original ESI-zero publication, EDI-saved player, and stale entry lifetime come from natural declaration/lifetime order. [same emitted code as probe 79]
+probe 82 control-flow; result=MISMATCH; diff=341; shape=95.92592592592592: Hypothesis 43: use the natural function-scope entry lifetime, initialize it after the object call, clear it on the selected-table retry, remove the redundant count guard, preserve global zero comparisons, and use the canonical virtual analyize_selected_objects name. Fresh result is 341 strict bytes with exact prologue and body islands; the remaining scan assignment order is unresolved.
+probe 83 layout; result=MISMATCH; diff=613; shape=93.06569343065694: Hypothesis 44: use a natural positive-count do-loop and a register-qualified table count to recover the original test-before-scan order without changing the table ABI.
+probe 86 layout; result=MISMATCH; diff=613; shape=93.06569343065694: Hypothesis: keep scan function-scope and assign it only inside an explicit positive-count guard. This tests the binary's delayed scan initialization while preserving table_count and pointer liveness across retry. [same emitted code as probe 83]
+probe 88 control-flow; result=MISMATCH; diff=341; shape=95.92592592592592: Hypothesis: add only a positive-count guard around the original top-tested scan. This separates the delayed pointer assignment from do-loop rotation and tests whether guard shape alone recovers the original post-test scan setup.
+probe 89 control-flow; result=MISMATCH; diff=453; shape=96.29629629629629: Hypothesis: use a binary-proven explicit scan-done edge. The original count JLE skips scan = table and lands at the shared entry-null test; a source goto tests whether VC5 preserves that delayed assignment.
+probe 90 control-flow; result=MISMATCH; diff=613; shape=93.06569343065694: Hypothesis: combine the explicit binary-proven scan-done edge with a do-loop. The preguard should emit one count test, then the delayed scan assignment, followed by the observed bottom-bound compare.
+probe 92 control-flow; result=MISMATCH; diff=613; shape=93.06569343065694: Hypothesis: keep scan and its index block-local while using the proven scan-done goto and do-loop. This tests whether nested declaration scope restores the original table/count register colors. [same emitted code as probe 90]
+probe 94 control-flow; result=MISMATCH; diff=613; shape=93.06569343065694: Hypothesis: encode the observed preguard, delayed pointer assignment, and bottom backedge with explicit local labels. This tests whether VC5 preserves the exact loop topology without a redundant top-test or pointer-hoist. [same emitted code as probe 92]
+probe 96 control-flow; result=MISMATCH; diff=342; shape=96.6542750929368: Hypothesis: place the shared action-5 assignment at the proven line-5171 block between cases 4 and 5. Case 2 and the case-4 range success both jump to this in-switch label, matching the original +0281 jump and +02E6 common block.
+probe 97 control-flow; result=MISMATCH; diff=342; shape=96.6542750929368: Hypothesis: make case 4 fall through into the shared in-switch action-5 label after a negative range guard. This removes the second goto edge and should force case 2 and case 4 to share the original +02E6 assignment block. [same emitted code as probe 96]
+probe 98 control-flow; result=MISMATCH; diff=342; shape=96.6542750929368: Hypothesis: place action_5 inside the case-4 positive range block, with no local declaration between case 2's goto and the target. This tests whether VC5 can share the case-2 jump with the case-4 fallthrough block.
+probe 99 control-flow; result=MISMATCH; diff=342; shape=96.6542750929368: Hypothesis: move the shared action-5 label directly after case 2, then branch to it from case 4. This tests whether VC5's switch layout preserves a real case-2 jump instead of duplicating the shared assignment. [same emitted code as probe 98]
+probe 100 abi; result=MISMATCH; diff=342; shape=96.6542750929368: Hypothesis: use the reviewed unsigned dword global types for DAT_0086bc88 and DAT_0086bc8c, matching game_globals.h and exact sibling 005195D0. This tests relocation identity and width provenance without changing behavior.
+probe 102 liveness; result=MISMATCH; diff=335; shape=96.29629629629629: Hypothesis: compute the scan pointer inside the tested loop as table + i, instead of hoisting scan = table. This tests whether VC5 strength-reduces the proven 0x2c stride while preserving post-test pointer initialization.
+probe 103 control-flow; result=MISMATCH; diff=336; shape=97.02602230483271: Hypothesis: combine the scan = table + i body-local form with the proven in-switch action-5 label placement. This tests whether the scan improvement and action-tail layout compose without losing exact later blocks.
+```
+<!-- end-recovered:bc79e7c447462b219471 -->
+
+<!-- recovered:f09c482c26d902e6ce23 -->
+### `056a20c24f68` `src/scratch/005196E0_get_mouse_pointer_action_vars.cpp:1-55`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 005196E0 TRIBE_Player::get_mouse_pointer_action_vars
+// Attempt log:
+// try 1: packet-grounded high-level reconstruction. Models object lookup, default outputs, special contained-object path, player bounds, right-click table lookup, current action override, action/var switch, and final ret/clear-current-action loop.
+// try 2: matched function size exactly (978B) with natural high-level source, enabling byte compare.
+// try 3: modeled initial world->object(id) call and zeroing output refs before null-object return.
+// try 4: modeled special kind 0x19 object path using +94/+98 inner object pointers versus normal +8/+c path.
+// try 5: modeled owner/player bounds check against world player_count at +3c and virtual call at player vtable +0x98.
+// try 6: modeled master-id 0x9e/0xa3 current-offset bonus 50.
+// try 7: modeled selected vs normal right-click-table choice from global game offsets +0xa24/+0xa28 and +0xa2c/+0xa30.
+// try 8: modeled indexed table probe plus fallback linear scan over 0x2c-byte entries.
+// try 9: modeled table-mode switch selecting action/var pairs from entry offsets and default -1/-1.
+// try 10: modeled action switch cases 0..9, current-action flags at +0x198, hp/range ftol tests, shared default zero-output path, and recursive clear-current-action retry.
+// try 11: restored the direct RGE_Static_Object/master/player ownership proven by the packet, the world +0x3c layout, absolute game-global identity, and the original retry_table/redo_mouseFunc loop instead of recursive re-entry.
+// probe 12: corrected the object/master ABI widths and compiler-owned __ftol casts; call count and frame became exact.
+// probe 13: corrected master +0x10/+0x14/+0x26, static-object +0x30/+0x48/+0x4e, world player_count +0x3c, and short target +0x19c ownership; emitted size stayed exact.
+// probe 14: tested the positive outer object guard; VC5 emitted the same code as the prior natural guard.
+// probe 15: moved period-style locals to function scope; instruction count became 268 and exact-block coverage improved, but the saved-this home remained wrong.
+// probe 16: tested a boolean selection local; it worsened CFG/return shape and was rolled back to the integer storage form supported by the dword stores.
+// probe 17: changed table selection to the decompiler-supported negative OR guard; body layout improved but the prologue remained unchanged.
+// probe 18: tested an ordinary self alias for the saved-this lifetime; VC5 emitted duplicate code and it is retained only as readable ownership context.
+// probe 19: tested a shared action-5 label after case 4; it moved the code farther and was rolled back.
+// probe 20: replaced the self alias with direct typed this-member access to test the saved-this home; emitted code was unchanged and was rolled back.
+// probe 21: corrected the right-click table key to master->object_group; the original uses +0x10 for table lookup and +0x14 only for the player bound. The codegen basin became structurally worse, but this restores the executable's key behavior.
+// probe 22: reordered the local declarations and removed the explicit self alias after the key correction; both emitted the same 0x18-frame basin.
+// probe 23: declared the fallback scan pointer inside the positive-count block; this follows the original post-test iterator copy at line 5248 and improved CFG/block shape without changing size or calls.
+// probe 24: post-lookup current initialization plus a pretested fallback scan improved the clean result to 891 strict bytes and 74.35% shape; this is now pinned.
+// probes 25-32: zero-local, receiver-alias, entry-pointer, narrow-field, register, positive-guard, and context variants either duplicated code or worsened the clean basin.
+// probe 29: caching current_action_flags produced the original 0x1c frame and EDI receiver, but local homes and broad CFG drift worsened; do not retain the cache.
+// probe 26: a scoped rge_base_game receiver improved exact-block coverage but worsened strict bytes and did not recover the original ECX count color.
+// context sweep: 32 ambient declaration samples all emitted one unchanged nonexact basin; neutral front-end declarations are not the blocker.
+// probe 33: corrected action dispatch to mouse_actions[object_type]. The original reloads the bounded owner/special value at [esp+14], not RtClickTable at [esp+20]. Frame became exact and shape improved.
+// probe 34: changed object-state < 3 to <= 2. The original emits cmp byte,2 plus JBE.
+// probe 35: moved current=50 before action-code rewrites for cases 8 and 9. This matches the original fallthrough instruction order.
+// probe 36: scoped TRIBE_Game* receivers around both global table arms. This removes two compiler-generated receiver copies and improved the result to 882 strict bytes and 80.22% shape.
+// probes 37-39: no-reset entry state, receiver aliases, declaration order, and register qualifiers did not improve the scoped-receiver basin. The no-reset source produced 914-930 strict bytes and was rolled back.
+// Probe 40: retained the executable's function-scope entry lifetime and cleared
+// entry only on the retry path. This recovered the saved-this home and local
+// homes. The strict difference fell to 341 bytes.
+// Probe 41: removed the redundant positive-count guard from the fallback scan.
+// The source now keeps the binary's null and fault order. The scan assignment
+// remains two bytes early because VC5 hoists its local pointer initialization.
+// Probe 42: restored the reviewed extern rge_base_game ABI and the global zero
+// float DAT_00576828. Relocation identity now matches the game ABI evidence.
+// The virtual call is named analyize_selected_objects at slot 0x98.
+// Current validation: 341 strict bytes, 86.30% shape, 91.42% exact blocks,
+// 978-byte size, 270 instructions, four ordered calls, and a 0x1c frame.
+// Remaining blocker: VC5 places scan = table before the count test. The target
+// places it after the test and rereads object_player before the null test.
+// No inline asm, fake volatility, broad header edits, or accepted_drift proposal.
+// Claim audit: explicit count guards, do-loops, and label forms did not match.
+// A natural table + index scan reduced the strict difference to 335 bytes and
+// matched the target through the first action dispatch, but changed source
+// ownership from the observed moving cursor. It was restored to this baseline.
+// Moving the shared action-5 label into the switch improved block coverage but
+// did not remove the case-2 duplicate. It was also restored.
+```
+<!-- end-recovered:f09c482c26d902e6ce23 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

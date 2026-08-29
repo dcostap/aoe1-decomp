@@ -1,0 +1,188 @@
+# Recovery journal: 00517F30 `setupAssyrian`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/tplayer.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\tplayer.cpp`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:8656e4c7b90dfb437dfc -->
+### `target-session` `build/target_sessions/00517F30_setupAssyrian.json:1-58`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=96; shape=88.23529411764706: Natural direct int* setup-array source; establish baseline before focused source hypotheses.
+probe 2 variant; result=MISMATCH; diff=131; shape=87.05882352941177: Reordered common stores by constant group: 0x28, 100, 0x14, then 0x0a/0x50, following prior attempt lead; test structural basin.
+probe 4 variant; result=MISMATCH; diff=115; shape=87.05882352941177: Reordered common groups to 0x0a, 0x28, 0x14, 100, then 0x50; test whether constant/register order follows source group order.
+probe 7 variant; result=MISMATCH; diff=115; shape=87.05882352941177: variant lab build\variant_lab\00517F30_setupAssyrian\20260816_224612: 24 variants, 24 invariant-eligible, 0 exact
+probe 8 variant; result=MISMATCH; diff=115; shape=87.05882352941177: variant lab build\variant_lab\00517F30_setupAssyrian\20260816_224635: 24 variants, 0 invariant-eligible, 0 exact
+probe 9 control-flow; result=MISMATCH; diff=70; shape=93.97590361445783: Moved common p[0x13] = 0x14 after the map-type conditional to test whether VC5's direct-immediate store and test interleave imply source statement scope.
+probe 11 control-flow; result=MISMATCH; diff=71; shape=92.7710843373494: Moved common p[6] = 0x14 after the map-type conditional, paired with the prior p[0x13] scope test.
+probe 13 control-flow; result=MISMATCH; diff=96; shape=88.23529411764706: Added the decompiler-supported explicit return after the 50/50 map-type arm, preserving original source topology before the function-end return. [same emitted code as probe 1]
+probe 15 context; result=MISMATCH; diff=96; shape=88.23529411764706: Removed the virtual destructor and replaced its vptr layout with an explicit four-byte gap, preserving playerAI at +0x238; test compiler class-surface influence. [same emitted code as probe 13]
+probe 17 variant; result=MISMATCH; diff=96; shape=88.23529411764706: variant lab build\variant_lab\00517F30_setupAssyrian\20260816_224945: 64 variants, 0 invariant-eligible, 0 exact
+probe 18 abi; result=MISMATCH; diff=96; shape=88.23529411764706: Expanded AIModule to the same-TU polymorphic surface and vararg history declaration, retaining the direct call and tested +0x238 playerAI ownership.
+probe 21 baseline; result=MISMATCH; diff=96; shape=88.23529411764706: Fresh clean natural reconstruction baseline before new probes; all calls, ownership, and control flow align, but non-deathmatch constant scheduling differs. [same emitted code as probe 20]
+probe 22 other; result=MISMATCH; diff=96; shape=88.23529411764706: Test chained assignment for the two unconditional 100 stores; check whether VC5 delays the value load to the observed post-param_2 position. [same emitted code as probe 21]
+probe 23 liveness; result=MISMATCH; diff=96; shape=88.23529411764706: Name the map-type value before the unconditional 100 stores; test whether an explicit live parameter copy reproduces the original early map-type load and later constant schedule. [same emitted code as probe 22]
+probe 24 control-flow; result=MISMATCH; diff=159; shape=82.22222222222223: Duplicate the two unconditional 100 stores into each map-type arm; test whether VC5 hoists branch-common stores into the observed pre-arm position.
+probe 26 control-flow; result=MISMATCH; diff=105; shape=88.23529411764706: Move the unconditional 100 stores after the map-type arms; test whether VC5's common-tail scheduling can reproduce the oracle's post-test stores while preserving behavior.
+probe 28 liveness; result=MISMATCH; diff=96; shape=88.23529411764706: Chain the two 0x28 stores; test whether the assignment expression changes VC5 register coloring from the oracle's EDX=0x28 then EDX=100 sequence. [same emitted code as probe 23]
+probe 29 liveness; result=MISMATCH; diff=96; shape=88.23529411764706: Chain the two 0x14 stores; test whether VC5 preserves the oracle's direct-immediate 0x14 stores around the map-type load. [same emitted code as probe 28]
+probe 30 context; result=MISMATCH; diff=96; shape=88.23529411764706: Add a period standard header used by same-TU donors; test whether front-end context changes the localized VC5 constant scheduling. [same emitted code as probe 29]
+probe 31 abi; result=MISMATCH; diff=96; shape=88.23529411764706: Use the reviewed RGE_Base_Game/RGE_Player inheritance surface and vararg AIModule logger; test canonical ABI context against the localized store schedule.
+probe 32 control-flow; result=MISMATCH; diff=96; shape=88.23529411764706: Swap the 0x14 group and unconditional 100 group; test the direct source-order axis after canonical ABI context. [same emitted code as probe 31]
+probe 33 liveness; result=MISMATCH; diff=96; shape=88.23529411764706: Name the reused 100 value after the 0x28/0x14 groups; test whether explicit value lifetime reproduces the oracle's delayed EDX=100 while retaining branch reuse. [same emitted code as probe 32]
+probe 34 liveness; result=MISMATCH; diff=96; shape=88.23529411764706: Name only the two common 100 stores with a const local while keeping branch literals direct; test a separate value basin without artificial parameter or address plumbing. [same emitted code as probe 33]
+probe 35 control-flow; result=MISMATCH; diff=96; shape=88.23529411764706: Use a comma expression for the two common 100 stores; test a real source evaluation-order barrier without changing the table behavior. [same emitted code as probe 34]
+probe 36 liveness; result=MISMATCH; diff=96; shape=88.23529411764706: Chain each pair of map-type result stores; test branch result liveness and assignment lowering against the oracle's shared register stores. [same emitted code as probe 35]
+probe 37 context; result=MISMATCH; diff=96; shape=88.23529411764706: Add the period string header used by a same-TU logging function; test a supported front-end header basin for the localized constant schedule. [same emitted code as probe 36]
+probe 41 abi; result=MISMATCH; diff=96; shape=88.23529411764706: Hypothesis 1: use the exact setupBabylonian free logCommonHistory(void*, char*) call spelling; test whether this same-TU call ABI changes the later constant/register schedule while retaining the three direct targets.
+probe 42 liveness; result=MISMATCH; diff=96; shape=88.23529411764706: Hypothesis 2: bind the repeated 0x28 value to one initialized local; test whether its longer live range selects EDX for the 0x28 stores and preserves the original later EDX schedule. [same emitted code as probe 41]
+probe 43 control-flow; result=MISMATCH; diff=70; shape=93.97590361445783: Hypothesis 3: restore the prior best source topology with the second 0x14 store after the map-type conditional; reassess the strongest known shape frontier under the current clean toolchain. [same emitted code as probe 9]
+probe 44 liveness; result=MISMATCH; diff=70; shape=93.97590361445783: Hypothesis 4: add one natural named base-value local to the prior best topology; test whether it flips the 0x28 register color without disturbing the improved common-tail placement. [same emitted code as probe 43]
+probe 45 liveness; result=MISMATCH; diff=70; shape=93.97590361445783: Hypothesis 5: cache param_2 into a map_type local before the non-deathmatch stores; test whether early parameter liveness restores the original load-before-0x28/0x14 schedule in the high-shape topology. [same emitted code as probe 44]
+probe 46 other; result=MISMATCH; diff=77; shape=91.56626506024097: Hypothesis 6 diagnostic only: mark the two common 100 stores volatile to test whether a compiler ordering barrier can reproduce the oracle's post-0x4C placement; do not retain unless binary-supported.
+probe 47 layout; result=MISMATCH; diff=70; shape=93.97590361445783: Hypothesis 7: use one natural int* alias for the non-deathmatch build-list phase, matching same-TU donor spelling; test whether pointer ownership and alias liveness improve the high-shape schedule. [same emitted code as probe 45]
+probe 48 liveness; result=MISMATCH; diff=70; shape=92.7710843373494: Hypothesis 8: chain the two common 100 assignments while retaining the high-shape alias topology; test whether one source value flow preserves the oracle's EDX=100 lifetime.
+probe 49 liveness; result=MISMATCH; diff=96; shape=88.23529411764706: Hypothesis 9: chain the two 0x14 assignments in the high-shape source; test whether shared value flow selects the oracle's EDX=0x28 and restores the early +0x4C store without added control flow.
+probe 50 context; result=MISMATCH; diff=96; shape=88.23529411764706: Hypothesis 10: add the exact same-TU donor standard header <stddef.h>; test whether supported VC5 front-end context changes the natural schedule while preserving the proven ABI and fault order. [same emitted code as probe 40]
+probe 51 context; result=MISMATCH; diff=96; shape=88.23529411764706: Hypothesis 11: add the supported <stdio.h> plus <string.h> header combination used by period game code; test a distinct VC5 front-end context basin after <stddef.h> alone was unchanged. [same emitted code as probe 50]
+probe 52 abi; result=MISMATCH; diff=96; shape=88.23529411764706: Hypothesis 12: model difficulty as the reviewed RGE_Base_Game base method and deathMatch as the TRIBE_Game method; test canonical receiver ownership and virtual surface against the residual schedule.
+probe 54 variant; result=MISMATCH; diff=96; shape=88.23529411764706: variant lab build\variant_lab\00517F30_setupAssyrian\20260822_125743: 81 variants, 0 invariant-eligible, 0 exact
+probe 55 control-flow; result=MISMATCH; diff=96; shape=88.23529411764706: Hypothesis 13: sequence the proven +0x4C and +0xA0 stores with a comma expression; test a real source evaluation-order barrier against the blocker schedule without changing values, predicates, or calls. [same emitted code as probe 51]
+probe 56 control-flow; result=MISMATCH; diff=96; shape=88.23529411764706: Hypothesis 14: express the map-type tail as an inverted outer guard with a nested 50 arm; test whether the original branch polarity and common-store schedule emerge from this natural equivalent CFG. [same emitted code as probe 55]
+probe 58 liveness; result=MISMATCH; diff=96; shape=88.23529411764706: Hypothesis 15: force the repeated 0x28 value into a register-qualified local; test whether VC5 honors an explicit period source register hint and selects EDX for the original constant group. [same emitted code as probe 56]
+probe 59 liveness; result=MISMATCH; diff=96; shape=88.23529411764706: Hypothesis 17: keep register-qualified 0x28 and 100 locals live across the common and map-type stores; test whether paired constant lifetimes recover the oracle's EDX reuse. [same emitted code as probe 58]
+probe 61 variant; result=MISMATCH; diff=96; shape=88.23529411764706: variant lab build\variant_lab\00517F30_setupAssyrian\20260822_130052: 12 variants, 12 invariant-eligible, 0 exact
+probe 63 baseline; result=MISMATCH; diff=96; shape=90.36144578313252: Fresh grouped-context baseline after integration: direct int* civilization stores, three direct calls, and current shared player context remain nonexact at the 0x28/0x64 schedule hunk.
+probe 64 context; result=MISMATCH; diff=96; shape=90.36144578313252: Fresh current tplayer group context: the registered shared header and full tplayer prefix keep all three direct call targets and owner identity, but the target remains in the same 334-byte/96-byte 0x28 versus 0x64 schedule basin.
+probe 65 layout; result=MISMATCH; diff=96; shape=90.36144578313252: Target-local int pointer aliases, typed field overlay, and narrow pointer expressions did not recover the original EDX constant or immediate 0x14 stores; they changed no required ownership or call facts.
+probe 66 control-flow; result=MISMATCH; diff=96; shape=90.36144578313252: Natural early-return and equivalent outer else control-flow forms emit the same 334-byte/96-byte structure; preserve the direct branch returns and partial-output behavior.
+probe 67 liveness; result=MISMATCH; diff=96; shape=90.36144578313252: Named base/full constants, map-type locals, register hints, comma sequencing, and immediate literal spellings did not change the current schedule basin; no metric-only form was retained.
+probe 70 liveness; result=MISMATCH; diff=96; shape=90.36144578313252: Natural non-deathmatch map_type initialized before the setup stores; fresh rebuild unchanged at 334 bytes and 96 positional bytes, so early parameter capture does not recover the original +0xBE schedule. [same emitted code as probe 69]
+probe 71 liveness; result=MISMATCH; diff=96; shape=90.36144578313252: Chained assignments for each repeated civilization value were tested as natural C++ dependencies. Fresh output worsened resynchronization to 302 equal bytes and introduced a CFG diagnostic, so the chain form was restored. [same emitted code as probe 70]
+probe 72 context; result=MISMATCH; diff=96; shape=90.36144578313252: A line-band hypothesis grouped the final civilization stores and branch on one physical source line, matching the original line-4132 band; fresh VC5 output stayed 334 bytes and 96 positional bytes, so source line grouping is not the schedule cause. [same emitted code as probe 71]
+probe 74 baseline; result=MISMATCH; diff=96; shape=90.36144578313252: Baseline after qualified tplayer.cpp owner and 00517F30-00518081 boundary review; natural direct source remains clean. [same emitted code as probe 73]
+probe 75 liveness; result=MISMATCH; diff=96; shape=89.1566265060241: Test one natural chained assignment for the repeated 0x28 stores, preserving source store order and output fault order.
+probe 76 liveness; result=MISMATCH; diff=96; shape=90.36144578313252: Test one natural chained assignment for the repeated 0x14 stores, preserving the observed pre-branch publication order.
+probe 77 liveness; result=MISMATCH; diff=96; shape=90.36144578313252: Test one natural chained assignment for the repeated 100 stores, preserving the pre-branch store sequence.
+probe 78 control-flow; result=MISMATCH; diff=120; shape=70.78651685393258: Test a natural switch form for the final map-type groups while preserving each civilization dword publication and return behavior.
+probe 79 abi; result=MISMATCH; diff=96; shape=90.36144578313252: Test a target-local narrow AIModule member view for the proven direct logging call; preserve receiver, target, arity, and fault order.
+```
+<!-- end-recovered:8656e4c7b90dfb437dfc -->
+
+<!-- recovered:fad761409384c7d1c12f -->
+### `4da364361016` `src/scratch/00517F30_setupAssyrian.cpp:1-76`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 00517F30 TRIBE_Player::setupAssyrian | tplayer.cpp:4089-4142
+// Attempt log:
+// - canonical direct int* setup-array source matches the log/deathmatch/difficulty
+//   control flow and all call sites; default build remains 96 positional bytes off
+//   and three bytes short, first mismatch at the non-deathmatch constant group.
+// - moving/reordering independent setup groups was tested; the best diagnostic
+//   order (0x28, 100, 0x14, then 0x0a/0x50) reached exact size and 12 bytes off,
+//   but left the canonical source restored because its ordering is not established.
+// - direct parameter/member spelling was retained; no stable shared type/global
+//   fact was found. Paused with the natural source and the remaining lead is the
+//   source-level ordering around the 0x14 versus 0x64 stores.
+// - this session reconfirmed the baseline, then tested direct group reordering;
+//   it worsened the positional diff despite improving resynchronization.
+// - an ordinary local int* alias plus the b_d_c_a group order reached exact size
+//   and 12 positional bytes off; the only remaining hunk was [0x4c] versus
+//   [0xa0]/[0xa4] store order around the param_2 test. Shared tplayer ABI
+//   declarations and a second pointer alias emitted the same bytes.
+// - a focused 24-way permutation of the four individual stores found no exact
+//   variant. The diagnostic alias/order source was restored; remaining evidence
+//   is a localized VC5 scheduling/register basin, not an unknown call or layout.
+// - Same-TU donor review of setupBabylonian, setupHittite, setupEgyptian, and
+//   setupMacedonian confirms the direct int* build-list array and shared
+//   playerAI/game method surface. The donor-style outer difficulty branch was
+//   retested and was codegen-identical; retain the natural direct source.
+// - Packet audit disproved the reported default-deathmatch error: 00517FB2 is
+//   the param_2 == 0/1 target and writes +0xF0 (param_1[0x3c]); the true
+//   default block at 00517F74 writes +0x58 (param_1[0x16]). Restored the
+//   candidate source unchanged. A fresh blind review is still required later.
+// - Fresh baseline reconfirmed 96 positional bytes off, 334 versus 337 bytes,
+//   exact prefix before +0xBE, and exact call/owner/frame parity.
+// - A 24-way group-order lab found no exact variant. All variants stayed at
+//   size 334; the natural order remained the best result.
+// - Moving either repeated 0x14 store after the map-type branch improved the
+//   raw diff to 70/71 bytes but added seven trailing bytes. Both were restored.
+// - Explicit branch return, full AIModule surface, and 64 ambient declarations
+//   emitted the baseline bytes. The remaining lead is VC5 scheduling context.
+// - Revisit pass: chained stores, named map/value locals, group permutations,
+//   branch-common duplication, supported headers, and reviewed inheritance
+//   context stayed at 334 bytes and 96 positional bytes off. Restored the
+//   natural direct source; the remaining hunk is the 0x28/0x64 load schedule.
+// - New pass: free logging ABI spelling, value locals, pointer aliases, comma
+//   sequencing, inverted guards, register hints, supported header combinations,
+//   and base-game inheritance all stayed in the 334-byte/96-byte basin.
+// - The prior late-0x14 source topology still gives 344 bytes and 70 bytes off,
+//   but it moves +0x4C after the map-type branch and violates the blocker.
+// - A 27-source-shape lab and a 12-flag lab found no exact or size-correct
+//   natural variant. The direct source is restored as the clean owner.
+// BLOCKER: the residual schedule moves the +0xA0 store before the +0x18 and
+// +0x4C stores. These writes use the caller's output array. A short or invalid
+// array can therefore expose a different partial result and fault point.
+// Final continuation audit: no natural source variant established the target
+// publication order without changing this partial-output behavior. The block
+// therefore continues with the exact 00518F00 tplayer owner.
+// - Fresh registered-group validation kept all selected exact tplayer anchors
+//   exact. This target still has the correct PDB owner, boundary, three calls,
+//   and parameter homes, but remains 334 versus 337 bytes with 96 byte diff.
+// - Target-local natural aliases, typed overlays, constant locals, equivalent
+//   guards, and literal forms did not move the +0xBE 0x28/0x64 schedule hunk.
+//   All experiments were restored before final validation.
+// - A start-of-block map_type capture, source-line grouping for the line-4132
+//   stores, and chained repeated-value assignments were also tested fresh.
+//   They emitted the same 334-byte baseline or a worse 302-byte resync.
+//   The natural direct assignments remain the clean source.
+// - Fresh checks of the nine registered exact anchors (00517B90, 00517E10,
+//   005181C0, 005188F0, 00518B50, 00518DD0, 00518F00, 005192F0, and 00519320)
+//   all returned MATCH after this continuation.
+// - Fresh claim audit selected this first unleased normal tplayer.cpp sibling
+//   after exact 00517E10.  The PDB owner is TRIBE_Player::setupAssyrian and
+//   the original body boundary is 00517F30-00518081.
+// - Fresh target-local tests covered repeated-store chains, a switch form, and
+//   a narrow logging-member view.  None reached exact output.  All were
+//   restored because they did not prove the shipped source form.
+// - Final validation remains 334 versus 337 bytes with 96 positional bytes
+//   off.  The three direct calls, owner symbol, parameter homes, stores, and
+//   return paths remain aligned.  The first mismatch is the 0x28 versus 0x64
+//   constant schedule at +0xBE.
+```
+<!-- end-recovered:fad761409384c7d1c12f -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

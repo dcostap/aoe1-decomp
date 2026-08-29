@@ -1,0 +1,158 @@
+# Recovery journal: 00438AA0 `TransDibBlt`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/Dib.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\Dib.cpp`.
+- Earlier recovery note: `recovery_notes/Dib_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:e81493acb879fa8db36e -->
+### `target-session` `build/target_sessions/00438AA0_TransDibBlt.json:1-41`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=619; shape=85.63049853372434: Baseline current natural scratch reconstruction before new probes; establish size, calls, frame, and first mismatch.
+probe 2 layout; result=MISMATCH; diff=619; shape=85.63049853372434: Hypothesis 2: swap declarations of DestTotHgt and local_4 to recover original entry homes (-8/-4) shown by GetDibDim LEAs; distinct stack ownership probe. [same emitted code as probe 1]
+probe 3 abi; result=MISMATCH; diff=619; shape=85.63049853372434: Hypothesis 3: replace gap overlay with the proven TRANSINFO x/y/w/h fields and LineInfo at +14; canonical layout surface test. [same emitted code as probe 2]
+probe 4 liveness; result=MISMATCH; diff=943; shape=76.81159420289855: Hypothesis 4: hoist decompiler-proven pTVar9, pBVar2, and saved flip-Y aliases to function entry; preserve their cross-branch lifetimes and source ownership.
+probe 5 control-flow; result=MISMATCH; diff=940; shape=48.68035190615836: Hypothesis 5: rebuild from the decompiler-proven parameter-home reuse and branch topology, including mutated params and parameter-local byte temporary; test canonical shipped source shape.
+probe 6 liveness; result=MISMATCH; diff=618; shape=86.51026392961877: Hypothesis 6: reuse the proven dstRect parameter home for the vertical fixed-point step, then use it in line scaling and the 0x100 memcpy gate.
+probe 7 liveness; result=MISMATCH; diff=616; shape=83.0945558739255: Hypothesis 7: reuse the dead destination pointer parameter as the byte temporary in both transparent copy loops, matching original [esp+8] byte-store/read evidence.
+probe 8 layout; result=MISMATCH; diff=618; shape=86.51026392961877: Hypothesis 8: use the decompiler-proven int type for local_4 instead of long, testing width-driven stack home and arithmetic lowering. [same emitted code as probe 6]
+probe 9 abi; result=MISMATCH; diff=762; shape=85.63049853372434: Hypothesis 9: use the direct destination-info parameter at the first GetDibDim call instead of the clipInfo alias, testing receiver expression and load scheduling.
+probe 10 context; result=MISMATCH; diff=606; shape=82.02898550724638: Hypothesis 10: restore the broader same-TU standard-header context used by the exact Dib.cpp donors (windowsx, stdio, memory) while keeping the current source body.
+probe 11 liveness; result=MISMATCH; diff=642; shape=82.50728862973762: Hypothesis 11: volatile DestTotHgt to force the observed address-taken output home and preserve its post-call value across arithmetic; diagnostic only.
+probe 12 liveness; result=MISMATCH; diff=606; shape=82.02898550724638: Hypothesis 12: remove the post-table TRANSINFO alias and use the original trans parameter directly for the LineInfo guard and fetch. [same emitted code as probe 10]
+probe 13 abi; result=MISMATCH; diff=606; shape=82.02898550724638: Hypothesis 13: restore the proven canonical TRANSINFO x/y/w/h field surface instead of an opaque gap, while preserving the current generated code basin. [same emitted code as probe 12]
+probe 14 liveness; result=MISMATCH; diff=607; shape=81.44927536231884: Hypothesis 14: restore a named long yStep local instead of reusing dstRect, isolating the vertical scale home from the destination RECT parameter.
+probe 15 liveness; result=MISMATCH; diff=606; shape=82.02898550724638: Hypothesis 15: use a LINEINFO reference rather than a pointer temporary for each line record, testing member-address lifetime and VC5 field scheduling. [same emitted code as probe 13]
+probe 16 control-flow; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 16: preserve the binary-proven redundant inner first<last predicate after the memcpy guard, which should emit the second D60 compare before the pixel loop.
+probe 17 layout; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 17: use the decompiler-proven int width for xStep while retaining long source positions, testing fixed-point width and register pressure. [same emitted code as probe 16]
+probe 18 abi; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 18: use the canonical shipped TRANSINFO/LINEINFO type names and exact field ownership, testing ABI symbol identity without changing offsets. [same emitted code as probe 17]
+probe 19 context; result=MISMATCH; diff=613; shape=86.51026392961877: Hypothesis 19: remove unsupported broad headers and return to the minimal windows.h context, isolating context effects after the natural source fixes.
+probe 20 context; result=MISMATCH; diff=613; shape=86.51026392961877: Hypothesis 20: add only memory.h to the minimal windows context, testing whether memcpy intrinsic declarations rather than unrelated headers control the remaining basin. [same emitted code as probe 19]
+probe 21 context; result=MISMATCH; diff=603; shape=86.51026392961877: Post-checkpoint hypothesis 21: restore the full Dib.cpp donor header set after canonical source cleanup; retain only if it improves the complete binary while source remains period-plausible. [same emitted code as probe 18]
+probe 22 layout; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 22: reorder DestTotHgt before local_4 in the declaration list to recover the original -8/-4 output-home pair under the current int/long model. [same emitted code as probe 21]
+probe 23 layout; result=MISMATCH; diff=664; shape=58.26086956521739: Hypothesis 23: model the proven contiguous five-word local window as a typed aggregate, preserving SrcTotHgt/sySkip/DestOrien/DestTotHgt/local_4 offsets and address-taking.
+probe 24 layout; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 24: swap sySkip and DestOrien declaration order to test whether VC5 assigns the observed -16/-12 homes by declaration order. [same emitted code as probe 22]
+probe 25 layout; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 25: declare DestTotHgt before DestOrien before sySkip so VC5 can assign the observed contiguous -8/-12/-16 homes; this directly tests the first mismatch offsets. [same emitted code as probe 24]
+probe 26 abi; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 26: spell the proven long-reference output aliases as pointer dereferences (*(long*)&param), matching the decompiler's address-cast form while retaining the AAJ helper ABI. [same emitted code as probe 25]
+probe 27 liveness; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 27: overwrite the proven srcInfo parameter home with TRANSINFO::LineInfo in the positive line-info branch, matching original +C85 parameter write evidence. [same emitted code as probe 26]
+probe 28 liveness; result=MISMATCH; diff=653; shape=83.23863636363636: Hypothesis 28: scope the x-table accumulator inside each orientation arm, matching the decompiler's branch-local lVar5 lifetime and testing EAX/ECX color assignment.
+probe 29 liveness; result=MISMATCH; diff=648; shape=83.71428571428571: Hypothesis 29: order branch-local x-table declarations as pointer, accumulator, count, matching the decompiler's pplVar10/lVar5/lVar7 order and testing table register colors.
+probe 30 liveness; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 30: make the x-table pointer and count function-scope locals, matching the decompiler's function-scope table variables while retaining the natural accumulator. [same emitted code as probe 27]
+probe 31 liveness; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 31: make the x-table accumulator function-scope beside p/n, matching the decompiler's lVar5 lifetime and testing register-color order. [same emitted code as probe 30]
+probe 32 layout; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 32: use int for DestTotHgt with the proven long-reference alias, testing whether its width changes the output-home rotation. [same emitted code as probe 31]
+probe 34 layout; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 1: use the decompiler-proven int widths for row indices, source offsets, clip bounds, and fallback fixed-point state; this tests whether the broad loop topology is blocked by long locals rather than home allocation. [same emitted code as probe 33]
+probe 35 control-flow; result=MISMATCH; diff=606; shape=82.16374269005848: Hypothesis 2: mirror the exact DibBlt donor's fallback loop shape with explicit sourceY/sourceRow/outputRow locals and the donor's update order; this tests whether target drift comes from loop topology rather than fixed-point widths.
+probe 37 layout; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 3: restore the decompiler's local declaration order SrcTotHgt, sySkip, DestOrien, DestTotHgt, local_4 while retaining the proven aliases; this tests declaration-order coloring against the observed -8/-c/-10 output homes. [same emitted code as probe 34]
+probe 39 liveness; result=MISMATCH; diff=605; shape=87.3900293255132: Hypothesis 4: remove the named LINEINFO pointer and reread lineInfo[syi] members directly; the original repeats the scaled record address at skip test, while the pointer form CSEs it.
+probe 40 liveness; result=MISMATCH; diff=605; shape=87.3900293255132: Hypothesis 5: keep the proven srcInfo parameter-home overwrite but remove the separate lineInfo alias, using direct typed reads through srcInfo; this tests whether the original parameter home, not a local pointer, controls EBX/EBP liveness. [same emitted code as probe 39]
+probe 41 liveness; result=MISMATCH; diff=611; shape=87.17201166180757: Hypothesis 6: materialize the proven source-row pointer before both transparent loops and index it by SrcXTbl entries; the original adds src to the row offset before its inner loop.
+probe 43 liveness; result=MISMATCH; diff=603; shape=86.51026392961877: Hypothesis 7: express the row base as an indexed pointer expression without a named sourceLine local; this tests whether VC5 can retain the original pre-loop src-plus-offset addition without extending a new pointer lifetime. [same emitted code as probe 37]
+probe 45 liveness; result=MISMATCH; diff=605; shape=87.3900293255132: Hypothesis 8: combine direct repeated LINEINFO member reads with explicit row-base pointer expressions; these two independent forms are both supported by the original duplicate address and pre-loop source-base additions. [same emitted code as probe 40]
+probe 47 liveness; result=MISMATCH; diff=605; shape=86.04651162790698: Hypothesis 9: scope sourceLine pointers inside the nonempty run and pixel-loop guards, preserving source-plus-offset ownership while shortening their liveness; this tests the original pre-loop addition without early alias pressure.
+```
+<!-- end-recovered:e81493acb879fa8db36e -->
+
+<!-- recovered:e3bd5df51b4f3330203f -->
+### `b25c5800db4c` `src/scratch/00438AA0_TransDibBlt.cpp:1-62`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA 00438AA0 TransDibBlt
+// Dib.cpp:155-273
+// Attempt log:
+// 1-8: Reconstructed the fast path, positive ClipDibBlt gate, fixed-point scaling,
+//      SrcXTbl setup, LineInfo copy/transparent path, and full-width fallback with
+//      typed BITMAPINFO256/RECT/TRANSINFO surfaces.
+// 9: Forced the proven direct memcpy call using the same-TU windows.h/pragma
+//    context; this fixed the call target/count but not the function topology.
+// 10: Named destination-info and original flip-Y values across the clip call;
+//     this recovered the original pre-guard loads and improved the best build to
+//     619 differing bytes (63.3572%), 5/5 calls, 0x10 frame, 956/977 bytes.
+// 11: Function-scope alias hoisting made the prologue broadly worse and was
+//     rolled back; swapping the two out-local declarations was codegen-neutral.
+// 12: ABI evidence for Dib.cpp shows ClipDibBlt/GetDibDim use long-reference
+// parameters (AAJ in the original symbols), not long-pointer parameters (PAJ).
+// Switched these local declarations and calls to the period reference surface;
+// the parameter-home aliases for dstInfo and flipY remain binary-proven.
+// 13: Initializing DestTotHgt changed the prologue and worsened the diff to 892;
+// rolled back.  Mirroring the decompiler's dead dstRect y-scale home changed
+// the first block and worsened the diff to 912; rolled back.
+// 14: Removing the post-table trans alias and matching the decompiler local
+// declaration order were emitted-code duplicates.  A volatile DestTotHgt moved
+// the size gap from -21 to -13 but worsened positional diff to 649; rolled back.
+// 15: Reusing the dead dst parameter as the byte temporary collapsed the frame
+// to 0x0C and worsened the diff to 668; rolled back.
+// 16: Matched the same-TU DibBlt donor's int fixed-point step locals for xStep
+//     and yStep; the emitted code was unchanged, so the clean long-typed source
+//     remains the best period-plausible reconstruction.
+// Current pass, 2026-08-17, owner sa-3e20849d:
+// - Baseline: 619 differing bytes, 956/977 bytes, 0x10 frame, and 5/5 calls.
+// - Thirty-two focused probes tested local types, declaration order, parameter
+//   homes, loop lifetimes, redundant predicates, ABI casts, headers, and
+//   ambient VC5 declarations. No probe reached an exact result.
+// - The best current build differs by 603 bytes. It has 958/977 bytes, a 0x10
+//   frame, 5/5 ordered calls, and the original owner symbol.
+// - Binary evidence supports the dstRect y-step home, the srcInfo LineInfo
+//   overwrite, and the repeated first<last test. Keep these forms.
+// - The remaining gap starts at the GetDibDim output homes. VC5 assigns the
+//   three long outputs to a different rotation. Later table and loop register
+//   colors also differ.
+// - Ambient declarations produced two code groups and no exact result. This
+//   weakens a front-end declaration-state explanation.
+// - No ORIGINAL BUG is proved. No accepted_drift source is justified.
+// PAUSE: preserve this clean, typed reconstruction until new period source or
+// translation-unit evidence resolves the GetDibDim home rotation.
+// Current pass, 2026-08-22, owner sa-a5e817c5-r1:
+// - Nine focused probes tested loop widths, donor-shaped fallback loops,
+//   declaration order, repeated LINEINFO reads, and row-base pointer forms.
+// - Direct repeated LINEINFO member reads improved shape to 87.39% and exact
+//   blocks to 51.91%, but positional drift grew to 605 bytes. Do not retain it
+//   over the 603-byte clean source without a matching home fix.
+// - Scoped row-base pointers reached 54.55% exact blocks but grew the size gap
+//   to 25 bytes and the positional drift to 605 bytes. Restore the clean form.
+// - The unchanged clean source remains 603 bytes different, 958/977 bytes,
+//   0x10 frame, 5/5 ordered calls, and 86.51% shape.
+// - The first mismatch remains the GetDibDim output-home rotation at +D5.
+//   No exact result or accepted-drift residue is proved.
+// TU captain, 2026-08-26, owner sa-c6a4d383-r1:
+// - A direct-parameter rewrite followed the decompiler but worsened the result
+//   to 777 bytes and was rejected.
+// - The restored source remains 613 bytes different, 956/977 bytes, with
+//   5/5 ordered calls, a 0x10 frame, and the correct owner symbol.
+```
+<!-- end-recovered:e3bd5df51b4f3330203f -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

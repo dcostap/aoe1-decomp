@@ -1,0 +1,178 @@
+# Recovery journal: 00488B90 `check_terrain`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/rmm_terr.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\rmm_terr.cpp`.
+- Earlier recovery note: `recovery_notes/rmm_terr_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:b6d63e56f36b296f1157 -->
+### `d050eea3c` `src/rmm_terr.cpp:121-121`
+
+Mapping: `strong`. comment lies after mapped function check_terrain at old line 116.
+
+```text
+    // BINARY NOTE: Both scans use clipped inclusive bounds and preserve the
+```
+<!-- end-recovered:b6d63e56f36b296f1157 -->
+
+<!-- recovered:591daf288bac25c70c41 -->
+### `target-session` `build/target_sessions/00488B90_check_terrain.json:1-62`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=351; shape=83.43558282208589: Clean paused source baseline: canonical typed terrain/map ownership and two scan CFGs; establish current metrics before new hypotheses.
+probe 2 liveness; result=MISMATCH; diff=295; shape=81.21212121212122: H1: Reordered radius-bound declarations to x min/max then y min/max, matching target's x in EAX and y in EDI setup hypothesis.
+probe 3 liveness; result=MISMATCH; diff=303; shape=81.59509202453988: H2: Tested max-x/max-y before min-x/min-y declaration order to recover target's eager x/y bound setup.
+probe 4 liveness; result=MISMATCH; diff=358; shape=79.64071856287426: H3: Tested y-first bound declaration order, then x, to probe target's x/y register coloring.
+probe 5 liveness; result=MISMATCH; diff=357; shape=79.64071856287426: H4: Tested min-y/min-x/max-x/max-y bound declaration permutation for target's paired-load and add/sub topology.
+probe 6 liveness; result=MISMATCH; diff=356; shape=82.20858895705521: H5: Tested min-x/max-y/max-x/min-y declaration permutation as a focused register-coloring probe.
+probe 7 liveness; result=MISMATCH; diff=352; shape=83.43558282208589: H6: Tested min-x/min-y/max-y/max-x declaration permutation for target's paired-load and add/sub topology.
+probe 8 control-flow; result=MISMATCH; diff=351; shape=83.43558282208589: H7: Tested explicit copy-then-adjust bound statements, which directly model target's paired x/y loads and four arithmetic updates. [same emitted code as probe 1]
+probe 9 liveness; result=MISMATCH; diff=351; shape=83.43558282208589: H8: Moved first-scan row-index declaration after count/base locals to test target's observed stack-home permutation. [same emitted code as probe 8]
+probe 10 liveness; result=MISMATCH; diff=295; shape=81.21212121212122: H9: Restored best bound permutation (min-x/max-x/min-y/max-y) while retaining row-index-after-base declaration for a combined home-order test. [same emitted code as probe 2]
+probe 11 liveness; result=MISMATCH; diff=398; shape=75.60975609756098: H10: Reordered second fixed-radius bounds to max-x/max-y/min-x/min-y to probe target's EBP/EDI allocation and declaration-scope basin.
+probe 12 liveness; result=MISMATCH; diff=295; shape=81.09756097560975: H12: Tested a typed self alias used throughout both scans, a plausible source form for the target's repeated saved-self reloads.
+probe 13 layout; result=MISMATCH; diff=295; shape=81.09756097560975: H13: Named the map-row table before each row cursor, testing a period-plausible owner expression against target's retained row-table register. [same emitted code as probe 12]
+probe 14 liveness; result=MISMATCH; diff=295; shape=81.21212121212122: H14: Split first row-pointer declaration from assignment to test target's row-base and row-index scheduling. [same emitted code as probe 10]
+probe 15 context; result=MISMATCH; diff=295; shape=81.21212121212122: H15: Added period-plausible math header context from the same rmm_terr.cpp translation unit to test front-end register/codegen basin. [same emitted code as probe 14]
+probe 16 control-flow; result=MISMATCH; diff=295; shape=81.21212121212122: H16: Split second inner count initialization from +1 to test target's ECX loop-counter setup. [same emitted code as probe 15]
+probe 17 liveness; result=MISMATCH; diff=362; shape=75.60975609756098: H17: Matched second fixed-radius bound declaration order to the best first-scan permutation.
+probe 19 liveness; result=MISMATCH; diff=295; shape=81.21212121212122: H1: Move first-scan row_index into the positive-radius scope to test target entry home order: target count at +0x14 and row index at +0x18. [same emitted code as probe 18]
+probe 21 liveness; result=MISMATCH; diff=351; shape=83.43558282208589: H2: Use natural first-scan bounds order min_x, min_y, max_x, max_y; target loads x/y before both add operations and this order tests that source model. [same emitted code as probe 9]
+probe 23 control-flow; result=MISMATCH; diff=409; shape=79.39393939393939: H3: Initialize first-scan xx before its inner guard, matching target mov index before cmp/jg and a natural for-loop initializer.
+probe 25 liveness; result=MISMATCH; diff=385; shape=80.3680981595092: H4: Reuse the dead radius parameter as the first-scan max_y bound, matching target's max_y home and decompiler-observed parameter reassignment.
+probe 27 liveness; result=MISMATCH; diff=396; shape=77.91411042944786: H5: Assign first-scan row_index before row-pointer setup, testing target's delayed row-index home store after map-row and offset setup.
+probe 29 variant; result=MISMATCH; diff=396; shape=77.91411042944786: variant lab build\variant_lab\00488B90_check_terrain\20260817_111924: 3 variants, 3 invariant-eligible, 0 exact
+probe 30 layout; result=MISMATCH; diff=295; shape=81.09756097560975: H6: Restore the same-TU exact donor's typed RGE_Random_Map_Module_List* base field instead of void*, testing canonical unused base-surface context. [same emitted code as probe 13]
+probe 31 liveness; result=MISMATCH; diff=398; shape=75.90361445783132: H7: Declare and initialize first-scan row_index at its first use after bounds, testing a natural initializer against target's delayed row-index materialization.
+probe 33 layout; result=MISMATCH; diff=302; shape=80.98159509202453: H8: Initialize the first row tile before its row-table cursor with typed indexed ownership, testing target's offset-before-row-pointer setup without raw cursor arithmetic.
+probe 35 liveness; result=MISMATCH; diff=333; shape=78.78787878787878: H9: Reverse the top local declaration order to base_terrain then count, testing target's count/home ordering while preserving the same typed fields.
+probe 37 liveness; result=MISMATCH; diff=351; shape=83.43558282208589: H10: Separate first-scan bound declarations from assignments in x-min/y-min/x-max/y-max order, testing target's grouped x/y load and add schedule with natural scalar locals. [same emitted code as probe 21]
+probe 39 liveness; result=MISMATCH; diff=295; shape=81.21212121212122: H11: Reuse one typed row_ptr and row local across both scans at function scope, testing target's persistent row-pointer spill and register lifetime. [same emitted code as probe 19]
+probe 41 liveness; result=MISMATCH; diff=295; shape=81.21212121212122: H12: Reuse function-scope typed row locals but declare them before row_index, testing source declaration order as the remaining stack-home axis. [same emitted code as probe 39]
+probe 43 liveness; result=MISMATCH; diff=333; shape=78.78787878787878: H13: Split count declaration from its early assignment, testing whether target's count home is a delayed scalar store rather than an initializer. [same emitted code as probe 35]
+probe 45 liveness; result=MISMATCH; diff=351; shape=83.43558282208589: H14: Use one combined first-scan bound declaration with natural x/y assignments, testing period C++ declaration grouping against target's line-138 band. [same emitted code as probe 37]
+probe 48 liveness; result=MISMATCH; diff=295; shape=81.21212121212122: H1: Split first-radius bounds into copy then compound updates to test target mov/copy/sub/add schedule and avoid LEA lowering. [same emitted code as probe 47]
+probe 50 control-flow; result=MISMATCH; diff=358; shape=78.44311377245509: H2: Mutate clamped first-scan min_y as the outer induction, matching Ghidra source shape and target reload/update home; no separate row_index.
+probe 52 liveness; result=MISMATCH; diff=351; shape=83.43558282208589: H3: Split first-radius bounds in x/y declaration order with copy then compound updates; test whether target loads both coordinates before arithmetic. [same emitted code as probe 45]
+probe 54 liveness; result=MISMATCH; diff=351; shape=83.43558282208589: H4: Keep min bounds as expressions but build max bounds from copied x/y with compound adds; test target add lowering without broad copy form. [same emitted code as probe 52]
+probe 59 baseline; result=MISMATCH; diff=295; shape=81.21212121212122: Fresh canonical rmm_terr.cpp grouped-context baseline after exact 00489030 recovery. [same emitted code as probe 58]
+probe 60 control-flow; result=MISMATCH; diff=358; shape=78.44311377245509: H1: Use the clamped min_y local as the first outer induction, as the original line-147 spill/reload and decompiler variable lifetime show. [same emitted code as probe 50]
+probe 61 liveness; result=MISMATCH; diff=292; shape=79.39393939393939: H2: Group the adjacent result count and first-scan row index as one two-long scan state, testing the exact contiguous homes shown at entry -0x14/-0x10.
+probe 62 liveness; result=MISMATCH; diff=295; shape=81.21212121212122: H3: Keep the result count in a one-field typed result object while leaving row induction scalar; test whether aggregate status allocates compiler self, result, then loop homes. [same emitted code as probe 59]
+probe 63 liveness; result=MISMATCH; diff=351; shape=83.43558282208589: H4: Initialize all four first-scan bounds from x/y before ordered compound subtract/add updates, matching the original line-138 load-copy-arithmetic sequence. [same emitted code as probe 54]
+probe 64 liveness; result=MISMATCH; diff=351; shape=83.43558282208589: H5: Initialize retained max_x/max_y first, then copy min_x/min_y, so VC5 can keep maxima in EAX/EDI and minima in EBP/ESI as the original does. [same emitted code as probe 63]
+probe 65 liveness; result=MISMATCH; diff=351; shape=83.43558282208589: H6: Declare first-scan bounds before line-138 assignments, then assign maxima before copied minima; test PDB's declaration band and VC5 initialization-site coloring. [same emitted code as probe 64]
+probe 67 variant; result=MISMATCH; diff=351; shape=83.43558282208589: variant lab build\variant_lab\00488B90_check_terrain\20260823_183155: 64 variants, 12 invariant-eligible, 0 exact
+probe 68 liveness; result=MISMATCH; diff=356; shape=44.642857142857146: H7: Put the PDB-band locals at function scope and reuse clipped bounds and typed row cursors across both scans, matching VC5-era declaration style.
+probe 70 layout; result=MISMATCH; diff=303; shape=41.21212121212121: H8: Model the five proven persistent scan homes as one typed scan-state record and use its explicit byte offset with typed rows.
+probe 72 liveness; result=MISMATCH; diff=381; shape=80.98159509202453: H9: Mutate the dead radius parameter into the first-scan max_y bound, as the exact rmm_elev donor and target's entry +0x10 home writes support.
+probe 73 liveness; result=MISMATCH; diff=381; shape=80.98159509202453: H10: Form the reused max_y home with radius += y, testing donor-supported parameter mutation without the early y preload from radius = y + radius. [same emitted code as probe 72]
+probe 75 liveness; result=MISMATCH; diff=292; shape=79.39393939393939: H11: Bind named long references to a two-long counter aggregate, following the newly exact 00489030 adjacent-output aggregate pattern while preserving ordinary scalar uses. [same emitted code as probe 61]
+probe 77 liveness; result=MISMATCH; diff=295; shape=81.21212121212122: H12: Carry one typed generator pointer declared before the result count and use it for every member read, testing whether the target's first home is an explicit saved owner. [same emitted code as probe 62]
+probe 79 variant; result=MISMATCH; diff=295; shape=81.21212121212122: variant lab build\variant_lab\00488B90_check_terrain\20260823_183802: 12 variants, 12 invariant-eligible, 0 exact
+probe 80 liveness; result=MISMATCH; diff=295; shape=81.21212121212122: H13: Declare first-scan row induction before the result and terrain locals, testing VC5's reverse local-order coloring against the target self/count/row homes. [same emitted code as probe 77]
+probe 83 control-flow; result=MISMATCH; diff=350; shape=83.43558282208589: H14: Replace the first clipped scan's do/while shell with the period-matched for loop used by the exact RMM elevation sibling; target has a direct bottom jle without the rebuilt jump block.
+probe 85 liveness; result=MISMATCH; diff=334; shape=84.66257668711657: H15: Mirror the exact rmm_elev sibling's declaration-before-assignment order for first-scan bounds and row cursors, while preserving its natural for loop and typed RMM fields.
+probe 87 liveness; result=MISMATCH; diff=295; shape=82.20858895705521: H16: Scope the first radius row index with the exact sibling's row pointer declarations, testing whether the original six-home permutation follows block-local index lifetime rather than function scope.
+probe 89 liveness; result=MISMATCH; diff=351; shape=83.43558282208589: H17: Split first bounds into copied x/y values, then compound radius updates in x/y order; this tests the target's mov/copy/sub/add sequence with canonical typed fields. [same emitted code as probe 65]
+probe 91 control-flow; result=MISMATCH; diff=295; shape=83.43558282208589: H18: Use a top-tested while loop for the clipped first scan, testing the target's pretest and direct fall-through topology without changing typed row ownership or predicates.
+probe 93 liveness; result=MISMATCH; diff=333; shape=79.75460122699387: H19: Reverse the real result/base local declaration order while keeping initial count and direct terrain lookup; test whether VC5's saved-self and result homes follow source lifetime order.
+probe 95 liveness; result=MISMATCH; diff=333; shape=79.75460122699387: H20: Split result declaration from its initial assignment, testing the target's early count store and saved-self home without changing result type or scan behavior. [same emitted code as probe 93]
+probe 97 liveness; result=MISMATCH; diff=333; shape=79.75460122699387: H21: Split only the result declaration and initialization from the clean source, testing early store placement while retaining the clean count/base declaration order. [same emitted code as probe 95]
+probe 99 layout; result=MISMATCH; diff=378; shape=68.09815950920246: H22: Remove the persistent first-scan row alias and derive each typed tile row from the proven row-table cursor; test whether VC5 hoists the initial row load and recovers the target cursor topology.
+probe 101 context; result=MISMATCH; diff=334; shape=84.66257668711657: H23: Copy the exact RMM elevation sibling's typed declaration and assignment shape for the complete first scan, including block-local row index and for rotation. [same emitted code as probe 85]
+```
+<!-- end-recovered:591daf288bac25c70c41 -->
+
+<!-- recovered:0ddb02fd82c934c135cc -->
+### `c70bedf2391b` `src/scratch/00488B90_check_terrain.cpp:1-51`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00488B90 RGE_RMM_Terrain_Generator::check_terrain
+// Source: rmm_terr.cpp lines 121-173
+// attempt 1: natural typed source from packet/decompiler; comparable 437B but broad mismatch (409/437 positional, first mismatch 5) because VC5 keeps this in EBP and reshapes loops.
+// attempt 2: raw-offset/source-order mirror of original asm; closer prologue/loop intent but compiles 432B vs expected 437B (frame 0x14, this kept in EBX).
+// attempt 3: made saved self volatile to force stack reload; frame became 0x1C and broad mismatch (410/437, first mismatch 2), reverted.
+// attempt 4: added extra local/result arithmetic to force frame 0x18; optimized away/no size improvement, reverted.
+// attempt 5: diagnostic /Od produced 437B but broad mismatch from offset 0 (430/437), reverted flags.
+// attempt 6: typed RGE_Tile row pointer form produced cleaner source but wrong register allocation and row-loop scheduling.
+// attempt 7: raw byte-pointer tile scans matched the 0x18 stride and terrain_bits +5 access but still used different saved-register topology.
+// attempt 8: tried preserving this in a local stack slot; VC5 either optimized it into EBX or added extra stores in the prologue.
+// attempt 9: tried recomputing row offset per outer iteration vs preserving it; no improvement to size/register family.
+// attempt 10: reviewed param widths (uchar terrain/avoid vs int masks); current source explicitly preserves avoid&0xff table lookup, but remaining mismatch is loop topology/register allocation.
+// attempt 11: rebuilt the prior raw-offset source as the session baseline; 426B/0x14 frame, structural stage.
+// attempt 12: restored the period terrain-generator/map/row ownership and direct repeated tile-byte predicates; test whether the canonical base surface restores the original frame and loop topology.
+// attempt 13: corrected the proven terrain-set member from rows to impassable_terrain (+0x2E within the +0x8C terrain table); the observed map-relative lookup is +0xBA + index*0x198.
+// attempt 14: widened the base-terrain result to long, matching the original dword local/home and EBX zero-plus-byte load rather than a byte-only stack home.
+// attempt 15: gave the first radius scan its own row index instead of mutating min_y; original asm spills/reloads that outer index at +0x18 while retaining min_y in the setup register.
+// attempt 16: hoisted the row-index declaration before count/base locals to probe VC5's source declaration/home ordering without changing ownership or CFG.
+// attempt 17: carried a typed self pointer through both scans, reflecting the binary's repeated saved-this reloads rather than relying on an implicit compiler spill.
+// attempt 19: ordered the row-index declaration before the typed self local, probing the remaining four-byte home permutation at the otherwise exact prologue.
+// attempt 20: initialized the spilled first-scan row index directly from y-radius rather than copying min_y; this is the last bounded liveness probe before retaining the best canonical basin.
+// attempt 21: block-scoped the first-scan row index; emitted code was unchanged.
+// attempt 22: restored first-scan induction to clamped min_y; behaviorally natural and exact-size, but drift widened to 353 bytes, so restored the prior basin.
+// attempt 23: register/split self initialization and function-scope first-row locals were compiler duplicates; restored.
+// Left in scratch: canonical typed terrain/map/row ownership, long base-terrain ABI, and both scan CFGs are reconstructed; remaining drift is VC5 stack-home/register coloring and early loop block shape (best current 429B, exact frame, 70.7% positional diff).
+// Main-agent audit removed the codegen-only self alias; direct member ownership
+// is authoritative for the paused canonical source.
+// Fresh pass: first-scan for/while and clamped-min_y combinations were worse or
+// exact-size but structurally farther; second-scan cursor declaration/update
+// variants were compiler duplicates (focused six-variant lab, 429B/309 diff).
+// Function-scope reuse of all bounds/cursors and local int row cursors did not
+// improve the canonical basin. Restored clean source after the 10-probe budget;
+// remaining lead is the target's early local-home/register assignment and
+// spilled first row-pointer topology.
+// New claim: the binary clamps the first-scan row index before induction; using
+// y-radius would read extra rows at a map edge, so the typed reconstruction uses
+// the clamped min_y value.
+// New claim: a named 24-byte RGE_Tile terrain_type byte preserves tile ownership
+// and low-five-bit behavior, but VC5 emits a broader 351-byte mismatch. The
+// remaining gap is local-home/register allocation and early block placement.
+// Fresh claim probes: x-bound declaration order (min_x, max_x, min_y, max_y)
+// reached 437 bytes and reduced positional drift to 295 bytes, but did not
+// recover the target's stack-home permutation. Other bound permutations were
+// worse or compiler duplicates. Explicit copy-then-adjust bounds, row-index
+// declaration moves, typed self/map-row aliases, split row assignments, math
+// header context, and split inner-count initialization also produced no lead.
+// The best natural source remains this typed reconstruction; no exact result.
+// Revisit pass: row-index scope and initializer forms, bound declaration and
+// assignment forms, typed row-pointer order/scope, radius-home reuse, typed
+// same-TU list context, and count initialization produced no lead. Restored
+// the canonical typed terrain/map source after each probe.
+```
+<!-- end-recovered:0ddb02fd82c934c135cc -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

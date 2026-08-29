@@ -1,0 +1,76 @@
+# Recovery journal: 005110E0 `tribe_clean_elevation`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/tmap.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\tmap.cpp`.
+- Earlier recovery note: `recovery_notes/tmap_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:d3dcef335141d9e3f093 -->
+### `8b8759603dfe` `src/scratch/005110E0_tribe_clean_elevation.cpp:1-30`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// TRIBE_Map::tribe_clean_elevation
+// VA: 005110E0, tmap.cpp:1067-1087
+// Status: PARKED in scratch - VC5 register allocation (esi vs edi swap)
+//
+// Attempt log:
+// v0: Basic implementation, extern "C" set_terrain → 181 bytes, 31% diff
+// v1: Member function set_terrain → 176 bytes, register issues
+// v2: Local vars, while+goto loop structure → 12% positional diff
+// v3: Direct param manipulation → 12%, same register swap
+// v4: Short variable names (xc, tr, row, etc.) → 12%, same issue
+// Retry 2026-05-26 Boss pass: 16 more probes. Revalidated current scratch (181B,
+// 22 positional / 25 edit, first mismatch +3). Tried for/positive outer loop,
+// direct row expressions, pointer rowbase, self alias/register self, parameter-slot reuse,
+// no-continue forms, x-local before self, register x local, self declared after clips,
+// x_start2 temp, and reloading x from the parameter slot. All non-regressing variants
+// stayed in the same this-vs-x register swap family; attempts to force x into EDI and
+// this into ESI regressed broadly (~150 positional). No accepted_drift proposal because
+// although behavior is equivalent, the diff is a whole-function register-coloring swap.
+//
+// Remaining diff: 22 bytes / 12% positional
+// All diffs are from register swap: original uses esi=this, edi=x;
+// rebuild uses edi=this, esi=x. Everything else (loop structure, field
+// accesses, set_terrain call) matches perfectly.
+//
+// Struct layout:
+//   RGE_Map: gap_00[8], map_width(+8), map_height(+C), gap_10[0x8D7C],
+//            map_row_offset(+0x8D8C), gap_8D90[0x30], game_world(+0x8DC0)
+//   TRIBE_Map: extends RGE_Map, no fields accessed here
+//
+// Size: 181 bytes, ret 10h
+```
+<!-- end-recovered:d3dcef335141d9e3f093 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

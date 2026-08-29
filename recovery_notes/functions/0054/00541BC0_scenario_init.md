@@ -1,0 +1,70 @@
+# Recovery journal: 00541BC0 `scenario_init`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/world.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\World.cpp`.
+- Earlier recovery note: `recovery_notes/world_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:630e01c573ddd1efaa93 -->
+### `e5b22f4df482` `src/scratch/00541BC0_scenario_init.cpp:1-24`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00541BC0 RGE_Game_World::scenario_init
+// EH-framed allocate and construct RGE_Scenario, store at +0x5C.
+// FLAGS: config/flags/00541BC0_scenario_init.rsp uses /GX for original SEH/new-expression basin.
+//
+// BLOCKER: same /GX new-expression common-tail scheduling family as 0052E5F0,
+// 00541C90, 00541D00, and 0052E530. Natural direct new emits exact EH prologue,
+// allocation size, constructor call, and early body, but VC5 sinks the member store
+// into the non-null path and sends the null path to a cleanup tail after the compared
+// range. Explicit common-store shapes reach the original ctor-success jump/null-xor/
+// common store family, but insert a redundant post-join `test eax,eax; jne +0`,
+// shifting and truncating the EH epilogue inside the 91-byte window.
+//
+// Attempt log:
+// 1. Prior /GX direct new with sizeof(RGE_Scenario)=0x1990 gives exact EH prologue/allocation/ctor family, but store sinks into non-null path; 23.08% pos / 16.48% edit.
+// 2. Volatile read of local: first 75B exact/common join retained, but spills EAX through [esp+18h] and stores EDX.
+// 3. Explicit if/else assignment: forced source join but adds unwanted post-join `test eax,eax; jne`.
+// 4. variant_lab over direct/local/ternary/ifelse/volatile/slot shapes, member volatility, and vc5-risky flags: no exact. Best edit family was /GX /Oa + volatile read (edit 14) but still stack-spills EAX.
+// 5. Slot local/pointer-to-member shape and ternary collapse back to the sunk-store basin.
+// 6. 2026-05-10 pass on this VA only: retried 20+ variants: direct/local new, if-null/if-not/goto common-store, assignment-in-condition, zero-init, volatile local, parameter reuse, bool temp, switch, empty-if, ternary, do/for single-pass, if/else member stores, and volatile-read. Also probed flags /O1, /Og, /Ob0, /Ox, /Gf, /Gy, /Oa, /Ot with /GX. No exact.
+// 7. Best current source below: edit diff 12.0879%, positional 17.5824%; mismatch is redundant join-test plus epilogue truncation (`83c4` incomplete at tail). Not an accepted_drift suggestion under Boss's window/truncation ruling.
+// 8. 2026-05-10 StarryZephyr pass: rechecked current baseline (same 17.5824%/12.0879%), tried direct member new and plain local new
+//    (both collapse to sunk-store/null-tail, 23.0769%/16.4835%), and positive goto common-store (same redundant join-test basin).
+//    Restored current best common-tail source; no accepted_drift due EH tail/window drift.
+// No inline asm/hacks.
+```
+<!-- end-recovered:630e01c573ddd1efaa93 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

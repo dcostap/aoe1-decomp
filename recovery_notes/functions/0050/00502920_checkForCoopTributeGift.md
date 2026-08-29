@@ -1,0 +1,135 @@
+# Recovery journal: 00502920 `checkForCoopTributeGift`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/taitacmd.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\taitacmd.cpp`.
+- Earlier recovery note: `recovery_notes/taitacmd_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:66c47c61bd6597ceca8f -->
+### `d050eea3c` `src/taitacmd.cpp:15720-15732`
+
+Mapping: `ambiguous`. next mapped function definition is checkForCoopTributeGift at old line 15841.
+
+```text
+// - Fresh final validation remains a 453-byte mismatch at +0014. The frame,
+// [non-comment lines omitted during migration]
+//   281-byte mismatch and 95.37% exact-block coverage, but lost the target's
+// [non-comment lines omitted during migration]
+// - Exact-finish probes: the counted outer-for form reproduced the initial
+// [non-comment lines omitted during migration]
+//   that test but stayed at 453 bytes (+4 size). Restored this clean source.
+```
+<!-- end-recovered:66c47c61bd6597ceca8f -->
+
+<!-- recovered:33cda479ba583a501906 -->
+### `6a2aef2e2` `src/taitacmd.cpp:13285-13309`
+
+Mapping: `ambiguous`. next mapped function definition is checkForCoopTributeGift at old line 13406.
+
+```text
+//   and a direct tribute call instead of the observed player vslot +0x54.
+//   the full RGE_Player virtual surface; this fixed the call set and frame.
+// - Split the random-player pick from the later tribute amount so VC5 could
+// - The original inner scan uses a positive tempRand guard around the do-loop;
+//   remaining structural hunk is the initial amount spill (VC5 keeps it in
+//   budget; no inline asm or custom flags.
+// - New claim: restored the binary-shaped inner break form, but VC5 duplicated
+// - New claim: declaration order and a scoped tempRand initializer emitted the
+//   to 472; restored the four binary-shaped gate jumps.
+// - New claim: first-use initializers, reordered loop initialization, the
+// - Remaining lead: recover the natural VC5 spill that stores coopTributeAmount
+//   to [esp+10] before its first test; calls, frame, and loop body are aligned.
+// it before initializing private loop homes. The executable stores and reloads
+// the same value first. After tribute calls, the executable reloads the resource
+// cursor; the rebuild relies on its callee-saved register. Loop exits use an
+// inverted branch form. All 12 calls, amounts, players, and effects match.
+//   owner symbol, 12 ordered calls, boundary, and four resource reads match.
+// - A counted outer loop with an explicit inner zero-amount goto reached a
+//   inner tempRand test and was restored. A combined inner while reached 314
+//   bytes and changed the j setup order. Both forms were reverted.
+// - The target's first structural hunk is still the required stack spill and
+//   reload of tempRand at [esp+10]. Natural aliases, declaration order, comma
+//   setup, initial-value copies, and period loop forms did not reproduce it.
+//   spill and pointer setup, but VC5 removed the target's redundant inner
+//   tempRand test and ended at 281 bytes (-4 size). The natural do-loop kept
+```
+<!-- end-recovered:33cda479ba583a501906 -->
+
+<!-- recovered:a89adde68e6868c263c3 -->
+### `target-session` `build/target_sessions/00502920_checkForCoopTributeGift.json:1-3`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 variant; result=MISMATCH; diff=112; shape=92.71844660194175: Direct nested final call: resource delta and aiPlayer attribute remain direct argument expressions; tests natural evaluation order against baseline.
+probe 3 variant; result=MISMATCH; diff=95; shape=91.94312796208531: Keep int delta and typed aiPlayer local, but read the attribute directly in the final virtual-call argument; tests whether the original delay comes from the current local.
+probe 4 variant; result=MATCH; diff=0; shape=100.0: Use a typed float amount local initialized from the resource delta, plus the existing typed current local; tests whether explicit conversion materializes before the final call.
+```
+<!-- end-recovered:a89adde68e6868c263c3 -->
+
+<!-- recovered:c2db38f884c03e13c850 -->
+### `2037e92c9e7c` `src/scratch/00502920_checkForCoopTributeGift.cpp:1-27`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 00502920 TribeTacticalAIModule::checkForCoopTributeGift
+// Attempt log:
+// - Initial rough reconstruction was structurally short and used incomplete
+//   player/object virtual surfaces.
+// - Baseline recorded before replacing that scaffold with the period-shaped
+//   md/player/world/resource ownership and the exact RGE/TRIBE virtual slots.
+// - Canonical typed reconstruction restored exact size/frame, all 11 ordered
+//   calls, and the first 169 instructions; the remaining drift is localized to
+//   the final four-argument command_give_attribute x87 argument schedule.
+// - Tried direct final argument evaluation, split/named resource-delta locals,
+//   receiver/attribute pointer locals, and a focused 12-variant lab.  The
+//   closest natural form uses an int delta plus a float current-attribute local
+//   (71 positional bytes; 30-byte edit drift); no variant was exact.
+// - Corrected the current attribute from element 0xb8 to element 0x2e because
+//   the oracle loads byte offset +0xb8; positional diff stayed 71 and edit drift
+//   improved to 28 bytes.
+// - Direct receiver/raw-pointer/direct-delta and assignment/reference probes
+//   did not reproduce the oracle's fild-before-fld order; restored the clean
+//   typed local form.
+// - New claim probes: a float amount temporary and implicit conversion were
+//   codegen duplicates; a void virtual return and base-typed receiver/cast were
+//   also duplicates. A volatile amount made a 717-byte structural mismatch.
+//   Restored the clean source after each diagnostic.
+// - Replaced temporary offset aliases with the canonical sn[0xba]/sn[0xbe]
+//   ownership and full managed-array prefix; emitted code stayed unchanged.
+// left in scratch: size/frame/call/CFG parity is exact, but the final call's
+//   target FPU order and the consequent late branch displacements remain.
+```
+<!-- end-recovered:c2db38f884c03e13c850 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

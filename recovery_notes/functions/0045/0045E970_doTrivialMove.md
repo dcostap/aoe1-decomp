@@ -1,0 +1,218 @@
+# Recovery journal: 0045E970 `doTrivialMove`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/move_obj.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\move_obj.cpp`.
+- Earlier recovery note: `recovery_notes/move_obj_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:8523057d3ee47ea37312 -->
+### `d050eea3c` `src/move_obj.cpp:1754-1771`
+
+Mapping: `ambiguous`. comment lies after mapped function doTrivialMove at old line 1422.
+
+```text
+    // ORIGINAL BUG: The waypoint-snap branch above jumps to moved without
+// [non-comment lines omitted during migration]
+        // BINARY NOTE: VC5 emits the original qword x87 temporary for this value.
+```
+<!-- end-recovered:8523057d3ee47ea37312 -->
+
+<!-- recovered:fa484ce84b4e8225f0e2 -->
+### `6a2aef2e2` `src/move_obj.cpp:1611-1611`
+
+Mapping: `ambiguous`. comment lies after mapped function doTrivialMove at old line 1262.
+
+```text
+        // VC5 emits the original qword x87 temporary for this value.
+```
+<!-- end-recovered:fa484ce84b4e8225f0e2 -->
+
+<!-- recovered:01ae1fa0304dec27d765 -->
+### `target-session` `build/target_sessions/0045E970_doTrivialMove.json:1-57`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=2826; shape=72.52650176678445: Baseline current scratch reconstruction before new probes; establish size, frame, calls, and mismatch frontier.
+probe 2 liveness; result=MISMATCH; diff=2826; shape=72.52650176678445: Hypothesis 1: move numberFacets declaration after other scalar locals to test VC5 register-color coalescing with the persistent zero/curDistance topology. [same emitted code as probe 1]
+probe 3 liveness; result=MISMATCH; diff=2826; shape=72.52650176678445: Hypothesis 2: promote destinationZ to function scope because the original carries the teleport z value through a late shared tail and reuses an early stack home. [same emitted code as probe 2]
+probe 4 liveness; result=MISMATCH; diff=2826; shape=72.52650176678445: Hypothesis 3: add the decompiler-supported alreadyMoving copy of numberFacets before each turn-scale multiply to test the original integer temporary and stack spill topology.
+probe 6 control-flow; result=MISMATCH; diff=2826; shape=72.70318021201413: Hypothesis 4: reverse the second movement's sine/cosine assignment order because the original second x87 block starts with fsin, unlike the first movement block.
+probe 7 liveness; result=MISMATCH; diff=2826; shape=72.70318021201413: Hypothesis 5: separate the early already-moving flag from the later float curDistance path distance, as supported by the Ghidra local-type split and target stack-slot reuse.
+probe 8 behavior; result=MISMATCH; diff=2826; shape=72.87985865724382: Hypothesis 6: reverse the closest-distance comparison to the Ghidra-documented original predicate, closestDistanceToWaypoint < nextDistance.
+probe 9 behavior; result=MISMATCH; diff=2897; shape=73.45679012345678: Hypothesis 7: restore the original one-expression target-radius predicate from the earlier clean reconstruction to test whether VC5 preserves the target radius-first x87 topology.
+probe 10 liveness; result=MISMATCH; diff=2826; shape=72.87985865724382: Hypothesis 8: restore the Ghidra local declaration order (targetDY, newAngle, distance, dX, newY, curDistance, alreadyMoving, dY, facets) to test VC5 home assignment. [same emitted code as probe 8]
+probe 11 behavior; result=MISMATCH; diff=2826; shape=72.87985865724382: Hypothesis 9: swap the first movement passable coordinates because the original pushes the two computed coordinates in the opposite semantic order in the target block.
+probe 12 liveness; result=MISMATCH; diff=2826; shape=72.87985865724382: Hypothesis 10: use a register-qualified numberFacets local to test the target's proven EDI facet count and stack spill pattern. [same emitted code as probe 11]
+probe 13 liveness; result=MISMATCH; diff=2821; shape=73.67491166077738: Hypothesis 11: introduce a distinct angleDX local for both atan2 sites, preventing dX from coalescing with dY and testing the target's separate early coordinate homes.
+probe 14 liveness; result=MISMATCH; diff=2821; shape=73.67491166077738: Hypothesis 12: separate the atan2 Y input from the later signed angle delta with an angleDY local, matching the target's distinct coordinate and angle stack roles.
+probe 15 liveness; result=MISMATCH; diff=2821; shape=73.67491166077738: Hypothesis 13: promote the Path* owner across the logging and movement phases to test the target's repeated EDI path-base ownership. [same emitted code as probe 13]
+probe 16 context; result=MISMATCH; diff=2812; shape=73.76325088339223: Hypothesis 14: add the period standard stdlib header to test translation-unit declaration context around floor and floating helpers.
+probe 17 context; result=MISMATCH; diff=2812; shape=73.76325088339223: Hypothesis 15: add string.h with stdlib.h to test the historical move_obj translation-unit standard-header combination.
+probe 18 context; result=MISMATCH; diff=2812; shape=73.76325088339223: Hypothesis 16: add memory.h to the standard-header context used by a large legacy movement translation unit.
+probe 19 layout; result=MISMATCH; diff=2814; shape=72.34982332155477: Hypothesis 17: model the target's qword next-distance temporary as double to test the x87 stack and late local-frame shape.
+probe 20 liveness; result=MISMATCH; diff=2814; shape=72.34982332155477: Hypothesis 18: scope the late float curDistance at the waypoint-distance block, freeing the long-lived newAngle home while preserving the target's double next-distance frame. [same emitted code as probe 19]
+probe 21 liveness; result=MISMATCH; diff=2814; shape=72.34982332155477: Hypothesis 19: promote destinationZ to function scope with the double next-distance model to test the target's shared late z-home. [same emitted code as probe 20]
+probe 22 liveness; result=MISMATCH; diff=2814; shape=72.70318021201413: Hypothesis 20: reuse newAngle for the late path distance after the second movement, testing whether the target coalesces those non-overlapping float lifetimes into one home.
+probe 25 layout; result=MISMATCH; diff=2814; shape=72.34982332155477: Combined lead: retain the cleaned natural source and model nextDistance as double; target qword store/fmul and exact 0x2C frame support this form.
+probe 26 context; result=MISMATCH; diff=2822; shape=72.34982332155477: Context reduction: remove unsupported stdlib.h after the double-next-distance lead to test whether the frame and x87 shape depend on this header.
+probe 28 liveness; result=MISMATCH; diff=2814; shape=72.34982332155477: Hypothesis 1: move numberFacets before the float locals, matching the Ghidra declaration order and target EDI plus [esp+0C] topology; test whether VC5 recolors this long-lived count and shifts newAngle into the target home. [same emitted code as probe 27]
+probe 30 liveness; result=MISMATCH; diff=2814; shape=72.34982332155477: Hypothesis 2: reuse the existing distanceToCover local for the late waypoint distance and closest-distance store, instead of introducing curDistance; this tests the natural phase reuse suggested by the original decompiler's broad temporary lifetimes and target late stack-home reuse.
+probe 32 control-flow; result=MISMATCH; diff=2935; shape=71.31509267431598: Hypothesis 3: fold the radius guard and first passable result into one short-circuit condition, removing the phase-local passable initialization; test whether VC5 preserves target's direct result/EDI topology without changing behavior.
+probe 34 liveness; result=MISMATCH; diff=2817; shape=67.93286219081273: Hypothesis 4: rebuild the source around the original move_obj PDB locals: separate newX, angleDelta, facetDelta, tempZ, speedOffset, result, and use the proven phase reuse instead of current angleDX/dY/newY/passable names. This tests whether PDB local lifetimes recover the target frame and x87 homes.
+probe 36 liveness; result=MISMATCH; diff=2814; shape=72.34982332155477: Hypothesis 5: reuse the existing found/result local for all passable results before and after path finding, matching the original PDB's single result symbol and Ghidra's reused iVar13; this tests integer home and register lifetime without changing calls. [same emitted code as probe 30]
+probe 41 baseline; result=MISMATCH; diff=2814; shape=72.34982332155477: Fresh baseline before authentic movement-context reconstruction; current pinned source.
+probe 42 behavior; result=MISMATCH; diff=2793; shape=72.52650176678445: Hypothesis 1: cast the angle-times-facets product before multiplying the scale constant, testing the target fild/fmul/fmul x87 order.
+probe 43 liveness; result=MISMATCH; diff=2793; shape=72.52650176678445: Hypothesis 2: qualify numberFacets as register after the x87 product cast, testing the target EDI facet lifetime and [esp+0C] home. [same emitted code as probe 42]
+probe 44 liveness; result=MISMATCH; diff=2793; shape=72.52650176678445: Hypothesis 3: declare numberFacets before the coordinate locals without a register qualifier, testing the target local-home order and EDI allocation. [same emitted code as probe 43]
+probe 45 liveness; result=MISMATCH; diff=2877; shape=70.93639575971731: Hypothesis 4: separate newX from dX, using dX for atan2 deltas and newX for published movement coordinates, as supported by PDB local names and target stack reuse.
+probe 46 behavior; result=MISMATCH; diff=2790; shape=73.0565371024735: Hypothesis 4 correction: retain separate newX coordinate ownership while restoring the two direct floor rereads in the fallback teleport, preserving target call count and fault order.
+probe 47 behavior; result=MISMATCH; diff=2883; shape=73.76325088339223: Hypothesis 5: use one direct target-distance/radius predicate with reread object and master members, testing authentic fault order and target x87 scheduling.
+probe 49 liveness; result=MISMATCH; diff=2791; shape=73.40989399293287: Hypothesis 6: retain a distinct facetDelta local for scaled angle steering, separating it from newY movement coordinates as supported by PDB names and target qword/stack topology.
+probe 50 layout; result=MISMATCH; diff=2800; shape=72.43816254416961: Hypothesis 7: keep the next-distance result double but let the float coordinate products lower naturally, testing the target single qword x87 temporary and NaN behavior.
+probe 51 layout; result=MISMATCH; diff=2791; shape=73.40989399293287: Hypothesis 8: cast only the first operand of each next-distance product, preserving a double expression while testing the target one-sided qword x87 temporary.
+probe 52 layout; result=MISMATCH; diff=2800; shape=73.67491166077738: Hypothesis 9: keep the first next-distance product in float and cast only the second coordinate product to double, testing target operand order and one qword spill.
+probe 53 layout; result=MISMATCH; diff=2799; shape=74.02826855123675: Hypothesis 10: store the next-distance result as float after the one-sided double product, testing target final fst-before-fcompp and preserving qword intermediate behavior.
+probe 54 liveness; result=MISMATCH; diff=2828; shape=72.43816254416961: Hypothesis 11: remove the cached displayObjectID and use the original global directly in the indexed master lookup, testing target pre-loop scaling and state schedule.
+probe 55 liveness; result=MISMATCH; diff=2809; shape=73.93992932862191: Hypothesis 12: use one authentic angle pointer local for the two boundAngle calls, testing the target persistent EDI angle address without raw vtable or volatility.
+probe 56 liveness; result=MISMATCH; diff=2799; shape=74.02826855123675: Hypothesis 13: declare facetDelta at its first source use rather than at function entry, testing authentic VC5 lifetime and target stack-home placement. [same emitted code as probe 53]
+probe 57 context; result=MISMATCH; diff=2799; shape=74.02826855123675: Hypothesis 14: restore the authentic preceding move_obj.cpp exact definition sequence in the unregistered wrapper, supported by the PDB source module and address order. [same emitted code as probe 56]
+probe 58 liveness; result=MISMATCH; diff=2799; shape=74.02826855123675: Hypothesis 15: keep a distinct angleDelta through both steering phases, matching the original PDB local set while preserving direct calls and x87 coordinate order.
+probe 60 baseline; result=MISMATCH; diff=2799; shape=74.02826855123675: Fresh baseline for exact-finish audit; current pinned authentic movement reconstruction has 0x2C frame, 83 aligned calls, and first home mismatch at newAngle. [same emitted code as probe 59]
+probe 61 liveness; result=MISMATCH; diff=2799; shape=74.02826855123675: Hypothesis 1 direct result: PDB-order declaration reorder with top-level facetDelta emitted duplicate 0x2C/3677 and unchanged 2799 diff; restore order. [same emitted code as probe 60]
+probe 63 liveness; result=MISMATCH; diff=2799; shape=74.02826855123675: Hypothesis 2 direct result: move numberFacets declaration to its first-use point before the sprite facet guard; output duplicate at 2799 with unchanged frame, calls, and first home mismatch. [same emitted code as probe 61]
+probe 65 liveness; result=MISMATCH; diff=2917; shape=73.58657243816255: Hypothesis 3 direct result: join newAngle declaration with its owner-world initialization; VC5 hoisted initialization before alreadyMoving and moved first mismatch to entry +0x0E, diff 2917. Restore.
+probe 68 liveness; result=MISMATCH; diff=2799; shape=74.02826855123675: Hypothesis 4: start distanceToCover lifetime at first velocity assignment, matching its first use; fresh result stayed 2799/3677/0x2C with 83 calls but changed 121 bytes closer in the movement block, not enough to overcome first home mismatch.
+probe 70 liveness; result=MISMATCH; diff=2799; shape=74.02826855123675: Hypothesis 5: move dX/dY/targetDY/angleDelta, movement newX/newY/distanceToCover, and late curDistance declarations to their first-use points; fresh output remained exactly 2799/3677/0x2C with 83 calls, proving no lifetime basin change. [same emitted code as probe 63]
+probe 71 behavior; result=MISMATCH; diff=2799; shape=74.02826855123675: Hypothesis 6: name the master radius sqrt as a local to mirror target x87 source shape; fresh output duplicate 2799/3677/0x2C and 83 calls, so current direct form is the same VC5 basin. [same emitted code as probe 58]
+probe 74 context; result=MISMATCH; diff=2799; shape=74.02826855123675: Hypothesis 7: compile the target against reviewed include/move_obj_context.h with canonical moving-object, master, path, world, player, and virtual surfaces plus lowercase global aliases; fresh output stayed 2799/3677/0x2C, 83 calls, owner match, proving this context is codegen-equivalent here. [same emitted code as probe 70]
+probe 75 layout; result=MISMATCH; diff=2790; shape=73.0565371024735: Hypothesis 8 direct result: replace the late rounded next-distance float with a double local; diff improved only to 2790 but emitted x87 changed to two qword stores and lost the original fld-st1/fst-dword/fxch sequence. The clean float-plus-double-coordinate expression is required by exact x87 topology. [same emitted code as probe 48]
+probe 77 behavior; result=MISMATCH; diff=2889; shape=74.73498233215548: Hypothesis 9: inline target-distance and master-radius expressions to remove targetDX/targetDY2/master locals and match direct map/object rereads; emitted 2889-byte drift with 66.41% resync and control-flow diagnostic, so named target locals preserve the authentic basin.
+probe 79 liveness; result=MISMATCH; diff=2799; shape=74.02826855123675: Hypothesis 10 register-basin audit: qualify numberFacets as register to test the original EDI color; VC5 ignored the hint and emitted the same EBX/0x24 home, unchanged 2799 bytes, while the original uses EDI/[esp+0C]. Restore and document the basin as blocked without unsupported forcing. [same emitted code as probe 74]
+probe 81 liveness; result=MISMATCH; diff=3233; shape=73.14487632508833: Hypothesis 11: use the Ghidra bool interpretation for alreadyMoving; VC5 emitted a byte home and shifted first mismatch to entry +0x0E, 3233 diff despite 83 calls. The original dword EDX/store/compare proves int-like lowering; restore.
+```
+<!-- end-recovered:01ae1fa0304dec27d765 -->
+
+<!-- recovered:3d5e6155a06cde4941f7 -->
+### `ed599f2a6eab` `src/scratch/0045E970_doTrivialMove.cpp:1-74`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0045E970 RGE_Moving_Object::doTrivialMove
+// Canonical source reconstruction from move_obj.cpp:1509-2185.
+// Attempt log:
+// - baseline: natural named moving-object/master/world/path ownership, typed x87 math,
+//   complete named RGE_Static_Object and RGE_Master_Static_Object virtual surfaces.
+// - restored period-correct double-zero comparisons and the observed sprite layout;
+//   this removed the extra speed store and moved the structural frontier substantially.
+// - repeated currentWaypoint() expressions to preserve the original ordered calls;
+//   the final direct snap call now matches all 83 original call sites.
+// - inlined the target-radius predicate as one typed expression; this is the cleanest
+//   source reconstruction, although the compiler still reserves an 0x24 rather than
+//   the original 0x2C frame and leaves broad positional drift.
+// - reversed the first turnTimer guard to the original negative-first source shape;
+//   this closed the first local CFG hunk and improved the diff by 26 bytes.
+// - promoting one Waypoint* across the repeated path scans collapsed the frame to
+//   0x1C and worsened the structural diff; rolled back.
+// - reordering the real arithmetic locals to the dossier order was emitted-code
+//   duplicate evidence; rolled back.
+// - cached displayPathObjectID before the display gate, matching its original
+//   pre-gate load; size moved 18 bytes closer, but positional diff worsened by 1.
+// - current bounded pause: exact matching remains unresolved after this claim's
+//   three evidence-backed hypotheses;
+//   remaining evidence points to original local-frame/register topology and VC5
+//   tail/block scheduling, not a missing call or virtual-surface declaration.
+// - reintroduced the decompiler's zero-initialized first-turn temporary; it
+//   improved exact-block coverage but worsened positional bytes, so rolled back.
+// - swapped the commutative master-radius terms; shape improved without a
+//   positional change, so kept the radius_y/radius_x source order.
+// - restored named target-distance and radius temporaries from the original
+//   stack hunk; size moved 6 bytes closer and positional diff improved to 2826.
+// - naming the owner world and radius components was emitted-code duplicate or
+//   worse; kept only the natural target-distance temporaries.
+// - this pass tested 23 meaningful source and context hypotheses. The first
+//   separate angle-X local improved five strict bytes and six exact blocks.
+// - the shipped second-turn x87 block starts with fsin; the retained reverse
+//   assignment order follows that binary order.
+// - BINARY NOTE: the late next-distance value uses a qword store and fmul.
+//   A natural double local restores the original 0x2C frame.
+// - the stdlib.h context is retained because it reduced positional drift by
+//   eight bytes in the reduced double-local source.
+// - unresolved: current result is 2814 differing bytes, 72.35% shape, and
+//   exact call-site order; the remaining drift starts at the local frame.
+// - original PDB local symbols (orig/age1_x1.pdb, move_obj.obj) prove the
+//   names newY, dX, newX, newAngle, tempZ, alreadyMoving, angleDelta,
+//   facetDelta, numberFacets, curDistance, distanceToCover, speedOffset,
+//   result, targetDX, targetDY, and dY, with optimized stack-slot aliases.
+// - this pass tested five further hypotheses: numberFacets declaration order
+//   and distanceToCover reuse were codegen duplicates; folding the first
+//   passable guard worsened the result; a PDB-local lifetime rewrite reduced
+//   call alignment; and reusing found for passable was another duplicate.
+//   All experiments were restored to this clean source.
+// - this claim tested the binary-supported newX, angleDelta, and facetDelta
+//   local roles. The angleDelta spelling was emitted-code duplicate evidence.
+// - BINARY NOTE: the shipped fallback publishes the passability coordinates,
+//   then rereads both floor expressions for teleport. Keep both direct calls.
+// - BINARY NOTE: the late next-distance path keeps one double coordinate
+//   product, then rounds the distance to float before its ordered tests.
+// - the preceding exact move_obj.cpp definitions were restored in the
+//   unregistered wrapper. This context was emitted-code duplicate evidence.
+// - current bounded pause: fresh result is 2799 differing bytes, 74.03%
+//   shape, 0x2C frame, and all 83 direct-call sites aligned. Exact finish
+//   remains unresolved at the first local home and steering x87 block.
+// - exact-finish audit: the reviewed canonical move_obj context emitted the
+//   same bytes, calls, frame, boundary, and owner, so the standalone context
+//   is not the blocker.
+// - BINARY NOTE: the original uses EDI for the facet count, then spills it to
+//   [esp+0C]. A register hint did not change VC5's EBX/[esp+24] basin.
+// - BINARY NOTE: the original late next-distance block keeps the mixed float
+//   and qword x87 sequence. A double local lowered to two qword stores and
+//   was rejected despite a nine-byte metric gain.
+// - ORIGINAL BUG: the original dword alreadyMoving home is required. A bool
+//   reconstruction emitted a byte home and shifted the whole entry CFG.
+// - direct target-distance expressions changed the control-flow basin and
+//   were restored. Keep named target reads and the ordered object rereads.
+```
+<!-- end-recovered:3d5e6155a06cde4941f7 -->
+
+<!-- recovered:92d321058aeaaf5ff71a -->
+### `ed599f2a6eab` `src/scratch/0045E970_doTrivialMove.cpp:664-664`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+        // BINARY NOTE: VC5 emits the original qword x87 temporary for this value.
+```
+<!-- end-recovered:92d321058aeaaf5ff71a -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

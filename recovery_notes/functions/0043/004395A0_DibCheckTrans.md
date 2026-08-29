@@ -1,0 +1,142 @@
+# Recovery journal: 004395A0 `DibCheckTrans`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/Dib.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\Dib.cpp`.
+- Earlier recovery note: `recovery_notes/Dib_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:be457ca3dff891bd9e6f -->
+### `target-session` `build/target_sessions/004395A0_DibCheckTrans.json:1-36`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=197; shape=86.04651162790698: Baseline clean typed BITMAPINFO256 TRANSINFO scan source; verify current emitted bytes and record starting mismatch.
+probe 2 liveness; result=MISMATCH; diff=197; shape=86.04651162790698: Hypothesis: register-qualified raw_width should preserve the original EBX-backed bitmap width across malloc and row scans. [same emitted code as probe 1]
+probe 3 variant; result=MISMATCH; diff=363; shape=72.05882352941177: Hypothesis: direct bits[row + x] indexing should recover the oracle EAX scan base and ECX index instead of the named scan pointer's EBP/EAX topology.
+probe 4 layout; result=MISMATCH; diff=197; shape=86.04651162790698: Hypothesis: the oracle's EBP plus-0x10 cursor is a real byte offset over LineInfo, with stores emitted before the source increment.
+probe 5 context; result=MISMATCH; diff=197; shape=86.04651162790698: Hypothesis: the period DIBUTILS header context windowsx.h, stdio.h, and memory.h controls the oracle's callee-saved register coloring. [same emitted code as probe 2]
+probe 6 context; result=MISMATCH; diff=197; shape=86.04651162790698: Hypothesis: the period DIBUTILS macro and PDIB declaration surface, even unused here, restores the original VC5 front-end register basin. [same emitted code as probe 5]
+probe 7 liveness; result=MISMATCH; diff=197; shape=86.04651162790698: Hypothesis: a function-scope independent LineInfo byte cursor, initialized inside the positive-height guard, should receive the oracle EBP register. [same emitted code as probe 4]
+probe 8 variant; result=MISMATCH; diff=197; shape=86.04651162790698: variant lab build\variant_lab\004395A0_DibCheckTrans\20260816_225045: 512 variants, 512 invariant-eligible, 0 exact
+probe 9 abi; result=MISMATCH; diff=197; shape=86.04651162790698: Hypothesis: original decompiler locals are int-valued pixel indices and row offsets; use int for first, row, x, and last to recover the oracle register colors. [same emitted code as probe 6]
+probe 10 variant; result=MISMATCH; diff=197; shape=86.04651162790698: Hypothesis: declare row before all_trans and first to match the original row calculation's local declaration order and register allocation. [same emitted code as probe 9]
+probe 11 liveness; result=MISMATCH; diff=197; shape=86.04651162790698: Hypothesis: hoist all_trans to function scope while assigning one at each row so VC5 gives it the oracle ESI carrier. [same emitted code as probe 10]
+probe 12 variant; result=MISMATCH; diff=197; shape=86.04651162790698: Hypothesis: split scan initialization and increment so VC5 can keep the row result in EAX and add the bits base, matching the oracle EAX scan base. [same emitted code as probe 11]
+probe 13 liveness; result=MISMATCH; diff=197; shape=86.04651162790698: Hypothesis: declaring raw_width first gives VC5 the original long-lived EBX carrier while preserving its post-GetDibDim assignment. [same emitted code as probe 12]
+probe 14 layout; result=MISMATCH; diff=302; shape=78.03030303030303: Hypothesis: keep a named LINEINFO base after allocation, then index it naturally, to recover the oracle output cursor and store register.
+probe 15 abi; result=MISMATCH; diff=197; shape=86.04651162790698: Hypothesis: raw bitmap width is an int local, matching the decompiler's iVar7 and potentially promoting it to the oracle EBX carrier. [same emitted code as probe 13]
+probe 16 variant; result=MISMATCH; diff=197; shape=86.04651162790698: Hypothesis: declare and initialize raw_width at its assignment site after GetDibDim, matching a period local lifetime and promoting the oracle EBX carrier. [same emitted code as probe 15]
+probe 18 variant; result=MISMATCH; diff=363; shape=72.05882352941177: Direct typed bits[row + x] indexing removes the named scan pointer and tests whether VC5 recovers the oracle EAX base with ECX index without raw cursor plumbing. [same emitted code as probe 3]
+probe 20 liveness; result=MISMATCH; diff=296; shape=68.88888888888889: Scope each typed scan pointer to its natural loop so the base dies between passes; test whether VC5 then keeps the observed EAX row base and ECX index without extending a shared pointer lifetime.
+probe 22 liveness; result=MISMATCH; diff=324; shape=85.27131782945736: A const int raw-width initialized before GetDibDim tests whether immutable field capture keeps the oracle EBX carrier live across allocation; this is a period-plausible declaration probe, not a forced register.
+probe 24 liveness; result=MISMATCH; diff=197; shape=86.04651162790698: Introduce the binary-supported raw-width alias seen in the decompiler: capture the DIB width, copy it to a scan bound, and retain the original for first. Test whether this natural two-value lifetime forces the pre-malloc EBX carrier. [same emitted code as probe 17]
+probe 26 layout; result=MISMATCH; diff=197; shape=86.04651162790698: Use the canonical typed LINEINFO allocation size instead of an explicit shift; test whether period sizeof lowering changes independent width-load scheduling while preserving the proven 16-byte record ownership. [same emitted code as probe 24]
+probe 28 layout; result=MISMATCH; diff=197; shape=86.04651162790698: Use a typed BITMAPINFOHEADER owner alias for the proven width field; test whether canonical header ownership preserves the original pre-malloc width load without raw offsets or absolute addresses. [same emitted code as probe 26]
+probe 30 liveness; result=MISMATCH; diff=197; shape=86.04651162790698: Swap raw-width declaration ahead of height and width to test the natural local-allocation axis that controls EAX height versus EBX width at the allocation site. [same emitted code as probe 28]
+probe 33 abi; result=MISMATCH; diff=197; shape=86.04651162790698: Use an int row index while retaining the long GetDibDim dimensions; test whether the original parameter-home-sized induction value changes the row and transparency register colors. [same emitted code as probe 30]
+probe 35 liveness; result=MISMATCH; diff=331; shape=88.37209302325581: Move the natural first-visible-pixel initialization after row-base and x setup, matching the original PDB/decompiler order while keeping typed scan ownership and loop behavior.
+probe 36 liveness; result=MISMATCH; diff=260; shape=87.59689922480621: With first assigned after row calculation, declare the typed scan base after x and first; test the natural declaration order that may recover the oracle EAX base without a shared raw cursor.
+probe 37 variant; result=MISMATCH; diff=366; shape=73.72262773722628: Combine original local order (first after row) with direct typed bits[row + x] indexing; test whether the moved first lifetime avoids the earlier direct-index structural basin.
+probe 39 liveness; result=MISMATCH; diff=260; shape=87.59689922480621: Combine the PDB-supported post-row first assignment with raw-width declared first, testing whether this natural declaration order selects the oracle EBX width carrier and downstream ESI/EDI roles. [same emitted code as probe 36]
+probe 41 variant; result=MISMATCH; diff=197; shape=86.04651162790698: Spell the typed scan base as &bits[row] rather than bits + row; test the original decompiler's indexed address form without changing ownership or loop behavior. [same emitted code as probe 33]
+probe 43 abi; result=MISMATCH; diff=197; shape=86.04651162790698: Narrow only the proven pixel endpoints first and last to int while retaining long dimensions; test whether endpoint width changes the observed first/last and scan register colors. [same emitted code as probe 41]
+probe 45 layout; result=MISMATCH; diff=330; shape=78.19548872180451: Use a typed LINEINFO pointer that advances one record per natural row; test whether this ownership-preserving pointer induction recovers the oracle EBP line cursor without a raw byte offset.
+probe 51 variant; result=MISMATCH; diff=346; shape=74.07407407407408: Use decompiler-supported direct bits[row + x] indexing with raw width and output dimensions declared in the observed GetDibDim order; test whether the natural cursor-free source recovers the oracle EAX base and EBX width carrier.
+probe 53 variant; result=MISMATCH; diff=363; shape=72.05882352941177: Use the minimal direct bits[row + x] spelling with the pinned natural declaration order and long scan index; test only the scan-base lowering while preserving the known frame and call shape. [same emitted code as probe 18]
+probe 54 variant; result=MISMATCH; diff=197; shape=86.04651162790698: Split scan-base initialization into a pointer copy followed by scan += row; test whether this natural pointer-update form preserves the row pitch while selecting the oracle EAX scan base. [same emitted code as probe 50]
+probe 55 liveness; result=MISMATCH; diff=197; shape=86.04651162790698: Promote the row scan pointer to function scope but keep its single row assignment; test whether a natural longer scan lifetime recovers the oracle EAX base without a raw cursor. [same emitted code as probe 54]
+probe 56 abi; result=MISMATCH; diff=197; shape=86.04651162790698: Narrow only the scan index to the decompiler-supported int width while retaining the natural scan pointer and long dimensions; test whether this source-level pixel index recovers the oracle ECX carrier. [same emitted code as probe 55]
+```
+<!-- end-recovered:be457ca3dff891bd9e6f -->
+
+<!-- recovered:b4a94bfce8261d19c8a1 -->
+### `15c84a1b36c1` `src/scratch/004395A0_DibCheckTrans.cpp:1-51`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004395A0 DibCheckTrans | Dib.cpp:634-714
+// Attempt log:
+// - baseline: replaced the decompiler cursor model with typed Win32
+//   BITMAPINFO256 plus TRANSINFO/TRANSENTRY ownership; call set, frame, and
+//   scan behavior are understood.
+// - tried direct bits indexing, width signedness, TU malloc declarations,
+//   declaration scope, and typed entry/stride cursors; the clean natural
+//   candidate remains the most stable source basin.
+// - corrected local ABI evidence shows GetDibDim takes long references and
+//   canonical LINEINFO/TRANSINFO fields are the right ownership model, but
+//   those changes alone did not move the 333-byte basin.
+// - PDB local-order evidence (tw, orientation, y, height, width, raw_width)
+//   plus function-scope tw/y and the natural scan-pointer source produced the
+//   best current 219-byte emitted basin; this is retained as the clean source.
+// - direct bits[row+x], an explicit LINEINFO byte-offset cursor, and widening
+//   all_trans changed structure or worsened the match and were rolled back.
+// - binary branch layout shows the nonzero scan case is inline and the zero
+//   case is the jump arm; changing the first scan predicate to nonzero-first
+//   improved the natural source basin from 219 to 197 bytes and made the scan
+//   blocks exact. Declaration-order and register-keyword probes did not help.
+// - left in scratch: the oracle saves raw bitmap width in EBX, uses a direct
+//   EAX scan base with ECX index, and has a different remaining register/
+//   entry-offset topology; calls, frame, size, and scan behavior are aligned.
+// - tried reading the proven bitmap width before GetDibDim to extend its
+//   lifetime; VC5 changed the setup and scan coloring and worsened diff 197
+//   to 324, so it was rolled back. The post-call width read remains canonical.
+// - new claim probes: raw_width declaration initialization/int type, an int
+//   orientation cast, scan declaration order, int height, and long all_trans
+//   were codegen duplicates. Direct bits[row+x] with the corrected branch
+//   widened the frame to 0x1c; initializing tw/y widened it to 0x18.
+// - restored the natural typed candidate; remaining gap is the original EBX
+//   save and EAX/ECX scan register topology despite exact calls/frame/size.
+// - current claim probes tested raw_width register/int/order/initialization
+//   forms, scan update forms, inner declaration order, function-scope flags,
+//   LineInfo cursors, and period DIB header context; all returned the same
+//   197-byte basin or worsened structure.
+// - an ambient declaration sweep of 512 VC5 front-end states produced one
+//   emitted group and no exact result; the natural source remains clean.
+// - revisit probes tested typed direct indexing, scan-pointer scope and spelling,
+//   raw-width aliases and declaration order, narrow index types, sizeof allocation,
+//   and typed LINEINFO pointer induction; none improved the 197-byte basin.
+// - final local evidence still shows exact calls, frame, size, and scan CFG, but
+//   the oracle's EBX width save, EAX scan base, ECX index, and EBP line cursor
+//   remain unrecovered without forbidden cursor or register-steering source.
+// - revisit claim: the local dossier and type records reconfirmed BITMAPINFO256
+//   size 0x428, LINEINFO size 0x10, TRANSINFO::LineInfo at +0x14, and the
+//   long-reference GetDibDim ABI. The unchanged typed source rebuilt at 345
+//   bytes with the 0x14 frame and all 3 ordered calls, but still differed by
+//   197 bytes. The first hunk remains the prologue and register/save topology;
+//   no policy-valid natural edit improved it. Keep this clean source paused
+//   until period source or new translation-unit evidence becomes available.
+```
+<!-- end-recovered:b4a94bfce8261d19c8a1 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

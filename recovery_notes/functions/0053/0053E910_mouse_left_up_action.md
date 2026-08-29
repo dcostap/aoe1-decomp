@@ -1,0 +1,122 @@
+# Recovery journal: 0053E910 `mouse_left_up_action`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/vw_main.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\vw_main.cpp`.
+- Earlier recovery note: `recovery_notes/vw_main_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:b4444d24b43f29639bf2 -->
+### `target-session` `build/target_sessions/0053E910_mouse_left_up_action.json:1-23`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=1974; shape=92.84649776453055: Canonical current source baseline: exact size/frame/call count and 92.85% shape, but strict mismatch starts at scroll-action zero basin; target identity remains clean-source evidence to inspect.
+probe 2 context; result=MISMATCH; diff=1974; shape=92.84649776453055: Header hypothesis: include the period <stdlib.h> used by the exact same-TU mouse-right donor, replacing the local free declaration context; test whether VC5 front-end state restores the early zero/register basin.
+probe 3 liveness; result=MISMATCH; diff=1974; shape=92.84649776453055: Null-local hypothesis: keep one typed RGE_Static_Object* null_object live across pointer arguments, movable-object reset, and pick exclusion; original keeps EBX zero across the same early and late pointer-zero uses.
+probe 5 control-flow; result=MISMATCH; diff=1974; shape=92.84649776453055: Operand-order hypothesis: reverse both zero comparisons in the scroll multi-place boolean; original uses memory-left cmp against EBX rather than the rebuilt test/load basin. [same emitted code as probe 1]
+probe 7 liveness; result=MISMATCH; diff=1974; shape=92.84649776453055: Named-result hypothesis: materialize the scroll multi-place boolean in a branch-local int before the call; this tests whether original EBX zero is a carried source result rather than direct predicate lowering. [same emitted code as probe 3]
+probe 9 liveness; result=MISMATCH; diff=1974; shape=92.84649776453055: Declaration-lifetime hypothesis: declare and zero game_mode before scroll handling, then assign the real mode after pause; original EBX is zero before scroll and later becomes the game-mode register. [same emitted code as probe 5]
+probe 11 liveness; result=MISMATCH; diff=1974; shape=92.84649776453055: Shared-zero hypothesis: use one branch-crossing int zero for the scroll boolean, object/player null assignments, and set_game_mode argument; original EBX serves all these zero uses before becoming game_mode.
+probe 13 liveness; result=MISMATCH; diff=1974; shape=92.84649776453055: Stack-home hypothesis: move the unsigned-char pick result declaration to function scope before pick_info; original stores the case-0/6 pick byte at entry-relative [esp+30], while baseline uses [esp+2c].
+probe 15 liveness; result=MISMATCH; diff=2090; shape=90.04329004329004: Parameter-home hypothesis (complete): reuse key for both interface-style and ordinary pick results, with LAB_F0C7 testing the same low-byte parameter value; original decomp shows param_3 overwritten by pick status.
+probe 17 control-flow; result=MISMATCH; diff=2030; shape=90.80118694362018: Interface-style CFG hypothesis: join selected and unselected success arms before the common redraw and coordinate stores; original has separate call blocks at +050a but one common set_redraw tail at +051f, unlike baseline's duplicated tails.
+probe 19 liveness; result=MISMATCH; diff=1974; shape=92.84649776453055: Declaration-order hypothesis: declare the 20-byte pick record before the early program-mode local; original PDB/decomp places pick_info at function entry and shows an unexplained pre-log local value, so stack/register initialization order may differ. [same emitted code as probe 9]
+probe 21 control-flow; result=MISMATCH; diff=1974; shape=92.84649776453055: Explicit-tail hypothesis: add a source label after the interface-style selected/unselected arms and jump from the selected arm; this preserves duplicated calls while testing whether VC5 keeps the unselected arm inline instead of outlining it.
+probe 23 liveness; result=MISMATCH; diff=2034; shape=92.99552906110283: Narrow object-alias hypothesis: cache pick_info.object only across the interface-style selected-bit test and its two selection calls; original directly tests [object+36] and preserves the object pointer in EAX.
+probe 26 context; result=MISMATCH; diff=1974; shape=92.84649776453055: Header-context hypothesis with required macro hygiene: add <windows.h> and undefine its small macro so the existing pick1 parameter remains source-valid; test historical SDK front-end state without changing the ABI.
+probe 27 context; result=MISMATCH; diff=1974; shape=92.84649776453055: Header-context hypothesis: add <string.h> to the same-TU declaration context because VC5 standard-header combinations can shift inline and register basins even when this body has no string call.
+probe 28 context; result=MISMATCH; diff=1974; shape=92.84649776453055: Combined-header hypothesis: use the period <stdlib.h> and <string.h> pair around the free declaration; individual headers were neutral, but VC5 front-end state can change only under a supported combination.
+probe 29 control-flow; result=MISMATCH; diff=1974; shape=92.84649776453055: Call-setup hypothesis: replace the interface-style exclude local with the direct conditional receiver expression; original pick1 setup interleaves player selected_obj load with zero pushes, unlike the baseline's precomputed alias.
+probe 32 liveness; result=MISMATCH; diff=1974; shape=92.84649776453055: Reuse the existing mode local for game_mode after pause, instead of declaring a second local; test whether the original EBX zero basin and later mode register reflect one source variable.
+probe 34 liveness; result=MISMATCH; diff=1974; shape=92.84649776453055: Move the address-taken pick record into the post-pause action scope, matching its first PDB use near the game-mode load; test whether reduced early lifetime restores the EBX zero basin. [same emitted code as probe 31]
+probe 36 liveness; result=MISMATCH; diff=1974; shape=92.84649776453055: Use a typed null object only for the early scroll cleanup assignment, where the original carries EBX zero into movable_object and later mode-8 arguments; keep switch cleanup literals unchanged. [same emitted code as probe 7]
+probe 38 control-flow; result=MISMATCH; diff=1974; shape=92.84649776453055: Keep a real pick-output pointer alias alive across the interface-style conditional pick call, testing whether the original branch computes the output LEA before its selected-object load.
+probe 40 control-flow; result=MISMATCH; diff=2022; shape=92.42199108469539: Duplicate the interface-style conditional pick call in its two source arms; test whether VC5 tail-merges one call while retaining the original branch-specific output and exclude argument setup.
+probe 42 control-flow; result=MISMATCH; diff=1970; shape=92.54843517138599: Initialize the interface-style exclude pointer to null, then assign the selected object only on equal coordinates; test the natural one-sided branch against the original branch-specific pick setup.
+```
+<!-- end-recovered:b4444d24b43f29639bf2 -->
+
+<!-- recovered:3b24cedd56078bddd085 -->
+### `912332e8f578` `src/scratch/0053E910_mouse_left_up_action.cpp:1-44`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 0053E910 RGE_Main_View::mouse_left_up_action (2252 bytes)
+// PDB: vw_main.cpp (RGE_Main_View::mouse_left_up_action), lines 681-1076
+//
+// long __thiscall RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags)
+// ret 10h cleanup (4 stack params, thiscall). Returns 0 or 1.
+//
+// Attempt log:
+//   prior candidate: exact size/frame but rejected because it used synthetic
+//     virtual padding/manual dispatch views and omitted three ordered
+//     interface-style-2 calls (unselect_object, select_object, set_redraw).
+//   probe 12 (baseline): rebuilt the canonical named TPanel/RGE_View/
+//     RGE_Main_View, RGE_Base_Game, RGE_Player, RGE_Static_Object, sprite,
+//     map, and visible-map surfaces from the generated original-header facts.
+//     Natural delete/destroy/rotate calls replace manual virtual surfaces.
+//   probe 13 (ABI): restored the real overloaded TPanel set_rect declaration;
+//     inherited set_redraw/end_scroll/command virtual indices then aligned.
+//   probe 14 (liveness): shared zero and typed null locals were const-folded;
+//     rolled back as diagnostic-only codegen attempts.
+//   probe 15 (control-flow): duplicated the interface-style-2 selected and
+//     unselected success arms, including their own set_redraw and coordinate
+//     stores. This restored all three missing calls and exact 72/72 call-site
+//     order while preserving the natural branch behavior.
+//   probes 16-19: function-scope ret/pick_info and zero-basin variants were
+//     unchanged; the mode-mode zero expression was rejected as noncanonical.
+//   follow-up probes: standard-header contexts, shared zero locals, parameter
+//     result reuse, direct pick arguments, and interface-tail labels were all
+//     restored after emitting no improvement. The duplicated interface arms
+//     are required for the 72-call sequence; a common redraw tail loses calls.
+//
+//   worker pass (sa-6b56b58a): reusing the mode local, moving pick_info scope,
+//   typed null aliases, and a pick-output alias were codegen duplicates.
+//   Duplicating the conditional pick call changed the call sequence and was
+//   restored. Initializing the exclude pointer to null changed metrics only;
+//   it reduced the raw diff by 4 bytes but worsened shape and block coverage.
+//   The pinned source was restored and revalidated unchanged.
+//
+// Current state: canonical source, size 2252/2252, frame 0x14/0x14, calls
+//   72/72 ordered and target-aligned, shape 92.85%, strict diff 1974 bytes.
+// Remaining evidence-backed drift is the early EBX zero/register-zero basin,
+// the result-byte home ([esp+2Ch] rebuilt vs [esp+30h] original), and a small
+// number of CFG/epilogue scheduling differences. No synthetic virtual slots,
+// raw vptr fields/stores, fake volatility, or inline assembly remain.
+// Next lead: only a genuinely source-supported TU/variable-lifetime fact should
+// be tried; otherwise this is a clean documented structural pause.
+```
+<!-- end-recovered:3b24cedd56078bddd085 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

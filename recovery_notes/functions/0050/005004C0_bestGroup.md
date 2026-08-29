@@ -1,0 +1,254 @@
+# Recovery journal: 005004C0 `bestGroup`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/taitacmd.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\taitacmd.cpp`.
+- Earlier recovery note: `recovery_notes/taitacmd_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:dd3048ab9f3f2f39e120 -->
+### `d050eea3c` `src/taitacmd.cpp:13752-13756`
+
+Mapping: `exact`. removed comment declares this PDB source owner VA.
+
+```text
+// ---------------------------------------------------------------------------
+// PDB source owner: 005004C0_bestGroup.cpp
+// ---------------------------------------------------------------------------
+// VA: 005004C0 TribeTacticalAIModule::bestGroup (430 bytes)
+// PDB: taitacmd.cpp:11348-11391
+```
+<!-- end-recovered:dd3048ab9f3f2f39e120 -->
+
+<!-- recovered:6a7711495ce3090d55af -->
+### `d050eea3c` `src/taitacmd.cpp:13867-13910`
+
+Mapping: `ambiguous`. comment lies after mapped function bestGroup at old line 13765.
+
+```text
+// - The exact-size clean reconstruction remains nonexact at 339 differing
+// [non-comment lines omitted during migration]
+// - Tested id-first temporaries, direct and sentinel guards, loop forms,
+// [non-comment lines omitted during migration]
+//   value local for type and desired, and a target alias, were codegen-neutral.
+// - Left in scratch: behavior, calls, frame, and boundary are understood; the
+//   unresolved basin is prologue/local-home/register coloring.
+// Current session probes: named the groups sentinel (both initialization
+// [non-comment lines omitted during migration]
+// distance guards; sentinel/term forms duplicated the 68-byte basin and the
+// [non-comment lines omitted during migration]
+// TacticalAIModule base likewise duplicated the basin.
+// - This session's 18-variant local declaration/predicate lab produced two
+//   size/frame/call-set-preserving codegen groups, neither closer than 68
+// [non-comment lines omitted during migration]
+//   were also codegen duplicates.
+// [non-comment lines omitted during migration]
+// Current bounded pass: behavior, calls, frame, boundary, and typed ownership
+// are stable; remaining drift is the first prologue/local-home/register basin
+// [non-comment lines omitted during migration]
+// - Current TU pass: a natural do-while list form added four bytes and a
+// [non-comment lines omitted during migration]
+//   filtering and ordered desired/number locals was codegen-duplicate. The
+//   dossier and same-TU donors add no new ownership or ABI fact, so the clean
+//   source remains authoritative.
+// - This pass tested direct and separate filter locals, declaration order,
+```
+<!-- end-recovered:6a7711495ce3090d55af -->
+
+<!-- recovered:28d681423a0075a78de6 -->
+### `6a2aef2e2` `src/taitacmd.cpp:11916-11945`
+
+Mapping: `ambiguous`. comment lies after mapped function bestGroup at old line 11829.
+
+```text
+//   qualified TribeTacticalAIModule::bestGroup symbol and its boundary is
+//   ordered direct calls, candidate return, and fault order.
+//   bytes. The first ordered call gap is id versus assistGroupID evaluation.
+//   declaration order, point aliases, and label forms. None produced an exact
+
+//   group walk: desired/actual, isGathered/allUnitsIdle gates, four gathered
+//   location reads, integer distance, and best-group update.
+// - Explicit top-null/bottom-sentinel control flow plus separate
+//   desired-before-number assignments restored the original ordered call set
+//   and exact size, but the remaining EBX/EBP/EDI register and local-home
+//   rotation stayed 68 bytes from the oracle. Reusing the decompiler's one
+// orders), swapped the commutative x/y distance terms, and nested the final
+// nested guards regressed to 296 bytes before restoration. A proven
+//   bytes; register-qualified point/type parameters and a full self alias
+// - Restored the period math-header surface and the generated polymorphic
+//   AIModule/TacticalAIModule/TribeTacticalAIModule and TacticalAIGroup
+//   destructor ownership. These canonical source corrections emit the same
+//   317-byte function and preserve the proven +0xF0/+0x9D4 offsets.
+// (68 bytes, 21.4511%).
+//   branch, then was restored. A typed self alias combined with direct type
+//   register-qualified parameters, point aliases, guard nesting, and class
+// - A volatile best-distance diagnostic reached 52 bytes but remains an
+//   unsupported metric-only form. A 32-sample ambient declaration sweep found
+// - A simpler direct type predicate with one block-local desired value and a
+//   `(underLimit && unset) || better`. It is equivalent because every stored
+//   best distance is under the limit. This reduced the residual from 30 to 17
+//   bytes and made the complete distance-update tail exact. Declaration and
+//   initialization reorders were duplicate or worse.
+// check. Values, calls, used flags, branches, memory effects, FPU operations,
+// returns, and fault behavior match. No local address escapes.
+```
+<!-- end-recovered:28d681423a0075a78de6 -->
+
+<!-- recovered:aae0b45d597bc5b25fc1 -->
+### `target-session` `build/target_sessions/005004C0_bestGroup.json:1-58`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=350; shape=88.54961832061069: Clean typed source baseline before further codegen hypotheses.
+probe 2 abi; result=MISMATCH; diff=350; shape=88.54961832061069: Tested const-qualified getter and object declarations against exact donor ABI symbols.
+probe 3 liveness; result=MISMATCH; diff=350; shape=88.54961832061069: Reordered sentinel before best to test original entry stack-home rotation. [same emitted code as probe 2]
+probe 4 control-flow; result=MISMATCH; diff=339; shape=89.31297709923665: Moved first sentinel assignment inside the nonempty-list arm and used direct outer sentinel comparison.
+probe 5 liveness; result=MISMATCH; diff=339; shape=89.31297709923665: Scoped sentinel to the nonempty-list arm to test its stack-home lifetime against the original best/sentinel slots. [same emitted code as probe 4]
+probe 6 behavior; result=MISMATCH; diff=340; shape=89.31297709923665: Reversed assist equality operands to force original id-then-assist call order.
+probe 7 behavior; result=MISMATCH; diff=363; shape=78.41726618705036: Cached candidate group id before the assist getter to reproduce original id-then-assist call sequence.
+probe 8 liveness; result=MISMATCH; diff=363; shape=78.41726618705036: Declared groupID before validity to test original EBP id and EBX validity register coloring. [same emitted code as probe 7]
+probe 9 liveness; result=MISMATCH; diff=363; shape=78.41726618705036: Moved the id temporary to function scope to test register reuse across the original point reload. [same emitted code as probe 8]
+probe 10 liveness; result=MISMATCH; diff=363; shape=78.41726618705036: Diagnostic register qualification for the id temporary to test whether VC5 can recover original EBP coloring. [same emitted code as probe 9]
+probe 11 control-flow; result=MISMATCH; diff=378; shape=77.37226277372262: Used direct inner-list sentinel expressions to preserve original per-iteration address recomputation.
+probe 12 abi; result=MISMATCH; diff=378; shape=77.37226277372262: Corrected object and currentZone to the inventory-proven non-const ABI while retaining const TacticalAIGroup getters.
+probe 14 liveness; result=MISMATCH; diff=339; shape=89.31297709923665: Swapped best and bestDistance declaration order to test local-home allocation while preserving direct outer control flow. [same emitted code as probe 13]
+probe 15 abi; result=MISMATCH; diff=339; shape=89.31297709923665: Replaced the decompiler pointer getter with the inventory-proven const Waypoint reference ABI.
+probe 16 liveness; result=MISMATCH; diff=339; shape=89.31297709923665: Hoisted the sentinel declaration while keeping its first assignment inside the nonempty arm. [same emitted code as probe 15]
+probe 17 control-flow; result=MISMATCH; diff=350; shape=88.54961832061069: Tested a comma assignment in the outer sentinel guard for source-controlled store and compare order.
+probe 18 liveness; result=MISMATCH; diff=339; shape=89.31297709923665: Hoisted a named point pointer to test the original pre-null point-home load. [same emitted code as probe 16]
+probe 20 control-flow; result=MISMATCH; diff=339; shape=89.31297709923665: Used a direct group-sentinel condition for the typed assist scan, while retaining the named sentinel local for outer ownership; tests whether the original single compare backedge is source-controlled. [same emitted code as probe 19]
+probe 21 liveness; result=MISMATCH; diff=339; shape=89.31297709923665: Reordered the named sentinel before best so the typed group owner can occupy the original sentinel and result homes; preserves natural selection and list ownership. [same emitted code as probe 20]
+probe 22 behavior; result=MISMATCH; diff=340; shape=89.31297709923665: Reversed the natural assist equality operands to test whether VC5 honors the original id-before-assist call order without introducing a persistent candidate-id local.
+probe 23 behavior; result=MISMATCH; diff=363; shape=78.41726618705036: Named the candidate id inside the typed assist iteration so VC5 can emit id before assistGroupID without extending it across the scan.
+probe 25 liveness; result=MISMATCH; diff=339; shape=89.31297709923665: Added a typed point-reference alias at function scope and used it for the four natural coordinate reads, testing the original early point-home load without raw cursor access. [same emitted code as probe 21]
+probe 27 liveness; result=MISMATCH; diff=339; shape=89.31297709923665: Scoped the typed point alias to the nonempty group arm, matching the original early point-address lifetime candidate without changing group or AI ownership. [same emitted code as probe 25]
+probe 29 control-flow; result=MISMATCH; diff=304; shape=94.02985074626865: Used the direct typed group sentinel for the assist-scan entry guard, leaving the named sentinel for the outer walk; tests whether this removes the compiler's extra null backedge test.
+probe 30 liveness; result=MISMATCH; diff=304; shape=94.02985074626865: With the direct typed assist-sentinel guard retained, scoped the point alias before the filters to test recovery of the original early parameter-home load. [same emitted code as probe 29]
+probe 31 control-flow; result=MISMATCH; diff=304; shape=94.02985074626865: Combined the outer nonempty test with the typed sentinel assignment while retaining the direct inner group guard, testing source-controlled sentinel initialization and branch layout. [same emitted code as probe 30]
+probe 33 liveness; result=MISMATCH; diff=304; shape=94.02985074626865: Retained the direct typed assist guard and hoisted a function-scope point pointer alias before the outer test, testing whether a natural address lifetime recovers the original early point register. [same emitted code as probe 31]
+probe 34 liveness; result=MISMATCH; diff=304; shape=94.02985074626865: Replaced the pointer alias with a natural point reference alias under the direct assist guard, testing whether reference binding forces the original early point-address register. [same emitted code as probe 33]
+probe 36 control-flow; result=MISMATCH; diff=384; shape=78.19548872180451: Changed the typed assist do-loop to a sentinel-first while guard with an explicit null bound, testing whether natural loop rotation removes the direct-guard size excess.
+probe 38 control-flow; result=MISMATCH; diff=304; shape=94.02985074626865: Kept the direct typed assist guard but used an explicit local exit for null assist nodes, testing whether compiler layout matches the original single backedge without a post-loop null test. [same emitted code as probe 34]
+probe 41 behavior; result=MISMATCH; diff=363; shape=78.41726618705036: Forced the proven original id-before-assist call order with a natural groupID local; test whether the call-site order outweighs the clean direct-expression basin. [same emitted code as probe 23]
+probe 45 control-flow; result=MISMATCH; diff=350; shape=88.54961832061069: Initialized the outer sentinel before the nonempty-list guard, matching the original pre-compare sentinel store; test whether this fixes the first local-home hunk without changing the natural loop. [same emitted code as probe 17]
+probe 47 control-flow; result=MISMATCH; diff=339; shape=89.31297709923665: Moved the outer sentinel assignment into the first statement of the natural do-loop, matching the decompiler's per-iteration owner assignment; test whether VC5 hoists the first store before the guard. [same emitted code as probe 44]
+probe 48 behavior; result=MISMATCH; diff=340; shape=89.31297709923665: Reversed the assist equality operands to make group id the source-left call, testing whether VC5 follows this natural spelling for the oracle's id-before-assist order. [same emitted code as probe 22]
+probe 50 behavior; result=MISMATCH; diff=363; shape=78.41726618705036: Named groupID before the assist predicate so the source completes group id before the assist call, testing explicit call sequencing against the original id-first pair. [same emitted code as probe 41]
+probe 52 liveness; result=MISMATCH; diff=363; shape=78.41726618705036: Moved groupID to function scope while preserving explicit id-before-assist sequencing, testing whether broader declaration scope lets VC5 reuse the original EBP point register across the assist call. [same emitted code as probe 50]
+probe 54 liveness; result=MISMATCH; diff=363; shape=78.41726618705036: Combined explicit id-first groupID sequencing with a named point pointer, testing whether a pointer local restores the original EBP point/groupID reuse while preserving all calls. [same emitted code as probe 52]
+probe 56 liveness; result=MISMATCH; diff=363; shape=78.41726618705036: Placed function-scope groupID before all pointer locals, testing declaration-order coloring for the original EBP groupID/point reuse while keeping explicit id-first calls. [same emitted code as probe 54]
+probe 59 liveness; result=MISMATCH; diff=363; shape=78.41726618705036: Added a register-qualified scoped groupID to test whether explicit register intent recovers the original EBP live-range split without keeping a stack local. [same emitted code as probe 56]
+probe 61 liveness; result=MISMATCH; diff=363; shape=78.41726618705036: Declared the point pointer before groupID and used both named locals, testing declaration-order coloring for an EBP point home plus EBP groupID reuse. [same emitted code as probe 59]
+probe 63 abi; result=MISMATCH; diff=364; shape=76.7605633802817: Combined bool valid with explicit groupID local; decompiler marks validity as bool, and this tests whether byte-sized predicate typing restores EBX validity while EBP carries groupID.
+probe 65 liveness; result=MISMATCH; diff=363; shape=78.41726618705036: Combined a function-scope point reference alias with groupID sequencing, testing whether reference binding preserves the original point register while the id result spans assistGroupID. [same emitted code as probe 61]
+probe 67 liveness; result=MISMATCH; diff=339; shape=89.31297709923665: Made only the sentinel local volatile as a diagnostic for the proven repeated stack rereads, testing whether this forces original point-EBP versus sentinel-memory topology. [same emitted code as probe 47]
+probe 69 control-flow; result=MISMATCH; diff=393; shape=84.9624060150376: Changed only the assist scan from do/while to a sentinel-tested while loop with the same null break and updates, testing whether VC5 restores the original top-null/backedge topology.
+probe 71 liveness; result=MISMATCH; diff=339; shape=89.31297709923665: Reordered sentinel before best and bestDistance declarations to test local-home assignment against the original best=[esp+1c], sentinel=[esp+18] prologue. [same emitted code as probe 67]
+probe 72 control-flow; result=MISMATCH; diff=304; shape=94.02985074626865: Used a direct groups-sentinel entry guard for the assist scan while retaining the sentinel local for loop updates and outer control, testing the known direct-guard structural basin. [same emitted code as probe 38]
+probe 73 liveness; result=MISMATCH; diff=304; shape=94.02985074626865: Retained direct assist entry guard and named point pointer, testing whether explicit point-address lifetime recovers the original pre-null EBP load and removes the 14-byte size excess. [same emitted code as probe 72]
+probe 74 control-flow; result=MISMATCH; diff=391; shape=88.65248226950355: Combined direct assist entry guard with an early outer empty-list return and pre-loop sentinel, testing whether this natural guard form restores the original point preload and exact 430-byte boundary.
+probe 77 liveness; result=MISMATCH; diff=357; shape=89.31297709923665: Hypothesis: initialize the list sentinel before best and bestDistance, then use it for the outer guard; this tests whether authentic declaration and initialization order restores the original sentinel stack home without changing behavior.
+probe 79 liveness; result=MISMATCH; diff=350; shape=88.54961832061069: Hypothesis: keep the original best and bestDistance initialization order, but assign the sentinel before the outer guard; this tests whether sentinel lifetime, rather than declaration order, controls its original stack home. [same emitted code as probe 45]
+probe 81 behavior; result=MISMATCH; diff=340; shape=89.31297709923665: Hypothesis: reverse the equality operands so the candidate group id is evaluated before the assist group id, matching the original direct-call order and preserving the same predicate. [same emitted code as probe 48]
+probe 83 liveness; result=MISMATCH; diff=339; shape=89.31297709923665: Hypothesis: retain the sentinel assignment before the outer guard and repeat it at the start of each outer iteration; this tests whether the original repeated sentinel home comes from an authentic loop-body assignment. [same emitted code as probe 76]
+probe 85 behavior; result=MISMATCH; diff=363; shape=84.49612403100775: Hypothesis: use a block-local const groupID to force the proven id-before-assist call order while keeping the temporary read-only; this tests whether const liveness avoids the prior explicit-id register basin.
+probe 87 behavior; result=MISMATCH; diff=363; shape=84.49612403100775: Hypothesis: bind group->id through a block-local comma expression, preserving the id-before-assist fault order with one source predicate; this tests whether one statement restores a smaller natural VC5 basin. [same emitted code as probe 85]
+probe 89 liveness; result=MISMATCH; diff=339; shape=89.31297709923665: Hypothesis: use one natural function-scope pointer alias for the reference point; this tests whether point-address liveness restores the original EBP geometry owner and sentinel stack home. [same emitted code as probe 83]
+probe 91 liveness; result=MISMATCH; diff=363; shape=84.49612403100775: Hypothesis: mark the integer validity flag register-qualified while keeping a block-local explicit groupID; this tests whether natural VC5 register preference reproduces EBX valid and EBP groupID without changing the call surface. [same emitted code as probe 87]
+probe 92 control-flow; result=MISMATCH; diff=393; shape=87.59689922480621: Hypothesis: express the assist scan as one sentinel-tested while loop with its natural zero and validity exits, removing the redundant outer guard; this tests whether VC5 emits the original bottom compare polarity and loop edge.
+probe 94 behavior; result=MISMATCH; diff=340; shape=89.31297709923665: Restore original id-before-assistGroupID evaluation order in the proven assist comparison; tests ordered getter calls and natural operand ownership. [same emitted code as probe 81]
+```
+<!-- end-recovered:aae0b45d597bc5b25fc1 -->
+
+<!-- recovered:6db3ebd55d28f809e38e -->
+### `3789ccb1ae1e` `src/scratch/005004C0_bestGroup.cpp:2-33`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 005004C0 TribeTacticalAIModule::bestGroup (430 bytes)
+// PDB: taitacmd.cpp:11348-11391
+//
+// Attempt log:
+// - Replaced the old decompiler-shaped scaffold (which filtered on desired and
+//   actual unit counts) with the packet-proven type/action, assist-group,
+//   commander-zone, and gather-distance selection logic.
+// - Baseline candidate: natural typed list walk with an explicit sentinel local,
+//   the type-106 assist-group scan, and four direct gatherLocation() reads.
+// - Split id/assist calls restored the oracle's ordered call multiset but moved
+//   the saved-this/point and validity registers; declaration-order and bool/int
+//   variants were duplicates or worse, so they were rolled back.
+// - Swapping sentinel/best declarations improved late block alignment but left
+//   the prologue stack homes wrong and was rolled back.
+// - A 12-variant natural lab over initial-local order, assist-loop form, and
+//   direct versus split id calls found no exact output. The direct do/break
+//   family retained the best clean basin; top-tested variants lost size.
+// - Fresh pass: removing the outer sentinel refresh worsened the frame and
+//   CFG. Reversing the assist-id equality was the only small metric gain, but
+//   it did not change VC5 call order. Point aliases, pointer/reference ABI,
+//   declaration splitting, donor constness, and alternate null exits were
+//   codegen duplicates or worse.
+// - Final clean source: exact size/frame and typed behavior/call set; remaining
+//   drift is the assist id/validity call-order and early local-home/register
+//   basin. No canonical layout or behavioral uncertainty remains.
+// - Tried the natural id-first equality spelling; VC5 kept the call-site order
+//   mismatch and moved one byte farther from the oracle, so the assist-first
+//   clean form remains selected.
+// - Tried a natural outer while sentinel walk in place of the if/do form; it
+//   improved shape but worsened positional drift from 350 to 372 bytes and did
+//   not change the first local-home hunk or assist call order, so it was rolled
+//   back.
+```
+<!-- end-recovered:6db3ebd55d28f809e38e -->
+
+<!-- recovered:0c1b14d7ad299ecb99fd -->
+### `3789ccb1ae1e` `src/scratch/005004C0_bestGroup.cpp:155-166`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// Session audit:
+// - PDB sibling selection identifies 005004C0 as the first unowned normal
+//   tactical-AI sibling after 00500670 in source order. Its owner is the
+//   qualified TribeTacticalAIModule::bestGroup symbol and its boundary is
+//   005004C0-0050066D.
+// - The clean source preserves the sentinel walk, type/action/id/null checks,
+//   ordered direct calls, candidate return, and fault order.
+// - The exact-size clean reconstruction remains nonexact at 339 differing
+//   bytes. The first ordered call gap is id versus assistGroupID evaluation.
+// - Tested id-first temporaries, direct and sentinel guards, loop forms,
+//   declaration order, point aliases, and label forms. None produced an exact
+//   result. The current source is restored to the pinned clean form.
+```
+<!-- end-recovered:0c1b14d7ad299ecb99fd -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

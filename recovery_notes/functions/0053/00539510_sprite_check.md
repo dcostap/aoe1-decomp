@@ -1,0 +1,130 @@
+# Recovery journal: 00539510 `sprite_check`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/view.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\view.cpp`.
+- Earlier recovery note: `recovery_notes/view_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:95b989b10093e0bfc9aa -->
+### `target-session` `build/target_sessions/00539510_sprite_check.json:1-23`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=277; shape=73.37278106508876: Current clean typed decoder before fresh probes; establish exact mismatch.
+probe 3 liveness; result=MISMATCH; diff=277; shape=73.37278106508876: Added register annotation only to shape parameter; test whether VC5 honors desired stream-pointer color without changing ABI. [same emitted code as probe 1]
+probe 4 control-flow; result=MISMATCH; diff=281; shape=72.18934911242603: Combined opcode assignment with switch expression; test whether VC5 keeps byte result in EDX and removes pre-dispatch reload.
+probe 6 abi; result=MISMATCH; diff=260; shape=75.15151515151516: Widened opcode local from uchar to int; test whether VC5 retains the loaded opcode in EDX and matches dispatch lowering.
+probe 8 control-flow; result=MISMATCH; diff=277; shape=73.37278106508876: Combined initial info/x/y guards into short-circuit groups; test whether a single validation region restores callee-save order.
+probe 10 variant; result=MISMATCH; diff=277; shape=73.37278106508876: variant lab build\variant_lab\00539510_sprite_check\20260816_230539: 3 variants, 2 invariant-eligible, 0 exact
+probe 11 abi; result=MISMATCH; diff=277; shape=73.37278106508876: Qualified Shape_Info input as const to test whether VC5 alias analysis recovers original info/shape/stream register ownership. [same emitted code as probe 3]
+probe 13 context; result=MISMATCH; diff=275; shape=73.96449704142012: Restored period-like polymorphic TPanel base and protected RGE_View helper access; test class context effect on register allocation and owner symbol.
+probe 14 context; result=MISMATCH; diff=275; shape=73.96449704142012: Added proven RGE_View object-size padding to the period-like base surface; test whether complete class size changes target register basin. [same emitted code as probe 13]
+probe 16 context; result=MISMATCH; diff=411; shape=2.816901408450704: Extracted the decoder into an inlineable helper with info-before-shape parameters; test whether helper parameter order steers inlined VC5 register coloring.
+probe 18 liveness; result=MISMATCH; diff=277; shape=73.37278106508876: Delayed Shape_Info alias assignment until after the info guard; test whether source lifetime changes info and shape register coloring. [same emitted code as probe 11]
+probe 20 context; result=MISMATCH; diff=274; shape=73.96449704142012: Added the reviewed RGE_View virtual surface before sprite_check; test whether declaration order and vtable context alter VC5 register assignment.
+probe 22 layout; result=MISMATCH; diff=277; shape=73.37278106508876: Used canonical SLP Shape_Info offset and dimension signedness (unsigned long offsets, long dimensions); test field typing effects. [same emitted code as probe 18]
+probe 24 liveness; result=MISMATCH; diff=274; shape=73.96449704142012: Added a widened opcode value local used across every decoder arm; test whether VC5 spills and reloads it through the dead info parameter home.
+probe 26 liveness; result=MISMATCH; diff=277; shape=73.37278106508876: Moved the Shape_Info alias declaration before all scalar and stream locals; test VC5 declaration-order register coloring. [same emitted code as probe 22]
+probe 28 variant; result=MISMATCH; diff=277; shape=73.37278106508876: variant lab build\variant_lab\00539510_sprite_check\20260816_231340: 128 variants, 128 invariant-eligible, 0 exact
+probe 30 liveness; result=MISMATCH; diff=277; shape=73.37278106508876: Moved the stream cursor declaration ahead of geometry locals, following the decompiler local order; test pointer register coloring. [same emitted code as probe 26]
+probe 33 abi; result=MISMATCH; diff=277; shape=73.37278106508876: Removed the redundant Shape_Info alias and restored canonical unsigned offsets and long dimensions; test whether direct typed info ownership recovers the oracle's EDI info and delayed shape load.
+probe 34 liveness; result=MISMATCH; diff=277; shape=73.37278106508876: Scoped the decoder opcode to the loop body, as PDB line 5272 and the target per-case home reload suggest; test natural command lifetime and return of target opcode topology. [same emitted code as probe 33]
+probe 35 liveness; result=MISMATCH; diff=277; shape=73.37278106508876: Introduced a branch-local typed shape_base alias before the outline/data accesses, preserving natural sprite ownership; test whether delayed source lifetime recovers target EDI info and ESI sprite registers. [same emitted code as probe 32]
+probe 36 liveness; result=MISMATCH; diff=277; shape=73.37278106508876: Scoped the stream cursor to the successful sprite-data branch, matching its proven lifetime; test whether stream EAX and typed info EDI emerge without steering. [same emitted code as probe 35]
+probe 39 abi; result=MISMATCH; diff=277; shape=73.37278106508876: Changed sprite_check access to protected, matching original decorated IAEH owner and Ghidra source evidence; test symbol and body impact. [same emitted code as probe 38]
+probe 40 control-flow; result=MISMATCH; diff=282; shape=73.05389221556887: Rewrote the decoder from the local loop to the decompiler-supported source shape: direct row lookup, while(start <= x), and post-case width return; test whether target loop topology and address lowering recover naturally.
+```
+<!-- end-recovered:95b989b10093e0bfc9aa -->
+
+<!-- recovered:23745b2c70f9bb5d9819 -->
+### `f521e261f88d` `src/scratch/00539510_sprite_check.cpp:1-52`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 00539510 RGE_View::sprite_check
+// view.cpp lines 5238-5347
+// Attempt log:
+// prior worker: natural switch source produced inline early returns and wrong info
+// register (ESI not EDI), 86.9% positional diff.
+// prior worker: shared labels/goto and explicit base/si locals moved the CFG but
+// still colored info/base incorrectly; /O1, /Ox, /Ob0 did not help.
+// probe 1 hypothesis: remove compiler-steering aliases and use the ordinary
+// parameter/member expressions with a top-tested while loop.
+// continuation: the exact Shape.cpp decoder donor uses a width-tested loop
+// with a top x guard, and orders arms as 0-group, 2, 1-group, 3, then 6+.
+// Restoring that source family, plus named rowtab/data-offset pointers,
+// improved the size-preserving result from 303 to 277 strict bytes.
+// register hints and a combined opcode read were duplicates; using shape as
+// the cursor worsened the result. Keep the typed donor-shaped reconstruction.
+// probe 2: combined width/x loop gate plus byte opcode; size moved closer but
+// VC5 added an extra opcode reload and kept the parameter registers swapped.
+// probe 3: split opcode read/increment; emitted code was unchanged.
+// probe 4: explicit width-exhaustion return and separate switch-default tail
+// restored exact size, but VC5 inverted the two identical return-1 blocks.
+// probe 5: explicit ret0/ret1/default labels improved CFG coverage only.
+// probe 6: infinite-loop/top-guard form removed the duplicated x check but
+// shortened the function; probe 7 returned to the natural nested while form.
+// probe 8: donor-era <memory.h> context was codegen-neutral here.
+// probe 9: register annotation on info was codegen-neutral.
+// probe 10: opcode type/read/switch variant lab found no exact or register-color
+// lead; best invariant group retained the same info=ESI/shape=EDI basin.
+// continuation probes: a separate next-cursor across each decoder arm worsened
+// the structural diff; direct-info ownership, local declaration reordering, and
+// parameter-home byte-store variants all emitted the 277-byte clean basin.
+// probe 11: an early named shape_base alias was a natural liveness test for
+// the oracle's ESI base/EDI info ownership; VC5 emitted identical code, so it
+// was rolled back.
+// continuation probes: a period-like TPanel base and protected/full virtual
+// RGE_View surface improved only SIB bytes (275/274 diff), not register colors.
+// A widened int opcode local reached a shorter 396-byte basin (260 diff), but
+// retained EAX as the opcode and was not a natural exact reconstruction.
+// A helper extraction did not inline and added a direct call. A const info
+// pointer changed the decorated owner symbol. A 128-sample ambient declaration
+// sweep produced no exact result; all variants kept the swapped pointer colors.
+// Final clean source remains the typed decoder below. Next useful evidence is
+// the original view.cpp class/TU context or a matching register-color donor.
+// left in scratch: canonical typed decoder and exact size/CFG family are
+// reconstructed, but VC5 still colors info/shape opposite the oracle and emits
+// a byte-opcode reload plus distinct return-tail drift. Not accepted_drift-safe.
+// revisit: direct canonical Shape_Info field widths, scoped opcode/stream
+// locals, and a branch-local shape-base alias all emitted the same 413-byte,
+// 277-byte-diff basin. The next useful evidence remains the original view.cpp
+// translation-unit context; retain this clean natural decoder.
+// revisit validation: protected access matches the original IAEH decorated
+// symbol but does not change body codegen. A decompiler-shaped while(start <= x)
+// rewrite worsened the result to 282 bytes; restore the typed 277-byte basin.
+```
+<!-- end-recovered:23745b2c70f9bb5d9819 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

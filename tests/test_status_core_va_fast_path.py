@@ -28,7 +28,10 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
         row = rows[0]
         self.assertEqual(row["source_bucket"], "scratch")
         self.assertEqual(row["source_path"], "src/point.cpp")
-        self.assertEqual(row["recovery_note_path"], "recovery_notes/0047E530_operator.md")
+        self.assertEqual(
+            row["recovery_note_path"],
+            "recovery_notes/functions/0047/0047E530_operator.md",
+        )
         self.assertIn("Recovery notes:", row["source_note"])
 
     def test_logic_review_lookup_includes_sparse_tracked_files(self) -> None:

@@ -1,0 +1,149 @@
+# Recovery journal: 00467380 `setup_shadow_area`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/Panel_ez.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\Panel_ez.cpp`.
+- Earlier recovery note: `recovery_notes/Panel_ez_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:26ab25bae9f0f3099048 -->
+### `target-session` `build/target_sessions/00467380_setup_shadow_area.json:1-35`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=356; shape=94.48275862068965: Initial clean canonical source before new hypotheses.
+probe 2 liveness; result=MISMATCH; diff=353; shape=95.17241379310344: Scoped local DrawSystem pointer for mask only; tests whether original EDX pointer color is source-driven.
+probe 3 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Outer DrawSystem pointer used for saved flags and conditional mask, with direct restore; tests original EDX pointer lifetime.
+probe 5 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Named render-area and DrawSystem locals preserve both receiver objects before old flag read; tests original EAX/EDX register colors.
+probe 7 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Reference alias for DrawSystem and Flags; tests whether original pointer alias preserves EDX and redundant mask load. [same emitted code as probe 3]
+probe 9 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Named render-area plus outer DrawSystem pointer used for both saved and masked flags; tests full two-pointer local topology. [same emitted code as probe 5]
+probe 11 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Swap x_min and y_max declaration order while preserving source arguments; tests output-local register coloring. [same emitted code as probe 1]
+probe 13 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Permutation with x_max declared first, then y_max and x_min; tests declaration-order register basin. [same emitted code as probe 11]
+probe 15 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Scoped DrawSystem local for Init argument only; tests original EDX argument register without changing allocation lifetime. [same emitted code as probe 7]
+probe 17 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Remove cached shadow-area local and reread member in both guards; tests whether original ECX lifetime is direct-member driven.
+probe 19 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Split old_flags declaration from its guarded assignment; PDB line bands place the flag read on the guard line. [same emitted code as probe 13]
+probe 22 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Outer typed DrawSystem alias only through the allocation guard; tests original EDX pointer preservation without using alias for later Init or restore. [same emitted code as probe 15]
+probe 23 liveness; result=MISMATCH; diff=164; shape=85.31468531468532: Typed render-area plus DrawSystem aliases across the guarded work; tests original EAX render-area and EDX DrawSystem register colors and final restore.
+probe 24 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Outer DrawSystem alias feeds old_flags, while mask and later calls reread direct render_area members; tests whether separate source ownership prevents flags CSE. [same emitted code as probe 22]
+probe 25 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Short-lived typed render-area alias only for old_flags, with direct member rereads afterward; tests whether the original first EDX load is declaration-driven without added lifetime. [same emitted code as probe 24]
+probe 26 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Expanded Flags = Flags & 1 assignment instead of compound assignment; tests whether original reloads the field because source uses expanded form. [same emitted code as probe 25]
+probe 27 liveness; result=MISMATCH; diff=348; shape=93.10344827586206: Typed Flags reference alias carries the field into the guarded mask; tests whether original real load/store pair comes from a source reference.
+probe 28 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Split DrawSystem pointer and old_flags declarations from assignments, then use the pointer for the mask; tests declaration-site scheduling and original pointer reload. [same emitted code as probe 26]
+probe 29 layout; result=MISMATCH; diff=356; shape=93.79310344827586: Natural 256-byte area_name plus four typed shape bounds, using y_min for the third result; tests Ghidra's separate y_min evidence against the prior overlay model.
+probe 30 liveness; result=MISMATCH; diff=356; shape=93.79310344827586: Separate inner flags local reloads DrawSystem::Flags before masking and storing; tests original second field read while preserving old_flags.
+probe 31 layout; result=MISMATCH; diff=358; shape=90.34482758620689: Restore overlay shape model with 256-byte area_name and three used bounds; isolates the decompiler's 256-byte buffer evidence.
+probe 32 layout; result=MISMATCH; diff=356; shape=93.79310344827586: Four typed shape bounds restored with 256-byte area_name; declaration order y_min,y_max,x_min,x_max and width from y_min. [same emitted code as probe 29]
+probe 33 liveness; result=MISMATCH; diff=356; shape=93.79310344827586: Four-bound declaration order x_min,x_max,y_min,y_max; tests VC5 local register colors against original shape_minmax setup. [same emitted code as probe 32]
+probe 34 liveness; result=MISMATCH; diff=358; shape=86.20689655172414: Hoist four shape-bound declarations before area_name at function scope; tests declaration order and local lifetime against original register topology.
+probe 37 liveness; result=MISMATCH; diff=341; shape=95.13888888888889: Model the binary-proven redundant Flags reread with a volatile member; tests whether the original field declaration prevents VC5 CSE while preserving the natural old_flags topology.
+probe 38 liveness; result=MISMATCH; diff=341; shape=95.13888888888889: Combine the binary-supported volatile Flags reread with a short-lived typed DrawSystem alias for the creation branch; tests pointer register carry without retaining it through Init/restoration.
+probe 40 layout; result=MISMATCH; diff=356; shape=94.48275862068965: Use the period TDrawSystem surface proven by matching DrawSystem functions, keeping Flags at +0x28; tests whether the complete class declaration changes VC5 register allocation. [same emitted code as probe 36]
+probe 41 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Preserve the binary-proven second Flags read as an explicit current_flags value, rather than volatility; tests whether source-level value flow recovers the original EDX/EDI mask sequence. [same emitted code as probe 28]
+probe 42 liveness; result=MISMATCH; diff=364; shape=91.60839160839161: Use a volatile local only for the binary-proven second Flags read; tests whether the reread is source-value driven without changing the reviewed DrawSystem field type.
+probe 43 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Make the natural DrawSystem alias const to test whether a fixed pointer local selects the original EDX carry register without changing lifetime through Init. [same emitted code as probe 41]
+probe 44 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Use a short-lived render-area alias for the flags guard, testing whether preserving the owner object keeps EAX live and moves DrawSystem into the original EDX register. [same emitted code as probe 43]
+probe 45 abi; result=MISMATCH; diff=356; shape=94.48275862068965: Use the canonical unsigned-long type for the saved Flags value; tests whether width/signedness of old_flags controls the original EBP and reread lowering. [same emitted code as probe 40]
+probe 46 layout; result=MISMATCH; diff=358; shape=90.34482758620689: Model the proven area_name/base-dword overlap as a natural local union; tests whether union member ownership recovers the original stack window better than a cast over char[260].
+probe 47 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Expand the direct Flags compound assignment into two member expressions, without aliases or volatility; tests the original reread as a period-plausible VC5 source spelling. [same emitted code as probe 45]
+probe 48 liveness; result=MISMATCH; diff=356; shape=94.48275862068965: Use a period-plausible register-qualified DrawSystem pointer to test the unresolved EDX register-color hypothesis. [same emitted code as probe 44]
+```
+<!-- end-recovered:26ab25bae9f0f3099048 -->
+
+<!-- recovered:6373044d60a33ae0cb33 -->
+### `4da364361016` `src/scratch/00467380_setup_shadow_area.cpp:1-59`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00467380 TEasy_Panel::setup_shadow_area (Panel_ez.cpp:331-370)
+// Attempt log:
+// 1: Natural source with manual operator_new/placement ctor: no EH prologue, 400B; also TDrawSystem flags offset wrong.
+// 2: Real new + TDrawSystem +0x28 triggers EH but sizeof(TDrawArea)=1 and frame 0x114.
+// 3: Force sizeof(TDrawArea)=0x100: size matches after padding, but frame is 0x114 and draw_system indirection wrong.
+// 4: Model draw_system holder: improves data flow but frame still +4 due hidden new temp.
+// 5: Shrink area_name by 4 recovers 0x110 frame but hidden new temp at [esp+20] shifts area_name uses.
+// 6: Assign new result through y_max slot improved edit diff to 23.3 but added store and shifted shape locals; kept as clue.
+// 7: Explicit holder local worsened frame to 0x114 and spilled old_flags; rolled back.
+// 8: Direct holder/no y_max store returns to 65.47%/27.33%.
+// 9: area_name[248] regressed to frame mismatch; rolled back.
+// 10: Explicit p local made no codegen difference.
+// 11: Passing area_name to ctor only moves ctor lea to +24, sprintf still shifted.
+// 12: Using area_name for sprintf moves to +28 but not original +20.
+// 13: Reordering locals did not move hidden new temp; shape_minmax arg LEAs differ.
+// 14: shape arg order variant improved edit to 26.9; first LEA matches but others differ.
+// 15: Second shape arg order still 26.9; LEAs [14,1c,18,28].
+// 16: Third shape arg order matches original LEA sequence [14,20,18,24].
+// 17: Separate flags local no codegen change.
+// 18: Reload draw system pointer inside creation block improved to final 65.04% positional / 25.21% edit.
+// 19: Restored canonical ownership from the ground-truth layouts: +0x20 is TPanel::render_area
+//     (TDrawArea*), whose +0 DrawSystem points at TDrawSystem::Flags, not a synthetic holder.
+//     Used the proven reference-output/long/byte method ABIs and the area_name+4 overlay shown by
+//     the original stack addresses.  This is the clean source reconstruction being tested.
+// 20: The canonical ABI/layout source reached 342 differing bytes before the proven dword overlay
+//     was restored; the overlay is behaviorally required even though its stack home remains shifted.
+// 21: Removing a named DrawSystem alias, assigning new directly to shadow_area, adding a new-area
+//     local, swapping output-local declarations, and restoring windows.h/new.h context were all
+//     duplicate codegen basins (final 356 differing bytes, 472-byte size/frame, 11/11 calls).
+// 22: A named area_name+4 pointer was also a duplicate.  Remaining blocker is the first EH/new
+//     local-layout hunk: original reloads flags through EDX and reuses [esp+10] while VC5 keeps
+//     the canonical candidate's allocation/area homes at different offsets.  Left in scratch.
+// 23: Retaining a natural TDrawSystem pointer across flags, allocation, Init, and restoration
+//     improved positional diff to 348 but grew the frame to 0x114 and worsened block shape;
+//     rolled back to the clean direct-access reconstruction.
+// 24: Scoping a natural TDrawSystem pointer only across the flag mask and TDrawArea allocation
+//     lifetime produced duplicate codegen (356 differing bytes, 0x110 frame); rolled back.
+// 25: Scoping the three shape output locals inside the post-allocation block reused the EH
+//     allocation home at [esp+10] and recovered the original output stack homes, but reduced
+//     the frame to 0x10C.
+// 26: Hoisting width and height did not change codegen; restored their natural inner scope.
+// 27: Increasing area_name to 260 bytes recovered the original 0x110 frame and raised shape
+//     similarity to 94.48%; the positional diff remained 356 bytes.
+// 28: A scoped DrawSystem pointer, explicit field-mask assignment, and area_name+4 pointer
+//     were duplicate codegen basins; restored the simplest direct member expressions.
+// 29: A scoped DrawSystem pointer for the mask only improved the diagnostic to 353 differing
+// bytes and 95.17% shape, but changed the proven register topology; restored the clean source.
+// 30: Outer DrawSystem/render-area aliases, a reference alias, direct shadow-area rereads,
+// split old_flags declaration, output-local permutations, and an Init-only DrawSystem alias
+// all reproduced the 356-byte basin. The natural clean source remains unresolved.
+// 31: A full period TDrawSystem declaration with Flags at +0x28 was codegen-neutral.
+// 32: Volatile Flags forced the binary-proven reread and improved the diagnostic to 341
+//     bytes, but still used the wrong pointer register and was not retained as an ABI fact.
+// 33: Explicit current_flags, const/register DrawSystem aliases, and a short-lived
+//     render-area alias reproduced the 356-byte basin.
+// 34: A volatile local for the reread added three bytes and spilled the value.
+// 35: A union for the area_name/base-dword overlap reduced the frame to 0x10C.
+// 36: Expanded direct Flags assignment also reproduced the 356-byte basin.
+// FLAGS: config/flags/00467380_setup_shadow_area.rsp uses /GX; needed for EH prologue around TDrawArea allocation/constructor.
+```
+<!-- end-recovered:6373044d60a33ae0cb33 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

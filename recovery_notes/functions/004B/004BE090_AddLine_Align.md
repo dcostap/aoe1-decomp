@@ -1,0 +1,152 @@
+# Recovery journal: 004BE090 `AddLine_Align`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/spanlist.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\spanlist.cpp`.
+- Earlier recovery note: `recovery_notes/spanlist_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:16a92b3e3c2a9c69d462 -->
+### `target-session` `build/target_sessions/004BE090_AddLine_Align.json:1-45`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=288; shape=90.9090909090909: Retained typed inherited span-list Bresenham source from prior attempt log; establish current codegen baseline.
+probe 2 behavior; result=MISMATCH; diff=328; shape=66.44736842105263: Tested canonical natural AddLine_Align source from the sibling spanlist reconstruction; direct parameters, endpoint locals, and accumulator loop preserve observed homes.
+probe 4 control-flow; result=MISMATCH; diff=328; shape=66.44736842105263: Tested direct endpoint/height Bresenham reconstruction with a single-site do/while vertical loop; this follows the original vertical compare and one AddSpan site. [same emitted code as probe 2]
+probe 6 liveness; result=MISMATCH; diff=316; shape=84.35374149659864: Removed the artificial x1v alias and mutated the incoming x1 parameter, matching original register use and swap homes.
+probe 8 liveness; result=MISMATCH; diff=309; shape=90.34482758620689: Moved x1v into the diagonal branch and used direct x1 in axial paths, delaying its register lifetime and its span-start initialization.
+probe 9 liveness; result=MISMATCH; diff=309; shape=90.34482758620689: Added a function-scope manager alias for the proven saved-this home and routed each AddSpan call through it. [same emitted code as probe 8]
+probe 11 behavior; result=MISMATCH; diff=321; shape=85.23489932885906: Tested direct parameter mutation with binary-observed y-swap before x-swap order; this is a distinct source-order hypothesis.
+probe 14 behavior; result=MISMATCH; diff=319; shape=75.51020408163265: Tested direct parameter source with original PDB locals yd, xt, yl and natural Bresenham roles; this tests source-variable ownership and direct endpoint mutation.
+probe 16 liveness; result=MISMATCH; diff=316; shape=84.35374149659864: Removed only the x1v alias while preserving the clean source control flow; this tests whether direct x1 use recovers the original early register and saved-this schedule. [same emitted code as probe 6]
+probe 18 liveness; result=MISMATCH; diff=316; shape=84.35374149659864: Kept x1v only for the initial equality test, then used direct x1 in all arms; this isolates early-load pressure from the persistent alias. [same emitted code as probe 16]
+probe 20 control-flow; result=MISMATCH; diff=288; shape=90.9090909090909: Removed the vertical y_stop alias and compared against the endpoint parameter directly; this tests the original endpoint register versus the clean source's separate stop local. [same emitted code as probe 13]
+probe 22 liveness; result=MISMATCH; diff=316; shape=84.35374149659864: Kept x1v only in the axial branches while using direct x1 in the diagonal branch; this tests whether the original early x1 load belongs only to the equality/horizontal path. [same emitted code as probe 18]
+probe 24 other; result=MISMATCH; diff=310; shape=88.81118881118881: Removed axial a/b locals and used direct aligned x1v expressions; this tests whether early temporary declarations caused the preloaded y1 and first block drift.
+probe 26 control-flow; result=MISMATCH; diff=288; shape=90.9090909090909: Changed only the axial scan from while-plus-body increment to a natural for loop; this tests the original loop backedge and extra-jump discrepancy. [same emitted code as probe 20]
+probe 28 liveness; result=MISMATCH; diff=288; shape=90.9090909090909: Made the axial y-swap temporary function-scope yl, matching the original PDB local name and home evidence; this tests declaration scope and swap liveness. [same emitted code as probe 26]
+probe 30 layout; result=MISMATCH; diff=288; shape=90.9090909090909: Changed the local manager declaration from inheritance to the PDB-proven VSList member ownership; this tests canonical class layout without changing function behavior. [same emitted code as probe 28]
+probe 31 liveness; result=MISMATCH; diff=288; shape=90.9090909090909: Used the original PDB local names yd, xt, and yl with function-scope declaration and natural swap/direction roles, while preserving the validated loop topology. [same emitted code as probe 30]
+probe 33 liveness; result=MISMATCH; diff=316; shape=84.35374149659864: Introduced only an endpoint alias x2v for the initial axis test and kept direct x1 throughout; this tests operand-load coloring without the persistent x1v alias. [same emitted code as probe 22]
+probe 35 control-flow; result=MISMATCH; diff=288; shape=90.9090909090909: Used an unbraced natural axial for loop with the call as its single statement; this tests whether source block scope causes the original fall-through call setup. [same emitted code as probe 31]
+probe 37 context; result=MISMATCH; diff=288; shape=90.9090909090909: Added the period SDK memory.h header used by the exact AddShape donor; this tests translation-unit front-end context while preserving typed ownership. [same emitted code as probe 35]
+probe 40 control-flow; result=MISMATCH; diff=288; shape=90.9090909090909: Changed equal-x axial scan from top-tested while to guarded do/while to match original body-first loop and remove the extra entry jump. [same emitted code as probe 39]
+probe 42 control-flow; result=MISMATCH; diff=288; shape=90.9090909090909: Rewrote the equal-x and horizontal arms as sequential guarded returns instead of one if/else-if chain; this tests source branch topology and delayed y1 load scheduling. [same emitted code as probe 40]
+probe 44 liveness; result=MISMATCH; diff=288; shape=90.9090909090909: Added a typed manager alias and routed all AddSpan calls through it while preserving the clean Bresenham locals; tests whether original saved-this scheduling comes from an explicit receiver local. [same emitted code as probe 42]
+probe 47 behavior; result=MISMATCH; diff=356; shape=29.447852760736197: Reconstructed the PDB/Ghidra variable-role source with an early x2 endpoint, direct parameter mutation, separate iVar5/iVar3 roles, and original vertical loop predicate; tests natural decompiler ownership against assembly homes.
+probe 49 behavior; result=MISMATCH; diff=288; shape=91.03448275862068: Reversed the diagonal y-swap before x-swap while retaining the validated x1v source; original assembly emits the y register swap before the x swap.
+probe 51 layout; result=MISMATCH; diff=288; shape=90.9090909090909: Restored the complete period TSpan_List_Manager field surface from the exact same-TU AddShape_Align donor without changing accesses; tests translation-unit class context as codegen input. [same emitted code as probe 44]
+probe 53 context; result=MISMATCH; diff=288; shape=90.9090909090909: Added the exact same-TU Shape_Info definition from AddShape_Align as a donor-supported front-end context probe; target body and ownership remain unchanged. [same emitted code as probe 51]
+probe 55 liveness; result=MISMATCH; diff=288; shape=90.9090909090909: Qualified each AddSpan call with this-> while preserving the validated typed source; tests member-expression scheduling for the saved-this copy. [same emitted code as probe 53]
+probe 57 control-flow; result=MISMATCH; diff=340; shape=71.42857142857143: Expanded the axial do/while into an explicit guarded infinite loop with post-increment break; tests whether VC5 needs an explicit body-first loop shape.
+probe 59 behavior; result=MISMATCH; diff=288; shape=90.9090909090909: Reversed only the equivalent Bresenham arm predicate from dx >= dy to dy >= dx; original compares dy against dx before the JL vertical arm.
+probe 61 liveness; result=MISMATCH; diff=185; shape=91.60839160839161: Introduced branch-local line and end_y cursors only in the equal-x arm, preserving direct y1/y2 in other arms; tests delayed parameter loading and original ECX y1 coloring.
+probe 62 liveness; result=MISMATCH; diff=185; shape=91.60839160839161: Split the equal-x branch cursor declarations from their assignments; tests declaration-site scheduling while retaining the branch-local cursor model that cut diff to 185. [same emitted code as probe 61]
+probe 63 liveness; result=MISMATCH; diff=185; shape=91.60839160839161: Reduced the equal-x cursor model to one branch-local line cursor while retaining the direct y2 endpoint; tests whether the extra end_y local caused the two-byte size drift. [same emitted code as probe 62]
+probe 64 liveness; result=MISMATCH; diff=185; shape=91.60839160839161: Kept a top-level x1v only for the diagonal arm while using direct x1 in the equality and horizontal arms, combined with the branch-local line cursor. [same emitted code as probe 63]
+probe 65 behavior; result=MISMATCH; diff=184; shape=91.60839160839161: Combined the branch-local line cursor with the binary-proven dy >= dx operand order for the Bresenham arm predicate.
+probe 66 behavior; result=MISMATCH; diff=276; shape=93.00699300699301: Combined the improved branch-local line cursor with y-swap-before-x-swap source order; original bytes emit the y exchange before the x exchange.
+probe 67 liveness; result=MISMATCH; diff=280; shape=86.3013698630137: Added a post-swap diagonal line accumulator initialized before direction setup, matching original mov esi,ecx and keeping the parameter y1 read-only afterward.
+probe 69 liveness; result=MISMATCH; diff=184; shape=91.60839160839161: Restored the best natural improved model: branch-local equal-x line cursor, direct diagonal y1, and dy >= dx operand order; confirms the 184-byte frontier before final validation. [same emitted code as probe 65]
+probe 70 liveness; result=MISMATCH; diff=288; shape=90.9090909090909: Moved the equal-x line cursor initialization after the direct endpoint swap; tests whether VC5 can load the normalized y1 directly into ESI. [same emitted code as probe 59]
+probe 75 behavior; result=MISMATCH; diff=316; shape=84.35374149659864: Hypothesis: mutate proven parameter homes directly, matching original x2-home write and y/x swap ownership; retain natural loop and fault order.
+probe 81 liveness; result=MISMATCH; diff=324; shape=89.5104895104895: Direct parameter mutation with retained aligned Bresenham loop tests the original ECX/EBX y-parameter ownership and avoids the top-level x1v alias.
+probe 83 liveness; result=MISMATCH; diff=313; shape=92.3076923076923: Branch-local x1v only in the diagonal path, with direct x1 in axial paths, tests delayed endpoint ownership without changing AddSpan ordering.
+probe 85 liveness; result=MISMATCH; diff=184; shape=91.60839160839161: Explicit manager receiver local used for all five AddSpan calls tests whether original saved-this publication comes from a carried member receiver. [same emitted code as probe 80]
+probe 87 liveness; result=MISMATCH; diff=314; shape=81.11888111888112: Directly repurpose y2 as the signed line step and copy its endpoint before slope setup; tests the original parameter-home step/endpoint topology.
+probe 89 liveness; result=MISMATCH; diff=288; shape=90.9090909090909: Direct y1/y2 mutation in the equal-x arm removes the branch-local line alias and tests the original ESI/EBP swap and loop homes.
+```
+<!-- end-recovered:16a92b3e3c2a9c69d462 -->
+
+<!-- recovered:25452d2ea3f22309d1fd -->
+### `1c8b86c20c67` `src/scratch/004BE090_AddLine_Align.cpp:1-52`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 004BE090 TSpan_List_Manager::AddLine_Align (spanlist.cpp:961-1053, 337B)
+//
+// Attempt log:
+// - Initial Bresenham impl: 320 bytes, prologue misses early x1->eax load
+// - int x1v = x1; forces eax load before push ebx, prologue matches first 13 bytes
+//   but extra mov edi,eax; mov esi,[esp+18h] add 5 bytes, rest is ~12 bytes shorter
+// - Full class + a/b at function scope: 336 bytes (missing push ecx due to inherit)
+// - TODO: eliminate extra mov edi,eax by not saving x1v in vertical case
+// - A direct parameter-mutating reconstruction from the binary's stack-home
+//   topology added a call site and widened the function; restored x1v source.
+// - Removing /GX was a codegen duplicate; full manager context, function-scope
+//   a/b, and direct-x1 nonvertical variants were also duplicates or worse.
+// - Spanlist stdlib/string header context, split x1v assignment, scoped y
+//   copies, early-return guards, for-loop rewrites, and a Ghidra-shaped
+//   parameter-mutation source were tested; none improved the retained basin.
+// - Session sa9f8966ac_r1: direct parameter-home mutation reached 334 bytes
+//   with the same five calls but a worse positional/resync basin; restored.
+// - The same-TU DrawLine donor loop family emitted six AddSpan calls, while a
+//   Ghidra-local-order variant emitted 332 bytes but the same 324-byte diff;
+//   x1v declaration-order changes were codegen duplicates. A 256-variant
+//   local/parameter lab found no exact or structurally useful group.
+// - Corrected the vertical-major loop to stop on the y endpoint and increment
+//   x only on error overflow; this is required by the original y-stop compare.
+//   The corrected typed source reached 335 bytes, 90.91% shape, and diff 288.
+// - Reusing dead endpoint parameters for the proven vertical-major error and
+//   step homes was codegen-identical to the corrected source; retained.
+// - Restored the typed inherited span-list manager surface from exact donors;
+//   context was codegen-identical. Remaining drift is prologue scheduling and
+//   first-argument register coloring, with all five AddSpan sites aligned.
+// - This pass retested a carried manager pointer and deferred x1v creation;
+//   both stayed structural mismatches, so the validated x1v source is restored.
+// - Fresh spanlist loop-shape lead: the vertical axis uses a guarded do/while,
+//   matching the original compare-before-body and same-TU span traversal.
+// - This claim baseline rebuilt 335 meaningful bytes with all five AddSpan
+//   sites aligned; the first mismatch remains the saved-this/register basin.
+// - A natural endpoint-local source from the sibling spanlist reconstruction
+//   emitted 356 bytes and six AddSpan sites under this TU; rejected.
+// - Direct x1 parameter mutation, delayed diagonal x1v creation, and the
+//   binary-observed y-before-x swap order produced 327, 331, and 325 bytes;
+//   all were worse than the clean source despite some stronger block islands.
+// - A carried manager alias was codegen-identical to the delayed-x1 variant.
+//   The clean source is restored. Next evidence needed is original TU/source
+//   context that explains prologue register coloring and vertical homes.
+// - Claim sa-36e3fb9c-r1 retested direct x1/x2 aliases, PDB-local yd/xt/yl
+//   declarations, endpoint-local removal, axial for-loop forms, the PDB VSList
+//   class layout, and <memory.h>; all were duplicate or worse. Clean restored.
+// - A branch-local equal-x line cursor plus dy>=dx operand order reduced the
+//   positional diff to 184 bytes with 91.61% shape; retained as the frontier.
+// FLAGS: /nologo /c /O2 /Oy /GX
+
+// Main-agent audit confirmed canonical span-manager ownership and retained the
+// natural aligned Bresenham construction.
+```
+<!-- end-recovered:25452d2ea3f22309d1fd -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

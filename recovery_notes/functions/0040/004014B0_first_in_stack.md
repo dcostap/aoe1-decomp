@@ -1,0 +1,134 @@
+# Recovery journal: 004014B0 `first_in_stack`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/act_atak.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\Act_atak.cpp`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:cffbbb759b3359a377bc -->
+### `target-session` `build/target_sessions/004014B0_first_in_stack.json:1-50`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=4; shape=96.0: Natural member-surface baseline: vfFC gate, repeated unitAI, currentOrder, rangeStatus, and three set_state paths.
+probe 2 control-flow; result=MISMATCH; diff=4; shape=96.0: Tail-shape probe: use an explicit if/else for the 0D versus 6 state selection, preserving one call per arm.
+probe 3 control-flow; result=MISMATCH; diff=4; shape=96.0: Condition-polarity probe: express ready success first, then fall through to state 0D. [same emitted code as probe 2]
+probe 4 abi; result=MISMATCH; diff=4; shape=96.0: Derived-surface probe: declare the proven RGE_Action_Attack set_state override instead of inheriting the base declaration.
+probe 6 abi; result=MISMATCH; diff=4; shape=96.0: Destructor-surface probe: use the period virtual destructor declarations on RGE_Action and RGE_Action_Attack while retaining the proven slot layout.
+probe 7 control-flow; result=MISMATCH; diff=4; shape=96.0: Predicate spelling probe: use logical negation for the ready_to_attack zero test. [same emitted code as probe 6]
+probe 8 control-flow; result=MISMATCH; diff=4; shape=96.0: Label-routing probe: route the two final state calls through explicit local labels to test source block ownership.
+probe 10 abi; result=MISMATCH; diff=4; shape=96.0: Receiver-type probe: dispatch the state-0D call through the proven base RGE_Action surface. [same emitted code as probe 3]
+probe 11 abi; result=MISMATCH; diff=4; shape=96.0: Receiver-type probe: dispatch the state-6 call through the proven base RGE_Action surface.
+probe 13 liveness; result=MISMATCH; diff=4; shape=96.0: Scope probe: declare range_status at function scope, then assign -1 only on the ready path, matching saved-home lifetime evidence. [same emitted code as probe 1]
+probe 15 liveness; result=MISMATCH; diff=4; shape=96.0: Predicate-result probe: retain ready_to_attack in a named int before the range-status guard. [same emitted code as probe 10]
+probe 17 abi; result=MISMATCH; diff=4; shape=96.0: Class-surface probe: flatten RGE_Action_Attack onto the proven 24-slot action vtable and inline base fields.
+probe 18 abi; result=MISMATCH; diff=4; shape=96.0: State-parameter width probe: declare the known slot with int to test whether VC5 register coloring depends on the historical formal type. [same emitted code as probe 17]
+probe 20 control-flow; result=MISMATCH; diff=4; shape=96.0: Nested-guard probe: separate the ready result guard from the range-status guard, following the two observed comparisons. [same emitted code as probe 15]
+probe 21 control-flow; result=MISMATCH; diff=4; shape=96.0: Nested positive-status probe: branch explicitly to state 6 on rangeStatus equality, then fall through to state 0D. [same emitted code as probe 4]
+probe 23 liveness; result=MISMATCH; diff=4; shape=96.0: AI-local reuse probe: assign the second unitAI result into the existing ai local before currentOrder. [same emitted code as probe 11]
+probe 25 liveness; result=MISMATCH; diff=4; shape=96.0: Parameter-color probe: mark the unused byte parameter register-qualified, as supported for read-only parameters by VC5 lessons. [same emitted code as probe 13]
+probe 27 control-flow; result=MISMATCH; diff=50; shape=76.0: Top-gate polarity probe: route the zero vfFC case directly to the ready block and keep the nonzero AI path in an else arm.
+probe 29 variant; result=MISMATCH; diff=50; shape=76.0: variant lab build\variant_lab\004014B0_first_in_stack\20260816_222741: 128 variants, 128 invariant-eligible, 0 exact
+probe 30 abi; result=MISMATCH; diff=4; shape=96.0: Return-type probe: declare set_state as int while ignoring its result, testing whether the target register colors require the historical return surface. [same emitted code as probe 25]
+probe 33 liveness; result=MISMATCH; diff=4; shape=96.0: Probe 1: remove the named UnitAIModule local and use two direct unitAI member calls; this tests whether the earlier temporary drives the final EAX/EDX coloring.
+probe 35 liveness; result=MISMATCH; diff=4; shape=96.0: Probe 2: move the UnitAIModule pointer declaration to function scope while keeping its guarded assignment; tests whether longer AI-local scope recolors the final virtual calls. [same emitted code as probe 32]
+probe 37 abi; result=MISMATCH; diff=4; shape=96.0: Probe 3: cache this in a proven base RGE_Action pointer for both final set_state calls; tests whether receiver static type or alias controls the recolor without changing the virtual slot. [same emitted code as probe 20]
+probe 39 abi; result=MISMATCH; diff=4; shape=96.0: Probe 4: cast the first state literal to the proven unsigned-char parameter type; tests whether explicit argument width changes only the final call register color. [same emitted code as probe 37]
+probe 41 control-flow; result=MISMATCH; diff=19; shape=87.71929824561404: Probe 5: duplicate the natural state-6 call in the two readiness arms; tests whether VC5 tail-merges duplicate calls and selects target EAX/EDX coloring.
+probe 43 abi; result=MISMATCH; diff=4; shape=96.0: Probe 6: use an int parameter on the virtual set_state declaration while retaining the same immediate arguments; diagnostic only because reviewed ABI evidence supports unsigned char. [same emitted code as probe 35]
+probe 45 control-flow; result=MISMATCH; diff=4; shape=96.0: Probe 7: make the final set_state(6) return explicit; tests whether VC5 epilogue ownership affects the two final virtual-load registers. [same emitted code as probe 43]
+probe 47 abi; result=MISMATCH; diff=4; shape=96.0: Probe 8: reduce UnitAIModule to its proven direct currentOrder declaration; tests whether its unused virtual surface or fields drive the final register recolor.
+probe 49 abi; result=MISMATCH; diff=4; shape=96.0: Probe 9: replace the two state literals with a local enum; tests whether a typed state constant changes VC5 virtual-call register coloring. [same emitted code as probe 21]
+probe 52 liveness; result=MISMATCH; diff=4; shape=96.0: Probe 11: split range_status declaration from its -1 assignment in the same block; tests a VC5 declaration/initialization timing effect on final register colors. [same emitted code as probe 45]
+probe 54 abi; result=MISMATCH; diff=4; shape=96.0: Probe 12: bind a reference to the proven RGE_Action base subobject for the final calls; tests whether reference receiver lowering changes the vtable-load register. [same emitted code as probe 39]
+probe 56 abi; result=MISMATCH; diff=4; shape=96.0: Probe 13: declare the object range virtual as double instead of float; tests whether x87 return width affects the final vtable-load colors, while retaining the observed compare shape. [same emitted code as probe 52]
+probe 58 control-flow; result=MISMATCH; diff=4; shape=96.0: Probe 14: use logical negation for the guarded UnitAIModule null test; tests a source predicate spelling effect on final register colors. [same emitted code as probe 56]
+probe 60 variant; result=MISMATCH; diff=4; shape=96.0: variant lab build\variant_lab\004014B0_first_in_stack\20260817_103626: 7 variants, 7 invariant-eligible, 0 exact
+probe 62 abi; result=MISMATCH; diff=4; shape=96.0: Probe derived RGE_Action_Attack set_state override declaration, supported by exact 00401550 source; test whether static derived virtual surface changes final vtable-load colors. [same emitted code as probe 23]
+probe 64 abi; result=MISMATCH; diff=4; shape=96.0: Probe explicit unsigned-char casts on both final set_state arguments; test whether VC5 immediate typing changes final virtual-register coloring while preserving the proven call surface. [same emitted code as probe 62]
+probe 66 abi; result=MISMATCH; diff=4; shape=96.0: Probe the complete Act_atak.cpp-derived RGE_Action_Attack virtual surface from local exact donor sources; test whether omitted override declarations cause the final EAX/EDX recolor.
+probe 68 abi; result=MISMATCH; diff=4; shape=96.0: Probe a natural base-typed RGE_Action pointer alias for the two final virtual calls; unlike the prior reference probe, test whether static receiver type changes the EAX/EDX color without changing target slots. [same emitted code as probe 54]
+probe 70 abi; result=MISMATCH; diff=4; shape=96.0: Probe canonical local inheritance: model RGE_Action_Object as an empty derived RGE_Static_Object with the proven vslot and unitAI surface; test whether base ownership changes final register colors.
+probe 72 other; result=MISMATCH; diff=4; shape=96.0: Probe unqualified member calls for the final set_state branches; tests a natural source spelling that may alter VC5 receiver expression coloring. [same emitted code as probe 61]
+probe 75 abi; result=MISMATCH; diff=4; shape=96.0: Probe canonical inherited receiver ownership with the +0x08 action object field statically typed as RGE_Static_Object; test whether the target TU used the base class directly. [same emitted code as probe 70]
+probe 79 variant; result=MISMATCH; diff=4; shape=96.0: variant lab build\variant_lab\004014B0_first_in_stack\20260817_161146: 11 variants, 8 invariant-eligible, 0 exact
+probe 80 variant; result=MISMATCH; diff=4; shape=96.0: variant lab build\variant_lab\004014B0_first_in_stack\20260817_161413: 22 variants, 19 invariant-eligible, 0 exact
+probe 81 variant; result=MISMATCH; diff=4; shape=96.0: variant lab build\variant_lab\004014B0_first_in_stack\20260817_161505: 22 variants, 13 invariant-eligible, 0 exact
+probe 82 variant; result=MISMATCH; diff=4; shape=96.0: variant lab build\variant_lab\004014B0_first_in_stack\20260817_161629: 5 variants, 5 invariant-eligible, 1 exact
+probe 83 variant; result=MISMATCH; diff=4; shape=96.0: variant lab build\variant_lab\004014B0_first_in_stack\20260817_161753: 6 variants, 6 invariant-eligible, 2 exact
+probe 84 variant; result=MISMATCH; diff=4; shape=96.0: Exact variant lab result: nested final guard with ready_to_attack == 0, then range_status == 1 state-6 return, otherwise state-13 return, followed by common state-6 call. V000002 matches 135/135 bytes with 100% blocks and exact call-set. Walkback: baseline and nested_done remain diff 4; explicit else is also exact, but nested_no_else is the smallest natural exact source. [same emitted code as probe 83]
+probe 86 control-flow; result=MATCH; diff=0; shape=100.0: Applied generated exact nested no-else final guard to living source. This is the only source change from the pinned clean baseline.
+probe 87 abi; result=MATCH; diff=0; shape=100.0: Canonicalized RGE_Action virtual names, method signatures, and target/task pointer types while retaining the existing RGE_Action_Object surface. Test whether named ABI ownership preserves the exact nested-guard output.
+probe 88 abi; result=MATCH; diff=0; shape=100.0: Replaced generic RGE_Action_Object vfNN surface with canonical RGE_Static_Object -> RGE_Animated_Object -> RGE_Moving_Object -> RGE_Action_Object inheritance, named slots, real maximumSpeed at +0xFC, and canonical action-object fields. Body now calls maximumSpeed().
+```
+<!-- end-recovered:cffbbb759b3359a377bc -->
+
+<!-- recovered:21b46f05b0cf76427eef -->
+### `f5984b7eb930` `src/scratch/004014B0_first_in_stack.cpp:1-30`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004014B0 RGE_Action_Attack::first_in_stack
+// Attempt log:
+// - The former source used a naked inline-assembly body. This reconstruction
+//   uses the proven action, object, and UnitAIModule member surfaces.
+// - The target reuses the saved this home as rangeStatus after the first two
+//   pushes. Keep rangeStatus as a local initialized immediately before the
+//   ready_to_attack call.
+// - Baseline check: 135/135 bytes, no frame, one saved ESI, eight calls, and
+//   100% ordered-call alignment. Only four bytes differ: the two final
+//   vtable-load registers swap (target EAX then EDX; rebuild EDX then EAX).
+// - Tested natural guard forms, nested and labeled control flow, top-level
+//   rangeStatus scope, named ready result, AI-local reuse, base receiver
+//   casts, destructor and flattened class surfaces, and parameter/state ABI
+//   widths. These all kept the same four-byte register recolor.
+// - An inverted vfFC top gate changed the call layout and reached 50 bytes of
+//   difference. Restore the baseline source before final validation.
+// - An ambient-declaration family of 128 compiler-context variants produced
+//   128 distinct outputs, but none changed the four-byte recolor.
+// - This claim tested direct and scoped AI locals, base receiver aliases and
+//   references, explicit returns, state enum/casts, UnitAIModule surfaces,
+//   split rangeStatus initialization, predicate spelling, and vfFC width.
+//   All retained 135-byte output and the same EDX/EAX final-call recolor.
+// - A seven-form final control-flow variant family also kept the clean
+//   baseline or moved farther; no variant produced target EAX/EDX order.
+// - This revisit tested the derived Act_atak virtual surface, explicit
+//   unsigned-char casts, base pointer aliases, unqualified calls, and the
+//   canonical RGE_Static_Object inheritance and receiver typing. Each kept
+//   the same 4-byte recolor.
+// - A 4096-variant standard-header context lab kept 135-byte output and
+//   found no exact result. Final validation remains diff 4.
+```
+<!-- end-recovered:21b46f05b0cf76427eef -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

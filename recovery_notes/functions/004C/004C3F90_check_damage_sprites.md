@@ -1,0 +1,124 @@
+# Recovery journal: 004C3F90 `check_damage_sprites`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/stat_obj.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\stat_obj.cpp`.
+- Earlier recovery note: `recovery_notes/stat_obj_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:b0413a8cb9bbfb197c2f -->
+### `target-session` `build/target_sessions/004C3F90_check_damage_sprites.json:1-28`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=438; shape=67.95580110497238: Baseline pinned scratch source: typed DamageSpriteInfo and RGE_Sprite ownership, natural flag branches and coordinate formula.
+probe 2 control-flow; result=MISMATCH; diff=460; shape=65.78947368421052: Restore typed DamageSpriteInfo pointer/count do-while to test binary observed stride-8 pointer walk and countdown.
+probe 4 control-flow; result=MISMATCH; diff=415; shape=71.03825136612022: Restore switch with shared add_sprite tail and explicit labels to test original one-call dispatch topology.
+probe 5 liveness; result=MISMATCH; diff=450; shape=71.2707182320442: Loop local declaration order: index before typed DamageSpriteInfo pointer, preserving natural pointer/count do-while and shared add tail.
+probe 8 liveness; result=MISMATCH; diff=447; shape=70.7182320441989: Use the already typed master-object local for later damage-sprite ownership accesses; test natural pointer liveness without changing behavior.
+probe 10 behavior; result=MISMATCH; diff=415; shape=71.03825136612022: Split the first random coordinate into an offset assignment plus fractional world-coordinate addition to test natural x87 scheduling. [same emitted code as probe 9]
+probe 11 behavior; result=MISMATCH; diff=418; shape=77.54010695187166: Split both random coordinates into offset assignments and fractional coordinate additions.
+probe 12 control-flow; result=MISMATCH; diff=504; shape=74.72527472527473: Use a natural switch with typed add_sprite calls in flag 0 and flag 1 arms, relying on compiler tail merging instead of explicit labels.
+probe 13 abi; result=MISMATCH; diff=415; shape=71.03825136612022: Use binary-labeled long damage-sprite location locals while preserving typed sprite ownership and switch tail. [same emitted code as probe 10]
+probe 14 control-flow; result=MISMATCH; diff=433; shape=69.1891891891892: Remove the redundant inner damage-sprite count guard after the proven early zero-count return; test natural loop topology.
+probe 15 liveness; result=MISMATCH; diff=414; shape=71.8232044198895: Name the proven damage-sprite count in the indexed scan to test whether VC5 preserves the observed byte count without changing behavior.
+probe 16 liveness; result=MISMATCH; diff=414; shape=71.8232044198895: Use direct typed master damage-sprite indexing in both scan predicates to test pointer/index coloring without raw cursor arithmetic.
+probe 17 control-flow; result=MISMATCH; diff=415; shape=72.92817679558011: Use a natural grouped switch for old damage-sprite flags (0/1 remove, 2 restore) to test the binary compare and block layout.
+probe 18 liveness; result=MISMATCH; diff=417; shape=72.37569060773481: Swap new/old damage-location declaration order so new-percent matches the observed [esp+1c] home and old-percent matches [esp+18].
+probe 20 control-flow; result=MISMATCH; diff=432; shape=70.2127659574468: Use a typed indexed do-while under the proven positive count guard to test original bottom-loop topology without raw cursors.
+probe 22 context; result=MISMATCH; diff=416; shape=72.37569060773481: Use reviewed external DAT_0057473c/DAT_00574740 constants and STR_STAT_OBJ symbol to recover original rdata relocations.
+probe 23 control-flow; result=MISMATCH; diff=454; shape=72.37569060773481: Replace indexed for scan with pointer/count do-while while retaining typed switch and canonical member ownership.
+probe 25 liveness; result=MISMATCH; diff=454; shape=72.92817679558011: Reorder pointer-scan locals to index, count, then record pointer, testing original EDI index/EAX pointer/EBP countdown topology.
+probe 26 abi; result=MISMATCH; diff=443; shape=70.37037037037037: Use a byte cursor anchored at damage_percent plus an int countdown to test the original EAX pointer and EBP count register topology.
+probe 27 liveness; result=MISMATCH; diff=443; shape=70.37037037037037: Name the damage-sprite count after the hp guard and reuse it in both guards and the byte-cursor countdown, testing the original EBX-preserved count plus EBP copy.
+probe 29 liveness; result=MISMATCH; diff=437; shape=69.79166666666667: Use direct indexed damage-sprite members throughout the new-branch dispatch, matching the original scaled-index and array-pointer reload topology.
+probe 31 liveness; result=MISMATCH; diff=415; shape=72.92817679558011: Declare the dispatch flag before its record pointer to test original ECX flag and EAX record-pointer coloring without changing ownership. [same emitted code as probe 21]
+probe 32 liveness; result=MISMATCH; diff=509; shape=69.94535519125684: Separate the byte count field from an unsigned countdown initialized from that named count, testing the original preserved-byte plus copied-counter topology.
+probe 34 control-flow; result=MISMATCH; diff=432; shape=71.42857142857143: Byte-cursor scan declaration order p, index, countdown; compare allocator colors against the original EAX pointer and EDI index.
+probe 35 behavior; result=MISMATCH; diff=461; shape=70.8108108108108: Model the decompiler-supported float loop index with integer casts and countdown, testing whether VC5 scalar-reduces it to the original EDI index and EBP copy.
+probe 37 control-flow; result=MISMATCH; diff=432; shape=71.42857142857143: Use an explicitly unsigned countdown initialized from a cast byte field while retaining direct outer guards, testing original countdown width without preserving a named field local.
+probe 39 control-flow; result=MISMATCH; diff=414; shape=71.8232044198895: Restore natural old-flag if/else dispatch from the best prior basin; test whether grouped switch added one structural byte. [same emitted code as probe 16]
+probe 40 context; result=MISMATCH; diff=415; shape=71.2707182320442: Test reviewed global rdata declarations and STR_STAT_OBJ against the improved if/else source, separating source-canonical constants from emitted basin.
+```
+<!-- end-recovered:b0413a8cb9bbfb197c2f -->
+
+<!-- recovered:eefc8b47baa2ac1d7f86 -->
+### `056a20c24f68` `src/scratch/004C3F90_check_damage_sprites.cpp:1-41`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 004C3F90 RGE_Static_Object::check_damage_sprites()
+// Source: stat_obj.cpp lines 1866-1934
+// Attempt log:
+// - Canonical ownership is the proven static-object/master layout: master_obj +0x8,
+//   owner/world/map +0x0C/+0x3C/+0x28, sprite_list +0x18, hp +0x30,
+//   curr_damage_percent +0x34, and world xyz +0x38/+0x3C/+0x40.
+// - Corrected the active-sprite ABI to RGE_Sprite*, unsigned char, long, long;
+//   the +0x38 virtual is the period new_sprite surface.
+// - Recovered the binary's shared add_sprite tail with a switch and local labels;
+//   flag 2/default bypass it.  Reused one random float home and modeled the
+//   observed fractional coordinate formula (world coordinate minus signed-short
+//   truncation plus the size-scaled random offset), restoring all 10 call targets.
+// - Declaration-order and direct-member probes improved the best rebuild to 528
+//   bytes versus the original 561 (67.40% shape, 453 positional diff bytes,
+//   90% ordered-call alignment, frame 0x18); remaining drift is structural in
+//   saved-register/index coloring, dispatch/local stack homes, and the second
+//   coordinate x87 schedule.  Left in scratch; no inline asm or accepted_drift.
+// - Binary-backed branch-layout probe: test the natural flag==2 branch before
+//   the flag<2 removal branch, matching the original virtual-call then remove
+//   call order while preserving behavior for flags above 2.
+// - Typed loop probe: replaced the pointer/count do-while with an indexed
+//   DamageSpriteInfo for-loop; diff improved 450 -> 415 and exact-block coverage
+//   improved 25.41% -> 32.60%, but first structural drift remains at the scan gate.
+// - Fresh structural probes tried the binary-looking byte-pointer walk,
+//   counter width, declaration order, and master scope; all were nonexact
+//   duplicates or worse (best fresh diff 432), so restored the 415-byte source.
+// - A prior pass removed forced shared-tail labels, but the current binary-backed
+//   switch keeps one proven add_sprite tail and preserves the ordered call set.
+// - Revisited the typed scan and flag ownership. A named count in the indexed
+//   scan was codegen-active, while direct typed member indexing was unchanged.
+//   A natural grouped old-flag switch recovered the observed <=1/==2 compare
+//   sequence and a 544-byte rebuild with all 10 ordered calls; it remains
+//   nonexact at 415 positional bytes, so the source stays in scratch.
+// - Follow-up scan probes tested pointer/count do-while forms, byte cursors,
+//   counter widths, local order, named count lifetimes, and the decompiler's
+//   float index. They were larger or changed the call surface. The byte cursor
+//   recovered the EAX pointer and EDI index, but not the original EBP copy.
+// - Replaced the grouped old-flag switch with the natural flag==2 / flag<2
+//   if/else. This reduced the rebuild to 541 bytes and the strict diff to 414.
+//   External rdata declarations were tested and restored because they widened
+//   the strict diff to 415 and changed the proven x87 schedule.
+```
+<!-- end-recovered:eefc8b47baa2ac1d7f86 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

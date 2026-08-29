@@ -1,0 +1,97 @@
+# Recovery journal: 00512C30 `obj_cost`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/tplayer.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\tplayer.cpp`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:c7e6727ddb0aa81f8a40 -->
+### `target-session` `build/target_sessions/00512C30_obj_cost.json:1-7`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=178; shape=92.74611398963731: Natural typed player/resource ownership with three cost blocks and final food/wood/gold repair; verify current 642B candidate.
+probe 2 variant; result=MISMATCH; diff=304; shape=93.29896907216495: Hypothesis: narrow short cost locals should preserve original mov bp,ax/mov si,ax partial-register stores.
+probe 4 variant; result=MISMATCH; diff=457; shape=99.48453608247422: Hypothesis: function-scope Ghidra-supported short cost, avail, and total locals preserve original partial-register reuse.
+probe 5 context; result=MISMATCH; diff=457; shape=99.48453608247422: Hypothesis: canonical polymorphic ObjectInfo/TRIBE_Player surfaces may reproduce the partial-register register-sharing basin. [same emitted code as probe 4]
+probe 6 abi; result=MISMATCH; diff=457; shape=99.48453608247422: Hypothesis: short caller declaration for _ftol may account for original AX/BP partial-width result path; test only, not retain without ABI proof. [same emitted code as probe 5]
+probe 7 variant; result=MISMATCH; diff=457; shape=99.48453608247422: Hypothesis: explicit float-to-int-to-short cast spelling may make VC5 preserve AX into the short cost register. [same emitted code as probe 6]
+probe 10 variant; result=MATCH; diff=0; shape=100.0: Hypothesis: direct output-pointer cost assignment, matching Ghidra's sVar3 temporary semantics, may induce AX-to-BP partial stores.
+```
+<!-- end-recovered:c7e6727ddb0aa81f8a40 -->
+
+<!-- recovered:3a880d13af13ad39d14e -->
+### `b6e159352e2d` `src/scratch/00512C30_obj_cost.cpp:1-36`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// Attempt log for 00512C30 TRIBE_Player::obj_cost
+// try 1: natural reconstruction from packet/decompiler with three cost blocks and final food/wood/gold repair; exact size but xor ebx delayed and uses immediate zero stores.
+// try 2: initialize int total before output stores to encourage EBX zeroing and bx stores; exact size and first mismatch deeper, but movsx ebp,ax instead of mov bp,ax.
+// try 3: use short total again with early initialization; shrank to 640B, rolled back.
+// try 4: restore int total and use int cost variables; first mismatch deeper but still movsx ebp,ax family.
+// try 5: compare using (float)(short)cost; worse, rolled back.
+// try 6: restore direct int cost compare best int-cost form.
+// try 7: /Oy- flag probe; too small 624B, rolled back.
+// try 8: /O1 flag probe; too small 592B, rolled back.
+// try 9: reviewed final repair if/else structure; source matches original branch family, kept.
+// try 10: reviewed parameter order and initialization; early init now matches prologue exactly through offset 180.
+// BLOCKER: exact 642B with correct prologue/initialization, but cost blocks remain in a different narrow-vs-int codegen basin: original keeps __ftol result in BP then sign-extends BP for fild; rebuilt sign-extends AX into EBP directly and schedules fild/lea differently. Broad downstream positional drift remains, not accepted_drift-safe.
+//
+// Bounded retry sa274ecf51_objcost (2026-08-11, 10 hypotheses):
+// - Integrated baseline: typed object table/resources and natural three-cost source, 642B,
+//   7/7 calls and exact prologue; 178 strict bytes (27.7259%), first mismatch at mov bp,ax.
+// - Short cost locals alone moved the first mismatch earlier and worsened strict bytes.
+// - Short total plus short cost/availability locals reached a stable 639B effective build
+//   with exact CFG/call set, 100% exact-block coverage, and 29 edit bytes (95.95% resync),
+//   but the three missing bytes are the oracle's partial-register mov bp,ax/mov si,ax forms;
+//   positional drift then spans later branch displacements. Function-scope lifetimes,
+//   explicit compare temporaries, psVar5-style common repair pointer, int/long cast spelling,
+//   narrow _ftol declaration, and same-TU polymorphic class surfaces were codegen duplicates.
+// - Retained source is the simplest binary-supported typed model: short cost/availability/
+//   shortage values, PDB reference output ABI, and exact-sibling vptr/layout surfaces.
+//   Remaining drift is broad register/partial-width codegen, not accepted-drift-safe.
+//
+// ShardB6 retry:
+// - Restored the earlier pointer-ABI, explicit six-byte cost fields, and int shortage total.
+//   This rebuilt at 642 bytes with 178 strict diff bytes; the old 642-byte size was not exact.
+// - Removed explicit long casts from the natural float-to-short cost expression; code was unchanged.
+// - Changed check_obj_cost's second parameter from int to the exact short-pointer donor ABI; code was unchanged.
+// - Function-scope short cost/availability temporaries with an int total rebuilt at 642 bytes but worsened
+//   to 304 diff bytes. Rolled back.
+// - Final source keeps the binary-supported 642-byte candidate. The remaining first hunk is the oracle's
+//   mov bp,ax partial-register path; no natural typed source lead remains in this bounded retry.
+```
+<!-- end-recovered:3a880d13af13ad39d14e -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

@@ -1,0 +1,229 @@
+# Recovery journal: 004F0D70 `addObject`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/taitacmd.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\taitacmd.cpp`.
+- Earlier recovery note: `recovery_notes/taitacmd_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:1f88f306dc387dec5162 -->
+### `d050eea3c` `src/taitacmd.cpp:4436-4445`
+
+Mapping: `ambiguous`. next mapped function definition is addObject at old line 4547.
+
+```text
+// Attempt log:
+// - Replaced the old raw helper scaffold with the period-typed object,
+// [non-comment lines omitted during migration]
+//   stack homes; frame and call structure then aligned.
+// - Reversed corner assignment order as a control-flow probe; it worsened the
+// [non-comment lines omitted during migration]
+//   exact match with the default VC5 flags.
+```
+<!-- end-recovered:1f88f306dc387dec5162 -->
+
+<!-- recovered:4bc3f4979eeecd610e0f -->
+### `d050eea3c` `src/taitacmd.cpp:4550-4566`
+
+Mapping: `strong`. comment lies after mapped function addObject at old line 4547.
+
+```text
+// - Branch-local subtype IDs changed the basin to 777 bytes and 747 strict
+// [non-comment lines omitted during migration]
+// - The remaining mismatch is register ownership: the original keeps the
+// [non-comment lines omitted during migration]
+//   source keeps the same behavior and calls but assigns another register
+//   basin, spilling the ID after three resize calls.
+// - ManagedArray recovery replaced the four caller-side scan/append copies
+// [non-comment lines omitted during migration]
+//   extra resize call. Restoring the depth immediately gives an exact match.
+// - Exact-finish reduction removed four redundant returns and flattened the
+// [non-comment lines omitted during migration]
+//   moved the function into an 816-byte register basin. The executable keeps
+```
+<!-- end-recovered:4bc3f4979eeecd610e0f -->
+
+<!-- recovered:b0415bf091b5dca0615f -->
+### `d050eea3c` `src/taitacmd.cpp:4592-4605`
+
+Mapping: `strong`. comment lies after mapped function addObject at old line 4547.
+
+```text
+            // BINARY NOTE: This call stays out of line. Later add calls inline.
+// [non-comment lines omitted during migration]
+            // BINARY NOTE: These contains and resize sites stay out of line.
+```
+<!-- end-recovered:b0415bf091b5dca0615f -->
+
+<!-- recovered:f2a291a5e2d195b5068a -->
+### `d050eea3c` `src/taitacmd.cpp:4647-4686`
+
+Mapping: `ambiguous`. comment lies after mapped function addObject at old line 4547.
+
+```text
+// Attempt log:
+// - Replaced the former one-array/helper scaffold with the binary-backed
+// [non-comment lines omitted during migration]
+// - Baseline rebuilt 827 bytes with two extra removeFromGroup calls; the
+//   canonical fields/call family were right but the helper scaffold was not.
+// [non-comment lines omitted during migration]
+// - Mirrored the exact ManagedArray donor's bounded for scans and
+//   value[i]=value[i+1] compaction.  The best source-shaped basin is 768 bytes
+// [non-comment lines omitted during migration]
+//   and a narrow volatile member-pointer reload were codegen duplicates.  The
+// [non-comment lines omitted during migration]
+//   bytes and 730 diff bytes; rolled back.  Reset do/while scans reached the
+// [non-comment lines omitted during migration]
+//   to 659 diff bytes and 67.74% shape; rolled back.
+// [non-comment lines omitted during migration]
+// - Tested natural inline ManagedArray contains/remove calls with early
+// [non-comment lines omitted during migration]
+// - Tested natural inline contains iteration for the first three list gates.
+// [non-comment lines omitted during migration]
+// - Reconstructed the decompiler's shared count/pointer scan topology.  It
+// [non-comment lines omitted during migration]
+//   restored the ten-call sequence, but the shared scan source remained far
+//   outside the clean structural basin; restored.
+// - Tried a no-reinitialization scan-index form and a first-scan do-while
+//   form.  They improved some block counts, but moved strict diff to 710 and
+//   682 bytes; restored the 607-byte clean source.
+```
+<!-- end-recovered:f2a291a5e2d195b5068a -->
+
+<!-- recovered:00668347021f0484f6e9 -->
+### `6a2aef2e2` `src/taitacmd.cpp:3823-3829`
+
+Mapping: `strong`. next mapped function definition is addObject at old line 3903.
+
+```text
+// __thiscall, int clearArea(int, float, float, float, float)
+//
+//   tactical-module, and passableTile surfaces. The binary selects the best
+//   passable point around the four supplied area corners, then calls moveUnit.
+// - Reordered the point and distance declarations to reproduce the original
+//   switch and FPU layout, so it was restored.
+// - Ordered switch arms by the original emitted block order. This produced an
+```
+<!-- end-recovered:00668347021f0484f6e9 -->
+
+<!-- recovered:d18e01144c89b01fa0da -->
+### `target-session` `build/target_sessions/004F0D70_addObject.json:1-26`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=570; shape=80.2158273381295: Baseline current typed candidate; establish behavior, calls, frame, and mismatch.
+probe 2 liveness; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 1: register persistent object alias, supported by same-TU donor and original parameter alias behavior; test entry register coloring. [same emitted code as probe 1]
+probe 4 liveness; result=MISMATCH; diff=769; shape=77.6978417266187: Hypothesis 2: preserve object alias while reusing the incoming obj parameter home as the integer contains argument, matching proven +0x18 address/write evidence.
+probe 6 control-flow; result=MISMATCH; diff=821; shape=76.36986301369863: Hypothesis 3: restore the decompiler-supported pRVar2/sVar1/iVar3/iVar4/iVar6/pMVar5 source topology, including parameter-home reuse only at proven contains sites.
+probe 8 liveness; result=MISMATCH; diff=769; shape=77.6978417266187: Hypothesis 4: use a typed reference to the address-taken incoming parameter home for contains IDs, while retaining a separate object pointer. [same emitted code as probe 4]
+probe 10 liveness; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 5: delay group initialization until after the complete local declaration block, matching possible original declaration order and early-load scheduling. [same emitted code as probe 2]
+probe 12 liveness; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 6: mark the read-only object parameter register-qualified, an old-MSVC-supported register-color probe. [same emitted code as probe 10]
+probe 15 liveness; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 7: register-qualify the repeated object ID local to preserve it across resize calls in a callee-saved register. [same emitted code as probe 12]
+probe 17 abi; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 8: flatten the proven class prefix to a same-size nonvirtual typed surface, testing whether inherited virtual-base front-end context controls register allocation. [same emitted code as probe 15]
+probe 19 liveness; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 10: reorder local declarations so the list pointer precedes scalar scan locals, testing VC5 declaration-order register coloring. [same emitted code as probe 17]
+probe 21 control-flow; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 11: express all bounded scans as combined loop predicates instead of explicit break guards, testing alternate period loop lowering. [same emitted code as probe 19]
+probe 23 liveness; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 12: retain a non-register persistent object alias across all field reads, testing a natural PDB/decompiler temporary without parameter-home mutation. [same emitted code as probe 21]
+probe 25 layout; result=MISMATCH; diff=814; shape=79.49640287769785: Hypothesis 13: use direct named member scans for civilians and soldiers while retaining the shared list pointer for append, testing alias-load scheduling.
+probe 27 liveness; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 14: keep a long-lived typed module alias for this, testing whether explicit receiver ownership recovers the original EBP receiver and EBX parameter colors. [same emitted code as probe 23]
+probe 29 context; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 15: restore the period stdlib header context used by nearby exact same-TU sources, testing front-end/inlining-basin effects. [same emitted code as probe 27]
+probe 31 context; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 16: restore period string-header context alone, testing VC5 front-end state without changing function semantics. [same emitted code as probe 29]
+probe 33 context; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 17: restore period windows SDK header context, testing the supported SDK declaration basin. [same emitted code as probe 31]
+probe 35 context; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 18: combine stdlib, string, and windows period headers, testing a supported multi-header front-end basin. [same emitted code as probe 33]
+probe 37 liveness; result=MISMATCH; diff=570; shape=80.2158273381295: Hypothesis 19: use a typed reference alias for this instead of a pointer alias, testing whether reference ownership changes the receiver register basin. [same emitted code as probe 35]
+probe 39 liveness; result=MISMATCH; diff=747; shape=81.25: Hypothesis 20: split each subtype contains ID into a branch-local scalar, following the prior 801-byte split-local lead and testing local lifetime topology.
+probe 42 behavior; result=MISMATCH; diff=643; shape=91.58249158249158: Use direct ManagedArray add calls for the four binary-inline list sites, with the exact add body, instead of caller-side scan and append scaffolding.
+probe 43 context; result=MATCH; diff=0; shape=100.0: Disable nested inlining only at the binary-proven out-of-line artifact add call, then restore normal depth for the four inline add sites.
+probe 44 control-flow; result=MATCH; diff=0; shape=100.0: Exact-finish reduction: remove redundant returns after civilian and soldier add calls; outer if/else already reaches the epilogue. [same emitted code as probe 43]
+probe 45 control-flow; result=MATCH; diff=0; shape=100.0: Exact-finish reduction: remove the two final boat-branch returns that only precede the function epilogue. [same emitted code as probe 44]
+probe 46 control-flow; result=MATCH; diff=0; shape=100.0: Exact-finish reduction: flatten the nested soldier branch into a direct else-if chain. [same emitted code as probe 45]
+probe 48 context; result=MATCH; diff=0; shape=100.0: Force only the three binary out-of-line contains sites to remain calls under the shared inline definitions; the grouped function now equals the isolated exact bytes. [same emitted code as probe 47]
+```
+<!-- end-recovered:d18e01144c89b01fa0da -->
+
+<!-- recovered:d0aa949d5f32f9c67953 -->
+### `b11af3c6a1ee` `src/scratch/004F0D70_addObject.cpp:1-48`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 004F0D70 TribeTacticalAIModule::addObject
+// PDB: taitacmd.cpp lines 3098-3167
+//
+// Attempt log:
+// - Earlier source used an add_unique_scan helper and wrong list offsets.
+//   It collapsed the four inline scan blocks and produced a 500-byte body.
+// - The binary uses one shared resize/append tail for civilians and soldiers.
+//   Boat and subtype lists use separate inline bodies.
+// - Fresh typed reconstruction: model the ten ManagedArray fields at their
+//   proven offsets and use the declaration-only period array methods.
+// - Baseline direct scans with do/while loops rebuilt 879 bytes and aligned
+//   all 11 calls.  Matching the same-TU for-loop donor reduced this to 839.
+// - Loading each subtype list before contains reduced the body to 825 bytes.
+//   The player/world correction then reduced it to 822 bytes and aligned the
+//   difficulty chain at md->player->world (+0x3c).
+// - A split scan-ID/contains-ID local reduced size to 801 but worsened byte
+//   alignment.  It was restored.  Current source is the 822-byte candidate:
+//   all calls and list offsets align, but register ownership and several
+//   subtype blocks still differ.
+// - Session shardA4: direct `this`/parameter use, declaration reordering, and
+//   the donor-backed TacticalAIModule virtual base were natural ABI probes;
+//   each was a codegen duplicate.
+// - The original has a dedicated boat-chain return before the shared
+//   civilian/soldier append.  Added that return and the fishing early-return
+//   form; returns became 3/3 and exact-block coverage improved to 60.66%, but
+//   the 822-byte body and first prologue mismatch remained.
+// - A preincrement resize capacity form was also a codegen duplicate and was
+//   restored to the clearer `number + 1` spelling.
+// - Same-TU AIModule base spelling and a full base gap were codegen duplicates
+//   at 822 bytes; the structural prologue and four ID spill gaps were unchanged.
+// - Restoring the binary-supported persistent object alias in the current
+//   virtual-base context was also a duplicate.  A register-ID diagnostic was
+//   unchanged, so the clean typed candidate remains authoritative.
+// - Revisit session: the clean 822-byte source rebuilt with 11/11 ordered
+//   calls, no frame, 570 strict diff bytes, and 60.66% exact-block coverage.
+// - Tested persistent object aliases, parameter-home mutation, the Ghidra
+//   local topology, a typed parameter-home reference, delayed initialization,
+//   register-qualified parameter/ID locals, a flat class prefix, local-order
+//   changes, and combined scan predicates.  These were duplicates or worse.
+// - Tested non-register object and receiver aliases, direct member scans,
+//   stdlib/string/windows headers, their combination, and a receiver reference.
+//   Each emitted the same 822-byte candidate.
+// - Branch-local subtype IDs changed the basin to 777 bytes and 747 strict
+//   diff bytes, but lost structural alignment and was restored.
+// - The remaining mismatch is register ownership: the original keeps the
+//   parameter in EBX, this in EBP, and the repeated ID in EDI.  The clean
+//   source keeps the same behavior and calls but assigns another register
+//   basin, spilling the ID after three resize calls.
+```
+<!-- end-recovered:d0aa949d5f32f9c67953 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

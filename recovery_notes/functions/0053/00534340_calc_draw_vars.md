@@ -1,0 +1,433 @@
+# Recovery journal: 00534340 `calc_draw_vars`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/view.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\view.cpp`.
+- Earlier recovery note: `recovery_notes/view_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:dffce308d81019f2b395 -->
+### `target-session` `build/target_sessions/00534340_calc_draw_vars.json:1-175`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=61; shape=95.16129032258064: Clean inherited RGE_View/TPanel/tagRECT reconstruction from durable attempt log; establish current metrics.
+probe 2 liveness; result=MISMATCH; diff=198; shape=77.94117647058823: Named function-scope int zero reused in guards and clear stores to force original EBP zero lifetime.
+probe 4 liveness; result=MISMATCH; diff=198; shape=77.94117647058823: Register-qualified named zero local tests whether VC5 honors an explicit EBP zero register. [same emitted code as probe 2]
+probe 6 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Short zero local tests whether a narrow zero sentinel recovers the original BP stores and EBP allocation. [same emitted code as probe 1]
+probe 8 context; result=MISMATCH; diff=61; shape=95.16129032258064: Use the complete same-TU TPanel field and virtual surface from exact handle_scroll_view donor to test front-end context and register basin. [same emitted code as probe 6]
+probe 10 context; result=MISMATCH; diff=61; shape=95.16129032258064: Add the complete known RGE_View data surface through 0x35C to test unused-member front-end context while preserving canonical offsets. [same emitted code as probe 8]
+probe 13 layout; result=MISMATCH; diff=61; shape=95.16129032258064: Canonical layout probe: replace touched TPanel and RGE_View gaps with the complete inventory-proven field declarations, while preserving the natural body and exact offsets. [same emitted code as probe 12]
+probe 14 layout; result=MISMATCH; diff=61; shape=95.16129032258064: Canonical prefix probe: replace the remaining known RGE_View prefix gaps with inventory-proven typed world/map and size fields. [same emitted code as probe 13]
+probe 16 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Diagnostic natural probe: remove the panel-width local and use direct typed pnl_wid reads throughout; test whether VC5 assigns EBP zero and EDI divisor. [same emitted code as probe 15]
+probe 18 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_120524: 256 variants, 256 invariant-eligible, 0 exact
+probe 19 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Diagnostic natural probe: carry a mutable short zero local through the guard and all zero stores, following the exact donor's short initialized local pattern. [same emitted code as probe 16]
+probe 21 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Diagnostic natural probe: name the already-checked tile width and height inside the success arm, then use those typed locals for division. [same emitted code as probe 19]
+probe 23 liveness; result=MISMATCH; diff=198; shape=77.94117647058823: Diagnostic natural probe: use one initialized long zero local for all zero comparisons and stores, testing width-consistent zero register coloring. [same emitted code as probe 4]
+probe 26 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_161614: 6 variants, 6 invariant-eligible, 0 exact
+probe 27 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_161658: 6 variants, 6 invariant-eligible, 0 exact
+probe 28 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_161831: 4 variants, 4 invariant-eligible, 0 exact
+probe 29 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_161933: 4 variants, 1 invariant-eligible, 0 exact
+probe 30 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_162028: 4 variants, 4 invariant-eligible, 0 exact
+probe 31 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_162100: 4 variants, 4 invariant-eligible, 0 exact
+probe 32 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_162145: 5 variants, 5 invariant-eligible, 0 exact
+probe 33 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_162220: 5 variants, 3 invariant-eligible, 0 exact
+probe 34 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_162310: 6 variants, 6 invariant-eligible, 0 exact
+probe 35 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_162345: 5 variants, 5 invariant-eligible, 0 exact
+probe 36 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_162414: 2 variants, 2 invariant-eligible, 0 exact
+probe 37 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_162614: 1 variants, 1 invariant-eligible, 0 exact
+probe 38 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_162639: 2 variants, 2 invariant-eligible, 0 exact
+probe 40 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_163213: 2 variants, 2 invariant-eligible, 0 exact
+probe 41 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_163236: 4 variants, 4 invariant-eligible, 0 exact
+probe 42 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_163249: 4 variants, 4 invariant-eligible, 0 exact
+probe 43 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_163322: 4 variants, 4 invariant-eligible, 0 exact
+probe 44 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_163426: 8 variants, 8 invariant-eligible, 0 exact
+probe 45 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_163527: 2 variants, 2 invariant-eligible, 0 exact
+probe 46 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_163647: 2 variants, 2 invariant-eligible, 0 exact
+probe 47 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_163717: 4 variants, 4 invariant-eligible, 0 exact
+probe 48 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_163746: 16 variants, 16 invariant-eligible, 0 exact
+probe 49 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_163820: 7 variants, 7 invariant-eligible, 0 exact
+probe 51 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H1: use one initialized short zero local for guards and all zero stores, modeled on exact hit_tile prologue. [same emitted code as probe 50]
+probe 53 liveness; result=MISMATCH; diff=81; shape=95.16129032258064: H2: load tile_wid/tile_hgt into short locals only after visible guard, then test locals and divide by them; tests exact local lifetime and tile ownership.
+probe 55 liveness; result=MISMATCH; diff=214; shape=83.33333333333333: H3: function-scope short tile_width/tile_height initialized from RGE_View fields before the compound guard; tests source local lifetime without changing ownership.
+probe 57 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H4: declare short tile dimension locals inside the successful view guard after panel width; tests exact local scope while preserving direct guard field loads. [same emitted code as probe 51]
+probe 59 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H5: use int tile dimension locals inside the successful arm, testing whether VC5's signed promotion source type controls EBP/EDI divisor coloring. [same emitted code as probe 57]
+probe 61 liveness; result=MISMATCH; diff=191; shape=87.09677419354838: H6: materialize panel height as a long local beside proven panel width inside the success arm; tests height local lifetime and reuse across division/center arithmetic.
+probe 63 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H7: assign panel height local only at the max-row statement, then reuse it for center row; tests source declaration timing against original EDI height load. [same emitted code as probe 59]
+probe 65 control-flow; result=MISMATCH; diff=61; shape=95.16129032258064: H9: model the success arm with an explicit return and a separate clear block, matching original dual return tails without a source else. [same emitted code as probe 63]
+probe 67 context; result=MISMATCH; diff=61; shape=95.16129032258064: H10: route tile dimension reads through natural inline view-class accessors; tests whether original view TU inline bodies anchor tile ownership or register colors. [same emitted code as probe 65]
+probe 69 abi; result=MISMATCH; diff=61; shape=95.16129032258064: H11: model canonical TPanel visible as long rather than int, testing field ownership/type provenance while preserving the proven +70 access. [same emitted code as probe 67]
+probe 71 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H12: assign panel height to an int local only after width division, testing whether local type changes reserved EDI lifetime while retaining original load timing. [same emitted code as probe 69]
+probe 73 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H13: declare and initialize the proven panel-width local directly inside the successful arm as long; tests declaration lifetime and canonical TPanel width type together. [same emitted code as probe 71]
+probe 75 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H14: split declaration and zero assignment for one short zero local before the guard; tests VC5 lifetime scheduling separately from combined initialization. [same emitted code as probe 73]
+probe 77 abi; result=MISMATCH; diff=61; shape=95.16129032258064: H15: remove explicit int casts from short tile dimensions and use ordinary C++ promotions; tests whether original divisor ownership came from natural period expression spelling. [same emitted code as probe 75]
+probe 79 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H16: add period-plausible register qualification to a short zero local, testing whether source register intent explains the original EBP zero basin. [same emitted code as probe 77]
+probe 81 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H17: register-qualify short tile width/height locals inside the success arm; tests whether original divisor register colors reflect explicit period register intent. [same emitted code as probe 79]
+probe 83 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H18: move initialized short zero declaration after the proven panel-width local; tests declaration order as the controlling EBP/EDI allocator axis. [same emitted code as probe 81]
+probe 85 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H19: combine panel-width declaration and initialization inside the success arm as int; tests initializer lifetime versus the current separate assignment. [same emitted code as probe 83]
+probe 87 abi; result=MISMATCH; diff=61; shape=95.16129032258064: H20: use PDB-proven TPanel position/redraw enum member types instead of int aliases; tests canonical class declaration metadata for the allocator basin. [same emitted code as probe 85]
+probe 89 layout; result=MISMATCH; diff=61; shape=95.16129032258064: H21: pad RGE_View to the PDB-proven complete 0x360-byte class size; tests whether omitted tail ownership controls VC5 front-end allocation. [same emitted code as probe 87]
+probe 92 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Focused zero-lifetime family: seven natural zero forms (short/unsigned/const/cast, declaration split/order) all kept 217-byte 61-diff basin; one unsigned form worsened late tail. No EBP zero or early POP EDI. [same emitted code as probe 91]
+probe 93 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Focused lifetime family: zero plus panel-height/tile locals, inner declarations, register-qualified pw, and nested guards. 13 additional variants produced four groups; size-eligible forms stayed 217-byte 61-diff basin, others grew 222 or 198 differences. [same emitted code as probe 92]
+probe 94 control-flow; result=MISMATCH; diff=61; shape=95.16129032258064: Focused statement-order family: six natural orders for offset/max assignments. Current order is uniquely 217-byte 61-diff; reordered forms changed branch/source layout or zero color to EBX, never EBP. [same emitted code as probe 93]
+probe 95 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H1 short zero initialized before pw: duplicate current 217/61; zero remained EDI. [same emitted code as probe 94]
+probe 96 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H2 short zero declared after pw: duplicate 217/61; no early EDI pop. [same emitted code as probe 95]
+probe 97 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H3 split short zero declaration and assignment before guard: duplicate 217/61; no EBP zero. [same emitted code as probe 96]
+probe 98 abi; result=MISMATCH; diff=61; shape=95.16129032258064: H4 const/unsigned/cast short zero forms: signed forms duplicate; unsigned creates a worse late-tail group. [same emitted code as probe 97]
+probe 99 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H5 panel-height local assigned after row offset with shared short zero: duplicate 217/61; compiler CSEs the load. [same emitted code as probe 98]
+probe 100 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H6 panel-height local assigned before offset stores: 222-byte EBX-zero basin; violates observed size/order. [same emitted code as probe 99]
+probe 101 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H7 short panel-height local: 222-byte candidate; no evidence for original narrow height local. [same emitted code as probe 100]
+probe 102 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H8 tile width/height locals with shared zero: duplicate or 222-byte basin; direct field reads remain canonical. [same emitted code as probe 101]
+probe 103 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H9 register-qualified panel width, and zero plus register width: duplicates; register keyword is not supported by bytes. [same emitted code as probe 102]
+probe 104 control-flow; result=MISMATCH; diff=61; shape=95.16129032258064: H10 nested positive guards with shared zero and inner width: duplicate 217/61; no natural block-order recovery. [same emitted code as probe 103]
+probe 105 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H11 shared zero with inner pw declaration: duplicate 217/61; scope does not change allocator basin. [same emitted code as probe 104]
+probe 106 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H12 shared zero with inner pw/ph declarations: duplicate or 222-byte basin; original still lacks required EBP zero. [same emitted code as probe 105]
+probe 107 control-flow; result=MISMATCH; diff=61; shape=95.16129032258064: H13 reversed independent offset/max statement order: 217-byte alternatives changed EAX to EDX or zero to EBX; current order is required. [same emitted code as probe 106]
+probe 108 control-flow; result=MISMATCH; diff=61; shape=95.16129032258064: H14 source row-first setup: 222-byte EBX-zero layout, rejected by original 217-byte boundary and PDB band order. [same emitted code as probe 107]
+probe 109 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: H15 historical full-view/TPanel lifetime audit: complete class surfaces, PDB-proven visible and panel-width types, and zero declaration scopes remain duplicate per prior checkpoints. [same emitted code as probe 108]
+probe 110 control-flow; result=MISMATCH; diff=61; shape=95.16129032258064: H16 historical tail audit: explicit clear goto, positive return, fallthrough, and nested guard forms never recovered original POP EDI before clear stores. [same emitted code as probe 109]
+probe 111 context; result=MISMATCH; diff=61; shape=95.16129032258064: H17 historical context audit: donor headers, windows/memory/new context, and ambient declarations changed no first zero-register mismatch; keep natural source baseline. [same emitted code as probe 110]
+probe 113 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182112: 4 variants, 4 invariant-eligible, 0 exact
+probe 114 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182244: 8 variants, 8 invariant-eligible, 0 exact
+probe 115 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182315: 16 variants, 16 invariant-eligible, 0 exact
+probe 116 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182406: 80 variants, 80 invariant-eligible, 0 exact
+probe 117 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182424: 160 variants, 160 invariant-eligible, 0 exact
+probe 118 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182456: 480 variants, 480 invariant-eligible, 0 exact
+probe 119 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182545: 4 variants, 4 invariant-eligible, 0 exact
+probe 120 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182611: 4 variants, 4 invariant-eligible, 0 exact
+probe 121 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182646: 5 variants, 5 invariant-eligible, 0 exact
+probe 122 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182707: 30 variants, 20 invariant-eligible, 0 exact
+probe 123 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182728: 150 variants, 80 invariant-eligible, 0 exact
+probe 124 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182847: 1 variants, 1 invariant-eligible, 0 exact
+probe 125 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182907: 2 variants, 2 invariant-eligible, 0 exact
+probe 126 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182926: 6 variants, 6 invariant-eligible, 0 exact
+probe 127 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_182946: 3 variants, 3 invariant-eligible, 0 exact
+probe 128 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183132: 1 variants, 1 invariant-eligible, 0 exact
+probe 129 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183225: 7 variants, 7 invariant-eligible, 0 exact
+probe 130 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183257: 1 variants, 1 invariant-eligible, 0 exact
+probe 131 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183315: 5 variants, 5 invariant-eligible, 0 exact
+probe 132 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183343: 5 variants, 5 invariant-eligible, 0 exact
+probe 133 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183408: 1 variants, 1 invariant-eligible, 0 exact
+probe 134 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183440: 1 variants, 1 invariant-eligible, 0 exact
+probe 135 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183502: 1 variants, 1 invariant-eligible, 0 exact
+probe 136 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183525: 4 variants, 4 invariant-eligible, 0 exact
+probe 137 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183541: 7 variants, 7 invariant-eligible, 0 exact
+probe 138 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183556: 4 variants, 4 invariant-eligible, 0 exact
+probe 139 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183621: 16 variants, 16 invariant-eligible, 0 exact
+probe 140 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183643: 6 variants, 6 invariant-eligible, 0 exact
+probe 141 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183657: 11 variants, 11 invariant-eligible, 0 exact
+probe 142 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_183714: 11 variants, 11 invariant-eligible, 0 exact
+probe 144 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_184640: 2 variants, 2 invariant-eligible, 0 exact
+probe 145 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Original FPO row is proc=217, locals=0, regs=4, prolog=0, BP=N, SEH=N, params=0; no stack-local lifetime is present. [same emitted code as probe 144]
+probe 146 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: PDB S_GPROC32 is RVA 00133340, Cb=D9, Type=11C0; S_REGISTER only this follows, then S_END. No local S_BPREL/S_REGISTER or nested block records. [same emitted code as probe 145]
+probe 147 abi; result=MISMATCH; diff=61; shape=95.16129032258064: PDB type 11C0 is void RGE_View member ThisCall with zero parameters; class field metadata proves target ABI and method owner. [same emitted code as probe 146]
+probe 148 layout; result=MISMATCH; diff=61; shape=95.16129032258064: PDB RGE_View size=864 with TPanel base size=244; visible +112 int, pnl_wid/pnl_hgt +20/+24 long, render_rect +140, tile fields +264..270 short. No layout uncertainty remains. [same emitted code as probe 147]
+probe 149 context; result=MISMATCH; diff=61; shape=95.16129032258064: view.obj S_COMPILE records C, Pentium, compiler Microsoft 32-bit C/C++ Optimizing Compiler Version 11.00; this matches the pinned VC5-era compiler family. [same emitted code as probe 148]
+probe 150 context; result=MISMATCH; diff=61; shape=95.16129032258064: PE header records x86, linker 5.00, timestamp 1998-07-17, NB10 CodeView age1_x1.pdb; original compiler identity is not a modern-toolchain mismatch. [same emitted code as probe 149]
+probe 151 other; result=MISMATCH; diff=61; shape=95.16129032258064: Original FPO/PDB Cb=D9 gives boundary 00534340..00534418; next GPROC starts 00534420. Seven-byte alignment padding is outside the function, so boundary metadata cannot explain the mismatch. [same emitted code as probe 150]
+probe 152 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Original pushes are split EBX/EBP, xor EBP, push ESI, compare, push EDI; FPO prolog remains zero. This is late callee-save scheduling, not a hidden frame. [same emitted code as probe 151]
+probe 153 context; result=MISMATCH; diff=61; shape=95.16129032258064: Exact same-TU get_tile_screen_coords has FPO locals=0 regs=4 prolog=0 and delayed push EDI after an early test; delayed save scheduling is a real VC5 view.obj pattern. [same emitted code as probe 152]
+probe 154 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Exact same-TU get_tile_picture has FPO locals=0 regs=4 and all four early pushes, while its final pop order splits around the last arithmetic; allocation and epilogue order vary by live values. [same emitted code as probe 153]
+probe 155 flags; result=MISMATCH; diff=61; shape=95.16129032258064: A focused /G5 versus default lab produced one codegen group: both variants are 217 bytes with 61 differences and first mismatch +5. Pentium target metadata does not control this basin. [same emitted code as probe 154]
+probe 156 other; result=MISMATCH; diff=61; shape=95.16129032258064: Current VC5 object COFF .debug encodes function size D9 while .text is E0 with seven NOPs; local object boundary metadata agrees with original Cb=D9. [same emitted code as probe 155]
+probe 158 baseline; result=MISMATCH; diff=61; shape=95.16129032258064: Clean baseline before PDB-supported EBP zero-liveness and tail-clear control/lifetime probes; current 217-byte source, 61 strict mismatches. [same emitted code as probe 157]
+probe 159 control-flow; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 1: express the invalid arm as a natural negative guard with clear body first; PDB line 916 supports the guard and line 942 supports the clear arm. Test whether VC5 materializes the guard zero in EBP and preserves tail clear order. [same emitted code as probe 158]
+probe 161 control-flow; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 2: use a natural invalid guard with an explicit early return, then fall through to the success statements; this keeps line-916 validation and line-942 clear stores while changing lifetime boundaries without labels or aliases. [same emitted code as probe 159]
+probe 163 control-flow; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 3: use nested natural positive guards with a success-arm return and one clear block after the guards; this tests whether nested guard lifetime keeps a zero value in EBP before the saved-register pushes. [same emitted code as probe 161]
+probe 165 liveness; result=MISMATCH; diff=61; shape=90.3225806451613: Hypothesis 4: use a natural clear-arm assignment order closer to the class field declaration order, testing whether VC5 assigns the live zero value to EBP and still schedules the binary-proven clear tail.
+probe 167 liveness; result=MISMATCH; diff=191; shape=87.09677419354838: Hypothesis 5: carry both panel dimensions as natural success-arm locals, matching the two panel loads in the original while testing whether the zero value then selects EBP and the height value selects the original EDI lifetime. [same emitted code as probe 61]
+probe 169 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 6: join the panel-width declaration and initialization as a const success-arm local, a period-plausible lifetime form for the PDB line-932 load; test its effect on zero-register color and clear-tail pop placement. [same emitted code as probe 163]
+probe 171 liveness; result=MISMATCH; diff=71; shape=93.54838709677419: Hypothesis 7: capture tile width and height in natural short locals after the visible guard, then use them through the success arm; test whether the original AX/BX lifetimes select EBP for the zero and EDI for division.
+probe 173 control-flow; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 8: preserve the same positive guard with explicit nested logical grouping, a natural source-form variant that can alter VC5 predicate lifetime without adding locals or aliases. [same emitted code as probe 169]
+probe 175 liveness; result=MISMATCH; diff=61; shape=91.93548387096774: Hypothesis 9: move the two clear-offset stores to the start of the natural invalid arm; test whether their earlier zero use changes the allocator to EBP while preserving the observed tail store order.
+probe 177 layout; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 11: qualify the inherited visible field through the real TPanel base, a canonical ownership form supported by the PDB layout; test whether this changes the early zero lifetime without changing offsets. [same emitted code as probe 173]
+probe 179 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 12: type the carried panel-width local as the PDB-proven long field, preserving the natural statement and guard shape while testing a different register lifetime for EBP zero and the divisor. [same emitted code as probe 177]
+probe 181 liveness; result=MISMATCH; diff=191; shape=87.09677419354838: Hypothesis 13: carry only panel height as a natural long local while retaining the width local and statement order; test whether the height lifetime frees EBP for the guard zero. [same emitted code as probe 167]
+probe 183 control-flow; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 14: retain the original positive guard but return explicitly from the success arm before a separate natural clear block; test whether this lifetime boundary changes EBP zero liveness and clear-tail pops. [same emitted code as probe 179]
+probe 185 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 15: join the non-const width declaration and initialization inside the successful guard; this is the simplest natural alternative to the current function-scope declaration and tests the PDB line-932 lifetime. [same emitted code as probe 183]
+probe 188 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_200209: 5 variants, 5 invariant-eligible, 0 exact
+probe 189 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_200412: 6 variants, 6 invariant-eligible, 0 exact
+probe 190 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_200522: 24 variants, 24 invariant-eligible, 0 exact
+probe 191 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_200640: 12 variants, 12 invariant-eligible, 0 exact
+probe 192 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_200735: 60 variants, 60 invariant-eligible, 0 exact
+probe 193 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_200759: 120 variants, 120 invariant-eligible, 0 exact
+probe 194 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_200818: 160 variants, 160 invariant-eligible, 0 exact
+probe 195 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_200925: 400 variants, 400 invariant-eligible, 0 exact
+probe 196 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_201004: 480 variants, 440 invariant-eligible, 0 exact
+probe 197 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260817_201040: 4 variants, 4 invariant-eligible, 0 exact
+probe 199 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 1: use a separately declared short zero assigned before the guard, rather than compiler literal zeros. This tests whether an explicit narrow zero obtains the original EBP zero owner and restores EDI before the clear stores. [same emitted code as probe 198]
+probe 201 context; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 2 (corrected): restore only the original view.cpp line numbers with #line 916 before the body. The first quoted-file spelling was a compile setup error and was not a probe. [same emitted code as probe 199]
+probe 203 liveness; result=MISMATCH; diff=191; shape=87.09677419354838: Hypothesis 3: carry panel height in a register-qualified long local, matching the original EDI value's two uses after the tile-height divide. This tests whether explicit long liveness changes EBP/EDI coloring while preserving the natural success schedule. [same emitted code as probe 181]
+probe 205 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 4: carry tile width through a register-qualified short local after the guard. The original keeps AX live into the divisor, so this tests whether an explicit narrow live range selects EDI for the divisor and EBP for zero. [same emitted code as probe 201]
+probe 207 abi; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 5: model the visible field as long instead of int. Both are four-byte scalar reads at +0x70, so this tests whether the source type changes VC5's zero-register basin without changing layout or behavior. [same emitted code as probe 205]
+probe 209 flags; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 6: enable VC5 global optimization explicitly with #pragma optimize("g", on) for this function. The default uses /O2, so this tests whether the compiler pragma selects a different optimizer scheduling basin. [same emitted code as probe 207]
+probe 211 flags; result=MISMATCH; diff=127; shape=88.70967741935483: Hypothesis 7: disable frame-pointer omission locally with #pragma optimize("y", off). This is a controlled flag test for the original's unusual EBP zero usage, and should show whether the saved-register restoration order depends on /Oy.
+probe 213 flags; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 8: request VC5 speed optimization locally with #pragma optimize("t", on), testing whether the /O2 speed-versus-size setting affects the EBP zero and EDI restore schedule. [same emitted code as probe 209]
+probe 215 context; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 9: set VC5 inline depth to zero around this body. No call exists in the target, but the pragma tests whether front-end inline state changes the stable EBP/EDI register allocation basin. [same emitted code as probe 213]
+probe 217 liveness; result=MISMATCH; diff=198; shape=77.94117647058823: Hypothesis 10: use a separately declared int zero assigned before the guard. This differs from the earlier initialized-local test and checks whether a full-width zero with a distinct assignment schedules into EBP and permits the original early EDI restore. [same emitted code as probe 23]
+probe 221 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 1: a register-qualified int zero local may reproduce the original EBP zero owner and preserve the success divisor in EDI. This is a distinct local-lifetime/register-allocation test. [same emitted code as probe 220]
+probe 222 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 2: register-qualify the carried panel width to test whether its compiler color shifts the tile divisor from EBP to the original EDI without changing source behavior. [same emitted code as probe 221]
+probe 226 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 1: keep a real short zero for guard and clear publication, while retaining literal success offset stores. This tests whether the original EBP zero is a source local with a shorter success-arm lifetime. [same emitted code as probe 225]
+probe 228 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 2: capture tile_wid and tile_hgt as success-arm short locals after the guard. This tests whether real divisor locals take EDI while the guard zero takes EBP without changing observed loads or integer division. [same emitted code as probe 226]
+probe 230 liveness; result=MISMATCH; diff=61; shape=95.16129032258064: Hypothesis 3: combine a PDB-plausible short zero publication value with success-arm tile-width and tile-height locals. This tests the interaction between zero lifetime and explicit divisor locals. [same emitted code as probe 228]
+probe 233 baseline; result=MISMATCH; diff=61; shape=95.16129032258064: Fresh baseline in the authentic view.cpp translation-unit context. This confirms current register allocation before new evidence-led work. [same emitted code as probe 232]
+probe 234 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_230950: 14 variants, 13 invariant-eligible, 0 exact
+probe 235 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_231051: 19 variants, 14 invariant-eligible, 0 exact
+probe 236 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_231236: 96 variants, 96 invariant-eligible, 0 exact
+probe 237 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_231339: 23 variants, 18 invariant-eligible, 0 exact
+probe 238 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_231616: 5 variants, 1 invariant-eligible, 0 exact
+probe 239 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_231932: 10 variants, 2 invariant-eligible, 0 exact
+probe 240 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_232110: 12 variants, 3 invariant-eligible, 0 exact
+probe 241 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_232224: 16 variants, 16 invariant-eligible, 0 exact
+probe 242 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_232547: 144 variants, 100 invariant-eligible, 0 exact
+probe 243 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_232715: 26 variants, 21 invariant-eligible, 0 exact
+probe 244 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_232814: 2 variants, 1 invariant-eligible, 0 exact
+probe 245 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_233004: 28 variants, 21 invariant-eligible, 0 exact
+probe 246 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_233115: 8 variants, 8 invariant-eligible, 0 exact
+probe 247 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_233218: 16 variants, 7 invariant-eligible, 0 exact
+probe 248 variant; result=MISMATCH; diff=61; shape=95.16129032258064: variant lab build\variant_lab\00534340_calc_draw_vars\20260823_233250: 5 variants, 1 invariant-eligible, 0 exact
+```
+<!-- end-recovered:dffce308d81019f2b395 -->
+
+<!-- recovered:c66c4c20b3ecb408566c -->
+### `d232633c52d4` `src/scratch/00534340_calc_draw_vars.cpp:1-203`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00534340 RGE_View::calc_draw_vars
+// PDB: view.cpp:916-942, 217 bytes
+// __thiscall, void, ret
+// FLAGS: default
+//
+// Attempt log:
+// probe 1: class layout mismatch (160b vs 217b)
+// probe 2-4: free fn / goto / all vars at top — 94-98% diff
+// probe 5-6: nested blocks / __thiscall with class — 90%
+// probe 7: inline checks, eager loads — 93%
+// probe 8-9: vis before zero / literal 0 — 93%
+// probe 10: declare pw/ph uninitialized, assign after checks — 90%
+// probe 11: invert layout (success body first with &&, zero at end) — 36.9%
+//   Key: layout now matches original (calc inline, zero after)
+//   Remaining 80 bytes = register allocation drift only:
+//   - visible in EDX vs EAX (8b 51 70 vs 8b 41 70)
+//   - zero in EAX vs EBP (33 c0 vs 33 ed, no push ebp before xor)
+//   - tile_wid divisor in EBP vs EDI (movsx ebp,dx vs movsx edi,ax)
+//   - zero path pops ESI/EBP before stores vs after stores
+//   All semantically equivalent, VC5 register allocation stable
+// probe 12: if/else vs if+return — identical binary to probe 11
+//
+// left in scratch: remaining drift is VC5 register allocation —
+// EAX/EBP/EDI register choices differ from original by 80 bytes (36.9%).
+// Single-function scope cannot resolve. Needs TU context or register allocation control.
+// probe 13: true TPanel base/polymorphic surface — emitted code unchanged.
+// probe 14: short/int zero locals, register-qualified width locals, and natural
+//   statement-order variants — unchanged or structurally worse.
+// probe 15: exact tagRECT dword aggregate for render_rect — emitted code unchanged.
+// final: retain the period-plausible inherited TPanel/tagRECT ownership; remaining
+//   mismatch is isolated to VC5 register coloring and zero-path save/pop order.
+// Session follow-up: named zero, direct-member width/height, and visible-local
+// probes were rolled back; they were duplicate or farther.  Retain the clean
+// named panel-width/height source and canonical RGE_View/TPanel/tagRECT surface.
+// Main-agent audit confirmed canonical panel/view rectangle ownership and kept
+// the natural visible/geometry branches.
+// Matching-worker continuation: a nine-variant natural body lab (current,
+// zero-local widths, inner/direct locals, declaration/order, math-order, and
+// truthy guards) preserved the 217-byte size but produced only four codegen
+// groups and no exact result.  The clean current source remains the best
+// reconstruction; the remaining 80-byte gap is the stable EAX/EDX, EBP/EDI,
+// and failure-tail register basin, likely requiring broader view.cpp TU context.
+// fresh orch-view-01 pass: splitting the row-offset zero around max-column
+//   changed size to 222 and 191-byte drift; restored clean.
+// fresh pass: natural nested positive guards emitted the same 217/80-byte
+//   codegen as clean; restored clean.
+// fresh pass: reversed zero-comparison operands, leading short zero sentinel,
+//   and chained offset assignment were duplicate or one byte farther; restored.
+// fresh pass: explicit clear-draw-vars goto tail was 217/197 bytes; restored.
+// fresh pass: one-sided panel-width/height local variants were 217/192 and
+//   217/89 bytes; restored.
+// fresh pass: 24-variant natural setup/math/local lab found 8 codegen groups,
+//   10 size-eligible variants, and no exact match.
+// fresh pass: broad period TPanel virtual surface changed output to 217/150;
+//   retained minimal exact-donor-compatible surface and restored clean.
+// Continuation sa-15c0371c-r1 (10-hypothesis budget):
+// probe 62: removing the height local while keeping the clean statement order
+//   worsened to 192 bytes; direct height rereads alone are not sufficient.
+// probe 64: interleaving col-offset/max-col and row-offset/max-row changed the
+//   zero register to EBX and grew to 222 bytes; restored.
+// probe 66: combining that interleaving with direct typed pnl_hgt rereads gave
+//   a natural 217-byte candidate at 61 differing bytes and 66.13% exact blocks.
+//   It aligns the complete success tail from max-col onward; only zero/divisor
+//   coloring and the clear-tail register lifetime remain.
+// probes 67-75: explicit int/short zero locals, full RGE_View tail layout,
+//   windows.h, declaration-order, and memory.h context were either worse or
+//   codegen duplicates of the 61-byte candidate.
+// final continuation source: retain the PDB-supported width local, direct
+//   height rereads, and interleaved offset/max statements; do not retain
+//   unused zero/header scaffolding. Remaining gap is stable EBP/EDI/EAX
+//   allocation and clear-tail pop ordering.
+// orch2 context probe: adding the exact set_rect donor's <new.h> context
+//   emitted the same 217-byte code; restored because it did not change the
+//   register basin.
+// continuation sa61_calc_draw_vars: exact same-TU view.cpp donor
+//   0053F6B0_handle_scroll_view confirms TPanel::pnl_wid/pnl_hgt are long;
+//   normalized both local fields from int to long.  The rebuilt function
+//   remains 217 bytes with the same 61-byte mismatch, CFG, memory effects,
+//   and saved-register set.  Retain the canonical typed surface.
+// Continuation sa1853792c_calc_draw_vars:
+// probes 96-98: moving the proven width local into the success arm, changing
+//   its type to long, and moving it to function scope were codegen duplicates.
+// probe 99: truthy guards were a duplicate; probe 100: protected access and
+//   the canonical RGE_View virtual surface were duplicates.
+// probe 102: a natural height local after the row-offset store was a duplicate.
+// probe 105: ungrouped center arithmetic was a duplicate; probe 106: long zero
+//   literals were a duplicate; probe 107: natural implicit promotions were a
+//   duplicate.  Restored the clean typed source after each diagnostic probe.
+// final continuation: validated clean source remains 217 bytes with 61 strict
+//   mismatches (66.13% exact blocks).  The first mismatch is the stable VC5
+//   EBP/EDI zero-versus-divisor coloring and failure-tail pop order.
+// Matching-worker fresh pass sa-6b1246ff: baseline reproduced 217 bytes,
+//   61 strict mismatches, and 66.13% exact-block coverage.  Explicit int and
+//   register-qualified zero locals were worse; a short zero local was a
+//   codegen duplicate.  Complete same-TU TPanel and RGE_View data surfaces
+//   were also duplicates.  Restored the clean natural source.  The remaining
+//   gap is the known VC5 EBP/EDI allocator basin; broader view.cpp context is
+//   still the useful next evidence.
+// Matching-worker sa-90ba5ca0-r1 canonical-layout probes:
+// probes 13-14: replaced the touched TPanel gaps with the inventory-proven
+//   complete TPanel field surface, then replaced the RGE_View prefix gaps with
+//   typed world/map and size fields.  Both rebuilt to the same 217-byte,
+//   61-difference result.  Retain the stronger local layout declarations;
+//   remaining drift stays in register coloring and the failure-tail lifetime.
+// Fresh continuation sa-9bdbe17c-r1: direct typed pnl_wid reads, a mutable
+// short zero local, and checked tile-width/height locals all reproduced the
+// clean 217-byte/61-difference basin.  A long zero local worsened to 198
+// differences.  A 256-sample ambient declaration context lab found five
+// codegen groups but no exact result; it never changed the first zero-register
+// mismatch.  Restored the pinned natural source.
+// Matching-worker sa-69ff65e9-r1 deeper view-TU pass:
+// The original PDB lists RGE_View::tile_wid/tile_hgt/tile_half_wid/
+// tile_half_hgt as short fields at +0x108..+0x10E.  It lists TPanel::pnl_wid
+// and pnl_hgt as long fields, and visible as int.  The target procedure has
+// only the register symbol this.  The PDB has no named local for this body.
+// Twenty new hypotheses tested those field types, tile local scopes, panel
+// width/height lifetimes, zero lifetimes, inline accessors, return form, enum
+// metadata, and complete RGE_View size.  The clean source stayed at 217 bytes,
+// 61 differences, and 66.13% exact blocks.  The only farther variants were
+// restored.  The remaining gap is the EBP zero versus EDI divisor color and
+// the related clear-tail pop order.
+// Source-gate audit: the living body uses named members and one carried width.
+// It has no generic slots, raw addresses, cursor aliases, fake zero local, or
+// no-effect scaffold.  The clear arm keeps the observed natural zero stores.
+// Continuation sa-d08f1c06-r1 (PDB-supported zero-lifetime pass):
+// probes 159-163 tested negative-guard, explicit invalid return, and nested
+// positive guards.  VC5 canonicalized all three to the clean 217/61 basin.
+// Probe 165 changed clear assignment order and was farther (same 61 bytes).
+// Probe 167 carried both panel dimensions as locals; it grew to 222/191.
+// Probes 169 and 185 joined width declaration/initialization (const and plain);
+// both were clean-basin duplicates.  Probe 171 captured tile shorts and was
+// farther at 71 bytes.  Probe 173 grouped the positive predicate and probe 177
+// qualified the inherited visible field; both were duplicates.  Probe 175
+// moved clear-offset stores first and was farther.  Probe 179 used a long
+// height local and was 222/191.  Probe 181 used explicit success return and
+// common clear block and was a duplicate.  No natural PDB-supported form moved
+// the guard zero from EDI to the original EBP or changed the clear-tail pop.
+// Restored the pinned clean source.  The remaining EBP zero and tail lifetime
+// are not supported by a source-local natural control or declaration change.
+// Matching-worker continuation sa-daa10f76-r1 (ten-hypothesis blocker pass):
+// probe 1: a separately declared short zero with an assignment before the
+// guard was a codegen duplicate at 217/61.  Probe 2: #line 916 restored the
+// original line band but was also a 217/61 duplicate.  Probe 3: a
+// register-qualified long panel-height local grew to 222/191.  Probe 4: a
+// register-qualified short tile-width local was a 217/61 duplicate.  Probe
+// 5: the four-byte visible field typed as long was a 217/61 duplicate.  Probe
+// 6: explicit optimize("g", on) was a 217/61 duplicate.  Probe 7:
+// optimize("y", off) produced a 217/127 body with a different frame, proving
+// the pinned /Oy context is required.  Probe 8: optimize("t", on) was a
+// 217/61 duplicate.  Probe 9: inline_depth(0) was a 217/61 duplicate.  Probe
+// 10: a separately assigned int zero grew to 217/198 and lost all exact
+// blocks.  Restored the pinned clean source after each probe and revalidated
+// 217 bytes, 61 strict differences, and 66.13% exact-block coverage.
+// The original still restores EDI before the eight clear-tail stores, while
+// the clean rebuild keeps zero in EDI until after those stores.  This changes
+// EDI at a faulting invalid-this store, so strict accepted drift is not proved.
+// Recovered view.cpp TU pass: the shared 0x360 RGE_View surface, /GX module
+// flags, and exact 00534100/00534130 prefixes keep the 217-byte, 61-difference
+// basin. Earlier view.cpp owners are not yet on the shared surface.
+// Continuation sa-5abaa990-r3: a right-to-left chained clear, a named validity
+// result, and named width/quotient locals were duplicate or farther. None
+// changed the EDI zero owner. Restored the 217-byte, 61-difference source.
+// Matching-worker exact-finish sa-4f34b859-r1: the authentic view.cpp context
+// gate was rechecked through src/view_tu.cpp. Exact anchors 00534100,
+// 00534130, 00535480, 00535EB0, 00535ED0, 00535F20, 00535F70, 00535FC0,
+// 005381C0, 00538420, and 00538410 remain exact in that shared surface.
+// The target stays 217 bytes with 62 instructions, no calls, no frame, four
+// saved registers, and 61 strict differences. The first difference is the
+// original EBP zero versus rebuilt EDI zero at +5. The original restores EDI
+// before its eight clear-tail stores; the rebuild keeps the zero in EDI there.
+// A register-qualified int zero and a register-qualified panel-width local
+// both reproduced the clean 217/61 basin. Both were restored. No natural
+// source-local change tested in this claim moved the EBP/EDI basin. Next
+// evidence needs the omitted original view.cpp source or compiler context.
+// Exact-finish blocker audit sa-1f3e151c: fresh validation in the current
+// src/view_tu.cpp context reproduced 217 bytes, 62 instructions, no calls,
+// no frame, four saved registers, the matched calc_draw_vars owner, and 61
+// strict differences. Three new natural liveness tests were duplicates:
+// a short zero used only for guard and clear publication; success-arm short
+// tile-width and tile-height locals; and their combination. Each was restored.
+// BINARY NOTE: this body has no x87 work, calls, or Tile_Edge_Tables access.
+// Its writable publication is limited to the proven short fields at +0x116
+// through +0x124. The unresolved bytes are the original EBP zero versus the
+// rebuild EDI zero and the original early EDI restore before clear stores.
+// Do not add table access, x87 arithmetic, calls, or synthetic state to tune
+// this register-allocation blocker.
+// Continuation sa-7e3ccf7d-r1: fresh validation reproduced the pinned
+// 217-byte body with 61 strict differences. DIA reports only the registered
+// `this` symbol. It reports no source local or inline frame for this function.
+// Exact same-TU donor 00539D90 has the original delayed-save prologue shape.
+// Its mutable short local explains that donor's EBP zero, not this target.
+// Fifteen new variant families tested output locals, divisor reuse, predicate
+// locals, references, accessors, declaration order, chains, and register hints.
+// They also tested the PDB-backed RGE_View and TPanel method surfaces.
+// A 144-case VC5 flag classification produced three groups and no match.
+// All size-valid natural forms kept the original blocker or moved farther.
+// Adding exact predecessor 00533F70 changed later scheduling and size only.
+// It kept the rebuilt EDI zero at the first guard. That owner is not in the
+// current shared translation-unit map, so the experiment cannot support an
+// exact claim. The pinned clean source remains the smallest supported form.
+// Useful next evidence is the omitted original view.cpp source or a reviewed
+// expansion of the translation-unit owner map. Do not add fake predecessor
+// code, volatility, table reads, floating-point work, or raw register control.
+```
+<!-- end-recovered:c66c4c20b3ecb408566c -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

@@ -1,0 +1,60 @@
+# Recovery journal: 004C9360 `lay_down_passable_terrain`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/t_b_obj.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\t_b_obj.cpp`.
+- Earlier recovery note: `recovery_notes/t_b_obj_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:afcdf5823d17ca9c7560 -->
+### `30c9a04a1db9` `src/scratch/004C9360_lay_down_passable_terrain.cpp:1-14`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 004C9360 TRIBE_Building_Object::lay_down_passable_terrain (t_b_obj.cpp:748-788, 288B)
+// Lays down passable terrain under the building by modifying tile terrain types.
+// FLAGS: /nologo /c /O2 /Oy
+//
+// Attempt notes:
+// - Logic, FPU operations, field offsets, loops, and tile access all match correctly
+// - Remaining ~3.8% edit diff (11 bytes) is from the cascaded val check:
+//   * Original uses `sub; je; dec; je; dec; jne` — relies on `dec` setting ZF for `jne`
+//   * Rebuilt inserts `test edx,edx` before `jne` (VC5 doesn't trust dec flags)
+//   * This shifts all subsequent instructions by 2 bytes, affecting jump targets
+//   * Total size stays 288 because the epilogue (`add esp,0Ch; ret`) loses same 2 bytes
+// - FPU eval order: x_start → x_end → y_start → y_end (matched by declaration order)
+// - Tile access uses byte offsets (row*4 for pointer array, col*24 per tile)
+// - Cascaded values: 14→(b&0xE6)|6, 15→(b&0xE1)|1, 16→b&0xE0 (others unchanged)
+```
+<!-- end-recovered:afcdf5823d17ca9c7560 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

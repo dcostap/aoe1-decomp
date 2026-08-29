@@ -1,0 +1,174 @@
+# Recovery journal: 0052C3F0 `get_target_task`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/ttsk_lst.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\ttsk_lst.cpp`.
+- Earlier recovery note: `recovery_notes/ttsk_lst_migration.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:a1e42118f3da3e114c79 -->
+### `d050eea3c` `src/ttsk_lst.cpp:1-9`
+
+Mapping: `strong`. comment lies after mapped function get_target_task at old line 1.
+
+```text
+// PDB source module: C:\\msdev\\work\\age1_x1\\ttsk_lst.cpp.
+// Definitions follow the original source-line and address order.
+// [non-comment lines omitted during migration]
+//   0052C3F0 TRIBE_Task_List::get_target_task (lines 41-294)
+//   0052C8D0 TRIBE_Task_List::is_attack_task (lines 299-304)
+// [non-comment lines omitted during migration]
+// BINARY NOTE: 0052C8A1 is a switch-table and padding boundary. It is not a
+// source owner. The first owner has seven ordered RGE_Player::isAlly calls and
+```
+<!-- end-recovered:a1e42118f3da3e114c79 -->
+
+<!-- recovered:562c7e95cd67ea9015ac -->
+### `target-session` `build/target_sessions/0052C3F0_get_target_task.json:1-32`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=1047; shape=86.01398601398601: Baseline current typed reconstruction before new hypotheses; establish mismatch and calls.
+probe 2 liveness; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 1: remove named target alias and use param_2 directly; tests whether compiler preserves incoming target in ESI and original entry ordering.
+probe 3 control-flow; result=MISMATCH; diff=1090; shape=87.52997601918466: Hypothesis 2: remove redundant positive count guards and keep direct for scans; original has one list-count test per scan, while current emitted code had duplicate tests.
+probe 5 liveness; result=MISMATCH; diff=1143; shape=86.33093525179856: Hypothesis 3: use direct this->list_num in first scan guard and loop instead of branch-local count; tests whether count-home lifetime drives the first register and setup hunk.
+probe 7 abi; result=MISMATCH; diff=1143; shape=86.33093525179856: Hypothesis 4: narrow first scan count to short; tests whether the original sign-extended word count is a narrow local rather than an int home.
+probe 9 liveness; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 5: reorder the three short locals to sVar2, sVar5, sVar7; tests whether declaration order selects target versus alternate-id register colors. [same emitted code as probe 1]
+probe 11 control-flow; result=MISMATCH; diff=1136; shape=86.33093525179856: Hypothesis 6: remove only the first scan's explicit positive guard; tests whether its original single count test comes from a bare for while later scans retain their branch-local guard structure.
+probe 13 abi; result=MISMATCH; diff=1092; shape=86.44859813084112: Hypothesis 7: type sVar5 and sVar7 as int; original compares sign-extended target id in EAX against full ECX/EDI, unlike baseline's 16-bit compares.
+probe 14 liveness; result=MISMATCH; diff=1092; shape=86.44859813084112: Hypothesis 8: declare the target alias at function scope before scalar locals and assign it before sVar2; tests declaration order and early pointer lifetime as the target ESI-versus-EDI color control. [same emitted code as probe 13]
+probe 16 abi; result=MISMATCH; diff=1092; shape=86.44859813084112: Hypothesis 9: combine full-width alternate IDs with direct param_2 member expressions; tests whether eliminating the alias lets full-width ID locals take EDI while param_2 takes ESI.
+probe 18 control-flow; result=MISMATCH; diff=1143; shape=86.57074340527578: Hypothesis 11: with full-width alternate IDs retained, remove only the first positive list guard; tests whether the oracle's first single list test is recoverable without the all-loop register cascade.
+probe 20 liveness; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 12: make the first scan index branch-local instead of sharing function-wide iVar8; tests whether original EDI loop coloring comes from a short-lived local.
+probe 22 abi; result=MISMATCH; diff=1092; shape=86.44859813084112: Hypothesis 13: preserve int ID locals and explicitly promote sVar2 in the group-0x15 test; original emits movsx EAX,BP before compares 9 and 11, unlike baseline's 16-bit compares.
+probe 23 abi; result=MISMATCH; diff=1134; shape=85.88516746411483: Hypothesis 14: materialize an int value local in the group-0x15 branch before compares 9 and 11; tests whether the oracle's full-width compare sequence needs a real promoted local.
+probe 25 control-flow; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 15: replace the first positive guard with a binary-proven empty-scan goto and a single counted for; tests one-test lowering while preserving a source fall-through label.
+probe 27 liveness; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 16: declare the shared loop index before the scalar locals; tests whether VC5 local declaration order controls the target and alternate-id register colors. [same emitted code as probe 9]
+probe 29 context; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 17: add the period SDK windows.h context; VC5 header state can select a different codegen basin even when the body has no Windows API call. [same emitted code as probe 27]
+probe 31 context; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 18: add period stdlib.h context; test whether CRT declaration state changes this large function's VC5 register basin. [same emitted code as probe 29]
+probe 33 context; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 19: add period string.h context; test another documented VC5 translation-unit header axis for a basin change. [same emitted code as probe 31]
+probe 35 context; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 20: add period memory.h context; test the documented VC5 standard-header basin axis.
+probe 36 liveness; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 21: register-qualify the target alias as a bounded register-color experiment; test whether VC5 can select original ESI for target without changing the source model. [same emitted code as probe 35]
+probe 39 control-flow; result=MISMATCH; diff=1136; shape=86.33093525179856: Hypothesis 1: replace only the first guarded for scan with an explicit typed do/while and pointer cursor; tests the oracle's single first-loop count gate and pointer induction without changing later source.
+probe 41 control-flow; result=MISMATCH; diff=1136; shape=86.33093525179856: Hypothesis 2: replace only the first guarded for scan with a direct-index do/while, preserving the existing index local; tests the oracle's single count gate without adding a cursor lifetime. [same emitted code as probe 11]
+probe 43 liveness; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 3: register-qualify the read-only target parameter, testing whether the oracle's ESI target color and delayed EDI save come from period register pressure rather than a local alias. [same emitted code as probe 38]
+probe 45 liveness; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 4: scope the first-branch default IDs inside their only use, testing whether shorter sVar5/sVar7 lifetimes restore original EDI ID color and ESI target color. [same emitted code as probe 43]
+probe 47 liveness; result=MISMATCH; diff=1148; shape=86.09112709832134: Hypothesis 5: use direct list_num reads with index initialization before the first do/while guard; tests the oracle's xor-index-before-sign-extend ordering without changing later scans.
+probe 49 abi; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 6: explicitly promote sVar2 only in the group-0x15 comparisons; tests the original movsx-EAX/full-width compare sequence while keeping the natural switch and loop model.
+probe 51 layout; result=MISMATCH; diff=1239; shape=73.87580299785867: Hypothesis 7: reconstruct the decompiler's natural typed model with function-scope master/task/cursor locals and do/while scans; tests original pointer induction, declaration lifetime, and repeated list_num gates together.
+probe 53 control-flow; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 8: restore two binary-proven redundant target-null guards around the unit branch and the repair/group branches; tests missing target-test blocks and original nested source ownership. [same emitted code as probe 25]
+probe 55 control-flow; result=MISMATCH; diff=1111; shape=86.37413394919169: Hypothesis 9: split the shared target outer block into four independent target-guarded source blocks, matching the original repeated test-ESI edges at 0052C508, 0052C567, and 0052C5E5/689.
+probe 58 context; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis: move the reviewed task-list, object, master, and player surfaces into include/ttsk_lst_context.h and add an unregistered ttsk_lst owner wrapper in PDB address order. The target bytes stayed unchanged; the shared context preserves list/list_num aliasing and the seven isAlly plus base call anchors.
+probe 60 liveness; result=MISMATCH; diff=1047; shape=86.01398601398601: Hypothesis 1: declare the target alias before the first action-field load, testing whether earlier source lifetime makes VC5 load param_2 into the original ESI home before the EDI save. [same emitted code as probe 59]
+```
+<!-- end-recovered:562c7e95cd67ea9015ac -->
+
+<!-- recovered:b84279354a1d576a8e68 -->
+### `cb717c939b48` `src/scratch/0052C3F0_get_target_task.cpp:1-70`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// ttsk_lst.cpp:41-294, 1201 bytes
+// attempt 1: 16 bytes
+// attempt 2: compile errors - bad gaps, vfunc syntax, missing base decl
+// attempt 3: 1201 bytes, 96.8% diff, codegen basin problem
+// attempt 4: fix class offsets, add FPU global: still 1201 bytes, 96.9% diff
+// Fixed base class to RGE_Static_Object with correct vtable/master/owner/44/48/4C.
+// Field offsets now match original EXE layout.
+// Remaining 96.4%: register allocation cascade (param_1 in EDX orig vs EAX rebuilt).
+// Original pushes esi before loading param_2; rebuilt loads param_2 early.
+// This changes stack offsets and register assignments throughout 1201 bytes.
+// Deep codegen basin — needs significant source restructuring.
+// Left in scratch.
+// Baseline reset: use typed task, object, master, player, and list surfaces
+// from the exact task_lst.cpp and ttsk_lst.cpp donors.  Preserve the binary
+// branch order and the seven player-relation calls.
+// Probe: switch(sVar2) preserved the binary sparse dispatch and the jump-table
+// shape. The lower-bound subtract is VC5 lowering; the natural switch is kept.
+// Probe: moving the two -1 defaults into the group branch moved their stores
+// to the original post-gate location and aligned the early CFG.
+// Probe: positive list guards with a fall-through zero return merged the empty
+// scans into the original common return block and reduced the size gap.
+// Probe: branch-local int count values made every scan sign-extend list_num
+// before its guard, matching the repeated oracle scan prologue.
+// Probe: a named target alias and reordered short declarations produced no
+// emitted change. Shared iVar8 loop state matched the decompiler evidence.
+// Left in scratch: structural drift is 44 bytes, with the first hunk at the
+// param_2 home/register load (original ESI, rebuilt EDI); all eight calls align.
+// Follow-up probe: guarded do/while scans removed the 44-byte size gap but
+// changed induction-register coloring and worsened the positional diff; restored.
+// Follow-up probe: removing only the first scan guard also worsened the basin;
+// the original single gate is not enough without the matching source context.
+// Follow-up probe: materializing the target master id through short/int locals
+// and an independent group-0x15 gate exposed one oracle block but worsened CFG;
+// restored. Remaining lead is TU/source lifetime context, not register forcing.
+// Pass 2 evidence:
+// BINARY NOTE: The shipped first target-id compare sign-extends the short field
+// to EAX and compares full-width ECX/EDI. Int alternate-id locals reproduced
+// that width and reduced output by 4 bytes, but worsened positional diff.
+// BINARY NOTE: Removing explicit positive list guards removed the 44-byte size
+// gap, but changed the register basin and worsened positional similarity.
+// Header additions, declaration order, local scope, and a register hint were
+// unchanged or worse. The baseline below remains the clean natural source.
+// Pass 3 evidence:
+// BINARY NOTE: The original repeats target-null tests before later target
+// policy blocks. Separate source blocks improved CFG coverage, but added 16
+// bytes and worsened strict difference. The clean source remains restored.
+// BINARY NOTE: A first-scan do/while reached the original 1201-byte size, but
+// changed induction colors and worsened strict difference. VC5 canonicalized
+// direct-index and typed-cursor forms to the same basin.
+// Open: recover the source or translation-unit context that keeps param_2 in
+// ESI and sVar7 in EDI before tuning the remaining list-scan topology.
+// Pass 4 context:
+// BINARY NOTE: The PDB source module is ttsk_lst.cpp.  The reviewed context
+// header keeps the canonical task-list list/list_num alias and the player
+// virtual slot used by all seven relation calls.  The target output stayed
+// unchanged after this context move.  The unregistered module wrapper lists
+// the PDB owner order and the 0052C8D0 exact anchor.
+// Pass 5 audit:
+// BINARY NOTE: The packet has 47 nonempty PDB boundary bands for this owner.
+// Each band falls inside 0052C3F0..0052C8A1.  0052C8A1 is padding-only and
+// 0052C8D0 is the separate exact is_attack_task owner.
+// BINARY NOTE: Direct param_2 use and the prior target alias emit identical
+// code.  Keep the direct spelling as the smaller natural source model.
+// BINARY NOTE: The final wrapper compiles with all eight ordered calls and the
+// correct owner symbol, but remains a positional mismatch at the first hunk.
+// Pass 6 experiment:
+// BINARY NOTE: The action-0x65 scan is closer as one plain bounded for.  The
+// isolated change removes its duplicate positive guard and gives 1201 bytes,
+// 411 instructions, and 1007 differing bytes.  Other guard removals were
+// worse, so this source shape is retained as the current clean reconstruction.
+```
+<!-- end-recovered:b84279354a1d576a8e68 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

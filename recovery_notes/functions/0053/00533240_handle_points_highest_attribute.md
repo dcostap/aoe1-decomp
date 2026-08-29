@@ -1,0 +1,444 @@
+# Recovery journal: 00533240 `handle_points_highest_attribute`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/victory.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\victory.cpp`.
+- Earlier recovery note: `recovery_notes/victory_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:fe031755703db0ca5cf8 -->
+### `target-session` `build/target_sessions/00533240_handle_points_highest_attribute.json:1-195`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=139; shape=75.60975609756098: Clean scalar candidate from prior history; establish current baseline before probes.
+probe 2 control-flow; result=MISMATCH; diff=191; shape=66.66666666666667: Test natural preheader player-pointer advance with top-tested while and bottom i/pointer updates; original has LEA before loop compare and JL backedge.
+probe 4 liveness; result=MISMATCH; diff=132; shape=87.65432098765432: Test binary-supported volatile id home because original reloads id from entry-relative local at loop compare; assess frame and register topology.
+probe 6 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Remove redundant player alias so direct this->player world/id accesses can recover original EDI player and EBP players coloring, potentially spilling id home. [same emitted code as probe 1]
+probe 8 control-flow; result=MISMATCH; diff=191; shape=66.66666666666667: Test explicit for loop with preheader players+1 and bottom i/players increments to reproduce original loop top compare and JL backedge. [same emitted code as probe 2]
+probe 10 control-flow; result=MISMATCH; diff=191; shape=64.19753086419753: Test natural preheader players+1 followed by do/while body and bottom pointer/index increments; this should preserve target's initial count guard and JL backedge.
+probe 11 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Rename best accumulator to period sibling's points spelling while preserving control flow; test register allocation against exact handle_points_attribute_first donor. [same emitted code as probe 6]
+probe 12 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Remove world local while retaining player alias, using direct player->world expressions; test pointer ownership and register colors around count/players loads. [same emitted code as probe 11]
+probe 13 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Force a nonvolatile id reference to test whether VC5 naturally materializes the original id home without volatile register-color disruption. [same emitted code as probe 12]
+probe 14 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Apply period-plausible register qualifier to player owner to test whether explicit owner preference recovers original EDI/EBP colors and id spill. [same emitted code as probe 13]
+probe 15 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Test register-qualified best accumulator to seek original ECX coloring and parameter-home reuse without changing loop control. [same emitted code as probe 14]
+probe 16 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Move id declaration to function scope while assigning only after count guard; test whether longer source lifetime recovers original fourth stack home. [same emitted code as probe 15]
+probe 18 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Canonical ownership probe: remove the post-update player alias and use direct this->player->world/id expressions, matching the sibling's source ownership style; test whether target's EDI player, EDX world, EBP player-array colors and spilled id emerge. [same emitted code as probe 17]
+probe 20 control-flow; result=MISMATCH; diff=139; shape=75.60975609756098: Canonical loop-condition probe: reverse the equivalent do/while spelling to ; target has cmp index,count followed by JL backedge, so test whether source operand order controls the original positive backedge layout.
+probe 22 control-flow; result=MISMATCH; diff=175; shape=64.19753086419753: Canonical pointer-owner probe: initialize the player cursor as world->players + 1 and advance it at loop tail, the direct array form implied by target LEA [base+4].
+probe 24 liveness; result=MISMATCH; diff=178; shape=64.19753086419753: Canonical cursor-ownership probe: retain the world player-array base and introduce a separate current_players cursor initialized at base+1, because target keeps base EBP and cursor EDI for LEA/add loop addressing.
+probe 26 liveness; result=MISMATCH; diff=178; shape=64.19753086419753: Natural declaration-scope probe: move the separate current_players cursor to function scope while assigning it only inside the positive count guard, preserving old-C declaration style without volatile or address tricks. [same emitted code as probe 24]
+probe 28 liveness; result=MISMATCH; diff=191; shape=64.19753086419753: Natural dual-cursor probe: initialize a persistent cursor from the world array before the threshold branch, then advance it before and after the scan; test whether VC5 retains target-like base/cursor register roles without opaque forcing. [same emitted code as probe 10]
+probe 32 control-flow; result=MISMATCH; diff=191; shape=66.66666666666667: Natural while-loop probe: pre-increment player cursor, then while (i < num) with bottom i/cursor updates; test target JL-backedge and explicit loop exit. [same emitted code as probe 8]
+probe 34 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Natural ownership probe: remove persistent player alias and use direct this->player world/id expressions while retaining clean do/while source. [same emitted code as probe 31]
+probe 36 control-flow; result=MISMATCH; diff=191; shape=64.19753086419753: Natural sibling-shaped cursor probe: initialize players+1 in the guard, then do/while with bottom i++ and players++; mirror 00533330 loop lowering. [same emitted code as probe 28]
+probe 38 liveness; result=MISMATCH; diff=178; shape=64.19753086419753: Natural dual-pointer probe: retain world player-array base and add current_players = players + 1, advancing the cursor at loop tail; target shows distinct base and cursor registers. [same emitted code as probe 26]
+probe 40 control-flow; result=MISMATCH; diff=191; shape=64.19753086419753: Natural single-cursor probe: assign players = players + 1 in the guarded preheader, then advance it at loop tail; avoid a second pointer local. [same emitted code as probe 36]
+probe 42 variant; result=MISMATCH; diff=191; shape=64.19753086419753: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_120949: 32 variants, 0 invariant-eligible, 0 exact
+probe 43 abi; result=MISMATCH; diff=181; shape=65.4320987654321: Natural narrow-id probe: model the proven short player id as short my_id; test whether target id stack home comes from source width.
+probe 47 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Function-scope val with delayed assignment: test whether target reuses the incoming entry home for the ftol integer before points initialization. [same emitted code as probe 46]
+probe 48 control-flow; result=MISMATCH; diff=178; shape=66.66666666666667: Natural dual-pointer while scan: keep base players and initialize a separate players+1 cursor before a top-tested loop; test target LEA base/cursor and JL backedge topology.
+probe 49 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Function-scope player owner with guarded assignment: test whether original player pointer keeps target EDI through world/id/cursor setup and adds the target local window. [same emitted code as probe 47]
+probe 50 layout; result=MISMATCH; diff=178; shape=64.19753086419753: Natural array-address cursor probe: initialize current_players as &players[1] instead of incrementing players in the do body; test whether VC5 preserves target base EBP and cursor LEA EDI. [same emitted code as probe 38]
+probe 51 layout; result=MISMATCH; diff=189; shape=56.666666666666664: Natural owner-derived cursor probe: initialize current_players from &world->players[1] rather than the local base; test field-owner expression and target LEA topology.
+probe 52 control-flow; result=MISMATCH; diff=178; shape=66.66666666666667: Natural dual-pointer for loop: initialize a separate players+1 cursor and use a combined increment clause; test target LEA setup with bottom JL loop. [same emitted code as probe 48]
+probe 53 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Decompiler-supported entry alias probe: retain p = entry across the state guard and use p for current-point reads/writes; test whether parameter-home reuse and target late entry color emerge. [same emitted code as probe 49]
+probe 54 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Decompiler-supported points-address probe: bind long* points = &entry->points and initialize best through *points; test whether the compiler preserves target parameter-home reuse. [same emitted code as probe 53]
+probe 55 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Nested current lifetime probe: declare and initialize float current inside the state-zero block after val and points; test whether target current slot and parameter-home reuse follow source scope. [same emitted code as probe 54]
+probe 56 abi; result=MISMATCH; diff=195; shape=63.04347826086956: Decompiler-supported attribute local probe: cache entry->attribute in a typed int before the ftol and reuse it in both scan reads; test whether target EBX offset lifetime and stack pressure match.
+probe 57 abi; result=MISMATCH; diff=189; shape=60.714285714285715: Decompiler-reuse diagnostic: preserve p = entry, then reuse the typed entry parameter itself as the integer accumulator through pointer casts; test whether target parameter-home writes and four-slot frame are source-driven.
+probe 59 context; result=MISMATCH; diff=139; shape=75.60975609756098: Local TU surface probe: replace the unused victory-condition virtual declarations with one explicit vftable field while preserving all proven offsets; test declaration context effects on target register and frame allocation. [same emitted code as probe 55]
+probe 61 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Full pointer declaration-scope probe: declare player, world, and players at function scope, then assign them after the current-value store; test target EDI/EDX/EBP allocation without hoisting loads. [same emitted code as probe 59]
+probe 62 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Period-plausible long accumulator probe: use 32-bit long for the ftol value and point result, matching decompiler long temporaries; test width-driven register and frame effects. [same emitted code as probe 61]
+probe 63 control-flow; result=MISMATCH; diff=157; shape=70.23809523809524: Positive threshold guard probe: place the scan in if (val >= initial_amount) and assign zero in the else arm; test branch polarity and cold-tail placement against target.
+probe 65 control-flow; result=MISMATCH; diff=163; shape=70.93023255813954: Natural preheader cursor assignment probe: advance the single players cursor before entering the do/while, then retain only the bottom increment; test target LEA-like setup and loop edge shape.
+probe 66 liveness; result=MISMATCH; diff=163; shape=70.93023255813954: Combined natural probe: retain the preheader single-cursor form, but remove the persistent player alias and use direct this->player world/id expressions; test whether target this EDI and world/player colors emerge. [same emitted code as probe 65]
+probe 68 control-flow; result=MISMATCH; diff=139; shape=78.04878048780488: Single-cursor top-tested loop probe: replace the guarded do/while with while (i < num), preserving pointer and index updates; test target JL-backedge and common-tail topology.
+probe 70 control-flow; result=MISMATCH; diff=191; shape=66.66666666666667: Combined target-shaped loop probe: preadvance the single cursor, then use while (i < num) with bottom index/cursor updates; test target LEA setup plus JL backedge. [same emitted code as probe 32]
+probe 72 control-flow; result=MISMATCH; diff=139; shape=75.60975609756098: Explicit infinite-loop probe: use while (true) with a bottom if (i >= num) break after the natural player/index updates; test whether VC5 lays out target's JL backedge and common jump. [same emitted code as probe 62]
+probe 75 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_164841: 9 variants, 9 invariant-eligible, 0 exact
+probe 76 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_164916: 9 variants, 9 invariant-eligible, 0 exact
+probe 77 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_165042: 15 variants, 15 invariant-eligible, 0 exact
+probe 78 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_165413: 20 variants, 20 invariant-eligible, 0 exact
+probe 80 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Lab 165413 V000001 direct_world: direct this->player->world with no player alias was duplicate baseline, diff 139; source ownership spelling is not the blocker. [same emitted code as probe 79]
+probe 81 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Lab 165413 V000002 dual_cursor: separate base+1 cursor regressed to 208-byte output, diff 178; separate cursor ownership changes loop basin. [same emitted code as probe 80]
+probe 82 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Lab 165413 V000003 dual_cursor_for: separate cursor with for update also produced diff 178; no target-sized structural form. [same emitted code as probe 81]
+probe 83 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Lab 165413 V000004 decomp_alias: points pointer and reused entry cast widened drift to 193; decompiler aliases are not canonical source. [same emitted code as probe 82]
+probe 84 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Lab 165413 V000009 decomp_exact: PDB-shaped entry reuse, points pointer, and direct cursor produced diff 192; exact decompiler form is rejected. [same emitted code as probe 83]
+probe 85 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Lab 165413 V000011 base_and_cursor: explicit world players base and cursor produced diff 178 and frame 0xC; target base/cursor split is not recovered by this natural form. [same emitted code as probe 84]
+probe 86 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Lab 165413 V000012 base_and_cursor_predeclare: function-scope base/cursor declarations stayed in diff 178 basin; declaration scope is negative evidence. [same emitted code as probe 85]
+probe 87 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Lab 165413 V000014 cursor_pointer_reference: named other-player pointer reduced structure to diff 215; pointer owner alias is not supported. [same emitted code as probe 86]
+probe 88 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Lab 165413 V000006 player_alias_early: early player owner alias regressed to diff 219; canonical owner must remain late or direct. [same emitted code as probe 87]
+probe 89 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Lab 165413 V000007 direct_index: indexed players[i] changed loop lowering and forced frame 0x10 but diff remained 187; cursor semantics are proven. [same emitted code as probe 88]
+probe 92 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Current declaration lifetime family: top-level, before-val, after-val, after-best; 8 variants all emitted the 221-byte diff-139 group. Scope alone does not create target current home or frame. [same emitted code as probe 91]
+probe 93 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Joined float current initialization after val/best remained in the same 221-byte diff-139 basin. Declaration-init spelling does not prevent val/current home coalescing. [same emitted code as probe 92]
+probe 94 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Function-scope val and best with assignments stayed in the 221-byte diff-139 group. Their broader semantic lifetime does not reproduce target parameter-home reuse. [same emitted code as probe 93]
+probe 95 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Function-scope my_id with assignment inside the positive scan guard was codegen-duplicate at diff 139; scope does not spill id. [same emitted code as probe 94]
+probe 96 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Declaring my_id before i caused a 205-byte, diff-177 basin and changed loop topology; rejected as a semantic lifetime mismatch. [same emitted code as probe 95]
+probe 97 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Declaring my_id in the count block before i, then assigning after the count guard, stayed diff 139; no natural spill lead. [same emitted code as probe 96]
+probe 98 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Diagnostic volatile int id forced target 0x10 frame and four homes, but changed this/attribute/base colors, added an address LEA, and produced 231 bytes; policy rejects volatility. [same emitted code as probe 97]
+probe 99 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Volatile-int diagnostic plus joined current initialization stayed in the 231-byte close group; current declaration form does not fix spilled-id color or LEA. [same emitted code as probe 98]
+probe 100 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Volatile-int plus named attribute local widened to 209 bytes and diff 196; named attribute is not a supported target lifetime model. [same emitted code as probe 99]
+probe 101 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Entry pointer alias with all proven field accesses was codegen-duplicate at diff 139; canonical entry ownership is not the frame blocker. [same emitted code as probe 100]
+probe 102 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Volatile short id reached exact size 230, frame 0x10, and call-set invariants, but emitted extra short load/extension and wrong register colors; narrow/volatile forcing is rejected. [same emitted code as probe 101]
+probe 103 variant; result=MISMATCH; diff=139; shape=75.60975609756098: Volatile-int scalar declaration order and local/top pointer-scope axes all emitted one 231-byte group; declaration order cannot repair the forced-color basin. [same emitted code as probe 102]
+probe 104 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: long my_id was codegen-duplicate at diff 139; source width does not explain target dword stack reload. [same emitted code as probe 103]
+probe 105 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Declaring best before val worsened to diff 158 while preserving 221-byte size; source order is not the target lifetime explanation. [same emitted code as probe 104]
+probe 107 context; result=MISMATCH; diff=139; shape=75.60975609756098: Claim baseline: current natural victory.cpp reconstruction; begin TU-only audit from pinned clean source [same emitted code as probe 106]
+probe 108 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_181823: 4096 variants, 0 invariant-eligible, 0 exact
+probe 109 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_181939: 12 variants, 0 invariant-eligible, 0 exact
+probe 110 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182017: 12 variants, 0 invariant-eligible, 0 exact
+probe 111 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182100: 16 variants, 0 invariant-eligible, 0 exact
+probe 112 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182214: 1 variants, 0 invariant-eligible, 0 exact
+probe 113 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182235: 1 variants, 0 invariant-eligible, 0 exact
+probe 114 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182312: 64 variants, 0 invariant-eligible, 0 exact
+probe 115 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182336: 4 variants, 0 invariant-eligible, 0 exact
+probe 116 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182407: 1 variants, 0 invariant-eligible, 0 exact
+probe 117 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182453: 6 variants, 0 invariant-eligible, 0 exact
+probe 118 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182513: 5 variants, 0 invariant-eligible, 0 exact
+probe 119 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182554: 1 variants, 0 invariant-eligible, 0 exact
+probe 120 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182628: 1 variants, 0 invariant-eligible, 0 exact
+probe 121 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182654: 1 variants, 0 invariant-eligible, 0 exact
+probe 122 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182719: 1 variants, 0 invariant-eligible, 0 exact
+probe 123 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182738: 1 variants, 0 invariant-eligible, 0 exact
+probe 124 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182810: 1 variants, 0 invariant-eligible, 0 exact
+probe 125 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182837: 1 variants, 0 invariant-eligible, 0 exact
+probe 126 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260817_182907: 1 variants, 0 invariant-eligible, 0 exact
+probe 128 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Compiler-object audit: original PE FPO row at RVA 00133240 is size 230, locals 16, regs 4, prolog 0, BP=Y, SEH=N, params 4; exact neighboring rows are 00533180 size 186/locals 8 and 00533330 size 224/locals 4, same VC5 basin. Target PDB victory.obj S_COMPILE is MS 32-bit optimizing compiler 11.00, C/Pentium/hardware-float/near; S_GPROC target Cb=0xE6, Debug end +0xDC, only this register, node +4, points +8 and amount +8. No S_BLOCK/range locals or inline records; -inll/-illines show no target inline expansion. Current VC5 object COFF .debug is size 0xDD/local 3 dwords/params1/flags 0x14, with one __ftol REL32 and no extra directives; prior volatile object is size 0xE7/local4 but code size 231. Original [esp+14] is an actual spilled player id while natural object keeps id in EBP; [esp+24] is original parameter-home reuse. This proves omitted PDB locals do not explain the extra word; no hidden ABI or compiler-version lead. [same emitted code as probe 127]
+probe 130 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Natural hypothesis 1: use source-like long points local instead of int best; tests whether exact PDB points home or width controls frame allocation. [same emitted code as probe 129]
+probe 131 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Natural hypothesis 2: model PDB-visible long points and amount locals with field initializers; tests whether local lifetimes produce the extra target stack word without aliases. [same emitted code as probe 130]
+probe 132 liveness; result=MISMATCH; diff=187; shape=60.869565217391305: Natural hypothesis 3: declare my_id with player before world/list locals; tests declaration order and longer player-id lifetime for the target spill and EBX/EBP colors.
+probe 133 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Natural hypothesis 4: function-scope my_id with assignment only in the positive scan arm; tests lifetime scope without an address alias. [same emitted code as probe 131]
+probe 134 layout; result=MISMATCH; diff=139; shape=75.60975609756098: Natural hypothesis 5: load world through the owning this->player expression while retaining player for id; tests receiver ownership and register colors after named class recovery. [same emitted code as probe 133]
+probe 135 layout; result=MISMATCH; diff=139; shape=75.60975609756098: Natural hypothesis 6: remove the named player owner and use direct this->player world/id expressions; tests whether target's EDI player reload and EBP array base reflect direct ownership. [same emitted code as probe 134]
+probe 136 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Natural hypothesis 7: initialize float current at its first use inside the state guard; tests declaration scope and x87 local lifetime without a fake stack object. [same emitted code as probe 135]
+probe 137 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Natural hypothesis 8: use the period long type for the truncated attribute value; tests signed width and FPU spill behavior against the target's dword homes. [same emitted code as probe 136]
+probe 138 liveness; result=MISMATCH; diff=195; shape=63.04347826086956: Natural hypothesis 9: bind the point-entry attribute index once and reuse it for all player reads; tests semantic field CSE and register pressure without cursor aliases. [same emitted code as probe 56]
+probe 139 layout; result=MISMATCH; diff=139; shape=75.60975609756098: Natural hypothesis 10: separate players declaration from its world assignment; tests declaration order for array-base color and frame pressure while preserving the proven pointer owner. [same emitted code as probe 137]
+probe 140 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Natural hypothesis 11: split loop-index declaration from its initialization; tests VC5 preheader scheduling and index/count home placement. [same emitted code as probe 139]
+probe 141 liveness; result=MISMATCH; diff=176; shape=69.41176470588235: Natural hypothesis 12: write curr_attribute_amount before binding current; tests source evaluation order and x87 store scheduling while preserving one conversion.
+probe 142 control-flow; result=MISMATCH; diff=139; shape=75.60975609756098: Natural hypothesis 13: use a negative early return for nonzero state; tests branch layout against the target's distant success tail. [same emitted code as probe 140]
+probe 143 layout; result=MISMATCH; diff=139; shape=75.60975609756098: Natural hypothesis 14: remove the named world owner and use player->world directly for list and count; tests whether world liveness controls the target's stack word and register cycle. [same emitted code as probe 142]
+probe 144 layout; result=MISMATCH; diff=215; shape=64.19753086419753: Natural hypothesis 15: declare player/world/list owners before the attribute conversion; tests whether original source lifetime hoisted these objects while keeping the same behavior.
+probe 145 control-flow; result=MISMATCH; diff=178; shape=64.19753086419753: Natural hypothesis 16: retain the typed players array as a base and use players[i] indexing; tests whether VC5 strength reduction naturally recovers the target's separate base and cursor registers. [same emitted code as probe 50]
+probe 146 layout; result=MISMATCH; diff=139; shape=75.60975609756098: Natural hypothesis 17: declare world/list owners before the player alias; tests local declaration order for the target's world/base register colors. [same emitted code as probe 143]
+probe 147 control-flow; result=MISMATCH; diff=191; shape=66.66666666666667: Natural hypothesis 18: use a pre-incremented typed cursor and top-tested while(i < num); tests the target's positive backedge and separate base/cursor behavior. [same emitted code as probe 70]
+probe 148 control-flow; result=MISMATCH; diff=191; shape=64.19753086419753: Natural hypothesis 19: initialize the typed cursor once and advance it after each body; tests the target's preheader LEA and bottom pointer update without a second cursor. [same emitted code as probe 40]
+probe 149 control-flow; result=MISMATCH; diff=191; shape=66.66666666666667: Natural hypothesis 20: use a typed cursor with a for-loop increment list; tests source update order against the target's inc-index/add-cursor positive backedge. [same emitted code as probe 147]
+probe 150 liveness; result=MISMATCH; diff=177; shape=64.19753086419753: Natural hypothesis 21: initialize my_id after reading player_num but before the positive-count guard; tests source declaration order against the target's post-count id spill.
+probe 153 baseline; result=MISMATCH; diff=139; shape=75.60975609756098: Baseline after independent PDB audit: DIA target has only this/node plus points and amount both RegRel VFRAME +8; no live ranges or hidden locals. Original frame is 0x10 with parameter-home reuse and local homes -0x10/-0x0C/-0x08/-0x04. Canonical scalar source restored before probes. [same emitted code as probe 152]
+probe 154 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 1: use PDB-named long amount and points scalar locals, matching DIA types and parameter-home reuse evidence. Tests width/name-driven home coalescing without aliases or volatility. [same emitted code as probe 153]
+probe 155 liveness; result=MISMATCH; diff=162; shape=73.17073170731707: Hypothesis 2: split amount declaration from assignment and place points initialization before amount assignment. Tests PDB-like declaration/initializer timing and whether a delayed converted value reaches the parameter home.
+probe 157 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 3: use implicit float-to-long conversion for the amount temporary, with canonical long points. Tests cast spelling and period natural conversion while retaining the direct attribute expression and call. [same emitted code as probe 154]
+probe 159 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 4: move canonical long amount and points declarations to function scope before current/state work. Tests whether earlier declaration scope reproduces the original parameter-home result lifetime and 0x10 frame. [same emitted code as probe 157]
+probe 161 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 5: initialize the current float in the positive state block at its first use. Tests declaration scope and float lifetime against the original -0x10 current home without synthetic storage. [same emitted code as probe 159]
+probe 163 layout; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 6: delay points/best declaration until after current conversion. Tests declaration order and independent-load scheduling around the target mov-node-points, fild, and parameter-home overwrite sequence.
+probe 165 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 7: move the loop index declaration to function scope while keeping its initialization in the positive scan arm. Tests whether original index liveness selects the ECX index and spilled-id home. [same emitted code as probe 161]
+probe 167 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 8: widen the natural player-id scalar to period long. Tests whether the original spilled dword id reflects long source width rather than register pressure. [same emitted code as probe 165]
+probe 169 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 9: widen the player-count scalar to period long. Tests the target dword count home and signed compare without changing loop topology. [same emitted code as probe 167]
+probe 171 layout; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 10: reverse the top-level count/current declaration order while preserving all statements. Tests VC5 declaration order as a register-color and local-home input. [same emitted code as probe 169]
+probe 173 control-flow; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 11: invert the state guard to an early return and keep the positive body in a natural block. Tests source guard polarity against the target's near-tail JNZ and distant success flow. [same emitted code as probe 171]
+probe 175 control-flow; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 12: write the positive-count guard with count-left  rather than . Tests compare operand order and pre-loop branch lowering. [same emitted code as probe 173]
+probe 177 control-flow; result=MISMATCH; diff=140; shape=74.39024390243902: Hypothesis 13: reverse the threshold expression to entry amount greater than converted value. Tests compare operand order while preserving the positive scan branch.
+probe 179 control-flow; result=MISMATCH; diff=157; shape=70.23809523809524: Hypothesis 14: express the threshold as a positive greater-or-equal scan arm with a negative fallback assignment. Tests branch polarity and shared final-tail placement against the target. [same emitted code as probe 63]
+probe 181 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 15: use implicit int-to-float assignment for the current value instead of an explicit cast. Tests conversion spelling and x87 local materialization. [same emitted code as probe 175]
+probe 183 liveness; result=MISMATCH; diff=176; shape=69.41176470588235: Hypothesis 16: derive current by rereading the stored point-entry float after direct member assignment. Tests whether the target local current is a compiler temporary or a source-owned member value. [same emitted code as probe 141]
+probe 185 layout; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 17: declare and initialize world before the player local, then obtain players from world. Tests owner declaration order against target player/world/array register colors. [same emitted code as probe 181]
+probe 187 layout; result=MISMATCH; diff=178; shape=56.043956043956044: Hypothesis 18: fetch the player-array owner through direct this-player-world ownership while retaining the named world for count. Tests owner expression form against sibling-backed register scheduling.
+probe 189 liveness; result=MISMATCH; diff=192; shape=74.07407407407408: Hypothesis 19: bind one ordinary loop-local other-player pointer before the two attribute comparisons. Tests whether the target's single player dereference is source-owned without using an alias or forced home.
+probe 193 control-flow; result=MISMATCH; diff=191; shape=64.19753086419753: Hypothesis 1: move the player-array increment before the do-loop and retain a tail increment, matching the oracle LEA-before-loop and add-after-index order. Tests loop rotation rather than register steering. [same emitted code as probe 148]
+probe 195 liveness; result=MISMATCH; diff=178; shape=66.66666666666667: Hypothesis 2: use a natural indexed for scan and declare the self id inside the loop. Tests whether VC5 strength-reduces players[i] while shortening id liveness, instead of relying on a cursor source. [same emitted code as probe 52]
+probe 197 layout; result=MISMATCH; diff=153; shape=73.17073170731707: Hypothesis 3: delay the best-points declaration until after the converted current value is stored. Tests whether source declaration timing selects the oracle ECX points/amount sequence and argument-home reuse.
+probe 199 layout; result=MISMATCH; diff=178; shape=64.19753086419753: Hypothesis 4: keep an explicit base pointer and a separate loop cursor, initialized and advanced inside the positive count arm. Tests the oracle's EBP base plus EDI cursor topology and whether it spills the self id naturally. [same emitted code as probe 145]
+probe 201 control-flow; result=MISMATCH; diff=191; shape=66.66666666666667: Hypothesis 5: express the positive scan as a preincremented pointer with a top-tested while loop and explicit tail updates. Tests whether VC5 emits the oracle jl-backedge/jmp-tail topology from while rather than do/while. [same emitted code as probe 149]
+probe 203 control-flow; result=MISMATCH; diff=140; shape=74.39024390243902: Hypothesis 6: reverse the threshold source operand spelling to entry amount greater than converted value. Tests compare operand order and branch lowering without changing semantics or loop ownership. [same emitted code as probe 177]
+probe 205 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 7: materialize the float conversion through a block-local initialized value before assigning the function-scope current. Tests whether the original x87 spill arose from declaration initialization and a distinct conversion lifetime. [same emitted code as probe 192]
+probe 207 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 8: widen count, scan index, and self id to period long types together. Tests whether the oracle's dword homes and signed compares require long source widths rather than int defaults. [same emitted code as probe 205]
+probe 209 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 9: take a nonvolatile address alias of the self-id local and compare through it. Tests whether a natural address-taken id creates the oracle fourth local home without volatile or fake padding. [same emitted code as probe 207]
+probe 211 liveness; result=MISMATCH; diff=132; shape=87.65432098765432: Hypothesis 10: make the self-id local volatile to force the oracle's spilled id home and 0x10 frame. This is diagnostic only; retain only if all nonvolatile models fail and policy permits. [same emitted code as probe 4]
+probe 213 control-flow; result=MISMATCH; diff=191; shape=64.19753086419753: Hypothesis 11: replace the do/while with source-local scan and done labels, unconditional cursor advance, and conditional backedge. Tests whether the target's jl loop-back and explicit final jump require source labels rather than structured loop syntax. [same emitted code as probe 193]
+probe 216 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260822_124927: 96 variants, 0 invariant-eligible, 0 exact
+probe 217 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 12: declare the self id at function scope and assign it only in the positive count arm. Tests extended source lifetime and register pressure for the target spilled id without volatility. [same emitted code as probe 216]
+probe 219 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 13: mark the target member protected, matching the original IA decorated-access evidence instead of the current QA symbol. Tests direct symbol identity and any access-driven compiler context. [same emitted code as probe 217]
+probe 220 liveness; result=MISMATCH; diff=132; shape=87.65432098765432: Hypothesis 15: force only the self-id read through a volatile cast while keeping a natural nonvolatile local. Tests stack-home pressure with less prologue disruption than a volatile declaration. [same emitted code as probe 211]
+probe 221 layout; result=MISMATCH; diff=178; shape=64.19753086419753: Hypothesis 16: use a const-qualified player-array base and a separate const cursor, with pre-loop and tail increments. Tests whether pointer constness preserves the oracle EBP base/EDI cursor topology without volatile scaffolding. [same emitted code as probe 199]
+probe 222 abi; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 17: use period long locals for converted amount and result, matching the target CodeView names and dword homes. Tests whether signed long source width changes FPU materialization or spill allocation. [same emitted code as probe 219]
+probe 223 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 18: use the stored curr_attribute_amount field as the later comparison source instead of a named float local. Tests whether the oracle current home is a compiler temp or a source-owned member reread. [same emitted code as probe 222]
+probe 224 variant; result=MISMATCH; diff=139; shape=75.60975609756098: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260822_125358: 144 variants, 0 invariant-eligible, 0 exact
+probe 225 layout; result=MISMATCH; diff=178; shape=64.19753086419753: Hypothesis 19: mirror exact victory.cpp handle_destroy_multiple ownership by declaring current_players inside the guard, indexing current_players[1], and advancing it at the tail. Tests donor-backed base/cursor lifetime and register coloring. [same emitted code as probe 221]
+probe 226 liveness; result=MISMATCH; diff=130; shape=90.12345679012346: Hypothesis 20: combine the lab's best nonnatural basin: initialize current before best and use volatile self id. Measures whether declaration timing reduces the volatile frame variant's 132-byte drift.
+probe 227 layout; result=MISMATCH; diff=178; shape=64.19753086419753: Hypothesis 21: initialize a separate current_players cursor directly as players plus one, then advance it at the loop tail. Tests whether one LEA preheader plus dual-pointer pressure recovers the oracle base/cursor and spilled id. [same emitted code as probe 225]
+probe 230 control-flow; result=MISMATCH; diff=178; shape=66.66666666666667: Hypothesis 22: combine the exact handle_explore donor's explicit players+1 walker with a top-tested while loop and tail pointer update. Tests whether this donor-backed CFG yields the oracle preheader LEA and jl-style backedge. [same emitted code as probe 195]
+probe 231 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 23: apply a period register qualifier to the player-array cursor. Tests whether explicit cursor register preference recovers the oracle base/cursor colors and spills id without volatile memory semantics. [same emitted code as probe 229]
+probe 232 liveness; result=MISMATCH; diff=139; shape=75.60975609756098: Hypothesis 24: bind the self-id through a const reference before the scan. Tests whether VC5 treats a local reference as an address-taken home and recovers the target current/id slot pair without volatile. [same emitted code as probe 231]
+probe 234 baseline; result=MISMATCH; diff=139; shape=75.60975609756098: Fresh baseline for exact-finish pass; validate the pinned natural source and inspect full structural differences. [same emitted code as probe 233]
+probe 235 layout; result=MISMATCH; diff=178; shape=64.19753086419753: Hypothesis 1: use indexed players[i] ownership. The oracle keeps the players base through the id read, then strength-reduces it to LEA base+4 and a bottom cursor increment. [same emitted code as probe 227]
+probe 236 liveness; result=MISMATCH; diff=178; shape=64.19753086419753: Hypothesis 2: remove the unsupported float local. Keep only the PDB-named integer amount and points, and reuse natural (float)amount conversions for publication and comparisons. [same emitted code as probe 235]
+probe 238 variant; result=MISMATCH; diff=178; shape=64.19753086419753: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260823_183014: 45 variants, 45 invariant-eligible, 0 exact
+probe 239 liveness; result=MISMATCH; diff=57; shape=90.12345679012346: Hypothesis 4: use indexed ownership with a branch-local current-player pointer. This keeps the player array as the canonical base while one entry supplies both score reads.
+probe 240 variant; result=MISMATCH; diff=57; shape=90.12345679012346: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260823_183302: 10 variants, 10 invariant-eligible, 0 exact
+probe 241 liveness; result=MISMATCH; diff=210; shape=90.12345679012346: Hypothesis 6: name the attribute index at function scope. The oracle carries one scaled index in EBX across publication and both score reads; this local can claim EBX before entry and iterator allocation.
+probe 242 liveness; result=MISMATCH; diff=57; shape=90.12345679012346: Hypothesis 7: declare the scan index at function scope. The PDB line band starts index setup before the scan, and its lifetime can reserve the target ECX color without changing indexed traversal. [same emitted code as probe 240]
+probe 243 liveness; result=MISMATCH; diff=57; shape=90.12345679012346: Hypothesis 8: apply the period register qualifier to the read-only entry parameter. This tests the target's early ESI parameter allocation without changing memory semantics or ownership. [same emitted code as probe 242]
+probe 244 variant; result=MISMATCH; diff=57; shape=90.12345679012346: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260823_183504: 16 variants, 16 invariant-eligible, 0 exact
+probe 245 variant; result=MISMATCH; diff=57; shape=90.12345679012346: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260823_183609: 5 variants, 5 invariant-eligible, 0 exact
+probe 246 variant; result=MISMATCH; diff=57; shape=90.12345679012346: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260823_183655: 1 variants, 1 invariant-eligible, 0 exact
+probe 247 variant; result=MISMATCH; diff=57; shape=90.12345679012346: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260823_183731: 256 variants, 256 invariant-eligible, 0 exact
+probe 248 variant; result=MISMATCH; diff=57; shape=90.12345679012346: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260823_183930: 16 variants, 16 invariant-eligible, 0 exact
+probe 249 context; result=MISMATCH; diff=21; shape=100.0: Hypothesis 20: validate the reduced indexed score-pointer source under the PDB-proven protected method declaration. This restores the IA owner identity and tests whether authentic class access context resolves the remaining caller-save colors.
+probe 251 baseline; result=MISMATCH; diff=21; shape=100.0: Fresh baseline before exact-finish probes; validate the reviewed-header indexed source with the required 00532C50 owner context. [same emitted code as probe 250]
+probe 252 liveness; result=MISMATCH; diff=21; shape=100.0: Hypothesis 1: declare points before the converted amount but keep its assignment after the conversion. This tests whether VC5 lexical local order selects ECX for points and EDX for the later player-count loop without changing source effects or fault order. [same emitted code as probe 251]
+probe 258 baseline; result=MISMATCH; diff=21; shape=100.0: Fresh Sol baseline: validate the pinned 21-byte natural source before auditing authentic loop and publication declarations. [same emitted code as probe 257]
+probe 259 control-flow; result=MISMATCH; diff=22; shape=98.76543209876543: Hypothesis 1: place the signed player-id operand first in the unequal test. This tests the authentic comparison expression as a natural cause of the ECX/EDX loop-color swap while preserving behavior and faults.
+probe 261 control-flow; result=MISMATCH; diff=22; shape=98.76543209876543: Hypothesis 2: spell the signed loop bound with num first. This tests whether the authentic comparison orientation changes VC5 temporary color while retaining the same signed domain, iteration count, and fault order.
+probe 263 liveness; result=MISMATCH; diff=23; shape=97.53086419753086: Hypothesis 3: publish the converted amount directly and compare through the point-entry member. The PDB has no named float local, so this tests whether VC5 creates the oracle's stack float as a compiler temporary without source register steering.
+probe 265 abi; result=MISMATCH; diff=21; shape=100.0: Hypothesis 4: use function-scope long points then long amount, as DIA records them in that child order, and use signed long loop/count values. This audits authentic VC5 widths without changing Win32 behavior. [same emitted code as probe 258]
+probe 266 variant; result=MISMATCH; diff=21; shape=100.0: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260823_231303: 4 variants, 4 invariant-eligible, 0 exact
+probe 268 liveness; result=MISMATCH; diff=21; shape=100.0: Hypothesis 5: compare the loop index directly with the signed world player count. The PDB has no num symbol, so this tests whether VC5 creates and spills the oracle count while preserving each malformed count case. [same emitted code as probe 266]
+probe 269 context; result=MISMATCH; diff=21; shape=100.0: Hypothesis 6: restore the exact immediate 00533120 victory.cpp predecessor before the exact 00533180 anchor. This tests authentic PDB address order as the cause of the remaining scratch-register phase. [same emitted code as probe 268]
+probe 270 abi; result=MISMATCH; diff=21; shape=100.0: Hypothesis 7: use DIA-proven long points/amount and implicit VC5 numeric conversions, as exact victory.cpp sibling 00533330 does. Keep the direct signed world count and natural indexed scan. [same emitted code as probe 269]
+probe 271 control-flow; result=MISMATCH; diff=21; shape=100.0: Hypothesis 8: spell the self-player skip as a natural for-loop continue. The oracle branches directly to the shared increment block; this tests that source block form without changing reads, iterations, or malformed-input behavior. [same emitted code as probe 270]
+probe 273 control-flow; result=MISMATCH; diff=21; shape=100.0: Hypothesis 9: express the same top-tested indexed scan as a while loop with a bottom increment. This tests the source loop form implied by the oracle pretest and shared update block. [same emitted code as probe 271]
+probe 275 variant; result=MISMATCH; diff=21; shape=100.0: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260823_231727: 4 variants, 4 invariant-eligible, 0 exact
+probe 277 abi; result=MISMATCH; diff=191; shape=65.4320987654321: Hypothesis 10: use a signed short player index, matching the victory module's short player count and id fields. This tests whether VC5 keeps the proven dword induction while selecting the oracle scratch-register phase.
+probe 279 liveness; result=MISMATCH; diff=159; shape=96.29629629629629: Hypothesis 11: publish a fresh implicit view of amount while retaining current for both comparisons. This audits whether the original source repeated the cast and VC5 CSE created the single oracle x87 temporary.
+probe 281 control-flow; result=MISMATCH; diff=21; shape=100.0: Hypothesis 12: use the binary's initial negative guard as a direct early return. This tests the natural source polarity while keeping the same state read, no-side-effect path, and complete body topology. [same emitted code as probe 273]
+probe 282 variant; result=MISMATCH; diff=21; shape=100.0: variant lab build\variant_lab\00533240_handle_points_highest_attribute\20260823_232313: 6 variants, 5 invariant-eligible, 0 exact
+probe 284 abi; result=MISMATCH; diff=140; shape=96.34146341463415: Hypothesis 13: retain the world player count in a signed short local while keeping the index promoted to int. This preserves every field value and audits the module's native count width.
+probe 287 baseline; result=MISMATCH; diff=21; shape=100.0: Fresh authentic-wrapper baseline after stale cache notice [same emitted code as probe 286]
+```
+<!-- end-recovered:fe031755703db0ca5cf8 -->
+
+<!-- recovered:fbfe747da9113343a86d -->
+### `b7fd2baf398f` `src/scratch/00533240_handle_points_highest_attribute.cpp:1-194`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// RGE_Victory_Conditions::handle_points_highest_attribute
+// VA: 00533240
+// victory.cpp
+// Attempt log:
+// - Baseline: reconstructed from scratch (previous scratch source was a decompiler-shaped
+//   wrong reconstruction: reversed threshold direction, invented max-scan loop, invented
+//   trailing ftol). Modeled on exact sibling handle_points_attribute_first (00533180):
+//   same RGE_Player/RGE_Game_World/RGE_Victory_Point_Entry/RGE_Victory_Conditions surface.
+// - Binary semantics: val = ftol(player->attributes[entry->attribute]); curr_amount =
+//   (float)val; best starts at entry->points; if val < entry->amount then best = 0
+//   else scan players[1..num-1]: if any other player's attribute > curr_amount -> best = 0
+//   (break), if == curr_amount -> best = entry->curr_points; finally if best != curr_points
+//   award delta to tot_victory_points and store best.
+// - Probe 3 changed the indexed for-loop to a guarded do/while with direct repeated attribute
+//   reads; size gap fell from 36 to 18 bytes and the FPU compare family moved closer.
+// - Probe 4 restored the binary `other > curr_amount` operand order and branch-local id; shape
+//   improved to 63.22% with the expected fcomp/test-ah-41 sequence.
+// - Probe 5 named the proven attribute offset and world owner; best emitted reconstruction was
+//   197 differing bytes, 69.14% shape, but frame stayed 0xC versus the original 0x10.
+// - Probes 6-12 tested same-TU aliases, register hints, a split cursor, short id width, a self
+//   alias, and a points-field pointer. They were duplicate, neutral, or worse; no ABI/call/CFG
+//   defect was found. Left in scratch: structural/register allocation gap (original spills this,
+//   curr_amount, id, and count; best rebuild spills only this/attribute-related temporaries).
+// - Main-agent audit restored polymorphic player/world/victory ownership;
+//   emitted code is unchanged.
+// - Constructor/TU context probe: the recovered four-slot victory surface,
+//   polymorphic world/player surfaces, and named point-entry id/group fields
+//   are canonical but emitted the same structural candidate. The remaining
+//   blocker is the original four-dword local window versus the natural 0xC frame.
+// - Fresh pass: an entry alias/int-width spelling was codegen-neutral. A four-dword
+//   aggregate with direct attribute expressions improved to diff 141 but added an
+//   implausible 0x18 frame; scalar top-level count/current locals improved to
+//   diff 139 (75.61% shape, 0xC frame, 22.22% blocks). A self alias was
+//   codegen-neutral and was removed during main-agent source audit.
+// - A preheader cursor plus tail increment regressed to diff 178; decompiler-style
+//   top-level declarations regressed to the prior diff 197 basin. Declaration versus
+//   assignment initialization of self was neutral. Remaining gap is the original
+//   four-dword local/register allocation window; calls and CFG are aligned.
+// - Fresh worker pass: exact-sibling player/entry aliases regressed to diff 216 and were
+//   restored. A narrow volatile id local is binary-supported by the observed stack reload;
+//   it forced the 0x10 frame and improved diagnostic diff to 132 with 87.65% shape, but
+//   changed the early register colors and made the function one byte too long. Named player,
+//   named attribute, self-alias, address-taken nonvolatile id, and while/preheader variants
+//   were neutral, duplicate, or worse (diff 139-219). Restored the clean scalar candidate.
+// - Pause lead: the remaining blocker is source/register allocation for the original id and
+//   current stack homes. Calls, relocation identity, and CFG counts are aligned.
+// - Follow-up worker: direct repeated player-id access and direct player->world access,
+//   both matching exact victory.cpp sibling idioms, were codegen-neutral. A preheader plus
+//   tail pointer increment and a for-loop increment clause regressed structural parity
+//   (diff 191/190); an isolated player local reproduced the prior diff-216 basin. Restored
+//   the clean scalar candidate. No new natural structural lead remains in these axes.
+// - tu-victory-533240 probe: kept a typed player owner only after the point-entry update, so the
+//   same owner feeds world and id in the sibling-backed loop. VC5 emitted the unchanged 221-byte,
+//   139-byte-diff group; the original 0x10 local window and four stack homes remain unresolved.
+// - Short player-id local, threshold-fail no-op, scoped player-count declaration, and split
+//   best declaration probes were tested. The short and no-op forms regressed structure;
+//   the scoped-count and split-best forms were codegen duplicates. Restored the clean scalar
+//   source; the original four-slot local window remains the blocker.
+// - Shard E follow-up: period-plausible long locals were codegen-neutral; delayed best
+//   assignment regressed diff 153. Nested non-greater control flow, function-scope loop/value
+//   declarations, and an inner current initializer were duplicate or neutral. Restored the
+//   validated natural scalar source. No new structural lead; the original id spill and frame
+//   remain unresolved.
+// - Reassessment: direct player/world ownership, a distinct points local, exact-sibling
+//   non-polymorphic player/world declarations, and function-scope owner declarations were
+//   duplicate codegen. A bottom-increment cursor reproduced the older diff-191 basin.
+//   The original parameter-home best, four-slot frame, and spilled id remain unresolved.
+// - Canonical-structure follow-up: direct this->player->world/id ownership was codegen-neutral;
+//   reversing the equivalent loop condition changed only branch bytes. Initializing the cursor
+//   as world->players + 1, and split base/cursor locals, regressed to 175/178-byte differences;
+//   a persistent dual cursor reproduced the prior 191-byte basin. Restored the clean scalar
+//   do/while source. Target pointer base/cursor colors and spilled id remain open.
+// - Revisit pass: natural while, preheader-plus-do/while, single-cursor, and dual-cursor
+//   update forms reproduced the known 191/178-byte basins. A short id widened the drift to
+//   181 bytes. A 32-variant natural declaration/order lab produced only the existing 221-byte
+//   groups; no variant had the target 0x10 frame or 230-byte size. Restored the clean scalar
+//   source. The unresolved evidence remains the target's separate player-array base/cursor
+//   registers and spilled player id.
+// - Revisit pass 2: completed 20 additional natural probes across typed aliases, declaration
+//   scopes, pointer ownership, cursor initialization, and loop forms. Entry aliases, points
+//   field pointers, long widths, pointer TU surfaces, and positive guards were neutral or worse.
+//   A top-tested while loop improved diagnostic shape to 78.05% but kept the 139-byte diff.
+//   A preheader single-cursor form reached the target 0x10 frame but changed this to EBX and
+//   widened structural drift to 163 bytes. A typed diagnostic that reused entry as an integer
+//   accumulator widened drift to 189 bytes and is not retained. Restored the pinned natural
+//   scalar source; the target's parameter-home val reuse, spilled id, and base/cursor colors
+//   remain unresolved.
+// - TU-only audit: 20 further probes kept the clean 221-byte / 0xC-frame source. A 4096-variant
+//   period-standard-header sweep, plus Windows headers, ambient declarations, the repository
+//   type/global headers, canonical list and class surfaces, full victory method declarations,
+//   point-dispatch context, neighboring point-handler order, declaration order, protected
+//   access, period typedefs, PDB `node` naming, and supported VC5 flag families were neutral or
+//   worse. Default `/O2 /Oy` remains the only supported flag basin. The original four-slot local
+//   window is not caused by recoverable TU context in this source model.
+// - Object audit: FPO confirms a real 0x10 local frame, not hidden ABI, SEH, inline code, or a
+//   boundary error. The extra word holds a spilled player id. The oracle also reuses the node
+//   parameter home for the converted value and result. PDB local records are incomplete, but
+//   no natural source form recovered those choices. The volatile frame diagnostic stays rejected.
+// - Source-gate audit: replaced narrow class gaps and incomplete world slots with the named
+//   donor-header fields and virtual methods. Restored `amount` and `next` on the point entry,
+//   and typed the victory-list pointers. The rebuilt bytes stayed at the clean 221-byte,
+//   139-byte-diff baseline, so this ownership cleanup does not explain the codegen gap.
+// - Natural frame/home follow-up: tested 21 evidence-led source forms after the ownership
+//   cleanup. Long `points`/`amount` locals, declaration scopes and orders, direct owner reads,
+//   typed indexed and cursor scans, loop forms, and assignment order were neutral or worse.
+//   The natural scalar source remains the clean candidate. No volatile, gap, fake aggregate,
+//   address alias, or forced parameter-home form was retained. Final validation is 221 bytes,
+//   139-byte diff, 0xC frame versus the original 230 bytes and 0x10 frame.
+// - Independent PDB audit: DIA lists only this, node, points, and amount for this function.
+//   points and amount both use VFRAME +8, which is the incoming node home at function entry.
+//   DIA reports no live ranges, hidden locals, or inline frames. The complete point-entry UDT
+//   is 0x1C bytes with amount, points, curr_points, curr_attribute_amount, and next at +8,+C,
+//   +10,+14,+18. The sibling 00533180 has points at VFRAME -4 and amount at +8; sibling
+//   00533330 has amount at +8. These donors support the scalar fields and parameter-home reuse,
+//   but they do not support a new alias or forced home in this target.
+// - Independent follow-up: 20 natural probes tested PDB-named widths, implicit conversions,
+//   declaration order and scope, guard polarity, threshold operand order, owner expressions,
+//   loop-local pointer ownership, and current-member storage. All forms were neutral or worse.
+//   Restored the pinned scalar source. Final clean metrics remain 221 bytes, 139-byte diff,
+//   0xC frame versus the original 230 bytes and 0x10 frame.
+// - Accepted-drift audit: do not promote this candidate. The original has a
+//   0x10 frame, while the rebuild has a 0x0C frame at the ftol call. Thus the
+//   helper receives a different stack and exception context. The x87 compare
+//   predicates and point effects otherwise align, but that observable call
+//   context keeps this function in scratch.
+// - sa-5b56772e-r1 extended pass: a 96-variant structural lab covered declaration
+//   order, store timing, count scope, id scope, and natural/indexed/preincrement
+//   scans. It produced four groups: the clean 221-byte/139-diff group, 208-byte
+//   loop regressions at 178/191 diff, and no size/frame/call-set eligible variant.
+//   A 144-variant id-home lab added normal, volatile, and address-alias ids. It
+//   produced no eligible variant; volatile id gave 231 bytes, 90.12% shape, 63%
+//   exact blocks, and 130-byte diff when current was initialized before best.
+//   This remains diagnostic scaffolding and is rejected by source policy.
+// - Further donor-led probes mirrored exact victory.cpp current-player cursor
+//   ownership, direct players+1 initialization, const base/cursor types, long
+//   amount/result locals, member-current rereads, and function-scope id storage.
+//   These stayed neutral or returned the 178-byte loop basin. The original
+//   protected IA decorated member access was restored from the target symbol;
+//   it does not change body bytes but makes owner identity exact. The natural
+//   clean body remains 221 bytes, 139-byte diff, 0xC versus 0x10 frame.
+// - Final donor sweep tested the handle_explore explicit walker with while,
+//   direct players+1 with do/while, register-qualified players, and a const
+//   id reference. The walker and direct cursor forms returned the 178-byte
+//   basin; register and reference forms duplicated the 139-byte group. No
+//   natural form improved the frame, first divergence, or exact-block result.
+// - BINARY NOTE: PDB assigns this body to victory.cpp lines 1415-1449. The exact
+//   preceding point-handler owner 00533180 spans lines 1383-1411. Its shared
+//   record and player/world declarations validate the canonical field offsets;
+//   the remaining target blocker is the separate four-slot local window.
+// - New structural recovery: naming the indexed score address produced the
+//   original 0x10 frame, saved-register map, parameter-home reuse, pointer
+//   induction, 230-byte boundary, 81 instructions, calls, and complete CFG.
+//   Moving the float conversion before the points initializer and using the
+//   natural indexed for-loop were also required. The reduced direct-id loop is
+//   codegen-identical to the guarded local-id form and preserves the binary's
+//   count check before the id read. Fresh validation differs in 21 register
+//   bytes only: VC5 selects ECX and EDX in the inverse order after __ftol.
+// - The PDB-qualified target is protected. Moving only this declaration to the
+//   protected section restores the original IA decorated owner. It does not
+//   change the body bytes.
+// - Exact-finish follow-up: a fresh grouped check remains 230 bytes with the
+//   original 0x10 frame, one direct __ftol call, complete CFG, and 21 register
+//   bytes differing after the conversion. The indexed score-pointer source is
+//   still the smallest supported body.
+// - Context test: temporarily placing the exact 00532C50 destroy_all owner
+//   before this body in the victory point wrapper, with the reviewed shared
+//   header, did not change the target bytes. The exact 00533330 anchor stayed
+//   exact. The owner mapping and source context were restored.
+// - Authentic-condition test: a temporary shared-header wrapper containing
+//   00532C50, 00532CC0, and this body also kept the 21-byte register recolor.
+//   Appending this owner changed the protected condition-description result,
+//   so that context was rejected and restored.
+// - Natural declaration-scope and entry-alias probes after the structural
+//   recovery were codegen duplicates. No supported source form selected the
+//   oracle ECX/EDX allocation without changing the body basin.
+// - Sol PDB audit: the authentic compiland is Release/victory.obj and reports
+//   Microsoft C/C++ 11.00 with Pentium platform code. DIA orders `points` before
+//   `amount`. Both locals are signed long values at VFRAME +8. The body now uses
+//   those proven names, types, and declaration order. This change is codegen-neutral.
+// - Loop-width audit: the index and cached count require signed 32-bit values.
+//   A short index emitted 16-bit induction and reduced the frame. A short count
+//   emitted an extra sign extension and changed the boundary. Int and long forms
+//   produce the pinned body and preserve negative-count behavior.
+// - Publication audit: `current` must materialize before its member publication.
+//   Repeating the amount conversion emitted `fst` plus `fstp` and shortened the
+//   body. Reading the published member changed the amount home. The retained form
+//   preserves the oracle's stack value, member store, x87 state, and fault order.
+// - Final exact-finish audit tested operand direction, direct count reads, while,
+//   continue, early return, immediate source-order context, debug flags, and CPU
+//   flags. Supported forms stayed at 21 register bytes or changed real structure.
+//   The remaining difference is the unsupported ECX/EDX scratch-register phase.
+// - Captain direct-indexed attribute reads regressed to a 208-byte, 0xC-frame body and 178
+//   differing bytes. The pinned indexed score-pointer source was restored. Final validation
+//   remains 230 bytes, 0x10 frame, complete CFG, and 21 register bytes different.
+```
+<!-- end-recovered:fbfe747da9113343a86d -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

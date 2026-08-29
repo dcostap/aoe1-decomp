@@ -71,11 +71,12 @@ class RemovedBlock:
 
     @property
     def text(self) -> str:
-        return "\n".join(self.lines).rstrip()
+        return "\n".join(line.rstrip() for line in self.lines).rstrip()
 
     @property
     def stable_id(self) -> str:
-        payload = f"{self.commit}\0{self.path}\0{self.old_start}\0{self.text}"
+        identity_text = "\n".join(self.lines).rstrip()
+        payload = f"{self.commit}\0{self.path}\0{self.old_start}\0{identity_text}"
         return hashlib.sha256(payload.encode("utf-8", errors="surrogateescape")).hexdigest()[:20]
 
     @property

@@ -1,0 +1,128 @@
+# Recovery journal: 005153D0 `loadAIInformation`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/tplayer.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\tplayer.cpp`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:dd8b7317bed7c38d1a06 -->
+### `target-session` `build/target_sessions/005153D0_loadAIInformation.json:1-40`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=1279; shape=97.04016913319239: Baseline clean typed reconstruction: exact size/frame and 42 ordered calls; strict diff 1279, edit/resync 90.62%; first mismatch saved debug-random store order.
+probe 2 variant; result=MISMATCH; diff=1279; shape=97.04016913319239: H1 nested assignment chain for debug-random save: test whether VC5 preserves local home before global backup. [same emitted code as probe 1]
+probe 4 liveness; result=MISMATCH; diff=1389; shape=97.67441860465117: H2 volatile local saved-random home: test whether local volatile store blocks VC5 scheduler reordering.
+probe 6 context; result=MISMATCH; diff=1279; shape=97.04016913319239: H3 volatile saved-debug global: test whether a compiler-visible global side effect enforces original local-before-global store order without local volatile home effects. [same emitted code as probe 2]
+probe 8 liveness; result=MISMATCH; diff=1279; shape=97.04016913319239: H4 declaration initializers for debug-random locals: test whether source initialization sites recover original store order and stack homes. [same emitted code as probe 6]
+probe 10 liveness; result=MISMATCH; diff=1274; shape=96.0167714884696: H5 scoped TRIBE_Game receiver for the two get_string calls: test whether cached receiver reproduces original vtable-load and destination-register scheduling.
+probe 12 control-flow; result=MISMATCH; diff=1279; shape=97.04016913319239: H6 reorder construction rule arms to binary PDB line order: no-city/default first, custom/city second, testing original jne-custom topology.
+probe 14 control-flow; result=MISMATCH; diff=1279; shape=97.04016913319239: H7 explicit custom-construction goto with no-city fallthrough and shared post-load label: test whether source labels recover original jne-custom block ordering.
+probe 16 context; result=MISMATCH; diff=1279; shape=97.04016913319239: H8 period-like stdlib.h include: test translation-unit front-end context effect on early store scheduling and whole-function basin.
+probe 18 context; result=MISMATCH; diff=1279; shape=97.04016913319239: H9 string.h with corrected char-pointer casts: test canonical CRT prototypes and intrinsic selection.
+probe 20 abi; result=MISMATCH; diff=1279; shape=97.04016913319239: H10 return-type ABI probe: declare get_string as char* per exact donor surfaces, testing whether ignored virtual result restores original load/vtable schedule. [same emitted code as probe 8]
+probe 22 abi; result=MISMATCH; diff=1279; shape=97.04016913319239: H11 split singleton ownership: use reviewed RGE_Base_Game pointer for virtual strings/difficulty and derived TRIBE_Game pointer only for direct map getters. [same emitted code as probe 20]
+probe 24 context; result=MISMATCH; diff=808; shape=97.46835443037975: H12 reviewed extern rge_base_game plus derived cast for map getters: test symbol-relative singleton ownership against macro address form.
+probe 25 control-flow; result=MISMATCH; diff=808; shape=97.46835443037975: H13 nested rule-file null/random condition with no-city arm first: test whether explicit short-circuit structure preserves original split no-city/custom block layout.
+probe 26 context; result=MISMATCH; diff=808; shape=97.46835443037975: H15 mixed singleton ownership: extern RGE_Base_Game for virtual strings/difficulty, absolute derived macro for map getters, testing relocation and register basin separation.
+probe 27 control-flow; result=MISMATCH; diff=808; shape=97.46835443037975: H17 separate null and strcmp gotos with no-city label before custom label: test whether explicit source block order recovers original split branch topology.
+probe 28 control-flow; result=MISMATCH; diff=808; shape=97.46835443037975: H18 switch on strcmp result with case-zero no-city and default custom: test switch lowering for original test/jne-custom fallthrough.
+probe 30 liveness; result=MISMATCH; diff=1354; shape=97.45762711864407: H19 reverse source assignment order: save global backup before local copy, testing whether VC5 emits the original local-home then global-store sequence through scheduling.
+probe 32 layout; result=MISMATCH; diff=808; shape=97.46835443037975: H20 reverse declaration order of four 256-byte buffers: diagnostic stack-home/lifetime hypothesis against proven LEA displacements.
+probe 33 context; result=MISMATCH; diff=799; shape=97.46835443037975: H21 debug-global extern symbol probe: test whether named global declarations reproduce original local/global store ordering and relocation ownership.
+probe 34 abi; result=MISMATCH; diff=799; shape=97.46835443037975: H22 named global ABI probe: use inferred PDB global names debug_random_on and global_save_debug_random_on2 instead of arbitrary extern names.
+probe 37 liveness; result=MISMATCH; diff=808; shape=97.46835443037975: H23 register hint on long-lived random seed: test whether VC5 spills it after the global backup in the original order. [same emitted code as probe 36]
+probe 38 liveness; result=MISMATCH; diff=808; shape=97.46835443037975: H24 register hint on saved debug flag: test whether its final restore liveness changes global/local store order. [same emitted code as probe 37]
+probe 43 liveness; result=MISMATCH; diff=808; shape=97.46835443037975: H25 chained saved-debug assignment: test natural nested assignment for oracle local-home then saved_debug2 store order.
+probe 44 control-flow; result=MISMATCH; diff=808; shape=97.46835443037975: H26 invert construction rule guard and put default arm first: test PDB branch fall-through and original near default edge.
+probe 45 liveness; result=MISMATCH; diff=808; shape=97.46835443037975: H28 initialize saved debug local at declaration after debug_rand: test natural initializer scheduling against donor update and oracle stack home. [same emitted code as probe 43]
+probe 46 control-flow; result=MISMATCH; diff=808; shape=97.46835443037975: H29 explicit no-city and custom labels with shared construction-loaded join: emitted source remained the 808-byte custom-first basin; restored natural if/else.
+probe 47 liveness; result=MISMATCH; diff=808; shape=97.46835443037975: H27 direct second debug_random_on read produced 1409-byte drift and changed liveness; restored local RHS.
+probe 48 control-flow; result=MISMATCH; diff=808; shape=97.46835443037975: H30 duplicated default construction arms added one log call and 66 bytes; restored single if/else.
+probe 49 control-flow; result=MISMATCH; diff=808; shape=97.46835443037975: H31 nested ruleFile outer guard returned to the same 808-byte basin; restored single if/else.
+probe 50 context; result=MISMATCH; diff=808; shape=97.46835443037975: H32 constant pointer and H33 fixed reference for saved_debug2 were non-improving; reference worsened to 1418 bytes; restored proven absolute macro.
+probe 53 baseline; result=MISMATCH; diff=808; shape=97.46835443037975: Fresh accepted-drift baseline after the tplayer.cpp context gate. PDB lines 2145-2302, TRIBE_Player ownership, adjacent exact tplayer anchors, and 42 calls support this module. [same emitted code as probe 52]
+probe 54 control-flow; result=MISMATCH; diff=788; shape=95.3091684434968: H34: select the city-plan file by mutating the dead ruleFile parameter, then use one common construction load. This tests the oracle's duplicated default log setup and one shared virtual call.
+probe 55 control-flow; result=MISMATCH; diff=106; shape=97.65458422174841: H35: keep one common default load after two default log arms, and let the custom load jump to the shared construction tail. This follows the PDB line bands and oracle's partly merged calls.
+probe 56 control-flow; result=MISMATCH; diff=9; shape=99.57356076759062: H36: make the equal city-plan case the explicit inner success arm. This tests the oracle's JNE-to-custom edge and equal-case fallthrough before the custom block.
+probe 57 context; result=MATCH; diff=0; shape=99.57356076759062: H37: restore the PDB-named debug globals as extern objects. This tests the original source ownership that previously produced the required private-home-before-global store order.
+probe 58 other; result=MATCH; diff=0; shape=99.57356076759062: Exact walkback R1: remove the saved_debug2 macro alias and use the authentic global_save_debug_random_on2 name directly. This tests whether the alias is incidental. [same emitted code as probe 57]
+probe 59 other; result=MISMATCH; diff=799; shape=97.46835443037975: Exact walkback R2: revert the nested city-plan source to one compact if/else while retaining authentic extern globals. This tests whether the recovered branch layout is required.
+probe 60 other; result=MISMATCH; diff=9; shape=99.57356076759062: Exact walkback R3: replace both authentic extern debug globals with absolute image expressions while retaining the exact city-plan form. This tests whether named object ownership is required.
+probe 61 other; result=MATCH; diff=0; shape=99.57356076759062: Exact walkback R4: remove the obsolete disabled declaration block. The canonical tplayer_context.h now owns these declarations.
+```
+<!-- end-recovered:dd8b7317bed7c38d1a06 -->
+
+<!-- recovered:b4d4debacaddf3154b91 -->
+### `b20a5cbcbec3` `src/scratch/005153D0_loadAIInformation.cpp:1-34`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 005153D0 TRIBE_Player::loadAIInformation
+// Attempt log:
+// try 1: direct packet/Ghidra reconstruction: 3x 256-byte name buffers, debug-rand save/restore, AI file selection/loading, personality/rules/build-list setup, diplomacy loops; compile failed on VC5 __thiscall vtable typedefs.
+// try 2: changed vtable typedefs to __stdcall; default /O2 too small (.text 1424 vs 1514).
+// try 3: inlined empty-string strcpy calls and added the two original resource get_string calls; default /O2 improved to .text 1472 vs 1514 but still too small.
+// try 4: diagnostic impossible saveRand/save_debug_random_on == -1 log branches only to force exact-size compare; exact-size 1514/1514 but broad mismatch 83.5535% positional / 94.8481% edit, first mismatch +27 around saveRand/save_debug_random_on stack scheduling; diagnostic branches rolled back.
+// try 5: /GX on diagnostic source no change; rolled back.
+// try 6: /Od diagnostic exact-size but worse debug-basin mismatch 86.3276% positional / 169.5509% edit; rolled back.
+// typed ABI probe: restored the canonical RGE_Player/World/Scenario offsets,
+// AIModule and embedded AI-module surfaces, TRIBE_Game getters, virtual
+// get_string/build-loader calls, direct strategy/emotional/information calls,
+// and the enemy-before-ally diplomacy predicate order.  This recovered exact
+// frame size, all 42 ordered calls, and a 1514-byte rebuilt body; the current
+// structural best is 1281 strict-diff bytes with 89.56% edit/resync similarity.
+// city-plan probe: duplicated the binary-backed custom/no-city construction
+// argument setup in the two source arms, which restored original size and
+// call-site parity; a shared-tail/goto variant was worse and was rolled back.
+// remaining localized drift: VC5 stores the saved debug-random global before
+// the local home (the oracle does the reverse), the map-switch branch spans
+// differ, and the no-city/final learn tails have small block-layout shifts.
+// left in scratch: no custom flags or compiler-steering scaffolding retained.
+// shardB6 probe: typed save-local/global assignment chain left emitted order unchanged; restored clean source.
+// luna probe: split save-random declarations and tested volatile/direct-global variants; VC5 kept the
+// saved-global store before the local home or added reload/cleanup code, so all variants were rolled back.
+// luna probe: inverted and nested the construction-rule guard, then tested an explicit custom-arm jump;
+// VC5 retained the same custom-first block layout.  Natural if/else source remains authoritative.
+// luna probe: the oracle scans learn_info with strlen before loadLearnInfo; replacing `*learn` with strlen
+// improved strict diff 1281->1279, exact blocks 78.04%->79.53%, and resync similarity 89.56%->90.62%.
+// luna-r2 probe: a donor-backed local RGE_Base_Game pointer for both get_string calls improved strict diff
+// 1279->1274 but changed a direct call target and worsened shape; restored the clean source.
+// extern-global probe: reviewed rge_base_game ownership restored the original direct get_string
+// register schedule and improved strict diff 1279->808; use a derived cast only for direct TRIBE_Game
+// map getters.  An absolute image macro is retained for debug-random state because no reviewed symbol
+// owns those addresses and named extern probes left unresolved external relocations.
+```
+<!-- end-recovered:b4d4debacaddf3154b91 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

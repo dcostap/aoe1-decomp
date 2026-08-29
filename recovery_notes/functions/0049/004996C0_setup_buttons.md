@@ -1,0 +1,173 @@
+# Recovery journal: 004996C0 `setup_buttons`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/scr_game.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\scr_game.cpp`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:d50cf4c197d80a9cd05e -->
+### `target-session` `build/target_sessions/004996C0_setup_buttons.json:1-39`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=4268; shape=46.998063266623625: Baseline current canonical scratch reconstruction before managed probes; establish metrics, calls, frame, and mismatch stage.
+probe 2 liveness; result=MISMATCH; diff=4268; shape=46.998063266623625: Hypothesis 1: direct indexed button_panel loop may preserve original EDI object and EBX zero register allocation better than a moving pointer.
+probe 3 control-flow; result=MISMATCH; diff=4268; shape=46.998063266623625: Hypothesis 2: original null game_obj path jumps to the shared late disable tail and does not call final set_button; route null path directly to a separate disable label.
+probe 4 liveness; result=MISMATCH; diff=4268; shape=46.998063266623625: Hypothesis 3: name the level-three action predicate result to prevent VC5 from tail-merging its any_selected_have_action call with the level-nine site; original has two direct sites.
+probe 5 behavior; result=MISMATCH; diff=4273; shape=47.19173660426081: Hypothesis 4: original level-two dispatch guards work_status behind master_obj type 'P'; restore the proven master-type guard before production reconstruction.
+probe 7 context; result=MISMATCH; diff=4268; shape=46.998063266623625: Hypothesis 6: a branch-local RGE_Base_Game* alias, proven useful for callee-save coloring in exact scr_game donors, may move player from EBX to the original EDI allocation.
+probe 8 liveness; result=MISMATCH; diff=4164; shape=46.86894770819884: Hypothesis 7: culture is a byte field and the original byte-width local may recover its observed low-byte load and stack slot reuse.
+probe 9 control-flow; result=MISMATCH; diff=4166; shape=46.86894770819884: Hypothesis 8: the building-list pre-scan likely uses a typed moving Item_Avail* cursor, matching the original +0x28 pointer walk and separate count register.
+probe 10 other; result=MISMATCH; diff=4164; shape=46.86894770819884: Hypothesis 10: replace the level-three second macro call with the explicit typed member call to prevent cross-branch tail merging while preserving the original argument surface. [same emitted code as probe 8]
+probe 11 other; result=MISMATCH; diff=4164; shape=46.86894770819884: Hypothesis 11: explicit typed level-six second button call may stop VC5 from sharing its call tail with level-three while preserving the direct set_button ABI. [same emitted code as probe 10]
+probe 12 behavior; result=MISMATCH; diff=4279; shape=47.062621045836025: Hypothesis 12: nest the level-two work/production body under the binary-proven master_type == 'P' guard, rather than combining it in the outer dispatch condition.
+probe 14 control-flow; result=MISMATCH; diff=4164; shape=46.86894770819884: Hypothesis 13: preserve the original shared late disable target for a null game object while retaining the byte-typed culture probe.
+probe 15 liveness; result=MISMATCH; diff=4164; shape=46.86894770819884: Hypothesis 15: the button reset count is a short-period loop index; test short versus int without changing the moving-pointer loop shape. [same emitted code as probe 14]
+probe 16 control-flow; result=MISMATCH; diff=4164; shape=46.86894770819884: Hypothesis 16: the production-queue early exit targets the shared late disable block, matching original JNZ 0049A88C instead of a direct call-and-return.
+probe 17 liveness; result=MISMATCH; diff=4164; shape=46.86894770819884: Hypothesis 17: name the reset-loop panel pointer so the object lifetime can use the original EDI callee-save while EBX remains the zero value.
+probe 18 abi; result=MISMATCH; diff=4164; shape=46.86894770819884: Hypothesis 18: restore the reviewed work_status reference ABI and pass typed references, replacing the decompiler pointer spelling.
+probe 19 liveness; result=MISMATCH; diff=4249; shape=46.93350548741123: Hypothesis 19: tech_count_local is an out-parameter written by interface_tech_avail; remove the unsupported zero initializer, matching original no-store evidence at +0049FF8.
+probe 20 liveness; result=MISMATCH; diff=4249; shape=46.93350548741123: Hypothesis 20: show_queue is a boolean predicate; test bool versus byte storage against the original byte flag and queue-branch tests. [same emitted code as probe 19]
+probe 21 liveness; result=MISMATCH; diff=4249; shape=46.93350548741123: Hypothesis 21: use a typed building reference instead of a pointer alias; the original keeps game_obj in EDI without the rebuilt stack home before work_status. [same emitted code as probe 20]
+probe 24 liveness; result=MISMATCH; diff=4278; shape=47.320852162685604: Hypothesis 22: test int show_queue against bool storage; repeated queue checks may use a full-width local despite byte global input.
+probe 27 behavior; result=MISMATCH; diff=4277; shape=47.062621045836025: Hypothesis 1: remove the unsupported level-seven objects null guard; original 00499D37 dereferences object->objects directly, so the natural source must preserve the shipped fault order.
+probe 29 control-flow; result=MISMATCH; diff=4293; shape=47.062621045836025: Hypothesis 2: match the original level-seven loop rotation; the executable tests selected against sel_count at entry, then tests the slot index against 25 only after the body.
+probe 31 control-flow; result=MISMATCH; diff=4293; shape=47.062621045836025: Hypothesis 3: rotate the level-four movable scan like the executable; selected<count is the entry guard and the 25-slot bound is a bottom test after i advances. [same emitted code as probe 29]
+probe 33 liveness; result=MISMATCH; diff=4293; shape=47.062621045836025: Hypothesis 4: preserve the binary-backed value one across mode and command setup; original compares sub_game_mode and pushes the same live EBP value for level-three and level-six button index one, which may keep their calls separate.
+probe 35 control-flow; result=MISMATCH; diff=4295; shape=46.93350548741123: Hypothesis 5: restore the level-zero special-selection scan rotation; the original checks selected against sel_count before the body and checks the 25-slot cursor only at the bottom.
+probe 37 liveness; result=MISMATCH; diff=4300; shape=47.062621045836025: Hypothesis 6: the level-zero special scan carries the raw uchar have_action result; original 0049A60E calls have_action and stores AL directly, unlike bool normalization in the clean source.
+probe 39 liveness; result=MISMATCH; diff=4243; shape=36.28147191736604: Hypothesis 7: model the level-four movable flag as a full int; original keeps 1/0 in EBP and tests the full register, while the clean bool emits a byte home.
+probe 40 behavior; result=MISMATCH; diff=4201; shape=36.28147191736604: Hypothesis 8: retain the full-int movable flag and also remove the unsupported level-seven objects null guard; combine two binary-backed width/fault-order corrections to test their interaction.
+probe 41 control-flow; result=MISMATCH; diff=4236; shape=36.28147191736604: Hypothesis 9: remove the duplicate production-queue count guard; show_queue already proves a positive queue count, and original 0049A0D2 enters the countdown loop without a second zero test.
+probe 42 control-flow; result=MISMATCH; diff=4193; shape=36.60426081342802: Hypothesis 10: model the proven queue scan as a do-while under show_queue; show_queue already proves a positive count, and original enters at 0049A0D2 without a zero pre-test.
+probe 43 liveness; result=MISMATCH; diff=4188; shape=36.28147191736604: Hypothesis 11: make the technology-button loop index int; original 0049A3C5 keeps a dword loop home at entry-relative -0x410 and stores/reloads it across calls.
+probe 44 liveness; result=MISMATCH; diff=4188; shape=36.28147191736604: Hypothesis 12: use the original level-four declaration order selected, movable, i; PDB/decompiler initialization bands show i/movable/selected scheduling unlike the clean selected/i/movable order. [same emitted code as probe 43]
+probe 45 liveness; result=MISMATCH; diff=4188; shape=36.28147191736604: Hypothesis 13: make the level-seven found flag int; original carries found as a full register value from 00499D72 into the later action-button argument. [same emitted code as probe 44]
+probe 46 control-flow; result=MISMATCH; diff=4191; shape=36.28147191736604: Hypothesis 14: retest the level-four bottom-bound loop with the int movable and queue basins; the original has only selected<count at entry and the 25-slot compare at the loop backedge.
+probe 47 control-flow; result=MISMATCH; diff=4191; shape=36.28147191736604: Hypothesis 15: rotate level-seven scan to the original bottom-bound form while retaining the recovered int movable, raw-fault, queue, and int-tech-index changes. [same emitted code as probe 46]
+probe 48 control-flow; result=MISMATCH; diff=4191; shape=36.28147191736604: Hypothesis 16: make the normal-button tail's fall-through explicit so the shared final set_button stays attached to the late disable tail, matching original 0049A885 to 0049A88C ordering.
+probe 51 layout; result=MISMATCH; diff=4188; shape=37.24983860555197: Hypothesis 1: preserve the shared screen field offsets but bind setup_buttons button_panel stores and garrison calls to the compact TRIBE_Panel_Button ABI proven by exact set_button; this should restore in_use at +3D0 and direct call identity.
+probe 52 control-flow; result=MISMATCH; diff=4188; shape=37.24983860555197: Hypothesis 2: express the initial 12-button clear as the natural indexed array loop, not a manually advancing pointer, to recover the original EDI array cursor, EBX zero, and ECX countdown lowering.
+probe 53 layout; result=MISMATCH; diff=4188; shape=36.28147191736604: Hypothesis 4: restore the target-local scr_game ABI surfaces proven by the oracle: RGE_Player selection array +134 and sel_count +19C, TRIBE player helpers, RGE static size +88, building queue +1C8/+1CE, master button fields +15E/+16E, compact button in_use +3D0, color table +28, and screen field ownership.
+```
+<!-- end-recovered:d50cf4c197d80a9cd05e -->
+
+<!-- recovered:896c8b874ec7f4304e6b -->
+### `912332e8f578` `src/scratch/004996C0_setup_buttons.cpp:1-39`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004996C0 TRIBE_Screen_Game::setup_buttons (4574B)
+// PDB source: scr_game.cpp lines 3395-4017
+// Attempt log:
+// - baseline: canonical TRIBE_Screen_Game fields and named UI/game surfaces,
+//   with the inventory, unit-level, production, and technology branches
+//   reconstructed from the packet and exact scr_game.cpp donors.
+// - removed an unsupported start_item prologue store; the original initializes
+//   item_cnt and last_item only (the temporary metric was slightly worse).
+// - /GX was tested against the existing scr_game donor flag context; emitted
+//   code was unchanged, so the default response file remains authoritative.
+// - corrected production dispatch to game_obj->object_state and work_type,
+//   including the 0x67 command path and the production-queue menu.
+// - restored named selection-hole handling and the original 0x4E43 versus
+//   0x1D4E3 multi-selection IDs; the remaining drift is compiler CFG/tail
+//   merging and late production/default-button scheduling, not an unknown
+//   pointer-offset scaffold.
+// - moved the packet-backed level-zero selection/button tail outside the
+//   level-two building branch; this restored two set_button sites and the
+//   level-zero any_selected_have_action path, improving the diff by 27 bytes
+//   and matching the original unit-level-zero guard.
+// - tested the null-object cancel set_button, the empty level-two production
+//   tail, a master_type == 'P' building guard, a level-three action temporary,
+//   and declaration/pointer-walk ordering; each was rolled back or codegen-
+//   neutral. The clean source remains the best structural reconstruction.
+// - restored the level-seven objects dereference without a null guard; the
+//   original reads object->objects directly and this reduced the diff by 16.
+// - changed the level-four movable flag to int, modeled the production queue
+//   scan as a do-while, and changed the technology loop index to int. Together
+//   with the direct level-seven dereference, these reduced the diff to 4188B,
+//   added seven exact blocks, and raised resync similarity to 51.40%.
+// - tested level-four and level-seven loop rotations, raw uchar have_action,
+//   int found, an explicit final-tail goto, and a live one local. They were
+//   neutral or worse and are not retained. Two set_button sites and one
+//   any_selected_have_action site still tail-merge versus the executable.
+// - restored target-local scr_game layouts: the base player selection array,
+//   static-object and building queue offsets, master button fields, color
+//   table, compact button in_use, and direct TRIBE_Player helper symbols. The
+//   checker still reports the same strict diff because the first prologue hunk
+//   shifts all later bytes; resynchronized structural similarity improved.
+```
+<!-- end-recovered:896c8b874ec7f4304e6b -->
+
+<!-- recovered:3c5f1c618a6cc5f19d3b -->
+### `912332e8f578` `src/scratch/004996C0_setup_buttons.cpp:69-71`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// The original player surface keeps the selected-object array in the base
+// object at +134.  The shared header models that array in the derived object,
+// which moves it to +1A4 for this owner.  Keep the target-local ABI here.
+```
+<!-- end-recovered:3c5f1c618a6cc5f19d3b -->
+
+<!-- recovered:0a479fcb99d3cd5900cd -->
+### `912332e8f578` `src/scratch/004996C0_setup_buttons.cpp:225-227`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// The shipped setup_buttons owner uses the older, compact button layout.  Keep
+// the shared screen declaration, but use the proven member surface for these
+// two direct calls and the in_use store.
+```
+<!-- end-recovered:0a479fcb99d3cd5900cd -->
+
+<!-- recovered:af380ae8d523f943ea49 -->
+### `912332e8f578` `src/scratch/004996C0_setup_buttons.cpp:1128-1135`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// Managed pass 2026-08-17 notes:
+// Baseline: 4268 differing bytes, 4129 rebuilt bytes, and 80 calls.
+// The reviewed work_status reference ABI emitted the same bytes as pointers.
+// The pointer spelling was not canonical, so this source uses references.
+// The original passes tech_count_local to interface_tech_avail without a store.
+// Removing its zero initializer added one exact block in a valid source model.
+// Late disable labels for null-object and queue exits were codegen-neutral.
+// Byte culture changed compare width. Other tested aliases and guards were worse.
+```
+<!-- end-recovered:af380ae8d523f943ea49 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

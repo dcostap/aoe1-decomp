@@ -1,0 +1,154 @@
+# Recovery journal: 0051C3F0 `handle_idle`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/tpnl_obj.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\tpnl_obj.cpp`.
+- Earlier recovery note: `recovery_notes/tpnl_obj_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:3588bd0eb7059bff445a -->
+### `target-session` `build/target_sessions/0051C3F0_handle_idle.json:1-48`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=1322; shape=72.42105263157895: Baseline existing scratch reconstruction before new probes.
+probe 2 control-flow; result=MISMATCH; diff=1335; shape=73.26315789473684: Restored compound player/game-object guard; original repeats player test and preserves separate set_object arms.
+probe 3 control-flow; result=MISMATCH; diff=1316; shape=72.0: Split player null and player object mismatch into two sequential guards, matching oracle block order.
+probe 4 control-flow; result=MISMATCH; diff=1309; shape=72.42105263157895: Reordered independent player-object and null-player guards to place positive compare block before null cleanup, as oracle CFG does.
+probe 5 control-flow; result=MISMATCH; diff=1341; shape=70.52631578947368: Used outer null-player branch with else-if object mismatch; this is the source form predicted by oracle jump layout.
+probe 6 liveness; result=MISMATCH; diff=1351; shape=62.94736842105263: Introduced one typed object alias across identity and combat checks to test whether original preserves object/master/list pointer colors.
+probe 8 behavior; result=MISMATCH; diff=1322; shape=72.84210526315789: Changed master type guard from >0x45 to >=0x46, matching original cmp 46h/jb lowering.
+probe 9 liveness; result=MISMATCH; diff=1325; shape=72.63157894736842: Removed saved_changed alias; source logic preserves changed state without a redundant local, testing original four-byte output-destination offsets.
+probe 10 control-flow; result=MISMATCH; diff=1352; shape=70.94736842105263: Changed score loop from for to explicit do-while with function-scope index, following original line-band loop increment and donor style.
+probe 12 liveness; result=MISMATCH; diff=1322; shape=72.84210526315789: Moved the function-scope building pointer before short and float temporaries, testing the oracle bldg home at stack +2Ch versus current +34h. [same emitted code as probe 8]
+probe 13 control-flow; result=MISMATCH; diff=1336; shape=68.0: Tested one compound p-null or object-mismatch condition with separate set_object arms.
+probe 15 control-flow; result=MISMATCH; diff=1322; shape=72.42105263157895: Tested separately declared for-loop index versus for-header index, based on original loop line bands. [same emitted code as probe 1]
+probe 16 abi; result=MISMATCH; diff=1322; shape=72.42105263157895: Made TPanel::handle_idle virtual, matching derived override semantics and testing whether original self/register allocation uses inherited virtual surface.
+probe 17 behavior; result=MISMATCH; diff=1347; shape=82.73684210526316: Replaced two hand-written name scans with strcmp equality; original emits VC5's two-byte strcmp loop and sbb result with no call.
+probe 18 context; result=MISMATCH; diff=1347; shape=82.73684210526316: Added the repository-proven VC5 pragma intrinsic(strcmp), preserving inline two-byte lowering while testing removal of the extra four-byte frame. [same emitted code as probe 17]
+probe 19 liveness; result=MISMATCH; diff=1350; shape=82.52631578947368: Removed saved_changed while retaining intrinsic strcmp; tests whether the extra local caused the 0x90 frame.
+probe 20 layout; result=MISMATCH; diff=1348; shape=83.78947368421052: Tested a 96-byte temporary name buffer to explain the exact four-byte frame excess while preserving work_status capacity argument.
+probe 21 liveness; result=MISMATCH; diff=1348; shape=83.78947368421052: Moved name buffer before the building pointer and scalar locals, testing the oracle name +38 and bldg +2Ch stack homes. [same emitted code as probe 20]
+probe 22 liveness; result=MISMATCH; diff=1348; shape=83.78947368421052: Removed the artificial inner block so bldg can be declared at first use yet remain visible to the later farm check. [same emitted code as probe 21]
+probe 23 behavior; result=MISMATCH; diff=1348; shape=84.21052631578948: Restored binary-proven unsigned type threshold >=46h after intrinsic strcmp reconstruction.
+probe 24 layout; result=MISMATCH; diff=1350; shape=82.94736842105263: Restored proven 100-byte name buffer: original LEA +38h spans exactly to entry-1 under 0x8Ch frame.
+probe 27 abi; result=MISMATCH; diff=1350; shape=82.94736842105263: Added binary-supported local RGE_Action_Object alias for the identity snapshot, matching the original this_00 lifetime and testing reload/register topology.
+probe 29 control-flow; result=MISMATCH; diff=1341; shape=80.9034907597536: Rewrote player/object refresh as one compound condition with a shared action arm, matching the original four-block line-918 CFG and redundant player retest.
+probe 30 control-flow; result=MISMATCH; diff=1294; shape=83.1275720164609: Reversed the shared refresh action to positive p first, testing the original fall-through object_130 call and null set_object cold arm.
+probe 31 liveness; result=MISMATCH; diff=1294; shape=83.33333333333333: Swapped changed and do_buttons declaration order within the shared-refresh CFG to test the oracle EBX changed versus EBP-this register color.
+probe 32 behavior; result=MISMATCH; diff=1337; shape=84.66386554621849: Corrected snapshot change semantics from the original flags: attribute/list/hp changes set changed only, and count changes notify buttons only when either count is zero.
+probe 33 layout; result=MISMATCH; diff=1337; shape=84.66386554621849: Moved the proven 100-byte work name buffer after the scalar locals, testing original stack span and register-pressure order with corrected change flags. [same emitted code as probe 32]
+probe 34 behavior; result=MISMATCH; diff=1337; shape=84.66386554621849: Changed construction progress local from int to binary-proven short, testing the original narrow return width and shared work_type stack home. [same emitted code as probe 33]
+probe 35 control-flow; result=MISMATCH; diff=1331; shape=90.3157894736842: Rewrote the identity snapshot as a negative guard chain, matching the original owner/group/master compare polarity and distinct source branches.
+probe 36 control-flow; result=MISMATCH; diff=1337; shape=84.66386554621849: Added one proven shared identity-done label and explicit exits after each changed snapshot arm, matching the original late jump target at +0x233.
+probe 37 liveness; result=MISMATCH; diff=1331; shape=90.52631578947368: Restored changed-before-do_buttons declaration order with the negative guard chain, testing the PDB local order and explicit do_buttons home at entry-relative +0x10.
+probe 38 abi; result=MISMATCH; diff=1331; shape=90.52631578947368: Named the binary-proven action-object receiver for the identity snapshot, testing whether the original this_00 lifetime restores EBP-this and changed register color.
+probe 39 liveness; result=MISMATCH; diff=1331; shape=90.52631578947368: Moved the function-scope building receiver before scalar outputs, testing original bldg_obj stack lifetime and saved-register allocation. [same emitted code as probe 38]
+probe 40 liveness; result=MISMATCH; diff=1331; shape=90.52631578947368: Split changed/do_buttons declaration from initialization at the identity block, testing original delayed zero stores and register lifetime. [same emitted code as probe 39]
+probe 41 liveness; result=MISMATCH; diff=1332; shape=85.42094455852155: Replaced named population temporaries with direct ordered casts, matching the original pop then max x87 __ftol sequence.
+probe 42 liveness; result=MISMATCH; diff=1336; shape=89.79166666666667: Tested the original direct master-type guard before assigning bldg, preserving EAX for the type test and ESI for the later building work.
+probe 43 context; result=MISMATCH; diff=1332; shape=85.42094455852155: Expanded TPanel to the exact same-TU period field surface and proven offsets, testing whether donor-supported unused members restore the original compiler basin. [same emitted code as probe 41]
+probe 44 context; result=MISMATCH; diff=1332; shape=85.42094455852155: Moved nonvirtual TPanel::handle_idle to the exact donor declaration position after data members, testing period class-context effects on the EBP-this prologue. [same emitted code as probe 43]
+probe 46 control-flow; result=MISMATCH; diff=1332; shape=87.57894736842105: Hypothesis: chained do_buttons = changed = 1 in the three early object mismatch arms may preserve both flag stores and original EBX/stack assignment order.
+probe 47 control-flow; result=MISMATCH; diff=1332; shape=87.57894736842105: Hypothesis: nested changed-then-do_buttons guards may force VC5 to preserve early flag publication that the compound guard drops.
+probe 49 liveness; result=MISMATCH; diff=1332; shape=87.36842105263158: Hypothesis: declaring do_buttons before changed may give VC5 the original changed-in-EBX and do_buttons-stack allocation.
+probe 51 liveness; result=MISMATCH; diff=1332; shape=87.36842105263158: Hypothesis: declaration order matching the oracle's durable stack-home order may recover changed/flag register colors and building output homes. [same emitted code as probe 49]
+probe 53 control-flow; result=MISMATCH; diff=1335; shape=89.47368421052632: Hypothesis: restore the original nested owner/group/master identity guards and a named master pointer, as shown by the decompiler and branch nesting, to preserve invalid-item paths and flag publication.
+probe 54 liveness; result=MISMATCH; diff=1335; shape=89.47368421052632: Hypothesis: make the recovered master-object alias function-scope, matching its reuse across identity, combat, and building checks, to recover original callee-saved colors. [same emitted code as probe 53]
+probe 55 liveness; result=MISMATCH; diff=1335; shape=89.47368421052632: Hypothesis: make the action-object receiver function-scope, matching the decompiler's long-lived receiver and preserving its owner/master fault order. [same emitted code as probe 54]
+probe 56 liveness; result=MISMATCH; diff=1335; shape=89.47368421052632: Hypothesis: follow the decompiler's durable local declaration order, placing the building receiver after work_type, to recover EBP=this, EBX=changed, ESI=building, and original stack homes. [same emitted code as probe 55]
+probe 57 liveness; result=MISMATCH; diff=1350; shape=88.0: Hypothesis: retain the building receiver through the proven later publication/farm path with a second typed alias, matching the original stack-published receiver.
+probe 59 control-flow; result=MISMATCH; diff=1335; shape=89.47368421052632: Hypothesis: keep the decompiler-proven nested identity guards but remove the named master alias, testing whether direct repeated master reads preserve the original register basin.
+```
+<!-- end-recovered:3588bd0eb7059bff445a -->
+
+<!-- recovered:7f5109abe5debdf1fee7 -->
+### `ab874ff73095` `src/scratch/0051C3F0_handle_idle.cpp:1-51`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0051C3F0 TRIBE_Panel_Object::handle_idle (1568B)
+// tpnl_obj.cpp
+// Attempt log:
+// try 1: packet-grounded natural control flow with exact field offsets, virtual slots, and typed object surfaces.
+// try 2: corrected active field and object layouts; call set now matches, but frame/CFG remain short.
+// try 3: added real get_action and corrected child notify slot; all 25 call targets now align.
+// try 4: explored local/frame padding and source guard forms; no exact movement beyond 62% shape.
+// try 5: typed the distinct pierce-armor and child notification virtual slots
+// from the oracle call map; this is the only post-baseline structural lead.
+// try 6: separated typed range and speed output destinations to preserve both
+// getter results; retained despite frame growth because this fixes behavior.
+// try 7: modeled need_redraw at +38 separately from the parent panel at +40.
+// try 8: removed long-lived object/master/combat aliases and reused typed fields;
+// this aligned the getter reload pattern and restored the 0x8C frame.
+// try 9: kept the function-scope building pointer and saved pre-name flag;
+// work_type reuse reached the best current structural result.
+// best current check: 1322B diff, 72.42% shape, 0x8C frame, 25/25 calls.
+// remaining structural gap: this stays in ESI rather than the oracle's EBP;
+// the player guard and local stack homes still differ.
+// prior pause state: meaningful code was 1413/1568B with a 0x84/0x8C frame.
+// try 10: tested score-loop declaration and do-while forms; the for-loop basin
+// is stable and closer to the oracle.
+// try 11: tested compound and split player/object guards; none recovered the
+// oracle's three null-test blocks without harming call or CFG parity.
+// try 12: tested local declaration order and object aliases; register and stack
+// homes stayed in the same basin or lost the 0x8C frame.
+// try 13: replaced both hand-written name scans with intrinsic strcmp. This
+// recovers the oracle's two-byte compare loop and sbb result, raising shape to
+// 82.95%; the remaining frame is 0x90 and strict diff is 1350B.
+// try 14: restored the 100-byte name buffer from the oracle's +38h stack span;
+// retained despite the four-byte frame increase over the 96-byte probe.
+// try 15: rewrote the player refresh as one compound guard with one shared
+// action arm. Positive p-first lowering improved the probe to 1294B diff,
+// 83.13% shape, and exact code size while keeping 25/25 ordered calls.
+// try 16: corrected the snapshot flags: attribute and nonzero-count changes
+// set changed only; zero-count changes set do_buttons. A negative guard chain
+// then reached 90.53% shape and 61.89% exact-block coverage at 1331B diff.
+// try 17: used direct ordered population casts instead of named temporaries.
+// This recovered the proven 0x8C frame and 1568B code size; the current probe
+// is 1332B diff, 85.42% shape, 66.74% exact blocks, and 25/25 calls.
+// The direct population form emits pop then max in the original __ftol order.
+// Captain pass: direct player-member expressions replaced the short-lived p
+// alias. Grouped codegen stayed at 1332B, so the simplification is neutral.
+// Captain pass: the nested equality-guard basin was tested and worsened the
+// grouped diff to 1344B. The natural early-failure chain remains authoritative.
+// Captain pass: including tpnl_obj_context.h under the standalone guard fixes
+// validation without changing grouped output. Both checks remain 1332B apart.
+// The rebuilt call map uses vslot+240 for get_pierce_armor, while the oracle
+// uses vslot+244. This is a shared virtual-surface request, not a local cast.
+// Final unresolved source is natural and typed, with 25/25 ordered calls.
+// Structural reconstruction remains incomplete.
+```
+<!-- end-recovered:7f5109abe5debdf1fee7 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

@@ -1,0 +1,93 @@
+# Recovery journal: 00455CB0 `request_redraw`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/map.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\map.cpp`.
+- Earlier recovery note: `recovery_notes/map_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:30a765cdbe1cf221d680 -->
+### `01127414cc2e` `src/scratch/00455CB0_request_redraw.cpp:1-47`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// RGE_Map::request_redraw
+// VA: 00455CB0
+// map.cpp
+// Attempt log:
+// Prior pass tried natural member implementation with x0/y0/x1/y1 locals, decompiler-style
+// param mutation, free __fastcall surface, /Ob1, no self local/direct this, register self,
+// shared swap temp, while loop, positive nested bounds gates, and flags /O1 /O2-no-/Oy /Gs /Od.
+// Best remained exact-sized but broad register/topology drift.
+// Current Boss retry:
+// 1: Revalidated best scratch: 175B, 95.4286% positional / 46.8571% edit, first mismatch +3.
+// 2: Natural independent min/max locals like matched do_elevation_brush: worsened first mismatch +1,
+//    because VC5 preloads parameters before saved-register setup.
+// 3: Added separate y loop local with for; no change from best.
+// 4: Changed outer y loop to guarded do/while; no change from best.
+// 5: register x0/x1 formals; no change from best.
+// 6: maxx/minx declaration-order probe; worsened first mismatch +1.
+// 7: Swapped-predicate spelling (`x1 < x0`, nested positive bounds): better positional (74.8571%)
+//    but much worse edit/control flow and still wrong early EBP/ESI coloring.
+// 8: Removed self local/direct this; no change from best.
+// 2026-05-26 Boss retry: 10 more probes. Revalidated baseline; tried swapped/min locals with x1<x0,
+// register x1 parameter, volatile x1 parameter/local, precomputed x-offset outside the row loop,
+// direct-this/no-self, while outer loop, row pointer local, explicit `(x+x*2)<<3` tile offset,
+// register self, and alternate y swap predicate/order. None matched; precomputed x-offset improved
+// positional to 62.2857% but destroyed edit/control-flow shape, while alternate y swap reached
+// 74.8571% positional / 49.7143% edit but kept wrong EBP/EDI roles. Best kept is still baseline.
+// GIVEUP: not accepted_drift-worthy. Behavior is understood, but mismatch is broad: original pushes
+// ecx/ebx/ebp/esi before loading x0/x1, uses ESI=x0, EDI=x1, EBX=this/height, EBP=y0, ECX/y1 stack,
+// and precomputes x0*24 once outside the row loop. VC5 variants either preload x1 into EBP before
+// `push esi`, use EBP as maxx instead of EDI, or choose a shorter/nested branch family.
+// Luna455CB0 pass (2026-08-02, 10/10 meaningful probes): dossier confirms map_width +08,
+// map_height +0C, map_row_offset +8D8C, tile stride 0x18, draw_attribute +0A. Typed tile
+// ownership/decompiler-local forms and register-qualified y parameters did not recover the
+// target prologue. A 64-variant source-shape lab found no exact; explicit x0*24 outside the
+// row loop was the metric best (109 positional bytes / 85.90% shape) but is not the cleanest
+// source and moved the loop topology. The final clean candidate below is exact-sized, with
+// remaining drift broad in register coloring, row/offset scheduling, and early block layout.
+// Luna455CB0b sequential pass (2026-08-02):
+// 1: Full ground-truth RGE_Map/RGE_Tile declaration surface from exact map.cpp donors; no emitted change.
+// 2: register-qualified early row cursor moved to 160 positional bytes and recovered ESI=x0/EDI=x1,
+//    EBP=row, but loaded y0 too early and retained the wrong y1/map-width/map-height roles.
+// 3: register row declared then assigned after clipping was a codegen duplicate of clean source.
+// 4: explicit post-swap min/max aliases introduced a +10-byte structural tail; rolled back.
+// 5-7: combined register self/row, direct-this/row, and zero-initialized late row assignment either
+//    duplicated the 160-byte basin or clean baseline; no new lead.
+// 8: register-qualified y1 with early row was also a duplicate.
+// 9: focused 8-variant lab over y1/self/row surfaces produced only two groups (160/167 positional),
+//    no exact. Clean typed source restored; remaining issue is broad VC5 register coloring and loop layout.
+```
+<!-- end-recovered:30a765cdbe1cf221d680 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

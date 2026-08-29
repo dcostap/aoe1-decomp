@@ -1,0 +1,125 @@
+# Recovery journal: 005204A0 `draw_timeline`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/tpnl_tml.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\tpnl_tml.cpp`.
+- Earlier recovery note: `recovery_notes/tpnl_tml_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:8d145122f75c126fe3f8 -->
+### `target-session` `build/target_sessions/005204A0_draw_timeline.json:1-33`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=1299; shape=72.36842105263158: Current clean source baseline: 1600 bytes, 0x50 frame versus original 1565/0x54; 19 calls aligned, CFG 38 versus 37, strict drift 1299 bytes. Behavioral and call set are close; frame/local lifetime and control-flow differ.
+probe 2 control-flow; result=MISMATCH; diff=1299; shape=72.36842105263158: Hypothesis 1: replace do-loop with top-tested while and move history bound to an explicit bottom break. Original PDB/CFG shows error-rate init before page bound and history compare at bottom; test whether this restores loop topology.
+probe 4 layout; result=MISMATCH; diff=1565; shape=63.2016632016632: Hypothesis 2: restore Ghidra/PDB candidate float next_pop_total. Test whether VC5 naturally keeps the timeline index as an integer induction while source uses float for comparisons and sample expressions.
+probe 6 behavior; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 3: restore the binary-proven distinct intermediate_x_pos and special_event_flag locals. Use intermediate_x_pos in the bar-thickness interpolation and special_event_flag for first-column event recording; Ghidra and stack accesses prove both counters.
+probe 7 behavior; result=MISMATCH; diff=1327; shape=73.10195227765726: Hypothesis 4: keep the distinct special_event_flag and separate interpolation counter, but revert the interpolation expression to the prior clean form. This isolates whether the frame and size improvement comes from the proven second counter alone.
+probe 8 liveness; result=MISMATCH; diff=1327; shape=73.10195227765726: Hypothesis 5: move special_event_flag to the end of the declaration band. Test whether VC5 declaration order, rather than behavior, controls the original stack-home permutation while preserving the two proven counters. [same emitted code as probe 7]
+probe 9 liveness; result=MISMATCH; diff=1327; shape=73.10195227765726: Hypothesis 6: remove the unused pop_total zero initialization. Original emits no pop_total store before the first player scan, although it takes an overlapped byte address for event output; test whether the source initializer affects local homes. [same emitted code as probe 8]
+probe 10 layout; result=MISMATCH; diff=1350; shape=73.70689655172414: Hypothesis 7: use the Ghidra-declared long cntr_droped_slice_rate instead of float. The original reads one counter through FILD and writes it at loop tail; test the binary-indicated narrow type despite the current float reconstruction.
+probe 11 behavior; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 8: express interpolation as segment plus difference multiplied by (intermediate_x_pos / bar_thickness). This is a natural algebraic form that may preserve the original x87 FILD intermediate, FDIV bar, FILD difference, and segment topology. [same emitted code as probe 6]
+probe 12 context; result=MISMATCH; diff=1332; shape=68.83116883116882: Hypothesis 10 (corrected): isolate the Windows SDK header context with a renamed API symbol, while retaining the observed IAT function-pointer declaration. Test whether header state changes the local allocation basin.
+probe 13 control-flow; result=MISMATCH; diff=1310; shape=69.39655172413794: Hypothesis 11: use the original-style truth guard  instead of an explicit greater-than comparison. Test whether VC5 chooses the original initialization and page-bound layout from truth semantics.
+probe 14 layout; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 12: restore the canonical TPanel/TEasy_Panel/Time_Line_Panel inheritance and field surface from the verified constructor and exact same-TU donors. The touched offsets stay fixed, but VC5 class context may select the original local and member scheduling basin.
+probe 15 liveness; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 13: materialize a named float x_fraction for intermediate_x_pos divided by bar_thickness before multiplying the segment difference. Test whether this natural staged form recovers the original x87 sequence without integer reassociation.
+probe 16 behavior; result=MISMATCH; diff=1385; shape=68.73661670235546: Hypothesis 14: spell interpolation as a sequence of compound float assignments. This preserves the source-level intermediate value and should force the observed FILD intermediate, FDIV bar, FILD difference, and add segment order without a helper or volatility.
+probe 17 behavior; result=MISMATCH; diff=1366; shape=69.6969696969697: Hypothesis 15: use segment plus an explicitly cast intermediate_x_pos-times-difference product divided by bar_thickness. This tests the alternative natural grouping while retaining the proven float interpolation behavior.
+probe 18 liveness; result=MISMATCH; diff=1313; shape=67.24137931034483: Hypothesis 16: reuse the binary-proven error_correction_time_slice_thickness local as the computed bar length. Original stack home [esp+50] carries the event flag, then the bar length and loop bound; remove the unsupported separate bar_length local.
+probe 19 control-flow; result=MISMATCH; diff=1441; shape=69.6969696969697: Hypothesis 17: express the outer timeline scan as a for loop with next_pop_total in the increment clause. The original bottom band increments the index, stores it, and compares history count; test this period-plausible loop form against the do/while basin.
+probe 20 liveness; result=MISMATCH; diff=1365; shape=68.83116883116882: Hypothesis 18: move the long error-correction rate declaration after the drawing locals. Test whether its stack home moves from rebuilt [esp+38] toward the original [esp+34], while preserving its loop-crossing lifetime.
+probe 21 layout; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 19: narrow error_correction_time_slice_thickness to int. Ghidra calls this local long, but its values are flags and 32-bit bar lengths; test whether the source width changes stack home and arithmetic lowering. [same emitted code as probe 14]
+probe 22 behavior; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 20: parenthesize the sample-fraction multiplication and cast the Y-line total at the product boundary. This tests the original line-1350 x87 statement grouping while preserving the direct typed expression. [same emitted code as probe 21]
+probe 24 control-flow; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 21: spell the outer history scan as an unconditional loop with explicit bottom history break. This preserves the page-limit guard before the body while preventing the compiler from hoisting it ahead of the error-rate initializer.
+probe 26 liveness; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 22: give error_correction_drop_time_slice_rate the scope of the history block and initialize it at declaration. The target stores this value before the first page-limit guard, so test whether its natural scope prevents VC5 from sinking the store. [same emitted code as probe 23]
+probe 28 layout; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 23: widen local_28 to long. The target keeps its zero store and later page compare in a stack home, while the current int form lets VC5 fold the early value into EBX and delay the store; test the binary-supported four-byte local width. [same emitted code as probe 26]
+probe 30 behavior; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 24: remove the explicit float cast from the next-sample Y-line multiplication. The target uses FILD/FＭULP for this product, while the current cast lowers through FIMUL; keep the first-sample expression unchanged and test the target x87 topology.
+probe 32 liveness; result=MISMATCH; diff=1329; shape=71.21212121212122: Hypothesis 25: reuse Y_line_total as the next-sample difference after the conversion, matching the target's stack home and decompiler dataflow. The source now computes the converted next segment minus segment directly into that long local.
+probe 34 control-flow; result=MISMATCH; diff=1310; shape=69.82758620689656: Hypothesis 26: reverse the page-limit comparison to the target's member-left form, . The original loads local_28 then the member and uses JGE; test operand order as a source-level CFG and liveness cause.
+probe 36 behavior; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 27: express the population accumulator as compound assignment. The target loads time_slice then adds the existing temp_pop_num, so test this period-plausible evaluation form for x87 and local-home effects. [same emitted code as probe 28]
+probe 38 behavior; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 28: use compound assignment for the next-sample population accumulator. The target FPU block adds each converted byte to the existing float remainder; test this source evaluation form. [same emitted code as probe 36]
+probe 40 liveness; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 29: scope the inner-bar accumulator, vertical total, and player index locals inside the bar loop. Their target stores begin at the loop body, so test whether natural block lifetime recovers stack-home placement without ABI or control-flow scaffolding.
+probe 42 liveness; result=MISMATCH; diff=1365; shape=68.83116883116882: Hypothesis 30: take a local reference to time_slice and use it for all sample assignments and tests. The target materializes and rereads this float at a stable stack home; test an address-taken natural alias against the current FPU CSE.
+probe 45 liveness; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 31: restore the decompiler declaration order by placing special_event_flag before error_correction_time_slice_thickness. The target stack owns special at the inner-loop home before the event-thickness/bar local; test declaration-order allocation. [same emitted code as probe 44]
+probe 47 liveness; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 32: make drop_rate a function-scope local and assign it inside each history iteration. The target keeps the first conversion result live across the sample/drop branch; test this natural lifetime against the block-scoped local. [same emitted code as probe 45]
+probe 49 liveness; result=MISMATCH; diff=1310; shape=70.04310344827586: Hypothesis 33: keep bar_length as a function-scope local and assign it at the bar setup. This tests whether the target's bar-length home is the long-lived error-thickness home rather than a block temporary. [same emitted code as probe 47]
+```
+<!-- end-recovered:8d145122f75c126fe3f8 -->
+
+<!-- recovered:572ef733e4af4db6b66c -->
+### `056a20c24f68` `src/scratch/005204A0_draw_timeline.cpp:1-37`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 005204A0 Time_Line_Panel::draw_timeline (1565 bytes)
+// Source: tpnl_tml.cpp lines 1191-1427
+// Attempt log:
+// - Initial bounded reconstruction from packet/Ghidra, preserving the original nested player scans,
+//   switch color dispatch, x87 conversion expressions, and early-return behavior.
+// - Probe: removed the decompiler-only special-event counter; original increment has no later read.
+// - Probe: restored the packet's overlapping pop_total/event local and its zero initialization.
+// - Structural probe: restored donor-proven byte-cursor scans and the original fractional segment
+//   correction/local counter topology; replaced diagnostic _ftol stubs with typed conversions.
+// - Probe: promoted the repeated segment temporary to the named local lifetime used by the draw loop.
+// - Probe: typed conversion and outer-temporary variants preserved the 19-call set but did not
+//   reduce the 0x64 frame; the prior clean result was 1565 bytes and 56.5% shape.
+// - Probe: the binary's repeated player guard is `player_num - 1 > 0`; the simpler guard improved
+//   CFG parity from 37/41 to 37/38 conditions.
+// - Probe: direct repeated world/player expressions remove cached object homes and improve shape
+//   to 65.5%; the candidate is 1616 bytes with a 0x5C frame and 19 aligned calls.
+// - Probe: reusing local_38 as the inner player cursor is codegen-duplicate evidence.
+// - Probe: modeled history samples as a float time_slice and kept the returned sample in a signed dword temp;
+//   this reached the original 0x50/0x54 frame basin and reduced strict drift to 1337 bytes.
+// - Probe: separated the 32-bit switch palette input from the byte palette-index result; this preserved the
+//   original EAX switch constants and reduced strict drift to 1300 bytes with 73.7% shape similarity.
+// - Probe: ordered the Y-line total load before the explicit sample conversion; the current clean source is
+//   1600 bytes with a 0x50 frame, 19 aligned calls, and 1299-byte strict drift.
+// - Current claim probes 1-20: tested loop forms, local types and order, interpolation groupings,
+//   canonical class context, and Windows header context. Header context and alternate loop forms did not
+//   improve strict output. Duplicate codegen ruled out several declaration and cast variants.
+// - Binary-supported recovery: the inner bar loop has independent intermediate_x_pos and special_event_flag
+//   counters. The stack uses [esp+4Ch] for interpolation and [esp+48h] for first-column event gating.
+//   Restoring both counters reaches the original 0x54 frame and 19-call set, but remains nonexact at 1620
+//   bytes, 70.04% shape, and 1310 strict-drift bytes. The pinned final source keeps this natural model.
+// - Unresolved: initial local-home permutation, early page/history CFG layout, and x87 sample conversion
+//   scheduling still differ. The separate bar_length local is retained because its source form is closer
+//   than the binary-overlapped reuse variant; no unsupported register steering or inline assembly was used.
+// - Follow-up claim probes 21-33 tested outer-loop forms, local scope and width, operand order, accumulator
+//   forms, x87 interpolation ownership, and address-taken sample storage. No probe improved the clean bytes.
+// - Final clean result: 1620 emitted bytes versus 1565, 0x54 frame, 19 ordered calls, 70.04% shape,
+//   and 1310 strict-drift bytes. Keep the simplest two-counter source until new binary evidence appears.
+```
+<!-- end-recovered:572ef733e4af4db6b66c -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

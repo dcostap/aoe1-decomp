@@ -1,0 +1,411 @@
+# Recovery journal: 00446230 `DrawShadowBox`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/drawarea.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\Drawarea.cpp`.
+- Earlier recovery note: `recovery_notes/drawarea_reunification.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:a15ab610c870dce202e0 -->
+### `target-session` `build/target_sessions/00446230_DrawShadowBox.json:1-209`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=47; shape=97.0873786407767: Current natural typed traversal baseline: 273 bytes, 47 differing bytes; exact call/CFG/frame, residual row-pointer schedule and 2-byte tail shift.
+probe 2 liveness; result=MISMATCH; diff=74; shape=95.14563106796116: Moved pixel declaration into each row iteration so row_start remains the persistent row cursor; tests whether original ECX row base and EDX inner cursor reflect loop-local scope.
+probe 4 variant; result=MISMATCH; diff=47; shape=97.0873786407767: Reordered the natural row-start address terms to Bits + x1 + row_offset, following the exact neighboring Flic draw setup expression; tests address-term scheduling without changing behavior or ownership. [same emitted code as probe 1]
+probe 7 baseline; result=MISMATCH; diff=47; shape=97.0873786407767: Rechecked current pinned natural typed draw-area source before fresh structural probes; preserve typed ownership and natural table lookup. [same emitted code as probe 6]
+probe 8 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: Moved the existing outer pixel assignment to the top of each do-loop iteration; this follows original mov pixel,row_start before the inner bound test without changing typed ownership.
+probe 10 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: Swapped declaration order of the existing pixel and row-start locals, testing VC5 register coloring while retaining the natural persistent row traversal. [same emitted code as probe 7]
+probe 12 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: Placed pixel=row_start in the inner for initializer at each outer iteration, matching the original loop's per-row cursor setup without changing pointer ownership. [same emitted code as probe 8]
+probe 14 liveness; result=MISMATCH; diff=74; shape=95.14563106796116: Scoped the pixel cursor to the inner for initializer, a natural lifetime test for the original row-start/pixel register split. [same emitted code as probe 2]
+probe 16 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: Renamed the pixel cursor to row_cursor while preserving the same natural persistent row traversal; tests whether VC5 colors the cursor by live role rather than declaration spelling. [same emitted code as probe 10]
+probe 18 control-flow; result=MISMATCH; diff=77; shape=93.13725490196079: Moved the natural shadow-table base assignment before row pointer setup, matching the original line's table-before-address initialization lead.
+probe 20 abi; result=MISMATCH; diff=76; shape=92.15686274509804: Restored typed RGE_Color_Table ownership for the table local and indexed its canonical table member; tests whether object-pointer liveness matches the original.
+probe 22 control-flow; result=MISMATCH; diff=56; shape=95.09803921568627: Removed the standalone row_offset and assigned the typed row_start directly in each orientation arm; tests whether VC5 naturally merges the common pointer setup.
+probe 23 layout; result=MISMATCH; diff=56; shape=95.09803921568627: With direct orientation-arm row_start ownership retained, reordered terms to row_offset plus x1 plus typed Bits; tests the original x1/Bits load order and preserves natural pointer arithmetic. [same emitted code as probe 22]
+probe 25 layout; result=MISMATCH; diff=56; shape=95.09803921568627: Used typed row_start as Bits+x1 before adding the orientation-specific row offset in each arm; tests the original x1-before-Bits load lead without raw pointer plumbing. [same emitted code as probe 23]
+probe 27 control-flow; result=MISMATCH; diff=72; shape=95.14563106796116: Combined direct typed row_start construction in the orientation arms with top-of-do pixel initialization, testing the original row-pointer register topology and tail layout together.
+probe 30 baseline; result=MISMATCH; diff=47; shape=97.0873786407767: Fresh claim baseline: pinned natural typed row traversal; inspect exact tail topology before any new source hypothesis. [same emitted code as probe 29]
+probe 31 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: Moved pixel=row_start into each outer-loop body before the inner scan, matching the original mov pixel,row_start at the loop header rather than after row advancement. [same emitted code as probe 12]
+probe 33 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: Placed pixel=row_start in the inner for initializer while retaining the persistent do/while cursor reset; tests whether VC5 emits the original loop-header copy without changing row count topology. [same emitted code as probe 31]
+probe 35 variant; result=MISMATCH; diff=74; shape=95.14563106796116: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_121400: 4 variants, 3 invariant-eligible, 0 exact
+probe 37 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_162644: 6 variants, 4 invariant-eligible, 0 exact
+probe 38 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_162745: 36 variants, 36 invariant-eligible, 0 exact
+probe 39 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_162942: 2 variants, 2 invariant-eligible, 0 exact
+probe 40 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_163022: 3 variants, 3 invariant-eligible, 0 exact
+probe 41 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_163045: 1 variants, 1 invariant-eligible, 0 exact
+probe 42 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_163102: 4 variants, 4 invariant-eligible, 0 exact
+probe 43 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_163134: 4 variants, 4 invariant-eligible, 0 exact
+probe 44 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_163248: 3 variants, 3 invariant-eligible, 0 exact
+probe 45 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_163314: 1 variants, 1 invariant-eligible, 0 exact
+probe 46 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_163336: 1 variants, 1 invariant-eligible, 0 exact
+probe 47 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_163355: 1 variants, 1 invariant-eligible, 0 exact
+probe 48 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_163422: 1 variants, 1 invariant-eligible, 0 exact
+probe 49 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_163456: 3 variants, 3 invariant-eligible, 0 exact
+probe 50 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_163509: 3 variants, 3 invariant-eligible, 0 exact
+probe 51 variant; result=MISMATCH; diff=47; shape=97.0873786407767: variant lab build\variant_lab\00446230_DrawShadowBox\20260817_163546: 1 variants, 1 invariant-eligible, 0 exact
+probe 54 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: H1: Declare the inner pixel cursor in the for initializer, matching the original two-pointer Ghidra ownership and avoiding a persistent reset local. [same emitted code as probe 14]
+probe 56 liveness; result=MISMATCH; diff=221; shape=73.83177570093459: H2: Introduce a distinct row-owner alias at first address construction, then derive row_start and row_end from that typed pointer; tests original loop pointer ownership rather than declaration order.
+probe 58 abi; result=MISMATCH; diff=135; shape=90.38461538461539: H3: Remove the table cursor and use the canonical RGE_Color_Table member directly in the inner transform, testing original helper-type ownership and compiler CSE.
+probe 60 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H4: Cache the canonical RGE_Color_Table object before taking its table member, testing whether the original UI helper owner remains live across row setup. [same emitted code as probe 53]
+probe 62 liveness; result=MISMATCH; diff=77; shape=93.13725490196079: H5: Assign the RGE_Color_Table table cursor before constructing row_start and row_end, testing source statement order against the original x1/Bits/table load sequence. [same emitted code as probe 18]
+probe 64 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: H6: Give the scan cursor a nested block-local while owner, rather than a persistent pixel local or for initializer; tests original UI loop scope and pointer lifetime. [same emitted code as probe 54]
+probe 66 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H7: Hoist row_count declaration to the enclosing typed helper scope while keeping its assignment in the positive-height arm; tests original local lifetime and register pressure. [same emitted code as probe 60]
+probe 68 abi; result=MISMATCH; diff=76; shape=92.15686274509804: H8: Keep the canonical RGE_Color_Table pointer as the loop owner and index its inline table in place, testing whether the original retained helper object rather than a byte-table alias. [same emitted code as probe 20]
+probe 70 abi; result=MISMATCH; diff=47; shape=97.0873786407767: H9: Treat the indexed UI color table as signed char through an explicit period-style cast, testing narrow table type and byte-store lowering. [same emitted code as probe 66]
+probe 72 liveness; result=MISMATCH; diff=151; shape=90.56603773584905: H10: Recompute each row end from the advanced row start and the clipped x span, testing whether original pointer ownership derives the endpoint rather than advancing two cursors.
+probe 74 control-flow; result=MISMATCH; diff=47; shape=97.0873786407767: H11: Use the period-style truth test on the row countdown () after the observed decrement, testing loop predicate spelling without changing behavior. [same emitted code as probe 70]
+probe 76 control-flow; result=MISMATCH; diff=268; shape=90.47619047619048: H12: Use a positive row-count loop predicate after the observed decrement, testing signed bound spelling against the original countdown branch.
+probe 78 control-flow; result=MISMATCH; diff=47; shape=97.0873786407767: H13: Move row_count decrement into the do-while condition, testing source loop-tail ownership against the original add/add/dec/jne order. [same emitted code as probe 74]
+probe 80 liveness; result=MISMATCH; diff=48; shape=97.0873786407767: H14: Reverse row_end and row_start update statements, testing whether compiler scheduling follows a distinct original pointer-owner order.
+probe 82 control-flow; result=MISMATCH; diff=47; shape=97.0873786407767: H15: Express the inner inclusive scan as a guarded do-while, testing the original row loop's explicit first compare and pointer ownership. [same emitted code as probe 78]
+probe 84 control-flow; result=MISMATCH; diff=47; shape=97.0873786407767: H16: Use pre-increment for the inner pixel cursor, testing the loop update form while preserving the observed inclusive scan. [same emitted code as probe 82]
+probe 86 abi; result=MISMATCH; diff=47; shape=97.0873786407767: H17: Widen the row counter from int to long, testing the original UI helper's period scalar width while preserving the dword countdown. [same emitted code as probe 84]
+probe 88 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H18: Reorder the typed row address to Bits plus x1 plus row_offset, testing the target's x1-first load and add sequence. [same emitted code as probe 86]
+probe 90 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H19: Declare the table cursor before row and pixel pointers, testing UI helper declaration order as a register-coloring input. [same emitted code as probe 88]
+probe 92 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H20: Declare row_start and row_end at their first typed initialization after orientation math, testing original local scope and address ownership. [same emitted code as probe 90]
+probe 94 liveness; result=MISMATCH; diff=74; shape=95.14563106796116: H21: Combine a for-header pixel owner with table-first pointer declarations, testing the untried UI helper declaration-order and inner-scope basin. [same emitted code as probe 64]
+probe 96 liveness; result=MISMATCH; diff=74; shape=95.14563106796116: H22: Combine table-first declarations, a long row counter, and a scoped for-header pixel cursor; tests the complete untried period loop-owner context. [same emitted code as probe 94]
+probe 99 control-flow; result=MISMATCH; diff=74; shape=94.1747572815534: H1: Replace the inner for scan with an explicit row_start <= row_end guard and nested do-while pixel loop; the original compares row base, then copies it to EDX before the first pixel.
+probe 101 liveness; result=MISMATCH; diff=74; shape=94.1747572815534: H2: Scope pixel inside the guarded row body and use a nested do-while; this tests whether a short-lived pixel owner preserves persistent row_start in ECX and pixel in EDX.
+probe 103 control-flow; result=MISMATCH; diff=47; shape=97.0873786407767: H3: Express the existing inner scan as a while loop with explicit pixel++ to test loop-tail lowering without changing persistent pixel lifetime. [same emitted code as probe 98]
+probe 105 liveness; result=MISMATCH; diff=74; shape=95.14563106796116: H4: Move pixel = row_start into the outer row-loop body and remove the tail reset, testing whether an iteration-local assignment preserves row_start's original long-lived ECX role. [same emitted code as probe 33]
+probe 107 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H5: Initialize row_start from Bits, then add row_offset and x1 in separate pointer updates; tests whether explicit row-base ownership recovers the original ECX setup. [same emitted code as probe 103]
+probe 109 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H6: Declare row_end before row_start while preserving the typed row traversal; tests whether VC5 local declaration order selects original row-base/pixel register colors. [same emitted code as probe 107]
+probe 111 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H7: Declare the pixel pointer before row_start and row_end, testing whether local declaration order rotates the persistent row base and inner cursor without changing behavior. [same emitted code as probe 109]
+probe 113 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H8: Declare table before pixel while retaining the persistent row/pixel traversal; tests whether table-pointer liveness changes the row-base register color. [same emitted code as probe 111]
+probe 115 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H9: Split row_start at the pointer-plus-row-offset boundary, then add x1; tests a natural two-stage row-base expression against the original x1/Bits schedule. [same emitted code as probe 113]
+probe 117 liveness; result=MISMATCH; diff=101; shape=90.29126213592232: H10: Load the shadow table between row_start and row_end assignments, testing the original +00C1 table/row-base schedule from the same PDB line.
+probe 119 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H11: Form row_end as row_start - x1 + x2 instead of row_start + (x2 - x1), testing the original endpoint register schedule and preserving inclusive semantics. [same emitted code as probe 115]
+probe 121 abi; result=MISMATCH; diff=76; shape=92.15686274509804: H12: Use a typed RGE_Color_Table owner and Ghidra-shaped local declaration order (table, row offset/stride/orientation, pixel, row start/end); tests canonical table ownership plus pointer colors. [same emitted code as probe 68]
+probe 123 liveness; result=MISMATCH; diff=226; shape=76.19047619047619: H13: Introduce a natural persistent row cursor alias (row) and a per-row pixel cursor, testing whether explicit row-base ownership recovers ECX/EDX without raw pointer steering.
+probe 125 control-flow; result=MISMATCH; diff=47; shape=97.0873786407767: H14: Move row_count decrement into the outer do-while condition, testing whether the original dec/jne tail came from predecrement source ownership. [same emitted code as probe 119]
+probe 127 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H15: Parenthesize row_offset + x1 before adding Bits; this natural typed address form tests whether VC5 keeps the row base in ECX as in the original +00C1 sequence. [same emitted code as probe 125]
+probe 129 liveness; result=MISMATCH; diff=74; shape=95.14563106796116: H16: Declare and initialize pixel inside each outer row iteration, matching the period Shape sibling's row-local cursor form; tests row-start lifetime and loop-tail ownership. [same emitted code as probe 96]
+probe 131 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H18: Construct row_end by copying row_start, then subtracting x1 and adding x2; tests explicit endpoint cursor mutation against the original add/sub instruction order. [same emitted code as probe 127]
+probe 133 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: H19: Initialize row_start from Bits and compound-add the combined row_offset plus x1; tests a period pointer-update form distinct from separate additions. [same emitted code as probe 131]
+probe 135 control-flow; result=MISMATCH; diff=47; shape=97.0873786407767: H20: Use prefix increment for the inner pixel cursor, testing whether the original add/compare tail follows prefix-update source semantics. [same emitted code as probe 133]
+probe 137 control-flow; result=MISMATCH; diff=45; shape=96.07843137254902: H21: Convert the outer row do-while to a bounded for loop with the observed row_count countdown; tests whether the loop-tail branch can arise from header-owned decrement source.
+probe 141 context; result=MISMATCH; diff=47; shape=97.0873786407767: H1: Replace tagRECT ClipRect with the scalar ClipLeft/Top/Right/Bottom surface used by exact Drawarea constructor and SetClipRect donors; tests original same-TU field declarations without changing offsets or behavior. [same emitted code as probe 140]
+probe 142 context; result=MISMATCH; diff=47; shape=97.0873786407767: H2: Restore the complete binary-backed TDrawArea field surface from inventory and exact Drawarea neighbors, replacing one opaque gap with typed fields while preserving every offset. [same emitted code as probe 141]
+probe 143 context; result=MISMATCH; diff=82; shape=96.11650485436893: H3: Add the complete inventory-backed RGE_Color_Table palette class surface, constructors, save method, FILE and PALETTEENTRY declarations; tests whether the historical palette header changes register allocation.
+probe 144 context; result=MISMATCH; diff=78; shape=93.13725490196079: H4: Add only the period stdio header used by the exact RGE_Color_Table constructor donors; tests standard-header front-end state without palette methods or body changes.
+probe 145 context; result=MISMATCH; diff=78; shape=93.13725490196079: H5: Use the real SDK windows.h RECT surface and remove the local tagRECT clone; exact Drawarea Windows donors support this API declaration context. [same emitted code as probe 144]
+probe 146 context; result=MISMATCH; diff=77; shape=92.15686274509804: H6: Add only string.h, a period Drawarea header used by exact FillRect and palette donors; tests CRT declaration context independently from Windows and stdio.
+probe 147 context; result=MISMATCH; diff=82; shape=96.11650485436893: H7: Add only stdlib.h, another exact Drawarea period header; tests allocator and standard declaration state without string or Windows headers. [same emitted code as probe 143]
+probe 148 abi; result=MISMATCH; diff=47; shape=97.0873786407767: H8: Use the period uchar pixel and palette typedef from exact color-table and draw-area donors throughout the touched byte fields and cursors; tests source type spelling without semantic change. [same emitted code as probe 142]
+probe 149 context; result=MISMATCH; diff=82; shape=96.11650485436893: H9: Add the repository game_types forward-declaration header used by exact SetPixel and other Drawarea-adjacent sources; tests period shared type context without new fields. [same emitted code as probe 147]
+probe 150 context; result=MISMATCH; diff=82; shape=96.11650485436893: H10: Add the neighboring Drawarea method declarations in original function order around AlignedWidth, SetShadowTable, DrawShadowBox, GetPalette, and SetPalette; tests same-class declaration context without unrelated methods.
+probe 151 context; result=MISMATCH; diff=82; shape=96.11650485436893: H11: Keep only the adjacent SetShadowTable member declaration, with the existing AlignedWidth and target declarations; isolates neighboring class method order from palette types. [same emitted code as probe 149]
+probe 152 context; result=MISMATCH; diff=47; shape=97.0873786407767: H12: Add the exact Drawarea global extern DDSys_CanColorFill from Clear.cpp, unused in this body; tests documented file-scope declaration state known to affect old VC5 codegen. [same emitted code as probe 148]
+probe 153 abi; result=MISMATCH; diff=48; shape=97.0873786407767: H13: Add unused cdecl/stdcall API prototypes copied from exact Drawarea Clear, destructor, and SetPalette donors; tests same-TU imported API declaration context without calls.
+probe 154 abi; result=MISMATCH; diff=47; shape=97.0873786407767: H14: Isolate the exact FillRect memset prototype from the broader imported API group; tests whether only the cdecl CRT declaration affects the residual tail. [same emitted code as probe 152]
+probe 155 abi; result=MISMATCH; diff=48; shape=97.0873786407767: H15: Isolate the exact GetPaletteEntries stdcall prototype from SetPalette; tests palette API declaration state without CRT declarations. [same emitted code as probe 153]
+probe 156 abi; result=MISMATCH; diff=48; shape=97.0873786407767: H16: Isolate the exact GDI SelectObject/DeleteObject/DeleteDC prototypes from the TDrawArea destructor donor; tests same-TU imported API state. [same emitted code as probe 155]
+probe 157 context; result=MISMATCH; diff=47; shape=97.0873786407767: H17: Add the exact Drawarea pragma function(memset) used by FillRect/Clear; tests compiler intrinsic state without introducing a call. [same emitted code as probe 154]
+probe 158 context; result=MISMATCH; diff=78; shape=93.13725490196079: H18: Restore the complete period header combination windows.h, stdlib.h, and string.h used by neighboring exact Drawarea sources, with SDK RECT; tests the full same-TU standard/API context. [same emitted code as probe 145]
+probe 159 abi; result=MISMATCH; diff=48; shape=97.0873786407767: H19: Define the RGE_Color_Table virtual destructor inline, matching an exact color.cpp donor spelling; tests whether destructor declaration versus definition changes this TU's allocation basin. [same emitted code as probe 156]
+probe 160 abi; result=MISMATCH; diff=47; shape=97.0873786407767: H20: Use the inventory/header class spelling for RGE_Color_Table instead of struct while preserving public layout and virtual destructor; tests declaration kind as an old-MSVC context axis. [same emitted code as probe 157]
+probe 162 flags; result=MISMATCH; diff=47; shape=97.0873786407767: Object audit H1: Drawarea.obj S_COMPILE records Language C, Pentium target, hardware FP, NEAR ambient model, PCode 0, and Microsoft C/C++ Optimizing Compiler 11.00. This matches the pinned VC5-era compiler family and gives no alternate backend lead. [same emitted code as probe 161]
+probe 163 flags; result=MISMATCH; diff=47; shape=97.0873786407767: Object audit H2: PE headers prove 1998-07-17 image, linker 5.00, NB10 age1_x1.pdb debug directory, and embedded FPO. The target is not a modern compiler or linker artifact. [same emitted code as probe 162]
+probe 164 abi; result=MISMATCH; diff=47; shape=97.0873786407767: Object audit H3: Drawarea PDB S_GPROC32 is Cb 0x10F at section:0x45230, type 0x21D4, ThisCall void with four long arguments. Parameter homes are exactly +4,+8,+C,+10; no ABI uncertainty remains. [same emitted code as probe 163]
+probe 165 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: Object audit H4: embedded FPO row for DrawShadowBox is size 271, Locals 0, Regs 4, Params 16, BP yes, SEH no. The original has no stack-local allocation; hidden omitted locals cannot explain the two-byte tail or register swap. [same emitted code as probe 164]
+probe 166 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: Object audit H5: PDB S_GPROC32 has only S_REGISTER this and four S_BPREL32 parameters, with no S_BPREL32/S_REGREL32 locals, blocks, or labels inside this symbol. Optimized local names and declaration order are not recoverable from this object. [same emitted code as probe 165]
+probe 167 layout; result=MISMATCH; diff=47; shape=97.0873786407767: Object audit H6: TDrawArea PDB UDT 0x289C is 0x100 bytes with typed Bits uchar* at +8, Orien int at +24, RECT at +28, and shadow_color_table RGE_Color_Table* at +C8. The full owning layout is binary-proven. [same emitted code as probe 166]
+probe 168 layout; result=MISMATCH; diff=47; shape=97.0873786407767: Object audit H7: RGE_Color_Table PDB UDT 0x28A5 is 296 bytes with vftable at +0, name at +4, and unsigned-byte table at +40. Its virtual destructor is introducing, but DrawShadowBox only performs the proven table read. [same emitted code as probe 167]
+probe 169 abi; result=MISMATCH; diff=47; shape=97.0873786407767: Object audit H8: Drawarea PDB type 0x21D2 identifies AlignedWidth as long ThisCall with zero explicit parameters. The sole target call relocates directly to TDrawArea::AlignedWidth at 00444B40; no same-name ABI donor ambiguity exists. [same emitted code as probe 168]
+probe 170 context; result=MISMATCH; diff=47; shape=97.0873786407767: Object audit H9: cvdump -inll and -illines show no inlinee or inline-line records for Drawarea.obj. No inline expansion or macro-generated body is evidenced for this symbol. [same emitted code as probe 169]
+probe 171 liveness; result=MISMATCH; diff=47; shape=97.0873786407767: Object audit H10: oracle assembly keeps row base ECX, row end ESI, pixel EDX, table EDI, pitch EBP, and row count EBX; rebuilt keeps the same roles except ECX/EDX are exchanged and adds mov ecx,edx before the backedge. FPO/PDB prove no stack spill or hidden local axis can account for this schedule. [same emitted code as probe 170]
+probe 173 layout; result=MISMATCH; diff=279; shape=63.80952380952381: Source-gate cleanup: applied PDB TDrawArea field names through +0xC8, declared RGE_Color_Table as class, and replaced raw byte cursors with typed indexed row loops while preserving Bits, table[256], AlignedWidth, long parameters, call order, and store order.
+probe 174 liveness; result=MISMATCH; diff=232; shape=74.28571428571429: Bounded natural-source pass: kept the PDB-backed named layout and indexed row loop, but anchored each typed row at Bits + row_offset + x1 with a zero-based column bound. This tests natural row-slice ownership without restoring raw byte cursors.
+probe 177 layout; result=MISMATCH; diff=279; shape=63.80952380952381: Baseline for this claim: canonical PDB-typed full TDrawArea and RGE_Color_Table table[256] with indexed row access, no cursor locals; validates current source before natural-shape probes. [same emitted code as probe 176]
+probe 178 liveness; result=MISMATCH; diff=259; shape=69.6078431372549: H1 typed-base indexing: removed the row pointer and used Bits[row_offset + x] for both read and write. This tests the user's required typed Bits indexing without cursor aliases.
+probe 179 control-flow; result=MISMATCH; diff=232; shape=73.83177570093459: H2 zero-based typed index: changed the inner loop to x=0..x2-x1 and indexed Bits[row_offset + x1 + x]. Tests whether VC5 strength-reduces a row slice without a row pointer or pixel cursor.
+probe 180 abi; result=MISMATCH; diff=259; shape=69.6078431372549: H3 full PDB layout with an inline period-style RGE_Color_Table destructor, while retaining direct Bits[row_offset + x] indexing. Tests whether destructor declaration state controls the prologue without changing behavior or call arity. [same emitted code as probe 178]
+probe 181 control-flow; result=MISMATCH; diff=259; shape=69.6078431372549: H4 guard polarity: rewrote the positive nested table/Bits guard as an early return with the same null fault order, retaining typed Bits indexing. Tests VC5 block placement while preserving behavior. [same emitted code as probe 180]
+probe 182 control-flow; result=MISMATCH; diff=259; shape=69.6078431372549: H5 split null guards: used two sequential early returns for shadow_color_table and Bits, preserving table-before-Bits fault order. Tests whether the original shared zero compare came from source guard structure. [same emitted code as probe 181]
+probe 183 layout; result=MISMATCH; diff=214; shape=68.22429906542057: H6 direct table owner: removed the table pointer local and used this->shadow_color_table->table[Bits[row_offset + x]] at the store. Tests whether VC5 keeps the proven typed table address live without a generic alias.
+probe 184 behavior; result=MISMATCH; diff=214; shape=68.22429906542057: H7 pitch expression order: changed row_pitch to orientation * AlignedWidth(). Tests source evaluation order against the original call-result multiply while retaining the one direct AlignedWidth call. [same emitted code as probe 183]
+probe 185 liveness; result=MISMATCH; diff=259; shape=67.6470588235294: H8 initialized table local: materialized unsigned char* table from RGE_Color_Table::table before row-offset setup, then kept direct typed Bits indexing. Tests declaration/initialization timing and table liveness.
+probe 186 liveness; result=MISMATCH; diff=259; shape=69.6078431372549: H9 delayed table assignment: restored declaration before row_offset and assignment after orientation-dependent row offset. Tests PDB line-order evidence for table materialization. [same emitted code as probe 182]
+probe 187 abi; result=MISMATCH; diff=259; shape=69.6078431372549: H10 read-only table local: made the local pointer const while keeping RGE_Color_Table::table[256] ownership and direct Bits indexing. Tests alias/liveness type without changing the memory effect. [same emitted code as probe 186]
+probe 188 control-flow; result=MISMATCH; diff=199; shape=65.68627450980392: H12 counted outer rows: replaced the y1..y2 for-loop with rows=y2-y1+1 and a guarded do/while, while keeping direct typed Bits indexing and row offset updates. Tests the original EBX row-count lowering without pointer cursors.
+probe 189 control-flow; result=MISMATCH; diff=203; shape=63.72549019607843: H13 counted rows with the binary-style y1<=y2 guard: retained the explicit post-setup bound test and used rows only for the bottom decrement. Tests loop counter shape without adding a rows>0 predicate.
+probe 190 control-flow; result=MISMATCH; diff=199; shape=65.68627450980392: H14 counted while: retained rows=y2-y1+1 with a positive guard but used a for(; rows != 0; rows--) loop. Tests the original row-count decrement with explicit loop condition and no row or pixel cursor.
+probe 191 abi; result=MISMATCH; diff=199; shape=65.68627450980392: H15 mutable typed table local: restored unsigned char* for the local view of RGE_Color_Table::table[256]. Tests the period-style pointer type after the counted indexed-row shape. [same emitted code as probe 190]
+probe 192 liveness; result=MISMATCH; diff=199; shape=65.68627450980392: H16 for-header row count: moved rows initialization into for(long rows = y2-y1+1; rows > 0; rows--) while keeping indexed Bits access. Tests declaration scope and update lowering from the PDB no-local function. [same emitted code as probe 191]
+probe 195 baseline; result=MISMATCH; diff=199; shape=65.68627450980392: Fresh claim baseline: canonical PDB-typed direct Bits indexed row arithmetic, four long parameters, one AlignedWidth call, no cursor aliases; current exact-size 271-byte frontier is 199 differing bytes. [same emitted code as probe 194]
+probe 196 control-flow; result=MISMATCH; diff=259; shape=69.6078431372549: H1 natural nested indexed rows: replaced counted rows loop with for(y=y1; y<=y2; y++) while retaining direct Bits[row_offset+x] expressions. Tests exact TDrawArea pixel-fill sibling loop form without cursor aliases. [same emitted code as probe 187]
+probe 197 layout; result=MISMATCH; diff=199; shape=65.68627450980392: H2 direct indexed term order: changed both pixel expressions to Bits[x + row_offset], preserving typed ownership and counted outer rows. Tests VC5 address-term ordering without cursors or aliases. [same emitted code as probe 195]
+probe 198 behavior; result=MISMATCH; diff=182; shape=66.66666666666667: H3 AlignedWidth result use: split row_pitch initialization and compound multiply (row_pitch=AlignedWidth(); row_pitch*=orientation). Tests target's mov result-to-EBP then imul ordering without changing one call.
+probe 199 control-flow; result=MISMATCH; diff=204; shape=75.49019607843137: H4 redundant PDB-shaped y guard: wrapped the counted indexed row loop in if (y1 <= y2), matching the late PDB line 4396 guard while retaining the earlier invalid-rectangle checks.
+probe 200 behavior; result=MISMATCH; diff=199; shape=65.68627450980392: H5 reversed AlignedWidth result use: row_pitch starts from orientation then compound-multiplies by AlignedWidth(). Tests call-result liveness and multiplication operand order against target EBP pitch. [same emitted code as probe 197]
+probe 201 layout; result=MISMATCH; diff=182; shape=66.66666666666667: H6 explicit indexed row arithmetic: used Bits[row_offset + x1 + (x - x1)] at both read and store. Tests whether the original's row-base and pixel endpoint lowering comes from a normalized row slice, without pointer locals. [same emitted code as probe 198]
+probe 202 abi; result=MISMATCH; diff=182; shape=66.66666666666667: H7 row-count width: changed only the indexed outer rows local from long to int. Tests target's EBX countdown and period scalar width while preserving four long parameters and table ownership. [same emitted code as probe 201]
+probe 203 control-flow; result=MISMATCH; diff=193; shape=66.66666666666667: H8 counted-loop predicate: changed indexed outer rows condition from rows > 0 to rows != 0. Tests direct target JNE decrement form without cursors.
+probe 204 control-flow; result=MISMATCH; diff=217; shape=68.26923076923077: H9 indexed inner loop form: changed x <= x2 to x != x2 + 1 while retaining direct Bits[row_offset+x]. Tests endpoint loop lowering and target's inclusive pixel traversal without cursor aliases.
+probe 205 liveness; result=MISMATCH; diff=188; shape=64.70588235294117: H10 parameter-home reuse: converted outer row count into mutating y2 (y2=y2-y1+1; for(; y2>0; y2--)), keeping direct Bits indexing and no row-count local. Tests PDB no-local evidence and target EBX row countdown.
+probe 206 control-flow; result=MISMATCH; diff=201; shape=72.64150943396227: H11 PDB line-4396 do-loop: wrapped direct indexed rows in if(y1<=y2), initialized rows inside, and used do/while(--rows != 0). Tests target's late y bound and bottom decrement without row/pixel cursors.
+probe 207 liveness; result=MISMATCH; diff=195; shape=67.96116504854369: H12 guarded parameter countdown: retained if(y1<=y2) do-loop but reused y2 for y2-y1+1 and decremented it. Tests PDB no-local parameter mutation and target EBX outer count.
+probe 208 liveness; result=MISMATCH; diff=182; shape=66.66666666666667: H14 declaration order: declared row_offset before pitch and table while keeping direct indexed rows and split AlignedWidth result use. Tests no-local PDB ordering influence on y1/pitch register homes. [same emitted code as probe 202]
+probe 209 liveness; result=MISMATCH; diff=182; shape=66.66666666666667: H15 table declaration first: moved the typed palette pointer declaration before row offset and pitch, without changing direct indexed access or assignment timing. Tests declaration-order register coloring under PDB no-local evidence. [same emitted code as probe 208]
+probe 210 layout; result=MISMATCH; diff=212; shape=71.56862745098039: H16 direct typed table owner: removed the table pointer local and used shadow_color_table->table[...] directly inside both indexed expressions. Tests table ownership and load liveness without generic aliases.
+probe 211 control-flow; result=MISMATCH; diff=182; shape=66.66666666666667: H17 indexed outer while: separated rows initialization and used while(rows > 0) with decrement after row update. Tests PDB no-local loop form and update scheduling without cursors. [same emitted code as probe 209]
+probe 212 control-flow; result=MISMATCH; diff=198; shape=66.66666666666667: H18 inclusive countdown spelling: used rows=y2-y1 with rows>=0, avoiding explicit +1 while preserving direct indexed fill. Tests indexed outer loop arithmetic and signed countdown lowering.
+probe 213 liveness; result=MISMATCH; diff=182; shape=66.66666666666667: H19 outer update list: moved row_offset addition and rows decrement into the for increment list, preserving their source order and direct indexed access. Tests target's adjacent add/add/dec tail without cursor aliases. [same emitted code as probe 211]
+probe 214 behavior; result=MISMATCH; diff=182; shape=66.66666666666667: H20 named AlignedWidth result: introduced aligned_width, then formed row_pitch=aligned_width*orientation, retaining direct indexed Bits access and one call. Tests whether target's EBP call result is a named intermediate. [same emitted code as probe 213]
+probe 218 control-flow; result=MISMATCH; diff=110; shape=86.53846153846153: H1 pointer row-start/end topology without an extra y-count guard; tests target's ECX/ESI row cursors and no zero-count branch.
+probe 219 layout; result=MISMATCH; diff=95; shape=87.5: H2 historical gap-layout class plus pointer row cursors and direct count loop; tests whether the pointer basin needs the donor's narrow class surface.
+probe 220 control-flow; result=MISMATCH; diff=61; shape=95.09803921568627: H3 restored donor pointer loop's explicit y1<=y2 guard and int row_count; tests the target's late count setup against the no-guard form.
+probe 221 behavior; result=MISMATCH; diff=46; shape=96.07843137254902: H4 combined AlignedWidth()*orientation expression; tests target's result-to-EBP then multiply scheduling in the pointer basin.
+probe 222 liveness; result=MISMATCH; diff=46; shape=96.07843137254902: H5 matched the historical donor declaration order: row_start, row_end, pixel, table, then row_offset; tests one-register rotation source axis. [same emitted code as probe 221]
+probe 223 liveness; result=MISMATCH; diff=46; shape=96.07843137254902: H6 added the donor's post-row pixel=row_start assignment; tests whether a final dead-looking cursor assignment preserves target register coloring. [same emitted code as probe 222]
+probe 224 liveness; result=MISMATCH; diff=46; shape=96.07843137254902: H7 moved pixel=row_start into the outer loop body, matching the exact donor source rather than placing it after the loop. [same emitted code as probe 223]
+probe 225 layout; result=MISMATCH; diff=46; shape=96.07843137254902: H8 folded x1 into row_offset before adding Bits; tests whether target's ECX row cursor comes from a mutated offset rather than a fresh pointer expression. [same emitted code as probe 224]
+probe 226 abi; result=MISMATCH; diff=45; shape=96.07843137254902: H9 used the historical donor's declaration-only virtual destructor on struct RGE_Color_Table; tests the one-byte table-address encoding basin without changing runtime ownership. [same emitted code as probe 137]
+probe 227 control-flow; result=MISMATCH; diff=224; shape=72.72727272727273: H10 replaced the guarded for-count with a top-tested while(row_count > 0); tests count-test placement and target's absence of an extra zero branch.
+probe 228 control-flow; result=MISMATCH; diff=82; shape=88.46153846153847: H11 removed only the redundant y1<=y2 guard while retaining int row_count and donor pointer loop; isolates the guard's effect on this-pointer and prologue coloring.
+probe 229 behavior; result=MISMATCH; diff=45; shape=96.07843137254902: H12 wrote row_end as row_start-x1+x2, the target's explicit pointer arithmetic shape; tests whether source grouping controls the row-end register path. [same emitted code as probe 226]
+probe 230 liveness; result=MISMATCH; diff=45; shape=96.07843137254902: H13 introduced a scoped pixel_count intermediate for x2-x1 before row_end; tests whether a short-lived offset changes row cursor allocation. [same emitted code as probe 229]
+probe 231 abi; result=MISMATCH; diff=45; shape=96.07843137254902: H14 narrowed row_offset from long to int; tests whether target's pointer arithmetic uses a period int local rather than long. [same emitted code as probe 230]
+probe 232 abi; result=MISMATCH; diff=45; shape=96.07843137254902: H15 widened row_count from int to long; tests whether the saved EBX countdown reflects a long source local. [same emitted code as probe 231]
+probe 233 liveness; result=MISMATCH; diff=45; shape=96.07843137254902: H16 moved the table pointer declaration before row cursors; tests whether table lifetime priority drives target's ECX/ESI pointer rotation. [same emitted code as probe 232]
+probe 234 layout; result=MISMATCH; diff=134; shape=91.34615384615384: H17 removed the table local and used direct shadow_color_table->table indexing inside the loop; tests receiver lifetime and reload behavior.
+probe 235 abi; result=MISMATCH; diff=45; shape=96.07843137254902: H18 made the table cursor const; tests whether the target's read-only lookup pointer affects register allocation or indexed load form. [same emitted code as probe 233]
+probe 236 abi; result=MISMATCH; diff=73; shape=93.13725490196079: H19 signed char pointer cursors with an explicit Bits cast; tests signed pointer representation after resolving the expected conversion.
+probe 237 abi; result=MISMATCH; diff=45; shape=96.07843137254902: H20 compiled the signed table-pointer variant with an explicit table cast; tests whether signed element type changes table-index lowering. [same emitted code as probe 235]
+probe 240 variant; result=MISMATCH; diff=182; shape=66.66666666666667: variant lab build\variant_lab\00446230_DrawShadowBox\20260822_124856: 36 variants, 24 invariant-eligible, 0 exact
+probe 241 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: H21 pointer donor context with a natural for(y=y1; y<=y2; y++) outer loop; tests whether VC5 derives target's EBX row countdown without the donor's redundant guard and zero branch. [same emitted code as probe 105]
+probe 242 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: H22 pointer donor context with separately declared y and top-tested while(y<=y2); tests loop declaration scope and update placement against target's countdown lowering. [same emitted code as probe 241]
+probe 243 control-flow; result=MISMATCH; diff=82; shape=87.61904761904762: H23 pointer loop counted directly from y2 down to y1; tests whether mutating the clipped endpoint preserves target EBX ownership and count formation.
+probe 244 layout; result=MISMATCH; diff=46; shape=96.07843137254902: H24 retained the pointer-loop source but restored the full canonical TDrawArea field surface with declaration-only RGE_Color_Table destructor; tests whether the 45-byte pointer basin depends on gap layout. [same emitted code as probe 225]
+probe 245 context; result=MISMATCH; diff=46; shape=96.07843137254902: H25 changed only the RGE_Color_Table destructor from declaration-only to an inline empty body in the full-surface pointer source; tests canonical destructor context versus the 45-byte donor basin. [same emitted code as probe 244]
+probe 246 control-flow; result=MISMATCH; diff=49; shape=97.0873786407767: H26 compiled the historical direct row-start guarded do/while after restoring balanced block closure; tests direct construction and reversed row-update topology.
+probe 247 liveness; result=MISMATCH; diff=49; shape=97.0873786407767: H27 swapped persistent-row and inner-pixel source roles: pixel owns the row base, row_start owns inner traversal. Tests the target's ECX row base and EDX pixel register map without raw steering. [same emitted code as probe 246]
+probe 248 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: H28 direct row-start guarded do/while with pixel initialized at each loop top and row_start-before-row_end updates; tests target's top compare/mov pixel topology without the tail assignment. [same emitted code as probe 129]
+probe 249 control-flow; result=MISMATCH; diff=82; shape=87.61904761904762: H29 removed the redundant outer y guard while retaining a direct-count do/while pointer loop; tests whether target's prior clipped-y proof supports zero-branch-free lowering.
+probe 250 layout; result=MISMATCH; diff=224; shape=71.55963302752293: H30 implemented the Ghidra variable topology: row_index selects orientation, color_table keeps the object, mutable pixel is reset from row_start, and row_end advances independently. Tests the decompiler-supported owner/lifetime model against target ECX/EDX/ESI roles.
+probe 251 layout; result=MISMATCH; diff=224; shape=72.64150943396227: H31 kept Ghidra's mutable pixel/row_start topology but delayed color_table assignment until after Bits and row-end setup; tests target's observed Bits-before-table read order.
+probe 253 control-flow; result=MISMATCH; diff=75; shape=94.11764705882354: H32 kept the H9 setup but adopted Ghidra's pbVar4/pbVar5 loop topology: mutable pixel resets from row_start+pitch, row_end advances, then row_start follows. Tests target's update dependencies.
+probe 254 layout; result=MISMATCH; diff=109; shape=88.57142857142857: H33 replaced the row_offset product with Ghidra's row_index=y1 then orientation-adjusted row index, while retaining cached byte table and counted pointer loop; tests source arithmetic ownership.
+probe 255 abi; result=MISMATCH; diff=109; shape=88.57142857142857: H34 narrowed Ghidra-style row_index to int; tests the decompiler's iVar2 width against target orientation and pointer setup. [same emitted code as probe 254]
+probe 256 liveness; result=MISMATCH; diff=233; shape=75.47169811320755: H36 used the Ghidra pbVar4/pbVar5 role order with cached byte-table base: pixel is mutable traversal, row_start is saved base, row_end is independent, and reset is row_start+pitch.
+probe 257 layout; result=MISMATCH; diff=222; shape=70.64220183486239: H37 mirrored Ghidra's declaration order and source assignment order: table object, row index, aligned width, pixel/base/end pointers, orientation, pitch. Tests whether declaration coloring recovers target's this/ECX/EDX roles.
+probe 258 context; result=MISMATCH; diff=219; shape=74.52830188679245: H38 retained Ghidra declaration/assignment order but changed only the color-table local to a byte base assigned after pointer setup; tests target's delayed table load without object-pointer hoisting.
+probe 260 variant; result=MISMATCH; diff=46; shape=96.07843137254902: variant lab build\variant_lab\00446230_DrawShadowBox\20260822_125909: 144 variants, 96 invariant-eligible, 0 exact
+probe 261 liveness; result=MISMATCH; diff=46; shape=96.07843137254902: H41 aligned the live source with the historical 45-byte pointer donor: orientation and pitch declarations precede row cursors, and row_end uses row_start-x1+x2. [same emitted code as probe 260]
+probe 262 context; result=MISMATCH; diff=45; shape=96.07843137254902: H42 removed unused forward declarations and _DDSURFACEDESC from the pointer donor context; tests the historical translation-unit declaration surface behind the one-byte table-address basin. [same emitted code as probe 237]
+probe 263 liveness; result=MISMATCH; diff=45; shape=96.07843137254902: H43 rotated source cursor roles to mirror target registers: pixel is the persistent row base, row_start is the row end, and row_end is the inner cursor. Tests a direct supported mapping of Ghidra pbVar4/pbVar5/pbVar8. [same emitted code as probe 262]
+probe 264 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: H44 retained the role-rotated pointer source but changed only the outer counted-for to a guarded do/while, testing removal of target's extra zero-count branch. [same emitted code as probe 242]
+probe 265 control-flow; result=MISMATCH; diff=82; shape=87.61904761904762: H45 removed the explicit y guard from the role-rotated do/while pointer source, isolating whether the target's precomputed row count has a zero-branch-free natural form. [same emitted code as probe 243]
+probe 266 control-flow; result=MISMATCH; diff=87; shape=84.61538461538461: H47 changed the invalid-rectangle early return to a positive x1<=x2 && y1<=y2 outer guard while retaining the pointer loop; tests Ghidra's positive predicate source shape against target branch layout.
+probe 267 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: H48 replaced the nested count guard with for(; y1<=y2; y1++), testing the source loop form that should naturally emit target's late compare and count without an extra zero branch. [same emitted code as probe 264]
+probe 270 baseline; result=MISMATCH; diff=45; shape=96.07843137254902: Restored prior 45-byte pointer frontier as the baseline for authentic Drawarea context and loop-topology work. [same emitted code as probe 263]
+probe 271 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: Used canonical row_start, row_end, and pixel roles with a guarded do loop. The prior for loop added a redundant zero-count branch absent from the target. [same emitted code as probe 267]
+probe 272 layout; result=MISMATCH; diff=74; shape=95.14563106796116: Grouped row_offset plus x1 before Bits in the row-start expression. This tests the target's x1 load before Bits and its add order. [same emitted code as probe 271]
+probe 273 liveness; result=MISMATCH; diff=74; shape=95.14563106796116: Mutated row_offset by x1 before forming row_start. This tests whether the branch result stays in ECX as the target row base. [same emitted code as probe 272]
+probe 274 liveness; result=MISMATCH; diff=74; shape=95.14563106796116: Marked the two call-crossing row pointers as register locals. This tests whether period VC5 honors the source storage hint for the target ECX/ESI pointer map. [same emitted code as probe 273]
+probe 275 liveness; result=MISMATCH; diff=75; shape=91.34615384615384: Kept the RGE_Color_Table object as the local owner instead of its byte table. This tests the target's delayed add of the +0x28 table field after row-end setup.
+probe 276 layout; result=MISMATCH; diff=74; shape=95.14563106796116: Put x1 on the left of the row-start pointer addition. This natural commutative form tests the target's x1 load before Bits. [same emitted code as probe 274]
+probe 277 liveness; result=MISMATCH; diff=233; shape=75.47169811320755: Applied the decompiler-supported mutable pixel, saved row start, and row end topology. The bottom resets pixel from saved row start before publishing that new start. [same emitted code as probe 256]
+probe 278 control-flow; result=MISMATCH; diff=74; shape=95.14563106796116: Moved the inner cursor reset to each do-loop top and removed the duplicate bottom reset. This preserves the direct row-base topology while removing its two extra moves.
+probe 279 control-flow; result=MISMATCH; diff=72; shape=95.14563106796116: Kept direct branch-local row-start construction and moved the pixel reset to each do-loop top. This tests the target's ECX row base, ESI end, and post-compare EDX cursor copy without a bottom reset. [same emitted code as probe 27]
+probe 280 layout; result=MISMATCH; diff=72; shape=95.14563106796116: Put x1 before Bits in both direct row-start branch assignments. This tests the target's x1-in-EDX then Bits-in-EAX load order while preserving the proven ECX row base. [same emitted code as probe 279]
+probe 281 layout; result=MISMATCH; diff=72; shape=95.14563106796116: Expanded the row end as row_start minus x1 plus x2. This tests the target's explicit x1 copy, row-base copy, subtract, then x2 add sequence. [same emitted code as probe 280]
+probe 282 layout; result=MISMATCH; diff=72; shape=95.14563106796116: Formed each direct row start as numeric row offset plus x1 plus Bits. This tests whether the pointer-last expression emits the target x1-before-Bits load order. [same emitted code as probe 281]
+probe 283 liveness; result=MISMATCH; diff=72; shape=95.14563106796116: Applied the period register hint to the repeatedly clipped x1 parameter. This tests whether VC5 preserves x1 before the independent Bits load. [same emitted code as probe 282]
+probe 284 context; result=MATCH; diff=0; shape=100.0: Restored the exact-donor Drawarea stdlib context while retaining direct row construction and a loop-top pixel reset. This tests the combined authentic header and source state.
+probe 285 layout; result=MATCH; diff=0; shape=100.0: Walkback: restored stdlib.h and simplified each row-start expression into Bits+x1 followed by the row offset addition. [same emitted code as probe 284]
+probe 286 layout; result=MATCH; diff=0; shape=100.0: Walkback: grouped the row-end delta as row_start plus x2 minus x1, matching the simplest rectangle-width model. [same emitted code as probe 285]
+probe 287 abi; result=MATCH; diff=0; shape=100.0: Replaced the local gap and void placeholders with the PDB-backed TDrawArea fields and natural DirectDraw surface records. [same emitted code as probe 286]
+probe 288 liveness; result=MATCH; diff=0; shape=100.0: Walkback: removed the redundant block around the row scan to test whether its local scope is incidental. [same emitted code as probe 287]
+```
+<!-- end-recovered:a15ab610c870dce202e0 -->
+
+<!-- recovered:121a34c7b2bd8b8a0177 -->
+### `23311122d0a9` `src/scratch/00446230_DrawShadowBox.cpp:1-147`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 00446230 TDrawArea::DrawShadowBox (271 B)
+// PDB source: Drawarea.cpp, lines 4356-4409
+//
+// Baseline reconstruction: clip the requested rectangle to the draw area's
+// clip rectangle and surface, then apply the configured shadow color table to
+// each pixel in the resulting rectangle.
+//
+// Attempt log:
+// - Replaced the prior FillRect/DrawBevel scaffold with the binary-supported
+//   TDrawArea/RGE_Color_Table ownership and the AlignedWidth row scan.
+// - Parameter-left clipping comparisons plus a negative invalid-rectangle
+//   guard recovered the original prologue, CFG, call set, and most bytes.
+// - Pointer/table declaration, address-term, and running-cursor variants were
+//   duplicate or worse; best retained output is 273 bytes, 47 differing
+//   positional bytes, with the residual confined to row-pointer scheduling.
+// - Main-agent audit replaced the raw color-table vptr field with its canonical
+//   virtual destructor surface; the validated gap is 48 bytes with unchanged
+//   size, calls, frame, and instruction shape.
+// - This session tested offset/left/Bits address-term order, table-first
+//   assignment, scoped and top-reset pixel cursors, and a Color_Table* local;
+//   cursor variants changed size/prologue or worsened the diff. The clean
+//   source below remains the best natural reconstruction.
+// - This session retested the row address expression, inner cursor scope and
+//   declaration order, plus point-of-use Bits/row-address locals. The natural
+//   canonical source remains the best living reconstruction; residual drift is
+//   the row-base/pixel cursor register schedule and a two-byte tail shift.
+// - This session moved the outer pixel declaration beside the row pointers;
+//   it improved the unchanged-size result to 273 bytes/47 differing bytes.
+//   A per-row for-initializer worsened it to 271 bytes/74 bytes. Sequential
+//   start-offset and declaration-order rewrites were codegen duplicates.
+// Main-agent audit confirmed canonical draw-area/color-table ownership and kept
+// the natural typed row/pixel traversal.
+// - Fresh pass: the exact-donor full TDrawArea/scalar-clip declaration surface
+//   was codegen-identical to this local gap/ClipRect surface (47 bytes). Adding
+//   the Drawarea stdlib/string header context worsened the result to 78 bytes;
+//   it was removed.
+// - Fresh row-pointer probes (table between pointer assignments and an explicit
+//   x1-first offset assignment) were duplicate or worse. The remaining binary
+//   lead is the original's row-base/pixel register rotation at +00C1, followed
+//   by its two-byte tail layout difference; no further natural source axis was
+//   supported by this pass.
+// - Bounded fresh pass: mutating row_offset by x1 was a codegen duplicate;
+//   72/96-case row-setup, declaration-order, and loop-shape labs produced only
+//   the existing 273-byte or shorter 271-byte basins. Canonical object-table
+//   locals, predecrement row tails, and the decompiler two-pointer topology
+//   widened the mismatch (76/228/233 bytes); all were rolled back.
+// - Final clean source remains the natural typed byte-table traversal at
+//   273 bytes/47 differing bytes. The unresolved binary lead is specifically
+//   VC5 pointer register coloring (original row base ECX, pixel EDX) plus the
+//   two-byte tail shift; no behavior, call, layout, or ABI uncertainty remains.
+// - Fresh worker pass tested a loop-local pixel cursor; it moved to a 271-byte
+//   but 74-difference basin and was restored. The neighboring exact Flic draw
+//   expression Bits + x1 + row_offset was also codegen-identical to the clean
+//   source. The natural 273-byte/47-difference source remains authoritative.
+// - Fresh structural probes tried direct typed row-start construction in each
+//   orientation arm. This fixed the original row-start/pixel register roles
+//   and reduced the resync cost, but remained a 271-byte/56-difference basin.
+//   Loop-top pixel initialization, table-object ownership, and pointer-term
+//   rewrites were worse or duplicate. The pinned natural source is restored.
+// - Fresh claim validation confirmed the pinned 273-byte/47-difference basin.
+//   A loop-top pixel reset remained 271 bytes/74 differences. A focused
+//   counted-loop lab reached 271 bytes/45 differences, but added an initial
+//   zero-count branch and changed the source-supported do-loop topology; it
+//   was not retained. The natural pinned source remains authoritative.
+// - Deep UI-type pass: inventory evidence confirms Bits is unsigned char* at
+//   +0x08, shadow_color_table is RGE_Color_Table* at +0xC8, and table is an
+//   unsigned char[256] at +0x28. No layout or helper-type uncertainty remains.
+// - This pass tested 20 distinct loop, pointer-owner, declaration-scope,
+//   update-order, scalar-width, and table-owner hypotheses, plus two combined
+//   contexts. The scoped inner cursor forms moved to the 271-byte/74-difference
+//   basin. Table-owner and row-scope variants were duplicate or worse.
+// - Recomputing row_end, reversing row updates, and changing countdown tests
+//   widened the result or changed control flow. The target keeps row base in
+//   ECX, row end in ESI, and the inner pixel cursor in EDX. The prior cursor
+//   source kept that schedule and was the best metric source before cleanup.
+// - Translation-unit audit: scalar clip fields, the full TDrawArea field
+//   surface, uchar pixel types, an unused DDSys global, memset pragma/prototype,
+//   RGE_Color_Table class spelling, and nearby declarations were duplicate.
+//   stdio, stdlib, string, windows, and game_types headers moved to 77-82
+//   differences. Full palette methods moved to 82 differences. Imported API
+//   declarations moved the tail to 48 differences. No tested context restored
+//   the original row-base ECX and pixel EDX schedule. The baseline is restored.
+// - Object audit confirms the VC5 target, 271-byte FPO body, no locals or SEH,
+//   four long parameters, layouts, and AlignedWidth call. No inline record or
+//   metadata supports another source owner for the row/pixel register swap.
+// - Source-gate cleanup: the PDB-backed TDrawArea fields now own every member
+//   from +0x38 through +0xC8, and RGE_Color_Table is a class with its named
+//   vptr-backed fields. The byte cursors are replaced by a typed indexed row
+//   loop. This is the clean semantic source even if its metric regresses.
+// - Follow-up pass: direct Bits[row_offset + x] indexing removed the row
+//   pointer and improved the typed source to a same-size 278-byte basin.
+//   Direct table ownership reached same-size 271 bytes but lost the proven
+//   saved-register prologue, so the typed table local remains the better
+//   source shape.
+// - A counted outer row loop matches the executable's row-count decrement and
+//   reaches 271 bytes with 199 differing bytes. It keeps the table local and
+//   direct Bits indexing. No row_start, row_end, pixel cursor, raw view, or
+//   steering form is retained.
+// - Fresh direct-index frontier: PDB symbols contain only this and four long
+//   parameter records. No local record proves a row or pixel cursor. The exact
+//   FillRect and Shape pixel-fill siblings support typed indexed loops, but
+//   their cursor locals were not restored here.
+// - Splitting the AlignedWidth result from its orientation multiply improved
+//   the unchanged 271-byte result from 199 to 182 differing bytes. A named
+//   aligned-width intermediate emitted the same bytes and was removed.
+// - Direct Bits term reordering, explicit indexed row arithmetic, row-count
+//   int width, table declaration order, and a while form were codegen
+//   duplicates. A direct typed table owner lost the required saved-register
+//   prologue and was removed.
+// - Redundant late y guards and do-loop forms improved shape but moved strict
+//   bytes or added guards. Mutating parameter homes for the row count widened
+//   the function. The retained source is the smallest natural typed-index
+//   form, with one AlignedWidth call and typed table ownership.
+// - Fresh accepted-drift review (20 probes): pointer row_start/row_end/pixel
+//   loops were tested against the indexed clean source. H1 no-guard pointers
+//   reached 110 bytes; H2 donor gap layout reached 95; H3 donor pointer guard
+//   reached 61; H4 combined AlignedWidth()*Orien reached 46; H5 declaration
+//   reorder and H6/H7 cursor assignments were duplicate. H8 mutated offset
+//   setup was duplicate. H9 declaration-only RGE_Color_Table reached the prior
+//   45-byte frontier, but still had the wrong row cursor register map and an
+//   extra zero-count branch, so it was not retained.
+// - H10 top-tested while reached 224 bytes; H11 no guard with int count reached
+//   82; H12 explicit row_end arithmetic, H13 scoped pixel_count, H14 int
+//   row_offset, H15 long row_count, and H16 declaration reorder were duplicate
+//   45-byte outputs. H17 direct table ownership reached 285 bytes; H18 const
+//   table was duplicate; H19 signed pixel pointers reached 73; H20 signed table
+//   pointer was duplicate. All variants were restored to the pinned source.
+//   The 45-byte pointer frontier has broad register and control-flow residue.
+//   It is not accepted drift. The clean source remains authoritative.
+// - Follow-up shape pass used Ghidra's recovered pointer topology as a new
+//   lead: row-index, table-object, mutable-pixel, saved-row, and row-end forms
+//   reached 224, 109, 222, 219, 233, and 222 bytes. Natural for/while,
+//   countdown, do/while, positive-guard, and parameter-loop forms stayed at
+//   74-87 or 82 bytes. Direct row-start construction reached 49 bytes/97.09%
+//   shape but added two bytes; role rotation returned the 45-byte basin.
+// - Context isolation removed unused forward declarations and DDSURFACEDESC
+//   from the historical pointer TU and recovered the 45-byte frontier. A
+//   144-variant lab swept pointer declaration order, row setup arithmetic, and
+//   six loop shapes. It produced four code groups, no exact, and no new shape
+//   basin. The best group stayed 271 bytes, 45 differing bytes, 96.08% shape,
+//   84.31% exact-block coverage, with one redundant zero-count branch and the
+//   ECX/ESI/EDX pointer-role rotation still unresolved.
+// Accepted-drift audit: do not promote. After AlignedWidth, the executable
+// reads Bits once before shadow_color_table and keeps that pointer through both
+// loops. The rebuild reads shadow_color_table first and reloads Bits inside the
+// pixel loop. Concurrent member changes can alter pixels and write addresses.
+// Invalid member storage can also fault in a different order.
+```
+<!-- end-recovered:121a34c7b2bd8b8a0177 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

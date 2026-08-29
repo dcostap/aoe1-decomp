@@ -1,0 +1,122 @@
+# Recovery journal: 0053B7E0 `Update_Unit_Info`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/vis_unit.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\vis_unit.cpp`.
+- Earlier recovery note: `recovery_notes/vis_unit_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:d9cdce575c8886798b27 -->
+### `target-session` `build/target_sessions/0053B7E0_Update_Unit_Info.json:1-37`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=411; shape=68.08510638297872: Initial scratch reconstruction; establish behavior and codegen frontier.
+probe 2 layout; result=MISMATCH; diff=409; shape=79.43262411347517: Typed owner VUR_Ptrs array with player index; test canonical owner layout and frame.
+probe 3 liveness; result=MISMATCH; diff=409; shape=79.43262411347517: Mutate old_mask as the changed-mask accumulator; test parameter-home and prologue scheduling. [same emitted code as probe 2]
+probe 4 control-flow; result=MISMATCH; diff=409; shape=81.56028368794327: Use top-tested p < Player_Count loop; test original loop rotation and mask guard topology.
+probe 5 abi; result=MISMATCH; diff=409; shape=81.56028368794327: Use non-polymorphic static-object overlay with typed VUR_Ptrs at +194; test owner type surface. [same emitted code as probe 4]
+probe 6 liveness; result=MISMATCH; diff=405; shape=67.12328767123287: Use a typed owner VUR_Ptrs pointer alias before indexed update; test whether refs remains live across repair.
+probe 7 liveness; result=MISMATCH; diff=412; shape=85.81560283687944: Use an explicit widened sizeInt across growth and copy; test capacity register and stack-home model.
+probe 8 layout; result=MISMATCH; diff=407; shape=73.04964539007092: Use a typed reference to the nine-slot owner array; test alias-preserving field access without raw offsets.
+probe 9 other; result=MISMATCH; diff=412; shape=85.81560283687944: Spell the typed owner slot as pointer addition; test equivalent period C++ address lowering. [same emitted code as probe 7]
+probe 10 control-flow; result=MISMATCH; diff=415; shape=82.97872340425532: Guard the do-loop with old_mask != 0; test explicit source guard against the original direct backedge.
+probe 11 liveness; result=MISMATCH; diff=412; shape=85.81560283687944: Split changed-mask XOR and low-word mask statements; test source evaluation order and register color. [same emitted code as probe 9]
+probe 12 liveness; result=MISMATCH; diff=407; shape=73.04964539007092: Keep a function-scope typed owner-slot alias; test whether a live field base recovers repair-store scheduling. [same emitted code as probe 8]
+probe 14 other; result=MISMATCH; diff=409; shape=81.56028368794327: Restore direct short capacity arithmetic; compare the simplest typed owner-array source. [same emitted code as probe 5]
+probe 17 abi; result=MISMATCH; diff=409; shape=81.56028368794327: Use the period global VIS_UNIT_objectsValue RGE_Static_Object symbol with the proven polymorphic +0x194 owner field. [same emitted code as probe 15]
+probe 18 layout; result=MISMATCH; diff=427; shape=76.7605633802817: Typed owner-slot index uses the moving refs pointer relative to its proven input array base; test natural recovery of the original +0x194 plus refs schedule.
+probe 20 liveness; result=MISMATCH; diff=409; shape=81.56028368794327: Mutate the dead incoming old_mask home after XOR, matching the original parameter-home store while keeping typed owner fields. [same emitted code as probe 17]
+probe 22 liveness; result=MISMATCH; diff=284; shape=83.68794326241135: Use a typed moving current_refs alias instead of mutating the incoming refs parameter; test natural live-pointer ownership.
+probe 23 liveness; result=MISMATCH; diff=409; shape=81.56028368794327: Use a typed reference alias current_refs = refs so the moving pointer remains the incoming parameter home while preserving the natural alias. [same emitted code as probe 20]
+probe 24 liveness; result=MISMATCH; diff=391; shape=85.81560283687944: Scope the typed current_refs pointer inside the positive Player_Count guard, matching the original late refs load and avoiding early liveness.
+probe 25 layout; result=MISMATCH; diff=412; shape=67.37588652482269: With a typed moving current_refs alias, bind each object's typed VUR_Ptrs array before indexed repair; test natural owner alias lowering.
+probe 26 control-flow; result=MISMATCH; diff=426; shape=75.88652482269504: Use a guarded do-loop with current_refs initialized after Player_Count, preserving one initial count test and a typed moving pointer.
+probe 27 layout; result=MISMATCH; diff=427; shape=77.46478873239437: Use the typed current_refs minus input refs pointer difference for the owner slot index; test explicit natural array-relative ownership.
+probe 28 liveness; result=MISMATCH; diff=284; shape=83.68794326241135: Name a distinct old_value copy before mask formation to test natural register-color recovery for old-mask and p. [same emitted code as probe 22]
+probe 29 layout; result=MISMATCH; diff=412; shape=67.37588652482269: Bind the proven nine-slot VUR array as a typed reference under the moving current_refs model; test array-reference lowering. [same emitted code as probe 25]
+probe 30 liveness; result=MISMATCH; diff=421; shape=78.01418439716312: Move the natural player index to function scope beside current_refs; test whether VC5 keeps p in the original EDI color.
+probe 33 layout; result=MISMATCH; diff=284; shape=83.68794326241135: Diagnostic only: replace typed VUR_Ptrs member indexing with a binary-proven +0x194 owner base and explicit p index; test whether separate owner base recovers original p register and repair scheduling. Do not retain if it only steers codegen. [same emitted code as probe 32]
+probe 34 liveness; result=MISMATCH; diff=422; shape=83.68794326241135: Move p initialization inside the positive Player_Count guard while keeping p functionally live; original assembly tests Player_Count before storing zero to the p home. Test declaration/initialization timing as a natural source cause.
+probe 35 control-flow; result=MISMATCH; diff=422; shape=83.68794326241135: Combine category and positive Player_Count guards with the natural top-tested player loop; test whether the original shared late return and post-test zero home come from one short-circuit guard. [same emitted code as probe 34]
+probe 36 abi; result=MISMATCH; diff=284; shape=83.68794326241135: Use the caller-supported void* VUR_Ptrs element type instead of VisibleUnitRec* while keeping the same polymorphic +0x194 layout; test whether the period caller ABI type changes owner-update codegen. [same emitted code as probe 33]
+probe 37 layout; result=MISMATCH; diff=334; shape=78.16901408450704: Diagnostic only: encode the executable-proven owner address as obj + (0x194 - refs_base) + current_refs, using the moving typed refs alias. Test whether the observed owner-repair address algebra is the source shape; reject if it is metric-only raw arithmetic.
+probe 38 liveness; result=MISMATCH; diff=284; shape=83.68794326241135: Diagnostic register qualifier on old_mask only; test whether a read-only register parameter selects the original EBX old-mask color without changing ABI. [same emitted code as probe 36]
+probe 39 liveness; result=MISMATCH; diff=284; shape=83.68794326241135: Diagnostic register qualifier on the player index; test whether VC5 keeps p in original EDI rather than the direct owner-offset color. [same emitted code as probe 38]
+probe 40 liveness; result=MISMATCH; diff=284; shape=83.68794326241135: Move the growth newList declaration to function scope while preserving its branch-local use; test whether original local_8 spill across free reflects old-style top-level declarations. [same emitted code as probe 39]
+probe 41 liveness; result=MISMATCH; diff=284; shape=83.68794326241135: Split the local size declaration from its list_size assignment; test whether original capacity register/home timing reflects old-style declaration scheduling. [same emitted code as probe 40]
+probe 42 layout; result=MISMATCH; diff=386; shape=73.28767123287672: Diagnostic raw-form family: compute refOffset = 0x194 - refs and use the moving refs pointer in typed owner address updates, matching the original effective owner address algebra. Reject as policy scaffolding unless binary/source evidence supports it.
+probe 43 layout; result=MISMATCH; diff=421; shape=68.79432624113475: Diagnostic owner-surface trial: model the proven +0x194 slot as one named field while current_refs remains live, isolating whether the array index itself causes EDI owner-offset pressure. This cannot be retained because binary proves per-player slots.
+probe 44 liveness; result=MISMATCH; diff=284; shape=83.68794326241135: Use a natural pointer-to-owner-slot local for each repair store, testing whether address-taken slot liveness recovers original refs/pointer scheduling. [same emitted code as probe 41]
+```
+<!-- end-recovered:d9cdce575c8886798b27 -->
+
+<!-- recovered:df9f086b3c1f4263c4b5 -->
+### `0fd97682b092` `src/scratch/0053B7E0_Update_Unit_Info.cpp:1-30`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// vis_unit.cpp target: Visible_Unit_Manager::Update_Unit_Info
+// initial reconstruction from packet/decompiler for per-player visible unit bitmask update.
+// Attempt log:
+// - Baseline had exact size/frame but modeled growth cleanup as operator_delete; changing to cdecl free aligned both direct calls.
+// - Reversed the mask XOR operands without codegen movement; mutating the incoming old_mask home was binary-backed but entered a smaller/wrong basin when assigned to new_mask and restored only the old-mask-home family.
+// - Typed memcpy recovered the original rep movsd/rep movsb copy (and is retained); direct short list_size arithmetic improved the best positional diff to 306 bytes, though the frame remains 0x14 versus 0x10.
+// - Hoisting the new-list/old-list pointers was diagnostic only and was rolled back.
+// - This session tested a named mask delta, ordered object-base arithmetic,
+//   top-tested versus guarded do-loop control flow, and function-scope offset
+//   locals; none improved the canonical 306-byte frontier. Volatile pointer
+//   diagnostics matched the original frame locally but were rolled back as
+//   compiler-steering scaffolding.
+// - Typed VUR_Ptrs[9] owner storage is required by the caller object layout;
+//   the direct typed form recovers the 0x10 frame.
+// - Same-TU AddResource uses the period stdlib/string header context; retaining
+//   those headers and the proven polymorphic static-object boundary changed no
+//   bytes, but keeps the ownership model source-plausible.
+// - A top-tested player loop plus direct typed owner-array indexing is the
+//   simplest baseline. It gives a 0x10 frame and a 409-byte strict diff.
+// - Widened capacity, owner-slot aliases, split mask statements, and a guarded
+//   do-loop did not improve the clean frontier and were rolled back.
+// - A typed moving current_refs alias is period-plausible and matches the
+//   observed moving refs ownership. It improves the strict diff to 284 bytes,
+//   with a 0x10 frame and 39.01% exact-block coverage, but is not exact.
+// - Scoping current_refs inside the guard, pointer-difference owner indexes,
+//   owner-array references, and function-scope player indexes all worsened it.
+// - The original repair stores use the moving refs pointer plus a local offset;
+//   the typed alias improves the owner schedule but does not recover that
+//   source form. Raw offset forms are rejected as compiler-steering scaffolding.
+// Left in scratch: prologue register coloring and owner repair scheduling remain.
+```
+<!-- end-recovered:df9f086b3c1f4263c4b5 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

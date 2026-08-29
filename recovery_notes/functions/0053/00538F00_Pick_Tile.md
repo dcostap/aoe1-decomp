@@ -1,0 +1,255 @@
+# Recovery journal: 00538F00 `Pick_Tile`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/view.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\view.cpp`.
+- Earlier recovery note: `recovery_notes/view_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:757b38d3304dc3dec4c8 -->
+### `target-session` `build/target_sessions/00538F00_Pick_Tile.json:1-98`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=283; shape=78.44827586206897: Existing clean source baseline: natural named map dimensions, coordinate locals, and four int output references; calls and CFG match but frame is absent and size is 283B.
+probe 2 layout; result=MISMATCH; diff=223; shape=86.77685950413223: Natural two-int Map_Dims local: test the prior binary-backed frame hypothesis without parameter-home alias casts.
+probe 3 layout; result=MISMATCH; diff=223; shape=86.77685950413223: Map_Dims aggregate initializer: test whether whole-object initialization forces the original two dimension homes and load schedule. [same emitted code as probe 2]
+probe 4 liveness; result=MISMATCH; diff=189; shape=88.98305084745763: Use the dead map-height field itself as the first bounding output; this is a natural scratch reuse that may force the target second local home.
+probe 5 liveness; result=MISMATCH; diff=189; shape=87.28813559322033: Reverse Map_Dims field order while preserving semantic width/height use; test VC5 register-color basin.
+probe 6 liveness; result=MISMATCH; diff=223; shape=86.77685950413223: Restore four local bounding outputs but retain Map_Dims and test declaration order; seek target second-home coalescing without casts. [same emitted code as probe 3]
+probe 7 liveness; result=MISMATCH; diff=283; shape=77.58620689655173: Separate scalar dimensions in height-then-width declaration and assignment order; test whether first-use allocation swaps map width/height registers.
+probe 8 liveness; result=MISMATCH; diff=189; shape=88.98305084745763: Best prior Map_Dims scratch-reuse shape plus a register-qualified local view-top; test one supported register-color axis. [same emitted code as probe 4]
+probe 9 layout; result=MISMATCH; diff=188; shape=88.98305084745763: Use a natural two-element int array for map dimensions and reuse its second element as the dead bounding output.
+probe 10 liveness; result=MISMATCH; diff=188; shape=88.98305084745763: Split dimension-array initialization into two statements; test target store scheduling without changing semantics. [same emitted code as probe 9]
+probe 11 abi; result=MISMATCH; diff=188; shape=88.98305084745763: Use the canonical RGE_Map long map_width/map_height types seen in exact view.cpp donors; test ABI type impact. [same emitted code as probe 10]
+probe 12 context; result=MISMATCH; diff=188; shape=88.98305084745763: Introduce a local map pointer before dimension loads; test period-plausible ownership alias scheduling. [same emitted code as probe 11]
+probe 13 liveness; result=MISMATCH; diff=211; shape=81.35593220338983: Delay the dimension-array declaration until after coordinate computation; test source lifetime and scheduling order.
+probe 15 liveness; result=MISMATCH; diff=188; shape=88.98305084745763: Reuse dead scalar map_w as the first bounding output; test natural address-taking and dimension-home coalescing.
+probe 16 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: Swap scalar map dimension declaration and assignment order while reusing map_w as the first bound output.
+probe 17 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: Bind view_top through a natural local reference; test whether reference liveness selects ECX without manual steering. [same emitted code as probe 16]
+probe 18 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: Decouple declaration order from assignment order: declare map_w first but load map_h first, with map_w as bounding scratch. [same emitted code as probe 17]
+probe 19 liveness; result=MISMATCH; diff=282; shape=76.72413793103448: Swap the dead scalar scratch from map_w to map_h; test whether output-home choice changes register colors.
+probe 22 liveness; result=MISMATCH; diff=283; shape=78.44827586206897: Reuse the dead map-height local as the helper's first bounding output, while keeping typed map/view ownership and named outputs. [same emitted code as probe 21]
+probe 23 layout; result=MISMATCH; diff=189; shape=88.98305084745763: Use a typed two-int Map_Dims aggregate for map dimensions, with its height member as the dead helper output; test natural frame ownership. [same emitted code as probe 8]
+probe 24 liveness; result=MISMATCH; diff=211; shape=81.35593220338983: With typed Map_Dims retained, delay dimension assignments until after natural screen-coordinate calculations to test declaration evaluation order. [same emitted code as probe 13]
+probe 25 liveness; result=MISMATCH; diff=283; shape=78.44827586206897: Add natural named width/height aliases to the typed dimensions, testing whether explicit dimension ownership recovers target divisor and map-register colors.
+probe 26 liveness; result=MISMATCH; diff=189; shape=88.98305084745763: Declare coordinate scalars before the typed Map_Dims aggregate, testing declaration scope and register liveness without changing logic. [same emitted code as probe 23]
+probe 27 liveness; result=MISMATCH; diff=267; shape=83.47826086956522: Cache tile width and height in typed narrow locals before bounds and division, testing natural field-load liveness.
+probe 28 layout; result=MISMATCH; diff=283; shape=78.44827586206897: Split map width into a typed one-field aggregate and keep map height scalar, testing a smaller natural stack owner for the width reload. [same emitted code as probe 25]
+probe 29 liveness; result=MISMATCH; diff=189; shape=88.98305084745763: Hoist the found flag declaration to function scope while keeping its assignment at loop entry, testing source lifetime without aliases. [same emitted code as probe 26]
+probe 30 behavior; result=MISMATCH; diff=285; shape=89.47368421052632: Use natural int screen-coordinate locals as helper output owners, avoiding casts while preserving coordinate bounds and typed map/view ownership.
+probe 31 liveness; result=MISMATCH; diff=188; shape=84.48275862068965: Delay initialization of natural screen-coordinate helper locals until the helper loop, avoiding early parameter loads.
+probe 32 liveness; result=MISMATCH; diff=189; shape=88.98305084745763: Move the typed dimension aggregate before coordinate locals, testing stack-field declaration order while preserving natural logic. [same emitted code as probe 29]
+probe 33 liveness; result=MISMATCH; diff=261; shape=83.76068376068376: Swap natural x/y screen-coordinate assignment order after typed dimension loads, testing source evaluation sequencing.
+probe 34 layout; result=MISMATCH; diff=189; shape=88.98305084745763: Use a natural aggregate initializer for the typed map dimensions, testing initializer lowering against separate member assignments. [same emitted code as probe 32]
+probe 35 layout; result=MISMATCH; diff=189; shape=87.28813559322033: Reverse the typed Map_Dims field order with matching initializer values, testing dimension field offset and register allocation. [same emitted code as probe 5]
+probe 36 layout; result=MISMATCH; diff=283; shape=78.44827586206897: Model the two moving tile coordinates as a typed local aggregate, testing a natural coordinate owner instead of a dimension aggregate. [same emitted code as probe 28]
+probe 37 control-flow; result=MISMATCH; diff=214; shape=79.82456140350877: Express the second bound as a positive in-range arm with an explicit fallback return, matching the decompiler's source-level nesting.
+probe 40 liveness; result=MISMATCH; diff=283; shape=78.44827586206897: Use the dead map-height local as the helper's first natural output owner, removing the unused bound-first local; test whether this period-plausible alias recovers the original two-slot local frame without parameter-home reuse. [same emitted code as probe 39]
+probe 42 layout; result=MISMATCH; diff=226; shape=75.20661157024793: Use one natural four-int Tile_Bounds aggregate for all helper outputs, testing whether contiguous local ownership explains the observed frame and call LEAs without parameter-home aliases.
+probe 44 layout; result=MISMATCH; diff=223; shape=86.77685950413223: Use a natural contiguous Map_Dims initializer for map width and height while keeping ordinary helper output locals; compare its frame and dimension load topology against the scalar source. [same emitted code as probe 6]
+probe 47 layout; result=MISMATCH; diff=283; shape=78.44827586206897: Hypothesis 1: model the inherited +0x8c screen origin as canonical tagRECT render_rect.left/top, with a real TPanel base footprint. This tests geometry type context without changing offsets or branch semantics. [same emitted code as probe 36]
+probe 49 layout; result=MISMATCH; diff=283; shape=78.44827586206897: Hypothesis 2: replace the flat map stub with the canonical RGE_Map geometry surface: long dimensions, map/world fields, and map_row_offset at +0x8D8C. This tests whether the real aggregate layout changes VC5 member lowering. [same emitted code as probe 46]
+probe 51 control-flow; result=MISMATCH; diff=296; shape=57.02479338842975: Hypothesis 3: express the geometry gate as positive nested in-range control, with the upper-bound return inside the nonnegative arm and the negative return last. This directly tests branch layout and cold-tail placement against the positive nested PDB model.
+probe 53 control-flow; result=MISMATCH; diff=283; shape=78.44827586206897: Hypothesis 4: use empty for loops with comma updates for both tile-bound corrections, matching the decompiler's explicit initializer/test/update topology rather than while-body updates. [same emitted code as probe 49]
+probe 55 liveness; result=MISMATCH; diff=283; shape=78.44827586206897: Hypothesis 5: use the dead map-height local as the helper's first geometry output owner. The original helper writes its first output into the former local_4 home, so this tests a natural dead-local reuse without parameter casts. [same emitted code as probe 53]
+probe 57 liveness; result=MISMATCH; diff=284; shape=78.44827586206897: Hypothesis 6: map all four helper outputs onto binary-proven dead homes (map_h, px, py, and row_out pointer object) through explicit int-reference casts, then compare the overwritten px/row_out values. This tests the original parameter-home alias topology directly.
+probe 59 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: Hypothesis 7: reuse map_w as the helper's dead first output owner while declaring/loading map_h first, as the original's late first-output address and dead dimension lifetime suggest. This is a natural scalar-lifetime test distinct from parameter aliases. [same emitted code as probe 18]
+probe 60 liveness; result=MISMATCH; diff=188; shape=88.98305084745763: Hypothesis 8: retain the best dead map_w helper-output reuse but restore map_w declaration/load before map_h, testing whether canonical geometry declaration order fixes the original EDX/ESI dimension colors. [same emitted code as probe 15]
+probe 61 layout; result=MISMATCH; diff=189; shape=88.98305084745763: Hypothesis 9: apply canonical inherited tagRECT render_rect.left/top geometry to the frame-parity map_w-output source, testing whether real rectangle ownership changes the early register basin.
+probe 62 layout; result=MISMATCH; diff=195; shape=76.27118644067797: Hypothesis 10: represent the helper geometry outputs as a typed Tile_Bounds aggregate while retaining dead map_w as the first output. This tests canonical contiguous geometry storage and member addressing against separate scalar outputs.
+probe 64 control-flow; result=MISMATCH; diff=153; shape=88.13559322033899: Hypothesis 11: rewrite the helper decision as an explicit non-strict in-range arm (by1 <= bound_left) with the decrement arm last, testing whether branch polarity and source arm order recover the original late loop tails.
+probe 65 control-flow; result=MISMATCH; diff=155; shape=90.67796610169492: Hypothesis 12: use a top-tested while(found) helper scan instead of the observed do/while. This negative control tests whether the original call block's unconditional first iteration is required for branch layout. [same emitted code as probe 59]
+probe 66 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: Hypothesis 13: keep map_w declared first and reused as the dead first helper output, but initialize map_h before map_w. This isolates declaration order from initializer order as a register-coloring axis. [same emitted code as probe 65]
+probe 67 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: Hypothesis 14: cache the canonical RGE_Map pointer in a local before reading map dimensions, testing whether an explicit owner lifetime changes the early register graph while preserving the map layout. [same emitted code as probe 66]
+probe 68 abi; result=MISMATCH; diff=155; shape=90.67796610169492: Hypothesis 15b: retain canonical long dimension locals and explicitly bind the dead first helper output through an int reference. This tests width-driven register/lifetime effects after correcting the ABI type mismatch. [same emitted code as probe 67]
+probe 69 abi; result=MISMATCH; diff=155; shape=90.67796610169492: Hypothesis 16: widen adjusted screen coordinates bx1/by1 to canonical long geometry values, while retaining the map_w dead-output layout. This tests whether coordinate width changes divisor and branch register allocation. [same emitted code as probe 68]
+probe 71 liveness; result=MISMATCH; diff=283; shape=77.58620689655173: Hypothesis 17: initialize map dimensions and adjusted coordinates at declaration while retaining the frame-parity dead map_w output. This tests whether VC5 materializes geometry values early enough to select original register colors. [same emitted code as probe 7]
+probe 72 variant; result=MISMATCH; diff=283; shape=77.58620689655173: variant lab build\variant_lab\00538F00_Pick_Tile\20260822_124914: 4 variants, 2 invariant-eligible, 0 exact
+probe 73 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: Hypothesis 18: reproduce the lab's best natural scalar topology: inline map_h/map_w and reuse dead map_w for the helper's first output. This isolates the lab lead from the living source and measures it authoritatively. [same emitted code as probe 69]
+probe 74 variant; result=MISMATCH; diff=155; shape=90.67796610169492: variant lab build\variant_lab\00538F00_Pick_Tile\20260822_125035: 64 variants, 32 invariant-eligible, 0 exact
+probe 75 variant; result=MISMATCH; diff=155; shape=90.67796610169492: variant lab build\variant_lab\00538F00_Pick_Tile\20260822_125051: 512 variants, 256 invariant-eligible, 0 exact
+probe 76 liveness; result=MISMATCH; diff=155; shape=87.28813559322033: Hypothesis 19: combine dead map_w first-output reuse with the remaining original parameter-home output aliases (px, py, row_out pointer object). This tests whether the full decompiler-observed alias topology plus the frame-producing map_w owner recovers the late call loop.
+probe 79 liveness; result=MISMATCH; diff=188; shape=88.98305084745763: Shape-priority baseline: restore the strongest natural scalar topology from the prior lab by reusing dead map_w as the helper's first output. This preserves source semantics after the last map_w use and restores the original 8B frame and 301B size. [same emitted code as probe 60]
+probe 80 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: Shape baseline refinement: reorder dimensions to map_h then map_w while retaining dead map_w helper output. This is the prior 301B/frame-parity basin and tests the first-divergence register topology. [same emitted code as probe 75]
+probe 81 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: First-divergence probe: name the inherited top coordinate as a local value before map loads, testing whether its lifetime recovers original ECX top, EDX map-width, and ESI map-height colors. [same emitted code as probe 80]
+probe 82 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: Register-color probe: qualify only the non-address-taken map-height local as register, testing whether VC5 assigns the original ESI map-height color without disturbing the map_w output home. [same emitted code as probe 81]
+probe 83 abi; result=MISMATCH; diff=155; shape=90.67796610169492: Type topology probe: remove redundant int casts from long screen parameters, using their native 32-bit long geometry values. This tests whether cast syntax affects early parameter loads or arithmetic lowering. [same emitted code as probe 82]
+probe 84 liveness; result=MISMATCH; diff=188; shape=88.98305084745763: Stack-home probe: declare and initialize map_w before map_h while reusing map_w for the first helper output. This tests whether the original width/height stack home order is recoverable without losing a real frame. [same emitted code as probe 79]
+probe 85 liveness; result=MISMATCH; diff=282; shape=76.72413793103448: Stack-home probe: use dead map_h, the source local suggested by the decompiler's local_4, as the helper's first output while retaining map_h-first declarations. This tests the alternate natural dead dimension owner for original lower-loop homes. [same emitted code as probe 19]
+probe 86 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: Register-topology probe: reverse adjusted-coordinate declarations to by1 then bx1 while retaining map_h-first and dead map_w output. This tests whether coordinate lifetime order recovers original ECX top and EBP/EAX scheduling. [same emitted code as probe 83]
+probe 87 liveness; result=MISMATCH; diff=254; shape=82.05128205128206: Coordinate-order probe: assign by1 before bx1 with reversed coordinate declarations. This tests whether source evaluation order can retain original x-first arithmetic while changing the early register colors.
+probe 88 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: Loop-topology probe: cache map_h into a named limit immediately before the second correction loop. This tests whether a natural short-lived bound local recovers the original register load before cmp without changing CFG. [same emitted code as probe 86]
+probe 89 control-flow; result=MISMATCH; diff=151; shape=92.24137931034483: Second-loop CFG probe: split the OR guard into a natural infinite loop with two positive break guards. This tests whether explicit map-height loading and the original two-edge loop exit topology appear.
+probe 90 control-flow; result=MISMATCH; diff=155; shape=90.67796610169492: Second-loop polarity probe: express the same bound correction as a positive break on (diff < map_h && tcol >= 0). This tests source condition polarity against the original jge exits while keeping the natural infinite loop. [same emitted code as probe 88]
+probe 91 control-flow; result=MISMATCH; diff=151; shape=92.24137931034483: Retain explicit two-break second-loop form as the shape frontier candidate; inspect its emitted loop topology before testing a guarded back-edge that may restore the original jump count. [same emitted code as probe 89]
+probe 92 control-flow; result=MISMATCH; diff=151; shape=92.24137931034483: Back-edge topology probe: encode the second correction as a labeled loop with explicit back-goto and shared exit. The original has a proven shared back-edge; this tests whether natural labels restore its unconditional jump and block map. [same emitted code as probe 91]
+probe 93 control-flow; result=MISMATCH; diff=153; shape=89.65517241379311: Combined shape probe: retain the explicit two-break correction loop and reverse the helper arm order to an explicit <= in-range branch. This tests whether both natural positive forms reduce total instruction drift.
+probe 94 variant; result=MISMATCH; diff=153; shape=89.65517241379311: variant lab build\variant_lab\00538F00_Pick_Tile\20260822_125842: 4 variants, 4 invariant-eligible, 0 exact
+probe 95 layout; result=MISMATCH; diff=155; shape=90.67796610169492: Canonical-type probe on the shape frontier: use long map_width/map_height fields, as the reviewed RGE_Map surface does, while retaining the natural map_w dead-output and original while CFG. [same emitted code as probe 90]
+probe 96 layout; result=MISMATCH; diff=156; shape=90.67796610169492: Canonical geometry probe on the frame-and-size frontier: replace flat view_left/view_top fields with inherited tagRECT render_rect members, while keeping long map dimensions and map_w output reuse.
+probe 97 variant; result=MISMATCH; diff=156; shape=90.67796610169492: variant lab build\variant_lab\00538F00_Pick_Tile\20260822_130047: 4 variants, 4 invariant-eligible, 0 exact
+probe 98 control-flow; result=MISMATCH; diff=151; shape=92.24137931034483: Loop-form probe: use a do-loop with a positive break guard before the second correction update. This tests whether first-iteration placement can retain the original back-edge and improve CFG while preserving the 301B frame. [same emitted code as probe 92]
+probe 101 liveness; result=MISMATCH; diff=188; shape=88.98305084745763: Reorder map width before map height declarations and assignments. This tests the first paired mismatch: original loads map_width into EDX and map_height into ESI, while the clean source loads height into EDX and width into ECX. [same emitted code as probe 84]
+probe 103 liveness; result=MISMATCH; diff=155; shape=90.67796610169492: Reorder only local declarations to map_w, bx1, map_h, by1 while retaining the clean assignment order. This tests the Ghidra-supported map-width/bx1/map-height lifetime order without changing the behavior model. [same emitted code as probe 100]
+probe 104 context; result=MISMATCH; diff=156; shape=90.67796610169492: Use authentic inherited TPanel render_rect ownership at +0x8C/+0x90 instead of a flat RGE_View view_left/view_top overlay. The exact view.cpp donor 00535480 uses tagRECT render_rect, and PDB line bands identify the two rectangle fields. [same emitted code as probe 96]
+probe 106 context; result=MISMATCH; diff=156; shape=90.67796610169492: Use the complete reviewed TPanel field and virtual surface from exact view.cpp donors, with inherited render_rect ownership. This tests authentic TU class context rather than a synthetic padded base. [same emitted code as probe 104]
+probe 108 abi; result=MISMATCH; diff=283; shape=78.0701754385965: Use the binary-supported helper output ownership: map_h, row_out, py, and px are the four int-reference outputs, with long input homes narrowed only at the helper boundary. This tests the original output publication and fault order rather than named bound aliases.
+probe 110 control-flow; result=MISMATCH; diff=283; shape=78.94736842105263: Reconstruct the decompiler-proven source shape: MapW then local_4, col_out as the loop sentinel, and helper outputs to local_4, row_out, py, px in the ABI order. The compare directions follow the helper's x-left/y-top/x-right/y-bottom publication.
+probe 111 abi; result=MISMATCH; diff=283; shape=78.94736842105263: Retain one natural found local while preserving the helper's binary-proven output aliases. This isolates whether the required 8-byte frame comes from loop-state lifetime rather than a pointer-sentinel source form. [same emitted code as probe 110]
+probe 113 liveness; result=MISMATCH; diff=188; shape=92.10526315789474: Use the decompiler-supported declaration and assignment order MapW, bx1, local_4, by1 with map_width loaded before map_height. This distinct source lifetime model tests the target's EDX=width and ESI=height entry colors.
+probe 115 liveness; result=MISMATCH; diff=155; shape=93.85964912280701: Name the inherited top coordinate before map loads and use that local in the y transform. This tests whether authentic top-value lifetime colors ECX while preserving all observed fault and transform order.
+probe 116 liveness; result=MISMATCH; diff=155; shape=93.85964912280701: Separate top declaration from assignment after the dimension reads. This tests declaration scope and source-order scheduling independently from the prior initialized-top probe. [same emitted code as probe 115]
+probe 118 liveness; result=MISMATCH; diff=286; shape=70.17543859649123: Compute the two screen transforms before reading map dimensions. The emitted target schedules view offsets before dimension loads, so this tests a natural source-order explanation for the EDX/ESI color basin.
+probe 120 context; result=MISMATCH; diff=156; shape=93.85964912280701: Restore period SDK header context with windows.h before the reviewed view declarations. This tests a supported VC5 translation-unit context axis after source and ABI topology are stable.
+probe 121 variant; result=MISMATCH; diff=156; shape=93.85964912280701: variant lab build\variant_lab\00538F00_Pick_Tile\20260823_190744: 4 variants, 0 invariant-eligible, 0 exact
+probe 122 liveness; result=MISMATCH; diff=156; shape=93.85964912280701: Test the remaining natural four-local declaration permutation map_h, bx1, map_w, by1. This isolates local lifetime coloring without changing source evaluation or helper ownership. [same emitted code as probe 120]
+probe 124 liveness; result=MISMATCH; diff=283; shape=78.94736842105263: Give the helper's unused x-left output a real block-local bound_first owner instead of reusing map_w. This tests natural output ownership against the helper's proven four-reference ABI and may explain the target's extra frame bytes.
+probe 128 behavior; result=MISMATCH; diff=293; shape=66.66666666666667: Use the Ghidra-supported original alias topology: map width first, positive screen bound, mutate output pointer and long parameter homes as four helper outputs. This tests direct parameter-home ownership, malformed-coordinate behavior, and target call setup without overlays or assembly.
+probe 130 liveness; result=MISMATCH; diff=293; shape=66.66666666666667: Test the Ghidra-shaped natural local set and direct parameter-home output aliases with explicit int lvalues. The binary proves the helper overwrites the map-height local and the long input homes; this checks whether that source topology restores the target frame and loop layout. [same emitted code as probe 128]
+probe 132 abi; result=MISMATCH; diff=293; shape=66.66666666666667: Use separate screen-coordinate locals with map width first, then the binary-proven four output aliases. This tests whether the authentic decompiler lifetime split restores the two-word frame while preserving direct helper and malformed-coordinate behavior. [same emitted code as probe 130]
+probe 134 behavior; result=MISMATCH; diff=282; shape=77.19298245614036: Keep the natural found-loop topology and replace only the helper output owners with the binary-proven map-height and incoming parameter homes. This tests alias behavior without changing bounds, store order, or loop control flow.
+```
+<!-- end-recovered:757b38d3304dc3dec4c8 -->
+
+<!-- recovered:530ede5a92a8a819e4b4 -->
+### `912332e8f578` `src/scratch/00538F00_Pick_Tile.cpp:1-83`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00538F00 RGE_View::Pick_Tile (view.cpp:4748-4855, 301B)
+// Converts screen-space coordinates to tile coordinates with isometric correction.
+//
+// Attempt log:
+// - baseline: natural typed map/dimension ownership; 301B but VC5 used a 4B
+//   push-local frame and a different early register coloring.
+// - context/ABI/layout/declaration probes (canonical RGE_View/RGE_Map surface,
+//   split declarations, and local ordering) were codegen duplicates.
+// - binary stack evidence showed that VC5 homes bounding-coordinate outputs in
+//   dead incoming-parameter slots. This is compiler allocation evidence, not a
+//   reason to express source-level casts that overwrite parameter objects.
+// - a focused 32-case natural-shape lab found only a diagnostic local-struct
+//   variant with 301B/frame parity; it still diverged at the early view-top
+//   register load and is not retained as source scaffolding.
+// - this pass rechecked sum/order, map-pointer, declaration-scope, and six-way
+//   local-order variants; they were duplicates or neutral.
+// - a direct contiguous Map_Dims aggregate plus binary-observed output aliases
+//   reached 301B/frame parity and 189B strict drift (88.98% shape), but the
+//   parameter casts were compiler-steering rather than plausible living source;
+//   aggregate initializer/order variants did not improve it and were rolled back.
+// Main-agent audit restored four ordinary named bounding outputs and removed
+// explicit parameter-home alias casts. Remaining gap is broad VC5 register/frame
+// coloring, not an unresolved call set or bounding-box behavior.
+// - continuation baseline revalidated the ordinary source at 283B (18B short).
+// - staged dimension declaration/initializer and long-width probes were duplicate
+//   or neutral; a separate named map-width/bx1/map-height order only moved one
+//   diagnostic byte and worsened block shape.
+// - a binary-backed two-int Map_Dims local restored the proven 8B frame and 301B
+//   size; combining it with the observed parameter-home output aliases reached
+//   189B strict drift / 88.98% shape. The alias/aggregate form remains diagnostic
+//   only because it is compiler-steering rather than canonical source.
+// - register-qualified view-top, a local map pointer, and aggregate declaration
+//   reordering were codegen duplicates. Restored the natural named-dimension and
+//   four bounding-output reconstruction; final validated lead is the same-TU
+//   register/frame allocation around the early dimension loads.
+// - ABI audit: declared the protected bounding helper with four int& outputs
+//   and passed named locals by reference. The call now uses the original
+//   ?get_tile_bounding_coords@RGE_View@@IAEXHHAAH000@Z relocation; frame and
+//   emitted bytes stayed unchanged at 283B, so no lifetime variant was kept.
+// - this pass tested natural two-slot dimension aggregates, scalar dimension
+//   scratch reuse, declaration/assignment order, array storage, canonical
+//   long map fields, and local map/reference aliases. The best diagnostic
+//   shape was 301B/frame 8B/155 strict-drift bytes; its early dimension-load
+//   register colors and later loop homes still differ. All probes were
+//   restored to this ordinary named-dimension source.
+// - continuation probes revisited a typed Map_Dims aggregate, natural helper
+//   output owners, coordinate-local storage, and positive bound nesting. The
+//   aggregate reached 301B/frame 8B/189 strict-drift bytes, but its early
+//   divisor and register topology still differed. Policy-compliant exactness
+//   was not found; the pinned named-dimension source is restored below.
+// - worker pass: canonical tagRECT ownership for the +0x8C/+0x90 geometry,
+//   full RGE_Map layout, nested positive bounds, explicit for-loop updates,
+//   map-height/map-width output reuse, parameter-home aliases, canonical long
+//   widths, and a map pointer local were tested. Geometry and map surfaces
+//   were neutral; nested bounds reached size parity but lost block shape.
+// - a dead map-width first helper output with split dimension declarations
+//   reached 301B/frame 8B/155 strict drift and 56.14% exact blocks. Inline
+//   dimension initialization gave the same result. An explicit <= branch
+//   reached 153 drift bytes but reversed the observed branch shape, so it is
+//   diagnostic only. Full parameter aliases were not better.
+// - structured labs tested declaration order, helper output owner, and 512
+//   ambient TU contexts. Eight codegen groups resulted; no exact result or
+//   early view-top register recovery occurred. Ambient declarations changed
+//   only later bytes and are not source evidence. Natural source is restored.
+// - shape-priority continuation retained the binary-supported dead map_w first
+//   output and the canonical long map dimensions. The natural while CFG is
+//   301B with the original 8B frame, 90.68% shape, 56.14% exact blocks, and
+//   155 strict drift bytes. The first mismatch is now the early view-top
+//   register color at +0015, not the frame or function boundary.
+// - explicit second-loop break and do-loop forms reached 151 strict drift and
+//   92.24% shape with 116 instructions, but changed CFG from 9/4 to 10/3 and
+//   reduced exact blocks to 53.51%. They are rejected as shape-only forms.
+// - coordinate declaration/order, register qualification, long parameter
+//   casts, canonical geometry ownership, and four local-order lab variants
+//   did not recover the early colors. The natural while form remains current.
+// - fresh exact-finish probes tested the decompiler-proven helper aliases:
+//   map_height and the incoming long parameter homes receive the four bounding
+//   outputs, while the found flag reuses col_out. Direct natural C++ casts
+//   preserved the call target but emitted 283-287 bytes without the target's
+//   8-byte frame. They were restored. The current source keeps the simpler
+//   equivalent output locals until authentic source context supplies a better
+//   allocation model.
+// FLAGS: /nologo /c /O2 /Oy
+```
+<!-- end-recovered:530ede5a92a8a819e4b4 -->
+
+<!-- recovered:c31b4b3f7acec3928bbc -->
+### `912332e8f578` `src/scratch/00538F00_Pick_Tile.cpp:184-193`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// Worker pass sa-36bdddaa (2026-08-23):
+// - The pinned natural source was restored after each probe.
+// - Full TPanel/render_rect context, decompiler output aliases, map-local
+//   declaration permutations, transform order, and period header context did
+//   not recover the first ESI/ECX color mismatch.
+// - Fresh validation remains a mismatch: 155 positional bytes, one direct
+//   helper call, matching frame, and preserved loop and output behavior.
+// - Anchor rechecks were blocked after another worker moved Add_GDI_Clip_Mask
+//   from accepted_drift to matching while the TU resolver still names the old
+//   path. No anchor source was changed here.
+```
+<!-- end-recovered:c31b4b3f7acec3928bbc -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

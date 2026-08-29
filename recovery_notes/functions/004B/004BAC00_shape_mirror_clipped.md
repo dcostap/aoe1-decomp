@@ -1,0 +1,166 @@
+# Recovery journal: 004BAC00 `shape_mirror_clipped`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/Shape.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\Shape.cpp`.
+- Earlier recovery note: `recovery_notes/Shape_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:42243d1da7700abc6c13 -->
+### `target-session` `build/target_sessions/004BAC00_shape_mirror_clipped.json:1-39`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 2 control-flow; result=MISMATCH; diff=783; shape=67.19745222929936: Hypothesis 1: copied exact same-TU clipped-draw loop topology with explicit shared count and do/while row/skip guards. Candidate 731B, no frame, 783 strict; worsened from 764B/690. This source shape over-coalesced state and removed the original late paths; restored.
+probe 4 control-flow; result=MISMATCH; diff=701; shape=72.13622291021672: Hypothesis 2: use explicit (code & 1) == 1 parity tests in all four RLE phases to recover original masked-compare topology. Candidate reached exact 799B and 72.14% shape, but 701 strict versus 690 and 0xC frame; better block/shape diagnostics did not justify retention.
+probe 6 control-flow; result=MISMATCH; diff=691; shape=66.66666666666667: Hypothesis 3: replace nested state!=0 / if(state==0) transitions with unconditional state decrement and two while(state==0) loops, matching sibling clipped-draw source. Candidate 754B/691 versus baseline 764B/690; shape fell and CFG worsened. Restored.
+probe 8 liveness; result=MISMATCH; diff=694; shape=67.0886075949367: Hypothesis 4: reuse clip_top directly as the advanced current row instead of a separate row local, to reduce frame/home pressure. Candidate 761B/694 with same 0xC frame and worse CFG; explicit row local retained.
+probe 10 liveness; result=MISMATCH; diff=739; shape=66.35514018691589: Hypothesis 5: carry the row destination through incoming x as an integer home, then reload it after pitch advance, following exact unclipped mirror donors. Diagnostic candidate 778B/739, 0xC frame, much worse despite reproducing a persistent cursor; rejected as both metric and policy-invalid parameter-home steering.
+probe 11 control-flow; result=MISMATCH; diff=686; shape=68.47133757961784: Hypothesis 6: invert the initial horizontal guard to source form , matching original jge jump over decode. Candidate 763B/686 strict, 68.47% shape; improved strict by 4 and setup/body alignment, retained as new best natural source.
+probe 13 control-flow; result=MISMATCH; diff=704; shape=68.47133757961784: Hypothesis 7: use do/while for the guarded visible-row loop, matching the original lack of an initial rows test. Candidate 750B/704 and 13 edit spans; this removed the useful exact-size direction and worsened strict bytes. Restored inverted-guard baseline.
+probe 15 liveness; result=MISMATCH; diff=686; shape=68.47133757961784: Hypothesis 8: hoist row and rows declarations to function scope to seek the original [esp+24] row counter home. Emitted code was byte-identical to the inverted-guard source (763B/686); declaration scope alone is a dead axis and was restored.
+probe 17 control-flow; result=MISMATCH; diff=704; shape=67.82334384858044: Hypothesis 9: spell top-row skip as a post-body while loop with decrement after decode, matching original update placement. Candidate 757B/704, worse than 763B/686; restored.
+probe 19 control-flow; result=MISMATCH; diff=695; shape=68.0379746835443: Hypothesis 10: use a for-loop with post-body --skip for the top-row decoder. Candidate 759B/695, worse than the retained while form; restored.
+probe 20 control-flow; result=MISMATCH; diff=685; shape=69.10828025477707: Hypothesis 11: translate Ghidra-supported partial literal loops to explicit nonzero guard, byte mask, and do/while decrement. Candidate 765B/685 strict, 69.11% shape, longest run 11; improved strict and block coverage, retained.
+probe 22 control-flow; result=MISMATCH; diff=688; shape=69.4267515923567: Hypothesis 12: apply the Ghidra explicit nonzero/do-loop form to middle visible literal runs. Candidate 758B/688 and 69.43% shape; it worsened strict bytes after the good initial-loop improvement, so restored.
+probe 23 control-flow; result=MISMATCH; diff=684; shape=69.4267515923567: Hypothesis 14: express the two partial-copy entry guards as unsigned-byte `> 0`, matching original TEST AL/JBE. Candidate 763B/684 strict, 69.43% shape, longest run 15; improved by one strict byte and retained.
+probe 25 control-flow; result=MISMATCH; diff=692; shape=68.9873417721519: Hypothesis 15: use Ghidra-style unconditional state decrements before the middle and drain loops. Candidate 753B/692; it lost one conditional and worsened strict bytes. Restored byte-guard source.
+probe 27 liveness; result=MISMATCH; diff=730; shape=68.78980891719745: Hypothesis 16: share one function-scope command/count byte pair across all RLE phases to recover the original repeated byte home. Candidate 759B/730 and no frame; much worse due long-lived byte liveness. Restored.
+probe 28 control-flow; result=MISMATCH; diff=680; shape=69.4006309148265: Hypothesis 17: translate the full middle literal copy to an explicit unsigned byte-count guard and do/while loop, as Ghidra shows. Candidate 753B/680 strict, 69.40% shape, 31 spans; strong strict improvement, retained.
+probe 29 behavior; result=MISMATCH; diff=688; shape=70.06369426751593: Hypothesis 18: correct the middle literal branch for xpos >= clip_left using visible count x-xpos and source offset count-copy_count, per Ghidra and original +015B. Candidate 764B/688, raw similarity improved to 59.57%, shape 70.06%; strict worsened from 680 but fixes a real missing partial-copy behavior, retained for further codegen tuning.
+probe 30 liveness; result=MISMATCH; diff=688; shape=70.06369426751593: Hypothesis 19: split the corrected middle visible count into copy_count=x; copy_count-=xpos to force original mov/sub order. VC5 emitted byte-identical code (764B/688); staged arithmetic is a dead axis. [same emitted code as probe 29]
+probe 31 control-flow; result=MISMATCH; diff=688; shape=69.47040498442368: Hypothesis 20: translate the corrected middle crossing literal loop to a masked unsigned-byte do/while, matching Ghidra and TEST AL/JBE/AND. Candidate 772B/688, raw similarity 60.33%, strict tie; retained as behavior-led source form.
+probe 32 control-flow; result=MISMATCH; diff=669; shape=71.01910828025478: Hypothesis 21: use Ghidra-proven do/while top-row skip with post-decrement, while retaining typed local count and corrected middle literal behavior. Candidate 764B/669 strict, 71.02% shape, raw similarity 60.20%; strong improvement, retained and pinned.
+probe 34 control-flow; result=MISMATCH; diff=685; shape=71.01910828025478: Hypothesis 22: use do/while for the guarded visible-row count to remove the original missing initial rows test. Candidate 751B/685, raw similarity 60.45%, but strict and size worsened from 669; restored.
+probe 35 layout; result=MISMATCH; diff=669; shape=71.01910828025478: Hypothesis 23: restore donor-supported full typed TDrawArea/TShape/Shape_Header surfaces and derive payload as (Shape_Header+1). Emitted code stayed exactly 764B/669; this validates period-plausible ownership context without a codegen change. Retained full typed declarations. [same emitted code as probe 32]
+probe 37 baseline; result=MISMATCH; diff=669; shape=71.01910828025478: Claim baseline: pinned natural typed decoder before new structural probe. [same emitted code as probe 36]
+probe 38 control-flow; result=MISMATCH; diff=698; shape=70.38216560509554: Hypothesis 1: mutate the clipped top parameter directly after the top skip, removing the separate row local. This tests the Ghidra/PDB row-counter ownership basin.
+probe 40 control-flow; result=MISMATCH; diff=665; shape=70.56962025316456: Hypothesis 2: replace nested state dispatch with the binary-shaped sequential decrement and two while(state == 0) loops from the Ghidra CFG. This tests real control-flow topology rather than register steering.
+probe 41 control-flow; result=MISMATCH; diff=696; shape=71.42857142857143: Hypothesis 3: initialize the state only in the no-initial-clip arm, matching Ghidra's if/else and the original mov bl,1 block after the initial scan.
+probe 42 control-flow; result=MISMATCH; diff=699; shape=71.65605095541402: Hypothesis 4: use a guarded do/while for the visible-row loop, matching the original unconditional body entry after the positive row-count guard and the Ghidra CFG.
+probe 44 control-flow; result=MISMATCH; diff=693; shape=76.34069400630915: Hypothesis 5: spell every RLE parity test as ((code & 1) == 1), matching the original copied-byte mask and compare topology proved in Shape.cpp and exact sibling donors.
+probe 45 control-flow; result=MISMATCH; diff=683; shape=53.56037151702786: Hypothesis 6: remove the redundant post-scan state test and use decrement-guarded do/while middle and drain loops. The binary proves state is nonzero on entry and uses dec/jnz plus bottom tests.
+probe 46 liveness; result=MISMATCH; diff=709; shape=55.063291139240505: Hypothesis 7: model the Ghidra-proven row base and per-row working destination as two real pointers. The binary resets the working cursor from a row pointer and advances the row pointer after each row.
+probe 48 control-flow; result=MISMATCH; diff=696; shape=72.29299363057325: Hypothesis 8: apply the explicit parity compare only to the top-row skip decoder. This isolates the original mov bl/and/cmp basin from later row scans.
+probe 50 control-flow; result=MISMATCH; diff=679; shape=71.02803738317758: Hypothesis 9: apply explicit parity only to the first horizontal clip decoder. This isolates its target mov cl/and/cmp topology from the top skip and later drains.
+probe 51 control-flow; result=MISMATCH; diff=674; shape=73.81703470031546: Hypothesis 10: add explicit parity to the middle visible-row decoder while retaining the top direct test and first horizontal explicit test. This tests its distinct branch basin.
+probe 52 control-flow; result=MISMATCH; diff=674; shape=75.79617834394904: Hypothesis 11: add explicit parity to the final drain decoder. This completes the phase-by-phase test of the binary parity idiom.
+probe 53 control-flow; result=MISMATCH; diff=693; shape=76.34069400630915: Hypothesis 12: complete the explicit parity idiom in the top decoder as well, after phase tests showed the three horizontal paths benefit from explicit masking. [same emitted code as probe 44]
+probe 54 liveness; result=MISMATCH; diff=764; shape=75.70093457943925: Hypothesis 13: share one function-scope byte count across all RLE phases. The oracle reuses one command-byte home at the y parameter slot; this tests liveness and home reuse without aliases.
+probe 56 control-flow; result=MISMATCH; diff=669; shape=74.69135802469135: Hypothesis 14: combine the binary parity compares with a guarded do/while visible-row loop. This tests whether explicit parity reaches the original CFG when the extra pretest is removed.
+probe 57 control-flow; result=MISMATCH; diff=691; shape=75.54179566563468: Hypothesis 15: move state=1 into the no-initial-clip else arm. This matches the original branch-local mov bl,1 after the initial decoder and removes the pre-compare state store.
+probe 59 layout; result=MISMATCH; diff=669; shape=74.69135802469135: Hypothesis 16: use signed char for the state variable, matching Ghidra's char cVar11 and the original BL decrement control flow. [same emitted code as probe 56]
+```
+<!-- end-recovered:42243d1da7700abc6c13 -->
+
+<!-- recovered:95164bfca6561f0ecd1b -->
+### `0923cad7edb1` `src/scratch/004BAC00_shape_mirror_clipped.cpp:1-72`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 004BAC00 TShape::shape_mirror_clipped
+// Attempt log:
+// try 1: reconstructed mirrored clipped RLE draw from original asm: compute mirrored dest pointer, skip top rows, process left/right clipping bands and middle rows.
+// try 2: modeled TDrawArea fields Bits +8, Height +0x1c, Orien +0x24 and AlignedWidth call; prologue/call surface compile.
+// try 3: modeled source start as shape_header +0x18 from asm load of this+0xc then add 0x18.
+// try 4: modeled mirrored destination pointer for positive/negative orientation using x+1 and y/height adjustment.
+// try 5: implemented top-row RLE skip loop with odd literal runs, even fill/end packets, and zero-length extended literal.
+// try 6: implemented vertical clipping count max_y-row+1 and early max_y rejection.
+// try 7: implemented left/right horizontal clipping states 1/2/3 corresponding to original bl state transitions.
+// try 8: used memcpy-like byte loops for mirrored literal copies (*--save_buffer = *src++), matching behavioral direction.
+// try 9: used memset for fill packets to match original memset calls at 0x54DA60.
+// try 10: /GX probe had no effect; removed. Current reconstruction compiles 640B vs original 799B, meaning several source branches/loops are still over-factored or behavior missing.
+// try 11: corrected the member ABI to put TDrawArea* first, followed by the
+// six stack arguments proven by the callee's homes; retained the same decoder
+// body for an isolated ABI probe.
+// try 12: restored the full natural clipped mirror state machine: clip-right /
+// clip-top / clip-left / y / x / clip-bottom ownership, visible literal and
+// fill runs, and the post-visible end-of-line drain.
+// try 13: restored the binary-proven partial literal copies in the initial
+// horizontal clip band; runs crossing the visible window copy their in-range
+// bytes before entering the middle or end-of-line state.
+// try 14: a do/while top-row skip was structurally closer in isolation but
+// shifted the best positional basin from 690 to 696 strict bytes; restored.
+// try 15: mutating one command byte in the Shape.cpp sibling idiom reached the
+// original size and better edit islands, but removed the required frame and
+// worsened positional bytes to 770; restored the 690-byte best candidate.
+// try 16: tested a direct typed Shape_Header reconstruction with do/while top-
+// row and visible-row loops. It emitted 736B/766 strict bytes versus the
+// pinned 764B/690 candidate, so it was rolled back.
+// try 17: confirmed the pinned typed reconstruction as this claim's baseline;
+// it remains 764B/690 strict bytes with all three calls aligned.
+// try 18: reordered the setup locals; output worsened to 762B/763 and was
+// restored.
+// try 19: shared the command byte only across visible and drain states; this
+// removed the frame but worsened output to 760B/764 and was restored.
+// try 20: added a separate per-row destination cursor; size and edit islands
+// improved, but strict output worsened to 781B/712, so it was restored.
+// try 21: hoisted that cursor declaration; codegen was unchanged.
+// try 22: changed the visible-row loop to do/while from binary topology;
+// output worsened to 751B/696 and was restored.
+// try 23: inlined the proven clipped-literal source offset expression; VC5
+// emitted the same 764B/690 code. The simpler expression is retained.
+// try 24: inverted the initial horizontal guard to `xpos > x`, matching the
+// original jge skip over the pre-band decoder; this reached 763B/686.
+// try 25: translated the Ghidra-proven partial literal loops to explicit
+// unsigned-byte guards and do/while decrements; this reached 763B/684.
+// try 26: fixed the middle literal branch for xpos >= clip_left to copy only
+// x-xpos bytes from the count-copy_count source offset. This improved raw
+// resynchronization and restores the binary-proven clipped behavior.
+// try 27: changed the top-row skip to a do/while loop after the behavior fix;
+// this reached 764B/669 and 71.02% instruction shape.
+// try 28: restored full donor-supported TDrawArea/TShape/Shape_Header surfaces;
+// codegen stayed at 764B/669, so typed ownership is retained.
+// Final bounded pass: 764B rebuilt versus 799B original, 669 strict bytes,
+// 71.02% shape, three ordered calls aligned, and a 0xC versus 0x8 frame.
+// The remaining gap is the original local-home/parameter allocation basin and
+// related state layout; this source is not exact or accepted_drift-safe.
+//
+// sa-70d977cd-r1 claim probes (2026-08-22):
+// - Directly mutating the top-row parameter worsened the basin to 698 bytes.
+// - The Ghidra-shaped sequential state decrements improved strict bytes to
+//   665, but reduced shape and increased the size gap; it was not retained.
+// - Explicit `((code & 1) == 1)` parity tests in all four RLE phases reached
+//   the original 799-byte size and 76.34% shape, but 693 strict bytes.
+// - Combining those explicit tests with the guarded visible-row do/while
+//   reached 799 bytes, 74.69% shape, and 669 strict bytes. This is retained
+//   because it follows the original parity and loop topology.
+// - A separate row-start pointer, function-scope count, and state signedness
+//   probes did not improve strict output. The row pointer worsened frame and
+//   shape; the function-scope count removed the frame but reached 764 bytes.
+// - The retained source still has a 0xC versus 0x8 frame. All three calls are
+//   ordered and aligned. No accepted-drift claim is supported.
+```
+<!-- end-recovered:95164bfca6561f0ecd1b -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

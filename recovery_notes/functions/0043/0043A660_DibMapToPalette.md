@@ -1,0 +1,186 @@
+# Recovery journal: 0043A660 `DibMapToPalette`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/Dib.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\Dib.cpp`.
+- Earlier recovery note: `recovery_notes/Dib_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:86c28c8035ba95701523 -->
+### `target-session` `build/target_sessions/0043A660_DibMapToPalette.json:1-61`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=910; shape=56.97329376854599: Baseline current reconstruction before focused assembly and source-model probes.
+probe 2 control-flow; result=MISMATCH; diff=923; shape=52.81899109792285: Hypothesis 2: model transparent search as direct do/while on zeroIndex, matching original result test and removing artificial hitEnd.
+probe 4 layout; result=MISMATCH; diff=910; shape=56.97329376854599: Hypothesis 3: restore the binary-proven dword ZeroBlue local and use it for the blue-channel accumulator, matching the original +2C stack home. [same emitted code as probe 1]
+probe 6 liveness; result=MISMATCH; diff=927; shape=59.9406528189911: Hypothesis 4: model the original transparent search with dword HitEnd state and ZeroBlue accumulator, calling nearest-index after the boundary reset as shown by the CFG.
+probe 8 liveness; result=MISMATCH; diff=915; shape=56.676557863501486: Hypothesis 5: reorder locals to the binary stack-home sequence (bits, image size, counts, RGB pointer, palette entry, byte state, table) without changing behavior.
+probe 10 control-flow; result=MISMATCH; diff=945; shape=54.02298850574713: Hypothesis 6: reproduce the observed resize topology with separate growth/shrink tests and a compression-3 goto to the shared translation dispatch.
+probe 12 abi; result=MISMATCH; diff=910; shape=57.27002967359051: Hypothesis 7: cast width and bit count to DWORD in the row-byte formula, matching original zero-extension and logical SHR evidence.
+probe 13 layout; result=MISMATCH; diff=910; shape=57.27002967359051: Hypothesis 8: reverse pointer-sum operand order to mirror original address formation, with palette count before biSize. [same emitted code as probe 12]
+probe 14 abi; result=MISMATCH; diff=944; shape=58.160237388724035: Hypothesis 9: name the widened bit count before the image-size expression to recover original width-first load order.
+probe 16 liveness; result=MISMATCH; diff=927; shape=59.9406528189911: Hypothesis 10: combine the inferred original declaration order with a dword HitEnd boundary state and ZeroBlue channel local.
+probe 18 behavior; result=MISMATCH; diff=910; shape=56.97329376854599: Hypothesis 11: use COLORREF byte order Blue:Green:Red for palette-table lookups, as original byte moves prove; current Red:Green:Blue was behaviorally wrong.
+probe 19 behavior; result=MISMATCH; diff=910; shape=56.97329376854599: Hypothesis 12: preserve COLORREF semantics while writing red-low, green-middle, blue-high operands in original source order. [same emitted code as probe 18]
+probe 20 liveness; result=MISMATCH; diff=910; shape=56.97329376854599: Hypothesis 13: stage the COLORREF OR operations in low-to-high order to recover original AL, CL, AH load scheduling. [same emitted code as probe 19]
+probe 21 liveness; result=MISMATCH; diff=944; shape=56.97329376854599: Hypothesis 14: initialize nPalColors from biClrUsed before the zero/bit-depth guard, matching original retained member load and fallback assignment.
+probe 23 behavior; result=MISMATCH; diff=910; shape=56.97329376854599: Hypothesis 15: use a period-style RGB macro with byte casts for the proven COLORREF byte order and source expansion. [same emitted code as probe 20]
+probe 24 control-flow; result=MISMATCH; diff=910; shape=56.97329376854599: Hypothesis 16: inline the RGB macro directly in each nearest-index call, matching original call-site expression rather than a named color temporary. [same emitted code as probe 23]
+probe 25 layout; result=MISMATCH; diff=968; shape=58.160237388724035: Hypothesis 17: widen hitEnd to the binary-proven dword state while preserving the current search behavior.
+probe 26 liveness; result=MISMATCH; diff=942; shape=58.45697329376855: Hypothesis 18: retain the dword hitEnd slot but delay its zero store into the transparent block, matching original initialization line placement.
+probe 27 control-flow; result=MISMATCH; diff=942; shape=58.45697329376855: Hypothesis 19: split the combined null guard into sequential positive guards, preserving original test/load/test order under the widened dword state. [same emitted code as probe 26]
+probe 29 liveness; result=MISMATCH; diff=910; shape=57.27002967359051: Hypothesis 20: separate nDibColors initialization from the uninitialized nPalColors declaration, matching binary store timing. [same emitted code as probe 13]
+probe 30 control-flow; result=MISMATCH; diff=927; shape=60.23738872403561: Hypothesis 21: express transparent search as an infinite loop with explicit nearest-index break, matching original call-result branch and boundary retry CFG.
+probe 34 control-flow; result=MISMATCH; diff=967; shape=72.56637168141593: Hypothesis 1: restore the binary local surface (dword HitEnd, ZeroBlue, no separate transIndex) and source transparent search from the original loop; duplicate bit-base selection around resize calls.
+probe 35 liveness; result=MISMATCH; diff=965; shape=72.56637168141593: Hypothesis 2: place zeroIndex beside lpBits and separate HitEnd/ZeroBlue/PALETTEENTRY declarations; initialize locals only after the hbm guard to recover original entry stores and stack homes.
+probe 36 control-flow; result=MISMATCH; diff=963; shape=72.56637168141593: Hypothesis 3: retain the original single guarded body while keeping deferred dword/byte local initialization; avoid early-return control-flow that altered the entry CFG.
+probe 37 liveness; result=MISMATCH; diff=967; shape=72.56637168141593: Hypothesis 4: restore declaration-time zero initialization for nDibColors, ZeroIndex, and dword HitEnd; this tests whether the original prologue stores are declaration-driven rather than body assignments. [same emitted code as probe 34]
+probe 38 layout; result=MISMATCH; diff=967; shape=72.56637168141593: Hypothesis 5: restore the declaration order that gave a test-based entry guard; source declaration order controls the VC5 zero-register basin and local packing. [same emitted code as probe 37]
+probe 39 layout; result=MISMATCH; diff=967; shape=72.56637168141593: Hypothesis 6: restore the original pe-before-ZeroBlue declaration order; this was the prior natural basin with a test hbm guard and distinct byte/dword initialization topology. [same emitted code as probe 38]
+probe 40 layout; result=MISMATCH; diff=958; shape=71.21661721068249: Hypothesis 7: model the proven four-byte stack overlap as a union: ZeroBlue is the transparent blue accumulator and the GetPaletteEntries output storage. This should block invalid table/temporary coalescing.
+probe 41 abi; result=MISMATCH; diff=958; shape=71.21661721068249: Hypothesis 8: reuse the binary-proven ZeroBlue dword as the four-byte GetPaletteEntries output and read its three color bytes; this tests the observed output-home ownership. [same emitted code as probe 40]
+probe 42 layout; result=MISMATCH; diff=996; shape=71.30434782608695: Hypothesis 9: restore the binary four-byte xlat[0..3] zero/one initialization blocks before the transparent search; the executable proves dword stores at both sites.
+probe 43 layout; result=MISMATCH; diff=952; shape=82.00589970501476: Hypothesis 10: separate the dword transparent-search state from the byte palette table; original dword stores at the table prefix and palette calls at table+4 prove this state/table surface.
+probe 44 liveness; result=MISMATCH; diff=952; shape=82.00589970501476: Hypothesis 11: delay searchState initialization into the guarded body to preserve the original test-based entry prologue while retaining the proven dword table-prefix state. [same emitted code as probe 43]
+probe 45 control-flow; result=MISMATCH; diff=952; shape=82.00589970501476: Hypothesis 12: initialize only the transparent-search state at its proven loop line, not at guarded entry; this should stop VC5 from hoisting its zero into the hbm guard. [same emitted code as probe 44]
+probe 46 control-flow; result=MISMATCH; diff=952; shape=82.00589970501476: Hypothesis 13: use the equivalent early-failure guard to test whether VC5 emits the original test-based null checks when the extra dword state is present. [same emitted code as probe 45]
+probe 47 control-flow; result=MISMATCH; diff=977; shape=78.69822485207101: Hypothesis 14: mirror the original positive transparent branch and do-while table scan; PDB/CFG show the transparent branch falls through to its index test, while the nontransparent call sits in the later arm.
+probe 49 abi; result=MISMATCH; diff=960; shape=82.11143695014663: Hypothesis 15: cache the imported GlobalHandle pointer within each resize arm; original assembly loads the IAT address into ESI before the repeated handle calls.
+probe 50 control-flow; result=MISMATCH; diff=960; shape=82.11143695014663: Hypothesis 16: recover the final palette rewrite's proven byte-pointer ownership, p=rgb+1, assignment order, and post-increment do-while CFG. [same emitted code as probe 49]
+probe 51 abi; result=MISMATCH; diff=937; shape=84.91124260355029: Hypothesis 17: narrow the transparent palette index state to BYTE; original emits a byte entry store at +0x30 while widening the later comparison.
+probe 52 liveness; result=MISMATCH; diff=928; shape=85.20710059171597: Hypothesis 18: reverse the zeroIndex and nDibColors declarations to recover the original dword-then-byte prologue store order while retaining their proven homes.
+probe 53 layout; result=MISMATCH; diff=928; shape=85.20710059171597: Hypothesis 19: use the period byte-pointer DIB base spelling for lpRgb; this tests whether the source type controls the original EDI-first address formation. [same emitted code as probe 52]
+probe 54 control-flow; result=MISMATCH; diff=921; shape=85.45994065281899: Hypothesis 20: express nPalColors as the original explicit shift-or-header assignment, not a header assignment followed by a guard; the binary stores nPal only in the two branch arms.
+probe 55 layout; result=MISMATCH; diff=964; shape=83.67952522255193: Hypothesis 21: initialize the lpRgb pointer at declaration, matching the PDB line split between the header-size load and GetObject setup; test its register color and address topology.
+probe 58 context; result=MISMATCH; diff=926; shape=85.50295857988165: Use the authentic Dib.cpp owner sequence through DibMapToPalette with canonical Win32 BITMAPINFOHEADER, RGBQUAD, PALETTEENTRY, GDI, and Global* declarations; the grouped probe compiles and keeps the three current exact anchors, while the target remains structural.
+probe 60 layout; result=MISMATCH; diff=926; shape=85.50295857988165: Use the natural address of bih->biSize as the RGBQUAD base. The original prologue loads biSize into EDI, adds the header pointer, and stores the result as the PALETTEENTRY/GetObject anchor. [same emitted code as probe 59]
+probe 61 liveness; result=MISMATCH; diff=926; shape=85.50295857988165: Swap the proven palette-entry and RGBQUAD local declarations. Original stack evidence places pe at the GetObject output home before lpRgb; test whether that restores the shipped EDI address anchor. [same emitted code as probe 60]
+probe 62 liveness; result=MISMATCH; diff=926; shape=85.50295857988165: Name the header size before forming the RGBQUAD base. Test whether a real period local carries biSize in EDI and preserves the original add-to-bih address topology. [same emitted code as probe 61]
+probe 63 context; result=MISMATCH; diff=926; shape=85.50295857988165: Use the period DIBUTILS-style DIB_COLORS macro for the RGBQUAD base. This is a natural Win32 source-context test for the original header-size address formation. [same emitted code as probe 62]
+probe 64 control-flow; result=MISMATCH; diff=926; shape=85.50295857988165: Use the canonical DibNumColors-style conditional assignment. The original stores nPalColors separately in both branch arms and carries the result through the image-size and bits address path. [same emitted code as probe 63]
+probe 65 liveness; result=MISMATCH; diff=926; shape=85.50295857988165: Test a period-plausible register declaration for nPalColors. The original keeps the color count in ESI across the size-image and bits branches while still writing its stack home. [same emitted code as probe 64]
+probe 66 layout; result=MISMATCH; diff=926; shape=85.50295857988165: Build the RGBQUAD base through a natural header pointer update. This tests whether VC5 keeps biSize in EDI before adding bih, as in the original prologue. [same emitted code as probe 65]
+probe 67 liveness; result=MISMATCH; diff=926; shape=85.50295857988165: Test a local RGBQUAD alias only inside transparent search. The original reads red through the carried register pointer but green and blue through the saved stack pointer home; this tests that observed dual-address topology. [same emitted code as probe 66]
+probe 68 abi; result=MISMATCH; diff=926; shape=85.50295857988165: Use a byte-oriented color payload alias for the proven RGBQUAD byte order. Test whether separate semantic red and packed green/blue reads reproduce the original dual pointer-register schedule without changing pixel values. [same emitted code as probe 67]
+probe 69 context; result=MISMATCH; diff=926; shape=85.50295857988165: Use the exact DIBUTILS DibNumColors macro spelling, including signed casts. This tests authentic period header macro lowering for the nPalColors branch. [same emitted code as probe 68]
+probe 70 context; result=MISMATCH; diff=926; shape=85.50295857988165: Use the period FAR-qualified RGBQUAD pointer surface from the neighboring Dib.cpp utility routines. Test whether the authentic pointer type changes the initial address owner while preserving flat Win32 pixel semantics. [same emitted code as probe 69]
+probe 71 layout; result=MISMATCH; diff=926; shape=85.50295857988165: Reverse the commutative header-size pointer addition. The original loads biSize into EDI before adding bih; this period-plausible spelling tests operand scheduling without a raw cursor. [same emitted code as probe 70]
+probe 72 control-flow; result=MISMATCH; diff=910; shape=63.204747774480715: Model the original resize ownership with a newBits local: copy before or after reallocation as observed, preserve bits until the copy, and recompute the common post-resize bits pointer once before dispatch.
+probe 73 control-flow; result=MISMATCH; diff=910; shape=63.204747774480715: Merge each resize pointer selection into one natural conditional expression before the common memcpy or memmove call. The original has one call site per arm with a shared pointer-selection tail. [same emitted code as probe 72]
+probe 74 control-flow; result=MISMATCH; diff=910; shape=63.204747774480715: Put the conditional destination directly in each common memory call. This tests the original one-memmove/one-memcpy call topology while keeping bits as the old source until the shared post-resize recomputation. [same emitted code as probe 73]
+probe 75 control-flow; result=MISMATCH; diff=910; shape=63.204747774480715: Use explicit shared copy tails after each compression pointer branch. The original has one memmove and one memcpy call per resize arm, with branch-local pointer setup joining before the call. [same emitted code as probe 74]
+probe 77 layout; result=MISMATCH; diff=926; shape=85.50295857988165: Use the period char-pointer spelling for the RGBQUAD header tail. This tests the source type's address scheduling without changing field ownership or pixel order. [same emitted code as probe 76]
+probe 78 liveness; result=MISMATCH; diff=937; shape=85.58823529411765: Initialize ZeroBlue before the red/green locals. The original line-1825 block loads red, green, and blue through a distinct register order; this tests declaration and initialization order while preserving COLORREF pixel semantics.
+```
+<!-- end-recovered:86c28c8035ba95701523 -->
+
+<!-- recovered:4d21b4e846bf5322fb35 -->
+### `b25c5800db4c` `src/scratch/0043A660_DibMapToPalette.cpp:1-70`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 0043A660 DibMapToPalette
+// Dib.cpp
+// Attempt log:
+// - Baseline established typed DIB ownership, palette lookup/remap, compression dispatch,
+//   and the final palette-entry rewrite; the first build was missing the DIB resize path.
+// - Replaced direct stdcall declarations with the IAT function-pointer surface and
+//   corrected the packet ABI to four arguments (one handle is both bitmap/palette).
+// - Added the binary-proven grow/shrink paths: GlobalHandle/GlobalUnlock,
+//   GlobalReAlloc/GlobalLock, and the memmove/memcpy image preservation calls.
+// - Restored the original positive null-test order, header color-count ownership, and
+//   BI_BITFIELDS/non-BI bits offsets; the current frame/code shape is close but nonexact.
+// - Kept the natural one-call transparent search and separate transparent/nontransparent
+//   table branches after the executable showed that the raw nearest-index zero is not
+//   replaced by zeroIndex on the nontransparent path.
+// - Moved the binary-proven grow-branch memmove before compression dispatch; this
+//   restores the original ordered 21-call surface and improves the structural diff.
+// - Replaced the initial bits-address ternary with the explicit BI_BITFIELDS branch
+//   used by the neighboring Dib.cpp donors; this improves the diff from 942 to 911.
+// - Typed SizeImage as the packet-proven unsigned DWORD; VC5 emitted the same code,
+//   so the source-backed type correction is retained without a metric change.
+// - Reversed the palette-flags branch: the original takes the zero-index path
+//   when flags are nonzero and reads the bottom-row byte otherwise; diff improved
+//   from 911 to 910 bytes and the branch opcode now matches.
+// - R3 tested the packet's dword HitEnd local. Moving its initialization into
+//   the transparent-search block restored the 0x128 frame and improved shape,
+//   but positional diff worsened; the clean BYTE/prologue form is retained.
+// - R3 tested the exact Dib.cpp header context. It split the common memmove
+//   into two calls and was rolled back; the custom IAT surface remains required.
+// - R3 tested the one-state do/while transparent search suggested by the
+//   HitEnd/zeroIndex branches. It shortened the function and worsened shape.
+// - Focused probes confirmed that the DWORD image-size formula needs unsigned
+//   width/bit-depth operands, while local-order and loop-state variants did not
+//   improve the clean result.
+// - The original table lookup uses the Windows COLORREF order: red low, green
+//   middle, blue high. Keep that byte order even when compiler output is unchanged.
+// - A later structural pass recovered the dword transparent-search state before
+//   the byte translation table. This restored the 0x128 frame, the dword zero/one
+//   stores at the table prefix, and the original 337-instruction count.
+// - Narrowing the transparent palette index to BYTE restored the test-based
+//   entry prologue, 21 ordered calls, and several early exact blocks.
+// - The explicit nPalColors shift-or-header branch and branch-local GlobalHandle
+//   cache are retained because their emitted stores and IAT loads match the
+//   original topology better than the simpler forms.
+// - Tested but rejected: a union or dword overlay for the final palette-entry
+//   output, a positive transparent table branch with a do-while scan, declaration
+//   pointer initialization, and four separate byte stores for the table prefix.
+//   These changed the frame, block coverage, or code size in the wrong direction.
+// BINARY NOTE: the shipped function has a 0x128 frame and a dword transparent-search
+// state. The current source models both facts with a separate searchState local.
+// BINARY NOTE: the grouped Dib.cpp context uses the period Win32
+// BITMAPINFOHEADER, RGBQUAD, PALETTEENTRY, GDI, and Global* declarations.
+// This removes same-name overlays that cannot coexist with the canonical SDK.
+// Current structural frontier: 921 differing bytes (85.46% shape, 21/21 ordered
+// calls, frame 0x128, code size 1025 vs 1017); remaining drift is mostly address
+// formation, branch layout, and register topology.
+// - Module probe: the canonical Win32 owner surface keeps the 0x128 frame and
+//   21 ordered calls. The isolated check is 926 bytes / 1027 bytes; the grouped
+//   wrapper is 879 bytes / 1026 bytes. The three prior exact anchors remain
+//   exact in the grouped object.
+// - Continuation probes tested DIB base pointer spellings, FAR and macro type
+//   surfaces, local declaration order, color initialization order, and a
+//   natural shared resize-copy tail. The pointer and declaration variants were
+//   codegen duplicates. The copy-tail variant reached 910 differing bytes but
+//   introduced a second memmove call and lost the 0x128/21-call structure, so
+//   it was restored.
+// TU captain, 2026-08-26, owner sa-c6a4d383-r1:
+// - The grouped candidate remains 879 bytes different and emits 1026 bytes.
+// - It escapes one byte past the 1017-byte owner boundary.
+// - The standalone checker cannot compile this owner because xlatClut8 is a
+//   TU-local definition supplied by the authentic wrapper.
+```
+<!-- end-recovered:4d21b4e846bf5322fb35 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

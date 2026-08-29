@@ -1,0 +1,162 @@
+# Recovery journal: 004CBD40 `higher_check_for_cliff`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/t_c_obj.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\t_c_obj.cpp`.
+- Earlier recovery note: `recovery_notes/t_c_obj_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:2a836d0c03630db401c3 -->
+### `target-session` `build/target_sessions/004CBD40_higher_check_for_cliff.json:1-53`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=258; shape=79.05405405405405: Clean scratch source baseline before fresh probes; compare frame, call, and first mismatch.
+probe 2 control-flow; result=MISMATCH; diff=337; shape=81.69934640522875: Hypothesis: use a natural top-tested while(node) after the initial null guard; target tail uses jne loop with fall-through return unlike clean do/while basin.
+probe 3 abi; result=MISMATCH; diff=258; shape=79.05405405405405: Hypothesis: recover decompiler pointer output ABI instead of references; prior note predicted same ABI bytes, verify full source basin and call setup. [same emitted code as probe 1]
+probe 4 control-flow; result=MISMATCH; diff=337; shape=81.69934640522875: Hypothesis: original uses one natural while(node) loop, not an explicit null return plus do/while; this should preserve the oracle's fall-through tail without duplicate entry test. [same emitted code as probe 2]
+probe 5 context; result=MISMATCH; diff=258; shape=79.05405405405405: Hypothesis: restore period math.h declaration context for atan2 instead of a hand declaration; same-TU VC5 header state can affect x87 lowering. [same emitted code as probe 3]
+probe 6 liveness; result=MISMATCH; diff=258; shape=79.05405405405405: Hypothesis: use the output angle directly rather than a named double temporary; oracle compares fpatan ST0 before storing angle and then fsubs the same ST0 value. [same emitted code as probe 5]
+probe 7 liveness; result=MISMATCH; diff=258; shape=79.05405405405405: Hypothesis: bind the angle reference to a local pointer alias after the node guard; this may reproduce oracle EDI angle liveness and ST0 compare order. [same emitted code as probe 6]
+probe 8 abi; result=MISMATCH; diff=259; shape=77.70270270270271: Hypothesis: mark the target method virtual to match the oracle's decorated virtual member identity; body should remain natural and codegen-neutral if this surface is correct.
+probe 9 layout; result=MISMATCH; diff=258; shape=79.05405405405405: Hypothesis: model the proven polymorphic static/master classes with implicit vptrs while preserving observed object_group and world offsets. [same emitted code as probe 7]
+probe 10 control-flow; result=MISMATCH; diff=334; shape=79.05405405405405: Hypothesis: split the two cliff predicates into nested guards, matching their separate source line bands; test whether this preserves the oracle's loop tail and register liveness.
+probe 11 control-flow; result=MISMATCH; diff=258; shape=79.05405405405405: Hypothesis: retain separate nested guards but keep the common node advance outside, avoiding the explicit continue and preserving the oracle's loop topology. [same emitted code as probe 9]
+probe 12 liveness; result=MISMATCH; diff=258; shape=79.05405405405405: Hypothesis: materialize y2 into an entry-scope local after the node guard, matching oracle EBP=y2 and its pre-loop reload. [same emitted code as probe 11]
+probe 13 context; result=MISMATCH; diff=258; shape=79.05405405405405: Hypothesis: use named external float globals for the atan2 angle constants, matching same-TU period declarations instead of absolute F32 lvalues.
+probe 15 baseline; result=MISMATCH; diff=258; shape=79.05405405405405: Own-claim baseline: clean typed map/cliff traversal reproduces size, frame, saved registers, and call set, but broad register/FPU/control-flow drift remains at diff 258. [same emitted code as probe 14]
+probe 16 behavior; result=MISMATCH; diff=328; shape=83.22147651006712: Hypothesis: spell upper angle bounds as angle > upper, a natural equivalent that may recover the oracle's fld angle/fcomp upper x87 order instead of reversed fcompp.
+probe 18 liveness; result=MISMATCH; diff=333; shape=78.37837837837837: Hypothesis: keep the atan2 result in a double, normalize it first, then assign the output angle; this is a natural source order that may preserve ST0 through fcom and fsub before one store.
+probe 20 liveness; result=MISMATCH; diff=333; shape=78.37837837837837: Hypothesis: express angle normalization as one ordinary conditional conversion, allowing VC5 to compare the atan2 double, adjust only the negative arm, and store one float. [same emitted code as probe 18]
+probe 22 liveness; result=MISMATCH; diff=258; shape=79.05405405405405: Hypothesis: combine independent natural aliases for the address-taken angle output and endpoint y2 before the traversal; their joint liveness may recover oracle EDI/EBP without changing map/cliff ownership. [same emitted code as probe 15]
+probe 24 liveness; result=MISMATCH; diff=320; shape=77.02702702702703: Hypothesis: keep the old-object parameter assignment in the successful lines-intersect arm, matching the decompiler's semantic order; VC5 may hoist it before the call while changing node/angle liveness.
+probe 26 control-flow; result=MISMATCH; diff=355; shape=76.25: Hypothesis: recover the oracle's cmp facet,19 then first-angle-range CFG with a natural accepted-range guard, followed by the second range decision.
+probe 28 layout; result=MISMATCH; diff=337; shape=73.85620915032679: Hypothesis: replace raw absolute float lvalues with the locally proven external angle globals and contiguous cliff-check table, preserving the typed map/cliff traversal while removing non-period pointer expressions.
+probe 30 layout; result=MISMATCH; diff=341; shape=77.70270270270271: Hypothesis: retain the proven narrow cliff facet field as unsigned char through the threshold checks, matching the binary's byte load without inventing a wider field.
+probe 32 control-flow; result=MISMATCH; diff=258; shape=80.4054054054054: Hypothesis: spell the proven facet cutoff as facet >= 0x19, matching the oracle's cmp 19/jge while retaining the natural combined angle predicate.
+probe 33 layout; result=MISMATCH; diff=337; shape=77.70270270270271: Hypothesis: model the proven 0x20-stride cliff-check records as a typed eight-float table, replacing raw shifted addresses while preserving each observed field offset and natural traversal.
+probe 35 liveness; result=MISMATCH; diff=258; shape=80.4054054054054: Hypothesis: declare the byte-derived table offset before the retained facet value; VC5 may keep the first scaled result in EAX and the later facet predicate in ESI, matching the oracle without raw register steering. [same emitted code as probe 32]
+probe 37 other; result=MISMATCH; diff=321; shape=76.47058823529412: Removed raw absolute addresses. Added a typed cliff-check table and ordinary numeric constants.
+probe 40 layout; result=MISMATCH; diff=288; shape=81.87919463087249: Use repository-defined DAT_00587268 as the proven contiguous cliff table anchor and reviewed DAT_00574C98/DAT_00574CA4 angle constants; test whether real relocations recover the original table addressing without raw addresses.
+probe 41 behavior; result=MISMATCH; diff=287; shape=83.78378378378379: Remove the named double and test the assigned float angle directly; this matches the oracle's compare, store, and conditional normalization order while retaining reviewed constants.
+probe 42 behavior; result=MISMATCH; diff=287; shape=83.78378378378379: Try a natural float angle temporary, then store it and normalize the same value; test whether VC5 keeps the x87 result for the oracle's fcom/fst order. [same emitted code as probe 41]
+probe 43 context; result=MISMATCH; diff=287; shape=83.78378378378379: Correct the reviewed global symbol casing to match game_globals.cpp; prior relocation comparisons were invalid because DAT_00574C98/DAT_00574CA4 were unresolved C++ names.
+probe 44 layout; result=MISMATCH; diff=278; shape=79.86577181208054: Experiment with the correctly mangled scalar DAT_00587268 symbol and a typed address-of view; determine whether relocation identity restores original table references before rejecting the cursor form by policy.
+probe 45 context; result=MISMATCH; diff=278; shape=79.86577181208054: Match the same-TU exact donor's uppercase DAT_00574C98/DAT_00574CA4 declarations; test the established period spelling for relocation handling.
+probe 46 behavior; result=MISMATCH; diff=308; shape=77.70270270270271: Move the angle store after the natural normalization guard; test whether source order explains the oracle's x87 compare-before-store while preserving the same result.
+probe 47 layout; result=MISMATCH; diff=311; shape=78.37837837837837: Use a typed contiguous DAT_00587268 table plus compare-before-store angle normalization; this is the cleanest policy-valid replacement for raw absolute data and preserves the oracle x87 topology.
+probe 50 context; result=MISMATCH; diff=337; shape=77.70270270270271: Use reviewed lower-case DAT_00574c98/DAT_00574ca4 symbols for angle normalization instead of unresolved uppercase names and literals; test relocation and FPU basin.
+probe 52 layout; result=MISMATCH; diff=377; shape=67.05882352941177: Replace unresolved typed cliff-table global with reviewed DAT_0058725c/DAT_00587268 symbols and proven 0x20 byte stride; use local typed accessors to avoid numeric absolute addresses.
+probe 54 layout; result=MISMATCH; diff=257; shape=79.05405405405405: Use macro-expanded reviewed global base symbols with proven 0x20 stride, preserving natural typed float access while avoiding raw numeric addresses and helper calls.
+probe 55 context; result=MISMATCH; diff=257; shape=79.05405405405405: Wrap reviewed angle globals in typed pointer lvalues to test whether direct float memory operands preserve the oracle fcom/fsub topology without numeric absolute addresses. [same emitted code as probe 54]
+probe 56 liveness; result=MISMATCH; diff=257; shape=79.05405405405405: Name the endpoint y2 value and carry it into the intersection call; original loads y2 into EBP before the node body while clean source leaves it as a stack argument. [same emitted code as probe 55]
+probe 57 liveness; result=MISMATCH; diff=257; shape=79.05405405405405: Use one natural angle pointer alias throughout the scan; test whether explicit address-taken liveness assigns angle to oracle EDI instead of current EBX. [same emitted code as probe 56]
+probe 58 behavior; result=MISMATCH; diff=257; shape=79.05405405405405: Test volatile reviewed angle constants as a narrow FPU-memory operand hypothesis; oracle directly fcom/fsub loads float globals while ordinary double promotion adds x87 shuffles.
+probe 59 behavior; result=MISMATCH; diff=328; shape=79.86577181208054: Use a natural float atan2 temporary instead of double; test whether the original direct fcom/fst/fsub topology comes from an explicit float result.
+probe 60 control-flow; result=MISMATCH; diff=336; shape=81.69934640522875: Use one top-tested while(node) scan instead of an explicit null guard plus do/while; target oracle's bottom test with jne loop backedge and fall-through null return.
+probe 61 liveness; result=MISMATCH; diff=257; shape=79.05405405405405: Apply a period-plausible register hint to the long-lived node cursor; test whether VC5 assigns the oracle EBX node color without changing behavior. [same emitted code as probe 57]
+probe 62 control-flow; result=MISMATCH; diff=336; shape=81.69934640522875: Use a natural for(node; node; node=next) list scan; test whether its canonical loop update emits the oracle jne backedge and preserves table/FPU body. [same emitted code as probe 60]
+probe 63 abi; result=MISMATCH; diff=341; shape=77.02702702702703: Keep the proven facet byte narrow as uchar through the local table offset and threshold; test whether VC5's width-aware promotion recovers EAX/ESI colors.
+probe 64 behavior; result=MISMATCH; diff=263; shape=77.70270270270271: Reverse the equivalent angle range comparisons to test VC5 x87 operand scheduling; oracle loads angle before each bound, unlike the current bound-first macro lowering.
+probe 68 context; result=MISMATCH; diff=257; shape=79.05405405405405: Measure canonical static-object field ownership and restore natural double x87 source; bytes stayed in the clean 421-byte, 257-diff basin. [same emitted code as probe 66]
+probe 69 behavior; result=MISMATCH; diff=330; shape=81.87919463087249: Use explicit angle > upper thresholds so VC5 keeps the oracle's x87 C0|C3 tests and unordered behavior; compare operand order against the shipped late predicate.
+probe 70 behavior; result=MISMATCH; diff=353; shape=72.5: Recover the shipped nested threshold CFG: facet<19 then angle>=lower and angle<=upper, followed by angle>=lower2 and angle>upper2; this preserves exact x87 C0 and C0|C3 unordered tests.
+probe 71 behavior; result=MISMATCH; diff=255; shape=81.75675675675676: Retain natural bound-left strict upper checks (upper > angle), which compile to the oracle's direct fcomp and C0|C3 tests; this is the best behavior-preserving x87 basin at 421 bytes/255 diff.
+probe 72 context; result=MISMATCH; diff=255; shape=81.75675675675676: Use canonical polymorphic RGE_Object_List and RGE_Map surfaces from stat_obj-era donors; preserve their proven field offsets and test whether authentic owners change the node register basin. [same emitted code as probe 71]
+probe 73 layout; result=MISMATCH; diff=255; shape=81.75675675675676: Use the proven 0x10 RGE_Object_Node fields from exact stat_obj donors while preserving node/next ownership; test whether canonical node extent changes the register basin. [same emitted code as probe 72]
+```
+<!-- end-recovered:2a836d0c03630db401c3 -->
+
+<!-- recovered:ae02a503920f0228155e -->
+### `0923cad7edb1` `src/scratch/004CBD40_higher_check_for_cliff.cpp:1-54`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 004CBD40 TRIBE_Combat_Object::higher_check_for_cliff
+// Source: t_c_obj.cpp lines 1379-1442
+// attempt 1: natural decompiler-shaped source with local layout/types; close but RGE_Tile size wrong (20 vs 24), fcom constants double, and register coloring differs.
+// attempt 2: fixed RGE_Tile to 0x18 so map_row_offset[row][col] emits lea x+x*2 then [row+x*8+10h]; moved first mismatch from tile indexing to register coloring.
+// attempt 3: used absolute float constants for 0.0/2pi; got correct dword global fcom/fsub addresses but introduced extra FPU stack shuffling when a was a named float.
+// attempt 4: kept double atan2/fpatan value with absolute float constants; better size, but remaining broad drift starts at EBX/EBP/EDI allocation for node/angle/y2.
+// attempt 5: rewrote angle tests using decompiler's outside-range condition; improved to best edit diff 120B and first mismatch 70.
+// attempt 6: tried register-qualified node/angle/y2 locals; VC5 ignored/helped none, no metric improvement.
+// attempt 7: tried while(1) with explicit null-return at loop bottom; worsened early branch spans.
+// attempt 8: tried explicit angle_local/y2_bits locals to force EDI/EBP; worsened to first mismatch 19.
+// attempt 9: tried for-loop over node->next; worsened loop entry/null-test shape.
+// attempt 10: tried naming lines_intersect result local; worsened call/branch scheduling and reverted.
+// session baseline: default VC5 build is 421 bytes with exact frame/saved-reg/call-set parity;
+//   first mismatch is +0x46, where node/angle/facet/offset color as EBP/EBX/EDI/ESI
+//   instead of the oracle's EBX/EDI/ESI/EAX.  The remaining drift is a broad liveness basin.
+// session ABI probe: PDB's float&/int& output ABI emits the same bytes as pointer proxies;
+//   references are retained as the more plausible source surface.
+// session layout probe: restored the canonical 24-byte RGE_Tile/RGE_Object_List ownership;
+//   objects.list emits the same bytes as the narrow +0x10 tile stub.
+// session probes: direct angle lvalue, byte facet, local declaration-order variants, and
+//   facet/offset order variants did not improve the basin; compare-before-store angle adds 10 bytes.
+// fresh pass r2: baseline reconfirmed 421 bytes / 258 positional diff. Named endpoint-y2,
+// reversed endpoint addition, named tile, virtual object/list/map donors, the intermediate
+// combat-object hierarchy, entry-declared node/cliff locals, and entry endpoint-y2 all emitted
+// the same 421-byte basin. Restored the clean typed source; unresolved clue remains oracle
+// EBP=y2 plus EBX=node while this build chooses EBP=node and EBX=angle.
+// fresh pass r3: reversed the typed map-height predicate to map->map_height <= row, matching
+// the decompiler predicate; VC5 reversed cmp operands and jge to jle, worsening the first hunk.
+// Restored the clean predicate; no source change retained.
+// fresh pass r4: split the typed terrain height and width bounds into separate natural guards;
+// VC5 reversed the height/width compares and worsened the first hunk by 4 bytes.
+// Restored the combined clean guard; no source change retained.
+// fresh pass r5: natural while-loop, pointer output ABI, math-header context, direct angle
+// assignment, angle alias, split cliff guards, endpoint-y2 local, and named angle globals
+// did not improve the 421-byte basin.  Virtual static/master surfaces preserve the same bytes
+// and restore the oracle's virtual decorated member identity; retain those natural declarations.
+// fresh pass r6: spelling the facet cutoff as facet >= 0x19 recovers the oracle's cmp 19/jge,
+// one exact late block, and better block/resync metrics without changing positional diff.
+// Reordering offset/facet declarations is emitted-code duplicate.  A typed eight-float cliff
+// table removes raw address expressions but worsens size and positional drift.
+// Main review retained that typed table because raw absolute addresses are not
+// valid living source. Numeric pool values are ordinary source constants.
+// Left in scratch: behavior and call set look right, but broad register-allocation/FPU compare drift remains; not an accepted_drift candidate.
+// fresh pass r7: replaced the unresolved typed table and numeric absolute-address
+// expressions with reviewed data symbols and the proven 0x20-byte table stride.
+// This restores the 421-byte code-size basin and improves positional diff to 257.
+// The source remains a typed float access over a binary-proven contiguous table.
+// Seven follow-up probes covered angle aliases, endpoint lifetimes, loop forms,
+// narrow facet width, and comparison direction. They did not improve the basin.
+// BINARY NOTE: The shipped upper-bound tests use x87 C0|C3 status bits. Keep the
+// natural bound-left `upper > angle` spelling so unordered values follow those
+// branches; the equivalent bound-right spelling emits only C0 in VC5.
+// Canonical stat-object, map, tile, list, and node fields are retained from
+// exact stat_obj donors. They preserve proven offsets but are codegen-neutral.
+```
+<!-- end-recovered:ae02a503920f0228155e -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

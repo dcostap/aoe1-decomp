@@ -1,0 +1,84 @@
+# Recovery journal: 0042CB30 `GetReadyPlayerStr`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/com_hand.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\Com_hand.cpp`.
+- Earlier recovery note: `recovery_notes/com_hand_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:cd03eef57f0da1448121 -->
+### `d7b30a95b149` `src/scratch/0042CB30_GetReadyPlayerStr.cpp:1-38`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 0042CB30 GetReadyPlayerStr (TCommunications_Handler::GetReadyPlayerStr)
+// Inventory: infmap.cpp (actually Com_hand.cpp)
+//
+// Left in scratch: VC5 codegen drift — register allocation and loop optimization
+// differences from original.
+//
+// Functional understanding:
+// - Copies template string "Ready=                        " to global buffer 0x62C5B0
+// - Loops i=1..MaxGamePlayers checking LastTurnAck[i] >= current_turn
+// - If ready: writes 'A' at buffer[6+i]
+// - If not ready: switches on PLAYERHUMANITY type (0='-', 2='W', 4='C', 5='X', 6='V', default='?')
+//
+// Remaining drift:
+// - Prologue: original pushes ebp/esi/edi with ebp=this; rebuilt pushes esi/edi with edx=this
+//   (missing 1 byte push ebp shifts all offsets)
+// - String copy: original sets eax=1 after strcpy (loop counter init); rebuilt omits this
+// - Loop counter: original keeps i in eax with [eax+62C5B6h] buffer writes;
+//   rebuilt uses running buffer pointer in eax (converted from i+62C5B6h)
+// - current_turn: original reloads [this+10C8h] each iteration; rebuilt hoists it
+// - Default char: original uses bl=3Fh (push ebx); rebuilt uses immediate '?'
+// - Zero-extend: original xor ecx,0/mov cx,[mem]; rebuilt and edi,0FFFFh
+// - Jump table: original at fixed address 42CBE4; rebuilt at [ecx*4] (unresolved)
+// - Missing pop ebp at epilogue (matching missing push ebp)
+//
+// Attempted probes (all produced same VC5 output):
+// 1. do-while loop instead of goto
+// 2. for loop with p computed inside
+// 3. Removed defc variable (use '?' literal)
+// 4. different buffer write syntax (0x62C5B6+i vs buf[i+6])
+// 5. goto labels with declaration-first ordering
+// 6. unsigned int casts for comparisons
+// 7. int declared at top of function
+//
+// All VC5 output converges to edx=this, running pointer, hoisted current_turn.
+// This appears to be a stable VC5 codegen basin; the source produces the same
+// optimized output regardless of minor variations.
+//
+// A custom flags file or different TU context might be needed.
+```
+<!-- end-recovered:cd03eef57f0da1448121 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

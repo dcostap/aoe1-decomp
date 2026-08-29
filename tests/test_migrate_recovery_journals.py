@@ -106,6 +106,19 @@ static int helper(int value) {
         self.assertEqual(plain.attempt_score, 0)
         self.assertGreater(useful.attempt_score, 0)
 
+    def test_recovered_text_removes_trailing_whitespace(self) -> None:
+        block = migration.RemovedBlock(
+            commit="deadbeef",
+            path="src/sample.cpp",
+            old_start=1,
+            old_end=2,
+            lines=("// Attempt: changed the loop. ", "// Result: mismatch.\t"),
+        )
+        self.assertEqual(
+            block.text,
+            "// Attempt: changed the loop.\n// Result: mismatch.",
+        )
+
     def test_declared_owner_va_beats_nearby_function_mapping(self) -> None:
         block = migration.RemovedBlock(
             commit="deadbeef",

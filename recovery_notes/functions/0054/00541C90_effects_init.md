@@ -1,0 +1,77 @@
+# Recovery journal: 00541C90 `effects_init`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/world.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\World.cpp`.
+- Earlier recovery note: `recovery_notes/world_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:f92b7170be8ea2ae759d -->
+### `e5b22f4df482` `src/scratch/00541C90_effects_init.cpp:1-31`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00541C90 RGE_Game_World::effects_init
+// EH-framed allocate and construct RGE_Effects, store at +0x4C.
+// FLAGS: config/flags/00541C90_effects_init.rsp uses /GX for original EH frame.
+//
+// Attempt log:
+// - HollowSnowdrop pass: /GX + 0x0C-sized RGE_Effects direct-new gets exact 88/88 prologue/allocation/ctor family.
+//   Remaining drift mirrors 0052E650: original has short null branch to xor eax and common store; rebuilt stores
+//   after ctor and branches null to padded epilogue. Placement-new/decompiler null fallback likely collapses out of EH.
+// - MidnightLily baseline recheck: direct `this->effects = new RGE_Effects(param_1)` preserves EH/new/ctor but stores on
+//   success path before SEH cleanup; null path jumps to cleanup tail (edit diff 15).
+// - Try 1: explicit operator new + inline placement new + common store removed the EH new-expression lowering, only 48 bytes.
+// - Try 2: direct new into local plus `if (effects == 0) effects = 0;` kept original short null branch/xor/common store,
+//   but VC5 inserted a redundant `test eax,eax; jne +0` at the join before loading EH saved ecx. Best current basin
+//   (edit diff 11, first mismatch at join offset 67).
+// - Try 3: explicit `if (effects != 0) goto store; effects = 0;` same redundant join test as try 2.
+// - Try 4: manual operator new + explicit constructor call removed EH new-expression lowering, only 64 bytes.
+// - Try 5: volatile local after direct new preserved join but forced stack spill/reload before store (worse, edit diff 17).
+// - Try 6/7/9: direct assignment expression, ternary common store, and separate pointer declaration all collapsed to baseline
+//   success-path store/null-to-tail family (edit diff 15).
+// - Try 8: /Ob0 flag with direct-new variants had no effect; restored /GX-only flag.
+// - 2026-05-10 pass: retried 20+ focused variants: direct/local new, common-store if/else arms, empty if arms,
+//   assignment-in-condition, goto common store, zero-init local, parameter reuse, volatile local, bool/switch/do/while/for
+//   null forms, ternary/self-assignment/comma no-ops, and narrow flag probes (/O1, /Og, /Ob0, /Ox, /Gf, /Gy, /Oy-).
+//   No exact. Best is still the current common-tail source; it has the original ctor-success jump, null xor, and common
+//   member-store intent, but VC5 inserts a no-op `test eax,eax; jne +0` at the join, pushing the epilogue past the
+//   88-byte function window (tail disassembles incomplete). Not an accepted_drift suggestion under the 00449E20 ruling.
+// - 2026-05-10 StarryZephyr pass: rechecked baseline (18.18% positional, edit 12.5%), tried ternary member assignment
+//   (collapses to sunk-store/null-tail, 23.86%), then restored current common-tail self-assignment source. Same blocker
+//   as data_load_effects: exact prefix through EH/new/ctor; tail join either gains no-op test/jne or sinks the store.
+// Left in scratch: behavior and EH/call surface are correct; blocker is VC5 source shaping around null-path/common-store join.
+// No inline asm/hacks.
+```
+<!-- end-recovered:f92b7170be8ea2ae759d -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

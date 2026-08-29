@@ -1,0 +1,150 @@
+# Recovery journal: 0047C640 `word_wrap_append`
+
+<!-- recovery-journal-schema:1 -->
+
+## Current state
+
+- Status: `scratch`.
+- Living source: `src/Pnl_txt.cpp`.
+- PDB source: `C:\msdev\work\age1_x1\Pnl_txt.cpp`.
+- Earlier recovery note: `recovery_notes/Pnl_txt_module.md`.
+
+## Translation-unit context
+
+Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+
+## Current mismatch
+
+Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+## Recovered attempt history
+
+
+<!-- recovered:608256ff8bcf60a92e4a -->
+### `target-session` `build/target_sessions/0047C640_word_wrap_append.json:1-39`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=986; shape=80.50847457627118: Current clean scratch source: typed MBCS/GDI reconstruction; size/frame/calls match but prologue register colors and block shape diverge.
+probe 2 liveness; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 1: reorder locals to the original Ghidra stack declaration order, so VC5 assigns the saved parameter/this and long-lived text length to the original colors. [same emitted code as probe 1]
+probe 3 abi; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 2: use the CRT __mbslen int return ABI instead of a narrow short declaration; original keeps text length in full EBP and only compares BP. [same emitted code as probe 2]
+probe 4 liveness; result=MISMATCH; diff=955; shape=75.98870056497175: Hypothesis 3: make text_len a full int local; original carries the mbslen result in EBP while comparing only its low word.
+probe 5 liveness; result=MISMATCH; diff=956; shape=69.85915492957747: Hypothesis 4: widen chars to int while retaining the narrow text length; test whether the original EBX count is a full local with only word compares.
+probe 6 liveness; result=MISMATCH; diff=982; shape=79.15492957746478: Hypothesis 5: widen last_chars to int because original reloads a full dword into EBX before the final narrow copy count.
+probe 7 abi; result=MISMATCH; diff=1002; shape=68.13186813186813: Hypothesis 6: use bool for the five binary flags, following the decompiler's boolean inference, to test narrow flag storage and liveness.
+probe 8 abi; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 7: add the proven TTextPanel draw virtual surface from same-TU donors; class-front-end context may alter nonvirtual member codegen. [same emitted code as probe 3]
+probe 9 control-flow; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 8: combine the null and empty tests into the natural short-circuit guard; original source likely used one guard even though the emitted blocks can look split. [same emitted code as probe 8]
+probe 10 layout; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 9: restore the complete proven TTextPanel field surface and class extent from same-TU donors; front-end class context may control register allocation. [same emitted code as probe 9]
+probe 11 liveness; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 10: qualify the non-address-taken text parameter as register; VC5 may choose the original ESI/EDI color basin. [same emitted code as probe 10]
+probe 13 variant; result=MISMATCH; diff=986; shape=80.50847457627118: variant lab build\variant_lab\0047C640_word_wrap_append\20260817_152429: 64 variants, 64 invariant-eligible, 0 exact
+probe 14 context; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 11: use the pinned period MBSTRING.H declarations and natural _mbs* calls; compiler helper expansion may recover the original __mbs* ABI and register basin.
+probe 16 control-flow; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 12: express the forward scan as one short-circuit while condition, matching the decompiler's chars-and-width guard rather than a nested width break. [same emitted code as probe 11]
+probe 17 layout; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 13: use int for max_wid; field arithmetic and the original dword compare may come from an int local rather than long. [same emitted code as probe 16]
+probe 18 control-flow; result=MISMATCH; diff=985; shape=73.08781869688386: Hypothesis 14: spell the width guard with the original decompiler polarity, auto_scbar == 0 first, to test branch scheduling and liveness.
+probe 20 liveness; result=MISMATCH; diff=548; shape=76.48725212464589: Hypothesis 15: keep text_len as a full int but explicitly narrow each loop comparison; this may preserve the original EBP result register and BP compare form.
+probe 21 liveness; result=MISMATCH; diff=548; shape=76.48725212464589: Hypothesis 16: qualify the full-width, explicitly narrowed text_len as register to retain it in EBP across the scan. [same emitted code as probe 20]
+probe 23 liveness; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 17: qualify the narrow text_len local as register; this tests whether VC5 will preserve the original EBP result without changing its proven width. [same emitted code as probe 17]
+probe 25 variant; result=MISMATCH; diff=986; shape=80.50847457627118: variant lab build\variant_lab\0047C640_word_wrap_append\20260817_152930: 12 variants, 12 invariant-eligible, 0 exact
+probe 27 liveness; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 1: declare chars before text_len so the original EBP text length and EBX counter colors arise from source declaration order. [same emitted code as probe 26]
+probe 28 liveness; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 2: swap japanese and old_font declarations to recover the original adjacent tm-related stack homes at +0x40/+0x44. [same emitted code as probe 27]
+probe 29 liveness; result=MISMATCH; diff=928; shape=74.5042492917847: Hypothesis 3: initialize chars before the newline guard, then assign one in the non-newline path, to recover the original EBX zero-to-one counter lifetime.
+probe 30 liveness; result=MISMATCH; diff=928; shape=74.5042492917847: Hypothesis 4: initialize chars at declaration as well as at each source-line pass, so VC5 creates EBX zero before the entry null checks and before the restart. [same emitted code as probe 29]
+probe 31 liveness; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 5: use a declaration initializer for found_break, testing whether original entry EBX zero comes from a function-scope false initializer before the null guard. [same emitted code as probe 28]
+probe 32 liveness; result=MISMATCH; diff=928; shape=74.5042492917847: Hypothesis 6: combine the earlier chars-zero lifetime with a function-scope found_break initializer, aiming for original text/this colors plus a live EBX zero before entry checks. [same emitted code as probe 30]
+probe 33 liveness; result=MISMATCH; diff=928; shape=74.5042492917847: Hypothesis 7: combine the chars-zero pass lifetime with an early japanese initializer, testing whether the retained zero value selects EBX while preserving text in ESI and this in EDI. [same emitted code as probe 32]
+probe 34 liveness; result=MISMATCH; diff=973; shape=72.80453257790369: Hypothesis 8: combine the best prior int text_len and explicit narrow compare model with the earlier chars-zero initialization, testing both width semantics and the original register basin.
+probe 35 liveness; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 9: explicitly assign chars to zero before the early guards, testing the natural source pattern that could keep EBX zero through the original entry compare. [same emitted code as probe 31]
+probe 36 control-flow; result=MISMATCH; diff=984; shape=73.2394366197183: Hypothesis 10: use the decompiler's top-tested width loop with a post-update text-length break, instead of the current combined counter-first loop.
+probe 37 liveness; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 11: qualify the short chars counter as register, testing whether VC5 selects the original EBX counter while leaving text_len available for EBP. [same emitted code as probe 35]
+probe 38 liveness; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 12: keep one natural self pointer across panel field reads and member calls, matching the original's persistent EDI this pointer rather than repeated this reloads. [same emitted code as probe 37]
+probe 39 layout; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 13: place max_wid before dc in the local declaration order, testing whether the original +0x28 width home and EBP dc color follow declaration order. [same emitted code as probe 38]
+probe 40 layout; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 14: model the proven decompiler temp buffer as unsigned char[256], removing redundant helper casts while retaining the append_line char API. [same emitted code as probe 39]
+probe 41 layout; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 15: declare found_char_break before found_break, matching their original +0x1c/+0x10 stack ordering and testing flag declaration pressure. [same emitted code as probe 40]
+probe 42 control-flow; result=MISMATCH; diff=927; shape=74.5042492917847: Hypothesis 16: initialize chars at the loop entry before mbslen, testing whether VC5 emits the original restart xor EBX while eliding the initial zero.
+probe 43 liveness; result=MISMATCH; diff=927; shape=74.5042492917847: Hypothesis 17: combine the loop-entry chars-zero model with register-qualified short text_len, testing whether VC5 keeps mbslen in EBP and moves last_char to ECX. [same emitted code as probe 42]
+probe 44 liveness; result=MISMATCH; diff=986; shape=80.22598870056497: Hypothesis 18: initialize last_char before the first extent call, testing whether its earlier lifetime changes EBP allocation from the current zero register to original text_len.
+probe 45 liveness; result=MISMATCH; diff=986; shape=80.50847457627118: Hypothesis 19: use declaration initialization for text_len before its per-line mbslen assignment, testing whether VC5 preserves the original EBP result register. [same emitted code as probe 41]
+```
+<!-- end-recovered:608256ff8bcf60a92e4a -->
+
+<!-- recovered:1d37149fda7ab0d834c8 -->
+### `ed599f2a6eab` `src/scratch/0047C640_word_wrap_append.cpp:1-56`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 0047C640 TTextPanel::word_wrap_append (Pnl_txt.cpp:320-560)
+// Attempt log:
+// baseline: existing broad scratch reconstruction used strlen/isspace and fake
+// helpers; calls, frame, and body topology were not aligned.
+// probe 2: restored the period MBCS/GDI helper surface and two-stage wrap /
+// backtrack behavior; frame became 0x170 and ordered calls became 28/29.
+// probe 3: added the binary-proven Japanese single-byte-pair __ismbcspace call;
+// ordered call set became exact (29/29), with only a small size drift.
+// probe 4: removed an unproven render-area null guard; direct GetDc topology
+// reduced the structural drift.
+// probes 5-6: tested the TEXTMETRICA/old-font ownership and the four-byte
+// leading temp buffer window.  The surviving source uses a separate old-font,
+// tm.tmCharSet, and a 0x100-byte clear with temp_text+4 destination.
+// probes 7-9: declaration-order and period-polymorphic TPanel context tests;
+// the latter was a codegen duplicate.  Probe 10 scoped per-line locals, also a
+// duplicate.  Before the current claim, the best reconstruction had frame
+// 0x170, exact 29-call sequence/CFG counts, size 1055 vs 1064, and 71.7%
+// shape similarity.
+// claim shardC4-47C640: split null and empty guards was a codegen duplicate.
+// Reordered the Japanese whitespace test before the character-pair tests;
+// this moved the build to size 1064, 76.8% shape, and 33.4% exact blocks.
+// A named panel alias and two local declaration-order variants were duplicates.
+// claim orch-47C640-b: typed render_area/direct calls were a codegen duplicate;
+// an input cursor alias was also a duplicate.  A conditional max-width form
+// removed one structural spill and reached diff 801, but changed block shape;
+// restored the ordinary if/else form.  Splitting the wrap-loop width guard
+// was a codegen duplicate.
+// Binary pointer topology: the first extent call measures __mbsinc(text) but
+// keeps next_char at text; the original then advances it inside the loop.
+// Kept that natural source form.  A named first-length temp improved resync
+// but broke size and prologue parity, so it was rolled back.
+// claim sa-a864d1c5: restored the pinned clean source before pause.  The
+// baseline remains 1064 bytes, 0x170 frame, 29 ordered calls, and 986 strict
+// differing bytes.  Local declaration order, __mbslen int return, int count
+// widths, bool flags, full TTextPanel layout, a derived draw slot, combined
+// guards, register qualifiers, max-width polarity, period MBSTRING.H calls,
+// and int text_len with narrow comparisons did not produce an exact result.
+// The int text_len/narrow-compare probe was the best diagnostic lead at 548
+// differing bytes, but its shape similarity fell to 76.49%; it was restored.
+// Ambient declaration context (64 variants) and the vc5-small flag family
+// (12 variants) each formed one unchanged nonexact group.  No tested source
+// or context change recovered the original ESI text / EDI this prologue.
+// BINARY NOTE: the original keeps the text length in EBP and the moving input
+// cursor in ESI, while the clean source keeps them in a stack home and EBX.
+// LIKELY INTENT: the remaining drift is a VC5 register-color or source-context
+// basin issue, not an unresolved call, frame, or helper ownership issue.
+// left in scratch: the remaining broad drift begins at VC5 prologue/register
+// coloring (parameter in EBX vs original ESI, this in ESI vs original EDI),
+// plus local slot/block placement; calls, frame, and size now match.
+// claim sa-42122c60: test source declaration order for the two persistent
+// narrow counters that occupy EBP and EBX in the original.
+// claim sa-42122c60 follow-up: 19 focused probes tested counter initialization,
+// loop order, flag and buffer types, declaration order, self aliases, and
+// register qualifiers.  The loop-entry chars-zero form reduced the byte diff
+// to 927 but lost size and block shape; all probes were restored.  The clean
+// source remains 1064 bytes with a 0x170 frame and 29 ordered calls.
+```
+<!-- end-recovered:1d37149fda7ab0d834c8 -->
+
+## Rejected approaches
+
+Record disproved source forms and repeated code-generation basins here.
+
+## Open questions
+
+Record unknown facts and the evidence needed to answer them here.
+
+## Next useful approaches
+
+Record specific evidence-led approaches for the next worker here.
+
+## Worker updates
+
+Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
