@@ -16,8 +16,6 @@
 // Canonical-context check: the PDB 0x134 base and PAV parameter symbol remain exact.
 
 
-void* operator new(size_t size);
-
 TribeHuntedAnimalUnitAIModule::TribeHuntedAnimalUnitAIModule(RGE_Static_Object* obj, int param)
     : UnitAIModule(obj, param)
 {
@@ -234,8 +232,6 @@ int TribeHuntedAnimalUnitAIModule::processIdle(int param_1)
 // - The canonical 0x134 base preserves exact /GX code and the PAV constructor symbol.
 
 
-void* operator new(size_t size);
-
 TribePreditorUnitAIModule::TribePreditorUnitAIModule(
     RGE_Static_Object* obj, int param)
     : UnitAIModule(obj, param)
@@ -311,7 +307,7 @@ int TribePreditorUnitAIModule::processNotify(NotifyEvent* event, unsigned long p
         }
 
         this->stopObject(1);
-        this->notifyCommander((void*)event);
+        this->notifyCommander(event);
     }
 
     return UnitAIModule::processNotify(event, param_2);
@@ -363,14 +359,14 @@ int TribeElephantUnitAIModule::processNotify(NotifyEvent* event, unsigned long p
         }
         {
             int caller = event->caller;
-            int count = this->notifyCount;
+            int count = this->attackingUnitsValue.numberValue;
             int i = 0;
             if (count > 0) {
                 goto loop_check;
                 do {
-                    if (i >= this->notifyCapacity)
+                    if (i >= this->attackingUnitsValue.maximumSizeValue)
                         goto after_loop;
-                    if (this->notifyArray[i] == caller)
+                    if (this->attackingUnitsValue.value[i] == caller)
                         goto found;
                     i++;
 loop_check:;
@@ -378,24 +374,24 @@ loop_check:;
 after_loop:;
             }
 
-            if (count >= this->notifyCapacity) {
+            if (count >= this->attackingUnitsValue.maximumSizeValue) {
                 int newCapacity = count + 1;
                 int* newArray = (int*)operator_new(newCapacity * 4);
                 if (newArray != 0) {
                     int j = 0;
                     if (count > 0) {
                         while (j < newCapacity && j < count) {
-                            newArray[j] = this->notifyArray[j];
+                            newArray[j] = this->attackingUnitsValue.value[j];
                             j++;
                         }
                     }
-                    operator_delete(this->notifyArray);
-                    this->notifyArray = newArray;
-                    this->notifyCapacity = newCapacity;
+                    operator_delete(this->attackingUnitsValue.value);
+                    this->attackingUnitsValue.value = newArray;
+                    this->attackingUnitsValue.maximumSizeValue = newCapacity;
                 }
             }
-            this->notifyArray[this->notifyCount] = caller;
-            this->notifyCount++;
+            this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
+            this->attackingUnitsValue.numberValue++;
 found:
             this->objectValue->setUnderAttack(1);
             int val = this->closestAttacker(0);
@@ -469,11 +465,11 @@ int TribeLionUnitAIModule::processNotify(NotifyEvent* event, unsigned long param
     switch (event->mType) {
     case 0x1FC:
     {
-        RGE_Static_Object* obj = this->objectValue->owner->world->object(this->field_34);
+        RGE_Static_Object* obj = this->objectValue->owner->world->object(this->currentTargetValue);
         if (obj != 0) {
             float dist = this->objectValue->distance_to_object(obj);
-            if (!(dist > *(float*)((char*)this->objectValue->master_obj + 0x28))) {
-                this->attackObject(this->field_34, 1);
+            if (!(dist > this->objectValue->master_obj->los)) {
+                this->attackObject(this->currentTargetValue, 1);
                 return 3;
             }
         }
@@ -494,19 +490,18 @@ int TribeLionUnitAIModule::processNotify(NotifyEvent* event, unsigned long param
     break;
 
     case 0x1FA:
-        if (*(int*)((char*)event + 0x0C) != 0x258) {
+        if (event->p1 != 0x258) {
             break;
         }
-        if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->inScenarioEditor() == 1) {
-            int value = taiuaimd_world_next_object_id(this->objectValue->owner->world) + 3;
-            value = value + value * 4;
-            value = value + value * 4;
-            value = value + value * 4;
-            value = value + value * 4;
-            value = value << 3;
-            this->field_100 = value;
+        if (rge_base_game->scenarioGame() == 1) {
+            if (rge_base_game->singlePlayerGame() == 1) {
+                this->idleTimeoutValue =
+                    (this->objectValue->owner->world->difficultyLevel() + 3) * 5000;
+            } else {
+                this->idleTimeoutValue = 25000;
+            }
         } else {
-            this->field_100 = 0x61A8;
+            this->idleTimeoutValue = 25000;
         }
         this->setAdjustedIdleTimeout();
         this->removeCurrentTarget();
@@ -543,7 +538,7 @@ int TribeLionUnitAIModule::processIdle(int param_1)
         return 5;
     }
 
-    int difficulty = taiuaimd_world_difficulty(objectValue->owner->world);
+    int difficulty = objectValue->owner->world->difficultyLevel();
 
     float los;
     if (rge_base_game->scenarioGame() == 1 && rge_base_game->singlePlayerGame() == 1 && difficulty >= 3) {
@@ -582,9 +577,9 @@ TribeRangedUnitAIModule::TribeRangedUnitAIModule(RGE_Static_Object* obj, int cat
 //   generates `jne near ret2_block` matching original's shared return-2 pattern
 // - Separate negate-and-add: `float nty = -(dy / dist * speed); float resultY = nty + world_y;`
 //   generates `fchs; fadd` instead of compiler-optimized `fsubr`
-// - Direct `this->obj` access in vtable[4] arguments (no cached local) matches
+// - Direct `this->objectValue` access in vtable[4] arguments (no cached local) matches
 //   original's `mov eax, [esi+4]` placement
-// - `thisObj = this->obj` declared AFTER vtable[4] call matches original's
+// - `thisObj = this->objectValue` declared AFTER vtable[4] call matches original's
 //   `mov edi, [esi+4]` placement
 //
 // Remaining drift (all register allocation choices):
@@ -689,11 +684,9 @@ TribeRangedUnitAIModule2::TribeRangedUnitAIModule2(RGE_Static_Object* obj, int c
 // 9: outer count guard plus while (i < count) reproduced the duplicated entry test and improved shape to 90.95%; the remaining gap is register coloring and late vptr spill.
 // 10: a base-pointer alias was codegen-identical and was removed as unsupported steering.
 // 11: rewrote the typed evasive result tail as coordinate plus explicit negated displacement; restored the original fchs/fadd tail family, reducing the size gap to 4 bytes and positional diff to 521; first order-call hunk remains.
-// 12: removed the saved object alias and used direct this->obj member calls; this restored the original vptr reload and exact 643-byte output.
+// 12: removed the saved object alias and used direct this->objectValue member calls; this restored the original vptr reload and exact 643-byte output.
 // exact: direct member accesses preserve the original object/vptr reload schedule and produce all 643 bytes.
 
-void* __cdecl operator new(unsigned int);
-void __cdecl operator delete(void*);
 extern float DAT_005758b0;
 extern float DAT_005758c4;
 extern "C" double __cdecl sqrt(double);
@@ -706,70 +699,74 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
     float dx;
     float dy;
     float len;
-    if (*(int*)((char*)ev + 8) != 0x200) {
-        return this->baseProcessNotify(ev, flags);
+    if (ev->mType != 0x200) {
+        return UnitAIModule::processNotify(ev, flags);
     }
     target = 0;
-    if (this->state != 0x258 ||
-        (target = this->obj->owner->world->object(this->target_id)) == 0 ||
+    if (this->currentActionValue != 0x258 ||
+        (target = this->objectValue->owner->world->object(this->currentTargetValue)) == 0 ||
         target->getSpeed() == DAT_005758c4)
         return 2;
 
-    this->order(this->obj->id, 0x2bc, this->target_id, -1, this->p3c, this->p40, this->p44, this->p48, 0, 1, this->p2c);
+    this->order(this->objectValue->id, 0x2bc, this->currentTargetValue, -1,
+                this->currentTargetXValue, this->currentTargetYValue,
+                this->currentTargetZValue, this->desiredTargetDistanceValue,
+                0, 1, this->currentOrderPriorityValue);
 
-    evasiveMoveDistance = this->obj->maximumSpeed() *
-                          this->obj->rateOfFire() * DAT_005758b0;
-    dx = target->world_x - this->obj->world_x;
-    dy = target->world_y - this->obj->world_y;
+    evasiveMoveDistance = this->objectValue->maximumSpeed() *
+                          this->objectValue->rateOfFire() * DAT_005758b0;
+    dx = target->world_x - this->objectValue->world_x;
+    dy = target->world_y - this->objectValue->world_y;
 
-    if (this->count > 0) {
+    if (this->attackingUnitsValue.numberValue > 0) {
         int i = 0;
-        while (i < this->count) {
-                if (i > this->capacity - 1) {
+        while (i < this->attackingUnitsValue.numberValue) {
+                if (i > this->attackingUnitsValue.maximumSizeValue - 1) {
                     int newCount = i + 1;
                     int* n = new int[newCount];
                     if (n) {
                         int j = 0;
-                        if (this->capacity > 0) {
+                        if (this->attackingUnitsValue.maximumSizeValue > 0) {
                             do {
                                 if (j < newCount) {
                                     ++j;
-                                    n[j-1] = this->ids[j-1];
+                                    n[j-1] = this->attackingUnitsValue.value[j-1];
                                 } else {
                                     break;
                                 }
-                            } while (j < this->capacity);
+                            } while (j < this->attackingUnitsValue.maximumSizeValue);
                         }
-                        delete[] this->ids;
-                        this->ids = n;
-                        this->capacity = newCount;
+                        delete[] this->attackingUnitsValue.value;
+                        this->attackingUnitsValue.value = n;
+                        this->attackingUnitsValue.maximumSizeValue = newCount;
                     }
                 }
-                if (this->ids[i] != this->target_id) {
-                    if (i > this->capacity - 1) {
+                if (this->attackingUnitsValue.value[i] != this->currentTargetValue) {
+                    if (i > this->attackingUnitsValue.maximumSizeValue - 1) {
                         int newCount = i + 1;
                         int* n = new int[newCount];
                         if (n) {
                             int j = 0;
-                            if (this->capacity > 0) {
+                            if (this->attackingUnitsValue.maximumSizeValue > 0) {
                                 do {
                                     if (j < newCount) {
                                         ++j;
-                                        n[j-1] = this->ids[j-1];
+                                        n[j-1] = this->attackingUnitsValue.value[j-1];
                                     } else {
                                         break;
                                     }
-                                } while (j < this->capacity);
+                                } while (j < this->attackingUnitsValue.maximumSizeValue);
                             }
-                            delete[] this->ids;
-                            this->ids = n;
-                            this->capacity = newCount;
+                            delete[] this->attackingUnitsValue.value;
+                            this->attackingUnitsValue.value = n;
+                            this->attackingUnitsValue.maximumSizeValue = newCount;
                         }
                     }
-                    RGE_Static_Object* obj2 = this->obj->owner->world->object(this->ids[i]);
+                    RGE_Static_Object* obj2 = this->objectValue->owner->world->object(
+                        this->attackingUnitsValue.value[i]);
                     if (obj2) {
-                        dx += obj2->world_x - this->obj->world_x;
-                        dy += obj2->world_y - this->obj->world_y;
+                        dx += obj2->world_x - this->objectValue->world_x;
+                        dy += obj2->world_y - this->objectValue->world_y;
                     }
                 }
             ++i;
@@ -777,9 +774,9 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
     }
 
     len = (float)sqrt(dx*dx + dy*dy);
-    this->evasiveMoveTo(this->obj->world_x + (-(dx / len * evasiveMoveDistance)),
-                        this->obj->world_y + (-(dy / len * evasiveMoveDistance)),
-                        this->obj->world_z, 1);
+    this->evasiveMoveTo(this->objectValue->world_x + (-(dx / len * evasiveMoveDistance)),
+                        this->objectValue->world_y + (-(dy / len * evasiveMoveDistance)),
+                        this->objectValue->world_z, 1);
     return 3;
 }
 
@@ -847,7 +844,7 @@ int TribeCivilianUnitAIModule::attackObject(int targetId, int param2) {
 
 int TribeCivilianUnitAIModule::canAttackUnit(RGE_Static_Object* obj) {
     if (!obj) return 0;
-    return obj->master_obj->id != 1;
+    return obj->master_obj->object_group != 1;
 }
 
 
@@ -906,13 +903,13 @@ int TribeCivilianUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 {
     switch (event->mType - 0x1f4) {
     case 0x1b:
-        if (taiuaimd_world_difficulty(this->objectValue->owner->world) >= 3) {
+        if (this->objectValue->owner->world->difficultyLevel() >= 3) {
             return 2;
         }
         // Intentional fall-through: 0x20f is the high-priority spelling of 0x1f4.
     case 0: {
         if (event->p2 <= 0) {
-            taiuaimd_player_notify(this->objectValue->owner,
+            this->objectValue->owner->notify(
                 this->objectValue->id, this->objectValue->id, 0x209,
                 event->caller, 0, 0);
             this->purgeNotifyQueue(param_2);
@@ -927,12 +924,12 @@ int TribeCivilianUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 
         if (this->objectValue->owner->computerPlayer() == 1) {
             if (eventObject->owner->id != 0 || eventObject->id != this->currentTargetValue) {
-                taiuaimd_player_notify(this->objectValue->owner,
+                this->objectValue->owner->notify(
                     this->objectValue->id, this->objectValue->id, 0x201,
                     event->caller, 0, 0);
             }
         } else if (this->attackingUnitsValue.numberValue == 0) {
-            taiuaimd_player_notify(this->objectValue->owner,
+            this->objectValue->owner->notify(
                 this->objectValue->id, this->objectValue->id, 0x201,
                 event->caller, 0, 0);
         }
@@ -986,7 +983,7 @@ found_attacker:
 already_attacking:
         this->objectValue->setUnderAttack(1);
         float speed = this->objectValue->getSpeed();
-        int state = taiuaimd_object_action_state(this->objectValue);
+        int state = this->objectValue->actionState();
 
         if (this->currentOrderValue == 0x2c6 && speed > 0.0f) {
             goto return_two;
@@ -996,14 +993,14 @@ already_attacking:
         }
         if (this->currentOrderValue == 0x2c9 && state == 0x0c &&
             targetObject != 0 && targetObject->master_obj->object_group == 10 &&
-            ((RGE_Static_Object*)(*(long*)((char*)event + 0x0C)))->owner->id == 0) {
+            eventObject->owner->id == 0) {
             goto return_two;
         }
         if (this->currentOrderValue == 0x2ce) {
             goto return_two;
         }
 
-        if (((RGE_Static_Object*)(*(long*)((char*)event + 0x0C)))->owner->id == 0) {
+        if (eventObject->owner->id == 0) {
             if (this->currentOrderValue != -1) {
                 this->order(this->objectValue->id, this->currentOrderValue,
                             this->currentTargetValue, -1,
@@ -1047,7 +1044,7 @@ already_attacking:
     }
 
     case 6:
-        if (this->currentActionValue == *(long*)((char*)event + 0x0C)) {
+        if (this->currentActionValue == event->p1) {
             this->removeCurrentTarget();
             if (actionFile != 0) {
                 int id;
@@ -1066,7 +1063,7 @@ already_attacking:
         break;
 
     case 5:
-        if (this->currentActionValue == *(long*)((char*)event + 0x0C)) {
+        if (this->currentActionValue == event->p1) {
             this->removeCurrentTarget();
             if (actionFile != 0) {
                 int id;
@@ -1239,7 +1236,7 @@ already_attacking:
                 result = this->closestObject(type, 3, 0, -1, 0);
             }
             if (result != -1 &&
-                taiuaimd_object_can_path(this->objectValue, result, 1.0f, 0, 0, -1, -1) == 1 &&
+                this->objectValue->canPath(result, 1.0f, 0, 0, -1, -1) == 1 &&
                 this->buildObject(result, 1) == 1) {
                 return 3;
             }
@@ -1326,8 +1323,28 @@ int TribeCivilianUnitAIModule::processMisc() { return 9; }
 TribePriestUnitAIModule::TribePriestUnitAIModule(RGE_Static_Object* param_1, int param_2)
     : UnitAIModule(param_1, param_2)
 {
-    this->field_128 = 0x11;
-    this->field_124 = (int)operator_new(0x44);
+    this->numberImportantObjects = 0x11;
+    this->importantObjects = (int*)operator new(0x44);
+
+    if (this->importantObjects) {
+        importantObjects[0] = 3;
+        this->importantObjects[1] = 0;
+        this->importantObjects[2] = 4;
+        this->importantObjects[3] = 0x1A;
+        this->importantObjects[4] = 0x18;
+        this->importantObjects[5] = 6;
+        this->importantObjects[6] = 0x19;
+        this->importantObjects[7] = 0x11;
+        this->importantObjects[8] = 0x0A;
+        this->importantObjects[9] = 0x0C;
+        this->importantObjects[10] = 0x23;
+        this->importantObjects[11] = 0x17;
+        this->importantObjects[12] = 0x24;
+        this->importantObjects[13] = 0x1C;
+        this->importantObjects[14] = 0x12;
+        this->importantObjects[15] = 0x0D;
+        this->importantObjects[16] = 0x27;
+    }
 }
 
 // VA: 005059A0 TribePriestUnitAIModule::attackObject(int, int)
@@ -1363,9 +1380,9 @@ TribePriestUnitAIModule::TribePriestUnitAIModule(RGE_Static_Object* param_1, int
 
 int TribePriestUnitAIModule::attackObject(int param_1, int param_2) {
     if (this->canConvert(param_1) == 0) {
-        if (this->field_28 == -1) {
-            if (this->unit->owner->computerPlayer() != 0) {
-                return this->moveTo(param_1, this->unit->weaponRange(), param_2);
+        if (this->currentOrderValue == -1) {
+            if (this->objectValue->owner->computerPlayer() != 0) {
+                return this->moveTo(param_1, this->objectValue->weaponRange(), param_2);
             }
         }
         return 0;
@@ -1382,10 +1399,8 @@ int TribePriestUnitAIModule::retryableOrder(int value) {
 
 
 int TribePriestUnitAIModule::canConvert(int id) {
-    char* base = (char*)this->some_ptr;
-
-    if (*(float*)(base + 0x44) >= 100.0f) {
-        RGE_Static_Object* obj = (*(RGE_Game_World**)(*(char**)(base + 0x0C) + 0x3C))->object(id);
+    if (this->objectValue->attribute_amount_held >= 100.0f) {
+        RGE_Static_Object* obj = this->objectValue->owner->world->object(id);
         if (obj) {
             int og = obj->master_obj->object_group;
             short sid = obj->master_obj->id;
@@ -1398,8 +1413,8 @@ int TribePriestUnitAIModule::canConvert(int id) {
             if (sid == 0xA3) return 0;
             if (og == 0x1E) return 0;
 
-            if (og == 0x12 && *(float*)(*(char**)(*(char**)((char*)this->some_ptr + 0x0C) + 0x50) + 0x6C) <= 0.0f) return 0;
-            if (og == 3 && *(float*)(*(char**)(*(char**)((char*)this->some_ptr + 0x0C) + 0x50) + 0x70) <= 0.0f) return 0;
+            if (og == 0x12 && this->objectValue->owner->attributes[0x1B] <= 0.0f) return 0;
+            if (og == 3 && this->objectValue->owner->attributes[0x1C] <= 0.0f) return 0;
 
             return 1;
         }
@@ -1512,8 +1527,8 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
     a = 1;
     for (; a <= maxLimit; ++a) {
         i = 0;
-        if (taiuaimd_heal_counts[a - 1] > 0) {
-            HealUnitRecord** listPtr = &taiuaimd_heal_records[a - 1];
+        if (VisibleUnitList_Size[a - 1] > 0) {
+            VISIBLE_UNIT_REC** listPtr = &VisibleUnitList[a - 1];
             do {
                 if ((*listPtr)[i].object_id != this->objectValue->id) {
                     RGE_Static_Object* unit =
@@ -1523,19 +1538,19 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
                             if ((float)(int)unit->master_obj->hp > unit->hp) {
                                 if (unit->object_state < 3) {
                                     if (param_1 != 0 ||
-                                        (*listPtr)[i].priority <= 4) {
+                                        (*listPtr)[i].distance <= 4) {
                                         if (this->objectValue->owner->id != 0 ||
-                                            (*listPtr)[i].priority <= 2) {
-                                            if (taiuaimd_object_can_see(this->objectValue,
+                                            (*listPtr)[i].distance <= 2) {
+                                            if (this->objectValue->canPath(
                                                     (*listPtr)[i].object_id,
                                                     1.0f, 0, 0, -1, -1)) {
                                                 float need = (float)(int)unit->master_obj->hp -
-                                                    unit->hp / (float)(int)(*listPtr)[i].priority;
+                                                    unit->hp / (float)(int)(*listPtr)[i].distance;
                                                 if (allyToHealID == -1 || need < allyNeed) {
                                                     allyNeed = need;
                                                     allyToHealID = unit->id;
                                                     if (param_2 != 0) {
-                                                        *param_2 = (float)(int)(*listPtr)[i].priority;
+                                                        *param_2 = (float)(int)(*listPtr)[i].distance;
                                                     }
                                                 }
                                             }
@@ -1547,7 +1562,7 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
                     }
                 }
                 ++i;
-            } while (i < taiuaimd_heal_counts[a - 1]);
+            } while (i < VisibleUnitList_Size[a - 1]);
         }
         if (allyToHealID != -1) {
             break;
@@ -1596,17 +1611,17 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* param_1)
     float targetValue = 0.0f;
     int i = 0;
 
-    if ((int)DAT_0087d7d8 > 0) {
+    if (VisibleUnitList_Size[3] > 0) {
         do {
-            if (taiuaimd_player_is_enemy(this->objectValue->owner,
-                    (int)((VISIBLE_UNIT_REC*)DAT_0087d7f0)[i].player) != 0) {
+            if (this->objectValue->owner->isEnemy(
+                    (int)VisibleUnitList[3][i].player) != 0) {
                 RGE_Static_Object* found = this->lookupObject(
-                    ((VISIBLE_UNIT_REC*)DAT_0087d7f0)[i].object_id);
+                    VisibleUnitList[3][i].object_id);
 
                 if (found != 0 && found->object_state < 3) {
                     if (this->canConvert(found->id) != 0) {
                         float priority =
-                            (float)((VISIBLE_UNIT_REC*)DAT_0087d7f0)[i].distance;
+                            (float)VisibleUnitList[3][i].distance;
                         if (priority < 1.0f)
                             priority = 1.0f;
 
@@ -1625,7 +1640,7 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* param_1)
             }
 
             i++;
-        } while (i < (int)DAT_0087d7d8);
+        } while (i < VisibleUnitList_Size[3]);
     }
 
     return best_id;
@@ -1648,7 +1663,7 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* event, unsigned long par
     case 0x1f9:
     case 0x1fb:
     case 0x202:
-        if (this->objectValue->owner->computerPlayer() == 0 && this->field_30 == 0x25c) {
+        if (this->objectValue->owner->computerPlayer() == 0 && this->currentActionValue == 0x25c) {
             this->removeCurrentTarget();
             if (actionFile != 0) {
                 int objId;
@@ -1663,12 +1678,12 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* event, unsigned long par
             this->notifyCommander(event);
             return 2;
         }
-        if (this->field_30 == 0x25c) {
+        if (this->currentActionValue == 0x25c) {
             int id = this->bestUnitToConvert(0);
             if (id != -1 && this->convertObject(id, 1) == 1) {
                 return 3;
             }
-        } else if (this->field_30 == 0x25b) {
+        } else if (this->currentActionValue == 0x25b) {
             int id = this->bestUnitToHeal(0, 0);
             if (id != -1 && this->healObject(id, 1) == 1) {
                 return 3;
@@ -1690,9 +1705,9 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* event, unsigned long par
 
     case 0x1fc:
     {
-        RGE_Static_Object* obj = this->lookupObject(this->field_34);
+        RGE_Static_Object* obj = this->lookupObject(this->currentTargetValue);
         if (obj != 0) {
-            if (this->visibleStatus(taiuaimd_player_visible_map(this->objectValue->owner),
+            if (this->visibleStatus(this->objectValue->owner->visible,
                                     (int)obj->world_x, (int)obj->world_y) == 0x0f) {
                 return 2;
             }
@@ -1754,7 +1769,7 @@ int TribePriestUnitAIModule::processIdle(int param_1)
             return 6;
         }
 
-    int range = (int)DAT_0087d7d8;
+    int range = VisibleUnitList_Size[3];
     int r = debug_rand("C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x6AC) % (range + 2);
     if (range > 0 && r > range) {
         float local_4;
@@ -1978,20 +1993,20 @@ int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 
     if (event->p2 <= 0) {
         RGE_Static_Object* obj = this->objectValue;
-        taiuaimd_player_notify(obj->owner, obj->id, obj->id, 0x209, event->caller, 0, 0);
+        obj->owner->notify(obj->id, obj->id, 0x209, event->caller, 0, 0);
         this->purgeNotifyQueue(param_2);
         return 4;
     }
 
-    if (this->helpCount == 0 || this->objectValue->owner->computerPlayer() == 1) {
+    if (this->attackingUnitsValue.numberValue == 0 || this->objectValue->owner->computerPlayer() == 1) {
         RGE_Static_Object* obj = this->objectValue;
-        taiuaimd_player_notify(obj->owner, obj->id, obj->id, 0x201, event->caller, 0, 0);
+        obj->owner->notify(obj->id, obj->id, 0x201, event->caller, 0, 0);
     }
 
-    int count = this->helpCount;
+    int count = this->attackingUnitsValue.numberValue;
     int i = 0;
-    for (; i < count && i < this->helpMax; ++i) {
-        if (this->helpList[i] == event->caller) {
+    for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+        if (this->attackingUnitsValue.value[i] == event->caller) {
             goto skip_help;
         }
     }
@@ -2003,27 +2018,28 @@ int TribeTradeShipUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 skip_help:
     i = 0;
     int caller = event->caller;
-    count = this->helpCount;
-    for (; i < count && i < this->helpMax; ++i) {
-        if (this->helpList[i] == caller) {
+    count = this->attackingUnitsValue.numberValue;
+    for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+        if (this->attackingUnitsValue.value[i] == caller) {
             goto after_add;
         }
     }
 
-    if (this->helpCount > this->helpMax - 1) {
-        int newMax = this->helpCount + 1;
+    if (this->attackingUnitsValue.numberValue >
+        this->attackingUnitsValue.maximumSizeValue - 1) {
+        int newMax = this->attackingUnitsValue.numberValue + 1;
         int* newList = (int*)operator new(newMax * 4);
         if (newList != 0) {
-            for (i = 0; i < this->helpMax && i < newMax; ++i) {
-                newList[i] = this->helpList[i];
+            for (i = 0; i < this->attackingUnitsValue.maximumSizeValue && i < newMax; ++i) {
+                newList[i] = this->attackingUnitsValue.value[i];
             }
-            operator delete(this->helpList);
-            this->helpList = newList;
-            this->helpMax = newMax;
+            operator delete(this->attackingUnitsValue.value);
+            this->attackingUnitsValue.value = newList;
+            this->attackingUnitsValue.maximumSizeValue = newMax;
         }
     }
-    this->helpList[this->helpCount] = caller;
-    this->helpCount++;
+    this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
+    this->attackingUnitsValue.numberValue++;
 
 after_add:
     this->objectValue->setUnderAttack(1);
@@ -2077,20 +2093,20 @@ after_add:
 
 int TribeTradeShipUnitAIModule::processIdle(int param_1)
 {
-    if (this->obj->owner->computerPlayer()) {
+    if (this->objectValue->owner->computerPlayer()) {
         int targetId = this->closestObject(-1, -1, -1, -1, 0);
         if (targetId != -1) {
-            RGE_Static_Object* target = this->obj->owner->world->object(targetId);
+            RGE_Static_Object* target = this->objectValue->owner->world->object(targetId);
             if (target != 0) {
-                float speed = this->obj->maximumSpeed() * 7.0f;
-                float xDiff = target->world_x - this->obj->world_x;
-                float yDiff = target->world_y - this->obj->world_y;
+                float speed = this->objectValue->maximumSpeed() * 7.0f;
+                float xDiff = target->world_x - this->objectValue->world_x;
+                float yDiff = target->world_y - this->objectValue->world_y;
                 float distance = (float)sqrt(xDiff * xDiff + yDiff * yDiff);
 
-                this->moveTo(
-                    (float)(-(xDiff / distance * speed)) + this->obj->world_x,
-                    (float)(-(yDiff / distance * speed)) + this->obj->world_y,
-                    this->obj->world_z, 1);
+                this->evasiveMoveTo(
+                    (float)(-(xDiff / distance * speed)) + this->objectValue->world_x,
+                    (float)(-(yDiff / distance * speed)) + this->objectValue->world_y,
+                    this->objectValue->world_z, 1);
                 return 6;
             }
         }
@@ -2159,56 +2175,59 @@ int TribeTransportShipUnitAIModule::processNotify(NotifyEvent* event, ulong para
     }
 
     if (event->p2 <= 0) {
-        RGE_Static_Object* o = this->obj;
-        taiuaimd_player_notify(o->owner, o->id, o->id, 0x209, event->caller, 0, 0);
+        RGE_Static_Object* o = this->objectValue;
+        o->owner->notify(o->id, o->id, 0x209, event->caller, 0, 0);
         this->purgeNotifyQueue(param_2);
         return 4;
     }
 
-    if (this->helpCount == 0 || ((RGE_Player*)this->obj->owner)->computerPlayer() == 1) {
-        RGE_Static_Object* o = this->obj;
-        taiuaimd_player_notify(o->owner, o->id, o->id, 0x201, event->caller, 0, 0);
+    if (this->attackingUnitsValue.numberValue == 0 ||
+        this->objectValue->owner->computerPlayer() == 1) {
+        RGE_Static_Object* o = this->objectValue;
+        o->owner->notify(o->id, o->id, 0x201, event->caller, 0, 0);
     }
 
-    int count = this->helpCount;
+    int count = this->attackingUnitsValue.numberValue;
     int i = 0;
-    for (; i < count && i < this->helpMax; ++i) {
-        if (this->helpList[i] == event->caller) goto found_for_help;
+    for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+        if (this->attackingUnitsValue.value[i] == event->caller) goto found_for_help;
     }
-    if (((RGE_Player*)this->obj->owner)->computerPlayer() == 0 && this->currentTarget != event->caller) {
+    if (this->objectValue->owner->computerPlayer() == 0 &&
+        this->currentTargetValue != event->caller) {
         this->askForHelp(event->caller);
     }
 
 found_for_help:
     i = 0;
     int caller = event->caller;
-    count = this->helpCount;
-    for (; i < count && i < this->helpMax; ++i) {
-        if (this->helpList[i] == caller) goto already_in_list;
+    count = this->attackingUnitsValue.numberValue;
+    for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+        if (this->attackingUnitsValue.value[i] == caller) goto already_in_list;
     }
 
-    if (this->helpCount > this->helpMax - 1) {
-        int newMax = this->helpCount + 1;
+    if (this->attackingUnitsValue.numberValue >
+        this->attackingUnitsValue.maximumSizeValue - 1) {
+        int newMax = this->attackingUnitsValue.numberValue + 1;
         int* newList = (int*)operator new(newMax * 4);
         if (newList != 0) {
-            for (i = 0; i < this->helpMax && i < newMax; ++i)
-                newList[i] = this->helpList[i];
-            operator delete(this->helpList);
-            this->helpList = newList;
-            this->helpMax = newMax;
+            for (i = 0; i < this->attackingUnitsValue.maximumSizeValue && i < newMax; ++i)
+                newList[i] = this->attackingUnitsValue.value[i];
+            operator delete(this->attackingUnitsValue.value);
+            this->attackingUnitsValue.value = newList;
+            this->attackingUnitsValue.maximumSizeValue = newMax;
         }
     }
-    this->helpList[this->helpCount] = caller;
-    this->helpCount++;
+    this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
+    this->attackingUnitsValue.numberValue++;
 
 already_in_list:
-    this->obj->setUnderAttack(1);
-    if (this->currentOrder != -1) {
+    this->objectValue->setUnderAttack(1);
+    if (this->currentOrderValue != -1) {
         return 2;
     }
 
-    RGE_Action_Object* obj2 = (RGE_Action_Object*)this->obj;
-    if (!obj2->action_list->have_action() || obj2->action_list->get_action()->state == 2) {
+    RGE_Action_Object* obj2 = (RGE_Action_Object*)this->objectValue;
+    if (!obj2->actions->have_action() || obj2->actions->get_action()->state == 2) {
         this->runAwayFromAttackers(1);
     }
     return 3;
@@ -2233,23 +2252,23 @@ already_in_list:
 
 int TribeTransportShipUnitAIModule::processIdle(int param_1)
 {
-    if (this->sub->owner->computerPlayer()) {
+    if (this->objectValue->owner->computerPlayer()) {
         int targetId = closestObject(-1, -1, -1, -1, 0);
 
         if (targetId != -1) {
-            RGE_Static_Object* target = this->sub->owner->world->object(targetId);
+            RGE_Static_Object* target = this->objectValue->owner->world->object(targetId);
 
             if (target != 0) {
-                float speed = this->sub->maximumSpeed() * 7.0f;
+                float speed = this->objectValue->maximumSpeed() * 7.0f;
 
-                float dx = target->world_x - this->sub->world_x;
-                float dy = target->world_y - this->sub->world_y;
+                float dx = target->world_x - this->objectValue->world_x;
+                float dy = target->world_y - this->objectValue->world_y;
                 float dist = (float)sqrt(dx * dx + dy * dy);
 
-                float move_x = (float)(-((dx / dist) * speed)) + this->sub->world_x;
-                float move_y = (float)(-((dy / dist) * speed)) + this->sub->world_y;
+                float move_x = (float)(-((dx / dist) * speed)) + this->objectValue->world_x;
+                float move_y = (float)(-((dy / dist) * speed)) + this->objectValue->world_y;
 
-                moveTo(move_x, move_y, this->sub->world_z, 1);
+                evasiveMoveTo(move_x, move_y, this->objectValue->world_z, 1);
 
                 return 6;
             }
@@ -2339,20 +2358,20 @@ int TribeFishingShipUnitAIModule::processNotify(NotifyEvent* ev, ulong flags)
 
     if (ev->p2 <= 0) {
         RGE_Static_Object* obj = this->objectValue;
-        taiuaimd_player_notify(obj->owner, obj->id, obj->id, 0x209, ev->caller, 0, 0);
+        obj->owner->notify(obj->id, obj->id, 0x209, ev->caller, 0, 0);
         this->purgeNotifyQueue(flags);
         return 4;
     }
 
-    if (this->helpCount == 0 || this->objectValue->owner->computerPlayer() == 1) {
+    if (this->attackingUnitsValue.numberValue == 0 || this->objectValue->owner->computerPlayer() == 1) {
         RGE_Static_Object* obj = this->objectValue;
-        taiuaimd_player_notify(obj->owner, obj->id, obj->id, 0x201, ev->caller, 0, 0);
+        obj->owner->notify(obj->id, obj->id, 0x201, ev->caller, 0, 0);
     }
 
-    int count = this->helpCount;
+    int count = this->attackingUnitsValue.numberValue;
     int i = 0;
-    for (; i < count && i < this->helpMax; ++i) {
-        if (this->helpList[i] == ev->caller) goto skip_help;
+    for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+        if (this->attackingUnitsValue.value[i] == ev->caller) goto skip_help;
     }
     if (this->objectValue->owner->computerPlayer() == 0 &&
         this->currentTargetValue != ev->caller) {
@@ -2362,24 +2381,25 @@ int TribeFishingShipUnitAIModule::processNotify(NotifyEvent* ev, ulong flags)
 skip_help:
     i = 0;
     int caller = ev->caller;
-    count = this->helpCount;
-    for (; i < count && i < this->helpMax; ++i) {
-        if (this->helpList[i] == caller) goto after_add;
+    count = this->attackingUnitsValue.numberValue;
+    for (; i < count && i < this->attackingUnitsValue.maximumSizeValue; ++i) {
+        if (this->attackingUnitsValue.value[i] == caller) goto after_add;
     }
 
-    if (this->helpCount > this->helpMax - 1) {
-        int newMax = this->helpCount + 1;
+    if (this->attackingUnitsValue.numberValue >
+        this->attackingUnitsValue.maximumSizeValue - 1) {
+        int newMax = this->attackingUnitsValue.numberValue + 1;
         int* newList = (int*)operator new(newMax * 4);
         if (newList != 0) {
-            for (i = 0; i < this->helpMax && i < newMax; ++i)
-                newList[i] = this->helpList[i];
-            operator delete(this->helpList);
-            this->helpList = newList;
-            this->helpMax = newMax;
+            for (i = 0; i < this->attackingUnitsValue.maximumSizeValue && i < newMax; ++i)
+                newList[i] = this->attackingUnitsValue.value[i];
+            operator delete(this->attackingUnitsValue.value);
+            this->attackingUnitsValue.value = newList;
+            this->attackingUnitsValue.maximumSizeValue = newMax;
         }
     }
-    this->helpList[this->helpCount] = caller;
-    this->helpCount++;
+    this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = caller;
+    this->attackingUnitsValue.numberValue++;
 
 after_add:
     this->objectValue->setUnderAttack(1);
@@ -2448,9 +2468,9 @@ int TribeFishingShipUnitAIModule::processIdle(int param_1)
                 float yDiff = target->world_y - objectValue->world_y;
                 float distance = (float)sqrt(xDiff * xDiff + yDiff * yDiff);
 
-                moveTo((0.0f - ((xDiff / distance) * speed)) + objectValue->world_x,
-                       (0.0f - ((yDiff / distance) * speed)) + objectValue->world_y,
-                       objectValue->facet, 1);
+                evasiveMoveTo((0.0f - ((xDiff / distance) * speed)) + objectValue->world_x,
+                              (0.0f - ((yDiff / distance) * speed)) + objectValue->world_y,
+                              objectValue->world_z, 1);
                 return 6;
             }
         }
@@ -2464,8 +2484,6 @@ int TribeFishingShipUnitAIModule::processIdle(int param_1)
 // Historical exact flags: config/flags/00506FE0_TribeSoldierUnitAIModule.rsp
 // Canonical-context check: the PDB 0x134 base and PAV parameter symbol remain exact.
 
-
-void* operator new(size_t size);
 
 TribeSoldierUnitAIModule::TribeSoldierUnitAIModule(RGE_Static_Object* obj, int param)
     : UnitAIModule(obj, param)
@@ -2568,10 +2586,6 @@ int TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(int value) {
 // intelligentEvasiveMoveTo succeeds. Keep this order and these fault boundaries.
 
 
-extern void* operator new(unsigned int size);
-extern void operator delete(void* ptr);
-
-extern "C" int debug_rand(char*, int);
 extern float DAT_005758bc;
 extern float DAT_005758c0;
 extern float DAT_005758dc;
@@ -2638,7 +2652,7 @@ int TribeSoldierUnitAIModule::processNotify(NotifyEvent* param_1, ulong param_2)
                 evasiveMoveDistance, fStack_8,
                 this->objectValue->world_z, 1, 1) != 1)
             break;
-        *(int*)0x592A48 = 1;
+        taskedThisUpdate = 1;
         return 3;
     }
 
@@ -2792,7 +2806,7 @@ int TribeSoldierUnitAIModule::processIdle(int param_1)
     if (this->objectValue->owner->id != 0 &&
         (this->objectValue->owner->computerPlayer() != 0 ||
          this->objectValue->master_obj->id != 0x12B)) {
-        if (this->currentActionValue != 0x2D5 ||
+        if (this->currentOrderValue != 0x2D5 ||
             (this->objectValue->master_obj->id != 0x23 &&
              this->objectValue->master_obj->id != 0x24 &&
              this->objectValue->master_obj->id != 0xFA)) {
@@ -2802,19 +2816,19 @@ int TribeSoldierUnitAIModule::processIdle(int param_1)
             }
 
             if (this->objectValue->owner->computerPlayer() != 0 &&
-                taiuaimd_object_in_group(this->objectValue) != 1) {
-                taiuaimd_world_difficulty(this->objectValue->owner->world);
+                this->objectValue->inGroup() != 1) {
+                this->objectValue->owner->world->difficultyLevel();
 
                 if ((rge_base_game->scenarioGame() == 1 &&
                      rge_base_game->singlePlayerGame() == 1 &&
-                     taiuaimd_player_strategic_number(this->objectValue->owner, 0x8F) == 0) ||
+                     this->objectValue->owner->strategicNumber(0x8F) == 0) ||
                     (rge_base_game->singlePlayerGame() == 1 &&
-                     taiuaimd_player_strategic_number(this->objectValue->owner, 0x8F) == 0)) {
+                     this->objectValue->owner->strategicNumber(0x8F) == 0)) {
                     return 5;
                 }
 
-                if (this->currentActionValue != 0x2BD &&
-                    this->currentActionValue != 0x2D5) {
+                if (this->currentOrderValue != 0x2BD &&
+                    this->currentOrderValue != 0x2D5) {
                     int targetID2 = this->closestObject(-1, -1, -1, -1, 0);
                     if (targetID2 != -1) {
                         RGE_Static_Object* target =
@@ -2848,9 +2862,6 @@ int TribeSoldierUnitAIModule::processIdle(int param_1)
 // VA: 00507880, TribeArtifactUnitAIModule::TribeArtifactUnitAIModule
 // Donor: exact UnitAIModule-derived constructor shape from taiuaimd.cpp.
 // Historical exact flags: config/flags/00507880_TribeArtifactUnitAIModule.rsp
-
-
-void* operator new(size_t size);
 
 
 TribeArtifactUnitAIModule::TribeArtifactUnitAIModule(
@@ -2900,18 +2911,14 @@ extern FILE* actionFile;
 extern int fprintf(void*, const char*, ...);
 extern const char str_taiuaimd_path[];
 extern const char str_fmt_stopObject[];
-extern void* operator new(unsigned int);
-extern void operator delete(void*);
-
-
 int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long flags)
 {
 
     switch (event->mType) {
     case 0x1fc: {
-        RGE_Static_Object* obj = this->objectValue->owner->world->object(this->targetId);
+        RGE_Static_Object* obj = this->objectValue->owner->world->object(this->currentTargetValue);
         if (obj != 0) {
-            if (taiuaimd_player_visible_map(this->objectValue->owner)->get_visible(
+            if (this->objectValue->owner->visible->get_visible(
                     (int)obj->world_x, (int)obj->world_y) == 0x0f)
                 return 2;
         }
@@ -2931,8 +2938,8 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
     }
 
     case 0x1fa:
-        if (this->field_28 != -1) {
-            if (this->field_30 + 0x64 == this->field_28) {
+        if (this->currentOrderValue != -1) {
+            if (this->currentActionValue + 0x64 == this->currentOrderValue) {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int objId;
@@ -2948,8 +2955,8 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
                 return 2;
             }
         }
-        if (this->field_28 != -1) return 2;
-        if (this->field_30 != *(int*)((char*)event + 0x0C)) return 2;
+        if (this->currentOrderValue != -1) return 2;
+        if (this->currentActionValue != event->p1) return 2;
         this->removeCurrentTarget();
         if (actionFile != 0) {
             int objId;
@@ -2965,8 +2972,8 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
         return 2;
 
     case 0x1f9:
-        if (this->field_28 != -1) {
-            if (this->field_30 + 0x64 == this->field_28) {
+        if (this->currentOrderValue != -1) {
+            if (this->currentActionValue + 0x64 == this->currentOrderValue) {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int objId;
@@ -2982,8 +2989,8 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
                 return 2;
             }
         }
-        if (this->field_28 != -1) return 2;
-        if (this->field_30 != *(int*)((char*)event + 0x0C)) return 2;
+        if (this->currentOrderValue != -1) return 2;
+        if (this->currentActionValue != event->p1) return 2;
         this->removeCurrentTarget();
         if (actionFile != 0) {
             int objId;
@@ -2999,8 +3006,8 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
         return 2;
 
     case 0x1fb:
-        if (this->field_28 != -1) {
-            if (this->field_30 + 0x64 == this->field_28) {
+        if (this->currentOrderValue != -1) {
+            if (this->currentActionValue + 0x64 == this->currentOrderValue) {
                 this->removeCurrentTarget();
                 if (actionFile != 0) {
                     int objId;
@@ -3016,8 +3023,8 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
                 return 2;
             }
         }
-        if (this->field_28 != -1) return 2;
-        if (this->field_30 != *(int*)((char*)event + 0x0C)) return 2;
+        if (this->currentOrderValue != -1) return 2;
+        if (this->currentActionValue != event->p1) return 2;
         this->removeCurrentTarget();
         if (actionFile != 0) {
             int objId;
@@ -3033,26 +3040,28 @@ int TribeArtifactUnitAIModule::processNotify(NotifyEvent* event, unsigned long f
         return 2;
 
     case 600: {
-        int id = *(int*)((char*)event + 0x00);
+        int id = event->caller;
         int i = 0;
-        while (i < this->count && i < this->capacity) {
-            if (this->ids[i] == id) goto already;
+        while (i < this->attackingUnitsValue.numberValue &&
+               i < this->attackingUnitsValue.maximumSizeValue) {
+            if (this->attackingUnitsValue.value[i] == id) goto already;
             ++i;
         }
 
-        if (this->count > this->capacity - 1) {
-            int newCount = this->count + 1;
+        if (this->attackingUnitsValue.numberValue >
+            this->attackingUnitsValue.maximumSizeValue - 1) {
+            int newCount = this->attackingUnitsValue.numberValue + 1;
             int* p = (int*)operator new(newCount * 4);
             if (p != 0) {
-                for (int j = 0; j < this->capacity && j < newCount; ++j)
-                    p[j] = this->ids[j];
-                operator delete(this->ids);
-                this->ids = p;
-                this->capacity = newCount;
+                for (int j = 0; j < this->attackingUnitsValue.maximumSizeValue && j < newCount; ++j)
+                    p[j] = this->attackingUnitsValue.value[j];
+                operator delete(this->attackingUnitsValue.value);
+                this->attackingUnitsValue.value = p;
+                this->attackingUnitsValue.maximumSizeValue = newCount;
             }
         }
-        this->ids[this->count] = id;
-        ++this->count;
+        this->attackingUnitsValue.value[this->attackingUnitsValue.numberValue] = id;
+        ++this->attackingUnitsValue.numberValue;
 already:
         this->objectValue->setUnderAttack(1);
         return 2;
@@ -3302,19 +3311,19 @@ extern FILE* actionFile;
 
 int TribeArtifactUnitAIModule::processMisc()
 {
-    if (this->getActionState(1) == 6) {
+    if (this->processIdle(1) == 6) {
         this->removeCurrentTarget();
         if (actionFile != 0) {
             int value;
-            if (this->obj != 0) {
-                value = *(int*)((char*)this->obj + 4);
+            if (this->objectValue != 0) {
+                value = this->objectValue->id;
             } else {
                 value = -1;
             }
             fprintf(actionFile, "#%d call stopObject %s %d\n", value, "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0xB60);
         }
         this->stopObject(1);
-        this->field_F8 = 0;
+        this->idleTimerValue = 0;
         return 10;
     }
     return 9;
@@ -3361,9 +3370,9 @@ TribeTowerUnitAIModule::TribeTowerUnitAIModule(RGE_Static_Object* obj, int param
 int TribeTowerUnitAIModule::canAttackUnit(RGE_Static_Object* target) {
     if (target == 0)
         return 0;
-    if (*(short*)((char*)target->master_obj + 0x14) == 1)
+    if (target->master_obj->object_group == 1)
         return 0;
-    if (this->object->interaction_type < 2)
+    if (this->objectValue->object_state < 2)
         return 0;
     return 1;
 }
@@ -3420,7 +3429,7 @@ TribeBuildingUnitAIModule::TribeBuildingUnitAIModule(RGE_Static_Object* obj, int
 // surfaces from 005068B0 and modeled the three binary dispatch cases (0x1f4, 0x258, 0x2bb).
 // probe 2: adding the full list-growth/removal bodies improved structure but left two inline
 // growth calls and no real resize call.
-// probe 3: modeling +0x60 as ManagedArray_int and using resize for 0x1f4 reduced the body to
+// probe 3: modeling +0x60 as ManagedArray<int> and using resize for 0x1f4 reduced the body to
 // 607 bytes and restored the direct resize relocation.
 // probe 4: normalized the switch expression; no lookup table was emitted and it was rolled back.
 // probe 5: added the binary-proven type 0x20b/default-return arm; VC5 emitted the expected
@@ -3467,26 +3476,26 @@ int TribeBuildingUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
     case 0:
     {
         if (event->p2 <= 0) {
-            RGE_Static_Object* obj = this->obj;
-            taiuaimd_player_notify(obj->owner, obj->id, obj->id, 0x209, event->caller, 0, 0);
+            RGE_Static_Object* obj = this->objectValue;
+            obj->owner->notify(obj->id, obj->id, 0x209, event->caller, 0, 0);
             this->purgeNotifyQueue(param_2);
             return 4;
         }
 
         if (this->attackingUnitsValue.numberValue == 0 ||
-            this->obj->owner->computerPlayer() == 1) {
-            RGE_Static_Object* obj = this->obj;
-            taiuaimd_player_notify(obj->owner, obj->id, obj->id, 0x201, event->caller, 0, 0);
+            this->objectValue->owner->computerPlayer() == 1) {
+            RGE_Static_Object* obj = this->objectValue;
+            obj->owner->notify(obj->id, obj->id, 0x201, event->caller, 0, 0);
         }
 
-        ManagedArray_int* array = (ManagedArray_int*)&this->attackingUnitsValue;
+        ManagedArray<int>* array = &this->attackingUnitsValue;
         int count = array->numberValue;
         int i = 0;
         for (; i < count && i < array->maximumSizeValue; ++i) {
             if (array->value[i] == event->caller) goto found_for_help;
         }
-        if (this->obj->owner->computerPlayer() == 0 &&
-            this->currentTarget != event->caller) {
+        if (this->objectValue->owner->computerPlayer() == 0 &&
+            this->currentTargetValue != event->caller) {
             this->askForHelp(event->caller);
         }
 
@@ -3505,7 +3514,7 @@ found_for_help:
         array->numberValue++;
 
 already_in_list:
-        this->obj->setUnderAttack(1);
+        this->objectValue->setUnderAttack(1);
         return 2;
     }
 
@@ -3537,7 +3546,7 @@ already_in_list:
         this->attackingUnitsValue.numberValue++;
 
 changed_258:
-        this->obj->setUnderAttack(1);
+        this->objectValue->setUnderAttack(1);
         return 2;
     }
 
@@ -3551,7 +3560,7 @@ changed_258:
         return 2;
 
 found_2bb:
-        ManagedArray_int* array = (ManagedArray_int*)&this->attackingUnitsValue;
+        ManagedArray<int>* array = &this->attackingUnitsValue;
         int max = array->maximumSizeValue;
         int caller = event->caller;
         i = 0;

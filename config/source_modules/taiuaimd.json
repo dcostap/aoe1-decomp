@@ -66,7 +66,7 @@
     "00508110": { "status": "matching", "note_path": "recovery_notes/taiuaimd_module.md" },
     "00508140": { "status": "scratch", "note_path": "recovery_notes/taiuaimd_module.md" },
     "00508170": { "status": "matching", "note_path": "recovery_notes/taiuaimd_module.md" },
-    "00508320": { "status": "matching", "note_path": "recovery_notes/taiuaimd_module.md" },
+    "00508320": { "status": "scratch", "note_path": "recovery_notes/taiuaimd_module.md" },
     "00508660": { "status": "matching", "note_path": "recovery_notes/taiuaimd_module.md" }
   }
 }
