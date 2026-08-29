@@ -17,6 +17,7 @@ in `src/game_globals.cpp`.
 | World status | `visible_combats`, `logStatusFile`, `lastStatusLogTime` | `World.cpp` GDATA records at the three adjacent storage records |
 | AI controls | `allowAIToCheat`, `useComputerPlayers`, `die_die_die` | BaseGame, TPlayer, TWorld, and screen relocations |
 | Visibility | `VIS_UNIT_objectsValue`, `VisibleUnitList`, `VisibleUnitList_Size`, `VisibleUnitManager` | `vis_unit.cpp` and World GDATA records |
+| LOS tables | `Edge_Offsets_N0` through `Edge_Offsets_N16`, `Edge_Offsets_T0` through `Edge_Offsets_T16`, `NormalLOS`, `SquareLOS` | `visible.cpp` GDATA records and section contribution; table bytes and pointer relocations match the original |
 | Map visibility | `unified_map_offsets[1024]` | `visible.cpp`, object, view, and map relocations; PDB type `0x1150` |
 | Main and BaseGame | `AppInst`, `TRIBE_GUID`, `ZONE_GUID` | BaseGame and WinMain relocations; GUIDs use C linkage |
 | Visibility log | `Map_Update_Suppresion`, `VCALL_LOG_HEAD`, `VCALL_LOG_TAIL`, `VCALL_LOG[1024]` | `visible.cpp` GDATA records and direct stores |
@@ -57,15 +58,20 @@ caused by this storage change.
 
 ## Held storage
 
-The PDB proves `NormalLOS`, `SquareLOS`, the edge tables, `pathSystem`, and
-`aiPathSystem`. Their current sources use table initialization or placement
-construction that needs its original owner. This pass does not move them or
-invent a raw-address carrier. Reopen this hold after a source-owner review.
+The PDB proves `pathSystem` and `aiPathSystem`. The `pathsys.cpp` data
+contribution contains both complete `PathingSystem` objects. A natural object
+probe changed the compiler startup shape: VC5 emitted a startup wrapper at
+`0046B060` and moved the direct constructor body to a later symbol. It did not
+match the original 27-byte `0046B060` owner. Keep the current placement
+construction until the historical startup shape is proved.
 
 The PDB also proves the fixed `InfluenceMap` objects `iMap`, `losMap`, and
-`attackMap`. Their current `taiinfmd.cpp` source uses fixed-address carriers.
-This pass leaves them unchanged. A separate natural-object migration must
-replace those carriers and validate the three generated initializer owners.
+`attackMap`. The `taiinfmd.cpp` data contribution contains three adjacent
+`0x28` objects at the recorded addresses. A natural object probe emitted the
+same object symbols but changed the initializer layout. At `004D6AD0`, VC5
+emitted a 10-byte startup wrapper instead of the original 23-byte direct
+constructor owner. Keep the current fixed-address carriers until all three
+initializer and destructor owners reproduce the original startup order.
 
 ## Fresh WinMain exact-policy audit
 
@@ -87,3 +93,22 @@ check also passes with `MATCH` and `0.0000%`.
 `src/main.cpp` uses the named `RGE_Prog_Info` fields, canonical `TRIBE_Game`
 methods, and reviewed `TRIBE_GUID` and `ZONE_GUID` globals. It has no wrapper,
 raw address, fake vtable, or compiler-only alias.
+
+## Validation for the table move
+
+The natural table definitions are in `src/visible.cpp`. The object contains
+all 34 table symbols, 7356 data bytes, and 34 pointer relocations. Each table
+byte sequence matches its original image range. The full visible candidate
+check compiled all 27 PDB owners. Its exact proposal returned 13 of 13 exact
+rows. The observed rows returned 6 of 14 matches. The observed mismatches are
+existing source drift, not table ownership changes.
+
+Fresh exact anchors after the move:
+
+- `0053C3C0`, `0053C400`, `0053C490`, `0053C670`, `0053C6C0`, `0053CE80`,
+  `0053CF10`, `0053CFC0`, `0053CFF0`, `0053D040`, `0053D0C0`, `0053D110`, and
+  `0053D150`: `MATCH`, `0.0000%`.
+- `0053B5A0` `Visible_Unit_Manager`: `MATCH`, `0.0000%`.
+
+The source keeps `pathSystem`, `aiPathSystem`, `iMap`, `losMap`, and
+`attackMap` on hold. Their ownership and startup evidence are recorded above.
