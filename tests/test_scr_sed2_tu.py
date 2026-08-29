@@ -52,17 +52,18 @@ class ScrSed2TranslationUnitTests(unittest.TestCase):
         header = (REPO_ROOT / "include" / "scr_sed2.h").read_text(
             encoding="utf-8"
         )
-        for token in (
-            "class TPanel",
-            "class TEasy_Panel",
-            "class TScreenPanel",
-            "class T_Scenario",
-            "class TRIBE_World",
-            "class TRIBE_Screen_Sed",
-            "TButtonPanel* Diplomacy_friend_box[8][3]",
-            "unsigned long save_window_color",
+        self.assertIn('#include "scr_sed.h"', header)
+        self.assertNotIn("class TPanel", header)
+        self.assertNotIn("class T_Scenario", header)
+        self.assertNotIn("class TRIBE_World", header)
+        self.assertNotIn("class TRIBE_Screen_Sed", header)
+
+        for provider in (
+            "pnl_msg.h", "pnl_btn.h", "pnl_edit.h", "pnl_drop.h",
+            "pnl_lst.h", "tscenaro.h", "tworld.h", "vw_dimap.h",
+            "vw_main.h", "spnl_obj.h",
         ):
-            self.assertIn(token, header)
+            self.assertIn(f'#include "../include/{provider}"', module)
 
 
 if __name__ == "__main__":
