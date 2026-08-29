@@ -50,8 +50,9 @@ four matching owners and five scratch owners. The translation-unit registry
 points its four exact owners to the direct module source and records module
 name `scr_cj`.
 
-The source uses `config/flags/00491E20_action.rsp`, which is
-`/nologo /c /O2 /Oy /GX`. `/GX` is supported by the original EH registration.
+The source uses `config/flags/scr_cj.rsp`. It enables `/GX` and the canonical
+DirectPlay include provider. The four focused response files use the same
+settings. `/GX` agrees with the original EH registration.
 
 ## String address recovery
 

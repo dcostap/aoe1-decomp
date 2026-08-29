@@ -4958,7 +4958,7 @@
       "name": "scr_cj",
       "source": "src/scr_cj.cpp",
       "module": "scr_cj",
-      "flags": "config/flags/00491E20_action.rsp",
+      "flags": "config/flags/scr_cj.rsp",
       "owners": {
         "00491650": "src/scr_cj.cpp",
         "00491A80": "src/scr_cj.cpp",
