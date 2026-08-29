@@ -25,22 +25,20 @@ treat this record cleanup as a behavior claim.
 
 Current status:
 
-- 178 owners are `matching`.
+- 168 owners are `matching`.
 - 10 owners are `accepted_drift`.
-- 26 owners are `scratch`.
+- 36 owners are `scratch`.
 - 2 owners are `verified_logic`.
 
-The 36 non-matching owners keep their current status.
-Their attempt logs remain beside their source body in this module.
+The 48 non-matching owners keep their current status.
 The two `verified_logic` owners keep their existing ledgers.
 
-The reunited context reports localized drift for two unregistered matching-bank
-owners. `004F5FB0` differs by 7 bytes. `00503600` differs by 4 bytes and has a
-different virtual path slot count. These owners were not registered exact
-claims before migration.
+Fresh grouped evidence proves `00502FC0`, `00502FF0`, `00503040`, and
+`00503600` exact. All four owners are registered. `004F5FB0` is also matching
+and registered.
 
-Migration validation must check source order, one compiler-facing owner, and the
-registered exact owners after the module config points to this source.
+The final grouped audit checks source order, one compiler-facing owner, and all
+registered exact owners from this source.
 
 ## Tactical group provider checkpoint
 
@@ -49,8 +47,9 @@ registered exact owners after the module config points to this source.
 `include/waypoint.h`. The owner has named fields and no alias unions or byte
 carriers. `taitacmd.h` and `taiinfmd.h` consume this provider.
 
-The Tactical grouped candidate kept 109 of 111 registered rows exact. The
-Tactical Group owner band remains exact. `004F0D70 addObject` regressed to a
+At this checkpoint, the Tactical grouped candidate kept 109 of 111 registered
+rows exact. The Tactical Group owner band remains exact. `004F0D70 addObject`
+regressed to a
 778-byte mismatch with five boundary escapes. `004F99B0 taskPlay` regressed by
 one byte. Both bodies remain in their natural source and are now scratch.
 The provider move changed declaration context and Tactical Group member
@@ -77,8 +76,8 @@ existing `TacticalAIGroup::task`, time, and tribute source forms. No absolute
 data address remains in `src/taitacmd.cpp`.
 
 The final full-module build uses `config/flags/004ED4F0_TribeTacticalAIModule.rsp`.
-The registered grouped gate passes. The module has 178 matching, 10
-accepted-drift, 26 scratch, and 2 verified-logic normal owners. Fresh checks
+The registered grouped gate passes. The module has 168 matching, 10
+accepted-drift, 36 scratch, and 2 verified-logic normal owners. Fresh checks
 prove `004EA9C0`, `004EEE40`, `00501660`, `00502100`, `00501C70`, and
 `00502200` as `MATCH` with `0.0000%` positional difference. `00502920` and
 `00502D50` remain scratch after fresh grouped-context mismatches. `004F8E20`

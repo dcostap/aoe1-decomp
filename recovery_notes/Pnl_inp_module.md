@@ -74,11 +74,11 @@ No canonical dependency is missing for this header composition. The source
 keeps only body-level helper and module-string declarations; it does not copy
 those declarations into the module header.
 
-## Validation fanout
+## Historical validation fanout
 
-No compiler or validator command was run in this wave, as required.
+No compiler or validator command ran during that header-composition wave.
 
-After the blocker is repaired:
+The planned checks were:
 
 1. Recheck `pnl_lst.cpp` against the composed `panel.h` and `drawarea.h`
    declarations. Confirm its virtual slots, base offsets, and direct targets.
@@ -104,9 +104,9 @@ parameters also reject the existing integer arguments to `Alignment` (lines
 45, 85, and 88) and `RedrawMode` (lines 121, 200, 211, 221, 227, 238, 257,
 262, 280, and 310).
 
-No exact or observed comparison result was produced. This run does not change
-any owner status. The source repair below addresses those declaration and enum
-errors. A fresh grouped validation remains required.
+No exact or observed comparison result was produced. That run changed no owner
+status. The source repair below addressed those declaration and enum errors.
+The current final grouped audit completes the required validation.
 
 ## Follow-up source repair
 
@@ -123,22 +123,22 @@ errors without adding compatibility declarations or context.
 
 No compiler or validator command ran for this repair, as required.
 
+## Current exactness state
+
+The source manifest has 17 matching owners and five scratch owners. All 17
+matching owners are registered. The final grouped audit proves them exact.
+`00476D80 setup` is one of these matching owners.
+
+The five scratch owners are:
+
+- `00476C10`
+- `00476FA0`
+- `00477220`
+- `00477AF0`
+- `00477E90`
+
 ## Historical exactness state
 
-The prior grouped review used
-`python tools/audit_translation_unit_observed.py --group Pnl_inp --jobs 1
---output-dir build/audits/Pnl_inp_review_final --print-full`.
-
-It reported 18 registered owners as `MATCH` with zero positional differences,
-zero relocation target mismatches, and zero boundary escapes. Four unregistered
-owners remained observations:
-
-- `00476C10` constructor: isolated `MATCH`, grouped `MISMATCH`, 68 bytes.
-- `00476D80` setup: grouped `MISMATCH`, 1 byte; the call target used vslot
-  `+0xE0` instead of the executable's `+0xE8`.
-- `00476FA0` char action: isolated `MATCH`, grouped `MISMATCH`, 500 bytes,
-  with two boundary escapes.
-- `00477220` key-down action: grouped `MISMATCH`, 1076 bytes.
-
-Those results predate this header composition. They do not validate the
-post-integration source.
+The pre-composition report remains under
+`build/audits/Pnl_inp_review_final`. The current final grouped audit supersedes
+that report for owner status and exactness.
