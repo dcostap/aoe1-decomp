@@ -62,3 +62,14 @@ The preflight lacked the copied FPO evidence and an explicit selector for
 `0041E7A0`. It used the stale inferred selector
 `?rge_base_game_wnd_proc@@YGKIIII@Z` and reported a missing grouped symbol.
 The focused audit used the emitted selector above and reported `MATCH`.
+
+## Final verification
+
+`build/audits/final_release_observed/report.json` compiled all 221 configured
+groups after integration. All 4,104 registered owners matched. The report has
+zero registered regressions and no unregistered matching rows.
+
+Four promoted owners retained obsolete per-function response files:
+`00476D80`, `00503600`, `00512630`, and `00519CA0`. Each owner matches under
+its registered translation-unit flags. The obsolete response files were
+removed so the grouped compiler context remains the only active context.

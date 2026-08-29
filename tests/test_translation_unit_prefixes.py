@@ -72,13 +72,15 @@ class TranslationUnitPrefixTests(unittest.TestCase):
         self.assertEqual("MISMATCH", result["result"])
         self.assertEqual("mismatch", result["owner_symbol"]["status"])
 
-    def test_natural_matching_owner_is_an_exact_anchor(self) -> None:
+    def test_natural_matching_owners_are_exact_anchors(self) -> None:
         self.assertEqual(
             (REPO_ROOT / "src" / "fractal.cpp").resolve(),
             _matching_owner_path(0x0044B270),
         )
-        with self.assertRaisesRegex(ValueError, "not an exact anchor"):
-            _matching_owner_path(0x0044B2B0)
+        self.assertEqual(
+            (REPO_ROOT / "src" / "fractal.cpp").resolve(),
+            _matching_owner_path(0x0044B2B0),
+        )
 
     def test_rejects_reversed_source_order(self) -> None:
         target = owner(0x0044B2B0, (194, 206))
