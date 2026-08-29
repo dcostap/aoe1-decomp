@@ -54,7 +54,7 @@
     "004736F0": { "status": "matching" },
     "00473890": { "status": "matching" },
     "00473920": { "status": "matching" },
-    "00473930": { "status": "matching", "note_path": "recovery_notes/pnl_btn.md" },
+    "00473930": { "status": "scratch", "note_path": "recovery_notes/pnl_btn.md" },
     "004739B0": { "status": "matching" },
     "00473AA0": { "status": "matching" },
     "00473B80": { "status": "matching" },

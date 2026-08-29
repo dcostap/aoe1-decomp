@@ -30,7 +30,7 @@
     "004C04F0": { "status": "matching" },
     "004C0620": { "status": "matching" },
     "004C0720": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/sprite_module.md"
     },
     "004C0840": { "status": "matching" },
@@ -41,7 +41,7 @@
     },
     "004C0C50": { "status": "matching" },
     "004C0C90": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/sprite_module.md"
     },
     "004C0D80": {

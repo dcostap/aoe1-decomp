@@ -38,7 +38,7 @@
       "note_path": "recovery_notes/pathsys_module.md"
     },
     "0046B680": {
-      "status": "accepted_drift",
+      "status": "matching",
       "note_path": "recovery_notes/pathsys_module.md"
     },
     "0046B6E0": {
@@ -69,7 +69,7 @@
       "note_path": "recovery_notes/pathsys_module.md"
     },
     "0046DCB0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/pathsys_module.md"
     }
   }

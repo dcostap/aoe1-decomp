@@ -27,7 +27,7 @@
     "0050E6B0": { "status": "matching" },
     "0050E730": { "status": "matching" },
     "0050E7A0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/tm_b_obj_module.md"
     },
     "0050E950": { "status": "matching" }

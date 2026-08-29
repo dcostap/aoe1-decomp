@@ -18,7 +18,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "004258E0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00425910": {
@@ -26,7 +26,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00425930": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00425960": {
@@ -38,7 +38,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00425990": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00425A20": {
@@ -94,7 +94,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00426E10": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00426FB0": {
@@ -102,7 +102,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00426FC0": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00427300": {
@@ -126,7 +126,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00428270": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00428280": {
@@ -150,7 +150,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00428820": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "004289A0": {
@@ -158,11 +158,11 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00428A70": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00428B10": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00428DA0": {
@@ -174,15 +174,15 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "004297D0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00429810": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00429870": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "00429A30": {
@@ -222,7 +222,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042A0C0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042A130": {
@@ -242,7 +242,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042A540": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042A650": {
@@ -262,7 +262,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042B0A0": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042B200": {
@@ -382,7 +382,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042D120": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042D170": {
@@ -398,7 +398,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042D3B0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042D3E0": {
@@ -426,7 +426,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042D720": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042D960": {
@@ -434,7 +434,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042DA50": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042DA80": {
@@ -482,15 +482,15 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042E580": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042E5B0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042E5E0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042E610": {
@@ -514,7 +514,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042EA10": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042EB10": {
@@ -546,7 +546,7 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042ECE0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042EF00": {
@@ -562,15 +562,15 @@
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042F040": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042F110": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042F140": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_hand_module.md"
     },
     "0042F190": {

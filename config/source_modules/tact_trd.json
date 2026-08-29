@@ -10,7 +10,7 @@
     "004D27A0": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
     "004D27F0": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
     "004D2830": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
-    "004D2880": { "status": "accepted_drift", "note_path": "recovery_notes/tact_trd_module.md" },
+    "004D2880": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
     "004D2CB0": { "status": "scratch", "note_path": "recovery_notes/tact_trd_module.md" },
     "004D32C0": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },
     "004D32F0": { "status": "matching", "note_path": "recovery_notes/tact_trd_module.md" },

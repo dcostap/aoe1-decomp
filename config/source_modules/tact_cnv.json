@@ -24,7 +24,7 @@
       "note_path": "recovery_notes/004CDE10_set_state.md"
     },
     "004CE070": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/004CE070_update.md"
     },
     "004CE450": { "status": "matching" },

@@ -10,7 +10,7 @@
     "004CEA10": { "status": "matching" },
     "004CEA50": { "status": "matching" },
     "004CEA90": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/tact_hea_module.md"
     },
     "004CECF0": {

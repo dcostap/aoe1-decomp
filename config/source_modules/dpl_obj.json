@@ -16,7 +16,7 @@
     "00442050": { "status": "matching" },
     "00442100": { "status": "matching" },
     "00442180": { "status": "matching" },
-    "004421F0": { "status": "accepted_drift", "note_path": "recovery_notes/dpl_obj_module.md" },
+    "004421F0": { "status": "matching", "note_path": "recovery_notes/dpl_obj_module.md" },
     "004422B0": { "status": "matching" },
     "00442390": { "status": "matching" },
     "00442540": { "status": "matching" }

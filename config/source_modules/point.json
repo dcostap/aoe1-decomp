@@ -7,8 +7,8 @@
   "functions": {
     "0047E480": { "status": "matching" },
     "0047E490": { "status": "matching" },
-    "0047E4B0": { "status": "scratch" },
-    "0047E4E0": { "status": "scratch" },
+    "0047E4B0": { "status": "matching" },
+    "0047E4E0": { "status": "matching" },
     "0047E510": { "status": "scratch" },
     "0047E530": {
       "status": "scratch",
@@ -16,7 +16,7 @@
     },
     "0047E580": { "status": "scratch" },
     "0047E5D0": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/0047E5D0_rotateXYByFacet.md"
     }
   }

@@ -12,7 +12,7 @@
     "004D1850": { "status": "matching" },
     "004D1880": { "status": "matching" },
     "004D18B0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/tact_rep_module.md"
     },
     "004D1BB0": {

@@ -26,7 +26,7 @@
     "004E6020": { "status": "matching" },
     "004E6090": { "status": "matching" },
     "004E60D0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/taimdmd_module.md"
     },
     "004E60F0": { "status": "matching" },

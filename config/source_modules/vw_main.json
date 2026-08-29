@@ -30,7 +30,7 @@
     "00540420": { "status": "matching" },
     "005405C0": { "status": "matching" },
     "005405E0": { "status": "matching" },
-    "00540680": { "status": "matching" },
+    "00540680": { "status": "scratch" },
     "00540700": { "status": "matching" }
   }
 }

@@ -13,7 +13,7 @@
     "0044AFE0": {"status": "scratch", "note_path": "recovery_notes/fractal_module.md"},
     "0044B210": {"status": "matching", "note_path": "recovery_notes/fractal_module.md"},
     "0044B270": {"status": "matching", "note_path": "recovery_notes/fractal_module.md"},
-    "0044B2B0": {"status": "accepted_drift", "note_path": "recovery_notes/fractal_module.md"},
+    "0044B2B0": {"status": "matching", "note_path": "recovery_notes/fractal_module.md"},
     "0044B320": {"status": "matching", "note_path": "recovery_notes/fractal_module.md"},
     "0044B470": {"status": "accepted_drift", "note_path": "recovery_notes/fractal_module.md"},
     "0044B540": {"status": "matching", "note_path": "recovery_notes/fractal_module.md"},

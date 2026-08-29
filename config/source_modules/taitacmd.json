@@ -6,7 +6,7 @@
   "header": "include/taitacmd.h",
   "functions": {
     "004EA860": {
-      "status": "matching"
+      "status": "scratch"
     },
     "004EA9B0": {
       "status": "matching"
@@ -233,7 +233,7 @@
       "status": "matching"
     },
     "004EF4E0": {
-      "status": "matching"
+      "status": "scratch"
     },
     "004F0180": {
       "status": "matching"
@@ -253,7 +253,7 @@
       "status": "matching"
     },
     "004F13F0": {
-      "status": "matching"
+      "status": "scratch"
     },
     "004F1600": {
       "status": "scratch",
@@ -270,7 +270,7 @@
       "status": "matching"
     },
     "004F4AA0": {
-      "status": "matching"
+      "status": "scratch"
     },
     "004F4D90": {
       "status": "scratch",
@@ -349,10 +349,10 @@
       "note_path": "recovery_notes/taitacmd_module.md"
     },
     "004F8570": {
-      "status": "matching"
+      "status": "scratch"
     },
     "004F87B0": {
-      "status": "matching"
+      "status": "scratch"
     },
     "004F8BE0": {
       "status": "matching"
@@ -389,7 +389,7 @@
       "note_path": "recovery_notes/taitacmd_module.md"
     },
     "004F9AD0": {
-      "status": "matching"
+      "status": "scratch"
     },
     "004F9E00": {
       "status": "matching"
@@ -408,7 +408,7 @@
       "status": "matching"
     },
     "004FAAA0": {
-      "status": "matching"
+      "status": "scratch"
     },
     "004FAC90": {
       "status": "matching"
@@ -430,16 +430,16 @@
       "note_path": "recovery_notes/taitacmd_module.md"
     },
     "004FB500": {
-      "status": "matching"
+      "status": "scratch"
     },
     "004FB520": {
       "status": "matching"
     },
     "004FB550": {
-      "status": "matching"
+      "status": "scratch"
     },
     "004FB710": {
-      "status": "matching"
+      "status": "scratch"
     },
     "004FB8D0": {
       "status": "matching"
@@ -619,7 +619,7 @@
       "status": "matching"
     },
     "00501D70": {
-      "status": "matching"
+      "status": "scratch"
     },
     "005020A0": {
       "status": "matching"
@@ -657,18 +657,18 @@
       "note_path": "recovery_notes/taitacmd_module.md"
     },
     "00502FC0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/taitacmd_module.md"
     },
     "00502FF0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/taitacmd_module.md"
     },
     "00503020": {
       "status": "matching"
     },
     "00503040": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/taitacmd_module.md"
     },
     "00503070": {
@@ -676,7 +676,7 @@
       "note_path": "recovery_notes/taitacmd_module.md"
     },
     "005032E0": {
-      "status": "matching"
+      "status": "scratch"
     },
     "00503480": {
       "status": "matching"

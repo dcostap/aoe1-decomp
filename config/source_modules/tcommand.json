@@ -9,22 +9,22 @@
     "00509770": { "status": "matching" },
     "00509910": { "status": "matching" },
     "00509980": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/tcommand_module.md"
     },
     "00509AF0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/tcommand_module.md"
     },
     "00509C60": {
-      "status": "matching"
+      "status": "scratch"
     },
     "00509E10": {
       "status": "scratch",
       "note_path": "recovery_notes/tcommand_module.md"
     },
     "0050A010": { "status": "matching" },
-    "0050A140": { "status": "matching" },
+    "0050A140": { "status": "scratch" },
     "0050A1D0": {
       "status": "scratch",
       "note_path": "recovery_notes/tcommand_module.md"

@@ -23,7 +23,7 @@
     },
     "0053C670": { "status": "matching" },
     "0053C680": {
-      "status": "accepted_drift",
+      "status": "matching",
       "note_path": "recovery_notes/visible.md"
     },
     "0053C6C0": { "status": "matching" },

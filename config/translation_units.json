@@ -180,7 +180,8 @@
         "0044C350": "src/fractal.cpp",
         "0044C360": "src/fractal.cpp",
         "0044C370": "src/fractal.cpp",
-        "0044C4B0": "src/fractal.cpp"
+        "0044C4B0": "src/fractal.cpp",
+        "0044B2B0": "src/fractal.cpp"
       },
       "symbols": {
         "0044AC50": "??0PointMaker@@QAE@XZ",
@@ -210,7 +211,8 @@
         "0044B540": "?Branch@PointMaker@@IAEXH@Z",
         "0044B610": "?MakeFirstLink@PointMaker@@IAEHXZ",
         "0044C370": "?ErrorCheckingAndCorrection@PointMaker@@IAEXXZ",
-        "0044C4B0": "?PrepareLimits@PointMaker@@IAEXXZ"
+        "0044C4B0": "?PrepareLimits@PointMaker@@IAEXXZ",
+        "0044B2B0": "?MakeArrays@PointMaker@@QAEXXZ"
       }
     },
     {
@@ -376,7 +378,6 @@
         "004E8D10": "src/taistrmd.cpp",
         "004E8D20": "src/taistrmd.cpp",
         "004E9100": "src/taistrmd.cpp",
-        "004E9260": "src/taistrmd.cpp",
         "004E9730": "src/taistrmd.cpp",
         "004E9D90": "src/taistrmd.cpp",
         "004E9DA0": "src/taistrmd.cpp",
@@ -403,7 +404,6 @@
         "004E75D0": "?setRule@VictoryConditionRuleSystem@@QAEXHH@Z",
         "004E75F0": "?rule@VictoryConditionRuleSystem@@QAEHH@Z",
         "004E9100": "??0TribeStrategyAIModule@@QAE@PAXH@Z",
-        "004E9260": "??0TribeStrategyAIModule@@QAE@HH@Z",
         "004E9730": "??1TribeStrategyAIModule@@UAE@XZ",
         "004E9D90": "?setMainDecisionAI@TribeStrategyAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z",
         "004EA130": "?ruleSetName@TribeStrategyAIModule@@QAEPADXZ",
@@ -532,7 +532,11 @@
         "00507F60": "src/taiuaimd.cpp",
         "00508110": "src/taiuaimd.cpp",
         "00508170": "src/taiuaimd.cpp",
-        "00508660": "src/taiuaimd.cpp"
+        "00508660": "src/taiuaimd.cpp",
+        "00504480": "src/taiuaimd.cpp",
+        "005059A0": "src/taiuaimd.cpp",
+        "00506C90": "src/taiuaimd.cpp",
+        "00508140": "src/taiuaimd.cpp"
       },
       "symbols": {
         "00503BB0": "??0TribeHuntedAnimalUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z",
@@ -588,7 +592,11 @@
         "00507F60": "??0TribeTowerUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z",
         "00508110": "?canAttackUnit@TribeTowerUnitAIModule@@UAEHPAVRGE_Static_Object@@@Z",
         "00508170": "??0TribeBuildingUnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z",
-        "00508660": "?processIdle@TribeBuildingUnitAIModule@@MAEHH@Z"
+        "00508660": "?processIdle@TribeBuildingUnitAIModule@@MAEHH@Z",
+        "00504480": "?processNotify@TribeLionUnitAIModule@@MAEHPAUNotifyEvent@@K@Z",
+        "005059A0": "?attackObject@TribePriestUnitAIModule@@UAEHHH@Z",
+        "00506C90": "?convertToLOSResourceType@TribeFishingShipUnitAIModule@@UAEHH@Z",
+        "00508140": "?canAttackUnitAtNeutrality@TribeTowerUnitAIModule@@UAEHH@Z"
       }
     },
     {
@@ -673,7 +681,13 @@
         "0043AB40": "src/Dib.cpp",
         "0043AB80": "src/Dib.cpp",
         "0043ACB0": "src/Dib.cpp",
-        "0043AD40": "src/Dib.cpp"
+        "0043AD40": "src/Dib.cpp",
+        "00439A10": "src/Dib.cpp",
+        "00439BE0": "src/Dib.cpp",
+        "0043A070": "src/Dib.cpp",
+        "0043A330": "src/Dib.cpp",
+        "0043A420": "src/Dib.cpp",
+        "0043AA60": "src/Dib.cpp"
       },
       "symbols": {
         "00439B50": "?ReadDibBits@@YAPAEPAD@Z",
@@ -686,7 +700,13 @@
         "0043AD40": "?DibFree@@YAXPAUtagBITMAPINFOHEADER@@@Z",
         "00438E80": "?ClipDibBlt@@YAHPAUBITMAPINFO256@@PAUtagRECT@@AAJ2222222HH@Z",
         "00439060": "?GetDibDim@@YAXPAUBITMAPINFO256@@AAJ11@Z",
-        "00439700": "?GetPaletteFromDib@@YAPAXPADH@Z"
+        "00439700": "?GetPaletteFromDib@@YAPAXPADH@Z",
+        "00439A10": "?DibOpenFile@@YAPAUtagBITMAPINFOHEADER@@PAD@Z",
+        "00439BE0": "?DibWriteClipped@@YAHPAUtagBITMAPINFOHEADER@@PADJJJJ@Z",
+        "0043A070": "?DibFromBitmap@@YAPAUtagBITMAPINFOHEADER@@PAXKI0I@Z",
+        "0043A330": "?DibSetUsage@@YAHPAUtagBITMAPINFOHEADER@@PAXI@Z",
+        "0043A420": "?DibDraw@@YAHPAXHHHHPAUtagBITMAPINFOHEADER@@HHHHJI@Z",
+        "0043AA60": "?xlatClut8@@YAXPAEK0@Z"
       }
     },
     {
@@ -882,14 +902,16 @@
         "004013A0": "src/act_atak.cpp",
         "004013B0": "src/act_atak.cpp",
         "00401540": "src/act_atak.cpp",
-        "00401AD0": "src/act_atak.cpp"
+        "00401AD0": "src/act_atak.cpp",
+        "00401550": "src/act_atak.cpp"
       },
       "symbols": {
         "00401000": "??0RGE_Action_Attack@@QAE@HPAVRGE_Action_Object@@@Z",
         "004013A0": "??1RGE_Action_Attack@@UAE@XZ",
         "004013B0": "?save@RGE_Action_Attack@@UAEXH@Z",
         "00401540": "?stop@RGE_Action_Attack@@UAEHXZ",
-        "00401AD0": "?work@RGE_Action_Attack@@UAEHPAVRGE_Static_Object@@MMM@Z"
+        "00401AD0": "?work@RGE_Action_Attack@@UAEHPAVRGE_Static_Object@@MMM@Z",
+        "00401550": "?set_state@RGE_Action_Attack@@MAEXE@Z"
       }
     },
     {
@@ -1030,11 +1052,8 @@
         "004162A0": "src/aiuaimod.cpp",
         "004162B0": "src/aiuaimod.cpp",
         "004162C0": "src/aiuaimod.cpp",
-        "00416340": "src/aiuaimod.cpp",
-        "004163C0": "src/aiuaimod.cpp",
         "00416470": "src/aiuaimod.cpp",
         "00416550": "src/aiuaimod.cpp",
-        "004165F0": "src/aiuaimod.cpp",
         "00416690": "src/aiuaimod.cpp",
         "00416730": "src/aiuaimod.cpp",
         "004167D0": "src/aiuaimod.cpp",
@@ -1051,7 +1070,6 @@
         "00417360": "src/aiuaimod.cpp",
         "004173D0": "src/aiuaimod.cpp",
         "00417440": "src/aiuaimod.cpp",
-        "004174A0": "src/aiuaimod.cpp",
         "00417510": "src/aiuaimod.cpp",
         "00417580": "src/aiuaimod.cpp",
         "004175B0": "src/aiuaimod.cpp",
@@ -1208,7 +1226,6 @@
         "00532BE0": "src/victory.cpp",
         "00532C50": "src/victory.cpp",
         "00532C70": "src/victory.cpp",
-        "00532CC0": "src/victory.cpp",
         "00532EF0": "src/victory.cpp",
         "00532F00": "src/victory.cpp",
         "00532F10": "src/victory.cpp",
@@ -1224,7 +1241,9 @@
         "00533480": "src/victory.cpp",
         "00533490": "src/victory.cpp",
         "005334C0": "src/victory.cpp",
-        "005334E0": "src/victory.cpp"
+        "005334E0": "src/victory.cpp",
+        "005327A0": "src/victory.cpp",
+        "00533120": "src/victory.cpp"
       },
       "symbols": {
         "00531AF0": "??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@@Z",
@@ -1267,7 +1286,9 @@
         "00532AF0": "?add_bring@RGE_Victory_Conditions@@QAEEEPAVRGE_Static_Object@@0@Z",
         "00532B30": "?add_bring@RGE_Victory_Conditions@@QAEEEPAVRGE_Static_Object@@MMMM@Z",
         "00532F10": "?remove_condition@RGE_Victory_Conditions@@QAEEJ@Z",
-        "00532F50": "?add_point@RGE_Victory_Conditions@@IAEPAURGE_Victory_Point_Entry@@EE@Z"
+        "00532F50": "?add_point@RGE_Victory_Conditions@@IAEPAURGE_Victory_Point_Entry@@EE@Z",
+        "005327A0": "?handle_explore@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z",
+        "00533120": "?handle_points_attribute_amount@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Point_Entry@@@Z"
       }
     },
     {
@@ -1346,7 +1367,8 @@
         "004BE690": "src/spanlist.cpp",
         "004BE750": "src/spanlist.cpp",
         "004BE850": "src/spanlist.cpp",
-        "004BE9E0": "src/spanlist.cpp"
+        "004BE9E0": "src/spanlist.cpp",
+        "004BE4B0": "src/spanlist.cpp"
       },
       "symbols": {
         "004BD5E0": "??0TSpan_Node_List@@QAE@HHH@Z",
@@ -1369,7 +1391,8 @@
         "004BE5F0": "?Merge_n_Align@TSpan_List_Manager@@QAEXPAV1@0@Z",
         "004BE690": "?AlignamizeSpans@TSpan_List_Manager@@QAEXXZ",
         "004BE750": "?ScrollSpansHorizontally@TSpan_List_Manager@@QAEXHH@Z",
-        "004BE9E0": "?ValidateSpan@TSpan_List_Manager@@QAEHH@Z"
+        "004BE9E0": "?ValidateSpan@TSpan_List_Manager@@QAEHH@Z",
+        "004BE4B0": "?DeleteShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z"
       }
     },
     {
@@ -1396,7 +1419,8 @@
         "0045BF40": "src/Mouseptr.cpp",
         "0045BF80": "src/Mouseptr.cpp",
         "0045BF90": "src/Mouseptr.cpp",
-        "0045C300": "src/Mouseptr.cpp"
+        "0045C300": "src/Mouseptr.cpp",
+        "0045C010": "src/Mouseptr.cpp"
       },
       "symbols": {
         "0045B000": "??1TMousePointer@@QAE@XZ",
@@ -1417,7 +1441,8 @@
         "0045BF90": "?center@TMousePointer@@QAEXXZ",
         "0045C300": "?GetDDBltError@TMousePointer@@QAEHJ@Z",
         "0045B760": "?update_mouse_position@TMousePointer@@QAEHXZ",
-        "0045BE20": "?set_facet@TMousePointer@@QAEXH@Z"
+        "0045BE20": "?set_facet@TMousePointer@@QAEXH@Z",
+        "0045C010": "?Poll@TMousePointer@@QAEXXZ"
       }
     },
     {
@@ -1602,11 +1627,9 @@
         "004EEE40": "src/taitacmd.cpp",
         "004EEF40": "src/taitacmd.cpp",
         "004EF4D0": "src/taitacmd.cpp",
-        "004EF4E0": "src/taitacmd.cpp",
         "004F0180": "src/taitacmd.cpp",
         "004F0BC0": "src/taitacmd.cpp",
         "004F1090": "src/taitacmd.cpp",
-        "004F13F0": "src/taitacmd.cpp",
         "004F4760": "src/taitacmd.cpp",
         "004F6100": "src/taitacmd.cpp",
         "004F6110": "src/taitacmd.cpp",
@@ -1638,7 +1661,68 @@
         "005018F0": "src/taitacmd.cpp",
         "00501A80": "src/taitacmd.cpp",
         "00501AB0": "src/taitacmd.cpp",
-        "00503580": "src/taitacmd.cpp"
+        "00503580": "src/taitacmd.cpp",
+        "004F1E10": "src/taitacmd.cpp",
+        "004F5FB0": "src/taitacmd.cpp",
+        "004F7350": "src/taitacmd.cpp",
+        "004F7D90": "src/taitacmd.cpp",
+        "004F8BE0": "src/taitacmd.cpp",
+        "004F9470": "src/taitacmd.cpp",
+        "004F9E00": "src/taitacmd.cpp",
+        "004FA000": "src/taitacmd.cpp",
+        "004FA820": "src/taitacmd.cpp",
+        "004FA940": "src/taitacmd.cpp",
+        "004FAFC0": "src/taitacmd.cpp",
+        "004FB160": "src/taitacmd.cpp",
+        "004FB520": "src/taitacmd.cpp",
+        "004FB9E0": "src/taitacmd.cpp",
+        "004FBB30": "src/taitacmd.cpp",
+        "004FBC10": "src/taitacmd.cpp",
+        "004FD2F0": "src/taitacmd.cpp",
+        "004FD6D0": "src/taitacmd.cpp",
+        "004FD8D0": "src/taitacmd.cpp",
+        "004FF4E0": "src/taitacmd.cpp",
+        "004FF8E0": "src/taitacmd.cpp",
+        "004FFAE0": "src/taitacmd.cpp",
+        "004FFCE0": "src/taitacmd.cpp",
+        "004FFEE0": "src/taitacmd.cpp",
+        "00500260": "src/taitacmd.cpp",
+        "00500320": "src/taitacmd.cpp",
+        "005003A0": "src/taitacmd.cpp",
+        "00500420": "src/taitacmd.cpp",
+        "005007B0": "src/taitacmd.cpp",
+        "005007F0": "src/taitacmd.cpp",
+        "00500850": "src/taitacmd.cpp",
+        "005008A0": "src/taitacmd.cpp",
+        "005008F0": "src/taitacmd.cpp",
+        "005009A0": "src/taitacmd.cpp",
+        "00500A30": "src/taitacmd.cpp",
+        "00500A80": "src/taitacmd.cpp",
+        "00500AF0": "src/taitacmd.cpp",
+        "00500B30": "src/taitacmd.cpp",
+        "00500DE0": "src/taitacmd.cpp",
+        "00501190": "src/taitacmd.cpp",
+        "00501430": "src/taitacmd.cpp",
+        "00501660": "src/taitacmd.cpp",
+        "00501690": "src/taitacmd.cpp",
+        "00501920": "src/taitacmd.cpp",
+        "005019C0": "src/taitacmd.cpp",
+        "00501AF0": "src/taitacmd.cpp",
+        "00501B50": "src/taitacmd.cpp",
+        "00501B90": "src/taitacmd.cpp",
+        "00501C70": "src/taitacmd.cpp",
+        "00501D20": "src/taitacmd.cpp",
+        "005020A0": "src/taitacmd.cpp",
+        "00502100": "src/taitacmd.cpp",
+        "00502200": "src/taitacmd.cpp",
+        "00502230": "src/taitacmd.cpp",
+        "00502BF0": "src/taitacmd.cpp",
+        "00502FC0": "src/taitacmd.cpp",
+        "00502FF0": "src/taitacmd.cpp",
+        "00503020": "src/taitacmd.cpp",
+        "00503040": "src/taitacmd.cpp",
+        "00503480": "src/taitacmd.cpp",
+        "00503600": "src/taitacmd.cpp"
       },
       "symbols": {
         "004EA9B0": "??1TacticalAIGroup@@UAE@XZ",
@@ -1711,11 +1795,9 @@
         "004EEE40": "?updateAreaName@TribeTacticalAIModule@@QAEPADXZ",
         "004EEF40": "?update@TribeTacticalAIModule@@UAEHH@Z",
         "004EF4D0": "?setMainDecisionAI@TribeTacticalAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z",
-        "004EF4E0": "?save@TribeTacticalAIModule@@UAEHH@Z",
         "004F0180": "?logGroupDebug@TribeTacticalAIModule@@QAAXHPADZZ",
         "004F0BC0": "?clearArea@TribeTacticalAIModule@@QAEHHMMMM@Z",
         "004F1090": "?removeObject@TribeTacticalAIModule@@QAEXH@Z",
-        "004F13F0": "?evaluateCivilianDistribution@TribeTacticalAIModule@@QAEXXZ",
         "004F4760": "?playTaskSoldiers@TribeTacticalAIModule@@QAEXKK@Z",
         "004F6100": "?numberCivilians@TribeTacticalAIModule@@QBEHXZ",
         "004F6110": "?numberCivilianExplorers@TribeTacticalAIModule@@QBEHXZ",
@@ -1749,7 +1831,68 @@
         "00501AB0": "?requiredGatherAmount@TribeTacticalAIModule@@QAEHH@Z",
         "00503580": "?numberWaterExplorers@TribeTacticalAIModule@@QAEHXZ",
         "004EB3A0": "?setSpecificCommander@TacticalAIGroup@@QAEXHPAVTribeMainDecisionAIModule@@@Z",
-        "004EB560": "?setAllLocations@TacticalAIGroup@@QAEXMMM@Z"
+        "004EB560": "?setAllLocations@TacticalAIGroup@@QAEXMMM@Z",
+        "004F1E10": "?taskIdleSoldiers@TribeTacticalAIModule@@QAEXKK@Z",
+        "004F5FB0": "?evaluateBuildListInsertions@TribeTacticalAIModule@@QAEXXZ",
+        "004F7350": "?numberIdleSoldiers@TribeTacticalAIModule@@QAEHXZ",
+        "004F7D90": "?idleSoldier@TribeTacticalAIModule@@QAEHXZ",
+        "004F8BE0": "?busyWithAction@TribeTacticalAIModule@@QAEHHH@Z",
+        "004F9470": "?highLevelTaskExplorer@TribeTacticalAIModule@@QAEHHH@Z",
+        "004F9E00": "?taskBuilder@TribeTacticalAIModule@@QAEHHPAVRGE_Static_Object@@@Z",
+        "004FA000": "?taskRepairer@TribeTacticalAIModule@@QAEHHPAVRGE_Static_Object@@@Z",
+        "004FA820": "?taskExplorer@TribeTacticalAIModule@@QAEHHH@Z",
+        "004FA940": "?taskExplorer@TribeTacticalAIModule@@QAEHHMM@Z",
+        "004FAFC0": "?taskWaterTrader@TribeTacticalAIModule@@QAEHHH@Z",
+        "004FB160": "?taskWaterFisher@TribeTacticalAIModule@@QAEHHHMM@Z",
+        "004FB520": "?taskDefender@TribeTacticalAIModule@@QAEHHMM@Z",
+        "004FB9E0": "?taskTransporter@TribeTacticalAIModule@@QAEHHMM@Z",
+        "004FBB30": "?removeFromTaskLists@TribeTacticalAIModule@@QAEXH@Z",
+        "004FBC10": "?calculatePriority@TribeTacticalAIModule@@QAEHM@Z",
+        "004FD2F0": "?numberUngroupedSoldiers@TribeTacticalAIModule@@QAEHXZ",
+        "004FD6D0": "?numberUngroupedArtifacts@TribeTacticalAIModule@@QAEHXZ",
+        "004FD8D0": "?displaySoldierGroups@TribeTacticalAIModule@@QAEXXZ",
+        "004FF4E0": "?numberUngroupedWarBoats@TribeTacticalAIModule@@QAEHXZ",
+        "004FF8E0": "?numberUngroupedFishingBoats@TribeTacticalAIModule@@QAEHXZ",
+        "004FFAE0": "?numberUngroupedTradeBoats@TribeTacticalAIModule@@QAEHXZ",
+        "004FFCE0": "?numberUngroupedTransportBoats@TribeTacticalAIModule@@QAEHXZ",
+        "004FFEE0": "?displayBoatGroups@TribeTacticalAIModule@@QAEXXZ",
+        "00500260": "?createGroup@TribeTacticalAIModule@@QAEPAVTacticalAIGroup@@H@Z",
+        "00500320": "?removeGroup@TribeTacticalAIModule@@QAEHH@Z",
+        "005003A0": "?removeAllGroups@TribeTacticalAIModule@@QAEHH@Z",
+        "00500420": "?group@TribeTacticalAIModule@@QAEPAVTacticalAIGroup@@HHHH@Z",
+        "005007B0": "?addToGroup@TribeTacticalAIModule@@QAEHHH@Z",
+        "005007F0": "?removeFromGroup@TribeTacticalAIModule@@QAEHHH@Z",
+        "00500850": "?removeFromGroup@TribeTacticalAIModule@@QAEHH@Z",
+        "005008A0": "?groupUnitIsIn@TribeTacticalAIModule@@QAEPAVTacticalAIGroup@@H@Z",
+        "005008F0": "?numberGroups@TribeTacticalAIModule@@QAEHHH@Z",
+        "005009A0": "?numberItemsToAttack@TribeTacticalAIModule@@QAEHXZ",
+        "00500A30": "?itemToCapture@TribeTacticalAIModule@@QAEHXZ",
+        "00500A80": "?itemToBringToArea@TribeTacticalAIModule@@QAEHXZ",
+        "00500AF0": "?attackLimiterTime@TribeTacticalAIModule@@QAEKH@Z",
+        "00500B30": "?resetAttackSeparationTime@TribeTacticalAIModule@@QAEXXZ",
+        "00500DE0": "?setGroupInfluences@TribeTacticalAIModule@@QAEXAAVInfluenceMap@@@Z",
+        "00501190": "?selectBestCommander@TribeTacticalAIModule@@QAEHPAVTacticalAIGroup@@@Z",
+        "00501430": "?dealWithGAIAAttacker@TribeTacticalAIModule@@QAEHPAVRGE_Static_Object@@0@Z",
+        "00501660": "?enableAttack@TribeTacticalAIModule@@QAEXH@Z",
+        "00501690": "?unexploredArea@TribeTacticalAIModule@@QAEHHAAUXYPoint@@@Z",
+        "00501920": "?addGatherer@TribeTacticalAIModule@@QAEPAUUnitData@@H@Z",
+        "005019C0": "?removeGatherer@TribeTacticalAIModule@@QAEHH@Z",
+        "00501AF0": "?trackUnitGather@TribeTacticalAIModule@@QAEXHHH@Z",
+        "00501B50": "?deleteUnit@TribeTacticalAIModule@@QAEHH@Z",
+        "00501B90": "?numberAvailableStoragePits@TribeTacticalAIModule@@QAEHAAH0H@Z",
+        "00501C70": "?numberAvailableGranaries@TribeTacticalAIModule@@QAEHAAH0@Z",
+        "00501D20": "?initialExplorationSatisfied@TribeTacticalAIModule@@QAEHXZ",
+        "005020A0": "?isFarmer@TribeTacticalAIModule@@QAEHPAVRGE_Static_Object@@@Z",
+        "00502100": "?numberFarmers@TribeTacticalAIModule@@QAEHXZ",
+        "00502200": "?inAge@TribeTacticalAIModule@@QAEHH@Z",
+        "00502230": "?stuffAvoidancePath@TribeTacticalAIModule@@QAEXPAVTacticalAIGroup@@PAVPath@@@Z",
+        "00502BF0": "?checkForASAPAgeResearch@TribeTacticalAIModule@@QAEXXZ",
+        "00502FC0": "?resourceDifference@TribeTacticalAIModule@@QAEHH@Z",
+        "00502FF0": "?actualGathererCount@TribeTacticalAIModule@@QAEHH@Z",
+        "00503020": "?actualGathererCountByRealResourceID@TribeTacticalAIModule@@QAEHH@Z",
+        "00503040": "?desiredGathererCount@TribeTacticalAIModule@@QAEHH@Z",
+        "00503480": "?numberGatherersWithTarget@TribeTacticalAIModule@@QAEHH@Z",
+        "00503600": "?saveTheTown@TribeTacticalAIModule@@QAEXH@Z"
       }
     },
     {
@@ -1769,7 +1912,6 @@
         "004AEE10": "src/scr_sed2.cpp",
         "004AF320": "src/scr_sed2.cpp",
         "004AF6C0": "src/scr_sed2.cpp",
-        "004B1A50": "src/scr_sed2.cpp",
         "004B29E0": "src/scr_sed2.cpp",
         "004B2AA0": "src/scr_sed2.cpp",
         "004B2BC0": "src/scr_sed2.cpp",
@@ -1792,9 +1934,7 @@
         "00509720": "src/tcommand.cpp",
         "00509770": "src/tcommand.cpp",
         "00509910": "src/tcommand.cpp",
-        "00509C60": "src/tcommand.cpp",
         "0050A010": "src/tcommand.cpp",
-        "0050A140": "src/tcommand.cpp",
         "0050A510": "src/tcommand.cpp",
         "0050A730": "src/tcommand.cpp",
         "0050A7B0": "src/tcommand.cpp",
@@ -1811,7 +1951,9 @@
         "0050AFD0": "src/tcommand.cpp",
         "0050B0D0": "src/tcommand.cpp",
         "0050B130": "src/tcommand.cpp",
-        "0050B3E0": "src/tcommand.cpp"
+        "0050B3E0": "src/tcommand.cpp",
+        "00509980": "src/tcommand.cpp",
+        "00509AF0": "src/tcommand.cpp"
       },
       "symbols": {
         "00509770": "?do_command@TRIBE_Command@@EAEXPAX@Z",
@@ -1824,7 +1966,6 @@
         "0050B3E0": "?command_queue@TRIBE_Command@@QAEXPAVRGE_Static_Object@@FF@Z",
         "00509720": "??0TRIBE_Command@@QAE@PAVTRIBE_World@@PAVTCommunications_Handler@@@Z",
         "00509910": "?do_command_tribe_create@TRIBE_Command@@AAEXPAURGE_Command_Create@@@Z",
-        "00509C60": "?do_command_build@TRIBE_Command@@AAEXPAUTRIBE_Command_Build@@@Z",
         "0050A010": "?place_line_of_walls@TRIBE_Command@@AAEXPAVTRIBE_Player@@PAVTRIBE_Master_Building_Object@@HHHHHPAPAVRGE_Static_Object@@@Z",
         "0050A510": "?do_command_give_attribute@TRIBE_Command@@EAEXPAUTRIBE_Command_Give_Attribute@@@Z",
         "0050A730": "?do_command_unload@TRIBE_Command@@AAEXPAUTRIBE_Command_Unload@@@Z",
@@ -1835,7 +1976,9 @@
         "0050AEE0": "?command_upgrade_town@TRIBE_Command@@QAEXF@Z",
         "0050AF30": "?command_quick_build@TRIBE_Command@@QAEXF@Z",
         "0050AF80": "?command_shared_los@TRIBE_Command@@QAEXF@Z",
-        "0050B0D0": "?command_cheat@TRIBE_Command@@QAEXFF@Z"
+        "0050B0D0": "?command_cheat@TRIBE_Command@@QAEXFF@Z",
+        "00509980": "?do_command_make@TRIBE_Command@@AAEXPAUTRIBE_Command_Make@@@Z",
+        "00509AF0": "?do_command_research@TRIBE_Command@@AAEXPAUTRIBE_Command_Research@@@Z"
       }
     },
     {
@@ -1864,7 +2007,81 @@
         "00529F60": "src/tribegam.cpp",
         "0052A000": "src/tribegam.cpp",
         "0052A080": "src/tribegam.cpp",
-        "0052A1E0": "src/tribegam.cpp"
+        "0052A1E0": "src/tribegam.cpp",
+        "00521620": "src/tribegam.cpp",
+        "00521FA0": "src/tribegam.cpp",
+        "00522200": "src/tribegam.cpp",
+        "005222C0": "src/tribegam.cpp",
+        "00522770": "src/tribegam.cpp",
+        "005227D0": "src/tribegam.cpp",
+        "00522810": "src/tribegam.cpp",
+        "00522860": "src/tribegam.cpp",
+        "005228A0": "src/tribegam.cpp",
+        "00523450": "src/tribegam.cpp",
+        "005234A0": "src/tribegam.cpp",
+        "005234F0": "src/tribegam.cpp",
+        "00523500": "src/tribegam.cpp",
+        "005236A0": "src/tribegam.cpp",
+        "005237B0": "src/tribegam.cpp",
+        "00523B10": "src/tribegam.cpp",
+        "00523F10": "src/tribegam.cpp",
+        "00524030": "src/tribegam.cpp",
+        "005243A0": "src/tribegam.cpp",
+        "00524790": "src/tribegam.cpp",
+        "00524880": "src/tribegam.cpp",
+        "00524A60": "src/tribegam.cpp",
+        "00524A80": "src/tribegam.cpp",
+        "00525E50": "src/tribegam.cpp",
+        "00529000": "src/tribegam.cpp",
+        "005291F0": "src/tribegam.cpp",
+        "00529200": "src/tribegam.cpp",
+        "005292A0": "src/tribegam.cpp",
+        "005292B0": "src/tribegam.cpp",
+        "005292C0": "src/tribegam.cpp",
+        "005292D0": "src/tribegam.cpp",
+        "005292E0": "src/tribegam.cpp",
+        "005292F0": "src/tribegam.cpp",
+        "00529300": "src/tribegam.cpp",
+        "00529310": "src/tribegam.cpp",
+        "00529320": "src/tribegam.cpp",
+        "00529340": "src/tribegam.cpp",
+        "00529350": "src/tribegam.cpp",
+        "00529370": "src/tribegam.cpp",
+        "00529380": "src/tribegam.cpp",
+        "005293A0": "src/tribegam.cpp",
+        "005293B0": "src/tribegam.cpp",
+        "005293D0": "src/tribegam.cpp",
+        "005293E0": "src/tribegam.cpp",
+        "00529400": "src/tribegam.cpp",
+        "00529410": "src/tribegam.cpp",
+        "00529420": "src/tribegam.cpp",
+        "00529430": "src/tribegam.cpp",
+        "00529440": "src/tribegam.cpp",
+        "00529450": "src/tribegam.cpp",
+        "00529460": "src/tribegam.cpp",
+        "00529470": "src/tribegam.cpp",
+        "005294A0": "src/tribegam.cpp",
+        "005294B0": "src/tribegam.cpp",
+        "005294C0": "src/tribegam.cpp",
+        "005294D0": "src/tribegam.cpp",
+        "005294E0": "src/tribegam.cpp",
+        "005294F0": "src/tribegam.cpp",
+        "00529500": "src/tribegam.cpp",
+        "00529510": "src/tribegam.cpp",
+        "00529520": "src/tribegam.cpp",
+        "00529530": "src/tribegam.cpp",
+        "00529540": "src/tribegam.cpp",
+        "00529550": "src/tribegam.cpp",
+        "00529560": "src/tribegam.cpp",
+        "00529610": "src/tribegam.cpp",
+        "00529980": "src/tribegam.cpp",
+        "005299E0": "src/tribegam.cpp",
+        "0052A030": "src/tribegam.cpp",
+        "0052A190": "src/tribegam.cpp",
+        "0052A210": "src/tribegam.cpp",
+        "0052A430": "src/tribegam.cpp",
+        "0052A630": "src/tribegam.cpp",
+        "0052A6A0": "src/tribegam.cpp"
       },
       "symbols": {
         "005228E0": "?get_string@TRIBE_Game@@UAEPADJPADH@Z",
@@ -1878,7 +2095,81 @@
         "00528FB0": "?receive_game_options@TRIBE_Game@@UAEXXZ",
         "00529F60": "?action_key_down@TRIBE_Game@@UAEHKHHHH@Z",
         "0052A000": "?action_close@TRIBE_Game@@UAEHXZ",
-        "0052A080": "?get_achievement_info@TRIBE_Game@@QAEJEPAPAD@Z"
+        "0052A080": "?get_achievement_info@TRIBE_Game@@QAEJEPAPAD@Z",
+        "00521620": "?close_game_screens@TRIBE_Game@@QAEXH@Z",
+        "00521FA0": "?setup_cmd_options@TRIBE_Game@@UAEHXZ",
+        "00522200": "?setup_palette@TRIBE_Game@@MAEHXZ",
+        "005222C0": "?setup_sounds@TRIBE_Game@@MAEHXZ",
+        "00522770": "?create_world@TRIBE_Game@@MAEPAVRGE_Game_World@@XZ",
+        "005227D0": "?set_game_mode@TRIBE_Game@@UAEXHH@Z",
+        "00522810": "?set_player@TRIBE_Game@@UAEXF@Z",
+        "00522860": "?set_save_game_name@TRIBE_Game@@QAEXPAD@Z",
+        "005228A0": "?set_load_game_name@TRIBE_Game@@QAEXPAD@Z",
+        "00523450": "?get_view_panel@TRIBE_Game@@UAEPAVTPanel@@XZ",
+        "005234A0": "?get_map_panel@TRIBE_Game@@UAEPAVTPanel@@XZ",
+        "005234F0": "?get_save_game_name@TRIBE_Game@@QAEPADXZ",
+        "00523500": "?get_load_game_name@TRIBE_Game@@QAEPADXZ",
+        "005236A0": "?show_status_message@TRIBE_Game@@QAEXPAD0J@Z",
+        "005237B0": "?start_video@TRIBE_Game@@QAEHHPAD@Z",
+        "00523B10": "?stop_video@TRIBE_Game@@QAEXE@Z",
+        "00523F10": "?start_campaign_menu@TRIBE_Game@@QAEHXZ",
+        "00524030": "?start_menu@TRIBE_Game@@QAEHXZ",
+        "005243A0": "?restart_game@TRIBE_Game@@QAEXXZ",
+        "00524790": "?save_scenario@TRIBE_Game@@QAEHPAD@Z",
+        "00524880": "?calc_timing_text@TRIBE_Game@@UAEXXZ",
+        "00524A60": "?show_timings@TRIBE_Game@@UAEXXZ",
+        "00524A80": "?show_comm@TRIBE_Game@@UAEXXZ",
+        "00525E50": "?test_scenario@TRIBE_Game@@QAEHPAD@Z",
+        "00529000": "?set_tribe_options@TRIBE_Game@@QAEXPAUTRIBE_Game_Options@1@@Z",
+        "005291F0": "?mapSize@TRIBE_Game@@QBE?AW4MapSize@1@XZ",
+        "00529200": "?setMapSize@TRIBE_Game@@QAEXW4MapSize@1@@Z",
+        "005292A0": "?mapType@TRIBE_Game@@QBE?AW4MapType@1@XZ",
+        "005292B0": "?setMapType@TRIBE_Game@@QAEXW4MapType@1@@Z",
+        "005292C0": "?animals@TRIBE_Game@@QBEHXZ",
+        "005292D0": "?setAnimals@TRIBE_Game@@QAEXH@Z",
+        "005292E0": "?predators@TRIBE_Game@@QBEHXZ",
+        "005292F0": "?setPredators@TRIBE_Game@@QAEXH@Z",
+        "00529300": "?victoryType@TRIBE_Game@@QBE?AW4VictoryType@1@XZ",
+        "00529310": "?victoryAmount@TRIBE_Game@@QBEHXZ",
+        "00529320": "?setVictoryType@TRIBE_Game@@QAEXW4VictoryType@1@H@Z",
+        "00529340": "?civilization@TRIBE_Game@@QAEHH@Z",
+        "00529350": "?setCivilization@TRIBE_Game@@QAEXHH@Z",
+        "00529370": "?scenarioPlayer@TRIBE_Game@@QAEHH@Z",
+        "00529380": "?setScenarioPlayer@TRIBE_Game@@QAEXHH@Z",
+        "005293A0": "?playerColor@TRIBE_Game@@QAEHH@Z",
+        "005293B0": "?setPlayerColor@TRIBE_Game@@QAEXHH@Z",
+        "005293D0": "?computerName@TRIBE_Game@@QAEHH@Z",
+        "005293E0": "?setComputerName@TRIBE_Game@@QAEXHH@Z",
+        "00529400": "?allowTrading@TRIBE_Game@@QAEHXZ",
+        "00529410": "?longCombat@TRIBE_Game@@QAEHXZ",
+        "00529420": "?randomizePositions@TRIBE_Game@@QAEHXZ",
+        "00529430": "?fullTechTree@TRIBE_Game@@QAEHXZ",
+        "00529440": "?resourceLevel@TRIBE_Game@@QAE?AW4ResourceLevel@1@XZ",
+        "00529450": "?startingAge@TRIBE_Game@@QAE?AW4Age@1@XZ",
+        "00529460": "?startingUnits@TRIBE_Game@@QAEHXZ",
+        "00529470": "?deathMatch@TRIBE_Game@@QAEEXZ",
+        "005294A0": "?quickStartGame@TRIBE_Game@@QAEEXZ",
+        "005294B0": "?randomStartValue@TRIBE_Game@@QAEHXZ",
+        "005294C0": "?setAllowTrading@TRIBE_Game@@QAEXH@Z",
+        "005294D0": "?setLongCombat@TRIBE_Game@@QAEXH@Z",
+        "005294E0": "?setRandomizePositions@TRIBE_Game@@QAEXH@Z",
+        "005294F0": "?setFullTechTree@TRIBE_Game@@QAEXH@Z",
+        "00529500": "?setResourceLevel@TRIBE_Game@@QAEXW4ResourceLevel@1@@Z",
+        "00529510": "?setStartingAge@TRIBE_Game@@QAEXW4Age@1@@Z",
+        "00529520": "?setStartingUnits@TRIBE_Game@@QAEXH@Z",
+        "00529530": "?setDeathMatch@TRIBE_Game@@QAEXE@Z",
+        "00529540": "?setPopLimit@TRIBE_Game@@QAEXE@Z",
+        "00529550": "?setQuickStartGame@TRIBE_Game@@QAEXE@Z",
+        "00529560": "?setRandomStartValue@TRIBE_Game@@QAEXH@Z",
+        "00529610": "?handle_idle@TRIBE_Game@@UAEHXZ",
+        "00529980": "?handle_query_new_palette@TRIBE_Game@@UAEHPAXIIJ@Z",
+        "005299E0": "?handle_activate@TRIBE_Game@@UAEHPAXIIJ@Z",
+        "0052A030": "?game_over_msg@TRIBE_Game@@QAEPADXZ",
+        "0052A190": "?video_wnd_proc@TRIBE_Game@@QAEJPAXIIJ@Z",
+        "0052A210": "?set_interface_messages@TRIBE_Game@@UAEXXZ",
+        "0052A430": "?shutdown_video_system@TRIBE_Game@@QAEXXZ",
+        "0052A630": "?add_notification_loc@TRIBE_Game@@QAEXJJ@Z",
+        "0052A6A0": "?goto_notification_loc@TRIBE_Game@@QAEXXZ"
       }
     },
     {
@@ -1892,7 +2183,66 @@
         "00514700": "src/tplayer.cpp",
         "00514710": "src/tplayer.cpp",
         "00515DF0": "src/tplayer.cpp",
-        "00519D40": "src/tplayer.cpp"
+        "00519D40": "src/tplayer.cpp",
+        "00511BD0": "src/tplayer.cpp",
+        "00511E20": "src/tplayer.cpp",
+        "005120F0": "src/tplayer.cpp",
+        "00512630": "src/tplayer.cpp",
+        "005128A0": "src/tplayer.cpp",
+        "00512BF0": "src/tplayer.cpp",
+        "00513000": "src/tplayer.cpp",
+        "005134F0": "src/tplayer.cpp",
+        "00513600": "src/tplayer.cpp",
+        "00513690": "src/tplayer.cpp",
+        "00513720": "src/tplayer.cpp",
+        "00513750": "src/tplayer.cpp",
+        "00513790": "src/tplayer.cpp",
+        "005137D0": "src/tplayer.cpp",
+        "00513840": "src/tplayer.cpp",
+        "00513860": "src/tplayer.cpp",
+        "005138D0": "src/tplayer.cpp",
+        "00513920": "src/tplayer.cpp",
+        "00513A80": "src/tplayer.cpp",
+        "00513D60": "src/tplayer.cpp",
+        "00513D80": "src/tplayer.cpp",
+        "00513DA0": "src/tplayer.cpp",
+        "00513DD0": "src/tplayer.cpp",
+        "00513FD0": "src/tplayer.cpp",
+        "00514010": "src/tplayer.cpp",
+        "005145E0": "src/tplayer.cpp",
+        "00514660": "src/tplayer.cpp",
+        "00514690": "src/tplayer.cpp",
+        "005146B0": "src/tplayer.cpp",
+        "005146E0": "src/tplayer.cpp",
+        "00514720": "src/tplayer.cpp",
+        "00514F90": "src/tplayer.cpp",
+        "00514FB0": "src/tplayer.cpp",
+        "00514FE0": "src/tplayer.cpp",
+        "00515040": "src/tplayer.cpp",
+        "005150E0": "src/tplayer.cpp",
+        "00515180": "src/tplayer.cpp",
+        "005151C0": "src/tplayer.cpp",
+        "005151F0": "src/tplayer.cpp",
+        "00515220": "src/tplayer.cpp",
+        "00515250": "src/tplayer.cpp",
+        "00515280": "src/tplayer.cpp",
+        "005152B0": "src/tplayer.cpp",
+        "005152E0": "src/tplayer.cpp",
+        "005153B0": "src/tplayer.cpp",
+        "00517B90": "src/tplayer.cpp",
+        "00517E10": "src/tplayer.cpp",
+        "005181C0": "src/tplayer.cpp",
+        "005188F0": "src/tplayer.cpp",
+        "00518B50": "src/tplayer.cpp",
+        "00518DD0": "src/tplayer.cpp",
+        "005192F0": "src/tplayer.cpp",
+        "00519320": "src/tplayer.cpp",
+        "00519500": "src/tplayer.cpp",
+        "005195D0": "src/tplayer.cpp",
+        "00519BD0": "src/tplayer.cpp",
+        "00519C40": "src/tplayer.cpp",
+        "00519CA0": "src/tplayer.cpp",
+        "00519D10": "src/tplayer.cpp"
       },
       "symbols": {
         "00512620": "?update_dopplegangers@TRIBE_Player@@UAEXXZ",
@@ -1900,7 +2250,66 @@
         "00514700": "?changeToHumanPlayer@TRIBE_Player@@UAEXXZ",
         "00514710": "?changeToComputerPlayer@TRIBE_Player@@UAEXXZ",
         "00515DF0": "?intelligentCivSelection@TRIBE_Player@@QAEHHHH@Z",
-        "00519D40": "?random_start@TRIBE_Gaia@@UAEXXZ"
+        "00519D40": "?random_start@TRIBE_Gaia@@UAEXXZ",
+        "00511BD0": "??0TRIBE_Player@@QAE@HPAVTRIBE_World@@E@Z",
+        "00511E20": "??0TRIBE_Player@@QAE@PAVTRIBE_World@@PAVRGE_Master_Player@@EPADEEE222@Z",
+        "005120F0": "??1TRIBE_Player@@UAE@XZ",
+        "00512630": "?scenario_save@TRIBE_Player@@UAEXH@Z",
+        "005128A0": "?load@TRIBE_Player@@UAEXH@Z",
+        "00512BF0": "?tech_cost@TRIBE_Player@@QAEXFAAF00000@Z",
+        "00513000": "?interface_tech_avail@TRIBE_Player@@QAEXPAPAUItem_Avail@@PAFF@Z",
+        "005134F0": "?interface_trade_avail@TRIBE_Player@@QAEXPAPAUTrade_Avail@@PAF@Z",
+        "00513600": "?command_make_building@TRIBE_Player@@QAEEFMM@Z",
+        "00513690": "?command_make_wall@TRIBE_Player@@QAEEFJJJJ@Z",
+        "00513720": "?command_building_make_tech@TRIBE_Player@@QAEEF@Z",
+        "00513750": "?command_building_cancel@TRIBE_Player@@QAEEXZ",
+        "00513790": "?command_delete_object@TRIBE_Player@@QAEEPAVRGE_Static_Object@@@Z",
+        "005137D0": "?command_trade_attribute@TRIBE_Player@@QAEEJ@Z",
+        "00513840": "?command_trade_attribute@TRIBE_Player@@QAEEHJ@Z",
+        "00513860": "?command_attack_ground@TRIBE_Player@@QAEEMM@Z",
+        "005138D0": "?command_give_attribute@TRIBE_Player@@UAEEHHMM@Z",
+        "00513920": "?command_building_make_obj@TRIBE_Player@@QAEEF@Z",
+        "00513A80": "?command_make_unload@TRIBE_Player@@QAEEMM@Z",
+        "00513D60": "?check_tech_cost@TRIBE_Player@@QAEEFPAF@Z",
+        "00513D80": "?pay_tech_cost@TRIBE_Player@@QAEEF@Z",
+        "00513DA0": "?tech_abling@TRIBE_Player@@QAEXJE@Z",
+        "00513DD0": "?rev_tech@TRIBE_Player@@QAEXJ@Z",
+        "00513FD0": "?add_population_entry@TRIBE_Player@@QAEXXZ",
+        "00514010": "?random_start@TRIBE_Player@@UAEXXZ",
+        "005145E0": "?researchCost@TRIBE_Player@@QAEXHHPAVResourceItem@@H@Z",
+        "00514660": "?objectAvailable@TRIBE_Player@@QAEHH@Z",
+        "00514690": "?researchAvailable@TRIBE_Player@@QAEHH@Z",
+        "005146B0": "?researchEverAvailable@TRIBE_Player@@QAEHH@Z",
+        "005146E0": "?researchState@TRIBE_Player@@QAEEH@Z",
+        "00514720": "?aiStatus@TRIBE_Player@@UAEPADH@Z",
+        "00514F90": "?kickAI@TRIBE_Player@@UAEXH@Z",
+        "00514FB0": "?strategicNumber@TRIBE_Player@@UAEHH@Z",
+        "00514FE0": "?logMessage@TRIBE_Player@@UAAXPADZZ",
+        "00515040": "?sendAICommand@TRIBE_Player@@UAEHHHHHH@Z",
+        "005150E0": "?removeObject@TRIBE_Player@@UAEXPAVRGE_Static_Object@@HHPAURGE_Object_Node@@@Z",
+        "00515180": "?cancelBuild@TRIBE_Player@@UAEXHHHMMHH@Z",
+        "005151C0": "?registerBuild@TRIBE_Player@@UAEXPAVRGE_Static_Object@@H@Z",
+        "005151F0": "?trainUnit@TRIBE_Player@@UAEXHHH@Z",
+        "00515220": "?cancelTrain@TRIBE_Player@@UAEXHHHH@Z",
+        "00515250": "?registerTrain@TRIBE_Player@@UAEXHHHH@Z",
+        "00515280": "?research@TRIBE_Player@@UAEXHHH@Z",
+        "005152B0": "?cancelResearch@TRIBE_Player@@UAEXHHHH@Z",
+        "005152E0": "?registerResearch@TRIBE_Player@@UAEXHHH@Z",
+        "005153B0": "?setDiplomaticStance@TRIBE_Player@@UAEXHH@Z",
+        "00517B90": "?setupEgyptian@TRIBE_Player@@QAEXPAHHHH@Z",
+        "00517E10": "?setupBabylonian@TRIBE_Player@@QAEXPAHHHH@Z",
+        "005181C0": "?setupHittite@TRIBE_Player@@QAEXPAHHHH@Z",
+        "005188F0": "?setupChoson@TRIBE_Player@@QAEXPAHHHH@Z",
+        "00518B50": "?setupCarthaginian@TRIBE_Player@@QAEXPAHHHH@Z",
+        "00518DD0": "?setupMacedonian@TRIBE_Player@@QAEXPAHHHH@Z",
+        "005192F0": "?trackUnitGather@TRIBE_Player@@UAEXHHH@Z",
+        "00519320": "?get_achievement@TRIBE_Player@@QAEXEPAD@Z",
+        "00519500": "?new_victory@TRIBE_Player@@UAEXXZ",
+        "005195D0": "?analyize_selected_objects@TRIBE_Player@@UAEXXZ",
+        "00519BD0": "??0TRIBE_Gaia@@QAE@PAVTRIBE_World@@PAVRGE_Master_Player@@EPADE@Z",
+        "00519C40": "?save@TRIBE_Gaia@@UAEXH@Z",
+        "00519CA0": "?update@TRIBE_Gaia@@UAEXXZ",
+        "00519D10": "?load_master_object@TRIBE_Gaia@@QAEXHFEPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"
       }
     },
     {
@@ -1938,7 +2347,41 @@
         "0049D2F0": "src/scr_game.cpp",
         "0049D340": "src/scr_game.cpp",
         "0049D530": "src/scr_game.cpp",
-        "0049D540": "src/scr_game.cpp"
+        "0049D540": "src/scr_game.cpp",
+        "00496700": "src/scr_game.cpp",
+        "004970A0": "src/scr_game.cpp",
+        "00497280": "src/scr_game.cpp",
+        "00497440": "src/scr_game.cpp",
+        "00498A50": "src/scr_game.cpp",
+        "004993B0": "src/scr_game.cpp",
+        "00499680": "src/scr_game.cpp",
+        "004996B0": "src/scr_game.cpp",
+        "0049A8F0": "src/scr_game.cpp",
+        "0049AB60": "src/scr_game.cpp",
+        "0049B560": "src/scr_game.cpp",
+        "0049BC60": "src/scr_game.cpp",
+        "0049BCA0": "src/scr_game.cpp",
+        "0049BD20": "src/scr_game.cpp",
+        "0049BD70": "src/scr_game.cpp",
+        "0049C1B0": "src/scr_game.cpp",
+        "0049C280": "src/scr_game.cpp",
+        "0049C300": "src/scr_game.cpp",
+        "0049C540": "src/scr_game.cpp",
+        "0049C770": "src/scr_game.cpp",
+        "0049C920": "src/scr_game.cpp",
+        "0049C970": "src/scr_game.cpp",
+        "0049CA10": "src/scr_game.cpp",
+        "0049CA80": "src/scr_game.cpp",
+        "0049CAC0": "src/scr_game.cpp",
+        "0049CB90": "src/scr_game.cpp",
+        "0049CC20": "src/scr_game.cpp",
+        "0049CE10": "src/scr_game.cpp",
+        "0049CE40": "src/scr_game.cpp",
+        "0049CEA0": "src/scr_game.cpp",
+        "0049CFF0": "src/scr_game.cpp",
+        "0049D370": "src/scr_game.cpp",
+        "0049D4B0": "src/scr_game.cpp",
+        "0049D4F0": "src/scr_game.cpp"
       },
       "symbols": {
         "004972F0": "?handle_resume@TRIBE_Screen_Game@@QAEXXZ",
@@ -1949,7 +2392,41 @@
         "0049CFB0": "?command_ungroup@TRIBE_Screen_Game@@IAEXXZ",
         "0049D290": "?command_formation@TRIBE_Screen_Game@@IAEXH@Z",
         "0049D2C0": "?command_stand_ground@TRIBE_Screen_Game@@IAEXXZ",
-        "0049D2F0": "?command_attack_ground@TRIBE_Screen_Game@@IAEXXZ"
+        "0049D2F0": "?command_attack_ground@TRIBE_Screen_Game@@IAEXXZ",
+        "00496700": "?handle_idle@TRIBE_Screen_Game@@UAEJXZ",
+        "004970A0": "?wnd_proc@TRIBE_Screen_Game@@UAEJPAXIIJ@Z",
+        "00497280": "?handle_user_command@TRIBE_Screen_Game@@UAEJIJ@Z",
+        "00497440": "?key_down_action@TRIBE_Screen_Game@@UAEJJFHHH@Z",
+        "00498A50": "?player_changed@TRIBE_Screen_Game@@QAEXHH@Z",
+        "004993B0": "?age_changed@TRIBE_Screen_Game@@IAEXXZ",
+        "00499680": "?show_message@TRIBE_Screen_Game@@QAEXW4MessageType@TMessagePanel@@PADEE@Z",
+        "004996B0": "?reset_buttons@TRIBE_Screen_Game@@QAEXXZ",
+        "0049A8F0": "?calc_text_msg@TRIBE_Screen_Game@@IAEPADPADPAUItem_Avail@@JJ@Z",
+        "0049AB60": "?set_button@TRIBE_Screen_Game@@IAEXPAVTShape@@FFJJJJJPAEPAD2H@Z",
+        "0049B560": "?draw@TRIBE_Screen_Game@@UAEXXZ",
+        "0049BC60": "?command_add_attribute@TRIBE_Screen_Game@@IAEXH@Z",
+        "0049BCA0": "?command_ai_info@TRIBE_Screen_Game@@IAEXXZ",
+        "0049BD20": "?command_attack@TRIBE_Screen_Game@@IAEXXZ",
+        "0049BD70": "?command_build@TRIBE_Screen_Game@@IAEXXZ",
+        "0049C1B0": "?command_diplomacy@TRIBE_Screen_Game@@IAEXXZ",
+        "0049C280": "?command_fps@TRIBE_Screen_Game@@IAEXXZ",
+        "0049C300": "?command_game_speed@TRIBE_Screen_Game@@IAEXH@Z",
+        "0049C540": "?command_group@TRIBE_Screen_Game@@IAEXXZ",
+        "0049C770": "?command_menu@TRIBE_Screen_Game@@IAEXXZ",
+        "0049C920": "?command_outline@TRIBE_Screen_Game@@IAEXXZ",
+        "0049C970": "?command_pause@TRIBE_Screen_Game@@IAEXXZ",
+        "0049CA10": "?command_player@TRIBE_Screen_Game@@IAEXH@Z",
+        "0049CA80": "?command_quick_build@TRIBE_Screen_Game@@IAEXXZ",
+        "0049CAC0": "?command_quit@TRIBE_Screen_Game@@IAEXXZ",
+        "0049CB90": "?command_save_game@TRIBE_Screen_Game@@IAEXXZ",
+        "0049CC20": "?command_save_scenario@TRIBE_Screen_Game@@IAEXXZ",
+        "0049CE10": "?command_stop@TRIBE_Screen_Game@@IAEXXZ",
+        "0049CE40": "?command_tool_box@TRIBE_Screen_Game@@IAEXXZ",
+        "0049CEA0": "?command_trade@TRIBE_Screen_Game@@IAEXXZ",
+        "0049CFF0": "?command_unload@TRIBE_Screen_Game@@IAEXXZ",
+        "0049D370": "?command_tab_selected@TRIBE_Screen_Game@@IAEXH@Z",
+        "0049D4B0": "?set_focus@TRIBE_Screen_Game@@UAEXH@Z",
+        "0049D4F0": "?stop_sound_system@TRIBE_Screen_Game@@MAEXXZ"
       }
     },
     {
@@ -2007,7 +2484,9 @@
         "004ADAF0": "src/scr_sed.cpp",
         "004ADB10": "src/scr_sed.cpp",
         "004ADC30": "src/scr_sed.cpp",
-        "004ADC40": "src/scr_sed.cpp"
+        "004ADC40": "src/scr_sed.cpp",
+        "004AAB60": "src/scr_sed.cpp",
+        "004AD340": "src/scr_sed.cpp"
       },
       "symbols": {
         "004AD300": "?command_new@TRIBE_Screen_Sed@@QAEXXZ",
@@ -2034,7 +2513,9 @@
         "004ADAF0": "?command_quick_save@TRIBE_Screen_Sed@@QAEXXZ",
         "004ADB10": "?scenario_save_defaulted@TRIBE_Screen_Sed@@QAEPADXZ",
         "004ADC30": "?need_to_save@TRIBE_Screen_Sed@@QAEEXZ",
-        "004ADC40": "?set_focus@TRIBE_Screen_Sed@@MAEXH@Z"
+        "004ADC40": "?set_focus@TRIBE_Screen_Sed@@MAEXH@Z",
+        "004AAB60": "?set_paint_type@TRIBE_Screen_Sed@@IAEXW4PaintType@1@H@Z",
+        "004AD340": "?command_new_map@TRIBE_Screen_Sed@@QAEHPADHHHHH@Z"
       }
     },
     {
@@ -2491,7 +2972,6 @@
         "00470A40": "src/player.cpp",
         "00470BE0": "src/player.cpp",
         "00470C70": "src/player.cpp",
-        "00470F80": "src/player.cpp",
         "00471430": "src/player.cpp",
         "004715D0": "src/player.cpp",
         "004716D0": "src/player.cpp",
@@ -2553,7 +3033,6 @@
         "00470A40": "?modify_tobj_percent@RGE_Player@@QAEXFFME@Z",
         "00470BE0": "?set_relation@RGE_Player@@QAEXJE@Z",
         "00470C70": "?make_new_object@RGE_Player@@UAEPAVRGE_Static_Object@@JMMMH@Z",
-        "00470F80": "?group_objects@RGE_Player@@QAEHH@Z",
         "00471430": "?update_selected@RGE_Player@@QAEXXZ",
         "004715D0": "?command_make_work@RGE_Player@@UAEEPAVRGE_Static_Object@@MM@Z",
         "004716D0": "?command_make_do@RGE_Player@@UAEEPAVRGE_Static_Object@@MM@Z",
@@ -2629,7 +3108,30 @@
         "00460B70": "src/move_obj.cpp",
         "00460D30": "src/move_obj.cpp",
         "00460D60": "src/move_obj.cpp",
-        "00460DB0": "src/move_obj.cpp"
+        "00460DB0": "src/move_obj.cpp",
+        "0045D080": "src/move_obj.cpp",
+        "0045D0B0": "src/move_obj.cpp",
+        "0045D0E0": "src/move_obj.cpp",
+        "0045D120": "src/move_obj.cpp",
+        "0045D5C0": "src/move_obj.cpp",
+        "0045D5F0": "src/move_obj.cpp",
+        "0045D610": "src/move_obj.cpp",
+        "0045D650": "src/move_obj.cpp",
+        "0045D680": "src/move_obj.cpp",
+        "0045D6A0": "src/move_obj.cpp",
+        "0045F820": "src/move_obj.cpp",
+        "0045F9D0": "src/move_obj.cpp",
+        "0045FBC0": "src/move_obj.cpp",
+        "0045FED0": "src/move_obj.cpp",
+        "004600F0": "src/move_obj.cpp",
+        "004603B0": "src/move_obj.cpp",
+        "00460570": "src/move_obj.cpp",
+        "00460710": "src/move_obj.cpp",
+        "00460930": "src/move_obj.cpp",
+        "00460970": "src/move_obj.cpp",
+        "00460BF0": "src/move_obj.cpp",
+        "00460C00": "src/move_obj.cpp",
+        "00460EB0": "src/move_obj.cpp"
       },
       "symbols": {
         "0045C450": "??0RGE_Moving_Object@@QAE@PAVRGE_Master_Moving_Object@@PAVRGE_Player@@MMMH@Z",
@@ -2646,7 +3148,30 @@
         "00460B70": "?removeUserDefinedWaypoint@RGE_Moving_Object@@UAEXH@Z",
         "00460D30": "?setInitialPoints@RGE_Moving_Object@@QAEXAAUXYPoint@@0@Z",
         "00460D60": "?copy_obj@RGE_Moving_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
-        "00460DB0": "?boundAngle@RGE_Moving_Object@@QAEXPAMH@Z"
+        "00460DB0": "?boundAngle@RGE_Moving_Object@@QAEXPAMH@Z",
+        "0045D080": "?new_sprite@RGE_Moving_Object@@UAEXPAVRGE_Sprite@@@Z",
+        "0045D0B0": "?spawn_death_obj@RGE_Moving_Object@@UAEPAVRGE_Static_Object@@XZ",
+        "0045D0E0": "?transform@RGE_Moving_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
+        "0045D120": "?is_moving@RGE_Moving_Object@@UAEEXZ",
+        "0045D5C0": "?set_velocity@RGE_Moving_Object@@QAEXMMM@Z",
+        "0045D5F0": "?new_angle@RGE_Moving_Object@@UAEXM@Z",
+        "0045D610": "?getPath@RGE_Moving_Object@@QBEABVPath@@XZ",
+        "0045D650": "?setGoal@RGE_Moving_Object@@QAEXMMM@Z",
+        "0045D680": "?setActionRange@RGE_Moving_Object@@QAEXM@Z",
+        "0045D6A0": "?setTargetRadius@RGE_Moving_Object@@QAEXMM@Z",
+        "0045F820": "?canPath@RGE_Moving_Object@@UAEHUXYZPoint@@MHPAMHHH@Z",
+        "0045F9D0": "?canPath@RGE_Moving_Object@@UAEHHMPAMHHH@Z",
+        "0045FBC0": "?canBidirectionPath@RGE_Moving_Object@@UAEHHHMPAMHHH@Z",
+        "0045FED0": "?canPathWithObstructions@RGE_Moving_Object@@UAEHHMPAMHHHAAV?$ManagedArray@H@@@Z",
+        "004600F0": "?canPathWithAdditionalPassability@RGE_Moving_Object@@UAEHUXYZPoint@@MHPAMHHHHH@Z",
+        "004603B0": "?canLinePath@RGE_Moving_Object@@UAEHABUXYPoint@@0MAAU2@H@Z",
+        "00460570": "?canLinePath@RGE_Moving_Object@@UAEHHHHHMH@Z",
+        "00460710": "?firstTileAlongLine@RGE_Moving_Object@@UAEHABUXYPoint@@0AAU2@HHH@Z",
+        "00460930": "?setWaitingToMove@RGE_Moving_Object@@UAEXE@Z",
+        "00460970": "?addUserDefinedWaypoint@RGE_Moving_Object@@UAEHPAUXYZBYTEPoint@@H@Z",
+        "00460BF0": "?setFinalUserDefinedWaypoint@RGE_Moving_Object@@QAEXXZ",
+        "00460C00": "?findAvoidancePath@RGE_Moving_Object@@UAEPAVPath@@AAUXYZPoint@@MH@Z",
+        "00460EB0": "?rotate@RGE_Moving_Object@@UAEXJ@Z"
       }
     },
     {
@@ -2803,10 +3328,12 @@
         "0047ECA0": "src/registry.cpp",
         "0047ED00": "src/registry.cpp",
         "0047ED60": "src/registry.cpp",
-        "0047EE20": "src/registry.cpp"
+        "0047EE20": "src/registry.cpp",
+        "0047EDD0": "src/registry.cpp"
       },
       "symbols": {
-        "0047EC40": "?RegSet@TRegistry@@QAEHHPBDPAEK@Z"
+        "0047EC40": "?RegSet@TRegistry@@QAEHHPBDPAEK@Z",
+        "0047EDD0": "?RegGet@TRegistry@@QAEJHPBDPAEPAK@Z"
       }
     },
     {
@@ -3086,12 +3613,14 @@
       "owners": {
         "004D3470": "src/tact_wnd.cpp",
         "004D34C0": "src/tact_wnd.cpp",
-        "004D3690": "src/tact_wnd.cpp"
+        "004D3690": "src/tact_wnd.cpp",
+        "004D3810": "src/tact_wnd.cpp"
       },
       "symbols": {
         "004D3470": "??0TRIBE_Action_Wonder@@QAE@HPAVRGE_Action_Object@@@Z",
         "004D34C0": "??0TRIBE_Action_Wonder@@QAE@PAVRGE_Action_Object@@@Z",
-        "004D3690": "?first_in_stack@TRIBE_Action_Wonder@@UAEXE@Z"
+        "004D3690": "?first_in_stack@TRIBE_Action_Wonder@@UAEXE@Z",
+        "004D3810": "?update@TRIBE_Action_Wonder@@UAEEXZ"
       }
     },
     {
@@ -3159,7 +3688,6 @@
         "00475150": "src/Pnl_drop.cpp",
         "00475160": "src/Pnl_drop.cpp",
         "004751C0": "src/Pnl_drop.cpp",
-        "004751E0": "src/Pnl_drop.cpp",
         "00475210": "src/Pnl_drop.cpp",
         "00475230": "src/Pnl_drop.cpp",
         "00475250": "src/Pnl_drop.cpp",
@@ -3535,7 +4063,6 @@
         "004D5EB0": "src/taiconmd.cpp",
         "004D5EE0": "src/taiconmd.cpp",
         "004D5EF0": "src/taiconmd.cpp",
-        "004D5F00": "src/taiconmd.cpp",
         "004D6780": "src/taiconmd.cpp",
         "004D6800": "src/taiconmd.cpp"
       },
@@ -3544,7 +4071,6 @@
         "004D5EB0": "??0TribeConstructionAIModule@@QAE@HH@Z",
         "004D5EE0": "??1TribeConstructionAIModule@@UAE@XZ",
         "004D5EF0": "?setMainDecisionAI@TribeConstructionAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z",
-        "004D5F00": "?canPlace@TribeConstructionAIModule@@QAEHPAVBuildItem@@@Z",
         "004D6780": "?placeDock@TribeConstructionAIModule@@QAEPAVConstructionItem@@PAVBuildItem@@@Z",
         "004D6800": "?setBuilt@TribeConstructionAIModule@@QAEXPAVRGE_Static_Object@@H@Z"
       }
@@ -3591,11 +4117,19 @@
         "00448A40": "src/Dsutil.c",
         "00448A70": "src/Dsutil.c",
         "00448A80": "src/Dsutil.c",
-        "00448B30": "src/Dsutil.c"
+        "00448B30": "src/Dsutil.c",
+        "00447890": "src/Dsutil.c",
+        "00447A20": "src/Dsutil.c",
+        "00447EF0": "src/Dsutil.c",
+        "004481A0": "src/Dsutil.c"
       },
       "symbols": {
         "00447D50": "_WaveOpenFile",
-        "00448040": "_WaveCloseReadFile"
+        "00448040": "_WaveCloseReadFile",
+        "00447890": "_DSReloadSoundBuffer",
+        "00447A20": "_SndObjDestroy",
+        "00447EF0": "_WaveStartDataRead",
+        "004481A0": "_WaveStartDataWrite"
       }
     },
     {
@@ -3936,7 +4470,8 @@
         "00442180": "src/dpl_obj.cpp",
         "004422B0": "src/dpl_obj.cpp",
         "00442390": "src/dpl_obj.cpp",
-        "00442540": "src/dpl_obj.cpp"
+        "00442540": "src/dpl_obj.cpp",
+        "004421F0": "src/dpl_obj.cpp"
       },
       "symbols": {
         "004418A0": "??0RGE_Doppleganger_Object@@QAE@PAVRGE_Master_Doppleganger_Object@@PAVRGE_Player@@MMMHPAVRGE_Static_Object@@@Z",
@@ -3946,7 +4481,8 @@
         "00441EB0": "?update@RGE_Doppleganger_Object@@UAEEXZ",
         "004422B0": "?remove_doppleganger_check@RGE_Doppleganger_Creator@@QAEHPAVRGE_Static_Object@@@Z",
         "00442390": "?perform_doppleganger_checks@RGE_Doppleganger_Creator@@QAEXXZ",
-        "00442540": "?expand_allocations@RGE_Doppleganger_Creator@@IAEXH@Z"
+        "00442540": "?expand_allocations@RGE_Doppleganger_Creator@@IAEXH@Z",
+        "004421F0": "?add_doppleganger_check@RGE_Doppleganger_Creator@@QAEHPAVRGE_Static_Object@@PAK@Z"
       }
     },
     {
@@ -4364,10 +4900,12 @@
         "0051D040": "src/tpnl_pop.cpp",
         "0051D060": "src/tpnl_pop.cpp",
         "0051D470": "src/tpnl_pop.cpp",
-        "0051D4E0": "src/tpnl_pop.cpp"
+        "0051D4E0": "src/tpnl_pop.cpp",
+        "0051CE40": "src/tpnl_pop.cpp"
       },
       "symbols": {
-        "0051D060": "?draw@TRIBE_Panel_Pop@@UAEXXZ"
+        "0051D060": "?draw@TRIBE_Panel_Pop@@UAEXXZ",
+        "0051CE40": "?set_rect@TRIBE_Panel_Pop@@UAEXJJJJ@Z"
       }
     },
     {
@@ -4397,10 +4935,18 @@
       "module": "rmm_tdbc",
       "flags": "config/flags/00487710_init.rsp",
       "owners": {
-        "004876C0": "src/rmm_tdbc.cpp"
+        "004876C0": "src/rmm_tdbc.cpp",
+        "004876F0": "src/rmm_tdbc.cpp",
+        "00487930": "src/rmm_tdbc.cpp",
+        "00488700": "src/rmm_tdbc.cpp",
+        "004887A0": "src/rmm_tdbc.cpp"
       },
       "symbols": {
-        "004876C0": "??0TRIBE_RMM_Database_Controller@@QAE@PAD000@Z"
+        "004876C0": "??0TRIBE_RMM_Database_Controller@@QAE@PAD000@Z",
+        "004876F0": "??0TRIBE_RMM_Database_Controller@@QAE@H@Z",
+        "00487930": "?de_init@TRIBE_RMM_Database_Controller@@UAEEXZ",
+        "00488700": "?add_elevation_module@TRIBE_RMM_Database_Controller@@MAEXXZ",
+        "004887A0": "?add_shallows_module@TRIBE_RMM_Database_Controller@@IAEXXZ"
       }
     },
     {
@@ -4657,7 +5203,9 @@
         "004B9040": "src/Shape.cpp",
         "004B9070": "src/Shape.cpp",
         "004B97F0": "src/Shape.cpp",
-        "004BA900": "src/Shape.cpp"
+        "004BA900": "src/Shape.cpp",
+        "004B99F0": "src/Shape.cpp",
+        "004BAAF0": "src/Shape.cpp"
       },
       "symbols": {
         "004B8B30": "??0TShape@@QAE@XZ",
@@ -4668,7 +5216,9 @@
         "004B9040": "?shape_count@TShape@@QAEJXZ",
         "004B9070": "?shape_minmax@TShape@@QAEEAAJ000J@Z",
         "004B97F0": "?shape_draw_unclipped@TShape@@AAEEPAVTDrawArea@@JJJ@Z",
-        "004BA900": "?shape_mirror_unclipped@TShape@@AAEEPAVTDrawArea@@JJ@Z"
+        "004BA900": "?shape_mirror_unclipped@TShape@@AAEEPAVTDrawArea@@JJ@Z",
+        "004B99F0": "?shape_shadow_unclipped@TShape@@AAEEPAVTDrawArea@@JJPAE@Z",
+        "004BAAF0": "?shape_mirror_shadow_unclipped@TShape@@AAEEPAVTDrawArea@@JJPAE@Z"
       }
     },
     {
@@ -4679,12 +5229,14 @@
       "owners": {
         "0047E480": "src/point.cpp",
         "0047E490": "src/point.cpp",
-        "0047E5D0": "src/point.cpp"
+        "0047E4B0": "src/point.cpp",
+        "0047E4E0": "src/point.cpp"
       },
       "symbols": {
         "0047E480": "??0XYZ@@QAE@XZ",
         "0047E490": "??0XYZ@@QAE@HHH@Z",
-        "0047E5D0": "?rotateXYByFacet@XYZ@@QAEXABV1@AAV1@E@Z"
+        "0047E4B0": "??8@YAHABVXYZ@@0@Z",
+        "0047E4E0": "??9@YAHABVXYZ@@0@Z"
       }
     },
     {
@@ -4725,7 +5277,26 @@
         "00447620": "src/dstring.cpp",
         "004476A0": "src/dstring.cpp",
         "004476F0": "src/dstring.cpp",
-        "00447760": "src/dstring.cpp"
+        "00447760": "src/dstring.cpp",
+        "00446880": "src/dstring.cpp",
+        "004468E0": "src/dstring.cpp",
+        "00446930": "src/dstring.cpp",
+        "00446980": "src/dstring.cpp",
+        "004469E0": "src/dstring.cpp",
+        "00446A30": "src/dstring.cpp",
+        "00446A80": "src/dstring.cpp",
+        "00446AE0": "src/dstring.cpp",
+        "00446B30": "src/dstring.cpp",
+        "00446B80": "src/dstring.cpp",
+        "00446BE0": "src/dstring.cpp",
+        "00446C30": "src/dstring.cpp",
+        "00446D60": "src/dstring.cpp",
+        "00446FD0": "src/dstring.cpp",
+        "00447140": "src/dstring.cpp",
+        "004472D0": "src/dstring.cpp",
+        "00447370": "src/dstring.cpp",
+        "00447710": "src/dstring.cpp",
+        "00447780": "src/dstring.cpp"
       },
       "symbols": {
         "004465D0": "??0DString@@QAE@XZ",
@@ -4748,7 +5319,26 @@
         "00447620": "??0DKeyString@@QAE@VDString@@0@Z",
         "004476A0": "??1DKeyString@@QAE@XZ",
         "004476F0": "?key@DKeyString@@QBE?AVDString@@XZ",
-        "00447760": "?value@DKeyString@@QBE?AVDString@@XZ"
+        "00447760": "?value@DKeyString@@QBE?AVDString@@XZ",
+        "00446880": "??8@YAHABVDString@@0@Z",
+        "004468E0": "??8@YAHABVDString@@PBD@Z",
+        "00446930": "??8@YAHPBDABVDString@@@Z",
+        "00446980": "??9@YAHABVDString@@0@Z",
+        "004469E0": "??9@YAHABVDString@@PBD@Z",
+        "00446A30": "??9@YAHPBDABVDString@@@Z",
+        "00446A80": "??M@YAHABVDString@@0@Z",
+        "00446AE0": "??M@YAHABVDString@@PBD@Z",
+        "00446B30": "??M@YAHPBDABVDString@@@Z",
+        "00446B80": "??O@YAHABVDString@@0@Z",
+        "00446BE0": "??O@YAHABVDString@@PBD@Z",
+        "00446C30": "??O@YAHPBDABVDString@@@Z",
+        "00446D60": "?contains@DString@@QBEHV1@@Z",
+        "00446FD0": "?nextWord@DString@@QAE?AV1@H@Z",
+        "00447140": "?subString@DString@@QAE?AV1@HH@Z",
+        "004472D0": "?stripTrailing@DString@@QAE?AV1@D@Z",
+        "00447370": "?stripLeading@DString@@QAE?AV1@D@Z",
+        "00447710": "?setKey@DKeyString@@QAEXVDString@@@Z",
+        "00447780": "?setValue@DKeyString@@QAEXVDString@@@Z"
       }
     },
     {
@@ -4800,7 +5390,9 @@
         "0046D260": "src/pathsys.cpp",
         "0046D270": "src/pathsys.cpp",
         "0046D740": "src/pathsys.cpp",
-        "0046D770": "src/pathsys.cpp"
+        "0046D770": "src/pathsys.cpp",
+        "0046B680": "src/pathsys.cpp",
+        "0046DCB0": "src/pathsys.cpp"
       },
       "symbols": {
         "0046B0F0": "??0PathingSystem@@QAE@HHHPAVRGE_Map@@PAVRGE_Game_World@@@Z",
@@ -4811,7 +5403,9 @@
         "0046B570": "?setMisc@PathingSystem@@QAEXHHE@Z",
         "0046B5C0": "?zeroObstructionMap@PathingSystem@@QAEXXZ",
         "0046D740": "?checksum@PathingSystem@@QAEJXZ",
-        "0046D770": "?printState@PathingSystem@@IAEXPAVRGE_Moving_Object@@@Z"
+        "0046D770": "?printState@PathingSystem@@IAEXPAVRGE_Moving_Object@@@Z",
+        "0046B680": "?decrementObstruction@PathingSystem@@QAEXHH@Z",
+        "0046DCB0": "?copyUnobstructibles@PathingSystem@@QAEXAAV?$ManagedArray@H@@@Z"
       },
       "module": "pathsys"
     },
@@ -4902,7 +5496,6 @@
         "00492F70": "src/scr_cred.cpp",
         "00492F80": "src/scr_cred.cpp",
         "00493070": "src/scr_cred.cpp",
-        "00493420": "src/scr_cred.cpp",
         "00493540": "src/scr_cred.cpp"
       },
       "symbols": {
@@ -4948,10 +5541,12 @@
         "00486180": "src/rmm_obj.cpp",
         "00486210": "src/rmm_obj.cpp",
         "00486700": "src/rmm_obj.cpp",
-        "00486A60": "src/rmm_obj.cpp"
+        "00486A60": "src/rmm_obj.cpp",
+        "00485E50": "src/rmm_obj.cpp"
       },
       "symbols": {
-        "00485DC0": "?generate@RGE_RMM_Object_Generator@@UAEEXZ"
+        "00485DC0": "?generate@RGE_RMM_Object_Generator@@UAEEXZ",
+        "00485E50": "?generate_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@@Z"
       }
     },
     {
@@ -4991,7 +5586,13 @@
         "0053D040": "src/visible.cpp",
         "0053D0C0": "src/visible.cpp",
         "0053D110": "src/visible.cpp",
-        "0053D150": "src/visible.cpp"
+        "0053D150": "src/visible.cpp",
+        "0053C1B0": "src/visible.cpp",
+        "0053C290": "src/visible.cpp",
+        "0053C680": "src/visible.cpp",
+        "0053CE70": "src/visible.cpp",
+        "0053CEE0": "src/visible.cpp",
+        "0053D070": "src/visible.cpp"
       },
       "symbols": {
         "0053C400": "?save@RGE_Visible_Map@@QAEXH@Z",
@@ -5005,7 +5606,13 @@
         "0053CFF0": "?save@RGE_Unified_Visible_Map@@QAEXH@Z",
         "0053D040": "?reset@RGE_Unified_Visible_Map@@QAEXXZ",
         "0053D110": "?checksumUnifiedVisible@RGE_Visible_Map@@QAEKXZ",
-        "0053D150": "?log_map_call@@YAXHHHHHHHHH@Z"
+        "0053D150": "?log_map_call@@YAXHHHHHHHHH@Z",
+        "0053C1B0": "??0RGE_Visible_Map@@QAE@PAVRGE_Map@@PAVRGE_Player@@@Z",
+        "0053C290": "??0RGE_Visible_Map@@QAE@HPAVRGE_Game_World@@@Z",
+        "0053C680": "?recomputeExplored@RGE_Visible_Map@@QAEXXZ",
+        "0053CE70": "?checksum_visible_inputs@RGE_Visible_Map@@QAEKXZ",
+        "0053CEE0": "??0RGE_Unified_Visible_Map@@QAE@HPAVRGE_Game_World@@@Z",
+        "0053D070": "?Set_Map_Offsets@RGE_Unified_Visible_Map@@AAEXXZ"
       }
     },
     {
@@ -5209,7 +5816,15 @@
         "0040A7C0": "src/aibobj.cpp",
         "0040A7D0": "src/aibobj.cpp",
         "0040A7E0": "src/aibobj.cpp",
-        "0040A7F0": "src/aibobj.cpp"
+        "0040A7F0": "src/aibobj.cpp",
+        "00409FA0": "src/aibobj.cpp",
+        "0040A060": "src/aibobj.cpp",
+        "0040A130": "src/aibobj.cpp",
+        "0040A240": "src/aibobj.cpp",
+        "0040A370": "src/aibobj.cpp",
+        "0040A390": "src/aibobj.cpp",
+        "0040A3B0": "src/aibobj.cpp",
+        "0040A3D0": "src/aibobj.cpp"
       },
       "symbols": {
         "0040A5A0": "?xPosition@BaseObject@@QBEMXZ",
@@ -5225,7 +5840,15 @@
         "0040A640": "?currentTask@BaseObject@@QBEHXZ",
         "0040A650": "?currentTarget@BaseObject@@QBEHXZ",
         "0040A660": "?currentTargetType@BaseObject@@QBEHXZ",
-        "0040A7D0": "?setCurrentTarget@BaseObject@@QAEXH@Z"
+        "0040A7D0": "?setCurrentTarget@BaseObject@@QAEXH@Z",
+        "00409FA0": "??0BaseObject@@QAE@XZ",
+        "0040A060": "??0BaseObject@@QAE@HHHHPADMMMMMMHHH@Z",
+        "0040A130": "??0BaseObject@@QAE@PAV0@@Z",
+        "0040A240": "??0BaseObject@@QAE@ABV0@@Z",
+        "0040A370": "??8@YAHABVBaseObject@@0@Z",
+        "0040A390": "??9@YAHABVBaseObject@@0@Z",
+        "0040A3B0": "??M@YAHABVBaseObject@@0@Z",
+        "0040A3D0": "??O@YAHABVBaseObject@@0@Z"
       }
     },
     {
@@ -5462,7 +6085,6 @@
         "0041AFE0": "src/asprite.cpp",
         "0041AFF0": "src/asprite.cpp",
         "0041B000": "src/asprite.cpp",
-        "0041B010": "src/asprite.cpp",
         "0041B140": "src/asprite.cpp",
         "0041B200": "src/asprite.cpp",
         "0041B210": "src/asprite.cpp",
@@ -5491,7 +6113,6 @@
         "0041AF80": "?get_facetindex@RGE_Active_Sprite@@UAEFF@Z",
         "0041AFB0": "?get_frame@RGE_Active_Sprite@@UAEEAAF000J@Z",
         "0041AFF0": "?setToFirstFrame@RGE_Active_Sprite@@UAEXXZ",
-        "0041B010": "??0RGE_Active_Animated_Sprite@@QAE@PAVRGE_Sprite@@@Z",
         "0041B140": "??0RGE_Active_Animated_Sprite@@QAE@HPAPAVRGE_Sprite@@@Z",
         "0041B200": "??1RGE_Active_Animated_Sprite@@UAE@XZ",
         "0041B210": "?save@RGE_Active_Animated_Sprite@@UAEXH@Z",
@@ -5530,14 +6151,13 @@
         "004779A0": "src/Pnl_inp.cpp",
         "004779B0": "src/Pnl_inp.cpp",
         "004779D0": "src/Pnl_inp.cpp",
-        "00477AF0": "src/Pnl_inp.cpp",
         "00477C90": "src/Pnl_inp.cpp",
         "00477CB0": "src/Pnl_inp.cpp",
-        "00477E90": "src/Pnl_inp.cpp",
         "00477EF0": "src/Pnl_inp.cpp",
         "00478010": "src/Pnl_inp.cpp",
         "00478150": "src/Pnl_inp.cpp",
-        "004781A0": "src/Pnl_inp.cpp"
+        "004781A0": "src/Pnl_inp.cpp",
+        "00476D80": "src/Pnl_inp.cpp"
       },
       "symbols": {
         "00477910": "?set_text@TInputPanel@@UAEXPAD@Z",
@@ -5550,14 +6170,13 @@
         "004779A0": "?get_input_buffer@TInputPanel@@QAEPADXZ",
         "004779B0": "?append_character@TInputPanel@@IAEHJ@Z",
         "004779D0": "?insert_character@TInputPanel@@IAEHJ@Z",
-        "00477AF0": "?delete_character@TInputPanel@@IAEHXZ",
         "00477C90": "?backspace_character@TInputPanel@@IAEHXZ",
         "00477CB0": "?paste@TInputPanel@@IAEHXZ",
-        "00477E90": "?reformat@TInputPanel@@IAEXXZ",
         "00477EF0": "?calc_input_pos@TInputPanel@@IAEXXZ",
         "00478010": "?calc_cur_line_col@TInputPanel@@IAEXXZ",
         "00478150": "?is_blank@TInputPanel@@QAEHXZ",
-        "004781A0": "?get_trimmed_str@TInputPanel@@QAEPADPADH@Z"
+        "004781A0": "?get_trimmed_str@TInputPanel@@QAEPADPADH@Z",
+        "00476D80": "?setup@TInputPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPADHEHEEFPAVTDigital@@3W4FormatType@1@@Z"
       }
     },
     {
@@ -5614,7 +6233,9 @@
         "00473B80": "src/pnl_btn.cpp",
         "00473BB0": "src/pnl_btn.cpp",
         "00473BC0": "src/pnl_btn.cpp",
-        "00473BE0": "src/pnl_btn.cpp"
+        "00473BE0": "src/pnl_btn.cpp",
+        "004727B0": "src/pnl_btn.cpp",
+        "00473120": "src/pnl_btn.cpp"
       },
       "symbols": {
         "004721A0": "?set_text_info@TButtonPanel@@QAEXPADPAXJJJJ@Z",
@@ -5636,7 +6257,9 @@
         "00472830": "?get_id2@TButtonPanel@@QAEJXZ",
         "00472840": "?get_text@TButtonPanel@@QAEHFPAPAD0@Z",
         "004739B0": "?do_action@TButtonPanel@@QAEXXZ",
-        "00473AA0": "?do_right_action@TButtonPanel@@QAEXH@Z"
+        "00473AA0": "?do_right_action@TButtonPanel@@QAEXH@Z",
+        "004727B0": "?set_disabled@TButtonPanel@@QAEXH@Z",
+        "00473120": "?handle_mouse_down@TButtonPanel@@UAEJEJJHH@Z"
       }
     },
     {
@@ -5743,14 +6366,26 @@
         "004CAA50": "src/t_c_obj.cpp",
         "004CB8D0": "src/t_c_obj.cpp",
         "004CBD30": "src/t_c_obj.cpp",
-        "004CC570": "src/t_c_obj.cpp"
+        "004CC570": "src/t_c_obj.cpp",
+        "004CB060": "src/t_c_obj.cpp",
+        "004CB1B0": "src/t_c_obj.cpp",
+        "004CB300": "src/t_c_obj.cpp",
+        "004CB450": "src/t_c_obj.cpp",
+        "004CB5C0": "src/t_c_obj.cpp",
+        "004CB710": "src/t_c_obj.cpp"
       },
       "symbols": {
         "004CA0F0": "??0TRIBE_Combat_Object@@QAE@PAVTRIBE_Master_Combat_Object@@PAVRGE_Player@@MMMH@Z",
         "004CA1A0": "??0TRIBE_Combat_Object@@QAE@HPAVRGE_Game_World@@H@Z",
         "004CA510": "?create_action_list@TRIBE_Combat_Object@@UAEPAVRGE_Action_List@@XZ",
         "004CAA50": "?attack@TRIBE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAVRGE_Combat_Object@@@Z",
-        "004CBD30": "?lines_intersect@@YAHMMMMMMMM@Z"
+        "004CBD30": "?lines_intersect@@YAHMMMMMMMM@Z",
+        "004CB060": "?hunt@TRIBE_Combat_Object@@UAEHHH@Z",
+        "004CB1B0": "?convert@TRIBE_Combat_Object@@UAEHHH@Z",
+        "004CB300": "?heal@TRIBE_Combat_Object@@UAEHHH@Z",
+        "004CB450": "?repair@TRIBE_Combat_Object@@UAEHHH@Z",
+        "004CB5C0": "?build@TRIBE_Combat_Object@@UAEHHH@Z",
+        "004CB710": "?trade@TRIBE_Combat_Object@@UAEHHH@Z"
       }
     },
     {
@@ -5954,7 +6589,6 @@
             "00422A10": "src/basegame.cpp",
             "00422A50": "src/basegame.cpp",
             "00422AB0": "src/basegame.cpp",
-            "00422B10": "src/basegame.cpp",
             "00422CC0": "src/basegame.cpp",
             "00422D20": "src/basegame.cpp",
             "00422D60": "src/basegame.cpp",
@@ -6142,7 +6776,6 @@
             "00422A10": "?GetWorldChecksum@RGE_Base_Game@@QAEJXZ",
             "00422A50": "?disable_input@RGE_Base_Game@@QAEXXZ",
             "00422AB0": "?enable_input@RGE_Base_Game@@QAEXXZ",
-            "00422B10": "?set_screen_size@RGE_Base_Game@@QAEXJJ@Z",
             "00422CC0": "?check_prog_argument@RGE_Base_Game@@QAEEPAD@Z",
             "00422D20": "?get_scenario_checksum@RGE_Base_Game@@QAEJPAD@Z",
             "00422D60": "?check_scenario_checksum@RGE_Base_Game@@QAEEPADJ@Z",
@@ -6184,7 +6817,6 @@
         "00467570": "src/Panel_ez.cpp",
         "004679A0": "src/Panel_ez.cpp",
         "004679F0": "src/Panel_ez.cpp",
-        "00467A50": "src/Panel_ez.cpp",
         "00467A70": "src/Panel_ez.cpp",
         "00467BE0": "src/Panel_ez.cpp",
         "00467D50": "src/Panel_ez.cpp",
@@ -6220,8 +6852,6 @@
         "00468530": "src/Panel_ez.cpp",
         "00468760": "src/Panel_ez.cpp",
         "004689C0": "src/Panel_ez.cpp",
-        "00469000": "src/Panel_ez.cpp",
-        "004691C0": "src/Panel_ez.cpp",
         "00469910": "src/Panel_ez.cpp",
         "00469AD0": "src/Panel_ez.cpp",
         "00469C40": "src/Panel_ez.cpp",
@@ -6239,7 +6869,12 @@
         "0046A3C0": "src/Panel_ez.cpp",
         "0046A410": "src/Panel_ez.cpp",
         "0046A4E0": "src/Panel_ez.cpp",
-        "0046A670": "src/Panel_ez.cpp"
+        "0046A670": "src/Panel_ez.cpp",
+        "004672A0": "src/Panel_ez.cpp",
+        "00468CB0": "src/Panel_ez.cpp",
+        "00468E50": "src/Panel_ez.cpp",
+        "00469380": "src/Panel_ez.cpp",
+        "00469A80": "src/Panel_ez.cpp"
       },
       "symbols": {
         "00466A20": "??0TEasy_Panel@@QAE@PAD@Z",
@@ -6295,7 +6930,12 @@
         "0046A3C0": "?clear_popup_help@TEasy_Panel@@QAEXXZ",
         "0046A410": "?command_do_popup_help@TEasy_Panel@@QAEJEJJ@Z",
         "0046A4E0": "?action@TEasy_Panel@@UAEJPAVTPanel@@JKK@Z",
-        "0046A670": "?set_system_colors@TEasy_Panel@@QAEXXZ"
+        "0046A670": "?set_system_colors@TEasy_Panel@@QAEXXZ",
+        "004672A0": "?prepare_for_close@TEasy_Panel@@QAEXXZ",
+        "00468CB0": "?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@PADJJJJJHHH@Z",
+        "00468E50": "?create_text@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTTextPanel@@PAPADJJJJJJHH@Z",
+        "00469380": "?create_drop_down@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTDropDownPanel@@JJJJJJJ@Z",
+        "00469A80": "?create_auto_scrollbar@TEasy_Panel@@MAEHPAPAVTScrollBarPanel@@PAVTTextPanel@@J@Z"
       },
       "module": "panel_ez"
     },
@@ -6360,7 +7000,8 @@
         "0047E370": "src/Pnl_txt.cpp",
         "0047E380": "src/Pnl_txt.cpp",
         "0047E3F0": "src/Pnl_txt.cpp",
-        "0047E410": "src/Pnl_txt.cpp"
+        "0047E410": "src/Pnl_txt.cpp",
+        "0047D760": "src/Pnl_txt.cpp"
       },
       "symbols": {
         "0047C4D0": "?set_scrollbar@TTextPanel@@QAEXPAVTScrollBarPanel@@H@Z",
@@ -6404,7 +7045,8 @@
         "0047C2F0": "?setup@TTextPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPADHEHEFPAPADF@Z",
         "0047DC70": "?currentLine@TTextPanel@@QAEPADXZ",
         "0047DCD0": "?append_line@TTextPanel@@QAEHPADJ@Z",
-        "0047E1E0": "?get_line@TTextPanel@@QAEJXZ"
+        "0047E1E0": "?get_line@TTextPanel@@QAEJXZ",
+        "0047D760": "?draw_line@TTextPanel@@QAEXPAXFFKK@Z"
       }
     },
     {
@@ -6487,7 +7129,12 @@
         "00510C10": "src/tmap.cpp",
         "00510C90": "src/tmap.cpp",
         "00510CB0": "src/tmap.cpp",
-        "00511000": "src/tmap.cpp"
+        "00511000": "src/tmap.cpp",
+        "0050F760": "src/tmap.cpp",
+        "0050F7C0": "src/tmap.cpp",
+        "0050F7F0": "src/tmap.cpp",
+        "0050F860": "src/tmap.cpp",
+        "0050FC40": "src/tmap.cpp"
       },
       "symbols": {
         "0050F7A0": "??1TRIBE_Map@@UAE@XZ",
@@ -6501,7 +7148,12 @@
         "00510C10": "?do_cliff_brush_stroke@TRIBE_Map@@UAEEJJJJEE@Z",
         "00510C90": "?water@TRIBE_Map@@QAEEE@Z",
         "00510CB0": "?clean_borders@TRIBE_Map@@QAEXJJJJE@Z",
-        "00511000": "?do_terrain_brush_check@TRIBE_Map@@QAEEJJ@Z"
+        "00511000": "?do_terrain_brush_check@TRIBE_Map@@QAEEJJ@Z",
+        "0050F760": "??0TRIBE_Map@@QAE@PAD000FFFPAPAVRGE_Sound@@@Z",
+        "0050F7C0": "?map_generate@TRIBE_Map@@UAEXPAVRGE_Player@@PAVRGE_Game_World@@PAURGE_Player_Info@@PAE@Z",
+        "0050F7F0": "?map_generate@TRIBE_Map@@QAEXPAURGE_Player_Info@@@Z",
+        "0050F860": "?load_random_map@TRIBE_Map@@UAEXPAD000@Z",
+        "0050FC40": "?do_terrain_brush@TRIBE_Map@@UAEEJJJE@Z"
       },
       "module": "tmap_cpp"
     },
@@ -6801,7 +7453,6 @@
         "00449840": "src/file_stf.cpp",
         "004498A0": "src/file_stf.cpp",
         "00449910": "src/file_stf.cpp",
-        "00449990": "src/file_stf.cpp",
         "00449A20": "src/file_stf.cpp",
         "00449A40": "src/file_stf.cpp",
         "00449A50": "src/file_stf.cpp",
@@ -6824,7 +7475,6 @@
         "00449840": "?checkDrives@DriveInformation@@QAEXXZ",
         "004498A0": "?numberOfFilesWithFilename@DriveInformation@@QAEHPAD@Z",
         "00449910": "?numberOfFilesWithAttribute@DriveInformation@@QAEHH@Z",
-        "00449990": "?numberOfFilesWithFilenameOrAttribute@DriveInformation@@QAEHPADH@Z",
         "00449A20": "?resetCurrentDriveAndDirectory@DriveInformation@@QAEHXZ",
         "00449A40": "?resetCurrentDrive@DriveInformation@@QAEHXZ",
         "00449A50": "?resetCurrentDirectory@DriveInformation@@QAEHXZ",
@@ -6852,7 +7502,8 @@
         "0050E630": "src/tm_b_obj.cpp",
         "0050E6B0": "src/tm_b_obj.cpp",
         "0050E730": "src/tm_b_obj.cpp",
-        "0050E950": "src/tm_b_obj.cpp"
+        "0050E950": "src/tm_b_obj.cpp",
+        "0050E7A0": "src/tm_b_obj.cpp"
       },
       "symbols": {
         "0050E040": "??0TRIBE_Master_Building_Object@@QAE@PAV0@H@Z",
@@ -6866,7 +7517,8 @@
         "0050E630": "?make_new_obj@TRIBE_Master_Building_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMMH@Z",
         "0050E6B0": "?make_new_obj@TRIBE_Master_Building_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z",
         "0050E730": "?make_new_master@TRIBE_Master_Building_Object@@UAEPAVRGE_Master_Static_Object@@XZ",
-        "0050E950": "?alignment@TRIBE_Master_Building_Object@@UAEEAAM0PAVRGE_Game_World@@E@Z"
+        "0050E950": "?alignment@TRIBE_Master_Building_Object@@UAEEAAM0PAVRGE_Game_World@@E@Z",
+        "0050E7A0": "?draw@TRIBE_Master_Building_Object@@UAEXPAVTDrawArea@@FFPAVRGE_Color_Table@@JJHE@Z"
       }
     },
     {
@@ -6909,13 +7561,15 @@
         "004CE990": "src/tact_hea.cpp",
         "004CEA10": "src/tact_hea.cpp",
         "004CEA50": "src/tact_hea.cpp",
-        "004CF030": "src/tact_hea.cpp"
+        "004CF030": "src/tact_hea.cpp",
+        "004CEA90": "src/tact_hea.cpp"
       },
       "symbols": {
         "004CE930": "??0TRIBE_Action_Heal@@QAE@HPAVRGE_Action_Object@@@Z",
         "004CE990": "??0TRIBE_Action_Heal@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
         "004CF030": "?work@TRIBE_Action_Heal@@UAEHPAVRGE_Static_Object@@MMM@Z",
-        "004CEA10": "??0TRIBE_Action_Heal@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
+        "004CEA10": "??0TRIBE_Action_Heal@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z",
+        "004CEA90": "?set_state@TRIBE_Action_Heal@@MAEXE@Z"
       }
     },
     {
@@ -6928,7 +7582,6 @@
         "0046DFA0": "src/Picture.cpp",
         "0046DFC0": "src/Picture.cpp",
         "0046E020": "src/Picture.cpp",
-        "0046E0B0": "src/Picture.cpp",
         "0046E2C0": "src/Picture.cpp",
         "0046E2D0": "src/Picture.cpp",
         "0046E370": "src/Picture.cpp"
@@ -6938,7 +7591,6 @@
         "0046DFA0": "??0TPicture@@QAE@XZ",
         "0046DFC0": "??1TPicture@@QAE@XZ",
         "0046E020": "?Save@TPicture@@QAEXH@Z",
-        "0046E0B0": "?Load@TPicture@@QAEXPADJHPAXH@Z",
         "0046E2C0": "?AlignedWidth@TPicture@@QAEJXZ",
         "0046E2D0": "?Draw@TPicture@@QAEXPAVTDrawArea@@JJHH@Z",
         "0046E370": "?Tile@TPicture@@QAEJPAVTDrawArea@@JJJJJJJJJJ@Z"
@@ -7030,7 +7682,6 @@
         "00540420": "src/vw_main.cpp",
         "005405C0": "src/vw_main.cpp",
         "005405E0": "src/vw_main.cpp",
-        "00540680": "src/vw_main.cpp",
         "00540700": "src/vw_main.cpp"
       },
       "symbols": {
@@ -7055,7 +7706,6 @@
         "004D5090": "src/taibldmd.cpp",
         "004D5170": "src/taibldmd.cpp",
         "004D5270": "src/taibldmd.cpp",
-        "004D5310": "src/taibldmd.cpp",
         "004D5590": "src/taibldmd.cpp",
         "004D5690": "src/taibldmd.cpp",
         "004D56F0": "src/taibldmd.cpp",
@@ -7080,7 +7730,6 @@
         "004D5090": "?addItem@TribeBuildAIModule@@QAEHPAVRGE_Static_Object@@H@Z",
         "004D5170": "?addBuiltItem@TribeBuildAIModule@@QAEHPAVRGE_Static_Object@@H@Z",
         "004D5270": "?removeBuiltItem@TribeBuildAIModule@@QAEHH@Z",
-        "004D5310": "?cancelBuildItem@TribeBuildAIModule@@QAEHHHHMMHH@Z",
         "004D5590": "?addTrainedUnit@TribeBuildAIModule@@QAEHHHHH@Z",
         "004D5690": "?addResearch@TribeBuildAIModule@@QAEHHHH@Z",
         "004D56F0": "?cancelResearch@TribeBuildAIModule@@QAEHHHHH@Z",
@@ -7288,7 +7937,8 @@
         "004D32F0": "src/tact_trd.cpp",
         "004D3330": "src/tact_trd.cpp",
         "004D3340": "src/tact_trd.cpp",
-        "004D33C0": "src/tact_trd.cpp"
+        "004D33C0": "src/tact_trd.cpp",
+        "004D2880": "src/tact_trd.cpp"
       },
       "symbols": {
         "004D2660": "??0TRIBE_Action_Trade@@QAE@HPAVRGE_Action_Object@@@Z",
@@ -7300,7 +7950,8 @@
         "004D32F0": "?get_wait_sprite@TRIBE_Action_Trade@@IAEPAVRGE_Sprite@@XZ",
         "004D3330": "?stop@TRIBE_Action_Trade@@UAEHXZ",
         "004D3340": "?move_to@TRIBE_Action_Trade@@UAEHPAVRGE_Static_Object@@MMM@Z",
-        "004D33C0": "?work@TRIBE_Action_Trade@@UAEHPAVRGE_Static_Object@@MMM@Z"
+        "004D33C0": "?work@TRIBE_Action_Trade@@UAEHPAVRGE_Static_Object@@MMM@Z",
+        "004D2880": "?set_state@TRIBE_Action_Trade@@MAEXE@Z"
       }
     },
     {
@@ -7422,7 +8073,8 @@
         "0050DD30": "src/Timeline.cpp",
         "0050DE00": "src/Timeline.cpp",
         "0050DEF0": "src/Timeline.cpp",
-        "0050DF40": "src/Timeline.cpp"
+        "0050DF40": "src/Timeline.cpp",
+        "0050D7E0": "src/Timeline.cpp"
       },
       "symbols": {
         "0050D7B0": "??0RGE_Timeline@@QAE@PAVRGE_Game_World@@@Z",
@@ -7432,7 +8084,8 @@
         "0050DE00": "?add_attack@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@0@Z",
         "0050DEF0": "?add_move@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@MMM@Z",
         "0050DF40": "?add_delete@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@@Z",
-        "0050DB10": "?mock_update@RGE_Timeline@@QAEXM@Z"
+        "0050DB10": "?mock_update@RGE_Timeline@@QAEXM@Z",
+        "0050D7E0": "??1RGE_Timeline@@UAE@XZ"
       }
     },
     {
@@ -7504,7 +8157,8 @@
         "004CDBB0": "src/tact_cnv.cpp",
         "004CDE10": "src/tact_cnv.cpp",
         "004CE450": "src/tact_cnv.cpp",
-        "004CE4B0": "src/tact_cnv.cpp"
+        "004CE4B0": "src/tact_cnv.cpp",
+        "004CE070": "src/tact_cnv.cpp"
       },
       "symbols": {
         "004CD9E0": "??0TRIBE_Action_Convert@@QAE@HPAVRGE_Action_Object@@@Z",
@@ -7512,7 +8166,8 @@
         "004CDB70": "?save@TRIBE_Action_Convert@@UAEXH@Z",
         "004CDE10": "?set_state@TRIBE_Action_Convert@@MAEXE@Z",
         "004CE4B0": "?martyrdom@TRIBE_Action_Convert@@QAEXXZ",
-        "004CDA90": "??0TRIBE_Action_Convert@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"
+        "004CDA90": "??0TRIBE_Action_Convert@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
+        "004CE070": "?update@TRIBE_Action_Convert@@UAEEXZ"
       }
     },
     {
@@ -7535,7 +8190,8 @@
         "004E6490": "src/taimdmd.cpp",
         "004E6580": "src/taimdmd.cpp",
         "004E6600": "src/taimdmd.cpp",
-        "004E6870": "src/taimdmd.cpp"
+        "004E6870": "src/taimdmd.cpp",
+        "004E60D0": "src/taimdmd.cpp"
       },
       "symbols": {
         "004E4FA0": "?setLogHistory@TribeMainDecisionAIModule@@UAEXH@Z",
@@ -7550,7 +8206,8 @@
         "004E6490": "?revokeTributeAlliance@TribeMainDecisionAIModule@@QAEXXZ",
         "004E6580": "?setTributeChat@TribeMainDecisionAIModule@@IAEXXZ",
         "004E6600": "?processAICommand@TribeMainDecisionAIModule@@QAEHHHHHH@Z",
-        "004E6870": "?currentScore@TribeMainDecisionAIModule@@QAEHH@Z"
+        "004E6870": "?currentScore@TribeMainDecisionAIModule@@QAEHH@Z",
+        "004E60D0": "?detask@TribeMainDecisionAIModule@@QAEXH@Z"
       }
     },
     {
@@ -7621,7 +8278,7 @@
         "0047B660": "src/Pnl_scbr.cpp",
         "0047B690": "src/Pnl_scbr.cpp",
         "0047B8B0": "src/Pnl_scbr.cpp",
-        "0047B970": "src/Pnl_scbr.cpp"
+        "0047AB20": "src/Pnl_scbr.cpp"
       },
       "symbols": {
         "0047A8A0": "??1TScrollBarPanel@@UAE@XZ",
@@ -7636,9 +8293,9 @@
         "0047B660": "?draw_border@TScrollBarPanel@@IAEXHHPAUtagRECT@@@Z",
         "0047B690": "?draw_border@TScrollBarPanel@@IAEXHHJJJJ@Z",
         "0047B8B0": "?draw_back_pic@TScrollBarPanel@@IAEXXZ",
-        "0047B970": "?draw_button_pic@TScrollBarPanel@@IAEXHHPAUtagRECT@@@Z",
         "0047ACC0": "?handle_idle@TScrollBarPanel@@UAEJXZ",
-        "0047A700": "??0TScrollBarPanel@@QAE@XZ"
+        "0047A700": "??0TScrollBarPanel@@QAE@XZ",
+        "0047AB20": "?set_tab_pos@TScrollBarPanel@@QAEXJ@Z"
       }
     },
     {
@@ -7656,7 +8313,8 @@
         "004121C0": "src/airesitm.cpp",
         "004121E0": "src/airesitm.cpp",
         "00412200": "src/airesitm.cpp",
-        "00412210": "src/airesitm.cpp"
+        "00412210": "src/airesitm.cpp",
+        "00412050": "src/airesitm.cpp"
       },
       "symbols": {
         "00411EC0": "??0ResourceItem@@QAE@XZ",
@@ -7668,7 +8326,8 @@
         "004121C0": "?incrementValue@ResourceItem@@QAEXHH@Z",
         "004121E0": "?setAllValues@ResourceItem@@QAEXH@Z",
         "00412200": "?number@ResourceItem@@QBEHXZ",
-        "00412210": "?largestValueIndex@ResourceItem@@QAEHH@Z"
+        "00412210": "?largestValueIndex@ResourceItem@@QAEHH@Z",
+        "00412050": "??0ResourceItem@@QAE@PAV0@@Z"
       }
     },
     {
@@ -7685,7 +8344,8 @@
         "004D1880": "src/tact_rep.cpp",
         "004D1F50": "src/tact_rep.cpp",
         "004D1F60": "src/tact_rep.cpp",
-        "004D1FA0": "src/tact_rep.cpp"
+        "004D1FA0": "src/tact_rep.cpp",
+        "004D18B0": "src/tact_rep.cpp"
       },
       "symbols": {
         "004D1680": "??0TRIBE_Action_Repair@@QAE@HPAVRGE_Action_Object@@H@Z",
@@ -7696,7 +8356,8 @@
         "004D1880": "?first_in_stack@TRIBE_Action_Repair@@UAEXE@Z",
         "004D1F50": "?stop@TRIBE_Action_Repair@@UAEHXZ",
         "004D1F60": "?move_to@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z",
-        "004D1FA0": "?work@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z"
+        "004D1FA0": "?work@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z",
+        "004D18B0": "?set_state@TRIBE_Action_Repair@@MAEXE@Z"
       }
     },
     {
@@ -7706,7 +8367,6 @@
       "flags": "config/flags/tairesmd.rsp",
       "owners": {
         "004E6B40": "src/tairesmd.cpp",
-        "004E6BA0": "src/tairesmd.cpp",
         "004E6C20": "src/tairesmd.cpp",
         "004E6C30": "src/tairesmd.cpp",
         "004E6C40": "src/tairesmd.cpp",
@@ -7716,7 +8376,6 @@
         "004E6DD0": "src/tairesmd.cpp"
       },
       "symbols": {
-        "004E6BA0": "??0TribeResourceAIModule@@QAE@HH@Z",
         "004E6C20": "??1TribeResourceAIModule@@UAE@XZ",
         "004E6C30": "?setMainDecisionAI@TribeResourceAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z",
         "004E6C40": "?save@TribeResourceAIModule@@UAEHH@Z",
@@ -7792,11 +8451,85 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "004550A0": "src/map.cpp",
-        "0045A6D0": "src/map.cpp"
+        "0045A6D0": "src/map.cpp",
+        "00455430": "src/map.cpp",
+        "00455570": "src/map.cpp",
+        "00455890": "src/map.cpp",
+        "004558A0": "src/map.cpp",
+        "004558B0": "src/map.cpp",
+        "00455D60": "src/map.cpp",
+        "00455DB0": "src/map.cpp",
+        "00455DD0": "src/map.cpp",
+        "00455F10": "src/map.cpp",
+        "00455FF0": "src/map.cpp",
+        "00456140": "src/map.cpp",
+        "00456150": "src/map.cpp",
+        "00456160": "src/map.cpp",
+        "004564E0": "src/map.cpp",
+        "004568C0": "src/map.cpp",
+        "00456E90": "src/map.cpp",
+        "00457300": "src/map.cpp",
+        "00457310": "src/map.cpp",
+        "00457320": "src/map.cpp",
+        "004573C0": "src/map.cpp",
+        "004575C0": "src/map.cpp",
+        "00457750": "src/map.cpp",
+        "00457760": "src/map.cpp",
+        "004578A0": "src/map.cpp",
+        "004578B0": "src/map.cpp",
+        "00458760": "src/map.cpp",
+        "004587D0": "src/map.cpp",
+        "00458FD0": "src/map.cpp",
+        "00459020": "src/map.cpp",
+        "004593A0": "src/map.cpp",
+        "004593D0": "src/map.cpp",
+        "00459460": "src/map.cpp",
+        "004595E0": "src/map.cpp",
+        "00459900": "src/map.cpp",
+        "00459A00": "src/map.cpp",
+        "00459D20": "src/map.cpp",
+        "0045A490": "src/map.cpp"
       },
       "symbols": {
         "004550A0": "??0RGE_Map@@QAE@PAD00FFFPAPAVRGE_Sound@@@Z",
-        "0045A6D0": "?get_point@RGE_Map@@QAEXAAF0MMMFF@Z"
+        "0045A6D0": "?get_point@RGE_Map@@QAEXAAF0MMMFF@Z",
+        "00455430": "??1RGE_Map@@UAE@XZ",
+        "00455570": "?init_tile_sizes@RGE_Map@@QAEXXZ",
+        "00455890": "?set_map_visible@RGE_Map@@QAEXE@Z",
+        "004558A0": "?set_map_fog@RGE_Map@@QAEXE@Z",
+        "004558B0": "?clear_map@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@EJJ@Z",
+        "00455D60": "?clear_map_view_info@RGE_Map@@QAEXXZ",
+        "00455DB0": "?coordinate_map@RGE_Map@@QAEXXZ",
+        "00455DD0": "?set_map_screen_pos@RGE_Map@@QAEXHHHH@Z",
+        "00455F10": "?scenario_save@RGE_Map@@QAEXH@Z",
+        "00455FF0": "?scenario_load@RGE_Map@@QAEXHPAE@Z",
+        "00456140": "?give_up_map_offsets@RGE_Map@@QAEPAPAURGE_Tile@@XZ",
+        "00456150": "?get_map_width@RGE_Map@@QAEJXZ",
+        "00456160": "?get_map_height@RGE_Map@@QAEJXZ",
+        "004564E0": "?preclean_elevation@RGE_Map@@QAEXJJJJE@Z",
+        "004568C0": "?clean_elevation@RGE_Map@@QAEXJJJJE@Z",
+        "00456E90": "?clean_terrain@RGE_Map@@QAEXJJJJE@Z",
+        "00457300": "?clean_borders@RGE_Map@@QAEXJJJJ@Z",
+        "00457310": "?clean_border_tile@RGE_Map@@QAEJJJQAY0CA@J@Z",
+        "00457320": "?do_terrain_brush@RGE_Map@@UAEEJJJE@Z",
+        "004573C0": "?do_terrain_brush_stroke@RGE_Map@@UAEEJJJJJE@Z",
+        "004575C0": "?do_elevation_brush_stroke@RGE_Map@@UAEEJJJJJE@Z",
+        "00457750": "?do_cliff_brush@RGE_Map@@UAEEJJEE@Z",
+        "00457760": "?do_cliff_brush_stroke@RGE_Map@@UAEEJJJJEE@Z",
+        "004578A0": "?map_generate@RGE_Map@@UAEXPAVRGE_Player@@PAVRGE_Game_World@@PAURGE_Player_Info@@PAE@Z",
+        "004578B0": "?map_generate2@RGE_Map@@UAEXPAVRGE_Game_World@@JJEJ@Z",
+        "00458760": "?delete_objects_on_tile@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@HHHH@Z",
+        "004587D0": "?delete_all_objects_on_tile@RGE_Map@@QAEXHH@Z",
+        "00458FD0": "?create_terrain_objects@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@@Z",
+        "00459020": "?set_tile_size@RGE_Map@@QAEXEFFF@Z",
+        "004593A0": "?check_map_coords@RGE_Map@@QAEEFF@Z",
+        "004593D0": "?get_elev@RGE_Map@@QAEEFF@Z",
+        "00459460": "?get_border@RGE_Map@@QAEEFF@Z",
+        "004595E0": "?set_elev@RGE_Map@@QAEXFFFFEFE@Z",
+        "00459900": "?set_terrain@RGE_Map@@QAEXPAVRGE_Game_World@@FFEHH@Z",
+        "00459A00": "?set_terrain_absolute@RGE_Map@@QAEXPAVRGE_Game_World@@FFEHH@Z",
+        "00459D20": "?get_tile_type@RGE_Map@@QAEEFF@Z",
+        "0045A490": "?check_for_border@RGE_Map@@QAEXEAAE@Z"
       }
     },
     {
@@ -7841,9 +8574,14 @@
         "00431D20": "src/com_q.cpp",
         "00431DD0": "src/com_q.cpp",
         "00431E40": "src/com_q.cpp",
-        "00431F50": "src/com_q.cpp"
+        "00431F50": "src/com_q.cpp",
+        "00431BF0": "src/com_q.cpp",
+        "00431F10": "src/com_q.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "00431BF0": "?AddItem@RGE_Communications_Queue@@QAEHKPAXKIEH@Z",
+        "00431F10": "?GetNextSequence@RGE_Communications_Queue@@QAEEK@Z"
+      }
     },
     {
       "name": "t_b_obj",
@@ -7857,9 +8595,14 @@
         "004C9480": "src/t_b_obj.cpp",
         "004C9760": "src/t_b_obj.cpp",
         "004C9D90": "src/t_b_obj.cpp",
-        "004CA0B0": "src/t_b_obj.cpp"
+        "004CA0B0": "src/t_b_obj.cpp",
+        "004C8490": "src/t_b_obj.cpp",
+        "004C8A60": "src/t_b_obj.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "004C8490": "?setup@TRIBE_Building_Object@@MAEHHPAVRGE_Game_World@@@Z",
+        "004C8A60": "?rehook@TRIBE_Building_Object@@UAEXXZ"
+      }
     },
     {
       "name": "scr_name",
@@ -7893,7 +8636,6 @@
         "00425910": "src/com_hand.cpp",
         "00425960": "src/com_hand.cpp",
         "00425970": "src/com_hand.cpp",
-        "00425990": "src/com_hand.cpp",
         "00425A20": "src/com_hand.cpp",
         "00425A40": "src/com_hand.cpp",
         "004264D0": "src/com_hand.cpp",
@@ -7903,9 +8645,7 @@
         "00426D40": "src/com_hand.cpp",
         "00426D50": "src/com_hand.cpp",
         "00426DC0": "src/com_hand.cpp",
-        "00426E10": "src/com_hand.cpp",
         "00426FB0": "src/com_hand.cpp",
-        "00426FC0": "src/com_hand.cpp",
         "00427300": "src/com_hand.cpp",
         "00427390": "src/com_hand.cpp",
         "00427440": "src/com_hand.cpp",
@@ -7915,7 +8655,6 @@
         "00428710": "src/com_hand.cpp",
         "00428810": "src/com_hand.cpp",
         "004289A0": "src/com_hand.cpp",
-        "00428A70": "src/com_hand.cpp",
         "00429760": "src/com_hand.cpp",
         "00429A30": "src/com_hand.cpp",
         "00429BD0": "src/com_hand.cpp",
@@ -7923,8 +8662,6 @@
         "00429CE0": "src/com_hand.cpp",
         "00429F80": "src/com_hand.cpp",
         "0042A160": "src/com_hand.cpp",
-        "0042A540": "src/com_hand.cpp",
-        "0042B0A0": "src/com_hand.cpp",
         "0042BAD0": "src/com_hand.cpp",
         "0042BAE0": "src/com_hand.cpp",
         "0042C7F0": "src/com_hand.cpp",
@@ -7945,14 +8682,12 @@
         "0042CCD0": "src/com_hand.cpp",
         "0042CD10": "src/com_hand.cpp",
         "0042D0E0": "src/com_hand.cpp",
-        "0042D120": "src/com_hand.cpp",
         "0042D170": "src/com_hand.cpp",
         "0042D2D0": "src/com_hand.cpp",
         "0042D3E0": "src/com_hand.cpp",
         "0042D440": "src/com_hand.cpp",
         "0042D490": "src/com_hand.cpp",
         "0042D580": "src/com_hand.cpp",
-        "0042D720": "src/com_hand.cpp",
         "0042D960": "src/com_hand.cpp",
         "0042DC20": "src/com_hand.cpp",
         "0042DEA0": "src/com_hand.cpp",
@@ -7972,11 +8707,28 @@
         "0042ECC0": "src/com_hand.cpp",
         "0042ECD0": "src/com_hand.cpp",
         "0042EF60": "src/com_hand.cpp",
-        "0042F040": "src/com_hand.cpp",
         "0042F190": "src/com_hand.cpp",
         "0042F230": "src/com_hand.cpp",
         "0042F250": "src/com_hand.cpp",
-        "0042F270": "src/com_hand.cpp"
+        "0042F270": "src/com_hand.cpp",
+        "004258E0": "src/com_hand.cpp",
+        "00425930": "src/com_hand.cpp",
+        "00428270": "src/com_hand.cpp",
+        "00428820": "src/com_hand.cpp",
+        "00428B10": "src/com_hand.cpp",
+        "004297D0": "src/com_hand.cpp",
+        "00429810": "src/com_hand.cpp",
+        "00429870": "src/com_hand.cpp",
+        "0042A0C0": "src/com_hand.cpp",
+        "0042D3B0": "src/com_hand.cpp",
+        "0042DA50": "src/com_hand.cpp",
+        "0042E580": "src/com_hand.cpp",
+        "0042E5B0": "src/com_hand.cpp",
+        "0042E5E0": "src/com_hand.cpp",
+        "0042EA10": "src/com_hand.cpp",
+        "0042ECE0": "src/com_hand.cpp",
+        "0042F110": "src/com_hand.cpp",
+        "0042F140": "src/com_hand.cpp"
       },
       "symbols": {
         "00425750": "?GameOver@TCommunications_Handler@@QAEXXZ",
@@ -7985,7 +8737,6 @@
         "00425910": "?ShowSyncChatMsgs@TCommunications_Handler@@QAEXH@Z",
         "00425960": "?SetStepMode@TCommunications_Handler@@QAEXH@Z",
         "00425970": "?SetSpeedControl@TCommunications_Handler@@QAEXH@Z",
-        "00425990": "?CalculatePlayerRange@TCommunications_Handler@@IAEHXZ",
         "00425A20": "?Step@TCommunications_Handler@@QAEXH@Z",
         "004264D0": "?get_command@TCommunications_Handler@@QAEPAXXZ",
         "00426510": "?new_command@TCommunications_Handler@@QAEEPAXH@Z",
@@ -7994,9 +8745,7 @@
         "00426D40": "?HasKicked@TCommunications_Handler@@QAEHI@Z",
         "00426D50": "?SendPlayerName@TCommunications_Handler@@IAEJXZ",
         "00426DC0": "?LogRXMsg@TCommunications_Handler@@IAEXIIKEE@Z",
-        "00426E10": "?ReceiveGameMessages@TCommunications_Handler@@QAEXXZ",
         "00426FB0": "?ShutdownGameMessages@TCommunications_Handler@@QAEXXZ",
-        "00426FC0": "?GetDPLAYMessages@TCommunications_Handler@@QAEXXZ",
         "00427300": "?CheckPingTime@TCommunications_Handler@@QAEXH@Z",
         "00427390": "?TXPing@TCommunications_Handler@@IAEHI@Z",
         "00427440": "?TXDebugPing@TCommunications_Handler@@QAEHXZ",
@@ -8006,7 +8755,6 @@
         "00428710": "?CheckPlayerStopTurn@TCommunications_Handler@@IAEXK@Z",
         "00428810": "?ReleaseSettings@TCommunications_Handler@@QAEXXZ",
         "004289A0": "?TEST@TCommunications_Handler@@IAEHXZ",
-        "00428A70": "?SetSelfPlayer@TCommunications_Handler@@IAEXXZ",
         "00429760": "?SendGroupChatMsg@TCommunications_Handler@@QAEXPAD@Z",
         "00429A30": "?SendSpeedChange@TCommunications_Handler@@QAEXII@Z",
         "00429BD0": "?HiTurnAcknowledged@TCommunications_Handler@@QAEKXZ",
@@ -8014,8 +8762,6 @@
         "00429CE0": "?SendChecksumMessage@TCommunications_Handler@@QAEJKIJJJJJ@Z",
         "00429F80": "?ClearAllSerialNumbers@TCommunications_Handler@@QAEXXZ",
         "0042A160": "?ClearRXTXForPlayer@TCommunications_Handler@@IAEXI@Z",
-        "0042A540": "?TXAcknowledgeMessage@TCommunications_Handler@@QAEHII@Z",
-        "0042B0A0": "?TXResendRequest@TCommunications_Handler@@QAEHII@Z",
         "0042BAD0": "?GetCommunicationsStatus@TCommunications_Handler@@QAE?AW4COMMSTATUS@@XZ",
         "0042BAE0": "?UnlinkCurrentLevel@TCommunications_Handler@@QAE?AW4COMMSTATUS@@XZ",
         "0042C7F0": "?IsPaused@TCommunications_Handler@@QAEHXZ",
@@ -8036,14 +8782,12 @@
         "0042CCD0": "?IsPlayerHuman@TCommunications_Handler@@QAEHI@Z",
         "0042CD10": "?IsPlayerComputer@TCommunications_Handler@@QAEHI@Z",
         "0042D0E0": "?GetPlayerName@TCommunications_Handler@@QAEPADI@Z",
-        "0042D120": "?UpdatePlayerInformation@TCommunications_Handler@@QAEXKPAD0@Z",
         "0042D170": "?IsLobbyLaunched@TCommunications_Handler@@QAEHXZ",
         "0042D2D0": "?InitPlayerInformation@TCommunications_Handler@@IAEXIKPAD0@Z",
         "0042D3E0": "?SetMyPlayerName@TCommunications_Handler@@QAEXPAD@Z",
         "0042D440": "?SetPlayerName@TCommunications_Handler@@QAEXIPAD@Z",
         "0042D490": "?SetWindowHandle@TCommunications_Handler@@QAEPAXPAX@Z",
         "0042D580": "?OpenMultiplayerConnection@TCommunications_Handler@@QAEHXZ",
-        "0042D720": "?PackPlayersDown@TCommunications_Handler@@IAEXXZ",
         "0042D960": "?AddSelfPlayer@TCommunications_Handler@@IAEHXZ",
         "0042DC20": "?LaunchMultiplayerGame@TCommunications_Handler@@QAEXXZ",
         "0042DEA0": "?SetApplicationGUID@TCommunications_Handler@@QAEXU_GUID@@@Z",
@@ -8062,14 +8806,31 @@
         "0042ECC0": "?SetHostPlayerNumber@TCommunications_Handler@@IAEXI@Z",
         "0042ECD0": "?GetHostPlayerNumber@TCommunications_Handler@@QAEIXZ",
         "0042EF60": "?OutOfSync@TCommunications_Handler@@QAEXHK@Z",
-        "0042F040": "?EnumPlayersCallback2@@YGHKKPAUDPNAME@@KPAX@Z",
         "0042F190": "?ForceNameChange@TCommunications_Handler@@QAEXXZ",
         "0042F230": "?SetSpeedV1@TCommunications_Handler@@QAEXK@Z",
         "0042F250": "?SetSpeedV2@TCommunications_Handler@@QAEXK@Z",
         "0042F270": "?IsPlayerOutOfSync@TCommunications_Handler@@QAEHIK@Z",
         "00425A40": "??0TCommunications_Handler@@QAE@PAXEPAVTChat@@U_GUID@@@Z",
         "00426FB0": "?ShutdownGameMessages@TCommunications_Handler@@QAEXXZ",
-        "0042EC40": "?StringFromGUID@@YAHPAU_GUID@@PAG@Z"
+        "0042EC40": "?StringFromGUID@@YAHPAU_GUID@@PAG@Z",
+        "004258E0": "?StopIfSyncFail@TCommunications_Handler@@QAEXH@Z",
+        "00425930": "?DropPacketsIntentionally@TCommunications_Handler@@QAEXH@Z",
+        "00428270": "?NotifyWindow@TCommunications_Handler@@QAEXW4COMMMESSAGES@@@Z",
+        "00428820": "?SendSharedData@TCommunications_Handler@@QAEJH@Z",
+        "00428B10": "?DropDeadPlayer@TCommunications_Handler@@QAEXIK@Z",
+        "004297D0": "?SendChatMsgAll@TCommunications_Handler@@QAEXPAD@Z",
+        "00429810": "?SendChatMsg@TCommunications_Handler@@QAEXIIPAD@Z",
+        "00429870": "?TXChat@TCommunications_Handler@@QAEJIPAEPAD@Z",
+        "0042A0C0": "?CountWaitingMessages@TCommunications_Handler@@QAEHXZ",
+        "0042D3B0": "?SetGameTitle@TCommunications_Handler@@QAEHPAD@Z",
+        "0042DA50": "?InitJoinGame@TCommunications_Handler@@QAEJXZ",
+        "0042E580": "?IsPlayerReady@TCommunications_Handler@@QAEHI@Z",
+        "0042E5B0": "?ComputerPlayerGameStart@TCommunications_Handler@@QAEHXZ",
+        "0042E5E0": "?MultiplayerGameStart@TCommunications_Handler@@QAEHXZ",
+        "0042EA10": "?Kick@TCommunications_Handler@@QAEHI@Z",
+        "0042ECE0": "?DebugSessionInformation@TCommunications_Handler@@QAEXPAUDPSESSIONDESC2@@@Z",
+        "0042F110": "?ForcePlayerEnumeration@TCommunications_Handler@@QAEXXZ",
+        "0042F140": "?ForcePlayerDestroyAndCreate@TCommunications_Handler@@QAEXXZ"
       }
     },
     {
@@ -8156,7 +8917,17 @@
         "00435CD0": "src/Command.cpp",
         "00435D40": "src/Command.cpp",
         "00435D90": "src/Command.cpp",
-        "004360D0": "src/Command.cpp"
+        "004360D0": "src/Command.cpp",
+        "00433D90": "src/Command.cpp",
+        "00433E20": "src/Command.cpp",
+        "004342E0": "src/Command.cpp",
+        "004348B0": "src/Command.cpp",
+        "004348F0": "src/Command.cpp",
+        "00434DC0": "src/Command.cpp",
+        "00435020": "src/Command.cpp",
+        "00435060": "src/Command.cpp",
+        "004350A0": "src/Command.cpp",
+        "004351B0": "src/Command.cpp"
       },
       "symbols": {
         "00434290": "?do_command_stop@RGE_Command@@IAEXPAURGE_Command_Stop@@@Z",
@@ -8174,7 +8945,17 @@
         "00435CD0": "?command_remove_from_group@RGE_Command@@QAEXHHH@Z",
         "00435D40": "?command_destroy_group@RGE_Command@@QAEXHH@Z",
         "00435D90": "?command_ai_order@RGE_Command@@QAEXHHHHHHMMMMEEE@Z",
-        "004360D0": "?command_add_waypoint@RGE_Command@@QAEXHHEEE@Z"
+        "004360D0": "?command_add_waypoint@RGE_Command@@QAEXHHEEE@Z",
+        "00433D90": "??1RGE_Command@@UAE@XZ",
+        "00433E20": "?do_command@RGE_Command@@UAEXPAX@Z",
+        "004342E0": "?do_command_pause@RGE_Command@@IAEXPAURGE_Command_Pause@@@Z",
+        "004348B0": "?do_command_create@RGE_Command@@IAEXPAURGE_Command_Create@@@Z",
+        "004348F0": "?do_command_add_attribute@RGE_Command@@IAEXPAURGE_Command_Add_Attribute@@@Z",
+        "00434DC0": "?do_command_group_ai_order@RGE_Command@@IAEXPAURGE_Command_Group_AI_Order@@@Z",
+        "00435020": "?do_command_create_group@RGE_Command@@IAEXPAURGE_Command_Create_Group@@@Z",
+        "00435060": "?do_command_add_to_group@RGE_Command@@IAEXPAURGE_Command_Add_To_Group@@@Z",
+        "004350A0": "?do_command_remove_from_group@RGE_Command@@IAEXPAURGE_Command_Remove_From_Group@@@Z",
+        "004351B0": "?duplicate_check_command_stop@RGE_Command@@IAEEPAURGE_Command_Stop@@@Z"
       }
     },
     {
@@ -8231,7 +9012,8 @@
         "004460C0": "src/drawarea.cpp",
         "00446220": "src/drawarea.cpp",
         "00446340": "src/drawarea.cpp",
-        "00446370": "src/drawarea.cpp"
+        "00446370": "src/drawarea.cpp",
+        "004459A0": "src/drawarea.cpp"
       },
       "symbols": {
         "00442680": "??0TDrawSystem@@QAE@XZ",
@@ -8279,7 +9061,8 @@
         "00446340": "?GetPalette@TDrawArea@@QAEXPAUtagPALETTEENTRY@@@Z",
         "00446370": "?SetPalette@TDrawArea@@QAEXPAUtagPALETTEENTRY@@@Z",
         "00443D40": "?ModifyPalette@TDrawSystem@@QAEXHHPAUtagPALETTEENTRY@@@Z",
-        "00444B40": "?AlignedWidth@TDrawArea@@QAEJXZ"
+        "00444B40": "?AlignedWidth@TDrawArea@@QAEJXZ",
+        "004459A0": "?DrawRect@TDrawArea@@QAEXJJJJE@Z"
       }
     },
     {
@@ -8298,7 +9081,6 @@
         "004D9970": "src/taiinfmd.cpp",
         "004D9A90": "src/taiinfmd.cpp",
         "004D9B20": "src/taiinfmd.cpp",
-        "004DA0E0": "src/taiinfmd.cpp",
         "004DA190": "src/taiinfmd.cpp",
         "004DA1C0": "src/taiinfmd.cpp",
         "004DA420": "src/taiinfmd.cpp",
@@ -8343,7 +9125,36 @@
         "004E4450": "src/taiinfmd.cpp",
         "004E45A0": "src/taiinfmd.cpp",
         "004E4610": "src/taiinfmd.cpp",
-        "004E4790": "src/taiinfmd.cpp"
+        "004E4790": "src/taiinfmd.cpp",
+        "004D84E0": "src/taiinfmd.cpp",
+        "004D9110": "src/taiinfmd.cpp",
+        "004D9160": "src/taiinfmd.cpp",
+        "004D9EC0": "src/taiinfmd.cpp",
+        "004D9FC0": "src/taiinfmd.cpp",
+        "004DABB0": "src/taiinfmd.cpp",
+        "004DFD60": "src/taiinfmd.cpp",
+        "004E0FD0": "src/taiinfmd.cpp",
+        "004E1730": "src/taiinfmd.cpp",
+        "004E1930": "src/taiinfmd.cpp",
+        "004E1A00": "src/taiinfmd.cpp",
+        "004E1AF0": "src/taiinfmd.cpp",
+        "004E1BD0": "src/taiinfmd.cpp",
+        "004E2490": "src/taiinfmd.cpp",
+        "004E2A00": "src/taiinfmd.cpp",
+        "004E2BA0": "src/taiinfmd.cpp",
+        "004E3210": "src/taiinfmd.cpp",
+        "004E32C0": "src/taiinfmd.cpp",
+        "004E34C0": "src/taiinfmd.cpp",
+        "004E3500": "src/taiinfmd.cpp",
+        "004E3530": "src/taiinfmd.cpp",
+        "004E3840": "src/taiinfmd.cpp",
+        "004E3B80": "src/taiinfmd.cpp",
+        "004E3C90": "src/taiinfmd.cpp",
+        "004E3E90": "src/taiinfmd.cpp",
+        "004E3F80": "src/taiinfmd.cpp",
+        "004E42B0": "src/taiinfmd.cpp",
+        "004E4350": "src/taiinfmd.cpp",
+        "004E4400": "src/taiinfmd.cpp"
       },
       "symbols": {
         "004D7070": "??0TribeInformationAIModule@@QAE@HH@Z",
@@ -8361,7 +9172,36 @@
         "004DAF80": "?addImportantObject@TribeInformationAIModule@@QAEHH@Z",
         "004E0F90": "?storeAttackMemory@TribeInformationAIModule@@QAEHEEEEEFEKH@Z",
         "004DAFB0": "?importantObject@TribeInformationAIModule@@QAEHH@Z",
-        "004E2440": "?resourceType@TribeInformationAIModule@@QAEHHH@Z"
+        "004E2440": "?resourceType@TribeInformationAIModule@@QAEHHH@Z",
+        "004D84E0": "?save@TribeInformationAIModule@@QAEHH@Z",
+        "004D9110": "?fullyExploredZone@TribeInformationAIModule@@QAEHH@Z",
+        "004D9160": "?setFullyExploredZone@TribeInformationAIModule@@QAEXHH@Z",
+        "004D9EC0": "?numberDocksInZone@TribeInformationAIModule@@QAEHHPAVRGE_Zone_Map@@@Z",
+        "004D9FC0": "?closestDockDistance@TribeInformationAIModule@@QAEHHH@Z",
+        "004DABB0": "?addImportantObject@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@H@Z",
+        "004DFD60": "?findObjectMemoryLimits@TribeInformationAIModule@@QAE?AUObjectMemory@@HHAAH0@Z",
+        "004E0FD0": "?storeAttackMemory@TribeInformationAIModule@@QAEHEEEEEEEFEKH@Z",
+        "004E1730": "?unexploredPlayerLocation@TribeInformationAIModule@@QAEHHAAUXYPoint@@@Z",
+        "004E1930": "?numberUnitsWithinXTiles@TribeInformationAIModule@@QAEHHHHH@Z",
+        "004E1A00": "?withinXTilesOfAttackOnPlayer@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@HH@Z",
+        "004E1AF0": "?withinXTilesOfEnemyTowncenter@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@H@Z",
+        "004E1BD0": "?withinXTilesOfObject@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@HHHHH@Z",
+        "004E2490": "?addResourceObject@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@@Z",
+        "004E2A00": "?findClosestDropsite@TribeInformationAIModule@@QAEMPAVRGE_Static_Object@@HAAH@Z",
+        "004E2BA0": "?findClosestReturnDropsite@TribeInformationAIModule@@QAEPAVRGE_Static_Object@@PAV2@@Z",
+        "004E3210": "?amountForageBushesInXTiles@TribeInformationAIModule@@QAEHHHH@Z",
+        "004E32C0": "?amountResourceTypesInXTiles@TribeInformationAIModule@@QAEHHHHH@Z",
+        "004E34C0": "?costToLoseUnit@TribeInformationAIModule@@QAEHH@Z",
+        "004E3500": "?benefitToKillUnit@TribeInformationAIModule@@QAEHH@Z",
+        "004E3530": "?inRangeOfUnits@TribeInformationAIModule@@QAEHHHHH@Z",
+        "004E3840": "?ruinToCapture@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z",
+        "004E3B80": "?resourceTypeToPlaceDropsiteBy@TribeInformationAIModule@@QAEHH@Z",
+        "004E3C90": "?dropsitesWithinRequiredDistance@TribeInformationAIModule@@QAEHAAHHH@Z",
+        "004E3E90": "?numberAvailableStoragePits@TribeInformationAIModule@@QAEHH@Z",
+        "004E3F80": "?numberAvailableGranaries@TribeInformationAIModule@@QAEHXZ",
+        "004E42B0": "?timeToBeKilled@TribeInformationAIModule@@QAEMPAVTacticalAIGroup@@PAVRGE_Static_Object@@@Z",
+        "004E4350": "?timeToBeKilled@TribeInformationAIModule@@QAEMPAHHPAVRGE_Static_Object@@@Z",
+        "004E4400": "?calculatePlayVariation@TribeInformationAIModule@@QAEHH@Z"
       }
     },
     {

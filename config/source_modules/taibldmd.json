@@ -28,7 +28,7 @@
     "004D5090": { "status": "matching" },
     "004D5170": { "status": "matching" },
     "004D5270": { "status": "matching" },
-    "004D5310": { "status": "matching" },
+    "004D5310": { "status": "scratch" },
     "004D5590": { "status": "matching" },
     "004D5600": {
       "status": "accepted_drift",

@@ -25,7 +25,7 @@
     "0041AFF0": { "status": "matching" },
     "0041B000": { "status": "matching" },
     "0041B010": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/0041B010_RGE_Active_Animated_Sprite.md"
     },
     "0041B140": { "status": "matching" },

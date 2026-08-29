@@ -10,7 +10,7 @@
     "0046DFA0": { "status": "matching", "note_path": "recovery_notes/Picture_module.md" },
     "0046DFC0": { "status": "matching", "note_path": "recovery_notes/Picture_module.md" },
     "0046E020": { "status": "matching", "note_path": "recovery_notes/Picture_module.md" },
-    "0046E0B0": { "status": "matching", "note_path": "recovery_notes/Picture_module.md" },
+    "0046E0B0": { "status": "scratch", "note_path": "recovery_notes/Picture_module.md" },
     "0046E270": { "status": "accepted_drift", "note_path": "recovery_notes/Picture_module.md" },
     "0046E2C0": { "status": "matching", "note_path": "recovery_notes/Picture_module.md" },
     "0046E2D0": { "status": "matching", "note_path": "recovery_notes/Picture_module.md" },

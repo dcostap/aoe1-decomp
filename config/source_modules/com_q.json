@@ -18,7 +18,7 @@
     "00431B10": { "status": "scratch", "note_path": "recovery_notes/com_q_module.md" },
     "00431BD0": { "status": "matching" },
     "00431BE0": { "status": "matching" },
-    "00431BF0": { "status": "scratch", "note_path": "recovery_notes/com_q_module.md" },
+    "00431BF0": { "status": "matching", "note_path": "recovery_notes/com_q_module.md" },
     "00431D10": { "status": "matching" },
     "00431D20": { "status": "matching" },
     "00431D30": {
@@ -28,7 +28,7 @@
     "00431DD0": { "status": "matching" },
     "00431E40": { "status": "matching" },
     "00431F10": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/com_q_module.md"
     },
     "00431F50": { "status": "matching" }

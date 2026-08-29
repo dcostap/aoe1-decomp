@@ -19,7 +19,7 @@
     "00492FB0": { "status": "accepted_drift", "note_path": "recovery_notes/scr_cred_module.md" },
     "00493070": { "status": "matching", "note_path": "recovery_notes/scr_cred_module.md" },
     "00493160": { "status": "scratch", "note_path": "recovery_notes/scr_cred_module.md" },
-    "00493420": { "status": "matching", "note_path": "recovery_notes/scr_cred_module.md" },
+    "00493420": { "status": "scratch", "note_path": "recovery_notes/scr_cred_module.md" },
     "00493540": { "status": "matching", "note_path": "recovery_notes/scr_cred_module.md" }
   }
 }

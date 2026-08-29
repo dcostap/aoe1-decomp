@@ -52,7 +52,7 @@
     "00445780": { "status": "matching" },
     "004457E0": { "status": "matching" },
     "00445840": { "status": "scratch", "note_path": "recovery_notes/drawarea_reunification.md" },
-    "004459A0": { "status": "accepted_drift", "note_path": "recovery_notes/drawarea_reunification.md" },
+    "004459A0": { "status": "matching", "note_path": "recovery_notes/drawarea_reunification.md" },
     "00445A40": { "status": "matching" },
     "00445A60": { "status": "accepted_drift", "note_path": "recovery_notes/drawarea_reunification.md" },
     "00445AF0": { "status": "accepted_drift", "note_path": "recovery_notes/drawarea_reunification.md" },
