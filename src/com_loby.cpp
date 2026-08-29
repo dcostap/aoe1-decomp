@@ -1,5 +1,3 @@
-#include <dplay.h>
-#include <dplobby.h>
 #include "../include/com_loby.h"
 #include "../include/debuglog.h"
 #include <string.h>
