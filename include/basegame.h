@@ -35,6 +35,7 @@ class TRIBE_Main_View;
 class TribeJoinScreen;
 class TribeMPCreateDialog;
 class TribeMPSetupScreen;
+class TribeGameSettingsScreen;
 class TribeMPStartupScreen;
 class TRIBE_Screen_Wait;
 class TRIBE_Screen_Disconnect;
@@ -92,6 +93,7 @@ class RGE_Base_Game {
     friend class TribeJoinScreen;
     friend class TribeMPCreateDialog;
     friend class TribeMPSetupScreen;
+    friend class TribeGameSettingsScreen;
     friend class TribeMPStartupScreen;
     friend class TRIBE_Screen_Wait;
     friend class TRIBE_Screen_Disconnect;

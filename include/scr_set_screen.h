@@ -57,24 +57,8 @@ public:
     long missionTextHeight;
     TTextPanel* missionText;
     TScrollBarPanel* missionScrollbar;
-    union {
-        TButtonPanel* optionButton[4];
-        struct {
-            TButtonPanel* optionButton0;
-            TButtonPanel* optionButton1;
-            TButtonPanel* optionButton2;
-            TButtonPanel* optionButton3;
-        };
-    };
-    union {
-        TTextPanel* optionText[4];
-        struct {
-            TTextPanel* optionText0;
-            TTextPanel* optionText1;
-            TTextPanel* optionText2;
-            TTextPanel* optionText3;
-        };
-    };
+    TButtonPanel* optionButton[4];
+    TTextPanel* optionText[4];
     TButtonPanel* okButton;
     TButtonPanel* cancelButton;
     TButtonPanel* help_button;

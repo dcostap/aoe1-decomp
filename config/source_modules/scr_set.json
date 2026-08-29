@@ -4,6 +4,10 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_set.cpp",
   "source": "src/scr_set.cpp",
   "header": "include/scr_set.h",
+  "header_composition": {
+    "status": "repaired",
+    "summary": "Consumes canonical panel, control, tribe-game, scenario, communications, and settings-screen owners."
+  },
   "functions": {
     "004B4880": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
     "004B5810": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
