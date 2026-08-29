@@ -43,6 +43,10 @@ All 18 matching owners report `MATCH`, `0.0000%`, correct ownership,
 relocations, and boundaries. The generated deleting destructor also reports
 `MATCH`.
 
+The final grouped audit registered `00540680`. The original owner symbol uses
+the struct-tag encoding for `RGE_Pick_Info`. The full type definition remains
+a class, as the CodeView type record requires.
+
 ## Global-storage consolidation repair
 
 The canonical `game_globals.h` declarations for `00577900`, `00577904`, and

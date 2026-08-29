@@ -49,7 +49,7 @@ The manifest adds these rows:
   `compiler_generated_static_initializer` entries for the `E4`, `E3`, and
   `E2` startup and cleanup sequence.
 
-The 24 PDB-less rows have no PDB source file or line record. Their inventory
+The 26 PDB-less rows have no PDB source file or line record. Their inventory
 records and Ghidra listings show either a direct jump to the base destructor
 or the static initializer sequence. This is generated evidence, not a new
 normal source owner.

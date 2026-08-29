@@ -66,8 +66,10 @@ The focused audit used the emitted selector above and reported `MATCH`.
 ## Final verification
 
 `build/audits/final_release_observed/report.json` compiled all 221 configured
-groups after integration. All 4,104 registered owners matched. The report has
-zero registered regressions and no unregistered matching rows.
+groups after integration. The initial integrated report proved all 4,104
+registered owners. The View record-tag repair then proved `00540680` and raised
+the final registry target to 4,105 owners. The final report must have zero
+registered regressions and no unregistered matching rows.
 
 Four promoted owners retained obsolete per-function response files:
 `00476D80`, `00503600`, `00512630`, and `00519CA0`. Each owner matches under

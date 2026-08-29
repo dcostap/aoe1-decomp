@@ -7684,10 +7684,12 @@
         "00540420": "src/vw_main.cpp",
         "005405C0": "src/vw_main.cpp",
         "005405E0": "src/vw_main.cpp",
+        "00540680": "src/vw_main.cpp",
         "00540700": "src/vw_main.cpp"
       },
       "symbols": {
         "0053F6F0": "?draw@RGE_Main_View@@UAEXXZ",
+        "00540680": "?fixup_pick_info@RGE_Main_View@@IAEXPAURGE_Pick_Info@@@Z",
         "00540700": "?reset_display_object_selection@RGE_Main_View@@QAEXH@Z"
       }
     },
