@@ -15,6 +15,10 @@ from common import CONFIG_DIR, REPO_ROOT, repo_path, translation_unit_for_source
 CACHE_SCHEMA = 3
 _INCLUDE_RE = re.compile(r'^\s*#\s*include\s*[<"]([^>"]+)[>"]', re.MULTILINE)
 _SOURCE_SUFFIXES = {".c", ".cc", ".cpp", ".cxx", ".h", ".hh", ".hpp", ".hxx", ".inl"}
+_FILE_HASH_CACHE: dict[tuple[Path, int, int], str] = {}
+_DIRECT_INCLUDE_CACHE: dict[
+    tuple[Path, int, int, tuple[Path, ...]], tuple[Path, ...]
+] = {}
 
 
 @contextmanager
@@ -78,11 +82,18 @@ def build_artifact_lock(path: Path) -> Iterator[None]:
 
 
 def _sha256(path: Path) -> str:
+    stat = path.stat()
+    key = (path.resolve(), stat.st_size, stat.st_mtime_ns)
+    cached = _FILE_HASH_CACHE.get(key)
+    if cached is not None:
+        return cached
     digest = hashlib.sha256()
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
-    return digest.hexdigest()
+    value = digest.hexdigest()
+    _FILE_HASH_CACHE[key] = value
+    return value
 
 
 def _display_path(path: Path) -> str:
@@ -119,12 +130,24 @@ def source_dependencies(source_path: Path, include_dirs: tuple[Path, ...] = ()) 
         if path.suffix.lower() not in _SOURCE_SUFFIXES:
             continue
         try:
-            text = path.read_text(encoding="utf-8", errors="replace")
+            stat = path.stat()
         except OSError:
             continue
-        for name in _INCLUDE_RE.findall(text):
-            resolved = _resolve_include(name, path, include_dirs)
-            if resolved is not None and resolved not in seen:
+        key = (path, stat.st_size, stat.st_mtime_ns, include_dirs)
+        direct = _DIRECT_INCLUDE_CACHE.get(key)
+        if direct is None:
+            try:
+                text = path.read_text(encoding="utf-8", errors="replace")
+            except OSError:
+                continue
+            direct = tuple(
+                resolved
+                for name in _INCLUDE_RE.findall(text)
+                if (resolved := _resolve_include(name, path, include_dirs)) is not None
+            )
+            _DIRECT_INCLUDE_CACHE[key] = direct
+        for resolved in direct:
+            if resolved not in seen:
                 pending.append(resolved)
     return sorted(seen, key=_display_path)
 

@@ -290,6 +290,71 @@ def collect_audit_rows(repo_root: Path = REPO_ROOT) -> list[dict[str, Any]]:
     return rows
 
 
+def collect_observed_audit_rows(path: Path) -> list[dict[str, Any]]:
+    """Use one complete grouped audit without rebuilding dependency fingerprints."""
+    report = json.loads(path.read_text(encoding="utf-8"))
+    summary = report.get("summary") or {}
+    if summary.get("compile_error_count") != 0:
+        raise ValueError(f"{path}: grouped audit has compile errors")
+    if summary.get("compiled_group_count") != summary.get("group_count"):
+        raise ValueError(f"{path}: grouped audit is incomplete")
+
+    rows: list[dict[str, Any]] = []
+    for observed in report.get("rows") or []:
+        if observed.get("source_bucket") != "matching":
+            continue
+        va = str(observed.get("va") or "")
+        owner_status = str(observed.get("owner_status") or "unverified")
+        checker_status = str(observed.get("grouped_result") or "")
+        category = str(observed.get("category") or "")
+        duplicate = len(observed.get("registered_groups") or []) > 1
+        if duplicate:
+            status = "DUPLICATE_SOURCE_OWNER"
+        elif owner_status == "mismatch":
+            status = "OWNER_MISMATCH"
+        elif owner_status != "match":
+            status = "OWNER_UNVERIFIED"
+        elif category == "registered_owner_match" and checker_status == "MATCH":
+            status = "MATCH"
+        else:
+            status = "MISMATCH"
+        mismatch_kind = ""
+        priority, reason = _repair_priority(status, mismatch_kind)
+        source = str(observed.get("source_path") or "")
+        rows.append(
+            {
+                "va": va,
+                "name": str(observed.get("name") or ""),
+                "source": source,
+                "canonical_source": source,
+                "source_owner_status": "duplicate" if duplicate else "canonical",
+                "duplicate_source_owner": duplicate,
+                "bank": "matching",
+                "corpus_bucket": "normal",
+                "grouped_tu": str(observed.get("group") or ""),
+                "pdb_qualified_owner": str(observed.get("expected_symbol") or ""),
+                "rebuilt_decorated_symbol": str(observed.get("symbol") or ""),
+                "owner_status": owner_status,
+                "owner_expected_name": str(observed.get("expected_owner_name") or ""),
+                "owner_expected_class": "",
+                "owner_rebuilt_class": "",
+                "owner_mismatch_kind": mismatch_kind,
+                "metadata_state": "grouped",
+                "checker_status": checker_status,
+                "diff_state": "grouped",
+                "status": status,
+                "repair_priority": priority,
+                "repair_reason": reason,
+                "metadata_path": str(path),
+                "diff_path": str(path),
+                "manifest_path": "",
+                "object_path": "",
+            }
+        )
+    rows.sort(key=lambda row: int(str(row["va"]), 16))
+    return rows
+
+
 def build_report(rows: list[dict[str, Any]]) -> dict[str, Any]:
     rows = sorted(rows, key=lambda row: int(str(row["va"]), 16))
     status_counts = Counter(str(row["status"]) for row in rows)
@@ -391,12 +456,22 @@ def parse_args() -> argparse.Namespace:
         default=BUILD_DIR / "matching_owner_audit.txt",
         help="Deterministic text report path.",
     )
+    parser.add_argument(
+        "--observed-report",
+        type=Path,
+        help="Use one complete grouped-observation report instead of stale per-function artifacts.",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    report = build_report(collect_audit_rows())
+    rows = (
+        collect_observed_audit_rows(args.observed_report)
+        if args.observed_report is not None
+        else collect_audit_rows()
+    )
+    report = build_report(rows)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     write_text_report(report, args.text_output)

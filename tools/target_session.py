@@ -93,30 +93,43 @@ def _sessions_lock():
     root = _sessions_root()
     root.mkdir(parents=True, exist_ok=True)
     path = root / "sessions.lock"
-    descriptor: int | None = None
-    for _ in range(200):
-        try:
-            descriptor = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-            os.write(descriptor, str(os.getpid()).encode("ascii"))
-            break
-        except FileExistsError:
-            try:
-                if time.time() - path.stat().st_mtime > 300:
-                    path.unlink()
-                    continue
-            except FileNotFoundError:
-                continue
-            time.sleep(0.05)
-    if descriptor is None:
-        raise TimeoutError(f"Timed out waiting for target-session lock: {path}")
+    descriptor = os.open(path, os.O_RDWR | os.O_CREAT)
+    handle = os.fdopen(descriptor, "r+b")
+    if path.stat().st_size == 0:
+        handle.write(b"\0")
+        handle.flush()
+    acquired = False
     try:
+        for _ in range(200):
+            try:
+                handle.seek(0)
+                if os.name == "nt":
+                    import msvcrt
+
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+                else:
+                    import fcntl
+
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                acquired = True
+                break
+            except OSError:
+                time.sleep(0.05)
+        if not acquired:
+            raise TimeoutError(f"Timed out waiting for target-session lock: {path}")
         yield
     finally:
-        os.close(descriptor)
-        try:
-            path.unlink()
-        except FileNotFoundError:
-            pass
+        if acquired:
+            handle.seek(0)
+            if os.name == "nt":
+                import msvcrt
+
+                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                import fcntl
+
+                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+        handle.close()
 
 
 def _load_session(record: dict[str, str]) -> dict | None:

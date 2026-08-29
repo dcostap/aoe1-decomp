@@ -1,11 +1,18 @@
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
-from audit_matching_owners import audit_status, build_report, owner_mismatch_kind  # noqa: E402
+from audit_matching_owners import (  # noqa: E402
+    audit_status,
+    build_report,
+    collect_observed_audit_rows,
+    owner_mismatch_kind,
+)
 from function_diagnostics import owning_function_symbol_validation  # noqa: E402
 
 
@@ -135,6 +142,37 @@ class MatchingOwnerAuditTests(unittest.TestCase):
         self.assertEqual([row["va"] for row in report["rows"]], ["00400010", "00400020"])
         self.assertEqual(report["summary"]["exact_claim_count"], 1)
         self.assertEqual(report["summary"]["class_or_free_owner_mismatch_count"], 1)
+
+    def test_complete_grouped_report_supplies_fast_owner_evidence(self) -> None:
+        report = {
+            "summary": {
+                "group_count": 1,
+                "compiled_group_count": 1,
+                "compile_error_count": 0,
+            },
+            "rows": [
+                {
+                    "group": "sample",
+                    "va": "00400010",
+                    "name": "work",
+                    "source_path": "src/sample.cpp",
+                    "source_bucket": "matching",
+                    "registered_groups": ["sample"],
+                    "grouped_result": "MATCH",
+                    "owner_status": "match",
+                    "symbol": "?work@Owner@@QAEXXZ",
+                    "expected_symbol": "?work@Owner@@QAEXXZ",
+                    "expected_owner_name": "work",
+                    "category": "registered_owner_match",
+                }
+            ],
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "observed.json"
+            path.write_text(json.dumps(report), encoding="utf-8")
+            rows = collect_observed_audit_rows(path)
+        self.assertEqual(rows[0]["status"], "MATCH")
+        self.assertEqual(rows[0]["metadata_state"], "grouped")
 
 
 if __name__ == "__main__":
