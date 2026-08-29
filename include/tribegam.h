@@ -23,6 +23,8 @@ struct MouseClickInfo {
 class TRIBE_Screen_Game;
 
 class TRIBE_Game : public RGE_Base_Game {
+    friend class TRIBE_Screen_Game;
+
 public:
     using RGE_Base_Game::get_string;
 

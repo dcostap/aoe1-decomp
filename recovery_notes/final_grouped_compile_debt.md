@@ -13,6 +13,62 @@ The baseline evidence is in:
 The failure record names each module and its first compiler diagnostic. It does
 not copy the full generated report.
 
+## Current BaseGame access result
+
+The proof started from `0aa947077`. The focused re-test covered all 57 modules
+in the baseline access bucket. It compiled 55 modules. It left no
+`RGE_Base_Game` access error in those modules.
+
+The repair is in `include/basegame.h`. It adds one narrow friend for each
+current source owner that reads a protected field through `rge_base_game`.
+The owners are `RGE_Action_Gather`, `RGE_Campaign`, `RGE_Command`,
+`RGE_Dialog_List`, `RGE_Diamond_Map_View`, `RGE_Game_Info`,
+`RGE_Master_Static_Object`, `RGE_Panel_Time`, `RGE_Panel_Tool_Box`,
+`RGE_Scenario_File_Info`, and `RGE_View`. It also adds the direct action
+owners `TRIBE_Action_Build`, `TRIBE_Action_Hunt`, `TRIBE_Action_Make_Obj`,
+`TRIBE_Action_Make_Tech`, and `TRIBE_Action_Wonder`.
+
+The remaining owners are `TRIBE_Campaign_Editor_Screen`, `TRIBE_Command`,
+`TRIBE_Combat_Object`, `TRIBE_Dialog_Name`, `TRIBE_Master_Building_Object`,
+`TRIBE_Mission_Screen`, `TRIBE_Panel_Inven`, `TRIBE_Panel_Object`,
+`TRIBE_Panel_Pop`, `TRIBE_Panel_Time`, `TRIBE_Screen_Campaign_Selection`,
+`TRIBE_Screen_Game`, `TRIBE_Screen_Info`, `TRIBE_Screen_Main_Error`,
+`TRIBE_Screen_Main_Menu`, `TRIBE_Screen_Name`, `TRIBE_Screen_Sed`,
+`TRIBE_Screen_Sed_Menu`, `TRIBE_Screen_Sed_Open`,
+`TRIBE_Screen_Status_Message`, `TribeAboutDialog`,
+`TribeAchievementsScreen`, `TribeConfigDialog`, `TribeDiplomacyDialog`,
+`TribeEndScreen`, `TribeLoadSavedGameScreen`, `TribeMenuDialog`,
+`TribeSaveGameScreen`, `TribeSelectScenarioScreen`,
+`TribeSelectTribeScreen`, `TribeSendMessageDialog`,
+`TribeSendQuickMessageDialog`, `TribeSPMenuScreen`, `TChat`, `TEditPanel`,
+`TEasy_Panel`, `TMessageDialog`, and `Time_Line_Panel`. It also adds the
+direct `color_log` friend. Each relation is supported by direct source use
+and its PDB source module.
+
+The final audit is `build/audits/grouped_access2_final/report.json`. Its two
+remaining compile errors are outside the BaseGame bucket. Main commit
+`0cda8e171` fixes the stale `scr_cams` enum names.
+
+The `scr_game` error identifies `TRIBE_Screen_Game` as the source owner. It
+reads `TRIBE_Game::auto_exit_time` and `TRIBE_Game::show_object_id` through a
+`TRIBE_Game*`. The narrow `TRIBE_Game` friend is now in
+`include/tribegam.h`.
+
+Root-D added `TRIBE_Credits_Screen` and `THelpDialog` to the same central
+proof. Their direct uses are `draw_area`, `music_system`, and `save_paused`
+in `scr_cred.cpp`, plus `prog_window` in `dlg_help.cpp`. The root-D compile
+attempt found no remaining BaseGame access error. It still has independent
+linkage, global-type, and missing-member errors.
+
+The focused `scr_game` re-test now compiles the group with no compiler error.
+The remaining rows are codegen and ownership results, not access failures.
+
+The final sweep includes `scr_cred`, `dlg_help`, and `scr_game` in
+`build/audits/grouped_access2_final_with_roots_d2/report.json`.
+That sweep requested 59 groups and compiled 56. The three compile failures
+are the stale `scr_cams` enum names on this older worktree, plus independent
+`scr_cred` and `dlg_help` declaration debt. Main has the `scr_cams` repair.
+
 ## Current root buckets
 
 Two baseline failures are resolved:
