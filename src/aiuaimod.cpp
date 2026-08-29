@@ -16,8 +16,6 @@
 // The managed attacking-unit array is a normal member.
 
 
-void* __cdecl operator new(unsigned int size);
-
 UnitAIModule::UnitAIModule(RGE_Static_Object* obj, int maxQueueSize)
     : objectValue(obj),
       moodValue(-1),
@@ -2990,9 +2988,6 @@ int UnitAIModule::convertToLOSResourceType(int) {
 // VA: 004177D0 (131 bytes, EH-framed)
 // Natural play-status setter.
 
-void* __cdecl operator new(unsigned int sz);
-
-
 void UnitAIModule::setPlayStatus(AIPlayStatus* status) {
     if (playStatus == 0) {
         playStatus = new AIPlayStatus();
@@ -3128,11 +3123,6 @@ void UnitAIModule::askForHelp(int caller)
 // The binary passes range bits directly in one order path.
 //
 // The source keeps the proven range and dispatcher state.
-
-
-void* __cdecl operator new(unsigned int size);
-void __cdecl operator delete(void* block);
-inline void* __cdecl operator new(unsigned int, void* ptr) { return ptr; }
 
 
 int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
