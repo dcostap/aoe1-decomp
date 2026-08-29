@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -15,7 +16,9 @@ if str(TOOLS_DIR) not in sys.path:
 from generate_source_module_inventory import (  # noqa: E402
     build_source_module_inventory,
     _diff_freshness,
+    _strict_build_fingerprint,
 )
+import generate_source_module_inventory as inventory_module  # noqa: E402
 from common import load_translation_units  # noqa: E402
 
 
@@ -162,6 +165,22 @@ class SourceModuleInventoryTests(unittest.TestCase):
 
         self.assertFalse(fresh)
         self.assertEqual(reason, "stale-build-inputs")
+
+    def test_strict_fingerprint_requires_grouped_object_and_manifest(self) -> None:
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT / "build") as temporary:
+            root = Path(temporary)
+            with patch.object(
+                inventory_module, "BUILD_DIR", root
+            ), patch.object(
+                inventory_module,
+                "_current_build_fingerprint",
+                return_value="current",
+            ):
+                fingerprint = _strict_build_fingerprint(
+                    "demo", root / "demo.cpp", root / "demo.rsp"
+                )
+
+        self.assertEqual(fingerprint, "")
 
 
 if __name__ == "__main__":

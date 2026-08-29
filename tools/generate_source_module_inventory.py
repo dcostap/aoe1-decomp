@@ -15,13 +15,14 @@ import json
 from pathlib import Path
 from typing import Any, Iterable
 
-from build_cache import build_input_manifest
+from build_cache import build_input_manifest, load_build_manifest
 from common import (
     BUILD_DIR,
     REPO_ROOT,
     load_pdb_function_line_changes,
     load_pdb_function_source_map,
     load_toolchain,
+    slugify_name,
     source_module_for_name,
     validate_source_modules,
     load_translation_units,
@@ -313,6 +314,26 @@ def _current_build_fingerprint(source: Path, flags: Path) -> str:
     return str(manifest.get("fingerprint") or "").strip()
 
 
+def _strict_build_fingerprint(group_name: str, source: Path, flags: Path) -> str:
+    """Return a fingerprint only when the current grouped build is present."""
+    fingerprint = _current_build_fingerprint(source, flags)
+    slug = f"tu_{slugify_name(group_name)}"
+    if not fingerprint:
+        return ""
+    if not (BUILD_DIR / "obj" / f"{slug}.obj").is_file():
+        return ""
+    build_manifest = load_build_manifest(
+        BUILD_DIR / "manifests" / f"build_{slug}.json"
+    )
+    if (
+        not build_manifest
+        or build_manifest.get("returncode") != 0
+        or build_manifest.get("input_fingerprint") != fingerprint
+    ):
+        return ""
+    return fingerprint
+
+
 def build_source_module_inventory(
     groups: Iterable[dict[str, object]] | None = None,
     *,
@@ -392,7 +413,9 @@ def build_source_module_inventory(
             # Strict inventories may use an exact anchor only when its diff
             # carries the fingerprint for the current grouped compiler input.
             # A missing fingerprint is stale evidence, not a reason to trust it.
-            build_fingerprint = _current_build_fingerprint(wrapper_path, flags_path)
+            build_fingerprint = _strict_build_fingerprint(
+                group_name, wrapper_path, flags_path
+            )
         owners: list[dict[str, Any]] = []
         for index, va in enumerate(ordered_vas, start=1):
             source_row = source_map.get(va)
