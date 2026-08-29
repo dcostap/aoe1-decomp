@@ -6,17 +6,9 @@
   "header": "include/taiinfmd.h",
   "header_composition": {
     "status": "repaired",
-    "summary": "The public header consumes canonical game-global and ManagedArray providers. Source-local duplicate provider declarations and raw string-address carriers are removed. Fixed InfluenceMap storage remains held."
+    "summary": "The public header consumes canonical game-global and ManagedArray providers. Source-local duplicate providers and raw carriers are removed. InfluenceMap storage uses natural source-owned objects."
   },
   "functions": {
-    "004D6AD0": {
-      "status": "matching",
-      "note_path": "recovery_notes/taiinfmd_module.md"
-    },
-    "004D6B70": {
-      "status": "matching",
-      "note_path": "recovery_notes/taiinfmd_module.md"
-    },
     "004D6BB0": {
       "status": "accepted_drift",
       "note_path": "recovery_notes/taiinfmd_module.md"

@@ -30,26 +30,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-// PDB-order owner 004D6AD0.
-InfluenceMap* const iMap = (InfluenceMap*)0x86BC38;
-
-void $E9(void) {
-    iMap->InfluenceMap::InfluenceMap(0xFE, 0xFE, 0);
-}
-
-// Compiler-generated static initializer from taiinfmd.cpp line 104.
-InfluenceMap* const losMap = (InfluenceMap*)0x86BC10;
-
-void $E14(void) {
-    losMap->InfluenceMap::InfluenceMap(0x32, 0x32, 0);
-}
-
-// PDB-order owner 004D6B70.
-InfluenceMap* const attackMap = (InfluenceMap*)0x86BC60;
-
-void $E19(void) {
-    attackMap->InfluenceMap::InfluenceMap(0x32, 0x32, 0);
-}
+// The compiler owns the startup wrappers and destructor registration for
+// these source globals. Their declaration order is the PDB source order.
+InfluenceMap iMap(0xFE, 0xFE, 0);
+InfluenceMap losMap(0x32, 0x32, 0);
+InfluenceMap attackMap(0x32, 0x32, 0);
 
 // PDB-order owner 004D6BB0.
 #include <string.h>
@@ -2287,7 +2272,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                         int column = minClear.y;
                                         while (blocked == 0 &&
                                                column <= maxClear.y) {
-                                            int value = iMap->lookupValue(
+                                            int value = iMap.lookupValue(
                                                 row, column);
                                             if (value == 0xff)
                                                 blocked = 1;
@@ -2300,11 +2285,11 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
 
                                     if (blocked == 0) {
                                         int connectionsBefore =
-                                            iMap->connectionCountValue;
+                                            iMap.connectionCountValue;
                                         if (placement == 4 ||
                                             placement == 6) {
                                             int connections =
-                                                iMap->connectionsIncluding(
+                                                iMap.connectionsIncluding(
                                                     minClear, maxClear,
                                                     0xff, 0xff, 1, 0, 1);
                                             if (placement == 4 &&
@@ -3769,7 +3754,7 @@ int TribeInformationAIModule::findGatherPosition(XYPoint& p, int group, int clea
                                                  lineCollisionPoint, 1) == 0) val = 0x40;
                             for (yy2 = minClear.y; yy2 <= maxClear.y && !blocked; yy2++) {
                                 for (xx2 = min.x; xx2 <= max.x && !blocked; xx2++) {
-                                    int v = iMap->lookupValue(yy2, xx2);
+                                    int v = iMap.lookupValue(yy2, xx2);
                                     if (v == 0xff) blocked = 1; else val += v;
                                 }
                             }
@@ -3797,8 +3782,8 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                                    XYPoint& from,
                                                    XYPoint& to)
 {
-    iMap->initialize(0x14);
-    iMap->setUnchangeableLimit(0xff);
+    iMap.initialize(0x14);
+    iMap.setUnchangeableLimit(0xff);
 
     this->md->buildAI.numberBuiltItemsOfType(0x44, 0);
     this->md->buildAI.numberBuiltItemsOfType(0x67, 0);
@@ -3818,7 +3803,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
         for (int x = 0; x < max.x; x++) {
             for (int y = 0; y < max.y; y++) {
                 if (x < 5 || x > innerMax.x || y < 5 || y > innerMax.y) {
-                    iMap->decrementValue(x, y, 10);
+                    iMap.decrementValue(x, y, 10);
                 }
             }
         }
@@ -3849,9 +3834,9 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                         this->mapBound(&bMinLOS);
 
                         if (mode == 1 || mode == 2) {
-                            iMap->setValue(bMinLOS.x, bMinLOS.y, 0xff);
+                            iMap.setValue(bMinLOS.x, bMinLOS.y, 0xff);
                         } else {
-                            iMap->setValue(bMin.x, bMin.y, bMax.x, bMax.y, 0xff);
+                            iMap.setValue(bMin.x, bMin.y, bMax.x, bMax.y, 0xff);
                         }
 
                         if (mode == 1) {
@@ -3869,7 +3854,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                     bMax.x += 1;
                                     bMax.y += 1;
                                     this->mapBound(&bMax);
-                                    iMap->incrementValue(bMin.x, bMin.y,
+                                    iMap.incrementValue(bMin.x, bMin.y,
                                                           bMax.x, bMax.y, 8);
 
                                     bMin.x -= 3;
@@ -3878,7 +3863,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                     bMax.x += 3;
                                     bMax.y += 3;
                                     this->mapBound(&bMax);
-                                    iMap->incrementValue(bMin.x, bMin.y,
+                                    iMap.incrementValue(bMin.x, bMin.y,
                                                           bMax.x, bMax.y, 4);
 
                                     bMin.x -= 5;
@@ -3887,7 +3872,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                     bMax.x += 5;
                                     bMax.y += 5;
                                     this->mapBound(&bMin);
-                                    iMap->incrementValue(bMin.x, bMin.y,
+                                    iMap.incrementValue(bMin.x, bMin.y,
                                                           bMax.x, bMax.y, 2);
                                 }
                             } else {
@@ -3898,7 +3883,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                     bMax.x += 5;
                                     bMax.y += 5;
                                     this->mapBound(&bMax);
-                                    iMap->decrementValue(bMin.x, bMin.y,
+                                    iMap.decrementValue(bMin.x, bMin.y,
                                                           bMax.x, bMax.y, 0x80);
                                 }
                             }
@@ -3910,7 +3895,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                             bMax.x += 3;
                             bMax.y += 3;
                             this->mapBound(&bMin);
-                            iMap->incrementValue(bMin.x, bMin.y,
+                            iMap.incrementValue(bMin.x, bMin.y,
                                                   bMax.x, bMax.y, 0x80);
                         }
                     }
@@ -4017,7 +4002,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                 }
                 this->mapBound(&bMin);
                 this->mapBound(&bMax);
-                iMap->setValue(bMin.x, bMin.y, bMax.x, bMax.y, 0xff);
+                iMap.setValue(bMin.x, bMin.y, bMax.x, bMax.y, 0xff);
 
                 if (mode == 3 || mode == 0) {
                     float radiusValue = object->master_obj->los;
@@ -4037,10 +4022,10 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     maxLOS.y = bMax.y + radius;
                     this->mapBound(&maxLOS);
                     if (mode == 0 && placement == 3) {
-                        iMap->incrementValue(minLOS.x, minLOS.y,
+                iMap.incrementValue(minLOS.x, minLOS.y,
                                               maxLOS.x, maxLOS.y, 10);
                     } else {
-                        iMap->decrementValue(minLOS.x, minLOS.y,
+                iMap.decrementValue(minLOS.x, minLOS.y,
                                               maxLOS.x, maxLOS.y, 10);
                     }
                 } else if (mode == 1 || mode == 2) {
@@ -4060,7 +4045,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     aMin.x = bMin.x + radius;
                     aMin.y = bMax.y + radius;
                     this->mapBound(&aMin);
-                    iMap->decrementValue(aMax.x, aMax.y,
+                    iMap.decrementValue(aMax.x, aMax.y,
                                           aMin.x, aMin.y, 10);
                 } else if (mode == 5) {
                     float radiusValue = object->master_obj->los;
@@ -4076,7 +4061,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     maxDC.x = bMax.x + radius * 2;
                     maxDC.y = bMax.y + radius * 2;
                     this->mapBound(&maxDC);
-                    iMap->decrementValue(minDC.x, minDC.y,
+                    iMap.decrementValue(minDC.x, minDC.y,
                                           maxDC.x, maxDC.y, 20);
                 } else if (mode == 8) {
                     int radius = (int)object->master_obj->los;
@@ -4088,7 +4073,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     maxLOS.x = bMax.x + radius;
                     maxLOS.y = bMax.y + radius;
                     this->mapBound(&maxLOS);
-                    iMap->incrementValue(minLOS.x, minLOS.y,
+                    iMap.incrementValue(minLOS.x, minLOS.y,
                                           maxLOS.x, maxLOS.y, 20);
 
                     radius /= 2;
@@ -4098,7 +4083,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     maxLOS.x = bMax.x + radius;
                     maxLOS.y = bMax.y + radius;
                     this->mapBound(&maxLOS);
-                    iMap->incrementValue(minLOS.x, minLOS.y,
+                    iMap.incrementValue(minLOS.x, minLOS.y,
                                           maxLOS.x, maxLOS.y, 20);
 
                     radius /= 3;
@@ -4108,7 +4093,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     maxLOS.x = bMax.x + radius;
                     maxLOS.y = bMax.y + radius;
                     this->mapBound(&maxLOS);
-                    iMap->incrementValue(minLOS.x, minLOS.y,
+                    iMap.incrementValue(minLOS.x, minLOS.y,
                                           maxLOS.x, maxLOS.y, 20);
                 }
             }
@@ -4132,11 +4117,11 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     maxTerrain.y = y - 2;
                     this->mapBound(&minTerrain);
                     this->mapBound(&maxTerrain);
-                    iMap->setValue(x, y, 0xff);
-                    iMap->decrementValue(minTerrain.x, minTerrain.y,
+                    iMap.setValue(x, y, 0xff);
+                    iMap.decrementValue(minTerrain.x, minTerrain.y,
                                           maxTerrain.x, maxTerrain.y, 10);
                 }
-                iMap->incrementValue(x, y, x, y,
+                iMap.incrementValue(x, y, x, y,
                                       (map->map_row_offset[y][x].height >> 5) * 5);
             }
         }
@@ -4157,26 +4142,26 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                 max.x = (unsigned char)memory->maxX + 4;
                 max.y = (unsigned char)memory->maxY + 4;
                 this->mapBound(&max);
-                iMap->incrementValue(min.x, min.y, max.x, max.y, 0x10);
+                iMap.incrementValue(min.x, min.y, max.x, max.y, 0x10);
             }
         }
     }
 
     if (mode == 0) {
-                this->md->tacticalAI.setGroupInfluences(*iMap);
+                this->md->tacticalAI.setGroupInfluences(iMap);
     }
 
     int connectionFlag = 1;
     if (mode == 4) {
         connectionFlag = 0;
     }
-    iMap->setConnectionCount(min, max, 0xff, 1, connectionFlag, 1);
+    iMap.setConnectionCount(min, max, 0xff, 1, connectionFlag, 1);
 
     if (mode != 0 && this->maxBuildingLots > 0) {
         for (int i = 0; i < this->maxBuildingLots; i++) {
             BuildingLot* lot = &this->buildingLots[i];
             if (lot->typeID == objectType && lot->status == 2) {
-                iMap->setValue(lot->x, lot->y, 0xff);
+                iMap.setValue(lot->x, lot->y, 0xff);
             }
         }
     }
@@ -5451,11 +5436,11 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
             int losPenalty;
             int attackPenalty;
             if (maxLOSValue > 0)
-                losPenalty = -(losMap->lookupValue(x, y) * stageDistance / maxLOSValue);
+                losPenalty = -(losMap.lookupValue(x, y) * stageDistance / maxLOSValue);
             else
                 losPenalty = 0;
             if (maxAttackValue > 0)
-                attackPenalty = -(attackMap->lookupValue(x, y) * stageDistance / maxAttackValue);
+                attackPenalty = -(attackMap.lookupValue(x, y) * stageDistance / maxAttackValue);
             else
                 attackPenalty = 0;
             int v = attackPenalty + losPenalty + pathPenalty + randomization + dist;
@@ -5468,8 +5453,8 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
 // PDB-order owner 004E21E0.
 int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
 {
-    losMap->initialize(0);
-    losMap->setReferencePoint(refX, refY);
+    losMap.initialize(0);
+    losMap.setReferencePoint(refX, refY);
 
     int i = 0;
     if (this->maxImportantObjectMemory > 0) {
@@ -5490,20 +5475,20 @@ int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
                     } else {
                         flag = 1;
                     }
-                    losMap->incrementValue(minX, minY, maxX, maxY, flag);
+                    losMap.incrementValue(minX, minY, maxX, maxY, flag);
                 }
             }
             i++;
         } while (i < this->maxImportantObjectMemory);
     }
-    return losMap->maxValue();
+    return losMap.maxValue();
 }
 
 // PDB-order owner 004E22F0.
 int TribeInformationAIModule::setupAttackMap(int param_1, int param_2, int param_3)
 {
-    attackMap->initialize(0);
-    attackMap->setReferencePoint(param_2, param_3);
+    attackMap.initialize(0);
+    attackMap.setReferencePoint(param_2, param_3);
 
     int i = 0;
     if (this->maxAttackMemories > 0) {
@@ -5512,7 +5497,7 @@ int TribeInformationAIModule::setupAttackMap(int param_1, int param_2, int param
             if ((unsigned char)((char*)this->attackMemories)[offset + 0x0A] == (unsigned int)param_1) {
                 unsigned short owner = (unsigned char)((char*)this->attackMemories)[offset + 0x09];
                 if (owner == (unsigned short)this->md->player->id) {
-                    attackMap->incrementValue(
+                    attackMap.incrementValue(
                         (unsigned char)((char*)this->attackMemories)[offset + 0x05],
                         (unsigned char)((char*)this->attackMemories)[offset + 0x06],
                         (unsigned char)((char*)this->attackMemories)[offset + 0x07],
@@ -5525,7 +5510,7 @@ int TribeInformationAIModule::setupAttackMap(int param_1, int param_2, int param
         } while (i < this->maxAttackMemories);
     }
 
-    return attackMap->maxValue();
+    return attackMap.maxValue();
 }
 
 // PDB-order owner 004E23A0.

@@ -56,22 +56,30 @@ The full `scr_game.cpp` and one overloaded static-object constructor check stay
 blocked by existing class-access and symbol-selection issues. They are not
 caused by this storage change.
 
-## Held storage
+## Natural global objects
 
-The PDB proves `pathSystem` and `aiPathSystem`. The `pathsys.cpp` data
-contribution contains both complete `PathingSystem` objects. A natural object
-probe changed the compiler startup shape: VC5 emitted a startup wrapper at
-`0046B060` and moved the direct constructor body to a later symbol. It did not
-match the original 27-byte `0046B060` owner. Keep the current placement
-construction until the historical startup shape is proved.
+The PDB proves `pathSystem` and `aiPathSystem` as complete `PathingSystem`
+objects in `pathsys.cpp`. The source now defines both objects with the
+original constructor arguments and declaration order. VC5 owns their startup
+and destructor-registration helpers. The old placement wrappers are removed.
 
-The PDB also proves the fixed `InfluenceMap` objects `iMap`, `losMap`, and
-`attackMap`. The `taiinfmd.cpp` data contribution contains three adjacent
-`0x28` objects at the recorded addresses. A natural object probe emitted the
-same object symbols but changed the initializer layout. At `004D6AD0`, VC5
-emitted a 10-byte startup wrapper instead of the original 23-byte direct
-constructor owner. Keep the current fixed-address carriers until all three
-initializer and destructor owners reproduce the original startup order.
+The PDB proves `iMap`, `losMap`, and `attackMap` as adjacent `0x28`
+`InfluenceMap` objects in `taiinfmd.cpp`. The source now defines all three
+objects with the original constructor arguments and declaration order. The
+old fixed-address carriers and handwritten initializer bodies are removed.
+
+The natural definitions change the old direct initializer boundaries. This is
+an accepted structural change for compiler-generated startup code. It does
+not change the constructor arguments or source declaration order.
+
+The compiler-generated manifest classifies `0046B060`, `0046B0B0`, `004D6AD0`,
+`004D6B20`, and `004D6B70` as static initializers. Their owning source modules
+no longer list these entries as ordinary functions.
+
+Natural helper validation maps the direct constructor bodies to the old ranges:
+`0046B060` and `0046B0B0` return `MATCH`, `0.0000%`; `004D6AD0`, `004D6B20`,
+and `004D6B70` return `MATCH`, `0.0000%`. The surrounding VC5 startup and
+destructor-registration helpers remain compiler-generated.
 
 ## Fresh WinMain exact-policy audit
 
@@ -94,7 +102,7 @@ check also passes with `MATCH` and `0.0000%`.
 methods, and reviewed `TRIBE_GUID` and `ZONE_GUID` globals. It has no wrapper,
 raw address, fake vtable, or compiler-only alias.
 
-## Validation for the table move
+## Validation for natural storage
 
 The natural table definitions are in `src/visible.cpp`. The object contains
 all 34 table symbols, 7356 data bytes, and 34 pointer relocations. Each table
@@ -103,6 +111,11 @@ check compiled all 27 PDB owners. Its exact proposal returned 13 of 13 exact
 rows. The observed rows returned 6 of 14 matches. The observed mismatches are
 existing source drift, not table ownership changes.
 
+The pathsys candidate compiled all 20 ordinary owners. Its 13 exact proposal
+rows matched. The seven observed rows had three matches. The taiinfmd
+candidate compiled all 121 ordinary owners. It returned 83 matches and 38
+existing source mismatches, with no comparison errors.
+
 Fresh exact anchors after the move:
 
 - `0053C3C0`, `0053C400`, `0053C490`, `0053C670`, `0053C6C0`, `0053CE80`,
@@ -110,5 +123,5 @@ Fresh exact anchors after the move:
   `0053D150`: `MATCH`, `0.0000%`.
 - `0053B5A0` `Visible_Unit_Manager`: `MATCH`, `0.0000%`.
 
-The source keeps `pathSystem`, `aiPathSystem`, `iMap`, `losMap`, and
-`attackMap` on hold. Their ownership and startup evidence are recorded above.
+The source now owns all five objects naturally. Their ownership and startup
+evidence are recorded above.

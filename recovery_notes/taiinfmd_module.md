@@ -4,7 +4,7 @@
 - Source: `src/taiinfmd.cpp`.
 - Header: `include/taiinfmd.h`.
 - Flags: `config/flags/004D6BB0_TribeInformationAIModule.rsp`.
-- Normal owners: 123.
+- Normal owners: 121.
 - Address range: `004D6AD0` to `004E4790`.
 
 ## Module migration
@@ -14,10 +14,16 @@ compiler-facing source owner and one module-local header. The old wrapper,
 fragment includes, fallback declarations, context macro, and per-function
 source owners were removed.
 
-The source module manifest records all 123 normal owners. It now has 95
+The source module manifest records all 121 normal owners. It now has 93
 matching, 9 accepted-drift, and 19 scratch owners.
-Compiler-generated entries `004D6B20`, `004D7050`, `004DE980`, and `004DE9D0`
-remain outside the normal owner manifest.
+Compiler-generated entries `004D6AD0`, `004D6B20`, `004D6B70`, `004D7050`,
+`004DE980`, and `004DE9D0` remain outside the normal owner manifest.
+
+The module defines `iMap`, `losMap`, and `attackMap` as ordinary global
+`InfluenceMap` objects. Their constructor arguments and declaration order
+match the original startup calls. No fixed-address carrier or handwritten
+initializer remains. VC5 emits the startup and destructor-registration helpers
+for these objects.
 
 ## Provider cleanup
 
@@ -73,6 +79,14 @@ The consolidated source compiles with the pinned VC5 compiler and the module
 response file. Migration changes the complete source context, so old exact
 results from isolated fragment owners are not claims about the merged source.
 Run the registered translation-unit checks after each source-shape repair.
+
+The natural-global candidate compiled all 121 ordinary owners. It returned 83
+matches and 38 existing source mismatches, with no comparison errors. The
+`004D7070` constructor remained an exact match.
+
+The natural constructor helpers mapped to `004D6AD0`, `004D6B20`, and
+`004D6B70` all return `MATCH`, `0.0000%`. Their VC5 startup and destructor
+registration helpers remain compiler-generated.
 
 A clean compile reported one existing uninitialized-local warning in the
 recovered `loadLearnInfo` path. No inline assembly or synthetic owner is used.

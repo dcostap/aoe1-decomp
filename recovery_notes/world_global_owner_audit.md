@@ -43,8 +43,8 @@ exact data types and storage addresses:
 | `L` | `0062C4FC` | `TDebuggingLog*` | `include/game_globals.h`; `src/game_globals.cpp` (already present) |
 | `MouseSystem` | `0062E660` | `TMousePointer*` | `include/Mouseptr.h`; `src/Mouseptr.cpp` |
 | `rge_base_game` | `0062C574` | `RGE_Base_Game*` | `include/game_globals.h`; definition `src/game_globals.cpp` |
-| `aiPathSystem` | `0062F348` | `PathingSystem` (size `0x11DCF8`) | `include/game_globals.h`; future `src/pathsys.cpp` |
-| `pathSystem` | `0074D440` | `PathingSystem` (size `0x11DCF8`) | `include/game_globals.h`; future `src/pathsys.cpp` |
+| `aiPathSystem` | `0062F348` | `PathingSystem` (size `0x11DCF8`) | `include/game_globals.h`; `src/pathsys.cpp` |
+| `pathSystem` | `0074D440` | `PathingSystem` (size `0x11DCF8`) | `include/game_globals.h`; `src/pathsys.cpp` |
 | `fixed_update_time` | `0057F9E4` | `long` | `include/game_globals.h`; `src/game_globals.cpp` |
 | `save_game_version` | `0058EBCC` | `float` | `include/game_globals.h`; `src/game_globals.cpp` |
 
@@ -58,8 +58,9 @@ declaration in the shared global header and its definition in
 `src/game_globals.cpp`. `rge_write_error` has a declaration in
 `include/rge_fio.h`, but no current definition.
 
-`pathSystem` and `aiPathSystem` are real objects. The PDB `$E9` and `$E14`
-initialization owners are in `pathsys.cpp`. Do not replace either object with a
+`pathSystem` and `aiPathSystem` are real objects. Their PDB `$E9` and `$E14`
+initialization entries belong to the `pathsys.cpp` startup sequence. The
+source now defines both objects naturally. Do not replace either object with a
 pointer, an absolute-dereference macro, or a raw field carrier.
 
 The PDB pointer element records identify `TDebuggingLog`, `RGE_Base_Game`,
@@ -147,13 +148,13 @@ The following World globals now have one compiler-facing owner:
 - `VIS_UNIT_objectsValue`, `VisibleUnitList`, `VisibleUnitList_Size`,
   `VisibleUnitManager`, and `unified_map_offsets` use the same declaration and
   definition.
+- `pathSystem` and `aiPathSystem` use the shared declarations and natural
+  definitions in `src/pathsys.cpp`.
 
 The PDB `S_GDATA32` records and the original relocations prove each name and
 type. The retained World checks for `00540750` and `00542ED0` report `MATCH`
 and `0.0000%`. The old World destructor remains nonexact for an unrelated
 cleanup target difference.
 
-The remaining `NormalLOS`, `SquareLOS`, edge-table, `pathSystem`, and
-`aiPathSystem` storage needs a separate source-owner pass. Their PDB records
-prove storage, but their current initialization bodies are not safe to move to
-the plain global definition file. Do not add address aliases for these values.
+The `NormalLOS`, `SquareLOS`, and edge-table storage now has a natural owner in
+`src/visible.cpp`. Do not add address aliases for these values.

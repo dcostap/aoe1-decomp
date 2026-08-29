@@ -5,14 +5,6 @@
   "source": "src/pathsys.cpp",
   "header": "include/pathsys.h",
   "functions": {
-    "0046B060": {
-      "status": "scratch",
-      "note_path": "recovery_notes/pathsys_module.md"
-    },
-    "0046B0B0": {
-      "status": "scratch",
-      "note_path": "recovery_notes/pathsys_module.md"
-    },
     "0046B0F0": {
       "status": "matching"
     },

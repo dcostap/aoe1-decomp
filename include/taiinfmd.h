@@ -43,10 +43,10 @@ class PathingSystem;
 class RGE_Action;
 class RGE_Action_List;
 
-// The shipped module uses these three fixed global InfluenceMap objects.
-extern InfluenceMap* const iMap;
-extern InfluenceMap* const losMap;
-extern InfluenceMap* const attackMap;
+// The module owns these three global InfluenceMap objects.
+extern InfluenceMap iMap;
+extern InfluenceMap losMap;
+extern InfluenceMap attackMap;
 
 void* operator new(unsigned int size);
 void operator delete(void* pointer);

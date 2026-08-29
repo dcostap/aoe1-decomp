@@ -30,15 +30,10 @@ struct BYTEPoint {
     uchar y;
 };
 
-// 0046B060, pathsys.cpp line 58.
-void E9() {
-    new (&pathSystem) PathingSystem(0xFF, 0xFF, 0, 0, 0);
-}
-
-// 0046B0B0, pathsys.cpp line 60.
-void E14() {
-    new (&aiPathSystem) PathingSystem(0xFF, 0xFF, 1, 0, 0);
-}
+// The compiler owns the startup wrappers and destructor registration for
+// these source globals. Their declaration order is the PDB source order.
+PathingSystem pathSystem(0xFF, 0xFF, 0, 0, 0);
+PathingSystem aiPathSystem(0xFF, 0xFF, 1, 0, 0);
 
 // 0046B0F0, pathsys.cpp lines 104-136.
 PathingSystem::PathingSystem(int xSize, int ySize, int aiPS,
