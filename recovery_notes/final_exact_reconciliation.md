@@ -49,9 +49,8 @@ Source-module status transitions were:
 The final registry contains 4,103 owners from the preflight report.
 A fresh focused audit proved one additional exact owner, `0041E7A0`.
 Its emitted symbol is `?rge_base_game_wnd_proc@@YGJPAXIIJ@Z`.
-The updated registry target is 4,104 owners and exact grouped matches.
-The final report must contain zero registered owner regressions.
-It must contain no unregistered `matching`-status rows.
+The initial integration target was 4,104 exact owners. The later View record-tag
+repair proved `00540680` and raised the final count to 4,105.
 
 Fresh grouped `MATCH` results supersede prior accepted-drift status statements
 for these VAs: `0044B2B0`, `005059A0`, `004BE4B0`, `004421F0`, and `0046B680`.
@@ -66,10 +65,8 @@ The focused audit used the emitted selector above and reported `MATCH`.
 ## Final verification
 
 `build/audits/final_release_observed/report.json` compiled all 221 configured
-groups after integration. The initial integrated report proved all 4,104
-registered owners. The View record-tag repair then proved `00540680` and raised
-the final registry target to 4,105 owners. The final report must have zero
-registered regressions and no unregistered matching rows.
+groups after integration. All 4,105 registered owners matched. The final report
+has zero registered regressions and no unregistered matching rows.
 
 Four promoted owners retained obsolete per-function response files:
 `00476D80`, `00503600`, `00512630`, and `00519CA0`. Each owner matches under

@@ -28,10 +28,10 @@ destructor at `0050D790` is compiler-generated and has no ordinary owner.
 
 The source contains all 13 handwritten owners in PDB order. It uses one
 module-local header and no wrapper, function-fragment include, context macro, or
-fallback declaration. Four accepted-drift owners remain observed:
-`0050D5B0`, `0050D7E0`, `0050DD70`, and `0050DE50`. `0050DFD0` is scratch because its
-natural code has broad control-flow and call-surface drift. The other eight
-owners remain registered matching owners.
+fallback declaration. Three accepted-drift owners remain observed:
+`0050D5B0`, `0050DD70`, and `0050DE50`. `0050DFD0` is scratch because its
+natural code has broad control-flow and call-surface drift. The other nine
+owners are registered matching owners.
 
 `scenario.h` now includes `Timeline.h` instead of carrying a second partial
 `RGE_Timeline` declaration. This gives scenario code the same canonical class
@@ -116,10 +116,8 @@ internal tail or its duplicated null-test/list-walk shape. Calls, cleanup, and
 the final count decrement alone do not prove equivalence for this broad drift.
 Keep the natural body, but do not call it accepted drift.
 
-The accepted-drift destructor `0050D7E0` reports `MATCH` and `0.0000%` in the
-fresh grouped candidate. It remains an observed accepted-drift row and is not
-registered as an exact owner. A later ownership decision can promote it with a
-matching source-module status and registered decorated symbol.
+The final grouped reconciliation promotes destructor `0050D7E0`. It reports
+`MATCH`, `0.0000%`, with valid ownership, boundaries, and relocations.
 
 The generated vector deleting destructor at `0050D790` remains compiler
 generated and has no ordinary source owner. The grouped audit reported no

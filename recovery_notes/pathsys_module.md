@@ -20,13 +20,13 @@ The pinned VC5 compiler builds the module with
 compile after the typed Map tile repair.
 
 Exact owners are `0046B0F0`, `0046B270`, `0046B310`, `0046B360`, `0046B550`,
-`0046B570`, `0046B590`, `0046B5C0`, `0046D250`, `0046D260`, `0046D270`,
-`0046D740`, and `0046D770`. The source-module metadata lists these exact
-claims and no others.
+`0046B570`, `0046B590`, `0046B5C0`, `0046B680`, `0046D250`, `0046D260`,
+`0046D270`, `0046D740`, `0046D770`, and `0046DCB0`. The source-module metadata
+lists these exact claims and no others.
 
-Scratch rows are `0046B5E0`, `0046B620`, `0046B6E0`, `0046D280`, and
-`0046DCB0`. `0046B680` and `0046D830` remain accepted drift. The direct
-migration does not promote them.
+Scratch rows are `0046B5E0`, `0046B620`, `0046B6E0`, and `0046D280`.
+`0046D830` remains accepted drift. The final grouped reconciliation promoted
+`0046B680` and `0046DCB0` after both returned `MATCH`, `0.0000%`.
 
 The natural definitions emit VC5 CRT startup and destructor-registration
 helpers. The direct constructor helpers mapped to the old initializer ranges

@@ -22,8 +22,7 @@
 The module has 12 normal owners and 3297 normal bytes.
 
 - Matching: `004D2660`, `004D2710`, `004D27A0`, `004D27F0`, `004D2830`,
-  `004D32C0`, `004D32F0`, `004D3330`, `004D3340`, `004D33C0`.
-- Accepted drift: `004D2880 set_state`.
+  `004D2880`, `004D32C0`, `004D32F0`, `004D3330`, `004D3340`, `004D33C0`.
 - Scratch: `004D2CB0 update`.
 - `004D26E0` is a compiler-generated scalar deleting destructor.  It is not a
   handwritten owner and remains outside the source module function list.
@@ -42,8 +41,8 @@ The prior grouped candidate check on the authentic wrapper reported:
 - `update`: `MISMATCH`, 982 bytes, with matching owner, relocations, and boundary.
 
 The `update` scratch source retains the original frame note and prior evidence.
-The `set_state` source retains its accepted-drift evidence.  This migration does
-not promote or reopen either status.
+The final grouped reconciliation promotes `set_state`. It reports `MATCH`,
+`0.0000%`, with valid ownership, boundaries, and relocations.
 
 The first final candidate rebuilt `004D2660` as 70 bytes instead of 118 bytes.
 Terra 6 identified the cause as the stale task file-I/O surface, not
@@ -63,5 +62,4 @@ folder-based donor claim.
 ## Reopening conditions
 
 Reopen `update` only with new source, layout, control-flow, or compiler-context
-evidence.  Reopen `set_state` only with evidence that changes its reviewed
-localized equivalence or its direct call and relocation identity.
+evidence. `set_state` is exact in the final grouped context.

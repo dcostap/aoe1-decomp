@@ -18,15 +18,14 @@ match claim. Exact claims live in `config/translation_units.json`.
 
 ## Current exact claims
 
-The merged source has 14 registered exact owners. `0053C290` is not an exact
-owner. Its old registration became stale after the full source context changed
-its emitted code. The old registration and symbol entry were removed.
+The final grouped reconciliation has 20 registered exact owners. It promotes
+`0053C1B0`, `0053C290`, and `0053C680` from the earlier migration results.
 
-A candidate full-TU check compiled all 27 owners. It found 17 `MATCH` rows and
-10 `MISMATCH` rows. Every row has a PDB-qualified owner symbol. The observed
-status is:
+An earlier candidate full-TU check compiled all 27 owners. It found 17 `MATCH`
+rows and 10 `MISMATCH` rows. Every row had a PDB-qualified owner symbol. Its
+historical results were:
 
-| VA | Bank | Current result | Current mismatch |
+| VA | Bank | Historical result | Historical mismatch |
 | --- | --- | --- | --- |
 | `0053C1B0` | matching | MISMATCH | 2 bytes; merged-context register order |
 | `0053C290` | matching | MISMATCH | 171 bytes; 296 rebuilt bytes, one boundary escape |
@@ -50,10 +49,6 @@ visible-map writes, explored-mask writes, tile-list call, and collapse flag.
 The remaining difference is inner-loop address and register scheduling. The
 source uses the reviewed row-pointer form. It is not an exact claim.
 
-`0053C680` keeps the same rows, columns, byte test, count update, and return.
-The original reads `[eax+ebp]`. VC5 emits `[ebp+eax+0]` in the merged source.
-The extra displacement shifts later branch bytes. The address is equivalent.
-
 `0053D0D0` keeps the same row and column loops and checksum result. One memory
 operand uses the opposite SIB register order. The address and read are equal.
 
@@ -61,7 +56,7 @@ operand uses the opposite SIB register order. The address and read are equal.
 wraparound, and close call. The final 11-byte mismatch is one epilogue span.
 The jump-table and data references have the same relocated targets.
 
-These four owners remain accepted drift. The notes do not call them `MATCH`.
+These three owners remain accepted drift. The notes do not call them `MATCH`.
 Their status is narrow, behavior-equivalent drift. New evidence must reopen the
 status if it shows a changed call, bound, write, return, error, or fault order.
 
@@ -91,18 +86,10 @@ points are the original local frame, saved `this`, and parameter-home layout.
 These four owners stay scratch. Their source is behavior-focused and typed. No
 exact or accepted-drift claim exists for them.
 
-## Matching regressions
+## Final matching reconciliation
 
-`0053C1B0` remains matching source-bank material. The full source context now
-changes two bytes in the mask tail. It has no exact registration.
-
-`0053C290` remains matching source-bank material. The full source context now
-changes 171 bytes and escapes the original boundary. It has no exact
-registration. This regression caused the removal of its stale exact claim.
-
-The other registered owners retain fresh `MATCH` results in the current module
-check. The constructor and helper owners without registrations have no exact
-claim.
+`0053C1B0`, `0053C290`, and `0053C680` retain fresh `MATCH` results in the
+final grouped context. Each has exact registration and valid ownership.
 
 ## Header cleanup candidate
 
@@ -115,10 +102,10 @@ The second grouped run compiled the cleaned source and compared all 14
 registered owners. All 14 owners returned `MATCH`, with zero relocation target
 mismatches and zero boundary escapes.
 
-The observed rows remain separate from exact claims. `0053C1B0` differs by 2
-bytes. `0053C290` differs by 171 bytes and escapes its boundary. `0053C5D0`,
-`0053C680`, `0053D0D0`, and `0053D200` retain their reviewed drift. `0053C680`
-also escapes its boundary. `0053CCF0` differs by 361 bytes. The overloaded
+The earlier observed rows remain useful migration evidence. The final grouped
+audit supersedes those results for `0053C1B0`, `0053C290`, and `0053C680`.
+`0053C5D0`, `0053D0D0`, and `0053D200` retain their reviewed drift.
+`0053CCF0` differs by 361 bytes. The overloaded
 scratch rows `0053C6F0`, `0053C920`, and `0053CAC0` have comparison errors
 because the candidate proposal has no unique symbol mapping for those methods.
 They are not treated as matches.

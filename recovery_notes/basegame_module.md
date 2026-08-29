@@ -11,8 +11,9 @@ No candidate source or context owns a BaseGame body.
 ## Provider evidence
 
 `0041E7A0` is the process window callback.
-The PDB uses the untyped callback symbol `?rge_base_game_wnd_proc@@YGKIIII@Z`.
-The recovered source uses the natural `WNDPROC` ABI and stays scratch.
+The recovered source uses the natural `WNDPROC` ABI. Its emitted symbol is
+`?rge_base_game_wnd_proc@@YGJPAXIIJ@Z`. A fresh focused audit returned
+`MATCH`, `0.0000%`, with the correct owner, boundary, and relocations.
 
 `0041B6A0` reads `RGE_Prog_Info::instance`.
 `src/basegame.cpp` includes the canonical owner `include/main.h`.
@@ -82,23 +83,23 @@ The current PDB plan has 202 normal owners.
 It uses canonical provider headers.
 It does not include a candidate context.
 
-The direct audit reports 187 exact owners.
+The final grouped audit reports 186 exact owners.
 Each reports `MATCH` and `0.0000%`.
 
-The remaining fifteen owners are nonexact.
+The remaining sixteen owners are nonexact.
 They remain in the module source without a false exact claim.
-`0041BAA0`, `0041E920`, and `00421BF0` remain accepted drift.
+`0041BAA0`, `0041E7D0`, `0041E920`, and `00421BF0` remain accepted drift.
 
 `0041F560` remains verified logic.
 The scratch owners are `0041C270`, `0041CCA0`, `0041CFD0`, `0041E700`,
-`0041E7A0`, `0041F9F0`, `0041FDE0`, `004206D0`, `00421110`, `00421FA0`,
-and `00422960`.
+`0041F9F0`, `0041FDE0`, `004206D0`, `00421110`, `00421FA0`, `00422960`,
+and `00422B10`.
 
 ## Canonical field cleanup
 
 `0041C270` now uses `TDrawSystem::ScreenWidth`.
 It uses `RGE_Prog_Info::mouse_scroll_interval`.
-The direct module registers 187 exact owners.
+The final module registers 186 exact owners.
 
 The direct source now uses fields, literals, normal Win32 calls, and `delete`.
 It has no raw data addresses, manual lifetime calls, local IAT wrappers, or

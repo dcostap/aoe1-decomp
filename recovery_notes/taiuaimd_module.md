@@ -20,30 +20,26 @@ They remain compiler-generated entries.
 ## Natural module status
 
 The natural source compiles all 63 normal owners with the pinned `/GX` module
-flags. The grouped candidate check reports 54 of 55 matching owners as `MATCH`
-with `0.0000%` difference.
+flags. The final grouped audit reports all 58 matching owners as `MATCH`,
+`0.0000%`.
 
 Owner `00508320` remains scratch. Its canonical `ManagedArray<int>::resize`
 definition is inline in the shared header. VC5 emits an 884-byte body instead
 of the 600-byte original and crosses the original boundary.
 
-The candidate also compiles all nine observed owners. Their source status stays
-unchanged. A compiled match does not promote an observed owner.
-
 Accepted drift owners:
 
 - `005041C0` elephant `processNotify`.
 - `00504750` ranged `processNotify`.
-- `005059A0` priest `attackObject`.
 
 Scratch owners:
 
-- `00504480` lion `processNotify`.
 - `00504E10` civilian `processNotify`.
 - `00505B00` priest `bestUnitToHeal`.
-- `00506C90` fishing ship `convertToLOSResourceType`.
-- `00508140` tower `canAttackUnitAtNeutrality`.
 - `00508320` building `processNotify`.
+
+The final grouped reconciliation promoted `00504480`, `005059A0`, `00506C90`,
+and `00508140`. Each returned `MATCH`, `0.0000%`, with valid ownership.
 
 ## Migration history
 
@@ -73,8 +69,8 @@ The old artifact logging macro was expanded at each call site.
 The old soldier update macro now uses `taskedThisUpdate`.
 These changes remove recovery macros from the compiler-facing source.
 
-The source includes the generated module comments that record important binary facts.
-Function-specific attempt history remains in those comments until later review.
+Source comments retain durable behavior and ABI facts. Recovery notes and Git
+history retain attempt history.
 
 ## Integration handoff
 

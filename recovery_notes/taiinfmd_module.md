@@ -14,8 +14,8 @@ compiler-facing source owner and one module-local header. The old wrapper,
 fragment includes, fallback declarations, context macro, and per-function
 source owners were removed.
 
-The source module manifest records all 121 normal owners. It now has 93
-matching, 9 accepted-drift, and 19 scratch owners.
+The source module manifest records all 121 normal owners. It has 84 matching,
+9 accepted-drift, and 28 scratch owners.
 Compiler-generated entries `004D6AD0`, `004D6B20`, `004D6B70`, `004D7050`,
 `004DE980`, and `004DE9D0` remain outside the normal owner manifest.
 
@@ -34,13 +34,9 @@ The source now uses direct literals for its known module strings and the
 canonical lowercase floating-global spellings. These changes preserve the
 PDB source bodies and behavior.
 
-The three fixed `InfluenceMap` objects remain unchanged. Their natural storage
-owner and initialization context are not proved, so their absolute carriers
-stay under the held-global review.
-
-The merged source retains 56 exact registered owners. Owners `004D9110` and
-`004D9160` each have a one-byte natural-context recolor. Owner `004E0FD0` has
-an 11-byte merged-context regression. These owners remain scratch.
+The final grouped reconciliation registers 84 exact owners. It promotes
+`004D9110`, `004D9160`, and `004E0FD0` from the earlier migration results.
+Each now returns `MATCH`, `0.0000%`, in the natural module.
 
 ## Context evidence
 
@@ -65,9 +61,8 @@ and uses its public `command` method.
 Taicon continues to forward-declare PlacementState in its public signatures.
 
 The record owner uses natural alignment. It has no manual padding carriers.
-The Taiinf grouped candidate keeps 56/56 registered exact owners at `MATCH`.
-`004D9110` and `004D9160` remain observed scratch with one differing byte
-each. Both keep their owner, boundary, and direct targets.
+The final Taiinf grouped audit keeps all 84 registered owners at `MATCH`.
+Each has the correct owner, boundary, relocations, and direct targets.
 
 The post-cleanup candidate check for accepted-drift constructor `004D6BB0`
 still reports a 94-byte mismatch with matching owner and boundaries. No
@@ -99,9 +94,10 @@ Keep the rejected owner-clean packet out of main. It embeds complete
 `tacticalAI +0x1146C` and `aiPlayer +0x1256C`. The rejected header shifts them
 to `+0x11780` and `+0x12880`.
 
-The shift causes ABI regressions for `004D9970`, `004D9A90`, `004D9B20`,
-`004DA190`, `004DA1C0`, `004DE1F0`, and `004DE4A0`. The first two remaining
-rows, `004D9110` and `004D9160`, differ by one SIB recolor byte each.
+The rejected shift caused ABI regressions for `004D9970`, `004D9A90`,
+`004D9B20`, `004DA190`, `004DA1C0`, `004DE1F0`, and `004DE4A0`.
+It also made `004D9110` and `004D9160` differ by one SIB recolor byte each.
+That rejected packet is not the current source.
 
 Do not use a size-one local view or any offset-preserving carrier. It is a
 foreign layout. Taiinf resumes only after the Taimd dependency chain supplies

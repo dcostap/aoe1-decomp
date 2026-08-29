@@ -2,7 +2,7 @@
 
 The module now owns all 29 normal PDB functions in source order.
 
-Twenty-two functions remain exact owners. The composed grouped build reported
+Twenty-three functions are exact owners. The composed grouped build reported
 `MATCH` and zero byte drift for each exact owner.
 
 The current nonexact results include:
@@ -22,9 +22,8 @@ The current nonexact results include:
   do not.
   The file, palette, scanline, overlay, and cleanup behavior remain aligned.
 
-The natural module build adds a temporary three-byte register-color drift to
-`004BE4B0 DeleteShape`. Its size, control flow, calls, and all other bytes
-remain aligned. It stays accepted drift. The prior exact-owner claim is removed.
+The final grouped reconciliation promotes `004BE4B0 DeleteShape`. It reports
+`MATCH`, `0.0000%`, with valid ownership, boundaries, and relocations.
 
 `004BDB00 AddSpan` remains scratch. The current source is a natural typed
 reconstruction. The focused grouped build reports 589 differing bytes and a
@@ -33,13 +32,13 @@ reconstruction. The focused grouped build reports 589 differing bytes and a
 The migration removes the source-bank fragments and the wrapper. `drawarea.h`
 owns the shared span declarations. `spanlist.h` consumes the canonical
 Drawarea and Shape headers. The composed fanout retained 48/48 Drawarea and
-22/22 spanlist exact owners. Shape retained 10/11 checked owners;
+23/23 spanlist exact owners. Shape retained 10/11 checked owners;
 `004BAAF0` remains scratch for its documented two-byte difference.
 
 The fresh grouped audit is `build/audit_accepted_drift_final2/report.txt`. It confirms
 that `004BE090` has the owning symbol but escapes its original boundary, so it
 is not accepted drift. It also confirms that `004BEB10` has 14 aligned calls and
 no relocation or boundary mismatch, but its 351-byte difference includes a
-return and block-shape change. `004BDEA0 AddShape`, `004BE4B0 DeleteShape`, and
-`004BEAD0 DecodeLine` remain accepted drift because their differences are 3, 3,
-and 12 bytes without boundary or relocation errors.
+return and block-shape change. `004BDEA0 AddShape` and `004BEAD0 DecodeLine`
+remain accepted drift. The final reconciliation supersedes the earlier
+`004BE4B0` drift result.

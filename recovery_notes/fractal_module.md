@@ -20,11 +20,10 @@ point-array views.
 
 ## Function state
 
-Thirty owners remain `matching`. They were the former registered exact set.
-A fresh direct-owner check after migration gave `MATCH` and `0.0000%` for all
-30. No exact owner regressed.
+Thirty-one owners are `matching`. The final grouped reconciliation promoted
+`0044B2B0` after it returned `MATCH`, `0.0000%`.
 
-Eight owners remain `accepted_drift`: `0044AB90`, `0044B2B0`, `0044B470`,
+Seven owners remain `accepted_drift`: `0044AB90`, `0044B470`,
 `0044B760`, `0044BB60`, `0044BCD0`, `0044BF90`, and `0044C510`. Their prior
 source remains the behavior candidate. The old records place their differences
 in VC5 scheduling, register allocation, x87 order, or address calculation.
@@ -41,7 +40,7 @@ register shape.
 | --- | --- | --- |
 | `0044AB90` | accepted drift | VC5 schedules the ESI clear after the `BranchDistance` store. |
 | `0044AFE0` | scratch | The mask rows need the original parameter-home and loop register shape. |
-| `0044B2B0` | accepted drift | VC5 reverses the independent Width and Height load schedule. |
+| `0044B2B0` | matching | The final grouped build resolves the earlier Width and Height load scheduling drift. |
 | `0044B470` | accepted drift | VC5 swaps the two input register roles before the initial stores. |
 | `0044B760` | accepted drift | VC5 uses another direction-register coloring and clamp schedule. |
 | `0044BAA0` | scratch | The current check has broad control-flow and frame drift. |
@@ -74,7 +73,7 @@ cell offset uses the independent signed remainder values.
 
 ## Validation scope
 
-The original group was `fractal_arrays`. It now maps its 30 exact owners to
+The original group was `fractal_arrays`. It now maps its 31 exact owners to
 `src/fractal.cpp`. The direct owner sweep passed after the metadata move. Each
 row had the expected owner symbol and `MATCH` at `0.0000%`.
 

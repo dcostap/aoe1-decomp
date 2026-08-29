@@ -56,11 +56,9 @@ Both reports had zero comparison errors.
   paths preserve six calls, clipping, transparent flags, global status stores,
   and return behavior. The current module build has 716 differing bytes from
   local address lowering. This drift is too broad for accepted drift.
-- `004459A0 TDrawArea::DrawRect(long, long, long, long, uchar)`: accepted
-  drift. The member source preserves the four line calls. The prior source used
-  a calling-convention shim; this module uses the PDB member owner. A temporary
-  direct-symbol check produced an exact 147-byte body; no exact claim was
-  promoted during migration.
+- `004459A0 TDrawArea::DrawRect(long, long, long, long, uchar)`: matching.
+  The final grouped reconciliation promotes the natural PDB member owner. It
+  reports `MATCH`, `0.0000%`, with four original line calls.
 - `00445A60 TDrawArea::DrawHorzLine`: accepted drift. Clipping and the external
   fill call are preserved. The current module build has a three-byte
   instruction-scheduling difference.

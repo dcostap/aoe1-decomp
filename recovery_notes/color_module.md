@@ -134,13 +134,11 @@ overloaded symbols were added. Their results were:
 | `00446230` | MISMATCH | 68 | 1 |
 | `004463B0` | MISMATCH | 326 | 0 |
 
-The Drawarea summary was 48/48 exact, 1/13 observed, zero comparison errors,
-and full-module false because the accepted-drift and scratch rows are not all
-exact. Both grouped reports are recorded above. No focused checks or global
-tools ran.
+The earlier Drawarea summary was 48/48 exact and 1/13 observed. The final
+reconciliation registers 50 exact owners. Accepted-drift and scratch rows keep
+the full-module result false.
 
 ## Integration note
 
-The coordinator must update the global `color_cpp` translation-unit registry to
-point to `src/color.cpp` and map its exact owners directly to that source. This
-module migration does not change global ownership configuration.
+The global `color_cpp` translation-unit registry points to `src/color.cpp` and
+maps its exact owners to that source.
