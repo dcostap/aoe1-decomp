@@ -7,7 +7,7 @@ class TRIBE_Tech;
 
 // These records are serialized by send_zone_score_info. Their source owner is
 // tworld.cpp, and their wire sizes are part of the TWorld ABI.
-class TRIBE_Zone_High_Score_Info {
+struct TRIBE_Zone_High_Score_Info {
 public:
     long score;
     unsigned char civ;

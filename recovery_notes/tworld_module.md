@@ -43,6 +43,11 @@ restored. The unified source uses typed fields, canonical globals, named string
 data, standard CRT declarations, and structured control flow. It has no
 absolute address expressions or C-style casts.
 
+`TRIBE_Zone_High_Score_Info` uses the `struct` tag. The original
+`00531240 fill_in_score` symbol encodes this record with `U`, and the exact
+owner requires that tag. This direct symbol evidence overrides the generated
+type dump's `class` label.
+
 ## Communications access
 
 The PDB marks `TCommunications_Handler::WasKicked` private. It does not record
