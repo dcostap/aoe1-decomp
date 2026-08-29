@@ -360,6 +360,7 @@ protected:
     long SendPlayerName();
     void LogRXMsg(unsigned int param_1, unsigned int param_2, unsigned long param_3, unsigned char param_4, unsigned char param_5);
 public:
+    int GetWasKicked(unsigned int player);
     unsigned long GetCurrentTurn();
     unsigned long GetRXPacketSize();
     unsigned long GetTXPacketSize();

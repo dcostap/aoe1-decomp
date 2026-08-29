@@ -415,7 +415,7 @@ unsigned char TRIBE_World::load_world(int handle)
         this->artifact_count = 0;
         this->ruin_count = 0;
     }
-    
+
     if (save_game_version >= 5.4f) {
         rge_read(handle, &this->countdown_victory, 1);
         rge_read(handle, &this->countdown_clock, 4);
@@ -423,7 +423,7 @@ unsigned char TRIBE_World::load_world(int handle)
         this->countdown_victory = 0;
         this->countdown_clock = 0.0f;
     }
-    
+
     if (save_game_version >= 6.6f) {
         rge_read(handle, &this->score_displayed, 1);
     } else {
