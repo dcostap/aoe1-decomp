@@ -77,6 +77,7 @@ class RGE_Base_Game {
     friend class RGE_Communications_Synchronize;
     friend class RGE_Main_View;
     friend class TRIBE_Main_View;
+    friend class TPanel;
     friend class RGE_Scenario;
     friend class T_Scenario;
     friend class TribeJoinScreen;
