@@ -28,9 +28,9 @@ destructor at `0050D790` is compiler-generated and has no ordinary owner.
 
 The source contains all 13 handwritten owners in PDB order. It uses one
 module-local header and no wrapper, function-fragment include, context macro, or
-fallback declaration. Three accepted-drift owners remain observed:
-`0050D5B0`, `0050D7E0`, and `0050DD70`. `0050DFD0` is scratch because its
-natural code has broad control-flow and call-surface drift. The other nine
+fallback declaration. Four accepted-drift owners remain observed:
+`0050D5B0`, `0050D7E0`, `0050DD70`, and `0050DE50`. `0050DFD0` is scratch because its
+natural code has broad control-flow and call-surface drift. The other eight
 owners remain registered matching owners.
 
 `scenario.h` now includes `Timeline.h` instead of carrying a second partial
@@ -90,15 +90,15 @@ registered exact claims.
   with their decorated symbols.
 
 The fresh grouped candidate compiled all 13 normal owners and the generated
-destructor. Eight of the nine registered matching owners report `MATCH` with
+destructor. All eight registered matching owners report `MATCH` with
 zero positional differences, zero relocation-target mismatches, and zero
-boundary escapes. `0050DE50` retains matching status, but canonical provider
+boundary escapes. `0050DE50` has accepted-drift status because canonical provider
 composition causes a 12-byte register and instruction-order regression
 (8.0537%) with zero relocation-target mismatches and zero boundary escapes. The
 generated destructor reports `MATCH` and `0.0000%`.
 
 The `0050DE50` regression changes no call target, branch count, boundary, or
-relocation target. Keep its source natural and its reviewed matching status.
+relocation target. Keep its source natural and its reviewed accepted-drift status.
 Exact repair remains open after this provider cleanup.
 
 The accepted-drift constructor `0050D5B0` remains a 16-byte mismatch

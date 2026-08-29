@@ -7362,7 +7362,6 @@
         "0050DB10": "src/Timeline.cpp",
         "0050DD30": "src/Timeline.cpp",
         "0050DE00": "src/Timeline.cpp",
-        "0050DE50": "src/Timeline.cpp",
         "0050DEF0": "src/Timeline.cpp",
         "0050DF40": "src/Timeline.cpp"
       },
@@ -7374,8 +7373,7 @@
         "0050DE00": "?add_attack@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@0@Z",
         "0050DEF0": "?add_move@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@MMM@Z",
         "0050DF40": "?add_delete@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@@Z",
-        "0050DB10": "?mock_update@RGE_Timeline@@QAEXM@Z",
-        "0050DE50": "?add_create@RGE_Timeline@@QAEPAURGE_Time_Entry@@MFEMMM@Z"
+        "0050DB10": "?mock_update@RGE_Timeline@@QAEXM@Z"
       }
     },
     {
