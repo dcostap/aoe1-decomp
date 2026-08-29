@@ -9,13 +9,13 @@ not declarations to headers.
 | Family | Recommended canonical owner header | Related generator source | Proven size |
 | --- | --- | --- | ---: |
 | `RGE_Land_Info_Line`, `RGE_Land_Info` | `include/rmm_land.h` | `rmm_land.cpp` | `0x34`, `0x1438` |
-| `RGE_Terrain_Info_Line`, `RGE_Terrain_Hot_Spots`, `RGE_Terrain_Info` | `include/rmm_terr.h` | `rmm_terr.cpp` | `0x20`, `0x10`, `0x1298` |
+| `RGE_Terrain_Info_Line`, `RGE_Terrain_Hot_Spots`, `RGE_Terrain_Info` | `include/rmm_terrain_info.h` | `rmm_terr.cpp` | `0x20`, `0x10`, `0x1298` |
 | `RGE_Object_Info_Line`, `RGE_Land_Point_Info_Line`, `RGE_Object_Info` | `include/rmm_obj.h` | `rmm_obj.cpp` | `0x30`, `0x10`, `0x18C8` |
 | `RGE_Elevation_Info_Line`, `RGE_Elevation_Hot_Spots`, `RGE_Elevation_Info` | `include/rmm_elev.h` (future owner-only header) | `rmm_elev.cpp` | `0x18`, `0x10`, `0xF80` |
 | `RGE_Land_Data_Entry`, `RGE_Land_Data`, and the other DBCT data records | `include/rmm_dbct.h` | `rmm_dbct.cpp` | `0x2C`, `0x08` where applicable |
 
 **Recommendation:** Keep `RGE_RMM_Land_Generator` in `rmm_land.h`,
-`RGE_RMM_Terrain_Generator` in `rmm_terr.h`, and
+`RGE_RMM_Terrain_Generator` in `rmm_terrain_generator.h`, and
 `RGE_RMM_Object_Generator` in `rmm_obj.h`.
 
 **Recommendation:** Create `include/rmm_elev.h` later as the owner-only
@@ -83,7 +83,7 @@ allocation of a related generator.
 
 **Recommendation:** CNTR declaration headers should forward-declare
 `RGE_Land_Info`, `RGE_Terrain_Info`, and `RGE_Object_Info` when signatures are
-the only use. The CNTR source must include `rmm_land.h`, `rmm_terr.h`, and
+the only use. The CNTR source must include `rmm_land.h`, `rmm_terrain_generator.h`, and
 `rmm_obj.h` for its local records and `new` expressions.
 
 **Recommendation:** DBCT must use complete Land, Terrain, Object, and

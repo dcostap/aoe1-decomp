@@ -1,42 +1,50 @@
-# rmm_terr.cpp module merge
+# rmm_terr.cpp natural module
 
 - PDB source: `C:\\msdev\\work\\age1_x1\\rmm_terr.cpp`.
-- Source: `src/rmm_terr.cpp`.
-- Header: `include/rmm_terr.h`.
+- Source owner: `src/rmm_terr.cpp`.
+- Generator header: `include/rmm_terrain_generator.h`.
+- Record header: `include/rmm_terrain_info.h`.
+- RMM base header: `include/rmm_base.h`.
+- Map and zone providers: `include/map.h` and `include/zone_map.h`.
 - Flags: `config/flags/default.rsp`.
 
-## Transition
+## Ownership
 
-The module has 11 normal owners in PDB order from `004888E0` through
-`00489030`.
+The source owns all eleven normal PDB bodies in source order:
 
-The merged source owns all 11 bodies. It removes the wrapper, per-function
-`.cpp` includes, fallback class declarations, and context-only source shape.
-The header now has the natural module name `rmm_terr.h`.
+1. `004888E0` constructor
+2. `00488920` `generate`
+3. `004889D0` `water`
+4. `004889F0` `check_borders`
+5. `00488B90` `check_terrain`
+6. `00488D50` `generate_modifiers`
+7. `00488E40` `fig_chance`
+8. `00488E60` `count_map_tiles`
+9. `00488EA0` `link_stack_randomly`
+10. `00488F90` `remove_area_from_lists`
+11. `00489030` `base_terrain_generate`
 
-The module manifest records nine matching owners. The former accepted-drift
-owner `00488B90` (`check_terrain`) and former matching owner `00488E60`
-(`count_map_tiles`) are now scratch. The old grouped registration had nine
-exact owners. This merge does not promote either owner.
+The old prefix source, copied RMM base, copied generator context, and old
+`rmm_terr.h` provider are removed. The source now uses the canonical random-map
+base, typed map rows, typed tiles, typed zone classes, and typed terrain fields.
+It keeps the shipped coordinate order and helper call order.
 
-## Check state
+## Validation
 
-The migration preserves the reviewed function bodies and behavior. It does not
-perform byte tuning during source-shape migration. The complete merged source
-compiles with the pinned VC5 toolchain.
+A fresh grouped candidate build compiled the complete module. The retained
+owners `004888E0`, `00488920`, `004889D0`, `004889F0`, `00488D50`, `00488E40`,
+`00488EA0`, and `00489030` each report `MATCH` and `0.0000%`. Their owner
+symbols, boundaries, relocations, and direct targets also match.
 
-The nine matching owners check as `MATCH` with `0.0000%` positional difference
-through the merged source. The `check_terrain` owner remains a `MISMATCH`: the
-merged body emits 433 bytes against the 437-byte original, with 295 changed
-bytes. The `count_map_tiles` owner also mismatches by two bytes. These are
-source-shape context results, not behavior changes.
+`00488F90` is scratch. Its typed stack-row form has the original boundary and
+call target, but VC5 reorders four independent address instructions. It reports
+nine differing bytes. The source keeps the natural typed form instead of a raw
+byte overlay.
 
-The translation-unit validator passes. The source-module and translation-unit
-tests pass with 16 tests passed and two skipped.
+`00488B90` remains scratch. Its reviewed clipped scans and terrain predicate
+order are unchanged. Its current rebuilt span differs by 295 bytes.
 
-The `check_terrain` note remains attached to this module because its two clipped
-inclusive scans and terrain predicate order are reviewed. It is now scratch.
-The fresh grouped result in `build/audit_accepted_drift_final2/report.txt`
-reports 433 rebuilt bytes against 437 original bytes
-and 295 differing bytes. The frame, owner symbol, and boundaries match, but
-the checker reports structural control-flow drift beyond a localized change.
+`00488E60` remains scratch. Its typed tile scan is unchanged in behavior. Its
+current rebuilt span differs by two bytes.
+
+The final candidate report is under `build/candidate_tus/rmm_terr_natural_final`.

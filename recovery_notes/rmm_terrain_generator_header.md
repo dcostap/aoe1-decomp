@@ -1,18 +1,20 @@
 # RMM Terrain Generator owner-only header
 
-## Recommendation
+## Integrated owner
 
-Use `include/rmm_terrain_generator.h` as the owner-only declaration surface for
-`RGE_RMM_Terrain_Generator`. Keep the Terrain Info records in
-`include/rmm_terrain_info.h`.
+`include/rmm_terrain_generator.h` is the declaration surface for
+`RGE_RMM_Terrain_Generator`. The natural source module includes it directly.
+Terrain Info records remain in `include/rmm_terrain_info.h`.
 
 The generator header includes only `rmm_base.h` and `rmm_terrain_info.h`. It
 forward-declares `RGE_Zone_Map`. It does not declare Tile, Map context, globals,
 padding fields, or unions.
 
-Do not use the legacy context-heavy `include/rmm_terr.h` for CNTR or DBCT
-consumer declarations. This candidate does not change `src/rmm_terr.cpp`,
-configuration, or function status.
+CNTR and DBCT include this owner-only header when they create a terrain
+generator. They include `rmm_terrain_info.h` for direct record use.
+
+The old context-heavy `include/rmm_terr.h` provider is removed. It duplicated
+the RMM base and generator declarations.
 
 ## PDB and CodeView evidence
 
@@ -114,10 +116,8 @@ The two compatible relocation sites are the base constructor call and the
 Terrain generator vtable. Raw bytes differ only in those unresolved relocation
 slots.
 
-The generic candidate validator requires the registered `rmm_terr.cpp` source
-owner and therefore cannot validate a build-only source path. The focused
-candidate was compiled and compared directly without changing source,
-configuration, or ownership metadata.
+The complete natural source now uses this header. The grouped candidate keeps
+the retained exact owners in the registered `rmm_terr` translation unit.
 
 ## Integration boundary
 
@@ -125,9 +125,8 @@ configuration, or ownership metadata.
 Terrain Info records. Keep this header as the sole owner of the Terrain
 generator declaration surface.
 
-**Recommendation:** Future CNTR and DBCT consumers should include this header
-for the complete generator declaration and `rmm_terrain_info.h` for direct
-record use. They must not include `rmm_terr.h`.
+**Recommendation:** CNTR and DBCT consumers should include this header for the
+complete generator declaration and `rmm_terrain_info.h` for direct record use.
 
 **Recommendation:** Do not move generator or base declarations into
 `rmm_terrain_info.h`. Do not add context macros or a second generator or record

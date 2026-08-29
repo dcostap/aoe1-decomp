@@ -2,15 +2,14 @@
 
 ## Recommendation
 
-Use `include/rmm_terrain_info.h` as the owner-only candidate for the three
-runtime Terrain Info records. The header has no includes and no dependency on
+Use `include/rmm_terrain_info.h` as the owner-only header for the three runtime
+Terrain Info records. The header has no includes and no dependency on
 Tile, the random-map base, a generator, globals, padding, or context aliases.
 
-Do not include `include/rmm_terr.h` from DBCT or CNTR. That header carries
-module-local Tile, base, Map, and generator declarations. It causes type
-redefinition errors in those consumer contexts.
+Do not use a module context as a second record provider. DBCT and CNTR include
+this record header for direct Terrain Info access.
 
-This note does not change `rmm_terr.cpp`, DBCT, CNTR, or any consumer.
+The natural Terrain source consumes this header directly.
 
 ## Proven layout
 
@@ -47,9 +46,8 @@ The two consumers pass complete records:
 - CNTR calls the Terrain generator constructor at `00482864`.
 - DBCT calls it at `00483475` with its `terrain_info` field at `+0x1474`.
 
-CNTR and DBCT each keep a duplicate Terrain Info definition today. Their
-record fields match the CodeView layout, but their full context headers cannot
-include `rmm_terr.h` directly.
+CNTR and DBCT use this shared definition. Their generator construction sites
+include `rmm_terrain_generator.h`.
 
 ## Validation
 
@@ -61,10 +59,9 @@ The probe is a build artifact. It does not claim a source-owner change.
 
 ## Integration boundary
 
-This candidate is ready for record-level fanout after review. A later change
-may replace the duplicate record definitions in DBCT and CNTR with this header.
-That change needs focused builds for `rmm_terr`, DBCT, and CNTR. It must not
-move the Terrain generator or random-map base declarations into this header.
+The record header is ready for record-level fanout. Consumer changes need
+focused builds for `rmm_terr`, DBCT, and CNTR. Do not move the Terrain
+generator or random-map base declarations into this header.
 ## Include-order probe
 
 Focused VC5 probes use `config/flags/default.rsp`. These include orders pass:
@@ -85,7 +82,7 @@ the following exact C2011 conflicts:
   `RGE_Terrain_Info` at `rmm_dbct.h:154`.
 - `rmm_terrain_info.h` plus `rmm_cntr_context.h`: the same three records at
   `rmm_cntr_context.h:60`, `:74`, and `:81`.
-- `rmm_terrain_info.h` plus the old `rmm_terr.h`: the same three records.
+- `rmm_terrain_info.h` plus the removed `rmm_terr.h`: the same three records.
 
 ### Direct fanout gate
 
@@ -98,17 +95,17 @@ Do not add include-order guards that hide competing record owners.
 
 ## Internal owner migration
 
-`rmm_terr.h` now includes `rmm_terrain_info.h` and no longer repeats the three
-record definitions. Tile, base, Map, zone-map, and generator declarations did
-not change. DBCT, CNTR, and all source files did not change.
+`rmm_terrain_info.h` is the sole Terrain Info record provider. The old
+`rmm_terr.h` context provider is removed. Tile, base, Map, zone-map, and
+generator declarations stay in their canonical headers.
 
-The rebuilt `rmm_terr` object keeps all ten matching owners exact. The focused
-comparison reports `MATCH`, `0.0000%`, equal boundaries, and matching owner
-symbols for `004888E0`, `00488920`, `004889D0`, `004889F0`, `00488D50`,
-`00488E40`, `00488E60`, `00488EA0`, `00488F90`, and `00489030`.
+The rebuilt `rmm_terr` object keeps the retained matching owners exact. The
+focused comparison reports `MATCH`, `0.0000%`, equal boundaries, and matching
+owner symbols for the eight registered owners. `00488F90` is now scratch
+because its natural typed stack-row form changes nine instruction bytes.
 
-The accepted-drift `00488B90` remains unchanged at 295 differing bytes in a
-433-byte rebuilt body versus 437 original bytes. It remains accepted drift.
+The scratch `00488B90` remains unchanged at 295 differing bytes in a 433-byte
+rebuilt body versus 437 original bytes.
 
 Authoritative focused checks for the constructor, `check_borders`, and
 `base_terrain_generate` each report `Result: MATCH`. The source module has no
