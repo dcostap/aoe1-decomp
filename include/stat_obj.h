@@ -4,11 +4,6 @@
 #include "utmarray.h"
 #include "xyz_point.h"
 
-extern float DAT_0056e63c;
-extern float DAT_0056e640;
-extern float DAT_0056e644;
-extern float DAT_0056ee00;
-
 class InfluenceMap;
 class LOSTBL;
 class Path;
@@ -125,22 +120,22 @@ public:
     virtual void setUnderAttack(unsigned char);
     virtual float calc_attack_modifier(RGE_Static_Object*)
     {
-        return DAT_0056e63c;
+        return 1.0f;
     }
-    virtual float getSpeed() const { return DAT_0056e640; }
-    virtual float getAngle() const { return DAT_0056ee00; }
-    virtual float maximumSpeed() { return DAT_0056ee00; }
-    virtual float rateOfFire() { return DAT_0056e640; }
-    virtual float damageCapability(RGE_Static_Object*) { return DAT_0056e640; }
-    virtual float damageCapability() { return DAT_0056e640; }
-    virtual float weaponRange() { return DAT_0056e640; }
-    virtual float minimumWeaponRange() { return DAT_0056e640; }
+    virtual float getSpeed() const { return 0.0f; }
+    virtual float getAngle() const { return 0.0f; }
+    virtual float maximumSpeed() { return 0.0f; }
+    virtual float rateOfFire() { return 0.0f; }
+    virtual float damageCapability(RGE_Static_Object*) { return 0.0f; }
+    virtual float damageCapability() { return 0.0f; }
+    virtual float weaponRange() { return 0.0f; }
+    virtual float minimumWeaponRange() { return 0.0f; }
     virtual int passableTile(float, float, int) { return 0; }
     virtual unsigned char facetToNextWaypoint() const { return 0xFF; }
     virtual int currentTargetID() const { return -1; }
-    virtual float currentTargetX() const { return DAT_0056e644; }
-    virtual float currentTargetY() const { return DAT_0056e644; }
-    virtual float currentTargetZ() const { return DAT_0056e644; }
+    virtual float currentTargetX() const { return -1.0f; }
+    virtual float currentTargetY() const { return -1.0f; }
+    virtual float currentTargetZ() const { return -1.0f; }
     virtual void setWaitingToMove(unsigned char) {}
     virtual unsigned char waitingToMove() const { return 0; }
     virtual unsigned char actionState() const { return 0; }

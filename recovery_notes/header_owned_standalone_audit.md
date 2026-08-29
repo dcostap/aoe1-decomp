@@ -92,6 +92,12 @@ relocations, and boundaries for the 68 `stat_obj.h` rows and the normal rows
 in `panel.h`, `player.h`, `aimodule.h`, `move_obj.h`, `scenario.h`,
 `aiuaimod.h`, `ani_obj.h`, `world.h`, and `com_q.h`.
 
+The Static Object float defaults use natural `1.0f`, `0.0f`, and `-1.0f`
+literals. They do not use fixed-address data carriers. `XYZPoint` keeps its
+CodeView class definition after a struct forward declaration. This reproduces
+the original `U` symbol tag for the by-value and reference methods. The direct
+Moving Object candidate then keeps all 38 registered owners exact.
+
 `0043F320` remains scratch by policy. `004147A0` emits the current public body,
 but validation still reports the missing protected symbol. The direct Player
 module retains one known migration regression at `004705A0`; its owner stays
