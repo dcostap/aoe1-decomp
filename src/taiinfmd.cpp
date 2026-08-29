@@ -70,7 +70,7 @@ TribeInformationAIModule::TribeInformationAIModule(void* p, int v)
     int z = 0;
     int one = 1;
     int i;
-    strcpy((char*)this + 0xFF90, (const char*)0x5878BC);
+    strcpy(this->unitHistoryFilename, "learn\\Default.uh");
 
     this->resourceTypesValue = (int**)operator new(0x10);
     this->numberResourceTypesValue = (int*)operator new(0x10);
@@ -192,18 +192,6 @@ TribeInformationAIModule::TribeInformationAIModule(void* p, int v)
 
 // PDB-order owner 004D7070.
 #include <string.h>
-
-extern "C" void __cdecl rge_read(int file, void* buffer, int size);
-
-extern float save_game_version;
-extern float DAT_00575550;
-extern float DAT_00575554;
-extern float DAT_00575558;
-extern float DAT_0057555c;
-extern float DAT_00575560;
-
-void* operator new(unsigned int size);
-void operator delete(void* ptr);
 
 TribeInformationAIModule::TribeInformationAIModule(int param1, int param2)
     : InformationAIModule(0, param1),
@@ -414,13 +402,6 @@ TribeInformationAIModule::TribeInformationAIModule(int param1, int param2)
 }
 
 // PDB-order owner 004D7CB0.
-extern "C" int rge_open(char*, int, int);
-extern "C" void rge_write(int, void*, int);
-extern "C" int rge_close(int);
-
-void* operator new(unsigned int size);
-void operator delete(void* ptr);
-
 TribeInformationAIModule::~TribeInformationAIModule()
 {
     int count;
@@ -1009,9 +990,6 @@ int TribeInformationAIModule::ownerOfGameID(int p0) { return -1; }
 #include <stdlib.h>
 #include <string.h>
 
-extern double __cdecl floor(double);
-extern float DAT_00575568;
-
 int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId, float& outX, float& outY, int& outResourceId, int* exclude, int excludeCount)
 {
     unsigned char zone;
@@ -1262,9 +1240,6 @@ int TribeInformationAIModule::numberGameIDsOwnedBy(int param1, int param2) {
 #include <math.h>
 #include <string.h>
 
-extern "C" int __cdecl debug_rand(char* file, int line);
-extern float DAT_00575570;
-
 ConstructionItem* TribeInformationAIModule::placeDock(
     BuildItem* item, float x, float targetY, int terrain_type, int tile_type)
 {
@@ -1382,9 +1357,6 @@ ConstructionItem* TribeInformationAIModule::placeDock(
 // PDB-order owner 004D9EC0.
 #include <stddef.h>
 
-void* operator new(size_t size);
-void operator delete(void* ptr);
-
 int TribeInformationAIModule::numberDocksInZone(int param_1, RGE_Zone_Map* param_2)
 {
     int count = 0;
@@ -1411,9 +1383,6 @@ int TribeInformationAIModule::numberDocksInZone(int param_1, RGE_Zone_Map* param
 // PDB-order owner 004D9FC0.
 #include <stddef.h>
 #include <math.h>
-
-void* operator new(size_t size);
-void operator delete(void* ptr);
 
 int TribeInformationAIModule::closestDockDistance(int x, int y)
 {
@@ -1753,9 +1722,6 @@ duplicate:
 }
 
 // PDB-order owner 004DABB0.
-extern void* operator new(unsigned int);
-extern void operator delete(void*);
-
 int TribeInformationAIModule::addImportantObject(RGE_Static_Object* obj, int recurse) {
     int oType;
     int marked;
@@ -2506,9 +2472,6 @@ unsupported_size:
 }
 
 // PDB-order owner 004DC1B0.
-extern void* operator new(unsigned int);
-extern void operator delete(void*);
-
 void TribeInformationAIModule::addObject(RGE_Static_Object* obj)
 {
     register RGE_Static_Object* object = obj;
@@ -2642,8 +2605,6 @@ void TribeInformationAIModule::removeObject(int param_1)
 }
 
 // PDB-order owner 004DC490.
-extern int debug_rand(char* file, int line);
-
 ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
     int group, int* unitIds, int count, int& playNumber,
     int* outputUnits, int& outputCount, int& outputUnit)
@@ -2722,7 +2683,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                 variation = this->calculatePlayVariation(targetNumber);
                 score = 100 - (int)play->deathPercentageValue + variation;
                 randomValue =
-                    debug_rand((char*)0x5878dc, 0xd49) % 0x32;
+                    debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0xd49) % 0x32;
                 strategicValue = 0;
 
                 switch (play->typeValue) {
@@ -2745,7 +2706,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                     playNumber = targetNumber;
                     playStatus.copyUnits(outputUnits, outputCount);
                     randomValue =
-                        debug_rand((char*)0x5878dc, 0xd6a);
+                        debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0xd6a);
                     outputUnit = outputUnits[randomValue % outputCount];
                 }
             }
@@ -2761,8 +2722,6 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
 // PDB-order owner 004DC750.
 #include <math.h>
 
-extern "C" long __ftol();
-extern int debug_rand(char* file, int line);
 ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeapons, int boats, int objnum, int& output)
 {
     int* out = &output;
@@ -2978,9 +2937,6 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
 
 // PDB-order owner 004DCF10.
 #include <math.h>
-
-void* operator new(unsigned int size);
-void __cdecl operator delete(void* ptr);
 
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
     int owner, TacticalAIGroup* group, AttackState& stateRef, unsigned long currentTime)
@@ -3301,10 +3257,6 @@ done:
 // PDB-order owner 004DDD40.
 #include <math.h>
 
-extern int debug_rand(char* file, int line);
-void* operator new(unsigned int size);
-void operator delete(void* ptr);
-
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* ids, int count)
 {
     ObjectMemory* bestObject;
@@ -3376,7 +3328,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* i
                                                     bestAttackValue = 0.0f;
                                                 } else {
                                                     int randomRange = this->md->tacticalAI.strategicNumber(0x53);
-                                                    bestAttackValue = (float)(debug_rand((char*)0x5878dc, 0x110b) % randomRange);
+                                                    bestAttackValue = (float)(debug_rand("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x110b) % randomRange);
                                                 }
 
                                                 int killCount =
@@ -3719,8 +3671,6 @@ int TribeInformationAIModule::numberItemsToDefend() {
 }
 
 // PDB-order owner 004DEA80.
-extern float DAT_00575580;
-
 ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1)
 {
     RGE_Static_Object* unit = this->md->object(param_1);
@@ -4072,10 +4022,10 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                 if (mode == 3 || mode == 0) {
                     float radiusValue = object->master_obj->los;
                     if (mode == 0) {
-                        radiusValue *= DAT_005755B4;
+                        radiusValue *= DAT_005755b4;
                     }
                     if (placement == 0x6d) {
-                        radiusValue *= DAT_005755B4;
+                        radiusValue *= DAT_005755b4;
                     }
                     int radius = (int)radiusValue;
                     XYPoint minLOS;
@@ -4096,7 +4046,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                 } else if (mode == 1 || mode == 2) {
                     float radiusValue = object->master_obj->los;
                     if (placement == 0x6d) {
-                        radiusValue *= DAT_005755B4;
+                        radiusValue *= DAT_005755b4;
                     }
                     if (objectType == 0x44 || objectType == 0x67) {
                         radiusValue = DAT_00575578;
@@ -4115,7 +4065,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                 } else if (mode == 5) {
                     float radiusValue = object->master_obj->los;
                     if (placement == 0x6d) {
-                        radiusValue *= DAT_005755B0;
+                        radiusValue *= DAT_005755b0;
                     }
                     int radius = (int)radiusValue;
                     XYPoint minDC;
@@ -5123,13 +5073,6 @@ AttackMemory* TribeInformationAIModule::attackMemory(int index) {
 // PDB-order owner 004E1260.
 #include <stdio.h>
 
-extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" void __cdecl rge_read(int, void*, int);
-extern "C" int __cdecl rge_close(int);
-
-void* operator new(unsigned int size);
-void operator delete(void* ptr);
-
 void TribeInformationAIModule::loadLearnInfo(char* suffix)
 {
     int numMemoriesToLoad;
@@ -5140,10 +5083,10 @@ void TribeInformationAIModule::loadLearnInfo(char* suffix)
     char* learnFileName = this->learnFileName;
 
     if (suffix == 0) {
-        sprintf(learnFileName, (char*)0x5879A4,
+        sprintf(learnFileName, "learn\\default.%d",
                 (int)this->md->player->id);
     } else {
-        sprintf(learnFileName, (char*)0x587994, suffix,
+        sprintf(learnFileName, "learn\\%s%s.%d", suffix,
                 rge_base_game->player_game_info->get_current_player_name(),
                 (int)this->md->player->id);
     }
@@ -5622,9 +5565,6 @@ int TribeInformationAIModule::resourceType(int resourceTypeIndex, int resourceId
 }
 
 // PDB-order owner 004E2490.
-extern void* operator new(unsigned int size);
-extern void operator delete(void* ptr);
-
 int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
 {
     short group = obj->master_obj->object_group;
@@ -5812,9 +5752,6 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
 }
 
 // PDB-order owner 004E2A00.
-extern "C" long __cdecl _ftol();
-
-
 float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* obj, int mode, int& dropsiteID)
 {
     float best;
@@ -5857,9 +5794,6 @@ float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* obj, int 
 // PDB-order owner 004E2BA0.
 #include <stddef.h>
 #include <math.h>
-
-void* operator new(size_t size);
-void operator delete(void* ptr);
 
 RGE_Static_Object* TribeInformationAIModule::findClosestReturnDropsite(RGE_Static_Object* unit)
 {
@@ -5961,7 +5895,7 @@ void TribeInformationAIModule::updateResourceDropsites(int idx) {
                     int out_id = -1;
                     float dist = this->findClosestDropsite(obj, 1, &out_id);
 
-                    int val = (int)(_flt_5755BC - _flt_5755B8 * dist);
+                    int val = (int)(DAT_005755bc - DAT_005755b8 * dist);
                     *(int*)((char*)this->resources[idx] + byte_off + 8) = val;
                     *(unsigned char*)((char*)this->resources[idx] + byte_off + 0x0E) =
                         (unsigned char)(int)dist;
@@ -6021,9 +5955,6 @@ int TribeInformationAIModule::setResourceObjectValid(int resourceType, int resou
 // PDB-order owner 004E3070.
 #include <stddef.h>
 
-void* operator new(size_t size);
-void operator delete(void* ptr);
-
 int TribeInformationAIModule::numberStoragePits() {
     int i = 0;
     int result = 0;
@@ -6044,9 +5975,6 @@ int TribeInformationAIModule::numberStoragePits() {
 
 // PDB-order owner 004E3140.
 #include <stddef.h>
-
-void* operator new(size_t size);
-void operator delete(void* ptr);
 
 int TribeInformationAIModule::numberGranaries() {
     int i = 0;
@@ -6621,10 +6549,6 @@ float TribeInformationAIModule::damageInflictedPerSecond(int* ids, int count, RG
 }
 
 // PDB-order owner 004E42B0.
-extern float DAT_00575580;  // 0.0f
-extern float DAT_005755C0;  // 600.0f
-
-
 float TribeInformationAIModule::timeToBeKilled(TacticalAIGroup* group, RGE_Static_Object* target) {
     float rVal = 0.0f;
     int i = 0;
@@ -6642,7 +6566,7 @@ float TribeInformationAIModule::timeToBeKilled(TacticalAIGroup* group, RGE_Stati
                     (int)target->world_y);
 
                 if (dps == 0.0f) {
-                    dps = DAT_005755C0;
+                    dps = DAT_005755c0;
                 } else {
                     dps = obj->hp / dps;
                 }
@@ -6699,8 +6623,6 @@ int TribeInformationAIModule::closestDropsiteResID(int index) const {
 }
 
 // PDB-order owner 004E4400.
-extern "C" long __cdecl __ftol(void);
-
 int TribeInformationAIModule::calculatePlayVariation(int param_1) {
     (void)param_1;
     int totalPlays = 0;
@@ -6739,10 +6661,6 @@ int TribeInformationAIModule::convertUnitToIntType(RGE_Static_Object* obj) const
 #include <stdio.h>
 #include <string.h>
 
-
-// File I/O helper functions
-extern "C" void rge_read(int fd, void* buf, int size);
-extern "C" int rge_close(int fd);
 
 void TribeInformationAIModule::loadUnitHistory() {
     char historyFileName[256];

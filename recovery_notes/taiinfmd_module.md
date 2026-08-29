@@ -19,6 +19,19 @@ matching, 9 accepted-drift, and 19 scratch owners.
 Compiler-generated entries `004D6B20`, `004D7050`, `004DE980`, and `004DE9D0`
 remain outside the normal owner manifest.
 
+## Provider cleanup
+
+The public header now consumes the canonical `game_globals.h` and
+`utmarray.h` providers. Duplicate source-local declarations for file I/O,
+random helpers, floating constants, and allocation helpers were removed.
+The source now uses direct literals for its known module strings and the
+canonical lowercase floating-global spellings. These changes preserve the
+PDB source bodies and behavior.
+
+The three fixed `InfluenceMap` objects remain unchanged. Their natural storage
+owner and initialization context are not proved, so their absolute carriers
+stay under the held-global review.
+
 The merged source retains 56 exact registered owners. Owners `004D9110` and
 `004D9160` each have a one-byte natural-context recolor. Owner `004E0FD0` has
 an 11-byte merged-context regression. These owners remain scratch.
@@ -49,6 +62,10 @@ The record owner uses natural alignment. It has no manual padding carriers.
 The Taiinf grouped candidate keeps 56/56 registered exact owners at `MATCH`.
 `004D9110` and `004D9160` remain observed scratch with one differing byte
 each. Both keep their owner, boundary, and direct targets.
+
+The post-cleanup candidate check for accepted-drift constructor `004D6BB0`
+still reports a 94-byte mismatch with matching owner and boundaries. No
+registered exact owner regressed.
 
 ## Validation
 

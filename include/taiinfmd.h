@@ -50,8 +50,10 @@ extern InfluenceMap* const attackMap;
 
 void* operator new(unsigned int size);
 void operator delete(void* pointer);
-extern "C" void* __cdecl operator_new(unsigned int size);
-extern "C" void __cdecl operator_delete(void* pointer);
+extern "C" void __cdecl rge_read(int file, void* buffer, int size);
+extern "C" int __cdecl rge_open(char* path, int mode, int attr = 0);
+extern "C" void __cdecl rge_write(int file, void* buffer, int size);
+extern "C" int __cdecl rge_close(int file);
 
 class TribeInformationAIModule : public InformationAIModule {
 public:
@@ -289,28 +291,4 @@ typedef char taiinfmd_information_size[
 typedef char taiinfmd_managed_array_size[
     (sizeof(ManagedArray<int>) == 0x10) ? 1 : -1];
 
-extern "C" void __cdecl rge_read(int file, void* buffer, int size);
-extern "C" int __cdecl rge_open(char* path, int mode, int attr = 0);
-extern "C" void __cdecl rge_write(int file, void* buffer, int size);
-extern "C" int debug_rand(char* file, int line);
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
-extern "C" long __cdecl _ftol();
-extern float save_game_version;
-extern float DAT_00575564;
-extern float DAT_00575550;
-extern float DAT_00575554;
-extern float DAT_00575558;
-extern float DAT_0057555c;
-extern float DAT_00575560;
-extern float DAT_00575574;
-extern float DAT_00575578;
-extern float DAT_0057557c;
-extern float DAT_00575580;
-extern float DAT_00575584;
-extern float DAT_005755B0;
-extern float DAT_005755B4;
-extern float DAT_005755B8;
-extern float DAT_005755BC;
-extern float _flt_5755B8;
-extern float _flt_5755BC;
 #endif
