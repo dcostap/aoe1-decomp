@@ -46,8 +46,10 @@ Source-module status transitions were:
 - 9 `accepted_drift` to `matching`.
 - 73 `matching` to `scratch`.
 
-The final registry contains 4,103 owners.
-The final exact grouped target is 4,103 owner matches.
+The final registry contains 4,103 owners from the preflight report.
+A fresh focused audit proved one additional exact owner, `0041E7A0`.
+Its emitted symbol is `?rge_base_game_wnd_proc@@YGJPAXIIJ@Z`.
+The updated registry target is 4,104 owners and exact grouped matches.
 The final report must contain zero registered owner regressions.
 It must contain no unregistered `matching`-status rows.
 
@@ -55,3 +57,8 @@ Fresh grouped `MATCH` results supersede prior accepted-drift status statements
 for these VAs: `0044B2B0`, `005059A0`, `004BE4B0`, `004421F0`, and `0046B680`.
 They also supersede `0053C680`, `004D2880`, `0050D7E0`, and `004459A0`.
 Each row passed ownership, boundary, relocation, and symbol checks.
+
+The preflight lacked the copied FPO evidence and an explicit selector for
+`0041E7A0`. It used the stale inferred selector
+`?rge_base_game_wnd_proc@@YGKIIII@Z` and reported a missing grouped symbol.
+The focused audit used the emitted selector above and reported `MATCH`.
