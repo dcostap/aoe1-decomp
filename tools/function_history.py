@@ -77,30 +77,49 @@ def _history_lock(slug: str):
     root = _history_root(slug)
     root.mkdir(parents=True, exist_ok=True)
     lock_path = root / "history.lock"
-    descriptor: int | None = None
-    for _ in range(200):
-        try:
-            descriptor = os.open(lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-            os.write(descriptor, str(os.getpid()).encode("ascii"))
-            break
-        except FileExistsError:
-            try:
-                if time.time() - lock_path.stat().st_mtime > 300:
-                    lock_path.unlink()
-                    continue
-            except FileNotFoundError:
-                continue
-            time.sleep(0.05)
-    if descriptor is None:
-        raise TimeoutError(f"Timed out waiting for history lock: {lock_path}")
+    descriptor = os.open(lock_path, os.O_RDWR | os.O_CREAT)
     try:
+        handle = os.fdopen(descriptor, "r+b")
+    except BaseException:
+        os.close(descriptor)
+        raise
+    acquired = False
+    try:
+        if lock_path.stat().st_size == 0:
+            handle.write(b"\0")
+            handle.flush()
+        for _ in range(200):
+            try:
+                handle.seek(0)
+                if os.name == "nt":
+                    import msvcrt
+
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+                else:
+                    import fcntl
+
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                acquired = True
+                break
+            except OSError:
+                time.sleep(0.05)
+        if not acquired:
+            raise TimeoutError(f"Timed out waiting for history lock: {lock_path}")
         yield
     finally:
-        os.close(descriptor)
         try:
-            lock_path.unlink()
-        except FileNotFoundError:
-            pass
+            if acquired:
+                handle.seek(0)
+                if os.name == "nt":
+                    import msvcrt
+
+                    msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+                else:
+                    import fcntl
+
+                    fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+        finally:
+            handle.close()
 
 
 def _validate_label(label: str) -> str:

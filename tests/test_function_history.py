@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import multiprocessing
+import queue
 import sys
 import tempfile
 import unittest
@@ -10,6 +12,7 @@ from unittest.mock import patch
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
+import function_history  # noqa: E402
 from function_history import (  # noqa: E402
     _dominates,
     _refresh_frontier,
@@ -22,6 +25,16 @@ from function_history import (  # noqa: E402
     restore_checkpoint,
     structural_checkpoint_delta,
 )
+
+
+def _hold_history_lock(root: str, slug: str, ready: object, entered: object, release: object) -> None:
+    import function_history
+
+    function_history.REPO_ROOT = Path(root)
+    ready.put(True)
+    with function_history._history_lock(slug):
+        entered.put(True)
+        release.get(timeout=30)
 
 
 class FunctionHistoryTests(unittest.TestCase):
@@ -64,6 +77,109 @@ class FunctionHistoryTests(unittest.TestCase):
             _validate_label("bad label")
         with self.assertRaises(ValueError):
             _validate_label("../escape")
+
+    def test_history_lock_closes_descriptor_when_handle_setup_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            with (
+                patch.object(function_history, "REPO_ROOT", Path(temporary)),
+                patch.object(function_history.os, "open", return_value=123),
+                patch.object(function_history.os, "fdopen", side_effect=RuntimeError("setup failed")),
+                patch.object(function_history.os, "close") as close,
+            ):
+                with self.assertRaisesRegex(RuntimeError, "setup failed"):
+                    with function_history._history_lock("demo"):
+                        pass
+            close.assert_called_once_with(123)
+
+    def test_history_lock_serializes_processes(self) -> None:
+        context = multiprocessing.get_context("spawn")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            slug = "demo"
+            first_ready = context.Queue()
+            first_entered = context.Queue()
+            first_release = context.Queue()
+            second_ready = context.Queue()
+            second_entered = context.Queue()
+            second_release = context.Queue()
+            first = context.Process(
+                target=_hold_history_lock,
+                args=(str(root), slug, first_ready, first_entered, first_release),
+            )
+            second = context.Process(
+                target=_hold_history_lock,
+                args=(str(root), slug, second_ready, second_entered, second_release),
+            )
+            first.start()
+            second_started = False
+            try:
+                self.assertTrue(first_ready.get(timeout=5))
+                self.assertTrue(first_entered.get(timeout=5))
+                second.start()
+                second_started = True
+                self.assertTrue(second_ready.get(timeout=5))
+                with self.assertRaises(queue.Empty):
+                    second_entered.get(timeout=0.2)
+                first_release.put(True)
+                self.assertTrue(second_entered.get(timeout=5))
+                second_release.put(True)
+            finally:
+                if first.is_alive():
+                    first_release.put(True)
+                if second_started and second.is_alive():
+                    second_release.put(True)
+                first.join(timeout=5)
+                second.join(timeout=5)
+                if first.is_alive():
+                    first.terminate()
+                if second.is_alive():
+                    second.terminate()
+            self.assertEqual(first.exitcode, 0)
+            self.assertEqual(second.exitcode, 0)
+            self.assertTrue((root / "build" / "history" / slug / "history.lock").is_file())
+
+    def test_history_lock_is_released_when_process_exits(self) -> None:
+        context = multiprocessing.get_context("spawn")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            slug = "demo"
+            abandoned_ready = context.Queue()
+            abandoned_entered = context.Queue()
+            abandoned_release = context.Queue()
+            successor_ready = context.Queue()
+            successor_entered = context.Queue()
+            successor_release = context.Queue()
+            abandoned = context.Process(
+                target=_hold_history_lock,
+                args=(str(root), slug, abandoned_ready, abandoned_entered, abandoned_release),
+            )
+            successor = context.Process(
+                target=_hold_history_lock,
+                args=(str(root), slug, successor_ready, successor_entered, successor_release),
+            )
+            abandoned.start()
+            try:
+                self.assertTrue(abandoned_ready.get(timeout=5))
+                self.assertTrue(abandoned_entered.get(timeout=5))
+                abandoned.terminate()
+                abandoned.join(timeout=5)
+                self.assertFalse(abandoned.is_alive())
+
+                successor.start()
+                self.assertTrue(successor_ready.get(timeout=5))
+                self.assertTrue(successor_entered.get(timeout=5))
+                successor_release.put(True)
+                successor.join(timeout=5)
+            finally:
+                if abandoned.is_alive():
+                    abandoned.terminate()
+                if successor.is_alive():
+                    successor_release.put(True)
+                abandoned.join(timeout=5)
+                successor.join(timeout=5)
+                if successor.is_alive():
+                    successor.terminate()
+            self.assertEqual(successor.exitcode, 0)
 
     def test_automatic_best_selectors_use_structural_metric_then_diff_tiebreak(self) -> None:
         index = {
