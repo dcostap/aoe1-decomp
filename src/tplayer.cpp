@@ -3376,8 +3376,8 @@ void TRIBE_Gaia::random_start() {}
 
 void TRIBE_Player::scenario_postload(int first, long* second, float third) {
     RGE_Player::scenario_postload(first, second, third);
-    if (0.0 < this->attributes[0]) {
-        this->mutualExploredMask = 1;
+    if (0.0 < this->attributes[50]) {
+        this->allied_LOS_Enable = 1;
         this->world->update_mutual_allies();
     }
 }

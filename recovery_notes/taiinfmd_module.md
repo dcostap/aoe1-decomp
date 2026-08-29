@@ -112,3 +112,9 @@ fragment set. The two context headers,
 chain. `rg` found no translation-unit entry or other source consumer. The
 wrapper and both headers were removed after all included owners moved to this
 module.
+
+## Wave20 full-audit reconciliation
+
+The fresh full audit removes three stale exact claims. `004D9110` and
+`004D9160` each differ by one byte. `004E0FD0` differs by 11 bytes. All three
+rows are scratch and are no longer registered as exact.

@@ -4,18 +4,30 @@
 
 ## Current state
 
-- Status: `scratch`.
+- Status: `matching`.
 - Living source: `src/file_stf.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\file_stf.cpp`.
 - Earlier recovery note: `recovery_notes/file_stf_module.md`.
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+- PDB module: `file_stf.cpp`, source lines 20-22.
+- Natural owner: `src/file_stf.cpp`, first normal owner in the module.
+- Original body: `00449710-0044974A`, 59 bytes, no calls, no frame.
+- Exact anchors: saved `EBX`/`ESI`, two-byte `strcmp` loop, and two `sbb`
+  return instructions.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- The former source declaration used `const char*`. It emitted
+  `?compareFilenameStrings@@YAHPBD0@Z`, so the checker could not select the
+  original `?compareFilenameStrings@@YAHPBX0@Z` owner.
+- The current source uses the original `const void*` ABI and casts to
+  `const char*` for `strcmp`. The current focused result is exact: 59/59
+  bytes, 0 differing bytes, no frame, no calls, no relocations, and the
+  original owner and boundary.
+- Coordinator review changed `include/file_stf.h` to the PDB-proven
+  `const void*` declaration. Focused and grouped owner checks remain exact.
 
 ## Recovered attempt history
 
@@ -51,16 +63,37 @@ Mapping: `exact`. historical standalone source path names this target VA.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+- Explicit byte loops with `const void*` produced 52-96 bytes and remained
+  nonexact. The best loop shape was 53 bytes with 75.86% shape similarity.
+- Typed pointer aliases caused pointer-difference lowering or extra saved
+  registers. They did not reproduce the original loop.
+- The decompiler-literal `bool` return form added redundant compare lowering.
+- A natural `strcmp((const char*)a, (const char*)b)` wrapper reproduced the
+  original 59-byte body exactly. The compiler inlined the two-byte CRT loop.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+- No ABI question remains after the shared-header validation.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+- Keep the exact `strcmp` wrapper. Review the shared declaration during module
+  integration; do not replace the wrapper with a hand-written byte loop.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave20-file-stf
+
+- Result: exact natural reconstruction.
+- The fresh baseline could not select the original owner because the old
+  `const char*` declaration emitted `PBD` instead of `HPBX`.
+- Tested ABI, unsigned-byte, pointer-alias, bool, goto, return-shape, and
+  direct-loop forms. They all remained nonexact.
+- The final wrapper `return strcmp((const char*)a, (const char*)b);` matches
+  all 59 bytes. Focused `check_function.py --no-build` and the worker TU audit
+  both report `MATCH`, `0.0000%`, correct owner, boundary, and relocations.
+- The worker TU audit found 22 included normal functions. It found 20
+  registered matches, this exact unregistered owner, and the unrelated
+  `00449990` boundary problem.

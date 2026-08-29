@@ -92,3 +92,6 @@ boundary escapes: `004CD210` reported `MATCH` with 142 bytes, `004CD5E0`
 reported `MISMATCH` with four bytes (`0.5525%`), and `004CD960` reported
 `MISMATCH` with nine bytes (`7.4380%`). No status move was made from the
 observed candidate result.
+
+The wave20 full audit confirms `004CD210` as an exact natural owner. It is now
+registered as matching. `004CD960` remains accepted drift.

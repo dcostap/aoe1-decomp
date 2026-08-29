@@ -105,6 +105,10 @@ The accepted-drift constructor `0050D5B0` remains a 16-byte mismatch
 (3.3970%), with no relocation or boundary mismatch. `0050DD70` remains a
 6-byte mismatch (4.4118%), with no relocation or boundary mismatch.
 
+The wave20 full audit confirms `0050DE50 add_create` as an exact natural owner.
+It is now registered as matching. `0050D5B0` and `0050DD70` remain accepted
+drift.
+
 `0050DFD0` is now scratch. The fresh candidate compares the 100-byte original
 with a 94-byte natural body and reports 99 differing bytes (99.0000%). The
 original saves only `esi` and `edi`, while the rebuilt body also saves `ebx`.

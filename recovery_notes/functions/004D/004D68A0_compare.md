@@ -4,20 +4,62 @@
 
 ## Current state
 
-- Status: `scratch`.
+- Status: `accepted_drift`.
 - Living source: `src/taiconmd.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\taiconmd.cpp`.
 - Earlier recovery note: `recovery_notes/taiconmd_module.md`.
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+The PDB module is `taiconmd.cpp`. The owning class is
+`TribeConstructionAIModule`. The natural owner is `src/taiconmd.cpp`.
+The target follows `setBuilt` at `004D6800` and precedes the padding after the
+41-byte body. The protected owner symbol is
+`?compare@TribeConstructionAIModule@@IAEPAVConstructionItem@@PAV2@0@Z`.
+The six registered exact neighbors remain the module anchors.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+The final focused check is `MISMATCH`, 12 bytes, or 29.2683%. The original and
+rebuilt bodies are both 41 bytes with no frame. Both save `ebx`, `esi`, and
+`edi`. Both have two aligned direct `buildAttempts` calls, one conditional,
+one return, zero relocation mismatches, and zero boundary escapes. The rebuilt
+owner is correct.
+
+The retained source stores the first result in a local. It evaluates `left`
+before `right`, which preserves the observed null-fault order. VC5 uses a
+different register allocation and saves `edi` before the first load. The
+diagnostic class is `PARTIAL_REGISTER_RECOLOR`.
 
 ## Recovered attempt history
+
+### Final natural source
+
+```cpp
+int leftAttempts = left->buildAttempts();
+if (leftAttempts > right->buildAttempts()) {
+    return right;
+}
+return left;
+```
+
+This source remains the clean natural reconstruction. It uses the canonical
+const `ConstructionItem::buildAttempts` declaration and target.
+
+### Tested hypotheses
+
+- A direct unqualified comparison reduced the byte diff to 5, but VC5 called
+  `right` first. It does not preserve the proven null-fault order.
+- Conditional-return, pointer-alias, const-reference, register-qualified,
+  split-assignment, and reversed-condition forms did not improve the natural
+  left-first result. They emitted the same 5- or 12-byte basins.
+- Explicit `ConstructionItem::buildAttempts` qualification reduced the diff to
+  2 bytes, but it still evaluated `right` first. It is not retained as a
+  metric-only source tweak.
+- The old standalone exact donor used a non-const `buildAttempts` declaration
+  and emitted the QAE symbol. The canonical shared declaration emits QBE, which
+  is the original `0040AA20` symbol. The old donor does not prove the shared
+  ABI or the natural TU codegen.
 
 
 <!-- recovered:9dd503b5d80ce7b1a726 -->
@@ -43,16 +85,46 @@ probe 2 abi; result=MATCH; diff=0; shape=100.0: Protected compare declaration fo
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+The direct comparison and explicit-qualified comparison are rejected for the
+final source because both evaluate `right` before `left`. The conditional,
+alias, reference, register-qualified, and split-local variants either repeat
+those basins or add source machinery without recovering the target bytes.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+The remaining question is whether a period source form can force the original
+left-first VC5 schedule while retaining the canonical const member ABI. The
+tested natural forms did not find one. A future worker needs new source or
+toolchain evidence, not more cosmetic register hints.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+Review the 12-byte register recolor as a possible accepted-drift proposal.
+Any proposal must cite the left-first fault order, the two QBE calls, argument
+order, cleanup, boundary, and owner evidence. Do not promote this scratch
+target from byte metrics alone.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+### wave20-taiconmd
+
+- Result: improved natural reconstruction retained; exactness unresolved.
+- Focused final check: `MISMATCH`, 12 bytes, 29.2683%, 94.44% shape,
+  100.00% aligned calls, owner match, zero relocation mismatches, and zero
+  boundary escapes.
+- Grouped audit:
+  `python tools/audit_translation_unit_observed.py --group taiconmd --jobs 1`
+  with worker output under
+  `build/audits/workers/wave20-taiconmd/taiconmd`. It found six registered
+  exact-owner matches, one grouped match not registered, and two grouped
+  mismatches (`placeStructure` and this target).
+- The worker made no status or registration change.
+
+### Coordinator accepted-drift review
+
+The coordinator approved accepted drift after the wave closed. Both bodies are
+41 bytes. They have the same owner, frame, saved registers, left-first fault
+order, two const `buildAttempts` calls, comparison, return values, boundary,
+and relocations. The difference is register allocation around the two calls.
+The left-first local-result source remains because direct forms reverse the
+proved call and fault order.

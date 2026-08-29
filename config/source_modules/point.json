@@ -14,7 +14,7 @@
       "status": "scratch",
       "note_path": "recovery_notes/0047E530_operator.md"
     },
-    "0047E580": { "status": "scratch" },
+    "0047E580": { "status": "matching" },
     "0047E5D0": {
       "status": "scratch",
       "note_path": "recovery_notes/0047E5D0_rotateXYByFacet.md"

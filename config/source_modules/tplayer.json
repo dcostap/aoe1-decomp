@@ -45,7 +45,7 @@
     "00513FD0": "matching",
     "00514010": "matching",
     "00514510": "matching",
-    "00514590": "scratch",
+    "00514590": "matching",
     "005145E0": "matching",
     "00514660": "matching",
     "00514690": "matching",
@@ -107,6 +107,6 @@
     "00519CA0": "matching",
     "00519D10": "matching",
     "00519D40": "matching",
-    "00519D50": "scratch"
+    "00519D50": "matching"
   }
 }

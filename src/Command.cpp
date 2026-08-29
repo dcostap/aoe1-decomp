@@ -19,11 +19,10 @@ unsigned long __cdecl debug_timeGetTime(char*, int);
 
 
 
-RGE_Command::RGE_Command(RGE_Game_World* world, TCommunications_Handler* com_hand) {
-    this->world = world;
-    this->com_hand = com_hand;
-    this->last_order = 0;
-    this->last_order_size = 0;
+RGE_Command::RGE_Command(RGE_Game_World* world, TCommunications_Handler* com_hand)
+    : world(world), com_hand(com_hand) {
+    last_order = 0;
+    last_order_size = 0;
 }
 
 RGE_Command::~RGE_Command() {

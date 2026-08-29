@@ -4,18 +4,39 @@
 
 ## Current state
 
-- Status: `scratch`.
+- Status: `matching`.
 - Living source: `src/spanlist.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\spanlist.cpp`.
 - Earlier recovery note: `recovery_notes/spanlist_module.md`.
+- The natural source now matches the 71-byte target in the focused check.
+- The source uses the canonical parameter order `x_off, y_off`.
+- The record walk uses typed `++list`, not numeric pointer arithmetic.
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+- PDB module: `spanlist.cpp`; owner: `TSpan_List_Manager`.
+- The target starts at `004BE1F0` and ends at `004BE236`; `AddLine_Align`
+  precedes it at `004BE090`.
+- `VSpanMiniList` is a three-byte record: `Y_delta`, `X_start`, `X_end`.
+- `Y_delta == 0xFF` ends the walk. Each record advances by three bytes.
+- Typed `++list` preserves the proven three-byte record step.
+- Each valid record calls `AddSpan(X_start + x_off, X_end + x_off,
+  Y_delta + y_off)`.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Focused result: `MATCH`, `0.0000%`, 71/71 bytes, 33/33 instructions.
+- The frame and saved registers match: no frame; `ebx`, `ebp`, `esi`, `edi`.
+- The one direct `AddSpan` call aligns. The owner symbol and boundary match.
+- One relocation is safely masked and targets `AddSpan`.
+- There is no current structural difference.
+- Worker audit: `build/audits/workers/wave20-spanlist/spanlist/report.txt`.
+- The grouped audit included 29 normal functions. It retained 22 registered
+  owner matches and found this target exact as an unregistered grouped match.
+- The audit reported a three-byte regression for registered `DeleteShape`
+  (`004BE4B0`). This worker changed only `AddMiniList`; do not alter that row
+  here. Other queued rows are pre-existing `AddSpan`, `AddLine_Align`,
+  `AddShape`, `DecodeLine`, and `take_snapshot` issues.
 
 ## Recovered attempt history
 
@@ -49,16 +70,31 @@ Mapping: `exact`. historical standalone source path names this target VA.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+- Reversed source parameter names (`yoff, xoff`) preserved the apparent call
+  semantics but recolored the two offset registers and differed by two bytes.
+- A temporary `line` local emitted the same exact bytes but added no source value.
+- Explicit `int` casts on the byte fields emitted the same exact bytes and were
+  removed from the final natural form.
+- Numeric pointer arithmetic for the three-byte record step was rejected by
+  policy. Typed `++list` emits the same exact bytes.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+- No target-specific questions remain after the focused exact check.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+- The coordinator can review promotion. No further source experiment is
+  needed unless the registered audit changes. The `DeleteShape` regression
+  needs separate coordinator review.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+- 2026-08-29 (`wave20-spanlist`): corrected the natural parameter order and
+  removed incidental locals and casts. Focused checks progressed from a
+  two-byte register recolor to `MATCH`, `0.0000%`. The final focused check and
+  grouped audit are exact. The exact source is pinned for the coordinator.
+- 2026-08-29 (`wave20-spanlist`): replaced numeric record stride arithmetic
+  with typed `++list`. Focused and target-session checks remain exact. The
+  grouped audit keeps this target exact and reports an unrelated `DeleteShape`
+  three-byte regression.

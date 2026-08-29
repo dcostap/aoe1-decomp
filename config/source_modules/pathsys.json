@@ -65,7 +65,7 @@
       "status": "matching"
     },
     "0046D830": {
-      "status": "accepted_drift",
+      "status": "scratch",
       "note_path": "recovery_notes/pathsys_module.md"
     },
     "0046DCB0": {

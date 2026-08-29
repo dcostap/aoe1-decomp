@@ -4,7 +4,7 @@
 
 ## Current state
 
-- Status: `scratch`.
+- Status: `accepted_drift`.
 - Living source: `src/tact_mob.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\tact_mob.cpp`.
 - Earlier recovery note: `recovery_notes/tact_mob_module.md`.
@@ -107,3 +107,79 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave20-tact-mob (2026-08-29)
+
+- Result: unresolved natural reconstruction. Status remains `scratch`.
+- The pinned source is the simple period-plausible body. It calls
+  `RGE_Action(obj, 1)`, then assigns `pre_paid`, `unique_id`, `action_type`,
+  `obj_id`, and zero `work_done`.
+- The fresh baseline and final validation are both 63 bytes. The target has
+  31 strict differing bytes (49.2063%), 28 edit-diff bytes (44.44%), and
+  83.33% instruction-shape similarity. The first mismatch is +0x0F
+  (`004D0EBF`). One direct base call is aligned. The owner symbol matches.
+- Original evidence proves the parameter load order `pre_paid`, `unique_id`,
+  `obj_id`, with widths 1, 4, and 2. The natural VC5 build chooses another
+  register and order. The original writes fields in the order `pre_paid`,
+  `unique_id`, vptr, `action_type`, `obj_id`, and `work_done`.
+- Tested natural local copies and a sequenced comma expression. Both emitted
+  the same 31-byte mismatch. Member initializers reduced the strict mismatch
+  to 30 bytes, but produced a less similar edit alignment and a wrong field
+  store order. A volatile parameter snapshot improved shape similarity but
+  produced a 62-byte body and a 37-byte mismatch. These forms were rejected.
+- A historical exact probe used volatile parameter snapshots and a raw vptr
+  store. That source form is artificial and violates the no-manual-vptr rule.
+  It is not retained.
+- Focused validation: `target_session.py check` final `validation` probe;
+  `check_function.py --no-build --detail concise`; both report `MISMATCH`.
+  The target size, call set, owner, and boundary are correct. The audit shows
+  zero relocation target mismatches and zero boundary escapes.
+- Grouped validation: `build/audits/workers/wave20-tact-mob/tact_mob_cpp/`
+  reports 7/7 registered exact owners matching. The translation unit has 10
+  normal functions, with 3 unregistered grouped mismatches. Exact-neighbor
+  count is 7.
+- The clean source is pinned. Session state is active pending coordinator
+  review; no status or registration change was made.
+- Blocker: the remaining difference is VC5 constructor scheduling and the
+  16-bit `obj_id` load. Next work should seek period source or compiler-context
+  evidence. Do not retain raw vptr or volatile scheduling tricks.
+
+### wave20-tact-mob follow-up (2026-08-29)
+
+- The coordinator requested more natural structural tests. The exact
+  `TRIBE_Action_Make_Tech` donor uses the order `unique_id`, `action_type`,
+  then its short object id. Applying that order here, with `work_done` zero and
+  `pre_paid` last, reduced the target to 9 differing bytes.
+- The final rebuilt bytes match the original from +0x00 through +0x1E and
+  from +0x28 through +0x3E. The only edit-resync hunk is the six-byte vptr
+  store: the rebuilt constructor emits the relocated vptr store at +0x1F,
+  before the unique-id store; the original emits it at +0x22, after that
+  store. The parameter loads, all member stores, call target, size, and return
+  are otherwise equal.
+- Tested other natural field orders, partial member initializer lists, and a
+  work-member initializer. They produced 20-32 differing bytes or the prior
+  30-byte basin. Moving `work_done` and `pre_paid` does not change the 9-byte
+  output. Qualified and unqualified member forms also produce the prior
+  31-byte output. No new natural form reaches `MATCH`.
+- Focused final validation is probe `#30` (`validation`): `MISMATCH`, 9 bytes,
+  14.2857%, 90.48% edit similarity, 94.44% instruction-shape similarity,
+  one aligned direct base call, owner match, and the correct 63-byte boundary.
+  `check_function.py --no-build --call-map-unmatched --stack-map` confirms no
+  call-target or stack-home issue. The only first hunk is the vptr scheduling
+  difference at +0x1F.
+- Grouped final validation is in
+  `build/audits/workers/wave20-tact-mob/tact_mob_cpp/`. It reports 7/7
+  registered exact neighbors matching, including the unchanged exact owners.
+  Three unregistered normal functions remain grouped mismatches.
+- The improved natural source is pinned. This is a narrow accepted-drift
+  proposal, not a status change: the one vptr store moves across one ordinary
+  member store, with no call, branch, fault, or observable effect between
+  them. The coordinator must review the proposal.
+
+### Coordinator accepted-drift review
+
+The coordinator approved accepted drift after the wave closed. Both bodies are
+63 bytes with the same base call, parameters, field values, owner, boundary,
+and return. The only edit-resynchronized difference moves the implicit vptr
+store across the `unique_id` store. No call or branch occurs between them. The
+donor-supported natural member order remains.

@@ -13,23 +13,9 @@ extern char* getcwd(char* buffer, int size);
 extern void splitpath(const char* path, char* drive, char* directory,
                       char* filename, char* extension);
 
-int __cdecl compareFilenameStrings(const char* a, const char* b)
+int __cdecl compareFilenameStrings(const void* a, const void* b)
 {
-    char ca, cb;
-
-    while (1) {
-        ca = *a;
-        cb = *b;
-        if (ca != cb) return (ca < cb) ? -1 : 1;
-        if (ca == 0) return 0;
-
-        ca = a[1];
-        cb = b[1];
-        if (ca != cb) return (ca < cb) ? -1 : 1;
-        a += 2;
-        b += 2;
-        if (ca == 0) return 0;
-    }
+    return strcmp((const char*)a, (const char*)b);
 }
 
 char driveAsLetter(int value)

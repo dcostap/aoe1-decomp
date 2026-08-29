@@ -77,6 +77,14 @@ table. This changes a scalar placeholder into its proven array provider.
 - Normalized fragment-relative include paths for the new source location.
 - Kept the existing nonexact source states. This migration does not promote accepted drift, scratch, or verified logic.
 
+## Wave20 reconciliation
+
+The exact `0052A170 resetRandomComputerName` loop preserves the original bug
+that clears only 16 of 18 declared rows. The sequential audit also confirms
+the existing two-byte `00524880 calc_timing_text` difference and removes its
+stale exact claim. The module retains 95 matching, 22 scratch, and one
+verified-logic owner. All 95 registered owners match.
+
 ## Exactness regression record
 
 The reunified source preserves the pre-migration wrapper object for the 21 registered exact anchors and for the publicly named owners not affected by the SDK cleanup. The `00521790` setup change is the only new broad difference. The prior grouped wrapper already had nonexact owners outside its 21 registered exact anchors. Those results remain unresolved and are not promoted by this migration.

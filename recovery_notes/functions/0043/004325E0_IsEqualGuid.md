@@ -4,36 +4,69 @@
 
 ## Current state
 
-- Status: `scratch`.
+- Status: `matching`.
 - Living source: `src/com_sess.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\com_sess.cpp`.
 - Earlier recovery note: `recovery_notes/004325E0_IsEqualGuid.md`.
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+- PDB module: `com_sess.cpp`; source order follows `EnumSessionCallback`.
+- Owning class: `TCommunications_Sessions`.
+- PDB span: lines 233-239. The original body is `004325E0-0043261D` (62 bytes).
+- The original has no frame, saves `ESI`, and has no calls or relocations.
+- It compares four 32-bit words at offsets `0`, `4`, `8`, and `0xC`.
+  The four failed comparisons branch to `00432618`; success returns `1`.
+- The registered translation-unit audit includes 13 normal functions. The other
+  12 registered neighbors remain exact.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Fresh field-by-field baseline: rebuilt size 135 bytes, positional diff 125
+  bytes (92.5926%), no calls, and no frame. It saved `EBX` and `ESI`.
+- Before the coordinator flag repair, `IsEqualGUID(*guid1, *guid2)` emitted a
+  27-byte `repe cmpsb` body. The VC5 SDK selects that branch without
+  `_OLE32_`.
+- The reviewed module flag now defines `_OLE32_`. The same natural helper call
+  expands to the SDK four-dword comparison and matches all 62 bytes. The owner,
+  boundary, frame, calls, and relocations match.
 
 ## Recovered attempt history
 
-
-No function-specific cleanup block was mapped automatically. Review the earlier note and Git history before work.
+- Replaced eight byte-field tests and nested branches with the period Windows
+  `IsEqualGUID` helper. This reduced the positional diff from 125 to 62 bytes.
+- Tried `InlineIsEqualGUID(*guid1, *guid2)`. The current canonical headers do
+  not declare `InlineIsEqualGUID`; compilation failed, so no check was recorded.
+- The earlier matching source used direct `unsigned long*` casts over `GUID`
+  fields and produced the 62-byte original body. That form is rejected here
+  because raw pointer aliasing is not allowed.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+- Direct `unsigned long*` field casts are an exact code-generation donor, but
+  they violate the source-recovery policy and are not retained.
+- `InlineIsEqualGUID` is not available under the current canonical include
+  context. Do not add a header or flag change for this local function.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+- What original include or build context exposed the SDK's four-dword
+  `InlineIsEqualGUID` implementation?
+- Was the shipped source a direct four-word helper call, or did it use the
+  prohibited pointer casts directly?
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+- Search period source and exact donors for a declared four-word GUID helper.
+- If no policy-compliant helper exists, retain the typed Windows helper as a
+  natural scratch reconstruction and leave the exact claim unresolved.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+- 2026-08-29, `wave20-com-sess`: Retained `return IsEqualGUID(*guid1,
+  *guid2);` as the best natural reconstruction. Focused result is MISMATCH,
+  62 bytes (100.0000%). Grouped result is MISMATCH only for this target;
+  12 exact neighbors remain exact.
+- Coordinator review defined the period VC5 `_OLE32_` module context. Focused
+  validation then reported `MATCH`, `0.0000%`, 62/62 bytes. The function is
+  registered as exact.

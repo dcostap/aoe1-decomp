@@ -36,11 +36,11 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj,
                                              unsigned char pre_paid)
     : RGE_Action(obj, 1)
 {
-    this->pre_paid = pre_paid;
     this->unique_id = unique_id;
     this->action_type = 0x66;
     this->obj_id = obj_id;
-    this->work_done = 0;
+    this->work_done = 0.0f;
+    this->pre_paid = pre_paid;
 }
 
 TRIBE_Action_Make_Obj::~TRIBE_Action_Make_Obj() {

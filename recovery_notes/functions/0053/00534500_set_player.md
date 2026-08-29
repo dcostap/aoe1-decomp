@@ -4,17 +4,27 @@
 
 ## Current state
 
-- Status: `scratch`.
+- Status: `matching`.
 - Living source: `src/view.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\view.cpp`.
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+PDB module: `view.cpp`; source owner: `src/view.cpp`; owning class: `RGE_View`.
+The original body is 37 bytes at `00534500-00534524`. It reads the parameter
+at `[esp+4]`, stores it at `player` (`+0x100`), writes `-9999.0f` to
+`last_view_x` (`+0x138`) and `last_view_y` (`+0x13C`), then calls virtual slot
+`+0x20` with `TPanel::RedrawImmediate` and returns with `ret 4`.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+The focused target is exact with the natural source below: 37/37 bytes,
+9/9 instructions, one aligned virtual call, zero relocations, and the original
+boundary. The translation-unit audit still reports unrelated grouped mismatches.
+
+The fresh baseline used the prior `redraw(2)` call and differed by 18 bytes.
+Its direct call did not match the original virtual slot. Replacing it with the
+virtual `set_redraw(TPanel::RedrawImmediate)` call removes all target differences.
 
 ## Recovered attempt history
 
@@ -31,16 +41,44 @@ probe 1 layout; result=MISMATCH; diff=4; shape=100.0: Use natural -9999.0f for c
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+`redraw(2)` is rejected. It emits a direct call to `redraw` and misses the
+original virtual `set_redraw` dispatch.
+
+No raw offsets, aliases, wrappers, manual vtables, padding, or compiler
+steering are used.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+The source status remains `scratch`; promotion is outside this worker lease.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+Review the exact source for promotion. Do not alter shared declarations for
+this target.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+### wave20-view
+
+Changed only `RGE_View::set_player` in `src/view.cpp`:
+
+```cpp
+void RGE_View::set_player(RGE_Player* player) {
+    this->player = player;
+    last_view_x = -9999.0f;
+    last_view_y = -9999.0f;
+    set_redraw(TPanel::RedrawImmediate);
+}
+```
+
+Focused validation: `target_session.py check --kind validation` and
+`check_function.py --no-build` both report `Result: MATCH`, `0.0000%`,
+37/37 bytes, 9/9 instructions, correct owner and boundary, one aligned
+virtual call, and zero relocation differences. The worker audit reports 46
+registered-owner matches, including this target, among 47 registered rows;
+22 grouped mismatches and other unrelated rows remain.
+
+The worker attempted the required session start before the coordinator reminder;
+it timed out on `build/target_sessions/sessions.lock`. The preclaimed active
+lease remained valid, so no retry was made. The exact source was pinned and the
+session was released after validation.

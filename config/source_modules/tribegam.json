@@ -146,7 +146,7 @@
       "note_path": "recovery_notes/tribegam_module.md"
     },
     "00524880": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/tribegam_module.md"
     },
     "00524A60": {
@@ -422,7 +422,7 @@
       "note_path": "recovery_notes/tribegam_module.md"
     },
     "0052A170": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/tribegam_module.md"
     },
     "0052A190": {

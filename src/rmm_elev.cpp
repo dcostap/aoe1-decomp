@@ -259,23 +259,14 @@ float RGE_RMM_Elevation_Generator::fig_chance(long p0, long p1, long p2)
 
 long RGE_RMM_Elevation_Generator::count_map_tiles(uchar tile_type)
 {
+    RGE_Tile* tile = this->map_row_offset[0];
+    RGE_Tile* end = tile + this->map_width * this->map_height;
     long count = 0;
-    long row = 0;
-    if (row < this->map_height) {
-        do {
-            RGE_Tile* tile = this->map_row_offset[row];
-            long col = 0;
-            if (col < this->map_width) {
-                do {
-                    if (tile->terrain_type == tile_type) {
-                        ++count;
-                    }
-                    ++col;
-                    ++tile;
-                } while (col < this->map_width);
-            }
-            ++row;
-        } while (row < this->map_height);
+    while (tile < end) {
+        if (tile->terrain_type == tile_type) {
+            ++count;
+        }
+        ++tile;
     }
     return count;
 }

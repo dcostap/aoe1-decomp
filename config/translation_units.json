@@ -643,7 +643,8 @@
         "00438670": "src/diam_map.cpp",
         "00438720": "src/diam_map.cpp",
         "004387C0": "src/diam_map.cpp",
-        "004387D0": "src/diam_map.cpp"
+        "004387D0": "src/diam_map.cpp",
+        "00438060": "src/diam_map.cpp"
       },
       "symbols": {
         "00436830": "??0RGE_Diamond_Map@@QAE@XZ",
@@ -662,7 +663,8 @@
         "00438670": "?start_scroll_view@RGE_Diamond_Map@@QAEXJJ@Z",
         "00438720": "?handle_scroll_view@RGE_Diamond_Map@@QAEXJJ@Z",
         "004387C0": "?end_scroll_view@RGE_Diamond_Map@@QAEXXZ",
-        "004387D0": "?is_inside@RGE_Diamond_Map@@UAEHJJ@Z"
+        "004387D0": "?is_inside@RGE_Diamond_Map@@UAEHJJ@Z",
+        "00438060": "?draw_object@RGE_Diamond_Map@@MAEXFFEFPAVRGE_Static_Object@@@Z"
       }
     },
     {
@@ -1157,7 +1159,8 @@
         "004CD2E0": "src/tact_bld.cpp",
         "004CD310": "src/tact_bld.cpp",
         "004CD910": "src/tact_bld.cpp",
-        "004CD920": "src/tact_bld.cpp"
+        "004CD920": "src/tact_bld.cpp",
+        "004CD210": "src/tact_bld.cpp"
       },
       "symbols": {
         "004CD1B0": "??0TRIBE_Action_Build@@QAE@HPAVRGE_Action_Object@@@Z",
@@ -1165,7 +1168,8 @@
         "004CD2E0": "?first_in_stack@TRIBE_Action_Build@@UAEXE@Z",
         "004CD310": "?set_state@TRIBE_Action_Build@@MAEXE@Z",
         "004CD910": "?stop@TRIBE_Action_Build@@UAEHXZ",
-        "004CD920": "?move_to@TRIBE_Action_Build@@UAEHPAVRGE_Static_Object@@MMM@Z"
+        "004CD920": "?move_to@TRIBE_Action_Build@@UAEHPAVRGE_Static_Object@@MMM@Z",
+        "004CD210": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"
       }
     },
     {
@@ -1242,8 +1246,9 @@
         "00533490": "src/victory.cpp",
         "005334C0": "src/victory.cpp",
         "005334E0": "src/victory.cpp",
-        "005327A0": "src/victory.cpp",
-        "00533120": "src/victory.cpp"
+        "00533120": "src/victory.cpp",
+        "00532610": "src/victory.cpp",
+        "00532CC0": "src/victory.cpp"
       },
       "symbols": {
         "00531AF0": "??0RGE_Victory_Conditions@@QAE@PAVRGE_Player@@@Z",
@@ -1287,8 +1292,9 @@
         "00532B30": "?add_bring@RGE_Victory_Conditions@@QAEEEPAVRGE_Static_Object@@MMMM@Z",
         "00532F10": "?remove_condition@RGE_Victory_Conditions@@QAEEJ@Z",
         "00532F50": "?add_point@RGE_Victory_Conditions@@IAEPAURGE_Victory_Point_Entry@@EE@Z",
-        "005327A0": "?handle_explore@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z",
-        "00533120": "?handle_points_attribute_amount@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Point_Entry@@@Z"
+        "00533120": "?handle_points_attribute_amount@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Point_Entry@@@Z",
+        "00532610": "?handle_bring_object@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z",
+        "00532CC0": "?condition_description@RGE_Victory_Conditions@@MAEPADPAURGE_Victory_Entry@@@Z"
       }
     },
     {
@@ -1360,6 +1366,7 @@
         "004BDA00": "src/spanlist.cpp",
         "004BDA70": "src/spanlist.cpp",
         "004BDFA0": "src/spanlist.cpp",
+        "004BE1F0": "src/spanlist.cpp",
         "004BE240": "src/spanlist.cpp",
         "004BE290": "src/spanlist.cpp",
         "004BE5B0": "src/spanlist.cpp",
@@ -1367,8 +1374,7 @@
         "004BE690": "src/spanlist.cpp",
         "004BE750": "src/spanlist.cpp",
         "004BE850": "src/spanlist.cpp",
-        "004BE9E0": "src/spanlist.cpp",
-        "004BE4B0": "src/spanlist.cpp"
+        "004BE9E0": "src/spanlist.cpp"
       },
       "symbols": {
         "004BD5E0": "??0TSpan_Node_List@@QAE@HHH@Z",
@@ -1385,14 +1391,14 @@
         "004BDA00": "?SetSpanRegions@TSpan_List_Manager@@QAEXHHHH@Z",
         "004BDA70": "?ResetAll@TSpan_List_Manager@@QAEXXZ",
         "004BDFA0": "?AddShape_Align@TSpan_List_Manager@@QAEXPAEPAUShape_Info@@HHH@Z",
+        "004BE1F0": "?AddMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z",
         "004BE240": "?SubtractMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z",
         "004BE290": "?DeleteSpan@TSpan_List_Manager@@QAEXHHH@Z",
         "004BE5B0": "?PointVisible@TSpan_List_Manager@@QAEHHH@Z",
         "004BE5F0": "?Merge_n_Align@TSpan_List_Manager@@QAEXPAV1@0@Z",
         "004BE690": "?AlignamizeSpans@TSpan_List_Manager@@QAEXXZ",
         "004BE750": "?ScrollSpansHorizontally@TSpan_List_Manager@@QAEXHH@Z",
-        "004BE9E0": "?ValidateSpan@TSpan_List_Manager@@QAEHH@Z",
-        "004BE4B0": "?DeleteShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z"
+        "004BE9E0": "?ValidateSpan@TSpan_List_Manager@@QAEHH@Z"
       }
     },
     {
@@ -1472,6 +1478,7 @@
         "0053AD50": "src/view.cpp",
         "00533940": "src/view.cpp",
         "00534130": "src/view.cpp",
+        "00534500": "src/view.cpp",
         "005345D0": "src/view.cpp",
         "00535CC0": "src/view.cpp",
         "00535DA0": "src/view.cpp",
@@ -1479,7 +1486,6 @@
         "00538420": "src/view.cpp",
         "00538B80": "src/view.cpp",
         "00539930": "src/view.cpp",
-        "00539AA0": "src/view.cpp",
         "00539D90": "src/view.cpp",
         "00539EC0": "src/view.cpp",
         "0053AC70": "src/view.cpp",
@@ -1521,6 +1527,7 @@
         "0053AD50": "?Object_Was_Displayed@RGE_View@@QAE_NH_N@Z",
         "00533940": "?setup@RGE_View@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJEHPAD@Z",
         "00534130": "?create_surfaces@RGE_View@@QAEHXZ",
+        "00534500": "?set_player@RGE_View@@QAEXPAVRGE_Player@@@Z",
         "005345D0": "?get_selection_area@RGE_View@@QAEHAAJ000H@Z",
         "00535CC0": "?pick_weight@RGE_View@@UAEHPAVRGE_Static_Object@@H@Z",
         "00535DA0": "?get_tile_screen_coords@RGE_View@@QAEHFFPAF0H@Z",
@@ -1528,7 +1535,6 @@
         "00538420": "?Draw_GDI_Object@RGE_View@@IAEXPAUDClipInfo_Node@@PAVTDrawArea@@@Z",
         "00538B80": "?draw_terrain_shape@RGE_View@@IAEXHHPAVTShape@@HEEHH@Z",
         "00539930": "?pick_touched_object@RGE_View@@IAEHPAVDClipInfo_List@@HHHHAAH@Z",
-        "00539AA0": "?get_tile_picture@RGE_View@@IAEFEEFF@Z",
         "00539D90": "?hit_tile@RGE_View@@IAEHPAURGE_Tile@@FFFFPAUtagPOINT@@@Z",
         "00539EC0": "?hit_object@RGE_View@@IAEPAVRGE_Static_Object@@PAURGE_Tile@@FFFFPAUtagPOINT@@1PAF2PAV2@E@Z",
         "0053AC70": "?reset_cyclic_overlay_sprites@RGE_View@@QAEXXZ",
@@ -1723,7 +1729,8 @@
         "00503020": "src/taitacmd.cpp",
         "00503040": "src/taitacmd.cpp",
         "00503480": "src/taitacmd.cpp",
-        "00503600": "src/taitacmd.cpp"
+        "00503600": "src/taitacmd.cpp",
+        "004FB710": "src/taitacmd.cpp"
       },
       "symbols": {
         "004EA9B0": "??1TacticalAIGroup@@UAE@XZ",
@@ -1894,7 +1901,8 @@
         "00503020": "?actualGathererCountByRealResourceID@TribeTacticalAIModule@@QAEHH@Z",
         "00503040": "?desiredGathererCount@TribeTacticalAIModule@@QAEHH@Z",
         "00503480": "?numberGatherersWithTarget@TribeTacticalAIModule@@QAEHH@Z",
-        "00503600": "?saveTheTown@TribeTacticalAIModule@@QAEXH@Z"
+        "00503600": "?saveTheTown@TribeTacticalAIModule@@QAEXH@Z",
+        "004FB710": "?taskResearch@TribeTacticalAIModule@@QAEHPAVBuildItem@@@Z"
       }
     },
     {
@@ -1955,7 +1963,9 @@
         "0050B130": "src/tcommand.cpp",
         "0050B3E0": "src/tcommand.cpp",
         "00509980": "src/tcommand.cpp",
-        "00509AF0": "src/tcommand.cpp"
+        "00509AF0": "src/tcommand.cpp",
+        "00509C60": "src/tcommand.cpp",
+        "00509E10": "src/tcommand.cpp"
       },
       "symbols": {
         "00509770": "?do_command@TRIBE_Command@@EAEXPAX@Z",
@@ -1980,7 +1990,9 @@
         "0050AF80": "?command_shared_los@TRIBE_Command@@QAEXF@Z",
         "0050B0D0": "?command_cheat@TRIBE_Command@@QAEXFF@Z",
         "00509980": "?do_command_make@TRIBE_Command@@AAEXPAUTRIBE_Command_Make@@@Z",
-        "00509AF0": "?do_command_research@TRIBE_Command@@AAEXPAUTRIBE_Command_Research@@@Z"
+        "00509AF0": "?do_command_research@TRIBE_Command@@AAEXPAUTRIBE_Command_Research@@@Z",
+        "00509C60": "?do_command_build@TRIBE_Command@@AAEXPAUTRIBE_Command_Build@@@Z",
+        "00509E10": "?do_command_build_wall@TRIBE_Command@@AAEXPAUTRIBE_Command_Build_Wall@@@Z"
       }
     },
     {
@@ -2030,7 +2042,6 @@
         "00524030": "src/tribegam.cpp",
         "005243A0": "src/tribegam.cpp",
         "00524790": "src/tribegam.cpp",
-        "00524880": "src/tribegam.cpp",
         "00524A60": "src/tribegam.cpp",
         "00524A80": "src/tribegam.cpp",
         "00525E50": "src/tribegam.cpp",
@@ -2079,6 +2090,7 @@
         "00529980": "src/tribegam.cpp",
         "005299E0": "src/tribegam.cpp",
         "0052A030": "src/tribegam.cpp",
+        "0052A170": "src/tribegam.cpp",
         "0052A190": "src/tribegam.cpp",
         "0052A210": "src/tribegam.cpp",
         "0052A430": "src/tribegam.cpp",
@@ -2118,7 +2130,6 @@
         "00524030": "?start_menu@TRIBE_Game@@QAEHXZ",
         "005243A0": "?restart_game@TRIBE_Game@@QAEXXZ",
         "00524790": "?save_scenario@TRIBE_Game@@QAEHPAD@Z",
-        "00524880": "?calc_timing_text@TRIBE_Game@@UAEXXZ",
         "00524A60": "?show_timings@TRIBE_Game@@UAEXXZ",
         "00524A80": "?show_comm@TRIBE_Game@@UAEXXZ",
         "00525E50": "?test_scenario@TRIBE_Game@@QAEHPAD@Z",
@@ -2167,6 +2178,7 @@
         "00529980": "?handle_query_new_palette@TRIBE_Game@@UAEHPAXIIJ@Z",
         "005299E0": "?handle_activate@TRIBE_Game@@UAEHPAXIIJ@Z",
         "0052A030": "?game_over_msg@TRIBE_Game@@QAEPADXZ",
+        "0052A170": "?resetRandomComputerName@TRIBE_Game@@QAEXXZ",
         "0052A190": "?video_wnd_proc@TRIBE_Game@@QAEJPAXIIJ@Z",
         "0052A210": "?set_interface_messages@TRIBE_Game@@UAEXXZ",
         "0052A430": "?shutdown_video_system@TRIBE_Game@@QAEXXZ",
@@ -2186,6 +2198,7 @@
         "00514710": "src/tplayer.cpp",
         "00515DF0": "src/tplayer.cpp",
         "00519D40": "src/tplayer.cpp",
+        "00519D50": "src/tplayer.cpp",
         "00511BD0": "src/tplayer.cpp",
         "00511E20": "src/tplayer.cpp",
         "005120F0": "src/tplayer.cpp",
@@ -2244,7 +2257,8 @@
         "00519BD0": "src/tplayer.cpp",
         "00519C40": "src/tplayer.cpp",
         "00519CA0": "src/tplayer.cpp",
-        "00519D10": "src/tplayer.cpp"
+        "00519D10": "src/tplayer.cpp",
+        "00514590": "src/tplayer.cpp"
       },
       "symbols": {
         "00512620": "?update_dopplegangers@TRIBE_Player@@UAEXXZ",
@@ -2253,6 +2267,7 @@
         "00514710": "?changeToComputerPlayer@TRIBE_Player@@UAEXXZ",
         "00515DF0": "?intelligentCivSelection@TRIBE_Player@@QAEHHHH@Z",
         "00519D40": "?random_start@TRIBE_Gaia@@UAEXXZ",
+        "00519D50": "?scenario_postload@TRIBE_Player@@UAEXHPAJM@Z",
         "00511BD0": "??0TRIBE_Player@@QAE@HPAVTRIBE_World@@E@Z",
         "00511E20": "??0TRIBE_Player@@QAE@PAVTRIBE_World@@PAVRGE_Master_Player@@EPADEEE222@Z",
         "005120F0": "??1TRIBE_Player@@UAE@XZ",
@@ -2311,7 +2326,8 @@
         "00519BD0": "??0TRIBE_Gaia@@QAE@PAVTRIBE_World@@PAVRGE_Master_Player@@EPADE@Z",
         "00519C40": "?save@TRIBE_Gaia@@UAEXH@Z",
         "00519CA0": "?update@TRIBE_Gaia@@UAEXXZ",
-        "00519D10": "?load_master_object@TRIBE_Gaia@@QAEXHFEPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"
+        "00519D10": "?load_master_object@TRIBE_Gaia@@QAEXHFEPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
+        "00514590": "?objectCostByType@TRIBE_Player@@UAEHH@Z"
       }
     },
     {
@@ -2330,6 +2346,7 @@
         "004973F0": "src/scr_game.cpp",
         "00498290": "src/scr_game.cpp",
         "004987A0": "src/scr_game.cpp",
+        "00498A10": "src/scr_game.cpp",
         "004994B0": "src/scr_game.cpp",
         "00499520": "src/scr_game.cpp",
         "004995D0": "src/scr_game.cpp",
@@ -2399,6 +2416,7 @@
         "004970A0": "?wnd_proc@TRIBE_Screen_Game@@UAEJPAXIIJ@Z",
         "00497280": "?handle_user_command@TRIBE_Screen_Game@@UAEJIJ@Z",
         "00497440": "?key_down_action@TRIBE_Screen_Game@@UAEJJFHHH@Z",
+        "00498A10": "?game_mode_changed@TRIBE_Screen_Game@@QAEXHH@Z",
         "00498A50": "?player_changed@TRIBE_Screen_Game@@QAEXHH@Z",
         "004993B0": "?age_changed@TRIBE_Screen_Game@@IAEXXZ",
         "00499680": "?show_message@TRIBE_Screen_Game@@QAEXW4MessageType@TMessagePanel@@PADEE@Z",
@@ -2978,7 +2996,8 @@
         "004716D0": "src/player.cpp",
         "00471860": "src/player.cpp",
         "00471BF0": "src/player.cpp",
-        "00471D00": "src/player.cpp"
+        "00471D00": "src/player.cpp",
+        "00470F80": "src/player.cpp"
       },
       "symbols": {
         "0046E4B0": "??0RGE_Player@@QAE@HPAVRGE_Game_World@@E@Z",
@@ -3040,7 +3059,8 @@
         "004716D0": "?command_make_do@RGE_Player@@UAEEPAVRGE_Static_Object@@MM@Z",
         "00471860": "?command_give_attribute@RGE_Player@@UAEEHHM@Z",
         "00471BF0": "?set_map_visible@RGE_Player@@QAEXXZ",
-        "00471D00": "?new_victory@RGE_Player@@UAEXXZ"
+        "00471D00": "?new_victory@RGE_Player@@UAEXXZ",
+        "00470F80": "?group_objects@RGE_Player@@QAEHH@Z"
       }
     },
     {
@@ -3133,7 +3153,8 @@
         "00460970": "src/move_obj.cpp",
         "00460BF0": "src/move_obj.cpp",
         "00460C00": "src/move_obj.cpp",
-        "00460EB0": "src/move_obj.cpp"
+        "00460EB0": "src/move_obj.cpp",
+        "00460940": "src/move_obj.cpp"
       },
       "symbols": {
         "0045C450": "??0RGE_Moving_Object@@QAE@PAVRGE_Master_Moving_Object@@PAVRGE_Player@@MMMH@Z",
@@ -3173,7 +3194,8 @@
         "00460970": "?addUserDefinedWaypoint@RGE_Moving_Object@@UAEHPAUXYZBYTEPoint@@H@Z",
         "00460BF0": "?setFinalUserDefinedWaypoint@RGE_Moving_Object@@QAEXXZ",
         "00460C00": "?findAvoidancePath@RGE_Moving_Object@@UAEPAVPath@@AAUXYZPoint@@MH@Z",
-        "00460EB0": "?rotate@RGE_Moving_Object@@UAEXJ@Z"
+        "00460EB0": "?rotate@RGE_Moving_Object@@UAEXJ@Z",
+        "00460940": "?userDefinedWaypoint@RGE_Moving_Object@@UAEPAUXYZBYTEPoint@@H@Z"
       }
     },
     {
@@ -3690,6 +3712,7 @@
         "00475150": "src/Pnl_drop.cpp",
         "00475160": "src/Pnl_drop.cpp",
         "004751C0": "src/Pnl_drop.cpp",
+        "004751E0": "src/Pnl_drop.cpp",
         "00475210": "src/Pnl_drop.cpp",
         "00475230": "src/Pnl_drop.cpp",
         "00475250": "src/Pnl_drop.cpp",
@@ -3717,6 +3740,7 @@
         "00475130": "?currentLineNumber@TDropDownPanel@@QAEHXZ",
         "00475160": "?setCurrentLineId@TDropDownPanel@@QAEXH@Z",
         "004751C0": "?currentLine@TDropDownPanel@@QAEPADXZ",
+        "004751E0": "?set_tab_order@TDropDownPanel@@UAEXPAVTPanel@@0@Z",
         "00475250": "?set_line@TDropDownPanel@@QAEXJ@Z",
         "004752A0": "?append_line@TDropDownPanel@@QAEHPADJ@Z",
         "004752D0": "?append_line@TDropDownPanel@@QAEHJJ@Z",
@@ -4032,11 +4056,13 @@
       "flags": "config/flags/default.rsp",
       "owners": {
         "004846C0": "src/rmm_elev.cpp",
-        "00484B30": "src/rmm_elev.cpp"
+        "00484B30": "src/rmm_elev.cpp",
+        "00484B50": "src/rmm_elev.cpp"
       },
       "symbols": {
         "004846C0": "??0RGE_RMM_Elevation_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@PAURGE_Elevation_Info@@@Z",
-        "00484B30": "?fig_chance@RGE_RMM_Elevation_Generator@@IAEMJJJ@Z"
+        "00484B30": "?fig_chance@RGE_RMM_Elevation_Generator@@IAEMJJJ@Z",
+        "00484B50": "?count_map_tiles@RGE_RMM_Elevation_Generator@@IAEJE@Z"
       }
     },
     {
@@ -4066,7 +4092,8 @@
         "004D5EE0": "src/taiconmd.cpp",
         "004D5EF0": "src/taiconmd.cpp",
         "004D6780": "src/taiconmd.cpp",
-        "004D6800": "src/taiconmd.cpp"
+        "004D6800": "src/taiconmd.cpp",
+        "004D5F00": "src/taiconmd.cpp"
       },
       "symbols": {
         "004D5E60": "??0TribeConstructionAIModule@@QAE@PAXH@Z",
@@ -4074,7 +4101,8 @@
         "004D5EE0": "??1TribeConstructionAIModule@@UAE@XZ",
         "004D5EF0": "?setMainDecisionAI@TribeConstructionAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z",
         "004D6780": "?placeDock@TribeConstructionAIModule@@QAEPAVConstructionItem@@PAVBuildItem@@@Z",
-        "004D6800": "?setBuilt@TribeConstructionAIModule@@QAEXPAVRGE_Static_Object@@H@Z"
+        "004D6800": "?setBuilt@TribeConstructionAIModule@@QAEXPAVRGE_Static_Object@@H@Z",
+        "004D5F00": "?canPlace@TribeConstructionAIModule@@QAEHPAVBuildItem@@@Z"
       }
     },
     {
@@ -4452,9 +4480,12 @@
         "00432380": "src/com_sess.cpp",
         "00432390": "src/com_sess.cpp",
         "004324F0": "src/com_sess.cpp",
-        "00432560": "src/com_sess.cpp"
+        "00432560": "src/com_sess.cpp",
+        "004325E0": "src/com_sess.cpp"
       },
-      "symbols": {}
+      "symbols": {
+        "004325E0": "?IsEqualGuid@TCommunications_Sessions@@QAEHPAU_GUID@@0@Z"
+      }
     },
     {
       "name": "dpl_obj",
@@ -4474,8 +4505,7 @@
         "00442180": "src/dpl_obj.cpp",
         "004422B0": "src/dpl_obj.cpp",
         "00442390": "src/dpl_obj.cpp",
-        "00442540": "src/dpl_obj.cpp",
-        "004421F0": "src/dpl_obj.cpp"
+        "00442540": "src/dpl_obj.cpp"
       },
       "symbols": {
         "004418A0": "??0RGE_Doppleganger_Object@@QAE@PAVRGE_Master_Doppleganger_Object@@PAVRGE_Player@@MMMHPAVRGE_Static_Object@@@Z",
@@ -4485,8 +4515,7 @@
         "00441EB0": "?update@RGE_Doppleganger_Object@@UAEEXZ",
         "004422B0": "?remove_doppleganger_check@RGE_Doppleganger_Creator@@QAEHPAVRGE_Static_Object@@@Z",
         "00442390": "?perform_doppleganger_checks@RGE_Doppleganger_Creator@@QAEXXZ",
-        "00442540": "?expand_allocations@RGE_Doppleganger_Creator@@IAEXH@Z",
-        "004421F0": "?add_doppleganger_check@RGE_Doppleganger_Creator@@QAEHPAVRGE_Static_Object@@PAK@Z"
+        "00442540": "?expand_allocations@RGE_Doppleganger_Creator@@IAEXH@Z"
       }
     },
     {
@@ -4783,7 +4812,10 @@
         "0046AF90": "src/Path.cpp",
         "0046AFA0": "src/Path.cpp",
         "0046AFC0": "src/Path.cpp",
-        "0046AFE0": "src/Path.cpp"
+        "0046AFE0": "src/Path.cpp",
+        "0046A810": "src/Path.cpp",
+        "0046A8E0": "src/Path.cpp",
+        "0046A9E0": "src/Path.cpp"
       },
       "symbols": {
         "0046ADC0": "?numberOfWaypoints@Path@@QBE?BHXZ",
@@ -4793,7 +4825,10 @@
         "0046AEA0": "?currentWaypoint@Path@@QBEPAUWaypoint@@XZ",
         "0046AEC0": "?currentWaypointNumber@Path@@QBE?BHXZ",
         "0046AEE0": "?nextWaypoint@Path@@QBEPBUWaypoint@@XZ",
-        "0046AF60": "?lastWaypoint@Path@@QBEPBUWaypoint@@XZ"
+        "0046AF60": "?lastWaypoint@Path@@QBEPBUWaypoint@@XZ",
+        "0046A810": "??6@YAAAVostream@@AAV0@ABVPath@@@Z",
+        "0046A8E0": "??HPath@@QBE?AV0@ABV0@@Z",
+        "0046A9E0": "??4Path@@QAEAAV0@ABV0@@Z"
       }
     },
     {
@@ -5142,15 +5177,15 @@
       "flags": "config/flags/00473E40_TDialogPanel.rsp",
       "owners": {
         "00473C10": "src/pnl_dlg.cpp",
-        "00473D60": "src/pnl_dlg.cpp",
         "00473E40": "src/pnl_dlg.cpp",
-        "00473EC0": "src/pnl_dlg.cpp"
+        "00473EC0": "src/pnl_dlg.cpp",
+        "00473C80": "src/pnl_dlg.cpp"
       },
       "symbols": {
         "00473C10": "??0TDialogPanel@@QAE@PAD@Z",
-        "00473D60": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJEH@Z",
         "00473EC0": "?set_focus@TDialogPanel@@UAEXH@Z",
-        "00473E40": "??1TDialogPanel@@UAE@XZ"
+        "00473E40": "??1TDialogPanel@@UAE@XZ",
+        "00473C80": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z"
       }
     },
     {
@@ -5235,14 +5270,16 @@
         "0047E490": "src/point.cpp",
         "0047E4B0": "src/point.cpp",
         "0047E4E0": "src/point.cpp",
-        "0047E510": "src/point.cpp"
+        "0047E510": "src/point.cpp",
+        "0047E580": "src/point.cpp"
       },
       "symbols": {
         "0047E480": "??0XYZ@@QAE@XZ",
         "0047E490": "??0XYZ@@QAE@HHH@Z",
         "0047E4B0": "??8@YAHABVXYZ@@0@Z",
         "0047E4E0": "??9@YAHABVXYZ@@0@Z",
-        "0047E510": "??4XYZ@@QAEAAV0@ABV0@@Z"
+        "0047E510": "??4XYZ@@QAEAAV0@ABV0@@Z",
+        "0047E580": "??GXYZ@@QBE?AV0@ABV0@@Z"
       }
     },
     {
@@ -5304,7 +5341,11 @@
         "004472D0": "src/dstring.cpp",
         "00447370": "src/dstring.cpp",
         "00447710": "src/dstring.cpp",
-        "00447780": "src/dstring.cpp"
+        "00447780": "src/dstring.cpp",
+        "00446780": "src/dstring.cpp",
+        "00446800": "src/dstring.cpp",
+        "00446C80": "src/dstring.cpp",
+        "00446D10": "src/dstring.cpp"
       },
       "symbols": {
         "004465D0": "??0DString@@QAE@XZ",
@@ -5348,7 +5389,11 @@
         "004472D0": "?stripTrailing@DString@@QAE?AV1@D@Z",
         "00447370": "?stripLeading@DString@@QAE?AV1@D@Z",
         "00447710": "?setKey@DKeyString@@QAEXVDString@@@Z",
-        "00447780": "?setValue@DKeyString@@QAEXVDString@@@Z"
+        "00447780": "?setValue@DKeyString@@QAEXVDString@@@Z",
+        "00446780": "??4DString@@QAEAAV0@PBD@Z",
+        "00446800": "??4DString@@QAEAAV0@ABV0@@Z",
+        "00446C80": "??HDString@@QBE?AV0@ABV0@@Z",
+        "00446D10": "??ADString@@QAEAADH@Z"
       }
     },
     {
@@ -5551,12 +5596,10 @@
         "00486180": "src/rmm_obj.cpp",
         "00486210": "src/rmm_obj.cpp",
         "00486700": "src/rmm_obj.cpp",
-        "00486A60": "src/rmm_obj.cpp",
-        "00485E50": "src/rmm_obj.cpp"
+        "00486A60": "src/rmm_obj.cpp"
       },
       "symbols": {
-        "00485DC0": "?generate@RGE_RMM_Object_Generator@@UAEEXZ",
-        "00485E50": "?generate_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@@Z"
+        "00485DC0": "?generate@RGE_RMM_Object_Generator@@UAEEXZ"
       }
     },
     {
@@ -5598,7 +5641,6 @@
         "0053D110": "src/visible.cpp",
         "0053D150": "src/visible.cpp",
         "0053C1B0": "src/visible.cpp",
-        "0053C290": "src/visible.cpp",
         "0053C680": "src/visible.cpp",
         "0053CE70": "src/visible.cpp",
         "0053CEE0": "src/visible.cpp",
@@ -5618,7 +5660,6 @@
         "0053D110": "?checksumUnifiedVisible@RGE_Visible_Map@@QAEKXZ",
         "0053D150": "?log_map_call@@YAXHHHHHHHHH@Z",
         "0053C1B0": "??0RGE_Visible_Map@@QAE@PAVRGE_Map@@PAVRGE_Player@@@Z",
-        "0053C290": "??0RGE_Visible_Map@@QAE@HPAVRGE_Game_World@@@Z",
         "0053C680": "?recomputeExplored@RGE_Visible_Map@@QAEXXZ",
         "0053CE70": "?checksum_visible_inputs@RGE_Visible_Map@@QAEKXZ",
         "0053CEE0": "??0RGE_Unified_Visible_Map@@QAE@HPAVRGE_Game_World@@@Z",
@@ -6831,6 +6872,7 @@
         "00467570": "src/Panel_ez.cpp",
         "004679A0": "src/Panel_ez.cpp",
         "004679F0": "src/Panel_ez.cpp",
+        "00467A50": "src/Panel_ez.cpp",
         "00467A70": "src/Panel_ez.cpp",
         "00467BE0": "src/Panel_ez.cpp",
         "00467D50": "src/Panel_ez.cpp",
@@ -6908,6 +6950,7 @@
         "00467570": "?draw@TEasy_Panel@@UAEXXZ",
         "004679A0": "?handle_mouse_down@TEasy_Panel@@UAEJEJJHH@Z",
         "004679F0": "?set_info_file@TEasy_Panel@@QAEXPADJ@Z",
+        "00467A50": "?set_ideal_size@TEasy_Panel@@MAEXJJ@Z",
         "00467A70": "?set_background@TEasy_Panel@@QAEHPADJ@Z",
         "00467D50": "?set_background_colors@TEasy_Panel@@QAEXEE@Z",
         "00467DA0": "?set_palette@TEasy_Panel@@QAEHPADJ@Z",
@@ -7451,6 +7494,7 @@
       "module": "file_stf",
       "flags": "config/flags/default.rsp",
       "owners": {
+        "00449710": "src/file_stf.cpp",
         "00449750": "src/file_stf.cpp",
         "00449760": "src/file_stf.cpp",
         "00449770": "src/file_stf.cpp",
@@ -7473,6 +7517,7 @@
         "00449AC0": "src/file_stf.cpp"
       },
       "symbols": {
+        "00449710": "?compareFilenameStrings@@YAHPBX0@Z",
         "00449750": "?driveAsLetter@@YADH@Z",
         "00449760": "?driveAsInt@@YAHD@Z",
         "00449770": "??0DriveInformation@@QAE@XZ",
@@ -8088,7 +8133,8 @@
         "0050DE00": "src/Timeline.cpp",
         "0050DEF0": "src/Timeline.cpp",
         "0050DF40": "src/Timeline.cpp",
-        "0050D7E0": "src/Timeline.cpp"
+        "0050D7E0": "src/Timeline.cpp",
+        "0050DE50": "src/Timeline.cpp"
       },
       "symbols": {
         "0050D7B0": "??0RGE_Timeline@@QAE@PAVRGE_Game_World@@@Z",
@@ -8099,7 +8145,8 @@
         "0050DEF0": "?add_move@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@MMM@Z",
         "0050DF40": "?add_delete@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@@Z",
         "0050DB10": "?mock_update@RGE_Timeline@@QAEXM@Z",
-        "0050D7E0": "??1RGE_Timeline@@UAE@XZ"
+        "0050D7E0": "??1RGE_Timeline@@UAE@XZ",
+        "0050DE50": "?add_create@RGE_Timeline@@QAEPAURGE_Time_Entry@@MFEMMM@Z"
       }
     },
     {
@@ -8322,6 +8369,7 @@
         "00411FF0": "src/airesitm.cpp",
         "004120B0": "src/airesitm.cpp",
         "004120C0": "src/airesitm.cpp",
+        "00412100": "src/airesitm.cpp",
         "00412180": "src/airesitm.cpp",
         "004121A0": "src/airesitm.cpp",
         "004121C0": "src/airesitm.cpp",
@@ -8335,6 +8383,7 @@
         "00411FF0": "??0ResourceItem@@QAE@ABV0@@Z",
         "004120B0": "??1ResourceItem@@UAE@XZ",
         "004120C0": "??YResourceItem@@QAEAAV0@ABV0@@Z",
+        "00412100": "??8@YAHABVResourceItem@@0@Z",
         "00412180": "?value@ResourceItem@@QBEHH@Z",
         "004121A0": "?setValue@ResourceItem@@QAEXHH@Z",
         "004121C0": "?incrementValue@ResourceItem@@QAEXHH@Z",
@@ -8502,7 +8551,8 @@
         "00459900": "src/map.cpp",
         "00459A00": "src/map.cpp",
         "00459D20": "src/map.cpp",
-        "0045A490": "src/map.cpp"
+        "0045A490": "src/map.cpp",
+        "0045A500": "src/map.cpp"
       },
       "symbols": {
         "004550A0": "??0RGE_Map@@QAE@PAD00FFFPAPAVRGE_Sound@@@Z",
@@ -8543,7 +8593,8 @@
         "00459900": "?set_terrain@RGE_Map@@QAEXPAVRGE_Game_World@@FFEHH@Z",
         "00459A00": "?set_terrain_absolute@RGE_Map@@QAEXPAVRGE_Game_World@@FFEHH@Z",
         "00459D20": "?get_tile_type@RGE_Map@@QAEEFF@Z",
-        "0045A490": "?check_for_border@RGE_Map@@QAEXEAAE@Z"
+        "0045A490": "?check_for_border@RGE_Map@@QAEXEAAE@Z",
+        "0045A500": "?update@RGE_Map@@QAEXK@Z"
       }
     },
     {
@@ -8936,16 +8987,12 @@
         "00435D40": "src/Command.cpp",
         "00435D90": "src/Command.cpp",
         "004360D0": "src/Command.cpp",
+        "00433D40": "src/Command.cpp",
         "00433D90": "src/Command.cpp",
         "00433E20": "src/Command.cpp",
         "004342E0": "src/Command.cpp",
-        "004348B0": "src/Command.cpp",
-        "004348F0": "src/Command.cpp",
-        "00434DC0": "src/Command.cpp",
-        "00435020": "src/Command.cpp",
-        "00435060": "src/Command.cpp",
-        "004350A0": "src/Command.cpp",
-        "004351B0": "src/Command.cpp"
+        "004351B0": "src/Command.cpp",
+        "004350E0": "src/Command.cpp"
       },
       "symbols": {
         "00434290": "?do_command_stop@RGE_Command@@IAEXPAURGE_Command_Stop@@@Z",
@@ -8964,16 +9011,12 @@
         "00435D40": "?command_destroy_group@RGE_Command@@QAEXHH@Z",
         "00435D90": "?command_ai_order@RGE_Command@@QAEXHHHHHHMMMMEEE@Z",
         "004360D0": "?command_add_waypoint@RGE_Command@@QAEXHHEEE@Z",
+        "00433D40": "??0RGE_Command@@QAE@PAVRGE_Game_World@@PAVTCommunications_Handler@@@Z",
         "00433D90": "??1RGE_Command@@UAE@XZ",
         "00433E20": "?do_command@RGE_Command@@UAEXPAX@Z",
         "004342E0": "?do_command_pause@RGE_Command@@IAEXPAURGE_Command_Pause@@@Z",
-        "004348B0": "?do_command_create@RGE_Command@@IAEXPAURGE_Command_Create@@@Z",
-        "004348F0": "?do_command_add_attribute@RGE_Command@@IAEXPAURGE_Command_Add_Attribute@@@Z",
-        "00434DC0": "?do_command_group_ai_order@RGE_Command@@IAEXPAURGE_Command_Group_AI_Order@@@Z",
-        "00435020": "?do_command_create_group@RGE_Command@@IAEXPAURGE_Command_Create_Group@@@Z",
-        "00435060": "?do_command_add_to_group@RGE_Command@@IAEXPAURGE_Command_Add_To_Group@@@Z",
-        "004350A0": "?do_command_remove_from_group@RGE_Command@@IAEXPAURGE_Command_Remove_From_Group@@@Z",
-        "004351B0": "?duplicate_check_command_stop@RGE_Command@@IAEEPAURGE_Command_Stop@@@Z"
+        "004351B0": "?duplicate_check_command_stop@RGE_Command@@IAEEPAURGE_Command_Stop@@@Z",
+        "004350E0": "?do_command_destroy_group@RGE_Command@@IAEXPAURGE_Command_Destroy_Group@@@Z"
       }
     },
     {
@@ -9145,13 +9188,10 @@
         "004E4610": "src/taiinfmd.cpp",
         "004E4790": "src/taiinfmd.cpp",
         "004D84E0": "src/taiinfmd.cpp",
-        "004D9110": "src/taiinfmd.cpp",
-        "004D9160": "src/taiinfmd.cpp",
         "004D9EC0": "src/taiinfmd.cpp",
         "004D9FC0": "src/taiinfmd.cpp",
         "004DABB0": "src/taiinfmd.cpp",
         "004DFD60": "src/taiinfmd.cpp",
-        "004E0FD0": "src/taiinfmd.cpp",
         "004E1730": "src/taiinfmd.cpp",
         "004E1930": "src/taiinfmd.cpp",
         "004E1A00": "src/taiinfmd.cpp",
@@ -9192,13 +9232,10 @@
         "004DAFB0": "?importantObject@TribeInformationAIModule@@QAEHH@Z",
         "004E2440": "?resourceType@TribeInformationAIModule@@QAEHHH@Z",
         "004D84E0": "?save@TribeInformationAIModule@@QAEHH@Z",
-        "004D9110": "?fullyExploredZone@TribeInformationAIModule@@QAEHH@Z",
-        "004D9160": "?setFullyExploredZone@TribeInformationAIModule@@QAEXHH@Z",
         "004D9EC0": "?numberDocksInZone@TribeInformationAIModule@@QAEHHPAVRGE_Zone_Map@@@Z",
         "004D9FC0": "?closestDockDistance@TribeInformationAIModule@@QAEHHH@Z",
         "004DABB0": "?addImportantObject@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@H@Z",
         "004DFD60": "?findObjectMemoryLimits@TribeInformationAIModule@@QAE?AUObjectMemory@@HHAAH0@Z",
-        "004E0FD0": "?storeAttackMemory@TribeInformationAIModule@@QAEHEEEEEEEFEKH@Z",
         "004E1730": "?unexploredPlayerLocation@TribeInformationAIModule@@QAEHHAAUXYPoint@@@Z",
         "004E1930": "?numberUnitsWithinXTiles@TribeInformationAIModule@@QAEHHHHH@Z",
         "004E1A00": "?withinXTilesOfAttackOnPlayer@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@HH@Z",

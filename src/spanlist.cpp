@@ -617,7 +617,7 @@ void TSpan_List_Manager::AddLine_Align(int x1, int y1, int x2, int y2)
     }
 }
 
-void TSpan_List_Manager::AddMiniList(VSpanMiniList* list, int yoff, int xoff)
+void TSpan_List_Manager::AddMiniList(VSpanMiniList* list, int x_off, int y_off)
 {
     if (list == 0) {
         return;
@@ -628,9 +628,9 @@ void TSpan_List_Manager::AddMiniList(VSpanMiniList* list, int yoff, int xoff)
         if (y_delta == 0xFF) {
             return;
         }
-        AddSpan((int)list->X_start + xoff,
-                (int)list->X_end + xoff, y_delta + yoff);
-        list = (VSpanMiniList*)((char*)list + 3);
+        AddSpan(list->X_start + x_off,
+                list->X_end + x_off, y_delta + y_off);
+        ++list;
     }
 }
 

@@ -25,7 +25,7 @@
     "004120B0": { "status": "matching" },
     "004120C0": { "status": "matching" },
     "00412100": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/00412100_operator.md"
     },
     "00412140": {

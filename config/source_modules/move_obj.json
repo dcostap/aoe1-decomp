@@ -45,7 +45,7 @@
     "004608D0": { "status": "scratch", "note_path": "recovery_notes/move_obj_module.md" },
     "00460900": { "status": "scratch", "note_path": "recovery_notes/move_obj_module.md" },
     "00460930": { "status": "matching" },
-    "00460940": { "status": "accepted_drift" },
+    "00460940": { "status": "matching" },
     "00460970": { "status": "matching" },
     "00460B20": { "status": "scratch", "note_path": "recovery_notes/move_obj_module.md" },
     "00460B70": { "status": "matching" },

@@ -75,12 +75,13 @@ public:
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual void set_focus(int);
     virtual void draw_background(int);
-    virtual void set_ideal_size(long, long);
 
     long setup(TDrawArea*, TPanel*, char*, long, int, long, long, long, long,
                int);
 
 protected:
+    virtual void set_ideal_size(long, long);
+
     // text array, then character text.
     virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long,
                               long, long, long, long, long);

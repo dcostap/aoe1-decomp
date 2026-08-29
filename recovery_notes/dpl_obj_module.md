@@ -43,3 +43,8 @@ The focused grouped check reports the approved difference:
 
 The `00441BB0` drift check keeps equal size, CFG shape, calls, relocations,
 boundaries, and owner symbols. It remains accepted drift.
+
+## Wave20 full-audit reconciliation
+
+The fresh full audit disproves the stale `004421F0 add_doppleganger_check`
+exact claim by four bytes. The row is scratch and is no longer registered.

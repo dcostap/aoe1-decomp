@@ -4,36 +4,74 @@
 
 ## Current state
 
-- Status: `scratch`.
+- Status: `matching`.
 - Living source: `src/tribegam.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\tribegam.cpp`.
 - Earlier recovery note: `recovery_notes/tribegam_module.md`.
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+- PDB module: `tribegam.cpp`; natural owner: `src/tribegam.cpp`.
+- Owning class: `TRIBE_Game`; calling convention: `__thiscall`.
+- Original body: `0052A170-0052A181` (18 bytes), with the next function at
+  `0052A190` after alignment padding.
+- Original source lines: 5437-5443. The body has no calls or stack frame.
+- The only proven this-relative access is the destination at `this + 0x1198`.
+- The original body saves `edi`, fills 40 dwords with zero through `rep stosd`,
+  restores `edi`, and returns.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- No mismatch remains. The rebuilt body is 18 bytes and has seven instructions.
+- Focused validation reports `MATCH`, `0.0000%`, exact boundary, matching owner
+  symbol, and no calls or relocations.
+- Grouped audit reports this owner as `MATCH`. It found 94 registered owner
+  matches, 14 grouped mismatches, six relocation problems, two boundary
+  problems, one unregistered grouped match, and one registered regression in
+  the full group. Those other rows are outside this assignment.
 
 ## Recovered attempt history
 
-
-No function-specific cleanup block was mapped automatically. Review the earlier note and Git history before work.
+- Fresh baseline: `memset(this->computerNameUsed, 0,
+  sizeof(this->computerNameUsed))` emitted 20 bytes. It copied 45 dwords and
+  preserved `this` in `edx`, so it did not match the 40-dword original fill.
+- Layout attempt: `sizeof(this->computerNameUsed[0]) * 16` kept the 20-byte
+  sequence but improved instruction-shape similarity from 62.50% to 75.00%.
+- Literal-size attempt: `memset(this->computerNameUsed, 0, 0xA0)` emitted the
+  same 20-byte sequence as the layout attempt.
+- Final natural attempt:
+  `for (i = 0; i < 16; ++i) memset(this->computerNameUsed[i], 0,
+  sizeof(this->computerNameUsed[i]));` emits the exact seven-instruction
+  original body. The compiler folds the 16 ten-byte row clears into the
+  original 160-byte dword fill.
+- The direct `target_session.py check` for the literal-size attempt reached a
+  lock timeout while recording its probe. No lock retry or lock manipulation
+  was used. The final exact build was validated with `check_function.py`, then
+  pinned with `target_session.py pin-clean`.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+- Clearing all 18 declared rows is rejected. It changes the proven 160-byte
+  extent to 180 bytes and emits two extra instructions.
+- A raw function-fragment source, explicit offset view, manual dword array,
+  or inline assembly is rejected by source policy. The final source uses the
+  reviewed field and row type.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+- The reviewed header declares 18 rows, while the executable clears only the
+  first 16 rows. The target behavior proves the 16-row extent for this method,
+  but this assignment does not permit a shared-header change.
+- The exact emitted code does not prove whether the original source used the
+  same row loop or a 160-byte `memset`. The retained loop is natural and
+  explains the original fill without a raw size constant.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+- No further codegen work is needed for this target. The coordinator can review
+  promotion after the grouped audit and the header extent question.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+- 2026-08-29, `wave20-tribegam`: Recovered and pinned the exact natural row
+  loop. Focused check and grouped audit both report `MATCH` for `0052A170`.

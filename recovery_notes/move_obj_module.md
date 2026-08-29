@@ -30,6 +30,10 @@ checks before exact promotion.
 - `00460210`, `004608D0`, `00460900`, and `00460B20` also remain scratch.
 - All other normal owners retain matching status.
 
+The wave20 full audit confirms `00460940 userDefinedWaypoint` as an exact
+natural owner. It is now registered as matching. The other reviewed statuses
+remain unchanged.
+
 ## Structural audit
 
 The canonical provider pass compiles all 51 owners from `src/move_obj.cpp`.

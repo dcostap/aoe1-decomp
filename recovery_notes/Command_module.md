@@ -56,3 +56,11 @@ The grouped report has a boundary escape for `00435320`, `00435620`, and
 
 The module has 21 matching, 24 scratch, and six accepted-drift owners. The
 complete audit records each nonexact result.
+
+## Wave20 reconciliation
+
+The sequential wave20 audit promotes `00433D40 RGE_Command` and removes six
+stale exact claims: `004348B0`, `004348F0`, `00434DC0`, `00435020`,
+`00435060`, and `004350A0`. The later full audit also promotes exact
+`004350E0`. The module now has 27 matching, 18 scratch, and six accepted-drift
+owners. All 27 registered owners match in the fresh audit.

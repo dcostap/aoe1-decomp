@@ -27,7 +27,7 @@
     },
     "00432560": { "status": "matching" },
     "004325E0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/004325E0_IsEqualGuid.md"
     }
   }

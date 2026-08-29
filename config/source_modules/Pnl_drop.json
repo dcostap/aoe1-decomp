@@ -31,7 +31,7 @@
     "00475150": { "status": "matching", "note_path": "recovery_notes/Pnl_drop_module.md" },
     "00475160": { "status": "matching", "note_path": "recovery_notes/Pnl_drop_module.md" },
     "004751C0": { "status": "matching", "note_path": "recovery_notes/Pnl_drop_module.md" },
-    "004751E0": { "status": "scratch", "note_path": "recovery_notes/Pnl_drop_module.md" },
+    "004751E0": { "status": "matching", "note_path": "recovery_notes/Pnl_drop_module.md" },
     "00475210": { "status": "matching", "note_path": "recovery_notes/Pnl_drop_module.md" },
     "00475230": { "status": "matching", "note_path": "recovery_notes/Pnl_drop_module.md" },
     "00475250": { "status": "matching", "note_path": "recovery_notes/Pnl_drop_module.md" },

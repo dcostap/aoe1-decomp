@@ -128,3 +128,6 @@ removed.
 - The six accepted-drift owners retain their previously reviewed localized
   differences. Their old isolated metrics do not claim exactness for this
   complete translation unit.
+
+The wave20 full audit reports 121 differing bytes for `005327A0
+handle_explore`. That row is scratch and is no longer registered as exact.

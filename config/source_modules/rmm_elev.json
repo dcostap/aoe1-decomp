@@ -24,7 +24,7 @@
     },
     "00484B30": { "status": "matching" },
     "00484B50": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/rmm_elev_natural_candidate.md"
     },
     "00484B90": {

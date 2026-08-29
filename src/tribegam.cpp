@@ -4354,7 +4354,12 @@ int TRIBE_Game::randomComputerName(int param1) {
 
 
 void TRIBE_Game::resetRandomComputerName() {
-    memset(this->computerNameUsed, 0, sizeof(this->computerNameUsed));
+    int i;
+
+    for (i = 0; i < 16; ++i) {
+        memset(this->computerNameUsed[i], 0,
+               sizeof(this->computerNameUsed[i]));
+    }
 }
 
 

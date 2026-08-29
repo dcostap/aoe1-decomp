@@ -73,17 +73,20 @@ ResourceItem& ResourceItem::operator+=(const ResourceItem& source) {
 }
 
 int operator==(const ResourceItem& left, const ResourceItem& right) {
-    if (left.numberValue != right.numberValue) {
-        return 0;
-    }
-
-    for (int i = 0; i < left.numberValue; ++i) {
-        if (left.valueValue[i] != right.valueValue[i]) {
-            return 0;
+    const ResourceItem& lhs = left;
+    int count = lhs.numberValue;
+    if (count == right.numberValue) {
+        for (int i = 0; i < count; ++i) {
+            if (lhs.valueValue[i] != right.valueValue[i]) {
+                goto not_equal;
+            }
         }
+
+        return 1;
     }
 
-    return 1;
+not_equal:
+    return 0;
 }
 
 int operator!=(const ResourceItem& left, const ResourceItem& right) {

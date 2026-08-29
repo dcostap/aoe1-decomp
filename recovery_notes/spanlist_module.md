@@ -42,3 +42,10 @@ no relocation or boundary mismatch, but its 351-byte difference includes a
 return and block-shape change. `004BDEA0 AddShape` and `004BEAD0 DecodeLine`
 remain accepted drift. The final reconciliation supersedes the earlier
 `004BE4B0` drift result.
+
+## Wave20 reconciliation
+
+The typed `004BE1F0 AddMiniList` body now matches all 71 bytes. The sequential
+audit also disproves the stale `004BE4B0 DeleteShape` exact claim by three
+bytes. The module retains 23 matching, four scratch, and two accepted-drift
+owners. All 23 registered owners match.

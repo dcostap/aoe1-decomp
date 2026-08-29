@@ -565,7 +565,7 @@ void RGE_View::set_player(RGE_Player* player) {
     this->player = player;
     last_view_x = -9999.0f;
     last_view_y = -9999.0f;
-    redraw(2);
+    set_redraw(TPanel::RedrawImmediate);
 }
 
 

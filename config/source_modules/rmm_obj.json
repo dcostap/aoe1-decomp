@@ -9,7 +9,7 @@
     "00485CB0": { "status": "matching" },
     "00485DC0": { "status": "matching" },
     "00485E50": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/rmm_obj_module.md"
     },
     "00485F10": {

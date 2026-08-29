@@ -9,7 +9,7 @@
     "004D5EB0": { "status": "matching" },
     "004D5EE0": { "status": "matching" },
     "004D5EF0": { "status": "matching" },
-    "004D5F00": { "status": "scratch" },
+    "004D5F00": { "status": "matching" },
     "004D60E0": {
       "status": "scratch",
       "note_path": "recovery_notes/taiconmd_module.md"
@@ -17,7 +17,7 @@
     "004D6780": { "status": "matching" },
     "004D6800": { "status": "matching" },
     "004D68A0": {
-      "status": "scratch",
+      "status": "accepted_drift",
       "note_path": "recovery_notes/taiconmd_module.md"
     }
   }

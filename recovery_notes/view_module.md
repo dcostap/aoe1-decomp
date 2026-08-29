@@ -115,3 +115,10 @@ and proves the same calls, bounds, writes, returns, and state effects:
 
 These four claims remain non-exact. New evidence must reopen them if it shows
 a changed call, bound, write, return, target, or fault order.
+
+## Wave20 reconciliation
+
+The sequential wave20 audit promotes exact `00534500 set_player`. It removes
+the stale `00539AA0 get_tile_picture` exact claim after a 120-byte mismatch and
+one boundary escape. The module retains 47 matching, 26 scratch, four
+accepted-drift, and two verified-logic owners. All 47 registered owners match.

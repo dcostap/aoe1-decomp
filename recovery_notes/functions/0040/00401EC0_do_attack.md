@@ -14,7 +14,23 @@ Record the PDB module, source order, owning class, address sequence, and exact a
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+The natural body remains the simplest period-plausible reconstruction:
+`RGE_Combat_Object* object = static_cast<RGE_Combat_Object*>(this->obj);`,
+dispatch through the target-object or coordinate `attack` overload, then clear
+`need_to_attack`.  The historical standalone donor produced the original 56
+bytes with no frame, one conditional branch, two virtual calls, and two returns.
+
+The fresh natural-TU focused check cannot extract the target.  It reports:
+`Expected one defined function named '?do_attack@RGE_Action_Attack@@IAEXXZ'; found []`.
+The same result held for a temporary period C-style cast spelling, which was
+restored to `static_cast`.  The natural compiler inlines this private helper
+into `update` and emits no standalone symbol.  No source-level behavior or
+ABI change is supported to prevent that optimization.
+
+The grouped `act_atak` audit compiled 13 functions.  Six registered neighbors
+remain exact.  The target is `NOT_EMITTED`; relocations are not applicable.
+The other observed rows contain two accepted drifts, two grouped mismatches,
+and two boundary problems owned by other targets.
 
 ## Recovered attempt history
 
@@ -205,8 +221,24 @@ Record unknown facts and the evidence needed to answer them here.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+Keep this normal function classification. The original executable has a
+standalone 56-byte symbol. Investigate surrounding natural-TU inlining context.
+Do not add a no-inline attribute, address-taking dummy use, or other compiler
+steering to the body.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### 2026-08-29 wave20-act-atak
+
+- Result: unresolved natural-TU emission blocker; no source change retained.
+- Focused `target_session.py check` baseline and cast-form attempts both failed
+  before comparison because the natural object has no target symbol.
+- Grouped audit: `build/audits/workers/wave20-act-atak/act_atak/report.txt`.
+  It records 6 registered exact neighbors and target `NOT_EMITTED`.
+- The source body is restored to the initial `static_cast` form.  The previous
+  standalone custom-context result remains `MATCH`, 56 bytes, 0.0000%, but it
+  is not evidence of natural-TU emission.
+- The session is paused. Clean pinning was not possible because no current
+  natural-TU symbol was emitted.

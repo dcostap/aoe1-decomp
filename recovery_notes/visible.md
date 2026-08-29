@@ -112,3 +112,9 @@ They are not treated as matches.
 
 Validation report: `build/candidate_tus/visible_header_cleanup/run02/report.txt`.
 Report SHA-256: `21ab51c8bfb35720de12d693ce96104fc9a92360f5ebd525bb4043bc2ed9cce1`.
+
+## Wave20 full-audit reconciliation
+
+The fresh full audit reports 171 differing bytes and one boundary escape for
+`0053C290 RGE_Visible_Map`. That constructor is scratch and is no longer
+registered as exact.

@@ -2217,7 +2217,7 @@ void TRIBE_Screen_Game::game_mode_changed(int a, int b) {
     if (this->tool_box != 0) {
         this->tool_box->game_mode_changed(a, b);
     }
-    if (this->button_panel != 0) {
+    if (this->button_panel[0] != 0) {
         this->reset_buttons();
     }
 }

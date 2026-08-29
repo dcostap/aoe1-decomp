@@ -14,3 +14,6 @@ boundary.
 
 The natural code preserves setup calls, color ordering, modal updates, and
 parent-child updates. Exact repair continues on this canonical source.
+
+The wave20 full audit reports 196 differing bytes for `00473D60 setup`. That
+row is now scratch and is no longer registered as exact.

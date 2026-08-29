@@ -496,7 +496,7 @@ char* TDropDownPanel::currentLine() {
 void TDropDownPanel::set_tab_order(TPanel* a, TPanel* b) {
     TPanel::set_tab_order(a, b);
     if (this->val_panel != 0) {
-        this->val_panel->set_tab_order((TPanel**)0, (short)0);
+        this->val_panel->set_tab_order((TPanel*)0, (TPanel*)0);
     }
 }
 

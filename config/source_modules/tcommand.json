@@ -17,10 +17,10 @@
       "note_path": "recovery_notes/tcommand_module.md"
     },
     "00509C60": {
-      "status": "scratch"
+      "status": "matching"
     },
     "00509E10": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/tcommand_module.md"
     },
     "0050A010": { "status": "matching" },

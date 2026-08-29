@@ -103,3 +103,8 @@ The full registered-owner candidate changed only this owner: `MISMATCH`, 13
 bytes, with no relocation or boundary error. The restored interior cursor uses
 the proven `0x10` land stride and returns `MATCH`, `0.0000%` for all eight.
 This unusual form remains only for that direct variant evidence.
+
+## Wave20 full-audit reconciliation
+
+The fresh full audit reports a two-byte mismatch for `00485E50
+generate_objects`. That row is scratch and is no longer registered as exact.

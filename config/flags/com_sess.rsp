@@ -1,1 +1,1 @@
-/nologo /c /O2 /Oy /Ithird_party/directplay/include
+/nologo /c /O2 /Oy /D_OLE32_ /Ithird_party/directplay/include

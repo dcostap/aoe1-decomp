@@ -33,7 +33,7 @@ protected:
     void updateDirectory();
 };
 
-int __cdecl compareFilenameStrings(const char* a, const char* b);
+int __cdecl compareFilenameStrings(const void* a, const void* b);
 char driveAsLetter(int value);
 int driveAsInt(char value);
 

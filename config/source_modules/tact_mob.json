@@ -7,7 +7,7 @@
   "functions": {
     "004D0DD0": { "status": "matching" },
     "004D0EB0": {
-      "status": "scratch",
+      "status": "accepted_drift",
       "note_path": "recovery_notes/tact_mob_module.md"
     },
     "004D0EF0": { "status": "matching" },

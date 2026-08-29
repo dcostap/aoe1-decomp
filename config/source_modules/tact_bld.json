@@ -7,7 +7,7 @@
   "functions": {
     "004CD1B0": { "status": "matching" },
     "004CD210": {
-      "status": "accepted_drift",
+      "status": "matching",
       "note_path": "recovery_notes/tact_bld_module.md"
     },
     "004CD2A0": { "status": "matching" },

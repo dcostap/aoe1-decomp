@@ -24,9 +24,10 @@ Exact owners are `0046B0F0`, `0046B270`, `0046B310`, `0046B360`, `0046B550`,
 `0046D270`, `0046D740`, `0046D770`, and `0046DCB0`. The source-module metadata
 lists these exact claims and no others.
 
-Scratch rows are `0046B5E0`, `0046B620`, `0046B6E0`, and `0046D280`.
-`0046D830` remains accepted drift. The final grouped reconciliation promoted
-`0046B680` and `0046DCB0` after both returned `MATCH`, `0.0000%`.
+Scratch rows are `0046B5E0`, `0046B620`, `0046B6E0`, `0046D280`, and
+`0046D830`. The wave20 grouped audit found no emitted `0046D830 copyPath`
+symbol, so accepted drift no longer applies. The final grouped reconciliation
+promoted `0046B680` and `0046DCB0` after both returned `MATCH`, `0.0000%`.
 
 The natural definitions emit VC5 CRT startup and destructor-registration
 helpers. The direct constructor helpers mapped to the old initializer ranges

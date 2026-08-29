@@ -11,11 +11,25 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+- PDB module: `spnl_obj.cpp`; source order is constructor, destructor,
+  `set_master_info`, `draw`, `draw_item`, this function, then
+  `get_pierce_armor`.
+- The owning class is `TRIBE_Scenario_Editor_Panel_Object`.
+- The original body is 24 bytes at `004BF6C0-004BF6D7`.
+- The exact call target is `TPanel::release_mouse` at `00466280`.
+- The original also reads `rge_base_game->prog_mode` at offset `0x1B0`.
+  The read is after the call and before return value publication.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Fresh natural baseline: rebuilt code is 13 bytes with three instructions.
+- The original is 24 bytes with five instructions and no frame.
+- Calls, owner symbol, boundary, cleanup, and the relocated `release_mouse`
+  target match. The first mismatch is offset `+5`.
+- The natural source emits the call, `mov eax,1`, and `ret 0x10`.
+  VC5 removes the unused non-volatile member read.
+- Focused result: `MISMATCH`, 18 differing bytes, 75.0000% positional
+  difference, structural instruction difference.
 
 ## Recovered attempt history
 
@@ -50,16 +64,32 @@ Mapping: `exact`. historical standalone source path names this target VA.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+- A direct `rge_base_game->prog_mode;` expression does not compile because
+  `prog_mode` is protected in the reviewed `RGE_Base_Game` declaration.
+- Earlier standalone and complete-context attempts used volatile fields,
+  volatile references, or a volatile local game pointer. These preserved the
+  read, but changed its destination register or used fake volatility. They
+  are not valid natural source.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+- The original source line 393 causes an unused load of the protected
+  `prog_mode` field. No policy-compliant access path is known in the current
+  natural declarations.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+- Check period source or a reviewed friend/accessor declaration for the
+  original `prog_mode` statement. Do not add a raw offset or volatile stub.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave20-spnl-obj (2026-08-29)
+
+- Kept the initial natural body: `release_mouse(); return 1;`.
+- Recorded a fresh target-session baseline. A direct member-read test was
+  rejected at compile time because `prog_mode` is protected.
+- No source improvement survived the policy review. The target remains
+  unresolved because of the unused `prog_mode` read.
