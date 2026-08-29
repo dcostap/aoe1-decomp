@@ -55,9 +55,9 @@ declarations in `world.h` and `tworld.h` emit pointer `+0xF0`, then integer
 
 The VC5 probe and World, TRIBE, and three registered consumer checks report
 `MATCH`, `0.0000%`. `logStatus` is `protected` in the PDB
-(`world.cpp.asm`, `00540A10`), but `include/world.h:76` places it in the public
-section. Correct that access separately. Access does not alter the decorated
-name, but it records the original class surface.
+(`world.cpp.asm`, `00540A10`), and `include/world.h` now keeps it in the
+protected section. Access does not alter the decorated name, but it records the
+original class surface.
 
 All other World slots are supported by the current declarations: slots 0-39
 cover the protected loader/init surface, slots 41-59 cover the public game
