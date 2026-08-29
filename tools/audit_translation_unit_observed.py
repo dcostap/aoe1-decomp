@@ -145,7 +145,7 @@ def classify(
             reason = "Accepted drift stays closed without specific new evidence."
         else:
             category = "grouped_mismatch"
-            action = "assign_tu_captain"
+            action = "assign_matching_worker"
             reason = "The function is in its natural translation unit but still differs."
     elif result == "NOT_EMITTED":
         if registered_here:
@@ -530,7 +530,7 @@ def build_queue(
             }
         ]
         codegen = [
-            row for row in group_rows if row["recommended_action"] == "assign_tu_captain"
+            row for row in group_rows if row["recommended_action"] == "assign_matching_worker"
         ]
         accepted_holds = [
             row for row in group_rows if row["recommended_action"] == "hold_accepted_drift"
@@ -591,7 +591,7 @@ def queue_text(queue: dict[str, object]) -> str:
     lines = [
         "Translation-unit repair queue",
         f"Groups: {queue['group_count']}",
-        f"Captain tasks: {queue['captain_task_count']}",
+        f"Matching-worker tasks: {queue['captain_task_count']}",
         f"Main-agent tasks: {queue['main_agent_task_count']}",
         "",
     ]

@@ -102,6 +102,7 @@ behavior oracle.
 
 Keep only a better natural reconstruction. Do not retain aliases, fake helpers,
 dummy declarations, volatility, raw offsets, or source tricks for metrics alone.
+Use named fields and record sizes instead of numeric offsets or element strides.
 
 ## Function journal
 
