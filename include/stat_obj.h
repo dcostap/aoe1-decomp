@@ -156,8 +156,9 @@ public:
     virtual int transport(float, float, float, int);
     virtual int stopAction();
     virtual int pause();
-    virtual int canPath(int, float, float*, int, int, int);
+    // VC5 reverses this adjacent overload pair in the original vtable.
     virtual int canPath(XYZPoint, float, int, float*, int, int, int);
+    virtual int canPath(int, float, float*, int, int, int);
     virtual int canBidirectionPath(int, int, float, float*, int, int, int);
     virtual int canPathWithObstructions(int, float, float*, int, int, int,
                                         ManagedArray<int>&);
@@ -191,6 +192,9 @@ public:
     void set_location(float, float, float);
     int isGroupCommander();
     int inGroup();
+    int groupUnitCount();
+    int groupUnitCommand(int, int);
+    int groupUnitCallback(int);
     int unitIsInGroup(int);
     int createGroup(int*, int, int, float);
     int commanderCreateGroup(int*, int, int, float);

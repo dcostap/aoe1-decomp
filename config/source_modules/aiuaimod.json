@@ -6,7 +6,8 @@
   "header": "include/aiuaimod.h",
   "functions": {
     "00412F00": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/aiuaimod_module.md"
     },
     "00413090": {
       "status": "matching"
@@ -16,7 +17,8 @@
       "note_path": "recovery_notes/aiuaimod_module.md"
     },
     "00413450": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/aiuaimod_module.md"
     },
     "00413810": {
       "status": "matching"

@@ -1,9 +1,7 @@
 #include "../include/aiuaimod.h"
-#include "../include/ai_play_phase_command.h"
-#include "../include/ai_play_phase_trigger.h"
-#include "../include/ai_play_phase.h"
 #include "../include/game_globals.h"
 #include "../include/rge_base_game_global.h"
+#include "../include/act_obj.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,42 +12,8 @@
 // aiuaimod.cpp
 // EH frame (/GX)
 
-//
-// Attempt log:
-// - The first isolated typed candidate had the right four calls and layout but
-//   no EH frame. Correcting setAdjustedIdleTimeout to its proven thiscall
-//   member ABI removed the spurious caller push/cleanup.
-// - Modeling the proven ManagedArray<int> member with its inline scalar-delete
-//   destructor restored the original EH frame, 356-byte size, phase local,
-//   delayed vptr position, call-site cleanup, and exact 34-instruction tail.
-// - The current natural source uses the binary-proven novtable/delayed-vptr
-//   surface, scalar initializer list, real managed-array destructor, and
-//   standard new/member-call ABIs. Current best: 356/356 bytes, 4/4 ordered
-//   calls, 95.83% shape, 88 positional differing bytes; the tail from
-//   +0xF4 through +0x164 is exact.
-// - Tried natural compiler-owned vptr, a declaration-only member destructor,
-//   a local allocation result, register-qualified obj, and the template
-//   spelling; none changed the remaining hunk. Original pushes EDI and loads
-//   obj before MOV ESI,this, saves this only before the first allocation, and
-//   keeps push 0x28 after the +0x38..+0x5C stores. VC5 currently moves MOV
-//   ESI,this/EH-local save ahead of PUSH EDI and hoists that argument push.
-// - Added the full UnitAIModule virtual ABI and typed OrderEvent/NotifyEvent
-//   queue surfaces; the emitted constructor stayed identical.
-// - Replaced proven waypoint padding with the typed Waypoint array and last
-//   position aggregate, then typed both queue pointers; both probes stayed
-//   identical. An empty ManagedArray default constructor also had no effect.
-// - Split initializer-list prefixes, a natural zeroing member constructor,
-//   new int[10], and the likely standard-header pair. The split lab found no
-//   exact source; new int[10] and headers emitted the same 88-byte result.
-// - Pausing with the best source: remaining drift is the constructor's first
-//   block liveness/EH scheduling. Calls, layout, size, and tail are aligned.
-//   No inline asm or compiler-only filler used.
-// - Recovered the missing source shape: attackingUnitsValue is constructed
-//   with capacity 10 in the initializer list. Its natural member constructor
-//   zeroes the scalar fields and allocates the initial int storage. This
-//   reproduces the original member-construction EH schedule and MATCHes all
-//   356 bytes. The scalar delete is retained from the exact array destructor
-//   donor, including the original allocation/deallocation mismatch.
+// The shipped constructor uses a real polymorphic UnitAIModule surface.
+// The managed attacking-unit array is a normal member.
 
 
 void* __cdecl operator new(unsigned int size);
@@ -91,19 +55,17 @@ UnitAIModule::UnitAIModule(RGE_Static_Object* obj, int maxQueueSize)
     playStatus = 0;
     stopAfterTargetKilledValue = 0;
 
-    *(void**)this = (void*)0x56EAD8;
-
     if (obj != 0) {
-        objectCategoryValue = obj->master_obj->object_category;
-        defenseBufferValue = obj->master_obj->defense_buffer;
+        objectCategoryValue = obj->master_obj->object_group;
+        defenseBufferValue = obj->master_obj->los;
     }
 
     orderQueueValue = (OrderEvent*)operator new(orderQueueMaxSizeValue * 0x24);
     notifyQueueValue = (NotifyEvent*)operator new(notifyQueueMaxSizeValue * 0x18);
 
-    lastWorldPositionX = -1.0f;
-    lastWorldPositionY = -1.0f;
-    lastWorldPositionZ = -1.0f;
+    lastWorldPositionValue.x = -1.0f;
+    lastWorldPositionValue.y = -1.0f;
+    lastWorldPositionValue.z = -1.0f;
 
     setAdjustedIdleTimeout();
 }
@@ -115,12 +77,8 @@ UnitAIModule::UnitAIModule(RGE_Static_Object* obj, int maxQueueSize)
 
 
 UnitAIModule::~UnitAIModule() {
-    // BINARY NOTE: the constructor uses delayed novtable publication. The
-    // executable restores the base vptr before it reads the first owned queue.
-    OrderEvent* queue;
-    if ((*(void* volatile*)this = (void*)0x56EAD8,
-         queue = *(OrderEvent* volatile*)&orderQueueValue)) {
-        delete queue;
+    if (orderQueueValue) {
+        delete orderQueueValue;
         orderQueueValue = 0;
     }
     if (notifyQueueValue) {
@@ -181,16 +139,16 @@ void UnitAIModule::save(int fd) {
     rge_write(fd, &lookAroundTimeoutValue, 4);
     rge_write(fd, &defendTargetValue, 4);
     rge_write(fd, &defenseBufferValue, 4);
-    rge_write(fd, &lastWorldPositionX, 16);
+    rge_write(fd, &lastWorldPositionValue, 16);
 
     rge_write(fd, &orderQueueSizeValue, 4);
     for (i = 0; i < orderQueueSizeValue; i++) {
-        rge_write(fd, (char*)orderQueueValue + i * 0x24, 0x24);
+        rge_write(fd, &orderQueueValue[i], sizeof(OrderEvent));
     }
 
     rge_write(fd, &notifyQueueSizeValue, 4);
     for (i = 0; i < notifyQueueSizeValue; i++) {
-        rge_write(fd, (char*)notifyQueueValue + i * 0x18, 0x18);
+        rge_write(fd, &notifyQueueValue[i], sizeof(NotifyEvent));
     }
 
     temp = attackingUnitsValue.numberValue;
@@ -225,7 +183,7 @@ void UnitAIModule::save(int fd) {
         playStatus->save(fd);
     }
 
-    rge_write(fd, (char*)this + 0x130, 1);
+    rge_write(fd, &stopAfterTargetKilledValue, 1);
 }
 
 // --- matching/00413450_load.cpp ---
@@ -234,41 +192,7 @@ void UnitAIModule::save(int fd) {
 // EH frame (/GX) — same as ctor/dtor: VC5 only generates with full TU context
 // Also has AIPlayStatus new/construct/load and dual version checks (6.93, 7.02)
 // These require full TU context to match exactly.
-// Attempt log:
-// - Baseline: natural typed field/queue reconstruction was 59 bytes short,
-//   frame 0x2C versus 0x3C, and missed the AIPlayStatus constructor call.
-// - Added the binary-proven AIPlayStatus size/constructor surface and restored
-//   the unconditional load after the new-expression; checking this as the
-//   first structural hypothesis.
-// - Separate serialized count locals, the recipient-offset event overlay, the
-//   positive 6.93 version gate, and an indexed attacking-unit scan recovered
-//   the original call order and block layout.
-// - The local NotifyEvent payload gap is intentional: the 0x24-byte order
-//   read starts at recipient and proves the larger stack window (frame 0x3C).
-// - The equality edge is a binary-proven shared skip-add path. A direct
-//   source label preserves that edge; replacing it with a found flag moved
-//   the compiler into a broader, less faithful basin.
-// - Best current check: 953 rebuilt bytes versus 949, exact frame 0x3C,
-//   39/39 ordered calls, 97.29% exact-block coverage, and 44 edit cost.
-//   Remaining drift starts in the inline attacking-array copy guard: VC5 emits
-//   `test ebp/jle` for the current natural do/while shape while the oracle has
-//   `cmp eax,ebp/jge`; the late suffix is otherwise an exact aligned island.
-// - Pausing in scratch after the bounded 10 meaningful hypotheses; next lead
-//   is a natural two-bound copy-loop spelling, not frame padding or volatility.
-// - Replaced the grow-copy do/while with the same-TU matched ManagedArray
-//   for-loop: a separate capacity guard and new-size guard reproduce the
-//   binary's `cmp eax,ebp/jge` block and exact 949-byte function.
-// - Exact candidate: frame, 39 ordered calls, CFG, boundary, and all 949 bytes
-//   match under the existing /GX response file.
-
-
-extern float save_game_version;
-
 void __cdecl rge_read(int fd, void* data, int size);
-
-struct LoadNotifyEvent : NotifyEvent {
-    char loadPayloadGap[0x10];
-};
 
 void UnitAIModule::load(int fd) {
     int numberNotifies;
@@ -279,7 +203,9 @@ void UnitAIModule::load(int fd) {
     int local_3c;
     int tempInt;
     int j;
-    LoadNotifyEvent tempNotify;
+    OrderEvent tempOrder;
+    NotifyEvent tempNotify;
+    int hasPlayStatus;
 
     rge_read(fd, &moodValue, 4);
     rge_read(fd, &currentOrderValue, 4);
@@ -311,15 +237,15 @@ void UnitAIModule::load(int fd) {
 
     rge_read(fd, &defendTargetValue, 4);
     rge_read(fd, &defenseBufferValue, 4);
-    rge_read(fd, &lastWorldPositionX, 16);
+    rge_read(fd, &lastWorldPositionValue, 16);
 
     // Read order queue
     rge_read(fd, &numberNotifies, 4);
     iVar5 = 0;
     if (numberNotifies > 0) {
         do {
-            rge_read(fd, &tempNotify.recipient, 0x24);
-            addToOrderQueue((OrderEvent*)&tempNotify.recipient, 0);
+            rge_read(fd, &tempOrder, sizeof(tempOrder));
+            addToOrderQueue(&tempOrder, 0);
             ++iVar5;
         } while (iVar5 < numberNotifies);
     }
@@ -329,8 +255,8 @@ void UnitAIModule::load(int fd) {
     iVar5 = 0;
     if (i > 0) {
         do {
-            rge_read(fd, &tempNotify.recipient, 0x18);
-            addToNotifyQueue((NotifyEvent*)&tempNotify.recipient);
+            rge_read(fd, &tempNotify, sizeof(tempNotify));
+            addToNotifyQueue(&tempNotify);
             ++iVar5;
         } while (iVar5 < i);
     }
@@ -371,8 +297,8 @@ attacking_unit_already_present:
     }
 
     // Read playStatus
-    rge_read(fd, &tempNotify, 4);
-    if (tempNotify.caller == 1) {
+    rge_read(fd, &hasPlayStatus, 4);
+    if (hasPlayStatus == 1) {
         playStatus = new AIPlayStatus();
         playStatus->load(fd);
     }
@@ -613,101 +539,8 @@ int UnitAIModule::numberAttackingUnits() const {
 // VA: 00413AB0 UnitAIModule::update (1372 bytes)
 // aiuaimod.cpp:612-1069
 // Typed period-plausible reconstruction of the main AI update tick.
-//
-// Attempt log:
-// - Replaced the old raw-offset placeholder with the observed UnitAIModule,
-//   RGE_Static_Object, action-list, and ManagedArray ownership surfaces.
-// - Baseline follows the oracle's target cleanup, attacking-unit validation,
-//   notify/order queue passes, idle timeout, and look-around tail.
-// - Reordered the overloaded moveTo declarations so the four-float target
-//   retry reaches vslot +0x90; inlined the object range expression and fixed
-//   the priority formula to 100.0f / distance, capped at 99.
-// - Modeled the two ManagedArray growth/removal paths and the out-of-line
-//   notify error purge. Ten bounded hypotheses are now exhausted; the typed
-//   reconstruction has the oracle's 37 behavior-backed call operations (the
-//   two queue callbacks are still classified as extra virtual slots after
-//   hoisting), 1473 bytes vs the oracle's 1372, and 1325 positional diff bytes.
-// Main-agent source audit: named the observed Static_Object virtual methods
-// (weaponRange, underAttack, setUnderAttack, setWaitingToMove, and
-// waitingToMove) and replaced the remaining numeric slot labels through the
-// proven +0x130 surface. Current post-audit check is 1469 bytes, 39 calls,
-// and 76.66% shape; the queue-callback topology remains unresolved.
-// Shard B pass: direct purge-and-return on notify result 4 is the natural
-// oracle-supported form and improved the best diff from 1325 to 1314 bytes.
-// Pointer-to-virtual-member callbacks emitted direct thunks and four extra
-// calls, so they were rolled back. A raw vtable callback kept the same call
-// map but changed cleanup and worsened the shape, so it was also rolled back.
-// Shard B narrow control probe: processNotify and processOrder are unconditional
-// callback loops whose bounds test supplies the empty-queue behavior. Removing
-// the two source preconditions aligned all 37 ordered calls and raised shape
-// similarity to 84.85%; the remaining drift is not a call-order gap.
-//
-// Follow-up probes:
-// - The reviewed extern FILE* actionFile declaration reduced the natural source
-//   to the exact 1372-byte boundary. Positive objectValue guards and one shared
-//   target log/stop tail remain binary-supported in this basin.
-// - Reversing the final look-around comparison to timer > timeout recovered the
-//   original load order and raised shape to 90.89%; the source still has 458
-//   instructions versus 461 and 1173 strict diff bytes.
-// - A for-loop scan improved raw diff to 1114 bytes but moved the operator[]
-//   growth block to a cold suffix. It was rolled back because the oracle keeps
-//   that block before the lookup path. Volatility, register hints, explicit
-//   labels, and alternate remove forms were also tested and discarded.
-// - Direct currentOrder reloads removed an artificial live temporary and
-//   reduced the strict diff to 1038 bytes. Binary evidence then fixed
-//   weaponRange(1), the 100.0f data symbol, and a named distance float.
-// - Two direct action-log calls tail-merge to the oracle's immediate 0x335 and
-//   0x356 pushes. The invalid-attacker remove path breaks to the timer tail;
-//   it does not retest the attacking-unit loop.
-// - Current reduced check: 1372 bytes, 37 calls, 463 versus 461 instructions,
-//   97.62% shape, 88.29% exact-block coverage, and 256 strict diff bytes.
-// - Captain repair: the target-killed retry calls moveTo with force flag 1.
-//   This matches the original push at +0142 and reduces the grouped diff to
-//   226 bytes with 95.23% exact-block coverage.
-//   BINARY NOTE: the first remaining block is +03A2. The oracle adds the
-//   secondary and look-around timers, tests notify size, then stores all three
-//   timers. The current source stores idle first and clears the offset register
-//   before that test. Do not retain a metric-only scheduling workaround.
-// - Accepted-drift audit: do not promote. The executable reads notifyQueueSize
-//   before publishing the updated idle timer. The rebuild publishes idle first.
-//   The executable also writes currentOrderPriority to a stack home before later
-//   helper calls; the rebuild omits that helper-visible stack publication.
-// - Specialist audit: moving offset initialization into the positive notify
-//   guard changed the CFG and grew the body to 1417 bytes. Expanded timer
-//   assignments, an idle-timer local, split order-loop declarations, and an
-//   unused current-order local either duplicated the clean output or were
-//   optimized away. Retain the clean natural source while this blocker remains.
-// - Authentic-context pass: the complete PDB prefix through this owner now
-//   compiles from canonical owner includes. Every exact anchor stays exact.
-//   The accepted save drift and this owner's bytes also stay unchanged.
-//   The prefix uses /O2 /Oy /GX, as required by three exact early owners.
-//   Thus, missing prefix context does not cause the timer publication drift.
-//   Extending the prefix through 00414800 also leaves this body unchanged.
-// - The canonical declaration also restores the PDB-qualified nonvirtual
-//   `?update@UnitAIModule@@QAEHK@Z` owner. The prior virtual declaration had
-//   the same code bytes but the wrong owning symbol.
-// - The later five-argument moveTo owner proves the canonical virtual ABI.
-//   This call uses a binary-proven four-argument beta view at the same slot.
-// - Typed notify and order indexing is required. VC5 derives the 0x18 and 0x24
-//   byte induction variables after each initial bound test. This recovers the
-//   executable's timer publication order and both queue-loop stack lifetimes.
-// - Current reduced check: 1372 bytes, 37 aligned calls, 463 instructions,
-//   98.27% shape, 95.23% exact-block coverage, and 226 strict diff bytes.
-//   BLOCKER: the executable publishes currentOrder to the incoming parameter
-//   home before the post-queue state guard. Natural tail locals and parameter
-//   assignments are removed by VC5. The rebuild therefore stays seven bytes
-//   short at +0467 and speculates one later currentAction read.
-
-
-
-#define taskedThisUpdate (*(int*)0x592A48)
-#define searchedThisUpdate (*(int*)0x592A4C)
-#define numberVisibleObjects (*(int*)0x592A50)
-#define numberDifferentPlayerObjectsVisible (*(int*)0x592A54)
-extern FILE* actionFile;
-extern float DAT_0056ebc0;
-#define actionFormat ((const char*)0x57F964)
-#define actionSource ((const char*)0x57F980)
+// Natural update pass. The remaining nonexact behavior is recorded in the
+// module recovery note.
 
 int UnitAIModule::update(unsigned long param_1)
 {
@@ -724,7 +557,7 @@ int UnitAIModule::update(unsigned long param_1)
     numberVisibleObjects = 0;
     numberDifferentPlayerObjectsVisible = 0;
 
-    haveGameAction = this->objectValue->actions->have_action();
+    haveGameAction = ((RGE_Action_Object*)this->objectValue)->actions->have_action();
     if (haveGameAction == 0 && this->objectValue->waitingToMove() == 1) {
         this->objectValue->setWaitingToMove(0);
     }
@@ -743,8 +576,8 @@ int UnitAIModule::update(unsigned long param_1)
                     } else {
                         objectID = i;
                     }
-                    fprintf(actionFile, actionFormat, objectID,
-                            actionSource, 0x306);
+                    fprintf(actionFile, str_fmt_stopObject, objectID,
+                            str_aiuaimod_path, 0x306);
                 }
                 this->stopObject(1);
                 this->idleTimerValue = this->idleTimeoutValue;
@@ -770,9 +603,9 @@ int UnitAIModule::update(unsigned long param_1)
                                         } else {
                                             targetLogObjectID = i;
                                         }
-                                        fprintf(actionFile, actionFormat,
+                                        fprintf(actionFile, str_fmt_stopObject,
                                                 targetLogObjectID,
-                                                actionSource, 0x335);
+                                                str_aiuaimod_path, 0x335);
                                     }
                                     this->stopObject(1);
                                 } else {
@@ -794,8 +627,8 @@ int UnitAIModule::update(unsigned long param_1)
                             } else {
                                 targetLogObjectID = i;
                             }
-                            fprintf(actionFile, actionFormat, targetLogObjectID,
-                                    actionSource, 0x356);
+                            fprintf(actionFile, str_fmt_stopObject,
+                                    targetLogObjectID, str_aiuaimod_path, 0x356);
                         }
                         this->stopObject(1);
                     }
@@ -838,9 +671,9 @@ int UnitAIModule::update(unsigned long param_1)
         }
     }
 
-    this->lastWorldPositionX = this->objectValue->world_x;
-    this->lastWorldPositionY = this->objectValue->world_y;
-    this->lastWorldPositionZ = this->objectValue->world_z;
+    this->lastWorldPositionValue.x = this->objectValue->world_x;
+    this->lastWorldPositionValue.y = this->objectValue->world_y;
+    this->lastWorldPositionValue.z = this->objectValue->world_z;
     this->idleTimerValue += param_1;
     this->secondaryTimerValue += param_1;
     this->lookAroundTimerValue += param_1;
@@ -924,80 +757,11 @@ update_tail:
     return 1;
 }
 
-#undef taskedThisUpdate
-#undef searchedThisUpdate
-#undef numberVisibleObjects
-#undef numberDifferentPlayerObjectsVisible
-#undef actionFormat
-#undef actionSource
-
 // --- scratch/00414040_updateGroup.cpp ---
 // VA: 00414040 UnitAIModule::updateGroup (1831B)
 // aiuaimod.cpp
-// Attempt log:
-// - Replaced the unrelated placeholder with a typed reconstruction from the
-//   play-status, group-member, and phase-trigger ownership in the binary.
-// - Baseline follows the original three trigger checks, group rebuild path,
-//   and phase-255 group fill path. Exact codegen remains under investigation.
-// - Corrected object virtual slots (+1B8, +1BC, +1C8), target coordinates,
-//   world_time at +04, and the groupList+1 member array from the assembly.
-// - Separated the dead-group count from its eight-byte grouping scan offset.
-// - Eight probes reached exact call-set parity, but the remaining gap is a
-//   broad VC5 frame and block-layout difference. No productive codegen lead
-//   remains in this assignment.
-// - Tried the period ManagedArray<int>::operator[] donor at both the first
-//   comparison and the later lookup. The repeated operator[] added one growth
-//   call pair and was rolled back.
-// - Kept operator[] only for the first comparison and phase-255 member read;
-//   direct value access remains after the separate resize call. This improved
-//   the structural check to 1714 differing bytes with exact call parity.
-// - Tried initializing the typed groupList sentinel before the phase-255 fill;
-//   the original zero store supports this group-layout hypothesis.
-// - Rolled back the sentinel initialization: it worsened the positional diff
-//   from 1714 to 1767 bytes and increased the rebuilt size by four bytes.
-// - This claim tested the combined outer play guard, array-pointer and loop-index
-//   spellings, and a repeated phase-command temporary. The best emitted code
-//   stayed at 1714 differing bytes and 42 aligned calls.
-// - Reversing the equivalent distance threshold improved resync similarity but
-//   worsened positional equality to 1762 bytes; restored the clean source.
-// - This claim tested 24 distinct structural, lifetime, ABI, and layout probes.
-// - Directly rereading currentPhaseValue removed its stack byte and reduced the
-//   diff to 1646 bytes. Branch-local member results in trigger types 8 and 9
-//   reduced it to 1611 bytes and kept the source natural.
-// - Removing dead play initialization and testing a 52-entry groupList reached
-//   the best provisional metric: 1601 bytes, exact 0xFC frame, 42 calls.
-//   The 52-entry array is not retained because the binary does not prove it.
-// - The clean 50-entry array now gives 1602 bytes, frame 0xF4, and 42 calls.
-// - Positive guard forms, integer target-ID typing, local declaration scopes,
-//   loop-form changes, address aliases, a volatile diagnostic, and threshold
-//   variants either duplicated output or worsened the result.
-// - Restored the PDB-listed gatherDistance as the distance result local. The
-//   reversed distance > threshold form recovers the original fcompp/test 41h
-//   x87 predicate shape and reduced the clean diff to 1600 bytes.
-// - Restored the PDB-listed newTarget, groupCount, and a locals. A dedicated i
-//   counter for the three-trigger phase loop moved the frame to 0xF8 and the
-//   diff to 1598 bytes. A typed int* group-list cursor raises shape similarity
-//   to 75.25% with 27.38% exact-block coverage.
-// - BINARY NOTE: the phase-255 path zeros all five totalHitPoints entries.
-//   It indexes that typed array by group and publishes totalHitPoints[i].
-//   The group-list cursor starts at groupList + 1 and advances after each
-//   member. These forms preserve the observed typed array addresses.
-// - Open blocker: the executable frame is 0xFC and this natural source frame
-//   is 0xF8. The first mismatch remains the prologue. Direct calls and their
-//   order match, but broad control-flow drift remains.
-// MANAGEDARRAY AUDIT: group-member growth guards, copies, publication, resize,
-// value reads, and field offsets follow the expected template behavior. No
-// shared template change is required.
-// BLOCKER: The executable frame is 0xFC and the natural source frame is 0xF8.
-// A 52-entry group list fixes only the frame and adds unsupported local storage.
-// Broad CFG drift also remains despite all 42 calls aligning.
-// Canonical-context pass: this owner uses the PDB aiuaimod.cpp surfaces and
-// the real bestUnitToAttack slot at vtable +0x30. The source has 42 direct
-// calls in the oracle order. The full prefix through 00414800 keeps this body
-// in the same code-generation basin. Do not change 00413AB0 queue indexing
-// or its timer and current-order publication while testing this owner.
-// - Captain probe: a separate initial-target local was codegen-identical and
-//   was restored. The grouped result remains 1520 differing bytes, 0xF8 frame.
+// Natural group update. It remains an observed scratch owner.
+// The source uses the proven play-status and group-member fields.
 
 
 void UnitAIModule::updateGroup(unsigned long param_1)
@@ -1031,9 +795,6 @@ void UnitAIModule::updateGroup(unsigned long param_1)
 
                     object = this->objectValue;
                     if (object->groupMembers[memberIndex] != object->id) {
-                        if (object->groupMembers.maximumSizeValue - 1 < memberIndex) {
-                            object->groupMembers.resize(memberIndex + 1);
-                        }
                         object = this->lookupObject(
                             object->groupMembers.value[memberIndex]);
                         if (object != 0 && object->unitAI() != 0) {
@@ -1104,7 +865,7 @@ foundTrigger:
                 do {
                     RGE_Static_Object* member = this->lookupObject(*group);
                     totalHitPoints[this->playStatus->group(*group)] +=
-                        (int)member->hitPoints;
+                        (int)member->hp;
                     --remaining;
                     ++group;
                 } while (remaining != 0);
@@ -1136,13 +897,12 @@ foundTrigger:
                             if (command != -1) {
                                 AIPlayPhaseCommand* phaseCommand =
                                     phase->command(command);
-                                int groupingOffset = 0;
+                                int groupingIndex = 0;
                                 while (triggerSatisfied != 0 &&
-                                       groupingOffset < 400) {
-                                    AIPlayGrouping* grouping =
-                                        (AIPlayGrouping*)((char*)this->playStatus +
-                                                          groupingOffset);
-                                    if (grouping->groupValue == a) {
+                                       groupingIndex < 50) {
+                                    AIPlayStatus::GroupingStruct* grouping =
+                                        &this->playStatus->groupings[groupingIndex];
+                                    if (grouping->groupID == a) {
                                         RGE_Static_Object* member =
                                             this->lookupObject(grouping->id);
                                         if (member != 0) {
@@ -1160,7 +920,7 @@ foundTrigger:
                                             }
                                         }
                                     }
-                                    groupingOffset += 8;
+                                    groupingIndex++;
                                 }
                             }
                             ++a;
@@ -1173,12 +933,11 @@ foundTrigger:
                     case 2: {
                         int matchingGroups = 0;
                         int deadGroups = 0;
-                        int groupingOffset = 0;
+                        int groupingIndex = 0;
                         do {
-                            AIPlayGrouping* grouping =
-                                (AIPlayGrouping*)((char*)this->playStatus +
-                                                  groupingOffset);
-                            if ((unsigned int)grouping->groupValue ==
+                            AIPlayStatus::GroupingStruct* grouping =
+                                &this->playStatus->groupings[groupingIndex];
+                            if ((unsigned int)grouping->groupID ==
                                 (unsigned int)trigger->value1()) {
                                 ++matchingGroups;
                                 RGE_Static_Object* member =
@@ -1187,8 +946,8 @@ foundTrigger:
                                     ++deadGroups;
                                 }
                             }
-                            groupingOffset += 8;
-                        } while (groupingOffset < 400);
+                            groupingIndex++;
+                        } while (groupingIndex < 50);
                         if (matchingGroups != 0 &&
                             trigger->value2() <= (deadGroups * 100) /
                                 matchingGroups) {
@@ -1198,21 +957,20 @@ foundTrigger:
                     }
                     case 3: {
                         int lostHitPoints = 0;
-                        int groupingOffset = 0;
+                        int groupingIndex = 0;
                         do {
-                            AIPlayGrouping* grouping =
-                                (AIPlayGrouping*)((char*)this->playStatus +
-                                                  groupingOffset);
-                            if ((unsigned int)grouping->typeValue ==
+                            AIPlayStatus::GroupingStruct* grouping =
+                                &this->playStatus->groupings[groupingIndex];
+                            if ((unsigned int)grouping->type ==
                                 (unsigned int)trigger->value1()) {
                                 RGE_Static_Object* member =
                                     this->lookupObject(grouping->id);
                                 if (member != 0) {
-                                    lostHitPoints += (int)member->hitPoints;
+                                    lostHitPoints += (int)member->hp;
                                 }
                             }
-                            groupingOffset += 8;
-                        } while (groupingOffset < 400);
+                            groupingIndex++;
+                        } while (groupingIndex < 50);
                         int original = this->playStatus->originalHitPoints(
                             trigger->value1());
                         if (trigger->value2() <=
@@ -1225,15 +983,14 @@ foundTrigger:
                     }
                     case 8: {
                         triggerSatisfied = 1;
-                        int groupingOffset = 0;
+                        int groupingIndex = 0;
                         do {
                             if (triggerSatisfied == 0) {
                                 break;
                             }
-                            AIPlayGrouping* grouping =
-                                (AIPlayGrouping*)((char*)this->playStatus +
-                                                  groupingOffset);
-                            if ((unsigned int)grouping->groupValue ==
+                            AIPlayStatus::GroupingStruct* grouping =
+                                &this->playStatus->groupings[groupingIndex];
+                            if ((unsigned int)grouping->groupID ==
                                     (unsigned int)trigger->value1()) {
                                 RGE_Static_Object* member =
                                     this->lookupObject(grouping->id);
@@ -1241,32 +998,31 @@ foundTrigger:
                                     triggerSatisfied = 0;
                                 }
                             }
-                            groupingOffset += 8;
-                        } while (groupingOffset < 400);
+                            groupingIndex++;
+                        } while (groupingIndex < 50);
                         break;
                     }
                     case 9: {
                         triggerSatisfied = 1;
-                        int groupingOffset = 0;
+                        int groupingIndex = 0;
                         do {
                             if (triggerSatisfied == 0) {
                                 break;
                             }
-                            AIPlayGrouping* grouping =
-                                (AIPlayGrouping*)((char*)this->playStatus +
-                                                  groupingOffset);
-                            if ((unsigned int)grouping->typeValue ==
+                            AIPlayStatus::GroupingStruct* grouping =
+                                &this->playStatus->groupings[groupingIndex];
+                            if ((unsigned int)grouping->type ==
                                     (unsigned int)trigger->value1()) {
                                 RGE_Static_Object* member =
                                     this->lookupObject(grouping->id);
                                 if (member != 0 &&
-                                    (int)member->hitPoints <
-                                        member->master_obj->maximumHitPoints) {
+                                    (int)member->hp <
+                                        member->master_obj->hp) {
                                     triggerSatisfied = 0;
                                 }
                             }
-                            groupingOffset += 8;
-                        } while (groupingOffset < 400);
+                            groupingIndex++;
+                        } while (groupingIndex < 50);
                         break;
                     }
                     case 10:
@@ -1302,42 +1058,7 @@ foundTrigger:
 // aiuaimod.cpp
 // Period-plausible reconstruction of play-phase command selection.
 //
-// Attempt log:
-// - Replaced the raw-pointer placeholder with typed playbook, phase-command,
-//   group-member, and UnitAIModule ownership.
-// - The source keeps all 25 ordered calls and the original direct-call ABI set.
-// - Binary tests covered branch shape, loop form, local scope, point layout,
-//   coordinate load order, vtable context, and case-5 result lifetime.
-// - The case-5 scan uses groupValue at grouping offset +4. The original loads
-//   this byte before lookup. It reuses param_1 for the found object id.
-// - The case-5 scan increments its 8-byte cursor after the body and compares
-//   it with 0x190.
-// - The member filter uses a nested guard and reuses param_1 for the group
-//   byte. The original writes that value before group() and compares it after.
-// - The play number is read before the object/world/playbook receiver.
-// - The case-1 phase byte is a narrow local. The case-3 value is loaded before
-//   unitAI(). Cases 4 and 8 load their integer fields before unitAI().
-// - The case-5 scan uses a while loop. This emits the original jl backedge.
-// - Case 5 reads found->hitPoints and master_obj->maximumHitPoints. These are
-//   the object and master fields proven by the corrected canonical ABI.
-// - The current natural source is 1216 rebuilt bytes versus 1298 original
-//   bytes, with a 0x2C frame and 934 strict differing bytes.
-// - Direct order calls improved shape but added one virtual call. They were
-//   not retained because the original has 25 ordered calls.
-//
-// Current status: structural reconstruction remains incomplete. Keep this
-// readable common-tail source as the best behavior-backed candidate.
-// MANAGEDARRAY AUDIT: group-member capacity checks, resize calls, value reads,
-// and field offsets follow the expected template behavior. No shared template
-// change is required.
-// BLOCKER: The rebuild is 82 bytes short, with a 0x2C frame versus 0x44 and 34
-// fewer instructions. Broad register and local-lifetime recovery remains
-// incomplete despite all 25 calls aligning.
-// Canonical-context pass: this owner now uses the PDB aiuaimod.cpp surfaces.
-// Its 1216-byte body, 0x2C frame, 25 calls, and 934-byte diff stay unchanged.
-// The corrected object and master hit-point fields follow updateGroup.
-
-
+// Natural phase selection. It remains an observed scratch owner.
 int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
 {
     int phase = 0;
@@ -1394,10 +1115,6 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                 RGE_Static_Object* member = this->objectValue;
                 if (member->groupMembers.numberValue > 0) {
                     do {
-                        if (i > member->groupMembers.maximumSizeValue - 1) {
-                            member->groupMembers.resize(i + 1);
-                        }
-
                         member = this->lookupObject(
                             member->groupMembers.value[i]);
                         if (member != 0 && member->unitAI() != 0) {
@@ -1461,9 +1178,9 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                 orderZ = -1.0f;
                                 break;
                             case 4: {
-                                int pointX = this->playStatus->originalPointX;
-                                int pointY = this->playStatus->originalPointY;
-                                int pointZ = this->playStatus->originalPointZ;
+                                int pointX = this->playStatus->originalPointValue.xValue;
+                                int pointY = this->playStatus->originalPointValue.yValue;
+                                int pointZ = this->playStatus->originalPointValue.zValue;
                                 orderAction = 0x2C6;
                                 param_1 = -1;
                                 orderTargetOwner = -1;
@@ -1475,21 +1192,21 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                             }
                             case 5: {
                                 param_1 = -1;
-                                int groupingOffset = 0;
-                                while (groupingOffset < 0x190) {
-                                    AIPlayGrouping* grouping =
-                                        (AIPlayGrouping*)((char*)this->playStatus + groupingOffset);
-                                    if (grouping->groupValue == command->value1()) {
+                                int groupingIndex = 0;
+                                while (groupingIndex < 50) {
+                                    AIPlayStatus::GroupingStruct* grouping =
+                                        &this->playStatus->groupings[groupingIndex];
+                                    if (grouping->groupID == command->value1()) {
                                         RGE_Static_Object* found =
                                             this->lookupObject(grouping->id);
                                         if (found != 0 &&
-                                            (int)found->hitPoints + 1 <
-                                                found->master_obj->maximumHitPoints) {
+                                            (int)found->hp + 1 <
+                                                found->master_obj->hp) {
                                             param_1 = found->id;
                                             break;
                                         }
                                     }
-                                    groupingOffset += 8;
+                                    groupingIndex++;
                                 }
                                 if (param_1 == -1) {
                                     goto next_member;
@@ -1539,65 +1256,18 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
     return 1;
 }
 
-// --- scratch/00414D40_order.cpp ---
+// --- accepted_drift/00414D40_order.cpp ---
 // VA: 00414D40 UnitAIModule::order(int,int,int,int,float,float,float,float,int,int,int)
 // aiuaimod.cpp
-// Attempt log:
-// - Baseline: typed direct-call reconstruction; exact size/call set, but VC5 saves
-//   EDI at entry while the original delays it until the nonzero-p9 path.
-// - Tried p2 directly, a block-local orderType, early-return versus explicit-else
-//   layout, positive state guard, <3 versus <=2, corrected virtual return types,
-//   and stdio context. These emitted the same best nonexact code (except <3,
-//   which changed the compare immediate); no source-shape lead remains in this
-//   isolated TU.
-// - Follow-up session probes: a branch-local p2 copy, an address-taken p2 alias,
-//   register/const p2 qualifiers, and /GX all emitted the same code. A natural
-//   switch(p9) worsened size/call alignment and was rolled back. The remaining
-//   structural gap is the original's delayed push edi after the p9 test versus
-//   VC5's entry push edi; no ABI/layout or ordered-call discrepancy was found.
-// - Fresh normal-414D40-r1 pass: baseline reconfirmed the 306-byte, 8-call
-//   canonical source. Separate branch-local copies, a top-level guard-bound
-//   copy, a single-iteration loop, a common done label, and positive-guard
-//   if/else layout were all codegen duplicates. The delayed EDI save remains
-//   the only actionable gap; the clean direct-parameter source is restored.
-// - Added the full proven UnitAIModule virtual surface and typed 0x24-byte
-//   OrderEvent; corrected the same-TU owner return surface. No bytes changed.
-// - Expanded the local class to the proven UnitAIModule field layout. All
-//   eight ordered calls and the 277-byte mismatch stayed unchanged.
-// - Fresh shardE baseline reconfirmed the same 306-byte source and 8-call
-//   surface. A volatile state byte, an inline identity helper around p2, and
-//   a branch-local p10 copy all emitted the same code. A size-optimization
-//   pragma changed the basin to 297 bytes and was rolled back.
-// - Restored the canonical source. The remaining evidence-backed blocker is
-//   VC5's entry push edi versus the oracle's branch-local push edi; ABI,
-//   layout, ordered calls, and all later blocks remain aligned.
-// - Best canonical source retained: positive state guard, direct p2 use, typed
-//   object/member ownership, real virtual calls, and standard FILE/fprintf ABI.
-// - Managed pass probes: split p2 into branch-local orderType copies, move the
-//   nonzero-path copy after the p10 call, and add windows.h context. All were
-//   codegen duplicates. Restored the canonical source; delayed EDI remains
-//   unresolved and requires a compiler/TU-context lead, not a semantic change.
-// - Revisit probes added stdlib.h, then string.h with stdio.h, and split the
-//   late orderType declaration from its assignment. All stayed at 306 bytes,
-//   eight ordered calls, and the same 277-byte mismatch. The natural typed
-//   dispatch remains the clean source.
-// - Final revisit validation: the restored source still has the exact 306-byte
-//   boundary and eight ordered calls. The only structural gap is VC5's entry
-//   push edi versus the original branch-local push edi; no policy-valid source
-//   lead was found.
-// Scratch status: the original saves EDI only on the nonzero-p9 path, while
-// the rebuild saves it at entry. This is broad stack and block-layout drift.
-// A fresh early-invalid-state return probe reproduced the same allocation.
-// Canonical-context pass: this owner now uses the shared aiuaimod.cpp surface.
-// Its 306-byte boundary, eight calls, symbol, and 277-byte drift stay unchanged.
-// Adding this owner changes updateGroup scheduling but not its recorded metrics.
-
-
-
-extern FILE* actionFile;
-extern const char str_fmt_stopObject[];
-extern const char str_aiuaimod_path[];
-
+// The source keeps the proven order dispatch and call sequence.
+// ACCEPTED DRIFT: the original saves EDI only on the nonzero-p9 path. The
+// rebuild saves it at entry. This shifts parameter displacements but each of
+// the three addToOrderQueue calls receives the same typed arguments. The only
+// other instruction difference replaces a dead p10 register load with a direct
+// stack compare. All eight calls, predicates, queue effects, logging, virtual
+// dispatches, return values, register restoration, and fault order match.
+// Size and CFG match. Each path balances its own saved registers and arguments.
+// This function has no SEH.
 int UnitAIModule::order(int p1, int p2, int p3, int p4, float p5, float p6, float p7, float p8, int p9, int p10, int p11)
 {
     if (this->objectValue->object_state <= 2) {
@@ -1643,15 +1313,7 @@ int UnitAIModule::order(int p1, int p2, int p3, int p4, float p5, float p6, floa
 // --- matching/00414E80_notify.cpp ---
 // VA: 00414E80 notify (177B)
 // aiuaimod.cpp
-// 2026-05-24 Boss pass: replaced placeholder with full behavior from packet. Baseline decompiler-shaped source reached exact size but 67.2316% positional, first mismatch +25 due parameter/register coloring and list-scan topology. Tried msg/target locals in both orders, register locals, direct parameter expressions, original if/else shape, several loop forms (while/do/continue), positive 1FB guard, currentAction local, direct addToNotifyQueue args, explicit max/array locals, volatile/raw-offset variants, goto-fail/shared tail, no-else/break form, and delayed target load. Best kept source (explicit msg/target plus max/arr locals and do loop) improves to 18.6441% positional / 28.8136% edit, first mismatch +25. Remaining drift is register-coloring (msg/target/max/array in different registers), list-scan block shape, and equivalent final addToNotifyQueue argument registers; not accepted_drift-quality because differences are broad control-flow/register topology, not localized benign drift.
-// 2026-05-26 Boss pass: matched on try 3. Negative probes: target-before-msg local order
-// moved first diff but still wrong final arg registers; hoisting n/max/arr locals failed/regressed.
-// Winning shape preserves msg then target locals, but rewrites the 0x2BB scan as an explicit
-// `while(1)` with `if(i>=max) goto fail2; ... if(i<n) continue; return 0;` and a separate
-// `fail2: return 0;`. This recovers the original loop block order/register coloring and final
-// addToNotifyQueue pushes. MATCH.
-// PDB FPO and vtable evidence prove the public virtual UAE owner. The prior
-// isolated declaration emitted exact body bytes under the wrong QAE symbol.
+// The public notify owner uses the canonical event and queue surface.
 
 
 int UnitAIModule::notify(int param_1, int param_2, int param_3, long param_4, long param_5, long param_6)
@@ -1707,11 +1369,6 @@ int UnitAIModule::notifyCommander(NotifyEvent* event) {
 // --- matching/00414F70_notifyCommander.cpp ---
 // VA: 00414F70 UnitAIModule::notifyCommander(int,int,int,long,long,long)
 // aiuaimod.cpp
-// attempt 1: packet-grounded natural UnitAIModule/RGE_Static_Object surfaces, padded virtual slots for NotifyEvent (+0xD0) and owner notify (+0xE8).
-// Canonical-context audit: +0xD0 is processGroupNotify. The RGE_Player +0xE8
-// call is notify. These PDB-backed names preserve the exact seven-call body.
-
-
 int UnitAIModule::notifyCommander(int a1, int a2, int a3, long a4, long a5, long a6)
 {
     NotifyEvent nEvent;
@@ -1745,13 +1402,7 @@ int UnitAIModule::notifyCommander(int a1, int a2, int a3, long a4, long a5, long
 // --- matching/00415040_search.cpp ---
 // VA: 00415040 UnitAIModule::search()
 // aiuaimod.cpp
-// attempt 2: direct branch-local GetVisibleUnits calls to avoid stack locals; rely on VC5 right-to-left argument setup/tail merging.
-
-#define searchedThisUpdate (*(int*)0x592A4C)
-#define numberVisibleObjects (*(int*)0x592A50)
-
-
-#define VisibleUnitManager (*(Visible_Unit_Manager**)0x87D800)
+// Direct typed visible-unit calls preserve the original call order.
 
 void UnitAIModule::search()
 {
@@ -1773,7 +1424,7 @@ void UnitAIModule::search()
                 numberVisibleObjects = VisibleUnitManager->GetVisibleUnits(
                     (int)obj->world_x,
                     (int)obj->world_y,
-                    (int)obj->master_obj->range,
+                    (int)obj->master_obj->los,
                     obj->owner->id,
                     this->importantObjects,
                     this->numberImportantObjects,
@@ -1785,7 +1436,7 @@ void UnitAIModule::search()
 
     obj = this->objectValue;
     master = obj->master_obj;
-    range = (int)master->range;
+    range = (int)master->los;
     if (master->id == 0x76)
         range += range;
 
@@ -1834,40 +1485,7 @@ int UnitAIModule::actionRequiresLiveTarget(int actionId) {
 // PDB OWNER: ?bestUnitToAttack@UnitAIModule@@UAEHHHPAM@Z
 // PDB MODULE: aiuaimod.cpp, lines 2014-2462; body 004151B0-00415A07.
 // `UnitAIModule::update` is a separate owner at 00413AB0-0041400B.
-// Attempt log:
-// - Reconstructed the visible-unit scan, current-target retention, and score
-//   passes from the executable. The current source is not exact.
-// - BINARY NOTE: slot +10C is called without pushes for range tests.
-// - BINARY NOTE: three later slot +10C calls push four path arguments.
-//   The source uses a narrow casted surface for those calls.
-// - BINARY NOTE: the +3C counter uses dword inc, so it is an int.
-// - BINARY NOTE: the final group value is sign-extended to an int.
-// - BINARY NOTE: the threat gate uses test and jle, which proves <= 0.
-// - BINARY NOTE: the second scan stores the selected ID and building flag
-//   into separate locals.
-// - Tested 21 distinct hypotheses. Calls now align 49/49 and the frame is
-//   0x38, but strict drift remains 1748 bytes (81.8352%).
-// - Main remaining leads are table-symbol ownership, local-home coloring,
-//   and the final x87 score-compare form.
-// - Acceptance blocker: during score division by target hit points, the
-//   executable keeps the numerator in x87 extended precision across the
-//   hit-point test and uses FXCH/FDIV. The rebuild spills the numerator to a
-//   32-bit float home before division. Boundary scores can select a different
-//   target. The rebuild still differs in the related x87 spill and branch
-//   topology.
-// - BINARY NOTE: the current-target distance score is divided only when the
-//   float distance is positive. This restores the +15665 guard and its two
-//   denominator paths; the second scan uses distance only for range filtering.
-// - Canonical prefix through this owner emits the same bytes as its standalone
-//   build. The authentic score and x87 context does not change this function.
-//   PDB FPO proves the public virtual UAE owner.
-// - PDB and the 49 ordered calls prove this owner is bestUnitToAttack, not update.
-// - Inclusive outer bounds and the candidate hit-point local improved structure.
-//   Other x87, local-reuse, and ABI probes were restored when they moved bytes
-//   farther from the executable.
-
-extern int DAT_0087d7c8[5];
-extern VisibleUnitEntry* DAT_0087d7e0[5];
+// Natural visible-unit scoring pass. It remains an observed scratch owner.
 
 int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
 {
@@ -1909,12 +1527,12 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
             maxReactDistance = difficulty == 3 ? 75 : 50;
         }
         modifier = (int)((float)maxReactDistance *
-                         this->objectValue->master_obj->field_28 * DAT_0056ebc4);
+                         this->objectValue->master_obj->los * DAT_0056ebc4);
         if (modifier < 1) {
             modifier = 1;
         }
     } else {
-        modifier = ((int)this->objectValue->master_obj->field_28) * 2;
+        modifier = ((int)this->objectValue->master_obj->los) * 2;
     }
 
     numberNonCurrentTargets = -1;
@@ -1940,17 +1558,17 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
 
     for (i = 4; i >= 2; --i) {
         j = 0;
-        if (DAT_0087d7c8[i] > 0) {
+        if (VisibleUnitList_Size[i] > 0) {
             do {
                 RGE_Static_Object* target =
-                    world->object(DAT_0087d7e0[i][j].object_id);
+                    world->object(VisibleUnitList[i][j].object_id);
                 if (target != 0 && target->object_state <= 2 &&
                     this->objectValue->owner->isAlly(target->owner->id) != 1 &&
                     target->inside_obj == 0 &&
                     ((param_1 != 0 && numberObjectsInRange != 0) ||
                      target->master_obj->object_group != 0x1B) &&
                     ((target->master_obj->object_group != 3 ||
-                      target->hitPoints > 1.0f ||
+                      target->hp > 1.0f ||
                       (this->objectValue->master_obj->id != 0x23 &&
                        this->objectValue->master_obj->id != 0x24))) &&
                     this->canAttackUnit(target) != 0 &&
@@ -1959,7 +1577,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                          target->master_obj->object_group) != 0)) {
                     distance = this->objectValue->distance_to_object(target);
                     if (this->objectValue->minimumWeaponRange() <= distance &&
-                        modifier >= DAT_0087d7e0[i][j].distance) {
+                        modifier >= VisibleUnitList[i][j].distance) {
                         if (target->id != this->currentTargetValue) {
                             ++currentTargetIsWall;
                         }
@@ -1982,7 +1600,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                     }
                 }
                 ++j;
-            } while (j < DAT_0087d7c8[i]);
+            } while (j < VisibleUnitList_Size[i]);
         }
     }
 
@@ -2019,8 +1637,8 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                         (RGE_Master_Combat_Object*)this->objectValue->master_obj);
                 numberMovingTargets =
                     (float)numberObjectsInRange * DAT_0056ebc0 + numberMovingTargets;
-                if (target->hitPoints > DAT_0056ebc8) {
-                    numberMovingTargets /= target->hitPoints;
+                if (target->hp > DAT_0056ebc8) {
+                    numberMovingTargets /= target->hp;
                 }
                 distance = target->distance_to_object(this->objectValue);
                 if (distance > DAT_0056ebc8) {
@@ -2061,17 +1679,17 @@ skipCurrentTarget:
 
     for (i = 4; i >= 2; --i) {
         j = 0;
-        if (DAT_0087d7c8[i] > 0) {
+        if (VisibleUnitList_Size[i] > 0) {
             do {
                 RGE_Static_Object* target =
-                    world->object(DAT_0087d7e0[i][j].object_id);
+                    world->object(VisibleUnitList[i][j].object_id);
                 if (target != 0 && target->object_state <= 2 &&
                     this->objectValue->owner->isAlly(target->owner->id) != 1 &&
                     target->inside_obj == 0 &&
                     ((param_1 != 0 && numberObjectsInRange != 0) ||
                      target->master_obj->object_group != 0x1B) &&
                     ((target->master_obj->object_group != 3 ||
-                      target->hitPoints > 1.0f ||
+                      target->hp > 1.0f ||
                       (this->objectValue->master_obj->id != 0x23 &&
                        this->objectValue->master_obj->id != 0x24))) &&
                     this->canAttackUnit(target) != 0 &&
@@ -2080,11 +1698,11 @@ skipCurrentTarget:
                          target->master_obj->object_group) != 0)) {
                     float distance = this->objectValue->distance_to_object(target);
                     if (this->objectValue->minimumWeaponRange() <= distance &&
-                        modifier >= DAT_0087d7e0[i][j].distance &&
+                        modifier >= VisibleUnitList[i][j].distance &&
                         (param_2 != 1 || this->objectValue->inAttackRange(target) != 0)) {
                         if (param_2 == 0 && this->objectValue->inAttackRange(target) == 0 &&
                             this->objectValue->canPath(
-                                DAT_0087d7e0[i][j].object_id,
+                                VisibleUnitList[i][j].object_id,
                                     this->objectValue->weaponRange(), 0, 0, -1, -1) == 0) {
                             goto skipTarget;
                         }
@@ -2094,16 +1712,16 @@ skipCurrentTarget:
                                 (float)target->master_obj->calc_base_damage_ability(
                                     (RGE_Master_Combat_Object*)this->objectValue->master_obj) * DAT_0056ebc0 +
                                 threat;
-                            float hitPoints = target->hitPoints;
+                            float hitPoints = target->hp;
                             if (hitPoints > DAT_0056ebc8) {
                                 score /= hitPoints;
                             }
-                            if (DAT_0087d7e0[i][j].distance != 0) {
-                                score /= (float)DAT_0087d7e0[i][j].distance;
+                            if (VisibleUnitList[i][j].distance != 0) {
+                                score /= (float)VisibleUnitList[i][j].distance;
                             }
                             if (numberDamagingUnits > 1) {
                                 int distanceValue =
-                                    DAT_0087d7e0[i][j].distance;
+                                    VisibleUnitList[i][j].distance;
                                 score /= (float)(distanceValue * distanceValue *
                                                   distanceValue);
                             }
@@ -2115,7 +1733,7 @@ skipCurrentTarget:
                                    (float)score >
                                        (float)numberMovingTargets)))) {
                                 numberNonCurrentTargets =
-                                    DAT_0087d7e0[i][j].object_id;
+                                    VisibleUnitList[i][j].object_id;
                                 currentTargetIsBuilding = (group == 3);
                                 numberMovingTargets = score;
                             }
@@ -2125,7 +1743,7 @@ skipCurrentTarget:
 
 skipTarget:
                 ++j;
-            } while (j < DAT_0087d7c8[i]);
+            } while (j < VisibleUnitList_Size[i]);
         }
     }
 
@@ -2135,31 +1753,8 @@ skipTarget:
 // --- matching/00415A10_mostDangerousEnemy.cpp ---
 // VA: 00415A10 UnitAIModule::mostDangerousEnemy
 // aiuaimod.cpp
-// Retry 2026-05-26: rebuilt full behavior with lookupObject, objectValue virtual threat calls, FPU compare, and outThreat store.
-// Best result: exact size 188B, MISMATCH 73 positional / 20 edit bytes, first mismatch +40.
-// Tried 10 variants: nested virtual call vs temp float, explicit actionObj local, owner local, master local order, threat2 short vs int,
-// direct global id expression vs id temp, idx temp for best update, objectValue direct reload vs saved local, and loop/source order changes.
-// Left in scratch: remaining drift is localized codegen/register coloring and one-byte branch-distance shifts in the per-object threat block:
-// rebuilt keeps master in EDI and vtable in EBX while original keeps master in EBX and vtable in EDI; update block loads global/index in
-// opposite order. Behavior/calls/stack cleanup/FPU compare look equivalent, but not proposing accepted_drift because drift spans register
-// allocation throughout the central virtual-call block rather than a tiny isolated encoding difference.
-// Luna415A10 pass: baseline rebuilt to 189B under the stricter boundary/call checker; old 188B cache
-// had truncated the final ret operand. Direct loop-index ID spelling was codegen-duplicate.
-// Unified objectValue/target as the proven polymorphic RGE_Static_Object surface and typed owner as
-// RGE_Player*; both were codegen-duplicate. A focused central lab showed direct master/owner member
-// access is the clean best source: 68 positional / 13 edit bytes, 98.53% shape, 189B.
-// Update-order lab found pointer-local and volatile-index forms alter the prologue; the volatile-index
-// probe regressed to 84 bytes. Restored the direct nonvolatile ID expression; remaining drift is the
-// two independent update-block loads (original index-before-global, rebuilt global-before-index).
-// Main-agent audit replaced literal absolute dereferences with the established shared globals and
-// modeled the 8-byte lookup entry. That natural declaration context recovered exact load order,
-// register allocation, branch distances, and 188/188-byte equality.
+// Natural threat scoring pass. It remains an observed scratch owner.
 
-
-struct UnitAIObjectEntry {
-    int object_id;
-    int unknown;
-};
 
 int UnitAIModule::mostDangerousEnemy(float* outThreat) {
     search();
@@ -2167,21 +1762,21 @@ int UnitAIModule::mostDangerousEnemy(float* outThreat) {
     int best = -1;
     float bestThreat = 0.0f;
     int i = 0;
-    if ((int)DAT_0087d7d8 > 0) {
+    if (VisibleUnitList_Size[4] > 0) {
         do {
-            RGE_Static_Object* obj = lookupObject(((UnitAIObjectEntry*)DAT_0087d7f0)[i].object_id);
+            RGE_Static_Object* obj = lookupObject(VisibleUnitList[4][i].object_id);
             if (obj) {
                 float f = objectValue->calculateDamage(
                     ((RGE_Master_Combat_Object*)obj->master_obj)->weapon_num,
                     ((RGE_Master_Combat_Object*)obj->master_obj)->weapon,
-                    objectValue->calc_attack_modifier(obj, obj->owner, obj));
+                    objectValue->calc_attack_modifier(obj), obj->owner, obj);
                 if (best == -1 || f > bestThreat) {
                     bestThreat = f;
-                    best = ((UnitAIObjectEntry*)DAT_0087d7f0)[i].object_id;
+                    best = VisibleUnitList[4][i].object_id;
                 }
             }
             i++;
-        } while (i < (int)DAT_0087d7d8);
+        } while (i < VisibleUnitList_Size[4]);
     }
 
     if (outThreat) {
@@ -2203,18 +1798,18 @@ int UnitAIModule::weakestEnemy(float* outHp) {
     int bestId = -1;
     float bestHp = 0.0f;
     int i = 0;
-    if ((int)DAT_0087d7d8 > 0) {
+    if (VisibleUnitList_Size[4] > 0) {
         do {
-            int id = *(int*)((char*)DAT_0087d7f0 + i * 8);
+            int id = VisibleUnitList[4][i].object_id;
             RGE_Static_Object* obj = this->lookupObject(id);
             if (obj != 0) {
-                if (bestId == -1 || obj->hitPoints < bestHp) {
-                    bestHp = obj->hitPoints;
-                    bestId = *(int*)((char*)DAT_0087d7f0 + i * 8);
+                if (bestId == -1 || obj->hp < bestHp) {
+                    bestHp = obj->hp;
+                    bestId = VisibleUnitList[4][i].object_id;
                 }
             }
             i++;
-        } while (i < (int)DAT_0087d7d8);
+        } while (i < VisibleUnitList_Size[4]);
     }
     if (outHp != 0) {
         *outHp = bestHp;
@@ -2225,24 +1820,7 @@ int UnitAIModule::weakestEnemy(float* outHp) {
 // --- matching/00415B50_closestAttacker.cpp ---
 // VA: 00415B50 UnitAIModule::closestAttacker (328B)
 // aiuaimod.cpp:2579-2600
-//
-// Attempt log:
-// - Replaced the former placeholder with the binary-supported attacking-units
-//   ManagedArray<int> surface, owner/world object lookup, distance comparison,
-//   selected-ID tracking, and optional float output.
-// - Baseline: period utmarray.h inline operator[] growth body and a positive-
-//   count do/while scan; exact call set, but the distance local was optimized
-//   into the x87 stack and the frame was four bytes short.
-// - Promoted distance to a function-scope local and reversed selected-ID versus
-//   threshold assignment order. This restored the separate FPU spill, frame,
-//   CFG, call-site relocations, and all late blocks.
-// - A volatile-distance diagnostic confirmed the spill cause but was removed.
-//   Declaration/init permutations and a focused six-case init-order lab did not
-//   produce the oracle's store order.
-// - Reordered the local declarations to selected ID, threshold, loop index,
-//   distance, matching the same-TU weakestEnemy donor's declaration style. This
-//   preserved the natural source and emitted the oracle's sentinel-before-zero
-//   stores exactly: MATCH (328/328 bytes, 6/6 calls, default flags).
+// The source uses the canonical managed array and object fields.
 
 
 int UnitAIModule::closestAttacker(float* attackDistance) {
@@ -2278,29 +1856,8 @@ int UnitAIModule::closestAttacker(float* attackDistance) {
 // --- matching/00415CA0_closestObject.cpp ---
 // VA: 00415CA0 UnitAIModule::closestObject (420B)
 // aiuaimod.cpp:2606-2741
-//
-// Attempt log:
-// - Replaced the placeholder with the binary-supported visible-unit bucket
-//   scan, per-player marker array, owner/object/type filters, closest-distance
-//   selection, global visibility count, and optional output conversion.
-// - Baseline uses named typed visible-unit records and the period UnitAIModule
-//   search/evasive virtual surfaces; retain later probe notes after compiling.
-// - Reusing objectsOfPlayer[0] as a saved-this alias reproduced the oracle's
-//   0x30 frame, but main-agent audit rejected that parameter-home compiler
-//   steering. The living source keeps direct this access and canonical player
-//   marker ownership even though VC5 uses a less favorable frame basin.
-// - Reversed closest-ID/distance assignment order, reused loop indices, and
-//   tested typed DAT_0087d7c8/DAT_0087d7e0 table declarations; none changed the
-//   remaining schedule. Absolute-address table macros and cached self/object
-//   temporaries worsened the frame or block shape and were rolled back.
-// - Main-agent normalization to a nine-entry, directly indexed player-marker
-//   array unexpectedly recovered the final scheduling hunk: exact 420-byte
-//   MATCH with the complete 3/3 ordered call sequence.
+// The source scans the canonical visible-unit result arrays.
 
-
-extern int DAT_0087d7c8[5];
-extern VisibleUnitEntry* DAT_0087d7e0[5];
-extern int numberDifferentPlayerObjectsVisible;
 
 int UnitAIModule::closestObject(int param_1, int param_2, int param_3,
                                 int param_4, int* param_5) {
@@ -2317,14 +1874,14 @@ int UnitAIModule::closestObject(int param_1, int param_2, int param_3,
     int category;
     for (category = 0; category <= 4; ++category) {
         i = 0;
-        if (DAT_0087d7c8[category] > 0) {
+        if (VisibleUnitList_Size[category] > 0) {
             do {
-                objectsOfPlayer[DAT_0087d7e0[category][i].owner] = 1;
+                objectsOfPlayer[VisibleUnitList[category][i].player] = 1;
                 if (this->objectValue->id !=
-                    DAT_0087d7e0[category][i].object_id) {
+                    VisibleUnitList[category][i].object_id) {
                     RGE_Static_Object* object =
                         this->objectValue->owner->world->object(
-                            DAT_0087d7e0[category][i].object_id);
+                            VisibleUnitList[category][i].object_id);
                     if (object != 0 && object->object_state < 7) {
                         if ((param_2 != 0 || category == 2 || category == 1) &&
                             (param_2 != 2 || category == 4) &&
@@ -2335,15 +1892,15 @@ int UnitAIModule::closestObject(int param_1, int param_2, int param_3,
                             (param_4 == -1 || object->master_obj->id == param_4) &&
                             (param_3 == -1 || object->object_state == param_3)) {
                             if (closestObjectID == -1 ||
-                                (float)DAT_0087d7e0[category][i].distance < closestDistance) {
-                                closestObjectID = DAT_0087d7e0[category][i].object_id;
-                                closestDistance = (float)DAT_0087d7e0[category][i].distance;
+                                (float)VisibleUnitList[category][i].distance < closestDistance) {
+                                closestObjectID = VisibleUnitList[category][i].object_id;
+                                closestDistance = (float)VisibleUnitList[category][i].distance;
                             }
                         }
                     }
                 }
                 ++i;
-            } while (i < DAT_0087d7c8[category]);
+            } while (i < VisibleUnitList_Size[category]);
         }
     }
 
@@ -2366,18 +1923,6 @@ int UnitAIModule::closestObject(int param_1, int param_2, int param_3,
 // rejecting already-tested resources until the object's path test succeeds.
 // The 100-entry list is initialized to the historical 0x80000000 sentinel;
 // the resource distance is returned through the optional integer output.
-//
-// Attempt log:
-// - Replaced the stale placeholder with the binary-supported visible-resource
-//   query, object path gate, distance check, and reject-list behavior.
-// - A do/infinite-loop spelling caused VC5 to peel the first query; the
-//   bounded while form restored one shared call site and the original CFG.
-// - Naming the append cursor and incrementing the reject count before storing
-//   the rejected ID reproduced the original EBP/EDI update order. MATCH.
-
-extern float DAT_0056ebe0;
-
-
 int UnitAIModule::closestResourceObject(int resourceType, int* distance) {
     int excludeList[100];
     int* nextExclude = excludeList;
@@ -2420,8 +1965,6 @@ int UnitAIModule::closestResourceObject(int resourceType, int* distance) {
 }
 
 // --- matching/00415F40_closestUndiscoveredTile.cpp ---
-
-extern int __cdecl debug_rand(char* param_1, int param_2);
 
 int UnitAIModule::closestUndiscoveredTile(int* param_1, int* param_2, int param_3) {
     RGE_Static_Object* object;
@@ -2507,7 +2050,7 @@ int UnitAIModule::closestUndiscoveredTile(int* param_1, int* param_2, int param_
         point.x = *param_1;
         point.y = *param_2;
         point.z = (int)object->world_z;
-        return object->canPathPoint(point, object->master_obj->los - 1.0f,
+        return object->canPath(point, object->master_obj->los - 1.0f,
                                     -1, (float*)&param_1, 0, -1, -1);
     }
 
@@ -2593,19 +2136,6 @@ int UnitAIModule::canAttackUnitAtNeutrality(int) {
 // --- matching/004162C0_stopObject.cpp ---
 // VA: 004162C0 stopObject (118B)
 // aiuaimod.cpp
-//
-// Attempt log:
-// - Existing scratch was a near match (2 bytes diff): saving currentOrderValue into an `order` local before
-//   storing currentOrderValue=-1 made VC5 use eax for the copied value, while original reloads through ecx in
-//   the reset block.
-// - SpruceGlow try 1 MATCH: assign `lastOrderValue = currentOrderValue;` directly before `currentOrderValue = -1`.
-//   This lets VC5 use ecx for the member reload/store pair exactly as original.
-// Result: MATCH locally with `python tools/check_function.py --va 004162C0`.
-
-
-extern FILE* actionFile;
-
-
 int UnitAIModule::stopObject(int param) {
     if (actionFile != 0) {
         fprintf(actionFile, "t%ld, U#%d sO, cOAA=%d.\n",
@@ -2686,18 +2216,6 @@ int UnitAIModule::attackRoundupObject(int targetId) {
 // - objectValue's can-hunt operation is virtual slot +164.
 // - A successful lookup supplies target group and world coordinates to the
 //   five-argument setCurrentTarget helper; a null lookup uses -1 and zeros.
-//
-// Attempt log:
-// - Baseline: natural typed reconstruction reached the exact size/frame/call
-//   surface; only the logging null-test block was laid out with the opposite
-//   branch polarity.
-// - Inverted the logging test to keep the non-null ID load in the fallthrough
-//   block and the null -1 assignment in the late JE target. MATCH.
-
-
-extern FILE* actionFile;
-
-
 int UnitAIModule::huntObject(int param_1, int param_2) {
     if (param_2 != 0 || this->currentActionValue != 0x265) {
         if (actionFile != 0) {
@@ -2835,10 +2353,6 @@ int UnitAIModule::repairObject(int targetId, int flag)
 // --- matching/004167D0_buildObject.cpp ---
 // VA: 004167D0 buildObject (148B)
 // Based on matched gatherObject sibling; action 0x25A and vcall +0x174.
-// Attempt log:
-// try 1: replaced raw helper shim with typed/nested-success form from matched gatherObject.
-
-
 int UnitAIModule::buildObject(int targetId, int flag) {
     if (flag != 0 || currentActionValue != 0x25A) {
         int result = objectValue->build(targetId, flag);
@@ -2865,13 +2379,6 @@ int UnitAIModule::buildObject(int targetId, int flag) {
 // FLAGS: default
 // MATCH: 0.0000% (148/148 bytes exact)
 //
-// Key insights:
-// - tradeWithObject IS virtual (UAEH mangling), giving class a vtable pointer at +0x00
-// - canTrade at vtable+0x178 = slot 94: need 94 filler virtual slots via __declspec(novtable)
-// - Inverted condition: if(flag || action != 267) { if(canTrade==1) { ... } else return0; } else return0;
-//   This forces VC5 to use shared return-0 epilogue instead of inline
-
-
 int UnitAIModule::tradeWithObject(int targetId, int flag)
 {
     if (flag != 0 || this->currentActionValue != 0x267) {
@@ -2968,14 +2475,6 @@ int UnitAIModule::unload(int id, float x, float y)
 // --- matching/00416AF0_moveTo.cpp ---
 // VA: 00416AF0 UnitAIModule::moveTo
 // aiuaimod.cpp lines 3386-3404
-//
-// Attempt log:
-// - Initial scratch was a free-function/raw-call implementation and not in the right thiscall/member-call surface.
-// - Natural member-call source nearly matched immediately, but the first local layout had objectValue/currentActionValue
-//   shifted by +4. Correcting UnitAIModule so objectValue is at +0x04 and currentActionValue at +0x30 produced exact code.
-// Result: MATCH locally with `python tools/check_function.py --va 00416AF0`.
-
-
 int UnitAIModule::moveTo(int targetId, int flag) {
     if (flag || this->currentActionValue == -1) {
         if (this->objectValue->moveTo(targetId, flag) == 1) {
@@ -2995,10 +2494,6 @@ int UnitAIModule::moveTo(int targetId, int flag) {
 // --- matching/00416B80_moveTo.cpp ---
 // VA: 00416B80 UnitAIModule::moveTo(int,float,int)
 // aiuaimod.cpp lines 3410-3428
-// Retry 2026-05-19: replace raw __fastcall/free-function body with natural member-call surface
-// copied from matched 00416AF0 shape and adjusted for 3-arg virtual canMoveTo.
-
-
 int UnitAIModule::moveTo(int targetId, float range, int flag) {
     if (flag || this->currentActionValue == -1) {
         if (this->objectValue->moveTo(targetId, range, flag) == 1) {
@@ -3034,22 +2529,6 @@ int UnitAIModule::moveTo(float param_1, float param_2, float param_3, float para
 // --- matching/00416C80_evasiveMoveTo.cpp ---
 // VA: 00416C80 UnitAIModule::evasiveMoveTo (674 bytes)
 // aiuaimod.cpp lines 3453-3514.
-//
-// Attempt log:
-// - The old scratch was a decompiler-shaped raw-vtable version. It passed the
-//   receiver explicitly, used the wrong unsigned absolute-value arithmetic for
-//   the jitter, and introduced a second slot-114 call at the rotated loop tail.
-// - Current reconstruction restores the period typed object surface, signed
-//   power-of-two remainder expressions, direct map ownership, and positive
-//   guard/ordinary top-tested retry structure. The two incoming float homes are
-//   intentionally mutated because the oracle writes them at +4/+8.
-// - Typed player/world/map ownership plus shared DAT_0056ebc8/DAT_0056ebd0
-//   constants reproduce the direct FPU memory operands; immediate 0.0f stores
-//   remain separate. Final check: MATCH, 674/674 bytes, default flags.
-
-
-extern "C" int __cdecl debug_rand(const char* file, int line);
-
 int UnitAIModule::evasiveMoveTo(float x, float y, float z, int flag)
 {
     if (flag != 0 || this->currentActionValue == -1) {
@@ -3118,30 +2597,8 @@ int UnitAIModule::evasiveMoveTo(float x, float y, float z, int flag)
 // VA: 00416F30 UnitAIModule::intelligentEvasiveMoveTo (666 bytes)
 // aiuaimod.cpp:3520-3629
 //
-// BINARY NOTE: The target is the UnitAIModule owner in the aiuaimod.cpp
-// sequence. Its point probe, path retry, publication, and failure exits stay
-// in this source. The unusual x87 order follows the executable.
+// Natural evasive movement. It remains an observed scratch owner.
 //
-// BINARY NOTE: This owner follows 004151B0 in the PDB order. The shared
-// UnitAIModule declaration keeps the qualified owner and the 00413AB0 update
-// owner canonical. Do not replace it with a local vtable scaffold.
-//
-// BINARY NOTE: The target has a 0x14 frame, four saved registers, 220
-// instructions, and ten ordered calls. The current clean source keeps these
-// properties, but the checker still reports a 445-byte positional mismatch.
-//
-// Attempt log:
-// - Positive and early-return guard forms emitted the same code.
-// - Declaration scope and order, pointZ scope, register forceFlag, and typed
-//   self/object aliases did not change the 445-byte codegen basin or lost the
-//   canonical virtual calls.
-// - A final point.z reread reduced the frame and worsened the CFG. The source
-//   keeps pointZ because the original has a separate point-z home.
-// - The canonical shared context changed no bytes, but it restored the real
-//   UnitAIModule owner. No inline assembly, volatility, config, or shared-file
-//   edits were used.
-
-
 int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
                                             int targetId, int forceFlag)
 {
@@ -3175,7 +2632,7 @@ int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
     pointZ = (int)this->objectValue->world_z;
     point.z = pointZ;
 
-    if (this->objectValue->canPathPoint(point, 1.0f, -1, 0, 0, -1, -1) == 0) {
+    if (this->objectValue->canPath(point, 1.0f, -1, 0, 0, -1, -1) == 0) {
         facet = -1;
         baseDistance = this->objectValue->distance_to_position(
             x, y, this->objectValue->world_z);
@@ -3234,7 +2691,7 @@ int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
                 continue;
             }
 
-            if (this->objectValue->canPathPoint(point, 1.0f, -1, 0, 0, -1, -1) == 1) {
+            if (this->objectValue->canPath(point, 1.0f, -1, 0, 0, -1, -1) == 1) {
                 break;
             }
         }
@@ -3255,20 +2712,6 @@ int UnitAIModule::intelligentEvasiveMoveTo(float x, float y, float z,
 // --- matching/004171F0_runAwayFromAttackers.cpp ---
 // VA: 004171F0 UnitAIModule::runAwayFromAttackers (357B)
 // aiuaimod.cpp:3634-3678
-//
-// Attempt log:
-// - Replaced the placeholder with the binary-supported early guard, attacking-
-//   units ManagedArray<int> scan, world-object lookup, accumulated coordinate
-//   deltas, float range getter, normalized retreat point, and evasiveMoveTo call.
-// - Baseline below follows the exact same-TU typed surfaces and utmarray.h
-//   inline growth body; initial body was 2 bytes over size and spilled the
-//   range factor after the x87 sum.
-// - Initializing xDiff/yDiff before the loop index restored the oracle's
-//   immediate zero stores. Binding `range * 4.0f` at the maximumSpeed call kept
-//   the scaled getter live through sqrt and reproduced the complete FPU tail.
-//   MATCH (357/357 bytes, 5/5 calls, default flags).
-
-
 #pragma intrinsic(sqrt)
 
 int UnitAIModule::runAwayFromAttackers(int param_1) {
@@ -3356,10 +2799,6 @@ int UnitAIModule::defendObject(int id, float distance, int allow_when_busy) {
 // --- matching/00417440_defendPosition.cpp ---
 // defendPosition: aiuaimod.cpp lines 3733-3747
 // __thiscall, virtual (but we don't rely on virtual here)
-// Direct transcription of original asm.
-// Attempt 1: straightforward implementation with minimal stubs.
-
-
 int UnitAIModule::defendPosition(float x, float y, float distance, int flag) {
     // Guard: if (flag == 0 && currentActionValue != -1) return 0;
     if (flag == 0 && this->currentActionValue != -1) {
@@ -3513,10 +2952,7 @@ int UnitAIModule::isNeutralOwner(int player_id) {
 // __thiscall with 3 params: RGE_Visible_Map* param_1, int param_2 (x), int param_3 (y)
 // ret 0Ch = 3 params cleaned.
 // Similar to get_visible but accessed via this->objectValue->owner instead of direct player.
-// Use #define for absolute address, load-order matching, branch-free explored path.
-
-#define unified_map_offsets ((unsigned long**)0x886808)
-
+// The map offset table is the canonical view provider.
 
 unsigned char UnitAIModule::visibleStatus(class RGE_Visible_Map* param_1, int param_2, int param_3) {
     unsigned long cell = unified_map_offsets[param_3][param_2];
@@ -3552,12 +2988,7 @@ int UnitAIModule::convertToLOSResourceType(int) {
 // --- matching/004177D0_setPlayStatus.cpp ---
 // UnitAIModule::setPlayStatus
 // VA: 004177D0 (131 bytes, EH-framed)
-// Attempt log:
-// - Previous fake-dtor/raw-call source forced an EH frame but used wrong prologue order, extra EDI, indirect call wrappers,
-//   and broad stack drift.
-// - 2026-05-10 StarryZephyr pass: rewrote as natural typed AIPlayStatus new/copy under /GX. This recovers the original
-//   prologue family, no extra EDI, new-expression shape, direct ctor/copy calls, and exact byte count. Remaining mismatch
-//   is still broad tail scheduling around common join/new result store.
+// Natural play-status setter.
 
 void* __cdecl operator new(unsigned int sz);
 
@@ -3574,10 +3005,7 @@ void UnitAIModule::setPlayStatus(AIPlayStatus* status) {
 // --- matching/00417860_lookAround.cpp ---
 // VA: 00417860 UnitAIModule::lookAround
 // PDB: aiuaimod.cpp lines 3949-3987
-// Attempt: canonical visible-unit bucket scan; tuning against VC5 codegen.
-// Exact: the terminal count/list globals are the last elements of the five-bucket
-// VisibleUnitList_Size/VisibleUnitList arrays established by GetVisibleUnits; this
-// method scans the two terminal buckets with the binary-proven byte offsets.
+// The method scans the two terminal visible-unit buckets.
 
 
 int __cdecl debug_rand(char* file, int line);
@@ -3594,9 +3022,9 @@ void UnitAIModule::lookAround()
     ownerID = owner->id;
     world = owner->world;
 
-    for (int off = 0; off > -8; off -= 4) {
-        for (int j = 0; j < *(int*)((char*)&DAT_0087d7d8 + off); ++j) {
-            VisibleUnitEntry* entries = *(VisibleUnitEntry**)((char*)&DAT_0087d7f0 + off);
+    for (int category = 4; category > 2; --category) {
+        for (int j = 0; j < VisibleUnitList_Size[category]; ++j) {
+            VISIBLE_UNIT_REC* entries = VisibleUnitList[category];
             RGE_Static_Object* obj = world->object(entries[j].object_id);
             if (obj != 0 && obj->object_state <= 2) {
                 this->objectValue->owner->notify(obj_id, ownerID, 0x20D,
@@ -3614,14 +3042,6 @@ void UnitAIModule::lookAround()
 // 00417920 hasOrderOnQueue (53B, aiuaimod.cpp)
 // Searches an array of OrderEvent structs (stride 0x24) for a matching order type.
 // Returns 1 if found, 0 if not.
-//
-// Attempt log:
-// - Best version: while(1) + if(i < count) continue; return 0;
-// - Prologue/loads/cmp first 0x17 bytes match perfectly
-// - Remaining: bottom-of-loop uses jge+jmp instead of jl (VC5 loop inversion)
-// - Same codegen pattern as inGroup (0040A420)
-
-
 int UnitAIModule::hasOrderOnQueue(int param_1) {
     int count = this->orderQueueSizeValue;
     int index = 0;
@@ -3637,32 +3057,8 @@ int UnitAIModule::hasOrderOnQueue(int param_1) {
 // --- matching/00417960_askForHelp.cpp ---
 // VA: 00417960 UnitAIModule::askForHelp(int) (493B)
 // aiuaimod.cpp:4005-4113
-//
-// Attempt log:
-// - Replaced the placeholder with the binary-supported visible-unit bucket
-//   scan.  The caller object is looked up first, then the five populated
-//   visible-unit buckets are searched for nearby idle allied units.
-// - The natural typed array form with repeated entry expressions reproduces
-//   the 493-byte frame/size and all 15 ordered calls; a saved object-id local
-//   collapsed the pointer/index schedule and was rolled back.
-// - Binary evidence fixes the state guard at <= 2 and this routine's outer
-//   scan at the two populated buckets (the emitted byte-offset loop compares
-//   its cursor with 4).  The late scan and final dispatch blocks now align.
-// - Fresh TU pass: declaring targetAI before the caller Y local reproduces the
-//   unitAI call, Y load, and final push schedule. The mismatch falls to two
-//   stack-displacement bytes at 00417AEA and 00417AFF.
-// - An explicit cdecl slot-10c method ABI was tested because the original
-//   post-call homes are 12 bytes higher. It worsened the structural match and
-//   was rolled back. Keep the natural typed thiscall surface.
-// - Direct callerObject->world_y arguments and a top-level uninitialized Y
-//   local both duplicate the two-byte result. Keep direct typed member reads.
-// - Main-agent audit corrected slot +0x10C to weaponRange() and moved the three
-//   pending stack arguments into the complete eleven-argument order ABI.
-// - Binary stack order confirms those pending values are 1, 0, and 0x32;
-//   keeping weaponRange() argument-free and the complete order ABI matches.
+// The source scans the two canonical visible-unit result buckets.
 
-
-extern float DAT_0056ebec;
 
 void UnitAIModule::askForHelp(int caller)
 {
@@ -3673,13 +3069,13 @@ void UnitAIModule::askForHelp(int caller)
         int category = 0;
         do {
             int i = 0;
-            if (((int*)&DAT_0087d7cc)[category] > 0) {
+            if (VisibleUnitList_Size[category + 1] > 0) {
                 do {
                     if (this->objectValue->id !=
-                        ((VisibleUnitEntry**)&DAT_0087d7e4)[category][i].object_id) {
+                        VisibleUnitList[category + 1][i].object_id) {
                         RGE_Static_Object* object =
                             this->lookupObject(
-                                ((VisibleUnitEntry**)&DAT_0087d7e4)[category][i].object_id);
+                                VisibleUnitList[category + 1][i].object_id);
                         if (object != 0 && object->unitAI() != 0) {
                             RGE_Player* owner = object->owner;
                             if (owner != 0 && object->object_state <= 2) {
@@ -3716,7 +3112,7 @@ void UnitAIModule::askForHelp(int caller)
                         }
                     }
                     ++i;
-                } while (i < ((int*)&DAT_0087d7cc)[category]);
+                } while (i < VisibleUnitList_Size[category + 1]);
             }
             ++category;
         } while (category <= 1);
@@ -3728,76 +3124,14 @@ void UnitAIModule::askForHelp(int caller)
 // aiuaimod.cpp
 // Period-plausible reconstruction of the UnitAIModule order dispatcher.
 //
-// Attempt log:
-// - Replaced the stale placeholder with the typed OrderEvent dispatcher,
-//   AI-play setup, order-result bookkeeping, and queue compaction supported by
-//   the original call set and field offsets.
-// - Reversed the overloaded moveTo declarations so VC5 emits the observed
-//   virtual +0x90 call; the original source vtable order is a TU-sensitive fact.
-// - Replaced aggregate queue assignment with the eight binary-observed dword
-//   copies; the range dword at +0x20 is intentionally not shifted by the oracle.
-// - Direct playStatus construction plus branch-local z/y/x conversion locals
-//   reproduced the saved-register/prologue family and the six coordinate ftol
-//   calls. Best checkpoint: 839 positional differing bytes, 90.46% resync
-//   similarity, 42/42 calls, exact size, frame, and CFG counts still differ in
-//   the EH handler relocation and localized result/coordinate scheduling.
-// - Placement-new and direct-coordinate-store variants were rolled back; they
-//   worsened EH/size or merged one binary-observed ftol path.
-// - Left in scratch: remaining drift is switch-tail placement, the branch-local
-//   +0x2C6 range scheduling, and localized register/load order.
-// Main-agent source audit: replaced raw vtable/gap-only object, player, world,
-// and master surfaces with donor-backed virtual destructors while preserving
-// every proven field offset. Revalidation is codegen-unchanged; the function
-// remains scratch because dispatch/tail topology and byte scheduling remain
-// unresolved.
-// - Preserved the 0x2C6 range as a branch-local float value; this
-//   keeps the original's separate +0x90 call site from collapsing into +0x2D4.
-//   The rebuilt call map is now 42/42, with 832 differing bytes.
-// - Probe: removed the branch-local float range; this merged the +0x2C6 call
-//   with +0x2D4 and lost one required virtual call, so restore the clean form.
-// - Probe: inlined the playbook result test; VC5 now emits the original test
-//   eax,eax and improves the best positional diff from 832 to 830 bytes.
-// - Pointer-range, forced-tail-goto, and logged-branch-break variants were
-//   rolled back; they lost the call map or expanded the function.
+// Natural order dispatcher. It remains an observed scratch owner.
+// The binary passes range bits directly in one order path.
 //
-// Current matching pass:
-// - Baseline check: 1269 bytes, 42/42 ordered calls, exact size and CFG counts,
-//   96.63% shape similarity, 80.43% exact-block coverage, and 830 differing
-//   bytes. The first mismatch is the switch-table relocation at +0x31.
-// - Tested 20 meaningful hypotheses. Direct range use merges the two +0x90
-//   calls. A local range keeps both calls but emits fld/fstp. Pointer, alias,
-//   bit-cast, receiver, and volatile forms did not improve this basin.
-// - Tested stop-tail gotos, duplicated stop calls, scoped log receivers,
-//   header context, overload order, queue induction forms, coordinate scopes,
-//   and truth-test spelling. None improved the clean checkpoint.
-// - A mutating param_2 loop made one queue block exact but worsened registers
-//   and total bytes. A preguarded do/while emitted the same bytes as the clean
-//   for loop. The variant lab found no exact candidate.
-// - Current pass: the queue index is declared before its pre-loop bound and
-//   shifted in a guarded do/while. This matches the original mov edx,param_2
-//   before the first bound compare, improving shape to 96.88% and exact-block
-//   coverage to 81.88% at the same 830 differing bytes. This is now pinned.
-// - Current pass tested short-lived play-status aliases, canonical point
-//   aggregates, donor string externs, priority locals, range pointers, and
-//   explicit stop-tail forms. They either duplicated an existing basin or
-//   worsened size, control flow, or call count. Remaining leads are the
-//   original action-log tail source shape, compiler context, and relocations.
-// - Fresh probe: a source goto for the shared false-actionFile stop tail
-//   preserved the observed call count but grew the function by 123 bytes.
-//   Restore the natural local-tail source.
-// - Fresh probe: long coordinate temporaries are codegen-identical to int
-//   temporaries. Keep int because the canonical fields and ABI are int.
-// BLOCKER: order 0x2C6 passes range by a raw dword copy in the executable. The
-// rebuild loads and stores range through x87 before the virtual call. A
-// signaling NaN can raise, become quiet, or change payload bits. FP exception,
-// argument-bit, and fault timing can differ. Keep this dispatcher in scratch.
-// Canonical-context pass: the protected PDB declaration emits the required
-// MAE owner. The complete prefix preserves all 1269 bytes and 42 calls.
+// The source keeps the proven range and dispatcher state.
 
 
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* block);
-extern FILE* actionFile;
 inline void* __cdecl operator new(unsigned int, void* ptr) { return ptr; }
 
 
@@ -3827,17 +3161,17 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
                     int y = (int)order->targetY;
                     int x = (int)order->targetX;
                     AIPlayStatus* status = this->playStatus;
-                    status->originalPointX = x;
-                    status->originalPointY = y;
-                    status->originalPointZ = z;
+                    status->originalPointValue.xValue = x;
+                    status->originalPointValue.yValue = y;
+                    status->originalPointValue.zValue = z;
                 } else {
                     int z = (int)this->objectValue->world_z;
                     int y = (int)this->objectValue->world_y;
                     int x = (int)this->objectValue->world_x;
                     AIPlayStatus* status = this->playStatus;
-                    status->originalPointX = x;
-                    status->originalPointY = y;
-                    status->originalPointZ = z;
+                    status->originalPointValue.xValue = x;
+                    status->originalPointValue.yValue = y;
+                    status->originalPointValue.zValue = z;
                 }
             }
         }
@@ -4035,28 +3369,8 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
 // - Tested aliases, accessors, literal forms, condition forms, and local scopes.
 // - Those forms duplicated this basin or changed valid behavior and layout.
 // - Needed evidence is the original 4757 call spelling or fuller header context.
-// - Captain probe: direct currentOrder rereads in case 506 were codegen-identical
-//   to the saved local form. The natural local remains authoritative.
 
 typedef unsigned long ulong;
-extern FILE* actionFile;
-extern float DAT_0056ebc8;
-extern float DAT_0056ebf4;
-
-
-#define LOG_STOP(lineNumber) \
-    do { \
-        if (actionFile != 0) { \
-            long objectID; \
-            if (this->objectValue != 0) { \
-                objectID = this->objectValue->id; \
-            } else { \
-                objectID = -1; \
-            } \
-            fprintf(actionFile, "#%d call stopObject %s %d\n", objectID, \
-                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", (lineNumber)); \
-        } \
-    } while (0)
 
 int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 {
@@ -4228,7 +3542,7 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
         float targetCapability = target->damageCapability(this->objectValue);
         float targetRatio;
         if (targetCapability > DAT_0056ebc8) {
-            targetRatio = target->hitPoints / targetCapability;
+            targetRatio = target->hp / targetCapability;
         } else {
             targetRatio = 25000.0f;
         }
@@ -4236,7 +3550,7 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
         float attackerCapability = attacker->damageCapability(this->objectValue);
         float attackerRatio;
         if (attackerCapability > DAT_0056ebc8) {
-            attackerRatio = attacker->hitPoints / attackerCapability;
+            attackerRatio = attacker->hp / attackerCapability;
         } else {
             attackerRatio = 25000.0f;
         }
@@ -4290,7 +3604,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
             }
         }
         this->removeCurrentTarget();
-        LOG_STOP(0x1269);
+        if (actionFile != 0)
+            fprintf(actionFile, "#%d call stopObject %s %d\n",
+                    this->objectValue != 0 ? this->objectValue->id : -1,
+                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1269);
         this->stopObject(1);
         this->notifyCommander(event);
         return 2;
@@ -4305,7 +3622,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
             if (this->currentOrderValue == 0x2D5 ||
                 this->objectValue->owner->computerPlayer() == 0) {
                 this->removeCurrentTarget();
-                LOG_STOP(0x128B);
+                if (actionFile != 0)
+                    fprintf(actionFile, "#%d call stopObject %s %d\n",
+                            this->objectValue != 0 ? this->objectValue->id : -1,
+                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x128B);
                 this->stopObject(0);
                 return 2;
             }
@@ -4315,7 +3635,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
                              this->desiredTargetDistanceValue - DAT_0056ebf4,
                              1) == 0) {
                 this->removeCurrentTarget();
-                LOG_STOP(0x129B);
+                if (actionFile != 0)
+                    fprintf(actionFile, "#%d call stopObject %s %d\n",
+                            this->objectValue != 0 ? this->objectValue->id : -1,
+                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x129B);
                 this->stopObject(0);
                 return 2;
             }
@@ -4326,19 +3649,28 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
         }
         if (order != -1 && this->currentActionValue + 100 == order) {
             this->removeCurrentTarget();
-            LOG_STOP(0x12AF);
+            if (actionFile != 0)
+                fprintf(actionFile, "#%d call stopObject %s %d\n",
+                        this->objectValue != 0 ? this->objectValue->id : -1,
+                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x12AF);
             this->stopObject(1);
             return 2;
         }
         if (order == -1 && this->currentActionValue == event->p1) {
             this->removeCurrentTarget();
-            LOG_STOP(0x12B7);
+            if (actionFile != 0)
+                fprintf(actionFile, "#%d call stopObject %s %d\n",
+                        this->objectValue != 0 ? this->objectValue->id : -1,
+                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x12B7);
             this->stopObject(1);
             return 2;
         }
         if (order == 0x2D4 && event->p1 == 0x262) {
             this->removeCurrentTarget();
-            LOG_STOP(0x12C0);
+            if (actionFile != 0)
+                fprintf(actionFile, "#%d call stopObject %s %d\n",
+                        this->objectValue != 0 ? this->objectValue->id : -1,
+                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x12C0);
             this->stopObject(0);
             return 2;
         }
@@ -4350,7 +3682,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
             return 2;
         }
         this->removeCurrentTarget();
-        LOG_STOP(0x12CD);
+        if (actionFile != 0)
+            fprintf(actionFile, "#%d call stopObject %s %d\n",
+                    this->objectValue != 0 ? this->objectValue->id : -1,
+                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x12CD);
         this->stopObject(1);
         return 2;
     }
@@ -4364,7 +3699,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
             if (this->currentOrderValue == 0x2D5 ||
                 this->objectValue->owner->computerPlayer() == 0) {
                 this->removeCurrentTarget();
-                LOG_STOP(0x12E9);
+                if (actionFile != 0)
+                    fprintf(actionFile, "#%d call stopObject %s %d\n",
+                            this->objectValue != 0 ? this->objectValue->id : -1,
+                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x12E9);
                 this->stopObject(1);
                 return 2;
             }
@@ -4374,7 +3712,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
                              this->desiredTargetDistanceValue - DAT_0056ebf4,
                              1) == 0) {
                 this->removeCurrentTarget();
-                LOG_STOP(0x12F3);
+                if (actionFile != 0)
+                    fprintf(actionFile, "#%d call stopObject %s %d\n",
+                            this->objectValue != 0 ? this->objectValue->id : -1,
+                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x12F3);
                 this->stopObject(1);
                 return 2;
             }
@@ -4384,21 +3725,30 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
         }
         if (order != -1 && this->currentActionValue + 100 == order) {
             this->removeCurrentTarget();
-            LOG_STOP(0x1304);
+            if (actionFile != 0)
+                fprintf(actionFile, "#%d call stopObject %s %d\n",
+                        this->objectValue != 0 ? this->objectValue->id : -1,
+                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1304);
             this->stopObject(1);
             this->notifyCommander(event);
             return 2;
         }
         if (order == -1 && this->currentActionValue == event->p1) {
             this->removeCurrentTarget();
-            LOG_STOP(0x130D);
+            if (actionFile != 0)
+                fprintf(actionFile, "#%d call stopObject %s %d\n",
+                        this->objectValue != 0 ? this->objectValue->id : -1,
+                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x130D);
             this->stopObject(1);
             this->notifyCommander(event);
             return 2;
         }
         if (order == 0x2D4 && event->p1 == 0x262) {
             this->removeCurrentTarget();
-            LOG_STOP(0x1317);
+            if (actionFile != 0)
+                fprintf(actionFile, "#%d call stopObject %s %d\n",
+                        this->objectValue != 0 ? this->objectValue->id : -1,
+                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1317);
             this->stopObject(0);
             this->notifyCommander(event);
             return 2;
@@ -4411,7 +3761,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
             return 2;
         }
         this->removeCurrentTarget();
-        LOG_STOP(0x1325);
+        if (actionFile != 0)
+            fprintf(actionFile, "#%d call stopObject %s %d\n",
+                    this->objectValue != 0 ? this->objectValue->id : -1,
+                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1325);
         this->stopObject(1);
         return 2;
     }
@@ -4425,7 +3778,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
             if (this->currentOrderValue == 0x2D5 ||
                 this->objectValue->owner->computerPlayer() == 0) {
                 this->removeCurrentTarget();
-                LOG_STOP(0x1341);
+                if (actionFile != 0)
+                    fprintf(actionFile, "#%d call stopObject %s %d\n",
+                            this->objectValue != 0 ? this->objectValue->id : -1,
+                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1341);
                 this->stopObject(1);
                 return 2;
             }
@@ -4435,7 +3791,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
                              this->desiredTargetDistanceValue - DAT_0056ebf4,
                              1) == 0) {
                 this->removeCurrentTarget();
-                LOG_STOP(0x134B);
+                if (actionFile != 0)
+                    fprintf(actionFile, "#%d call stopObject %s %d\n",
+                            this->objectValue != 0 ? this->objectValue->id : -1,
+                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x134B);
                 this->stopObject(1);
                 return 2;
             }
@@ -4445,21 +3804,30 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
         }
         if (order != -1 && this->currentActionValue + 100 == order) {
             this->removeCurrentTarget();
-            LOG_STOP(0x135C);
+            if (actionFile != 0)
+                fprintf(actionFile, "#%d call stopObject %s %d\n",
+                        this->objectValue != 0 ? this->objectValue->id : -1,
+                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x135C);
             this->stopObject(1);
             this->notifyCommander(event);
             return 2;
         }
         if (order == -1 && this->currentActionValue == event->p1) {
             this->removeCurrentTarget();
-            LOG_STOP(0x1365);
+            if (actionFile != 0)
+                fprintf(actionFile, "#%d call stopObject %s %d\n",
+                        this->objectValue != 0 ? this->objectValue->id : -1,
+                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1365);
             this->stopObject(1);
             this->notifyCommander(event);
             return 2;
         }
         if (order == 0x2D4 && event->p1 == 0x262) {
             this->removeCurrentTarget();
-            LOG_STOP(0x136F);
+            if (actionFile != 0)
+                fprintf(actionFile, "#%d call stopObject %s %d\n",
+                        this->objectValue != 0 ? this->objectValue->id : -1,
+                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x136F);
             this->stopObject(0);
             this->notifyCommander(event);
             return 2;
@@ -4472,7 +3840,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
             return 2;
         }
         this->removeCurrentTarget();
-        LOG_STOP(0x137D);
+        if (actionFile != 0)
+            fprintf(actionFile, "#%d call stopObject %s %d\n",
+                    this->objectValue != 0 ? this->objectValue->id : -1,
+                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x137D);
         this->stopObject(1);
         return 2;
     }
@@ -4486,7 +3857,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
                 this->addToWaypointQueue(x, y);
                 if (this->explore(x, y, 1) == 0) {
                     this->removeCurrentTarget();
-                    LOG_STOP(0x1396);
+                    if (actionFile != 0)
+                        fprintf(actionFile, "#%d call stopObject %s %d\n",
+                                this->objectValue != 0 ? this->objectValue->id : -1,
+                                "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1396);
                     this->stopObject(1);
                     this->notifyCommander(event);
                 }
@@ -4494,7 +3868,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
                 return 3;
             }
             this->removeCurrentTarget();
-            LOG_STOP(0x13A6);
+            if (actionFile != 0)
+                fprintf(actionFile, "#%d call stopObject %s %d\n",
+                        this->objectValue != 0 ? this->objectValue->id : -1,
+                        "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x13A6);
             this->stopObject(1);
             this->notifyCommander(event);
             return 2;
@@ -4518,13 +3895,19 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
                     return 3;
                 }
                 this->removeCurrentTarget();
-                LOG_STOP(0x13CE);
+                if (actionFile != 0)
+                    fprintf(actionFile, "#%d call stopObject %s %d\n",
+                            this->objectValue != 0 ? this->objectValue->id : -1,
+                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x13CE);
                 this->stopObject(1);
                 this->notifyCommander(event);
                 return 2;
             } else {
                 this->removeCurrentTarget();
-                LOG_STOP(0x13DA);
+                if (actionFile != 0)
+                    fprintf(actionFile, "#%d call stopObject %s %d\n",
+                            this->objectValue != 0 ? this->objectValue->id : -1,
+                            "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x13DA);
                 this->stopObject(1);
                 this->notifyCommander(event);
                 return 2;
@@ -4535,7 +3918,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
     case 523: {
         this->objectValue->stopAction();
         this->removeCurrentTarget();
-        LOG_STOP(0x13E7);
+        if (actionFile != 0)
+            fprintf(actionFile, "#%d call stopObject %s %d\n",
+                    this->objectValue != 0 ? this->objectValue->id : -1,
+                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x13E7);
         this->stopObject(1);
         this->purgeNotifyQueue(param_2);
         this->orderQueueSizeValue = 0;
@@ -4550,7 +3936,10 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
     case 510:
         this->objectValue->stopAction();
         this->removeCurrentTarget();
-        LOG_STOP(0x13F9);
+        if (actionFile != 0)
+            fprintf(actionFile, "#%d call stopObject %s %d\n",
+                    this->objectValue != 0 ? this->objectValue->id : -1,
+                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x13F9);
         this->stopObject(1);
         return 2;
 
@@ -4602,14 +3991,15 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 
     default:
         this->removeCurrentTarget();
-        LOG_STOP(0x1439);
+        if (actionFile != 0)
+            fprintf(actionFile, "#%d call stopObject %s %d\n",
+                    this->objectValue != 0 ? this->objectValue->id : -1,
+                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x1439);
         this->stopObject(1);
         this->notifyCommander(event);
         return 2;
     }
 }
-
-#undef LOG_STOP
 
 // --- matching/00419510_processGroupNotify.cpp ---
 // VA: 00419510 UnitAIModule::processGroupNotify
@@ -4617,14 +4007,7 @@ int UnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 // PDB owner and access: protected UnitAIModule::processGroupNotify.
 // Body boundary: 00419510-004195E0; padding starts at 004195E1.
 // This is the first normal aiuaimod.cpp sibling after processNotify, which ends at 004193F3.
-// Attempt log:
-// - Reconstructed the play-status/playbook/phase/trigger ownership from the original
-//   offsets and direct-call set; replacing the stale unrelated placeholder.
-// - Hoisted the natural play/phase locals and used the packet's do-while trigger scan;
-//   those spellings alone stayed in the same 199-byte basin.
-// - Materializing trigger->value1() before the AIPlayStatus::group call preserved
-//   its live EDI compare value, triggered the original delayed callee-save layout,
-//   and produced an exact 209-byte match under the default flags.
+// The source uses the canonical play and phase providers.
 
 
 void UnitAIModule::processGroupNotify(NotifyEvent* param_1)
@@ -4687,17 +4070,7 @@ int UnitAIModule::processIdle(int param) {
 // 00419BC0. The 00419BB7-00419BBF gap is padding.
 // Typed reconstruction of the order-specific miscellaneous update pass.
 //
-// Exact-finish notes:
-// - DECISIVE: use target-first movement, the defend target field, and a direct
-//   desired-distance push. These choices restore the original block order.
-// - REQUIRED: literal -1.0f preserves the original VC5 fld/fsub sequence.
-//   The equivalent named global emits fsubr and is not byte exact.
-// - INCIDENTAL: split threshold declaration, inline accessors, extra aliases,
-//   and a move-distance local were tested and removed or walked back.
-// - INSEPARABLE: the 0x2BD branch shape and defendTargetValue source are kept
-//   together; each controls the nearby canPath call and block layout.
-// - ABI: the PDB-qualified protected access is required; public access emits
-//   the wrong decorated owner even though the function bytes stay unchanged.
+// The source retains the proven order and target fallbacks.
 // BINARY NOTE: the 0x2BD canPath guard reads [this+0x4C], not [this+0x34].
 // BINARY NOTE: the targetless +0x90 call receives desired distance as an int
 //   push, not through an x87 store.
@@ -4705,15 +4078,6 @@ int UnitAIModule::processIdle(int param) {
 //   defensive checks that are absent from the executable.
 // Reusable lesson candidate: a pooled float literal can select a different VC5
 //   x87 operand order than an equivalent absolute global expression.
-
-
-// BINARY NOTE: shared headers do not provide the called RGE_* vtable surfaces.
-// Keep these local ABI surfaces. Their fields and called slots are proven here.
-
-extern int taskedThisUpdate;                     // 00592A48
-extern FILE* actionFile;                         // 0062C4CC
-extern const char str_fmt_stopObject[];         // 0057F964
-extern const char str_aiuaimod_path[];          // 0057F980
 
 int UnitAIModule::processMisc()
 {
@@ -4850,7 +4214,7 @@ int UnitAIModule::processMisc()
                     int x = (int)this->currentTargetXValue;
                     int y = (int)this->currentTargetYValue;
                     XYZPoint point = { x, y, invalidValue };
-                    if (this->objectValue->canPathPoint(
+                    if (this->objectValue->canPath(
                             point, this->desiredTargetDistanceValue,
                             invalidValue, 0, 0,
                             invalidValue, invalidValue) == 1) {
@@ -4963,18 +4327,7 @@ int UnitAIModule::processMisc()
 // Body boundary: 00419BC0-00419C26; 00419C30 is the next sibling.
 // EXACT MATCH: switch generates subtract-chain matching original
 //
-// Exact-finish notes:
-// - REQUIRED: the protected virtual declaration restores the PDB-qualified ABI
-//   without changing the exact body bytes.
-// - WALKBACK: public nonvirtual spelling also emitted exact bytes, but its
-//   decorated owner was QAEH rather than the PDB's MAEH protected virtual.
-// - BINARY NOTE: lastOrderValue is read before call28 and reread after call40.
-//   Do not cache it across either virtual call.
-// - BINARY NOTE: the four virtual calls use slots +0x28, +0x40, +0x64, +0x68,
-//   with no stores, publication, or cleanup side effects in this body.
-// - BINARY NOTE: the fallback return is reached after failed calls or unknown
-//   orders; the two recognized orders return 8 only when the final call returns
-//   1, and return 7 otherwise.
+// The protected virtual owner and call order are binary-proven.
 
 
 int UnitAIModule::processRetryableOrder() {
@@ -5006,13 +4359,7 @@ int UnitAIModule::processRetryableOrder() {
 // Body boundary: 00419C30-00419C63; 00419C70 is the next sibling.
 // EXACT MATCH: forwards the OrderEvent fields and param2 to the ten-parameter overload.
 //
-// Exact-finish notes:
-// - REQUIRED: protected access restores the PDB-qualified IAEH owner ABI.
-// - WALKBACK: public access emitted identical body bytes but the wrong QAEH owner.
-// - REQUIRED: the sibling ABI is four ints, four floats, then two ints; an
-//   all-int donor declaration created a synthetic direct target.
-// - BINARY NOTE: param2 is reread from its incoming home after the first push.
-// - BINARY NOTE: the call is direct to 00419C70 and ret 8 cleans both parameters.
+// The protected wrapper forwards all event fields to its sibling overload.
 
 
 int UnitAIModule::addToOrderQueue(OrderEvent* order, int param2) {
@@ -5029,15 +4376,7 @@ int UnitAIModule::addToOrderQueue(OrderEvent* order, int param2) {
 // (?addToOrderQueue@UnitAIModule@@IAEHHHHHMMMMHH@Z), aiuaimod.cpp:5762-5826.
 // Body boundary: 00419C70-00419ECE; 00419ED0 is the next PDB sibling.
 // aiuaimod.cpp
-// Attempt log:
-// - Reconstructed the canonical OrderEvent queue. The queue has nine 4-byte
-//   fields, a 0x24-byte stride, and UnitAIModule fields at +0x10, +0x14, and
-//   +0x18. The p9 path shifts existing records toward the next slot.
-// - PDB/Ghidra proves this overload is protected and nonvirtual. The previous
-//   public declaration emitted identical bytes but the wrong QAEH owner symbol.
-// - The protected declaration now emits the PDB-qualified IAEH owner while
-//   preserving the exact boundary, direct allocation calls, ret 28h cleanup,
-//   queue rereads, publication order, and null-fault order.
+// The protected overload owns the binary queue insertion sequence.
 
 
 int UnitAIModule::addToOrderQueue(int p1, int p2, int p3, int p4,
@@ -5154,17 +4493,7 @@ int UnitAIModule::addToNotifyQueue(NotifyEvent* event) {
 // int, long, long, long), aiuaimod.cpp:5840-5868.
 // Symbol: ?addToNotifyQueue@UnitAIModule@@IAEHHHHJJJ@Z.
 // Body boundary: 00419F00-0041A016; 00419ED0 is the preceding sibling.
-// Attempt log:
-// - Replaced the stale placeholder with the proven notify-queue ownership:
-//   size at +0x1c, capacity at +0x20, and NotifyEvent array at +0x24.
-// - The typed field-copy/indexed append baseline matched through the append
-//   block; direct/compound shift spellings left a localized register drift.
-// - A focused natural source-shape lab showed that spelling capacity growth as
-//   multiplication by two reproduces the original VC5 register/block layout.
-// - Main-agent audit confirmed canonical UnitAIModule/NotifyEvent ownership;
-//   emitted code remains exact.
-// - A fresh public-ABI check also matched bytes, but emitted QAE rather than
-//   the PDB-qualified protected IAE owner. Keep the protected declaration.
+// The protected overload owns the notify queue insertion sequence.
 
 
 int UnitAIModule::addToNotifyQueue(int caller, int recipient, int mType,
@@ -5215,14 +4544,7 @@ int UnitAIModule::addToNotifyQueue(int caller, int recipient, int mType,
 // Body boundary: 0041A020-0041A0C5; padding starts at 0041A0C6.
 // The preceding 00419F00 helper is protected and has symbol
 // ?addToNotifyQueue@UnitAIModule@@IAEHHHHJJJ@Z. Do not merge these ABIs.
-// Fresh 2026-05-19: implement packet-derived notify queue purge logic.
-// try 1: natural NotifyEntry pointer: exact size, 6/166 positional; pointer setup used EAX+LEA and loop used jge/jmp.
-// try 2: model loop cursor as int* p=&entry->action: fixed pointer setup exactly; remaining 3/166 branch topology at loop end.
-// try 3: explicit goto loop/done: no branch-topology change.
-// try 4: for(;;) with break on count: no branch-topology change.
-// try 5: while(i<count): worsened badly (80% positional/prologue/loop basin), rolled back.
-// Remaining drift: only loop-tail branch inversion after `cmp edi,ebx`: original `jl top; jmp done`, rebuilt `jge done; jmp top`.
-// Same flags, same targets, same loop state, same calls/logging/virtual stopObject, and all other bytes exact.
+// The source scans typed notify records and clears the queue after the scan.
 
 
 
@@ -5231,14 +4553,14 @@ void UnitAIModule::purgeNotifyQueue(unsigned long time)
     int i = 0;
     int count = this->notifyQueueSizeValue;
     if (count > 0) {
-        int* p = (int*)&this->notifyQueueValue->p1;
         for (;;) {
-            if (p[-1] == 0x1FA) {
-                int action = *p;
+            NotifyEvent* event = &this->notifyQueueValue[i];
+            if (event->mType == 0x1FA) {
+                int action = event->p1;
                 if (action != 0x262 || this->currentActionValue == action || this->currentActionValue == 0x268) {
                     if (this->currentOrderValue == -1 && this->currentActionValue == action) {
                         this->removeCurrentTarget();
-                        FILE* f = *(FILE**)0x62C4CC;
+                        FILE* f = actionFile;
                         if (f != 0) {
                             int id;
                             if (this->objectValue != 0) {
@@ -5254,7 +4576,6 @@ void UnitAIModule::purgeNotifyQueue(unsigned long time)
                 }
             }
             i++;
-            p += 6;
             if (i >= count) break;
         }
     }
@@ -5273,16 +4594,9 @@ RGE_Static_Object* UnitAIModule::lookupObject(int objectId) {
 }
 
 // --- matching/0041A100_logDebug.cpp ---
-extern "C" int __cdecl vsprintf(char* dest, const char* fmt, char* args);
-
 // BINARY NOTE: 0041A100 is UnitAIModule::logDebug, public virtual varargs,
 // at aiuaimod.cpp lines 5932-5942. Its body ends at 0041A14E; the next bytes
 // are padding. Keep the preceding 0041A020 purgeNotifyQueue owner separate.
-// compact debug logger first
-// tried va_start/va_end and a direct stack-address cast for the varargs pack; mismatch stayed on the vsprintf arg-list stack slot
-// tried changing textOut+4 to textOut (both vsprintf dest and virtual call arg); original uses plain textOut, not textOut+4
-// MATCHED: changed textOut+4 to textOut in both vsprintf dest and virtual call arg — original uses plain textOut
-
 void UnitAIModule::logDebug(char* param_1, ...) {
     char textOut[1024];
     if (this->objectValue != 0) {

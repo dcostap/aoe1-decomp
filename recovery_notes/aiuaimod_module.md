@@ -1,131 +1,78 @@
 # aiuaimod.cpp source module
 
-## PDB context
+## Context
 
-- PDB source: `C:\\msdev\\work\\age1_x1\\aiuaimod.cpp`.
-- The module has 114 normal owners.
+- PDB source: `C:\msdev\work\age1_x1\aiuaimod.cpp`.
+- The module has 114 normal owners in ascending PDB address order.
 - The normal owner byte total is 27,557 bytes.
-- The source follows PDB line order and ascending address order.
-- The owning class is `UnitAIModule` for all 114 owners.
-- The module header proves the 0x134-byte `UnitAIModule` layout.
-- The source uses `/O2 /Oy /GX` from `00412F00_UnitAIModule.rsp`.
+- The source owner is `src/aiuaimod.cpp`.
+- The shared module header is `include/aiuaimod.h`.
+- The module uses `/O2 /Oy /GX` from `config/flags/00412F00_UnitAIModule.rsp`.
+- `UnitAIModule` has the proven 0x134-byte layout and complete 56-slot virtual
+  surface. Its destructor is a real virtual destructor.
 
-`include/ai_play_phase_command.h` owns the PDB-proven 0x10
-`AIPlayPhaseCommand` record. Its PDB fields are protected. The module header
-does not define a local copy. The source includes its owner and uses public
-accessors.
-`include/ai_play_phase_trigger.h` owns the PDB-proven 0x14
-`AIPlayPhaseTrigger` record. Its PDB fields are protected. The
-`PAVAIPlayPhaseTrigger` return from `AIPlayPhase::trigger` proves its class
-identity. The module uses its public accessors without a local copy. The source
-includes its owner.
-`include/ai_play_phase.h` owns the PDB-proven 0x8C `AIPlayPhase` record. Its
-public header forward-declares the phase. The source includes its owner and
-uses its public methods.
+## Natural source changes
 
-## Unit AI root virtual prefix
+- Removed `__declspec(novtable)` from `UnitAIModule`.
+- Removed all handwritten vptr stores. VC5 now emits the class vtable and the
+  scalar and vector deleting surfaces. `00413070` stays compiler generated.
+- Kept `00413070` out of normal source ownership and out of the TU owner map.
+- Moved the UnitAIModule class to the canonical owner header.
+- Replaced copied provider class views with the owner headers for action lists,
+  AI playbooks, base game, map, master objects, players, static objects,
+  visible maps, visible units, and the world.
+- Replaced the copied managed array with canonical `ManagedArray<int>`.
+- Replaced the load carrier overlay with typed `OrderEvent`, `NotifyEvent`, and
+  a separate play-status flag.
+- Replaced visible-unit pointer and count overlays with the typed
+  `VisibleUnitList` and `VisibleUnitList_Size` globals owned by `vis_unit.cpp`.
+- Replaced the map absolute-address macro with `view.h`'s typed table.
+- Replaced all UnitAIModule absolute global reads with typed global storage in
+  `game_globals.h` and `game_globals.cpp`.
+- Removed source attempt logs and compiler-shaping macros.
 
-PDB field list `0x28CE` defines the public virtual prefix in this order:
-destructor, `save`, `load`, `owner`, `order`, and `notify`. `notify` is
-`int (int, int, int, long, long, long)` at vslot `+0x14`.
+## Status
 
-The prior three-int `notify` declaration is not a real overload. It appears in
-no PDB UnitAIModule method, source definition, or function inventory. Do not
-restore it for caller convenience.
+The source module manifest keeps 114 normal owners in PDB order. Current source
+status is:
 
-## Source result
+- 102 `matching` owners in the source manifest after removing the two
+  natural-shape regressions below.
+- 3 `accepted_drift` owners: `00413150`, `00414D40`, and `0041A020`.
+- 9 `scratch` owners: the seven prior scratch owners plus `00412F00` and
+  `00413450`.
 
-The module now has one compiler-facing source file: `src/aiuaimod.cpp`.
-It contains all 114 normal owners in PDB order.
-It has no wrapper source or `.cpp` include.
-The module header is `include/aiuaimod.h`.
+The current exact TU registration excludes all accepted-drift and scratch
+owners. It contains 101 owners. `004195F0` remains a matching source owner but
+is not registered in the grouped TU.
 
-The prior source banks supplied 104 matching owners, eight scratch owners, and
-two accepted-drift owners. The migration keeps these statuses.
+## Focused validation
 
-The accepted-drift owners are:
+The full source compiled with the pinned VC5 compiler and module response file.
+Focused checks after canonicalization report `MATCH` and `0.0000%` for these
+anchors:
 
-- `00413150` `save`: 30 bytes differ in the attacking-unit grow loop.
-- `0041A020` `purgeNotifyQueue`: three loop-tail bytes differ.
+- `00413090` `~UnitAIModule`
+- `00413810` `owner`
+- `004138E0` `orderQueueElement`
+- `00414E80` `notify`
+- `00415CA0` `closestObject`
+- `00415E50` `closestResourceObject`
+- `00415F40` `closestUndiscoveredTile`
+- `004161D0` `waypoint`
+- `004171F0` `runAwayFromAttackers`
+- `00417730` `visibleStatus`
+- `00417860` `lookAround`
+- `00419510` `processGroupNotify`
+- `00419650` `processMisc`
+- `00419BC0` `processRetryableOrder`
+- `00419C70` `addToOrderQueue`
 
-`00414D40` `order` is scratch. Its current source has a 277-byte structural
-drift over a 306-byte body. The original delays the EDI save until the `p9`
-path; the rebuild saves it at entry. This broad stack and block-layout drift
-does not support accepted drift.
+Natural source regressions are deliberate and documented:
 
-The scratch owners are:
+- `00412F00` changes because VC5 owns the real class vptr publication.
+- `00413450` changes because the load source uses typed records instead of the
+  former stack carrier overlay.
 
-- `00413AB0` `update`
-- `00414040` `updateGroup`
-- `00414800` `selectNewPlayPhase`
-- `004151B0` `bestUnitToAttack`
-- `00416F30` `intelligentEvasiveMoveTo`
-- `00417B50` `processOrder`
-- `004180C0` `processNotify`
-
-These owners remain observed, not exact claims.
-
-## Migration check
-
-The direct module object emits 114 defined `UnitAIModule` owner symbols.
-The 103 prior registered exact owners remain byte exact after relocation checks.
-The eight scratch owners and two accepted-drift owners remain nonexact.
-The unregistered `004195F0` `processIdle` owner also differs in the direct TU.
-Its source-bank status remains `matching` until the coordinator reviews the
-natural module context.
-
-## `004195F0` repair evidence
-
-PDB assigns `004195F0` to `UnitAIModule::processIdle(int)` at lines 5255
-through 5282. Its decorated symbol is `?processIdle@UnitAIModule@@MAEHH@Z`.
-The original boundary is `004195F0` through `00419641`, 82 bytes.
-
-The original expression order is:
-
-1. `processRetryableOrder()` through virtual slot `+0xDC`.
-2. `bestUnitToAttack(1, 0, 0)` through virtual slot `+0x30`.
-3. `attackObject(index, 1)` through virtual slot `+0x5C`.
-
-The current private placeholders emit three wrong direct targets and a 78-byte
-body. A scratch-only natural replacement with the three canonical virtual calls
-emits the exact 82-byte, 33-instruction body under the authentic `/O2 /Oy /GX`
-translation-unit context. The focused result is `MATCH` with zero target
-relocations.
-
-Do not edit AIUA yet. `00413070` deleting-destructor ownership and natural
-emission remain a separate gate. One future sole editor must apply both
-source-supported repairs, then run the full AIUA group.
-
-## `00413070` emission hold
-
-`00413070` is compiler generated. It has no PDB source line or handwritten
-source owner. The original boundary is `00413070` through `0041308D`, 30 bytes.
-The defined body is `??_GUnitAIModule@@UAEPAXI@Z`. It calls `00413090`, then
-calls `0054B660` when the deleting flag has bit one set. It returns `this` with
-`ret 4`.
-
-The original vtable at `0056EAD8` has this thunk in slot zero. VC5 uses weak
-`??_EUnitAIModule@@UAEPAXI@Z` only as the vector-deleting identity. The
-validator must compare the defined `??_G` fallback body.
-
-Current AIUA uses `__declspec(novtable)` and manual delayed vptr stores. Its
-object emits no `??_G`, `??_E`, or `??_7UnitAIModule@@6B@Z`. Removing those
-forms would naturally emit the thunk and vtable, but would change the proven
-constructor and destructor vptr order. It is not an exact source repair.
-
-Do not add a dummy reference or standalone generated body. AIUA stays held.
-
-## Generated and no-line entries
-
-The scalar deleting destructor at `00413070` is compiler generated.
-It is not a normal PDB owner.
-The `004138B0` `canConvert` code has no PDB source line.
-Neither entry has a source definition in this module.
-The compiler emits all 114 normal owner symbols from the direct source.
-
-## Validation
-
-The direct source compiles with the pinned VC5 compiler and module response file.
-The worker did not change global translation-unit registration.
-The coordinator must retarget the old wrapper registrations to this module source.
-Fresh grouped checks are required after that config change.
+No new provider was invented for unresolved behavior. The seven prior scratch
+owners remain scratch. Their full natural bodies remain in this source file.

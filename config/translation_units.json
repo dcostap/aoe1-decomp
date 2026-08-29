@@ -903,14 +903,12 @@
       }
     },
     {
-      "name": "aiuaimod_prefix",
+      "name": "aiuaimod",
       "source": "src/aiuaimod.cpp",
       "module": "aiuaimod",
       "flags": "config/flags/00412F00_UnitAIModule.rsp",
       "owners": {
-        "00412F00": "src/aiuaimod.cpp",
         "00413090": "src/aiuaimod.cpp",
-        "00413450": "src/aiuaimod.cpp",
         "00413810": "src/aiuaimod.cpp",
         "00413820": "src/aiuaimod.cpp",
         "00413830": "src/aiuaimod.cpp",
@@ -1013,7 +1011,6 @@
         "0041A100": "src/aiuaimod.cpp"
       },
       "symbols": {
-        "00413450": "?load@UnitAIModule@@UAEXH@Z",
         "00413810": "?owner@UnitAIModule@@UBEPAVRGE_Player@@XZ",
         "00413820": "?object@UnitAIModule@@QBEPAVRGE_Static_Object@@XZ",
         "00413880": "?idleTimeout@UnitAIModule@@QBEKXZ",

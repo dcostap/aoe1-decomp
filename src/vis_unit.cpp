@@ -11,8 +11,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern VISIBLE_UNIT_REC* VisibleUnitList[5];
-extern int VisibleUnitList_Size[5];
+VISIBLE_UNIT_REC* VisibleUnitList[5];
+int VisibleUnitList_Size[5];
 extern int* NormalLOS;
 extern int* PTR_Edge_Offsets_N16;
 extern RGE_Static_Object** VIS_UNIT_objectsValue;

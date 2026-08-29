@@ -1,6 +1,12 @@
 #include "..\include\game_globals.h"
 #include "../include/dsutil.h"
 
+FILE* actionFile = 0;
+int taskedThisUpdate = 0;
+int searchedThisUpdate = 0;
+int numberVisibleObjects = 0;
+int numberDifferentPlayerObjectsVisible = 0;
+
 // Generated once by tools\generate_working_scaffold.py.
 // After the first scaffold pass, this file becomes editable project source.
 

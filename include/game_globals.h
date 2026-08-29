@@ -16,6 +16,13 @@ class TCommunications_Handler;
 class TRegistry;
 class TSound_Driver;
 
+// Shared action and UnitAIModule update state.
+extern FILE* actionFile;
+extern int taskedThisUpdate;
+extern int searchedThisUpdate;
+extern int numberVisibleObjects;
+extern int numberDifferentPlayerObjectsVisible;
+
 struct COMM_DEBUG_PING {
     unsigned char Command;
     unsigned char Reserved[3];
