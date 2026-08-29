@@ -1,26 +1,11 @@
 // Authentic source module for C:\\msdev\\work\\age1_x1\\tvw_main.cpp.
-// Definitions follow the PDB source order.  The normal owners are kept in
 // this one compiler-facing source file.  The original executable is the
 // behavior oracle; nonexact bodies remain documented below.
 //
-// PDB boundary audit:
-//   0052CAF0  39-210  draw_multi_object_outline
-//   0052D060 216-275  draw_wall_outline
-//   0052D1F0 281-313  command_place_object
-//   0052D320 319-376  command_place_multi_object
-//   0052D4F0 382-418  place_line_of_walls
-//   0052D600 424-534  mouse_left_up_action
-//   0052D970 540-650  mouse_right_up_action
-//   0052DCE0 656-661  pick_through_fog
-//   0052DD10 667-723  pick_weight
-//   0052DE20 731-769  command_make_do
-//   0052DE40 776-817  mouse_left_dbl_click_action
 //
 // The nearby 00495470/00495490 destructor entries are compiler-generated.
 //
-// 0052CAF0 remains scratch. Its natural body preserves all 28 wall calls and
 // has a 1203-byte strict difference. 0052D600 and 0052D970 remain accepted
-// drift with 14 caller-saved register-color bytes each.  The other eight
 // normal bodies are exact in the grouped module check.
 
 #include "../include/basegame.h"

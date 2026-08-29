@@ -32,7 +32,6 @@ BuildItem::BuildItem(BuildItem* source)
     : BaseItem(static_cast<BaseItem*>(source)), next(0), prev(0),
       buildCategoryValue(source->buildCategoryValue),
       numberValue(source->numberValue), priorityValue(source->priorityValue),
-      // ORIGINAL BUG: 00408324-0040832A reads source +0x80 and writes that
       // value to destination +0x84. When the fields differ, built() reports
       // progress, not built. Copying source->builtValue would correct the
       // state, but it would change the shipped behavior and target bytes.
@@ -51,7 +50,6 @@ BuildItem::BuildItem(const BuildItem& source)
     : BaseItem(static_cast<const BaseItem&>(source)), next(0), prev(0),
       buildCategoryValue(source.buildCategoryValue),
       numberValue(source.numberValue), priorityValue(source.priorityValue),
-      // ORIGINAL BUG: 004083E4-004083EA reads source +0x80 and writes that
       // value to destination +0x84. When the fields differ, built() reports
       // progress, not built. Copying source.builtValue would correct the
       // state, but it would change the shipped behavior and target bytes.

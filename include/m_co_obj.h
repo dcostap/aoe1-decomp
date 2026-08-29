@@ -53,7 +53,6 @@ public:
     short weapon_num;
     RGE_Armor_Weapon_Info* weapon;
     short defense_terrain_bonus;
-    // PDB and tact_rep prove a float at +0x114.
     float weapon_range;
     float area_effect_range;
     unsigned char area_effect_level;

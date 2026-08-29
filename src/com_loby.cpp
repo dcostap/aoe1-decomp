@@ -5,7 +5,6 @@
 extern TDebuggingLog* L;
 extern char _s_Release[];
 
-// PDB signature is non-const; the SDK callback type is const-qualified.
 int __stdcall EnumPlayersCallbackLobby(
     DPID dpId, DWORD dwPlayerType, DPNAME* lpName, DWORD dwFlags,
     LPVOID lpContext);

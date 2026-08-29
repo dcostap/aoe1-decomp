@@ -1,7 +1,6 @@
 #ifndef AOE1_PNL_SLD_H
 #define AOE1_PNL_SLD_H
 
-// PDB source: C:\\msdev\\work\\age1_x1\\pnl_sld.cpp.
 #include "Pnl_scbr.h"
 
 class TVerticalSliderPanel : public TScrollBarPanel {

@@ -3,7 +3,6 @@
 
 #include <windows.h>
 
-// PDB: main.cpp, _WinMain@16 uses the complete RGE_Prog_Info object.
 // Its named fields naturally align to 0x1238 bytes.
 struct RGE_Prog_Info {
 public:

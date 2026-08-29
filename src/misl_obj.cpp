@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\misl_obj.cpp.
-// Definitions follow the original source order.
 
 #include "../include/misl_obj.h"
 #include "../include/act_list.h"

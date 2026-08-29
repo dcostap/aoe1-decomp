@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\tm_co_ob.cpp.
-// The definitions follow the complete PDB source order.
 
 #include "../include/tm_co_ob.h"
 #include "../include/t_c_obj.h"
@@ -14,7 +12,6 @@ extern "C" {
 extern float save_game_version;
 extern float DAT_0057677c;
 
-// tm_co_ob.cpp:28-31
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
     TRIBE_Master_Combat_Object* source, int do_setup)
     : RGE_Master_Combat_Object(source, 0) {
@@ -23,7 +20,6 @@ TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
     }
 }
 
-// tm_co_ob.cpp:36-39
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
     int id, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup)
     : RGE_Master_Combat_Object(id, sprites, sounds, 0) {
@@ -32,7 +28,6 @@ TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
     }
 }
 
-// tm_co_ob.cpp:44-47
 TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
     FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds, short id,
     int do_setup)
@@ -42,7 +37,6 @@ TRIBE_Master_Combat_Object::TRIBE_Master_Combat_Object(
     }
 }
 
-// tm_co_ob.cpp:51-69
 int TRIBE_Master_Combat_Object::setup(TRIBE_Master_Combat_Object* source) {
     RGE_Master_Combat_Object::setup(source);
     master_type = 0x46;
@@ -60,7 +54,6 @@ int TRIBE_Master_Combat_Object::setup(TRIBE_Master_Combat_Object* source) {
     return 1;
 }
 
-// tm_co_ob.cpp:73-107
 int TRIBE_Master_Combat_Object::setup(int fd, RGE_Sprite** sprites,
                                       RGE_Sound** sounds) {
     int armor_count;
@@ -115,7 +108,6 @@ int TRIBE_Master_Combat_Object::setup(int fd, RGE_Sprite** sprites,
     return 1;
 }
 
-// tm_co_ob.cpp:111-148
 int TRIBE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
                                       RGE_Sound** sounds, short id) {
     int armor_count;
@@ -168,16 +160,13 @@ int TRIBE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
     return 1;
 }
 
-// tm_co_ob.cpp:152
 TRIBE_Master_Combat_Object::~TRIBE_Master_Combat_Object() {
 }
 
-// tm_co_ob.cpp:157-159
 RGE_Task_List* TRIBE_Master_Combat_Object::create_task_list() {
     return new TRIBE_Task_List();
 }
 
-// tm_co_ob.cpp:163-176
 void TRIBE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* source) {
     RGE_Master_Combat_Object::copy_obj(source);
 
@@ -194,7 +183,6 @@ void TRIBE_Master_Combat_Object::copy_obj(RGE_Master_Static_Object* source) {
     orig_pierce_armor = tribe_source->orig_pierce_armor;
 }
 
-// tm_co_ob.cpp:180-211
 void TRIBE_Master_Combat_Object::modify(float value,
                                         unsigned char attribute) {
     short* type;
@@ -265,7 +253,6 @@ void TRIBE_Master_Combat_Object::modify(float value,
     }
 }
 
-// tm_co_ob.cpp:215-229
 void TRIBE_Master_Combat_Object::modify_delta(float value,
                                               unsigned char attribute) {
     if (attribute != 0x64) {
@@ -283,7 +270,6 @@ void TRIBE_Master_Combat_Object::modify_delta(float value,
     } while (--remaining != 0);
 }
 
-// tm_co_ob.cpp:233-247
 void TRIBE_Master_Combat_Object::modify_percent(float value,
                                                 unsigned char attribute) {
     if (attribute != 0x64) {
@@ -302,7 +288,6 @@ void TRIBE_Master_Combat_Object::modify_percent(float value,
     } while (remaining != 0);
 }
 
-// tm_co_ob.cpp:251-262
 void TRIBE_Master_Combat_Object::save(int fd) {
     RGE_Master_Combat_Object::save(fd);
 
@@ -317,13 +302,11 @@ void TRIBE_Master_Combat_Object::save(int fd) {
     rge_write(fd, &orig_pierce_armor, 2);
 }
 
-// tm_co_ob.cpp:266-268
 RGE_Static_Object* TRIBE_Master_Combat_Object::make_new_obj(
     RGE_Player* player, float x, float y, float z) {
     return new TRIBE_Combat_Object(this, player, x, y, z, 1);
 }
 
-// tm_co_ob.cpp:272-274
 RGE_Master_Static_Object* TRIBE_Master_Combat_Object::make_new_master() {
     return new TRIBE_Master_Combat_Object(this, 1);
 }

@@ -1,10 +1,7 @@
 // Authentic C++ source module for C:\\msdev\\work\\age1_x1\\rmm_clif.cpp.
-// Definitions follow the original PDB source order.
 //
-// PDB owner sequence: constructor, generate, setup_cliff_maps,
 // generate_cliff, check_for_valid_cliff_site, invalidate_cliff_area.
 // The 00482081 block between the last two owners is padding-only and has no
-// source owner.
 
 #include "../include/rmm_clif.h"
 #include "../include/map.h"
@@ -12,8 +9,6 @@
 
 extern "C" int __cdecl debug_rand(char* file, int line);
 
-// 00481980 RGE_RMM_Cliffs_Generator::RGE_RMM_Cliffs_Generator
-// PDB source lines 33-37.
 RGE_RMM_Cliffs_Generator::RGE_RMM_Cliffs_Generator(
     RGE_Map* map, RGE_Random_Map_Module* module,
     RGE_Cliffs_Info cliffs_info)
@@ -23,8 +18,6 @@ RGE_RMM_Cliffs_Generator::RGE_RMM_Cliffs_Generator(
     this->schedule = 1.75f;
 }
 
-// 004819C0 RGE_RMM_Cliffs_Generator::generate
-// PDB source lines 41-56.
 uchar RGE_RMM_Cliffs_Generator::generate()
 {
     int i;
@@ -41,8 +34,6 @@ uchar RGE_RMM_Cliffs_Generator::generate()
     return 1;
 }
 
-// 00481A00 RGE_RMM_Cliffs_Generator::setup_cliff_maps
-// PDB source lines 60-173.
 void RGE_RMM_Cliffs_Generator::setup_cliff_maps()
 {
     long cliff_width = this->map_width / 3;
@@ -161,8 +152,6 @@ void RGE_RMM_Cliffs_Generator::setup_cliff_maps()
     this->randomize_stack(&this->valid_cliff_sites);
 }
 
-// 00481CD0 RGE_RMM_Cliffs_Generator::generate_cliff
-// PDB source lines 177-294.
 void RGE_RMM_Cliffs_Generator::generate_cliff()
 {
     long start_x = -1;
@@ -278,8 +267,6 @@ void RGE_RMM_Cliffs_Generator::generate_cliff()
     }
 }
 
-// 00481FC0 RGE_RMM_Cliffs_Generator::check_for_valid_cliff_site
-// PDB source lines 298-344.
 uchar RGE_RMM_Cliffs_Generator::check_for_valid_cliff_site(
     long direction, long& y, long& valid_height, long index)
 {
@@ -333,10 +320,7 @@ invalid:
     return 0;
 }
 
-// 004820A0 RGE_RMM_Cliffs_Generator::invalidate_cliff_area
-// PDB source lines 348-375.
 // The upper y clamp preserves the shipped x2-versus-height comparison.
-// Full recovery history is in recovery_notes/rmm_clif_module.md.
 void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(
     long x, long y, long spacing)
 {

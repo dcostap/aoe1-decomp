@@ -2,8 +2,6 @@
 #define AOE1_VIS_UNIT_H
 
 // Owner declarations for C:\\msdev\\work\\age1_x1\\vis_unit.cpp.
-// The header carries only the records and manager classes owned by that PDB
-// source module. Map, object, player, combat, world, UnitAI, and tile-list
 // layouts remain in their own owner headers.
 
 class RGE_Player;
@@ -55,7 +53,6 @@ public:
 typedef char aoe1_visible_unit_manager_size_check[
     (sizeof(Visible_Unit_Manager) == 0x24) ? 1 : -1];
 
-// The same PDB source module owns the visible-resource record and manager.
 class VISIBLE_RESOURCE_REC {
 public:
     int object_id;

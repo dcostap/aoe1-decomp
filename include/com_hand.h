@@ -14,9 +14,6 @@ struct _GUID;
 
 // Canonical Com_hand.cpp context for six grouped owners.
 // Evidence: exact 00425A40, 00426350, and 00426530, plus behavior-reviewed
-// 004261E0, 00426650, and 00426FC0. The constructor anchor uses Com_hand.cpp
-// lines 268-332 with /GX.
-// The original FPO/PDB symbol proves protected CommOut(unsigned long,
 // unsigned char, void*, int, unsigned char):
 // ?CommOut@TCommunications_Handler@@IAEJKEPAXHE@Z.
 // The field offsets follow the executable and the exact constructor source.
@@ -345,7 +342,6 @@ public:
                    unsigned char e, int f);
     int NewCommand(void* command, int size, int ordered);
     int DoCycle(unsigned long param_1);
-    // Module-local declarations for the complete PDB method sequence.
     char* WaitingOnNamedInfo(unsigned int playerIndex);
     char* WaitingOnInfo(unsigned int param_1);
     void ShowSyncChatMsgs(int param);

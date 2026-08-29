@@ -68,7 +68,7 @@ int TCommunications_Sessions::AddSession(
     this->Session[SessionCount].SessGUID = sessGUID;
     this->Session[SessionCount].MaxPlayers = maxPlayers;
     this->Session[SessionCount].CurrentPlayers = currentPlayers;
-    // ORIGINAL BUG: The binary writes all four user values to User1.
+    // The binary writes all four user values to User1.
     // Preserve this defect to match the shipped executable; do not correct User2-User4.
     this->Session[SessionCount].User1 = user1;
     this->Session[SessionCount].User1 = user2;

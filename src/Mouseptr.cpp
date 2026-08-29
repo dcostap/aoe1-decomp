@@ -1,5 +1,4 @@
 // Authentic Mouseptr.cpp source module.
-// Definitions follow the PDB source order from Mouseptr.cpp.
 
 #include "../include/Mouseptr.h"
 
@@ -257,7 +256,7 @@ int TMousePointer::LoadCursors(char* base, int file_id, int keep_name)
         if (this->Num_Cursors > this->Max_Cursors)
             return 0;
         for (int i = 0; i < this->Num_Cursors; i++) {
-            // BINARY NOTE: The height check follows the width check.
+            // The height check follows the width check.
             long* height = &((Shape_Info*)this->Cursor_Shape->shape_info)[i].Height;
             if (height[-1] > this->Max_CX)
                 return 0;

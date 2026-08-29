@@ -1,5 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\scr_mps.cpp.
-// Definitions follow the original PDB source order.
 
 #include "../include/scr_mps.h"
 #include "../include/scr_set_screen.h"
@@ -39,10 +37,7 @@ extern TChat* chat;
 extern TDebuggingLog* L;
 extern TCommunications_Handler* comm;
 
-// PDB-order owner source: 004A00B0_TribeMPSetupScreen.cpp.
 
-// VA: 004A00B0 TribeMPSetupScreen::TribeMPSetupScreen
-// PDB donor: scr_mps.cpp:203-437
 
 
 TribeMPSetupScreen::TribeMPSetupScreen()
@@ -380,10 +375,7 @@ TribeMPSetupScreen::TribeMPSetupScreen()
     L->Log("$$$ CHAT SCREEN: CONSTRUCTOR DONE");
 }
 
-// PDB-order owner source: 004A0D80_init_vars.cpp.
 
-// VA: 004A0D80 TribeMPSetupScreen::init_vars
-// PDB donor: scr_mps.cpp:443-663
 
 
 void TribeMPSetupScreen::init_vars() {
@@ -578,9 +570,7 @@ void TribeMPSetupScreen::init_vars() {
     }
 }
 
-// PDB-order owner source: 004A1300_TribeMPSetupScreen.cpp.
 
-// VA: 004A1300 TribeMPSetupScreen::~TribeMPSetupScreen
 
 
 TribeMPSetupScreen::~TribeMPSetupScreen()
@@ -652,7 +642,6 @@ TribeMPSetupScreen::~TribeMPSetupScreen()
     delete this->help_button;
 }
 
-// PDB-order owner source: 004A1640_handle_idle.cpp.
 
 
 
@@ -678,13 +667,10 @@ long TribeMPSetupScreen::handle_idle() {
     return TPanel::handle_idle();
 }
 
-// PDB-order owner source: 004A16D0_key_down_action.cpp.
 
 long TribeMPSetupScreen::key_down_action(long p0, short p1, int p2, int p3, int p4) { return 0; }
 
-// PDB-order owner source: 004A16E0_action.cpp.
 
-// VA: 004A16E0 TribeMPSetupScreen::action
 
 long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4)
 {
@@ -917,10 +903,7 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
     return this->TEasy_Panel::action(param_1, param_2, param_3, param_4);
 }
 
-// PDB-order owner source: 004A2060_startGame.cpp.
 
-// VA: 004A2060 TribeMPSetupScreen::startGame
-// PDB source: scr_mps.cpp lines 1140-1446
 
 
 int TribeMPSetupScreen::startGame()
@@ -1146,10 +1129,7 @@ int TribeMPSetupScreen::startGame()
     return 1;
 }
 
-// PDB-order owner source: 004A27A0_calcRandomPositions.cpp.
 
-// VA: 004A27A0 calcRandomPositions
-// PDB donor: scr_mps.cpp:1452-1526
 
 
 void TribeMPSetupScreen::calcRandomPositions() {
@@ -1229,9 +1209,7 @@ void TribeMPSetupScreen::calcRandomPositions() {
     }
 }
 
-// PDB-order owner source: 004A2910_showNetInfo.cpp.
 
-// VA: 004A2910 TribeMPSetupScreen::showNetInfo
 
 
 void TribeMPSetupScreen::showNetInfo()
@@ -1267,11 +1245,7 @@ void TribeMPSetupScreen::showNetInfo()
     }
 }
 
-// PDB-order owner source: 004A2BA0_cancelScreen.cpp.
 
-// VA: 004A2BA0 TribeMPSetupScreen::cancelScreen(int)
-// PDB donor: scr_mps.cpp:1576-1622
-// FLAGS: config/flags/004A2BA0_cancelScreen.rsp (/GX)
 
 
 void TribeMPSetupScreen::cancelScreen(int timed_out) {
@@ -1308,9 +1282,7 @@ void TribeMPSetupScreen::cancelScreen(int timed_out) {
     panel_system.destroyPanel("MP Setup Screen");
 }
 
-// PDB-order owner source: 004A2D50_handle_user_command.cpp.
 
-// VA: 004A2D50 TribeMPSetupScreen::handle_user_command
 
 
 long TribeMPSetupScreen::handle_user_command(unsigned int command, long param)
@@ -1568,14 +1540,10 @@ long TribeMPSetupScreen::handle_user_command(unsigned int command, long param)
     }
 }
 
-// PDB-order owner source: 004A37C0_handle_timer_command.cpp.
 
 long TribeMPSetupScreen::handle_timer_command(unsigned int p0, long p1) { return 1; }
 
-// PDB-order owner source: 004A37D0_fillPlayers.cpp.
 
-// VA: 004A37D0 TribeMPSetupScreen::fillPlayers
-// PDB donor: scr_mps.cpp:1940-2203
 
 
 void TribeMPSetupScreen::fillPlayers()
@@ -1815,9 +1783,7 @@ void TribeMPSetupScreen::fillPlayers()
     this->fillPlayerColors();
 }
 
-// PDB-order owner source: 004A4100_fillChat.cpp.
 
-// VA: 004A4100 TribeMPSetupScreen::fillChat
 
 
 void TribeMPSetupScreen::fillChat(int n) {
@@ -1834,10 +1800,7 @@ void TribeMPSetupScreen::fillChat(int n) {
     }
 }
 
-// PDB-order owner source: 004A4190_updateSummary.cpp.
 
-// VA: 004A4190 TribeMPSetupScreen::updateSummary
-// PDB source: scr_mps.cpp lines 2241-2686
 
 
 void TribeMPSetupScreen::updateSummary()
@@ -2201,7 +2164,6 @@ void TribeMPSetupScreen::updateSummary()
     this->fillPlayers();
 }
 
-// PDB-order owner source: 004A4FC0_kickPlayer.cpp.
 
 
 void TribeMPSetupScreen::kickPlayer(int param_1) {
@@ -2212,9 +2174,7 @@ void TribeMPSetupScreen::kickPlayer(int param_1) {
     this->popupYesNoDialog(text, "Kick Dialog", 0x1C2, 0x64);
 }
 
-// PDB-order owner source: 004A5020_handleKickedPlayer.cpp.
 
-// VA: 004A5020 handleKickedPlayer (55B)
 
 
 void TribeMPSetupScreen::handleKickedPlayer(int player_index) {
@@ -2227,7 +2187,6 @@ void TribeMPSetupScreen::handleKickedPlayer(int player_index) {
     }
 }
 
-// PDB-order owner source: 004A5060_activateVictoryPanels.cpp.
 
 
 
@@ -2255,7 +2214,6 @@ void TribeMPSetupScreen::activateVictoryPanels() {
     }
 }
 
-// PDB-order owner source: 004A5130_setupTabOrder.cpp.
 
 
 
@@ -2288,10 +2246,7 @@ void TribeMPSetupScreen::setupTabOrder()
     set_curr_child(chatInput);
 }
 
-// PDB-order owner source: 004A5210_setupSinglePlayerPlayers.cpp.
 
-// VA: 004A5210 setupSinglePlayerPlayers
-// PDB donor: scr_mps.cpp:2793-2886
 
 
 void TribeMPSetupScreen::setupSinglePlayerPlayers() {
@@ -2389,10 +2344,7 @@ void TribeMPSetupScreen::setupSinglePlayerPlayers() {
     this->fillNumberPlayers();
 }
 
-// PDB-order owner source: 004A5440_fillNumberPlayers.cpp.
 
-// VA: 004A5440 TribeMPSetupScreen::fillNumberPlayers()
-// PDB source: scr_mps.cpp lines 2892-2904
 
 
 
@@ -2415,10 +2367,7 @@ void TribeMPSetupScreen::fillNumberPlayers() {
     this->numberPlayersDrop->set_line(line);
 }
 
-// PDB-order owner source: 004A54C0_fillPlayerColors.cpp.
 
-// VA: 004A54C0 TribeMPSetupScreen::fillPlayerColors
-// PDB donor: scr_mps.cpp:2910-2943
 
 
 
@@ -2477,10 +2426,7 @@ void TribeMPSetupScreen::fillPlayerColors() {
     } while (--remaining != 0);
 }
 
-// PDB-order owner source: 004A5610_TRIBE_Screen_Wait.cpp.
 
-// PDB source: scr_mps.cpp lines 2950-3225 (134 line records)
-// FLAGS: /GX.
 
 
 TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
@@ -2703,7 +2649,6 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     this->settingText[i]->set_active(1);
 }
 
-// PDB-order owner source: 004A6050_TRIBE_Screen_Wait.cpp.
 
 TRIBE_Screen_Wait::~TRIBE_Screen_Wait() {
     delete this->message;
@@ -2714,19 +2659,16 @@ TRIBE_Screen_Wait::~TRIBE_Screen_Wait() {
     }
 }
 
-// PDB-order owner source: 004A60E0_set_text.cpp.
 
 void TRIBE_Screen_Wait::set_text(char* param) {
     this->message->set_text(param);
 }
 
-// PDB-order owner source: 004A6100_set_text.cpp.
 
 void TRIBE_Screen_Wait::set_text(long param) {
     this->message->set_text(param);
 }
 
-// PDB-order owner source: 004A6120_action.cpp.
 
 long TRIBE_Screen_Wait::action(TPanel* param_1, long param_2, unsigned long param_3, unsigned long param_4) {
     if ((param_1 != 0) && (param_1 == this->close_button) &&
@@ -2737,7 +2679,6 @@ long TRIBE_Screen_Wait::action(TPanel* param_1, long param_2, unsigned long para
     return this->TScreenPanel::action(param_1, param_2, param_3, param_4);
 }
 
-// PDB-order owner source: 004A6170_handle_idle.cpp.
 
 long TRIBE_Screen_Wait::handle_idle() {
     if (!rge_base_game->input_enabled)
@@ -2745,7 +2686,6 @@ long TRIBE_Screen_Wait::handle_idle() {
     return TPanel::handle_idle();
 }
 
-// PDB-order owner source: 004A61A0_TRIBE_Screen_Disconnect.cpp.
 
 
 
@@ -2767,25 +2707,21 @@ TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(int mode)
     }
 }
 
-// PDB-order owner source: 004A6290_TRIBE_Screen_Disconnect.cpp.
 
 TRIBE_Screen_Disconnect::~TRIBE_Screen_Disconnect() {
     delete this->message;
 }
 
-// PDB-order owner source: 004A62F0_set_text.cpp.
 
 void TRIBE_Screen_Disconnect::set_text(char* param) {
     this->message->set_text(param);
 }
 
-// PDB-order owner source: 004A6310_set_text.cpp.
 
 void TRIBE_Screen_Disconnect::set_text(long param) {
     this->message->set_text(param);
 }
 
-// PDB-order owner source: 004A6330_action.cpp.
 
 
 
@@ -2805,6 +2741,5 @@ long TRIBE_Screen_Disconnect::action(TPanel* p1, long p2, unsigned long p3, unsi
     return TEasy_Panel::action(p1, p2, p3, p4);
 }
 
-// PDB-order owner source: 004A63C0_handle_idle.cpp.
 
 long TRIBE_Screen_Disconnect::handle_idle() { return TPanel::handle_idle(); }

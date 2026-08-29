@@ -27,7 +27,6 @@ static const char sprite_format[] =
 static const char picture_format[] = " %hd %hd %hd %hd";
 static const char sound_format[] = "%hd %hd %hd";
 
-// PDB order: sprite.cpp lines 42-72.
 RGE_Sprite::RGE_Sprite(short sprite_id)
 {
     this->color_tables = 0;
@@ -61,7 +60,6 @@ RGE_Sprite::RGE_Sprite(short sprite_id)
     this->sound_list = 0;
 }
 
-// PDB order: sprite.cpp lines 78-135.
 RGE_Sprite::RGE_Sprite(int handle, RGE_Sound** sounds,
                        RGE_Color_Table** color_tables)
 {
@@ -138,7 +136,6 @@ RGE_Sprite::RGE_Sprite(int handle, RGE_Sound** sounds,
     }
 }
 
-// PDB order: sprite.cpp lines 140-262.
 RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
 {
     this->color_tables = 0;
@@ -186,7 +183,7 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
         &this->pause_between_loops,
         draw_count,
         &temp_color_flag,
-        // BINARY NOTE: the final count reuses sprite_id's parameter home.
+        // the final count reuses sprite_id's parameter home.
         // Keep this alias so a partial scan keeps the shipped value.
         &sprite_id);
 
@@ -303,7 +300,6 @@ RGE_Sprite::RGE_Sprite(FILE* infile, short sprite_id, RGE_Sound** sounds)
     }
 }
 
-// PDB order: sprite.cpp lines 267-288.
 RGE_Sprite::~RGE_Sprite()
 {
     TShape* shape = this->shape;
@@ -330,7 +326,6 @@ RGE_Sprite::~RGE_Sprite()
     this->color_tables = 0;
 }
 
-// PDB order: sprite.cpp lines 292-305.
 void RGE_Sprite::rehook(RGE_Sprite** sprites)
 {
     short i;
@@ -352,7 +347,6 @@ loop_test:
     load_facets(sprites);
 }
 
-// PDB order: sprite.cpp lines 309-358.
 void RGE_Sprite::save(int handle)
 {
     int info = -1;
@@ -412,14 +406,12 @@ void RGE_Sprite::save(int handle)
     }
 }
 
-// PDB order: sprite.cpp lines 362-392.
 void RGE_Sprite::load_facets(RGE_Sprite** facets)
 {
     this->shape = 0;
     this->loaded = 1;
 }
 
-// PDB order: sprite.cpp lines 396-437.
 void RGE_Sprite::play_sound(short param_1, short param_2, short param_3)
 {
     if (param_3 >= this->facet_num) {
@@ -462,7 +454,6 @@ void RGE_Sprite::play_sound(short param_1, short param_2, short param_3)
     }
 }
 
-// PDB order: sprite.cpp lines 441-471.
 unsigned char RGE_Sprite::get_facetindex(long facet, long frame, long& index)
 {
     if (this->mirror_flag != 0 && this->facet_num == 2) {
@@ -497,7 +488,6 @@ unsigned char RGE_Sprite::get_facetindex(long facet, long frame, long& index)
     return 0;
 }
 
-// PDB order: sprite.cpp lines 475-590.
 void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
                          RGE_Color_Table* color_table,
                          TDrawArea* draw_area, unsigned char draw_level)
@@ -611,7 +601,6 @@ draw_done:
     }
 }
 
-// PDB order: sprite.cpp lines 594-621.
 unsigned char RGE_Sprite::draw(long facet, long param_2, long param_3,
                                long param_4, long param_5, long param_6,
                                RGE_Color_Table* color_table,
@@ -673,7 +662,6 @@ unsigned char RGE_Sprite::draw(long facet, long param_2, long param_3,
     return (unsigned char)count;
 }
 
-// PDB order: sprite.cpp lines 625-652.
 unsigned char RGE_Sprite::normal_draw(long param_1, long param_2,
                                       long param_3, long param_4,
                                       RGE_Color_Table* param_5,
@@ -720,7 +708,6 @@ unsigned char RGE_Sprite::normal_draw(long param_1, long param_2,
     return (unsigned char)count;
 }
 
-// PDB order: sprite.cpp lines 656-684.
 unsigned char RGE_Sprite::shadow_draw(long param_1, long param_2,
                                       long param_3, long param_4,
                                       RGE_Color_Table* param_5,
@@ -768,7 +755,6 @@ unsigned char RGE_Sprite::shadow_draw(long param_1, long param_2,
     return (unsigned char)param_1;
 }
 
-// PDB order: sprite.cpp lines 688-707.
 int RGE_Sprite::get_size(long& min_x, long& min_y, long& max_x,
                          long& max_y, long facet)
 {
@@ -794,7 +780,6 @@ int RGE_Sprite::get_size(long& min_x, long& min_y, long& max_x,
     return this->shape->shape_minmax(min_x, min_y, max_x, max_y, facet);
 }
 
-// PDB order: sprite.cpp lines 711-759.
 int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x,
                           short& max_y, long frame, long facet)
 {
@@ -855,7 +840,6 @@ int RGE_Sprite::get_frame(short& min_x, short& min_y, short& max_x,
     return 1;
 }
 
-// PDB order: sprite.cpp lines 763-803.
 int RGE_Sprite::get_frame_min_max(short& min_x, short& min_y, short& max_x,
                                   short& max_y, long frame, long facet,
                                   short offset_x, short offset_y)
@@ -902,7 +886,6 @@ int RGE_Sprite::get_frame_min_max(short& min_x, short& min_y, short& max_x,
     return 1;
 }
 
-// PDB order: sprite.cpp lines 807-827.
 unsigned char RGE_Sprite::get_lowest_draw_level(void)
 {
     short count = this->draw_list_num;
@@ -921,7 +904,6 @@ unsigned char RGE_Sprite::get_lowest_draw_level(void)
     return lowest;
 }
 
-// PDB order: sprite.cpp lines 831-850.
 unsigned char RGE_Sprite::hit_test(short x, short y, long facet, long value)
 {
     int index = 0;
@@ -958,7 +940,6 @@ unsigned char RGE_Sprite::hit_test(short x, short y, long facet, long value)
     return this->shape_hit_test(x, y, facet, value);
 }
 
-// PDB order: sprite.cpp lines 855-915.
 unsigned char RGE_Sprite::shape_hit_test(short x, short y, long facet,
                                          long frame)
 {
@@ -1040,7 +1021,6 @@ fail:
     return 0;
 }
 
-// PDB order: sprite.cpp lines 919-924.
 RGE_Active_Sprite* RGE_Sprite::make_active_sprite()
 {
     if (this->flags & 1) {
@@ -1049,7 +1029,6 @@ RGE_Active_Sprite* RGE_Sprite::make_active_sprite()
     return new RGE_Active_Sprite(this);
 }
 
-// PDB order: sprite.cpp lines 930-951.
 int RGE_Sprite::check_for_shadows()
 {
     short count;
@@ -1083,7 +1062,6 @@ ret1:
     return 1;
 }
 
-// PDB order: sprite.cpp lines 955-975.
 void RGE_Sprite::update(unsigned long param_1)
 {
     if (loaded) {
@@ -1091,7 +1069,7 @@ void RGE_Sprite::update(unsigned long param_1)
         if (pS) {
             int dt = delta_time;
             unsigned long time = param_1;
-            // BINARY NOTE: update compares against the double at 00574528.
+            // update compares against the double at 00574528.
             if ((double)dt == DAT_00574528) {
                 this->last_time = time;
                 this->delta_time = 1;

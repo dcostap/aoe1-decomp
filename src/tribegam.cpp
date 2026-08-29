@@ -48,11 +48,8 @@
 #include <windows.h>
 #include <mbstring.h>
 
-// PDB source order for C:\\msdev\\work\\age1_x1\\tribegam.cpp.
 
-// The module keeps the recovered period source in original PDB order.
 
-// PDB lines 160-191; VA 00520FC0 encrypt_codes.
 
 extern const int encrypt_table[];
 
@@ -81,7 +78,6 @@ void encrypt_codes(char* src, char* dst, int max_len) {
     *out = 0;
 }
 
-// PDB lines 199-224; VA 00521020 run_log.
 
 struct _iobuf;
 
@@ -128,7 +124,6 @@ void __cdecl run_log(char* param_1, int param_2)
     fclose(run_log_file);
 }
 
-// PDB lines 230-232; VA 00523AE0 video_sub_wnd_proc.
 
 static long __stdcall video_sub_wnd_proc(void* hwnd, unsigned int msg,
                                          unsigned int wparam, long lparam) {
@@ -136,7 +131,6 @@ static long __stdcall video_sub_wnd_proc(void* hwnd, unsigned int msg,
         hwnd, msg, wparam, lparam);
 }
 
-// PDB lines 256-342; VA 00521120 TRIBE_Game::TRIBE_Game.
 
 extern void* StringTableX;
 extern int disable_terrain_sounds;
@@ -261,7 +255,6 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* prog_info, int setup_game)
     }
 }
 
-// PDB lines 347-413; VA 005213A0 TRIBE_Game::~TRIBE_Game.
 
 extern void* StringTableX;
 
@@ -318,7 +311,6 @@ TRIBE_Game::~TRIBE_Game()
     }
 }
 
-// PDB lines 419-447; VA 00521620 TRIBE_Game::close_game_screens.
 
 void TRIBE_Game::close_game_screens(int destroyGameScreen)
 {
@@ -350,7 +342,6 @@ void TRIBE_Game::close_game_screens(int destroyGameScreen)
     }
 }
 
-// PDB lines 453-685; VA 00521790 TRIBE_Game::setup.
 
 #include <string.h>
 #include <windows.h>
@@ -530,9 +521,8 @@ int TRIBE_Game::setup()
     return 1;
 }
 
-// PDB lines 691-797; VA 00521FA0 TRIBE_Game::setup_cmd_options.
 
-// BINARY NOTE: The oracle loads [p+1], then increments p in each scan body.
+// The oracle loads [p+1], then increments p in each scan body.
 
 #include <string.h>
 
@@ -659,7 +649,6 @@ int TRIBE_Game::setup_cmd_options()
     return this->RGE_Base_Game::setup_cmd_options();
 }
 
-// PDB lines 803-822; VA 00522200 TRIBE_Game::setup_palette.
 
 #include <windows.h>
 
@@ -684,7 +673,6 @@ int TRIBE_Game::setup_palette() {
     return 1;
 }
 
-// PDB lines 828-866; VA 005222C0 TRIBE_Game::setup_sounds.
 
 extern "C" void* __cdecl calloc(unsigned int num, unsigned int size);
 extern void* operator new(unsigned int size);
@@ -748,7 +736,6 @@ int TRIBE_Game::setup_sounds()
     return 1;
 }
 
-// PDB lines 872-874; VA 00522770 TRIBE_Game::create_world.
 
 #include "../include/game_globals.h"
 #include "../include/game_types.h"
@@ -757,7 +744,6 @@ RGE_Game_World* TRIBE_Game::create_world() {
     return new TRIBE_World;
 }
 
-// PDB lines 880-892; VA 005227D0 TRIBE_Game::set_game_mode.
 
 void TRIBE_Game::set_game_mode(int a, int b) {
     int old_mode = this->game_mode;
@@ -767,7 +753,6 @@ void TRIBE_Game::set_game_mode(int a, int b) {
     }
 }
 
-// PDB lines 898-913; VA 00522810 TRIBE_Game::set_player.
 
 #include "../include/game_globals.h"
 
@@ -786,7 +771,6 @@ void TRIBE_Game::set_player(short player) {
     }
 }
 
-// PDB lines 919-924; VA 00522860 TRIBE_Game::set_save_game_name.
 
 extern "C" char* strcpy(char* dst, const char* src);
 
@@ -798,7 +782,6 @@ void TRIBE_Game::set_save_game_name(char* text) {
     }
 }
 
-// PDB lines 930-935; VA 005228A0 TRIBE_Game::set_load_game_name.
 
 #include <string.h>
 
@@ -811,7 +794,6 @@ void TRIBE_Game::set_load_game_name(char* param_1) {
     this->load_game_name[0] = 0;
 }
 
-// PDB lines 942-951; VA 005228E0 TRIBE_Game::get_string.
 
 #include <windows.h>
 
@@ -826,7 +808,6 @@ char* TRIBE_Game::get_string(long string_id, char* buffer, int buffer_size) {
     return buffer;
 }
 
-// PDB lines 957-1118; VA 00522930 TRIBE_Game::get_string2.
 
 char* TRIBE_Game::get_string2(int param_1, long param_2, long param_3, char* param_4, int param_5)
 {
@@ -1065,7 +1046,6 @@ char* TRIBE_Game::get_string2(int param_1, long param_2, long param_3, char* par
     return param_4;
 }
 
-// PDB lines 1124-1139; VA 00523450 TRIBE_Game::get_view_panel.
 
 TPanel* TRIBE_Game::get_view_panel()
 {
@@ -1083,7 +1063,6 @@ TPanel* TRIBE_Game::get_view_panel()
     return 0;
 }
 
-// PDB lines 1145-1160; VA 005234A0 TRIBE_Game::get_map_panel.
 
 TPanel* TRIBE_Game::get_map_panel(void) {
     if (this->prog_mode == 4 || this->prog_mode == 6 || this->prog_mode == 5) {
@@ -1102,21 +1081,17 @@ TPanel* TRIBE_Game::get_map_panel(void) {
     return 0;
 }
 
-// PDB lines 1166-1168; VA 005234F0 TRIBE_Game::get_save_game_name.
 
 char * TRIBE_Game::get_save_game_name() { return this->save_game_name; }
 
-// PDB lines 1174-1176; VA 00523500 TRIBE_Game::get_load_game_name.
 
 char * TRIBE_Game::get_load_game_name() { return this->load_game_name; }
 
-// PDB lines 1182-1184; VA 00523510 TRIBE_Game::new_scenario_header.
 
 RGE_Scenario_Header* TRIBE_Game::new_scenario_header(int param_1) {
     return new TRIBE_Scenario_Header(param_1);
 }
 
-// PDB lines 1190-1192; VA 00523570 TRIBE_Game::new_scenario_header.
 
 #include "../include/game_types.h"
 
@@ -1124,13 +1099,11 @@ RGE_Scenario_Header* TRIBE_Game::new_scenario_header(RGE_Scenario* param_1) {
     return new TRIBE_Scenario_Header(static_cast<T_Scenario*>(param_1));
 }
 
-// PDB lines 1198-1200; VA 005235D0 TRIBE_Game::new_scenario_info.
 
 RGE_Scenario* TRIBE_Game::new_scenario_info(int param_1) {
     return new T_Scenario(param_1, 0);
 }
 
-// PDB lines 1206-1211; VA 00523640 TRIBE_Game::show_error_message.
 
 extern "C" __declspec(dllimport) int __stdcall MessageBoxA(void* hWnd, const char* lpText, const char* lpCaption, unsigned int uType);
 
@@ -1142,7 +1115,6 @@ void TRIBE_Game::show_error_message(int param_1) {
     MessageBoxA(this->prog_window, msg, title, 0x10);
 }
 
-// PDB lines 1216-1230; VA 005236A0 TRIBE_Game::show_status_message.
 
 static char status_screen[] = "Status Screen";
 
@@ -1159,7 +1131,6 @@ void TRIBE_Game::show_status_message(char* s1, char* s2, long p3) {
     panel_system.setCurrentPanel(status_screen, 0);
 }
 
-// PDB lines 1235-1239; VA 00523750 TRIBE_Game::show_status_message.
 
 void TRIBE_Game::show_status_message(int string_id, char* param_2, long param_3) {
     char str[0x100];
@@ -1167,13 +1138,11 @@ void TRIBE_Game::show_status_message(int string_id, char* param_2, long param_3)
     this->show_status_message(str, param_2, param_3);
 }
 
-// PDB lines 1244-1249; VA 005237A0 TRIBE_Game::close_status_message.
 
 void TRIBE_Game::close_status_message() {
     panel_system.restorePreviousPanel(1);
 }
 
-// PDB lines 1255-1443; VA 005237B0 TRIBE_Game::start_video.
 
 #include <stdio.h>
 #include <string.h>
@@ -1267,7 +1236,6 @@ int TRIBE_Game::start_video(int video, char* file)
     return 0;
 }
 
-// PDB lines 1449-1555; VA 00523B10 TRIBE_Game::stop_video.
 
 #include <new.h>
 #include <string.h>
@@ -1404,7 +1372,6 @@ void TRIBE_Game::stop_video(unsigned char do_stop)
     }
 }
 
-// PDB lines 1560-1596; VA 00523F10 TRIBE_Game::start_campaign_menu.
 
 int TRIBE_Game::start_campaign_menu()
 {
@@ -1441,7 +1408,6 @@ int TRIBE_Game::start_campaign_menu()
     return 1;
 }
 
-// PDB lines 1601-1636; VA 00524030 TRIBE_Game::start_menu.
 
 #include <new.h>
 
@@ -1481,7 +1447,6 @@ int TRIBE_Game::start_menu()
     return 1;
 }
 
-// PDB lines 1642-1733; VA 00524150 TRIBE_Game::quit_game.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern int do_debug_random;
@@ -1574,7 +1539,6 @@ void TRIBE_Game::quit_game()
     return;
 }
 
-// PDB lines 1739-1842; VA 005243A0 TRIBE_Game::restart_game.
 
 void TRIBE_Game::restart_game()
 {
@@ -1630,7 +1594,6 @@ void TRIBE_Game::restart_game()
     }
 }
 
-// PDB lines 1850-1879; VA 00524530 TRIBE_Game::load_db_files.
 
 int TRIBE_Game::load_db_files()
 {
@@ -1658,7 +1621,6 @@ int TRIBE_Game::load_db_files()
     return result;
 }
 
-// PDB lines 1887-1903; VA 005245D0 TRIBE_Game::load_game_data.
 
 #include "../include/game_globals.h"
 
@@ -1680,7 +1642,6 @@ int TRIBE_Game::load_game_data()
     return 1;
 }
 
-// PDB lines 1909-1959; VA 00524640 TRIBE_Game::save_game.
 
 extern "C" char* __cdecl strcpy(char* destination, const char* source);
 extern "C" char* __cdecl strchr(const char* source, int character);
@@ -1728,7 +1689,6 @@ int TRIBE_Game::save_game(char* filename)
     return 1;
 }
 
-// PDB lines 1965-1997; VA 00524790 TRIBE_Game::save_scenario.
 
 int TRIBE_Game::save_scenario(char* filename)
 {
@@ -1761,7 +1721,6 @@ int TRIBE_Game::save_scenario(char* filename)
     return 1;
 }
 
-// PDB lines 2003-2069; VA 00524880 TRIBE_Game::calc_timing_text.
 
 extern "C" char* __cdecl strcpy(char* destination, const char* source);
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
@@ -1825,7 +1784,6 @@ void TRIBE_Game::calc_timing_text()
             this->view_update_count);
 }
 
-// PDB lines 2075-2079; VA 00524A60 TRIBE_Game::show_timings.
 
 void TRIBE_Game::show_timings() {
     if (this->game_screen)
@@ -1833,7 +1791,6 @@ void TRIBE_Game::show_timings() {
                                         this->timing_text2);
 }
 
-// PDB lines 2085-2095; VA 00524A80 TRIBE_Game::show_comm.
 
 void TRIBE_Game::show_comm() {
     if (this->game_screen == 0) return;
@@ -1848,7 +1805,6 @@ void TRIBE_Game::show_comm() {
     );
 }
 
-// PDB lines 2100-2137; VA 00524AF0 TRIBE_Game::show_ai.
 
 #include <string.h>
 #include <stdio.h>
@@ -1903,7 +1859,6 @@ void TRIBE_Game::show_ai()
     }
 }
 
-// PDB lines 2143-2580; VA 00524D70 TRIBE_Game::notification.
 
 #include <stdio.h>
 
@@ -2373,7 +2328,6 @@ void TRIBE_Game::notification(int type, long player, long value,
     }
 }
 
-// PDB lines 2586-2638; VA 00525D20 TRIBE_Game::start_game.
 
 #include <string.h>
 #include <stdio.h>
@@ -2419,7 +2373,6 @@ int TRIBE_Game::start_game(int param_1)
     return 1;
 }
 
-// PDB lines 2646-2662; VA 00525E50 TRIBE_Game::test_scenario.
 
 #include <string.h>
 
@@ -2442,7 +2395,6 @@ int TRIBE_Game::test_scenario(char* name)
     return 0;
 }
 
-// PDB lines 2670-2781; VA 00525EE0 TRIBE_Game::start_scenario.
 
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 
@@ -2538,7 +2490,6 @@ int TRIBE_Game::start_scenario(char* scenario)
     return this->start_game(1);
 }
 
-// PDB lines 2787-3184; VA 00526170 TRIBE_Game::load_game.
 
 #include <stdio.h>
 #include <string.h>
@@ -2887,7 +2838,6 @@ int TRIBE_Game::load_game(char* file_name)
     }
 }
 
-// PDB lines 3191-3220; VA 00526DC0 TRIBE_Game::do_game_over.
 
 #include "../include/game_globals.h"
 
@@ -2915,7 +2865,6 @@ void TRIBE_Game::do_game_over(void) {
     }
 }
 
-// PDB lines 3234-3697; VA 00526E60 TRIBE_Game::create_game.
 
 #include <stddef.h>
 #include <stdio.h>
@@ -3287,7 +3236,6 @@ int TRIBE_Game::create_game(int param_1)
     return result;
 }
 
-// PDB lines 3703-3767; VA 00527830 TRIBE_Game::create_game_screen.
 
 int TRIBE_Game::create_game_screen()
 {
@@ -3343,7 +3291,6 @@ int TRIBE_Game::create_game_screen()
     return 0;
 }
 
-// PDB lines 3773-4202; VA 00527A70 TRIBE_Game::processCheatCode.
 
 extern "C" char* __cdecl strcpy(char*, const char*);
 extern "C" char* __cdecl strstr(const char*, const char*);
@@ -3466,7 +3413,6 @@ int TRIBE_Game::processCheatCode(int player_id, char* cheat) {
     return 0;
 }
 
-// PDB lines 4208-4359; VA 00528670 TRIBE_Game::let_game_begin.
 
 #include <stdio.h>
 #include <string.h>
@@ -3669,7 +3615,6 @@ void TRIBE_Game::let_game_begin()
     this->enable_input();
 }
 
-// PDB lines 4365-4412; VA 00528DE0 TRIBE_Game::start_scenario_editor.
 
 int TRIBE_Game::start_scenario_editor(char* scenario_filename, int mode)
 {
@@ -3707,7 +3652,6 @@ int TRIBE_Game::start_scenario_editor(char* scenario_filename, int mode)
     return 0;
 }
 
-// PDB lines 4418-4431; VA 00528F60 TRIBE_Game::send_game_options.
 
 void TRIBE_Game::send_game_options(void) {
     TRIBE_Game_Combined_Options combined_options;
@@ -3720,7 +3664,6 @@ void TRIBE_Game::send_game_options(void) {
     }
 }
 
-// PDB lines 4437-4455; VA 00528FB0 TRIBE_Game::receive_game_options.
 
 void TRIBE_Game::receive_game_options(void) {
     if (this->comm_handler != 0) {
@@ -3735,7 +3678,6 @@ void TRIBE_Game::receive_game_options(void) {
     }
 }
 
-// PDB lines 4461-4487; VA 00529000 TRIBE_Game::set_tribe_options.
 
 void TRIBE_Game::set_tribe_options(TRIBE_Game_Options* options) {
     int i;
@@ -3765,7 +3707,6 @@ void TRIBE_Game::set_tribe_options(TRIBE_Game_Options* options) {
     this->setPopLimit(options->popLimitValue);
 }
 
-// PDB lines 4493-4520; VA 00529100 TRIBE_Game::get_tribe_options.
 
 void TRIBE_Game::get_tribe_options(TRIBE_Game_Options* opt)
 {
@@ -3796,14 +3737,12 @@ void TRIBE_Game::get_tribe_options(TRIBE_Game_Options* opt)
     opt->popLimitValue = popLimit();
 }
 
-// PDB lines 4525-4527; VA 005291F0 TRIBE_Game::mapSize.
 
 TRIBE_Game::MapSize TRIBE_Game::mapSize() const {
     return static_cast<TRIBE_Game::MapSize>(
         this->tribe_game_options.mapSizeValue);
 }
 
-// PDB lines 4532-4554; VA 00529200 TRIBE_Game::setMapSize.
 
 void TRIBE_Game::setMapSize(MapSize size) {
     this->tribe_game_options.mapSizeValue = size;
@@ -3829,219 +3768,178 @@ void TRIBE_Game::setMapSize(MapSize size) {
     }
 }
 
-// PDB lines 4559-4561; VA 005292A0 TRIBE_Game::mapType.
 
 TRIBE_Game::MapType TRIBE_Game::mapType() const {
     return static_cast<TRIBE_Game::MapType>(
         this->tribe_game_options.mapTypeValue);
 }
 
-// PDB lines 4566-4568; VA 005292B0 TRIBE_Game::setMapType.
 
 void TRIBE_Game::setMapType(TRIBE_Game::MapType val) {
     this->tribe_game_options.mapTypeValue = val;
 }
 
-// PDB lines 4573-4575; VA 005292C0 TRIBE_Game::animals.
 
 int TRIBE_Game::animals() const { return this->tribe_game_options.animalsValue; }
 
-// PDB lines 4580-4583; VA 005292D0 TRIBE_Game::setAnimals.
 
 void TRIBE_Game::setAnimals(int val) { this->tribe_game_options.animalsValue = val; }
 
-// PDB lines 4588-4590; VA 005292E0 TRIBE_Game::predators.
 
 int TRIBE_Game::predators() const { return this->tribe_game_options.predatorsValue; }
 
-// PDB lines 4595-4598; VA 005292F0 TRIBE_Game::setPredators.
 
 void TRIBE_Game::setPredators(int val) { this->tribe_game_options.predatorsValue = val; }
 
-// PDB lines 4603-4605; VA 00529300 TRIBE_Game::victoryType.
 
 TRIBE_Game::VictoryType TRIBE_Game::victoryType() const {
     return static_cast<TRIBE_Game::VictoryType>(
         this->tribe_game_options.victoryTypeValue);
 }
 
-// PDB lines 4610-4612; VA 00529310 TRIBE_Game::victoryAmount.
 
 int TRIBE_Game::victoryAmount() const { return this->tribe_game_options.victoryAmountValue; }
 
-// PDB lines 4617-4620; VA 00529320 TRIBE_Game::setVictoryType.
 
 void TRIBE_Game::setVictoryType(TRIBE_Game::VictoryType type, int amount) {
     this->tribe_game_options.victoryTypeValue = type;
     this->tribe_game_options.victoryAmountValue = amount;
 }
 
-// PDB lines 4626-4628; VA 00529340 TRIBE_Game::civilization.
 
 int TRIBE_Game::civilization(int i) {
     return this->tribe_game_options.civilizationValue[i];
 }
 
-// PDB lines 4634-4636; VA 00529350 TRIBE_Game::setCivilization.
 
 void TRIBE_Game::setCivilization(int player, int civ) {
     this->tribe_game_options.civilizationValue[player] =
         static_cast<unsigned char>(civ);
 }
 
-// PDB lines 4642-4644; VA 00529370 TRIBE_Game::scenarioPlayer.
 
 int TRIBE_Game::scenarioPlayer(int idx) { return this->tribe_game_options.scenarioPlayerValue[idx]; }
 
-// PDB lines 4650-4652; VA 00529380 TRIBE_Game::setScenarioPlayer.
 
 void TRIBE_Game::setScenarioPlayer(int i, int v) {
     this->tribe_game_options.scenarioPlayerValue[i] = v;
 }
 
-// PDB lines 4658-4660; VA 005293A0 TRIBE_Game::playerColor.
 
 int TRIBE_Game::playerColor(int i) {
     return this->tribe_game_options.playerColorValue[i];
 }
 
-// PDB lines 4666-4668; VA 005293B0 TRIBE_Game::setPlayerColor.
 
 void TRIBE_Game::setPlayerColor(int i, int v) {
     this->tribe_game_options.playerColorValue[i] = v;
 }
 
-// PDB lines 4674-4676; VA 005293D0 TRIBE_Game::computerName.
 
 int TRIBE_Game::computerName(int i) {
     return this->tribe_game_options.computerNameValue[i];
 }
 
-// PDB lines 4682-4684; VA 005293E0 TRIBE_Game::setComputerName.
 
 void TRIBE_Game::setComputerName(int i, int v) {
     this->tribe_game_options.computerNameValue[i] = v;
 }
 
-// PDB lines 4690-4692; VA 00529400 TRIBE_Game::allowTrading.
 
 int TRIBE_Game::allowTrading() { return this->tribe_game_options.allowTradingValue; }
 
-// PDB lines 4698-4700; VA 00529410 TRIBE_Game::longCombat.
 
 int TRIBE_Game::longCombat() { return this->tribe_game_options.longCombatValue; }
 
-// PDB lines 4706-4708; VA 00529420 TRIBE_Game::randomizePositions.
 
 int TRIBE_Game::randomizePositions() { return this->tribe_game_options.randomizePositionsValue; }
 
-// PDB lines 4714-4716; VA 00529430 TRIBE_Game::fullTechTree.
 
 int TRIBE_Game::fullTechTree() { return this->tribe_game_options.fullTechTreeValue; }
 
-// PDB lines 4722-4724; VA 00529440 TRIBE_Game::resourceLevel.
 
 TRIBE_Game::ResourceLevel TRIBE_Game::resourceLevel() {
     return static_cast<TRIBE_Game::ResourceLevel>(
         this->tribe_game_options.resourceLevelValue);
 }
 
-// PDB lines 4730-4732; VA 00529450 TRIBE_Game::startingAge.
 
 TRIBE_Game::Age TRIBE_Game::startingAge() {
     return static_cast<TRIBE_Game::Age>(
         this->tribe_game_options.startingAgeValue);
 }
 
-// PDB lines 4738-4740; VA 00529460 TRIBE_Game::startingUnits.
 
 int TRIBE_Game::startingUnits() { return this->tribe_game_options.startingUnitsValue; }
 
-// PDB lines 4746-4748; VA 00529470 TRIBE_Game::deathMatch.
 
 unsigned char TRIBE_Game::deathMatch() { return this->tribe_game_options.deathMatchValue; }
 
-// PDB lines 4754-4759; VA 00529480 TRIBE_Game::popLimit.
 
 unsigned char TRIBE_Game::popLimit() {
     return this->tribe_game_options.popLimitValue;
 }
 
-// PDB lines 4766-4768; VA 005294A0 TRIBE_Game::quickStartGame.
 
 unsigned char TRIBE_Game::quickStartGame() { return this->quick_start_game; }
 
-// PDB lines 4774-4776; VA 005294B0 TRIBE_Game::randomStartValue.
 
 int TRIBE_Game::randomStartValue() { return this->random_start_value; }
 
-// PDB lines 4782-4784; VA 005294C0 TRIBE_Game::setAllowTrading.
 
 void TRIBE_Game::setAllowTrading(int val) {
     this->tribe_game_options.allowTradingValue = static_cast<unsigned char>(val);
 }
 
-// PDB lines 4790-4792; VA 005294D0 TRIBE_Game::setLongCombat.
 
 void TRIBE_Game::setLongCombat(int val) {
     this->tribe_game_options.longCombatValue = static_cast<unsigned char>(val);
 }
 
-// PDB lines 4798-4800; VA 005294E0 TRIBE_Game::setRandomizePositions.
 
 void TRIBE_Game::setRandomizePositions(int val) {
     this->tribe_game_options.randomizePositionsValue =
         static_cast<unsigned char>(val);
 }
 
-// PDB lines 4806-4808; VA 005294F0 TRIBE_Game::setFullTechTree.
 
 void TRIBE_Game::setFullTechTree(int val) {
     this->tribe_game_options.fullTechTreeValue = static_cast<unsigned char>(val);
 }
 
-// PDB lines 4814-4816; VA 00529500 TRIBE_Game::setResourceLevel.
 
 void TRIBE_Game::setResourceLevel(TRIBE_Game::ResourceLevel val) {
     this->tribe_game_options.resourceLevelValue = val;
 }
 
-// PDB lines 4822-4824; VA 00529510 TRIBE_Game::setStartingAge.
 
 void TRIBE_Game::setStartingAge(TRIBE_Game::Age val) {
     this->tribe_game_options.startingAgeValue = val;
 }
 
-// PDB lines 4830-4832; VA 00529520 TRIBE_Game::setStartingUnits.
 
 void TRIBE_Game::setStartingUnits(int val) {
     this->tribe_game_options.startingUnitsValue = static_cast<unsigned char>(val);
 }
 
-// PDB lines 4838-4840; VA 00529530 TRIBE_Game::setDeathMatch.
 
 void TRIBE_Game::setDeathMatch(unsigned char val) { this->tribe_game_options.deathMatchValue = val; }
 
-// PDB lines 4846-4848; VA 00529540 TRIBE_Game::setPopLimit.
 
 void TRIBE_Game::setPopLimit(unsigned char val) { this->tribe_game_options.popLimitValue = val; }
 
-// PDB lines 4854-4856; VA 00529550 TRIBE_Game::setQuickStartGame.
 
 void TRIBE_Game::setQuickStartGame(unsigned char val) { this->quick_start_game = val; }
 
-// PDB lines 4862-4864; VA 00529560 TRIBE_Game::setRandomStartValue.
 
 void TRIBE_Game::setRandomStartValue(int val) { this->random_start_value = val; }
 
-// PDB lines 4869-4908; VA 00529570 TRIBE_Game::gameSummary.
 
 char* TRIBE_Game::gameSummary() {
     DAT_0086bca0 = 0;
     return reinterpret_cast<char*>(&DAT_0086bca0);
 }
 
-// PDB lines 4914-4942; VA 00529580 TRIBE_Game::wnd_proc.
 
 long __stdcall TRIBE_Game::wnd_proc(void* hWnd, unsigned int msg,
                                     unsigned int wParam, long lParam)
@@ -4076,7 +3974,6 @@ long __stdcall TRIBE_Game::wnd_proc(void* hWnd, unsigned int msg,
         reinterpret_cast<HWND>(hWnd), msg, wParam, lParam);
 }
 
-// PDB lines 4948-5060; VA 00529610 TRIBE_Game::handle_idle.
 
 #include <string.h>
 
@@ -4162,7 +4059,6 @@ int TRIBE_Game::handle_idle()
     return retval;
 }
 
-// PDB lines 5066-5079; VA 00529980 TRIBE_Game::handle_query_new_palette.
 
 int TRIBE_Game::handle_query_new_palette(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) {
     int result;
@@ -4182,7 +4078,6 @@ int TRIBE_Game::handle_query_new_palette(void* param_1, unsigned int param_2, un
     return result;
 }
 
-// PDB lines 5085-5109; VA 005299E0 TRIBE_Game::handle_activate.
 
 int TRIBE_Game::handle_activate(void* param_1, unsigned int param_2, unsigned int param_3, long param_4) {
     RGE_Base_Game::handle_activate(param_1, param_2, param_3, param_4);
@@ -4205,7 +4100,6 @@ int TRIBE_Game::handle_activate(void* param_1, unsigned int param_2, unsigned in
     return 1;
 }
 
-// PDB lines 5115-5280; VA 00529A70 TRIBE_Game::action_user_command.
 
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 
@@ -4361,7 +4255,6 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
     return 1;
 }
 
-// PDB lines 5286-5315; VA 00529F60 TRIBE_Game::action_key_down.
 
 extern void (__stdcall *WinHelpA_tribe)(int, const char*, int, int);
 
@@ -4391,7 +4284,6 @@ int TRIBE_Game::action_key_down(unsigned long key, int param_2, int param_3,
     return 0;
 }
 
-// PDB lines 5321-5365; VA 0052A000 TRIBE_Game::action_close.
 
 int TRIBE_Game::action_close() {
     if (this->comm_handler) {
@@ -4401,7 +4293,6 @@ int TRIBE_Game::action_close() {
     return 1;
 }
 
-// PDB lines 5371-5380; VA 0052A030 TRIBE_Game::game_over_msg.
 
 #pragma warning(disable:4234)
 
@@ -4416,7 +4307,6 @@ char* TRIBE_Game::game_over_msg() {
     return DAT_0086BCE0;
 }
 
-// PDB lines 5386-5391; VA 0052A080 TRIBE_Game::get_achievement_info.
 
 long TRIBE_Game::get_achievement_info(unsigned char param_1, char** param_2) {
     if (!this->world)
@@ -4425,7 +4315,6 @@ long TRIBE_Game::get_achievement_info(unsigned char param_1, char** param_2) {
         param_1, param_2);
 }
 
-// PDB lines 5397-5431; VA 0052A0B0 TRIBE_Game::randomComputerName.
 
 extern "C" int atoi(const char*);
 extern "C" int debug_rand(const char* file, int line);
@@ -4464,13 +4353,11 @@ int TRIBE_Game::randomComputerName(int param1) {
     return slot + param1 * 10 - 9;
 }
 
-// PDB lines 5437-5443; VA 0052A170 TRIBE_Game::resetRandomComputerName.
 
 void TRIBE_Game::resetRandomComputerName() {
     memset(this->computerNameUsed, 0, sizeof(this->computerNameUsed));
 }
 
-// PDB lines 5449-5463; VA 0052A190 TRIBE_Game::video_wnd_proc.
 
 extern "C" __declspec(dllimport) void* __stdcall SetCursor(void* cursor);
 
@@ -4490,7 +4377,6 @@ long TRIBE_Game::video_wnd_proc(void* hwnd, unsigned int msg, unsigned int wpara
         reinterpret_cast<HWND>(hwnd), msg, wparam, lparam);
 }
 
-// PDB lines 5470-5478; VA 0052A1E0 TRIBE_Game::SetClickTables.
 
 void TRIBE_Game::SetClickTables(MouseClickInfo* a, int b,
                                 MouseClickInfo* c, int d) {
@@ -4500,7 +4386,6 @@ void TRIBE_Game::SetClickTables(MouseClickInfo* a, int b,
     this->MouseLeftClickTableSize = d;
 }
 
-// PDB lines 5484-5495; VA 0052A210 TRIBE_Game::set_interface_messages.
 
 void TRIBE_Game::set_interface_messages() {
     if (this->prog_info->interface_style == 1) {
@@ -4516,7 +4401,6 @@ void TRIBE_Game::set_interface_messages() {
                          Tribe2btnMouseLeftClickTableSize);
 }
 
-// PDB lines 5501-5569; VA 0052A260 TRIBE_Game::setup_video_system.
 
 int TRIBE_Game::setup_video_system()
 {
@@ -4574,7 +4458,6 @@ int TRIBE_Game::setup_video_system()
     return 1;
 }
 
-// PDB lines 5575-5605; VA 0052A430 TRIBE_Game::shutdown_video_system.
 
 extern "C" int restore_mouse_after_paint;  // 62C55Ch
 
@@ -4609,7 +4492,6 @@ void TRIBE_Game::shutdown_video_system()
     video_setup = 0;
 }
 
-// PDB lines 5611-5649; VA 0052A510 TRIBE_Game::disconnect_multiplayer_game.
 
 void TRIBE_Game::disconnect_multiplayer_game()
 {
@@ -4660,7 +4542,6 @@ void TRIBE_Game::disconnect_multiplayer_game()
     }
 }
 
-// PDB lines 5653-5667; VA 0052A630 TRIBE_Game::add_notification_loc.
 
 void TRIBE_Game::add_notification_loc(long x, long y) {
     long current;
@@ -4676,7 +4557,6 @@ void TRIBE_Game::add_notification_loc(long x, long y) {
     this->current_notification_recalled = this->current_notification_loc;
 }
 
-// PDB lines 5671-5691; VA 0052A6A0 TRIBE_Game::goto_notification_loc.
 
 void TRIBE_Game::goto_notification_loc() {
     if (this->current_notification_recalled == -1)

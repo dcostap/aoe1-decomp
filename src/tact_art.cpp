@@ -13,13 +13,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-// PDB lines 36-38; VA 004CCBA0.
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(int id, RGE_Action_Object* object)
     : RGE_Action(id, object, 1) {
     this->action_type = 0x6B;
 }
 
-// PDB lines 43-48; VA 004CCC00.
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* object,
                                                RGE_Task* task,
                                                RGE_Static_Object* target)
@@ -29,7 +27,6 @@ TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* object,
     this->target_obj = target;
 }
 
-// PDB lines 53-60; VA 004CCC30.
 TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* file,
                                                RGE_Task* task,
                                                float x, float y, float z)
@@ -41,7 +38,6 @@ TRIBE_Action_Artifact::TRIBE_Action_Artifact(RGE_Action_Object* file,
     this->target_z = z;
 }
 
-// PDB lines 64-74; VA 004CCC70.
 void TRIBE_Action_Artifact::first_in_stack(unsigned char value) {
     if (value == 0) {
         return;
@@ -64,7 +60,6 @@ void TRIBE_Action_Artifact::first_in_stack(unsigned char value) {
     this->set_state(6);
 }
 
-// PDB lines 78-116; VA 004CCCB0.
 void TRIBE_Action_Artifact::set_state(unsigned char new_state) {
     this->state = new_state;
     switch (new_state) {
@@ -98,7 +93,6 @@ void TRIBE_Action_Artifact::set_state(unsigned char new_state) {
     }
 }
 
-// PDB lines 120-164; VA 004CCDF0.
 unsigned char TRIBE_Action_Artifact::update() {
     unsigned char val = sub_actions->update();
     if (val > 0 && val <= 3) {
@@ -141,7 +135,6 @@ unsigned char TRIBE_Action_Artifact::update() {
     }
 }
 
-// PDB lines 168-224; VA 004CCF30.
 RGE_Player* TRIBE_Action_Artifact::check_ownership() {
     RGE_Action_Object* obj = this->obj;
     RGE_Master_Static_Object* master = obj->master_obj;
@@ -206,13 +199,11 @@ RGE_Player* TRIBE_Action_Artifact::check_ownership() {
     return 0;
 }
 
-// PDB lines 228-231; VA 004CD120.
 int TRIBE_Action_Artifact::stop() {
     this->set_state(6);
     return 1;
 }
 
-// PDB lines 235-241; VA 004CD130.
 int TRIBE_Action_Artifact::move_to(RGE_Static_Object* obj, float x, float y, float z) {
     this->target_x = x;
     this->target_y = y;
@@ -221,7 +212,6 @@ int TRIBE_Action_Artifact::move_to(RGE_Static_Object* obj, float x, float y, flo
     return 1;
 }
 
-// PDB lines 245-259; VA 004CD160.
 int TRIBE_Action_Artifact::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4) {
     if (param_1 != 0) {
         this->target_obj = param_1;
@@ -236,7 +226,6 @@ int TRIBE_Action_Artifact::work(RGE_Static_Object* param_1, float param_2, float
     return 1;
 }
 
-// PDB lines 263-265; VA 004CD1A0.
 void TRIBE_Action_Artifact::reset_owner() {
     this->set_state(100);
 }

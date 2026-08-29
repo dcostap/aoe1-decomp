@@ -1,5 +1,4 @@
 // Authentic complete owner for C:\\msdev\\work\\age1_x1\\visible.cpp.
-// Normal owners stay in PDB source order.
 
 #include "../include/visible.h"
 #include "../include/map.h"
@@ -9,7 +8,6 @@
 #include <stdio.h>
 #include <string.h>
 
-// PDB GDATA and section contributions place these tables in visible.cpp.
 // Their source data is static. The terminator row is part of each table.
 LOSTBL Edge_Offsets_N0[2] = {{0, 0, 0}, {999, 0, 0}};
 LOSTBL Edge_Offsets_N1[4] = {{-1, -1, 1}, {0, -1, 1}, {1, -1, 1}, {999, 0, 0}};
@@ -59,8 +57,6 @@ extern void __cdecl log_map_call(int world_time, int player_id, int type,
                                  int p6, int x1, int y1, int x2, int y2,
                                  int suppression);
 
-// VA: 0053C1B0 RGE_Visible_Map::RGE_Visible_Map
-// PDB source: visible.cpp lines 226-256.
 RGE_Visible_Map::RGE_Visible_Map(RGE_Map* param_1, RGE_Player* param_2) {
     int row;
 
@@ -95,8 +91,6 @@ RGE_Visible_Map::RGE_Visible_Map(RGE_Map* param_1, RGE_Player* param_2) {
     this->PlayerExploredMaskInvertValue = ~this->PlayerExploredMaskValue;
 }
 
-// VA: 0053C290 RGE_Visible_Map::RGE_Visible_Map
-// PDB source: visible.cpp lines 265-307.
 RGE_Visible_Map::RGE_Visible_Map(int file, RGE_Game_World* world) {
     int player_id;
 
@@ -140,8 +134,6 @@ RGE_Visible_Map::RGE_Visible_Map(int file, RGE_Game_World* world) {
     this->PlayerExploredMaskInvertValue = ~this->PlayerExploredMaskValue;
 }
 
-// VA: 0053C3C0 RGE_Visible_Map::~RGE_Visible_Map
-// PDB source: visible.cpp lines 313-329.
 RGE_Visible_Map::~RGE_Visible_Map() {
     if (this->visible_map != 0) {
         free(this->visible_map);
@@ -155,8 +147,6 @@ RGE_Visible_Map::~RGE_Visible_Map() {
     this->map = 0;
 }
 
-// VA: 0053C400 RGE_Visible_Map::save
-// PDB source: visible.cpp lines 336-350.
 void RGE_Visible_Map::save(int handle) {
     rge_write(handle, &this->widthValue, 4);
     rge_write(handle, &this->heightValue, 4);
@@ -169,8 +159,6 @@ void RGE_Visible_Map::save(int handle) {
     }
 }
 
-// VA: 0053C490 RGE_Visible_Map::get_visible
-// PDB source: visible.cpp lines 361-382.
 unsigned char RGE_Visible_Map::get_visible(int x, int y) const {
     unsigned long cell = unified_map_offsets[y][x];
     RGE_Player* p = this->player;
@@ -179,8 +167,6 @@ unsigned char RGE_Visible_Map::get_visible(int x, int y) const {
     return 0;
 }
 
-// VA: 0053C4D0 RGE_Visible_Map::set_all
-// PDB source: visible.cpp lines 389-436.
 void RGE_Visible_Map::set_all(unsigned char value) {
     log_map_call(this->world->world_time, (int)this->player->id, 5, 0,
                  (unsigned int)value, 0, 0, 0, 0);
@@ -247,8 +233,6 @@ void RGE_Visible_Map::set_all(unsigned char value) {
     }
 }
 
-// VA: 0053C5D0 RGE_Visible_Map::explore_all
-// PDB source: visible.cpp lines 442-467.
 void RGE_Visible_Map::explore_all(void) {
     log_map_call(this->world->world_time, (int)this->player->id, 6, 0, 0, 0, 0, 0, 0);
 
@@ -275,15 +259,11 @@ void RGE_Visible_Map::explore_all(void) {
     this->player->tile_list.collapse_list = 1;
 }
 
-// VA: 0053C670 RGE_Visible_Map::percentExplored
-// PDB source: visible.cpp lines 474-476.
 float RGE_Visible_Map::percentExplored(void) const {
     return (float)this->numberTilesExploredValue /
            this->numberTotalTilesValue;
 }
 
-// VA: 0053C680 RGE_Visible_Map::recomputeExplored
-// PDB source: visible.cpp lines 483-497.
 void RGE_Visible_Map::recomputeExplored(void) {
     int y;
     int x;
@@ -307,8 +287,6 @@ void RGE_Visible_Map::recomputeExplored(void) {
     }
 }
 
-// VA: 0053C6C0 RGE_Visible_Map::get_los_table
-// PDB source: visible.cpp lines 504-514.
 LOSTBL* RGE_Visible_Map::get_los_table(int distance, int diagonal) {
     if (distance > 0x10) {
         distance = 0x10;
@@ -322,8 +300,6 @@ LOSTBL* RGE_Visible_Map::get_los_table(int distance, int diagonal) {
     return NormalLOS[distance];
 }
 
-// VA: 0053C6F0 RGE_Visible_Map::explore_terrain
-// PDB source: visible.cpp lines 521-658.
 int RGE_Visible_Map::explore_terrain(int x, int y, int radius, int square,
                                      int update_tiles, int p6) {
     int Revealed;
@@ -442,8 +418,6 @@ int RGE_Visible_Map::explore_terrain(int x, int y, int radius, int square,
     return Revealed;
 }
 
-// VA: 0053C920 RGE_Visible_Map::unexplore_terrain
-// PDB source: visible.cpp lines 665-767.
 void RGE_Visible_Map::unexplore_terrain(int x, int y, int radius, int square,
                                         int update_tiles, int p6) {
     RGE_Tile* tile = 0;
@@ -527,8 +501,6 @@ void RGE_Visible_Map::unexplore_terrain(int x, int y, int radius, int square,
     }
 }
 
-// VA: 0053CAC0 RGE_Visible_Map::explore_terrain_sq
-// PDB source: visible.cpp lines 775-883.
 int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
                                         int update_tiles, int p6) {
     unsigned char* p;
@@ -637,8 +609,6 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
     return Revealed;
 }
 
-// VA: 0053CCF0 RGE_Visible_Map::unexplore_terrain_sq
-// PDB source: visible.cpp lines 891-975.
 void RGE_Visible_Map::unexplore_terrain_sq(int x1, int y1, int x2, int y2,
                                            int update_tiles, int p6) {
     RGE_Visible_Map* self = this;
@@ -711,16 +681,12 @@ void RGE_Visible_Map::unexplore_terrain_sq(int x1, int y1, int x2, int y2,
     }
 }
 
-// VA: 0053CE70 RGE_Visible_Map::checksum_visible_inputs
-// PDB source: visible.cpp lines 983-990.
 unsigned long RGE_Visible_Map::checksum_visible_inputs() {
     unsigned long v = this->input_csum;
     this->input_csum = 0;
     return v;
 }
 
-// VA: 0053CE80 RGE_Unified_Visible_Map::RGE_Unified_Visible_Map
-// PDB source: visible.cpp lines 1005-1026.
 RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int mapWidth, int mapHeight) {
     this->mapWidth = mapWidth;
     this->mapHeight = mapHeight;
@@ -736,8 +702,6 @@ RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int mapWidth, int mapHeight) {
     }
 }
 
-// VA: 0053CEE0 RGE_Unified_Visible_Map::RGE_Unified_Visible_Map
-// PDB source: visible.cpp lines 1032-1042.
 RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int map, RGE_Game_World* world) {
     this->UnifiedVisibleMap = 0;
     this->mapWidth = 0;
@@ -747,8 +711,6 @@ RGE_Unified_Visible_Map::RGE_Unified_Visible_Map(int map, RGE_Game_World* world)
     Set_Map_Offsets();
 }
 
-// VA: 0053CF10 RGE_Unified_Visible_Map::load
-// PDB source: visible.cpp lines 1046-1074.
 void RGE_Unified_Visible_Map::load(int handle) {
     int oldH = this->mapHeight;
     int oldW = this->mapWidth;
@@ -770,8 +732,6 @@ void RGE_Unified_Visible_Map::load(int handle) {
     this->mapWidth = 0;
 }
 
-// VA: 0053CFC0 RGE_Unified_Visible_Map::~RGE_Unified_Visible_Map
-// PDB source: visible.cpp lines 1079-1084.
 RGE_Unified_Visible_Map::~RGE_Unified_Visible_Map() {
     this->mapHeight = 0;
     Set_Map_Offsets();
@@ -780,8 +740,6 @@ RGE_Unified_Visible_Map::~RGE_Unified_Visible_Map() {
     }
 }
 
-// VA: 0053CFF0 RGE_Unified_Visible_Map::save
-// PDB source: visible.cpp lines 1088-1095.
 void RGE_Unified_Visible_Map::save(int handle) {
     rge_write(handle, this, 4);
     rge_write(handle, &this->mapHeight, 4);
@@ -790,16 +748,12 @@ void RGE_Unified_Visible_Map::save(int handle) {
     }
 }
 
-// VA: 0053D040 RGE_Unified_Visible_Map::reset
-// PDB source: visible.cpp lines 1099-1106.
 void RGE_Unified_Visible_Map::reset(void) {
     if (this->UnifiedVisibleMap != 0) {
         memset(this->UnifiedVisibleMap, 0, this->mapWidth * this->mapHeight * 4);
     }
 }
 
-// VA: 0053D070 RGE_Unified_Visible_Map::Set_Map_Offsets
-// PDB source: visible.cpp lines 1111-1119.
 void RGE_Unified_Visible_Map::Set_Map_Offsets(void) {
     int y = 0;
     if (this->mapHeight > 0) {
@@ -817,14 +771,10 @@ void RGE_Unified_Visible_Map::Set_Map_Offsets(void) {
     }
 }
 
-// VA: 0053D0C0 RGE_Unified_Visible_Map::suppress_updates
-// PDB source: visible.cpp lines 1123-1125.
 void RGE_Unified_Visible_Map::suppress_updates(int val) {
     Map_Update_Suppresion = val;
 }
 
-// VA: 0053D0D0 RGE_Visible_Map::checksumVisible
-// PDB source: visible.cpp lines 1132-1140.
 long RGE_Visible_Map::checksumVisible(void) {
     unsigned int value = 0;
     int y = 0;
@@ -845,8 +795,6 @@ long RGE_Visible_Map::checksumVisible(void) {
     return value;
 }
 
-// VA: 0053D110 RGE_Visible_Map::checksumUnifiedVisible
-// PDB source: visible.cpp lines 1146-1154.
 unsigned long RGE_Visible_Map::checksumUnifiedVisible(void) {
     unsigned long value;
 
@@ -877,8 +825,6 @@ unsigned long RGE_Visible_Map::checksumUnifiedVisible(void) {
     return value;
 }
 
-// VA: 0053D150 log_map_call
-// PDB source: visible.cpp lines 1162-1196.
 void __cdecl log_map_call(int param_1, int param_2, int param_3, int param_4,
                           int param_5, int param_6, int param_7, int param_8,
                           int param_9) {
@@ -904,8 +850,6 @@ void __cdecl log_map_call(int param_1, int param_2, int param_3, int param_4,
     VCALL_LOG[idx].supress = param_9;
 }
 
-// VA: 0053D200 dump_vismap_log
-// PDB source: visible.cpp lines 1199-1249.
 void __cdecl dump_vismap_log() {
     int done = 0;
     FILE* f = fopen("c:\\aoeexlog.txt", "w");

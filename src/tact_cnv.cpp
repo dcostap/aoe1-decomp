@@ -1,6 +1,4 @@
-// Source module: C:\\msdev\\work\\age1_x1\\tact_cnv.cpp
 //
-// The definitions follow the original PDB line and address order.
 
 #include "../include/game_globals.h"
 #include "../include/rge_fio.h"
@@ -347,7 +345,7 @@ uchar TRIBE_Action_Convert::update()
                     chance = chance * DAT_00575004;
                 }
             }
-            // BINARY NOTE: Direct field ownership preserves the original x87 order.
+            // Direct field ownership preserves the original x87 order.
             if (chance <= this->task->work_val1 *
                            static_cast<RGE_Master_Action_Object*>(
                                this->obj->master_obj)->work_rate) {

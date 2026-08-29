@@ -1,7 +1,6 @@
 #ifndef AOE1_RMM_SHAL_H
 #define AOE1_RMM_SHAL_H
 
-// PDB-backed declarations for the original rmm_shal.cpp owner sequence.
 
 #include "rmm_base.h"
 

@@ -2,7 +2,6 @@
 #define TAISTRMD_H
 
 // Declarations for the original taistrmd.cpp source module.
-// PDB order starts with VictoryConditionRuleSystem and then the strategy
 // module constructors and methods.
 
 #include "aivcrule.h"

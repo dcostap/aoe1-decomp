@@ -1,7 +1,6 @@
 #ifndef AOE1_RPNL_TBX_H
 #define AOE1_RPNL_TBX_H
 
-// PDB source module: C:\msdev\work\age1_x1\rpnl_tbx.cpp.
 // This header owns RGE_Panel_Tool_Box. Panel controls stay with their owners.
 #include "Pnl_scr.h"
 #include "pnl_btn.h"

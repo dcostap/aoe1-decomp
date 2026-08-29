@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\taiuaimd.cpp.
-// The definitions below follow the 63 normal owners in PDB source order.
 // Generated destructor and vtable entries are emitted by the compiler.
 #include "../include/taiuaimd.h"
 #include <math.h>
@@ -8,12 +6,8 @@
 #include <stdio.h>
 #include "../include/game_globals.h"
 
-// VA: 00503BB0, TribeHuntedAnimalUnitAIModule::TribeHuntedAnimalUnitAIModule
 // Reworked with the exact taiuaimd.cpp UnitAIModule constructor pattern:
-// visible virtual base dtor + /GX triggers the lightweight constructor EH frame;
 // cache importantObjects[0], reload this->importantObjects for later source lines.
-// Historical exact flags: config/flags/00503BB0_TribeHuntedAnimalUnitAIModule.rsp
-// Canonical-context check: the PDB 0x134 base and PAV parameter symbol remain exact.
 
 
 TribeHuntedAnimalUnitAIModule::TribeHuntedAnimalUnitAIModule(RGE_Static_Object* obj, int param)
@@ -45,23 +39,15 @@ TribeHuntedAnimalUnitAIModule::TribeHuntedAnimalUnitAIModule(RGE_Static_Object* 
     setAdjustedIdleTimeout();
 }
 
-// 00503D30 TribeHuntedAnimalUnitAIModule::processNotify
-// PDB: taiuaimd.cpp:99-136, 256 bytes
 // int __thiscall processNotify(NotifyEvent* param_1, ulong param_2)
 // ret 8 (2 params)
-// Historical exact flags: default
 //
-// Attempt log:
-// - Baseline used the canonical caller array fields and natural growth/copy loop;
 //   the arithmetic dispatch lowered to cmp/jne and was four bytes too large.
 // - A switch on mType reproduced the original subtract/je dispatch and shared tail.
 // - The two notification calls are one-argument thiscall virtuals at +0xEC/+0xA4;
 //   typed slot surfaces removed the incorrect extra fastcall register setup.
 // - UnitAIModule owns the base vptr, so the derived subobject starts at +0x04;
 //   removing the duplicate gap restored all proven array offsets and exact bytes.
-// Main-agent audit restored destructor slots, qualified the base dispatch, and
-// replaced manual allocation calls with natural new[]/delete[]; output remains exact.
-// The shared PDB surface removes fake fields and preserves the protected virtual
 // symbol ?processNotify@TribeHuntedAnimalUnitAIModule@@MAEHPAUNotifyEvent@@K@Z.
 
 
@@ -127,37 +113,22 @@ done:
     return 3;
 }
 
-// 00503E30 TribeHuntedAnimalUnitAIModule::processIdle(int param_1)
-// Source: taiuaimd.cpp lines 141-169
 // Size: 229 bytes
 // NC: no custom flags (default /O2 /Oy)
 //
-// Status: EXACT — validated VC5 codegen match
 //
-// Attempt log:
-// Probe 1: __cdecl virtual calls — 89.1% positional diff, __cdecl cleanup added
-// Probe 2: better register usage — 82.1% positional diff, still __cdecl cleanup
-// Probe 3: __stdcall virtual calls — 77.3% positional diff, first 26 bytes exact
-// Probe 4: if/else structure — 77.3% positional diff (same as Probe 3)
-// Probe 5: same-TU polymorphic donor surfaces — codegen-neutral; retained the
-// canonical destructor/vtable context from exact taiuaimd.cpp idle donors.
-// Probe 6: explicit float casts around the negated movement products — exact;
 // VC5 emits the binary's fchs/fadd tails instead of fsubr.
 //
-// Session findings (2026-08):
 // - Nested-if (if (targetID != -1) { ...; return 6; } return 5;) reproduces the
 //   original control flow EXACTLY: je near to a shared return-5 tail, return-6
 //   epilogue with mov eax,6 first (135 diff, shape 84.5%) — BUT VC5 then scrambles
 //   the FPU schedule (stores `speed` to [esp+14] early, computes SPEED_3 late,
-//   faddp st2, no mov ecx,esi; verified codegen-neutral vs parked negation).
 // - This parked if/else + result-local form instead produces a byte-perfect FPU
 //   block (only fsubr vs fchs+fadd at the tail differs) but jne-inline control
 //   flow (190 diff). So control-flow structure changes VC5's whole-function FPU
 //   register scheduling; the FPU scramble is NOT fixable by negation spelling or
-//   virtual-shim dispatch (both tested: virtuals force ecx=this at maximumSpeed
 //   call, matching original, but still scramble FPU and add bytes).
 // - Next lead: sweep FPU local shapes (hoisted s3/len locals, inline-vs-named
-//   nx/ny, statement order) under the nested-if structure via variant lab
 //   template build/temp/00503E30_processIdle_lab.tpl.cpp.
 //
 // Key findings (struct layout correct):
@@ -176,20 +147,15 @@ done:
 //   surfaces, and explicit float casts reproduce the complete 229-byte body.
 //
 // Current session findings (2026-08-09):
-// - A named distance alone and a separate speed3 local were codegen-neutral.
 // - Recovered the natural typed virtual surfaces: closestObject at slot 0x10,
 //   evasiveMoveTo at 0x27, and RGE_Static_Object::maximumSpeed at 0x3F. The
 //   maximumSpeed call then uses the original ecx/edx register topology.
 // - The canonical evasiveMoveTo world-z argument is float. Its ABI passes the
 //   same raw dword bits observed at the call site without conversion; restoring
-//   that typed surface is codegen-neutral.
-// - The shared PDB surface preserves the protected virtual symbol and exact body.
 // - Binding the scale to the return (`speed = objectValue->maximumSpeed() *
 //   SPEED_3`) reproduces the original 229-byte size and the whole FPU block
 //   through the two normalized multiplications (best: 52-byte strict diff,
-//   93.02% shape, 96.51% resync). Explicit unary negation is codegen-neutral.
 // - Separate offset/negation locals emitted an extra stack store (62-byte
-//   diff); rolled back. Remaining bytes are the two near-branch displacements
 //   plus VC5's fsubr versus the original fchs/fadd tail.
 
 
@@ -220,16 +186,11 @@ int TribeHuntedAnimalUnitAIModule::processIdle(int param_1)
     return 5;
 }
 
-// VA: 00503F20, TribePreditorUnitAIModule::TribePreditorUnitAIModule, 328 bytes
-// Source: taiuaimd.cpp lines 177-202
-// Historical exact flags: /GX (EH frame for operator new + parent constructor)
 //
 // Key findings:
-// - /GX needed for EH prologue/epilogue (fs:[0] save/restore with handler)
 // - Virtual ~UnitAIModule() needed to trigger constructor EH frame
 // - importantObjects[0] uses cached pointer; this->importantObjects[i] for i>=1
 //   forces per-index reload from [esi+124h] with edx/eax/ecx register cycling
-// - The canonical 0x134 base preserves exact /GX code and the PAV constructor symbol.
 
 
 TribePreditorUnitAIModule::TribePreditorUnitAIModule(
@@ -261,17 +222,10 @@ TribePreditorUnitAIModule::TribePreditorUnitAIModule(
 }
 
 
-// PDB ownership gives a public virtual TribePreditorUnitAIModule method.
 
 int TribePreditorUnitAIModule::canAttackUnitAtNeutrality(int p0) { return 1; }
 
-// VA: 005040B0 TribePreditorUnitAIModule::processNotify
-// taiuaimd.cpp:216-258
 //
-// Attempt log:
-// v0: Initial implementation - RGE_Static_Object missing vtable caused wrong offsets, fcomp branch inverted
-// v1: Added virtual to RGE_Static_Object, fixed fcomp branch to !(dist>range)
-// v2: Canonical fields and slots preserve exact bytes and the protected MAE symbol.
 
 
 extern FILE* actionFile;  // FILE* at 0x62C4CC
@@ -317,16 +271,11 @@ int TribePreditorUnitAIModule::processNotify(NotifyEvent* event, unsigned long p
 TribeElephantUnitAIModule::TribeElephantUnitAIModule(RGE_Static_Object* obj, int category)
     : UnitAIModule(obj, category) {}
 
-// VA: 005041C0, TribeElephantUnitAIModule::processNotify, 261 bytes
-// Source: taiuaimd.cpp lines 274-317
-// ACCEPTED_DRIFT: register allocation (ebp/ecx swap for caller/count) and copy loop
 // pattern differ slightly. All behavior identical.
 //
-// Remaining drift:
 // 1. Register swap: original keeps caller in ebp, count in ecx. My compiler
 //    reverses this (caller in ecx saved to stack, count in ebp). This adds 4 bytes
 //    for the stack save (`mov [esp+18h], ecx`).
-// 2. Copy/reallocation loop uses different register allocation and slightly
 //    different instruction scheduling (same structure, different registers).
 // 3. The original uses `jg short` for p2 check (body=jump target, purge=fallthrough);
 //    this layout is achieved with `if (event->p2 <= 0)` in the switch.
@@ -336,17 +285,11 @@ TribeElephantUnitAIModule::TribeElephantUnitAIModule(RGE_Static_Object* obj, int
 // Also matches: search loop structure (scaled-index access, capacity reload per
 // iteration), store-to-array, virtual call sequence, and epilogues.
 //
-// Attempt log:
 // - v1: if-else chaining → cmp not sub for dispatch, wrong NotifyEvent layout
 // - v2: switch dispatch, fixed NotifyEvent layout (p2 at +0x10), loop structure off
-// - v3: switch → sub pattern works (63 bytes match), p2 check wrong branch layout
 // - v4: attempted raw-offset hacks (failed)
 // - v5-v6: refined loop structure
-// - v7: raw-offset access forced correct scaled-index loop, register allocation off
-// - v8: declaration order didn't help register allocation
 // - v9: goto-based layout attempt
-// - v10: if(p2<=0) fixes branch layout (90 bytes match), register allocation persists
-// Historical exact flags: /nologo /c /O2 /Oy
 
 
 int TribeElephantUnitAIModule::processNotify(NotifyEvent* event, unsigned long param_2)
@@ -410,9 +353,6 @@ found:
 
 int TribeElephantUnitAIModule::processIdle(int p0) { return 5; }
 
-// VA: 005042E0, TribeLionUnitAIModule::TribeLionUnitAIModule
-// Same taiuaimd.cpp constructor pattern as TribeHuntedAnimalUnitAIModule: visible virtual base dtor + /GX for EH frame; reload member after first importantObjects store.
-// Historical exact flags: config/flags/005042E0_TribeLionUnitAIModule.rsp
 
 
 TribeLionUnitAIModule::TribeLionUnitAIModule(RGE_Static_Object* obj, int param)
@@ -448,11 +388,6 @@ TribeLionUnitAIModule::TribeLionUnitAIModule(RGE_Static_Object* obj, int param)
 
 int TribeLionUnitAIModule::canAttackUnitAtNeutrality(int p0) { return 1; }
 
-// VA: 00504480 TribeLionUnitAIModule::processNotify(NotifyEvent*, unsigned long)
-// PDB source: taiuaimd.cpp lines 375-436
-// attempt 1: based on matching predator processNotify, adding 0x1FA game-mode branch; first was underspecified and optimized too small.
-// attempt 2: fill scenario-editor timing branch/logging/stopObject path from original asm.
-// attempt 3: put 0x1FC branch inline and 0x1FA case out-of-line like original's subtract dispatch.
 
 extern FILE* actionFile;
 extern int fprintf(void*, const char*, ...);
@@ -522,7 +457,6 @@ int TribeLionUnitAIModule::processNotify(NotifyEvent* event, unsigned long param
 }
 
 // TribeLionUnitAIModule::processIdle (00504600)
-// taiuaimd.cpp:441-515, 251 bytes
 // __thiscall: ecx=this, 1 stack param, ret 4
 
 
@@ -564,9 +498,6 @@ int TribeLionUnitAIModule::processIdle(int param_1)
 TribeRangedUnitAIModule::TribeRangedUnitAIModule(RGE_Static_Object* obj, int category)
     : UnitAIModule(obj, category) {}
 
-// VA: 00504750, processNotify, 294 bytes
-// Source: taiuaimd.cpp lines 529-586
-// ACCEPTED_DRIFT: VC5 register allocation differs (eax vs edx for vtable loads,
 // eax vs edi for obj pointer register). All calling conventions, stack cleanup,
 // control flow, FPU math, and behavior identical.
 //
@@ -582,7 +513,6 @@ TribeRangedUnitAIModule::TribeRangedUnitAIModule(RGE_Static_Object* obj, int cat
 // - `thisObj = this->objectValue` declared AFTER vtable[4] call matches original's
 //   `mov edi, [esi+4]` placement
 //
-// Remaining drift (all register allocation choices):
 // 1. Vtable[64] call: original `mov edx,[edi]; call [edx+100h]`, rebuilt
 //    `mov eax,[edi]; call [eax+100h]` — different base register
 // 2. Obj pointer: original keeps obj in `eax` (reloaded from [esi+4] at 0x480B),
@@ -607,21 +537,14 @@ TribeRangedUnitAIModule::TribeRangedUnitAIModule(RGE_Static_Object* obj, int cat
 //   return-2 (pop edi,esi,ebp; mov eax,2; pop ebx; ret 8)
 // - FPU math: dx, dy, dist = sqrt(dx²+dy²), speed = s1*s2*3, result_y/x
 //   with fchs; fadd pattern, fdiv; fmul st2; fchs; fadd; fstp [esp] sequence
-// - Final call vtable[39] with (result_x, result_y, world_z, 1)
 //
-// Attempt log:
 // - v1: __thiscall keyword issue, compilation failed (C4234)
-// - v2: initial interface approach, 35.4% edit diff. Issues: inline
 //   returns instead of shared return-2 block
 // - v3: fixed branch polarity with if/else structure → jne near to shared block.
 //   Issue: fsubr instead of fchs+fadd (6 bytes short, 288 vs 294)
-// - v4: added thisObj local declared AFTER vtable[4] call → 24.8% edit diff, 294B
 // - v5: removed thisObj local → worse (47.3%), compiler removed push ebp
 // - v6: restored thisObj after vtable[4] call, separate nty/ntx vars → BEST:
-//   14.97% edit diff. fchs; fadd matches. Remaining: register allocation only.
 //
-// Conclusion: Remaining 15% edit diff is benign register allocation that cannot
-// be controlled from C++ source. Accepted drift.
 
 
 typedef unsigned long ulong;
@@ -674,17 +597,7 @@ int TribeRangedUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 TribeRangedUnitAIModule2::TribeRangedUnitAIModule2(RGE_Static_Object* obj, int category)
     : UnitAIModule(obj, category) {}
 
-// VA: 005048D0 TribeRangedUnitAIModule2::processNotify
-// Attempt log:
-// 1: direct reconstruction from packet/decompiler, local offset stubs.
-// 2: restored the period object and module call surfaces at the observed slots.
-// 3: converted failure cases to shared fail return, but VC5 still allocates a 0x0C frame instead of original 0x08 and loop topology is broad mismatch.
-// 4: tried defensive null/sentinel branches only as a diagnostic to force compare size; produced 643B but broad 92% mismatch from offset 0, rolled back because it was behavior-altering and not a valid source model.
 // 5-8: combined guard, object id, same-TU UnitAIModule ABI, float coordinate fields, and natural new[]/delete[] growth restored exact call order and frame size.
-// 9: outer count guard plus while (i < count) reproduced the duplicated entry test and improved shape to 90.95%; the remaining gap is register coloring and late vptr spill.
-// 10: a base-pointer alias was codegen-identical and was removed as unsupported steering.
-// 11: rewrote the typed evasive result tail as coordinate plus explicit negated displacement; restored the original fchs/fadd tail family, reducing the size gap to 4 bytes and positional diff to 521; first order-call hunk remains.
-// 12: removed the saved object alias and used direct this->objectValue member calls; this restored the original vptr reload and exact 643-byte output.
 // exact: direct member accesses preserve the original object/vptr reload schedule and produce all 643 bytes.
 
 extern float DAT_005758b0;
@@ -780,11 +693,8 @@ int TribeRangedUnitAIModule2::processNotify(NotifyEvent* ev, unsigned long flags
     return 3;
 }
 
-// VA: 00504B60, TribeCivilianUnitAIModule::TribeCivilianUnitAIModule
 // Reworked with the exact taiuaimd.cpp UnitAIModule constructor pattern:
-// visible virtual base dtor + /GX triggers the lightweight constructor EH frame;
 // cache importantObjects[0], reload this->importantObjects for later source lines.
-// Historical exact flags: config/flags/00504B60_TribeCivilianUnitAIModule.rsp
 
 
 
@@ -816,9 +726,7 @@ int TribeCivilianUnitAIModule::importantWhenDead(int value) {
     return 0;
 }
 
-// VA: 00504CC0 | TribeCivilianUnitAIModule::attackObject(int,int) | taiuaimd.cpp:726-741 | 90 bytes
 //
-// Attempt log:
 // [1] UnitAIModule had no virtual -> vtable offset wrong; 16-bit cmp; huntObject at vt[0].
 // [2] Fixed vtable with virtual attackObject; cast to int for 32-bit cmp.
 //     VC5 doesn't support __thiscall on function pointers.
@@ -877,23 +785,12 @@ int TribeCivilianUnitAIModule::convertToLOSResourceType(int value) {
     }
 }
 
-// VA: 00504E10 TribeCivilianUnitAIModule::processNotify
-// PDB donor: taiuaimd.cpp lines 800-1237
-// Attempt log:
-// BINARY NOTE: The original keeps event in EBX, uses indexed bounded list scans,
+// The original keeps event in EBX, uses indexed bounded list scans,
 //   and places the owner-id-zero order arm before the enemy arm.
 // The same-TU virtual surfaces and FILE/fprintf declarations preserve the proven calls.
-// Probe: reversing the owner branch recovered the original 2478-byte boundary and
 //   raised shape from 76.74% to 87.18%; ordering the resource arm raised it to 87.83%.
-// Probe H26: one late return label for the four proven guard jumps raised shape to
-//   88.57%, matched the 16-return CFG, and reduced positional diff to 2067 bytes.
-// Probe H27: actionFile-gated local stop/notify returns restored both 0x3aa/0x3b9
-//   log blocks. Calls then matched 78/78, shape reached 88.96%, and diff reached 1820.
-// Probe H30: direct ternary closestObject arguments reduced diff to 1594, but added
-//   one fprintf and one stopObject call. Reject it for the hard call-count mismatch.
-// BINARY NOTE: H27 still emits 74 bytes past the target boundary. Its ordered calls
+// H27 still emits 74 bytes past the target boundary. Its ordered calls
 //   remain -3/+3, with the 0x261 argument setup and one relocated cold tail unresolved.
-// unresolved: final clean source is pinned after H27 validation; no exact match.
 
 typedef unsigned char uchar;
 typedef unsigned long ulong;
@@ -1315,9 +1212,6 @@ int TribeCivilianUnitAIModule::processIdle(int p0) { return 5; }
 
 int TribeCivilianUnitAIModule::processMisc() { return 9; }
 
-// VA: 00505820 TribePriestUnitAIModule::TribePriestUnitAIModule
-// PDB source: taiuaimd.cpp
-// Attempt log:
 
 
 TribePriestUnitAIModule::TribePriestUnitAIModule(RGE_Static_Object* param_1, int param_2)
@@ -1347,31 +1241,16 @@ TribePriestUnitAIModule::TribePriestUnitAIModule(RGE_Static_Object* param_1, int
     }
 }
 
-// VA: 005059A0 TribePriestUnitAIModule::attackObject(int, int)
-// PDB source: taiuaimd.cpp lines 1338-1349
 // Default flags
 //
-// attempt log:
-// Attempt 1: explicit vtable with void* vtable → shifted offsets by 4 (extra vtable ptr)
-// Attempt 2: removed explicit void* vtable → TribePriestUnitAIModule offsets correct
-// Attempt 3: object with gap_00[0xC] → shifted offsets by 4 (hidden vtable)
-// Attempt 4: object with gap_04[0x8] → all offsets correct, 99/103 matching
-// Attempt 5: float temp for weaponRange result → 51 diff bytes (worse)
-// Attempt 6: int cp temp → same 4-byte register diff
-// Attempt 7: object pointer temp → 51 diff bytes (worse)
 //
-// Remaining mismatch: 4 bytes of register allocation in weaponRange call block:
 //   Original: mov edx,[esp+14h]; push edx; mov eax,[ecx]; call [eax+10Ch]
 //   Rebuild:  mov eax,[esp+14h]; push eax; mov edx,[ecx]; call [edx+10Ch]
 // This is a stable register-color difference in VC5's virtual-call scheduling.
 // SpruceGlow tries 1-10: param_2 local/self-assign/mutate/cast, late object local, float local,
 //   early-return/else/nested-positive control-flow forms, manual vtable attempt, and separate object
-//   owner local. Most kept the same 4-byte register-color diff; float/local owner/control-flow variants
 //   were much worse or failed to compile due VC5 __thiscall limitations.
 // SpruceGlow tries 11-20: volatile param_2, long local, saved result, late object declaration,
-//   param_1 local, split computerPlayer temp, zero return local, helper idint, and weaponRange signature probes
-//   (long/void*) all either kept the same 4-byte diff or worsened codegen.
-// ACCEPTED_DRIFT: reviewed by Boss. The diff is exactly four same-length register-color
 // bytes in one virtual-call setup: rebuilt pushes param_2 through eax and loads/calls the
 // vtable through edx, while original uses edx for the pushed arg and eax for vtable/call.
 // Stack effects, call target slot (+0x10C), FPU result handling, branches, return values,
@@ -1430,85 +1309,44 @@ int TribePriestUnitAIModule::canAttackUnit(RGE_Static_Object* obj) {
     return 0;
 }
 
-// 00505B00 TribePriestUnitAIModule::bestUnitToHeal
-// Attempt log:
 // 1: Natural nested loops over four ally buckets: compiles 432 vs 445, wrong prologue/self in EBX and wrong canSee vtable surface.
 // 2: Switch canSee to +0x194 virtual and bucket offset loop: exact size but 91% diff; self in ESI, 0x28 frame, bad global/list shape.
 // 3: Use pointer-to-current bucket globals: frame 0x20 but self still ESI and broad diff.
-// 4: Volatile self alias worsened prologue by homing this at [esp]; rolled back.
-// 5: /Od and /O2-without-/Oy flag probes did not improve; removed custom flags.
-// 6: Rewriting priority gates as <5/<3 worsened to 91.01% diff.
-// 7: Naming fpriority before need calculation did not move first mismatch or improve diff.
-// 8: Breaking outer loop then returning at function tail worsened to 89.89% diff.
-// 9: Reconstructed the single final return with an inner do/while and outer break,
 //    removing cached master/priority/offset locals; 445-byte output, 375 differing bytes.
-// 10: Restored donor TU context/full UnitAIModule ABI and typed object/owner/record
-//     ownership; output was codegen-duplicate (375 differing bytes).
 // 11: Caching the current record-list pointer reached an exact 0x1c frame but
-//     shortened the body and changed reload behavior; rolled back.
 // 12: Reloading the record-list value per iteration also shortened the body;
-//     rolled back because the oracle rereads the bucket slot.
 // 13: Typed HealUnitRecord indexing and char* bucket offset were source-cleanup
-//     probes; both emitted the same 375-byte-diff basin as probe 9.
-// 14: Typed five-entry count/list tables gave the same 445-byte basin with a
 //     small edit-distance gain; retained as canonical ownership.
 // 15: Removed the unit_id temporary and reread the typed record ID at lookup and
 //     canSee calls, matching the oracle reload order. Diff fell to 347 bytes and
-//     shape rose to 85.19%; this is the current clean reconstruction.
-// 16: Hoisting the record-slot pointer emitted identical code; rolled back.
-// 17: Typed views over scalar global declarations shortened the body; rolled back.
-// 18: Parallel count/list slot pointers kept the same register topology; rolled back.
 // 19-28: Scalar-global overlays, parallel pointers, a typed aggregate, category
 //     loop forms, direct table expressions, and wider object-pointer scope did
 //     not recover the oracle's hidden table-base slot or register colors. The
-//     scalar overlay shortened the body; the other forms were codegen duplicates
 //     or farther from the oracle. Restored the natural typed table source.
-// 29: A reviewed-header byte-offset cursor moved the positional diff to 345,
 //     but kept the 0x18 frame and violated the no-byte-cursor source policy;
-//     restored the pinned source.
 // 30: A cached typed record pointer shortened the body to 390 bytes and moved
 //     the frame to 0x14; restored the pinned source.
-// 31-39: Re-tested scalar globals, typed and raw offset cursors, declaration
 //     order, do/while and for-header forms, and function-scope pointer aliases.
-//     They stayed in the same 345-349-byte basin or shortened the body.
 // 40: Replayed the prior 344-byte checkpoint. It had a 0x14 frame and only
 //     126 instructions, so its smaller diff was not a natural improvement.
-// 42-50: Hoisted list/object pointers and tested register hints and an offset
-//     address alias. They emitted the clean 347-byte basin or a duplicate.
 // 52: Volatile offset storage recovered the 0x1c frame but added six bytes and
 //     32 changed spans. Restored the natural typed source.
-// 54: Final unchanged validation confirms the pinned 445-byte source and 347
 //     differing bytes.
-// 55-57: Reviewed scalar DAT globals and casted bucket indexing improved the
 //     diagnostic diff to 344 bytes, but shortened the natural body to 429 bytes
 //     and lost block shape; restored.
 // 58-62: Full tactical member declarations and canonical object vtable names
-//     were codegen duplicates after the proven canSee +0x194 slot was restored.
 // 63-67: Typed table-slot, count-slot, char-offset, and declaration-order
-//     probes stayed in a 345-byte diff basin with the wrong saved-register
 //     ownership; restored.
 // 68-70: A live list-slot induction pointer recovered the 0x1c frame and more
-//     aligned blocks, but added pre-loop global arithmetic and worsened the
-//     positional diff to 358 bytes; restored.
 // 71-72: A contiguous count/list table overlay shortened the body to 421 bytes
 //     and changed global ownership; restored.
-// 73: Fresh unchanged validation confirms the pinned natural typed source.
-// 74-75: Replaced the outer for/break form with the PDB-supported positive
 //     guard, nested do loop, early found-ID return, and final -1 return.
-//     This improved the result to 346 differing bytes and 442 bytes, but the
 //     offset still stayed in a saved register and the frame stayed 0x18.
 // 76-77: Added the binary-proven scalar table bases and byte-offset cursor.
-//     Function-scope slot pointers and direct count rereads were codegen
 //     duplicates; they did not recover the slot home or saved-register colors.
 // 78-80: An index-derived slot pointer recovered the 0x1c frame and 91.85%
-//     shape, but worsened the positional diff to 354 bytes. Reference, raw
-//     pointer, declaration-order, and reviewed-header variants stayed there.
-// 81: Restored the pinned natural typed source and ran unchanged validation.
-//     Exactness remains blocked by the slot-pointer and object register basin.
-// BLOCKER: the natural typed source now matches the prologue, calls, CFG, size, and
 // most inner blocks, but VC5 keeps the table offset in EDI and object in ESI.
 // The oracle keeps the table slot in ESI, object in EDI, and one extra frame slot.
-// Current best: 445/445 bytes, 347 differing bytes (77.9775%), first mismatch +2.
 
 
 int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
@@ -1572,8 +1410,6 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
     return allyToHealID;
 }
 
-// 00505CC0 TribePriestUnitAIModule::bestUnitToConvert
-// taiuaimd.cpp:1517-1558, 263 bytes
 //
 // int __thiscall TribePriestUnitAIModule::bestUnitToConvert(float* param_1)
 // - ret 4 cleanup (1 stack param + this in ecx)
@@ -1581,9 +1417,7 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
 // Returns: best unit ID (int), or -1 if none found
 // param_1: optional output for priority value (can be NULL)
 //
-// === Attempt log ===
 // 1: C-style function pointer virtual calls; RGE_Player class with virtual
-//    Compiled to 263 bytes, 79% positional diff (~208 bytes mismatched)
 //    Virtual calls use __cdecl (ecx not set = wrong calling convention)
 //    Stack frame: sub esp,10h + push ebx,ebp vs sub esp,0Ch + push ebp,edi
 //    Same TU-context register cascade as other view/tai functions
@@ -1595,9 +1429,7 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
 //    initial local-home ordering.
 // 4: Used the canonical game_globals.h declarations and the proven 8-byte
 //    visible-unit record instead of a locally typed global; emitted code was
-//    unchanged, but relocation identity became eligible for exact matching.
 // 5: Declared targetValue before the loop index, matching the original
-//    target-value store before the loop-count home. Exact 263-byte match.
 
 
 typedef unsigned char uchar;
@@ -1646,9 +1478,6 @@ int TribePriestUnitAIModule::bestUnitToConvert(float* param_1)
     return best_id;
 }
 
-// 00505DD0 TribePriestUnitAIModule::processNotify
-// Attempt log:
-// 1: Direct reconstruction from packet: switch on event->mType, stop/log tails, special 0x25c/0x25b virtual flows, target-visible branch.
 // 2: Inlined repeated logging instead of helper; got to 1-byte diff. Fixed RGE_Player::visible_map offset from +34 to +38.
 
 extern FILE* actionFile;
@@ -1731,27 +1560,19 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* event, unsigned long par
     return UnitAIModule::processNotify(event, param_2);
 }
 
-// 00505FD0 TribePriestUnitAIModule::processIdle
-// Source: taiuaimd.cpp lines 1692-1756
-// Attempt log:
-// 1: initial natural source with virtual slots 0x40/0x70/0x9C/0xE0, base processIdle member, debug_rand, and intrinsic sqrt: wrong frame (sub 10), object field offset +0x10 from explicit vtable+virtual double count, early null return inline.
 // 2: remove explicit object vtable field and wrap body in positive computerPlayer guard: shortened to 352 without local output.
 // 3: restore 4-byte local output buffer: still 352.
 // 4: return to early-return structure with corrected object offsets: exact object offsets but still sub esp,10; early fail inline.
-// 5: move chooseSomething output local into narrow scope: fixed sub esp,0C and output address; 33.9% edit diff. Remaining branch layout differs (early fail inline vs shared tail) and later FPU/call scheduling shifted.
 // 6: positive computerPlayer/target guards shortened to 352.
 // 7: explicit goto shared ret5 with top declarations shortened to 336, wrong family.
 // 8: corrected the object slot +0x10C surface (the period method is weaponRange);
 //    returned to best attempt-5 source family.
 // 9: status local with `if (status != 6) { body } return 6` to try inline ret6 layout.
 // 10: restored full same-TU UnitAIModule/RGE_Static_Object virtual surfaces,
-//     typed globals, positive guards, and the donor-backed weaponRange gate;
 //     335 differing bytes, with calls and frame aligned.
 // 11: put the success/failure flow back into the original positive outer guard;
 //     153 differing bytes and exact central block islands.
-// 12: reversed the commutative distance-square terms; FPU stack schedule moved
 //     toward the original, 62 differing bytes.
-// 13: mirrored exact idle donors' xDiff-then-yDiff declaration/order; 54 bytes
 //     remained, localized to movement lowering and the success tail.
 // 14: explicit float casts around the negated movement products plus a direct
 //     return 6 after evasiveMoveTo reproduce the complete 360-byte function.
@@ -1810,12 +1631,7 @@ int TribePriestUnitAIModule::processIdle(int param_1)
     return 5;
 }
 
-// VA: 00506140 TribePriestUnitAIModule::processMisc
-// PDB: taiuaimd.cpp:1761-1796
 //
-// Attempt log:
-// baseline: natural UnitAIModule/Action_Object ownership, direct helper
-// methods, and the period Priest virtual surface; exact 247-byte match.
 
 
 
@@ -1874,10 +1690,7 @@ int TribePriestUnitAIModule::processMisc()
     return 9;
 }
 
-// VA: 00506240, TribeTradeShipUnitAIModule::TribeTradeShipUnitAIModule
 // Reworked with the exact taiuaimd.cpp UnitAIModule constructor pattern:
-// visible virtual base dtor + /GX triggers the lightweight constructor EH frame.
-// Historical exact flags: config/flags/00506240_TribeTradeShipUnitAIModule.rsp
 
 
 
@@ -1896,17 +1709,12 @@ TribeTradeShipUnitAIModule::TribeTradeShipUnitAIModule(RGE_Static_Object* obj, i
     }
 }
 
-// VA: 00506320 TribeTradeShipUnitAIModule::processNotify
-// Source: taiuaimd.cpp lines 1823-1976
-// Attempt log:
-// - Clean baseline: restored the period typed UnitAIModule/RGE_Static_Object/
 //   RGE_Player surfaces from exact taiuaimd.cpp siblings.  The notification
 //   list and growth path follows the matching fishing/transport implementations;
 //   trade retry uses the proven closestObject/tradeWithObject and
 //   closestUndiscoveredTile/explore virtual slots.  The +0x1c callback in the
 //   retry cleanup is UnitAIModule::notifyCommander(NotifyEvent*), not a
 //   recursive processNotify call.
-// - Baseline was exact in size/frame/CFG with a 3-byte mismatch: the trade
 //   retry dispatch read +0x28, while the oracle reads currentAction at +0x30.
 // - Correcting both retry comparisons to currentActionValue reduced the gap
 //   to two bytes; the only remaining issue was the +0x18/+0x1c overload slot.
@@ -2069,24 +1877,16 @@ after_add:
     return 3;
 }
 
-// 005066D0 TribeTradeShipUnitAIModule::processIdle
-// PDB: taiuaimd.cpp:1981-2027, 250 bytes
 //
-// Canonical reconstruction: an AI trade ship looks for its destination,
 // obtains the ship speed, and moves back toward the ship by seven speed
 // units.  The object/player/world fields and the virtual calls are modeled at
-// their proven offsets; the math is kept in the natural source form suggested
 // by the original x87 stack topology.
 //
-// Attempt log:
 // - Typed virtual surfaces and nested success guards matched the frame, calls,
 //   and all non-math control-flow structure.
 // - Binding the seven-times-speed scale to the getter result reproduced the
-//   original early FMUL and exact-size FPU schedule.
 // - The explicit float cast around each negated movement product is deliberate:
 //   without it VC5 folds the operation into FPU FSUBR; with it the original
-//   FCHS/FADD pair and branch displacements are reproduced. MATCH.
-// Main-agent audit restored canonical destructor slots on the world/player,
 // object, and AI surfaces; emitted code remains exact.
 
 
@@ -2115,10 +1915,7 @@ int TribeTradeShipUnitAIModule::processIdle(int param_1)
     return 5;
 }
 
-// VA: 005067D0, TribeTransportShipUnitAIModule::TribeTransportShipUnitAIModule
 // Reworked with the exact taiuaimd.cpp UnitAIModule constructor pattern:
-// visible virtual base dtor + /GX triggers the lightweight constructor EH frame.
-// Historical exact flags: config/flags/005067D0_TribeTransportShipUnitAIModule.rsp
 
 
 
@@ -2137,31 +1934,20 @@ TribeTransportShipUnitAIModule::TribeTransportShipUnitAIModule(RGE_Static_Object
     }
 }
 
-// VA: 005068B0, processNotify, 444 bytes
-// Source: taiuaimd.cpp lines 2051-2117
-// Status: EXACT — validated VC5 codegen match
-// Attempt log:
 // - v1: natural decompiler-shaped implementation with local structs/vtable pads.
 // - v2: fixed notify caller offset to +0, p2 to +0x10 and base call signature with ulong.
 // - v3/v4: changed mType dispatch to subtract chain; v4 uses `t != 0 && t != 0x1b`.
-// - v5: cached helpMax in scan loops to avoid extra max>0 pretest/pointer-walk family.
 // - v6: modeled RGE_Static_Object::action_list as pointer at +0x184, fixing final have_action/get_action surface.
 // - v7: switch for mType dispatch emits original sub/sub chain exactly.
 // - v8: introduced count locals for scan loops to try to get count in ecx and max in edx like original.
 // - v9: swapped count/i declaration order; no register change.
-// - v10: left in scratch. Best check: 444/444 bytes, positional diff 55.8559%, edit diff 31.3063%, first mismatch at +0xA0.
-//   Blocker: scan-loop register/topology mismatch. Original uses indexed loop with ecx=count, edx=max,
 //   ebx=list, ebp/edi=caller; rebuilt uses edx=count, ebp=max and pointer-walk/add forms, cascading into
 //   allocation-copy registers (newMax/newList/caller) despite matching call set, stack cleanup, and final action-list surface.
 // - v11: restored the exact same-TU UnitAIModule, RGE_Player, RGE_Static_Object,
 //   and action-list virtual/direct surfaces; indexed scan and copy topology were
 //   structurally aligned, but redundant bound guards remained.
-// - v12: tested do/while scans and the donor bounded-copy form; do/while caused
-//   pointer-walk register coloring, so the indexed for family was retained.
 // - v13: removed the outer positive count wrappers; size reached 444 and the
-//   remaining drift localized to bound scheduling and relocation identity.
 // - v14: expressed both scans as natural combined `i < count && i < helpMax`
-//   bounds. Exact 444-byte match with all 13 calls and 9/9 relocations aligned.
 
 
 int TribeTransportShipUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
@@ -2233,19 +2019,14 @@ already_in_list:
     return 3;
 }
 
-// 00506A70 TribeTransportShipUnitAIModule::processIdle (taiuaimd.cpp:2122-2147)
 // int __thiscall processIdle(int param_1)
 //
-// MATCHED - natural typed thiscall virtual surfaces reproduce both dispatch calls.
 // The final explicit float cast preserves the original VC5 fchs/fadd movement lowering.
 //
 // Attempts:
 // 1. __fastcall vtable shims and early returns produced an extra edx setup and wrong tails.
-// 2. Typed virtual slots at +40/+9C and +FC removed the ABI drift and fixed the structure.
 // 3. Materializing getSpeed()*7 before dx/dy fixed the original FPU evaluation order.
 // 4-7. Equivalent movement spellings either emitted fsubr or spilled intermediates.
-// 8. A focused variant lab found `(float)(-((delta / distance) * speed)) + position` exact.
-// Main-agent audit restored canonical polymorphic ownership and destructor
 // slots throughout the world/object/AI surface; emitted code remains exact.
 
 
@@ -2278,15 +2059,10 @@ int TribeTransportShipUnitAIModule::processIdle(int param_1)
     return 5;
 }
 
-// 00506B70 TribeFishingShipUnitAIModule::TribeFishingShipUnitAIModule(RGE_Static_Object*, int)
-// Constructor, EH frame — needs /GX flag
-// Source: taiuaimd.cpp lines 2155-2168
 // Size: 207 bytes
 //
-// MATCHED. Exact 207-byte match confirmed via local check_function.py.
 //
 // Key findings:
-// - /GX needed for EH prologue/epilogue (fs:[0] save/restore with handler)
 // - Virtual ~UnitAIModule() needed to trigger constructor EH frame
 //   (operator new alone insufficient in single-function TU)
 // - this->importantObjects[i] for writes 1-7 forces per-index reload from [esi+124h]
@@ -2329,20 +2105,9 @@ int TribeFishingShipUnitAIModule::convertToLOSResourceType(int value) {
     return -1;
 }
 
-// VA: 00506CC0 TribeFishingShipUnitAIModule::processNotify
-// Source: taiuaimd.cpp lines 2197-2276
-// Attempt log:
-// 1: natural reconstruction from packet with direct fields, virtual calls, dynamic int-list growth: broad mismatch; compiler cached NotifyEvent in EBP not original EDI.
 // 2: add register event alias and use it throughout to try EDI allocation; no register change.
-// 3: tried notification type gate as switch; no prologue/register improvement and slightly worse diff, rolled back.
-// 4: tried narrow /O1 as possible register/prologue probe; object shrank to 521 and failed configured size, flag removed.
-// 5: tried /O2 /Oy /Ob0 flag probe; same as default, flag removed.
 // 6: remove event alias and use parameter directly to test whether alias caused EBP cache; no change.
-// 7: corrected RGE_Player virtual padding so sendCommand is at vtable +0xE8 instead of +0x20; behavior surface improved but diff worsened due existing early register barrier.
 // 8: reviewed late stopObject/vf58/vfA4 surface: current manual vtbl field is behaviorally suspect for ECX=this scheduling, but changing to full virtual class would require reworking all field offsets.
-// 9: compared default vs flag/no-alias/switch variants; best byte metrics remain the natural default family before vtable padding, but kept vtable padding because it matches binary-observed +0xE8 call target.
-// 10: left in scratch: main blocker is first prologue/register allocation (original EDI=NotifyEvent, ESI=this; rebuilt EBP=NotifyEvent), cascading through all event/list logic plus unresolved true class/vtable surface for late stop calls.
-// 11: restored the same-TU UnitAIModule/RGE_Static_Object/RGE_Player surfaces as the exact transport-ship donor; the target's +0x10 call is the real order slot, followed by stopObject and runAwayFromAttackers.
 
 
 
@@ -2428,26 +2193,19 @@ after_add:
     return 3;
 }
 
-// VA: 00506EE0 TribeFishingShipUnitAIModule::processIdle
-// PDB: taiuaimd.cpp:2281-2306, 250 bytes
 // __thiscall: ecx=this, one stack parameter, ret 4
 //
-// Attempt log:
 // The parked predecessor used raw function-pointer calls and got cdecl/fastcall
 // stack plumbing instead of the observed virtual thiscall calls.  This candidate
 // restores the natural UnitAIModule and RGE_Static_Object virtual surfaces, named
 // coordinate locals, and the direct period-style movement expression.
-// Baseline: 250 bytes, 53 differing bytes; all five calls, frame, and prefix
 // structure aligned.
-// Named x/y offset temporaries were codegen-neutral; explicit assignments added
-// stack homes and eight bytes, so they were rolled back.
 // Separate speed/factor locals moved the x87 schedule and widened the function;
 // the scaled return local is retained.
 // Binary-required arithmetic spelling: `0.0f - offset` preserves the original
 // fchs/fadd tail, while unary minus or direct subtraction lowers to fsubr.  The
 // simple zero-minus form is retained because it is the only exact natural form
 // found and matches the observed arithmetic topology.
-// Main-agent audit restored canonical destructor slots across the player,
 // object, world, and AI virtual surfaces; emitted code remains exact.
 
 
@@ -2479,10 +2237,6 @@ int TribeFishingShipUnitAIModule::processIdle(int param_1)
     return 5;
 }
 
-// VA: 00506FE0, TribeSoldierUnitAIModule::TribeSoldierUnitAIModule
-// Donor: exact UnitAIModule-derived constructor shape from taiuaimd.cpp.
-// Historical exact flags: config/flags/00506FE0_TribeSoldierUnitAIModule.rsp
-// Canonical-context check: the PDB 0x134 base and PAV parameter symbol remain exact.
 
 
 TribeSoldierUnitAIModule::TribeSoldierUnitAIModule(RGE_Static_Object* obj, int param)
@@ -2520,7 +2274,6 @@ TribeSoldierUnitAIModule::TribeSoldierUnitAIModule(RGE_Static_Object* obj, int p
 }
 
 
-// PDB ownership gives a public virtual method with a class-pointer parameter.
 
 int TribeSoldierUnitAIModule::canAttackUnit(RGE_Static_Object* obj) {
     if (!obj) return 0;
@@ -2528,7 +2281,6 @@ int TribeSoldierUnitAIModule::canAttackUnit(RGE_Static_Object* obj) {
 }
 
 
-// PDB ownership gives a public virtual TribeSoldierUnitAIModule method.
 
 int TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(int value) {
     if (value == 0x3 || value == 0x1B || value == 0x4 || value == 0x15 || value == 0x2 || value == 0x14)
@@ -2536,53 +2288,25 @@ int TribeSoldierUnitAIModule::canAttackUnitAtNeutrality(int value) {
     return 1;
 }
 
-// VA 005071F0 TribeSoldierUnitAIModule::processNotify
-// taiuaimd.cpp:2380-2536
-// Attempt log:
-// 1: Natural reconstruction from packet/decompiler using nearby taiuaimd processNotify/list-growth patterns.
 // 2: Modeled NotifyEvent type split for 0x20F evasive-move and 0x200 chase/retreat paths, with base processNotify fallback.
-// 3: Added computerPlayer/world->object/type gates, group 0x23/0x24 checks, command/target checks, and issueOrder/moveTo virtual-call surfaces.
 // 4: Added debug_rand jitter and FPU-ish random coordinate adjustment logic for both X/Y evasive targets.
 // 5: Added rangeLeft/distance_to_object check, target vector accumulation, dynamic id-list growth/copy/delete pattern, and normalized retreat move.
-// 6: Default /O2 /Oy compiles but is size-short: configured 1098 exceeds rebuilt .text 992. Broad source is behaviorally approximate but not enough codegen/detail.
-// 7: Probed /Od: exact size 1098 but broad wrong basin from offset 0 (86.7942% positional); removed flag.
-// 8: Probed /O2 /Oy /Ob0: still size-short 992; removed flag.
-// 9: Probed /O2 /Oy /Og-: exact size 1098 but broad wrong basin from offset 0 (86.0656% positional); removed flag.
-// 10: Probed /O2 /Oy /Op: closer size 1040 but still size-short; removed flag.
-// 11: Probed /O1 /Oy: size-short 861; removed flag.
 // 12: Rebuilt the canonical taiuaimd class surfaces: switched to the original 0x200/0x20F dispatch order, typed owner/master/world access, UnitAIModule::order/intelligentEvasiveMoveTo, weaponRange, and the inline ManagedArray indexer.
-// 13: Common-fallback goto/positive-guard rewrites moved the fallback block early and degraded the otherwise aligned call/body basin; reverted.
 // 14: Scoping jitter locals, splitting modulo into a temporary, adding stdio context, and reusing the jitter local for the range delta did not improve emitted code; reverted.
-// 15: Explicit goto-to-base paths in the switch were codegen-identical; the compiler still relocated the fallback before the 0x200 body.
-// 16: A positive compound 0x20F guard inside the switch was codegen-identical; Ghidra's guard shape did not change the VC5 basin.
-// 17: Reusing param_1's dead stack home for the second jitter float worsened the diff and did not reduce the 0x0C frame; reverted.
-// 18: Reusing evasiveMoveDistance for the 0x200 range delta kept size/diff but worsened shape and exact-block coverage; reverted.
-// 19: Moving both guards into the decompiler's if/else-if form matched the earlier broad 1055-byte basin; reverted.
-// 20: Modeling one explicit 0x200 case with a default 0x20F guard changed dispatch to cmp and worsened the diff to 944; reverted.
-// 21: Replaced switch breaks with an if/else dispatch and one late base label; 1055-byte diff and 6/+6 call-site gaps; reverted.
 // 22: Swapped the switch arm order; emitted code was identical to the clean 855-byte candidate; reverted.
-// 23: Replaced rejected switch breaks with direct base returns; added ten processNotify calls and worsened the diff to 1225; reverted.
-// 24: Explicit 0x200-to-0x20F labels kept the fallback late but changed the dispatch/body basin to 1062 bytes and 6/+6 call gaps; reverted.
-// 40 meaningful probes: direct +0x60 pointer, +0x64 count, and +0x6C capacity fields with
-// duplicated natural growth scans recover the shipped list-loop basin. The best
 // result is 1078 bytes, 0x8 frame, 93.75% shape, and 639 strict-diff bytes.
 // Parenthesized random-coordinate arithmetic and the inverted >10 branch recover
-// both x87 jitter blocks. The remaining drift is the late shared base-fallback
 // block: the rebuilt guards use short branches to an early call site.
 // Compiler-neutral goto and local-order reductions were removed from the pinned source.
 // Canonical taiuaimd context restores the protected virtual MAE owner symbol.
 //
-// Exact-finish:
 // - The exact transition uses positive ordered guards for the 0x200 path.
 // - Shared return_two and return_base labels keep the cold paths late.
-// - Natural break exits remain in the 0x20F path. Their explicit goto forms
-//   were tested and removed because they produced the same bytes.
 // - The negative 0x200 guard form kept size and calls but changed four bytes
 //   in the private return block. Keep the positive guard form.
-// - Fresh check: MATCH, 1098 bytes, 0.0000% positional difference.
 //
-// BINARY NOTE: fallback rereads both message arguments at the late call.
-// BINARY NOTE: the 0x20F success path publishes taskedThisUpdate only after
+// fallback rereads both message arguments at the late call.
+// the 0x20F success path publishes taskedThisUpdate only after
 // intelligentEvasiveMoveTo succeeds. Keep this order and these fault boundaries.
 
 
@@ -2763,15 +2487,10 @@ return_two:
     return 2;
 }
 
-// VA: 00507640 TribeSoldierUnitAIModule::processIdle
-// PDB: taiuaimd.cpp:2541-2629, 564 bytes
 //
-// Attempt log:
-// Prior parked work reconstructed the broad behavior but used an incorrect
 // object/master surface and omitted the maximum-speed result in the final
 // movement calculation.  The current candidate restores the period
 // UnitAIModule/RGE object surfaces and the duplicated strategic-number gate
-// visible in the executable.  Keep later source-shape probes below this note.
 //
 // Prior evidence retained from the parked attempt:
 // - the target is normal corpus work and uses the default VC5 /O2 /Oy flags;
@@ -2779,18 +2498,12 @@ return_two:
 //   binary-proven;
 // - the final movement uses object maximumSpeed() multiplied by [5758B0h]
 //   (3.0f), then normalized x/y deltas and evasiveMoveTo(..., world_z, 1).
-// Baseline result: exact 564-byte match with the default /O2 /Oy response.
-// Source audit: named master/player/object ownership and ordinary virtual
-// declarations are retained; no inline asm, volatility, or codegen-only pad
 // function is used.
 //
-// Exact-finish notes:
-// - The first exact check matched 564 bytes and all 16 ordered calls.
 // - The real object, player, master, and UnitAIModule surfaces are required.
 // - Collapsing the duplicated strategic-number gate removed 3 calls and 56
 //   bytes. It also changed the first direct call, so the shipped gate stays.
 // - Removing the explicit sqrt float cast kept the exact result. The reduced
-//   source keeps that simpler form.
 // - Keep SPEED_3. The binary loads the soldier speed constant at 5758B0h.
 
 
@@ -2859,9 +2572,6 @@ int TribeSoldierUnitAIModule::processIdle(int param_1)
     return 5;
 }
 
-// VA: 00507880, TribeArtifactUnitAIModule::TribeArtifactUnitAIModule
-// Donor: exact UnitAIModule-derived constructor shape from taiuaimd.cpp.
-// Historical exact flags: config/flags/00507880_TribeArtifactUnitAIModule.rsp
 
 
 TribeArtifactUnitAIModule::TribeArtifactUnitAIModule(
@@ -2897,15 +2607,6 @@ TribeArtifactUnitAIModule::TribeArtifactUnitAIModule(
     setAdjustedIdleTimeout();
 }
 
-// VA: 00507A30 TribeArtifactUnitAIModule::processNotify
-// Attempt log:
-// try 1: reconstruct broad switch from packet and sibling processNotify matches; initial source compiled too small (640B), showing broad missing inline logging/repeated bodies.
-// try 2: inlined repeated actionFile/fprintf stop logging instead of a local helper; size improved to 800B but still short.
-// try 3: temporary padding branch got a byte-compare (79.1274% positional / 98.2311% edit) and proved the family is still very broad: prologue loads event into EBP instead of original EBX, switch compiles as sparse compares instead of original dense jump-table, and case layout/tails differ widely. Removed the padding branch.
-// try 4: restored the period typed world/visible-map and operator new/delete surfaces, reordered the special cases by their PDB bands, and restored the dense 0x1f4..0x2bb switch case set.
-// try 5: changed the field_28 guard to retain the binary-redundant second -1 check and restored the indexed list scan/copy topology; structural islands aligned through the list body.
-// try 6: expanded each logging prefix while sharing the fprintf tail; exact size and calls returned, but the temporary line-local/goto source was 328 bytes off.
-// try 7: restored ordinary duplicated LOGSTOP plus stop/notify statements; VC5 tail-merged the observed common suffix and produced an exact 848-byte match.
 
 extern FILE* actionFile;
 extern int fprintf(void*, const char*, ...);
@@ -3298,12 +2999,8 @@ int TribeArtifactUnitAIModule::processIdle(int param_1) {
     return 5;
 }
 
-// 00507EF0 TribeArtifactUnitAIModule::processMisc
-// Source: taiuaimd.cpp lines 2897-2919
 // protected: virtual int __thiscall TribeArtifactUnitAIModule::processMisc(void)
 //
-// Attempt log:
-// Probe 1: natural shape with virtual calls at slots 22 (0x58) and 53 (0xD4), default flags
 
 
 extern FILE* actionFile;
@@ -3329,9 +3026,6 @@ int TribeArtifactUnitAIModule::processMisc()
     return 9;
 }
 
-// VA: 00507F60, TribeTowerUnitAIModule::TribeTowerUnitAIModule
-// Donor: exact UnitAIModule-derived constructor shape from taiuaimd.cpp.
-// Historical exact flags: config/flags/00507F60_TribeTowerUnitAIModule.rsp
 
 
 
@@ -3384,9 +3078,6 @@ int TribeTowerUnitAIModule::canAttackUnitAtNeutrality(int value) {
     return 1;
 }
 
-// VA: 00508170, TribeBuildingUnitAIModule::TribeBuildingUnitAIModule
-// Donor: exact UnitAIModule-derived constructor shape from taiuaimd.cpp.
-// Historical exact flags: config/flags/00508170_TribeBuildingUnitAIModule.rsp
 
 
 
@@ -3421,54 +3112,20 @@ TribeBuildingUnitAIModule::TribeBuildingUnitAIModule(RGE_Static_Object* obj, int
     }
 }
 
-// VA: 00508320 TribeBuildingUnitAIModule::processNotify
-// Source: taiuaimd.cpp lines 3027-3115
-// Attempt log:
-// baseline: rough decompiler-style source had the wrong switch and omitted dynamic-list growth.
-// structural reconstruction: copied the exact same-TU UnitAIModule/RGE_Player/RGE_Static_Object
 // surfaces from 005068B0 and modeled the three binary dispatch cases (0x1f4, 0x258, 0x2bb).
-// probe 2: adding the full list-growth/removal bodies improved structure but left two inline
 // growth calls and no real resize call.
-// probe 3: modeling +0x60 as ManagedArray<int> and using resize for 0x1f4 reduced the body to
 // 607 bytes and restored the direct resize relocation.
-// probe 4: normalized the switch expression; no lookup table was emitted and it was rolled back.
-// probe 5: added the binary-proven type 0x20b/default-return arm; VC5 emitted the expected
 // compressed lookup table and all 11 ordered calls, but the local table remained after the
 // original boundary until the body is byte-sized.
-// probe 6: used a branch-local ManagedArray pointer, preloaded the 0x258 caller, and reread
-// 0x2bb maximum size; exact-block coverage reached 85% and the remaining drift localized to
 // the second removal search plus the lookup-table boundary.
-// probe 7: changed the 0x1f4 pointer to a natural reference and matched its growth compare
 // operands; best emitted result was 317 changed bytes / 64.71% shape / all calls aligned.
-// probe 8: do/while removal-loop variants moved farther; restored probe 7.
-// probe 9/10: fresh post-hit removal locals and a guarded do/while were also farther; restored
-// the probe-7 source shape.
-// probe 11: give the second removal search an explicit typed maximum local before its list pointer;
-// this follows the original max/caller/pointer load order without adding codegen-only scaffolding.
-// result: the body shrank from 832 to 828 bytes and positional diff improved 317 to 313, but
 // VC5 still reused the prior max register and kept the pointer-first removal CFG.
-// fresh worker probe: replaced the 0x2bb pointer-walk search with a natural indexed while and
-// a do/while compaction loop; size reached 600 and positional diff improved to 135.
 // kept the max/list locals with that do/while shape; event-pointer allocation returned to the
-// original prologue family and positional diff improved to 89 with all 11 calls aligned.
-// rolled back a direct-value variant; it moved the prologue and worsened the diff to 138.
-// prior best: all 11 call targets and the main 0x1f4/0x258 bodies aligned; remaining
-// drift was the 0x2bb max/list register order and the final removal block.
-// worker probe 21: used a donor-natural bounded search and direct-field compaction block;
-// positional diff stayed 89, but the tail shape improved and the source remained natural.
-// worker probe 22: scoped a ManagedArray reference at the post-hit label; diff reached 23,
 // with the expected max-first tail shape but case-0 LEA scheduling changed.
-// worker probes 23-26: label scoping, pointer aliases, and a named maximum-field pointer
-// were codegen duplicates; retained the natural array-pointer form as the cleaner candidate.
-// worker probe 27: declared the case-0 array owner before count; diff reached 16 and restored
 // the original case-0 LEA/index order without changing calls or the 600-byte boundary.
-// worker probe 28: cached the post-hit caller before index initialization; exact 600-byte match
 // with all 11 ordered calls and the original 0x2bb register/pointer-walk topology.
-// worker probe 29: removed the diagnostic maximum-field pointer; the natural max local stayed
-// exact. Final source uses named ManagedArray ownership and ordinary bounded search/compaction.
 
 // This function uses the period UnitAIModule layout and the same-TU virtual surfaces as
-// the exact transport/fishing processNotify donors.  The target class adds no fields.
 
 int TribeBuildingUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 {

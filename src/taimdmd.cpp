@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\taimdmd.cpp.
-// Definitions follow the original PDB source order.
 
 #include "../include/taimdmd.h"
 #include "../include/m_s_obj.h"
@@ -26,8 +24,7 @@ extern float g_time;
 extern float g_cut1;
 extern float g_cut2;
 
-// PDB lines 89-151; VA 004E4800.
-// BINARY NOTE: The shipped constructor stores the derived vptr at +0x155,
+// The shipped constructor stores the derived vptr at +0x155,
 // after field initialization. VC5 emits that store at +0xF7 here.
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     void* p1, int p2, char* p3, TRIBE_Player* player, char* p5, char* p6,
@@ -105,8 +102,7 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     memset(this->tributeGiven, 0, 36);
 }
 
-// PDB lines 175-231; VA 004E4B80.
-// BINARY NOTE: The shipped load constructor stores its derived vptr at +0x114,
+// The shipped load constructor stores its derived vptr at +0x114,
 // after field initialization. VC5 emits that store at +0xEA here.
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     int p1, char* p2, TRIBE_Player* p3, int file)
@@ -177,13 +173,11 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     }
 }
 
-// PDB lines 236-237; VA 004E4EC0.
 // The natural virtual destructor matched in the standalone context.
 TribeMainDecisionAIModule::~TribeMainDecisionAIModule()
 {
 }
 
-// PDB lines 242-253; VA 004E4FA0.
 void TribeMainDecisionAIModule::setLogHistory(int value)
 {
     buildAI.setLogHistory(value);
@@ -198,10 +192,8 @@ void TribeMainDecisionAIModule::setLogHistory(int value)
     MainDecisionAIModule::setLogHistory(value);
 }
 
-// PDB lines 258-784; VA 004E5050.
-// BINARY NOTE: The clean source retains the natural local model. The shipped
 // attribute result uses [esp+1Ch], while this source emits [esp+10h].
-// BINARY NOTE: The first swayable scan jumps to the shared increment tail.
+// The first swayable scan jumps to the shared increment tail.
 int TribeMainDecisionAIModule::update(int param_1)
 {
     int newEnemy;
@@ -646,7 +638,6 @@ swayable_next_player:
     return 1;
 }
 
-// PDB lines 789-816; VA 004E5DB0.
 int TribeMainDecisionAIModule::save(int file)
 {
     MainDecisionAIModule::save(file);
@@ -677,7 +668,6 @@ int TribeMainDecisionAIModule::save(int file)
     return 1;
 }
 
-// PDB lines 821-832; VA 004E5F30.
 void TribeMainDecisionAIModule::kick(int param_1)
 {
     this->logCommonHistory("Got a kick=%d.", param_1);
@@ -693,7 +683,6 @@ void TribeMainDecisionAIModule::kick(int param_1)
     }
 }
 
-// PDB lines 837-846; VA 004E5FA0.
 int TribeMainDecisionAIModule::addObject(RGE_Static_Object* object)
 {
     if (object == 0) {
@@ -704,7 +693,6 @@ int TribeMainDecisionAIModule::addObject(RGE_Static_Object* object)
     return MainDecisionAIModule::addObject(object);
 }
 
-// PDB lines 851-859; VA 004E5FE0.
 int TribeMainDecisionAIModule::removeObject(int object_id)
 {
     this->tacticalAI.removeObject(object_id);
@@ -713,7 +701,6 @@ int TribeMainDecisionAIModule::removeObject(int object_id)
     return MainDecisionAIModule::removeObject(object_id);
 }
 
-// PDB lines 864-880; VA 004E6020.
 int TribeMainDecisionAIModule::objectGroupThatCanPerformAction(int action)
 {
     switch (action) {
@@ -730,7 +717,6 @@ int TribeMainDecisionAIModule::objectGroupThatCanPerformAction(int action)
     }
 }
 
-// PDB lines 885-891; VA 004E6090.
 int TribeMainDecisionAIModule::canPerformAction(int param_1, int param_2)
 {
     RGE_Static_Object* object = this->object(param_1);
@@ -743,13 +729,11 @@ int TribeMainDecisionAIModule::canPerformAction(int param_1, int param_2)
     return 0;
 }
 
-// PDB lines 896-899; VA 004E60D0.
 void TribeMainDecisionAIModule::detask(int param)
 {
     this->tacticalAI.detask(param);
 }
 
-// PDB lines 904-924; VA 004E60F0.
 int TribeMainDecisionAIModule::isMoveable(int id)
 {
     RGE_Static_Object* obj = this->object(id);
@@ -765,8 +749,7 @@ int TribeMainDecisionAIModule::isMoveable(int id)
     return 1;
 }
 
-// PDB lines 929-943; VA 004E6160.
-// BINARY NOTE: The source keeps the natural bounded ManagedArray copy loop.
+// The source keeps the natural bounded ManagedArray copy loop.
 void TribeMainDecisionAIModule::updateBuildAIWithObjects()
 {
     int* newList;
@@ -812,7 +795,6 @@ void TribeMainDecisionAIModule::updateBuildAIWithObjects()
     }
 }
 
-// PDB lines 949-1015; VA 004E6250.
 void TribeMainDecisionAIModule::tributeNotify(int player, int notification,
                                                int amount)
 {
@@ -863,7 +845,6 @@ void TribeMainDecisionAIModule::tributeNotify(int player, int notification,
     }
 }
 
-// PDB lines 1020-1043; VA 004E6490.
 void TribeMainDecisionAIModule::revokeTributeAlliance()
 {
     char tempString[256];
@@ -884,9 +865,7 @@ void TribeMainDecisionAIModule::revokeTributeAlliance()
     }
 }
 
-// PDB lines 1048-1059; VA 004E6580.
-// BINARY NOTE: Naming the random result before the arithmetic preserves the
-// standalone MATCH in the reduced function context.
+// Naming the random result before the arithmetic preserves the
 void TribeMainDecisionAIModule::setTributeChat()
 {
     TribeTacticalAIModule* tactical = &this->tacticalAI;
@@ -902,7 +881,6 @@ void TribeMainDecisionAIModule::setTributeChat()
     }
 }
 
-// PDB lines 1065-1170; VA 004E6600.
 int TribeMainDecisionAIModule::processAICommand(int player, int command,
                                                 int value, int amount,
                                                 int extra)
@@ -990,7 +968,6 @@ int TribeMainDecisionAIModule::processAICommand(int player, int command,
     return 1;
 }
 
-// PDB lines 1175-1181; VA 004E6870.
 int TribeMainDecisionAIModule::currentScore(int index)
 {
     if (index >= 1 && index <= this->player->world->player_num)

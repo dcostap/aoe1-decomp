@@ -1,7 +1,6 @@
 #ifndef AOE1_DLG_ABT_H
 #define AOE1_DLG_ABT_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_abt.cpp.
 // This header owns only TribeAboutDialog.
 #include "pnl_dlg.h"
 

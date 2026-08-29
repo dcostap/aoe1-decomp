@@ -8,7 +8,6 @@
 extern "C" double __cdecl sqrt(double value);
 #pragma intrinsic(sqrt)
 
-// PDB source order for C:\\msdev\\work\\age1_x1\\rmm_terr.cpp.
 
 RGE_RMM_Terrain_Generator::RGE_RMM_Terrain_Generator(
     RGE_Map* map, RGE_Random_Map_Module* parent, RGE_Terrain_Info* info)
@@ -118,7 +117,7 @@ void RGE_RMM_Terrain_Generator::check_borders()
 uchar RGE_RMM_Terrain_Generator::check_terrain(
     uchar terrain, long x, long y, long radius, uchar avoid_terrain)
 {
-    // BINARY NOTE: Both scans use clipped inclusive bounds and preserve the
+    // Both scans use clipped inclusive bounds and preserve the
     // executable's terrain predicate and byte-count return.
     long count = 1;
     long base_terrain =
@@ -254,7 +253,7 @@ float RGE_RMM_Terrain_Generator::fig_chance(
 
 long RGE_RMM_Terrain_Generator::count_map_tiles(unsigned char tileType)
 {
-    // BINARY NOTE: The executable scans +0x10 rows with +0x18 tile records.
+    // The executable scans +0x10 rows with +0x18 tile records.
     RGE_Tile* tile = this->map_row_offset[0];
     RGE_Tile* end = tile + this->map_width * this->map_height;
     long count = 0;
@@ -340,7 +339,7 @@ void RGE_RMM_Terrain_Generator::remove_area_from_lists(
 uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
     RGE_Terrain_Info_Line line)
 {
-    // BINARY NOTE: pop_stack writes adjacent long x and chance outputs.
+    // pop_stack writes adjacent long x and chance outputs.
     struct Stack_Coordinates {
         long x;
         long chance;
@@ -348,7 +347,7 @@ uchar RGE_RMM_Terrain_Generator::base_terrain_generate(
     long& x = coordinates.x;
     long& chance = coordinates.chance;
 
-    // BINARY NOTE: The shipped body reuses the fair_count home for its float
+    // The shipped body reuses the fair_count home for its float
     // score after the fairness phase.
     union {
         float fStack_a4c;

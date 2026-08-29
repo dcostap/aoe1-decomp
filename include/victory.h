@@ -3,7 +3,6 @@
 
 // Period-shaped declarations for the complete victory.cpp owner set.
 //
-// The PDB identifies one RGE_Victory_Conditions class for the complete
 // victory.cpp source module. Keep the proven field offsets and virtual slots
 // in one module-owned declaration.
 // Foreign owner headers stay private to victory.cpp.
@@ -55,7 +54,7 @@ typedef char rge_victory_point_entry_size_check[
     (sizeof(RGE_Victory_Point_Entry) == 0x1C) ? 1 : -1];
 
 class RGE_Victory_Conditions {
-// BINARY NOTE: victory.cpp FPO records use protected handlers and struct-tagged
+// victory.cpp FPO records use protected handlers and struct-tagged
 // RGE_Victory_Entry/RGE_Victory_Point_Entry parameters.
 protected:
     virtual void handle_point_condition(RGE_Victory_Point_Entry* entry);

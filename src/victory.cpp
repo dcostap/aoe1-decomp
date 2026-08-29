@@ -1,5 +1,4 @@
 // Authentic complete owner for C:\\msdev\\work\\age1_x1\\victory.cpp.
-// Normal owners stay in PDB source order.
 #include "../include/victory.h"
 #include "../include/rge_fio.h"
 #include "../include/player.h"
@@ -15,7 +14,6 @@ extern "C" void __cdecl getstring(char** destination, char* source);
 extern "C" void __cdecl free(void* block);
 
 
-// VA: 00531750 RGE_Victory_Conditions
 
 
 RGE_Victory_Conditions::RGE_Victory_Conditions(
@@ -152,7 +150,6 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(
     }
 }
 
-// VA: 00531AF0 RGE_Victory_Conditions
 
 RGE_Victory_Conditions::RGE_Victory_Conditions(RGE_Player* player) {
     this->player = player;
@@ -164,7 +161,6 @@ RGE_Victory_Conditions::RGE_Victory_Conditions(RGE_Player* player) {
     this->tot_victory_points = 0;
 }
 
-// VA: 00531B20 ~RGE_Victory_Conditions
 
 RGE_Victory_Conditions::~RGE_Victory_Conditions() {
     RGE_Victory_Entry* entry = this->victory_list;
@@ -185,7 +181,6 @@ RGE_Victory_Conditions::~RGE_Victory_Conditions() {
     this->player = 0;
 }
 
-// VA: 00531B70 save
 
 
 void RGE_Victory_Conditions::save(int outfile) {
@@ -250,7 +245,6 @@ void RGE_Victory_Conditions::save(int outfile) {
     }
 }
 
-// VA: 00531DB0 check_for_victory
 
 
 void RGE_Victory_Conditions::check_for_victory() {
@@ -322,7 +316,6 @@ void RGE_Victory_Conditions::check_for_victory() {
     }
 }
 
-// VA: 00531E90 update
 
 unsigned char RGE_Victory_Conditions::update() {
     {
@@ -343,7 +336,6 @@ unsigned char RGE_Victory_Conditions::update() {
     return victory;
 }
 
-// VA: 00531EF0 update_for_object
 
 void RGE_Victory_Conditions::update_for_object(RGE_Static_Object* object) {
     RGE_Victory_Entry* entry = this->victory_list;
@@ -357,7 +349,6 @@ void RGE_Victory_Conditions::update_for_object(RGE_Static_Object* object) {
     }
 }
 
-// VA: 00531F30 handle_point_condition
 
 void RGE_Victory_Conditions::handle_point_condition(RGE_Victory_Point_Entry* param_1) {
     switch (param_1->command) {
@@ -379,7 +370,6 @@ void RGE_Victory_Conditions::handle_point_condition(RGE_Victory_Point_Entry* par
     }
 }
 
-// VA: 00531F90 handle_condition
 
 
 
@@ -424,7 +414,6 @@ void RGE_Victory_Conditions::handle_condition(RGE_Victory_Entry* entry) {
     }
 }
 
-// VA: 00532050 handle_capture
 
 
 void RGE_Victory_Conditions::handle_capture(RGE_Victory_Entry* entry) {
@@ -458,7 +447,6 @@ void RGE_Victory_Conditions::handle_capture(RGE_Victory_Entry* entry) {
     }
 }
 
-// VA: 00532110 handle_create
 
 
 void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* entry) {
@@ -507,7 +495,6 @@ void RGE_Victory_Conditions::handle_create(RGE_Victory_Entry* entry) {
     }
 }
 
-// VA: 00532220 handle_create_in_area
 
 
 void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* entry) {
@@ -569,7 +556,6 @@ void RGE_Victory_Conditions::handle_create_in_area(RGE_Victory_Entry* entry) {
     }
 }
 
-// VA: 005323B0 handle_destroy
 
 void RGE_Victory_Conditions::handle_destroy(RGE_Victory_Entry* entry) {
     if (entry->target_obj && entry->target_obj->object_state == 7) {
@@ -578,7 +564,6 @@ void RGE_Victory_Conditions::handle_destroy(RGE_Victory_Entry* entry) {
     }
 }
 
-// VA: 005323D0 handle_destroy_multiple
 
 
 void RGE_Victory_Conditions::handle_destroy_multiple(RGE_Victory_Entry* entry) {
@@ -619,7 +604,6 @@ void RGE_Victory_Conditions::handle_destroy_multiple(RGE_Victory_Entry* entry) {
     }
 }
 
-// VA: 005324A0 handle_destroy_all
 
 
 
@@ -659,7 +643,6 @@ void RGE_Victory_Conditions::handle_destroy_all(RGE_Victory_Entry* entry) {
     entry->state = 2;
 }
 
-// VA: 00532570 handle_destroy_player
 
 void RGE_Victory_Conditions::handle_destroy_player(RGE_Victory_Entry* entry) {
     if (entry->target_player) {
@@ -670,7 +653,6 @@ void RGE_Victory_Conditions::handle_destroy_player(RGE_Victory_Entry* entry) {
     }
 }
 
-// VA: 005325A0 handle_bring_area
 
 
 void RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Entry* entry) {
@@ -698,7 +680,6 @@ void RGE_Victory_Conditions::handle_bring_area(RGE_Victory_Entry* entry) {
     }
 }
 
-// VA: 00532610 handle_bring_object
 
 
 void RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Entry* entry) {
@@ -732,7 +713,6 @@ void RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Entry* entry) {
     }
 }
 
-// VA: 005326F0 handle_attribute
 
 
 void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* entry)
@@ -774,7 +754,6 @@ void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* entry)
         e->state = 0;
 }
 
-// VA: 005327A0 handle_explore
 
 
 void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
@@ -811,7 +790,6 @@ void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
     }
 }
 
-// VA: 00532880 handle_victory_points
 
 
 void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* entry) {
@@ -841,7 +819,6 @@ void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* entry) {
     }
 }
 
-// VA: 00532930 add
 
 
 
@@ -859,7 +836,6 @@ RGE_Victory_Entry* RGE_Victory_Conditions::add(unsigned char param_1, unsigned c
     return entry;
 }
 
-// VA: 00532970 add_capture
 
 unsigned char RGE_Victory_Conditions::add_capture(unsigned char param_1, RGE_Static_Object* param_2, unsigned char param_3) {
     RGE_Victory_Entry* entry = this->add(param_1, param_3);
@@ -872,7 +848,6 @@ unsigned char RGE_Victory_Conditions::add_capture(unsigned char param_1, RGE_Sta
     return 0;
 }
 
-// VA: 005329A0 add_create
 
 unsigned char RGE_Victory_Conditions::add_create(unsigned char param_1, long param_2, long param_3, unsigned char param_4) {
     RGE_Victory_Entry* entry = this->add(param_1, param_4);
@@ -885,7 +860,6 @@ unsigned char RGE_Victory_Conditions::add_create(unsigned char param_1, long par
     return 0;
 }
 
-// VA: 005329D0 add_create
 
 unsigned char RGE_Victory_Conditions::add_create(unsigned char param_1, long param_2, long param_3, float param_4, float param_5, float param_6, float param_7, unsigned char param_8) {
     RGE_Victory_Entry* entry = this->add(param_1, param_8);
@@ -902,7 +876,6 @@ unsigned char RGE_Victory_Conditions::add_create(unsigned char param_1, long par
     return 0;
 }
 
-// VA: 00532A20 add_destroy
 
 unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, RGE_Static_Object* param_2) {
     RGE_Victory_Entry* entry = this->add(param_1, 0);
@@ -915,7 +888,6 @@ unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, RGE_Sta
     return 0;
 }
 
-// VA: 00532A50 add_destroy
 
 unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, long param_2, long param_3, RGE_Player* param_4) {
     RGE_Victory_Entry* entry = this->add(param_1, 0);
@@ -929,7 +901,6 @@ unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, long pa
     return 0;
 }
 
-// VA: 00532A90 add_destroy
 
 unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, long param_2, RGE_Player* param_3) {
     RGE_Victory_Entry* entry = this->add(param_1, 0);
@@ -942,7 +913,6 @@ unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, long pa
     return 0;
 }
 
-// VA: 00532AC0 add_destroy
 
 unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, RGE_Player* param_2) {
     RGE_Victory_Entry* entry = this->add(param_1, 0);
@@ -954,7 +924,6 @@ unsigned char RGE_Victory_Conditions::add_destroy(unsigned char param_1, RGE_Pla
     return 0;
 }
 
-// VA: 00532AF0 add_bring
 
 unsigned char RGE_Victory_Conditions::add_bring(unsigned char param_1, RGE_Static_Object* param_2, RGE_Static_Object* param_3) {
     RGE_Victory_Entry* entry = this->add(param_1, 0);
@@ -968,7 +937,6 @@ unsigned char RGE_Victory_Conditions::add_bring(unsigned char param_1, RGE_Stati
     return 0;
 }
 
-// VA: 00532B30 add_bring
 
 unsigned char RGE_Victory_Conditions::add_bring(unsigned char param_1, RGE_Static_Object* param_2, float param_3, float param_4, float param_5, float param_6) {
     RGE_Victory_Entry* entry = this->add(param_1, 0);
@@ -984,7 +952,6 @@ unsigned char RGE_Victory_Conditions::add_bring(unsigned char param_1, RGE_Stati
     return 0;
 }
 
-// VA: 00532B70 add_attributes
 
 unsigned char RGE_Victory_Conditions::add_attributes(unsigned char param_1, long param_2, long param_3, unsigned char param_4) {
     RGE_Victory_Entry* entry = this->add(param_1, param_4);
@@ -997,7 +964,6 @@ unsigned char RGE_Victory_Conditions::add_attributes(unsigned char param_1, long
     return 0;
 }
 
-// VA: 00532BA0 add_explore
 
 
 unsigned char RGE_Victory_Conditions::add_explore(unsigned char param_1, long param_2, unsigned char param_3) {
@@ -1016,7 +982,6 @@ unsigned char RGE_Victory_Conditions::add_explore(unsigned char param_1, long pa
     return 0;
 }
 
-// VA: 00532BE0 add_victory_points
 
 unsigned char RGE_Victory_Conditions::add_victory_points(unsigned char param_1, long param_2, unsigned char param_3) {
     RGE_Victory_Entry* entry = this->add(param_1, param_3);
@@ -1028,7 +993,6 @@ unsigned char RGE_Victory_Conditions::add_victory_points(unsigned char param_1, 
     return 0;
 }
 
-// VA: 00532C10 sub
 
 
 
@@ -1052,7 +1016,6 @@ void RGE_Victory_Conditions::sub(RGE_Victory_Entry* entry) {
     }
 }
 
-// VA: 00532C50 destroy_all
 
 void RGE_Victory_Conditions::destroy_all() {
     RGE_Victory_Entry* entry;
@@ -1064,7 +1027,6 @@ void RGE_Victory_Conditions::destroy_all() {
     }
 }
 
-// VA: 00532C70 condition_info
 
 unsigned char RGE_Victory_Conditions::condition_info(long index, char** outEntry, unsigned char& outCommand) {
     RGE_Victory_Entry* entry = this->victory_list;
@@ -1087,7 +1049,6 @@ unsigned char RGE_Victory_Conditions::condition_info(long index, char** outEntry
     return 0;
 }
 
-// VA: 00532CC0 condition_description
 
 
 char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* entry) {
@@ -1146,7 +1107,6 @@ char* RGE_Victory_Conditions::condition_description(RGE_Victory_Entry* entry) {
     return description;
 }
 
-// VA: 00532ED0 condition_raw_info
 
 
 RGE_Victory_Entry* RGE_Victory_Conditions::condition_raw_info(long index) {
@@ -1167,11 +1127,9 @@ RGE_Victory_Entry* RGE_Victory_Conditions::condition_raw_info(long index) {
     return 0;
 }
 
-// VA: 00532EF0 condition_number
 
 long RGE_Victory_Conditions::condition_number(long p0) { return this->list_num; }
 
-// VA: 00532F00 victory_achieved
 
 unsigned char RGE_Victory_Conditions::victory_achieved(void) {
     if (this->victory == 2) {
@@ -1180,7 +1138,6 @@ unsigned char RGE_Victory_Conditions::victory_achieved(void) {
     return 0;
 }
 
-// VA: 00532F10 remove_condition
 
 unsigned char RGE_Victory_Conditions::remove_condition(long index) {
     int i = 0;
@@ -1196,7 +1153,6 @@ unsigned char RGE_Victory_Conditions::remove_condition(long index) {
     return 0;
 }
 
-// VA: 00532F50 add_point
 
 
 RGE_Victory_Point_Entry* RGE_Victory_Conditions::add_point(unsigned char p1, unsigned char p2) {
@@ -1217,7 +1173,6 @@ RGE_Victory_Point_Entry* RGE_Victory_Conditions::add_point(unsigned char p1, uns
     return entry;
 }
 
-// VA: 00532FA0 sub_point
 
 
 
@@ -1238,7 +1193,6 @@ void RGE_Victory_Conditions::sub_point(RGE_Victory_Point_Entry* entry) {
     }
 }
 
-// VA: 00532FE0 add_points_attribute_amount
 
 unsigned char RGE_Victory_Conditions::add_points_attribute_amount(unsigned char p1, unsigned char p2, long attribute, long amount, long points) {
     RGE_Victory_Point_Entry* entry = this->add_point(p2, p1);
@@ -1252,7 +1206,6 @@ unsigned char RGE_Victory_Conditions::add_points_attribute_amount(unsigned char 
     return 0;
 }
 
-// VA: 00533020 add_points_attribute_first
 
 unsigned char RGE_Victory_Conditions::add_points_attribute_first(unsigned char p1, unsigned char p2, long attribute, long amount, long points) {
     RGE_Victory_Point_Entry* entry = this->add_point(p2, p1);
@@ -1266,7 +1219,6 @@ unsigned char RGE_Victory_Conditions::add_points_attribute_first(unsigned char p
     return 0;
 }
 
-// VA: 00533060 add_points_highest_attribute
 
 unsigned char RGE_Victory_Conditions::add_points_highest_attribute(unsigned char p1, unsigned char p2, long attribute, long amount, long points) {
     RGE_Victory_Point_Entry* entry = this->add_point(p2, p1);
@@ -1280,7 +1232,6 @@ unsigned char RGE_Victory_Conditions::add_points_highest_attribute(unsigned char
     return 0;
 }
 
-// VA: 005330A0 add_points_high_attribute_once
 
 unsigned char RGE_Victory_Conditions::add_points_high_attribute_once(unsigned char p1, unsigned char p2, long attribute, long amount, long points) {
     RGE_Victory_Point_Entry* entry = this->add_point(p2, p1);
@@ -1294,7 +1245,6 @@ unsigned char RGE_Victory_Conditions::add_points_high_attribute_once(unsigned ch
     return 0;
 }
 
-// VA: 005330E0 add_points_high_attribute_amount
 
 unsigned char RGE_Victory_Conditions::add_points_high_attribute_amount(unsigned char p1, unsigned char p2, long attribute, long amount, long points) {
     RGE_Victory_Point_Entry* entry = this->add_point(p2, p1);
@@ -1308,7 +1258,6 @@ unsigned char RGE_Victory_Conditions::add_points_high_attribute_amount(unsigned 
     return 0;
 }
 
-// VA: 00533120 handle_points_attribute_amount
 
 void RGE_Victory_Conditions::handle_points_attribute_amount(RGE_Victory_Point_Entry* param_1) {
     if (param_1->state == 0) {
@@ -1326,7 +1275,6 @@ void RGE_Victory_Conditions::handle_points_attribute_amount(RGE_Victory_Point_En
     }
 }
 
-// VA: 00533180 handle_points_attribute_first
 
 
 void RGE_Victory_Conditions::handle_points_attribute_first(RGE_Victory_Point_Entry* entry) {
@@ -1363,7 +1311,6 @@ void RGE_Victory_Conditions::handle_points_attribute_first(RGE_Victory_Point_Ent
     }
 }
 
-// VA: 00533240 handle_points_highest_attribute
 
 
 
@@ -1404,7 +1351,6 @@ void RGE_Victory_Conditions::handle_points_highest_attribute(RGE_Victory_Point_E
     }
 }
 
-// VA: 00533330 handle_points_high_attribute_once
 
 
 void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point_Entry* node) {
@@ -1439,7 +1385,6 @@ void RGE_Victory_Conditions::handle_points_high_attribute_once(RGE_Victory_Point
     }
 }
 
-// VA: 00533410 handle_points_high_attribute_amount
 
 
 void RGE_Victory_Conditions::handle_points_high_attribute_amount(RGE_Victory_Point_Entry* node) {
@@ -1457,11 +1402,9 @@ void RGE_Victory_Conditions::handle_points_high_attribute_amount(RGE_Victory_Poi
     }
 }
 
-// VA: 00533480 get_victory_points
 
 long RGE_Victory_Conditions::get_victory_points() { return this->tot_victory_points; }
 
-// VA: 00533490 get_victory_points_group
 
 long RGE_Victory_Conditions::get_victory_points_group(unsigned char group) {
     int total = 0;
@@ -1474,7 +1417,6 @@ long RGE_Victory_Conditions::get_victory_points_group(unsigned char group) {
     return total;
 }
 
-// VA: 005334C0 get_victory_points_id
 
 long RGE_Victory_Conditions::get_victory_points_id(unsigned char id) {
     int result = 0;
@@ -1487,7 +1429,6 @@ long RGE_Victory_Conditions::get_victory_points_id(unsigned char id) {
     return result;
 }
 
-// VA: 005334E0 get_attribute_id
 
 long RGE_Victory_Conditions::get_attribute_id(unsigned char id) {
     int result = 0;

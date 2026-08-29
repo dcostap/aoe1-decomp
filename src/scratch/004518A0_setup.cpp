@@ -1,4 +1,3 @@
-// VA: 004518A0 setup (1207B)
 // m_s_obj.cpp
 
 class RGE_Master_Static_Object {

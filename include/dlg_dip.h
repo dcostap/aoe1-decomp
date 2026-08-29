@@ -1,7 +1,6 @@
 #ifndef AOE1_DLG_DIP_H
 #define AOE1_DLG_DIP_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_dip.cpp.
 // TribeDiplomacyDialog is the only class owned by this header. Shared dialog,
 // panel, screen, control, drawing, shape, base-game, player, and world types
 // come from their canonical owners.

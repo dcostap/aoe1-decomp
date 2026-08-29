@@ -6,7 +6,6 @@
 class ResFileHdr;
 class resfile_header;
 
-// PDB type: ResFileHdr. Size 0x114.
 // Evidence: inventory/types/dumps/ResFileHdr.txt and Res_file.cpp assembly
 // at 0047F076, 0047F180, and 0047F230.
 class ResFileHdr {
@@ -18,7 +17,6 @@ public:
     char res_name[260];          // +0x10
 };
 
-// PDB type: resfile_header. Size 0x40.
 // Evidence: inventory/types/dumps/resfile_header.txt and the 0x40-byte
 // header reads and writes in RESFILE_open_new_resource_file and
 // RESFILE_build_res_file.
@@ -31,7 +29,6 @@ public:
     int directory_size;          // +0x3C
 };
 
-// PDB type: resfile_type_dir_node. Size 0x0C.
 // Evidence: inventory/types/dumps/resfile_type_dir_node.txt and the 0x0C
 // directory stride at RESFILE_locate_resource 0047F285-0047F2BD.
 class resfile_type_dir_node {
@@ -41,7 +38,6 @@ public:
     long numID;                  // +0x08
 };
 
-// PDB type: resfile_id_dir_node. Size 0x0C.
 // Evidence: inventory/types/dumps/resfile_id_dir_node.txt and the 0x0C
 // resource-record stride at RESFILE_locate_resource 0047F2A0-0047F2A6.
 class resfile_id_dir_node {
@@ -51,7 +47,6 @@ public:
     long itemSize;               // +0x08
 };
 
-// PDB type: res_file_type_info. Size 0x08.
 // Evidence: inventory/types/dumps/res_file_type_info.txt and
 // BUILDRES_get_files_resource_type assembly at 0047FCD9-0047FD17.
 class res_file_type_info {
@@ -60,7 +55,6 @@ public:
     unsigned long rType;          // +0x04
 };
 
-// PDB type: BuildRes_type_node. Size 0x14.
 // Evidence: inventory/types/dumps/BuildRes_type_node.txt and the 0x14-byte
 // allocation and linked-list accesses in RESFILE_build_res_file.
 class BuildRes_type_node;
@@ -75,7 +69,6 @@ public:
     BuildRes_type_node* next;     // +0x10
 };
 
-// PDB type: BuildRes_id_node. Size 0x118.
 // Evidence: inventory/types/dumps/BuildRes_id_node.txt and the 0x118-byte
 // allocation and field accesses in RESFILE_build_res_file.
 class BuildRes_id_node {
@@ -89,7 +82,6 @@ public:
 };
 
 // Resource-file global state. The image uses DAT_0086b254 at 0047F076,
-// 0047F184, 0047F1F8, and 0047F240.
 extern ResFileHdr* DAT_0086b254;
 
 // Resource-missing diagnostic flag. The image uses DAT_0086b258 at 0047F36B

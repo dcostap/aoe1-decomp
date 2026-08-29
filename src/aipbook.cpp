@@ -425,10 +425,7 @@ AIPlayPhase* AIPlay::phase(int index) {
     return 0;
 }
 
-// 0040F530 AIPlay::fillGroups
-// BINARY NOTE: This natural reconstruction retains the shipped 22-call
 // surface, grouping order, capacity stop, and deviation calculation.
-// The current source is nonexact. See recovery_notes/aipbook_module.md.
 int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                        int numberGroupMembers, RGE_Game_World* world) {
     AIPlay* play;
@@ -600,8 +597,6 @@ CountDeviation:
     return minUnits;
 }
 
-// 0040F9B0 AIPlay::groupGivenCommandOnPhase
-// Scratch status: the current natural result escapes its original boundary.
 int AIPlay::groupGivenCommandOnPhase(int groupValue, int typeValue,
                                      int phaseIndex) {
     int type = typeValue;
@@ -836,8 +831,6 @@ void AIPlayStatus::save(int file) {
     rge_write(iVar1, &lastPhaseChangeTimeValue, 4);
 }
 
-// 00410050 AIPlayStatus::copy
-// ACCEPTED_DRIFT: behavior-equivalent. Drift is limited to setup register
 // order before the grouping loop. The copy order and memory effects match.
 void AIPlayStatus::copy(AIPlayStatus* other) {
     int count = 50;
@@ -925,9 +918,6 @@ AIPlayBook::~AIPlayBook() {
     }
 }
 
-// 00410220 AIPlayBook::loadPlays
-// BINARY NOTE: The parser keeps the shipped two-pass file scan, /GX array
-// lifetime, named fields, and the 72 ordered call sites. It remains scratch.
 int AIPlayBook::loadPlays(char* filename) {
     int temp4;
     int phaseValue1;

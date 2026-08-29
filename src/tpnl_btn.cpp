@@ -1,5 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\tpnl_btn.cpp.
-// Definitions follow PDB source lines 50 through 334.
 
 #include "../include/scr_game.h"
 #include "../include/tpnl_btn.h"

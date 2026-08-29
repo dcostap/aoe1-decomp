@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\sceninfo.cpp.
-// The definitions follow the original source order.
 
 #include "../include/basegame.h"
 #include "../include/main.h"
@@ -19,7 +17,6 @@ void rge_write_uncompressed(int fd, void* buffer, int count);
 int rge_close(int fd);
 }
 
-// 0048CEA0 RGE_Scenario_File_Info::RGE_Scenario_File_Info(char*)
 RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* path)
 {
     long i;
@@ -56,7 +53,6 @@ RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* path)
     }
 }
 
-// 0048CFD0 RGE_Scenario_File_Info::~RGE_Scenario_File_Info()
 RGE_Scenario_File_Info::~RGE_Scenario_File_Info() {
     save();
     if (scenario_num > 0) {
@@ -72,7 +68,6 @@ RGE_Scenario_File_Info::~RGE_Scenario_File_Info() {
     }
 }
 
-// 0048D040 RGE_Scenario_File_Info::save()
 void RGE_Scenario_File_Info::save()
 {
     int fd = rge_open(this->filename, 0x8301, 0x180);
@@ -96,7 +91,6 @@ void RGE_Scenario_File_Info::save()
     rge_close(fd);
 }
 
-// 0048D0E0 RGE_Scenario_File_Info::reload_scenarios()
 void RGE_Scenario_File_Info::reload_scenarios()
 {
     char file_name[260];
@@ -203,13 +197,11 @@ void RGE_Scenario_File_Info::reload_scenarios()
     this->scenario_num = total;
 }
 
-// 0048D4D0 RGE_Scenario_File_Info::get_scenario_name(long)
 char* RGE_Scenario_File_Info::get_scenario_name(long index) {
     if (index >= this->scenario_num || index < 0) return 0;
     return this->scenarios[index].name;
 }
 
-// 0048D500 RGE_Scenario_File_Info::get_scenario_info(long)
 RGE_Scenario_Header* RGE_Scenario_File_Info::get_scenario_info(long index) {
     if (index >= this->scenario_num || index < 0) return 0;
     return this->scenarios[index].scenario_header;

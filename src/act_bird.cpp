@@ -1,7 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\act_bird.cpp.
-// Definitions follow the original source order.
-// PDB bands: 00401FE0 (30-32), 00402040 (37-44), 00402080 (48-57),
-// 004020C0 (61-87), and 00402180 (91-152).
 // Direct owners: Action, action object, player, world, map, sprite, task,
 // and master object. Combat is not referenced by this module.
 

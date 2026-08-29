@@ -1,18 +1,10 @@
 // Authentic ACT_GATH.cpp source module.
 //
-// PDB source path: C:\\msdev\\work\\age1_x1\\ACT_GATH.cpp.
-// The handwritten owners stay in PDB line and address order.  The vector
 // deleting destructor at 00402F10 is compiler-generated.  The non-deleting
 // destructor at 00402F30 is the small derived-to-base thunk emitted by the
 // virtual destructor definition.
 //
-// Address and source-line bands:
-// 00402EA0 (63-66), 00402F40 (74-90), 00402FD0 (98-110),
-// 00403020 (116-119), 00403050 (125-159), 00403110 (165-377),
-// 00403590 (383-752), 00403C60 (758-767), 00403C90 (773-780),
-// 00403CD0 (786-789), 00403CE0 (796-831), and 00403D90 (837-887).
 //
-// Direct owner dependencies are included below.  Sound remains a blocker
 // because no canonical owner header publishes its needed surface.
 
 #include "../include/act_gath.h"
@@ -35,7 +27,6 @@ extern float DAT_0056e278;
 extern double DAT_0056e280;
 extern double DAT_0056e290;
 
-// PDB lines 63-66; VA 00402EA0.
 RGE_Action_Gather::RGE_Action_Gather(int file, RGE_Action_Object* object)
     : RGE_Action(file, object, 1) {
     this->action_type = 5;
@@ -46,7 +37,6 @@ RGE_Action_Gather::RGE_Action_Gather(int file, RGE_Action_Object* object)
 RGE_Action_Gather::~RGE_Action_Gather() {
 }
 
-// PDB lines 74-90; VA 00402F40.
 RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* object,
                                      RGE_Task* task,
                                      RGE_Static_Object* target)
@@ -62,7 +52,6 @@ RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* object,
     }
 }
 
-// PDB lines 98-110; VA 00402FD0.
 RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* object,
                                      RGE_Task* task,
                                      float x, float y, float z)
@@ -75,13 +64,11 @@ RGE_Action_Gather::RGE_Action_Gather(RGE_Action_Object* object,
     this->targetType = -1;
 }
 
-// PDB lines 116-119; VA 00403020.
 void RGE_Action_Gather::save(int outfile) {
     RGE_Action::save(outfile);
     rge_write(outfile, &this->targetType, 4);
 }
 
-// PDB lines 125-159; VA 00403050.
 void RGE_Action_Gather::first_in_stack(unsigned char param1) {
     short attr = this->task->attribute_type;
     if (this->obj->attribute_type_held != attr) {
@@ -119,7 +106,6 @@ void RGE_Action_Gather::first_in_stack(unsigned char param1) {
     this->set_state(3);
 }
 
-// PDB lines 165-377; VA 00403110.
 void RGE_Action_Gather::set_state(unsigned char param_1) {
     RGE_Action* move_to;
 
@@ -276,7 +262,6 @@ gather_depleted:
     this->obj->new_sprite(this->get_wait_sprite());
 }
 
-// PDB lines 383-752; VA 00403590.
 unsigned char RGE_Action_Gather::update() {
     float give_amount;
     RGE_Player* check_player;
@@ -521,7 +506,6 @@ computer_check:
     return 0;
 }
 
-// PDB lines 758-767; VA 00403C60.
 RGE_Sprite* RGE_Action_Gather::get_move_sprite() {
     RGE_Task* task = this->task;
     short task_facet = task->attribute_type;
@@ -538,7 +522,6 @@ RGE_Sprite* RGE_Action_Gather::get_move_sprite() {
     return task->move_sprite;
 }
 
-// PDB lines 773-780; VA 00403C90.
 RGE_Sprite* RGE_Action_Gather::get_wait_sprite() {
     RGE_Task* task = this->task;
     short value = task->attribute_type;
@@ -551,13 +534,11 @@ RGE_Sprite* RGE_Action_Gather::get_wait_sprite() {
     return this->obj->master_obj->sprite;
 }
 
-// PDB lines 786-789; VA 00403CD0.
 int RGE_Action_Gather::stop() {
     this->set_state(2);
     return 1;
 }
 
-// PDB lines 796-831; VA 00403CE0.
 int RGE_Action_Gather::move_to(RGE_Static_Object* target,
                                float x, float y, float z) {
     if (target != 0) {
@@ -591,7 +572,6 @@ int RGE_Action_Gather::move_to(RGE_Static_Object* target,
     return 1;
 }
 
-// PDB lines 837-887; VA 00403D90.
 int RGE_Action_Gather::work(RGE_Static_Object* target,
                             float x, float y, float z) {
     if (target != 0) {

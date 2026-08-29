@@ -1,4 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\tm_b_obj.cpp.
 // The scalar deleting destructor at 0050E0A0 is compiler generated.
 
 #include "../include/tm_b_obj.h"
@@ -129,7 +128,7 @@ TRIBE_Master_Building_Object::~TRIBE_Master_Building_Object() {
 void TRIBE_Master_Building_Object::copy_obj(RGE_Master_Static_Object* source) {
     TRIBE_Master_Combat_Object::copy_obj(source);
 
-    // BINARY NOTE: This virtual copy path receives a building-master source.
+    // This virtual copy path receives a building-master source.
     TRIBE_Master_Building_Object* building_source =
         static_cast<TRIBE_Master_Building_Object*>(source);
     this->construction_sprite = building_source->construction_sprite;

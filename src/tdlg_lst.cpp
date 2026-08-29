@@ -1,5 +1,3 @@
-// PDB source module: C:/msdev/work/age1_x1/tdlg_lst.cpp.
-// Definitions follow the original source order.
 
 #include "../include/tdlg_lst.h"
 #include "../include/basegame.h"

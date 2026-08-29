@@ -1,7 +1,6 @@
 #ifndef AOE1_COM_Q_H
 #define AOE1_COM_Q_H
 
-// PDB source: C:\msdev\work\age1_x1\com_q.cpp.
 
 #include <new.h>
 

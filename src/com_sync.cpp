@@ -1,7 +1,5 @@
 // Authentic com_sync.cpp owner sequence.
 //
-// PDB source module: C:\\msdev\\work\\age1_x1\\com_sync.cpp
-// The owner order follows the original source lines and address order.
 
 #include "../include/com_hand.h"
 #include "../include/debuglog.h"
@@ -18,14 +16,12 @@
 
 extern TDebuggingLog* L;
 
-// Source-private checksum scratch. The executable references the first nine
 // dwords at 0062D208: DoChecksum writes player slots 1 through 8, and
 // LogChecksums reads the base slot plus those eight player slots. The
 // checksumVisible result is a long. 0062D230 is one unsigned long result.
 extern long DAT_0062D208[9];
 extern unsigned long DAT_0062D230;
 
-// com_sync.cpp:23-27
 RGE_Communications_Synchronize::RGE_Communications_Synchronize(
     TCommunications_Handler* handler) {
     Comm = handler;
@@ -59,7 +55,6 @@ RGE_Communications_Synchronize::RGE_Communications_Synchronize(
     }
 }
 
-// com_sync.cpp:30-32
 RGE_Communications_Synchronize::~RGE_Communications_Synchronize() {
     for (int i = 0; i < 0x37; i++) {
         CHECKSUMARRAY& entry = this->Check[i];
@@ -75,7 +70,6 @@ RGE_Communications_Synchronize::~RGE_Communications_Synchronize() {
     }
 }
 
-// com_sync.cpp:44-62
 int RGE_Communications_Synchronize::Add(
     unsigned int turn, unsigned long wRandom, unsigned long checksum1,
     unsigned long checksum2, long chatCrc, long dataCrc,
@@ -104,7 +98,6 @@ int RGE_Communications_Synchronize::Add(
                                    chatCrc, dataCrc, a7, a8, a9);
 }
 
-// com_sync.cpp:74-125
 int RGE_Communications_Synchronize::ValidateChecksums(
     unsigned int turn, unsigned long wRandom, unsigned long checksum1,
     unsigned long checksum2, long chatCrc, long dataCrc, long a7,
@@ -150,7 +143,6 @@ int RGE_Communications_Synchronize::ValidateChecksums(
     return 1;
 }
 
-// com_sync.cpp:129-195
 unsigned long RGE_Communications_Synchronize::DoChecksum(
     unsigned long turn) {
     unsigned long worldTime = 0;
@@ -211,12 +203,10 @@ unsigned long RGE_Communications_Synchronize::DoChecksum(
     return 1;
 }
 
-// com_sync.cpp:200-202
 void RGE_Communications_Synchronize::SetLastWorldRandom(unsigned long value) {
     this->LastWorldRandom = value;
 }
 
-// com_sync.cpp:207-322
 void RGE_Communications_Synchronize::LogChecksums(
     unsigned int playerNo, unsigned long worldTime, unsigned long commTurn,
     long unifiedVisible, long checksumNew, long position, long action,
@@ -387,28 +377,22 @@ void RGE_Communications_Synchronize::LogChecksums(
     fclose(file);
 }
 
-// com_sync.cpp:325-327
 void RGE_Communications_Synchronize::EnableSyncChecking(int value) {
     this->DoChecksums = value;
 }
 
-// com_sync.cpp:330-332
 void RGE_Communications_Synchronize::SetStopOnFail(int value) {
     this->StopOnSyncFail = value;
 }
 
-// com_sync.cpp:335-337
 void RGE_Communications_Synchronize::SetDialogOnFail(int value) {
     this->DialogOnSyncFail = value;
 }
 
-// com_sync.cpp:340-342
 void RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int value) {
     this->SendChatMsgs = value;
 }
 
-// com_sync.cpp:345-435
-// This owner remains scratch. Keep its source body in the module until its
 // separate matching pass is complete.
 int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     unsigned int playerNo, unsigned long commTurn) {

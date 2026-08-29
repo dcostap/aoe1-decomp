@@ -17,7 +17,6 @@
 
 unsigned long __cdecl debug_timeGetTime(char*, int);
 
-// PDB source order for C:\\msdev\\work\\age1_x1\\Command.cpp.
 
 
 RGE_Command::RGE_Command(RGE_Game_World* world, TCommunications_Handler* com_hand) {

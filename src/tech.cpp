@@ -17,9 +17,7 @@ void __cdecl getstring(char** destination, char* source);
 void __cdecl rge_read(int file, void* data, int size);
 void __cdecl rge_write(int file, void* data, int size);
 
-// PDB compiland: .\Release\tech.obj.
 // Contribution: 0050B840-0050D456.
-// PDB line records are absent. The order follows the contribution addresses.
 
 TRIBE_Tech::TRIBE_Tech(int file, TRIBE_World* world_arg)
 {
@@ -197,7 +195,7 @@ void TRIBE_Tech::save(int file)
 
 long TRIBE_Tech::get_help_message(short tech_id)
 {
-    // ORIGINAL BUG: The executable accepts tech_tree_num as an index.
+    // The executable accepts tech_tree_num as an index.
     if (tech_id < 0 || tech_id > this->tech_tree_num) {
         return -1;
     }
@@ -206,7 +204,7 @@ long TRIBE_Tech::get_help_message(short tech_id)
 
 long TRIBE_Tech::get_help_page(short tech_id)
 {
-    // ORIGINAL BUG: The executable accepts tech_tree_num as an index.
+    // The executable accepts tech_tree_num as an index.
     if (tech_id < 0 || tech_id > this->tech_tree_num) {
         return -1;
     }
@@ -215,7 +213,7 @@ long TRIBE_Tech::get_help_page(short tech_id)
 
 long TRIBE_Tech::get_hotkey(short tech_id)
 {
-    // ORIGINAL BUG: The executable accepts tech_tree_num as an index.
+    // The executable accepts tech_tree_num as an index.
     if (tech_id < 0 || tech_id > this->tech_tree_num) {
         return -1;
     }
@@ -537,7 +535,7 @@ unsigned char TRIBE_Player_Tech::check_for_new_tech()
     active_count = 0;
     tech = this->base_tech->tech_tree;
     do {
-        // ORIGINAL BUG: The executable clears changed and never sets it.
+        // The executable clears changed and never sets it.
         changed = 0;
         for (i = 0; i < this->tech_player_tree_num; i++) {
             if (this->tech_player_tree[i].state < 2 &&

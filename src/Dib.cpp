@@ -1,5 +1,3 @@
-// Reunified PDB source module: C:\\msdev\\work\\age1_x1\\Dib.cpp.
-// Functions follow the original source order from lines 72 through 2031.
 
 #include "../include/dib.h"
 #include "../include/drawarea.h"
@@ -36,7 +34,6 @@ extern "C" int __cdecl atoi(const char*);
 #pragma function(memcpy)
 extern "C" void* __cdecl memcpy(void*, const void*, unsigned int);
 
-// VA: 00438820 DibBlt | Dib.cpp:72-145
 void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
     long dest_x, long dest_y, long dest_width, long dest_height,
     BITMAPINFO256* src_info, BYTE* src_bits,
@@ -136,7 +133,6 @@ void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
     }
 }
 
-// VA: 00438AA0 TransDibBlt | Dib.cpp:155-273
 void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
                          long dx, long dy, long dw, long dh,
                          BITMAPINFO256* srcInfo, uchar* src, TRANSINFO* trans,
@@ -278,7 +274,6 @@ void __cdecl TransDibBlt(BITMAPINFO256* dstInfo, uchar* dst, RECT* dstRect,
     }
 }
 
-// VA: 00438E80 ClipDibBlt | Dib.cpp:280-366
 int __cdecl ClipDibBlt(BITMAPINFO256* dib, RECT* rect,
     LONG& x, LONG& y, LONG& width, LONG& height,
     LONG& src_x, LONG& src_y, LONG& src_width, LONG& src_height,
@@ -358,7 +353,6 @@ int __cdecl ClipDibBlt(BITMAPINFO256* dib, RECT* rect,
     return 0;
 }
 
-// VA: 00439060 GetDibDim | Dib.cpp:372-383
 void __cdecl GetDibDim(BITMAPINFO256* param_1, long& param_2, long& param_3, long& param_4)
 {
     param_2 = (param_1->bmiHeader.biWidth + 3) & 0xFFFFFFFC;
@@ -371,7 +365,6 @@ void __cdecl GetDibDim(BITMAPINFO256* param_1, long& param_2, long& param_3, lon
     param_4 = -1;
 }
 
-// VA: 004390A0 TileDibBlt | Dib.cpp:394-628
 long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, long param_4, long param_5,
           long param_6, long param_7, long param_8, long param_9, BITMAPINFO256 *param_10,
           uchar *param_11, TRANSINFO *param_12, long param_13, long param_14, long param_15,
@@ -476,7 +469,6 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
     return param_7 * param_6;
 }
 
-// VA: 004395A0 DibCheckTrans | Dib.cpp:634-714
 int __cdecl DibCheckTrans(BITMAPINFO256* dib, TRANSINFO* info,
     unsigned char* bits)
 {
@@ -558,7 +550,6 @@ int __cdecl DibCheckTrans(BITMAPINFO256* dib, TRANSINFO* info,
     return tw;
 }
 
-// VA: 00439700 GetPaletteFromDib | Dib.cpp:721-732
 void* __cdecl GetPaletteFromDib(char* path, int make_identity)
 {
     BITMAPINFOHEADER* dib = DibOpenFile(path);
@@ -573,7 +564,6 @@ void* __cdecl GetPaletteFromDib(char* path, int make_identity)
     return palette;
 }
 
-// VA: 00439750 ReadPalette | Dib.cpp:738-899
 void* __cdecl ReadPalette(char* filename, long res_id, int do_gamma)
 {
     unsigned char* data;
@@ -671,7 +661,6 @@ cleanup:
     return result;
 }
 
-// VA: 00439A10 DibOpenFile | Dib.cpp:930-1003
 BITMAPINFOHEADER* __cdecl DibOpenFile(char* name)
 {
     int fh;
@@ -724,7 +713,6 @@ BITMAPINFOHEADER* __cdecl DibOpenFile(char* name)
     return dib;
 }
 
-// VA: 00439B50 ReadDibBits | Dib.cpp:1011-1035
 unsigned char* __cdecl ReadDibBits(char* param_1)
 {
     OFSTRUCT of;
@@ -747,7 +735,6 @@ unsigned char* __cdecl ReadDibBits(char* param_1)
     return result;
 }
 
-// VA: 00439BE0 DibWriteClipped | Dib.cpp:1042-1059
 int __cdecl DibWriteClipped(BITMAPINFOHEADER* dib, char* name,
     long src_x, long src_y, long width, long height)
 {
@@ -785,7 +772,6 @@ int __cdecl DibWriteClipped(BITMAPINFOHEADER* dib, char* name,
     return 1;
 }
 
-// VA: 00439CC0 DibWriteFile | Dib.cpp:1066-1095
 int __cdecl DibWriteFile(BITMAPINFOHEADER* dib, char* name)
 {
     HFILE file;
@@ -818,7 +804,6 @@ int __cdecl DibWriteFile(BITMAPINFOHEADER* dib, char* name)
     return 1;
 }
 
-// VA: 00439D80 DibCreatePalette | Dib.cpp:1105-1155
 HPALETTE __cdecl DibCreatePalette(BITMAPINFOHEADER* dib)
 {
     HPALETTE hpal = 0;
@@ -864,7 +849,6 @@ HPALETTE __cdecl DibCreatePalette(BITMAPINFOHEADER* dib)
     return hpal;
 }
 
-// VA: 00439E50 DibReadBitmapInfo | Dib.cpp:1166-1280
 #define BFT_BITMAP 0x4d42
 #define WIDTHBYTES(i) ((unsigned)((i + 31) & (~31)) / 8)
 #define DibNumColors(lpbi) \
@@ -991,7 +975,6 @@ PDIB __cdecl DibReadBitmapInfo(HFILE fh)
     return pdib;
 }
 
-// VA: 0043A070 DibFromBitmap | Dib.cpp:1290-1416
 #define DibFromBitmapNumColors(lpbi) \
     ((lpbi)->biClrUsed == 0 && (lpbi)->biBitCount <= 8 ? \
         (int)(1 << (int)(lpbi)->biBitCount) : (int)(lpbi)->biClrUsed)
@@ -1118,7 +1101,6 @@ BITMAPINFOHEADER* __cdecl DibFromBitmap(HBITMAP hbm, DWORD biStyle,
     return lpbiNew;
 }
 
-// VA: 0043A330 DibSetUsage | Dib.cpp:1482-1538
 #define DibUsageNumColors(lpbi) \
     ((lpbi)->biClrUsed == 0 && (lpbi)->biBitCount <= 8 ? \
         (int)(1 << (int)(lpbi)->biBitCount) : (int)(lpbi)->biClrUsed)
@@ -1171,7 +1153,6 @@ BOOL __cdecl DibSetUsage(UsagePDIB pdib, HPALETTE hpal, UINT wUsage)
     return TRUE;
 }
 
-// VA: 0043A420 DibDraw | Dib.cpp:1546-1589
 int __cdecl DibDraw(
     void* a1, int a2, int a3, int a4, int a5,
     BITMAPINFOHEADER* a6, int a7, int a8, int a9, int a10,
@@ -1201,7 +1182,6 @@ int __cdecl DibDraw(
                          bits, (const BITMAPINFO*)a6, a12, a11);
 }
 
-// VA: 0043A4B0 DibCopy | Dib.cpp:1592-1602
 BITMAPINFOHEADER* __cdecl DibCopy(BITMAPINFOHEADER* dib)
 {
     tagBITMAPINFOHEADER* copy;
@@ -1219,7 +1199,6 @@ BITMAPINFOHEADER* __cdecl DibCopy(BITMAPINFOHEADER* dib)
     return copy;
 }
 
-// VA: 0043A500 DibCreate | Dib.cpp:1605-1659
 typedef LPBITMAPINFOHEADER CreatePDIB;
 
 CreatePDIB __cdecl DibCreate(int bits, int dx, int dy)
@@ -1280,7 +1259,6 @@ CreatePDIB __cdecl DibCreate(int bits, int dx, int dy)
     return (CreatePDIB)lpbi;
 }
 
-// VA: 0043AA60 xlatClut8 | Dib.cpp:1691-1700
 static void __cdecl xlatClut8(unsigned char* bits, unsigned long count,
     unsigned char* clut)
 {
@@ -1294,7 +1272,6 @@ static void __cdecl xlatClut8(unsigned char* bits, unsigned long count,
     } while (count != 0);
 }
 
-// VA: 0043AA90 xlatClut4 | Dib.cpp:1703-1712
 void __cdecl xlatClut4(unsigned char *buf, unsigned int count,
     unsigned char *clut)
 {
@@ -1307,7 +1284,6 @@ void __cdecl xlatClut4(unsigned char *buf, unsigned int count,
     }
 }
 
-// VA: 0043AAD0 xlatRle8 | Dib.cpp:1720-1763
 void __cdecl xlatRle8(unsigned char* data, int unused, unsigned char* xlat)
 {
     unsigned char* p = data;
@@ -1346,10 +1322,8 @@ void __cdecl xlatRle8(unsigned char* data, int unused, unsigned char* xlat)
     }
 }
 
-// VA: 0043AB40 xlatRle4 | Dib.cpp:1766
 static void __cdecl xlatRle4(unsigned char*, unsigned long, unsigned char*) {}
 
-// VA: 0043AB50 memmove | Dib.cpp:1770-1776
 extern "C" void* __cdecl memmove(void* dst_arg, const void* src_arg,
     unsigned int n)
 {
@@ -1373,7 +1347,6 @@ extern "C" void* __cdecl memmove(void* dst_arg, const void* src_arg,
     return dst_arg;
 }
 
-// VA: 0043A660 DibMapToPalette | Dib.cpp:1782-1923
 #define DIB_RGB(r, g, b) \
     ((DWORD)(BYTE)(r) | ((DWORD)(BYTE)(g) << 8) | \
         ((DWORD)(BYTE)(b) << 16))
@@ -1517,7 +1490,6 @@ void __cdecl DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm,
     }
 }
 
-// VA: 0043AB80 CreateIdentityPalette | Dib.cpp:1930-1992
 void __cdecl CreateIdentityPalette(void* palette)
 {
     union {
@@ -1569,7 +1541,6 @@ void __cdecl CreateIdentityPalette(void* palette)
     SetPaletteEntries((HPALETTE)palette, 0, 0x100, palette_locals.new_pal + 1);
 }
 
-// VA: 0043ACB0 CopyPalette | Dib.cpp:1999-2026
 void* __cdecl CopyPalette(void* param_1)
 {
     int nNumEntries = 0;
@@ -1591,7 +1562,6 @@ void* __cdecl CopyPalette(void* param_1)
     return result;
 }
 
-// VA: 0043AD40 DibFree | Dib.cpp:2029-2031
 void __cdecl DibFree(BITMAPINFOHEADER* param_1)
 {
     void* handle = GlobalHandle(param_1);

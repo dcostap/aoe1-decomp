@@ -1,8 +1,6 @@
 #ifndef AOE1_TAIMDMD_H
 #define AOE1_TAIMDMD_H
 
-// Canonical declarations for the original taimdmd.cpp source module.
-// The embedded module order follows the PDB layout through 0x125C8.
 
 #include "aimdmod.h"
 #include "aidipmod.h"

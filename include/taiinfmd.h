@@ -2,7 +2,6 @@
 #define TAIINFMD_H
 
 // Declarations for the original taiinfmd.cpp source module.
-// PDB order starts with the three static initializers and the constructor
 // pair, then continues through TribeInformationAIModule.
 
 #include "aiinfmod.h"

@@ -276,7 +276,7 @@ TribeGameSettingsScreen::TribeGameSettingsScreen()
                            0x0B))
         return;
 
-    // BINARY NOTE: The executable computes this position before it reloads
+    // The executable computes this position before it reloads
     // scenarioList, then uses signed divide by ideal_width.
     long second_column_pos;
     second_column_pos = this->scenarioListWidth;

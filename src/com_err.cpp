@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\com_err.cpp.
-// The four handwritten owners stay in PDB source order.
 
 #include <windows.h>
 
@@ -9,22 +7,18 @@
 
 extern TDebuggingLog* L;
 
-// 00424E40; com_err.cpp lines 6-9.
 RGE_Comm_Error::RGE_Comm_Error(void* param) {
     HostHWND = param;
     LastReportedError = 0;
 }
 
-// 00424E60; com_err.cpp lines 12-15.
 void RGE_Comm_Error::NotifyWindowParam(COMMMESSAGES msg, long param) {
     PostMessageA(HostHWND, 0x400, msg, param);
     L->Log("COMM: Send msg to window WM_USER  Msg=%d  Param=%d\n", msg, param);
 }
 
-// 00424EA0; com_err.cpp line 19.
 RGE_Comm_Error::~RGE_Comm_Error() {}
 
-// 00424EB0; com_err.cpp lines 23-380.
 // The threshold tree and empty non-match arms preserve the original handler
 // layout and shared default fallthrough.
 void RGE_Comm_Error::ShowReturn(long code, char* context) {

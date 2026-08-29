@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\zone_map.cpp.
-// Definitions follow the original source order.
 
 #include "../include/zone_map.h"
 

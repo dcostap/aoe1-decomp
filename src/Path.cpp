@@ -4,7 +4,6 @@
 
 extern float DAT_00570e40;
 
-// PDB source order for C:\\msdev\\work\\age1_x1\\Path.cpp.
 
 Path::Path(int max_size)
 {
@@ -223,7 +222,7 @@ float Path::length() const
         Waypoint* waypoint = pathValue + 1;
         int remaining = currentSizeValue - 1;
         do {
-            // ORIGINAL BUG: The first z term uses the previous x value.
+            // The first z term uses the previous x value.
             total += sqrtf((waypoint[0].x - waypoint[-1].x) *
                                (waypoint[0].x - waypoint[-1].x) +
                            (waypoint[0].y - waypoint[-1].y) *

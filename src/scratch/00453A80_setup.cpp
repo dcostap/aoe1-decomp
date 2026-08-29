@@ -1,4 +1,3 @@
-// VA: 00453A80 setup (1909B)
 // m_s_obj.cpp
 
 class RGE_Master_Static_Object {

@@ -5,7 +5,6 @@
 // AIModule comes from its canonical shared header.
 #include "aimodule.h"
 
-// The PDB order is the two TradeAIModule constructors, the virtual destructor,
 // setMainDecisionAI, and save.  The generated class inventory proves the
 // TradeAIModule object size of 0xF4 and md at +0xF0.
 class MainDecisionAIModule;

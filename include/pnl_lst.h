@@ -1,7 +1,6 @@
 #ifndef AOE1_PNL_LST_H
 #define AOE1_PNL_LST_H
 
-// PDB source: C:\\msdev\\work\\age1_x1\\Pnl_lst.cpp.
 // This header owns TTextPanel and TListPanel.
 #include "panel.h"
 #include "drawarea.h"

@@ -3,7 +3,6 @@
 
 class TCommunications_Handler;
 
-// Canonical declarations owned by the com_sync.cpp source module.
 
 class RGE_Communications_Synchronize {
 public:

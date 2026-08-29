@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\Act_atak.cpp.
-// Definitions follow the original source order.
 
 #include "../include/act_atak.h"
 #include "../include/act_list.h"
@@ -24,7 +22,6 @@
 
 extern float DAT_0056e0cc;
 
-// 00401000, Act_atak.cpp lines 42-63.
 RGE_Action_Attack::RGE_Action_Attack(int handle, RGE_Action_Object* object)
     : RGE_Action(handle, object, 1)
 {
@@ -46,7 +43,6 @@ RGE_Action_Attack::RGE_Action_Attack(int handle, RGE_Action_Object* object)
     this->wait_sprite = this->obj->get_sprite_pointer(sprite_id);
 }
 
-// 00401170, Act_atak.cpp lines 73-135.
 RGE_Action_Attack::RGE_Action_Attack(
     RGE_Action_Object* object, RGE_Static_Object* target,
     RGE_Sprite* move, RGE_Sprite* fight, RGE_Sprite* wait,
@@ -101,7 +97,6 @@ RGE_Action_Attack::RGE_Action_Attack(
     }
 }
 
-// 004012B0, Act_atak.cpp lines 145-190.
 RGE_Action_Attack::RGE_Action_Attack(
     RGE_Action_Object* object, float x, float y, float z,
     RGE_Sprite* move, RGE_Sprite* fight, RGE_Sprite* wait,
@@ -150,12 +145,10 @@ RGE_Action_Attack::RGE_Action_Attack(
     }
 }
 
-// 004013A0, Act_atak.cpp line 196.
 RGE_Action_Attack::~RGE_Action_Attack()
 {
 }
 
-// 004013B0, Act_atak.cpp lines 221-250.
 void RGE_Action_Attack::save(int handle)
 {
     int saved_handle = handle;
@@ -192,7 +185,6 @@ void RGE_Action_Attack::save(int handle)
     rge_write(saved_handle, &sprite_id, 2);
 }
 
-// 004014B0, Act_atak.cpp lines 256-299.
 void RGE_Action_Attack::first_in_stack(unsigned char)
 {
     if (this->obj->maximumSpeed() != 0.0) {
@@ -215,14 +207,12 @@ void RGE_Action_Attack::first_in_stack(unsigned char)
     this->set_state(6);
 }
 
-// 00401540, Act_atak.cpp lines 305-308.
 int RGE_Action_Attack::stop()
 {
     this->set_state(1);
     return 1;
 }
 
-// 00401550, Act_atak.cpp lines 314-403.
 void RGE_Action_Attack::set_state(unsigned char state)
 {
     this->sub_actions->delete_list();
@@ -294,7 +284,6 @@ void RGE_Action_Attack::set_state(unsigned char state)
     }
 }
 
-// 00401780, Act_atak.cpp lines 409-704.
 unsigned char RGE_Action_Attack::update()
 {
     this->timer += this->obj->owner->world->world_time_delta_seconds;
@@ -445,7 +434,6 @@ return_zero:
     }
 }
 
-// 00401AD0, Act_atak.cpp lines 711-744.
 int RGE_Action_Attack::work(RGE_Static_Object* target, float x, float y,
                             float z)
 {
@@ -470,7 +458,6 @@ int RGE_Action_Attack::work(RGE_Static_Object* target, float x, float y,
     return 0;
 }
 
-// 00401B30, Act_atak.cpp lines 750-954.
 int RGE_Action_Attack::ready_to_attack(int& range_status)
 {
     if (this->obj->turn_towards(this->target_obj, this->target_x,
@@ -586,7 +573,6 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
     return this->obj->can_attack() != 0;
 }
 
-// 00401EC0, Act_atak.cpp lines 960-983.
 void RGE_Action_Attack::do_attack()
 {
     RGE_Combat_Object* object = static_cast<RGE_Combat_Object*>(this->obj);
@@ -599,7 +585,6 @@ void RGE_Action_Attack::do_attack()
     this->need_to_attack = 0;
 }
 
-// 00401F00, Act_atak.cpp lines 989-1017.
 void RGE_Action_Attack::copy_obj_sprites(
     RGE_Master_Action_Object* source, RGE_Task* old_task, RGE_Task* new_task)
 {

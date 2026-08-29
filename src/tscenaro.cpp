@@ -648,7 +648,7 @@ void T_Scenario::Save_victory_conditions_into_players(int save_attrs) {
         int condition_index = 0;
         do {
             SP_Victory_Info* condition = &this->sp_victory[row][condition_index];
-            // BINARY NOTE: The shipped record walk is anchored at AttribType.
+            // The shipped record walk is anchored at AttribType.
             int* attribute_field = &condition->AttribType;
             int type = attribute_field[-2];
             if (type != 0) {
@@ -755,7 +755,7 @@ void T_Scenario::WriteDisabledTechnologiesToMainSystem()
         return;
 
     int player_index = 1;
-    // BINARY NOTE: The shipped loop reads the low byte of each typed field.
+    // The shipped loop reads the low byte of each typed field.
     int* disabled = &this->DisabledTechnology[0][1];
     do {
         TRIBE_Player* player =

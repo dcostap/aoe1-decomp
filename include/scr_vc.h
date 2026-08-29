@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_VC_H
 #define AOE1_SCR_VC_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\scr_vc.cpp.
 // This module owns TRIBE_Mission_Screen. Shared panel and screen types keep
 // their declarations in their canonical owner headers.
 #include "Pnl_scr.h"

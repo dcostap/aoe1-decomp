@@ -1,4 +1,3 @@
-// PDB source order: dlg_list.cpp lines 39-174.
 // This file owns all six normal functions in the compiland.
 
 #include "../include/dlg_list.h"

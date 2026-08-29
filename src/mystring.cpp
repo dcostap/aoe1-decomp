@@ -1,11 +1,8 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\mystring.cpp.
-// Definitions follow the original source-line and address order.
 
 #include "../include/mystring.h"
 #include <stdlib.h>
 #include <string.h>
 
-// mystring.cpp:19-23, 00462D70.
 void convert_us(char* str) {
     while (*str != '\0') {
         if (*str == '_') {
@@ -15,7 +12,6 @@ void convert_us(char* str) {
     }
 }
 
-// mystring.cpp:27-31, 00462D90.
 void unconvert_us(char* str) {
     while (*str != '\0') {
         if (*str == ' ') {
@@ -25,7 +21,6 @@ void unconvert_us(char* str) {
     }
 }
 
-// mystring.cpp:35-49, 00462DB0.
 void addstring(char** param_1, char* param_2, char* param_3) {
     unsigned int len1;
     unsigned int len2;
@@ -43,9 +38,8 @@ void addstring(char** param_1, char* param_2, char* param_3) {
     *param_1 = dst;
 }
 
-// mystring.cpp:53-61, 00462E30.
-// BINARY NOTE: The old value is freed before allocation and publication.
-// ORIGINAL BUG: A failed calloc is published before the copy faults.
+// The old value is freed before allocation and publication.
+// A failed calloc is published before the copy faults.
 void getstring(char** param_1, char* param_2) {
     unsigned int len;
     char* dst;

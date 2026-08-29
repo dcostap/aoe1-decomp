@@ -1,5 +1,4 @@
 // Module-local include for the authentic Pnl_txt.cpp source module.
-// PDB source: C:\msdev\work\age1_x1\Pnl_txt.cpp.
 
 #ifndef AOE1_PNL_TXT_H
 #define AOE1_PNL_TXT_H

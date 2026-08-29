@@ -1,5 +1,3 @@
-// PDB source module: C:/msdev/work/age1_x1/Res_file.cpp.
-// Definitions follow the original PDB source order.
 
 #include "../include/Res_file.h"
 #include "../include/debuglog.h"
@@ -19,7 +17,6 @@ extern "C" int __cdecl read(int fd, void* buf, unsigned size);
 extern "C" int __cdecl close(int fd);
 extern "C" int __cdecl write(int fd, const void* buf, unsigned size);
 
-// 0047EE90 RESFILE_open_new_resource_file, Res_file.cpp:70-233.
 // The executable publishes the node before its password and version checks.
 void __cdecl RESFILE_open_new_resource_file(
     char* name, char* cmpName, char* path, int isMapped)
@@ -140,7 +137,6 @@ void __cdecl RESFILE_open_new_resource_file(
     }
 }
 
-// 0047F180 RESFILE_close_new_resource_file, Res_file.cpp:240-286.
 void __cdecl RESFILE_close_new_resource_file(char* name)
 {
     ResFileHdr* cur = DAT_0086b254;
@@ -177,7 +173,6 @@ found:
     free(cur);
 }
 
-// 0047F230 RESFILE_locate_resource, Res_file.cpp:293-411.
 int __cdecl RESFILE_locate_resource(
     unsigned long type_id,
     unsigned long res_id,
@@ -224,7 +219,6 @@ int __cdecl RESFILE_locate_resource(
     return 0;
 }
 
-// 0047F320 RESFILE_load, Res_file.cpp:420-484.
 unsigned char* __cdecl RESFILE_load(
     unsigned long type,
     unsigned long id,
@@ -279,7 +273,6 @@ unsigned char* __cdecl RESFILE_load(
     return 0;
 }
 
-// 0047F480 RESFILE_Extract_to_File, Res_file.cpp:496-536.
 int __cdecl RESFILE_Extract_to_File(
     unsigned long type,
     unsigned long id,
@@ -316,13 +309,11 @@ int __cdecl RESFILE_Extract_to_File(
     return file != 0;
 }
 
-// 0047F580 RESFILE_Set_Missing_Flag, Res_file.cpp:544-546.
 void __cdecl RESFILE_Set_Missing_Flag(int flag)
 {
     DAT_0086b258 = flag;
 }
 
-// 0047F590 RESFILE_Decommit_Mapped_Memory, Res_file.cpp:555-563.
 int __cdecl RESFILE_Decommit_Mapped_Memory(unsigned char* address, int size)
 {
     if ((address != 0) && (size > 0)) {
@@ -331,10 +322,7 @@ int __cdecl RESFILE_Decommit_Mapped_Memory(unsigned char* address, int size)
     return 0;
 }
 
-// 0047F5C0 RESFILE_build_res_file, Res_file.cpp:574-935.
 // The local declaration order and +4 stack windows are retained from the
-// current source recovery. Remaining byte differences are recorded in the
-// module recovery note.
 int __cdecl RESFILE_build_res_file(
     char* build_list_file, char* source_path, char* target_path)
 {
@@ -596,7 +584,6 @@ int __cdecl RESFILE_build_res_file(
     return 1;
 }
 
-// 0047FC50 BUILDRES_get_files_resource_type, Res_file.cpp:943-990.
 unsigned long __cdecl BUILDRES_get_files_resource_type(char* name)
 {
     int len = strlen(name);

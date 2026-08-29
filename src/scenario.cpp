@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\scenario.cpp.
-// The definitions follow the original source order.
 
 #include "../include/scenario.h"
 #include "../include/Picture.h"
@@ -33,7 +31,6 @@ void __cdecl getstring(char** destination, char* source);
 void __cdecl addstring(char** destination, char* old_text, char* append);
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* block);
-// 0048AB10 RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario*)
 RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario* scenario) {
     this->error_code = 0;
     this->version = 2;
@@ -55,7 +52,6 @@ RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario* scenario) {
     }
 }
 
-// 0048ABB0 RGE_Scenario_Header::RGE_Scenario_Header(int)
 RGE_Scenario_Header::RGE_Scenario_Header(int fd) {
     int header_size;
     int desc_size;
@@ -84,7 +80,6 @@ RGE_Scenario_Header::RGE_Scenario_Header(int fd) {
     }
 }
 
-// 0048AC70 RGE_Scenario_Header::~RGE_Scenario_Header()
 RGE_Scenario_Header::~RGE_Scenario_Header() {
     if (this->description != 0) {
         free(this->description);
@@ -92,7 +87,6 @@ RGE_Scenario_Header::~RGE_Scenario_Header() {
     }
 }
 
-// 0048ACA0 RGE_Scenario_Header::get_size()
 long RGE_Scenario_Header::get_size() {
     unsigned int len;
 
@@ -105,7 +99,6 @@ long RGE_Scenario_Header::get_size() {
     return len + 0x0C;
 }
 
-// 0048ACC0 RGE_Scenario_Header::save(int)
 void RGE_Scenario_Header::save(int fd) {
     int header_size;
     int desc_len;
@@ -128,7 +121,6 @@ void RGE_Scenario_Header::save(int fd) {
     }
 }
 
-// 0048AD60 RGE_Scenario::RGE_Scenario(RGE_Game_World*)
 RGE_Scenario::RGE_Scenario(RGE_Game_World* game_world) {
     this->world = game_world;
     this->time_line = new RGE_Timeline(this->world);
@@ -138,7 +130,6 @@ RGE_Scenario::RGE_Scenario(RGE_Game_World* game_world) {
     memset(this->player_name, 0, sizeof(this->player_name));
 }
 
-// 0048AE10 RGE_Scenario::RGE_Scenario(int, RGE_Game_World*)
 RGE_Scenario::RGE_Scenario(int file, RGE_Game_World* world)
 {
     short length;
@@ -301,7 +292,6 @@ RGE_Scenario::RGE_Scenario(int file, RGE_Game_World* world)
         rge_read(file, text, 4);
 }
 
-// 0048B5A0 RGE_Scenario::~RGE_Scenario()
 RGE_Scenario::~RGE_Scenario()
 {
     if (this->time_line != 0) {
@@ -337,7 +327,6 @@ RGE_Scenario::~RGE_Scenario()
     } while (--count != 0);
 }
 
-// 0048B6C0 RGE_Scenario::InitializeTextValues()
 void RGE_Scenario::InitializeTextValues()
 {
     char none_string[30];
@@ -392,7 +381,6 @@ void RGE_Scenario::InitializeTextValues()
     }
 }
 
-// 0048B910 RGE_Scenario::Set_scenario_name(char*)
 void RGE_Scenario::Set_scenario_name(char* param_1) {
     if (param_1 != 0) {
         strcpy(this->scenario_name, param_1);
@@ -402,10 +390,8 @@ void RGE_Scenario::Set_scenario_name(char* param_1) {
     this->scenario_name[0] = 0;
 }
 
-// 0048B950 RGE_Scenario::Set_description(char*)
 void RGE_Scenario::Set_description(char* text) { this->Set_message(text, 0); }
 
-// 0048B960 RGE_Scenario::Set_Cine_PreGame(char*)
 void RGE_Scenario::Set_Cine_PreGame(char* text) {
     if (text != 0) {
         strcpy(this->Cine_PreGame, text);
@@ -414,7 +400,6 @@ void RGE_Scenario::Set_Cine_PreGame(char* text) {
     }
 }
 
-// 0048B9A0 RGE_Scenario::Set_Cine_Victory(char*)
 void RGE_Scenario::Set_Cine_Victory(char* param_1) {
     if (param_1 != 0) {
         strcpy(this->Cine_Victory, param_1);
@@ -424,7 +409,6 @@ void RGE_Scenario::Set_Cine_Victory(char* param_1) {
     this->Cine_Victory[0] = 0;
 }
 
-// 0048B9E0 RGE_Scenario::Set_Cine_Loss(char*)
 void RGE_Scenario::Set_Cine_Loss(char* text) {
     if (text != 0) {
         strcpy(this->Cine_Loss, text);
@@ -433,7 +417,6 @@ void RGE_Scenario::Set_Cine_Loss(char* text) {
     }
 }
 
-// 0048BA20 RGE_Scenario::Set_Mission_Bmp(char*)
 void RGE_Scenario::Set_Mission_Bmp(char* param_1) {
     if (param_1 != 0) {
         strcpy(this->Mission_Bmp, param_1);
@@ -443,7 +426,6 @@ void RGE_Scenario::Set_Mission_Bmp(char* param_1) {
     this->Mission_Bmp[0] = 0;
 }
 
-// 0048BA60 RGE_Scenario::Set_BuildList(int, char*, int)
 void RGE_Scenario::Set_BuildList(int param_1, char* param_2, int param_3) {
     char** slot;
 
@@ -460,7 +442,6 @@ void RGE_Scenario::Set_BuildList(int param_1, char* param_2, int param_3) {
     }
 }
 
-// 0048BAD0 RGE_Scenario::Set_CityPlan(int, char*, int)
 void RGE_Scenario::Set_CityPlan(int index, char* str, int flag) {
     if (str != 0) {
         strcpy(CityPlan[index], str);
@@ -474,7 +455,6 @@ void RGE_Scenario::Set_CityPlan(int index, char* str, int flag) {
     }
 }
 
-// 0048BB40 RGE_Scenario::Set_player_AI(int, char*, int)
 void RGE_Scenario::Set_player_AI(int index, char* str, int flag) {
     if (str != 0) {
         strcpy(AiRules[index], str);
@@ -488,51 +468,39 @@ void RGE_Scenario::Set_player_AI(int index, char* str, int flag) {
     }
 }
 
-// 0048BBB0 RGE_Scenario::Set_Version(float)
 void RGE_Scenario::Set_Version(float v) { this->Version = v; }
 
-// 0048BBC0 RGE_Scenario::Set_player_Type(int, int)
 void RGE_Scenario::Set_player_Type(int index, int val) {
     if (index < 0 || index >= 16) return;
     this->PlType[index] = val;
 }
 
-// 0048BBE0 RGE_Scenario::Set_player_Civ(int, int)
 void RGE_Scenario::Set_player_Civ(int index, int val) {
     if (index < 0 || index >= 16) return;
     this->PlCivilization[index] = val;
 }
 
-// 0048BC00 RGE_Scenario::Set_player_Active(int, int)
 void RGE_Scenario::Set_player_Active(int index, int val) {
     if (index < 0 || index >= 16) return;
     this->PlActive[index] = val;
 }
 
-// 0048BC20 RGE_Scenario::SetPlayerName(int, char*)
 void RGE_Scenario::SetPlayerName(int index, char* name) {
     memcpy(this->player_name[index], name, strlen(name) + 1);
 }
 
-// 0048BC60 RGE_Scenario::Get_scenario_name()
 char* RGE_Scenario::Get_scenario_name() { return this->scenario_name; }
 
-// 0048BC70 RGE_Scenario::Get_description()
 char* RGE_Scenario::Get_description() { return this->description; }
 
-// 0048BC80 RGE_Scenario::Get_Cine_PreGame()
 char* RGE_Scenario::Get_Cine_PreGame() { return this->Cine_PreGame; }
 
-// 0048BC90 RGE_Scenario::Get_Cine_Victory()
 char* RGE_Scenario::Get_Cine_Victory() { return this->Cine_Victory; }
 
-// 0048BCA0 RGE_Scenario::Get_Cine_Loss()
 char* RGE_Scenario::Get_Cine_Loss() { return this->Cine_Loss; }
 
-// 0048BCB0 RGE_Scenario::Get_Mission_Bmp()
 char* RGE_Scenario::Get_Mission_Bmp() { return this->Mission_Bmp; }
 
-// 0048BCC0 RGE_Scenario::Get_BuildList(int, int)
 char* RGE_Scenario::Get_BuildList(int player, int use_file)
 {
     char random_str[50];
@@ -573,7 +541,6 @@ char* RGE_Scenario::Get_BuildList(int player, int use_file)
     return this->TempText1;
 }
 
-// 0048BEC0 RGE_Scenario::Get_CityPlan(int, int)
 char* RGE_Scenario::Get_CityPlan(int player, int use_file)
 {
     char random_str[50];
@@ -614,12 +581,10 @@ char* RGE_Scenario::Get_CityPlan(int player, int use_file)
     return this->TempText2;
 }
 
-// 0048C0D0 RGE_Scenario::Get_Version()
 float RGE_Scenario::Get_Version() {
     return DAT_00572178;
 }
 
-// 0048C0E0 RGE_Scenario::Get_player_AI(int, int)
 char* RGE_Scenario::Get_player_AI(int player, int use_temp_file)
 {
     char random_str[0x32];
@@ -658,7 +623,6 @@ char* RGE_Scenario::Get_player_AI(int player, int use_temp_file)
     return this->TempText3;
 }
 
-// 0048C2F0 RGE_Scenario::GetPlayerPosture(int)
 int RGE_Scenario::GetPlayerPosture(int player) {
     if (player < 0) {
         return 0;
@@ -685,36 +649,30 @@ int RGE_Scenario::GetPlayerPosture(int player) {
     return 0;
 }
 
-// 0048C360 RGE_Scenario::GetPlayerName(int)
 char *RGE_Scenario::GetPlayerName(int index) {
     return &this->player_name[index][0];
 }
 
-// 0048C370 RGE_Scenario::Get_player_Type(int)
 int RGE_Scenario::Get_player_Type(int index) {
     if (index < 0 || index >= 16) return 0;
     return this->PlType[index];
 }
 
-// 0048C390 RGE_Scenario::Get_player_Civ(int)
 int RGE_Scenario::Get_player_Civ(int index) {
     if (index < 0 || index >= 16) return 0;
     return this->PlCivilization[index];
 }
 
-// 0048C3B0 RGE_Scenario::Get_player_Active(int)
 int RGE_Scenario::Get_player_Active(int index) {
     if (index < 0 || index >= 16) return 0;
     return this->PlActive[index];
 }
 
-// 0048C3D0 RGE_Scenario::update()
 void RGE_Scenario::update() {
     if (this->time_line)
         this->time_line->update();
 }
 
-// 0048C3E0 RGE_Scenario::save(int)
 void RGE_Scenario::save(int file)
 {
     float* version;
@@ -913,7 +871,6 @@ skip_store:
     rge_write(file, &end_marker, 4);
 }
 
-// 0048CC20 RGE_Scenario::active_player_count()
 int RGE_Scenario::active_player_count() {
     int count;
     int player;
@@ -929,7 +886,6 @@ int RGE_Scenario::active_player_count() {
     return count;
 }
 
-// 0048CC50 RGE_Scenario::any_player_count()
 int RGE_Scenario::any_player_count(void) {
     int count = 0;
     int i = 0;
@@ -945,7 +901,6 @@ int RGE_Scenario::any_player_count(void) {
     return count;
 }
 
-// 0048CC80 RGE_Scenario::computer_player_count()
 int RGE_Scenario::computer_player_count(void) {
     int count = 0;
     int i = 0;
@@ -961,13 +916,10 @@ int RGE_Scenario::computer_player_count(void) {
     return count;
 }
 
-// 0048CCB0 RGE_Scenario::Set_conquest_victory(unsigned char)
 void RGE_Scenario::Set_conquest_victory(unsigned char v) { this->victory_conquest = v; }
 
-// 0048CCC0 RGE_Scenario::Get_conquest_victory()
 unsigned char RGE_Scenario::Get_conquest_victory() { return this->victory_conquest; }
 
-// 0048CCD0 RGE_Scenario::add_description(char*)
 void RGE_Scenario::add_description(char* text) {
     if (this->description == 0) {
         getstring(&this->description, text);
@@ -976,7 +928,6 @@ void RGE_Scenario::add_description(char* text) {
     addstring(&this->description, this->description, text);
 }
 
-// 0048CD10 RGE_Scenario::Set_message(char*, long)
 void RGE_Scenario::Set_message(char* text, long field_index) {
     long len;
     char* buf;
@@ -1034,7 +985,6 @@ void RGE_Scenario::Set_message(char* text, long field_index) {
     }
 }
 
-// 0048CE40 RGE_Scenario::Get_message(long)
 char* RGE_Scenario::Get_message(long which) {
     switch (which) {
     case 0:

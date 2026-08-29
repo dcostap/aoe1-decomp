@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_abt.cpp.
-// The handwritten owners follow the original source order.
 // The scalar deleting destructor at 0043B2E0 is compiler generated.
 
 #include "../include/dlg_abt.h"
@@ -15,7 +13,6 @@
 
 extern TRegistry* Regs;
 
-// 0043AD70 TribeAboutDialog::TribeAboutDialog (dlg_abt.cpp:46-148)
 TribeAboutDialog::TribeAboutDialog(TScreenPanel* parent)
     : TDialogPanel("About Dialog")
 {
@@ -127,7 +124,6 @@ TribeAboutDialog::TribeAboutDialog(TScreenPanel* parent)
     TPanel::set_curr_child(this->credits_button);
 }
 
-// 0043B300 TribeAboutDialog::~TribeAboutDialog (dlg_abt.cpp:154-168)
 TribeAboutDialog::~TribeAboutDialog()
 {
     this->delete_panel((TPanel**)&this->title_text);
@@ -145,7 +141,6 @@ TribeAboutDialog::~TribeAboutDialog()
     this->delete_panel((TPanel**)&this->background);
 }
 
-// 0043B400 TribeAboutDialog::action (dlg_abt.cpp:174-200)
 long TribeAboutDialog::action(TPanel* panel, long command,
                               unsigned long param_3, unsigned long param_4)
 {
@@ -175,7 +170,6 @@ long TribeAboutDialog::action(TPanel* panel, long command,
     return TEasy_Panel::action(panel, command, param_3, param_4);
 }
 
-// 0043B550 TribeAboutDialog::draw (dlg_abt.cpp:206)
 void TribeAboutDialog::draw()
 {
     TEasy_Panel::draw();

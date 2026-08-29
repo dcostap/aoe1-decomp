@@ -1,5 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\scr_load.cpp.
-// Normal owners follow PDB source order.
 
 #include "../include/scr_load.h"
 #include "../include/pnl_btn.h"
@@ -177,7 +175,7 @@ long TribeLoadSavedGameScreen::action(TPanel* panel, long message,
                         this->list->currentLine());
                 _unlink(file_name);
 
-                // BINARY NOTE: Reload before the second selected-line lookup.
+                // Reload before the second selected-line lookup.
                 save_dir = rge_base_game->prog_info->save_dir;
                 sprintf(file_name, "%s%s.gmx", save_dir,
                         this->list->currentLine());

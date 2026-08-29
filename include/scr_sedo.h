@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_SEDO_H
 #define AOE1_SCR_SEDO_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\scr_sedo.cpp.
 // This header owns the scenario-open screen. Shared panel and screen
 // surfaces come from their canonical owners.
 #include "Pnl_scr.h"

@@ -29,7 +29,6 @@ class RGE_Static_Object;
 struct RGE_Tile;
 class RGE_Base_Game;
 
-// The View and Main View modules share these PDB-owned pick records.
 class RGE_Pick_Info {
 public:
     float x;
@@ -141,7 +140,6 @@ private:
 typedef char view_clip_list_size_check[
     (sizeof(DClipInfo_List) == 0x70) ? 1 : -1];
 
-// view.cpp rendering and DClip state. The PDB records these external symbols.
 extern DClipInfo_List* SDI_List;
 extern int SDI_Capture_Info;
 extern int SDI_Draw_Line;

@@ -1,5 +1,3 @@
-// PDB source module: C:/msdev/work/age1_x1/scr_stms.cpp.
-// Definitions follow the original source order.
 
 #include "../include/scr_stms.h"
 #include "../include/basegame.h"

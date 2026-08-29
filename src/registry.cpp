@@ -1,9 +1,6 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\registry.cpp.
-// The definitions follow the original PDB source order.
 
 #include "../include/registry.h"
 
-// PDB lines 12-59; VA 0047EB80.
 TRegistry::TRegistry(const char* name)
 {
     this->ghMachineKey = 0;
@@ -17,7 +14,6 @@ TRegistry::TRegistry(const char* name)
                     &this->ghMachineKeyRead, &this->gdwDisp);
 }
 
-// PDB lines 63-83; VA 0047EC00.
 TRegistry::~TRegistry()
 {
     if (this->ghUserKey != 0) {
@@ -34,7 +30,6 @@ TRegistry::~TRegistry()
     }
 }
 
-// PDB lines 87-105; VA 0047EC40.
 int TRegistry::RegSet(int use_user, const char* name,
                       unsigned char* value, unsigned long size)
 {
@@ -47,7 +42,6 @@ int TRegistry::RegSet(int use_user, const char* name,
     return (err == 0);
 }
 
-// PDB lines 108-125; VA 0047ECA0.
 int TRegistry::RegSetInt(int useUserKey, const char* valueName, int value)
 {
     unsigned long ret;
@@ -62,7 +56,6 @@ int TRegistry::RegSetInt(int useUserKey, const char* valueName, int value)
     return (ret == 0);
 }
 
-// PDB lines 131-149; VA 0047ED00.
 int TRegistry::RegSetAscii(int use_user, const char* name,
                            unsigned char* value, unsigned long size)
 {
@@ -75,7 +68,6 @@ int TRegistry::RegSetAscii(int use_user, const char* name,
     return (err == 0);
 }
 
-// PDB lines 153-187; VA 0047ED60.
 char* TRegistry::RegGetAscii(int userKey, const char* name)
 {
     unsigned long type = REG_SZ;
@@ -90,7 +82,6 @@ char* TRegistry::RegGetAscii(int userKey, const char* name)
     }
 }
 
-// PDB lines 192-203; VA 0047EDD0.
 long TRegistry::RegGet(int useUserKey, const char* valueName,
                        unsigned char* data, unsigned long* dataSize)
 {
@@ -103,7 +94,6 @@ long TRegistry::RegGet(int useUserKey, const char* valueName,
                             &type, data, dataSize);
 }
 
-// PDB lines 206-231; VA 0047EE20.
 int TRegistry::RegGetInt(int use_user, const char* name)
 {
     unsigned long dwSize = 4;

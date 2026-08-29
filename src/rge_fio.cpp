@@ -1,5 +1,4 @@
 /* Authentic C++ source module for C:\\msdev\\work\\age1_x1\\rge_fio.cpp. */
-// The definitions below follow the ten normal-owner PDB source order.
 
 #include "../include/rge_fio.h"
 

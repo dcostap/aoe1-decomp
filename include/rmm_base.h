@@ -45,9 +45,7 @@ protected:
     void update_map_info(RGE_Map*);
     void share_resources(uchar**, uchar***, Map_Stack**, Map_Stack***);
 
-    // 00480CC0: ?init_stack@RGE_Random_Map_Module@@IAEXAAUMap_Stack@@@Z
     void init_stack(Map_Stack&);
-    // 00480CF0: ?deinit_stack@RGE_Random_Map_Module@@IAEXAAUMap_Stack@@@Z
     void deinit_stack(Map_Stack&);
     void push_stack(Map_Stack&, long, long, float, float);
     Map_Stack* pop_stack(Map_Stack&, long&, long&, float&);
@@ -56,7 +54,6 @@ protected:
     void clear_stack();
     uchar check_stack(Map_Stack*);
     void randomize_stack(Map_Stack*);
-    // 00480FB0: ?find_path@RGE_Random_Map_Module@@IAEEJJAAJ0PAM@Z
     uchar find_path(long, long, long&, long&, float*);
     uchar find_path(Map_Stack&, long, long, long&, long&, float*);
     uchar add_module(RGE_Random_Map_Module*);

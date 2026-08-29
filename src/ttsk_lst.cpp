@@ -1,12 +1,6 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\ttsk_lst.cpp.
-// Definitions follow the original source-line and address order.
 //
 // Owners:
-//   0052C3F0 TRIBE_Task_List::get_target_task (lines 41-294)
-//   0052C8D0 TRIBE_Task_List::is_attack_task (lines 299-304)
 //
-// BINARY NOTE: 0052C8A1 is a switch-table and padding boundary. It is not a
-// source owner. The first owner has seven ordered RGE_Player::isAlly calls and
 // one direct RGE_Task_List::get_target_task call.
 
 #include "../include/ttsk_lst.h"

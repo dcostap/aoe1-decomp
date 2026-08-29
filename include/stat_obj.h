@@ -177,7 +177,6 @@ public:
     virtual Path* findAvoidancePath(XYZPoint&, float, int);
     virtual long get_action_checksum();
     virtual long get_waypoint_checksum();
-    // VC5 reverses this adjacent overload group. The PDB vtable has the int
     // overload at +0x1D8 and the master overload at +0x1DC.
     virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual int setup(int, RGE_Game_World*);

@@ -1,4 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\Colorlog.cpp.
 // This file owns the module's handwritten definition.
 
 #include "../include/colorlog.h"

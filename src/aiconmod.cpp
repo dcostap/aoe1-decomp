@@ -1,7 +1,4 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\aiconmod.cpp
-// The definitions below follow the original PDB source-line order.
 // The scalar deleting destructor at 0040AB90 is compiler generated and has no
-// PDB source line, so it is not a source owner here.
 
 #include "../include/aiconmod.h"
 #include <stdio.h>
@@ -16,8 +13,6 @@ union IntFloat {
     float f;
 };
 
-// 0040AA90 ConstructionAIModule::ConstructionAIModule (aiconmod.cpp:36-43)
-// FLAGS: config/flags/0040AA90_ConstructionAIModule.rsp (/GX for EH frame)
 ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2)
     : AIModule("ConAI", 0x3EA, param_2, param_1),
       numberConstructionLotsValue(0),
@@ -39,7 +34,6 @@ ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2)
     strcpy(this->constructionPlanNameValue, "");
 }
 
-// 0040ABB0 ConstructionAIModule::ConstructionAIModule (aiconmod.cpp:57-182)
 // Typed wire locals preserve the original serialized read order and raw bits.
 ConstructionAIModule::ConstructionAIModule(int p1, int fd)
     : AIModule("ConAI", 0x3ea, p1, 0),
@@ -151,19 +145,13 @@ ConstructionAIModule::ConstructionAIModule(int p1, int fd)
     }
 }
 
-// 0040B120 ConstructionAIModule::~ConstructionAIModule (aiconmod.cpp:187-190)
-// FLAGS: /GX (EH frame)
 ConstructionAIModule::~ConstructionAIModule() {
     if (this->numberConstructionLotsValue > 0) {
         removeOldLots();
     }
 }
 
-// 0040B1A0 ConstructionAIModule::save (aiconmod.cpp:195-302)
-// PDB proves tempString[257], tempInt, tempBOOL, and tempFloat.
-// ACCEPTED DRIFT: The same 67 ordered writes, values, widths, list traversal,
 // boundaries, memory effects, fault order, and return value are preserved.
-// VC5 uses different private stack homes for the three scalar temporaries.
 int ConstructionAIModule::save(int fd)
 {
     char tempString[257];
@@ -258,8 +246,6 @@ int ConstructionAIModule::save(int fd)
     return 1;
 }
 
-// 0040B690 ConstructionAIModule::loadConstructionPlan (aiconmod.cpp:308-380)
-// FLAGS: config/flags/0040B690_loadConstructionPlan.rsp (/GX for EH frame)
 int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float p4, float p5, float p6)
 {
     char commentTemp1;
@@ -333,15 +319,11 @@ int ConstructionAIModule::loadConstructionPlan(char* name, int p2, int p3, float
     return 1;
 }
 
-// 0040B970 ConstructionAIModule::constructionPlanName (aiconmod.cpp:385-387)
 char* ConstructionAIModule::constructionPlanName() {
     return this->constructionPlanNameValue;
 }
 
-// 0040B980 ConstructionAIModule::setReferencePoint (aiconmod.cpp:393-443)
-// ACCEPTED DRIFT: The same x/y bound calculations, floating operations,
 // predicates, list edits, calls, cleanup, and 495-byte boundary are preserved.
-// VC5 places two private upper-bound temporaries in different stack homes.
 void ConstructionAIModule::setReferencePoint(int mapX, int mapY, float xRef, float yRef, float zRef)
 {
     this->mapXSizeValue = mapX;
@@ -378,28 +360,23 @@ void ConstructionAIModule::setReferencePoint(int mapX, int mapY, float xRef, flo
     }
 }
 
-// 0040BB70 ConstructionAIModule::xReferencePoint (aiconmod.cpp:448-450)
 float ConstructionAIModule::xReferencePoint() {
     return this->xReferencePointValue;
 }
 
-// 0040BB80 ConstructionAIModule::yReferencePoint (aiconmod.cpp:455-457)
 float ConstructionAIModule::yReferencePoint() {
     return this->yReferencePointValue;
 }
 
-// 0040BB90 ConstructionAIModule::placeStructure (aiconmod.cpp:462-464)
 // The parameter and result are unused in this shipped base implementation.
 ConstructionItem* ConstructionAIModule::placeStructure(BuildItem* item) {
     return 0;
 }
 
-// 0040BBA0 ConstructionAIModule::lastPlacementReturnCode (aiconmod.cpp:470-472)
 ConstructionAIModule::PlacementResult ConstructionAIModule::lastPlacementReturnCode() {
     return this->lastPlacementReturnCodeValue;
 }
 
-// 0040BBB0 ConstructionAIModule::setBuilt (aiconmod.cpp:477-486)
 void ConstructionAIModule::setBuilt(ConstructionItem* item, int built) {
     ConstructionItem* current;
     ConstructionItem* end;
@@ -419,7 +396,6 @@ void ConstructionAIModule::setBuilt(ConstructionItem* item, int built) {
     }
 }
 
-// 0040BC00 ConstructionAIModule::unplaceStructure (aiconmod.cpp:492-508)
 int ConstructionAIModule::unplaceStructure(ConstructionItem* item, int decrement) {
     ConstructionItem* current;
     ConstructionItem* end;
@@ -447,7 +423,6 @@ int ConstructionAIModule::unplaceStructure(ConstructionItem* item, int decrement
     return -1;
 }
 
-// 0040BC80 ConstructionAIModule::unplaceStructure (aiconmod.cpp:513-529)
 int ConstructionAIModule::unplaceStructure(float x, float y, int decrement) {
     int id;
     ConstructionItem* item;
@@ -472,7 +447,6 @@ int ConstructionAIModule::unplaceStructure(float x, float y, int decrement) {
     return -1;
 }
 
-// 0040BD10 ConstructionAIModule::decrementBuildAttempts (aiconmod.cpp:534-540)
 void ConstructionAIModule::decrementBuildAttempts(float x, float y, int count) {
     ConstructionItem* item = this->lot(x, y);
     if (item != 0 && count > 0) {
@@ -483,7 +457,6 @@ void ConstructionAIModule::decrementBuildAttempts(float x, float y, int count) {
     }
 }
 
-// 0040BD40 ConstructionAIModule::incrementBuildAttempts (aiconmod.cpp:545-551)
 void ConstructionAIModule::incrementBuildAttempts(float x, float y, int count) {
     ConstructionItem* item = this->lot(x, y);
     if (item != 0 && count > 0) {
@@ -494,7 +467,6 @@ void ConstructionAIModule::incrementBuildAttempts(float x, float y, int count) {
     }
 }
 
-// 0040BD70 ConstructionAIModule::lot (aiconmod.cpp:556-570)
 ConstructionItem* ConstructionAIModule::lot(float x, float y)
 {
     ConstructionItem* p = this->constructionLots.next;
@@ -516,7 +488,6 @@ ConstructionItem* ConstructionAIModule::lot(float x, float y)
     return 0;
 }
 
-// 0040BE10 ConstructionAIModule::randomLot (aiconmod.cpp:575-583)
 ConstructionItem* ConstructionAIModule::randomLot(float px, float py) {
     ConstructionItem* cur = this->randomConstructionLots.next;
     while (cur != &this->randomConstructionLots && cur != 0) {
@@ -528,7 +499,6 @@ ConstructionItem* ConstructionAIModule::randomLot(float px, float py) {
     return 0;
 }
 
-// 0040BE70 ConstructionAIModule::removeOldLots (aiconmod.cpp:588-599)
 void ConstructionAIModule::removeOldLots(void) {
     ConstructionItem* item = this->constructionLots.next;
     ConstructionItem* end = &this->constructionLots;

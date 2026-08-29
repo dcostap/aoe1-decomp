@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\scr_trb.cpp.
-// Definitions follow the original PDB source order.
 
 #include <string.h>
 #include "../include/scr_trb.h"
@@ -8,9 +6,7 @@
 #include "../include/pnl_pic.h"
 #include "../include/basegame.h"
 
-// VA: 004B75A0 TribeSelectTribeScreen ctor (2085B)
 // scr_trb.cpp lines 37-157
-// Exact reconstruction. /GX is required by the EH cleanup frame around the
 // constructor's new expressions. The fixed tab-list copy is a REP MOVSD block.
 
 TribeSelectTribeScreen::TribeSelectTribeScreen()
@@ -84,7 +80,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     i = 0;
     TButtonPanel** button = this->tribeButton;
 
-    // BINARY NOTE: The shipped loop re-enters through a zero-register reset.
+    // The shipped loop re-enters through a zero-register reset.
     // LIKELY INTENT: The initial zero state makes this guard equivalent to do/while.
     while (i < 9) {
         *button = new TButtonPanel;
@@ -128,7 +124,7 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->pnl_hgt * 0x3C / 0x1E0,
         font->font, font->font_wid, font->font_hgt,
         0, 0, 0, 0, 0, 0, "");
-    // BINARY NOTE: The original call pushes alignment values 6 then 3.
+    // The original call pushes alignment values 6 then 3.
     this->tribeText->set_alignment(TTextPanel::AlignTop,
                                    TTextPanel::AlignWordwrap);
 
@@ -168,16 +164,14 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
     this->background->set_curr_child(this->tribeButton[0]);
     this->fillTribeText(0);
 
-    // BINARY NOTE: Nine button pointers are copied by one REP MOVSD block.
+    // Nine button pointers are copied by one REP MOVSD block.
     memcpy(tabList, this->tribeButton, 9 * sizeof(this->tribeButton[0]));
     tabList[9] = this->okButton;
-    // BINARY NOTE: The shipped call targets TPanel::set_tab_order directly.
+    // The shipped call targets TPanel::set_tab_order directly.
     this->TPanel::set_tab_order(tabList, 10);
 }
 
-// VA: 004B7DF0 ~TribeSelectTribeScreen dtor (227B)
 // scr_trb.cpp lines 162-172
-// Has EH frame (fs:[0]), needs /GX.
 
 extern void __cdecl free(void* ptr);
 
@@ -201,8 +195,6 @@ TribeSelectTribeScreen::~TribeSelectTribeScreen() {
     free(screenText);
 }
 
-// VA: 004B7EE0 TribeSelectTribeScreen::action (140B)
-// PDB source: scr_trb.cpp lines 178-197
 // The direct member helper declarations preserve the shipped thiscall calls.
 
 long TribeSelectTribeScreen::action(TPanel* sender, long actionType,
@@ -228,7 +220,6 @@ long TribeSelectTribeScreen::action(TPanel* sender, long actionType,
     return this->TEasy_Panel::action(sender, actionType, param3, param4);
 }
 
-// VA: 004B7F70 fillTribeText (210B)
 // scr_trb.cpp lines 202-233
 // TribeSelectTribeScreen::tribeText is +0x480. The text setter is the proved
 // TTextPanel virtual at +0xE8. Scroll is a direct TTextPanel member call.
@@ -267,8 +258,6 @@ void TribeSelectTribeScreen::fillTribeText(int tribeIdx) {
     this->tribeText->scroll(6, 0, 1);
 }
 
-// VA: 004B8070 TribeSelectTribeScreen::tribeName
-// PDB source: scr_trb.cpp lines 238-261.
 
 char* TribeSelectTribeScreen::tribeName(int param_1) {
     switch (param_1) {

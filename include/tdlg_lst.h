@@ -1,7 +1,6 @@
 #ifndef AOE1_TDLG_LST_H
 #define AOE1_TDLG_LST_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\tdlg_lst.cpp.
 // RGE_Dialog_List and its panel hierarchy belong to their canonical modules.
 #include "rdlg_lst.h"
 

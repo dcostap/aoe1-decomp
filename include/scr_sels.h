@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_SELS_H
 #define AOE1_SCR_SELS_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\Scr_sels.cpp.
 // TribeSelectScenarioScreen is the only class owned by this header. Its
 // complete screen base comes from the canonical screen owner.
 #include "Pnl_scr.h"

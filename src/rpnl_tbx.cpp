@@ -1,5 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\rpnl_tbx.cpp.
-// Definitions follow the PDB source lines and address order.
 
 #include "../include/rpnl_tbx.h"
 
@@ -30,7 +28,6 @@ static char text_elevation_label[] = "<Elev>";
 static char text_command[] = "Cmd";
 static char text_command_label[] = "<Cmd>";
 
-// PDB: rpnl_tbx.cpp:39-161.
 RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
     TDrawArea* draw_area,
     TPanel* parent,
@@ -200,7 +197,6 @@ RGE_Panel_Tool_Box::RGE_Panel_Tool_Box(
     }
 }
 
-// PDB: rpnl_tbx.cpp:166-174.
 RGE_Panel_Tool_Box::~RGE_Panel_Tool_Box()
 {
     delete this->game_mode_button;
@@ -212,7 +208,6 @@ RGE_Panel_Tool_Box::~RGE_Panel_Tool_Box()
     delete this->command_button;
 }
 
-// PDB: rpnl_tbx.cpp:180-306.
 long RGE_Panel_Tool_Box::action(TPanel* panel, long code,
                                 unsigned long param_3, unsigned long param_4)
 {
@@ -302,8 +297,6 @@ long RGE_Panel_Tool_Box::action(TPanel* panel, long code,
     return 0;
 }
 
-// PDB: rpnl_tbx.cpp:312-372.
-// ACCEPTED DRIFT: This body has a reviewed ESI/EDI role exchange only.
 long RGE_Panel_Tool_Box::key_down_action(long key, short ch, int a3, int a4,
                                          int a5)
 {
@@ -382,7 +375,6 @@ long RGE_Panel_Tool_Box::key_down_action(long key, short ch, int a3, int a4,
     return 0;
 }
 
-// PDB: rpnl_tbx.cpp:380-422.
 void RGE_Panel_Tool_Box::game_mode_changed(int mode, int new_mode)
 {
     TButtonPanel* button;
@@ -423,7 +415,6 @@ void RGE_Panel_Tool_Box::game_mode_changed(int mode, int new_mode)
     rge_base_game->get_player()->unselect_object();
 }
 
-// PDB: rpnl_tbx.cpp:428-437.
 void RGE_Panel_Tool_Box::draw()
 {
     if (this->render_area != 0 && this->visible != 0 &&

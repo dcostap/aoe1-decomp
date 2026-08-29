@@ -8,7 +8,6 @@ extern void* DAT_0062cf3c;
 extern unsigned char DAT_0062cf40;
 extern TDebuggingLog* L;
 
-// PDB source: C:\\msdev\\work\\age1_x1\\com_q.cpp, lines 24-35.
 RGE_Communications_Queue::RGE_Communications_Queue(int param_1) {
     if (param_1 < 0x14) {
         param_1 = 0x14;
@@ -22,7 +21,6 @@ RGE_Communications_Queue::RGE_Communications_Queue(int param_1) {
     this->AllocateQueue(param_1);
 }
 
-// PDB source: com_q.cpp, lines 38-40.
 RGE_Communications_Queue::~RGE_Communications_Queue() {
     MsgQueue* queue = this->Queue;
 
@@ -31,7 +29,6 @@ RGE_Communications_Queue::~RGE_Communications_Queue() {
     }
 }
 
-// PDB source: com_q.cpp, lines 43-97.
 int RGE_Communications_Queue::AllocateQueue(unsigned int param_1) {
     int result;
     if (param_1 < this->MaxQSize) {
@@ -84,7 +81,6 @@ int RGE_Communications_Queue::AllocateQueue(unsigned int param_1) {
     return result;
 }
 
-// PDB source: com_q.cpp, lines 141-165.
 unsigned char RGE_Communications_Queue::ExpectedNextSequence(
     unsigned long turn, unsigned int from) {
     unsigned char seq;
@@ -106,7 +102,6 @@ unsigned char RGE_Communications_Queue::ExpectedNextSequence(
     return DAT_0062cf40;
 }
 
-// PDB source: com_q.cpp, lines 168-178.
 unsigned int RGE_Communications_Queue::QueuedForTurn(unsigned long turn) {
     unsigned int count = 0;
     unsigned int i = 0;
@@ -121,12 +116,10 @@ unsigned int RGE_Communications_Queue::QueuedForTurn(unsigned long turn) {
     return count;
 }
 
-// PDB source: com_q.cpp, lines 181-184.
 void RGE_Communications_Queue::FlushAll() {
     this->FlushTurnRange(0, 0);
 }
 
-// PDB source: com_q.cpp, lines 187-205.
 unsigned int RGE_Communications_Queue::FlushTurnRange(
     unsigned long param_1, unsigned long param_2) {
     unsigned int i = 0;
@@ -163,7 +156,6 @@ unsigned int RGE_Communications_Queue::FlushTurnRange(
     return i;
 }
 
-// PDB source: com_q.cpp, lines 208-230.
 void RGE_Communications_Queue::FlushForPlayer(unsigned int param_1) {
     RGE_Communications_Queue* th = this;
     L->Log("Flushing queue for player %d", param_1);
@@ -193,17 +185,14 @@ void RGE_Communications_Queue::FlushForPlayer(unsigned int param_1) {
     } while (i <= th->HighQueueDepth);
 }
 
-// PDB source: com_q.cpp, lines 233-236.
 unsigned int RGE_Communications_Queue::FlushForTurn(unsigned long turn) {
     return this->FlushTurnRange(turn, turn);
 }
 
-// PDB source: com_q.cpp, lines 239-242.
 unsigned int RGE_Communications_Queue::FlushThruTurn(unsigned long turn) {
     return this->FlushTurnRange(0, turn);
 }
 
-// PDB source: com_q.cpp, lines 246-277.
 int RGE_Communications_Queue::AddItem(
     unsigned long turn, void* data, unsigned long size,
     unsigned int from, unsigned char sequence, int control) {
@@ -249,17 +238,14 @@ int RGE_Communications_Queue::AddItem(
     return 1;
 }
 
-// PDB source: com_q.cpp, lines 288-290.
 unsigned int RGE_Communications_Queue::GetQueueDepth() {
     return this->QueueDepth;
 }
 
-// PDB source: com_q.cpp, lines 293-295.
 unsigned int RGE_Communications_Queue::GetHighQueueDepth() {
     return this->HighQueueDepth;
 }
 
-// PDB source: com_q.cpp, lines 298-323.
 void* RGE_Communications_Queue::GetSpecificItem(
     unsigned int player, unsigned long turn, unsigned char sequence,
     unsigned int* size) {
@@ -296,7 +282,6 @@ found:
     return DAT_0062cf3c;
 }
 
-// PDB source: com_q.cpp, lines 327-346.
 void* RGE_Communications_Queue::GetNextItemSingle() {
     MsgQueue* q = this->Queue;
     for (unsigned int i = 0; i <= this->HighQueueDepth; i++) {
@@ -316,7 +301,6 @@ void* RGE_Communications_Queue::GetNextItemSingle() {
     return 0;
 }
 
-// PDB source: com_q.cpp, lines 350-421.
 void* RGE_Communications_Queue::GetNextItemOrdered(unsigned long turn) {
     unsigned int bestControlCommand = 0xFFFFFFFF;
     unsigned int i = 0;
@@ -356,7 +340,6 @@ void* RGE_Communications_Queue::GetNextItemOrdered(unsigned long turn) {
     return DAT_0062cf38;
 }
 
-// PDB source: com_q.cpp, lines 424-458.
 unsigned char RGE_Communications_Queue::GetNextSequence(unsigned long turn) {
     if (turn != this->LastCurrentTurn) {
         this->Sequence = 1;
@@ -370,6 +353,5 @@ unsigned char RGE_Communications_Queue::GetNextSequence(unsigned long turn) {
     return 0;
 }
 
-// PDB source: com_q.cpp, line 462.
 void RGE_Communications_Queue::TestShowQueue() {
 }

@@ -2,7 +2,6 @@
 #include "../include/teffects.h"
 #include "../include/tplayer.h"
 
-// PDB source order for C:\\msdev\\work\\age1_x1\\teffects.cpp.
 
 TRIBE_Effects::TRIBE_Effects(int param) : RGE_Effects(param) {
 }

@@ -4,7 +4,7 @@
 /*
  * Declarations shared by the Dsutil.c source module.
  *
- * BINARY NOTE: Dsutil.c is a C source module. The shipped module uses the
+ * Dsutil.c is a C source module. The shipped module uses the
  * period VC5 Windows, WinMM, DirectSound, and C runtime declarations.
  * /Oi- is required by the measured direct memcpy and memset call sites.
  */

@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\pathsys.cpp.
-// Definitions follow the original source-line and address order.
 
 #include <math.h>
 #include <stdio.h>
@@ -31,11 +29,9 @@ struct BYTEPoint {
 };
 
 // The compiler owns the startup wrappers and destructor registration for
-// these source globals. Their declaration order is the PDB source order.
 PathingSystem pathSystem(0xFF, 0xFF, 0, 0, 0);
 PathingSystem aiPathSystem(0xFF, 0xFF, 1, 0, 0);
 
-// 0046B0F0, pathsys.cpp lines 104-136.
 PathingSystem::PathingSystem(int xSize, int ySize, int aiPS,
                              RGE_Map* map, RGE_Game_World* world)
 {
@@ -76,12 +72,10 @@ PathingSystem::PathingSystem(int xSize, int ySize, int aiPS,
     } while ((int)distance < (int)(DiagionalDistance + 256));
 }
 
-// 0046B270, pathsys.cpp lines 142-144.
 PathingSystem::~PathingSystem()
 {
 }
 
-// 0046B310, pathsys.cpp lines 150-167.
 int PathingSystem::initialize(int xSize, int ySize, RGE_Map* map, RGE_Game_World* world) {
     mapValue = map;
     worldValue = world;
@@ -96,7 +90,6 @@ int PathingSystem::initialize(int xSize, int ySize, RGE_Map* map, RGE_Game_World
     return 1;
 }
 
-// 0046B360, pathsys.cpp lines 172-219.
 void PathingSystem::printToFile(char* filename)
 {
     int column;
@@ -158,32 +151,26 @@ void PathingSystem::printToFile(char* filename)
     }
 }
 
-// 0046B550, pathsys.cpp lines 407-410.
 unsigned char PathingSystem::lookupMisc(int row, int column) {
     return this->miscValue[row][column];
 }
 
-// 0046B570, pathsys.cpp lines 423-426.
 void PathingSystem::setMisc(int row, int column, unsigned char value) {
     this->miscValue[row][column] = value;
 }
 
-// 0046B590, pathsys.cpp lines 431-433.
 void PathingSystem::initMisc(unsigned char value) {
     memset(this->miscValue, value, 0xFE01);
 }
 
-// 0046B5C0, pathsys.cpp lines 624-627.
 void PathingSystem::zeroObstructionMap(void) {
     memset(obstructionValue, 0, sizeof(obstructionValue));
 }
 
-// 0046B5E0, pathsys.cpp lines 632-635.
 unsigned char PathingSystem::obstruction(int x, int y) {
     return (unsigned char)(this->obstructionValue[x][y >> 2] >> ObstructionValueShift[y & 3]) & 3;
 }
 
-// 0046B620, pathsys.cpp lines 641-652.
 void PathingSystem::incrementObstruction(int x, int y) {
     unsigned char* ptr = &obstructionValue[x][y >> 2];
     unsigned char val = *ptr;
@@ -194,7 +181,6 @@ void PathingSystem::incrementObstruction(int x, int y) {
     *ptr = (ObstructionValueMask[y & 3] & val) | ((field + 1) << ObstructionValueShift[y & 3]);
 }
 
-// 0046B680, pathsys.cpp lines 658-668.
 void PathingSystem::decrementObstruction(int x, int y) {
     unsigned char val = obstructionValue[x][y >> 2];
     unsigned char field = (val >> ObstructionValueShift[y & 3]) & 3;
@@ -266,7 +252,6 @@ static __inline int estimateDistanceOrdered(int ax, int ay, int bx, int by)
     return DiagionalDistance[diagonal & 0xff] + (straight << 4);
 }
 
-// 0046B6E0, pathsys.cpp lines 855-1896.
 int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RGE_Moving_Object* obj,
                                 float tolerance, int targetID, int mode, float* costOut,
                                 int useIterationCap, int checkTerrain, int checkObstructions,
@@ -972,22 +957,18 @@ path_exhausted:
     return 0;
 }
 
-// 0046D250, pathsys.cpp lines 2027-2029.
 void PathingSystem::incrementInitialPaths() {
     ++numInitialPathsValue;
 }
 
-// 0046D260, pathsys.cpp lines 2034-2036.
 void PathingSystem::incrementContinuePaths() {
     ++numContinuePathsValue;
 }
 
-// 0046D270, pathsys.cpp lines 2041-2043.
 void PathingSystem::incrementCanPaths() {
     ++numCanPathsValue;
 }
 
-// 0046D280, pathsys.cpp lines 2049-2217.
 int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                             int checkObjects)
 {
@@ -1163,7 +1144,6 @@ blocked:
     return 0;
 }
 
-// 0046D740, pathsys.cpp lines 2222-2228.
 long PathingSystem::checksum(void) {
     unsigned int value = 0;
     unsigned char (*row)[0xFF] = this->obstructionValue;
@@ -1181,7 +1161,6 @@ long PathingSystem::checksum(void) {
     return value;
 }
 
-// 0046D770, pathsys.cpp lines 2233-2242.
 void PathingSystem::printState(RGE_Moving_Object* obj)
 {
     obj->logDebug("    There are %d open paths and %d traversed paths.",
@@ -1206,7 +1185,6 @@ void PathingSystem::printState(RGE_Moving_Object* obj)
     }
 }
 
-// 0046D830, pathsys.cpp lines 2249-2421.
 int PathingSystem::copyPath(int step)
 {
     uchar previousFacet;
@@ -1348,7 +1326,6 @@ int PathingSystem::copyPath(int step)
     } while (true);
 }
 
-// 0046DCB0, pathsys.cpp lines 2427-2432.
 void PathingSystem::copyUnobstructibles(ManagedArray<int>& out)
 {
     int i = this->currentUnobstructibles.numberValue;

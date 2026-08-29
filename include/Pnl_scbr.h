@@ -1,7 +1,6 @@
 #ifndef AOE1_PNL_SCBR_H
 #define AOE1_PNL_SCBR_H
 
-// PDB source: C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp.
 // This header owns TScrollBarPanel.
 #include "pnl_lst.h"
 #include "drawarea.h"

@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_NAME_H
 #define AOE1_SCR_NAME_H
 
-// PDB source module: C:/msdev/work/age1_x1/scr_name.cpp.
 // This header owns only the two screen types from scr_name.cpp. Shared panel,
 // dialog, and screen types come from their canonical owners.
 #include "pnl_dlg.h"

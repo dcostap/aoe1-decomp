@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\vis_unit.cpp.
-// Definitions follow the original source order.
 
 #include "../include/vis_unit.h"
 #include "../include/map.h"

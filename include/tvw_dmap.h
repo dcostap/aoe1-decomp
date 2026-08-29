@@ -1,7 +1,6 @@
 #ifndef AOE1_TVW_DMAP_H
 #define AOE1_TVW_DMAP_H
 
-// PDB owner: tvw_dmap.cpp.
 
 #include "vw_dimap.h"
 

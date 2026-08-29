@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_CRED_H
 #define AOE1_SCR_CRED_H
 
-// PDB source module: C:\msdev\work\age1_x1\scr_cred.cpp.
 // This header owns only the classes defined by this module.
 #include "Pnl_scr.h"
 #include "pnl_lst.h"

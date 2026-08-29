@@ -2,7 +2,6 @@
 #define AOE1_AIPBOOK_H
 
 // Declarations for the original aipbook.cpp source module.
-// PDB type records prove each aggregate size and field offset below.
 
 #include "aiplaybook.h"
 #include "ai_play_group.h"

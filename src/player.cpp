@@ -1,4 +1,3 @@
-// PDB source: player.cpp.
 // This file owns the complete Player source body order.
 #include "../include/player.h"
 #include "../include/world.h"
@@ -1821,7 +1820,7 @@ void RGE_Player::ungroup_objects(void) {
     int count = 0;
     RGE_Static_Object** object = this->sel_list;
 
-    // BINARY NOTE: The executable advances the index before the tile pointer.
+    // The executable advances the index before the tile pointer.
     for (; i < 0x19; ++i, ++object) {
         if (count >= this->sel_count) {
             break;

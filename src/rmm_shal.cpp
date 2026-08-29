@@ -1,5 +1,3 @@
-// Authentic PDB-ordered source module for C:\\msdev\\work\\age1_x1\\rmm_shal.cpp.
-// The three handwritten owners follow the original source-line and address order.
 // map.h is source-private because the public module header needs only pointer
 // and base declarations.
 
@@ -8,8 +6,6 @@
 
 extern "C" int __cdecl debug_rand(char*, int);
 
-// 00487010 RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator
-// PDB source lines 34-38, size 59 bytes.
 RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(
     RGE_Map* in_map, RGE_Random_Map_Module* parent_module,
     RGE_Shallows_Info* in_info)
@@ -19,9 +15,6 @@ RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(
     this->info = *in_info;
 }
 
-// 00487050 RGE_RMM_Shallows_Generator::generate
-// PDB source lines 42-102, size 418 bytes.
-// The nested for loops follow the PDB line map: outer loop at line 56,
 // inner loop at line 57, and connection call at line 58.
 uchar RGE_RMM_Shallows_Generator::generate()
 {
@@ -76,10 +69,6 @@ uchar RGE_RMM_Shallows_Generator::generate()
     return 1;
 }
 
-// 00487200 RGE_RMM_Shallows_Generator::make_tribe_connections
-// PDB source lines 106-245, size 1172 bytes.
-// The source preserves the current reviewed scratch reconstruction.
-// Its scratch status and measured result remain unchanged by this move.
 void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param_2) {
     int iVar2;
     int iVar4;
@@ -207,7 +196,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
             if (in_zone >= this->map_width) in_zone = this->map_width - 1;
 
             iVar2 = debug_rand("C:\\msdev\\work\\age1_x1\\rmm_shal.cpp", 0xD2);
-            // BINARY NOTE: This bound remains live for the outer row loop.
+            // This bound remains live for the outer row loop.
             end_x = (iVar2 * 3) / 0x7FFF + 1 + ty2;
             if (end_x >= this->map_height) end_x = this->map_height - 1;
 

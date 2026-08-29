@@ -6,9 +6,7 @@
 #include "../include/world.h"
 #include "../include/zone_map.h"
 
-// PDB source order for C:\\msdev\\work\\age1_x1\\rmm_obj.cpp.
 
-// VA: 00485C50 RGE_RMM_Object_Generator::RGE_RMM_Object_Generator
 RGE_RMM_Object_Generator::RGE_RMM_Object_Generator(
     RGE_Map* param_1, RGE_Random_Map_Module* param_2,
     RGE_Game_World* param_3, RGE_Object_Info* param_4, unsigned char param_5)
@@ -24,7 +22,6 @@ RGE_RMM_Object_Generator::RGE_RMM_Object_Generator(
     this->add_terrain = param_5;
 }
 
-// VA: 00485CB0 RGE_RMM_Object_Generator::add_quick_obj
 void RGE_RMM_Object_Generator::add_quick_obj(
     long obj_id, long number_of_groups, long object_exclusion_zone)
 {
@@ -44,7 +41,6 @@ void RGE_RMM_Object_Generator::add_quick_obj(
     this->info.object_num = this->info.object_num + 1;
 }
 
-// VA: 00485DC0 RGE_RMM_Object_Generator::generate
 unsigned char RGE_RMM_Object_Generator::generate() {
     if (this->add_terrain != 0) {
         RGE_Game_World* wld = this->world;
@@ -78,7 +74,6 @@ unsigned char RGE_RMM_Object_Generator::generate() {
     return 1;
 }
 
-// VA: 00485E50 RGE_RMM_Object_Generator::generate_objects
 void RGE_RMM_Object_Generator::generate_objects(RGE_Object_Info_Line& line) {
     if (line.scale_flag) {
         long n = (this->map_width * this->map_height *
@@ -104,8 +99,6 @@ void RGE_RMM_Object_Generator::generate_objects(RGE_Object_Info_Line& line) {
     }
 }
 
-// VA: 00485F10 RGE_RMM_Object_Generator::make_placement_stack
-// The clean reconstruction retains the proven Map_Stack reference, typed row
 // tables, and the source's clipped rectangular scan.
 extern "C" int __cdecl debug_rand(char* file, int line);
 extern char s_rmm_obj_cpp[];
@@ -183,8 +176,7 @@ void RGE_RMM_Object_Generator::make_placement_stack(
     }
 }
 
-// VA: 00486110 RGE_RMM_Object_Generator::to_close
-// BINARY NOTE: This interior cursor keeps the exact VC5 addressing form.
+// This interior cursor keeps the exact VC5 addressing form.
 unsigned char RGE_RMM_Object_Generator::to_close(
     RGE_Object_Info_Line& info_line, long x, long y)
 {
@@ -207,7 +199,6 @@ unsigned char RGE_RMM_Object_Generator::to_close(
     return 0;
 }
 
-// VA: 00486180 RGE_RMM_Object_Generator::set_search_area
 void RGE_RMM_Object_Generator::set_search_area(
     long x, long y, long radius, unsigned char fill)
 {
@@ -238,7 +229,6 @@ void RGE_RMM_Object_Generator::set_search_area(
     }
 }
 
-// VA: 00486210 RGE_RMM_Object_Generator::remove_area_from_lists
 void RGE_RMM_Object_Generator::remove_area_from_lists(
     long left, long right, long y) {
     long x_start = left - y;
@@ -270,8 +260,6 @@ void RGE_RMM_Object_Generator::remove_area_from_lists(
     }
 }
 
-// VA: 004862B0 RGE_RMM_Object_Generator::place_avoid_objects
-// ACCEPTED DRIFT: The typed source preserves the executable's call order,
 // placement gates, FPU work, and state changes. Its private setup block has a
 // reviewed register and scheduling difference.
 extern "C" void* __cdecl memset(void*, int, unsigned int);
@@ -346,8 +334,6 @@ void RGE_RMM_Object_Generator::place_avoid_objects(
     this->deinit_stack(obj_stack);
 }
 
-// VA: 004864F0 RGE_RMM_Object_Generator::place_objects
-// SCRATCH: The source model and call sequence are understood. The executable
 // still differs in the initial world/player/count scheduling block.
 #include <memory.h>
 
@@ -407,7 +393,6 @@ void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
     this->deinit_stack(obj_stack);
 }
 
-// VA: 00486700 RGE_RMM_Object_Generator::place_land_objects
 void RGE_RMM_Object_Generator::place_land_objects(
     RGE_Object_Info_Line& line, long x, long y, long inner_radius,
     long outer_radius, long land_index)
@@ -512,8 +497,6 @@ void RGE_RMM_Object_Generator::place_land_objects(
     }
 }
 
-// VA: 00486A60 RGE_RMM_Object_Generator::place_group
-// MATCH: The variance doubling and typed radius scratch preserve the exact
 // period VC5 x87 and register topology.
 void RGE_RMM_Object_Generator::place_group(
     RGE_Object_Info_Line& info, long px, long py, RGE_Player* player)
@@ -564,8 +547,6 @@ void RGE_RMM_Object_Generator::place_group(
     self->deinit_stack(obj_stack);
 }
 
-// VA: 00486C40 RGE_RMM_Object_Generator::place_cluster
-// SCRATCH: The typed cluster expansion preserves the executable's 19 calls,
 // bounds, placement state, and neighbor pushes. Local liveness still differs.
 void RGE_RMM_Object_Generator::place_cluster(
     RGE_Object_Info_Line& info, long x, long y, RGE_Player* player)

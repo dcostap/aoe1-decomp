@@ -1,5 +1,4 @@
 // Authentic source module for C:\\msdev\\work\\age1_x1\\asp_list.cpp.
-// Definitions follow the original PDB source-line and address order.
 // The compiler emits the nearby vector-deleting destructor at 0041A660.
 
 #include "../include/asp_list.h"
@@ -11,19 +10,16 @@ extern "C" void __cdecl rge_write(int handle, void* buffer, int size);
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
 
-// PDB: asp_list.cpp:23-27; 0041A640
 RGE_Active_Sprite_List::RGE_Active_Sprite_List(RGE_Static_Object* owner) {
     this->list = 0;
     this->owner = owner;
 }
 
-// PDB: asp_list.cpp:31-32; 0041A680
-// BINARY NOTE: The body stores the class vptr and tail-jumps to delete_list.
+// The body stores the class vptr and tail-jumps to delete_list.
 RGE_Active_Sprite_List::~RGE_Active_Sprite_List() {
     delete_list();
 }
 
-// PDB: asp_list.cpp:37-60; 0041A690
 void RGE_Active_Sprite_List::load(int param_1, RGE_Sprite** param_2) {
     unsigned char cVar4;
     RGE_Active_Sprite_Node* pRVar2;
@@ -46,8 +42,7 @@ void RGE_Active_Sprite_List::load(int param_1, RGE_Sprite** param_2) {
     this->list = pRVar5;
 }
 
-// PDB: asp_list.cpp:64-90; 0041A6F0
-// BINARY NOTE: This protected owner carries the shipped EH cleanup state.
+// This protected owner carries the shipped EH cleanup state.
 unsigned char RGE_Active_Sprite_List::load_node(int param_1, unsigned char param_2,
                                                  RGE_Sprite** param_3) {
     RGE_Active_Sprite_Node* node;
@@ -78,7 +73,6 @@ unsigned char RGE_Active_Sprite_List::load_node(int param_1, unsigned char param
     return 1;
 }
 
-// PDB: asp_list.cpp:94-102; 0041A820
 void RGE_Active_Sprite_List::save(int file) {
     RGE_Active_Sprite_Node* node = this->list;
     unsigned char ender = 0;
@@ -91,7 +85,6 @@ void RGE_Active_Sprite_List::save(int file) {
     rge_write(file, &ender, 1);
 }
 
-// PDB: asp_list.cpp:106-124; 0041A860
 void RGE_Active_Sprite_List::delete_list() {
     RGE_Active_Sprite_Node* node = this->list;
 
@@ -113,7 +106,6 @@ void RGE_Active_Sprite_List::delete_list() {
     this->list = 0;
 }
 
-// PDB: asp_list.cpp:128-143; 0041A8B0
 RGE_Active_Sprite_Node* RGE_Active_Sprite_List::copy_sprite_list() {
     RGE_Active_Sprite_Node* old_list = this->list;
     RGE_Active_Sprite_Node* node = old_list;
@@ -131,15 +123,12 @@ RGE_Active_Sprite_Node* RGE_Active_Sprite_List::copy_sprite_list() {
     return node;
 }
 
-// PDB: asp_list.cpp:147-150; 0041A8F0
 void RGE_Active_Sprite_List::use_sprite_list(RGE_Active_Sprite_Node* list) {
     this->delete_list();
     this->list = list;
 }
 
-// PDB: asp_list.cpp:154-200; 0041A910
-// STATUS: VERIFIED_LOGIC; exact work remains suspended on broad register drift.
-// BINARY NOTE: The source preserves duplicate counts and order insertion.
+// The source preserves duplicate counts and order insertion.
 void RGE_Active_Sprite_List::add_sprite(RGE_Sprite* param_1, unsigned char param_2,
                                         long param_3, long param_4) {
     RGE_Active_Sprite_Node* pp;
@@ -177,7 +166,6 @@ void RGE_Active_Sprite_List::add_sprite(RGE_Sprite* param_1, unsigned char param
     *ppPrev = node;
 }
 
-// PDB: asp_list.cpp:204-237; 0041A9B0
 void RGE_Active_Sprite_List::remove_sprite(RGE_Sprite* param_1) {
     RGE_Active_Sprite_Node* p = this->list;
     RGE_Active_Sprite_Node** ppPrev = &this->list;
@@ -204,7 +192,6 @@ void RGE_Active_Sprite_List::remove_sprite(RGE_Sprite* param_1) {
     }
 }
 
-// PDB: asp_list.cpp:241-246; 0041AA20
 void RGE_Active_Sprite_List::update(float param_1, float param_2) {
     RGE_Active_Sprite_Node* node = this->list;
 
@@ -219,7 +206,6 @@ void RGE_Active_Sprite_List::update(float param_1, float param_2) {
     }
 }
 
-// PDB: asp_list.cpp:250-255; 0041AA50
 void RGE_Active_Sprite_List::draw(short param_1, short param_2, short param_3,
                                   short param_4, short param_5, RGE_Color_Table* param_6,
                                   TDrawArea* param_7) {
@@ -231,7 +217,6 @@ void RGE_Active_Sprite_List::draw(short param_1, short param_2, short param_3,
     }
 }
 
-// PDB: asp_list.cpp:259-264; 0041AAA0
 void RGE_Active_Sprite_List::normal_draw(short param_1, short param_2, short param_3,
                                          RGE_Color_Table* param_4, TDrawArea* param_5) {
     RGE_Active_Sprite_Node* node = this->list;
@@ -242,7 +227,6 @@ void RGE_Active_Sprite_List::normal_draw(short param_1, short param_2, short par
     }
 }
 
-// PDB: asp_list.cpp:268-273; 0041AAE0
 void RGE_Active_Sprite_List::shadow_draw(short param_1, short param_2, short param_3,
                                          RGE_Color_Table* param_4, TDrawArea* param_5,
                                          unsigned char param_6) {
@@ -254,7 +238,6 @@ void RGE_Active_Sprite_List::shadow_draw(short param_1, short param_2, short par
     }
 }
 
-// PDB: asp_list.cpp:277-285; 0041AB20
 short RGE_Active_Sprite_List::frame(RGE_Sprite* param_1) {
     RGE_Active_Sprite_Node* node = this->list;
 
@@ -268,7 +251,6 @@ short RGE_Active_Sprite_List::frame(RGE_Sprite* param_1) {
     return 0;
 }
 
-// PDB: asp_list.cpp:289-297; 0041AB60
 unsigned char RGE_Active_Sprite_List::is_animating(RGE_Sprite* param_1) {
     RGE_Active_Sprite_Node* node = this->list;
 
@@ -282,7 +264,6 @@ unsigned char RGE_Active_Sprite_List::is_animating(RGE_Sprite* param_1) {
     return 0;
 }
 
-// PDB: asp_list.cpp:301-307; 0041AB90
 void RGE_Active_Sprite_List::set_frame(RGE_Sprite* param_1, short param_2) {
     RGE_Active_Sprite_Node* node = this->list;
 
@@ -294,7 +275,6 @@ void RGE_Active_Sprite_List::set_frame(RGE_Sprite* param_1, short param_2) {
     }
 }
 
-// PDB: asp_list.cpp:311-319; 0041ABC0
 unsigned char RGE_Active_Sprite_List::frame_passed(RGE_Sprite* param_1, short param_2) {
     RGE_Active_Sprite_Node* node = this->list;
 
@@ -308,7 +288,6 @@ unsigned char RGE_Active_Sprite_List::frame_passed(RGE_Sprite* param_1, short pa
     return 0;
 }
 
-// PDB: asp_list.cpp:323-331; 0041AC00
 unsigned char RGE_Active_Sprite_List::looped(RGE_Sprite* param_1) {
     RGE_Active_Sprite_Node* node = this->list;
 
@@ -322,7 +301,6 @@ unsigned char RGE_Active_Sprite_List::looped(RGE_Sprite* param_1) {
     return 0;
 }
 
-// PDB: asp_list.cpp:335-343; 0041AC30
 short RGE_Active_Sprite_List::get_facetindex(RGE_Sprite* param_1, short param_2) {
     RGE_Active_Sprite_Node* node = this->list;
 
@@ -336,7 +314,6 @@ short RGE_Active_Sprite_List::get_facetindex(RGE_Sprite* param_1, short param_2)
     return 0;
 }
 
-// PDB: asp_list.cpp:347-355; 0041AC70
 unsigned char RGE_Active_Sprite_List::get_frame(short& param_1, short& param_2,
                                                 short& param_3, short& param_4,
                                                 RGE_Sprite* param_5, long param_6) {
@@ -352,7 +329,6 @@ unsigned char RGE_Active_Sprite_List::get_frame(short& param_1, short& param_2,
     return 0;
 }
 
-// PDB: asp_list.cpp:359-374; 0041ACC0
 unsigned char RGE_Active_Sprite_List::get_lowest_draw_level() {
     unsigned char min_level = 0x14;
     RGE_Active_Sprite_Node* node = this->list;
@@ -368,7 +344,6 @@ unsigned char RGE_Active_Sprite_List::get_lowest_draw_level() {
     return min_level;
 }
 
-// PDB: asp_list.cpp:378-390; 0041ACF0
 int RGE_Active_Sprite_List::check_for_shadows() {
     RGE_Active_Sprite_Node* node = this->list;
 

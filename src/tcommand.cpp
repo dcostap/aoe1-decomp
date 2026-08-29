@@ -1,5 +1,4 @@
 // Authentic source module for C:\\msdev\\work\\age1_x1\\tcommand.cpp.
-// The function order follows the PDB source order from lines 56 through 1796.
 // The vector deleting destructor at 00509740 is compiler-generated.
 
 #include "../include/tcommand.h"
@@ -30,7 +29,6 @@ extern int out_of_sync2;
 extern void __cdecl debug_random_write();
 extern void __cdecl dump_vismap_log();
 
-// PDB order: lines 56-57.
 TRIBE_Command::TRIBE_Command(
     TRIBE_World* world,
     TCommunications_Handler* com_hand)
@@ -38,7 +36,6 @@ TRIBE_Command::TRIBE_Command(
 {
 }
 
-// PDB order: lines 62-125.
 extern "C" int __cdecl debug_rand(const char* file, int line);
 
 void TRIBE_Command::do_command(void* cmd)
@@ -93,7 +90,6 @@ void TRIBE_Command::do_command(void* cmd)
     }
 }
 
-// PDB order: lines 130-139.
 void TRIBE_Command::do_command_tribe_create(RGE_Command_Create* cmd)
 {
     int player_offset = (unsigned int)cmd->player_id * 4;
@@ -114,7 +110,6 @@ void TRIBE_Command::do_command_tribe_create(RGE_Command_Create* cmd)
     }
 }
 
-// PDB order: lines 143-205.
 void TRIBE_Command::do_command_make(TRIBE_Command_Make* cmd)
 {
     short progress;
@@ -153,7 +148,6 @@ void TRIBE_Command::do_command_make(TRIBE_Command_Make* cmd)
     }
 }
 
-// PDB order: lines 209-251.
 void TRIBE_Command::do_command_research(TRIBE_Command_Research* cmd)
 {
     short progress;
@@ -194,7 +188,6 @@ void TRIBE_Command::do_command_research(TRIBE_Command_Research* cmd)
     }
 }
 
-// PDB order: lines 256-331.
 void TRIBE_Command::do_command_build(TRIBE_Command_Build* cmd)
 {
     RGE_Static_Object* blockingObject;
@@ -267,7 +260,6 @@ void TRIBE_Command::do_command_build(TRIBE_Command_Build* cmd)
     } while (n != 0);
 }
 
-// PDB order: lines 337-450.
 void TRIBE_Command::do_command_build_wall(TRIBE_Command_Build_Wall* cmd)
 {
     int count = cmd->unit_num;
@@ -336,7 +328,6 @@ void TRIBE_Command::do_command_build_wall(TRIBE_Command_Build_Wall* cmd)
     }
 }
 
-// PDB order: lines 456-503.
 void TRIBE_Command::place_line_of_walls(
     TRIBE_Player* player,
     TRIBE_Master_Building_Object* master,
@@ -399,7 +390,6 @@ void TRIBE_Command::place_line_of_walls(
     }
 }
 
-// PDB order: lines 508-527.
 void TRIBE_Command::do_command_explore(TRIBE_Command_Explore* cmd)
 {
     TRIBE_Command* self = this;
@@ -424,8 +414,7 @@ void TRIBE_Command::do_command_explore(TRIBE_Command_Explore* cmd)
     }
 }
 
-// PDB order: lines 531-665.
-// BINARY NOTE: Original game fields use draw_system +0x48 and quick_build +0x9A8.
+// Original game fields use draw_system +0x48 and quick_build +0x9A8.
 void TRIBE_Command::do_command_game(TRIBE_Command_Game* cmd)
 {
     char file_name[260];
@@ -493,7 +482,6 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* cmd)
     }
 }
 
-// PDB order: lines 671-683.
 void TRIBE_Command::do_command_cancel_build(TRIBE_Command_Cancel_Build* cmd)
 {
     RGE_Static_Object* object = this->world->object(cmd->unit_id);
@@ -502,7 +490,6 @@ void TRIBE_Command::do_command_cancel_build(TRIBE_Command_Cancel_Build* cmd)
     }
 }
 
-// PDB order: lines 688-703.
 void TRIBE_Command::do_command_attack_ground(TRIBE_Command_Attack_Ground* packet)
 {
     RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
@@ -521,7 +508,6 @@ void TRIBE_Command::do_command_attack_ground(TRIBE_Command_Attack_Ground* packet
     } while (count != 0);
 }
 
-// PDB order: lines 708-770.
 void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
 {
     float cost;
@@ -558,7 +544,6 @@ void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
         (long)ca->attr_amount, 0);
 }
 
-// PDB order: lines 776-789.
 void TRIBE_Command::do_command_trade_attribute(TRIBE_Command_Trade_Attribute* packet)
 {
     int count = packet->unit_num;
@@ -575,7 +560,6 @@ void TRIBE_Command::do_command_trade_attribute(TRIBE_Command_Trade_Attribute* pa
     }
 }
 
-// PDB order: lines 795-815.
 void TRIBE_Command::do_command_repair(TRIBE_Command_Repair* packet)
 {
     int target_id = packet->target.id;
@@ -598,7 +582,6 @@ void TRIBE_Command::do_command_repair(TRIBE_Command_Repair* packet)
     }
 }
 
-// PDB order: lines 820-846.
 void TRIBE_Command::do_command_unload(TRIBE_Command_Unload* cmd)
 {
     TRIBE_Command* v_this = this;
@@ -617,7 +600,6 @@ void TRIBE_Command::do_command_unload(TRIBE_Command_Unload* cmd)
     }
 }
 
-// PDB order: lines 852-867.
 void TRIBE_Command::do_command_queue(TRIBE_Command_Queue* queue) {
     TRIBE_Building_Object* building =
         static_cast<TRIBE_Building_Object*>(
@@ -632,7 +614,6 @@ void TRIBE_Command::do_command_queue(TRIBE_Command_Queue* queue) {
     }
 }
 
-// PDB order: lines 872-900.
 extern "C" TDebuggingLog* L;
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
@@ -658,7 +639,6 @@ void TRIBE_Command::command_make(RGE_Static_Object* obj, short unit_id)
     }
 }
 
-// PDB order: lines 906-938.
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_make(
@@ -680,7 +660,6 @@ void TRIBE_Command::command_make(
     }
 }
 
-// PDB order: lines 944-972.
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_research(RGE_Static_Object* obj, short tech_id)
@@ -705,7 +684,6 @@ void TRIBE_Command::command_research(RGE_Static_Object* obj, short tech_id)
     }
 }
 
-// PDB order: lines 978-1009.
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_research(
@@ -727,7 +705,6 @@ void TRIBE_Command::command_research(
     }
 }
 
-// PDB order: lines 1015-1060.
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_build(
@@ -769,7 +746,6 @@ void TRIBE_Command::command_build(
     }
 }
 
-// PDB order: lines 1066-1110.
 extern void Log(void* log, const char* format, ...);
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
@@ -802,7 +778,6 @@ void TRIBE_Command::command_build(int player_id, int* ids, int count,
     }
 }
 
-// PDB order: lines 1116-1176.
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_build_wall(
@@ -857,7 +832,6 @@ void TRIBE_Command::command_build_wall(
     }
 }
 
-// PDB order: lines 1182-1221.
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_explore(
@@ -885,7 +859,6 @@ void TRIBE_Command::command_explore(
     }
 }
 
-// PDB order: lines 1227-1250.
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_allied_victory(short player_id, unsigned char flag)
@@ -907,7 +880,6 @@ void TRIBE_Command::command_allied_victory(short player_id, unsigned char flag)
     }
 }
 
-// PDB order: lines 1256-1281.
 void TRIBE_Command::command_relation(short player_id, short target_player_id, short relation)
 {
     TRIBE_Command_Game* cmd = static_cast<TRIBE_Command_Game*>(
@@ -929,7 +901,6 @@ void TRIBE_Command::command_relation(short player_id, short target_player_id, sh
     }
 }
 
-// PDB order: lines 1287-1308.
 void TRIBE_Command::command_game_speed(float speed)
 {
     TRIBE_Command_Game* packet = static_cast<TRIBE_Command_Game*>(
@@ -943,7 +914,6 @@ void TRIBE_Command::command_game_speed(float speed)
     }
 }
 
-// PDB order: lines 1314-1334.
 void TRIBE_Command::command_save_game()
 {
     TRIBE_Command_Game* packet = static_cast<TRIBE_Command_Game*>(
@@ -956,7 +926,6 @@ void TRIBE_Command::command_save_game()
     }
 }
 
-// PDB order: lines 1340-1363.
 void TRIBE_Command::command_inventory(short player_id, short inventory_id, float amount)
 {
     TRIBE_Command_Game* cmd = static_cast<TRIBE_Command_Game*>(
@@ -975,7 +944,6 @@ void TRIBE_Command::command_inventory(short player_id, short inventory_id, float
     }
 }
 
-// PDB order: lines 1369-1390.
 extern void Log(void* log, const char* text, ...);
 
 void TRIBE_Command::command_upgrade_town(short town_id) {
@@ -990,7 +958,6 @@ void TRIBE_Command::command_upgrade_town(short town_id) {
     }
 }
 
-// PDB order: lines 1396-1417.
 void TRIBE_Command::command_quick_build(short value) {
     TRIBE_Command_Game* packet = static_cast<TRIBE_Command_Game*>(
         calloc(1, sizeof(TRIBE_Command_Game)));
@@ -1003,7 +970,6 @@ void TRIBE_Command::command_quick_build(short value) {
     }
 }
 
-// PDB order: lines 1423-1444.
 void TRIBE_Command::command_shared_los(short param_1) {
     TRIBE_Command_Game* order;
 
@@ -1018,7 +984,6 @@ void TRIBE_Command::command_shared_los(short param_1) {
     }
 }
 
-// PDB order: lines 1450-1471.
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_cancel_build(RGE_Static_Object* obj)
@@ -1034,7 +999,6 @@ void TRIBE_Command::command_cancel_build(RGE_Static_Object* obj)
     }
 }
 
-// PDB order: lines 1477-1519.
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_attack_ground(RGE_Static_Object** objs, short count, float x, float y)
@@ -1068,7 +1032,6 @@ void TRIBE_Command::command_attack_ground(RGE_Static_Object** objs, short count,
     }
 }
 
-// PDB order: lines 1525-1547.
 extern "C" void* __cdecl calloc(size_t, size_t);
 
 void TRIBE_Command::command_cheat(short param1, short param2) {
@@ -1084,7 +1047,6 @@ void TRIBE_Command::command_cheat(short param1, short param2) {
     }
 }
 
-// PDB order: lines 1553-1579.
 void TRIBE_Command::command_give_attribute(
     int player_id,
     int to_player_id,
@@ -1107,7 +1069,6 @@ void TRIBE_Command::command_give_attribute(
     this->submit(packet, sizeof(TRIBE_Command_Give_Attribute));
 }
 
-// PDB order: lines 1585-1625.
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_trade_attribute(RGE_Static_Object** objs, short count, long attribute)
@@ -1140,7 +1101,6 @@ void TRIBE_Command::command_trade_attribute(RGE_Static_Object** objs, short coun
     }
 }
 
-// PDB order: lines 1632-1660.
 extern void* __cdecl calloc(unsigned int, unsigned int);
 
 void TRIBE_Command::command_trade_attribute(int param_1, int param_2, long param_3) {
@@ -1162,7 +1122,6 @@ void TRIBE_Command::command_trade_attribute(int param_1, int param_2, long param
     }
 }
 
-// PDB order: lines 1666-1716.
 extern "C" void* __cdecl calloc(size_t count, size_t size);
 
 void TRIBE_Command::command_repair(
@@ -1195,7 +1154,6 @@ void TRIBE_Command::command_repair(
     }
 }
 
-// PDB order: lines 1722-1764.
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_unload(RGE_Static_Object** objs, short count, float x, float y)
@@ -1228,7 +1186,6 @@ void TRIBE_Command::command_unload(RGE_Static_Object** objs, short count, float 
     }
 }
 
-// PDB order: lines 1770-1796.
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_queue(

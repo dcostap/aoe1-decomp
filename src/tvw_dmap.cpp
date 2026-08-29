@@ -1,12 +1,9 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\tvw_dmap.cpp.
-// Definitions follow the PDB source-line and address order.
 // The scalar deleting destructor between the constructor and destructor is
 // compiler generated.
 
 #include "../include/scr_game.h"
 #include "../include/tvw_dmap.h"
 
-// tvw_dmap.cpp:38-41; 0052C9E0.
 TRIBE_Diamond_Map_View::TRIBE_Diamond_Map_View()
     : RGE_Diamond_Map_View()
 {
@@ -14,12 +11,10 @@ TRIBE_Diamond_Map_View::TRIBE_Diamond_Map_View()
     this->flash_on = 0;
 }
 
-// tvw_dmap.cpp:42; 0052CA20.
 TRIBE_Diamond_Map_View::~TRIBE_Diamond_Map_View()
 {
 }
 
-// tvw_dmap.cpp:47-54; 0052CA30.
 void TRIBE_Diamond_Map_View::set_redraw(TPanel::RedrawMode mode)
 {
     RGE_Diamond_Map::set_redraw(mode);
@@ -30,7 +25,6 @@ void TRIBE_Diamond_Map_View::set_redraw(TPanel::RedrawMode mode)
     }
 }
 
-// tvw_dmap.cpp:60-73; 0052CA60.
 void TRIBE_Diamond_Map_View::draw_objects()
 {
     unsigned long now = debug_timeGetTime(
@@ -42,7 +36,6 @@ void TRIBE_Diamond_Map_View::draw_objects()
     RGE_Diamond_Map::draw_objects();
 }
 
-// tvw_dmap.cpp:79-95; 0052CAB0.
 void TRIBE_Diamond_Map_View::draw_object(
     short param_1, short param_2, unsigned char param_3, short param_4,
     RGE_Static_Object* param_5)

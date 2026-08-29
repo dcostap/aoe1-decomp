@@ -1,7 +1,6 @@
 #ifndef AOE1_AIUAIMOD_H
 #define AOE1_AIUAIMOD_H
 
-// Canonical declarations for the PDB aiuaimod.cpp source module.
 // UnitAIModule owns the class surface. Other objects come from their owner
 // headers so this module does not carry duplicate provider views.
 

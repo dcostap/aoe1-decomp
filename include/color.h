@@ -2,7 +2,6 @@
 #define AOE1_COLOR_H
 
 // Compiler-facing declarations for the complete color.cpp source module.
-// The source file keeps its handwritten owners in PDB order.
 
 #include <windows.h>
 

@@ -1,7 +1,6 @@
 #ifndef AOE1_DLG_HELP_H
 #define AOE1_DLG_HELP_H
 
-// PDB source: C:\\msdev\\work\\age1_x1\\dlg_help.cpp.
 // This header owns THelpDialog.
 #include "pnl_dlg.h"
 #include "pnl_btn.h"

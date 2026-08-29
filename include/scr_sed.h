@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_SED_H
 #define AOE1_SCR_SED_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\scr_sed.cpp.
 // TRIBE_Screen_Sed and List_Info are the only declarations owned here.
 // Shared panel and control types come from their canonical owners.
 #include "Pnl_scr.h"

@@ -1,10 +1,7 @@
-// PDB source module: C:/msdev/work/age1_x1/pnl_dlg.cpp.
-// Definitions follow the original source-line and address order.
 // The nearby vector-deleting destructor is compiler-generated.
 
 #include "../include/pnl_dlg.h"
 
-// pnl_dlg.cpp:33-34
 TDialogPanel::TDialogPanel(char* name)
     : TEasy_Panel(name)
     , dlg_wnd(0)
@@ -16,7 +13,6 @@ TDialogPanel::TDialogPanel(char* name)
 {
 }
 
-// pnl_dlg.cpp:40-81
 int TDialogPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3,
                         long param_4, char* param_5, long param_6, int param_7)
 {
@@ -53,8 +49,7 @@ int TDialogPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3,
     return 1;
 }
 
-// pnl_dlg.cpp:87-124
-// BINARY NOTE: This overload colors the panel before modal updates.
+// This overload colors the panel before modal updates.
 int TDialogPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3,
                         long param_4, unsigned char param_5, int param_6)
 {
@@ -89,7 +84,6 @@ int TDialogPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3,
     return 1;
 }
 
-// pnl_dlg.cpp:130-144
 TDialogPanel::~TDialogPanel()
 {
     if (panel_system.restorePreviousModalPanel() == 0) {
@@ -102,7 +96,6 @@ TDialogPanel::~TDialogPanel()
     }
 }
 
-// pnl_dlg.cpp:150-152
 void TDialogPanel::set_focus(int focus)
 {
     TEasy_Panel::set_focus(focus);

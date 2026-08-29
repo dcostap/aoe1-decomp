@@ -1,7 +1,6 @@
 #ifndef AOE1_TPNL_TML_H
 #define AOE1_TPNL_TML_H
 
-// PDB source module: C:\msdev\work\age1_x1\tpnl_tml.cpp.
 // Time_Line_Panel owns this layout. Its base and foreign members use their
 // reviewed source-module owners.
 #include "panel_ez.h"

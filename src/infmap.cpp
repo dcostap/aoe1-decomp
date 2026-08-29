@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\infmap.cpp.
-// Definitions follow the original source order.
 
 #include "../include/infmap.h"
 #include "../include/rge_fio.h"
@@ -24,7 +22,6 @@ static const char print_row[] = "R%03d: ";
 static const char print_row_end[] = ":R%03d\n";
 static const char print_row_end_last[] = ":R%03d\n\n";
 
-// 0044DF80, infmap.cpp lines 26-36.
 InfluenceMap::InfluenceMap(int xSize, int ySize, unsigned char fillValue)
     : xSizeValue(xSize),
       xReferencePointValue(0),
@@ -47,7 +44,6 @@ InfluenceMap::InfluenceMap(int xSize, int ySize, unsigned char fillValue)
     }
 }
 
-// 0044E050, infmap.cpp lines 45-47.
 InfluenceMap::InfluenceMap(int fd) {
     this->xSizeValue = -1;
     this->ySizeValue = -1;
@@ -56,7 +52,6 @@ InfluenceMap::InfluenceMap(int fd) {
     this->load(fd);
 }
 
-// 0044E080, infmap.cpp lines 52-57.
 InfluenceMap::~InfluenceMap() {
     if (this->valueValue) {
         operator_delete(this->valueValue);
@@ -66,13 +61,11 @@ InfluenceMap::~InfluenceMap() {
     }
 }
 
-// 0044E0B0, infmap.cpp lines 62-66.
 int InfluenceMap::initialize(unsigned char value) {
     memset(this->valueValue, value, this->xSizeValue * this->ySizeValue);
     return 1;
 }
 
-// 0044E0F0, infmap.cpp lines 71-81.
 void InfluenceMap::save(int fd) {
     rge_write(fd, &xSizeValue, 4);
     rge_write(fd, &ySizeValue, 4);
@@ -87,7 +80,6 @@ void InfluenceMap::save(int fd) {
     }
 }
 
-// 0044E1A0, infmap.cpp lines 86-100.
 void InfluenceMap::load(int fd) {
     rge_read(fd, &xSizeValue, 4);
     rge_read(fd, &ySizeValue, 4);
@@ -104,7 +96,6 @@ void InfluenceMap::load(int fd) {
     }
 }
 
-// 0044E250, infmap.cpp lines 105-173.
 void InfluenceMap::printToFile(char* filename)
 {
     if (filename != 0) {
@@ -201,19 +192,16 @@ void InfluenceMap::printToFile(char* filename)
     }
 }
 
-// 0044E4C0, infmap.cpp lines 178-181.
 void InfluenceMap::setReferencePoint(int x, int y) {
     this->xReferencePointValue = x;
     this->yReferencePointValue = y;
 }
 
-// 0044E4E0, infmap.cpp lines 186-188.
 int InfluenceMap::lookupValue(int x, int y) {
     return this->rowValue[y - this->yReferencePointValue]
                        [x - this->xReferencePointValue];
 }
 
-// 0044E510, infmap.cpp lines 203-213.
 int InfluenceMap::setValue(int x, int y, unsigned char value) {
     x -= this->xReferencePointValue;
     y -= this->yReferencePointValue;
@@ -224,7 +212,6 @@ int InfluenceMap::setValue(int x, int y, unsigned char value) {
     return 1;
 }
 
-// 0044E560, infmap.cpp lines 219-235.
 int InfluenceMap::setValue(int x1, int y1, int x2, int y2,
                            unsigned char value)
 {
@@ -245,7 +232,6 @@ int InfluenceMap::setValue(int x1, int y1, int x2, int y2,
     return 1;
 }
 
-// 0044E600, infmap.cpp lines 240-257.
 int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
     int rx = x - this->xReferencePointValue;
     int ry = y - this->yReferencePointValue;
@@ -268,7 +254,6 @@ int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
     return 1;
 }
 
-// 0044E680, infmap.cpp lines 263-299.
 int InfluenceMap::incrementValue(int x1, int y1, int x2, int y2,
                                  unsigned char amount)
 {
@@ -282,7 +267,7 @@ int InfluenceMap::incrementValue(int x1, int y1, int x2, int y2,
     else if (x1 >= this->xSizeValue)
         x1 = this->xSizeValue - 1;
 
-    // ORIGINAL BUG: the shipped code compares y coordinates with xSizeValue.
+    // the shipped code compares y coordinates with xSizeValue.
     if (y1 < 0)
         y1 = 0;
     else if (y1 >= this->xSizeValue)
@@ -293,7 +278,7 @@ int InfluenceMap::incrementValue(int x1, int y1, int x2, int y2,
     else if (x2 >= this->xSizeValue)
         x2 = this->xSizeValue - 1;
 
-    // ORIGINAL BUG: the shipped code compares y coordinates with xSizeValue.
+    // the shipped code compares y coordinates with xSizeValue.
     if (y2 < 0)
         y2 = 0;
     else if (y2 >= this->xSizeValue)
@@ -316,7 +301,6 @@ int InfluenceMap::incrementValue(int x1, int y1, int x2, int y2,
     return 1;
 }
 
-// 0044E790, infmap.cpp lines 304-321.
 int InfluenceMap::decrementValue(int x, int y, unsigned char amount) {
     int tx = x - xReferencePointValue;
     int ty = y - yReferencePointValue;
@@ -341,7 +325,6 @@ int InfluenceMap::decrementValue(int x, int y, unsigned char amount) {
     return 1;
 }
 
-// 0044E800, infmap.cpp lines 327-363.
 int InfluenceMap::decrementValue(int x1, int y1, int x2, int y2,
                                  unsigned char amount)
 {
@@ -355,7 +338,7 @@ int InfluenceMap::decrementValue(int x1, int y1, int x2, int y2,
     else if (x1 >= this->xSizeValue)
         x1 = this->xSizeValue - 1;
 
-    // ORIGINAL BUG: the shipped code compares y coordinates with xSizeValue.
+    // the shipped code compares y coordinates with xSizeValue.
     if (y1 < 0)
         y1 = 0;
     else if (y1 >= this->xSizeValue)
@@ -366,7 +349,7 @@ int InfluenceMap::decrementValue(int x1, int y1, int x2, int y2,
     else if (x2 >= this->xSizeValue)
         x2 = this->xSizeValue - 1;
 
-    // ORIGINAL BUG: the shipped code compares y coordinates with xSizeValue.
+    // the shipped code compares y coordinates with xSizeValue.
     if (y2 < 0)
         y2 = 0;
     else if (y2 >= this->xSizeValue)
@@ -389,7 +372,6 @@ int InfluenceMap::decrementValue(int x1, int y1, int x2, int y2,
     return 1;
 }
 
-// 0044E900, infmap.cpp lines 369-387.
 int InfluenceMap::setCoverageCount(const XYPoint& from, const XYPoint& to,
                                    int threshold)
 {
@@ -413,7 +395,6 @@ int InfluenceMap::setCoverageCount(const XYPoint& from, const XYPoint& to,
     return this->coverageCountValue;
 }
 
-// 0044E9E0, infmap.cpp lines 394-458.
 int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
                                      int minimum, int edgeHorizontal,
                                      int edgeVertical, int allDirections)
@@ -442,7 +423,7 @@ int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
                         switch (direction) {
                         case 0:
                             --neighborX;
-                            // BINARY NOTE: VC5 merges this suffix with case 7.
+                            // VC5 merges this suffix with case 7.
                             --neighborY;
                             break;
                         case 1:
@@ -486,7 +467,6 @@ int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
     return self->connectionCountValue;
 }
 
-// 0044EC00, infmap.cpp lines 464-488.
 int InfluenceMap::coverageIncluding(const XYPoint& from, const XYPoint& to,
                                     unsigned char minimum,
                                     unsigned char amount)
@@ -518,7 +498,6 @@ int InfluenceMap::coverageIncluding(const XYPoint& from, const XYPoint& to,
     return rVal;
 }
 
-// 0044ED20, infmap.cpp lines 495-585.
 int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                                        unsigned char minimum,
                                        unsigned char amount, int mode1,
@@ -630,13 +609,11 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
     return result;
 }
 
-// 0044F030, infmap.cpp lines 590-594.
 void InfluenceMap::setUnchangeableLimit(unsigned char value) {
     if (value > 0)
         this->unchangeableLimitValue = value;
 }
 
-// 0044F040, infmap.cpp lines 599-607.
 int InfluenceMap::maxValue() {
     int total = this->xSizeValue * this->ySizeValue;
     int maxVal = (unsigned int)this->valueValue[0];

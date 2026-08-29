@@ -95,9 +95,7 @@ class TRIBE_Screen_Wait;
 class TRIBE_Screen_Disconnect;
 void __cdecl color_log(unsigned char, unsigned char, int);
 
-// PDB owner: basegame.cpp, 004231E0.
 unsigned long __cdecl debug_timeGetTime(char*, int);
-// PDB owner: basegame.cpp, 004230A0.
 int __cdecl debug_rand(char*, int);
 void __cdecl debug_srand(char*, int, unsigned int);
 
@@ -241,14 +239,14 @@ public:
     virtual void set_game_mode(int, int);
     virtual void set_player(short);
     virtual int get_error_code();
-    // BINARY NOTE: VC5 reverses this adjacent overload group in the vtable.
+    // VC5 reverses this adjacent overload group in the vtable.
     virtual char* get_string(long);
     virtual char* get_string(long, char*, int);
     virtual char* get_string(int, long, char*, int);
     virtual char* get_string2(int, long, long, char*, int);
     virtual TPanel* get_view_panel() { return 0; }
     virtual TPanel* get_map_panel() { return 0; }
-    // BINARY NOTE: VC5 reverses this adjacent overload pair in the vtable.
+    // VC5 reverses this adjacent overload pair in the vtable.
     virtual RGE_Scenario_Header* new_scenario_header(int);
     virtual RGE_Scenario_Header* new_scenario_header(RGE_Scenario*);
     virtual RGE_Scenario* new_scenario_info(int);

@@ -1,8 +1,6 @@
 // Authentic source module for C:\\msdev\\work\\age1_x1\\vw_main.cpp.
-// Definitions follow the PDB source order.
 //
 // Migration note: 18 direct owners retain matching status. Nine normal owners
-// remain scratch. They are not registered exact claims.
 //
 // The nearby 0053DB10 vector deleting destructor is compiler-generated and is
 // not a normal source owner. The 0053E8E9 three-byte padding entry is also not
@@ -1205,7 +1203,7 @@ int RGE_Main_View::pick_objects1(long x, long y,
 
 RGE_Static_Object* RGE_Main_View::pick_best_target(
     long x, long y, int* attacking_out, short action_filter) {
-    // BINARY NOTE: task ownership is RGE_Master_Action_Object, not its static
+    // task ownership is RGE_Master_Action_Object, not its static
     // base. Its named tasks and task_by_group fields are used below.
     short selected_count;
     RGE_Static_Object** selected_objects;
@@ -1449,7 +1447,7 @@ void RGE_Main_View::fixup_pick_info(RGE_Pick_Info* info) {
 }
 
 void RGE_Main_View::reset_display_object_selection(int select_type) {
-    // BINARY NOTE: the list is a typed 20-byte record array at the view tail.
+    // the list is a typed 20-byte record array at the view tail.
     int count = 0;
     if (this->DispSel_List_Max > 0) {
         do {

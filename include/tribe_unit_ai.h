@@ -3,7 +3,6 @@
 
 #include "unit_ai_module.h"
 
-// PDB donor: TribeUnitAIModules.h. These derived modules add no data.
 class TribeArtifactUnitAIModule : public UnitAIModule {
 public:
     TribeArtifactUnitAIModule(RGE_Static_Object*, int);

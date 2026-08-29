@@ -6,8 +6,6 @@
 #include "../include/task.h"
 #include "../include/world.h"
 
-// PDB source: C:\\msdev\\work\\age1_x1\\act_tran.cpp.
-// The definitions follow the original source-line and address order.
 //
 // Direct dependency closure:
 // - act_tran.h owns RGE_Action_Transport and consumes RGE_Action_Move_To.
@@ -18,23 +16,16 @@
 //   and world fields and methods.
 // - m_s_obj.h and stat_obj.h arrive through the canonical owner-header chain.
 //
-// Normal owners in PDB order: 00406D60, 00406DC0, 00406E00, 00406E50,
-// 00406F90, 00407160, 00407170, 004071A0, 004072B0, and 00407420.
-// 00406D90 is the compiler-generated vector-deleting destructor.
 
 extern float DAT_0056e6c8;
 extern float DAT_0056e6cc;
 
-// VA: 00406D60 RGE_Action_Transport::RGE_Action_Transport
-// PDB: act_tran.cpp:54-56.
 RGE_Action_Transport::RGE_Action_Transport(int id, RGE_Action_Object* object)
     : RGE_Action(id, object, 1)
 {
     this->action_type = 0x0C;
 }
 
-// VA: 00406DC0 RGE_Action_Transport::RGE_Action_Transport
-// PDB: act_tran.cpp:64-74.
 RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* object,
                                            RGE_Task* task,
                                            float x, float y, float z)
@@ -47,9 +38,6 @@ RGE_Action_Transport::RGE_Action_Transport(RGE_Action_Object* object,
     this->target_z = z;
 }
 
-// VA: 00406E00 RGE_Action_Transport::first_in_stack
-// PDB: act_tran.cpp:80-90.
-// ACCEPTED_DRIFT: VC5 inserts add esp,4 after the virtual calls in this
 // member. The original uses callee cleanup with ret 4. The FPU comparisons
 // use a relocated zero constant instead of the original hardcoded address.
 void RGE_Action_Transport::first_in_stack(unsigned char param_1)
@@ -61,9 +49,6 @@ void RGE_Action_Transport::first_in_stack(unsigned char param_1)
     this->set_state(2);
 }
 
-// VA: 00406E50 RGE_Action_Transport::set_state
-// PDB: act_tran.cpp:96-133.
-// The /GX response file is required by the original allocation cleanup.
 void RGE_Action_Transport::set_state(unsigned char param_1)
 {
     RGE_Action_Move_To* move_to;
@@ -112,8 +97,6 @@ void RGE_Action_Transport::set_state(unsigned char param_1)
     }
 }
 
-// VA: 00406F90 RGE_Action_Transport::update
-// PDB: act_tran.cpp:139-300.
 unsigned char RGE_Action_Transport::update(void)
 {
     switch (this->state) {
@@ -185,7 +168,7 @@ unsigned char RGE_Action_Transport::update(void)
         return 1;
 
     case 0x0D:
-        // BINARY NOTE: Typed casts select the virtual notify overload here.
+        // Typed casts select the virtual notify overload here.
         this->obj->notify(
             (int)this->obj->id, (int)this->obj->id, 0x1F9, (long)0x266,
             (long)0, (long)0
@@ -201,16 +184,12 @@ unsigned char RGE_Action_Transport::update(void)
     return 0;
 }
 
-// VA: 00407160 RGE_Action_Transport::stop
-// PDB: act_tran.cpp:306-309.
 int RGE_Action_Transport::stop()
 {
     this->set_state(2);
     return 1;
 }
 
-// VA: 00407170 RGE_Action_Transport::move_to
-// PDB: act_tran.cpp:316-339.
 int RGE_Action_Transport::move_to(RGE_Static_Object* object,
                                   float x, float y, float z)
 {
@@ -222,8 +201,6 @@ int RGE_Action_Transport::move_to(RGE_Static_Object* object,
     return 1;
 }
 
-// VA: 004071A0 RGE_Action_Transport::work
-// PDB: act_tran.cpp:346-386.
 int RGE_Action_Transport::work(RGE_Static_Object* object,
                                float x, float y, float z)
 {
@@ -258,8 +235,6 @@ int RGE_Action_Transport::work(RGE_Static_Object* object,
     return 1;
 }
 
-// VA: 004072B0 RGE_Action_Transport::next_to_drop_off_terrain
-// PDB: act_tran.cpp:392-462.
 int RGE_Action_Transport::next_to_drop_off_terrain(void)
 {
     if (this->task != 0 && this->task->terrain_id == -1) {
@@ -291,8 +266,6 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void)
     }
 
     int target_zone = this->targetZone();
-    // The transport sentinel is tested as its stored dword in the original
-    // source; keep the proven bitwise -1.0f test rather than an x87 compare.
     if (*(int*)&this->target_x != 0xBF800000) {
         target_zone = (int)this->obj->lookupZone(
             (int)this->target_x,
@@ -315,8 +288,6 @@ int RGE_Action_Transport::next_to_drop_off_terrain(void)
     return 0;
 }
 
-// VA: 00407420 RGE_Action_Transport::targetZone
-// PDB: act_tran.cpp:468-473.
 int RGE_Action_Transport::targetZone(void)
 {
     if (*(int*)&this->target_x != 0xBF800000) {

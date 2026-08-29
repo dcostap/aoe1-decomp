@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_SING_H
 #define AOE1_SCR_SING_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\Scr_sing.cpp.
 // TribeSPMenuScreen is the only class owned by this header. Its screen base
 // comes from the canonical screen owner.
 

@@ -1,7 +1,6 @@
 #ifndef AOE1_RPNL_TIM_H
 #define AOE1_RPNL_TIM_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\rpnl_tim.cpp.
 // This header owns only RGE_Panel_Time.
 
 #include "panel.h"

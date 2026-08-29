@@ -1,5 +1,3 @@
-// Authentic PDB-ordered source module for C:\\msdev\\work\\age1_x1\\rmm_land.cpp.
-// The five normal owners below follow the original source-line and address order.
 
 #include <string.h>
 #include "../include/map.h"
@@ -8,8 +6,6 @@
 extern double dbl_571ED0;
 extern "C" int __cdecl debug_rand(char* file, int line);
 
-// 00485200 RGE_RMM_Land_Generator::RGE_RMM_Land_Generator
-// PDB: rmm_land.cpp lines 25-29 (59 bytes).
 RGE_RMM_Land_Generator::RGE_RMM_Land_Generator(
     RGE_Map* map, RGE_Random_Map_Module* module, RGE_Land_Info* info)
     : RGE_Random_Map_Module(map, module, 1) {
@@ -17,8 +13,6 @@ RGE_RMM_Land_Generator::RGE_RMM_Land_Generator(
     this->info = *info;
 }
 
-// 00485240 RGE_RMM_Land_Generator::generate
-// PDB: rmm_land.cpp lines 33-51 (133 bytes).
 extern "C" void* memset(void* dst, int value, unsigned int size);
 
 unsigned char RGE_RMM_Land_Generator::generate() {
@@ -32,10 +26,8 @@ unsigned char RGE_RMM_Land_Generator::generate() {
     return 1;
 }
 
-// 004852D0 RGE_RMM_Land_Generator::check_terrain_and_zone
-// PDB: rmm_land.cpp lines 57-140 (417 bytes).
 //
-// BINARY NOTE: The executable computes octogon bounds but scans only the
+// The executable computes octogon bounds but scans only the
 // +/-2 neighborhood. The named bounds remain part of the source model.
 unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
     unsigned char target, unsigned char land_id, long x, long y)
@@ -111,9 +103,6 @@ unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
     return count;
 }
 
-// 00485480 RGE_RMM_Land_Generator::chance
-// PDB: rmm_land.cpp lines 146-208 (159 bytes). Status: scratch.
-// BLOCKER: Named Land-line fields remain one byte beyond the original owner
 // boundary under the canonical header.
 unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_id)
 {
@@ -167,10 +156,8 @@ unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_id)
     return 0;
 }
 
-// 00485520 RGE_RMM_Land_Generator::base_land_generate
-// PDB: rmm_land.cpp lines 213-353 (1833 bytes).
 //
-// BINARY NOTE: map rows use [row][column]. The stack outputs are column then
+// map rows use [row][column]. The stack outputs are column then
 // row, and the helper calls use that same coordinate order.
 unsigned char RGE_RMM_Land_Generator::base_land_generate() {
     long land_size[99];

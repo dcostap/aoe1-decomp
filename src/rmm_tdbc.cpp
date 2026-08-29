@@ -1,4 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\rmm_tdbc.cpp.
 
 #include "../include/rmm_tdbc.h"
 #include "../include/rmm_clif.h"

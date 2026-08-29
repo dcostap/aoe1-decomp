@@ -1,5 +1,4 @@
 // Authentic source module for C:\\msdev\\work\\age1_x1\\tact_lst.cpp.
-// Definitions follow the original PDB source and address order.
 //
 // The four normal owners are all retained in this module. The scalar
 // deleting destructor for TRIBE_Action_List is compiler generated and has no
@@ -26,14 +25,12 @@
 
 #include <string.h>
 
-// PDB lines 37-38; VA 004D0150.
 TRIBE_Action_List::TRIBE_Action_List(RGE_Action_Object* object)
     : RGE_Action_List(object)
 {
 }
 
-// PDB lines 43-88; VA 004D0170.
-// BINARY NOTE: The shipped ABI takes (int, short). Each case keeps its
+// The shipped ABI takes (int, short). Each case keeps its
 // original allocation size through the canonical action owner constructor.
 RGE_Action* TRIBE_Action_List::create_action(int param, short type)
 {
@@ -69,8 +66,7 @@ RGE_Action* TRIBE_Action_List::create_action(int param, short type)
     }
 }
 
-// PDB lines 93-156; VA 004D05D0.
-// BINARY NOTE: Selection reads RGE_Task::action_type at +0x06 and retains
+// Selection reads RGE_Task::action_type at +0x06 and retains
 // separate target and coordinate constructor paths.
 RGE_Action* TRIBE_Action_List::create_task_action(
     RGE_Task* task,
@@ -123,8 +119,7 @@ RGE_Action* TRIBE_Action_List::create_task_action(
     }
 }
 
-// PDB lines 160-183; VA 004D0C50.
-// BINARY NOTE: The action type is read through the canonical node and action
+// The action type is read through the canonical node and action
 // owners before the inherited fallback handles unknown types.
 void TRIBE_Action_List::get_action_name(char* dest)
 {

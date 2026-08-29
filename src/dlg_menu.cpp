@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_menu.cpp.
-// The handwritten owners follow the original source-line and address order.
 
 #include "../include/dlg_menu.h"
 #include "../include/scr_save.h"

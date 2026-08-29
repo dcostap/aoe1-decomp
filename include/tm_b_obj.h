@@ -13,7 +13,6 @@ class RGE_Static_Object;
 class TDrawArea;
 
 // tm_b_obj.cpp owns this building-master extension.
-// BINARY NOTE: 00512A90 selects RGE_Master_Combat_Object for type 'F'
 // (0x164 bytes) and this class for type 'P' (0x17C bytes).
 // Do not replace these direct targets with Fish or Projectile classes.
 // Base slots keep check_placement at +0x20, alignment at +0x24, and draw at

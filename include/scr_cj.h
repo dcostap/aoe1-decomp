@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_CJ_H
 #define AOE1_SCR_CJ_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\scr_cj.cpp.
 // This header owns the join screen and create-game dialog. Shared screen and
 // dialog bases come from their canonical owners.
 #include "pnl_dlg.h"

@@ -1,9 +1,7 @@
 #ifndef UTMARRAY_H
 #define UTMARRAY_H
 
-// Reconstructed from the original ManagedArray<int> CodeView type and the
 // exact utmarray.h functions at 00408D20, 004147A0, 004DE980, 004DE9D0,
-// 004EA750, and 004F1390.
 
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* ptr);

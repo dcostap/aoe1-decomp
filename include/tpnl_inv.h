@@ -1,7 +1,6 @@
 #ifndef AOE1_TPNL_INV_H
 #define AOE1_TPNL_INV_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp.
 // This header owns TRIBE_Panel_Inven. Its base comes from panel.h.
 #include "panel.h"
 

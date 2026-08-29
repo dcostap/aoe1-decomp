@@ -1,8 +1,5 @@
-// VA: 004147A0
 // ManagedArray<int>::resize(int new_size)
-// PDB source: utmarray.h lines 183-195
 // Size: 95 bytes (0x5F), 40 asm lines
-// Exact match: 0.0000%
 
 // Key insight: for loop + direct indexing prevents loop peeling,
 // same pattern as ManagedArray<int>::remove (004F1390).

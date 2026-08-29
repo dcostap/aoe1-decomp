@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\m_s_obj.cpp.
-// Definitions follow the original source order.
 
 #include "../include/m_s_obj.h"
 #include "../include/basegame.h"
@@ -24,7 +22,6 @@ extern float DAT_00570610;
 extern float DAT_00570614;
 extern float DAT_00570618;
 
-// 00452120, m_s_obj.cpp lines 40-43.
 RGE_Master_Static_Object::RGE_Master_Static_Object(
     RGE_Master_Static_Object* object, int do_setup) {
     if (do_setup != 0) {
@@ -32,7 +29,6 @@ RGE_Master_Static_Object::RGE_Master_Static_Object(
     }
 }
 
-// 00452170, m_s_obj.cpp lines 48-51.
 RGE_Master_Static_Object::RGE_Master_Static_Object(
     int value, RGE_Sprite** sprites, RGE_Sound** sounds, int do_setup) {
     if (do_setup) {
@@ -40,7 +36,6 @@ RGE_Master_Static_Object::RGE_Master_Static_Object(
     }
 }
 
-// 004521A0, m_s_obj.cpp lines 56-59.
 RGE_Master_Static_Object::RGE_Master_Static_Object(
     _iobuf* file, RGE_Sprite** sprites, RGE_Sound** sounds,
     short value, int doSetup) {
@@ -49,7 +44,6 @@ RGE_Master_Static_Object::RGE_Master_Static_Object(
     }
 }
 
-// 004521E0, m_s_obj.cpp lines 65-157.
 int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* src) {
     master_type = 0x0A;
     recyclable = src->recyclable;
@@ -141,7 +135,6 @@ int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* src) {
     return 1;
 }
 
-// 004524E0, m_s_obj.cpp lines 162-294.
 int RGE_Master_Static_Object::setup(
     int handle, RGE_Sprite** sprites, RGE_Sound** sounds) {
     short death_sound_num;
@@ -301,7 +294,6 @@ int RGE_Master_Static_Object::setup(
     return 1;
 }
 
-// 00452B00, m_s_obj.cpp lines 299-485.
 int RGE_Master_Static_Object::setup(
     FILE* fp, RGE_Sprite** sprites, RGE_Sound** sounds, short object_id) {
     char object_name[120];
@@ -445,7 +437,6 @@ int RGE_Master_Static_Object::setup(
     return 1;
 }
 
-// 00452FA0, m_s_obj.cpp lines 492-504.
 RGE_Master_Static_Object::~RGE_Master_Static_Object() {
     if (this->name != 0) {
         free(this->name);
@@ -457,7 +448,6 @@ RGE_Master_Static_Object::~RGE_Master_Static_Object() {
     }
 }
 
-// 00452FE0, m_s_obj.cpp lines 509-522.
 RGE_Static_Object* RGE_Master_Static_Object::make_new_obj(
     RGE_Player* player, float x, float y, float z) {
     if (recyclable) {
@@ -471,12 +461,10 @@ RGE_Static_Object* RGE_Master_Static_Object::make_new_obj(
     return new RGE_Static_Object(this, player, x, y, z, 1);
 }
 
-// 004530B0, m_s_obj.cpp lines 527-529.
 RGE_Master_Static_Object* RGE_Master_Static_Object::make_new_master(void) {
     return new RGE_Master_Static_Object(this, 1);
 }
 
-// 00453120, m_s_obj.cpp lines 534-574.
 void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     short id_val = id;
     short copy_id_val = copy_id;
@@ -603,7 +591,6 @@ void RGE_Master_Static_Object::copy_obj(RGE_Master_Static_Object* src) {
     available = available_val;
 }
 
-// 004534A0, m_s_obj.cpp lines 578-600.
 void RGE_Master_Static_Object::modify(float value, unsigned char op) {
     switch (op) {
         case 0:
@@ -627,7 +614,6 @@ void RGE_Master_Static_Object::modify(float value, unsigned char op) {
     }
 }
 
-// 00453540, m_s_obj.cpp lines 604-626.
 void RGE_Master_Static_Object::modify_delta(float value, unsigned char op) {
     switch (op) {
         case 0:
@@ -651,7 +637,6 @@ void RGE_Master_Static_Object::modify_delta(float value, unsigned char op) {
     }
 }
 
-// 004535F0, m_s_obj.cpp lines 630-652.
 void RGE_Master_Static_Object::modify_percent(float value, unsigned char op) {
     switch (op) {
         case 0:
@@ -675,7 +660,6 @@ void RGE_Master_Static_Object::modify_percent(float value, unsigned char op) {
     }
 }
 
-// 004536D0, m_s_obj.cpp lines 656-772.
 void RGE_Master_Static_Object::save(int fd) {
     RGE_Master_Static_Object* self = this;
     short name_size = 0;
@@ -782,7 +766,7 @@ void RGE_Master_Static_Object::save(int fd) {
         if (self->damage_sprite_num > 0) {
             do {
                 rge_write(fd, (void*)(&self->damage_sprites[j].sprite->id), 2);
-                // ORIGINAL BUG: The beta save stream writes two bytes here.
+                // The beta save stream writes two bytes here.
                 rge_write(fd, (void*)(&self->damage_sprites[j].damage_percent), 2);
                 rge_write(fd, (void*)(&self->damage_sprites[j].flag), 1);
                 j++;
@@ -800,7 +784,6 @@ void RGE_Master_Static_Object::save(int fd) {
     rge_write(fd, (void*)(&self->copy_id), 2);
 }
 
-// 00453C40, m_s_obj.cpp lines 778-1011.
 unsigned char RGE_Master_Static_Object::check_placement(
     RGE_Player* player, float x, float y, int* obj_id,
     unsigned char p5, unsigned char p6, unsigned char p7,
@@ -817,7 +800,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
         radius_y_value = radius_y;
     }
 
-    // BINARY NOTE: The beta executable transposes the upper placement edges.
+    // The beta executable transposes the upper placement edges.
     float left_edge = x - radius_x_value;
     float bottom_edge = radius_x_value + x;
     float right_edge = radius_y_value + y;
@@ -993,12 +976,10 @@ unsigned char RGE_Master_Static_Object::check_placement(
     return 0;
 }
 
-// 004543C0, m_s_obj.cpp lines 1015-1017.
 void RGE_Master_Static_Object::make_available(unsigned char v) {
     this->available = v;
 }
 
-// 004543D0, m_s_obj.cpp lines 1021-1088.
 unsigned char RGE_Master_Static_Object::alignment(
     float& param_1, float& param_2, RGE_Game_World* param_3,
     unsigned char param_4) {
@@ -1075,7 +1056,6 @@ unsigned char RGE_Master_Static_Object::alignment(
     return 1;
 }
 
-// 00454690, m_s_obj.cpp lines 1092-1122.
 unsigned char RGE_Master_Static_Object::alignment_box(
     RGE_Game_World* world, float x, float y,
     short& x1, short& y1, short& x2, short& y2,
@@ -1105,7 +1085,6 @@ unsigned char RGE_Master_Static_Object::alignment_box(
     return 1;
 }
 
-// 004547F0, m_s_obj.cpp lines 1126-1147.
 void RGE_Master_Static_Object::draw(
     TDrawArea* draw_area, short x, short y, RGE_Color_Table* color_table,
     long param_5, long param_6, int param_7, unsigned char param_8) {
@@ -1114,7 +1093,7 @@ void RGE_Master_Static_Object::draw(
                            color_table, draw_area, 10);
 
         if (param_7 != 0) {
-            // BINARY NOTE: The executable reads world before outline radii.
+            // The executable reads world before outline radii.
             RGE_Map* map = rge_base_game->world->map;
             float rx1 = this->outline_radius_x;
             float ry1 = this->outline_radius_y;
@@ -1139,22 +1118,18 @@ void RGE_Master_Static_Object::draw(
     }
 }
 
-// 00454950, m_s_obj.cpp lines 1153-1155.
 long RGE_Master_Static_Object::get_help_message() {
     return this->help_string_id;
 }
 
-// 00454960, m_s_obj.cpp lines 1161-1163.
 long RGE_Master_Static_Object::get_help_page() {
     return this->help_page_id;
 }
 
-// 00454970, m_s_obj.cpp lines 1169-1171.
 long RGE_Master_Static_Object::get_hotkey() {
     return this->hotkey_id;
 }
 
-// 00454980, m_s_obj.cpp lines 1177-1197.
 long RGE_Master_Static_Object::calc_base_damage_ability(
     RGE_Master_Combat_Object* param) {
     float total = 0.0f;

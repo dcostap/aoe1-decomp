@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\tpnl_inv.cpp.
-// Definitions follow the shipped source order.
 
 #include "../include/tpnl_inv.h"
 #include "../include/Shape.h"
@@ -10,10 +8,9 @@
 
 extern char s_tpnl_inv_draw[];
 extern const char s_fmt_ld[];
-// BINARY NOTE: No current canonical owner header declares this C helper.
+// No current canonical owner header declares this C helper.
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
-// tpnl_inv.cpp:33-61
 TRIBE_Panel_Inven::TRIBE_Panel_Inven(
     TDrawArea* area, TPanel* parent, void* font_, TRIBE_Player* player_)
     : TPanel()
@@ -35,7 +32,6 @@ TRIBE_Panel_Inven::TRIBE_Panel_Inven(
     }
 }
 
-// tpnl_inv.cpp:67-71
 void TRIBE_Panel_Inven::set_text_color(unsigned long color1,
                                        unsigned long color2) {
     this->font_color = color1;
@@ -43,7 +39,6 @@ void TRIBE_Panel_Inven::set_text_color(unsigned long color1,
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// tpnl_inv.cpp:77-91
 TRIBE_Panel_Inven::~TRIBE_Panel_Inven() {
     if (this->save_attr != 0) {
         free(this->save_attr);
@@ -60,7 +55,6 @@ TRIBE_Panel_Inven::~TRIBE_Panel_Inven() {
     this->TPanel::~TPanel();
 }
 
-// tpnl_inv.cpp:97-158
 void TRIBE_Panel_Inven::draw() {
     char str[20];
 
@@ -119,7 +113,6 @@ void TRIBE_Panel_Inven::draw() {
     this->draw_finish();
 }
 
-// tpnl_inv.cpp:164-198
 long TRIBE_Panel_Inven::handle_idle() {
     this->TPanel::handle_idle();
 
@@ -160,14 +153,12 @@ long TRIBE_Panel_Inven::handle_idle() {
     return 0;
 }
 
-// tpnl_inv.cpp:204-208
 void TRIBE_Panel_Inven::set_player(TRIBE_Player* player) {
     this->player = player;
     this->save_info();
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// tpnl_inv.cpp:214-230
 void TRIBE_Panel_Inven::save_info() {
     if (this->save_attr == 0 ||
         this->save_attr_num != this->player->attribute_num) {
@@ -183,7 +174,6 @@ void TRIBE_Panel_Inven::save_info() {
         this->save_attr[i] = (short)(int)this->player->attributes[i];
 }
 
-// tpnl_inv.cpp:236-265
 unsigned char TRIBE_Panel_Inven::get_help_info(char*& out_str,
                                                long& out_val,
                                                long x, long y) {

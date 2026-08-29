@@ -1,5 +1,3 @@
-// PDB source module: C:/msdev/work/age1_x1/tpnl_obj.cpp.
-// Definitions follow the original PDB source order.
 
 #include "../include/tpnl_obj.h"
 #include "../include/Shape.h"
@@ -42,7 +40,6 @@ static short building_facet(const RGE_Master_Static_Object* master)
         ->building_facet;
 }
 
-// 0051ADF0 TRIBE_Panel_Object (tpnl_obj.cpp:49-116)
 TRIBE_Panel_Object::TRIBE_Panel_Object(
     TDrawArea* draw_area, TPanel* parent, void* font_, long font_wid_,
     long font_hgt_, TShape* unit_pics_, TShape** bldg_pics_,
@@ -112,7 +109,6 @@ TRIBE_Panel_Object::TRIBE_Panel_Object(
     }
 }
 
-// 0051B070 ~TRIBE_Panel_Object (tpnl_obj.cpp:122-134)
 TRIBE_Panel_Object::~TRIBE_Panel_Object()
 {
     if (this->health_pic != 0) {
@@ -126,7 +122,6 @@ TRIBE_Panel_Object::~TRIBE_Panel_Object()
     }
 }
 
-// 0051B110 set_player (tpnl_obj.cpp:140-146)
 void TRIBE_Panel_Object::set_player(TRIBE_Player* player) {
     this->player = player;
     if (player != 0) {
@@ -136,26 +131,22 @@ void TRIBE_Panel_Object::set_player(TRIBE_Player* player) {
     set_object(0);
 }
 
-// 0051B140 set_object (tpnl_obj.cpp:152-167)
 void TRIBE_Panel_Object::set_object(RGE_Static_Object* object) {
     this->game_obj = static_cast<TRIBE_Building_Object*>(object);
     save_object_info();
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// 0051B160 set_mode (tpnl_obj.cpp:175-179)
 void TRIBE_Panel_Object::set_mode(unsigned char mode) {
     this->mode = mode;
     save_object_info();
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// 0051B180 get_mode (tpnl_obj.cpp:185-187)
 unsigned char TRIBE_Panel_Object::get_mode() {
     return this->mode;
 }
 
-// 0051B190 draw (tpnl_obj.cpp:193-735)
 void TRIBE_Panel_Object::draw()
 {
     short cur_val;
@@ -580,7 +571,7 @@ void TRIBE_Panel_Object::draw()
                     item_type = 5;
                     break;
                 default:
-                    // BINARY NOTE: an invalid resource type skips this draw.
+                    // an invalid resource type skips this draw.
                     goto resource_done;
                 }
 
@@ -638,7 +629,6 @@ finish:
     this->draw_finish();
 }
 
-// 0051BF90 draw_score (tpnl_obj.cpp:741-814)
 void TRIBE_Panel_Object::draw_score()
 {
     int i;
@@ -729,7 +719,6 @@ void TRIBE_Panel_Object::draw_score()
     this->draw_finish();
 }
 
-// 0051C220 draw_item (tpnl_obj.cpp:820-867)
 void TRIBE_Panel_Object::draw_item(int index, int frame, ValueType type,
                                    int value, int value2)
 {
@@ -786,7 +775,6 @@ void TRIBE_Panel_Object::draw_item(int index, int frame, ValueType type,
     }
 }
 
-// 0051C3F0 handle_idle (tpnl_obj.cpp:873-1133)
 long TRIBE_Panel_Object::handle_idle()
 {
     TPanel::handle_idle();
@@ -968,7 +956,6 @@ finish:
     return 0;
 }
 
-// 0051CA10 save_object_info (tpnl_obj.cpp:1139-1228)
 void TRIBE_Panel_Object::save_object_info()
 {
     if (this->mode == 2) {
@@ -1057,8 +1044,6 @@ void TRIBE_Panel_Object::save_object_info()
     }
 }
 
-// 0051CC80 mouse_left_down_action (tpnl_obj.cpp:1234-1244)
 long TRIBE_Panel_Object::mouse_left_down_action(long p0, long p1, int p2, int p3) { return 0; }
 
-// 0051CC90 mouse_left_up_action (tpnl_obj.cpp:1250-1265)
 long TRIBE_Panel_Object::mouse_left_up_action(long p0, long p1, int p2, int p3) { return 0; }

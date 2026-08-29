@@ -1,7 +1,6 @@
 #ifndef AOE1_COM_TYPES_H
 #define AOE1_COM_TYPES_H
 
-// Shared PDB-backed communication enum types.
 
 enum COMMSTATUS {
     UNINITIALIZED = 0,

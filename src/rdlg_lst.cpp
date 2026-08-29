@@ -1,5 +1,3 @@
-// PDB source module: C:/msdev/work/age1_x1/rdlg_lst.cpp.
-// Definitions follow the original source order.
 
 #include <stdlib.h>
 #include <string.h>

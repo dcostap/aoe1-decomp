@@ -1,5 +1,3 @@
-// PDB source module: C:/msdev/work/age1_x1/scr_cams.cpp.
-// Definitions follow the original source order.
 // The vector-deleting destructor at 00490E10 is compiler generated.
 
 #include "../include/scr_cams.h"
@@ -16,7 +14,6 @@
 
 extern TCommunications_Handler* comm;
 
-// 004909D0 TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection
 TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
     : TScreenPanel("Campaign Selection Screen")
 {
@@ -115,7 +112,6 @@ TRIBE_Screen_Campaign_Selection::TRIBE_Screen_Campaign_Selection()
     }
 }
 
-// 00490E30 TRIBE_Screen_Campaign_Selection::init_vars
 void TRIBE_Screen_Campaign_Selection::init_vars()
 {
     title = 0;
@@ -136,7 +132,6 @@ void TRIBE_Screen_Campaign_Selection::init_vars()
     rge_base_game->setDifficulty(difficulty);
 }
 
-// 00490EA0 TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection
 TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection()
 {
     delete this->title;
@@ -153,7 +148,6 @@ TRIBE_Screen_Campaign_Selection::~TRIBE_Screen_Campaign_Selection()
     delete this->close_button;
 }
 
-// 00490F90 TRIBE_Screen_Campaign_Selection::handle_idle
 long TRIBE_Screen_Campaign_Selection::handle_idle()
 {
     if (campaignsLoaded == 0) {
@@ -168,7 +162,6 @@ long TRIBE_Screen_Campaign_Selection::handle_idle()
     return TPanel::handle_idle();
 }
 
-// 00490FF0 TRIBE_Screen_Campaign_Selection::action
 long TRIBE_Screen_Campaign_Selection::action(TPanel* panel, long code,
                                              unsigned long p3,
                                              unsigned long p4)
@@ -204,7 +197,6 @@ long TRIBE_Screen_Campaign_Selection::action(TPanel* panel, long code,
     return TEasy_Panel::action(panel, code, p3, p4);
 }
 
-// 004911A0 TRIBE_Screen_Campaign_Selection::fillCampaigns
 void TRIBE_Screen_Campaign_Selection::fillCampaigns()
 {
     campaignList->empty_list();
@@ -239,7 +231,6 @@ void TRIBE_Screen_Campaign_Selection::fillCampaigns()
     }
 }
 
-// 00491290 TRIBE_Screen_Campaign_Selection::fillScenarios
 void TRIBE_Screen_Campaign_Selection::fillScenarios()
 {
     scenarioList->empty_list();
@@ -265,7 +256,6 @@ void TRIBE_Screen_Campaign_Selection::fillScenarios()
     }
 }
 
-// 00491350 TRIBE_Screen_Campaign_Selection::startGame
 void TRIBE_Screen_Campaign_Selection::startGame()
 {
     TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);

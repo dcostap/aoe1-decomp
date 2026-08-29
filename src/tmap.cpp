@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\tmap.cpp.
-// Definitions follow the original source order.
 
 #include "../include/tmap.h"
 #include "../include/m_s_obj.h"
@@ -14,7 +12,6 @@ typedef unsigned char uchar;
 
 extern int __cdecl debug_rand(char*, int);
 
-// 0050F410, tmap.cpp lines 38-121.
 TRIBE_Map::TRIBE_Map(int p1, RGE_Sound** p2, unsigned char load)
     : RGE_Map(p1, p2, 0),
       old_cliff_x(-1),
@@ -63,7 +60,6 @@ TRIBE_Map::TRIBE_Map(int p1, RGE_Sound** p2, unsigned char load)
     setup_cliff_type(0,-1,0,-1,0x109,8,0x109,7,1.5f,1.5f);
 }
 
-// 0050F760, tmap.cpp lines 127-131.
 TRIBE_Map::TRIBE_Map(char* param1, char* param2, char* param3, char* param4,
                      short param5, short param6, short param7,
                      RGE_Sound** param8)
@@ -71,22 +67,19 @@ TRIBE_Map::TRIBE_Map(char* param1, char* param2, char* param3, char* param4,
 {
 }
 
-// 0050F7A0, tmap.cpp line 136.
 TRIBE_Map::~TRIBE_Map()
 {
 }
 
-// 0050F7B0, tmap.cpp lines 141-143.
 void TRIBE_Map::save(int p)
 {
     RGE_Map::save(p);
 }
 
-// 0050F7C0, tmap.cpp lines 148-156.
 void TRIBE_Map::map_generate(RGE_Player* player, RGE_Game_World* world,
                              RGE_Player_Info* info, unsigned char* zones_in)
 {
-    // BINARY NOTE: The shipped wrapper stores world at +0x8DD4 and player at
+    // The shipped wrapper stores world at +0x8DD4 and player at
     // +0x8DD8 before it delegates to the one-argument overload.
     this->rge_player = player;
     this->rge_game_world = world;
@@ -94,18 +87,15 @@ void TRIBE_Map::map_generate(RGE_Player* player, RGE_Game_World* world,
     this->map_generate(info);
 }
 
-// 0050F7F0, tmap.cpp line 160.
 void TRIBE_Map::map_generate(RGE_Player_Info* info)
 {
 }
 
-// 0050F800, tmap.cpp lines 193-195.
 void TRIBE_Map::data_load_random_map(int param_1)
 {
     this->random_map = new TRIBE_RMM_Database_Controller(param_1);
 }
 
-// 0050F860, tmap.cpp lines 199-201.
 void TRIBE_Map::load_random_map(char* param_1, char* param_2, char* param_3,
                                 char* param_4)
 {
@@ -114,7 +104,6 @@ void TRIBE_Map::load_random_map(char* param_1, char* param_2, char* param_3,
     this->random_map = ctrl;
 }
 
-// 0050F8D0, tmap.cpp lines 210-259.
 void TRIBE_Map::check_tile_for_forest_change(short x, short y,
                                              RGE_Game_World* world)
 {
@@ -187,7 +176,6 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
     }
 }
 
-// 0050FA90, tmap.cpp lines 264-314.
 void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
                                 RGE_Game_World* world)
 {
@@ -247,7 +235,6 @@ void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
     }
 }
 
-// 0050FC40, tmap.cpp lines 318-352.
 unsigned char TRIBE_Map::do_terrain_brush(long x, long y, long r,
                                           unsigned char type)
 {
@@ -286,7 +273,6 @@ unsigned char TRIBE_Map::do_terrain_brush(long x, long y, long r,
     return 1;
 }
 
-// 0050FD40, tmap.cpp lines 356-396.
 unsigned char TRIBE_Map::do_terrain_brush_stroke(long p1, long p2, long p3,
                                                  long p4, long p5,
                                                  unsigned char p6)
@@ -315,7 +301,6 @@ unsigned char TRIBE_Map::do_terrain_brush_stroke(long p1, long p2, long p3,
     return 1;
 }
 
-// 0050FDD0, tmap.cpp lines 400-439.
 unsigned char TRIBE_Map::do_elevation_brush_stroke(long x1, long y1, long x2,
                                                    long y2, long r,
                                                    unsigned char c)
@@ -349,7 +334,6 @@ unsigned char TRIBE_Map::do_elevation_brush_stroke(long x1, long y1, long x2,
     return 1;
 }
 
-// 0050FE90, tmap.cpp lines 443-459.
 void TRIBE_Map::setup_cliff_type(long param_1, long param_2, long param_3,
                                  long param_4, long param_5, long param_6,
                                  long param_7, long param_8, float param_9,
@@ -373,7 +357,6 @@ void TRIBE_Map::setup_cliff_type(long param_1, long param_2, long param_3,
     this->cliff_master_table[idx].info.info[3] = param_4;
 }
 
-// 0050FF20, tmap.cpp lines 463-485.
 RGE_Static_Object* TRIBE_Map::find_cliff(long param_1, long param_2)
 {
     long x1 = param_1 * 3 + 1;
@@ -427,7 +410,6 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long param_1, long param_2)
     return 0;
 }
 
-// 00510020, tmap.cpp lines 489-515.
 TRIBE_Cliff_Info TRIBE_Map::get_cliff_info(RGE_Static_Object* obj)
 {
     TRIBE_Cliff_Info ret = {0, 0, 0, 0};
@@ -448,7 +430,6 @@ TRIBE_Cliff_Info TRIBE_Map::get_cliff_info(RGE_Static_Object* obj)
     return ret;
 }
 
-// 005100D0, tmap.cpp lines 519-527.
 unsigned char TRIBE_Map::check_cliff_valid(TRIBE_Cliff_Info param_1)
 {
     int temp = param_1.info[0] * 4 + param_1.info[1];
@@ -457,7 +438,6 @@ unsigned char TRIBE_Map::check_cliff_valid(TRIBE_Cliff_Info param_1)
     return this->cliff_master_table[temp].id >= 0;
 }
 
-// 00510110, tmap.cpp lines 531-573.
 RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y,
                                               TRIBE_Cliff_Info info)
 {
@@ -505,7 +485,6 @@ RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y,
     return new_cliff;
 }
 
-// 005102A0, tmap.cpp lines 577-618.
 void TRIBE_Map::remove_cliff_edge(long x, long y, long dir)
 {
     TRIBE_Cliff_Info cliff_info;
@@ -557,7 +536,6 @@ void TRIBE_Map::remove_cliff_edge(long x, long y, long dir)
     }
 }
 
-// 00510410, tmap.cpp lines 622-627.
 long TRIBE_Map::reverse_cliff_direction(long dir)
 {
     long result = dir + 2;
@@ -566,7 +544,6 @@ long TRIBE_Map::reverse_cliff_direction(long dir)
     return result;
 }
 
-// 00510430, tmap.cpp lines 631-815.
 long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing,
                                long other_facing)
 {
@@ -746,7 +723,6 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing,
     return existing;
 }
 
-// 00510960, tmap.cpp lines 819-838.
 void TRIBE_Map::delete_cliff(long param_1, long param_2)
 {
     RGE_Static_Object* cliff = find_cliff(param_1, param_2);
@@ -778,7 +754,6 @@ void TRIBE_Map::delete_cliff(long param_1, long param_2)
     }
 }
 
-// 00510A50, tmap.cpp lines 842-919.
 unsigned char TRIBE_Map::do_cliff_brush(long x, long y, unsigned char a,
                                         unsigned char b)
 {
@@ -843,7 +818,6 @@ unsigned char TRIBE_Map::do_cliff_brush(long x, long y, unsigned char a,
     return 1;
 }
 
-// 00510C10, tmap.cpp lines 923-935.
 unsigned char TRIBE_Map::do_cliff_brush_stroke(long a, long b, long c, long d,
                                                unsigned char e,
                                                unsigned char f)
@@ -859,7 +833,6 @@ unsigned char TRIBE_Map::do_cliff_brush_stroke(long a, long b, long c, long d,
     return 1;
 }
 
-// 00510C90, tmap.cpp lines 939-947.
 unsigned char TRIBE_Map::water(unsigned char value)
 {
     if (value == 1)
@@ -871,7 +844,6 @@ unsigned char TRIBE_Map::water(unsigned char value)
     return 0;
 }
 
-// 00510CB0, tmap.cpp lines 952-1025.
 void TRIBE_Map::clean_borders(long x1, long y1, long x2, long y2,
                               unsigned char terrain)
 {
@@ -938,7 +910,6 @@ void TRIBE_Map::clean_borders(long x1, long y1, long x2, long y2,
     }
 }
 
-// 00511000, tmap.cpp lines 1029-1063.
 unsigned char TRIBE_Map::do_terrain_brush_check(long x, long y)
 {
     RGE_Tile* tile = map_row_offset[y] + x;
@@ -970,7 +941,6 @@ unsigned char TRIBE_Map::do_terrain_brush_check(long x, long y)
     return 1;
 }
 
-// 005110E0, tmap.cpp lines 1067-1087.
 void TRIBE_Map::tribe_clean_elevation(long x_start, long y_start,
                                       long x_end, long y_end)
 {
@@ -999,7 +969,6 @@ void TRIBE_Map::tribe_clean_elevation(long x_start, long y_start,
     }
 }
 
-// 005111A0, tmap.cpp lines 1091-1270.
 void TRIBE_Map::tribe_clean_terrain(long x1, long y1, long x2, long y2,
                                     uchar flag, uchar terrain)
 {

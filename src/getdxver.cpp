@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\getdxver.cpp.
-// Definitions follow the original source order.
 
 #include "../include/getdxver.h"
 #include <windows.h>
@@ -16,7 +14,6 @@ extern const GUID CLSID_DirectPlay;
 extern const GUID IID_IDirectPlay3;
 extern const GUID IID_IDirectDrawSurface3;
 
-// getdxver.cpp:54-338.
 void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
     int hr;
     void* DDHinst = 0;
@@ -188,7 +185,6 @@ void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
     }
 }
 
-// getdxver.cpp:342-389.
 int IsDPlay501a() {
     DWORD lpDummy;
     UINT verSize = GetFileVersionInfoSizeA("dplayx.dll", &lpDummy);

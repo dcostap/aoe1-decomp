@@ -5,7 +5,6 @@
 
 // Canonical infmap.cpp class surface.
 //
-// PDB source order and the type inventory identify one 0x28-byte polymorphic
 // InfluenceMap. The vptr is compiler-owned. The source owners below include
 // this header through the grouped wrapper; their private fallback declarations
 // remain available for isolated work.

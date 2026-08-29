@@ -1,34 +1,11 @@
-// Attempt log:
-// try 7: reset the decompiler-shaped local and fake app surface to the period
 // RGE_Prog_Info and TRIBE_Game ownership model.  The source now names every
 // initialized field and uses the observed virtual calls and delete path.
-// probe: initial get_error_code is the constructor-result test; run is only
 // called for a zero result, followed by the final get_error_code.
-// probe: the error dialog passes the initial result to get_string2.
-// probe: error_code is initialized after the early string setup to preserve
 // the original zero register and stack-home schedule.
-// probe: moved error_code initialization after vol_name copy; original xor ebx at 00454BCA follows the AOE length scan.
-// probe: restored the original GUID byte order as two adjacent static GUID
-// aggregates; reordered defaults and directory copies reduced the mismatch to
-// an exact-size 285 bytes.
-// probe: prev_instance, max_players_per_cd, instance ordering reached the best
-// 159-byte mismatch and 94.01% resync similarity. Other parameter orders were
-// worse. Explicit dword stores regressed and were removed. The remaining drift
 // is local parameter scheduling plus one delayed zone GUID dword.
-// probe: matched the original option-store order: defer use_cd_audio through
 // use_wave_music until after the scroll values, and retain use_dir_draw=1.
-// probe: moved the zone GUID aggregate after scalar setup; this delayed its
-// final dword store and reduced the mismatch to 24 bytes.
-// probe: ordered paths as data, sound, graphics, save, scenario, campaign,
-// resource, AI, and AVI; this reduced the mismatch to 14 bytes.
-// probe: the executable returns the run() result and discards the following
-// get_error_code() result. Modeling that bug reduced the mismatch to 4 bytes.
-// probe: pointer field ABI changed to void* with no codegen change. Instance
 // assignment permutations and late aliases did not reproduce the final order.
-// exact-finish: reversing the independent instance assignments matched all
 // four remaining bytes. Reverting that one change restored the 4-byte diff.
-// The retained order is the smallest natural source form; no compiler
-// scaffolding or manual exception ownership was added.
 
 #include <stdio.h>
 #include <string.h>

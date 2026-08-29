@@ -4,7 +4,6 @@
 #define WIN32_LEAN_AND_MEAN
 
 // Canonical Drawarea.cpp type surface.
-// PDB layout proves TDrawSystem size 0x47C and TDrawArea size 0x100.
 
 typedef unsigned char uchar;
 
@@ -183,9 +182,7 @@ public:
     void PtrClear(tagRECT*, int);
     long AlignedWidth();
     void Copy(TDrawArea*, long, long, RECT*, int);
-    // Drawarea.cpp:00445250. View.cpp calls this during the span blit.
     void PtrSpanCopy(TDrawArea*, long, long, tagRECT*, unsigned char**);
-    // Drawarea.cpp:00445580. View.cpp calls this during scroll copying.
     void OverlayMemCopy(tagRECT&, tagRECT&, int, int, int, int);
     void SetTrans(int, unsigned char);
     void SetOverlayTrans(int, unsigned char);

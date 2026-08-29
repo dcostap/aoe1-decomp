@@ -1452,8 +1452,8 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
         this->unit_list_info[0].id = -1;
         this->set_string(this->unit_list_info[0].text, 0x2775, 0x14);
 
-        short out = 1; // BINARY NOTE: the original loads this index as a word.
-        // BINARY NOTE: the offset zero store follows the positive-count test.
+        short out = 1; // The original loads this index as a word.
+        // the offset zero store follows the positive-count test.
         if (n > 0) {
             int master_index = 0;
             do {
@@ -1759,7 +1759,6 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
     if (param_1 == this->main_view) {
         if (param_2 == 0x10) {
             rge_base_game->get_player()->unselect_object();
-            // BINARY NOTE: the PDB ABI names this parameter unsigned long,
             // but the main-view event carries an RGE_Static_Object pointer.
             RGE_Static_Object* event_object =
                 reinterpret_cast<RGE_Static_Object*>(param_3);
@@ -1853,7 +1852,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 line = this->victory_drop_down->get_line();
                 if (param_1 == this->victory_drop_down) { rge_base_game->set_game_mode(0, 0); this->DestinationObject = 0; this->SelectedObject = 0; rge_base_game->get_player()->unselect_object(); }
                 if (line == 2) { this->DestinationObject = 0; rge_base_game->get_player()->unselect_object(); }
-                // BINARY NOTE: both object-selection arms use redraw mode 0x10.
+                // both object-selection arms use redraw mode 0x10.
                 if (param_1 == this->victory_button_set_object) {
                     this->SelectRegionFlag = SelectObject;
                     rge_base_game->set_game_mode(0x10, 0);
@@ -2076,12 +2075,12 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 this->set_unit_player(static_cast<short>(line));
                 line = this->unit_player_list->get_line();
                 if (line == 0) {
-                    // BINARY NOTE: the shipped path redraws with status 3.
+                    // the shipped path redraws with status 3.
                     rge_base_game->set_game_mode(rge_base_game->game_mode, 3);
                 } else {
-                    // BINARY NOTE: status 4 precedes master-panel setup.
+                    // status 4 precedes master-panel setup.
                     rge_base_game->set_game_mode(rge_base_game->game_mode, 4);
-                    // BINARY NOTE: master ownership is world->players[id].
+                    // master ownership is world->players[id].
                     RGE_Master_Static_Object* player_master;
                     TRIBE_Player* player_tribe;
                     short master_id = rge_base_game->master_obj_id;
@@ -2114,7 +2113,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 }
                 this->object_panel->set_master_info(list_master, list_tribe);
                 this->set_paint_object_mode();
-                // BINARY NOTE: the list path redraws with flag 1, not 2.
+                // the list path redraws with flag 1, not 2.
                 this->object_panel->set_redraw(TPanel::RedrawNormal);
                 return 1;
             }
@@ -2439,7 +2438,7 @@ void TRIBE_Screen_Sed::command_save(unsigned char closeMenu, unsigned char postA
     }
 }
 
-// BINARY NOTE: The scenario buffer retains the shipped malformed-name behavior.
+// The scenario buffer retains the shipped malformed-name behavior.
 
 void TRIBE_Screen_Sed::command_save_as(unsigned char post_action)
 {

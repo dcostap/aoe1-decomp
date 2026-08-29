@@ -1,11 +1,8 @@
-// PDB source module: C:\msdev\work\age1_x1\trig.cpp.
-// Definitions follow the original source and address order.
 
 #include "../include/trig.h"
 
 #include <math.h>
 
-// 0052A730, trig.cpp lines 11-35.
 TRIGONOMETRY::TRIGONOMETRY()
 {
     int i;
@@ -45,14 +42,12 @@ TRIGONOMETRY::TRIGONOMETRY()
     }
 }
 
-// 0052A830, trig.cpp lines 37-40.
 int TRIGONOMETRY::RestrictAngle(int param_1)
 {
     int value = param_1 % 0x1000;
     return value < 0 ? -value : value;
 }
 
-// 0052A850, trig.cpp lines 43-46.
 int TRIGONOMETRY::RestrictAngle360(int param_1)
 {
     int value = param_1 % 0x168;
@@ -62,61 +57,52 @@ int TRIGONOMETRY::RestrictAngle360(int param_1)
     return value;
 }
 
-// 0052A870, trig.cpp line 48.
 float TRIGONOMETRY::sine(int param_1)
 {
     int index = this->RestrictAngle(param_1);
     return this->sines[index];
 }
 
-// 0052A890, trig.cpp line 49.
 float TRIGONOMETRY::cosine(int param_1)
 {
     int index = this->RestrictAngle(param_1);
     return this->cose[index];
 }
 
-// 0052A8B0, trig.cpp line 50.
 float TRIGONOMETRY::tangent(int param_1)
 {
     int index = this->RestrictAngle(param_1);
     return this->tane[index];
 }
 
-// 0052A8D0, trig.cpp line 51.
 float TRIGONOMETRY::atangent(int param_1)
 {
     int index = this->RestrictAngle(param_1);
     return this->atane[index];
 }
 
-// 0052A8F0, trig.cpp line 53.
 float TRIGONOMETRY::sin360(int param_1)
 {
     int index = this->RestrictAngle360(param_1);
     return this->sine360[index];
 }
 
-// 0052A910, trig.cpp line 54.
 float TRIGONOMETRY::cos360(int param_1)
 {
     int index = this->RestrictAngle360(param_1);
     return this->cose360[index];
 }
 
-// 0052A930, trig.cpp line 55.
 float TRIGONOMETRY::tan360(int param_1)
 {
     int index = this->RestrictAngle360(param_1);
     return this->tane360[index];
 }
 
-// 0052A950, trig.cpp line 56.
 float TRIGONOMETRY::atan360(int param_1)
 {
     int index = this->RestrictAngle360(param_1);
     return this->atane360[index];
 }
 
-// 0052A980, trig.cpp line 58: compiler-generated static initializer.
 TRIGONOMETRY trig;

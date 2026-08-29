@@ -1,5 +1,4 @@
 /* Authentic C++ source module for C:\\msdev\\work\\age1_x1\\Sound.cpp. */
-// Definitions follow the 14-owner PDB source order.
 #include "../include/sound.h"
 #include "../include/rge_fio.h"
 #include <stdio.h>

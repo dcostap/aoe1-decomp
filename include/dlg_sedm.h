@@ -1,7 +1,6 @@
 #ifndef AOE1_DLG_SEDM_H
 #define AOE1_DLG_SEDM_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_sedm.cpp.
 // TRIBE_Dialog_Sed_Menu is the only class owned by this header. Its dialog
 // base comes from the canonical panel owner.
 #include "pnl_dlg.h"

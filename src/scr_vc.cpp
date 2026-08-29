@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\scr_vc.cpp.
-// Definitions follow the original source order.
 
 #include <string.h>
 
@@ -16,8 +14,6 @@
 #include "../include/sounddrv.h"
 #include "../include/rge_base_game_global.h"
 
-// VA: 004B8100 TRIBE_Mission_Screen::TRIBE_Mission_Screen
-// PDB: scr_vc.cpp:45-194
 TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* info_file,
                                            unsigned char game_flag,
                                            TPicture* vc_back_bmp)
@@ -147,8 +143,6 @@ TRIBE_Mission_Screen::TRIBE_Mission_Screen(char* info_file,
     this->vc_back_bmp = vc_back_bmp;
 }
 
-// VA: 004B87D0 TRIBE_Mission_Screen::~TRIBE_Mission_Screen
-// PDB: scr_vc.cpp:200-219
 TRIBE_Mission_Screen::~TRIBE_Mission_Screen()
 {
     if (this->game_flag == 0) {
@@ -168,8 +162,6 @@ TRIBE_Mission_Screen::~TRIBE_Mission_Screen()
     }
 }
 
-// VA: 004B88B0 TRIBE_Mission_Screen::handle_idle
-// PDB: scr_vc.cpp:225-230
 long TRIBE_Mission_Screen::handle_idle()
 {
     if (!rge_base_game->input_enabled) {
@@ -178,8 +170,6 @@ long TRIBE_Mission_Screen::handle_idle()
     return TPanel::handle_idle();
 }
 
-// VA: 004B88E0 TRIBE_Mission_Screen::draw
-// PDB: scr_vc.cpp:236-260
 void TRIBE_Mission_Screen::draw()
 {
     TScreenPanel::draw();
@@ -213,8 +203,6 @@ void TRIBE_Mission_Screen::draw()
     }
 }
 
-// VA: 004B89A0 TRIBE_Mission_Screen::action
-// PDB: scr_vc.cpp:266-293
 long TRIBE_Mission_Screen::action(TPanel* sender, long actionType,
                                   unsigned long param3,
                                   unsigned long param4)
@@ -251,8 +239,6 @@ long TRIBE_Mission_Screen::action(TPanel* sender, long actionType,
     return TEasy_Panel::action(sender, actionType, param3, param4);
 }
 
-// VA: 004B8AE0 TRIBE_Mission_Screen::key_down_action
-// PDB: scr_vc.cpp:299-307
 long TRIBE_Mission_Screen::key_down_action(long param_1, short param_2,
                                            int param_3, int param_4,
                                            int param_5)

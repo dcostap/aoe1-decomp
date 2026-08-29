@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_MAIN_H
 #define AOE1_SCR_MAIN_H
 
-// PDB source module: C:\msdev\work\age1_x1\Scr_main.cpp.
 // This header owns only the two screen classes from this module.
 #include "Pnl_scr.h"
 

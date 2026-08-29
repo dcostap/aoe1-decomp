@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_sedm.cpp.
-// The definitions follow the original source-line and address order.
 
 #include "../include/dlg_sedm.h"
 #include "../include/pnl_btn.h"

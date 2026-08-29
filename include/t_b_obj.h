@@ -1,7 +1,6 @@
 #ifndef AOE1_T_B_OBJ_H
 #define AOE1_T_B_OBJ_H
 
-// Declarations owned by the PDB source module t_b_obj.cpp.
 // The TRIBE combat hierarchy comes from its canonical owner header.
 #include "t_c_obj.h"
 #include "tm_b_obj.h"

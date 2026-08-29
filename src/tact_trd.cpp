@@ -1,9 +1,5 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\tact_trd.cpp.
-// Definitions follow the authentic PDB source order.
 //
 // The scalar deleting destructor at 004D26E0 is compiler-generated and has no
-// handwritten source owner.  The ten exact owners, the accepted-drift
-// set_state owner, and the scratch update owner share this source module.
 
 #include "../include/game_globals.h"
 #include "../include/rge_fio.h"
@@ -22,7 +18,6 @@
 #include "../include/world.h"
 #include "../include/obj_list.h"
 
-// PDB lines 42-47; VA 004D2660.
 TRIBE_Action_Trade::TRIBE_Action_Trade(int file, RGE_Action_Object* obj)
     : RGE_Action(file, obj, 1)
 {
@@ -31,7 +26,6 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(int file, RGE_Action_Object* obj)
     this->action_type = 0x6F;
 }
 
-// PDB lines 55-70; VA 004D2710.
 TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj,
                                        RGE_Task* task,
                                        RGE_Static_Object* target)
@@ -47,7 +41,6 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj,
     this->pick_up_y = -1.0f;
 }
 
-// PDB lines 77-91; VA 004D27A0.
 TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj,
                                        RGE_Task* task,
                                        float x, float y, float z)
@@ -62,7 +55,6 @@ TRIBE_Action_Trade::TRIBE_Action_Trade(RGE_Action_Object* obj,
     *(int*)&this->target_z = *(int*)&z;
 }
 
-// PDB lines 98-103; VA 004D27F0.
 void TRIBE_Action_Trade::save(int file)
 {
     RGE_Action::save(file);
@@ -70,7 +62,6 @@ void TRIBE_Action_Trade::save(int file)
     rge_write(file, &this->pick_up_y, 4);
 }
 
-// PDB lines 109-128; VA 004D2830.
 void TRIBE_Action_Trade::first_in_stack(unsigned char param_1)
 {
     if (this->obj->attribute_type_held != 0 &&
@@ -89,10 +80,9 @@ void TRIBE_Action_Trade::first_in_stack(unsigned char param_1)
     this->set_state(3);
 }
 
-// PDB lines 134-275; VA 004D2880.
-// BINARY NOTE: The original is an EH-framed switch.  The high object slots
+// The original is an EH-framed switch.  The high object slots
 // are represented by the reviewed virtual surface in tact_trd.h.
-// BINARY NOTE: Case-local Move_To results preserve the two constructor-result
+// Case-local Move_To results preserve the two constructor-result
 // handoffs and the original action-list call order.
 void TRIBE_Action_Trade::set_state(unsigned char param_1)
 {
@@ -226,10 +216,7 @@ void TRIBE_Action_Trade::set_state(unsigned char param_1)
     }
 }
 
-// PDB lines 281-626; VA 004D2CB0.
-// BINARY NOTE: The original frame is eight bytes plus ESI and EDI.
-// BINARY NOTE: This complete body remains scratch.  Its exact anchors have
-// matching boundaries and calls, but its source still has structural drift.
+// The original frame is eight bytes plus ESI and EDI.
 extern double DAT_00575350;
 
 unsigned char TRIBE_Action_Trade::update()
@@ -449,7 +436,6 @@ unsigned char TRIBE_Action_Trade::update()
     return 0;
 }
 
-// PDB lines 632-640; VA 004D32C0.
 RGE_Sprite* TRIBE_Action_Trade::get_move_sprite(void)
 {
     RGE_Task* task = this->task;
@@ -467,7 +453,6 @@ RGE_Sprite* TRIBE_Action_Trade::get_move_sprite(void)
     return task->move_sprite;
 }
 
-// PDB lines 646-653; VA 004D32F0.
 RGE_Sprite* TRIBE_Action_Trade::get_wait_sprite(void)
 {
     TRIBE_Action_Trade* action = this;
@@ -482,14 +467,12 @@ RGE_Sprite* TRIBE_Action_Trade::get_wait_sprite(void)
     return action->obj->master_obj->sprite;
 }
 
-// PDB lines 659-662; VA 004D3330.
 int TRIBE_Action_Trade::stop()
 {
     this->set_state(2);
     return 1;
 }
 
-// PDB lines 669-690; VA 004D3340.
 int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj, float x, float y, float z)
 {
     if (obj != 0) {
@@ -515,7 +498,6 @@ int TRIBE_Action_Trade::move_to(RGE_Static_Object* obj, float x, float y, float 
     return 1;
 }
 
-// PDB lines 697-727; VA 004D33C0.
 int TRIBE_Action_Trade::work(RGE_Static_Object* obj, float x, float y, float z)
 {
     if (obj != 0) {

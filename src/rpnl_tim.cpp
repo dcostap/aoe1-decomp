@@ -1,4 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\rpnl_tim.cpp.
 // Definitions follow the original constructor, draw, and idle order.
 
 #include "../include/rpnl_tim.h"

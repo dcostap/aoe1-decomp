@@ -1,6 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\rmm_dbct.cpp.
-// Definitions follow the PDB source order. The unresolved owners stay in this
-// canonical module. Exactness does not change their source ownership.
 
 #include "../include/world.h"
 #include "../include/map.h"

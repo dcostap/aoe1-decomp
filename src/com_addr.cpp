@@ -2,9 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 
-// PDB source: C:\\msdev\\work\\age1_x1\\com_addr.cpp, lines 8-79.
-// BINARY NOTE: comm is at +0x00, Status is at +0x214, and pIPAD is at +0x220.
-// BINARY NOTE: The constructor calls EraseInformation, WSAStartup, the IPAD
+// comm is at +0x00, Status is at +0x214, and pIPAD is at +0x220.
+// The constructor calls EraseInformation, WSAStartup, the IPAD
 // array construction, GetHostName, both address loaders, and buffer cleanup.
 RGE_Communications_Addresses::RGE_Communications_Addresses(TCommunications_Handler* handler)
 {
@@ -27,8 +26,7 @@ RGE_Communications_Addresses::RGE_Communications_Addresses(TCommunications_Handl
     }
 }
 
-// PDB source: com_addr.cpp, lines 82-90.
-// BINARY NOTE: Cleanup order is EraseInformation, conditional WSACleanup,
+// Cleanup order is EraseInformation, conditional WSACleanup,
 // then destruction of the IPAD array.
 RGE_Communications_Addresses::~RGE_Communications_Addresses() {
     this->EraseInformation();
@@ -40,16 +38,14 @@ RGE_Communications_Addresses::~RGE_Communications_Addresses() {
     }
 }
 
-// PDB source: com_addr.cpp, lines 93-97.
-// BINARY NOTE: hostname begins at +0x194 after the WSADATA member.
+// hostname begins at +0x194 after the WSADATA member.
 char* RGE_Communications_Addresses::GetHostName()
 {
     gethostname(this->hostname, 0x80);
     return this->hostname;
 }
 
-// PDB source: com_addr.cpp, lines 100-135.
-// BINARY NOTE: The method publishes a zero through the caller buffer, scans
+// The method publishes a zero through the caller buffer, scans
 // host aliases, copies each alias, and updates AliasesAvailable.
 int RGE_Communications_Addresses::SetIPAliases(char* out_buffer)
 {
@@ -75,8 +71,7 @@ int RGE_Communications_Addresses::SetIPAliases(char* out_buffer)
     return AliasesAvailable;
 }
 
-// PDB source: com_addr.cpp, lines 138-143.
-// BINARY NOTE: pIPAD[index] is formed before the count check. The fallback is
+// pIPAD[index] is formed before the count check. The fallback is
 // the natural empty string literal used by the original source.
 char* RGE_Communications_Addresses::GetAddress(unsigned int index) {
     if (this->pIPAD + index != 0 &&
@@ -86,13 +81,12 @@ char* RGE_Communications_Addresses::GetAddress(unsigned int index) {
     return "";
 }
 
-// PDB source: com_addr.cpp, lines 146-154.
-// BINARY NOTE: The count check, indexed record access, null test, and fallback
+// The count check, indexed record access, null test, and fallback
 // keep the shipped fault order.
 char* RGE_Communications_Addresses::GetAlias(unsigned int index) {
     char* alias;
 
-    // ORIGINAL BUG: The alias count itself passes this test and selects the next record.
+    // The alias count itself passes this test and selects the next record.
     // A >= correction would reject that shipped case and change malformed-input behavior.
     if (index > this->AliasesAvailable) {
         return "";
@@ -104,8 +98,7 @@ char* RGE_Communications_Addresses::GetAlias(unsigned int index) {
     return alias;
 }
 
-// PDB source: com_addr.cpp, lines 157-198.
-// BINARY NOTE: The method tests hostname, resolves the address list, publishes
+// The method tests hostname, resolves the address list, publishes
 // a zero through out_buffer, and then copies each formatted address.
 int RGE_Communications_Addresses::SetIPAddresses(char* out_buffer)
 {
@@ -136,8 +129,7 @@ int RGE_Communications_Addresses::SetIPAddresses(char* out_buffer)
     return AddressesAvailable;
 }
 
-// PDB source: com_addr.cpp, lines 202-206.
-// BINARY NOTE: The method copies a natural empty string literal to hostname,
+// The method copies a natural empty string literal to hostname,
 // then clears AliasesAvailable and AddressesAvailable.
 void RGE_Communications_Addresses::EraseInformation(void) {
     strcpy(this->hostname, "");

@@ -6,7 +6,6 @@
 
 #include "m_co_obj.h"
 
-// Declarations owned by the PDB source module tm_co_ob.cpp.
 
 class Attribute_Cost {
 public:

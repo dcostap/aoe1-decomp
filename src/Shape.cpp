@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\Shape.cpp.
-// Definitions follow the original PDB source order.
 
 #include "../include/Shape.h"
 #include "../include/view.h"

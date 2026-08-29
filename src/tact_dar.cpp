@@ -1,5 +1,4 @@
 // Authentic source module for C:\\msdev\\work\\age1_x1\\tact_dar.cpp.
-// Definitions follow PDB source order. The compiler-generated vector
 // deleting destructor is not a handwritten owner here.
 
 #include "../include/tact_dar.h"
@@ -14,10 +13,8 @@
 #include "../include/game_globals.h"
 #include <stdlib.h>
 
-// 00575078 is an unnamed read-only float used by the original map scan.
 extern float DAT_00575078;
 
-// VA 004CE530; tact_dar.cpp lines 32-37; matching before reunification.
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
     int file, RGE_Action_Object* object)
     : RGE_Action(file, object, 1)
@@ -28,7 +25,6 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
     rge_read(file, this->flags, this->obj->owner->world->player_num);
 }
 
-// VA 004CE5F0; tact_dar.cpp lines 42-48; matching before reunification.
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
     RGE_Action_Object* object, RGE_Task* task, RGE_Static_Object* target)
     : RGE_Action(object, 1)
@@ -40,7 +36,6 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
         this->obj->owner->world->player_num, 1);
 }
 
-// VA 004CE670; tact_dar.cpp lines 53-61; matching before reunification.
 TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
     RGE_Action_Object* object, RGE_Task* task,
     float x, float y, float z)
@@ -55,7 +50,6 @@ TRIBE_Action_Discovery_Artifact::TRIBE_Action_Discovery_Artifact(
         this->obj->owner->world->player_num, 1);
 }
 
-// VA 004CE6D0; tact_dar.cpp lines 65-69; matching before reunification.
 void TRIBE_Action_Discovery_Artifact::save(int file)
 {
     int size;
@@ -65,7 +59,6 @@ void TRIBE_Action_Discovery_Artifact::save(int file)
     rge_write(file, this->flags, size);
 }
 
-// VA 004CE700; tact_dar.cpp lines 73-76; matching before reunification.
 void TRIBE_Action_Discovery_Artifact::first_in_stack(unsigned char value)
 {
     if (value != 0) {
@@ -73,7 +66,6 @@ void TRIBE_Action_Discovery_Artifact::first_in_stack(unsigned char value)
     }
 }
 
-// VA 004CE720; tact_dar.cpp lines 80-92; matching before reunification.
 void TRIBE_Action_Discovery_Artifact::set_state(unsigned char value)
 {
     this->state = value;
@@ -82,7 +74,6 @@ void TRIBE_Action_Discovery_Artifact::set_state(unsigned char value)
     }
 }
 
-// VA 004CE740; tact_dar.cpp lines 96-121; accepted drift before reunification.
 unsigned char TRIBE_Action_Discovery_Artifact::update()
 {
     switch (this->state) {
@@ -105,7 +96,6 @@ unsigned char TRIBE_Action_Discovery_Artifact::update()
     return 0;
 }
 
-// VA 004CE7A0; tact_dar.cpp lines 125-165; matching before reunification.
 void TRIBE_Action_Discovery_Artifact::check_objects()
 {
     RGE_Action_Object* obj = this->obj;

@@ -1,7 +1,6 @@
 #ifndef AOE1_TM_TRE_O_H
 #define AOE1_TM_TRE_O_H
 
-// Declarations for the PDB source module tm_tre_o.cpp.
 //
 // RGE_Master_Static_Object comes from its canonical owner header.
 // This header adds only the tree-master declaration owned here.

@@ -3195,7 +3195,6 @@ int RGE_Base_Game::handle_mouse_move(HWND p1, UINT p2, WPARAM p3, LPARAM p4)
     int right_btn;
     int left_btn;
     tagPOINT point;
-    // ORIGINAL BUG: 00421110 passes this local without a write.
     // action_mouse_move receives its stack value. Do not initialize it.
     int shift_key;
     if (this->prog_ready == 0) {

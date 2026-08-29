@@ -1,9 +1,6 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\t_tre_ob.cpp.
-// Definitions follow the original source-line and address order.
 
 #include "../include/t_tre_ob.h"
 
-// t_tre_ob.cpp:36-39, 004CCA60.
 TRIBE_Tree_Object::TRIBE_Tree_Object(
     TRIBE_Master_Tree_Object* param_1, RGE_Player* param_2,
     float param_3, float param_4, float param_5, int param_6)
@@ -13,7 +10,6 @@ TRIBE_Tree_Object::TRIBE_Tree_Object(
     }
 }
 
-// t_tre_ob.cpp:44-47, 004CCB20.
 TRIBE_Tree_Object::TRIBE_Tree_Object(
     int param_1, RGE_Game_World* world, int do_setup)
     : RGE_Static_Object(param_1, world, 0) {
@@ -22,7 +18,6 @@ TRIBE_Tree_Object::TRIBE_Tree_Object(
     }
 }
 
-// t_tre_ob.cpp:51-62, 004CCB90.
 void TRIBE_Tree_Object::set_object_state(unsigned char value) {
     RGE_Static_Object::set_object_state(value);
 }

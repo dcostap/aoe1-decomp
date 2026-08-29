@@ -299,7 +299,7 @@ void TRIBE_Campaign_Editor_Screen::make_campaign()
     if (name != 0) {
         if (*name == 0 || *name == ' ') {
             this->popupOKDialog(0x2BCC, 0, 0x1C2, 100);
-            // BINARY NOTE: An invalid name returns without clearing need_to_save.
+            // An invalid name returns without clearing need_to_save.
             return;
         } else {
             addstring(&text, name, ".cpx");

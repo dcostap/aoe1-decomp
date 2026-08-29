@@ -1,5 +1,4 @@
 /* Authentic C++ source module for C:\\msdev\\work\\age1_x1\\com_spd.cpp. */
-// The definitions below follow the 27-owner PDB source order.
 #include "../include/com_spd.h"
 
 #include <stdio.h>
@@ -13,7 +12,7 @@ static char s_machine_speed_info_text[256];
 RGE_Communications_Speed::RGE_Communications_Speed(
     TCommunications_Handler* handler)
 {
-    // BINARY NOTE: The constructor initializes ten player records, then
+    // The constructor initializes ten player records, then
     // allocates FrameTSLC before TurnTSLC.
     Comm = handler;
     CurrentBufferGranularity = 90;

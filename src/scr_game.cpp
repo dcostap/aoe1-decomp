@@ -1,5 +1,4 @@
 // Authentic complete owner for C:\msdev\work\age1_x1\scr_game.cpp.
-// Bodies follow PDB source order. The executable is the behavior oracle.
 
 #include "../include/scr_game.h"
 #include "../include/game_globals.h"
@@ -21,7 +20,6 @@ static char s_game_a_format[] = "gamea%d.shp";
 static char s_game_b_format[] = "gameb%d.shp";
 static char s_game_c_format[] = "gamec%d.shp";
 
-/* PDB owner: TRIBE_Screen_Game::TRIBE_Screen_Game */
 TRIBE_Screen_Game::TRIBE_Screen_Game()
     : TScreenPanel(s_Game_Screen)
 {
@@ -528,7 +526,6 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
 }
 
 
-/* PDB owner: TRIBE_Screen_Game::~TRIBE_Screen_Game */
 TRIBE_Screen_Game::~TRIBE_Screen_Game() {
     panel_system.destroyPanel(s_Game_Screen);
 
@@ -717,12 +714,10 @@ TRIBE_Screen_Game::~TRIBE_Screen_Game() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::set_redraw */
 void TRIBE_Screen_Game::set_redraw(TPanel::RedrawMode p) {
     this->TPanel::set_redraw(p);
 }
 
-/* PDB owner: TRIBE_Screen_Game::set_overlapped_redraw */
 void TRIBE_Screen_Game::set_overlapped_redraw(
     TPanel* param_1, TPanel* param_2, TPanel::RedrawMode param_3)
 {
@@ -772,7 +767,6 @@ void TRIBE_Screen_Game::set_overlapped_redraw(
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::set_map_buttons_redraw */
 void TRIBE_Screen_Game::set_map_buttons_redraw(TPanel::RedrawMode mode) {
     if (this->pnl_wid < 0x320) {
         this->button_panel[5]->set_redraw(mode);
@@ -782,7 +776,6 @@ void TRIBE_Screen_Game::set_map_buttons_redraw(TPanel::RedrawMode mode) {
     this->button_panel[16]->set_redraw(mode);
 }
 
-/* PDB owner: TRIBE_Screen_Game::handle_size */
 long TRIBE_Screen_Game::handle_size(long width, long height) {
     TPanel::handle_size(width, height);
 
@@ -1040,7 +1033,6 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
 }
 
 
-/* PDB owner: TRIBE_Screen_Game::handle_paint */
 long TRIBE_Screen_Game::handle_paint() {
     if (this->render_area == 0) {
         return 0;
@@ -1121,7 +1113,6 @@ long TRIBE_Screen_Game::handle_paint() {
     return 0;
 }
 
-/* PDB owner: TRIBE_Screen_Game::handle_idle */
 long TRIBE_Screen_Game::handle_idle() {
     long result;
 
@@ -1156,7 +1147,6 @@ long TRIBE_Screen_Game::handle_idle() {
     return result;
 }
 
-/* PDB owner: TRIBE_Screen_Game::handle_game_update */
 void TRIBE_Screen_Game::handle_game_update(void)
 {
     unsigned long t;
@@ -1412,7 +1402,6 @@ void TRIBE_Screen_Game::handle_game_update(void)
     return;
 }
 
-/* PDB owner: TRIBE_Screen_Game::wnd_proc */
 long TRIBE_Screen_Game::wnd_proc(void* window, unsigned int message,
                                  unsigned int wparam, long lparam) {
     if (message == 0x104 && wparam == 0x79 &&
@@ -1451,7 +1440,6 @@ long TRIBE_Screen_Game::wnd_proc(void* window, unsigned int message,
     return TPanel::wnd_proc(window, message, wparam, lparam);
 }
 
-/* PDB owner: TRIBE_Screen_Game::handle_mouse_down */
 long TRIBE_Screen_Game::handle_mouse_down(unsigned char param1, long param2, long param3, int param4, int param5) {
     message_panel->remove_message();
     message_panel2->remove_message();
@@ -1462,12 +1450,10 @@ long TRIBE_Screen_Game::handle_mouse_down(unsigned char param1, long param2, lon
     return TEasy_Panel::handle_mouse_down(param1, param2, param3, param4, param5);
 }
 
-/* PDB owner: TRIBE_Screen_Game::handle_user_command */
 long TRIBE_Screen_Game::handle_user_command(unsigned int command, long value) {
     return TPanel::handle_user_command(command, value);
 }
 
-/* PDB owner: TRIBE_Screen_Game::handle_pause */
 void TRIBE_Screen_Game::handle_pause(void) {
     this->pause_text->set_text(0x2329);
     if (this->pause_text->active == 0) {
@@ -1477,7 +1463,6 @@ void TRIBE_Screen_Game::handle_pause(void) {
     this->main_view->set_redraw(TPanel::RedrawNormal);
 }
 
-/* PDB owner: TRIBE_Screen_Game::handle_resume */
 void TRIBE_Screen_Game::handle_resume(void) {
     if (this->pause_text->active != 0) {
         this->pause_text->set_active(0);
@@ -1486,7 +1471,6 @@ void TRIBE_Screen_Game::handle_resume(void) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::handleChatReceived */
 void TRIBE_Screen_Game::handleChatReceived(int chatIndex)
 {
     char chat_msg[256];
@@ -1502,7 +1486,6 @@ void TRIBE_Screen_Game::handleChatReceived(int chatIndex)
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::display_system_message */
 void TRIBE_Screen_Game::display_system_message(char* text) {
     this->chat_panel[this->chat_line]->show_message(
         TMessagePanel::ChatMessage, text, 0xFF, 0, 0, 0, 0);
@@ -1512,7 +1495,6 @@ void TRIBE_Screen_Game::display_system_message(char* text) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::key_down_action */
 long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
                                         int param_3, int param_4, int param_5)
 {
@@ -1631,7 +1613,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
         }
     }
 
-    // BINARY NOTE: Ctrl and Alt 0x49 use different game fields.
+    // Ctrl and Alt 0x49 use different game fields.
     if (param_3 != 0) {
         switch (param_1) {
         case 0x30:
@@ -1695,7 +1677,6 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             rge_base_game->game_mode == 6 &&
             rge_base_game->sub_game_mode == 1) {
             for (int i = 0; i < this->item_cnt; ++i) {
-                // BINARY NOTE: A player alias changes VC5's register map.
                 RGE_Master_Static_Object* master =
                     rge_base_game->get_player()->master_objects[
                         this->bldg_list[i].id];
@@ -1870,7 +1851,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
     } else {
         if (rge_base_game->game_mode != 6 ||
             rge_base_game->sub_game_mode != 1) {
-            // BINARY NOTE: a matched work key returns; a miss reaches the next switch.
+            // a matched work key returns; a miss reaches the next switch.
             if (this->work_hotkey != 0 && param_1 == this->work_hotkey &&
                 game_over == 0) {
                 if (allow_user_commands != 0) {
@@ -1895,7 +1876,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             }
         }
 
-        // BINARY NOTE: this switch is after the work-key fall-through blocks.
+        // this switch is after the work-key fall-through blocks.
         switch (param_1) {
         case 0x30:
         case 0x31:
@@ -1974,7 +1955,6 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
     return 0;
 }
 
-/* PDB owner: TRIBE_Screen_Game::char_action */
 long TRIBE_Screen_Game::char_action(long action, short param_2) {
     static_cast<void>(param_2);
     switch (action) {
@@ -1994,7 +1974,6 @@ long TRIBE_Screen_Game::char_action(long action, short param_2) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::action */
 long TRIBE_Screen_Game::action(TPanel* panel, long id,
                                unsigned long p3, unsigned long p4)
 {
@@ -2095,7 +2074,6 @@ long TRIBE_Screen_Game::action(TPanel* panel, long id,
     return TEasy_Panel::action(panel, id, p3, p4);
 }
 
-/* PDB owner: TRIBE_Screen_Game::do_button_action */
 void TRIBE_Screen_Game::do_button_action(int action, int value, int flag) {
     if (allow_user_commands != 0) {
         switch (action) {
@@ -2236,7 +2214,6 @@ void TRIBE_Screen_Game::do_button_action(int action, int value, int flag) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::game_mode_changed */
 void TRIBE_Screen_Game::game_mode_changed(int a, int b) {
     if (this->tool_box != 0) {
         this->tool_box->game_mode_changed(a, b);
@@ -2246,7 +2223,6 @@ void TRIBE_Screen_Game::game_mode_changed(int a, int b) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::player_changed */
 void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
     char str[512];
     RGE_Player* player = rge_base_game->get_player();
@@ -2436,7 +2412,6 @@ void TRIBE_Screen_Game::player_changed(int old_player, int new_player) {
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-/* PDB owner: TRIBE_Screen_Game::object_changed */
 void TRIBE_Screen_Game::object_changed(void) {
     int changed = this->game_obj != rge_base_game->get_player()->selected_obj;
     this->game_obj = rge_base_game->get_player()->selected_obj;
@@ -2464,7 +2439,6 @@ void TRIBE_Screen_Game::object_changed(void) {
     this->reset_buttons();
 }
 
-/* PDB owner: TRIBE_Screen_Game::age_changed */
 void TRIBE_Screen_Game::age_changed() {
     char str[512];
 
@@ -2492,7 +2466,6 @@ void TRIBE_Screen_Game::age_changed() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::show_timings */
 void TRIBE_Screen_Game::show_timings(char* param_1, char* param_2) {
     char* current = this->fps_panel->get_text();
     if (current == 0 || strcmp(current, param_2) != 0) {
@@ -2500,7 +2473,6 @@ void TRIBE_Screen_Game::show_timings(char* param_1, char* param_2) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::show_comm */
 void TRIBE_Screen_Game::show_comm(char* p1, char* p2, char* p3, char* p4, char* p5, char* p6) {
     message_panel->show_message(TMessagePanel::DebugMessage, p1, 0x56, 0, 0, 0, 0);
     message_panel2->show_message(TMessagePanel::DebugMessage, p2, 0x56, 0, 0, 0, 0);
@@ -2510,7 +2482,6 @@ void TRIBE_Screen_Game::show_comm(char* p1, char* p2, char* p3, char* p4, char* 
     message_panel6->show_message(TMessagePanel::DebugMessage, p6, 0x56, 0, 0, 0, 0);
 }
 
-/* PDB owner: TRIBE_Screen_Game::show_ai */
 void TRIBE_Screen_Game::show_ai(char* a1, char* a2, char* a3, char* a4, char* a5, char* a6)
 {
     this->message_panel->show_message(TMessagePanel::DebugMessage, a1, 0x56, 0, 0, 0, 0);
@@ -2521,20 +2492,17 @@ void TRIBE_Screen_Game::show_ai(char* a1, char* a2, char* a3, char* a4, char* a5
     this->message_panel6->show_message(TMessagePanel::DebugMessage, a6, 0x56, 0, 0, 0, 0);
 }
 
-/* PDB owner: TRIBE_Screen_Game::show_message */
 void TRIBE_Screen_Game::show_message(TMessagePanel::MessageType type,
                                      char* text, unsigned char a3,
                                      unsigned char a4) {
     this->message_panel->show_message(type, text, a3, a4, 0, 0, 0);
 }
 
-/* PDB owner: TRIBE_Screen_Game::reset_buttons */
 void TRIBE_Screen_Game::reset_buttons() {
     this->start_item = 0;
     this->setup_buttons();
 }
 
-/* PDB owner: TRIBE_Screen_Game::setup_buttons */
 void TRIBE_Screen_Game::setup_buttons()
 {
     char name[512];
@@ -3010,7 +2978,6 @@ void TRIBE_Screen_Game::setup_buttons()
 }
 
 // Managed pass 2026-08-17 notes:
-/* PDB owner: TRIBE_Screen_Game::disable_unused_buttons */
 void TRIBE_Screen_Game::disable_unused_buttons(void) {
     for (int button_index = 0; button_index < 12; ++button_index) {
         TRIBE_Panel_Button* button = this->button_panel[button_index];
@@ -3024,7 +2991,6 @@ void TRIBE_Screen_Game::disable_unused_buttons(void) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::calc_text_msg */
 char* TRIBE_Screen_Game::calc_text_msg(char* text, Item_Avail* item,
                                        long unused, long command_id) {
     char command_str[512];
@@ -3080,7 +3046,6 @@ char* TRIBE_Screen_Game::calc_text_msg(char* text, Item_Avail* item,
     return text;
 }
 
-/* PDB owner: TRIBE_Screen_Game::calc_button_loc */
 short TRIBE_Screen_Game::calc_button_loc(unsigned char param_1) {
     if (param_1 >= 1 && param_1 <= 5) {
         return param_1 - 1;
@@ -3097,7 +3062,6 @@ short TRIBE_Screen_Game::calc_button_loc(unsigned char param_1) {
     return 0;
 }
 
-/* PDB owner: TRIBE_Screen_Game::set_button */
 void TRIBE_Screen_Game::set_button(
     TShape* picture, short index, short frame,
     long id, long id2, long string_id, long help_page_id,
@@ -3191,7 +3155,6 @@ void TRIBE_Screen_Game::set_button(
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::reset_clocks */
 void TRIBE_Screen_Game::reset_clocks() {
     if (this->world->victory_type == 2) {
         this->countdown_clock[0]->set_clock_type(3, 0);
@@ -3286,7 +3249,6 @@ void TRIBE_Screen_Game::reset_clocks() {
     }
 }
 
-/* PDB owner: scr_game_score_compare */
 int scr_game_score_compare(const void* param_b, const void* param_a) {
     const PLAYER_SCORE* a = static_cast<const PLAYER_SCORE*>(param_a);
     const PLAYER_SCORE* b = static_cast<const PLAYER_SCORE*>(param_b);
@@ -3301,7 +3263,6 @@ int scr_game_score_compare(const void* param_b, const void* param_a) {
     return (a->player_id >= b->player_id) - 1;
 }
 
-/* PDB owner: TRIBE_Screen_Game::reset_score_display */
 void TRIBE_Screen_Game::reset_score_display()
 {
     int i;
@@ -3460,7 +3421,6 @@ void TRIBE_Screen_Game::reset_score_display()
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::draw */
 void TRIBE_Screen_Game::draw()
 {
     if (byte_62C584) {
@@ -3522,7 +3482,6 @@ void TRIBE_Screen_Game::draw()
 }
 
 
-/* PDB owner: TRIBE_Screen_Game::handle_anim_pal */
 void TRIBE_Screen_Game::handle_anim_pal()
 {
     unsigned long time;
@@ -3555,7 +3514,6 @@ void TRIBE_Screen_Game::handle_anim_pal()
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::handle_terrain_sound */
 void TRIBE_Screen_Game::handle_terrain_sound() {
     color_log(0x54, 0x16, 4);
 
@@ -3632,7 +3590,6 @@ void TRIBE_Screen_Game::handle_terrain_sound() {
     return;
 }
 
-/* PDB owner: TRIBE_Screen_Game::handle_mouse_pointing_at */
 void TRIBE_Screen_Game::handle_mouse_pointing_at() {
     void* window = rge_base_game->prog_window;
     if (GetForegroundWindow() != window) {
@@ -3689,7 +3646,6 @@ void TRIBE_Screen_Game::handle_mouse_pointing_at() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_add_attribute */
 void TRIBE_Screen_Game::command_add_attribute(int value) {
     if (rge_base_game->get_paused() == 0) {
         if (rge_base_game->allowCheatCodes() != 0) {
@@ -3699,7 +3655,6 @@ void TRIBE_Screen_Game::command_add_attribute(int value) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_ai_info */
 void TRIBE_Screen_Game::command_ai_info() {
     message_panel->remove_message();
     message_panel2->remove_message();
@@ -3726,27 +3681,24 @@ void TRIBE_Screen_Game::command_ai_info() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_attack */
 void TRIBE_Screen_Game::command_attack(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
     this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBE2), 0x32, 0, 0, 0, 0);
-    // BINARY NOTE: This command uses the set_game_mode virtual slot.
+    // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x67, 0);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_build */
 void TRIBE_Screen_Game::command_build(void) {
     if (rge_base_game->get_paused() == 0) {
         rge_base_game->set_game_mode(6, 1);
-        // BINARY NOTE: The original clears the inherited start item.
+        // The original clears the inherited start item.
         this->start_item = 0;
         this->setup_buttons();
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_building */
 void TRIBE_Screen_Game::command_building(int obj_id) {
     short attr;
     char msg[512];
@@ -3775,7 +3727,6 @@ void TRIBE_Screen_Game::command_building(int obj_id) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_cancel */
 void TRIBE_Screen_Game::command_cancel() {
     if (this->help_mode) {
         this->clear_popup_help();
@@ -3797,7 +3748,6 @@ void TRIBE_Screen_Game::command_cancel() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_cancel_building */
 void TRIBE_Screen_Game::command_cancel_building() {
     if (rge_base_game->get_paused() == 0) {
         static_cast<TRIBE_Player*>(rge_base_game->get_player())
@@ -3805,7 +3755,6 @@ void TRIBE_Screen_Game::command_cancel_building() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_chat */
 void TRIBE_Screen_Game::command_chat() {
     if (rge_base_game->singlePlayerGame()) {
         command_quick_chat();
@@ -3820,7 +3769,6 @@ void TRIBE_Screen_Game::command_chat() {
     new TribeSendMessageDialog(this);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_quick_chat */
 void TRIBE_Screen_Game::command_quick_chat() {
     if (game_ended == 0 && rge_base_game->prog_mode == 5) {
         char* msg = get_string(0xBFE);
@@ -3832,7 +3780,6 @@ void TRIBE_Screen_Game::command_quick_chat() {
     new TribeSendQuickMessageDialog(this, TribeSendQuickMessageDialog::AsChat);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_comm_info */
 void TRIBE_Screen_Game::command_comm_info() {
     rge_base_game->do_show_timings = 0;
     this->fps_panel->visible = 0;
@@ -3856,17 +3803,15 @@ void TRIBE_Screen_Game::command_comm_info() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_convert */
 void TRIBE_Screen_Game::command_convert(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
     this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBE4), 0x32, 0, 0, 0, 0);
-    // BINARY NOTE: This command uses the set_game_mode virtual slot.
+    // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x65, 0);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_diplomacy */
 void TRIBE_Screen_Game::command_diplomacy() {
     if (rge_base_game->get_paused() == 0) {
         if (rge_base_game->singlePlayerGame() == 1) {
@@ -3876,7 +3821,6 @@ void TRIBE_Screen_Game::command_diplomacy() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_fog_of_war */
 void TRIBE_Screen_Game::command_fog_of_war() {
     if (rge_base_game->allowCheatCodes()) {
         rge_base_game->set_map_fog(rge_base_game->fogOfWar() == 0);
@@ -3884,7 +3828,6 @@ void TRIBE_Screen_Game::command_fog_of_war() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_fps */
 void TRIBE_Screen_Game::command_fps() {
     RGE_Base_Game* game = rge_base_game;
     if (game->do_show_timings != 0) {
@@ -3903,7 +3846,6 @@ void TRIBE_Screen_Game::command_fps() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_game_speed */
 void TRIBE_Screen_Game::command_game_speed(int param_1) {
     float cur_speed;
     float old_speed;
@@ -3969,14 +3911,12 @@ void TRIBE_Screen_Game::command_game_speed(int param_1) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_group */
 void TRIBE_Screen_Game::command_group(void) {
     if (rge_base_game->get_paused() == 0) {
         rge_base_game->get_player()->group_objects(-1);
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_group_by_number */
 void TRIBE_Screen_Game::command_group_by_number(int group) {
     if (rge_base_game->get_paused() == 0) {
         if (group == 0) {
@@ -3986,7 +3926,6 @@ void TRIBE_Screen_Game::command_group_by_number(int group) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_heal */
 void TRIBE_Screen_Game::command_heal(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
@@ -3996,17 +3935,15 @@ void TRIBE_Screen_Game::command_heal(void) {
         rge_base_game->set_game_mode(0x66, 0);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_repair */
 void TRIBE_Screen_Game::command_repair(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
     this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBEC), 0x32, 0, 0, 0, 0);
-    // BINARY NOTE: This command uses the set_game_mode virtual slot.
+    // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x68, 0);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_score */
 void TRIBE_Screen_Game::command_score(int a1)
 {
     this->world->score_displayed = static_cast<unsigned char>(a1);
@@ -4031,7 +3968,6 @@ void TRIBE_Screen_Game::command_score(int a1)
     this->main_view->set_redraw(TPanel::RedrawNormal);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_select_group */
 void TRIBE_Screen_Game::command_select_group(int group, int unselect) {
     if (rge_base_game->get_paused()) {
         return;
@@ -4046,7 +3982,6 @@ void TRIBE_Screen_Game::command_select_group(int group, int unselect) {
     this->main_view->set_redraw(TPanel::RedrawNormal);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_menu */
 void TRIBE_Screen_Game::command_menu() {
     if (rge_base_game->prog_mode == 6) {
         static_cast<TRIBE_Command*>(this->world->commands)->do_commands();
@@ -4057,7 +3992,6 @@ void TRIBE_Screen_Game::command_menu() {
     new TribeMenuDialog(this);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_more */
 void TRIBE_Screen_Game::command_more() {
     if (rge_base_game->get_paused())
         return;
@@ -4078,7 +4012,6 @@ void TRIBE_Screen_Game::command_more() {
     this->setup_buttons();
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_move */
 void TRIBE_Screen_Game::command_move() {
     RGE_Static_Object** list;
     short list_num;
@@ -4096,7 +4029,6 @@ void TRIBE_Screen_Game::command_move() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_outline */
 void TRIBE_Screen_Game::command_outline() {
     RGE_Base_Game* game;
     unsigned char t;
@@ -4118,7 +4050,6 @@ void TRIBE_Screen_Game::command_outline() {
     game->outline_type = t;
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_pause */
 void TRIBE_Screen_Game::command_pause() {
     char msg[256];
     unsigned long t = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\scr_game.cpp", 0x14F2);
@@ -4141,7 +4072,6 @@ void TRIBE_Screen_Game::command_pause() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_player */
 void TRIBE_Screen_Game::command_player(int param_1) {
     if (!rge_base_game->allowCheatCodes()) {
         return;
@@ -4157,7 +4087,6 @@ void TRIBE_Screen_Game::command_player(int param_1) {
     rge_base_game->set_player(static_cast<short>(param_1));
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_quick_build */
 void TRIBE_Screen_Game::command_quick_build(void) {
     if (rge_base_game->allowCheatCodes() != 0) {
         static_cast<TRIBE_Command*>(this->world->commands)
@@ -4165,14 +4094,12 @@ void TRIBE_Screen_Game::command_quick_build(void) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_quit */
 void TRIBE_Screen_Game::command_quit() {
     comm->SendIResignMsg();
     comm->GameOver();
     static_cast<TRIBE_Game*>(rge_base_game)->do_game_over();
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_research */
 void TRIBE_Screen_Game::command_research(int tech_id) {
     register TRIBE_Screen_Game* self = this;
     short attr;
@@ -4190,7 +4117,6 @@ void TRIBE_Screen_Game::command_research(int tech_id) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_save_game */
 void TRIBE_Screen_Game::command_save_game() {
     if (rge_base_game->prog_mode == 6) {
         static_cast<TRIBE_Command*>(this->world->commands)->do_commands();
@@ -4199,7 +4125,6 @@ void TRIBE_Screen_Game::command_save_game() {
     panel_system.setCurrentPanel(Save_Game_Screen, 0);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_save_scenario */
 void TRIBE_Screen_Game::command_save_scenario() {
     if (rge_base_game->prog_mode == 6) {
         static_cast<TRIBE_Command*>(this->world->commands)->do_commands();
@@ -4208,7 +4133,6 @@ void TRIBE_Screen_Game::command_save_scenario() {
     panel_system.setCurrentPanel(s_Save_Game_Screen, 0);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_select_building */
 void TRIBE_Screen_Game::command_select_building(int value) {
     int object_id;
 
@@ -4263,14 +4187,12 @@ void TRIBE_Screen_Game::command_select_building(int value) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_stop */
 void TRIBE_Screen_Game::command_stop(void) {
     if (rge_base_game->get_paused() == 0) {
         rge_base_game->get_player()->command_stop();
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_tool_box */
 void TRIBE_Screen_Game::command_tool_box() {
     if (rge_base_game->multiplayerGame() == 0) {
         RGE_Panel_Tool_Box* tb = this->tool_box;
@@ -4281,13 +4203,10 @@ void TRIBE_Screen_Game::command_tool_box() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_trade */
 void TRIBE_Screen_Game::command_trade() {}
 
-/* PDB owner: TRIBE_Screen_Game::command_trade_with */
 void TRIBE_Screen_Game::command_trade_with(int p0) {}
 
-/* PDB owner: TRIBE_Screen_Game::command_train */
 void TRIBE_Screen_Game::command_train(int player_id, short train_id) {
     short attr;
     char msg[512];
@@ -4311,7 +4230,6 @@ void TRIBE_Screen_Game::command_train(int player_id, short train_id) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_ungroup */
 void TRIBE_Screen_Game::command_ungroup(void) {
     if (rge_base_game->get_paused() == 0) {
         (rge_base_game->get_player())->ungroup_objects();
@@ -4319,7 +4237,6 @@ void TRIBE_Screen_Game::command_ungroup(void) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_unload */
 void TRIBE_Screen_Game::command_unload(void) {
     if (!rge_base_game->get_paused()) {
         this->message_panel->show_message(TMessagePanel::BadMessage,
@@ -4329,7 +4246,6 @@ void TRIBE_Screen_Game::command_unload(void) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_unselect */
 void TRIBE_Screen_Game::command_unselect(void) {
     if (rge_base_game->get_paused() == 0) {
         rge_base_game->get_player()->unselect_object();
@@ -4338,7 +4254,6 @@ void TRIBE_Screen_Game::command_unselect(void) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_view_selected */
 void TRIBE_Screen_Game::command_view_selected() {
     if (rge_base_game->get_paused()) return;
 
@@ -4351,7 +4266,6 @@ void TRIBE_Screen_Game::command_view_selected() {
                         static_cast<short>(selected->world_y));
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_view_tribe */
 void TRIBE_Screen_Game::command_view_tribe()
 {
     if (rge_base_game->get_paused() == 0) {
@@ -4370,7 +4284,6 @@ void TRIBE_Screen_Game::command_view_tribe()
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_visibility */
 void TRIBE_Screen_Game::command_visibility() {
     if (!rge_base_game->allowCheatCodes())
         return;
@@ -4380,7 +4293,6 @@ void TRIBE_Screen_Game::command_visibility() {
     this->map_view->set_redraw(TPanel::RedrawImmediate);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_work */
 void TRIBE_Screen_Game::command_work() {
     RGE_Static_Object** list;
     short list_num;
@@ -4398,31 +4310,27 @@ void TRIBE_Screen_Game::command_work() {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_formation */
 void TRIBE_Screen_Game::command_formation(int value) {
     if (rge_base_game->get_paused() == 0) {
         (rge_base_game->get_player())->command_formation(value);
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_stand_ground */
 void TRIBE_Screen_Game::command_stand_ground(void) {
     if (rge_base_game->get_paused() == 0) {
         (rge_base_game->get_player())->command_stand_ground();
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_attack_ground */
 void TRIBE_Screen_Game::command_attack_ground(void) {
     if (rge_base_game->get_paused() != 0) {
         return;
     }
     this->message_panel->show_message(TMessagePanel::BadMessage, this->get_string(0xBE5), 0x32, 0, 0, 0, 0);
-    // BINARY NOTE: This command uses the set_game_mode virtual slot.
+    // This command uses the set_game_mode virtual slot.
     rge_base_game->set_game_mode(0x64, 0);
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_trade_attribute */
 void TRIBE_Screen_Game::command_trade_attribute(long value) {
     if (rge_base_game->get_paused() == 0) {
         static_cast<TRIBE_Player*>(rge_base_game->get_player())
@@ -4430,7 +4338,6 @@ void TRIBE_Screen_Game::command_trade_attribute(long value) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::command_tab_selected */
 void TRIBE_Screen_Game::command_tab_selected(int value) {
     RGE_Player* player = rge_base_game->get_player();
     int found = 0;
@@ -4495,7 +4402,6 @@ void TRIBE_Screen_Game::command_tab_selected(int value) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::any_selected_have_action */
 int TRIBE_Screen_Game::any_selected_have_action() {
     TRIBE_Player* player = static_cast<TRIBE_Player*>(
         rge_base_game->get_player());
@@ -4520,7 +4426,6 @@ int TRIBE_Screen_Game::any_selected_have_action() {
     return 0;
 }
 
-/* PDB owner: TRIBE_Screen_Game::set_focus */
 void TRIBE_Screen_Game::set_focus(int value) {
     TScreenPanel::set_focus(value);
     if (this->have_focus != 0) {
@@ -4530,7 +4435,6 @@ void TRIBE_Screen_Game::set_focus(int value) {
     }
 }
 
-/* PDB owner: TRIBE_Screen_Game::stop_sound_system */
 void TRIBE_Screen_Game::stop_sound_system(void) {
     TDigital* sound_system = this->game_over_sound;
 
@@ -4541,8 +4445,6 @@ void TRIBE_Screen_Game::stop_sound_system(void) {
     TPanel::stop_sound_system();
 }
 
-/* PDB owner: TRIBE_Screen_Game::restart_sound_system */
 int TRIBE_Screen_Game::restart_sound_system() { return TPanel::restart_sound_system(); }
 
-/* PDB owner: TRIBE_Screen_Game::add_log */
 void TRIBE_Screen_Game::add_log(char* p0) {}

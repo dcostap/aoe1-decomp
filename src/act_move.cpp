@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\act_move.cpp.
-// Definitions follow the original source-line and address order.
 //
 // The scalar deleting destructor at 00405580 is compiler generated. It has no
 // standalone source owner. The non-deleting destructor at 004056E0 is the
@@ -18,14 +16,12 @@
 #include "../include/rge_fio.h"
 #include "../include/command_waypoint.h"
 
-// 00405510 RGE_Action_Move_To::RGE_Action_Move_To(int, RGE_Action_Object*)
 RGE_Action_Move_To::RGE_Action_Move_To(int handle, RGE_Action_Object* object)
     : RGE_Action(handle, object, 1) {
     action_type = 1;
     rge_read(handle, &range, 4);
 }
 
-// 004055A0 RGE_Action_Move_To::RGE_Action_Move_To(
 //     RGE_Action_Object*, float, float, float, float, RGE_Sprite*)
 RGE_Action_Move_To::RGE_Action_Move_To(
     RGE_Action_Object* object, float x, float y, float z, float range_value,
@@ -53,7 +49,6 @@ RGE_Action_Move_To::RGE_Action_Move_To(
     }
 }
 
-// 00405620 RGE_Action_Move_To::RGE_Action_Move_To(
 //     RGE_Action_Object*, RGE_Static_Object*, float, RGE_Sprite*)
 RGE_Action_Move_To::RGE_Action_Move_To(
     RGE_Action_Object* object, RGE_Static_Object* target,
@@ -86,19 +81,16 @@ RGE_Action_Move_To::RGE_Action_Move_To(
     }
 }
 
-// 004056E0 RGE_Action_Move_To::~RGE_Action_Move_To()
 RGE_Action_Move_To::~RGE_Action_Move_To() {
     this->obj->removeAllUserDefinedWaypoints(0);
     this->obj->stop_moving();
 }
 
-// 00405750 RGE_Action_Move_To::save(int)
 void RGE_Action_Move_To::save(int outfile) {
     RGE_Action::save(outfile);
     rge_write(outfile, &this->range, 4);
 }
 
-// 00405780 RGE_Action_Move_To::first_in_stack(unsigned char)
 void RGE_Action_Move_To::first_in_stack(unsigned char param_1) {
     if (this->target_obj != 0) {
         if (this->obj->inRange(this->target_obj, this->range) != 0) {
@@ -115,7 +107,6 @@ void RGE_Action_Move_To::first_in_stack(unsigned char param_1) {
     this->set_state(3);
 }
 
-// 004057E0 RGE_Action_Move_To::set_state(unsigned char)
 void RGE_Action_Move_To::set_state(unsigned char param_1) {
     this->state = param_1;
 
@@ -135,8 +126,6 @@ void RGE_Action_Move_To::set_state(unsigned char param_1) {
     }
 }
 
-// 00405850 RGE_Action_Move_To::update()
-// Scratch status: the natural source keeps the proven calls, field ownership,
 // state transitions, and return values. Its current result has a broad CFG
 // difference with one missing cold block.
 unsigned char RGE_Action_Move_To::update() {
@@ -272,7 +261,6 @@ target_lost:
     return 4;
 }
 
-// 00405BF0 RGE_Action_Move_To::is_in_range()
 unsigned char RGE_Action_Move_To::is_in_range() {
     float distance;
 

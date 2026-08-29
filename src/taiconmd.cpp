@@ -1,5 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\taiconmd.cpp.
-// Definitions follow the PDB source-line and address order.
 
 #include "../include/taiconmd.h"
 
@@ -13,31 +11,26 @@
 
 extern int useInfluencePlacement;
 
-// taiconmd.cpp:37-38, 004D5E60.
 TribeConstructionAIModule::TribeConstructionAIModule(void* owner, int player)
     : ConstructionAIModule(owner, player), md(0)
 {
 }
 
-// taiconmd.cpp:45-46, 004D5EB0.
 TribeConstructionAIModule::TribeConstructionAIModule(int player, int file)
     : ConstructionAIModule(player, file), md(0)
 {
 }
 
-// taiconmd.cpp:51, 004D5EE0.
 TribeConstructionAIModule::~TribeConstructionAIModule()
 {
 }
 
-// taiconmd.cpp:57-59, 004D5EF0.
 void TribeConstructionAIModule::setMainDecisionAI(
     TribeMainDecisionAIModule* value)
 {
     this->md = value;
 }
 
-// taiconmd.cpp:64-105, 004D5F00.
 int TribeConstructionAIModule::canPlace(BuildItem* item)
 {
     if (this->xReferencePointValue <= 0.0 ||
@@ -75,7 +68,6 @@ int TribeConstructionAIModule::canPlace(BuildItem* item)
     return 0;
 }
 
-// taiconmd.cpp:111-333, 004D60E0.
 ConstructionItem* TribeConstructionAIModule::placeStructure(
     BuildItem* item, int builderID, PlacementState& state,
     unsigned long currentTime)
@@ -213,7 +205,6 @@ skipPlace:
     return result;
 }
 
-// taiconmd.cpp:338-358, 004D6780.
 ConstructionItem* TribeConstructionAIModule::placeDock(BuildItem* item)
 {
     ConstructionItem* result = this->md->informationAI.placeDock(
@@ -233,7 +224,6 @@ ConstructionItem* TribeConstructionAIModule::placeDock(BuildItem* item)
     return 0;
 }
 
-// taiconmd.cpp:363-379, 004D6800.
 void TribeConstructionAIModule::setBuilt(RGE_Static_Object* object, int built)
 {
     ConstructionItem* item = this->constructionLots.next;
@@ -251,11 +241,10 @@ void TribeConstructionAIModule::setBuilt(RGE_Static_Object* object, int built)
         (unsigned char)object->world_y, 1);
 }
 
-// taiconmd.cpp:385-389, 004D68A0.
 ConstructionItem* TribeConstructionAIModule::compare(
     ConstructionItem* left, ConstructionItem* right)
 {
-    // BINARY NOTE: Read left first. A null left faults before a null right.
+    // Read left first. A null left faults before a null right.
     int leftAttempts = left->buildAttempts();
     if (leftAttempts > right->buildAttempts()) {
         return right;

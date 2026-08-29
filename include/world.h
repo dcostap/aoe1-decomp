@@ -24,7 +24,6 @@ class RGE_Game_World {
 public:
     RGE_Game_World();
 
-    // ABI NOTE: Keep these virtual declarations in PDB and vtable order.
     // The load_scenario, setup_player_colors, base_save, and scenario_init
     // overloads below use the original declaration order. addObject and
     // removeObject occupy world vslots 62 and 63.

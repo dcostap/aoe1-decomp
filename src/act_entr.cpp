@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\act_entr.cpp.
-// Definitions follow the original source and address order.
 
 #include "../include/act_entr.h"
 #include "../include/act_list.h"
@@ -10,14 +8,12 @@
 #include "../include/task.h"
 #include "../include/world.h"
 
-// VA: 004023C0.
 RGE_Action_Enter::RGE_Action_Enter(int file, RGE_Action_Object* object)
     : RGE_Action(file, object, 1)
 {
     this->action_type = 3;
 }
 
-// VA: 00402410.
 RGE_Action_Enter::RGE_Action_Enter(RGE_Action_Object* object,
                                    RGE_Task* task,
                                    RGE_Static_Object* target)
@@ -90,18 +86,15 @@ line_path:
     }
 }
 
-// VA: 004025F0.
 RGE_Action_Enter::~RGE_Action_Enter()
 {
 }
 
-// VA: 00402600.
 void RGE_Action_Enter::first_in_stack(unsigned char value)
 {
     this->set_state(4);
 }
 
-// VA: 00402610.
 void RGE_Action_Enter::set_state(unsigned char value)
 {
     RGE_Action_Move_To* move_to;
@@ -142,7 +135,6 @@ void RGE_Action_Enter::set_state(unsigned char value)
     }
 }
 
-// VA: 00402740.
 unsigned char RGE_Action_Enter::update()
 {
     RGE_Action* action;

@@ -1,7 +1,6 @@
 #ifndef AOE1_PNL_DROP_H
 #define AOE1_PNL_DROP_H
 
-// PDB source: C:\\msdev\\work\\age1_x1\\Pnl_drop.cpp.
 // This header owns TDropDownPanel and TDropDownButtonPanel.
 #include "panel.h"
 #include "drawarea.h"

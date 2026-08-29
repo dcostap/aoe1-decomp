@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_TRB_H
 #define AOE1_SCR_TRB_H
 
-// Owner declaration for the PDB-owned scr_trb.cpp module.
 #include "Pnl_scr.h"
 
 class TPicturePanel;

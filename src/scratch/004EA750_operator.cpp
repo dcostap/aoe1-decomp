@@ -1,9 +1,5 @@
-// 004EA750 ManagedArray<int>::operator[]
-// Source: utmarray.h lines 63-67
 // public: int & __thiscall ManagedArray<int>::operator[](int)
 //
-// Attempt log:
-// Probe 1: natural resizing operator[], default flags
 
 #include "..\..\include\game_globals.h"
 

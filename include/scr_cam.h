@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_CAM_H
 #define AOE1_SCR_CAM_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\scr_cam.cpp.
 // This header owns only the campaign editor screen. Shared panel, screen,
 // control, campaign, and game declarations stay in their owner headers.
 #include "Pnl_scr.h"

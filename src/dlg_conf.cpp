@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_conf.cpp.
-// The handwritten owners follow the original source-line and address order.
 // The scalar-deleting destructor between them is compiler generated.
 
 #include "../include/dlg_conf.h"
@@ -28,7 +26,6 @@ extern int allow_user_commands;
 extern unsigned char do_color_log;
 extern "C" int numberPathingIterations;
 
-// dlg_conf.cpp:84-321.
 TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     : TDialogPanel("Config Dialog"), modeValue(mode)
 {
@@ -104,7 +101,7 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
 
     float speed;
     this->gameSpeed = speed = rge_base_game->world->game_speed;
-    // BINARY NOTE: these values lower as the three fixed .rdata float literals.
+    // these values lower as the three fixed .rdata float literals.
     if (speed == 2.0f) {
         this->speedButton[2]->set_radio_button();
     } else if (speed == 1.5f) {
@@ -313,7 +310,6 @@ TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     this->set_tab_order(tab_list, 2);
 }
 
-// dlg_conf.cpp:326-371.
 TribeConfigDialog::~TribeConfigDialog()
 {
     this->delete_panel((TPanel**)&this->title);
@@ -436,8 +432,6 @@ TribeConfigDialog::~TribeConfigDialog()
     this->delete_panel((TPanel**)&this->cancelButton);
 }
 
-// dlg_conf.cpp:377-647.
-// The action remains scratch.  Keep the shipped branch and call ordering.
 long TribeConfigDialog::action(TPanel* panel, long event,
     unsigned long param_3, unsigned long param_4)
 {

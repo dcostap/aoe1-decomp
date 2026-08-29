@@ -12,10 +12,7 @@
 extern float DAT_0056e380;
 extern double DAT_0056e388;
 
-// PDB source: C:\\msdev\\work\\age1_x1\\ACT_misl.cpp.
-// The definitions follow the original source order.
 
-// VA: 00404BB0 RGE_Action_Missile::RGE_Action_Missile
 
 RGE_Action_Missile::RGE_Action_Missile(int file, RGE_Action_Object* object)
     : RGE_Action(file, object, 1)
@@ -28,7 +25,6 @@ RGE_Action_Missile::RGE_Action_Missile(int file, RGE_Action_Object* object)
     rge_read(file, &ballistic_acceleration, 4);
 }
 
-// VA: 00404C90 RGE_Action_Missile::RGE_Action_Missile
 RGE_Action_Missile::RGE_Action_Missile(
     RGE_Action_Object* object, RGE_Static_Object* target,
     RGE_Static_Object* target2, float x, float y, float z)
@@ -42,7 +38,6 @@ RGE_Action_Missile::RGE_Action_Missile(
     this->set_target_obj2(target);
 }
 
-// VA: 00404D10 RGE_Action_Missile::first_in_stack
 void RGE_Action_Missile::first_in_stack(unsigned char value)
 {
     if (value != 0) {
@@ -58,7 +53,6 @@ void RGE_Action_Missile::first_in_stack(unsigned char value)
     }
 }
 
-// VA: 00404D50 RGE_Action_Missile::intercept
 void RGE_Action_Missile::intercept(float& x, float& y, float& z)
 {
     if (!this->target_obj) {
@@ -73,7 +67,6 @@ void RGE_Action_Missile::intercept(float& x, float& y, float& z)
     }
 }
 
-// VA: 00404DB0 RGE_Action_Missile::set_state (805 bytes)
 void RGE_Action_Missile::set_state(unsigned char param_1)
 {
     float tx;
@@ -186,7 +179,6 @@ void RGE_Action_Missile::set_state(unsigned char param_1)
     }
 }
 
-// VA: 004050F0 RGE_Action_Missile::update (955 bytes)
 unsigned char RGE_Action_Missile::update()
 {
     float delta;
@@ -384,7 +376,6 @@ return_one:
     return 1;
 }
 
-// VA: 004054B0 RGE_Action_Missile::save
 void RGE_Action_Missile::save(int handle)
 {
     RGE_Action::save(handle);

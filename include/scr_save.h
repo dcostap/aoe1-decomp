@@ -1,9 +1,7 @@
 #ifndef AOE1_SCR_SAVE_H
 #define AOE1_SCR_SAVE_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\scr_save.cpp.
 // TribeSaveGameScreen is the only class owned by this header. It owns all five
-// normal scr_save.cpp bodies in PDB order. Shared panel, dialog, screen,
 // control, drawing, shape, picture, and game-owner surfaces come from their
 // canonical owners.
 #include "pnl_dlg.h"

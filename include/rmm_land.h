@@ -5,7 +5,6 @@
 // Map, tile, stack, and random-map base ownership comes from canonical
 // headers. This header owns only the Land records and generator surface.
 //
-// PDB order: ctor 25-29, generate 33-51, check_terrain_and_zone 57-140,
 // chance 146-208, and base_land_generate 213-353.
 
 #include "rmm_base.h"

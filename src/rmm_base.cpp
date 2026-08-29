@@ -1,4 +1,3 @@
-// Authentic PDB-order source module for C:\\msdev\\work\\age1_x1\\rmm_base.cpp.
 
 #include "../include/rmm_base.h"
 #include "../include/map.h"
@@ -30,7 +29,7 @@ RGE_Random_Map_Module::RGE_Random_Map_Module(
         this->map_height = 0;
     }
 
-    // BINARY NOTE: Publish empty state before a parent receives this object.
+    // Publish empty state before a parent receives this object.
     this->list = 0;
     this->search_map = 0;
     this->search_map_rows = 0;
@@ -132,7 +131,7 @@ uchar RGE_Random_Map_Module::add_module(RGE_Random_Map_Module* module)
     if (module == 0) {
         return 0;
     }
-    // BINARY NOTE: The shipped code dereferences allocation failure.
+    // The shipped code dereferences allocation failure.
     // Publish the complete node only after both fields have values.
     item = (RGE_Random_Map_Module_List*)calloc(1, 8);
     item->next = this->list;
@@ -141,8 +140,6 @@ uchar RGE_Random_Map_Module::add_module(RGE_Random_Map_Module* module)
     return 1;
 }
 
-// ACCEPTED DRIFT: The compared pointers, list edits, free call, and return
-// values match.  The remaining bytes are register-color and address-source
 // choices in the list walk.
 uchar RGE_Random_Map_Module::remove_module(
     RGE_Random_Map_Module* param_1)
@@ -186,7 +183,7 @@ void RGE_Random_Map_Module::create_shared_resources()
 
     count = map_height;
     count *= map_width;
-    // BINARY NOTE: Store each allocation before row-pointer publication.
+    // Store each allocation before row-pointer publication.
     // The shipped code does not test allocation results.
     search_map = (uchar*)calloc(count, 1);
     search_map_rows = (uchar**)calloc(map_height, 4);
@@ -399,8 +396,6 @@ uchar RGE_Random_Map_Module::check_stack(Map_Stack* stack)
     return 1;
 }
 
-// SCRATCH: The five randomization calls and list edits remain aligned, but the
-// natural body has a frame-size and control-flow mismatch.
 void RGE_Random_Map_Module::randomize_stack(Map_Stack* param_1)
 {
     Map_Stack sub_stacks[100];
@@ -444,11 +439,9 @@ uchar RGE_Random_Map_Module::find_path(
     return result;
 }
 
-// PDB CONTEXT: C:\\msdev\\work\\age1_x1\\rmm_base.cpp lines 526-849
 // own this second overload.  The executable has ten ordered helper calls,
 // including clear_stack, eight push_stack calls, and pop_stack.
 // LIKELY INTENT: Search eight neighboring tiles through the shared stack and
-// byte map.  The retained source is scratch because its FPU/local-slot basin
 // differs from the executable.
 uchar RGE_Random_Map_Module::find_path(
     Map_Stack& path_stack, long x, long y, long& target_x, long& target_y,

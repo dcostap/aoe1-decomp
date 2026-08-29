@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_LOAD_H
 #define AOE1_SCR_LOAD_H
 
-// PDB source module: C:\msdev\work\age1_x1\scr_load.cpp.
 #include "Pnl_scr.h"
 
 class TTextPanel;

@@ -1,7 +1,6 @@
 #ifndef AOE1_DLG_LIST_H
 #define AOE1_DLG_LIST_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_list.cpp.
 // This header owns TListDialog.
 #include "pnl_dlg.h"
 #include "pnl_lst.h"
@@ -13,7 +12,6 @@ public:
     TListDialog(char*);
     virtual ~TListDialog();
 
-    // The PDB symbol for this overload is QAE. It is nonvirtual.
     long setup(TPanel*, char*, long, long, long, long, long, long, long,
                char*, long, long, long, long, char**, short, short,
                long, long, long, long, long);

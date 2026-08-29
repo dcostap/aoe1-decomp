@@ -1,5 +1,3 @@
-// PDB source module: C:/msdev/work/age1_x1/scr_name.cpp.
-// Definitions follow the original PDB source order.
 
 #include "../include/scr_name.h"
 #include "../include/scr_cams.h"
@@ -18,7 +16,6 @@
 static char name_selection_screen[] = "Name Selection Screen";
 static char setup_info_file[] = "scr2";
 
-// 004A63D0 TRIBE_Screen_Name (scr_name.cpp:50-96)
 TRIBE_Screen_Name::TRIBE_Screen_Name()
     : TScreenPanel(name_selection_screen)
 {
@@ -90,7 +87,6 @@ TRIBE_Screen_Name::TRIBE_Screen_Name()
     this->started_input = 0;
 }
 
-// 004A66E0 TRIBE_Screen_Name::~TRIBE_Screen_Name (scr_name.cpp:102-114)
 TRIBE_Screen_Name::~TRIBE_Screen_Name()
 {
     panel_system.setCurrentPanel("New Name Dialog", 0);
@@ -106,7 +102,6 @@ TRIBE_Screen_Name::~TRIBE_Screen_Name()
     delete this->close_button;
 }
 
-// 004A67C0 init_vars (scr_name.cpp:120-130)
 void TRIBE_Screen_Name::init_vars()
 {
     this->title = 0;
@@ -120,7 +115,6 @@ void TRIBE_Screen_Name::init_vars()
     this->close_button = 0;
 }
 
-// 004A6800 TRIBE_Screen_Name::get_player_names (scr_name.cpp:136-163)
 void TRIBE_Screen_Name::get_player_names()
 {
     this->name_list->empty_list();
@@ -153,7 +147,6 @@ void TRIBE_Screen_Name::get_player_names()
     }
 }
 
-// 004A68C0 TRIBE_Screen_Name::setup_tab_order (scr_name.cpp:169-197)
 void TRIBE_Screen_Name::setup_tab_order()
 {
     int disabled = 0;
@@ -186,7 +179,6 @@ void TRIBE_Screen_Name::setup_tab_order()
     }
 }
 
-// 004A6980 TRIBE_Screen_Name::handle_idle (scr_name.cpp:204-219)
 long TRIBE_Screen_Name::handle_idle()
 {
     if (!rge_base_game->input_enabled)
@@ -194,7 +186,6 @@ long TRIBE_Screen_Name::handle_idle()
     return TPanel::handle_idle();
 }
 
-// 004A69B0 TRIBE_Screen_Name::action (scr_name.cpp:225-322)
 long TRIBE_Screen_Name::action(TPanel* panel, long event, unsigned long p3,
                                unsigned long p4)
 {
@@ -281,7 +272,6 @@ long TRIBE_Screen_Name::action(TPanel* panel, long event, unsigned long p3,
     return this->TEasy_Panel::action(panel, event, p3, p4);
 }
 
-// 004A6D50 TRIBE_Dialog_Name::TRIBE_Dialog_Name (scr_name.cpp:329-361)
 TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
     : TDialogPanel("New Name Dialog")
 {
@@ -321,7 +311,6 @@ TRIBE_Dialog_Name::TRIBE_Dialog_Name(TScreenPanel* screen)
     this->set_curr_child(this->name_input);
 }
 
-// 004A6F60 TRIBE_Dialog_Name::~TRIBE_Dialog_Name (scr_name.cpp:367-373)
 TRIBE_Dialog_Name::~TRIBE_Dialog_Name()
 {
     delete this->title;
@@ -331,7 +320,6 @@ TRIBE_Dialog_Name::~TRIBE_Dialog_Name()
     delete this->cancel_button;
 }
 
-// 004A6FF0 TRIBE_Dialog_Name::action (scr_name.cpp:379-423)
 long TRIBE_Dialog_Name::action(TPanel* panel, long p2, unsigned long p3,
                                unsigned long p4)
 {
@@ -367,7 +355,6 @@ long TRIBE_Dialog_Name::action(TPanel* panel, long p2, unsigned long p3,
     return this->TEasy_Panel::action(panel, p2, p3, p4);
 }
 
-// 004A71D0 TRIBE_Dialog_Name::wnd_proc (scr_name.cpp:429-440)
 long TRIBE_Dialog_Name::wnd_proc(void* param1, unsigned int param2,
                                  unsigned int param3, long param4)
 {

@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\stat_obj.cpp.
-// Definitions follow the original source order.
 #include "../include/act_obj.h"
 #include "../include/asp_list.h"
 #include "../include/basegame.h"
@@ -39,7 +37,6 @@ extern int logDebugID;
 extern FILE* debugOut;
 extern char STR_STAT_OBJ[];
 
-// 004C1100 RGE_Static_Object::RGE_Static_Object
 
 
 
@@ -61,7 +58,6 @@ RGE_Static_Object::RGE_Static_Object(RGE_Master_Static_Object* master, RGE_Playe
 }
 
 
-// 004C11E0 RGE_Static_Object::RGE_Static_Object
 
 
 
@@ -84,7 +80,6 @@ RGE_Static_Object::RGE_Static_Object(int id, RGE_Game_World* world, int do_setup
 
 
 
-// 004C1290 RGE_Static_Object::~RGE_Static_Object
 
 
 RGE_Static_Object::~RGE_Static_Object() {
@@ -152,7 +147,6 @@ RGE_Static_Object::~RGE_Static_Object() {
 }
 
 
-// 004C1420 RGE_Static_Object::recycle_in_to_game
 
 
 
@@ -215,7 +209,6 @@ void RGE_Static_Object::recycle_in_to_game(RGE_Master_Static_Object* master, RGE
 }
 
 
-// 004C1590 RGE_Static_Object::recycle_out_of_game
 
 
 void RGE_Static_Object::recycle_out_of_game() {
@@ -270,9 +263,8 @@ void RGE_Static_Object::recycle_out_of_game() {
 }
 
 
-// 004C16B0 RGE_Static_Object::setup
-// BINARY NOTE: setup is a protected virtual member in the shipped symbol.
-// BINARY NOTE: setup is a protected virtual member in the shipped symbol.
+// setup is a protected virtual member in the shipped symbol.
+// setup is a protected virtual member in the shipped symbol.
 
 
 
@@ -336,8 +328,7 @@ int RGE_Static_Object::setup(RGE_Master_Static_Object* master, RGE_Player* playe
 }
 
 
-// 004C1840 RGE_Static_Object::setup
-// BINARY NOTE: this loader entry is a protected virtual setup member.
+// this loader entry is a protected virtual setup member.
 
 
 int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
@@ -354,7 +345,7 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     rge_read(save_file, &long_val, 1);
     this->owner = world->players[long_val & 0xff];
 
-    // BINARY NOTE: The shipped loader reuses the incoming file home for this index.
+    // The shipped loader reuses the incoming file home for this index.
     rge_read(save_file, &index, 2);
     this->master_obj = this->owner->master_objects[index];
 
@@ -413,7 +404,7 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     if (0 < byte_val) {
         do {
             rge_read(save_file, &tempInt_fffffff8, 4);
-            // BINARY NOTE: The duplicate scan checks count before capacity.
+            // The duplicate scan checks count before capacity.
             int number = this->groupMembers.numberValue;
             int index = 0;
             local_4 = tempInt_fffffff8;
@@ -497,7 +488,6 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
 }
 
 
-// 004C1CF0 RGE_Static_Object::change_unique_id
 
 void RGE_Static_Object::change_unique_id() {
     this->owner->removeObject(this, this->sleep_flag, this->dopple_flag, this->player_object_node);
@@ -511,21 +501,18 @@ void RGE_Static_Object::change_unique_id() {
 }
 
 
-// 004C1D60 RGE_Static_Object::create_object_list
 
 RGE_Object_List* RGE_Static_Object::create_object_list(void) {
     return new RGE_Object_List;
 }
 
 
-// 004C1DC0 RGE_Static_Object::create_sprite_list
 
 RGE_Active_Sprite_List* RGE_Static_Object::create_sprite_list(void) {
     return new RGE_Active_Sprite_List(this);
 }
 
 
-// 004C1E20 RGE_Static_Object::get_starting_attribute
 void RGE_Static_Object::get_starting_attribute()
 {
     RGE_Master_Static_Object* master;
@@ -554,7 +541,6 @@ void RGE_Static_Object::get_starting_attribute()
 }
 
 
-// 004C1E70 RGE_Static_Object::give_attribute_to_owner
 
 
 void RGE_Static_Object::give_attribute_to_owner(void) {
@@ -572,7 +558,6 @@ void RGE_Static_Object::give_attribute_to_owner(void) {
 }
 
 
-// 004C1ED0 RGE_Static_Object::take_attribute_from_owner
 
 
 void RGE_Static_Object::take_attribute_from_owner(void) {
@@ -589,7 +574,6 @@ void RGE_Static_Object::take_attribute_from_owner(void) {
 }
 
 
-// 004C1F30 RGE_Static_Object::draw
 
 
 
@@ -637,7 +621,6 @@ void RGE_Static_Object::draw(TDrawArea* area, short x, short y,
 }
 
 
-// 004C2030 RGE_Static_Object::shadow_draw
 void RGE_Static_Object::shadow_draw(TDrawArea* param_1, short param_2, short param_3, unsigned char param_4) {
     if (this->tile != 0 && this->object_state < 7) {
         this->sprite_list->shadow_draw(this->facet, this->shadow_x_offset + param_2, this->shadow_y_offset + param_3, this->owner->color_table, param_1, param_4);
@@ -645,7 +628,6 @@ void RGE_Static_Object::shadow_draw(TDrawArea* param_1, short param_2, short par
 }
 
 
-// 004C2080 RGE_Static_Object::normal_draw
 
 
 void RGE_Static_Object::normal_draw(TDrawArea* param_1, short param_2, short param_3)
@@ -682,7 +664,6 @@ void RGE_Static_Object::normal_draw(TDrawArea* param_1, short param_2, short par
 }
 
 
-// 004C2110 RGE_Static_Object::draw_front_frame
 
 
 void RGE_Static_Object::draw_front_frame(TDrawArea* param_1, short param_2, short param_3) {
@@ -698,7 +679,6 @@ void RGE_Static_Object::draw_front_frame(TDrawArea* param_1, short param_2, shor
 }
 
 
-// 004C21A0 RGE_Static_Object::draw_back_frame
 
 
 
@@ -724,7 +704,6 @@ void RGE_Static_Object::draw_back_frame(TDrawArea* area, short x, short y) {
 }
 
 
-// 004C2220 RGE_Static_Object::capture_frame
 
 
 void RGE_Static_Object::capture_frame(TDrawArea* area, short x, short y) {
@@ -750,8 +729,7 @@ void RGE_Static_Object::capture_frame(TDrawArea* area, short x, short y) {
 }
 
 
-// 004C22C0 RGE_Static_Object::capture_square_frame
-// - ORIGINAL BUG: the original first AddGDINode setup reuses screen_y_offset
+// - the original first AddGDINode setup reuses screen_y_offset
 
 
 
@@ -803,12 +781,10 @@ void RGE_Static_Object::capture_square_frame(TDrawArea* render_area,
 }
 
 
-// 004C23F0 RGE_Static_Object::capture_frame_3d_cube
 
 void RGE_Static_Object::capture_frame_3d_cube(TDrawArea* p0, short p1, short p2) {}
 
 
-// 004C2400 RGE_Static_Object::capture_frame_3d_square
 
 
 
@@ -1018,7 +994,6 @@ void RGE_Static_Object::capture_frame_3d_square(
 }
 
 
-// 004C2970 RGE_Static_Object::draw_frame_3d_square_back
 
 
 static char stat_obj_square_back_tag[] =
@@ -1071,7 +1046,6 @@ void RGE_Static_Object::draw_frame_3d_square_back(TDrawArea* area, short x, shor
 }
 
 
-// 004C2B50 RGE_Static_Object::draw_frame_3d_square_front
 
 
 static char tag[] = "stat_obj::draw_frame_3d_square_front";
@@ -1146,8 +1120,7 @@ void RGE_Static_Object::draw_frame_3d_square_front(
 }
 
 
-// 004C2DF0 RGE_Static_Object::draw_frame_3d_cube_back
-// BINARY NOTE: The reviewed extern rge_base_game declaration is required here;
+// The reviewed extern rge_base_game declaration is required here;
 
 
 void RGE_Static_Object::draw_frame_3d_cube_back(TDrawArea* area, short sx, short sy)
@@ -1207,7 +1180,6 @@ void RGE_Static_Object::draw_frame_3d_cube_back(TDrawArea* area, short sx, short
 }
 
 
-// 004C31E0 RGE_Static_Object::draw_frame_3d_cube_front
 
 
 void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* area, short x, short y)
@@ -1226,7 +1198,7 @@ void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* area, short x, short
     RGE_Map* map = this->owner->world->map;
     TPanel* view = rge_base_game->get_view_panel();
 
-    // BINARY NOTE: A null view returns before the draw-area lock sequence.
+    // A null view returns before the draw-area lock sequence.
     if (view == 0)
         return;
 
@@ -1239,7 +1211,7 @@ void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* area, short x, short
                 SelectObject(area->DrawDc, GetStockObject(6));
             }
 
-            // BINARY NOTE: Update x before y and keep both incoming short homes.
+            // Update x before y and keep both incoming short homes.
             x += this->screen_x_offset;
             y += this->screen_y_offset - 0x10;
             neg_ry = -rz4;
@@ -1251,7 +1223,7 @@ void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* area, short x, short
 
             neg_ry2 = -ry2;
             map->get_point(x2, y2, neg_ry2, neg_ry, rx1, x, y);
-            // BINARY NOTE: Delay this negation until the first projection ends.
+            // Delay this negation until the first projection ends.
             neg_local_10 = -local_10;
             map->get_point(x1, y1, neg_local_10, neg_ry, rx1, x, y);
             MoveToEx(area->DrawDc, x2, y2, 0);
@@ -1344,8 +1316,7 @@ void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* area, short x, short
 }
 
 
-// 004C3B30 RGE_Static_Object::draw_frame
-// BINARY NOTE: Keep the sprite and sprite-list guards, facet dispatch, frame
+// Keep the sprite and sprite-list guards, facet dispatch, frame
 
 
 
@@ -1395,7 +1366,6 @@ void RGE_Static_Object::draw_frame(TDrawArea* area, short x, short y)
 }
 
 
-// 004C3C70 RGE_Static_Object::update
 
 typedef unsigned char uchar;
 
@@ -1470,7 +1440,6 @@ uchar RGE_Static_Object::update()
 }
 
 
-// 004C3F90 RGE_Static_Object::check_damage_sprites
 
 static char s_stat_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\stat_obj.cpp";
 
@@ -1551,7 +1520,6 @@ void RGE_Static_Object::check_damage_sprites()
 }
 
 
-// 004C41D0 RGE_Static_Object::spawn_death_obj
 
 
 RGE_Static_Object* RGE_Static_Object::spawn_death_obj(void) {
@@ -1566,7 +1534,6 @@ RGE_Static_Object* RGE_Static_Object::spawn_death_obj(void) {
 }
 
 
-// 004C4210 RGE_Static_Object::rehook
 
 void RGE_Static_Object::rehook(void) {
     RGE_Static_Object* obj;
@@ -1583,7 +1550,6 @@ void RGE_Static_Object::rehook(void) {
 }
 
 
-// 004C4250 RGE_Static_Object::get_object_pointer
 
 
 
@@ -1635,7 +1601,6 @@ RGE_Static_Object* RGE_Static_Object::get_object_pointer(long id)
 }
 
 
-// 004C4330 RGE_Static_Object::get_sprite_pointer
 
 
 
@@ -1652,7 +1617,6 @@ RGE_Sprite* RGE_Static_Object::get_sprite_pointer(short index) {
 }
 
 
-// 004C4360 RGE_Static_Object::save
 
 
 void RGE_Static_Object::save(int file)
@@ -1723,8 +1687,7 @@ void RGE_Static_Object::save(int file)
 }
 
 
-// 004C4680 RGE_Static_Object::teleport
-// BINARY NOTE: teleport uses the canonical named terrain methods.
+// teleport uses the canonical named terrain methods.
 
 
 float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
@@ -1748,7 +1711,7 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
     if (param_1 < 0.0f) {
         param_1 = 0.0f;
     }
-    // BINARY NOTE: The upper-bound loads come directly from map width and height.
+    // The upper-bound loads come directly from map width and height.
     if (param_1 >= (float)map->map_width) {
         param_1 = (float)map->map_width - 0.001f;
     }
@@ -1932,7 +1895,6 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
 }
 
 
-// 004C4BD0 RGE_Static_Object::new_sprite
 
 void RGE_Static_Object::new_sprite(RGE_Sprite* sprite) {
     if (sprite == 0) {
@@ -1948,7 +1910,6 @@ void RGE_Static_Object::new_sprite(RGE_Sprite* sprite) {
 }
 
 
-// 004C4C20 RGE_Static_Object::add_overlay_sprite
 
 
 void RGE_Static_Object::add_overlay_sprite(RGE_Sprite* sprite, unsigned char mode) {
@@ -1956,15 +1917,13 @@ void RGE_Static_Object::add_overlay_sprite(RGE_Sprite* sprite, unsigned char mod
 }
 
 
-// 004C4C40 RGE_Static_Object::remove_overlay_sprite
 
-// BINARY NOTE: this virtual member takes an RGE_Sprite pointer.
+// this virtual member takes an RGE_Sprite pointer.
 void RGE_Static_Object::remove_overlay_sprite(RGE_Sprite* param) {
     this->sprite_list->remove_sprite(param);
 }
 
 
-// 004C4C50 RGE_Static_Object::change_ownership
 
 
 void RGE_Static_Object::change_ownership(RGE_Player* player)
@@ -2023,7 +1982,6 @@ void RGE_Static_Object::change_ownership(RGE_Player* player)
 }
 
 
-// 004C4D80 RGE_Static_Object::modify
 
 void RGE_Static_Object::modify(float value, unsigned char type) {
     switch (type) {
@@ -2044,7 +2002,6 @@ void RGE_Static_Object::modify(float value, unsigned char type) {
 }
 
 
-// 004C4E00 RGE_Static_Object::modify_delta
 
 
 void RGE_Static_Object::modify_delta(float delta, unsigned char type)
@@ -2071,7 +2028,6 @@ void RGE_Static_Object::modify_delta(float delta, unsigned char type)
 }
 
 
-// 004C4E90 RGE_Static_Object::modify_percent
 
 
 
@@ -2095,7 +2051,6 @@ void RGE_Static_Object::modify_percent(float percent, unsigned char mode) {
 }
 
 
-// 004C4F10 RGE_Static_Object::transform
 
 
 void RGE_Static_Object::transform(RGE_Master_Static_Object* param_1) {
@@ -2126,7 +2081,6 @@ void RGE_Static_Object::transform(RGE_Master_Static_Object* param_1) {
 }
 
 
-// 004C4FB0 RGE_Static_Object::copy_obj
 
 
 void RGE_Static_Object::copy_obj(RGE_Master_Static_Object* master)
@@ -2168,7 +2122,6 @@ void RGE_Static_Object::copy_obj(RGE_Master_Static_Object* master)
 }
 
 
-// 004C5080 RGE_Static_Object::destroy_obj
 
 
 void RGE_Static_Object::destroy_obj(void) {
@@ -2185,7 +2138,6 @@ void RGE_Static_Object::destroy_obj(void) {
 }
 
 
-// 004C50C0 RGE_Static_Object::die_die_die
 
 void RGE_Static_Object::die_die_die(void) {
     if ((this->selected & 1) != 0) {
@@ -2196,7 +2148,6 @@ void RGE_Static_Object::die_die_die(void) {
 }
 
 
-// 004C50F0 RGE_Static_Object::remove_visible_resource
 
 typedef unsigned long ulong;
 
@@ -2240,7 +2191,6 @@ void RGE_Static_Object::remove_visible_resource() {
 }
 
 
-// 004C5210 RGE_Static_Object::create_doppleganger_when_dying
 
 typedef unsigned long ulong;
 
@@ -2271,7 +2221,6 @@ void RGE_Static_Object::create_doppleganger_when_dying() {
 }
 
 
-// 004C52F0 RGE_Static_Object::set_object_state
 
 void RGE_Static_Object::set_object_state(unsigned char state)
 {
@@ -2337,8 +2286,7 @@ void RGE_Static_Object::set_object_state(unsigned char state)
 }
 
 
-// 004C5610 RGE_Static_Object::check_object_bounds
-// BINARY NOTE: The executable's final X overlap accepts less, equal, and
+// The executable's final X overlap accepts less, equal, and
 
 
 RGE_Static_Object* RGE_Static_Object::check_object_bounds()
@@ -2402,21 +2350,18 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
 }
 
 
-// 004C5820 RGE_Static_Object::get_terrain_speed
 
 float RGE_Static_Object::get_terrain_speed(unsigned char terrain_type) {
     return owner->world->terrains[master_obj->terrain][terrain_type];
 }
 
 
-// 004C5850 RGE_Static_Object::is_moving
 
 unsigned char RGE_Static_Object::is_moving() { return 0; }
 
 
-// 004C5860 RGE_Static_Object::is_dying
 
-// BINARY NOTE: this method is an exceptional nonvirtual member. Its original
+// this method is an exceptional nonvirtual member. Its original
 unsigned char RGE_Static_Object::is_dying(void) {
     if (object_state >= 3 && object_state != 6) {
         return 1;
@@ -2425,8 +2370,7 @@ unsigned char RGE_Static_Object::is_dying(void) {
 }
 
 
-// 004C5880 RGE_Static_Object::get_frame
-// BINARY NOTE: the four outputs are references, not pointer parameters.
+// the four outputs are references, not pointer parameters.
 
 
 int RGE_Static_Object::get_frame(short& param_1, short& param_2, short& param_3, short& param_4) {
@@ -2439,7 +2383,6 @@ int RGE_Static_Object::get_frame(short& param_1, short& param_2, short& param_3,
 }
 
 
-// 004C58C0 RGE_Static_Object::more_room
 
 
 unsigned char RGE_Static_Object::more_room() {
@@ -2447,7 +2390,6 @@ unsigned char RGE_Static_Object::more_room() {
 }
 
 
-// 004C58E0 RGE_Static_Object::enter_obj
 
 
 
@@ -2476,7 +2418,6 @@ void RGE_Static_Object::enter_obj(RGE_Static_Object* target) {
 }
 
 
-// 004C5960 RGE_Static_Object::exit_obj
 
 void RGE_Static_Object::exit_obj(void) {
     if (inside_obj != 0) {
@@ -2486,9 +2427,8 @@ void RGE_Static_Object::exit_obj(void) {
 }
 
 
-// 004C5980 RGE_Static_Object::get_los_table
 
-// BINARY NOTE: LOSTBL is a struct in the original decorated return type.
+// LOSTBL is a struct in the original decorated return type.
 LOSTBL* RGE_Static_Object::get_los_table(void) {
     if (this->owner == 0) {
         return 0;
@@ -2497,7 +2437,6 @@ LOSTBL* RGE_Static_Object::get_los_table(void) {
 }
 
 
-// 004C59B0 RGE_Static_Object::explore_terrain
 
 extern "C" long __cdecl _ftol(void);
 
@@ -2530,7 +2469,6 @@ int RGE_Static_Object::explore_terrain(RGE_Player* player, unsigned char mode, i
 }
 
 
-// 004C5AA0 RGE_Static_Object::unexplore_terrain
 
 extern "C" long __cdecl _ftol(void);
 
@@ -2562,7 +2500,6 @@ void RGE_Static_Object::unexplore_terrain(RGE_Player* player, unsigned char mode
 }
 
 
-// 004C5B90 RGE_Static_Object::damage
 void RGE_Static_Object::damage(int count, RGE_Armor_Weapon_Info* info, float scale, RGE_Player* player, RGE_Static_Object* object) {
     float damage_amount;
 
@@ -2575,7 +2512,6 @@ void RGE_Static_Object::damage(int count, RGE_Armor_Weapon_Info* info, float sca
 }
 
 
-// 004C5BE0 RGE_Static_Object::calculateDamage
 
 float RGE_Static_Object::calculateDamage(int count, RGE_Armor_Weapon_Info* info, float scale, RGE_Player*, RGE_Static_Object*) {
     float damage = 0.0f;
@@ -2592,7 +2528,6 @@ float RGE_Static_Object::calculateDamage(int count, RGE_Armor_Weapon_Info* info,
 }
 
 
-// 004C5C10 RGE_Static_Object::rotate
 
 void RGE_Static_Object::rotate(long amount) {
     int facet_num = (int)this->sprite->facet_num;
@@ -2608,7 +2543,6 @@ void RGE_Static_Object::rotate(long amount) {
 }
 
 
-// 004C5C40 RGE_Static_Object::set_attribute
 
 void RGE_Static_Object::set_attribute(short param1, float param2) {
     attribute_type_held = param1;
@@ -2616,7 +2550,6 @@ void RGE_Static_Object::set_attribute(short param1, float param2) {
 }
 
 
-// 004C5C60 RGE_Static_Object::set_attribute_amount
 void RGE_Static_Object::set_attribute_amount(float amount, unsigned char add, unsigned char clamp)
 {
     if (add != 0) {
@@ -2634,7 +2567,6 @@ void RGE_Static_Object::set_attribute_amount(float amount, unsigned char add, un
 }
 
 
-// 004C5CB0 RGE_Static_Object::heal
 
 unsigned char RGE_Static_Object::heal(float amount) {
     float fVar1 = amount + this->hp;
@@ -2651,12 +2583,10 @@ unsigned char RGE_Static_Object::heal(float amount) {
 }
 
 
-// 004C5D10 RGE_Static_Object::notify_of_relation
 
 void RGE_Static_Object::notify_of_relation(long p0, unsigned char p1) {}
 
 
-// 004C5D20 RGE_Static_Object::set_being_worked_on
 
 void RGE_Static_Object::set_being_worked_on(RGE_Action_Object* action, short mode, unsigned char flag) {
     if (worker_num < 0xFA) {
@@ -2666,7 +2596,6 @@ void RGE_Static_Object::set_being_worked_on(RGE_Action_Object* action, short mod
 }
 
 
-// 004C5D40 RGE_Static_Object::release_being_worked_on
 void RGE_Static_Object::release_being_worked_on(RGE_Static_Object* unused) {
     if (this->worker_num > 0) {
         this->worker_num--;
@@ -2687,8 +2616,7 @@ void RGE_Static_Object::release_being_worked_on(RGE_Static_Object* unused) {
 }
 
 
-// 004C5D80 RGE_Static_Object::inRange
-//   - BINARY NOTE: The complete Y expression stays in the pending x87 status window. This
+//   - The complete Y expression stays in the pending x87 status window. This
 
 
 
@@ -2731,7 +2659,6 @@ int RGE_Static_Object::inRange(RGE_Static_Object* other, float range)
 }
 
 
-// 004C5E50 RGE_Static_Object::distance_to_object
 
 
 
@@ -2766,7 +2693,6 @@ float RGE_Static_Object::distance_to_object(RGE_Static_Object* other) {
 }
 
 
-// 004C5F00 RGE_Static_Object::distance_to_position
 
 
 
@@ -2792,7 +2718,6 @@ float RGE_Static_Object::distance_to_position(float x, float y, float z)
 }
 
 
-// 004C5FA0 RGE_Static_Object::hit_test
 
 
 unsigned char RGE_Static_Object::hit_test(
@@ -2825,7 +2750,6 @@ unsigned char RGE_Static_Object::hit_test(
 }
 
 
-// 004C60A0 RGE_Static_Object::box_hit_test
 
 
 
@@ -2861,7 +2785,6 @@ unsigned char RGE_Static_Object::box_hit_test(short param_1, short param_2, shor
 }
 
 
-// 004C6240 RGE_Static_Object::set_location
 
 void RGE_Static_Object::set_location(float x, float y, float z) {
     world_x = x;
@@ -2870,12 +2793,10 @@ void RGE_Static_Object::set_location(float x, float y, float z) {
 }
 
 
-// 004C6260 RGE_Static_Object::new_angle
 
 void RGE_Static_Object::new_angle(float p0) {}
 
 
-// 004C6270 RGE_Static_Object::drop_held_objects
 
 
 unsigned char RGE_Static_Object::drop_held_objects(int mode)
@@ -2934,8 +2855,7 @@ unsigned char RGE_Static_Object::drop_held_objects(int mode)
 }
 
 
-// 004C6400 RGE_Static_Object::find_drop_location
-// BINARY NOTE: the x and y outputs are float references in the shipped symbol.
+// the x and y outputs are float references in the shipped symbol.
 
 unsigned char RGE_Static_Object::find_drop_location(
     int terrain, float& x, float& y, RGE_Master_Static_Object* master,
@@ -2987,7 +2907,7 @@ unsigned char RGE_Static_Object::find_drop_location(
                         terrain != (int)this->lookupZone((int)x, (int)y)) {
                         goto retry_attempt;
                     }
-                    // BINARY NOTE: success returns from inside the retry loop.
+                    // success returns from inside the retry loop.
                     if (master->check_placement(this->owner, x, y,
                         0, 1, 1, 1, 0, 1, 1) == 0 &&
                         object->passableTile(x, y, 0) == 1) {
@@ -3010,14 +2930,12 @@ retry_attempt:
 }
 
 
-// 004C66C0 RGE_Check_List::RGE_Check_List
 
 RGE_Check_List::RGE_Check_List() {
     this->list = 0;
 }
 
 
-// 004C66D0 RGE_Check_List::~RGE_Check_List
 
 RGE_Check_List::~RGE_Check_List() {
     RGE_Check_Node* next;
@@ -3030,7 +2948,6 @@ RGE_Check_List::~RGE_Check_List() {
 }
 
 
-// 004C6700 RGE_Check_List::add_node
 
 void RGE_Check_List::add_node(RGE_Static_Object* object, float dx, float dy, unsigned char flag) {
     RGE_Check_Node* node = static_cast<RGE_Check_Node*>(calloc(1, sizeof(RGE_Check_Node)));
@@ -3043,7 +2960,6 @@ void RGE_Check_List::add_node(RGE_Static_Object* object, float dx, float dy, uns
 }
 
 
-// 004C6740 RGE_Static_Object::make_object_bounds_list
 
 
 RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float max_dist) {
@@ -3154,10 +3070,8 @@ RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float max_dist) {
 }
 
 
-// 004C6AA0 RGE_Static_Object::boundToFacet
-// BINARY NOTE: PDB owner is RGE_Static_Object::boundToFacet.
-// BINARY NOTE: The owned body is [004C6AA0, 004C6B41); later bytes are padding.
-// BINARY NOTE: Keep the narrow sprite facet-count read at sprite + 0x60.
+// The owned body is [004C6AA0, 004C6B41); later bytes are padding.
+// Keep the narrow sprite facet-count read at sprite + 0x60.
 
 extern "C" double __cdecl atan2(double, double);
 
@@ -3190,10 +3104,8 @@ int RGE_Static_Object::boundToFacet(float x, float y, int facet_num)
 }
 
 
-// 004C6B50 RGE_Static_Object::numberFacets
-// BINARY NOTE: PDB owner is RGE_Static_Object::numberFacets.
-// BINARY NOTE: The owned body is [004C6B50, 004C6B5F); the next byte is padding.
-// BINARY NOTE: Keep the narrow sprite facet-count read at sprite + 0x60.
+// The owned body is [004C6B50, 004C6B5F); the next byte is padding.
+// Keep the narrow sprite facet-count read at sprite + 0x60.
 
 
 int RGE_Static_Object::numberFacets() {
@@ -3203,27 +3115,21 @@ int RGE_Static_Object::numberFacets() {
 }
 
 
-// 004C6B60 RGE_Static_Object::underAttack
-// BINARY NOTE: PDB owner is RGE_Static_Object::underAttack() const.
-// BINARY NOTE: The owned body is [004C6B60, 004C6B67); 004C6B67 begins padding.
-// BINARY NOTE: The body is one narrow byte read at this + 0x86 followed by ret.
+// The owned body is [004C6B60, 004C6B67); 004C6B67 begins padding.
+// The body is one narrow byte read at this + 0x86 followed by ret.
 
 
 unsigned char RGE_Static_Object::underAttack() const { return this->underAttackValue; }
 
 
-// 004C6B70 RGE_Static_Object::setUnderAttack
-// BINARY NOTE: PDB owner is RGE_Static_Object::setUnderAttack(unsigned char).
-// BINARY NOTE: The owned body is [004C6B70, 004C6B7D); 004C6B7D begins padding.
-// BINARY NOTE: Keep the virtual, non-const setter ABI and the narrow +0x86 store.
+// The owned body is [004C6B70, 004C6B7D); 004C6B7D begins padding.
+// Keep the virtual, non-const setter ABI and the narrow +0x86 store.
 
 
 void RGE_Static_Object::setUnderAttack(unsigned char v) { this->underAttackValue = v; }
 
 
-// 004C6B80 RGE_Static_Object::addToObstructionMap
-// BINARY NOTE: PDB-qualified owner is RGE_Static_Object::addToObstructionMap(int).
-// BINARY NOTE: The body is [004C6B80, 004C6C8A); 004C6C90 starts the next symbol.
+// The body is [004C6B80, 004C6C8A); 004C6C90 starts the next symbol.
 
 int RGE_Static_Object::addToObstructionMap(int mode)
 {
@@ -3262,9 +3168,7 @@ int RGE_Static_Object::addToObstructionMap(int mode)
 }
 
 
-// 004C6C90 RGE_Static_Object::removeFromObstructionMap
-// BINARY NOTE: PDB-qualified owner is RGE_Static_Object::removeFromObstructionMap(int).
-// BINARY NOTE: The owned body is [004C6C90, 004C6D9A); 004C6DA0 starts changeInfluenceMap.
+// The owned body is [004C6C90, 004C6D9A); 004C6DA0 starts changeInfluenceMap.
 
 int RGE_Static_Object::removeFromObstructionMap(int mode)
 {
@@ -3303,7 +3207,6 @@ int RGE_Static_Object::removeFromObstructionMap(int mode)
 }
 
 
-// 004C6DA0 RGE_Static_Object::changeInfluenceMap
 
 extern "C" double __cdecl floor(double);
 extern "C" double __cdecl ceil(double);
@@ -3378,7 +3281,6 @@ void RGE_Static_Object::changeInfluenceMap(InfluenceMap* map, int mode, int grad
 }
 
 
-// 004C7030 RGE_Static_Object::objectCollisionList
 
 
 RGE_Check_List* RGE_Static_Object::objectCollisionList(float extra)
@@ -3395,8 +3297,7 @@ RGE_Check_List* RGE_Static_Object::objectCollisionList(float extra)
 }
 
 
-// 004C7340 RGE_Static_Object::logDebug
-// BINARY NOTE: logDebug is a public virtual cdecl member.
+// logDebug is a public virtual cdecl member.
 
 
 void __cdecl RGE_Static_Object::logDebug(const char* format, ...)
@@ -3426,12 +3327,10 @@ void __cdecl RGE_Static_Object::logDebug(const char* format, ...)
 }
 
 
-// 004C7420 RGE_Static_Object::unitAI
 
 UnitAIModule* RGE_Static_Object::unitAI() { return this->unitAIValue; }
 
 
-// 004C7430 RGE_Static_Object::lookupZone
 
 
 
@@ -3461,7 +3360,6 @@ unsigned char RGE_Static_Object::lookupZone(XYPoint pt) {
 }
 
 
-// 004C74B0 RGE_Static_Object::lookupZone
 
 
 unsigned char RGE_Static_Object::lookupZone(int x, int y) {
@@ -3490,7 +3388,6 @@ unsigned char RGE_Static_Object::lookupZone(int x, int y) {
 }
 
 
-// 004C7530 RGE_Static_Object::currentZone
 
 
 
@@ -3516,8 +3413,7 @@ unsigned char RGE_Static_Object::currentZone() {
 }
 
 
-// 004C75B0 RGE_Static_Object::withinRangeOfZoneAtPoint
-// BINARY NOTE: the point input is a reference to struct XYPoint.
+// the point input is a reference to struct XYPoint.
 
 
 int RGE_Static_Object::withinRangeOfZoneAtPoint(unsigned char param_1, float param_2, XYPoint& param_3) {
@@ -3540,7 +3436,6 @@ int RGE_Static_Object::withinRangeOfZoneAtPoint(unsigned char param_1, float par
 }
 
 
-// 004C7630 RGE_Static_Object::withinRangeOfZone
 
 
 int RGE_Static_Object::withinRangeOfZone(unsigned char type, float range)
@@ -3569,8 +3464,7 @@ int RGE_Static_Object::withinRangeOfZone(unsigned char type, float range)
 }
 
 
-// 004C76C0 RGE_Static_Object::findClosestPointInTerrainType
-// BINARY NOTE: the output point is a reference to struct XYPoint.
+// the output point is a reference to struct XYPoint.
 
 
 int RGE_Static_Object::findClosestPointInTerrainType(XYPoint point, XYPoint& out, int a, int b, int c) {
@@ -3590,20 +3484,17 @@ int RGE_Static_Object::findClosestPointInTerrainType(XYPoint point, XYPoint& out
 }
 
 
-// 004C7740 RGE_Static_Object::isGroupCommander
 
 int RGE_Static_Object::isGroupCommander(void) {
     return id == groupCommanderValue;
 }
 
 
-// 004C7760 RGE_Static_Object::inGroup
 
 
 int RGE_Static_Object::inGroup() { return this->groupMembers.numberValue > 0; }
 
 
-// 004C7770 RGE_Static_Object::unitIsInGroup
 
 int RGE_Static_Object::unitIsInGroup(int value) {
     int count = this->groupMembers.numberValue;
@@ -3626,7 +3517,6 @@ not_found_shared:
 }
 
 
-// 004C77B0 RGE_Static_Object::createGroup
 
 
 int RGE_Static_Object::createGroup(int* list, int count, int commander, float range)
@@ -3685,7 +3575,6 @@ int RGE_Static_Object::createGroup(int* list, int count, int commander, float ra
 }
 
 
-// 004C78B0 RGE_Static_Object::commanderCreateGroup
 
 
 
@@ -3712,7 +3601,6 @@ int RGE_Static_Object::commanderCreateGroup(int* list, int count, int param3, fl
 }
 
 
-// 004C7920 RGE_Static_Object::addToGroup
 
 int RGE_Static_Object::addToGroup(int groupIndex, float unused)
 {
@@ -3755,7 +3643,6 @@ done:
 }
 
 
-// 004C79D0 RGE_Static_Object::commanderAddToGroup
 
 
 int RGE_Static_Object::commanderAddToGroup(int id, float range)
@@ -3794,7 +3681,6 @@ int RGE_Static_Object::commanderAddToGroup(int id, float range)
 }
 
 
-// 004C7B60 RGE_Static_Object::removeFromGroup
 
 
 
@@ -3839,7 +3725,6 @@ final:
 }
 
 
-// 004C7BD0 RGE_Static_Object::commanderRemoveFromGroup
 
 
 int RGE_Static_Object::commanderRemoveFromGroup(int id)
@@ -3916,7 +3801,6 @@ int RGE_Static_Object::commanderRemoveFromGroup(int id)
 }
 
 
-// 004C7CE0 RGE_Static_Object::destroyGroup
 
 int RGE_Static_Object::destroyGroup() {
     groupMembers.numberValue = 0;
@@ -3925,11 +3809,9 @@ int RGE_Static_Object::destroyGroup() {
 }
 
 
-// 004C7D00 RGE_Static_Object::commanderDestroyGroup
 int RGE_Static_Object::commanderDestroyGroup(){ this->destroyGroup(); return 1; }
 
 
-// 004C7DB0 RGE_Static_Object::addToPathingGroup
 
 
 void RGE_Static_Object::addToPathingGroup(int groupIndex)
@@ -3975,7 +3857,6 @@ void RGE_Static_Object::addToPathingGroup(int groupIndex)
 }
 
 
-// 004C7E50 RGE_Static_Object::removeAllFromPathingGroup
 
 
 void RGE_Static_Object::removeAllFromPathingGroup(void) {
@@ -3985,7 +3866,6 @@ void RGE_Static_Object::removeAllFromPathingGroup(void) {
 }
 
 
-// 004C7E70 RGE_Static_Object::remove_shadows
 
 void RGE_Static_Object::remove_shadows(void) {
     int x0 = (int)this->world_x;
@@ -3994,7 +3874,6 @@ void RGE_Static_Object::remove_shadows(void) {
 }
 
 
-// 004C7EB0 RGE_Static_Object::set_sleep_flag
 
 
 
@@ -4022,13 +3901,11 @@ void RGE_Static_Object::set_sleep_flag(unsigned char newFlag) {
 }
 
 
-// 004C7F30 RGE_Static_Object::get_action_checksum
 
-// BINARY NOTE: the shipped getter returns long and is virtual.
+// the shipped getter returns long and is virtual.
 long RGE_Static_Object::get_action_checksum() { return 0; }
 
 
-// 004C7F40 RGE_Static_Object::get_waypoint_checksum
 
-// BINARY NOTE: the shipped getter returns long and is virtual.
+// the shipped getter returns long and is virtual.
 long RGE_Static_Object::get_waypoint_checksum() { return 0; }

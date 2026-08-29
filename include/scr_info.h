@@ -1,8 +1,6 @@
 #ifndef AOE1_SCR_INFO_H
 #define AOE1_SCR_INFO_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\scr_info.cpp.
-// The donor-header record and layout inventory prove this direct screen
 // surface and its 0x484-byte extent.
 #include "Pnl_scr.h"
 

@@ -1,7 +1,6 @@
 #ifndef AOE1_PNL_SCR_H
 #define AOE1_PNL_SCR_H
 
-// PDB source: C:\\msdev\\work\\age1_x1\\Pnl_scr.cpp.
 // This header owns TScreenPanel. Shared types come from their owners.
 #include "panel_ez.h"
 #include "drawarea.h"

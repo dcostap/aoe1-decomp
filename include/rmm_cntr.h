@@ -1,7 +1,6 @@
 #ifndef AOE1_RMM_CNTR_H
 #define AOE1_RMM_CNTR_H
 
-// PDB source: C:\msdev\work\age1_x1\rmm_cntr.cpp.
 // This module owns the controller declaration only. Record and generator
 // declarations stay with their canonical owners.
 

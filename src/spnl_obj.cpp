@@ -1,5 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\spnl_obj.cpp.
-// Definitions follow the original PDB source order.
 
 #include "../include/spnl_obj.h"
 
@@ -49,7 +47,7 @@ void TRIBE_Scenario_Editor_Panel_Object::set_master_info(
 }
 
 // spnl_obj.cpp lines 78-325.
-// BINARY NOTE: The building facet belongs to the building-master extension.
+// The building facet belongs to the building-master extension.
 void TRIBE_Scenario_Editor_Panel_Object::draw()
 {
     int text_flag;

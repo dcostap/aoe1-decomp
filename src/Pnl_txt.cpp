@@ -28,7 +28,6 @@ extern "C" __declspec(dllimport) int __stdcall CompareStringA(
     int length1, const char* string2, int length2);
 extern char DAT_0086B250;
 
-// PDB: Pnl_txt.cpp:73-78.
 TTextPanel::TTextPanel()
     : list(0),
       num_lines(0),
@@ -80,7 +79,6 @@ TTextPanel::TTextPanel()
     this->panel_type = 1;
 }
 
-// PDB: Pnl_txt.cpp:84-92.
 TTextPanel::~TTextPanel()
 {
     this->free_text();
@@ -92,7 +90,6 @@ TTextPanel::~TTextPanel()
     // An explicit call creates a duplicate call before eh_state = -1.
 }
 
-// PDB: Pnl_txt.cpp:102-120.
 long TTextPanel::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h,
                        void* font, long font_arg2, long font_arg3, char* back_pic,
                        int fill, unsigned char backColor, int outlineValue, unsigned char outlineColor,
@@ -114,7 +111,6 @@ long TTextPanel::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, 
     return 1;
 }
 
-// PDB: Pnl_txt.cpp:130-151.
 long TTextPanel::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w,
                        long h, void* font, long font_width, long font_height,
                        char* back_picture, int fill, unsigned char backColor,
@@ -140,7 +136,6 @@ long TTextPanel::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w,
     return 1;
 }
 
-// PDB: Pnl_txt.cpp:161-179.
 long TTextPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long param_4,
                        long param_5, long param_6, void* param_7, long param_8,
                        long param_9, char* param_10, int param_11, unsigned char param_12,
@@ -163,7 +158,6 @@ long TTextPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3, long p
     return 1;
 }
 
-// PDB: Pnl_txt.cpp:185-231.
 void TTextPanel::set_rect(long left, long top, long width, long height) {
     int x;
     int y;
@@ -215,7 +209,6 @@ void TTextPanel::set_rect(long left, long top, long width, long height) {
     }
 }
 
-// PDB: Pnl_txt.cpp:237-246.
 void TTextPanel::set_scrollbar(TScrollBarPanel* panel, int auto_scbar_value) {
     this->scbar_panel = panel;
     this->auto_scbar = auto_scbar_value;
@@ -225,7 +218,6 @@ void TTextPanel::set_scrollbar(TScrollBarPanel* panel, int auto_scbar_value) {
     }
 }
 
-// PDB: Pnl_txt.cpp:254-262.
 TTextPanel::CharType TTextPanel::char_type(unsigned char* text) {
     if (text != 0 && *text != 0) {
         if (IsDBCSLeadByte(*text) != 0) {
@@ -240,7 +232,6 @@ TTextPanel::CharType TTextPanel::char_type(unsigned char* text) {
     return SingleByteChar;
 }
 
-// PDB: Pnl_txt.cpp:268-314.
 void TTextPanel::set_text(char* text) {
     char temp_text[256];
 
@@ -274,7 +265,6 @@ void TTextPanel::set_text(char* text) {
     }
 }
 
-// PDB: Pnl_txt.cpp:320-560.
 int TTextPanel::word_wrap_append(char* text)
 {
     short text_len;
@@ -469,14 +459,12 @@ int TTextPanel::word_wrap_append(char* text)
     }
 }
 
-// PDB: Pnl_txt.cpp:566-570.
 void TTextPanel::set_text(long id) {
     char buffer[0x1000];
     this->get_string(id, buffer, 0x1000);
     this->set_text(buffer);
 }
 
-// PDB: Pnl_txt.cpp:576-592.
 void TTextPanel::set_text(char** texts, short count) {
     free_text();
     if (count == 0) {
@@ -494,7 +482,6 @@ void TTextPanel::set_text(char** texts, short count) {
     }
 }
 
-// PDB: Pnl_txt.cpp:598-604.
 void TTextPanel::set_font(void* param_1, long param_2, long param_3) {
     this->font = param_1;
     this->font_wid = param_2;
@@ -503,46 +490,39 @@ void TTextPanel::set_font(void* param_1, long param_2, long param_3) {
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// PDB: Pnl_txt.cpp:610-614.
 void TTextPanel::set_alignment(TTextPanel::Alignment a, TTextPanel::Alignment b) {
     this->vert_align = a;
     this->horz_align = b;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// PDB: Pnl_txt.cpp:620-623.
 void TTextPanel::set_word_wrap(int value) {
     this->word_wrap = value;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// PDB: Pnl_txt.cpp:629-632.
 void TTextPanel::set_style(TTextPanel::Style value) {
     this->text_style = value;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// PDB: Pnl_txt.cpp:638-642.
 void TTextPanel::set_text_color(unsigned long a, unsigned long b) {
     this->text_color1 = a;
     this->text_color2 = b;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// PDB: Pnl_txt.cpp:648-652.
 void TTextPanel::set_highlight_text_color(unsigned long a, unsigned long b) {
     this->highlightTextColor1 = a;
     this->highlightTextColor2 = b;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// PDB: Pnl_txt.cpp:658-661.
 void TTextPanel::set_fill_back(int a, unsigned char b) {
     this->fill_back = a;
     this->back_color = b;
 }
 
-// PDB: Pnl_txt.cpp:667-685.
 void TTextPanel::set_back_pic(char* name) {
     long x_max;
     long x_min;
@@ -566,7 +546,6 @@ void TTextPanel::set_back_pic(char* name) {
     this->back_pic_hgt = (short)(y_min - x_min + 1);
 }
 
-// PDB: Pnl_txt.cpp:691-699.
 void TTextPanel::set_outline(int outline, unsigned char color) {
     this->outline = outline;
     if (outline != 0) {
@@ -578,7 +557,6 @@ void TTextPanel::set_outline(int outline, unsigned char color) {
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// PDB: Pnl_txt.cpp:705-738.
 void TTextPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5, int c6)
 {
     bevel_type = type, bevel_color1 = (unsigned char)c1;
@@ -609,13 +587,11 @@ void TTextPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int c5
     calc_draw_info(1);
 }
 
-// PDB: Pnl_txt.cpp:744-747.
 void TTextPanel::set_spacer_size(int size) {
     spacer_size = size;
     calc_draw_info(1);
 }
 
-// PDB: Pnl_txt.cpp:753-763.
 void TTextPanel::set_active(int active) {
     TPanel::set_active(active);
     if (this->auto_scbar != 0 && this->scbar_panel != 0) {
@@ -628,7 +604,6 @@ void TTextPanel::set_active(int active) {
     }
 }
 
-// PDB: Pnl_txt.cpp:769-833.
 void TTextPanel::calc_draw_info(int recalc_scrollbar)
 {
     short bottom_line;
@@ -722,7 +697,6 @@ void TTextPanel::calc_draw_info(int recalc_scrollbar)
     this->text_wid = this->pnl_wid;
 }
 
-// PDB: Pnl_txt.cpp:839-878.
 void TTextPanel::scroll(unsigned char scroll_type, short amount, int param_3)
 {
     switch (scroll_type) {
@@ -765,7 +739,6 @@ void TTextPanel::scroll(unsigned char scroll_type, short amount, int param_3)
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// PDB: Pnl_txt.cpp:884-921.
 long TTextPanel::key_down_action(long param_1, short param_2, int param_3,
                                  int param_4, int param_5)
 {
@@ -811,7 +784,6 @@ long TTextPanel::key_down_action(long param_1, short param_2, int param_3,
     }
 }
 
-// PDB: Pnl_txt.cpp:927-955.
 long TTextPanel::action(TPanel* panel, long msg, unsigned long p1, unsigned long p2)
 {
     if (this->scbar_panel && panel == this->scbar_panel) {
@@ -836,7 +808,6 @@ long TTextPanel::action(TPanel* panel, long msg, unsigned long p1, unsigned long
     return TPanel::action(panel, msg, p1, p2);
 }
 
-// PDB: Pnl_txt.cpp:961-1000.
 void TTextPanel::draw()
 {
     short line;
@@ -882,7 +853,6 @@ void TTextPanel::draw()
     this->draw_finish();
 }
 
-// PDB: Pnl_txt.cpp:1006-1089.
 void TTextPanel::draw_background()
 {
     short pic_cols;
@@ -960,7 +930,6 @@ void TTextPanel::draw_background()
     }
 }
 
-// PDB: Pnl_txt.cpp:1095-1133.
 void TTextPanel::draw_border()
 {
     if (this->bevel_type != 0) {
@@ -1027,7 +996,6 @@ void TTextPanel::draw_border()
     }
 }
 
-// PDB: Pnl_txt.cpp:1139-1229.
 void TTextPanel::draw_line(void* dc, short line_index, short line,
                            unsigned long color1, unsigned long color2)
 {
@@ -1136,7 +1104,6 @@ void TTextPanel::draw_line(void* dc, short line_index, short line,
     }
 }
 
-// PDB: Pnl_txt.cpp:1235-1346.
 void TTextPanel::calc_line_pos(void* dc, short line, short current,
                                RECT* rect, long* out)
 {
@@ -1232,7 +1199,6 @@ void TTextPanel::calc_line_pos(void* dc, short line, short current,
     }
 }
 
-// PDB: Pnl_txt.cpp:1352-1356.
 long TTextPanel::mouse_left_down_action(long x, long y, int buttons, int keys) {
     if (this->parent_panel != 0) {
         this->parent_panel->action(this, 1, 0, 0);
@@ -1240,34 +1206,27 @@ long TTextPanel::mouse_left_down_action(long x, long y, int buttons, int keys) {
     return 0;
 }
 
-// PDB: Pnl_txt.cpp:1361-1363.
 int TTextPanel::numberLines() const {
     return num_lines;
 }
 
-// PDB: Pnl_txt.cpp:1368-1370.
 int TTextPanel::numberDrawLines() const {
     return draw_lines;
 }
 
-// PDB: Pnl_txt.cpp:1375-1377.
 int TTextPanel::currentLineNumber() const {
     return cur_line;
 }
 
-// PDB: Pnl_txt.cpp:1382-1384.
 void TTextPanel::setCurrentLineNumber(int p) { this->set_line(p); }
 
-// PDB: Pnl_txt.cpp:1389-1389.
 char* TTextPanel::currentLine() { return this->get_text(); }
 
-// PDB: Pnl_txt.cpp:1399-1402.
 void TTextPanel::set_line(long line) {
     cur_line = (short)line;
     calc_draw_info(1);
 }
 
-// PDB: Pnl_txt.cpp:1408-1418.
 void TTextPanel::set_line_by_id(long id) {
     int index = 0;
     void** node = (void**)this->list;
@@ -1285,32 +1244,26 @@ void TTextPanel::set_line_by_id(long id) {
     }
 }
 
-// PDB: Pnl_txt.cpp:1424-1426.
 int TTextPanel::append_line(char* text, long value) {
     return insert_line((int)num_lines, text, value);
 }
 
-// PDB: Pnl_txt.cpp:1432-1434.
 int TTextPanel::append_line(char* text1, char* text2, long value) {
     return insert_line((int)num_lines, text1, text2, value);
 }
 
-// PDB: Pnl_txt.cpp:1440-1442.
 int TTextPanel::append_line(long a1, long a2) {
     return insert_line((int)num_lines, a1, a2);
 }
 
-// PDB: Pnl_txt.cpp:1448-1450.
 int TTextPanel::append_line(long a1, long a2, long a3) {
     return insert_line((int)num_lines, a1, a2, a3);
 }
 
-// PDB: Pnl_txt.cpp:1456-1458.
 int TTextPanel::insert_line(long line, char* text1, long value) {
     return insert_line(line, text1, 0, value);
 }
 
-// PDB: Pnl_txt.cpp:1464-1582.
 int TTextPanel::insert_line(long line, char* text, char* text2, long value)
 {
     int i;
@@ -1411,7 +1364,6 @@ int TTextPanel::insert_line(long line, char* text, char* text2, long value)
     return 1;
 }
 
-// PDB: Pnl_txt.cpp:1588-1592.
 int TTextPanel::insert_line(long line, long text, long value)
 {
     char str[256];
@@ -1420,7 +1372,6 @@ int TTextPanel::insert_line(long line, long text, long value)
     return insert_line(line, str, value);
 }
 
-// PDB: Pnl_txt.cpp:1598-1606.
 int TTextPanel::insert_line(long param_1, long param_2, long param_3, long param_4) {
     char str1[256];
     char str2[256];
@@ -1430,7 +1381,6 @@ int TTextPanel::insert_line(long param_1, long param_2, long param_3, long param
     return this->insert_line(param_1, str1, str2, param_4);
 }
 
-// PDB: Pnl_txt.cpp:1612-1628.
 int TTextPanel::change_line(long param_1, char* param_2, char* param_3, long param_4) {
     int iVar1;
     int iVar2;
@@ -1448,7 +1398,6 @@ int TTextPanel::change_line(long param_1, char* param_2, char* param_3, long par
     return 1;
 }
 
-// PDB: Pnl_txt.cpp:1634-1650.
 int TTextPanel::change_line(long a1, long a2, long a3, long a4) {
     int saved_sorted = this->sorted;
     this->sorted = 0;
@@ -1463,7 +1412,6 @@ int TTextPanel::change_line(long a1, long a2, long a3, long a4) {
     return 1;
 }
 
-// PDB: Pnl_txt.cpp:1656-1710.
 int TTextPanel::delete_line(long line)
 {
     if (line >= 0 && line <= this->num_lines - 1) {
@@ -1512,7 +1460,6 @@ int TTextPanel::delete_line(long line)
     return 0;
 }
 
-// PDB: Pnl_txt.cpp:1716-1721.
 long TTextPanel::get_line() {
     if (num_lines == 0) {
         return -1;
@@ -1520,7 +1467,6 @@ long TTextPanel::get_line() {
     return cur_line;
 }
 
-// PDB: Pnl_txt.cpp:1727-1740.
 long TTextPanel::get_line(long index) {
     TTextPanel::TextNode* node = this->list;
     int i = 0;
@@ -1534,7 +1480,6 @@ long TTextPanel::get_line(long index) {
     return -1;
 }
 
-// PDB: Pnl_txt.cpp:1746-1760.
 long TTextPanel::get_line(char* s) {
     TTextPanel::TextNode* node = this->list;
     long i = 0;
@@ -1546,12 +1491,10 @@ long TTextPanel::get_line(char* s) {
     return -1;
 }
 
-// PDB: Pnl_txt.cpp:1766-1768.
 char* TTextPanel::get_text() {
     return this->get_text(this->cur_line);
 }
 
-// PDB: Pnl_txt.cpp:1774-1790.
 char* TTextPanel::get_text(long index) {
     TTextPanel::TextNode* node = this->list;
     long i = 0;
@@ -1570,12 +1513,10 @@ char* TTextPanel::get_text(long index) {
     return &DAT_0086B250;
 }
 
-// PDB: Pnl_txt.cpp:1796-1798.
 char* TTextPanel::get_text2() {
     return this->get_text2(this->cur_line);
 }
 
-// PDB: Pnl_txt.cpp:1804-1820.
 char* TTextPanel::get_text2(long index) {
     long i;
     TTextPanel::TextNode* node;
@@ -1595,12 +1536,10 @@ char* TTextPanel::get_text2(long index) {
     return (char*)&DAT_0086b24c;
 }
 
-// PDB: Pnl_txt.cpp:1826-1828.
 long TTextPanel::get_id() {
     return this->get_id(this->cur_line);
 }
 
-// PDB: Pnl_txt.cpp:1834-1848.
 long TTextPanel::get_id(long index) {
     long count = 0;
     long target = index;
@@ -1618,10 +1557,8 @@ long TTextPanel::get_id(long index) {
     return -1;
 }
 
-// PDB: Pnl_txt.cpp:1854-1854.
 void TTextPanel::empty_list() { this->free_text(); }
 
-// PDB: Pnl_txt.cpp:1862-1886.
 void TTextPanel::free_text(void) {
     TTextPanel::TextNode* node = this->list;
     if (node != 0) {
@@ -1643,13 +1580,11 @@ void TTextPanel::free_text(void) {
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// PDB: Pnl_txt.cpp:1892-1895.
 void TTextPanel::set_second_column_pos(long value) {
     this->second_column_pos = value;
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// PDB: Pnl_txt.cpp:1901-1916.
 int TTextPanel::get_text_rect(RECT* rect) {
     void* dc = this->render_area->GetDc(s_pnl_txt__get_text_rect);
     if (dc != 0) {

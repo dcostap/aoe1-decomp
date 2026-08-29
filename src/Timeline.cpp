@@ -8,9 +8,7 @@
 
 #include <stdlib.h>
 
-// PDB source order: Timeline.cpp lines 25-530.
 
-// 0050D5B0 RGE_Timeline::RGE_Timeline(int, RGE_Game_World*)
 RGE_Timeline::RGE_Timeline(int fd, RGE_Game_World* world_arg)
 {
     int index;
@@ -50,7 +48,7 @@ RGE_Timeline::RGE_Timeline(int fd, RGE_Game_World* world_arg)
             }
 
             if (player_id >= 0 && this->world != 0) {
-                // ORIGINAL BUG: the shipped code uses target_player_id for
+                // the shipped code uses target_player_id for
                 // this lookup, although player_id was read for this object.
                 entry->target_obj = this->world->players[target_player_id]->objects->find_by_id(entry->target_obj_id);
             } else {
@@ -66,7 +64,6 @@ RGE_Timeline::RGE_Timeline(int fd, RGE_Game_World* world_arg)
     }
 }
 
-// 0050D7B0 RGE_Timeline::RGE_Timeline(RGE_Game_World*)
 RGE_Timeline::RGE_Timeline(RGE_Game_World* world_arg) {
     this->world = world_arg;
     this->time_list = 0;
@@ -75,7 +72,6 @@ RGE_Timeline::RGE_Timeline(RGE_Game_World* world_arg) {
     this->old_time = -1.0f;
 }
 
-// 0050D7E0 RGE_Timeline::~RGE_Timeline()
 RGE_Timeline::~RGE_Timeline() {
     while (this->time_list != 0) {
         RGE_Time_Entry* next = this->time_list->next;
@@ -88,7 +84,6 @@ RGE_Timeline::~RGE_Timeline() {
     this->list_num = 0;
 }
 
-// 0050D830 RGE_Timeline::save(int)
 void RGE_Timeline::save(int file) {
     short source_player_id;
     short target_player_id;
@@ -134,7 +129,6 @@ void RGE_Timeline::save(int file) {
     }
 }
 
-// 0050D9A0 RGE_Timeline::update()
 void RGE_Timeline::update() {
     RGE_Time_Entry* event = 0;
     RGE_Player* player;
@@ -192,7 +186,6 @@ void RGE_Timeline::update() {
     this->old_time = time;
 }
 
-// 0050DB10 RGE_Timeline::mock_update(float)
 void RGE_Timeline::mock_update(float t)
 {
     RGE_Time_Entry* list;
@@ -291,7 +284,6 @@ void RGE_Timeline::mock_update(float t)
     old_time = t;
 }
 
-// 0050DD30 RGE_Timeline::find_id(RGE_Static_Object*)
 short RGE_Timeline::find_id(RGE_Static_Object* obj) {
     RGE_Time_Entry* entry = this->time_list;
     if (entry == 0) return -1;
@@ -305,7 +297,6 @@ short RGE_Timeline::find_id(RGE_Static_Object* obj) {
     return -1;
 }
 
-// 0050DD70 RGE_Timeline::add(float)
 RGE_Time_Entry* RGE_Timeline::add(float time)
 {
     RGE_Time_Entry* node;
@@ -344,7 +335,6 @@ RGE_Time_Entry* RGE_Timeline::add(float time)
     }
 }
 
-// 0050DE00 RGE_Timeline::add_attack(float, RGE_Static_Object*, RGE_Static_Object*)
 RGE_Time_Entry* RGE_Timeline::add_attack(float time,
                                           RGE_Static_Object* object,
                                           RGE_Static_Object* target) {
@@ -354,14 +344,13 @@ RGE_Time_Entry* RGE_Timeline::add_attack(float time,
         entry->player = object->owner->id;
         entry->this_obj_id = this->find_id(object);
         entry->target_obj = target;
-        // ORIGINAL BUG: the shipped code looks up the source object again.
+        // the shipped code looks up the source object again.
         entry->target_obj_id = this->find_id(object);
         entry->command = 0;
     }
     return entry;
 }
 
-// 0050DE50 RGE_Timeline::add_create(float, short, unsigned char, float, float, float)
 RGE_Time_Entry* RGE_Timeline::add_create(float time, short type,
                                           unsigned char player, float x,
                                           float y, float z)
@@ -387,7 +376,6 @@ RGE_Time_Entry* RGE_Timeline::add_create(float time, short type,
     return node;
 }
 
-// 0050DEF0 RGE_Timeline::add_move(float, RGE_Static_Object*, float, float, float)
 RGE_Time_Entry* RGE_Timeline::add_move(float time,
                                         RGE_Static_Object* object,
                                         float x, float y, float z) {
@@ -404,7 +392,6 @@ RGE_Time_Entry* RGE_Timeline::add_move(float time,
     return entry;
 }
 
-// 0050DF40 RGE_Timeline::add_delete(float, RGE_Static_Object*)
 RGE_Time_Entry* RGE_Timeline::add_delete(float time,
                                           RGE_Static_Object* obj)
 {
@@ -436,7 +423,6 @@ RGE_Time_Entry* RGE_Timeline::add_delete(float time,
     return node;
 }
 
-// 0050DFD0 RGE_Timeline::sub(RGE_Time_Entry*)
 void RGE_Timeline::sub(RGE_Time_Entry* entry) {
     RGE_Time_Entry* p = this->time_list;
     RGE_Time_Entry** link = &this->time_list;

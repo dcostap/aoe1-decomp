@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\m_co_obj.cpp.
-// Definitions follow the original source order.
 
 #include "../include/m_co_obj.h"
 #include "../include/com_obj.h"
@@ -244,7 +242,7 @@ int RGE_Master_Combat_Object::setup(FILE* file, RGE_Sprite** sprites,
     area_effect_level = (unsigned char)temp_area_effect_level;
     fight_sprite = selected_sprite;
     base_armor = (unsigned char)temp_base_armor;
-    // BINARY NOTE: the shipped parser stores the low byte of this value.
+    // the shipped parser stores the low byte of this value.
     fire_missile_at_frame = (unsigned char)temp_fire_missile_at_frame;
     orig_armor = (unsigned char)base_armor;
     value_count = (int)armor_num;
@@ -492,7 +490,7 @@ void RGE_Master_Combat_Object::modify_percent(float value,
         weapon_range = (float)((double)value * (double)weapon_range);
         break;
     case 15:
-        // BINARY NOTE: the shipped case 15 path uses missile_id as its source.
+        // the shipped case 15 path uses missile_id as its source.
         base_armor = (unsigned char)((float)missile_id * value);
         break;
     case 16:

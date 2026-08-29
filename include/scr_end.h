@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_END_H
 #define AOE1_SCR_END_H
 
-// PDB source module: C:\msdev\work\age1_x1\scr_end.cpp.
 #include "Pnl_scr.h"
 
 class TPicturePanel;

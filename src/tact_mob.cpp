@@ -15,23 +15,9 @@
 extern float save_game_version;
 
 // Authentic source module for C:\\msdev\\work\\age1_x1\\tact_mob.cpp.
-// Normal owners follow the PDB source-line and address order below. The nearby
-// 004D0E90 vector-deleting destructor is compiler generated, not handwritten.
 //
 // The module uses the canonical tribal master-object build-time field.
-// 004D0DD0  lines 31-41   matching
-// 004D0EB0  lines 48-54   scratch
-// 004D0EF0  lines 60-65   matching
-// 004D0F70  lines 69-76   matching
-// 004D0FC0  lines 79-116  scratch
-// 004D10E0  lines 120-123 matching
-// 004D10F0  lines 126-167 scratch (canonical owner available)
-// 004D12B0  lines 171-233 matching
-// 004D1550  lines 237-251 matching
-// 004D15F0  lines 255-268 matching
 
-// VA 004D0DD0; PDB tact_mob.cpp:31-41; matching.
-// /GX is part of the constructor's original exception-handling frame.
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int param_1, RGE_Action_Object* param_2)
     : RGE_Action(param_1, param_2, 1)
 {
@@ -47,7 +33,6 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int param_1, RGE_Action_Object* par
     }
 }
 
-// VA 004D0EB0; PDB tact_mob.cpp:48-54; scratch.
 // The disambiguated constructor still differs by 31 bytes in its natural
 // register and field-width schedule.
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj,
@@ -63,7 +48,6 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj,
     this->work_done = 0;
 }
 
-// VA 004D0EF0; PDB tact_mob.cpp:60-65; matching.
 TRIBE_Action_Make_Obj::~TRIBE_Action_Make_Obj() {
     TRIBE_Player* player = static_cast<TRIBE_Player*>(this->obj->owner);
     player->logMessage(
@@ -72,7 +56,6 @@ TRIBE_Action_Make_Obj::~TRIBE_Action_Make_Obj() {
         (int)this->obj->id, this->unique_id);
 }
 
-// VA 004D0F70; PDB tact_mob.cpp:69-76; matching.
 void TRIBE_Action_Make_Obj::save(int handle) {
     RGE_Action::save(handle);
     rge_write(handle, &this->obj_id, 2);
@@ -81,8 +64,6 @@ void TRIBE_Action_Make_Obj::save(int handle) {
     rge_write(handle, &this->pre_paid, 1);
 }
 
-// VA 004D0FC0; PDB tact_mob.cpp:79-116; scratch.
-// The natural body misses one virtual call and has broad call-surface drift.
 void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1)
 {
     if (param_1 == 0) return;
@@ -124,10 +105,8 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1)
                         this->unique_id);
 }
 
-// VA 004D10E0; PDB tact_mob.cpp:120-123; matching.
 void TRIBE_Action_Make_Obj::set_state(uchar v) { this->state = v; }
 
-// VA 004D10F0; PDB tact_mob.cpp:126-167; scratch (canonical owner available).
 // The canonical member names retain the x87 work-rate and completion order.
 unsigned char TRIBE_Action_Make_Obj::update()
 {
@@ -183,8 +162,7 @@ unsigned char TRIBE_Action_Make_Obj::update()
     return 0;
 }
 
-// VA 004D12B0; PDB tact_mob.cpp:171-233; matching.
-// BINARY NOTE: The retry loops use the shipped side-selection and radius
+// The retry loops use the shipped side-selection and radius
 // formulas. The protected access also publishes the created object before
 // the saved-register pops in the original body. The success arm rereads
 // owner->master_objects[obj_id] for make_new_obj. Reusing proto adds a
@@ -257,8 +235,7 @@ unsigned char TRIBE_Action_Make_Obj::place_obj(RGE_Static_Object** out)
     return 0;
 }
 
-// VA 004D1550; PDB tact_mob.cpp:237-251; matching.
-// BINARY NOTE: The original reloads obj->owner for each later call instead
+// The original reloads obj->owner for each later call instead
 // of carrying one player alias across calls.
 int TRIBE_Action_Make_Obj::stop() {
     static_cast<TRIBE_Player*>(this->obj->owner)->logMessage(
@@ -282,7 +259,6 @@ int TRIBE_Action_Make_Obj::stop() {
     return 1;
 }
 
-// VA 004D15F0; PDB tact_mob.cpp:255-268; matching.
 // The master-object lookup and terminator store preserve the original order.
 void TRIBE_Action_Make_Obj::get_info(short& param_1, short& param_2, char* param_3, short param_4) {
     param_1 = this->obj_id;

@@ -1,7 +1,6 @@
 #ifndef AOE1_PNL_INP_H
 #define AOE1_PNL_INP_H
 
-// PDB source: C:\\msdev\\work\\age1_x1\\Pnl_inp.cpp.
 // This header owns TInputPanel.
 #include "pnl_lst.h"
 #include "sounddrv.h"

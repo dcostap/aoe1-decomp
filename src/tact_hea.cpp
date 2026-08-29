@@ -1,5 +1,3 @@
-// Authentic PDB-ordered source module for C:\\msdev\\work\\age1_x1\\tact_hea.cpp.
-// The seven normal owners follow the original source-line and address order.
 
 #include "../include/tact_hea.h"
 
@@ -19,13 +17,11 @@
 #include "../include/world.h"
 #include "../include/sound.h"
 
-// 004CE930 TRIBE_Action_Heal::TRIBE_Action_Heal(int, RGE_Action_Object*)
 TRIBE_Action_Heal::TRIBE_Action_Heal(int id, RGE_Action_Object* object)
     : RGE_Action(id, object, 1) {
     this->action_type = 0x69;
 }
 
-// 004CE990 TRIBE_Action_Heal::TRIBE_Action_Heal(
 //     RGE_Action_Object*, RGE_Task*, RGE_Static_Object*)
 TRIBE_Action_Heal::TRIBE_Action_Heal(
     RGE_Action_Object* obj, RGE_Task* task, RGE_Static_Object* target)
@@ -38,7 +34,6 @@ TRIBE_Action_Heal::TRIBE_Action_Heal(
     target_z = target->world_z;
 }
 
-// 004CEA10 TRIBE_Action_Heal::TRIBE_Action_Heal(
 //     RGE_Action_Object*, RGE_Task*, float, float, float)
 TRIBE_Action_Heal::TRIBE_Action_Heal(
     RGE_Action_Object* obj, RGE_Task* task, float x, float y, float z)
@@ -50,7 +45,6 @@ TRIBE_Action_Heal::TRIBE_Action_Heal(
     this->target_z = z;
 }
 
-// 004CEA50 TRIBE_Action_Heal::first_in_stack(unsigned char)
 void TRIBE_Action_Heal::first_in_stack(unsigned char) {
     if (this->target_obj != 0) {
         short kind = this->target_obj->master_obj->object_group;
@@ -63,7 +57,6 @@ void TRIBE_Action_Heal::first_in_stack(unsigned char) {
     this->set_state(3);
 }
 
-// 004CEA90 TRIBE_Action_Heal::set_state(unsigned char)
 void TRIBE_Action_Heal::set_state(unsigned char state) {
     this->sub_actions->delete_list();
     this->state = state;
@@ -132,7 +125,6 @@ void TRIBE_Action_Heal::set_state(unsigned char state) {
     }
 }
 
-// 004CECF0 TRIBE_Action_Heal::update()
 extern float DAT_005750e0;
 extern double DAT_005750e8;
 
@@ -264,7 +256,6 @@ unsigned char TRIBE_Action_Heal::update() {
     return 0;
 }
 
-// 004CF030 TRIBE_Action_Heal::work(
 //     RGE_Static_Object*, float, float, float)
 int TRIBE_Action_Heal::work(RGE_Static_Object* target, float, float, float) {
     if (target != 0) {

@@ -1,7 +1,6 @@
 #ifndef AOE1_PNL_BTN_H
 #define AOE1_PNL_BTN_H
 
-// PDB source: C:\\msdev\\work\\age1_x1\\Pnl_btn.cpp.
 // This header owns TButtonPanel.
 #include "panel.h"
 

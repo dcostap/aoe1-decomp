@@ -1,7 +1,5 @@
 // Authentic source module for C:\\msdev\\work\\age1_x1\\effects.cpp.
-// Definitions follow the original PDB source-line and address order.
 //
-// 00449240 is the compiler-generated scalar deleting destructor between the
 // two constructors. It is not a handwritten source owner.
 
 #include "../include/effects.h"
@@ -13,7 +11,6 @@ void __cdecl rge_read(int fd, void* buf, int size);
 void __cdecl rge_write(int fd, void* buf, int size);
 void convert_us(char* s);
 
-// PDB: effects.cpp:21-63; 004490E0
 // The original constructor keeps the first record name as the name-read base
 // while its count and command fields use the running record offset.
 RGE_Effects::RGE_Effects(int fd) {
@@ -63,7 +60,6 @@ RGE_Effects::RGE_Effects(int fd) {
     }
 }
 
-// PDB: effects.cpp:68-129; 00449260
 RGE_Effects::RGE_Effects(char* path) {
     int local_4, index, count;
 
@@ -104,7 +100,6 @@ RGE_Effects::RGE_Effects(char* path) {
     }
 }
 
-// PDB: effects.cpp:134-149; 00449440
 RGE_Effects::~RGE_Effects() {
     for (short i = 0; i < effect_num; i++) {
         if (effects[i].effect_list != 0) {
@@ -119,7 +114,6 @@ RGE_Effects::~RGE_Effects() {
     effect_num = 0;
 }
 
-// PDB: effects.cpp:154-180; 004494B0
 void RGE_Effects::save(int fd) {
     long* num = &this->effect_num;
     RGE_Effect* record;
@@ -152,7 +146,6 @@ void RGE_Effects::save(int fd) {
     }
 }
 
-// PDB: effects.cpp:186-274; 004495C0
 void RGE_Effects::do_effect(short effect_id, RGE_Player* player) {
     if (effect_id < effect_num) {
         RGE_Effect* eff = &effects[effect_id];

@@ -76,7 +76,6 @@ public:
     float angle_to_object(RGE_Static_Object*, float, float);
     virtual unsigned char turn_towards(RGE_Static_Object*, float, float);
 protected:
-    // Keep both setup overloads after stop and turn for the PDB vtable order.
     virtual int setup(int, RGE_Game_World*);
     virtual int setup(RGE_Master_Moving_Object*, RGE_Player*, float, float, float);
 public:

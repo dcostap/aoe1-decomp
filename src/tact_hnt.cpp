@@ -1,16 +1,7 @@
-// Authentic source module for the PDB compiland tact_hnt.cpp.
 //
-// PDB source path: C:\msdev\work\age1_x1\tact_hnt.cpp
-// Source order and line bands:
-// 004CF090 (70-73), 004CF130 (81-105), 004CF1C0 (113-124),
-// 004CF210 (130-133), 004CF240 (139-171), 004CF300 (177-378),
-// 004CF860 (384-794), 004CFF20 (800-807), 004CFF50 (813-820),
-// 004CFF90 (826-833), 004CFFD0 (840-883), and 004D0080 (890-948).
 //
-// The PDB source path, source-line bands, ascending address sequence, class
 // owner, and exact anchors establish this as one authentic translation unit.
 // Exact anchors are 004CF090, 004CF130, 004CF1C0, 004CF240, 004CF300,
-// 004CFF20, 004CFF90, and 004D0080. The 004CF210 and 004CFF50 bodies use
 // their canonical inherited owners in this module.
 // The scalar deleting destructor at 004CF100 is compiler-generated from the
 // virtual class surface. It has no handwritten owner.
@@ -37,14 +28,12 @@
 extern float DAT_00575150;
 extern double DAT_00575168;
 
-// PDB lines 70-73; VA 004CF090.
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(int param_1, RGE_Action_Object* param_2)
     : RGE_Action(param_1, param_2, 1) {
     this->action_type = 0x6E;
     rge_read(param_1, &targetType, 4);
 }
 
-// PDB lines 81-105; VA 004CF130.
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj, RGE_Task* tsk, RGE_Static_Object* target)
     : RGE_Action(obj, 1)
 {
@@ -59,7 +48,6 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj, RGE_Task* tsk, RGE_
     }
 }
 
-// PDB lines 113-124; VA 004CF1C0.
 TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj, RGE_Task* task,
                                      float x, float y, float z)
     : RGE_Action(obj, 1) {
@@ -71,13 +59,11 @@ TRIBE_Action_Hunt::TRIBE_Action_Hunt(RGE_Action_Object* obj, RGE_Task* task,
     this->targetType = -1;
 }
 
-// PDB lines 130-133; VA 004CF210.
 void TRIBE_Action_Hunt::save(int outfile) {
     this->RGE_Action::save(outfile);
     rge_write(outfile, &this->targetType, 4);
 }
 
-// PDB lines 139-171; VA 004CF240.
 float _zero_val = 0.0f;
 
 void TRIBE_Action_Hunt::first_in_stack(unsigned char param_1)
@@ -120,7 +106,6 @@ void TRIBE_Action_Hunt::first_in_stack(unsigned char param_1)
     }
 }
 
-// PDB lines 177-378; VA 004CF300.
 void TRIBE_Action_Hunt::set_state(unsigned char param_1)
 {
     this->sub_actions->delete_list();
@@ -186,7 +171,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
 
     case 12: {
         this->timer = 0.0f;
-        // BINARY NOTE: The action master is stored as a static-master pointer.
+        // The action master is stored as a static-master pointer.
         // These three reads prove the combat-master fields at +0x124, +0x12A,
         // and +0x138.
         RGE_Action_Attack* action = new RGE_Action_Attack(
@@ -211,7 +196,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
 
     case 7:
         this->timer = 0.0f;
-        // BINARY NOTE: State 7 reads attribute_type_held (+0x4C), then calls
+        // State 7 reads attribute_type_held (+0x4C), then calls
         // the inherited set_attribute virtual at slot +0x80.
         if (this->obj->attribute_type_held != this->task->attribute_type) {
             this->obj->set_attribute(this->task->attribute_type, 0);
@@ -255,7 +240,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
             }
             return;
         }
-        // BINARY NOTE: The shipped check reads target_obj (+0x10), not
+        // The shipped check reads target_obj (+0x10), not
         // target_obj2 (+0x14), before clearing target_obj.
         // LIKELY INTENT: Clear the current target before state 3.
         if (this->target_obj != 0 &&
@@ -277,7 +262,6 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
     }
 }
 
-// PDB lines 384-794; VA 004CF860.
 unsigned char TRIBE_Action_Hunt::update()
 {
     float give_amount;
@@ -447,7 +431,6 @@ state_default2:
     return 0;
 }
 
-// PDB lines 800-807; VA 004CFF20.
 RGE_Sprite* TRIBE_Action_Hunt::get_move_sprite(void) {
     RGE_Task* task = this->task;
     short task_facet = task->attribute_type;
@@ -458,7 +441,6 @@ RGE_Sprite* TRIBE_Action_Hunt::get_move_sprite(void) {
     return task->move_sprite;
 }
 
-// PDB lines 813-820; VA 004CFF50.
 RGE_Sprite* TRIBE_Action_Hunt::get_wait_sprite(void) {
     RGE_Task* task = this->task;
     short task_facet = task->attribute_type;
@@ -469,7 +451,6 @@ RGE_Sprite* TRIBE_Action_Hunt::get_wait_sprite(void) {
     return this->obj->master_obj->sprite;
 }
 
-// PDB lines 826-833; VA 004CFF90.
 int TRIBE_Action_Hunt::stop(void) {
     if (this->obj->owner->computerPlayer() == 0) {
         this->set_state(2);
@@ -479,7 +460,6 @@ int TRIBE_Action_Hunt::stop(void) {
     return 1;
 }
 
-// PDB lines 840-883; VA 004CFFD0.
 int TRIBE_Action_Hunt::move_to(RGE_Static_Object* target, float x, float y, float z) {
     if (target != 0 && target->owner == this->obj->owner) {
         RGE_Master_Action_Object* master =
@@ -507,7 +487,6 @@ int TRIBE_Action_Hunt::move_to(RGE_Static_Object* target, float x, float y, floa
     return 1;
 }
 
-// PDB lines 890-948; VA 004D0080.
 int TRIBE_Action_Hunt::work(RGE_Static_Object* param_1, float param_2, float param_3, float param_4)
 {
     if (param_1 != 0) {

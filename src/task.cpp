@@ -3,10 +3,7 @@
 #include "../include/sound.h"
 #include "../include/sprite.h"
 
-// PDB source: C:\\msdev\\work\\age1_x1\\task.cpp
-// The definitions follow the original task.cpp source order.
 
-// PDB lines 26-57; VA 00508670.
 
 RGE_Task::RGE_Task(short param_1)
 {
@@ -41,13 +38,11 @@ RGE_Task::RGE_Task(short param_1)
     work_sound2 = 0;
 }
 
-// PDB lines 62-62; VA 005086F0.
 
 RGE_Task::~RGE_Task()
 {
 }
 
-// PDB lines 68-98; VA 00508700.
 
 void RGE_Task::copy(RGE_Task* src)
 {
@@ -80,7 +75,6 @@ void RGE_Task::copy(RGE_Task* src)
     work_sound2 = src->work_sound2;
 }
 
-// PDB lines 103-149; VA 005087C0.
 
 void RGE_Task::load(int fd, RGE_Sprite** sprites, RGE_Sound** sounds)
 {
@@ -154,7 +148,6 @@ void RGE_Task::load(int fd, RGE_Sprite** sprites, RGE_Sound** sounds)
     work_sound2 = selected_sound;
 }
 
-// PDB lines 154-218; VA 00508A20.
 
 extern int __cdecl fscanf(FILE* file, const char* format, ...);
 
@@ -233,7 +226,6 @@ void RGE_Task::load(FILE* file, RGE_Sprite** sprites, RGE_Sound** sounds)
     work_sound2 = selected_sound;
 }
 
-// PDB lines 223-267; VA 00508BB0.
 
 void RGE_Task::save(int fd)
 {

@@ -1,16 +1,12 @@
-// Authentic aibldmod.cpp source module in PDB source order.
-// PDB: C:\\msdev\\work\\age1_x1\\aibldmod.cpp, lines 34-792.
 // Owners are BuildAIModule methods in address and source-line order.
 // Canonical class anchors are BuildAIModule +0xF0 BuildItem, +0x1A0 list
 // length, and +0x5AC typesToIgnore. The nearby 00408820 deleting destructor
 // is compiler generated and has no standalone source owner.
-// Twenty-four owners match. insertItem (00409950) remains scratch.
 
 #include "../include/aibldmod.h"
 #include <string.h>
 
-// 004086B0 BuildAIModule::BuildAIModule
-// BINARY NOTE: The canonical member initializers own the BuildItem,
+// The canonical member initializers own the BuildItem,
 // scalar, ManagedArray, and derived virtual setup.
 BuildAIModule::BuildAIModule(void* param_1, int param_2)
     : AIModule("Build AI", 0x3E9, param_2, param_1),
@@ -24,8 +20,7 @@ BuildAIModule::BuildAIModule(void* param_1, int param_2)
     strcpy(this->nextBuildItemRequestedValue, "None");
 }
 
-// 00408840 BuildAIModule::BuildAIModule
-// BINARY NOTE: The serialized fields, local declaration order, and name
+// The serialized fields, local declaration order, and name
 // buffer size preserve the original constructor frame and call sequence.
 #include <stdlib.h>
 BuildAIModule::BuildAIModule(int p1, int fd)
@@ -134,15 +129,13 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     }
 }
 
-// 00408D50 BuildAIModule::~BuildAIModule
-// BINARY NOTE: VC5 owns the BuildItem, ManagedArray, and AIModule cleanup.
+// VC5 owns the BuildItem, ManagedArray, and AIModule cleanup.
 BuildAIModule::~BuildAIModule()
 {
     if (buildListLengthValue > 0)
         removeOldList();
 }
 
-// 00408DF0 BuildAIModule::save
 int BuildAIModule::save(int file) {
     char tempString[257];
     int tempInt; float tempFloat; int iStack_110; unsigned char local_109;
@@ -186,7 +179,6 @@ int BuildAIModule::save(int file) {
     return 1;
 }
 
-// 004092F0 BuildAIModule::displayBuildList
 void BuildAIModule::displayBuildList()
 {
     this->logCommonHistory("Build list '%s':", buildListNameValue);
@@ -217,8 +209,7 @@ void BuildAIModule::displayBuildList()
     }
 }
 
-// 00409430 BuildAIModule::loadBuildList
-// ORIGINAL BUG: This source retains the executable's dead NULL test against
+// This source retains the executable's dead NULL test against
 // the in-object buildListNameValue array.
 #include <stdio.h>
 #include <io.h>
@@ -356,20 +347,16 @@ no_build_list:
     return 1;
 }
 
-// 004098A0 BuildAIModule::buildListLength
 int BuildAIModule::buildListLength() const { return this->buildListLengthValue; }
 
-// 004098B0 BuildAIModule::buildListName
 char* BuildAIModule::buildListName() { return this->buildListNameValue; }
 
-// 004098C0 BuildAIModule::haveBuildList
 int BuildAIModule::haveBuildList() const {
     char* name = (char*)this->buildListNameValue;
     if (name != 0 && strcmp(name, "NONE") != 0 && strcmp(name, "NULL") != 0) return 1;
     return 0;
 }
 
-// 00409950 BuildAIModule::insertItem remains scratch.
 static const char s_SetGatherPercentage[] = "SetGatherPercentage";
 static const char s_AddedBuildListItem[] = "AddedBuildListItem";
 int BuildAIModule::insertItem(RGE_Player* player, int objType, int count, int itemType, int p5, int buildCap, int index)
@@ -388,7 +375,7 @@ int BuildAIModule::insertItem(RGE_Player* player, int objType, int count, int it
         pos = pos->next;
         i++;
     }
-    // BINARY NOTE: The special arm and shared strncpy tail retain the
+    // The special arm and shared strncpy tail retain the
     // original branch and call order.
     if (itemType != 6) {
         if (player->master_objects[objType] != 0) {
@@ -437,7 +424,6 @@ name_done:
     return 1;
 }
 
-// 00409B70 BuildAIModule::numberItemsBuilt
 int BuildAIModule::numberItemsBuilt(void) const {
     const BuildItem* current = this->buildList.next;
     const BuildItem* end = &this->buildList;
@@ -451,7 +437,6 @@ int BuildAIModule::numberItemsBuilt(void) const {
     return count;
 }
 
-// 00409BB0 BuildAIModule::numberItemsInProgress
 int BuildAIModule::numberItemsInProgress(void) const {
     const BuildItem* current = this->buildList.next;
     const BuildItem* end = &this->buildList;
@@ -465,7 +450,6 @@ int BuildAIModule::numberItemsInProgress(void) const {
     return count;
 }
 
-// 00409BF0 BuildAIModule::numberItemsBuiltOrInProgress
 int BuildAIModule::numberItemsBuiltOrInProgress(void) const {
     const BuildItem* item = this->buildList.next;
     const BuildItem* end = &this->buildList;
@@ -481,19 +465,14 @@ int BuildAIModule::numberItemsBuiltOrInProgress(void) const {
     return count;
 }
 
-// 00409C30 BuildAIModule::numberItemsIntoBuildList
 int BuildAIModule::numberItemsIntoBuildList() const { return this->numberItemsIntoBuildListValue; }
 
-// 00409C40 BuildAIModule::lastBuildItemRequested
 char* BuildAIModule::lastBuildItemRequested() const { return (char*)this->lastBuildItemRequestedValue; }
 
-// 00409C50 BuildAIModule::currentBuildItemRequested
 char* BuildAIModule::currentBuildItemRequested() const { return (char*)this->currentBuildItemRequestedValue; }
 
-// 00409C60 BuildAIModule::nextBuildItemRequested
 char* BuildAIModule::nextBuildItemRequested() const { return (char*)this->nextBuildItemRequestedValue; }
 
-// 00409C70 BuildAIModule::numberItemsOfType
 int BuildAIModule::numberItemsOfType(int typeID, int buildCategory) {
     BuildItem* cur = this->buildList.next;
     int count = 0;
@@ -507,7 +486,6 @@ int BuildAIModule::numberItemsOfType(int typeID, int buildCategory) {
     return count;
 }
 
-// 00409CD0 BuildAIModule::numberBuiltItemsOfType
 int BuildAIModule::numberBuiltItemsOfType(int param_1, int param_2) {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
@@ -523,7 +501,6 @@ int BuildAIModule::numberBuiltItemsOfType(int param_1, int param_2) {
     return count;
 }
 
-// 00409D40 BuildAIModule::numberUnbuiltItemsOfType
 int BuildAIModule::numberUnbuiltItemsOfType(int param_1, int param_2) {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
@@ -539,7 +516,6 @@ int BuildAIModule::numberUnbuiltItemsOfType(int param_1, int param_2) {
     return count;
 }
 
-// 00409DB0 BuildAIModule::numberBuiltOrInProgressItemsOfType
 int BuildAIModule::numberBuiltOrInProgressItemsOfType(int type_id, int build_category) {
     int count = 0;
     BuildItem* item = this->buildList.next;
@@ -555,7 +531,6 @@ int BuildAIModule::numberBuiltOrInProgressItemsOfType(int type_id, int build_cat
     return count;
 }
 
-// 00409E20 BuildAIModule::numberInProgressItemsOfType
 int BuildAIModule::numberInProgressItemsOfType(int param_1, int param_2) {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
@@ -571,7 +546,6 @@ int BuildAIModule::numberInProgressItemsOfType(int param_1, int param_2) {
     return count;
 }
 
-// 00409E90 BuildAIModule::removeOldList
 void BuildAIModule::removeOldList(void) {
     BuildItem* current = this->buildList.next;
     BuildItem* end = &this->buildList;
@@ -587,7 +561,6 @@ void BuildAIModule::removeOldList(void) {
     this->buildListLengthValue = 0;
 }
 
-// 00409EE0 BuildAIModule::anyBuildListItem
 BuildItem* BuildAIModule::anyBuildListItem(int param_1, int param_2, int param_3) {
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
@@ -609,8 +582,7 @@ BuildItem* BuildAIModule::anyBuildListItem(int param_1, int param_2, int param_3
     return 0;
 }
 
-// 00409F50 BuildAIModule::specificBuildListItem
-// BINARY NOTE: The original checks the sentinel before loading the id.
+// The original checks the sentinel before loading the id.
 BuildItem* BuildAIModule::specificBuildListItem(int uniqueID)
 {
     BuildItem* item = this->buildList.next;

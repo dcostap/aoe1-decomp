@@ -1,5 +1,4 @@
 // RGE_Game_World::base_save (00543850) / game_save (005438D0)
-// PDB source: World.cpp:2108-2152
 // Size: 228 bytes (function fragment starting at 005438D0)
 
 struct RGE_Color_Table;

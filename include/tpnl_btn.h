@@ -1,7 +1,6 @@
 #ifndef AOE1_TPNL_BTN_H
 #define AOE1_TPNL_BTN_H
 
-// PDB owner: tpnl_btn.cpp. TButtonPanel stays in pnl_btn.h.
 
 #include "pnl_btn.h"
 

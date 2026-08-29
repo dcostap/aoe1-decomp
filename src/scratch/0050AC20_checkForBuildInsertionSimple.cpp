@@ -1,5 +1,3 @@
-// 0050AC20 TMap::checkForBuildInsertionSimple
-// Source: tmap.cpp, size 278 bytes
 
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 

@@ -1,6 +1,4 @@
 // taipbook.cpp
-// PDB source: C:\\msdev\\work\\age1_x1\\taipbook.cpp.
-// The source owns all five handwritten normal functions in PDB order.
 // The vector-deleting destructor at 004E68D0 is compiler generated.
 
 #include "../include/taipbook.h"
@@ -12,21 +10,17 @@
 TribeAIPlayBook::~TribeAIPlayBook() {
 }
 
-// 004E68B0 TribeAIPlayBook::TribeAIPlayBook
 TribeAIPlayBook::TribeAIPlayBook() : AIPlayBook() {
 }
 
-// 004E6900 TribeAIPlayBook::convertTargetNameToIntType
 int TribeAIPlayBook::convertTargetNameToIntType(char* name) const {
     return AIPlayBook::convertTargetNameToIntType(name);
 }
 
-// 004E6910 TribeAIPlayBook::convertTargetCharacteristicNameToIntType
 int TribeAIPlayBook::convertTargetCharacteristicNameToIntType(char* name) const {
     return AIPlayBook::convertTargetCharacteristicNameToIntType(name);
 }
 
-// 004E6920 TribeAIPlayBook::convertUnitNameToIntType
 int TribeAIPlayBook::convertUnitNameToIntType(char* name) const
 {
     if (strcmp(name, "Hand") == 0)
@@ -45,7 +39,6 @@ int TribeAIPlayBook::convertUnitNameToIntType(char* name) const
     return AIPlayBook::convertUnitNameToIntType(name);
 }
 
-// 004E6AD0 TribeAIPlayBook::convertUnitToIntType
 int TribeAIPlayBook::convertUnitToIntType(RGE_Static_Object* obj) const
 {
     short group = obj->master_obj->object_group;

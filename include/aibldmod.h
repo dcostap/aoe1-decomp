@@ -1,7 +1,6 @@
 #ifndef AOE1_AIBLDMOD_H
 #define AOE1_AIBLDMOD_H
 
-// Canonical declarations for the original aibldmod.cpp source module.
 #include "aibitm.h"
 #include "aiblditm.h"
 #include "aimodule.h"
@@ -20,7 +19,6 @@ class BuildAIModule : public AIModule {
 public:
     // AIModule supplies slots 0-14: the destructor, the public module
     // operations, and filterOutMessage.  These four methods supply slots
-    // 15-18 in the PDB-proven BuildAIModule vtable.
     virtual ~BuildAIModule();
     virtual int save(int file);
     virtual void displayBuildList();

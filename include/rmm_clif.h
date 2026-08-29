@@ -2,7 +2,6 @@
 #define AOE1_RMM_CLIF_H
 
 // Declarations for the complete C:\\msdev\\work\\age1_x1\\rmm_clif.cpp
-// source module. Shared map and random-map declarations come from their
 // canonical owners.
 
 #include "rmm_base.h"

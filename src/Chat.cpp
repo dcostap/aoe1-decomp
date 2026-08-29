@@ -1,5 +1,4 @@
 // Authentic Chat.cpp source module.
-// PDB owners below follow the shipped source-line order.
 
 #include "../include/chat.h"
 #include "../include/basegame.h"

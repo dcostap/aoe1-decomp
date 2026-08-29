@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_ACH_H
 #define AOE1_SCR_ACH_H
 
-// PDB source module: C:\msdev\work\age1_x1\scr_ach.cpp.
 #include "Pnl_scr.h"
 #include "tpnl_tml.h"
 

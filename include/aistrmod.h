@@ -4,7 +4,6 @@
 #include "aimodule.h"
 
 // Declarations for the authentic aistrmod.cpp source module.
-// PDB source order is StrategyAIModule::StrategyAIModule (lines 22-24),
 // then StrategyAIModule::~StrategyAIModule (line 29).
 
 class StrategyAIModule : public AIModule {

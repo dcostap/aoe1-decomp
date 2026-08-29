@@ -196,7 +196,7 @@ void RGE_Diamond_Map_View::draw()
     rge_base_game->add_to_timing(7, debug_timeGetTime("C:\\msdev\\work\\age1_x1\\vw_dimap.cpp", 0x112) - start);
 }
 
-// BINARY NOTE: The binary calls the player command slot at +0xA8.
+// The binary calls the player command slot at +0xA8.
 int RGE_Diamond_Map_View::command_make_do(long a1, long a2) {
     int result;
     short col;
@@ -212,8 +212,8 @@ int RGE_Diamond_Map_View::command_make_do(long a1, long a2) {
     return result;
 }
 
-// BINARY NOTE: The binary calls the player command slot at +0xA0.
-// BINARY NOTE: The cleanup call uses the base-game slot at +0x10.
+// The binary calls the player command slot at +0xA0.
+// The cleanup call uses the base-game slot at +0x10.
 int RGE_Diamond_Map_View::command_make_move(long a1, long a2) {
     int result;
     short col;
@@ -230,8 +230,8 @@ int RGE_Diamond_Map_View::command_make_move(long a1, long a2) {
     return result;
 }
 
-// BINARY NOTE: The binary calls the player command slot at +0xA4.
-// BINARY NOTE: The cleanup call uses the base-game slot at +0x10.
+// The binary calls the player command slot at +0xA4.
+// The cleanup call uses the base-game slot at +0x10.
 int RGE_Diamond_Map_View::command_make_work(long a1, long a2) {
     int result;
     short col;

@@ -1,5 +1,3 @@
-// PDB source module: C:/msdev/work/age1_x1/Dlg_msg.cpp.
-// Definitions follow the original source order.
 
 #include "../include/dlg_msg.h"
 #include "../include/basegame.h"

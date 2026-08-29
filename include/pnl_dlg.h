@@ -1,7 +1,6 @@
 #ifndef AOE1_PNL_DLG_H
 #define AOE1_PNL_DLG_H
 
-// PDB source: C:\\msdev\\work\\age1_x1\\pnl_dlg.cpp.
 // This header owns TDialogPanel. Its base comes from panel_ez.h.
 #include "panel_ez.h"
 

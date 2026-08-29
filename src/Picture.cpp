@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\Picture.cpp.
-// Definitions follow the shipped source order.
 
 #include "../include/Picture.h"
 #include "../include/Shape.h"
@@ -32,7 +30,6 @@ extern long __cdecl TileDibBlt(BITMAPINFO256* bitmap_info,
     void* trans_info, long param_8, long param_9, long param_10,
     long param_11, int has_trans, int zero_1, int zero_2);
 
-// Picture.cpp:11-22
 TPicture::TPicture(char* file_name, long resource_id, int palette_id,
     void* palette, int palette_flags) {
     this->Dib = 0;
@@ -46,7 +43,6 @@ TPicture::TPicture(char* file_name, long resource_id, int palette_id,
     this->Load(file_name, resource_id, palette_id, palette, palette_flags);
 }
 
-// Picture.cpp:25-76
 TPicture::TPicture(int file_handle, int param_2) {
     this->Dib = 0;
     this->BitmapInfo = 0;
@@ -109,7 +105,6 @@ TPicture::TPicture(int file_handle, int param_2) {
     }
 }
 
-// Picture.cpp:79-88
 TPicture::TPicture() {
     this->Dib = 0;
     this->BitmapInfo = 0;
@@ -121,7 +116,6 @@ TPicture::TPicture() {
     this->Orien = 1;
 }
 
-// Picture.cpp:91-109
 TPicture::~TPicture() {
     if (this->OwnMemory == 0) {
         return;
@@ -143,7 +137,6 @@ TPicture::~TPicture() {
     }
 }
 
-// Picture.cpp:112-123
 void TPicture::Save(int fd) {
     rge_write(fd, &this->OwnMemory, 4);
     rge_write(fd, &this->Width, 4);
@@ -157,7 +150,6 @@ void TPicture::Save(int fd) {
     }
 }
 
-// Picture.cpp:126-197
 void TPicture::Load(char* file_name, long resource_id, int palette_id,
     void* palette, int palette_flags) {
     BITMAPINFO256* bitmap;
@@ -247,7 +239,6 @@ void TPicture::Load(char* file_name, long resource_id, int palette_id,
     this->Orien = 1;
 }
 
-// Picture.cpp:200-216
 void TPicture::Init(BITMAPINFO256* info, unsigned char* bits,
     TRANSINFO* trans) {
     int height;
@@ -268,12 +259,10 @@ void TPicture::Init(BITMAPINFO256* info, unsigned char* bits,
     this->Orien = -1;
 }
 
-// Picture.cpp:219-221
 long TPicture::AlignedWidth() {
     return (this->Width + 3) & ~3;
 }
 
-// Picture.cpp:224-241
 void TPicture::Draw(TDrawArea* draw_area, long x, long y, int dst_x,
     int dst_y) {
     if (this->TransInfo != 0) {
@@ -288,7 +277,6 @@ void TPicture::Draw(TDrawArea* draw_area, long x, long y, int dst_x,
     }
 }
 
-// Picture.cpp:246-252
 long TPicture::Tile(TDrawArea* draw_area, long param_2, long param_3,
     long param_4, long param_5, long param_6, long param_7, long param_8,
     long param_9, long param_10, long param_11) {
@@ -298,7 +286,6 @@ long TPicture::Tile(TDrawArea* draw_area, long param_2, long param_3,
         param_9, param_10, param_11, (this->TransInfo != 0), 0, 0);
 }
 
-// Picture.cpp:256-286
 unsigned char TPicture::GetPixel(long x, long y, int param_3, int param_4) {
     char orientation = (char)this->Orien;
     if (param_4 != 0) {

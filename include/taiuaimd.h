@@ -1,7 +1,6 @@
 #ifndef AOE1_TAIUAIMD_H
 #define AOE1_TAIUAIMD_H
 
-// Canonical declarations for the PDB taiuaimd.cpp source module.
 // UnitAIModule and game objects come from their owning headers.
 #include "aiuaimod.h"
 #include "act_obj.h"

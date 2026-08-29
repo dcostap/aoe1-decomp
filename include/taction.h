@@ -10,7 +10,6 @@
 // - RGE_Action_List is 0x0C bytes.  Its constructor stores obj at +04 and
 //   clears list at +08.  TRIBE_Action_List uses that constructor.
 // - TRIBE_Action's vtable at 005753E0 has the same first three override slots.
-// - The PDB line order is the order used by src/taction.cpp.
 //
 // Shared action and action-list bases are owned by their canonical headers.
 

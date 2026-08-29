@@ -1,7 +1,6 @@
 #ifndef AOE1_DLG_CONF_H
 #define AOE1_DLG_CONF_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_conf.cpp.
 // This header owns only the configuration dialog surface.
 #include "pnl_dlg.h"
 

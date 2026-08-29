@@ -1,19 +1,9 @@
-// Authentic source module for the PDB compiland tact_rep.cpp.
 //
-// PDB source path: C:\\msdev\\work\\age1_x1\\tact_rep.cpp
-// Source order and line bands:
-// 004D1680 (41-46), 004D1720 (54-66), 004D17B0 (74-81),
-// 004D1800 (85-96), 004D1850 (100-104), 004D1880 (110-115),
-// 004D18B0 (121-221), 004D1BB0 (229-441), 004D1F50 (447-450),
-// 004D1F60 (457-464), 004D1FA0 (471-495), and 004D2020 (501-557).
 //
-// The PDB source path, line bands, ascending address sequence, class owner,
 // and exact anchors establish one authentic translation unit. The nearby
-// 004D16F0 vector deleting destructor is compiler-generated and has no
 // handwritten source owner.
 //
 // The prior candidate recorded eleven exact owners.  This header migration is
-// not validated.  update (004D1BB0) remains scratch.
 //
 // The state-4 range load uses RGE_Master_Combat_Object::weapon_range at
 // +0x114. The source consumes the canonical m_co_obj.h owner header.
@@ -39,7 +29,6 @@
 
 extern float save_game_version;
 
-// PDB lines 41-46; VA 004D1680.
 // The constructor keeps the period base initialization and conditional setup.
 TRIBE_Action_Repair::TRIBE_Action_Repair(int param_1, RGE_Action_Object* param_2,
                                          int param_3)
@@ -51,7 +40,6 @@ TRIBE_Action_Repair::TRIBE_Action_Repair(int param_1, RGE_Action_Object* param_2
     }
 }
 
-// PDB lines 54-66; VA 004D1720.
 TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj,
                                          RGE_Task* task_arg,
                                          RGE_Static_Object* target)
@@ -69,7 +57,6 @@ TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj,
     }
 }
 
-// PDB lines 74-81; VA 004D17B0.
 TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj,
                                          RGE_Task* task,
                                          float x, float y, float z)
@@ -83,7 +70,6 @@ TRIBE_Action_Repair::TRIBE_Action_Repair(RGE_Action_Object* obj,
     this->save_target_command_flag = 0;
 }
 
-// PDB lines 85-96; VA 004D1800.
 int TRIBE_Action_Repair::setup(int param_1, RGE_Action_Object* param_2)
 {
     int result = RGE_Action::setup(param_1, param_2);
@@ -95,14 +81,12 @@ int TRIBE_Action_Repair::setup(int param_1, RGE_Action_Object* param_2)
     return result;
 }
 
-// PDB lines 100-104; VA 004D1850.
 void TRIBE_Action_Repair::save(int handle)
 {
     RGE_Action::save(handle);
     rge_write(handle, &this->save_target_command_flag, 1);
 }
 
-// PDB lines 110-115; VA 004D1880.
 void TRIBE_Action_Repair::first_in_stack(unsigned char value)
 {
     if (value != 0 && this->target_obj != 0) {
@@ -112,8 +96,6 @@ void TRIBE_Action_Repair::first_in_stack(unsigned char value)
     this->set_state(3);
 }
 
-// PDB lines 121-221; VA 004D18B0.
-// Exact under the module's period /O2 /Oy /GX flags.
 void TRIBE_Action_Repair::set_state(unsigned char param_1)
 {
     this->sub_actions->delete_list();
@@ -202,8 +184,6 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
     this->obj->new_sprite(this->obj->master_obj->sprite);
 }
 
-// PDB lines 229-441; VA 004D1BB0.
-// The source remains scratch. See recovery_notes/tact_rep_module.md.
 // Its natural calls, size, frame, and state routing match, but VC5 colors
 // the state-4 action-list vtable load in EAX instead of the shipped EDX.
 unsigned char TRIBE_Action_Repair::update()
@@ -362,14 +342,12 @@ invalid_target:
     return 0;
 }
 
-// PDB lines 447-450; VA 004D1F50.
 int TRIBE_Action_Repair::stop()
 {
     this->set_state(2);
     return 1;
 }
 
-// PDB lines 457-464; VA 004D1F60.
 int TRIBE_Action_Repair::move_to(RGE_Static_Object* obj,
                                  float x, float y, float z)
 {
@@ -381,7 +359,6 @@ int TRIBE_Action_Repair::move_to(RGE_Static_Object* obj,
     return 1;
 }
 
-// PDB lines 471-495; VA 004D1FA0.
 int TRIBE_Action_Repair::work(RGE_Static_Object* target,
                               float param_2, float param_3, float z)
 {
@@ -408,7 +385,6 @@ int TRIBE_Action_Repair::work(RGE_Static_Object* target,
     return 1;
 }
 
-// PDB lines 501-557; VA 004D2020.
 void TRIBE_Action_Repair::meet_target()
 {
     XYPoint rVal;

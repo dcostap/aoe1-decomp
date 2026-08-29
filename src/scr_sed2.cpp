@@ -1,5 +1,3 @@
-// Canonical scr_sed2.cpp source module in PDB and address order.
-// PDB source: C:/msdev/work/age1_x1/scr_sed2.cpp.
 // Padding-only fragments at 004AE05A, 004AEC95, and 004AF2D2 are excluded.
 #include "../include/scr_sed2.h"
 #include "../include/pnl_msg.h"
@@ -59,8 +57,6 @@ const TEditPanel::FormatType FormatText = TEditPanel::FormatText;
 const TEditPanel::FormatType FormatUnsignedInt = TEditPanel::FormatUnsignedInt;
 const TEditPanel::FormatType FormatMultiLine = TEditPanel::FormatMultiLine;
 
-// VA: 004ADC80 TRIBE_Screen_Sed::SaveDisabledItemsInScenario()
-// PDB source: scr_sed2.cpp lines 343-352
 // Default flags
 //
 // __thiscall: this in ecx, no stack params. void return.
@@ -87,9 +83,7 @@ void TRIBE_Screen_Sed::SaveDisabledItemsInScenario() {
     this->player_num = (short)(line + 1);
 }
 
-// VA: 004ADD00 TRIBE_Screen_Sed::LoadDisabledItemsFromScenario.
-// BINARY NOTE: The named getter result preserves the source line split and
-// the original register map.
+// The named getter result preserves the source line split and
 
 void TRIBE_Screen_Sed::LoadDisabledItemsFromScenario(void) {
     TButtonPanel** button;
@@ -110,11 +104,9 @@ void TRIBE_Screen_Sed::LoadDisabledItemsFromScenario(void) {
 
 
 
-// VA: 004ADD50 TRIBE_Screen_Sed::save_info_in_scenario.
 void TRIBE_Screen_Sed::save_info_in_scenario() {}
 
-// VA: 004ADD60 TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario.
-// BINARY NOTE: The victory setters use the typed T_Scenario surface.
+// The victory setters use the typed T_Scenario surface.
 
 void TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario()
 {
@@ -204,10 +196,7 @@ void TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario()
     }
 }
 
-// VA: 004AE070 TRIBE_Screen_Sed::save_victory_cond_in_scenario.
-// BINARY NOTE: VC5 merges two equivalent selected-object setter tails in
-// this reconstruction.
-// BINARY NOTE: The protected PDB owner is retained by this definition.
+// VC5 merges two equivalent selected-object setter tails in
 
 void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int index)
 {
@@ -329,8 +318,7 @@ set_amount:
     return;
 }
 
-// VA: 004AE620 TRIBE_Screen_Sed::load_victory_cond_from_scenario.
-// ORIGINAL BUG: Case 1 tests the amount home, not the destination-object
+// Case 1 tests the amount home, not the destination-object
 // home. The shipped UI can select a line from the amount value.
 
 void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
@@ -401,7 +389,6 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
         this->victory_drop_down->setCurrentLineNumber(9);
         break;
     case 1:
-        // ORIGINAL BUG: PDB home -0x30 and the case-1 load use Amount.
         // The destination object does not select line 5 in this case.
         if (Amount != 0) this->victory_drop_down->setCurrentLineNumber(5);
         else if (obj != 0) this->victory_drop_down->setCurrentLineNumber(6);
@@ -424,8 +411,7 @@ void TRIBE_Screen_Sed::load_victory_cond_from_scenario(int index)
     }
 }
 
-// VA: 004AE9D0 TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario.
-// BINARY NOTE: Zero score and time values use the default entries.
+// Zero score and time values use the default entries.
 
 void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario()
 {
@@ -529,8 +515,6 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario()
     static_cast<T_Scenario*>(this->world->scenario)->Save_victory_conditions_into_players(1);
 }
 
-// 004AECB0 TRIBE_Screen_Sed::save_diplomacy_in_scenario (155B)
-// scr_sed2.cpp:913-940
 // Default flags
 
 
@@ -560,8 +544,7 @@ void TRIBE_Screen_Sed::save_diplomacy_in_scenario(int param_1)
 }
 
 // TRIBE_Screen_Sed::load_diplomacy_from_scenario
-// VA: 004AED50 TRIBE_Screen_Sed::load_diplomacy_from_scenario.
-// BINARY NOTE: Each diplomacy row clears its allied-victory button before
+// Each diplomacy row clears its allied-victory button before
 // the selected attitude and final player-specific state are applied.
 
 void TRIBE_Screen_Sed::load_diplomacy_from_scenario(int player)
@@ -584,8 +567,7 @@ void TRIBE_Screen_Sed::load_diplomacy_from_scenario(int player)
     }
 }
 
-// VA: 004AEE10 TRIBE_Screen_Sed::activate_victory_proper_fields.
-// BINARY NOTE: Cases 6 and 9 keep separate source cases; VC5 merges their
+// Cases 6 and 9 keep separate source cases; VC5 merges their
 // identical set-object bodies.
 
 void TRIBE_Screen_Sed::activate_victory_proper_fields(int TypeOfVictory, int activate)
@@ -718,8 +700,7 @@ void TRIBE_Screen_Sed::activate_victory_proper_fields(int TypeOfVictory, int act
     }
 }
 
-// VA: 004AF320 TRIBE_Screen_Sed::init_module_variables.
-// BINARY NOTE: The paired panel arrays are cleared in declared field order.
+// The paired panel arrays are cleared in declared field order.
 
 void TRIBE_Screen_Sed::init_module_variables()
 {
@@ -889,8 +870,6 @@ void TRIBE_Screen_Sed::init_module_variables()
     this->world = (TRIBE_World*)0;
 }
 
-// VA: 004AF6C0 TRIBE_Screen_Sed::create_all_buttons_etc.
-// BINARY NOTE: The constructor path requires the /GX exception flag.
 
 void TRIBE_Screen_Sed::create_all_buttons_etc()
 {
@@ -1278,8 +1257,7 @@ bad:
     return;
 }
 
-// VA: 004B1A50 TRIBE_Screen_Sed::position_panels.
-// BINARY NOTE: The panel cursor loops follow the adjacent array layout shown
+// The panel cursor loops follow the adjacent array layout shown
 // by the executable.
 
 void TRIBE_Screen_Sed::position_panels()
@@ -1543,7 +1521,6 @@ void TRIBE_Screen_Sed::position_panels()
     this->Diplomacy_status_label[3]->set_fixed_position(2, 0x70, 0x91, 0x16);
 }
 
-// VA: 004B29E0 TRIBE_Screen_Sed::activate_victory_panel.
 
 void TRIBE_Screen_Sed::activate_victory_panel(int flag)
 {
@@ -1569,7 +1546,6 @@ void TRIBE_Screen_Sed::activate_victory_panel(int flag)
     }
 }
 
-// VA: 004B2AA0 TRIBE_Screen_Sed::MakeFileList.
 
 int TRIBE_Screen_Sed::MakeFileList(TDropDownPanel* list, char* directory,
                                    char* extension, unsigned char show_none,
@@ -1607,7 +1583,6 @@ int TRIBE_Screen_Sed::MakeFileList(TDropDownPanel* list, char* directory,
     return count;
 }
 
-// VA: 004B2BC0 TRIBE_Screen_Sed::Set_player_advance_civilization_text.
 
 int TRIBE_Screen_Sed::Set_player_advance_civilization_text(int)
 {
@@ -1622,7 +1597,6 @@ int TRIBE_Screen_Sed::Set_player_advance_civilization_text(int)
     return 1;
 }
 
-// VA: 004B2C50 TRIBE_Screen_Sed::SavePlayerActiveStatus.
 
 void TRIBE_Screen_Sed::SavePlayerActiveStatus()
 {
@@ -1666,7 +1640,6 @@ void TRIBE_Screen_Sed::SavePlayerActiveStatus()
     this->unit_player_list->set_line((long)this->player_num);
 }
 
-// VA: 004B2DD0 TRIBE_Screen_Sed::create_check_box.
 
 int TRIBE_Screen_Sed::create_check_box(TPanel* parent, TButtonPanel** out)
 {
@@ -1682,7 +1655,6 @@ int TRIBE_Screen_Sed::create_check_box(TPanel* parent, TButtonPanel** out)
     return 1;
 }
 
-// VA: 004B2E60 TRIBE_Screen_Sed::create_radio_button.
 
 int TRIBE_Screen_Sed::create_radio_button(TPanel* parent, TButtonPanel** out)
 {

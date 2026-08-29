@@ -1,7 +1,6 @@
 #ifndef AOE1_TPNL_OBJ_H
 #define AOE1_TPNL_OBJ_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp.
 // The panel base is owned by panel.cpp.  This header owns only the panel
 // object declared by this source module.
 #include "panel.h"

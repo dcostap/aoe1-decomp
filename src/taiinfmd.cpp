@@ -1,5 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\taiinfmd.cpp.
-// Definitions follow the original PDB source order.
 
 #include "../include/taiinfmd.h"
 #include "../include/taimdmd.h"
@@ -31,12 +29,10 @@
 #include <string.h>
 
 // The compiler owns the startup wrappers and destructor registration for
-// these source globals. Their declaration order is the PDB source order.
 InfluenceMap iMap(0xFE, 0xFE, 0);
 InfluenceMap losMap(0x32, 0x32, 0);
 InfluenceMap attackMap(0x32, 0x32, 0);
 
-// PDB-order owner 004D6BB0.
 #include <string.h>
 
 TribeInformationAIModule::TribeInformationAIModule(void* p, int v)
@@ -175,7 +171,6 @@ TribeInformationAIModule::TribeInformationAIModule(void* p, int v)
     }
 }
 
-// PDB-order owner 004D7070.
 #include <string.h>
 
 TribeInformationAIModule::TribeInformationAIModule(int param1, int param2)
@@ -386,7 +381,6 @@ TribeInformationAIModule::TribeInformationAIModule(int param1, int param2)
     }
 }
 
-// PDB-order owner 004D7CB0.
 TribeInformationAIModule::~TribeInformationAIModule()
 {
     int count;
@@ -511,7 +505,6 @@ TribeInformationAIModule::~TribeInformationAIModule()
     }
 }
 
-// PDB-order owner 004D8270.
 #include <stdio.h>
 #include <string.h>
 
@@ -535,7 +528,6 @@ int TribeInformationAIModule::initialize() {
     return 1;
 }
 
-// PDB-order owner 004D8300.
 #include <stdlib.h>
 
 int TribeInformationAIModule::update(int param_1)
@@ -634,12 +626,10 @@ int TribeInformationAIModule::update(int param_1)
     return 1;
 }
 
-// PDB-order owner 004D84D0.
 void TribeInformationAIModule::setMainDecisionAI(TribeMainDecisionAIModule* v) {
     this->md = v;
 }
 
-// PDB-order owner 004D84E0.
 #include <string.h>
 #include <stdlib.h>
 
@@ -750,7 +740,6 @@ int TribeInformationAIModule::save(int handle)
     return 1;
 }
 
-// PDB-order owner 004D8C80.
 void TribeInformationAIModule::blotExploredMap(int p1, int p2, int p3, int p4)
 {
     XYPoint min;
@@ -772,7 +761,6 @@ void TribeInformationAIModule::blotExploredMap(int p1, int p2, int p3, int p4)
     }
 }
 
-// PDB-order owner 004D8D20.
 int TribeInformationAIModule::closestUnexploredTile(
     int objectId, float x, float y, float* outX, float* outY)
 {
@@ -925,7 +913,6 @@ skipTile:
     }
 }
 
-// PDB-order owner 004D9110.
 int TribeInformationAIModule::fullyExploredZone(int param_1) {
     RGE_Static_Object* object = md->object(param_1);
     if (object != 0) {
@@ -937,7 +924,6 @@ int TribeInformationAIModule::fullyExploredZone(int param_1) {
     return 0;
 }
 
-// PDB-order owner 004D9160.
 void TribeInformationAIModule::setFullyExploredZone(int param_1, int param_2) {
     RGE_Static_Object* object = md->object(param_1);
     if (object != 0) {
@@ -946,7 +932,6 @@ void TribeInformationAIModule::setFullyExploredZone(int param_1, int param_2) {
     }
 }
 
-// PDB-order owner 004D91A0.
 int TribeInformationAIModule::tileUncovered(int x, int y) {
     int rv;
 
@@ -961,16 +946,13 @@ not_found:
     return 0;
 }
 
-// PDB-order owner 004D91F0.
 void TribeInformationAIModule::setTileExplored(int x, int y) {
     if (x >= 0 && y >= 0 && x < this->mapXSizeValue && y < this->mapYSizeValue)
         this->pathMap.setValue(x, y, 0);
 }
 
-// PDB-order owner 004D9230.
 int TribeInformationAIModule::ownerOfGameID(int p0) { return -1; }
 
-// PDB-order owner 004D9240.
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1101,7 +1083,6 @@ next:
     return -1;
 }
 
-// PDB-order owner 004D96B0.
 #include <stddef.h>
 
 int TribeInformationAIModule::gameIDsOfObjectType(int objectType, int** ids, int** owners, int playerFilter)
@@ -1150,7 +1131,6 @@ next:
     return count;
 }
 
-// PDB-order owner 004D9970.
 int TribeInformationAIModule::gameIDsOwnedBy(int owner_filter, int** out, int owner_id)
 {
     int count = 0;
@@ -1196,7 +1176,6 @@ int TribeInformationAIModule::gameIDsOwnedBy(int owner_filter, int** out, int ow
     return count;
 }
 
-// PDB-order owner 004D9A90.
 int TribeInformationAIModule::numberGameIDsOwnedBy(int param1, int param2) {
     int result = 0;
     int i = 0;
@@ -1221,14 +1200,13 @@ int TribeInformationAIModule::numberGameIDsOwnedBy(int param1, int param2) {
     return result;
 }
 
-// PDB-order owner 004D9B20.
 #include <math.h>
 #include <string.h>
 
 ConstructionItem* TribeInformationAIModule::placeDock(
     BuildItem* item, float x, float targetY, int terrain_type, int tile_type)
 {
-    // BINARY NOTE: The zone-map output and cache array use separate homes.
+    // The zone-map output and cache array use separate homes.
     RGE_Visible_Map* visible = this->md->aiPlayer->visible;
     RGE_Map* map = this->md->aiPlayer->world->map;
     int bestY;
@@ -1291,7 +1269,7 @@ ConstructionItem* TribeInformationAIModule::placeDock(
                                                 this->numberDocksInZone(
                                                     (int)zone, zoneMap);
                                         }
-                                        // BINARY NOTE: A positive count selects the
+                                        // A positive count selects the
                                         // penalty block and emits TEST/JBE.
                                         if (zoneCounter[zone] > 0) {
                                             int zonePenalty =
@@ -1339,7 +1317,6 @@ ConstructionItem* TribeInformationAIModule::placeDock(
     return 0;
 }
 
-// PDB-order owner 004D9EC0.
 #include <stddef.h>
 
 int TribeInformationAIModule::numberDocksInZone(int param_1, RGE_Zone_Map* param_2)
@@ -1365,7 +1342,6 @@ int TribeInformationAIModule::numberDocksInZone(int param_1, RGE_Zone_Map* param
     return count;
 }
 
-// PDB-order owner 004D9FC0.
 #include <stddef.h>
 #include <math.h>
 
@@ -1399,7 +1375,6 @@ int TribeInformationAIModule::closestDockDistance(int x, int y)
     return distance;
 }
 
-// PDB-order owner 004DA0E0.
 int TribeInformationAIModule::hasAdjacentTileType(int param_1,int param_2,int param_3){
     RGE_Map* map = this->md->player->world->map;
     int x = param_1;
@@ -1422,7 +1397,6 @@ int TribeInformationAIModule::hasAdjacentTileType(int param_1,int param_2,int pa
     return 0;
 }
 
-// PDB-order owner 004DA190.
 int TribeInformationAIModule::mapXSize() {
     if (this->mapXSizeValue == -1) {
         this->mapXSizeValue = this->md->aiPlayer->world->map->map_width;
@@ -1430,7 +1404,6 @@ int TribeInformationAIModule::mapXSize() {
     return this->mapXSizeValue;
 }
 
-// PDB-order owner 004DA1C0.
 int TribeInformationAIModule::mapYSize() {
     if (this->mapYSizeValue == -1) {
         this->mapYSizeValue = this->md->aiPlayer->world->map->map_height;
@@ -1438,7 +1411,6 @@ int TribeInformationAIModule::mapYSize() {
     return this->mapYSizeValue;
 }
 
-// PDB-order owner 004DA1F0.
 void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
 {
     XYPoint maxLOS;
@@ -1505,7 +1477,6 @@ void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
     } while (index < this->maxImportantObjectMemory);
 }
 
-// PDB-order owner 004DA420.
 void TribeInformationAIModule::addPriorAttackInfluences(int targetOwner, int unused)
 {
     XYPoint max;
@@ -1551,7 +1522,6 @@ void TribeInformationAIModule::addPriorAttackInfluences(int targetOwner, int unu
     }
 }
 
-// PDB-order owner 004DA5A0.
 ObjectMemory* TribeInformationAIModule::objectMemory(int param_1) {
     int iVar1;
     ObjectMemory* pOVar2;
@@ -1575,7 +1545,6 @@ ObjectMemory* TribeInformationAIModule::objectMemory(int param_1) {
     return 0;
 }
 
-// PDB-order owner 004DA5F0.
 ObjectMemory* TribeInformationAIModule::addObjectMemory(RGE_Static_Object* obj) {
     if (obj == 0) return 0;
     return addObjectMemory(obj->id,
@@ -1594,7 +1563,6 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(RGE_Static_Object* obj) 
                            obj);
 }
 
-// PDB-order owner 004DA680.
 ObjectMemory* TribeInformationAIModule::addObjectMemory(int id, short type, short group, uchar x, uchar y, uchar z, uchar owner, short hp, int attempts, uchar kills, float dmg, float rof, float range, RGE_Static_Object* obj)
 {
     int maxMemory = this->maxImportantObjectMemory;
@@ -1706,7 +1674,6 @@ duplicate:
     return this->importantObjectMemory + i;
 }
 
-// PDB-order owner 004DABB0.
 int TribeInformationAIModule::addImportantObject(RGE_Static_Object* obj, int recurse) {
     int oType;
     int marked;
@@ -1817,13 +1784,11 @@ end:
     return 0;
 }
 
-// PDB-order owner 004DAF80.
 int TribeInformationAIModule::addImportantObject(int objectId) {
     RGE_Static_Object* obj = this->md->object(objectId);
     return this->addImportantObject(obj, 0);
 }
 
-// PDB-order owner 004DAFB0.
 int TribeInformationAIModule::importantObject(int param_1) {
     if (importantUnit(param_1) == 0) {
         if (importantResource(param_1) == 0) {
@@ -1835,7 +1800,6 @@ int TribeInformationAIModule::importantObject(int param_1) {
     return 1;
 }
 
-// PDB-order owner 004DAFF0.
 int TribeInformationAIModule::importantUnit(int type_id) {
     if (type_id != 0 && type_id != 3 && type_id != 4 && type_id != 0x18 &&
         type_id != 0x15 && type_id != 6 && type_id != 0x19 && type_id != 0x11 &&
@@ -1848,7 +1812,6 @@ int TribeInformationAIModule::importantUnit(int type_id) {
     return 1;
 }
 
-// PDB-order owner 004DB070.
 int TribeInformationAIModule::importantResource(int param_1) {
     if (param_1 == 0x1F || param_1 == 5 || param_1 == 0x21 || param_1 == 7 ||
         param_1 == 9 || param_1 == 8 || param_1 == 0x20 || param_1 == 0xF) {
@@ -1857,7 +1820,6 @@ int TribeInformationAIModule::importantResource(int param_1) {
     return 0;
 }
 
-// PDB-order owner 004DB0B0.
 int TribeInformationAIModule::importantMisc(int value) {
     if (value != 1 && value != 0x1E) {
         return 0;
@@ -1865,7 +1827,6 @@ int TribeInformationAIModule::importantMisc(int value) {
     return 1;
 }
 
-// PDB-order owner 004DB0D0.
 int TribeInformationAIModule::isBuilding(RGE_Static_Object* obj) {
     short group;
 
@@ -1875,7 +1836,6 @@ int TribeInformationAIModule::isBuilding(RGE_Static_Object* obj) {
     return 1;
 }
 
-// PDB-order owner 004DB100.
 int TribeInformationAIModule::isUnitBuilding(RGE_Static_Object* obj) {
     RGE_Master_Static_Object* mo = obj->master_obj;
     if (mo->object_group != 3) {
@@ -1888,7 +1848,6 @@ int TribeInformationAIModule::isUnitBuilding(RGE_Static_Object* obj) {
     return 0;
 }
 
-// PDB-order owner 004DB160.
 int TribeInformationAIModule::isBoat(RGE_Static_Object* obj) {
     unsigned short group = obj->master_obj->object_group;
     if (group == 0x15 || group == 2 || group == 0x14 || group == 0x16) {
@@ -1897,12 +1856,10 @@ int TribeInformationAIModule::isBoat(RGE_Static_Object* obj) {
     return 0;
 }
 
-// PDB-order owner 004DB190.
 int TribeInformationAIModule::isWall(RGE_Static_Object* obj) {
     return obj->master_obj->object_group == 0x1B;
 }
 
-// PDB-order owner 004DB1B0.
 int TribeInformationAIModule::isTower(RGE_Static_Object* object) {
     short id = object->master_obj->id;
 
@@ -1912,7 +1869,6 @@ int TribeInformationAIModule::isTower(RGE_Static_Object* object) {
     return 0;
 }
 
-// PDB-order owner 004DB1F0.
 int TribeInformationAIModule::isBoatAccessible(RGE_Static_Object* param_1, int param_2) {
     RGE_Static_Object* obj = this->md->object(param_2);
     if (obj == 0) {
@@ -1924,7 +1880,6 @@ int TribeInformationAIModule::isBoatAccessible(RGE_Static_Object* param_1, int p
     return 0;
 }
 
-// PDB-order owner 004DB240.
 int TribeInformationAIModule::isLandAccessible(RGE_Static_Object* param_1, int param_2) {
     RGE_Static_Object* object = md->object(param_2);
     if (object != 0) {
@@ -1936,12 +1891,10 @@ int TribeInformationAIModule::isLandAccessible(RGE_Static_Object* param_1, int p
     return 0;
 }
 
-// PDB-order owner 004DB280.
 int TribeInformationAIModule::influenceCanPlaceStructure(BuildItem* p0) {
     return 1;
 }
 
-// PDB-order owner 004DB290.
 #include <math.h>
 #include <stdlib.h>
 
@@ -2456,7 +2409,6 @@ unsupported_size:
     return 0;
 }
 
-// PDB-order owner 004DC1B0.
 void TribeInformationAIModule::addObject(RGE_Static_Object* obj)
 {
     register RGE_Static_Object* object = obj;
@@ -2528,13 +2480,11 @@ after_buildings:
     }
 }
 
-// PDB-order owner 004DC3A0.
 void TribeInformationAIModule::removeObject(int param_1)
 {
     int idx;
     int* ptr;
 
-    // --- playerBuildings search ---
     idx = 0;
     while (idx < playerBuildings.maximumSizeValue) {
         if (playerBuildings.value[idx] == param_1)
@@ -2542,7 +2492,6 @@ void TribeInformationAIModule::removeObject(int param_1)
         idx++;
     }
 
-    // --- playerBuildings removal ---
     if (idx < playerBuildings.maximumSizeValue) {
         if (idx < playerBuildings.maximumSizeValue - 1) {
             do {
@@ -2556,7 +2505,6 @@ void TribeInformationAIModule::removeObject(int param_1)
             playerBuildings.numberValue = 0;
     }
 
-    // --- playerObjects search ---
     idx = 0;
     while (idx < playerObjects.maximumSizeValue) {
         if (playerObjects.value[idx] == param_1)
@@ -2564,7 +2512,6 @@ void TribeInformationAIModule::removeObject(int param_1)
         idx++;
     }
 
-    // --- playerObjects removal ---
     if (idx < playerObjects.maximumSizeValue) {
         if (idx < playerObjects.maximumSizeValue - 1) {
             do {
@@ -2578,7 +2525,6 @@ void TribeInformationAIModule::removeObject(int param_1)
             playerObjects.numberValue = 0;
     }
 
-    // --- finalize ---
     RGE_Static_Object* obj = md->object(param_1);
     if (obj != 0) {
         ObjectMemory* mem = objectMemory(param_1);
@@ -2589,7 +2535,6 @@ void TribeInformationAIModule::removeObject(int param_1)
     }
 }
 
-// PDB-order owner 004DC490.
 ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
     int group, int* unitIds, int count, int& playNumber,
     int* outputUnits, int& outputCount, int& outputUnit)
@@ -2704,7 +2649,6 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
     return target;
 }
 
-// PDB-order owner 004DC750.
 #include <math.h>
 
 ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeapons, int boats, int objnum, int& output)
@@ -2920,7 +2864,6 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
     return best;
 }
 
-// PDB-order owner 004DCF10.
 #include <math.h>
 
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
@@ -3239,7 +3182,6 @@ done:
     return wonder;
 }
 
-// PDB-order owner 004DDD40.
 #include <math.h>
 
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* ids, int count)
@@ -3286,7 +3228,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* i
                                     if ((dx <= 5 && dy <= 5) ||
                                         this->md->player->visible->get_visible(
                                             (int)object->world_x, (int)object->world_y) == 0x0f) {
-                                        // BINARY NOTE: slot +0xC4 receives ObjectMemory::id.
+                                        // slot +0xC4 receives ObjectMemory::id.
                                         if (commanderIsPriest == 0 ||
                                             commanderObj->unitAI()->canAttackUnit(object) != 0) {
                                             float damage;
@@ -3349,7 +3291,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* i
                                                     zoneFactor = (float)this->md->tacticalAI.strategicNumber(0xb9) * (float)currentTargetCount;
                                                 }
 
-                                                // BINARY NOTE: VC5 evaluates these weights in this order.
+                                                // VC5 evaluates these weights in this order.
                                                 float score =
                                                     (float)this->md->tacticalAI.strategicNumber(0xb8) *
                                                     targetTime;
@@ -3383,7 +3325,6 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* i
     return 0;
 }
 
-// PDB-order owner 004DE1F0.
 ObjectMemory* TribeInformationAIModule::objectToDefend(int target_obj_id)
 {
     ObjectMemory* bestEntry;
@@ -3435,7 +3376,6 @@ ObjectMemory* TribeInformationAIModule::objectToDefend(int target_obj_id)
     return bestEntry;
 }
 
-// PDB-order owner 004DE330.
 ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int objId, int type, int group)
 {
     RGE_Static_Object* mainObj = this->md->object(objId);
@@ -3492,7 +3432,6 @@ ObjectMemory* TribeInformationAIModule::higherPriorityObjectToDefend(int objId, 
     return best;
 }
 
-// PDB-order owner 004DE4A0.
 int TribeInformationAIModule::defendPriority(int param_1, int param_2)
 {
     switch (param_1) {
@@ -3519,7 +3458,6 @@ int TribeInformationAIModule::defendPriority(int param_1, int param_2)
     }
 }
 
-// PDB-order owner 004DE600.
 int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj)
 {
     int group = obj->master_obj->object_group;
@@ -3650,12 +3588,10 @@ checkDefend_fail:
     return 0;
 }
 
-// PDB-order owner 004DEA70.
 int TribeInformationAIModule::numberItemsToDefend() {
     return this->itemsToDefend.numberValue;
 }
 
-// PDB-order owner 004DEA80.
 ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1)
 {
     RGE_Static_Object* unit = this->md->object(param_1);
@@ -3691,7 +3627,6 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1)
     return bestDock;
 }
 
-// PDB-order owner 004DEBA0.
 int TribeInformationAIModule::findGatherPosition(XYPoint& p, int group, int clearDistance, int minDistance, int maxDistance, RGE_Static_Object* obj, XYPoint& out)
 {
     XYPoint max;
@@ -3774,7 +3709,6 @@ int TribeInformationAIModule::findGatherPosition(XYPoint& p, int group, int clea
     return bestPointValue != -1;
 }
 
-// PDB-order owner 004DEE90.
 #include <stdlib.h>
 
 void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
@@ -4167,7 +4101,6 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
     }
 }
 
-// PDB-order owner 004DFCE0.
 int TribeInformationAIModule::mapBound(XYPoint& pt) {
     int ret = 0;
 
@@ -4188,13 +4121,11 @@ int TribeInformationAIModule::mapBound(XYPoint& pt) {
     return ret;
 }
 
-// PDB-order owner 004DFD40.
 int TribeInformationAIModule::groupInfluenceDimension(int dim) {
     if (dim <= 1) return 2;
     return dim * dim;
 }
 
-// PDB-order owner 004DFD60.
 ObjectMemory TribeInformationAIModule::findObjectMemoryLimits(int owner, int object_id, int& c1, int& c2)
 {
     ObjectMemory rVal;
@@ -4285,7 +4216,6 @@ next:
     return rVal;
 }
 
-// PDB-order owner 004E0040.
 int TribeInformationAIModule::isNextTo(XYPoint& p1, XYPoint& p2, int mode) {
     int dx = p2.x - p1.x;
     int dy = p2.y - p1.y;
@@ -4305,7 +4235,6 @@ check_mode1:
     return 1;
 }
 
-// PDB-order owner 004E0090.
 int TribeInformationAIModule::facetTo(XYPoint& from, XYPoint& to) {
     int dx;
     int dy;
@@ -4334,7 +4263,6 @@ int TribeInformationAIModule::facetTo(XYPoint& from, XYPoint& to) {
     return 4;
 }
 
-// PDB-order owner 004E0100.
 int TribeInformationAIModule::placementCode(int param_1) {
     switch (param_1) {
     case 0x45:
@@ -4366,7 +4294,6 @@ int TribeInformationAIModule::placementCode(int param_1) {
     }
 }
 
-// PDB-order owner 004E02A0.
 #include <stddef.h>
 
 void TribeInformationAIModule::storeLot(int typeID, unsigned char x,
@@ -4434,7 +4361,6 @@ void TribeInformationAIModule::storeLot(int typeID, unsigned char x,
     }
 }
 
-// PDB-order owner 004E0470.
 #include <windows.h>
 
 void TribeInformationAIModule::removeLot(int p1, unsigned char p2, unsigned char p3, unsigned char p4)
@@ -4466,7 +4392,6 @@ found:
     }
 }
 
-// PDB-order owner 004E0510.
 BuildingLot* TribeInformationAIModule::availableLot(int typeID) {
     int i = 0;
     int max = this->maxBuildingLots;
@@ -4494,7 +4419,6 @@ BuildingLot* TribeInformationAIModule::availableLot(int typeID) {
     return 0;
 }
 
-// PDB-order owner 004E0560.
 int TribeInformationAIModule::invalidLot(int typeID, unsigned char x, unsigned char y) {
     int count = this->maxBuildingLots;
     int i = 0;
@@ -4507,7 +4431,6 @@ int TribeInformationAIModule::invalidLot(int typeID, unsigned char x, unsigned c
     return 0;
 }
 
-// PDB-order owner 004E05C0.
 int TribeInformationAIModule::undesirableLot(int typeID, unsigned char xRange, unsigned char yRange, int coordOffset) {
     int i = 0;
     int max = this->maxBuildingLots;
@@ -4544,7 +4467,6 @@ ret_zero_late:
     return 0;
 }
 
-// PDB-order owner 004E0670.
 void TribeInformationAIModule::setupWalls(int param_1, int param_2, int param_3, int param_4,
                                            int param_5, int param_6, int param_7, int param_8)
 {
@@ -4911,7 +4833,6 @@ void TribeInformationAIModule::setupWalls(int param_1, int param_2, int param_3,
     }
 }
 
-// PDB-order owner 004E0F40.
 int TribeInformationAIModule::insideGate(int param_1, int param_2, int param_3) {
     int* p;
     int i;
@@ -4944,7 +4865,6 @@ early_fail:
     return 0;
 }
 
-// PDB-order owner 004E0F90.
 int TribeInformationAIModule::storeAttackMemory(
     unsigned char param_1, unsigned char param_2, unsigned char param_3,
     unsigned char param_4, unsigned char param_5, short param_6,
@@ -4954,7 +4874,6 @@ int TribeInformationAIModule::storeAttackMemory(
                                    param_9);
 }
 
-// PDB-order owner 004E0FD0.
 #include <stdlib.h>
 
 int TribeInformationAIModule::storeAttackMemory(
@@ -5029,7 +4948,6 @@ int TribeInformationAIModule::storeAttackMemory(
     return bestIdx;
 }
 
-// PDB-order owner 004E1190.
 void TribeInformationAIModule::removeAttackMemory(int index) {
     if (index < 0 || index >= this->maxAttackMemories) {
         return;
@@ -5048,14 +4966,12 @@ void TribeInformationAIModule::removeAttackMemory(int index) {
     this->attackMemories[index].play = -1;
 }
 
-// PDB-order owner 004E1230.
 AttackMemory* TribeInformationAIModule::attackMemory(int index) {
     if (index >= 0 && index < this->maxAttackMemories)
         return this->attackMemories + index;
     return 0;
 }
 
-// PDB-order owner 004E1260.
 #include <stdio.h>
 
 void TribeInformationAIModule::loadLearnInfo(char* suffix)
@@ -5165,12 +5081,10 @@ void TribeInformationAIModule::loadLearnInfo(char* suffix)
     }
 }
 
-// PDB-order owner 004E1720.
 void TribeInformationAIModule::setSaveLearnInformation(int v) {
     this->saveLearnInformationValue = v;
 }
 
-// PDB-order owner 004E1730.
 int TribeInformationAIModule::unexploredPlayerLocation(int objectId, XYPoint& out)
 {
     RGE_Static_Object* obj = (RGE_Static_Object*)this->md->object(objectId);
@@ -5236,7 +5150,6 @@ int TribeInformationAIModule::unexploredPlayerLocation(int objectId, XYPoint& ou
     return 0;
 }
 
-// PDB-order owner 004E1930.
 #include <stdlib.h>
 
 int TribeInformationAIModule::numberUnitsWithinXTiles(int playerFilter, int xCenter, int yCenter, int radius)
@@ -5264,7 +5177,6 @@ int TribeInformationAIModule::numberUnitsWithinXTiles(int playerFilter, int xCen
     return resultCount;
 }
 
-// PDB-order owner 004E1A00.
 int TribeInformationAIModule::withinXTilesOfAttackOnPlayer(
     RGE_Static_Object* target, int tiles, int playerId)
 {
@@ -5298,7 +5210,6 @@ int TribeInformationAIModule::withinXTilesOfAttackOnPlayer(
     return 0;
 }
 
-// PDB-order owner 004E1AF0.
 int TribeInformationAIModule::withinXTilesOfEnemyTowncenter(
     RGE_Static_Object* obj, int tiles)
 {
@@ -5320,7 +5231,6 @@ int TribeInformationAIModule::withinXTilesOfEnemyTowncenter(
     return 0;
 }
 
-// PDB-order owner 004E1BD0.
 int TribeInformationAIModule::withinXTilesOfObject(
     RGE_Static_Object* obj, int tile_range,
     int type1, int type2, int type3, int type4)
@@ -5362,7 +5272,6 @@ int TribeInformationAIModule::withinXTilesOfObject(
     return closest_id;
 }
 
-// PDB-order owner 004E1D10.
 int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoint,
                                                int useTransport,
                                                int landTerrainRequired,
@@ -5431,7 +5340,7 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
             XYPoint temp;
             XYPoint temp2;
             temp.x = x; temp.y = y;
-            // BINARY NOTE: A successful line path adds stageDistance to the score.
+            // A successful line path adds stageDistance to the score.
             int pathPenalty = unit->canLinePath(temp, targetPoint, 1.0f, temp2, 1) == 1 ? stageDistance : 0;
             int losPenalty;
             int attackPenalty;
@@ -5450,7 +5359,6 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
     return bestValue != -1;
 }
 
-// PDB-order owner 004E21E0.
 int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
 {
     losMap.initialize(0);
@@ -5484,7 +5392,6 @@ int TribeInformationAIModule::setupLOSMap(int owner, int refX, int refY)
     return losMap.maxValue();
 }
 
-// PDB-order owner 004E22F0.
 int TribeInformationAIModule::setupAttackMap(int param_1, int param_2, int param_3)
 {
     attackMap.initialize(0);
@@ -5513,7 +5420,6 @@ int TribeInformationAIModule::setupAttackMap(int param_1, int param_2, int param
     return attackMap.maxValue();
 }
 
-// PDB-order owner 004E23A0.
 #include <stdlib.h>
 
 void TribeInformationAIModule::addResourceType(int resource_idx, int type_value)
@@ -5539,7 +5445,6 @@ void TribeInformationAIModule::addResourceType(int resource_idx, int type_value)
     this->numberResourceTypesValue[resource_idx]++;
 }
 
-// PDB-order owner 004E2440.
 int TribeInformationAIModule::resourceType(int resourceTypeIndex, int resourceId) {
     for (int i = 0; i < this->numberResourceTypesValue[resourceTypeIndex]; i++) {
         if (this->resourceTypesValue[resourceTypeIndex][i] == resourceId) {
@@ -5549,7 +5454,6 @@ int TribeInformationAIModule::resourceType(int resourceTypeIndex, int resourceId
     return 0;
 }
 
-// PDB-order owner 004E2490.
 int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
 {
     short group = obj->master_obj->object_group;
@@ -5736,7 +5640,6 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
     return 1;
 }
 
-// PDB-order owner 004E2A00.
 float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* obj, int mode, int& dropsiteID)
 {
     float best;
@@ -5776,7 +5679,6 @@ float TribeInformationAIModule::findClosestDropsite(RGE_Static_Object* obj, int 
     return best;
 }
 
-// PDB-order owner 004E2BA0.
 #include <stddef.h>
 #include <math.h>
 
@@ -5814,7 +5716,6 @@ RGE_Static_Object* TribeInformationAIModule::findClosestReturnDropsite(RGE_Stati
     return result;
 }
 
-// PDB-order owner 004E2D10.
 void TribeInformationAIModule::updateAllResourceDropsites()
 {
     for (int resourceType = 0; resourceType < 4; ++resourceType) {
@@ -5862,7 +5763,6 @@ void TribeInformationAIModule::updateAllResourceDropsites()
     }
 }
 
-// PDB-order owner 004E2E90.
 void TribeInformationAIModule::updateResourceDropsites(int idx) {
     this->closestDropsiteValue[idx] = -1;
     this->closestDropsiteResourceID[idx] = -1;
@@ -5926,7 +5826,6 @@ void TribeInformationAIModule::updateResourceDropsites(int idx) {
     }
 }
 
-// PDB-order owner 004E3020.
 int TribeInformationAIModule::setResourceObjectValid(int resourceType, int resourceId, int valid) {
     for (int i = 0; i < this->numResources[resourceType]; i++) {
         if (this->resources[resourceType][i].id == resourceId) {
@@ -5937,7 +5836,6 @@ int TribeInformationAIModule::setResourceObjectValid(int resourceType, int resou
     return 0;
 }
 
-// PDB-order owner 004E3070.
 #include <stddef.h>
 
 int TribeInformationAIModule::numberStoragePits() {
@@ -5958,7 +5856,6 @@ int TribeInformationAIModule::numberStoragePits() {
     return result;
 }
 
-// PDB-order owner 004E3140.
 #include <stddef.h>
 
 int TribeInformationAIModule::numberGranaries() {
@@ -5979,7 +5876,6 @@ int TribeInformationAIModule::numberGranaries() {
     return result;
 }
 
-// PDB-order owner 004E3210.
 #include <math.h>
 
 int TribeInformationAIModule::amountForageBushesInXTiles(int x, int y, int max_distance)
@@ -6002,7 +5898,6 @@ int TribeInformationAIModule::amountForageBushesInXTiles(int x, int y, int max_d
     return (int)total;
 }
 
-// PDB-order owner 004E32C0.
 #include <math.h>
 
 int TribeInformationAIModule::amountResourceTypesInXTiles(int type_index, int x, int y, int distance)
@@ -6030,7 +5925,6 @@ int TribeInformationAIModule::amountResourceTypesInXTiles(int type_index, int x,
     return (int)total;
 }
 
-// PDB-order owner 004E3390.
 float TribeInformationAIModule::damagePerSecond(int param_1, int param_2, int param_3) {
     float rateOfFire = 0.0f;
 
@@ -6067,7 +5961,6 @@ float TribeInformationAIModule::damagePerSecond(int param_1, int param_2, int pa
     return rateOfFire;
 }
 
-// PDB-order owner 004E34C0.
 int TribeInformationAIModule::costToLoseUnit(int param_1) {
     RGE_Static_Object* object = md->object(param_1);
     if (object == 0) {
@@ -6076,7 +5969,6 @@ int TribeInformationAIModule::costToLoseUnit(int param_1) {
     return this->md->player->objectCostByType(object->master_obj->id);
 }
 
-// PDB-order owner 004E3500.
 int TribeInformationAIModule::benefitToKillUnit(int unitId) {
     RGE_Static_Object* object = this->md->object(unitId);
     if (object == 0)
@@ -6084,7 +5976,6 @@ int TribeInformationAIModule::benefitToKillUnit(int unitId) {
     return object->owner->objectCostByType(object->master_obj->id);
 }
 
-// PDB-order owner 004E3530.
 int TribeInformationAIModule::inRangeOfUnits(
     int playerFilter, int x, int y, int mapRange)
 {
@@ -6125,7 +6016,6 @@ found:
     return 0;
 }
 
-// PDB-order owner 004E3640.
 #include <stdlib.h>
 #include <string.h>
 
@@ -6173,7 +6063,7 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
                                             bestState = state;
                                             bestTimer = timer;
                                             bestHitpoints = hp;
-                                        // BINARY NOTE: TEST AH,41h followed by JNE rejects unordered values.
+                                        // TEST AH,41h followed by JNE rejects unordered values.
                                         } else if (bestState == state && bestState == 6 && bestTimer > timer) {
                                             bestObject = &this->importantObjectMemory[i];
                                             bestState = state;
@@ -6193,7 +6083,6 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
     return bestObject;
 }
 
-// PDB-order owner 004E3840.
 #include <stdlib.h>
 
 ObjectMemory* TribeInformationAIModule::ruinToCapture(int playerFilter)
@@ -6251,7 +6140,6 @@ ObjectMemory* TribeInformationAIModule::ruinToCapture(int playerFilter)
     return bestMemory;
 }
 
-// PDB-order owner 004E39D0.
 ObjectMemory* TribeInformationAIModule::artifactToCapture(int player)
 {
     RGE_Static_Object* townCenter;
@@ -6310,7 +6198,6 @@ ObjectMemory* TribeInformationAIModule::artifactToCapture(int player)
     return bestMemory;
 }
 
-// PDB-order owner 004E3B80.
 int TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(int param_1) {
     if (param_1 == 2) return 0;
 
@@ -6340,7 +6227,6 @@ int TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(int param_1) {
     return -1;
 }
 
-// PDB-order owner 004E3C90.
 int TribeInformationAIModule::dropsitesWithinRequiredDistance(
     int& numApplicableResources, int resourceType, int requiredDistance)
 {
@@ -6378,7 +6264,6 @@ int TribeInformationAIModule::dropsitesWithinRequiredDistance(
     }
 }
 
-// PDB-order owner 004E3E90.
 int TribeInformationAIModule::numberAvailableStoragePits(int param_1)
 {
     int age_idx = (int)(this->md->player->attributes[6]);
@@ -6415,7 +6300,6 @@ int TribeInformationAIModule::numberAvailableStoragePits(int param_1)
            this->md->tacticalAI.strategicNumber(param_1 + 0xA3);
 }
 
-// PDB-order owner 004E3F80.
 int TribeInformationAIModule::numberAvailableGranaries() {
     if (this->closestDropsiteValue[0] == -1) {
         return 0;
@@ -6445,7 +6329,6 @@ int TribeInformationAIModule::numberAvailableGranaries() {
     return (strategicN < this->closestDropsiteValue[0]) ? 1 : 0;
 }
 
-// PDB-order owner 004E4040.
 void TribeInformationAIModule::lookAtMap()
 {
     RGE_Map* map = this->md->player->world->map;
@@ -6497,7 +6380,6 @@ void TribeInformationAIModule::lookAtMap()
     }
 }
 
-// PDB-order owner 004E41C0.
 float TribeInformationAIModule::damageInflictedPerSecond(TacticalAIGroup* group, RGE_Static_Object* target) {
     float rVal = 0.0f;
     int i = 0;
@@ -6520,7 +6402,6 @@ float TribeInformationAIModule::damageInflictedPerSecond(TacticalAIGroup* group,
     return rVal;
 }
 
-// PDB-order owner 004E4240.
 float TribeInformationAIModule::damageInflictedPerSecond(int* ids, int count, RGE_Static_Object* refObj)
 {
     float total = 0.0f;
@@ -6533,7 +6414,6 @@ float TribeInformationAIModule::damageInflictedPerSecond(int* ids, int count, RG
     return total;
 }
 
-// PDB-order owner 004E42B0.
 float TribeInformationAIModule::timeToBeKilled(TacticalAIGroup* group, RGE_Static_Object* target) {
     float rVal = 0.0f;
     int i = 0;
@@ -6566,7 +6446,6 @@ float TribeInformationAIModule::timeToBeKilled(TacticalAIGroup* group, RGE_Stati
     return rVal;
 }
 
-// PDB-order owner 004E4350.
 float TribeInformationAIModule::timeToBeKilled(int* ids, int count, RGE_Static_Object* obj) {
     float total = 0.0f;
     int remaining;
@@ -6599,7 +6478,6 @@ float TribeInformationAIModule::timeToBeKilled(int* ids, int count, RGE_Static_O
     return total;
 }
 
-// PDB-order owner 004E43E0.
 int TribeInformationAIModule::closestDropsiteResID(int index) const {
     if (index < 0 || index > 3) {
         return -1;
@@ -6607,7 +6485,6 @@ int TribeInformationAIModule::closestDropsiteResID(int index) const {
     return this->closestDropsiteResourceID[index];
 }
 
-// PDB-order owner 004E4400.
 int TribeInformationAIModule::calculatePlayVariation(int param_1) {
     (void)param_1;
     int totalPlays = 0;
@@ -6618,7 +6495,6 @@ int TribeInformationAIModule::calculatePlayVariation(int param_1) {
     return 100 - (int)((float)this->unitHistory[0] / (float)totalPlays * DAT_00575584);
 }
 
-// PDB-order owner 004E4450.
 int TribeInformationAIModule::convertUnitToIntType(RGE_Static_Object* obj) const {
     int og = obj->master_obj->object_group;
     int id = obj->master_obj->id;
@@ -6642,7 +6518,6 @@ int TribeInformationAIModule::convertUnitToIntType(RGE_Static_Object* obj) const
     return (og == 0x16) ? 8 : -1;
 }
 
-// PDB-order owner 004E4500.
 #include <stdio.h>
 #include <string.h>
 
@@ -6665,7 +6540,6 @@ void TribeInformationAIModule::loadUnitHistory() {
     }
 }
 
-// PDB-order owner 004E45A0.
 void TribeInformationAIModule::unitsThatAreMostBuilt(int& out1, int& out2) {
     int* history;
     int i;
@@ -6691,7 +6565,6 @@ void TribeInformationAIModule::unitsThatAreMostBuilt(int& out1, int& out2) {
     }
 }
 
-// PDB-order owner 004E4610.
 void TribeInformationAIModule::unitsThatAreLeastBuilt(int& out1, int& out2) {
     int* history;
     int i;
@@ -6717,7 +6590,6 @@ void TribeInformationAIModule::unitsThatAreLeastBuilt(int& out1, int& out2) {
     }
 }
 
-// PDB-order owner 004E4680.
 int TribeInformationAIModule::acceptablePotentialDropsiteArea(int param1, int param2)
 {
     int strategicNumber = this->md->tacticalAI.strategicNumber(0xCA);
@@ -6741,7 +6613,6 @@ int TribeInformationAIModule::acceptablePotentialDropsiteArea(int param1, int pa
     return 1;
 }
 
-// PDB-order owner 004E4790.
 int TribeInformationAIModule::percentTilesExploredInPositionQuadrant(int param_1, int param_2) {
     if (this->mapXSizeValue == -1) {
         return 0;

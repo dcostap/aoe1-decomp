@@ -1,5 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\scr_end.cpp.
-// The normal owners follow PDB source lines 34 through 143.
 
 #include "../include/scr_end.h"
 #include "../include/pnl_btn.h"

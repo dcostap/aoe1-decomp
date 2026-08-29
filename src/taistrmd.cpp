@@ -1,11 +1,7 @@
-// Authentic PDB-ordered source for C:\msdev\work\age1_x1\taistrmd.cpp.
 //
-// The 33 normal owners below follow PDB source order and shipped address order.
 // The two nearby deleting destructors are compiler-generated and have no source
 // owner.  Thirty-two normal owners match.  TribeStrategyAIModule::update stays
-// in scratch because its natural VC5 register schedule remains unresolved.
 //
-// BINARY NOTE: The target module spans PDB lines 34-1626.  The module header
 // owns the proved class layouts and virtual surfaces used by this file.
 
 #include "../include/taistrmd.h"
@@ -17,12 +13,7 @@
 #include "../include/m_s_obj.h"
 #include "../include/victory.h"
 
-// PDB lines 34-265; VA 004E6E10.
-// 004E6E10 VictoryConditionRuleSystem::VictoryConditionRuleSystem
-// Attempt log:
-// try 1: raw dword store reconstruction from original asm constants.
 // Canonical context: the compiler now owns the proved virtual-table store.
-// The shared 0x38C class stays exact alone and in the ordered /GX prefix.
 
 
 VictoryConditionRuleSystem::VictoryConditionRuleSystem()
@@ -256,22 +247,15 @@ VictoryConditionRuleSystem::VictoryConditionRuleSystem()
     p[225] = 1;
 }
 
-// PDB lines 270-271; VA 004E7430.
 VictoryConditionRuleSystem::~VictoryConditionRuleSystem() {}
 
-// PDB lines 276-317; VA 004E7440.
-// VA: 004E7440 VictoryConditionRuleSystem::loadRules (394B)
 // taistrmd.cpp
 //
-// Exact recovery notes:
-// - The prior source used a 260-byte buffer prefix as the second integer output.
-//   It matched all bytes except four parsed-character stack displacements.
 // - Separate ruleIndex and ruleValue integers with a 256-byte line buffer recover
 //   the original dword homes. They also keep first and second `%c` semantics.
 // - The module header supplies the proved class surface before this body.
 // - Sixteen natural declaration orders emitted one exact code group. The retained
 //   order follows parse meaning. Array and overlay forms emitted a word load.
-// Final reduced source: MATCH, 0 differing bytes, 394 bytes.
 
 extern "C" int __cdecl strcmp(const char* left, const char* right);
 extern "C" unsigned int __cdecl strlen(const char* text);
@@ -302,7 +286,7 @@ int VictoryConditionRuleSystem::loadRules(char* filename)
         file = fopen(temp, "r");
         if (file != 0) {
             while (fgets(temp, 0x100, file) != 0) {
-                // BINARY NOTE: The shipped parser ignores both sscanf results.
+                // The shipped parser ignores both sscanf results.
                 // Keep these outputs uninitialized for malformed input.
                 sscanf(temp, " %c%c",
                        &commentTemp1, &commentTemp2);
@@ -329,27 +313,21 @@ int VictoryConditionRuleSystem::loadRules(char* filename)
     return 0;
 }
 
-// PDB lines 322-325; VA 004E75D0.
 void VictoryConditionRuleSystem::setRule(int index, int val) {
     if (index < 0 || index >= 226) return;
     this->sn[index] = val;
 }
 
-// PDB lines 330-334; VA 004E75F0.
 int VictoryConditionRuleSystem::rule(int index) {
     if (index < 0 || index >= 226) return -1;
     return this->sn[index];
 }
 
-// PDB lines 340-347; VA 004E7610.
-// PDB ownership is VictoryConditionRuleSystem, not TribeStrategyAIModule.
-// The corrected qualified symbol and the five body bytes both match exactly.
 
 int VictoryConditionRuleSystem::evaluateAsInProgress(TRIBE_Player*, int) {
     return 0;
 }
 
-// PDB lines 353-404; VA 004E7620.
 int VictoryConditionRuleSystem::evaluateAsNonInProgress(TRIBE_Player* player, int rule) {
     switch (rule) {
         case 1:
@@ -395,10 +373,6 @@ int VictoryConditionRuleSystem::evaluateAsNonInProgress(TRIBE_Player* player, in
     }
 }
 
-// PDB lines 410-997; VA 004E7690.
-// VA: 004E7690 VictoryConditionRuleSystem::execute
-// Attempt log:
-// - baseline reconstruction from the binary switch, named VictoryConditionRuleSystem
 //   strategic-number storage, and the player -> main-decision -> tactical-AI ownership chain.
 
 
@@ -701,20 +675,13 @@ int VictoryConditionRuleSystem::execute(TRIBE_Player* player, int state, int com
     return 1;
 }
 
-// PDB lines 1003-1005; VA 004E8D10.
-// PDB ownership is VictoryConditionRuleSystem, not TribeStrategyAIModule.
-// The corrected qualified symbol and the five body bytes both match exactly.
 
 int VictoryConditionRuleSystem::stopExecution(TRIBE_Player*, int) {
     return 0;
 }
 
-// PDB lines 1010-1172; VA 004E8D20.
-// VA: 004E8D20 VictoryConditionRuleSystem::modifyForDifficultyLevel (969B)
 // taistrmd.cpp
 //
-// Attempt log:
-// baseline reset: canonical VictoryConditionRuleSystem::sn ownership, the
 // period scenarioGame() helper, natural guarded switch, and repeated minimum-1
 // FPU scaling blocks. Earlier source used expansionRule(), an explicit
 // float-argument ftol wrapper, and top-level initialized locals; those forms
@@ -903,23 +870,13 @@ void VictoryConditionRuleSystem::modifyForDifficultyLevel(int level)
     }
 }
 
-// PDB lines 1189-1197; VA 004E9100.
-// VA: 004E9100 TribeStrategyAIModule constructor (315B)
 // taistrmd.cpp
-// EH frame (/GX)
 //
-// Attempt log:
-// baseline reconstruction: period-plausible derived constructor with the
 // proven StrategyAIModule base, three ManagedArray-like members, the
 // VictoryConditionRuleSystem member, and named Waypoint fields (214-byte
-// mismatch; array/member construction was initially modeled in the body).
 // tried default-constructing the three destructible arrays and ordering their
-// initializers after the scalar fields; mismatch fell to 7 bytes and the
 // original call/frame topology aligned.
 // moved difficultyLevel(0) into the member-initializer sequence; this placed
-// the derived vptr store after the difficulty store and matched exactly.
-// Canonical-context check: the shared PDB layout remains exact alone and in
-// the complete ordered /GX prefix through the loading constructor.
 
 extern "C" char* __cdecl strcpy(char* destination, const char* source);
 
@@ -949,116 +906,62 @@ TribeStrategyAIModule::TribeStrategyAIModule(void* object, int parameter)
     strcpy(this->ruleSetNameValue, "");
 }
 
-// PDB lines 1205-1243; VA 004E9260.
-// 004E9260 TribeStrategyAIModule::TribeStrategyAIModule
 // taistrmd.cpp
 //
-// Attempt log:
-// source-gate pass: replaced the synthetic TribeStrategyAIModule base gap with
 // the real 0xF0 AIModule base, typed md, Waypoint, and sn[226]. The AIModule
 // message slots now use AIModuleMessage*, and StrategyAIModule inherits them.
-// Removed explicit name padding and the parameter-home a/value temporaries.
 // The direct rge_read calls and ManagedArray<int>::add behavior remain.
-// Validation after the grouped source-gate changes: 28-byte mismatch, 0x0C
 // rebuilt frame, 28 calls, and exact 1231-byte size. The prior four-byte source
-// was metric-closer but used synthetic layout and parameter-home aliases.
-// baseline reset: canonical StrategyAIModule(void*,int) ABI, virtual derived
 // construction, real ManagedArray<int> members, and the period inline add
 // implementation. Earlier work used an int-typed base shim and a macro-expanded
 // duplicate scan; those produced the wrong constructor relocation and a
-// pointer-walk/boolean CFG rather than the donor's indexed ManagedArray scan.
-// parameter-home probe: reusing the dead first constructor parameter for the
-// serialized name length and rule values reduced the mismatch from 31 bytes to
 // 7 bytes and aligned all three indexed add loops.
-// frame probes: explicit/scoped value locals, top-of-function declarations,
 // address-taken aliases, and an explicit self pointer all collapsed back to a
-// 0xC frame and a 20-byte displacement-only drift; these were diagnostic and
-// were rolled back.
-// left in scratch: best canonical source is the parameter-home/ManagedArray
-// reconstruction (7 bytes, 0x10 frame). Remaining drift is the original
 // compiler's one-word local-frame reservation around the name-length home.
 // same-TU context check: the full AIModule/StrategyAIModule virtual surface
-// was added from the class reference. It was a codegen duplicate and is kept
 // as the period-plausible declaration context.
 // this session: reconfirmed the typed constructor and stack map. The remaining
 // seven bytes are local-home displacements at the serialized name/value phase;
-// prior parameter-home and liveness basins remain worse at 20 bytes.
-// direct reuse of the first parameter for the name length was tested from the
 // dossier's entry-relative +4 address evidence; it removed the one-word frame
-// reservation and worsened the result to 20 bytes, so the clean local remains.
 // scoped the name-length local through loadRules only; VC5 shrank the frame to
-// 0xC and worsened the mismatch to 19 bytes, so this lifetime variant was
-// restored. The unresolved lead remains the original parameter-home hunk.
-// continuation: a local serialized value plus parameter-home name/loop reads
-// reached the same 7-byte basin; an address-taken value pointer was a codegen
-// duplicate. A four-way /GX variant lab confirmed the local-name form is the
-// best invariant-preserving source; parameter-name forms either lose the frame
-// slot or retain the same later drift. Restored this clean typed source.
-// this session: parameter-home length/value reuse plus one named serialized
-// value local fell to a 0xC frame and the prior 20-byte basin; restored.
 // moving count/index declarations to function entry, then declaring length
-// with them, produced the same 7-byte codegen and no new stack layout.
 // a declaration-order lab produced only the known 11-byte and 20-byte groups;
 // a debug-context flag lab lacked the EH frame and was not a valid lead.
-// left in scratch: clean typed constructor remains 7 bytes off in seven
 // stack-home displacement bytes at the length and add-value temporary sites.
 // explicit function-level value local reached a 4-byte diff and exact loop
 // bodies, but moved the base self-home and name-length homes by one word.
-// loop-scoped value locals were a codegen duplicate of the clean source.
 // a two-element value-buffer diagnostic reached 2 bytes but changed the
 // base self-home and one indexed name terminator byte; it was not plausible.
-// new focused labs: combined /GX with /Zd, /Zi, and /Z7; varied the indexed
 // terminator spelling; all produced the same two-byte aggregate candidate.
 // Moving ManagedArray::add outside the class, changing its inline spelling,
 // reducing the base virtual surface, adding likely CRT headers, moving local
 // declarations, and using pointer/reference self aliases did not fix the home.
 // Pair structs behave like int[2]; scalar chains collapse to the 0xC frame.
-// Risky VC5 optimization flags produced no exact invariant-preserving group.
 // The remaining fact is one uncolored frame word: natural parameter reuse has
 // the correct physical hidden-self home but a 0xC frame, while an 8-byte value
 // aggregate restores 0x10 and moves that hidden home to the loop-index slot.
-// final unresolved pass: 20 meaningful probes retained this clean source at
 // 4 differing displacement bytes, with 28 calls, size, and 0x10 frame exact.
-// BINARY NOTE: the original reads the name length and each rule value through
+// the original reads the name length and each rule value through
 // the entry +4 constructor-parameter home. Direct parameter reuse loses one
-// frame word and gives a 20-byte mismatch. Local-name, type, scope, header,
-// ambient-declaration, and flag probes found no exact source basin.
 // LIKELY INTENT: the shipped source reused parameter a as a wire temporary;
 // the clean local form remains the smallest period-plausible source here.
 // Object audit: original and current FPO, 0x10 frame, calls, EH metadata, ABI,
-// compiler, and boundaries match. PDB has no block, inline, or range records
 // beyond its named reused homes. No object evidence supports an alias for the
 // remaining four stack displacements.
-// continuation: PDB confirms playerID, infile, tempIntNum, i, and tempInt.
 // It has no block records for these locals. The original has separate count,
-// index, value, and hidden-self homes, while clean source keeps named locals
 // and lets VC5 reuse dead homes naturally.
-// continuation probes: separate count locals restored the 0x10 frame but made
-// the name-length home local and worsened the result to 31 bytes. Scoped counts
-// improved shape but kept that 31-byte basin. Entry declarations, while and
 // guarded do-while scans, post-increment, local declaration orders, an int
 // add parameter, casts, and one receiver alias did not change the clean 28-byte
-// output. Scoped for-header indexes worsened it to 37 bytes. All probes were
-// rolled back. Final validation remains 28 bytes, exact size, and 28 calls.
-// Accepted-drift audit: do not promote. The executable has a 0x10 frame, while
 // this rebuild has 0x0C. rge_read receives addresses of tempIntNum and tempInt.
-// The frame mismatch changes those external writable addresses and malformed-
 // input fault context, despite the aligned call sequence and equal code size.
 // continuation: Ghidra's local roles support reusing playerID for the name and
 // list-value reads, with one count, one index, and one tempInt local. That
-// source shape rebuilt with a 0x0C frame and a 20-byte mismatch. A four-local
-// value/length/count/index variant reached the prior 4-byte basin, but moved
-// the hidden-self and name homes and is not retained as the clean source.
 // continuation: declaration order, declaration scope, for/while/do-while
 // forms, entry declarations, and scoped count locals did not improve the
-// parameter-home basin. Restore the typed clean source after each diagnostic.
-// canonical source-module pass: one shared PDB-backed AIModule, StrategyAI,
 // ManagedArray, VictoryConditionRuleSystem, Waypoint, and TribeStrategy type
 // removes all prefix redefinitions. Every preceding exact owner remains exact
-// in the ordered /GX build. This surface with natural new[]/delete[] restores
 // the original 0x10 frame and reduces this target from 28 differing bytes to 15. The complete
 // prefix emits the same 15-byte result, so prior function bodies add no further
-// codegen change. The open difference is stack-home rotation after loadRules.
 // exact finish: use tempInt for each list count. Reuse tempIntNum for the
 // name length and each serialized value. This gives the original local and
 // dead-parameter homes without an explicit alias. The result is exact.
@@ -1120,13 +1023,8 @@ TribeStrategyAIModule::TribeStrategyAIModule(int playerID, int infile)
     }
 }
 
-// PDB lines 1248-1249; VA 004E9730.
-// VA: 004E9730 ~TribeStrategyAIModule (232B)
 // taistrmd.cpp
-// EH frame (/GX)
 //
-// Attempt log:
-// (baseline) Natural virtual-destructor surface: real StrategyAIModule base
 //   (vptr-only, virtual dtor), VictoryConditionRuleSystem member with virtual
 //   dtor, and three IntArray members with inline delete+zero dtors. Empty
 //   derived dtor body; VC5 auto-restores the TribeStrategyAIModule vftable,
@@ -1140,63 +1038,39 @@ TribeStrategyAIModule::~TribeStrategyAIModule() {
     // vptr restored, members and base destroyed automatically by VC5
 }
 
-// PDB lines 1254-1352; VA 004E9820.
-// VA: 004E9820 TribeStrategyAIModule::update (1391B)
 // taistrmd.cpp
 //
-// Attempt log:
-// baseline reset: replaced the placeholder helper-shaped source with the
 // binary-backed strategy module, victory-entry ownership, three ManagedArray
-// members, and the exact rule-system call surface. The first baseline tests
-// the natural source family shown by the PDB and decompiler.
-// corrected the victory-entry fields to their proven +0x0C..+0x28 layout;
 // this recovered the target field access schedule without changing calls.
 // Added the full period AI virtual surface as a TU-context check; it was a
-// codegen duplicate and remains because it is the canonical class context.
 // Replaced four manual growth copies with the matched ManagedArray operator[]
-// form. This reduced the body from 1539 to 1469 bytes and improved structural
 // coverage from 24.65% to 51.63%; the 20-call sequence stayed exact.
 // Declaration initialization of the zero loop index was a duplicate. The
 // remaining structural gap starts at the entry zero-index scheduling and is
 // 78 bytes beyond the original boundary; no register-only tuning is justified.
 // claim shardA4-4E9820-r1: corrected the typed main-decision ownership so rule
 // evaluation uses md->aiPlayer at +0x1256C, while victory lookup keeps md->player.
-// This preserved the call set and improved exact-block coverage from 51.63% to 58.60%.
 // moved the natural zero iterator assignment before timeout polling and exposed
 // the idle score accumulator before its action loop; size fell by 5 bytes.
 // spelled the first idle count and capacity predicates in iterator order; the
 // capacity compare moved to the original instruction shape with no size change.
 // used the idle result directly for the action execute tail; this removed the
 // redundant result copy, reduced the body to 1463 bytes, and reached 1165 diff bytes.
-// scoped the score local before the array alias as a diagnostic variant; rolled it
-// back because it reached 1189 diff bytes. Best source keeps the typed result tail.
-// shardA6 probe lead: keep the final rule-set state behind the same typed array
 // alias used by the strategy loops, so operator[] and the follow-up execute call
 // share one source-level owner.
-// shardA6 result: the typed final rule-set alias was a codegen duplicate; restored
 // the direct state spelling because it did not move the first structural hunk.
-// luna-r2 probe: collapsed second-phase selected-rule aliases to one typed rule;
-// stack-slot evidence supported it, but positional diff worsened 1144 -> 1171,
-// so restored the clean source.
-// claim sa-e8231ea7-r1: baseline rebuilt 1458 bytes with 20 ordered calls and
-// 66.51% exact-block coverage. The final clean source below is 1402 bytes,
 // with 20 ordered calls, 84.88% exact-block coverage, and 11 bytes of overrun.
-// Probe facts: direct indexed shifts removed four compiler-generated address
 // instructions. Bounded while scans recovered the original insertion CFG and
 // reduced the overrun from 67 to 11 bytes. Alias field access recovered the
 // original ManagedArray load schedule. Selected-rule reuse removed a copy that
-// had no target instruction. These changes remain natural source forms.
-// BINARY NOTE: the shipped scans test both the active count and capacity, then
+// the shipped scans test both the active count and capacity, then
 // shift each found entry from the following slot before clamping the count.
 // Next lead: recover the entry zero-register schedule and the remaining
-// first idle-loop capacity load; current mismatch starts at the prologue.
 // MANAGEDARRAY AUDIT: field offsets, resize calls, growth copies, active-count
 // checks, capacity checks, shifts, and negative-count clamps match the binary
 // paths. No shared template change is required.
-// BLOCKER: The executable pushes EDI before it reads and updates
 // victoryConditionChangeTimeout. The rebuild reads that member first. An
 // invalid this pointer therefore faults with ESP differing by four bytes.
-// continuation sa-65c9da2a: Recovered the two removal scans as top-tested
 // while loops. Removed their redundant positive-count wrappers. This matches
 // the target's 430-instruction CFG and removes the duplicate loop predicates.
 // Reversed the three capacity-guard operand spellings to keep count or index
@@ -1204,34 +1078,22 @@ TribeStrategyAIModule::~TribeStrategyAIModule() {
 // Reused the idleRules alias for the first capacity read. The target then uses
 // the three-byte [array+0C] load instead of a direct six-byte this-relative
 // load. These changes reduce the emitted body to the exact 1391-byte size.
-// Rejected source probes: branch-local score, split or delayed iterator zero,
 // declaration reordering, for-loop updates, short-circuit scans, and explicit
 // found labels. They changed no code or moved farther from the target.
-// Final validation: 20 ordered calls, 430 instructions, exact frame and size,
-// 88.60% exact-block coverage, 762 differing bytes. First mismatch remains
 // +0008: target push EDI/mov EBP,0; rebuild zeroes EBX/EBP then pushes EDI.
-// BINARY NOTE: the final mismatch is a prologue and early scan scheduling
 // issue. No changed call, ABI, layout, cleanup, or memory effect is retained.
-// continuation sa-f958dccf-r1: Fresh traversal variants tested positive-count
 // guarded do/while, guarded while, and skip-label forms for both removal scans.
-// The pinned top-tested source remains the only 1391-byte, 20-call basin.
 // Guarded forms add 4 or 8 bytes and duplicate loop predicates. The skip-label
 // form adds 8 bytes. The target still reads each moving array pointer after its
 // positive-count test, so the pinned source has a known malformed-object fault
-// order gap despite its valid-state codegen proximity.
-// Fresh local-lifetime variants tested split iterator initialization and joined
 // best-score initialization. They did not move the entry hunk. Reusing the
 // result local for the victory command, literal timeout reset, early victory
 // initialization, and the complete period class declaration surface were also
-// codegen duplicates or worse. No fake alias, volatile access, or raw vtable
 // was retained.
-// BINARY NOTE: the authoritative target remains 1391 bytes, 430 instructions,
+// the authoritative target remains 1391 bytes, 430 instructions,
 // four saved registers, one ret-4 boundary, and 20 ordered direct calls owned
-// by PDB-qualified taistrmd.cpp symbols. The mismatch begins at +0008: the
 // target saves EDI, zeros EBP, then reads the timeout member. The rebuild zeros
 // EBX and EBP, reads the member, then saves EDI. This changes invalid-this fault
-// order and shifts the following branch spans. Exact-finish is blocked by this
-// unresolved natural VC5 register and lifetime basin.
 // Context repair: the target inlines ManagedArray::operator[] growth in this
 // large method, while setVictoryCondition keeps that call out-of-line.
 // The shared definition and scoped inline-depth control preserve both paths.
@@ -1430,17 +1292,12 @@ add_idle_rule:
     return 1;
 }
 
-// PDB lines 1357-1359; VA 004E9D90.
 void TribeStrategyAIModule::setMainDecisionAI(TribeMainDecisionAIModule* v) {
     this->md = v;
 }
 
-// PDB lines 1364-1400; VA 004E9DA0.
-// VA: 004E9DA0 TribeStrategyAIModule::save
-// Attempt log:
-// try 1: packet-grounded save implementation: fixed scalar writes, strcpy/strlen rule-set name serialization,
 // and three grow-while-saving integer arrays mirroring UnitAIModule::save pattern.
-// BINARY NOTE: the first ten writes begin at +0xF4 and skip targetType at
+// the first ten writes begin at +0xF4 and skip targetType at
 // +0x200; the canonical class layout also places md at +0xF0.
 // The standalone declaration mirrors that inherited layout for source checks.
 
@@ -1536,12 +1393,10 @@ int TribeStrategyAIModule::save(int fd)
     return 1;
 }
 
-// PDB lines 1405-1407; VA 004EA130.
 char* TribeStrategyAIModule::ruleSetName() {
     return this->ruleSetNameValue;
 }
 
-// PDB lines 1412-1420; VA 004EA140.
 char* strncpy(char* dest, const char* src, unsigned int count);
 
 
@@ -1558,74 +1413,57 @@ void TribeStrategyAIModule::setRule(int rule, int value) {
     this->vcRules.setRule(rule, value);
 }
 
-// PDB lines 1433-1435; VA 004EA1B0.
 int TribeStrategyAIModule::rule(int param) {
     return this->vcRules.rule(param);
 }
 
-// PDB lines 1440-1444; VA 004EA1D0.
 void TribeStrategyAIModule::setDifficultyLevel(int param) {
     this->vcRules.modifyForDifficultyLevel(param);
 }
 
-// PDB lines 1449-1451; VA 004EA1F0.
 int TribeStrategyAIModule::currentVictoryCondition() const {
     return this->currentVictoryConditionValue;
 }
 
-// PDB lines 1456-1458; VA 004EA200.
 int TribeStrategyAIModule::targetID() const {
     return this->targetIDValue;
 }
 
-// PDB lines 1463-1465; VA 004EA210.
 int TribeStrategyAIModule::targetType() const {
     return this->targetTypeValue;
 }
 
-// PDB lines 1470-1472; VA 004EA220.
 int TribeStrategyAIModule::secondTargetID() const {
     return this->secondTargetIDValue;
 }
 
-// PDB lines 1477-1479; VA 004EA230.
 int TribeStrategyAIModule::secondTargetType() const {
     return this->secondTargetTypeValue;
 }
 
-// PDB lines 1484-1486; VA 004EA240.
 const Waypoint& TribeStrategyAIModule::targetPoint1() const {
     return this->targetPoint1Value;
 }
 
-// PDB lines 1491-1493; VA 004EA250.
 const Waypoint& TribeStrategyAIModule::targetPoint2() const {
     return this->targetPoint2Value;
 }
 
-// PDB lines 1498-1500; VA 004EA260.
 int TribeStrategyAIModule::targetAttribute() const {
     return this->targetAttributeValue;
 }
 
-// PDB lines 1505-1507; VA 004EA270.
 int TribeStrategyAIModule::targetNumber() const {
     return this->targetNumberValue;
 }
 
-// PDB lines 1512-1608; VA 004EA280.
-// 004EA280 TribeStrategyAIModule::setVictoryCondition
 // taistrmd.cpp
 //
-// Attempt log:
-// baseline: the old scratch used raw offset aliases, a GoalList shim, and
 // incomplete ManagedArray declarations. It had the right rough behavior but
 // emitted the wrong operator[]/rule-system calls and crossed the boundary.
 // canonical reset: model the three +0x238/+0x248/+0x258 arrays with the exact
 // utmarray.h method signatures, the +0x268 VictoryConditionRuleSystem surface,
 // the +0xF0 main-decision owner, and reuse the incoming v parameter for each
-// contains(const int&) call as proven by the original parameter-home stores.
-// typed/local-pointer reconstruction reached exact size and 11-byte drift;
 // adding the proven decorated operator[] override removed all four relocation
 // false positives. A focused four-way store-shape lab found that a local alias
 // for currentVictoryConditionValue is the only source spelling in this TU that
@@ -1645,7 +1483,7 @@ class TRIBE_Player;
     } \
 } while (0)
 
-// BINARY NOTE: this add-heavy body uses the out-of-line ManagedArray::operator[]
+// this add-heavy body uses the out-of-line ManagedArray::operator[]
 // calls shown at 004EA6EF, 004EA71A, and 004EA72A.
 #pragma inline_depth(0)
 
@@ -1722,8 +1560,6 @@ void TribeStrategyAIModule::setVictoryCondition(int v)
     }
 }
 
-// PDB lines 1613-1617; VA 004EA7C0.
-// probe 5: loop bounded by numberValue, inner guard on maximumSizeValue
 
 
 int TribeStrategyAIModule::isRuleExecuting(int ruleId) {
@@ -1740,8 +1576,6 @@ int TribeStrategyAIModule::isRuleExecuting(int ruleId) {
     return 0;
 }
 
-// PDB lines 1622-1626; VA 004EA810.
-// probe 2: mirror the matched executingRules pattern with the idleRules offsets
 
 
 int TribeStrategyAIModule::isRuleIdle(int rule_id) {

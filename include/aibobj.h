@@ -2,7 +2,6 @@
 #define AOE1_AIBOBJ_H
 
 // Declarations for the original aibobj.cpp source module.
-// The PDB type record proves the 0xA0-byte BaseObject layout.
 
 class BaseObject {
 public:

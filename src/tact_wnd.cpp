@@ -1,5 +1,4 @@
 // Authentic source module for C:\\msdev\\work\\age1_x1\\tact_wnd.cpp.
-// Definitions follow the PDB source order. The nearby vector-deleting
 // destructor is compiler generated and has no handwritten source owner.
 //
 // The destructor, set_state, and update remain held. The canonical Base Game
@@ -21,14 +20,12 @@
 
 static const float LIMIT = 2000.0f;
 
-// PDB lines 35-37; VA 004D3470; matching before source reunification.
 TRIBE_Action_Wonder::TRIBE_Action_Wonder(int id, RGE_Action_Object* object)
     : RGE_Action(id, object, 1)
 {
     this->action_type = 0x78;
 }
 
-// PDB lines 42-45; VA 004D34C0; matching before source reunification.
 TRIBE_Action_Wonder::TRIBE_Action_Wonder(RGE_Action_Object* object)
     : RGE_Action(object, 1)
 {
@@ -36,7 +33,6 @@ TRIBE_Action_Wonder::TRIBE_Action_Wonder(RGE_Action_Object* object)
     this->timer = 0.0f;
 }
 
-// PDB lines 50-97; VA 004D34F0; held for the canonical Base Game gap.
 TRIBE_Action_Wonder::~TRIBE_Action_Wonder()
 {
     RGE_Game_World* world = rge_base_game->world;
@@ -108,7 +104,6 @@ TRIBE_Action_Wonder::~TRIBE_Action_Wonder()
     }
 }
 
-// PDB lines 101-104; VA 004D3690; matching before source reunification.
 void TRIBE_Action_Wonder::first_in_stack(unsigned char value)
 {
     if (value != 0) {
@@ -116,7 +111,6 @@ void TRIBE_Action_Wonder::first_in_stack(unsigned char value)
     }
 }
 
-// PDB lines 108-148; VA 004D36B0; held for the canonical Base Game gap.
 void TRIBE_Action_Wonder::set_state(unsigned char value)
 {
     this->state = value;
@@ -182,7 +176,6 @@ void TRIBE_Action_Wonder::set_state(unsigned char value)
     }
 }
 
-// PDB lines 152-179; VA 004D3810; held for the canonical Base Game gap.
 unsigned char TRIBE_Action_Wonder::update()
 {
     switch (this->state) {

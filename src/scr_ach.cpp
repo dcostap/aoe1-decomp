@@ -1,5 +1,4 @@
 // scr_ach.cpp
-// PDB source order: lines 110-936.
 // The source owns all eight normal functions in this compiland.
 // The vector-deleting destructor at 0048E1F0 is compiler generated.
 
@@ -20,7 +19,6 @@
 
 extern int confirmed_close;
 
-// 0048D530 TribeAchievementsScreen::TribeAchievementsScreen(char*, int)
 TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_flag)
     : TScreenPanel("Achievements Screen")
 {
@@ -162,7 +160,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
 
     int player_index = 0;
     int y = 0xAB;
-    // BINARY NOTE: The shipped loop creates eight player rows.
+    // The shipped loop creates eight player rows.
     do {
         char* name;
         if (player_index + 1 < rge_base_game->world->player_num) {
@@ -216,7 +214,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
 
     long ok_x;
     long ok_width;
-    // BINARY NOTE: The shipped layout tests the non-null message arm first.
+    // The shipped layout tests the non-null message arm first.
     if (this->end_game_flag == 0 || rge_base_game->singlePlayerGame() == 0) {
         create_button(this, &this->timelineButton, 0x26D8, 0, 100, 0x1B9,
                       200, 0x1E, 0, 0, 0);
@@ -288,7 +286,6 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     }
 }
 
-// 0048E210 TribeAchievementsScreen::~TribeAchievementsScreen()
 TribeAchievementsScreen::~TribeAchievementsScreen()
 {
     panel_system.destroyPanel("YesNoDialog");
@@ -372,8 +369,7 @@ TribeAchievementsScreen::~TribeAchievementsScreen()
     }
 }
 
-// 0048E400 TribeAchievementsScreen::set_mode
-// BINARY NOTE: Mode 6 is emitted before mode 5 in the original handler
+// Mode 6 is emitted before mode 5 in the original handler
 // order. Mode 3 calls victory IDs 15 and 16 in that order.
 void TribeAchievementsScreen::set_mode(long mode)
 {
@@ -710,7 +706,6 @@ void TribeAchievementsScreen::set_mode(long mode)
     }
 }
 
-// 0048F0B0 TribeAchievementsScreen::draw()
 void TribeAchievementsScreen::draw()
 {
     TScreenPanel::draw();
@@ -745,7 +740,6 @@ void TribeAchievementsScreen::draw()
     }
 }
 
-// 0048F190 TribeAchievementsScreen::handle_mouse_down(unsigned char, long,
 // long, int, int)
 long TribeAchievementsScreen::handle_mouse_down(unsigned char button, long x,
                                                 long y, int flags, int area)
@@ -773,7 +767,6 @@ long TribeAchievementsScreen::handle_mouse_down(unsigned char button, long x,
     return result;
 }
 
-// 0048F280 TribeAchievementsScreen::action(TPanel*, long, unsigned long,
 // unsigned long)
 long TribeAchievementsScreen::action(TPanel* panel, long id,
                                      unsigned long param3,
@@ -864,7 +857,6 @@ long TribeAchievementsScreen::action(TPanel* panel, long id,
     return 1;
 }
 
-// 0048F500 TribeAchievementsScreen::handle_idle()
 long TribeAchievementsScreen::handle_idle()
 {
     if (!rge_base_game->input_enabled)
@@ -872,7 +864,6 @@ long TribeAchievementsScreen::handle_idle()
     return TPanel::handle_idle();
 }
 
-// 0048F530 TribeAchievementsScreen::wnd_proc(void*, unsigned int,
 // unsigned int, long)
 long TribeAchievementsScreen::wnd_proc(void* h1, unsigned int msg,
                                        unsigned int w, long l)

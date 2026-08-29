@@ -98,7 +98,6 @@ protected:
 
 public:
     // Override declarations follow inherited vtable slot order. Only
-    // logStatus keeps its PDB-proven protected access.
     virtual unsigned char data_load_world(FILE*);
     virtual void data_load_players_type(short, short, FILE*);
     virtual void data_load_map(char*, char*, char*, char*, short, short, short,

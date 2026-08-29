@@ -1,5 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\World.cpp.
-// Definitions follow the original PDB source-line and address order.
 
 #include <windows.h>
 #include <math.h>

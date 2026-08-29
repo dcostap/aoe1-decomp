@@ -1,5 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\fractal.cpp.
-// Definitions follow the original source and address order.
 
 #include "../include/fractal.h"
 #include "../include/trig.h"
@@ -10,7 +8,6 @@
 extern int __cdecl debug_rand(char* file, int line);
 extern TRIGONOMETRY trig;
 
-// 0044AB90, fractal.cpp lines 29-53.
 void PointMaker::SetDefaultValues()
 {
     NumberOfSatellites = 2;
@@ -35,7 +32,6 @@ void PointMaker::SetDefaultValues()
     DrawOnlyInExternalArrayFlag = 0;
 }
 
-// 0044AC50, fractal.cpp lines 56-60.
 PointMaker::PointMaker()
 {
     ProbArray = 0;
@@ -45,7 +41,6 @@ PointMaker::PointMaker()
     CreateMasks();
 }
 
-// 0044AC80, fractal.cpp lines 63-68.
 PointMaker::~PointMaker()
 {
     DeleteArrays();
@@ -55,7 +50,6 @@ PointMaker::~PointMaker()
     DeleteMasks();
 }
 
-// 0044ACB0, fractal.cpp lines 71-106.
 void PointMaker::CreateMasks()
 {
     Mask_2x2 = new char[16];
@@ -81,7 +75,6 @@ void PointMaker::CreateMasks()
     memcpy(Mask_5x5, ptr5, sizeof(ptr5));
 }
 
-// 0044AF90, fractal.cpp lines 109-112.
 void PointMaker::DeleteMasks()
 {
     operator delete(Mask_2x2);
@@ -90,7 +83,6 @@ void PointMaker::DeleteMasks()
     operator delete(Mask_5x5);
 }
 
-// 0044AFE0, fractal.cpp lines 115-172.
 void PointMaker::DrawMask(int param_1, int param_2, int param_3)
 {
     int iVar1;
@@ -202,7 +194,6 @@ void PointMaker::DrawMask(int param_1, int param_2, int param_3)
     }
 }
 
-// 0044B210, fractal.cpp lines 176-182.
 void PointMaker::ClearArrays()
 {
     if (DrawToOneArrayFlag == 0 && PlacementArray != 0) {
@@ -213,7 +204,6 @@ void PointMaker::ClearArrays()
     }
 }
 
-// 0044B270, fractal.cpp lines 185-191.
 void PointMaker::DeleteArrays()
 {
     if (ProbArray != 0) {
@@ -226,7 +216,6 @@ void PointMaker::DeleteArrays()
     PlacementArray = 0;
 }
 
-// 0044B2B0, fractal.cpp lines 194-206.
 void PointMaker::MakeArrays()
 {
     SizeArrays = Height * Width;
@@ -242,7 +231,6 @@ void PointMaker::MakeArrays()
     }
 }
 
-// 0044B320, fractal.cpp lines 209-238.
 int PointMaker::CreateShape()
 {
     NumNodes = 0;
@@ -280,7 +268,6 @@ int PointMaker::CreateShape()
     return ProbabilityTiles;
 }
 
-// 0044B470, fractal.cpp lines 241-269.
 int PointMaker::CreateShape(int param_1, int param_2)
 {
     NumNodes = 0;
@@ -314,7 +301,6 @@ int PointMaker::CreateShape(int param_1, int param_2)
     return ProbabilityTiles;
 }
 
-// 0044B540, fractal.cpp lines 276-298.
 void PointMaker::Branch(int point)
 {
     if (CurrentNumberOfBranchLevels > 1 &&
@@ -336,7 +322,6 @@ void PointMaker::Branch(int point)
     }
 }
 
-// 0044B610, fractal.cpp lines 306-325.
 int PointMaker::MakeFirstLink()
 {
     int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x134);
@@ -380,7 +365,6 @@ int PointMaker::MakeFirstLink()
     return result;
 }
 
-// 0044B760, fractal.cpp lines 328-352.
 int PointMaker::MakeNewLink()
 {
     int max_x;
@@ -413,7 +397,7 @@ int PointMaker::MakeNewLink()
 
     int old_y = y;
     if (dy + old_y < 5) {
-        // ORIGINAL BUG: The shipped lower-y correction negates dx, not dy.
+        // The shipped lower-y correction negates dx, not dy.
         dy = -dx;
         DirY = -DirY;
     }
@@ -450,7 +434,6 @@ int PointMaker::MakeNewLink()
     return result;
 }
 
-// 0044B950, fractal.cpp lines 355-373.
 int PointMaker::MakeSatelliteLink()
 {
     int dx = debug_rand("C:\\msdev\\work\\age1_x1\\fractal.cpp", 0x165);
@@ -474,7 +457,7 @@ int PointMaker::MakeSatelliteLink()
         DirX = -DirX;
     }
     if (dy + y < 3) {
-        // ORIGINAL BUG: The shipped lower-y correction negates dx, not dy.
+        // The shipped lower-y correction negates dx, not dy.
         dy = -dx;
         DirY = -DirY;
     }
@@ -492,7 +475,6 @@ int PointMaker::MakeSatelliteLink()
     return result;
 }
 
-// 0044BAA0, fractal.cpp lines 378-397.
 void PointMaker::DrawPrimaryIntoProbabilityArray()
 {
     int radius = PrimaryRadius;
@@ -523,7 +505,6 @@ void PointMaker::DrawPrimaryIntoProbabilityArray()
     }
 }
 
-// 0044BB60, fractal.cpp lines 401-429.
 void PointMaker::DrawCurrentBranchIntoProbArray(int which)
 {
     int point_x = Point[which].x;
@@ -581,7 +562,6 @@ void PointMaker::DrawCurrentBranchIntoProbArray(int which)
     }
 }
 
-// 0044BCD0, fractal.cpp lines 432-460.
 void PointMaker::DrawCurrentSatelliteIntoProbArray(int point)
 {
     int radius = SatelliteRadius;
@@ -610,7 +590,6 @@ void PointMaker::DrawCurrentSatelliteIntoProbArray(int point)
     }
 }
 
-// 0044BD80, fractal.cpp lines 464-482.
 void PointMaker::AddingRect(int x, int y, int w, int h)
 {
     int iVar2;
@@ -696,7 +675,6 @@ void PointMaker::AddingRect(int x, int y, int w, int h)
     }
 }
 
-// 0044BF90, fractal.cpp lines 486-504.
 void PointMaker::AddingCircle(int param_1, int param_2, int param_3)
 {
     if (param_3 == 0) param_3 = 1;
@@ -762,7 +740,6 @@ void PointMaker::AddingCircle(int param_1, int param_2, int param_3)
     }
 }
 
-// 0044C1B0, fractal.cpp lines 519-529.
 void PointMaker::CreateMapBasedOnProbabilityArray()
 {
     int hits = 0;
@@ -779,94 +756,79 @@ void PointMaker::CreateMapBasedOnProbabilityArray()
     NumTilesActuallyChosen += hits;
 }
 
-// 0044C200, fractal.cpp lines 533-535.
 void PointMaker::SetPoint(int value_x, int value_y)
 {
     x = value_x;
     y = value_y;
 }
 
-// 0044C220, fractal.cpp lines 538-540.
 void PointMaker::SetMaxNumberOfBranches(int value)
 {
     MaxNumberOfBranches = value;
 }
 
-// 0044C230, fractal.cpp lines 543-545.
 void PointMaker::SetChanceOfNextNode(int value)
 {
     ChanceOfNextNode = value;
 }
 
-// 0044C240, fractal.cpp lines 548-550.
 void PointMaker::SetNumberOfSatellites(int value)
 {
     NumberOfSatellites = value;
 }
 
-// 0044C250, fractal.cpp lines 553-555.
 void PointMaker::SetSplitsPerBranch(int value)
 {
     NumSplitsPerBranch = value;
 }
 
-// 0044C260, fractal.cpp lines 558-560.
 void PointMaker::SetWidthAndHeight(int width, int height)
 {
     Width = width;
     Height = height;
 }
 
-// 0044C280, fractal.cpp lines 563-565.
 void PointMaker::SetStartPositionRadius(int value)
 {
     PrimaryRadius = value;
 }
 
-// 0044C290, fractal.cpp lines 568-570.
 void PointMaker::SetBranchsRadius(int value)
 {
     BranchRadius = value;
 }
 
-// 0044C2A0, fractal.cpp lines 573-575.
 void PointMaker::SetSatelliteRadius(int value)
 {
     SatelliteRadius = value;
 }
 
-// 0044C2B0, fractal.cpp lines 578-581.
 void PointMaker::SetMaxNumberOfBranchLevels(int value)
 {
     MaxBranchFlag = 1;
     MaxNumberOfBranchLevels = value;
 }
 
-// 0044C2D0, fractal.cpp lines 584-586.
 void PointMaker::SetSatelliteDistance(int value)
 {
     SatelliteDistance = value;
 }
 
-// 0044C2E0, fractal.cpp lines 589-591.
 void PointMaker::SetBranchDistance(int value)
 {
     BranchDistance = value;
 }
 
-// 0044C2F0, fractal.cpp lines 594-596.
 void PointMaker::SetMinimumNumberOfTiles(int value)
 {
     MinimumNumTiles = value;
 }
 
-// 0044C300, fractal.cpp lines 599-601.
 void PointMaker::SetDrawToOneArray()
 {
     DrawToOneArrayFlag = 1;
 }
 
-// 0044C310, fractal.cpp lines 604-609.
 void PointMaker::SetBorderDepthPercentage(int value)
 {
     BorderDepthPercentage = value;
@@ -879,19 +841,16 @@ void PointMaker::SetBorderDepthPercentage(int value)
     PrepareLimits();
 }
 
-// 0044C350, fractal.cpp lines 613-615.
 char* PointMaker::RetrieveMap()
 {
     return PlacementArray;
 }
 
-// 0044C360, fractal.cpp lines 618-620.
 char* PointMaker::RetrieveProbMap()
 {
     return ProbArray;
 }
 
-// 0044C370, fractal.cpp lines 623-641.
 void PointMaker::ErrorCheckingAndCorrection()
 {
     int width = Width;
@@ -918,7 +877,6 @@ void PointMaker::ErrorCheckingAndCorrection()
     MaxBranchFlag = 0;
 }
 
-// 0044C4B0, fractal.cpp lines 644-647.
 void PointMaker::PrepareLimits()
 {
     int width = Width;
@@ -932,7 +890,6 @@ void PointMaker::PrepareLimits()
     BottomLimit = height - top;
 }
 
-// 0044C510, fractal.cpp lines 650-670.
 void PointMaker::MapCleanUpEliminatingSinglesOnly()
 {
     int bottom = Height - 1;

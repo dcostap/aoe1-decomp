@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_STMS_H
 #define AOE1_SCR_STMS_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\scr_stms.cpp.
 // This header owns the status-message screen. Its base is canonical.
 #include "Pnl_scr.h"
 

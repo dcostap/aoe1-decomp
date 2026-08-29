@@ -1,5 +1,4 @@
 // Authentic complete owner for C:\\msdev\\work\\age1_x1\\Scr_main.cpp.
-// Normal owners stay in PDB source order (85, 199, 220, 231, 264, 395,
 // 426, 435, 443, 451, 480).
 
 #include "../include/scr_main.h"
@@ -15,8 +14,6 @@
 #include "../include/scr_sedm.h"
 #include <string.h>
 
-// VA: 0049E6D0 TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu
-// PDB source: Scr_main.cpp lines 85-193.
 TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     : TScreenPanel("Main Menu") {
     RECT rect;
@@ -134,8 +131,6 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     this->set_curr_child(this->button[0]);
 }
 
-// VA: 0049EC00 TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu
-// PDB source: Scr_main.cpp lines 199-214.
 TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu() {
     this->delete_panel((TPanel**)&this->title1);
     this->delete_panel((TPanel**)&this->title2);
@@ -155,16 +150,12 @@ TRIBE_Screen_Main_Menu::~TRIBE_Screen_Main_Menu() {
     }
 }
 
-// VA: 0049ECD0 TRIBE_Screen_Main_Menu::handle_idle
-// PDB source: Scr_main.cpp lines 220-225.
 long TRIBE_Screen_Main_Menu::handle_idle() {
     if (!rge_base_game->input_enabled)
         rge_base_game->enable_input();
     return TPanel::handle_idle();
 }
 
-// VA: 0049ED00 TRIBE_Screen_Main_Menu::key_down_action
-// PDB source: Scr_main.cpp lines 231-258.
 long TRIBE_Screen_Main_Menu::key_down_action(long key, short param_2,
                                              int param_3, int param_4,
                                              int param_5) {
@@ -191,8 +182,6 @@ long TRIBE_Screen_Main_Menu::key_down_action(long key, short param_2,
     return 0;
 }
 
-// VA: 0049EE00 TRIBE_Screen_Main_Menu::action
-// PDB source: Scr_main.cpp lines 264-387.
 long TRIBE_Screen_Main_Menu::action(TPanel* panel, long event,
                                     unsigned long p3, unsigned long p4) {
     long result;
@@ -265,8 +254,6 @@ done:
     return result;
 }
 
-// VA: 0049F0D0 TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error
-// PDB source: Scr_main.cpp lines 395-420.
 TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error()
     : TScreenPanel("Main Error Screen") {
     this->message = 0;
@@ -293,27 +280,19 @@ TRIBE_Screen_Main_Error::TRIBE_Screen_Main_Error()
     }
 }
 
-// VA: 0049F240 TRIBE_Screen_Main_Error::~TRIBE_Screen_Main_Error
-// PDB source: Scr_main.cpp lines 426-429.
 TRIBE_Screen_Main_Error::~TRIBE_Screen_Main_Error() {
     this->delete_panel((TPanel**)&this->message);
     this->delete_panel((TPanel**)&this->cancel_button);
 }
 
-// VA: 0049F2B0 TRIBE_Screen_Main_Error::set_text(char*)
-// PDB source: Scr_main.cpp lines 435-437.
 void TRIBE_Screen_Main_Error::set_text(char* param) {
     this->message->set_text(param);
 }
 
-// VA: 0049F2D0 TRIBE_Screen_Main_Error::set_text(long)
-// PDB source: Scr_main.cpp lines 443-445.
 void TRIBE_Screen_Main_Error::set_text(long param) {
     this->message->set_text(param);
 }
 
-// VA: 0049F2F0 TRIBE_Screen_Main_Error::action
-// PDB source: Scr_main.cpp lines 451-474.
 long TRIBE_Screen_Main_Error::action(TPanel* param_1, long param_2,
                                      unsigned long param_3,
                                      unsigned long param_4) {
@@ -341,8 +320,6 @@ call_parent:
     return this->TEasy_Panel::action(panel, state, param_3, param_4);
 }
 
-// VA: 0049F340 TRIBE_Screen_Main_Error::handle_idle
-// PDB source: Scr_main.cpp lines 480-484.
 long TRIBE_Screen_Main_Error::handle_idle() {
     if (!rge_base_game->input_enabled)
         rge_base_game->enable_input();

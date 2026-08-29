@@ -1,7 +1,6 @@
 #ifndef AOE1_RDLG_LST_H
 #define AOE1_RDLG_LST_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\rdlg_lst.cpp.
 // This header owns RGE_Dialog_List and its list record.
 #include "dlg_list.h"
 

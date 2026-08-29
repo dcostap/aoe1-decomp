@@ -1,7 +1,6 @@
 #ifndef AOE1_AIPLAYBOOK_H
 #define AOE1_AIPLAYBOOK_H
 
-// Shared owner declaration for the PDB-proven AIPlayBook ABI.
 
 class AIPlay;
 class RGE_Static_Object;

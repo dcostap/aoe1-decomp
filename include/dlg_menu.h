@@ -1,7 +1,6 @@
 #ifndef AOE1_DLG_MENU_H
 #define AOE1_DLG_MENU_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_menu.cpp.
 // This header owns only TribeMenuDialog. Shared panel, dialog, screen, and
 // button surfaces come from their canonical owner headers.
 #include "pnl_dlg.h"

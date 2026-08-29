@@ -1,5 +1,3 @@
-// attempt 1: direct local-buffer / vcall / MessageBoxA shape from the asm
-// goal: keep the 256-byte title/msg stack frame and the imported MessageBoxA call in the same basin
 
 class RGE_Base_Game {
 public:

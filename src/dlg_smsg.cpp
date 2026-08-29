@@ -17,7 +17,6 @@
 #include "../include/rge_base_game_global.h"
 #include <string.h>
 
-// Source order follows the original PDB module.
 
 TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
     : TDialogPanel("Send Message Dialog")
@@ -310,7 +309,7 @@ long TribeSendMessageDialog::action(TPanel* panel, long code,
         }
     }
 
-    // ORIGINAL BUG: preserve the shipped fourth-button read.
+    // preserve the shipped fourth-button read.
     else if (panel == this->radioButton[3]) {
     }
 

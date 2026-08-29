@@ -1,5 +1,4 @@
 /* Authentic C++ source module for C:\\msdev\\work\\age1_x1\\file_stf.cpp. */
-// The definitions below follow the 22-owner PDB source order.
 
 #include "../include/file_stf.h"
 

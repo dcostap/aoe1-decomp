@@ -13,21 +13,8 @@ void __cdecl rge_read(int handle, void* buffer, int count);
 void __cdecl rge_write(int handle, void* buffer, int count);
 }
 
-// Original PDB module: C:\\msdev\\work\\age1_x1\\tact_tek.cpp.
-// Normal owners follow the PDB source and address order below. The nearby
-// 004D2230 vector-deleting destructor is compiler generated, not handwritten.
 //
-// 004D21B0  lines 29-34  matching
-// 004D2250  lines 41-45  accepted_drift
-// 004D2290  lines 49-64  scratch
-// 004D2370  lines 68-73  matching
-// 004D23B0  lines 76-98  matching
-// 004D2440  lines 102-106 matching
-// 004D2450  lines 109-134 scratch
-// 004D2550  lines 138-147 matching
-// 004D25E0  lines 151-164 accepted_drift
 
-// VA 004D21B0; PDB tact_tek.cpp:29-34; matching.
 TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(int file, RGE_Action_Object* object)
     : RGE_Action(file, object, 1) {
     this->action_type = 0x67;
@@ -35,7 +22,6 @@ TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(int file, RGE_Action_Object* obje
     rge_read(file, &this->unique_id, 4);
 }
 
-// VA 004D2250; PDB tact_tek.cpp:41-45; accepted drift.
 // The constructor preserves the original base construction and field values.
 TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(RGE_Action_Object* object,
                                                short tech_id_value,
@@ -46,7 +32,6 @@ TRIBE_Action_Make_Tech::TRIBE_Action_Make_Tech(RGE_Action_Object* object,
     this->tech_id = tech_id_value;
 }
 
-// VA 004D2290; PDB tact_tek.cpp:49-64; scratch.
 TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech() {
     if (this->state != 1) {
         TRIBE_Player* player = static_cast<TRIBE_Player*>(this->obj->owner);
@@ -78,14 +63,12 @@ TRIBE_Action_Make_Tech::~TRIBE_Action_Make_Tech() {
     }
 }
 
-// VA 004D2370; PDB tact_tek.cpp:68-73; matching.
 void TRIBE_Action_Make_Tech::save(int file) {
     RGE_Action::save(file);
     rge_write(file, &this->tech_id, 2);
     rge_write(file, &this->unique_id, 4);
 }
 
-// VA 004D23B0; PDB tact_tek.cpp:76-98; matching.
 void TRIBE_Action_Make_Tech::first_in_stack(unsigned char value) {
     if (value == 0 || this->tech_id < 0) {
         return;
@@ -117,12 +100,10 @@ void TRIBE_Action_Make_Tech::first_in_stack(unsigned char value) {
     this->set_state(1);
 }
 
-// VA 004D2440; PDB tact_tek.cpp:102-106; matching.
 void TRIBE_Action_Make_Tech::set_state(unsigned char new_state) {
     this->state = new_state;
 }
 
-// VA 004D2450; PDB tact_tek.cpp:109-134; scratch.
 unsigned char TRIBE_Action_Make_Tech::update() {
     if (this->state == 1) {
         return 1;
@@ -171,7 +152,6 @@ unsigned char TRIBE_Action_Make_Tech::update() {
     return 1;
 }
 
-// VA 004D2550; PDB tact_tek.cpp:138-147; matching.
 int TRIBE_Action_Make_Tech::stop() {
     this->set_state(1);
 
@@ -202,7 +182,6 @@ int TRIBE_Action_Make_Tech::stop() {
     return 1;
 }
 
-// VA 004D25E0; PDB tact_tek.cpp:151-164; accepted drift.
 // The final terminator store is behavior-equivalent despite VC5 SIB ordering.
 void TRIBE_Action_Make_Tech::get_info(short& tech_id_out,
                                        short& progress_out,

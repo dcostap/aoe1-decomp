@@ -1,7 +1,6 @@
 #ifndef AOE1_DLG_SMSG_H
 #define AOE1_DLG_SMSG_H
 
-// PDB source module: C:\\msdev\\work\\age1_x1\\dlg_smsg.cpp.
 // This header owns the two send-message dialog classes. The dialog base comes
 // from its canonical owner. Other UI, game, and communication types are used
 // through pointers and stay forward-declared here.

@@ -16,7 +16,6 @@ struct RGE_Visible_Map;
 
 class UnitAIModule {
 public:
-    // PDB virtual order: +0x00 through +0x14.
     virtual ~UnitAIModule();
     virtual void save(int fd);
     virtual void load(int fd);

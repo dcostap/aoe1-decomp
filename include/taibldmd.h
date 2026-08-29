@@ -1,7 +1,6 @@
 #ifndef AOE1_TAIBLDMD_H
 #define AOE1_TAIBLDMD_H
 
-// Canonical declarations for the original taibldmd.cpp source module.
 // BuildAIModule owns the complete base through offset 0x5BC.
 
 #include "aibldmod.h"
@@ -45,7 +44,6 @@ public:
     int allBuilt(int param1, int param2);
 
 protected:
-    // PDB: the only TribeBuildAIModule data member is the main-decision
     // pointer at +0x5BC.
     TribeMainDecisionAIModule* md;
 };

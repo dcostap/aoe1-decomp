@@ -1,5 +1,3 @@
-// PDB source module: C:\msdev\work\age1_x1\scr_info.cpp.
-// The normal owners follow PDB source lines 32 through 189.  The scalar
 // deleting destructor at 0049D5E0 is compiler-generated.
 
 #include "../include/scr_info.h"

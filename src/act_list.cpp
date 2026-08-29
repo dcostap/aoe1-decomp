@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\act_list.cpp.
-// Definitions follow the original source order.
 
 #include "../include/act_list.h"
 #include "../include/act_atak.h"

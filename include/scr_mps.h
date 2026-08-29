@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_MPS_H
 #define AOE1_SCR_MPS_H
 
-// PDB source module: C:/msdev/work/age1_x1/scr_mps.cpp.
 // This header owns only the multiplayer setup, wait, and disconnect screens.
 // The canonical screen base is the only included foreign owner.
 #include "Pnl_scr.h"

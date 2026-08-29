@@ -1,7 +1,6 @@
 #ifndef AOE1_SPNL_OBJ_H
 #define AOE1_SPNL_OBJ_H
 
-// PDB source module: C:\msdev\work\age1_x1\spnl_obj.cpp.
 // This header owns only the scenario-editor panel extension.
 #include "tpnl_obj.h"
 

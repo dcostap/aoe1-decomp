@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\scr_mp.cpp.
-// Definitions follow the original PDB source order.
 
 #include <string.h>
 #include <io.h>
@@ -18,8 +16,6 @@
 extern TRegistry* Regs;
 extern TCommunications_Handler* comm;
 
-// VA: 0049F370 TribeMPStartupScreen constructor (1278B)
-// FLAGS: config/flags/0049F370_TribeMPStartupScreen.rsp (/GX for EH cleanup).
 
 TribeMPStartupScreen::TribeMPStartupScreen()
     : TScreenPanel("MP Startup Screen")
@@ -150,7 +146,6 @@ TribeMPStartupScreen::TribeMPStartupScreen()
     }
 }
 
-// VA: 0049F890 ~TribeMPStartupScreen dtor (257B)
 // FLAGS: config/flags/0049F890_TribeMPStartupScreen.rsp.
 
 TribeMPStartupScreen::~TribeMPStartupScreen() {
@@ -170,7 +165,6 @@ TribeMPStartupScreen::~TribeMPStartupScreen() {
     panel_system.destroyPanel("YesNoDialog");
 }
 
-// VA: 0049F9A0 TribeMPStartupScreen::handle_idle (33B)
 
 long TribeMPStartupScreen::handle_idle() {
     if (!rge_base_game->input_enabled)
@@ -178,7 +172,6 @@ long TribeMPStartupScreen::handle_idle() {
     return TPanel::handle_idle();
 }
 
-// VA: 0049F9D0 TribeMPStartupScreen::action (1265B)
 
 long TribeMPStartupScreen::action(TPanel* panel, long event,
                                   unsigned long param3, unsigned long param4)
@@ -278,7 +271,6 @@ long TribeMPStartupScreen::action(TPanel* panel, long event,
     return this->TEasy_Panel::action(panel, event, param3, param4);
 }
 
-// VA: 0049FED0 TribeMPStartupScreen::fillList (461B)
 
 void TribeMPStartupScreen::fillList() {
     int lastServiceNumber;
@@ -321,7 +313,6 @@ void TribeMPStartupScreen::fillList() {
     }
 }
 
-// VA: 004A00A0 TribeMPStartupScreen::handle_user_command (8B)
 
 long TribeMPStartupScreen::handle_user_command(unsigned int p0, long p1) {
     return 1;

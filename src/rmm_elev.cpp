@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\rmm_elev.cpp.
-// Definitions follow the original source order from lines 21 through 403.
 // Map tiles and stack nodes use their canonical typed owners.
 
 #include "../include/rmm_elev.h"

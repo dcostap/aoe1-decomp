@@ -1,6 +1,5 @@
 // Authentic direct source owner for C:\\msdev\\work\\age1_x1\\t_b_obj.cpp.
 //
-// The source order follows the PDB line bands.  This file owns the complete
 // normal compiland.  The scalar deleting destructor at 004C8090 is compiler
 // generated and has no source body here.
 

@@ -2,7 +2,6 @@
 #define AOE1_ASP_LIST_H
 
 // Compiler-facing declarations for the original asp_list.cpp module.
-// Layouts and virtual slots follow the reviewed PDB and binary evidence.
 
 class RGE_Color_Table;
 class TDrawArea;
@@ -106,7 +105,7 @@ public:
     virtual short get_facetindex(RGE_Sprite* param_1, short param_2);
 
 protected:
-    // BINARY NOTE: FPO identifies load_node as protected (MAE), not public (UAE).
+    // FPO identifies load_node as protected (MAE), not public (UAE).
     virtual unsigned char load_node(int param_1, unsigned char param_2,
                                     RGE_Sprite** param_3);
 

@@ -1,5 +1,4 @@
 // scr_cred.cpp
-// PDB source order: lines 46-753.
 // The source owns all sixteen normal functions in this compiland.
 // The deleting destructors at 00492950 and 00492F50 are compiler generated.
 
@@ -329,7 +328,6 @@ void TScrollTextPanel::set_text(char* text) {
     this->done = 0;
 }
 
-// ACCEPTED_DRIFT: equivalent x87 multiply encoding differs by two bytes.
 long TScrollTextPanel::handle_idle()
 {
     if (this->last_time == 0) {

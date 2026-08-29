@@ -63,7 +63,7 @@ TRIBE_Combat_Object::~TRIBE_Combat_Object()
 {
     if (this->own_master != 0) {
         RGE_Master_Static_Object* master = this->master_obj;
-        // ORIGINAL BUG: The executable reads master->id before this test.
+        // The executable reads master->id before this test.
         const int id = master->id;
         if (master != 0) {
             delete master;

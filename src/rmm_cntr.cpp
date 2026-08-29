@@ -1,4 +1,3 @@
-// PDB source: C:\msdev\work\age1_x1\rmm_cntr.cpp.
 
 #include "../include/rmm_cntr.h"
 #include "../include/rmm_land.h"

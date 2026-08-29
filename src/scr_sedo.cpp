@@ -1,5 +1,4 @@
 // Authentic complete owner for C:\\msdev\\work\\age1_x1\\scr_sedo.cpp.
-// Normal owners stay in PDB source order (45, 104, 116, 155).
 
 #include "../include/scr_sedo.h"
 #include "../include/main.h"
@@ -14,9 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 
-// VA: 004B33D0 TRIBE_Screen_Sed_Open (constructor)
-// PDB source: scr_sedo.cpp lines 45-99.
-// BINARY NOTE: The constructor owns the +0x478-+0x48C panel slots and keeps
+// The constructor owns the +0x478-+0x48C panel slots and keeps
 // the original setup and child-creation order.
 TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     : TScreenPanel("Scenario Editor Open")
@@ -87,8 +84,6 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
     set_tab_order(tabList + 1, 4);
 }
 
-// VA: 004B36A0 ~TRIBE_Screen_Sed_Open
-// PDB source: scr_sedo.cpp lines 104-111.
 TRIBE_Screen_Sed_Open::~TRIBE_Screen_Sed_Open() {
     delete title;
     title = 0;
@@ -104,8 +99,6 @@ TRIBE_Screen_Sed_Open::~TRIBE_Screen_Sed_Open() {
     deleteButton = 0;
 }
 
-// VA: 004B3740 TRIBE_Screen_Sed_Open::fillList
-// PDB source: scr_sedo.cpp lines 116-149.
 void TRIBE_Screen_Sed_Open::fillList()
 {
     char file_name[260];
@@ -141,9 +134,7 @@ void TRIBE_Screen_Sed_Open::fillList()
     }
 }
 
-// VA: 004B38A0 TRIBE_Screen_Sed_Open::action
-// PDB source: scr_sedo.cpp lines 155-245.
-// BINARY NOTE: The action keeps the shipped delete, open, panel-transition,
+// The action keeps the shipped delete, open, panel-transition,
 // cleanup, and return paths in their original order.
 long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
                                    unsigned long param_3,

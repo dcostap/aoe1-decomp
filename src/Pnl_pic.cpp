@@ -4,7 +4,6 @@
 
 extern void __cdecl operator_delete(void*);
 
-// PDB: Pnl_pic.cpp:30-35
 TPicturePanel::TPicturePanel() : TPanel() {
     this->keep_loaded = 1;
     this->size_from_pic = 0;
@@ -18,12 +17,10 @@ TPicturePanel::TPicturePanel() : TPanel() {
     this->res_id = -1;
 }
 
-// PDB: Pnl_pic.cpp:41-43
 TPicturePanel::~TPicturePanel() {
     this->free_pic();
 }
 
-// PDB: Pnl_pic.cpp:50-87
 long TPicturePanel::setup(TDrawArea* p1, TPanel* p2, long p3, long p4, long p5, long p6, char* p7, long p8, int p9, int p10)
 {
     short sw, sh;
@@ -57,7 +54,6 @@ long TPicturePanel::setup(TDrawArea* p1, TPanel* p2, long p3, long p4, long p5, 
     return 1;
 }
 
-// PDB: Pnl_pic.cpp:93-99
 void TPicturePanel::set_picture(TShape* new_shape, long new_res_id) {
     this->free_pic();
     this->shape = new_shape;
@@ -66,7 +62,6 @@ void TPicturePanel::set_picture(TShape* new_shape, long new_res_id) {
     this->set_redraw(TPanel::RedrawNormal);
 }
 
-// PDB: Pnl_pic.cpp:105-147
 int TPicturePanel::load_pic()
 {
     char file_name[80];
@@ -112,7 +107,6 @@ int TPicturePanel::load_pic()
     return 0;
 }
 
-// PDB: Pnl_pic.cpp:153-169
 void TPicturePanel::free_pic() {
     TPicture* p = this->pic;
     if (p != 0) {
@@ -133,7 +127,6 @@ void TPicturePanel::free_pic() {
     this->own_pic = 0;
 }
 
-// PDB: Pnl_pic.cpp:175-204
 void TPicturePanel::draw()
 {
     if (!this->render_area) return;

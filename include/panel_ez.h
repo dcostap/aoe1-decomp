@@ -1,7 +1,6 @@
 #ifndef AOE1_PANEL_EZ_H
 #define AOE1_PANEL_EZ_H
 
-// PDB source: C:\\msdev\\work\\age1_x1\\Panel_ez.cpp.
 // This header owns TEasy_Panel. Foreign types stay in their own headers.
 #include "panel.h"
 
@@ -82,7 +81,6 @@ public:
                int);
 
 protected:
-    // PDB virtual order: long button, character button, integer text,
     // text array, then character text.
     virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long,
                               long, long, long, long, long);

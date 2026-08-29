@@ -8,17 +8,13 @@
 #include "../include/task.h"
 #include "../include/world.h"
 
-// PDB source: C:\\msdev\\work\\age1_x1\\ACT_make.cpp.
-// Definitions follow the original source order.
 
-// VA: 004049B0
 RGE_Action_Make::RGE_Action_Make(int param_1, RGE_Action_Object* param_2)
     : RGE_Action(param_1, param_2, 1)
 {
     this->action_type = 0x15;
 }
 
-// VA: 00404A10
 RGE_Action_Make::RGE_Action_Make(RGE_Action_Object* param_1,
                                  RGE_Task* param_2)
     : RGE_Action(param_1, 1)
@@ -27,7 +23,6 @@ RGE_Action_Make::RGE_Action_Make(RGE_Action_Object* param_1,
     this->task = param_2;
 }
 
-// VA: 00404A40
 void RGE_Action_Make::first_in_stack(unsigned char)
 {
     short attribute_type;
@@ -40,14 +35,12 @@ void RGE_Action_Make::first_in_stack(unsigned char)
     }
 }
 
-// VA: 00404A70
 void RGE_Action_Make::set_state(unsigned char param_1)
 {
     this->state = param_1;
     this->timer = this->obj->owner->attributes[0x24];
 }
 
-// VA: 00404A90
 unsigned char RGE_Action_Make::update()
 {
     float work;

@@ -13,8 +13,6 @@
 #include "../include/taimdmd.h"
 #include <string.h>
 
-// PDB source order: taibldmd.cpp lines 62-1773.
-// 004D3AB0 is the compiler-generated vector deleting destructor. It is not a
 // handwritten owner and is emitted by the TribeBuildAIModule virtual surface.
 
 TribeBuildAIModule::TribeBuildAIModule(void* owner, int player)

@@ -1,7 +1,6 @@
 #ifndef AOE1_SCR_CAMS_H
 #define AOE1_SCR_CAMS_H
 
-// PDB source module: C:/msdev/work/age1_x1/scr_cams.cpp.
 // This header owns only the campaign-selection screen. Shared panel and
 // screen types come from their canonical owners.
 #include "Pnl_scr.h"

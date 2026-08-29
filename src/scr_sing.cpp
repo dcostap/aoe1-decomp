@@ -1,4 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\Scr_sing.cpp.
 // The handwritten owners follow the original source-line order.
 // The vector-deleting destructor is compiler generated.
 
@@ -15,7 +14,6 @@
 #include "../include/pnl_lst.h"
 #include <stdlib.h>
 
-// Scr_sing.cpp:55-106.
 TribeSPMenuScreen::TribeSPMenuScreen()
     : TScreenPanel("Single Player Menu")
 {
@@ -55,7 +53,7 @@ TribeSPMenuScreen::TribeSPMenuScreen()
             button[4]->set_text(0, 0x2407);
             button[5]->set_text(0, 0x2409);
 
-            // BINARY NOTE: Keep one local receiver for the two hotkey stores.
+            // Keep one local receiver for the two hotkey stores.
             TButtonPanel* cancel = button[5];
             cancel->hotkey = 0x1B;
             cancel->hotkey_shift = 0;
@@ -70,7 +68,6 @@ TribeSPMenuScreen::TribeSPMenuScreen()
     }
 }
 
-// Scr_sing.cpp:111-117.
 TribeSPMenuScreen::~TribeSPMenuScreen()
 {
     TPanel* panel = title;
@@ -88,7 +85,6 @@ TribeSPMenuScreen::~TribeSPMenuScreen()
     close_button = 0;
 }
 
-// Scr_sing.cpp:123-128.
 long TribeSPMenuScreen::handle_idle()
 {
     if (rge_base_game->input_enabled == 0)
@@ -96,7 +92,6 @@ long TribeSPMenuScreen::handle_idle()
     return TPanel::handle_idle();
 }
 
-// Scr_sing.cpp:134-318.
 long TribeSPMenuScreen::action(TPanel* panel, long code,
                                unsigned long a3, unsigned long a4)
 {

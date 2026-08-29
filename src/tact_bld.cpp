@@ -15,17 +15,13 @@
 #include "../include/task.h"
 #include "../include/world.h"
 
-// PDB lines 45-47; VA 004CD1B0.
 TRIBE_Action_Build::TRIBE_Action_Build(int id, RGE_Action_Object* object)
     : RGE_Action(id, object, 1) {
     this->action_type = 0x65;
 }
 
-// PDB lines 55-69; VA 004CD210.
-// BINARY NOTE: Moving full owner includes into this direct source removes the
-// prior four-byte comparison difference under the module flags. The module
-// status remains accepted_drift pending owner-status review.
-// BINARY NOTE: This constructor keeps the observed task, owner, target, and
+// Moving full owner includes into this direct source removes the
+// This constructor keeps the observed task, owner, target, and
 // coordinate stores in the original action hierarchy.
 TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* action_obj,
                                        RGE_Task* task,
@@ -43,7 +39,6 @@ TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* action_obj,
     }
 }
 
-// PDB lines 77-87; VA 004CD2A0.
 TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* file,
                                        RGE_Task* task,
                                        float x, float y, float z)
@@ -55,7 +50,6 @@ TRIBE_Action_Build::TRIBE_Action_Build(RGE_Action_Object* file,
     this->target_z = z;
 }
 
-// PDB lines 93-103; VA 004CD2E0.
 void TRIBE_Action_Build::first_in_stack(unsigned char value) {
     if (value != 0) {
         if (this->target_obj != 0) {
@@ -68,8 +62,6 @@ void TRIBE_Action_Build::first_in_stack(unsigned char value) {
     this->set_state(3);
 }
 
-// PDB lines 109-198; VA 004CD310.
-// BINARY NOTE: /GX is required for the original EH registration and unwind
 // state stores around action construction.
 void TRIBE_Action_Build::set_state(unsigned char param_1)
 {
@@ -157,9 +149,7 @@ void TRIBE_Action_Build::set_state(unsigned char param_1)
     }
 }
 
-// PDB lines 204-424; VA 004CD5E0.
-// BINARY NOTE: The direct checker reports four strict bytes. The rebuilt
-// source selects vslot+0x1F8 where the original selects vslot+0x1F0.
+// The direct checker reports four strict bytes. The rebuilt
 unsigned char TRIBE_Action_Build::update()
 {
     float work;
@@ -298,13 +288,11 @@ reset_common:
     goto return_zero;
 }
 
-// PDB lines 430-433; VA 004CD910.
 int TRIBE_Action_Build::stop() {
     this->set_state(2);
     return 1;
 }
 
-// PDB lines 440-447; VA 004CD920.
 int TRIBE_Action_Build::move_to(RGE_Static_Object* obj,
                                 float x, float y, float z) {
     this->target_x = x;
@@ -315,9 +303,7 @@ int TRIBE_Action_Build::move_to(RGE_Static_Object* obj,
     return 1;
 }
 
-// PDB lines 454-483; VA 004CD960.
-// BINARY NOTE: The direct checker reports nine strict bytes in the owner-id
-// register map and fallback coordinate load order.
+// The direct checker reports nine strict bytes in the owner-id
 int TRIBE_Action_Build::work(RGE_Static_Object* target,
                              float param_2, float param_3, float param_4) {
     if (target != 0 && target->owner->id == this->obj->owner->id) {

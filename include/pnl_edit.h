@@ -1,7 +1,6 @@
 #ifndef AOE1_PNL_EDIT_H
 #define AOE1_PNL_EDIT_H
 
-// PDB source: C:\\msdev\\work\\age1_x1\\pnl_edit.cpp.
 // This header owns TEditPanel.
 #include "panel.h"
 #include "drawarea.h"

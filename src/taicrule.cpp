@@ -1,7 +1,5 @@
 // Authentic source module for C:\\msdev\\work\\age1_x1\\taicrule.cpp.
-// The definitions follow the PDB source and address order.
 //
-// 004D68E0 is the compiler-generated scalar deleting destructor.  It is not
 // a handwritten source owner.
 
 #include "../include/taicrule.h"
@@ -9,13 +7,10 @@
 #include <string.h>
 #include <stdio.h>
 
-// VA 004D68D0; taicrule.cpp lines 23-24; matching.
 CombatRuleSystem::CombatRuleSystem() {}
 
-// VA 004D6900; taicrule.cpp lines 29-30; matching.
 CombatRuleSystem::~CombatRuleSystem() {}
 
-// VA 004D6910; taicrule.cpp lines 35-74; accepted drift.
 int CombatRuleSystem::loadRules(char* filename)
 {
     char line[256]; FILE* f; int a,b,c; char c1,c2;
@@ -47,8 +42,6 @@ int CombatRuleSystem::loadRules(char* filename)
     return 1;
 }
 
-// VA 004D6AA0; taicrule.cpp lines 79-81; matching.
 int CombatRuleSystem::bestUnitTypeToAttack(int) { return -1; }
 
-// VA 004D6AB0; taicrule.cpp lines 86-88; matching.
 int CombatRuleSystem::bestUnitTypeToDefendAgainst(int) { return -1; }

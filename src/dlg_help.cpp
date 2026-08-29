@@ -1,12 +1,9 @@
-// PDB source module: C:/msdev/work/age1_x1/dlg_help.cpp.
-// Definitions follow the original PDB source order.
 
 #include "../include/dlg_help.h"
 #include <stdio.h>
 
 extern "C" char* strcpy(char*, const char*);
 
-// 0043E840 THelpDialog::THelpDialog (dlg_help.cpp:57-61)
 // The constructor is the EH-framed context anchor for this module.
 THelpDialog::THelpDialog(TEasy_Panel* parent, char* name, long page_id,
                          long x_limit, long y_limit, long extra)
@@ -16,7 +13,6 @@ THelpDialog::THelpDialog(TEasy_Panel* parent, char* name, long page_id,
     this->setup_help(parent, name, text, x_limit, y_limit, extra);
 }
 
-// 0043E8E0 THelpDialog::THelpDialog (dlg_help.cpp:68-70)
 THelpDialog::THelpDialog(TEasy_Panel* parent, char* name, char* text,
                          long x_limit, long y_limit, long extra)
     : TDialogPanel("Help Dialog")
@@ -24,7 +20,6 @@ THelpDialog::THelpDialog(TEasy_Panel* parent, char* name, char* text,
     this->setup_help(parent, name, text, x_limit, y_limit, extra);
 }
 
-// 0043E950 THelpDialog::~THelpDialog (dlg_help.cpp:76-88)
 THelpDialog::~THelpDialog()
 {
     delete ok_button;
@@ -33,7 +28,6 @@ THelpDialog::~THelpDialog()
     delete title;
 }
 
-// 0043E9E0 THelpDialog::setup_help (dlg_help.cpp:94-185)
 // The unresolved geometry-home difference remains documented in the module note.
 void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text,
                              long page_id, long x_limit, long y_limit)
@@ -116,7 +110,6 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text,
     }
 }
 
-// 0043ED40 THelpDialog::action (dlg_help.cpp:191-223)
 long THelpDialog::action(TPanel* panel, long command, unsigned long param_3,
                          unsigned long param_4)
 {
@@ -143,7 +136,6 @@ long THelpDialog::action(TPanel* panel, long command, unsigned long param_3,
     return TEasy_Panel::action(panel, command, param_3, param_4);
 }
 
-// 0043EE10 THelpDialog::handle_mouse_down (dlg_help.cpp:230-238)
 long THelpDialog::handle_mouse_down(unsigned char button, long x, long y,
                                     int flags, int area)
 {

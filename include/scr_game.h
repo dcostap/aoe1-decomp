@@ -2,7 +2,6 @@
 #define AOE1_SCR_GAME_H
 
 #include "game_globals.h"
-// PDB owner: scr_game.cpp.
 // This header owns only TRIBE_Screen_Game and its score record.
 
 #include "Pnl_scr.h"

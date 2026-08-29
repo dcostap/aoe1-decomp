@@ -1,11 +1,8 @@
 // Recovered direct owner module for C:\msdev\work\age1_x1\Pnl_btn.cpp.
-// Definitions follow the PDB source order.
 #include "../include/pnl_btn.h"
 #include "../include/Shape.h"
 #include "../include/sounddrv.h"
 // 00471EC0_TButtonPanel.cpp
-// VA: 00471EC0 TButtonPanel constructor
-// PDB source: Pnl_btn.cpp
 #include <string.h>
 
 TButtonPanel::TButtonPanel()
@@ -92,8 +89,6 @@ TButtonPanel::~TButtonPanel() {
 }
 
 // 004720A0_setup.cpp
-// VA: 004720A0 TButtonPanel::setup(...)
-// PDB source: Pnl_btn.cpp lines 112-122 (99 bytes, 34 asm lines)
 
 long TButtonPanel::setup(
     TDrawArea* draw_area,
@@ -161,10 +156,6 @@ void TButtonPanel::set_text_pos(long a, long b) {
 }
 
 // 00472240_set_radio_info.cpp
-// VA: 00472240 TButtonPanel::set_radio_info(TButtonPanel** param_1, short param_2)
-// PDB source: Pnl_btn.cpp lines 207-225
-// BINARY NOTE: The accepted-drift copy loop preserves the shipped allocation,
-// count, and pointer-copy behavior. See recovery_notes/pnl_btn.md.
 
 #include <stdlib.h>
 
@@ -213,8 +204,6 @@ void TButtonPanel::set_picture(short param_1, TShape* param_2, short param_3) {
 }
 
 // 00472330_set_text.cpp
-// VA: 00472330 set_text
-// PDB source: Pnl_btn.cpp:282-331
 
 #include <string.h>
 
@@ -257,8 +246,6 @@ void TButtonPanel::set_text(short state, char* text) {
 }
 
 // 00472440_set_text.cpp
-// VA: 00472440 set_text
-// PDB source: Pnl_btn.cpp:337-372
 
 #include <string.h>
 
@@ -382,7 +369,7 @@ void TButtonPanel::set_bevel_info(int type, int c1, int c2, int c3, int c4, int 
 }
 
 // 004727B0_set_disabled.cpp
-// BINARY NOTE: The shipped setter changes handle_mouse_input, not active.
+// The shipped setter changes handle_mouse_input, not active.
 void TButtonPanel::set_disabled(int is_disabled) {
     disabled = is_disabled;
         set_redraw(TPanel::RedrawNormal);
@@ -394,7 +381,6 @@ void TButtonPanel::set_disabled(int is_disabled) {
 }
 
 // 004727F0_set_rect.cpp
-// BINARY NOTE: PDB and vtable entries identify this override as TButtonPanel::set_rect.
 void TButtonPanel::set_rect(long a, long b, long c, long d) {
     TPanel::set_rect(a, b, c, d);
 }
@@ -446,11 +432,8 @@ void TButtonPanel::get_text_color(short state, unsigned long* color1, unsigned l
 }
 
 // 004728C0_draw.cpp
-// VA: 004728C0 TButtonPanel::draw (2097 B)
-// PDB source: Pnl_btn.cpp lines 586-840
 // __thiscall this, returns void
-// BINARY NOTE: The panel and button layouts, virtual slots, and bevel branch
-// order follow the reviewed binary evidence. The current body remains scratch.
+// The panel and button layouts, virtual slots, and bevel branch
 
 #include <string.h>
 
@@ -688,7 +671,7 @@ void TButtonPanel::draw()
 }
 
 // 00473120_handle_mouse_down.cpp
-// BINARY NOTE: The input gate checks active and mouse_captured, then uses the
+// The input gate checks active and mouse_captured, then uses the
 // virtual hit_button test before dispatching to TPanel::handle_mouse_down.
 long TButtonPanel::handle_mouse_down(unsigned char button, long x, long y, int ctrl, int shift) {
     if (active == 0) {
@@ -730,7 +713,6 @@ long TButtonPanel::mouse_left_down_action(long x, long y, int ctrl, int shift) {
 }
 
 // 00473240_mouse_left_move_action.cpp
-// VA: 00473240 TButtonPanel::mouse_left_move_action(long,long,int,int)
 // Pnl_btn.cpp lines 893-920
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
@@ -805,7 +787,6 @@ long TButtonPanel::mouse_right_down_action(long x, long y, int ctrl, int shift) 
 }
 
 // 00473450_mouse_right_move_action.cpp
-// VA: 00473450 mouse_right_move_action (194B)
 // Pnl_btn.cpp
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
@@ -858,8 +839,6 @@ long TButtonPanel::mouse_right_up_action(long x, long y, int ctrl, int shift) {
 }
 
 // 004735B0_handle_key_down.cpp
-// VA: 004735B0 TButtonPanel::handle_key_down (307 B)
-// PDB source: Pnl_btn.cpp
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
@@ -889,8 +868,6 @@ long TButtonPanel::handle_key_down(long key, short ch, int a3, int a4, int a5) {
 }
 
 // 004736F0_key_down_action.cpp
-// VA: 004736F0 TButtonPanel::key_down_action (359 B)
-// PDB source: Pnl_btn.cpp
 
 extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 
@@ -947,8 +924,6 @@ long TButtonPanel::key_down_action(long key, short ch, int a3, int a4, int a5) {
 }
 
 // 00473890_wnd_proc.cpp
-// VA: 00473890 TButtonPanel::wnd_proc
-// PDB: Pnl_btn.cpp lines 1118-1135 (131 bytes, 42 asm lines)
 
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(void* hwnd, unsigned msg, unsigned wparam, long lparam);
 
@@ -974,8 +949,6 @@ long TButtonPanel::wnd_proc(void* hwnd, unsigned msg, unsigned wp, long lp) {
 long TButtonPanel::char_action(long p0, short p1) { return 0; }
 
 // 00473930_hit_button.cpp
-// VA: 00473930 TButtonPanel::hit_button(long param_1, long param_2)
-// PDB source: Pnl_btn.cpp lines 1171-1182
 
 #include <stdlib.h>
 
@@ -997,7 +970,6 @@ int TButtonPanel::hit_button(long param_1, long param_2) {
 }
 
 // 004739B0_do_action.cpp
-// VA: 004739B0 do_action (230B)
 // Pnl_btn.cpp
 
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(
@@ -1033,7 +1005,6 @@ void TButtonPanel::do_action(void) {
 }
 
 // 00473AA0_do_right_action.cpp
-// VA: 00473AA0 do_right_action (209B)
 // Pnl_btn.cpp
 
 extern "C" __declspec(dllimport) long __stdcall SendMessageA(

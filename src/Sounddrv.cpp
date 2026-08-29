@@ -574,7 +574,7 @@ int TDigital::load(char* name, long param) {
                 if (load_type != 1) {
                     goto wave_info_fail;
                 }
-                /* ORIGINAL BUG: The shipped path frees resource_data twice. */
+                /* The shipped path frees resource_data twice. */
                 free(resource_data);
 wave_info_fail:
                 color_log(0xBA, 0x5F, 1);

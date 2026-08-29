@@ -1,4 +1,3 @@
-// PDB source order: dlg_dip.cpp lines 77-903.
 // This file owns every normal function in the compiland.
 
 #include "../include/dlg_dip.h"

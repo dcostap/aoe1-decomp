@@ -1,5 +1,3 @@
-// PDB source module: C:\\msdev\\work\\age1_x1\\flics.cpp.
-// The definitions below follow the original source order.
 
 #include "../include/flics.h"
 #include <string.h>
@@ -7,7 +5,6 @@
 typedef unsigned char uchar;
 typedef unsigned short ushort;
 
-// 00449B30, flics.cpp lines 21-50.
 RGE_Flic_Player::RGE_Flic_Player(char* path)
 {
     register int size;
@@ -19,7 +16,7 @@ RGE_Flic_Player::RGE_Flic_Player(char* path)
         flic_buffer = (unsigned char*)calloc(size, 1);
         lseek(fd, 0, 0);
         read(fd, flic_buffer, size);
-        // BINARY NOTE: The shipped constructor copies the complete 0x84-byte
+        // The shipped constructor copies the complete 0x84-byte
         // FLIC header before it reads the width field.
         flichead = *(FlicHead*)flic_buffer;
         flic_width = (int)*(short*)((char*)&flichead + 0x08);
@@ -30,8 +27,6 @@ RGE_Flic_Player::RGE_Flic_Player(char* path)
         flic_handle = -1;
     }
 }
-
-// 00449BE0, flics.cpp lines 54-70.
 RGE_Flic_Player::RGE_Flic_Player(int file_handle)
 {
     if (file_handle > -1) {
@@ -46,7 +41,6 @@ RGE_Flic_Player::RGE_Flic_Player(int file_handle)
     }
 }
 
-// 00449C40, flics.cpp lines 74-77.
 RGE_Flic_Player::~RGE_Flic_Player()
 {
     if (this->flic_buffer) {
@@ -54,7 +48,6 @@ RGE_Flic_Player::~RGE_Flic_Player()
     }
 }
 
-// 00449C50, flics.cpp lines 81-171.
 void RGE_Flic_Player::palette(tagRGBQUAD* palette)
 {
     FrameHead* framehead;
@@ -165,26 +158,22 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
     }
 }
 
-// 00449DF0, flics.cpp lines 175-180.
 long RGE_Flic_Player::resolution()
 {
     return ((long)this->flichead.width << 16) |
            (short)this->flichead.height;
 }
 
-// 00449E00, flics.cpp lines 184-186.
 long RGE_Flic_Player::time_delay()
 {
     return this->flichead.speed;
 }
 
-// 00449E10, flics.cpp lines 190-192.
 short RGE_Flic_Player::frames()
 {
     return this->flichead.frames;
 }
 
-// 00449E20, flics.cpp lines 196-212.
 void RGE_Flic_Player::start()
 {
     switch (this->flichead.type) {
@@ -205,13 +194,11 @@ void RGE_Flic_Player::start()
     this->flichead.oframe2 = this->flichead.oframe1;
 }
 
-// 00449E80, flics.cpp lines 216-218.
 void RGE_Flic_Player::reset()
 {
     this->flichead.oframe2 = this->flichead.oframe1;
 }
 
-// 00449E90, flics.cpp lines 222-345.
 unsigned char RGE_Flic_Player::draw(TDrawArea* drawarea_in, long flic_x,
                                     long flic_y)
 {
@@ -231,7 +218,7 @@ unsigned char RGE_Flic_Player::draw(TDrawArea* drawarea_in, long flic_x,
         chunk_base = (char*)frame + sizeof(FrameHead);
     }
 
-    // BINARY NOTE: The original stores x1, drawarea, y1, x2, and y2 in
+    // The original stores x1, drawarea, y1, x2, and y2 in
     // this order. The y1 store comes before the bound expressions.
     this->x1 = flic_x;
     this->drawarea = drawarea_in;
@@ -306,7 +293,6 @@ unsigned char RGE_Flic_Player::draw(TDrawArea* drawarea_in, long flic_x,
     return result;
 }
 
-// 0044A090, flics.cpp lines 349-361.
 void RGE_Flic_Player::literal()
 {
     int i = 0;
@@ -321,7 +307,6 @@ void RGE_Flic_Player::literal()
     } while (i < this->flic_size_y);
 }
 
-// 0044A100, flics.cpp lines 365-441.
 void RGE_Flic_Player::delta_flc()
 {
     ushort* p;
@@ -394,7 +379,6 @@ void RGE_Flic_Player::delta_flc()
     } while (--remaining != 0);
 }
 
-// 0044A2A0, flics.cpp lines 445-488.
 void RGE_Flic_Player::delta_fli()
 {
     char* chunk = this->chunk;
@@ -431,7 +415,6 @@ void RGE_Flic_Player::delta_fli()
     } while (remaining != 0);
 }
 
-// 0044A390, flics.cpp lines 492-500.
 void RGE_Flic_Player::black()
 {
     long i;
@@ -449,7 +432,6 @@ void RGE_Flic_Player::black()
     }
 }
 
-// 0044A3E0, flics.cpp lines 504-541.
 void RGE_Flic_Player::byte_run()
 {
     char* chunk = this->chunk;
@@ -491,5 +473,3 @@ void RGE_Flic_Player::byte_run()
         count--;
     } while (count != 0);
 }
-
-// 0044A05D is a reviewed padding-only boundary between draw and literal.

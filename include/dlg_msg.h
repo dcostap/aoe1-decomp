@@ -1,7 +1,6 @@
 #ifndef AOE1_DLG_MSG_H
 #define AOE1_DLG_MSG_H
 
-// PDB source: C:\\msdev\\work\\age1_x1\\Dlg_msg.cpp.
 // This header owns TMessageDialog. Its panel bases come from their owners.
 #include "pnl_dlg.h"
 #include "pnl_btn.h"
