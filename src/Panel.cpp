@@ -1936,8 +1936,10 @@ char* TPanel::panelName() const {
 void TPanel::setPanelName(char* name) {
     if (name != 0 && strlen(name) != 0) {
         char* old = panel_name;
+        unsigned int name_length;
         if (old == 0) goto alloc;
-        if (strlen(old) >= strlen(name)) goto copy;
+        name_length = strlen(name);
+        if (strlen(old) >= name_length) goto copy;
         if (panel_name == 0) goto alloc;
         free(panel_name);
 alloc:
