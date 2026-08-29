@@ -4,7 +4,7 @@
 
 ## Current state
 
-- Status: `scratch`.
+- Status: `matching`.
 - Living source: `src/Dsutil.c`.
 - PDB source: `C:\msdev\work\age1_x1\Dsutil.c`.
 - Earlier recovery note: `recovery_notes/dsutil_module.md`.
@@ -45,4 +45,9 @@ Record specific evidence-led approaches for the next worker here.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+- The read-only Dsutil study proved a natural direct-expression `do/while`
+  loop. It keeps separate buffer reloads and rejects prior local aliases and
+  raw virtual calls.
+- Coordinator mini-integration applied that form. Focused and grouped checks
+  report `MATCH`, `0.0000%`, 65/65 bytes, two aligned calls, correct owner, and
+  a closed boundary. The function is registered as matching.

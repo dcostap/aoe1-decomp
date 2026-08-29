@@ -41,8 +41,6 @@ protected:
     unsigned char indirect_fire_flag;
 
     int ready_to_attack(int&);
-
-private:
     void do_attack();
 };
 

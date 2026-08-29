@@ -4,7 +4,7 @@
 
 ## Current state
 
-- Status: `scratch`.
+- Status: `matching`.
 - Living source: `src/tmap.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\tmap.cpp`.
 - Earlier recovery note: `recovery_notes/tmap_module.md`.
@@ -65,3 +65,10 @@ result.
 - `wave10-tmap`: Rebuilt the stale result and retained the current natural
   function source unchanged. Final result remains `MISMATCH`, 2 bytes
   (4.0816%), caused only by the `cliff_master_table` displacement.
+- The ABI study proved that `0x9B40` is table entry 0x55 from the canonical
+  `0x8DF8` base. It is not a second field offset. The constructor and two cliff
+  functions use the same 0x28-byte entry stride and 0x55 bias.
+- Coordinator mini-integration added the typed `temp + 0x55` index. Focused
+  and grouped checks report `MATCH`, `0.0000%`, 49/49 bytes, correct owner, no
+  calls or relocations, and a closed boundary. The function is registered as
+  matching.

@@ -4,7 +4,7 @@
 
 ## Current state
 
-- Status: `scratch`.
+- Status: `matching`.
 - Living source: `src/campaign.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\campaign.cpp`.
 - Earlier recovery note: `recovery_notes/campaign_module.md`.
@@ -46,4 +46,8 @@ Record specific evidence-led approaches for the next worker here.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+- The read-only campaign study tested 13 natural forms. Typed pointer addition
+  through `*list + i` and `scenario_offsets + i` emits the original 100 bytes.
+- Coordinator mini-integration applied that one-line form. Focused and grouped
+  checks report `MATCH`, `0.0000%`, correct owner, two aligned calls, safe
+  relocations, and a closed boundary. The function is registered as matching.

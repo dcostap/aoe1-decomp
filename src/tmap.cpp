@@ -435,7 +435,7 @@ unsigned char TRIBE_Map::check_cliff_valid(TRIBE_Cliff_Info param_1)
     int temp = param_1.info[0] * 4 + param_1.info[1];
     temp = param_1.info[2] + temp * 4;
     temp = param_1.info[3] + temp * 4;
-    return this->cliff_master_table[temp].id >= 0;
+    return this->cliff_master_table[temp + 0x55].id >= 0;
 }
 
 RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y,

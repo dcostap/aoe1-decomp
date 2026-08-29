@@ -154,7 +154,7 @@ long RGE_Campaign::scenario_info(char*** list)
     int i = 0;
     if (0 < this->campaign_header.scenario_num) {
         do {
-            getstring(strings + i, this->scenario_offsets[i].name);
+            getstring(*list + i, (this->scenario_offsets + i)->name);
             ++i;
         } while (i < this->campaign_header.scenario_num);
     }

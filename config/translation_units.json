@@ -3154,7 +3154,9 @@
         "00460BF0": "src/move_obj.cpp",
         "00460C00": "src/move_obj.cpp",
         "00460EB0": "src/move_obj.cpp",
-        "00460940": "src/move_obj.cpp"
+        "00460940": "src/move_obj.cpp",
+        "004608D0": "src/move_obj.cpp",
+        "00460900": "src/move_obj.cpp"
       },
       "symbols": {
         "0045C450": "??0RGE_Moving_Object@@QAE@PAVRGE_Master_Moving_Object@@PAVRGE_Player@@MMMH@Z",
@@ -3195,7 +3197,9 @@
         "00460BF0": "?setFinalUserDefinedWaypoint@RGE_Moving_Object@@QAEXXZ",
         "00460C00": "?findAvoidancePath@RGE_Moving_Object@@UAEPAVPath@@AAUXYZPoint@@MH@Z",
         "00460EB0": "?rotate@RGE_Moving_Object@@UAEXJ@Z",
-        "00460940": "?userDefinedWaypoint@RGE_Moving_Object@@UAEPAUXYZBYTEPoint@@H@Z"
+        "00460940": "?userDefinedWaypoint@RGE_Moving_Object@@UAEPAUXYZBYTEPoint@@H@Z",
+        "004608D0": "?maximumSpeed@RGE_Moving_Object@@UAEMXZ",
+        "00460900": "?waitingToMove@RGE_Moving_Object@@UBEEXZ"
       }
     },
     {
@@ -3858,11 +3862,13 @@
         "00423690": "src/campaign.cpp",
         "00423710": "src/campaign.cpp",
         "00423720": "src/campaign.cpp",
-        "004237A0": "src/campaign.cpp"
+        "004237A0": "src/campaign.cpp",
+        "00423730": "src/campaign.cpp"
       },
       "symbols": {
         "00423230": "??0RGE_Campaign@@QAE@PAD@Z",
-        "00423330": "??0RGE_Campaign@@QAE@PAD0JPAPAD1@Z"
+        "00423330": "??0RGE_Campaign@@QAE@PAD0JPAPAD1@Z",
+        "00423730": "?scenario_info@RGE_Campaign@@QAEJPAPAPAD@Z"
       }
     },
     {
@@ -4152,7 +4158,8 @@
         "00447890": "src/Dsutil.c",
         "00447A20": "src/Dsutil.c",
         "00447EF0": "src/Dsutil.c",
-        "004481A0": "src/Dsutil.c"
+        "004481A0": "src/Dsutil.c",
+        "00447B70": "src/Dsutil.c"
       },
       "symbols": {
         "00447D50": "_WaveOpenFile",
@@ -4161,7 +4168,8 @@
         "00447A20": "_SndObjDestroy",
         "00447EF0": "_WaveStartDataRead",
         "004481A0": "_WaveStartDataWrite",
-        "00448A60": "_ds_stream_pause"
+        "00448A60": "_ds_stream_pause",
+        "00447B70": "_SndObjStop"
       }
     },
     {
@@ -7190,7 +7198,8 @@
         "0050F7C0": "src/tmap.cpp",
         "0050F7F0": "src/tmap.cpp",
         "0050F860": "src/tmap.cpp",
-        "0050FC40": "src/tmap.cpp"
+        "0050FC40": "src/tmap.cpp",
+        "005100D0": "src/tmap.cpp"
       },
       "symbols": {
         "0050F7A0": "??1TRIBE_Map@@UAE@XZ",
@@ -7208,7 +7217,8 @@
         "0050F7C0": "?map_generate@TRIBE_Map@@UAEXPAVRGE_Player@@PAVRGE_Game_World@@PAURGE_Player_Info@@PAE@Z",
         "0050F7F0": "?map_generate@TRIBE_Map@@QAEXPAURGE_Player_Info@@@Z",
         "0050F860": "?load_random_map@TRIBE_Map@@UAEXPAD000@Z",
-        "0050FC40": "?do_terrain_brush@TRIBE_Map@@UAEEJJJE@Z"
+        "0050FC40": "?do_terrain_brush@TRIBE_Map@@UAEEJJJE@Z",
+        "005100D0": "?check_cliff_valid@TRIBE_Map@@QAEEUTRIBE_Cliff_Info@@@Z"
       },
       "module": "tmap_cpp"
     },

@@ -2073,17 +2073,18 @@ int RGE_Moving_Object::firstTileAlongLine(const XYPoint& a,
 }
 
 float RGE_Moving_Object::maximumSpeed(void) {
-    if (this->master_obj != 0 && this->master_obj->radius_x > 0.0) {
-        return this->master_obj->radius_y * this->master_obj->radius_x;
+    if (this->sprite != 0 && this->sprite->base_speed > 0.0) {
+        return ((RGE_Master_Moving_Object*)this->master_obj)->speed *
+               this->sprite->base_speed;
     }
-    return this->master_obj->radius_y;
+    return ((RGE_Master_Moving_Object*)this->master_obj)->speed;
 }
 
 // The canonical RGE_Moving_Object declaration and named movement-state
 // methods live in include/move_obj.h.
 
 unsigned char RGE_Moving_Object::waitingToMove(void) const {
-    unsigned int state = (unsigned char)this->movement_state();
+    unsigned int state = this->actionState();
 
     if ((state == 6) || (state == 7)) {
         return 0;

@@ -227,22 +227,21 @@ unsigned int __cdecl SndObjPlay(SNDOBJ* sndobj, unsigned long flags)
 
 int __cdecl SndObjStop(SNDOBJ* obj)
 {
+    int i;
+
     if (obj == 0) {
         return 0;
     }
 
-    {
-        int i = 0;
-        if (obj->iAlloc > 0) {
-            do {
-                LPDIRECTSOUNDBUFFER buf = obj->Buffers[i];
-                IDirectSoundBuffer_Stop(buf);
-                IDirectSoundBuffer_SetCurrentPosition(buf, 0);
-                ++i;
-            } while (i < obj->iAlloc);
-        }
-        return 1;
+    i = 0;
+    if (obj->iAlloc > 0) {
+        do {
+            IDirectSoundBuffer_Stop(obj->Buffers[i]);
+            IDirectSoundBuffer_SetCurrentPosition(obj->Buffers[i], 0);
+            ++i;
+        } while (i < obj->iAlloc);
     }
+    return 1;
 }
 
 int __cdecl DSFillSoundBuffer(LPDIRECTSOUNDBUFFER dsb, void* data,

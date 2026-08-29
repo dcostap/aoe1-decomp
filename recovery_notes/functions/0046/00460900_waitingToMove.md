@@ -4,7 +4,7 @@
 
 ## Current state
 
-- Status: `scratch`.
+- Status: `matching`.
 - Living source: `src/move_obj.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\move_obj.cpp`.
 - Earlier recovery note: `recovery_notes/move_obj_module.md`.
@@ -72,3 +72,8 @@
   baseline bookkeeping attempt. The final bookkeeping attempt reached the
   compiler and failed on the pure-virtual local view; no lock was forced or
   deleted.
+- Coordinator mini-integration: vtable and PDB evidence proves the original
+  call is inherited `actionState() const`, not `movement_state()`. The natural
+  call emits `MATCH`, `0.0000%`, 38/38 bytes, and vslot `+0x134`. The fresh
+  grouped audit confirms the exact owner. The function is registered as
+  matching.
