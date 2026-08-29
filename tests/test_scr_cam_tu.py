@@ -49,6 +49,15 @@ class ScrCamSourceModuleTests(unittest.TestCase):
     def test_module_uses_its_normal_header_without_fragments(self) -> None:
         source = (REPO_ROOT / "src" / "scr_cam.cpp").read_text(encoding="utf-8")
         header = (REPO_ROOT / "include" / "scr_cam.h").read_text(encoding="utf-8")
+        shared_header = (REPO_ROOT / "include" / "Pnl_scr.h").read_text(
+            encoding="utf-8"
+        )
+        panel_header = (REPO_ROOT / "include" / "panel_ez.h").read_text(
+            encoding="utf-8"
+        )
+        base_panel_header = (REPO_ROOT / "include" / "panel.h").read_text(
+            encoding="utf-8"
+        )
 
         self.assertIn('#include "../include/scr_cam.h"', source)
         self.assertNotIn('#include "matching/', source)
@@ -56,14 +65,14 @@ class ScrCamSourceModuleTests(unittest.TestCase):
         for va in self.VAS:
             self.assertEqual(list((REPO_ROOT / "src").glob(f"**/{va:08X}_*.cpp")), [])
 
-        for token in (
-            "class TPanel",
-            "class TEasy_Panel",
-            "class TScreenPanel",
-            "class TRIBE_Campaign_Editor_Screen",
-            "class RGE_Campaign",
-        ):
-            self.assertIn(token, header)
+        self.assertIn('#include "Pnl_scr.h"', header)
+        self.assertIn("class TScreenPanel", shared_header)
+        self.assertIn("class TPanel", base_panel_header)
+        self.assertIn("class TEasy_Panel", panel_header)
+        for token in ("class TPanel", "class TEasy_Panel"):
+            self.assertNotIn(token, header)
+        self.assertIn("class TRIBE_Campaign_Editor_Screen", header)
+        self.assertIn("class RGE_Campaign;", header)
 
 
 if __name__ == "__main__":

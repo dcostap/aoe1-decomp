@@ -13,6 +13,7 @@ if str(TOOLS_DIR) not in sys.path:
 from translation_unit_prefixes import (  # noqa: E402
     PdbOwner,
     _default_prefixes,
+    _matching_owner_path,
     compare_object_owner,
     render_filtered_wrapper,
     validate_authentic_prefix,
@@ -55,22 +56,29 @@ class TranslationUnitPrefixTests(unittest.TestCase):
         from coff import load_coff_object
         from common import translation_unit_for_va
 
-        object_path = REPO_ROOT / "build" / "obj" / "tu_com_obj_enter.obj"
+        object_path = REPO_ROOT / "build" / "obj" / "tu_zone_map.obj"
         if not object_path.is_file():
             self.skipTest("grouped object is not available in this checkout")
-        group = translation_unit_for_va(0x0042FC90)
+        group = translation_unit_for_va(0x005473B0)
         self.assertIsNotNone(group)
         assert group is not None
         obj = load_coff_object(object_path)
 
-        # Use a deliberately wrong qualified owner. The grouped object now
-        # carries the canonical RGE_Combat_Object symbol, so the test must
-        # exercise the PDB-owner rejection instead of relying on stale bytes.
-        wrong_pdb_symbol = "Other_Combat_Object::calc_attack_modifier"
-        result = compare_object_owner(obj, 0x0042FC90, group, wrong_pdb_symbol)
+        # Use a deliberately wrong qualified owner. The test must exercise
+        # PDB-owner rejection instead of relying on stale bytes.
+        wrong_pdb_symbol = "Other_Zone_Map_List::get_zone_map"
+        result = compare_object_owner(obj, 0x005473B0, group, wrong_pdb_symbol)
 
         self.assertEqual("MISMATCH", result["result"])
         self.assertEqual("mismatch", result["owner_symbol"]["status"])
+
+    def test_natural_matching_owner_is_an_exact_anchor(self) -> None:
+        self.assertEqual(
+            (REPO_ROOT / "src" / "fractal.cpp").resolve(),
+            _matching_owner_path(0x0044B270),
+        )
+        with self.assertRaisesRegex(ValueError, "not an exact anchor"):
+            _matching_owner_path(0x0044B2B0)
 
     def test_rejects_reversed_source_order(self) -> None:
         target = owner(0x0044B2B0, (194, 206))
@@ -101,7 +109,7 @@ class TranslationUnitPrefixTests(unittest.TestCase):
             line_end=182,
             class_owner="OtherClass",
         )
-        paths = {prefix.va: REPO_ROOT / "src" / "matching" / "first.cpp"}
+        paths = {prefix.va: REPO_ROOT / "src" / "fractal.cpp"}
         self.assertEqual([], validate_authentic_prefix(target, [prefix], paths))
 
     def test_reports_address_order_conflict_without_rejecting_source_order(self) -> None:

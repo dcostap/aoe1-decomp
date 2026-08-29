@@ -69,14 +69,17 @@ class SourceModuleInventoryTests(unittest.TestCase):
         )
 
     def test_pdb_module_line_and_class_context_is_preserved(self) -> None:
-        module = self.modules["com_obj_enter"]
-        self.assertEqual(module["module_name"], "com_obj.cpp")
+        module = self.modules["scr_info"]
+        self.assertEqual(module["module_name"], "scr_info.cpp")
         self.assertEqual(module["module_name_source"], "pdb_source_file")
         self.assertEqual(
             [owner["source_line"] for owner in module["owners"]],
-            [179, 532, 541, 569, 980, 1252, 1301, 1309, 1356],
+            [32, 58, 65, 91, 101, 110, 118],
         )
-        self.assertEqual({owner["class_owner"] for owner in module["owners"]}, {"RGE_Combat_Object"})
+        self.assertEqual(
+            {owner["class_owner"] for owner in module["owners"]},
+            {"TRIBE_Screen_Info"},
+        )
         self.assertIn("pdb_source_module", module["context"]["flags"])
         self.assertIn("source_line_order", module["context"]["flags"])
         self.assertIn("class_ownership", module["context"]["flags"])
@@ -85,7 +88,33 @@ class SourceModuleInventoryTests(unittest.TestCase):
     def test_bank_and_exact_status_are_per_owner(self) -> None:
         module = self.modules["zone_map"]
         owners = {owner["va"]: owner for owner in module["owners"]}
-        self.assertTrue(all(owner["bank"] == "matching" for owner in owners.values()))
+        self.assertEqual(
+            {va: owner["bank"] for va, owner in owners.items()},
+            {
+                "00546720": "matching",
+                "00546770": "matching",
+                "005467B0": "accepted_drift",
+                "005468C0": "scratch",
+                "005469C0": "matching",
+                "00546A00": "matching",
+                "00546A90": "accepted_drift",
+                "00546BB0": "matching",
+                "00546E50": "matching",
+                "00546EB0": "matching",
+                "00546ED0": "matching",
+                "00546F00": "matching",
+                "00547000": "matching",
+                "00547080": "matching",
+                "00547180": "matching",
+                "00547240": "matching",
+                "00547260": "matching",
+                "00547270": "matching",
+                "005472B0": "matching",
+                "005473B0": "matching",
+                "005474B0": "matching",
+                "005474D0": "matching",
+            },
+        )
         for owner in owners.values():
             self.assertIn(owner["exact_status"], {"MATCH", "MISMATCH", "UNVALIDATED"})
             if owner["exact_status"] == "UNVALIDATED":

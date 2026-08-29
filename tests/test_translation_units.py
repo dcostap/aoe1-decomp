@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -20,6 +21,7 @@ from common import (  # noqa: E402
     compiler_translation_unit_for_va,
     function_record_by_va,
     load_translation_units,
+    preferred_source_path,
     translation_unit_for_va,
     validate_translation_unit,
 )
@@ -31,24 +33,25 @@ import validate_translation_units as validation_module  # noqa: E402
 
 
 class TranslationUnitTests(unittest.TestCase):
-    def test_zone_map_owners_use_one_grouped_object(self) -> None:
+    def test_zone_map_owners_use_one_natural_source_module(self) -> None:
         expected_vas = (0x005468C0, 0x005469C0, 0x00546E50, 0x005473B0)
         paths = set()
         slugs = set()
 
         for va in expected_vas:
             record = function_record_by_va(va)
-            group = translation_unit_for_va(va)
+            group = compiler_translation_unit_for_va(va)
             self.assertIsNotNone(group)
             assert group is not None
             validate_translation_unit(group)
             paths.add(compiler_source_path(record))
             slugs.add(compiler_artifact_slug(record))
 
-        self.assertEqual(paths, {REPO_ROOT / "src" / "rge_zone_map_tu.cpp"})
+        self.assertEqual(paths, {REPO_ROOT / "src" / "zone_map.cpp"})
         self.assertEqual(slugs, {"tu_zone_map"})
+        self.assertIsNone(translation_unit_for_va(0x005468C0))
 
-    def test_com_obj_owners_use_one_grouped_object(self) -> None:
+    def test_com_obj_owners_use_natural_source_module_without_stale_group(self) -> None:
         expected_vas = (
             0x0042FC90,
             0x00430EC0,
@@ -61,15 +64,19 @@ class TranslationUnitTests(unittest.TestCase):
 
         for va in expected_vas:
             record = function_record_by_va(va)
-            group = translation_unit_for_va(va)
-            self.assertIsNotNone(group)
-            assert group is not None
-            validate_translation_unit(group)
+            self.assertIsNone(translation_unit_for_va(va))
+            self.assertIsNone(compiler_translation_unit_for_va(va))
             paths.add(compiler_source_path(record))
             slugs.add(compiler_artifact_slug(record))
 
-        self.assertEqual(paths, {REPO_ROOT / "src" / "com_obj_tu.cpp"})
-        self.assertEqual(slugs, {"tu_com_obj_enter"})
+        self.assertEqual(paths, {REPO_ROOT / "src" / "com_obj.cpp"})
+        self.assertEqual(
+            slugs,
+            {
+                f"{va:08X}_{function_record_by_va(va)['name']}"
+                for va in expected_vas
+            },
+        )
 
     def test_point_module_maps_multiple_exact_owners_to_one_normal_source(self) -> None:
         point = next(group for group in load_translation_units() if group["name"] == "point")
@@ -114,40 +121,37 @@ class TranslationUnitTests(unittest.TestCase):
             for issue in issues
             if issue.code == "pdb-owner-mismatch"
         }
-        self.assertTrue(
-            mismatch_vas <= {
-                "004304A0",
-                "004AD680",
-                "004BFFE0",
-                "004DAFF0",
-                "004348F0",
-                "00467A50",
-            }
-        )
+        configured_vas = {
+            str(va).upper()
+            for group in load_translation_units()
+            for va in group["owners"]
+        }
+        self.assertTrue(mismatch_vas <= configured_vas)
 
-        # Current grouped objects may all be canonical. Keep the PDB-owner
-        # rejection test independent from mutable build output.
-        object_path = REPO_ROOT / "build" / "obj" / "tu_com_obj_enter.obj"
-        if not object_path.is_file():
-            self.skipTest("grouped object is not available in this checkout")
-        group = copy.deepcopy(load_translation_units()[0])
+        # Keep the PDB-owner rejection test independent from mutable build
+        # output. The source module supplies the expected owner.
+        group = copy.deepcopy(
+            next(group for group in load_translation_units() if group["name"] == "zone_map")
+        )
         with patch.object(
             validation_module,
             "_mapped_owner_symbols",
             return_value={
-                "0042FC90": (
-                    "?calc_attack_modifier@Other_Combat_Object"
-                    "@@QAEMPAURGE_Armor_Weapon_Info@@H@Z"
+                "005473B0": (
+                    "?get_zone_map@Other_Zone_Map_List"
+                    "@@QAEPAVRGE_Zone_Map@@PAMJAAH@Z"
                 ),
             },
         ):
-            forced_issues = validate_translation_units([group], object_dir=object_path.parent)
+            forced_issues = validate_translation_units(
+                [group], object_dir=REPO_ROOT / "build" / "obj"
+            )
         forced_mismatch_vas = {
             issue.message.split(" owner ", 1)[1].split(" ", 1)[0]
             for issue in forced_issues
             if issue.code == "pdb-owner-mismatch"
         }
-        self.assertIn("0042FC90", forced_mismatch_vas)
+        self.assertIn("005473B0", forced_mismatch_vas)
 
     def test_manifest_validation_rejects_duplicate_va(self) -> None:
         groups = load_translation_units()
@@ -206,28 +210,55 @@ class TranslationUnitTests(unittest.TestCase):
         self.assertIn("c-language-mode", {issue.code for issue in issues})
 
     def test_manifest_validation_requires_owner_include_order_and_count(self) -> None:
-        group = copy.deepcopy(load_translation_units()[1])
-        owners = group["owners"]
-        assert isinstance(owners, dict)
-        group["owners"] = dict(reversed(list(owners.items())))
+        first_va = "00405D00"
+        second_va = "00405D10"
+        first_record = function_record_by_va(int(first_va, 16))
+        second_record = function_record_by_va(int(second_va, 16))
+        first_path = preferred_source_path(first_record)
+        second_path = preferred_source_path(second_record)
+        self.assertTrue(first_path.is_file())
+        self.assertTrue(second_path.is_file())
 
-        issues = validate_translation_units([group])
-        issue_codes = {issue.code for issue in issues}
+        (REPO_ROOT / "build").mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT / "build") as temp_dir:
+            temp_root = Path(temp_dir)
+            wrapper = temp_root / "legacy_tu.cpp"
+            first_include = Path(os.path.relpath(first_path, wrapper.parent)).as_posix()
+            second_include = Path(os.path.relpath(second_path, wrapper.parent)).as_posix()
+            wrapper.write_text(
+                f'#include "{first_include}"\n#include "{second_include}"\n',
+                encoding="utf-8",
+            )
+            group = {
+                "name": "legacy_order_test",
+                "source": wrapper.relative_to(REPO_ROOT).as_posix(),
+                "flags": "",
+                "owners": {
+                    first_va: first_path.relative_to(REPO_ROOT).as_posix(),
+                    second_va: second_path.relative_to(REPO_ROOT).as_posix(),
+                },
+                "symbols": {},
+                "module": "",
+            }
 
-        self.assertIn("owner-include-order", issue_codes)
+            reversed_group = copy.deepcopy(group)
+            owners = reversed_group["owners"]
+            assert isinstance(owners, dict)
+            reversed_group["owners"] = dict(reversed(list(owners.items())))
+            issues = validate_translation_units([reversed_group])
+            self.assertIn("owner-include-order", {issue.code for issue in issues})
 
-        missing_owner = copy.deepcopy(load_translation_units()[1])
-        missing_owners = missing_owner["owners"]
-        assert isinstance(missing_owners, dict)
-        first_va = next(iter(missing_owners))
-        missing_owners[first_va] = missing_owners[first_va] + ".missing"
-        missing_issues = validate_translation_units([missing_owner])
+            missing_owner = copy.deepcopy(group)
+            missing_owners = missing_owner["owners"]
+            assert isinstance(missing_owners, dict)
+            missing_owners[first_va] = missing_owners[first_va] + ".missing"
+            missing_issues = validate_translation_units([missing_owner])
 
         self.assertIn("owner-include-count", {issue.code for issue in missing_issues})
 
     def test_manifest_validation_requires_exact_symbols_for_duplicate_names(self) -> None:
         group = copy.deepcopy(
-            next(group for group in load_translation_units() if group["name"] == "panel_create_button")
+            next(group for group in load_translation_units() if group["name"] == "tscenaro")
         )
         group["symbols"] = {}
 
@@ -237,12 +268,12 @@ class TranslationUnitTests(unittest.TestCase):
         self.assertEqual(2, len(missing))
 
     def test_manifest_validation_checks_configured_symbols_in_grouped_object(self) -> None:
-        object_path = REPO_ROOT / "build" / "obj" / "tu_panel_create_button.obj"
+        object_path = REPO_ROOT / "build" / "obj" / "tu_tscenaro.obj"
         if not object_path.is_file():
             self.skipTest("grouped object is not available in this checkout")
 
         group = copy.deepcopy(
-            next(group for group in load_translation_units() if group["name"] == "panel_create_button")
+            next(group for group in load_translation_units() if group["name"] == "tscenaro")
         )
         symbols = group["symbols"]
         assert isinstance(symbols, dict)
@@ -258,6 +289,7 @@ class TranslationUnitTests(unittest.TestCase):
         assert isinstance(owners, dict)
         owner = next(iter(owners.values()))
 
+        (REPO_ROOT / "build").mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(dir=REPO_ROOT / "build") as temp_dir:
             manifests_dir = Path(temp_dir)
             manifest = manifests_dir / "build_isolated_owner.json"
