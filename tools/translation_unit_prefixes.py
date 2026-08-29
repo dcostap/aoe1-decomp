@@ -16,6 +16,7 @@ from common import (
     load_pdb_function_source_map,
     load_toolchain,
     preferred_source_path,
+    source_module_entry_for_va,
     repo_path,
     tool_env,
     translation_unit_for_va,
@@ -111,16 +112,44 @@ def _normalized_pdb_path(value: str) -> str:
 
 def _matching_owner_path(va: int) -> Path:
     path = preferred_source_path(function_record_by_va(va)).resolve()
-    matching_dir = (REPO_ROOT / "src" / "matching").resolve()
-    try:
-        path.relative_to(matching_dir)
-    except ValueError as error:
+    if not _is_matching_owner_path(va, path):
         raise ValueError(
-            f"{va:08X} is not an exact anchor in src/matching: {path}"
-        ) from error
+            f"{va:08X} is not an exact anchor in a current matching owner: {path}"
+        )
     if not path.is_file():
         raise ValueError(f"{va:08X} canonical owner is missing: {path}")
     return path
+
+
+def _is_matching_owner_path(va: int, owner_path: Path) -> bool:
+    """Return whether a path is a current matching-bank owner.
+
+    A natural source module is the compiler-facing owner after reunification.
+    Keep the legacy matching-bank path valid for pre-reunification groups and
+    test fixtures.
+    """
+    resolved = owner_path.resolve()
+    matching_dir = (REPO_ROOT / "src" / "matching").resolve()
+    try:
+        resolved.relative_to(matching_dir)
+    except ValueError:
+        pass
+    else:
+        return True
+
+    return _natural_matching_owner_path(va, resolved)
+
+
+def _natural_matching_owner_path(va: int, owner_path: Path) -> bool:
+    """Return whether a matching VA uses its natural source-module path."""
+    entry = source_module_entry_for_va(va)
+    if entry is None or str(entry.get("status") or "") != "matching":
+        return False
+    module = entry.get("module")
+    if not isinstance(module, dict):
+        return False
+    source = repo_path(str(module.get("source") or "")).resolve()
+    return owner_path.resolve() == source
 
 
 def validate_authentic_prefix(
@@ -171,17 +200,17 @@ def validate_authentic_prefix(
         owner_path = owner_paths.get(prefix.va)
         if owner_path is None:
             raise ValueError(f"{prefix.va:08X} has no configured compiler-facing owner")
-        matching_dir = (REPO_ROOT / "src" / "matching").resolve()
-        try:
-            owner_path.resolve().relative_to(matching_dir)
-        except ValueError as error:
+        if not _is_matching_owner_path(prefix.va, owner_path):
             raise ValueError(
-                f"{prefix.va:08X} is not an exact anchor in src/matching: {owner_path}"
-            ) from error
+                f"{prefix.va:08X} is not an exact anchor in a current matching owner: {owner_path}"
+            )
         previous = prefix
 
     resolved = [owner_paths[prefix.va].resolve() for prefix in prefixes]
-    if len(resolved) != len(set(resolved)):
+    if len(resolved) != len(set(resolved)) and not all(
+        _natural_matching_owner_path(prefix.va, owner_paths[prefix.va])
+        for prefix in prefixes
+    ):
         raise ValueError("Two prefix VAs use the same compiler-facing owner")
     return address_conflicts
 
