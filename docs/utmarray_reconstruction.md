@@ -38,19 +38,27 @@ The same type records prove these methods and access levels:
 
 ## Exact code evidence
 
-Pinned VC5 compiles six emitted `ManagedArray<int>` methods from the shared
+Pinned VC5 compiles five emitted `ManagedArray<int>` methods from the shared
 header to the original bytes:
 
 | VA | Method | Size |
 |---:|---|---:|
 | `00408D20` | destructor | 47 |
-| `004147A0` | `resize` | 95 |
 | `004DE980` | `contains` | 70 |
 | `004DE9D0` | `add` | 154 |
 | `004EA750` | `operator[]` | 102 |
 | `004F1390` | `remove` | 89 |
 
-Run this command to validate the header:
+The PDB proves that `ManagedArray<int>::resize(int)` is protected. The current
+reconstructed header keeps `resize` public because reconstructed external
+callers still depend on that access. `tools/validate_utmarray.py` reports the
+missing protected signature `?resize@?$ManagedArray@H@@IAEHH@Z` under this
+header. This is an open access and owner blocker. Do not change the header
+access or external callers until that boundary is resolved. The other five
+emitted exact methods remain valid.
+
+Run this command to check the header. It currently stops at the missing
+protected `resize` signature noted above:
 
 ```text
 python tools/validate_utmarray.py

@@ -9,10 +9,12 @@ functions. The original inventory and PDB records remain the evidence source.
 
 | Group | Count |
 | --- | ---: |
-| Valid unresolved header-owned standalone rows | 100 |
+| Valid unresolved header-owned standalone rows | 101 |
 | Normal canonical-owner rows without duplicate probes | 6 |
-| Newly classified compiler-generated rows | 30 |
+| Newly classified compiler-generated rows | 29 |
 | Existing intentional unclaimed exceptions | 60 |
+| Normal corpus rows | 5,428 |
+| Compiler-generated corpus rows | 256 |
 
 The six normal rows remain in the normal corpus. Their standalone probes are
 removed because their canonical bodies already exist:
@@ -26,11 +28,16 @@ removed because their canonical bodies already exist:
 The deleted files for these rows were duplicate probes, not source owners.
 The inventory records their PDB header or source-module ownership.
 
+`004147A0` remains a normal unresolved standalone row. Its PDB record proves
+protected `ManagedArray<int>::resize(int)` ownership, but reconstructed external
+callers still depend on the current public header access. The standalone source
+keeps this access debt visible until the owner boundary is resolved.
+
 ## Newly classified generated rows
 
 The manifest adds these rows:
 
-- `00408D20`, `004147A0`, `004EA750`, and `004F1390`:
+- `00408D20`, `004EA750`, and `004F1390`:
   `compiler_generated_template_instantiation` for `ManagedArray<int>` methods
   emitted from `include/utmarray.h`.
 - `00404A00`, `00404C80`, `00406DB0`, `0041A200`, `00441A60`, `004754B0`,
@@ -49,9 +56,9 @@ normal source owner.
 
 ## Deleted-file verification
 
-All 30 generated source-bank files named by the manifest rows were deleted.
-The four `ManagedArray<int>` probes are covered by the exact header method
-records in `docs/utmarray_reconstruction.md` and `tools/validate_utmarray.py`.
+All 29 generated source-bank files named by the manifest rows were deleted.
+The three remaining `ManagedArray<int>` probes are covered by the exact header
+method records in `docs/utmarray_reconstruction.md`.
 The 23 scalar-destructor probes have matching destructor symbols and direct
 base-destructor evidence in `inventory/functions/` and the original Ghidra
 listings. The three `00463BA0`-`00463BD0` probes have the `E4`/`E3`/`E2`
