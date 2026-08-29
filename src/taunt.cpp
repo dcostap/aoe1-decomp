@@ -9,6 +9,8 @@
 #include <string.h>
 
 extern "C" int __cdecl _strnicmp(const char*, const char*, unsigned int);
+// BINARY NOTE: These are the anonymous MuteOn and MuteOff literals at
+// 0x00576548 and 0x00576550. No canonical providers expose either literal.
 extern const char DAT_00576548[];
 extern const char DAT_00576550[];
 
@@ -103,6 +105,8 @@ int TTaunt::GetTauntNo(char* text) {
 // VA: 00509640 TTaunt::GetTauntText
 // PDB source: taunt.cpp lines 146-157.
 char* TTaunt::GetTauntText(int id) {
+    // BINARY NOTE: The executable copies the unnamed "Taunts you!" literal
+    // at 0x00588B88. No reviewed shared provider exposes this literal.
     strcpy(this->TBuff, (const char*)0x588B88);
     return this->TBuff;
 }

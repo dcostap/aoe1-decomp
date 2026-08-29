@@ -77,13 +77,13 @@ int RGE_Communications_Addresses::SetIPAliases(char* out_buffer)
 
 // PDB source: com_addr.cpp, lines 138-143.
 // BINARY NOTE: pIPAD[index] is formed before the count check. The fallback is
-// the shared empty string at 0x580460.
+// the natural empty string literal used by the original source.
 char* RGE_Communications_Addresses::GetAddress(unsigned int index) {
     if (this->pIPAD + index != 0 &&
         index <= this->AddressesAvailable) {
         return this->pIPAD[index].DottedIPAddress;
     }
-    return (char*)0x580460;
+    return "";
 }
 
 // PDB source: com_addr.cpp, lines 146-154.
@@ -95,11 +95,11 @@ char* RGE_Communications_Addresses::GetAlias(unsigned int index) {
     // ORIGINAL BUG: The alias count itself passes this test and selects the next record.
     // A >= correction would reject that shipped case and change malformed-input behavior.
     if (index > this->AliasesAvailable) {
-        return (char*)0x00580460;
+        return "";
     }
     alias = this->pIPAD[index].Alias;
     if (alias == 0) {
-        return (char*)0x00580460;
+        return "";
     }
     return alias;
 }

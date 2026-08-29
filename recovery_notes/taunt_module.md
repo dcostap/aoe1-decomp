@@ -29,3 +29,11 @@ removed. The source preserves the reviewed matching bodies and the dedicated
 with `include/taunt.h` after this module is integrated, then remove the old
 context header. This request affects the Chat module and needs its grouped
 translation-unit validation. Do not add another `TTaunt` layout to Chat.
+
+## Unresolved data references
+
+The MuteOn and MuteOff literals at `00576548` and `00576550` have no reviewed
+shared providers. `GetTauntText` also uses the unnamed `"Taunts you!"` literal
+at `00588B88`, which has no reviewed shared provider. The source keeps the
+existing generated aliases and absolute literal address. It does not invent
+storage or replace them with guessed globals.

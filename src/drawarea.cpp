@@ -1,5 +1,6 @@
 #include "../include/drawarea.h"
 #include "../include/color.h"
+#include "../include/game_globals.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -10,7 +11,8 @@ extern int DDSys_CanColorFill;
 extern int PalSetRes;
 extern int FullPalSets;
 extern int AniPalSets;
-extern unsigned int DAT_0062e64c;
+// BINARY NOTE: DAT_0062e650 is the unnamed dword adjacent to the proved
+// DAT_0062e64c storage at 0x0062E64C. No canonical symbol owns this dword.
 extern unsigned int DAT_0062e650;
 struct TRANSINFO;
 extern "C" void __cdecl TransDibBlt(
@@ -27,7 +29,6 @@ extern "C" void* __cdecl malloc(unsigned int);
 extern "C" void __cdecl free(void*);
 extern void* __cdecl calloc(unsigned int, unsigned int);
 extern void* __cdecl operator new(unsigned int);
-#define system_ignore_size_messages (*(int*)0x62E63C)
 #pragma function(memset)
 
 TDrawSystem::TDrawSystem()
@@ -2305,6 +2306,8 @@ void TDrawArea::take_snapshot(char* name, int& number)
     int file;
     while (1) {
         if (name == 0) {
+            // BINARY NOTE: 0x005845E4 is the shared default snapshot format.
+            // No reviewed provider exposes this literal to this TU.
             sprintf(BMPFile, (char*)0x5845e4, number);
         }
         else {

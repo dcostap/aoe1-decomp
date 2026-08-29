@@ -12,3 +12,8 @@ Fresh grouped validation after migration and IPAD restoration produced
 `MATCH`, `0.0000%`, with the complete owner and boundary checks.
 
 The method keeps the shipped `>` count test. The count itself selects the next record.
+
+The fallback now uses the natural empty string literal. The unnamed storage at
+`00580460` has no PDB GDATA or reviewed source provider. The fresh grouped
+check still reports `MATCH`, `0.0000%`, and no boundary or relocation-target
+errors.

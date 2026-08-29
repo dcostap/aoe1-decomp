@@ -80,3 +80,22 @@ Their source preserves the recovered behavior, but broad code-generation drift
 remains. The current module builds are 317 differing bytes for Paint and 328
 differing bytes for DrawLine. `004438F0 GetDCErrorNum` is padding-only and is
 not a normal owner.
+
+## Canonical global and string audit
+
+`system_ignore_size_messages` and `DAT_0062e64c` now come from
+`include/game_globals.h`. The old drawarea-only absolute storage macro and
+duplicate declaration are removed. The exact owners remain exact after this
+include change.
+
+The following values remain local because the original evidence does not prove
+a reusable provider:
+
+- `DDSys_CanColorFill`, `PalSetRes`, `FullPalSets`, and `AniPalSets` have PDB
+  symbols, but no reviewed shared header or storage owner exists yet.
+- `DAT_0062e650` is the unnamed dword next to `DAT_0062e64c` at `0062E650`.
+- The default snapshot format at `005845E4` is shared with `spanlist.cpp`, but
+  neither module has a reviewed shared string provider.
+
+The source keeps these declarations or the absolute format address. It does
+not invent a carrier or guess a global owner.
