@@ -18,7 +18,7 @@ not copy the full generated report.
 Two baseline failures are resolved:
 
 - `tscenaro`: current main `4858419ce` added the missing `rge_base_game` provider.
-- `Panel`: `164913da4` added the proven `TPanel` friend for `prog_active`.
+- `Panel`: `258b4a7d2` added the proven `TPanel` friend for `prog_active`.
 
 The remaining debt has 67 baseline modules:
 
@@ -46,10 +46,13 @@ The remaining debt has 67 baseline modules:
 
 ## Focused proof
 
-The rebased four-module gate passed for `dib`, `basegame_cpp`, `com_loby`, and
-`Panel`. It reported 311 registered-owner matches.
+The final four-module gate passed compilation for `dib`, `basegame_cpp`,
+`com_loby`, and `Panel`. It reported 310 registered-owner matches and five
+owner regressions. Dib has three known drift or symbol-kind regressions.
+BaseGame has the stale `debug_srand` symbol claim. `setup_main_window`
+regressed after the current Timeline and scenario integration; preserve both.
 
-The gate report is `build/audits/rebased_compile2/report.json`.
+The gate report is `build/audits/final_rebased_compile/report.json`.
 Exact checks returned `MATCH` and `0.0000%` for owners `00439700`, `0041C7D0`,
 `0041EE90`, and `00463BE0`.
 
