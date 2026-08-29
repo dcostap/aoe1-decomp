@@ -14,6 +14,7 @@ if str(TOOLS_DIR) not in sys.path:
 from register_candidate_tu import (  # noqa: E402
     candidate_group,
     candidate_flag_errors,
+    affected_owner_checks,
     changed_owner_checks,
     introduced_validation_issues,
     merge_candidate_group,
@@ -215,6 +216,35 @@ class RegisterCandidateTranslationUnitTests(unittest.TestCase):
         self.assertEqual(
             changed_owner_checks(groups, candidate),
             {"00401010": "src/matching/00401010_demo.cpp"},
+        )
+
+    def test_affected_owner_checks_keeps_existing_group_owners(self) -> None:
+        groups = [
+            {
+                "name": "demo",
+                "source": "src/demo_tu.cpp",
+                "flags": "config/flags/default.rsp",
+                "owners": {
+                    "00401010": "src/matching/00401010_demo.cpp",
+                    "00401020": "src/matching/00401020_old.cpp",
+                },
+            }
+        ]
+        candidate = {
+            "name": "demo",
+            "source": "src/demo_tu.cpp",
+            "flags": "config/flags/default.rsp",
+            "owners": {"00401030": "src/matching/00401030_added.cpp"},
+        }
+        merged, _ = merge_candidate_group(groups, candidate)
+
+        self.assertEqual(
+            affected_owner_checks(groups, candidate, merged),
+            {
+                "00401010": "src/matching/00401010_demo.cpp",
+                "00401020": "src/matching/00401020_old.cpp",
+                "00401030": "src/matching/00401030_added.cpp",
+            },
         )
 
     def test_candidate_flag_errors_returns_only_current_errors(self) -> None:

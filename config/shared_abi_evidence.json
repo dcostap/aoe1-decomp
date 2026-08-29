@@ -5,7 +5,7 @@
       "name": "rge_base_game",
       "storage_va": "0062C574",
       "declaration": "extern RGE_Base_Game* rge_base_game;",
-      "header": "include/rge_base_game_global.h",
+      "header": "include/game_globals.h",
       "definition": "src/game_globals.cpp",
       "codegen_note": "Use the extern symbol in compiler-facing source. An absolute-dereference macro can change VC5 relocations, scheduling, and register coloring.",
       "evidence": [

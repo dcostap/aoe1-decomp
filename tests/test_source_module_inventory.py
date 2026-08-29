@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -12,6 +14,7 @@ if str(TOOLS_DIR) not in sys.path:
 
 from generate_source_module_inventory import (  # noqa: E402
     build_source_module_inventory,
+    _diff_freshness,
 )
 from common import load_translation_units  # noqa: E402
 
@@ -133,6 +136,32 @@ class SourceModuleInventoryTests(unittest.TestCase):
                 if owner["exact_anchor"]:
                     self.assertTrue(owner["exact_evidence"].startswith("build/diff/"))
                     self.assertEqual(owner["exact_status"], "MATCH")
+
+    def test_strict_diff_freshness_rejects_stale_build_fingerprint(self) -> None:
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT / "build") as temporary:
+            root = Path(temporary)
+            source = root / "module.cpp"
+            diff = root / "module.diff.json"
+            source.write_text("void module() {}\n", encoding="utf-8")
+            diff.write_text(
+                json.dumps(
+                    {
+                        "rebuilt_source_map": {"source": str(source)},
+                        "build_input_fingerprint": "old",
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            fresh, reason = _diff_freshness(
+                diff,
+                expected_source=source,
+                input_paths=[source],
+                expected_build_fingerprint="current",
+            )
+
+        self.assertFalse(fresh)
+        self.assertEqual(reason, "stale-build-inputs")
 
 
 if __name__ == "__main__":

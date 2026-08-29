@@ -290,11 +290,23 @@ class TranslationUnitTests(unittest.TestCase):
         )
         symbols = group["symbols"]
         assert isinstance(symbols, dict)
-        symbols["00468CB0"] = "?not_a_real_symbol@@YAXXZ"
+        owner_va = next(iter(group["owners"]))
+        symbols[owner_va] = "?not_a_real_symbol@@YAXXZ"
 
         issues = validate_translation_units([group], object_dir=object_path.parent)
 
         self.assertIn("symbol-not-defined", {issue.code for issue in issues})
+
+    def test_manifest_validation_rejects_missing_grouped_object(self) -> None:
+        group = copy.deepcopy(
+            next(group for group in load_translation_units() if group["name"] == "point")
+        )
+        with tempfile.TemporaryDirectory() as temporary:
+            issues = validate_translation_units(
+                [group], object_dir=Path(temporary)
+            )
+
+        self.assertIn("missing-grouped-object", {issue.code for issue in issues})
 
     def test_isolated_owner_overlap_is_reported(self) -> None:
         group = load_translation_units()[1]

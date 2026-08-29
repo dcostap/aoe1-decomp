@@ -463,6 +463,14 @@ def validate_translation_units(
                 )
 
         if object_dir is not None:
+            object_path = object_dir / f"tu_{slugify_name(name)}.obj"
+            if not object_path.is_file():
+                issues.append(
+                    _issue(
+                        "missing-grouped-object",
+                        f"{group_label} grouped object is missing: {object_path}",
+                    )
+                )
             owner_symbols = _mapped_owner_symbols(group, object_dir, records)
             if owner_symbols is not None:
                 for va, _, record in owner_records:

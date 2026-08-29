@@ -15,11 +15,13 @@ import json
 from pathlib import Path
 from typing import Any, Iterable
 
+from build_cache import build_input_manifest
 from common import (
     BUILD_DIR,
     REPO_ROOT,
     load_pdb_function_line_changes,
     load_pdb_function_source_map,
+    load_toolchain,
     source_module_for_name,
     validate_source_modules,
     load_translation_units,
@@ -101,6 +103,7 @@ def _exact_fields(
     expected_source: Path,
     input_paths: Iterable[Path],
     expected_pdb_symbol: str,
+    expected_build_fingerprint: str | None = None,
 ) -> tuple[str, bool, str]:
     """Return status, anchor state, and the evidence source.
 
@@ -118,6 +121,7 @@ def _exact_fields(
         diff_path,
         expected_source=expected_source,
         input_paths=input_paths,
+        expected_build_fingerprint=expected_build_fingerprint,
     )
     if not freshness[0]:
         return "UNVALIDATED", False, freshness[1]
@@ -163,6 +167,7 @@ def _diff_freshness(
     *,
     expected_source: Path,
     input_paths: Iterable[Path],
+    expected_build_fingerprint: str | None = None,
 ) -> tuple[bool, str]:
     """Check that a diff artifact represents the current grouped source.
 
@@ -194,6 +199,18 @@ def _diff_freshness(
         pass
     if rebuilt != expected:
         return False, "stale-source-context"
+
+    if expected_build_fingerprint is not None:
+        rebuilt_extraction = payload.get("rebuilt_extraction")
+        artifact_fingerprint = str(payload.get("build_input_fingerprint") or "").strip()
+        if not artifact_fingerprint and isinstance(rebuilt_extraction, dict):
+            artifact_fingerprint = str(
+                rebuilt_extraction.get("build_input_fingerprint") or ""
+            ).strip()
+        if not artifact_fingerprint:
+            return False, "missing-build-fingerprint"
+        if artifact_fingerprint != expected_build_fingerprint:
+            return False, "stale-build-inputs"
 
     try:
         artifact_mtime = diff_path.stat().st_mtime_ns
@@ -287,8 +304,19 @@ def _module_context(
     }
 
 
+def _current_build_fingerprint(source: Path, flags: Path) -> str:
+    """Return the current compiler-input fingerprint for one source module."""
+    try:
+        manifest = build_input_manifest(source, flags, load_toolchain())
+    except (KeyError, OSError, ValueError):
+        return ""
+    return str(manifest.get("fingerprint") or "").strip()
+
+
 def build_source_module_inventory(
     groups: Iterable[dict[str, object]] | None = None,
+    *,
+    require_fresh_build: bool = False,
 ) -> dict[str, Any]:
     """Join the configured groups with PDB metadata and live status.
 
@@ -351,6 +379,20 @@ def build_source_module_inventory(
             input_paths.append(REPO_ROOT / _portable(source_module["header"]))
         flags_path = REPO_ROOT / raw_flags
         input_paths.append(flags_path)
+        build_fingerprint: str | None = None
+        has_diff_artifact = any(
+            (
+                BUILD_DIR
+                / "diff"
+                / f"{str((status_by_va.get(va) or {}).get('slug') or Path(_portable(owner_paths[va])).stem)}.json"
+            ).is_file()
+            for va in ordered_vas
+        )
+        if require_fresh_build and has_diff_artifact:
+            # Strict inventories may use an exact anchor only when its diff
+            # carries the fingerprint for the current grouped compiler input.
+            # A missing fingerprint is stale evidence, not a reason to trust it.
+            build_fingerprint = _current_build_fingerprint(wrapper_path, flags_path)
         owners: list[dict[str, Any]] = []
         for index, va in enumerate(ordered_vas, start=1):
             source_row = source_map.get(va)
@@ -371,6 +413,7 @@ def build_source_module_inventory(
                 expected_source=wrapper_path,
                 input_paths=input_paths,
                 expected_pdb_symbol=symbol_name,
+                expected_build_fingerprint=build_fingerprint,
             )
             owner = {
                 "address_order": index,
@@ -549,7 +592,7 @@ def _validate_strict(inventory: dict[str, Any]) -> None:
 
 def main() -> None:
     args = parse_args()
-    inventory = build_source_module_inventory()
+    inventory = build_source_module_inventory(require_fresh_build=args.strict)
     if args.strict:
         _validate_strict(inventory)
     output = args.output or (DEFAULT_JSON_PATH if args.format == "json" else DEFAULT_CSV_PATH)

@@ -213,6 +213,29 @@ def changed_owner_checks(
     return changed
 
 
+def affected_owner_checks(
+    groups: list[dict[str, object]],
+    candidate: dict[str, object],
+    merged_groups: list[dict[str, object]],
+) -> dict[str, object]:
+    """Return every owner rebuilt by an update to an existing grouped TU.
+
+    The candidate compiler run uses the complete wrapper. Adding or changing
+    one owner can therefore change code for an existing owner as well. Check
+    all owners in the merged group before accepting the registration.
+    """
+    target = next(
+        (group for group in merged_groups if group.get("name") == candidate.get("name")),
+        None,
+    )
+    if target is None:
+        raise ValueError(f"Candidate group {candidate.get('name')!r} is missing after merge")
+    owners = target.get("owners")
+    if not isinstance(owners, dict):
+        raise ValueError(f"Candidate group {candidate.get('name')!r} has no owner map")
+    return dict(owners)
+
+
 def validate_report(
     payload: dict[str, object], proposal_path: Path, report_path: Path
 ) -> dict[str, object]:
@@ -353,8 +376,8 @@ def main() -> int:
             candidate["name"] = args.name
         registered_groups = load_translation_units()
         baseline_issues = validate_translation_units(registered_groups)
-        owners_to_check = changed_owner_checks(registered_groups, candidate)
         groups, action = merge_candidate_group(registered_groups, candidate)
+        owners_to_check = affected_owner_checks(registered_groups, candidate, groups)
         flag_errors = candidate_flag_errors(candidate)
         if flag_errors:
             message = "; ".join(str(issue["message"]) for issue in flag_errors)
@@ -404,7 +427,7 @@ def main() -> int:
         print("Restored config/translation_units.json.", file=sys.stderr)
         return 1
     print(
-        f"Changed registered checks: {len(results)}/{len(results)} MATCH, 0.0000%."
+        f"Registered checks: {len(results)}/{len(results)} MATCH, 0.0000%."
     )
     print("Updated config/translation_units.json.")
     return 0
