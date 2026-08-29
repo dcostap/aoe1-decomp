@@ -62,3 +62,9 @@ entries are observed mismatches or accepted source states. The generated
 The grouped result is diagnostic. Source recovery did not byte-tune the scratch
 owners. The direct module now registers its seven exact owners in
 `config/translation_units.json`.
+
+## Compile debt validation
+
+The registered group compiles with `python tools/build_function.py --va
+004C8370 --force`.  Representative owner `004C8370` reports `MATCH` and
+`0.0000%`.  No source or ABI repair was needed in this module.

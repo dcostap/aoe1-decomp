@@ -20,8 +20,6 @@
 
 typedef unsigned char uchar;
 
-extern "C" int __cdecl debug_rand(char* file, int line);
-
 TRIBE_Action_Convert::TRIBE_Action_Convert(int file, RGE_Action_Object* object)
     : RGE_Action(file, object, 1), requiredRange(1.0f)
 {

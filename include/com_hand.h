@@ -182,6 +182,9 @@ typedef char comm_hand_options_size_check[
     (sizeof(COMMPLAYEROPTIONS) == 0x1D0) ? 1 : -1];
 
 class TCommunications_Handler {
+    // com_spd.cpp reads these two source-owned fields in AnalyzeGameSpeed and
+    // AdjustLocalSpeed.  Keep that original cross-class access narrow.
+    friend class RGE_Communications_Speed;
     friend class TRIBE_World;
     friend class TCommunications_Sessions;
     friend class TribeMPCreateDialog;

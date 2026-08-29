@@ -89,6 +89,17 @@ comparison errors.
 All `RGE_Communications_Speed` fields are private. The public method list has
 33 methods in PDB order. `AdjustLocalSpeed` is protected and follows that list.
 
+The source reads `TCommunications_Handler::current_turn` and
+`PlayerOptions.CommandTurnIncrement` in `AdjustLocalSpeed` and
+`AnalyzeGameSpeed`.  `TCommunications_Handler` now grants friendship only to
+`RGE_Communications_Speed`; this preserves the direct, source-backed access
+without making either field public.
+
+The registered group compiles with `python tools/build_function.py --va
+00432620 --force`.  Representative owner `00432620` reports `MATCH` and
+`0.0000%`.  DirectPlay headers and the import library were restored from the
+tracked provider files.  No `basegame.h` change was needed.
+
 ## Rebased integration proof
 
 The fresh grouped proof is `build/candidate_tus/com_spd_integration_proof`.
