@@ -49,3 +49,18 @@ escapes, zero relocation differences, and zero direct-target differences.
 
 The module metadata and registered translation unit list all 82 owners as
 matching.
+
+## Global-storage consolidation repair
+
+The canonical `game_globals.h` declarations for `00577318` through `0057732C`
+are non-const `float` objects. The global inventory records the same type and
+the original constructor uses direct `float` relocations at its `FCOMP` sites.
+The six local `extern const float` declarations therefore conflicted with the
+canonical declarations. They were removed from `src/tscenaro.cpp`.
+
+On 2026-08-29, the complete registered group compiled through
+`build/manifests/build_tu_tscenaro.json`. Owners `0052A990` and `0052AB90`
+both report `MATCH`, `0.0000%`, correct ownership, boundaries, and all
+relocations. The PDB source map identifies `0052AB90` as
+`T_Scenario::T_Scenario` in `tscenaro.cpp`. It covers the repaired
+version-gate references.

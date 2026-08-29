@@ -16,13 +16,6 @@ extern void rge_write_uncompressed(int file, void* data, int size);
 extern void rge_read(int file, void* data, int size);
 extern "C" void __cdecl rge_write(int file, void* data, int size);
 
-extern const float DAT_00577318;
-extern const float DAT_0057731c;
-extern const float DAT_00577320;
-extern const float DAT_00577324;
-extern const float DAT_00577328;
-extern const float DAT_0057732c;
-
 TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario* scenario)
     : RGE_Scenario_Header(scenario) {
     any_sp_victory = scenario->any_sp_victory();

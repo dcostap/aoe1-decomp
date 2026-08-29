@@ -42,3 +42,21 @@ build/candidate_tus/vw_main_natural_policy_repair` compiled the repaired source.
 All 18 matching owners report `MATCH`, `0.0000%`, correct ownership,
 relocations, and boundaries. The generated deleting destructor also reports
 `MATCH`.
+
+## Global-storage consolidation repair
+
+The canonical `game_globals.h` declarations for `00577900`, `00577904`, and
+`00577908` are non-const `float` objects. The global inventory records the
+same type, and the original view code uses direct `float` relocations at its
+`FLD`, `FCOMP`, and `FSUB` sites. The three local `extern const float`
+declarations therefore conflicted with the canonical declarations. They were
+removed from `src/vw_main.cpp`. The duplicate local declarations for
+`allow_user_commands` and `do_draw_log` were also removed; canonical headers
+already provide those declarations.
+
+On 2026-08-29, the complete registered group compiled through
+`build/manifests/build_tu_vw_main.json`. Owners `0053DAB0` and `0053DBA0`
+both report `MATCH`, `0.0000%`, correct ownership, boundaries, and all
+relocations. The PDB source map identifies `0053DBA0` as
+`RGE_Main_View::do_auto_scroll` in `vw_main.cpp`. It covers the repaired
+scrolling-global references.

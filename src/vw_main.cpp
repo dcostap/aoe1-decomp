@@ -29,11 +29,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern int allow_user_commands;
-extern int do_draw_log;
-extern const float DAT_00577900;
-extern const float DAT_00577904;
-extern const float DAT_00577908;
 extern void __cdecl color_log(unsigned char, unsigned char, int);
 extern unsigned long __cdecl debug_timeGetTime(char*, int);
 extern void __cdecl write_draw_log2(char*);
