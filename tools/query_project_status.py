@@ -234,11 +234,14 @@ def annotate_leases(
     for row in rows:
         session = by_va.get(row.get("va", "").upper())
         lease_session = session if session and session_is_active(session) else None
-        if lease_session is None:
+        if lease_session is None and active_by_source:
             try:
-                record = function_record_by_va(int(row.get("va", ""), 16))
-                lease_session = active_by_source.get(compiler_source_path(record).resolve())
-            except (KeyError, TypeError, ValueError):
+                source_text = str(row.get("source_path") or "")
+                source = Path(source_text)
+                if not source.is_absolute():
+                    source = REPO_ROOT / source
+                lease_session = active_by_source.get(source.resolve())
+            except (OSError, ValueError):
                 lease_session = None
         active = lease_session is not None
         total_probes = meaningful_probe_count(session or {}, current_claim_only=False)

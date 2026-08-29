@@ -71,7 +71,7 @@ Run each tool with `--help` before its first use.
      --kind baseline --note "fresh natural translation-unit baseline"
    ```
 
-8. Pin the clean natural source after the baseline.
+   The baseline check pins the clean natural source automatically.
 
 ## Work
 

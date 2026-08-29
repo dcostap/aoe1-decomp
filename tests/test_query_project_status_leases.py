@@ -109,7 +109,10 @@ class QueryProjectStatusLeaseTests(unittest.TestCase):
         self.assertEqual(row["work_last_gain"], "#6@2026-08-02")
 
     def test_annotation_marks_every_function_in_the_leased_translation_unit(self) -> None:
-        rows = [{"va": "00001000"}, {"va": "00003000"}]
+        rows = [
+            {"va": "00001000", "source_path": "src/module.cpp"},
+            {"va": "00003000", "source_path": "src/module.cpp"},
+        ]
 
         def record_for_va(va: int) -> dict[str, str]:
             return {"va": f"{va:08X}", "name": "demo"}
@@ -119,7 +122,7 @@ class QueryProjectStatusLeaseTests(unittest.TestCase):
             patch.object(
                 query_project_status,
                 "compiler_source_path",
-                return_value=Path("C:/repo/src/module.cpp"),
+                return_value=query_project_status.REPO_ROOT / "src" / "module.cpp",
             ),
         ):
             annotated = annotate_leases(rows, self.sessions())

@@ -915,16 +915,8 @@ def run_checked_probe(
 ) -> tuple[int, dict]:
     with _sessions_lock():
         session = _require_active_owner(_load_session(record), owner, record)
-        used = meaningful_probe_count(session)
-        budget = int(session.get("meaningful_probe_budget") or 0)
         next_number = len(session.get("probes") or []) + 1
         clean_baseline = dict(session.get("clean_baseline") or {})
-    if budget and used >= budget and kind not in NON_MEANINGFUL_PROBE_KINDS:
-        print(
-            f"NOTICE: initial probe checkpoint reached ({used}/{budget}); "
-            "this is not a stop rule or evidence of exhaustion.",
-            file=sys.stderr,
-        )
     label = checkpoint.strip() or f"probe-{next_number:03d}-{kind}"
     forbidden = {
         "--va",
@@ -955,6 +947,8 @@ def run_checked_probe(
     result = subprocess.run(command, cwd=REPO_ROOT)
     if result.returncode not in {0, 1}:
         raise RuntimeError(f"check_function failed with exit code {result.returncode}; probe was not recorded")
+    if checkpoint_info(record, label) is None:
+        raise RuntimeError("check_function did not complete a checkpoint; probe was not recorded")
     session = record_probe(record, owner, kind, note, label)
     if kind == "baseline":
         session = pin_clean_baseline(record, owner, note)
@@ -1072,14 +1066,12 @@ def format_session(record: dict[str, str], session: dict | None) -> str:
         total_checks = len(session.get("probes") or [])
         probes = meaningful_probe_count(session)
         total_probes = meaningful_probe_count(session, current_claim_only=False)
-        budget = int(session.get("meaningful_probe_budget") or 0)
-        remaining = max(0, budget - probes) if budget else "unbounded"
         active = "active" if _lease_active(session) else session.get("state", "inactive")
         lines.extend(
             [
                 f"Session: {active}; owner={session.get('owner')} lease={session.get('lease_expires_at')}",
-                f"Meaningful probes this claim: {probes}/{budget or 'unbounded'}; "
-                f"remaining={remaining}; target total={total_probes}; recorded checks={total_checks}",
+                f"Meaningful probes this claim: {probes}; "
+                f"target total={total_probes}; recorded checks={total_checks}",
             ]
         )
         baseline = session.get("clean_baseline") or {}
@@ -1278,15 +1270,14 @@ def format_session_list(rows: list[dict], active_only: bool = False) -> str:
         rows = [row for row in rows if _lease_active(row)]
     if not rows:
         return "No target sessions."
-    lines = ["VA       owner                state     probes  clean  lease/update", "-" * 86]
+    lines = ["VA       owner                state     probes clean  lease/update", "-" * 86]
     for row in rows:
         state = "active" if _lease_active(row) else str(row.get("state", ""))
         probes = meaningful_probe_count(row)
-        budget = row.get("meaningful_probe_budget") or "-"
         when = row.get("lease_expires_at") if state == "active" else row.get("updated_at")
         lines.append(
             f"{row.get('va', ''):<8} {str(row.get('owner', '')):<20} {state:<9} "
-            f"{probes:>3}/{str(budget):<3} {('yes' if row.get('clean_baseline') else 'no'):<6} {when or ''}"
+            f"{probes:>6} {('yes' if row.get('clean_baseline') else 'no'):<6} {when or ''}"
         )
     return "\n".join(lines)
 
@@ -1321,11 +1312,10 @@ def format_history(record: dict[str, str], session: dict | None, limit: int) -> 
             f"Session: {state}; owner={session.get('owner')} "
             f"claimed={session.get('claimed_at')} updated={session.get('updated_at')}"
         )
-        budget = int(session.get("meaningful_probe_budget") or 0)
         lines.append(
             f"Probes: {len(probes)} recorded; "
-            f"{meaningful_probe_count(session)} meaningful this claim "
-            f"(budget {budget or 'unbounded'}); checker checkpoints: {len(runs)}"
+            f"{meaningful_probe_count(session)} meaningful this claim; "
+            f"checker checkpoints: {len(runs)}"
         )
     lines.append("")
     lines.append("Checker runs (newest first):")
@@ -1516,7 +1506,7 @@ def parse_args() -> argparse.Namespace:
         "--budget",
         type=int,
         default=20,
-        help="Planning budget for meaningful hypotheses (around 20; not a stop rule).",
+        help=argparse.SUPPRESS,
     )
     start.add_argument("--lease-hours", type=float, default=8.0, help="Lease duration in hours (default 8.0).")
     start.add_argument("--force", action="store_true", help="Deliberately take over another active lease (use with care).")
@@ -1638,7 +1628,7 @@ def main() -> None:
             if args.lease_hours <= 0:
                 raise ValueError("--lease-hours must be positive")
             session = start_session(record, args.owner, args.budget, args.lease_hours, args.force)
-            print(format_session(record, session))
+            print(format_brief(record, session, 20))
         elif args.command == "probe":
             session = record_probe(record, args.owner, args.kind, args.note, args.checkpoint)
             if args.kind == "baseline":

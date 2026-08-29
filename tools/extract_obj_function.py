@@ -20,6 +20,7 @@ from common import (
     repo_path,
     translation_unit_for_va,
 )
+from original_fpo import load_original_owner_symbols
 
 
 PADDING_BYTES = {0x90, 0xCC}
@@ -236,6 +237,9 @@ def main() -> None:
         group = translation_unit_for_va(va)
         symbols = group.get("symbols", {}) if group is not None else {}
         exact_symbol = symbols.get(f"{va:08X}") if isinstance(symbols, dict) else None
+        if not exact_symbol:
+            original_symbols, _linkages = load_original_owner_symbols()
+            exact_symbol = original_symbols.get(f"{va:08X}")
         if exact_symbol:
             symbol = select_exact_function_symbol(obj, str(exact_symbol))
         else:

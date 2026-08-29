@@ -164,11 +164,35 @@ def direct_call_symbols_match(original: str, rebuilt: str) -> bool:
 
 _SIMPLE_OWNER_NAME_RE = re.compile(r"~?[A-Za-z_][A-Za-z0-9_]*$")
 _VC5_OPERATOR_CODES = {
+    "??4": "operator=",
+    "??5": "operator>>",
+    "??6": "operator<<",
+    "??7": "operator!",
     "??8": "operator==",
     "??9": "operator!=",
+    "??A": "operator[]",
+    "??D": "operator*",
+    "??E": "operator++",
+    "??F": "operator--",
+    "??G": "operator-",
+    "??H": "operator+",
+    "??I": "operator&",
+    "??K": "operator/",
+    "??L": "operator%",
     "??M": "operator<",
+    "??N": "operator<=",
     "??O": "operator>",
+    "??P": "operator>=",
+    "??Q": "operator,",
+    "??R": "operator()",
+    "??S": "operator~",
+    "??T": "operator^",
+    "??U": "operator|",
+    "??V": "operator&&",
+    "??W": "operator||",
+    "??X": "operator*=",
     "??Y": "operator+=",
+    "??Z": "operator-=",
 }
 _VC5_TEMPLATE_TYPE_CODES = {
     "D": "char",
@@ -241,6 +265,25 @@ def owning_function_symbol_validation(
         result["status"] = (
             "match"
             if rebuilt == expected and pdb_name == stdcall.group(1)
+            else "mismatch"
+        )
+        return result
+    if rebuilt.startswith("??B") and expected.startswith("operator"):
+        qualified = expected_qualified_name.strip()
+        qualified_operator = qualified.rsplit("::", 1)[-1] if qualified else ""
+        expected_owner = qualified.rsplit("::", 1)[0] if "::" in qualified else ""
+        scope = rebuilt[3:].split("@@", 1)[0]
+        owner_parts = [part for part in scope.split("@") if part]
+        rebuilt_owner = "::".join(reversed(owner_parts))
+        normalize_conversion = lambda value: re.sub(r"[\s_]", "", value)
+        result["expected_normalized"] = normalize_conversion(expected)
+        result["rebuilt_normalized"] = normalize_conversion(qualified_operator)
+        result["expected_owner"] = expected_owner
+        result["rebuilt_owner"] = rebuilt_owner
+        result["status"] = (
+            "match"
+            if result["expected_normalized"] == result["rebuilt_normalized"]
+            and expected_owner == rebuilt_owner
             else "mismatch"
         )
         return result

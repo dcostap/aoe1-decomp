@@ -260,6 +260,8 @@ class TargetSessionTests(unittest.TestCase):
                 with patch.object(
                     target_session.subprocess, "run", return_value=SimpleNamespace(returncode=1)
                 ) as run, patch.object(
+                    target_session, "checkpoint_info", return_value={"id": "probe"}
+                ), patch.object(
                     target_session, "record_probe", return_value={"owner": "AgentA"}
                 ) as record:
                     code, session = target_session.run_checked_probe(
@@ -286,6 +288,26 @@ class TargetSessionTests(unittest.TestCase):
                         self.record, "AgentA", "layout", "note", "", ["--no-history"]
                     )
 
+    def test_checked_probe_does_not_record_an_incomplete_checker_run(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with patch.object(target_session, "REPO_ROOT", root):
+                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                with (
+                    patch.object(
+                        target_session.subprocess,
+                        "run",
+                        return_value=SimpleNamespace(returncode=1),
+                    ),
+                    patch.object(target_session, "checkpoint_info", return_value=None),
+                    patch.object(target_session, "record_probe") as record,
+                ):
+                    with self.assertRaisesRegex(RuntimeError, "did not complete"):
+                        target_session.run_checked_probe(
+                            self.record, "AgentA", "layout", "note", "", []
+                        )
+            record.assert_not_called()
+
     def test_checked_baseline_automatically_pins_clean_source(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -295,6 +317,8 @@ class TargetSessionTests(unittest.TestCase):
                 target_session.start_session(self.record, "AgentA", 2, 2.0)
                 with patch.object(
                     target_session.subprocess, "run", return_value=SimpleNamespace(returncode=1)
+                ), patch.object(
+                    target_session, "checkpoint_info", return_value={"id": "probe"}
                 ), patch.object(
                     target_session, "record_probe", return_value=recorded
                 ), patch.object(
@@ -326,6 +350,8 @@ class TargetSessionTests(unittest.TestCase):
                 with patch.object(
                     target_session.subprocess, "run", return_value=SimpleNamespace(returncode=1)
                 ) as run, patch.object(
+                    target_session, "checkpoint_info", return_value={"id": "probe"}
+                ), patch.object(
                     target_session,
                     "record_probe",
                     return_value={"owner": "AgentA"},

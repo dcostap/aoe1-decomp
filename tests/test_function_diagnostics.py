@@ -320,8 +320,34 @@ class CoffAndDiagnosticTests(unittest.TestCase):
             "??YOtherItem@@QAEAAV0@ABV0@@Z",
             "ResourceItem::operator+=",
         )
+        assignment = owning_function_symbol_validation(
+            "operator=",
+            "??4DString@@QAEAAV0@PBD@Z",
+            "DString::operator=",
+        )
+        index = owning_function_symbol_validation(
+            "operator[]",
+            "??ADString@@QAEAADH@Z",
+            "DString::operator[]",
+        )
         self.assertEqual(member["status"], "match")
         self.assertEqual(free_equal["status"], "match")
+        self.assertEqual(assignment["status"], "match")
+        self.assertEqual(index["status"], "match")
+        self.assertEqual(wrong_owner["status"], "mismatch")
+
+    def test_owning_symbol_validation_accepts_conversion_operator(self) -> None:
+        valid = owning_function_symbol_validation(
+            "operator_char*",
+            "??BDString@@QBEPADXZ",
+            "DString::operator char *",
+        )
+        wrong_owner = owning_function_symbol_validation(
+            "operator_char*",
+            "??BOtherString@@QBEPADXZ",
+            "DString::operator char *",
+        )
+        self.assertEqual(valid["status"], "match")
         self.assertEqual(wrong_owner["status"], "mismatch")
 
     def test_owning_symbol_validation_accepts_vc5_relational_operators(self) -> None:
