@@ -40,7 +40,7 @@ class TRIBE_Screen_Disconnect;
 unsigned long __cdecl debug_timeGetTime(char*, int);
 // PDB owner: basegame.cpp, 004230A0.
 int __cdecl debug_rand(char*, int);
-extern "C" void __cdecl debug_srand(char*, int, unsigned int);
+void __cdecl debug_srand(char*, int, unsigned int);
 
 struct RGE_Font {
     HFONT font;

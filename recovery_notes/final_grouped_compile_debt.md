@@ -47,10 +47,13 @@ The remaining debt has 67 baseline modules:
 ## Focused proof
 
 The final four-module gate passed compilation for `dib`, `basegame_cpp`,
-`com_loby`, and `Panel`. It reported 310 registered-owner matches and five
-owner regressions. Dib has three known drift or symbol-kind regressions.
-BaseGame has the stale `debug_srand` symbol claim. `setup_main_window`
-regressed after the current Timeline and scenario integration; preserve both.
+`com_loby`, and `Panel`. A later focused rebuild restored the symbol-proven
+`BITMAPINFO256` `struct` tag. `ClipDibBlt` and `GetDibDim` now match.
+
+The canonical C++ linkage for `debug_srand` restores its original symbol and
+exact body. `setup_main_window` remains accepted drift after the Timeline and
+scenario integration. It has equal size, calls, and branch counts. Its 27
+positional differences are a local register-map conflict.
 
 The gate report is `build/audits/final_rebased_compile/report.json`.
 Exact checks returned `MATCH` and `0.0000%` for owners `00439700`, `0041C7D0`,
