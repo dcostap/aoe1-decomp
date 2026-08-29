@@ -583,8 +583,7 @@
       "status": "matching"
     },
     "00501660": {
-      "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "status": "matching"
     },
     "00501690": {
       "status": "matching"
@@ -629,8 +628,7 @@
       "status": "matching"
     },
     "00502200": {
-      "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "status": "matching"
     },
     "00502230": {
       "status": "matching"
@@ -644,13 +642,15 @@
       "note_path": "recovery_notes/taitacmd_module.md"
     },
     "00502920": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/taitacmd_module.md"
     },
     "00502BF0": {
       "status": "matching"
     },
     "00502D50": {
-      "status": "matching"
+      "status": "scratch",
+      "note_path": "recovery_notes/taitacmd_module.md"
     },
     "00502F30": {
       "status": "accepted_drift",

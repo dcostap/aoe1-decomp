@@ -56,3 +56,31 @@ one byte. Both bodies remain in their natural source and are now scratch.
 The provider move changed declaration context and Tactical Group member
 spelling. The two source bodies are unchanged. Repair them after the next
 Tactical ownership surface is complete.
+
+## Final source naturalization pass
+
+The module now uses one canonical declaration for `debug_timeGetTime` near the
+source preamble. Its C++ signature is `extern "C" unsigned long __cdecl
+debug_timeGetTime(const char*, int)`. The later conflicting declarations were
+removed. This fixes the first `doSomething` call before the later task bodies.
+
+The source replaces proven raw member views with typed owners. `sn[]` owns the
+tactical strategy values. `zoomingToNextAge` owns `+0xFA4`. `informationAI`
+owns `closestDropsiteValue[0]` at `md + 0x122C`. `player->attributes[6]`
+owns the age value at `md + 0x1228`. `buildAI`, `resourceAI`, `informationAI`,
+and `strategyAI` own their embedded module calls. `lastCoopAttackDemandTime`
+owns `+0xFA0`. `RGE_Static_Object::hp` owns object `+0x30`.
+
+The proven strings at `updateAreaName`, debug-time call sites, and log sites
+now use typed string literals. One mutable source-path provider serves the
+existing `TacticalAIGroup::task`, time, and tribute source forms. No absolute
+data address remains in `src/taitacmd.cpp`.
+
+The final full-module build uses `config/flags/004ED4F0_TribeTacticalAIModule.rsp`.
+The registered grouped gate passes. The module has 178 matching, 10
+accepted-drift, 26 scratch, and 2 verified-logic normal owners. Fresh checks
+prove `004EA9C0`, `004EEE40`, `00501660`, `00502100`, `00501C70`, and
+`00502200` as `MATCH` with `0.0000%` positional difference. `00502920` and
+`00502D50` remain scratch after fresh grouped-context mismatches. `004F8E20`
+also remains scratch; its typed provider cleanup keeps behavior but changes its
+current code size from 1369 to 1365 bytes.

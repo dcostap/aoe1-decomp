@@ -31,6 +31,9 @@ extern "C" double __cdecl ceil(double);
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" void* __cdecl operator_new(unsigned int);
 extern "C" void __cdecl operator_delete(void*);
+extern "C" unsigned long __cdecl debug_timeGetTime(const char*, int);
+extern "C" int debug_rand(char*, int);
+extern int __ftol();
 
 // ---------------------------------------------------------------------------
 // PDB source owner: 004EA860_TacticalAIGroup.cpp
@@ -110,15 +113,6 @@ TacticalAIGroup::~TacticalAIGroup() {}
 // Probe 4: mirrored the exact same-TU save donor's companion pointer and 40-count do/while; exact.
 
 
-extern "C" void __cdecl rge_read(int fd, void* data, int size); // 00480080
-
-extern float DAT_0058ebcc;
-extern float DAT_005756e0;
-extern float DAT_005756e4;
-extern float DAT_005756e8;
-extern float DAT_005756ec;
-
-
 int TacticalAIGroup::load(int fd)
 {
     rge_read(fd, &this->idValue, 4);
@@ -158,24 +152,24 @@ int TacticalAIGroup::load(int fd)
 
     // Version detection: conditional field reads based on float version comparison
     // Asm pattern: fld [58EBCCh]; fcomp [5756E0h]; test ah,1; jne â†’ if (ver < threshold)
-    if (DAT_0058ebcc >= DAT_005756e0) {
+    if (save_game_version >= DAT_005756e0) {
         rge_read(fd, &this->consecutiveGatherAttemptsValue, 1);
     } else {
         this->consecutiveGatherAttemptsValue = 0;
     }
 
-    if (DAT_0058ebcc >= DAT_005756e4) {
+    if (save_game_version >= DAT_005756e4) {
         rge_read(fd, &this->numberObjectsToDestroyValue, 4);
         rge_read(fd, &this->objectsToDestroyValue, 0x50);
         rge_read(fd, &this->objectsToDestroyOwnerValue, 4);
         rge_read(fd, &this->objectsToDestroyCommanderZoneValue, 4);
     }
 
-    if (DAT_0058ebcc >= DAT_005756e8) {
+    if (save_game_version >= DAT_005756e8) {
         rge_read(fd, &this->lastAttackRoundupTime, 4);
     }
 
-    if (DAT_0058ebcc >= DAT_005756ec) {
+    if (save_game_version >= DAT_005756ec) {
         rge_read(fd, &this->lastAddedUnitTimeValue, 4);
     }
 
@@ -202,9 +196,6 @@ int TacticalAIGroup::load(int fd)
 //   â€” 180 differing bytes; the attack-waypoint and trailing offsets aligned.
 // Probe 5: replaced the indexed loop with the binary-backed companion cursor
 //   and 40-count do/while â€” exact 636/636 bytes.
-
-
-extern "C" void __cdecl rge_write(int fd, void* data, int size); // 004802C0
 
 
 // TacticalAIGroup layout (partial, only serialized fields)
@@ -683,8 +674,6 @@ void TacticalAIGroup::setSpecificCommander(int commander, TribeMainDecisionAIMod
 
 
 
-extern int __ftol();
-
 int TacticalAIGroup::currentHitPoints(TribeMainDecisionAIModule* module) const {
     int total = 0;
     const int* unit = unitsValue;
@@ -1072,11 +1061,6 @@ void TacticalAIGroup::setAssistGroupType(int val) { this->assistGroupTypeValue =
 // - third pass: positive non-null target and positive play-number guards match the original fallthrough polarity. The play guard reduced the result to 2549/5679, with 100% ordered call alignment and 61.12% exact-block coverage.
 // - third pass: negative target guard, local declaration order, direct case4 distance assignment, and a corrected do/while scan were tested. The first three were duplicate or neutral; the do/while variant was rejected for size and call drift. Current source is the pinned 2549-byte result.
 
-
-extern int __ftol();
-extern int debug_rand(char*, int);
-void* operator new(unsigned int);
-void operator delete(void*);
 
 static char s_file[] = "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
 static char s0[] = "";
@@ -2395,11 +2379,6 @@ TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
 //   late inline-object/vptr transition. The retained fields are nonvolatile;
 //   volatile probes were metric-only and were removed.
 
-
-extern "C" void* __cdecl operator_new(unsigned int size);
-extern "C" void __cdecl operator_delete(void* p);
-extern float save_game_version;
-
 TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
     : TacticalAIModule(0, param_1),
       md(0),
@@ -3250,29 +3229,29 @@ TribeTacticalAIModule::~TribeTacticalAIModule()
 char* TribeTacticalAIModule::updateAreaName()
 {
     switch (this->updateArea) {
-    case 0: return (char*)0x0058839C;
-    case 1: return (char*)0x0058838C;
-    case 2: return (char*)0x00588380;
-    case 3: return (char*)0x0058836C;
-    case 4: return (char*)0x0058835C;
-    case 5: return (char*)0x00588350;
-    case 6: return (char*)0x00588340;
-    case 7: return (char*)0x00588330;
-    case 8: return (char*)0x00588324;
-    case 9: return (char*)0x00588318;
-    case 10: return (char*)0x00588308;
-    case 11: return (char*)0x005882FC;
-    case 12: return (char*)0x005882F4;
-    case 13: return (char*)0x005882E4;
-    case 14: return (char*)0x005882D8;
-    case 15: return (char*)0x005882CC;
-    case 16: return (char*)0x005882C0;
-    case 17: return (char*)0x0058762C;
-    case 18: return (char*)0x005882B4;
-    case 19: return (char*)0x005882A8;
-    case 20: return (char*)0x00588298;
-    case 21: return (char*)0x00588284;
-    default: return (char*)0x0057F54C;
+    case 0: return "Setup SolGroups";
+    case 1: return "Eval CivDist";
+    case 2: return "Task Civs";
+    case 3: return "Setup BoatGroups";
+    case 4: return "Fill BoatGroups";
+    case 5: return "Task Boats";
+    case 6: return "Fill SolGroups";
+    case 7: return "Task IdleSol";
+    case 8: return "Task ActSol";
+    case 9: return "Playtasking";
+    case 10: return "Task UngrpSol";
+    case 11: return "Research";
+    case 12: return "Train";
+    case 13: return "BldLst Change";
+    case 14: return "Help Build";
+    case 15: return "Repair Bldg";
+    case 16: return "Repair Wall";
+    case 17: return "Build";
+    case 18: return "Open Builds";
+    case 19: return "Open Tasks";
+    case 20: return "Food dropsite";
+    case 21: return "BldLst Insertions";
+    default: return "Invalid";
     }
 }
 
@@ -3516,7 +3495,6 @@ void TribeTacticalAIModule::setMainDecisionAI(TribeMainDecisionAIModule* val) { 
 // - The canonical inline resize body stays visible for same-TU update. Four
 //   early save resize sites remain out of line, as the executable requires.
 
-void __cdecl rge_write(int file, void* data, int size);
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* ptr);
 
@@ -4105,11 +4083,11 @@ int TribeTacticalAIModule::doSomething()
     char tempName[256];
 
     availableTime = this->md->player->world->availableComputerPlayerUpdateTime;
-    startTime = debug_timeGetTime((char*)0x5880C0, 0x99C);
+    startTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x99C);
 
     if (availableTime > 0) {
         do {
-            updateAreaStartTime = debug_timeGetTime((char*)0x5880C0, 0x99F);
+            updateAreaStartTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x99F);
             incUpdateArea = 1;
 
             switch (this->updateArea) {
@@ -4401,7 +4379,7 @@ int TribeTacticalAIModule::doSomething()
                     this->lastBuildTime = this->md->player->world->world_time;
                 }
 
-                currentTime = debug_timeGetTime((char*)0x5880C0, 0xB92);
+                currentTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0xB92);
                 this->md->player->world->useComputerPlayerUpdateTime(
                     currentTime - startTime);
 
@@ -4425,7 +4403,7 @@ int TribeTacticalAIModule::doSomething()
                 break;
             }
 
-            currentTime = debug_timeGetTime((char*)0x5880C0, 0xBAA);
+            currentTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0xBAA);
             this->lastUpdateAreaTimeValue =
                 currentTime - updateAreaStartTime;
             this->updateAreaAverageTotal += this->lastUpdateAreaTimeValue;
@@ -4443,7 +4421,7 @@ int TribeTacticalAIModule::doSomething()
         } while (currentTime - startTime < availableTime);
     }
 
-    currentTime = debug_timeGetTime((char*)0x5880C0, 0xBC9);
+    currentTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0xBC9);
     this->md->player->world->useComputerPlayerUpdateTime(currentTime - startTime);
     return 1;
 }
@@ -4847,9 +4825,6 @@ void TribeTacticalAIModule::removeObject(int objectId)
 //   executable's civilian-count reread and keeps the explorer-demand store
 //   before the sn[3] load. Direct field access loses one or both properties.
 
-extern "C" double __cdecl ceil(double);
-
-
 void TribeTacticalAIModule::evaluateCivilianDistribution()
 {
     int percentExplored;
@@ -5040,15 +5015,6 @@ low_count_done:
 //   and removed both resize calls. It also changed 004F13F0 to 679 bytes.
 //   The target source was restored; no context bridge was retained.
 
-
-extern "C" {
-    void* __cdecl operator_new(unsigned int size);
-    void __cdecl operator_delete(void* block);
-}
-
-
-extern unsigned long debug_timeGetTime(const char* file, int line);
-
 int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long param_2) {
     int newExplorer;
     int taskedCount;
@@ -5152,7 +5118,7 @@ excess_explorers_done:
             civilianList->resize(1);
         }
         this->nextCivilianToTaskValue = civilianList->value[0];
-        if (debug_timeGetTime((const char*)0x005880C0, 0x0D8A) - param_1 >= param_2) {
+        if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x0D8A) - param_1 >= param_2) {
             return 0;
         }
     }
@@ -5187,7 +5153,7 @@ task_done:
         newExplorer = newExplorer + 4;
         if (i >= this->civilians.numberValue) goto no_more;
         this->nextCivilianToTaskValue = this->civilians[i];
-        if (debug_timeGetTime((const char*)0x005880C0, 0x0DC6) - param_1 >= param_2) {
+        if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x0DC6) - param_1 >= param_2) {
             if (i > 0) {
                 // Binary-proven capacity touch: ensure room for civilians[i-1]
                 // before returning, matching the inline operator[] grow.
@@ -5263,12 +5229,6 @@ is_explorer:
 // probe 23: replaced the repeated do-loop sentinel guard with the natural
 // pretest while loop shown by 004F1E71 and 004F21CD. This removed the final
 // redundant branch and reached an exact 989-byte match at 0.0000%.
-
-static const char s_taitacmd_cpp[] =
-    "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
-
-
-extern unsigned long debug_timeGetTime(const char*, int);
 
 void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
                                               unsigned long maxTime)
@@ -5408,7 +5368,7 @@ ready_to_task_check:
 next_group:
         group = group->next;
         this->nextIdleSoldierGroupToTaskValue = group->id();
-        if (debug_timeGetTime(s_taitacmd_cpp, 0xEA9) - startTime >=
+        if (debug_timeGetTime(s_file, 0xEA9) - startTime >=
             maxTime) {
             return;
         }
@@ -5531,11 +5491,6 @@ next_group:
 // - fifth blind review found one missing numberObjectsToDestroy reset in action-2 replacement failure. Main-agent executable review confirmed and corrected it; three reviewers found no other broad difference.
 // - sixth blind review found one transport fault-order difference, one defend idle-time reset, and an extra special-target attack-attempt write. Main-agent executable review confirmed and corrected them.
 // - seventh four-reviewer cohort found no confirmed behavior difference after main-agent adjudication. The remaining differences are broad VC5 tail sharing, local lifetime, and scheduling drift; see logic_reviews/004F21F0_taskActiveSoldiers.md.
-
-
-static char s_C__msdev_work_age1_x1_taitacmd_c[] =
-    "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
-
 
 
 void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
@@ -6113,11 +6068,11 @@ inactive_post_setup:
                                 unit_id = cur->unit(i);
                                 unitObj2 = this->md->object(unit_id);
                                 if (unitObj2 == 0) {
-                                    this->logCommonHistory((char*)0x005883D4);
+                                    this->logCommonHistory("    Unit %d is invalid.");
                                 } else {
                                     ai = unitObj2->unitAI();
                                     if (ai == 0) {
-                                        this->logCommonHistory((char*)0x005883B4);
+                                        this->logCommonHistory("    Unit %d has invalid unitAI.");
                                     } else {
                                         if (cur->unit(i) == cur->commander()) {
                                             const Waypoint* loc;
@@ -6796,7 +6751,7 @@ ContinueLoop:
             } else {
                 this->nextActiveSoldierGroupToTaskValue = cur->id();
             }
-            if (debug_timeGetTime(s_C__msdev_work_age1_x1_taitacmd_c, 0x14fe) - param_1 >= param_2) {
+            if (debug_timeGetTime(s_file, 0x14fe) - param_1 >= param_2) {
                 return;
             }
         } while (cur != &this->groups);
@@ -6825,13 +6780,6 @@ ContinueLoop:
 // rolled back. playUnits[51] preserves the binary's reserved leading output
 // slot and 0x1A4 local window; exact 823-byte match.
 // Exact: default /O2 /Oy, 823/823 bytes, 22/22 calls, no custom flags or inline asm.
-
-
-extern "C" {
-    void* __cdecl operator_new(unsigned int size);
-    void __cdecl operator_delete(void* ptr);
-}
-
 
 void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1,
                                               unsigned long param_2)
@@ -7511,12 +7459,6 @@ next_group:
 // - Exact playTaskSoldiers same-TU context emits the original register choice.
 //   The isolated source keeps this localized, proved-equivalent VC5 drift.
 
-void* operator_new(unsigned int size);
-void __cdecl operator_delete(void* ptr);
-
-
-
-
 void TribeTacticalAIModule::evaluateOpenTasks()
 {
     int i;
@@ -7949,7 +7891,7 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
         return;
     }
 
-    entryTime = debug_timeGetTime((char*)0x5880C0, 0x1904);
+    entryTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x1904);
 
     switch (param_3) {
     case 0x72:
@@ -8181,7 +8123,7 @@ notify_after_owner:
     if (0 < this->workingArea.numberValue) {
         while (param_2 < numberToRespond &&
                (param_3 < 2 ||
-                debug_timeGetTime((char*)0x5880C0, 0x1A54) - entryTime < 0xB)) {
+                debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x1A54) - entryTime < 0xB)) {
             RGE_Static_Object* unitObject =
                 this->md->aiPlayer->world->object(this->workingArea[param_3]);
             if (unitObject != 0 && unitObject->unitAI() != 0) {
@@ -8325,12 +8267,6 @@ notify_relic:
 // Probe 10: restored the canonical indexer return and added the donor-TU
 //   <stdlib.h> context as the final translation-unit hypothesis.
 
-
-extern "C" {
-    void* operator_new(unsigned int size);
-    void operator_delete(void* ptr);
-}
-
 int TribeTacticalAIModule::numberIdleSoldiers()
 {
     int count = 0;
@@ -8430,11 +8366,6 @@ int TribeTacticalAIModule::numberIdleSoldiers()
 // pointer before the working-area count. The rebuild reads the count first.
 // Soldier element and working-array reads therefore have different mutation
 // and fault order.
-
-extern "C" {
-    void* __cdecl operator_new(unsigned int size);
-    void __cdecl operator_delete(void* ptr);
-}
 
 int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priority, int reset)
 {
@@ -8919,9 +8850,6 @@ next_soldier:
 //   world->object at 00545D30h
 // - return obj->id ([edi+4]) on currentAction == -1
 
-void* operator_new(unsigned int size);
-void __cdecl operator_delete(void* ptr);
-
 int TribeTacticalAIModule::idleSoldier()
 {
     for (int i = 0; i < soldiers.numberValue; i++) {
@@ -9106,10 +9034,6 @@ second_next:
 // first loop uses equivalent positive versus inverted tails and one count read.
 // All 25 calls, x87 comparisons, array effects, and return values match.
 
-
-void* operator_new(unsigned int size);
-void operator_delete(void* ptr);
-
 int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseMode)
 {
     float bestUnitDistance;
@@ -9223,9 +9147,6 @@ second_next:
 // calls with a 10-byte strict drift only in the two entry initialization stores.
 // probe 11: natural sentinel-first initialization (bestUnitID=-1, then
 // bestUnitDistance=0) produced a full MATCH; no inline asm or opaque scaffolding.
-
-void* operator_new(unsigned int);
-void operator_delete(void*);
 
 int TribeTacticalAIModule::civilian(XYPoint& pos, int chooseMode, int order1, int order2, int order3, int allow103)
 {
@@ -9664,32 +9585,32 @@ void TribeTacticalAIModule::updateGathererDistribution()
     distribution[3]=0;
     if (inAge(1)) {
         if (this->sn[0xB5]==1) {
-            if (this->md->buildAI.readyToResearch(2,1) && *(int*)((char*)this->md + 0x122C)!=-1 && (this->md->resourceAI.resource(1)>120 || builtFirstGranary==1)) {
+            if (this->md->buildAI.readyToResearch(2,1) && this->md->informationAI.closestDropsiteValue[0]!=-1 && (this->md->resourceAI.resource(1)>120 || builtFirstGranary==1)) {
                 *distribution=desiredNumberGatherersValue;
                 g=&gatherers[0].data1;
                 for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=-1) g[1]=5;
-                *(int*)((char*)this + 0xFA4)=1;
+                this->zoomingToNextAge=1;
                 special=1;
             } else {
-                *(int*)((char*)this + 0xFA4)=0;
+                this->zoomingToNextAge=0;
                 distribution[1]=desiredNumberGatherersValue;
                 special=1;
             }
-        } else *(int*)((char*)this + 0xFA4)=0;
+        } else this->zoomingToNextAge=0;
     } else if (inAge(2)) {
         if (this->sn[0xB6]==1) {
-            if (this->md->buildAI.readyToResearch(3,1) && (this->md->resourceAI.resource(1)>240 || (this->md->resourceAI.resource(1)>120 && *(int*)((char*)this->md + 0x122C)<20))) {
+            if (this->md->buildAI.readyToResearch(3,1) && (this->md->resourceAI.resource(1)>240 || (this->md->resourceAI.resource(1)>120 && this->md->informationAI.closestDropsiteValue[0]<20))) {
                 *distribution=desiredNumberGatherersValue;
                 g=&gatherers[0].data1;
                 for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=-1) g[1]=5;
-                *(int*)((char*)this + 0xFA4)=1;
+                this->zoomingToNextAge=1;
                 special=1;
             } else {
-                *(int*)((char*)this + 0xFA4)=0;
+                this->zoomingToNextAge=0;
                 distribution[1]=desiredNumberGatherersValue;
                 special=1;
             }
-        } else *(int*)((char*)this + 0xFA4)=0;
+        } else this->zoomingToNextAge=0;
     } else if (inAge(3)) {
         if (this->sn[0xB7]==1) {
             if (this->md->buildAI.readyToResearch(4,1)) {
@@ -9697,17 +9618,17 @@ void TribeTacticalAIModule::updateGathererDistribution()
                 distribution[3]=distribution[0];
                 g=&gatherers[0].data1;
                 for (i=0;i<numberGatherersValue;i++,g+=6) if (g[0]!=0 && g[0]!=3 && g[0]!=-1) g[1]=5;
-                *(int*)((char*)this + 0xFA4)=1;
+                this->zoomingToNextAge=1;
                 special=1;
             } else {
                 *distribution=desiredNumberGatherersValue/3;
                 distribution[1]=distribution[0];
                 distribution[3]=distribution[0];
-                *(int*)((char*)this + 0xFA4)=0;
+                this->zoomingToNextAge=0;
                 special=1;
             }
-        } else *(int*)((char*)this + 0xFA4)=0;
-    } else *(int*)((char*)this + 0xFA4)=0;
+        } else this->zoomingToNextAge=0;
+    } else this->zoomingToNextAge=0;
 
     if (!special) {
         desiredGathererDistribution[2]=(this->sn[0x77]+this->sn[0x9E])*desiredNumberGatherersValue/100;
@@ -9898,8 +9819,6 @@ int TribeTacticalAIModule::highLevelTaskExplorer(int id, int mode)
 // - The remaining structural gap is the target's late success/failure block
 //   order and its one extra instruction; no supported exact source was found.
 
-extern float DAT_005756f0;
-
 int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
 {
     UnitData* gatherer;
@@ -9927,7 +9846,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
     if (i >= this->numberGatherersValue)
         goto fail;
 
-    now = debug_timeGetTime(s_taitacmd_cpp, 0x1F5C);
+    now = debug_timeGetTime(s_file, 0x1F5C);
     if (now - this->gatherers[i].lastTaskTime < 5000)
         return 1;
     this->gatherers[i].lastTaskTime = now;
@@ -10004,12 +9923,12 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
     } while (i < 4);
 
     task = 0;
-    if (this->inAge(1) != 0 && *(int*)((char*)this + 0x468) == 1) {
+    if (this->inAge(1) != 0 && this->sn[0xB5] == 1) {
         triedTasking[1] = 1;
-    } else if (this->inAge(2) != 0 && *(int*)((char*)this + 0x46C) == 1 && triedTasking[1] == 0) {
+    } else if (this->inAge(2) != 0 && this->sn[0xB6] == 1 && triedTasking[1] == 0) {
         task = 0;
         triedTasking[1] = 1;
-    } else if (this->inAge(3) != 0 && *(int*)((char*)this + 0x470) == 1) {
+    } else if (this->inAge(3) != 0 && this->sn[0xB7] == 1) {
         if (triedTasking[1] == 0) {
             taskResult = this->taskGatherer(gatherer->id, 0, 1, param, 0);
             triedTasking[1] = 1;
@@ -10123,8 +10042,6 @@ dispatch:
 // Final: exact default-flags match; source retains named object/module ownership,
 // natural same-TU ManagedArray-style loops, typed XYZPoint/PlacementState ABIs,
 // and ordinary C++ cleanup. No inline asm or compiler-steering scaffolding.
-
-void* operator_new(unsigned int); void operator_delete(void*);
 
 int TribeTacticalAIModule::taskBuilder(int id, BuildItem* item, ConstructionItem* con, ulong flags) {
     if (item == 0) {
@@ -10752,9 +10669,6 @@ dispatch:
 // 15: A canonical civilians ManagedArray<int> alias on the repeated scan produced MATCH.
 // 16: Scoped that reference to the civilian scan and growth block; MATCH remained.
 // Final: exact default-flags output, with canonical list ownership and typed dispatch.
-
-extern "C" void* __cdecl operator_new(unsigned int);
-extern "C" void __cdecl operator_delete(void*);
 
 int TribeTacticalAIModule::taskExplorer(int unit, float x, float y, int flag)
 {
@@ -11679,7 +11593,7 @@ end:
 int TribeTacticalAIModule::calculatePriority(float value) {
     int priority;
 
-    priority = (int)((float)*(int*)((char*)this + 0x21C) / value);
+    priority = (int)((float)this->sn[0x22] / value);
     if (priority > 99) {
         priority = 99;
     }
@@ -11761,12 +11675,6 @@ int TribeTacticalAIModule::calculatePriority(float value) {
 // - The exact add body with declaration-only resize emits the same 2245-byte
 //   frontier as the former manual scans. It matches the PDB line ownership and
 //   removes unsupported caller-side field access. Keep this source model.
-
-void* operator_new(unsigned int size);
-void __cdecl operator_delete(void* ptr);
-
-extern int __cdecl debug_rand(char* file, int line);
-extern "C" double __cdecl ceil(double value);
 
 void TribeTacticalAIModule::setupSoldierGroups()
 {
@@ -12427,11 +12335,6 @@ void TribeTacticalAIModule::fillSoldierGroups() {
 // exact: both aliases are ordinary member references; no compiler-steering or
 // raw-offset source remains beyond the proven class gaps and array layout.
 
-extern "C" {
-    void* operator_new(unsigned int size);
-    void operator_delete(void* ptr);
-}
-
 int TribeTacticalAIModule::numberUngroupedSoldiers()
 {
     int rNum = 0;
@@ -12495,11 +12398,6 @@ int TribeTacticalAIModule::numberUngroupedSoldiers()
 // nonescaping dword homes. Every read follows its matching write, including
 // the push-adjusted rNum update. Register use, calls, values, writes,
 // predicates, cleanup, and faults match the reviewed war-boat twin.
-
-extern "C" {
-    void* operator_new(unsigned int size);
-    void operator_delete(void* ptr);
-}
 
 int TribeTacticalAIModule::numberExtraGroupedSoldiers()
 {
@@ -12582,9 +12480,6 @@ int TribeTacticalAIModule::numberExtraGroupedSoldiers()
 // 82.50% shape, 58.17% exact-block coverage, 350 positional diff bytes.
 // Exact result: 510-byte size/frame/call-set parity and 100% positional match;
 // no accepted-drift or inline-asm claim.
-
-extern void* operator_new(unsigned int size);
-extern void operator_delete(void* ptr);
 
 int TribeTacticalAIModule::numberUngroupedArtifacts()
 {
@@ -12755,10 +12650,6 @@ void TribeTacticalAIModule::displaySoldierGroups()
 //   uses cmp eax,ecx. The ternary source reproduces that local instruction order.
 // Remaining mismatch: the original first balance block loads numAGroups from
 //   [esp+20h]. The best rebuild loads the same source value from [esp+24h].
-
-void* operator new(unsigned int size);
-void __cdecl operator_delete(void* ptr);
-extern "C" double __cdecl ceil(double value);
 
 void TribeTacticalAIModule::setupBoatGroups()
 {
@@ -13360,11 +13251,6 @@ void TribeTacticalAIModule::fillBoatGroups() {
 // exact: canonical ownership is the boats and workingArea ManagedArray<int>
 // members at +134 and +D48; no raw-offset plumbing or compiler steering remains.
 
-extern "C" {
-    void* operator_new(unsigned int size);
-    void operator_delete(void* ptr);
-}
-
 int TribeTacticalAIModule::numberUngroupedWarBoats()
 {
     int rNum = 0;
@@ -13499,11 +13385,6 @@ int TribeTacticalAIModule::numberExtraGroupedWarBoats()
 //     keeps canonical named ManagedArray ownership and ordinary references;
 //     no raw-offset or compiler-steering form remains.
 
-extern "C" {
-    void* operator_new(unsigned int size);
-    void operator_delete(void* ptr);
-}
-
 int TribeTacticalAIModule::numberUngroupedFishingBoats()
 {
     int rNum = 0;
@@ -13543,11 +13424,6 @@ int TribeTacticalAIModule::numberUngroupedFishingBoats()
 //     ManagedArray operator[]/add surfaces from exact same-TU numberUngroupedSoldiers
 //     and numberUngroupedFishingBoats donors; this is the natural typed reconstruction.
 
-extern "C" {
-    void* operator_new(unsigned int size);
-    void operator_delete(void* ptr);
-}
-
 int TribeTacticalAIModule::numberUngroupedTradeBoats()
 {
     int rNum = 0;
@@ -13586,11 +13462,6 @@ int TribeTacticalAIModule::numberUngroupedTradeBoats()
 // try 11: while(1)+break outer loop was neutral versus do/while for the major mismatch.
 // try 12: replaced raw offset plumbing with the sibling's typed ManagedArray<int> surface and ordinary aliases; pending checker result.
 // exact: sibling-shaped typed ManagedArray<int> reconstruction matches all 510 bytes with default flags.
-
-extern "C" {
-    void* operator_new(unsigned int size);
-    void operator_delete(void* ptr);
-}
 
 int TribeTacticalAIModule::numberUngroupedTransportBoats()
 {
@@ -14265,8 +14136,8 @@ int TribeTacticalAIModule::numberItemsToAttack()
 int TribeTacticalAIModule::itemToCapture(void) {
     int targetId;
 
-    if (((TribeStrategyAIModule*)((char*)this->md + 0x10E74))->currentVictoryCondition() == 0) {
-        targetId = ((TribeStrategyAIModule*)((char*)this->md + 0x10E74))->targetID();
+    if (this->md->strategyAI.currentVictoryCondition() == 0) {
+        targetId = this->md->strategyAI.targetID();
         if (this->group(-1, -1, -1, targetId) == 0) {
             return targetId;
         }
@@ -14281,8 +14152,8 @@ int TribeTacticalAIModule::itemToBringToArea()
 {
     int target;
 
-    if (((TribeStrategyAIModule*)((char*)this->md + 0x10E74))->currentVictoryCondition() == 4) {
-        target = ((TribeStrategyAIModule*)((char*)this->md + 0x10E74))->secondTargetID();
+    if (this->md->strategyAI.currentVictoryCondition() == 4) {
+        target = this->md->strategyAI.secondTargetID();
         if (this->group(-1, -1, -1, target) == 0)
             return target;
     }
@@ -14310,9 +14181,9 @@ int TribeTacticalAIModule::numberItemsToDefend()
 
 
 unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
-    if (*(int*)((char*)this + 0x2B0) == 1) {
+    if (this->sn[0x47] == 1) {
         int val = this->randomizedAttackSeparationTime;
-        int limit = *(int*)((char*)this + 0x254);
+        int limit = this->sn[0x30];
         if (val < limit) {
             return val;
         }
@@ -14321,7 +14192,7 @@ unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
         if (param_1 == 0x2E) {
             return this->randomizedAttackSeparationTime;
         }
-        return *(int*)((char*)this + 0x254);
+        return this->sn[0x30];
     }
 }
 
@@ -14343,8 +14214,6 @@ unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
 // - /Ob0 and /Og did not affect this register-allocation family; no custom flags are needed.
 // - Winning shape: do not name `sep`; use direct member rereads in the expression. VC5 still saves the tested EAX
 //   into EDI just before the call, but avoids making the variable a long-lived EDI local from the first load.
-
-extern int __cdecl debug_rand(char* file, int line);
 
 void TribeTacticalAIModule::resetAttackSeparationTime() {
     if (this->sn[0x66] > 0) {
@@ -14555,9 +14424,6 @@ int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* group)
 // Exact candidate: 932/932 bytes, 43/43 calls, 0x14 frame, default flags.
 
 
-void* operator_new(unsigned int size);
-void __cdecl operator_delete(void* ptr);
-
 void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
 {
     int half;
@@ -14664,13 +14530,13 @@ int TribeTacticalAIModule::selectBestCommander(TacticalAIGroup* group)
             obj = self->md->object(group->unit(i));
             if (obj != 0) {
                 if (obj->master_obj->id != 0x7D) {
-                    if (*(int*)((char*)self + 0x2C0) == 2) {
+                    if (self->sn[0x4B] == 2) {
                         score = (int)obj->weaponRange();
                     }
                     else {
-                        score = (int)*(float*)((char*)obj + 0x30);
+                        score = (int)obj->hp;
                     }
-                    mode = *(int*)((char*)self + 0x2C0);
+                    mode = self->sn[0x4B];
                     if (mode == 1 || mode == 3) {
                         if (bestScore == -1 || score < bestScore) {
                             bestUnit = group->unit(i);
@@ -14709,8 +14575,6 @@ int TribeTacticalAIModule::selectBestCommander(TacticalAIGroup* group)
 // 5: Reorder locals and make weaponRange return float with named fscore worsened (extra stack/FPU drift); keep float return but use direct conditional conversion.
 // 6: Restore exact local order/value: bestScore=-1, bestUnit=-1, i=0; direct return bestUnit. Validates exact before promotion.
 
-extern void* operator new(unsigned int);
-extern void operator delete(void*);
 int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>& a)
 {
     int bestScore = -1;
@@ -14867,7 +14731,7 @@ int TribeTacticalAIModule::importantGroupLeader(int param) {
 void TribeTacticalAIModule::enableAttack(int param) {
     if (this->attackEnabledValue == 1)
         return;
-    int field3AC = *(int*)((char*)this + 0x3AC);
+    int field3AC = this->sn[0x86];
     if (field3AC != 0 && field3AC != param)
         return;
     this->attackEnabledValue = 1;
@@ -14970,7 +14834,7 @@ UnitData* TribeTacticalAIModule::addGatherer(int id)
     int value;
 
     if (id == -1) {
-        this->logCommonHistory((char*)0x00588AA8);
+        this->logCommonHistory("ERROR adding gatherer id -1.");
         return 0;
     }
     freeIndex = -1;
@@ -15021,7 +14885,7 @@ int TribeTacticalAIModule::removeGatherer(int id)
     int i;
 
     if (id == -1) {
-        this->logCommonHistory((char*)0x00588AC8);
+        this->logCommonHistory("ERROR removing gatherer id -1.");
         return 0;
     }
     i = 0;
@@ -15334,25 +15198,25 @@ int TribeTacticalAIModule::numberAvailableGranaries(int& count, int& unbuilt)
 {
     int value;
 
-    value = ((BuildAIModule*)((char*)this->md + 0x104))->numberUnbuiltItemsOfType(0x44, 0);
+    value = this->md->buildAI.numberUnbuiltItemsOfType(0x44, 0);
     unbuilt = value;
     if (value > 0) {
         return 0;
     }
-    value = ((TribeResourceAIModule*)((char*)this->md + 0x10D7C))->resource(0);
+    value = this->md->resourceAI.resource(0);
     if (this->sn[0xBE] <= value) {
         return 0;
     }
     if (this->sn[0x97] != -1) {
-        value = ((BuildAIModule*)((char*)this->md + 0x104))->numberItemsOfType(0x44, 0);
+        value = this->md->buildAI.numberItemsOfType(0x44, 0);
         count = value;
         if (value >= this->sn[0x97]) {
             return 0;
         }
     }
-    value = ((BuildAIModule*)((char*)this->md + 0x104))->numberItemsOfType(0x44, 0);
+    value = this->md->buildAI.numberItemsOfType(0x44, 0);
     count = value;
-    return ((TribeInformationAIModule*)((char*)this->md + 0xCEC))->numberAvailableGranaries();
+    return this->md->informationAI.numberAvailableGranaries();
 }
 
 // ---------------------------------------------------------------------------
@@ -15543,9 +15407,6 @@ int TribeTacticalAIModule::isFarmer(RGE_Static_Object* obj)
 //   callee-save coloring to EBX outer index / EBP growth size and reached an
 //   exact 249-byte match without changing ownership, calls, or CFG.
 
-void* operator_new(unsigned int size);
-void __cdecl operator_delete(void* ptr);
-
 int TribeTacticalAIModule::numberFarmers()
 {
     int i;
@@ -15575,7 +15436,7 @@ int TribeTacticalAIModule::numberFarmers()
 // PDB source owner: 00502200_inAge.cpp
 // ---------------------------------------------------------------------------
 int TribeTacticalAIModule::inAge(int age) {
-    int currentAge = *(int*)((char*)this->md + 0x1228);
+    int currentAge = (int)this->md->player->attributes[6];
     return currentAge == age ? 1 : 0;
 }
 
@@ -15883,12 +15744,12 @@ void TribeTacticalAIModule::checkForCoopTributeDemand()
     int count;
     int* need;
 
-    int tributeInterval = *(int*)((char*)this + 0x47C);
-    int tributeAmount = *(int*)((char*)this + 0x480);
-    int foodMin = *(int*)((char*)this + 0x48C);
-    int woodMin = *(int*)((char*)this + 0x490);
-    int stoneMin = *(int*)((char*)this + 0x494);
-    int goldMin = *(int*)((char*)this + 0x498);
+    int tributeInterval = this->sn[0xBA];
+    int tributeAmount = this->sn[0xBB];
+    int foodMin = this->sn[0xBE];
+    int woodMin = this->sn[0xBF];
+    int stoneMin = this->sn[0xC0];
+    int goldMin = this->sn[0xC1];
     if (tributeInterval == -1) return;
     world = static_cast<TRIBE_World*>(this->md->player->world);
     cur = world->world_time;
@@ -15995,15 +15856,11 @@ next:
 //   Restored the clean source after each diagnostic.
 // - Replaced temporary offset aliases with the canonical sn[0xba]/sn[0xbe]
 //   ownership and full managed-array prefix; emitted code stayed unchanged.
-// - Exact natural form: materialize the resource delta as a float local before
-//   the current-attribute float local. This restores the original fild/fld
-//   order without compiler steering or opaque helpers.
-// Exact candidate: size/frame/call/CFG parity and the final call's FPU order
-// are exact.
-
-extern int debug_rand(const char* file, int line);
-static const char str_taitacmd_path[] =
-    "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
+// - Natural form: materialize the resource delta as a float local before the
+//   current-attribute float local. This restores the original fild/fld order
+//   without compiler steering or opaque helpers.
+// The source remains scratch in the reunited module. Fresh validation reports
+// a 681-byte mismatch and a different initial object lookup.
 
 void TribeTacticalAIModule::checkForCoopTributeGift()
 {
@@ -16029,7 +15886,7 @@ void TribeTacticalAIModule::checkForCoopTributeGift()
         if (num_computer == 1) {
             world->controllingComputerPlayer = this->md->player->id;
         } else {
-            int pick = debug_rand(str_taitacmd_path, 0x3275) %
+            int pick = debug_rand(s_file, 0x3275) %
                             num_computer + 1;
             i = 1;
             if (world->player_num > 1) {
@@ -16144,23 +16001,22 @@ void TribeTacticalAIModule::checkForASAPAgeResearch()
 // canonical md->player->world ownership and direct member expressions, avoiding
 // a saved md/object temporary across the virtual calls.
 // Probe 3: restored the complete 0x104-byte RGE_Game_World base; the derived
-// controllingComputerPlayer byte then landed at its proven +0x11D offset and
-// the canonical source matched all 480 bytes.
+// controllingComputerPlayer byte then landed at its proven +0x11D offset.
+// That isolated source matched 480 bytes. The reunited source remains scratch
+// after fresh validation reports a 430-byte mismatch.
 // Probe 5: made the debug source-file path a period-style local string literal;
 // emitted code remained exact and the source no longer depends on a fabricated
 // external path symbol.
 
-extern int debug_rand(const char* file, int line);
 void TribeTacticalAIModule::checkForCoopAttack(int p1, int p2, int p3)
 {
-    int coopAttackEnabled = *(int*)((char*)this + 0x4A4);
-    int coopAttackInterval = *(int*)((char*)this + 0x4A8);
+    int coopAttackEnabled = this->sn[0xC4];
+    int coopAttackInterval = this->sn[0xC5];
     if (coopAttackEnabled != 1) return;
 
     int now = this->md->player->world->world_time;
-    int* lastCoopAttackTime = (int*)((char*)this + 0xFA0);
-    if ((now - *lastCoopAttackTime) / 1000 < coopAttackInterval) return;
-    *lastCoopAttackTime = now;
+    if ((now - this->lastCoopAttackDemandTime) / 1000 < coopAttackInterval) return;
+    this->lastCoopAttackDemandTime = now;
 
     TRIBE_World* world = static_cast<TRIBE_World*>(this->md->player->world);
     if (world->controllingComputerPlayer == 0xff) {
@@ -16175,7 +16031,7 @@ void TribeTacticalAIModule::checkForCoopAttack(int p1, int p2, int p3)
         if (num_computer == 1) {
             world->controllingComputerPlayer = this->md->player->id;
         } else {
-            int pick = debug_rand(str_taitacmd_path, 0x32f1) % num_computer + 1;
+            int pick = debug_rand(s_file, 0x32f1) % num_computer + 1;
             i = 1;
             if (world->player_num > 1) {
                 do {
@@ -16369,8 +16225,6 @@ int TribeTacticalAIModule::desiredGathererCount(int index) {
 
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
-extern float DAT_00575758;
-
 void TribeTacticalAIModule::taskElephantGatherers(
     int mainHunterID, int numberToTask, int targetID)
 {
@@ -16720,14 +16574,9 @@ int TribeTacticalAIModule::numberWaterExplorers()
 // - Final validation: MATCH, 1450/1450 bytes, 52/52 calls, 0x24 frame.
 
 
-extern int __ftol();
-extern void* operator_new(unsigned int size);
-extern void operator_delete(void* block);
-
-
 void TribeTacticalAIModule::saveTheTown(int objectID)
 {
-    ulong entryTime = debug_timeGetTime((char*)0x5880C0, 0x3420);
+    ulong entryTime = debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x3420);
     RGE_Static_Object* targetObject;
     XYPoint objectPosition;
     int entryCount;
@@ -16774,7 +16623,7 @@ void TribeTacticalAIModule::saveTheTown(int objectID)
         if (this->soldiers.numberValue > 0) {
             while (count < this->soldiers.numberValue && entryCount < 6) {
                 if (count > 1 &&
-                    debug_timeGetTime((char*)0x5880C0, 0x3447) -
+                    debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x3447) -
                             entryTime > 10)
                     return;
 
