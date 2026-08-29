@@ -48,3 +48,27 @@ constructs or destroys a picture. `diam_map.h` uses the same owner.
 
 The old partial `TPicture` body is removed from `scenario.h`. Focused registered
 checks report `MATCH` for Scenario, Picture, and Diamond Map owners.
+
+## Source-shape cleanup
+
+The original `.data` bytes prove the former absolute string uses:
+
+- `00585800` is `"."`.
+- `00585FE8` is `"%stemp_buildlist%d.tmp"`.
+- `00585FE0` is `"%s%s.ai"`.
+- `0058600C` is `"%stemp_CityPlan%d.tmp"`.
+- `00586000` is `"%s%s.cty"`.
+- `0057F324` is `"%s"`.
+
+The source now uses these natural literals. `TempText1` and `TempText2` are
+the reviewed fields at offsets `0x1028` and `0x1108`. `DAT_00572178` is the
+canonical version constant from `game_globals.h`; the local `g_version`
+declaration is removed.
+
+The source-shape cleanup keeps all guards, calls, writes, and returns. The
+registered checks for `0048C0D0` remain `MATCH`. The accepted-drift checks for
+`0048BCC0` and `0048BEC0` still differ by eight emitted bytes because VC5
+caches the canonical temporary-field address before late returns.
+
+The complete polished candidate check reports `43/43` registered owners as
+`MATCH`, with zero relocation mismatches and zero boundary escapes.

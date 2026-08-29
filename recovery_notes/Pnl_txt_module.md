@@ -73,3 +73,22 @@ wrapper includes and matching-bank exact owners.
 The two matching owners with custom per-function flags, `0047C0B0` and
 `0047CC10`, remain outside the default grouped exact-owner registration. Their
 isolated custom-flag checks were not changed by this source move.
+
+## Source-shape cleanup
+
+The original `.data` bytes at `0058547C` prove the
+`pnl_txt::word_wrap_append` diagnostic string. The source now uses its named
+module provider for both device-context calls. The redundant `SelectObjectFn`
+alias is removed from `get_text_rect`. The bytes at `00580460` prove the
+space literal used by both append paths; the source now uses `" "`.
+
+`DAT_0086b24c` is the canonical shared declaration from `game_globals.h`. The
+duplicate local declaration is removed. `DAT_0086B250` has no PDB global-data
+record or reviewed provider. Its direct sentinel accesses remain unchanged.
+
+The registered checks for `0047D760`, `0047E2F0`, and `0047E410` remain
+`MATCH`. `0047C640` remains scratch and retains its existing control-flow
+difference.
+
+The complete polished candidate check reports `56/56` registered owners as
+`MATCH`, with zero relocation mismatches and zero boundary escapes.

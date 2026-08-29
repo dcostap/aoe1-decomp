@@ -7,6 +7,7 @@
 #include <string.h>
 
 extern char s_pnl_txt__draw[];
+extern char s_pnl_txt__word_wrap_append[];
 extern char s_pnl_txt__get_text_rect[];
 extern "C" short __cdecl __mbslen(const char* text);
 extern "C" unsigned char* __cdecl __mbsinc(const unsigned char* text);
@@ -26,8 +27,6 @@ extern "C" __declspec(dllimport) int __stdcall CompareStringA(
     unsigned long locale, unsigned long flags, const char* string1,
     int length1, const char* string2, int length2);
 extern char DAT_0086B250;
-extern unsigned char DAT_0086b24c;
-typedef void* (__stdcall *SelectObjectFn)(void* hdc, void* obj);
 
 // PDB: Pnl_txt.cpp:73-78.
 TTextPanel::TTextPanel()
@@ -310,7 +309,7 @@ int TTextPanel::word_wrap_append(char* text)
     }
     max_wid -= 10;
 
-    dc = this->render_area->GetDc((char*)0x58547c);
+    dc = this->render_area->GetDc(s_pnl_txt__word_wrap_append);
     if (dc == 0) {
         return 0;
     }
@@ -437,11 +436,11 @@ int TTextPanel::word_wrap_append(char* text)
                   (const unsigned char*)text, chars);
         if (found_space) {
             __mbscat((unsigned char*)temp_text + 4,
-                     (const unsigned char*)0x580460);
+                     (const unsigned char*)" ");
         }
         if (found_linefeed) {
             __mbscat((unsigned char*)temp_text + 4,
-                     (const unsigned char*)0x580460);
+                     (const unsigned char*)" ");
         }
         if (found_return) {
             unsigned char* p = (unsigned char*)temp_text + 4;
@@ -465,7 +464,7 @@ int TTextPanel::word_wrap_append(char* text)
     append_all:
         this->append_line(text, 0);
         SelectObject((HDC)dc, (HGDIOBJ)old_font);
-        this->render_area->ReleaseDc((char*)0x58547c);
+        this->render_area->ReleaseDc(s_pnl_txt__word_wrap_append);
         return 1;
     }
 }
@@ -1654,10 +1653,9 @@ void TTextPanel::set_second_column_pos(long value) {
 int TTextPanel::get_text_rect(RECT* rect) {
     void* dc = this->render_area->GetDc(s_pnl_txt__get_text_rect);
     if (dc != 0) {
-        SelectObjectFn select_object = SelectObject;
-        void* old_font = select_object(dc, this->font);
+        void* old_font = SelectObject(dc, this->font);
         this->calc_line_pos(dc, 0, 0, rect, 0);
-        select_object(dc, old_font);
+        SelectObject(dc, old_font);
         this->render_area->ReleaseDc(s_pnl_txt__get_text_rect);
         return 1;
     }

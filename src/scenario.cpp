@@ -33,8 +33,6 @@ void __cdecl getstring(char** destination, char* source);
 void __cdecl addstring(char** destination, char* old_text, char* append);
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* block);
-extern float g_version;
-
 // 0048AB10 RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario*)
 RGE_Scenario_Header::RGE_Scenario_Header(RGE_Scenario* scenario) {
     this->error_code = 0;
@@ -547,11 +545,11 @@ char* RGE_Scenario::Get_BuildList(int player, int use_file)
     rge_base_game->get_string(0x277b, random_str, 50);
     rge_base_game->get_string(0x2775, none_str, 50);
     if (GetTempPathA(0x104, temp_path) == 0) {
-        strcpy(temp_path, (char*)0x00585800);
+        strcpy(temp_path, ".");
     }
 
     if (use_file == 1 && this->BuildListFileSize[player] > 0 && this->BuildListFile[player] != 0) {
-        sprintf((char*)this->TempText1, (char*)0x00585FE8, temp_path, player);
+        sprintf(this->TempText1, "%stemp_buildlist%d.tmp", temp_path, player);
         fd = _open((char*)this->TempText1, 0x8301, 0x180);
     }
 
@@ -565,14 +563,14 @@ char* RGE_Scenario::Get_BuildList(int player, int use_file)
         char* name = this->BuildList[player];
         if (strcmp(name, none_str) != 0) {
             if (strcmp(name, random_str) != 0) {
-                sprintf((char*)this + 0x1028, (char*)0x00585FE0, rge_base_game->prog_info->ai_dir, name);
-                return (char*)this + 0x1028;
+                sprintf(this->TempText1, "%s%s.ai", rge_base_game->prog_info->ai_dir, name);
+                return this->TempText1;
             }
         }
     }
 
-    sprintf((char*)this + 0x1028, (char*)0x0057F324, this->BuildList[player]);
-    return (char*)this + 0x1028;
+    sprintf(this->TempText1, "%s", this->BuildList[player]);
+    return this->TempText1;
 }
 
 // 0048BEC0 RGE_Scenario::Get_CityPlan(int, int)
@@ -588,11 +586,11 @@ char* RGE_Scenario::Get_CityPlan(int player, int use_file)
     rge_base_game->get_string(0x277b, random_str, 50);
     rge_base_game->get_string(0x2775, none_str, 50);
     if (GetTempPathA(0x104, temp_path) == 0) {
-        strcpy(temp_path, (char*)0x00585800);
+        strcpy(temp_path, ".");
     }
 
     if (use_file == 1 && this->CityPlanFileSize[player] > 0 && this->CityPlanFile[player] != 0) {
-        sprintf((char*)this->TempText2, (char*)0x0058600C, temp_path, player);
+        sprintf(this->TempText2, "%stemp_CityPlan%d.tmp", temp_path, player);
         fd = _open((char*)this->TempText2, 0x8301, 0x180);
     }
 
@@ -606,19 +604,19 @@ char* RGE_Scenario::Get_CityPlan(int player, int use_file)
         char* name = this->BuildList[player];
         if (strcmp(name, none_str) != 0) {
             if (strcmp(name, random_str) != 0) {
-                sprintf((char*)this + 0x1108, (char*)0x00586000, rge_base_game->prog_info->ai_dir, this->CityPlan[player]);
-                return (char*)this + 0x1108;
+                sprintf(this->TempText2, "%s%s.cty", rge_base_game->prog_info->ai_dir, this->CityPlan[player]);
+                return this->TempText2;
             }
         }
     }
 
-    sprintf((char*)this + 0x1108, (char*)0x0057F324, this->CityPlan[player]);
-    return (char*)this + 0x1108;
+    sprintf(this->TempText2, "%s", this->CityPlan[player]);
+    return this->TempText2;
 }
 
 // 0048C0D0 RGE_Scenario::Get_Version()
 float RGE_Scenario::Get_Version() {
-    return g_version;
+    return DAT_00572178;
 }
 
 // 0048C0E0 RGE_Scenario::Get_player_AI(int, int)
