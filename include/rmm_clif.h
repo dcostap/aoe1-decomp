@@ -1,8 +1,6 @@
 #ifndef AOE1_RMM_CLIF_H
 #define AOE1_RMM_CLIF_H
 
-// Declarations for the complete C:\\msdev\\work\\age1_x1\\rmm_clif.cpp
-// canonical owners.
 
 #include "rmm_base.h"
 

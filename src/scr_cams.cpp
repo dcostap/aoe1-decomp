@@ -1,4 +1,3 @@
-// The vector-deleting destructor at 00490E10 is compiler generated.
 
 #include "../include/scr_cams.h"
 #include "../include/scr_name.h"

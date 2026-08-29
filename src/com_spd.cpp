@@ -1,4 +1,3 @@
-/* Authentic C++ source module for C:\\msdev\\work\\age1_x1\\com_spd.cpp. */
 #include "../include/com_spd.h"
 
 #include <stdio.h>

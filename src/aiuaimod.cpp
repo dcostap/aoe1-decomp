@@ -87,11 +87,6 @@ UnitAIModule::~UnitAIModule() {
     }
 }
 
-// aiuaimod.cpp
-// in the attackingUnits grow-array loop (EBP vs EBX register choice).
-// Logic, call set, stack cleanup, and memory effects are identical.
-// 536-byte identical prefix before the first diff at offset 536.
-// Function size matches exactly (758 bytes).
 
 
 void __cdecl rge_write(int fd, const void* data, int size);
@@ -175,9 +170,6 @@ void UnitAIModule::save(int fd) {
     rge_write(fd, &stopAfterTargetKilledValue, 1);
 }
 
-// aiuaimod.cpp
-// Also has AIPlayStatus new/construct/load and dual version checks (6.93, 7.02)
-// These require full TU context to match exactly.
 void __cdecl rge_read(int fd, void* data, int size);
 
 void UnitAIModule::load(int fd) {
@@ -704,8 +696,6 @@ update_tail:
     return 1;
 }
 
-// aiuaimod.cpp
-// The source uses the proven play-status and group-member fields.
 
 
 void UnitAIModule::updateGroup(unsigned long param_1)
@@ -1196,15 +1186,6 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
     return 1;
 }
 
-// aiuaimod.cpp
-// The source keeps the proven order dispatch and call sequence.
-// rebuild saves it at entry. This shifts parameter displacements but each of
-// the three addToOrderQueue calls receives the same typed arguments. The only
-// other instruction difference replaces a dead p10 register load with a direct
-// stack compare. All eight calls, predicates, queue effects, logging, virtual
-// dispatches, return values, register restoration, and fault order match.
-// Size and CFG match. Each path balances its own saved registers and arguments.
-// This function has no SEH.
 int UnitAIModule::order(int p1, int p2, int p3, int p4, float p5, float p6, float p7, float p8, int p9, int p10, int p11)
 {
     if (this->objectValue->object_state <= 2) {
@@ -1392,7 +1373,6 @@ int UnitAIModule::retryableOrder(int) {
     return 0;
 }
 
-// first pass: direct byte flag check, then whitelist the live-target action ids
 
 
 int UnitAIModule::actionRequiresLiveTarget(int actionId) {
@@ -1703,8 +1683,6 @@ int UnitAIModule::mostDangerousEnemy(float* outThreat) {
     return best;
 }
 
-// VC5 emits `xor esi,esi; mov dword [esp+0Ch],0; test eax,eax`; declaring i first makes it
-// reuse ESI for the zero store after the count test and shifts the loop by 4 bytes.
 
 
 int UnitAIModule::weakestEnemy(float* outHp) {
@@ -1823,10 +1801,6 @@ int UnitAIModule::closestObject(int param_1, int param_2, int param_3,
     return closestObjectID;
 }
 
-// aiuaimod.cpp
-//
-// The 100-entry list is initialized to the historical 0x80000000 sentinel;
-// the resource distance is returned through the optional integer output.
 int UnitAIModule::closestResourceObject(int resourceType, int* distance) {
     int excludeList[100];
     int* nextExclude = excludeList;
@@ -1981,15 +1955,6 @@ int UnitAIModule::addToWaypointQueue(int param_1, int param_2) {
     return 1;
 }
 
-// Default flags
-//
-// __thiscall: this in ecx, 2 stack params (int x, int y). ret 8 cleanup.
-// Exact with default flags after reshaping the loop tail.
-// Key source shape: positive outer guard + `while (1)` loop with bottom
-// `if (i < waypointQueueSize) continue; return 0;`, and y-match routed through
-// `goto found;` so VC5 keeps the original `jl loop` backedge and places the
-// loop-fail return before the success return while the early-empty return stays last.
-// Waypoint struct: 0x10 bytes (float x,y,z + 1 byte), array at this+0x70, size at this+0xF0.
 
 
 int UnitAIModule::inWaypointQueue(int x, int y) const {
@@ -2092,12 +2057,6 @@ int UnitAIModule::attackRoundupObject(int targetId) {
     return 0;
 }
 
-//
-// - objectValue is at +04 and currentActionValue at +30.
-// - UnitAIModule::stopObject is virtual slot +58.
-// - objectValue's can-hunt operation is virtual slot +164.
-// - A successful lookup supplies target group and world coordinates to the
-//   five-argument setCurrentTarget helper; a null lookup uses -1 and zeros.
 int UnitAIModule::huntObject(int param_1, int param_2) {
     if (param_2 != 0 || this->currentActionValue != 0x265) {
         if (actionFile != 0) {
@@ -2134,10 +2093,6 @@ int UnitAIModule::huntObject(int param_1, int param_2) {
     }
     return 0;
 }
-
-// Based on matched gatherObject/buildObject siblings.
-// Sibling pattern: inverted condition, nested success, shared return-0 tail.
-
 
 int UnitAIModule::convertObject(int targetId, int flag) {
     if (flag != 0 || currentActionValue != 0x25C) {
@@ -2224,7 +2179,6 @@ int UnitAIModule::repairObject(int targetId, int flag)
     return 0;
 }
 
-// Based on matched gatherObject sibling; action 0x25A and vcall +0x174.
 int UnitAIModule::buildObject(int targetId, int flag) {
     if (flag != 0 || currentActionValue != 0x25A) {
         int result = objectValue->build(targetId, flag);
@@ -2245,8 +2199,6 @@ int UnitAIModule::buildObject(int targetId, int flag) {
     return 0;
 }
 
-// FLAGS: default
-//
 int UnitAIModule::tradeWithObject(int targetId, int flag)
 {
     if (flag != 0 || this->currentActionValue != 0x267) {
@@ -2598,7 +2550,6 @@ int UnitAIModule::runAwayFromAttackers(int param_1) {
 // UnitAIModule::followObject(int param_1, float param_2, int param_3)
 // Size: 108 bytes
 
-// Local stubs for types used by this function
 
 int UnitAIModule::followObject(int param_1, float param_2, int param_3) {
     if (param_3 == 0 && this->currentActionValue != -1) {
@@ -2642,7 +2593,6 @@ int UnitAIModule::defendObject(int id, float distance, int allow_when_busy) {
 // defendPosition: aiuaimod.cpp lines 3733-3747
 // __thiscall, virtual (but we don't rely on virtual here)
 int UnitAIModule::defendPosition(float x, float y, float distance, int flag) {
-    // Guard: if (flag == 0 && currentActionValue != -1) return 0;
     if (flag == 0 && this->currentActionValue != -1) {
         return 0;
     }
@@ -2929,11 +2879,6 @@ void UnitAIModule::askForHelp(int caller)
     }
 }
 
-// aiuaimod.cpp
-//
-// The binary passes range bits directly in one order path.
-//
-// The source keeps the proven range and dispatcher state.
 
 
 int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
@@ -3145,19 +3090,6 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
     return result == 1;
 }
 
-//
-// - The authentic UnitAIModule type is 0x134 bytes.
-// - Four nested weaponRange and canPath ladders restore all 148 calls.
-// - every attack and path call rereads event->caller.
-// - This differs from attacker->id when the event or object graph changes.
-// - zero target damage stores zero currentTargetDC.
-// - Nonzero target damage calls objectValue->damageCapability(target).
-// - The 505 and 507 arms share one chained order-publication tail.
-// - The 506 arm keeps a distinct direct order-publication tail.
-// - Direct cleanup tails preserve all stop and commander notifications.
-//   tileY, and tileX. Their proven homes overlap parameters and scoped locals.
-// - The authentic context removes five register-only byte differences.
-// - Needed evidence is the original 4757 call spelling or fuller header context.
 
 typedef unsigned long ulong;
 
@@ -3844,17 +3776,6 @@ int UnitAIModule::processIdle(int param) {
     return 5;
 }
 
-// (?processMisc@UnitAIModule@@MAEHXZ), aiuaimod.cpp:5287-5689.
-// Body boundary: 00419650-00419BB7 (ret at 00419BB6); next sibling starts at
-//
-// The source retains the proven order and target fallbacks.
-// the 0x2BD canPath guard reads [this+0x4C], not [this+0x34].
-// the targetless +0x90 call receives desired distance as an int
-//   push, not through an x87 store.
-// LIKELY INTENT: retain the shipped target and action fallbacks without adding
-//   defensive checks that are absent from the executable.
-// Reusable lesson candidate: a pooled float literal can select a different VC5
-//   x87 operand order than an equivalent absolute global expression.
 
 int UnitAIModule::processMisc()
 {
@@ -4097,10 +4018,6 @@ int UnitAIModule::processMisc()
     return 9;
 }
 
-// (?processRetryableOrder@UnitAIModule@@MAEHXZ), aiuaimod.cpp:5694-5746.
-// Body boundary: 00419BC0-00419C26; 00419C30 is the next sibling.
-//
-// The protected virtual owner and call order are binary-proven.
 
 
 int UnitAIModule::processRetryableOrder() {

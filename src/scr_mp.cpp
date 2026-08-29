@@ -146,7 +146,6 @@ TribeMPStartupScreen::TribeMPStartupScreen()
     }
 }
 
-// FLAGS: config/flags/0049F890_TribeMPStartupScreen.rsp.
 
 TribeMPStartupScreen::~TribeMPStartupScreen() {
     delete this->title;

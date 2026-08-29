@@ -182,7 +182,6 @@ int TRIBE_Action_Make_Tech::stop() {
     return 1;
 }
 
-// The final terminator store is behavior-equivalent despite VC5 SIB ordering.
 void TRIBE_Action_Make_Tech::get_info(short& tech_id_out,
                                        short& progress_out,
                                        char* name_out,

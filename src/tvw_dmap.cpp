@@ -1,5 +1,3 @@
-// The scalar deleting destructor between the constructor and destructor is
-// compiler generated.
 
 #include "../include/scr_game.h"
 #include "../include/tvw_dmap.h"

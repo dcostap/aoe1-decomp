@@ -519,7 +519,6 @@ int TribeInformationAIModule::initialize() {
 
     // Check if player name exists
     if (game_info->get_current_player_name()) {
-        // Inline call in sprintf argument forces VC5 to call get_current_player_name again
         sprintf((char*)this + 0xFF90, "learn\\%s.uh", game_info->get_current_player_name());
     } else {
         strcpy((char*)this + 0xFF90, "learn\\Default.uh");
@@ -635,8 +634,6 @@ void TribeInformationAIModule::setMainDecisionAI(TribeMainDecisionAIModule* v) {
 
 void rge_write(int file, void* data, int size);
 
-// The binary identifies this +0x158 subobject as the path/InfluenceMap save
-// surface; keep the local ABI narrow until the shared class layout is proven.
 int TribeInformationAIModule::save(int handle)
 {
     int tmp;
@@ -3291,7 +3288,6 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* i
                                                     zoneFactor = (float)this->md->tacticalAI.strategicNumber(0xb9) * (float)currentTargetCount;
                                                 }
 
-                                                // VC5 evaluates these weights in this order.
                                                 float score =
                                                     (float)this->md->tacticalAI.strategicNumber(0xb8) *
                                                     targetTime;

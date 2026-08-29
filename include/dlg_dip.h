@@ -1,9 +1,6 @@
 #ifndef AOE1_DLG_DIP_H
 #define AOE1_DLG_DIP_H
 
-// TribeDiplomacyDialog is the only class owned by this header. Shared dialog,
-// panel, screen, control, drawing, shape, base-game, player, and world types
-// come from their canonical owners.
 #include "pnl_dlg.h"
 #include "Pnl_scr.h"
 #include "Pnl_txt.h"

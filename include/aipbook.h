@@ -1,7 +1,6 @@
 #ifndef AOE1_AIPBOOK_H
 #define AOE1_AIPBOOK_H
 
-// Declarations for the original aipbook.cpp source module.
 
 #include "aiplaybook.h"
 #include "ai_play_group.h"

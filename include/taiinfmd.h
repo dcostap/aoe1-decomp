@@ -1,8 +1,6 @@
 #ifndef TAIINFMD_H
 #define TAIINFMD_H
 
-// Declarations for the original taiinfmd.cpp source module.
-// pair, then continues through TribeInformationAIModule.
 
 #include "aiinfmod.h"
 #include "ai_attack_state.h"

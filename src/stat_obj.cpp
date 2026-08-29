@@ -729,7 +729,6 @@ void RGE_Static_Object::capture_frame(TDrawArea* area, short x, short y) {
 }
 
 
-// - the original first AddGDINode setup reuses screen_y_offset
 
 
 
@@ -1120,7 +1119,6 @@ void RGE_Static_Object::draw_frame_3d_square_front(
 }
 
 
-// The reviewed extern rge_base_game declaration is required here;
 
 
 void RGE_Static_Object::draw_frame_3d_cube_back(TDrawArea* area, short sx, short sy)
@@ -2616,7 +2614,6 @@ void RGE_Static_Object::release_being_worked_on(RGE_Static_Object* unused) {
 }
 
 
-//   - The complete Y expression stays in the pending x87 status window. This
 
 
 

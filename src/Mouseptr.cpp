@@ -1,4 +1,3 @@
-// Authentic Mouseptr.cpp source module.
 
 #include "../include/Mouseptr.h"
 

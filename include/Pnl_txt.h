@@ -1,4 +1,3 @@
-// Module-local include for the authentic Pnl_txt.cpp source module.
 
 #ifndef AOE1_PNL_TXT_H
 #define AOE1_PNL_TXT_H

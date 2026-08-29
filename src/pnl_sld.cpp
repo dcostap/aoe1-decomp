@@ -1,5 +1,3 @@
-// The ten normal owners below follow the original source-line order.
-// The scalar deleting destructors at 0047BD10 and 0047BE10 are compiler-generated.
 
 #include "../include/pnl_sld.h"
 

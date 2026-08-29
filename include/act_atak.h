@@ -9,7 +9,6 @@ class RGE_Static_Object;
 class RGE_Sprite;
 class RGE_Task;
 
-// Declarations for the complete C:\\msdev\\work\\age1_x1\\Act_atak.cpp module.
 class RGE_Action_Attack : public RGE_Action {
 public:
     RGE_Action_Attack(int, RGE_Action_Object*);

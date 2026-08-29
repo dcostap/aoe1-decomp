@@ -1,5 +1,3 @@
-// Authentic source module for C:\\msdev\\work\\age1_x1\\tact_dar.cpp.
-// deleting destructor is not a handwritten owner here.
 
 #include "../include/tact_dar.h"
 #include "../include/act_obj.h"

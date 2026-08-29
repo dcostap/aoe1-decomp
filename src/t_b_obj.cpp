@@ -1,7 +1,3 @@
-// Authentic direct source owner for C:\\msdev\\work\\age1_x1\\t_b_obj.cpp.
-//
-// normal compiland.  The scalar deleting destructor at 004C8090 is compiler
-// generated and has no source body here.
 
 #include "../include/t_b_obj.h"
 #include "../include/act_list.h"

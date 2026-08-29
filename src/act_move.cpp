@@ -1,7 +1,3 @@
-//
-// The scalar deleting destructor at 00405580 is compiler generated. It has no
-// standalone source owner. The non-deleting destructor at 004056E0 is the
-// handwritten virtual destructor.
 
 #include "../include/act_move.h"
 #include "../include/action.h"
@@ -126,8 +122,6 @@ void RGE_Action_Move_To::set_state(unsigned char param_1) {
     }
 }
 
-// state transitions, and return values. Its current result has a broad CFG
-// difference with one missing cold block.
 unsigned char RGE_Action_Move_To::update() {
     XYZBYTEPoint waypoint;
     int move_result;

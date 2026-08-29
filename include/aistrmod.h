@@ -3,8 +3,6 @@
 
 #include "aimodule.h"
 
-// Declarations for the authentic aistrmod.cpp source module.
-// then StrategyAIModule::~StrategyAIModule (line 29).
 
 class StrategyAIModule : public AIModule {
 public:

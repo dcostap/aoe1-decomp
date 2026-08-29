@@ -1,7 +1,6 @@
 #ifndef AOE1_TIMELINE_H
 #define AOE1_TIMELINE_H
 
-// Declarations for the original Timeline.cpp source module.
 
 class RGE_Game_World;
 class RGE_Static_Object;

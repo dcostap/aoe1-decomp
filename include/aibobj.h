@@ -1,7 +1,6 @@
 #ifndef AOE1_AIBOBJ_H
 #define AOE1_AIBOBJ_H
 
-// Declarations for the original aibobj.cpp source module.
 
 class BaseObject {
 public:

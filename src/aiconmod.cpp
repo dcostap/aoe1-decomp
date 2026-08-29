@@ -1,4 +1,3 @@
-// The scalar deleting destructor at 0040AB90 is compiler generated and has no
 
 #include "../include/aiconmod.h"
 #include <stdio.h>

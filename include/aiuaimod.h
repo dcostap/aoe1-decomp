@@ -46,7 +46,6 @@ struct NotifyEvent {
     long p3;
 };
 
-// No reviewed owner header exists for this point record.
 struct XYZPoint {
     int x;
     int y;

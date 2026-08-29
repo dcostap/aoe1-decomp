@@ -1,4 +1,3 @@
-// Definitions follow the original constructor, draw, and idle order.
 
 #include "../include/rpnl_tim.h"
 #include "../include/basegame.h"

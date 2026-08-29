@@ -1,4 +1,3 @@
-// Padding-only fragments at 004AE05A, 004AEC95, and 004AF2D2 are excluded.
 #include "../include/scr_sed2.h"
 #include "../include/pnl_msg.h"
 #include "../include/pnl_btn.h"
@@ -57,9 +56,6 @@ const TEditPanel::FormatType FormatText = TEditPanel::FormatText;
 const TEditPanel::FormatType FormatUnsignedInt = TEditPanel::FormatUnsignedInt;
 const TEditPanel::FormatType FormatMultiLine = TEditPanel::FormatMultiLine;
 
-// Default flags
-//
-// __thiscall: this in ecx, no stack params. void return.
 
 
 void TRIBE_Screen_Sed::SaveDisabledItemsInScenario() {
@@ -196,7 +192,6 @@ void TRIBE_Screen_Sed::save_multi_victory_cond_in_scenario()
     }
 }
 
-// VC5 merges two equivalent selected-object setter tails in
 
 void TRIBE_Screen_Sed::save_victory_cond_in_scenario(int index)
 {
@@ -515,7 +510,6 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario()
     static_cast<T_Scenario*>(this->world->scenario)->Save_victory_conditions_into_players(1);
 }
 
-// Default flags
 
 
 void TRIBE_Screen_Sed::save_diplomacy_in_scenario(int param_1)
@@ -567,8 +561,6 @@ void TRIBE_Screen_Sed::load_diplomacy_from_scenario(int player)
     }
 }
 
-// Cases 6 and 9 keep separate source cases; VC5 merges their
-// identical set-object bodies.
 
 void TRIBE_Screen_Sed::activate_victory_proper_fields(int TypeOfVictory, int activate)
 {

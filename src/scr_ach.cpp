@@ -1,6 +1,3 @@
-// scr_ach.cpp
-// The source owns all eight normal functions in this compiland.
-// The vector-deleting destructor at 0048E1F0 is compiler generated.
 
 #include "../include/scr_ach.h"
 #include "../include/pnl_btn.h"

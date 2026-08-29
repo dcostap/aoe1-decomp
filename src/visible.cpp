@@ -1,4 +1,3 @@
-// Authentic complete owner for C:\\msdev\\work\\age1_x1\\visible.cpp.
 
 #include "../include/visible.h"
 #include "../include/map.h"

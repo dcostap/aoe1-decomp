@@ -2078,7 +2078,6 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                     // the shipped path redraws with status 3.
                     rge_base_game->set_game_mode(rge_base_game->game_mode, 3);
                 } else {
-                    // status 4 precedes master-panel setup.
                     rge_base_game->set_game_mode(rge_base_game->game_mode, 4);
                     // master ownership is world->players[id].
                     RGE_Master_Static_Object* player_master;
@@ -2113,7 +2112,6 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 }
                 this->object_panel->set_master_info(list_master, list_tribe);
                 this->set_paint_object_mode();
-                // the list path redraws with flag 1, not 2.
                 this->object_panel->set_redraw(TPanel::RedrawNormal);
                 return 1;
             }

@@ -7,8 +7,6 @@
 
 TButtonPanel::TButtonPanel()
 {
-    // Scalar field initializations (body, not initializer list)
-    // VC5 batches by value: first non-zero, then zeros
 
     buttonTypeValue = Normal;
     drawTypeValue = DrawClear;
@@ -609,7 +607,6 @@ void TButtonPanel::draw()
                         this->pnl_x + this->pnl_wid - 2, this->pnl_y + this->pnl_hgt - 2,
                         this->bevel_color1);
             } else if ((this->draw_reverse != 0) != (this->is_down != 0)) {
-                // UP shape (this placed first in binary)
                 switch (this->bevel_type) {
                 case 1:
                     this->render_area->DrawRect(this->pnl_x + 1, this->pnl_y + 1,
@@ -634,7 +631,6 @@ void TButtonPanel::draw()
                     break;
                 }
             } else {
-                // DOWN shape
                 switch (this->bevel_type) {
                 case 1:
                     this->render_area->DrawVertLine(this->pnl_x, this->pnl_y,

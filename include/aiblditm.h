@@ -1,8 +1,6 @@
 #ifndef AOE1_AIBLDITM_H
 #define AOE1_AIBLDITM_H
 
-// Compiler-facing surface for the aiblditm.cpp source module.
-// The BaseItem layout and constructors come from the reviewed aibitm surface.
 #include "aibitm.h"
 
 class BuildItem : public BaseItem {

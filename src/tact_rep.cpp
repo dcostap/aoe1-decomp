@@ -1,12 +1,3 @@
-//
-//
-// and exact anchors establish one authentic translation unit. The nearby
-// handwritten source owner.
-//
-// The prior candidate recorded eleven exact owners.  This header migration is
-//
-// The state-4 range load uses RGE_Master_Combat_Object::weapon_range at
-// +0x114. The source consumes the canonical m_co_obj.h owner header.
 
 #include <stdio.h>
 #include "../include/tact_rep.h"
@@ -184,8 +175,6 @@ void TRIBE_Action_Repair::set_state(unsigned char param_1)
     this->obj->new_sprite(this->obj->master_obj->sprite);
 }
 
-// Its natural calls, size, frame, and state routing match, but VC5 colors
-// the state-4 action-list vtable load in EAX instead of the shipped EDX.
 unsigned char TRIBE_Action_Repair::update()
 {
     RGE_Static_Object* check_target;

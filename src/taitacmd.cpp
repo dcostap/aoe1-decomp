@@ -1,4 +1,3 @@
-// Authentic taitacmd.cpp translation unit.
 #include "../include/taitacmd.h"
 #include "../include/taimdmd.h"
 #include "../include/act_list.h"
@@ -154,14 +153,6 @@ int TacticalAIGroup::load(int fd)
     return 1;
 }
 
-// Serializes the TacticalAIGroup save fields through rge_write (004802C0).
-// Returns 1 on success.
-//
-//   differing bytes; the helper relocation and register/loop shape were wrong.
-//   rge_write symbol â€” 210 differing bytes; all 34 call targets aligned.
-//   member offsets.
-//   â€” 180 differing bytes; the attack-waypoint and trailing offsets aligned.
-//   and 40-count do/while â€” exact 636/636 bytes.
 
 
 // TacticalAIGroup layout (partial, only serialized fields)
@@ -238,14 +229,6 @@ int TacticalAIGroup::subType() const { return this->subTypeValue; }
 
 void TacticalAIGroup::setSubType(int val) { this->subTypeValue = val; }
 
-// - Replaced old one-slot stub with full Ghidra logic and the canonical
-//   RGE_Player command surface.
-// - Using `while (i < 40)` for the scan (not do-while) prevents
-//   VC5 from peeling/preloading the first array element and matches the original
-//   push-edi, xor-index, memory-cmp loop top.
-// - The old `md->player->list->next` spelling was a reduced-context type view.
-//   `world_time`. The original load is [player+3C], then [world+4]. Use that
-//   real field meaning as `md->player->world->world_time`.
 
 
 
@@ -275,10 +258,6 @@ int TacticalAIGroup::addUnit(int unit, TribeMainDecisionAIModule* md)
     return 0;
 }
 
-// - Replaced old one-field stub with full Ghidra logic and the canonical
-//   RGE_Player command surface.
-//   the parameter load before saved-register pushes and emits the original
-//   memory compare at the loop top instead of a peeled first-element load.
 
 
 
@@ -311,7 +290,6 @@ int TacticalAIGroup::removeUnit(int unit, TribeMainDecisionAIModule* md)
     return 0;
 }
 
-// - Replaced stub with Ghidra logic and dummy-virtual vtable +0xCC dispatch.
 
 
 
@@ -338,10 +316,6 @@ int TacticalAIGroup::removeUnitByIndex(int index, TribeMainDecisionAIModule* md)
     return 0;
 }
 
-//
-// Fix: piVar1[-0x28] pointer trick fails because VC5 converts
-// *piVar1++ = -1 into rep stosd, breaking paired writes. Clean
-// indexed for loop produces matching lea+loop with two stores each iteration.
 
 
 
@@ -390,10 +364,6 @@ int TacticalAIGroup::removeExtraUnits(TribeMainDecisionAIModule* md)
     return 0;
 }
 
-// - Replaced stub with full scan/removal logic, commander updates, player vtable
-//   +0xCC notification, and TribeTacticalAIModule::stopUnit call through the
-//   canonical RGE_Player surface.
-//   reloading `*p` before commander/stopUnit preserves the original memory reads.
 
 
 
@@ -498,9 +468,6 @@ void TacticalAIGroup::setDesiredNumberUnits(int val) { this->desiredNumberUnitsV
 
 int TacticalAIGroup::commander() const { return this->commanderValue; }
 
-// - Replaced stub with full commander clear/set and member-list notification.
-//   pointer (`count = 0; src = ...`) makes VC5 allocate count to EDI and reuse
-//   ESI for the countdown, matching the original loop.
 
 
 
@@ -648,59 +615,6 @@ int TacticalAIGroup::assistGroupType() const { return this->assistGroupTypeValue
 
 void TacticalAIGroup::setAssistGroupType(int val) { this->assistGroupTypeValue = val; }
 
-// - expanded duplicated natural case bodies/log calls for water/explorer/defend/roundup paths; corrected master_obj->los to +0x28.
-// - split gather case 9/14: no prologue improvement; kept as less taskID-live source, but behavior/log detail remains approximate.
-// - moved broad function-scope locals into case scopes and simplified case 5/6/12/19 dead grouped tests: no frame change; slight positional improvement.
-// - inlined floored_hp helper to direct (int)obj->hp because original uses local fld/__ftol not a source helper call; kept though prologue unchanged.
-// - shared original-like locals oHP/distance/min/max added and equivalent hp/distance/XY temps folded into them: no prologue/frame change.
-// - case5/6/12/19 HP-only group also converted to taskID/busyOK parameter-slot reuse plus unitp[40], matching original HP-summing topology; prologue unchanged.
-// - direct reset from busyOK (`consecutiveGatherAttemptsValue=(unsigned char)busyOK`) is behaviorally wrong but important evidence: it makes taskID live in EBP and emits `mov [esi+2C8h],bl`/EBP switch, while preserving busyOK in EBX and perturbing the first log argument loads. This suggests the missing lever is not the byte store alone, but creating an EBX byte-capable zero rather than an EBX busyOK.
-// - explicit fallthrough label did not force original short JNE; restored source-like early no-commander return.
-// - faithful rewrite pass: restored decomp-observed retreat logs, attack-memory setup log, case4 split strategic-number branches, and roundup waited-enough/target-location logs rather than chasing local byte diff.
-// - faithful rewrite pass: case20 now uses unitp[40] HP topology and includes the pre-subtype unit log plus defender-branch log from decomp.
-// - faithful rewrite pass: shared attack case now also writes HP through unitp[40], matching decomp's piVar10[0x28] topology.
-// - faithful rewrite pass: case20 busy gate now re-calls currentAction like decomp instead of only testing the saved logged action.
-// - faithful rewrite pass: shared attack currentAction log restored to pass the action value for the binary-observed CurrentAction %d log.
-// - faithful rewrite pass: attack-memory waypoint refinement corrected to compare/replace x bounds with previous waypoint x and y bounds with previous waypoint y per decomp.
-// - faithful rewrite pass: case20 currentAction log restored to pass the action value for the binary-observed CurrentAction %d log.
-// - faithful rewrite pass: case20 busy log no longer consumes a third currentAction as a vararg; decomp logs the unit id only on busy skip.
-// - faithful rewrite pass: placed default before case20 to mirror decompiler/source switch order.
-// - faithful rewrite pass: case20 defender-branch log corrected to original unit+target varargs before taskDefender.
-// - faithful rewrite pass: shared attack body now uses source-like `if (playNumberValue == -1)` wrapper instead of early continue.
-// - waypoint-count byte materialization matches decomp but is not kept in source because it created a frame-size pressure cliff; direct expression preserves behavior.
-// - pressure/fidelity pass: removed artificial priority local in important-leader defender branch; constant 99 is source-equivalent and may reduce frame pressure.
-// - faithful rewrite pass: play-list construction uses source/decomp-like pointer plus countdown loop and shift-size allocation like decomp.
-// - pressure/fidelity pass: direct attack-open lastAttackRoundupTime assignment is source-equivalent and reduces artificial local pressure.
-// - faithful rewrite pass: owner ids passed to taskAttacker explicitly cast through int like decomp's owner->id use.
-// - attack-memory store now materializes player/target owner bytes before the call, matching original byte-load surface.
-// - faithful rewrite pass: case20 playNumber handling restored to decomp/original: log and return 0 immediately, unlike attack case taskPlay path.
-// - faithful rewrite pass: attack-task logs now mirror original pushes: subtype log includes unit+subtype, target-null log includes unit+target, target log includes unit+target; leader-defender/direct-task logs use no extra unit arg.
-// - faithful rewrite pass: gather invalid/out-of-zone path directly removeUnitByIndex; original failure block has no logGroupDebug.
-// - introduced distinct mutable log-string placeholders for most logGroupDebug call sites; original source used distinct messages, and this prevents VC5 from merging unrelated log/return blocks.
-// - split attack-family firstTime tail from the generic post-switch store tail (cases 2/21 and 20 now jump to a zero-waypoints tail): slight improvement to 4019/5679 and cleaner original-like separate return families, but the generic store-return tail is still physically too late.
-// - corrected more firstTime return-family facts from original branch targets: cases 0/1, 4, 7, 8, 10, 11, 2/21, and 20 branch to the common return-one epilogue when firstTime != 1, while firstTime==1 stores original HP/unit and returns 1. Only the grouped HP-only case branches to the zero epilogue/store-return-zero family.
-// - case8 shared zero-tail goto produced identical bytes; kept as shared-tail source intent.
-// - rechecked closest-jump combo separately; it keeps case0 as a jump to a much earlier store tail (004ECA83), explaining better default distance but worse positional layout.
-// - case8 pointer-loop/parameter-slot topology from decomp/original (param_1 accumulator, param_3 index, piVar10 pointer) compiled identically with store_return_zero; kept as source-faithful.
-// - converted case10 to pointer-loop/unitp[40] topology as original/decomp; testing source-fidelity over size.
-// - after case8 was changed to the truthful store_return_one tail, case0 no longer needs the oHP-carried tail: direct `goto store_return_one` emits the desired shared-tail jump sequence. Simplified case0 accordingly.
-// - converted case20 roundup loop to pointer-loop/busyOK topology with explicit case20_next label; byte metrics nearly unchanged (edit equal 3669 vs 3687) but source shape now matches the other HP loops and decomp better, so kept.
-// - per xref audit, changed case8 firstTime==1 to store_return_one despite shrinking .text to 5648; size is less important than truthful tail ownership while filling missing logic. This now emits case0/case8 jumps to the shared store tail.
-// - changed gather attempt increment from !=0xff to <0xff; kept, matches original CMP/JAE spelling and improves edit equal by one byte.
-// - gather null commander object as explicit goto return_zero_tail produced identical bytes; kept as source documentation of original shared-zero intent.
-// - gather compare spelling `gatherDist >= nearDist` kept; improves edit equality by one byte and matches original FPU load/test polarity better.
-// - probing declaration order `gi; nearDist; unitp` to see if nearDist/loop-index stack slots swap toward original.
-// - probing full original label order: move cases 3,7,8 before case20.
-// - behavior-fix pass: original branches to 004ECD15 return-one (no xor) for the non-firstTime paths of cases 0/1, 4, 7, 8, 10, 11, 2/21, and 20; updated these from the older zero-tail approximation. Metrics worsen, but this restores the binary-observed return value.
-// - case0/1 now uses source-like `break` to a common post-switch firstTime store. This reproduces the original compare/mov-one/cmp/store scheduling for that local tail, though the compiler still places the common tail too early versus original.
-// - combined source-like break for case4/case10/case11 plus an explicit case0 non-firstTime return-one guard improves both metrics (4014 positional, 3502 edit equal); kept temporarily.
-// - restored case4 to the local `store_return_one_mid` tail too: original has the case4/case10 store/return tail before the next case, and breaking case4 made case10/case11/default blocks too early.
-// - re-audited original case20 tail: 004EC189 jumps to return-one on firstTime!=1, but firstTime==1 loads the HP total then joins the zero-waypoint tail at 004EC6FA. Restored case20 to `store_return_one_zero_waypoints` despite a metric regression.
-// - moved case20 HP-total assignment after the firstTime check to mirror original scheduling (`cmp firstTime,1; mov inUse,1; jne return; load total; join zero-waypoint tail`). This worsens positional slightly but fixes a real local ordering fact.
-// - applied the same delayed HP-total assignment to attack case2/21; this is a real original tail fact and improves current metrics to 4013 positional / 3398 edit equal.
-// - removing the explicit case10 goto and letting it fall through to `store_return_one_mid` compiled identically; VC5 still moved the mid store tail after case11.
-// - inverted gather distance source to `if (gatherDist < nearDist) stop else group` so the stop/currentOrder path is inline and the group path is the taken branch, matching original block polarity around the FPU compare.
-// - register keyword and a far label for the case7 tactical-accumulator tail compiled identically; kept no keyword and source label only where useful.
 
 
 static char s_file[] = "C:\\msdev\\work\\age1_x1\\taitacmd.cpp";
@@ -1392,33 +1306,6 @@ store_return_one_zero_waypoints:
 
 }
 
-// Size: 232 bytes
-// NC: no custom flags (default /O2 /Oy)
-//
-//
-//   (004ECE70): while (i < 40) loop, `if (obj == 0 || obj->unitAI() == 0) { remove; }
-//   else { body }` so the rare remove path is laid out late, natural float fields
-//   strategic threshold. Sibling used literals, not extern const symbols, and VC5
-//   merged the constants into the shared .data slots (5756F0/5756F4).
-//   exact-block coverage 78.48%; block order now matches original exactly
-//   (remove block late, increment, return 1, return 0).
-//   byte-identical output, so that form did not alter VC5's FPU fold.
-//
-//   branch-local strategicNumber result; both calls stayed duplicated and the
-//   output reached 232 bytes with 70 differing bytes.
-//   branch-local float conversion this selects the original `fld`/`fcomp` /
-// TacticalAIGroup ownership surfaces; emitted code remains exact.
-//
-// - TacticalAIGroup: typeValue(+0x14), unitsValue[40](+0x1C, 40 slots),
-// - mod1(TribeTacticalAIModule*)=[esp+1Ch], mod2(MainDecisionAIModule*)=[esp+20h]
-// - dist at [esp+10h], n at [esp+14h] (original local order)
-// - Constants: [5756F4h]=1.0f, [5756F0h]=0.0f (shared float pool)
-// - Object call: mod2->object(unitID) = 0040D760h
-// - unitAI: obj->unitAI() = 004C7420h
-// - distance_to_position(float,float,float) thiscall ret 0Ch = 004C5F00h
-// - strategicNumber: mod1->strategicNumber(0x17/0x29) = 004F6210h
-// - removeUnitByIndex(idx, mod2) thiscall = 004EB0C0h
-//
 
 
 
@@ -1463,9 +1350,6 @@ int TacticalAIGroup::isGathered(TribeTacticalAIModule* tactical, TribeMainDecisi
     return 1;
 }
 
-// - Replaced stub with full unit scan, stale-unit removal, distance clamp, and
-//   tight-gather threshold check.
-//   `dist -= 2.0f; if (dist < 0.0f) dist = 0.0f; if (dist > 1.0) return 0;`.
 
 
 
@@ -1506,9 +1390,6 @@ int TacticalAIGroup::isTightGathered(TribeTacticalAIModule* tactical, TribeMainD
     return 1;
 }
 
-// - Replaced stub with full scan, stale-unit removal, master object/type/action
-//   special cases, and current-order idle rejection.
-//   ignore-build special case, preserving the original shared loop tail.
 
 
 
@@ -1579,10 +1460,6 @@ void TacticalAIGroup::setCurrentAttackWaypoint(unsigned char wp)
         this->currentAttackWaypointValue = wp;
 }
 
-// Function: TacticalAIGroup::addAttackWaypoint
-// - Replaced old cdecl stub with a real C++ member function.  Member functions
-//   naturally use ECX=this and ret 8 in VC5; no explicit __thiscall keyword is
-//   needed or allowed.
 
 
 void TacticalAIGroup::addAttackWaypoint(float x, float y)
@@ -1601,7 +1478,6 @@ Waypoint* TacticalAIGroup::attackWaypoint(unsigned char index) {
     return 0;
 }
 
-//   to keep VC5's loop fallthrough default-return block before the success
 
 int TacticalAIGroup::firstIdleUnit(TribeMainDecisionAIModule* md)
 {
@@ -1651,53 +1527,6 @@ int TacticalAIGroup::addObjectToDestroy(int objectId) {
     return 0;
 }
 
-// to the related 004ED4F0 load-constructor surface.
-// - 2026-05-04: copied the Ghidra heuristic body and adjusted the local type
-//   surface to compile.  PlacementState/AttackState use the real active offsets
-//   (+0x114/+0x28), matching type dumps and the original +0xF60/+0xFD4 stores.
-//   registration prefix, leaving the .text section shorter than the original;
-// - A volatile pointer makes the six-store distribution loop match the original
-//   compact loop, but with the EH prefix still missing the section is too short
-//   most remaining structural gap is the missing VC5 C++ EH registration prefix.
-// - 2026-08-11: ABI/layout evidence confirms TacticalAIModule inheritance and
-//   virtual destructor surfaces for the module, Group, and ResourceItem.  A
-//   novtable-derived typed base restores the original FS:[0] EH prefix,
-//   base-constructor call, and 0x100C layout; raw group/resource storage is
-//   retained because the oracle places their explicit constructor calls after
-//   the preceding scalar zeroing rather than at automatic member-init entry.
-// - 2026-08-11: a volatile distribution cursor reaches the exact 782-byte
-//   the later distribution loop.
-//   lifetimes.  VC5 moved both calls into member initialization and removed
-//   vptr emission.  VC5 emitted the derived vptr at entry and produced 849
-//   setup.
-// - 2026-08-13: corrected +0xD88 to the proven resourceMapping field and used
-//   a natural indexed initialization for mapping, distributions, differences,
-//   and build counts.  VC5 now emits the compact six-store loop and 782 bytes;
-//   keep this readable source.  The remaining structural gap is the early
-//   Group receiver LEA and delayed EH-state store near the first field zero.
-//   scoped, reordered, reference, split, and late group-pointer forms did not
-//   change the 782-byte code.  Moving the group call earlier reduced the byte
-//   diff to 649, but changed the call and store order, so it is not valid.
-//   Explicit vptr layouts, a typed group-link prefix, standard headers, and
-//   remains 692 bytes different, with three ordered calls and exact size.
-// after the base call and state 0x0A before the group constructor. The raw
-// ResourceItem argument before five member stores.
-// - 2026-08-22: modeled all ManagedArray<int> fields as nontrivial members with
-//   zeroing constructors and a real delete-and-zero destructor. Modeled the
-//   inline group and resource objects as typed members. An ordered initializer
-//   list now covers every member through neededResources(4), matching the
-//   original EH transitions, zero-store order, and late constructor calls.
-//   The exact check is 782/782 bytes, 3/3 calls, and 100% block coverage.
-//   the result to 639 differing bytes. Replacing the natural destructor body
-//   this target. Kept the real delete-and-zero body for canonical semantics.
-//   global operator delete stayed exact and is retained.
-//   declaration and the unused TribeMainDecisionAIModule forward declaration
-//   both stayed exact. Neither declaration is retained.
-//   a raw vptr store. The normal virtual class moved the vptr 33 bytes.
-//   into the member initializer list. VC5 now completes those initializers and
-//   writes the derived vptr at the executable's original point. This keeps
-//   compiler ownership and needs no raw vptr access or novtable attribute.
-//   or updateAreaAverageTotal back into the body produced 33, 26, and 7 byte
 
 
 TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
@@ -1791,72 +1620,6 @@ TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
     this->attackStateValue.active = 0;
 }
 
-// starting point than a hand-summarized skeleton.
-// - 2026-05-04: replaced the earlier partial skeleton with the full Ghidra
-//   approximated body (lines 1803-2027), adjusted just enough to compile as C++:
-//   vtable store uses *(int*)this = 0x575788, and groups.next/prev modeled.
-//   (config/flags/004ED4F0_TribeTacticalAIModule.rsp).
-// - 2026-05-04 continued: original constructs groups/neededResources inside
-//   the body after many stores, not in initializer-list order.  Switched those
-//   members to raw storage and call their constructors manually in-body.
-// - Stack-frame note: packet uses a 0x24 byte local area.  The Ghidra locals only
-//   induced 0x20; a volatile padding local did not change VC5's allocation, so
-//   this remains tied to the missing EH registration/state slot.
-// - Switched the TacticalAIModule base to raw storage plus an explicit in-body
-//   in ESI, push file/player args, then call base ctor) and avoids C++'s forced
-//   base-initializer scheduling.
-// - Tried wrapping the body in __try/__finally to force FS:[0] setup.  It did
-//   diff, so it is removed.  The dead `eh_state` local from Ghidra likewise had
-//   no benefit after removing the guard, so it is gone.  The first 0x100 bytes are mostly aligned after
-//   ignoring the missing 21-byte EH prefix; a local issue remains that VC5 hoists
-//   ResourceItem's `push 4` before the final +0xD50..+0xD64 zero stores.
-// - Marked ManagedArray<int>::value volatile: this prevents VC5 from turning the
-//   duplicate-scan loop into a single incrementing pointer walk.  The rebuilt
-//   loop now reloads the array base for indexed comparisons, much closer to the
-//   original `[base+eax*4]` family.  Marking numberValue and desiredNumberValue
-//   volatile too (but not maximumSizeValue) improves the repeated list loader
-//   substantially; current best is ~85.19% positional / ~60.77% edit.
-//   same metrics; this is source/type/EH-context work, not a simple flag issue.
-// - Rewriting equivalent bounds checks with the induction variable on the left
-//   (`i >= max`, `i >= newMax`) is a small edit-diff win for all inlined list
-//   loaders.
-// - Comparing against the saved temp local (`local_28`) instead of the raw read
-//   buffer (`local_2c`) is a larger win and better expresses the original's
-//   store-to-local after each read.  Removing the no-op FakeDtor guard gave a
-//   vptr store/zero after the base ctor and still no EH prefix; it contradicts
-//   the packet where the TribeTacticalAIModule vptr is written much later at
-//   run before the base ctor and before all zeroing, contradicting original order.
-//   trick can recover EH without auto-member construction.
-// - Fixed one Ghidra-local artifact in the compileable body: old gatherer reads
-//   now use tempUD.data4/data5 instead of uninitialized stack aliases. Duplicate
-//   the saved add temp/local id instead produced the same current metrics.
-//   84.95% positional / 55.95% edit.
-// - Corrected PlacementState/AttackState active offsets from type dumps and
-//   changed the legacy-version clearing loops to raw dword zeroing.  This fixes
-// - Version gates use float literals for original dword FPU constants.  For
-//   `constant <= save_game_version` gates, spelling as `!(save_game_version < C)`
-//   preserves the original `test ah,1` branch family; direct `C <= save` emitted
-//   need the negated form to keep the read block before the zero-fill block.
-// - Rewriting ManagedArray grow checks as `count > max - 1` instead of
-//   `max + -1 < count` preserves the original jle-skip compare family and trims
-//   ResourceItem typed bases/members, and moved their construction to the
-//   initializer list. Removed the manual derived-vptr store. This is retained
-//   as the one constructor-order test for the current session.
-// - Kept the typed TacticalAIModule base but restored raw placement storage for
-//   group/resource objects. This retained compiler EH setup, removed automatic
-// - A novtable derived-class context removed the compiler's early vptr store,
-// - Declaring the proven derived virtual destructor preserved the clean metrics
-// - Removing the decompiler tempUD self-assignment shortened the function but
-// - 2026-08-17 claim pass: ran 22 distinct source, ABI, liveness, control-flow,
-//   5325 differing bytes (90.9945%), 84.93% shape, 0x24 frame, and 104/104
-//   missing original EH-state store at [esp+0x3C].
-// - Evidence: __declspec(novtable), flattened placement construction, alternate
-//   loop forms, scalar/pointer volatility axes, unsuffixed/direct version gates,
-//   before further work. Next lead: recover VC5's original constructor EH state
-//   and delayed derived-vptr scheduling without manual assembly.
-// - 2026-08-22 claim pass: modeled ManagedArray<int> as a natural zeroing,
-//   delete-and-zero member; modeled groups and neededResources as their proven
-//   late inline-object/vptr transition. The retained fields are nonvolatile;
 
 TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
     : TacticalAIModule(0, param_1),
@@ -2659,23 +2422,6 @@ LAB_004ee6c3:
   }
 }
 
-// The destructor body removes all groups; the remaining cleanup is the normal
-// reverse-order destruction of the nontrivial members and base class.
-//
-// - Typed all members from the binary-backed 0x100C layout. The first check
-//   had 14 unresolved ManagedArray destructor calls and was 419 bytes short.
-// - Kept civilians as the out-of-line ManagedArray<int> member at 00408D20;
-//   modeled the other 13 identical four-word records with an inline
-//   storage-record destructor so VC5 emits the observed scalar delete/zero
-//   sequence and EH-state stores. This moved to exact size/CFG/call shape.
-// - Changed operator delete to the period C++ global declaration; this
-//   relocation identity (4 bytes).
-// - Added the decorated 00408D20 ManagedArray<int> identity to
-//   config/original_symbol_overrides.txt; the rebuilt function is now exact.
-// - Same-template inline destruction for all 14 members emitted one extra
-//   Restored the typed exact candidate. The storage-record distinction is
-//   retained only because the executable proves the one out-of-line call and
-//   the 13 inlined scalar cleanups.
 
 
 TribeTacticalAIModule::~TribeTacticalAIModule()
@@ -2683,8 +2429,6 @@ TribeTacticalAIModule::~TribeTacticalAIModule()
     this->removeAllGroups(-1);
 }
 
-// - Replaced stub with full switch table of status string addresses.
-//   bounds check and jump table.
 
 
 char* TribeTacticalAIModule::updateAreaName()
@@ -2716,32 +2460,6 @@ char* TribeTacticalAIModule::updateAreaName()
     }
 }
 
-//   member names. It was 677 bytes short and had 18/22 calls.
-// - Rebuilt the source around the binary-proven TribeTacticalAIModule member
-//   layout, ManagedArray records, strategic-number indices, and typed world /
-// - The target's first pair clamp compares sn[0x10] > sn[0x1A] directly;
-//   at +0xF0, placing numberValue at md+0xDE0.
-//   tick/1000 guard unsigned, restoring the target magic-multiply sequence.
-//   player-list insertions. This recovered the original scan and growth CFG.
-//   size, 0x8 frame, 22 ordered calls, and 98.19% instruction shape.
-// - Corrected id ownership to RGE_Player +0x4A, with world +0x3C and
-//   player_num +0x3C. The source now has 969 differing bytes and 107 edit
-//   a post-reset player receiver, timestamp temporary, unsigned tick type,
-//   typed source; no evidence-backed lead remains for this claim.
-//   scope, references, real MainDecision and world class surfaces, virtual
-//   update ownership, the canonical world_time spelling, diplomacy layout,
-//   and an inline world-time accessor. Aliases and declaration surfaces were
-// - The Ghidra listing confirms a temporary md receiver in the first timing
-//   +0x121, followed by the missing six-byte md reload before the farms reset.
-// the farms reset; the executable reloads md. No call occurs between capture
-// and use. Later, the rebuild reads md before clearing playersToDefend, while
-// the executable clears first; both dereference md after the clear. No call
-// crosses this scheduling change. All 22 calls and ManagedArray effects match.
-// - Exact finish in the registered taitacmd.cpp context kept shared resize
-//   out of line to protect 004F13F0. A local inline growth body restores the
-//   target's three operator_new/operator_delete pairs without a helper call.
-//   The zeroNumber calls preserve the md reread and player publication order.
-// - Walkback of the local growth body restores three direct resize calls and
 
 
 // These three target insertions inline growth and emit direct
@@ -2895,24 +2613,6 @@ diplomacy:
 
 void TribeTacticalAIModule::setMainDecisionAI(TribeMainDecisionAIModule* val) { this->md = val; }
 
-//
-// four resize-backed task arrays, scalar/gatherer data, six legacy arrays
-// with their inline grow-on-read bodies, the fixed strategic-number table,
-// four more grow-on-read arrays, distributions/resource values, the group
-// sentinel list, and the remaining tactical state.
-//
-//   3347B, 94/94 calls, 0x8 frame, 91.13% shape.
-// - Guarded ManagedArray aliases for the four resize-backed arrays recovered
-//   the original shared array-base accesses.
-//   form across all ten manual growth blocks. Current: 3230B, 94/94 calls,
-//   0x0 frame, 99.41% shape, 822 positional bytes / 187 edit bytes.
-// - Moving the fixed `sn[226]` write-pointer assignment inside its positive
-//   count guard reproduced the original test-before-`lea` block order.
-// - Original tail serialization writes `zoomingToNextAge` before the adjacent
-//   `lastCoopAttackDemandTime` field. Swapping those natural statements gives
-//   an exact 3230B / 94-call match.
-// - The canonical inline resize body stays visible for same-TU update. Four
-//   early save resize sites remain out of line, as the executable requires.
 
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* ptr);
@@ -3424,46 +3124,6 @@ int TribeTacticalAIModule::save(int file)
 
 void __cdecl TribeTacticalAIModule::logGroupDebug(int, char*, ...) {}
 
-// and the period source's shared update-area timing tails.
-//
-//   73/78 calls, 83.23% shape, 182 bytes short.
-// - restored case 0x15's unskip/timing/select-next terminal path and direct
-//   updateBuildAIWithObjects call; size and call count became exact (2514/78).
-// - branch-local mostDamaged calls recovered the binary's push/jump dispatch;
-//   current best remained structurally aligned through the tactical cases.
-// - direct buildListLength call predicates recovered three test-eax blocks.
-// - fixed common timing average to the executable's fixed /20 division; case 0x15
-//   retains its separate total/count division.
-//   duplicates; the direct world-time guard widened the body by 102 bytes.
-//   Explicit common-tail labels widened it by 94 bytes. Restored the clean
-//   raw vtable fields and absolute string address were diagnostic surfaces.
-//   switch-label order, scoped timer locals, explicit loop breaks, and several
-//   coordinate assignment orders were duplicate or worse.
-//   cursor updates in its increment clause. This restores the original JL
-//   backedge and improves the clean result to 417 differing bytes, 92.92%
-//   shape, 78/78 calls, and 0x128 frame.
-// - The registered context now exposes a narrow nonvirtual TribeBuildAIModule
-//   surface for exact anchors. A local inherited virtual view restores the
-//   original +0x44 loadBuildList call without changing shared declarations.
-// - CVDump proves four stack locals and their names. They are startTime at
-//   -0x11C, availableTime at -0x120, incUpdateArea at -0x128, and
-//   updateAreaStartTime at -0x124.
-// - CVDump also proves three branch-local XYPoint variables named position.
-//   Their homes are -0x108, -0x118, and -0x110. These scopes restore all three
-//   x87 conversion blocks without fake aliases.
-// - Direct member timing updates restore the four timing homes and the complete
-//   common timing block. Local elapsed, total, and count values were decompiler
-//   artifacts.
-// - The executable casts the unsigned world-time delta to signed int before
-//   division. This source keeps unsigned wrap, then applies signed division and
-//   the signed <= 5 test.
-// - The signed age block and direct timing source restore the internal case-21
-// - Gotos, shared returns, loop forms, timer scopes, switch order, missing
-//   default, nested calls, duplicate exits, 512 ambient contexts, and supported
-//   flag axes did not recover that order.
-// VC5 puts case 21 first, adds a loop jump, and places the finish block last.
-// With the required signed age source, the rebuilt reachable boundary is 98
-// bytes too large because it also includes the following switch table.
 
 static const char s_build_file_format[] = "%s.bld";
 
@@ -3820,13 +3480,6 @@ int TribeTacticalAIModule::doSomething()
     return 1;
 }
 
-// __thiscall, int clearArea(int, float, float, float, float)
-//
-//   tactical-module, and passableTile surfaces. The binary selects the best
-//   passable point around the four supplied area corners, then calls moveUnit.
-// - Reordered the point and distance declarations to reproduce the original
-//   switch and FPU layout, so it was restored.
-// - Ordered switch arms by the original emitted block order. This produced an
 
 
 int TribeTacticalAIModule::clearArea(int object_id, float x1, float y1,
@@ -3886,41 +3539,6 @@ int TribeTacticalAIModule::clearArea(int object_id, float x1, float y1,
     return 0;
 }
 
-//
-// - Earlier source used an add_unique_scan helper and wrong list offsets.
-//   It collapsed the four inline scan blocks and produced a 500-byte body.
-// - The binary uses one shared resize/append tail for civilians and soldiers.
-//   Boat and subtype lists use separate inline bodies.
-//   proven offsets and use the declaration-only period array methods.
-// - Loading each subtype list before contains reduced the body to 825 bytes.
-//   The player/world correction then reduced it to 822 bytes and aligned the
-//   difficulty chain at md->player->world (+0x3c).
-//   all calls and list offsets align, but register ownership and several
-//   subtype blocks still differ.
-// - The original has a dedicated boat-chain return before the shared
-//   civilian/soldier append.  Added that return and the fishing early-return
-//   restored to the clearer `number + 1` spelling.
-//   at 822 bytes; the structural prologue and four ID spill gaps were unchanged.
-// - Restoring the binary-supported persistent object alias in the current
-//   virtual-base context was also a duplicate.  A register-ID diagnostic was
-//   unchanged, so the clean typed candidate remains authoritative.
-// - Revisit session: the clean 822-byte source rebuilt with 11/11 ordered
-//   calls, no frame, 570 strict diff bytes, and 60.66% exact-block coverage.
-//   register-qualified parameter/ID locals, a flat class prefix, local-order
-//   changes, and combined scan predicates.  These were duplicates or worse.
-//   stdlib/string/windows headers, their combination, and a receiver reference.
-//   Each emitted the same 822-byte candidate.
-//   diff bytes, but lost structural alignment and was restored.
-//   parameter in EBX, this in EBP, and the repeated ID in EDI.  The clean
-//   with direct calls to the exact add body. This recovered the original
-//   parameter, receiver, and ID registers and all inline blocks.
-// - The artifact add at line 3165 remains out of line in the executable, while
-//   all four later add sites inline. A narrow inline-depth limit preserves this
-//   proved same-TU split. Without it, VC5 inlines the artifact add and emits an
-//   soldier else-if. Both reductions remained exact.
-// - The shared template surface initially inlined three contains calls and
-//   all three calls out of line. One narrow inline-depth region restores the
-//   exact isolated and grouped output without changing nearby exact owners.
 
 
 void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
@@ -3993,40 +3611,6 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
     }
 }
 
-//
-//   tactical list ownership and the natural repeated scan/compact source.
-// - Deferred index initialization until after removeFromTaskLists and routed
-//   the normal paths through one group-removal tail; this reduced the build to
-//   792 bytes and one extra call.
-// - Reset the scan index before each list and let boat removal continue into
-//   the war-boat scan; size and all ten ordered call sites then matched.
-//   (original 765), with 607 strict diff bytes and 216 edit/resync bytes.
-// - An ordinary zero local, register-qualified zero, per-loop pointer aliases,
-//   remaining gap is the original EBX zero/prologue allocation and associated
-//   block placement; calls, frame, boundary, and size are otherwise aligned.
-// - Removing the outer count guards reduced the CFG count but regressed to 744
-//   exact 765-byte size and saved EBX, but used EBX for the count and regressed
-// - Zero locals derived from objectId or the scan index, and explicit stage-skip
-//   gotos, all emitted the clean candidate unchanged; no new structural lead.
-//   returns.  EBX and several structural blocks aligned, but size fell to 632
-//   bytes and one removeFromGroup call site disappeared; restored.
-//   The compiler inlined auxiliary contains calls too, losing four call sites
-//   and growing to 804 bytes; restored the clean candidate.
-//   recovered the saved-EBX prologue but grew to 839 bytes, with a broad CFG
-//   shift; restored the clean candidate.
-// - Corrected the boat-removal continuation into the war-boat scan.  This
-// - Renewed pass: 21 distinct source, liveness, control-flow, and context
-//   the frameless boundary, and the correct owning symbol.  The unresolved
-//   original saved EBX, all ten calls, and every block.
-// - VC5 inlines the first three remove calls. The original TU also inlines the
-//   fourth war-boat call, but the isolated TU exhausts its inline budget there.
-//   adds one call and removes 92 bytes, so it cannot model the executable.
-// - The original control flow checks war, fishing, trade, and transport only
-//   after a successful boat removal. If the boat scan fails, it checks only
-//   artifacts. This source preserves that shipped list ownership.
-//   with a natural remove call produced 673 bytes, 11 calls, and 397 strict
-//   diff bytes. Restoring the body rebuilt the 765-byte exact result in the
-//   authentic taitacmd.cpp translation unit.
 
 
 void TribeTacticalAIModule::removeObject(int objectId)
@@ -4042,7 +3626,6 @@ void TribeTacticalAIModule::removeObject(int objectId)
             this->boats.remove(objectId);
 
             if (this->warBoats.contains(objectId)) {
-                // Exact remove body at the fourth inline site.
                 int removeIndex = 0;
                 int maximum = this->warBoats.maximumSizeValue;
                 for (; removeIndex < maximum; removeIndex++) {
@@ -4081,39 +3664,6 @@ void TribeTacticalAIModule::removeObject(int objectId)
     this->removeFromGroup(objectId);
 }
 
-//   TribeTacticalAIModule fields through zoomingToNextAge. This fixed the +0xFA4 field and gave the
-// - Kept the visible-map chain, shared ManagedArray pointer local, ceil expression, and zero local;
-//   these reproduce the original prologue and main path through the low-count tail.
-// - Modeled the low-count result as desired=1, a gatherer cap, and one final explorer assignment.
-//   This removed the extra display/update calls and recovered all 13 ordered calls, 3 jumps, 2 returns,
-//   and 90.97% exact-block coverage. Best current output is 509 effective bytes versus 514, 73 strict
-// - A focused direct explorer-result assignment with a live one-count predicate added two final-call
-// - A typed low-count field-order spelling assigned explorer and gatherer results in separate arms;
-// - A direct low-count field-order rewrite added a second civilian-count test and widened the function
-// - A natural typed field assignment in each low-count arm reproduced the 539-byte, two-extra-call
-//   cap tail. This restored 514-byte size and 144 instructions, but VC5 hoisted the sn[3] load
-//   where VC5 keeps the low-count cap in a different register/lifetime shape. No policy-invalid steering kept.
-//   sequences now use the exact operator[] body. The emitted bytes are equal,
-//   but method ownership is canonical and resize remains out of line.
-// - Restored the binary-supported low-count local reuse from the decompiler:
-//   one result holds 1, sn[5], then sn[3], and the computed explorer demand is
-//   stored before its cap. This gives exact 514-byte size, 144 instructions,
-// - Exact addObject and removeObject predecessor contexts did not change this
-//   target. Register hints, branch-local result scopes, references, and store
-//   sequencing were duplicates or worse. No compiler-context shim is retained.
-//   and one reused result local. Pre-branch count reuse, result-local reuse,
-//   branch-local cap declarations, direct member rereads, assignment order,
-//   Restore the pinned source. The first unproved register divergence remains
-//   the sn[5] load and later civilian-count reload at +0x178.
-//   reloads civilians.numberValue after it updates desiredNumberGatherers. The
-//   rebuild reuses the earlier count read. Concurrent count changes can produce
-//   a different civilianExplorers result and different later stores.
-//   inheritance. The emitted body is unchanged. The decompiler-shaped local
-//   reuse, stored-field cap comparison, and inline numberCivilians accessor are
-// - Exact finish: use the canonical ManagedArray number and setDesiredNumber
-//   inline methods at the low-count publication boundary. This preserves the
-//   executable's civilian-count reread and keeps the explorer-demand store
-//   before the sn[3] load. Direct field access loses one or both properties.
 
 void TribeTacticalAIModule::evaluateCivilianDistribution()
 {
@@ -4204,67 +3754,6 @@ low_count_done:
     this->updateGathererDistribution();
 }
 
-// __thiscall, int, ret 8
-//
-//   ManagedArray<int> surface (inline operator[] grow, remove, out-of-line
-//   resize) and the plain source-level algorithm: new-explorer creation,
-//   gatherer->explorer conversion by needed-resource priority, excess-
-//   explorer removal, gatherer creation, and the refresh loop that tasks
-//   civilians one per tick (return j = count tasked).
-//   VC5 emits real ManagedArray<int>::resize calls (call set then fully
-//   aligned; target-count gap 0).
-//   inside it pass the `tasked` variable (register pushes, not -1 literals);
-//   the loop is `do { if (tasked != -1) goto append; ... } while (newExplorer
-//   > -1)` under an early-exit check. VC5 still rotates the loop-top tasked
-//   check to the loop bottom (proves tasked == -1 at the head) so the
-//   original's separate B010 top-check block is not reproduced.
-//   == 0) { addGatherer path }` keeps the addGatherer path inline and
-//   task_done as the skip target (original's jne layout); call sites 100%
-//   aligned.
-//   indexing civilians[taskedCount-1]): both regressed; VC5 emits extra
-//   explorer scan exposed the refresh-loop operator[] grow at the original
-//   top block and restored the 0x14 frame. The value form is the cleanest
-//   forms added an unnecessary address alias. Split taskedCount initialization
-//   was emitted identically to `i + 1`.
-//   1563B strict diff and 90.50% shape. Comma and reverse coordinate forms,
-//   separate coordinate locals, local declaration order, direct member-call
-//   arguments, and combined refresh IV expressions were duplicate or worse.
-//   to 1260B diff, 96.59% shape, and 86.70% exact-block coverage. Explicit
-//   excess-removal labels gave 1150B strict diff but poor resynchronization and
-// - The final unresolved candidate is 2083B versus 2062B, 39/39 ordered calls,
-//   remaining evidence points to VC5 scheduling and refresh register homes.
-// - Canonical ownership: md +0xF0, civilians +0xF4 (ManagedArray<int>),
-//   civilianExplorers +0x104 (ManagedArray<int>), numberGatherersValue +0x9CC,
-//   desiredNumberGatherersValue +0x9D0, neededResourceValue[4] +0xD88,
-//   nextCivilianToTaskValue +0xF7C. taskCivilians returns j, the number of
-//   civilians tasked this tick.
-// - Call set (39): object x5, __ftol x6, idleCivilian x4, removeGatherer,
-//   resize x2, operator_new/delete (inline grows), stopUnit, addGatherer x2,
-//   highLevelTaskGatherer, highLevelTaskExplorer, updateGathererDistribution,
-//   debug_timeGetTime x2.
-// - ManagedArray audit: the local template remains the canonical utmarray.h
-//   resize stays declaration-only for the real 004147A0 out-of-line call.
-//   all metrics remained unchanged.
-//   caller-side explorer scan and append. Duplicate failure still exits through
-//   the scan to its canonical method owner; resize remains declaration-only.
-// - Shared-context pass: restore the nested inline operator[] allocation body.
-//   The grouped function then equaled all 2083 standalone bytes. The prior
-//   declaration-only shared resize surface had collapsed it to 1312 bytes.
-// - Contextual matching pass: retain a civilian-array owner across the setup
-//   resize and publication, compare the requested ID against civilians[i],
-//   and let operator[] own the timed-return capacity guard. The grouped and
-//   standalone bodies now equal 2064 bytes, with exact frame, calls, and CFG.
-//   two-byte induction-value register move remains after the refresh search.
-//   Adding exact 004F4760 after the excluded 004F21F0 did not change this body.
-//   The shared context still declares removeGatherer as void, while the exact
-// - Final pin was blocked by a concurrent config/translation_units.json edit:
-//   the loader rejects 00543E00 as an owner of world_scenario_sparse. No shared
-//   config or helper file was changed by this pass.
-//   914 differing bytes, and 39/39 ordered calls. During the pass, the shared
-//   taitacmd header changed ManagedArray::resize from declaration-only to an
-//   inline body. That changed this owner to 2236 bytes with 10 new/delete calls
-//   and removed both resize calls. It also changed 004F13F0 to 679 bytes.
-//   The target source was restored; no context bridge was retained.
 
 int TribeTacticalAIModule::taskCivilians(unsigned long param_1, unsigned long param_2) {
     int newExplorer;
@@ -4406,8 +3895,6 @@ task_done:
         this->nextCivilianToTaskValue = this->civilians[i];
         if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x0DC6) - param_1 >= param_2) {
             if (i > 0) {
-                // Binary-proven capacity touch: ensure room for civilians[i-1]
-                // before returning, matching the inline operator[] grow.
                 this->civilians[i - 1];
             }
             goto done;
@@ -4427,32 +3914,6 @@ is_explorer:
     goto task_done;
 }
 
-// taitacmd.cpp
-// helpers and was 704 bytes; it was structurally short and did not preserve
-// the original direct-call set.
-// information/strategy subobjects, object/zone APIs, and the nested
-// skip-invalid-group loop from the same-TU decompiler control flow.  This is
-// 47/47 conditional CFG, and 51 calls; the first broad result was 777 bytes
-// different.  The remaining call topology is concentrated in the action
-// selection tail (rebuilt 4 setAction/16 type versus original 1 setAction/19
-// type), while the task call is in a relocated cold block.
-// 756 differing bytes with 73.77% exact-block coverage.  Direct-sentinel and
-// typed form.  No inline asm, fake imports, or custom flags retained.
-// strict differing bytes (76.4408%), and 63.50% bounded edit similarity.
-// - Named the debug source file. The previous literal address was not valid
-// order, with task before action selection. This moved task into the original
-//
-// delayed isGathered initialization, the int currentZone() & 0xff form, the
-// inverted zone test, and the explicit fully-explored failure edge are all
-// supported by closer code. The best clean checkpoint is 1008 bytes, 0x10
-// frame, 51 calls, 90.97% shape, 274 differing bytes, and 81.35% bounded
-// similarity. The action tail remains unresolved: the executable has 19 type
-// calls and four setAction calls. Fresh predicates, nested assignments,
-// scopes, initializers, and shared-label forms did not reach that call set.
-//
-// as direct setAction calls. VC5 merged their common call tail, recovered all
-// 19 type calls, and proved that setType(0x69) continues to action 8. This
-// reached 35 differing bytes with exact frame, calls, and call order.
 
 void TribeTacticalAIModule::taskIdleSoldiers(unsigned long startTime,
                                               unsigned long maxTime)
@@ -4601,39 +4062,6 @@ next_group:
     this->nextIdleSoldierGroupToTaskValue = -1;
 }
 
-// First pass: start from the full repo-local Ghidra approximation, kept below as
-// the line-by-line porting guide.  The compileable body below intentionally ports
-// only the top iterator/action-gate skeleton first; next passes should replace the
-// large TODO body with successive Ghidra blocks and watch edit/resync diff.
-// - seeded full Ghidra decompiler output under #if 0 from inventory/functions/004F/004F21F0_taskActiveSoldiers.txt.
-// - built a compileable first skeleton for the opening group-selection/list-walk/action gate.
-// - check_function cannot yet diff: current .text is 352 bytes vs original 9580; next step is to port the inactive-group body until the object is large enough for normal diff metrics.
-// - ported first inactive non-attack defend/relic branches (types 0x65/0x68/0x6d) with rough typed helper surfaces; rebuilt .text now 1408 bytes, still below original size for diff extraction.
-// - moved the victory-condition target-selection/grow logic onto the type-100/0x67 attack-enabled arm instead of the unrelated inactive generic-type arm. Shared only the binary-observed ManagedArray delete tail and the active exception-path finish; this removed the duplicate objectToAttackByGroup path and brought direct-call totals much closer.
-// - reshaped the active action dispatch around the original 0xc/0x13/3 gates, shared the action-7 timeout path, restored the second assist-group lookup, and routed the defend exception path through the observed common attack-state clear. This moved ordered call alignment from the first relic failure calls to the post-relic-success tail.
-// - inverted the action-0x10 type-100 reset arm to keep its commander/canAttack path inline before the non-100 gather path, matching the original physical order; shape rose from 52.82% to 53.66% and ordered-call alignment from 80.00% to 81.36%.
-// - inverted the action-2 valid-target subtype dispatch so non-default subtypes stay inline and subtype -1 becomes the late handler, matching the original +1C9C compare chain and post-epilogue handler family. This was the major structural breakthrough: shape rose to 69.12%, call alignment to 85.23%, and edit/resync similarity to 41.08%.
-// - reordered action-0x13 predicates to isGathered -> elapsed-time/consecutive-idle -> allUnitsIdle, following the original call order. Kept despite broad address movement because all three calls now align in order.
-// - made the two defend-object null failures exit immediately, preventing VC5 from merging their distinct setAction calls. Split the inactive default-task selection so its action result is materialized for the shared task tail.
-// - modeled the two path-point outputs as distinct float locals (including the defend gatherAux); frame returned to the exact 0xD0.
-// - split the active exception-path canPath failure from the type/path-point rejection. The former also clears numberObjectsToDestroy, matching the distinct original +09E8 failure block and recovering the last missing setAction call.
-// - precompute the exception-path target coordinates in the three pending-task homes before converging the active-selection and action-7 paths. Sharing only the calls after task preserves both task call sites while tail-sharing setAction/target/type/location/in-use/wait. This made all 440 aggregate call counts exact.
-// - hoisted the reused ObjectMemory pointer to function scope so the converged exception tail does not need an artificial fourth pending local. The defend canPath output is one float, while its two find-first-path outputs remain distinct floats; correcting that surface keeps the frame at the exact 0xD0.
-// - rewrote the active exception fallback as linear negative guards (type, additional canPath, then positive path-point success), preserving the original distinct canPath failure and rejection blocks. Splitting task/setAction/setTarget/setTargetType before the shared coordinate/set-location tail raised the ordered call prefix to 109 and shape above 75%.
-// - the original direct canPath and additional-passability canPath use distinct float output homes; modeling `point` and `exceptionPoint` separately restores the exact 0xD0 frame after the exception-prefix split. The action-0x0f invalid reset also requires the observed numberObjectsToDestroy=0 store.
-// - unified the action-0x0f/0x10 invalid reset at the binary-observed common tail, then isolated the action-0x10 attack failure with a local label and natural direct task call. This prevents VC5 from merging that setInUse/setAction pair with the distant action-7 timeout tail: aggregate calls are now exact at 440, size is -27, shape 75.70%, and call alignment 91.59%.
-// - inlined the action-0x10 taskAttacker target/location arguments to recover the original right-to-left call order, extending the ordered prefix to 255. This removes two artificial float homes and exposes an 8-byte frame deficit that still needs a real local-layout fix.
-// - original defend null exits and action-7 exception completion jump to the common tail at 004F4548 after their state stores. The temporary clear_attack_state tail preserves the single original store; direct copies make VC5 emit four stores.
-// - original action-2 reset paths place the target-location store before the numberObjectsToDestroy store in their cold reset tail.
-// - reordered action-2 handling to the binary-supported positive valid-target branch first, with invalid-target replacement/reset as the else arm; emitted code stayed effectively duplicate (six changed bytes, one fewer diff byte) with no CFG or call movement, but the source now follows the decompiler-supported fallthrough.
-// - changed the byte state test to `object_state > 2`. This recovered original CMP 2 / JA and made block +0x1C92 exact.
-// - tAreaMin and tAreaMax are 16-byte Waypoint values. Modeling both makes the original 63-instruction action-2 block exact, but exposes conflicting synthetic homes.
-// - direct location expressions recover exact local blocks. Defer them until common-tail structure preserves the call surface and exact 0xD0 frame.
-// - the direct relic path passes relic->type, not constant 0x6d. This aligns the next defender block at original +0x3ac and improves strict diff by 51 bytes.
-// - placing the relic exit in each completed branch preserves behavior and recovers exact blocks at original +0x1e3c and +0x1ef8.
-// - original relic and defender path failures share the later active setAction block. Spelling all three failure tails directly lets VC5 recover that join without source labels and improves strict diff by 15 bytes.
-// - removed an unreachable duplicate inactive target block and its trampoline. They never emitted code; inactive selection now targets the live common region directly.
-// - an outer-loop continue restores the missing relic setter sites, but skips group advancement and the time-limit check. Do not use that diagnostic shape as behavior evidence.
 
 
 void TribeTacticalAIModule::taskActiveSoldiers(ulong param_1, ulong param_2)
@@ -5902,12 +5330,6 @@ ContinueLoop:
     this->nextActiveSoldierGroupToTaskValue = -1;
 }
 
-// 6: first soldier loop also uses edi=i+1 and ebp as byte offset; original uses ebp as integer index and ebx as i+1/new max.
-// 7: array growth/copy behavior and later call sequence are semantically represented, but local/register topology is still wrong.
-// A side-effectful soldiers[i] capacity ensure followed by direct value access
-// recovered the target's count/load/store interleave.
-// unplayedSoldiers[51] fixed the frame but shifted the play-unit argument;
-// Exact: default /O2 /Oy, 823/823 bytes, 22/22 calls, no custom flags or inline asm.
 
 void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1,
                                               unsigned long param_2)
@@ -5989,22 +5411,6 @@ void TribeTacticalAIModule::playTaskSoldiers(unsigned long param_1,
     }
 }
 
-//
-// CodeView proves i at -0x1C, soldierObj at -0x14, centerPoint at -0x10,
-// and gatherPoint at -0x08. The move destination uses gatherPoint.x and y.
-//
-// The protected ManagedArray layout requires the public number, operator[],
-// contains, add, and remove methods. The outer for-loop and direct
-// inlined add allocation and loses exactness. Direct member expressions, the
-// reduction are incidental.
-//
-// contains checks membership before add. Inlined add performs its
-// own duplicate scan. Both scans are present in the original executable.
-//
-// SHARED-CONTEXT NOTE: the tactical header's nested operator[] growth changes
-// this body from 740 to 852 bytes. The canonical utmarray.h surface keeps the
-// resize calls out of line and preserves the exact body. Using that surface in
-// the shared wrapper regresses earlier exact anchors, so this owner stays out.
 
 
 
@@ -6050,37 +5456,6 @@ void TribeTacticalAIModule::taskUngroupedSoldiers()
     }
 }
 
-//   (md at +0xF0, embedded informationAI at md+0xCEC, groups sentinel at
-//   +0x9D4, and the ten ManagedArray<int> buckets) and the two ordered group
-//   validating this call/order surface.
-//   while(1) sentinel exits; this recovered the original loop-top null check.
-//   water fully-explored gate.
-//   loop tail instead of falling into action-10/11 checks.
-//   and the trade fully-explored gate.
-//   the outer loop; replaced the found-reset null-object return with next-group.
-//   installed, as required by the executable's shared task tail.
-//   is retained.
-//   named canonical RGE/AIModule surfaces, corrected AIModule to 0xF0, and
-//   declared the XYZPoint canPath overload before the integer overload.
-//   branch already proves the fallback type and the original has no second
-//   virtual type call there.
-//   target-location tail; this matches the single original setTargetLocation
-//   site without the 0x6C frame introduced by new target locals.
-//   checks (the original does not jump to next_group after its task call).
-//   tail for default/target/action-11 paths and skipped setAction for unknown
-//   first-pass types.  This resolves the task/action/type/target-location call
-//   count gaps while keeping frame 0x60.  The best validated source remains in
-//   frame 0x60.  The remaining aggregate gap is one setAction and one setInUse
-// - the executable has one physical setTargetLocation call site
-//   for the resource/trade target setup.  Keep those coordinates as direct
-//   arguments so VC5 can share the tail without extra float reloads.
-// - LIKELY INTENT: the action-8 found reset is a separate task path.  Its
-//   still run, but the executable uses a shared tail instead.
-//   tactical ManagedArray field or call one of its methods. The array members
-//   only establish later class offsets, which the current 16-byte layout
-//   already models. No shared-header migration applies to this target.
-//   2278 and 2203 bytes. Restored the clean 2070-byte source.
-//   shape, 97.87% ordered calls, 2070 differing bytes. Result remains
 
 
 void TribeTacticalAIModule::taskBoats()
@@ -6438,79 +5813,6 @@ next_group:
     }
 }
 
-// Size: 2024 bytes. __thiscall. 62 calls.
-//
-// retained only at the packet-proven source sites that call 004147A0; the
-// parent does not contain compiler-expanded allocation/copy/delete blocks.
-//
-//   strict diff; recovered the full 62-call family without parent-level grow
-//   explicit resize/value sites, positive dropsite block order, and combined
-//   task-array bounds.  This reduced the rebuilt body to 2052B and 1878B
-//   strict diff with 95.99% shape.
-// - Scoped the first civilians ManagedArray alias, used the binary-positive
-//   x87 gate (`vf61() == 0.0`, double zero), and nested
-//   `group(assistGroupID(), -1, -1, -1)` to preserve source call scheduling.
-//   97.12% shape, 89.74% exact-block coverage, all 62 calls aligned.
-//
-// - AUDITED the checker's +06F2 "commander vs assistGroupID" direct-target
-//   discrepancy: the two call targets are actually in the correct order at
-//   (004F5F9A -> 004F5E65) returns to the null test at the top of the body,
-//   with `or ebp,-1` in the preheader.  Changed `if {...} do {...} while` to
-//   a plain `while (group != &this->groups)` with `int minusOne = -1` first in
-//   the body.  This resolved the +06F2 artifact and added 8 exact blocks.
-// - FIXED the dropsite-success block (line 6089): original keeps
-//   `lea ebp,[esi+0D58h]` (unitsTasked alias) live across the resize call and
-//   holds n in ecx across the scan; added `ManagedArray<int>* unitsTasked =
-//   &this->unitsTaskedThisUpdate;` and read n/cap/value through it.  The
-//   whole 6089 block (inline grow + membership scan + resize + append) is now
-//   structurally byte-exact.
-//   (12.45%), 98.88% shape, 95.03% exact-block coverage, all 62 calls aligned,
-//   0 wrong direct targets.  Second scan + group walk byte-exact.
-// - REMAINING STALL: the line-6068 first membership scan.  Original spills the
-//   reloads them in the loop (`mov edx,[esp+1Ch]`, `cmp eax,[esp+18h]`); the
-//   rebuilt substitutes them back to direct member reads ([esi+0D5Ch]/
-//   [esi+0D64h]) and drops the frame to 0x8.  Tried ~12 families: while/for
-//   +&&/break, locals vs direct-member vs mixed condition bounds, with/without
-//   outer `if (n > 0)` guard, pointer and reference aliases, `register`/
-//   `const` locals, n loaded before the resize call, full-class surface,
-//   game_globals.h include context, and /O1//O2//Ox flag sets.  VC5
-//   keep count/cap in registers or substitute member re-reads under register
-//   pressure; no source form produces the stack-home spill).  The spill may
-//   require the original full taitacmd.cpp TU context (real utmarray.h
-//   build cannot reproduce.  Next lead: build a combined-TU or full-class
-//   context that reproduces the original allocator pressure, or accept the
-// - Also noted: two SIB base/index term swaps remain in the loop-body address
-//   encodings (e.g. original `mov ebx,[ecx+edx]` vs rebuilt `mov ebx,[edx+ecx]`
-//   at the second-scan civilianID load) - downstream register-color cascades
-//   from the first-scan substitution, expected to resolve if the first scan
-//   ever aligns.
-//   the proven canonical RGE_Player/RGE_Static_Object virtual names and modeled
-//   TacticalAIGroup as its real 0x330 object with a named +0x1D0 field. Calls,
-//   layout, and behavior remain unchanged; one relocation byte aligned better.
-//
-// - Exact contains ownership recovers the original 0x10 frame and all four
-//   first-scan homes. CodeView lists only i, so the bound homes are compiler
-//   state from the inlined method. Exact add also replaces the second manual
-//   scan without changing emitted code.
-//   CFG, and block coverage. Six bytes differ in one first-scan comparison.
-//   Only the transient EBX and EDX assignments are reversed.
-// - Zero through twelve dummy predecessors do not change this result. The
-//   exact same-TU playTaskSoldiers predecessor produces positional equality in
-//   the context lab. Its declarations alone also produce equality.
-// - Do not retain unused context declarations or a namespaced duplicate
-//   predecessor. The next supported step needs genuine combined taitacmd.cpp
-//
-// - All six changed bytes are in the five instructions at +0xB3 through
-//   +0xC0. The original uses EBX for the task-array value and EDX for the
-//   civilian-array base. The rebuild exchanges these two registers.
-// - Both versions load the same pointers, select the same indexed task value,
-//   and compare it with the same civilian value. They set identical flags for
-//   the branch at +0xC1. Calls, memory writes, predicates, and fault order do
-//   not change.
-// - On fallthrough, +0xC7 replaces EDX and +0xD0 replaces EBX. On the taken
-//   path, the loop tail at +0x2C0 uses neither register. The next iteration
-//   replaces EBX at +0x25 and EDX at +0x3C before use.
-// - Exact playTaskSoldiers same-TU context emits the original register choice.
 
 void TribeTacticalAIModule::evaluateOpenTasks()
 {
@@ -6652,15 +5954,6 @@ void TribeTacticalAIModule::evaluateOpenTasks()
     }
 }
 
-//
-//   build calls and no typed checkForBuildInsertion surface.
-//   build/resource/information/player/world ownership and the natural nested
-//   insertion guards. This recovered 327 bytes and all nine ordered calls but
-//   initially placed the strategic-number array 0x60 bytes too high.
-//   own the proven +0x4C8/+0x438/+0x450/+0x454 fields; only the resourceAI
-//   displacement remained three bytes off.
-// - The two gotos retain binary-proven shared granary/queue tails; all data and
-//   calls remain named typed members rather than raw-offset plumbing.
 
 void TribeTacticalAIModule::evaluateBuildListInsertions()
 {
@@ -6776,8 +6069,6 @@ int TribeTacticalAIModule::strategicNumber(int index) {
     return sn[index];
 }
 
-// - Replaced simple stub with bounds check, raw sn array store, percentage clamp,
-//   and informationAI notification for strategic number 0x69.
 
 
 
@@ -6801,46 +6092,6 @@ void TribeTacticalAIModule::setStrategicNumber(int index, int value)
     }
 }
 
-// named TacticalAIGroup/Information/Diplomacy ownership, and the complete
-// named RGE_Static_Object virtual surface used by the two path tests.
-//
-//   md->informationAI for relic memory, the four named managed arrays, and the
-//   embedded TacticalAIGroup sentinel; no vtable padding or raw vptr plumbing.
-// - put the 0x72/0x74 relic handler in the cold non-0x201 arm; this moved the
-//   ordered calls.
-// - repeated unitAI() calls and direct managed-array reads were restored where
-//   the original reloads them; the observed scalar/XYZ canPath overload slots
-//   required the named overload declarations in the compiler's slot order.
-// - kept the entry object in attackPoint.x, separate from the later targetObj;
-//   this matches the packet's stack alias and object ownership flow.
-// - replaced boolean civilian/explorer searches with the binary-supported
-// - corrected MD member ownership: diplomacyAI is at +0x9DC and
-//   informationAI at +0xCEC.  TacticalAIGroup Waypoint fields are 16-byte
-//   Waypoints (not 12-byte XYZPoints), restoring players/workingArea and
-//   aiPlayer offsets (+0xD28/+0xD48/+0x1256C).
-//   29.67% exact-block coverage, 97.48% ordered-call similarity, frame 0x20
-// - managed-array growth loops written as bounded for loops moved the clean
-//   parameter homes, block placement, and header context. Most were neutral.
-// - the original has one extra far-victim coordinate __ftol call
-//   before the common coop-attack call. A volatile diagnostic reproduced the
-//   119-call surface, but it also changed cleanup and is not retained.
-// - remaining structural facts: the original frame is 0x30, its civilian
-//   46 bytes longer with one missing __ftol call.
-//   near victory call was folded back to the same missing-ftol result.  The
-//   common post-branch call is restored.
-// - 2026-08-22: moved the relic handler behind a switch dispatch and one
-//   shared late label.  This reproduces the original sub/sub dispatch and
-//   improves ordered calls to 118/119, shape to 85.74%, and exact-block
-//   coverage to 46.21%.  The source-level late label is supported by the
-//   original cold relic and explorer blocks.
-// - 2026-08-22: a ternary coordinate expression removed three __ftol calls
-// - 2026-08-22: split the coop call across the near, far-victory, and
-//   far-target arms.  VC5 still emitted 118 calls and no extra __ftol; restore
-//   the shared call form because its shape and call order were weaker.
-// MANAGEDARRAY AUDIT: restored playersToAttack[0] for the index-zero capacity
-// check and removed the fake resize(index) method. This emits identical code.
-// Growth guards, copies, publication, and field offsets now follow the shared
-// template contract.
 
 
 void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
@@ -7207,18 +6458,6 @@ notify_relic:
     } while (1);
 }
 
-// Counts soldiers whose UnitAIModule is idle and records them in workingArea.
-//
-//   9 calls; helper shims lost the two unitAI calls and all three original
-//   decorated member-call identities. Canonical fields were nevertheless the
-//   soldiers and workingArea ManagedArray<int> members.
-//   RGE_Game_World::object, RGE_Static_Object::unitAI, and UnitAIModule calls,
-//   exact same-TU numberUngroupedSoldiers source so the reset precedes the
-//   soldiers count load and indexed member expressions retain their address
-//   term order.
-//   retained only as a focused address-term experiment.
-//   whether a natural local pointer changes VC5's base/index encoding.
-//   unchanged while testing whether class vptr context affects SIB encoding.
 
 int TribeTacticalAIModule::numberIdleSoldiers()
 {
@@ -7244,42 +6483,6 @@ int TribeTacticalAIModule::numberIdleSoldiers()
     return count;
 }
 
-//   ordered calls and behavior-backed array/priority topology align, but the
-//   frame/prologue and several branch/register blocks remain structurally
-//   the out-of-line ManagedArray resize/contains surface, and the repeated
-//   restores the inline operator[] only for the zero-priority soldiers read.
-//   zero-priority soldier growth as the one inline allocation/copy/delete path;
-//   the other soldier reads retain the six out-of-line resize call sites.
-//   matching the original inline positive block and late zero block.
-//   busy-array register reuse; no byte-stride cursor was retained yet.
-//   byte-stride cursor, matching the original EBP offset and zero-arm
-//   allocation-size topology.
-//   test the original EBX=this, EDI=result, EBP=offset callee-save coloring.
-//   original compare operand spellings for bounds/duplicate scans.
-//   element access; removed the byte-stride cursor and excess owner alias.
-//   frame stayed 0x10 and the first structural hunk remained unchanged.
-//   stayed exact, but the natural branch source moved to 808B and diff 719.
-//   frame stayed 0xC, calls stayed aligned, and size moved to 688B with diff
-//   compiler layout moved one resize call before the positive arm.
-//   76.10%, but the label-crossing source was not a clean original model.
-//   647, exact calls and frame. The remaining structural gap is register
-//   coloring, block placement, and the original shared append tail order.
-// - The old countedSoldier label was outside the valid-object block.  The
-//   original null object and null UnitAI paths skip the result increment, so
-//   the label now stays inside that block.
-// - A shared negative/positive append tail restored the original 726-byte
-// - Delaying the soldiers alias until after the outer count guard, then
-//   assigning the working count before the soldier value, restored the exact
-//   prologue and 248-instruction size.  The best current result is 353 strict
-//   differing bytes, 93.55% shape similarity, and 78.63% exact-block coverage.
-// - Direct working-area expressions, a branch pointer alias, an inline add
-//   helper, alternate loop forms, ABI declaration changes, and local-order
-// MANAGEDARRAY AUDIT: resize guards, inline growth, copies, publication,
-// contains bounds, append count, and field offsets match the executable. No
-// shared template change is required.
-// pointer before the working-area count. The rebuild reads the count first.
-// Soldier element and working-array reads therefore have different mutation
-// and fault order.
 
 int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priority, int reset)
 {
@@ -7409,53 +6612,6 @@ nextSoldier:
     return rNum;
 }
 
-// taitacmd.cpp: 6953-7056
-//   and priority branches into helpers (752B); the packet instead shows two
-//   long, source-level near-duplicate loops and the real resize/contains ABI.
-//   this->unitsTaskedThisUpdate ownership, the binary's three priority modes, and
-//   repeated-loop register and stack-home topology is audited.
-// - Duplicating the three warboat priority append arms recovered their six
-//   missing resize/contains sites; restoring the negative soldier arm and
-//   sharing its binary-proven workingArea tail recovered the full 47-call
-// - Separate Ghidra-backed soldier scan variables did not change emitted
-//   code.  Left unresolved: source/context needed to keep this in ebp/ebx
-// - Reversed the soldier append forms to match the binary call order: the
-//   equality arm scans workingArea, while the greater-priority arm uses
-//   contains.  This restored the ordered 47-call surface.
-// - Using local_8 as the proven byte offset in the warboat tasked-unit test
-//   reduced the frame from 0x14 to 0x10.  The remaining prologue still uses
-// - A direct workingArea.numberValue store in the greater arm preserves all
-//   47 calls.  A separate pointer alias and declaration reorder had no effect.
-// - Reordered each dispatch as negative, greater, equal to match the target's
-//   jge/jle block layout.  This reduced the size gap to 24 bytes and raised
-//   shape similarity, but the compiler merged three warboat append calls.
-// - Keeping the binary-backed byte-offset load only in the negative warboat
-//   arm restores all 47 calls and gives the best clean structural result:
-//   1383 bytes, 67.37% shape, and 23.02% exact-block coverage.  Applying the
-//   offset spelling to all arms merges the same calls and loses three calls.
-//   duplicates.  Remaining structural gap is target ebp/ebx allocation and
-//   an 83-byte tail.
-//   `index >= maximum`.  This matches the original CMP operand order, raises
-//   shape similarity to 68.53%, and raises exact-block coverage to 31.41%.
-//   parameter.  This matches the original CMP operand order, raises shape to
-//   70.16%, and raises exact-block coverage to 37.17%.
-//   shape and resynchronization, but lost two required calls and the 0x10
-//   ordered calls, 70.16% shape, 37.17% exact-block coverage, 1295 strict
-//   differing bytes.  The remaining lead is the target EBP/EBX register and
-//   stack-home topology, then the 83-byte structural tail.
-// MANAGEDARRAY AUDIT: resize, contains, capacity guards, duplicate scans,
-// append publication, count increments, and field offsets use the expected
-// ABI on both warboat and soldier paths. No shared template change is needed.
-//
-// - Canonical polymorphic AI/object/master declarations, template
-//   ManagedArray<int>, the target-class vptr, and the RGE object id field did
-//   two required contains/resize call sites and produced 45 calls. Inline
-//   contains and branch-local result pointers did not prevent that merge.
-// - Separate array scopes, register-qualified local_c, soldiers/warBoats
-// - A workingArea reference moved this to EBX and a 0x14 frame. A count-based
-//   greater-arm append restored 47 calls but grew the body to 1463 bytes.
-//   frame, 47/47 ordered calls, 70.16% shape, 37.17% exact-block coverage,
-//   the target EBP/EBX topology or broad tail CFG.
 
 int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int compare)
 {
@@ -7704,24 +6860,6 @@ next_soldier:
     return i;
 }
 
-// Size: 231 bytes
-// NC: no custom flags (default /O2 /Oy)
-//
-//
-// New approach (this session): the grow/copy/delete path is the inline
-// ManagedArray<int>::operator[] (utmarray.h lines 63-67) exactly as matched at
-// one source line (7063), which is the signature of an inlined operator[] call:
-//     obj = md->player->world->object(soldiers[i]);
-// [base+eax*4-4] post-increment form), so inlining operator[] should reproduce
-//
-// Key findings (struct layout correct):
-// - Prologue: push ebx; push ebp; push esi; mov esi,ecx; xor ebx,ebx; push edi
-// - +0x114: soldiers ManagedArray (value=+0x114, numberValue=+0x118, maximumSizeValue=+0x120)
-// - +0x0F0: md (TribeMainDecisionAIModule*) -> +0xF0: player -> +0x3C: world
-// - operator_new at 0054B6F0h, operator_delete at 0054B660h
-// - unitAI at 004C7420h (called twice: null-check then currentAction), currentAction at 00413960h,
-//   world->object at 00545D30h
-// - return obj->id ([edi+4]) on currentAction == -1
 
 int TribeTacticalAIModule::idleSoldier()
 {
@@ -7735,23 +6873,6 @@ int TribeTacticalAIModule::idleSoldier()
     return -1;
 }
 
-//   this->unitsTaskedThisUpdate ManagedArray members at their proven offsets.
-// - The first pass uses explicit resize-before-value accesses.  The second
-//   pass uses the period direct operator[] form only in the mode branch, which
-//   accounts for the observed inline grow/copy block.
-//   placement and register-sized branch displacements in the final tail.
-//   did not improve emitted code.  The natural direct-return form is retained.
-//   return, goto, sibling-overload guard topology, reordered empty/found labels,
-//   The remaining structural lead is the original near JL fallthrough to its
-//   own -1 epilogue, followed by the found-object epilogue; VC5 keeps an inverted
-//   wrapper as control-flow steering.  The natural labeled block is retained.
-// - The direct this->unitsTaskedThisUpdate receiver in the second scan restores the
-//   original EBP/EDX allocation.  Natural new[] and delete[] preserve the same
-//   inline growth code.
-//   47 bytes different, with all 23 ordered calls aligned.
-// executable gives second-pass exhaustion its own -1 epilogue. The rebuild
-// jumps to the existing shared -1 epilogue. Found-object returns keep the same
-// ID. No ManagedArray, object, call, cleanup, or return effect moves.
 
 
 int TribeTacticalAIModule::idleCivilian(int mode)
@@ -7831,24 +6952,6 @@ second_next:
     return -1;
 }
 
-// bounded-session result: scoped civilian-array pointers recovered the EBX/ESI/EDI
-// ownership, separate first/second object locals recovered all four 0x10-byte
-// Reversed capacity comparisons matched every resize branch.  The natural bounded
-// Remaining localized leads are the four contains inner-loop register permutations,
-// the first-pass near success jump/epilogue, and the distance-selection x87 tail.
-// no inline asm; exact promotion remains unresolved.
-// grew to 879/981B; an explicit positive bottom branch duplicated the clean
-// 645B output.  The no-outer for and while forms reproduced the prior 605B
-// recovered the target x87 compare block and reduced it to 636 bytes.
-// with 25/25 ordered calls, a 0x10 frame, and 96.68% exact-block coverage.
-// Separate second-pass index storage reached 616 bytes but lost exact blocks;
-// backedge and a late first-found epilogue.  VC5 keeps an inverted JGE/JMP tail
-// MANAGEDARRAY AUDIT: resize guards, contains bounds, inline growth, copies,
-// publication, and value reads match the executable. No template change is
-// required.
-// late in the executable. Both read the same object ID after currentOrder. The
-// first loop uses equivalent positive versus inverted tails and one count read.
-// All 25 calls, x87 comparisons, array effects, and return values match.
 
 int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseMode)
 {
@@ -7935,11 +7038,6 @@ second_next:
     return bestUnitID;
 }
 
-// tried canonical inline ManagedArray growth and typed md/player/world ownership;
-// rebuild to 606 bytes and restored the inline growth topology.
-// reached exact size/frame, 13 calls, and 93.9% shape similarity.
-// immediate zero store and 175-instruction body, but emitted the two entry
-// stores in reverse order and left a six-byte tasked-scan register permutation.
 
 int TribeTacticalAIModule::civilian(XYPoint& pos, int chooseMode, int order1, int order2, int order3, int allow103)
 {
@@ -7983,24 +7081,6 @@ next:
     return bestUnitID;
 }
 
-// taitacmd.cpp: 7336-7374
-// - Prior worker used helper-factored growth/filter code and stopped at 704B;
-//   the packet proves five inline ManagedArray growth blocks plus one real
-//   resize call, so this candidate restores those source-level surfaces.
-//   ManagedArray<int> members at +0xF4, +0x114, and +0x134.  The null-object
-//   UnitAI filter is intentionally retained because the executable calls
-//   unitAI with a null receiver before checking the three wildcard filters.
-//   factoring was gone but the second/third success paths still had duplicate
-//   explicit growth checks.
-//   operator[] and reached exact size (1071B), leaving a localized boat-loop
-//   branch-local typed result-array pointer, assigned only on civilian success,
-//   preserving the original EDI receiver into the late shared return.
-// - Exact candidate: 1071B, 35/35 ordered calls, 100% shape, 0-byte strict
-//   diff.  The null-receiver call and branch-local result pointer are retained
-//   because both are directly supported by the original instruction flow.
-// short-circuit order, including its apparent original bug; the surrounding
-// player/AI/object surfaces now use the proven polymorphic boundaries and
-// named member offsets without raw address plumbing.
 
 
 int TribeTacticalAIModule::unit(int player, int currentAction, int currentTargetType)
@@ -8102,41 +7182,6 @@ void TribeTacticalAIModule::displayCivilianDistribution()
 {
 }
 
-// - v2: corrected sn from pointer to embedded array at +0x194 (sn[0x93] observed at +0x3e0).
-// - v4: modeled assignedResource as 5 ints: counter at [0], flags at [1..4], matching original 0x34 frame.
-// - v5: made loop index register to try to force ESI index / EDI this allocation.
-// - v7: reordered local array declarations so assignedResource occupies low stack offsets like original.
-// - v8: grouped arrays in a local struct to force assigned/tempNeeded/tempDiff contiguous stack layout.
-// - v9: reordered one-time array initialization to match original flag/temp output stack stores.
-// - v10: tried a fixed four-entry initialization loop; VC5 kept the loop and
-//   lost the original unrolled stores, so it was restored.
-// - v11: replaced raw md subobject casts with canonical buildAI/resourceAI
-//   members and restored the proven AIModule, ResourceItem, and tactical sizes;
-//   emitted code stayed unchanged while source ownership became typed.
-// - v13: removed the self alias; emitted code stayed unchanged.
-// - v14: initialized the fallback assigned-resource pointer at slot 1; this
-// - v15: separated the local arrays as a control; it preserved the frame but
-//   changed the prologue and was restored.
-// - v16: rewrote the final copy as an indexed four-entry loop. VC5 reduced the
-//   size to 478 bytes and kept the natural member ownership; this is the
-// - v18: changed the final indexed loop to a counted for form; VC5 emitted the
-//   same code.
-// Revisit v19: restored three direct four-entry arrays and a separate scalar;
-// Revisit v20: moved the difference-pointer declaration after scalar locals;
-// VC5 emitted duplicate code at diff 403.
-// Revisit v21: removed the invented aggregate and used direct typed arrays;
-// Revisit v22: used typed parallel pointers for the final copy; VC5 emitted
-// kept the byte offset as its own scalar, rather than folding the offset into
-// a fifth array slot. This tests the original local ownership and indexing.
-// Revisit v24: replaced the fallback pointer walk with direct indexed array
-// reads. VC5 now emits the original independent pointer setup and loop bytes;
-// Revisit v25: a four-entry local aggregate plus a separate offset retained
-// Revisit v26: register hints for the difference cursor and first result were
-// size, eight ordered calls, and correct field offsets. It remains non-exact:
-// in EDX and EAX and zero in ECX. VC5 keeps only -1 in EAX and zero in ESI.
-// The first difference scan also swaps the original EBP result and EBX cursor.
-// The indexed fallback and final copy preserve the original pointer topology,
-// but no period-plausible source change has recovered the early colors. Leave
 
 void TribeTacticalAIModule::updateNeededResources()
 {
@@ -8236,21 +7281,6 @@ next_resource:
     }
 }
 
-// 2: fixed zero-sized local class gap and compiled; best attempt reaches exact 1369-byte size.
-// 4: modeled gatherer stride 0x18, count +0x9CC, desired count +0x9D0, current task/target/priority fields, and resource-id validation scan.
-// 5: modeled special cases for advancing ages/research readiness and the 5-priority retask stamping loops for nonzero/non-minus-one gatherers.
-// 6: modeled default weighted distribution using integer percent division and late negative distribution correction/remainder split.
-// 12: retained the desired-distribution cursor and corrected array index ownership from original stores; current structural best is 1258 bytes (91.8919%) with 100% ordered-call alignment.
-// 15: corrected the age4 no-research path to write desired distribution slots 0, 1, and 3, as shown by the original stores.
-// 48.21% exact-block coverage, 15/15 ordered calls, and a 0x0C frame).
-// Evidence-led layout correction: the resource scan fields include a proven
-// DA8-DB8 gap, builtFirstGranary is at +F8C, and zoomingToNextAge is at +FA4.
-// The earlier single-field model wrote the wrong member, even though its code
-// unsigned remainder parity, bool special flag, declaration-order changes,
-// receiver aliases, sum-count aliases, nested age syntax, and standard-header
-// CFG, not call identity or field ownership.
-// with a 0x0C frame, 15 ordered calls, 83.93% shape, and 1237 differing bytes.
-// nested MainDecision ownership, and top-level object lifetime. The best new
 
 void TribeTacticalAIModule::updateGathererDistribution()
 {
@@ -8389,7 +7419,7 @@ int TribeTacticalAIModule::stopUnit(int param_1, int param_2) {
     return 1;
 }
 
-// mirrored the matched stopUnit/groupGatherUnit sibling surface: direct virtual call through md->unit with owner-id at +0x4A
+// moveUnit sends the order through md->unit with the player's id.
 
 int TribeTacticalAIModule::moveUnit(int param_1, float param_2, float param_3, int param_4) {
     RGE_Player* player = this->md->player;
@@ -8405,12 +7435,6 @@ int TribeTacticalAIModule::groupGatherUnit(int param_1, int param_2, float param
     return 1;
 }
 
-//   typed explorer predicate: world->object, repeated UnitAI calls, current
-//   action/order checks, held-attribute gate, and taskExplorer(this,id,mode).
-// - Member-left positive held-attribute rejection recovered the original x87
-//   compare/branch. Nesting the final object->unitAI()->hasOrderOnQueue(0x2C1)
-//   call restored VC5's push-before-object evaluation order and matched exactly.
-//   ownership; exact bytes were revalidated after promotion.
 
 int TribeTacticalAIModule::highLevelTaskExplorer(int id, int mode)
 {
@@ -8464,29 +7488,6 @@ int TribeTacticalAIModule::highLevelTaskExplorer(int id, int mode)
     return 1;
 }
 
-// taitacmd.cpp: 7988-8225
-//   calls).  The source was reset to the same-TU typed tactical-AI surface
-//   before further code-generation work.
-//   object / UnitAI member calls, resource-AI member call, and the natural
-//   four-distribution task loop.  The five-word tried array models the binary's
-//   object slot at element zero and four task flags at elements one through
-//   four; the fallback passes element one as the output flag array.
-//   the clean typed candidate is 910B versus 1018B (50.30% shape, 934 strict
-//   diff bytes); the remaining structural gap is return/block topology.
-//   reached 900B/926 diff bytes but lost the proven 0x18 frame and was rolled
-// - Direct indexed/typed gatherer fields recovered the original folded
-//   this-relative addressing and raised shape to 66.39%; a named gatherer
-// - Initializing taskResult with triedTasking[1..3] removed the unsupported
-//   fifth flag slot and recovered most structural islands.  A shared null
-//   not change code generation.
-//   return; desired[-4] < *desired restored the paired distribution cursor.
-//   A gatherer pointer re-anchor after the first task branch restored the
-//   original register colors and the strongest clean nonexact result: 962B,
-//   83.93% shape, 421 strict-diff bytes, and the 0x18 frame.
-//   strict diff to 418B and raised shape to 84.23% without changing the 0x18
-//   frame or 32-call order. Cursor rewrites, direct indexing, object-window
-// - The remaining structural gap is the target's late success/failure block
-//   order and its one extra instruction; no supported exact source was found.
 
 int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
 {
@@ -8624,12 +7625,6 @@ fail:
     return 0;
 }
 
-//
-//   scan; it was 285 bytes and first diverged while loading the waypoint
-//   parameter.
-//   natural do/decrement loop, then mirror the exact same-TU ManagedArray
-//   scan/growth source and typed mission virtual surface.  Pending checker
-//   result.
 
 
 
@@ -8676,19 +7671,6 @@ dispatch:
     return 1;
 }
 
-// 2: fixed vtable padding for RGE_Static_Object task slot +0x198 and AiPlayer builderTask +0xFC; /O2 /Oy remains 784B vs original 801B, extraction stops.
-// 5: restored the binary-proven PlacementState anchor at +0xE4C and the
-//    three-int XYZPoint task ABI; the previously dead z conversion is an
-//    observed fifth __ftol call and the task record reserves 0x0c bytes.
-// 6: restored md->player->world ownership (+0xF0/+0x3C) and the canonical
-//    TribeConstructionAIModule placement offset (+0x6C4).
-// 7: corrected task-failure cleanup to destroy the ConstructionItem argument,
-// 8: mirrored the same-TU indexed task scan and un-nested bounded growth copy;
-//    these recover the target count/register topology and exact CFG.
-//    placeStructure relocation without changing emitted code.
-//     default VC5 /O2 /Oy now matches 801/801 bytes exactly.
-// FLAGS: config/flags/004F9AD0_taskBuilder.rsp (/nologo /c /O2 /Oy)
-// natural same-TU ManagedArray-style loops, typed XYZPoint/PlacementState ABIs,
 
 int TribeTacticalAIModule::taskBuilder(int id, BuildItem* item, ConstructionItem* con, ulong flags) {
     if (item == 0) {
@@ -8757,15 +7739,6 @@ have:
     return 1;
 }
 
-// 2: reduced local lifetimes and removed aggregate source temps; still got 0x18 frame.
-// 3: marked coordinate temps register to try to keep ftol results in EBX/EBP/EAX; no frame change.
-// 4: inline coordinate casts directly into virtual calls to reduce named temp pressure; restored one-slot frame, but cached obj in EBP.
-// 5: make obj volatile forced stack reloads but ordered store before test.
-// 6: assignment-in-condition with nonvolatile obj restored store-after-test shape but cached obj in EBP.
-// - Mirrored the same-TU ManagedArray<int> indexed scan and natural new[]/delete[] bounded copy idiom; this restored the target loop CFG and size family.
-// - Split distance_to_object and calculatePriority into sequential locals; this restored the original 505-byte suffix topology.
-// - Widened the RGE_Player sendUnitAIOrder player-id arguments to int, recovering the movsx/player-vtable load order and exact bytes.
-// - Normalized module ownership to TribeTacticalAIModule -> TribeMainDecisionAIModule -> RGE_Player, preserving the proven offsets and exact output.
 
 
 int TribeTacticalAIModule::taskBuilder(int id, RGE_Static_Object* builder)
@@ -8825,13 +7798,6 @@ found:
     return 1;
 }
 
-// __thiscall, returns 0/1
-//
-//   MainDecision/world lookup, RGE_Static_Object::canPath call, distance and
-//   priority calls, ManagedArray<int> growth, and player order dispatch.
-//   at vslot +0x198 instead of the observed +0x194.
-// - Removed the final padding virtual before the six-argument canPath surface;
-//   ManagedArray<int> scan/growth idiom. Default flags; no inline asm.
 
 
 int TribeTacticalAIModule::taskRepairer(int id, RGE_Static_Object* repairer)
@@ -8881,34 +7847,6 @@ dispatch:
     return 1;
 }
 
-//    ManagedArray growth, resource-search ABI, and natural loop topology from the
-//    but used generated placeholder virtual methods. This source restores the
-//    named RGE_Static_Object and TRIBE_Player surfaces from the original headers;
-//    calls at 0x194/0x19C use real canPath/canBidirectionPath signatures.
-//    canPath overload in this declaration surface to emit those two calls at
-//    the original addresses. No manual virtual-table padding, raw virtual-table
-//    access, inline assembly, or fake volatility is retained.
-//  - Confirmed the original calls push the full six/seven argument surfaces;
-//  - Fresh r3 evidence confirms the [esp+14h] target home is a real later
-//    lifetime: the oracle reloads it for the 0x194/0x19C calls and for the
-//    patterns support an ordinary named local, not a synthetic alias.
-//  - Tried pointer declaration orders, top-level initialization, explicit
-//    retry if/else, a positive sn gate, a do/while resource cursor, and one
-//    duplicates; the cursor and shared-output forms were worse. All rolled
-//    back to this clean typed source.
-//    proven owning symbol. The emitted bytes were unchanged, but the declaration
-//    context, a named resource local, and the polymorphic tactical-module surface.
-//    volatility is not retained.
-//    passed the size, frame, and call-set gates.
-//  - the initial target pointer is stored after its null-test value
-//    is produced, then reloaded after EBX becomes the resource-array cursor.
-//    split and top-level declarations, math-header context, pointer-to-pointer
-//    alias, moving resource cursor, conditional resource initialization, and
-//    five exclusions. They were duplicates or worse. The moving cursor added
-//    one byte; five exclusions changed the frame to 0x2C.
-//    the mutable resource lifetime and improves the source to 1751B versus
-//    1712B, 32/32 ordered calls, frame 0x30, and 1581 strict-diff bytes.
-//    where the oracle homes gathererObj before its null branch. The remaining
 
 
 int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p5)
@@ -9105,12 +8043,6 @@ units_tasked:
     return 1;
 }
 
-//
-//   a hand-shaped count/capacity scan; it was 282 bytes and diverged at the
-//   first bounded-array test.
-//   ManagedArray reference and natural indexed scan/growth source, while
-//   retaining the typed unexplored-area and float taskExplorer overloads.
-//   Pending checker result.
 
 int TribeTacticalAIModule::taskExplorer(int param_1, int param_2)
 {
@@ -9211,16 +8143,6 @@ dispatch:
     return taskExplorer(param_1, param_2, param_3, 0);
 }
 
-// 1: Natural implementation with static add_unique helper emitted helper out-of-line; function only 336B.
-// 2: Inline both array-add sequences and use the canonical player surface: size matches, but search loops use pointer-walk/test max; 81.60% positional, 30.47% edit.
-// 3: While with max locals improves edit to 21.68 but adds duplicate count tests and function too long.
-// 9: Removed the decompiler-only positive-count guards from all bounded scans;
-//     output stayed unchanged and the layout is now canonical.
-// 12: Explicitly assigned civilian.numberValue before both scans; no code change.
-// 13: Guarded do-while repeated scan reduced the byte diff but changed block shape;
-//     restored the natural indexed for-loop.
-// 14: Separate firstCount and secondCount locals did not change emitted code.
-// Final: exact default-flags output, with canonical list ownership and typed dispatch.
 
 int TribeTacticalAIModule::taskExplorer(int unit, float x, float y, int flag)
 {
@@ -9296,17 +8218,6 @@ haveExplorer:
     return 1;
 }
 
-// FLAGS: default
-//
-//   vtable proxy.  They preserved calls but emitted a 256-byte function with
-//   scan still produced a 246-byte function and diverged at the first capacity
-//   check.
-//   ManagedArray reference, bounded for scan, grow/copy/append sequence, and
-//   RGE_Player::id field from the generated layout.  Emitted code stayed exact;
-//   retained as the canonical ownership model.
-//   name/void signature instead of a placeholder method name/return type;
-//   emitted code stayed exact.
-//   new[]/delete[] growth; emitted code remains exact.
 
 
 int TribeTacticalAIModule::taskFollower(int param_1, int param_2, float param_3, int param_4) {
@@ -9343,17 +8254,6 @@ done:
     return 1;
 }
 
-//
-// int __thiscall TribeTacticalAIModule::taskDefender(int param_1, int param_2, float param_3, int param_4)
-// ret 10h cleanup (4 stack params + this in ecx)
-//
-//    Prologue OK through offset 13, but register cascade: countÃ¢â€ â€™edx vs ecx
-//    Search loop uses pointer arithmetic (add ecx,4) instead of indexed [edi+eax*4]
-//    Text size: 272 vs 260 (12 bytes too big)
-// 4: Reference-local indexed scan/copy plus direct operator new/delete recovered the
-// 5: The mission slot takes an int, with the proven short field promoted before the
-//    call; the typed virtual surface and argument order also match exactly.
-// sendUnitAIOrder, and natural new[]/delete[] growth; output remains exact.
 
 int TribeTacticalAIModule::taskDefender(int param_1, int param_2, float param_3, int param_4)
 {
@@ -9407,8 +8307,6 @@ dispatch:
     return 1;
 }
 
-// Records a unit ID as tasked this update, then dispatches to player.
-// FLAGS: /nologo /c /O2 /Oy
 
 void* __cdecl operator_new(unsigned int size);
 void __cdecl operator_delete(void* ptr);
@@ -9513,12 +8411,6 @@ dispatch:
     return 1;
 }
 
-// __thiscall, returns 0/1
-//
-//   object lookup and final player virtual call surfaces structurally wrong.
-//   TribeMainDecisionAIModule::aiPlayer layout, and the natural ManagedArray
-//   growth/append idiom shared by the exact taskWaterExplorer/taskTransporter
-//   the exact same-TU ManagedArray growth source; default flags, no inline asm.
 
 int TribeTacticalAIModule::taskWaterFisher(int playerID, int targetID, float x, float y)
 {
@@ -9566,29 +8458,6 @@ dispatch:
     return 1;
 }
 
-// 2: rewrote early failure paths to shared fail label and corrected world pointer chain (+f0/+f0/+3c).
-// 3: made attackerID parameter const to avoid early save in ebx; prologue now matches through first object lookup, but function became 1 byte short and fail block placed early.
-// 4: replaced direct fail returns with result variable and done label; no placement change.
-// 5: expanded RGE_Static_Object virtual surface so vf_10c call lands at vtable +0x10c.
-// 6: corrected command id expression: original maps commandFlag==1 to 0x2d9, otherwise 0x2bc.
-// 8: verified object lookup chain now matches original +0xf0/+0xf0/+0x3c and first prologue matches after const attackerID.
-// 9: remaining target-command branch still differs broadly; vtable +0x10c is fixed but stack argument scheduling and command vtable call are wrong.
-//     same-TU ManagedArray<int> growth idiom, modeled md->player->world, and identified the
-//     +0x10c call as the zero-argument weaponRange getter used by the 12-argument order call.
-// 12: corrected the weaponRange slot count and moveUnit's float/float ABI after the
-//     rebuilt call map exposed a +0x108 dispatch and two spurious __ftol calls.
-// 13: hoisted the target pointer and target-branch scalar locals to the function
-// 14: moved the command selector ahead of target lookup as a liveness/scheduling
-// 15: retained the command selector after target validation but before distance
-//     computation, isolating its scheduling point from the object lookup.
-// 16: restored late command evaluation and moved the command local ahead of the
-// 17: retained the binary-proven unitAI result as a typed local instead of testing
-// 18: reordered the top-level locals to the decompiler's attacker/unitAI/target/int
-//     sequence before the final validation checkpoint.
-//     so the clean canonical branch order is restored.
-// 20: explicit late command if/else after priority restored the original EBP attacker,
-//     EAX target-ID, 545-byte size, and all call/relocation sites; only the no-target
-//     distance temporary home differs (original [esp+20], rebuilt [esp+28]), diff 2.
 
 
 int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
@@ -9691,16 +8560,6 @@ int TribeTacticalAIModule::taskDefender(int groupId, float x, float y) {
     return 0;
 }
 
-// __thiscall, returns 0/1
-//
-//   RGE_Static_Object::unitAI, TRIBE_Player::trainUnit, and the proven
-//   this->unitsTaskedThisUpdate ManagedArray layout.
-//   bytes. The remaining bytes are four swapped local-home displacements:
-//   VC5 stores the found object in the incoming parameter home and the
-//   object ID in the compiler local home.
-// - Tried early object-ID/object declarations, pointer initialization,
-//   assignment-in-condition, long ID types, and parameter reuse. The
-//   entry, assign it before the ManagedArray<int> alias. This restored all four
 
 int TribeTacticalAIModule::taskTrain(BuildItem* item)
 {
@@ -9755,21 +8614,6 @@ dispatch:
     return 1;
 }
 
-// __thiscall, returns 0/1
-//
-// The target uses the same building lookup, BuildItem state changes, and
-// ManagedArray<int> growth. The final dispatch is TRIBE_Player::research.
-//
-// - Split lookup declaration and assignment restored the exact 448-byte
-//   topology except for four stack-home displacement bytes.
-//   duplicate code. The remaining gap is the object spill slot at 004FB75E
-//   and 004FB843: target [esp+18], rebuilt [esp+10].
-// - Reused the scan index for the array-copy loop, matching the original EAX
-//   loop topology; emitted code was unchanged, so the spill-home gap remains.
-// - Declared objectID at its first natural use after the item state updates to
-//   test whether its shorter lifetime restored the original object spill home;
-// - Initializing the entry objectID local to zero selected the original VC5
-//   local-home assignment. The initializer is optimized away; output is exact.
 
 int TribeTacticalAIModule::taskResearch(BuildItem* item)
 {
@@ -9827,11 +8671,6 @@ dispatch:
     return 1;
 }
 
-//
-//   search and used explicit allocation helpers; it was 275 bytes and diverged
-//   at the first post-guard array scan.
-//   ManagedArray reference, indexed bounded for-loop, natural new[]/delete[],
-//   and typed mission virtual surface.  Pending checker result.
 
 int TribeTacticalAIModule::taskToEnter(int param_1, int param_2)
 {
@@ -9937,15 +8776,6 @@ dispatch:
     return 1;
 }
 
-// __thiscall, void, ret 4
-// FLAGS: default
-//
-// inherited attempts: decompiler-shaped pointer scans produced a redundant
-//   unchanged (negative layout evidence).
-//   named fields (including data1); emitted code remained exact.
-// Exact source is a natural bounded ManagedArray scan/compact operation,
-// typed helper calls, and an explicit element pointer for the observed
-// load/lea/decrement/store sequence.
 
 
 void TribeTacticalAIModule::removeFromTaskLists(int key) {
@@ -10004,55 +8834,6 @@ int TribeTacticalAIModule::calculatePriority(float value) {
     return priority;
 }
 
-//
-// uses the established inline operator[]/remove surfaces; the local list uses
-// the out-of-line resize member, as shown by the original call at 004147A0.
-//
-// - default flags, no ManagedArray destructor: 2156 bytes, no EH frame; rolled
-//   back after confirming the target's FS registration requires a nontrivial
-//   local lifetime.
-//   body after dead-store elimination.
-// - function-scope numPotentialAGroups models the FPU remainder home; the
-//   constructor form preserves the original zero-store scheduling and is kept.
-//   numAGroups/i before the workingArea loop; the leftover numAGroups is used as
-//   the workingArea index (general operator[] growth, no const-fold to element 0).
-//   Removed the pre-loop reset; moved `i = 0; numAGroups = 0;` to after the loop.
-// - time-check: original computes BOTH /1000 divisions into named locals before
-//   the test (rebalance statement first, attack second; test attack-first).
-//   The inline && short-circuits in VC5; named locals reproduce the dual mul/shr.
-//   while(numEGroups>i), while(local_24>numAGroups), else-arm
-//   numPotentialAGroups >= sn[0x24] with a named maxArtifact temp (original loads
-//   sn[0x24] on its own source line 9494 first).
-// - else-arm i as min(...) (ternary/if-else) stores i after the subtraction;
-//   newArtifact=ebx, product=edi CSE across the ceil call via the artifactUnits
-//   local).  Current best: 2245/2241 bytes (+4), frame 0x2C/0x2C, 69/69 calls,
-// the original balance block keeps numAGroups at [esp+18h],
-// newArtifact at [esp+10h], and the zero value in EBP across all three ceil
-// VC5 selects the opposite two homes and rematerializes zero after __ftol.
-// the original carries numAGroups into the workingArea index;
-// there is no reset before that loop.  Keep this shipped behavior.
-// LIKELY INTENT: the balance block is a direct group-count calculation with
-// short-lived remainder values.  Named product and max-bound locals preserve
-//   zero compare, a for-loop removal form, CRT headers, and a register hint
-// Remaining leads (allocator coloring, not structure):
-// 1. numAGroups/newArtifact stack-home swap: rebuilt homes numAGroups at
-//    [esp+10h] and newArtifact at [esp+18h]; original has them swapped.
-//    Declaration order (tried 5 orders) does not affect it.  It is tied to the
-//    removeGroup loop (+0184).
-// 2. zero-register liveness: original keeps the balance-entry zero in ebp live
-//    across the ceil calls (`cmp eax,ebp` at the <=0 remainder checks); rebuilt
-//    rematerializes `test eax,eax`, which frees ebp for i (mov ebp,eax after
-//    __ftol) instead of ecx, and flips the product imuls to loaded-first forms
-//    (+4 bytes total).  The imul folding (`imul edi,[esi+1D4h]` vs
-//    `mov edi,[esi+1D4h]; imul edi,ebx`) is a scheduling symptom of the same.
-// 3. first-path i clamp stores early (default-then-override) in BOTH versions;
-//    else path stores i after the sub (min form) - already matched.
-// - Replacing the complete local surface with include/utmarray.h made resize
-//   inline twice. It added two allocator pairs and 214 bytes. The original
-//   calls resize at both add sites, so the shared-header form is not valid in
-//   this isolated translation unit.
-// - The exact add body with declaration-only resize emits the same 2245-byte
-//   removes unsupported caller-side field access. Keep this source model.
 
 void TribeTacticalAIModule::setupSoldierGroups()
 {
@@ -10291,36 +9072,6 @@ balance_groups:
 
 }
 
-// circular list sentinel; workingArea at +0xD48 is a ManagedArray<int> with
-// value/numberValue/desiredNumberValue/maximumSizeValue at +0/+4/+8/+C.
-// The function first repairs commander assignments, then fills type 100-102
-// groups from ungrouped soldiers, redistributes excess soldiers, and finally
-// assigns any remaining ungrouped soldiers to eligible groups.
-//
-//   repeated growth and removal blocks are kept inline because the original
-//   emits the canonical utmarray.h operator[]/remove shapes at each use site.
-// - restored the commander-zone object/currentZone filter in both fill paths
-//   and both excess-redistribution paths; the call set and frame then aligned.
-// - added the binary-observed inUse gate before selecting a commander for an
-//   underfilled group.
-// - kept the initial sentinel walk scoped, and used guarded do/while list
-//   traversal for the type loop and the final soldier redistribution scan.
-//   chooser and preserved its two-stage same-zone/capacity selection.
-//   bytes, but the named iterator remains the clearer source model.
-// - made the final selected and fallback paths use branch-local ManagedArray
-//   subscripts into one shared unit value. VC5 kept both growth/delete arms and
-//   one shared addUnit tail, matching the original topology.
-// - restored the first fill branch order from the binary: direct same-zone fill
-//   when ungrouped <= missing, then nearest fill when the group remains short.
-//   Reused the desired/number locals for the later missing calculation.
-// - modeled the second type pass with explicit group/sentinel locals and the
-//   observed store to bestGroup before its sentinel/null checks. The source
-//   emits the same 122-call set and exact frame, but VC5 keeps group in EAX and
-//   reloads it where the original keeps group in EBP.
-//   class context, and compare spelling. The best clean result is 3523/3554
-//   bytes, exact frame and 122/122 calls, 90.16% call alignment, 72.73% shape,
-//   all were restored.
-//   122/122 calls, 90.16% call alignment, 72.73% shape, and 3056 positional
 
 extern void* operator new(unsigned int);
 extern void operator delete(void*);
@@ -10668,10 +9419,6 @@ void TribeTacticalAIModule::fillSoldierGroups() {
     }
 }
 
-// the source now models two ManagedArray<int> members and lets VC5 lower each
-// repeated soldiers[i] access and workingArea.add() naturally.
-// reset-before-soldier-count load order, leaving one SIB base/index byte.
-// raw-offset source remains beyond the proven class gaps and array layout.
 
 int TribeTacticalAIModule::numberUngroupedSoldiers()
 {
@@ -10693,20 +9440,6 @@ int TribeTacticalAIModule::numberUngroupedSoldiers()
     return rNum;
 }
 
-//   list sentinel, and workingArea is a ManagedArray<int> at +0xd48.
-//   EBX and all 16 calls present, but the outer count calls were reversed.
-//   aligned and the diff fell to 65 bytes.
-//   unchanged and the diagnostic form was removed.
-//   rNum/tempCount inside the counted-group block; output reached 473 bytes
-//   with a 16-byte diff and exact outer CFG, leaving only the result home.
-//   destructor surface. The emitted code was unchanged, so this typed layout
-//   is retained as the cleaner ownership model.
-// their transient uses: original result/rNum/tempCount use
-// [esp+18]/[esp+14]/[esp+10], while current uses [esp+10]/[esp+18]/[esp+14].
-// The source keeps canonical ownership.
-// nonescaping dword homes. Every read follows its matching write, including
-// the push-adjusted rNum update. Register use, calls, values, writes,
-// predicates, cleanup, and faults match the reviewed war-boat twin.
 
 int TribeTacticalAIModule::numberExtraGroupedSoldiers()
 {
@@ -10749,16 +9482,6 @@ int TribeTacticalAIModule::numberExtraGroupedSoldiers()
     return result;
 }
 
-// 2: closer decompiler-shaped source with local_c/local_4 names and direct indexed array accesses: much closer prologue but only 8-byte frame.
-// 3: make i volatile to force the third stack local slot seen in original; got 0x0c frame but stack slots are permuted.
-// 4: reorder local declarations to try local_c at +8, i at +0c, local_4 at +10; no stack-slot improvement.
-// 5: invert first capacity condition source to try cmp ebp,eax / jle skip shape; fixed first branch polarity but copy loops still wrong.
-// from the prior hand-expanded/volatile experiment.
-// remain live across the working-area growth call, matching the oracle's callee-saved
-// artifact register and spilled outer-index topology.
-// `j >= maximumSizeValue` compare direction, avoiding the zero-folded max test.
-// 649 bytes, while named artifact plus `i`-first was the best group.
-// typed ManagedArray::add surface used by exact same-TU sibling counters. This
 
 int TribeTacticalAIModule::numberUngroupedArtifacts()
 {
@@ -10780,12 +9503,6 @@ int TribeTacticalAIModule::numberUngroupedArtifacts()
     return rNum;
 }
 
-//   varargs expression, then removed duplicate md/index varargs from the two
-//   target and object-to-destroy logs.  This recovered all 99 call sites and
-//   and also preserves the original right-to-left varargs evaluation order.
-// exact candidate: 0-byte positional and edit/resync diff under default flags;
-// modeled the AIModule base plus object/player virtual surfaces.  This keeps
-// the direct cdecl member logger and proven field ownership period-plausible.
 
 void TribeTacticalAIModule::displaySoldierGroups()
 {
@@ -10850,36 +9567,6 @@ void TribeTacticalAIModule::displaySoldierGroups()
     }
 }
 
-//
-// ManagedArray<int> surface. The three boat lists and workingArea are named
-// ManagedArray<int> members, while the group list is the TacticalAIGroup
-// sentinel owned by TribeTacticalAIModule. The repeated boat phases are kept
-// as ordinary source-level loops; their shared remove/copy topology is visible
-// in the original CFG.
-//
-//   and three ordinary boat-group phases; 2887-byte target rebuilt as 2894
-// - negative type guard with explicit continue: matched the original late
-// - declaration/local-role reorderings (including the retained type-68 count)
-//   emitted the same VC5 code; no further declaration archaeology retained.
-//   clamps produced the exact 2887-byte size and exact balance focus range.
-// - explicit remainder guards with a separate retained type-68 local restored
-// - compact arithmetic with a separate retained local, hoisted product and
-//   remainder locals, and the exact setupSoldierGroups scalar declaration order
-// - corrected the third balance denominator/cap from sn[0x3d]/sn[0x3c] to
-//   from 94.07% to 94.39% and exact blocks from 70.87% to 71.29%, with the
-//   numPotentialEGroups restored the 0x2C frame and 81.57% exact blocks, but
-//   lifetimes, register hints, function-scope group pointers, and loop-form
-//   71.29% exact blocks, 93/93 ordered calls, and frame 0x28 versus 0x2C.
-//   shared header inlines resize at this site, adds one allocator pair and 82
-//   bytes, and changes the call surface. Keep resize declaration-only here.
-//   restores the 0x2C frame and the main balance CFG. Named maximum and count
-//   locals preserve the sn-first load order. A function-scope remainder local
-//   blocks, and 93/93 ordered calls. The rebuilt size is 2889 versus 2887.
-// - compound products, declaration-local call results, a typed balance pair,
-//   the smallest natural product and scalar forms.
-// the min clamp loads sn[0x3a] before warBoats.numberValue and
-//   uses cmp eax,ecx. The ternary source reproduces that local instruction order.
-//   [esp+20h]. The best rebuild loads the same source value from [esp+24h].
 
 void TribeTacticalAIModule::setupBoatGroups()
 {
@@ -11124,30 +9811,6 @@ balance_boat_groups:
     }
 }
 
-// ManagedArray<int> workingArea ownership, and the three boat-filling passes.
-// Bounded pass: restored the group-sentinel walk, commander assignment for
-// empty/nonempty boat groups, workingArea growth/removal, three type-based fill
-// passes, nearest-unit selection, and excess-unit redistribution. Declaration,
-// original physical block order. Final validation is 2924/2959 bytes with the
-// exact 0x18 frame and exact 103-call target multiset, but only 87.38% ordered
-// alignment; the remaining issue is broad CFG placement around the best-unit
-// block placement at the second boat pass, not call or memory-effect coverage.
-// Integration check: the ordered call map is aligned, but the checker still
-// reports one direct-target difference at +08E7 (desiredNumberUnits versus
-// numberUnits). Treat that site as the next binary-behavior lead.
-// Tried the proven same-TU AIModule base surface with md at +0xF0; emitted
-// Tried a natural for-loop increment for the second boat-type scan because
-// the original has separate type-skip and underfilled-false increment blocks;
-// reuse, loop polarity and do-loop forms, scope and declaration order, the
-// repeated nearest-fill loop, desired/number call order, exact ManagedArray
-// copy forms, C-linkage allocation helpers, and fallback cursor reuse.
-// The original proves a repeated nearest-fill backedge at 004FEDCA and a
-// behavior model but moved the result to 2937 bytes and 2481 differing bytes;
-// it was restored because it did not preserve the original physical layout.
-// worse. The remaining lead is the compiler's second-pass register and block
-// allocation: original uses EBP for the sentinel and EDI for the boat group,
-// spelling, <stddef.h> context, and mutable sentinel all emit this same
-// still has the proven executable backedge at 004FEDCA.
 
 
 extern void* operator new(unsigned int);
@@ -11445,9 +10108,6 @@ void TribeTacticalAIModule::fillBoatGroups() {
     }
 }
 
-// workingArea members. This matched the exact same-TU numberUngroupedSoldiers
-// exact: canonical ownership is the boats and workingArea ManagedArray<int>
-// members at +134 and +D48; no raw-offset plumbing or compiler steering remains.
 
 int TribeTacticalAIModule::numberUngroupedWarBoats()
 {
@@ -11469,29 +10129,6 @@ int TribeTacticalAIModule::numberUngroupedWarBoats()
     return rNum;
 }
 
-//   but the working-area scan and list CFG had extra structural blocks.
-//
-// This source models the proven group sentinel and workingArea as their
-// period-plausible typed owners. The inline array method is the same ownership
-//
-// - ManagedArray::add plus the explicit while loop aligned all 19 calls and
-//   reduced the function to the exact 509-byte boundary.
-// - Left-side comparison spellings aligned the remaining branch opcodes.
-// - A local workingArea reference aligned the prologue order and all body
-//   bytes except stack-home displacements.
-// - A natural do-while spelling for the inner predicate added one
-// - A direct typed count predicate reversed the initial numberUnits/
-//   desiredNumberUnits call order and increased the diff to 19 bytes; restored
-//   the explicit count temporary.
-// - Scalar declaration permutations, split/chained initialization, scoped
-// - A natural for-loop added one numberUnits call and 11 bytes; volatile result
-//   to [esp+10]/[esp+18]/[esp+14], while the oracle uses [esp+18]/[esp+14]/
-// - Partial rNum/tempCount scopes and hoisting add's copy index j were duplicates.
-//   TacticalAIGroup surfaces, moved the workingArea reference, and reordered
-//   result/rNum/tempCount declarations. All emitted the same 10-byte home
-// - Main review replaced direct allocation calls with new[]/delete[] and the
-// write, including the push-adjusted rNum update. No home's address escapes.
-// Register use, calls, values, writes, predicates, cleanup, and faults match.
 
 int TribeTacticalAIModule::numberExtraGroupedWarBoats()
 {
@@ -11537,12 +10174,6 @@ int TribeTacticalAIModule::numberExtraGroupedWarBoats()
     return result;
 }
 
-// 6: tried local order local_c/i/local_4 and local_c/local_4/i with volatile offset temp; stack slot order unchanged.
-// 8: tried /O2 without /Oy; unchanged.
-// 9: tried /Od narrow flag; unchanged under this build harness/output family.
-// 11: replaced manual array growth with the period-plausible inline ManagedArray
-//     operator[]/add surfaces used by the exact same-TU numberUngroupedSoldiers
-//     keeps canonical named ManagedArray ownership and ordinary references;
 
 int TribeTacticalAIModule::numberUngroupedFishingBoats()
 {
@@ -11564,7 +10195,6 @@ int TribeTacticalAIModule::numberUngroupedFishingBoats()
     return rNum;
 }
 
-//     ManagedArray operator[]/add surfaces from exact same-TU numberUngroupedSoldiers
 
 int TribeTacticalAIModule::numberUngroupedTradeBoats()
 {
@@ -11607,14 +10237,6 @@ int TribeTacticalAIModule::numberUngroupedTransportBoats()
     return rNum;
 }
 
-// taitacmd.cpp
-// logger, then replaced decompiler-only group/object shims with the
-// binary-backed method names and ABIs.  The target's [this+0xf0] value is the
-// MainDecisionAIModule pointer, not a Player/finder object; the final log is
-// the five-value unit state record (the md argument belongs only to
-// currentHitPoints()).
-// Exact under the default VC5 flags: 889/889 bytes, 69/69 ordered calls,
-// frameless push ebx/ebp/esi/edi prologue.  The readable typed source is kept
 
 void TribeTacticalAIModule::displayBoatGroups()
 {
@@ -11699,8 +10321,6 @@ void TribeTacticalAIModule::displayBoatGroups()
     }
 }
 
-// - Replaced stub with real C++ `new TacticalAIGroup`, list insertion, optional
-//   ID assignment, and group count increment.
 
 void* __cdecl operator new(unsigned int size);
 
@@ -11726,9 +10346,6 @@ TacticalAIGroup* TribeTacticalAIModule::createGroup(int assignID)
     return group;
 }
 
-// with an inner `if (group == 0) break;` before the id check. This makes VC5 place
-// the sentinel compare at the bottom and jump back to a loop top that begins with
-// the null test, matching the original layout.
 
 int TribeTacticalAIModule::removeGroup(int id) {
     TacticalAIGroup* sentinel = &this->groups;
@@ -11750,10 +10367,6 @@ int TribeTacticalAIModule::removeGroup(int id) {
     return 0;
 }
 
-// - Replaced stub with Ghidra list-removal logic and vtable-slot-0
-//   deleting-destructor dispatch via a normal virtual member (`destroy(1)`).
-//   explicit bottom sentinel break. A `while (group != 0)`/do-while condition
-//   makes VC5 add a bottom null test and shifts the epilogue.
 
 int TribeTacticalAIModule::removeAllGroups(int type)
 {
@@ -11828,18 +10441,6 @@ TacticalAIGroup* TribeTacticalAIModule::group(int id, int type, int action, int 
     return 0;
 }
 
-//
-//   actual unit counts) with the packet-proven type/action, assist-group,
-//   commander-zone, and gather-distance selection logic.
-//   the type-106 assist-group scan, and four direct gatherLocation() reads.
-// - Split id/assist calls restored the oracle's ordered call multiset but moved
-//   the saved-this/point and validity registers; declaration-order and bool/int
-//   direct versus split id calls found no exact output. The direct do/break
-//   CFG. Reversing the assist-id equality was the only small metric gain, but
-//   it did not change VC5 call order. Point aliases, pointer/reference ABI,
-//   clean form remains selected.
-//   not change the first local-home hunk or assist call order, so it was rolled
-//   back.
 
 
 TacticalAIGroup* TribeTacticalAIModule::bestGroup(
@@ -11913,36 +10514,7 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
     return best;
 }
 
-//   qualified TribeTacticalAIModule::bestGroup symbol and its boundary is
-//   ordered direct calls, candidate return, and fault order.
-//   bytes. The first ordered call gap is id versus assistGroupID evaluation.
-//   declaration order, point aliases, and label forms. None produced an exact
 
-//   group walk: desired/actual, isGathered/allUnitsIdle gates, four gathered
-//   location reads, integer distance, and best-group update.
-// - Explicit top-null/bottom-sentinel control flow plus separate
-//   desired-before-number assignments restored the original ordered call set
-//   and exact size, but the remaining EBX/EBP/EDI register and local-home
-//   rotation stayed 68 bytes from the oracle. Reusing the decompiler's one
-// orders), swapped the commutative x/y distance terms, and nested the final
-// nested guards regressed to 296 bytes before restoration. A proven
-//   bytes; register-qualified point/type parameters and a full self alias
-// - Restored the period math-header surface and the generated polymorphic
-//   AIModule/TacticalAIModule/TribeTacticalAIModule and TacticalAIGroup
-//   destructor ownership. These canonical source corrections emit the same
-//   317-byte function and preserve the proven +0xF0/+0x9D4 offsets.
-// (68 bytes, 21.4511%).
-//   branch, then was restored. A typed self alias combined with direct type
-//   register-qualified parameters, point aliases, guard nesting, and class
-// - A volatile best-distance diagnostic reached 52 bytes but remains an
-//   unsupported metric-only form. A 32-sample ambient declaration sweep found
-// - A simpler direct type predicate with one block-local desired value and a
-//   `(underLimit && unset) || better`. It is equivalent because every stored
-//   best distance is under the limit. This reduced the residual from 30 to 17
-//   bytes and made the complete distance-update tail exact. Declaration and
-//   initialization reorders were duplicate or worse.
-// check. Values, calls, used flags, branches, memory effects, FPU operations,
-// returns, and fault behavior match. No local address escapes.
 
 
 TacticalAIGroup* TribeTacticalAIModule::readyAndIdleGroup(
@@ -12074,9 +10646,6 @@ int TribeTacticalAIModule::numberUnitsInGroups(int type) {
     return total;
 }
 
-//   [i-1]; } else break;` inside the do-while. Spelling it as `if (i >= 1)
-//   break; next = i + 1; copy [i];` makes VC5 choose a different index register
-//   and move the limit check to the bottom.
 
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* ptr);
@@ -12135,7 +10704,6 @@ int TribeTacticalAIModule::itemToBringToArea()
     return -1;
 }
 
-// Observed body remains unresolved. This source keeps the owner callable.
 
 int TribeTacticalAIModule::numberItemsToDefend()
 {
@@ -12161,16 +10729,6 @@ unsigned long TribeTacticalAIModule::attackLimiterTime(int param_1) {
     }
 }
 
-// Default flags
-// Attempts:
-// - Natural local `int sep = sn[0x66]` with split arithmetic was behaviorally correct, but VC5 kept sep in EDI
-//   from the initial load (`mov edi,[esi+32C]; test edi,edi`) instead of original `mov eax,...; test eax,eax;`
-//   then delayed `mov edi,eax` until immediately before the debug_rand call.
-// - Splitting remainder/half/base locals did not change the early EDI allocation and also reordered the base/half
-//   arithmetic around `ecx` differently.
-// - Testing the member directly then assigning sep inside the true arm still collapsed to the same EDI-local family.
-// - /Ob0 and /Og did not affect this register-allocation family; no custom flags are needed.
-//   into EDI just before the call, but avoids making the variable a long-lived EDI local from the first load.
 
 void TribeTacticalAIModule::resetAttackSeparationTime() {
     if (this->sn[0x66] > 0) {
@@ -12186,19 +10744,6 @@ void TribeTacticalAIModule::resetAttackSeparationTime() {
     }
 }
 
-//
-//   wrong desiredNumberUnits(int) declaration, and placed the default call
-//   outside the target-success/failure split. Those forms changed call
-//   identity/count and the target-null behavior.
-//   repeated type checks, informationAI ownership, and local source shape.
-// - The target-null path is an early return; findGatherPosition failure uses
-//   the ordinary object coordinates before the common return.
-//   reversed result predicate, and register-qualified group were respectively
-// - The successful findGatherPosition arm returns immediately; leaving the
-//   default setGatherLocation call as fall-through reproduces the exact
-//   compiler tail merge and the original register ownership.
-//   ownership; emitted code remains exact.
-// FLAGS: /nologo /c /O2 /Oy
 
 
 int TribeTacticalAIModule::setGatherLocation(TacticalAIGroup* group)
@@ -12246,19 +10791,6 @@ int TribeTacticalAIModule::setGatherLocation(TacticalAIGroup* group)
     return 1;
 }
 
-// promotion are pending.
-//
-//   desiredNumberUnits(int) declaration, and omitted the flag argument from
-//   findGatherPosition. Those forms changed call identity/count and are not a
-// - Corrected the overload/ABI surface: MainDecisionAIModule::object is
-//   overloaded, desiredNumberUnits has no argument, and
-//   findGatherPosition takes XYPoint references plus the flag argument.
-// - Canonicalized md as TribeMainDecisionAIModule with its named
-//   informationAI subobject at +0xCEC; this preserves the exact call bytes.
-// - The third type result is named before the default flag store; this is a
-//   plausible local reuse that preserves the original call-before-store order.
-//   ownership; emitted code remains exact.
-// FLAGS: /nologo /c /O2 /Oy
 
 
 int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* group)
@@ -12305,14 +10837,6 @@ int TribeTacticalAIModule::setAllGroupLocations(TacticalAIGroup* group)
     return 1;
 }
 
-// taitacmd.cpp
-//   TribeInformationAIModule::groupInfluenceDimension/mapBound, InfluenceMap,
-//   and inlined ManagedArray<int> surfaces; size, calls, and CFG now match.
-//   moved the FPU conversion onto the original parameter home.
-//   role orders under size/frame/call-set gates.  The retained do/minmax source
-//   was best at 11 bytes; for changed size and role swap regressed to 41 bytes.
-//   shadowed clearDistance locals.  The object scope uses min first, which
-// Exact candidate: 932/932 bytes, 43/43 calls, 0x14 frame, default flags.
 
 
 void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
@@ -12388,8 +10912,6 @@ void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
     }
 }
 
-// - Replaced stub with full best-commander scan and score comparison logic.
-//   object vfunc at vtable +0x10C as a float-returning virtual method.
 
 
 
@@ -12441,8 +10963,6 @@ int TribeTacticalAIModule::selectBestCommander(TacticalAIGroup* group)
     return bestUnit;
 }
 
-// 2: Inline ManagedArray operator[] growth at all use sites.
-// 6: Restore exact local order/value: bestScore=-1, bestUnit=-1, i=0; direct return bestUnit. Validates exact before promotion.
 
 int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>& a)
 {
@@ -12499,14 +11019,6 @@ int TribeTacticalAIModule::selectBestCommander(ManagedArray<int>& a)
     return bestUnit;
 }
 
-// __thiscall
-//
-//   param_1 is the attacker, param_2 is the GAIA target, civilianExplorers is
-//   the +0x104 ManagedArray, md is the +0xF0 decision module, and sn[0x64]
-//   the do/while scan added a redundant first capacity test.
-// - Replaced the scan with the exact same-TU bounded for-loop idiom: 424
-//   bytes, with only sn displaced by the incomplete class layout.
-// - Restored the ten task-list array region before sn at +0x194; this fixed
 
 int TribeTacticalAIModule::dealWithGAIAAttacker(
     RGE_Static_Object* attacker, RGE_Static_Object* target)
@@ -12585,9 +11097,6 @@ void TribeTacticalAIModule::enableAttack(int param) {
     this->attackEnabledValue = 1;
 }
 
-// 4: restore success-first final branch.
-// 6: add field at object+0x44 and pass field_40 to distance_to_position: no change; realized original [ecx+40] is world_z bits, not a separate int.
-// 7: use world_z float as third distance argument: tiny improvement; remaining diff mostly branch-distance/tail layout and compare operand order.
 
 int TribeTacticalAIModule::unexploredArea(int player, XYPoint& out)
 {
@@ -12646,8 +11155,6 @@ UnitData* TribeTacticalAIModule::gatherer(int unitId) {
     return 0;
 }
 
-// - Replaced stub with full gatherer slot scan/add/duplicate-return logic.
-//   preserving the original duplicate-check fallthrough and return layout.
 
 UnitData* TribeTacticalAIModule::addGatherer(int id)
 {
@@ -12688,10 +11195,6 @@ next:
     return &this->gatherers[freeIndex];
 }
 
-// taitacmd.cpp
-// - The first natural scan used do/while; VC5 peeled its first record and
-//   emitted an extra load/branch family. A bounded while scan restored the
-//   original unpeeled pointer walk and matched exactly.
 
 int TribeTacticalAIModule::removeGatherer(int id)
 {
@@ -12782,93 +11285,6 @@ int TribeTacticalAIModule::deleteUnit(int param_1) {
     return 0;
 }
 
-// __thiscall, int, ret 0Ch (3 params)
-// FLAGS: default
-//
-//   remaining: register encoding only (esi for md, edi for capacity)
-//
-// - Canonical ownership established: md(+0xF0) -> RGE_Player(player+0xF0) ->
-//   12313). sn is the real sn[226] array at +0x194; +0x3EC =
-//   sn[0x96], +0x48C = sn[param3+0xBE]. buildAI at md+0x104, resourceAI at
-//   md+0x10D7C, informationAI at md+0xCEC (granaries sibling 00501C70 matched
-//   with raw-cast md style; that style kept here).
-//   result-first tail -> 12.16% (27 bytes, 3 spans), 222/222, calls 100%,
-//   orig keeps capacity in EAX through test/jne/mov/`imul eax,ebx` and saves
-//   coalesces capacity+product into a callee-saved register (esi or edi) and
-//   in-place vs separate product, operand swap, store-first vs result-first,
-//   named vs anonymous ternary, ghidra `((r<0)-1)&r` return, register/const
-//   qualifiers, top-declared locals, multiply-in-return, param mutation) +
-//   full real class surfaces (TacticalAIModule base + sn[226] + typed md
-//   members with real sizes) + risky-flag sweep all collapse into the same
-//   keeps imul before call but forces md->esi/product->edi plus an extra
-//   mov; result-first is clean in the tail but coalesces/sinks.
-// - Next lead: none obvious at single-function scope. Sibling 004E3E90
-//   (TribeInformationAIModule::numberAvailableStoragePits) is stuck on the
-//   same esi/edi register-swap family. A future worker might re-try md typed
-//   as the real TribeMainDecisionAIModule (0x125C8) or check whether the
-//   original source reused iVar3 for the product with an explicit separate
-//   result variable under a slightly different TU include context.
-//
-// roles and reusing iVar3 for the post-call count moved 27 -> 6 bytes and
-// restored all block/CFG parity. Direct md use, declaration reordering,
-// register qualifiers on md/product/result, signed result storage, and the
-// Initializing uVar5 with the product then compound-subtracting the call
-// this canonical source emits the same roles swapped (6 single-byte register
-// main-decision submodule ownership.
-// branch-initialized md lifetime, same-TU math.h context, full proven md
-// subobject sizes, and a branch-local md reference all emitted the same exact
-// pointer alias regressed structurally to 224 bytes / 113 differing bytes and
-// was restored. No ABI, call, layout, or behavior uncertainty remains.
-// md/self aliases, direct storage-count rereads, stdio context, 32-bit long
-// local widths, and proper TacticalAIModule/MainDecisionAIModule/AIModule
-// Bounded pass (orch2-501B90-live): natural direct this->sn_3EC use in the
-// remains without adding a redundant or non-behavioral member use.
-// register topology: 004F5FB0 emits `mov edi,[esi+0F0h]` (md->EDI, this stays
-// ESI) because its source reads this->sn[0xB0] AFTER the md load
-// (`mov eax,[esi+454h]` at 004F60B5). Liveness theory: original keeps this in
-// ESI through the md load (md->EDI, reusing param3's dead EDI slot LIFO), and
-// kills this only at the product move (+008B, mov esi,eax); the rebuilt kills
-// this at the md load itself (destructive mov esi,[esi+0F0h]; product->EDI).
-// Next lead: spell the main path so a this-based member is still read after
-// e.g. a source construct that keeps this live to the product point; prior
-// corrected false ownership. TribeBuildAIModule is the typed build subobject;
-// TribeInformationAIModule is standalone at +0xCEC and TribeResourceAIModule
-// follows at +0x10D7C. Tactical sn[226] owns +0x3EC and +0x48C.
-//
-//
-// register-encoding bytes: original md is EDI and the product is ESI; VC5
-// post-md this-member liveness can produce the original coloring, but natural
-//   same post-md this-liveness pattern, but direct strategic-number rereads
-//   layout remains canonical; no new natural ABI or ownership lead remains.
-//
-// reference, original scalar declaration order, direct post-call md use,
-// inline storage-count accessor, branch-local capacity declaration, decision
-// pointer declaration order, and TRIBE_Player-derived player typing all kept
-// exact size/CFG/call parity but reproduced the six-byte md/product register
-// InformationAIModule inheritance, full TribeBuild virtual surface, complete
-// tactical extent (0x100C), function-scope md lifetime, separate storage-limit
-// local, and minimal header context. All retained the 222-byte / six-byte
-// and direct natural remaining-value data flow both regressed to the known
-// remaining six bytes are still only md/product register encodings.
-// capacity-in-place and product/count local lifetimes, unsigned product,
-// expression-level subtraction, and top-scope count. The separate-count
-// forms keep md in EDI but sink imul after the count call (27 bytes); reusing
-//
-// and full CFG. Standard-header combinations, repository game headers, late
-// and early neutral declaration sweeps, inline and exception pragmas, and
-// AI surfaces from 00502920, full tactical ManagedArray members, full player
-// order, non-polymorphic 00501C70-style surfaces, and inherited information
-// lead changes md from ESI to EDI without changing the body or adding a fake
-// The remaining md/product swap is allocator coloring; a fake later this use
-// remains unsupported.
-//
-// Exact finish (sa-5dc5a657-r1, 2026-08-17): DIA records only this and the
-// has two int references and one int parameter. Renaming parameters to these
-// DIA reports a thiscall function type with const=0, so the method stays
-// non-const; the decorated symbol also proves the two-reference ABI.
-// A natural direct assignment of the final build count to the first reference
-// decision alias also stayed exact, so direct typed md expressions are retained.
-// and the original behavior.
 
 
 int TribeTacticalAIModule::numberAvailableStoragePits(int& param1, int& param2, int param3) {
@@ -12905,7 +11321,6 @@ int TribeTacticalAIModule::numberAvailableStoragePits(int& param1, int& param2, 
     }
 }
 
-//   emits `cmp eax,ecx; jl continue` rather than the reversed `cmp ecx,eax; jg`.
 
 int TribeTacticalAIModule::numberAvailableGranaries(int& count, int& unbuilt)
 {
@@ -12943,9 +11358,6 @@ int TribeTacticalAIModule::initialExplorationSatisfied()
     return iVar1 >= this->sn[0xA7];
 }
 
-//   the target size but had the wrong frame and broad block layout.
-//   informationAI starts at +0xCEC, and closestDropsiteValue is at +0x540.
-// - The typed source is period-plausible and has no inline assembly or raw
 
 void TribeTacticalAIModule::checkForBuildInsertion(int type, int count, int priority)
 {
@@ -13011,11 +11423,6 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int count, int prio
     }
 }
 
-// Function: TribeTacticalAIModule::isFarmer
-// - Replaced the old extern-c/cdecl stub with the real member-function surface.
-//   VC5 does not need an explicit __thiscall keyword for C++ member functions;
-//   declaring RGE_Static_Object::unitAI() and UnitAIModule::currentAction() as
-//   non-virtual members gives the original ECX=this direct-call shape.
 
 int TribeTacticalAIModule::isFarmer(RGE_Static_Object* obj)
 {
@@ -13037,30 +11444,6 @@ int TribeTacticalAIModule::isFarmer(RGE_Static_Object* obj)
     return 0;
 }
 
-// Size: 249 bytes
-// NC: no custom flags (default /O2 /Oy)
-//
-//   manual _new/_delete declarations produced the wrong relocation identities
-//   with the exact operator_new/operator_delete declarations and positive
-//   callee-save coloring; emitted code was unchanged.
-//   header, testing whether VC5 assigns the outer induction variable EBX.
-//   positive-guarded do-while topology while retaining the shared join.
-//   differs (outer index versus inlined operator[] new_size).
-// then reordered count/index declarations and initialization to match the
-//   with the persistent outer-index/new-size EBX/EBP coloring swap.
-// - full AIModule/TacticalAIModule inheritance, chained zero assignment,
-//   canonical TribeMainDecisionAIModule pointer, postfix increments, a named
-//   civilian ID, register-qualified new_size, and exact sibling-style
-//   callee-save coloring only; future lead is original TU/compiler register
-//   context or an as-yet-untried natural declaration/lifetime distinction.
-// - function-scope obj/ai/action declarations, game_globals.h context, and
-// - removing new_size or caching civilians.value broke the canonical growth
-//   surface; an out-of-class operator[] definition, civilians reference alias,
-//   only unresolved bytes are the EBX/EBP outer-index/new-size coloring swap.
-// - Replaced the named ai/action temporaries with the natural short-circuit
-//   action predicate (`currentAction() == 0x261 || == 0x262`), matching the
-//   nearby exact numberObjectsWithAction source idiom.  This flipped the
-//   callee-save coloring to EBX outer index / EBP growth size and reached an
 
 int TribeTacticalAIModule::numberFarmers()
 {
@@ -13092,23 +11475,6 @@ int TribeTacticalAIModule::inAge(int age) {
     return currentAge == age ? 1 : 0;
 }
 
-// void __thiscall stuffAvoidancePath(TacticalAIGroup* group, Path* path)
-// ret 8 (2 params)
-// FLAGS: default
-//
-//   10.0f; flag tooFew = (numberOfWaypoints() <= 5); loop i=1..count-1 adding an
-//   attack waypoint when (tooFew || accumDist >= divisionLength) && (tooFew != 1
-//   || accumDist >= 5.0f). The cmp edi,1 in the second clause requires the
-//   "tooFew != 1" spelling (nested if/else forms emit no second edi test).
-// - addAttackWaypoint takes floats; the call site evaluates currentWaypoint()
-//   twice (right-to-left): addAttackWaypoint(currentWaypoint()->x, currentWaypoint()->y).
-//   VC5 shortened the 2nd fnstsw test to `test bl,ah`; for-loop form fixed the
-//   registers AND the mask (tooFew->edi, i->ebx, `test ah,1`) but kept `inc` in
-//   the loop-increment slot (after moveToNextWaypoint).
-// - EXACT: while (i < numberOfWaypoints()-1) with i++ as a BODY statement placed
-//   before moveToNextWaypoint schedules `inc ebx` inside the fadd/fstp gap,
-//   matching the original tail exactly. 0.0000% diff.
-// - switch(tooFew) case0/1/default fell into jump-table lowering (worse); not kept.
 
 void TribeTacticalAIModule::stuffAvoidancePath(TacticalAIGroup* group, Path* path)
 {
@@ -13138,34 +11504,6 @@ void TribeTacticalAIModule::stuffAvoidancePath(TacticalAIGroup* group, Path* pat
     }
 }
 
-//
-//   omitted the object/radius scan, switch, ResourceItem lifetime, and build
-//   insertion calls.
-//   ResourceItem surface, the natural switch shared body, and same-TU AI
-//   frame and all ordered calls.
-//   recovered the original signed imul/magic division and exact entry through
-//   the time gate, but the parent boundary overflow remained.
-//   the same extra load-before-subtract shape.
-//   to test the decompiler's top-level local lifetime; emitted code was
-//   unchanged and the clean typed source was restored.
-//   build, information, and main-decision layouts; emitted code was unchanged.
-//   to seek the original `sub eax,[ebx+118h]`; VC5 emitted identical code.
-//   to seek the original direct memory subtract; VC5 emitted identical code.
-//   ordered calls, and natural ResourceItem/switch ownership. After refreshing
-//   the parent-fragment extraction, the owned comparison span is 00502310-
-//   subtraction: VC5 emits `mov ecx,[ebx+118h]; mov ebp,eax; sub ebp,ecx`
-//   instead of the shipped `sub eax,[ebx+118h]; mov ebp,eax`.
-// - Current claim: the split `unitsToInsert` initialization followed by
-//   remains pinned. Exact completion needs a supported source or context cause
-//   for the direct EAX subtraction.
-//   numberValue, and a reference alias all kept the extra load-before-subtract
-//   the observed signed int loop and did not recover the direct memory subtract.
-//   duplicate of the natural `while` loop.
-// - Binary conclusion: the typed source reproduces the complete natural parent
-//   behavior, EH surface, cleanup, and ordered call set. The refreshed checker
-//   is one post-call subtraction lowering and its resulting two-byte shift.
-//   the direct subtract or remove the parent-fragment call additions.
-//   was restored and passed unchanged final validation.
 
 void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int playerID)
 {
@@ -13282,31 +11620,6 @@ void TribeTacticalAIModule::checkForAttackResponseBuildInsertions(int playerID)
     }
 }
 
-//   and a direct tribute call instead of the observed player vslot +0x54.
-//   the full RGE_Player virtual surface; this fixed the call set and frame.
-// - Split the random-player pick from the later tribute amount so VC5 could
-// - The original inner scan uses a positive tempRand guard around the do-loop;
-//   remaining structural hunk is the initial amount spill (VC5 keeps it in
-//   budget; no inline asm or custom flags.
-// - New claim: restored the binary-shaped inner break form, but VC5 duplicated
-// - New claim: declaration order and a scoped tempRand initializer emitted the
-//   to 472; restored the four binary-shaped gate jumps.
-// - New claim: first-use initializers, reordered loop initialization, the
-// - Remaining lead: recover the natural VC5 spill that stores coopTributeAmount
-//   to [esp+10] before its first test; calls, frame, and loop body are aligned.
-// it before initializing private loop homes. The executable stores and reloads
-// the same value first. After tribute calls, the executable reloads the resource
-// cursor; the rebuild relies on its callee-saved register. Loop exits use an
-// inverted branch form. All 12 calls, amounts, players, and effects match.
-//   owner symbol, 12 ordered calls, boundary, and four resource reads match.
-// - A counted outer loop with an explicit inner zero-amount goto reached a
-//   inner tempRand test and was restored. A combined inner while reached 314
-//   bytes and changed the j setup order. Both forms were reverted.
-// - The target's first structural hunk is still the required stack spill and
-//   reload of tempRand at [esp+10]. Natural aliases, declaration order, comma
-//   setup, initial-value copies, and period loop forms did not reproduce it.
-//   spill and pointer setup, but VC5 removed the target's redundant inner
-//   tempRand test and ended at 281 bytes (-4 size). The natural do-loop kept
 
 void TribeTacticalAIModule::checkForCoopTributeDemand()
 {
@@ -13405,17 +11718,6 @@ next:
     } while (i < 4);
 }
 
-//   player/object virtual surfaces.
-//   md/player/world/resource ownership and the exact RGE/TRIBE virtual slots.
-//   the final four-argument command_give_attribute x87 argument schedule.
-//   closest natural form uses an int delta plus a float current-attribute local
-// - Corrected the current attribute from element 0xb8 to element 0x2e because
-//   did not reproduce the oracle's fild-before-fld order; restored the clean
-//   typed local form.
-// - Replaced temporary offset aliases with the canonical sn[0xba]/sn[0xbe]
-//   ownership and full managed-array prefix; emitted code stayed unchanged.
-//   current-attribute float local. This restores the original fild/fld order
-//   without compiler steering or opaque helpers.
 
 void TribeTacticalAIModule::checkForCoopTributeGift()
 {
@@ -13533,13 +11835,6 @@ void TribeTacticalAIModule::checkForASAPAgeResearch()
     }
 }
 
-// 3: Tried explicit self/ai locals: still optimized too small.
-// 4: Tried /Ob0: still optimized too small; removed flag.
-// canonical md->player->world ownership and direct member expressions, avoiding
-// a saved md/object temporary across the virtual calls.
-// controllingComputerPlayer byte then landed at its proven +0x11D offset.
-// emitted code remained exact and the source no longer depends on a fabricated
-// external path symbol.
 
 void TribeTacticalAIModule::checkForCoopAttack(int p1, int p2, int p3)
 {
@@ -13597,10 +11892,6 @@ void TribeTacticalAIModule::checkForCoopAttack(int p1, int p2, int p3)
     } while (idx < world->player_num);
 }
 
-// Remaining 6 bytes are only sentinel/current-count register choices: original mutates EDI
-// to the sentinel and uses EBX for current count; rebuilt keeps sentinel in EBX via LEA
-// and uses EDI for current count. Calls, predicates, loop effects, stack cleanup, and
-// memory effects otherwise match exactly.
 
 int TribeTacticalAIModule::processCoopAttack(int p1, int player, int p3, int p4) {
     if (attackEnabledValue == 0) {
@@ -13650,46 +11941,6 @@ int TribeTacticalAIModule::desiredGathererCount(int index) {
     return this->desiredGathererDistribution[this->neededResourceValue[index]];
 }
 
-// FLAGS: config/flags/00503070_taskElephantGatherers.rsp
-//   numberGatherersValue +0x9CC; local ManagedArray<int> fields are value,
-//   numberValue, desiredNumberValue, and maximumSizeValue.
-// - The original initializes one local ManagedArray slot with resize(1), then
-//   appends mainHunterID through numberValue. The desiredNumberValue field is
-//   not used by this body.
-// - Correcting UnitData to 0x18 bytes restored the proven +0x9CC gatherer count
-// - Hoisted local declarations, swapped declaration order, matched the
-//   operands reduced exact-block coverage and was restored.
-// - Replaced the outer counted for with a typed do-while to match the original
-//   count-positive entry guard and tail test; emitted code was unchanged and
-//   copy restored its complete copy block and reduced the best diff to 174.
-// - Direct return on no selected gatherer restored the original cold cleanup
-//   size, but changed later liveness; the shared break is retained instead.
-//   89.85% exact-block coverage, 100% ordered-call alignment, and 174 strict
-//   differing bytes. The remaining structural hunk starts at outer-loop zero
-// - Revisited with the natural counted while, the reviewed DAT_00575758
-//   sentinel, and bestDistance > distance. The external sentinel and operand
-//   order recover the original fcomp/test-ah,41 sequence.
-// - Returning directly when no gatherer is selected recovers the original
-//   separate destructor cleanup block: 618 bytes, 197 instructions, exact
-//   frame/CFG/call count, and 13/13 relocation identities.
-//   maximumSizeValue before numberValue, while the original reverses them.
-//   cached count were worse and were restored.
-//   each other. The original loads numberValue into ECX, then maximumSizeValue
-//   into ESI. The rebuild reverses these loads. No instruction occurs between
-//   them, and both registers have the same values before the next instruction.
-// - No unsupported raw vtable or inline-assembly form is retained.
-//   ManagedArray accessors and constructor/destructor surfaces, assignment and
-//   update forms, narrow local aliases, standard-header context, ambient
-//   count are retained because the symbol record proves those roles.
-//   tactical-module destructor surface. All emitted code stayed unchanged.
-// - A 32-case first-scan source and header-context lab kept size, frame, call
-//   loads maximumSizeValue before numberValue. The original loads numberValue
-//   into ECX, then maximumSizeValue into ESI. No call, write, x87 predicate,
-//   cleanup, fault boundary, or direct-control identity differs.
-//   the full taitacmd.cpp class context, and the exact utmarray.h API shapes.
-//   bound order, field aliases, register hints, and authentic source lines.
-// - CPU and debug-context classification did not recover the reload order.
-//   The clean typed source remains authoritative; no steering form is kept.
 
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
@@ -13781,15 +12032,6 @@ afterAdd:
     }
 }
 
-// __thiscall, void
-//
-//   tradeBoats ManagedArray, MainDecision object lookup, resourceAI threshold
-//   checks, and aiPlayer trade-attribute dispatch from the original call set.
-//   signed backedge (js-to-exit plus jmp-to-loop) and grew to 407 bytes; rolled
-//   back.
-//   found/next labels reproduced the original jns backedge, boundary, and all
-//   406 bytes exactly.  The labels preserve the observed found and next-boat
-//   post-loop resource guard changed liveness/saves and broad block layout;
 
 void* operator new(unsigned int size);
 void operator delete(void* ptr);
@@ -13849,42 +12091,6 @@ int TribeTacticalAIModule::numberGatherersWithTarget(int targetId) {
     return count;
 }
 
-//   numberUnits, unlike the executable.
-// - Function-scope number/desired locals: 184 bytes, all six direct calls in
-// - Volatile stack-home diagnostics reached 192 bytes and restored push ecx,
-//   but stored the first result before desiredUnits rather than at the observed
-//   expression, compound-assignment, direct-predicate, full typed-layout, and
-//   95.38% shape); it still spills before desiredUnits and has the wrong time
-//   compare/time surfaces found no exact or size-valid candidate. Full binary
-//   virtual TacticalAIGroup destructor surface; emitted code was unchanged. No
-//   Reused-value, compound-assignment, initializer-scope, and three-local
-//   declaration permutations were duplicate or worse. Adding/removing an
-// - Paused: ten fresh hypotheses exhausted; best diagnostic remains the prior
-//   initializers plus elapsed-first comparison were unchanged structurally;
-//   inner volatile-number plus elapsed-first reached 192 bytes / 111 diff.
-//   Desired-before-number declarations, reference alias, comma assignment,
-//   ordinary desired-minus-number reuse, and register-qualified desired were
-//   duplicate or worse. Re-establishing the prior diagnostic best confirmed
-//   192 bytes / 110 diff; its spill still occurs before desiredUnits rather
-//   ownership remain established, while the local spill/liveness and time-chain
-//   RGE_Game_World/RGE_Player surfaces, and the inherited
-//   MainDecisionAIModule -> TribeMainDecisionAIModule player ownership; all
-//   number, full Ghidra iVar1/iVar2 lifetime including the final setter temp,
-//   a named elapsed quotient, and unsigned world_time were duplicate or
-// - Paused: canonical ownership, six ordered calls, CFG, and behavior remain
-//   established; the only unresolved gap is the original delayed number spill
-//   ([esp+10] after desiredNumberUnits) plus its associated time-register
-//   elapsed<difference guard with a natural for-update reproduced the oracle's
-//   cmp edx,edi / jl branch; combining inner volatile number with the
-//   A late volatile copy followed by a separate difference local reached exact
-//   size (194) and 27 positional-diff bytes with all six calls and CFG aligned,
-//   split subtraction, address-taken number storage, world caching, and
-//   stdlib/string header context. Inner volatile number plus the natural
-//   inverted elapsed guard reproduced the prior best at 194 bytes / 27 diff;
-//   CFG, and behavior remain established; delayed number spill and time-chain
-//   allocation remain unresolved.
-//   gap is the 4-byte local home (`push ecx`, post-desired spill at [esp+10]).
-//   natural, evidence-backed spill lead remains without compiler steering.
 
 void TribeTacticalAIModule::checkStaleAttackGroups()
 {
@@ -13938,23 +12144,6 @@ int TribeTacticalAIModule::numberWaterExplorers()
     return count;
 }
 
-// __thiscall
-//   model: md, aiPlayer, soldiers, playersToAttack, target objects, and groups.
-//   then civilian reinforcement. It keeps the two inline ManagedArray growth
-//   sites because the executable contains all three growth blocks.
-// - Shared the binary LAB_00503954 soldier attack path with a count-only label;
-//   this restored all 52 ordered calls, the 0x24 frame, and a +11-byte size gap.
-// - Restored the five missing ManagedArray records before sn; this aligned
-//   sn[0x14] at +0x1E4 and playersToAttack at +0xD28/+0xD34.
-// - Modeled vslot 0x10C as the same-TU weaponRange() call and vslot 0x198
-//   as the full canPath(XYZPoint, float, int, float*, int, int, int) ABI.
-//   The natural trailing id, 0, 1, -1, -1 arguments preserve the original
-// - Reversed entryCount/count declarations to match the original loop stores.
-// - A natural conjunction (`count < soldiers.numberValue && entryCount < 6`)
-//   restores the binary split loop guard and reduces the gap to 14 bytes.
-// - The proven 0x10 base gap places aiPlayer at +0x1256C. Reversed the owner
-//   comparison operands and shared the binary entryCount label at +0x3A76.
-// - Shared point declaration, aggregate initialization, object-local reuse,
 
 
 void TribeTacticalAIModule::saveTheTown(int objectID)

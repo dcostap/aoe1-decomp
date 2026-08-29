@@ -1,11 +1,6 @@
 #ifndef AOE1_VICTORY_H
 #define AOE1_VICTORY_H
 
-// Period-shaped declarations for the complete victory.cpp owner set.
-//
-// victory.cpp source module. Keep the proven field offsets and virtual slots
-// in one module-owned declaration.
-// Foreign owner headers stay private to victory.cpp.
 
 class RGE_Game_World;
 class RGE_Player;
@@ -54,8 +49,6 @@ typedef char rge_victory_point_entry_size_check[
     (sizeof(RGE_Victory_Point_Entry) == 0x1C) ? 1 : -1];
 
 class RGE_Victory_Conditions {
-// victory.cpp FPO records use protected handlers and struct-tagged
-// RGE_Victory_Entry/RGE_Victory_Point_Entry parameters.
 protected:
     virtual void handle_point_condition(RGE_Victory_Point_Entry* entry);
     virtual void handle_condition(RGE_Victory_Entry* entry);

@@ -1,4 +1,3 @@
-/* Authentic C++ source module for C:\\msdev\\work\\age1_x1\\file_stf.cpp. */
 
 #include "../include/file_stf.h"
 

@@ -1,7 +1,6 @@
 #ifndef AOE1_SCENARIO_H
 #define AOE1_SCENARIO_H
 
-// Declarations for the original scenario.cpp source module.
 
 #include "Timeline.h"
 

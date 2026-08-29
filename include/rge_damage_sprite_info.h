@@ -1,7 +1,6 @@
 #ifndef AOE1_RGE_DAMAGE_SPRITE_INFO_H
 #define AOE1_RGE_DAMAGE_SPRITE_INFO_H
 
-// Owner-only record used by the m_s_obj and stat_obj consumers.
 class RGE_Sprite;
 
 class RGE_Damage_Sprite_Info {

@@ -120,8 +120,6 @@ void RGE_Zone_Map::save(int file)
     }
 }
 
-// VC5 emits a two-byte test for the zero-valued group counter in this source
-// as a test instruction. The shipped function uses the equivalent compare.
 uchar RGE_Zone_Map::do_zone_map()
 {
     int map_width;

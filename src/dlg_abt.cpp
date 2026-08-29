@@ -1,4 +1,3 @@
-// The scalar deleting destructor at 0043B2E0 is compiler generated.
 
 #include "../include/dlg_abt.h"
 #include "../include/pnl_lst.h"

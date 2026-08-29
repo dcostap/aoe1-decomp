@@ -17,12 +17,6 @@
 extern int displayPathingFlags;
 extern int displayPathObjectID;
 
-// move_obj.cpp lines 96-112
-//   and omitted the RGE_Animated_Object base ctor and natural EH surface.
-//   float, float, float, int), base construction with doSetup=0, two Path
-//   members, named moving-object fields, setGoal, and conditional setup.
-// - The natural initializer ordering reproduces the delayed derived-vptr store
-//   and all 333 bytes exactly; no manual vptr or raw-offset code is retained.
 
 
 RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* master,
@@ -63,12 +57,6 @@ RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* master,
     }
 }
 
-// move_obj.cpp lines 130-146
-//   helper and omitted the base ctor, EH-owned members, and setup branch.
-//   RGE_Animated_Object base construction with doSetup=0, two Path members,
-//   named moving-object fields, setGoal(0,0,0), and conditional setup.
-// - Member-initializing the range/sentinel fields (instead of assigning them
-//   in the body) naturally delayed the derived-vptr store to the original
 
 
 RGE_Moving_Object::RGE_Moving_Object(int mode,
@@ -108,13 +96,6 @@ RGE_Moving_Object::RGE_Moving_Object(int mode,
     }
 }
 
-// move_obj.cpp lines 152-158
-//
-//   deletes `userDefinedWaypoints` and clears it; compiler emits vptr restore, EH state transitions, member Path
-//   destructors, and base RGE_Static_Object destructor in the original order.
-// The former standalone fragment matched with its reduced class surface.
-// The natural module currently emits the RGE_Animated_Object destructor target;
-// the executable calls RGE_Static_Object directly. Keep this regression visible.
 
 
 RGE_Moving_Object::~RGE_Moving_Object() {
@@ -124,37 +105,6 @@ RGE_Moving_Object::~RGE_Moving_Object() {
     }
 }
 
-// move_obj.cpp lines 164-202
-//   hierarchy, Path temporary/assignment, reset sequence, base recycle call,
-//   and sprite-facet random-angle normalization shown by the packet.
-// - Scoped the temporary Path: this reproduces its assignment/destructor
-//   sequence before the movement-state reset (294 strict diff bytes).
-// - The oracle compares facet_num in memory and sign-extends it again after
-//   the guard.  A narrow member preserves those binary-observed accesses;
-//   nested positive guards retain the common set_angle tail.
-// - Inlined debug_rand into the angle expression (best 99 strict diff bytes).
-//   and the quotient sign-adjust register; the Path call identity is recorded
-//   by the target-specific original-symbol override.
-// - Removed the explicit float cast from the double angle quotient. This
-//   only three quotient sign-adjust register bytes differ.
-// - A named quotient temp was much worse (123 bytes). A named debug_rand
-//   result with the no-fxch expression reached 13 bytes but changed the
-//   original multiply setup. Restored the direct period expression.
-// - Tried the natural temporary assignment `this->pathValue = Path(10);` to
-//   test the original Path lifetime. It lost the exact block topology (407
-//   bytes); restored the scoped named Path source.
-// - Tried a natural `short facings` declaration to mirror the sprite member;
-// - Tried natural copy-initialization `Path path = Path(10)`; VC5 emitted
-//   unchanged code, so restored direct named construction.
-//   facings, register-qualified facings, reversed product operands, and an
-// - Function-scope or register-qualified random-result locals were worse
-// - Function-scope sprite declaration also emitted unchanged code. Restored
-//   the clean direct-expression source; only quotient sign-adjust coloring
-//   remains unresolved.
-//   const lifetime, explicit volatile reads, long quotient typing, and math
-//   long debug_rand return typing, and redundant cast removal. Each kept the
-// - Direct this->sprite ownership removed the pointer local and selected the
-//   original ECX sign-adjust register. The natural direct-member source was an
 
 
 void RGE_Moving_Object::recycle_in_to_game(
@@ -220,30 +170,6 @@ void RGE_Moving_Object::recycle_in_to_game(
     this->set_angle();
 }
 
-//   six movement-state resets, and binary-proven random-angle normalization.
-// - nested/combined sprite guards, int facet count, direct member rereads, and
-//   before the compare and still chose EAX for the sprite pointer.
-// - retained canonical sprite/type ownership; no raw-offset or volatility
-// - This session: zero-local, post-guard pointer alias, short facings, direct
-//   sprite rereads, scoped/const sprite lifetime, and full static-object
-//   no volatility retained in living source.
-//   with five ordered calls aligned; first unresolved block is sprite/facet
-//   guard (original ECX direct short compare/reload vs rebuilt EAX/AX reuse).
-//   pointer/reference and mixed-alias guard forms, complete RGE_Sprite layout,
-//   rebuilt EAX sprite allocation. Restored the natural int-facing source.
-//   versus rebuilt EAX/zero-ECX coloring plus the later FPU multiply schedule.
-// - orch2-45C970-rand: inlined debug_rand directly in the facings product,
-//   shape 92.94% -> 94.12%; calls and CFG stayed aligned. The first structural
-//   separate debug_rand before facet reload reached 291B and 66-byte diff.
-//   Direct member rereads broke the base-call argument schedule. Reordered
-//   Keep the natural separate-call form; remaining gap is ECX/EDX pointer
-//   coloring and the direct facet compare.
-// - shardC2-45C970: moved the existing typed sprite assignment immediately
-//   after base setup, before reset stores; emitted code stayed unchanged.
-//   facings, function-scope facings, scalar sprite handles, volatile facet
-// - The unresolved lead remains original ECX sprite -> EDX preservation and
-//   EDI facings coloring versus rebuilt EDI sprite -> ECX facings, plus the
-//   and a double denominator term without an outer float cast reproduce 291B.
 
 
 int RGE_Moving_Object::setup(RGE_Master_Moving_Object* master_obj,
@@ -457,9 +383,6 @@ unsigned char RGE_Moving_Object::is_moving() {
 
 void RGE_Moving_Object::stop_moving() { this->speed = 0; }
 
-// reversed temp declarations, in-place coordinate subtraction, and final scale expression order.
-// ordering around the coordinate subtracts before FPATAN; all guards, constants,
-// wrap predicates, scale, stack-slot reuse, returns, and memory effects match.
 
 
 float RGE_Moving_Object::angle_to_object(RGE_Static_Object* target, float tx, float ty)
@@ -559,40 +482,6 @@ void RGE_Moving_Object::set_angle() {
     this->facet = (unsigned char)((int)temp);
 }
 
-// - Replaced the old reduced guard/pointer stub with the binary-supported
-//   moving-object trail update: master trail options, tile/owner/master
-//   ownership, trail-master construction, interpolated trail objects, and
-//   the qualified RGE_Static_Object teleport tail.
-//   deltas and trail remainder, and typed virtual make_new_obj/new_angle
-//   calls.  The target's odd low-count remainder update is retained as
-//   executable behavior rather than corrected.
-// - Direct master-object rereads removed a long-lived saved pointer and
-// - A separate int interpolation countdown restored the proven 0x24 frame;
-//   declaration-only coordinate locals did not rotate the remaining homes.
-// - Positive count dispatch plus a distinct >=1 inner loop guard produced the
-// - <=0 outer spelling, a cached options byte, and truthy inner spelling were
-// - Nested typed option-then-tile guards preserved the observed branch order
-//   but emitted the same 491B code; restored the combined natural guard.
-// - Reordered case-local declarations and split the distance assignment; the
-// - Reusing the short count as the loop countdown reduced the frame to 0x20;
-// - A separate countdown reset before the inner gate recovered the oracle's
-// - A direct (float)count cast with a loop_count inner gate reached a 494B /
-// - This pass used the decompiler-supported `0 < count` inner gate and direct
-//   short-count casts.  Reordering the local declarations to dz, tx, ty, tz,
-//   distance, dx, dy produced 494B/150-byte-diff code with 158 instructions,
-//   62.66% exact-block coverage, and all six calls aligned.  The +3-byte
-//   boundary overrun and register-map conflict remain, so this is unresolved.
-// - Coordinate assignment/update order, delayed countdown declaration, a
-//   redundant countdown reset, typed tile ownership, signed option type, and
-//   regressed to 495B/441 bytes, so it was restored. The former TU guard was
-//   recovered the original interpolation block through the loop-entry edge.
-// - The countdown guard and delayed declaration are one required source group.
-//   uses the direct short count and one natural int countdown.
-//   header inclusion, separate step locals, direct step expressions, loop and
-//   coordinate reorderings, and comma or expanded assignments were regressive
-//   frame, six ordered calls, matching x87 call setup, and a three-byte
-//   at the option guard and trail-call argument setup. No exact source-only
-//   result was found in this finish pass.
 
 
 float RGE_Moving_Object::teleport(float x, float y, float z) {
@@ -712,9 +601,6 @@ void RGE_Moving_Object::setTargetRadius(float a, float b) {
     this->targetRadiusY = b;
 }
 
-// The canonical RGE_Moving_Object, Path, and UnitAIModule surfaces live in
-// include/move_obj.h. The source uses those named declarations.
-// default flags, and 0.0000% difference before source reunification.
 
 
 RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
@@ -722,7 +608,6 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
     if (this->master_obj->radius_z <= 0.0f) {
         this->setWaitingToMove(0);
         this->setStart(this->world_x, this->world_y, this->world_z);
-        // the inline helper is required for the original Path receiver schedule.
         this->pathingGroupMembers.zeroNumber();
         this->pathValue.setTimeStamp(this->owner->world->world_time);
         this->pathValue.killPath();
@@ -816,22 +701,6 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
     return PathFound;
 }
 
-// - The speed reset is the inherited RGE_Animated_Object field at +0x88;
-//   trail_remainder begins at +0x8c and is not the field written by doMove.
-// - Ghidra shows a separate retry-success local in both scans. Scoped natural
-//   retry loops remove the two peeled virtual-call sites and preserve the 0x18
-//   frame. Explicit cached waypoint-count loops match the action-log CFG.
-// - Binary control flow also requires the moveToNextWaypoint result, the fixed
-//   second retry-path return of 1, and asymmetric one-waypoint branches.
-// - Direct success arms, rather than one explicit shared label, preserve both
-//   original +0x1C0 virtual call sites. The count tests use the binary's <= 1
-//   and > 1 forms. The radius sum uses x*x + y*y for the observed x87 order.
-// - Qualified owner: RGE_Moving_Object::doMove in move_obj.cpp. The packet
-//   neighboring findPath and doTrivialMove anchors in this module.
-//   and 105/105 ordered calls. A positive waypoint guard, direct radius
-//   members, late distanceToGoal initialization, and scoped retry locals are
-//   the owner or call surface. The remaining gap is register, stack-home,
-//   form is retained.
 
 
 int RGE_Moving_Object::doMove() {
@@ -1242,45 +1111,6 @@ int RGE_Moving_Object::doMove() {
     return 1;
 }
 
-//   complete named RGE_Static_Object and RGE_Master_Static_Object virtual surfaces.
-// - repeated currentWaypoint() expressions to preserve the original ordered calls;
-//   the final direct snap call now matches all 83 original call sites.
-// - inlined the target-radius predicate as one typed expression; this is the cleanest
-// - reversed the first turnTimer guard to the original negative-first source shape;
-// - promoting one Waypoint* across the repeated path scans collapsed the frame to
-// - reordering the real arithmetic locals to the dossier order was emitted-code
-// - cached displayPathObjectID before the display gate, matching its original
-//   three evidence-backed hypotheses;
-//   remaining evidence points to original local-frame/register topology and VC5
-//   tail/block scheduling, not a missing call or virtual-surface declaration.
-// - reintroduced the decompiler's zero-initialized first-turn temporary; it
-// - restored named target-distance and radius temporaries from the original
-// - naming the owner world and radius components was emitted-code duplicate or
-//   worse; kept only the natural target-distance temporaries.
-// - the shipped second-turn x87 block starts with fsin; the retained reverse
-//   assignment order follows that binary order.
-// - the late next-distance value uses a qword store and fmul.
-//   A natural double local restores the original 0x2C frame.
-//   eight bytes in the reduced double-local source.
-// - unresolved: current result is 2814 differing bytes, 72.35% shape, and
-//   names newY, dX, newX, newAngle, tempZ, alreadyMoving, angleDelta,
-//   facetDelta, numberFacets, curDistance, distanceToCover, speedOffset,
-//   result, targetDX, targetDY, and dY, with optimized stack-slot aliases.
-//   call alignment; and reusing found for passable was another duplicate.
-//   local roles. The angleDelta spelling was emitted-code duplicate evidence.
-// - the shipped fallback publishes the passability coordinates,
-//   then rereads both floor expressions for teleport. Keep both direct calls.
-// - the late next-distance path keeps one double coordinate
-//   product, then rounds the distance to float before its ordered tests.
-// - the preceding exact move_obj.cpp definitions were restored in the
-//   shape, 0x2C frame, and all 83 direct-call sites aligned. Exact finish
-//   remains unresolved at the first local home and steering x87 block.
-//   same bytes, calls, frame, boundary, and owner, so the standalone context
-// - the original uses EDI for the facet count, then spills it to
-// - the original late next-distance block keeps the mixed float
-//   and qword x87 sequence. A double local lowered to two qword stores and
-// - the original dword alreadyMoving home is required. A bool
-//   were restored. Keep named target reads and the ordered object rereads.
 
 
 int RGE_Moving_Object::doTrivialMove(float x, float y)
@@ -1608,7 +1438,6 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
 
         dx = path->currentWaypoint()->x - (this->world_x + this->velocity_x);
         dy = path->currentWaypoint()->y - (this->world_y + this->velocity_y);
-        // VC5 emits the original qword x87 temporary for this value.
         float nextDistance =
             (float)sqrt(dy * dy + (double)dx * (double)dx);
 
@@ -1673,12 +1502,6 @@ int RGE_Moving_Object::passableTile(float x, float y, int mode) {
     return pathSystem.passable(this, x, y, 1);
 }
 
-//   bounds, cached zone-map lookup, zone comparison, and path-system calls.
-//   17 bytes too large. Reformed the success gates to restore the original CFG.
-// - Split the negative coordinate checks before the map bounds check. VC5 then
-//   reused the incoming XYZPoint home and emitted all 419 bytes exactly.
-// - Exact with default flags. No inline asm or custom flags.
-//   at 0045F9C3. The virtual qualifier keeps the rebuilt owner symbol exact.
 
 
 int RGE_Moving_Object::canPath(XYZPoint point, float tolerance, int targetID,
@@ -1736,9 +1559,6 @@ int RGE_Moving_Object::canPath(XYZPoint point, float tolerance, int targetID,
     return 0;
 }
 
-// - Replaced the placeholder with the period-plausible typed pathing
-//   and duplicated AI/normal path-system calls follow the binary evidence.
-//   Changed both calls to the binary-proven mode 0; the function now matches.
 
 
 int RGE_Moving_Object::canPath(int targetID, float tolerance, float* costOut,
@@ -1796,12 +1616,6 @@ int RGE_Moving_Object::canPath(int targetID, float tolerance, float* costOut,
         unobPlayerID, unobGroupID);
 }
 
-// function, then canPathWithObstructions at 0045FED0.
-//   terrain-backed lazy zone-map lookup, typed zone points, and two explicit
-//   AI/normal path phases for the source and goal objects.
-// - Keeping each first-phase result and assigning it to the flag on failure
-//   reproduces the original failure tail and the complete 779-byte function.
-//   UAE decorated symbol without changing the exact body.
 
 
 int RGE_Moving_Object::canBidirectionPath(
@@ -1891,32 +1705,6 @@ int RGE_Moving_Object::canBidirectionPath(
     return result;
 }
 
-// RGE_Moving_Object::canBidirectionPath [0045FBC0,0045FECB).
-// - Replaced the placeholder with the period-typed object/world/zone-map
-//   localized callee-save coloring gap beginning after get_zone_map.  The
-//   oracle carries zone_map in EBP and the first zone result in EBX, while
-//   default VC5 source coloring reverses those roles (and later reuses them
-//   for range/group arguments).
-// - Tried declaration/lifetime order, a zone-map alias, reversed comparison,
-//   split target assignment, and <stdlib.h> context; emitted code stayed in
-// - Tried a natural direct comparison of the two zone-map results, supported
-//   by the decompiler's immediate uchar result evidence; it lost 10 bytes and
-//   changed the first result to BL.  Restored the named typed results.
-// - Declared the typed zone-map handle before target lookup but assigned it at
-//   for target, zone map, zone results, and points; emitted code stayed equal.
-//   reference spellings emitted the same bytes. Restored the pointer form.
-//   goal_zone; it added 7 bytes and broke the zone-gate block. Restored int
-//   locals; the original 17-byte register-coloring gap remains.
-// - A 128-sample ambient file-scope declaration sweep produced one 534-byte
-//   group with the same 17-byte gap. Explicit long/int zone-result forms,
-//   implicit coordinate conversions, and full function-scope declarations
-// - Recovered the controlling source shape from the adjacent exact
-//   duplicate the cleanup and return in both arms, and let VC5 tail-merge the
-//   common epilogue. This swaps zone_map to EBP and the first zone result to
-//   EBX without changing behavior or call order. The target now matches all
-//   534 bytes.
-//   branch-local results and duplicated cleanup because the recorded bytes
-//   prove this source shape is required.
 
 
 int RGE_Moving_Object::canPathWithObstructions(
@@ -1986,13 +1774,6 @@ int RGE_Moving_Object::canPathWithObstructions(
     }
 }
 
-// - Replaced the placeholder with the period-plausible pathing implementation.
-//   The point bounds are checked through owner->world->map; exception fields are
-//   set before selecting pathSystem versus aiPathSystem, and both branches call
-//   the real path finder with the four object-coordinate conversions.
-//   stores in the opposite order (5 differing bytes).
-//   branch opcode; placing the aiPathSystem arm first made the zero-useAI path
-//   emitted code remains exact.
 
 
 int RGE_Moving_Object::canPathWithAdditionalPassability(
@@ -2312,10 +2093,6 @@ unsigned char RGE_Moving_Object::waitingToMove(void) const {
 
 void RGE_Moving_Object::setWaitingToMove(unsigned char v) { this->waitingToMoveValue = v; }
 
-// Returns pointer into waypoint array; each XYZBYTEPoint element is 3 bytes.
-// Remaining 9-byte diff (25%): VC5 reverses LEA/MOV order in the address math
-// (LEA EDX,[EAX+EAX*2]/MOV EAX,[ECX+0x168] vs MOV EDX,[ECX+0x168]/LEA EAX,[EAX+EAX*2])
-// Both sequences are semantically identical with same register pressure.
 
 
 XYZBYTEPoint* RGE_Moving_Object::userDefinedWaypoint(int param_1) {
@@ -2323,13 +2100,6 @@ XYZBYTEPoint* RGE_Moving_Object::userDefinedWaypoint(int param_1) {
     return (XYZBYTEPoint*)((char*)userDefinedWaypoints + param_1 * 3);
 }
 
-// 1: the old stub only modeled the final-waypoint guard.  The binary instead
-//    appends three-byte XYZBYTEPoint records and grows a 5/2x byte buffer.
-//    exact call set and 425-byte neighborhood but had reversed capacity
-//    operand order and a redundant nested copy-loop guard.
-// 3: wrote the capacity test as max > count and flattened the copy loop to
-// removeAllUserDefinedWaypoints slot; the surrounding ABI declarations retain
-// the proven inherited slot order without manual vtable stores.
 
 
 int RGE_Moving_Object::addUserDefinedWaypoint(XYZBYTEPoint* point, int param_2) {
@@ -2401,14 +2171,6 @@ void RGE_Moving_Object::removeAllUserDefinedWaypoints(int param_1) {
     }
 }
 
-// move_obj.cpp lines 2914-2935, 125 bytes
-// RGE_Moving_Object::removeUserDefinedWaypoint(int)
-// - The canonical member aliases emitted a short 112-byte body and missed the
-//   original reloads of the waypoint pointer.
-// - Removing both aliases and keeping the proven three-byte byte stride gave
-//   and decrement spelling did not change the exact bytes.
-// the executable reloads userDefinedWaypoints before each byte
-// copy, so the direct member expression is required here.
 
 
 void RGE_Moving_Object::removeUserDefinedWaypoint(int index) {
@@ -2429,11 +2191,6 @@ void RGE_Moving_Object::removeUserDefinedWaypoint(int index) {
 
 void RGE_Moving_Object::setFinalUserDefinedWaypoint() { this->finalUserDefinedWaypoint = 1; }
 
-//   pathing call from the packet using named period-era object/map types.
-// - Corrected map_zones to the proven RGE_Map +0x8DC4 field and preserved the
-//   base tail padding needed for the derived +0x88 layout.
-// - Kept zone-info results as int locals; VC5 then emits the observed byte
-//   ownership; emitted code remains exact.
 
 
 Path* RGE_Moving_Object::findAvoidancePath(XYZPoint& point, float range,
@@ -2502,8 +2259,6 @@ void RGE_Moving_Object::copy_obj(RGE_Master_Static_Object* master_obj) {
     RGE_Static_Object::copy_obj(master_obj);
 }
 
-// move_obj.cpp
-// 9: Replaced generated DAT_00570b50 references with the period literal 6.2831855f; this restored fcom/fstp ordering and matched exactly.
 
 
 void RGE_Moving_Object::boundAngle(float* angle, int numberFacets) {

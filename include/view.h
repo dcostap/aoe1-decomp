@@ -55,7 +55,6 @@ typedef char view_pick_object_info_size_check[
 
 extern RGE_Pick_Obj_Info Picked_Objects[];
 
-// view.cpp owns the DClip capture list used by View and Shape.
 class DClipInfo_Node {
 public:
     DClipInfo_Node* Next;

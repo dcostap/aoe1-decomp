@@ -1,8 +1,6 @@
 #ifndef AOE1_AICONMOD_H
 #define AOE1_AICONMOD_H
 
-// Reviewed compiler-facing declarations for the aiconmod.cpp source module.
-// AIModule and ConstructionItem use their canonical source-module headers.
 
 #include "aiconitm.h"
 #include "aimodule.h"

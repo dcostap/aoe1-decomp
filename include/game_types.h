@@ -1,7 +1,4 @@
 #pragma once
-// The full read-only reference dump lives in ..\inventory\types\all_types_reference.h.
-// Best-effort class interface reference lives in ..\inventory\classes\all_class_interfaces_reference.h.
-// Start by adding real type bodies here only when exact-match function work needs them.
 
 class AIModule;
 class AIModuleID;

@@ -1,5 +1,3 @@
-// Authentic complete owner for C:\\msdev\\work\\age1_x1\\Scr_main.cpp.
-// 426, 435, 443, 451, 480).
 
 #include "../include/scr_main.h"
 #include "../include/pnl_btn.h"

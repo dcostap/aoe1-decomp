@@ -1,11 +1,3 @@
-// Authentic ACT_GATH.cpp source module.
-//
-// deleting destructor at 00402F10 is compiler-generated.  The non-deleting
-// destructor at 00402F30 is the small derived-to-base thunk emitted by the
-// virtual destructor definition.
-//
-//
-// because no canonical owner header publishes its needed surface.
 
 #include "../include/act_gath.h"
 #include "../include/act_list.h"

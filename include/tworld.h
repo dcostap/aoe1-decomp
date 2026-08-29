@@ -76,8 +76,6 @@ public:
 typedef char tribe_zone_info_size_check[
     (sizeof(TRIBE_Zone_Info) == 0x1FC) ? 1 : -1];
 
-// Owner-only TRIBE_World surface from tworld.cpp.
-// RGE_Game_World owns the first 0x104 bytes.
 class TRIBE_World : public RGE_Game_World {
 public:
     TRIBE_Tech* tech;                         // +0x104

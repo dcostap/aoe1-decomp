@@ -12,11 +12,6 @@ struct IDirectPlay2;
 struct IDirectPlay3;
 struct _GUID;
 
-// Canonical Com_hand.cpp context for six grouped owners.
-// Evidence: exact 00425A40, 00426350, and 00426530, plus behavior-reviewed
-// unsigned char, void*, int, unsigned char):
-// ?CommOut@TCommunications_Handler@@IAEJKEPAXHE@Z.
-// The field offsets follow the executable and the exact constructor source.
 
 class TChat;
 class TCommunications_Handler;

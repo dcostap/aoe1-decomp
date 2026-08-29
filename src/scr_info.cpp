@@ -1,4 +1,3 @@
-// deleting destructor at 0049D5E0 is compiler-generated.
 
 #include "../include/scr_info.h"
 #include "../include/rge_base_game_global.h"

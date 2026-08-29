@@ -1,6 +1,3 @@
-// Shared UnitAIModule class definition for combined TU compilation.
-// This is the canonical layout derived from binary analysis.
-// Size: 0x131 (305 bytes, 4 + 0x04..0x130 fields, +0x130 is a byte)
 
 #pragma once
 

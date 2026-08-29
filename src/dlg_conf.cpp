@@ -1,4 +1,3 @@
-// The scalar-deleting destructor between them is compiler generated.
 
 #include "../include/dlg_conf.h"
 #include "../include/panel.h"

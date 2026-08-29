@@ -6,16 +6,6 @@
 #include "../include/task.h"
 #include "../include/world.h"
 
-//
-// Direct dependency closure:
-// - act_tran.h owns RGE_Action_Transport and consumes RGE_Action_Move_To.
-// - action.h owns the RGE_Action base and its fields and virtual slots.
-// - act_obj.h owns the complete action-object inheritance chain.
-// - act_list.h owns action-list fields and methods.
-// - map.h, player.h, task.h, and world.h own the accessed map, player, task,
-//   and world fields and methods.
-// - m_s_obj.h and stat_obj.h arrive through the canonical owner-header chain.
-//
 
 extern float DAT_0056e6c8;
 extern float DAT_0056e6cc;

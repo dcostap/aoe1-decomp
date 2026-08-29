@@ -1,8 +1,6 @@
 #ifndef AOE1_RMM_TERRAIN_INFO_H
 #define AOE1_RMM_TERRAIN_INFO_H
 
-// Owner-only records from C:\\msdev\\work\\age1_x1\\rmm_terr.cpp.
-// Field order and sizes are proved by the CodeView type records.
 
 struct RGE_Terrain_Info_Line {
     long terrain_size;

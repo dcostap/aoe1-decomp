@@ -1,8 +1,3 @@
-//
-// The two nearby deleting destructors are compiler-generated and have no source
-// owner.  Thirty-two normal owners match.  TribeStrategyAIModule::update stays
-//
-// owns the proved class layouts and virtual surfaces used by this file.
 
 #include "../include/taistrmd.h"
 #include "../include/taimdmd.h"
@@ -249,13 +244,6 @@ VictoryConditionRuleSystem::VictoryConditionRuleSystem()
 
 VictoryConditionRuleSystem::~VictoryConditionRuleSystem() {}
 
-// taistrmd.cpp
-//
-// - Separate ruleIndex and ruleValue integers with a 256-byte line buffer recover
-//   the original dword homes. They also keep first and second `%c` semantics.
-// - The module header supplies the proved class surface before this body.
-// - Sixteen natural declaration orders emitted one exact code group. The retained
-//   order follows parse meaning. Array and overlay forms emitted a word load.
 
 extern "C" int __cdecl strcmp(const char* left, const char* right);
 extern "C" unsigned int __cdecl strlen(const char* text);
@@ -680,13 +668,6 @@ int VictoryConditionRuleSystem::stopExecution(TRIBE_Player*, int) {
     return 0;
 }
 
-// taistrmd.cpp
-//
-// period scenarioGame() helper, natural guarded switch, and repeated minimum-1
-// FPU scaling blocks. Earlier source used expansionRule(), an explicit
-// float-argument ftol wrapper, and top-level initialized locals; those forms
-// changed the call set, introduced stack arguments, or allocated the frame too
-// early and were not retained.
 
 struct ScaleLocals {
     float scale1;
@@ -700,8 +681,6 @@ void VictoryConditionRuleSystem::modifyForDifficultyLevel(int level)
         int add1 = 0;
         int add2 = 0;
         int add3 = 0;
-        // The three fields mirror the binary-proven contiguous local window:
-        // scale1 at [esp+10h], scale2 at [esp+14h], and tmp at [esp+18h].
         ScaleLocals locals;
         locals.scale1 = 1.0f;
         locals.scale2 = 1.0f;
@@ -870,13 +849,6 @@ void VictoryConditionRuleSystem::modifyForDifficultyLevel(int level)
     }
 }
 
-// taistrmd.cpp
-//
-// proven StrategyAIModule base, three ManagedArray-like members, the
-// VictoryConditionRuleSystem member, and named Waypoint fields (214-byte
-// tried default-constructing the three destructible arrays and ordering their
-// original call/frame topology aligned.
-// moved difficultyLevel(0) into the member-initializer sequence; this placed
 
 extern "C" char* __cdecl strcpy(char* destination, const char* source);
 
@@ -906,68 +878,6 @@ TribeStrategyAIModule::TribeStrategyAIModule(void* object, int parameter)
     strcpy(this->ruleSetNameValue, "");
 }
 
-// taistrmd.cpp
-//
-// the real 0xF0 AIModule base, typed md, Waypoint, and sn[226]. The AIModule
-// message slots now use AIModuleMessage*, and StrategyAIModule inherits them.
-// The direct rge_read calls and ManagedArray<int>::add behavior remain.
-// rebuilt frame, 28 calls, and exact 1231-byte size. The prior four-byte source
-// construction, real ManagedArray<int> members, and the period inline add
-// implementation. Earlier work used an int-typed base shim and a macro-expanded
-// duplicate scan; those produced the wrong constructor relocation and a
-// 7 bytes and aligned all three indexed add loops.
-// address-taken aliases, and an explicit self pointer all collapsed back to a
-// compiler's one-word local-frame reservation around the name-length home.
-// same-TU context check: the full AIModule/StrategyAIModule virtual surface
-// as the period-plausible declaration context.
-// this session: reconfirmed the typed constructor and stack map. The remaining
-// seven bytes are local-home displacements at the serialized name/value phase;
-// dossier's entry-relative +4 address evidence; it removed the one-word frame
-// scoped the name-length local through loadRules only; VC5 shrank the frame to
-// moving count/index declarations to function entry, then declaring length
-// a declaration-order lab produced only the known 11-byte and 20-byte groups;
-// a debug-context flag lab lacked the EH frame and was not a valid lead.
-// stack-home displacement bytes at the length and add-value temporary sites.
-// explicit function-level value local reached a 4-byte diff and exact loop
-// bodies, but moved the base self-home and name-length homes by one word.
-// a two-element value-buffer diagnostic reached 2 bytes but changed the
-// base self-home and one indexed name terminator byte; it was not plausible.
-// terminator spelling; all produced the same two-byte aggregate candidate.
-// Moving ManagedArray::add outside the class, changing its inline spelling,
-// reducing the base virtual surface, adding likely CRT headers, moving local
-// declarations, and using pointer/reference self aliases did not fix the home.
-// Pair structs behave like int[2]; scalar chains collapse to the 0xC frame.
-// The remaining fact is one uncolored frame word: natural parameter reuse has
-// the correct physical hidden-self home but a 0xC frame, while an 8-byte value
-// aggregate restores 0x10 and moves that hidden home to the loop-index slot.
-// 4 differing displacement bytes, with 28 calls, size, and 0x10 frame exact.
-// the original reads the name length and each rule value through
-// the entry +4 constructor-parameter home. Direct parameter reuse loses one
-// LIKELY INTENT: the shipped source reused parameter a as a wire temporary;
-// the clean local form remains the smallest period-plausible source here.
-// Object audit: original and current FPO, 0x10 frame, calls, EH metadata, ABI,
-// beyond its named reused homes. No object evidence supports an alias for the
-// remaining four stack displacements.
-// It has no block records for these locals. The original has separate count,
-// and lets VC5 reuse dead homes naturally.
-// guarded do-while scans, post-increment, local declaration orders, an int
-// add parameter, casts, and one receiver alias did not change the clean 28-byte
-// this rebuild has 0x0C. rge_read receives addresses of tempIntNum and tempInt.
-// input fault context, despite the aligned call sequence and equal code size.
-// continuation: Ghidra's local roles support reusing playerID for the name and
-// list-value reads, with one count, one index, and one tempInt local. That
-// continuation: declaration order, declaration scope, for/while/do-while
-// forms, entry declarations, and scoped count locals did not improve the
-// ManagedArray, VictoryConditionRuleSystem, Waypoint, and TribeStrategy type
-// removes all prefix redefinitions. Every preceding exact owner remains exact
-// the original 0x10 frame and reduces this target from 28 differing bytes to 15. The complete
-// prefix emits the same 15-byte result, so prior function bodies add no further
-// exact finish: use tempInt for each list count. Reuse tempIntNum for the
-// name length and each serialized value. This gives the original local and
-// dead-parameter homes without an explicit alias. The result is exact.
-// Reverting any one list role swap causes five differing displacement bytes.
-// Explicit playerID reuse causes one terminator SIB difference. A broader
-// direct-role form increases the frame to 0x14. Keep the natural local form.
 
 extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern float save_game_version;
@@ -1023,80 +933,13 @@ TribeStrategyAIModule::TribeStrategyAIModule(int playerID, int infile)
     }
 }
 
-// taistrmd.cpp
-//
-//   (vptr-only, virtual dtor), VictoryConditionRuleSystem member with virtual
-//   dtor, and three IntArray members with inline delete+zero dtors. Empty
-//   derived dtor body; VC5 auto-restores the TribeStrategyAIModule vftable,
-//   destroys vcRules/idleRules/executingRules/vcRuleSet in reverse
-//   declaration order (EH states 3/2/1/0), then calls ~StrategyAIModule.
 
 void __cdecl operator delete(void* ptr);
 
 
 TribeStrategyAIModule::~TribeStrategyAIModule() {
-    // vptr restored, members and base destroyed automatically by VC5
 }
 
-// taistrmd.cpp
-//
-// binary-backed strategy module, victory-entry ownership, three ManagedArray
-// this recovered the target field access schedule without changing calls.
-// Added the full period AI virtual surface as a TU-context check; it was a
-// Replaced four manual growth copies with the matched ManagedArray operator[]
-// coverage from 24.65% to 51.63%; the 20-call sequence stayed exact.
-// Declaration initialization of the zero loop index was a duplicate. The
-// remaining structural gap starts at the entry zero-index scheduling and is
-// 78 bytes beyond the original boundary; no register-only tuning is justified.
-// claim shardA4-4E9820-r1: corrected the typed main-decision ownership so rule
-// evaluation uses md->aiPlayer at +0x1256C, while victory lookup keeps md->player.
-// moved the natural zero iterator assignment before timeout polling and exposed
-// the idle score accumulator before its action loop; size fell by 5 bytes.
-// spelled the first idle count and capacity predicates in iterator order; the
-// capacity compare moved to the original instruction shape with no size change.
-// used the idle result directly for the action execute tail; this removed the
-// redundant result copy, reduced the body to 1463 bytes, and reached 1165 diff bytes.
-// alias used by the strategy loops, so operator[] and the follow-up execute call
-// share one source-level owner.
-// the direct state spelling because it did not move the first structural hunk.
-// with 20 ordered calls, 84.88% exact-block coverage, and 11 bytes of overrun.
-// instructions. Bounded while scans recovered the original insertion CFG and
-// reduced the overrun from 67 to 11 bytes. Alias field access recovered the
-// original ManagedArray load schedule. Selected-rule reuse removed a copy that
-// the shipped scans test both the active count and capacity, then
-// shift each found entry from the following slot before clamping the count.
-// Next lead: recover the entry zero-register schedule and the remaining
-// MANAGEDARRAY AUDIT: field offsets, resize calls, growth copies, active-count
-// checks, capacity checks, shifts, and negative-count clamps match the binary
-// paths. No shared template change is required.
-// victoryConditionChangeTimeout. The rebuild reads that member first. An
-// invalid this pointer therefore faults with ESP differing by four bytes.
-// while loops. Removed their redundant positive-count wrappers. This matches
-// the target's 430-instruction CFG and removes the duplicate loop predicates.
-// Reversed the three capacity-guard operand spellings to keep count or index
-// on the CMP left, as the target does. This is behavior-preserving.
-// Reused the idleRules alias for the first capacity read. The target then uses
-// the three-byte [array+0C] load instead of a direct six-byte this-relative
-// load. These changes reduce the emitted body to the exact 1391-byte size.
-// declaration reordering, for-loop updates, short-circuit scans, and explicit
-// found labels. They changed no code or moved farther from the target.
-// +0008: target push EDI/mov EBP,0; rebuild zeroes EBX/EBP then pushes EDI.
-// issue. No changed call, ABI, layout, cleanup, or memory effect is retained.
-// guarded do/while, guarded while, and skip-label forms for both removal scans.
-// Guarded forms add 4 or 8 bytes and duplicate loop predicates. The skip-label
-// form adds 8 bytes. The target still reads each moving array pointer after its
-// positive-count test, so the pinned source has a known malformed-object fault
-// best-score initialization. They did not move the entry hunk. Reusing the
-// result local for the victory command, literal timeout reset, early victory
-// initialization, and the complete period class declaration surface were also
-// was retained.
-// the authoritative target remains 1391 bytes, 430 instructions,
-// four saved registers, one ret-4 boundary, and 20 ordered direct calls owned
-// target saves EDI, zeros EBP, then reads the timeout member. The rebuild zeros
-// EBX and EBP, reads the member, then saves EDI. This changes invalid-this fault
-// Context repair: the target inlines ManagedArray::operator[] growth in this
-// large method, while setVictoryCondition keeps that call out-of-line.
-// The shared definition and scoped inline-depth control preserve both paths.
 
 extern void* __cdecl operator new(unsigned int size);
 extern void __cdecl operator delete(void* pointer);
@@ -1457,18 +1300,6 @@ int TribeStrategyAIModule::targetNumber() const {
     return this->targetNumberValue;
 }
 
-// taistrmd.cpp
-//
-// incomplete ManagedArray declarations. It had the right rough behavior but
-// emitted the wrong operator[]/rule-system calls and crossed the boundary.
-// canonical reset: model the three +0x238/+0x248/+0x258 arrays with the exact
-// utmarray.h method signatures, the +0x268 VictoryConditionRuleSystem surface,
-// the +0xF0 main-decision owner, and reuse the incoming v parameter for each
-// adding the proven decorated operator[] override removed all four relocation
-// false positives. A focused four-way store-shape lab found that a local alias
-// for currentVictoryConditionValue is the only source spelling in this TU that
-// preserves the target's two-instruction scheduler order. A reference alias is
-// retained as the readable exact form; it has no extra behavior or calls.
 
 class TRIBE_Player;
 

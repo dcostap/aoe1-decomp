@@ -1,7 +1,6 @@
 #ifndef AOE1_TACT_DAR_H
 #define AOE1_TACT_DAR_H
 
-// Declarations owned by the tact_dar.cpp source module.
 #include "action.h"
 
 class RGE_Action_Object;

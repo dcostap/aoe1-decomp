@@ -176,7 +176,6 @@ void RGE_RMM_Object_Generator::make_placement_stack(
     }
 }
 
-// This interior cursor keeps the exact VC5 addressing form.
 unsigned char RGE_RMM_Object_Generator::to_close(
     RGE_Object_Info_Line& info_line, long x, long y)
 {
@@ -260,8 +259,6 @@ void RGE_RMM_Object_Generator::remove_area_from_lists(
     }
 }
 
-// placement gates, FPU work, and state changes. Its private setup block has a
-// reviewed register and scheduling difference.
 extern "C" void* __cdecl memset(void*, int, unsigned int);
 
 void RGE_RMM_Object_Generator::place_avoid_objects(
@@ -497,7 +494,6 @@ void RGE_RMM_Object_Generator::place_land_objects(
     }
 }
 
-// period VC5 x87 and register topology.
 void RGE_RMM_Object_Generator::place_group(
     RGE_Object_Info_Line& info, long px, long py, RGE_Player* player)
 {
@@ -547,7 +543,6 @@ void RGE_RMM_Object_Generator::place_group(
     self->deinit_stack(obj_stack);
 }
 
-// bounds, placement state, and neighbor pushes. Local liveness still differs.
 void RGE_RMM_Object_Generator::place_cluster(
     RGE_Object_Info_Line& info, long x, long y, RGE_Player* player)
 {

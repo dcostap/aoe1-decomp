@@ -6045,7 +6045,6 @@ int __cdecl StringFromGUID(_GUID* guid, unsigned short* output)
     int i;
     unsigned char* g;
 
-    // StringFromGUID reads the proven byte view of the GUID.
     g = reinterpret_cast<unsigned char*>(guid);
     *output = 0x7b;
     output = output + 1;

@@ -1,7 +1,3 @@
-// Owners are BuildAIModule methods in address and source-line order.
-// Canonical class anchors are BuildAIModule +0xF0 BuildItem, +0x1A0 list
-// length, and +0x5AC typesToIgnore. The nearby 00408820 deleting destructor
-// is compiler generated and has no standalone source owner.
 
 #include "../include/aibldmod.h"
 #include <string.h>
@@ -129,7 +125,6 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     }
 }
 
-// VC5 owns the BuildItem, ManagedArray, and AIModule cleanup.
 BuildAIModule::~BuildAIModule()
 {
     if (buildListLengthValue > 0)

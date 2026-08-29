@@ -1,4 +1,3 @@
-// The scalar deleting destructor at 0050E0A0 is compiler generated.
 
 #include "../include/tm_b_obj.h"
 #include "../include/basegame.h"

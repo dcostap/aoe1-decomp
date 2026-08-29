@@ -322,7 +322,6 @@ int __cdecl RESFILE_Decommit_Mapped_Memory(unsigned char* address, int size)
     return 0;
 }
 
-// The local declaration order and +4 stack windows are retained from the
 int __cdecl RESFILE_build_res_file(
     char* build_list_file, char* source_path, char* target_path)
 {

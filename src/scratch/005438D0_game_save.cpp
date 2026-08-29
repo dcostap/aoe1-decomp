@@ -12,14 +12,14 @@ struct RGE_Game_World {
     unsigned char g0[0x28];
     struct RGE_Map* map;                   // +0x28
     unsigned char g1[0x04];
-    short sound_num;                       // +0x2C (from ghidra: +0x2C)
+    short sound_num;                       // +0x2C
     unsigned char g2[0x02];
     RGE_Sound** sounds;                    // +0x30
     short sprite_num;                      // +0x34
     unsigned char g3[0x02];
     RGE_Sprite** sprites;                  // +0x38
     unsigned char g4[0x0C];
-    short master_player_num;               // +0x44 (from ghidra: +0x44)
+    short master_player_num;               // +0x44
     unsigned char g5[0x02];
     RGE_Master_Player** master_players;    // +0x48
     unsigned char g6[0x04];
@@ -28,7 +28,7 @@ struct RGE_Game_World {
     short terrain_size;                    // +0x52
     float** terrains;                      // +0x54
     unsigned char g7[0x0C];
-    short color_table_num;                 // +0x60 (from ghidra: +0x60)
+    short color_table_num;                 // +0x60
     unsigned char g8[0x02];
     RGE_Color_Table** color_tables;        // +0x64
 };

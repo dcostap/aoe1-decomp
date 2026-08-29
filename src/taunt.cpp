@@ -1,4 +1,3 @@
-// Authentic source module for C:\\msdev\\work\\age1_x1\\taunt.cpp.
 
 #include "../include/taunt.h"
 #include "../include/sounddrv.h"
@@ -91,8 +90,6 @@ int TTaunt::GetTauntNo(char* text) {
 }
 
 char* TTaunt::GetTauntText(int id) {
-    // The executable copies the unnamed "Taunts you!" literal
-    // at 0x00588B88. No reviewed shared provider exposes this literal.
     strcpy(this->TBuff, (const char*)0x588B88);
     return this->TBuff;
 }

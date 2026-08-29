@@ -28,7 +28,6 @@ THelpDialog::~THelpDialog()
     delete title;
 }
 
-// The unresolved geometry-home difference remains documented in the module note.
 void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text,
                              long page_id, long x_limit, long y_limit)
 {

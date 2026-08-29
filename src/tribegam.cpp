@@ -148,7 +148,6 @@ extern MouseClickInfo Tribe2btnMouseLeftClickTable[40];
 extern int Tribe2btnMouseRightClickTableSize;
 extern int Tribe2btnMouseLeftClickTableSize;
 
-// The VC5 SDK headers do not publish this Video for Windows record.
 struct ICINFO {
     unsigned long dwSize;
     unsigned long fccType;

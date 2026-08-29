@@ -1,4 +1,3 @@
-// Definitions follow source lines 44 through 145.
 
 #include "../include/Pnl_scr.h"
 

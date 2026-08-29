@@ -1,8 +1,3 @@
-// Authentic source module for C:\\msdev\\work\\age1_x1\\tact_lst.cpp.
-//
-// The four normal owners are all retained in this module. The scalar
-// deleting destructor for TRIBE_Action_List is compiler generated and has no
-// handwritten source owner.
 
 #include "../include/tact_lst.h"
 

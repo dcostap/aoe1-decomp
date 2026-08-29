@@ -1,7 +1,3 @@
-// Authentic C++ source module for C:\\msdev\\work\\age1_x1\\rmm_clif.cpp.
-//
-// generate_cliff, check_for_valid_cliff_site, invalidate_cliff_area.
-// The 00482081 block between the last two owners is padding-only and has no
 
 #include "../include/rmm_clif.h"
 #include "../include/map.h"

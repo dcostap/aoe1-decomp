@@ -1,8 +1,6 @@
 #ifndef TAISTRMD_H
 #define TAISTRMD_H
 
-// Declarations for the original taistrmd.cpp source module.
-// module constructors and methods.
 
 #include "aivcrule.h"
 #include "aistrmod.h"

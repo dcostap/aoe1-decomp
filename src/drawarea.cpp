@@ -2306,7 +2306,6 @@ void TDrawArea::take_snapshot(char* name, int& number)
     int file;
     while (1) {
         if (name == 0) {
-            // No reviewed provider exposes this literal to this TU.
             sprintf(BMPFile, (char*)0x5845e4, number);
         }
         else {

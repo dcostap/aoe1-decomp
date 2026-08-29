@@ -1,10 +1,3 @@
-//
-//
-// owner, and exact anchors establish this as one authentic translation unit.
-// Exact anchors are 004CF090, 004CF130, 004CF1C0, 004CF240, 004CF300,
-// their canonical inherited owners in this module.
-// The scalar deleting destructor at 004CF100 is compiler-generated from the
-// virtual class surface. It has no handwritten owner.
 
 #include "../include/m_co_obj.h"
 #include "../include/tact_hnt.h"

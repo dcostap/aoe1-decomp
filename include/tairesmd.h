@@ -4,9 +4,6 @@
 #include "aimodule.h"
 #include "airesitm.h"
 
-// Authentic declaration surface for C:\\msdev\\work\\age1_x1\\tairesmd.cpp.
-// The module contains two TribeResourceAIModule constructors and its virtual
-// destructor before the remaining helpers.
 
 class TribeMainDecisionAIModule;
 

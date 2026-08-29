@@ -1,6 +1,3 @@
-// Authentic source module for C:\\msdev\\work\\age1_x1\\TACTION.cpp.
-//
-// handwritten owner in this module.
 
 #include "../include/taction.h"
 

@@ -1,5 +1,3 @@
-// Authentic source module for C:\\msdev\\work\\age1_x1\\tcommand.cpp.
-// The vector deleting destructor at 00509740 is compiler-generated.
 
 #include "../include/tcommand.h"
 #include <windows.h>

@@ -1,7 +1,6 @@
 #ifndef AOE1_TACT_HEA_H
 #define AOE1_TACT_HEA_H
 
-// Declarations owned by the tact_hea.cpp source module.
 #include "action.h"
 
 class RGE_Action_Object;

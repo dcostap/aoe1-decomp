@@ -1,4 +1,3 @@
-/* Authentic C++ source module for C:\\msdev\\work\\age1_x1\\rge_fio.cpp. */
 
 #include "../include/rge_fio.h"
 
@@ -27,7 +26,6 @@ extern "C" int __cdecl deflate_data(void* state, void* source, int size,
                                     int flush);
 extern "C" void __cdecl deflate_deinit(void* state);
 
-// These data names are the reviewed addresses used by the original module.
 extern int DAT_0086b25c;
 extern int DAT_0086b260;
 extern unsigned char DAT_0086b264;

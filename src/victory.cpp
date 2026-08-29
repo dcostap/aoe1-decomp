@@ -1,4 +1,3 @@
-// Authentic complete owner for C:\\msdev\\work\\age1_x1\\victory.cpp.
 #include "../include/victory.h"
 #include "../include/rge_fio.h"
 #include "../include/player.h"

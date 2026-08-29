@@ -24,8 +24,6 @@ extern float g_time;
 extern float g_cut1;
 extern float g_cut2;
 
-// The shipped constructor stores the derived vptr at +0x155,
-// after field initialization. VC5 emits that store at +0xF7 here.
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     void* p1, int p2, char* p3, TRIBE_Player* player, char* p5, char* p6,
     char* p7)
@@ -102,8 +100,6 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     memset(this->tributeGiven, 0, 36);
 }
 
-// The shipped load constructor stores its derived vptr at +0x114,
-// after field initialization. VC5 emits that store at +0xEA here.
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     int p1, char* p2, TRIBE_Player* p3, int file)
     : MainDecisionAIModule(p1, p3, file),
@@ -173,7 +169,6 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     }
 }
 
-// The natural virtual destructor matched in the standalone context.
 TribeMainDecisionAIModule::~TribeMainDecisionAIModule()
 {
 }

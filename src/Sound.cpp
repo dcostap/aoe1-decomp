@@ -1,4 +1,3 @@
-/* Authentic C++ source module for C:\\msdev\\work\\age1_x1\\Sound.cpp. */
 #include "../include/sound.h"
 #include "../include/rge_fio.h"
 #include <stdio.h>

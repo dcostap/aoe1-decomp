@@ -1,12 +1,6 @@
 #ifndef AOE1_RMM_ELEV_H
 #define AOE1_RMM_ELEV_H
 
-// Owner surface for C:\\msdev\\work\\age1_x1\\rmm_elev.cpp.
-//
-// The complete record layouts come from the original CodeView type records:
-// RGE_Elevation_Info_Line is 0x18 bytes, RGE_Elevation_Hot_Spots is 0x10
-// bytes, and RGE_Elevation_Info is 0xF80 bytes.  The generator owns one
-// RGE_Elevation_Info at +0x30 after RGE_Random_Map_Module.
 
 #include "rmm_base.h"
 

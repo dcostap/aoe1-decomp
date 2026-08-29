@@ -1,4 +1,3 @@
-// The vector-deleting destructor at 00412B80 is compiler generated.
 
 #include "../include/aitacmod.h"
 

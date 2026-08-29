@@ -1,4 +1,3 @@
-// The nearby 004E6B80 scalar deleting destructor is compiler-generated.
 
 #include "../include/tairesmd.h"
 #include "../include/taimdmd.h"
@@ -8,8 +7,6 @@ extern const char s_Resource_AI[];
 void rge_read(int handle, void* buffer, int size);
 extern "C" void __cdecl rge_write(int file_handle, void* data, int size);
 
-// Both members are initialized in the initializer list. VC5 then
-// emits the derived vtable store after the member stores, matching the binary.
 TribeResourceAIModule::TribeResourceAIModule(void* param_1, int param_2,
                                              int param_3, int param_4,
                                              int param_5, int param_6)

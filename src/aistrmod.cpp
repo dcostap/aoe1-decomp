@@ -1,4 +1,3 @@
-// The vector-deleting destructor at 00412B20 is compiler generated.
 
 #include "../include/aistrmod.h"
 

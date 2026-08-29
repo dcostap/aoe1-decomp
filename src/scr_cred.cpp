@@ -1,6 +1,3 @@
-// scr_cred.cpp
-// The source owns all sixteen normal functions in this compiland.
-// The deleting destructors at 00492950 and 00492F50 are compiler generated.
 
 #include "../include/scr_cred.h"
 #include "../include/music.h"

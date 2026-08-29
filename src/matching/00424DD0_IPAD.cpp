@@ -1,8 +1,3 @@
-// The body is 00424DD0-00424E21; 00424E22 starts padding before
-// RGE_Communications_Addresses::pIPAD owns 0xA0-byte IPAD records:
-// DottedIPAddress is at +0x00 and Alias is at +0x20.
-// Both fields use natural empty string literals. VC5 inlines
-// strcpy here, so the body has no direct calls.
 
 #include <string.h>
 

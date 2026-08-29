@@ -26,9 +26,6 @@ unsigned char RGE_RMM_Land_Generator::generate() {
     return 1;
 }
 
-//
-// The executable computes octogon bounds but scans only the
-// +/-2 neighborhood. The named bounds remain part of the source model.
 unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
     unsigned char target, unsigned char land_id, long x, long y)
 {

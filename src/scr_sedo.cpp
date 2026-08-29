@@ -1,4 +1,3 @@
-// Authentic complete owner for C:\\msdev\\work\\age1_x1\\scr_sedo.cpp.
 
 #include "../include/scr_sedo.h"
 #include "../include/main.h"

@@ -1,6 +1,3 @@
-// Authentic source module for C:\\msdev\\work\\age1_x1\\effects.cpp.
-//
-// two constructors. It is not a handwritten source owner.
 
 #include "../include/effects.h"
 #include "../include/player.h"

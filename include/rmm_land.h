@@ -1,11 +1,6 @@
 #ifndef RMM_LAND_H
 #define RMM_LAND_H
 
-// Owner declarations for C:\\msdev\\work\\age1_x1\\rmm_land.cpp.
-// Map, tile, stack, and random-map base ownership comes from canonical
-// headers. This header owns only the Land records and generator surface.
-//
-// chance 146-208, and base_land_generate 213-353.
 
 #include "rmm_base.h"
 

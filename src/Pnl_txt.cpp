@@ -86,8 +86,6 @@ TTextPanel::~TTextPanel()
         DeleteObject(this->clip_rgn2);
         this->clip_rgn2 = 0;
     }
-    // No explicit TPanel::~TPanel() call — VC5 auto-generates it.
-    // An explicit call creates a duplicate call before eh_state = -1.
 }
 
 long TTextPanel::setup(TDrawArea* draw, TPanel* parent, long x, long y, long w, long h,

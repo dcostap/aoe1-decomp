@@ -1,4 +1,3 @@
-// The nearby vector-deleting destructor is compiler-generated.
 
 #include "../include/pnl_dlg.h"
 

@@ -1,5 +1,3 @@
-//
-// The scalar deleting destructor at 004D26E0 is compiler-generated and has no
 
 #include "../include/game_globals.h"
 #include "../include/rge_fio.h"
@@ -80,10 +78,6 @@ void TRIBE_Action_Trade::first_in_stack(unsigned char param_1)
     this->set_state(3);
 }
 
-// The original is an EH-framed switch.  The high object slots
-// are represented by the reviewed virtual surface in tact_trd.h.
-// Case-local Move_To results preserve the two constructor-result
-// handoffs and the original action-list call order.
 void TRIBE_Action_Trade::set_state(unsigned char param_1)
 {
     this->sub_actions->delete_list();

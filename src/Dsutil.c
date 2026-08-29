@@ -1,4 +1,3 @@
-/* Authentic C source module for C:\\msdev\\work\\age1_x1\\Dsutil.c. */
 #include "../include/dsutil.h"
 
 typedef struct SNDOBJ SNDOBJ;

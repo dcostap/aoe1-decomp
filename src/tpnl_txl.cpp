@@ -1,8 +1,3 @@
-//
-// Context gate:
-// - Address sequence: proved as 00520D70, 00520E30, and 00520ED0.
-// - Exact anchors: proved by the constructor, set_info, and draw symbols,
-//   their direct calls, and the shared TPanel/TRIBE_Panel_Text_Line layouts.
 
 #include "../include/tpnl_txl.h"
 #include <string.h>

@@ -1,5 +1,3 @@
-// The handwritten owners follow the original source-line order.
-// The vector-deleting destructor is compiler generated.
 
 #include "../include/scr_sing.h"
 #include "../include/scr_mps.h"

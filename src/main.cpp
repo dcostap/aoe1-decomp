@@ -1,11 +1,3 @@
-// RGE_Prog_Info and TRIBE_Game ownership model.  The source now names every
-// initialized field and uses the observed virtual calls and delete path.
-// called for a zero result, followed by the final get_error_code.
-// the original zero register and stack-home schedule.
-// is local parameter scheduling plus one delayed zone GUID dword.
-// use_wave_music until after the scroll values, and retain use_dir_draw=1.
-// assignment permutations and late aliases did not reproduce the final order.
-// four remaining bytes. Reverting that one change restored the 4-byte diff.
 
 #include <stdio.h>
 #include <string.h>

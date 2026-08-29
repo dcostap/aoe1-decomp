@@ -1,6 +1,3 @@
-// Authentic source module for C:\\msdev\\work\\age1_x1\\taicrule.cpp.
-//
-// a handwritten source owner.
 
 #include "../include/taicrule.h"
 #include "../include/game_globals.h"

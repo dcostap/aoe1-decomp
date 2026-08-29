@@ -1,8 +1,3 @@
-//
-// RGE_Combat_Object inherits the reviewed RGE_Action_Object
-// surface. Its combat state starts at +0x194 and ends at +0x1C4.
-// The compiler-generated vector deleting destructor at 0042F9C0 has no
-// handwritten source owner.
 
 #include "../include/com_obj.h"
 #include "../include/act_atak.h"

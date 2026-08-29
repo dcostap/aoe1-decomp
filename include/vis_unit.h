@@ -1,8 +1,6 @@
 #ifndef AOE1_VIS_UNIT_H
 #define AOE1_VIS_UNIT_H
 
-// Owner declarations for C:\\msdev\\work\\age1_x1\\vis_unit.cpp.
-// layouts remain in their own owner headers.
 
 class RGE_Player;
 class RGE_Static_Object;

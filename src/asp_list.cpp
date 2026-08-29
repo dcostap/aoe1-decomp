@@ -1,5 +1,3 @@
-// Authentic source module for C:\\msdev\\work\\age1_x1\\asp_list.cpp.
-// The compiler emits the nearby vector-deleting destructor at 0041A660.
 
 #include "../include/asp_list.h"
 #include "../include/sprite.h"

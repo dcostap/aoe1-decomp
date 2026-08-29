@@ -1,12 +1,3 @@
-// Authentic source module for C:\\msdev\\work\\age1_x1\\tvw_main.cpp.
-// this one compiler-facing source file.  The original executable is the
-// behavior oracle; nonexact bodies remain documented below.
-//
-//
-// The nearby 00495470/00495490 destructor entries are compiler-generated.
-//
-// has a 1203-byte strict difference. 0052D600 and 0052D970 remain accepted
-// normal bodies are exact in the grouped module check.
 
 #include "../include/basegame.h"
 #include "../include/main.h"

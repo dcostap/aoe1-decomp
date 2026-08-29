@@ -149,7 +149,6 @@ void TRIBE_Action_Build::set_state(unsigned char param_1)
     }
 }
 
-// The direct checker reports four strict bytes. The rebuilt
 unsigned char TRIBE_Action_Build::update()
 {
     float work;
@@ -303,7 +302,6 @@ int TRIBE_Action_Build::move_to(RGE_Static_Object* obj,
     return 1;
 }
 
-// The direct checker reports nine strict bytes in the owner-id
 int TRIBE_Action_Build::work(RGE_Static_Object* target,
                              float param_2, float param_3, float param_4) {
     if (target != 0 && target->owner->id == this->obj->owner->id) {

@@ -124,7 +124,6 @@ TribeSelectTribeScreen::TribeSelectTribeScreen()
         this->pnl_hgt * 0x3C / 0x1E0,
         font->font, font->font_wid, font->font_hgt,
         0, 0, 0, 0, 0, 0, "");
-    // The original call pushes alignment values 6 then 3.
     this->tribeText->set_alignment(TTextPanel::AlignTop,
                                    TTextPanel::AlignWordwrap);
 

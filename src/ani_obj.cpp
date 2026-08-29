@@ -1,4 +1,3 @@
-// Authentic source module for C:\\msdev\\work\\age1_x1\\ani_obj.cpp.
 
 #include "../include/ani_obj.h"
 #include "../include/asp_list.h"
@@ -6,8 +5,6 @@
 #include "../include/rge_fio.h"
 #include "../include/world.h"
 
-// The compiler-generated scalar deleting destructor is adjacent
-// at 0041A1E0 and is not a handwritten source owner.
 RGE_Animated_Object::RGE_Animated_Object(
     RGE_Master_Animated_Object* master, RGE_Player* player,
     float x, float y, float z, int do_setup)

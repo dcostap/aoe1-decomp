@@ -1,7 +1,6 @@
 #ifndef UTMARRAY_H
 #define UTMARRAY_H
 
-// exact utmarray.h functions at 00408D20, 004147A0, 004DE980, 004DE9D0,
 
 extern "C" void* __cdecl operator_new(unsigned int size);
 extern "C" void __cdecl operator_delete(void* ptr);

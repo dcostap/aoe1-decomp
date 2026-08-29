@@ -105,7 +105,6 @@ public:
     virtual short get_facetindex(RGE_Sprite* param_1, short param_2);
 
 protected:
-    // FPO identifies load_node as protected (MAE), not public (UAE).
     virtual unsigned char load_node(int param_1, unsigned char param_2,
                                     RGE_Sprite** param_3);
 

@@ -14,9 +14,6 @@
 
 extern float save_game_version;
 
-// Authentic source module for C:\\msdev\\work\\age1_x1\\tact_mob.cpp.
-//
-// The module uses the canonical tribal master-object build-time field.
 
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int param_1, RGE_Action_Object* param_2)
     : RGE_Action(param_1, param_2, 1)
@@ -33,8 +30,6 @@ TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(int param_1, RGE_Action_Object* par
     }
 }
 
-// The disambiguated constructor still differs by 31 bytes in its natural
-// register and field-width schedule.
 TRIBE_Action_Make_Obj::TRIBE_Action_Make_Obj(RGE_Action_Object* obj,
                                              short obj_id,
                                              int unique_id,

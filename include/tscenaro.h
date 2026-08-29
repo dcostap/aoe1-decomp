@@ -1,7 +1,6 @@
 #ifndef AOE1_TSCENARO_H
 #define AOE1_TSCENARO_H
 
-// Declarations for the tscenaro.cpp source module.
 
 #include "scenario.h"
 

@@ -1,5 +1,3 @@
-// Authentic com_sync.cpp owner sequence.
-//
 
 #include "../include/com_hand.h"
 #include "../include/debuglog.h"

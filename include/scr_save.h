@@ -1,9 +1,6 @@
 #ifndef AOE1_SCR_SAVE_H
 #define AOE1_SCR_SAVE_H
 
-// TribeSaveGameScreen is the only class owned by this header. It owns all five
-// control, drawing, shape, picture, and game-owner surfaces come from their
-// canonical owners.
 #include "pnl_dlg.h"
 #include "panel_ez.h"
 #include "Pnl_scr.h"

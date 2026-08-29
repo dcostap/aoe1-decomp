@@ -12,12 +12,6 @@ class RGE_Sprite;
 class RGE_Static_Object;
 class TDrawArea;
 
-// tm_b_obj.cpp owns this building-master extension.
-// (0x164 bytes) and this class for type 'P' (0x17C bytes).
-// Do not replace these direct targets with Fish or Projectile classes.
-// Base slots keep check_placement at +0x20, alignment at +0x24, and draw at
-// +0x34. TRIBE_Master_Combat_Object keeps create_task_list at +0x38. The
-// five-argument factory therefore occupies the proven +0x3C slot.
 class TRIBE_Master_Building_Object : public TRIBE_Master_Combat_Object {
 public:
     TRIBE_Master_Building_Object(TRIBE_Master_Building_Object*, int);

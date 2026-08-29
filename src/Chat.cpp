@@ -1,4 +1,3 @@
-// Authentic Chat.cpp source module.
 
 #include "../include/chat.h"
 #include "../include/basegame.h"

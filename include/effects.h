@@ -1,7 +1,6 @@
 #ifndef AOE1_EFFECTS_H
 #define AOE1_EFFECTS_H
 
-// Binary-proven record widths are 0x0C and 0x2C.
 struct RGE_Effect_Command {
     unsigned char command;
     short change_num1;

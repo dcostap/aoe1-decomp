@@ -1,9 +1,3 @@
-// Authentic source module for C:\\msdev\\work\\age1_x1\\tact_wnd.cpp.
-// destructor is compiler generated and has no handwritten source owner.
-//
-// The destructor, set_state, and update remain held. The canonical Base Game
-// header does not publish the two countdown helper declarations that they
-// call. No local Base Game layout or method shim is added.
 
 #include "../include/tact_wnd.h"
 #include "../include/act_list.h"

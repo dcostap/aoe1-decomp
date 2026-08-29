@@ -8,9 +8,6 @@ class RGE_Game_World;
 class RGE_Map;
 class RGE_Moving_Object;
 
-// Owner surface for C:\\msdev\\work\\age1_x1\\pathsys.cpp. Foreign game
-// classes stay in their canonical owner headers. The source module includes
-// those owners when it needs complete field or call declarations.
 
 typedef unsigned char uchar;
 typedef unsigned int uint;

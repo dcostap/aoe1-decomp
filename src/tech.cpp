@@ -17,7 +17,6 @@ void __cdecl getstring(char** destination, char* source);
 void __cdecl rge_read(int file, void* data, int size);
 void __cdecl rge_write(int file, void* data, int size);
 
-// Contribution: 0050B840-0050D456.
 
 TRIBE_Tech::TRIBE_Tech(int file, TRIBE_World* world_arg)
 {

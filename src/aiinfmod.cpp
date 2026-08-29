@@ -1,4 +1,3 @@
-// The scalar deleting destructor at 0040CDC0 is compiler generated and has no
 
 #include "../include/aiinfmod.h"
 

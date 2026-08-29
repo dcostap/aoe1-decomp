@@ -1,4 +1,3 @@
-/* Authentic C++ source module for C:\\msdev\\work\\age1_x1\\dpl_obj.cpp. */
 
 #include "../include/dpl_obj.h"
 #include "../include/ani_obj.h"

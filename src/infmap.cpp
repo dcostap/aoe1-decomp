@@ -423,7 +423,6 @@ int InfluenceMap::setConnectionCount(const XYPoint& from, const XYPoint& to,
                         switch (direction) {
                         case 0:
                             --neighborX;
-                            // VC5 merges this suffix with case 7.
                             --neighborY;
                             break;
                         case 1:

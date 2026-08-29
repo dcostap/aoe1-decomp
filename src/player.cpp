@@ -935,7 +935,6 @@ void RGE_Player::update() {
         this->set_game_status(2);
     }
 
-    // Line 1251: clear per-update checksum flag before VR_List processing
     this->checksum_created_this_update = 0;
 
     // Line 1251-1252: if VR_List exists, process new tiles
