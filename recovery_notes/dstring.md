@@ -12,11 +12,13 @@ The source keeps the required DString call-identity overrides only.
 
 ## Status
 
-The direct source reports `MATCH` and `0.0000%` for 21 registered owners.
+The direct source reports `MATCH` and `0.0000%` for 41 registered owners.
 These include the constructors, string accessors, word helpers, conversion
 helpers, case-copy helpers, and DKeyString owners.
 
 `00447420 uppercase` and `004474E0 lowercase` are scratch. The canonical
 `<ctype.h>` declarations cause two bytes of direct code drift in each owner.
-The other 27 unresolved owners remain scratch. Do not restore copied stream
-layouts or manual CRT declarations to promote them.
+The other nine unresolved owners remain scratch. A shared-worktree trial proved
+`00446D30 operator char*` exact after the tools learned its VC5 conversion-
+operator symbol. Do not restore copied stream layouts or manual CRT declarations
+to promote the remaining functions.
