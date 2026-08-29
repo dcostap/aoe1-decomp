@@ -265,7 +265,20 @@ class TranslationUnitTests(unittest.TestCase):
         issues = validate_translation_units([group])
 
         missing = [issue for issue in issues if issue.code == "missing-exact-symbol"]
-        self.assertEqual(2, len(missing))
+        self.assertEqual(
+            {
+                "0052A990",
+                "0052A9F0",
+                "0052AA80",
+                "0052AAC0",
+                "0052AB90",
+                "0052AF20",
+            },
+            {
+                issue.message.split(" owner ", 1)[1].split(" ", 1)[0]
+                for issue in missing
+            },
+        )
 
     def test_manifest_validation_checks_configured_symbols_in_grouped_object(self) -> None:
         object_path = REPO_ROOT / "build" / "obj" / "tu_tscenaro.obj"
