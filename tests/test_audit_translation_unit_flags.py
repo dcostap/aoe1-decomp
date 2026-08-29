@@ -113,6 +113,113 @@ class TranslationUnitFlagAuditTests(unittest.TestCase):
         self.assertIn("incompatible_custom_overlay", codes)
         self.assertEqual(report["summary"]["current_translation_unit_count"], 1)
         self.assertEqual(report["summary"]["proposed_module_count"], 1)
+        self.assertEqual(report["summary"]["blocking_issue_count"], 1)
+
+    def test_proposed_error_does_not_block_current_translation_units(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            flags = root / "config" / "flags"
+            flags.mkdir(parents=True)
+            (flags / "default.rsp").write_text("/nologo /c /O2 /Oy\n", encoding="utf-8")
+            (flags / "default_gx.rsp").write_text(
+                "/nologo /c /O2 /Oy /GX\n", encoding="utf-8"
+            )
+            wrapper = root / "src" / "demo_tu.cpp"
+            owner_a = root / "src" / "00100000_alpha.cpp"
+            owner_b = root / "src" / "00100010_beta.cpp"
+            wrapper.parent.mkdir(parents=True)
+            wrapper.write_text("", encoding="utf-8")
+            owner_a.write_text("", encoding="utf-8")
+            owner_b.write_text("", encoding="utf-8")
+            (flags / "00100000_alpha.rsp").write_text(
+                "/nologo /c /O2 /Oy /GX\n", encoding="utf-8"
+            )
+
+            records = [
+                _record("00100000", "00100000_alpha", "alpha", str(owner_a)),
+                _record("00100010", "00100010_beta", "beta", str(owner_b)),
+            ]
+            source_map = {
+                "00100000": _source_row("00100000"),
+                "00100010": _source_row("00100010"),
+            }
+            groups = [
+                {
+                    "name": "demo",
+                    "source": "src/demo_tu.cpp",
+                    "flags": "config/flags/default_gx.rsp",
+                    "owners": {
+                        "00100000": "src/00100000_alpha.cpp",
+                        "00100010": "src/00100010_beta.cpp",
+                    },
+                }
+            ]
+            needs = {
+                "00100000": {"eh": False, "frame_pointer": False, "frame_size": None, "evidence": {}},
+                "00100010": {"eh": False, "frame_pointer": False, "frame_size": None, "evidence": {}},
+            }
+
+            report = audit_translation_units(
+                groups=groups,
+                records=records,
+                source_map=source_map,
+                original_needs=needs,
+                root=root,
+            )
+
+        proposed_issue = next(
+            issue
+            for issue in report["issues"]
+            if issue["code"] == "incompatible_custom_overlay"
+        )
+        self.assertEqual(proposed_issue["severity"], "error")
+        self.assertTrue(proposed_issue["scope"].startswith("proposed:"))
+        self.assertEqual(report["summary"]["blocking_issue_count"], 0)
+
+    def test_current_error_still_blocks_translation_units(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            flags = root / "config" / "flags"
+            flags.mkdir(parents=True)
+            (flags / "default.rsp").write_text("/nologo /c /O2 /Oy\n", encoding="utf-8")
+            wrapper = root / "src" / "demo_tu.cpp"
+            owner = root / "src" / "00100000_alpha.cpp"
+            wrapper.parent.mkdir(parents=True)
+            wrapper.write_text("", encoding="utf-8")
+            owner.write_text("", encoding="utf-8")
+            (flags / "00100000_alpha.rsp").write_text(
+                "/nologo /c /O2 /Oy /GX\n", encoding="utf-8"
+            )
+
+            report = audit_translation_units(
+                groups=[
+                    {
+                        "name": "demo",
+                        "source": "src/demo_tu.cpp",
+                        "flags": "config/flags/default.rsp",
+                        "owners": {"00100000": "src/00100000_alpha.cpp"},
+                    }
+                ],
+                records=[_record("00100000", "00100000_alpha", "alpha", str(owner))],
+                source_map={"00100000": _source_row("00100000")},
+                original_needs={
+                    "00100000": {
+                        "eh": False,
+                        "frame_pointer": False,
+                        "frame_size": None,
+                        "evidence": {},
+                    }
+                },
+                root=root,
+            )
+
+        current_issue = next(
+            issue
+            for issue in report["issues"]
+            if issue["code"] == "stale_per_function_exception"
+        )
+        self.assertEqual(current_issue["scope"], "current:demo")
+        self.assertEqual(report["summary"]["blocking_issue_count"], 1)
 
     def test_audit_checks_language_eh_and_frame_against_original(self) -> None:
         with tempfile.TemporaryDirectory() as temp:

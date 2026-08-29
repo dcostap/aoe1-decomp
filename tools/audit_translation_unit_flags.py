@@ -769,7 +769,12 @@ def audit_translation_units(
             "proposed_module_count": len(proposed_units),
             "issue_count": len(issues),
             "issue_counts": dict(sorted(counts.items())),
-            "blocking_issue_count": sum(1 for issue in issues if issue["severity"] == "error"),
+            "blocking_issue_count": sum(
+                1
+                for issue in issues
+                if issue["severity"] == "error"
+                and not str(issue.get("scope") or "").startswith("proposed:")
+            ),
         },
         "current_translation_units": current_units,
         "proposed_translation_units": proposed_units,
