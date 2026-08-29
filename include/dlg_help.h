@@ -8,7 +8,7 @@
 #include "pnl_lst.h"
 #include "basegame.h"
 
-typedef int (__stdcall *GDI_WinHelpA)(int, char*, unsigned int, char*);
+typedef int (__stdcall *GDI_WinHelpA)(HWND, char*, unsigned int, char*);
 extern GDI_WinHelpA _WinHelpA;
 
 class THelpDialog : public TDialogPanel {

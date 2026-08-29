@@ -31,9 +31,9 @@ The old wrapper, context header, and six per-function source files are removed.
 The direct translation-unit registry points to `src/dlg_help.cpp`. The unresolved
 `setup_help` body remains in the direct source with its scratch status.
 
-The four dialog child pointers use unions with the proven `TTextPanel`,
-`TButtonPanel`, and destructor member surfaces. This preserves the measured
-`THelpDialog` size and the observed destruction order without manual vptr code.
+The four dialog child pointers use the proven `TTextPanel` and `TButtonPanel`
+member types. This preserves the measured `THelpDialog` size and the observed
+destruction order without manual vptr code.
 
 ## Validation and regressions
 
@@ -57,3 +57,18 @@ The four dialog child pointers use unions with the proven `TTextPanel`,
   spill without unsupported compiler steering.
 
 The scalar deleting destructor is generated and is not a normal source owner.
+
+## Grouped compile debt
+
+The destructor now uses the four source-owned fields proved by the binary:
+`ok_button`, `encyclopedia_button`, `list`, and `title`, in that destruction
+order. The geometry call uses the inherited `max_wid` and `max_hgt` fields at
+the binary-proved `TPanel` offsets `+0xB0` and `+0xB8`. The help API declaration
+uses a pointer-sized window handle.
+
+The candidate compile reaches only protected `RGE_Base_Game::prog_window` at
+source line 136. The central access agent must add the evidence-backed
+`RGE_Base_Game` friend relation for `THelpDialog`. Do not replace this read
+with a wrapper, raw offset, or unrelated global state. No `basegame.h` change
+was made here. Representative registered-owner checks remain blocked by this
+relation.

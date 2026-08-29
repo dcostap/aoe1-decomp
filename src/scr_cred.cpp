@@ -16,13 +16,12 @@ extern "C" __declspec(dllimport) unsigned int __stdcall GetPaletteEntries(
     void* hpal, unsigned int start, unsigned int count,
     tagPALETTEENTRY* entries);
 
-extern "C" unsigned long __cdecl debug_timeGetTime(char*, int);
-
 extern char s_scr_cred_draw_005862e0[];
 
+// Keep the module's original declaration order while the shared header owns
+// the storage types and definitions.
 extern float DAT_00572968;
 extern float DAT_0057297c;
-
 extern float DAT_0086b290;
 extern unsigned int DAT_0086b294;
 extern int DAT_0086b298;

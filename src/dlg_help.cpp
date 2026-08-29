@@ -27,10 +27,10 @@ THelpDialog::THelpDialog(TEasy_Panel* parent, char* name, char* text,
 // 0043E950 THelpDialog::~THelpDialog (dlg_help.cpp:76-88)
 THelpDialog::~THelpDialog()
 {
-    delete member_obj3;
-    delete member_obj4;
-    delete member_obj2;
-    delete member_obj1;
+    delete ok_button;
+    delete encyclopedia_button;
+    delete list;
+    delete title;
 }
 
 // 0043E9E0 THelpDialog::setup_help (dlg_help.cpp:94-185)
@@ -81,7 +81,7 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text,
         if (y < 0) y = 0;
 
         this->set_fixed_position(dialog_x, y, 0x154, panel_height);
-        this->set_ideal_size(this->field_B0, this->field_B8);
+        this->set_ideal_size(this->max_wid, this->max_hgt);
         this->list->set_fixed_position(10, 10, 0x14a,
                                        line_count * rge_text_font->font_hgt);
 
@@ -133,7 +133,7 @@ long THelpDialog::action(TPanel* panel, long command, unsigned long param_3,
             panel_system.setCurrentPanel(this->parent_panel, 0);
             panel_system.destroyPanel("Help Dialog");
 
-            int prog_window = rge_base_game->prog_window;
+            HWND prog_window = rge_base_game->prog_window;
             char* help_topic = this->get_string(help_page_id);
             _WinHelpA(prog_window, "empires.hlp", 0x101, help_topic);
             return 1;

@@ -82,3 +82,23 @@ compiled all sixteen normal owners. All fourteen exact owners report `MATCH`,
 The accepted-drift owner `00492FB0` remains observed. Its grouped result has
 84 differing bytes. The scratch owner `00493160` remains observed with 614
 differing bytes. Neither result changes its reviewed status.
+
+## Grouped compile debt
+
+The canonical global header now owns the credits palette state with the types
+proved by `RGE_fade_palette_start`: two 256-entry `PALETTEENTRY` tables, the
+fade fields, and the active `TDrawArea*`. The module keeps matching declaration
+order for VC5 context. The module no longer redeclares
+`debug_timeGetTime` with C linkage. `basegame.h` owns its C++ declaration and
+the `?debug_timeGetTime@@YAKPADH@Z` symbol.
+
+The candidate compile reaches only protected `RGE_Base_Game` access errors:
+
+- `TRIBE_Credits_Screen` needs `draw_area` at source line 62.
+- `TRIBE_Credits_Screen` needs `music_system` at source lines 105 and 127.
+- `TRIBE_Credits_Screen` needs `save_paused` at source line 289.
+
+The central access agent must add the evidence-backed `RGE_Base_Game` friend
+relation for `TRIBE_Credits_Screen`. Do not replace these reads with wrappers,
+raw offsets, or unrelated global state. No `basegame.h` change was made here.
+Representative registered-owner checks remain blocked by this relation.

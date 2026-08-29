@@ -8,6 +8,7 @@
 
 class RGE_Base_Game;
 class RGE_Static_Object;
+class TDrawArea;
 class Visible_Unit_Manager;
 class LOSTBL;
 class VC_LOG;
@@ -1782,32 +1783,30 @@ extern unsigned int DAT_0086b278;
 extern unsigned int DAT_0086b27c;
 // 0086B280 [.data]
 extern unsigned int DAT_0086b280;
+// Credits-screen palette state. The binary uses two contiguous 256-entry
+// PALETTEENTRY tables and stores the active draw area as a pointer.
+// 0086B290 [.data]
+extern float DAT_0086b290;
 // 0086B294 [.data]
 extern unsigned int DAT_0086b294;
 // 0086B298 [.data]
-extern unsigned int DAT_0086b298;
+extern int DAT_0086b298;
 // 0086B29C [.data]
-extern unsigned int DAT_0086b29c;
+extern int DAT_0086b29c;
+// 0086B2A0 [.data]
+extern int DAT_0086b2a0;
+// 0086B2A4 [.data]
+extern unsigned char DAT_0086b2a4;
+// 0086B2A8 [.data]
+extern tagPALETTEENTRY DAT_0086b2a8;
 // 0086B2AC [.data]
 extern float DAT_0086b2ac;
 // 0086B2B0 [.data]
-extern unsigned char DAT_0086b2b0;
-// 0086B2B1 [.data]
-extern unsigned char DAT_0086b2b1;
-// 0086B2B2 [.data]
-extern unsigned char DAT_0086b2b2;
-// 0086B2B3 [.data]
-extern unsigned char DAT_0086b2b3;
+extern tagPALETTEENTRY DAT_0086b2b0[256];
 // 0086B6B0 [.data]
-extern unsigned char DAT_0086b6b0;
-// 0086B6B1 [.data]
-extern unsigned char DAT_0086b6b1;
-// 0086B6B2 [.data]
-extern unsigned char DAT_0086b6b2;
-// 0086B6B3 [.data]
-extern unsigned char DAT_0086b6b3;
+extern tagPALETTEENTRY DAT_0086b6b0[256];
 // 0086BAB0 [.data]
-extern unsigned int DAT_0086bab0;
+extern TDrawArea* DAT_0086bab0;
 // 0086BC08 [.data]
 extern float DAT_0086bc08;
 // 0086BC8C [.data]
