@@ -15,7 +15,6 @@
 #include <stdio.h>
 
 extern RGE_Base_Game* rge_base_game;
-extern int SDI_Object_ID;
 
 TRIBE_Master_Building_Object::TRIBE_Master_Building_Object(
     TRIBE_Master_Building_Object* source, int do_setup)

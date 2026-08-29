@@ -4,6 +4,7 @@
 #include "../include/dib.h"
 #include "../include/drawarea.h"
 #include "../include/basegame.h"
+#include "../include/Shape.h"
 #include "../include/Res_file.h"
 #include <windowsx.h>
 #include <stdio.h>
@@ -16,9 +17,6 @@
 
 // The target reserves 0x1400 bytes from SrcXTbl to the next global.
 static long SrcXTbl[0x500];
-
-// This global has no shared declaration yet. Keep the target's C++ linkage.
-extern unsigned char shape_file_first;
 
 struct PAL_TABLE {
     int index;

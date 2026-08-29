@@ -61,6 +61,11 @@ typedef tagRECT Rect;
 typedef Shape_File_Header ShapeFile;
 typedef Shape_Header TShapeHeader;
 
+// Shape consumers share these PDB-proven C++ globals.
+extern unsigned char shape_file_first;
+extern int Shape_Loads;
+extern int ASM_Fast_Count;
+
 class DClipInfo_List;
 
 class TShape {

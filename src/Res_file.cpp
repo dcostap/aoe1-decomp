@@ -10,26 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef void* HANDLE;
-typedef unsigned long DWORD;
-
-extern "C" __declspec(dllimport) HANDLE __stdcall CreateFileA(
-    const char*, DWORD, DWORD, void*, DWORD, DWORD, HANDLE);
-extern "C" __declspec(dllimport) HANDLE __stdcall CreateFileMappingA(
-    HANDLE, void*, DWORD, DWORD, DWORD, const char*);
-extern "C" __declspec(dllimport) int __stdcall CloseHandle(HANDLE);
-extern "C" __declspec(dllimport) void* __stdcall MapViewOfFile(
-    HANDLE, DWORD, DWORD, DWORD, DWORD);
-extern "C" __declspec(dllimport) int __stdcall UnmapViewOfFile(void* address);
-extern "C" __declspec(dllimport) int __stdcall MessageBoxA(
-    void*, const char*, const char*, unsigned int);
-extern "C" __declspec(dllimport) int __stdcall VirtualFree(
-    void* address, unsigned int size, unsigned int free_type);
-extern "C" __declspec(dllimport) unsigned long __stdcall GetTempPathA(
-    unsigned long length, char* path);
-extern "C" __declspec(dllimport) unsigned int __stdcall GetTempFileNameA(
-    const char* path, const char* prefix, unsigned int unique, char* name);
-
 extern "C" int __cdecl __open(const char* path, int flags, ...);
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
 #ifndef _INC_IO

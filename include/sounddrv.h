@@ -8,6 +8,9 @@
 
 typedef unsigned char uchar;
 
+// Sounddrv consumers share this PDB-proven C++ global.
+extern unsigned char sound_file_first;
+
 class TDigital;
 
 class TSound_Driver {

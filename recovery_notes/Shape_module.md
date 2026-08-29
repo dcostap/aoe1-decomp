@@ -82,3 +82,15 @@ mismatches are not exactness or behavior claims.
 - The current source contains several unresolved clipped and dithered renderer
   reconstructions. Their prior notes identify broad VC5 frame, home, register,
   and RLE block differences. This migration does not claim exactness for them.
+
+## ABI compile repair
+
+The View header is the canonical declaration owner for the shared drawing
+globals. The PDB symbols prove `long SDI_Object_ID` and `long fog_next_shape`.
+The Shape source now uses those declarations instead of duplicate local types.
+Shape.h also publishes the PDB-proven C++ globals `shape_file_first`,
+`Shape_Loads`, and `ASM_Fast_Count` for its consumers.
+
+The full Shape source now compiles. `004B8B30`, `004B8E40`, and `004BA900`
+remain `MATCH` with `0.0000%`. Existing scratch renderer differences remain
+unchanged.

@@ -2,18 +2,17 @@
 // Definitions follow the shipped source order.
 
 #include "../include/Picture.h"
+#include "../include/Shape.h"
+#include "../include/Res_file.h"
 
 #include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-extern unsigned char shape_file_first;
 extern void __cdecl rge_read(int file_handle, void* buffer, int size);
 extern unsigned long __cdecl debug_timeGetTime(const char* file, int line);
 extern void __cdecl rge_write(int fd, void* buffer, int size);
 tagBITMAPINFOHEADER* __cdecl DibOpenFile(char* name);
-int __cdecl RESFILE_Extract_to_File(unsigned long type, unsigned long id,
-    char* name, FILE*& file);
 void __cdecl DibMapToPalette(tagBITMAPINFOHEADER* dib, void* palette,
     int palette_id, int palette_flags);
 void __cdecl DibFree(tagBITMAPINFOHEADER* dib);

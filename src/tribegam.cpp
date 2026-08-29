@@ -2,6 +2,7 @@
 #include "../include/tribegam.h"
 #include "../include/main.h"
 #include "../include/game_globals.h"
+#include "../include/Res_file.h"
 #include "../include/gameinfo.h"
 #include "../include/world_info.h"
 #include "../include/world.h"
@@ -263,7 +264,6 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* prog_info, int setup_game)
 // PDB lines 347-413; VA 005213A0 TRIBE_Game::~TRIBE_Game.
 
 extern void* StringTableX;
-extern void __cdecl RESFILE_close_new_resource_file(const char* name);
 
 TRIBE_Game::~TRIBE_Game()
 {

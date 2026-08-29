@@ -18,17 +18,8 @@ extern "C" int __cdecl read(int, void*, unsigned int);
 extern "C" int __cdecl close(int);
 extern "C" void __cdecl free(void*);
 extern "C" void __cdecl addstring(char**, const char*, const char*);
-extern unsigned char shape_file_first;
-extern int Shape_Loads;
 extern int shape_version_110;
 
-extern int SDI_Capture_Info;
-extern int SDI_Draw_Level;
-extern long SDI_Object_ID;
-extern int SDI_Draw_Line;
-extern int fog_next_shape;
-extern DClipInfo_List* SDI_List;
-extern int ASM_Fast_Count;
 
 extern "C" int __cdecl ASMGet_Color_Xform();
 extern "C" void __cdecl ASMSet_Surface_Info(void*, void*, void*, int, int,

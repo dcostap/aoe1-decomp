@@ -24,8 +24,6 @@
 static char s_space[] = " ";
 static char s_X[] = "X";
 
-extern unsigned char shape_file_first;
-extern unsigned char* __cdecl RESFILE_load(unsigned long type, unsigned long id, int& size, int& param_4);
 extern "C" int __cdecl stricmp(const char* str1, const char* str2);
 
 TEasy_Panel::TEasy_Panel(char* name)

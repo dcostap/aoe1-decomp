@@ -1,4 +1,5 @@
 #include "../include/sounddrv.h"
+#include "../include/Res_file.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -23,9 +24,6 @@ extern "C" unsigned int __cdecl read(int fd, void* buffer, unsigned int count);
 extern "C" int __cdecl strncmp(const char* left, const char* right,
                                unsigned int count);
 extern void __cdecl color_log(unsigned char a, unsigned char b, int c);
-extern uchar* __cdecl RESFILE_load(unsigned long type, unsigned long id,
-                                   int& load_type, int& data_size);
-extern uchar sound_file_first;
 
 struct WAVHEADER {
     unsigned char szRIFF[4];
@@ -554,7 +552,7 @@ int TDigital::load(char* name, long param) {
     }
 
     if (param <= -1 || (resource_data = RESFILE_load(
-                            0x77617620, param, &load_type, &resDataSize)) == 0) {
+                            0x77617620, param, load_type, resDataSize)) == 0) {
         this->failed = 1;
     } else {
         memcpy(&wave_hdr.szRIFF, resource_data, 0x2C);

@@ -8,7 +8,8 @@
 - Candidate proposal: `build/candidate_tus/Res_file.json`.
 - The old wrapper and context header are replaced by the natural source and
   header. The source has no source-bank includes or private fallback layouts.
-- Validation is not run here. The lead owns one grouped candidate validation.
+- The lead owns grouped exact validation. Focused checks below record the
+  current compile and representative owner results.
 
 The coordinator assigned all seven resource record types to `Res_file.cpp`.
 Their canonical declarations are in `include/Res_file.h`. The declarations use
@@ -257,3 +258,18 @@ was not retained.
 `0047F320` retains one mapped-data LEA SIB byte. Natural pointer variants did
 not remove it. `0047F5C0` retains its 680-byte difference after natural local
 and declaration-order variants. The clean source remains authoritative.
+
+## ABI compile repair
+
+The Win32 headers already provide the PDB-compatible imported C-linkage
+`__stdcall` declarations and record types. The source no longer redeclares
+those APIs with local `HANDLE`, `DWORD`, or `void*` substitutes.
+
+Resource consumers now include the canonical header. This removes the former
+`RESFILE_load` and `RESFILE_close_new_resource_file` declarations. The latter
+had incorrectly added `const` to its `char*` parameter and changed its C++
+decorated target.
+
+The full Res_file source now compiles. `0047F180`, `0047F230`, and
+`0047F480` remain `MATCH` with `0.0000%`. `0047F320` remains a one-byte
+`CONSISTENT_REGISTER_RECOLOR` mismatch documented above.

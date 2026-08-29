@@ -146,7 +146,7 @@ extern DClipInfo_List* SDI_List;
 extern int SDI_Capture_Info;
 extern int SDI_Draw_Line;
 extern int SDI_Draw_Level;
-extern int SDI_Object_ID;
+extern long SDI_Object_ID;
 extern long fog_next_shape;
 
 extern int view_debug_redraw_all;

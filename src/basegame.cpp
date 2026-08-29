@@ -1027,8 +1027,6 @@ int RGE_Base_Game::run()
 
 
 
-void __cdecl RESFILE_Set_Missing_Flag(int flag);
-
 extern "C" {
 char* __cdecl _mbsstr(const char* str, const char* substr);
 char* __cdecl _mbsninc(const char* str, unsigned int count);
@@ -1065,8 +1063,6 @@ extern int speed_val2;
 extern int do_draw_log;
 extern int safe_draw_log;
 extern char draw_log_name[260];
-extern unsigned char shape_file_first;
-extern unsigned char sound_file_first;
 extern int log_output;
 extern int DDSys_CanColorFill;
 extern unsigned char do_color_log;

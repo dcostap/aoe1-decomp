@@ -42,7 +42,6 @@
 #include <string.h>
 
 extern int allow_user_commands;
-extern int SDI_Draw_Line;
 
 void TRIBE_Main_View::draw_multi_object_outline() {
     short master_id;

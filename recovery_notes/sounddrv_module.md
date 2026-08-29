@@ -49,3 +49,16 @@ The 35 prior exact owners have no grouped regression.
 escapes the original boundary by one byte. The source keeps its prior cleanup,
 resource, and DirectSound behavior. Its remaining issue is code generation and
 boundary layout, not a missing owner.
+
+## ABI compile repair
+
+The PDB symbol `?RESFILE_load@@YAPAEKKAAH0@Z` proves a C++ `__cdecl` function
+with two `int&` output parameters. `src/Sounddrv.cpp` now uses the canonical
+declaration from `include/Res_file.h` and passes those outputs as references.
+The former local declaration and pointer arguments were incompatible with the
+owner ABI. The header also owns the PDB-proven C++ `sound_file_first` global.
+
+The full Sounddrv source now compiles. `004BC590` remains `MATCH` with
+`0.0000%`. The `004BCD30` checker still cannot select its overloaded `load`
+owner from the unregistered grouped object; this is an extractor limitation,
+not a compile failure.
