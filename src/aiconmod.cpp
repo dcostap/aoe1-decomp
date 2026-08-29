@@ -19,7 +19,7 @@ union IntFloat {
 // 0040AA90 ConstructionAIModule::ConstructionAIModule (aiconmod.cpp:36-43)
 // FLAGS: config/flags/0040AA90_ConstructionAIModule.rsp (/GX for EH frame)
 ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2)
-    : AIModule((char*)0x57F380, 0x3EA, param_2, param_1),
+    : AIModule("ConAI", 0x3EA, param_2, param_1),
       numberConstructionLotsValue(0),
       constructionLots(),
       numberRandomConstructionLotsValue(0),
@@ -36,7 +36,7 @@ ConstructionAIModule::ConstructionAIModule(void* param_1, int param_2)
     this->randomConstructionLots.next = &this->randomConstructionLots;
     this->randomConstructionLots.prev = &this->randomConstructionLots;
 
-    strcpy(this->constructionPlanNameValue, (const char*)0x592A40);
+    strcpy(this->constructionPlanNameValue, "");
 }
 
 // 0040ABB0 ConstructionAIModule::ConstructionAIModule (aiconmod.cpp:57-182)

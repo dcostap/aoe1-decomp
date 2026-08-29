@@ -29,6 +29,12 @@ extern int taskedThisUpdate;
 extern int searchedThisUpdate;
 extern int numberVisibleObjects;
 extern int numberDifferentPlayerObjectsVisible;
+
+// AIModule logging state. The PDB and executable references prove these
+// global names, storage addresses, and scalar types.
+extern FILE* commonHistoryLogFile;
+extern int specificAIPlayerToLog;
+
 extern short visible_combats;
 extern FILE* logStatusFile;
 extern unsigned long lastStatusLogTime;

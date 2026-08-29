@@ -1,4 +1,5 @@
 #include "../include/aimodule.h"
+#include "../include/game_globals.h"
 
 #include <stdarg.h>
 #include <string.h>
@@ -28,8 +29,8 @@ void AIModuleID::setID(int param_1, char* param_2) {
 AIModuleMessage::AIModuleMessage()
     : id(0),
       priority(0),
-      sender((char*)0x57F4B0, 0),
-      recipient((char*)0x57F4A4, 0),
+      sender("Sender", 0),
+      recipient("Recipient", 0),
       data1(0),
       data2(0),
       data3(0),
@@ -38,22 +39,22 @@ AIModuleMessage::AIModuleMessage()
       next(0),
       prev(0)
 {
-    strcpy(text, (char*)0x592A40);
+    strcpy(text, "");
 }
 
 AIModuleMessage::AIModuleMessage(int sender_id, int recipient_id, int msg_id, int msg_priority,
                                  long p5, long p6, long p7, AIModuleMessage* callback, int timestamp)
     : id(msg_id),
       priority(msg_priority),
-      sender((char*)0x592A40, sender_id),
-      recipient((char*)0x592A40, recipient_id),
+      sender("", sender_id),
+      recipient("", recipient_id),
       data1(p5),
       data2(p6),
       data3(p7),
       callbackMessage(callback),
       timeStamp(timestamp)
 {
-    strcpy(this->text, (char*)0x592A40);
+    strcpy(this->text, "");
 }
 
 AIModuleMessage::AIModuleMessage(AIModuleMessage* other)
@@ -96,7 +97,7 @@ void AIModuleMessage::setRecipient(int a, char* b) {
 }
 
 AIModule::AIModule()
-    : idValue((char*)0x592A40, -1),
+    : idValue("", -1),
       playerNumberValue(-1),
       runningValue(0),
       pausedValue(0),
@@ -106,7 +107,7 @@ AIModule::AIModule()
       intelligenceLevelValue(5),
       priorityValue(50),
       processFrameValue(0) {
-    strcpy(this->playerNameValue, (const char*)0x57F074);
+    strcpy(this->playerNameValue, "Unknown");
 }
 
 AIModule::AIModule(char* name, int id, int player, void* owner)
@@ -125,12 +126,11 @@ AIModule::AIModule(char* name, int id, int player, void* owner)
 
 struct _iobuf;
 extern int __cdecl fclose(_iobuf*);
-extern _iobuf* DAT_00592A44;
 
 AIModule::~AIModule() {
-    if (logCommonHistoryValue != 0 && DAT_00592A44 != 0) {
-        fclose(DAT_00592A44);
-        DAT_00592A44 = 0;
+    if (logCommonHistoryValue != 0 && commonHistoryLogFile != 0) {
+        fclose(commonHistoryLogFile);
+        commonHistoryLogFile = 0;
     }
 }
 
@@ -144,15 +144,13 @@ int AIModule::playerNumber() const { return this->playerNumberValue; }
 
 char* AIModule::playerName() const { return (char*)this->playerNameValue; }
 
-extern char s_Unknown[];
-
 void AIModule::setPlayer(int playerNumber, char* playerName) {
     this->playerNumberValue = playerNumber;
     if (playerName != 0) {
         strncpy(this->playerNameValue, playerName, 0x3F);
         return;
     }
-    strcpy(this->playerNameValue, s_Unknown);
+    strcpy(this->playerNameValue, "Unknown");
 }
 
 void AIModule::start() { this->runningValue = 1; }
@@ -191,9 +189,6 @@ void AIModule::toggleLogHistory(void)
 
 int AIModule::loggingCommonHistory() const { return this->logCommonHistoryValue; }
 
-extern FILE* commonHistoryLogFile;
-extern char emptyString[];
-
 void AIModule::setLogCommonHistory(int on)
 {
     this->logCommonHistoryValue = on;
@@ -204,7 +199,7 @@ void AIModule::setLogCommonHistory(int on)
             time_t t;
             time(&t);
             this->logCommonHistory("Common AI History File Started %s", asctime(localtime(&t)));
-            this->logCommonHistory(emptyString);
+            this->logCommonHistory("");
             return;
         }
     }
@@ -328,10 +323,10 @@ void AIModule::logCommonHistory(char* fmt, ...)
 {
     char textOut[1024];
 
-    if (*(int*)0x57F9FC != -1 && *(int*)0x57F9FC != this->playerNumberValue) {
+    if (specificAIPlayerToLog != -1 && specificAIPlayerToLog != this->playerNumberValue) {
         return;
     }
-    if (*(FILE**)0x592A44 == 0) {
+    if (commonHistoryLogFile == 0) {
         return;
     }
 
@@ -341,11 +336,11 @@ void AIModule::logCommonHistory(char* fmt, ...)
     va_end(args);
 
     if (strlen(textOut) != 0) {
-        fprintf(*(FILE**)0x592A44, "P#%d %s: %s\n", this->playerNumberValue, this->idValue.name, textOut);
+        fprintf(commonHistoryLogFile, "P#%d %s: %s\n", this->playerNumberValue, this->idValue.name, textOut);
     } else {
-        fprintf(*(FILE**)0x592A44, "P#%d\n", this->playerNumberValue);
+        fprintf(commonHistoryLogFile, "P#%d\n", this->playerNumberValue);
     }
-    fflush(*(FILE**)0x592A44);
+    fflush(commonHistoryLogFile);
 }
 
 void AIModule::logDebug(char*, ...)

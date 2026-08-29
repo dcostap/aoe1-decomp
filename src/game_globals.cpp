@@ -7,6 +7,10 @@ int taskedThisUpdate = 0;
 int searchedThisUpdate = 0;
 int numberVisibleObjects = 0;
 int numberDifferentPlayerObjectsVisible = 0;
+// 00592A44 [.data] AIModule common history stream.
+FILE* commonHistoryLogFile = 0;
+// 0057F9FC [.data] BaseGame filter for common AI history logging.
+int specificAIPlayerToLog = -1;
 short visible_combats = 0;
 FILE* logStatusFile = 0;
 unsigned long lastStatusLogTime = 0;
