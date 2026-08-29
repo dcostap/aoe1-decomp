@@ -137,8 +137,9 @@ reported measurements are preserved from the prior scratch owner.
   parameter-home aliases were restored.
 - Exact-finish audit: the PDB owner is rmm_clif.cpp, lines 348-375, in
   RGE_RMM_Cliffs_Generator. The target has one direct remove_stack_node call,
-  a 0x08 frame, and the protected IAEX owner. Fresh checks keep 004821A0,
-  004828A0, 004832E0, and 00483430 unchanged and exact.
+  a 0x08 frame, and the protected IAEX owner. This audit does not establish
+  status for the unrelated RMM controller or DBCT addresses listed in the
+  older history. The current target remains scratch.
 - This claim tested endpoint declaration order, split assignments, early
   coordinate lifetimes, a right-bound local, and the reviewed random-map
   base header. These tests did not improve the 168-byte residue. The last

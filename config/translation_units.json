@@ -4434,11 +4434,13 @@
       "flags": "config/flags/004821A0_RGE_RMM_Controller.rsp",
       "owners": {
         "004821A0": "src/rmm_cntr.cpp",
-        "00482260": "src/rmm_cntr.cpp"
+        "00482260": "src/rmm_cntr.cpp",
+        "004828A0": "src/rmm_cntr.cpp"
       },
       "symbols": {
         "004821A0": "??0RGE_RMM_Controller@@QAE@PAVRGE_Map@@PAVRGE_Game_World@@EJ@Z",
-        "00482260": "?generate@RGE_RMM_Controller@@UAEEXZ"
+        "00482260": "?generate@RGE_RMM_Controller@@UAEEXZ",
+        "004828A0": "?count_map_tiles@RGE_RMM_Controller@@IAEJE@Z"
       }
     },
     {

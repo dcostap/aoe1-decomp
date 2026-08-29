@@ -66,3 +66,24 @@ The PDB also proves the fixed `InfluenceMap` objects `iMap`, `losMap`, and
 `attackMap`. Their current `taiinfmd.cpp` source uses fixed-address carriers.
 This pass leaves them unchanged. A separate natural-object migration must
 replace those carriers and validate the three generated initializer owners.
+
+## Fresh WinMain exact-policy audit
+
+The PDB assigns `004549E0` to `main.cpp`, lines 66-192. Its original body is
+`004549E0-00454FF0` (1553 bytes). The direct compiler-facing owner is
+`src/main.cpp`, registered by the `main` source module.
+
+The standalone check rebuilds `_WinMain@16` and passes owner validation. It
+emits 1553 meaningful bytes with no boundary escape or trailing non-padding
+body. All 37 relocations are compatible. No actionable relocation target
+mismatch exists.
+
+The four direct calls keep their original targets: the VC5 stack-probe alias
+`__alloca_probe`/`__chkstk`, `sprintf`, `operator_new`, and the
+`TRIBE_Game` constructor. The eight indirect or virtual call sites keep their
+slots and order. The function has no tail jump. The grouped `main` candidate
+check also passes with `MATCH` and `0.0000%`.
+
+`src/main.cpp` uses the named `RGE_Prog_Info` fields, canonical `TRIBE_Game`
+methods, and reviewed `TRIBE_GUID` and `ZONE_GUID` globals. It has no wrapper,
+raw address, fake vtable, or compiler-only alias.
