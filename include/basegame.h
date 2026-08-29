@@ -6,6 +6,7 @@
 class RGE_Base_Game;
 class RGE_Game_Info;
 class RGE_Game_World;
+class TRIBE_History_Info;
 class RGE_Player;
 class TRIBE_Player;
 class TribeInformationAIModule;
@@ -68,6 +69,7 @@ class RGE_Base_Game {
     friend void __cdecl debug_srand(char*, int, unsigned int);
     friend class RGE_Player;
     friend class TRIBE_Player;
+    friend class TRIBE_History_Info;
     friend class TribeInformationAIModule;
     friend class TCommunications_Handler;
     friend class RGE_Communications_Synchronize;

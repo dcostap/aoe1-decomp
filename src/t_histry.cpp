@@ -1,25 +1,12 @@
 #include "../include/t_histry.h"
+#include "../include/world.h"
+#include "../include/basegame.h"
+#include "../include/rge_base_game_global.h"
+#include "../include/rge_fio.h"
 #include <stdlib.h>
 #include <string.h>
 
 #pragma intrinsic(memcpy)
-
-extern "C" void rge_read(int file, void* data, int size);
-extern "C" void rge_write(int file, void* data, int size);
-
-class RGE_Game_World {
-public:
-    virtual unsigned char data_load_world(void* file);
-    unsigned long world_time;
-};
-
-class RGE_Base_Game {
-public:
-    char gap_00[0x3F4];
-    RGE_Game_World* world;
-};
-
-extern RGE_Base_Game* rge_base_game;
 
 TRIBE_History_Info::TRIBE_History_Info(int index) {
     this->history = 0;

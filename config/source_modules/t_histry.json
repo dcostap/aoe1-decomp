@@ -21,7 +21,10 @@
     },
     "004CC950": { "status": "matching" },
     "004CC960": { "status": "matching" },
-    "004CC990": { "status": "matching" },
+    "004CC990": {
+      "status": "matching",
+      "note_path": "recovery_notes/t_histry_module.md"
+    },
     "004CC9E0": { "status": "matching" },
     "004CC9F0": {
       "status": "matching",
