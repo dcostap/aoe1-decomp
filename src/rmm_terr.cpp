@@ -1,12 +1,12 @@
 #include "../include/rmm_terrain_generator.h"
 #include "../include/map.h"
 #include "../include/zone_map.h"
+#include "../include/basegame.h"
 #include <math.h>
 #include <string.h>
 
 extern "C" double __cdecl sqrt(double value);
 #pragma intrinsic(sqrt)
-extern "C" int __cdecl debug_rand(char* file, int line);
 
 // PDB source order for C:\\msdev\\work\\age1_x1\\rmm_terr.cpp.
 
