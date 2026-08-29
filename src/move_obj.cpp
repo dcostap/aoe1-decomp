@@ -894,20 +894,20 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
     }
 
     if (actionFile != 0) {
-        fprintf(actionFile, (const char*)0x584C9C,
+        fprintf(actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n",
                 this->owner->world->world_time, this->id,
                 this->startValue.x, this->startValue.y,
                 this->goalValue.x, this->goalValue.y);
         this->pathValue.initToStart();
         int i = 0;
         while (i < this->pathValue.numberOfWaypoints()) {
-            fprintf(actionFile, (const char*)0x584C84, i,
+            fprintf(actionFile, ", WP#%d(%6.2f, %6.2f)", i,
                     this->pathValue.currentWaypoint()->x,
                     this->pathValue.currentWaypoint()->y);
             i++;
             this->pathValue.moveToNextWaypoint();
         }
-        fprintf(actionFile, (const char*)0x584C80);
+        fprintf(actionFile, ".\n");
         this->pathValue.initToStart();
         this->pathValue.moveToNextWaypoint();
     }

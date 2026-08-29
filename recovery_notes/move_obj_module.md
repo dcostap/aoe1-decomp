@@ -33,7 +33,7 @@ checks before exact promotion.
 ## Structural audit
 
 The canonical provider pass compiles all 51 owners from `src/move_obj.cpp`.
-The current report is `build/audits/move_obj_final/report.json`. It records 38
+The current report is `build/audits/move_obj_residue_strings/report.json`. It records 38
 matching, 10 scratch, and three accepted-drift source entries.
 
 The pass uses source-only includes for the reviewed sprite, player, moving
@@ -59,10 +59,13 @@ The unused `register` hint in `get_waypoint_checksum` and four `debug_rand`
 string casts were also removed. They do not change emitted code or the accepted
 8-byte drift.
 
-The pass tested the remaining raw and artificial forms. The three action-log
-addresses at `0x584C9C`, `0x584C84`, and `0x584C80` map to the original string
-records, but replacing them with literals changed module inline decisions and
-left `findPath` at 1064 bytes with 1120 differing bytes. Keep those addresses.
+The pass tested the remaining raw and artificial forms. PE image extraction
+maps `0x584C80`, `0x584C84`, and `0x584C9C` to file offsets `0x182E80`,
+`0x182E84`, and `0x182E9C`. The exact bytes are `".\n"`,
+`", WP#%d(%6.2f, %6.2f)"`, and
+`"t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)"`.
+`findPath` now uses these natural literals. Its grouped result remains
+`MISMATCH` with 1120 differing bytes. Other owner results did not change.
 Removing `(float*)0` from path calls reduced `doTrivialMove` to 3679 bytes and
 did not improve its grouped 2912-byte mismatch; the typed null casts remain.
 Typed packed-waypoint indexing caused the extractor to lose the unique owner
@@ -73,7 +76,7 @@ const. Downcasts to moving-master fields remain required by the base owner ABI.
 The final grouped observed audit compiled the authentic module with 51 normal
 owners. It reports 38 grouped matches, 10 scratch mismatches, and three
 accepted-drift entries. The 38 matches include 15 registered exact owners and
-23 unregistered exact owners. The scratch diffs are 3, 2, 113, 1122, 2977,
+23 unregistered exact owners. The scratch diffs are 3, 2, 113, 1120, 2977,
 2912, 1, 29, 34, and 5 bytes in address order. Accepted drift remains 10,
 9, and 8 bytes. Five rows still report relocation-target review because the
 grouped audit lacks reviewed owner overrides for those source entries.
@@ -84,5 +87,5 @@ the reviewed PDB and relocation evidence.
 
 Canonical providers changed the emitted result for ten former matching
 claims. The changed owners are now scratch in the module manifest. Their
-current grouped differences are 3, 2, 113, 1122, 2977, 2912, 1, 29, 34, and
+current grouped differences are 3, 2, 113, 1120, 2977, 2912, 1, 29, 34, and
 5 bytes in address order. The three accepted-drift entries remain closed.
