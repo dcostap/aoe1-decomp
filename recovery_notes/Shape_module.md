@@ -35,6 +35,10 @@ The source keeps the reviewed typed Shape records, `TShape` layout, draw-area
 layout, packed RLE ownership, and direct external call declarations. It does not
 add a new global definition or change a cross-shard declaration.
 
+`color_log` uses its canonical C++ declaration from `include/colorlog.h`.
+The former local C-linkage declaration conflicted with the source-owned symbol
+after the BaseGame friendship recovery.
+
 ## Prior state and expected migration effect
 
 The prior `shape` translation-unit entry registered 11 owners. The module

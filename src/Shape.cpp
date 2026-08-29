@@ -3,13 +3,13 @@
 
 #include "../include/Shape.h"
 #include "../include/view.h"
+#include "../include/colorlog.h"
 #include <string.h>
 #include <memory.h>
 
 #pragma function(memcpy)
 #pragma function(memset)
 
-extern "C" void __cdecl color_log(unsigned char, unsigned char, int);
 extern "C" int __cdecl open(const char*, int);
 extern "C" int __cdecl lseek(int, int, int);
 extern "C" int __cdecl tell(int);
