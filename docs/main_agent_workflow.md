@@ -38,6 +38,15 @@ For each active worker, record:
 Do not assign another function from an actively leased translation unit.
 `target_session.py start` enforces this rule.
 
+Preclaim large waves without metric work:
+
+```text
+python tools/target_session.py start --preclaim --va <VA> --owner <OWNER>
+```
+
+Tell each worker that its lease is active. The worker must use `brief`, not
+`start`, for that preclaimed lease.
+
 Do not edit or stage a worker's leased source while that worker is active.
 
 ## Worker assignment
@@ -59,6 +68,9 @@ handoff.
 
 Workers can choose their investigative methods. Do not set a hypothesis quota
 or fixed stop count.
+
+Do not accept an early stop after one mismatch or one codegen basin. Require
+materially different natural forms for the main evidence-backed hypotheses.
 
 Workers may seek:
 

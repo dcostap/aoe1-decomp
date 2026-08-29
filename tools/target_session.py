@@ -551,10 +551,40 @@ def _new_session(
 
 
 def start_session(
-    record: dict[str, str], owner: str, budget: int, lease_hours: float, force: bool = False
+    record: dict[str, str],
+    owner: str,
+    budget: int,
+    lease_hours: float,
+    force: bool = False,
+    collect_metrics: bool = True,
 ) -> dict:
     checked_owner = _validate_owner(owner)
-    metric_summary = current_metric_summary(record)
+
+    # Make a redundant worker start cheap after coordinator preclaiming.
+    with _sessions_lock():
+        prior = _load_session(record)
+        if prior and _lease_active(prior) and prior.get("owner") != checked_owner and not force:
+            raise RuntimeError(
+                f"{record['va']} is actively leased by {prior.get('owner')} until {prior.get('lease_expires_at')}; "
+                "coordinate with that owner or use --force for a deliberate takeover"
+            )
+        if prior and _lease_active(prior) and prior.get("owner") == checked_owner:
+            session = _new_session(
+                record,
+                checked_owner,
+                budget,
+                lease_hours,
+                prior,
+                dict(prior.get("last_metric_summary") or {}),
+            )
+            _write_session(record, session)
+            result = dict(session)
+            result["_start_reused_active"] = True
+            return result
+
+    metric_summary = current_metric_summary(record) if collect_metrics else {}
+
+    # Recheck after unlocked metric work because another process can claim the unit.
     with _sessions_lock():
         prior = _load_session(record)
         if prior and _lease_active(prior) and prior.get("owner") != checked_owner and not force:
@@ -1065,9 +1095,14 @@ def change_state(record: dict[str, str], owner: str, state: str, reason: str) ->
     return session
 
 
-def format_session(record: dict[str, str], session: dict | None) -> str:
+def format_session(
+    record: dict[str, str],
+    session: dict | None,
+    metrics: dict[str, object] | None = None,
+) -> str:
     source = preferred_source_path(record)
-    metrics = current_metric_summary(record)
+    if metrics is None:
+        metrics = current_metric_summary(record)
     journal_relative = function_recovery_note_relative_path(record["va"], function_slug(record))
     journal_exists = (REPO_ROOT / journal_relative).is_file()
     lines = [
@@ -1392,9 +1427,14 @@ def format_history(record: dict[str, str], session: dict | None, limit: int) -> 
     return "\n".join(lines)
 
 
-def format_brief(record: dict[str, str], session: dict | None, note_limit: int) -> str:
+def format_brief(
+    record: dict[str, str],
+    session: dict | None,
+    note_limit: int,
+    metrics: dict[str, object] | None = None,
+) -> str:
     """Return a bounded worker handoff without raw checkpoint/session payloads."""
-    status_lines = format_session(record, session).split("\n\nUseful commands:", 1)[0]
+    status_lines = format_session(record, session, metrics).split("\n\nUseful commands:", 1)[0]
     lines = [status_lines]
     translation_unit = compiler_translation_unit_for_va(int(record["va"], 16))
     if translation_unit is not None:
@@ -1526,6 +1566,11 @@ def parse_args() -> argparse.Namespace:
     )
     start.add_argument("--lease-hours", type=float, default=8.0, help="Lease duration in hours (default 8.0).")
     start.add_argument("--force", action="store_true", help="Deliberately take over another active lease (use with care).")
+    start.add_argument(
+        "--preclaim",
+        action="store_true",
+        help="Claim without metric collection or a full briefing.",
+    )
 
     probe = subparsers.add_parser(
         "probe",
@@ -1643,8 +1688,20 @@ def main() -> None:
                 raise ValueError("--budget must be zero or positive")
             if args.lease_hours <= 0:
                 raise ValueError("--lease-hours must be positive")
-            session = start_session(record, args.owner, args.budget, args.lease_hours, args.force)
-            print(format_brief(record, session, 20))
+            session = start_session(
+                record,
+                args.owner,
+                args.budget,
+                args.lease_hours,
+                args.force,
+                collect_metrics=not args.preclaim,
+            )
+            if session.pop("_start_reused_active", False):
+                print(f"Session already active: {record['va']} owner={args.owner}")
+            elif args.preclaim:
+                print(f"Session preclaimed: {record['va']} owner={args.owner}")
+            else:
+                print(format_brief(record, session, 20, session.get("last_metric_summary") or {}))
         elif args.command == "probe":
             session = record_probe(record, args.owner, args.kind, args.note, args.checkpoint)
             if args.kind == "baseline":

@@ -52,7 +52,16 @@ Run each tool with `--help` before its first use.
    python tools/query_project_status.py --va <VA> --paths --notes --leases --work-history
    ```
 
-2. Start the assigned session:
+2. Use the assigned session.
+
+   If the coordinator preclaimed the active lease, do not start it again. Read
+   the briefing instead:
+
+   ```text
+   python tools/target_session.py brief --va <VA>
+   ```
+
+   Otherwise, start the session:
 
    ```text
    python tools/target_session.py start --va <VA> --owner <OWNER>
@@ -155,6 +164,10 @@ An exact result starts a short source review.
 
 A nonexact source change can remain when it is natural, behavior-supported, and
 clearly better than the baseline.
+
+Do not stop after one mismatch or one codegen basin. Test materially different
+natural forms for the main evidence-backed hypotheses. Stop after exactness, a
+proved blocker, or reasonable natural-source exhaustion.
 
 Run a final recorded check. Record the exact improvement and remaining blocker.
 Pin the final clean source. Pause the session.

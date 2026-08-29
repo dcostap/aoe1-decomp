@@ -83,6 +83,36 @@ class TargetSessionTests(unittest.TestCase):
         self.assertEqual(target_session.session_claim_count(first), 1)
         self.assertEqual(target_session.session_claim_count(second), 1)
 
+    def test_active_same_owner_start_skips_metric_collection(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(target_session, "current_metric_summary", return_value={}) as metrics,
+            ):
+                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                metrics.reset_mock()
+                session = target_session.start_session(self.record, "AgentA", 4, 2.0)
+        metrics.assert_not_called()
+        self.assertTrue(session["_start_reused_active"])
+
+    def test_preclaim_skips_metric_collection(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(target_session, "current_metric_summary") as metrics,
+            ):
+                session = target_session.start_session(
+                    self.record,
+                    "AgentA",
+                    4,
+                    2.0,
+                    collect_metrics=False,
+                )
+        metrics.assert_not_called()
+        self.assertEqual(session["last_metric_summary"], {})
+
     def test_active_translation_unit_rejects_another_target(self) -> None:
         other_record = {**self.record, "va": "00002000", "name": "other"}
         with tempfile.TemporaryDirectory() as temporary:
