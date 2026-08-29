@@ -100,7 +100,8 @@ def _sessions_lock():
         handle.flush()
     acquired = False
     try:
-        for _ in range(200):
+        deadline = time.monotonic() + 60.0
+        while True:
             try:
                 handle.seek(0)
                 if os.name == "nt":
@@ -114,6 +115,8 @@ def _sessions_lock():
                 acquired = True
                 break
             except OSError:
+                if time.monotonic() >= deadline:
+                    break
                 time.sleep(0.05)
         if not acquired:
             raise TimeoutError(f"Timed out waiting for target-session lock: {path}")
