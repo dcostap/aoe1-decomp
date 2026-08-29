@@ -591,6 +591,8 @@ float DAT_00574ca4 = -6.28318548f;
 double DAT_00574ca8 = 0.0;
 // 00574F08 [.rdata]
 double DAT_00574f08 = 0.0;
+// 00574F10 [.rdata]
+float DAT_00574f10 = 1.0f;
 // 00574F14 [.rdata]
 float DAT_00574f14 = -1.0f;
 // 00574F78 [.rdata]

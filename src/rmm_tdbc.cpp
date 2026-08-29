@@ -10,8 +10,6 @@
 #include "../include/debuglog.h"
 #include <new.h>
 
-extern "C" int __cdecl debug_rand(char* file, int line);
-
 static char s_rmm_tdbc_path[] = "C:\\msdev\\work\\age1_x1\\rmm_tdbc.cpp";
 static char s_land_log[] = "Random Map land initilization, rand: %d";
 static char s_terrain_log[] = "Random Map terrain initilization, rand: %d";

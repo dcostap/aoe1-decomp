@@ -279,7 +279,7 @@ void TRIBE_Screen_Campaign_Selection::startGame()
     rge_base_game->setScenarioGame(1);
     rge_base_game->setCampaignGame(1);
     rge_base_game->setSavedGame(0);
-    game->setVictoryType(TRIBE_Game::VictoryType_Unknown, 0);
+    game->setVictoryType(TRIBE_Game::VictoryDefault, 0);
     rge_base_game->setDifficulty(this->difficultyDrop->get_id());
     rge_base_game->set_single_player_difficulty(
         this->difficultyDrop->get_id());
@@ -294,8 +294,8 @@ void TRIBE_Screen_Campaign_Selection::startGame()
     game->setLongCombat(0);
     game->setAllowTrading(1);
     game->setFullTechTree(0);
-    game->setResourceLevel(TRIBE_Game::ResourceLevel_Unknown);
-    game->setStartingAge(TRIBE_Game::Age_Unknown);
+    game->setResourceLevel(TRIBE_Game::DefaultResources);
+    game->setStartingAge(TRIBE_Game::DefaultAge);
     game->setStartingUnits(0);
 
     int first_human = -1;

@@ -129,7 +129,7 @@ unsigned char TRIBE_Action_Artifact::update() {
     }
 
     case 100:
-        this->obj->change_ownership(this->obj->owner->world->master_players[0]);
+        this->obj->change_ownership(this->obj->owner->world->players[0]);
         this->set_state(6);
         return 0;
 

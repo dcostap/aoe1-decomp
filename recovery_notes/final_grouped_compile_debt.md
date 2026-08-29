@@ -20,7 +20,10 @@ Two baseline failures are resolved:
 - `tscenaro`: current main `4858419ce` added the missing `rge_base_game` provider.
 - `Panel`: `258b4a7d2` added the proven `TPanel` friend for `prog_active`.
 
-The remaining debt has 67 baseline modules:
+The remaining debt had 67 baseline modules before the focused repairs below.
+The focused repairs resolve the `tact_art` type/global conflict and the
+`rmm_tdbc` linkage conflict. `scr_cams` still has only the BaseGame access
+errors listed below.
 
 - **56 BaseGame protected-field access:**
   `tpnl_tml`, `scr_end`, `scr_info`, `scr_cam`, `diam_map`, `scenario`,
@@ -33,9 +36,10 @@ The remaining debt has 67 baseline modules:
   `tact_mob_cpp`, `sceninfo`, `dlg_msg`, `rpnl_tbx_cpp`, `tm_b_obj`, `scr_main`,
   `gameinfo`, `scr_save`, `pnl_msg`, `vw_dimap`, `tpnl_obj`, `map`, `scr_name`,
   `Command`, `world`.
-- **1 enum and access relation:** `scr_cams`.
-- **1 type and global declaration:** `tact_art`.
-- **2 debug_rand linkage conflicts:** `rmm_tdbc`, `tact_cnv`.
+- **BaseGame access, including `scr_cams`:** the 56 modules listed above plus
+  `scr_cams`. Its enum errors are resolved, but its direct `RGE_Base_Game`
+  field reads still need the access agent.
+- **1 debug_rand linkage conflict:** `tact_cnv`.
 - **1 debug_srand and global declaration conflict:** `t_b_obj`.
 - **1 RESFILE_load ABI mismatch:** `sounddrv`.
 - **1 global redeclaration:** `Shape`.
@@ -45,6 +49,31 @@ The remaining debt has 67 baseline modules:
 - **1 WinAPI linkage declaration conflict:** `Res_file`.
 
 ## Focused proof
+
+### `scr_cams`, `tact_art`, and `rmm_tdbc`
+
+`scr_cams` used stale `TRIBE_Game::VictoryType_Unknown`,
+`ResourceLevel_Unknown`, and `Age_Unknown` names. The canonical enum members
+are `VictoryDefault`, `DefaultResources`, and `DefaultAge`. After that repair,
+the full source reaches only the protected `draw_area`, `input_enabled`, and
+`player_game_info` reads in `RGE_Base_Game`. Do not edit `include/basegame.h`
+in this module repair. The access agent owns that remaining relation.
+
+`tact_art` now uses `RGE_Game_World::players[0]` for the `RGE_Player*`
+ownership target. `master_players[0]` is an `RGE_Master_Player*` and cannot
+feed `change_ownership`. The canonical global provider now declares and
+defines `DAT_00574F10` as the `.rdata` value `1.0f` used by
+`check_ownership`. The full 11-owner candidate compiled and reported `MATCH`
+and `0.0000%` for every owner. Representative checks for `004CCBA0` and
+`004CCF30` also reported `MATCH` and `0.0000%`.
+
+`rmm_tdbc` now uses the canonical C++ `debug_rand` declaration supplied by
+`basegame.h` through `tribegam.h`. Its local `extern "C"` declaration caused
+the C2732 linkage conflict. The full 10-body candidate compiled with no
+comparison errors. Its registered owner `004876C0` and four observed owners
+reported `MATCH` and `0.0000%`; the other five observed owners retain their
+documented nonexact states. The representative `004876C0` check reported
+`MATCH` and `0.0000%`.
 
 The final four-module gate passed compilation for `dib`, `basegame_cpp`,
 `com_loby`, and `Panel`. A later focused rebuild restored the symbol-proven
