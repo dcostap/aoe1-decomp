@@ -25,6 +25,10 @@ bytes for `" "` at `00580460` and `"X"` at `00583B74`.
 The natural direct source compiles after the BaseGame owner published its cursor
 methods. Focused checks match `00466A20` and `0046A410` exactly.
 
+Final grouped validation records explicit symbols for two overloaded selections.
+`00467A70` selects `set_background(char *, long)`.
+`00468530` selects the character-text `create_button` overload.
+
 `00468C20` is scratch. The PDB text-overload order calls virtual offset `+0xF8`.
 The original calls `+0x100`. It differs by two bytes and has no relocation or
 boundary issue. Do not reorder PDB declarations to restore this old byte result.

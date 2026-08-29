@@ -43,6 +43,9 @@ behavior for them.
 The candidate records decorated names for the five overloaded rows. It has no
 comparison errors.
 
+Final grouped validation uses the emitted `struct RGE_Tile` symbol encoding for
+`00539D90` and `00539EC0`. This encoding agrees with the canonical tile record.
+
 Direct source compilation succeeds with the pinned VC5 compiler.
 
 ## Natural-source audit
