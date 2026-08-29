@@ -35,7 +35,7 @@ RGE_Moving_Object::RGE_Moving_Object(RGE_Master_Moving_Object* master,
                                      RGE_Player* player,
                                      float x, float y, float z,
                                      int doSetup)
-    : RGE_Animated_Object((RGE_Master_Animated_Object*)master,
+    : RGE_Animated_Object(master,
                           player, x, y, z, 0),
       pathValue(10),
       exceptionPathValue(10),
@@ -352,8 +352,8 @@ int RGE_Moving_Object::setup(RGE_Master_Moving_Object* master_obj,
 // try 1: natural load/setup reconstruction from packet; models rge_read sequence,
 // Path insertion/reset, user-defined waypoint allocation/load, and version-gated fields.
 // Integration pass: PDB call evidence requires Path::insertAtEnd,
-// Path::initToStart, and Path::moveToNextWaypoint. The raw 0x47C35000 store
-// stays an int bit pattern. The standalone owner matched before reunification.
+// Path::initToStart, and Path::moveToNextWaypoint. The legacy fallback assigns
+// 100000.0f; VC5 emits the same 0x47C35000 immediate as the executable.
 
 int RGE_Moving_Object::setup(int fd, RGE_Game_World* world)
 {
@@ -419,7 +419,7 @@ int RGE_Moving_Object::setup(int fd, RGE_Game_World* world)
         rge_read(fd, &this->closestDistanceToWaypoint, 4);
         rge_read(fd, &this->lastFacet, 1);
     } else {
-        *(int*)&this->closestDistanceToWaypoint = 0x47c35000;
+        this->closestDistanceToWaypoint = 100000.0f;
         this->lastFacet = 0xff;
     }
 
@@ -793,9 +793,10 @@ void RGE_Moving_Object::set_velocity(float a, float b, float c) {
 }
 
 // BINARY NOTE: 0045D5F0 calls RGE_Moving_Object::set_angle. The former
-// other_method declaration produced the wrong direct symbol.
+// other_method declaration produced the wrong direct symbol. A direct float
+// assignment preserves the executable's bit-copy store without a pointer cast.
 void RGE_Moving_Object::new_angle(float param_1) {
-    *(int*)&this->angle = *(int*)&param_1;
+    this->angle = param_1;
     this->set_angle();
 }
 
@@ -804,9 +805,9 @@ const Path& RGE_Moving_Object::getPath() const { return this->pathValue; }
 unsigned char RGE_Moving_Object::facetToNextWaypoint() const {
     Waypoint* waypoint;
 
-    waypoint = ((Path*)&this->pathValue)->currentWaypoint();
+    waypoint = this->pathValue.currentWaypoint();
     if (waypoint != 0) {
-        waypoint = ((Path*)&this->pathValue)->currentWaypoint();
+        waypoint = this->pathValue.currentWaypoint();
         return waypoint->facetToNextWaypoint;
     }
     return 0xFF;
@@ -1549,11 +1550,11 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
             if (this->speed <= DAT_00570b48) {
                 this->speed = 0.0f;
                 this->collisionAvoidanceDistance =
-                    (float)(debug_rand((char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x6D1) % 6) * DAT_00570bc0 - DAT_00570b80;
+                    (float)(debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x6D1) % 6) * DAT_00570bc0 - DAT_00570b80;
                 return 0;
             }
                 this->collisionAvoidanceDistance =
-                    (float)(debug_rand((char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x6CF) % 6) * DAT_00570bc0 - DAT_00570b80 / this->speed;
+                (float)(debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x6CF) % 6) * DAT_00570bc0 - DAT_00570b80 / this->speed;
                 this->speed = 0.0f;
             return 0;
         }
@@ -1740,11 +1741,11 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         }
         if (this->speed <= DAT_00570b48) {
             this->collisionAvoidanceDistance =
-                (float)(debug_rand((char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x7D5) % 6) * DAT_00570bc0 - DAT_00570b80;
+                (float)(debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x7D5) % 6) * DAT_00570bc0 - DAT_00570b80;
             this->speed = 0.0f;
         } else {
             this->collisionAvoidanceDistance =
-                (float)(debug_rand((char*)"C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x7D3) % 6) * DAT_00570bc0 - DAT_00570b80 / this->speed;
+                (float)(debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x7D3) % 6) * DAT_00570bc0 - DAT_00570b80 / this->speed;
             this->speed = 0.0f;
         }
         return 0;
@@ -2845,7 +2846,7 @@ void RGE_Moving_Object::rotate(long angleDeg) {
 
 long RGE_Moving_Object::get_waypoint_checksum() {
     float sum = 0.0f;
-    register int savedIndex;
+    int savedIndex;
     Path* path = &this->pathValue;
     savedIndex = path->currentWaypointNumber();
     path->initToStart();

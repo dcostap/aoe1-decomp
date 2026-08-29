@@ -48,6 +48,40 @@ aggregate initial-point members. It uses the canonical C++ declarations for
 `save_game_version` and the lower-case `DAT_00570b54`, `DAT_00570b58`, and
 `DAT_00570b5c` globals. No scratch behavior or shared layout changed.
 
+The residue pass removed several unnecessary source forms. The legacy setup
+fallback now uses `closestDistanceToWaypoint = 100000.0f`; the checker reports
+an exact 862-byte owner and the same `0x47C35000` store. `new_angle` now uses a
+direct float assignment; its 18-byte owner remains exact. `facetToNextWaypoint`
+now calls `Path` through its typed member; its 34-byte owner remains exact.
+The moving-master constructor now uses the proven implicit base conversion; its
+333-byte owner remains exact.
+The unused `register` hint in `get_waypoint_checksum` and four `debug_rand`
+string casts were also removed. They do not change emitted code or the accepted
+8-byte drift.
+
+The pass tested the remaining raw and artificial forms. The three action-log
+addresses at `0x584C9C`, `0x584C84`, and `0x584C80` map to the original string
+records, but replacing them with literals changed module inline decisions and
+left `findPath` at 1064 bytes with 1120 differing bytes. Keep those addresses.
+Removing `(float*)0` from path calls reduced `doTrivialMove` to 3679 bytes and
+did not improve its grouped 2912-byte mismatch; the typed null casts remain.
+Typed packed-waypoint indexing caused the extractor to lose the unique owner
+record, so the proven three-byte pointer arithmetic remains. `rge_write` needs
+the explicit cast because its reviewed ABI takes `void*`, while `waypoint()` is
+const. Downcasts to moving-master fields remain required by the base owner ABI.
+
+The final grouped observed audit compiled the authentic module with 51 normal
+owners. It reports 38 grouped matches, 10 scratch mismatches, and three
+accepted-drift entries. The 38 matches include 15 registered exact owners and
+23 unregistered exact owners. The scratch diffs are 3, 2, 113, 1122, 2977,
+2912, 1, 29, 34, and 5 bytes in address order. Accepted drift remains 10,
+9, and 8 bytes. Five rows still report relocation-target review because the
+grouped audit lacks reviewed owner overrides for those source entries.
+
+No declaration in `include/move_obj.h` had a safe shape-only replacement. Its
+virtual order, inherited surfaces, field widths, and size check remain tied to
+the reviewed PDB and relocation evidence.
+
 Canonical providers changed the emitted result for ten former matching
 claims. The changed owners are now scratch in the module manifest. Their
 current grouped differences are 3, 2, 113, 1122, 2977, 2912, 1, 29, 34, and
