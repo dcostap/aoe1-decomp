@@ -68,6 +68,7 @@ typedef char rge_timing_info_size_check[
 class RGE_Base_Game {
     friend int __cdecl debug_rand(char*, int);
     friend void __cdecl debug_srand(char*, int, unsigned int);
+    friend void* __cdecl ReadPalette(char*, long, int);
     friend class RGE_Player;
     friend class TRIBE_Player;
     friend class TRIBE_History_Info;

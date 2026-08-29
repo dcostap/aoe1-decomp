@@ -10,7 +10,7 @@ struct PanelNode;
 class TPanel;
 extern HWND AppWnd;
 extern char DAT_0062E670[0x200];
-extern "C" void* __cdecl ReadPalette(char*, long, int);
+void* __cdecl ReadPalette(char*, long, int);
 
 class TPanelSystem {
 public:
