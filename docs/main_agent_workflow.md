@@ -132,8 +132,8 @@ Treat source comments as hypotheses, not executable evidence.
 - Count queued work against the user's concurrency ceiling.
 - Keep the live set small enough for prompt review.
 - Integrate completed edits before filling every free slot.
-- Read the source comment log before reassigning scratch work. It is the
-  authoritative durable history.
+- Read the tracked function recovery journal before reassigning scratch work.
+  It is the authoritative durable matching history.
 - Treat generated session history as optional local detail. Cleanup can remove it.
 - Give workers prior evidence and open questions. Let them choose their methods.
 - Do not repeatedly poll participants.
@@ -259,7 +259,7 @@ one metric or a fixed threshold.
 
 Review all available evidence:
 
-- the durable attempt log in the source header or configured recovery note;
+- the tracked function recovery journal and any configured module note;
 - the number and quality of distinct hypotheses;
 - results from independent matching assignments;
 - current byte parity and exact-block coverage;
@@ -269,8 +269,8 @@ Review all available evidence:
 - authentic translation-unit context and its unresolved parts;
 - known behavior questions and useful approaches that remain untested.
 
-Treat source comments as the durable record. Generated work history can support
-the decision, but cleanup can remove it.
+Treat the function recovery journal as the durable matching record. Generated
+work history can support the decision, but cleanup can remove it.
 
 Count evidence-led hypotheses, not cosmetic edits or repeated checks. A high
 probe count alone does not show exhaustion.
@@ -386,7 +386,7 @@ Before review:
 4. validate the normalized source;
 5. create `logic_reviews\<slug>.md`;
 6. keep the source in `src\scratch`;
-7. preserve its complete matching attempt log.
+7. preserve and link its complete function recovery journal.
 
 The ledger must record:
 
@@ -452,8 +452,8 @@ Before promotion:
 7. move the source to `src\verified_logic`;
 8. version the source, ledger, and status change together.
 
-`verified_logic` remains nonexact. Preserve its ledger and attempt log if later
-exact work resumes.
+`verified_logic` remains nonexact. Preserve its ledger and function journal if
+later exact work resumes.
 
 ## State flow
 

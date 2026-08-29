@@ -40,8 +40,8 @@ assignment. Complete the exact-finish retrospective before you report.
 
 1. Query the target's status, paths, notes, history, and lease.
 2. If it is exact, validate and report it. Do not create another owner.
-3. If it is paused, read its source attempt log and bounded session brief.
-   Use the configured recovery note when a source module has `note_path`.
+3. If it is paused, read its tracked function recovery journal and bounded
+   session brief. Also read a configured module recovery note when present.
 4. Start a target session.
 5. Read the function packet and collect focused binary evidence.
 6. Complete the translation-unit context gate below.
@@ -82,7 +82,28 @@ checkpoints, pauses, and releases.
 
 Open at most two or three complete packets while selecting. Skip selection when
 the user assigns a VA. Prefer small, unleased, normal targets with a useful next
-state. Review the source comment log before you reassign paused work.
+state. Review the tracked function recovery journal before you reassign paused
+work.
+
+## Function recovery journals
+
+Each worked normal function uses a tracked journal under
+`recovery_notes/functions/<VA-prefix>/<slug>.md`. The journal is the durable
+matching notebook. Source comments are not attempt logs.
+
+Read the journal before you edit a target. Keep raw checks and complete source
+snapshots under `build/`. Before you pause or release a target, summarize only
+meaningful evidence in the journal:
+
+- the current natural source model and translation-unit context;
+- tested source, ABI, layout, control-flow, or compiler-context hypotheses;
+- results that proved or disproved an idea;
+- repeated code-generation basins and rejected artificial forms;
+- open questions, needed evidence, and useful next approaches;
+- exact-finish walkbacks or a proposed drift proof.
+
+Separate facts from hypotheses. Do not copy raw decompiler output or every
+compiler run into the journal.
 
 ## Evidence order
 
@@ -162,7 +183,7 @@ The first exact result starts the finish process. Do not report immediately.
 7. Review source, flags, ownership, and policy compliance.
 8. Run the authoritative function checker. Require `Result: MATCH` and
    `0.0000%` on the reduced source.
-9. Update the source recovery notes. Record the decisive change, tested
+9. Update the function recovery journal. Record the decisive change, tested
    reversions, required changes, incidental changes, and inseparable groups.
    State evidence separately from explanations that remain hypotheses.
    Mark each proved original defect as `ORIGINAL BUG:`. State the executable
@@ -189,18 +210,19 @@ Before this finish, confirm that you met the required-effort rules. Do not use
 this procedure as an early exit after a small number of probes.
 
 1. Restore the clean source when an experiment changed it.
-2. Update the source attempt log with tested facts and the next needed evidence.
+2. Update the function recovery journal with tested facts and the next needed
+   evidence.
 3. Run an unchanged final `validation` check.
 4. Pin that documented final source as clean.
 5. Pause the lease with a specific reason.
 
-For unresolved source, keep uncertain explanations in the attempt log. Use the
-configured recovery note for a consolidated source module. Add an inline code
+For unresolved source, keep uncertain explanations in the function journal.
+Use a configured module note for shared module evidence. Add an inline code
 comment only when current evidence establishes a durable source fact.
 
 Do not keep an opaque nonexact variant only because it has better metrics. The
-source attempt log is the durable notebook. Session files under `build\` are
-local coordination state.
+function recovery journal is the durable notebook. Session files under
+`build\` are local coordination state.
 
 ## Report
 

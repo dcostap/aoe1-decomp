@@ -10,6 +10,7 @@ from typing import Iterable
 from common import (
     REPO_ROOT,
     classify_corpus_bucket,
+    function_recovery_note_relative_path,
     load_asm_special_function_names,
     load_asm_special_regions,
     load_compiler_generated_functions,
@@ -300,7 +301,13 @@ def enrich_status_rows(
                     f"{notes['BLOCKER']} | {missing_ledger}" if notes["BLOCKER"] else missing_ledger
                 )
             module_entry = source_module_entry_for_va(row["va"])
-            note_path = str((module_entry or {}).get("note_path") or "")
+            journal_relative = function_recovery_note_relative_path(row["va"], row["slug"])
+            journal_path = REPO_ROOT / journal_relative
+            note_path = (
+                journal_relative.as_posix()
+                if journal_path.is_file()
+                else str((module_entry or {}).get("note_path") or "")
+            )
             if note_path:
                 note_label = f"Recovery notes: {note_path}"
                 notes["NOTE"] = (
@@ -518,6 +525,14 @@ def build_status_rows(
         parent_name_text = parent_fragment[1] if parent_fragment else ""
         parent_reason_text = parent_fragment[2] if parent_fragment else ""
 
+        journal_relative = function_recovery_note_relative_path(record["va"], slug)
+        configured_note_path = str((module_entry or {}).get("note_path") or "")
+        recovery_note_path = (
+            journal_relative.as_posix()
+            if (REPO_ROOT / journal_relative).is_file()
+            else configured_note_path
+        )
+
         row = {
             "va": record["va"],
             "name": record["name"],
@@ -529,7 +544,7 @@ def build_status_rows(
             "pdb_source_path": record.get("pdb_source_path", ""),
             "source_bucket": source_bucket,
             "source_path": source_path,
-            "recovery_note_path": str((module_entry or {}).get("note_path") or ""),
+            "recovery_note_path": recovery_note_path,
             "logic_review_path": str(Path("logic_reviews") / logic_review_path.name) if logic_review_path is not None else "",
             "has_logic_review": "yes" if logic_review_path is not None else "no",
             "corpus_bucket": corpus_bucket,

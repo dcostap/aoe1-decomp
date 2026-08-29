@@ -19,6 +19,7 @@ AUXILIARY_CONTRIBUTIONS_DIR = CONFIG_DIR / "auxiliary_contributions"
 INVENTORY_DIR = REPO_ROOT / "inventory"
 BUILD_DIR = REPO_ROOT / "build"
 PDB_INVENTORY_DIR = INVENTORY_DIR / "pdb"
+FUNCTION_RECOVERY_NOTES_DIR = REPO_ROOT / "recovery_notes" / "functions"
 TOOLCHAIN_SUPPLIED_FUNCTIONS_PATH = CONFIG_DIR / "toolchain_supplied_functions.txt"
 TOOLCHAIN_SUPPLIED_REGIONS_PATH = CONFIG_DIR / "toolchain_supplied_regions.txt"
 ASM_SPECIAL_FUNCTIONS_PATH = CONFIG_DIR / "asm_special_functions.txt"
@@ -292,6 +293,20 @@ def function_record_by_va(va: int) -> dict[str, str]:
         if record["va"].upper() == target:
             return record
     raise KeyError(f"No function record for VA {target}")
+
+
+def function_recovery_note_relative_path(va: str, slug: str) -> Path:
+    """Return the deterministic tracked recovery-journal path for one function."""
+    va_text = str(va).upper()
+    if len(va_text) != 8 or any(character not in "0123456789ABCDEF" for character in va_text):
+        raise ValueError(f"Invalid function VA: {va!r}")
+    if not slug or Path(slug).name != slug:
+        raise ValueError(f"Invalid function slug: {slug!r}")
+    return Path("recovery_notes") / "functions" / va_text[:4] / f"{slug}.md"
+
+
+def function_recovery_note_path(va: str, slug: str) -> Path:
+    return REPO_ROOT / function_recovery_note_relative_path(va, slug)
 
 
 def parse_hex(value: str | None) -> int | None:

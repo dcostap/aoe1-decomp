@@ -17,6 +17,7 @@ from common import (
     REPO_ROOT,
     compiler_artifact_slug,
     compiler_source_path,
+    function_recovery_note_relative_path,
     function_record_by_va,
     function_slug,
     load_pdb_function_source_map,
@@ -1040,10 +1041,13 @@ def change_state(record: dict[str, str], owner: str, state: str, reason: str) ->
 def format_session(record: dict[str, str], session: dict | None) -> str:
     source = preferred_source_path(record)
     metrics = current_metric_summary(record)
+    journal_relative = function_recovery_note_relative_path(record["va"], function_slug(record))
+    journal_exists = (REPO_ROOT / journal_relative).is_file()
     lines = [
         f"Target: {record['va']} {record['name']} ({record['size_bytes']} bytes)",
         f"Source: {_source_bucket(source)} / {source.relative_to(REPO_ROOT) if source.exists() else '<none>'}",
         f"PDB donor: {record.get('pdb_source_file', '') or '<none>'}",
+        f"Recovery journal: {journal_relative.as_posix() if journal_exists else '<missing>'}",
     ]
     if session is None:
         lines.append("Session: unclaimed")
@@ -1170,6 +1174,7 @@ def format_session(record: dict[str, str], session: dict | None) -> str:
 def session_status_payload(record: dict[str, str], session: dict | None) -> dict[str, object]:
     source = preferred_source_path(record)
     metrics = current_metric_summary(record)
+    journal_relative = function_recovery_note_relative_path(record["va"], function_slug(record))
     try:
         codegen_best = checkpoint_info(record, "@best-positional")
     except (KeyError, OSError, json.JSONDecodeError):
@@ -1182,6 +1187,9 @@ def session_status_payload(record: dict[str, str], session: dict | None) -> dict
             "pdb_source_file": record.get("pdb_source_file", ""),
             "source_bucket": _source_bucket(source),
             "source_path": str(source.relative_to(REPO_ROOT)) if source.exists() else "",
+            "recovery_journal_path": journal_relative.as_posix()
+            if (REPO_ROOT / journal_relative).is_file()
+            else "",
         },
         "session": session,
         "current_metrics": metrics,

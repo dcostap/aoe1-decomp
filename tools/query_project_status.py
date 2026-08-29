@@ -90,7 +90,7 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help=(
             "Include local generated claims, probes, progress, and last worker. "
-            "This data can reset with build cleanup; source comments are durable."
+            "This data can reset with build cleanup; tracked recovery journals are durable."
         ),
     )
     parser.add_argument("--max-lifetime-probes", type=int, help="Maximum lifetime meaningful probes")
