@@ -2,6 +2,12 @@
 #define AOE1_STAT_OBJ_H
 
 #include "utmarray.h"
+#include "xyz_point.h"
+
+extern float DAT_0056e63c;
+extern float DAT_0056e640;
+extern float DAT_0056e644;
+extern float DAT_0056ee00;
 
 class InfluenceMap;
 class LOSTBL;
@@ -22,7 +28,6 @@ class UnitAIModule;
 struct RGE_Object_Node;
 struct XYPoint;
 struct XYZBYTEPoint;
-struct XYZPoint;
 
 struct RGE_Check_Node {
     RGE_Static_Object* node;
@@ -85,96 +90,102 @@ public:
     virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
     virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*, RGE_Static_Object*);
     virtual void rotate(long);
-    virtual unsigned char can_attack();
+    virtual unsigned char can_attack() { return 0; }
     virtual void set_attribute(short, float);
     virtual void set_attribute_amount(float, unsigned char, unsigned char);
-    virtual int heal(int, int);
+    virtual int heal(int, int) { return 0; }
     virtual unsigned char heal(float);
-    virtual int canRepair();
+    virtual int canRepair() { return 0; }
     virtual void notify_of_relation(long, unsigned char);
-    virtual void do_command(RGE_Static_Object*, float, float, float);
-    virtual void move_to(RGE_Static_Object*, float, float, float);
-    virtual void work(RGE_Static_Object*, float, float, float);
-    virtual void stop();
-    virtual void set_attack(RGE_Static_Object*);
-    virtual void play_command_sound();
-    virtual void play_move_sound();
+    virtual void do_command(RGE_Static_Object*, float, float, float) {}
+    virtual void move_to(RGE_Static_Object*, float, float, float) {}
+    virtual void work(RGE_Static_Object*, float, float, float) {}
+    virtual void stop() {}
+    virtual void set_attack(RGE_Static_Object*) {}
+    virtual void play_command_sound() {}
+    virtual void play_move_sound() {}
     virtual void new_angle(float);
     virtual RGE_Static_Object* spawn_death_obj();
-    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float);
+    virtual RGE_Master_Static_Object* get_command_master(RGE_Static_Object*, float, float, float)
+    {
+        return this->master_obj;
+    }
     virtual void set_being_worked_on(RGE_Action_Object*, short, unsigned char);
     virtual void release_being_worked_on(RGE_Static_Object*);
     virtual unsigned char is_moving();
     unsigned char is_dying();
-    virtual RGE_Static_Object* get_target_obj();
+    virtual RGE_Static_Object* get_target_obj() { return 0; }
     virtual void enter_obj(RGE_Static_Object*);
     virtual void exit_obj();
     virtual int explore_terrain(RGE_Player*, unsigned char, int);
     virtual void unexplore_terrain(RGE_Player*, unsigned char, int);
     virtual LOSTBL* get_los_table();
-    virtual int inAttackRange(RGE_Static_Object*);
+    virtual int inAttackRange(RGE_Static_Object*) { return 0; }
     virtual unsigned char underAttack() const;
     virtual void setUnderAttack(unsigned char);
-    virtual float calc_attack_modifier(RGE_Static_Object*);
-    virtual float getSpeed() const;
-    virtual float getAngle() const;
-    virtual float maximumSpeed();
-    virtual float rateOfFire();
-    virtual float damageCapability(RGE_Static_Object*);
-    virtual float damageCapability();
-    virtual float weaponRange();
-    virtual float minimumWeaponRange();
-    virtual int passableTile(float, float, int);
-    virtual unsigned char facetToNextWaypoint() const;
-    virtual int currentTargetID();
-    virtual float currentTargetX();
-    virtual float currentTargetY();
-    virtual float currentTargetZ();
-    virtual void setWaitingToMove(unsigned char);
-    virtual unsigned char waitingToMove() const;
-    virtual unsigned char actionState() const;
-    virtual unsigned char keepGatheringWhenObjectIsOut(int);
-    virtual unsigned char produceWhenKilledBy(int);
-    virtual unsigned char useSameZoneDropsite();
+    virtual float calc_attack_modifier(RGE_Static_Object*)
+    {
+        return DAT_0056e63c;
+    }
+    virtual float getSpeed() const { return DAT_0056e640; }
+    virtual float getAngle() const { return DAT_0056ee00; }
+    virtual float maximumSpeed() { return DAT_0056ee00; }
+    virtual float rateOfFire() { return DAT_0056e640; }
+    virtual float damageCapability(RGE_Static_Object*) { return DAT_0056e640; }
+    virtual float damageCapability() { return DAT_0056e640; }
+    virtual float weaponRange() { return DAT_0056e640; }
+    virtual float minimumWeaponRange() { return DAT_0056e640; }
+    virtual int passableTile(float, float, int) { return 0; }
+    virtual unsigned char facetToNextWaypoint() const { return 0xFF; }
+    virtual int currentTargetID() const { return -1; }
+    virtual float currentTargetX() const { return DAT_0056e644; }
+    virtual float currentTargetY() const { return DAT_0056e644; }
+    virtual float currentTargetZ() const { return DAT_0056e644; }
+    virtual void setWaitingToMove(unsigned char) {}
+    virtual unsigned char waitingToMove() const { return 0; }
+    virtual unsigned char actionState() const { return 0; }
+    virtual unsigned char keepGatheringWhenObjectIsOut(int) const { return 0; }
+    virtual unsigned char produceWhenKilledBy(int) const { return 1; }
+    virtual unsigned char useSameZoneDropsite() const { return 1; }
     virtual void __cdecl logDebug(const char*, ...);
-    virtual void notify(int, int, int, long, long, long);
-    virtual int attack(float, float, float, int);
-    virtual int attack(int, int);
-    virtual int moveTo(int, int);
-    virtual int moveTo(int, float, int);
-    virtual int moveTo(float, float, float, float, int);
-    virtual int moveAwayFrom(int, int);
-    virtual int hunt(int, int);
-    virtual int gather(int, int);
-    virtual int convert(int, int);
-    virtual int repair(int, int);
-    virtual int build(int, int);
-    virtual int trade(int, int);
-    virtual int explore(int, int, int);
-    virtual int enter(int, int);
-    virtual int unload(int, float, float, float);
-    virtual int transport(float, float, float, int);
-    virtual int stopAction();
-    virtual int pause();
+    virtual void notify(int, int, int, long, long, long) {}
+    virtual int attack(float, float, float, int) { return 0; }
+    virtual int attack(int, int) { return 0; }
+    virtual int moveTo(int, int) { return 0; }
+    virtual int moveTo(int, float, int) { return 0; }
+    virtual int moveTo(float, float, float, float, int) { return 0; }
+    virtual int moveAwayFrom(int, int) { return 0; }
+    virtual int hunt(int, int) { return 0; }
+    virtual int gather(int, int) { return 0; }
+    virtual int convert(int, int) { return 0; }
+    virtual int repair(int, int) { return 0; }
+    virtual int build(int, int) { return 0; }
+    virtual int trade(int, int) { return 0; }
+    virtual int explore(int, int, int) { return 0; }
+    virtual int enter(int, int) { return 0; }
+    virtual int unload(int, float, float, float) { return 0; }
+    virtual int transport(float, float, float, int) { return 0; }
+    virtual int stopAction() { return 0; }
+    virtual int pause() { return 0; }
     // VC5 reverses this adjacent overload pair in the original vtable.
-    virtual int canPath(XYZPoint, float, int, float*, int, int, int);
-    virtual int canPath(int, float, float*, int, int, int);
-    virtual int canBidirectionPath(int, int, float, float*, int, int, int);
+    virtual int canPath(XYZPoint, float, int, float*, int, int, int) { return 0; }
+    virtual int canPath(int, float, float*, int, int, int) { return 0; }
+    virtual int canBidirectionPath(int, int, float, float*, int, int, int) { return 0; }
     virtual int canPathWithObstructions(int, float, float*, int, int, int,
-                                        ManagedArray<int>&);
+                                        ManagedArray<int>&) { return 0; }
     virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int,
-                                                 int, int, int, int);
-    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
-    virtual int canLinePath(int, int, int, int, float, int);
-    virtual int canLinePath(const XYPoint&, const XYPoint&, float, XYPoint&, int);
+                                                 int, int, int, int) { return 0; }
+    virtual int findFirstTerrainAlongExceptionPath(int, float*, float*) { return 0; }
+    virtual int canLinePath(int, int, int, int, float, int) { return 0; }
+    virtual int canLinePath(const XYPoint&, const XYPoint&, float, XYPoint&, int) { return 0; }
     virtual int firstTileAlongLine(const XYPoint&, const XYPoint&, XYPoint&, int,
-                                   int, int);
-    virtual XYZBYTEPoint* userDefinedWaypoint(int);
-    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
-    virtual void removeAllUserDefinedWaypoints(int);
-    virtual void removeUserDefinedWaypoint(int);
-    virtual int numberUserDefinedWaypoints() const;
-    virtual Path* findAvoidancePath(XYZPoint&, float, int);
+                                   int, int) { return 0; }
+    virtual XYZBYTEPoint* userDefinedWaypoint(int) { return 0; }
+    virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int) { return 0; }
+    virtual void removeAllUserDefinedWaypoints(int) {}
+    virtual void removeUserDefinedWaypoint(int) {}
+    virtual int numberUserDefinedWaypoints() const { return 0; }
+    virtual Path* findAvoidancePath(XYZPoint&, float, int) { return 0; }
     virtual long get_action_checksum();
     virtual long get_waypoint_checksum();
     // overload at +0x1D8 and the master overload at +0x1DC.

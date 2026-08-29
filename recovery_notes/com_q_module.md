@@ -23,3 +23,10 @@ localized.
 
 The direct typed forms changed code generation for several former leaf exact
 owners. Do not restore raw pointer arithmetic to promote them.
+
+## Header-owner closure
+
+`include/com_q.h` already contains the canonical `MsgQueue` constructor and
+destructor bodies. The direct object confirms `00431F60` and `00431F80` as
+`MATCH`, `0.0000%`, with correct symbols, boundaries, relocations, and the
+destructor delete target. No `.cpp` body or translation-unit owner is added.

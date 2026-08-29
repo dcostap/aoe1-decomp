@@ -11,6 +11,7 @@ public:
     RGE_Animated_Object(int, RGE_Game_World*, int);
 
     virtual ~RGE_Animated_Object();
+    virtual float getSpeed() const { return this->speed; }
 
 protected:
     virtual int setup(RGE_Master_Animated_Object*, RGE_Player*, float, float,

@@ -51,9 +51,9 @@ public:
     virtual int loggingCommonHistory() const;
     virtual void setLogCommonHistory(int);
     virtual void toggleLogCommonHistory();
-    virtual int loadState(char*);
-    virtual int saveState(char*);
-    virtual int gleanState(int);
+    virtual int loadState(char*) { return 0; }
+    virtual int saveState(char*) { return 0; }
+    virtual int gleanState(int) { return 0; }
     virtual int processMessage(AIModuleMessage*);
     virtual int update(int);
     virtual void setCallbackMessage(AIModuleMessage*);

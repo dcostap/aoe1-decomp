@@ -4,11 +4,12 @@
 
 `src/player.cpp` owns the complete Player module.
 It contains all 117 normal `player.cpp` PDB owners in source order.
-It also emits `0046ED40 RGE_Player::logStatus(FILE*, int)`.
+The header-owned `RGE_Player::logStatus(FILE*, int)` body is included by this
+module and emits its original symbol.
 
 The PDB maps `0046ED40` to `player.h:300`.
 The original `player.cpp` compiland emits its three-byte body.
-Keep that definition before the `player.cpp` owner sequence.
+Keep the header definition before the `player.cpp` owner sequence.
 The direct object matches `0046ED40` at `0.0000%`.
 
 `0046E750` remains compiler-generated.
@@ -60,3 +61,17 @@ The full 117-body candidate still matches all 106 registered exact owners.
 The remaining eleven rows keep their recorded status and mismatch data.
 
 The removed wrapper and its context had no remaining consumers.
+
+## Header-owner closure
+
+The seven standalone header probes from the source bank are deleted. Their
+bodies now live in `include/player.h` in PDB order, including the proved
+return defaults. The direct Player candidate emits `0046ED40` as
+`?logStatus@RGE_Player@@UAEXPAU_iobuf@@H@Z` and reports `MATCH`, `0.0000%`,
+with no relocation mismatch or boundary escape.
+
+The same candidate keeps 104 of 105 registered owners exact. `004705A0`
+`set_color_table` changes by 20 bytes and one boundary escape after the
+header body closure. Its register-color change is recorded as a structural
+migration regression. The owner remains registered and no source body was
+changed to hide it.

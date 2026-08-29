@@ -45,12 +45,36 @@ The four remaining normal records have no proven `.cpp` owner:
 00431F80 MsgQueue::~MsgQueue          com_q.h
 ```
 
-The natural bodies remain in `src/player.cpp`, `src/world.cpp`, and the
-canonical `include/com_q.h` surface. The PDB maps them to headers, not to an
-owning compiland. They remain explicit unresolved ownership. No source-module
-owner was invented.
+The natural bodies now remain in the canonical headers: `player.h`, `world.h`,
+and `com_q.h`. The PDB maps them to headers, not to an owning compiland. They
+remain explicit unresolved ownership. No source-module owner was invented.
+`RGE_Player::logStatus` and `RGE_Game_World::logStatus` no longer have
+duplicate definitions in their `.cpp` modules. The `MsgQueue` bodies were
+already in `com_q.h` and remain unchanged.
+
+Focused header-owner validation covers all four rows. It confirms the two
+`logStatus` bodies are empty and the two `MsgQueue` bodies keep their field
+stores, delete call, boundary, and direct target. No translation-unit owner is
+registered for these header rows. The Player, World, and communications-queue
+objects report `MATCH`, `0.0000%`, with the PDB-qualified symbols
+`?logStatus@RGE_Player@@UAEXPAU_iobuf@@H@Z`,
+`?logStatus@RGE_Game_World@@MAEXPAU_iobuf@@H@Z`,
+`??0MsgQueue@@QAE@XZ`, and `??1MsgQueue@@QAE@XZ`.
 
 ## Header bodies and residue
+
+The 101 normal header-attributed rows from the standalone audit now have
+canonical bodies in their owner headers. Their former 99 matching probes and
+two scratch probes are deleted. The header groups are `stat_obj.h` (68),
+`panel.h` (14), `player.h` (7), `aimodule.h` (3), `dlg_list.h` (2),
+`move_obj.h` (2), `scenario.h` (2), `aiuaimod.h` (1), `ani_obj.h` (1), and
+`utmarray.h` (1).
+
+Focused VC5 emission checks report positional `MATCH` for the 68 Static Object
+rows, the Panel, Player, AIModule, dialog, moving-object, Scenario,
+UnitAIModule, and animated-object rows. `0043F320` remains scratch and is not
+promoted by this structural check. `004147A0` emits the current public
+`resize` body, but its PDB-proven protected symbol is still missing.
 
 The 22 context-macro fragments had header line records and no proven `.cpp`
 owner. Their bodies now remain in the canonical headers:
@@ -84,18 +108,18 @@ The tree had four unreferenced scratch test files, not three:
 
 ## Current counts
 
-After this audit, the status view reports:
+After this closure, the status view reports:
 
-- 5,461 normal records;
-- 223 compiler-generated records;
-- 60 unclaimed normal records;
+- 5,428 normal records;
+- 256 compiler-generated records;
+- 167 unclaimed normal records;
 - 221 registered translation-unit groups;
 - 224 natural C/C++ source-module manifests;
 - 1 auxiliary no-line contribution manifest.
 
-The 60 unclaimed normal records include the four explicit header ownership
-rows, the 23 removed header fragments, and the 33 Tech observations. They are
-not silent exact-owner claims.
+The unclaimed normal records include the 105 explicit header ownership rows,
+the removed header fragments, and other reviewed exceptions. They are not
+silent exact-owner claims.
 
 ## Validation
 

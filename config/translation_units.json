@@ -2981,6 +2981,7 @@
       },
       "symbols": {
         "0046E4B0": "??0RGE_Player@@QAE@HPAVRGE_Game_World@@E@Z",
+        "0046EDB0": "?computerPlayer@RGE_Player@@QBEHXZ",
         "0046F050": "?sendPlayCommand@RGE_Player@@UAEXHHH@Z",
         "0046F140": "?sendPlayCommand@RGE_Player@@UAEXHPAHHHH@Z",
         "0046F200": "?pathingAttemptCap@RGE_Player@@QAEHXZ",

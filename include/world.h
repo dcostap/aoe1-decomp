@@ -70,7 +70,7 @@ protected:
     virtual void load_scenario6(int, RGE_Player_Info&);
     virtual void load_scenario7(int, RGE_Player_Info&);
     virtual void load_scenario8(int, RGE_Player_Info&);
-    virtual void logStatus(FILE*, int);
+    virtual void logStatus(FILE*, int) {}
 
 public:
     virtual ~RGE_Game_World();

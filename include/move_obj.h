@@ -72,6 +72,7 @@ public:
     unsigned char is_moving();
     virtual void stop_moving();
     int movement_state() const;
+    virtual float getAngle() const { return this->angle; }
     virtual unsigned char waitingToMove() const;
     float angle_to_object(RGE_Static_Object*, float, float);
     virtual unsigned char turn_towards(RGE_Static_Object*, float, float);
@@ -92,6 +93,10 @@ public:
     virtual int addUserDefinedWaypoint(XYZBYTEPoint*, int);
     virtual void removeAllUserDefinedWaypoints(int);
     virtual void removeUserDefinedWaypoint(int);
+    virtual int numberUserDefinedWaypoints() const
+    {
+        return this->numberUserDefinedWaypointsValue;
+    }
     void setFinalUserDefinedWaypoint();
     void setInitialPoints(XYPoint&, XYPoint&);
     void copy_obj(RGE_Master_Static_Object*);

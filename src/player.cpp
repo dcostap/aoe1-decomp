@@ -39,8 +39,6 @@ struct Selection_Locals {
     RGE_Static_Object** list;
 };
 
-void RGE_Player::logStatus(FILE* p0, int p1) {}
-
 RGE_Player::RGE_Player(int file, RGE_Game_World* world_arg,
                        unsigned char player_id)
     : computerPlayerValue(0), pathingAttemptCapValue(5),

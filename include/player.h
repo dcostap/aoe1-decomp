@@ -53,8 +53,8 @@ public:
     virtual ~RGE_Player();
     virtual void set_game_status(unsigned char);
     virtual void do_resign(int);
-    virtual void changeToHumanPlayer();
-    virtual void changeToComputerPlayer();
+    virtual void changeToHumanPlayer() {}
+    virtual void changeToComputerPlayer() {}
     virtual char* aiStatus(int);
     virtual int isEnemy(int);
     virtual int isAlly(int);
@@ -66,17 +66,17 @@ public:
                                  float, int, int, int);
     virtual void processAIOrder(int, int, int, int, int, float, float, float,
                                 float, int, int, int);
-    virtual void kickAI(int);
-    virtual int strategicNumber(int);
+    virtual void kickAI(int) {}
+    virtual int strategicNumber(int) { return -1; }
     virtual void sendGameOrder(RGE_Static_Object*, RGE_Static_Object*, float,
                                float);
     virtual void sendAddWaypointCommand(int, XYZBYTEPoint*, int);
     virtual void processAddWaypointCommand(int, XYZBYTEPoint*, int);
     virtual void sendPlayCommand(int, int*, int, int, int);
     virtual void sendPlayCommand(int, int, int);
-    virtual int sendAICommand(int, int, int, int, int);
-    virtual int objectCostByType(int);
-    virtual void trackUnitGather(int, int, int);
+    virtual int sendAICommand(int, int, int, int, int) { return 0; }
+    virtual int objectCostByType(int) { return -1; }
+    virtual void trackUnitGather(int, int, int) {}
     virtual RGE_Static_Object* make_scenario_obj(float, float, float, short,
                                                   unsigned char, float);
     virtual void scenario_save(int);
@@ -114,7 +114,7 @@ public:
     virtual void removeObject(RGE_Static_Object*, int, int, RGE_Object_Node*);
     virtual void __cdecl logMessage(char*, ...);
     virtual void notify(int, int, int, long, long, long);
-    virtual void logStatus(FILE*, int);
+    virtual void logStatus(FILE*, int) {}
     virtual void load_victory(int, long*, unsigned char);
     virtual void new_victory();
 

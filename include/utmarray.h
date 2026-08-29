@@ -136,6 +136,8 @@ public:
     }
 
 public:
+    // PDB marks resize protected. Reconstructed callers still require public
+    // access, so keep the body here while the source-access boundary is open.
     int resize(int new_size)
     {
         T* new_value = new T[new_size];

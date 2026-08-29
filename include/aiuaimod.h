@@ -46,12 +46,6 @@ struct NotifyEvent {
     long p3;
 };
 
-struct XYZPoint {
-    int x;
-    int y;
-    int z;
-};
-
 class UnitAIModule {
 public:
     virtual ~UnitAIModule();

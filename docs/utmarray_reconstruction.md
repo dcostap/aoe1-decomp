@@ -51,11 +51,12 @@ header to the original bytes:
 
 The PDB proves that `ManagedArray<int>::resize(int)` is protected. The current
 reconstructed header keeps `resize` public because reconstructed external
-callers still depend on that access. `tools/validate_utmarray.py` reports the
-missing protected signature `?resize@?$ManagedArray@H@@IAEHH@Z` under this
-header. This is an open access and owner blocker. Do not change the header
-access or external callers until that boundary is resolved. The other five
-emitted exact methods remain valid.
+callers still depend on that access. Its body now has canonical header
+ownership. `tools/validate_utmarray.py` reports the missing protected
+signature `?resize@?$ManagedArray@H@@IAEHH@Z` under this header. This is an open
+access and owner blocker. Do not change the header access or external callers
+until that boundary is resolved. The other five emitted exact methods remain
+valid.
 
 Run this command to check the header. It currently stops at the missing
 protected `resize` signature noted above:

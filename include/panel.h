@@ -133,19 +133,19 @@ public:
     virtual long handle_mouse_move(long, long, int, int);
     virtual long handle_mouse_up(unsigned char, long, long, int, int);
     virtual long handle_mouse_dbl_click(unsigned char, long, long, int, int);
-    virtual long mouse_move_action(long, long, int, int);
-    virtual long mouse_left_down_action(long, long, int, int);
-    virtual long mouse_left_hold_action(long, long, int, int);
-    virtual long mouse_left_move_action(long, long, int, int);
-    virtual long mouse_left_up_action(long, long, int, int);
-    virtual long mouse_left_dbl_click_action(long, long, int, int);
-    virtual long mouse_right_down_action(long, long, int, int);
-    virtual long mouse_right_hold_action(long, long, int, int);
-    virtual long mouse_right_move_action(long, long, int, int);
-    virtual long mouse_right_up_action(long, long, int, int);
-    virtual long mouse_right_dbl_click_action(long, long, int, int);
-    virtual long key_down_action(long, short, int, int, int);
-    virtual long char_action(long, short);
+    virtual long mouse_move_action(long, long, int, int) { return 0; }
+    virtual long mouse_left_down_action(long, long, int, int) { return 0; }
+    virtual long mouse_left_hold_action(long, long, int, int) { return 0; }
+    virtual long mouse_left_move_action(long, long, int, int) { return 0; }
+    virtual long mouse_left_up_action(long, long, int, int) { return 0; }
+    virtual long mouse_left_dbl_click_action(long, long, int, int) { return 0; }
+    virtual long mouse_right_down_action(long, long, int, int) { return 0; }
+    virtual long mouse_right_hold_action(long, long, int, int) { return 0; }
+    virtual long mouse_right_move_action(long, long, int, int) { return 0; }
+    virtual long mouse_right_up_action(long, long, int, int) { return 0; }
+    virtual long mouse_right_dbl_click_action(long, long, int, int) { return 0; }
+    virtual long key_down_action(long, short, int, int, int) { return 0; }
+    virtual long char_action(long, short) { return 0; }
     virtual long action(TPanel*, long, unsigned long, unsigned long);
     virtual void get_true_render_rect(tagRECT&);
     virtual int is_inside(long, long);
@@ -155,7 +155,7 @@ public:
     virtual unsigned char get_help_info(char*&, long&, long, long);
     virtual void stop_sound_system();
     virtual int restart_sound_system();
-    virtual void take_snapshot();
+    virtual void take_snapshot() {}
     virtual void handle_reactivate();
 
     TPanel(char* name);

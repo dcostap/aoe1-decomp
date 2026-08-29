@@ -3,8 +3,10 @@
 `World.cpp` owns 91 normal functions. The PDB maps them to lines 138 through
 4056. `RGE_Game_World` remains in `include/world.h`.
 
-`src/world.cpp` holds all 91 bodies in PDB source order. It uses canonical
-World, Map, Player, Scenario, Object, Command, and BaseGame owners. It has no
+`src/world.cpp` holds all 91 `World.cpp` bodies in PDB source order.
+The header-owned `RGE_Game_World::logStatus(FILE*, int)` body is included by
+this module. It uses canonical World, Map, Player, Scenario, Object, Command,
+and BaseGame owners. It has no
 World context include, local class carrier, absolute-address access, or wrapper
 include.
 
@@ -39,3 +41,11 @@ boundary escapes: `00540A40`, `005414A0`, `00541B60`, `00541BC0`, `00541C20`,
 
 The prior World wrappers and context headers had duplicate foreign owners.
 They are migration scaffolds. The natural source replaces them.
+
+## Header-owner closure
+
+The header-owned `00540A10` body is now only in `include/world.h`, under its
+PDB-proven protected access. The direct World candidate emits
+`?logStatus@RGE_Game_World@@MAEXPAU_iobuf@@H@Z` and reports `MATCH`, `0.0000%`,
+with no relocation mismatch or boundary escape. The 76 registered World
+owners also remain exact.

@@ -32,11 +32,14 @@ public:
 
 class RGE_Scenario {
 protected:
-    virtual RGE_Static_Object* get_object_pointer(int object_id);
+    virtual RGE_Static_Object* get_object_pointer(int object_id)
+    {
+        return 0;
+    }
 
 public:
     virtual ~RGE_Scenario();
-    virtual void rehook();
+    virtual void rehook() {}
     virtual void save(int file);
 
     RGE_Timeline* time_line;
