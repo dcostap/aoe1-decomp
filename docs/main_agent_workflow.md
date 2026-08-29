@@ -99,6 +99,9 @@ report directories prevent report collisions.
 
 ## Review a return
 
+Review completed work read-only while other workers remain active. Do not move
+`HEAD` or change shared files until the wave ends.
+
 When a worker reports completion:
 
 1. Tell the worker to stop editing the leased translation unit.
@@ -110,11 +113,16 @@ When a worker reports completion:
 7. Rerun focused grouped validation when source changed.
 8. Accept, revise, or reject the source change.
 9. Review any accepted-drift proposal.
-10. Update status and exact registration only after proof.
-11. Stage only the reviewed paths.
-12. Commit the logical result and release the translation-unit lease.
 
-Other workers can continue in unrelated translation units.
+After all workers in the wave stop:
+
+10. Update status and exact registration only after proof.
+11. Make reviewed shared-header or tool repairs.
+12. Stage only the reviewed paths.
+13. Commit each logical result and clear any stale lease.
+
+Other workers can continue in unrelated translation units during read-only
+review. Defer shared edits and commits until they stop.
 
 ## Exact review
 

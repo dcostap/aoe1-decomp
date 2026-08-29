@@ -86,6 +86,9 @@ ABI, layout, control-flow, lifetime, or compiler-context idea.
 Record meaningful checks through `target_session.py check`. Do not count syntax
 repairs, unchanged reruns, or renamed locals as new evidence.
 
+If the target-session lock times out, do not loop, force, or delete the lock.
+Keep the source safe, record the blocker, and report it to the main agent.
+
 Use `tools/check_function.py --no-build` for extra read-only diagnostics after a
 current check.
 

@@ -5,6 +5,7 @@ import json
 import sys
 import tempfile
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -39,6 +40,39 @@ class TargetSessionTests(unittest.TestCase):
                 self.assertEqual(second["owner"], "AgentB")
                 self.assertEqual(second["probe_start_index"], len(second["probes"]))
                 self.assertTrue(any(event["kind"] == "takeover" for event in second["events"]))
+
+    def test_metric_and_snapshot_work_stays_outside_the_global_lock(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            lock_depth = 0
+
+            @contextmanager
+            def checked_lock():
+                nonlocal lock_depth
+                lock_depth += 1
+                try:
+                    yield
+                finally:
+                    lock_depth -= 1
+
+            def require_unlocked(*_args, **_kwargs):
+                self.assertEqual(lock_depth, 0)
+                return {}
+
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(target_session, "_sessions_lock", checked_lock),
+                patch.object(target_session, "current_metric_summary", require_unlocked),
+                patch.object(target_session, "current_output_snapshot", require_unlocked),
+                patch.object(target_session, "current_input_snapshot", require_unlocked),
+            ):
+                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session.record_probe(
+                    self.record,
+                    "AgentA",
+                    "abi",
+                    "checked outside lock",
+                )
 
     def test_active_same_owner_start_renews_without_adding_a_claim(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

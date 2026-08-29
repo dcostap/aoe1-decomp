@@ -502,7 +502,12 @@ def classify_next_stage(metrics: dict[str, object]) -> str:
 
 
 def _new_session(
-    record: dict[str, str], owner: str, budget: int, lease_hours: float, prior: dict | None
+    record: dict[str, str],
+    owner: str,
+    budget: int,
+    lease_hours: float,
+    prior: dict | None,
+    metric_summary: dict[str, object] | None = None,
 ) -> dict:
     now = _utc_now()
     events = list((prior or {}).get("events") or [])
@@ -540,7 +545,7 @@ def _new_session(
         else len(probes),
         "probes": probes,
         "events": events,
-        "last_metric_summary": current_metric_summary(record),
+        "last_metric_summary": metric_summary or {},
         "clean_baseline": dict((prior or {}).get("clean_baseline") or {}),
     }
 
@@ -549,6 +554,7 @@ def start_session(
     record: dict[str, str], owner: str, budget: int, lease_hours: float, force: bool = False
 ) -> dict:
     checked_owner = _validate_owner(owner)
+    metric_summary = current_metric_summary(record)
     with _sessions_lock():
         prior = _load_session(record)
         if prior and _lease_active(prior) and prior.get("owner") != checked_owner and not force:
@@ -572,7 +578,14 @@ def start_session(
                     f"through {other_va} by {other.get('owner')} until "
                     f"{other.get('lease_expires_at')}; pause or release that target first"
                 )
-        session = _new_session(record, checked_owner, budget, lease_hours, prior)
+        session = _new_session(
+            record,
+            checked_owner,
+            budget,
+            lease_hours,
+            prior,
+            metric_summary,
+        )
         _write_session(record, session)
     return session
 
@@ -769,14 +782,15 @@ def record_probe(
     evidence: dict[str, object] | None = None,
     detect_output_duplicate: bool = True,
 ) -> dict:
+    metrics = current_metric_summary(record)
+    outputs = current_output_snapshot(record, metrics)
+    inputs = current_input_snapshot(record)
     with _sessions_lock():
         session = _require_active_owner(_load_session(record), owner, record)
         now = _utc_now()
-        metrics = current_metric_summary(record)
         prior_metrics = {}
         if session.get("probes"):
             prior_metrics = dict(session["probes"][-1].get("metrics") or {})
-        outputs = current_output_snapshot(record, metrics)
         duplicate_of = None
         identity = outputs.get("emitted_identity_sha256")
         if identity and detect_output_duplicate:
@@ -796,7 +810,7 @@ def record_probe(
             "checkpoint": checkpoint.strip(),
             "metrics": metrics,
             "metric_delta": metric_delta(metrics, prior_metrics),
-            "inputs": current_input_snapshot(record),
+            "inputs": inputs,
             "outputs": outputs,
             "same_emitted_code_as_probe": duplicate_of,
         }
@@ -1003,45 +1017,47 @@ def require_final_validation(record: dict[str, str], session: dict) -> None:
 def change_state(record: dict[str, str], owner: str, state: str, reason: str) -> dict:
     with _sessions_lock():
         session = _require_owner(_load_session(record), owner, record)
-        if state == "pause":
-            require_final_validation(record, session)
-        elif state == "release":
-            claim_probes = list(session.get("probes") or [])[int(session.get("probe_start_index") or 0) :]
-            metrics = current_metric_summary(record)
-            if claim_probes and not (
-                metrics.get("result") == "MATCH" and metrics.get("artifact_fresh") is True
-            ):
-                raise RuntimeError(
-                    "release is only for an exact current result or a claim with no recorded work; "
-                    "finalize unresolved work with validation, pin-clean, and pause"
-                )
-            if claim_probes and metrics.get("result") == "MATCH":
-                current_context = current_build_context(record, metrics)
-                if current_context is not None:
-                    latest_checkpoint = str(claim_probes[-1].get("checkpoint") or "")
-                    if not latest_checkpoint:
-                        raise RuntimeError(
-                            "grouped exact release requires the latest check checkpoint"
-                        )
-                    try:
-                        checkpoint = checkpoint_info(record, latest_checkpoint)
-                    except (KeyError, OSError, json.JSONDecodeError) as error:
-                        raise RuntimeError(
-                            f"grouped exact release checkpoint is unavailable ({latest_checkpoint})"
-                        ) from error
-                    _validate_grouped_checkpoint(
-                        record,
-                        checkpoint,
-                        current_context,
-                        metrics,
-                        current_input_snapshot(record),
-                        require_exact=True,
+    metrics = current_metric_summary(record)
+    if state == "pause":
+        require_final_validation(record, session)
+    elif state == "release":
+        claim_probes = list(session.get("probes") or [])[int(session.get("probe_start_index") or 0) :]
+        if claim_probes and not (
+            metrics.get("result") == "MATCH" and metrics.get("artifact_fresh") is True
+        ):
+            raise RuntimeError(
+                "release is only for an exact current result or a claim with no recorded work; "
+                "finalize unresolved work with validation, pin-clean, and pause"
+            )
+        if claim_probes and metrics.get("result") == "MATCH":
+            current_context = current_build_context(record, metrics)
+            if current_context is not None:
+                latest_checkpoint = str(claim_probes[-1].get("checkpoint") or "")
+                if not latest_checkpoint:
+                    raise RuntimeError(
+                        "grouped exact release requires the latest check checkpoint"
                     )
+                try:
+                    checkpoint = checkpoint_info(record, latest_checkpoint)
+                except (KeyError, OSError, json.JSONDecodeError) as error:
+                    raise RuntimeError(
+                        f"grouped exact release checkpoint is unavailable ({latest_checkpoint})"
+                    ) from error
+                _validate_grouped_checkpoint(
+                    record,
+                    checkpoint,
+                    current_context,
+                    metrics,
+                    current_input_snapshot(record),
+                    require_exact=True,
+                )
+    with _sessions_lock():
+        session = _require_owner(_load_session(record), owner, record)
         now = _utc_now()
         session["state"] = state
         session["updated_at"] = _iso(now)
         session["lease_expires_at"] = _iso(now)
-        session["last_metric_summary"] = current_metric_summary(record)
+        session["last_metric_summary"] = metrics
         session.setdefault("events", []).append(
             {"at": _iso(now), "kind": state, "owner": owner, "reason": reason.strip()}
         )
