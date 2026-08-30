@@ -68,19 +68,15 @@ TribeSPMenuScreen::TribeSPMenuScreen()
 
 TribeSPMenuScreen::~TribeSPMenuScreen()
 {
-    TPanel* panel = title;
-    delete_panel(&panel);
-    title = 0;
+    delete_panel((TPanel**)&title);
 
+    TPanel** panel = (TPanel**)&button[0];
     for (int i = 0; i < 7; i++) {
-        panel = button[i];
-        delete_panel(&panel);
-        button[i] = 0;
+        delete_panel(panel);
+        panel++;
     }
 
-    panel = close_button;
-    delete_panel(&panel);
-    close_button = 0;
+    delete_panel((TPanel**)&close_button);
 }
 
 long TribeSPMenuScreen::handle_idle()

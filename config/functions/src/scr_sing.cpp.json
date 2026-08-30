@@ -7,7 +7,7 @@
   },
   "functions": {
     "004B69A0": {"status": "matching", "symbol": "??0TribeSPMenuScreen@@QAE@XZ"},
-    "004B6C00": {"status": "scratch", "symbol": "??1TribeSPMenuScreen@@UAE@XZ"},
+    "004B6C00": {"status": "matching", "symbol": "??1TribeSPMenuScreen@@UAE@XZ"},
     "004B6C90": {"status": "matching", "symbol": "?handle_idle@TribeSPMenuScreen@@UAEJXZ"},
     "004B6CC0": {"status": "matching", "symbol": "?action@TribeSPMenuScreen@@UAEJPAVTPanel@@JKK@Z"}
   }
