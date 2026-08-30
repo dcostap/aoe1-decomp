@@ -8,6 +8,7 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+from build_cache import build_input_manifest, source_dependencies
 from coff import load_coff_object
 from common import (
     REPO_ROOT,
@@ -15,6 +16,7 @@ from common import (
     function_slug,
     load_pdb_function_source_map,
     load_build_modules,
+    load_toolchain,
     repo_path,
 )
 from extract_obj_function import select_record_function_symbol
@@ -38,6 +40,16 @@ def parse_args() -> argparse.Namespace:
         help="Audit only this configured group. Repeat for more groups.",
     )
     parser.add_argument(
+        "--affected-by",
+        action="append",
+        default=[],
+        metavar="PATH",
+        help=(
+            "Audit groups whose transitive source dependencies include this "
+            "repository file. Repeat to select the union."
+        ),
+    )
+    parser.add_argument(
         "--jobs",
         type=int,
         required=True,
@@ -54,6 +66,33 @@ def parse_args() -> argparse.Namespace:
         help="Print the full row dump. Reports always contain the full results.",
     )
     return parser.parse_args()
+
+
+def select_affected_groups(
+    groups: list[dict[str, object]],
+    affected_paths: list[Path],
+    include_dirs: tuple[Path, ...] = (),
+) -> tuple[list[dict[str, object]], dict[str, list[str]]]:
+    affected = {path.resolve() for path in affected_paths}
+    selected: list[dict[str, object]] = []
+    matches_by_group: dict[str, list[str]] = {}
+    for group in groups:
+        source = repo_path(str(group["source"])).resolve()
+        dependencies = set(source_dependencies(source, include_dirs))
+        matches = sorted(
+            affected & dependencies,
+            key=lambda path: path.as_posix().lower(),
+        )
+        if not matches:
+            continue
+        selected.append(group)
+        matches_by_group[str(group["name"])] = [
+            str(path.relative_to(REPO_ROOT.resolve())).replace("\\", "/")
+            if path.is_relative_to(REPO_ROOT.resolve())
+            else str(path)
+            for path in matches
+        ]
+    return selected, matches_by_group
 
 
 def isolated_symbol_name(va: int) -> str:
@@ -205,6 +244,7 @@ def compile_and_compare_group(
     pdb_owner_names: dict[str, str],
     matching_groups_by_va: dict[str, list[str]],
     output_dir: Path,
+    input_fingerprint: str,
 ) -> dict[str, object]:
     name = str(group["name"])
     wrapper = repo_path(str(group["source"]))
@@ -221,6 +261,7 @@ def compile_and_compare_group(
             "group": name,
             "source": str(group["source"]),
             "flags": str(build["flags_path"]),
+            "input_fingerprint": input_fingerprint,
             "compile_error": str(error),
             "rows": [],
         }
@@ -326,6 +367,7 @@ def compile_and_compare_group(
         "group": name,
         "source": str(group["source"]),
         "flags": str(build["flags_path"]),
+        "input_fingerprint": input_fingerprint,
         "compile_error": "",
         "rows": rows,
     }
@@ -346,6 +388,13 @@ def text_report(report: dict[str, object]) -> str:
         "",
         "Categories:",
     ]
+    selection = report.get("selection")
+    if isinstance(selection, dict) and selection.get("mode") == "affected_by":
+        lines[1:1] = [
+            "Selection: affected translation units",
+            f"Affected paths: {', '.join(selection['affected_by'])}",
+            f"Selected groups: {', '.join(selection['selected_groups'])}",
+        ]
     category_counts = summary["category_counts"]
     assert isinstance(category_counts, dict)
     for category, count in sorted(
@@ -404,6 +453,13 @@ def console_summary(report: dict[str, object]) -> str:
         f"Other configured functions: {summary['nonmatching_count']}",
         "Categories:",
     ]
+    selection = report.get("selection")
+    if isinstance(selection, dict) and selection.get("mode") == "affected_by":
+        lines[1:1] = [
+            "Selection: affected translation units",
+            f"Affected paths: {', '.join(selection['affected_by'])}",
+            f"Selected groups: {', '.join(selection['selected_groups'])}",
+        ]
     category_counts = summary["category_counts"]
     assert isinstance(category_counts, dict)
     for category, count in sorted(
@@ -622,6 +678,8 @@ def main() -> int:
         raise SystemExit("--jobs must be positive")
     output_dir = repo_path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+    if args.group and args.affected_by:
+        raise SystemExit("--group and --affected-by cannot be combined")
     groups = load_build_modules()
     matching_groups_by_va: dict[str, list[str]] = {}
     for group in groups:
@@ -631,12 +689,56 @@ def main() -> int:
             if isinstance(entry, dict) and entry.get("status") == "matching":
                 matching_groups_by_va.setdefault(str(va).upper(), []).append(str(group["name"]))
     requested = set(args.group)
+    selection: dict[str, object] = {
+        "mode": "groups" if requested else "all",
+        "affected_by": [],
+        "selected_groups": [],
+        "matches_by_group": {},
+    }
     if requested:
         known = {str(group["name"]) for group in groups}
         missing = sorted(requested - known)
         if missing:
             raise SystemExit(f"Unknown translation-unit groups: {', '.join(missing)}")
         groups = [group for group in groups if str(group["name"]) in requested]
+    elif args.affected_by:
+        affected_paths = [repo_path(value).resolve() for value in args.affected_by]
+        missing_paths = [path for path in affected_paths if not path.is_file()]
+        if missing_paths:
+            raise SystemExit(
+                "Affected dependency paths do not exist: "
+                + ", ".join(str(path) for path in missing_paths)
+            )
+        outside_paths = [
+            path
+            for path in affected_paths
+            if not path.is_relative_to(REPO_ROOT.resolve())
+        ]
+        if outside_paths:
+            raise SystemExit(
+                "Affected dependency paths must be inside the repository: "
+                + ", ".join(str(path) for path in outside_paths)
+            )
+        toolchain = load_toolchain()
+        include_dirs = tuple(
+            Path(value).resolve()
+            for value in toolchain.get("environment", {}).get("include", [])
+        )
+        groups, matches_by_group = select_affected_groups(
+            groups, affected_paths, include_dirs
+        )
+        if not groups:
+            raise SystemExit("No translation-unit groups depend on the selected paths")
+        selection = {
+            "mode": "affected_by",
+            "affected_by": [
+                str(path.relative_to(REPO_ROOT.resolve())).replace("\\", "/")
+                for path in affected_paths
+            ],
+            "selected_groups": [str(group["name"]) for group in groups],
+            "matches_by_group": matches_by_group,
+        }
+    selection["selected_groups"] = [str(group["name"]) for group in groups]
 
     statuses = build_status_rows(include_source_preview=False)
     by_source: dict[Path, list[dict[str, str]]] = {}
@@ -675,6 +777,17 @@ def main() -> int:
         for va, entry in load_pdb_function_source_map().items()
     }
     results: list[dict[str, object]] = []
+    toolchain = load_toolchain()
+    input_fingerprints = {
+        str(group["name"]): str(
+            build_input_manifest(
+                repo_path(str(group["source"])),
+                repo_path(str(group["build"]["flags_path"])),
+                toolchain,
+            )["fingerprint"]
+        )
+        for group in groups
+    }
     jobs = min(args.jobs, len(groups))
     with ThreadPoolExecutor(max_workers=jobs) as executor:
         futures = {
@@ -686,6 +799,7 @@ def main() -> int:
                 pdb_owner_names,
                 matching_groups_by_va,
                 output_dir,
+                input_fingerprints[str(group["name"])],
             ): str(group["name"])
             for group in groups
         }
@@ -706,6 +820,7 @@ def main() -> int:
     ]
     report: dict[str, object] = {
         "schema": 1,
+        "selection": selection,
         "summary": {
             "group_count": len(groups),
             "compiled_group_count": len(groups) - len(compile_errors),

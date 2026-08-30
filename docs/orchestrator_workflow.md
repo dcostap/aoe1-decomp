@@ -98,8 +98,8 @@ For a normal worker return:
 4. Read all changed function bodies and notes.
 5. Confirm that each changed file keeps its existing line-ending style.
 6. Check source plausibility and executable behavior.
-7. Rerun authoritative checks for retained changes.
-8. Audit the translation unit and its matching neighbors.
+7. Select the smallest verification level that proves the result.
+8. Reuse fresh worker artifacts when their input fingerprints match.
 9. Accept, revise, or reject each change.
 10. Review each accepted-drift proposal.
 11. Update statuses only after proof.
@@ -108,6 +108,31 @@ For a normal worker return:
 14. Mark the TODO item complete.
 
 The scheduler can assign that translation unit again after TODO completion.
+
+## Risk-based verification
+
+For a note-only result, review only the added note text. Do not rebuild
+unchanged source.
+
+For an ordinary scratch improvement, run one target check. Reuse the worker's
+translation-unit audit when its input fingerprint still matches.
+
+For an exact proposal, review source plausibility and run one authoritative
+target check. Rerun the translation-unit audit only when the worker artifact is
+missing or stale.
+
+For an accepted-drift proposal, perform the complete independent semantic
+review. Prove memory effects, fault order, calls, cleanup, and control flow.
+
+Each translation-unit audit report records `groups[].input_fingerprint`. A
+matching fingerprint proves that source, headers, symbols, flags, toolchain,
+and configured build inputs did not change.
+
+Read the changed function-note section first. Read old experiment history only
+when the new claim depends on it or conflicts with it.
+
+Batch reviewed note-only results when one commit remains clear. Keep source
+changes and status promotions in separate logical commits.
 
 ## Background validation
 
@@ -190,6 +215,20 @@ gate after an interrupted integration.
 Notify affected active workers after the change. Require fresh checks for every
 affected target. Header fingerprints force affected modules to rebuild.
 
+Audit shared-header changes through their transitive dependency set:
+
+```text
+python tools/audit_translation_unit_functions.py \
+  --affected-by include/example.h --jobs JOBS
+```
+
+Repeat `--affected-by` for more paths. The tool audits the union of dependent
+translation units and records the selected groups in its report.
+
+Do not run a full repository audit after each shared-header repair. Use one
+after shared changes stabilize, after toolchain or compiler-flag changes, or
+when dependency tracking cannot prove the affected set.
+
 Return deferred targets to the eligible pool after the blocker is resolved.
 
 ## Allowed matching-worker changes
@@ -227,6 +266,6 @@ Workers leave unresolved functions in `scratch`.
 ## Repository checks
 
 Run target and translation-unit checks during review. Run global audits and the
-full test suite when the current orchestration requires them.
+full test suite after the current shared changes stabilize.
 
 Do not duplicate global checks while workers compile functions.

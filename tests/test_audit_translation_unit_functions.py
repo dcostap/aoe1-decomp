@@ -5,7 +5,11 @@ TOOLS_DIR = Path(__file__).resolve().parents[1] / "tools"
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
-from audit_translation_unit_functions import build_queue, classify  # noqa: E402
+from audit_translation_unit_functions import (  # noqa: E402
+    build_queue,
+    classify,
+    select_affected_groups,
+)
 
 
 def status(bucket: str = "scratch") -> dict[str, str]:
@@ -172,3 +176,26 @@ def test_queue_retains_exact_policy_review() -> None:
         "00401000"
     ]
     assert complete["orchestrator_task_count"] == 1
+
+
+def test_affected_groups_follow_transitive_includes(tmp_path: Path) -> None:
+    shared = tmp_path / "shared.h"
+    middle = tmp_path / "middle.h"
+    direct = tmp_path / "direct.cpp"
+    transitive = tmp_path / "transitive.cpp"
+    unrelated = tmp_path / "unrelated.cpp"
+    shared.write_text("#pragma once\n", encoding="utf-8")
+    middle.write_text('#include "shared.h"\n', encoding="utf-8")
+    direct.write_text('#include "shared.h"\n', encoding="utf-8")
+    transitive.write_text('#include "middle.h"\n', encoding="utf-8")
+    unrelated.write_text("int value;\n", encoding="utf-8")
+    groups = [
+        {"name": "direct", "source": str(direct)},
+        {"name": "transitive", "source": str(transitive)},
+        {"name": "unrelated", "source": str(unrelated)},
+    ]
+
+    selected, matches = select_affected_groups(groups, [shared])
+
+    assert [group["name"] for group in selected] == ["direct", "transitive"]
+    assert set(matches) == {"direct", "transitive"}

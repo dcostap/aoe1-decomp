@@ -59,6 +59,9 @@ class DocumentationTests(unittest.TestCase):
             "one unique private experiment and audit directory",
             "compiler_gate.py close",
             "compiler_gate.py open",
+            "For a note-only result",
+            "input_fingerprint",
+            "--affected-by include/example.h",
         ):
             self.assertIn(required, orchestrator)
         for required in (

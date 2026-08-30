@@ -76,6 +76,19 @@ The response files contain compiler arguments only.
 - `audit_translation_unit_functions.py` compiles and checks configured source files.
 - `validate_translation_units.py` validates configured natural-source builds.
 
+Use `--group` for explicit translation units. Use repeatable `--affected-by`
+paths for the transitive dependency union of shared-source changes:
+
+```text
+python tools/audit_translation_unit_functions.py \
+  --affected-by include/panel_ez.h \
+  --affected-by include/pnl_dlg.h \
+  --jobs JOBS
+```
+
+The JSON report records the affected paths, selected groups, matching
+dependencies, and each group's complete input fingerprint.
+
 ## Project audits
 
 - `audit_matching_owners.py` checks PDB ownership for matching functions.
