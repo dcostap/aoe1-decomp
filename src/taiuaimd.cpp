@@ -1167,7 +1167,7 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
     }
 
     a = 1;
-    for (; a <= maxLimit; ++a) {
+    while (a <= maxLimit) {
         i = 0;
         if (VisibleUnitList_Size[a - 1] > 0) {
             VISIBLE_UNIT_REC** listPtr = &VisibleUnitList[a - 1];
@@ -1207,11 +1207,12 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
             } while (i < VisibleUnitList_Size[a - 1]);
         }
         if (allyToHealID != -1) {
-            break;
+            return allyToHealID;
         }
+        ++a;
     }
 
-    return allyToHealID;
+    return -1;
 }
 
 
@@ -2806,10 +2807,9 @@ found_for_help:
         }
 
         if (array->numberValue > array->maximumSizeValue - 1) {
-            (*array)[array->numberValue] = caller;
-        } else {
-            array->value[array->numberValue] = caller;
+            array->resize(array->numberValue + 1);
         }
+        array->value[array->numberValue] = caller;
         array->numberValue++;
 
 already_in_list:
