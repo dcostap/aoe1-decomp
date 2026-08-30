@@ -58,7 +58,8 @@ void TRIBE_Main_View::draw_multi_object_outline() {
             return;
 
         if (this->pick1(
-                0x28, 0, point.x - this->pnl_x, point.y - this->pnl_y,
+                0x28, 0, point.x - this->render_rect.left,
+                point.y - this->render_rect.top,
                 &pick_info, 0, 1) != 0x33)
             return;
 
