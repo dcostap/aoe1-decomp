@@ -123,7 +123,11 @@ class ResourcePolicyTests(unittest.TestCase):
         self.assertEqual(args.max_probable_anchor_scan_functions, 13)
 
     def test_policy_docs_do_not_set_numeric_worker_limits(self) -> None:
-        paths = [REPO_ROOT / "README.md", *(REPO_ROOT / "docs").glob("*.md")]
+        paths = [
+            REPO_ROOT / "README.md",
+            *(REPO_ROOT / "docs").glob("*.md"),
+            *(REPO_ROOT / "agent_roles").glob("*.md"),
+        ]
         forbidden = (
             re.compile(r"no more than\s+\d+", re.IGNORECASE),
             re.compile(r"\d+\s+concurrent\s+max", re.IGNORECASE),

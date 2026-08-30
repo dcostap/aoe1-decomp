@@ -11,11 +11,15 @@ RETIRED_TEXT = (
     "config/source_modules/",
     "config/translation_units.json",
     "docs/main_agent_workflow.md",
+    "docs/user_agent.md",
+    "docs/orchestrator_workflow.md",
+    "docs/agentic_matching_workflow.md",
     "audit_translation_unit_observed.py",
     "plan_translation_unit.py",
     "translation_unit_prefixes.py",
 )
 PATH_REFERENCE_RE = re.compile(r"(?:config/flags|tools)/[A-Za-z0-9_./-]+\.(?:rsp|py)")
+ROLE_REFERENCE_RE = re.compile(r"agent_roles/[A-Za-z0-9_./-]+\.md")
 RSP_REFERENCE_RE = re.compile(r"[A-Za-z0-9_./-]+\.rsp")
 FUNCTION_STATUS_RE = re.compile(r"^.{0,20}(?:current )?status\s*:", re.IGNORECASE | re.MULTILINE)
 
@@ -42,10 +46,10 @@ def present_markdown_files() -> list[Path]:
 
 class DocumentationTests(unittest.TestCase):
     def test_workflows_define_continuous_translation_unit_review(self) -> None:
-        orchestrator = (REPO_ROOT / "docs" / "orchestrator_workflow.md").read_text(
+        orchestrator = (REPO_ROOT / "agent_roles" / "orchestrator.md").read_text(
             encoding="utf-8"
         )
-        worker = (REPO_ROOT / "docs" / "agentic_matching_workflow.md").read_text(
+        worker = (REPO_ROOT / "agent_roles" / "matching_worker.md").read_text(
             encoding="utf-8"
         )
         orchestrator = " ".join(orchestrator.split())
@@ -78,8 +82,25 @@ class DocumentationTests(unittest.TestCase):
         self.assertNotIn("wave", orchestrator.casefold())
 
     def test_workhorse_model_uses_an_exact_provider_id(self) -> None:
-        text = (REPO_ROOT / "docs" / "user_agent.md").read_text(encoding="utf-8")
+        text = (REPO_ROOT / "agent_roles" / "root_orchestrator.md").read_text(
+            encoding="utf-8"
+        )
         self.assertIn("openai-codex-secondary/gpt-5.6-luna", text)
+
+    def test_root_orchestrator_defines_reusable_todo_enabled_slots(self) -> None:
+        text = (REPO_ROOT / "agent_roles" / "root_orchestrator.md").read_text(
+            encoding="utf-8"
+        )
+        text = " ".join(text.split())
+        for required in (
+            "Each slot owns one reusable worktree",
+            "approximately 30 translation units",
+            "Enable its TODO feature with `todo: true`",
+            "Perform the second verification",
+            "NEEDS_ROOT",
+            "Refill the slot when eligible work remains",
+        ):
+            self.assertIn(required, text)
 
     def test_markdown_has_no_assignment_lease_language(self) -> None:
         pattern = re.compile(r"\b(?:lease|leases|leased|unleased)\b", re.IGNORECASE)
@@ -90,7 +111,7 @@ class DocumentationTests(unittest.TestCase):
         ]
         self.assertEqual(failures, [])
 
-    def test_orchestrator_is_the_only_orchestration_role_name(self) -> None:
+    def test_agent_roles_use_current_names(self) -> None:
         result = subprocess.run(
             [
                 "git",
@@ -108,6 +129,14 @@ class DocumentationTests(unittest.TestCase):
                 "main agent",
                 "-e",
                 "coordinator",
+                "-e",
+                "user agent",
+                "-e",
+                "sub-orchestrator",
+                "-e",
+                "portfolio orchestrator",
+                "-e",
+                "orchestrator of orchestrators",
                 "--",
                 ".",
                 ":!orig/**",
@@ -119,7 +148,18 @@ class DocumentationTests(unittest.TestCase):
         self.assertIn(result.returncode, {0, 1})
         self.assertEqual(result.stdout, "")
         self.assertFalse((REPO_ROOT / "docs" / "main_agent_workflow.md").exists())
-        self.assertTrue((REPO_ROOT / "docs" / "orchestrator_workflow.md").is_file())
+        for retired in (
+            "user_agent.md",
+            "orchestrator_workflow.md",
+            "agentic_matching_workflow.md",
+        ):
+            self.assertFalse((REPO_ROOT / "docs" / retired).exists())
+        for current in (
+            "root_orchestrator.md",
+            "orchestrator.md",
+            "matching_worker.md",
+        ):
+            self.assertTrue((REPO_ROOT / "agent_roles" / current).is_file())
 
     def test_markdown_uses_current_paths(self) -> None:
         failures: list[str] = []
@@ -132,6 +172,9 @@ class DocumentationTests(unittest.TestCase):
             for reference in PATH_REFERENCE_RE.findall(text):
                 if not (REPO_ROOT / reference).is_file():
                     failures.append(f"{relative}: missing path {reference}")
+            for reference in ROLE_REFERENCE_RE.findall(text):
+                if not (REPO_ROOT / reference).is_file():
+                    failures.append(f"{relative}: missing role {reference}")
             for reference in RSP_REFERENCE_RE.findall(text):
                 full_path = REPO_ROOT / reference
                 profile_path = REPO_ROOT / "config" / "flags" / reference

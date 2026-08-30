@@ -1,4 +1,4 @@
-# Matching worker workflow
+# Matching worker
 
 Use this workflow for one assigned natural translation unit.
 

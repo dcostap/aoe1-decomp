@@ -11,6 +11,7 @@ This project recovers the 1998-07-17 Rise of Rome beta source.
 - `inventory/` contains generated reference data. Do not edit it.
 - `decomp_notes/` contains durable function and module notes.
 - `logic_reviews/` contains semantic-review ledgers at `logic_reviews/<VA>.md`.
+- `agent_roles/` contains the root orchestrator, orchestrator, and matching worker role definitions.
 
 A function note stores durable facts, failed approaches, and the next useful approach.
 It does not store status or source ownership.

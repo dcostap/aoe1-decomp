@@ -3,6 +3,17 @@
 This document describes the function registry and repository command tools.
 Run a command with `--help` before you use it.
 
+## Agent roles
+
+Role definitions live under `agent_roles/`:
+
+- `root_orchestrator.md` defines direct user interaction and optional hierarchical orchestration.
+- `orchestrator.md` defines one-worktree matching worker management and review.
+- `matching_worker.md` defines matching work for one natural translation unit.
+
+The root orchestrator can run a normal orchestration directly.
+For large work, it can manage user-selected reusable orchestrator worktree slots.
+
 ## Function registry
 
 `config/functions/` contains one JSON file for each natural source owner.

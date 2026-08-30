@@ -1,4 +1,20 @@
-# Orchestrator workflow
+# Orchestrator
+
+## Role
+
+The orchestrator manages matching workers in one worktree.
+Follow `agent_roles/root_orchestrator.md` only when acting as the root orchestrator.
+
+When a root orchestrator assigns this role:
+
+- work only in the assigned worktree;
+- use only the assigned translation-unit set;
+- follow the assigned worker capacity and tool job settings;
+- use the enabled TODO feature for worker-result review;
+- report major blockers to the root orchestrator; and
+- stop editing before the completed handoff.
+
+The root assignment overrides this document only where it is explicit.
 
 ## Authority
 
@@ -17,15 +33,15 @@ Every worker result is a proposal. Verify it before integration.
 
 ## Continuous scheduler
 
-The user selects the active worker capacity. Keep that capacity full while
-eligible translation units remain.
+The user or root assignment selects the active worker capacity. Keep that
+capacity full while eligible translation units remain.
 
 Active worker capacity and repository-tool job counts are separate settings.
 Never copy the active worker capacity into each worker's `--jobs` value. Unless
 the user selects nested tool parallelism, assign one tool job per worker. This
 keeps the active worker capacity as the compiler concurrency bound.
 
-Use the exact provider/model ID from `docs/user_agent.md` or the current user
+Use the exact provider/model ID from `agent_roles/root_orchestrator.md` or the current user
 instruction. The managed launcher does not accept a short model name.
 
 One orchestrator controls assignments in one shared worktree. Independent
@@ -55,7 +71,7 @@ artifacts with content identities and operating-system locks. Direct each
 worker's ad hoc experiments and translation-unit audit into its private
 directory.
 
-Require the worker to read `docs/agentic_matching_workflow.md`.
+Require the worker to read `agent_roles/matching_worker.md`.
 
 The managed subagent list is the active-assignment record. Open TODO review
 items identify completed translation units that are not yet eligible again.
@@ -193,6 +209,9 @@ The final response identifies:
 Create or update a TODO item keyed by the shared path and symbol. Merge duplicate
 findings into that item.
 
+In a root-managed worktree, send accepted shared findings to the root
+orchestrator. Do not edit shared paths unless the assignment grants authority.
+
 Use one authorized repair owner for an accepted shared change. Close compiler
 admission before editing shared source:
 
@@ -231,7 +250,7 @@ when dependency tracking cannot prove the affected set.
 
 Return deferred targets to the eligible pool after the blocker is resolved.
 
-## Allowed matching-worker changes
+## Allowed matching worker changes
 
 A matching worker can change only:
 
@@ -269,3 +288,27 @@ Run target and translation-unit checks during review. Run global audits and the
 full test suite after the current shared changes stabilize.
 
 Do not duplicate global checks while workers compile functions.
+
+## Root handoff
+
+Complete every ready worker-review TODO item before the root handoff.
+Stop all matching workers and background processes.
+Commit each accepted logical result.
+Leave no tracked or untracked change.
+
+The final handoff contains:
+
+- orchestrator ID;
+- worktree, branch, base commit, and head commit;
+- assigned, completed, blocked, and untouched translation units;
+- commits and changed paths;
+- exact promotions and accepted-drift approvals;
+- rejected worker proposals;
+- validation commands, reports, and fingerprints;
+- shared findings and major blockers;
+- remaining work; and
+- merge guidance.
+
+Use `NEEDS_ROOT` when a major issue requires root guidance.
+State the question, evidence, changed paths, and safe continuation point.
+Stop editing after either handoff.
