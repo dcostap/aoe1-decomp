@@ -13,22 +13,16 @@ extern "C" int __cdecl __ismbcspace(unsigned int);
 extern void operator delete(void*);
 extern char pnl_inp_draw[];
 
-TInputPanel::TInputPanel() : TTextPanel()
+TInputPanel::TInputPanel() : TTextPanel(), caret_color(0),
+                             caret_interval(GetCaretBlinkTime()),
+                             caret_last_time(0), draw_caret(1),
+                             overLengthSound(0), input_buffer(0),
+                             input_buffer1(0), input_buffer2(0),
+                             input_len(0), max_len(0), insert_mode(1),
+                             input_pos(0)
 {
-    this->caret_color = 0;
-    this->caret_interval = GetCaretBlinkTime();
-    this->caret_last_time = 0;
-    this->draw_caret = 1;
-    this->insert_mode = 1;
     this->handle_mouse_input = 1;
     this->bevel_type = 1;
-    this->overLengthSound = 0;
-    this->input_buffer = 0;
-    this->input_buffer1 = 0;
-    this->input_buffer2 = 0;
-    this->input_len = 0;
-    this->max_len = 0;
-    this->input_pos = 0;
     this->panel_type = 7;
     this->horz_align = TTextPanel::AlignHorizontalScroll;
 }
@@ -163,7 +157,6 @@ long TInputPanel::char_action(long ch, short count)
             break;
         case FormatSingleLine:
         case FormatMultiLine:
-        default:
             break;
         }
         if (this->insert_character(ch) == 0) return 1;
@@ -449,6 +442,7 @@ int TInputPanel::insert_character(long ch)
 
 int TInputPanel::delete_character()
 {
+    short deleted_len;
     int bVar1;
     unsigned char* pcVar2;
     unsigned char* pcVar3;
@@ -474,10 +468,10 @@ int TInputPanel::delete_character()
     }
     if (*pcVar2 == '\r') {
         pcVar3 = (unsigned char*)_mbsinc(pcVar2);
-        pcVar4 = (unsigned char*)1;
+        deleted_len = 1;
         if (*pcVar3 == '\n') {
             pcVar3 = (unsigned char*)_mbsinc(pcVar3);
-            pcVar4 = (unsigned char*)2;
+            deleted_len = 2;
         }
     } else {
         if ((*pcVar2 == '\n') && (pcVar2 > pcVar4)) {
@@ -485,7 +479,7 @@ int TInputPanel::delete_character()
             if (*pcVar4 == '\r') {
                 move_back_one = (int)_mbsdec(pcVar3, (unsigned char*)move_back_one);
                 pcVar3 = (unsigned char*)_mbsninc(pcVar4, 2);
-                pcVar4 = (unsigned char*)2;
+                deleted_len = 2;
                 bVar1 = 1;
                 goto do_copy;
             }
@@ -493,13 +487,13 @@ int TInputPanel::delete_character()
         } else {
             pcVar3 = (unsigned char*)_mbsinc(pcVar2);
         }
-        pcVar4 = (unsigned char*)1;
+        deleted_len = 1;
     }
 do_copy:
     _mbsncpy((unsigned char*)move_back_one, pcVar3,
              ((int)this->input_len - (int)this->input_pos) + 1);
     if (bVar1) --this->input_pos;
-    this->input_len -= (short)(int)pcVar4;
+    this->input_len -= deleted_len;
     this->reformat();
     this->calc_cur_line_col();
     this->draw_caret = 1;
@@ -591,7 +585,7 @@ void TInputPanel::reformat()
     if (cur >= n) cur = n - 1;
     this->cur_line = cur;
     if (top >= n) this->top_line = n - 1;
-    this->scroll(1, (unsigned char)top, 1);
+    this->scroll(1, top, 1);
     this->set_redraw(TPanel::RedrawNormal);
 }
 
