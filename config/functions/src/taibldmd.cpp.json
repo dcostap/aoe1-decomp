@@ -20,7 +20,7 @@
     "004D5090": {"status": "matching", "symbol": "?addItem@TribeBuildAIModule@@QAEHPAVRGE_Static_Object@@H@Z"},
     "004D5170": {"status": "matching", "symbol": "?addBuiltItem@TribeBuildAIModule@@QAEHPAVRGE_Static_Object@@H@Z"},
     "004D5270": {"status": "matching", "symbol": "?removeBuiltItem@TribeBuildAIModule@@QAEHH@Z"},
-    "004D5310": {"status": "scratch", "symbol": "?cancelBuildItem@TribeBuildAIModule@@QAEHHHHMMHH@Z"},
+    "004D5310": {"status": "matching", "symbol": "?cancelBuildItem@TribeBuildAIModule@@QAEHHHHMMHH@Z"},
     "004D5590": {"status": "matching", "symbol": "?addTrainedUnit@TribeBuildAIModule@@QAEHHHHH@Z"},
     "004D5600": {"status": "accepted_drift", "symbol": "?cancelTrainUnit@TribeBuildAIModule@@QAEHHHHH@Z"},
     "004D5690": {"status": "matching", "symbol": "?addResearch@TribeBuildAIModule@@QAEHHHH@Z"},
