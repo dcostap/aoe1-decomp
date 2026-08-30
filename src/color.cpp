@@ -21,10 +21,10 @@ void __cdecl RGE_translate_palette(tagPALETTEENTRY* src, tagPALETTEENTRY* dst,
     long diff;
     long index1;
     long intense[4];
+    intense[0] = 0;
     d = &dst->peFlags;
     diff = (int)dst - (int)src;
     s = &src->peGreen;
-    intense[0] = 0;
 
     do {
         if (intense[0] == keep1 || intense[0] == keep2) {
