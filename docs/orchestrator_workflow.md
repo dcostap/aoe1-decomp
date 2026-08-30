@@ -84,7 +84,8 @@ matching assignment.
 ## TODO review backlog
 
 The enabled TODO list is the authoritative integration backlog. The first
-unchecked item is the orchestrator's current task.
+unchecked item is current when it is ready. An item waiting only for a
+background result is not ready.
 
 Work only on that item. Mark it complete only after its result is integrated,
 rejected, or converted into a specific follow-up task.
@@ -107,6 +108,30 @@ For a normal worker return:
 14. Mark the TODO item complete.
 
 The scheduler can assign that translation unit again after TODO completion.
+
+## Background validation
+
+Start long, noninteractive integration audits in the background. Keep the
+related TODO item open until the audit finishes.
+
+Do not wait while independent ready TODO items remain. Set the next ready item
+as current and continue review work.
+
+Do not use a blocking wait only to watch progress. Use it when the result blocks
+all safe work, or when no independent ready item remains.
+
+Do not poll the process. Let its completion notice return the result. Never
+start a duplicate audit because the first audit is quiet.
+
+Freeze the shared change and its dependencies while its audit runs. Other
+reviews can continue when they do not change those shared paths.
+
+A later source change can invalidate one completed audit group. Audit that
+translation unit again after the review. Do not repeat the full audit when a
+focused rerun is sufficient.
+
+When the background audit finishes, inspect its report. Resume its TODO item at
+the next safe boundary. Fix failures before integration.
 
 ## Worker continuation
 
