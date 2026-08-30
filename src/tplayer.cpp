@@ -201,15 +201,15 @@ RGE_Static_Object* TRIBE_Player::make_scenario_obj(float x, float y, float z, sh
             obj->die_die_die();
         }
         else {
-            unsigned char group = static_cast<unsigned char>(obj->master_obj->object_group);
-            if (group > 0x1E && group < 0x5A) {
+            unsigned char master_type = obj->master_obj->master_type;
+            if (master_type > 0x1E && master_type < 0x5A) {
                 obj->new_angle(amount);
             }
             else {
                 obj->facet = static_cast<unsigned char>(static_cast<int>(amount));
             }
         }
-        if (this->master_objects[type_id]->object_group == 0x50 && mode == 2) {
+        if (this->master_objects[type_id]->master_type == 0x50 && mode == 2) {
             static_cast<TRIBE_Building_Object*>(obj)->build(10000.0f);
         }
     }
@@ -222,6 +222,7 @@ RGE_Static_Object* TRIBE_Player::make_scenario_obj(float x, float y, float z, sh
 void TRIBE_Player::save(int file)
 {
     int save_file = file;
+    int present;
     color_log(0x16, 0x16, 2);
     RGE_Player::save(save_file);
     color_log(0x16, 0x24, 2);
@@ -236,10 +237,13 @@ void TRIBE_Player::save(int file)
     rge_write(save_file, &this->ruin_held_time, 4);
     rge_write(save_file, &this->artifact_held_time, 4);
     color_log(0x16, 0x4C, 2);
-    if (this->type == 1) {
-        int present = this->playerAI != 0 && comm->IsHost() == 1;
+    if (this->type == 1 && this->playerAI != 0 && comm->IsHost() == 1) {
+        present = 1;
         rge_write(save_file, &present, 4);
-        if (present) this->playerAI->save(save_file);
+        this->playerAI->save(save_file);
+    } else {
+        present = 0;
+        rge_write(save_file, &present, 4);
     }
     color_log(0x16, 0x5F, 2);
 }
@@ -410,7 +414,7 @@ void TRIBE_Player::load_master_object(int first, short index, unsigned char type
 
     switch (type) {
     case 'F':
-        obj = new RGE_Master_Combat_Object(first, sprites, sounds, 1);
+        obj = new TRIBE_Master_Combat_Object(first, sprites, sounds, 1);
         break;
     case 'P':
         obj = new TRIBE_Master_Building_Object(first, sprites, sounds, 1);
@@ -445,33 +449,55 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1,
     short* amount_output;
     short available;
     short total = 0;
-    t1 = t2 = t3 = -1;
-    a1 = a2 = a3 = 0;
+    t1 = -1;
+    a1 = 0;
+    t2 = -1;
+    a2 = 0;
+    t3 = -1;
+    a3 = 0;
 
     unsigned char canUseAvailableResources =
         this->check_obj_cost(obj, 0, 1.0f, 0);
     RGE_Master_Static_Object* master =
-        this->master_objects[static_cast<unsigned short>(obj)];
+        this->master_objects[obj];
     if (master == 0 || master->master_type < 0x46) return;
     if (nameOut != 0) *nameOut = master->name;
 
     TRIBE_Master_Combat_Object* combat =
         static_cast<TRIBE_Master_Combat_Object*>(master);
-    for (int i = 0; i < 3; ++i) {
-        Attribute_Cost& cost = combat->build_inventory[i];
-        short* type_output = i == 0 ? &t1 : (i == 1 ? &t2 : &t3);
-        short* cost_output = i == 0 ? &a1 : (i == 1 ? &a2 : &a3);
-        if (cost.flag != 0) {
-            *type_output = cost.type;
-            if (*type_output >= 0) {
-                short amount = static_cast<short>(cost.amount * factor);
-                *cost_output = amount;
-                if (static_cast<float>(amount) > this->attributes[*type_output] &&
-                    canUseAvailableResources != 0) {
-                    available = static_cast<short>(this->attributes[*type_output]);
-                    total = static_cast<short>(total + amount - available);
-                    *cost_output = available;
-                }
+    if (combat->build_inventory[0].flag != 0) {
+        t1 = combat->build_inventory[0].type;
+        if (t1 >= 0) {
+            a1 = static_cast<short>(combat->build_inventory[0].amount * factor);
+            if (static_cast<float>(a1) > this->attributes[t1] &&
+                canUseAvailableResources != 0) {
+                available = static_cast<short>(this->attributes[t1]);
+                total = static_cast<short>(total + a1 - available);
+                a1 = available;
+            }
+        }
+    }
+    if (combat->build_inventory[1].flag != 0) {
+        t2 = combat->build_inventory[1].type;
+        if (t2 >= 0) {
+            a2 = static_cast<short>(combat->build_inventory[1].amount * factor);
+            if (static_cast<float>(a2) > this->attributes[t2] &&
+                canUseAvailableResources != 0) {
+                available = static_cast<short>(this->attributes[t2]);
+                total = static_cast<short>(total + a2 - available);
+                a2 = available;
+            }
+        }
+    }
+    if (combat->build_inventory[2].flag != 0) {
+        t3 = combat->build_inventory[2].type;
+        if (t3 >= 0) {
+            a3 = static_cast<short>(combat->build_inventory[2].amount * factor);
+            if (static_cast<float>(a3) > this->attributes[t3] &&
+                canUseAvailableResources != 0) {
+                available = static_cast<short>(this->attributes[t3]);
+                total = static_cast<short>(total + a3 - available);
+                a3 = available;
             }
         }
     }
@@ -483,46 +509,50 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1,
         } else if (t2 == 3 || t2 == -1) {
             t2 = 3;
             amount_output = &a2;
-        } else if (t3 == 3 || t3 == -1) {
-            t3 = 3;
-            a3 = total;
+        } else if (t3 != 3 && t3 != -1) {
             amount_output = 0;
         } else {
+            t3 = 3;
+            a3 = total;
             amount_output = 0;
         }
         if (amount_output != 0) *amount_output = static_cast<short>(*amount_output + total);
     }
 
-    if (a1 < 1) t1 = -1;
-    if (a2 < 1) t2 = -1;
-    if (a3 < 1) t3 = -1;
+    if (a1 <= 0) t1 = -1;
+    if (a2 <= 0) t2 = -1;
+    if (a3 <= 0) t3 = -1;
 }
 
 
 RGE_Static_Object* TRIBE_Player::find_obj(short id, RGE_Static_Object* after)
 {
     if (after != 0) {
-        bool found = false;
+        int found = 0;
         RGE_Object_Node* node = this->objects->list;
         while (node != 0) {
             RGE_Static_Object* object = node->node;
             if (object != 0) {
-                if (found && object->master_obj->id == id && object->object_state < 3)
-                    return object;
-                if (!found && object == after) found = true;
+                if (found) {
+                    if (object->master_obj->id == id && object->object_state <= 2)
+                        return object;
+                } else if (object == after) {
+                    found = 1;
+                }
             }
             node = node->next;
         }
     }
 
     RGE_Object_Node* node = this->objects->list;
-    while (node != 0) {
+    if (node == 0) return 0;
+    for (;;) {
         RGE_Static_Object* object = node->node;
-        if (object != 0 && object->master_obj->id == id && object->object_state < 3)
+        if (object != 0 && object->master_obj->id == id && object->object_state == 2)
             return object;
         node = node->next;
+        if (node == 0) return 0;
     }
-    return 0;
 }
 
 
@@ -933,12 +963,13 @@ unsigned char TRIBE_Player::command_make_unload(float first, float second) {
 unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* out, float factor,
                                              int skip_farm)
 {
-    RGE_Master_Static_Object* object = this->master_objects[static_cast<unsigned short>(obj_id)];
-    TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
-    if (out != 0) *out = -1;
-    if (object == 0 || object->master_type < 0x46) return 0;
     float population = this->attributes[3];
-    bool population_available = this->attributes[29] >= 1.0f;
+    if (out != 0) *out = -1;
+    RGE_Master_Static_Object* object = this->master_objects[obj_id];
+    TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
+    if (object->master_type < 0x46) return 0;
+    unsigned char population_available =
+        this->attributes[29] >= 1.0f;
     if (!population_available) population = 0.0f;
     for (int i = 0; i < 3; ++i) {
         int type = combat->build_inventory[i].type;
@@ -972,35 +1003,39 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* out, float facto
 
 unsigned char TRIBE_Player::pay_obj_cost(short obj_id, float factor, int skip_farm)
 {
-    RGE_Master_Static_Object* object = this->master_objects[static_cast<unsigned short>(obj_id)];
-    TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
-    if (!check_obj_cost(obj_id, 0, factor, skip_farm) || object == 0) return 0;
-    for (int i = 0; i < 3; ++i) {
-        int type = combat->build_inventory[i].type;
-        if (type >= 0 && combat->build_inventory[i].flag != 0 &&
-            (skip_farm == 0 || type != 4)) {
-            float amount = combat->build_inventory[i].amount * factor;
-            if (amount > this->attributes[type]) {
-                this->attributes[3] -= amount - this->attributes[type];
-                this->attributes[type] = 0.0f;
-            } else {
-                this->attributes[type] -= amount;
+    if (check_obj_cost(obj_id, 0, factor, skip_farm)) {
+        RGE_Master_Static_Object* object = this->master_objects[obj_id];
+        TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
+        for (int i = 0; i < 3; ++i) {
+            int type = combat->build_inventory[i].type;
+            if (type >= 0 && combat->build_inventory[i].flag != 0 &&
+                (skip_farm == 0 || type != 4)) {
+                float amount = combat->build_inventory[i].amount * factor;
+                if (amount > this->attributes[type]) {
+                    this->attributes[3] -= amount - this->attributes[type];
+                    this->attributes[type] = 0.0f;
+                } else {
+                    this->attributes[type] -= amount;
+                }
             }
         }
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 
 void TRIBE_Player::reimburse_obj_cost(short obj_idx)
 {
-    RGE_Master_Static_Object* object = this->master_objects[static_cast<unsigned short>(obj_idx)];
+    RGE_Master_Static_Object* object = this->master_objects[obj_idx];
     TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
-    if (object == 0 || object->master_type < 0x46) return;
+    if (object->master_type < 0x46) return;
     for (int i = 0; i < 3; ++i) {
-        int type = combat->build_inventory[i].type;
-        if (type >= 0 && combat->build_inventory[i].flag != 0)
-            this->attributes[type] += combat->build_inventory[i].amount;
+        Attribute_Cost* cost = &combat->build_inventory[i];
+        int type = cost->type;
+        unsigned char flag = cost->flag;
+        if (type >= 0 && flag != 0)
+            this->attributes[type] += cost->amount;
     }
 }
 
@@ -1536,15 +1571,19 @@ void TRIBE_Player::registerResearch(int a, int b, int c) {
 
 
 void TRIBE_Player::taskTrader(int first, int second, int third, float fourth, float fifth) {
-    int task = first;
-    static_cast<TRIBE_Command*>(this->world->commands)->command_work(this->id, &task, 1, second, third, fourth, fifth);
+    int* task = static_cast<int*>(calloc(1, 4));
+    *task = first;
+    static_cast<TRIBE_Command*>(this->world->commands)->command_work(this->id, task, 1, second, third, fourth, fifth);
+    free(task);
 }
 
 
 
 void TRIBE_Player::taskResourceGatherer(int first, int second, int third, float fourth, float fifth) {
-    int task = first;
-    static_cast<TRIBE_Command*>(this->world->commands)->command_work(this->id, &task, 1, second, third, fourth, fifth);
+    int* task = static_cast<int*>(calloc(1, 4));
+    *task = first;
+    static_cast<TRIBE_Command*>(this->world->commands)->command_work(this->id, task, 1, second, third, fourth, fifth);
+    free(task);
 }
 
 
@@ -3110,7 +3149,7 @@ void TRIBE_Player::logStatus(FILE* f, int verbose)
 
     fprintf(f, "Player %d:\n", static_cast<int>(this->id));
     if (verbose == 1) {
-        rge_base_game->get_string(static_cast<int>(this->id) + 0x27f6, tempString, 0x100);
+        rge_base_game->get_string(static_cast<int>(this->master_player_id) + 0x27f6, tempString, 0x100);
         if (this->playerAI == 0) {
             fprintf(f, "  Human Player, %s.\n", tempString);
         } else {
@@ -3129,14 +3168,14 @@ void TRIBE_Player::logStatus(FILE* f, int verbose)
     fprintf(f, "    Survival       %d.\n", this->victory_conditions->get_victory_points_id(0x16));
     fprintf(f, "    Wonder         %d.\n", this->victory_conditions->get_victory_points_id(0x17));
     fprintf(f, "      Total:       %d.\n", this->victory_conditions->get_victory_points());
-    fprintf(f, "  Population:      %d.\n", static_cast<int>(this->attributes[3]));
+    fprintf(f, "  Population:      %d.\n", static_cast<int>(this->attributes[11]));
     fprintf(f, "  Kills:           %d.\n", this->victory_conditions->get_attribute_id(0));
     fprintf(f, "  Kill Ratio:      %d.\n", this->victory_conditions->get_attribute_id(2));
     fprintf(f, "  Razings:         %d.\n", this->victory_conditions->get_attribute_id(1));
     fprintf(f, "  Food:            %d.\n", static_cast<int>(this->attributes[0]));
-    fprintf(f, "  Gold:            %d.\n", static_cast<int>(this->attributes[1]));
+    fprintf(f, "  Gold:            %d.\n", static_cast<int>(this->attributes[3]));
     fprintf(f, "  Stone:           %d.\n", static_cast<int>(this->attributes[2]));
-    fprintf(f, "  Wood:            %d.\n", static_cast<int>(this->attributes[4]));
+    fprintf(f, "  Wood:            %d.\n", static_cast<int>(this->attributes[1]));
     fprintf(f, "  Technology:      %d.\n", this->victory_conditions->get_attribute_id(0x11));
     fprintf(f, "  Exploration:     %d.\n", this->victory_conditions->get_attribute_id(7));
 
