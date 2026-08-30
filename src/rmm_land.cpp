@@ -17,7 +17,8 @@ extern "C" void* memset(void* dst, int value, unsigned int size);
 
 unsigned char RGE_RMM_Land_Generator::generate() {
     clear_stack();
-    memset(search_map, info.land_num, map_height * map_width);
+    long width = map_width;
+    memset(search_map, info.land_num, width * map_height);
     map->set_terrain(0, 0, 0, 0,
                      map_width - 1, map_height - 1,
                      info.base_terrain, 1, 0);
@@ -30,8 +31,7 @@ unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
     unsigned char target, unsigned char land_id, long x, long y)
 {
     long count = 0;
-    RGE_Land_Info_Line& land = this->info.land[land_id];
-    long area = land.area;
+    long area = this->info.land[land_id].area;
     long x0 = x - area;
     long x1 = x + area;
     long y1 = y + area;
@@ -80,7 +80,8 @@ unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
                             count++;
                         }
                     } else {
-                        if (this->search_map_rows[row][column] == land.zone) {
+                        if (this->search_map_rows[row][column] ==
+                            this->info.land[land_id].zone) {
                             if (row >= cy0 && row <= cy1 &&
                                 column >= cx0 && column <= cx1) {
                                 count++;
@@ -103,36 +104,45 @@ unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
 // boundary under the canonical header.
 unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_id)
 {
-    RGE_Land_Info_Line& land = this->info.land[land_id];
-    unsigned char fade = land.wall_fade;
+    unsigned char fade;
+    long wall_1;
+    long x_chance;
+    long wall_3;
+    long a;
+    long xpos;
+    long right;
+    long wall_2;
+    long wall_4;
+    long ypos;
+
+    fade = this->info.land[land_id].wall_fade;
     if (fade > 0) {
-        long wall_1 = land.wall_1_avoidance_line;
-        long xpos = x;
-        long wall_3 = land.wall_3_avoidance_line;
-        long a = wall_1 - xpos;
-        xpos -= wall_3;
-        long x_chance = a;
+        wall_1 = this->info.land[land_id].wall_1_avoidance_line;
+        wall_3 = this->info.land[land_id].wall_3_avoidance_line;
+        a = wall_1 - x;
+        xpos = x - wall_3;
+        x_chance = a;
         if (a <= xpos)
             x_chance = xpos;
 
-        long right = this->map_width;
+        right = this->map_width;
         a += wall_1;
         right -= wall_3;
         xpos += right;
         if (a <= xpos)
             a = xpos;
 
-        long wall_2 = land.wall_2_avoidance_line;
+        wall_2 = this->info.land[land_id].wall_2_avoidance_line;
         if (a > 0) {
-            long wall_4 = land.wall_4_avoidance_line;
-            long ypos = y;
+            ypos = y;
+            wall_4 = this->info.land[land_id].wall_4_avoidance_line;
             wall_2 += a;
             a -= wall_4;
             wall_2 -= ypos;
             a += ypos;
         } else {
             a = y;
-            long wall_4 = land.wall_4_avoidance_line;
+            wall_4 = this->info.land[land_id].wall_4_avoidance_line;
             wall_2 -= a;
             a -= wall_4;
         }
