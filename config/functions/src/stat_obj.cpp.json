@@ -32,7 +32,7 @@
     "004C2B50": {"status": "scratch", "symbol": "?draw_frame_3d_square_front@RGE_Static_Object@@QAEXPAVTDrawArea@@FF@Z"},
     "004C2DF0": {"status": "matching", "symbol": "?draw_frame_3d_cube_back@RGE_Static_Object@@QAEXPAVTDrawArea@@FF@Z"},
     "004C31E0": {"status": "matching", "symbol": "?draw_frame_3d_cube_front@RGE_Static_Object@@QAEXPAVTDrawArea@@FF@Z"},
-    "004C3B30": {"status": "scratch", "symbol": "?draw_frame@RGE_Static_Object@@UAEXPAVTDrawArea@@FF@Z"},
+    "004C3B30": {"status": "matching", "symbol": "?draw_frame@RGE_Static_Object@@UAEXPAVTDrawArea@@FF@Z"},
     "004C3C70": {"status": "scratch", "symbol": "?update@RGE_Static_Object@@UAEEXZ"},
     "004C3F90": {"status": "scratch", "symbol": "?check_damage_sprites@RGE_Static_Object@@UAEXXZ"},
     "004C41D0": {"status": "matching", "symbol": "?spawn_death_obj@RGE_Static_Object@@UAEPAV1@XZ"},
