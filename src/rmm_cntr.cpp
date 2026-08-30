@@ -34,30 +34,35 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
     info.land_num = land_num;
     switch (type) {
     default:
-        radius = 0; info.base_terrain = 0;
+        info.base_terrain = 0;
         info.wall_1_avoidance_line = 0; info.wall_2_avoidance_line = 0;
+        radius = 0;
         info.wall_3_avoidance_line = 0; info.wall_4_avoidance_line = 0;
         info.wall_fade = 0; break;
     case 3:
-        radius = 90; info.base_terrain = 1;
+        info.base_terrain = 1;
+        radius = 90;
         info.wall_1_avoidance_line = 0; info.wall_2_avoidance_line = 0;
         info.wall_3_avoidance_line = 0; info.wall_4_avoidance_line = 0;
         info.wall_fade = 0; break;
     case 2:
-        radius = 70; info.base_terrain = 1;
+        info.base_terrain = 1;
         info.wall_1_avoidance_line = 4; info.wall_2_avoidance_line = 4;
+        radius = 70;
         info.wall_3_avoidance_line = this->map_width - 5;
         info.wall_4_avoidance_line = this->map_height - 5;
         info.wall_fade = 34; break;
     case 1:
-        radius = 50; info.base_terrain = 1;
+        info.base_terrain = 1;
         info.wall_1_avoidance_line = 6; info.wall_2_avoidance_line = 6;
+        radius = 50;
         info.wall_3_avoidance_line = this->map_width - 7;
         info.wall_4_avoidance_line = this->map_height - 7;
         info.wall_fade = 20; break;
     case 0:
-        radius = 30; info.base_terrain = 1;
+        info.base_terrain = 1;
         info.wall_1_avoidance_line = 8; info.wall_2_avoidance_line = 8;
+        radius = 30;
         info.wall_3_avoidance_line = this->map_width - 9;
         info.wall_4_avoidance_line = this->map_height - 9;
         info.wall_fade = 20; break;
