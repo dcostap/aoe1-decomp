@@ -97,6 +97,7 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(
             item, builderID, -1, 0, 0, -1, -1, -1, -1, state, currentTime);
     }
 
+    ConstructionItem* current;
     RGE_Static_Object* builder = this->md->object(
         -1, -1, 4, -1, -1, -1, -1, -1, -1, -1);
     if (builder == 0) {
@@ -110,13 +111,13 @@ ConstructionItem* TribeConstructionAIModule::placeStructure(
     }
 
     ConstructionItem tempLots;
-    ConstructionItem* current = this->constructionLots.next;
     tempLots.next = &tempLots;
     tempLots.prev = &tempLots;
     int numberTempLots = 0;
     int minBuildAttempts = -1;
     ConstructionItem* end = &this->constructionLots;
 
+    current = this->constructionLots.next;
     while (current != end && current != 0) {
         if (item->typeID() == current->typeID() || current->typeID() == -1) {
             if (current->xSize() == item->xSize() &&
