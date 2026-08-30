@@ -586,60 +586,60 @@ TribeMPSetupScreen::~TribeMPSetupScreen()
     panel_system.destroyPanel("OKDialog");
     panel_system.destroyPanel("YesNoDialog");
 
-    delete this->title;
-    delete this->playerTitle;
-    delete this->civTitle;
-    delete this->settingsTitle;
-    delete this->colorTitle;
-    delete this->teamTitle;
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->playerTitle);
+    this->delete_panel((TPanel**)&this->civTitle);
+    this->delete_panel((TPanel**)&this->settingsTitle);
+    this->delete_panel((TPanel**)&this->colorTitle);
+    this->delete_panel((TPanel**)&this->teamTitle);
 
     for (int i = 0; i < 8; i++) {
-        delete this->playerNameDrop[i];
-        delete this->playerCivDrop[i];
-        delete this->scenarioPlayerDrop[i];
-        delete this->playerColor[i];
-        delete this->playerTeam[i];
-        delete this->playerNameText[i];
-        delete this->playerCivText[i];
-        delete this->scenarioPlayerText[i];
-        delete this->playerCDText[i];
-        delete this->playerVersionText[i];
-        delete this->playerColorText[i];
-        delete this->playerTeamText[i];
+        this->delete_panel((TPanel**)&this->playerNameDrop[i]);
+        this->delete_panel((TPanel**)&this->playerCivDrop[i]);
+        this->delete_panel((TPanel**)&this->scenarioPlayerDrop[i]);
+        this->delete_panel((TPanel**)&this->playerColor[i]);
+        this->delete_panel((TPanel**)&this->playerTeam[i]);
+        this->delete_panel((TPanel**)&this->playerNameText[i]);
+        this->delete_panel((TPanel**)&this->playerCivText[i]);
+        this->delete_panel((TPanel**)&this->scenarioPlayerText[i]);
+        this->delete_panel((TPanel**)&this->playerCDText[i]);
+        this->delete_panel((TPanel**)&this->playerVersionText[i]);
+        this->delete_panel((TPanel**)&this->playerColorText[i]);
+        this->delete_panel((TPanel**)&this->playerTeamText[i]);
     }
 
-    delete this->chatInput;
-    delete this->chatTitle;
-    delete this->chatBox;
-    delete this->gameSettingsButton;
-    delete this->scenarioName;
-    delete this->victoryFixedText;
+    this->delete_panel((TPanel**)&this->chatInput);
+    this->delete_panel((TPanel**)&this->chatTitle);
+    this->delete_panel((TPanel**)&this->chatBox);
+    this->delete_panel((TPanel**)&this->gameSettingsButton);
+    this->delete_panel((TPanel**)&this->scenarioName);
+    this->delete_panel((TPanel**)&this->victoryFixedText);
 
     for (int j = 0; j < 20; j++) {
-        delete this->settingText[j];
-        delete this->settingValue[j];
+        this->delete_panel((TPanel**)&this->settingText[j]);
+        this->delete_panel((TPanel**)&this->settingValue[j]);
     }
 
-    delete this->mapSizeLabel;
-    delete this->mapSizeDrop;
-    delete this->mapTypeLabel;
-    delete this->mapTypeDrop;
-    delete this->numberPlayersTitle;
-    delete this->numberPlayersDrop;
-    delete this->numberPlayersText;
-    delete this->hiddenMapButton;
-    delete this->hiddenMapText;
-    delete this->victoryTypeLabel;
-    delete this->victoryTypeDrop;
-    delete this->victoryAmountLabel;
-    delete this->victoryAmountInput;
-    delete this->startButton;
-    delete this->cancelButton;
-    delete this->close_button;
-    delete this->ready_button;
-    delete this->ready_button_label;
-    delete this->netInfoButton;
-    delete this->help_button;
+    this->delete_panel((TPanel**)&this->mapSizeLabel);
+    this->delete_panel((TPanel**)&this->mapSizeDrop);
+    this->delete_panel((TPanel**)&this->mapTypeLabel);
+    this->delete_panel((TPanel**)&this->mapTypeDrop);
+    this->delete_panel((TPanel**)&this->numberPlayersTitle);
+    this->delete_panel((TPanel**)&this->numberPlayersDrop);
+    this->delete_panel((TPanel**)&this->numberPlayersText);
+    this->delete_panel((TPanel**)&this->hiddenMapButton);
+    this->delete_panel((TPanel**)&this->hiddenMapText);
+    this->delete_panel((TPanel**)&this->victoryTypeLabel);
+    this->delete_panel((TPanel**)&this->victoryTypeDrop);
+    this->delete_panel((TPanel**)&this->victoryAmountLabel);
+    this->delete_panel((TPanel**)&this->victoryAmountInput);
+    this->delete_panel((TPanel**)&this->startButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
+    this->delete_panel((TPanel**)&this->close_button);
+    this->delete_panel((TPanel**)&this->ready_button);
+    this->delete_panel((TPanel**)&this->ready_button_label);
+    this->delete_panel((TPanel**)&this->netInfoButton);
+    this->delete_panel((TPanel**)&this->help_button);
 }
 
 
@@ -1287,7 +1287,7 @@ void TribeMPSetupScreen::cancelScreen(int timed_out) {
 
 long TribeMPSetupScreen::handle_user_command(unsigned int command, long param)
 {
-    char message[260];
+    char message[256];
     int player_ready;
     unsigned long scenario_checksum;
     unsigned long user6, user2, user7, user3, user1, user4;
@@ -1510,14 +1510,14 @@ long TribeMPSetupScreen::handle_user_command(unsigned int command, long param)
 
     case 0x17B7:  // COMM_PLAYER_SERVICE_ERROR
         L->Log("$$$ USER_COMMAND: COMM_PLAYER_SERVICE_ERROR (%d,%d)", command, param);
-        sprintf(message + 4, this->get_string(0x25DE), comm->GetPlayerName(param));
-        this->popupOKDialog(message + 4, 0, 0x1C2, 100);
+        sprintf(message, this->get_string(0x25DE), comm->GetPlayerName(param));
+        this->popupOKDialog(message, 0, 0x1C2, 100);
         return 1;
 
     case 0x17B6:  // COMM_BAD_VERSION
         L->Log("$$$ USER_COMMAND: COMM_BAD_VERSION (%d,%d)", command, param);
-        sprintf(message + 4, this->get_string(0x25DD), comm->GetPlayerName(param));
-        this->popupOKDialog(message + 4, 0, 0x1C2, 100);
+        sprintf(message, this->get_string(0x25DD), comm->GetPlayerName(param));
+        this->popupOKDialog(message, 0, 0x1C2, 100);
         return 1;
 
     case 0x17B9:  // COMM_HOST_BUSY
@@ -2543,7 +2543,7 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
         sprintf(str2, get_string(0x25BC), str1);            // "Victory: %s"
         break;
     case 9:                            // Standard
-        strcpy(str1, get_string(0x10E7));
+        strcpy(str1, get_string(0x10EC));
         sprintf(str2, get_string(0x25BC), str1);            // "Victory: %s"
         break;
     default:
@@ -2651,11 +2651,11 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
 
 
 TRIBE_Screen_Wait::~TRIBE_Screen_Wait() {
-    delete this->message;
-    delete this->close_button;
-    delete this->scenarioName;
+    this->delete_panel((TPanel**)&this->message);
+    this->delete_panel((TPanel**)&this->close_button);
+    this->delete_panel((TPanel**)&this->scenarioName);
     for (int i = 0; i < 20; ++i) {
-        delete this->settingText[i];
+        this->delete_panel((TPanel**)&this->settingText[i]);
     }
 }
 
