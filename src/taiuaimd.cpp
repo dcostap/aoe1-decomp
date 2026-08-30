@@ -2806,9 +2806,10 @@ found_for_help:
         }
 
         if (array->numberValue > array->maximumSizeValue - 1) {
-            array->resize(array->numberValue + 1);
+            (*array)[array->numberValue] = caller;
+        } else {
+            array->value[array->numberValue] = caller;
         }
-        array->value[array->numberValue] = caller;
         array->numberValue++;
 
 already_in_list:

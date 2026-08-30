@@ -581,11 +581,13 @@ RGE_Base_Game::~RGE_Base_Game()
     }
 
     if (this->fonts != 0) {
+        i = 0;
         if (this->font_num > 0) {
-            for (i = 0; i < this->font_num; i++) {
+            do {
                 if (this->fonts[i].font)
                     DeleteObject(this->fonts[i].font);
-            }
+                i++;
+            } while (i < this->font_num);
         }
         free(this->fonts);
         this->fonts = 0;
@@ -2408,9 +2410,9 @@ int RGE_Base_Game::check_expiration() {
     long expiration_time;
 
     memset(&expiration, 0, sizeof(expiration));
-    expiration.tm_year = (int)this->prog_info->expire_year - 1;
-    expiration.tm_mon = (int)this->prog_info->expire_month;
-    expiration.tm_wday = (int)this->prog_info->expire_day;
+    expiration.tm_mon = (int)this->prog_info->expire_month - 1;
+    expiration.tm_mday = (int)this->prog_info->expire_day;
+    expiration.tm_year = (int)this->prog_info->expire_year;
 
     expiration_time = mktime(&expiration);
     time(&cur_date);

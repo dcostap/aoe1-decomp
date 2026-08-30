@@ -184,9 +184,7 @@ long TribeSendMessageDialog::action(TPanel* panel, long code,
 {
     char save_msg[66];
 
-    if (panel == 0)
-        return TPanel::action(panel, code, a, b);
-
+    if (panel != 0) {
     if (panel == this->chatInput) {
         if (code == 0) {
             TRIBE_Screen_Game *screen = static_cast<TRIBE_Screen_Game *>(this->parent_panel);
@@ -197,7 +195,7 @@ long TribeSendMessageDialog::action(TPanel* panel, long code,
                 strcpy(save_msg, this->chatInput->currentLine());
 
             if (save_msg[0] == 0)
-                return 1;
+                goto done;
 
             if (rge_base_game->processCheatCode(rge_base_game->world->curr_player, save_msg) == 0) {
                 if (rge_base_game->multiplayerGame() != 0) {
@@ -214,13 +212,12 @@ long TribeSendMessageDialog::action(TPanel* panel, long code,
             this->chatInput->set_text("");
             return 1;
         }
-        return 1;
     }
 
+    else {
     if (panel == this->okButton) {
         if (code != 1) {
-            this->checkButtons();
-            return 1;
+            goto check_buttons_return;
         }
 
         this->checkButtons();
@@ -235,14 +232,14 @@ long TribeSendMessageDialog::action(TPanel* panel, long code,
         panel_system.destroyPanel("Send Message Dialog");
 
         if (save_msg[0] == 0)
-            return 1;
+            goto done;
 
         if (rge_base_game->processCheatCode(rge_base_game->world->curr_player, save_msg) != 0)
-            return 1;
+            goto done;
 
         if (rge_base_game->multiplayerGame() != 0) {
             if (rge_base_game->prog_mode == 5)
-                return 1;
+                goto done;
             comm->SendGroupChatMsg(save_msg);
             L->Log("$$$ SEND CHAT @%u: %s", rge_base_game->world->world_time, save_msg);
             return 1;
@@ -313,8 +310,14 @@ long TribeSendMessageDialog::action(TPanel* panel, long code,
     else if (panel == this->radioButton[3]) {
     }
 
+check_buttons_return:
     this->checkButtons();
+    }
+done:
     return 1;
+    }
+
+    return TPanel::action(panel, code, a, b);
 }
 
 void TribeSendMessageDialog::checkButtons(void) {

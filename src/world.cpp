@@ -460,9 +460,6 @@ unsigned char RGE_Game_World::data_load_objects(char* filename) {
 void RGE_Game_World::data_load_effects(char* filename) {
     RGE_Effects* e;
     e = new RGE_Effects(filename);
-    if (e == 0) {
-        e = 0;
-    }
     this->effects = e;
 }
 

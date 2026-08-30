@@ -71,9 +71,8 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     }
     this->tool_box = 0;
     this->help_mode = 0;
-    this->reset_after_update = 0;
-    this->cheat_code_entry_str[0] = 0;
     this->cheat_code_entry = 0;
+    this->cheat_code_entry_str[0] = 0;
 
     this->world = static_cast<TRIBE_World*>(rge_base_game->world);
     this->update_interval = rge_base_game->prog_info->update_interval;
@@ -519,7 +518,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     confirmed_close = 0;
     if (rge_base_game->check_prog_argument(s_PAUSE)) {
         start_paused = 1;
-        rge_base_game->set_game_mode(6, 0);
+        rge_base_game->set_prog_mode(6);
         rge_base_game->world->temp_pause = 1;
     }
 }
@@ -3822,7 +3821,7 @@ void TRIBE_Screen_Game::command_diplomacy() {
 
 void TRIBE_Screen_Game::command_fog_of_war() {
     if (rge_base_game->allowCheatCodes()) {
-        rge_base_game->set_map_fog(rge_base_game->fogOfWar() == 0);
+        rge_base_game->set_map_fog(this->world->map->fog_flag == 0);
         this->main_view->set_redraw(TPanel::RedrawImmediate);
     }
 }

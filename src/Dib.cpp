@@ -441,7 +441,7 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
     } else {
         iVar1 = param_18;
         iVar3 = param_19;
-        long dest_y = param_5 + SrcBotHgt;
+        long dest_y = param_5;
         if (0 < param_7) {
             param_17 = param_7;
             do {
@@ -454,8 +454,8 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
                             if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12,dest_y,SrcRtWid,SrcBotHgt,param_10,param_11,iVar9,param_14,iVar7,SrcLtWid,1,iVar1,iVar3);
                         }
                         if (SrcTopHgt != 0) {
-                            if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,dest_y,iVar12,SrcTopHgt,param_10,param_11,param_13,iVar10,DestBotHgt,iVar11,1,iVar1,iVar3);
-                            if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12,dest_y,SrcRtWid,SrcTopHgt,param_10,param_11,iVar9,iVar10,iVar7,iVar11,1,iVar1,iVar3);
+                            if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,dest_y+SrcBotHgt,iVar12,SrcTopHgt,param_10,param_11,param_13,iVar10,DestBotHgt,iVar11,1,iVar1,iVar3);
+                            if (SrcRtWid != 0) DibBlt(param_1,param_2,param_3,lVar15+iVar12,dest_y+SrcBotHgt,SrcRtWid,SrcTopHgt,param_10,param_11,iVar9,iVar10,iVar7,iVar11,1,iVar1,iVar3);
                         }
                         lVar15 += param_8;
                         --param_19;

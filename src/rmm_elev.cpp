@@ -356,9 +356,13 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
     max_y = this->map_height - 1;
 
     if (line.clumps > 0) {
-        for (long i = 0; i < line.clumps; ++i) {
-            this->init_stack(stack[i]);
-        }
+        Map_Stack* stack_ptr = stack;
+        long count = line.clumps;
+        do {
+            this->init_stack(*stack_ptr);
+            ++stack_ptr;
+            --count;
+        } while (count != 0);
     }
 
     local_stack.prev = 0;

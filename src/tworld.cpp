@@ -498,7 +498,6 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
     int res;
     int want;
     int missing;
-    int postVictoryType;
 
     this->score_displayed = 0;
     this->controllingComputerPlayer = 0xff;
@@ -608,7 +607,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
         append_line(description, str2, "%s", 0x25bb, str1);
     }
 
-    static_cast<TRIBE_Game*>(rge_base_game)->get_string((static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame() ? static_cast<TRIBE_Game*>(rge_base_game)->mpPathFinding() : static_cast<TRIBE_Game*>(rge_base_game)->pathFinding()) + 0x260e, str1, 0x100);
+    rge_base_game->get_string((static_cast<TRIBE_Game*>(rge_base_game)->multiplayerGame() ? static_cast<TRIBE_Game*>(rge_base_game)->mpPathFinding() : static_cast<TRIBE_Game*>(rge_base_game)->pathFinding()) + 0x260e, str1, 0x100);
     append_line(description, str2, "%s", 0x25f1, str1);
 
     sprintf(str2, rge_base_game->get_string(0x25f0),
@@ -633,6 +632,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
             victoryAmount = static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount();
             switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
             case 0:
+            case 9:
                 this->victory_type = 0;
                 static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
                 break;
@@ -640,8 +640,13 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
                 this->victory_type = 1;
                 static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
                 break;
-            case 2:
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Exploration(victoryAmount);
+            case 7:
+                this->victory_type = 2;
+                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
+                break;
+            case 8:
+                this->victory_type = 3;
+                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
                 break;
             case 3:
                 static_cast<T_Scenario*>(this->scenario)->Set_Multi_Ruins(victoryAmount);
@@ -652,31 +657,24 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
             case 5:
                 static_cast<T_Scenario*>(this->scenario)->Set_Multi_Discoveries(victoryAmount);
                 break;
+            case 2:
+                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Exploration(victoryAmount);
+                break;
             case 6:
                 static_cast<T_Scenario*>(this->scenario)->Set_Multi_Gold(victoryAmount);
                 break;
-            case 7:
-                this->victory_type = 2;
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
-                break;
-            case 8:
-                this->victory_type = 3;
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
-                break;
-            case 9:
-                this->victory_type = 0;
-                static_cast<T_Scenario*>(this->scenario)->Set_Multi_Conquest(1);
-                break;
             }
             static_cast<T_Scenario*>(this->scenario)->Save_victory_conditions_into_players(0);
-            postVictoryType = static_cast<TRIBE_Game*>(rge_base_game)->victoryType();
-            if (postVictoryType == 7) {
+            switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
+            case 7:
                 this->countdown_victory = 1;
-                    this->countdown_clock = static_cast<float>(victoryAmount);
-            } else if (postVictoryType == 8) {
+                this->countdown_clock = static_cast<float>(victoryAmount);
+                break;
+            case 8:
                 for (i = 1; i < this->player_num; ++i) {
                     this->players[i]->victory_conditions->add_victory_points(0, victoryAmount, 1);
                 }
+                break;
             }
         } else {
             if (static_cast<TRIBE_Game*>(rge_base_game)->campaignGame() || static_cast<TRIBE_Game*>(rge_base_game)->scenarioGame()) {
@@ -687,6 +685,12 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
                 case 1:
                     this->victory_type = 1;
                     break;
+                case 3:
+                    this->victory_type = 2;
+                    this->countdown_victory = 1;
+                    this->countdown_clock = static_cast<float>(
+                        static_cast<T_Scenario*>(this->scenario)->GetVictoryTime());
+                    break;
                 case 2: {
                     this->victory_type = 3;
                     victoryAmount = static_cast<T_Scenario*>(this->scenario)->GetVictoryScore();
@@ -695,12 +699,6 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
                     }
                     break;
                 }
-                case 3:
-                    this->victory_type = 2;
-                    this->countdown_victory = 1;
-                    this->countdown_clock = static_cast<float>(
-                        static_cast<T_Scenario*>(this->scenario)->GetVictoryTime());
-                    break;
                 }
             }
         }
@@ -733,8 +731,41 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
                 this->ruin_count = 5;
             }
         } else {
-            this->artifact_count = count_objects(this, 0x9f);
-            this->ruin_count = count_ruins(this);
+            int player_count = this->player_num;
+            this->artifact_count = 0;
+            if (player_count > 0) {
+                RGE_Player** player = this->players;
+                int count = player_count;
+                do {
+                    RGE_Object_Node* node = (*player)->objects->list;
+                    while (node != 0) {
+                        if (node->node->master_obj->id == 0x9f) {
+                            ++this->artifact_count;
+                        }
+                        node = node->next;
+                    }
+                    ++player;
+                    --count;
+                } while (count != 0);
+            }
+
+            this->ruin_count = 0;
+            if (player_count > 0) {
+                RGE_Player** player = this->players;
+                int count = player_count;
+                do {
+                    RGE_Object_Node* node = (*player)->objects->list;
+                    while (node != 0) {
+                        short id = node->node->master_obj->id;
+                        if (id == 0x9e || id == 0xa3) {
+                            ++this->ruin_count;
+                        }
+                        node = node->next;
+                    }
+                    ++player;
+                    --count;
+                } while (count != 0);
+            }
         }
 
         generator->generate();

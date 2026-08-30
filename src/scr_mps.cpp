@@ -2709,7 +2709,7 @@ TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect(int mode)
 
 
 TRIBE_Screen_Disconnect::~TRIBE_Screen_Disconnect() {
-    delete this->message;
+    this->delete_panel((TPanel**)&this->message);
 }
 
 

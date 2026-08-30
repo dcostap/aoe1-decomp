@@ -4,8 +4,7 @@
 
 extern void __cdecl operator_delete(void*);
 
-TPicturePanel::TPicturePanel() : TPanel() {
-    this->keep_loaded = 1;
+TPicturePanel::TPicturePanel() : TPanel(), keep_loaded(1) {
     this->size_from_pic = 0;
     this->own_pic = 0;
     this->pic_type = Picture;

@@ -2630,10 +2630,7 @@ int TribeTacticalAIModule::save(int file)
     if (this->civilians.numberValue > 0) {
         ManagedArray<int>& arr = this->civilians;
         do {
-            if (i > arr.maximumSizeValue - 1) {
-                arr.resize(i + 1);
-            }
-            tempInt = arr.value[i];
+            tempInt = arr[i];
             rge_write(file, &tempInt, 4);
             i++;
         } while (i < this->civilians.numberValue);
@@ -2648,10 +2645,7 @@ int TribeTacticalAIModule::save(int file)
     if (this->civilianExplorers.numberValue > 0) {
         ManagedArray<int>& arr = this->civilianExplorers;
         do {
-            if (i > arr.maximumSizeValue - 1) {
-                arr.resize(i + 1);
-            }
-            tempInt = arr.value[i];
+            tempInt = arr[i];
             rge_write(file, &tempInt, 4);
             i++;
         } while (i < this->civilianExplorers.numberValue);
@@ -2670,10 +2664,7 @@ int TribeTacticalAIModule::save(int file)
     if (this->soldiers.numberValue > 0) {
         ManagedArray<int>& arr = this->soldiers;
         do {
-            if (i > arr.maximumSizeValue - 1) {
-                arr.resize(i + 1);
-            }
-            tempInt = arr.value[i];
+            tempInt = arr[i];
             rge_write(file, &tempInt, 4);
             i++;
         } while (i < this->soldiers.numberValue);
@@ -2688,10 +2679,7 @@ int TribeTacticalAIModule::save(int file)
     if (this->ungroupedSoldiers.numberValue > 0) {
         ManagedArray<int>& arr = this->ungroupedSoldiers;
         do {
-            if (i > arr.maximumSizeValue - 1) {
-                arr.resize(i + 1);
-            }
-            tempInt = arr.value[i];
+            tempInt = arr[i];
             rge_write(file, &tempInt, 4);
             i++;
         } while (i < this->ungroupedSoldiers.numberValue);
@@ -3545,7 +3533,6 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
 {
     short group = obj->master_obj->object_group;
     int id;
-    int number;
     int i;
     ManagedArray<int>* list;
 
@@ -3575,12 +3562,8 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
         if (obj->master_obj->object_group == 0x14) {
             id = obj->id;
             list = &this->transportBoats;
-            // These contains and resize sites stay out of line.
             if (list->contains(id) != 1) {
-                number = list->numberValue;
-                if (number > list->maximumSizeValue - 1)
-                    list->resize(number + 1);
-                list->value[list->numberValue] = id;
+                (*list)[list->numberValue] = id;
                 list->numberValue++;
             }
         }
@@ -3589,10 +3572,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
             id = obj->id;
             list = &this->warBoats;
             if (list->contains(id) != 1) {
-                number = list->numberValue;
-                if (number > list->maximumSizeValue - 1)
-                    list->resize(number + 1);
-                list->value[list->numberValue] = id;
+                (*list)[list->numberValue] = id;
                 list->numberValue++;
             }
         }
@@ -3602,10 +3582,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
             list = &this->fishingBoats;
             if (list->contains(id) == 1)
                 return;
-            number = list->numberValue;
-            if (number > list->maximumSizeValue - 1)
-                list->resize(number + 1);
-            list->value[list->numberValue] = id;
+            (*list)[list->numberValue] = id;
             list->numberValue++;
         }
     }
@@ -3677,16 +3654,11 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
     percentExplored = (int)(this->md->player->visible->percentExplored() * 100.0f);
 
     list = &this->playersToAttack;
-    if (list->maximumSizeValue - 1 < 0)
-        list->resize(1);
-    numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1,
-                                                               list->value[0]);
+    numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1, (*list)[0]);
 
     if (this->civilians.numberValue >= 3) {
     list = &this->civilians;
-    if (list->maximumSizeValue - 1 < 0)
-        list->resize(1);
-    if (this->md->informationAI.fullyExploredZone(list->value[0]) == 1) {
+    if (this->md->informationAI.fullyExploredZone((*list)[0]) == 1) {
         zero = 0;
         this->civilianExplorers.desiredNumberValue = (int)ceil((float)((double)this->sn[0] * this->civilians.numberValue) * 0.01f);
         desired = this->numberSoldierExplorers();
@@ -3854,10 +3826,7 @@ excess_explorers_done:
                      this->numberGatherersValue < this->desiredNumberGatherersValue);
         }
         ManagedArray<int>* civilianList = &this->civilians;
-        if (civilianList->maximumSizeValue - 1 < 0) {
-            civilianList->resize(1);
-        }
-        this->nextCivilianToTaskValue = civilianList->value[0];
+        this->nextCivilianToTaskValue = (*civilianList)[0];
         if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x0D8A) - param_1 >= param_2) {
             return 0;
         }
@@ -5822,20 +5791,14 @@ void TribeTacticalAIModule::evaluateOpenTasks()
     if (this->civilians.numberValue > 0) {
         ManagedArray<int>* civilians = &this->civilians;
         do {
-            if (i > civilians->maximumSizeValue - 1) {
-                civilians->resize(i + 1);
-            }
-
             RGE_Static_Object* object =
-                this->md->player->world->object(civilians->value[i]);
+                this->md->player->world->object((*civilians)[i]);
             if (object != 0) {
                 UnitAIModule* unitAI = object->unitAI();
                 if (unitAI != 0) {
-                    if (i > civilians->maximumSizeValue - 1)
-                        civilians->resize(i + 1);
                     ManagedArray<int>* unitsTasked =
                         &this->unitsTaskedThisUpdate;
-                    if (unitsTasked->contains(civilians->value[i]))
+                    if (unitsTasked->contains((*civilians)[i]))
                         goto next_civilian;
 
                     if (object->getSpeed() == 0.0 &&
@@ -5861,10 +5824,7 @@ void TribeTacticalAIModule::evaluateOpenTasks()
                                 this->md->object(target);
                             if (targetObject == 0 ||
                                 targetObject->object_state > 2) {
-                                if (i > civilians->maximumSizeValue - 1) {
-                                    civilians->resize(i + 1);
-                                }
-                                this->stopUnit(civilians->value[i], 100);
+                                this->stopUnit((*civilians)[i], 100);
                             }
                         }
                     }
@@ -6497,15 +6457,9 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
     if (0 < self->soldiers.numberValue) {
         ManagedArray<int>& soldiers = self->soldiers;
         do {
-            if (reset > soldiers.maximumSizeValue - 1)
-                soldiers.resize(reset + 1);
-
             RGE_Static_Object* object =
-                self->md->aiPlayer->world->object(soldiers.value[reset]);
+                self->md->aiPlayer->world->object(soldiers[reset]);
             if ((object != 0) && (object->unitAI() != 0)) {
-                if (reset > soldiers.maximumSizeValue - 1)
-                    soldiers.resize(reset + 1);
-
                 int taskedNumber = self->unitsTaskedThisUpdate.numberValue;
                 int taskedIndex = 0;
                 if (0 < taskedNumber) {
@@ -6513,28 +6467,25 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                          taskedIndex < taskedNumber &&
                          taskedIndex < self->unitsTaskedThisUpdate.maximumSizeValue;
                          taskedIndex++) {
-                        if (self->unitsTaskedThisUpdate.value[taskedIndex] ==
-                            soldiers.value[reset])
+                        if (self->unitsTaskedThisUpdate[taskedIndex] ==
+                            soldiers[reset])
                             goto nextSoldier;
                     }
                 }
 
                 int value;
-                int number;
                 if (priority < 0) {
                     if (object->unitAI()->currentAction() != -1) {
                         if (object->unitAI()->currentOrderPriority() >= threshold)
                             goto nextSoldier;
                     }
 
-                    if (reset > soldiers.maximumSizeValue - 1)
-                        soldiers.resize(reset + 1);
-                    number = workingArea.numberValue;
-                    value = soldiers.value[reset];
+                    value = soldiers[reset];
                     int index = 0;
-                    if (0 < number) {
+                    if (0 < workingArea.numberValue) {
                         for (;
-                             index < number && index < workingArea.maximumSizeValue;
+                             index < workingArea.numberValue &&
+                             index < workingArea.maximumSizeValue;
                              index++) {
                             if (workingArea.value[index] == value)
                                 goto countedSoldier;
@@ -6545,14 +6496,12 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                 else if (priority > 0) {
                     if (object->unitAI()->currentAction() != -1) {
                         if (object->unitAI()->currentOrderPriority() > threshold) {
-                            if (reset > soldiers.maximumSizeValue - 1)
-                                soldiers.resize(reset + 1);
-                            number = workingArea.numberValue;
-                            value = soldiers.value[reset];
+                            value = soldiers[reset];
                             int index = 0;
-                            if (0 < number) {
+                            if (0 < workingArea.numberValue) {
                                 for (;
-                                     index < number && index < workingArea.maximumSizeValue;
+                                     index < workingArea.numberValue &&
+                                     index < workingArea.maximumSizeValue;
                                      index++) {
                                     if (workingArea.value[index] == value)
                                         goto countedSoldier;
@@ -6586,11 +6535,7 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
 
                             int value = soldiers.value[reset];
                             if (workingArea.contains(value) != 1) {
-                                int number = workingArea.numberValue;
-                                if (number > workingArea.maximumSizeValue - 1)
-                                    workingArea.resize(number + 1);
-                                workingArea.value[workingArea.numberValue] = value;
-                                workingArea.numberValue = workingArea.numberValue + 1;
+                                workingArea.add(value);
                             }
                             rNum = rNum + 1;
                         }
@@ -6598,10 +6543,7 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                     goto nextSoldier;
                 }
 appendWorking:
-                if (number > workingArea.maximumSizeValue - 1)
-                    workingArea.resize(number + 1);
-                workingArea.value[workingArea.numberValue] = value;
-                workingArea.numberValue = workingArea.numberValue + 1;
+                workingArea.add(value);
 countedSoldier:
                 rNum = rNum + 1;
             }
@@ -6621,7 +6563,6 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int compare)
     RGE_Static_Object* object;
     UnitAIModule* ai;
     int value;
-    int* values;
     int index;
     int scan;
     TribeTacticalAIModule* tactical;
@@ -6640,21 +6581,15 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int compare)
     if (this->warBoats.numberValue > 0) {
         warships = &this->warBoats;
         do {
-            if (local_c > warships->maximumSizeValue - 1)
-                warships->resize(local_c + 1);
-            local_8 = local_c * 4;
-            object = this->md->aiPlayer->world->object(warships->value[local_c]);
+            object = this->md->aiPlayer->world->object((*warships)[local_c]);
             if (object != 0 && object->unitAI() != 0) {
-                if (local_c > warships->maximumSizeValue - 1)
-                    warships->resize(local_c + 1);
-
                 value = 0;
                 if (this->unitsTaskedThisUpdate.numberValue > 0) {
                     do {
                         if (this->unitsTaskedThisUpdate.maximumSizeValue <= value)
                             break;
-                        if (this->unitsTaskedThisUpdate.value[value] ==
-                            *(int *)((char *)warships->value + local_8))
+                        if (this->unitsTaskedThisUpdate[value] ==
+                            (*warships)[local_c])
                             goto next_warboat;
                         ++value;
                     } while (value < this->unitsTaskedThisUpdate.numberValue);
@@ -6669,18 +6604,11 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int compare)
                         if (value >= priority)
                             goto next_warboat;
                     }
-                    if (local_c > warships->maximumSizeValue - 1)
-                        warships->resize(local_c + 1);
                     result = &this->workingArea;
-                    local_8 = *(int *)((char *)warships->value + local_8);
+                    local_8 = (*warships)[local_c];
                     value = result->contains(local_8);
                     if (value != 1) {
-                        value = result->numberValue;
-                        if (value > result->maximumSizeValue - 1)
-                            result->resize(value + 1);
-                        value = result->numberValue;
-                        values = result->value;
-                        values[value] = local_8;
+                        (*result)[result->numberValue] = local_8;
                         result->numberValue++;
                     }
                     ++i;
@@ -6693,16 +6621,11 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int compare)
                         value = ai->currentOrderPriority();
                         if (value <= priority)
                             goto next_warboat;
-                        if (local_c > warships->maximumSizeValue - 1)
-                            warships->resize(local_c + 1);
                         result = &this->workingArea;
-                        local_8 = warships->value[local_c];
+                        local_8 = (*warships)[local_c];
                         value = result->contains(local_8);
                         if (value != 1) {
-                            value = result->numberValue;
-                            if (value > result->maximumSizeValue - 1)
-                                result->resize(value + 1);
-                            result->value[result->numberValue] = local_8;
+                            (*result)[result->numberValue] = local_8;
                             result->numberValue++;
                         }
                         ++i;
@@ -6715,16 +6638,11 @@ int TribeTacticalAIModule::numberWarshipsWithPriority(int priority, int compare)
                         value = ai->currentOrderPriority();
                         if (value != priority)
                             goto next_warboat;
-                        if (local_c > warships->maximumSizeValue - 1)
-                            warships->resize(local_c + 1);
                         result = &this->workingArea;
-                        local_8 = warships->value[local_c];
+                        local_8 = (*warships)[local_c];
                         value = result->contains(local_8);
                         if (value != 1) {
-                            value = result->numberValue;
-                            if (value > result->maximumSizeValue - 1)
-                                result->resize(value + 1);
-                            result->value[value] = local_8;
+                            (*result)[result->numberValue] = local_8;
                             result->numberValue++;
                         }
                         ++i;
@@ -6742,13 +6660,8 @@ next_warboat:
         warships = &this->soldiers;
         tactical2 = this;
         do {
-            if (local_c > warships->maximumSizeValue - 1)
-                warships->resize(local_c + 1);
-            object = tactical2->md->aiPlayer->world->object(warships->value[local_c]);
+            object = tactical2->md->aiPlayer->world->object((*warships)[local_c]);
             if (object != 0 && object->unitAI() != 0) {
-                if (local_c > warships->maximumSizeValue - 1)
-                    warships->resize(local_c + 1);
-
                 value = tactical2->unitsTaskedThisUpdate.numberValue;
                 index = 0;
                 tactical = tactical2;
@@ -6757,7 +6670,7 @@ next_warboat:
                         if (tactical->unitsTaskedThisUpdate.maximumSizeValue <= index)
                             break;
                         tactical = local_4;
-                        if (tactical2->unitsTaskedThisUpdate.value[index] == warships->value[local_c])
+                        if (tactical2->unitsTaskedThisUpdate[index] == (*warships)[local_c])
                             goto next_soldier;
                         ++index;
                         tactical = local_4;
@@ -6775,11 +6688,9 @@ next_warboat:
                             if (value >= priority)
                                 goto next_soldier;
                         }
-                        if (local_c > warships->maximumSizeValue - 1)
-                            warships->resize(local_c + 1);
                         value = tactical2->workingArea.numberValue;
                         scan = 0;
-                        local_8 = warships->value[local_c];
+                        local_8 = (*warships)[local_c];
                         if (value > 0) {
                             do {
                                 if (scan >= tactical2->workingArea.maximumSizeValue)
@@ -6798,11 +6709,9 @@ next_warboat:
                             ai = object->unitAI();
                             value = ai->currentOrderPriority();
                             if (value > priority) {
-                        if (local_c > warships->maximumSizeValue - 1)
-                                    warships->resize(local_c + 1);
                                 value = tactical2->workingArea.numberValue;
                                 scan = 0;
-                                local_8 = warships->value[local_c];
+                                local_8 = (*warships)[local_c];
                                 if (value > 0) {
                                     do {
                                         if (scan >= tactical2->workingArea.maximumSizeValue)
@@ -6824,16 +6733,11 @@ next_warboat:
                             if (value != priority)
                                 goto next_soldier;
 
-                        if (local_c > warships->maximumSizeValue - 1)
-                                warships->resize(local_c + 1);
                             result = &tactical2->workingArea;
-                            local_8 = warships->value[local_c];
+                            local_8 = (*warships)[local_c];
                             value = result->contains(local_8);
                             if (value != 1) {
-                                value = result->numberValue;
-                            if (value > result->maximumSizeValue - 1)
-                                    result->resize(value + 1);
-                                result->value[result->numberValue] = local_8;
+                                (*result)[result->numberValue] = local_8;
                                 result->numberValue++;
                             }
                             ++i;
@@ -6844,9 +6748,7 @@ next_warboat:
                 }
                 goto soldier_done;
 append_soldier:
-                if (value > tactical2->workingArea.maximumSizeValue - 1)
-                    tactical2->workingArea.resize(value + 1);
-                tactical2->workingArea.value[tactical2->workingArea.numberValue] = local_8;
+                tactical2->workingArea[tactical2->workingArea.numberValue] = local_8;
                 tactical2->workingArea.numberValue++;
                 ++i;
 soldier_done:
@@ -6884,22 +6786,14 @@ int TribeTacticalAIModule::idleCivilian(int mode)
     if (this->civilians.numberValue > 0) {
         ManagedArray<int>* civilians = &this->civilians;
         do {
-            if (i > civilians->maximumSizeValue - 1)
-                civilians->resize(i + 1);
-            if (tasked.contains(civilians->value[i]) != 0)
+            if (tasked.contains((*civilians)[i]) != 0)
                 goto first_next;
 
-            if (i > civilians->maximumSizeValue - 1)
-                civilians->resize(i + 1);
             firstObject =
-                this->md->player->world->object(civilians->value[i]);
+                this->md->player->world->object((*civilians)[i]);
             if ((firstObject != 0) && (firstObject->unitAI() != 0)) {
-                if (i > civilians->maximumSizeValue - 1)
-                    civilians->resize(i + 1);
-                if (this->isGatherer(civilians->value[i]) == 0) {
-                    if (i > civilians->maximumSizeValue - 1)
-                        civilians->resize(i + 1);
-                    if (this->civilianExplorers.contains(civilians->value[i]) != 0)
+                if (this->isGatherer((*civilians)[i]) == 0) {
+                    if (this->civilianExplorers.contains((*civilians)[i]) != 0)
                         goto first_next;
                     if (firstObject->unitAI()->currentAction() == -1 &&
                         firstObject->unitAI()->currentOrder() == -1)
@@ -6918,21 +6812,15 @@ first_next:
     {
         ManagedArray<int>* civilians = &this->civilians;
 second_loop:
-            if (i > civilians->maximumSizeValue - 1)
-                civilians->resize(i + 1);
-            if (this->unitsTaskedThisUpdate.contains(civilians->value[i]) != 0)
+            if (this->unitsTaskedThisUpdate.contains((*civilians)[i]) != 0)
                 goto second_next;
 
-            if (i > civilians->maximumSizeValue - 1)
-                civilians->resize(i + 1);
             secondObject =
-                this->md->player->world->object(civilians->value[i]);
+                this->md->player->world->object((*civilians)[i]);
             if ((secondObject != 0) && (secondObject->unitAI() != 0)) {
                 if (mode != 0) {
                     if (mode != 3) {
-                        if (i > civilians->maximumSizeValue - 1)
-                            civilians->resize(i + 1);
-                        if (this->isGatherer(civilians->value[i]) != 0)
+                        if (this->isGatherer((*civilians)[i]) != 0)
                             goto second_next;
                     }
                 }
@@ -6967,21 +6855,13 @@ int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseM
     if (this->civilians.numberValue > 0) {
         ManagedArray<int>* civilians = &this->civilians;
         do {
-            if (i > civilians->maximumSizeValue - 1)
-                civilians->resize(i + 1);
-            if (this->unitsTaskedThisUpdate.contains(this->civilians.value[i]) != 0)
+            if (this->unitsTaskedThisUpdate.contains((*civilians)[i]) != 0)
                 continue;
 
-            if (i > civilians->maximumSizeValue - 1)
-                civilians->resize(i + 1);
-            firstObj = this->md->player->world->object(civilians->value[i]);
+            firstObj = this->md->player->world->object((*civilians)[i]);
             if ((firstObj != 0) && (firstObj->unitAI() != 0)) {
-                if (i > civilians->maximumSizeValue - 1)
-                    civilians->resize(i + 1);
-                if (this->isGatherer(civilians->value[i]) == 0) {
-                    if (i > civilians->maximumSizeValue - 1)
-                        civilians->resize(i + 1);
-                    if (this->civilianExplorers.contains(civilians->value[i]) != 0)
+                if (this->isGatherer((*civilians)[i]) == 0) {
+                    if (this->civilianExplorers.contains((*civilians)[i]) != 0)
                         continue;
                     if (firstObj->unitAI()->currentAction() == -1 &&
                         firstObj->unitAI()->currentOrder() == -1)
@@ -6996,9 +6876,7 @@ int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseM
     if (this->civilians.numberValue > 0) {
         ManagedArray<int>* civilians = &this->civilians;
         do {
-            if (i > civilians->maximumSizeValue - 1)
-                civilians->resize(i + 1);
-            if (this->unitsTaskedThisUpdate.contains(this->civilians.value[i]) != 0)
+            if (this->unitsTaskedThisUpdate.contains((*civilians)[i]) != 0)
                 goto second_next;
 
             secondObj = this->md->player->world->object((*civilians)[i]);
@@ -7010,9 +6888,7 @@ int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseM
                     }
                 }
                 if ((mode != 0) && (mode != 1)) {
-                    if (i > civilians->maximumSizeValue - 1)
-                        civilians->resize(i + 1);
-                    if (this->civilianExplorers.contains(civilians->value[i]) != 0)
+                    if (this->civilianExplorers.contains((*civilians)[i]) != 0)
                         goto second_next;
                 }
 
@@ -7158,9 +7034,7 @@ next_boat:
     return -1;
 
 found_civilian:
-    if (i > resultArray->maximumSizeValue - 1)
-        resultArray->resize(i + 1);
-    return resultArray->value[i];
+    return (*resultArray)[i];
 
 }
 
@@ -8550,7 +8424,7 @@ int TribeTacticalAIModule::taskAttacker(int attackerID, float x, float y,
 
 int TribeTacticalAIModule::taskDefender(int groupId, int defenderId) {
     this->logCommonHistory((char*)"ERROR: Unused taskDefender call 1: defender ID=%d group=%d\n",
-                           defenderId, groupId);
+                           groupId, defenderId);
     return 0;
 }
 
@@ -11952,9 +11826,7 @@ void TribeTacticalAIModule::taskElephantGatherers(
         int count;
         ManagedArray<int> alreadyTasked(0);
 
-        alreadyTasked.resize(1);
-        alreadyTasked.value[alreadyTasked.numberValue] = mainHunterID;
-        alreadyTasked.numberValue++;
+        alreadyTasked.add(mainHunterID);
         count = 0;
 
         while (count < numberToTask) {

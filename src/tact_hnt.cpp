@@ -258,7 +258,7 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
 unsigned char TRIBE_Action_Hunt::update()
 {
     float give_amount;
-    volatile float modifier;
+    float modifier;
     float max_hold;
     if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0)
         this->set_target_obj(0);

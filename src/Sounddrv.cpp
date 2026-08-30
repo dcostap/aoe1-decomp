@@ -514,9 +514,8 @@ int TDigital::load(char* name, long param) {
             buffer_desc.dwReserved = 0;
             buffer_desc.lpwfxFormat = this->wave_info;
             direct_sound = this->sound_system->direct_sound;
-            result = direct_sound->CreateSoundBuffer(
-                &buffer_desc, &this->sound_buffer, 0);
-            if (result != 0) {
+            if (direct_sound->CreateSoundBuffer(
+                    &buffer_desc, &this->sound_buffer, 0) != 0) {
                 this->failed = 1;
                 this->sound_buffer = 0;
                 free(this->wave_info);
@@ -526,9 +525,8 @@ int TDigital::load(char* name, long param) {
                 goto fail_return;
             }
 
-            result = this->sound_buffer->Lock(
-                0, this->data_size, &mem1, &size1, &mem2, &size2, 0);
-            if (result == 0) {
+            if (this->sound_buffer->Lock(
+                    0, this->data_size, &mem1, &size1, &mem2, &size2, 0) == 0) {
                 memcpy(mem1, this->wave_data, size1);
                 if (size2 != 0) {
                     memcpy(mem2, this->wave_data + size1, size2);
@@ -588,6 +586,7 @@ wave_info_fail:
                 this->wave_info->wBitsPerSample = wave_hdr.wBitsPerSample;
                 this->wave_info->cbSize = 0;
 
+                LPDIRECTSOUNDBUFFER* buffer_slot = &this->sound_buffer;
                 buffer_desc.dwSize = 0x14;
                 buffer_desc.dwFlags = 0xE2;
                 buffer_desc.dwBufferBytes = this->data_size;
@@ -595,11 +594,13 @@ wave_info_fail:
                 buffer_desc.lpwfxFormat = this->wave_info;
                 direct_sound = this->sound_system->direct_sound;
                 result = direct_sound->CreateSoundBuffer(
-                    &buffer_desc, &this->sound_buffer, 0);
-                if (result == 0) {
-                    result = this->sound_buffer->Lock(
-                        0, this->data_size, &mem1, &size1, &mem2, &size2, 0);
-                    if (result == 0) {
+                    &buffer_desc, buffer_slot, 0);
+                if (result != 0) {
+                    this->failed = 1;
+                } else {
+                    if ((*buffer_slot)->Lock(
+                            0, this->data_size, &mem1, &size1,
+                            &mem2, &size2, 0) == 0) {
                         memcpy(mem1, this->wave_data, size1);
                         if (size2 != 0) {
                             memcpy(mem2, this->wave_data + size1, size2);
@@ -611,8 +612,6 @@ wave_info_fail:
                     }
                     this->failed = 1;
                     this->sound_buffer->Release();
-                } else {
-                    this->failed = 1;
                 }
                 this->sound_buffer = 0;
                 free(this->wave_info);

@@ -22,8 +22,11 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     unsigned long color;
     int tab_count;
     TPanel* tabList[8];
+    char temptxt[50];
     char str[100];
     char info_file[260];
+
+    memset(temptxt + 31, 0, sizeof(temptxt) - 31);
 
     this->title = 0;
     this->time = 0;
@@ -42,6 +45,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     this->instruction_bar = 0;
     this->win_loss_text_bar = 0;
     this->summary_text_bar = 0;
+    str[1] = 0;
     this->end_game_flag = end_game_flag;
 
     this->achievement_choice[0] = 0;
@@ -107,7 +111,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
             message = rge_base_game->world->scenario->Get_message(3);
         }
         if (message != 0 && message[0] != 0) {
-            create_text(this, &this->win_loss_text, message, 10, 0x55,
+            create_text(this, &this->win_loss_text, "", 10, 0x55,
                         0x26C, 0x14A, 0x0B, 0, 0, 1);
             if (this->win_loss_text != 0) {
                 create_auto_scrollbar(&this->win_loss_text_bar,
@@ -209,14 +213,12 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
         ++player_index;
     } while (player_index < 8);
 
-    long ok_x;
-    long ok_width;
     // The shipped layout tests the non-null message arm first.
     if (this->end_game_flag == 0 || rge_base_game->singlePlayerGame() == 0) {
         create_button(this, &this->timelineButton, 0x26D8, 0, 100, 0x1B9,
                       200, 0x1E, 0, 0, 0);
-        ok_width = 200;
-        ok_x = 0x154;
+        create_button(this, &this->okButton, 0x269C, 0, 0x154, 0x1B9,
+                      200, 0x1E, 0, 0, 0);
     } else if (this->win_loss_text != 0) {
         create_button(this, &this->aftermathButton, 0x26B2, 0, 5, 0x1B9,
                       0x96, 0x1E, 0, 0, 0);
@@ -224,19 +226,16 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
                       0x96, 0x1E, 0, 0, 0);
         create_button(this, &this->restartButton, 0x269F, 0, 0x145, 0x1B9,
                       0x96, 0x1E, 0, 0, 0);
-        ok_width = 0x96;
-        ok_x = 0x1E5;
+        create_button(this, &this->okButton, 0x269C, 0, 0x1E5, 0x1B9,
+                      0x96, 0x1E, 0, 0, 0);
     } else {
         create_button(this, &this->timelineButton, 0x26D8, 0, 0x14, 0x1B9,
                       0xB4, 0x1E, 0, 0, 0);
         create_button(this, &this->restartButton, 0x269F, 0, 0xE6, 0x1B9,
                       0xB4, 0x1E, 0, 0, 0);
-        ok_width = 0xB4;
-        ok_x = 0x1B8;
+        create_button(this, &this->okButton, 0x269C, 0, 0x1B8, 0x1B9,
+                      0xB4, 0x1E, 0, 0, 0);
     }
-
-    create_button(this, &this->okButton, 0x269C, 0, ok_x, 0x1B9,
-                  ok_width, 0x1E, 0, 0, 0);
     create_button(this, &this->backButton, 0x26DA, 0, 200, 0x1B9,
                   0xF0, 0x1E, 0, 0, 0);
     this->backButton->set_active(0);

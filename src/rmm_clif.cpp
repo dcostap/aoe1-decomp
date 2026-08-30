@@ -320,8 +320,8 @@ invalid:
 void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(
     long x, long y, long spacing)
 {
-    long cliff_width2 = this->map_width / 3 - 1;
     long cliff_height2 = this->map_height / 3 - 1;
+    long cliff_width2 = this->map_width / 3 - 1;
     long cliff_x = x - spacing;
     long cliff_x2 = spacing + x;
     long cliff_y = y - spacing;
@@ -337,6 +337,7 @@ void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(
     }
     if (cliff_x2 > cliff_width2) {
         x = cliff_width2;
+        cliff_x2 = cliff_width2;
     }
     if (cliff_x2 > cliff_height2) {
         cliff_y2 = cliff_height2;
@@ -346,8 +347,8 @@ void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(
         long row = cliff_y;
         long row_count = cliff_y2 - cliff_y + 1;
         do {
-            if (spacing <= x) {
-                long column = spacing;
+            long column = spacing;
+            if (spacing <= cliff_x2) {
                 do {
                     if (this->search_map_rows[row][column] != 0) {
                         this->search_map_rows[row][column] = 0;

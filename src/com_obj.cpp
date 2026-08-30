@@ -910,11 +910,10 @@ float RGE_Combat_Object::damageCapability() {
 
 float RGE_Combat_Object::damageCapability(RGE_Static_Object* target) {
     float base_damage;
-    RGE_Master_Combat_Object* target_master =
-        static_cast<RGE_Master_Combat_Object*>(target->master_obj);
 
     base_damage = target->calc_attack_modifier((RGE_Static_Object*)this);
-    return calculateDamage(target_master->weapon_num, target_master->weapon,
+    return calculateDamage(((RGE_Master_Combat_Object*)target->master_obj)->weapon_num,
+                           ((RGE_Master_Combat_Object*)target->master_obj)->weapon,
                            base_damage, target->owner, target);
 }
 

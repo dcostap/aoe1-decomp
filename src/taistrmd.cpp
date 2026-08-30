@@ -991,12 +991,9 @@ int TribeStrategyAIModule::update(int parameter)
     if (i < this->idleRules.numberValue) {
         ManagedArray<int>* idleRules = &this->idleRules;
         do {
-            if (i > idleRules->maximumSizeValue - 1) {
-                idleRules->resize(i + 1);
-            }
             ruleResult = this->vcRules.evaluateAsNonInProgress(
                 this->md->aiPlayer,
-                idleRules->value[i]);
+                (*idleRules)[i]);
             if (ruleResult > bestResult) {
                 result = (*idleRules)[i];
                 bestResult = ruleResult;
@@ -1011,21 +1008,8 @@ int TribeStrategyAIModule::update(int parameter)
             this->currentVictoryConditionValue,
             result) == 1) {
         ManagedArray<int>* executingRules = &this->executingRules;
-        int executingCount = executingRules->numberValue;
-        i = 0;
-        if (executingCount > 0) {
-            while (i < executingCount && i < executingRules->maximumSizeValue) {
-                if (executingRules->value[i] == result) {
-                    goto remove_idle_rule;
-                }
-                ++i;
-            }
-        }
-        if (executingCount > executingRules->maximumSizeValue - 1) {
-            executingRules->resize(executingCount + 1);
-        }
-        executingRules->value[executingRules->numberValue] = result;
-        executingRules->numberValue++;
+        if (executingRules->add(result) == 0)
+            goto remove_idle_rule;
 
 remove_idle_rule:
         int idleCount = this->idleRules.maximumSizeValue;
@@ -1062,10 +1046,7 @@ remove_idle_rule:
                 this->md->aiPlayer,
                 (*executingRules)[i]);
             if (ruleResult < result) {
-                if (i > this->executingRules.maximumSizeValue - 1) {
-                    executingRules->resize(i + 1);
-                }
-                worstRuleResult = executingRules->value[i];
+                worstRuleResult = (*executingRules)[i];
                 result = ruleResult;
             }
             ++i;
@@ -1108,11 +1089,7 @@ remove_idle_rule:
                 ++i;
             }
         }
-        if (idleCount > idleRules->maximumSizeValue - 1) {
-            idleRules->resize(idleCount + 1);
-        }
-        idleRules->value[idleRules->numberValue] = worstRuleResult;
-        idleRules->numberValue++;
+        idleRules->add(worstRuleResult);
 
 add_idle_rule:
         ;

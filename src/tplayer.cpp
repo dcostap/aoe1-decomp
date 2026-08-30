@@ -1458,8 +1458,10 @@ void TRIBE_Player::removeObject(RGE_Static_Object* obj, int second, int third, R
 
 void TRIBE_Player::buildObject(int first, int second, float third, float fourth, int fifth)
 {
-    int objectId = first;
-    static_cast<TRIBE_Command*>(this->world->commands)->command_build(this->id, &objectId, 1, second, third, fourth, fifth);
+    int* objectId = static_cast<int*>(calloc(1, 4));
+    *objectId = first;
+    static_cast<TRIBE_Command*>(this->world->commands)->command_build(this->id, objectId, 1, second, third, fourth, fifth);
+    free(objectId);
 }
 
 

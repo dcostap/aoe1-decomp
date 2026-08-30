@@ -450,14 +450,14 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 if (this->mouseButton[0]->get_state() != 0) {
                     rge_base_game->prog_info->interface_style = 2;
                 } else {
-                    rge_base_game->prog_info->interface_style = param_3;
+                    rge_base_game->prog_info->interface_style = event;
                 }
                 static_cast<TRIBE_Game*>(rge_base_game)->set_interface_messages();
 
                 if (this->rolloverButton[0]->get_state() == 0) {
                     rge_base_game->rollover = 0;
                 } else {
-                    rge_base_game->rollover = 1;
+                    rge_base_game->rollover = event;
                 }
 
                 if (rge_base_game->singlePlayerGame() != 0) {
@@ -465,7 +465,7 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                         rge_base_game->setPathFinding(0);
                         numberPathingIterations = 0x9C4;
                     } else if (this->pathFindingButton[1]->get_state() != 0) {
-                        rge_base_game->setPathFinding(param_3);
+                        rge_base_game->setPathFinding(event);
                         numberPathingIterations = 5000;
                     } else if (this->pathFindingButton[2]->get_state() != 0) {
                         rge_base_game->setPathFinding(2);
@@ -507,20 +507,20 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                         }
                     } else if (info->use_music == 0) {
                         info->use_music = 1;
-                        Regs->RegSetInt(param_3, "Music Volume", this->newMusicVolume * 100);
+                        Regs->RegSetInt(event, "Music Volume", this->newMusicVolume * 100);
                         rge_base_game->setup_music_system();
                         music = rge_base_game->music_system;
                         if (music != 0) {
                             if (music->music_type == 1) {
-                                music->play_tracks(5, music->track_count, param_3, 0, 0);
+                                music->play_tracks(5, music->track_count, event, 0, 0);
                             } else if (music->music_type == 2) {
-                                music->play_tracks(1, music->track_count, param_3, 0, 0);
+                                music->play_tracks(1, music->track_count, event, 0, 0);
                             }
                         }
                     }
 
                     if (rge_base_game->sound_system != 0) {
-                        rge_base_game->sound_system->set_volume(this->newSoundVolume * -100, param_3);
+                        rge_base_game->sound_system->set_volume(this->newSoundVolume * -100, event);
                     }
                 }
 

@@ -63,24 +63,32 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
         info.wall_fade = 20; break;
     }
     long tiles = radius * this->map_width * this->map_height / 100;
-    float radius2 = (float)(this->map_width - 16) / sqrt((float)land_num) * 0.8f;
+    float radius2 = (float)(this->map_width - 16) / sqrt((float)land_num) * 0.8;
     float distance2 = radius2 * radius2;
-    long min_x = (long)(this->map_width / 2 - radius2 * 0.9f);
-    long min_y = (long)(this->map_height / 2 - radius2 * 0.9f);
-    long max_x = (long)(this->map_width / 2 + radius2 * 0.9f);
-    long max_y = (long)(this->map_height / 2 + radius2 * 0.9f);
+    long min_x = (long)(this->map_width / 2 - radius2 * 0.9);
+    long min_y = (long)(this->map_height / 2 - radius2 * 0.9);
+    long max_x = (long)(this->map_width / 2 + radius2 * 0.9);
+    long max_y = (long)(this->map_height / 2 + radius2 * 0.9);
     if (min_x < 9) min_x = 9;
     if (min_y < 9) min_y = 9;
     if (max_x >= this->map_width - 9) max_x = this->map_width - 10;
     if (max_y >= this->map_height - 9) max_y = this->map_height - 10;
-    if (land_num > 0) {
+    i = 0;
+    if (0 < land_num) {
         RGE_Land_Info_Line* land = info.land;
-        for (i = 0; i < info.land_num; ++i, ++land) {
+        do {
             switch (type) {
-            case 0: land->terrain_type = 0; land->area = 7; land->base_size = 5; land->zone = (uchar)i; break;
-            case 1: land->terrain_type = 0; land->area = 4; land->base_size = 5; land->zone = (uchar)i; break;
-            case 2: case 3: case 4:
+            case 2:
+            case 3:
+            case 4:
                 land->terrain_type = 0; land->area = 3; land->base_size = 5; land->zone = 0; break;
+            case 1:
+                land->terrain_type = 0; land->area = 4;
+                goto set_land_defaults;
+            case 0:
+                land->terrain_type = 0; land->area = 7;
+set_land_defaults:
+                land->base_size = 5; land->zone = (uchar)i; break;
             }
             uchar found;
             long x;
@@ -99,7 +107,7 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
                         if (dx < 0) dx = -dx;
                         if (dy < 0) dy = -dy;
                         if ((float)(dx * dx + dy * dy) <= distance2) {
-                            if (!found && j == i - 1) { prior.x = x; prior.y = y; }
+                            if (!found && j == i - 1) { prior.y = y; prior.x = x; }
                             found = 1;
                         }
                     }
@@ -107,7 +115,9 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
             } while (found);
             land->x = x; land->y = y;
             land->land_size = tiles / info.land_num;
-        }
+            ++i;
+            ++land;
+        } while (i < info.land_num);
     }
     new RGE_RMM_Land_Generator(this->map, this, &info);
 }

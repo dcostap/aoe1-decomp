@@ -338,18 +338,16 @@ long TMessagePanel::handle_idle() {
 
 int TMessagePanel::render_to_image_buffer() {
     tagRECT* image_rect;
-    void* dc;
     void* old_font;
     tagPALETTEENTRY p;
     unsigned long font_rgb;
     unsigned long back_rgb;
-    long x;
+    long x1;
     long display_hgt;
-    long y;
+    long y1;
     long wid;
     long hgt;
     tagSIZE ts;
-    int len;
     tagRECT rect;
     unsigned int flags;
     long used_x;
@@ -373,8 +371,7 @@ int TMessagePanel::render_to_image_buffer() {
         return 1;
     }
 
-    dc = this->ImageBuffer->GetDc("pnl_msg::render_to_image_buffer");
-    if (dc == 0) {
+    if (this->ImageBuffer->GetDc("pnl_msg::render_to_image_buffer") == 0) {
         return 0;
     }
 
@@ -392,8 +389,8 @@ int TMessagePanel::render_to_image_buffer() {
         back_rgb = ((unsigned long)p.peBlue << 16) |
                    ((unsigned long)p.peGreen << 8) | p.peRed;
     } else {
-        back_rgb = this->font_color2;
         font_rgb = this->font_color1;
+        back_rgb = this->font_color2;
     }
 
     if (this->message_type == 2) {
@@ -404,19 +401,13 @@ int TMessagePanel::render_to_image_buffer() {
     }
 
     wid = this->pnl_wid - 2;
-    x = image_rect->left;
+    x1 = image_rect->left + 1;
+    y1 = this->ImageRect.top + 1;
     hgt = this->pnl_hgt - 2;
-    y = this->ImageRect.top;
 
-    while (*text != 0) {
-        ++text;
-    }
-    len = (int)(text - this->text);
-    int ok = GetTextExtentPoint32A(this->ImageBuffer->DrawDc, this->text,
-                                   len, &ts);
-
-    if (ok == 0) {
-        SetRect(&rect, x, y, x + wid - 2, y + hgt - 2);
+    if (GetTextExtentPoint32A(this->ImageBuffer->DrawDc, this->text,
+                              strlen(this->text), &ts) == 0) {
+        SetRect(&rect, x1 - 1, y1 - 1, x1 + wid - 2, y1 + hgt - 2);
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
         this->ImageTextActive = 0;
     } else {
@@ -481,16 +472,16 @@ int TMessagePanel::render_to_image_buffer() {
             this->UsedImageRect.bottom = this->ImageRect.bottom;
 
         SetTextColor(this->ImageBuffer->DrawDc, back_rgb);
-        SetRect(&rect, x, y, x + wid - 1, y + hgt - 1);
+        SetRect(&rect, x1 - 1, y1 - 1, x1 + wid - 2, y1 + hgt - 2);
         DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
-        SetRect(&rect, x, y + 2, x + wid - 1, y + hgt + 1);
+        SetRect(&rect, x1 - 1, y1 + 1, x1 + wid - 2, y1 + hgt);
         DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
-        SetRect(&rect, x + 2, y, x + wid + 1, y + hgt - 1);
+        SetRect(&rect, x1 + 1, y1 - 1, x1 + wid, y1 + hgt - 2);
         DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
-        SetRect(&rect, x + 2, y + 2, x + wid + 1, y + hgt + 1);
+        SetRect(&rect, x1 + 1, y1 + 1, x1 + wid, y1 + hgt);
         DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
         SetTextColor(this->ImageBuffer->DrawDc, font_rgb);
-        SetRect(&rect, x + 1, y + 1, x + wid, y + hgt);
+        SetRect(&rect, x1, y1, x1 + wid - 1, y1 + hgt - 1);
         DrawTextA(this->ImageBuffer->DrawDc, this->text, -1, &rect, flags);
 
         if (this->Icon1 != 0) {

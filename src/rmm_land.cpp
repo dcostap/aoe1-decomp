@@ -157,7 +157,7 @@ unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_id)
 // map rows use [row][column]. The stack outputs are column then
 // row, and the helper calls use that same coordinate order.
 unsigned char RGE_RMM_Land_Generator::base_land_generate() {
-    long land_size[99];
+    long land_size[100];
     Map_Stack stack[99];
 
     long land_id;
@@ -200,9 +200,10 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
             unsigned char zone = land.zone;
             land_size[zone + 1] = (right - left + 1) * (bottom - top + 1);
 
-            for (row = top; row <= bottom; row++) {
-                for (column = left; column <= right; column++) {
-                    this->search_map_rows[row][column] = zone;
+            for (long fill_row = top; fill_row <= bottom; fill_row++) {
+                for (long fill_column = left; fill_column <= right;
+                     fill_column++) {
+                    this->search_map_rows[fill_row][fill_column] = zone;
                 }
             }
 

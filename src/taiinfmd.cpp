@@ -3470,15 +3470,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj)
         id = obj->id;
         {
             ManagedArray<int>* list = &this->itemsToDefend;
-            int numValues = list->numberValue;
-            for (int i = 0; i < numValues && i < list->maximumSizeValue; i++) {
-                if (list->value[i] == id)
-                    return 1;
-            }
-            if (list->numberValue > list->maximumSizeValue - 1)
-                list->resize(list->numberValue + 1);
-            list->value[list->numberValue] = id;
-            list->numberValue++;
+            list->add(id);
         }
         return 1;
     }
@@ -3490,15 +3482,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj)
         id = obj->id;
         {
             ManagedArray<int>* list = &this->itemsToDefend;
-            int numValues = list->numberValue;
-            for (int i = 0; i < numValues && i < list->maximumSizeValue; i++) {
-                if (list->value[i] == id)
-                    return 1;
-            }
-            if (list->numberValue > list->maximumSizeValue - 1)
-                list->resize(list->numberValue + 1);
-            list->value[list->numberValue] = id;
-            list->numberValue++;
+            list->add(id);
         }
         return 1;
     }
@@ -3508,15 +3492,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj)
         id = obj->id;
         {
             ManagedArray<int>* list = &this->itemsToDefend;
-            int numValues = list->numberValue;
-            for (int i = 0; i < numValues && i < list->maximumSizeValue; i++) {
-                if (list->value[i] == id)
-                    return 1;
-            }
-            if (list->numberValue > list->maximumSizeValue - 1)
-                list->resize(list->numberValue + 1);
-            list->value[list->numberValue] = id;
-            list->numberValue++;
+            list->add(id);
         }
         return 1;
     }
@@ -3527,15 +3503,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj)
         id = obj->id;
         {
             ManagedArray<int>* list = &this->itemsToDefend;
-            int numValues = list->numberValue;
-            for (int i = 0; i < numValues && i < list->maximumSizeValue; i++) {
-                if (list->value[i] == id)
-                    return 1;
-            }
-            if (list->numberValue > list->maximumSizeValue - 1)
-                list->resize(list->numberValue + 1);
-            list->value[list->numberValue] = id;
-            list->numberValue++;
+            list->add(id);
         }
         return 1;
     }
@@ -3554,10 +3522,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj)
             ManagedArray<int>* list8 = &this->itemsToDefend;
             if (list8->contains(tmp) == 1)
                 return 1;
-            int numValues = this->itemsToDefend.numberValue;
-            if (numValues > this->itemsToDefend.maximumSizeValue - 1)
-                list8->resize(numValues + 1);
-            list8->value[this->itemsToDefend.numberValue] = tmp;
+            (*list8)[list8->numberValue] = tmp;
             this->itemsToDefend.numberValue++;
             return 1;
         }
@@ -3568,10 +3533,7 @@ int TribeInformationAIModule::checkDefend(RGE_Static_Object* obj)
             tmp = obj->id;
             if (this->itemsToDefend.contains(tmp) == 1)
                 return 1;
-            int numValues = this->itemsToDefend.numberValue;
-            if (numValues > this->itemsToDefend.maximumSizeValue - 1)
-                this->itemsToDefend.resize(numValues + 1);
-            this->itemsToDefend.value[this->itemsToDefend.numberValue] = tmp;
+            this->itemsToDefend[this->itemsToDefend.numberValue] = tmp;
             this->itemsToDefend.numberValue++;
             return 1;
         }
@@ -5304,7 +5266,7 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
 
     for (int x = min.x; x <= max.x; ++x) {
         for (int y = min.y; y <= max.y; ++y) {
-            unsigned char tile = (unsigned char)(gMap->map_row_offset[y][x].height & 0x1f);
+            unsigned char tile = (unsigned char)(gMap->map_row_offset[y][x].terrain_type & 0x1f);
             vMap->get_visible(x, y);
             if (useTransport == 1) {
                 if (tile != 2) continue;
@@ -5322,7 +5284,7 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
                 int good = 1;
                 for (int a = passableMin.x; a <= passableMax.x && good; ++a) {
                     for (int b = passableMin.y; b <= passableMax.y && good; ++b) {
-                        unsigned char t = (unsigned char)(gMap->map_row_offset[b][a].height & 0x1f);
+                        unsigned char t = (unsigned char)(gMap->map_row_offset[b][a].terrain_type & 0x1f);
                         if (t != 1 && t != 0x16 && unit->passableTile((float)a, (float)b, 1) == 0) good = 0;
                     }
                 }

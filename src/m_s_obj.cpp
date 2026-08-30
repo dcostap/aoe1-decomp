@@ -800,10 +800,9 @@ unsigned char RGE_Master_Static_Object::check_placement(
         radius_y_value = radius_y;
     }
 
-    // The beta executable transposes the upper placement edges.
     float left_edge = x - radius_x_value;
-    float bottom_edge = radius_x_value + x;
-    float right_edge = radius_y_value + y;
+    float right_edge = radius_x_value + x;
+    float bottom_edge = radius_y_value + y;
     float top_edge = y - radius_y_value;
     if (left_edge < 0.0 ||
         (float)map->map_width <= right_edge - 0.001f ||
@@ -845,8 +844,8 @@ unsigned char RGE_Master_Static_Object::check_placement(
         edge_y_max = y_max;
     }
 
-    bool bVar9 = false;
-    bool bVar10 = false;
+    unsigned char req_terr1 = 0;
+    unsigned char req_terr2 = 0;
     short req_terrain1 = tile_req1;
 
     if (req_terrain1 >= 0 || tile_req2 >= 0) {
@@ -856,8 +855,8 @@ unsigned char RGE_Master_Static_Object::check_placement(
             for (short col = edge_x_min; col <= edge_x_max; ++col) {
                 unsigned short t = static_cast<unsigned short>(
                     map->map_row_offset[edge_y_min - 1][col].terrain_type & 0x1f);
-                if (t == (unsigned short)req_terrain1) bVar9 = 1;
-                if (t == (unsigned short)tile_req2) bVar10 = 1;
+                if (t == (unsigned short)req_terrain1) req_terr1 = 1;
+                if (t == (unsigned short)tile_req2) req_terr2 = 1;
             }
         }
 
@@ -865,8 +864,8 @@ unsigned char RGE_Master_Static_Object::check_placement(
             for (short row = edge_y_min; row <= edge_y_max; ++row) {
                 unsigned short t = static_cast<unsigned short>(
                     map->map_row_offset[row][edge_x_max + 1].terrain_type & 0x1f);
-                if (t == (unsigned short)req_terrain1) bVar9 = 1;
-                if (t == (unsigned short)tile_req2) bVar10 = 1;
+                if (t == (unsigned short)req_terrain1) req_terr1 = 1;
+                if (t == (unsigned short)tile_req2) req_terr2 = 1;
             }
         }
 
@@ -874,8 +873,8 @@ unsigned char RGE_Master_Static_Object::check_placement(
             for (short col = edge_x_max; col >= edge_x_min; --col) {
                 unsigned short t = static_cast<unsigned short>(
                     map->map_row_offset[edge_y_max + 1][col].terrain_type & 0x1f);
-                if (t == (unsigned short)req_terrain1) bVar9 = 1;
-                if (t == (unsigned short)tile_req2) bVar10 = 1;
+                if (t == (unsigned short)req_terrain1) req_terr1 = 1;
+                if (t == (unsigned short)tile_req2) req_terr2 = 1;
             }
         }
 
@@ -883,29 +882,32 @@ unsigned char RGE_Master_Static_Object::check_placement(
             for (short row = edge_y_max; row >= edge_y_min; --row) {
                 unsigned short t = static_cast<unsigned short>(
                     map->map_row_offset[row][terrain_table].terrain_type & 0x1f);
-                if (t == (unsigned short)req_terrain1) bVar9 = 1;
-                if (t == (unsigned short)tile_req2) bVar10 = 1;
+                if (t == (unsigned short)req_terrain1) req_terr1 = 1;
+                if (t == (unsigned short)tile_req2) req_terr2 = 1;
             }
         }
 
-        if (!bVar9 && !bVar10) return 1;
+        if (!req_terr1 && !req_terr2) return 1;
     }
 
-    bVar9 = false;
-    for (short col = x_min; col <= x_max; col++) {
-        for (short row = y_min; row <= y_max; row++) {
+    unsigned char part_vis = 0;
+    short x_index;
+    short y_index;
+    for (x_index = x_min; x_index <= x_max; x_index++) {
+        for (y_index = y_min; y_index <= y_max; y_index++) {
             unsigned char ct =
-                (unsigned char)(map->map_row_offset[row][col].terrain_type & 0x1f);
+                (unsigned char)(map->map_row_offset[y_index][x_index].terrain_type & 0x1f);
             if (terrain_cost[ct] <= 0.0f) {
                 return 2;
             }
             if (p5 != 0 &&
                 (rge_base_game->prog_mode == 7 ||
-                 player->visible->get_visible(col, row))) {
-                bVar9 = 1;
+                 player->visible->get_visible(x_index, y_index))) {
+                part_vis = 1;
             }
             if (p6 != 0) {
-                unsigned short tt = map->map_row_offset[row][col].tile_type;
+                unsigned short tt =
+                    map->map_row_offset[y_index][x_index].tile_type;
                 switch (elevation_flag) {
                     case 1:
                         if ((tt != 0 && tt != 5 && tt != 7) &&
@@ -923,26 +925,27 @@ unsigned char RGE_Master_Static_Object::check_placement(
         }
     }
 
-    if (p5 == 1 && !bVar9) return 5;
+    if (p5 == 1 && !part_vis) return 5;
     if (radius_x_value <= 0.0f && radius_y_value <= 0.0f) return 0;
 
-    short overlap_x_min = (short)(x - 3.0f);
-    short overlap_y_min = (short)(y - 3.0f);
-    short overlap_x_max = (short)(x - (-3.0f));
-    short overlap_y_max = (short)(y - (-3.0f));
-    if (overlap_x_min < 0) overlap_x_min = 0;
-    if (overlap_x_max >= map->map_width) overlap_x_max = (short)map->map_width - 1;
-    if (overlap_y_min < 0) overlap_y_min = 0;
-    if (overlap_y_max >= map->map_height) overlap_y_max = (short)map->map_height - 1;
+    x_min = (short)(x - 3.0f);
+    y_min = (short)(y - 3.0f);
+    x_max = (short)(x - (-3.0f));
+    y_max = (short)(y - (-3.0f));
+    if (x_min < 0) x_min = 0;
+    if (x_max >= map->map_width) x_max = (short)map->map_width - 1;
+    if (y_min < 0) y_min = 0;
+    if (y_max >= map->map_height) y_max = (short)map->map_height - 1;
 
     if (p10 != 0 && (p9 != 0 || radius_z > 0.0) &&
-        overlap_y_min <= overlap_y_max) {
-        short current_y = overlap_y_min;
+        y_min <= y_max) {
+        y_index = y_min;
         do {
-            if (overlap_x_min <= overlap_x_max) {
-                for (short col = overlap_x_min; col <= overlap_x_max; ++col) {
-                    for (RGE_Object_Node* node =
-                             map->map_row_offset[current_y][col].objects.list;
+            if (x_min <= x_max) {
+                x_index = x_min;
+                RGE_Tile* tile = &map->map_row_offset[y_index][x_min];
+                do {
+                    for (RGE_Object_Node* node = tile->objects.list;
                          node != 0; node = node->next) {
                         RGE_Static_Object* obj = node->node;
                         if (obj->object_state < 7 &&
@@ -967,10 +970,12 @@ unsigned char RGE_Master_Static_Object::check_placement(
                             }
                         }
                     }
-                }
+                    ++tile;
+                    ++x_index;
+                } while (x_index <= x_max);
             }
-            current_y++;
-        } while (current_y <= overlap_y_max);
+            y_index++;
+        } while (y_index <= y_max);
     }
 
     return 0;

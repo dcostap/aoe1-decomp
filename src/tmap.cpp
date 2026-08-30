@@ -189,7 +189,6 @@ void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
     short col;
 
     tile = this->map_row_offset[y] + x;
-    old_border = terrain;
     old_border = tile->terrain_type;
     tile->terrain_type = terrain;
 
@@ -521,8 +520,8 @@ void TRIBE_Map::remove_cliff_edge(long x, long y, long dir)
             int inner = -1;
             do {
                 this->game_world->players[this->game_world->curr_player]
-                    ->diam_tile_list.add_node(outer + (long)cliff->world_y,
-                                               inner + (long)cliff->world_z);
+                    ->diam_tile_list.add_node(outer + (long)cliff->world_x,
+                                               inner + (long)cliff->world_y);
                 ++inner;
             } while (inner < 2);
             ++outer;
@@ -530,8 +529,7 @@ void TRIBE_Map::remove_cliff_edge(long x, long y, long dir)
 
         delete cliff;
 
-        int reverse = this->reverse_cliff_direction(dir);
-        cliff_info.info[reverse] = 0;
+        cliff_info.info[this->reverse_cliff_direction(dir)] = 0;
         this->make_new_cliff(x, y, cliff_info);
     }
 }

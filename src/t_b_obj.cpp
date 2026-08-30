@@ -477,8 +477,10 @@ void TRIBE_Building_Object::modify(float value, unsigned char attribute)
 void TRIBE_Building_Object::transform(TRIBE_Master_Building_Object* master)
 {
     TRIBE_Combat_Object::transform(master);
-    built = 0;
-    if (master->build_pts_required > 0) {
+    object_state = 0;
+    TRIBE_Master_Combat_Object* combat_master =
+        static_cast<TRIBE_Master_Combat_Object*>(master_obj);
+    if (combat_master->build_pts_required > 0) {
         new_sprite(master->construction_sprite);
     }
     build_pts = 0;

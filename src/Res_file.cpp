@@ -325,244 +325,252 @@ int __cdecl RESFILE_Decommit_Mapped_Memory(unsigned char* address, int size)
 int __cdecl RESFILE_build_res_file(
     char* build_list_file, char* source_path, char* target_path)
 {
-    char build_filename[264];
+    char build_filename[260];
     char resource_filename[260];
     char data_filename[260];
     char temp_filename[260];
     char rPassword[40];
     resfile_header theHeader;
-    resfile_type_dir_node typeDirNode;
-    resfile_id_dir_node idDirNode;
     BuildRes_type_node* ID_List;
-    BuildRes_type_node* iq;
-    FILE* buildFile;
-    int resourceFile;
-    BuildRes_id_node* previous;
+    BuildRes_id_node* iq;
+    int numResTypes;
     unsigned long rId;
 
-    iq = 0;
-    rId = 0;
-
-    sprintf(build_filename + 4, "%s%s", source_path, build_list_file);
-
-    buildFile = fopen(build_filename + 4, "r");
-    if (buildFile == 0) {
-        L->Log("Error: could not find resource build file: %s", build_list_file);
-        return 0;
-    }
-
-    fscanf(buildFile, "%s %s", temp_filename + 4, rPassword + 4);
-    sprintf(resource_filename + 4, "%s%s", target_path, temp_filename + 4);
-
-    while (1) {
-        if (fscanf(buildFile, "%s", temp_filename + 4) == -1) break;
-        if (fscanf(buildFile, "%d", &idDirNode.id) == -1) break;
-        {
-            unsigned long typeID;
-            BuildRes_type_node* tnode;
-            BuildRes_id_node* pNode;
-            BuildRes_type_node* ins;
-            BuildRes_type_node* found;
-            int fd;
-            long size;
-
-            sprintf(data_filename + 4, "%s%s", source_path,
-                temp_filename + 4);
-
-            typeID = BUILDRES_get_files_resource_type(temp_filename + 4);
-            if (typeID == 0) {
-                L->Log("Error: could not determine file type of: %s",
-                    temp_filename + 4);
-                return 0;
-            }
-
-            ins = 0;
-            found = 0;
-            for (tnode = iq; tnode; tnode = tnode->next) {
-                if (tnode->type == typeID) {
-                    found = tnode;
-                    break;
-                }
-                if (tnode->type < typeID) {
-                    ins = tnode;
-                }
-            }
-
-            if (found == 0) {
-                found = new BuildRes_type_node;
-                if (found == 0) {
-                    L->Log("Error: out of memory #1");
-                    return 0;
-                }
-                found->type = typeID;
-                found->idOffset = 0;
-                found->nIds = 0;
-                found->idList = 0;
-                found->next = 0;
-                if (ins == 0) {
-                    found->next = iq;
-                    iq = found;
-                } else {
-                    found->next = ins->next;
-                    ins->next = found;
-                }
-                rId++;
-            }
-
-            previous = 0;
-            for (pNode = found->idList; pNode; pNode = pNode->next) {
-                if (pNode->id == idDirNode.id) {
-                    L->Log("Error: duplicate resources: %s & %s",
-                        pNode->fName, data_filename);
-                    return 0;
-                }
-                if (pNode->id < idDirNode.id) {
-                    previous = pNode;
-                }
-            }
-
-            pNode = new BuildRes_id_node;
-            if (pNode == 0) {
-                L->Log("Error: out of memory #2");
-                return 0;
-            }
-            pNode->id = idDirNode.id;
-            pNode->dataOffset = 0;
-            pNode->resData = 0;
-            pNode->resSize = 0;
-            pNode->next = 0;
-            strcpy(pNode->fName, data_filename + 4);
-
-            fd = __open(data_filename + 4, 0x8000);
-            if (fd == -1) {
-                L->Log("Error: unable to open file: %s", data_filename + 4);
-                delete pNode;
-            } else {
-                if (previous == 0) {
-                    pNode->next = found->idList;
-                    found->idList = pNode;
-                } else {
-                    pNode->next = previous->next;
-                    previous->next = pNode;
-                }
-                found->nIds++;
-
-                size = lseek(fd, 0, 2);
-                lseek(fd, 0, 0);
-                if (size <= 0) {
-                    L->Log("Error: file is empty/NULL: %s", data_filename + 4);
-                    return 0;
-                }
-                pNode->resData = (unsigned char*)malloc(size);
-                if (pNode->resData == 0) {
-                    L->Log("Error: out of memory #3");
-                    return 0;
-                }
-                pNode->resSize = size;
-                if (read(fd, pNode->resData, size) != size) {
-                    L->Log("Error: error reading file: %s", data_filename + 4);
-                    return 0;
-                }
-                close(fd);
-            }
-        }
-    }
-
-    fclose(buildFile);
-    resourceFile = __open(resource_filename + 4, 0x8301, 0x180);
-    if (resourceFile == -1) {
-        L->Log("Error: unable to create resource file file: %s",
-            resource_filename + 4);
-        return 0;
-    }
+    ID_List = 0;
+    numResTypes = 0;
 
     {
-        int pos;
-        int dirSize;
-        BuildRes_type_node* tnode;
-        BuildRes_id_node* pNode;
+        FILE* buildFile;
 
-        tnode = iq;
-        pos = rId * 12 + 0x40;
-        for (; tnode; tnode = tnode->next) {
-            tnode->idOffset = pos;
-            pos += tnode->nIds * 12;
-        }
-        dirSize = pos;
-        for (tnode = iq; tnode; tnode = tnode->next) {
-            for (pNode = tnode->idList; pNode; pNode = pNode->next) {
-                pNode->dataOffset = pos;
-                pos += pNode->resSize;
-            }
-        }
+        sprintf(build_filename, "%s%s", source_path, build_list_file);
 
-        memset(theHeader.banner_msg + 4, 0, 0x40);
-        strcpy(theHeader.banner_msg + 4,
-            "Copyright (c) 1997 Ensemble Studios.\x1a");
-        strcpy(theHeader.password, "1.00");
-        strcpy(theHeader.password + 4, rPassword + 4);
-
-        theHeader.num_res_types = rId;
-        theHeader.directory_size = dirSize;
-
-        if (write(resourceFile, theHeader.banner_msg + 4, 0x40) != 0x40) {
-            L->Log("Error writing resource file header");
+        buildFile = fopen(build_filename, "r");
+        if (buildFile == 0) {
+            L->Log("Error: could not find resource build file: %s",
+                build_list_file);
             return 0;
         }
 
-        pos = 0x40;
-        for (tnode = iq; tnode; tnode = tnode->next) {
-            typeDirNode.type = tnode->type;
-            typeDirNode.dirOffset = tnode->idOffset;
-            typeDirNode.numID = tnode->nIds;
-            if (write(resourceFile, &typeDirNode, 0xC) != 0xC) {
-                L->Log("Error writing resource file header: type node");
-                return 0;
+        fscanf(buildFile, "%s %s", temp_filename, rPassword);
+        sprintf(resource_filename, "%s%s", target_path, temp_filename);
+
+        while (1) {
+            if (fscanf(buildFile, "%s", temp_filename) == -1) break;
+            if (fscanf(buildFile, "%d", &rId) == -1) break;
+            {
+                unsigned long typeID;
+                BuildRes_type_node* tnode;
+                BuildRes_id_node* pNode;
+                BuildRes_type_node* ins;
+                BuildRes_type_node* found;
+                int fd;
+                long size;
+
+                sprintf(data_filename, "%s%s", source_path,
+                    temp_filename);
+
+                typeID = BUILDRES_get_files_resource_type(temp_filename);
+                if (typeID == 0) {
+                    L->Log("Error: could not determine file type of: %s",
+                        temp_filename);
+                    return 0;
+                }
+
+                ins = 0;
+                found = 0;
+                for (tnode = ID_List; tnode; tnode = tnode->next) {
+                    if (tnode->type == typeID) {
+                        found = tnode;
+                        break;
+                    }
+                    if (tnode->type < typeID) {
+                        ins = tnode;
+                    }
+                }
+
+                if (found == 0) {
+                    found = new BuildRes_type_node;
+                    if (found == 0) {
+                        L->Log("Error: out of memory #1");
+                        return 0;
+                    }
+                    found->type = typeID;
+                    found->idOffset = 0;
+                    found->nIds = 0;
+                    found->idList = 0;
+                    found->next = 0;
+                    if (ins == 0) {
+                        found->next = ID_List;
+                        ID_List = found;
+                    } else {
+                        found->next = ins->next;
+                        ins->next = found;
+                    }
+                    numResTypes++;
+                }
+
+                iq = 0;
+                for (pNode = found->idList; pNode; pNode = pNode->next) {
+                    if (pNode->id == rId) {
+                        L->Log("Error: duplicate resources: %s & %s",
+                            pNode->fName, data_filename);
+                        return 0;
+                    }
+                    if (pNode->id < rId) {
+                        iq = pNode;
+                    }
+                }
+
+                pNode = new BuildRes_id_node;
+                if (pNode == 0) {
+                    L->Log("Error: out of memory #2");
+                    return 0;
+                }
+                pNode->id = rId;
+                pNode->dataOffset = 0;
+                pNode->resData = 0;
+                pNode->resSize = 0;
+                pNode->next = 0;
+                strcpy(pNode->fName, data_filename);
+
+                fd = __open(data_filename, 0x8000);
+                if (fd == -1) {
+                    L->Log("Error: unable to open file: %s", data_filename);
+                    delete pNode;
+                } else {
+                    if (iq == 0) {
+                        pNode->next = found->idList;
+                        found->idList = pNode;
+                    } else {
+                        pNode->next = iq->next;
+                        iq->next = pNode;
+                    }
+                    found->nIds++;
+
+                    size = lseek(fd, 0, 2);
+                    lseek(fd, 0, 0);
+                    if (size <= 0) {
+                        L->Log("Error: file is empty/NULL: %s", data_filename);
+                        return 0;
+                    }
+                    pNode->resData = (unsigned char*)malloc(size);
+                    if (pNode->resData == 0) {
+                        L->Log("Error: out of memory #3");
+                        return 0;
+                    }
+                    pNode->resSize = size;
+                    if (read(fd, pNode->resData, size) != size) {
+                        L->Log("Error: error reading file: %s", data_filename);
+                        return 0;
+                    }
+                    close(fd);
+                }
             }
-            pos += 0xC;
         }
 
-        for (tnode = iq; tnode; tnode = tnode->next) {
-            if (pos != tnode->idOffset) {
-                L->Log("Error writing resource file: pos out of sync 1");
+        fclose(buildFile);
+    }
+
+    {
+        int resHandle;
+
+        resHandle = __open(resource_filename, 0x8301, 0x180);
+        if (resHandle == -1) {
+            L->Log("Error: unable to create resource file file: %s",
+                resource_filename);
+            return 0;
+        }
+
+        {
+            int pos;
+            int dirSize;
+            BuildRes_type_node* tnode;
+            BuildRes_id_node* pNode;
+            resfile_type_dir_node typeDirNode;
+            resfile_id_dir_node idDirNode;
+
+            tnode = ID_List;
+            pos = numResTypes * 12 + 0x40;
+            for (; tnode; tnode = tnode->next) {
+                tnode->idOffset = pos;
+                pos += tnode->nIds * 12;
+            }
+            dirSize = pos;
+            for (tnode = ID_List; tnode; tnode = tnode->next) {
+                for (pNode = tnode->idList; pNode; pNode = pNode->next) {
+                    pNode->dataOffset = pos;
+                    pos += pNode->resSize;
+                }
+            }
+
+            memset(theHeader.banner_msg, 0, 0x40);
+            strcpy(theHeader.banner_msg,
+                "Copyright (c) 1997 Ensemble Studios.\x1a");
+            strcpy(theHeader.password, "1.00");
+            strcpy(theHeader.password + 4, rPassword);
+
+            theHeader.num_res_types = numResTypes;
+            theHeader.directory_size = dirSize;
+
+            if (write(resHandle, theHeader.banner_msg, 0x40) != 0x40) {
+                L->Log("Error writing resource file header");
                 return 0;
             }
-            for (pNode = tnode->idList; pNode; pNode = pNode->next) {
-                idDirNode.id = pNode->id;
-                idDirNode.itemOffset = pNode->dataOffset;
-                idDirNode.itemSize = pNode->resSize;
-                if (write(resourceFile, &idDirNode, sizeof(idDirNode)) !=
-                    sizeof(idDirNode)) {
-                    L->Log("Error writing resource file header: id node");
+
+            pos = 0x40;
+            for (tnode = ID_List; tnode; tnode = tnode->next) {
+                typeDirNode.type = tnode->type;
+                typeDirNode.dirOffset = tnode->idOffset;
+                typeDirNode.numID = tnode->nIds;
+                if (write(resHandle, &typeDirNode, 0xC) != 0xC) {
+                    L->Log("Error writing resource file header: type node");
                     return 0;
                 }
                 pos += 0xC;
             }
-        }
 
-        for (tnode = iq; tnode; tnode = tnode->next) {
-            for (pNode = tnode->idList; pNode; pNode = pNode->next) {
-                if (pos != pNode->dataOffset) {
-                    L->Log("Error writing resource file data: pos out of sync 2");
+            for (tnode = ID_List; tnode; tnode = tnode->next) {
+                if (pos != tnode->idOffset) {
+                    L->Log("Error writing resource file: pos out of sync 1");
                     return 0;
                 }
-                if (write(resourceFile, pNode->resData, pNode->resSize) !=
-                    pNode->resSize) {
-                    L->Log("Error writing resource file data");
-                    return 0;
+                for (pNode = tnode->idList; pNode; pNode = pNode->next) {
+                    idDirNode.id = pNode->id;
+                    idDirNode.itemOffset = pNode->dataOffset;
+                    idDirNode.itemSize = pNode->resSize;
+                    if (write(resHandle, &idDirNode, sizeof(idDirNode)) !=
+                        sizeof(idDirNode)) {
+                        L->Log("Error writing resource file header: id node");
+                        return 0;
+                    }
+                    pos += 0xC;
                 }
-                pos += pNode->resSize;
+            }
+
+            for (tnode = ID_List; tnode; tnode = tnode->next) {
+                for (pNode = tnode->idList; pNode; pNode = pNode->next) {
+                    if (pos != pNode->dataOffset) {
+                        L->Log("Error writing resource file data: pos out of sync 2");
+                        return 0;
+                    }
+                    if (write(resHandle, pNode->resData, pNode->resSize) !=
+                        pNode->resSize) {
+                        L->Log("Error writing resource file data");
+                        return 0;
+                    }
+                    pos += pNode->resSize;
+                }
             }
         }
-    }
 
-    close(resourceFile);
+        close(resHandle);
+    }
 
     {
         BuildRes_id_node* pNode;
         BuildRes_type_node* nextType;
         BuildRes_id_node* nextNode;
-        ID_List = iq;
+
         while (ID_List) {
             pNode = ID_List->idList;
             while (pNode) {

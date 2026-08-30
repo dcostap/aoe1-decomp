@@ -5,7 +5,7 @@
 extern void* DAT_0062cf34;
 extern void* DAT_0062cf38;
 extern void* DAT_0062cf3c;
-extern unsigned char DAT_0062cf40;
+extern unsigned int DAT_0062cf40;
 extern TDebuggingLog* L;
 
 RGE_Communications_Queue::RGE_Communications_Queue(int param_1) {
@@ -88,18 +88,25 @@ unsigned char RGE_Communications_Queue::ExpectedNextSequence(
 
     seq = 1;
     i = 0;
-    DAT_0062cf40 = seq;
+    *(unsigned char*)&DAT_0062cf40 = seq;
     do {
         if (this->Queue[i].ExecTurn == turn &&
             this->Queue[i].From == from &&
             this->Queue[i].Size != 0) {
             seq++;
-            DAT_0062cf40 = seq;
+            *(unsigned char*)&DAT_0062cf40 = seq;
         }
         i++;
     } while (i <= this->HighQueueDepth);
 
-    return DAT_0062cf40;
+    {
+        unsigned int c = (unsigned int)this;
+        c |= 0xff;
+        if ((unsigned char)c >= seq) {
+            return (unsigned char)DAT_0062cf40;
+        }
+        return 0;
+    }
 }
 
 unsigned int RGE_Communications_Queue::QueuedForTurn(unsigned long turn) {

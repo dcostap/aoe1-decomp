@@ -137,37 +137,34 @@ void RGE_Action_Enter::set_state(unsigned char value)
 
 unsigned char RGE_Action_Enter::update()
 {
-    RGE_Action* action;
     XYPoint start;
     XYPoint dest;
     XYPoint result;
-    int target_valid;
 
-    target_valid = 1;
     if (this->targetID != -1 &&
         this->obj->owner->world->object(this->targetID) == 0) {
-        target_valid = 0;
+        goto invalid_target;
     }
 
-    if (target_valid != 0 && this->target2ID != -1 &&
+    if (this->target2ID != -1 &&
         this->obj->owner->world->object(this->target2ID) == 0) {
         this->set_target_obj2(0);
-        target_valid = 0;
     }
 
-    if (target_valid != 0 && this->target_obj != 0 &&
-        (this->target_obj->object_state >= 3 ||
+    if (this->target_obj == 0 ||
+        (this->target_obj->object_state < 3 &&
          this->obj->owner->isAlly(
-             (int)(short)this->target_obj->owner->id) == 0)) {
-        target_valid = 0;
+             (int)(short)this->target_obj->owner->id) != 0)) {
+        goto handle_state;
     }
 
-    if (target_valid == 0) {
-        this->set_state(1);
-        this->set_target_obj(0);
-        this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x269, 0, 0);
-        return 4;
-    }
+invalid_target:
+    this->set_state(1);
+    this->set_target_obj(0);
+    this->obj->notify(this->obj->id, this->obj->id, 0x1FB, 0x269, 0, 0);
+    return 4;
+
+handle_state:
 
     switch (this->state) {
     case 4:
@@ -220,7 +217,7 @@ unsigned char RGE_Action_Enter::update()
             dest.y = (int)this->obj->world_y;
             start.x = (int)this->target_obj->world_x;
             start.y = (int)this->target_obj->world_y;
-            if (this->obj->firstTileAlongLine(&dest, &start, &result, 2, 2,
+            if (this->obj->firstTileAlongLine(dest, start, result, 2, 2,
                                               1) == 1) {
                 float tile_x;
                 float tile_y;
@@ -248,12 +245,10 @@ unsigned char RGE_Action_Enter::update()
                     this->target_obj->world_z, 0.5f, 1);
             }
         } else if (this->target_obj->actionState() == 0x0B) {
-            RGE_Action_Object* target_action =
-                static_cast<RGE_Action_Object*>(this->target_obj);
-            action = target_action->actions->get_action();
-            this->target_x = action->targetX();
-            action = target_action->actions->get_action();
-            this->target_y = action->targetY();
+            this->target_x = static_cast<RGE_Action_Object*>(this->target_obj)
+                                 ->actions->get_action()->targetX();
+            this->target_y = static_cast<RGE_Action_Object*>(this->target_obj)
+                                 ->actions->get_action()->targetY();
         }
 
         this->set_state(4);

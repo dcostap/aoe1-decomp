@@ -532,7 +532,6 @@ void RGE_Player::scenario_load(int file, long* pos, float version)
     unsigned char player_count;
     short count;
     int human_team;
-    int saved_human_team;
 
     if (version <= 1.05) {
         int file_handle = file;
@@ -554,7 +553,6 @@ void RGE_Player::scenario_load(int file, long* pos, float version)
         rge_read(file_handle, &this->map_y, 2);
 
         human_team = 0;
-        saved_human_team = 0;
         if (rge_base_game->prog_mode != 7) {
             for (int player = 1; player < 9; player++) {
                 if (rge_base_game->playerID(player) == this->id &&
@@ -562,7 +560,6 @@ void RGE_Player::scenario_load(int file, long* pos, float version)
                      comm->GetPlayerHumanity(player) == 4)) {
                     if (rge_base_game->playerTeam(player - 1) > 1) {
                         human_team = 1;
-                        saved_human_team = 1;
                     }
                     break;
                 }
@@ -605,7 +602,6 @@ void RGE_Player::scenario_load(int file, long* pos, float version)
                     }
                 }
                 ++i;
-                human_team = saved_human_team;
             } while (i < count);
         }
 
@@ -1899,8 +1895,8 @@ unsigned char RGE_Player::command_stop(void) {
     short count;
 
     if (this->get_selected_objects_to_command(&list, &count, 3, -1, -1, -1)) {
-        (*list)->play_move_sound();
-        this->world->commands->command_order(list, count, 0, 0.0f, 0.0f);
+        (*list)->play_command_sound();
+        this->world->commands->command_stop(list, count);
         free(list);
         return 1;
     }

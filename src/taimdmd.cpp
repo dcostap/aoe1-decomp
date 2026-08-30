@@ -189,14 +189,9 @@ void TribeMainDecisionAIModule::setLogHistory(int value)
 
 // attribute result uses [esp+1Ch], while this source emits [esp+10h].
 // The first swayable scan jumps to the shared increment tail.
-int TribeMainDecisionAIModule::update(int param_1)
+int TribeMainDecisionAIModule::update(int timeLimit)
 {
-    int newEnemy;
-    TRIBE_World* world;
-    int numberNeutralCPs;
-    int numberHumanPlayers;
     int neutralList[9];
-    char tempString[256];
 
     if (this->player->world->game_state == 0 && this->firstUpdate == 1) {
         this->firstUpdate = 0;
@@ -228,27 +223,27 @@ int TribeMainDecisionAIModule::update(int param_1)
         }
 
         {
-            int amount = tactical->strategicNumber(0x8A);
-            if (amount != 0) {
-                this->player->command_add_attribute(0, (float)amount);
+            int iFood = tactical->strategicNumber(0x8A);
+            if (iFood != 0) {
+                this->player->command_add_attribute(0, (float)iFood);
             }
         }
         {
-            int amount = tactical->strategicNumber(0x8B);
-            if (amount != 0) {
-                this->player->command_add_attribute(3, (float)amount);
+            int iGold = tactical->strategicNumber(0x8B);
+            if (iGold != 0) {
+                this->player->command_add_attribute(3, (float)iGold);
             }
         }
         {
-            int amount = tactical->strategicNumber(0x8C);
-            if (amount != 0) {
-                this->player->command_add_attribute(2, (float)amount);
+            int iStone = tactical->strategicNumber(0x8C);
+            if (iStone != 0) {
+                this->player->command_add_attribute(2, (float)iStone);
             }
         }
         {
-            int amount = tactical->strategicNumber(0x8D);
-            if (amount != 0) {
-                this->player->command_add_attribute(1, (float)amount);
+            int iWood = tactical->strategicNumber(0x8D);
+            if (iWood != 0) {
+                this->player->command_add_attribute(1, (float)iWood);
             }
         }
     }
@@ -281,11 +276,12 @@ int TribeMainDecisionAIModule::update(int param_1)
                     this->player->world->world_time_delta;
                 if (this->tributeExpirationTimeout <= 0) {
                     if (tactical->strategicNumber(0x82) == 1) {
-                        int stanceValue = tactical->strategicNumber(0x80);
-                        this->diplomacyAI.setStance(stanceValue, 0, 100);
-                        stanceValue = tactical->strategicNumber(0x80);
-                        this->diplomacyAI.setStance(stanceValue, 2, 0);
-                        this->player->setDiplomaticStance(
+                        char tempString[256];
+                        this->diplomacyAI.setStance(
+                            tactical->strategicNumber(0x80), 0, 100);
+                        this->diplomacyAI.setStance(
+                            tactical->strategicNumber(0x80), 2, 0);
+                        this->aiPlayer->setDiplomaticStance(
                             tactical->strategicNumber(0x80), 3);
                         rge_base_game->get_string(
                             (long)0x901, tempString, 0x100);
@@ -296,24 +292,40 @@ int TribeMainDecisionAIModule::update(int param_1)
                         this->lastTributeChatTime =
                             this->player->world->world_time;
                     } else if (tactical->strategicNumber(0x81) == 1) {
+                        char tempString[256];
                         rge_base_game->get_string(
                             (long)0x900, tempString, 0x100);
-                        goto tribute_response_send;
+                        this->player->sendChatMessage(
+                            tactical->strategicNumber(0x80), 0, tempString);
+                        this->waitingOnTribute = 0;
+                        this->lastTributeChatTime =
+                            this->player->world->world_time;
+                        this->tributeAddressed =
+                            tactical->strategicNumber(0x84) == 0;
                     }
                 } else {
                     if (this->tributeAmount >=
                         tactical->strategicNumber(0x7C)) {
                         if (tactical->strategicNumber(0x81) == 1) {
-                            int stanceValue = tactical->strategicNumber(0x80);
-                            this->diplomacyAI.setStance(stanceValue, 0, 0);
-                            stanceValue = tactical->strategicNumber(0x80);
-                            this->diplomacyAI.setStance(stanceValue, 2, 100);
-                            this->player->setDiplomaticStance(
+                            char tempString[256];
+                            this->diplomacyAI.setStance(
+                                tactical->strategicNumber(0x80), 0, 0);
+                            this->diplomacyAI.setStance(
+                                tactical->strategicNumber(0x80), 2, 100);
+                            this->aiPlayer->setDiplomaticStance(
                                 tactical->strategicNumber(0x80), 0);
                             rge_base_game->get_string(
                                 (long)0x8FF, tempString, 0x100);
-                            goto tribute_response_send;
+                            this->player->sendChatMessage(
+                                tactical->strategicNumber(0x80), 0,
+                                tempString);
+                            this->waitingOnTribute = 0;
+                            this->lastTributeChatTime =
+                                this->player->world->world_time;
+                            this->tributeAddressed =
+                                tactical->strategicNumber(0x84) == 0;
                         } else if (tactical->strategicNumber(0x82) == 1) {
+                            char tempString[256];
                             rge_base_game->get_string(
                                 (long)0x8FE, tempString, 0x100);
                             this->player->sendChatMessage(
@@ -321,88 +333,70 @@ int TribeMainDecisionAIModule::update(int param_1)
                             this->waitingOnTribute = 0;
                             this->lastTributeChatTime =
                                 this->player->world->world_time;
-                            goto tribute_response_addressed;
+                            this->tributeAddressed =
+                                tactical->strategicNumber(0x84) == 0;
                         }
                     }
                 }
-                goto tribute_response_done;
-
-tribute_response_send:
-                this->player->sendChatMessage(
-                    tactical->strategicNumber(0x80), 0, tempString);
-                this->waitingOnTribute = 0;
-                this->lastTributeChatTime = this->player->world->world_time;
-
-tribute_response_addressed:
-                this->tributeAddressed =
-                    tactical->strategicNumber(0x84) == 0;
-
-tribute_response_done:
-                ;
             }
         } else {
             if (this->waitingOnTribute == 0) {
                 this->waitingOnTribute = 1;
-                this->tributeAmount = 0;
                 this->tributeExpirationTimeout =
                     tactical->strategicNumber(0x7F) * 1000;
+                this->tributeAmount = 0;
             }
             this->lastTributeChatTime = this->player->world->world_time;
-            int tribute = 0;
             if (tactical->strategicNumber(0x82) == 1) {
                 if (this->tributeAmount > 0) {
+                    char tempString[256];
                     rge_base_game->get_string(
                         (long)0x902, tempString, 0x100);
-                    tribute = tactical->strategicNumber(0x7C) -
-                              this->tributeAmount;
-                    goto tribute_chat_send_one;
+                    int tribute = tactical->strategicNumber(0x7C) -
+                                  this->tributeAmount;
+                    this->player->sendChatMessage(
+                        tactical->strategicNumber(0x80), 0, tempString,
+                        tribute);
                 } else {
+                    char tempString[256];
                     rge_base_game->get_string(
                         (long)0x903, tempString, 0x100);
-                    tribute = tactical->strategicNumber(0x7C);
-                    goto tribute_chat_send_two;
+                    int tribute = tactical->strategicNumber(0x7C);
+                    this->player->sendChatMessage(
+                        tactical->strategicNumber(0x80), 0, tempString,
+                        tribute);
                 }
-            } else {
-                if (tactical->strategicNumber(0x81) != 1) {
-                    goto tribute_chat_done;
-                }
+            } else if (tactical->strategicNumber(0x81) == 1) {
                 if (this->tributeAmount > 0) {
+                    char tempString[256];
                     rge_base_game->get_string(
                         (long)0x904, tempString, 0x100);
-                    tribute = tactical->strategicNumber(0x7C);
-                    goto tribute_chat_send_one;
+                    int tribute = tactical->strategicNumber(0x7C);
+                    this->player->sendChatMessage(
+                        tactical->strategicNumber(0x80), 0, tempString,
+                        tribute);
                 } else {
+                    char tempString[256];
                     rge_base_game->get_string(
                         (long)0x905, tempString, 0x100);
-                    tribute = tactical->strategicNumber(0x7C) -
-                              this->tributeAmount;
-                    goto tribute_chat_send_two;
+                    int tribute = tactical->strategicNumber(0x7C) -
+                                  this->tributeAmount;
+                    this->player->sendChatMessage(
+                        tactical->strategicNumber(0x80), 0, tempString,
+                        tribute);
                 }
             }
-
-tribute_chat_send_one:
-            this->player->sendChatMessage(
-                tactical->strategicNumber(0x80), 0, tempString, tribute);
             this->setTributeChat();
-            goto tribute_chat_done;
-
-tribute_chat_send_two:
-            this->player->sendChatMessage(
-                tactical->strategicNumber(0x80), 0, tempString, tribute);
-            this->setTributeChat();
-
-tribute_chat_done:
-            ;
         }
     }
 
     if (this->decidedInitialDiplomacy == 0 &&
         this->player->world->world_time > 10000) {
         this->decidedInitialDiplomacy = 1;
-        world = (TRIBE_World*)this->player->world;
-        newEnemy = 0;
-        numberNeutralCPs = 0;
-        numberHumanPlayers = 0;
+        TRIBE_World* world = (TRIBE_World*)this->player->world;
+        int numberComputerPlayers = 0;
+        int numberHumanPlayers = 0;
+        int numberNeutralCPs = 0;
 
         int playerIndex = 1;
         if (playerIndex < world->player_num) {
@@ -411,7 +405,7 @@ tribute_chat_done:
                 if (player->computerPlayer() == 0) {
                     numberHumanPlayers++;
                 } else {
-                    newEnemy++;
+                    numberComputerPlayers++;
                     if (player->isAllNeutral() == 1) {
                         neutralList[playerIndex] = 1;
                         numberNeutralCPs++;
@@ -424,12 +418,12 @@ tribute_chat_done:
         }
 
         if (world->controllingComputerPlayer == 0xFF) {
-            if (newEnemy == 1) {
+            if (numberComputerPlayers == 1) {
                 world->controllingComputerPlayer = (uchar)this->player->id;
             } else {
                 int selected =
                     debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
-                               0x236) % newEnemy + 1;
+                               0x236) % numberComputerPlayers + 1;
                 int playerIndex = 1;
                 if (playerIndex < world->player_num) do {
                     RGE_Player* player = world->players[playerIndex];
@@ -446,167 +440,124 @@ tribute_chat_done:
         }
 
         if (world->controllingComputerPlayer == (uchar)this->player->id) {
-            newEnemy = (newEnemy - numberHumanPlayers) / 2;
-            if (newEnemy < 0) {
-                newEnemy = 0;
+            int numberSwayable =
+                (numberComputerPlayers - numberHumanPlayers) / 2;
+            if (numberSwayable < 0) {
+                numberSwayable = 0;
             }
-            if (numberNeutralCPs < newEnemy) {
-                newEnemy = numberNeutralCPs;
+            if (numberNeutralCPs < numberSwayable) {
+                numberSwayable = numberNeutralCPs;
             }
             if (((TRIBE_Game*)rge_base_game)->deathMatch() == 1) {
-                newEnemy = 0;
+                numberSwayable = 0;
             }
 
-            if (newEnemy <= numberNeutralCPs && numberNeutralCPs > 0) {
+            if (numberSwayable <= numberNeutralCPs &&
+                numberNeutralCPs > 0) {
                 ManagedArray<int> swayableCPs;
-                numberNeutralCPs = 1;
-                while (numberNeutralCPs < world->player_num) {
-                    RGE_Player* player = world->players[numberNeutralCPs];
+                int i = 1;
+                while (i < world->player_num) {
+                    RGE_Player* player = world->players[i];
                     if (player->computerPlayer() != 0 &&
-                        neutralList[numberNeutralCPs] != 0) {
-                        for (int i = 0; i < swayableCPs.numberValue; i++) {
-                            if (swayableCPs.maximumSizeValue <= i) {
-                                break;
-                            }
-                            if (swayableCPs.value[i] == numberNeutralCPs) {
-                                goto swayable_next_player;
-                            }
-                        }
-                        if (swayableCPs.numberValue < newEnemy) {
-                            swayableCPs[swayableCPs.numberValue] =
-                                numberNeutralCPs;
-                            swayableCPs.numberValue++;
-                        }
+                        neutralList[i] != 0 &&
+                        world->controllingComputerPlayer != player->id &&
+                        swayableCPs.number() < numberSwayable) {
+                        swayableCPs.add(i);
                     }
-
-swayable_next_player:
-                    numberNeutralCPs++;
+                    i++;
                 }
 
-                newEnemy = 2000;
+                int resAmount = 2000;
                 switch (rge_base_game->difficulty()) {
                 case 0:
-                    newEnemy =
+                    resAmount =
                         debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
                                    0x26E) % 500 + 0x578;
                     break;
                 case 1:
-                    newEnemy =
+                    resAmount =
                         debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
                                    0x26F) % 400 + 1000;
                     break;
                 case 2:
-                    newEnemy =
+                    resAmount =
                         debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
                                    0x270) % 300 + 700;
                     break;
                 case 3:
-                    newEnemy =
+                    resAmount =
                         debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
                                    0x271) % 200 + 0x1C2;
                     break;
                 case 4:
-                    newEnemy =
+                    resAmount =
                         debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
                                    0x272) % 100 + 300;
                     break;
                 }
 
-                numberNeutralCPs = 1;
-                while (numberNeutralCPs < world->player_num) {
-                    RGE_Player* player = world->players[numberNeutralCPs];
+                i = 1;
+                while (i < world->player_num) {
+                    RGE_Player* player = world->players[i];
                     if (player->computerPlayer() != 0 &&
-                        neutralList[numberNeutralCPs] != 0) {
-                        int found = 0;
-                        for (int i = 0; i < swayableCPs.numberValue; i++) {
-                            if (swayableCPs.maximumSizeValue <= i) {
-                                break;
-                            }
-                            if (swayableCPs.value[i] == numberNeutralCPs) {
-                                found = 1;
-                                break;
-                            }
-                        }
-                        if (found) {
+                        neutralList[i] != 0) {
+                        if (swayableCPs.contains(i)) {
                             player->sendAICommand(
-                                (int)this->player->id, 7, newEnemy, 0, 0);
-                            newEnemy = newEnemy + newEnemy;
+                                (int)this->player->id, 7, resAmount, 0, 0);
+                            resAmount = resAmount + resAmount;
                         }
 
-                        for (int otherIndex = 1;
-                             otherIndex < world->player_num; otherIndex++) {
-                            if (numberNeutralCPs != otherIndex) {
-                                RGE_Player* other =
-                                    world->players[otherIndex];
-                                if (other->computerPlayer() == 0) {
-                                    int otherFound = 0;
-                                    for (int i = 0;
-                                         i < swayableCPs.numberValue; i++) {
-                                        if (swayableCPs.maximumSizeValue <= i) {
-                                            break;
-                                        }
-                                        if (swayableCPs.value[i] ==
-                                            numberNeutralCPs) {
-                                            otherFound = 1;
-                                            break;
-                                        }
-                                    }
-                                    if (otherFound) {
-                                        if (other->computerPlayer() == 1) {
-                                            player->sendAICommand(
-                                                (int)this->player->id, 6,
-                                                otherIndex, 2, 0);
-                                        }
-                                    } else {
-                                        player->sendAICommand(
-                                            (int)this->player->id, 6,
-                                            otherIndex, 0, 0);
-                                    }
-                                } else {
+                        for (int j = 1; j < world->player_num; j++) {
+                            if (i != j) {
+                                RGE_Player* temp2 = world->players[j];
+                                if (temp2->computerPlayer() == 0 &&
+                                    !swayableCPs.contains(i)) {
                                     player->sendAICommand(
-                                        (int)this->player->id, 6,
-                                        otherIndex, 2, 0);
+                                        (int)this->player->id, 6, j, 0, 0);
+                                }
+                                else if (temp2->computerPlayer() == 1) {
+                                    player->sendAICommand(
+                                        (int)this->player->id, 6, j, 2, 0);
                                 }
                             }
                         }
                     }
-                    numberNeutralCPs++;
+                    i++;
                 }
             }
         }
     }
 
     if (tactical->strategicNumber(0xD9) == 1) {
-        unsigned int timeout = (unsigned int)(
-            (tactical->strategicNumber(0x68) - 3) * 1000);
-        if ((int)timeout < 0) {
-            timeout = 0;
+        timeLimit = (tactical->strategicNumber(0x68) - 3) * 1000;
+        if (timeLimit < 0) {
+            timeLimit = 0;
         }
-        if (timeout < this->player->world->world_time) {
+        if (timeLimit < this->player->world->world_time) {
             tactical->setStrategicNumber(0xD9, 0);
-            int newPlayer = -1;
+            int newEnemy = -1;
             for (int playerIndex = 1;
                  playerIndex < this->player->world->player_num;
                  playerIndex++) {
                 if (this->player->world->players[playerIndex]->computerPlayer() !=
                     1) {
-                    newPlayer = playerIndex;
+                    newEnemy = playerIndex;
                     break;
                 }
             }
-            if (newPlayer != -1) {
-                if (this->player->isEnemy(newPlayer) == 0) {
+            if (newEnemy != -1) {
+                if (this->player->isEnemy(newEnemy) == 0) {
                     this->player->sendAICommand(
-                        (int)this->player->id, 6, newPlayer, 0, 0);
+                        (int)this->player->id, 6, newEnemy, 0, 0);
                 }
                 for (int playerIndex = 1;
                      playerIndex < this->player->world->player_num;
                      playerIndex++) {
                     if (playerIndex != this->player->id &&
-                        playerIndex != newPlayer) {
+                        playerIndex != newEnemy) {
                         RGE_Player* player =
                             this->player->world->players[playerIndex];
-                        if (player->isEnemy(newPlayer) == 1) {
+                        if (player->isEnemy(newEnemy) == 1) {
                             this->player->sendAICommand(
                                 (int)this->player->id, 6, playerIndex, 2, 0);
                             if (player->computerPlayer() == 1) {
@@ -614,7 +565,7 @@ swayable_next_player:
                                     (int)this->player->id, 6,
                                     (int)this->player->id, 2, 0);
                             }
-                        } else if (player->isAlly(newPlayer) == 1) {
+                        } else if (player->isAlly(newEnemy) == 1) {
                             this->player->sendAICommand(
                                 (int)this->player->id, 6, playerIndex, 0, 0);
                         }

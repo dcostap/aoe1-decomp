@@ -88,10 +88,8 @@ void TRIBE_Panel_Button::draw()
     if ((tribe_button_type == 0 || tribe_button_type == 1) && border_pic != 0) {
         if (render_area->Lock(s_tpnl_btn_draw, 1) != 0) {
             border_drawn = 0;
-            long border_facet = (is_down != 0);
-            border_facet += border_frame;
-            border_pic->shape_draw(render_area, pnl_x, pnl_y, border_facet, 0,
-                                   0);
+            border_pic->shape_draw(render_area, pnl_x, pnl_y,
+                                   border_frame + (is_down != 0), 0, 0);
             render_area->Unlock(s_tpnl_btn_draw);
         }
     }
@@ -170,21 +168,22 @@ void TRIBE_Panel_Button::draw()
 
             if (tribe_button_type == 0) {
                 x = pnl_x;
-                y = pnl_y;
                 if (!is_down) {
+                    y = pnl_y;
+                    x += 2;
+                    y += 2;
                     render_area->SetClipRect(clip_rect.left + 2,
                                              clip_rect.top + 2,
                                              clip_rect.right - 2,
                                              clip_rect.bottom - 2);
-                    x += 2;
-                    y += 2;
                 } else {
+                    y = pnl_y;
+                    x += 3;
+                    y += 3;
                     render_area->SetClipRect(clip_rect.left + 3,
                                              clip_rect.top + 3,
                                              clip_rect.right - 2,
                                              clip_rect.bottom - 3);
-                    x += 3;
-                    y += 3;
                 }
             } else if (tribe_button_type == 1) {
                 x = pnl_x + 1;
@@ -205,7 +204,7 @@ void TRIBE_Panel_Button::draw()
 
             if (disabled) {
                 fog_next_shape = 1;
-                _ASMSet_Shadowing(0xFF00FF, 0, 0x00FF00FF, 0);
+                _ASMSet_Shadowing(0xFF00FF, 0, 0xFF00FF00, 0);
             }
 
             if (color_table != 0) {

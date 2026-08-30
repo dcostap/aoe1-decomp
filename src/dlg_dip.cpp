@@ -12,11 +12,14 @@
 TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     : TDialogPanel("Diplomacy Dialog")
 {
+    TButtonPanel** button;
     int y;
     RGE_Game_World* world;
     int humanity;
     int player_id;
     int i;
+    TButtonPanel** ally;
+    TButtonPanel** tab_buttons;
     int disable_buttons;
     tagPALETTEENTRY palette_color;
     char temp_str[100];
@@ -120,12 +123,16 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     this->cur_player_row = -1;
     world = rge_base_game->world;
     if (world->player_num - 1 > 0) {
+        button = this->woodTributeButton;
+        tab_buttons = this->allyButton;
         y = 0x50;
-        for (player_id = 1; player_id < world->player_num; ++player_id, y += 0x1E) {
+        for (player_id = 1; player_id < world->player_num;
+             ++player_id, ++button, tab_buttons += 3, y += 0x1E) {
             const int row = player_id - 1;
             RGE_Player* player = world->players[player_id];
 
-            GetPaletteEntries(this->palette, player->color_table->id,
+            ally = tab_buttons;
+            GetPaletteEntries(this->palette, player->color_table->map_color,
                               1, &palette_color);
             disable_buttons = 0;
 
@@ -176,79 +183,78 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
             }
 
             if (player_id != world->curr_player) {
-                TButtonPanel** group = &this->allyButton[row * 3];
-                if (this->create_radio_button(this, &group[0],
+                if (this->create_radio_button(this, &ally[0],
                                               0xF0, y, 0x1E, 0x1E, 0, 0) == 0) {
                     return;
                 }
-                group[0]->set_help_info(0x7684, -1);
-                if (this->create_radio_button(this, &group[1],
+                ally[0]->set_help_info(0x7684, -1);
+                if (this->create_radio_button(this, &ally[1],
                                               0x136, y, 0x1E, 0x1E, 0, 0) == 0) {
                     return;
                 }
-                group[1]->set_help_info(0x7685, -1);
-                if (this->create_radio_button(this, &group[2],
+                ally[1]->set_help_info(0x7685, -1);
+                if (this->create_radio_button(this, &ally[2],
                                               0x17C, y, 0x1E, 0x1E, 0, 0) == 0) {
                     return;
                 }
-                group[2]->set_help_info(0x7686, -1);
+                ally[2]->set_help_info(0x7686, -1);
 
                 for (i = 0; i < 3; ++i) {
-                    group[i]->set_radio_info(group, 3);
+                    ally[i]->set_radio_info(ally, 3);
                     if (rge_base_game->prog_mode == 5) {
-                        group[i]->set_disabled(1);
+                        ally[i]->set_disabled(1);
                     }
                 }
 
                 unsigned char relation =
                     rge_base_game->get_player()->relation(player_id);
-                if (relation == 0) {
-                    group[0]->set_radio_button();
+                if (player_id == world->curr_player || relation == 0) {
+                    ally[0]->set_radio_button();
                 } else if (relation == 1) {
-                    group[1]->set_radio_button();
+                    ally[1]->set_radio_button();
                 } else {
-                    group[2]->set_radio_button();
+                    ally[2]->set_radio_button();
                 }
             }
 
             if (humanity == 0) {
-                if (this->create_button(this, &this->woodTributeButton[row],
+                if (this->create_button(this, button,
                                         -1, 0, 0x1B8, y, 0x28, 0x1E,
                                         0x0B, 0, 0) == 0) {
                     return;
                 }
-                if (this->create_button(this, &this->foodTributeButton[row],
+                if (this->create_button(this, button + 8,
                                         -1, 0, 0x1E0, y, 0x28, 0x1E,
                                         0x0B, 0, 0) == 0) {
                     return;
                 }
-                if (this->create_button(this, &this->goldTributeButton[row],
+                if (this->create_button(this, button - 8,
                                         -1, 0, 0x208, y, 0x28, 0x1E,
                                         0x0B, 0, 0) == 0) {
                     return;
                 }
-                if (this->create_button(this, &this->stoneTributeButton[row],
+                if (this->create_button(this, button + 16,
                                         -1, 0, 0x230, y, 0x28, 0x1E,
                                         0x0B, 0, 0) == 0) {
                     return;
                 }
 
-                this->woodTributeButton[row]->set_picture(0, this->buttonPics, 0);
-                this->foodTributeButton[row]->set_picture(0, this->buttonPics, 2);
-                this->goldTributeButton[row]->set_picture(0, this->buttonPics, 3);
-                this->stoneTributeButton[row]->set_picture(0, this->buttonPics, 1);
-                this->woodTributeButton[row]->setDrawType(
+                button[0]->set_picture(0, this->buttonPics, 0);
+                button[8]->set_picture(0, this->buttonPics, 2);
+                button[-8]->set_picture(0, this->buttonPics, 3);
+                button[16]->set_picture(0, this->buttonPics, 1);
+                button[0]->setDrawType(
                     TButtonPanel::DrawPictureAndText);
-                this->foodTributeButton[row]->setDrawType(
+                button[8]->setDrawType(
                     TButtonPanel::DrawPictureAndText);
-                this->goldTributeButton[row]->setDrawType(
+                button[-8]->setDrawType(
                     TButtonPanel::DrawPictureAndText);
-                this->stoneTributeButton[row]->setDrawType(
+                button[16]->setDrawType(
                     TButtonPanel::DrawPictureAndText);
-                this->woodTributeButton[row]->set_help_info(0x7687, -1);
-                this->foodTributeButton[row]->set_help_info(0x7688, -1);
-                this->goldTributeButton[row]->set_help_info(0x7689, -1);
-                this->stoneTributeButton[row]->set_help_info(0x768A, -1);
+                button[0]->set_help_info(0x7687, -1);
+                button[8]->set_help_info(0x7688, -1);
+                button[-8]->set_help_info(0x7689, -1);
+                button[16]->set_help_info(0x768A, -1);
             }
         }
     }

@@ -454,6 +454,7 @@ void TButtonPanel::draw()
     int text_len;
     char* text;
     long x, y;
+    long calc_x, calc_y;
 
     if (this->render_area == 0 || this->visible == 0 || this->active == 0 ||
         this->drawTypeValue == 1) {
@@ -479,11 +480,11 @@ void TButtonPanel::draw()
     if (this->drawTypeValue == 2 || this->drawTypeValue == 4 ||
         this->drawTypeValue == 6) {
         if (this->render_area->Lock(s_pnl_btn_draw, 1) != 0) {
-            TShape* pic = this->pic[this->cur_state];
-            if (pic != 0) {
+            if (this->pic[this->cur_state] != 0) {
                 if (this->auto_pic_pos != 0) {
-                    pic->shape_minmax(x_min, y_min, x_max, y_max,
-                                      this->pic_index[this->cur_state]);
+                    this->pic[this->cur_state]->shape_minmax(
+                        x_min, y_min, x_max, y_max,
+                        this->pic_index[this->cur_state]);
                     this->pic_x = (short)((this->pnl_wid / 2) -
                                           (((x_max - x_min) + 1) / 2) - x_min);
                     this->pic_y = (short)((this->pnl_hgt / 2) -
@@ -491,17 +492,14 @@ void TButtonPanel::draw()
                 }
                 x = this->pic_x + this->pnl_x;
                 y = this->pic_y + this->pnl_y;
-                if (this->draw_reverse == 0) {
-                    if (this->is_down != 0) {
-                        x = x + 1;
-                        y = y - 1;
-                    }
-                } else if (this->is_down == 0) {
+                if (((this->draw_reverse == 0) && (this->is_down != 0)) ||
+                    ((this->draw_reverse != 0) && (this->is_down == 0))) {
                     x = x + 1;
                     y = y - 1;
                 }
-                pic->shape_draw(this->render_area, x, y,
-                                this->pic_index[this->cur_state], 0, 0);
+                this->pic[this->cur_state]->shape_draw(
+                    this->render_area, x, y,
+                    this->pic_index[this->cur_state], 0, 0);
             }
             this->render_area->Unlock(s_pnl_btn_draw);
         }
@@ -515,29 +513,30 @@ void TButtonPanel::draw()
             void* old_font = SelectObject(dc, this->font);
             SetBkMode(dc, 1);
 
-            long tx = this->text_x;
-            if (tx == -1) {
-                tx = this->pnl_wid / 2;
+            calc_x = this->text_x;
+            if (calc_x == -1) {
+                calc_x = this->pnl_wid / 2;
             }
-            long ty = this->text_y;
-            if (ty == -1) {
-                ty = this->pnl_hgt / 2;
+            calc_y = this->text_y;
+            if (calc_y == -1) {
+                calc_y = this->pnl_hgt / 2;
             }
 
-            text = this->text1[this->cur_state];
-            if (text == 0) {
+            if (this->text1[this->cur_state] != 0) {
+                text = this->text1[this->cur_state];
+            } else {
                 text = this->text1[0];
             }
             if (text != 0) {
                 text_len = (short)strlen(text);
                 tagSIZE text_size;
                 GetTextExtentPoint32A(dc, text, text_len, &text_size);
-                x = (tx - text_size.cx / 2) + this->pnl_x;
-                long fontH = this->font_hgt;
-                if (this->text2[this->cur_state] == 0) {
-                    fontH = this->font_hgt / 2;
+                x = (calc_x - text_size.cx / 2) + this->pnl_x;
+                if (this->text2[this->cur_state] != 0) {
+                    y = (calc_y - this->font_hgt) + this->pnl_y;
+                } else {
+                    y = (calc_y - this->font_hgt / 2) + this->pnl_y;
                 }
-                y = (ty - fontH) + this->pnl_y;
                 if (this->draw_reverse == 0) {
                     if (this->is_down != 0) {
                         x = x + 1;
@@ -559,15 +558,16 @@ void TButtonPanel::draw()
                     TextOutA(dc, x, y, text, text_len);
                 }
 
-                text = this->text2[this->cur_state];
-                if (text == 0) {
+                if (this->text2[this->cur_state] != 0) {
+                    text = this->text2[this->cur_state];
+                } else {
                     text = this->text2[0];
                 }
                 if (text != 0) {
                     text_len = (short)strlen(text);
                     GetTextExtentPoint32A(dc, text, text_len, &text_size);
-                    x = (tx - text_size.cx / 2) + this->pnl_x;
-                    y = ty + this->pnl_y;
+                    x = (calc_x - text_size.cx / 2) + this->pnl_x;
+                    y = calc_y + this->pnl_y;
                     if (this->draw_reverse == 0) {
                         if (this->is_down != 0) {
                             x = x + 1;
@@ -606,7 +606,8 @@ void TButtonPanel::draw()
                 this->render_area->DrawRect(this->pnl_x + 1, this->pnl_y + 1,
                         this->pnl_x + this->pnl_wid - 2, this->pnl_y + this->pnl_hgt - 2,
                         this->bevel_color1);
-            } else if ((this->draw_reverse != 0) != (this->is_down != 0)) {
+            } else if (((this->draw_reverse == 0) && (this->is_down != 0)) ||
+                       ((this->draw_reverse != 0) && (this->is_down == 0))) {
                 switch (this->bevel_type) {
                 case 1:
                     this->render_area->DrawRect(this->pnl_x + 1, this->pnl_y + 1,
@@ -633,10 +634,12 @@ void TButtonPanel::draw()
             } else {
                 switch (this->bevel_type) {
                 case 1:
-                    this->render_area->DrawVertLine(this->pnl_x, this->pnl_y,
-                        this->pnl_y + this->pnl_hgt - 1, 0);
-                    this->render_area->DrawHorzLine(this->pnl_x + 1, this->pnl_x + this->pnl_wid - 1,
-                        this->pnl_y + this->pnl_hgt - 1, 0);
+                    this->render_area->DrawVertLine(
+                        this->pnl_x + this->pnl_wid - 1,
+                        this->pnl_y + 1, this->pnl_hgt - 1, 0);
+                    this->render_area->DrawHorzLine(
+                        this->pnl_x + 1, this->pnl_y + this->pnl_hgt - 1,
+                        this->pnl_wid - 1, 0);
                     this->render_area->DrawRect(this->pnl_x, this->pnl_y,
                         this->pnl_x + this->pnl_wid - 2, this->pnl_y + this->pnl_hgt - 2, 0xFF);
                     break;

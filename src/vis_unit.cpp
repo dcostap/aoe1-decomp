@@ -505,33 +505,30 @@ int Visible_Resource_Manager::Remove_Resource(int object_id, int type)
 }
 
 VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(
-    int x, int y, int param3, int type, int* reject_list, int reject_count)
+    int Xpos, int Ypos, int Zone, int ResType, int* excList, int elSize)
 {
-    if (type >= 0 && this->num_visible_resource_lists != 0 &&
-        type < this->num_visible_resource_lists) {
-        VISIBLE_RESOURCE_REC** resource_lists = this->VR_List;
-        int* used_lists = this->VR_ListUsed;
-        int count = used_lists[type];
-        VISIBLE_RESOURCE_REC* best;
+    if (ResType >= 0 && this->num_visible_resource_lists != 0 &&
+        ResType < this->num_visible_resource_lists) {
+        int count = this->VR_ListUsed[ResType];
         if (count != 0) {
-            VISIBLE_RESOURCE_REC* record = resource_lists[type];
-            int best_distance = 9999;
-            best = 0;
+            int bestdist = 9999;
+            VISIBLE_RESOURCE_REC* c = 0;
+            VISIBLE_RESOURCE_REC* record = this->VR_List[ResType];
             while (count > 0) {
                 int dx;
                 int dy;
-                int rejected = 0;
+                int Reject = 0;
                 int record_x = record->pos_x;
                 int record_y = record->pos_y;
-                if (record_x > x) {
-                    dx = record_x - x;
+                if (record_x > Xpos) {
+                    dx = record_x - Xpos;
                 } else {
-                    dx = x - record_x;
+                    dx = Xpos - record_x;
                 }
-                if (record_y > y) {
-                    dy = record_y - y;
+                if (record_y > Ypos) {
+                    dy = record_y - Ypos;
                 } else {
-                    dy = y - record_y;
+                    dy = Ypos - record_y;
                 }
 
                 int distance;
@@ -545,32 +542,32 @@ VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(
                                     dx * DAT_005776D0)) - dx;
                 }
 
-                if (distance < best_distance) {
-                    if (reject_count && reject_list) {
+                if (distance < bestdist) {
+                    if (elSize && excList) {
                         int i = 0;
-                        while (i < reject_count) {
-                            if (record->object_id == reject_list[i]) {
-                                rejected = 1;
+                        while (i < elSize) {
+                            if (record->object_id == excList[i]) {
+                                Reject = 1;
                                 break;
                             }
                             i++;
                         }
                     }
-                    if (!rejected) {
-                        best = record;
-                        best_distance = distance;
+                    if (!Reject) {
+                        c = record;
+                        bestdist = distance;
                     }
                 }
                 record++;
                 count--;
             }
-            if (best_distance > 0xff) {
-                best_distance = 0xff;
+            if (bestdist > 0xff) {
+                bestdist = 0xff;
             }
-            if (best != 0) {
-                best->distance = (unsigned char)best_distance;
+            if (c != 0) {
+                c->distance = (unsigned char)bestdist;
             }
-            return best;
+            return c;
         }
     }
     return 0;

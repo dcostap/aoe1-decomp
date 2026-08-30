@@ -105,50 +105,55 @@ void TRIBE_Action_Make_Tech::set_state(unsigned char new_state) {
 }
 
 unsigned char TRIBE_Action_Make_Tech::update() {
-    if (this->state == 1) {
-        return 1;
-    }
-    if (this->state != 6) {
-        return 0;
+    float work;
+    TRIBE_Player_Tech* player_tech;
+    RGE_Action_Object* action_object;
+
+    switch ((int)this->state) {
+    case 1:
+        goto success_initial;
+    case 6:
+        break;
+    default:
+        goto fail;
     }
 
-    float work;
-    if (rge_base_game->quick_build == 0) {
+    if (rge_base_game->quick_build != 0) {
+        work = 1000.0f;
+    } else {
         work = this->obj->owner->world->world_time_delta_seconds *
             static_cast<RGE_Master_Action_Object*>(
                 this->obj->master_obj)->work_rate;
-    } else {
-        work = 1000.0f;
     }
 
-    TRIBE_Player* player = static_cast<TRIBE_Player*>(this->obj->owner);
-    TRIBE_Player_Tech* player_tech = player->tech_tree;
-    if (player_tech->research(this->tech_id, work) != 0) {
-        return 0;
+    player_tech = static_cast<TRIBE_Player*>(this->obj->owner)->tech_tree;
+    if (player_tech->research(this->tech_id, work) == 0) {
+        this->set_state(1);
+        action_object = this->obj;
+        rge_base_game->notification(
+            0x64,
+            static_cast<TRIBE_Player*>(action_object->owner)->id,
+            this->tech_id,
+            (int)action_object->world_x,
+            (int)action_object->world_y);
+        static_cast<TRIBE_Player*>(this->obj->owner)->registerResearch(
+            (int)this->tech_id,
+            this->obj->id,
+            this->unique_id);
+        this->obj->notify(
+            this->obj->id,
+            this->obj->id,
+            0x1FA,
+            0x26C,
+            0,
+            0);
+        return 1;
     }
 
-    this->set_state(1);
-    RGE_Action_Object* action_object = this->obj;
-    rge_base_game->notification(
-        0x64,
-        player->id,
-        this->tech_id,
-        (int)action_object->world_y,
-        (int)action_object->world_x);
+fail:
+    return 0;
 
-    player->registerResearch(
-        (int)this->tech_id,
-        action_object->id,
-        this->unique_id);
-
-    action_object->notify(
-        action_object->id,
-        action_object->id,
-        0x1FA,
-        0x26C,
-        0,
-        0);
-
+success_initial:
     return 1;
 }
 

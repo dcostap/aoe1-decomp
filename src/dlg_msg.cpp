@@ -6,13 +6,11 @@
 extern char s_592A40[];
 
 TMessageDialog::TMessageDialog(char* name)
-    : TDialogPanel(name)
+    : TDialogPanel(name), dlg_type(0), text(0)
 {
-    dlg_type = 0;
-    text = 0;
-    button[0] = 0;
-    button[1] = 0;
-    button[2] = 0;
+    for (int i = 0; i < 3; ++i) {
+        button[i] = 0;
+    }
 }
 
 TMessageDialog::~TMessageDialog()

@@ -310,11 +310,11 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
         long value_hgt = this->val_hgt;
         if (this->list_is_above) {
             this->set_fixed_position(this->pnl_x - parent_x,
-                                     this->pnl_y + this->pnl_hgt - this->val_hgt - old_mode,
+                                     this->pnl_y + this->pnl_hgt - this->val_hgt - parent_y - old_mode,
                                      value_wid, value_hgt);
             this->list_is_above = 0;
         } else {
-            this->set_fixed_position(this->pnl_x - parent_x, this->pnl_y - old_mode,
+            this->set_fixed_position(this->pnl_x - parent_x, this->pnl_y - parent_y - old_mode,
                                      value_wid, value_hgt);
         }
         if (this->parent_panel) {
@@ -369,8 +369,9 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
                                           this->val_panel, this->scbar_panel, 0);
         this->clip_to_parent = 0;
         long calc_wid = this->list_wid;
+        long calc_hgt = this->list_hgt + this->val_hgt + 1;
         this->set_fixed_position(this->pnl_x - parent_x, this->pnl_y - parent_y,
-                                 calc_wid, this->list_hgt + this->val_hgt + 1);
+                                 calc_wid, calc_hgt);
         if (this->list_panel->yPosition() + this->list_panel->height() >
             this->render_area->Height - 4) {
             long overflow = this->list_panel->yPosition() + this->list_panel->height() +
@@ -391,6 +392,7 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
                                          (this->font_hgt + 1 + spacer_size * 2) +
                                          border_size * 2;
                     }
+                    calc_hgt = this->list_hgt + this->val_hgt + 1;
                     if (this->scbar_panel->active == 0) {
                         this->list_panel->set_fixed_position(0, 0, this->list_wid, this->list_hgt);
                         int number_lines = this->list_panel->numberLines();
@@ -416,7 +418,7 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
                                                   this->scbar_panel, this->val_panel);
                 this->set_fixed_position(this->pnl_x - parent_x,
                                          this->pnl_y - parent_y - this->list_hgt - 1,
-                                         calc_wid, this->list_hgt + this->val_hgt + 1);
+                                         calc_wid, calc_hgt);
                 this->list_is_above = 1;
             } else {
                 this->list_hgt -= overflow;
@@ -432,6 +434,7 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
                                      (this->font_hgt + 1 + spacer_size * 2) +
                                      border_size * 2;
                 }
+                calc_hgt = this->list_hgt + this->val_hgt + 1;
                 if (this->scbar_panel->active == 0) {
                     this->list_panel->set_fixed_position(0, 0, this->list_wid, this->list_hgt);
                     int number_lines = this->list_panel->numberLines();
@@ -442,7 +445,7 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
                                                       this->val_panel, this->scbar_panel, 0);
                 }
                 this->set_fixed_position(this->pnl_x - parent_x, this->pnl_y - parent_y,
-                                         calc_wid, this->list_hgt + this->val_hgt + 1);
+                                         calc_wid, calc_hgt);
             }
         }
         this->set_redraw(TPanel::RedrawNormal);

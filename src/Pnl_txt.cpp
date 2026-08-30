@@ -9,7 +9,7 @@
 extern char s_pnl_txt__draw[];
 extern char s_pnl_txt__word_wrap_append[];
 extern char s_pnl_txt__get_text_rect[];
-extern "C" short __cdecl __mbslen(const char* text);
+extern "C" int __cdecl __mbslen(const char* text);
 extern "C" unsigned char* __cdecl __mbsinc(const unsigned char* text);
 extern "C" unsigned char* __cdecl __mbsdec(const unsigned char* start,
                                                const unsigned char* current);
@@ -265,9 +265,9 @@ void TTextPanel::set_text(char* text) {
 
 int TTextPanel::word_wrap_append(char* text)
 {
-    short text_len;
+    int text_len;
     short chars;
-    short last_chars;
+    short last_fit_len;
     int found_break;
     int found_return;
     void* dc;
@@ -277,11 +277,11 @@ int TTextPanel::word_wrap_append(char* text)
     unsigned char* next_char;
     SIZE text_size;
     int found_linefeed;
-    int found_char_break;
+    int found_bad_return;
     int japanese;
     void* old_font;
     TEXTMETRICA tm;
-    char temp_text[256];
+    unsigned char temp_text[256];
 
     if (text == 0) {
         return 1;
@@ -310,14 +310,14 @@ int TTextPanel::word_wrap_append(char* text)
     next_line:
         text_len = __mbslen(text);
         found_break = 0;
-        found_linefeed = 0;
-        found_char_break = 0;
-        found_space = 0;
         found_return = 0;
+        found_space = 0;
+        found_linefeed = 0;
+        found_bad_return = 0;
         next_char = (unsigned char*)text;
 
         if (*text == '\n') {
-            found_linefeed = 1;
+            found_return = 1;
             chars = 0;
             goto emit_line;
         }
@@ -331,21 +331,21 @@ int TTextPanel::word_wrap_append(char* text)
                               &text_size);
         last_char = 0;
 
-        while (chars <= text_len) {
+        while (chars <= (short)text_len) {
             if (text_size.cx >= max_wid) {
                 break;
             }
             if (*next_char == '\n') {
             --chars;
-            found_linefeed = 1;
+            found_return = 1;
             if (last_char != 0 && *last_char == '\r') {
-                found_space = 1;
+                found_linefeed = 1;
                 --chars;
             }
                 break;
             }
             if (*next_char == '\r') {
-                found_return = 1;
+                found_bad_return = 1;
             }
 
             last_char = next_char;
@@ -358,7 +358,7 @@ int TTextPanel::word_wrap_append(char* text)
         }
 
     emit_line:
-        if (!found_linefeed) {
+        if (!found_return) {
             GetTextExtentPoint32A((HDC)dc, text, (int)(short)strlen(text),
                               &text_size);
             if (text_size.cx <= max_wid) {
@@ -367,8 +367,8 @@ int TTextPanel::word_wrap_append(char* text)
 
             chars = 1;
             next_char = (unsigned char*)text;
-            last_chars = chars;
-            while (chars < text_len) {
+            last_fit_len = chars;
+            while (chars < (short)text_len) {
                 next_char = __mbsinc(next_char);
                 GetTextExtentPoint32A(
                     (HDC)dc, text,
@@ -377,7 +377,7 @@ int TTextPanel::word_wrap_append(char* text)
                 if (text_size.cx > max_wid) {
                     break;
                 }
-                last_chars = chars - 1;
+                last_fit_len = chars - 1;
                 next_char = __mbsinc(next_char);
                 ++chars;
             }
@@ -392,7 +392,7 @@ int TTextPanel::word_wrap_append(char* text)
                     CharType second = this->char_type(old_next);
                     if (first == SingleByteChar && second == SingleByteChar &&
                         __ismbcspace(*next_char) != 0) {
-                        found_char_break = 1;
+                        found_space = 1;
                         break;
                     }
                     if ((first == DoubleByteChar && second == DoubleByteChar) ||
@@ -405,32 +405,31 @@ int TTextPanel::word_wrap_append(char* text)
                         break;
                     }
                 } else if (__ismbcspace(*next_char) != 0) {
-                    found_char_break = 1;
+                    found_space = 1;
                     break;
                 }
             }
+            if (!found_break && !found_space) {
+                chars = last_fit_len;
+                found_break = 1;
+            }
         }
-
-        if (!found_break && !found_char_break) {
-            chars = last_chars;
-            found_break = 1;
-        }
-        if (!found_linefeed && !found_char_break && !found_break) {
+        if (!found_return && !found_space && !found_break) {
             goto append_all;
         }
 
         memset(temp_text, 0, 0x100);
         __mbsncpy((unsigned char*)temp_text + 4,
                   (const unsigned char*)text, chars);
-        if (found_space) {
-            __mbscat((unsigned char*)temp_text + 4,
-                     (const unsigned char*)" ");
-        }
         if (found_linefeed) {
             __mbscat((unsigned char*)temp_text + 4,
                      (const unsigned char*)" ");
         }
         if (found_return) {
+            __mbscat((unsigned char*)temp_text + 4,
+                     (const unsigned char*)" ");
+        }
+        if (found_bad_return) {
             unsigned char* p = (unsigned char*)temp_text + 4;
             while (*p != 0) {
                 if (*p == '\r') {
@@ -439,12 +438,12 @@ int TTextPanel::word_wrap_append(char* text)
                 p = __mbsinc(p);
             }
         }
-        this->append_line(temp_text + 4, 0);
+        this->append_line((char*)temp_text + 4, 0);
         text = (char*)__mbsninc((const unsigned char*)text, chars);
-        if (found_space) {
+        if (found_linefeed) {
             text = (char*)__mbsinc((const unsigned char*)text);
         }
-        if (found_linefeed) {
+        if (found_return) {
             text = (char*)__mbsinc((const unsigned char*)text);
         }
         goto next_line;

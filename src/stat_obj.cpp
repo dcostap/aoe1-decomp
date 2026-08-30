@@ -2384,7 +2384,10 @@ int RGE_Static_Object::get_frame(short& param_1, short& param_2, short& param_3,
 
 
 unsigned char RGE_Static_Object::more_room() {
-    return objects->number_of_objects < (short)(unsigned short)master_obj->obj_max;
+    if (this->objects->number_of_objects <
+        (short)(unsigned short)this->master_obj->obj_max)
+        return 1;
+    return 0;
 }
 
 

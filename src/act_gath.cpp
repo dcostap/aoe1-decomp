@@ -393,13 +393,13 @@ unsigned char RGE_Action_Gather::update() {
                           (modifier * give_amount - max_hold) / modifier;
         }
         this->target_obj->set_attribute_amount(-give_amount, 1, 1);
-        this->obj->set_attribute_amount(give_amount, 1, 0);
-        if (this->obj->attribute_amount_held < give_amount) {
+        this->obj->set_attribute_amount(give_amount * modifier, 1, 0);
+        if (this->obj->attribute_amount_held < max_hold) {
             if (this->obj->attribute_amount_held > DAT_0056e278) {
                 return 0;
             }
             if (this->obj->keepGatheringWhenObjectIsOut(
-                    (short)this->obj->master_obj->attribute_max_amount) != 0) {
+                    (short)this->target_obj->master_obj->id) != 0) {
                 return 0;
             }
             this->set_state(8);

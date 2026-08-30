@@ -3876,7 +3876,10 @@ unsigned char TRIBE_Game::deathMatch() { return this->tribe_game_options.deathMa
 
 
 unsigned char TRIBE_Game::popLimit() {
-    return this->tribe_game_options.popLimitValue;
+    if (this->multiplayerGame()) {
+        return this->tribe_game_options.popLimitValue;
+    }
+    return 50;
 }
 
 

@@ -1720,7 +1720,6 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
     long saved_random_map_seed;
     float f1;
     float f2;
-    RGE_Player* player;
 
     if (param_1 == 0) {
         return 0;
@@ -1891,8 +1890,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                     if (f1 != -1.0f) {
                         f1 = f1 - (f1 - static_cast<float>(y1)) * 0.5f;
                         f2 = f2 - (f2 - static_cast<float>(y2)) * 0.5f;
-                        player = rge_base_game->get_player();
-                        player->set_view_loc(f1, f2);
+                        rge_base_game->get_player()->set_view_loc(f1, f2);
                         rge_base_game->get_player()->set_map_loc(static_cast<short>(f1), static_cast<short>(f2));
                     }
                 } else {
