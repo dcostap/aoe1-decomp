@@ -6,7 +6,7 @@
     "flags": "default"
   },
   "functions": {
-    "0047EE90": {"status": "scratch", "symbol": "RESFILE_open_new_resource_file"},
+    "0047EE90": {"status": "scratch", "symbol": "?RESFILE_open_new_resource_file@@YAXPAD00H@Z"},
     "0047F180": {"status": "matching", "symbol": "?RESFILE_close_new_resource_file@@YAXPAD@Z"},
     "0047F230": {"status": "matching", "symbol": "?RESFILE_locate_resource@@YAHKKAAH0AAPAE0@Z"},
     "0047F320": {"status": "verified_logic", "symbol": "?RESFILE_load@@YAPAEKKAAH0@Z"},
