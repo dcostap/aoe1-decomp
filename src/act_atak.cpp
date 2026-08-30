@@ -189,7 +189,7 @@ void RGE_Action_Attack::first_in_stack(unsigned char)
 {
     if (this->obj->maximumSpeed() != 0.0) {
         UnitAIModule* ai = this->obj->unitAI();
-        if (ai == 0 || this->obj->unitAI()->currentOrderValue != 0x2D5) {
+        if (ai == 0 || this->obj->unitAI()->currentOrder() != 0x2D5) {
             this->set_state(4);
             return;
         }
@@ -465,8 +465,7 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
         return 0;
     }
 
-    RGE_Static_Object* target = this->target_obj;
-    if (target == 0) {
+    if (this->target_obj == 0) {
         float distance = this->obj->distance_to_position(
             this->target_x, this->target_y, this->target_z);
         if (distance < this->min_range) {
@@ -483,36 +482,39 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
             }
         }
     } else {
-        if (target->owner->id > 0) {
-            short group = target->master_obj->object_group;
+        if (this->target_obj->owner->id > 0) {
+            short group = this->target_obj->master_obj->object_group;
             if (group != 3 && group != 27) {
                 unsigned char visibility = this->obj->owner->visible->get_visible(
-                    (int)target->world_x, (int)target->world_y);
+                    (int)this->target_obj->world_x,
+                    (int)this->target_obj->world_y);
                 if (visibility == 0) {
                     this->set_state(13);
                     return 0;
                 }
-                if (visibility == 0x80 && target->master_obj->fog_flag == 0) {
+                if (visibility == 0x80 &&
+                    this->target_obj->master_obj->fog_flag == 0) {
                     this->set_state(13);
                     return 0;
                 }
             }
         }
 
-        if (target->world_x == this->target_x &&
-            target->world_y == this->target_y &&
-            target->world_z == this->target_z) {
+        if (this->target_obj->world_x == this->target_x &&
+            this->target_obj->world_y == this->target_y &&
+            this->target_obj->world_z == this->target_z) {
             range_status = 1;
         } else {
-            float x_change = target->world_x - this->target_x;
-            float z_change = target->world_z - this->target_z;
-            float y_change = target->world_y - this->target_y;
+            float x_change = this->target_obj->world_x - this->target_x;
+            float z_change = this->target_obj->world_z - this->target_z;
+            float y_change = this->target_obj->world_y - this->target_y;
             if ((x_change > -0.5f && x_change < 0.5f) &&
                 (y_change > -0.5f && y_change < 0.5f) &&
                 (z_change > -0.5f && z_change < 0.5f)) {
                 range_status = 1;
             } else {
-                float distance = this->obj->distance_to_object(target);
+                float distance =
+                    this->obj->distance_to_object(this->target_obj);
                 RGE_Master_Static_Object* master = this->obj->master_obj;
                 float radius = sqrt(master->radius_x * master->radius_x +
                                     master->radius_y * master->radius_y);
@@ -520,9 +522,9 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
                 if (distance < this->min_range) {
                     range_status = 0;
                 } else if (distance <= max_distance) {
-                    this->target_x = target->world_x;
-                    this->target_y = target->world_y;
-                    this->target_z = target->world_z;
+                    this->target_x = this->target_obj->world_x;
+                    this->target_y = this->target_obj->world_y;
+                    this->target_z = this->target_obj->world_z;
                     range_status = 1;
                 } else {
                     range_status = 2;
@@ -541,7 +543,7 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
                 return 0;
             }
             ai = this->obj->unitAI();
-            if (ai->currentOrderValue != 0x2D5) {
+            if (ai->currentOrder() != 0x2D5) {
                 return 0;
             }
         }
@@ -560,7 +562,7 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
                 return 0;
             }
             ai = this->obj->unitAI();
-            if (ai->currentOrderValue != 0x2D5) {
+            if (ai->currentOrder() != 0x2D5) {
                 this->set_state(4);
                 return 0;
             }
@@ -588,16 +590,14 @@ void RGE_Action_Attack::do_attack()
 void RGE_Action_Attack::copy_obj_sprites(
     RGE_Master_Action_Object* source, RGE_Task* old_task, RGE_Task* new_task)
 {
-    RGE_Master_Action_Object* current_master =
-        static_cast<RGE_Master_Action_Object*>(this->obj->master_obj);
-    RGE_Master_Action_Object* new_master = source;
-
     if (this->move_sprite != 0) {
         if ((old_task != 0) && (new_task != 0) &&
             (this->move_sprite == old_task->move_sprite)) {
             this->move_sprite = new_task->move_sprite;
-        } else if (this->move_sprite == current_master->move_sprite) {
-            this->move_sprite = new_master->move_sprite;
+        } else if (this->move_sprite ==
+                   static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)
+                       ->move_sprite) {
+            this->move_sprite = source->move_sprite;
         }
     }
 
