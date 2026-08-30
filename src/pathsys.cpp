@@ -753,8 +753,6 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 right = scanRightRaw;
                 top = scanTopRaw;
                 bottom = scanBottomRaw;
-                if (right < left) { tmp = left; left = right; right = tmp; }
-                if (bottom < top) { tmp = top; top = bottom; bottom = tmp; }
                 if (left < 0) ++left;
                 if (right < 0) ++right;
                 if (top < 0) ++top;
@@ -800,11 +798,6 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 }
                 if (objectHit) status = 0xfe;
                 else status = foundBlockingOwnGroup != 1;
-            }
-
-            if (status == 1 && this->minTarget.x <= scanRightRaw && scanLeftRaw <= this->maxTarget.x &&
-                this->minTarget.y <= scanBottomRaw && scanTopRaw <= this->maxTarget.y) {
-                status = 0;
             }
 
             unobstructibleObjectHitpoints = DAT_00570e5c;
@@ -910,12 +903,6 @@ final_success_restore:
     }
     return 1;
 
-final_failure_restore:
-    if (this->currentObjectInObMap == 1 && this->currentObject->inside_obj == 0) {
-        this->currentObject->addToObstructionMap(this->aiPS);
-    }
-    return restoreResult;
-
 path_exhausted:
     openIndex = this->numberOpenPathsValue + 1;
     this->numberOpenPathsValue = openIndex;
@@ -951,10 +938,13 @@ path_exhausted:
         restoreResult = 0;
     }
 
+    goto final_failure_restore;
+
+final_failure_restore:
     if (this->currentObjectInObMap == 1 && this->currentObject->inside_obj == 0) {
         this->currentObject->addToObstructionMap(this->aiPS);
     }
-    return 0;
+    return restoreResult;
 }
 
 void PathingSystem::incrementInitialPaths() {
