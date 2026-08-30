@@ -8,8 +8,7 @@ The assignment gives you:
 
 - one natural translation unit and source path;
 - all current scratch-function VAs in that translation unit;
-- one primary VA for the translation-unit reservation;
-- one lease owner ID;
+- one worker ID;
 - allowed source and function-note paths;
 - user-selected resource settings; and
 - one unique build output directory.
@@ -57,22 +56,6 @@ progress.
 
 Run each repository tool with `--help` before its first use.
 
-The orchestrator normally preclaims the primary VA. Confirm the reservation:
-
-```text
-python tools/target_session.py brief --va <PRIMARY_VA>
-```
-
-If no preclaim exists, start it with the assigned lease duration:
-
-```text
-python tools/target_session.py start --va <PRIMARY_VA> --owner <OWNER> \
-  --lease-hours <HOURS>
-```
-
-The same owner can start sessions for other scratch functions in this translation
-unit. A different owner cannot reserve the translation unit.
-
 Before work on each function:
 
 1. Query its current status, paths, notes, and history.
@@ -85,9 +68,8 @@ Before work on each function:
 Example:
 
 ```text
-python tools/target_session.py start --va <VA> --owner <OWNER> \
-  --lease-hours <HOURS>
-python tools/target_session.py check --va <VA> --owner <OWNER> \
+python tools/target_session.py start --va <VA> --owner <WORKER_ID>
+python tools/target_session.py check --va <VA> --owner <WORKER_ID> \
   --kind baseline --note "fresh natural translation-unit baseline"
 ```
 
@@ -196,19 +178,9 @@ Before the final response:
 3. Confirm that matching neighbors still match.
 4. Update function notes with durable evidence.
 5. Review your changed paths.
-6. Hold the complete translation unit for orchestrator review.
 
 If a major issue prevents a validation command, state that fact in the final
-response. Always hold the translation unit before the final response.
-
-Use the primary VA for the review hold:
-
-```text
-python tools/target_session.py hold-tu --va <PRIMARY_VA> --owner <OWNER> \
-  --reason "worker finished; pending orchestrator review"
-```
-
-Do not release or pause the translation unit. Stop editing after the hold.
+response. Stop editing before the final response.
 
 ## Final response
 
@@ -216,7 +188,7 @@ Send no intermediate progress reports. Do not use a report tool.
 
 Your final response must contain:
 
-- translation unit and owner ID;
+- translation unit and worker ID;
 - scratch functions inspected;
 - functions changed;
 - baseline and final results for each retained change;

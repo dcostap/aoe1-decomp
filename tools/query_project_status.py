@@ -7,7 +7,7 @@ import re
 import sys
 from pathlib import Path
 
-from common import REPO_ROOT, compiler_source_path, function_record_by_va, load_functions
+from common import REPO_ROOT, load_functions
 from status_core import (
     build_status_rows,
     enrich_status_rows,
@@ -21,8 +21,7 @@ from target_session import (
     last_positional_improvement,
     load_target_sessions,
     meaningful_probe_count,
-    session_claim_count,
-    session_reserves_translation_unit,
+    session_work_period_count,
 )
 
 
@@ -41,8 +40,8 @@ def parse_args() -> argparse.Namespace:
             "  A verified-logic function without its ledger has a blocker.\n"
             "\n"
             "Examples:\n"
-            "  python tools/query_project_status.py --va 0047A3A0 --paths --notes --leases\n"
-            "  python tools/query_project_status.py --scratch --normal --unleased --smallest --limit LIMIT\n"
+            "  python tools/query_project_status.py --va 0047A3A0 --paths --notes\n"
+            "  python tools/query_project_status.py --scratch --normal --smallest --limit LIMIT\n"
             "  python tools/query_project_status.py --scratch --normal --work-history --notes --limit LIMIT\n"
             "  python tools/query_project_status.py --logic-review-in-progress --paths\n"
             "  python tools/query_project_status.py --summary --normal\n"
@@ -78,31 +77,16 @@ def parse_args() -> argparse.Namespace:
     blockers.add_argument("--no-blockers", action="store_true", help="Exclude rows with a parsed top-header BLOCKER note")
     blockers.add_argument("--blockers", action="store_true", help="Only rows with a parsed top-header BLOCKER note")
 
-    leases = parser.add_mutually_exclusive_group()
-    leases.add_argument(
-        "--unleased",
-        action="store_true",
-        help="Only functions whose translation unit has no active lease or review hold",
-    )
-    leases.add_argument(
-        "--active-leases",
-        action="store_true",
-        help="Only functions in a reserved translation unit, including review holds",
-    )
-    parser.add_argument(
-        "--owner", help="Only reservations owned by this exact agent/session name"
-    )
-    parser.add_argument("--leases", action="store_true", help="Include lease owner/state/probe columns in table output")
     parser.add_argument(
         "--work-history",
         action="store_true",
         help=(
-            "Include local generated claims, probes, progress, and last worker. "
+            "Include local generated work periods, probes, progress, and last worker. "
             "This data can reset with build cleanup; tracked function notes are durable."
         ),
     )
     parser.add_argument("--max-lifetime-probes", type=int, help="Maximum lifetime meaningful probes")
-    parser.add_argument("--max-claims", type=int, help="Maximum lifetime target claims")
+    parser.add_argument("--max-work-periods", type=int, help="Maximum lifetime target work periods")
 
     parser.add_argument("--va", help="Show one VA, e.g. 0047A3A0")
     parser.add_argument("--source", help="Filter by PDB source file/path substring, e.g. Pnl_pic.cpp")
@@ -224,7 +208,7 @@ def limited(rows: list[dict[str, str]], limit: int) -> list[dict[str, str]]:
     return rows
 
 
-def annotate_leases(
+def annotate_work_history(
     rows: list[dict[str, str]],
     sessions: list[dict] | None = None,
     *,
@@ -232,45 +216,14 @@ def annotate_leases(
 ) -> list[dict[str, str]]:
     source_sessions = load_target_sessions() if sessions is None else sessions
     by_va = {str(session.get("va", "")).upper(): session for session in source_sessions}
-    active_by_source: dict[Path, dict] = {}
-    for session in source_sessions:
-        if not session_reserves_translation_unit(session):
-            continue
-        try:
-            record = function_record_by_va(int(str(session.get("va") or ""), 16))
-            active_by_source[compiler_source_path(record).resolve()] = session
-        except (KeyError, TypeError, ValueError):
-            continue
     for row in rows:
         session = by_va.get(row.get("va", "").upper())
-        lease_session = (
-            session if session and session_reserves_translation_unit(session) else None
-        )
-        if lease_session is None and active_by_source:
-            try:
-                source_text = str(row.get("source_path") or "")
-                source = Path(source_text)
-                if not source.is_absolute():
-                    source = REPO_ROOT / source
-                lease_session = active_by_source.get(source.resolve())
-            except (OSError, ValueError):
-                lease_session = None
-        active = lease_session is not None
-        total_probes = meaningful_probe_count(session or {}, current_claim_only=False)
-        row["lease_active"] = "yes" if active else "no"
-        row["lease_owner"] = str((lease_session or {}).get("owner", "")) if active else ""
-        row["lease_target_va"] = str((lease_session or {}).get("va", "")) if active else ""
-        row["lease_state"] = str((lease_session or session or {}).get("state", ""))
-        row["lease_expires_at"] = (
-            str((lease_session or {}).get("lease_expires_at", ""))
-            if active and row["lease_state"] == "active"
-            else ""
-        )
-        row["lease_probes"] = str(meaningful_probe_count(session or {})) if session else ""
-        row["lease_probe_total"] = str(total_probes) if session else ""
-        row["clean_pinned"] = "yes" if session and session.get("clean_baseline") else ""
+        total_probes = meaningful_probe_count(session or {}, current_work_period_only=False)
+        row["work_probes"] = str(meaningful_probe_count(session or {})) if session else ""
+        row["work_probe_total"] = str(total_probes) if session else ""
+        row["work_clean_pinned"] = "yes" if session and session.get("clean_baseline") else ""
         if include_work_history:
-            claim_count = session_claim_count(session or {})
+            work_period_count = session_work_period_count(session or {})
             improvement = last_positional_improvement(session or {})
             if (session or {}).get("summary_version"):
                 best_diff = (session or {}).get("best_diff_bytes")
@@ -283,7 +236,7 @@ def annotate_leases(
                 best_diff = min(probe_diffs) if probe_diffs else None
             current_metrics = (session or {}).get("last_metric_summary") or {}
             current_diff = current_metrics.get("diff_bytes")
-            row["lease_claim_total"] = str(claim_count)
+            row["work_period_total"] = str(work_period_count)
             row["work_best_current_diff"] = (
                 f"{best_diff}/{current_diff if current_diff is not None else '-'}"
                 if best_diff is not None else "-"
@@ -297,24 +250,7 @@ def annotate_leases(
     return rows
 
 
-def filter_leases(
-    rows: list[dict[str, str]], *, unleased: bool = False, active_only: bool = False, owner: str = ""
-) -> list[dict[str, str]]:
-    result = rows
-    if unleased:
-        result = [row for row in result if row.get("lease_active") != "yes"]
-    if active_only:
-        result = [row for row in result if row.get("lease_active") == "yes"]
-    if owner:
-        result = [
-            row
-            for row in result
-            if row.get("lease_active") == "yes" and row.get("lease_owner") == owner
-        ]
-    return result
-
-
-def lease_prefilter_vas(
+def history_prefilter_vas(
     args: argparse.Namespace,
     sessions: list[dict],
 ) -> tuple[set[str] | None, set[str]]:
@@ -326,13 +262,13 @@ def lease_prefilter_vas(
         exclude_vas.update(
             str(session.get("va", "")).upper()
             for session in sessions
-            if meaningful_probe_count(session, current_claim_only=False) > args.max_lifetime_probes
+            if meaningful_probe_count(session, current_work_period_only=False) > args.max_lifetime_probes
         )
-    if args.max_claims is not None:
+    if args.max_work_periods is not None:
         exclude_vas.update(
             str(session.get("va", "")).upper()
             for session in sessions
-            if session_claim_count(session) > args.max_claims
+            if session_work_period_count(session) > args.max_work_periods
         )
     return include_vas, exclude_vas
 
@@ -406,8 +342,6 @@ def print_summary(rows: list[dict[str, str]]) -> None:
         f"asm_special={counts['asm_special']} "
         f"asm_region={counts['asm_region']}"
     )
-    active_leases = sum(row.get("lease_active") == "yes" for row in rows)
-    print(f"leases: reserved={active_leases} unleased={len(rows) - active_leases}")
     logic_reviews = sum(row.get("has_logic_review") == "yes" for row in rows)
     logic_reviews_in_progress = sum(
         row.get("has_logic_review") == "yes" and row.get("source_bucket") == "scratch"
@@ -464,19 +398,12 @@ def table_columns(args: argparse.Namespace) -> list[tuple[str, str, int]]:
             ("module_note", "module_note_path", 36),
             ("blocker", "source_blocker", 28),
         ])
-    if args.leases or args.work_history or args.unleased or args.active_leases or args.owner:
-        cols.extend([
-            ("lease_owner", "lease_owner", 20),
-            ("lease_va", "lease_target_va", 10),
-            ("lease", "lease_state", 10),
-            ("claim", "lease_probes", 7),
-            ("total", "lease_probe_total", 7),
-            ("clean", "clean_pinned", 6),
-            ("expires", "lease_expires_at", 20),
-        ])
     if args.work_history:
         cols.extend([
-            ("claims", "lease_claim_total", 6),
+            ("probes", "work_probes", 7),
+            ("total", "work_probe_total", 7),
+            ("clean", "work_clean_pinned", 6),
+            ("periods", "work_period_total", 7),
             ("best/cur", "work_best_current_diff", 10),
             ("last_gain", "work_last_gain", 15),
             ("last_worker", "work_last_worker", 18),
@@ -516,33 +443,23 @@ def main() -> None:
         raise SystemExit("--limit must be zero or positive")
     if args.max_lifetime_probes is not None and args.max_lifetime_probes < 0:
         raise SystemExit("--max-lifetime-probes must be zero or positive")
-    if args.max_claims is not None and args.max_claims < 0:
-        raise SystemExit("--max-claims must be zero or positive")
+    if args.max_work_periods is not None and args.max_work_periods < 0:
+        raise SystemExit("--max-work-periods must be zero or positive")
     include_work_history = (
         args.work_history
         or args.max_lifetime_probes is not None
-        or args.max_claims is not None
+        or args.max_work_periods is not None
     )
     needs_sessions = bool(
-        args.summary
-        or args.json
-        or args.csv
-        or args.leases
-        or args.work_history
-        or args.unleased
-        or args.active_leases
-        or args.owner
+        args.work_history
         or args.max_lifetime_probes is not None
-        or args.max_claims is not None
+        or args.max_work_periods is not None
     )
-    # A lease belongs to a complete translation unit.  A targeted VA can be a
-    # sibling of the VA that owns the session, so lease queries need the full
-    # compact session index.
     sessions = load_target_sessions() if needs_sessions else []
-    include_vas, exclude_vas = lease_prefilter_vas(args, sessions) if needs_sessions else (None, set())
+    include_vas, exclude_vas = history_prefilter_vas(args, sessions) if needs_sessions else (None, set())
     rows = load_rows(args, include_vas=include_vas, exclude_vas=exclude_vas)
     if needs_sessions:
-        rows = annotate_leases(rows, sessions, include_work_history=include_work_history)
+        rows = annotate_work_history(rows, sessions, include_work_history=include_work_history)
     rows = filter_status_rows(
         rows,
         corpus_bucket=corpus_bucket_from_args(args),
@@ -564,21 +481,15 @@ def main() -> None:
             for row in rows
             if row.get("has_logic_review") == "yes" and row.get("source_bucket") == "scratch"
         ]
-    rows = filter_leases(
-        rows,
-        unleased=args.unleased,
-        active_only=args.active_leases,
-        owner=args.owner or "",
-    )
     if args.max_lifetime_probes is not None:
         rows = [
             row for row in rows
-            if int(row.get("lease_probe_total") or 0) <= args.max_lifetime_probes
+            if int(row.get("work_probe_total") or 0) <= args.max_lifetime_probes
         ]
-    if args.max_claims is not None:
+    if args.max_work_periods is not None:
         rows = [
             row for row in rows
-            if int(row.get("lease_claim_total") or 0) <= args.max_claims
+            if int(row.get("work_period_total") or 0) <= args.max_work_periods
         ]
 
     if args.summary:

@@ -50,32 +50,18 @@ class ResourcePolicyTests(unittest.TestCase):
         self.assertEqual(defaults.max_variants, 0)
         self.assertEqual(defaults.compile_timeout, 0)
 
-    def test_leases_require_user_selected_duration(self) -> None:
+    def test_target_notebooks_have_no_assignment_timing(self) -> None:
         with patch.object(
             sys,
             "argv",
             ["target_session.py", "start", "--va", "00400000", "--owner", "worker"],
         ):
-            with self.assertRaises(SystemExit):
-                target_session.parse_args()
-        with patch.object(
-            sys,
-            "argv",
-            [
-                "target_session.py",
-                "start",
-                "--va",
-                "00400000",
-                "--owner",
-                "worker",
-                "--lease-hours",
-                "19",
-            ],
-        ):
-            self.assertEqual(target_session.parse_args().lease_hours, 19)
+            args = target_session.parse_args()
+        self.assertEqual(args.owner, "worker")
+        self.assertFalse(hasattr(args, "lease_hours"))
 
-    def test_translation_unit_review_commands_require_an_explicit_reason(self) -> None:
-        for command in ("hold-tu", "release-tu"):
+    def test_assignment_state_commands_are_removed(self) -> None:
+        for command in ("pause", "release", "hold-tu", "release-tu"):
             with self.subTest(command=command), patch.object(
                 sys,
                 "argv",

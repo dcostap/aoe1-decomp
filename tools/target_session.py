@@ -9,7 +9,7 @@ import subprocess
 import sys
 import time
 from contextlib import contextmanager
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 
 from build_cache import build_input_manifest, build_manifest_matches
@@ -38,8 +38,8 @@ from function_history import (
 )
 
 
-SESSION_VERSION = 3
-SESSION_INDEX_VERSION = 1
+SESSION_VERSION = 4
+SESSION_INDEX_VERSION = 2
 CLEAN_CHECKPOINT_LABEL = "clean-source"
 OWNER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$")
 PROBE_KINDS = (
@@ -65,10 +65,6 @@ def _utc_now() -> datetime:
 
 def _iso(value: datetime) -> str:
     return value.replace(microsecond=0).isoformat().replace("+00:00", "Z")
-
-
-def _parse_iso(value: str) -> datetime:
-    return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
 def _sessions_root() -> Path:
@@ -186,13 +182,11 @@ def target_session_summary(session: dict) -> dict:
         "name": str(session.get("name", "")),
         "slug": str(session.get("slug", "")),
         "owner": str(session.get("owner", "")),
-        "state": str(session.get("state", "")),
-        "claimed_at": str(session.get("claimed_at", "")),
+        "work_period_started_at": str(session.get("work_period_started_at", "")),
         "updated_at": str(session.get("updated_at", "")),
-        "lease_expires_at": str(session.get("lease_expires_at", "")),
         "meaningful_probe_count": meaningful_probe_count(session),
-        "meaningful_probe_total": meaningful_probe_count(session, current_claim_only=False),
-        "claim_count": session_claim_count(session),
+        "meaningful_probe_total": meaningful_probe_count(session, current_work_period_only=False),
+        "work_period_count": session_work_period_count(session),
         "recorded_probe_count": len(probes),
         "best_diff_bytes": min(probe_diffs) if probe_diffs else None,
         "last_positional_improvement": (
@@ -256,10 +250,6 @@ def _session_index_is_current(index: dict | None, fingerprint: str) -> bool:
             return False
         if not isinstance(summary.get("owner"), str):
             return False
-        if not isinstance(summary.get("state"), str):
-            return False
-        if not isinstance(summary.get("lease_expires_at"), str):
-            return False
         slug = summary.get("slug")
         if not isinstance(slug, str) or not slug:
             return False
@@ -306,8 +296,7 @@ def _rebuild_session_index() -> dict:
                     "va": path.name.split("_", 1)[0].upper(),
                     "slug": path.stem,
                     "owner": "",
-                    "state": "invalid",
-                    "lease_expires_at": "",
+                    "invalid": True,
                 }
             va = str(summary.get("va", "")).upper()
             if va:
@@ -341,42 +330,26 @@ def _write_session(record: dict[str, str], payload: dict) -> None:
         _rebuild_session_index()
 
 
-def _lease_active(session: dict, now: datetime | None = None) -> bool:
-    if session.get("state") != "active":
-        return False
-    expiry = str(session.get("lease_expires_at") or "")
-    if not expiry:
-        return False
-    try:
-        return _parse_iso(expiry) > (now or _utc_now())
-    except ValueError:
-        return False
-
-
-def session_reserves_translation_unit(session: dict, now: datetime | None = None) -> bool:
-    return session.get("state") == "review" or _lease_active(session, now)
-
-
 def _probe_is_meaningful(probe: dict) -> bool:
     if "meaningful" in probe:
         return bool(probe["meaningful"])
     return probe.get("kind") not in NON_MEANINGFUL_PROBE_KINDS
 
 
-def meaningful_probe_count(session: dict, *, current_claim_only: bool = True) -> int:
+def meaningful_probe_count(session: dict, *, current_work_period_only: bool = True) -> int:
     if session.get("summary_version") == SESSION_INDEX_VERSION:
-        field = "meaningful_probe_count" if current_claim_only else "meaningful_probe_total"
+        field = "meaningful_probe_count" if current_work_period_only else "meaningful_probe_total"
         return int(session.get(field) or 0)
     probes = list(session.get("probes") or [])
-    if current_claim_only:
-        probes = probes[int(session.get("probe_start_index") or 0) :]
+    if current_work_period_only:
+        probes = probes[int(session.get("work_period_start_index") or 0) :]
     return sum(_probe_is_meaningful(probe) for probe in probes)
 
 
-def session_claim_count(session: dict) -> int:
-    """Return lifetime claims without counting pause and probe events."""
+def session_work_period_count(session: dict) -> int:
+    """Return lifetime work periods without counting probe events."""
     if session.get("summary_version") == SESSION_INDEX_VERSION:
-        return int(session.get("claim_count") or 0)
+        return int(session.get("work_period_count") or 0)
     events = session.get("events") or []
     event_count = sum(event.get("kind") in {"start", "takeover"} for event in events)
     return max(event_count, 1 if session else 0)
@@ -586,19 +559,14 @@ def classify_next_stage(metrics: dict[str, object]) -> str:
 def _new_session(
     record: dict[str, str],
     owner: str,
-    lease_hours: float,
     prior: dict | None,
     metric_summary: dict[str, object] | None = None,
 ) -> dict:
     now = _utc_now()
     events = list((prior or {}).get("events") or [])
     probes = list((prior or {}).get("probes") or [])
-    continuing_active_claim = bool(
-        prior
-        and prior.get("owner") == owner
-        and session_reserves_translation_unit(prior, now)
-    )
-    if continuing_active_claim:
+    continuing_period = bool(prior and prior.get("owner") == owner)
+    if continuing_period:
         pass
     elif prior and prior.get("owner") != owner:
         events.append(
@@ -617,13 +585,10 @@ def _new_session(
         "name": record["name"],
         "slug": function_slug(record),
         "owner": owner,
-        "state": "active",
-        "claimed_at": prior.get("claimed_at") if continuing_active_claim else _iso(now),
+        "work_period_started_at": prior.get("work_period_started_at") if continuing_period else _iso(now),
         "updated_at": _iso(now),
-        "lease_expires_at": _iso(now + timedelta(hours=lease_hours)),
-        "lease_hours": lease_hours,
-        "probe_start_index": int(prior.get("probe_start_index") or 0)
-        if continuing_active_claim
+        "work_period_start_index": int(prior.get("work_period_start_index") or 0)
+        if continuing_period
         else len(probes),
         "probes": probes,
         "events": events,
@@ -635,93 +600,32 @@ def _new_session(
 def start_session(
     record: dict[str, str],
     owner: str,
-    lease_hours: float,
-    force: bool = False,
-    collect_metrics: bool = True,
 ) -> dict:
     checked_owner = _validate_owner(owner)
 
-    # Make a redundant worker start cheap after orchestrator preclaiming.
+    # Make repeated starts by the current worker cheap.
     with _sessions_lock():
         prior = _load_session(record)
-        if (
-            prior
-            and session_reserves_translation_unit(prior)
-            and prior.get("owner") != checked_owner
-            and not force
-        ):
-            raise RuntimeError(
-                f"{record['va']} is reserved by {prior.get('owner')}; "
-                "coordinate with that owner or use --force for a deliberate takeover"
-            )
-        if (
-            prior
-            and session_reserves_translation_unit(prior)
-            and prior.get("owner") == checked_owner
-        ):
-            was_active = _lease_active(prior)
+        if prior and prior.get("owner") == checked_owner:
             session = _new_session(
                 record,
                 checked_owner,
-                lease_hours,
                 prior,
                 dict(prior.get("last_metric_summary") or {}),
             )
             _write_session(record, session)
             result = dict(session)
-            result[
-                "_start_reused_active" if was_active else "_start_resumed_review"
-            ] = True
+            result["_start_reused"] = True
             return result
 
-    metric_summary = current_metric_summary(record) if collect_metrics else {}
+    metric_summary = current_metric_summary(record)
 
-    # Recheck after unlocked metric work because another process can claim the unit.
+    # Recheck after unlocked metric work because another notebook start can win.
     with _sessions_lock():
         prior = _load_session(record)
-        if (
-            prior
-            and session_reserves_translation_unit(prior)
-            and prior.get("owner") != checked_owner
-            and not force
-        ):
-            raise RuntimeError(
-                f"{record['va']} is reserved by {prior.get('owner')}; "
-                "coordinate with that owner or use --force for a deliberate takeover"
-            )
-        target_source = compiler_source_path(record).resolve()
-        session_index_fingerprint = _session_file_fingerprint()
-        session_index = _read_session_index()
-        if _session_index_is_current(session_index, session_index_fingerprint):
-            other_sessions = list(session_index["sessions"].values())
-        else:
-            # An external edit or an invalid index needs the complete locked scan.
-            other_sessions = _all_sessions()
-        for other in other_sessions:
-            other_va = str(other.get("va") or "").upper()
-            if (
-                other_va == record["va"].upper()
-                or not session_reserves_translation_unit(other)
-            ):
-                continue
-            try:
-                other_record = function_record_by_va(int(other_va, 16))
-                other_source = compiler_source_path(other_record).resolve()
-            except (KeyError, TypeError, ValueError):
-                continue
-            if (
-                other_source == target_source
-                and other.get("owner") != checked_owner
-                and not force
-            ):
-                raise RuntimeError(
-                    f"translation unit {target_source.relative_to(REPO_ROOT)} is reserved "
-                    f"through {other_va} by {other.get('owner')}; release that translation unit first"
-                )
         session = _new_session(
             record,
             checked_owner,
-            lease_hours,
             prior,
             metric_summary,
         )
@@ -736,13 +640,6 @@ def _require_owner(session: dict | None, owner: str, record: dict[str, str]) -> 
     if session.get("owner") != checked_owner:
         raise RuntimeError(f"{record['va']} is owned by {session.get('owner')}, not {checked_owner}")
     return session
-
-
-def _require_active_owner(session: dict | None, owner: str, record: dict[str, str]) -> dict:
-    checked = _require_owner(session, owner, record)
-    if not _lease_active(checked):
-        raise RuntimeError(f"{record['va']} session is not an active unexpired lease; run start first")
-    return checked
 
 
 def _sha256(path: Path) -> str:
@@ -840,10 +737,10 @@ def _validate_grouped_checkpoint(
     if not require_exact:
         return
     if metrics.get("result") != "MATCH":
-        raise RuntimeError("grouped exact release requires a current MATCH result")
+        raise RuntimeError("grouped exact checkpoint requires a current MATCH result")
     current_owner = metrics.get("owning_symbol_validation") or {}
     if not isinstance(current_owner, dict) or current_owner.get("status") != "match":
-        raise RuntimeError("grouped exact release requires a matching PDB-qualified owner")
+        raise RuntimeError("grouped exact checkpoint requires a matching PDB-qualified owner")
     saved_owner = saved_context.get("pdb_owner")
     if not isinstance(saved_owner, dict) or saved_owner != current_owner:
         raise RuntimeError("grouped checkpoint PDB-qualified owner result differs from the current result")
@@ -925,7 +822,7 @@ def record_probe(
     outputs = current_output_snapshot(record, metrics)
     inputs = current_input_snapshot(record)
     with _sessions_lock():
-        session = _require_active_owner(_load_session(record), owner, record)
+        session = _require_owner(_load_session(record), owner, record)
         now = _utc_now()
         prior_metrics = {}
         if session.get("probes"):
@@ -939,8 +836,8 @@ def record_probe(
                     break
         probe = {
             "number": len(session.get("probes") or []) + 1,
-            "claim_number": len(session.get("probes") or [])
-            - int(session.get("probe_start_index") or 0)
+            "work_period_probe_number": len(session.get("probes") or [])
+            - int(session.get("work_period_start_index") or 0)
             + 1,
             "at": _iso(now),
             "kind": kind,
@@ -960,7 +857,6 @@ def record_probe(
             {"at": _iso(now), "kind": "probe", "probe_number": probe["number"]}
         )
         session["updated_at"] = _iso(now)
-        session["lease_expires_at"] = _iso(now + timedelta(hours=float(session.get("lease_hours") or 8)))
         session["last_metric_summary"] = metrics
         _write_session(record, session)
     return session
@@ -972,9 +868,9 @@ def clean_baseline_is_current(record: dict[str, str], session: dict) -> bool:
 
 
 def require_clean_baseline(record: dict[str, str], owner: str) -> dict:
-    """Require an active owner and one explicitly audited clean-source checkpoint."""
+    """Require the current notebook owner and one audited clean-source checkpoint."""
     with _sessions_lock():
-        session = _require_active_owner(_load_session(record), owner, record)
+        session = _require_owner(_load_session(record), owner, record)
         baseline = dict(session.get("clean_baseline") or {})
     if not baseline:
         raise RuntimeError(
@@ -997,7 +893,7 @@ def pin_clean_baseline(record: dict[str, str], owner: str, note: str) -> dict:
     if not checked_note:
         raise ValueError("clean-source note must describe canonical ownership and the plausible source family")
     with _sessions_lock():
-        _require_active_owner(_load_session(record), owner, record)
+        _require_owner(_load_session(record), owner, record)
     metrics = current_metric_summary(record)
     if metrics.get("artifact_fresh") is not True:
         reason = metrics.get("freshness_reason") or "checker artifacts are stale"
@@ -1023,7 +919,7 @@ def pin_clean_baseline(record: dict[str, str], owner: str, note: str) -> dict:
         "metrics": metrics,
     }
     with _sessions_lock():
-        session = _require_active_owner(_load_session(record), owner, record)
+        session = _require_owner(_load_session(record), owner, record)
         session["clean_baseline"] = baseline
         session["updated_at"] = _iso(_utc_now())
         session.setdefault("events", []).append(
@@ -1067,7 +963,7 @@ def run_checked_probe(
     checker_args: list[str],
 ) -> tuple[int, dict]:
     with _sessions_lock():
-        session = _require_active_owner(_load_session(record), owner, record)
+        session = _require_owner(_load_session(record), owner, record)
         next_number = len(session.get("probes") or []) + 1
         clean_baseline = dict(session.get("clean_baseline") or {})
     label = checkpoint.strip() or f"probe-{next_number:03d}-{kind}"
@@ -1106,65 +1002,6 @@ def run_checked_probe(
     if kind == "baseline":
         session = pin_clean_baseline(record, owner, note)
     return result.returncode, session
-
-
-def change_state(record: dict[str, str], owner: str, state: str, reason: str) -> dict:
-    with _sessions_lock():
-        session = _require_owner(_load_session(record), owner, record)
-    metrics = current_metric_summary(record)
-    with _sessions_lock():
-        session = _require_owner(_load_session(record), owner, record)
-        now = _utc_now()
-        session["state"] = state
-        session["updated_at"] = _iso(now)
-        session["lease_expires_at"] = _iso(now)
-        session["last_metric_summary"] = metrics
-        session.setdefault("events", []).append(
-            {"at": _iso(now), "kind": state, "owner": owner, "reason": reason.strip()}
-        )
-        _write_session(record, session)
-    return session
-
-
-def change_translation_unit_state(
-    record: dict[str, str], owner: str, state: str, reason: str
-) -> list[dict]:
-    if state not in {"review", "release"}:
-        raise ValueError(f"Unsupported translation-unit state: {state}")
-    checked_owner = _validate_owner(owner)
-    target_source = compiler_source_path(record).resolve()
-    with _sessions_lock():
-        _require_owner(_load_session(record), checked_owner, record)
-        owned: list[tuple[dict[str, str], dict]] = []
-        for session in _all_sessions():
-            if session.get("owner") != checked_owner:
-                continue
-            try:
-                session_record = function_record_by_va(int(str(session.get("va") or ""), 16))
-                session_source = compiler_source_path(session_record).resolve()
-            except (KeyError, TypeError, ValueError):
-                continue
-            if session_source == target_source:
-                owned.append((session_record, session))
-        if not owned:
-            raise RuntimeError(f"No sessions owned by {checked_owner} exist for {target_source}")
-        now = _utc_now()
-        changed: list[dict] = []
-        for session_record, session in owned:
-            session["state"] = state
-            session["updated_at"] = _iso(now)
-            session["lease_expires_at"] = "" if state == "review" else _iso(now)
-            session.setdefault("events", []).append(
-                {
-                    "at": _iso(now),
-                    "kind": state,
-                    "owner": checked_owner,
-                    "reason": reason.strip(),
-                }
-            )
-            _write_session(session_record, session)
-            changed.append(session)
-    return changed
 
 
 def decomp_note_paths(record: dict[str, str]) -> tuple[str, str]:
@@ -1206,12 +1043,11 @@ def format_session(
     else:
         total_checks = len(session.get("probes") or [])
         probes = meaningful_probe_count(session)
-        total_probes = meaningful_probe_count(session, current_claim_only=False)
-        active = "active" if _lease_active(session) else session.get("state", "inactive")
+        total_probes = meaningful_probe_count(session, current_work_period_only=False)
         lines.extend(
             [
-                f"Session: {active}; owner={session.get('owner')} lease={session.get('lease_expires_at')}",
-                f"Meaningful probes this claim: {probes}; "
+                f"Session owner: {session.get('owner')}; updated={session.get('updated_at')}",
+                f"Meaningful probes this work period: {probes}; "
                 f"target total={total_probes}; recorded checks={total_checks}",
             ]
         )
@@ -1361,7 +1197,7 @@ def _all_sessions() -> list[dict]:
                 raise TypeError("session payload is not an object")
             rows.append(session)
         except (json.JSONDecodeError, OSError, TypeError, UnicodeError):
-            rows.append({"slug": path.stem, "state": "invalid", "owner": "", "updated_at": ""})
+            rows.append({"slug": path.stem, "invalid": True, "owner": "", "updated_at": ""})
     return rows
 
 
@@ -1391,7 +1227,7 @@ def load_target_sessions(vas: set[str] | None = None) -> list[dict]:
                             "va": va,
                             "slug": path.stem,
                             "owner": "",
-                            "state": "invalid",
+                            "invalid": True,
                         }
                     )
         return rows
@@ -1407,19 +1243,16 @@ def load_target_sessions(vas: set[str] | None = None) -> list[dict]:
     return [index["sessions"][va] for va in sorted(index["sessions"])]
 
 
-def format_session_list(rows: list[dict], active_only: bool = False) -> str:
-    if active_only:
-        rows = [row for row in rows if session_reserves_translation_unit(row)]
+def format_session_list(rows: list[dict]) -> str:
     if not rows:
         return "No target sessions."
-    lines = ["VA       owner                state     probes clean  lease/update", "-" * 86]
+    lines = ["VA       owner                probes clean  updated", "-" * 72]
     for row in rows:
-        state = "active" if _lease_active(row) else str(row.get("state", ""))
         probes = meaningful_probe_count(row)
-        when = row.get("lease_expires_at") if state == "active" else row.get("updated_at")
         lines.append(
-            f"{row.get('va', ''):<8} {str(row.get('owner', '')):<20} {state:<9} "
-            f"{probes:>6} {('yes' if row.get('clean_baseline') else 'no'):<6} {when or ''}"
+            f"{row.get('va', ''):<8} {str(row.get('owner', '')):<20} "
+            f"{probes:>6} {('yes' if row.get('clean_baseline') else 'no'):<6} "
+            f"{row.get('updated_at') or ''}"
         )
     return "\n".join(lines)
 
@@ -1447,16 +1280,15 @@ def format_history(record: dict[str, str], session: dict | None, limit: int) -> 
         f"Target: {record['va']} {record['name']} ({record['size_bytes']} bytes)",
     ]
     if session is None:
-        lines.append("Session: unclaimed")
+        lines.append("Notebook: <none>")
     else:
-        state = "active" if _lease_active(session) else str(session.get("state", "inactive"))
         lines.append(
-            f"Session: {state}; owner={session.get('owner')} "
-            f"claimed={session.get('claimed_at')} updated={session.get('updated_at')}"
+            f"Notebook owner={session.get('owner')} "
+            f"started={session.get('work_period_started_at')} updated={session.get('updated_at')}"
         )
         lines.append(
             f"Probes: {len(probes)} recorded; "
-            f"{meaningful_probe_count(session)} meaningful this claim; "
+            f"{meaningful_probe_count(session)} meaningful this work period; "
             f"checker checkpoints: {len(runs)}"
         )
     lines.append("")
@@ -1561,7 +1393,7 @@ def format_brief(
         [
             "",
             "Cumulative work:",
-            f"  claims={session_claim_count(session)} meaningful_probes={len(meaningful)} "
+            f"  work_periods={session_work_period_count(session)} meaningful_probes={len(meaningful)} "
             f"recorded_checks={len(probes)} emitted_code_groups={len(identities)}",
             f"  best_positional_diff={min(best_diffs) if best_diffs else '-'} "
             f"last_positional_gain={('#' + str(improvement.get('number'))) if improvement else 'none recorded'}",
@@ -1580,7 +1412,7 @@ def format_brief(
             duplicate_text = f" duplicate=#{duplicate}" if duplicate is not None else ""
             note = " ".join(str(probe.get("note") or "").split())
             lines.append(
-                f"  #{probe.get('number', '?')} claim_probe={probe.get('claim_number', '?')} "
+                f"  #{probe.get('number', '?')} period_probe={probe.get('work_period_probe_number', '?')} "
                 f"{probe.get('kind', '?')} diff={metrics.get('diff_bytes', '-')}{duplicate_text}: {note}"
             )
     lines.extend(
@@ -1619,31 +1451,24 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=(
-            "Translation-unit reservations, target checkpoints, and meaningful-probe bookkeeping "
-            "for parallel matching work.\n"
+            "Target notebooks, clean-source checkpoints, and meaningful-probe bookkeeping.\n"
             "\n"
             "Conventions:\n"
             "  --va        target VA as hex, e.g. 00425A40\n"
             "  --owner     stable agent/session name (use your subagent id)\n"
-            "  state changes require --reason (--note is an alias for it)\n"
             "  status      takes --va only; --owner is NOT accepted\n"
-            "  list        flags are --active and --json only (there is no --all flag)\n"
+            "  list        takes --json only\n"
             "  brief       shows a worker handoff with meaningful notes\n"
             "  history     shows a target's checker checkpoints and notebook probes\n"
             "\n"
             "Examples:\n"
-            '  python tools/target_session.py start --va 00425A40 --owner sa-1234 '
-            '--lease-hours HOURS\n'
+            '  python tools/target_session.py start --va 00425A40 --owner sa-1234\n'
             '  python tools/target_session.py check --va 00425A40 --owner sa-1234 '
             '--kind abi --note "hypothesis note" -- --detail concise\n'
             '  python tools/target_session.py status --va 00425A40\n'
             '  python tools/target_session.py brief --va 00425A40\n'
             '  python tools/target_session.py history --va 00425A40\n'
-            '  python tools/target_session.py hold-tu --va 00425A40 --owner sa-1234 '
-            '--reason "worker finished; pending review"\n'
-            '  python tools/target_session.py release-tu --va 00425A40 --owner sa-1234 '
-            '--reason "review complete"\n'
-            '  python tools/target_session.py list --active\n'
+            '  python tools/target_session.py list\n'
         ),
         epilog=(
             "Per-target attempt history also lives on disk under "
@@ -1654,22 +1479,10 @@ def parse_args() -> argparse.Namespace:
 
     start = subparsers.add_parser(
         "start",
-        help="Start one target notebook under its owner's translation-unit reservation.",
+        help="Start or continue one target notebook.",
     )
     start.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
     start.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
-    start.add_argument(
-        "--lease-hours",
-        type=float,
-        required=True,
-        help="Lease duration in hours. The current orchestration supplies this value.",
-    )
-    start.add_argument("--force", action="store_true", help="Deliberately take over another active lease (use with care).")
-    start.add_argument(
-        "--preclaim",
-        action="store_true",
-        help="Claim without metric collection or a full briefing.",
-    )
 
     probe = subparsers.add_parser(
         "probe",
@@ -1686,7 +1499,7 @@ def parse_args() -> argparse.Namespace:
 
     check = subparsers.add_parser(
         "check",
-        help="Run check_function under the active lease, checkpoint it, and record a probe. "
+        help="Run check_function, checkpoint it, and record a notebook probe. "
         "Requires --va --owner --kind --note.",
     )
     check.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
@@ -1724,32 +1537,9 @@ def parse_args() -> argparse.Namespace:
     restore_clean.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
     restore_clean.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
 
-    for command in ("pause", "release"):
-        action = subparsers.add_parser(
-            command,
-            help=f"{command.title()} the lease while keeping its notebook. "
-            "Requires --va --owner and --reason (or its alias --note).",
-        )
-        action.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
-        action.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
-        reason = action.add_mutually_exclusive_group(required=True)
-        reason.add_argument("--reason", dest="reason", help="Why the lease is being paused/released (REQUIRED).")
-        reason.add_argument("--note", dest="reason", help="Alias for --reason (REQUIRED either way).")
-
-    for command, description in (
-        ("hold-tu", "Reserve every owned session in the translation unit for orchestrator review."),
-        ("release-tu", "Release every owned session in the translation unit after review."),
-    ):
-        action = subparsers.add_parser(command, help=description)
-        action.add_argument("--va", required=True, help="Any owned target VA in the translation unit.")
-        action.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
-        reason = action.add_mutually_exclusive_group(required=True)
-        reason.add_argument("--reason", dest="reason", help="Reason for the translation-unit state change.")
-        reason.add_argument("--note", dest="reason", help="Alias for --reason.")
-
     status = subparsers.add_parser(
         "status",
-        help="Show one target's lease, metrics, and next stage. Takes --va only (no --owner).",
+        help="Show one target's notebook, metrics, and next stage. Takes --va only.",
     )
     status.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
     status.add_argument("--json", action="store_true", help="Emit JSON instead of the human summary.")
@@ -1777,12 +1567,7 @@ def parse_args() -> argparse.Namespace:
 
     listing = subparsers.add_parser(
         "list",
-        help="List target sessions. Flags are --active and --json only (no --all, no --va).",
-    )
-    listing.add_argument(
-        "--active",
-        action="store_true",
-        help="Show only active leases and translation units held for review.",
+        help="List target notebooks. The only option is --json.",
     )
     listing.add_argument("--json", action="store_true", help="Emit JSON instead of the human table.")
     return parser.parse_args()
@@ -1792,29 +1577,15 @@ def main() -> None:
     args = parse_args()
     if args.command == "list":
         rows = load_target_sessions()
-        if args.active:
-            rows = [row for row in rows if session_reserves_translation_unit(row)]
         print(json.dumps(rows, indent=2) if args.json else format_session_list(rows))
         return
 
     record = function_record_by_va(int(args.va, 16))
     try:
         if args.command == "start":
-            if args.lease_hours <= 0:
-                raise ValueError("--lease-hours must be positive")
-            session = start_session(
-                record,
-                args.owner,
-                args.lease_hours,
-                args.force,
-                collect_metrics=not args.preclaim,
-            )
-            if session.pop("_start_reused_active", False):
-                print(f"Session already active: {record['va']} owner={args.owner}")
-            elif session.pop("_start_resumed_review", False):
-                print(f"Session resumed from review: {record['va']} owner={args.owner}")
-            elif args.preclaim:
-                print(f"Session preclaimed: {record['va']} owner={args.owner}")
+            session = start_session(record, args.owner)
+            if session.pop("_start_reused", False):
+                print(f"Notebook already current: {record['va']} owner={args.owner}")
             else:
                 print(format_brief(record, session, 20, session.get("last_metric_summary") or {}))
         elif args.command == "probe":
@@ -1841,19 +1612,6 @@ def main() -> None:
         elif args.command == "restore-clean":
             session = restore_clean_baseline(record, args.owner)
             print(format_session(record, session))
-        elif args.command in {"pause", "release"}:
-            session = change_state(record, args.owner, args.command, args.reason)
-            print(format_session(record, session, session.get("last_metric_summary", {})))
-        elif args.command in {"hold-tu", "release-tu"}:
-            state = "review" if args.command == "hold-tu" else "release"
-            sessions = change_translation_unit_state(
-                record, args.owner, state, args.reason
-            )
-            source = compiler_source_path(record)
-            print(
-                f"Translation unit {source.relative_to(REPO_ROOT)}: "
-                f"state={state} owner={args.owner} sessions={len(sessions)}"
-            )
         elif args.command == "status":
             session = _load_session(record)
             print(

@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-import copy
 import json
-import multiprocessing
 import sys
 import tempfile
 import unittest
@@ -16,33 +14,6 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
 import target_session  # noqa: E402
-
-
-def _concurrent_start_worker(root_path, record, records, result_queue) -> None:
-    root = Path(root_path)
-    records_by_va = {item["va"].upper(): item for item in records}
-
-    def source_path(_record):
-        return root / "src" / "shared_module.cpp"
-
-    def record_by_va(va):
-        return records_by_va[f"{int(va):08X}"]
-
-    def unexpected_full_scan():
-        raise AssertionError("current session index was not used")
-
-    with (
-        patch.object(target_session, "REPO_ROOT", root),
-        patch.object(target_session, "compiler_source_path", source_path),
-        patch.object(target_session, "function_record_by_va", record_by_va),
-        patch.object(target_session, "_all_sessions", unexpected_full_scan),
-    ):
-        try:
-            target_session.start_session(record, record.get("test_owner", "AgentA"), 2.0)
-        except Exception as error:  # pragma: no cover - exercised in child process
-            result_queue.put(("error", type(error).__name__, str(error)))
-        else:
-            result_queue.put(("ok", record["va"], ""))
 
 
 class TargetSessionTests(unittest.TestCase):
@@ -62,15 +33,13 @@ class TargetSessionTests(unittest.TestCase):
         source_patcher.start()
         self.addCleanup(source_patcher.stop)
 
-    def test_active_json_list_uses_compact_index_and_filters_rows(self) -> None:
+    def test_json_list_uses_the_compact_index(self) -> None:
         rows = [
             {
                 "summary_version": target_session.SESSION_INDEX_VERSION,
                 "va": "00001000",
                 "slug": "00001000_demo",
                 "owner": "AgentA",
-                "state": "active",
-                "lease_expires_at": "2999-01-01T00:00:00Z",
                 "updated_at": "2026-01-01T00:00:00Z",
             },
             {
@@ -78,12 +47,10 @@ class TargetSessionTests(unittest.TestCase):
                 "va": "00002000",
                 "slug": "00002000_other",
                 "owner": "AgentB",
-                "state": "pause",
-                "lease_expires_at": "",
                 "updated_at": "2026-01-01T00:00:00Z",
             },
         ]
-        args = SimpleNamespace(command="list", active=True, json=True)
+        args = SimpleNamespace(command="list", json=True)
 
         with (
             patch.object(target_session, "parse_args", return_value=args),
@@ -95,21 +62,17 @@ class TargetSessionTests(unittest.TestCase):
 
         load.assert_called_once_with()
         payload = json.loads(output.call_args.args[0])
-        self.assertEqual([row["va"] for row in payload], ["00001000"])
+        self.assertEqual([row["va"] for row in payload], ["00001000", "00002000"])
         self.assertNotIn("probes", payload[0])
 
-    def test_active_lease_rejects_other_owner_then_allows_paused_takeover(self) -> None:
+    def test_new_owner_starts_a_new_work_period(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):
-                first = target_session.start_session(self.record, "AgentA", 2.0)
-                self.assertTrue(target_session._lease_active(first))
-                with self.assertRaises(RuntimeError):
-                    target_session.start_session(self.record, "AgentB", 2.0)
-                target_session.change_state(self.record, "AgentA", "pause", "needs ABI facts")
-                second = target_session.start_session(self.record, "AgentB", 2.0)
+                first = target_session.start_session(self.record, "AgentA")
+                second = target_session.start_session(self.record, "AgentB")
                 self.assertEqual(second["owner"], "AgentB")
-                self.assertEqual(second["probe_start_index"], len(second["probes"]))
+                self.assertEqual(second["work_period_start_index"], len(second["probes"]))
                 self.assertTrue(any(event["kind"] == "takeover" for event in second["events"]))
 
     def test_metric_and_snapshot_work_stays_outside_the_global_lock(self) -> None:
@@ -137,7 +100,7 @@ class TargetSessionTests(unittest.TestCase):
                 patch.object(target_session, "current_output_snapshot", require_unlocked),
                 patch.object(target_session, "current_input_snapshot", require_unlocked),
             ):
-                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(self.record, "AgentA")
                 target_session.record_probe(
                     self.record,
                     "AgentA",
@@ -145,455 +108,34 @@ class TargetSessionTests(unittest.TestCase):
                     "checked outside lock",
                 )
 
-    def test_active_same_owner_start_renews_without_adding_a_claim(self) -> None:
+    def test_same_owner_start_does_not_add_a_work_period(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):
-                first = target_session.start_session(self.record, "AgentA", 2.0)
-                second = target_session.start_session(self.record, "AgentA", 2.0)
-        self.assertEqual(target_session.session_claim_count(first), 1)
-        self.assertEqual(target_session.session_claim_count(second), 1)
+                first = target_session.start_session(self.record, "AgentA")
+                second = target_session.start_session(self.record, "AgentA")
+        self.assertEqual(target_session.session_work_period_count(first), 1)
+        self.assertEqual(target_session.session_work_period_count(second), 1)
 
-    def test_active_same_owner_start_skips_metric_collection(self) -> None:
+    def test_same_owner_start_skips_metric_collection(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with (
                 patch.object(target_session, "REPO_ROOT", root),
                 patch.object(target_session, "current_metric_summary", return_value={}) as metrics,
             ):
-                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(self.record, "AgentA")
                 metrics.reset_mock()
-                session = target_session.start_session(self.record, "AgentA", 2.0)
+                session = target_session.start_session(self.record, "AgentA")
         metrics.assert_not_called()
-        self.assertTrue(session["_start_reused_active"])
+        self.assertTrue(session["_start_reused"])
 
-    def test_preclaim_skips_metric_collection(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            with (
-                patch.object(target_session, "REPO_ROOT", root),
-                patch.object(target_session, "current_metric_summary") as metrics,
-            ):
-                session = target_session.start_session(
-                    self.record,
-                    "AgentA",
-                    2.0,
-                    collect_metrics=False,
-                )
-        metrics.assert_not_called()
-        self.assertEqual(session["last_metric_summary"], {})
-
-    def test_active_translation_unit_rejects_another_target(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            shared_source = root / "src" / "module.cpp"
-            with (
-                patch.object(target_session, "REPO_ROOT", root),
-                patch.object(target_session, "compiler_source_path", return_value=shared_source),
-                patch.object(target_session, "function_record_by_va", return_value=self.record),
-            ):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                    target_session.start_session(other_record, "AgentB", 2.0)
-
-    def test_active_translation_unit_allows_same_owner_targets(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        records = {record["va"]: record for record in (self.record, other_record)}
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            with (
-                patch.object(target_session, "REPO_ROOT", root),
-                patch.object(
-                    target_session,
-                    "function_record_by_va",
-                    side_effect=lambda va: records[f"{int(va):08X}"],
-                ),
-            ):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                second = target_session.start_session(other_record, "AgentA", 2.0)
-        self.assertEqual(second["owner"], "AgentA")
-        self.assertTrue(target_session._lease_active(second))
-
-    def test_translation_unit_review_hold_and_release_cover_owned_sessions(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        blocked_record = {**self.record, "va": "00003000", "name": "blocked"}
-        records = {
-            record["va"]: record
-            for record in (self.record, other_record, blocked_record)
-        }
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            with (
-                patch.object(target_session, "REPO_ROOT", root),
-                patch.object(
-                    target_session,
-                    "function_record_by_va",
-                    side_effect=lambda va: records[f"{int(va):08X}"],
-                ),
-            ):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                target_session.start_session(other_record, "AgentA", 2.0)
-                held = target_session.change_translation_unit_state(
-                    self.record, "AgentA", "review", "worker complete"
-                )
-                self.assertEqual(len(held), 2)
-                self.assertTrue(
-                    all(target_session.session_reserves_translation_unit(row) for row in held)
-                )
-                self.assertTrue(all(row["state"] == "review" for row in held))
-                self.assertTrue(all(row["lease_expires_at"] == "" for row in held))
-                with self.assertRaisesRegex(RuntimeError, "reserved"):
-                    target_session.start_session(blocked_record, "AgentB", 2.0)
-                resumed = target_session.start_session(other_record, "AgentA", 2.0)
-                self.assertTrue(resumed["_start_resumed_review"])
-                target_session.change_translation_unit_state(
-                    self.record, "AgentA", "review", "review continues"
-                )
-                released = target_session.change_translation_unit_state(
-                    self.record, "AgentA", "release", "review complete"
-                )
-        self.assertEqual(len(released), 2)
-        self.assertTrue(all(row["state"] == "release" for row in released))
-        self.assertTrue(
-            all(not target_session.session_reserves_translation_unit(row) for row in released)
-        )
-
-    def test_start_uses_current_index_for_translation_unit_conflict(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            shared_source = root / "src" / "module.cpp"
-            with (
-                patch.object(target_session, "REPO_ROOT", root),
-                patch.object(target_session, "compiler_source_path", return_value=shared_source),
-                patch.object(target_session, "function_record_by_va", return_value=self.record),
-            ):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                with patch.object(
-                    target_session,
-                    "_all_sessions",
-                    side_effect=AssertionError("current session index was not used"),
-                ):
-                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 2.0)
-
-    def test_semantically_stale_index_entry_preserves_translation_unit_conflict(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            shared_source = root / "src" / "module.cpp"
-            with (
-                patch.object(target_session, "REPO_ROOT", root),
-                patch.object(target_session, "compiler_source_path", return_value=shared_source),
-                patch.object(target_session, "function_record_by_va", return_value=self.record),
-            ):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                index = target_session._read_session_index()
-                self.assertIsNotNone(index)
-                session_files_fingerprint = target_session._session_file_fingerprint()
-                index["sessions"][self.record["va"]]["state"] = "pause"
-                target_session._session_index_path().write_text(
-                    json.dumps(index), encoding="utf-8"
-                )
-                self.assertEqual(
-                    session_files_fingerprint,
-                    target_session._session_file_fingerprint(),
-                )
-                with patch.object(
-                    target_session, "_all_sessions", wraps=target_session._all_sessions
-                ) as all_sessions:
-                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 2.0)
-        all_sessions.assert_called_once_with()
-
-    def test_start_skips_invalid_session_payloads_during_conflict_scan(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        payloads = {
-            "invalid-utf8": b"\xff\xfe",
-            "null": b"null",
-            "list": b"[]",
-            "string": b'"session"',
-        }
-        for label, payload in payloads.items():
-            with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary)
-                shared_source = root / "src" / "module.cpp"
-                with (
-                    patch.object(target_session, "REPO_ROOT", root),
-                    patch.object(target_session, "compiler_source_path", return_value=shared_source),
-                    patch.object(target_session, "function_record_by_va", return_value=self.record),
-                ):
-                    target_session.start_session(self.record, "AgentA", 2.0)
-                    invalid_path = target_session._sessions_root() / "00000001_bad.json"
-                    invalid_path.write_bytes(payload)
-                    with patch.object(
-                        target_session, "_all_sessions", wraps=target_session._all_sessions
-                    ) as all_sessions:
-                        with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                            target_session.start_session(other_record, "AgentB", 2.0)
-                all_sessions.assert_called_once_with()
-
-    def test_matching_empty_index_falls_back_to_active_session_files(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            shared_source = root / "src" / "module.cpp"
-            with (
-                patch.object(target_session, "REPO_ROOT", root),
-                patch.object(target_session, "compiler_source_path", return_value=shared_source),
-                patch.object(target_session, "function_record_by_va", return_value=self.record),
-            ):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                index = target_session._read_session_index()
-                self.assertIsNotNone(index)
-                index["sessions"] = {}
-                target_session._session_index_path().write_text(
-                    json.dumps(index), encoding="utf-8"
-                )
-                self.assertEqual(
-                    index["session_files_fingerprint"],
-                    target_session._session_file_fingerprint(),
-                )
-                with patch.object(
-                    target_session, "_all_sessions", wraps=target_session._all_sessions
-                ) as all_sessions:
-                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 2.0)
-        all_sessions.assert_called_once_with()
-
-    def test_matching_index_with_missing_entry_falls_back_to_full_scan(self) -> None:
-        second_record = {**self.record, "va": "00002000", "name": "second"}
-        other_record = {**self.record, "va": "00003000", "name": "other"}
-        records_by_va = {
-            record["va"]: record for record in (self.record, second_record, other_record)
-        }
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-
-            def source_path(record):
-                return root / "src" / (
-                    "first.cpp" if record["va"] == self.record["va"] else "second.cpp"
-                )
-
-            def record_by_va(va):
-                return records_by_va[f"{int(va):08X}"]
-
-            with (
-                patch.object(target_session, "REPO_ROOT", root),
-                patch.object(target_session, "compiler_source_path", source_path),
-                patch.object(target_session, "function_record_by_va", record_by_va),
-            ):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                target_session.start_session(second_record, "AgentB", 2.0)
-                index = target_session._read_session_index()
-                self.assertIsNotNone(index)
-                del index["sessions"][second_record["va"]]
-                target_session._session_index_path().write_text(
-                    json.dumps(index), encoding="utf-8"
-                )
-                self.assertEqual(
-                    index["session_files_fingerprint"],
-                    target_session._session_file_fingerprint(),
-                )
-                with patch.object(
-                    target_session, "_all_sessions", wraps=target_session._all_sessions
-                ) as all_sessions:
-                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentC", 2.0)
-        all_sessions.assert_called_once_with()
-
-    def test_matching_index_with_extra_entry_falls_back_to_full_scan(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            shared_source = root / "src" / "module.cpp"
-            with (
-                patch.object(target_session, "REPO_ROOT", root),
-                patch.object(target_session, "compiler_source_path", return_value=shared_source),
-                patch.object(target_session, "function_record_by_va", return_value=self.record),
-            ):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                index = target_session._read_session_index()
-                self.assertIsNotNone(index)
-                index["sessions"]["00009999"] = {
-                    "va": "00009999",
-                    "slug": "00009999_missing",
-                    "state": "active",
-                }
-                target_session._session_index_path().write_text(
-                    json.dumps(index), encoding="utf-8"
-                )
-                self.assertEqual(
-                    index["session_files_fingerprint"],
-                    target_session._session_file_fingerprint(),
-                )
-                with patch.object(
-                    target_session, "_all_sessions", wraps=target_session._all_sessions
-                ) as all_sessions:
-                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 2.0)
-        all_sessions.assert_called_once_with()
-
-    def test_matching_index_with_non_dict_entry_falls_back_to_full_scan(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        for invalid_entry in (None, ["invalid"]):
-            with self.subTest(invalid_entry=invalid_entry), tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary)
-                shared_source = root / "src" / "module.cpp"
-                with (
-                    patch.object(target_session, "REPO_ROOT", root),
-                    patch.object(target_session, "compiler_source_path", return_value=shared_source),
-                    patch.object(target_session, "function_record_by_va", return_value=self.record),
-                ):
-                    target_session.start_session(self.record, "AgentA", 2.0)
-                    index = target_session._read_session_index()
-                    self.assertIsNotNone(index)
-                    index["sessions"][self.record["va"]] = invalid_entry
-                    target_session._session_index_path().write_text(
-                        json.dumps(index), encoding="utf-8"
-                    )
-                    self.assertEqual(
-                        index["session_files_fingerprint"],
-                        target_session._session_file_fingerprint(),
-                    )
-                    with patch.object(
-                        target_session, "_all_sessions", wraps=target_session._all_sessions
-                    ) as all_sessions:
-                        with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                            target_session.start_session(other_record, "AgentB", 2.0)
-                all_sessions.assert_called_once_with()
-
-    def test_start_falls_back_to_full_scan_for_stale_index(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        active_other = {
-            "va": "00001000",
-            "owner": "AgentA",
-            "state": "active",
-            "lease_expires_at": "2999-01-01T00:00:00Z",
-        }
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            shared_source = root / "src" / "module.cpp"
-            with (
-                patch.object(target_session, "REPO_ROOT", root),
-                patch.object(target_session, "compiler_source_path", return_value=shared_source),
-                patch.object(target_session, "function_record_by_va", return_value=self.record),
-            ):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                index = target_session._read_session_index()
-                self.assertIsNotNone(index)
-                index["session_files_fingerprint"] = "stale"
-                target_session._session_index_path().write_text(
-                    json.dumps(index), encoding="utf-8"
-                )
-                with patch.object(
-                    target_session, "_all_sessions", return_value=[active_other]
-                ) as all_sessions:
-                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 2.0)
-        all_sessions.assert_called_once_with()
-
-    def test_start_falls_back_to_full_scan_for_corrupt_index(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        active_other = {
-            "va": "00001000",
-            "owner": "AgentA",
-            "state": "active",
-            "lease_expires_at": "2999-01-01T00:00:00Z",
-        }
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            shared_source = root / "src" / "module.cpp"
-            with (
-                patch.object(target_session, "REPO_ROOT", root),
-                patch.object(target_session, "compiler_source_path", return_value=shared_source),
-                patch.object(target_session, "function_record_by_va", return_value=self.record),
-            ):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                target_session._session_index_path().write_text("[]", encoding="utf-8")
-                with patch.object(
-                    target_session, "_all_sessions", return_value=[active_other]
-                ) as all_sessions:
-                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 2.0)
-        all_sessions.assert_called_once_with()
-
-    def test_start_falls_back_for_invalid_utf8_index(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            shared_source = root / "src" / "module.cpp"
-            with (
-                patch.object(target_session, "REPO_ROOT", root),
-                patch.object(target_session, "compiler_source_path", return_value=shared_source),
-                patch.object(target_session, "function_record_by_va", return_value=self.record),
-            ):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                target_session._session_index_path().write_bytes(b"\xff\xfe")
-                with patch.object(
-                    target_session, "_all_sessions", wraps=target_session._all_sessions
-                ) as all_sessions:
-                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 2.0)
-        all_sessions.assert_called_once_with()
-
-    def test_concurrent_starts_reject_duplicate_translation_unit_claims(self) -> None:
-        other_record = {**self.record, "va": "00002000", "name": "other"}
-        records = [
-            {**self.record, "test_owner": "AgentA"},
-            {**other_record, "test_owner": "AgentB"},
-        ]
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            with patch.object(target_session, "REPO_ROOT", root):
-                target_session._sessions_root().mkdir(parents=True)
-                target_session._write_session_index(
-                    {}, target_session._session_file_fingerprint()
-                )
-            context = multiprocessing.get_context("spawn")
-            result_queue = context.Queue()
-            processes = [
-                context.Process(
-                    target=_concurrent_start_worker,
-                    args=(str(root), record, records, result_queue),
-                )
-                for record in records
-            ]
-            try:
-                for process in processes:
-                    process.start()
-                for process in processes:
-                    process.join(15)
-                self.assertTrue(all(not process.is_alive() for process in processes))
-                self.assertTrue(all(process.exitcode == 0 for process in processes))
-                results = [result_queue.get(timeout=2) for _ in processes]
-            finally:
-                for process in processes:
-                    if process.is_alive():
-                        process.terminate()
-                        process.join()
-                result_queue.close()
-            self.assertEqual(sum(result[0] == "ok" for result in results), 1)
-            errors = [result for result in results if result[0] == "error"]
-            self.assertEqual(len(errors), 1)
-            self.assertEqual(errors[0][1], "RuntimeError")
-            self.assertIn("translation unit", errors[0][2])
-            with patch.object(target_session, "REPO_ROOT", root):
-                index = target_session._read_session_index()
-                self.assertIsNotNone(index)
-                self.assertEqual(
-                    index["session_files_fingerprint"],
-                    target_session._session_file_fingerprint(),
-                )
-                self.assertEqual(len(index["sessions"]), 1)
 
     def test_compact_summary_preserves_status_aggregates(self) -> None:
         session = {
             "va": "00001000",
             "owner": "AgentB",
-            "state": "pause",
-            "probe_start_index": 1,
+            "work_period_start_index": 1,
             "events": [{"kind": "start"}, {"kind": "takeover"}],
             "probes": [
                 {"number": 1, "kind": "baseline", "meaningful": True, "metrics": {"diff_bytes": 12}},
@@ -613,8 +155,8 @@ class TargetSessionTests(unittest.TestCase):
         summary = target_session.target_session_summary(session)
         self.assertNotIn("probes", summary)
         self.assertEqual(target_session.meaningful_probe_count(summary), 1)
-        self.assertEqual(target_session.meaningful_probe_count(summary, current_claim_only=False), 2)
-        self.assertEqual(target_session.session_claim_count(summary), 2)
+        self.assertEqual(target_session.meaningful_probe_count(summary, current_work_period_only=False), 2)
+        self.assertEqual(target_session.session_work_period_count(summary), 2)
         self.assertEqual(summary["best_diff_bytes"], 8)
         self.assertEqual(target_session.last_positional_improvement(summary)["number"], 2)
 
@@ -625,7 +167,7 @@ class TargetSessionTests(unittest.TestCase):
             sessions.mkdir(parents=True)
             for va in ("00001000", "00002000"):
                 (sessions / f"{va}_demo.json").write_text(
-                    json.dumps({"va": va, "owner": va, "state": "pause", "probes": []}),
+                    json.dumps({"va": va, "owner": va, "probes": []}),
                     encoding="utf-8",
                 )
             with patch.object(target_session, "REPO_ROOT", root):
@@ -641,7 +183,7 @@ class TargetSessionTests(unittest.TestCase):
             sessions.mkdir(parents=True)
             path = sessions / "00001000_demo.json"
             path.write_text(
-                json.dumps({"va": "00001000", "owner": "AgentA", "state": "pause", "probes": []}),
+                json.dumps({"va": "00001000", "owner": "AgentA", "probes": []}),
                 encoding="utf-8",
             )
             with patch.object(target_session, "REPO_ROOT", root):
@@ -651,7 +193,6 @@ class TargetSessionTests(unittest.TestCase):
                         {
                             "va": "00001000",
                             "owner": "AgentA",
-                            "state": "pause",
                             "probes": [{"kind": "baseline", "meaningful": True}],
                         }
                     ),
@@ -671,17 +212,15 @@ class TargetSessionTests(unittest.TestCase):
                     "va": "00009999",
                     "slug": "00009999_missing",
                     "owner": "AgentB",
-                    "state": "pause",
-                    "lease_expires_at": "",
                 },
             ),
-            "semantic-stale": lambda sessions, va: sessions[va].__setitem__("state", "pause"),
+            "semantic-stale": lambda sessions, va: sessions[va].__setitem__("owner", "stale"),
         }
         for label, mutate in mutations.items():
             with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
                 with patch.object(target_session, "REPO_ROOT", root):
-                    target_session.start_session(self.record, "AgentA", 2.0)
+                    target_session.start_session(self.record, "AgentA")
                     index = target_session._read_session_index()
                     self.assertIsNotNone(index)
                     mutate(index["sessions"], self.record["va"])
@@ -696,7 +235,7 @@ class TargetSessionTests(unittest.TestCase):
                         )
                     )
                 self.assertEqual([row["va"] for row in rows], [self.record["va"]])
-                self.assertEqual(rows[0]["state"], "active")
+                self.assertEqual(rows[0]["owner"], "AgentA")
 
     def test_broad_load_handles_invalid_session_payloads(self) -> None:
         payloads = {
@@ -715,8 +254,6 @@ class TargetSessionTests(unittest.TestCase):
                         {
                             "va": "00001000",
                             "owner": "AgentA",
-                            "state": "active",
-                            "lease_expires_at": "2999-01-01T00:00:00Z",
                             "probes": [],
                         }
                     ),
@@ -726,8 +263,8 @@ class TargetSessionTests(unittest.TestCase):
                 with patch.object(target_session, "REPO_ROOT", root):
                     rows = target_session.load_target_sessions()
                 by_va = {row["va"]: row for row in rows}
-                self.assertEqual(by_va["00001000"]["state"], "active")
-                self.assertEqual(by_va["00000001"]["state"], "invalid")
+                self.assertEqual(by_va["00001000"]["owner"], "AgentA")
+                self.assertTrue(by_va["00000001"]["invalid"])
 
     def test_broad_load_reuses_index_after_corrupt_session_rebuild(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -767,7 +304,7 @@ class TargetSessionTests(unittest.TestCase):
                 with patch.object(target_session, "REPO_ROOT", root):
                     rows = target_session.load_target_sessions({"00001000"})
                 self.assertEqual(rows[0]["va"], "00001000")
-                self.assertEqual(rows[0]["state"], "invalid")
+                self.assertTrue(rows[0]["invalid"])
 
     def test_probe_snapshots_current_metrics_and_counts_meaningful_attempts(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -801,7 +338,7 @@ class TargetSessionTests(unittest.TestCase):
                 encoding="utf-8",
             )
             with patch.object(target_session, "REPO_ROOT", root):
-                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(self.record, "AgentA")
                 session = target_session.record_probe(
                     self.record, "AgentA", "control-flow", "inverted the final guard", "guard-v1"
                 )
@@ -889,7 +426,7 @@ class TargetSessionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):
-                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(self.record, "AgentA")
                 with patch.object(
                     target_session.subprocess, "run", return_value=SimpleNamespace(returncode=1)
                 ) as run, patch.object(
@@ -915,7 +452,7 @@ class TargetSessionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):
-                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(self.record, "AgentA")
                 with self.assertRaisesRegex(ValueError, "managed"):
                     target_session.run_checked_probe(
                         self.record, "AgentA", "layout", "note", "", ["--no-history"]
@@ -925,7 +462,7 @@ class TargetSessionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):
-                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(self.record, "AgentA")
                 with (
                     patch.object(
                         target_session.subprocess,
@@ -947,7 +484,7 @@ class TargetSessionTests(unittest.TestCase):
             recorded = {"owner": "AgentA", "probes": [{"number": 1}]}
             pinned = {"owner": "AgentA", "clean_baseline": {"checkpoint_id": "clean"}}
             with patch.object(target_session, "REPO_ROOT", root):
-                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(self.record, "AgentA")
                 with patch.object(
                     target_session.subprocess, "run", return_value=SimpleNamespace(returncode=1)
                 ), patch.object(
@@ -976,7 +513,7 @@ class TargetSessionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):
-                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(self.record, "AgentA")
                 session = target_session._load_session(self.record)
                 session["clean_baseline"] = {"checkpoint_id": "clean-id"}
                 target_session._write_session(self.record, session)
@@ -1015,7 +552,7 @@ class TargetSessionTests(unittest.TestCase):
             with patch.object(target_session, "REPO_ROOT", root), patch.object(
                 target_session, "current_metric_summary", return_value=metrics
             ) as metric_summary, patch.object(target_session, "current_input_snapshot", return_value={}):
-                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(self.record, "AgentA")
                 first = target_session.record_probe(self.record, "AgentA", "baseline", "first")
                 second = target_session.record_probe(self.record, "AgentA", "liveness", "same code")
                 metric_summary.return_value = {
@@ -1027,26 +564,10 @@ class TargetSessionTests(unittest.TestCase):
             self.assertEqual(second["probes"][1]["same_emitted_code_as_probe"], 1)
             self.assertIsNone(third["probes"][2]["same_emitted_code_as_probe"])
 
-    def test_pause_note_is_alias_for_reason_and_baseline_is_valid(self) -> None:
-        self.assertIn("baseline", target_session.PROBE_KINDS)
-        self.assertIn("validation", target_session.PROBE_KINDS)
-        argv = [
-            "target_session.py",
-            "pause",
-            "--va",
-            "00001000",
-            "--owner",
-            "AgentA",
-            "--note",
-            "bounded stop",
-        ]
-        with patch.object(sys, "argv", argv):
-            args = target_session.parse_args()
-        self.assertEqual(args.reason, "bounded stop")
 
     def test_restore_and_validation_checks_do_not_consume_meaningful_budget(self) -> None:
         session = {
-            "probe_start_index": 1,
+            "work_period_start_index": 1,
             "probes": [
                 {"kind": "baseline", "meaningful": True},
                 {"kind": "control-flow", "meaningful": True},
@@ -1056,7 +577,7 @@ class TargetSessionTests(unittest.TestCase):
         }
         self.assertEqual(target_session.meaningful_probe_count(session), 1)
         self.assertEqual(
-            target_session.meaningful_probe_count(session, current_claim_only=False),
+            target_session.meaningful_probe_count(session, current_work_period_only=False),
             2,
         )
 
@@ -1074,7 +595,7 @@ class TargetSessionTests(unittest.TestCase):
             with patch.object(target_session, "REPO_ROOT", root), patch.object(
                 target_session, "current_metric_summary", return_value=metrics
             ), patch.object(target_session, "current_input_snapshot", return_value={}):
-                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(self.record, "AgentA")
                 target_session.record_probe(self.record, "AgentA", "baseline", "first")
                 session = target_session.record_probe(
                     self.record,
@@ -1089,22 +610,6 @@ class TargetSessionTests(unittest.TestCase):
             self.assertEqual(probe["evidence"]["variants"], 4)
             self.assertIsNone(probe["same_emitted_code_as_probe"])
 
-    def test_pause_releases_the_lease_after_recorded_work(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            with patch.object(target_session, "REPO_ROOT", root), patch.object(
-                target_session,
-                "current_metric_summary",
-                return_value={"result": "MISMATCH", "artifact_fresh": True},
-            ):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                target_session.record_probe(
-                    self.record, "AgentA", "control-flow", "changed guard"
-                )
-                paused = target_session.change_state(
-                    self.record, "AgentA", "pause", "bounded stop"
-                )
-            self.assertEqual(paused["state"], "pause")
 
     def test_pin_clean_records_existing_checkpoint_and_current_inputs(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -1121,7 +626,7 @@ class TargetSessionTests(unittest.TestCase):
                 "record_checkpoint",
                 return_value={"id": "checkpoint-clean"},
             ):
-                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(self.record, "AgentA")
                 session = target_session.pin_clean_baseline(
                     self.record,
                     "AgentA",
@@ -1131,21 +636,6 @@ class TargetSessionTests(unittest.TestCase):
             self.assertEqual(baseline["checkpoint_id"], "checkpoint-clean")
             self.assertEqual(baseline["inputs"], snapshot)
             self.assertIn("natural indexed loop", baseline["note"])
-
-    def test_release_releases_the_lease_after_recorded_work(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            with patch.object(target_session, "REPO_ROOT", root), patch.object(
-                target_session,
-                "current_metric_summary",
-                return_value={"result": "MISMATCH", "artifact_fresh": True},
-            ), patch.object(target_session, "current_input_snapshot", return_value={}):
-                target_session.start_session(self.record, "AgentA", 2.0)
-                target_session.record_probe(self.record, "AgentA", "baseline", "first")
-                released = target_session.change_state(
-                    self.record, "AgentA", "release", "stop"
-                )
-            self.assertEqual(released["state"], "release")
 
 
     def test_history_lists_checker_runs_and_notebook_probes_newest_first(self) -> None:
@@ -1164,12 +654,9 @@ class TargetSessionTests(unittest.TestCase):
                         "name": "demo",
                         "slug": slug,
                         "owner": "AgentA",
-                        "state": "pause",
-                        "claimed_at": "2026-08-02T10:00:00Z",
+                        "work_period_started_at": "2026-08-02T10:00:00Z",
                         "updated_at": "2026-08-02T11:00:00Z",
-                        "lease_expires_at": "2026-08-02T12:00:00Z",
-                        "lease_hours": 2.0,
-                        "probe_start_index": 0,
+                        "work_period_start_index": 0,
                         "probes": [
                             {"number": 1, "kind": "baseline", "at": "2026-08-02T10:01:00Z",
                              "checkpoint": "probe-001-baseline", "note": "first probe"},
@@ -1216,8 +703,7 @@ class TargetSessionTests(unittest.TestCase):
     def test_brief_bounds_notes_and_reports_lifetime_work(self) -> None:
         session = {
             "owner": "AgentB",
-            "state": "pause",
-            "probe_start_index": 2,
+            "work_period_start_index": 2,
             "events": [
                 {"kind": "start", "owner": "AgentA"},
                 {"kind": "takeover", "owner": "AgentB"},
@@ -1225,7 +711,7 @@ class TargetSessionTests(unittest.TestCase):
             "probes": [
                 {
                     "number": 1,
-                    "claim_number": 1,
+                    "work_period_probe_number": 1,
                     "kind": "baseline",
                     "meaningful": True,
                     "note": "old note",
@@ -1234,7 +720,7 @@ class TargetSessionTests(unittest.TestCase):
                 },
                 {
                     "number": 2,
-                    "claim_number": 1,
+                    "work_period_probe_number": 1,
                     "kind": "liveness",
                     "meaningful": True,
                     "note": "useful gain",
@@ -1244,7 +730,7 @@ class TargetSessionTests(unittest.TestCase):
                 },
                 {
                     "number": 3,
-                    "claim_number": 2,
+                    "work_period_probe_number": 2,
                     "kind": "validation",
                     "meaningful": False,
                     "note": "final check",
@@ -1256,7 +742,7 @@ class TargetSessionTests(unittest.TestCase):
             target_session, "preferred_source_path", return_value=Path("missing.cpp")
         ), patch.object(target_session, "checkpoint_info", side_effect=KeyError("none")):
             text = target_session.format_brief(self.record, session, note_limit=1)
-        self.assertIn("claims=2 meaningful_probes=2", text)
+        self.assertIn("work_periods=2 meaningful_probes=2", text)
         self.assertIn("best_positional_diff=8", text)
         self.assertIn("last_positional_gain=#2", text)
         self.assertIn("useful gain", text)

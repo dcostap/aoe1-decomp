@@ -4,7 +4,7 @@
 
 The orchestrator owns:
 
-- worker assignment and translation-unit reservations;
+- worker and translation-unit assignment;
 - the continuous worker scheduler;
 - the TODO review backlog;
 - shared headers, globals, config, tools, and tests;
@@ -20,6 +20,9 @@ Every worker result is a proposal. Verify it before integration.
 The user selects the active worker capacity. Keep that capacity full while
 eligible translation units remain.
 
+One orchestrator controls assignments in one shared worktree. Independent
+orchestrators use separate worktrees.
+
 Assign one worker to one natural translation unit. Never assign two active
 workers to the same translation unit.
 
@@ -27,21 +30,17 @@ An assignment contains:
 
 - the translation-unit name and source path;
 - all current scratch-function VAs in that translation unit;
-- one unique worker and lease owner ID;
+- one unique worker ID;
 - allowed source and function-note paths;
-- one primary VA for the translation-unit reservation;
-- the user-selected lease duration and resource settings;
+- the user-selected resource settings;
 - one unique build output directory; and
 - the required final-response format.
 
-Preclaim the primary VA before launch:
-
-```text
-python tools/target_session.py start --preclaim --va <PRIMARY_VA> \
-  --owner <OWNER> --lease-hours <HOURS>
-```
-
 Require the worker to read `docs/agentic_matching_workflow.md`.
+
+The managed subagent list is the active-assignment record. Open TODO review
+items identify completed translation units that are not yet eligible again.
+Select new work from translation units absent from both sets.
 
 Workers do not send progress reports. Managed completion delivers their final
 response to the orchestrator.
@@ -52,20 +51,16 @@ A completion event must not replace the orchestrator's current review task.
 Perform only this intake work:
 
 1. Confirm that the worker stopped editing.
-2. Confirm that its translation unit is held for review.
-3. Add one TODO verification item.
-4. Include the worker ID, translation unit, owner ID, outcome, and changed paths.
-5. Start a replacement worker on another eligible translation unit.
-6. Return to the first unchecked TODO item.
+2. Add one TODO verification item.
+3. Include the worker ID, translation unit, outcome, and changed paths.
+4. Start a replacement worker on another eligible translation unit.
+5. Return to the first unchecked TODO item.
 
 Batch TODO additions when several workers finish together. Do not review their
 changes during intake.
 
-A held translation unit is not eligible for another matching assignment. It
-remains held until its TODO review completes.
-
-If a worker exits before creating the hold, the orchestrator runs `hold-tu`
-with its primary VA and owner ID during completion intake.
+An open TODO review item makes its translation unit ineligible for another
+matching assignment.
 
 ## TODO review backlog
 
@@ -89,17 +84,9 @@ For a normal worker return:
 10. Update statuses only after proof.
 11. Stage only reviewed paths.
 12. Commit each logical result.
-13. Release the translation-unit reservation.
-14. Mark the TODO item complete.
+13. Mark the TODO item complete.
 
-Release every session owned by the worker in that translation unit:
-
-```text
-python tools/target_session.py release-tu --va <PRIMARY_VA> --owner <OWNER> \
-  --reason "orchestrator review complete"
-```
-
-The scheduler can assign that translation unit again after release.
+The scheduler can assign that translation unit again after TODO completion.
 
 ## Worker continuation
 
@@ -114,8 +101,8 @@ Good continuation tasks include:
 - cleanup within the same translation unit; or
 - more work on its remaining scratch functions.
 
-Keep the translation unit held while the continuation runs. The worker resumes
-its target session with the same owner ID.
+Keep the TODO item open while the continuation runs. The worker resumes its
+target notebooks with the same owner ID.
 
 Start a new worker when the task needs different ownership, scope, model, or
 shared-file authority.

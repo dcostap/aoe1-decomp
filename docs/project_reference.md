@@ -69,7 +69,7 @@ The response files contain compiler arguments only.
 
 ## Daily commands
 
-- `query_project_status.py` queries status, paths, notes, leases, and history.
+- `query_project_status.py` queries status, paths, notes, and history.
 - `target_session.py` manages function notebooks and translation-unit reservations.
 - `compiler_gate.py` protects live shared-source integration from compiler jobs.
 - `check_function.py` performs the authoritative one-function comparison.
@@ -97,7 +97,6 @@ The response files contain compiler arguments only.
 Resource limits come from the user or the current orchestration.
 Tools do not select worker counts, job counts, timeouts, or search budgets.
 Parallel commands require an explicit `--jobs` value.
-Lease creation requires explicit `--lease-hours`.
 Optional result limits and timeouts default to unlimited or disabled.
 
 Build artifacts use content fingerprints and per-module operating-system locks.

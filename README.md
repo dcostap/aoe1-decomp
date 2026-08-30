@@ -46,13 +46,13 @@ python tools/query_project_status.py --summary --normal
 Select ordinary matching work:
 
 ```text
-python tools/query_project_status.py --scratch --normal --unleased --smallest --limit <LIMIT>
+python tools/query_project_status.py --scratch --normal --smallest --limit <LIMIT>
 ```
 
 Inspect one function:
 
 ```text
-python tools/query_project_status.py --va 0047A3A0 --paths --notes --leases --work-history
+python tools/query_project_status.py --va 0047A3A0 --paths --notes --work-history
 ```
 
 Check one function:

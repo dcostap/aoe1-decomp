@@ -54,7 +54,7 @@ class DocumentationTests(unittest.TestCase):
             "one worker to one natural translation unit",
             "first unchecked item",
             "TODO verification item",
-            "release-tu",
+            "managed subagent list",
             "compiler_gate.py close",
             "compiler_gate.py open",
         ):
@@ -62,12 +62,21 @@ class DocumentationTests(unittest.TestCase):
         for required in (
             "one assigned natural translation unit",
             "scratch function bodies",
-            "hold-tu",
+            "target_session.py start",
             "Send no intermediate progress reports",
             "Do not use a report tool",
         ):
             self.assertIn(required, worker)
         self.assertNotIn("wave", orchestrator.casefold())
+
+    def test_markdown_has_no_assignment_lease_language(self) -> None:
+        pattern = re.compile(r"\b(?:lease|leases|leased|unleased)\b", re.IGNORECASE)
+        failures = [
+            path.relative_to(REPO_ROOT).as_posix()
+            for path in present_markdown_files()
+            if pattern.search(path.read_text(encoding="utf-8", errors="replace"))
+        ]
+        self.assertEqual(failures, [])
 
     def test_orchestrator_is_the_only_orchestration_role_name(self) -> None:
         result = subprocess.run(

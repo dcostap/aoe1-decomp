@@ -115,7 +115,7 @@ src/, and legacy source-bank include roots.
 Use it for late-stage VC5 source-shape/codegen-basin work after behavior is
 mostly understood. Matches still need normal review, reduction, and local
 check_function validation before promotion. Rankings measure emitted-code
-proximity, not source quality. A leased `--session-owner` compile requires the
+proximity, not source quality. A `--session-owner` compile requires the
 session's pinned clean-source checkpoint; generated variants never replace it.
 
 Quick workflow
