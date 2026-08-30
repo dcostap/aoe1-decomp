@@ -9,7 +9,7 @@
     "00452120": {"status": "matching", "symbol": "??0RGE_Master_Static_Object@@QAE@PAV0@H@Z"},
     "00452170": {"status": "matching", "symbol": "??0RGE_Master_Static_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z"},
     "004521A0": {"status": "matching", "symbol": "??0RGE_Master_Static_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z"},
-    "004521E0": {"status": "scratch", "symbol": "?setup@RGE_Master_Static_Object@@IAEHPAV1@@Z"},
+    "004521E0": {"status": "matching", "symbol": "?setup@RGE_Master_Static_Object@@IAEHPAV1@@Z"},
     "004524E0": {"status": "matching", "symbol": "?setup@RGE_Master_Static_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
     "00452B00": {"status": "scratch", "symbol": "?setup@RGE_Master_Static_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
     "00452FA0": {"status": "matching", "symbol": "??1RGE_Master_Static_Object@@UAE@XZ"},
