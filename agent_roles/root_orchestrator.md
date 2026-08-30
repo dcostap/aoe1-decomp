@@ -21,15 +21,15 @@ Repository-wide rules always apply.
 
 The root orchestrator uses the most advanced user-facing model, `gpt-5.6-sol`.
 
-Use the heavy model for orchestrator subagents.
-Run those orchestrators at medium reasoning level.
-Use heavy subagents only when the user permits hierarchical orchestration.
-Reserve them for orchestrator work or unusually hard focused tasks.
-A managed launch requires an exact provider and model ID.
-Ask the user when the exact heavy-model ID is not available.
+The user must select the orchestrator model and thinking level.
+The user must also select the matching worker model and thinking level.
+Both selections require exact provider and model IDs.
 
-Matching workers use `openai-codex-secondary/gpt-5.6-luna` at `xhigh` reasoning level.
-Orchestrators launch and manage those workers.
+Do not infer either selection from the root model, prior runs, or documentation.
+Ask the user when either model or thinking level is missing.
+
+Use orchestrator subagents only when the user permits hierarchical orchestration.
+Orchestrators launch and manage the selected matching workers.
 Give each worker useful scope and freedom to select its method.
 Do not invent function quotas, search budgets, or time limits.
 
@@ -51,15 +51,27 @@ The root orchestrator owns:
 Do not manage an orchestrator's matching workers directly.
 Send guidance through their orchestrator.
 
-## User-selected capacity
+## Required launch contract
 
-The user selects the active orchestrator slot count.
+Before launch, the user must specify:
+
+- the exact orchestrator provider and model ID;
+- the orchestrator thinking level;
+- the exact matching worker provider and model ID;
+- the matching worker thinking level;
+- the maximum concurrent orchestrator count;
+- the maximum concurrent matching worker count per orchestrator; and
+- the repository-tool job count.
+
+Do not launch hierarchical work until this contract is complete.
+Do not infer missing values or replace them with defaults.
+
+The maximum concurrent orchestrator count defines the active slot count.
 Each slot owns one reusable worktree.
 Keep the selected slots full while eligible translation units remain.
 
-The user also selects matching worker capacity.
-Give each orchestrator an explicit share of that capacity.
-Do not let the assigned shares exceed the user's total capacity.
+The worker limit applies separately to each orchestrator.
+Each orchestrator must stay at or below its assigned limit.
 
 Repository-tool job counts are separate from both capacity values.
 Do not multiply concurrency at each hierarchy level.
@@ -89,7 +101,10 @@ Each assignment contains:
 - all assigned translation units and source paths;
 - allowed source, note, and registry paths;
 - forbidden shared paths;
-- matching worker capacity and tool job settings;
+- exact orchestrator model and thinking level;
+- exact matching worker model and thinking level;
+- maximum concurrent matching workers;
+- tool job settings;
 - one private audit directory;
 - current root guidance and priorities; and
 - the required final handoff format.

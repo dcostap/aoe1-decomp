@@ -13,6 +13,7 @@ Role definitions live under `agent_roles/`:
 
 The root orchestrator can run a normal orchestration directly.
 For large work, it can manage user-selected reusable orchestrator worktree slots.
+The user must supply both exact subagent models, both thinking levels, both concurrency limits, and tool jobs.
 
 ## Function registry
 

@@ -81,11 +81,23 @@ class DocumentationTests(unittest.TestCase):
             self.assertIn(required, worker)
         self.assertNotIn("wave", orchestrator.casefold())
 
-    def test_workhorse_model_uses_an_exact_provider_id(self) -> None:
+    def test_hierarchical_launch_contract_is_user_selected(self) -> None:
         text = (REPO_ROOT / "agent_roles" / "root_orchestrator.md").read_text(
             encoding="utf-8"
         )
-        self.assertIn("openai-codex-secondary/gpt-5.6-luna", text)
+        text = " ".join(text.split())
+        for required in (
+            "exact orchestrator provider and model ID",
+            "orchestrator thinking level",
+            "exact matching worker provider and model ID",
+            "matching worker thinking level",
+            "maximum concurrent orchestrator count",
+            "maximum concurrent matching worker count per orchestrator",
+            "repository-tool job count",
+            "Do not launch hierarchical work until this contract is complete",
+            "Do not infer missing values or replace them with defaults",
+        ):
+            self.assertIn(required, text)
 
     def test_root_orchestrator_defines_reusable_todo_enabled_slots(self) -> None:
         text = (REPO_ROOT / "agent_roles" / "root_orchestrator.md").read_text(

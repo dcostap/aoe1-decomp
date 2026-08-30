@@ -9,6 +9,7 @@ When a root orchestrator assigns this role:
 
 - work only in the assigned worktree;
 - use only the assigned translation-unit set;
+- use the assigned exact matching worker model and thinking level;
 - follow the assigned worker capacity and tool job settings;
 - use the enabled TODO feature for worker-result review;
 - report major blockers to the root orchestrator; and
@@ -41,8 +42,10 @@ Never copy the active worker capacity into each worker's `--jobs` value. Unless
 the user selects nested tool parallelism, assign one tool job per worker. This
 keeps the active worker capacity as the compiler concurrency bound.
 
-Use the exact provider/model ID from `agent_roles/root_orchestrator.md` or the current user
-instruction. The managed launcher does not accept a short model name.
+The user or root assignment supplies the exact worker provider and model ID.
+It also supplies the worker thinking level and maximum concurrent worker count.
+Do not infer or default these values.
+The managed launcher does not accept a short model name.
 
 One orchestrator controls assignments in one shared worktree. Independent
 orchestrators use separate worktrees.
