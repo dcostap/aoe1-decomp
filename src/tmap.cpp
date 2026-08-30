@@ -416,15 +416,12 @@ TRIBE_Cliff_Info TRIBE_Map::get_cliff_info(RGE_Static_Object* obj)
 
     int facet = (int)obj->facet;
     int masterObjId = (int)obj->master_obj->id;
-    long* entryPtr = &this->cliff_master_table[0].facet;
-    int i;
-    for (i = 0; i < 256;) {
-        if ((entryPtr[-1] == masterObjId && entryPtr[0] == facet) ||
-            (entryPtr[1] == masterObjId && entryPtr[2] == facet)) {
-            return this->cliff_master_table[i].info;
+    for (int i = 0; i < 256; ++i) {
+        const TRIBE_Master_Cliff_Info& entry = this->cliff_master_table[i];
+        if ((entry.id == masterObjId && entry.facet == facet) ||
+            (entry.id2 == masterObjId && entry.facet2 == facet)) {
+            return entry.info;
         }
-        ++i;
-        entryPtr += 10;
     }
 
     return ret;

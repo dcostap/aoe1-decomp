@@ -21,7 +21,7 @@
     "0050FDD0": {"status": "matching", "symbol": "?do_elevation_brush_stroke@TRIBE_Map@@UAEEJJJJJE@Z"},
     "0050FE90": {"status": "matching", "symbol": "?setup_cliff_type@TRIBE_Map@@QAEXJJJJJJJJMM@Z"},
     "0050FF20": {"status": "matching", "symbol": "?find_cliff@TRIBE_Map@@QAEPAVRGE_Static_Object@@JJ@Z"},
-    "00510020": {"status": "matching", "symbol": "?get_cliff_info@TRIBE_Map@@QAE?AUTRIBE_Cliff_Info@@PAVRGE_Static_Object@@@Z"},
+    "00510020": {"status": "scratch", "symbol": "?get_cliff_info@TRIBE_Map@@QAE?AUTRIBE_Cliff_Info@@PAVRGE_Static_Object@@@Z"},
     "005100D0": {"status": "matching", "symbol": "?check_cliff_valid@TRIBE_Map@@QAEEUTRIBE_Cliff_Info@@@Z"},
     "00510110": {"status": "matching", "symbol": "?make_new_cliff@TRIBE_Map@@QAEPAVRGE_Static_Object@@JJUTRIBE_Cliff_Info@@@Z"},
     "005102A0": {"status": "matching", "symbol": "?remove_cliff_edge@TRIBE_Map@@QAEXJJJ@Z"},
