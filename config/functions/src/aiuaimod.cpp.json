@@ -72,7 +72,7 @@
     "004163C0": {"status": "scratch", "symbol": "?attackRoundupObject@UnitAIModule@@UAEHH@Z"},
     "00416470": {"status": "matching", "symbol": "?huntObject@UnitAIModule@@UAEHHH@Z"},
     "00416550": {"status": "matching", "symbol": "?convertObject@UnitAIModule@@UAEHHH@Z"},
-    "004165F0": {"status": "scratch", "symbol": "?healObject@UnitAIModule@@UAEHHH@Z"},
+    "004165F0": {"status": "matching", "symbol": "?healObject@UnitAIModule@@UAEHHH@Z"},
     "00416690": {"status": "matching", "symbol": "?gatherObject@UnitAIModule@@UAEHHH@Z"},
     "00416730": {"status": "matching", "symbol": "?repairObject@UnitAIModule@@UAEHHH@Z"},
     "004167D0": {"status": "matching", "symbol": "?buildObject@UnitAIModule@@UAEHHH@Z"},

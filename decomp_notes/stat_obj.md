@@ -64,6 +64,15 @@ The direct source promotes these prior scratch owners after grouped matches:
 `004C58E0`, `004C5D80`, `004C7430`, `004C74B0`, `004C7530`, and
 `004C7CE0`.
 
+## Heal overload ABI
+
+VC5 emits overloaded virtual groups in reverse declaration order. The header
+declares `heal(float)` before `heal(int, int)`. This produces the executable's
+slots `+0x8C` and `+0x88`, respectively.
+
+The repair removes the last byte from `004CECF0` and restores exact
+`004165F0`. It also moves the repair-action heal call to its proven slot.
+
 ## Accepted-drift recheck
 
 The fresh direct-module audit is `build/candidate_tus/audit_stat_obj_final`.

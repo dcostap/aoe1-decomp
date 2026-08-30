@@ -88,8 +88,9 @@ public:
     virtual unsigned char can_attack() { return 0; }
     virtual void set_attribute(short, float);
     virtual void set_attribute_amount(float, unsigned char, unsigned char);
-    virtual int heal(int, int) { return 0; }
+    // VC5 emits this overload group in reverse declaration order.
     virtual unsigned char heal(float);
+    virtual int heal(int, int) { return 0; }
     virtual int canRepair() { return 0; }
     virtual void notify_of_relation(long, unsigned char);
     virtual void do_command(RGE_Static_Object*, float, float, float) {}
