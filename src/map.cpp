@@ -342,7 +342,7 @@ void RGE_Map::clear_map(unsigned char param_1, unsigned char param_2)
 {
     for (long y = 0; y < this->map_height; ++y) {
         RGE_Tile* row = this->map_row_offset[y];
-        for (long x = 0; x < this->map_width; ++x, ++row) {
+        for (long x = 0; x < this->map_width; ++row, ++x) {
             row->tile_type = 0;
             row->terrain_type = param_1;
             row->height = param_2;
@@ -2203,13 +2203,11 @@ unsigned char RGE_Map::get_elev(short x, short y)
 unsigned char RGE_Map::get_terrain(short x, short y)
 {
     unsigned char id = this->map_row_offset[y][x].terrain_type & 0x1F;
-    if (id <= 0x20) {
-        unsigned int idx = id;
-        RGE_Tile_Set* terrain = &this->terrain_types[idx];
-        if (terrain->loaded != 0 || terrain->terrain_to_draw >= 0)
-            return id;
-    }
-    return 0;
+    if (id > 0x20 ||
+        (this->terrain_types[id].loaded == 0 &&
+         this->terrain_types[id].terrain_to_draw < 0))
+        id = 0;
+    return id;
 }
 
 unsigned char RGE_Map::get_border(short x, short y)
