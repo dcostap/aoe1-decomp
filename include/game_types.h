@@ -460,7 +460,7 @@ class TribeTransportShipUnitAIModule;
 class UnitAIModule;
 class UnitData;
 class VC_LOG;
-class VISIBLE_RESOURCE_REC;
+struct VISIBLE_RESOURCE_REC;
 struct VISIBLE_UNIT_PTR;
 struct VISIBLE_UNIT_REC;
 class VSpanMiniList;

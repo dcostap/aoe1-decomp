@@ -51,7 +51,7 @@ public:
 typedef char aoe1_visible_unit_manager_size_check[
     (sizeof(Visible_Unit_Manager) == 0x24) ? 1 : -1];
 
-class VISIBLE_RESOURCE_REC {
+struct VISIBLE_RESOURCE_REC {
 public:
     int object_id;
     unsigned char distance;

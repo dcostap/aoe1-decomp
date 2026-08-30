@@ -26,7 +26,7 @@
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C16B0": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C1840": {
@@ -234,7 +234,7 @@
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C5980": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C59B0": {
@@ -246,11 +246,11 @@
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C5B90": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C5BE0": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C5C10": {
@@ -358,7 +358,7 @@
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C6DA0": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C7030": {
@@ -366,7 +366,7 @@
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C7340": {
-      "status": "matching",
+      "status": "scratch",
       "note_path": "recovery_notes/stat_obj_module.md"
     },
     "004C7420": {

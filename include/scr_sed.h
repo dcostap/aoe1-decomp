@@ -248,6 +248,7 @@ protected:
     virtual void set_focus(int);
 public:
     void get_string(long, char*, int);
+    void position_panels();
 protected:
     int create_button(TPanel*, TButtonPanel**, long, int);
     int create_button(TPanel*, TButtonPanel**, char*, char*, char*, char*);
@@ -277,7 +278,6 @@ protected:
     void init_module_variables();
     void create_all_buttons_etc();
     int SetupListOfTerrain(TListPanel*);
-    void position_panels();
     void activate_victory_panel(int);
     int MakeFileList(TDropDownPanel*, char*, char*, unsigned char, unsigned char);
     void SavePlayerActiveStatus();

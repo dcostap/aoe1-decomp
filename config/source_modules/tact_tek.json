@@ -24,7 +24,7 @@
     },
     "004D2440": { "status": "matching" },
     "004D2450": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/tact_tek_module.md"
     },
     "004D2550": {

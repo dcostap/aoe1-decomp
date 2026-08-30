@@ -21,7 +21,7 @@
     },
     "004D4DB0": { "status": "matching" },
     "004D4E10": {
-      "status": "accepted_drift",
+      "status": "matching",
       "note_path": "recovery_notes/taibldmd_module.md"
     },
     "004D4F80": { "status": "matching" },

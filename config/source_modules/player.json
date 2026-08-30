@@ -100,7 +100,7 @@
       "status": "matching"
     },
     "0046F420": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/player_module.md"
     },
     "0046F6B0": {
@@ -286,7 +286,7 @@
       "status": "matching"
     },
     "00471760": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/player_module.md"
     },
     "004717D0": {

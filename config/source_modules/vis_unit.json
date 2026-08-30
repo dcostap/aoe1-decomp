@@ -27,7 +27,7 @@
     "0053BED0": { "status": "matching" },
     "0053BFD0": { "status": "matching" },
     "0053C050": {
-      "status": "scratch",
+      "status": "matching",
       "note_path": "recovery_notes/vis_unit_module.md"
     }
   }

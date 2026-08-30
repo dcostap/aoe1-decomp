@@ -20,3 +20,6 @@
 # long __stdcall(void*, unsigned int, unsigned int, long).
 00475930 ?pnl_sub_wnd_proc@@YGJPAXIIJ@Z local
 00523AE0 ?video_sub_wnd_proc@@YGJPAXIIJ@Z local
+
+# Release/visible.obj: RGE_Visible_Map::explore_terrain has no FPO row.
+0053C6F0 ?explore_terrain@RGE_Visible_Map@@QAEHHHHHHH@Z global

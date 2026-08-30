@@ -3,7 +3,6 @@
     {
       "name": "zone_map",
       "source": "src/zone_map.cpp",
-      "module": "zone_map",
       "flags": "config/flags/005473B0_get_zone_map.rsp",
       "owners": {
         "00546720": "src/zone_map.cpp",
@@ -39,13 +38,13 @@
         "005474B0": "?get_zone_map@RGE_Zone_Map_List@@QAEPAVRGE_Zone_Map@@J@Z",
         "005474D0": "?delete_zone_maps@RGE_Zone_Map_List@@QAEXXZ",
         "00546BB0": "?do_zone_map_area@RGE_Zone_Map@@AAEXJJEE@Z"
-      }
+      },
+      "module": "zone_map"
     },
     {
       "name": "tscenaro",
       "source": "src/tscenaro.cpp",
       "flags": "config/flags/0052A990_TRIBE_Scenario_Header.rsp",
-      "module": "tscenaro",
       "owners": {
         "0052A990": "src/tscenaro.cpp",
         "0052A9F0": "src/tscenaro.cpp",
@@ -143,12 +142,12 @@
         "0052B630": "?SetSPDestObjectID@T_Scenario@@QAEXHPAVRGE_Static_Object@@@Z",
         "0052BA00": "?GetSPObject@T_Scenario@@QAEPAVRGE_Static_Object@@H@Z",
         "0052C0B0": "?WriteDisabledTechnologiesToMainSystem@T_Scenario@@AAEXXZ"
-      }
+      },
+      "module": "tscenaro"
     },
     {
       "name": "fractal_arrays",
       "source": "src/fractal.cpp",
-      "module": "fractal",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0044AC50": "src/fractal.cpp",
@@ -213,12 +212,12 @@
         "0044C370": "?ErrorCheckingAndCorrection@PointMaker@@IAEXXZ",
         "0044C4B0": "?PrepareLimits@PointMaker@@IAEXXZ",
         "0044B2B0": "?MakeArrays@PointMaker@@QAEXXZ"
-      }
+      },
+      "module": "fractal"
     },
     {
       "name": "act_move",
       "source": "src/act_move.cpp",
-      "module": "act_move",
       "flags": "config/flags/00405620_RGE_Action_Move_To.rsp",
       "owners": {
         "00405510": "src/act_move.cpp",
@@ -239,12 +238,12 @@
         "00405780": "?first_in_stack@RGE_Action_Move_To@@UAEXE@Z",
         "004057E0": "?set_state@RGE_Action_Move_To@@MAEXE@Z",
         "00405BF0": "?is_in_range@RGE_Action_Move_To@@IAEEXZ"
-      }
+      },
+      "module": "act_move"
     },
     {
       "name": "tpnl_tml",
       "source": "src/tpnl_tml.cpp",
-      "module": "tpnl_tml",
       "flags": "config/flags/0051E860_create_timeline.rsp",
       "owners": {
         "0051E860": "src/tpnl_tml.cpp",
@@ -283,12 +282,12 @@
         "0051F120": "?draw_border@Time_Line_Panel@@QAEXXZ",
         "0051F310": "?init_timeline@Time_Line_Panel@@QAEXXZ",
         "0051FA30": "?draw@Time_Line_Panel@@UAEXXZ"
-      }
+      },
+      "module": "tpnl_tml"
     },
     {
       "name": "music",
       "source": "src/music.cpp",
-      "module": "music",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00461910": "src/music.cpp",
@@ -337,12 +336,12 @@
         "004629B0": "?end_fade@TMusic_System@@IAEXXZ",
         "00462A10": "?handle_messages@TMusic_System@@QAEIPAXIIJ@Z",
         "00462B40": "?after_end_track@TMusic_System@@IAEXXZ"
-      }
+      },
+      "module": "music"
     },
     {
       "name": "scr_cams",
       "source": "src/scr_cams.cpp",
-      "module": "scr_cams",
       "flags": "config/flags/004909D0_TRIBE_Screen_Campaign_Selection.rsp",
       "owners": {
         "004909D0": "src/scr_cams.cpp",
@@ -359,12 +358,12 @@
         "00490FF0": "?action@TRIBE_Screen_Campaign_Selection@@MAEJPAVTPanel@@JKK@Z",
         "004911A0": "?fillCampaigns@TRIBE_Screen_Campaign_Selection@@IAEXXZ",
         "00491290": "?fillScenarios@TRIBE_Screen_Campaign_Selection@@IAEXXZ"
-      }
+      },
+      "module": "scr_cams"
     },
     {
       "name": "taistrmd",
       "source": "src/taistrmd.cpp",
-      "module": "taistrmd",
       "flags": "config/flags/004E9260_TribeStrategyAIModule.rsp",
       "owners": {
         "004E6E10": "src/taistrmd.cpp",
@@ -431,12 +430,12 @@
         "004EA1B0": "?rule@TribeStrategyAIModule@@QAEHH@Z",
         "004EA1D0": "?setDifficultyLevel@TribeStrategyAIModule@@QAEXH@Z",
         "004EA280": "?setVictoryCondition@TribeStrategyAIModule@@QAEXH@Z"
-      }
+      },
+      "module": "taistrmd"
     },
     {
       "name": "scr_end",
       "source": "src/scr_end.cpp",
-      "module": "scr_end",
       "flags": "config/flags/004936D0_TribeEndScreen.rsp",
       "owners": {
         "004936D0": "src/scr_end.cpp",
@@ -447,12 +446,12 @@
         "004936D0": "??0TribeEndScreen@@QAE@PADPAPADH@Z",
         "00493C00": "??1TribeEndScreen@@UAE@XZ",
         "00493C90": "?action@TribeEndScreen@@MAEJPAVTPanel@@JKK@Z"
-      }
+      },
+      "module": "scr_end"
     },
     {
       "name": "scr_info",
       "source": "src/scr_info.cpp",
-      "module": "scr_info",
       "flags": "config/flags/0049D550_TRIBE_Screen_Info.rsp",
       "owners": {
         "0049D550": "src/scr_info.cpp",
@@ -471,12 +470,12 @@
         "0049D6B0": "?mouse_left_down_action@TRIBE_Screen_Info@@UAEJJJHH@Z",
         "0049D6C0": "?action@TRIBE_Screen_Info@@UAEJPAVTPanel@@JKK@Z",
         "0049D6E0": "?close_screen@TRIBE_Screen_Info@@QAEXXZ"
-      }
+      },
+      "module": "scr_info"
     },
     {
       "name": "taiuaimd",
       "source": "src/taiuaimd.cpp",
-      "module": "taiuaimd",
       "flags": "config/flags/00503BB0_TribeHuntedAnimalUnitAIModule.rsp",
       "owners": {
         "00503BB0": "src/taiuaimd.cpp",
@@ -597,12 +596,12 @@
         "005059A0": "?attackObject@TribePriestUnitAIModule@@UAEHHH@Z",
         "00506C90": "?convertToLOSResourceType@TribeFishingShipUnitAIModule@@UAEHH@Z",
         "00508140": "?canAttackUnitAtNeutrality@TribeTowerUnitAIModule@@UAEHH@Z"
-      }
+      },
+      "module": "taiuaimd"
     },
     {
       "name": "scr_cam",
       "source": "src/scr_cam.cpp",
-      "module": "scr_cam",
       "flags": "config/flags/0048F5D0_TRIBE_Campaign_Editor_Screen.rsp",
       "owners": {
         "0048F5D0": "src/scr_cam.cpp",
@@ -619,12 +618,12 @@
         "00490520": "src/scr_cam.cpp",
         "004905D0": "src/scr_cam.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "scr_cam"
     },
     {
       "name": "diam_map",
       "source": "src/diam_map.cpp",
-      "module": "diam_map",
       "flags": "config/flags/diam_map.rsp",
       "owners": {
         "00436830": "src/diam_map.cpp",
@@ -665,12 +664,12 @@
         "004387C0": "?end_scroll_view@RGE_Diamond_Map@@QAEXXZ",
         "004387D0": "?is_inside@RGE_Diamond_Map@@UAEHJJ@Z",
         "00438060": "?draw_object@RGE_Diamond_Map@@MAEXFFEFPAVRGE_Static_Object@@@Z"
-      }
+      },
+      "module": "diam_map"
     },
     {
       "name": "dib",
       "source": "src/Dib.cpp",
-      "module": "dib",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00438E80": "src/Dib.cpp",
@@ -709,12 +708,12 @@
         "0043A330": "?DibSetUsage@@YAHPAUtagBITMAPINFOHEADER@@PAXI@Z",
         "0043A420": "?DibDraw@@YAHPAXHHHHPAUtagBITMAPINFOHEADER@@HHHHJI@Z",
         "0043AA60": "?xlatClut8@@YAXPAEK0@Z"
-      }
+      },
+      "module": "dib"
     },
     {
       "name": "tworld_cpp",
       "source": "src/tworld.cpp",
-      "module": "tworld_cpp",
       "flags": "config/flags/0052E6B0_world_init.rsp",
       "owners": {
         "0052DF60": "src/tworld.cpp",
@@ -759,12 +758,12 @@
         "00530AE0": "?cheat@TRIBE_World@@QAEXFF@Z",
         "00531240": "?fill_in_score@TRIBE_World@@QAEXAAUTRIBE_Zone_High_Score_Info@@J@Z",
         "00531350": "?send_zone_score_info@TRIBE_World@@QAEXXZ"
-      }
+      },
+      "module": "tworld_cpp"
     },
     {
       "name": "scenario",
       "source": "src/scenario.cpp",
-      "module": "scenario",
       "flags": "config/flags/0048AD60_RGE_Scenario.rsp",
       "owners": {
         "0048AB10": "src/scenario.cpp",
@@ -816,12 +815,12 @@
         "0048ABB0": "??0RGE_Scenario_Header@@QAE@H@Z",
         "0048ACC0": "?save@RGE_Scenario_Header@@UAEXH@Z",
         "0048C3E0": "?save@RGE_Scenario@@UAEXH@Z"
-      }
+      },
+      "module": "scenario"
     },
     {
       "name": "com_err",
       "source": "src/com_err.cpp",
-      "module": "com_err",
       "flags": "config/flags/com_err.rsp",
       "owners": {
         "00424E40": "src/com_err.cpp",
@@ -834,11 +833,11 @@
         "00424E60": "?NotifyWindowParam@RGE_Comm_Error@@QAEXW4COMMMESSAGES@@J@Z",
         "00424EA0": "??1RGE_Comm_Error@@QAE@XZ",
         "00424EB0": "?ShowReturn@RGE_Comm_Error@@QAEXJPAD@Z"
-      }
+      },
+      "module": "com_err"
     },
     {
       "name": "m_s_obj",
-      "module": "m_s_obj",
       "source": "src/m_s_obj.cpp",
       "flags": "config/flags/00452FE0_make_new_obj.rsp",
       "owners": {
@@ -882,22 +881,22 @@
         "00454960": "?get_help_page@RGE_Master_Static_Object@@QAEJXZ",
         "00454970": "?get_hotkey@RGE_Master_Static_Object@@QAEJXZ",
         "00454980": "?calc_base_damage_ability@RGE_Master_Static_Object@@UAEJPAVRGE_Master_Combat_Object@@@Z"
-      }
+      },
+      "module": "m_s_obj"
     },
     {
       "name": "scr_sedo",
       "source": "src/scr_sedo.cpp",
-      "module": "scr_sedo",
       "flags": "config/flags/scr_sedo.rsp",
       "owners": {
         "004B33D0": "src/scr_sedo.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "scr_sedo"
     },
     {
       "name": "act_atak",
       "source": "src/act_atak.cpp",
-      "module": "act_atak",
       "flags": "config/flags/00401170_RGE_Action_Attack.rsp",
       "owners": {
         "00401000": "src/act_atak.cpp",
@@ -914,12 +913,12 @@
         "00401540": "?stop@RGE_Action_Attack@@UAEHXZ",
         "00401AD0": "?work@RGE_Action_Attack@@UAEHPAVRGE_Static_Object@@MMM@Z",
         "00401550": "?set_state@RGE_Action_Attack@@MAEXE@Z"
-      }
+      },
+      "module": "act_atak"
     },
     {
       "name": "aiconmod_prefix",
       "source": "src/aiconmod.cpp",
-      "module": "aiconmod",
       "flags": "config/flags/0040AA90_ConstructionAIModule.rsp",
       "owners": {
         "0040AA90": "src/aiconmod.cpp",
@@ -949,12 +948,12 @@
         "0040BC80": "?unplaceStructure@ConstructionAIModule@@UAEHMMH@Z",
         "0040BD70": "?lot@ConstructionAIModule@@QAEPAVConstructionItem@@MM@Z",
         "0040BE10": "?randomLot@ConstructionAIModule@@QAEPAVConstructionItem@@MM@Z"
-      }
+      },
+      "module": "aiconmod"
     },
     {
       "name": "airesmod",
       "source": "src/airesmod.cpp",
-      "module": "airesmod",
       "flags": "config/flags/airesmod.rsp",
       "owners": {
         "00412480": "src/airesmod.cpp",
@@ -992,12 +991,12 @@
         "004128D0": "?decrementResources@ResourceAIModule@@QAEXPAVResourceItem@@@Z",
         "00412920": "?setResourceMin@ResourceAIModule@@QAEXHH@Z",
         "00412940": "?setResourceMax@ResourceAIModule@@QAEXHH@Z"
-      }
+      },
+      "module": "airesmod"
     },
     {
       "name": "aiuaimod",
       "source": "src/aiuaimod.cpp",
-      "module": "aiuaimod",
       "flags": "config/flags/00412F00_UnitAIModule.rsp",
       "owners": {
         "00413090": "src/aiuaimod.cpp",
@@ -1146,12 +1145,12 @@
         "00419F00": "?addToNotifyQueue@UnitAIModule@@IAEHHHHJJJ@Z",
         "0041A0D0": "?lookupObject@UnitAIModule@@IAEPAVRGE_Static_Object@@H@Z",
         "0041A100": "?logDebug@UnitAIModule@@UAAXPADZZ"
-      }
+      },
+      "module": "aiuaimod"
     },
     {
       "name": "tact_bld",
       "source": "src/tact_bld.cpp",
-      "module": "tact_bld",
       "flags": "config/flags/004CD210_TRIBE_Action_Build.rsp",
       "owners": {
         "004CD1B0": "src/tact_bld.cpp",
@@ -1170,12 +1169,12 @@
         "004CD910": "?stop@TRIBE_Action_Build@@UAEHXZ",
         "004CD920": "?move_to@TRIBE_Action_Build@@UAEHPAVRGE_Static_Object@@MMM@Z",
         "004CD210": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"
-      }
+      },
+      "module": "tact_bld"
     },
     {
       "name": "tact_hnt",
       "source": "src/tact_hnt.cpp",
-      "module": "tact_hnt",
       "flags": "config/flags/004CF090_TRIBE_Action_Hunt.rsp",
       "owners": {
         "004CF090": "src/tact_hnt.cpp",
@@ -1193,12 +1192,12 @@
         "004CF090": "??0TRIBE_Action_Hunt@@QAE@HPAVRGE_Action_Object@@@Z",
         "004CF130": "??0TRIBE_Action_Hunt@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
         "004CF1C0": "??0TRIBE_Action_Hunt@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
-      }
+      },
+      "module": "tact_hnt"
     },
     {
       "name": "victory",
       "source": "src/victory.cpp",
-      "module": "victory",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00531AF0": "src/victory.cpp",
@@ -1295,12 +1294,12 @@
         "00533120": "?handle_points_attribute_amount@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Point_Entry@@@Z",
         "00532610": "?handle_bring_object@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z",
         "00532CC0": "?condition_description@RGE_Victory_Conditions@@MAEPADPAURGE_Victory_Entry@@@Z"
-      }
+      },
+      "module": "victory"
     },
     {
       "name": "scr_load",
       "source": "src/scr_load.cpp",
-      "module": "scr_load",
       "flags": "config/flags/0049DD40_TribeLoadSavedGameScreen.rsp",
       "owners": {
         "0049DD40": "src/scr_load.cpp",
@@ -1308,12 +1307,12 @@
         "0049E150": "src/scr_load.cpp",
         "0049E2B0": "src/scr_load.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "scr_load"
     },
     {
       "name": "m_mo_obj",
       "source": "src/m_mo_obj.cpp",
-      "module": "m_mo_obj",
       "flags": "config/flags/00451A20_RGE_Master_Moving_Object.rsp",
       "owners": {
         "00451A20": "src/m_mo_obj.cpp",
@@ -1344,12 +1343,12 @@
         "00451F30": "?copy_obj@RGE_Master_Moving_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
         "00451FB0": "?modify@RGE_Master_Moving_Object@@UAEXME@Z",
         "00452040": "?save@RGE_Master_Moving_Object@@UAEXH@Z"
-      }
+      },
+      "module": "m_mo_obj"
     },
     {
       "name": "spanlist",
       "source": "src/spanlist.cpp",
-      "module": "spanlist",
       "flags": "config/flags/spanlist.rsp",
       "owners": {
         "004BD5E0": "src/spanlist.cpp",
@@ -1399,12 +1398,12 @@
         "004BE690": "?AlignamizeSpans@TSpan_List_Manager@@QAEXXZ",
         "004BE750": "?ScrollSpansHorizontally@TSpan_List_Manager@@QAEXHH@Z",
         "004BE9E0": "?ValidateSpan@TSpan_List_Manager@@QAEHH@Z"
-      }
+      },
+      "module": "spanlist"
     },
     {
       "name": "mouseptr",
       "source": "src/Mouseptr.cpp",
-      "module": "Mouseptr",
       "flags": "config/flags/mouseptr_module_gx.rsp",
       "owners": {
         "0045B000": "src/Mouseptr.cpp",
@@ -1449,11 +1448,11 @@
         "0045B760": "?update_mouse_position@TMousePointer@@QAEHXZ",
         "0045BE20": "?set_facet@TMousePointer@@QAEXH@Z",
         "0045C010": "?Poll@TMousePointer@@QAEXXZ"
-      }
+      },
+      "module": "Mouseptr"
     },
     {
       "name": "view",
-      "module": "view",
       "source": "src/view.cpp",
       "flags": "config/flags/00533510_RGE_View.rsp",
       "owners": {
@@ -1486,6 +1485,7 @@
         "00538420": "src/view.cpp",
         "00538B80": "src/view.cpp",
         "00539930": "src/view.cpp",
+        "00539AA0": "src/view.cpp",
         "00539D90": "src/view.cpp",
         "00539EC0": "src/view.cpp",
         "0053AC70": "src/view.cpp",
@@ -1535,6 +1535,7 @@
         "00538420": "?Draw_GDI_Object@RGE_View@@IAEXPAUDClipInfo_Node@@PAVTDrawArea@@@Z",
         "00538B80": "?draw_terrain_shape@RGE_View@@IAEXHHPAVTShape@@HEEHH@Z",
         "00539930": "?pick_touched_object@RGE_View@@IAEHPAVDClipInfo_List@@HHHHAAH@Z",
+        "00539AA0": "?get_tile_picture@RGE_View@@IAEFEEFF@Z",
         "00539D90": "?hit_tile@RGE_View@@IAEHPAURGE_Tile@@FFFFPAUtagPOINT@@@Z",
         "00539EC0": "?hit_object@RGE_View@@IAEPAVRGE_Static_Object@@PAURGE_Tile@@FFFFPAUtagPOINT@@1PAF2PAV2@E@Z",
         "0053AC70": "?reset_cyclic_overlay_sprites@RGE_View@@QAEXXZ",
@@ -1553,12 +1554,12 @@
         "0053B4B0": "?FreeThread@DClipInfo_List@@QAEHPAUDClipInfo_Node@@0@Z",
         "0053B510": "?ReclaimAllNodes@DClipInfo_List@@QAEXXZ",
         "0053B590": "?ResetStats@DClipInfo_List@@QAEXXZ"
-      }
+      },
+      "module": "view"
     },
     {
       "name": "taitacmd",
       "source": "src/taitacmd.cpp",
-      "module": "taitacmd",
       "flags": "config/flags/004ED4F0_TribeTacticalAIModule.rsp",
       "owners": {
         "004EA9B0": "src/taitacmd.cpp",
@@ -1680,6 +1681,7 @@
         "004FA940": "src/taitacmd.cpp",
         "004FAFC0": "src/taitacmd.cpp",
         "004FB160": "src/taitacmd.cpp",
+        "004FB500": "src/taitacmd.cpp",
         "004FB520": "src/taitacmd.cpp",
         "004FB9E0": "src/taitacmd.cpp",
         "004FBB30": "src/taitacmd.cpp",
@@ -1852,6 +1854,7 @@
         "004FA940": "?taskExplorer@TribeTacticalAIModule@@QAEHHMM@Z",
         "004FAFC0": "?taskWaterTrader@TribeTacticalAIModule@@QAEHHH@Z",
         "004FB160": "?taskWaterFisher@TribeTacticalAIModule@@QAEHHHMM@Z",
+        "004FB500": "?taskDefender@TribeTacticalAIModule@@QAEHHH@Z",
         "004FB520": "?taskDefender@TribeTacticalAIModule@@QAEHHMM@Z",
         "004FB9E0": "?taskTransporter@TribeTacticalAIModule@@QAEHHMM@Z",
         "004FBB30": "?removeFromTaskLists@TribeTacticalAIModule@@QAEXH@Z",
@@ -1903,12 +1906,12 @@
         "00503480": "?numberGatherersWithTarget@TribeTacticalAIModule@@QAEHH@Z",
         "00503600": "?saveTheTown@TribeTacticalAIModule@@QAEXH@Z",
         "004FB710": "?taskResearch@TribeTacticalAIModule@@QAEHPAVBuildItem@@@Z"
-      }
+      },
+      "module": "taitacmd"
     },
     {
       "name": "scr_sed2",
       "source": "src/scr_sed2.cpp",
-      "module": "scr_sed2",
       "flags": "config/flags/scr_sed2.rsp",
       "owners": {
         "004ADC80": "src/scr_sed2.cpp",
@@ -1922,6 +1925,7 @@
         "004AEE10": "src/scr_sed2.cpp",
         "004AF320": "src/scr_sed2.cpp",
         "004AF6C0": "src/scr_sed2.cpp",
+        "004B1A50": "src/scr_sed2.cpp",
         "004B29E0": "src/scr_sed2.cpp",
         "004B2AA0": "src/scr_sed2.cpp",
         "004B2BC0": "src/scr_sed2.cpp",
@@ -1932,12 +1936,13 @@
       "symbols": {
         "004ADD00": "?LoadDisabledItemsFromScenario@TRIBE_Screen_Sed@@IAEXXZ",
         "004AE620": "?load_victory_cond_from_scenario@TRIBE_Screen_Sed@@IAEXH@Z",
-        "004AEE10": "?activate_victory_proper_fields@TRIBE_Screen_Sed@@IAEXHH@Z"
-      }
+        "004AEE10": "?activate_victory_proper_fields@TRIBE_Screen_Sed@@IAEXHH@Z",
+        "004B1A50": "?position_panels@TRIBE_Screen_Sed@@QAEXXZ"
+      },
+      "module": "scr_sed2"
     },
     {
       "name": "tcommand",
-      "module": "tcommand",
       "source": "src/tcommand.cpp",
       "flags": "config/flags/00509AF0_do_command_research.rsp",
       "owners": {
@@ -1945,6 +1950,7 @@
         "00509770": "src/tcommand.cpp",
         "00509910": "src/tcommand.cpp",
         "0050A010": "src/tcommand.cpp",
+        "0050A490": "src/tcommand.cpp",
         "0050A510": "src/tcommand.cpp",
         "0050A730": "src/tcommand.cpp",
         "0050A7B0": "src/tcommand.cpp",
@@ -1979,6 +1985,7 @@
         "00509720": "??0TRIBE_Command@@QAE@PAVTRIBE_World@@PAVTCommunications_Handler@@@Z",
         "00509910": "?do_command_tribe_create@TRIBE_Command@@AAEXPAURGE_Command_Create@@@Z",
         "0050A010": "?place_line_of_walls@TRIBE_Command@@AAEXPAVTRIBE_Player@@PAVTRIBE_Master_Building_Object@@HHHHHPAPAVRGE_Static_Object@@@Z",
+        "0050A490": "?do_command_cancel_build@TRIBE_Command@@AAEXPAUTRIBE_Command_Cancel_Build@@@Z",
         "0050A510": "?do_command_give_attribute@TRIBE_Command@@EAEXPAUTRIBE_Command_Give_Attribute@@@Z",
         "0050A730": "?do_command_unload@TRIBE_Command@@AAEXPAUTRIBE_Command_Unload@@@Z",
         "0050A7B0": "?do_command_queue@TRIBE_Command@@AAEXPAUTRIBE_Command_Queue@@@Z",
@@ -1993,11 +2000,11 @@
         "00509AF0": "?do_command_research@TRIBE_Command@@AAEXPAUTRIBE_Command_Research@@@Z",
         "00509C60": "?do_command_build@TRIBE_Command@@AAEXPAUTRIBE_Command_Build@@@Z",
         "00509E10": "?do_command_build_wall@TRIBE_Command@@AAEXPAUTRIBE_Command_Build_Wall@@@Z"
-      }
+      },
+      "module": "tcommand"
     },
     {
       "name": "tribegam_prefix",
-      "module": "tribegam",
       "source": "src/tribegam.cpp",
       "flags": "config/flags/00521120_TRIBE_Game.rsp",
       "owners": {
@@ -2017,6 +2024,7 @@
         "00528F60": "src/tribegam.cpp",
         "00528FB0": "src/tribegam.cpp",
         "00529100": "src/tribegam.cpp",
+        "00529480": "src/tribegam.cpp",
         "00529570": "src/tribegam.cpp",
         "00529F60": "src/tribegam.cpp",
         "0052A000": "src/tribegam.cpp",
@@ -2107,6 +2115,7 @@
         "00525EE0": "?start_scenario@TRIBE_Game@@QAEHPAD@Z",
         "00528F60": "?send_game_options@TRIBE_Game@@UAEXXZ",
         "00528FB0": "?receive_game_options@TRIBE_Game@@UAEXXZ",
+        "00529480": "?popLimit@TRIBE_Game@@QAEEXZ",
         "00529F60": "?action_key_down@TRIBE_Game@@UAEHKHHHH@Z",
         "0052A000": "?action_close@TRIBE_Game@@UAEHXZ",
         "0052A080": "?get_achievement_info@TRIBE_Game@@QAEJEPAPAD@Z",
@@ -2184,18 +2193,19 @@
         "0052A430": "?shutdown_video_system@TRIBE_Game@@QAEXXZ",
         "0052A630": "?add_notification_loc@TRIBE_Game@@QAEXJJ@Z",
         "0052A6A0": "?goto_notification_loc@TRIBE_Game@@QAEXXZ"
-      }
+      },
+      "module": "tribegam"
     },
     {
       "name": "tplayer",
       "source": "src/tplayer.cpp",
-      "module": "tplayer",
       "flags": "config/flags/tplayer.rsp",
       "owners": {
         "00512620": "src/tplayer.cpp",
         "00514510": "src/tplayer.cpp",
         "00514700": "src/tplayer.cpp",
         "00514710": "src/tplayer.cpp",
+        "00515130": "src/tplayer.cpp",
         "00515DF0": "src/tplayer.cpp",
         "00519D40": "src/tplayer.cpp",
         "00519D50": "src/tplayer.cpp",
@@ -2265,6 +2275,7 @@
         "00514510": "?objectCost@TRIBE_Player@@QAEXHHPAVResourceItem@@H@Z",
         "00514700": "?changeToHumanPlayer@TRIBE_Player@@UAEXXZ",
         "00514710": "?changeToComputerPlayer@TRIBE_Player@@UAEXXZ",
+        "00515130": "?buildObject@TRIBE_Player@@UAEXHHMMH@Z",
         "00515DF0": "?intelligentCivSelection@TRIBE_Player@@QAEHHHH@Z",
         "00519D40": "?random_start@TRIBE_Gaia@@UAEXXZ",
         "00519D50": "?scenario_postload@TRIBE_Player@@UAEXHPAJM@Z",
@@ -2328,12 +2339,12 @@
         "00519CA0": "?update@TRIBE_Gaia@@UAEXXZ",
         "00519D10": "?load_master_object@TRIBE_Gaia@@QAEXHFEPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
         "00514590": "?objectCostByType@TRIBE_Player@@UAEHH@Z"
-      }
+      },
+      "module": "tplayer"
     },
     {
       "name": "scr_game",
       "source": "src/scr_game.cpp",
-      "module": "scr_game",
       "flags": "config/flags/004982E0_action.rsp",
       "owners": {
         "004954A0": "src/scr_game.cpp",
@@ -2354,6 +2365,7 @@
         "0049B830": "src/scr_game.cpp",
         "0049BF20": "src/scr_game.cpp",
         "0049C160": "src/scr_game.cpp",
+        "0049C230": "src/scr_game.cpp",
         "0049C570": "src/scr_game.cpp",
         "0049C5B0": "src/scr_game.cpp",
         "0049C600": "src/scr_game.cpp",
@@ -2405,6 +2417,7 @@
       "symbols": {
         "004972F0": "?handle_resume@TRIBE_Screen_Game@@QAEXXZ",
         "0049C160": "?command_convert@TRIBE_Screen_Game@@IAEXXZ",
+        "0049C230": "?command_fog_of_war@TRIBE_Screen_Game@@IAEXXZ",
         "0049C5B0": "?command_heal@TRIBE_Screen_Game@@IAEXXZ",
         "0049C600": "?command_repair@TRIBE_Screen_Game@@IAEXXZ",
         "0049C710": "?command_select_group@TRIBE_Screen_Game@@IAEXHH@Z",
@@ -2447,12 +2460,12 @@
         "0049D370": "?command_tab_selected@TRIBE_Screen_Game@@IAEXH@Z",
         "0049D4B0": "?set_focus@TRIBE_Screen_Game@@UAEXH@Z",
         "0049D4F0": "?stop_sound_system@TRIBE_Screen_Game@@MAEXXZ"
-      }
+      },
+      "module": "scr_game"
     },
     {
       "name": "scr_ach",
       "source": "src/scr_ach.cpp",
-      "module": "scr_ach",
       "flags": "config/flags/0048D530_TribeAchievementsScreen.rsp",
       "owners": {
         "0048F0B0": "src/scr_ach.cpp",
@@ -2461,12 +2474,12 @@
         "0048F500": "src/scr_ach.cpp",
         "0048F530": "src/scr_ach.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "scr_ach"
     },
     {
       "name": "scr_sed",
       "source": "src/scr_sed.cpp",
-      "module": "scr_sed",
       "flags": "config/flags/scr_sed.rsp",
       "owners": {
         "004A81E0": "src/scr_sed.cpp",
@@ -2536,12 +2549,12 @@
         "004ADC40": "?set_focus@TRIBE_Screen_Sed@@MAEXH@Z",
         "004AAB60": "?set_paint_type@TRIBE_Screen_Sed@@IAEXW4PaintType@1@H@Z",
         "004AD340": "?command_new_map@TRIBE_Screen_Sed@@QAEHPADHHHHH@Z"
-      }
+      },
+      "module": "scr_sed"
     },
     {
       "name": "rmm_terr",
       "source": "src/rmm_terr.cpp",
-      "module": "rmm_terr",
       "flags": "config/flags/default.rsp",
       "owners": {
         "004888E0": "src/rmm_terr.cpp",
@@ -2562,11 +2575,11 @@
         "00488E40": "?fig_chance@RGE_RMM_Terrain_Generator@@IAEMJJJJ@Z",
         "00488EA0": "?link_stack_randomly@RGE_RMM_Terrain_Generator@@IAEXPAUMap_Stack@@E@Z",
         "00489030": "?base_terrain_generate@RGE_RMM_Terrain_Generator@@IAEEURGE_Terrain_Info_Line@@@Z"
-      }
+      },
+      "module": "rmm_terr"
     },
     {
       "name": "rmm_shal",
-      "module": "rmm_shal",
       "source": "src/rmm_shal.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
@@ -2576,11 +2589,11 @@
       "symbols": {
         "00487010": "??0RGE_RMM_Shallows_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@PAURGE_Shallows_Info@@@Z",
         "00487050": "?generate@RGE_RMM_Shallows_Generator@@UAEEXZ"
-      }
+      },
+      "module": "rmm_shal"
     },
     {
       "name": "tpnl_inv",
-      "module": "tpnl_inv",
       "source": "src/tpnl_inv.cpp",
       "flags": "config/flags/0051A5C0_TRIBE_Panel_Inven.rsp",
       "owners": {
@@ -2602,12 +2615,12 @@
         "0051ABF0": "?set_player@TRIBE_Panel_Inven@@QAEXPAVTRIBE_Player@@@Z",
         "0051AC10": "?save_info@TRIBE_Panel_Inven@@IAEXXZ",
         "0051ACA0": "?get_help_info@TRIBE_Panel_Inven@@UAEEAAPADAAJJJ@Z"
-      }
+      },
+      "module": "tpnl_inv"
     },
     {
       "name": "obj_list",
       "source": "src/obj_list.cpp",
-      "module": "obj_list",
       "flags": "config/flags/00463930_load.rsp",
       "owners": {
         "00462E80": "src/obj_list.cpp",
@@ -2638,12 +2651,12 @@
         "00463310": "?find_by_group@RGE_Object_List@@QAEPAVRGE_Static_Object@@JMMEEPAV2@@Z",
         "004634C0": "?find_by_master_id@RGE_Object_List@@QAEPAVRGE_Static_Object@@JMMEEPAV2@@Z",
         "00463930": "?load@RGE_Object_List@@MAEXEHPAVRGE_Game_World@@@Z"
-      }
+      },
+      "module": "obj_list"
     },
     {
       "name": "act_misl",
       "source": "src/act_misl.cpp",
-      "module": "act_misl",
       "flags": "config/flags/00404BB0_RGE_Action_Missile.rsp",
       "owners": {
         "00404BB0": "src/act_misl.cpp",
@@ -2658,23 +2671,23 @@
         "00404D10": "?first_in_stack@RGE_Action_Missile@@UAEXE@Z",
         "00404D50": "?intercept@RGE_Action_Missile@@IAEXAAM00@Z",
         "004054B0": "?save@RGE_Action_Missile@@UAEXH@Z"
-      }
+      },
+      "module": "act_misl"
     },
     {
       "name": "getdxver",
       "source": "src/getdxver.cpp",
-      "module": "getdxver",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0044DAC0": "src/getdxver.cpp",
         "0044DEE0": "src/getdxver.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "getdxver"
     },
     {
       "name": "debuglog",
       "source": "src/debuglog.cpp",
-      "module": "debuglog",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00436220": "src/debuglog.cpp",
@@ -2707,12 +2720,12 @@
         "004365C0": "?CloseLog@TDebuggingLog@@QAEXXZ",
         "00436610": "?Log@TDebuggingLog@@QAAXPADZZ",
         "00436810": "?YesOrNo@TDebuggingLog@@IAEPADH@Z"
-      }
+      },
+      "module": "debuglog"
     },
     {
       "name": "rmm_clif_constructor",
       "source": "src/rmm_clif.cpp",
-      "module": "rmm_clif",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00481980": "src/rmm_clif.cpp",
@@ -2727,12 +2740,12 @@
         "00481FC0": "?check_for_valid_cliff_site@RGE_RMM_Cliffs_Generator@@IAEEJAAJ0J@Z",
         "00481980": "??0RGE_RMM_Cliffs_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@URGE_Cliffs_Info@@@Z",
         "004819C0": "?generate@RGE_RMM_Cliffs_Generator@@UAEEXZ"
-      }
+      },
+      "module": "rmm_clif"
     },
     {
       "name": "com_sync",
       "source": "src/com_sync.cpp",
-      "module": "com_sync",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00432FF0": "src/com_sync.cpp",
@@ -2747,12 +2760,12 @@
         "00433AB0": "src/com_sync.cpp",
         "00433AC0": "src/com_sync.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "com_sync"
     },
     {
       "name": "aipbook_prefix",
       "source": "src/aipbook.cpp",
-      "module": "aipbook",
       "flags": "config/flags/00410220_loadPlays.rsp",
       "owners": {
         "0040E930": "src/aipbook.cpp",
@@ -2885,12 +2898,12 @@
         "004114E0": "?convertTargetCharacteristicNameToIntType@AIPlayBook@@UBEHPAD@Z",
         "00411650": "?convertUnitNameToIntType@AIPlayBook@@UBEHPAD@Z",
         "00411660": "?convertUnitToIntType@AIPlayBook@@UBEHPAVRGE_Static_Object@@@Z"
-      }
+      },
+      "module": "aipbook"
     },
     {
       "name": "player",
       "source": "src/player.cpp",
-      "module": "player",
       "flags": "config/flags/0046E4B0_RGE_Player.rsp",
       "owners": {
         "0046E4B0": "src/player.cpp",
@@ -2922,6 +2935,7 @@
         "0046F290": "src/player.cpp",
         "0046F2A0": "src/player.cpp",
         "0046F410": "src/player.cpp",
+        "0046F420": "src/player.cpp",
         "0046F6B0": "src/player.cpp",
         "0046F7A0": "src/player.cpp",
         "0046FA60": "src/player.cpp",
@@ -2963,6 +2977,7 @@
         "004714E0": "src/player.cpp",
         "00471520": "src/player.cpp",
         "00471530": "src/player.cpp",
+        "00471760": "src/player.cpp",
         "004717D0": "src/player.cpp",
         "00471820": "src/player.cpp",
         "004719D0": "src/player.cpp",
@@ -3036,6 +3051,7 @@
         "00470ED0": "?unselect_one_object@RGE_Player@@QAEXF@Z",
         "00471480": "?select_area@RGE_Player@@QAEXFFFF@Z",
         "004714C0": "?unselect_area@RGE_Player@@QAEXXZ",
+        "00471760": "?command_stop@RGE_Player@@UAEEXZ",
         "004719D0": "?command_create_group@RGE_Player@@UAEEHPAHHM@Z",
         "00471A00": "?command_add_to_group@RGE_Player@@UAEEHHM@Z",
         "00471A30": "?command_remove_from_group@RGE_Player@@UAEEHH@Z",
@@ -3045,6 +3061,7 @@
         "00471E90": "?get_list_info@RGE_Tile_List@@QAEXAAPAURGE_Tile_List_Node@@AAH@Z",
         "00471E40": "??0RGE_Tile_List@@QAE@H@Z",
         "0046F3A0": "?make_scenario_obj@RGE_Player@@UAEPAVRGE_Static_Object@@MMMFEM@Z",
+        "0046F420": "?scenario_load@RGE_Player@@UAEXHPAJM@Z",
         "0046FC40": "?load_master_object@RGE_Player@@QAEXHFEPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
         "004700D0": "?add_attribute_num@RGE_Player@@UAEXFME@Z",
         "00470380": "?save2@RGE_Player@@UAEXH@Z",
@@ -3061,12 +3078,12 @@
         "00471BF0": "?set_map_visible@RGE_Player@@QAEXXZ",
         "00471D00": "?new_victory@RGE_Player@@UAEXXZ",
         "00470F80": "?group_objects@RGE_Player@@QAEHH@Z"
-      }
+      },
+      "module": "player"
     },
     {
       "name": "sound",
       "source": "src/Sound.cpp",
-      "module": "sound",
       "flags": "config/flags/004BBF30_RGE_Sound.rsp",
       "owners": {
         "004BBE40": "src/Sound.cpp",
@@ -3084,12 +3101,12 @@
       "symbols": {
         "004BBE40": "??0RGE_Sound@@QAE@PAU_iobuf@@F@Z",
         "004BC070": "??0RGE_Sound@@QAE@XZ"
-      }
+      },
+      "module": "sound"
     },
     {
       "name": "scr_set",
       "source": "src/scr_set.cpp",
-      "module": "scr_set",
       "flags": "config/flags/scr_set.rsp",
       "owners": {
         "004B4880": "src/scr_set.cpp",
@@ -3108,12 +3125,12 @@
       "symbols": {
         "004B4880": "??0TribeGameSettingsScreen@@QAE@XZ",
         "004B5920": "??1TribeGameSettingsScreen@@UAE@XZ"
-      }
+      },
+      "module": "scr_set"
     },
     {
       "name": "move_obj",
       "source": "src/move_obj.cpp",
-      "module": "move_obj",
       "flags": "config/flags/0045C450_RGE_Moving_Object.rsp",
       "owners": {
         "0045C450": "src/move_obj.cpp",
@@ -3200,12 +3217,12 @@
         "00460940": "?userDefinedWaypoint@RGE_Moving_Object@@UAEPAUXYZBYTEPoint@@H@Z",
         "004608D0": "?maximumSpeed@RGE_Moving_Object@@UAEMXZ",
         "00460900": "?waitingToMove@RGE_Moving_Object@@UBEEXZ"
-      }
+      },
+      "module": "move_obj"
     },
     {
       "name": "airchmod",
       "source": "src/airchmod.cpp",
-      "module": "airchmod",
       "flags": "config/flags/00411670_ResearchAIModule.rsp",
       "owners": {
         "00411670": "src/airchmod.cpp",
@@ -3236,12 +3253,12 @@
         "00411E10": "?technologyTreeName@ResearchAIModule@@QAEPADXZ",
         "00411E20": "?removeOldTechTree@ResearchAIModule@@IAEXXZ",
         "00411E70": "?item@ResearchAIModule@@IAEPAVTechnologyItem@@H@Z"
-      }
+      },
+      "module": "airchmod"
     },
     {
       "name": "cdaudio",
       "source": "src/Cdaudio.cpp",
-      "module": "cdaudio",
       "flags": "config/flags/default.rsp",
       "owners": {
         "004237C0": "src/Cdaudio.cpp",
@@ -3278,12 +3295,12 @@
         "00423B10": "?GetTrackLength@CCDAudio@@QAEKEAAE0@Z",
         "00423B70": "?GetPosition@CCDAudio@@QAEKAAE00@Z",
         "00423BD0": "?DisplayErrorMsg@CCDAudio@@AAEKK@Z"
-      }
+      },
+      "module": "cdaudio"
     },
     {
       "name": "mystring",
       "source": "src/mystring.cpp",
-      "module": "mystring",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00462D70": "src/mystring.cpp",
@@ -3296,12 +3313,12 @@
         "00462D90": "?unconvert_us@@YAXPAD@Z",
         "00462DB0": "?addstring@@YAXPAPADPAD1@Z",
         "00462E30": "?getstring@@YAXPAPADPAD@Z"
-      }
+      },
+      "module": "mystring"
     },
     {
       "name": "chat",
       "source": "src/Chat.cpp",
-      "module": "Chat",
       "flags": "config/flags/00423C30_TChat.rsp",
       "owners": {
         "00423C30": "src/Chat.cpp",
@@ -3318,12 +3335,12 @@
       },
       "symbols": {
         "00423E90": "?inChatGroup@TChat@@QAEHH@Z"
-      }
+      },
+      "module": "Chat"
     },
     {
       "name": "t_histry",
       "source": "src/t_histry.cpp",
-      "module": "t_histry",
       "flags": "config/flags/default.rsp",
       "owners": {
         "004CC730": "src/t_histry.cpp",
@@ -3342,12 +3359,12 @@
         "004CC960": "?get_history_entry@TRIBE_History_Info@@QAEEEJ@Z",
         "004CC9F0": "?get_history_event@TRIBE_History_Info@@QAEEJAAEAAJ@Z",
         "004CCA30": "?get_history_event@TRIBE_History_Info@@QAEEJAAE@Z"
-      }
+      },
+      "module": "t_histry"
     },
     {
       "name": "registry",
       "source": "src/registry.cpp",
-      "module": "registry",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0047EB80": "src/registry.cpp",
@@ -3362,12 +3379,12 @@
       "symbols": {
         "0047EC40": "?RegSet@TRegistry@@QAEHHPBDPAEK@Z",
         "0047EDD0": "?RegGet@TRegistry@@QAEJHPBDPAEPAK@Z"
-      }
+      },
+      "module": "registry"
     },
     {
       "name": "dlg_abt",
       "source": "src/dlg_abt.cpp",
-      "module": "dlg_abt",
       "flags": "config/flags/0043AD70_TribeAboutDialog.rsp",
       "owners": {
         "0043AD70": "src/dlg_abt.cpp",
@@ -3380,11 +3397,11 @@
         "0043B300": "??1TribeAboutDialog@@UAE@XZ",
         "0043B400": "?action@TribeAboutDialog@@MAEJPAVTPanel@@JKK@Z",
         "0043B550": "?draw@TribeAboutDialog@@UAEXXZ"
-      }
+      },
+      "module": "dlg_abt"
     },
     {
       "name": "ani_obj",
-      "module": "ani_obj",
       "source": "src/ani_obj.cpp",
       "flags": "config/flags/0041A150_RGE_Animated_Object.rsp",
       "owners": {
@@ -3404,12 +3421,12 @@
         "0041A210": "??0RGE_Animated_Object@@QAE@HPAVRGE_Game_World@@H@Z",
         "0041A2C0": "?setup@RGE_Animated_Object@@MAEHPAVRGE_Master_Animated_Object@@PAVRGE_Player@@MMM@Z",
         "0041A310": "?setup@RGE_Animated_Object@@MAEHHPAVRGE_Game_World@@@Z"
-      }
+      },
+      "module": "ani_obj"
     },
     {
       "name": "Scr_sels",
       "source": "src/Scr_sels.cpp",
-      "module": "Scr_sels",
       "flags": "config/flags/004B3C90_TribeSelectScenarioScreen.rsp",
       "owners": {
         "004B3C90": "src/Scr_sels.cpp",
@@ -3421,12 +3438,12 @@
         "004B47D0": "src/Scr_sels.cpp",
         "004B4810": "src/Scr_sels.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "Scr_sels"
     },
     {
       "name": "com_addr",
       "source": "src/com_addr.cpp",
-      "module": "com_addr",
       "flags": "config/flags/004249D0_RGE_Communications_Addresses.rsp",
       "owners": {
         "004249D0": "src/com_addr.cpp",
@@ -3438,11 +3455,11 @@
         "00424C80": "src/com_addr.cpp",
         "00424D90": "src/com_addr.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "com_addr"
     },
     {
       "name": "act_expl",
-      "module": "act_expl",
       "source": "src/act_expl.cpp",
       "flags": "config/flags/00402C00_set_state.rsp",
       "owners": {
@@ -3460,7 +3477,8 @@
         "00402C00": "?set_state@RGE_Action_Explore@@MAEXE@Z",
         "00402D90": "?update@RGE_Action_Explore@@UAEEXZ",
         "00402E40": "?work@RGE_Action_Explore@@UAEHPAVRGE_Static_Object@@MMM@Z"
-      }
+      },
+      "module": "act_expl"
     },
     {
       "name": "scr_vc_prefix",
@@ -3482,7 +3500,6 @@
     {
       "name": "scr_stms",
       "source": "src/scr_stms.cpp",
-      "module": "scr_stms",
       "flags": "config/flags/004B7140_TRIBE_Screen_Status_Message.rsp",
       "owners": {
         "004B7140": "src/scr_stms.cpp",
@@ -3496,12 +3513,12 @@
         "004B7330": "??0TRIBE_Screen_Status_Message@@QAE@PADJ0J@Z",
         "004B7560": "?set_text@TRIBE_Screen_Status_Message@@QAEXPAD@Z",
         "004B7580": "?set_text@TRIBE_Screen_Status_Message@@QAEXJ@Z"
-      }
+      },
+      "module": "scr_stms"
     },
     {
       "name": "scr_sedm",
       "source": "src/scr_sedm.cpp",
-      "module": "scr_sedm",
       "flags": "config/flags/004B2EF0_TRIBE_Screen_Sed_Menu.rsp",
       "owners": {
         "004B31A0": "src/scr_sedm.cpp",
@@ -3510,34 +3527,35 @@
       "symbols": {
         "004B31A0": "?handle_idle@TRIBE_Screen_Sed_Menu@@MAEJXZ",
         "004B31D0": "?action@TRIBE_Screen_Sed_Menu@@MAEJPAVTPanel@@JKK@Z"
-      }
+      },
+      "module": "scr_sedm"
     },
     {
       "name": "colorlog",
       "source": "src/colorlog.cpp",
-      "module": "colorlog",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00424810": "src/colorlog.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "colorlog"
     },
     {
       "name": "tobj_lst",
-      "module": "tobj_lst",
       "source": "src/tobj_lst.cpp",
       "flags": "config/flags/00511B00_load.rsp",
       "owners": {
         "00511B00": "src/tobj_lst.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "tobj_lst"
     },
     {
       "name": "pnl_pic",
       "source": "src/Pnl_pic.cpp",
-      "module": "pnl_pic",
       "flags": "config/flags/0047A250_TPicturePanel.rsp",
       "owners": {
+        "0047A1D0": "src/Pnl_pic.cpp",
         "0047A250": "src/Pnl_pic.cpp",
         "0047A2A0": "src/Pnl_pic.cpp",
         "0047A3A0": "src/Pnl_pic.cpp",
@@ -3546,30 +3564,31 @@
         "0047A630": "src/Pnl_pic.cpp"
       },
       "symbols": {
+        "0047A1D0": "??0TPicturePanel@@QAE@XZ",
         "0047A250": "??1TPicturePanel@@UAE@XZ",
         "0047A2A0": "?setup@TPicturePanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPADJHH@Z",
         "0047A3A0": "?set_picture@TPicturePanel@@QAEXPAVTShape@@J@Z",
         "0047A3E0": "?load_pic@TPicturePanel@@IAEHXZ",
         "0047A5B0": "?free_pic@TPicturePanel@@IAEXXZ",
         "0047A630": "?draw@TPicturePanel@@UAEXXZ"
-      }
+      },
+      "module": "pnl_pic"
     },
     {
       "name": "dlg_menu",
       "source": "src/dlg_menu.cpp",
-      "module": "dlg_menu",
       "flags": "config/flags/0043F340_TribeMenuDialog.rsp",
       "owners": {
         "0043F720": "src/dlg_menu.cpp"
       },
       "symbols": {
         "0043F720": "?action@TribeMenuDialog@@MAEJPAVTPanel@@JKK@Z"
-      }
+      },
+      "module": "dlg_menu"
     },
     {
       "name": "rpnl_tim",
       "source": "src/rpnl_tim.cpp",
-      "module": "rpnl_tim",
       "flags": "config/flags/0048A680_RGE_Panel_Time.rsp",
       "owners": {
         "0048A680": "src/rpnl_tim.cpp",
@@ -3580,12 +3599,12 @@
         "0048A680": "??0RGE_Panel_Time@@QAE@PAVTDrawArea@@PAVTPanel@@PAX@Z",
         "0048A740": "?draw@RGE_Panel_Time@@UAEXXZ",
         "0048AA70": "?handle_idle@RGE_Panel_Time@@UAEJXZ"
-      }
+      },
+      "module": "rpnl_tim"
     },
     {
       "name": "m_an_obj_cpp",
       "source": "src/m_an_obj.cpp",
-      "module": "m_an_obj",
       "flags": "config/flags/m_an_obj.rsp",
       "owners": {
         "0044F9C0": "src/m_an_obj.cpp",
@@ -3613,12 +3632,12 @@
         "0044FD60": "?modify@RGE_Master_Animated_Object@@UAEXME@Z",
         "0044FD90": "?modify_delta@RGE_Master_Animated_Object@@UAEXME@Z",
         "0044FDC0": "?modify_percent@RGE_Master_Animated_Object@@UAEXME@Z"
-      }
+      },
+      "module": "m_an_obj"
     },
     {
       "name": "task_cpp",
       "source": "src/task.cpp",
-      "module": "task",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00508670": "src/task.cpp",
@@ -3631,12 +3650,12 @@
       "symbols": {
         "005087C0": "?load@RGE_Task@@QAEXHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
         "00508A20": "?load@RGE_Task@@QAEXPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"
-      }
+      },
+      "module": "task"
     },
     {
       "name": "tact_wnd",
       "source": "src/tact_wnd.cpp",
-      "module": "tact_wnd",
       "flags": "config/flags/tact_wnd.rsp",
       "owners": {
         "004D3470": "src/tact_wnd.cpp",
@@ -3649,12 +3668,12 @@
         "004D34C0": "??0TRIBE_Action_Wonder@@QAE@PAVRGE_Action_Object@@@Z",
         "004D3690": "?first_in_stack@TRIBE_Action_Wonder@@UAEXE@Z",
         "004D3810": "?update@TRIBE_Action_Wonder@@UAEEXZ"
-      }
+      },
+      "module": "tact_wnd"
     },
     {
       "name": "task_lst_cpp",
       "source": "src/task_lst.cpp",
-      "module": "task_lst",
       "flags": "config/flags/task_lst.rsp",
       "owners": {
         "00508E00": "src/task_lst.cpp",
@@ -3672,12 +3691,12 @@
       "symbols": {
         "00508EC0": "?load@RGE_Task_List@@QAEXHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
         "00508F60": "?load@RGE_Task_List@@QAEXPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"
-      }
+      },
+      "module": "task_lst"
     },
     {
       "name": "aitrdmod_cpp",
       "source": "src/aitrdmod.cpp",
-      "module": "aitrdmod",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00412E40": "src/aitrdmod.cpp",
@@ -3689,12 +3708,12 @@
       "symbols": {
         "00412E40": "??0TradeAIModule@@QAE@PAXH@Z",
         "00412EA0": "??0TradeAIModule@@QAE@HH@Z"
-      }
+      },
+      "module": "aitrdmod"
     },
     {
       "name": "pnl_drop",
       "source": "src/Pnl_drop.cpp",
-      "module": "Pnl_drop",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "00473ED0": "src/Pnl_drop.cpp",
@@ -3757,12 +3776,12 @@
         "00475400": "?get_text@TDropDownPanel@@QAEPADJ@Z",
         "00475420": "?get_id@TDropDownPanel@@QAEJXZ",
         "00475440": "?get_id@TDropDownPanel@@QAEJJ@Z"
-      }
+      },
+      "module": "Pnl_drop"
     },
     {
       "name": "taction",
       "source": "src/taction.cpp",
-      "module": "taction",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "004D38E0": "src/taction.cpp",
@@ -3777,12 +3796,12 @@
         "004D39E0": "?setup@TRIBE_Action@@UAEHHPAVRGE_Action_Object@@@Z",
         "004D3A00": "?setup@TRIBE_Action@@UAEHPAVRGE_Action_Object@@@Z",
         "004D3A10": "?create_action_list@TRIBE_Action@@UAEPAVRGE_Action_List@@PAVRGE_Action_Object@@@Z"
-      }
+      },
+      "module": "taction"
     },
     {
       "name": "aiinfmod",
       "source": "src/aiinfmod.cpp",
-      "module": "aiinfmod",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0040CD90": "src/aiinfmod.cpp",
@@ -3791,12 +3810,12 @@
       "symbols": {
         "0040CD90": "??0InformationAIModule@@QAE@PAXH@Z",
         "0040CDE0": "??1InformationAIModule@@UAE@XZ"
-      }
+      },
+      "module": "aiinfmod"
     },
     {
       "name": "aistrmod",
       "source": "src/aistrmod.cpp",
-      "module": "aistrmod",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00412AF0": "src/aistrmod.cpp",
@@ -3805,12 +3824,12 @@
       "symbols": {
         "00412AF0": "??0StrategyAIModule@@QAE@PAXH@Z",
         "00412B40": "??1StrategyAIModule@@UAE@XZ"
-      }
+      },
+      "module": "aistrmod"
     },
     {
       "name": "aitacmod",
       "source": "src/aitacmod.cpp",
-      "module": "aitacmod",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00412B50": "src/aitacmod.cpp",
@@ -3819,12 +3838,12 @@
       "symbols": {
         "00412B50": "??0TacticalAIModule@@QAE@PAXH@Z",
         "00412BA0": "??1TacticalAIModule@@UAE@XZ"
-      }
+      },
+      "module": "aitacmod"
     },
     {
       "name": "aitchitm",
       "source": "src/aitchitm.cpp",
-      "module": "aitchitm",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "00412BB0": "src/aitchitm.cpp",
@@ -3847,11 +3866,11 @@
         "00412DB0": "??9@YAHABVTechnologyItem@@0@Z",
         "00412DD0": "??M@YAHABVTechnologyItem@@0@Z",
         "00412DF0": "??O@YAHABVTechnologyItem@@0@Z"
-      }
+      },
+      "module": "aitchitm"
     },
     {
       "name": "campaign",
-      "module": "campaign",
       "source": "src/campaign.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
@@ -3869,12 +3888,12 @@
         "00423230": "??0RGE_Campaign@@QAE@PAD@Z",
         "00423330": "??0RGE_Campaign@@QAE@PAD0JPAPAD1@Z",
         "00423730": "?scenario_info@RGE_Campaign@@QAEJPAPAPAD@Z"
-      }
+      },
+      "module": "campaign"
     },
     {
       "name": "com_loby",
       "source": "src/com_loby.cpp",
-      "module": "com_loby",
       "flags": "config/flags/com_loby.rsp",
       "owners": {
         "0042F290": "src/com_loby.cpp",
@@ -3901,12 +3920,12 @@
         "0042F6B0": "?SendZoneHandshakeResponse@RGE_Lobby@@QAEJXZ",
         "0042F6C0": "?GameIsOver@RGE_Lobby@@QAEHXZ",
         "0042F6D0": "?ReceiveZoneMessages@RGE_Lobby@@QAEJXZ"
-      }
+      },
+      "module": "com_loby"
     },
     {
       "name": "dlg_dip",
       "source": "src/dlg_dip.cpp",
-      "module": "dlg_dip",
       "flags": "config/flags/0043C930_TribeDiplomacyDialog.rsp",
       "owners": {
         "0043E530": "src/dlg_dip.cpp",
@@ -3915,12 +3934,12 @@
       "symbols": {
         "0043E530": "?check_gold@TribeDiplomacyDialog@@IAEHXZ",
         "0043E5C0": "?check_wood@TribeDiplomacyDialog@@IAEHXZ"
-      }
+      },
+      "module": "dlg_dip"
     },
     {
       "name": "dlg_sedm",
       "source": "src/dlg_sedm.cpp",
-      "module": "dlg_sedm",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "00440140": "src/dlg_sedm.cpp",
@@ -3929,12 +3948,12 @@
       "symbols": {
         "00440140": "??0TRIBE_Dialog_Sed_Menu@@QAE@PAVTRIBE_Screen_Sed@@@Z",
         "00440400": "?action@TRIBE_Dialog_Sed_Menu@@UAEJPAVTPanel@@JKK@Z"
-      }
+      },
+      "module": "dlg_sedm"
     },
     {
       "name": "infmap",
       "source": "src/infmap.cpp",
-      "module": "infmap",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0044DF80": "src/infmap.cpp",
@@ -3962,12 +3981,12 @@
         "0044E680": "?incrementValue@InfluenceMap@@QAEHHHHHE@Z",
         "0044E790": "?decrementValue@InfluenceMap@@QAEHHHE@Z",
         "0044E800": "?decrementValue@InfluenceMap@@QAEHHHHHE@Z"
-      }
+      },
+      "module": "infmap"
     },
     {
       "name": "m_dg_obj",
       "source": "src/m_dg_obj.cpp",
-      "module": "m_dg_obj",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "004510C0": "src/m_dg_obj.cpp",
@@ -3989,12 +4008,12 @@
         "00451230": "?setup@RGE_Master_Doppleganger_Object@@IAEHPAV1@@Z",
         "00451250": "?setup@RGE_Master_Doppleganger_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
         "00451280": "?setup@RGE_Master_Doppleganger_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"
-      }
+      },
+      "module": "m_dg_obj"
     },
     {
       "name": "m_mi_obj",
       "source": "src/m_mi_obj.cpp",
-      "module": "m_mi_obj",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "00451440": "src/m_mi_obj.cpp",
@@ -4027,12 +4046,12 @@
         "00451840": "?make_new_master@RGE_Master_Missile_Object@@UAEPAVRGE_Master_Static_Object@@XZ",
         "004518B0": "?copy_obj@RGE_Master_Missile_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
         "004519A0": "?save@RGE_Master_Missile_Object@@UAEXH@Z"
-      }
+      },
+      "module": "m_mi_obj"
     },
     {
       "name": "pnl_sld",
       "source": "src/pnl_sld.cpp",
-      "module": "pnl_sld",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0047BCE0": "src/pnl_sld.cpp",
@@ -4053,12 +4072,12 @@
         "0047BE40": "?setup@THorizontalSliderPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAD2JJJJHH@Z",
         "0047BEC0": "?set_rect@THorizontalSliderPanel@@UAEXJJJJ@Z",
         "0047BF30": "?draw@THorizontalSliderPanel@@UAEXXZ"
-      }
+      },
+      "module": "pnl_sld"
     },
     {
       "name": "rmm_elev",
       "source": "src/rmm_elev.cpp",
-      "module": "rmm_elev",
       "flags": "config/flags/default.rsp",
       "owners": {
         "004846C0": "src/rmm_elev.cpp",
@@ -4069,12 +4088,12 @@
         "004846C0": "??0RGE_RMM_Elevation_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@PAURGE_Elevation_Info@@@Z",
         "00484B30": "?fig_chance@RGE_RMM_Elevation_Generator@@IAEMJJJ@Z",
         "00484B50": "?count_map_tiles@RGE_RMM_Elevation_Generator@@IAEJE@Z"
-      }
+      },
+      "module": "rmm_elev"
     },
     {
       "name": "t_tre_ob",
       "source": "src/t_tre_ob.cpp",
-      "module": "t_tre_ob",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "004CCA60": "src/t_tre_ob.cpp",
@@ -4085,12 +4104,12 @@
         "004CCA60": "??0TRIBE_Tree_Object@@QAE@PAVTRIBE_Master_Tree_Object@@PAVRGE_Player@@MMMH@Z",
         "004CCB20": "??0TRIBE_Tree_Object@@QAE@HPAVRGE_Game_World@@H@Z",
         "004CCB90": "?set_object_state@TRIBE_Tree_Object@@UAEXE@Z"
-      }
+      },
+      "module": "t_tre_ob"
     },
     {
       "name": "taiconmd",
       "source": "src/taiconmd.cpp",
-      "module": "taiconmd",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "004D5E60": "src/taiconmd.cpp",
@@ -4109,12 +4128,12 @@
         "004D6780": "?placeDock@TribeConstructionAIModule@@QAEPAVConstructionItem@@PAVBuildItem@@@Z",
         "004D6800": "?setBuilt@TribeConstructionAIModule@@QAEXPAVRGE_Static_Object@@H@Z",
         "004D5F00": "?canPlace@TribeConstructionAIModule@@QAEHPAVBuildItem@@@Z"
-      }
+      },
+      "module": "taiconmd"
     },
     {
       "name": "tdlg_lst",
       "source": "src/tdlg_lst.cpp",
-      "module": "tdlg_lst",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0050B450": "src/tdlg_lst.cpp",
@@ -4125,12 +4144,12 @@
       },
       "symbols": {
         "0050B450": "??0TRIBE_Dialog_List@@QAE@PAD@Z"
-      }
+      },
+      "module": "tdlg_lst"
     },
     {
       "name": "dsutil",
       "source": "src/Dsutil.c",
-      "module": "dsutil",
       "flags": "config/flags/00448BA0_ds_stream_time_func.rsp",
       "owners": {
         "004477D0": "src/Dsutil.c",
@@ -4170,12 +4189,12 @@
         "004481A0": "_WaveStartDataWrite",
         "00448A60": "_ds_stream_pause",
         "00447B70": "_SndObjStop"
-      }
+      },
+      "module": "dsutil"
     },
     {
       "name": "pnl_lst",
       "source": "src/pnl_lst.cpp",
-      "module": "pnl_lst",
       "flags": "config/flags/default.rsp",
       "owners": {
         "004782A0": "src/pnl_lst.cpp",
@@ -4218,12 +4237,12 @@
         "00478CD0": "?draw_highlight_bar@TListPanel@@QAEXXZ",
         "00478EE0": "?setDrawHighlightBar@TListPanel@@QAEXH@Z",
         "00478EF0": "?set_focus@TListPanel@@UAEXH@Z"
-      }
+      },
+      "module": "pnl_lst"
     },
     {
       "name": "act_bird_cpp",
       "source": "src/act_bird.cpp",
-      "module": "act_bird",
       "flags": "config/flags/00402180_update.rsp",
       "owners": {
         "00401FE0": "src/act_bird.cpp",
@@ -4235,12 +4254,12 @@
       "symbols": {
         "00401FE0": "??0RGE_Action_Bird@@QAE@HPAVRGE_Action_Object@@@Z",
         "00402040": "??0RGE_Action_Bird@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
-      }
+      },
+      "module": "act_bird"
     },
     {
       "name": "scr_sing",
       "source": "src/scr_sing.cpp",
-      "module": "scr_sing",
       "flags": "config/flags/004B69A0_TribeSPMenuScreen.rsp",
       "owners": {
         "004B69A0": "src/scr_sing.cpp",
@@ -4251,12 +4270,12 @@
         "004B69A0": "??0TribeSPMenuScreen@@QAE@XZ",
         "004B6C90": "?handle_idle@TribeSPMenuScreen@@UAEJXZ",
         "004B6CC0": "?action@TribeSPMenuScreen@@UAEJPAVTPanel@@JKK@Z"
-      }
+      },
+      "module": "scr_sing"
     },
     {
       "name": "tpnl_txl",
       "source": "src/tpnl_txl.cpp",
-      "module": "tpnl_txl",
       "flags": "config/flags/00520D70_TRIBE_Panel_Text_Line.rsp",
       "owners": {
         "00520D70": "src/tpnl_txl.cpp",
@@ -4267,11 +4286,11 @@
         "00520D70": "??0TRIBE_Panel_Text_Line@@QAE@PAVTDrawArea@@PAVTPanel@@PAX@Z",
         "00520E30": "?set_info@TRIBE_Panel_Text_Line@@QAEXEPADJ@Z",
         "00520ED0": "?draw@TRIBE_Panel_Text_Line@@UAEXXZ"
-      }
+      },
+      "module": "tpnl_txl"
     },
     {
       "name": "act_list",
-      "module": "act_list",
       "source": "src/act_list.cpp",
       "flags": "config/flags/00404200_create_task_action.rsp",
       "owners": {
@@ -4321,12 +4340,12 @@
         "00404850": "?get_task@RGE_Action_List@@QAEPAVRGE_Task@@XZ",
         "00404890": "?copy_obj_sprites@RGE_Action_List@@UAEXPAVRGE_Master_Action_Object@@PAVRGE_Task@@1@Z",
         "004048C0": "?get_action_name@RGE_Action_List@@UAEXPAD@Z"
-      }
+      },
+      "module": "act_list"
     },
     {
       "name": "act_tran",
       "source": "src/act_tran.cpp",
-      "module": "act_tran",
       "flags": "config/flags/00406E50_set_state.rsp",
       "owners": {
         "00406D60": "src/act_tran.cpp",
@@ -4342,12 +4361,12 @@
       "symbols": {
         "00406D60": "??0RGE_Action_Transport@@QAE@HPAVRGE_Action_Object@@@Z",
         "00406DC0": "??0RGE_Action_Transport@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"
-      }
+      },
+      "module": "act_tran"
     },
     {
       "name": "aiemomod",
       "source": "src/aiemomod.cpp",
-      "module": "aiemomod",
       "flags": "config/flags/0040C920_EmotionalAIModule.rsp",
       "owners": {
         "0040C7C0": "src/aiemomod.cpp",
@@ -4369,12 +4388,12 @@
         "0040C920": "??0EmotionalAIModule@@QAE@HH@Z",
         "0040CB10": "?state@EmotionalAIModule@@QBEHH@Z",
         "0040CBB0": "?overallState@EmotionalAIModule@@QBEHXZ"
-      }
+      },
+      "module": "aiemomod"
     },
     {
       "name": "aibitm",
       "source": "src/aibitm.cpp",
-      "module": "aibitm",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00407D80": "src/aibitm.cpp",
@@ -4432,14 +4451,15 @@
         "00407FC0": "??9@YAHABVBaseItem@@0@Z",
         "00407FE0": "??M@YAHABVBaseItem@@0@Z",
         "00408000": "??O@YAHABVBaseItem@@0@Z"
-      }
+      },
+      "module": "aibitm"
     },
     {
       "name": "dlg_smsg",
       "source": "src/dlg_smsg.cpp",
-      "module": "dlg_smsg",
       "flags": "config/flags/004407A0_TribeSendMessageDialog.rsp",
       "owners": {
+        "00440F20": "src/dlg_smsg.cpp",
         "00441410": "src/dlg_smsg.cpp",
         "00441460": "src/dlg_smsg.cpp",
         "00441530": "src/dlg_smsg.cpp",
@@ -4448,13 +4468,14 @@
         "00441840": "src/dlg_smsg.cpp"
       },
       "symbols": {
+        "00440F20": "?action@TribeSendMessageDialog@@MAEJPAVTPanel@@JKK@Z",
         "004416C0": "?action@TribeSendQuickMessageDialog@@UAEJPAVTPanel@@JKK@Z"
-      }
+      },
+      "module": "dlg_smsg"
     },
     {
       "name": "com_serv",
       "source": "src/com_serv.cpp",
-      "module": "com_serv",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00431FB0": "src/com_serv.cpp",
@@ -4469,12 +4490,12 @@
         "00432150": "src/com_serv.cpp",
         "00432180": "src/com_serv.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "com_serv"
     },
     {
       "name": "com_sess",
       "source": "src/com_sess.cpp",
-      "module": "com_sess",
       "flags": "config/flags/com_sess.rsp",
       "owners": {
         "00432200": "src/com_sess.cpp",
@@ -4493,12 +4514,12 @@
       },
       "symbols": {
         "004325E0": "?IsEqualGuid@TCommunications_Sessions@@QAEHPAU_GUID@@0@Z"
-      }
+      },
+      "module": "com_sess"
     },
     {
       "name": "dpl_obj",
       "source": "src/dpl_obj.cpp",
-      "module": "dpl_obj",
       "flags": "config/flags/004418A0_RGE_Doppleganger_Object.rsp",
       "owners": {
         "004418A0": "src/dpl_obj.cpp",
@@ -4524,12 +4545,12 @@
         "004422B0": "?remove_doppleganger_check@RGE_Doppleganger_Creator@@QAEHPAVRGE_Static_Object@@@Z",
         "00442390": "?perform_doppleganger_checks@RGE_Doppleganger_Creator@@QAEXXZ",
         "00442540": "?expand_allocations@RGE_Doppleganger_Creator@@IAEXH@Z"
-      }
+      },
+      "module": "dpl_obj"
     },
     {
       "name": "flics",
       "source": "src/flics.cpp",
-      "module": "flics",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00449B30": "src/flics.cpp",
@@ -4548,11 +4569,11 @@
       "symbols": {
         "00449B30": "??0RGE_Flic_Player@@QAE@PAD@Z",
         "00449BE0": "??0RGE_Flic_Player@@QAE@H@Z"
-      }
+      },
+      "module": "flics"
     },
     {
       "name": "mst_play",
-      "module": "mst_play",
       "source": "src/mst_play.cpp",
       "flags": "config/flags/00461270_load_master_object.rsp",
       "owners": {
@@ -4568,11 +4589,11 @@
       "symbols": {
         "00460FD0": "??0RGE_Master_Player@@QAE@PAU_iobuf@@@Z",
         "004610C0": "??0RGE_Master_Player@@QAE@H@Z"
-      }
+      },
+      "module": "mst_play"
     },
     {
       "name": "Panel",
-      "module": "Panel",
       "source": "src/Panel.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
@@ -4788,12 +4809,12 @@
         "004668D0": "?get_help_info@TPanel@@UAEEAAPADAAJJJ@Z",
         "004669D0": "?handle_reactivate@TPanel@@UAEXXZ",
         "004669F0": "?get_true_render_rect@TPanel@@UAEXAAUtagRECT@@@Z"
-      }
+      },
+      "module": "Panel"
     },
     {
       "name": "Path",
       "source": "src/Path.cpp",
-      "module": "Path",
       "flags": "config/flags/0046A8E0_operator.rsp",
       "owners": {
         "0046A7F0": "src/Path.cpp",
@@ -4837,13 +4858,13 @@
         "0046A810": "??6@YAAAVostream@@AAV0@ABVPath@@@Z",
         "0046A8E0": "??HPath@@QBE?AV0@ABV0@@Z",
         "0046A9E0": "??4Path@@QAEAAV0@ABV0@@Z"
-      }
+      },
+      "module": "Path"
     },
     {
       "name": "rge_tslc",
       "source": "src/rge_tslc.cpp",
       "flags": "config/flags/default.rsp",
-      "module": "rge_tslc",
       "owners": {
         "00480390": "src/rge_tslc.cpp",
         "004803F0": "src/rge_tslc.cpp",
@@ -4862,12 +4883,12 @@
         "00480400": "?GetAvg@RGE_TimeSinceLastCall@@QAEKH@Z",
         "00480460": "?Get@RGE_TimeSinceLastCall@@QAEKXZ",
         "00480610": "?GetHiLoInfo@RGE_TimeSinceLastCall@@QAEPADH@Z"
-      }
+      },
+      "module": "rge_tslc"
     },
     {
       "name": "tact_art",
       "source": "src/tact_art.cpp",
-      "module": "tact_art",
       "flags": "config/flags/004CCCB0_set_state.rsp",
       "owners": {
         "004CCBA0": "src/tact_art.cpp",
@@ -4894,12 +4915,12 @@
         "004CD130": "?move_to@TRIBE_Action_Artifact@@MAEHPAVRGE_Static_Object@@MMM@Z",
         "004CD160": "?work@TRIBE_Action_Artifact@@MAEHPAVRGE_Static_Object@@MMM@Z",
         "004CD1A0": "?reset_owner@TRIBE_Action_Artifact@@QAEXXZ"
-      }
+      },
+      "module": "tact_art"
     },
     {
       "name": "taunt",
       "source": "src/taunt.cpp",
-      "module": "taunt",
       "flags": "config/flags/005096A0_RestartSoundSystem.rsp",
       "owners": {
         "00509450": "src/taunt.cpp",
@@ -4911,7 +4932,8 @@
         "00509670": "src/taunt.cpp",
         "005096A0": "src/taunt.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "taunt"
     },
     {
       "name": "tpnl_btn",
@@ -4938,7 +4960,6 @@
     {
       "name": "tpnl_pop",
       "source": "src/tpnl_pop.cpp",
-      "module": "tpnl_pop",
       "flags": "config/flags/0051CDB0_TRIBE_Panel_Pop.rsp",
       "owners": {
         "0051CCA0": "src/tpnl_pop.cpp",
@@ -4953,12 +4974,12 @@
       "symbols": {
         "0051D060": "?draw@TRIBE_Panel_Pop@@UAEXXZ",
         "0051CE40": "?set_rect@TRIBE_Panel_Pop@@UAEXJJJJ@Z"
-      }
+      },
+      "module": "tpnl_pop"
     },
     {
       "name": "tpnl_tim",
       "source": "src/tpnl_tim.cpp",
-      "module": "tpnl_tim",
       "flags": "config/flags/0051E2B0_render_to_image_buffer.rsp",
       "owners": {
         "0051D790": "src/tpnl_tim.cpp",
@@ -4974,12 +4995,12 @@
       },
       "symbols": {
         "0051DC90": "?draw@TRIBE_Panel_Time@@UAEXXZ"
-      }
+      },
+      "module": "tpnl_tim"
     },
     {
       "name": "rmm_tdbc",
       "source": "src/rmm_tdbc.cpp",
-      "module": "rmm_tdbc",
       "flags": "config/flags/00487710_init.rsp",
       "owners": {
         "004876C0": "src/rmm_tdbc.cpp",
@@ -4994,12 +5015,12 @@
         "00487930": "?de_init@TRIBE_RMM_Database_Controller@@UAEEXZ",
         "00488700": "?add_elevation_module@TRIBE_RMM_Database_Controller@@MAEXXZ",
         "004887A0": "?add_shallows_module@TRIBE_RMM_Database_Controller@@IAEXXZ"
-      }
+      },
+      "module": "rmm_tdbc"
     },
     {
       "name": "tact_dar",
       "source": "src/tact_dar.cpp",
-      "module": "tact_dar",
       "flags": "config/flags/004CE530_TRIBE_Action_Discovery_Artifact.rsp",
       "owners": {
         "004CE530": "src/tact_dar.cpp",
@@ -5018,12 +5039,12 @@
         "004CE700": "?first_in_stack@TRIBE_Action_Discovery_Artifact@@UAEXE@Z",
         "004CE720": "?set_state@TRIBE_Action_Discovery_Artifact@@MAEXE@Z",
         "004CE7A0": "?check_objects@TRIBE_Action_Discovery_Artifact@@IAEXXZ"
-      }
+      },
+      "module": "tact_dar"
     },
     {
       "name": "rmm_cntr",
       "source": "src/rmm_cntr.cpp",
-      "module": "rmm_cntr",
       "flags": "config/flags/004821A0_RGE_RMM_Controller.rsp",
       "owners": {
         "004821A0": "src/rmm_cntr.cpp",
@@ -5034,12 +5055,12 @@
         "004821A0": "??0RGE_RMM_Controller@@QAE@PAVRGE_Map@@PAVRGE_Game_World@@EJ@Z",
         "00482260": "?generate@RGE_RMM_Controller@@UAEEXZ",
         "004828A0": "?count_map_tiles@RGE_RMM_Controller@@IAEJE@Z"
-      }
+      },
+      "module": "rmm_cntr"
     },
     {
       "name": "pnl_scr",
       "source": "src/Pnl_scr.cpp",
-      "module": "Pnl_scr",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0047BA70": "src/Pnl_scr.cpp",
@@ -5056,13 +5077,13 @@
         "0047BAE0": "?setup@TScreenPanel@@QAEJPAVTDrawArea@@PADJH@Z",
         "0047BB10": "?setup@TScreenPanel@@QAEJPAVTDrawArea@@PADJEH@Z",
         "0047BB40": "?draw@TScreenPanel@@UAEXXZ"
-      }
+      },
+      "module": "Pnl_scr"
     },
     {
       "name": "sounddrv",
       "source": "src/Sounddrv.cpp",
       "flags": "config/flags/default.rsp",
-      "module": "sounddrv",
       "owners": {
         "004BC590": "src/Sounddrv.cpp",
         "004BC5A0": "src/Sounddrv.cpp",
@@ -5136,25 +5157,27 @@
         "004BD540": "?set_pan@TDigital@@QAEXJ@Z",
         "004BD570": "?is_playing@TDigital@@QAEHXZ",
         "004BD5C0": "?add_to_play_list@TDigital@@QAEHXZ"
-      }
+      },
+      "module": "sounddrv"
     },
     {
       "name": "tact_tek",
       "source": "src/tact_tek.cpp",
-      "module": "tact_tek",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "004D2370": "src/tact_tek.cpp",
-        "004D2440": "src/tact_tek.cpp"
+        "004D2440": "src/tact_tek.cpp",
+        "004D2450": "src/tact_tek.cpp"
       },
       "symbols": {
         "004D2370": "?save@TRIBE_Action_Make_Tech@@UAEXH@Z",
-        "004D2440": "?set_state@TRIBE_Action_Make_Tech@@MAEXE@Z"
-      }
+        "004D2440": "?set_state@TRIBE_Action_Make_Tech@@MAEXE@Z",
+        "004D2450": "?update@TRIBE_Action_Make_Tech@@UAEEXZ"
+      },
+      "module": "tact_tek"
     },
     {
       "name": "effects",
-      "module": "effects_cpp",
       "source": "src/effects.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
@@ -5166,22 +5189,22 @@
         "004495C0": "?do_effect@RGE_Effects@@UAEXFPAVRGE_Player@@@Z",
         "00449440": "??1RGE_Effects@@UAE@XZ",
         "004494B0": "?save@RGE_Effects@@UAEXH@Z"
-      }
+      },
+      "module": "effects_cpp"
     },
     {
       "name": "rmm_land",
       "source": "src/rmm_land.cpp",
-      "module": "rmm_land",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00485200": "src/rmm_land.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "rmm_land"
     },
     {
       "name": "pnl_dlg",
       "source": "src/pnl_dlg.cpp",
-      "module": "pnl_dlg",
       "flags": "config/flags/00473E40_TDialogPanel.rsp",
       "owners": {
         "00473C10": "src/pnl_dlg.cpp",
@@ -5194,12 +5217,12 @@
         "00473EC0": "?set_focus@TDialogPanel@@UAEXH@Z",
         "00473E40": "??1TDialogPanel@@UAE@XZ",
         "00473C80": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z"
-      }
+      },
+      "module": "pnl_dlg"
     },
     {
       "name": "taipbook",
       "source": "src/taipbook.cpp",
-      "module": "taipbook",
       "flags": "config/flags/default.rsp",
       "owners": {
         "004E68B0": "src/taipbook.cpp",
@@ -5214,11 +5237,11 @@
         "004E6900": "?convertTargetNameToIntType@TribeAIPlayBook@@UBEHPAD@Z",
         "004E6910": "?convertTargetCharacteristicNameToIntType@TribeAIPlayBook@@UBEHPAD@Z",
         "004E6AD0": "?convertUnitToIntType@TribeAIPlayBook@@UBEHPAVRGE_Static_Object@@@Z"
-      }
+      },
+      "module": "taipbook"
     },
     {
       "name": "tmplayer",
-      "module": "tmplayer",
       "source": "src/tmplayer.cpp",
       "flags": "config/flags/00511830_load_master_object.rsp",
       "owners": {
@@ -5234,12 +5257,12 @@
         "00511820": "??1TRIBE_Master_Player@@UAE@XZ",
         "00511830": "?load_master_object@TRIBE_Master_Player@@UAEXHEPAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
         "00511990": "?load_object@TRIBE_Master_Player@@UAEXPAU_iobuf@@EPAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"
-      }
+      },
+      "module": "tmplayer"
     },
     {
       "name": "Shape",
       "source": "src/Shape.cpp",
-      "module": "Shape",
       "flags": "config/flags/default.rsp",
       "owners": {
         "004B8B30": "src/Shape.cpp",
@@ -5266,12 +5289,12 @@
         "004BA900": "?shape_mirror_unclipped@TShape@@AAEEPAVTDrawArea@@JJ@Z",
         "004B99F0": "?shape_shadow_unclipped@TShape@@AAEEPAVTDrawArea@@JJPAE@Z",
         "004BAAF0": "?shape_mirror_shadow_unclipped@TShape@@AAEEPAVTDrawArea@@JJPAE@Z"
-      }
+      },
+      "module": "Shape"
     },
     {
       "name": "point",
       "source": "src/point.cpp",
-      "module": "point",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0047E480": "src/point.cpp",
@@ -5288,24 +5311,24 @@
         "0047E4E0": "??9@YAHABVXYZ@@0@Z",
         "0047E510": "??4XYZ@@QAEAAV0@ABV0@@Z",
         "0047E580": "??GXYZ@@QBE?AV0@ABV0@@Z"
-      }
+      },
+      "module": "point"
     },
     {
       "name": "dlg_conf",
       "source": "src/dlg_conf.cpp",
-      "module": "dlg_conf",
       "flags": "config/flags/0043B560_TribeConfigDialog.rsp",
       "owners": {
         "0043C0C0": "src/dlg_conf.cpp"
       },
       "symbols": {
         "0043C0C0": "??1TribeConfigDialog@@UAE@XZ"
-      }
+      },
+      "module": "dlg_conf"
     },
     {
       "name": "dstring",
       "source": "src/dstring.cpp",
-      "module": "dstring",
       "flags": "config/flags/00446E90_word.rsp",
       "owners": {
         "004465D0": "src/dstring.cpp",
@@ -5402,12 +5425,12 @@
         "00446800": "??4DString@@QAEAAV0@ABV0@@Z",
         "00446C80": "??HDString@@QBE?AV0@ABV0@@Z",
         "00446D10": "??ADString@@QAEAADH@Z"
-      }
+      },
+      "module": "dstring"
     },
     {
       "name": "trig",
       "source": "src/trig.cpp",
-      "module": "trig",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0052A730": "src/trig.cpp",
@@ -5434,7 +5457,8 @@
         "0052A910": "?cos360@TRIGONOMETRY@@QAEMH@Z",
         "0052A930": "?tan360@TRIGONOMETRY@@QAEMH@Z",
         "0052A950": "?atan360@TRIGONOMETRY@@QAEMH@Z"
-      }
+      },
+      "module": "trig"
     },
     {
       "name": "pathsys",
@@ -5475,7 +5499,6 @@
     {
       "name": "tact_lst",
       "source": "src/tact_lst.cpp",
-      "module": "tact_lst",
       "flags": "config/flags/004D0170_create_action.rsp",
       "owners": {
         "004D0150": "src/tact_lst.cpp",
@@ -5486,12 +5509,12 @@
       "symbols": {
         "004D05D0": "?create_task_action@TRIBE_Action_List@@UAEPAVRGE_Action@@PAVRGE_Task@@PAVRGE_Static_Object@@MMM@Z",
         "004D0C50": "?get_action_name@TRIBE_Action_List@@UAEXPAD@Z"
-      }
+      },
+      "module": "tact_lst"
     },
     {
       "name": "teffects",
       "source": "src/teffects.cpp",
-      "module": "teffects",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0050D460": "src/teffects.cpp",
@@ -5502,12 +5525,12 @@
       "symbols": {
         "0050D460": "??0TRIBE_Effects@@QAE@H@Z",
         "0050D4B0": "??0TRIBE_Effects@@QAE@PAD@Z"
-      }
+      },
+      "module": "teffects"
     },
     {
       "name": "pnl_edit",
       "source": "src/pnl_edit.cpp",
-      "module": "pnl_edit",
       "flags": "config/flags/00475690_TEditPanel.rsp",
       "owners": {
         "00475930": "src/pnl_edit.cpp",
@@ -5539,12 +5562,12 @@
         "00475970": "?set_text@TEditPanel@@QAEXPAD@Z",
         "00475E10": "?set_text_color@TEditPanel@@QAEXKK@Z",
         "00475F40": "?wnd_proc@TEditPanel@@UAEJPAXIIJ@Z"
-      }
+      },
+      "module": "pnl_edit"
     },
     {
       "name": "scr_cred",
       "source": "src/scr_cred.cpp",
-      "module": "scr_cred",
       "flags": "config/flags/004926E0_TRIBE_Credits_Screen.rsp",
       "owners": {
         "004926E0": "src/scr_cred.cpp",
@@ -5567,12 +5590,12 @@
         "00492D70": "?action@TRIBE_Credits_Screen@@UAEJPAVTPanel@@JKK@Z",
         "00492F80": "?set_text@TScrollTextPanel@@UAEXPAD@Z",
         "00493070": "?draw@TScrollTextPanel@@UAEXXZ"
-      }
+      },
+      "module": "scr_cred"
     },
     {
       "name": "rmm_dbct",
       "source": "src/rmm_dbct.cpp",
-      "module": "rmm_dbct",
       "flags": "config/flags/00483020_RGE_RMM_Database_Controller.rsp",
       "owners": {
         "00483020": "src/rmm_dbct.cpp",
@@ -5589,11 +5612,11 @@
         "00483430": "?generate@RGE_RMM_Database_Controller@@UAEEXZ",
         "00483540": "?init@RGE_RMM_Database_Controller@@UAEEPAVRGE_Map@@PAVRGE_Game_World@@EJE@Z",
         "004835A0": "?de_init@RGE_RMM_Database_Controller@@UAEEXZ"
-      }
+      },
+      "module": "rmm_dbct"
     },
     {
       "name": "rmm_obj",
-      "module": "rmm_obj",
       "source": "src/rmm_obj.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
@@ -5608,12 +5631,12 @@
       },
       "symbols": {
         "00485DC0": "?generate@RGE_RMM_Object_Generator@@UAEEXZ"
-      }
+      },
+      "module": "rmm_obj"
     },
     {
       "name": "scr_cj",
       "source": "src/scr_cj.cpp",
-      "module": "scr_cj",
       "flags": "config/flags/scr_cj.rsp",
       "owners": {
         "00491650": "src/scr_cj.cpp",
@@ -5626,12 +5649,12 @@
         "00491A80": "?handle_idle@TribeJoinScreen@@UAEJXZ",
         "00491B20": "?handle_user_command@TribeJoinScreen@@UAEJIJ@Z",
         "00491C70": "?fillList@TribeJoinScreen@@IAEXXZ"
-      }
+      },
+      "module": "scr_cj"
     },
     {
       "name": "visible",
       "source": "src/visible.cpp",
-      "module": "visible",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0053C3C0": "src/visible.cpp",
@@ -5672,12 +5695,12 @@
         "0053CE70": "?checksum_visible_inputs@RGE_Visible_Map@@QAEKXZ",
         "0053CEE0": "??0RGE_Unified_Visible_Map@@QAE@HPAVRGE_Game_World@@@Z",
         "0053D070": "?Set_Map_Offsets@RGE_Unified_Visible_Map@@AAEXXZ"
-      }
+      },
+      "module": "visible"
     },
     {
       "name": "scr_trb",
       "source": "src/scr_trb.cpp",
-      "module": "scr_trb",
       "flags": "config/flags/004B75A0_TribeSelectTribeScreen.rsp",
       "owners": {
         "004B75A0": "src/scr_trb.cpp",
@@ -5686,12 +5709,12 @@
         "004B7F70": "src/scr_trb.cpp",
         "004B8070": "src/scr_trb.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "scr_trb"
     },
     {
       "name": "tm_tre_o",
       "source": "src/tm_tre_o.cpp",
-      "module": "tm_tre_o",
       "flags": "config/flags/0050F3A0_make_new_master.rsp",
       "owners": {
         "0050F180": "src/tm_tre_o.cpp",
@@ -5706,11 +5729,11 @@
         "0050F2A0": "??0TRIBE_Master_Tree_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z",
         "0050F320": "?make_new_obj@TRIBE_Master_Tree_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z",
         "0050F3A0": "?make_new_master@TRIBE_Master_Tree_Object@@UAEPAVRGE_Master_Static_Object@@XZ"
-      }
+      },
+      "module": "tm_tre_o"
     },
     {
       "name": "tvw_dmap",
-      "module": "tvw_dmap",
       "source": "src/tvw_dmap.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
@@ -5724,12 +5747,12 @@
         "0052CA30": "?set_redraw@TRIBE_Diamond_Map_View@@UAEXW4RedrawMode@TPanel@@@Z",
         "0052CA60": "?draw_objects@TRIBE_Diamond_Map_View@@MAEXXZ",
         "0052CAB0": "?draw_object@TRIBE_Diamond_Map_View@@MAEXFFEFPAVRGE_Static_Object@@@Z"
-      }
+      },
+      "module": "tvw_dmap"
     },
     {
       "name": "aiblditm_cpp",
       "source": "src/aiblditm.cpp",
-      "module": "aiblditm",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00408190": "src/aiblditm.cpp",
@@ -5784,12 +5807,12 @@
         "00408690": "?permanentSkip@BuildItem@@QAEEXZ",
         "004084C0": "??M@YAHABVBuildItem@@0@Z",
         "004084E0": "??O@YAHABVBuildItem@@0@Z"
-      }
+      },
+      "module": "aiblditm"
     },
     {
       "name": "aibldmod_cpp",
       "source": "src/aibldmod.cpp",
-      "module": "aibldmod",
       "flags": "config/flags/group_009_gx.rsp",
       "owners": {
         "004086B0": "src/aibldmod.cpp",
@@ -5822,12 +5845,12 @@
         "00409B70": "?numberItemsBuilt@BuildAIModule@@QBEHXZ",
         "004086B0": "??0BuildAIModule@@QAE@PAXH@Z",
         "00409F50": "?specificBuildListItem@BuildAIModule@@IAEPAVBuildItem@@H@Z"
-      }
+      },
+      "module": "aibldmod"
     },
     {
       "name": "aibobj",
       "source": "src/aibobj.cpp",
-      "module": "aibobj",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0040A350": "src/aibobj.cpp",
@@ -5908,12 +5931,12 @@
         "0040A390": "??9@YAHABVBaseObject@@0@Z",
         "0040A3B0": "??M@YAHABVBaseObject@@0@Z",
         "0040A3D0": "??O@YAHABVBaseObject@@0@Z"
-      }
+      },
+      "module": "aibobj"
     },
     {
       "name": "aidipmod",
       "source": "src/aidipmod.cpp",
-      "module": "aidipmod",
       "flags": "config/flags/group_009_gx.rsp",
       "owners": {
         "0040BEC0": "src/aidipmod.cpp",
@@ -5958,12 +5981,12 @@
         "0040C6E0": "?isAlly@DiplomacyAIModule@@QBEHH@Z",
         "0040C730": "?isAlliedWithMe@DiplomacyAIModule@@QBEHH@Z",
         "0040C780": "?setRelation@DiplomacyAIModule@@QAEXHH@Z"
-      }
+      },
+      "module": "aidipmod"
     },
     {
       "name": "aimdmod",
       "source": "src/aimdmod.cpp",
-      "module": "aimdmod",
       "flags": "config/flags/group_009_gx.rsp",
       "owners": {
         "0040CDF0": "src/aimdmod.cpp",
@@ -5988,12 +6011,12 @@
         "0040D250": "?removeObject@MainDecisionAIModule@@UAEHH@Z",
         "0040D3B0": "?numberObjectsWithGroup@MainDecisionAIModule@@QAEHH@Z",
         "0040DB20": "?objectGroupThatCanPerformAction@MainDecisionAIModule@@UAEHH@Z"
-      }
+      },
+      "module": "aimdmod"
     },
     {
       "name": "aimodule",
       "source": "src/aimodule.cpp",
-      "module": "aimodule",
       "flags": "config/flags/group_009_gx.rsp",
       "owners": {
         "0040DD90": "src/aimodule.cpp",
@@ -6079,12 +6102,12 @@
         "0040E820": "?logHistory@AIModule@@QAAXPADZZ",
         "0040E830": "?logCommonHistory@AIModule@@QAAXPADZZ",
         "0040E8F0": "?processFrame@AIModule@@IAEHXZ"
-      }
+      },
+      "module": "aimodule"
     },
     {
       "name": "asp_list_cpp",
       "source": "src/asp_list.cpp",
-      "module": "asp_list",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "0041A640": "src/asp_list.cpp",
@@ -6117,12 +6140,12 @@
         "0041A9B0": "?remove_sprite@RGE_Active_Sprite_List@@QAEXPAVRGE_Sprite@@@Z",
         "0041AA50": "?draw@RGE_Active_Sprite_List@@UAEXFFFFFPAVRGE_Color_Table@@PAVTDrawArea@@@Z",
         "0041AB20": "?frame@RGE_Active_Sprite_List@@UAEFPAVRGE_Sprite@@@Z"
-      }
+      },
+      "module": "asp_list"
     },
     {
       "name": "asprite_cpp",
       "source": "src/asprite.cpp",
-      "module": "asprite",
       "flags": "config/flags/group_009_gx.rsp",
       "owners": {
         "0041AD20": "src/asprite.cpp",
@@ -6192,12 +6215,12 @@
         "0041AFE0": "?get_lowest_draw_level@RGE_Active_Sprite@@QAEEXZ",
         "0041B530": "?is_animating@RGE_Active_Animated_Sprite@@UAEEXZ",
         "0041B560": "?frame_passed@RGE_Active_Animated_Sprite@@UAEEF@Z"
-      }
+      },
+      "module": "asprite"
     },
     {
       "name": "Pnl_inp",
       "source": "src/Pnl_inp.cpp",
-      "module": "Pnl_inp",
       "flags": "config/flags/group_009_gx.rsp",
       "owners": {
         "00476CF0": "src/Pnl_inp.cpp",
@@ -6236,12 +6259,12 @@
         "00478150": "?is_blank@TInputPanel@@QAEHXZ",
         "004781A0": "?get_trimmed_str@TInputPanel@@QAEPADPADH@Z",
         "00476D80": "?setup@TInputPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPADHEHEEFPAVTDigital@@3W4FormatType@1@@Z"
-      }
+      },
+      "module": "Pnl_inp"
     },
     {
       "name": "pnl_btn",
       "source": "src/pnl_btn.cpp",
-      "module": "pnl_btn",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00472030": "src/pnl_btn.cpp",
@@ -6319,12 +6342,12 @@
         "00473AA0": "?do_right_action@TButtonPanel@@QAEXH@Z",
         "004727B0": "?set_disabled@TButtonPanel@@QAEXH@Z",
         "00473120": "?handle_mouse_down@TButtonPanel@@UAEJEJJHH@Z"
-      }
+      },
+      "module": "pnl_btn"
     },
     {
       "name": "rmm_base",
       "source": "src/rmm_base.cpp",
-      "module": "rmm_base",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00480790": "src/rmm_base.cpp",
@@ -6353,12 +6376,12 @@
         "00480CC0": "?init_stack@RGE_Random_Map_Module@@IAEXAAUMap_Stack@@@Z",
         "00480FB0": "?find_path@RGE_Random_Map_Module@@IAEEJJAAJ0PAM@Z",
         "00480E50": "?clear_stack@RGE_Random_Map_Module@@IAEXXZ"
-      }
+      },
+      "module": "rmm_base"
     },
     {
       "name": "tm_co_ob_cpp",
       "source": "src/tm_co_ob.cpp",
-      "module": "tm_co_ob",
       "flags": "config/flags/group_009_gx.rsp",
       "owners": {
         "0050E970": "src/tm_co_ob.cpp",
@@ -6385,43 +6408,46 @@
         "0050EB60": "?setup@TRIBE_Master_Combat_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z",
         "0050EC90": "?setup@TRIBE_Master_Combat_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z",
         "0050EE80": "?modify@TRIBE_Master_Combat_Object@@UAEXME@Z"
-      }
+      },
+      "module": "tm_co_ob"
     },
     {
       "name": "main",
       "source": "src/main.cpp",
-      "module": "main",
       "flags": "config/flags/004549E0_WinMain_16.rsp",
       "owners": {
         "004549E0": "src/main.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "main"
     },
     {
       "name": "ttsk_lst",
       "source": "src/ttsk_lst.cpp",
-      "module": "ttsk_lst",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0052C8D0": "src/ttsk_lst.cpp"
       },
-      "symbols": {}
+      "symbols": {},
+      "module": "ttsk_lst"
     },
     {
       "name": "t_c_obj_complete_fresh",
       "source": "src/t_c_obj.cpp",
-      "module": "t_c_obj",
       "flags": "config/flags/004CA0F0_TRIBE_Combat_Object.rsp",
       "owners": {
         "004CA0F0": "src/t_c_obj.cpp",
         "004CA1A0": "src/t_c_obj.cpp",
         "004CA210": "src/t_c_obj.cpp",
+        "004CA300": "src/t_c_obj.cpp",
+        "004CA3E0": "src/t_c_obj.cpp",
         "004CA510": "src/t_c_obj.cpp",
         "004CA5F0": "src/t_c_obj.cpp",
         "004CA740": "src/t_c_obj.cpp",
         "004CA780": "src/t_c_obj.cpp",
         "004CA790": "src/t_c_obj.cpp",
         "004CA8C0": "src/t_c_obj.cpp",
+        "004CAA00": "src/t_c_obj.cpp",
         "004CAA50": "src/t_c_obj.cpp",
         "004CB8B0": "src/t_c_obj.cpp",
         "004CB8D0": "src/t_c_obj.cpp",
@@ -6437,7 +6463,10 @@
       "symbols": {
         "004CA0F0": "??0TRIBE_Combat_Object@@QAE@PAVTRIBE_Master_Combat_Object@@PAVRGE_Player@@MMMH@Z",
         "004CA1A0": "??0TRIBE_Combat_Object@@QAE@HPAVRGE_Game_World@@H@Z",
+        "004CA300": "?setup@TRIBE_Combat_Object@@MAEHPAVTRIBE_Master_Combat_Object@@PAVRGE_Player@@MMM@Z",
+        "004CA3E0": "?setup@TRIBE_Combat_Object@@MAEHHPAVRGE_Game_World@@@Z",
         "004CA510": "?create_action_list@TRIBE_Combat_Object@@UAEPAVRGE_Action_List@@XZ",
+        "004CAA00": "?calc_attack_modifier@TRIBE_Combat_Object@@UAEMPAVRGE_Static_Object@@@Z",
         "004CAA50": "?attack@TRIBE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAVRGE_Combat_Object@@@Z",
         "004CBD30": "?lines_intersect@@YAHMMMMMMMM@Z",
         "004CB060": "?hunt@TRIBE_Combat_Object@@UAEHHH@Z",
@@ -6447,12 +6476,12 @@
         "004CB5C0": "?build@TRIBE_Combat_Object@@UAEHHH@Z",
         "004CB710": "?trade@TRIBE_Combat_Object@@UAEHHH@Z",
         "004CB8B0": "?useSameZoneDropsite@TRIBE_Combat_Object@@UBEEXZ"
-      }
+      },
+      "module": "t_c_obj"
     },
     {
       "name": "sprite_cpp",
       "source": "src/sprite.cpp",
-      "module": "sprite",
       "flags": "config/flags/004C0960_get_frame.rsp",
       "owners": {
         "004BF720": "src/sprite.cpp",
@@ -6483,389 +6512,394 @@
         "004C0C50": "?get_lowest_draw_level@RGE_Sprite@@QAEEXZ",
         "004C0F90": "?make_active_sprite@RGE_Sprite@@QAEPAVRGE_Active_Sprite@@XZ",
         "004C1030": "?check_for_shadows@RGE_Sprite@@QAEHXZ"
-      }
+      },
+      "module": "sprite"
     },
-                        {
+    {
       "name": "basegame_cpp",
       "source": "src/basegame.cpp",
-      "module": "basegame",
       "flags": "config/flags/0041BAA0_setup.rsp",
       "owners": {
-            "0041B620": "src/basegame.cpp",
-            "0041B650": "src/basegame.cpp",
-            "0041B6A0": "src/basegame.cpp",
-            "0041C7D0": "src/basegame.cpp",
-            "0041C830": "src/basegame.cpp",
-            "0041C870": "src/basegame.cpp",
-            "0041C880": "src/basegame.cpp",
-            "0041C890": "src/basegame.cpp",
-            "0041C8B0": "src/basegame.cpp",
-            "0041C8D0": "src/basegame.cpp",
-            "0041C8F0": "src/basegame.cpp",
-            "0041C910": "src/basegame.cpp",
-            "0041C930": "src/basegame.cpp",
-            "0041C950": "src/basegame.cpp",
-            "0041C960": "src/basegame.cpp",
-            "0041C970": "src/basegame.cpp",
-            "0041C980": "src/basegame.cpp",
-            "0041C990": "src/basegame.cpp",
-            "0041C9A0": "src/basegame.cpp",
-            "0041C9C0": "src/basegame.cpp",
-            "0041C9F0": "src/basegame.cpp",
-            "0041CA10": "src/basegame.cpp",
-            "0041CB80": "src/basegame.cpp",
-            "0041CDA0": "src/basegame.cpp",
-            "0041CE00": "src/basegame.cpp",
-            "0041CE60": "src/basegame.cpp",
-            "0041CEC0": "src/basegame.cpp",
-            "0041CF30": "src/basegame.cpp",
-            "0041CF70": "src/basegame.cpp",
-            "0041CFC0": "src/basegame.cpp",
-            "0041D0A0": "src/basegame.cpp",
-            "0041E7A0": "src/basegame.cpp",
-            "0041EBC0": "src/basegame.cpp",
-            "0041EBF0": "src/basegame.cpp",
-            "0041ED00": "src/basegame.cpp",
-            "0041ED70": "src/basegame.cpp",
-            "0041EDE0": "src/basegame.cpp",
-            "0041EE90": "src/basegame.cpp",
-            "0041EFF0": "src/basegame.cpp",
-            "0041F030": "src/basegame.cpp",
-            "0041F110": "src/basegame.cpp",
-            "0041F2D0": "src/basegame.cpp",
-            "0041F400": "src/basegame.cpp",
-            "0041F730": "src/basegame.cpp",
-            "0041F800": "src/basegame.cpp",
-            "0041F830": "src/basegame.cpp",
-            "0041F920": "src/basegame.cpp",
-            "0041F9B0": "src/basegame.cpp",
-            "0041FA90": "src/basegame.cpp",
-            "0041FAF0": "src/basegame.cpp",
-            "0041FBC0": "src/basegame.cpp",
-            "0041FC90": "src/basegame.cpp",
-            "0041FE50": "src/basegame.cpp",
-            "0041FF20": "src/basegame.cpp",
-            "00420000": "src/basegame.cpp",
-            "00420050": "src/basegame.cpp",
-            "004200B0": "src/basegame.cpp",
-            "004200D0": "src/basegame.cpp",
-            "00420110": "src/basegame.cpp",
-            "00420130": "src/basegame.cpp",
-            "00420150": "src/basegame.cpp",
-            "00420180": "src/basegame.cpp",
-            "004201A0": "src/basegame.cpp",
-            "004201C0": "src/basegame.cpp",
-            "004201E0": "src/basegame.cpp",
-            "00420200": "src/basegame.cpp",
-            "00420220": "src/basegame.cpp",
-            "00420270": "src/basegame.cpp",
-            "004202E0": "src/basegame.cpp",
-            "00420330": "src/basegame.cpp",
-            "00420360": "src/basegame.cpp",
-            "00420370": "src/basegame.cpp",
-            "004203E0": "src/basegame.cpp",
-            "00420440": "src/basegame.cpp",
-            "00420500": "src/basegame.cpp",
-            "00420560": "src/basegame.cpp",
-            "00420580": "src/basegame.cpp",
-            "004205B0": "src/basegame.cpp",
-            "004205E0": "src/basegame.cpp",
-            "00420610": "src/basegame.cpp",
-            "00420650": "src/basegame.cpp",
-            "00420F60": "src/basegame.cpp",
-            "004211D0": "src/basegame.cpp",
-            "004212E0": "src/basegame.cpp",
-            "004213A0": "src/basegame.cpp",
-            "004213C0": "src/basegame.cpp",
-            "004213E0": "src/basegame.cpp",
-            "00421830": "src/basegame.cpp",
-            "00421910": "src/basegame.cpp",
-            "00421930": "src/basegame.cpp",
-            "00421950": "src/basegame.cpp",
-            "004219F0": "src/basegame.cpp",
-            "00421A80": "src/basegame.cpp",
-            "00421B70": "src/basegame.cpp",
-            "00421BB0": "src/basegame.cpp",
-            "00422030": "src/basegame.cpp",
-            "00422050": "src/basegame.cpp",
-            "00422090": "src/basegame.cpp",
-            "004220D0": "src/basegame.cpp",
-            "004220F0": "src/basegame.cpp",
-            "00422130": "src/basegame.cpp",
-            "00422260": "src/basegame.cpp",
-            "00422390": "src/basegame.cpp",
-            "004223A0": "src/basegame.cpp",
-            "004223B0": "src/basegame.cpp",
-            "004223C0": "src/basegame.cpp",
-            "004223D0": "src/basegame.cpp",
-            "004223E0": "src/basegame.cpp",
-            "004223F0": "src/basegame.cpp",
-            "00422400": "src/basegame.cpp",
-            "00422410": "src/basegame.cpp",
-            "00422420": "src/basegame.cpp",
-            "00422430": "src/basegame.cpp",
-            "00422440": "src/basegame.cpp",
-            "00422450": "src/basegame.cpp",
-            "00422460": "src/basegame.cpp",
-            "00422470": "src/basegame.cpp",
-            "00422480": "src/basegame.cpp",
-            "00422490": "src/basegame.cpp",
-            "004224A0": "src/basegame.cpp",
-            "004224C0": "src/basegame.cpp",
-            "004224E0": "src/basegame.cpp",
-            "00422630": "src/basegame.cpp",
-            "00422640": "src/basegame.cpp",
-            "00422650": "src/basegame.cpp",
-            "00422660": "src/basegame.cpp",
-            "00422670": "src/basegame.cpp",
-            "00422680": "src/basegame.cpp",
-            "00422690": "src/basegame.cpp",
-            "004226A0": "src/basegame.cpp",
-            "004226B0": "src/basegame.cpp",
-            "004226C0": "src/basegame.cpp",
-            "004226D0": "src/basegame.cpp",
-            "00422700": "src/basegame.cpp",
-            "00422710": "src/basegame.cpp",
-            "00422720": "src/basegame.cpp",
-            "00422740": "src/basegame.cpp",
-            "00422760": "src/basegame.cpp",
-            "00422790": "src/basegame.cpp",
-            "004227A0": "src/basegame.cpp",
-            "004227B0": "src/basegame.cpp",
-            "004227C0": "src/basegame.cpp",
-            "004227D0": "src/basegame.cpp",
-            "004227E0": "src/basegame.cpp",
-            "004227F0": "src/basegame.cpp",
-            "00422800": "src/basegame.cpp",
-            "00422820": "src/basegame.cpp",
-            "00422850": "src/basegame.cpp",
-            "00422870": "src/basegame.cpp",
-            "00422880": "src/basegame.cpp",
-            "004228A0": "src/basegame.cpp",
-            "004228B0": "src/basegame.cpp",
-            "004228C0": "src/basegame.cpp",
-            "004228E0": "src/basegame.cpp",
-            "00422900": "src/basegame.cpp",
-            "00422910": "src/basegame.cpp",
-            "00422920": "src/basegame.cpp",
-            "00422A10": "src/basegame.cpp",
-            "00422A50": "src/basegame.cpp",
-            "00422AB0": "src/basegame.cpp",
-            "00422CC0": "src/basegame.cpp",
-            "00422D20": "src/basegame.cpp",
-            "00422D60": "src/basegame.cpp",
-            "00422D80": "src/basegame.cpp",
-            "00422D90": "src/basegame.cpp",
-            "00422DA0": "src/basegame.cpp",
-            "00422DC0": "src/basegame.cpp",
-            "00422DE0": "src/basegame.cpp",
-            "00422E10": "src/basegame.cpp",
-            "00422E30": "src/basegame.cpp",
-            "00422E40": "src/basegame.cpp",
-            "00422E50": "src/basegame.cpp",
-            "00422E60": "src/basegame.cpp",
-            "00422EB0": "src/basegame.cpp",
-            "00422EC0": "src/basegame.cpp",
-            "00422ED0": "src/basegame.cpp",
-            "00422EE0": "src/basegame.cpp",
-            "00422EF0": "src/basegame.cpp",
-            "00422FD0": "src/basegame.cpp",
-            "00422FE0": "src/basegame.cpp",
-            "00422FF0": "src/basegame.cpp",
-            "00423010": "src/basegame.cpp",
-            "00423030": "src/basegame.cpp",
-            "004230A0": "src/basegame.cpp",
-            "00423140": "src/basegame.cpp",
-            "004231E0": "src/basegame.cpp"
+        "0041B620": "src/basegame.cpp",
+        "0041B650": "src/basegame.cpp",
+        "0041B6A0": "src/basegame.cpp",
+        "0041C270": "src/basegame.cpp",
+        "0041C7D0": "src/basegame.cpp",
+        "0041C830": "src/basegame.cpp",
+        "0041C870": "src/basegame.cpp",
+        "0041C880": "src/basegame.cpp",
+        "0041C890": "src/basegame.cpp",
+        "0041C8B0": "src/basegame.cpp",
+        "0041C8D0": "src/basegame.cpp",
+        "0041C8F0": "src/basegame.cpp",
+        "0041C910": "src/basegame.cpp",
+        "0041C930": "src/basegame.cpp",
+        "0041C950": "src/basegame.cpp",
+        "0041C960": "src/basegame.cpp",
+        "0041C970": "src/basegame.cpp",
+        "0041C980": "src/basegame.cpp",
+        "0041C990": "src/basegame.cpp",
+        "0041C9A0": "src/basegame.cpp",
+        "0041C9C0": "src/basegame.cpp",
+        "0041C9F0": "src/basegame.cpp",
+        "0041CA10": "src/basegame.cpp",
+        "0041CB80": "src/basegame.cpp",
+        "0041CDA0": "src/basegame.cpp",
+        "0041CE00": "src/basegame.cpp",
+        "0041CE60": "src/basegame.cpp",
+        "0041CEC0": "src/basegame.cpp",
+        "0041CF30": "src/basegame.cpp",
+        "0041CF70": "src/basegame.cpp",
+        "0041CFC0": "src/basegame.cpp",
+        "0041D0A0": "src/basegame.cpp",
+        "0041E7A0": "src/basegame.cpp",
+        "0041EBC0": "src/basegame.cpp",
+        "0041EBF0": "src/basegame.cpp",
+        "0041ED00": "src/basegame.cpp",
+        "0041ED70": "src/basegame.cpp",
+        "0041EDE0": "src/basegame.cpp",
+        "0041EE90": "src/basegame.cpp",
+        "0041EFF0": "src/basegame.cpp",
+        "0041F030": "src/basegame.cpp",
+        "0041F110": "src/basegame.cpp",
+        "0041F2D0": "src/basegame.cpp",
+        "0041F400": "src/basegame.cpp",
+        "0041F730": "src/basegame.cpp",
+        "0041F800": "src/basegame.cpp",
+        "0041F830": "src/basegame.cpp",
+        "0041F920": "src/basegame.cpp",
+        "0041F9B0": "src/basegame.cpp",
+        "0041FA90": "src/basegame.cpp",
+        "0041FAF0": "src/basegame.cpp",
+        "0041FBC0": "src/basegame.cpp",
+        "0041FC90": "src/basegame.cpp",
+        "0041FDE0": "src/basegame.cpp",
+        "0041FE50": "src/basegame.cpp",
+        "0041FF20": "src/basegame.cpp",
+        "00420000": "src/basegame.cpp",
+        "00420050": "src/basegame.cpp",
+        "004200B0": "src/basegame.cpp",
+        "004200D0": "src/basegame.cpp",
+        "00420110": "src/basegame.cpp",
+        "00420130": "src/basegame.cpp",
+        "00420150": "src/basegame.cpp",
+        "00420180": "src/basegame.cpp",
+        "004201A0": "src/basegame.cpp",
+        "004201C0": "src/basegame.cpp",
+        "004201E0": "src/basegame.cpp",
+        "00420200": "src/basegame.cpp",
+        "00420220": "src/basegame.cpp",
+        "00420270": "src/basegame.cpp",
+        "004202E0": "src/basegame.cpp",
+        "00420330": "src/basegame.cpp",
+        "00420360": "src/basegame.cpp",
+        "00420370": "src/basegame.cpp",
+        "004203E0": "src/basegame.cpp",
+        "00420440": "src/basegame.cpp",
+        "00420500": "src/basegame.cpp",
+        "00420560": "src/basegame.cpp",
+        "00420580": "src/basegame.cpp",
+        "004205B0": "src/basegame.cpp",
+        "004205E0": "src/basegame.cpp",
+        "00420610": "src/basegame.cpp",
+        "00420650": "src/basegame.cpp",
+        "00420F60": "src/basegame.cpp",
+        "004211D0": "src/basegame.cpp",
+        "004212E0": "src/basegame.cpp",
+        "004213A0": "src/basegame.cpp",
+        "004213C0": "src/basegame.cpp",
+        "004213E0": "src/basegame.cpp",
+        "00421830": "src/basegame.cpp",
+        "00421910": "src/basegame.cpp",
+        "00421930": "src/basegame.cpp",
+        "00421950": "src/basegame.cpp",
+        "004219F0": "src/basegame.cpp",
+        "00421A80": "src/basegame.cpp",
+        "00421B70": "src/basegame.cpp",
+        "00421BB0": "src/basegame.cpp",
+        "00422030": "src/basegame.cpp",
+        "00422050": "src/basegame.cpp",
+        "00422090": "src/basegame.cpp",
+        "004220D0": "src/basegame.cpp",
+        "004220F0": "src/basegame.cpp",
+        "00422130": "src/basegame.cpp",
+        "00422260": "src/basegame.cpp",
+        "00422390": "src/basegame.cpp",
+        "004223A0": "src/basegame.cpp",
+        "004223B0": "src/basegame.cpp",
+        "004223C0": "src/basegame.cpp",
+        "004223D0": "src/basegame.cpp",
+        "004223E0": "src/basegame.cpp",
+        "004223F0": "src/basegame.cpp",
+        "00422400": "src/basegame.cpp",
+        "00422410": "src/basegame.cpp",
+        "00422420": "src/basegame.cpp",
+        "00422430": "src/basegame.cpp",
+        "00422440": "src/basegame.cpp",
+        "00422450": "src/basegame.cpp",
+        "00422460": "src/basegame.cpp",
+        "00422470": "src/basegame.cpp",
+        "00422480": "src/basegame.cpp",
+        "00422490": "src/basegame.cpp",
+        "004224A0": "src/basegame.cpp",
+        "004224C0": "src/basegame.cpp",
+        "004224E0": "src/basegame.cpp",
+        "00422630": "src/basegame.cpp",
+        "00422640": "src/basegame.cpp",
+        "00422650": "src/basegame.cpp",
+        "00422660": "src/basegame.cpp",
+        "00422670": "src/basegame.cpp",
+        "00422680": "src/basegame.cpp",
+        "00422690": "src/basegame.cpp",
+        "004226A0": "src/basegame.cpp",
+        "004226B0": "src/basegame.cpp",
+        "004226C0": "src/basegame.cpp",
+        "004226D0": "src/basegame.cpp",
+        "00422700": "src/basegame.cpp",
+        "00422710": "src/basegame.cpp",
+        "00422720": "src/basegame.cpp",
+        "00422740": "src/basegame.cpp",
+        "00422760": "src/basegame.cpp",
+        "00422790": "src/basegame.cpp",
+        "004227A0": "src/basegame.cpp",
+        "004227B0": "src/basegame.cpp",
+        "004227C0": "src/basegame.cpp",
+        "004227D0": "src/basegame.cpp",
+        "004227E0": "src/basegame.cpp",
+        "004227F0": "src/basegame.cpp",
+        "00422800": "src/basegame.cpp",
+        "00422820": "src/basegame.cpp",
+        "00422850": "src/basegame.cpp",
+        "00422870": "src/basegame.cpp",
+        "00422880": "src/basegame.cpp",
+        "004228A0": "src/basegame.cpp",
+        "004228B0": "src/basegame.cpp",
+        "004228C0": "src/basegame.cpp",
+        "004228E0": "src/basegame.cpp",
+        "00422900": "src/basegame.cpp",
+        "00422910": "src/basegame.cpp",
+        "00422920": "src/basegame.cpp",
+        "00422A10": "src/basegame.cpp",
+        "00422A50": "src/basegame.cpp",
+        "00422AB0": "src/basegame.cpp",
+        "00422CC0": "src/basegame.cpp",
+        "00422D20": "src/basegame.cpp",
+        "00422D60": "src/basegame.cpp",
+        "00422D80": "src/basegame.cpp",
+        "00422D90": "src/basegame.cpp",
+        "00422DA0": "src/basegame.cpp",
+        "00422DC0": "src/basegame.cpp",
+        "00422DE0": "src/basegame.cpp",
+        "00422E10": "src/basegame.cpp",
+        "00422E30": "src/basegame.cpp",
+        "00422E40": "src/basegame.cpp",
+        "00422E50": "src/basegame.cpp",
+        "00422E60": "src/basegame.cpp",
+        "00422EB0": "src/basegame.cpp",
+        "00422EC0": "src/basegame.cpp",
+        "00422ED0": "src/basegame.cpp",
+        "00422EE0": "src/basegame.cpp",
+        "00422EF0": "src/basegame.cpp",
+        "00422FD0": "src/basegame.cpp",
+        "00422FE0": "src/basegame.cpp",
+        "00422FF0": "src/basegame.cpp",
+        "00423010": "src/basegame.cpp",
+        "00423030": "src/basegame.cpp",
+        "004230A0": "src/basegame.cpp",
+        "00423140": "src/basegame.cpp",
+        "004231E0": "src/basegame.cpp"
       },
       "symbols": {
-            "0041B620": "?write_draw_log@@YAXPAD@Z",
-            "0041B650": "?write_draw_log2@@YAXPAD@Z",
-            "0041B6A0": "??0RGE_Base_Game@@QAE@PAURGE_Prog_Info@@H@Z",
-            "0041C7D0": "?reset_timings@RGE_Base_Game@@QAEXXZ",
-            "0041C830": "?add_to_timing@RGE_Base_Game@@QAEXHK@Z",
-            "0041C870": "?increment_world_update_count@RGE_Base_Game@@QAEXXZ",
-            "0041C880": "?increment_view_update_count@RGE_Base_Game@@QAEXXZ",
-            "0041C890": "?set_last_single_time@RGE_Base_Game@@QAEXHK@Z",
-            "0041C8B0": "?get_last_time@RGE_Base_Game@@QAEKH@Z",
-            "0041C8D0": "?get_last_single_time@RGE_Base_Game@@QAEKH@Z",
-            "0041C8F0": "?get_accum_time@RGE_Base_Game@@QAEKH@Z",
-            "0041C910": "?get_max_time@RGE_Base_Game@@QAEKH@Z",
-            "0041C930": "?get_last_max_time@RGE_Base_Game@@QAEKH@Z",
-            "0041C950": "?get_last_world_update_count@RGE_Base_Game@@QAEKXZ",
-            "0041C960": "?get_last_view_update_count@RGE_Base_Game@@QAEKXZ",
-            "0041C970": "?get_world_update_count@RGE_Base_Game@@QAEKXZ",
-            "0041C980": "?get_view_update_count@RGE_Base_Game@@QAEKXZ",
-            "0041C990": "?get_error_code@RGE_Base_Game@@UAEHXZ",
-            "0041C9A0": "?get_string@RGE_Base_Game@@UAEPADJ@Z",
-            "0041C9C0": "?get_string@RGE_Base_Game@@UAEPADJPADH@Z",
-            "0041C9F0": "?get_string@RGE_Base_Game@@UAEPADHJPADH@Z",
-            "0041CA10": "?get_string2@RGE_Base_Game@@UAEPADHJJPADH@Z",
-            "0041CB80": "?get_scenario_info@RGE_Base_Game@@QAEPAVRGE_Scenario@@PADH@Z",
-            "0041CDA0": "?write_scenario_header@RGE_Base_Game@@QAEXH@Z",
-            "0041CE00": "?new_scenario_header@RGE_Base_Game@@UAEPAVRGE_Scenario_Header@@H@Z",
-            "0041CE60": "?new_scenario_header@RGE_Base_Game@@UAEPAVRGE_Scenario_Header@@PAVRGE_Scenario@@@Z",
-            "0041CEC0": "?new_scenario_info@RGE_Base_Game@@UAEPAVRGE_Scenario@@H@Z",
-            "0041CF30": "?get_campaign_info@RGE_Base_Game@@QAEXAAJ00@Z",
-            "0041CF70": "?set_campaign_info@RGE_Base_Game@@QAEEJJJ@Z",
-            "0041CFC0": "?set_campaign_win@RGE_Base_Game@@QAEXXZ",
-            "0041D0A0": "?setup_cmd_options@RGE_Base_Game@@MAEHXZ",
-            "0041E7A0": "?rge_base_game_wnd_proc@@YGJPAXIIJ@Z",
-            "0041EBC0": "?setup_palette@RGE_Base_Game@@MAEHXZ",
-            "0041EBF0": "?setup_mouse@RGE_Base_Game@@MAEHXZ",
-            "0041ED00": "?setup_chat@RGE_Base_Game@@MAEHXZ",
-            "0041ED70": "?setup_registry@RGE_Base_Game@@MAEHXZ",
-            "0041EDE0": "?setup_debugging_log@RGE_Base_Game@@MAEHXZ",
-            "0041EE90": "?setup_comm@RGE_Base_Game@@MAEHXZ",
-            "0041EFF0": "?reset_comm@RGE_Base_Game@@UAEHXZ",
-            "0041F030": "?setup_sound_system@RGE_Base_Game@@MAEHXZ",
-            "0041F110": "?setup_music_system@RGE_Base_Game@@UAEHXZ",
-            "0041F2D0": "?setup_shapes@RGE_Base_Game@@MAEHXZ",
-            "0041F400": "?setup_sounds@RGE_Base_Game@@MAEHXZ",
-            "0041F730": "?setup_blank_screen@RGE_Base_Game@@MAEHXZ",
-            "0041F800": "?setup_timings@RGE_Base_Game@@MAEXXZ",
-            "0041F830": "?stop_sound_system@RGE_Base_Game@@MAEXXZ",
-            "0041F920": "?restart_sound_system@RGE_Base_Game@@MAEHXZ",
-            "0041F9B0": "?stop_music_system@RGE_Base_Game@@MAEXXZ",
-            "0041FA90": "?shutdown_music_system@RGE_Base_Game@@UAEXXZ",
-            "0041FAF0": "?make_font@RGE_Base_Game@@IAEPAXPAXJH@Z",
-            "0041FBC0": "?make_font@RGE_Base_Game@@IAEPAXPAXPADHHH@Z",
-            "0041FC90": "?check_for_cd@RGE_Base_Game@@QAEHH@Z",
-            "0041FE50": "?check_multi_copies@RGE_Base_Game@@IAEHXZ",
-            "0041FF20": "?check_paint@RGE_Base_Game@@IAEHXZ",
-            "00420000": "?clear_window@RGE_Base_Game@@IAEXXZ",
-            "00420050": "?create_world@RGE_Base_Game@@MAEPAVRGE_Game_World@@XZ",
-            "004200B0": "?close@RGE_Base_Game@@QAEXXZ",
-            "004200D0": "?create_dialog@RGE_Base_Game@@QAEHPAPAVTPanel@@PAV2@@Z",
-            "00420110": "?delete_dialog@RGE_Base_Game@@QAEXPAPAVTPanel@@@Z",
-            "00420130": "?set_game_mode@RGE_Base_Game@@UAEXHH@Z",
-            "00420150": "?set_player@RGE_Base_Game@@UAEXF@Z",
-            "00420180": "?get_paused@RGE_Base_Game@@QAEHXZ",
-            "004201A0": "?get_font@RGE_Base_Game@@QAEPAURGE_Font@@H@Z",
-            "004201C0": "?get_shape@RGE_Base_Game@@QAEPAVTShape@@H@Z",
-            "004201E0": "?get_sound@RGE_Base_Game@@QAEPAVTDigital@@H@Z",
-            "00420200": "?request_pause@RGE_Base_Game@@QAEXXZ",
-            "00420220": "?set_paused@RGE_Base_Game@@QAEXHH@Z",
-            "00420270": "?get_mouse_info@RGE_Base_Game@@QAEXIJAAUtagPOINT@@AAH111@Z",
-            "004202E0": "?get_mouse_pos@RGE_Base_Game@@QAEXAAUtagPOINT@@@Z",
-            "00420330": "?get_player@RGE_Base_Game@@QAEPAVRGE_Player@@XZ",
-            "00420360": "?draw_window@RGE_Base_Game@@QAEXXZ",
-            "00420370": "?mouse_on@RGE_Base_Game@@QAEXXZ",
-            "004203E0": "?mouse_off@RGE_Base_Game@@QAEXXZ",
-            "00420440": "?set_windows_mouse@RGE_Base_Game@@QAEXH@Z",
-            "00420500": "?set_mouse_cursor@RGE_Base_Game@@QAEXPAX@Z",
-            "00420560": "?set_mouse_facet@RGE_Base_Game@@QAEXJ@Z",
-            "00420580": "?enum_wnd_proc@@YGHPAXJ@Z",
-            "004205B0": "?enum_child_proc@@YGHPAXJ@Z",
-            "004205E0": "?enum_thread_proc@@YGHPAXJ@Z",
-            "00420610": "?close_thread_windows@@YGHPAXJ@Z",
-            "00420650": "?close_child_windows@@YGHPAXJ@Z",
-            "00420F60": "?handle_idle@RGE_Base_Game@@MAEHXZ",
-            "004211D0": "?handle_key_down@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "004212E0": "?handle_user_command@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "004213A0": "?handle_command@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "004213C0": "?handle_music_done@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "004213E0": "?handle_paint@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "00421830": "?handle_activate@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "00421910": "?handle_init_menu@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "00421930": "?handle_exit_menu@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "00421950": "?handle_size@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "004219F0": "?handle_palette_changed@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "00421A80": "?handle_query_new_palette@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "00421B70": "?handle_close@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "00421BB0": "?handle_destroy@RGE_Base_Game@@MAEHPAXIIJ@Z",
-            "00422030": "?show_timings@RGE_Base_Game@@MAEXXZ",
-            "00422050": "?show_comm@RGE_Base_Game@@MAEXXZ",
-            "00422090": "?show_ai@RGE_Base_Game@@MAEXXZ",
-            "004220D0": "?send_game_options@RGE_Base_Game@@UAEXXZ",
-            "004220F0": "?receive_game_options@RGE_Base_Game@@UAEXXZ",
-            "00422130": "?set_game_options@RGE_Base_Game@@QAEXPAURGE_Game_Options@1@@Z",
-            "00422260": "?get_game_options@RGE_Base_Game@@QAEXPAURGE_Game_Options@1@@Z",
-            "00422390": "?version@RGE_Base_Game@@QBEMXZ",
-            "004223A0": "?scenarioGame@RGE_Base_Game@@QBEHXZ",
-            "004223B0": "?randomGame@RGE_Base_Game@@QBEHXZ",
-            "004223C0": "?campaignGame@RGE_Base_Game@@QBEHXZ",
-            "004223D0": "?savedGame@RGE_Base_Game@@QBEHXZ",
-            "004223E0": "?scenarioName@RGE_Base_Game@@QAEPADXZ",
-            "004223F0": "?singlePlayerGame@RGE_Base_Game@@QBEHXZ",
-            "00422400": "?multiplayerGame@RGE_Base_Game@@QBEHXZ",
-            "00422410": "?mapXSize@RGE_Base_Game@@QBEHXZ",
-            "00422420": "?mapYSize@RGE_Base_Game@@QBEHXZ",
-            "00422430": "?mapZSize@RGE_Base_Game@@QBEHXZ",
-            "00422440": "?allowCheatCodes@RGE_Base_Game@@QBEHXZ",
-            "00422450": "?cheatNotification@RGE_Base_Game@@QBEHXZ",
-            "00422460": "?fullVisibility@RGE_Base_Game@@QBEHXZ",
-            "00422470": "?fogOfWar@RGE_Base_Game@@QBEHXZ",
-            "00422480": "?coloredChat@RGE_Base_Game@@QBEHXZ",
-            "00422490": "?gameDeveloperMode@RGE_Base_Game@@QBEHXZ",
-            "004224A0": "?playerHasCD@RGE_Base_Game@@QAEHH@Z",
-            "004224C0": "?playerVersion@RGE_Base_Game@@QAEEH@Z",
-            "004224E0": "?playerVersionString@RGE_Base_Game@@QAEPADH@Z",
-            "00422630": "?playerCDAndVersion@RGE_Base_Game@@QAEEH@Z",
-            "00422640": "?difficulty@RGE_Base_Game@@QAEHXZ",
-            "00422650": "?numberPlayers@RGE_Base_Game@@QBEHXZ",
-            "00422660": "?playerTeam@RGE_Base_Game@@QAEHH@Z",
-            "00422670": "?pathFinding@RGE_Base_Game@@QAEEXZ",
-            "00422680": "?mpPathFinding@RGE_Base_Game@@QAEEXZ",
-            "00422690": "?gameSummary@RGE_Base_Game@@UAEPADXZ",
-            "004226A0": "?find_campaigns@RGE_Base_Game@@QAEXXZ",
-            "004226B0": "?setScenarioGame@RGE_Base_Game@@QAEXH@Z",
-            "004226C0": "?setVersion@RGE_Base_Game@@QAEXM@Z",
-            "004226D0": "?setScenarioName@RGE_Base_Game@@QAEXPAD@Z",
-            "00422700": "?setCampaignGame@RGE_Base_Game@@QAEXH@Z",
-            "00422710": "?setSavedGame@RGE_Base_Game@@QAEXH@Z",
-            "00422720": "?setSinglePlayerGame@RGE_Base_Game@@QAEXH@Z",
-            "00422740": "?setMultiplayerGame@RGE_Base_Game@@QAEXH@Z",
-            "00422760": "?setMapSize@RGE_Base_Game@@QAEXHHH@Z",
-            "00422790": "?setAllowCheatCodes@RGE_Base_Game@@QAEXH@Z",
-            "004227A0": "?setCheatNotification@RGE_Base_Game@@QAEXH@Z",
-            "004227B0": "?setFullVisibility@RGE_Base_Game@@QAEXH@Z",
-            "004227C0": "?setFogOfWar@RGE_Base_Game@@QAEXH@Z",
-            "004227D0": "?setColoredChat@RGE_Base_Game@@QAEXH@Z",
-            "004227E0": "?setNumberPlayers@RGE_Base_Game@@QAEXH@Z",
-            "004227F0": "?setGameDeveloperMode@RGE_Base_Game@@QAEXH@Z",
-            "00422800": "?setPlayerHasCD@RGE_Base_Game@@QAEXHH@Z",
-            "00422820": "?setPlayerVersion@RGE_Base_Game@@QAEXHE@Z",
-            "00422850": "?setPlayerCDAndVersion@RGE_Base_Game@@QAEXHE@Z",
-            "00422870": "?setDifficulty@RGE_Base_Game@@QAEXH@Z",
-            "00422880": "?setPlayerTeam@RGE_Base_Game@@QAEXHH@Z",
-            "004228A0": "?setPathFinding@RGE_Base_Game@@QAEXE@Z",
-            "004228B0": "?setMpPathFinding@RGE_Base_Game@@QAEXE@Z",
-            "004228C0": "?set_map_visible@RGE_Base_Game@@QAEXE@Z",
-            "004228E0": "?set_map_fog@RGE_Base_Game@@QAEXE@Z",
-            "00422900": "?turn_world_sound_off@RGE_Base_Game@@QAEXXZ",
-            "00422910": "?campaign_open_scenario@RGE_Base_Game@@QAEHXZ",
-            "00422920": "?GetChecksum@RGE_Base_Game@@QAEJJ@Z",
-            "00422A10": "?GetWorldChecksum@RGE_Base_Game@@QAEJXZ",
-            "00422A50": "?disable_input@RGE_Base_Game@@QAEXXZ",
-            "00422AB0": "?enable_input@RGE_Base_Game@@QAEXXZ",
-            "00422CC0": "?check_prog_argument@RGE_Base_Game@@QAEEPAD@Z",
-            "00422D20": "?get_scenario_checksum@RGE_Base_Game@@QAEJPAD@Z",
-            "00422D60": "?check_scenario_checksum@RGE_Base_Game@@QAEEPADJ@Z",
-            "00422D80": "?dump_memory_usage@RGE_Base_Game@@QAEXPAD@Z",
-            "00422D90": "?playerID@RGE_Base_Game@@QAEHH@Z",
-            "00422DA0": "?setPlayerID@RGE_Base_Game@@QAEXHH@Z",
-            "00422DC0": "?reset_countdown_timer@RGE_Base_Game@@QAEXJ@Z",
-            "00422DE0": "?set_countdown_timer@RGE_Base_Game@@QAEXJJ@Z",
-            "00422E10": "?get_countdown_timer@RGE_Base_Game@@QAEXJAAJ@Z",
-            "00422E30": "?play_video@RGE_Base_Game@@QAEHPAD@Z",
-            "00422E40": "?close_video@RGE_Base_Game@@QAEXXZ",
-            "00422E50": "?handle_video_notify@RGE_Base_Game@@QAEXXZ",
-            "00422E60": "?play_sound@RGE_Base_Game@@QAEHH@Z",
-            "00422EB0": "?get_game_speed@RGE_Base_Game@@QAEMXZ",
-            "00422EC0": "?set_game_speed@RGE_Base_Game@@QAEXM@Z",
-            "00422ED0": "?get_single_player_difficulty@RGE_Base_Game@@QAEHXZ",
-            "00422EE0": "?set_single_player_difficulty@RGE_Base_Game@@QAEXH@Z",
-            "00422EF0": "?setup_map_save_area@RGE_Base_Game@@MAEHXZ",
-            "00422FD0": "?reload_scenarios_info@RGE_Base_Game@@QAEXXZ",
-            "00422FE0": "?set_interface_messages@RGE_Base_Game@@MAEXXZ",
-            "00422FF0": "?set_render_all@RGE_Base_Game@@QAEXXZ",
-            "00423010": "?debug_random_reset@@YAXXZ",
-            "00423030": "?debug_random_write@@YAXXZ",
-            "004230A0": "?debug_rand@@YAHPADH@Z",
-            "00423140": "?debug_srand@@YAXPADHI@Z",
-            "004231E0": "?debug_timeGetTime@@YAKPADH@Z"
-      }
+        "0041B620": "?write_draw_log@@YAXPAD@Z",
+        "0041B650": "?write_draw_log2@@YAXPAD@Z",
+        "0041B6A0": "??0RGE_Base_Game@@QAE@PAURGE_Prog_Info@@H@Z",
+        "0041C270": "??1RGE_Base_Game@@UAE@XZ",
+        "0041C7D0": "?reset_timings@RGE_Base_Game@@QAEXXZ",
+        "0041C830": "?add_to_timing@RGE_Base_Game@@QAEXHK@Z",
+        "0041C870": "?increment_world_update_count@RGE_Base_Game@@QAEXXZ",
+        "0041C880": "?increment_view_update_count@RGE_Base_Game@@QAEXXZ",
+        "0041C890": "?set_last_single_time@RGE_Base_Game@@QAEXHK@Z",
+        "0041C8B0": "?get_last_time@RGE_Base_Game@@QAEKH@Z",
+        "0041C8D0": "?get_last_single_time@RGE_Base_Game@@QAEKH@Z",
+        "0041C8F0": "?get_accum_time@RGE_Base_Game@@QAEKH@Z",
+        "0041C910": "?get_max_time@RGE_Base_Game@@QAEKH@Z",
+        "0041C930": "?get_last_max_time@RGE_Base_Game@@QAEKH@Z",
+        "0041C950": "?get_last_world_update_count@RGE_Base_Game@@QAEKXZ",
+        "0041C960": "?get_last_view_update_count@RGE_Base_Game@@QAEKXZ",
+        "0041C970": "?get_world_update_count@RGE_Base_Game@@QAEKXZ",
+        "0041C980": "?get_view_update_count@RGE_Base_Game@@QAEKXZ",
+        "0041C990": "?get_error_code@RGE_Base_Game@@UAEHXZ",
+        "0041C9A0": "?get_string@RGE_Base_Game@@UAEPADJ@Z",
+        "0041C9C0": "?get_string@RGE_Base_Game@@UAEPADJPADH@Z",
+        "0041C9F0": "?get_string@RGE_Base_Game@@UAEPADHJPADH@Z",
+        "0041CA10": "?get_string2@RGE_Base_Game@@UAEPADHJJPADH@Z",
+        "0041CB80": "?get_scenario_info@RGE_Base_Game@@QAEPAVRGE_Scenario@@PADH@Z",
+        "0041CDA0": "?write_scenario_header@RGE_Base_Game@@QAEXH@Z",
+        "0041CE00": "?new_scenario_header@RGE_Base_Game@@UAEPAVRGE_Scenario_Header@@H@Z",
+        "0041CE60": "?new_scenario_header@RGE_Base_Game@@UAEPAVRGE_Scenario_Header@@PAVRGE_Scenario@@@Z",
+        "0041CEC0": "?new_scenario_info@RGE_Base_Game@@UAEPAVRGE_Scenario@@H@Z",
+        "0041CF30": "?get_campaign_info@RGE_Base_Game@@QAEXAAJ00@Z",
+        "0041CF70": "?set_campaign_info@RGE_Base_Game@@QAEEJJJ@Z",
+        "0041CFC0": "?set_campaign_win@RGE_Base_Game@@QAEXXZ",
+        "0041D0A0": "?setup_cmd_options@RGE_Base_Game@@MAEHXZ",
+        "0041E7A0": "?rge_base_game_wnd_proc@@YGJPAXIIJ@Z",
+        "0041EBC0": "?setup_palette@RGE_Base_Game@@MAEHXZ",
+        "0041EBF0": "?setup_mouse@RGE_Base_Game@@MAEHXZ",
+        "0041ED00": "?setup_chat@RGE_Base_Game@@MAEHXZ",
+        "0041ED70": "?setup_registry@RGE_Base_Game@@MAEHXZ",
+        "0041EDE0": "?setup_debugging_log@RGE_Base_Game@@MAEHXZ",
+        "0041EE90": "?setup_comm@RGE_Base_Game@@MAEHXZ",
+        "0041EFF0": "?reset_comm@RGE_Base_Game@@UAEHXZ",
+        "0041F030": "?setup_sound_system@RGE_Base_Game@@MAEHXZ",
+        "0041F110": "?setup_music_system@RGE_Base_Game@@UAEHXZ",
+        "0041F2D0": "?setup_shapes@RGE_Base_Game@@MAEHXZ",
+        "0041F400": "?setup_sounds@RGE_Base_Game@@MAEHXZ",
+        "0041F730": "?setup_blank_screen@RGE_Base_Game@@MAEHXZ",
+        "0041F800": "?setup_timings@RGE_Base_Game@@MAEXXZ",
+        "0041F830": "?stop_sound_system@RGE_Base_Game@@MAEXXZ",
+        "0041F920": "?restart_sound_system@RGE_Base_Game@@MAEHXZ",
+        "0041F9B0": "?stop_music_system@RGE_Base_Game@@MAEXXZ",
+        "0041FA90": "?shutdown_music_system@RGE_Base_Game@@UAEXXZ",
+        "0041FAF0": "?make_font@RGE_Base_Game@@IAEPAXPAXJH@Z",
+        "0041FBC0": "?make_font@RGE_Base_Game@@IAEPAXPAXPADHHH@Z",
+        "0041FC90": "?check_for_cd@RGE_Base_Game@@QAEHH@Z",
+        "0041FDE0": "?check_expiration@RGE_Base_Game@@IAEHXZ",
+        "0041FE50": "?check_multi_copies@RGE_Base_Game@@IAEHXZ",
+        "0041FF20": "?check_paint@RGE_Base_Game@@IAEHXZ",
+        "00420000": "?clear_window@RGE_Base_Game@@IAEXXZ",
+        "00420050": "?create_world@RGE_Base_Game@@MAEPAVRGE_Game_World@@XZ",
+        "004200B0": "?close@RGE_Base_Game@@QAEXXZ",
+        "004200D0": "?create_dialog@RGE_Base_Game@@QAEHPAPAVTPanel@@PAV2@@Z",
+        "00420110": "?delete_dialog@RGE_Base_Game@@QAEXPAPAVTPanel@@@Z",
+        "00420130": "?set_game_mode@RGE_Base_Game@@UAEXHH@Z",
+        "00420150": "?set_player@RGE_Base_Game@@UAEXF@Z",
+        "00420180": "?get_paused@RGE_Base_Game@@QAEHXZ",
+        "004201A0": "?get_font@RGE_Base_Game@@QAEPAURGE_Font@@H@Z",
+        "004201C0": "?get_shape@RGE_Base_Game@@QAEPAVTShape@@H@Z",
+        "004201E0": "?get_sound@RGE_Base_Game@@QAEPAVTDigital@@H@Z",
+        "00420200": "?request_pause@RGE_Base_Game@@QAEXXZ",
+        "00420220": "?set_paused@RGE_Base_Game@@QAEXHH@Z",
+        "00420270": "?get_mouse_info@RGE_Base_Game@@QAEXIJAAUtagPOINT@@AAH111@Z",
+        "004202E0": "?get_mouse_pos@RGE_Base_Game@@QAEXAAUtagPOINT@@@Z",
+        "00420330": "?get_player@RGE_Base_Game@@QAEPAVRGE_Player@@XZ",
+        "00420360": "?draw_window@RGE_Base_Game@@QAEXXZ",
+        "00420370": "?mouse_on@RGE_Base_Game@@QAEXXZ",
+        "004203E0": "?mouse_off@RGE_Base_Game@@QAEXXZ",
+        "00420440": "?set_windows_mouse@RGE_Base_Game@@QAEXH@Z",
+        "00420500": "?set_mouse_cursor@RGE_Base_Game@@QAEXPAX@Z",
+        "00420560": "?set_mouse_facet@RGE_Base_Game@@QAEXJ@Z",
+        "00420580": "?enum_wnd_proc@@YGHPAXJ@Z",
+        "004205B0": "?enum_child_proc@@YGHPAXJ@Z",
+        "004205E0": "?enum_thread_proc@@YGHPAXJ@Z",
+        "00420610": "?close_thread_windows@@YGHPAXJ@Z",
+        "00420650": "?close_child_windows@@YGHPAXJ@Z",
+        "00420F60": "?handle_idle@RGE_Base_Game@@MAEHXZ",
+        "004211D0": "?handle_key_down@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "004212E0": "?handle_user_command@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "004213A0": "?handle_command@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "004213C0": "?handle_music_done@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "004213E0": "?handle_paint@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "00421830": "?handle_activate@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "00421910": "?handle_init_menu@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "00421930": "?handle_exit_menu@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "00421950": "?handle_size@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "004219F0": "?handle_palette_changed@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "00421A80": "?handle_query_new_palette@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "00421B70": "?handle_close@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "00421BB0": "?handle_destroy@RGE_Base_Game@@MAEHPAXIIJ@Z",
+        "00422030": "?show_timings@RGE_Base_Game@@MAEXXZ",
+        "00422050": "?show_comm@RGE_Base_Game@@MAEXXZ",
+        "00422090": "?show_ai@RGE_Base_Game@@MAEXXZ",
+        "004220D0": "?send_game_options@RGE_Base_Game@@UAEXXZ",
+        "004220F0": "?receive_game_options@RGE_Base_Game@@UAEXXZ",
+        "00422130": "?set_game_options@RGE_Base_Game@@QAEXPAURGE_Game_Options@1@@Z",
+        "00422260": "?get_game_options@RGE_Base_Game@@QAEXPAURGE_Game_Options@1@@Z",
+        "00422390": "?version@RGE_Base_Game@@QBEMXZ",
+        "004223A0": "?scenarioGame@RGE_Base_Game@@QBEHXZ",
+        "004223B0": "?randomGame@RGE_Base_Game@@QBEHXZ",
+        "004223C0": "?campaignGame@RGE_Base_Game@@QBEHXZ",
+        "004223D0": "?savedGame@RGE_Base_Game@@QBEHXZ",
+        "004223E0": "?scenarioName@RGE_Base_Game@@QAEPADXZ",
+        "004223F0": "?singlePlayerGame@RGE_Base_Game@@QBEHXZ",
+        "00422400": "?multiplayerGame@RGE_Base_Game@@QBEHXZ",
+        "00422410": "?mapXSize@RGE_Base_Game@@QBEHXZ",
+        "00422420": "?mapYSize@RGE_Base_Game@@QBEHXZ",
+        "00422430": "?mapZSize@RGE_Base_Game@@QBEHXZ",
+        "00422440": "?allowCheatCodes@RGE_Base_Game@@QBEHXZ",
+        "00422450": "?cheatNotification@RGE_Base_Game@@QBEHXZ",
+        "00422460": "?fullVisibility@RGE_Base_Game@@QBEHXZ",
+        "00422470": "?fogOfWar@RGE_Base_Game@@QBEHXZ",
+        "00422480": "?coloredChat@RGE_Base_Game@@QBEHXZ",
+        "00422490": "?gameDeveloperMode@RGE_Base_Game@@QBEHXZ",
+        "004224A0": "?playerHasCD@RGE_Base_Game@@QAEHH@Z",
+        "004224C0": "?playerVersion@RGE_Base_Game@@QAEEH@Z",
+        "004224E0": "?playerVersionString@RGE_Base_Game@@QAEPADH@Z",
+        "00422630": "?playerCDAndVersion@RGE_Base_Game@@QAEEH@Z",
+        "00422640": "?difficulty@RGE_Base_Game@@QAEHXZ",
+        "00422650": "?numberPlayers@RGE_Base_Game@@QBEHXZ",
+        "00422660": "?playerTeam@RGE_Base_Game@@QAEHH@Z",
+        "00422670": "?pathFinding@RGE_Base_Game@@QAEEXZ",
+        "00422680": "?mpPathFinding@RGE_Base_Game@@QAEEXZ",
+        "00422690": "?gameSummary@RGE_Base_Game@@UAEPADXZ",
+        "004226A0": "?find_campaigns@RGE_Base_Game@@QAEXXZ",
+        "004226B0": "?setScenarioGame@RGE_Base_Game@@QAEXH@Z",
+        "004226C0": "?setVersion@RGE_Base_Game@@QAEXM@Z",
+        "004226D0": "?setScenarioName@RGE_Base_Game@@QAEXPAD@Z",
+        "00422700": "?setCampaignGame@RGE_Base_Game@@QAEXH@Z",
+        "00422710": "?setSavedGame@RGE_Base_Game@@QAEXH@Z",
+        "00422720": "?setSinglePlayerGame@RGE_Base_Game@@QAEXH@Z",
+        "00422740": "?setMultiplayerGame@RGE_Base_Game@@QAEXH@Z",
+        "00422760": "?setMapSize@RGE_Base_Game@@QAEXHHH@Z",
+        "00422790": "?setAllowCheatCodes@RGE_Base_Game@@QAEXH@Z",
+        "004227A0": "?setCheatNotification@RGE_Base_Game@@QAEXH@Z",
+        "004227B0": "?setFullVisibility@RGE_Base_Game@@QAEXH@Z",
+        "004227C0": "?setFogOfWar@RGE_Base_Game@@QAEXH@Z",
+        "004227D0": "?setColoredChat@RGE_Base_Game@@QAEXH@Z",
+        "004227E0": "?setNumberPlayers@RGE_Base_Game@@QAEXH@Z",
+        "004227F0": "?setGameDeveloperMode@RGE_Base_Game@@QAEXH@Z",
+        "00422800": "?setPlayerHasCD@RGE_Base_Game@@QAEXHH@Z",
+        "00422820": "?setPlayerVersion@RGE_Base_Game@@QAEXHE@Z",
+        "00422850": "?setPlayerCDAndVersion@RGE_Base_Game@@QAEXHE@Z",
+        "00422870": "?setDifficulty@RGE_Base_Game@@QAEXH@Z",
+        "00422880": "?setPlayerTeam@RGE_Base_Game@@QAEXHH@Z",
+        "004228A0": "?setPathFinding@RGE_Base_Game@@QAEXE@Z",
+        "004228B0": "?setMpPathFinding@RGE_Base_Game@@QAEXE@Z",
+        "004228C0": "?set_map_visible@RGE_Base_Game@@QAEXE@Z",
+        "004228E0": "?set_map_fog@RGE_Base_Game@@QAEXE@Z",
+        "00422900": "?turn_world_sound_off@RGE_Base_Game@@QAEXXZ",
+        "00422910": "?campaign_open_scenario@RGE_Base_Game@@QAEHXZ",
+        "00422920": "?GetChecksum@RGE_Base_Game@@QAEJJ@Z",
+        "00422A10": "?GetWorldChecksum@RGE_Base_Game@@QAEJXZ",
+        "00422A50": "?disable_input@RGE_Base_Game@@QAEXXZ",
+        "00422AB0": "?enable_input@RGE_Base_Game@@QAEXXZ",
+        "00422CC0": "?check_prog_argument@RGE_Base_Game@@QAEEPAD@Z",
+        "00422D20": "?get_scenario_checksum@RGE_Base_Game@@QAEJPAD@Z",
+        "00422D60": "?check_scenario_checksum@RGE_Base_Game@@QAEEPADJ@Z",
+        "00422D80": "?dump_memory_usage@RGE_Base_Game@@QAEXPAD@Z",
+        "00422D90": "?playerID@RGE_Base_Game@@QAEHH@Z",
+        "00422DA0": "?setPlayerID@RGE_Base_Game@@QAEXHH@Z",
+        "00422DC0": "?reset_countdown_timer@RGE_Base_Game@@QAEXJ@Z",
+        "00422DE0": "?set_countdown_timer@RGE_Base_Game@@QAEXJJ@Z",
+        "00422E10": "?get_countdown_timer@RGE_Base_Game@@QAEXJAAJ@Z",
+        "00422E30": "?play_video@RGE_Base_Game@@QAEHPAD@Z",
+        "00422E40": "?close_video@RGE_Base_Game@@QAEXXZ",
+        "00422E50": "?handle_video_notify@RGE_Base_Game@@QAEXXZ",
+        "00422E60": "?play_sound@RGE_Base_Game@@QAEHH@Z",
+        "00422EB0": "?get_game_speed@RGE_Base_Game@@QAEMXZ",
+        "00422EC0": "?set_game_speed@RGE_Base_Game@@QAEXM@Z",
+        "00422ED0": "?get_single_player_difficulty@RGE_Base_Game@@QAEHXZ",
+        "00422EE0": "?set_single_player_difficulty@RGE_Base_Game@@QAEXH@Z",
+        "00422EF0": "?setup_map_save_area@RGE_Base_Game@@MAEHXZ",
+        "00422FD0": "?reload_scenarios_info@RGE_Base_Game@@QAEXXZ",
+        "00422FE0": "?set_interface_messages@RGE_Base_Game@@MAEXXZ",
+        "00422FF0": "?set_render_all@RGE_Base_Game@@QAEXXZ",
+        "00423010": "?debug_random_reset@@YAXXZ",
+        "00423030": "?debug_random_write@@YAXXZ",
+        "004230A0": "?debug_rand@@YAHPADH@Z",
+        "00423140": "?debug_srand@@YAXPADHI@Z",
+        "004231E0": "?debug_timeGetTime@@YAKPADH@Z"
+      },
+      "module": "basegame"
     },
     {
       "name": "panel_ez",
@@ -7007,7 +7041,6 @@
     {
       "name": "Pnl_txt_cpp",
       "source": "src/Pnl_txt.cpp",
-      "module": "Pnl_txt",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0047BF40": "src/Pnl_txt.cpp",
@@ -7112,12 +7145,12 @@
         "0047DCD0": "?append_line@TTextPanel@@QAEHPADJ@Z",
         "0047E1E0": "?get_line@TTextPanel@@QAEJXZ",
         "0047D760": "?draw_line@TTextPanel@@QAEXPAXFFKK@Z"
-      }
+      },
+      "module": "Pnl_txt"
     },
     {
       "name": "rdlg_lst_cpp",
       "source": "src/rdlg_lst.cpp",
-      "module": "rdlg_lst",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0047E670": "src/rdlg_lst.cpp",
@@ -7131,12 +7164,12 @@
       },
       "symbols": {
         "0047E670": "??0RGE_Dialog_List@@QAE@PAD@Z"
-      }
+      },
+      "module": "rdlg_lst"
     },
     {
       "name": "ACT_GATH_cpp",
       "source": "src/act_gath.cpp",
-      "module": "act_gath",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "00402EA0": "src/act_gath.cpp",
@@ -7153,12 +7186,12 @@
         "00402EA0": "??0RGE_Action_Gather@@QAE@HPAVRGE_Action_Object@@@Z",
         "00402F40": "??0RGE_Action_Gather@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
         "00403050": "?first_in_stack@RGE_Action_Gather@@UAEXE@Z"
-      }
+      },
+      "module": "act_gath"
     },
     {
       "name": "tact_mob_cpp",
       "source": "src/tact_mob.cpp",
-      "module": "tact_mob",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "004D0DD0": "src/tact_mob.cpp",
@@ -7176,7 +7209,8 @@
         "004D10E0": "?set_state@TRIBE_Action_Make_Obj@@MAEXE@Z",
         "004D1550": "?stop@TRIBE_Action_Make_Obj@@UAEHXZ",
         "004D15F0": "?get_info@TRIBE_Action_Make_Obj@@QAEXAAF0PADF@Z"
-      }
+      },
+      "module": "tact_mob"
     },
     {
       "name": "tmap_cpp",
@@ -7199,7 +7233,8 @@
         "0050F7F0": "src/tmap.cpp",
         "0050F860": "src/tmap.cpp",
         "0050FC40": "src/tmap.cpp",
-        "005100D0": "src/tmap.cpp"
+        "005100D0": "src/tmap.cpp",
+        "005102A0": "src/tmap.cpp"
       },
       "symbols": {
         "0050F7A0": "??1TRIBE_Map@@UAE@XZ",
@@ -7218,13 +7253,13 @@
         "0050F7F0": "?map_generate@TRIBE_Map@@QAEXPAURGE_Player_Info@@@Z",
         "0050F860": "?load_random_map@TRIBE_Map@@UAEXPAD000@Z",
         "0050FC40": "?do_terrain_brush@TRIBE_Map@@UAEEJJJE@Z",
-        "005100D0": "?check_cliff_valid@TRIBE_Map@@QAEEUTRIBE_Cliff_Info@@@Z"
+        "005100D0": "?check_cliff_valid@TRIBE_Map@@QAEEUTRIBE_Cliff_Info@@@Z",
+        "005102A0": "?remove_cliff_edge@TRIBE_Map@@QAEXJJJ@Z"
       },
       "module": "tmap_cpp"
     },
     {
       "name": "spnl_obj_cpp",
-      "module": "spnl_obj",
       "source": "src/spnl_obj.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
@@ -7240,12 +7275,12 @@
         "004BEE40": "?set_master_info@TRIBE_Scenario_Editor_Panel_Object@@QAEXPAVRGE_Master_Static_Object@@PAVTRIBE_Player@@@Z",
         "004BF4D0": "?draw_item@TRIBE_Scenario_Editor_Panel_Object@@UAEXHHW4ValueType@TRIBE_Panel_Object@@HH@Z",
         "004BF6E0": "?get_pierce_armor@TRIBE_Scenario_Editor_Panel_Object@@QAEJXZ"
-      }
+      },
+      "module": "spnl_obj"
     },
     {
       "name": "m_ac_obj",
       "source": "src/m_ac_obj.cpp",
-      "module": "m_ac_obj",
       "flags": "config/flags/0044F070_RGE_Master_Action_Object.rsp",
       "owners": {
         "0044F070": "src/m_ac_obj.cpp",
@@ -7282,12 +7317,12 @@
         "0044F850": "?modify_percent@RGE_Master_Action_Object@@UAEXME@Z",
         "0044F980": "?play_command_sound@RGE_Master_Action_Object@@UAEXXZ",
         "0044F9A0": "?play_move_sound@RGE_Master_Action_Object@@UAEXXZ"
-      }
+      },
+      "module": "m_ac_obj"
     },
     {
       "name": "sceninfo",
       "source": "src/sceninfo.cpp",
-      "module": "sceninfo",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0048CEA0": "src/sceninfo.cpp",
@@ -7302,12 +7337,12 @@
         "0048D040": "?save@RGE_Scenario_File_Info@@QAEXXZ",
         "0048D4D0": "?get_scenario_name@RGE_Scenario_File_Info@@QAEPADJ@Z",
         "0048D500": "?get_scenario_info@RGE_Scenario_File_Info@@QAEPAVRGE_Scenario_Header@@J@Z"
-      }
+      },
+      "module": "sceninfo"
     },
     {
       "name": "color",
       "source": "src/color.cpp",
-      "module": "color",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00424350": "src/color.cpp",
@@ -7322,12 +7357,12 @@
         "00424440": "??0RGE_Color_Table@@QAE@PAU_iobuf@@F@Z",
         "004244F0": "??0RGE_Color_Table@@QAE@PAD@Z",
         "004245F0": "??0RGE_Color_Table@@QAE@PAVTDrawArea@@JPAUtagPALETTEENTRY@@1@Z"
-      }
+      },
+      "module": "color"
     },
     {
       "name": "act_make_cpp",
       "source": "src/act_make.cpp",
-      "module": "act_make",
       "flags": "config/flags/default.rsp",
       "owners": {
         "004049B0": "src/act_make.cpp",
@@ -7340,12 +7375,12 @@
         "00404A10": "??0RGE_Action_Make@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@@Z",
         "00404A40": "?first_in_stack@RGE_Action_Make@@UAEXE@Z",
         "00404A70": "?set_state@RGE_Action_Make@@MAEXE@Z"
-      }
+      },
+      "module": "act_make"
     },
     {
       "name": "taicrule",
       "source": "src/taicrule.cpp",
-      "module": "taicrule",
       "flags": "config/flags/default.rsp",
       "owners": {
         "004D68D0": "src/taicrule.cpp",
@@ -7358,12 +7393,12 @@
         "004D6900": "??1CombatRuleSystem@@UAE@XZ",
         "004D6AA0": "?bestUnitTypeToAttack@CombatRuleSystem@@QAEHH@Z",
         "004D6AB0": "?bestUnitTypeToDefendAgainst@CombatRuleSystem@@QAEHH@Z"
-      }
+      },
+      "module": "taicrule"
     },
     {
       "name": "com_spd",
       "source": "src/com_spd.cpp",
-      "module": "com_spd",
       "flags": "config/flags/00432620_RGE_Communications_Speed.rsp",
       "owners": {
         "00432620": "src/com_spd.cpp",
@@ -7413,19 +7448,20 @@
         "00432B20": "?GetLatencyInfo@RGE_Communications_Speed@@QAEPADXZ",
         "00432BD0": "?GetSelfPlayerOptimalSpeedStr@RGE_Communications_Speed@@QAEPADXZ",
         "00432C10": "?GetPlayerSpeedStatusStr@RGE_Communications_Speed@@QAEPADH@Z",
-    "00432C70": "?GetMachineSpeedInfo@RGE_Communications_Speed@@QAEPADXZ",
+        "00432C70": "?GetMachineSpeedInfo@RGE_Communications_Speed@@QAEPADXZ",
         "00432D90": "?GetAvgFrameRate@RGE_Communications_Speed@@QAEIXZ",
         "00432DA0": "?GetRecommendedBufferGranularity@RGE_Communications_Speed@@QAEIXZ",
         "00432FB0": "?SetV1@RGE_Communications_Speed@@QAEXK@Z",
         "00432FD0": "?SetV2@RGE_Communications_Speed@@QAEXK@Z"
-      }
+      },
+      "module": "com_spd"
     },
     {
       "name": "dlg_msg",
       "source": "src/dlg_msg.cpp",
-      "module": "dlg_msg",
       "flags": "config/flags/0043FCD0_TMessageDialog.rsp",
       "owners": {
+        "0043FC70": "src/dlg_msg.cpp",
         "0043FCD0": "src/dlg_msg.cpp",
         "0043FFF0": "src/dlg_msg.cpp",
         "00440070": "src/dlg_msg.cpp",
@@ -7433,17 +7469,18 @@
         "00440110": "src/dlg_msg.cpp"
       },
       "symbols": {
+        "0043FC70": "??0TMessageDialog@@QAE@PAD@Z",
         "0043FCD0": "??1TMessageDialog@@UAE@XZ",
         "0043FFF0": "?setup@TMessageDialog@@QAEJPAVTPanel@@PADJJJEHJJ@Z",
         "00440070": "?action@TMessageDialog@@UAEJPAVTPanel@@JKK@Z",
         "00440100": "?key_down_action@TMessageDialog@@UAEJJFHHH@Z",
         "00440110": "?handle_idle@TMessageDialog@@UAEJXZ"
-      }
+      },
+      "module": "dlg_msg"
     },
     {
       "name": "scr_mp_cpp",
       "source": "src/scr_mp.cpp",
-      "module": "scr_mp",
       "flags": "config/flags/0049F370_TribeMPStartupScreen.rsp",
       "owners": {
         "0049F9A0": "src/scr_mp.cpp",
@@ -7456,12 +7493,12 @@
         "0049F9D0": "?action@TribeMPStartupScreen@@UAEJPAVTPanel@@JKK@Z",
         "0049FED0": "?fillList@TribeMPStartupScreen@@IAEXXZ",
         "004A00A0": "?handle_user_command@TribeMPStartupScreen@@UAEJIJ@Z"
-      }
+      },
+      "module": "scr_mp"
     },
     {
       "name": "rpnl_tbx_cpp",
       "source": "src/rpnl_tbx.cpp",
-      "module": "rpnl_tbx",
       "flags": "config/flags/004898D0_RGE_Panel_Tool_Box.rsp",
       "owners": {
         "004898D0": "src/rpnl_tbx.cpp",
@@ -7476,12 +7513,12 @@
         "00489F50": "?action@RGE_Panel_Tool_Box@@UAEJPAVTPanel@@JKK@Z",
         "0048A520": "?game_mode_changed@RGE_Panel_Tool_Box@@QAEXHH@Z",
         "0048A640": "?draw@RGE_Panel_Tool_Box@@UAEXXZ"
-      }
+      },
+      "module": "rpnl_tbx"
     },
     {
       "name": "act_entr_cpp",
       "source": "src/act_entr.cpp",
-      "module": "act_entr",
       "flags": "config/flags/00402410_RGE_Action_Enter.rsp",
       "owners": {
         "004023C0": "src/act_entr.cpp",
@@ -7496,12 +7533,12 @@
         "004025F0": "??1RGE_Action_Enter@@UAE@XZ",
         "00402600": "?first_in_stack@RGE_Action_Enter@@UAEXE@Z",
         "00402610": "?set_state@RGE_Action_Enter@@MAEXE@Z"
-      }
+      },
+      "module": "act_entr"
     },
     {
       "name": "file_stf",
       "source": "src/file_stf.cpp",
-      "module": "file_stf",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00449710": "src/file_stf.cpp",
@@ -7548,11 +7585,11 @@
         "00449A60": "?changeDrive@DriveInformation@@QAEHH@Z",
         "00449A90": "?changeDirectory@DriveInformation@@QAEHPAD@Z",
         "00449AC0": "?updateDirectory@DriveInformation@@IAEXXZ"
-      }
+      },
+      "module": "file_stf"
     },
     {
       "name": "tm_b_obj",
-      "module": "tm_b_obj",
       "source": "src/tm_b_obj.cpp",
       "flags": "config/flags/0050E040_TRIBE_Master_Building_Object.rsp",
       "owners": {
@@ -7586,12 +7623,12 @@
         "0050E730": "?make_new_master@TRIBE_Master_Building_Object@@UAEPAVRGE_Master_Static_Object@@XZ",
         "0050E950": "?alignment@TRIBE_Master_Building_Object@@UAEEAAM0PAVRGE_Game_World@@E@Z",
         "0050E7A0": "?draw@TRIBE_Master_Building_Object@@UAEXPAVTDrawArea@@FFPAVRGE_Color_Table@@JJHE@Z"
-      }
+      },
+      "module": "tm_b_obj"
     },
     {
       "name": "rge_fio",
       "source": "src/rge_fio.cpp",
-      "module": "rge_fio",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0047FD30": "src/rge_fio.cpp",
@@ -7616,11 +7653,11 @@
         "00480080": "?rge_read@@YAXHPAXH@Z",
         "00480290": "?rge_buffer_full@@YAHPAEH@Z",
         "004802C0": "?rge_write@@YAXHPAXH@Z"
-      }
+      },
+      "module": "rge_fio"
     },
     {
       "name": "tact_hea",
-      "module": "tact_hea",
       "source": "src/tact_hea.cpp",
       "flags": "config/flags/004CE990_TRIBE_Action_Heal.rsp",
       "owners": {
@@ -7637,12 +7674,12 @@
         "004CF030": "?work@TRIBE_Action_Heal@@UAEHPAVRGE_Static_Object@@MMM@Z",
         "004CEA10": "??0TRIBE_Action_Heal@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z",
         "004CEA90": "?set_state@TRIBE_Action_Heal@@MAEXE@Z"
-      }
+      },
+      "module": "tact_hea"
     },
     {
       "name": "Picture",
       "source": "src/Picture.cpp",
-      "module": "Picture",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0046DDE0": "src/Picture.cpp",
@@ -7661,12 +7698,12 @@
         "0046E2C0": "?AlignedWidth@TPicture@@QAEJXZ",
         "0046E2D0": "?Draw@TPicture@@QAEXPAVTDrawArea@@JJHH@Z",
         "0046E370": "?Tile@TPicture@@QAEJPAVTDrawArea@@JJJJJJJJJJ@Z"
-      }
+      },
+      "module": "Picture"
     },
     {
       "name": "scr_main",
       "source": "src/scr_main.cpp",
-      "module": "scr_main",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "0049EC00": "src/scr_main.cpp",
@@ -7689,11 +7726,11 @@
         "0049F2D0": "?set_text@TRIBE_Screen_Main_Error@@QAEXJ@Z",
         "0049F2F0": "?action@TRIBE_Screen_Main_Error@@UAEJPAVTPanel@@JKK@Z",
         "0049F340": "?handle_idle@TRIBE_Screen_Main_Error@@UAEJXZ"
-      }
+      },
+      "module": "scr_main"
     },
     {
       "name": "m_co_obj",
-      "module": "m_co_obj",
       "source": "src/m_co_obj.cpp",
       "flags": "config/flags/0044FE40_RGE_Master_Combat_Object.rsp",
       "owners": {
@@ -7725,11 +7762,11 @@
         "00450B40": "?modify_delta@RGE_Master_Combat_Object@@UAEXME@Z",
         "00450D00": "?modify_percent@RGE_Master_Combat_Object@@UAEXME@Z",
         "00450E20": "?save@RGE_Master_Combat_Object@@UAEXH@Z"
-      }
+      },
+      "module": "m_co_obj"
     },
     {
       "name": "vw_main",
-      "module": "vw_main",
       "source": "src/vw_main.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
@@ -7756,13 +7793,13 @@
         "0053F6F0": "?draw@RGE_Main_View@@UAEXXZ",
         "00540680": "?fixup_pick_info@RGE_Main_View@@IAEXPAURGE_Pick_Info@@@Z",
         "00540700": "?reset_display_object_selection@RGE_Main_View@@QAEXH@Z"
-      }
+      },
+      "module": "vw_main"
     },
     {
       "name": "taibldmd",
       "source": "src/taibldmd.cpp",
       "flags": "config/flags/004D5690_addResearch.rsp",
-      "module": "taibldmd",
       "owners": {
         "004D3A80": "src/taibldmd.cpp",
         "004D3AD0": "src/taibldmd.cpp",
@@ -7771,6 +7808,7 @@
         "004D3B20": "src/taibldmd.cpp",
         "004D4460": "src/taibldmd.cpp",
         "004D4DB0": "src/taibldmd.cpp",
+        "004D4E10": "src/taibldmd.cpp",
         "004D4F80": "src/taibldmd.cpp",
         "004D5090": "src/taibldmd.cpp",
         "004D5170": "src/taibldmd.cpp",
@@ -7807,12 +7845,13 @@
         "004D5B80": "?insertGathererPercentage@TribeBuildAIModule@@QAEHHHH@Z",
         "004D5BB0": "?numberBuiltOrInProgressItemsOfType@TribeBuildAIModule@@UAEHHH@Z",
         "004D5C20": "?allBuilt@TribeBuildAIModule@@QAEHHH@Z",
-        "004D5DE0": "?buildItem@TribeBuildAIModule@@QAEPAVBuildItem@@HHH@Z"
-      }
+        "004D5DE0": "?buildItem@TribeBuildAIModule@@QAEPAVBuildItem@@HHH@Z",
+        "004D4E10": "?blockingResource@TribeBuildAIModule@@QAEHXZ"
+      },
+      "module": "taibldmd"
     },
     {
       "name": "action",
-      "module": "action",
       "source": "src/action.cpp",
       "flags": "config/flags/004076D0_create_action_list.rsp",
       "owners": {
@@ -7876,12 +7915,12 @@
         "00407D50": "?targetZ@RGE_Action@@QBEMXZ",
         "00407D60": "?subAction@RGE_Action@@QBEEXZ",
         "00407D70": "?setSubAction@RGE_Action@@QAEXE@Z"
-      }
+      },
+      "module": "action"
     },
     {
       "name": "dlg_help",
       "source": "src/dlg_help.cpp",
-      "module": "dlg_help",
       "flags": "config/flags/0043E840_THelpDialog.rsp",
       "owners": {
         "0043E840": "src/dlg_help.cpp",
@@ -7896,12 +7935,12 @@
         "0043E950": "??1THelpDialog@@UAE@XZ",
         "0043ED40": "?action@THelpDialog@@UAEJPAVTPanel@@JKK@Z",
         "0043EE10": "?handle_mouse_down@THelpDialog@@UAEJEJJHH@Z"
-      }
+      },
+      "module": "dlg_help"
     },
     {
       "name": "gameinfo",
       "source": "src/gameinfo.cpp",
-      "module": "gameinfo",
       "flags": "config/flags/gameinfo.rsp",
       "owners": {
         "0044C5A0": "src/gameinfo.cpp",
@@ -7989,12 +8028,12 @@
         "0044DA50": "?remove_player@RGE_Game_Info@@QAEXJ@Z",
         "0044D0F0": "?set_current_scenario@RGE_Person_Info@@QAEEJ@Z",
         "0044D300": "??1RGE_Game_Info@@QAE@XZ"
-      }
+      },
+      "module": "gameinfo"
     },
     {
       "name": "tact_trd",
       "source": "src/tact_trd.cpp",
-      "module": "tact_trd",
       "flags": "config/flags/004D2660_TRIBE_Action_Trade.rsp",
       "owners": {
         "004D2660": "src/tact_trd.cpp",
@@ -8021,12 +8060,12 @@
         "004D3340": "?move_to@TRIBE_Action_Trade@@UAEHPAVRGE_Static_Object@@MMM@Z",
         "004D33C0": "?work@TRIBE_Action_Trade@@UAEHPAVRGE_Static_Object@@MMM@Z",
         "004D2880": "?set_state@TRIBE_Action_Trade@@MAEXE@Z"
-      }
+      },
+      "module": "tact_trd"
     },
     {
       "name": "aiconitm",
       "source": "src/aiconitm.cpp",
-      "module": "aiconitm",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0040A820": "src/aiconitm.cpp",
@@ -8065,12 +8104,12 @@
         "0040A990": "??9@YAHABVConstructionItem@@0@Z",
         "0040A9C0": "??M@YAHABVConstructionItem@@0@Z",
         "0040A9E0": "??O@YAHABVConstructionItem@@0@Z"
-      }
+      },
+      "module": "aiconitm"
     },
     {
       "name": "tvictory",
       "source": "src/tvictory.cpp",
-      "module": "tvictory",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0052C8F0": "src/tvictory.cpp",
@@ -8087,12 +8126,12 @@
         "0052C950": "?handle_condition@TRIBE_Victory_Conditions@@UAEXPAURGE_Victory_Entry@@@Z",
         "0052C970": "?handle_tech@TRIBE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z",
         "0052C9B0": "?add_tech@TRIBE_Victory_Conditions@@QAEEEJ@Z"
-      }
+      },
+      "module": "tvictory"
     },
     {
       "name": "scr_save",
       "source": "src/scr_save.cpp",
-      "module": "scr_save",
       "flags": "config/flags/scr_save.rsp",
       "owners": {
         "004A71F0": "src/scr_save.cpp",
@@ -8103,12 +8142,12 @@
         "004A71F0": "??0TribeSaveGameScreen@@QAE@W4Mode@0@PADH@Z",
         "004A7670": "?fillList@TribeSaveGameScreen@@IAEXXZ",
         "004A8060": "?save_for_scenario_editor@TribeSaveGameScreen@@IAEXXZ"
-      }
+      },
+      "module": "scr_save"
     },
     {
       "name": "pnl_msg",
       "source": "src/Pnl_msg.cpp",
-      "module": "pnl_msg",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00479270": "src/Pnl_msg.cpp",
@@ -8127,12 +8166,12 @@
         "00479A10": "?get_true_render_rect@TMessagePanel@@UAEXAAUtagRECT@@@Z",
         "00479A80": "?handle_idle@TMessagePanel@@UAEJXZ",
         "0047A190": "?set_font@TMessagePanel@@UAEXPAXJJ@Z"
-      }
+      },
+      "module": "pnl_msg"
     },
     {
       "name": "Timeline",
       "source": "src/Timeline.cpp",
-      "module": "Timeline",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0050D7B0": "src/Timeline.cpp",
@@ -8157,12 +8196,12 @@
         "0050DB10": "?mock_update@RGE_Timeline@@QAEXM@Z",
         "0050D7E0": "??1RGE_Timeline@@UAE@XZ",
         "0050DE50": "?add_create@RGE_Timeline@@QAEPAURGE_Time_Entry@@MFEMMM@Z"
-      }
+      },
+      "module": "Timeline"
     },
     {
       "name": "Res_file",
       "source": "src/Res_file.cpp",
-      "module": "Res_file",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0047F180": "src/Res_file.cpp",
@@ -8179,12 +8218,12 @@
         "0047F580": "?RESFILE_Set_Missing_Flag@@YAXH@Z",
         "0047F590": "?RESFILE_Decommit_Mapped_Memory@@YAHPAEH@Z",
         "0047FC50": "?BUILDRES_get_files_resource_type@@YAKPAD@Z"
-      }
+      },
+      "module": "Res_file"
     },
     {
       "name": "vw_dimap",
       "source": "src/vw_dimap.cpp",
-      "module": "vw_dimap",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0053D360": "src/vw_dimap.cpp",
@@ -8213,12 +8252,12 @@
         "0053D8E0": "?command_make_do@RGE_Diamond_Map_View@@UAEHJJ@Z",
         "0053D970": "?command_make_move@RGE_Diamond_Map_View@@UAEHJJ@Z",
         "0053DA10": "?command_make_work@RGE_Diamond_Map_View@@UAEHJJ@Z"
-      }
+      },
+      "module": "vw_dimap"
     },
     {
       "name": "tact_cnv",
       "source": "src/tact_cnv.cpp",
-      "module": "tact_cnv",
       "flags": "config/flags/default_gx.rsp",
       "owners": {
         "004CD9E0": "src/tact_cnv.cpp",
@@ -8239,12 +8278,12 @@
         "004CE4B0": "?martyrdom@TRIBE_Action_Convert@@QAEXXZ",
         "004CDA90": "??0TRIBE_Action_Convert@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z",
         "004CE070": "?update@TRIBE_Action_Convert@@UAEEXZ"
-      }
+      },
+      "module": "tact_cnv"
     },
     {
       "name": "taimdmd",
       "source": "src/taimdmd.cpp",
-      "module": "taimdmd",
       "flags": "config/flags/004E4800_TribeMainDecisionAIModule.rsp",
       "owners": {
         "004E4EC0": "src/taimdmd.cpp",
@@ -8279,11 +8318,11 @@
         "004E6600": "?processAICommand@TribeMainDecisionAIModule@@QAEHHHHHH@Z",
         "004E6870": "?currentScore@TribeMainDecisionAIModule@@QAEHH@Z",
         "004E60D0": "?detask@TribeMainDecisionAIModule@@QAEXH@Z"
-      }
+      },
+      "module": "taimdmd"
     },
     {
       "name": "vis_unit",
-      "module": "vis_unit",
       "source": "src/vis_unit.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
@@ -8295,7 +8334,8 @@
         "0053BD70": "src/vis_unit.cpp",
         "0053BE00": "src/vis_unit.cpp",
         "0053BED0": "src/vis_unit.cpp",
-        "0053BFD0": "src/vis_unit.cpp"
+        "0053BFD0": "src/vis_unit.cpp",
+        "0053C050": "src/vis_unit.cpp"
       },
       "symbols": {
         "0053B5A0": "??0Visible_Unit_Manager@@QAE@HH@Z",
@@ -8306,13 +8346,14 @@
         "0053BD70": "?save@Visible_Resource_Manager@@QAEXH@Z",
         "0053BE00": "?Process_New_Tiles@Visible_Resource_Manager@@QAEXPAVRGE_Tile_List@@@Z",
         "0053BED0": "?AddResource@Visible_Resource_Manager@@QAEXHH@Z",
-        "0053BFD0": "?Remove_Resource@Visible_Resource_Manager@@QAEHHH@Z"
-      }
+        "0053BFD0": "?Remove_Resource@Visible_Resource_Manager@@QAEHHH@Z",
+        "0053C050": "?Get_Closest_Resource@Visible_Resource_Manager@@QAEPAUVISIBLE_RESOURCE_REC@@HHHHPAHH@Z"
+      },
+      "module": "vis_unit"
     },
     {
       "name": "dlg_list",
       "source": "src/dlg_list.cpp",
-      "module": "dlg_list",
       "flags": "config/flags/dlg_list.rsp",
       "owners": {
         "0043EE70": "src/dlg_list.cpp",
@@ -8327,12 +8368,12 @@
         "0043F210": "?key_down_action@TListDialog@@UAEJJFHHH@Z",
         "0043F220": "?action@TListDialog@@UAEJPAVTPanel@@JKK@Z",
         "0043EE70": "??0TListDialog@@QAE@PAD@Z"
-      }
+      },
+      "module": "dlg_list"
     },
     {
       "name": "pnl_scbr",
       "source": "src/Pnl_scbr.cpp",
-      "module": "Pnl_scbr",
       "flags": "config/flags/0047A700_TScrollBarPanel.rsp",
       "owners": {
         "0047A700": "src/Pnl_scbr.cpp",
@@ -8367,12 +8408,12 @@
         "0047ACC0": "?handle_idle@TScrollBarPanel@@UAEJXZ",
         "0047A700": "??0TScrollBarPanel@@QAE@XZ",
         "0047AB20": "?set_tab_pos@TScrollBarPanel@@QAEXJ@Z"
-      }
+      },
+      "module": "Pnl_scbr"
     },
     {
       "name": "airesitm",
       "source": "src/airesitm.cpp",
-      "module": "airesitm",
       "flags": "config/flags/airesitm.rsp",
       "owners": {
         "00411EC0": "src/airesitm.cpp",
@@ -8401,12 +8442,12 @@
         "00412200": "?number@ResourceItem@@QBEHXZ",
         "00412210": "?largestValueIndex@ResourceItem@@QAEHH@Z",
         "00412050": "??0ResourceItem@@QAE@PAV0@@Z"
-      }
+      },
+      "module": "airesitm"
     },
     {
       "name": "tact_rep",
       "source": "src/tact_rep.cpp",
-      "module": "tact_rep",
       "flags": "config/flags/004CD210_TRIBE_Action_Build.rsp",
       "owners": {
         "004D1680": "src/tact_rep.cpp",
@@ -8431,12 +8472,12 @@
         "004D1F60": "?move_to@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z",
         "004D1FA0": "?work@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z",
         "004D18B0": "?set_state@TRIBE_Action_Repair@@MAEXE@Z"
-      }
+      },
+      "module": "tact_rep"
     },
     {
       "name": "tairesmd",
       "source": "src/tairesmd.cpp",
-      "module": "tairesmd",
       "flags": "config/flags/tairesmd.rsp",
       "owners": {
         "004E6B40": "src/tairesmd.cpp",
@@ -8457,12 +8498,12 @@
         "004E6D40": "?unavailableResource@TribeResourceAIModule@@QAEHPAVResourceItem@@@Z",
         "004E6DD0": "?resourceName@TribeResourceAIModule@@QAEPADH@Z",
         "004E6B40": "??0TribeResourceAIModule@@QAE@PAXHHHHH@Z"
-      }
+      },
+      "module": "tairesmd"
     },
     {
       "name": "tpnl_obj",
       "source": "src/tpnl_obj.cpp",
-      "module": "tpnl_obj",
       "flags": "config/flags/tpnl_obj.rsp",
       "owners": {
         "0051ADF0": "src/tpnl_obj.cpp",
@@ -8485,11 +8526,11 @@
         "0051C220": "?draw_item@TRIBE_Panel_Object@@MAEXHHW4ValueType@1@HH@Z",
         "0051CC80": "?mouse_left_down_action@TRIBE_Panel_Object@@UAEJJJHH@Z",
         "0051CC90": "?mouse_left_up_action@TRIBE_Panel_Object@@UAEJJJHH@Z"
-      }
+      },
+      "module": "tpnl_obj"
     },
     {
       "name": "misl_obj",
-      "module": "misl_obj",
       "source": "src/misl_obj.cpp",
       "flags": "config/flags/0045AB20_make_object_collision_list.rsp",
       "owners": {
@@ -8515,12 +8556,12 @@
         "0045A950": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@PAVRGE_Static_Object@@M@Z",
         "0045A9E0": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@MMMM@Z",
         "0045AA70": "?missile_move@RGE_Missile_Object@@QAEEXZ"
-      }
+      },
+      "module": "misl_obj"
     },
     {
       "name": "map",
       "source": "src/map.cpp",
-      "module": "map",
       "flags": "config/flags/default.rsp",
       "owners": {
         "004550A0": "src/map.cpp",
@@ -8605,12 +8646,12 @@
         "00459D20": "?get_tile_type@RGE_Map@@QAEEFF@Z",
         "0045A490": "?check_for_border@RGE_Map@@QAEXEAAE@Z",
         "0045A500": "?update@RGE_Map@@QAEXK@Z"
-      }
+      },
+      "module": "map"
     },
     {
       "name": "tvw_main",
       "source": "src/tvw_main.cpp",
-      "module": "tvw_main",
       "flags": "config/flags/default.rsp",
       "owners": {
         "0052D060": "src/tvw_main.cpp",
@@ -8631,17 +8672,18 @@
         "0052DD10": "?pick_weight@TRIBE_Main_View@@UAEHPAVRGE_Static_Object@@H@Z",
         "0052DE20": "?command_make_do@TRIBE_Main_View@@UAEHJJHF@Z",
         "0052DE40": "?mouse_left_dbl_click_action@TRIBE_Main_View@@UAEJJJHH@Z"
-      }
+      },
+      "module": "tvw_main"
     },
     {
       "name": "com_q",
       "source": "src/com_q.cpp",
-      "module": "com_q",
       "flags": "config/flags/com_q.rsp",
       "owners": {
         "00431720": "src/com_q.cpp",
         "00431760": "src/com_q.cpp",
         "00431810": "src/com_q.cpp",
+        "004319E0": "src/com_q.cpp",
         "00431A40": "src/com_q.cpp",
         "00431A70": "src/com_q.cpp",
         "00431BD0": "src/com_q.cpp",
@@ -8655,36 +8697,41 @@
         "00431F10": "src/com_q.cpp"
       },
       "symbols": {
+        "004319E0": "?ExpectedNextSequence@RGE_Communications_Queue@@QAEEKI@Z",
         "00431A40": "?QueuedForTurn@RGE_Communications_Queue@@IAEIK@Z",
         "00431BF0": "?AddItem@RGE_Communications_Queue@@QAEHKPAXKIEH@Z",
         "00431F10": "?GetNextSequence@RGE_Communications_Queue@@QAEEK@Z"
-      }
+      },
+      "module": "com_q"
     },
     {
       "name": "t_b_obj",
-      "module": "t_b_obj",
       "source": "src/t_b_obj.cpp",
       "flags": "config/flags/default.rsp",
       "owners": {
         "004C8370": "src/t_b_obj.cpp",
         "004C8B80": "src/t_b_obj.cpp",
         "004C8E60": "src/t_b_obj.cpp",
+        "004C8E90": "src/t_b_obj.cpp",
         "004C9480": "src/t_b_obj.cpp",
         "004C9760": "src/t_b_obj.cpp",
         "004C9D90": "src/t_b_obj.cpp",
         "004CA0B0": "src/t_b_obj.cpp",
         "004C8490": "src/t_b_obj.cpp",
+        "004C8690": "src/t_b_obj.cpp",
         "004C8A60": "src/t_b_obj.cpp"
       },
       "symbols": {
         "004C8490": "?setup@TRIBE_Building_Object@@MAEHHPAVRGE_Game_World@@@Z",
-        "004C8A60": "?rehook@TRIBE_Building_Object@@UAEXXZ"
-      }
+        "004C8690": "?destroy_obj@TRIBE_Building_Object@@UAEXXZ",
+        "004C8A60": "?rehook@TRIBE_Building_Object@@UAEXXZ",
+        "004C8E90": "?transform@TRIBE_Building_Object@@QAEXPAVTRIBE_Master_Building_Object@@@Z"
+      },
+      "module": "t_b_obj"
     },
     {
       "name": "scr_name",
       "source": "src/scr_name.cpp",
-      "module": "scr_name",
       "flags": "config/flags/scr_name.rsp",
       "owners": {
         "004A63D0": "src/scr_name.cpp",
@@ -8699,12 +8746,12 @@
       "symbols": {
         "004A69B0": "?action@TRIBE_Screen_Name@@UAEJPAVTPanel@@JKK@Z",
         "004A6FF0": "?action@TRIBE_Dialog_Name@@UAEJPAVTPanel@@JKK@Z"
-      }
+      },
+      "module": "scr_name"
     },
     {
       "name": "com_hand",
       "source": "src/com_hand.cpp",
-      "module": "com_hand",
       "flags": "config/flags/com_hand.rsp",
       "owners": {
         "00425750": "src/com_hand.cpp",
@@ -8738,6 +8785,7 @@
         "00429C40": "src/com_hand.cpp",
         "00429CE0": "src/com_hand.cpp",
         "00429F80": "src/com_hand.cpp",
+        "0042A130": "src/com_hand.cpp",
         "0042A160": "src/com_hand.cpp",
         "0042BAD0": "src/com_hand.cpp",
         "0042BAE0": "src/com_hand.cpp",
@@ -8839,6 +8887,7 @@
         "00429C40": "?AllPlayersAcknowledged@TCommunications_Handler@@QAEHXZ",
         "00429CE0": "?SendChecksumMessage@TCommunications_Handler@@QAEJKIJJJJJ@Z",
         "00429F80": "?ClearAllSerialNumbers@TCommunications_Handler@@QAEXXZ",
+        "0042A130": "?ClearTXForPlayer@TCommunications_Handler@@IAEXI@Z",
         "0042A160": "?ClearRXTXForPlayer@TCommunications_Handler@@IAEXI@Z",
         "0042BAD0": "?GetCommunicationsStatus@TCommunications_Handler@@QAE?AW4COMMSTATUS@@XZ",
         "0042BAE0": "?UnlinkCurrentLevel@TCommunications_Handler@@QAE?AW4COMMSTATUS@@XZ",
@@ -8890,7 +8939,6 @@
         "0042F250": "?SetSpeedV2@TCommunications_Handler@@QAEXK@Z",
         "0042F270": "?IsPlayerOutOfSync@TCommunications_Handler@@QAEHIK@Z",
         "00425A40": "??0TCommunications_Handler@@QAE@PAXEPAVTChat@@U_GUID@@@Z",
-        "00426FB0": "?ShutdownGameMessages@TCommunications_Handler@@QAEXXZ",
         "0042EC40": "?StringFromGUID@@YAHPAU_GUID@@PAG@Z",
         "004258E0": "?StopIfSyncFail@TCommunications_Handler@@QAEXH@Z",
         "00425930": "?DropPacketsIntentionally@TCommunications_Handler@@QAEXH@Z",
@@ -8910,12 +8958,12 @@
         "0042ECE0": "?DebugSessionInformation@TCommunications_Handler@@QAEXPAUDPSESSIONDESC2@@@Z",
         "0042F110": "?ForcePlayerEnumeration@TCommunications_Handler@@QAEXXZ",
         "0042F140": "?ForcePlayerDestroyAndCreate@TCommunications_Handler@@QAEXXZ"
-      }
+      },
+      "module": "com_hand"
     },
     {
       "name": "scr_mps",
       "source": "src/scr_mps.cpp",
-      "module": "scr_mps",
       "flags": "config/flags/scr_mps.rsp",
       "owners": {
         "004A0D80": "src/scr_mps.cpp",
@@ -8938,6 +8986,7 @@
         "004A6120": "src/scr_mps.cpp",
         "004A6170": "src/scr_mps.cpp",
         "004A61A0": "src/scr_mps.cpp",
+        "004A6290": "src/scr_mps.cpp",
         "004A62F0": "src/scr_mps.cpp",
         "004A6310": "src/scr_mps.cpp",
         "004A6330": "src/scr_mps.cpp",
@@ -8964,16 +9013,17 @@
         "004A6120": "?action@TRIBE_Screen_Wait@@UAEJPAVTPanel@@JKK@Z",
         "004A6170": "?handle_idle@TRIBE_Screen_Wait@@UAEJXZ",
         "004A61A0": "??0TRIBE_Screen_Disconnect@@QAE@H@Z",
+        "004A6290": "??1TRIBE_Screen_Disconnect@@UAE@XZ",
         "004A62F0": "?set_text@TRIBE_Screen_Disconnect@@QAEXPAD@Z",
         "004A6310": "?set_text@TRIBE_Screen_Disconnect@@QAEXJ@Z",
         "004A6330": "?action@TRIBE_Screen_Disconnect@@UAEJPAVTPanel@@JKK@Z",
         "004A63C0": "?handle_idle@TRIBE_Screen_Disconnect@@UAEJXZ"
-      }
+      },
+      "module": "scr_mps"
     },
     {
       "name": "Command",
       "source": "src/Command.cpp",
-      "module": "Command",
       "flags": "config/flags/default.rsp",
       "owners": {
         "00433DB0": "src/Command.cpp",
@@ -9027,12 +9077,12 @@
         "004342E0": "?do_command_pause@RGE_Command@@IAEXPAURGE_Command_Pause@@@Z",
         "004351B0": "?duplicate_check_command_stop@RGE_Command@@IAEEPAURGE_Command_Stop@@@Z",
         "004350E0": "?do_command_destroy_group@RGE_Command@@IAEXPAURGE_Command_Destroy_Group@@@Z"
-      }
+      },
+      "module": "Command"
     },
     {
       "name": "drawarea",
       "source": "src/drawarea.cpp",
-      "module": "drawarea",
       "flags": "config/flags/drawarea_prefix_gx.rsp",
       "owners": {
         "00442680": "src/drawarea.cpp",
@@ -9134,12 +9184,12 @@
         "00443D40": "?ModifyPalette@TDrawSystem@@QAEXHHPAUtagPALETTEENTRY@@@Z",
         "00444B40": "?AlignedWidth@TDrawArea@@QAEJXZ",
         "004459A0": "?DrawRect@TDrawArea@@QAEXJJJJE@Z"
-      }
+      },
+      "module": "drawarea"
     },
     {
       "name": "taiinfmd",
       "source": "src/taiinfmd.cpp",
-      "module": "taiinfmd",
       "flags": "config/flags/004D6BB0_TribeInformationAIModule.rsp",
       "owners": {
         "004D7070": "src/taiinfmd.cpp",
@@ -9267,11 +9317,11 @@
         "004E42B0": "?timeToBeKilled@TribeInformationAIModule@@QAEMPAVTacticalAIGroup@@PAVRGE_Static_Object@@@Z",
         "004E4350": "?timeToBeKilled@TribeInformationAIModule@@QAEMPAHHPAVRGE_Static_Object@@@Z",
         "004E4400": "?calculatePlayVariation@TribeInformationAIModule@@QAEHH@Z"
-      }
+      },
+      "module": "taiinfmd"
     },
     {
       "name": "world",
-      "module": "world_cpp",
       "source": "src/world.cpp",
       "flags": "config/flags/world_scenario_sparse.rsp",
       "owners": {
@@ -9286,6 +9336,7 @@
         "005410E0": "src/world.cpp",
         "00541240": "src/world.cpp",
         "00541380": "src/world.cpp",
+        "005414A0": "src/world.cpp",
         "00541500": "src/world.cpp",
         "00541590": "src/world.cpp",
         "00541770": "src/world.cpp",
@@ -9364,6 +9415,7 @@
         "005410E0": "?data_load_sprites@RGE_Game_World@@MAEEPAD@Z",
         "00541240": "?data_load_players_type@RGE_Game_World@@MAEXFFPAU_iobuf@@@Z",
         "00541380": "?data_load_objects@RGE_Game_World@@MAEEPAD@Z",
+        "005414A0": "?data_load_effects@RGE_Game_World@@MAEXPAD@Z",
         "00541500": "?data_load_map@RGE_Game_World@@MAEXPAD000FFFPAPAVRGE_Sound@@0@Z",
         "00541590": "?data_load_random_map@RGE_Game_World@@MAEXPAD000@Z",
         "00541770": "?init_player_type@RGE_Game_World@@MAEEHFE@Z",
@@ -9429,7 +9481,236 @@
         "00545D10": "?numberObjects@RGE_Game_World@@QAEHXZ",
         "00545D20": "?numberNegativeObjects@RGE_Game_World@@QAEHXZ",
         "00545D30": "?object@RGE_Game_World@@QAEPAVRGE_Static_Object@@H@Z"
-      }
+      },
+      "module": "world_cpp"
+    },
+    {
+      "name": "act_obj",
+      "source": "src/act_obj.cpp",
+      "flags": "config/flags/act_obj.rsp",
+      "owners": {
+        "00405C60": "src/act_obj.cpp",
+        "00405F90": "src/act_obj.cpp",
+        "00406010": "src/act_obj.cpp",
+        "00406080": "src/act_obj.cpp",
+        "004060A0": "src/act_obj.cpp",
+        "004060D0": "src/act_obj.cpp",
+        "00406120": "src/act_obj.cpp",
+        "004061A0": "src/act_obj.cpp",
+        "00406200": "src/act_obj.cpp",
+        "00406220": "src/act_obj.cpp",
+        "00406270": "src/act_obj.cpp",
+        "00406290": "src/act_obj.cpp",
+        "004062B0": "src/act_obj.cpp",
+        "00406300": "src/act_obj.cpp",
+        "00406830": "src/act_obj.cpp",
+        "00406840": "src/act_obj.cpp",
+        "00406850": "src/act_obj.cpp",
+        "004069E0": "src/act_obj.cpp",
+        "00406A00": "src/act_obj.cpp",
+        "00406A30": "src/act_obj.cpp",
+        "00406A50": "src/act_obj.cpp",
+        "00406BC0": "src/act_obj.cpp",
+        "00406BF0": "src/act_obj.cpp",
+        "00406C10": "src/act_obj.cpp",
+        "00406D00": "src/act_obj.cpp",
+        "00406D30": "src/act_obj.cpp"
+      },
+      "symbols": {
+        "00405C60": "??0RGE_Action_Object@@QAE@PAVRGE_Master_Action_Object@@PAVRGE_Player@@MMMH@Z",
+        "00405F90": "??0RGE_Action_Object@@QAE@HPAVRGE_Game_World@@H@Z",
+        "00406010": "??1RGE_Action_Object@@UAE@XZ",
+        "00406080": "?recycle_out_of_game@RGE_Action_Object@@UAEXXZ",
+        "004060A0": "?recycle_in_to_game@RGE_Action_Object@@UAEXPAVRGE_Master_Static_Object@@PAVRGE_Player@@MMM@Z",
+        "004060D0": "?setup@RGE_Action_Object@@MAEHPAVRGE_Master_Action_Object@@PAVRGE_Player@@MMM@Z",
+        "00406120": "?setup@RGE_Action_Object@@MAEHHPAVRGE_Game_World@@@Z",
+        "004061A0": "?create_action_list@RGE_Action_Object@@MAEPAVRGE_Action_List@@XZ",
+        "00406200": "?rehook@RGE_Action_Object@@UAEXXZ",
+        "00406220": "?save@RGE_Action_Object@@UAEXH@Z",
+        "00406270": "?transform@RGE_Action_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
+        "00406290": "?destroy_obj@RGE_Action_Object@@UAEXXZ",
+        "004062B0": "?notify_of_relation@RGE_Action_Object@@UAEXJE@Z",
+        "00406300": "?move_to@RGE_Action_Object@@UAEXPAVRGE_Static_Object@@MMM@Z",
+        "00406830": "?set_attack@RGE_Action_Object@@UAEXPAVRGE_Static_Object@@@Z",
+        "00406840": "?play_command_sound@RGE_Action_Object@@UAEXXZ",
+        "00406850": "?play_move_sound@RGE_Action_Object@@UAEXXZ",
+        "004069E0": "?set_action@RGE_Action_Object@@UAEXPAVRGE_Action@@@Z",
+        "00406A00": "?set_only_action@RGE_Action_Object@@UAEXPAVRGE_Action@@@Z",
+        "00406A30": "?set_end_action@RGE_Action_Object@@UAEXPAVRGE_Action@@@Z",
+        "00406A50": "?stop@RGE_Action_Object@@UAEXXZ",
+        "00406BC0": "?copy_obj@RGE_Action_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
+        "00406BF0": "?have_action@RGE_Action_Object@@QAEEXZ",
+        "00406C10": "?get_target_obj@RGE_Action_Object@@UAEPAVRGE_Static_Object@@XZ",
+        "00406D00": "?actionState@RGE_Action_Object@@UBEEXZ",
+        "00406D30": "?get_action_checksum@RGE_Action_Object@@UAEJXZ"
+      },
+      "module": "act_obj_cpp"
+    },
+    {
+      "name": "stat_obj",
+      "source": "src/stat_obj.cpp",
+      "flags": "config/flags/default.rsp",
+      "owners": {
+        "004C1420": "src/stat_obj.cpp",
+        "004C1590": "src/stat_obj.cpp",
+        "004C1CF0": "src/stat_obj.cpp",
+        "004C1E20": "src/stat_obj.cpp",
+        "004C1F30": "src/stat_obj.cpp",
+        "004C2030": "src/stat_obj.cpp",
+        "004C2080": "src/stat_obj.cpp",
+        "004C21A0": "src/stat_obj.cpp",
+        "004C2220": "src/stat_obj.cpp",
+        "004C23F0": "src/stat_obj.cpp",
+        "004C2970": "src/stat_obj.cpp",
+        "004C2DF0": "src/stat_obj.cpp",
+        "004C31E0": "src/stat_obj.cpp",
+        "004C41D0": "src/stat_obj.cpp",
+        "004C4210": "src/stat_obj.cpp",
+        "004C4330": "src/stat_obj.cpp",
+        "004C4360": "src/stat_obj.cpp",
+        "004C4BD0": "src/stat_obj.cpp",
+        "004C4C20": "src/stat_obj.cpp",
+        "004C4C40": "src/stat_obj.cpp",
+        "004C4E90": "src/stat_obj.cpp",
+        "004C4FB0": "src/stat_obj.cpp",
+        "004C5080": "src/stat_obj.cpp",
+        "004C50C0": "src/stat_obj.cpp",
+        "004C50F0": "src/stat_obj.cpp",
+        "004C5820": "src/stat_obj.cpp",
+        "004C5850": "src/stat_obj.cpp",
+        "004C5860": "src/stat_obj.cpp",
+        "004C5880": "src/stat_obj.cpp",
+        "004C58E0": "src/stat_obj.cpp",
+        "004C5960": "src/stat_obj.cpp",
+        "004C59B0": "src/stat_obj.cpp",
+        "004C5AA0": "src/stat_obj.cpp",
+        "004C5C10": "src/stat_obj.cpp",
+        "004C5C40": "src/stat_obj.cpp",
+        "004C5C60": "src/stat_obj.cpp",
+        "004C5CB0": "src/stat_obj.cpp",
+        "004C5D10": "src/stat_obj.cpp",
+        "004C5D20": "src/stat_obj.cpp",
+        "004C5D40": "src/stat_obj.cpp",
+        "004C5D80": "src/stat_obj.cpp",
+        "004C5E50": "src/stat_obj.cpp",
+        "004C5FA0": "src/stat_obj.cpp",
+        "004C60A0": "src/stat_obj.cpp",
+        "004C6240": "src/stat_obj.cpp",
+        "004C6260": "src/stat_obj.cpp",
+        "004C66C0": "src/stat_obj.cpp",
+        "004C66D0": "src/stat_obj.cpp",
+        "004C6700": "src/stat_obj.cpp",
+        "004C6AA0": "src/stat_obj.cpp",
+        "004C6B50": "src/stat_obj.cpp",
+        "004C6B60": "src/stat_obj.cpp",
+        "004C6B70": "src/stat_obj.cpp",
+        "004C6B80": "src/stat_obj.cpp",
+        "004C6C90": "src/stat_obj.cpp",
+        "004C6DA0": "src/stat_obj.cpp",
+        "004C7420": "src/stat_obj.cpp",
+        "004C7430": "src/stat_obj.cpp",
+        "004C74B0": "src/stat_obj.cpp",
+        "004C7530": "src/stat_obj.cpp",
+        "004C75B0": "src/stat_obj.cpp",
+        "004C7630": "src/stat_obj.cpp",
+        "004C76C0": "src/stat_obj.cpp",
+        "004C7740": "src/stat_obj.cpp",
+        "004C7760": "src/stat_obj.cpp",
+        "004C7770": "src/stat_obj.cpp",
+        "004C77B0": "src/stat_obj.cpp",
+        "004C78B0": "src/stat_obj.cpp",
+        "004C79D0": "src/stat_obj.cpp",
+        "004C7B60": "src/stat_obj.cpp",
+        "004C7BD0": "src/stat_obj.cpp",
+        "004C7CE0": "src/stat_obj.cpp",
+        "004C7DB0": "src/stat_obj.cpp",
+        "004C7E50": "src/stat_obj.cpp",
+        "004C7E70": "src/stat_obj.cpp",
+        "004C7EB0": "src/stat_obj.cpp",
+        "004C7F30": "src/stat_obj.cpp",
+        "004C7F40": "src/stat_obj.cpp"
+      },
+      "symbols": {
+        "004C1E20": "?get_starting_attribute@RGE_Static_Object@@QAEXXZ",
+        "004C6DA0": "?changeInfluenceMap@RGE_Static_Object@@QAEXPAVInfluenceMap@@HHH@Z",
+        "004C1420": "?recycle_in_to_game@RGE_Static_Object@@UAEXPAVRGE_Master_Static_Object@@PAVRGE_Player@@MMM@Z",
+        "004C1590": "?recycle_out_of_game@RGE_Static_Object@@UAEXXZ",
+        "004C1CF0": "?change_unique_id@RGE_Static_Object@@QAEXXZ",
+        "004C1F30": "?draw@RGE_Static_Object@@UAEXPAVTDrawArea@@FFPAVRGE_Color_Table@@@Z",
+        "004C2030": "?shadow_draw@RGE_Static_Object@@UAEXPAVTDrawArea@@FFE@Z",
+        "004C2080": "?normal_draw@RGE_Static_Object@@UAEXPAVTDrawArea@@FF@Z",
+        "004C21A0": "?draw_back_frame@RGE_Static_Object@@UAEXPAVTDrawArea@@FF@Z",
+        "004C2220": "?capture_frame@RGE_Static_Object@@QAEXPAVTDrawArea@@FF@Z",
+        "004C23F0": "?capture_frame_3d_cube@RGE_Static_Object@@QAEXPAVTDrawArea@@FF@Z",
+        "004C2970": "?draw_frame_3d_square_back@RGE_Static_Object@@QAEXPAVTDrawArea@@FF@Z",
+        "004C2DF0": "?draw_frame_3d_cube_back@RGE_Static_Object@@QAEXPAVTDrawArea@@FF@Z",
+        "004C31E0": "?draw_frame_3d_cube_front@RGE_Static_Object@@QAEXPAVTDrawArea@@FF@Z",
+        "004C41D0": "?spawn_death_obj@RGE_Static_Object@@UAEPAV1@XZ",
+        "004C4210": "?rehook@RGE_Static_Object@@UAEXXZ",
+        "004C4330": "?get_sprite_pointer@RGE_Static_Object@@QAEPAVRGE_Sprite@@F@Z",
+        "004C4360": "?save@RGE_Static_Object@@UAEXH@Z",
+        "004C4BD0": "?new_sprite@RGE_Static_Object@@UAEXPAVRGE_Sprite@@@Z",
+        "004C4C20": "?add_overlay_sprite@RGE_Static_Object@@UAEXPAVRGE_Sprite@@E@Z",
+        "004C4C40": "?remove_overlay_sprite@RGE_Static_Object@@UAEXPAVRGE_Sprite@@@Z",
+        "004C4E90": "?modify_percent@RGE_Static_Object@@UAEXME@Z",
+        "004C4FB0": "?copy_obj@RGE_Static_Object@@UAEXPAVRGE_Master_Static_Object@@@Z",
+        "004C5080": "?destroy_obj@RGE_Static_Object@@UAEXXZ",
+        "004C50C0": "?die_die_die@RGE_Static_Object@@UAEXXZ",
+        "004C50F0": "?remove_visible_resource@RGE_Static_Object@@UAEXXZ",
+        "004C5820": "?get_terrain_speed@RGE_Static_Object@@QAEME@Z",
+        "004C5850": "?is_moving@RGE_Static_Object@@UAEEXZ",
+        "004C5860": "?is_dying@RGE_Static_Object@@QAEEXZ",
+        "004C5880": "?get_frame@RGE_Static_Object@@QAEHAAF000@Z",
+        "004C58E0": "?enter_obj@RGE_Static_Object@@UAEXPAV1@@Z",
+        "004C5960": "?exit_obj@RGE_Static_Object@@UAEXXZ",
+        "004C59B0": "?explore_terrain@RGE_Static_Object@@UAEHPAVRGE_Player@@EH@Z",
+        "004C5AA0": "?unexplore_terrain@RGE_Static_Object@@UAEXPAVRGE_Player@@EH@Z",
+        "004C5C10": "?rotate@RGE_Static_Object@@UAEXJ@Z",
+        "004C5C40": "?set_attribute@RGE_Static_Object@@UAEXFM@Z",
+        "004C5C60": "?set_attribute_amount@RGE_Static_Object@@UAEXMEE@Z",
+        "004C5CB0": "?heal@RGE_Static_Object@@UAEEM@Z",
+        "004C5D10": "?notify_of_relation@RGE_Static_Object@@UAEXJE@Z",
+        "004C5D20": "?set_being_worked_on@RGE_Static_Object@@UAEXPAVRGE_Action_Object@@FE@Z",
+        "004C5D40": "?release_being_worked_on@RGE_Static_Object@@UAEXPAV1@@Z",
+        "004C5D80": "?inRange@RGE_Static_Object@@QAEHPAV1@M@Z",
+        "004C5E50": "?distance_to_object@RGE_Static_Object@@QAEMPAV1@@Z",
+        "004C5FA0": "?hit_test@RGE_Static_Object@@QAEEFFFFF@Z",
+        "004C60A0": "?box_hit_test@RGE_Static_Object@@QAEEFFFFFF@Z",
+        "004C6240": "?set_location@RGE_Static_Object@@QAEXMMM@Z",
+        "004C6260": "?new_angle@RGE_Static_Object@@UAEXM@Z",
+        "004C66C0": "??0RGE_Check_List@@QAE@XZ",
+        "004C66D0": "??1RGE_Check_List@@QAE@XZ",
+        "004C6700": "?add_node@RGE_Check_List@@QAEXPAVRGE_Static_Object@@MME@Z",
+        "004C6AA0": "?boundToFacet@RGE_Static_Object@@QAEHMMH@Z",
+        "004C6B50": "?numberFacets@RGE_Static_Object@@QAEHXZ",
+        "004C6B60": "?underAttack@RGE_Static_Object@@UBEEXZ",
+        "004C6B70": "?setUnderAttack@RGE_Static_Object@@UAEXE@Z",
+        "004C6B80": "?addToObstructionMap@RGE_Static_Object@@QAEHH@Z",
+        "004C6C90": "?removeFromObstructionMap@RGE_Static_Object@@QAEHH@Z",
+        "004C7420": "?unitAI@RGE_Static_Object@@QAEPAVUnitAIModule@@XZ",
+        "004C7430": "?lookupZone@RGE_Static_Object@@QAEEUXYPoint@@@Z",
+        "004C74B0": "?lookupZone@RGE_Static_Object@@QAEEHH@Z",
+        "004C7530": "?currentZone@RGE_Static_Object@@QAEEXZ",
+        "004C75B0": "?withinRangeOfZoneAtPoint@RGE_Static_Object@@QAEHEMAAUXYPoint@@@Z",
+        "004C7630": "?withinRangeOfZone@RGE_Static_Object@@QAEHEM@Z",
+        "004C76C0": "?findClosestPointInTerrainType@RGE_Static_Object@@QAEHUXYPoint@@AAU2@HHH@Z",
+        "004C7740": "?isGroupCommander@RGE_Static_Object@@QAEHXZ",
+        "004C7760": "?inGroup@RGE_Static_Object@@QAEHXZ",
+        "004C7770": "?unitIsInGroup@RGE_Static_Object@@QAEHH@Z",
+        "004C77B0": "?createGroup@RGE_Static_Object@@QAEHPAHHHM@Z",
+        "004C78B0": "?commanderCreateGroup@RGE_Static_Object@@QAEHPAHHHM@Z",
+        "004C79D0": "?commanderAddToGroup@RGE_Static_Object@@QAEHHM@Z",
+        "004C7B60": "?removeFromGroup@RGE_Static_Object@@QAEHH@Z",
+        "004C7BD0": "?commanderRemoveFromGroup@RGE_Static_Object@@QAEHH@Z",
+        "004C7CE0": "?destroyGroup@RGE_Static_Object@@QAEHXZ",
+        "004C7DB0": "?addToPathingGroup@RGE_Static_Object@@QAEXH@Z",
+        "004C7E50": "?removeAllFromPathingGroup@RGE_Static_Object@@QAEXXZ",
+        "004C7E70": "?remove_shadows@RGE_Static_Object@@QAEXXZ",
+        "004C7EB0": "?set_sleep_flag@RGE_Static_Object@@QAEXE@Z",
+        "004C7F30": "?get_action_checksum@RGE_Static_Object@@UAEJXZ",
+        "004C7F40": "?get_waypoint_checksum@RGE_Static_Object@@UAEJXZ"
+      },
+      "module": "stat_obj"
     }
   ]
 }

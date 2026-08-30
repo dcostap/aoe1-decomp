@@ -39,6 +39,6 @@
     "00406C10": { "status": "matching" },
     "00406C30": { "status": "scratch", "note_path": "recovery_notes/act_obj_module.md" },
     "00406D00": { "status": "matching" },
-    "00406D30": { "status": "scratch", "note_path": "recovery_notes/act_obj_module.md" }
+    "00406D30": { "status": "matching", "note_path": "recovery_notes/act_obj_module.md" }
   }
 }

@@ -46,7 +46,7 @@
     "00431470": { "status": "matching", "note_path": "recovery_notes/com_obj_module.md" },
     "00431490": { "status": "matching", "note_path": "recovery_notes/com_obj_module.md" },
     "004314A0": { "status": "matching", "note_path": "recovery_notes/com_obj_module.md" },
-    "004314F0": { "status": "scratch", "note_path": "recovery_notes/com_obj_module.md" },
+    "004314F0": { "status": "matching", "note_path": "recovery_notes/com_obj_module.md" },
     "00431530": { "status": "matching", "note_path": "recovery_notes/com_obj_module.md" },
     "004315A0": { "status": "matching", "note_path": "recovery_notes/com_obj_module.md" },
     "004315B0": { "status": "matching", "note_path": "recovery_notes/com_obj_module.md" },

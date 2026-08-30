@@ -83,7 +83,7 @@ public:
     virtual void change_ownership(RGE_Player*);
     void set_something(int);
     virtual void new_sprite(RGE_Sprite*);
-    virtual void play_move_sound(RGE_Sound*);
+    void play_move_sound(RGE_Sound*);
     float distance_to_object(RGE_Static_Object*);
     virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float,
                                   RGE_Player*, RGE_Static_Object*);

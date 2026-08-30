@@ -26,67 +26,53 @@ public:
     TRIBE_Combat_Object(int, RGE_Game_World*, int);
     virtual ~TRIBE_Combat_Object();
 
-protected:
-    virtual int setup(TRIBE_Master_Combat_Object*, RGE_Player*, float, float,
-                      float);
-    virtual int setup(int, RGE_Game_World*);
-
-public:
     virtual RGE_Action_List* create_action_list();
     virtual void save(int);
     virtual unsigned char update();
     virtual void modify(float, unsigned char);
     virtual void transform(RGE_Master_Static_Object*);
     virtual void set_object_state(unsigned char);
+    virtual void cancel_object();
     virtual void die_die_die();
     virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*,
                         RGE_Static_Object*);
-
-protected:
-    virtual void change_ownership(RGE_Player*);
-
-public:
+    virtual float calc_attack_modifier(RGE_Static_Object*);
     virtual unsigned char attack(RGE_Static_Object*, RGE_Combat_Object*);
     virtual unsigned char do_attack(RGE_Static_Object*, RGE_Combat_Object*,
                                     float, float, float);
-    virtual float calc_attack_modifier(RGE_Static_Object*);
     virtual void get_armor(short&, short&);
     virtual void get_pierce_armor(short&, short&);
     void reposition_artifact();
+    void do_repair(RGE_Static_Object*);
     int can_debark();
-    virtual int hunt(int, int);
-    virtual int convert(int, int);
-    virtual int heal(int, int);
-    virtual int repair(int, int);
-    virtual int build(int, int);
-    virtual int trade(int, int);
-
-protected:
-    virtual void initUnitAI();
-
-public:
-    virtual unsigned char produceWhenKilledBy(int) const;
-    virtual void cancel_object();
-    virtual unsigned char keepGatheringWhenObjectIsOut(int) const;
-    virtual unsigned char useSameZoneDropsite() const;
-
-protected:
-    virtual unsigned char heal(float);
-
-public:
     virtual int higher_check_for_cliff(RGE_Static_Object*, int, int, float,
                                        float, float, float, RGE_Map*,
                                        RGE_Static_Object*, float&, int&);
     virtual int higher_than_target(RGE_Static_Object*);
+    virtual int hunt(int, int);
+    virtual int convert(int, int);
+    virtual int heal(int, int);
+protected:
+    virtual unsigned char heal(float);
+public:
+    virtual int repair(int, int);
+    virtual int build(int, int);
+    virtual int trade(int, int);
+    virtual unsigned char keepGatheringWhenObjectIsOut(int) const;
+    virtual unsigned char produceWhenKilledBy(int) const;
+    virtual unsigned char useSameZoneDropsite() const;
 
 protected:
+    virtual void initUnitAI();
+    virtual int setup(TRIBE_Master_Combat_Object*, RGE_Player*, float, float,
+                      float);
+    virtual int setup(int, RGE_Game_World*);
+    virtual void change_ownership(RGE_Player*);
     virtual unsigned char area_attack(float, float, float, RGE_Combat_Object*,
                                       RGE_Static_Object*);
     virtual int canRepair();
 
 public:
-    void do_repair(RGE_Static_Object*);
-
     unsigned char own_master;
 };
 

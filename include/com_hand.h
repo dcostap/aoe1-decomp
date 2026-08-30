@@ -387,8 +387,8 @@ public:
 protected:
     void ClearRXForPlayer(unsigned int player);
     void ClearRXTXForPlayer(unsigned int player);
-public:
     void ClearTXForPlayer(unsigned int player);
+public:
     int CountWaitingMessages();
     int StoreIncoming(uint SerialNumber, char* InBuff, uint Length, ulong dcoFromID, ulong dcoReceiveID);
     int StoreForResend(unsigned int param_1, char* param_2, unsigned int param_3, unsigned int* param_4);
