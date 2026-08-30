@@ -20,6 +20,14 @@ Every worker result is a proposal. Verify it before integration.
 The user selects the active worker capacity. Keep that capacity full while
 eligible translation units remain.
 
+Active worker capacity and repository-tool job counts are separate settings.
+Never copy the active worker capacity into each worker's `--jobs` value. Unless
+the user selects nested tool parallelism, assign one tool job per worker. This
+keeps the active worker capacity as the compiler concurrency bound.
+
+Use the exact provider/model ID from `docs/user_agent.md` or the current user
+instruction. The managed launcher does not accept a short model name.
+
 One orchestrator controls assignments in one shared worktree. Independent
 orchestrators use separate worktrees.
 
@@ -32,9 +40,20 @@ An assignment contains:
 - all current scratch-function VAs in that translation unit;
 - one unique worker ID;
 - allowed source and function-note paths;
-- the user-selected resource settings;
-- one unique build output directory; and
+- the active worker capacity and separate per-tool job setting;
+- one unique private experiment and audit directory; and
 - the required final-response format.
+
+Assign the stable worker ID before launch. Use a unique readable value such as
+`luna-01-Timeline`. Formal batches allocate managed subagent IDs only after the
+assignment exists. Use the assigned stable ID for target notebooks and worker
+reports. Use the managed subagent ID for harness control and TODO intake.
+
+The private directory does not replace repository-managed caches, target
+notebooks, or standard diff paths. Repository tools protect those shared
+artifacts with content identities and operating-system locks. Direct each
+worker's ad hoc experiments and translation-unit audit into its private
+directory.
 
 Require the worker to read `docs/agentic_matching_workflow.md`.
 

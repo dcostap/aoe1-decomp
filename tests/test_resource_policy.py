@@ -60,6 +60,11 @@ class ResourcePolicyTests(unittest.TestCase):
         self.assertEqual(args.owner, "worker")
         self.assertFalse(hasattr(args, "lease_hours"))
 
+    def test_target_notebook_help_uses_assigned_worker_ids(self) -> None:
+        source = (REPO_ROOT / "tools" / "target_session.py").read_text(encoding="utf-8")
+        self.assertIn("orchestrator-assigned stable worker ID", source)
+        self.assertNotIn("use your subagent id", source)
+
     def test_assignment_state_commands_are_removed(self) -> None:
         for command in ("pause", "release", "hold-tu", "release-tu"):
             with self.subTest(command=command), patch.object(

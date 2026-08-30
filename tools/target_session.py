@@ -1455,15 +1455,15 @@ def parse_args() -> argparse.Namespace:
             "\n"
             "Conventions:\n"
             "  --va        target VA as hex, e.g. 00425A40\n"
-            "  --owner     stable agent/session name (use your subagent id)\n"
+            "  --owner     orchestrator-assigned stable worker ID\n"
             "  status      takes --va only; --owner is NOT accepted\n"
             "  list        takes --json only\n"
             "  brief       shows a worker handoff with meaningful notes\n"
             "  history     shows a target's checker checkpoints and notebook probes\n"
             "\n"
             "Examples:\n"
-            '  python tools/target_session.py start --va 00425A40 --owner sa-1234\n'
-            '  python tools/target_session.py check --va 00425A40 --owner sa-1234 '
+            '  python tools/target_session.py start --va 00425A40 --owner luna-01-Timeline\n'
+            '  python tools/target_session.py check --va 00425A40 --owner luna-01-Timeline '
             '--kind abi --note "hypothesis note" -- --detail concise\n'
             '  python tools/target_session.py status --va 00425A40\n'
             '  python tools/target_session.py brief --va 00425A40\n'
@@ -1482,14 +1482,14 @@ def parse_args() -> argparse.Namespace:
         help="Start or continue one target notebook.",
     )
     start.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
-    start.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
+    start.add_argument("--owner", required=True, help="Orchestrator-assigned stable worker ID.")
 
     probe = subparsers.add_parser(
         "probe",
         help="Record one hypothesis probe on a target. Requires --va --owner --kind --note.",
     )
     probe.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
-    probe.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
+    probe.add_argument("--owner", required=True, help="Orchestrator-assigned stable worker ID.")
     probe.add_argument(
         "--kind", required=True, choices=PROBE_KINDS,
         help="Probe kind. One of: " + ", ".join(PROBE_KINDS) + ".",
@@ -1503,7 +1503,7 @@ def parse_args() -> argparse.Namespace:
         "Requires --va --owner --kind --note.",
     )
     check.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
-    check.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
+    check.add_argument("--owner", required=True, help="Orchestrator-assigned stable worker ID.")
     check.add_argument(
         "--kind", required=True, choices=PROBE_KINDS,
         help="Probe kind. One of: " + ", ".join(PROBE_KINDS) + ".",
@@ -1522,7 +1522,7 @@ def parse_args() -> argparse.Namespace:
         "Requires --va --owner --note.",
     )
     pin_clean.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
-    pin_clean.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
+    pin_clean.add_argument("--owner", required=True, help="Orchestrator-assigned stable worker ID.")
     pin_clean.add_argument(
         "--note",
         required=True,
@@ -1535,7 +1535,7 @@ def parse_args() -> argparse.Namespace:
         "Requires --va --owner.",
     )
     restore_clean.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
-    restore_clean.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
+    restore_clean.add_argument("--owner", required=True, help="Orchestrator-assigned stable worker ID.")
 
     status = subparsers.add_parser(
         "status",

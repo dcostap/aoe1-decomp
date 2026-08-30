@@ -6,7 +6,12 @@ Let me lay down what our basic primitives are:
 
 - Heavy expensive subagents, using gpt-5.6-sol -> these must be used only when necessary and allowed, for the hardest work, or for sub-orchestration tasks. Ran at medium reasoning level.
 
-- The workhorse model, using gpt-5.6-luna -> these are extremely cheap, but still very capable. Ran at xhigh reasoning level.
+- The workhorse model uses `openai-codex-secondary/gpt-5.6-luna`. These
+  workers are cheap and capable. Run them at `xhigh` reasoning level.
+
+Managed subagent launches require the exact provider/model ID. Do not pass a
+short model name. Ask me for the exact provider before a heavy-model launch if
+I did not give it.
 
 # Designing orchestration
 

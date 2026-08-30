@@ -8,10 +8,10 @@ The assignment gives you:
 
 - one natural translation unit and source path;
 - all current scratch-function VAs in that translation unit;
-- one worker ID;
+- one orchestrator-assigned stable worker ID;
 - allowed source and function-note paths;
-- user-selected resource settings; and
-- one unique build output directory.
+- active-worker capacity and a separate per-tool job setting; and
+- one unique private experiment and audit directory.
 
 You are the only active matching worker for that translation unit.
 
@@ -97,10 +97,15 @@ Use focused tools only when they answer a current question:
 - `variant_lab.py` for controlled source variants; and
 - `check_function.py --no-build` for extra read-only diagnostics.
 
-Use resource values from the assignment. Do not invent local limits.
+Use resource values from the assignment. Do not copy active-worker capacity
+into `--jobs`. Do not invent local limits.
 
 Keep only better natural source. Remove aliases, fake helpers, dummy declarations,
 fake volatility, raw offsets, and metric-only source tricks.
+
+Put ad hoc experiments and translation-unit audit output in your private
+directory. Leave repository-managed caches, target notebooks, and standard
+diff paths at their tool-defined locations.
 
 A change to one scratch function must not regress another function in the
 translation unit.

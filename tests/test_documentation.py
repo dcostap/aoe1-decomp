@@ -55,6 +55,8 @@ class DocumentationTests(unittest.TestCase):
             "first unchecked item",
             "TODO verification item",
             "managed subagent list",
+            "Active worker capacity and repository-tool job counts are separate settings",
+            "one unique private experiment and audit directory",
             "compiler_gate.py close",
             "compiler_gate.py open",
         ):
@@ -63,11 +65,17 @@ class DocumentationTests(unittest.TestCase):
             "one assigned natural translation unit",
             "scratch function bodies",
             "target_session.py start",
+            "Do not copy active-worker capacity into `--jobs`",
+            "repository-managed caches, target notebooks, and standard diff paths",
             "Send no intermediate progress reports",
             "Do not use a report tool",
         ):
             self.assertIn(required, worker)
         self.assertNotIn("wave", orchestrator.casefold())
+
+    def test_workhorse_model_uses_an_exact_provider_id(self) -> None:
+        text = (REPO_ROOT / "docs" / "user_agent.md").read_text(encoding="utf-8")
+        self.assertIn("openai-codex-secondary/gpt-5.6-luna", text)
 
     def test_markdown_has_no_assignment_lease_language(self) -> None:
         pattern = re.compile(r"\b(?:lease|leases|leased|unleased)\b", re.IGNORECASE)
