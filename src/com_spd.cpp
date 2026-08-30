@@ -321,7 +321,7 @@ char* RGE_Communications_Speed::GetMachineSpeedInfo()
 unsigned int RGE_Communications_Speed::GetRecommendedBufferFrames()
 {
     unsigned int high_latency;
-    unsigned int player;
+    int player;
 
     high_latency = 0;
     for (player = 1; player <= 9; ++player) {

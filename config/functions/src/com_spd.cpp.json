@@ -27,7 +27,7 @@
     "00432BD0": {"status": "matching", "symbol": "?GetSelfPlayerOptimalSpeedStr@RGE_Communications_Speed@@QAEPADXZ"},
     "00432C10": {"status": "matching", "symbol": "?GetPlayerSpeedStatusStr@RGE_Communications_Speed@@QAEPADH@Z"},
     "00432C70": {"status": "matching", "symbol": "?GetMachineSpeedInfo@RGE_Communications_Speed@@QAEPADXZ"},
-    "00432D20": {"status": "scratch", "symbol": "?GetRecommendedBufferFrames@RGE_Communications_Speed@@QAEIXZ"},
+    "00432D20": {"status": "matching", "symbol": "?GetRecommendedBufferFrames@RGE_Communications_Speed@@QAEIXZ"},
     "00432D90": {"status": "matching", "symbol": "?GetAvgFrameRate@RGE_Communications_Speed@@QAEIXZ"},
     "00432DA0": {"status": "matching", "symbol": "?GetRecommendedBufferGranularity@RGE_Communications_Speed@@QAEIXZ"},
     "00432DE0": {"status": "accepted_drift", "symbol": "?AnalyzeGameSpeed@RGE_Communications_Speed@@QAEHPAI0H@Z"},
