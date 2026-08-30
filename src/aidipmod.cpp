@@ -84,9 +84,7 @@ int DiplomacyAIModule::save(int param_1) {
 
 int DiplomacyAIModule::stance(int player_id, int type) const
 {
-    RGE_Player* player = this->md->player;
-
-    if (player_id > 0 && player_id < player->world->player_num) {
+    if (player_id > 0 && player_id < this->md->player->world->player_num) {
         switch (type) {
         case 0:
             return this->dislikeTable[player_id];

@@ -12,7 +12,7 @@
     "0040C000": {"status": "matching", "symbol": "?setMainDecisionAI@DiplomacyAIModule@@QAEXPAVMainDecisionAIModule@@@Z"},
     "0040C010": {"status": "matching", "symbol": "?update@DiplomacyAIModule@@UAEHH@Z"},
     "0040C0A0": {"status": "matching", "symbol": "?save@DiplomacyAIModule@@UAEHH@Z"},
-    "0040C100": {"status": "scratch", "symbol": "?stance@DiplomacyAIModule@@QBEHHH@Z"},
+    "0040C100": {"status": "matching", "symbol": "?stance@DiplomacyAIModule@@QBEHHH@Z"},
     "0040C190": {"status": "matching", "symbol": "?changeStance@DiplomacyAIModule@@QAEXHHH@Z"},
     "0040C2B0": {"status": "matching", "symbol": "?setStance@DiplomacyAIModule@@QAEXHHH@Z"},
     "0040C3B0": {"status": "matching", "symbol": "?isDisliked@DiplomacyAIModule@@QBEHH@Z"},
