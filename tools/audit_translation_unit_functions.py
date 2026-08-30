@@ -29,14 +29,14 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Compile authentic translation units and compare every included normal "
-            "function, including unregistered observed entries."
+            "function."
         )
     )
     parser.add_argument(
         "--group",
         action="append",
         default=[],
-        help="Audit only this registered group. Repeat for more groups.",
+        help="Audit only this configured group. Repeat for more groups.",
     )
     parser.add_argument(
         "--jobs",
@@ -350,7 +350,7 @@ def text_report(report: dict[str, object]) -> str:
     rows = report["rows"]
     assert isinstance(rows, list)
     lines = [
-        "Translation-unit observed-function sweep",
+        "Translation-unit function sweep",
         f"Groups requested: {summary['group_count']}",
         f"Groups compiled: {summary['compiled_group_count']}",
         f"Included normal functions: {summary['function_count']}",
@@ -409,7 +409,7 @@ def console_summary(report: dict[str, object]) -> str:
     summary = report["summary"]
     assert isinstance(summary, dict)
     lines = [
-        "Translation-unit observed-function sweep",
+        "Translation-unit function sweep",
         f"Groups requested: {summary['group_count']}",
         f"Groups compiled: {summary['compiled_group_count']}",
         f"Included normal functions: {summary['function_count']}",
@@ -652,7 +652,7 @@ def main() -> int:
         source_path = str(status.get("source_path") or "")
         if (
             status.get("corpus_bucket") != "normal"
-            or status.get("source_bucket") == "observed"
+            or status.get("source_bucket") == "unresolved"
             or not source_path
         ):
             continue

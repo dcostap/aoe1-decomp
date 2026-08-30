@@ -34,7 +34,7 @@ SOURCE_BUCKETS = [
     "accepted_drift",
     "verified_logic",
     "scratch",
-    "observed",
+    "unresolved",
     "unclaimed",
     "conflict",
 ]
@@ -395,14 +395,14 @@ def build_status_rows(
         elif module_entry is not None:
             source_bucket = "conflict"
         elif header_path is not None:
-            source_bucket = "observed"
+            source_bucket = "unresolved"
         else:
             source_bucket = "unclaimed"
 
         is_remaining = (
             "yes"
             if corpus_bucket == "normal"
-            and source_bucket in {"scratch", "unclaimed", "conflict"}
+            and source_bucket in {"scratch", "unresolved", "unclaimed", "conflict"}
             else "no"
         )
         if is_remaining == "yes":

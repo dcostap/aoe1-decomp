@@ -249,7 +249,7 @@ def collect_audit_rows(repo_root: Path = REPO_ROOT) -> list[dict[str, Any]]:
     return rows
 
 
-def collect_observed_audit_rows(path: Path) -> list[dict[str, Any]]:
+def collect_function_audit_rows(path: Path) -> list[dict[str, Any]]:
     """Use one complete grouped audit without rebuilding dependency fingerprints."""
     report = json.loads(path.read_text(encoding="utf-8"))
     summary = report.get("summary") or {}
@@ -259,14 +259,14 @@ def collect_observed_audit_rows(path: Path) -> list[dict[str, Any]]:
         raise ValueError(f"{path}: grouped audit is incomplete")
 
     rows: list[dict[str, Any]] = []
-    for observed in report.get("rows") or []:
-        if observed.get("source_bucket") != "matching":
+    for audit_row in report.get("rows") or []:
+        if audit_row.get("source_bucket") != "matching":
             continue
-        va = str(observed.get("va") or "")
-        owner_status = str(observed.get("owner_status") or "unverified")
-        checker_status = str(observed.get("grouped_result") or "")
-        category = str(observed.get("category") or "")
-        duplicate = len(observed.get("registered_groups") or []) > 1
+        va = str(audit_row.get("va") or "")
+        owner_status = str(audit_row.get("owner_status") or "unverified")
+        checker_status = str(audit_row.get("grouped_result") or "")
+        category = str(audit_row.get("category") or "")
+        duplicate = len(audit_row.get("registered_groups") or []) > 1
         if duplicate:
             status = "DUPLICATE_SOURCE_OWNER"
         elif owner_status == "mismatch":
@@ -279,22 +279,22 @@ def collect_observed_audit_rows(path: Path) -> list[dict[str, Any]]:
             status = "MISMATCH"
         mismatch_kind = ""
         priority, reason = _repair_priority(status, mismatch_kind)
-        source = str(observed.get("source_path") or "")
+        source = str(audit_row.get("source_path") or "")
         rows.append(
             {
                 "va": va,
-                "name": str(observed.get("name") or ""),
+                "name": str(audit_row.get("name") or ""),
                 "source": source,
                 "canonical_source": source,
                 "source_owner_status": "duplicate" if duplicate else "canonical",
                 "duplicate_source_owner": duplicate,
                 "bank": "matching",
                 "corpus_bucket": "normal",
-                "grouped_tu": str(observed.get("group") or ""),
-                "pdb_qualified_owner": str(observed.get("expected_symbol") or ""),
-                "rebuilt_decorated_symbol": str(observed.get("symbol") or ""),
+                "grouped_tu": str(audit_row.get("group") or ""),
+                "pdb_qualified_owner": str(audit_row.get("expected_symbol") or ""),
+                "rebuilt_decorated_symbol": str(audit_row.get("symbol") or ""),
                 "owner_status": owner_status,
-                "owner_expected_name": str(observed.get("expected_owner_name") or ""),
+                "owner_expected_name": str(audit_row.get("expected_owner_name") or ""),
                 "owner_expected_class": "",
                 "owner_rebuilt_class": "",
                 "owner_mismatch_kind": mismatch_kind,
@@ -416,7 +416,7 @@ def parse_args() -> argparse.Namespace:
         help="Deterministic text report path.",
     )
     parser.add_argument(
-        "--observed-report",
+        "--function-report",
         type=Path,
         help="Use one complete grouped-observation report instead of stale per-function artifacts.",
     )
@@ -426,8 +426,8 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     rows = (
-        collect_observed_audit_rows(args.observed_report)
-        if args.observed_report is not None
+        collect_function_audit_rows(args.function_report)
+        if args.function_report is not None
         else collect_audit_rows()
     )
     report = build_report(rows)

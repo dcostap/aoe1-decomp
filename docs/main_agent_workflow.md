@@ -96,7 +96,7 @@ notes, the Git index, or commits.
 
 The worker uses target checks for each meaningful hypothesis.
 
-The worker can run a final observed audit for only its assigned group. Require a
+The worker can run a final function audit for only its assigned group. Require a
 unique output directory under:
 
 ```text

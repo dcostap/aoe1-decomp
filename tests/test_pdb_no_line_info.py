@@ -153,7 +153,7 @@ class PdbNoLineInfoTests(unittest.TestCase):
             "source": "src/tech.cpp",
             "flags": "config/flags/tech.rsp",
             "owners": {},
-            "observed": {VA: {"source": "src/tech.cpp", "status": "observed"}},
+            "observed": {VA: {"source": "src/tech.cpp", "status": "unresolved"}},
             "generated": {},
             "symbols": {VA: SYMBOL},
         }

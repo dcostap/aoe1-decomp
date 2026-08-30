@@ -55,15 +55,15 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
             root / "logic_reviews" / "0040CDF0_MainDecisionAIModule.md",
         )
 
-    def test_header_owned_function_is_observed(self) -> None:
+    def test_header_owned_function_is_unresolved(self) -> None:
         rows = status_core.build_status_rows(
             include_source_preview=False,
             include_diff_metrics=False,
             va="0041A480",
         )
-        self.assertEqual(rows[0]["source_bucket"], "observed")
+        self.assertEqual(rows[0]["source_bucket"], "unresolved")
         self.assertEqual(rows[0]["source_path"], "include/stat_obj.h")
-        self.assertEqual(rows[0]["is_remaining"], "no")
+        self.assertEqual(rows[0]["is_remaining"], "yes")
 
     def test_va_build_matches_the_same_row_from_a_full_build(self) -> None:
         records = [

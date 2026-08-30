@@ -575,7 +575,7 @@ def validate_translation_units(
             assert isinstance(functions, dict)
             for va, entry in functions.items():
                 status = str(entry.get("status") or "")
-                if status != "observed" and va not in seen_functions:
+                if status != "unresolved" and va not in seen_functions:
                     issues.append(
                         _issue(
                             "unconfigured-function",

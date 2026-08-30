@@ -151,7 +151,7 @@ An exact result starts a short source review.
 7. Audit the assigned translation unit with a worker-specific output directory:
 
    ```text
-   python tools/audit_translation_unit_observed.py --group <GROUP> --jobs 1 \
+   python tools/audit_translation_unit_functions.py --group <GROUP> --jobs 1 \
      --output-dir build/audits/workers/<OWNER>/<GROUP>
    ```
 

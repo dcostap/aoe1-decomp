@@ -350,7 +350,7 @@ _SOURCE_MODULE_STATUSES = {
     "accepted_drift",
     "verified_logic",
     "scratch",
-    "observed",
+    "unresolved",
 }
 
 
@@ -708,7 +708,7 @@ def _validate_translation_unit_uncached(group: dict[str, object]) -> None:
         expected_vas = {
             va
             for va, entry in module_functions.items()
-            if isinstance(entry, dict) and str(entry.get("status") or "") != "observed"
+            if isinstance(entry, dict) and str(entry.get("status") or "") != "unresolved"
         }
         configured_vas = {str(va).upper() for va in configured_functions}
         if configured_vas != expected_vas:

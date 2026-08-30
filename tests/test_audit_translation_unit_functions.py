@@ -5,7 +5,7 @@ TOOLS_DIR = Path(__file__).resolve().parents[1] / "tools"
 if str(TOOLS_DIR) not in sys.path:
     sys.path.insert(0, str(TOOLS_DIR))
 
-from audit_translation_unit_observed import build_queue, classify  # noqa: E402
+from audit_translation_unit_functions import build_queue, classify  # noqa: E402
 
 
 def status(bucket: str = "scratch") -> dict[str, str]:

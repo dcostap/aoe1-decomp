@@ -58,12 +58,12 @@ def parse_args() -> argparse.Namespace:
     source.add_argument("--matching", action="store_true", help="Only matching functions")
     source.add_argument("--accepted-drift", action="store_true", help="Only accepted-drift functions")
     source.add_argument("--verified-logic", action="store_true", help="Only verified-logic functions")
-    source.add_argument("--observed", action="store_true", help="Only source-owned functions without an exact ownership claim")
+    source.add_argument("--unresolved", action="store_true", help="Only source-owned functions without an exact ownership claim")
     source.add_argument("--conflict", action="store_true", help="Only conflict functions")
-    source.add_argument("--source-bucket", choices=["matching", "accepted_drift", "verified_logic", "scratch", "observed", "unclaimed", "conflict"], help="Only this source bucket")
+    source.add_argument("--source-bucket", choices=["matching", "accepted_drift", "verified_logic", "scratch", "unresolved", "unclaimed", "conflict"], help="Only this source bucket")
 
     remaining = parser.add_mutually_exclusive_group()
-    remaining.add_argument("--remaining", action="store_true", help="Only ordinary remaining work (scratch/unclaimed/conflict)")
+    remaining.add_argument("--remaining", action="store_true", help="Only remaining work (scratch/unresolved/unclaimed/conflict)")
     remaining.add_argument("--done", action="store_true", help="Only non-remaining functions")
 
     logic_review = parser.add_mutually_exclusive_group()
@@ -175,8 +175,8 @@ def source_bucket_from_args(args: argparse.Namespace) -> str | None:
         return "accepted_drift"
     if args.verified_logic:
         return "verified_logic"
-    if args.observed:
-        return "observed"
+    if args.unresolved:
+        return "unresolved"
     if args.conflict:
         return "conflict"
     return None
@@ -370,7 +370,7 @@ def print_summary(rows: list[dict[str, str]]) -> None:
         f"accepted_drift={counts['accepted_drift']} "
         f"verified_logic={counts['verified_logic']} "
         f"scratch={counts['scratch']} "
-        f"observed={counts['observed']} "
+        f"unresolved={counts['unresolved']} "
         f"unclaimed={counts['unclaimed']} "
         f"conflict={counts['conflict']}"
     )
@@ -380,7 +380,7 @@ def print_summary(rows: list[dict[str, str]]) -> None:
             for row in rows
             if row.get("source_bucket") == bucket
         )
-        for bucket in ("matching", "accepted_drift", "verified_logic", "scratch", "observed", "unclaimed", "conflict")
+        for bucket in ("matching", "accepted_drift", "verified_logic", "scratch", "unresolved", "unclaimed", "conflict")
     }
     print(
         "source_bytes: "

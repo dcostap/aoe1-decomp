@@ -22,9 +22,9 @@ Use one of these values:
 - `accepted_drift`: The reviewed source has accepted code generation drift.
 - `verified_logic`: A semantic review approved the source.
 - `scratch`: The natural source still needs matching work.
-- `observed`: Source exists, but exact ownership cannot be proved.
+- `unresolved`: Source exists, but exact ownership cannot be proved.
 
-`observed` covers functions without one provable translation-unit recipe.
+`unresolved` covers functions without one provable translation-unit recipe.
 
 Every other normal function appears in one translation-unit `functions` map.
 That map stores its compiler recipe and symbol for every status.
@@ -59,7 +59,7 @@ python tools/check_function.py --va 0047A3A0
 Compile and audit all configured translation units:
 
 ```text
-python tools/audit_translation_unit_observed.py --jobs 40 --output-dir build/audits/current
+python tools/audit_translation_unit_functions.py --jobs 40 --output-dir build/audits/current
 ```
 
 Run the tests:

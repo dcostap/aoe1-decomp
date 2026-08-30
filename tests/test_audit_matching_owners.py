@@ -10,7 +10,7 @@ sys.path.insert(0, str(REPO_ROOT / "tools"))
 from audit_matching_owners import (  # noqa: E402
     audit_status,
     build_report,
-    collect_observed_audit_rows,
+    collect_function_audit_rows,
     owner_mismatch_kind,
 )
 from function_diagnostics import owning_function_symbol_validation  # noqa: E402
@@ -168,9 +168,9 @@ class MatchingOwnerAuditTests(unittest.TestCase):
             ],
         }
         with tempfile.TemporaryDirectory() as temporary:
-            path = Path(temporary) / "observed.json"
+            path = Path(temporary) / "function_audit.json"
             path.write_text(json.dumps(report), encoding="utf-8")
-            rows = collect_observed_audit_rows(path)
+            rows = collect_function_audit_rows(path)
         self.assertEqual(rows[0]["status"], "MATCH")
         self.assertEqual(rows[0]["metadata_state"], "grouped")
 

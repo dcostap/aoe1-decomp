@@ -92,7 +92,7 @@ The source tree uses final, original-like modules:
 - function notes do not store status or source ownership; and
 - wrapper files, function fragments, and context-selection macros are forbidden.
 
-`observed` means source exists, but one translation-unit recipe cannot be proved.
+`unresolved` means source exists, but one translation-unit recipe cannot be proved.
 Header-owned functions and PDB modules without procedure records can use it.
 
 Each other normal function must appear in one translation-unit `functions` map.
