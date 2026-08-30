@@ -167,19 +167,16 @@ void TRIBE_Panel_Button::draw()
             frame = pic_index[0];
 
             if (tribe_button_type == 0) {
-                x = pnl_x;
                 if (!is_down) {
-                    y = pnl_y;
-                    x += 2;
-                    y += 2;
+                    x = pnl_x + 2;
+                    y = pnl_y + 2;
                     render_area->SetClipRect(clip_rect.left + 2,
                                              clip_rect.top + 2,
                                              clip_rect.right - 2,
                                              clip_rect.bottom - 2);
                 } else {
-                    y = pnl_y;
-                    x += 3;
-                    y += 3;
+                    x = pnl_x + 3;
+                    y = pnl_y + 3;
                     render_area->SetClipRect(clip_rect.left + 3,
                                              clip_rect.top + 3,
                                              clip_rect.right - 2,
