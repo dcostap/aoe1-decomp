@@ -255,7 +255,7 @@ void RGE_Action_Object::work2(
             }
             if (action != 0) {
                 action_id = action->type();
-                this->set_action(action);
+                this->set_only_action(action);
             } else {
                 action_id = 1;
                 this->move_to(target, x, y, z);
@@ -352,16 +352,15 @@ void RGE_Action_Object::play_move_sound()
 RGE_Master_Static_Object* RGE_Action_Object::get_command_master(
     RGE_Static_Object* target, float x, float y, float z)
 {
-    RGE_Master_Action_Object* master =
-        static_cast<RGE_Master_Action_Object*>(this->master_obj);
-
-    if (target == this || master->task_by_group == 0) {
+    if (target == this ||
+        static_cast<RGE_Master_Action_Object*>(this->master_obj)->task_by_group == 0) {
         return this->master_obj;
     }
-    if (master->tasks->get_target_task(this, target, x, y, z) != 0) {
+    if (static_cast<RGE_Master_Action_Object*>(this->master_obj)
+            ->tasks->get_target_task(this, target, x, y, z) != 0) {
         return this->master_obj;
     }
-    if (master->task_by_group != 0) {
+    if (static_cast<RGE_Master_Action_Object*>(this->master_obj)->task_by_group != 0) {
         RGE_Master_Static_Object* obj;
         for (int i = 0; i < this->owner->master_object_num; i++) {
             obj = this->owner->master_objects[i];
@@ -369,7 +368,8 @@ RGE_Master_Static_Object* RGE_Action_Object::get_command_master(
                 obj->object_group == this->master_obj->object_group &&
                 obj->master_type == this->master_obj->master_type &&
                 static_cast<RGE_Master_Action_Object*>(obj)->task_by_group ==
-                    master->task_by_group) {
+                    static_cast<RGE_Master_Action_Object*>(this->master_obj)
+                        ->task_by_group) {
                 RGE_Master_Action_Object* other_master =
                     static_cast<RGE_Master_Action_Object*>(obj);
                 if (other_master->tasks->get_target_task(this, target, x, y,
@@ -394,7 +394,7 @@ void RGE_Action_Object::set_task(short task_id)
     if (task != 0) {
         action = this->actions->create_task_action(task, 0, -1.0f, -1.0f, -1.0f);
         if (action != 0) {
-            this->set_action(action);
+            this->set_only_action(action);
         }
     }
 }
@@ -411,7 +411,7 @@ void RGE_Action_Object::setTaskByTaskID(int task_id)
     if (task != 0) {
         action = this->actions->create_task_action(task, 0, -1.0f, -1.0f, -1.0f);
         if (action != 0) {
-            this->set_action(action);
+            this->set_only_action(action);
         }
     }
 }
@@ -516,7 +516,7 @@ void RGE_Action_Object::change_ownership(RGE_Player* player)
 {
     this->stop();
     RGE_Static_Object::change_ownership(player);
-    this->set_action(0);
+    this->set_only_action(0);
 }
 
 // act_obj.cpp lines 731-735.
@@ -554,10 +554,11 @@ RGE_Static_Object* RGE_Action_Object::get_target_obj(void)
 RGE_Task* RGE_Action_Object::getTask(
     RGE_Static_Object* target, float x, float y, float z)
 {
-    RGE_Master_Action_Object* master =
-        static_cast<RGE_Master_Action_Object*>(this->master_obj);
-    RGE_Task* task = master->tasks->get_target_task(this, target, x, y, z);
-    if (task == 0 && master->task_by_group != 0) {
+    RGE_Task* task = static_cast<RGE_Master_Action_Object*>(this->master_obj)
+                           ->tasks->get_target_task(
+        this, target, x, y, z);
+    if (task == 0 &&
+        static_cast<RGE_Master_Action_Object*>(this->master_obj)->task_by_group != 0) {
         int i = 0;
         if (this->owner->master_object_num > 0) {
             RGE_Master_Static_Object* obj;
@@ -567,11 +568,10 @@ RGE_Task* RGE_Action_Object::getTask(
                     obj->object_group == this->master_obj->object_group &&
                     obj->master_type == this->master_obj->master_type &&
                     static_cast<RGE_Master_Action_Object*>(obj)->task_by_group ==
-                        master->task_by_group) {
-                    RGE_Master_Action_Object* other_master =
-                        static_cast<RGE_Master_Action_Object*>(obj);
-                    task = other_master->tasks->get_target_task(this, target,
-                                                                x, y, z);
+                        static_cast<RGE_Master_Action_Object*>(this->master_obj)
+                            ->task_by_group) {
+                    task = static_cast<RGE_Master_Action_Object*>(obj)
+                               ->tasks->get_target_task(this, target, x, y, z);
                     if (task != 0) {
                         goto found;
                     }
