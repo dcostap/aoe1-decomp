@@ -7,7 +7,7 @@
   },
   "functions": {
     "0047BF40": {"status": "matching", "symbol": "??0TTextPanel@@QAE@XZ"},
-    "0047C0B0": {"status": "scratch", "symbol": "??1TTextPanel@@UAE@XZ"},
+    "0047C0B0": {"status": "matching", "symbol": "??1TTextPanel@@UAE@XZ"},
     "0047C120": {"status": "matching", "symbol": "?setup@TTextPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPADHEHEF3@Z"},
     "0047C1E0": {"status": "matching", "symbol": "?setup@TTextPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPADHEHEFJ@Z"},
     "0047C2F0": {"status": "matching", "symbol": "?setup@TTextPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPADHEHEFPAPADF@Z"},
@@ -25,7 +25,7 @@
     "0047CBB0": {"status": "matching", "symbol": "?set_text_color@TTextPanel@@QAEXKK@Z"},
     "0047CBD0": {"status": "matching", "symbol": "?set_highlight_text_color@TTextPanel@@QAEXKK@Z"},
     "0047CBF0": {"status": "matching", "symbol": "?set_fill_back@TTextPanel@@QAEXHE@Z"},
-    "0047CC10": {"status": "scratch", "symbol": "?set_back_pic@TTextPanel@@QAEXPAD@Z"},
+    "0047CC10": {"status": "matching", "symbol": "?set_back_pic@TTextPanel@@QAEXPAD@Z"},
     "0047CCF0": {"status": "matching", "symbol": "?set_outline@TTextPanel@@QAEXHE@Z"},
     "0047CD40": {"status": "matching", "symbol": "?set_bevel_info@TTextPanel@@UAEXHHHHHHH@Z"},
     "0047CE00": {"status": "matching", "symbol": "?set_spacer_size@TTextPanel@@QAEXH@Z"},
