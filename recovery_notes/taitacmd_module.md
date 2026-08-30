@@ -88,3 +88,20 @@ The shared-worktree trial recovered `00500AD0 numberItemsToDefend` as the
 natural forwarding call to `md->informationAI.numberItemsToDefend()`. Focused
 and complete-module checks report `MATCH` and `0.0000%`, including the correct
 relocated tail target. All 169 registered owners match.
+
+## ManagedArray direct-resize migration
+
+The `wave21-resize-taitacmd` pass reconciles the reviewed 52-index plan. The
+three `addObject` append sites and five `numberWarshipsWithPriority` append
+sites use public `ManagedArray::operator[]`. The two planned
+`numberSoldiersWithPriority` append sites use `ManagedArray::add`. The three
+`addObject` contains checks remain in place. The priority-count contains checks,
+duplicate scans, early returns, and outer loop flow remain in place. The local
+elephant-task seed uses `add` as a separate initialization operation. No direct
+`resize` call remains in `src/taitacmd.cpp`. `include/utmarray.h` is unchanged.
+
+The full observed audit compiled the `taitacmd` group with one translation
+unit, 216 included normal functions, and 170 registered owners. The migration
+caused the expected temporary source-group drift in the resize callers. The
+audit output is under
+`build/audits/workers/wave21-resize-taitacmd/taitacmd-final2/`.

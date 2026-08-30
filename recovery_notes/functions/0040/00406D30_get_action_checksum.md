@@ -11,29 +11,68 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+* PDB module: `act_obj.cpp`; natural source: `src/act_obj.cpp`.
+* Owning class and ABI: `RGE_Action_Object::get_action_checksum`, `__thiscall`.
+* The function is the last normal owner in this module. Its address is
+  `00406D30-00406D54` (37 bytes), after `00406D00` in source order.
+* The module uses `config/flags/act_obj.rsp` (`/O2 /Oy /GX`).
+* The original reads `this->actions` at `+0x184`, calls
+  `RGE_Action_List::get_action`, then reads `RGE_Action::action_type` at
+  `+0x4` and `RGE_Action::state` at `+0xC`.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+No current mismatch. The fresh target-session baseline and focused checker both
+report `MATCH`, `0.0000%`, 37/37 bytes, no boundary escapes, safe relocation
+masking (1/1), and the expected direct call target.
+
+The source body is the existing natural reconstruction: initialize a `long`
+checksum to zero, guard `actions`, call `get_action()`, guard the result, and
+add the signed `action_type` to the zero-extended `state`.
 
 ## Recovered attempt history
 
-
-No function-specific cleanup block was mapped automatically. Review the earlier note and Git history before work.
+* Fresh baseline: exact. No source change was needed.
+* Focused `--no-build --detail full`: exact, with the expected frame, saved
+  `esi`, 15 instructions, one aligned call, and two conditional exits.
+* Focused unmatched call map: no unmatched rows.
+* Focused stack map: no original stack homes, consistent with a frameless
+  function that only saves `esi`.
+* Final focused validation used `target_session.py check` with the existing
+  `wave21-act-obj` lease and `check_function.py --no-build --detail full`.
+  Both report `MATCH`, `0.0000%`, 37/37 bytes, the `get_action_checksum`
+  owner, one aligned direct `get_action` call, one safe relocation, and no
+  boundary escape.
+* Grouped candidate validation used
+  `build/audits/workers/wave21-act-obj/act_obj_direct_proposal.json`, which
+  compiles the natural `src/act_obj.cpp` module with
+  `config/flags/act_obj.rsp`. Its report is
+  `build/audits/workers/wave21-act-obj/grouped-act-obj/report.txt`.
+  The target row reports `MATCH`, `0.0000%`, 37/37 bytes, owner `match`, zero
+  relocation target mismatches, and zero boundary escapes. The complete group
+  still has unrelated scratch-owner mismatches and constructor comparison
+  errors, so it is not a full exact group.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+None. No artificial source form was tested or retained.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+The current `config/translation_units.json` has no registered `act_obj.cpp`
+group, so `audit_translation_unit_observed.py --group act_obj` cannot select
+this module. The direct candidate audit above validates the complete natural
+source group without changing global registration. Unrelated group failures
+remain outside this assignment.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+Coordinator review can promote the exact natural body. Do not change the
+source unless a later grouped compilation shows a regression in this target.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+* `wave21-act-obj`: Confirmed the existing body against fresh binary checks.
+  No source edit was required. Final focused and grouped reports retain only
+  the natural exact form. `pin-clean` was attempted once but could not acquire
+  `build/target_sessions/sessions.lock`; do not retry the lock.

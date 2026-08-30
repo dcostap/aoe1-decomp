@@ -11,11 +11,26 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+The PDB module is `scr_sed2.cpp`, and the natural owner is
+`src/scr_sed2.cpp`. The function is a `TRIBE_Screen_Sed` member in source and
+address order. Its effective body is `004B1A50` through `004B29D0`
+(end-exclusive), for 3969 bytes. The original symbol is public. The declaration
+in `include/scr_sed.h` now has one narrow public entry for `position_panels`.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+There is no current mismatch. A fresh rebuild produced 3969 bytes against the
+3969-byte original. Both functions have no frame, save `esi`, and contain 1341
+instructions. The owner matches
+`?position_panels@TRIBE_Screen_Sed@@QAEXXZ`.
+
+All 157 calls align at their original sites. The call map has 155 virtual calls
+at the proved slots and the direct `numberLines` and `numberDrawLines` helper
+calls. Both relocated call sites are safe. The CFG has 17 condition signals,
+two jumps, and one return on both sides.
+
+Focused check result: `MATCH`, `0.0000%`, 100.00% shape, 100.00% exact-block
+coverage, and no positional spans.
 
 ## Recovered attempt history
 
@@ -63,8 +78,36 @@ Record unknown facts and the evidence needed to answer them here.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+Review the exact source and promote it after the normal policy review. Do not
+replace the adjacent panel cursors without new binary evidence.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-scr-sed2-integrate
+
+The natural `position_panels` body was already present in `src/scr_sed2.cpp`.
+The integration corrected only its class access declaration, moving the one
+method from the protected block to the public block. This restores the original
+public decorated owner without widening any other API.
+
+Focused validation used:
+
+```text
+python tools/check_function.py --va 004B1A50 --rebuild --detail concise --checkpoint wave21-integration
+```
+
+The result was `MATCH`, `0.0000%`, with the 3969-byte boundary, public owner,
+all 157 call sites, the proved virtual slots and direct helpers, and safe
+relocations proved.
+
+The grouped audit used:
+
+```text
+python tools/audit_translation_unit_observed.py --group scr_sed2 --jobs 1 --output-dir build/audits/workers/wave21-scr-sed2-integrate/scr_sed2
+```
+
+The target remained `MATCH`. All 17 registered exact neighbors remained
+`MATCH`. The audit also reports the known unrelated relocation problem at
+`004AE070`; it is not part of this integration.

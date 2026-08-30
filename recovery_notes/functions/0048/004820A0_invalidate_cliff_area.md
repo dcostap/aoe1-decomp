@@ -416,3 +416,19 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### 2026-08-29 `wave21-rmm-clif-integrate`
+
+- Integrated the strongest natural behavior model from the worker study. The
+  width clamp now updates both `x` and `cliff_x2`. The height clamp and the
+  shipped cross-axis `cliff_x2` versus `cliff_height2` comparison remain.
+- The inner guard now uses the clipped `cliff_x2`. The column declaration is
+  before that guard. The height bound declaration precedes the width bound,
+  which is supported by the PDB local order and the natural-order study.
+- Focused validation: `MISMATCH`, 245 rebuilt bytes versus 243 original,
+  106 positional differences, 89 instructions, frame `0x8`, one direct call,
+  and the protected owner symbol. The rebuilt body escapes the original
+  boundary by two bytes. No register or boundary forcing was added.
+- Grouped validation of `rmm_clif_constructor`: the five registered exact
+  neighbors remain `MATCH`. The target is `boundary_problem` because of the
+  two-byte body growth. Keep this function in `scratch`.

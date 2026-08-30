@@ -17,6 +17,41 @@ Record the PDB module, source order, owning class, address sequence, and exact a
 
 Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
 
+## 2026-08-30 proved constructor corrections
+
+- Removed the early `reset_after_update = 0` store. The constructor sets this
+  field to `1` only after the initial string reads, as shown by the original
+  write sequence.
+- Initialized `cheat_code_entry` before clearing
+  `cheat_code_entry_str[0]`, matching the original member-store order.
+- Replaced the pause-path `set_game_mode(6, 0)` call with the proved
+  `set_prog_mode(6)` call. This preserves the original direct target and
+  argument count.
+- Baseline checkpoint `probe-058-baseline`: MISMATCH, 5866 rebuilt bytes,
+  4770 strict differing bytes, 0x210 frame, 180 calls, and boundary
+  00493D60-00495442. The current translation-unit source has unrelated
+  structural drift before this correction.
+
+## Final validation for this assignment
+
+- Checkpoint `probe-059-control-flow` is MISMATCH, but the corrected build is
+  5859 bytes with a 0x210 frame and 180 aligned calls. The owner symbol and
+  boundary are correct: `00493D60-00495442`.
+- The original and rebuilt initialization bands both write the dword at
+  `this + 0x734` before the byte at `this + 0x738`. The early write at
+  `this + 0x7A4` is absent, and the later `reset_after_update = 1` remains.
+  This preserves the proved write and fault order.
+- The pause tail now has `push 6` followed by the original virtual slot
+  `+0x0C` call. It then writes `world->temp_pause`, in the original order.
+- The target still differs by 1444 positional bytes because the live natural
+  translation unit has four unrelated direct relocation target differences.
+  These are outside this assignment and are not repaired here.
+- Grouped audit: `build/audits/workers/sa-0dfb99b9-r1/scr_game/report.txt`.
+  It compiled all 96 included functions and 65 registered owners. Immediate
+  neighbors `004954A0`, `004959A0`, `004959B0`, and `00495A90` remain MATCH.
+  Existing TU drift leaves other registered functions mismatched; this audit
+  found no target boundary error.
+
 ## Recovered attempt history
 
 

@@ -15,7 +15,14 @@ Record the PDB module, source order, owning class, address sequence, and exact a
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Fresh check `probe-044-behavior` (2026-08-29) reports a 1259-byte rebuild
+  against the 1265-byte original. The strict positional difference is 1097
+  bytes. Shape similarity is 78.16%. The frame is `0x1c`, and all 8 direct
+  calls align with the original targets and order. The owner symbol and
+  boundary are valid. The function remains `scratch`.
+- The first structural mismatch remains the natural module prologue at offset
+  `+0009`. The remaining drift is broad VC5 register, stack-home, and loop
+  scheduling drift. It is not an accepted-drift candidate.
 
 ## Recovered attempt history
 
@@ -91,12 +98,31 @@ Record disproved source forms and repeated code-generation basins here.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+- The original nontransparent arm has two destination Y values for each tile:
+  the current tile origin for the bottom source part and that origin plus the
+  bottom destination height for the top source part. The Ghidra listing and
+  original calls prove this split. The prior module body passed the latter to
+  all four calls. The living source now keeps the split with direct arithmetic
+  and no pointer overlay.
+- The source keeps the proven geometry order: scale setup, coordinate wrap,
+  split-width and split-height calculations, then tile-count calculation.
+  Explicit per-outer-loop `top_y` storage was tested and rejected. It changed
+  the natural VC5 result to 1111 differing bytes from the 1097-byte result.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+- Keep the corrected Y behavior and natural geometry order. Investigate the
+  first prologue scheduling hunk only after a separate source or ABI fact is
+  proved. Do not restore the rejected pointer-based fallback or loop-local
+  `top_y` storage.
 
 ## Worker updates
+
+- 2026-08-29 `wave21-dib-integrate`: corrected nontransparent destination Y
+  behavior in `src/Dib.cpp`. Bottom quadrants use `dest_y`; top quadrants use
+  `dest_y + SrcBotHgt`. The final check is a natural nonexact improvement:
+  1097 differing bytes, 78.16% shape, 1259/1265 bytes, 8/8 calls, `0x1c`
+  frame. The observed Dib TU audit is under
+  `build/audits/workers/wave21-dib-integrate/dib/report.txt`.
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.

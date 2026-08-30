@@ -15,7 +15,15 @@ Record the PDB module, source order, owning class, address sequence, and exact a
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+The fresh natural baseline before this integration was a mismatch with frame
+`0x4A4`, rebuilt size `1656/1669`, 35/35 ordered calls, shape `93.32%`, and
+strict diff `680` bytes. After the PDB-role integration, the focused check is a
+mismatch with frame `0x498`, rebuilt size `1664/1669`, 35/35 ordered calls,
+shape `85.59%`, and strict diff `1594` bytes. The owner symbol and boundaries
+remain valid. The grouped `Res_file` audit keeps the six registered exact
+neighbors matched, reports `0047F5C0` as grouped mismatch `1594`, and reports
+the pre-existing `0047EE90` boundary problem and `0047F320` one-byte mismatch.
+The first focused mismatch is at `+0x0002`; no exact claim is made.
 
 ## Recovered attempt history
 
@@ -219,3 +227,44 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-res-file-integrate
+
+- Integrated the PDB-supported natural local roles in `src/Res_file.cpp`.
+  Buffers use their ordinary sizes and base addresses. `ID_List` owns the type
+  root. `iq` owns the ID predecessor. `numResTypes` counts types and `rId` is
+  the scanned ID. `buildFile` and `resHandle` use separate natural scopes.
+  Directory records are output-only locals.
+- Rejected compiler-steering forms remain absent: no `+4` buffer windows, raw
+  overlays, unions, volatility, or forced stack writes.
+- Focused validation:
+  `python tools/target_session.py check --va 0047F5C0 --owner wave21-res-file-integrate --kind layout`
+  reported `MISMATCH`, diff `1594`, frame `0x498/0x4A4`, shape `85.59%`, and
+  35/35 ordered calls.
+- Grouped validation:
+  `python tools/audit_translation_unit_observed.py --group Res_file --jobs 1
+  --output-dir build/audits/workers/wave21-res-file-integrate/Res_file`
+  reported 6 registered owner matches, 2 grouped mismatches, and 1 boundary
+  problem. The target remains `scratch`.
+
+### wave21-resfile-frame-integrate
+
+- Applied the frame-gap audit's natural lifetime model in `src/Res_file.cpp`.
+  The output-building scope now owns distinct `typeDirNode` and `idDirNode`
+  objects.  The input `buildFile` and output `resHandle` remain in separate,
+  non-overlapping scopes, which permits their shared PDB home without an
+  overlay or union.  No padding, volatility, or raw stack writes were added.
+  The redundant `rId = 0` initialization was removed.
+- Focused validation with the pinned VC5 artifacts reported frame `0x4A4`,
+  rebuilt size `1669/1669`, 554 instructions, 35/35 ordered calls, owner
+  match, and `48/68` safely masked relocations.  The result remains a natural
+  mismatch: strict diff `644` bytes, shape `93.86%`, and 8/8 returns.
+  `target_session.py check` could not record its checkpoint because the
+  session lock timed out; the same artifact was checked read-only with
+  `check_function.py --no-build`.
+- Grouped `Res_file` validation in
+  `build/audits/workers/wave21-resfile-frame-integrate/Res_file` reports all
+  six registered owner matches, target `0047F5C0` grouped mismatch `644`, and
+  no boundary problem for the target.  It preserves the pre-existing
+  `0047EE90` boundary problem and `0047F320` one-byte mismatch.  The target
+  remains `scratch` and is paused pending further structural work.

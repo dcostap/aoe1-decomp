@@ -11,11 +11,27 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+- The PDB compiland is `tworld.cpp`. The function owns `0052EF30-005302D3`.
+- The PDB line span is `525-1128`. The next normal function starts at `00530370`.
+- The original has a `0x1308` stack allocation, EH state, and 171 calls.
+- The original saves EBX, EBP, ESI, and EDI after the stack probe.
+- The natural translation-unit group is `tworld_cpp`.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Fresh natural-module baseline: 5,028/5,028 bytes, 4,351 strict differing
+  bytes, 1,554-byte edit cost, 88.79% shape, and 44.33% exact blocks.
+- The baseline had 168/171 calls. VC5 merged three conquest setter sites.
+- Current source: 5,228/5,028 bytes, 4,301 strict differing bytes,
+  1,440-byte edit cost, 86.31% shape, and 43.80% exact blocks.
+- Current call counts are 171/171. Ordered call alignment is 99.42%.
+- Current CFG counts are exact: 116 conditional branches and 47 jumps.
+- The current boundary exceeds the original by 200 bytes. This is not a
+  narrow drift candidate.
+- The first instruction mismatch is at `+0x4C`. The original keeps the base
+  result in BL. VC5 stores AL directly to `[esp+0x17]` in the rebuild.
+- The only aggregate call-target gap is the stack-probe symbol. The original
+  names `__alloca_probe`; the rebuild names `__chkstk`.
 
 ## Recovered attempt history
 
@@ -153,16 +169,71 @@ Mapping: `exact`. historical standalone source path names this target VA.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+- A named `TRIBE_Game::VictoryType` post-victory local emits the same code as
+  a direct switch expression.
+- A base-class receiver for the nested path-finding `get_string` call emits
+  the same code as the derived-class receiver.
+- The earlier result-width, register, local-order, zero-local, helper, flag,
+  and switch experiments remain rejected. The recovered history lists them.
+- Do not retain independent `if` statements, fake aliases, dummy liveness,
+  fake volatility, or flag changes to preserve conquest call sites.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+- Why does this VC5 context hoist the repeated string-copy mask into EBX?
+  The original reserves BL for the base result through the description block.
+- Which natural declaration or period header context selects the original
+  `__alloca_probe` symbol instead of `__chkstk`?
+- Why does the current compiler expand the proved victory-handler order by
+  192 bytes? The original keeps all four conquest setter blocks in 144 bytes.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+- Find an exact VC5 donor that keeps a byte result in BL across several
+  intrinsic `strcpy` blocks. No current assembly-bank donor covers this shape.
+- Compare the original period `tribegam.h` victory enum and `tworld.cpp`
+  include order if repository evidence becomes available.
+- Isolate the main victory switch in its authentic full translation-unit
+  context. Keep the proved handler order and reject synthetic control flow.
+- Resolve the stack-probe symbol through toolchain evidence. Do not add a
+  source wrapper or a direct helper declaration.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### `bonus-sol-tworld` deep recovery
+
+Facts from the executable and PDB line bands:
+
+- The main victory switch emits handlers in this order: `0/9`, `1`, `7`, `8`,
+  `3`, `4`, `5`, `2`, and `6`. The handler lines are 773 through 808.
+- The post-save victory query is one call. The executable lowers values 7 and
+  8 as `sub eax,7; je; dec eax; jne`.
+- The scenario switch places the time handler at PDB line 845 before the score
+  handler at line 850.
+- The random-game fallback sets `artifact_count` to zero before its first
+  player walk. It then sets `ruin_count` to zero before its second walk.
+- The fallback reuses one saved player count. Each walk uses a moving player
+  pointer and a bottom decrement.
+
+The source now follows those facts. The direct fallback walks recovered near
+exact blocks. The artifact walk starts at original `+0xCBD` and rebuilt
+`+0xCBC`. The ruin walk starts at original `+0xD07` and rebuilt `+0xD02`.
+
+The proved switch orders recover all 171 call sites. They expose a 192-byte
+VC5 expansion in the main switch. The direct fallback walks add eight bytes,
+but reduce strict drift from 4,548 to 4,301 bytes. They also restore the
+original fault order for partial player walks.
+
+The final source improves strict drift by 50 bytes from the fresh baseline.
+It restores three missing conquest calls and exact CFG instruction counts.
+It remains unresolved because the body is 200 bytes too large.
+
+`target_session.py check` timed out on the shared session lock. The worker did
+not retry the lock. Direct focused checks and the grouped audit provide the
+validation evidence for this pass.
+
+The grouped `tworld_cpp` audit found all 20 registered exact neighbors at
+`MATCH`. It reports this target as `MISMATCH` with 4,301 differing bytes.
+The report is under `build/audits/workers/bonus-sol-tworld/tworld_cpp/`.

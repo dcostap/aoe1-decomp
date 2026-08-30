@@ -15,7 +15,16 @@ Record the PDB module, source order, owning class, address sequence, and exact a
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Fresh baseline before this change: 1230 rebuilt bytes versus 1219 original bytes,
+  704 differing bytes, and a 0x6C frame. The two tile reads emitted `shr bl,5`.
+- Current source emits 1219 bytes with a 0x6C frame and 376 instructions. The
+  owner symbol matches, the boundary is 004E1D10-004E21D2, and all 21 relocations
+  are safely masked.
+- Current strict mismatch is one byte at offset +03D6 (VA 004E20E6). The original
+  `canLinePath` call uses virtual slot +0x1B0. The rebuilt call uses +0x1AC.
+  Calls remain 20 versus 20, with 19 equal sites and one replaced site.
+- Replacing both `height` reads with `terrain_type` removes the 704-byte structural
+  mismatch. The shared `stat_obj.h` slot reorder remains pending and is untouched.
 
 ## Recovered attempt history
 
@@ -159,8 +168,21 @@ Record unknown facts and the evidence needed to answer them here.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+Apply the reviewed `canLinePath` virtual-slot reorder in `include/stat_obj.h` when
+the dependency wave permits it. Keep this target in scratch until that change is
+validated.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-find-staging-integrate
+
+- Baseline check `probe-100-baseline`: MISMATCH, 704 bytes, 1230-byte rebuild.
+- Validation check `probe-101-validation`: MISMATCH, one byte, 1219-byte rebuild,
+  exact boundary and owner, 20 calls, and 21/21 relocations safely masked.
+- The remaining mismatch is the known `canLinePath` slot blocker only. The source
+  change is limited to the two tile field reads in `findStagingPoint`.
+- Full observed `taiinfmd` audit completed in
+  `build/audits/workers/wave21-find-staging-integrate/taiinfmd`: 121 included
+  normal functions, 81 registered owner matches, and 19 grouped mismatches.

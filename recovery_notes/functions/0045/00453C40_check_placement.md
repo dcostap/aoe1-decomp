@@ -11,11 +11,31 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+The PDB module is `m_s_obj.cpp`, and the natural owner is
+`src/m_s_obj.cpp`. The owning class is `RGE_Master_Static_Object`. The original
+body is `00453C40-004543B4` (1,909 bytes), with PDB lines 778-1011. The
+function is `__thiscall`, has a 0x44-byte frame, saves EBX/EBP/ESI/EDI, and
+returns with `ret 28h`. It has 11 direct calls and no EH region.
+
+The source keeps the original check order: map setup, radius selection, bounds,
+center and perimeter terrain checks, placement scan, visibility, radius exit,
+overlap window, and object scan. The original upper bounds use normal axes:
+`x + radius_x` limits map width and `y + radius_y` limits map height.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+The pre-integration natural baseline was 1,900/1,909 bytes with a 1,781-byte
+strict difference, 0x44 frame, 11/11 calls, 82/82 conditional signals, and
+70.99% shape similarity. It had the upper X/Y bounds transposed.
+
+The integrated source remains `scratch`, not exact. The final focused check is
+1,909/1,909 bytes with a 1,719-byte strict difference (90.0471%), 72.53% shape
+similarity, 597/587 instructions, 7/5 unconditional jumps, 9/9 returns, and
+82/82 conditional signals. The first mismatch is +0x8. The owner symbol,
+boundary, and 11 direct call targets match. Two of 32 relocations are safely
+masked. The grouped `m_s_obj` audit reports the same 1,719-byte target
+difference and 19 registered-neighbor matches; three unrelated scratch rows
+remain mismatched and one has a boundary issue.
 
 ## Recovered attempt history
 
@@ -298,16 +318,37 @@ Mapping: `exact`. historical standalone source path names this target VA.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+The false transposed-edge model is rejected. Original x87 values and CVDUMP
+locals prove `tx1 = x - rx`, `tx2 = x + rx`, `ty1 = y - ry`, and `ty2 = y + ry`.
+
+The PDB-line terrain-table-before-map order is not retained. The proposal that
+uses it measures 1,726 bytes of strict difference, worse than the current
+1,719-byte proposal. Artificial register qualifiers, volatility, overlays, raw
+strides, wrappers, and assembly remain rejected by policy.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+The broad remaining difference is structural. The compiler assigns `this` to a
+different register and schedules the x87 homes differently. Required-terrain
+flag homes, shared index lifetimes, and overlap cursor registers also differ.
+No accepted-drift proof exists.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+Use the original block map and PDB local homes to test one natural lifetime
+change at a time. Preserve the normal-axis bounds and typed tile cursor. Do not
+tune register allocation before source structure and size improve.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-m-s-obj-integrate
+
+Integrated the proved normal-axis upper bounds from
+`build/audits/workers/bonus-sol-m-s-obj/m_s_obj_pdb_proposal.cpp`. The source now
+uses separate PDB-supported byte flags, shared placement indices for the later
+overlap window, and a typed `RGE_Tile*` cursor with `++tile`. These changes are
+natural and preserve the checked call order and fault order. Focused validation
+improved the strict difference from 1,781 to 1,719 bytes and reached the
+original size. The target remains scratch because it is not exact.

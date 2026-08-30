@@ -8,6 +8,10 @@
 - Living source: `src/scr_ach.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\scr_ach.cpp`.
 - Earlier recovery note: `recovery_notes/scr_ach_module.md`.
+- Current model: natural `color`, `tab_count`, `tabList[8]`, `temptxt[50]`,
+  `str[100]`, and `info_file[260]` declarations. The constructor uses direct
+  `str` and `info_file` expressions, a zero-length text seed for the message
+  panel, and one branch-local OK-button call in each layout arm.
 
 ## Translation-unit context
 
@@ -16,6 +20,16 @@ Record the PDB module, source order, owning class, address sequence, and exact a
 ## Current mismatch
 
 Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+- Latest focused check: `MISMATCH`, strict diff 2786 bytes, rebuilt size 3280
+  versus original 3222, frame `0x1D4` versus `0x1D4`, and 69 versus 69
+  ordered calls. The rebuilt owner symbol matches. The rebuilt body escapes the
+  original boundary by 58 bytes, so the target remains `scratch`.
+- The `memset(temptxt + 31, 0, sizeof(temptxt) - 31)` operation is deliberate.
+  DIA/raw-home analysis places the compiler buffer home at four bytes after the
+  Ghidra synthetic label: raw `[esp+0x67]` is source index 31, not 35. This
+  source range therefore covers the original four dword tail stores and the
+  final word/byte stores without repeated assignments or raw stack offsets.
 
 ## Recovered attempt history
 
@@ -126,6 +140,25 @@ Record unknown facts and the evidence needed to answer them here.
 
 Record specific evidence-led approaches for the next worker here.
 
+- Keep the +31 tail clear and branch-local OK calls. If exact repair resumes,
+  inspect the remaining prologue and common-tail scheduling without replacing
+  the natural declarations or introducing raw-home aliases.
+
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-scr-ach-integrate
+
+- Integrated the PDB-backed natural constructor model in `src/scr_ach.cpp`.
+  Added the live 50-byte `temptxt`, its +31 tail clear, and the `str[1]`
+  initialization. The message panel now starts with `""` before the direct
+  message setter. Each button-layout arm owns its OK-button call.
+- The focused check kept frame `0x1D4`, 69 ordered calls, and the owner symbol.
+  It produced 3280 rebuilt bytes against 3222 original bytes, 2786 strict
+  differing bytes, and a 58-byte boundary escape. Result: `MISMATCH`; keep
+  status `scratch`.
+- The focused stack map and the observed `scr_ach` group audit ran under
+  `build/audits/workers/wave21-scr-ach-integrate/scr_ach`. Five registered
+  neighbors stayed exact. The constructor remained a boundary problem, and
+  the grouped destructor also escaped because of the constructor overrun.

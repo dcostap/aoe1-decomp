@@ -11,11 +11,25 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+The PDB module is `com_q.cpp`. `004319E0` is the first function after the
+queue allocation routine and before `00431A40 QueuedForTurn`. The owning class
+is `RGE_Communications_Queue`, with `Queue` at `+0x114` and queue records of
+`0x1c` bytes. The original body is `004319E0-00431A3A` and has no calls.
+
+The global at `0062CF40` occupies four bytes. The executable writes its low
+byte at `004319F0` and `00431A12`, then reads the full dword at `00431A29`.
+The source-local declaration is therefore `extern unsigned int`; the two
+publication stores use a byte view of that storage.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+The fresh baseline used the old direct `unsigned char` global and plain
+return. It rebuilt 79 of 91 bytes, with 48 differing bytes and 75% shape.
+The mismatch covered the prologue and the byte-mask tail.
+
+The integrated source now reports `MATCH`, `0.0000%`, with 91 of 91 bytes,
+36 of 36 instructions, 100% shape, the original boundary, the expected owner
+symbol, and 3/3 safely masked relocations. It has no calls or extra bytes.
 
 ## Recovered attempt history
 
@@ -43,16 +57,35 @@ Mapping: `exact`. historical standalone source path names this target VA.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+The candidate's separate `off` accumulator and `0x1c` increment produced an
+exact result in an isolated context, but it was unused by the typed queue
+access. It was rejected as compiler steering and was removed. A typed entry
+pointer loop and a byte-offset expression both changed the control flow and
+size. The natural indexed queue loop with the proven dword global surface is
+exact without either form.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+The low-byte global is named as a four-byte object because the oracle uses both
+byte stores and a dword load. No shared global definition exists in the
+reviewed source tree. The remaining promotion decision is whether the local
+declaration is the preferred owner for this source module.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+Run the complete `com_q` audit after any neighboring source change. Do not
+replace the byte stores or the dword return-mask expression without a fresh
+checker result.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-com-q-integrate
+
+Integrated the proved mask-tail proposal into `src/com_q.cpp`. The final
+standalone checker result is `MATCH`, `0.0000%`, with matching boundaries,
+owner symbol, and relocations. The source uses the natural indexed `MsgQueue`
+loop and no raw address, assembly, numeric stride, or wrapper. A target-session
+baseline check was attempted but the shared session lock timed out; the fresh
+baseline and final results were run directly with `check_function.py`.

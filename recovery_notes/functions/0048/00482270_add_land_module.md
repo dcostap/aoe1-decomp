@@ -11,11 +11,20 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+The natural owner is `src/rmm_cntr.cpp`, from PDB compiland `rmm_cntr.cpp`.
+The owning symbol is `RGE_RMM_Controller::add_land_module` at `00482270`.
+The original body is `00482270-004826B1` (1090 bytes, 303 instructions).
+Registered exact anchors in this translation unit are `004821A0`, `00482260`,
+and `004828A0`.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+The focused validation remains `MISMATCH`: 932 differing bytes (85.5046%),
+with 1090 emitted bytes and a 0x30 frame. All eight direct calls align in order,
+and the checker reports no boundary or relocation issue. The first mismatch is
+at offset `+0x25`, in the outer switch dispatch. Structural coverage is 40.59%
+with a 301-byte edit difference. This is useful natural progress, not an exact
+claim.
 
 ## Recovered attempt history
 
@@ -126,6 +135,26 @@ Record unknown facts and the evidence needed to answer them here.
 
 Record specific evidence-led approaches for the next worker here.
 
+The remaining blocker is VC5 register and dispatch coloring. The current source
+does not force saved-register coloring, aliases, or volatile stores. Use focused
+binary evidence before testing another natural control-flow or lifetime form.
+
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### `wave21-rmm-cntr-integrate` — 2026-08-29
+
+Applied the strongest PDB-backed natural body changes from the recovery study:
+unsuffixed `0.8` and `0.9` constants, late `i` initialization, a preguarded
+`do/while`, a typed `RGE_Land_Info_Line*` cursor, PDB switch order with shared
+cases 0 and 1, and y-then-x last-prior reloads. Kept `info.land_num` for final
+division and loop continuation. Did not add saved-register forcing, aliases, or
+volatile stores.
+
+Focused validation used `target_session.py check` with `--kind validation` and
+reported the 932-byte mismatch above. Grouped validation used
+`audit_translation_unit_observed.py --group rmm_cntr --jobs 1` and wrote
+`build/audits/workers/wave21-rmm-cntr/report.txt`. Registered neighbors
+`004821A0`, `00482260`, and `004828A0` remained `MATCH`; the target remained a
+natural-TU mismatch.

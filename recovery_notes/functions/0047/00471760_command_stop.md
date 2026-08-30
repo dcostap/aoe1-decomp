@@ -8,14 +8,30 @@
 - Living source: `src/player.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\player.cpp`.
 - Earlier recovery note: `recovery_notes/player_module.md`.
+- Current natural model: obtain the selected object list and short count with
+  selection level `3`; play the first object's command sound; submit the list
+  through `RGE_Command::command_stop`; free the list and return `1`, or return
+  `0` when selection fails.
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+- Owning compiland: `player.cpp`, natural source owner `src/player.cpp`.
+- Owning method: `RGE_Player::command_stop()`; calling convention `__thiscall`.
+- PDB span: `player.cpp:2390-2403`; original body `00471760-004717C0` (97 bytes).
+- The source uses the natural `list` and `short count` locals.
 
-## Current mismatch
+## Current result
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Fresh focused result: `MATCH`, `0.0000%`, 97/97 bytes.
+- Frame and saved register set match: `0x8`, `esi`.
+- Calls align exactly: `get_selected_objects_to_command`, virtual slot `+0xAC`,
+  direct `command_stop`, and `free`.
+- Relocations are safely masked: 3/3. The `RGE_Player::command_stop` owner
+  symbol and original boundaries match.
+- The natural source calls `play_command_sound` through virtual slot `+0xAC`,
+  then submits the same list and count to `command_stop` before freeing it.
+- The fresh target-session baseline before this repair was 103 bytes with a 43
+  byte diff. It called virtual slot `+0xB0` and `command_order`.
 
 ## Recovered attempt history
 
@@ -37,16 +53,36 @@ Mapping: `exact`. historical standalone source path names this target VA.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+- The prior `play_move_sound` plus `command_order` form is rejected. It produced
+  the 103-byte baseline with a 43-byte diff and wrong direct targets.
+- Decompiler-only `_list_num` and `local_4` spellings are not retained. Named
+  `list` and `short count` produce the exact result in the natural module.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+- None for the emitted body. Promotion and status remain coordinator decisions.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+- No further source change is indicated. Recheck only if the owning module
+  changes or new binary evidence disproves the current call targets.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-player
+
+- Reviewed the reunified function. The existing `list`, `short count`,
+  `play_command_sound`, and `command_stop` form is the only retained source.
+- Replaced `play_move_sound` with `play_command_sound` and `command_order` with
+  `command_stop`. This follows the original call targets and virtual slot.
+- Fresh `target_session.py check` checkpoint `wave21-command-stop-natural-final`
+  reports `MATCH`, `0.0000%`, with no emitted-code movement.
+- `python tools/check_function.py --va 00471760 --no-build --call-map
+  --stack-map --detail full --map-limit 40`: all four call sites align.
+- `python tools/audit_translation_unit_observed.py --group player --jobs 1
+  --output-dir build/audits/workers/wave21-player/player`: target is an exact
+  unregistered included function; 105 registered owners also match.
+- Grouped sweep reports 117 included normal functions, 105 registered-owner
+  matches, and no grouped mismatch for this target.

@@ -15,7 +15,24 @@ Record the PDB module, source order, owning class, address sequence, and exact a
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+The integrated natural source keeps the original frame and boundary, but it is
+not exact. The authoritative validation reports 1475 rebuilt bytes against
+1475 original bytes, a 0x15C frame, 42 calls, and 3 returns. The owner symbol
+matches `TDigital::load`. The strict diff is 152 bytes (10.3051%), with the
+first mismatch at +0x40F. The checker masks 36 of 37 relocations and reports
+one call-site replacement and two target-count differences.
+
+The pre-integration current source reported 1485 rebuilt bytes and a 384-byte
+strict diff. The integrated source therefore improves size, CFG shape, and
+positional similarity without changing the call count or frame.
+
+## Current natural source model
+
+The file path uses direct tests for `CreateSoundBuffer` and `Lock`. The resource
+path carries a local pointer to the `sound_buffer` member through buffer create
+and lock, then uses the member for unlock and release. The failure-first
+resource branch preserves the original cleanup order. The shipped resource
+allocation double-free remains documented and unchanged.
 
 ## Recovered attempt history
 
@@ -128,3 +145,34 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-sounddrv-integrate
+
+Integrated the best natural source family from
+`build/audits/workers/bonus-sol-sounddrv/`. The variant runs proved that a
+resource-local `LPDIRECTSOUNDBUFFER*` alias and a failure-first create branch
+recover the original resource-path code shape. The alias points to the real
+member and does not change the ABI or fault order. The source also uses direct
+file-path result tests from the same natural candidate.
+
+The authoritative check remains `MISMATCH`: 1475/1475 bytes, 42/42 calls,
+0x15C frame, 98.78% shape similarity, 152 strict diff bytes, and 52 edit
+diff bytes. The first divergence is the resource `malloc(0x12)` tail at
++0x40F. The remaining call issue is the recursive `load` identity versus the
+original internal target. Keep the function in `scratch`.
+
+### wave21-sounddrv-direct-integrate
+
+The living function already contains the proved direct file-path
+`CreateSoundBuffer` guard. It tests the call result in place and sends a
+nonzero result through the existing failure cleanup. The guard has the same
+call, argument addresses, order, and fault path as the original.
+
+The focused report confirms the original and rebuilt `CreateSoundBuffer` call
+and `test eax`/success jump at `+0x258..+0x25D`. The full target check remains
+`MISMATCH`: 1475/1475 bytes, 42/42 calls, 0x15C frame, and 152 strict diff
+bytes. The first mismatch remains `+0x40F`, in the resource allocation tail.
+
+The grouped Sounddrv audit reports 35 registered exact owners and the target
+as the single grouped mismatch. Keep `load` in `scratch`. No further guard
+change is supported by this check.

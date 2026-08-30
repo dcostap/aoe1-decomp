@@ -142,3 +142,19 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### 2026-08-30 `wave21-visible-explore-integrate`
+
+- Integrated the completed typed candidate's canonical `RGE_Tile::draw_as`
+  store. The reviewed `RGE_Tile` bitfield layout places `draw_as` at byte
+  offset `+0x09`; the original store at `0053C8C3` is `c6 42 09 0f`.
+- Kept the existing typed `LOSTBL*`, `unsigned long*`, `RGE_Tile*`, map, and
+  player operations. No unrelated function or shared header changed.
+- Focused `check_function.py --va 0053C6F0 --rebuild` remains unavailable after
+  source reunification: extraction rejects the four same-name visible-map
+  methods in the natural object. The grouped visible audit compared the target
+  as `MISMATCH`, 555 bytes, with matching owner and no relocation mismatch;
+  three boundary escapes reflect the known default-TU basin.
+- Final grouped command: `python tools/audit_translation_unit_observed.py
+  --group visible --jobs 1 --output-dir
+  build/audits/workers/wave21-visible-explore-integrate/visible-final`.

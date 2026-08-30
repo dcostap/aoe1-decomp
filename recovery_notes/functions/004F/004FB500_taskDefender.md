@@ -10,11 +10,23 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+The PDB module is `taitacmd.cpp`. The owner is `TribeTacticalAIModule`.
+The natural owner is `src/taitacmd.cpp`.
+The function is the two-integer `taskDefender` overload.
+The body spans `004FB500-004FB51C` and has no frame.
+Its only direct call is `AIModule::logCommonHistory` at `004FB510`.
+
+The source call uses `groupId, defenderId` after the format string.
+This order produces the original push order and preserves the shipped code.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+The fresh baseline differed by two parameter-load bytes at `+0x3` and `+0x7`.
+The call shape, size, boundary, owner, and relocation count already matched.
+The final source is exact: 29 of 29 bytes match with no first mismatch.
+The frame is absent in both builds.
+The direct call count is one in both builds.
+Both relocation sites are safely masked.
 
 ## Recovered attempt history
 
@@ -80,8 +92,18 @@ Record unknown facts and the evidence needed to answer them here.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+No further source recovery is needed for this owner.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-taitacmd
+
+- Baseline: fresh rebuild, 2 bytes different, 6.8966% positional difference.
+- Tested the two natural varargs orders for `logCommonHistory`.
+- The order `groupId, defenderId` matches the original register loads and pushes.
+- Final focused check: `Result: MATCH`, `0.0000%`, 29/29 bytes.
+- Final owner, boundary, call target, and two relocations are correct.
+- Grouped `taitacmd` audit completed under `build/audits/workers/wave21-taitacmd-integrate/taitacmd`.
+- The grouped audit reports `MATCH`, 0 positional difference, and correct ownership for this function.

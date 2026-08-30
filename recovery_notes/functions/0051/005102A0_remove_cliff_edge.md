@@ -15,7 +15,11 @@ Record the PDB module, source order, owning class, address sequence, and exact a
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+The current policy-valid candidate is exact. The rebuilt body is 339 bytes with
+frame `0x24`, matching saved registers, the original reachable boundary, and no
+first structural difference. All eight direct or indirect call sites align, and
+all eight target relocations are compatible. The owning symbol is
+`TRIBE_Map::remove_cliff_edge`.
 
 ## Recovered attempt history
 
@@ -224,3 +228,11 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-remove-cliff-exact (2026-08-29)
+
+- Replaced the named `reverse` local with the direct `this->reverse_cliff_direction(dir)` index.
+- Corrected the natural cliff coordinate fields to `world_x` for the outer loop and `world_y` for the inner loop.
+- Kept direct `this->game_world` access and the existing typed class surface. Added no unsupported locals, raw layouts, flags, or assembly.
+- `python tools/check_function.py --va 005102A0 --rebuild --detail full`: `MATCH`, 339/339 bytes, `0.0000%`, frame `0x24`, owner symbol match, eight ordered calls, and eight safe relocations.
+- `python tools/audit_translation_unit_observed.py --group tmap_cpp --jobs 1 --output-dir build/audits/workers/remove-cliff-edge-boundary/tmap_audit_final`: all 17 registered tmap owners remained exact. The target is an exact unregistered included function; no registered neighbor regressed.

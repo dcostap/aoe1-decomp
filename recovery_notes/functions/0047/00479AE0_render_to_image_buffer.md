@@ -15,7 +15,22 @@ Record the PDB module, source order, owning class, address sequence, and exact a
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Final natural-shift check: original size 1662, rebuilt effective size 1656,
+  and frame 0x40 on both sides. All 31 calls align, with no target-count gap.
+- The rebuilt owner is `TMessagePanel::render_to_image_buffer`. The first strict
+  mismatch is offset `+0x268` (`00479D48`). Exact-block coverage is 94.93%.
+- Strict positional difference is 948 bytes (57.0397%). The result is not exact.
+
+## Current natural source model
+
+- The image drawing origin uses interior coordinates `x1 = ImageRect.left + 1`
+  and `y1 = ImageRect.top + 1`. Draw rectangles express their outer edges with
+  `x1 - 1` and `y1 - 1`.
+- The failed text-extent rectangle uses the original outer right and bottom
+  edges: `x1 + wid - 2` and `y1 + hgt - 2`.
+- Text length uses `strlen(this->text)`. The extent API result is tested directly.
+- The fallback color stores follow the target order: `font_rgb` first, then
+  `back_rgb`. The original palette calls and shape layout remain unchanged.
 
 ## Recovered attempt history
 
@@ -131,8 +146,18 @@ Record unknown facts and the evidence needed to answer them here.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+The remaining first hunk is register and local-carrier scheduling after the
+failed extent branch. Preserve the natural source while checking the target's
+`used_w`/`used_y` carrier order and the six-byte size gap.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+### 2026-08-29 natural-shift integration
+
+- Applied the proved natural source changes in `src/Pnl_msg.cpp`. The check
+  improved from the pinned clean-source difference of 1303 bytes to 948 bytes.
+- Focused validation used `check_function.py --no-build` with the call map and
+  original range `+0250-+02B0`. It confirmed 31/31 calls and the first hunk at
+  `+0268`, but returned `MISMATCH` because the rebuilt body is six bytes short.
+- The grouped `pnl_msg` audit preserved all seven registered exact neighbors.
+  The target remains scratch because it is not exact.

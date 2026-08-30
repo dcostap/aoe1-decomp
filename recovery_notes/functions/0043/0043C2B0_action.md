@@ -15,7 +15,18 @@ Record the PDB module, source order, owning class, address sequence, and exact a
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+Focused validation after the event-argument correction remains `MISMATCH`:
+
+- original/rebuilt effective size: 1659/1693 (+34 bytes);
+- frame: `0x104`/`0x104`;
+- saved registers: EBP, ESI, EDI / EBX, EBP, ESI, EDI;
+- calls: 47/47 aligned, with one direct relocation-target mismatch;
+- boundary escapes: 2 in the grouped audit;
+- strict diff: 1475 bytes (87.1234%);
+- first mismatch: `+0x0A` (original `test eax,eax`, rebuilt `push ebx`).
+
+The grouped `dlg_conf` audit completed without compile errors. 0043C0C0
+remains `MATCH` with zero diff. 0043B560 remains accepted drift.
 
 ## Recovered attempt history
 
@@ -87,3 +98,16 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### 2026-08-30 — wave21-dlg-conf-integrate
+
+Applied only the binary-proved event-argument corrections from
+`build/audits/workers/wave21-dlg-conf/recovery_study.md`:
+
+- use `event` for the interface-style fallback and rollover value;
+- pass `event` to the second path-finding button;
+- pass `event` to `RegSetInt`, both `play_tracks` calls, and sound volume.
+
+Rejected null guards, aliases, casts, and return steering were not changed.
+The focused check and grouped audit remain nonexact.  The grouped audit kept
+0043C0C0 exact.  No headers, layouts, or call surfaces changed.

@@ -20,19 +20,18 @@ The natural header proves `TDialogPanel` as the base, `dlg_type` at `+0x490`,
 The five registered exact neighbors are `0043FCD0`, `0043FFF0`, `00440070`,
 `00440100`, and `00440110`.
 
-## Current mismatch
+## Current exact reconstruction
 
-The natural source rebuild is 57 bytes and 15 instructions. The original is
-59 bytes and 16 instructions. Both have no frame, save `esi`, make one direct
-`TDialogPanel` call, and return with `ret 4`. The owner, boundary, and call
-target are correct. The strict difference is 44 bytes (74.5763%).
+The natural initializer-list plus indexed-loop source rebuild is 59 bytes and
+16 instructions. It matches all target body bytes after normal relocation
+comparison. Both builds have no frame, save `esi`, make one direct
+`TDialogPanel` call, and return with `ret 4`. The owner, boundary, call target,
+and two relocations are correct.
 
-The first structural difference is at `+0x0F`: the rebuilt constructor emits
-the derived vtable store before the member stores. The original emits
-`xor ecx,ecx`, clears `dlg_type` and `text`, writes the vtable, then clears the
-three button pointers with `ecx`. The rebuilt constructor uses one zero value
-and places the vtable store at `+0x0F`. This is a localized code-generation
-difference, not a behavior change.
+The initializer list places `dlg_type` and `text` stores before the derived
+vtable store. The indexed loop then clears `button[0..2]`. This matches the
+original write and fault order without raw offsets, manual vtable code,
+wrappers, or compiler steering.
 
 ## Recovered attempt history
 
@@ -88,9 +87,10 @@ The first `target_session.py check` attempt timed out on
 
 ## Next useful approaches
 
-Keep the simple body form. A later worker can inspect the original compiler
-context or a period header for an array-free member model. Do not add a manual
-vtable, overlay, raw offset, or volatile register hint.
+Retain the indexed loop. A later worker can inspect the original compiler
+context or a period header for a member model that preserves the original
+vtable scheduling and fault order. Do not add a manual vtable, overlay, raw
+offset, or volatile register hint.
 
 ## Worker updates
 
@@ -103,3 +103,39 @@ direct base-constructor call. The grouped `dlg_msg` audit reports 5 exact
 registered neighbors and 2 grouped mismatches (`0043FC70`, `0043FD50`).
 The coordinator paused the stale lease after the wave closed. The lock timeout
 prevented a clean baseline pin.
+
+### 2026-08-29 wave21-dlg-msg-integrate
+
+Integrated the proved indexed three-button initialization loop in
+`src/dlg_msg.cpp`. Focused `check_function.py --rebuild --detail full` reports
+MISMATCH, 9 bytes, 15.2542%, 16 versus 16 instructions, one aligned direct
+base-constructor call, safe relocations, and the correct owner. The remaining
+9-byte difference is the known vtable scheduling difference. The reordered
+writes preserve values but not fault order, so the target remains `scratch`.
+
+The grouped `dlg_msg` audit reports 5 registered exact neighbors and 2
+grouped mismatches. The constructor is 9 bytes different; the unrelated main
+setup remains 526 bytes different. A `target_session.py check` could not
+record because the session lock timed out; the direct check created the
+focused checkpoint. No further lock retry was made.
+
+### 2026-08-29 wave21-dlg-msg-exact-integrate
+
+Changed the constructor to the natural initializer-list plus indexed-loop
+form:
+
+```cpp
+TMessageDialog::TMessageDialog(char* name)
+    : TDialogPanel(name), dlg_type(0), text(0)
+{
+    for (int i = 0; i < 3; ++i) {
+        button[i] = 0;
+    }
+}
+```
+
+The focused check reports `MATCH`, `0.0000%`, 59/59 bytes, 16/16
+instructions, the correct constructor symbol and boundary, one aligned direct
+base-constructor target, and two compatible relocations. The grouped `dlg_msg`
+audit confirms all five registered exact neighbors remain exact. The only
+grouped mismatch is the unrelated `0043FD50` setup function.

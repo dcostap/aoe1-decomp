@@ -19,7 +19,7 @@
   calls `RGE_Action_Object::destroy_obj`, removes the doppleganger check, and
   clears `DoppleInstalled`.
 
-## Current mismatch
+## Previous baseline mismatch
 
 - Fresh baseline with `die_die_die()` was 39 bytes and used virtual slot
   `+0x6C`, so the stale exact result was not current.
@@ -33,6 +33,22 @@
   `+0x260`. Original `t_b_obj.cpp` places `take` at `+0x258` and `give` at
   `+0x25C`. This is a shared-header ABI blocker, not a body reconstruction
   defect.
+
+## Canonical ABI repair result
+
+The shared combat declarations now match the PDB evidence.  In
+`include/com_obj.h`, `RGE_Combat_Object::play_move_sound(RGE_Sound*)` is
+nonvirtual.  In `include/t_c_obj.h`, the introducing virtual declarations follow
+the PDB order.
+
+The fresh checker result is `MATCH`, `0.0000%`, at `004C8690`.  The owner and
+boundary match.  All three calls align, and both relocations are safely masked.
+The direct virtual call now uses the original `+0x258` slot.  No function body
+changed.
+
+The five-group audit completed in
+`build/audits/workers/wave21-combat-vtable-integrate/report.txt`.  All 157
+registered-owner rows match.  This target is an unregistered grouped match.
 
 ## Recovered attempt history
 
@@ -67,3 +83,7 @@ No function-specific cleanup block was mapped automatically. Review the earlier 
 - `wave10-tbobj`: Rebuilt stale evidence. Retained the natural `take` call.
   Fresh result is unresolved due to the canonical vtable slot shift. No TU
   audit was run because the target is not exact.
+
+- `wave21-combat-vtable-integrate`: Applied the PDB-proven shared combat
+  declaration repair.  The fresh check now reports `MATCH`, `0.0000%`, with
+  matching owner, boundary, calls, and relocations.

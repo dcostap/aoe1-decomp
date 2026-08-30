@@ -179,3 +179,19 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### 2026-08-29 `wave21-scr-sed-integrate`
+
+- Applied the proved direct chained receiver form for the victory go-to path:
+  `rge_base_game->get_player()->set_view_loc(f1, f2)`.
+- Removed the now-unused local `player`. Preserved the current Victory x87
+  expressions and map-generation prelude.
+- Fresh baseline: MISMATCH, 5184 rebuilt bytes, frame `0x2C`, diff 4327,
+  shape 88.34%, 201 rebuilt calls.
+- Final focused check: MISMATCH, 5184 rebuilt bytes, frame `0x2C`, diff 4326,
+  shape 88.47%, 201 rebuilt calls. The change improved one byte and one shape
+  point without changing call order, size, frame, or block coverage.
+- Full `scr_sed` observed audit passed all 38 registered exact neighbors.
+  Existing action boundary and relocation differences remain.
+- Source remains `scratch`. The pause command timed out on the session lock;
+  the coordinator must pause the lease when the lock is available.

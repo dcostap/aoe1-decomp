@@ -8,6 +8,12 @@
 - Living source: `src/rmm_land.cpp`.
 - PDB source: `C:\msdev\work\age1_x1\rmm_land.cpp`.
 - Earlier recovery note: `recovery_notes/rmm_land_module.md`.
+- Current source keeps named Map, Tile, Land-line, and Map_Stack types.
+- Phase-A terrain fill uses natural loop-scoped `fill_row` and `fill_column`
+  locals. The phase-B and phase-C pop outputs keep their separate `row` and
+  `column` locals.
+- The local count declaration is the PDB-supported `long land_size[100]`.
+  It has no float pointer carrier, union, overlay, or raw alias.
 
 ## Translation-unit context
 
@@ -15,7 +21,18 @@ Record the PDB module, source order, owning class, address sequence, and exact a
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Fresh natural baseline: 1860 rebuilt bytes, 0xB10 frame, 21/21 ordered
+  calls, owner match, and 1584 differing bytes (85.1613%).
+- Scoped fill-loop probe: 1849 rebuilt bytes, 0xB10 frame, 21/21 ordered
+  calls, owner match, and 1275 differing bytes (68.9562%). This is a material
+  improvement over the baseline.
+- Final array-extent probe: 1849 rebuilt bytes, 0xB14 frame, 21/21 ordered
+  calls, owner match, and 1278 differing bytes (69.1184%). The plain array
+  remains natural and follows the PDB-supported extent, despite the small
+  metric regression from the loop-only probe.
+- The first final mismatch is at +0002 because the rebuilt frame is 0xB14
+  versus the original 0xB10. The function remains non-exact. No direct-call
+  target gap or relocation mismatch was found in focused checks.
 
 ## Recovered attempt history
 
@@ -105,7 +122,8 @@ probe 67 control-flow; result=MISMATCH; diff=1610; shape=79.40199335548172: H33:
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+- Do not add a float pointer carrier, union, overlay, raw address alias, or
+  inline assembly. None is needed for the current natural source model.
 
 ## Open questions
 
@@ -118,3 +136,13 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### `wave21-rmm-land-integrate`
+
+- Integrated the proved scoped Phase-A fill loops and the plain PDB-supported
+  `land_size[100]` declaration.
+- Focused checks kept all 21 direct calls aligned and the owning symbol valid.
+- Grouped `rmm_land` validation included all five normal owners. The registered
+  `00485200` neighbor stayed `MATCH` at `0` bytes. This target stayed
+  `MISMATCH` at `1278` bytes, with owner match, zero relocations, and three
+  boundary findings.

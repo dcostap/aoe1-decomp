@@ -11,11 +11,30 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+- `view.cpp` owns the function at `00536B40-005381BF`.
+- PDB lines span `view.cpp:3026-4250`.
+- The first executable line is 3134. The 108-line prefix supports many
+  function-scope local declarations.
+- Exact same-TU anchors include `00535480 draw_view`, `00538280
+  Add_GDI_Clip_Mask`, `00538410 draw_multi_object_outline`, and `00538590
+  get_tile_mask_num`.
+- The original uses virtual slot `+0xF8` for game mode 21. The slot owner is
+  `draw_multi_object_outline`, not `game_mode_15_hook`.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Fresh baseline: 5731/5760 bytes, frame `0x110/0x110`, 5156 differing
+  bytes, 67.42% shape, and 16.05% exact-block coverage.
+- The baseline had one wrong call identity. It called `game_mode_15_hook`
+  directly instead of virtual slot `+0xF8`.
+- Strongest checked result: 5749/5760 bytes, frame `0x110/0x110`, 4972
+  differing bytes, 81.09% shape, and 30.44% exact-block coverage.
+- Edit alignment improved to 2288 bytes and 73.19% similarity.
+- All 83 ordered calls align. Direct targets and the virtual slot align.
+- CFG conditional counts align at 184/184. Jumps remain 26/23.
+- The first strict difference is `+0x33`. It is an early stack-home
+  displacement. The main remaining blocker is local-home allocation.
+- The result is broad structural mismatch. It is not an accepted-drift case.
 
 ## Recovered attempt history
 
@@ -312,16 +331,61 @@ Mapping: `exact`. historical standalone source path names this target VA.
 
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+- Guarded `do` loops around both node comparisons increased the result to
+  5777 bytes. They added two conditions and escaped the original boundary.
+  The source keeps the simpler `while` loops.
+- A nested sprite-time condition reduced shape to 78.18% and increased the
+  strict difference to 5112 bytes. The source keeps the short-circuit form.
+- Reordering only `row` and `screen_y` declarations did not change emitted
+  code. Declaration order alone does not solve the local-home blocker.
+- Function-scoping rollover and panel rectangle temporaries increased the
+  frame to `0x114`. Their natural block scopes restore the original frame.
+- The direct `game_mode_15_hook` call is disproved. It has the wrong call
+  identity and bypasses derived-class behavior.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+- The early stack homes still differ. For example, original `col_num` uses
+  `[esp+0x68]`, while the current build uses `[esp+0x14]`.
+- The original has three more unconditional jumps. Most remaining CFG gaps
+  occur in cached-mask handling and future/prior node comparison.
+- The original zero-mask branches use separate zero-store blocks. VC5 merges
+  those stores in the current source.
+- The final source needs one fresh focused check after the coordinator resumes
+  work. The user stopped new probes after the strongest checked checkpoint.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+- Start from the current behavior-correct source and preserve all 83 calls.
+- Use the original stack table in
+  `orig/ghidra_decomp/view.cpp.asm` near the `00536B40` listing.
+- Recover the original local lifetime groups. Do not tune declaration order
+  without a source or PDB reason.
+- Inspect the separate zero-store blocks at `+0x309` and `+0x354`.
+- Inspect the missing jumps in the future/prior comparison loops. Keep
+  `memcmp`; VC5 emits the original `repe cmpsb` family.
+- Do not propose drift. The remaining difference is broad and structural.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+### 2026-08-29 `bonus-sol-view`
+
+- Corrected game mode 21 to call virtual `draw_multi_object_outline`.
+- Restored `tiles_drawn`, upper-map early exit, tile null guards, and the
+  original terrain-screen calculation order.
+- Delayed terrain and mask setup until the proven rectangle guard.
+- Restored the original rollover fault surface and inactive-touch behavior.
+- Restored limited-rectangle loop guards, palette counter widths, and final
+  list-swap source order.
+- Removed narrowing comparisons for cached mask numbers. The original compares
+  promoted tile bytes with full integer mask results.
+- Expanded real function-scope locals, as supported by the PDB line gap.
+  Kept rollover and panel rectangle temporaries in natural block scopes.
+- Strongest focused check: 4972 differing bytes, 81.09% shape, 30.44% exact
+  blocks, 2288 edit difference, frame `0x110`, and exact 83-call order.
+- A baseline `target_session.py check` completed its compiler check but timed
+  out while recording `sessions.lock`. No lock retry occurred.
+- Worker audit output is under
+  `build/audits/workers/bonus-sol-view/view`.
+- The grouped audit compiled 79 normal functions. All 47 registered exact
+  owners remained matches. The target measured 4972 differing bytes.

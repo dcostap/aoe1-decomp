@@ -194,3 +194,11 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-change-terrain-cleanup
+
+- Removed only the dead initial `old_border = terrain` assignment in `src/tmap.cpp`.
+- Retained the canonical typed `old_border = tile->terrain_type` assignment, unchecked initial tile access, row-major closure, border comparison order, and all three calls.
+- Focused check: rebuilt 428 bytes versus the 427-byte original; frame `0x1C`, 141 instructions, 100.00% shape, 100.00% ordered calls, and 394 differing bytes. The owner symbol matches. The first strict mismatch is offset `+0x11`; the one-byte size drift remains.
+- The cleanup changed 18 bytes in two spans. It improved block coverage to 100.00% but increased strict diff by 2 bytes from the clean checkpoint. This is a scratch result, not an exact match.
+- Registered `tmap_cpp` neighbor audit completed in `build/audits/workers/wave21-change-terrain-cleanup/tmap_cpp/report.txt`. All 16 registered exact neighbors remained `MATCH` with zero new diff. The target owner matched; its grouped result remained a 394-byte mismatch with the original-boundary issue.

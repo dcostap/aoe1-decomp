@@ -11,11 +11,16 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+The function is in the `World.cpp` PDB module and owns `RGE_Game_World::data_load_effects`.
+The natural source keeps a local `RGE_Effects*`, assigns the path constructor result,
+then assigns that local to `this->effects`.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+No current mismatch. The focused check reports original and rebuilt size 88 bytes,
+27 instructions, two aligned calls, one saved register, and no frame. The owner
+symbol and boundary match. All six relocations are safe. The strict difference is
+0 bytes (0.0000%).
 
 ## Recovered attempt history
 
@@ -69,8 +74,20 @@ Record unknown facts and the evidence needed to answer them here.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+Confirm the grouped `world` translation-unit audit and registered exact neighbors.
 
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-world-integrate
+
+Integrated the natural exact proposal in `src/world.cpp`: allocate into local `e`,
+then assign `e` to `this->effects`. Removed the redundant `if (e == 0) e = 0`
+block. The fresh baseline was 92 bytes with a 24-byte difference (26.0870%).
+The focused final check is `MATCH`, 88 bytes, and `0.0000%`, with the correct owner,
+closed boundary, two aligned direct calls, and safe relocations. Target status stays
+`scratch` until the coordinator reviews promotion.
+The grouped `world` audit also reports `MATCH` with zero bytes and the correct owner.
+It preserved all 76 registered owner matches. This target is not yet registered in
+that group because the source reunification manifest remains coordinator-owned.

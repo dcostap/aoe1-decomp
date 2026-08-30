@@ -13,9 +13,17 @@
 
 Record the PDB module, source order, owning class, address sequence, and exact anchors here.
 
+- Natural source owner: `src/basegame.cpp`, `RGE_Base_Game::~RGE_Base_Game`.
+- The target remains in the `basegame_cpp` translation unit.
+
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- No current mismatch after the guarded font-loop reconstruction.
+- Final standalone check: 1136/1136 bytes, `0.0000%`, frame `0x110`, and saved
+  registers `ebx`, `ebp`, `esi`, `edi`.
+- Final control-flow counts: 37 conditional signals, 1 jump, and 1 return on
+  both sides. The owner symbol and original boundary match.
+- Final call map: 56/56 calls aligned. All 86/86 relocations are safe.
 
 ## Recovered attempt history
 
@@ -130,3 +138,17 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### `wave21-basegame-ctor-exact` — 2026-08-29
+
+- Applied `build/audits/workers/sa-9b48059f/0041C270/proposed_source_change.diff`.
+  The font-loop counter now initializes before the positive count guard and uses
+  a guarded `do`/`while` loop.
+- `python tools/check_function.py --va 0041C270 --rebuild --detail full` returned
+  `Result: MATCH`: 1136 equal bytes, `0.0000%`, 56 aligned calls, and 86/86
+  safe relocations. Frame, saved registers, owner, boundary, and CFG match.
+- The `basegame_cpp` observed-function audit returned grouped `MATCH` for
+  `0041C270` with zero grouped diff, relocation, and boundary errors. It retained
+  186 registered owner matches for the surrounding translation unit.
+- The fresh baseline record could not acquire `build/target_sessions/sessions.lock`
+  and timed out. The exact check and grouped audit completed successfully.

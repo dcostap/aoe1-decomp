@@ -27,20 +27,29 @@ and `0.0000%` for all six exact owners. It also reports a `MATCH` for the
 generated deleting destructor `00519E70`. Boundaries, direct targets, and
 relocations match for each exact owner.
 
-## Accepted drift: 00519F40 draw
+## Scratch: 00519F40 draw
 
-Keep `draw` as accepted drift. The direct module has 559 positional bytes that
-differ. The candidate confirms the same owner symbol with no relocation-target
-or boundary errors.
+The former accepted-drift decision is invalid. The living source passes
+`0x00FF00FF` to `_ASMSet_Shadowing`, but the original passes `0xFF00FF00`.
+This changes behavior.
 
-The prior review proves the draw calls, arguments, panel stores, GDI state,
-unlock calls, and returns. The residual is limited to private local homes,
-register allocation, and a small CFG layout difference. Do not reopen this
-status without new executable evidence.
+A natural corrected candidate now passes `0xFF00FF00`, restores type-0 `y`
+evaluation and the pre-`SetClipRect` increments, and uses the direct
+`border_frame + (is_down != 0)` expression. It preserves size, frame, 42
+calls, CFG, relocations, and fault order. The focused check reports 18
+positional bytes different (1.1443%), 99.81% shape similarity, and a
+`CONSISTENT_REGISTER_RECOLOR` diagnostic. Keep the function in scratch until
+the coordinator completes drift review.
+
+Evidence is under `build/audits/workers/semantic-00519F40/`.
+
+The focused validation checkpoint is `probe-058-validation`. The grouped
+`tpnl_btn` validation output is under
+`build/audits/workers/wave21-tpnl-btn-integrate/tpnl_btn/`.
 
 ## Rebased integration proof
 
 The fresh grouped proof is `build/candidate_tus/tpnl_btn_integration_proof`.
 All six registered exact owners report `MATCH` and `0.0000%`. The generated
-deleting destructor also matches. The accepted-drift `draw` result remains
-unregistered.
+deleting destructor also matches. The `draw` result remains unregistered
+scratch.

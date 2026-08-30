@@ -11,11 +11,17 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+- PDB module: `taibldmd.cpp`, source band lines 464-891.
+- Source order: `004D4540` follows `004D4460` and precedes `004D4DB0` in `src/taibldmd.cpp`.
+- Owning class and symbol: `TribeBuildAIModule::nextBuildableItem(int)`, `?nextBuildableItem@TribeBuildAIModule@@QAEPAVBuildItem@@H@Z`.
+- The target is an observed normal function in the natural module, but it is not yet registered as an owner in `config/translation_units.json`.
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- No focused positional mismatch remains under the module `/GX` response.
+- Final focused metrics: 2136/2136 bytes, frame `0xF4/0xF4`, 115/115 calls, 89/89 conditional signals, one return, and 117/117 relocations safely masked.
+- The checker reports `MATCH`, `0.0000%`, the expected owner symbol, and a closed target boundary.
+- Grouped audit reports target `MATCH`, but it also reports one registered neighbor (`004D4F80`) at a 9-byte mismatch after `/GX` was added. Review this module-wide flag effect before promotion.
 
 ## Recovered attempt history
 
@@ -298,3 +304,20 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### 2026-08-29 wave21-taibldmd-integrate
+
+- Integrated the proved proposal from `build/audits/workers/bonus-sol-taibldmd/proposed_taibldmd.cpp` into `src/taibldmd.cpp`.
+- The natural source now keeps the `0x67`, `0x44`, and `0x46` count calls in order, uses the count limit as the loop condition, and advances with `continue` after cost failure.
+- The module response `config/flags/004D5690_addResearch.rsp` lacked `/GX`. Added `/GX` because this function has the original EH prologue and needs the EH code path.
+- Focused check after integration: `MATCH`, `0.0000%`, 2136/2136 bytes, frame `0xF4/0xF4`, owner match, 115/115 calls, 89/89 conditional signals, and 117/117 relocations safely masked.
+- Grouped audit: `python tools/audit_translation_unit_observed.py --group taibldmd --jobs 1 --output-dir build/audits/workers/wave21-taibldmd-integrate/taibldmd`. Target `004D4540` is `MATCH` but remains unregistered. Twenty registered owners match. `/GX` changes registered `004D4F80` to a 9-byte mismatch; the parent must review module-wide flag ownership before promotion.
+
+### 2026-08-30 coordinator rollback
+
+- Restored the pre-integration function body because the exact body changed the source context and regressed registered owner `004D4F80`.
+- Kept module-wide `/GX`. Original `004D4540` and `004D4E10` use FS exception registration, so `/GX` is authentic.
+- Fresh grouped validation reports `004D4540` as a 9-byte mismatch.
+- `004D4F80`, `004D4E10`, and all 21 registered owners report `MATCH`, `0.0000%`.
+- Evidence: `build/audits/integration/taibld-rollback-validation/validation-summary.txt`.
+- Keep `004D4540` in `scratch`. Do not register the context-dependent exact form.

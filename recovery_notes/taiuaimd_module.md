@@ -72,6 +72,21 @@ These changes remove recovery macros from the compiler-facing source.
 Source comments retain durable behavior and ABI facts. Recovery notes and Git
 history retain attempt history.
 
+## ManagedArray append migration
+
+The `TribeBuildingUnitAIModule::processNotify` case for event type `0x1F4`
+now uses the complete `attackingUnitsValue.add(event->caller)` operation.
+The preceding attacker scan and help request remain unchanged. The add call
+keeps duplicate suppression, growth, copy, publication, and count update in
+one source operation. `include/utmarray.h` was not changed.
+
+The focused soldier checkpoint stayed exact at `005071F0`: `MATCH`,
+`0.0000%`, 1098/1098 bytes, and 19/19 ordered calls. The full `taiuaimd`
+audit found 58/58 registered owners unchanged and exact. The unregistered
+scratch owner `00508320` changed from the prior grouped `MATCH` to a 728-byte
+mismatch with a boundary escape. The audit report is
+`build/audits/workers/wave21-resize-taiuaimd/taiuaimd/report.txt`.
+
 ## Integration handoff
 
 The global `config/translation_units.json` registry still points to the old wrappers.

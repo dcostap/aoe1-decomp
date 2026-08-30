@@ -13,9 +13,26 @@
 
 Record the PDB module, source order, owning class, address sequence, and exact anchors here.
 
+- PDB module: `rmm_elev.cpp`, lines 290-403.
+- Owner: `RGE_RMM_Elevation_Generator::base_elevation_generate`.
+- Original span: `00484D00-004851F8` (1273 bytes), `__thiscall`.
+- The source remains in the natural `src/rmm_elev.cpp` translation unit.
+- The function has 23 ordered direct calls. The three registered exact neighbors
+  in the group remain exact after this change.
+
 ## Current mismatch
 
 Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+
+- The integrated source is a natural typed reconstruction and remains `scratch`.
+- Focused check: `MISMATCH`, 1127 differing bytes, 1265 rebuilt bytes.
+- Owner symbol matches. The frame is `0x98C` versus the original `0x988`.
+- All 23 direct calls align in order. There are no call target mismatches.
+- Boundary escape count is zero. Relocation target mismatches are zero; 4 of 28
+  relocation sites are safely masked.
+- Shape similarity is 84.63%, with 38.53% exact-block coverage. The first strict
+  mismatch is `+0x2`, in the prologue. The remaining difference is broad local
+  topology and code generation, not a narrow drift claim.
 
 ## Recovered attempt history
 
@@ -156,6 +173,25 @@ Record unknown facts and the evidence needed to answer them here.
 
 Record specific evidence-led approaches for the next worker here.
 
+- Keep the pointer/countdown init loop unless new binary evidence disproves it.
+- Do not promote status. The candidate is not exact and does not support an
+  accepted-drift claim.
+- Any next probe should address the frame and local-home topology without raw
+  layouts, wrappers, assembly, or compiler steering.
+
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-rmm-elev-integrate
+
+- Integrated the completed study's strongest policy-compliant candidate. The
+  init-stack loop now uses a typed `Map_Stack*` and a positive countdown.
+- This changed the focused result from 1223 to 1127 differing bytes and raised
+  shape similarity from 83.22% to 84.63%. The rebuilt size changed from 1276 to
+  1265 bytes, while the frame stayed `0x98C`.
+- Focused validation used `target_session.py check` with full call, block, and
+  stack maps. It proved the owner, zero boundary escapes, zero call-target
+  mismatches, and all 23 ordered calls.
+- Full `rmm_elev` audit: `004846C0`, `00484B30`, and `00484B50` remain `MATCH`.
+  The target remains `MISMATCH` at 1127 bytes. No status change is proposed.

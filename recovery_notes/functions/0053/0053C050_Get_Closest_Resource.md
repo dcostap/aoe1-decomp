@@ -173,3 +173,51 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### `wave21-closest-resource-integrate` (2026-08-30)
+
+- Applied the natural PDB-local candidate in `src/vis_unit.cpp`.
+- The source uses the original parameter names `Xpos`, `Ypos`, `Zone`,
+  `ResType`, `excList`, and `elSize`.
+- The source sets up `bestdist`, `c`, and `record` in the PDB-supported order.
+- The candidate preserves the proven two `__ftol` calls, loop order, and byte
+  distance store.
+- Variant lab validation matched 351/351 bytes: `MATCH`, `0.0000%`, frame
+  `0x10`, two direct `ftol` calls, six relocations, and the original boundary.
+  Evidence: `build/variant_lab/0053C050_Get_Closest_Resource/20260830_010451/`.
+- The leased validation recorded the same exact result as probe `#88`.
+  Evidence: `build/variant_lab/0053C050_Get_Closest_Resource/20260830_010626/`.
+- The grouped `vis_unit` audit kept all nine registered exact neighbors exact.
+- The normal checker cannot select this migrated target because the shared
+  header emits the class-tag return symbol while the original symbol uses the
+  struct-tag spelling. No header edit was permitted in this assignment.
+- Record-kind blocker for the coordinator: `include/vis_unit.h:60` declares
+  `class VISIBLE_RESOURCE_REC`. The current emitted owner is
+  `?Get_Closest_Resource@Visible_Resource_Manager@@QAEPAVVISIBLE_RESOURCE_REC@@HHHHPAHH@Z`.
+  The oracle owner is
+  `?Get_Closest_Resource@Visible_Resource_Manager@@QAEPAUVISIBLE_RESOURCE_REC@@HHHHPAHH@Z`.
+  Repairing this shared declaration needs its dependency audit.
+
+### `wave21-closest-resource-exact` (2026-08-30)
+
+- Applied the atomic PDB-proven record-kind repair. `VISIBLE_RESOURCE_REC` is
+  now a `struct` in `include/vis_unit.h:54` and in the forward declaration at
+  `include/game_types.h:463`. No source access syntax changed.
+- Fresh target validation reports `MATCH`, `0.0000%`, and 351/351 bytes.
+  The rebuilt owner is the oracle PAU symbol
+  `?Get_Closest_Resource@Visible_Resource_Manager@@QAEPAUVISIBLE_RESOURCE_REC@@HHHHPAHH@Z`.
+  Frame is `0x10`, calls are 2/2, relocations are 6/6, and the boundary is
+  exact. Evidence: target-session probe `#89` and `check_function.py --no-build`.
+- The candidate ABI probe passed with VC5 and all size and field-offset checks.
+- The registered-owner audit covered 491 rows across `vis_unit`, `visible`,
+  `aiuaimod`, `taiuaimd`, `tplayer`, `player`, `map`, `world`, and
+  `t_c_obj_complete_fresh`. It reports 490 registered matches and one known
+  unrelated `map` exception at `0045A500`; no dependency regression is tied to
+  this header repair. The dependent `00415E50` row remains `MATCH` with zero
+  relocation or boundary errors, and its fresh candidate relocation targets
+  the PAU symbol. Evidence: `build/audits/workers/wave21-closest-resource-exact/visible-resource-record-kind/`.
+- Focused metadata tests passed: 37 tests, `OK`. A full 297-test run had one
+  unrelated `test_history_lock_serializes_processes` timing error.
+- Source search finds one compiler-facing definition at
+  `src/vis_unit.cpp:507`, one declaration in `include/vis_unit.h`, and no
+  duplicate owner. The known map debt was not part of this patch.

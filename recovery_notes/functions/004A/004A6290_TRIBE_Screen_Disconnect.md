@@ -11,11 +11,26 @@
 
 ## Translation-unit context
 
-Record the PDB module, source order, owning class, address sequence, and exact anchors here.
+- PDB module: `scr_mps.cpp`; natural owner: `src/scr_mps.cpp`.
+- The target is the `TRIBE_Screen_Disconnect` destructor after its constructor
+  at `004A61A0` in this module's class-owner sequence.
+- The class layout packet places `message` at `this + 0x47C`.
+- The original body is 86 bytes. It has no frame pointer and saves `esi`.
 
-## Current mismatch
+## Current result
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Current source is exact: 86 rebuilt bytes versus 86 original bytes.
+- The rebuilt body has the original two direct calls, in order:
+  `TPanel::delete_panel` at `004A62C2`, then `TScreenPanel::~TScreenPanel`
+  at `004A62D1`.
+- The owner symbol matches. The original boundary is closed. All 7 relocation
+  checks are safe. Strict positional difference is 0 bytes (0.0000%).
+- The final focused check was recorded as checkpoint
+  `20260829T220823.389021Z-89ff41c55e`. It confirms `MATCH`, 22 aligned
+  instructions, and no call-map differences.
+- The canonical source form is natural for this module. It calls the inherited
+  `TPanel::delete_panel` helper, as do nearby panel destructors, and casts the
+  proven `message` field to the helper's `TPanel**` parameter.
 
 ## Recovered attempt history
 
@@ -38,18 +53,39 @@ Mapping: `exact`. historical standalone source path names this target VA.
 ```
 <!-- end-recovered:527e173d44c11a0ac777 -->
 
+### `wave21-scr-mps` natural translation-unit recovery
+
+The baseline `delete this->message;` emitted a null check and an indirect
+destructor call. It produced 90 bytes and missed the original direct
+`delete_panel` call. Replacing it with
+`this->delete_panel((TPanel**)&this->message);` produced the original 86
+bytes and exact call surface. This form matches the canonical helper use in
+the surrounding source and the proven `message` field address.
+
 ## Rejected approaches
 
-Record disproved source forms and repeated code-generation basins here.
+- Direct `delete this->message;`: rejected. The compiler emitted an indirect
+  call and a null branch, unlike the original direct helper call.
+- An unqualified `delete_panel` spelling was not retained. Its validation
+  probe could not run because the target-session lock timed out; the known
+  exact qualified form was restored without another lock retry.
 
 ## Open questions
 
-Record unknown facts and the evidence needed to answer them here.
+- The main agent must review source plausibility and promote the exact owner.
 
 ## Next useful approaches
 
-Record specific evidence-led approaches for the next worker here.
+- No further code recovery is needed unless the owning-source review rejects
+  the canonical helper form. Re-run the focused checker after any review edit.
 
 ## Worker updates
 
-Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+- `wave21-scr-mps`: Baseline was 90 bytes with 43 differing bytes and one
+  replaced call site. The helper form restored 86 bytes, 22 aligned
+  instructions, 2 aligned calls, closed boundaries, safe relocations, and
+  `MATCH`, `0.0000%`. The worker-specific `scr_mps` audit reported all 24
+  registered owners as matches; the ten unregistered rows remain unrelated
+  module work. The final audit at
+  `build/audits/workers/wave21-scr-mps/scr_mps/report.txt` retained the target
+  as `MATCH` with zero diff, correct ownership, relocations, and boundary.

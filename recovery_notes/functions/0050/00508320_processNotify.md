@@ -99,3 +99,24 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### `wave21-resize-taiuaimd-correct`
+
+- Replaced the `ManagedArray::add` migration with the complete explicit path.
+  The path keeps the second bounded duplicate scan, the capacity test, the
+  append write, and the count increment.
+- The growth arm binds the real write to public `operator[]`. The no-growth arm
+  writes the existing slot directly. The source has no direct `resize` call.
+- The original growth path calls protected `resize` before the append. The
+  public-index candidate inlines the same allocation, copy, delete, and append
+  sequence. A failed allocation still reaches the same append write and count
+  store. The candidate changes only the emitted allocation call surface.
+- The focused check reported `MISMATCH`, 747 differing bytes, 896 emitted
+  bytes, and 12 versus 11 ordered calls. The extra calls are one allocation
+  and one delete from the public-index growth operation. The duplicate checks,
+  help call, under-attack call order, and fault order remain explicit.
+- The audit at
+  `build/audits/workers/wave21-resize-taiuaimd-correct/taiuaimd/` included 63
+  normal functions. All 58 registered owners reported `registered_owner_match`.
+- Keep this target in `scratch`. The natural source change is retained for
+  behavior and access correctness, not as an exact-match claim.

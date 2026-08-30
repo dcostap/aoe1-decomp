@@ -136,3 +136,15 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### Wave21 one-flag exact integration
+
+Applied the one-flag source model in `src/player.cpp`: removed the
+`saved_human_team` local, its two assignments, and its loop update. Kept the
+H10 `long* player_id = &pos[i]` model and all stream calls, allocation order,
+fault order, and `load_victory` call order unchanged.
+
+The target check is exact: 653/653 bytes, 0.0000% difference, 0xC frame, 20
+ordered calls, 27/27 normalized relocations, correct owner symbol and boundary.
+The player translation-unit audit is recorded under
+`build/audits/workers/wave21-player-scenario-load/player`.

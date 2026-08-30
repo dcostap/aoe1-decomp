@@ -143,3 +143,19 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-hunt-update-integrate
+
+- Kept the state-12 nested switch in its original case order. The source call
+  `this->set_state(3); return 0;` remains in case 3.
+- Removed the artificial `volatile` qualifier from the `modifier` local.
+- The focused validation still reports the compiler merge: 53 rebuilt calls
+  versus 54 original calls. The missing call is virtual slot `+0x5C` at
+  original offset `+0x239` (PDB line 569).
+- The natural local now gives frame `0x8`, versus original frame `0xC`.
+  The clean pinned source remains the better exactness baseline at 1056 bytes.
+- Validation checkpoint: `probe-041-validation`, diff 1121 bytes, shape
+  83.96%, ordered calls 94.44%, size 1587 bytes.
+- Grouped `tact_hnt` audit kept all 10 registered neighboring owners exact.
+  It reports this target as the single grouped mismatch and keeps `004CFFD0`
+  as accepted drift.

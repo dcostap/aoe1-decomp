@@ -118,3 +118,21 @@ module.
 The fresh full audit removes three stale exact claims. `004D9110` and
 `004D9160` each differ by one byte. `004E0FD0` differs by 11 bytes. All three
 rows are scratch and are no longer registered as exact.
+
+## Wave21 ManagedArray resize migration
+
+`004DE600 checkDefend` no longer calls `ManagedArray<int>::resize` directly.
+The four duplicate-scan append arms now call the public `add` operation. The
+two prechecked append arms keep `contains`, then write through public
+`operator[]`, and then increment `numberValue`. This keeps duplicate checks and
+append publication in the same order.
+
+The fresh baseline check reported 1,407 differing bytes. The migration check
+reported 1,208 differing bytes, with code size reduced from 1,543 to 1,343
+bytes. The target remains a mismatch because of the existing structural
+reconstruction and call-surface differences.
+
+The full `taiinfmd` observed audit completed in
+`build/audits/workers/wave21-resize-taiinfmd/taiinfmd`. It kept all 81
+registered owner matches. The six changed source calls are limited to
+`checkDefend`; `include/utmarray.h` was not changed.

@@ -152,3 +152,13 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### wave21-sprite-draw-integrate: restore late mirror color read
+
+- Removed the non-PDB `unsigned char color` cache in the dynamic mirror palette arm.
+- The mirror call now reads `this->color_flag` after the palette lookup, matching the original late member read and preserving palette fault order.
+- Checkpoint `probe-068-control-flow` remains a natural mismatch: 416 differing bytes, exact 0x10C frame, and 22/23 ordered calls because VC5 merged the mirror call site.
+- The fixed mirror arm already reads `color_flag` after its palette lookup. The draw arms retain their direct reads.
+- Targeted assembly confirms the rebuilt dynamic mirror arm reads `[this+28h]` only after the palette branch and before the merged `shape_mirror` call. The original reads the same member at its late call setup, but keeps two mirror call sites.
+- Grouped `sprite_cpp` neighbor audit was run in `build/audits/workers/wave21-sprite-draw-integrate/sprite_cpp_direct_color`.
+  All 13 registered owners retained their prior results. The 10 existing nonmatching or boundary rows stayed unchanged, including the observed `do_draw` row at 416 bytes.

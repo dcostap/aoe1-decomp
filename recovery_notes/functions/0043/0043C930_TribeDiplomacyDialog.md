@@ -189,3 +189,17 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### 2026-08-29 `wave21-dlg-dip-integrate`
+
+- Fresh baseline: 3431 rebuilt bytes versus 3457 original, frame `0x11C`,
+  110/112 calls, and 3023 differing bytes.
+- Restored the natural typed `button`, `ally`, and `tab_buttons` cursor
+  lifetimes in the constructor. Resource creation now uses typed array cursors.
+- Restored the redundant current-player relation arm and three direct
+  `set_radio_button` sites. The palette call now reads the byte `map_color`
+  field, not the adjacent `id` field.
+- Focused check: 3445 rebuilt bytes, frame `0x124`, 112/112 calls, 3033
+  differing bytes, and 36.62% exact-block coverage. This is a natural
+  structural improvement with complete call parity, but it is not exact.
+- No raw byte-offset cursor remains. The source stays `scratch`.

@@ -15,7 +15,20 @@ Record the PDB module, source order, owning class, address sequence, and exact a
 
 ## Current mismatch
 
-Record the current frame, size, calls, boundaries, relocations, and first structural difference here.
+- Current natural source: the PDB local names are restored. `text_len` is an
+  `int`, while the two loop predicates retain the original narrow comparison.
+  `last_fit_len` names the saved fitting count. `found_return` marks a newline,
+  `found_linefeed` marks a CRLF pair, `found_bad_return` marks a CR seen in the
+  scanned text, and `found_space` marks a whitespace break.
+- Focused check after integration: `MISMATCH`, 548 differing bytes (51.5038%),
+  1064/1064 code bytes, 0x170/0x170 frame, and 29/29 ordered calls. The owner
+  symbol and body boundary match. Relocations are safely masked (21/33).
+- First structural difference remains the register-color basin at +0x07:
+  original `push ebp`, rebuilt parameter load into `ebx`. Shape is 76.49%,
+  with 33.43% exact-block coverage. The checker labels this
+  `WIDTH_OR_SIGNEDNESS` for audit only.
+- The source preserves the original newline, CRLF, CR replacement, and space
+  break paths. It remains `scratch` because the focused check is not exact.
 
 ## Recovered attempt history
 
@@ -148,3 +161,39 @@ Record specific evidence-led approaches for the next worker here.
 ## Worker updates
 
 Add one reviewed summary for each later assignment. Keep raw generated probe data under `build/`.
+
+### 2026-08-29 — `wave21-pnl-txt-integrate`
+
+- Integrated the corrected PDB-name and int-length model into `src/Pnl_txt.cpp`.
+- Renamed the natural locals to `last_fit_len` and `found_bad_return`.
+  Restored the PDB-aligned distinction between newline, CRLF, CR, and space
+  handling. No overlay union, forced alias, wrapper, or assembly was added.
+- Focused validation:
+  `python tools/target_session.py check --va 0047C640 --owner wave21-pnl-txt-integrate --kind behavior --note "Integrate corrected PDB local names and int text length; preserve newline, CRLF, CR replacement, and space-break semantics." --checkpoint wave21-pnl-txt-integrate-int-pdb -- --detail concise`
+  Result: `MISMATCH`, 548 bytes, 1064 bytes, frame 0x170, 29 ordered calls.
+- Grouped validation:
+  `python tools/audit_translation_unit_observed.py --group Pnl_txt_cpp --jobs 1 --output-dir build/audits/workers/wave21-pnl-txt-integrate/Pnl_txt_cpp`
+  Result: 57 registered owner matches; the target is a grouped mismatch at 548
+  bytes. Existing unrelated grouped queue items remain unchanged.
+
+### 2026-08-30 — `wave21-text-wrap-correctness`
+
+- Moved the `last_fit_len` fallback inside the non-newline path. A newline now
+  reaches output without reading an uninitialized fitting count. The existing
+  CRLF, CR, space, bounds, and fault ordering remain unchanged.
+- Corrected the compiler-facing `__mbslen` declaration from `short` to `int`.
+  The explicit short comparison model remains in both length loops.
+- Changed the target buffer to `unsigned char[256]`, matching the PDB type, and
+  used the required API pointer conversion for `append_line`.
+- Focused validation:
+  `python tools/check_function.py --va 0047C640 --rebuild --detail concise`
+  Result: `MISMATCH`, 982 differing bytes, 1061 rebuilt bytes, 0x170 frame,
+  and 29 ordered calls. The source compiles. This is a code-generation
+  regression from the prior 548-byte integration result, not a behavior claim.
+- The target-session check could not record a checkpoint because the session
+  lock timed out. No retry or lock change was made.
+- Translation-unit validation:
+  `python tools/audit_translation_unit_observed.py --group Pnl_txt_cpp --jobs 1 --output-dir build/audits/workers/wave21-text-wrap-correctness/Pnl_txt_cpp`
+  Result: 57 registered owners matched, with zero compile errors. The audit
+  also reports four grouped mismatches, three accepted-drift observations, and
+  one relocation problem already present in the natural module.
