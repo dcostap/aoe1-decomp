@@ -7,8 +7,8 @@
   },
   "functions": {
     "00478F40": {"status": "scratch", "symbol": "??0TMessagePanel@@QAE@PAXJJ@Z"},
-    "00479050": {"status": "scratch", "symbol": "??1TMessagePanel@@UAE@XZ"},
-    "004790E0": {"status": "scratch", "symbol": "?set_rect@TMessagePanel@@UAEXJJJJ@Z"},
+    "00479050": {"status": "matching", "symbol": "??1TMessagePanel@@UAE@XZ"},
+    "004790E0": {"status": "matching", "symbol": "?set_rect@TMessagePanel@@UAEXJJJJ@Z"},
     "00479270": {"status": "matching", "symbol": "?set_justification@TMessagePanel@@QAEXW4JustType@1@0H@Z"},
     "004792A0": {"status": "matching", "symbol": "?show_message@TMessagePanel@@QAEXW4MessageType@1@PADEEPAXJJ@Z"},
     "004793C0": {"status": "matching", "symbol": "?show_message2@TMessagePanel@@QAEXW4MessageType@1@PADKKPAXJJPAVTShape@@H3H@Z"},
