@@ -30,7 +30,7 @@
     "00472620": {"status": "matching", "symbol": "?set_text_color@TButtonPanel@@QAEXHKK@Z"},
     "00472650": {"status": "matching", "symbol": "?set_highlight_text_color@TButtonPanel@@QAEXHKK@Z"},
     "00472680": {"status": "matching", "symbol": "?set_sound@TButtonPanel@@QAEXPAVTDigital@@@Z"},
-    "00472690": {"status": "scratch", "symbol": "?set_radio_button@TButtonPanel@@QAEXXZ"},
+    "00472690": {"status": "matching", "symbol": "?set_radio_button@TButtonPanel@@QAEXXZ"},
     "00472700": {"status": "matching", "symbol": "?set_state@TButtonPanel@@UAEXF@Z"},
     "00472720": {"status": "matching", "symbol": "?set_state_by_id@TButtonPanel@@QAEXJ@Z"},
     "00472760": {"status": "matching", "symbol": "?set_bevel_info@TButtonPanel@@QAEXHHHHHHH@Z"},
