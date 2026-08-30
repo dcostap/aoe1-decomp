@@ -234,7 +234,7 @@ unsigned char TRIBE_Action_Build::update()
         break;
 
     case 7:
-        if (this->timer < 0.0f && this->target_obj != 0 &&
+        if (this->timer < 0.0 && this->target_obj != 0 &&
             this->target_obj->attribute_amount_held > 0.0f) {
             this->obj->removeAllFromPathingGroup();
             this->obj->setWaitingToMove(1);

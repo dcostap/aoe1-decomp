@@ -11,7 +11,7 @@
     "004CD2A0": {"status": "matching", "symbol": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"},
     "004CD2E0": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Build@@UAEXE@Z"},
     "004CD310": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Build@@MAEXE@Z"},
-    "004CD5E0": {"status": "scratch", "symbol": "?update@TRIBE_Action_Build@@UAEEXZ"},
+    "004CD5E0": {"status": "accepted_drift", "symbol": "?update@TRIBE_Action_Build@@UAEEXZ"},
     "004CD910": {"status": "matching", "symbol": "?stop@TRIBE_Action_Build@@UAEHXZ"},
     "004CD920": {"status": "matching", "symbol": "?move_to@TRIBE_Action_Build@@UAEHPAVRGE_Static_Object@@MMM@Z"},
     "004CD960": {"status": "accepted_drift", "symbol": "?work@TRIBE_Action_Build@@UAEHPAVRGE_Static_Object@@MMM@Z"}
