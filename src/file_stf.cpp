@@ -135,21 +135,21 @@ int DriveInformation::numberOfFilesWithAttribute(int attribute)
 int DriveInformation::numberOfFilesWithFilenameOrAttribute(char* filename,
                                                             int attribute)
 {
-    struct _finddata_t file_info;
-    long h = _findfirst("*.*", &file_info);
-    if (h == -1) {
+    long handle;
+    _finddata_t fileInfo;
+    int count;
+
+    handle = _findfirst("*.*", &fileInfo);
+    if (handle == -1) {
         return 0;
     }
-    int count = 1;
-    if (_findnext(h, &file_info) == -1) {
-        return count;
-    }
-    do {
-        if ((file_info.attrib & attribute) ||
-            strstr(file_info.name, filename)) {
-            ++count;
+    count = 1;
+    while (_findnext(handle, &fileInfo) != -1) {
+        if ((fileInfo.attrib & attribute) != 0 ||
+            strstr(fileInfo.name, filename) != 0) {
+            count++;
         }
-    } while (_findnext(h, &file_info) != -1);
+    }
     return count;
 }
 

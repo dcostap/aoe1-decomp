@@ -21,7 +21,7 @@
     "00449840": {"status": "matching", "symbol": "?checkDrives@DriveInformation@@QAEXXZ"},
     "004498A0": {"status": "matching", "symbol": "?numberOfFilesWithFilename@DriveInformation@@QAEHPAD@Z"},
     "00449910": {"status": "matching", "symbol": "?numberOfFilesWithAttribute@DriveInformation@@QAEHH@Z"},
-    "00449990": {"status": "scratch", "symbol": "?numberOfFilesWithFilenameOrAttribute@DriveInformation@@QAEHPADH@Z"},
+    "00449990": {"status": "matching", "symbol": "?numberOfFilesWithFilenameOrAttribute@DriveInformation@@QAEHPADH@Z"},
     "00449A20": {"status": "matching", "symbol": "?resetCurrentDriveAndDirectory@DriveInformation@@QAEHXZ"},
     "00449A40": {"status": "matching", "symbol": "?resetCurrentDrive@DriveInformation@@QAEHXZ"},
     "00449A50": {"status": "matching", "symbol": "?resetCurrentDirectory@DriveInformation@@QAEHXZ"},
