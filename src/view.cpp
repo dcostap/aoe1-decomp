@@ -447,7 +447,7 @@ void RGE_View::set_rect(long a, long b, long c, long d)
         MouseSystem->set_game_mode(1);
     }
 
-    this->target08(2);
+    this->set_redraw(TPanel::RedrawImmediate);
 }
 
 
@@ -546,8 +546,8 @@ void RGE_View::set_world(RGE_Game_World* world) {
         map->coordinate_map();
         tile_wid = map->tile_width;
         tile_hgt = map->tile_height;
-        tile_half_wid = map->tile_half_height;
-        tile_half_hgt = map->tile_half_width;
+        tile_half_wid = map->tile_half_width;
+        tile_half_hgt = map->tile_half_height;
         elev_hgt = map->elev_height;
     } else {
         map = 0;
@@ -581,7 +581,7 @@ void RGE_View::set_selection_area(long col1, long row1, long col2, long row2)
     if (this->map && rge_base_game->game_mode != 0x15) {
         this->map->request_redraw(col1, row1, col2, row2, 0x10);
     }
-    this->redraw(1);
+    this->set_redraw(TPanel::RedrawNormal);
 }
 
 
@@ -2683,9 +2683,8 @@ void RGE_View::Update_Render_Pointers() {
     }
 
     for (int i = 0; i < count; i++) {
-        RenderOffsets[i] = render_area->Bits +
-                           (i + render_rect.top) * render_area->Pitch +
-                           render_rect.left;
+        RenderOffsets[i] = static_cast<unsigned char*>(
+            render_area->DisplayOffsets[i + render_rect.top]) + render_rect.left;
     }
 }
 
