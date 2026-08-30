@@ -55,13 +55,15 @@ TRIBE_Dialog_Sed_Menu::~TRIBE_Dialog_Sed_Menu()
     panel_system.destroyPanel("Open Dialog");
     panel_system.destroyPanel("New Dialog");
 
-    delete this->title;
-    this->title = 0;
+    this->delete_panel((TPanel**)&this->title);
 
-    for (int i = 0; i < 7; ++i) {
-        delete this->buttons[i];
-        this->buttons[i] = 0;
-    }
+    TButtonPanel** buttons = this->buttons;
+    int count = 7;
+    do {
+        this->delete_panel((TPanel**)buttons);
+        ++buttons;
+        --count;
+    } while (count != 0);
 }
 
 long TRIBE_Dialog_Sed_Menu::action(

@@ -7,7 +7,7 @@
   },
   "functions": {
     "00440140": {"status": "matching", "symbol": "??0TRIBE_Dialog_Sed_Menu@@QAE@PAVTRIBE_Screen_Sed@@@Z"},
-    "00440360": {"status": "scratch", "symbol": "??1TRIBE_Dialog_Sed_Menu@@UAE@XZ"},
+    "00440360": {"status": "matching", "symbol": "??1TRIBE_Dialog_Sed_Menu@@UAE@XZ"},
     "00440400": {"status": "matching", "symbol": "?action@TRIBE_Dialog_Sed_Menu@@UAEJPAVTPanel@@JKK@Z"}
   }
 }
