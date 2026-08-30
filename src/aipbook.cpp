@@ -599,19 +599,20 @@ CountDeviation:
 
 int AIPlay::groupGivenCommandOnPhase(int groupValue, int typeValue,
                                      int phaseIndex) {
-    int type = typeValue;
     if (groupValue < 0 || groupValue >= 5)
         return -1;
     if (phaseIndex < 0 || phaseIndex >= 10)
         return -1;
 
+    int i = 0;
     AIPlayPhase* phase = &this->phases[phaseIndex];
-    for (int i = 0; i < 5; i++) {
+    for (; i < 5; i++) {
         AIPlayPhaseCommand* cmd = phase->command(i);
         if ((unsigned int)cmd->group() == (unsigned int)groupValue) {
             AIPlayPhaseCommand* cmd2 = phase->command(i);
-            *(unsigned char*)&groupValue = cmd2->type();
-            if ((groupValue & 0xff) == type) {
+            int typeTemp;
+            *(unsigned char*)&typeTemp = cmd2->type();
+            if ((typeTemp & 0xff) == typeValue) {
                 return i;
             }
         }
