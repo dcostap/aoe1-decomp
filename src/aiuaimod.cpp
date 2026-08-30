@@ -181,8 +181,10 @@ void UnitAIModule::load(int fd) {
     int local_3c;
     int tempInt;
     int j;
-    OrderEvent tempOrder;
-    NotifyEvent tempNotify;
+    union LoadEvent {
+        OrderEvent order;
+        NotifyEvent notify;
+    } tempEvent;
     int hasPlayStatus;
 
     rge_read(fd, &moodValue, 4);
@@ -222,8 +224,8 @@ void UnitAIModule::load(int fd) {
     iVar5 = 0;
     if (numberNotifies > 0) {
         do {
-            rge_read(fd, &tempOrder, sizeof(tempOrder));
-            addToOrderQueue(&tempOrder, 0);
+            rge_read(fd, &tempEvent, 0x24);
+            addToOrderQueue((OrderEvent*)&tempEvent, 0);
             ++iVar5;
         } while (iVar5 < numberNotifies);
     }
@@ -233,8 +235,8 @@ void UnitAIModule::load(int fd) {
     iVar5 = 0;
     if (i > 0) {
         do {
-            rge_read(fd, &tempNotify, sizeof(tempNotify));
-            addToNotifyQueue(&tempNotify);
+            rge_read(fd, &tempEvent.notify, sizeof(tempEvent.notify));
+            addToNotifyQueue(&tempEvent.notify);
             ++iVar5;
         } while (iVar5 < i);
     }
@@ -1045,6 +1047,9 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                 RGE_Static_Object* member = this->objectValue;
                 if (member->groupMembers.numberValue > 0) {
                     do {
+                        if (member->groupMembers.maximumSizeValue - 1 < i) {
+                            member->groupMembers.resize(i + 1);
+                        }
                         member = this->lookupObject(
                             member->groupMembers.value[i]);
                         if (member != 0 && member->unitAI() != 0) {
@@ -3764,12 +3769,12 @@ void UnitAIModule::processGroupNotify(NotifyEvent* param_1)
 
 
 int UnitAIModule::processIdle(int param) {
-    if (param == 1 && get_type() == 8)
+    if (param == 1 && this->processRetryableOrder() == 8)
         return 6;
 
-    int idx = find_unit(1, 0, 0);
+    int idx = this->bestUnitToAttack(1, 0, 0);
     if (idx != -1) {
-        if (do_stuff(idx, 1) == 1)
+        if (this->attackObject(idx, 1) == 1)
             return 6;
     }
 
