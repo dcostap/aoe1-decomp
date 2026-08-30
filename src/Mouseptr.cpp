@@ -22,13 +22,13 @@ TMousePointer::TMousePointer(int mode)
     Cursor_Shape = 0;
     Max_CX = 0;
     Max_CY = 0;
-    cursor_rect = *save_rect_ptr;
     cWidth = 0;
     cHeight = 0;
     gWidth = 0;
     gHeight = 0;
     mouse_x = 0;
     mouse_y = 0;
+    cursor_rect = *save_rect_ptr;
     facet = 0;
     game_facet = 0;
     next_facet = 0;
