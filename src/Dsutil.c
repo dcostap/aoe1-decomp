@@ -677,8 +677,11 @@ int __cdecl WaveCopyUselessChunks(HMMIO* hmmio, MMCKINFO* ck,
         result = 0;
         while (mmioDescend(*hmmio, (LPMMCKINFO)ck,
                            (LPMMCKINFO)parent, 0) == 0) {
-            if (ck->dwDataOffset + ck->cksize >
-                parent->cksize + parent->dwDataOffset) {
+            DWORD ckEnd = ck->cksize;
+            DWORD parentEnd = parent->cksize;
+            ckEnd += ck->dwDataOffset;
+            parentEnd += parent->dwDataOffset;
+            if (ckEnd > parentEnd) {
                 break;
             }
             if (ck->ckid != 0x20444150) {
@@ -1111,12 +1114,13 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
         if (IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)ds_stream_buffer,
             ds_write_cursor, ds_chunk_size, (void**)&lpWrite1, &dwLen1,
             (void**)&lpWrite2, &dwLen2, 0)) goto done;
-        if (lpWrite1 && _wiWave != 0 &&
-            ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
-            memset(lpWrite1, 0x80, dwLen1);
-        else if (lpWrite1 && _wiWave != 0 &&
-                 ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
-            memset(lpWrite1, 0, dwLen1);
+        {
+            LPWAVEFORMATEX wave = _wiWave;
+            if (wave && lpWrite1 && wave->wBitsPerSample == 8)
+                memset(lpWrite1, 0x80, dwLen1);
+            else if (wave && lpWrite1 && wave->wBitsPerSample == 16)
+                memset(lpWrite1, 0, dwLen1);
+        }
         IDirectSoundBuffer_Unlock((LPDIRECTSOUNDBUFFER)ds_stream_buffer,
             lpWrite1, dwLen1, lpWrite2, dwLen2);
         ds_write_cursor += ds_chunk_size;
@@ -1143,12 +1147,13 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
                      &uChkErr);
         if (uChkErr < dwLen1) {
             if (ds_stream_loop == 0) {
-                if (lpWrite1 && _wiWave != 0 &&
-                    ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
-                    memset(lpWrite1 + uChkErr, 0x80, dwLen1 - uChkErr);
-                else if (lpWrite1 && _wiWave != 0 &&
-                         ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
-                    memset(lpWrite1 + uChkErr, 0, dwLen1 - uChkErr);
+                LPWAVEFORMATEX wave = _wiWave;
+                if (wave && lpWrite1) {
+                    unsigned int bits = wave->wBitsPerSample;
+                    unsigned int fill = ((bits != 8) - 1) & 0x80;
+                    if (bits == 8 || bits == 16)
+                        memset(lpWrite1 + uChkErr, fill, dwLen1 - uChkErr);
+                }
                 if (ds_write_cursor <= dwLen2)
                     ds_silence_chunks = (ds_buffer_size + ds_write_cursor - dwLen2) / ds_chunk_size;
                 else
@@ -1197,12 +1202,13 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
             }
         }
     } else if (dwLen2 != 0 && ds_stream_stop_requested != 0) {
-        if (lpWrite2 && _wiWave != 0 &&
-            ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 8)
-            memset(lpWrite2, 0x80, dwLen2);
-        else if (lpWrite2 && _wiWave != 0 &&
-                 ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
-            memset(lpWrite2, 0, dwLen2);
+        LPWAVEFORMATEX wave = _wiWave;
+        if (wave && lpWrite2) {
+            unsigned int bits = wave->wBitsPerSample;
+            unsigned int fill = ((bits != 8) - 1) & 0x80;
+            if (bits == 8 || bits == 16)
+                memset(lpWrite2, fill, dwLen2);
+        }
     }
 
     if (ds_stream_buffer) IDirectSoundBuffer_Unlock(
