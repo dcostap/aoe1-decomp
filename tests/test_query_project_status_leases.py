@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import argparse
+import io
 import sys
 import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from contextlib import redirect_stdout
 from unittest.mock import patch
 
 
@@ -22,6 +24,38 @@ from query_project_status import (  # noqa: E402
 
 
 class QueryProjectStatusLeaseTests(unittest.TestCase):
+    def test_targeted_lease_query_loads_all_sessions_for_translation_unit_scope(self) -> None:
+        future = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat().replace("+00:00", "Z")
+        sibling_session = {
+            "va": "00002000",
+            "owner": "AgentB",
+            "state": "active",
+            "lease_expires_at": future,
+            "probes": [],
+        }
+        rows = [{"va": "00001000", "source_path": "src/module.cpp", "name": "target"}]
+
+        with (
+            patch.object(sys, "argv", ["query_project_status.py", "--va", "00001000", "--leases"]),
+            patch.object(query_project_status, "load_target_sessions", return_value=[sibling_session]) as load_sessions,
+            patch.object(query_project_status, "load_rows", return_value=rows),
+            patch.object(
+                query_project_status,
+                "function_record_by_va",
+                return_value={"va": "00002000", "name": "sibling"},
+            ),
+            patch.object(
+                query_project_status,
+                "compiler_source_path",
+                return_value=query_project_status.REPO_ROOT / "src" / "module.cpp",
+            ),
+        ):
+            with redirect_stdout(io.StringIO()) as output:
+                query_project_status.main()
+
+        load_sessions.assert_called_once_with()
+        self.assertIn("AgentB", output.getvalue())
+
     def test_live_va_query_requests_the_status_core_fast_path(self) -> None:
         with patch.object(sys, "argv", ["query_project_status.py", "--va", "00400000"]):
             args = query_project_status.parse_args()

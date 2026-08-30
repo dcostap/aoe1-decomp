@@ -521,8 +521,10 @@ def main() -> None:
         or args.max_lifetime_probes is not None
         or args.max_claims is not None
     )
-    session_vas = {args.va.upper()} if needs_sessions and args.va else None
-    sessions = load_target_sessions(session_vas) if needs_sessions else []
+    # A lease belongs to a complete translation unit.  A targeted VA can be a
+    # sibling of the VA that owns the session, so lease queries need the full
+    # compact session index.
+    sessions = load_target_sessions() if needs_sessions else []
     include_vas, exclude_vas = lease_prefilter_vas(args, sessions) if needs_sessions else (None, set())
     rows = load_rows(args, include_vas=include_vas, exclude_vas=exclude_vas)
     if needs_sessions:

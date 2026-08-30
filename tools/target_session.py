@@ -1807,7 +1807,7 @@ def main() -> None:
             session = record_probe(record, args.owner, args.kind, args.note, args.checkpoint)
             if args.kind == "baseline":
                 session = pin_clean_baseline(record, args.owner, args.note)
-            print(format_session(record, session, session.get("last_metric_summary") or None))
+            print(format_session(record, session, session.get("last_metric_summary", {})))
         elif args.command == "check":
             checker_args = list(args.checker_args)
             if checker_args and checker_args[0] == "--":
@@ -1820,16 +1820,16 @@ def main() -> None:
                 args.checkpoint,
                 checker_args,
             )
-            print(format_session(record, session, session.get("last_metric_summary") or None))
+            print(format_session(record, session, session.get("last_metric_summary", {})))
         elif args.command == "pin-clean":
             session = pin_clean_baseline(record, args.owner, args.note)
-            print(format_session(record, session, session.get("last_metric_summary") or None))
+            print(format_session(record, session, session.get("last_metric_summary", {})))
         elif args.command == "restore-clean":
             session = restore_clean_baseline(record, args.owner)
             print(format_session(record, session))
         elif args.command in {"pause", "release"}:
             session = change_state(record, args.owner, args.command, args.reason)
-            print(format_session(record, session, session.get("last_metric_summary") or None))
+            print(format_session(record, session, session.get("last_metric_summary", {})))
         elif args.command == "status":
             session = _load_session(record)
             print(
