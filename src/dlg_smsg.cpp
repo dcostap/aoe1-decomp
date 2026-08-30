@@ -157,24 +157,24 @@ TribeSendMessageDialog::TribeSendMessageDialog(TScreenPanel* parent)
 
 TribeSendMessageDialog::~TribeSendMessageDialog()
 {
-    delete this->title;
+    this->delete_panel((TPanel**)&this->title);
 
     int i;
     for (i = 0; i < 8; ++i) {
-        delete this->playerName[i];
-        delete this->playerCivilization[i];
-        delete this->checkButton[i];
+        this->delete_panel((TPanel**)&this->playerName[i]);
+        this->delete_panel((TPanel**)&this->playerCivilization[i]);
+        this->delete_panel((TPanel**)&this->checkButton[i]);
     }
 
     for (i = 0; i < 4; ++i) {
-        delete this->radioTitle[i];
-        delete this->radioButton[i];
+        this->delete_panel((TPanel**)&this->radioTitle[i]);
+        this->delete_panel((TPanel**)&this->radioButton[i]);
     }
 
-    delete this->chatInput;
-    delete this->chatTitle;
-    delete this->okButton;
-    delete this->help_button;
+    this->delete_panel((TPanel**)&this->chatInput);
+    this->delete_panel((TPanel**)&this->chatTitle);
+    this->delete_panel((TPanel**)&this->okButton);
+    this->delete_panel((TPanel**)&this->help_button);
 
     delete this->backgroundPics;
 }
