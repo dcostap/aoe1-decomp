@@ -388,11 +388,9 @@ long TRIBE_Panel_Time::handle_idle()
 
 int TRIBE_Panel_Time::render_to_image_buffer()
 {
+    tagRECT rect;
     void* old_font;
     char str[256];
-    tagRECT rect;
-    long width;
-    long height;
     int text_flags;
 
     if (this->ImageBuffer == 0) {
@@ -447,38 +445,44 @@ int TRIBE_Panel_Time::render_to_image_buffer()
 
     SetTextColor(this->ImageBuffer->DrawDc, this->color2);
 
-    width = this->pnl_wid - 1;
-    height = this->pnl_hgt - 1;
+    {
+        const int width = this->pnl_wid - 1;
+        const int height = this->pnl_hgt - 1;
 
-    SetRect(&rect, 0, 0, width - 2, height - 2);
-    DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, text_flags);
-    SetRect(&rect, 0, 2, width - 2, height);
-    DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, text_flags);
-    SetRect(&rect, 2, 0, width, height - 2);
-    DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, text_flags);
-    SetRect(&rect, 2, 2, width, height);
-    DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, text_flags);
+        SetRect(&rect, 0, 0, width - 2, height - 2);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, text_flags);
+        SetRect(&rect, 0, 2, width - 2, height);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, text_flags);
+        SetRect(&rect, 2, 0, width, height - 2);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, text_flags);
+        SetRect(&rect, 2, 2, width, height);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, text_flags);
 
-    SetTextColor(this->ImageBuffer->DrawDc, this->color1);
-    --width;
-    --height;
-    SetRect(&rect, 1, 1, width, height);
-    DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, text_flags);
+        SetTextColor(this->ImageBuffer->DrawDc, this->color1);
+        SetRect(&rect, 1, 1, width - 1, height - 1);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, text_flags);
+    }
 
     SelectObject(this->ImageBuffer->DrawDc, old_font);
     SelectClipRgn(this->ImageBuffer->DrawDc, 0);
     this->ImageBuffer->ReleaseDc("tpnl_tim::render_to_image_buffer");
 
+    int width = this->pnl_wid;
+    int screen_left = this->render_rect.left;
+    int height = this->pnl_hgt;
     this->UsedImageRect.left = 0;
     this->UsedImageRect.top = 0;
-    this->UsedScreenRect.left = this->render_rect.left;
-    this->UsedScreenRect.top = this->render_rect.top;
-    this->UsedImageRect.right = this->pnl_wid - 1;
-    this->UsedImageRect.bottom = this->pnl_hgt - 1;
-    this->UsedScreenRect.right =
-        this->render_rect.left + this->pnl_wid - 1;
-    this->UsedScreenRect.bottom =
-        this->render_rect.top + this->pnl_hgt - 1;
+    int screen_top = this->render_rect.top;
+    --width;
+    this->UsedScreenRect.left = screen_left;
+    --height;
+    screen_left += width;
+    this->UsedScreenRect.top = screen_top;
+    this->UsedImageRect.right = width;
+    this->UsedImageRect.bottom = height;
+    this->UsedScreenRect.right = screen_left;
+    screen_top += height;
+    this->UsedScreenRect.bottom = screen_top;
     this->last_display_time = this->display_time;
     this->old_clock_type = this->clock_type;
     this->old_clock_format = this->clock_format;
