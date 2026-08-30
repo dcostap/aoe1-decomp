@@ -7,7 +7,7 @@
   },
   "functions": {
     "0047E670": {"status": "matching", "symbol": "??0RGE_Dialog_List@@QAE@PAD@Z"},
-    "0047E6B0": {"status": "scratch", "symbol": "?setup@RGE_Dialog_List@@QAEHPAVTScreenPanel@@PADJH1@Z"},
+    "0047E6B0": {"status": "matching", "symbol": "?setup@RGE_Dialog_List@@QAEHPAVTScreenPanel@@PADJH1@Z"},
     "0047E830": {"status": "matching", "symbol": "??1RGE_Dialog_List@@UAE@XZ"},
     "0047E8C0": {"status": "matching", "symbol": "?get_list_id@RGE_Dialog_List@@UAEFXZ"},
     "0047E8F0": {"status": "matching", "symbol": "?create_list@RGE_Dialog_List@@MAEHXZ"},

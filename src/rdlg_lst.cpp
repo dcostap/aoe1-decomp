@@ -37,14 +37,16 @@ int RGE_Dialog_List::setup(TScreenPanel* screen, char* popup_file,
 
     rdlg_list_info*& info = this->list_info;
     int i = 0;
-    int offset = 0;
-    while (i < this->list_size) {
-        this->list_text[i] = (char*)calloc(strlen(info->text + offset) + 1, 1);
-        if (this->list_text[i] == 0)
-            return 0;
-        strcpy(this->list_text[i], info->text + offset);
-        ++i;
-        offset += 0x66;
+    if (i < this->list_size) {
+        int offset = 0;
+        while (i < this->list_size) {
+            this->list_text[i] = (char*)calloc(strlen(info->text + offset) + 1, 1);
+            if (this->list_text[i] == 0)
+                return 0;
+            strcpy(this->list_text[i], info->text + offset);
+            ++i;
+            offset += 0x66;
+        }
     }
 
     return this->TListDialog::setup(
