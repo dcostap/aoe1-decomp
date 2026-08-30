@@ -239,18 +239,15 @@ int InfluenceMap::incrementValue(int x, int y, unsigned char value) {
     if (rx < 0 || ry < 0 || rx >= this->xSizeValue || ry >= this->ySizeValue)
         return 0;
 
-    unsigned char** rows = this->rowValue;
-    unsigned char* cell = &rows[ry][rx];
-
-    if (*cell >= this->unchangeableLimitValue)
+    if (this->rowValue[ry][rx] >= this->unchangeableLimitValue)
         return 1;
 
-    int sum = (int)(unsigned char)*cell + (int)(unsigned char)value;
+    int sum = (int)(unsigned char)this->rowValue[ry][rx] + (int)(unsigned char)value;
     if (sum >= (int)(unsigned char)this->unchangeableLimitValue) {
-        *cell = (unsigned char)((int)(unsigned char)this->unchangeableLimitValue - 1);
+        this->rowValue[ry][rx] = (unsigned char)((int)(unsigned char)this->unchangeableLimitValue - 1);
         return 1;
     }
-    *cell = (unsigned char)sum;
+    this->rowValue[ry][rx] = (unsigned char)sum;
     return 1;
 }
 

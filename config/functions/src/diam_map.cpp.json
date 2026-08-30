@@ -19,7 +19,7 @@
     "004374C0": {"status": "scratch", "symbol": "?clear_image@RGE_Diamond_Map@@IAEXXZ"},
     "00437620": {"status": "matching", "symbol": "?copy_image@RGE_Diamond_Map@@IAEXXZ"},
     "00437660": {"status": "matching", "symbol": "?draw_all_tiles@RGE_Diamond_Map@@IAEXXZ"},
-    "004376D0": {"status": "scratch", "symbol": "?draw_explored_tiles@RGE_Diamond_Map@@IAEXXZ"},
+    "004376D0": {"status": "matching", "symbol": "?draw_explored_tiles@RGE_Diamond_Map@@IAEXXZ"},
     "00437760": {"status": "scratch", "symbol": "?draw_tile@RGE_Diamond_Map@@IAEXFFHE@Z"},
     "00437C20": {"status": "matching", "symbol": "?draw_selected_area@RGE_Diamond_Map@@MAEXXZ"},
     "00437CC0": {"status": "matching", "symbol": "?draw_objects@RGE_Diamond_Map@@MAEXXZ"},

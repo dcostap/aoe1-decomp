@@ -189,7 +189,8 @@ void TRIBE_Panel_Object::draw()
             TShape* picture;
             if (this->game_obj->master_obj->unit_level == 2) {
                 unsigned char culture = this->game_obj->culture;
-                shape += building_facet(this->game_obj->master_obj);
+                shape += static_cast<TRIBE_Master_Building_Object*>(
+                    this->game_obj->master_obj)->building_facet;
                 picture = this->bldg_pics[culture];
             } else {
                 picture = this->unit_pics;
@@ -248,7 +249,7 @@ void TRIBE_Panel_Object::draw()
         HGDIOBJ old_font = SelectObject(dc, (HGDIOBJ)this->font);
 
         if (this->game_obj->owner->id != 0) {
-            if (rge_base_game->campaignGameValue == 0) {
+            if (rge_base_game->campaignGame() == 0) {
                 name[0] = 0;
             } else {
                 strcpy(name, this->game_obj->owner->world->scenario->GetPlayerName(

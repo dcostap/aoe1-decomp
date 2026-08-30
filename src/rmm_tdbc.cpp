@@ -101,18 +101,19 @@ uchar TRIBE_RMM_Database_Controller::de_init()
 
 void TRIBE_RMM_Database_Controller::add_land_module(uchar value)
 {
-    RGE_Land_Data& map_land =
-        this->map_info.maps[this->map_type].land_info;
-    long original_edge = map_land.land_placement_edge;
+    long original_edge =
+        this->map_info.maps[this->map_type].land_info.land_placement_edge;
     if ((this->map_type == 5 || this->map_type == 8) &&
         this->map_width < 100) {
         int edge = this->map_width >= 80 ? 0 : -1;
         edge &= -5;
-        map_land.land_placement_edge = edge + 25;
+        this->map_info.maps[this->map_type].land_info.land_placement_edge =
+            edge + 25;
     }
 
     this->RGE_RMM_Database_Controller::add_land_module(value);
-    map_land.land_placement_edge = original_edge;
+    this->map_info.maps[this->map_type].land_info.land_placement_edge =
+        original_edge;
 
     int minus_one = -1;
     if (this->map_type < 5) {
@@ -395,9 +396,8 @@ uchar TRIBE_RMM_Database_Controller::generate()
     uchar result = this->RGE_RMM_Database_Controller::generate();
     for (int row = 0; row < this->map_height; ++row) {
         for (int column = 0; column < this->map_width; ++column) {
-            RGE_Tile& tile = this->map_row_offset[row][column];
-            if (tile.terrain_type == 0x10)
-                tile.terrain_type = 0;
+            if (this->map_row_offset[row][column].terrain_type == 0x10)
+                this->map_row_offset[row][column].terrain_type = 0;
         }
     }
     return result;

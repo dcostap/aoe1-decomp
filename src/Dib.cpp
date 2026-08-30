@@ -568,10 +568,9 @@ void* __cdecl ReadPalette(char* filename, long res_id, int do_gamma)
 {
     unsigned char* data;
     void* own_mem = 0;
+    int owns_memory = -1;
     void* result = 0;
-    int load_type = -1;
     int data_size;
-    int owns_memory = 0;
     char* tok = 0;
     int n = 0;
     struct LOGPAL { unsigned short ver; unsigned short cnt; unsigned char e[1]; };
@@ -594,14 +593,13 @@ void* __cdecl ReadPalette(char* filename, long res_id, int do_gamma)
     }
     if (!own_mem && res_id != -1) {
         data = RESFILE_load(0x62696e61, (unsigned long)res_id,
-            load_type, data_size);
-        if (load_type == 0) {
+            owns_memory, data_size);
+        if (owns_memory == 0) {
             own_mem = malloc(data_size);
             memcpy(own_mem, data, data_size);
             owns_memory = 1;
         } else {
             own_mem = data;
-            owns_memory = (load_type == 1);
         }
     }
     if (!own_mem) return 0;
@@ -648,16 +646,15 @@ palette_entries_done:
         if (res_id) {
             result = CreatePalette((const tagLOGPALETTE*)lp);
             if (do_gamma) {
-                RGE_Base_Game* game = rge_base_game;
-                if (game->draw_system->DrawType == 1 ||
-                    game->draw_system->ScreenMode == 1)
+                if (rge_base_game->draw_system->DrawType == 1 ||
+                    rge_base_game->draw_system->ScreenMode == 1)
                     CreateIdentityPalette(result);
             }
         }
         free(lp);
     }
 cleanup:
-    if (owns_memory) free(own_mem);
+    if (owns_memory == 1) free(own_mem);
     return result;
 }
 

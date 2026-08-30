@@ -64,7 +64,7 @@ Time_Line_Panel::~Time_Line_Panel() {
     while (this->time_slice_events != NULL) {
         p = this->time_slice_events;
         this->time_slice_events = p->next;
-        delete p;
+        free(p);
     }
 
     if (this->background_pic != NULL) {
@@ -78,10 +78,7 @@ Time_Line_Panel::~Time_Line_Panel() {
     }
 
     for (int i = 0; i < 3; i++) {
-        if (this->legend_entry_text[i] != 0) {
-            delete this->legend_entry_text[i];
-            this->legend_entry_text[i] = 0;
-        }
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->legend_entry_text[i]));
     }
 
 }
@@ -422,7 +419,7 @@ void Time_Line_Panel::init_timeline()
 }
 
 void Time_Line_Panel::add_pop_total_special_event(long time_slice, long pop_total, long X_line_pos, int icon_flag) {
-    Special_Events* se = new Special_Events();
+    Special_Events* se = static_cast<Special_Events*>(calloc(1, 0xB0));
 
     se->time_slice = time_slice;
     se->X_line_pos = X_line_pos;
@@ -459,7 +456,7 @@ void Time_Line_Panel::record_special_event(
         return;
     }
 
-    Special_Events* special_event = new Special_Events();
+    Special_Events* special_event = static_cast<Special_Events*>(calloc(1, 0xB0));
     special_event->X_line_pos = x_line_pos;
     special_event->Y_line_pos = y_line_pos;
     special_event->intermediate_y_line_segment = segment;

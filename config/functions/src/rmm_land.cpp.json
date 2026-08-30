@@ -7,7 +7,7 @@
   },
   "functions": {
     "00485200": {"status": "matching", "symbol": "??0RGE_RMM_Land_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@PAURGE_Land_Info@@@Z"},
-    "00485240": {"status": "scratch", "symbol": "?generate@RGE_RMM_Land_Generator@@UAEEXZ"},
+    "00485240": {"status": "matching", "symbol": "?generate@RGE_RMM_Land_Generator@@UAEEXZ"},
     "004852D0": {"status": "scratch", "symbol": "?check_terrain_and_zone@RGE_RMM_Land_Generator@@IAEEEEJJ@Z"},
     "00485480": {"status": "scratch", "symbol": "?chance@RGE_RMM_Land_Generator@@IAEEJJJ@Z"},
     "00485520": {"status": "scratch", "symbol": "?base_land_generate@RGE_RMM_Land_Generator@@IAEEXZ"}

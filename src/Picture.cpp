@@ -81,17 +81,19 @@ TPicture::TPicture(int file_handle, int param_2) {
         TRANSINFO* trans_info = (TRANSINFO*)malloc(0x18);
         this->TransInfo = trans_info;
         if (trans_info != 0) {
-            if (this->BitmapInfo->bmiHeader.biCompression == 3) {
+            if (((BITMAPINFO256*)this->Dib)->bmiHeader.biCompression == 3) {
                 unsigned char* transparency_bits =
                     (unsigned char*)this->Dib +
-                    this->BitmapInfo->bmiHeader.biSize + 12;
-                DibCheckTrans(this->BitmapInfo, trans_info, transparency_bits);
+                    ((BITMAPINFO256*)this->Dib)->bmiHeader.biSize + 12;
+                DibCheckTrans((BITMAPINFO256*)this->Dib, trans_info,
+                    transparency_bits);
             } else {
                 unsigned char* transparency_bits =
                     (unsigned char*)this->Dib +
-                    this->BitmapInfo->bmiHeader.biSize +
-                    this->BitmapInfo->bmiHeader.biClrUsed * 4;
-                DibCheckTrans(this->BitmapInfo, trans_info, transparency_bits);
+                    ((BITMAPINFO256*)this->Dib)->bmiHeader.biSize +
+                    ((BITMAPINFO256*)this->Dib)->bmiHeader.biClrUsed * 4;
+                DibCheckTrans((BITMAPINFO256*)this->Dib, trans_info,
+                    transparency_bits);
             }
         } else {
             DibFree(this->Dib);
@@ -156,6 +158,7 @@ void TPicture::Load(char* file_name, long resource_id, int palette_id,
     TRANSINFO* info;
     char temp_file_name[260];
     FILE* temp_file;
+    int height;
 
     debug_timeGetTime("C:\\msdev\\work\\age1_x1\\Picture.cpp", 0x7f);
     this->TransInfo = 0;
@@ -190,10 +193,11 @@ void TPicture::Load(char* file_name, long resource_id, int palette_id,
         }
         this->Bits = bits;
         this->Width = bitmap->bmiHeader.biWidth;
-        this->Height = bitmap->bmiHeader.biHeight;
-        if (this->Height < 0) {
+        height = bitmap->bmiHeader.biHeight;
+        this->Height = height;
+        if (height < 0) {
             this->Orien = 1;
-            this->Height = -this->Height;
+            this->Height = -height;
         } else {
             this->Orien = -1;
         }

@@ -104,15 +104,15 @@ TribeJoinScreen::~TribeJoinScreen() {
     if (p != 0) {
         delete p;
     }
-    delete this->title;
-    delete this->listTitle;
-    delete this->list;
-    delete this->scrollbar;
-    delete this->refreshButton;
-    delete this->joinButton;
-    delete this->createButton;
-    delete this->cancelButton;
-    delete this->close_button;
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->listTitle);
+    this->delete_panel((TPanel**)&this->list);
+    this->delete_panel((TPanel**)&this->scrollbar);
+    this->delete_panel((TPanel**)&this->refreshButton);
+    this->delete_panel((TPanel**)&this->joinButton);
+    this->delete_panel((TPanel**)&this->createButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
+    this->delete_panel((TPanel**)&this->close_button);
 }
 
 long TribeJoinScreen::handle_idle() {
@@ -333,11 +333,11 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
 }
 
 TribeMPCreateDialog::~TribeMPCreateDialog() {
-    delete this->title;
-    delete this->input_title;
-    delete this->inputGamename;
-    delete this->okButton;
-    delete this->cancelButton;
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->input_title);
+    this->delete_panel((TPanel**)&this->inputGamename);
+    this->delete_panel((TPanel**)&this->okButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
 }
 
 long TribeMPCreateDialog::action(TPanel* panel, long command,

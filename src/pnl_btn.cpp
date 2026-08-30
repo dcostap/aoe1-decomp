@@ -328,12 +328,12 @@ void TButtonPanel::set_radio_button(void) {
 
     for (i = 0; i < num_radio_buttons; i++) {
         radio_buttons[i]->is_down = 0;
-        radio_buttons[i]->set_redraw(TPanel::RedrawNone);
+        radio_buttons[i]->set_state(0);
     }
     if (drawTypeValue == 3 || drawTypeValue == 5) {
         is_down = 1;
     }
-    set_redraw(TPanel::RedrawNormal);
+    set_state(1);
 }
 
 // 00472700_set_state.cpp

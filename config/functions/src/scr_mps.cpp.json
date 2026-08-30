@@ -8,7 +8,7 @@
   "functions": {
     "004A00B0": {"status": "scratch", "symbol": "??0TribeMPSetupScreen@@QAE@XZ"},
     "004A0D80": {"status": "matching", "symbol": "?init_vars@TribeMPSetupScreen@@IAEXXZ"},
-    "004A1300": {"status": "scratch", "symbol": "??1TribeMPSetupScreen@@UAE@XZ"},
+    "004A1300": {"status": "matching", "symbol": "??1TribeMPSetupScreen@@UAE@XZ"},
     "004A1640": {"status": "matching", "symbol": "?handle_idle@TribeMPSetupScreen@@UAEJXZ"},
     "004A16D0": {"status": "matching", "symbol": "?key_down_action@TribeMPSetupScreen@@UAEJJFHHH@Z"},
     "004A16E0": {"status": "scratch", "symbol": "?action@TribeMPSetupScreen@@UAEJPAVTPanel@@JKK@Z"},
@@ -29,7 +29,7 @@
     "004A5440": {"status": "matching", "symbol": "?fillNumberPlayers@TribeMPSetupScreen@@IAEXXZ"},
     "004A54C0": {"status": "matching", "symbol": "?fillPlayerColors@TribeMPSetupScreen@@IAEXXZ"},
     "004A5610": {"status": "scratch", "symbol": "??0TRIBE_Screen_Wait@@QAE@XZ"},
-    "004A6050": {"status": "scratch", "symbol": "??1TRIBE_Screen_Wait@@UAE@XZ"},
+    "004A6050": {"status": "matching", "symbol": "??1TRIBE_Screen_Wait@@UAE@XZ"},
     "004A60E0": {"status": "matching", "symbol": "?set_text@TRIBE_Screen_Wait@@QAEXPAD@Z"},
     "004A6100": {"status": "matching", "symbol": "?set_text@TRIBE_Screen_Wait@@QAEXJ@Z"},
     "004A6120": {"status": "matching", "symbol": "?action@TRIBE_Screen_Wait@@UAEJPAVTPanel@@JKK@Z"},

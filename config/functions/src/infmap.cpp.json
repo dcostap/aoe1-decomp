@@ -17,7 +17,7 @@
     "0044E4E0": {"status": "matching", "symbol": "?lookupValue@InfluenceMap@@QAEHHH@Z"},
     "0044E510": {"status": "matching", "symbol": "?setValue@InfluenceMap@@QAEHHHE@Z"},
     "0044E560": {"status": "matching", "symbol": "?setValue@InfluenceMap@@QAEHHHHHE@Z"},
-    "0044E600": {"status": "scratch", "symbol": "?incrementValue@InfluenceMap@@QAEHHHE@Z"},
+    "0044E600": {"status": "matching", "symbol": "?incrementValue@InfluenceMap@@QAEHHHE@Z"},
     "0044E680": {"status": "matching", "symbol": "?incrementValue@InfluenceMap@@QAEHHHHHE@Z"},
     "0044E790": {"status": "matching", "symbol": "?decrementValue@InfluenceMap@@QAEHHHE@Z"},
     "0044E800": {"status": "matching", "symbol": "?decrementValue@InfluenceMap@@QAEHHHHHE@Z"},
