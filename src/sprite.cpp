@@ -547,15 +547,15 @@ void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
             }
             goto draw_done;
         } else {
-            unsigned char* table;
             if (this->color_tables[this->color_table] != 0) {
                 _ASMSet_Color_Xform((this->color_table + 1) * 0x10);
-                table = this->color_tables[this->color_table]->table;
+                this->shape->shape_mirror(
+                    draw_area, x, y, facetindex, this->color_flag,
+                    this->color_tables[this->color_table]->table);
             } else {
-                table = 0;
+                this->shape->shape_mirror(draw_area, x, y, facetindex,
+                                          this->color_flag, 0);
             }
-            this->shape->shape_mirror(draw_area, x, y, facetindex,
-                                      this->color_flag, table);
         }
     } else {
         if (do_draw_log != 0) {
@@ -578,15 +578,15 @@ void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
                                         this->color_flag, 0);
             }
         } else {
-            unsigned char* table;
             if (this->color_tables[this->color_table] != 0) {
                 _ASMSet_Color_Xform((this->color_table + 1) * 0x10);
-                table = this->color_tables[this->color_table]->table;
+                this->shape->shape_draw(
+                    draw_area, x, y, facetindex, this->color_flag,
+                    this->color_tables[this->color_table]->table);
             } else {
-                table = 0;
+                this->shape->shape_draw(draw_area, x, y, facetindex,
+                                        this->color_flag, 0);
             }
-            this->shape->shape_draw(draw_area, x, y, facetindex,
-                                    this->color_flag, table);
         }
     }
 

@@ -15,7 +15,7 @@
     "004BFFE0": {"status": "matching", "symbol": "?load_facets@RGE_Sprite@@QAEXPAPAV1@@Z"},
     "004BFFF0": {"status": "matching", "symbol": "?play_sound@RGE_Sprite@@QAEXFFF@Z"},
     "004C00E0": {"status": "accepted_drift", "symbol": "?get_facetindex@RGE_Sprite@@QAEEJJAAJ@Z"},
-    "004C01A0": {"status": "scratch", "symbol": "?do_draw@RGE_Sprite@@QAEXJJJJPAVRGE_Color_Table@@PAVTDrawArea@@E@Z"},
+    "004C01A0": {"status": "matching", "symbol": "?do_draw@RGE_Sprite@@QAEXJJJJPAVRGE_Color_Table@@PAVTDrawArea@@E@Z"},
     "004C04F0": {"status": "matching", "symbol": "?draw@RGE_Sprite@@QAEEJJJJJJPAVRGE_Color_Table@@PAVTDrawArea@@E@Z"},
     "004C0620": {"status": "matching", "symbol": "?normal_draw@RGE_Sprite@@QAEEJJJJPAVRGE_Color_Table@@PAVTDrawArea@@@Z"},
     "004C0720": {"status": "scratch", "symbol": "?shadow_draw@RGE_Sprite@@QAEEJJJJPAVRGE_Color_Table@@PAVTDrawArea@@E@Z"},
