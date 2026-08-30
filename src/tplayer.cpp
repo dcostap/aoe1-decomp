@@ -201,8 +201,9 @@ RGE_Static_Object* TRIBE_Player::make_scenario_obj(float x, float y, float z, sh
             obj->die_die_die();
         }
         else {
-            unsigned char master_type = obj->master_obj->master_type;
-            if (master_type > 0x1E && master_type < 0x5A) {
+            RGE_Master_Static_Object* master = obj->master_obj;
+            unsigned char group = master->master_type;
+            if (group > 0x1E && group < 0x5A) {
                 obj->new_angle(amount);
             }
             else {
