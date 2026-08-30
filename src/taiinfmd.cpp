@@ -5677,6 +5677,8 @@ RGE_Static_Object* TribeInformationAIModule::findClosestReturnDropsite(RGE_Stati
 void TribeInformationAIModule::updateAllResourceDropsites()
 {
     for (int resourceType = 0; resourceType < 4; ++resourceType) {
+        this->closestDropsiteValue[resourceType] = -1;
+        this->closestDropsiteResourceID[resourceType] = -1;
         ResourceMemory* resources = this->resources[resourceType];
         int count = this->numResources[resourceType];
         int i = 0;
