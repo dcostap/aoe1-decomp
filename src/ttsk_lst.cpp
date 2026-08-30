@@ -66,12 +66,10 @@ RGE_Task* TRIBE_Task_List::get_target_task(RGE_Action_Object* param_1,
             param_2->master_obj->master_type == 'P' &&
             param_2->object_state == 0) {
             int count = this->list_num;
-            if (count > 0) {
-                for (iVar8 = 0; iVar8 < count; iVar8++) {
-                    RGE_Task* task = this->list[iVar8];
-                    if (task->action_type == 0x65)
-                        return task;
-                }
+            for (iVar8 = 0; iVar8 < count; iVar8++) {
+                RGE_Task* task = this->list[iVar8];
+                if (task->action_type == 0x65)
+                    return task;
             }
             return 0;
         }
