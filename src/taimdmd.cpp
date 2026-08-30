@@ -445,84 +445,85 @@ int TribeMainDecisionAIModule::update(int timeLimit)
             if (numberSwayable < 0) {
                 numberSwayable = 0;
             }
-            if (numberNeutralCPs < numberSwayable) {
+            if (numberSwayable > numberNeutralCPs) {
                 numberSwayable = numberNeutralCPs;
             }
             if (((TRIBE_Game*)rge_base_game)->deathMatch() == 1) {
                 numberSwayable = 0;
             }
 
-            if (numberSwayable <= numberNeutralCPs &&
-                numberNeutralCPs > 0) {
-                ManagedArray<int> swayableCPs;
-                int i = 1;
-                while (i < world->player_num) {
-                    RGE_Player* player = world->players[i];
-                    if (player->computerPlayer() != 0 &&
-                        neutralList[i] != 0 &&
-                        world->controllingComputerPlayer != player->id &&
-                        swayableCPs.number() < numberSwayable) {
-                        swayableCPs.add(i);
-                    }
-                    i++;
-                }
-
-                int resAmount = 2000;
-                switch (rge_base_game->difficulty()) {
-                case 0:
-                    resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
-                                   0x26E) % 500 + 0x578;
-                    break;
-                case 1:
-                    resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
-                                   0x26F) % 400 + 1000;
-                    break;
-                case 2:
-                    resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
-                                   0x270) % 300 + 700;
-                    break;
-                case 3:
-                    resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
-                                   0x271) % 200 + 0x1C2;
-                    break;
-                case 4:
-                    resAmount =
-                        debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
-                                   0x272) % 100 + 300;
-                    break;
-                }
-
-                i = 1;
-                while (i < world->player_num) {
-                    RGE_Player* player = world->players[i];
-                    if (player->computerPlayer() != 0 &&
-                        neutralList[i] != 0) {
-                        if (swayableCPs.contains(i)) {
-                            player->sendAICommand(
-                                (int)this->player->id, 7, resAmount, 0, 0);
-                            resAmount = resAmount + resAmount;
+            if (numberNeutralCPs >= numberSwayable) {
+                if (numberNeutralCPs > 0) {
+                    ManagedArray<int> swayableCPs;
+                    int i = 1;
+                    while (i < world->player_num) {
+                        RGE_Player* player = world->players[i];
+                        if (player->computerPlayer() != 0 &&
+                            neutralList[i] != 0 &&
+                            world->controllingComputerPlayer != player->id &&
+                            swayableCPs.number() < numberSwayable) {
+                            swayableCPs.add(i);
                         }
+                        i++;
+                    }
 
-                        for (int j = 1; j < world->player_num; j++) {
-                            if (i != j) {
-                                RGE_Player* temp2 = world->players[j];
-                                if (temp2->computerPlayer() == 0 &&
-                                    !swayableCPs.contains(i)) {
-                                    player->sendAICommand(
-                                        (int)this->player->id, 6, j, 0, 0);
-                                }
-                                else if (temp2->computerPlayer() == 1) {
-                                    player->sendAICommand(
-                                        (int)this->player->id, 6, j, 2, 0);
+                    int resAmount = 2000;
+                    switch (rge_base_game->difficulty()) {
+                    case 0:
+                        resAmount =
+                            debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
+                                       0x26E) % 500 + 0x578;
+                        break;
+                    case 1:
+                        resAmount =
+                            debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
+                                       0x26F) % 400 + 1000;
+                        break;
+                    case 2:
+                        resAmount =
+                            debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
+                                       0x270) % 300 + 700;
+                        break;
+                    case 3:
+                        resAmount =
+                            debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
+                                       0x271) % 200 + 0x1C2;
+                        break;
+                    case 4:
+                        resAmount =
+                            debug_rand("C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
+                                       0x272) % 100 + 300;
+                        break;
+                    }
+
+                    i = 1;
+                    while (i < world->player_num) {
+                        RGE_Player* player = world->players[i];
+                        if (player->computerPlayer() != 0 &&
+                            neutralList[i] != 0) {
+                            if (swayableCPs.contains(i)) {
+                                player->sendAICommand(
+                                    (int)this->player->id, 7, resAmount, 0, 0);
+                                resAmount = resAmount + resAmount;
+                            }
+
+                            for (int j = 1; j < world->player_num; j++) {
+                                if (i != j) {
+                                    RGE_Player* temp2 = world->players[j];
+                                    if (temp2->computerPlayer() == 0 &&
+                                        !swayableCPs.contains(i)) {
+                                        player->sendAICommand(
+                                            (int)this->player->id, 6, j, 0, 0);
+                                    }
+                                    else if (temp2->computerPlayer() == 1) {
+                                        player->sendAICommand(
+                                            (int)this->player->id, 6, j, 2, 0);
+                                    }
                                 }
                             }
                         }
+                        i++;
                     }
-                    i++;
                 }
             }
         }
@@ -533,7 +534,7 @@ int TribeMainDecisionAIModule::update(int timeLimit)
         if (timeLimit < 0) {
             timeLimit = 0;
         }
-        if (timeLimit < this->player->world->world_time) {
+        if (this->player->world->world_time > timeLimit) {
             tactical->setStrategicNumber(0xD9, 0);
             int newEnemy = -1;
             for (int playerIndex = 1;
