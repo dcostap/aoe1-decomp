@@ -477,44 +477,31 @@ int PointMaker::MakeSatelliteLink()
 
 void PointMaker::DrawPrimaryIntoProbabilityArray()
 {
-    int i;
-    int local_c;
-    int local_8;
-    int local_4;
-    int px = Prime.x;
-    int py = Prime.y;
-    int rad = PrimaryRadius;
-    int left = px - rad;
-    int top = py - rad;
-    int bottom = py + rad;
-    int right = px + rad;
+    int radius = PrimaryRadius;
+    int left = Prime.x - radius;
+    int top = Prime.y - radius;
+    int bottom = Prime.y + radius;
+    int right = Prime.x + radius;
 
     if (left < 0) left = 0;
     if (top < 0) top = 0;
-    int w = Width - 1;
-    if (right > w) right = w;
-    int h = Height - 1;
-    if (bottom > h) {
-        i = h;
-        bottom = h;
-    }
+    int max_x = Width - 1;
+    if (right > max_x) right = max_x;
+    int max_y = Height - 1;
+    if (bottom > max_y) bottom = max_y;
+
     ProbabilityAdd = 1;
-    local_c = 0;
-    if (rad > 0) {
+    int ring = 0;
+    if (radius > 0) {
         do {
-            int destx = left;
-            local_4 = top;
-            left++;
-            local_8 = right;
-            top++;
-            int desty = bottom;
-            right--;
-            bottom--;
-            i = bottom;
-            AddingRect(destx, local_4, local_8, desty);
+            AddingRect(left, top, right, bottom);
             ProbabilityAdd++;
-            local_c++;
-        } while (local_c < PrimaryRadius);
+            ring++;
+            bottom--;
+            top++;
+            right--;
+            left++;
+        } while (ring < PrimaryRadius);
     }
 }
 
