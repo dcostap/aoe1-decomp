@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/taicrule.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taicrule.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "004D68D0": {"status": "matching", "symbol": "??0CombatRuleSystem@@QAE@XZ"},
+    "004D6900": {"status": "matching", "symbol": "??1CombatRuleSystem@@UAE@XZ"},
+    "004D6910": {"status": "accepted_drift", "symbol": "?loadRules@CombatRuleSystem@@QAEHPAD@Z"},
+    "004D6AA0": {"status": "matching", "symbol": "?bestUnitTypeToAttack@CombatRuleSystem@@QAEHH@Z"},
+    "004D6AB0": {"status": "matching", "symbol": "?bestUnitTypeToDefendAgainst@CombatRuleSystem@@QAEHH@Z"}
+  }
+}

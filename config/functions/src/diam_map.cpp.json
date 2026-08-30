@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "header": "include/diam_map.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\diam_map.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00436830": {"status": "matching", "symbol": "??0RGE_Diamond_Map@@QAE@XZ"},
+    "00436930": {"status": "matching", "symbol": "??1RGE_Diamond_Map@@UAE@XZ"},
+    "004369C0": {"status": "matching", "symbol": "?setup@RGE_Diamond_Map@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJEH0@Z"},
+    "00436A10": {"status": "accepted_drift", "symbol": "?set_bitmap@RGE_Diamond_Map@@QAEHPADJ@Z"},
+    "00436C30": {"status": "scratch", "symbol": "?set_world@RGE_Diamond_Map@@QAEXPAVRGE_Game_World@@@Z"},
+    "00437070": {"status": "matching", "symbol": "?set_player@RGE_Diamond_Map@@QAEXPAVRGE_Player@@@Z"},
+    "00437090": {"status": "matching", "symbol": "?set_redraw@RGE_Diamond_Map@@UAEXW4RedrawMode@TPanel@@@Z"},
+    "004370C0": {"status": "matching", "symbol": "?delete_surfaces@RGE_Diamond_Map@@QAEXXZ"},
+    "00437120": {"status": "matching", "symbol": "?create_surfaces@RGE_Diamond_Map@@QAEHXZ"},
+    "004372C0": {"status": "matching", "symbol": "?draw@RGE_Diamond_Map@@UAEXXZ"},
+    "004374C0": {"status": "scratch", "symbol": "?clear_image@RGE_Diamond_Map@@IAEXXZ"},
+    "00437620": {"status": "matching", "symbol": "?copy_image@RGE_Diamond_Map@@IAEXXZ"},
+    "00437660": {"status": "matching", "symbol": "?draw_all_tiles@RGE_Diamond_Map@@IAEXXZ"},
+    "004376D0": {"status": "scratch", "symbol": "?draw_explored_tiles@RGE_Diamond_Map@@IAEXXZ"},
+    "00437760": {"status": "scratch", "symbol": "?draw_tile@RGE_Diamond_Map@@IAEXFFHE@Z"},
+    "00437C20": {"status": "matching", "symbol": "?draw_selected_area@RGE_Diamond_Map@@MAEXXZ"},
+    "00437CC0": {"status": "matching", "symbol": "?draw_objects@RGE_Diamond_Map@@MAEXXZ"},
+    "00437EC0": {"status": "scratch", "symbol": "?draw_visible_object@RGE_Diamond_Map@@MAEXPAVRGE_Static_Object@@EE@Z"},
+    "00438060": {"status": "matching", "symbol": "?draw_object@RGE_Diamond_Map@@MAEXFFEFPAVRGE_Static_Object@@@Z"},
+    "004381D0": {"status": "scratch", "symbol": "?draw_clipped_horz_line@RGE_Diamond_Map@@IAEXFFFEPAURGE_Map_Image_Line@@@Z"},
+    "00438250": {"status": "scratch", "symbol": "?draw_view_rect@RGE_Diamond_Map@@MAEXXZ"},
+    "00438530": {"status": "accepted_drift", "symbol": "?pick_tile@RGE_Diamond_Map@@QAEHJJPAF0PAPAURGE_Tile@@@Z"},
+    "00438630": {"status": "matching", "symbol": "?handle_size@RGE_Diamond_Map@@UAEJJJ@Z"},
+    "00438670": {"status": "matching", "symbol": "?start_scroll_view@RGE_Diamond_Map@@QAEXJJ@Z"},
+    "00438720": {"status": "matching", "symbol": "?handle_scroll_view@RGE_Diamond_Map@@QAEXJJ@Z"},
+    "004387C0": {"status": "matching", "symbol": "?end_scroll_view@RGE_Diamond_Map@@QAEXXZ"},
+    "004387D0": {"status": "matching", "symbol": "?is_inside@RGE_Diamond_Map@@UAEHJJ@Z"}
+  }
+}

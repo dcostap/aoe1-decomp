@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/scr_load.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_load.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0049DD40": {"status": "matching", "symbol": "??0TribeLoadSavedGameScreen@@QAE@XZ"},
+    "0049E0A0": {"status": "matching", "symbol": "??1TribeLoadSavedGameScreen@@UAE@XZ"},
+    "0049E150": {"status": "matching", "symbol": "?fillList@TribeLoadSavedGameScreen@@IAEXXZ"},
+    "0049E2B0": {"status": "matching", "symbol": "?handle_idle@TribeLoadSavedGameScreen@@UAEJXZ"},
+    "0049E2E0": {"status": "scratch", "symbol": "?action@TribeLoadSavedGameScreen@@UAEJPAVTPanel@@JKK@Z"}
+  }
+}

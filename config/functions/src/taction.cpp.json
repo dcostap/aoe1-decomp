@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/taction.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\TACTION.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004D38E0": {"status": "matching", "symbol": "??0TRIBE_Action@@QAE@HPAVRGE_Action_Object@@H@Z"},
+    "004D3980": {"status": "matching", "symbol": "??0TRIBE_Action@@QAE@PAVRGE_Action_Object@@H@Z"},
+    "004D39E0": {"status": "matching", "symbol": "?setup@TRIBE_Action@@UAEHHPAVRGE_Action_Object@@@Z"},
+    "004D3A00": {"status": "matching", "symbol": "?setup@TRIBE_Action@@UAEHPAVRGE_Action_Object@@@Z"},
+    "004D3A10": {"status": "matching", "symbol": "?create_action_list@TRIBE_Action@@UAEPAVRGE_Action_List@@PAVRGE_Action_Object@@@Z"}
+  }
+}

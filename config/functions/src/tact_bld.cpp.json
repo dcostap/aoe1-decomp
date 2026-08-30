@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "header": "include/tact_bld.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_bld.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004CD1B0": {"status": "matching", "symbol": "??0TRIBE_Action_Build@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "004CD210": {"status": "matching", "symbol": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"},
+    "004CD2A0": {"status": "matching", "symbol": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"},
+    "004CD2E0": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Build@@UAEXE@Z"},
+    "004CD310": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Build@@MAEXE@Z"},
+    "004CD5E0": {"status": "scratch", "symbol": "?update@TRIBE_Action_Build@@UAEEXZ"},
+    "004CD910": {"status": "matching", "symbol": "?stop@TRIBE_Action_Build@@UAEHXZ"},
+    "004CD920": {"status": "matching", "symbol": "?move_to@TRIBE_Action_Build@@UAEHPAVRGE_Static_Object@@MMM@Z"},
+    "004CD960": {"status": "accepted_drift", "symbol": "?work@TRIBE_Action_Build@@UAEHPAVRGE_Static_Object@@MMM@Z"}
+  }
+}

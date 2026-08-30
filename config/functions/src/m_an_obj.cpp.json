@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "header": "include/m_an_obj.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\m_an_obj.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0044F9C0": {"status": "matching", "symbol": "??0RGE_Master_Animated_Object@@QAE@PAV0@H@Z"},
+    "0044FA40": {"status": "matching", "symbol": "??0RGE_Master_Animated_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z"},
+    "0044FAB0": {"status": "matching", "symbol": "??0RGE_Master_Animated_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z"},
+    "0044FB30": {"status": "matching", "symbol": "?setup@RGE_Master_Animated_Object@@IAEHPAV1@@Z"},
+    "0044FB60": {"status": "matching", "symbol": "?setup@RGE_Master_Animated_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
+    "0044FBA0": {"status": "matching", "symbol": "?setup@RGE_Master_Animated_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
+    "0044FBF0": {"status": "matching", "symbol": "??1RGE_Master_Animated_Object@@UAE@XZ"},
+    "0044FC00": {"status": "matching", "symbol": "?make_new_obj@RGE_Master_Animated_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z"},
+    "0044FCD0": {"status": "matching", "symbol": "?make_new_master@RGE_Master_Animated_Object@@UAEPAVRGE_Master_Static_Object@@XZ"},
+    "0044FD40": {"status": "matching", "symbol": "?copy_obj@RGE_Master_Animated_Object@@UAEXPAVRGE_Master_Static_Object@@@Z"},
+    "0044FD60": {"status": "matching", "symbol": "?modify@RGE_Master_Animated_Object@@UAEXME@Z"},
+    "0044FD90": {"status": "matching", "symbol": "?modify_delta@RGE_Master_Animated_Object@@UAEXME@Z"},
+    "0044FDC0": {"status": "matching", "symbol": "?modify_percent@RGE_Master_Animated_Object@@UAEXME@Z"},
+    "0044FDF0": {"status": "matching", "symbol": "?save@RGE_Master_Animated_Object@@UAEXH@Z"}
+  }
+}

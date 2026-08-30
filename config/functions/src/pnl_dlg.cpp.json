@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/pnl_dlg.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\pnl_dlg.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00473C10": {"status": "matching", "symbol": "??0TDialogPanel@@QAE@PAD@Z"},
+    "00473C80": {"status": "matching", "symbol": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z"},
+    "00473D60": {"status": "scratch", "symbol": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJEH@Z"},
+    "00473E40": {"status": "matching", "symbol": "??1TDialogPanel@@UAE@XZ"},
+    "00473EC0": {"status": "matching", "symbol": "?set_focus@TDialogPanel@@UAEXH@Z"}
+  }
+}

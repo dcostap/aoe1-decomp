@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "header": "include/color.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\color.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00423EE0": {"status": "scratch", "symbol": "?RGE_translate_palette@@YAXPAUtagPALETTEENTRY@@0U1@JHH@Z"},
+    "004240B0": {"status": "accepted_drift", "symbol": "?RGE_fade_palette@@YAXPAVTDrawArea@@UtagPALETTEENTRY@@MEPAU2@HH@Z"},
+    "00424350": {"status": "matching", "symbol": "??0RGE_Color_Table@@QAE@H@Z"},
+    "00424440": {"status": "matching", "symbol": "??0RGE_Color_Table@@QAE@PAU_iobuf@@F@Z"},
+    "004244F0": {"status": "matching", "symbol": "??0RGE_Color_Table@@QAE@PAD@Z"},
+    "004245F0": {"status": "matching", "symbol": "??0RGE_Color_Table@@QAE@PAVTDrawArea@@JPAUtagPALETTEENTRY@@1@Z"},
+    "004247A0": {"status": "matching", "symbol": "??1RGE_Color_Table@@UAE@XZ"},
+    "004247B0": {"status": "matching", "symbol": "?save@RGE_Color_Table@@QAEXH@Z"}
+  }
+}

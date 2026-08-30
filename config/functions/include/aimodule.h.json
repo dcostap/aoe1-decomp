@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aimodule.h",
+  "functions": {
+    "004087F0": {"status": "unresolved"},
+    "00408800": {"status": "unresolved"},
+    "00408810": {"status": "unresolved"}
+  }
+}

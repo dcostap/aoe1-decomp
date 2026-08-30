@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-"""Compile and compare one unregistered or proposed translation unit."""
+"""Compile and compare one proposed translation unit."""
 
 import argparse
 import json
@@ -20,9 +20,9 @@ from common import (
     preferred_source_path,
     repo_path,
     slugify_name,
-    source_module_entry_for_va,
+    function_entry_for_va,
 )
-from translation_unit_prefixes import _compile_wrapper, compare_object_owner
+from function_compare import compile_source, compare_object_function
 
 
 _INCLUDE = re.compile(r'^\s*#\s*include\s*"([^"]+)"(?:\s*//.*)?\s*$')
@@ -404,7 +404,7 @@ def validate_proposal(payload: dict[str, object]) -> list[str]:
         record = function_record_by_va(int(va, 16))
         if source.resolve() != preferred_source_path(record).resolve():
             issues.append(f"{va} is not the canonical source: {source_value}")
-        module_entry = source_module_entry_for_va(va)
+        module_entry = function_entry_for_va(va)
         direct_module = False
         source_module = None
         if module_entry is not None and source.resolve() == wrapper.resolve():
@@ -544,7 +544,7 @@ def _compare_generated_destructor(obj, va: int, group: dict[str, object]) -> dic
     fallback_symbols = dict(symbols) if isinstance(symbols, dict) else {}
     fallback_symbols[va_text] = fallback_symbol.name
     fallback_group["symbols"] = fallback_symbols
-    result = compare_object_owner(
+    result = compare_object_function(
         obj,
         va,
         fallback_group,
@@ -575,7 +575,7 @@ def _compare_generated_entry(obj, va: int, group: dict[str, object]) -> dict[str
         obj, expected_symbol
     ):
         return _compare_generated_destructor(obj, va, group)
-    return compare_object_owner(obj, va, group, require_owner=False)
+    return compare_object_function(obj, va, group, require_owner=False)
 
 
 def _render(rows: list[dict[str, object]]) -> str:
@@ -619,7 +619,7 @@ def main() -> int:
     if object_path.exists():
         object_path.unlink()
     try:
-        manifest = _compile_wrapper(wrapper, object_path, flags, wrapper.parent)
+        manifest = compile_source(wrapper, object_path, flags, wrapper.parent)
     except RuntimeError as error:
         print(f"Candidate compile failed:\n{error}", file=sys.stderr)
         return 2
@@ -641,14 +641,14 @@ def main() -> int:
     rows: list[dict[str, object]] = []
     for va in owners:
         try:
-            result = compare_object_owner(obj, int(va, 16), selection_group)
+            result = compare_object_function(obj, int(va, 16), selection_group)
         except (KeyError, ValueError) as error:
             rows.append(_error_row("exact", "matching", va, error))
         else:
             rows.append(_result_row("exact", "matching", result))
     for va, entry in observed.items():
         try:
-            result = compare_object_owner(obj, int(va, 16), selection_group)
+            result = compare_object_function(obj, int(va, 16), selection_group)
         except (KeyError, ValueError) as error:
             rows.append(_error_row("observed", entry["status"], va, error))
         else:

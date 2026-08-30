@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "header": "include/Pnl_scbr.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Pnl_scbr.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0047A700": {"status": "matching", "symbol": "??0TScrollBarPanel@@QAE@XZ"},
+    "0047A8A0": {"status": "matching", "symbol": "??1TScrollBarPanel@@UAE@XZ"},
+    "0047A8B0": {"status": "matching", "symbol": "?setup@TScrollBarPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAD222JJ1JW4Orientation@1@@Z"},
+    "0047A910": {"status": "scratch", "symbol": "?set_rect@TScrollBarPanel@@UAEXJJJJ@Z"},
+    "0047AA80": {"status": "scratch", "symbol": "?calc_item_rects@TScrollBarPanel@@IAEXXZ"},
+    "0047AB20": {"status": "matching", "symbol": "?set_tab_pos@TScrollBarPanel@@QAEXJ@Z"},
+    "0047AC10": {"status": "matching", "symbol": "?set_list_len@TScrollBarPanel@@QAEXJJ@Z"},
+    "0047AC30": {"status": "matching", "symbol": "?set_buttons@TScrollBarPanel@@QAEXPAVTShape@@HHHH@Z"},
+    "0047AC70": {"status": "matching", "symbol": "?set_bevel_info@TScrollBarPanel@@QAEXHHHHHHH@Z"},
+    "0047ACC0": {"status": "matching", "symbol": "?handle_idle@TScrollBarPanel@@UAEJXZ"},
+    "0047AE40": {"status": "matching", "symbol": "?mouse_left_down_action@TScrollBarPanel@@UAEJJJHH@Z"},
+    "0047AFD0": {"status": "scratch", "symbol": "?mouse_left_move_action@TScrollBarPanel@@UAEJJJHH@Z"},
+    "0047B3D0": {"status": "matching", "symbol": "?mouse_left_up_action@TScrollBarPanel@@UAEJJJHH@Z"},
+    "0047B420": {"status": "matching", "symbol": "?scroll@TScrollBarPanel@@QAEXW4ActionType@1@J@Z"},
+    "0047B4E0": {"status": "matching", "symbol": "?draw@TScrollBarPanel@@UAEXXZ"},
+    "0047B660": {"status": "matching", "symbol": "?draw_border@TScrollBarPanel@@IAEXHHPAUtagRECT@@@Z"},
+    "0047B690": {"status": "matching", "symbol": "?draw_border@TScrollBarPanel@@IAEXHHJJJJ@Z"},
+    "0047B8B0": {"status": "matching", "symbol": "?draw_back_pic@TScrollBarPanel@@IAEXXZ"},
+    "0047B970": {"status": "scratch", "symbol": "?draw_button_pic@TScrollBarPanel@@IAEXHHPAUtagRECT@@@Z"}
+  }
+}

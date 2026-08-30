@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "header": "include/com_spd.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_spd.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00432620": {"status": "matching", "symbol": "??0RGE_Communications_Speed@@QAE@PAVTCommunications_Handler@@@Z"},
+    "00432780": {"status": "matching", "symbol": "??1RGE_Communications_Speed@@QAE@XZ"},
+    "004327C0": {"status": "matching", "symbol": "?SetPlayerTurnSpeed@RGE_Communications_Speed@@QAEXIEE@Z"},
+    "00432800": {"status": "matching", "symbol": "?SetActualLatency@RGE_Communications_Speed@@QAEXIK@Z"},
+    "00432840": {"status": "matching", "symbol": "?SetFutureSpeedChange@RGE_Communications_Speed@@QAEXIIK@Z"},
+    "00432870": {"status": "matching", "symbol": "?EnableSpeedControl@RGE_Communications_Speed@@QAEXH@Z"},
+    "00432880": {"status": "matching", "symbol": "?GetBufferGranularity@RGE_Communications_Speed@@QAEIXZ"},
+    "00432890": {"status": "matching", "symbol": "?GetAdjustmentCount@RGE_Communications_Speed@@QAEKXZ"},
+    "004328A0": {"status": "matching", "symbol": "?GetBufferGranularityAdjusted@RGE_Communications_Speed@@QAEIXZ"},
+    "004328C0": {"status": "matching", "symbol": "?BufferFramesRemaining@RGE_Communications_Speed@@QAEIXZ"},
+    "004328D0": {"status": "matching", "symbol": "?WaitingOnAcknowledgement@RGE_Communications_Speed@@QAEIXZ"},
+    "004328E0": {"status": "matching", "symbol": "?AdjustLocalSpeed@RGE_Communications_Speed@@IAEXXZ"},
+    "00432940": {"status": "matching", "symbol": "?ReloadBufferFrames@RGE_Communications_Speed@@QAEXXZ"},
+    "00432970": {"status": "matching", "symbol": "?BufferTimeToUse@RGE_Communications_Speed@@QAEIK@Z"},
+    "00432A70": {"status": "matching", "symbol": "?Skip@RGE_Communications_Speed@@QAEXXZ"},
+    "00432A90": {"status": "matching", "symbol": "?GetHighLatencyCenti@RGE_Communications_Speed@@QAEEXZ"},
+    "00432B00": {"status": "matching", "symbol": "?GetPlayerLatency@RGE_Communications_Speed@@QAEKI@Z"},
+    "00432B20": {"status": "matching", "symbol": "?GetLatencyInfo@RGE_Communications_Speed@@QAEPADXZ"},
+    "00432BD0": {"status": "matching", "symbol": "?GetSelfPlayerOptimalSpeedStr@RGE_Communications_Speed@@QAEPADXZ"},
+    "00432C10": {"status": "matching", "symbol": "?GetPlayerSpeedStatusStr@RGE_Communications_Speed@@QAEPADH@Z"},
+    "00432C70": {"status": "matching", "symbol": "?GetMachineSpeedInfo@RGE_Communications_Speed@@QAEPADXZ"},
+    "00432D20": {"status": "scratch", "symbol": "?GetRecommendedBufferFrames@RGE_Communications_Speed@@QAEIXZ"},
+    "00432D90": {"status": "matching", "symbol": "?GetAvgFrameRate@RGE_Communications_Speed@@QAEIXZ"},
+    "00432DA0": {"status": "matching", "symbol": "?GetRecommendedBufferGranularity@RGE_Communications_Speed@@QAEIXZ"},
+    "00432DE0": {"status": "accepted_drift", "symbol": "?AnalyzeGameSpeed@RGE_Communications_Speed@@QAEHPAI0H@Z"},
+    "00432FB0": {"status": "matching", "symbol": "?SetV1@RGE_Communications_Speed@@QAEXK@Z"},
+    "00432FD0": {"status": "matching", "symbol": "?SetV2@RGE_Communications_Speed@@QAEXK@Z"}
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "header": "include/taibldmd.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taibldmd.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004D3A80": {"status": "matching", "symbol": "??0TribeBuildAIModule@@QAE@PAXH@Z"},
+    "004D3AD0": {"status": "matching", "symbol": "??0TribeBuildAIModule@@QAE@HH@Z"},
+    "004D3B00": {"status": "matching", "symbol": "??1TribeBuildAIModule@@UAE@XZ"},
+    "004D3B10": {"status": "matching", "symbol": "?setMainDecisionAI@TribeBuildAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z"},
+    "004D3B20": {"status": "matching", "symbol": "?loadBuildList@TribeBuildAIModule@@UAEHPADPAVRGE_Player@@@Z"},
+    "004D3D60": {"status": "scratch", "symbol": "?initialize@TribeBuildAIModule@@QAEXXZ"},
+    "004D4460": {"status": "matching", "symbol": "?skipNextBuildListItem@TribeBuildAIModule@@QAEXXZ"},
+    "004D4540": {"status": "scratch", "symbol": "?nextBuildableItem@TribeBuildAIModule@@QAEPAVBuildItem@@H@Z"},
+    "004D4DB0": {"status": "matching", "symbol": "?nextBuildListItemCategory@TribeBuildAIModule@@QAEHXZ"},
+    "004D4E10": {"status": "matching", "symbol": "?blockingResource@TribeBuildAIModule@@QAEHXZ"},
+    "004D4F80": {"status": "matching", "symbol": "?mostNeededResource@TribeBuildAIModule@@QAEHAAVResourceItem@@H@Z"},
+    "004D5090": {"status": "matching", "symbol": "?addItem@TribeBuildAIModule@@QAEHPAVRGE_Static_Object@@H@Z"},
+    "004D5170": {"status": "matching", "symbol": "?addBuiltItem@TribeBuildAIModule@@QAEHPAVRGE_Static_Object@@H@Z"},
+    "004D5270": {"status": "matching", "symbol": "?removeBuiltItem@TribeBuildAIModule@@QAEHH@Z"},
+    "004D5310": {"status": "scratch", "symbol": "?cancelBuildItem@TribeBuildAIModule@@QAEHHHHMMHH@Z"},
+    "004D5590": {"status": "matching", "symbol": "?addTrainedUnit@TribeBuildAIModule@@QAEHHHHH@Z"},
+    "004D5600": {"status": "accepted_drift", "symbol": "?cancelTrainUnit@TribeBuildAIModule@@QAEHHHHH@Z"},
+    "004D5690": {"status": "matching", "symbol": "?addResearch@TribeBuildAIModule@@QAEHHHH@Z"},
+    "004D56F0": {"status": "matching", "symbol": "?cancelResearch@TribeBuildAIModule@@QAEHHHHH@Z"},
+    "004D5780": {"status": "matching", "symbol": "?isAgeResearch@TribeBuildAIModule@@QAEHH@Z"},
+    "004D57A0": {"status": "matching", "symbol": "?insert@TribeBuildAIModule@@QAEHHHH@Z"},
+    "004D5AD0": {"status": "matching", "symbol": "?insertResearch@TribeBuildAIModule@@QAEHHH@Z"},
+    "004D5B80": {"status": "matching", "symbol": "?insertGathererPercentage@TribeBuildAIModule@@QAEHHHH@Z"},
+    "004D5BB0": {"status": "matching", "symbol": "?numberBuiltOrInProgressItemsOfType@TribeBuildAIModule@@UAEHHH@Z"},
+    "004D5C20": {"status": "matching", "symbol": "?allBuilt@TribeBuildAIModule@@QAEHHH@Z"},
+    "004D5CA0": {"status": "accepted_drift", "symbol": "?readyToResearch@TribeBuildAIModule@@QAEHHH@Z"},
+    "004D5D40": {"status": "accepted_drift", "symbol": "?unskipBuildList@TribeBuildAIModule@@QAEXHH@Z"},
+    "004D5DE0": {"status": "matching", "symbol": "?buildItem@TribeBuildAIModule@@QAEPAVBuildItem@@HHH@Z"}
+  }
+}

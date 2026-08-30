@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "header": "include/tact_dar.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_dar.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004CE530": {"status": "matching", "symbol": "??0TRIBE_Action_Discovery_Artifact@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "004CE5F0": {"status": "matching", "symbol": "??0TRIBE_Action_Discovery_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"},
+    "004CE670": {"status": "matching", "symbol": "??0TRIBE_Action_Discovery_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"},
+    "004CE6D0": {"status": "matching", "symbol": "?save@TRIBE_Action_Discovery_Artifact@@UAEXH@Z"},
+    "004CE700": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Discovery_Artifact@@UAEXE@Z"},
+    "004CE720": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Discovery_Artifact@@MAEXE@Z"},
+    "004CE740": {"status": "accepted_drift", "symbol": "?update@TRIBE_Action_Discovery_Artifact@@UAEEXZ"},
+    "004CE7A0": {"status": "matching", "symbol": "?check_objects@TRIBE_Action_Discovery_Artifact@@IAEXXZ"}
+  }
+}

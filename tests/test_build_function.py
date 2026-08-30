@@ -105,7 +105,7 @@ def _grouped_owner_worker(
     extract_obj_function.function_slug = lambda _record: f"owner_{owner}"
     extract_obj_function.repo_path = repo_path
     extract_obj_function.ensure_build_subdir = ensure_build_subdir
-    extract_obj_function.translation_unit_for_va = lambda _va: None
+    extract_obj_function.matching_build_for_va = lambda _va: None
     extract_obj_function.load_coff_object = fake_object
     extract_obj_function.select_record_function_symbol = lambda obj, _name: obj.symbols[0]
     extract_obj_function.function_symbol_section = lambda obj, _symbol: obj.sections[0]

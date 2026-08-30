@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/scr_trb.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_trb.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004B75A0": {"status": "matching", "symbol": "??0TribeSelectTribeScreen@@QAE@XZ"},
+    "004B7DF0": {"status": "matching", "symbol": "??1TribeSelectTribeScreen@@UAE@XZ"},
+    "004B7EE0": {"status": "matching", "symbol": "?action@TribeSelectTribeScreen@@MAEJPAVTPanel@@JKK@Z"},
+    "004B7F70": {"status": "matching", "symbol": "?fillTribeText@TribeSelectTribeScreen@@IAEXH@Z"},
+    "004B8070": {"status": "matching", "symbol": "?tribeName@TribeSelectTribeScreen@@IAEPADH@Z"}
+  }
+}

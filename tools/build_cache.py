@@ -9,7 +9,13 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator
 
-from common import CONFIG_DIR, REPO_ROOT, repo_path, translation_unit_for_source
+from common import (
+    CONFIG_DIR,
+    REPO_ROOT,
+    build_module_for_source,
+    build_module_signature,
+    repo_path,
+)
 
 
 CACHE_SCHEMA = 3
@@ -162,7 +168,8 @@ def build_input_manifest(source_path: Path, rsp_path: Path, toolchain: dict) -> 
         resolved = extra.resolve()
         if resolved not in input_paths:
             input_paths.append(resolved)
-    translation_unit = translation_unit_for_source(source_path)
+    module = build_module_for_source(source_path)
+    translation_unit = build_module_signature(module) if module is not None else None
     input_paths.sort(key=_display_path)
     inputs = [
         {

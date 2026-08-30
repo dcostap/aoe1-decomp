@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "header": "include/m_s_obj.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\m_s_obj.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00452120": {"status": "matching", "symbol": "??0RGE_Master_Static_Object@@QAE@PAV0@H@Z"},
+    "00452170": {"status": "matching", "symbol": "??0RGE_Master_Static_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z"},
+    "004521A0": {"status": "matching", "symbol": "??0RGE_Master_Static_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z"},
+    "004521E0": {"status": "scratch", "symbol": "?setup@RGE_Master_Static_Object@@IAEHPAV1@@Z"},
+    "004524E0": {"status": "matching", "symbol": "?setup@RGE_Master_Static_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
+    "00452B00": {"status": "scratch", "symbol": "?setup@RGE_Master_Static_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
+    "00452FA0": {"status": "matching", "symbol": "??1RGE_Master_Static_Object@@UAE@XZ"},
+    "00452FE0": {"status": "matching", "symbol": "?make_new_obj@RGE_Master_Static_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z"},
+    "004530B0": {"status": "matching", "symbol": "?make_new_master@RGE_Master_Static_Object@@UAEPAV1@XZ"},
+    "00453120": {"status": "matching", "symbol": "?copy_obj@RGE_Master_Static_Object@@UAEXPAV1@@Z"},
+    "004534A0": {"status": "matching", "symbol": "?modify@RGE_Master_Static_Object@@UAEXME@Z"},
+    "00453540": {"status": "matching", "symbol": "?modify_delta@RGE_Master_Static_Object@@UAEXME@Z"},
+    "004535F0": {"status": "matching", "symbol": "?modify_percent@RGE_Master_Static_Object@@UAEXME@Z"},
+    "004536D0": {"status": "matching", "symbol": "?save@RGE_Master_Static_Object@@UAEXH@Z"},
+    "00453C40": {"status": "scratch", "symbol": "?check_placement@RGE_Master_Static_Object@@UAEEPAVRGE_Player@@MMPAHEEEEEE@Z"},
+    "004543C0": {"status": "matching", "symbol": "?make_available@RGE_Master_Static_Object@@QAEXE@Z"},
+    "004543D0": {"status": "scratch", "symbol": "?alignment@RGE_Master_Static_Object@@UAEEAAM0PAVRGE_Game_World@@E@Z"},
+    "00454690": {"status": "matching", "symbol": "?alignment_box@RGE_Master_Static_Object@@QAEEPAVRGE_Game_World@@MMAAF1111111@Z"},
+    "004547F0": {"status": "matching", "symbol": "?draw@RGE_Master_Static_Object@@UAEXPAVTDrawArea@@FFPAVRGE_Color_Table@@JJHE@Z"},
+    "00454950": {"status": "matching", "symbol": "?get_help_message@RGE_Master_Static_Object@@QAEJXZ"},
+    "00454960": {"status": "matching", "symbol": "?get_help_page@RGE_Master_Static_Object@@QAEJXZ"},
+    "00454970": {"status": "matching", "symbol": "?get_hotkey@RGE_Master_Static_Object@@QAEJXZ"},
+    "00454980": {"status": "matching", "symbol": "?calc_base_damage_ability@RGE_Master_Static_Object@@UAEJPAVRGE_Master_Combat_Object@@@Z"}
+  }
+}

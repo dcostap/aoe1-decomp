@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "header": "include/point.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\point.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0047E480": {"status": "matching", "symbol": "??0XYZ@@QAE@XZ"},
+    "0047E490": {"status": "matching", "symbol": "??0XYZ@@QAE@HHH@Z"},
+    "0047E4B0": {"status": "matching", "symbol": "??8@YAHABVXYZ@@0@Z"},
+    "0047E4E0": {"status": "matching", "symbol": "??9@YAHABVXYZ@@0@Z"},
+    "0047E510": {"status": "matching", "symbol": "??4XYZ@@QAEAAV0@ABV0@@Z"},
+    "0047E530": {"status": "scratch", "symbol": "??HXYZ@@QBE?AV0@ABV0@@Z"},
+    "0047E580": {"status": "matching", "symbol": "??GXYZ@@QBE?AV0@ABV0@@Z"},
+    "0047E5D0": {"status": "scratch", "symbol": "?rotateXYByFacet@XYZ@@QAEXABV1@AAV1@E@Z"}
+  }
+}

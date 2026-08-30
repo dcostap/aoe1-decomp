@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "header": "include/taunt.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taunt.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00509450": {"status": "matching", "symbol": "??0TTaunt@@QAE@PAVTSound_Driver@@@Z"},
+    "00509480": {"status": "matching", "symbol": "??1TTaunt@@QAE@XZ"},
+    "00509490": {"status": "matching", "symbol": "?PlayTauntStr@TTaunt@@QAEHPADE@Z"},
+    "00509530": {"status": "matching", "symbol": "?PlayTauntNo@TTaunt@@QAEHH@Z"},
+    "00509610": {"status": "matching", "symbol": "?GetTauntNo@TTaunt@@QAEHPAD@Z"},
+    "00509640": {"status": "matching", "symbol": "?GetTauntText@TTaunt@@QAEPADH@Z"},
+    "00509670": {"status": "matching", "symbol": "?StopSoundSystem@TTaunt@@QAEXXZ"},
+    "005096A0": {"status": "matching", "symbol": "?RestartSoundSystem@TTaunt@@QAEHPAVTSound_Driver@@@Z"}
+  }
+}

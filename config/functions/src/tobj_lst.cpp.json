@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "header": "include/tobj_lst.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tobj_lst.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00511B00": {"status": "matching", "symbol": "?load@TRIBE_Object_List@@MAEXEHPAVRGE_Game_World@@@Z"}
+  }
+}

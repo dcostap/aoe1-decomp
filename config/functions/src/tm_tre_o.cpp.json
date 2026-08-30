@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/tm_tre_o.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tm_tre_o.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0050F180": {"status": "matching", "symbol": "??0TRIBE_Master_Tree_Object@@QAE@PAV0@H@Z"},
+    "0050F220": {"status": "matching", "symbol": "??0TRIBE_Master_Tree_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z"},
+    "0050F2A0": {"status": "matching", "symbol": "??0TRIBE_Master_Tree_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z"},
+    "0050F320": {"status": "matching", "symbol": "?make_new_obj@TRIBE_Master_Tree_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z"},
+    "0050F3A0": {"status": "matching", "symbol": "?make_new_master@TRIBE_Master_Tree_Object@@UAEPAVRGE_Master_Static_Object@@XZ"}
+  }
+}

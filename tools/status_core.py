@@ -12,16 +12,15 @@ from common import (
     classify_corpus_bucket,
     function_record_by_va,
     function_decomp_note_relative_path,
-    header_source_path,
     load_asm_special_function_names,
     load_asm_special_regions,
     load_compiler_generated_functions,
     load_functions,
     load_padding_only_functions,
     load_parent_owned_fragments,
-    load_translation_units,
+    load_build_modules,
     module_decomp_note_relative_path,
-    source_module_entry_for_va,
+    function_entry_for_va,
     load_toolchain_supplied_function_names,
     load_toolchain_supplied_regions,
 )
@@ -330,13 +329,7 @@ def build_status_rows(
     fields stay empty because targeted agent queries do not need global ranks.
     """
     logic_reviews_dir = REPO_ROOT / "logic_reviews"
-    flags_dir = REPO_ROOT / "config" / "flags"
     logic_review_ledgers = logic_review_files(logic_reviews_dir)
-    custom_flag_files = {
-        child.stem.upper(): child
-        for child in flags_dir.iterdir()
-        if child.suffix.lower() == ".rsp"
-    } if flags_dir.exists() else {}
 
     va_norm = va.upper() if va else None
     if va_norm is not None:
@@ -359,7 +352,7 @@ def build_status_rows(
     include_vas_norm = {value.upper() for value in include_vas} if include_vas is not None else None
     exclude_vas_norm = {value.upper() for value in exclude_vas or set()}
     recipes_by_va: dict[str, dict[str, object]] = {}
-    for group in load_translation_units():
+    for group in load_build_modules():
         functions = group.get("functions")
         if isinstance(functions, dict):
             for function_va in functions:
@@ -368,17 +361,15 @@ def build_status_rows(
     for record in records:
         slug = record["slug"]
         slug_key = slug.upper()
-        module_entry = source_module_entry_for_va(record["va"])
+        module_entry = function_entry_for_va(record["va"])
         module_path: Path | None = None
-        header_path: Path | None = None
         if module_entry is not None:
             module = module_entry["module"]
             assert isinstance(module, dict)
             module_path = REPO_ROOT / str(module["source"])
             present_paths = [module_path]
         else:
-            header_path = header_source_path(record)
-            present_paths = [header_path] if header_path is not None else []
+            present_paths = []
 
         corpus_bucket, corpus_reason = classify_corpus_bucket(
             record,
@@ -395,8 +386,6 @@ def build_status_rows(
             source_bucket = str(module_entry["status"])
         elif module_entry is not None:
             source_bucket = "conflict"
-        elif header_path is not None:
-            source_bucket = "unresolved"
         else:
             source_bucket = "unclaimed"
 
@@ -434,7 +423,6 @@ def build_status_rows(
             else str(path)
             for path in present_paths
         )
-        custom_flags_path = custom_flag_files.get(slug_key)
         logic_review_path = logic_review_ledgers.get(slug_key)
 
         parent_fragment = parent_owned_fragments.get(int(record["va"], 16))
@@ -458,6 +446,12 @@ def build_status_rows(
             if (REPO_ROOT / module_note_relative).is_file():
                 module_note_path = module_note_relative.as_posix()
         recipe = recipes_by_va.get(record_va)
+        build = (recipe or {}).get("build")
+        build = build if isinstance(build, dict) else {}
+        flags_path = str(build.get("flags_path") or "")
+        custom_flags_path = (
+            flags_path if build.get("flags") not in {None, "", "default"} else ""
+        )
 
         row = {
             "va": record["va"],
@@ -471,7 +465,7 @@ def build_status_rows(
             "source_bucket": source_bucket,
             "source_path": source_path,
             "translation_unit": str((recipe or {}).get("name") or ""),
-            "compiler_flags": str((recipe or {}).get("flags") or ""),
+            "compiler_flags": flags_path,
             "function_note_path": function_note_path,
             "module_note_path": module_note_path,
             "logic_review_path": str(Path("logic_reviews") / logic_review_path.name) if logic_review_path is not None else "",
@@ -491,8 +485,8 @@ def build_status_rows(
             "is_remaining": is_remaining,
             "remaining_size_rank": "",
             "remaining_asm_rank": "",
-            "uses_custom_flags": "yes" if custom_flags_path is not None else "no",
-            "custom_flags_path": str(Path("config") / "flags" / custom_flags_path.name) if custom_flags_path is not None else "",
+            "uses_custom_flags": "yes" if custom_flags_path else "no",
+            "custom_flags_path": custom_flags_path,
             "source_status": "",
             "source_flags_note": "",
             "source_blocker": "",

@@ -19,13 +19,14 @@ from common import (
     REPO_ROOT,
     compiler_artifact_slug,
     compiler_source_path,
-    compiler_translation_unit_for_va,
+    build_module_signature,
+    build_module_for_va,
     function_slug,
     load_toolchain,
     load_pdb_function_source_map,
     preferred_flags_rsp_path,
     preferred_source_path,
-    translation_unit_for_va,
+    matching_build_for_va,
 )
 
 
@@ -272,14 +273,6 @@ def _context_storage_path(value: str) -> Path:
     return Path("files") / relative
 
 
-def _effective_flags(record: dict[str, str]) -> tuple[Path, bool]:
-    toolchain = load_toolchain()
-    flags = preferred_flags_rsp_path(record, toolchain)
-    default_value = Path(str(toolchain["compiler"]["default_rsp"]))
-    default = default_value if default_value.is_absolute() else REPO_ROOT / default_value
-    return flags, flags.resolve() != default.resolve()
-
-
 def _complete_build_inputs(record: dict[str, str]) -> dict:
     """Return the current complete compiler-input manifest.
 
@@ -307,9 +300,9 @@ def _complete_build_inputs(record: dict[str, str]) -> dict:
 
 def _build_context(record: dict[str, str], metrics: dict | None = None) -> dict | None:
     """Capture grouped TU identity and every input used by its build."""
-    group = translation_unit_for_va(int(record["va"], 16))
+    group = matching_build_for_va(int(record["va"], 16))
     if group is None:
-        group = compiler_translation_unit_for_va(int(record["va"], 16))
+        group = build_module_for_va(int(record["va"], 16))
     if group is None:
         return None
     manifest = _complete_build_inputs(record)
@@ -319,14 +312,10 @@ def _build_context(record: dict[str, str], metrics: dict | None = None) -> dict 
     }
     required = {
         _normalized_context_path(str(group["source"])),
-        _normalized_context_path(str(group.get("flags") or manifest.get("response_file") or "")),
-        *(_normalized_context_path(str(owner)) for owner in (group.get("owners") or {}).values()),
+        _normalized_context_path(str(manifest.get("response_file") or "")),
     }
     manifest_group = manifest.get("translation_unit")
-    if manifest_group is None:
-        # Legacy manifests hashed the complete mapping file.
-        required.add("config/translation_units.json")
-    elif manifest_group != group:
+    if manifest_group != build_module_signature(group):
         raise ValueError("Complete grouped build manifest contains a different translation-unit entry")
     missing = sorted(path for path in required if path and path not in input_paths)
     if missing:
@@ -338,17 +327,10 @@ def _build_context(record: dict[str, str], metrics: dict | None = None) -> dict 
         "schema": _BUILD_CONTEXT_VERSION,
         "fingerprint": str(manifest["fingerprint"]),
         "source": str(manifest.get("source") or group["source"]),
-        "response_file": str(manifest.get("response_file") or group.get("flags") or ""),
+        "response_file": str(manifest.get("response_file") or ""),
         "compiler": manifest.get("compiler") or {},
         "inputs": list(manifest.get("inputs") or []),
-        "translation_unit": {
-            "name": str(group.get("name") or ""),
-            "source": str(group.get("source") or ""),
-            "flags": str(group.get("flags") or ""),
-            "functions": dict(group.get("functions") or {}),
-            "owners": dict(group.get("owners") or {}),
-            "symbols": dict(group.get("symbols") or {}),
-        },
+        "translation_unit": build_module_signature(group),
     }
     owner_validation = (metrics or {}).get("owning_symbol_validation")
     if isinstance(owner_validation, dict):
@@ -615,7 +597,7 @@ def structural_checkpoint_delta(current_metrics: dict, baseline_metrics: dict) -
 
 
 def _restore_checkpoint_unlocked(record: dict[str, str], selector: str) -> dict:
-    """Restore source and custom-flag state, first backing up current files."""
+    """Restore the natural source file after backing up its current contents."""
     slug = function_slug(record)
     index = _load_index(slug)
     run = _resolve_run(index, selector)
@@ -636,62 +618,8 @@ def _restore_checkpoint_unlocked(record: dict[str, str], selector: str) -> dict:
         backup = backup_root / "source" / current_source.name
         backup.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(current_source, backup)
-    try:
-        effective_flags, flags_are_custom = _effective_flags(record)
-    except (FileNotFoundError, KeyError, OSError):
-        effective_flags = REPO_ROOT / "config" / "flags" / f"{slug}.rsp"
-        flags_are_custom = effective_flags.exists()
-    if effective_flags.exists():
-        backup = backup_root / "flags" / effective_flags.name
-        backup.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(effective_flags, backup)
-
     source_target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source_snapshot, source_target)
-    saved_flags = run_dir / "flags" / "effective.rsp"
-    if not saved_flags.exists():
-        # Older checkpoints also kept a copy under the custom response-file
-        # name. Keep that layout readable during the optional migration.
-        saved_flags = run_dir / "flags" / effective_flags.name
-    if bool(run.get("custom_flags")):
-        if not saved_flags.exists():
-            raise FileNotFoundError(f"Checkpoint flags artifact is missing: {saved_flags}")
-        effective_flags.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(saved_flags, effective_flags)
-    elif flags_are_custom and effective_flags.exists():
-        effective_flags.unlink()
-
-    build_context = run.get("build_context") or {}
-    translation_unit = build_context.get("translation_unit") or {}
-    if translation_unit:
-        # Restore the wrapper and every canonical owner, but do not overwrite
-        # the repository manifest or shared headers as a side effect of a
-        # target-source restore. Their exact hashes remain in the checkpoint.
-        destinations: list[tuple[str, Path]] = []
-        wrapper_source = str(translation_unit.get("source") or "")
-        if wrapper_source:
-            destinations.append((wrapper_source, compiler_source_path(record)))
-        for raw_va, owner in (translation_unit.get("owners") or {}).items():
-            destination = (
-                preferred_source_path(record)
-                if str(raw_va).upper() == str(record["va"]).upper()
-                else REPO_ROOT / _normalized_context_path(str(owner))
-            )
-            destinations.append((str(owner), destination))
-        if effective_flags.exists() or bool(run.get("custom_flags")):
-            destinations.append((str(build_context.get("response_file") or ""), effective_flags))
-        for display_path, destination in destinations:
-            if not display_path:
-                continue
-            snapshot = run_dir / "context" / _context_storage_path(display_path)
-            if not snapshot.is_file():
-                raise FileNotFoundError(f"Checkpoint build-context artifact is missing: {snapshot}")
-            if destination.exists():
-                backup = backup_root / "context" / _context_storage_path(display_path)
-                backup.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(destination, backup)
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(snapshot, destination)
     return {
         **run,
         "restored_source_path": str(source_target.relative_to(REPO_ROOT)),
@@ -799,8 +727,7 @@ def format_history(record: dict[str, str], limit: int = 20) -> list[str]:
             lines.append(
                 f"    build context: TU={translation_unit.get('name') or '?'} "
                 f"fingerprint={str(context.get('fingerprint') or '')[:16]} "
-                f"owners={len(translation_unit.get('owners') or {})} "
-                f"symbols={len(translation_unit.get('symbols') or {})} "
+                f"functions={len(translation_unit.get('functions') or {})} "
                 f"pdb_owner={pdb_owner.get('status') or 'unverified'}"
             )
     lines.append(

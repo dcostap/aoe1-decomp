@@ -15,8 +15,8 @@ import common  # noqa: E402
 class CommonLookupCacheTests(unittest.TestCase):
     def tearDown(self) -> None:
         common.function_records_by_va.cache_clear()
-        common.source_module_entries_by_va.cache_clear()
-        common._validate_translation_unit_cached.cache_clear()
+        common.function_entries_by_va.cache_clear()
+        common._validate_build_module_cached.cache_clear()
 
     def test_function_record_lookup_builds_inventory_index_once(self) -> None:
         records = [
@@ -31,7 +31,7 @@ class CommonLookupCacheTests(unittest.TestCase):
 
         load.assert_called_once_with()
 
-    def test_source_module_lookup_builds_va_index_once(self) -> None:
+    def test_function_registry_lookup_builds_va_index_once(self) -> None:
         modules = [
             {
                 "name": "demo",
@@ -42,28 +42,28 @@ class CommonLookupCacheTests(unittest.TestCase):
                 },
             }
         ]
-        common.source_module_entries_by_va.cache_clear()
+        common.function_entries_by_va.cache_clear()
 
-        with patch.object(common, "load_source_modules", return_value=modules) as load:
-            self.assertEqual(common.source_module_entry_for_va(0x1000)["status"], "scratch")
-            self.assertEqual(common.source_module_entry_for_va("00002000")["status"], "matching")
+        with patch.object(common, "load_function_modules", return_value=modules) as load:
+            self.assertEqual(common.function_entry_for_va(0x1000)["status"], "scratch")
+            self.assertEqual(common.function_entry_for_va("00002000")["status"], "matching")
 
         load.assert_called_once_with()
 
-    def test_translation_unit_validation_runs_once_per_payload(self) -> None:
+    def test_build_module_validation_runs_once_per_payload(self) -> None:
         group = {
             "name": "demo",
             "source": "src/demo.cpp",
-            "flags": "",
-            "owners": {"00001000": "src/demo.cpp"},
-            "symbols": {},
-            "module": "demo",
+            "build": {"flags": "default", "flags_path": "config/flags/default.rsp"},
+            "functions": {
+                "00001000": {"status": "matching", "symbol": "?demo@@YAHXZ"}
+            },
         }
-        common._validate_translation_unit_cached.cache_clear()
+        common._validate_build_module_cached.cache_clear()
 
-        with patch.object(common, "_validate_translation_unit_uncached") as validate:
-            common.validate_translation_unit(group)
-            common.validate_translation_unit(group)
+        with patch.object(common, "_validate_build_module_uncached") as validate:
+            common.validate_build_module(group)
+            common.validate_build_module(group)
 
         validate.assert_called_once()
 

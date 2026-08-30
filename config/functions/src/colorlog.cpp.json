@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "header": "include/colorlog.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Colorlog.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00424810": {"status": "matching", "symbol": "?color_log@@YAXEEH@Z"}
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "header": "include/taiconmd.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taiconmd.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004D5E60": {"status": "matching", "symbol": "??0TribeConstructionAIModule@@QAE@PAXH@Z"},
+    "004D5EB0": {"status": "matching", "symbol": "??0TribeConstructionAIModule@@QAE@HH@Z"},
+    "004D5EE0": {"status": "matching", "symbol": "??1TribeConstructionAIModule@@UAE@XZ"},
+    "004D5EF0": {"status": "matching", "symbol": "?setMainDecisionAI@TribeConstructionAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z"},
+    "004D5F00": {"status": "matching", "symbol": "?canPlace@TribeConstructionAIModule@@QAEHPAVBuildItem@@@Z"},
+    "004D60E0": {"status": "scratch", "symbol": "?placeStructure@TribeConstructionAIModule@@QAEPAVConstructionItem@@PAVBuildItem@@HAAUPlacementState@@K@Z"},
+    "004D6780": {"status": "matching", "symbol": "?placeDock@TribeConstructionAIModule@@QAEPAVConstructionItem@@PAVBuildItem@@@Z"},
+    "004D6800": {"status": "matching", "symbol": "?setBuilt@TribeConstructionAIModule@@QAEXPAVRGE_Static_Object@@H@Z"},
+    "004D68A0": {"status": "accepted_drift", "symbol": "?compare@TribeConstructionAIModule@@IAEPAVConstructionItem@@PAV2@0@Z"}
+  }
+}

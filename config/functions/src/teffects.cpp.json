@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "header": "include/teffects.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\teffects.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0050D460": {"status": "matching", "symbol": "??0TRIBE_Effects@@QAE@H@Z"},
+    "0050D4B0": {"status": "matching", "symbol": "??0TRIBE_Effects@@QAE@PAD@Z"},
+    "0050D4D0": {"status": "matching", "symbol": "?do_effect@TRIBE_Effects@@UAEXFPAVRGE_Player@@@Z"},
+    "0050D550": {"status": "matching", "symbol": "?do_tech_effect@TRIBE_Effects@@QAEXFPAVRGE_Player@@@Z"}
+  }
+}

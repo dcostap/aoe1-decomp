@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "header": "include/rmm_terrain_generator.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rmm_terr.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "004888E0": {"status": "matching", "symbol": "??0RGE_RMM_Terrain_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@PAURGE_Terrain_Info@@@Z"},
+    "00488920": {"status": "matching", "symbol": "?generate@RGE_RMM_Terrain_Generator@@UAEEXZ"},
+    "004889D0": {"status": "matching", "symbol": "?water@RGE_RMM_Terrain_Generator@@IAEEE@Z"},
+    "004889F0": {"status": "matching", "symbol": "?check_borders@RGE_RMM_Terrain_Generator@@IAEXXZ"},
+    "00488B90": {"status": "scratch", "symbol": "?check_terrain@RGE_RMM_Terrain_Generator@@IAEEEJJJE@Z"},
+    "00488D50": {"status": "matching", "symbol": "?generate_modifiers@RGE_RMM_Terrain_Generator@@IAEXXZ"},
+    "00488E40": {"status": "matching", "symbol": "?fig_chance@RGE_RMM_Terrain_Generator@@IAEMJJJJ@Z"},
+    "00488E60": {"status": "accepted_drift", "symbol": "?count_map_tiles@RGE_RMM_Terrain_Generator@@IAEJE@Z"},
+    "00488EA0": {"status": "matching", "symbol": "?link_stack_randomly@RGE_RMM_Terrain_Generator@@IAEXPAUMap_Stack@@E@Z"},
+    "00488F90": {"status": "scratch", "symbol": "?remove_area_from_lists@RGE_RMM_Terrain_Generator@@IAEXJJJ@Z"},
+    "00489030": {"status": "matching", "symbol": "?base_terrain_generate@RGE_RMM_Terrain_Generator@@IAEEURGE_Terrain_Info_Line@@@Z"}
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "header": "include/dpl_obj.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\dpl_obj.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004418A0": {"status": "matching", "symbol": "??0RGE_Doppleganger_Object@@QAE@PAVRGE_Master_Doppleganger_Object@@PAVRGE_Player@@MMMHPAVRGE_Static_Object@@@Z"},
+    "00441A70": {"status": "matching", "symbol": "??0RGE_Doppleganger_Object@@QAE@HPAVRGE_Game_World@@H@Z"},
+    "00441BB0": {"status": "accepted_drift", "symbol": "?recycle_in_to_game@RGE_Doppleganger_Object@@UAEXPAVRGE_Master_Static_Object@@PAVRGE_Player@@MMMPAVRGE_Static_Object@@@Z"},
+    "00441D30": {"status": "matching", "symbol": "?setup@RGE_Doppleganger_Object@@MAEHPAVRGE_Master_Doppleganger_Object@@PAVRGE_Player@@MMM@Z"},
+    "00441DA0": {"status": "matching", "symbol": "?setup@RGE_Doppleganger_Object@@MAEHHPAVRGE_Game_World@@@Z"},
+    "00441E00": {"status": "matching", "symbol": "?rehook@RGE_Doppleganger_Object@@UAEXXZ"},
+    "00441EB0": {"status": "matching", "symbol": "?update@RGE_Doppleganger_Object@@UAEEXZ"},
+    "00441F80": {"status": "matching", "symbol": "?save@RGE_Doppleganger_Object@@UAEXH@Z"},
+    "00442050": {"status": "matching", "symbol": "?validate@RGE_Doppleganger_Object@@UAEXXZ"},
+    "00442100": {"status": "matching", "symbol": "??0RGE_Doppleganger_Creator@@QAE@PAVRGE_Player@@H@Z"},
+    "00442180": {"status": "matching", "symbol": "??1RGE_Doppleganger_Creator@@QAE@XZ"},
+    "004421F0": {"status": "scratch", "symbol": "?add_doppleganger_check@RGE_Doppleganger_Creator@@QAEHPAVRGE_Static_Object@@PAK@Z"},
+    "004422B0": {"status": "matching", "symbol": "?remove_doppleganger_check@RGE_Doppleganger_Creator@@QAEHPAVRGE_Static_Object@@@Z"},
+    "00442390": {"status": "matching", "symbol": "?perform_doppleganger_checks@RGE_Doppleganger_Creator@@QAEXXZ"},
+    "00442540": {"status": "matching", "symbol": "?expand_allocations@RGE_Doppleganger_Creator@@IAEXH@Z"}
+  }
+}

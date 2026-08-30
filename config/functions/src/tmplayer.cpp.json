@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/tmplayer.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tmplayer.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "005117C0": {"status": "matching", "symbol": "??0TRIBE_Master_Player@@QAE@PAU_iobuf@@@Z"},
+    "00511800": {"status": "matching", "symbol": "??0TRIBE_Master_Player@@QAE@H@Z"},
+    "00511820": {"status": "matching", "symbol": "??1TRIBE_Master_Player@@UAE@XZ"},
+    "00511830": {"status": "matching", "symbol": "?load_master_object@TRIBE_Master_Player@@UAEXHEPAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
+    "00511990": {"status": "matching", "symbol": "?load_object@TRIBE_Master_Player@@UAEXPAU_iobuf@@EPAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"}
+  }
+}

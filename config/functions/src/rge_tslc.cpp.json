@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "header": "include/rge_tslc.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\RGE_TSLC.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00480390": {"status": "matching", "symbol": "??0RGE_TimeSinceLastCall@@QAE@XZ"},
+    "004803F0": {"status": "matching", "symbol": "??1RGE_TimeSinceLastCall@@QAE@XZ"},
+    "00480400": {"status": "matching", "symbol": "?GetAvg@RGE_TimeSinceLastCall@@QAEKH@Z"},
+    "00480460": {"status": "matching", "symbol": "?Get@RGE_TimeSinceLastCall@@QAEKXZ"},
+    "00480480": {"status": "scratch", "symbol": "?Set@RGE_TimeSinceLastCall@@QAEKXZ"},
+    "00480510": {"status": "matching", "symbol": "?Skip@RGE_TimeSinceLastCall@@QAEXXZ"},
+    "00480540": {"status": "matching", "symbol": "?GetAvgInfo@RGE_TimeSinceLastCall@@QAEPADH@Z"},
+    "00480570": {"status": "matching", "symbol": "?GetHiLoMaxInfo@RGE_TimeSinceLastCall@@QAEPADH@Z"},
+    "00480610": {"status": "matching", "symbol": "?GetHiLoInfo@RGE_TimeSinceLastCall@@QAEPADH@Z"},
+    "004806A0": {"status": "matching", "symbol": "?CPS@RGE_TimeSinceLastCall@@QAEKXZ"},
+    "004806C0": {"status": "matching", "symbol": "?GetFirstCall@RGE_TimeSinceLastCall@@QAEKXZ"},
+    "004806D0": {"status": "matching", "symbol": "?GetElapsedFirstCall@RGE_TimeSinceLastCall@@QAEPADXZ"},
+    "00480770": {"status": "matching", "symbol": "?Test@RGE_TimeSinceLastCall@@QAEXXZ"}
+  }
+}

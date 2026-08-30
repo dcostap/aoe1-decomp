@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "header": "include/scr_cams.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_cams.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004909D0": {"status": "matching", "symbol": "??0TRIBE_Screen_Campaign_Selection@@QAE@XZ"},
+    "00490E30": {"status": "matching", "symbol": "?init_vars@TRIBE_Screen_Campaign_Selection@@IAEXXZ"},
+    "00490EA0": {"status": "accepted_drift", "symbol": "??1TRIBE_Screen_Campaign_Selection@@UAE@XZ"},
+    "00490F90": {"status": "matching", "symbol": "?handle_idle@TRIBE_Screen_Campaign_Selection@@UAEJXZ"},
+    "00490FF0": {"status": "matching", "symbol": "?action@TRIBE_Screen_Campaign_Selection@@MAEJPAVTPanel@@JKK@Z"},
+    "004911A0": {"status": "matching", "symbol": "?fillCampaigns@TRIBE_Screen_Campaign_Selection@@IAEXXZ"},
+    "00491290": {"status": "matching", "symbol": "?fillScenarios@TRIBE_Screen_Campaign_Selection@@IAEXXZ"},
+    "00491350": {"status": "scratch", "symbol": "?startGame@TRIBE_Screen_Campaign_Selection@@IAEXXZ"}
+  }
+}

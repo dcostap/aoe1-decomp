@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "header": "include/tact_wnd.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_wnd.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004D3470": {"status": "matching", "symbol": "??0TRIBE_Action_Wonder@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "004D34C0": {"status": "matching", "symbol": "??0TRIBE_Action_Wonder@@QAE@PAVRGE_Action_Object@@@Z"},
+    "004D34F0": {"status": "scratch", "symbol": "??1TRIBE_Action_Wonder@@UAE@XZ"},
+    "004D3690": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Wonder@@UAEXE@Z"},
+    "004D36B0": {"status": "scratch", "symbol": "?set_state@TRIBE_Action_Wonder@@UAEXE@Z"},
+    "004D3810": {"status": "matching", "symbol": "?update@TRIBE_Action_Wonder@@UAEEXZ"}
+  }
+}

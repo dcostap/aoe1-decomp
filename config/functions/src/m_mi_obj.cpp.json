@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "header": "include/m_mi_obj.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\m_mi_obj.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00451440": {"status": "matching", "symbol": "??0RGE_Master_Missile_Object@@QAE@PAV0@H@Z"},
+    "004514C0": {"status": "matching", "symbol": "??0RGE_Master_Missile_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z"},
+    "00451530": {"status": "matching", "symbol": "??0RGE_Master_Missile_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z"},
+    "004515B0": {"status": "matching", "symbol": "?setup@RGE_Master_Missile_Object@@IAEHPAV1@@Z"},
+    "00451620": {"status": "matching", "symbol": "?setup@RGE_Master_Missile_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
+    "004516C0": {"status": "matching", "symbol": "?setup@RGE_Master_Missile_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
+    "00451760": {"status": "matching", "symbol": "??1RGE_Master_Missile_Object@@UAE@XZ"},
+    "00451770": {"status": "matching", "symbol": "?make_new_obj@RGE_Master_Missile_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z"},
+    "00451840": {"status": "matching", "symbol": "?make_new_master@RGE_Master_Missile_Object@@UAEPAVRGE_Master_Static_Object@@XZ"},
+    "004518B0": {"status": "matching", "symbol": "?copy_obj@RGE_Master_Missile_Object@@UAEXPAVRGE_Master_Static_Object@@@Z"},
+    "00451910": {"status": "matching", "symbol": "?modify@RGE_Master_Missile_Object@@UAEXME@Z"},
+    "00451940": {"status": "matching", "symbol": "?modify_delta@RGE_Master_Missile_Object@@UAEXME@Z"},
+    "00451970": {"status": "matching", "symbol": "?modify_percent@RGE_Master_Missile_Object@@UAEXME@Z"},
+    "004519A0": {"status": "matching", "symbol": "?save@RGE_Master_Missile_Object@@UAEXH@Z"}
+  }
+}

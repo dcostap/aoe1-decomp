@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "header": "include/dlg_abt.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\dlg_abt.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0043AD70": {"status": "matching", "symbol": "??0TribeAboutDialog@@QAE@PAVTScreenPanel@@@Z"},
+    "0043B300": {"status": "matching", "symbol": "??1TribeAboutDialog@@UAE@XZ"},
+    "0043B400": {"status": "matching", "symbol": "?action@TribeAboutDialog@@MAEJPAVTPanel@@JKK@Z"},
+    "0043B550": {"status": "matching", "symbol": "?draw@TribeAboutDialog@@UAEXXZ"}
+  }
+}

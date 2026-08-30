@@ -5,13 +5,21 @@ import json
 from pathlib import Path
 
 from coff import load_coff_object
-from common import load_translation_units, repo_path
+from common import load_build_modules, repo_path
+from extract_obj_function import select_exact_function_symbol
 from original_fpo import (
     DEFAULT_FPO_PATH,
     DEFAULT_OWNER_OVERRIDES_PATH,
     load_original_owner_symbols,
 )
-from translation_unit_prefixes import _select_symbol
+
+
+def _select_symbol(obj, va: int, module: dict[str, object]):
+    functions = module["functions"]
+    assert isinstance(functions, dict)
+    entry = functions[f"{va:08X}"]
+    assert isinstance(entry, dict)
+    return select_exact_function_symbol(obj, str(entry["symbol"]))
 
 
 def parse_args() -> argparse.Namespace:
@@ -43,9 +51,11 @@ def audit_symbols(
     for group in groups:
         name = str(group["name"])
         obj = load_coff_object(object_dir / f"{name}.obj")
-        owners = group.get("owners")
-        assert isinstance(owners, dict)
-        for raw_va in owners:
+        functions = group.get("functions")
+        assert isinstance(functions, dict)
+        for raw_va, entry in functions.items():
+            if not isinstance(entry, dict) or entry.get("status") != "matching":
+                continue
             va = str(raw_va).upper()
             expected = original.get(va)
             if expected is None:
@@ -81,7 +91,12 @@ def audit_symbols(
                 if error:
                     row["error"] = error
                 rows.append(row)
-    owner_count = sum(len(group.get("owners") or {}) for group in groups)
+    owner_count = sum(
+        1
+        for group in groups
+        for entry in (group.get("functions") or {}).values()
+        if isinstance(entry, dict) and entry.get("status") == "matching"
+    )
     return {
         "group_count": len(groups),
         "owner_count": owner_count,
@@ -96,7 +111,7 @@ def audit_symbols(
 def main() -> int:
     args = parse_args()
     report = audit_symbols(
-        load_translation_units(),
+        load_build_modules(),
         repo_path(args.objects_dir),
         repo_path(args.fpo),
         repo_path(args.owner_overrides),

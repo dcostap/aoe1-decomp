@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "header": "include/airesitm.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\airesitm.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00411EC0": {"status": "matching", "symbol": "??0ResourceItem@@QAE@XZ"},
+    "00411F10": {"status": "scratch", "symbol": "??0ResourceItem@@QAE@H@Z"},
+    "00411F80": {"status": "scratch", "symbol": "??0ResourceItem@@QAE@HPAH@Z"},
+    "00411FF0": {"status": "matching", "symbol": "??0ResourceItem@@QAE@ABV0@@Z"},
+    "00412050": {"status": "matching", "symbol": "??0ResourceItem@@QAE@PAV0@@Z"},
+    "004120B0": {"status": "matching", "symbol": "??1ResourceItem@@UAE@XZ"},
+    "004120C0": {"status": "matching", "symbol": "??YResourceItem@@QAEAAV0@ABV0@@Z"},
+    "00412100": {"status": "matching", "symbol": "??8@YAHABVResourceItem@@0@Z"},
+    "00412140": {"status": "scratch", "symbol": "??9@YAHABVResourceItem@@0@Z"},
+    "00412180": {"status": "matching", "symbol": "?value@ResourceItem@@QBEHH@Z"},
+    "004121A0": {"status": "matching", "symbol": "?setValue@ResourceItem@@QAEXHH@Z"},
+    "004121C0": {"status": "matching", "symbol": "?incrementValue@ResourceItem@@QAEXHH@Z"},
+    "004121E0": {"status": "matching", "symbol": "?setAllValues@ResourceItem@@QAEXH@Z"},
+    "00412200": {"status": "matching", "symbol": "?number@ResourceItem@@QBEHXZ"},
+    "00412210": {"status": "matching", "symbol": "?largestValueIndex@ResourceItem@@QAEHH@Z"},
+    "00412240": {"status": "scratch", "symbol": "?sortLarge@ResourceItem@@IAEHXZ"}
+  }
+}

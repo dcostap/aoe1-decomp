@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "header": "include/scr_mp.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_mp.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0049F370": {"status": "scratch", "symbol": "??0TribeMPStartupScreen@@QAE@XZ"},
+    "0049F890": {"status": "scratch", "symbol": "??1TribeMPStartupScreen@@UAE@XZ"},
+    "0049F9A0": {"status": "matching", "symbol": "?handle_idle@TribeMPStartupScreen@@UAEJXZ"},
+    "0049F9D0": {"status": "matching", "symbol": "?action@TribeMPStartupScreen@@UAEJPAVTPanel@@JKK@Z"},
+    "0049FED0": {"status": "matching", "symbol": "?fillList@TribeMPStartupScreen@@IAEXXZ"},
+    "004A00A0": {"status": "matching", "symbol": "?handle_user_command@TribeMPStartupScreen@@UAEJIJ@Z"}
+  }
+}

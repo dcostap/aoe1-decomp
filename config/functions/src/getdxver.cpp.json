@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "header": "include/getdxver.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\getdxver.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0044DAC0": {"status": "matching", "symbol": "?GetDXVersion@@YAXPAK0@Z"},
+    "0044DEE0": {"status": "matching", "symbol": "?IsDPlay501a@@YAHXZ"}
+  }
+}

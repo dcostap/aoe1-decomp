@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/aitrdmod.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aitrdmod.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00412E40": {"status": "matching", "symbol": "??0TradeAIModule@@QAE@PAXH@Z"},
+    "00412EA0": {"status": "matching", "symbol": "??0TradeAIModule@@QAE@HH@Z"},
+    "00412ED0": {"status": "matching", "symbol": "??1TradeAIModule@@UAE@XZ"},
+    "00412EE0": {"status": "matching", "symbol": "?setMainDecisionAI@TradeAIModule@@QAEXPAVMainDecisionAIModule@@@Z"},
+    "00412EF0": {"status": "matching", "symbol": "?save@TradeAIModule@@UAEHH@Z"}
+  }
+}

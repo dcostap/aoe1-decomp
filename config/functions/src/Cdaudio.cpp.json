@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "header": "include/cdaudio.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Cdaudio.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "004237C0": {"status": "matching", "symbol": "??0CCDAudio@@QAE@XZ"},
+    "004237D0": {"status": "matching", "symbol": "??1CCDAudio@@QAE@XZ"},
+    "00423800": {"status": "matching", "symbol": "?Open@CCDAudio@@QAEKPAX@Z"},
+    "00423880": {"status": "matching", "symbol": "?Close@CCDAudio@@QAEKXZ"},
+    "004238C0": {"status": "matching", "symbol": "?Stop@CCDAudio@@QAEKXZ"},
+    "004238E0": {"status": "matching", "symbol": "?Play@CCDAudio@@QAEKE@Z"},
+    "00423930": {"status": "matching", "symbol": "?Pause@CCDAudio@@QAEKXZ"},
+    "00423950": {"status": "matching", "symbol": "?ResumePlay@CCDAudio@@QAEKXZ"},
+    "00423980": {"status": "matching", "symbol": "?Eject@CCDAudio@@QAEKXZ"},
+    "004239B0": {"status": "matching", "symbol": "?GetNumberOfTracks@CCDAudio@@QAEKAAE@Z"},
+    "004239F0": {"status": "matching", "symbol": "?IsMediaPresent@CCDAudio@@QAEKAAH@Z"},
+    "00423A40": {"status": "matching", "symbol": "?IsPlaying@CCDAudio@@QAEKAAH@Z"},
+    "00423AC0": {"status": "matching", "symbol": "?GetLength@CCDAudio@@QAEKAAE0@Z"},
+    "00423B10": {"status": "matching", "symbol": "?GetTrackLength@CCDAudio@@QAEKEAAE0@Z"},
+    "00423B70": {"status": "matching", "symbol": "?GetPosition@CCDAudio@@QAEKAAE00@Z"},
+    "00423BD0": {"status": "matching", "symbol": "?DisplayErrorMsg@CCDAudio@@AAEKK@Z"}
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "header": "include/tact_trd.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_trd.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004D2660": {"status": "matching", "symbol": "??0TRIBE_Action_Trade@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "004D2710": {"status": "matching", "symbol": "??0TRIBE_Action_Trade@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"},
+    "004D27A0": {"status": "matching", "symbol": "??0TRIBE_Action_Trade@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"},
+    "004D27F0": {"status": "matching", "symbol": "?save@TRIBE_Action_Trade@@UAEXH@Z"},
+    "004D2830": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Trade@@UAEXE@Z"},
+    "004D2880": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Trade@@MAEXE@Z"},
+    "004D2CB0": {"status": "scratch", "symbol": "?update@TRIBE_Action_Trade@@UAEEXZ"},
+    "004D32C0": {"status": "matching", "symbol": "?get_move_sprite@TRIBE_Action_Trade@@IAEPAVRGE_Sprite@@XZ"},
+    "004D32F0": {"status": "matching", "symbol": "?get_wait_sprite@TRIBE_Action_Trade@@IAEPAVRGE_Sprite@@XZ"},
+    "004D3330": {"status": "matching", "symbol": "?stop@TRIBE_Action_Trade@@UAEHXZ"},
+    "004D3340": {"status": "matching", "symbol": "?move_to@TRIBE_Action_Trade@@UAEHPAVRGE_Static_Object@@MMM@Z"},
+    "004D33C0": {"status": "matching", "symbol": "?work@TRIBE_Action_Trade@@UAEHPAVRGE_Static_Object@@MMM@Z"}
+  }
+}

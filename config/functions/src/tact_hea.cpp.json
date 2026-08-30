@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "header": "include/tact_hea.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_hea.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004CE930": {"status": "matching", "symbol": "??0TRIBE_Action_Heal@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "004CE990": {"status": "matching", "symbol": "??0TRIBE_Action_Heal@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"},
+    "004CEA10": {"status": "matching", "symbol": "??0TRIBE_Action_Heal@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"},
+    "004CEA50": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Heal@@UAEXE@Z"},
+    "004CEA90": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Heal@@MAEXE@Z"},
+    "004CECF0": {"status": "scratch", "symbol": "?update@TRIBE_Action_Heal@@UAEEXZ"},
+    "004CF030": {"status": "matching", "symbol": "?work@TRIBE_Action_Heal@@UAEHPAVRGE_Static_Object@@MMM@Z"}
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "header": "include/main.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\main.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004549E0": {"status": "matching", "symbol": "_WinMain@16"}
+  }
+}

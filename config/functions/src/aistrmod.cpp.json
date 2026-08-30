@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "header": "include/aistrmod.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aistrmod.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00412AF0": {"status": "matching", "symbol": "??0StrategyAIModule@@QAE@PAXH@Z"},
+    "00412B40": {"status": "matching", "symbol": "??1StrategyAIModule@@UAE@XZ"}
+  }
+}

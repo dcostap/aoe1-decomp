@@ -178,7 +178,7 @@ class CandidateTranslationUnitTests(unittest.TestCase):
             "symbol": "??_GRGE_Player@@UAEPAXI@Z",
             "result": "MATCH",
         }
-        with patch("validate_candidate_tu.compare_object_owner", return_value=comparison) as compare:
+        with patch("validate_candidate_tu.compare_object_function", return_value=comparison) as compare:
             result = _compare_generated_destructor(
                 obj,
                 0x0046E750,
@@ -264,7 +264,7 @@ class CandidateTranslationUnitTests(unittest.TestCase):
             ]
         )
         comparison = {"symbol": expected, "result": "MATCH"}
-        with patch("validate_candidate_tu.compare_object_owner", return_value=comparison) as compare:
+        with patch("validate_candidate_tu.compare_object_function", return_value=comparison) as compare:
             result = _compare_generated_entry(
                 obj,
                 0x004D6B20,

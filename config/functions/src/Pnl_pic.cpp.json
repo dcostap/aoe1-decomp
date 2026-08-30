@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "header": "include/pnl_pic.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Pnl_pic.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0047A1D0": {"status": "matching", "symbol": "??0TPicturePanel@@QAE@XZ"},
+    "0047A250": {"status": "matching", "symbol": "??1TPicturePanel@@UAE@XZ"},
+    "0047A2A0": {"status": "matching", "symbol": "?setup@TPicturePanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPADJHH@Z"},
+    "0047A3A0": {"status": "matching", "symbol": "?set_picture@TPicturePanel@@QAEXPAVTShape@@J@Z"},
+    "0047A3E0": {"status": "matching", "symbol": "?load_pic@TPicturePanel@@IAEHXZ"},
+    "0047A5B0": {"status": "matching", "symbol": "?free_pic@TPicturePanel@@IAEXXZ"},
+    "0047A630": {"status": "matching", "symbol": "?draw@TPicturePanel@@UAEXXZ"}
+  }
+}

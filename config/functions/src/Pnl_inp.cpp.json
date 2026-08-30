@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "header": "include/Pnl_inp.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Pnl_inp.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00476C10": {"status": "scratch", "symbol": "??0TInputPanel@@QAE@XZ"},
+    "00476CF0": {"status": "matching", "symbol": "??1TInputPanel@@UAE@XZ"},
+    "00476D80": {"status": "matching", "symbol": "?setup@TInputPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPADHEHEEFPAVTDigital@@3W4FormatType@1@@Z"},
+    "00476EE0": {"status": "matching", "symbol": "?set_focus@TInputPanel@@UAEXH@Z"},
+    "00476F20": {"status": "matching", "symbol": "?set_format@TInputPanel@@QAEXW4FormatType@1@@Z"},
+    "00476F30": {"status": "matching", "symbol": "?handle_idle@TInputPanel@@UAEJXZ"},
+    "00476FA0": {"status": "scratch", "symbol": "?char_action@TInputPanel@@UAEJJF@Z"},
+    "00477220": {"status": "scratch", "symbol": "?key_down_action@TInputPanel@@UAEJJFHHH@Z"},
+    "004777C0": {"status": "matching", "symbol": "?draw@TInputPanel@@UAEXXZ"},
+    "00477910": {"status": "matching", "symbol": "?set_text@TInputPanel@@UAEXPAD@Z"},
+    "00477990": {"status": "matching", "symbol": "?set_text@TInputPanel@@UAEXPAPADF@Z"},
+    "004779A0": {"status": "matching", "symbol": "?get_input_buffer@TInputPanel@@QAEPADXZ"},
+    "004779B0": {"status": "matching", "symbol": "?append_character@TInputPanel@@IAEHJ@Z"},
+    "004779D0": {"status": "matching", "symbol": "?insert_character@TInputPanel@@IAEHJ@Z"},
+    "00477AF0": {"status": "scratch", "symbol": "?delete_character@TInputPanel@@IAEHXZ"},
+    "00477C90": {"status": "matching", "symbol": "?backspace_character@TInputPanel@@IAEHXZ"},
+    "00477CB0": {"status": "matching", "symbol": "?paste@TInputPanel@@IAEHXZ"},
+    "00477E90": {"status": "scratch", "symbol": "?reformat@TInputPanel@@IAEXXZ"},
+    "00477EF0": {"status": "matching", "symbol": "?calc_input_pos@TInputPanel@@IAEXXZ"},
+    "00478010": {"status": "matching", "symbol": "?calc_cur_line_col@TInputPanel@@IAEXXZ"},
+    "00478150": {"status": "matching", "symbol": "?is_blank@TInputPanel@@QAEHXZ"},
+    "004781A0": {"status": "matching", "symbol": "?get_trimmed_str@TInputPanel@@QAEPADPADH@Z"}
+  }
+}

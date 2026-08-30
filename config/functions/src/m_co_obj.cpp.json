@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "header": "include/m_co_obj.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\m_co_obj.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0044FE40": {"status": "matching", "symbol": "??0RGE_Master_Combat_Object@@QAE@PAV0@H@Z"},
+    "0044FEC0": {"status": "matching", "symbol": "??0RGE_Master_Combat_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z"},
+    "0044FF30": {"status": "matching", "symbol": "??0RGE_Master_Combat_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z"},
+    "0044FFB0": {"status": "matching", "symbol": "?setup@RGE_Master_Combat_Object@@IAEHPAV1@@Z"},
+    "00450170": {"status": "matching", "symbol": "?setup@RGE_Master_Combat_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
+    "00450450": {"status": "accepted_drift", "symbol": "?setup@RGE_Master_Combat_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
+    "00450680": {"status": "matching", "symbol": "??1RGE_Master_Combat_Object@@UAE@XZ"},
+    "004506D0": {"status": "matching", "symbol": "?make_new_obj@RGE_Master_Combat_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z"},
+    "004507A0": {"status": "matching", "symbol": "?make_new_master@RGE_Master_Combat_Object@@UAEPAVRGE_Master_Static_Object@@XZ"},
+    "00450810": {"status": "matching", "symbol": "?copy_obj@RGE_Master_Combat_Object@@UAEXPAVRGE_Master_Static_Object@@@Z"},
+    "00450A00": {"status": "matching", "symbol": "?modify@RGE_Master_Combat_Object@@UAEXME@Z"},
+    "00450B40": {"status": "matching", "symbol": "?modify_delta@RGE_Master_Combat_Object@@UAEXME@Z"},
+    "00450D00": {"status": "matching", "symbol": "?modify_percent@RGE_Master_Combat_Object@@UAEXME@Z"},
+    "00450E20": {"status": "matching", "symbol": "?save@RGE_Master_Combat_Object@@UAEXH@Z"},
+    "00451000": {"status": "accepted_drift", "symbol": "?calc_base_damage_ability@RGE_Master_Combat_Object@@UAEJPAV1@@Z"}
+  }
+}

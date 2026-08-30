@@ -54,6 +54,13 @@ class TargetSessionTests(unittest.TestCase):
             "calling_convention": "__thiscall",
             "pdb_source_file": "demo.cpp",
         }
+        source_patcher = patch.object(
+            target_session,
+            "compiler_source_path",
+            side_effect=lambda _record: target_session.REPO_ROOT / "src" / "demo.cpp",
+        )
+        source_patcher.start()
+        self.addCleanup(source_patcher.stop)
 
     def test_active_json_list_uses_compact_index_and_filters_rows(self) -> None:
         rows = [

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "header": "include/dlg_smsg.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\dlg_smsg.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004407A0": {"status": "accepted_drift", "symbol": "??0TribeSendMessageDialog@@QAE@PAVTScreenPanel@@@Z"},
+    "00440E20": {"status": "scratch", "symbol": "??1TribeSendMessageDialog@@UAE@XZ"},
+    "00440F20": {"status": "matching", "symbol": "?action@TribeSendMessageDialog@@MAEJPAVTPanel@@JKK@Z"},
+    "00441410": {"status": "matching", "symbol": "?checkButtons@TribeSendMessageDialog@@IAEXXZ"},
+    "00441460": {"status": "matching", "symbol": "?draw@TribeSendMessageDialog@@MAEXXZ"},
+    "00441530": {"status": "matching", "symbol": "??0TribeSendQuickMessageDialog@@QAE@PAVTScreenPanel@@W4Mode@0@@Z"},
+    "00441650": {"status": "matching", "symbol": "??1TribeSendQuickMessageDialog@@UAE@XZ"},
+    "004416C0": {"status": "matching", "symbol": "?action@TribeSendQuickMessageDialog@@UAEJPAVTPanel@@JKK@Z"},
+    "00441840": {"status": "matching", "symbol": "?handle_mouse_down@TribeSendQuickMessageDialog@@UAEJEJJHH@Z"}
+  }
+}

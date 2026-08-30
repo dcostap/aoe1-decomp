@@ -157,13 +157,13 @@ class MatchingOwnerAuditTests(unittest.TestCase):
                     "name": "work",
                     "source_path": "src/sample.cpp",
                     "source_bucket": "matching",
-                    "registered_groups": ["sample"],
+                    "matching_groups": ["sample"],
                     "grouped_result": "MATCH",
                     "owner_status": "match",
                     "symbol": "?work@Owner@@QAEXXZ",
                     "expected_symbol": "?work@Owner@@QAEXXZ",
                     "expected_owner_name": "work",
-                    "category": "registered_owner_match",
+                    "category": "matching_result",
                 }
             ],
         }

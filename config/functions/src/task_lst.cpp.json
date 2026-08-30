@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "header": "include/task_lst.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\task_lst.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00508E00": {"status": "matching", "symbol": "??0RGE_Task_List@@QAE@XZ"},
+    "00508E20": {"status": "matching", "symbol": "??1RGE_Task_List@@QAE@XZ"},
+    "00508E30": {"status": "matching", "symbol": "?copy@RGE_Task_List@@QAEXPAV1@@Z"},
+    "00508EC0": {"status": "matching", "symbol": "?load@RGE_Task_List@@QAEXHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
+    "00508F60": {"status": "matching", "symbol": "?load@RGE_Task_List@@QAEXPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
+    "00509010": {"status": "matching", "symbol": "?save@RGE_Task_List@@QAEXH@Z"},
+    "00509050": {"status": "matching", "symbol": "?delete_list@RGE_Task_List@@QAEXXZ"},
+    "005090B0": {"status": "matching", "symbol": "?create_task@RGE_Task_List@@UAEPAVRGE_Task@@FF@Z"},
+    "00509120": {"status": "matching", "symbol": "?get_target_task@RGE_Task_List@@UAEPAVRGE_Task@@PAVRGE_Action_Object@@PAVRGE_Static_Object@@MMM@Z"},
+    "005092D0": {"status": "matching", "symbol": "?is_attack_task@RGE_Task_List@@UAEHPAVRGE_Task@@@Z"},
+    "005092F0": {"status": "matching", "symbol": "?check_task@RGE_Task_List@@MAEHPAVRGE_Task@@PAVRGE_Action_Object@@PAVRGE_Static_Object@@@Z"}
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "header": "include/spnl_obj.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\spnl_obj.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "004BEDC0": {"status": "matching", "symbol": "??0TRIBE_Scenario_Editor_Panel_Object@@QAE@PAVTDrawArea@@PAVTPanel@@PAXJJPAVTShape@@PAPAV3@PAVTRIBE_Player@@@Z"},
+    "004BEE30": {"status": "matching", "symbol": "??1TRIBE_Scenario_Editor_Panel_Object@@UAE@XZ"},
+    "004BEE40": {"status": "matching", "symbol": "?set_master_info@TRIBE_Scenario_Editor_Panel_Object@@QAEXPAVRGE_Master_Static_Object@@PAVTRIBE_Player@@@Z"},
+    "004BEE70": {"status": "scratch", "symbol": "?draw@TRIBE_Scenario_Editor_Panel_Object@@UAEXXZ"},
+    "004BF4D0": {"status": "matching", "symbol": "?draw_item@TRIBE_Scenario_Editor_Panel_Object@@UAEXHHW4ValueType@TRIBE_Panel_Object@@HH@Z"},
+    "004BF6C0": {"status": "scratch", "symbol": "?mouse_left_up_action@TRIBE_Scenario_Editor_Panel_Object@@UAEJJJHH@Z"},
+    "004BF6E0": {"status": "matching", "symbol": "?get_pierce_armor@TRIBE_Scenario_Editor_Panel_Object@@QAEJXZ"}
+  }
+}

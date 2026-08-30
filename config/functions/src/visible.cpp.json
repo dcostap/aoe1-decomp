@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "header": "include/visible.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\visible.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0053C1B0": {"status": "matching", "symbol": "??0RGE_Visible_Map@@QAE@PAVRGE_Map@@PAVRGE_Player@@@Z"},
+    "0053C290": {"status": "scratch", "symbol": "??0RGE_Visible_Map@@QAE@HPAVRGE_Game_World@@@Z"},
+    "0053C3C0": {"status": "matching", "symbol": "??1RGE_Visible_Map@@QAE@XZ"},
+    "0053C400": {"status": "matching", "symbol": "?save@RGE_Visible_Map@@QAEXH@Z"},
+    "0053C490": {"status": "matching", "symbol": "?get_visible@RGE_Visible_Map@@QBEEHH@Z"},
+    "0053C4D0": {"status": "matching", "symbol": "?set_all@RGE_Visible_Map@@QAEXE@Z"},
+    "0053C5D0": {"status": "accepted_drift", "symbol": "?explore_all@RGE_Visible_Map@@QAEXXZ"},
+    "0053C670": {"status": "matching", "symbol": "?percentExplored@RGE_Visible_Map@@QBEMXZ"},
+    "0053C680": {"status": "matching", "symbol": "?recomputeExplored@RGE_Visible_Map@@QAEXXZ"},
+    "0053C6C0": {"status": "matching", "symbol": "?get_los_table@RGE_Visible_Map@@QAEPAULOSTBL@@HH@Z"},
+    "0053C6F0": {"status": "scratch", "symbol": "?explore_terrain@RGE_Visible_Map@@QAEHHHHHHH@Z"},
+    "0053C920": {"status": "scratch", "symbol": "RGE_Visible_Map::unexplore_terrain"},
+    "0053CAC0": {"status": "scratch", "symbol": "RGE_Visible_Map::explore_terrain_sq"},
+    "0053CCF0": {"status": "scratch", "symbol": "RGE_Visible_Map::unexplore_terrain_sq"},
+    "0053CE70": {"status": "matching", "symbol": "?checksum_visible_inputs@RGE_Visible_Map@@QAEKXZ"},
+    "0053CE80": {"status": "matching", "symbol": "??0RGE_Unified_Visible_Map@@QAE@HH@Z"},
+    "0053CEE0": {"status": "matching", "symbol": "??0RGE_Unified_Visible_Map@@QAE@HPAVRGE_Game_World@@@Z"},
+    "0053CF10": {"status": "matching", "symbol": "?load@RGE_Unified_Visible_Map@@QAEXH@Z"},
+    "0053CFC0": {"status": "matching", "symbol": "??1RGE_Unified_Visible_Map@@QAE@XZ"},
+    "0053CFF0": {"status": "matching", "symbol": "?save@RGE_Unified_Visible_Map@@QAEXH@Z"},
+    "0053D040": {"status": "matching", "symbol": "?reset@RGE_Unified_Visible_Map@@QAEXXZ"},
+    "0053D070": {"status": "matching", "symbol": "?Set_Map_Offsets@RGE_Unified_Visible_Map@@AAEXXZ"},
+    "0053D0C0": {"status": "matching", "symbol": "?suppress_updates@RGE_Unified_Visible_Map@@QAEXH@Z"},
+    "0053D0D0": {"status": "accepted_drift", "symbol": "?checksumVisible@RGE_Visible_Map@@QAEJXZ"},
+    "0053D110": {"status": "matching", "symbol": "?checksumUnifiedVisible@RGE_Visible_Map@@QAEKXZ"},
+    "0053D150": {"status": "matching", "symbol": "?log_map_call@@YAXHHHHHHHHH@Z"},
+    "0053D200": {"status": "accepted_drift", "symbol": "?dump_vismap_log@@YAXXZ"}
+  }
+}

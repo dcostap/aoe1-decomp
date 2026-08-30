@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "header": "include/pnl_edit.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\pnl_edit.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004755C0": {"status": "matching", "symbol": "??0TEditPanel@@QAE@XZ"},
+    "00475690": {"status": "matching", "symbol": "??1TEditPanel@@UAE@XZ"},
+    "00475770": {"status": "scratch", "symbol": "?setup@TEditPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXFPADW4FormatType@1@H@Z"},
+    "00475930": {"status": "matching", "symbol": "?pnl_sub_wnd_proc@@YGJPAXIIJ@Z"},
+    "00475970": {"status": "matching", "symbol": "?set_text@TEditPanel@@QAEXPAD@Z"},
+    "00475A30": {"status": "matching", "symbol": "?update_text@TEditPanel@@QAEXXZ"},
+    "00475AF0": {"status": "matching", "symbol": "?get_text@TEditPanel@@QAEPADXZ"},
+    "00475B00": {"status": "matching", "symbol": "?get_input_buffer@TEditPanel@@QAEPADXZ"},
+    "00475B10": {"status": "matching", "symbol": "?currentLine@TEditPanel@@QAEPADXZ"},
+    "00475B20": {"status": "matching", "symbol": "?set_active@TEditPanel@@UAEXH@Z"},
+    "00475B60": {"status": "matching", "symbol": "?set_focus@TEditPanel@@UAEXH@Z"},
+    "00475CC0": {"status": "matching", "symbol": "?set_rect@TEditPanel@@UAEXJJJJ@Z"},
+    "00475DD0": {"status": "matching", "symbol": "?set_redraw@TEditPanel@@UAEXW4RedrawMode@TPanel@@@Z"},
+    "00475E10": {"status": "matching", "symbol": "?set_text_color@TEditPanel@@QAEXKK@Z"},
+    "00475E30": {"status": "matching", "symbol": "?set_highlight_text_color@TEditPanel@@QAEXKK@Z"},
+    "00475E40": {"status": "matching", "symbol": "?set_back_color@TEditPanel@@QAEXPAXKE@Z"},
+    "00475E50": {"status": "accepted_drift", "symbol": "?set_bevel_info@TEditPanel@@QAEXHHHHHHH@Z"},
+    "00475F20": {"status": "matching", "symbol": "?set_ime_info@TEditPanel@@QAEXHH@Z"},
+    "00475F40": {"status": "matching", "symbol": "?wnd_proc@TEditPanel@@UAEJPAXIIJ@Z"},
+    "00476040": {"status": "scratch", "symbol": "?sub_wnd_proc@TEditPanel@@QAEJPAXIIJ@Z"},
+    "00476440": {"status": "matching", "symbol": "?verify_char@TEditPanel@@QAEHH@Z"},
+    "00476680": {"status": "accepted_drift", "symbol": "?draw@TEditPanel@@UAEXXZ"},
+    "00476A50": {"status": "matching", "symbol": "?paint@TEditPanel@@UAEXXZ"},
+    "00476A60": {"status": "matching", "symbol": "?is_blank@TEditPanel@@QAEHXZ"},
+    "00476AB0": {"status": "matching", "symbol": "?get_trimmed_str@TEditPanel@@QAEPADPADH@Z"},
+    "00476BB0": {"status": "matching", "symbol": "?handle_reactivate@TEditPanel@@UAEXXZ"},
+    "00476BE0": {"status": "matching", "symbol": "?handle_mouse_down@TEditPanel@@UAEJEJJHH@Z"}
+  }
+}

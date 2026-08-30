@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "header": "include/act_list.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\act_list.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00403EA0": {"status": "matching", "symbol": "??0RGE_Action_List@@QAE@PAVRGE_Action_Object@@@Z"},
+    "00403EC0": {"status": "matching", "symbol": "??1RGE_Action_List@@QAE@XZ"},
+    "00403ED0": {"status": "matching", "symbol": "?load@RGE_Action_List@@QAEXH@Z"},
+    "00403F40": {"status": "matching", "symbol": "?rehook@RGE_Action_List@@QAEXXZ"},
+    "00403F60": {"status": "matching", "symbol": "?save@RGE_Action_List@@QAEXH@Z"},
+    "00403FA0": {"status": "matching", "symbol": "?delete_list@RGE_Action_List@@QAEXXZ"},
+    "00403FC0": {"status": "matching", "symbol": "?create_action@RGE_Action_List@@UAEPAVRGE_Action@@HF@Z"},
+    "00404200": {"status": "scratch", "symbol": "?create_task_action@RGE_Action_List@@UAEPAVRGE_Action@@PAVRGE_Task@@PAVRGE_Static_Object@@MMM@Z"},
+    "004044A0": {"status": "matching", "symbol": "?inside_obj_update@RGE_Action_List@@UAEEXZ"},
+    "004044F0": {"status": "matching", "symbol": "?update@RGE_Action_List@@UAEEXZ"},
+    "00404540": {"status": "matching", "symbol": "?add_action@RGE_Action_List@@QAEXPAVRGE_Action@@@Z"},
+    "00404590": {"status": "accepted_drift", "symbol": "?add_action_at_end@RGE_Action_List@@QAEXPAVRGE_Action@@@Z"},
+    "00404610": {"status": "scratch", "symbol": "?add_action_at_end_of_action_queue@RGE_Action_List@@QAEXPAVRGE_Action@@@Z"},
+    "00404710": {"status": "matching", "symbol": "?remove_action@RGE_Action_List@@QAEXXZ"},
+    "00404760": {"status": "matching", "symbol": "?have_action@RGE_Action_List@@QAEEXZ"},
+    "00404770": {"status": "matching", "symbol": "?action_stop@RGE_Action_List@@QAEHXZ"},
+    "00404790": {"status": "matching", "symbol": "?action_move_to@RGE_Action_List@@QAEHPAVRGE_Static_Object@@MMM@Z"},
+    "004047C0": {"status": "matching", "symbol": "?action_work@RGE_Action_List@@QAEHPAVRGE_Static_Object@@MMM@Z"},
+    "004047F0": {"status": "matching", "symbol": "?attack_response@RGE_Action_List@@QAEHPAVRGE_Static_Object@@@Z"},
+    "00404810": {"status": "matching", "symbol": "?relation_response@RGE_Action_List@@QAEHJE@Z"},
+    "00404840": {"status": "matching", "symbol": "?get_action@RGE_Action_List@@QAEPAVRGE_Action@@XZ"},
+    "00404850": {"status": "matching", "symbol": "?get_task@RGE_Action_List@@QAEPAVRGE_Task@@XZ"},
+    "00404860": {"status": "matching", "symbol": "?copy_obj@RGE_Action_List@@UAEXPAVRGE_Master_Action_Object@@@Z"},
+    "00404890": {"status": "matching", "symbol": "?copy_obj_sprites@RGE_Action_List@@UAEXPAVRGE_Master_Action_Object@@PAVRGE_Task@@1@Z"},
+    "004048C0": {"status": "matching", "symbol": "?get_action_name@RGE_Action_List@@UAEXPAD@Z"}
+  }
+}

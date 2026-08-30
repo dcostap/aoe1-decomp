@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "header": "include/scr_sed2.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_sed2.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004ADC80": {"status": "matching", "symbol": "?SaveDisabledItemsInScenario@TRIBE_Screen_Sed@@IAEXXZ"},
+    "004ADD00": {"status": "matching", "symbol": "?LoadDisabledItemsFromScenario@TRIBE_Screen_Sed@@IAEXXZ"},
+    "004ADD50": {"status": "matching", "symbol": "?save_info_in_scenario@TRIBE_Screen_Sed@@IAEXXZ"},
+    "004ADD60": {"status": "matching", "symbol": "?save_multi_victory_cond_in_scenario@TRIBE_Screen_Sed@@IAEXXZ"},
+    "004AE070": {"status": "scratch", "symbol": "?save_victory_cond_in_scenario@TRIBE_Screen_Sed@@IAEXH@Z"},
+    "004AE620": {"status": "matching", "symbol": "?load_victory_cond_from_scenario@TRIBE_Screen_Sed@@IAEXH@Z"},
+    "004AE9D0": {"status": "matching", "symbol": "?load_multi_victory_cond_from_scenario@TRIBE_Screen_Sed@@IAEXXZ"},
+    "004AECB0": {"status": "matching", "symbol": "?save_diplomacy_in_scenario@TRIBE_Screen_Sed@@IAEXH@Z"},
+    "004AED50": {"status": "matching", "symbol": "?load_diplomacy_from_scenario@TRIBE_Screen_Sed@@IAEXH@Z"},
+    "004AEE10": {"status": "matching", "symbol": "?activate_victory_proper_fields@TRIBE_Screen_Sed@@IAEXHH@Z"},
+    "004AF320": {"status": "matching", "symbol": "?init_module_variables@TRIBE_Screen_Sed@@IAEXXZ"},
+    "004AF6C0": {"status": "matching", "symbol": "?create_all_buttons_etc@TRIBE_Screen_Sed@@IAEXXZ"},
+    "004B1A50": {"status": "matching", "symbol": "?position_panels@TRIBE_Screen_Sed@@QAEXXZ"},
+    "004B29E0": {"status": "matching", "symbol": "?activate_victory_panel@TRIBE_Screen_Sed@@IAEXH@Z"},
+    "004B2AA0": {"status": "matching", "symbol": "?MakeFileList@TRIBE_Screen_Sed@@IAEHPAVTDropDownPanel@@PAD1EE@Z"},
+    "004B2BC0": {"status": "matching", "symbol": "?Set_player_advance_civilization_text@TRIBE_Screen_Sed@@IAEHH@Z"},
+    "004B2C50": {"status": "matching", "symbol": "?SavePlayerActiveStatus@TRIBE_Screen_Sed@@IAEXXZ"},
+    "004B2DD0": {"status": "matching", "symbol": "?create_check_box@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTButtonPanel@@@Z"},
+    "004B2E60": {"status": "matching", "symbol": "?create_radio_button@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTButtonPanel@@@Z"}
+  }
+}

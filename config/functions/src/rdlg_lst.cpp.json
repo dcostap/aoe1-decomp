@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "header": "include/rdlg_lst.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rdlg_lst.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0047E670": {"status": "matching", "symbol": "??0RGE_Dialog_List@@QAE@PAD@Z"},
+    "0047E6B0": {"status": "scratch", "symbol": "?setup@RGE_Dialog_List@@QAEHPAVTScreenPanel@@PADJH1@Z"},
+    "0047E830": {"status": "matching", "symbol": "??1RGE_Dialog_List@@UAE@XZ"},
+    "0047E8C0": {"status": "matching", "symbol": "?get_list_id@RGE_Dialog_List@@UAEFXZ"},
+    "0047E8F0": {"status": "matching", "symbol": "?create_list@RGE_Dialog_List@@MAEHXZ"},
+    "0047E910": {"status": "accepted_drift", "symbol": "?create_object_list@RGE_Dialog_List@@IAEHXZ"},
+    "0047EAA0": {"status": "matching", "symbol": "?rdlg_list_compare@@YAHPBX0@Z"},
+    "0047EAD0": {"status": "matching", "symbol": "?sort_list@RGE_Dialog_List@@IAEXXZ"},
+    "0047EAF0": {"status": "matching", "symbol": "?calc_list_line@RGE_Dialog_List@@IAEXXZ"},
+    "0047EB60": {"status": "matching", "symbol": "?get_cur_id@RGE_Dialog_List@@MAEFXZ"}
+  }
+}

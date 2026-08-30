@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "header": "include/dsutil.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Dsutil.c",
+  "build": {
+    "flags": "c_no_intrinsics"
+  },
+  "functions": {
+    "004477D0": {"status": "matching", "symbol": "_ShowErrMsg"},
+    "004477E0": {"status": "matching", "symbol": "_DSLoadSoundBuffer"},
+    "00447890": {"status": "matching", "symbol": "_DSReloadSoundBuffer"},
+    "004478F0": {"status": "matching", "symbol": "_DSGetWaveResource"},
+    "00447950": {"status": "matching", "symbol": "_SndObjCreate"},
+    "00447A20": {"status": "matching", "symbol": "_SndObjDestroy"},
+    "00447A60": {"status": "matching", "symbol": "_SndObjGetFreeBuffer"},
+    "00447B20": {"status": "matching", "symbol": "_SndObjPlay"},
+    "00447B70": {"status": "matching", "symbol": "_SndObjStop"},
+    "00447BC0": {"status": "matching", "symbol": "_DSFillSoundBuffer"},
+    "00447C60": {"status": "matching", "symbol": "_DSParseWaveResource"},
+    "00447D50": {"status": "matching", "symbol": "_WaveOpenFile"},
+    "00447EF0": {"status": "matching", "symbol": "_WaveStartDataRead"},
+    "00447F40": {"status": "matching", "symbol": "_WaveReadFile"},
+    "00448040": {"status": "matching", "symbol": "_WaveCloseReadFile"},
+    "00448080": {"status": "matching", "symbol": "_WaveCreateFile"},
+    "004481A0": {"status": "matching", "symbol": "_WaveStartDataWrite"},
+    "004481E0": {"status": "scratch", "symbol": "_WaveWriteFile"},
+    "00448250": {"status": "scratch", "symbol": "_WaveCloseWriteFile"},
+    "00448340": {"status": "scratch", "symbol": "_WaveCopyUselessChunks"},
+    "00448400": {"status": "matching", "symbol": "_riffCopyChunk"},
+    "004484D0": {"status": "matching", "symbol": "_WaveLoadFile"},
+    "004485C0": {"status": "matching", "symbol": "_WaveSaveFile"},
+    "00448660": {"status": "scratch", "symbol": "_ds_stream_init"},
+    "004486B0": {"status": "matching", "symbol": "_ds_stream_exit"},
+    "004486F0": {"status": "matching", "symbol": "_ds_stream_file"},
+    "00448A40": {"status": "matching", "symbol": "_ds_stream_volume"},
+    "00448A60": {"status": "matching", "symbol": "_ds_stream_pause"},
+    "00448A70": {"status": "matching", "symbol": "_ds_stream_resume"},
+    "00448A80": {"status": "matching", "symbol": "_ds_stream_stop"},
+    "00448B30": {"status": "matching", "symbol": "_ds_stream_messages"},
+    "00448BA0": {"status": "scratch", "symbol": "_ds_stream_time_func@20"}
+  }
+}

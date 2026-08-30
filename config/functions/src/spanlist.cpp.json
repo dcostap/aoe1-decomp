@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "header": "include/spanlist.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\spanlist.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004BD5E0": {"status": "matching", "symbol": "??0TSpan_Node_List@@QAE@HHH@Z"},
+    "004BD640": {"status": "matching", "symbol": "??1TSpan_Node_List@@QAE@XZ"},
+    "004BD690": {"status": "matching", "symbol": "?SetNumZones@TSpan_Node_List@@AAEXH@Z"},
+    "004BD720": {"status": "matching", "symbol": "?InitNewZone@TSpan_Node_List@@AAEXH@Z"},
+    "004BD790": {"status": "matching", "symbol": "?GetNode@TSpan_Node_List@@QAEPAUVSpan_Node@@XZ"},
+    "004BD800": {"status": "matching", "symbol": "?FreeNode@TSpan_Node_List@@QAEXPAUVSpan_Node@@@Z"},
+    "004BD820": {"status": "matching", "symbol": "?FreeThread@TSpan_Node_List@@QAEHPAUVSpan_Node@@0@Z"},
+    "004BD880": {"status": "matching", "symbol": "?ReclaimAllNodes@TSpan_Node_List@@QAEXXZ"},
+    "004BD8A0": {"status": "matching", "symbol": "?ResetStats@TSpan_Node_List@@QAEXXZ"},
+    "004BD8B0": {"status": "matching", "symbol": "??0TSpan_List_Manager@@QAE@HH@Z"},
+    "004BD9A0": {"status": "matching", "symbol": "??1TSpan_List_Manager@@QAE@XZ"},
+    "004BDA00": {"status": "matching", "symbol": "?SetSpanRegions@TSpan_List_Manager@@QAEXHHHH@Z"},
+    "004BDA70": {"status": "matching", "symbol": "?ResetAll@TSpan_List_Manager@@QAEXXZ"},
+    "004BDB00": {"status": "scratch", "symbol": "?AddSpan@TSpan_List_Manager@@QAEXHHH@Z"},
+    "004BDEA0": {"status": "accepted_drift", "symbol": "?AddShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z"},
+    "004BDFA0": {"status": "matching", "symbol": "?AddShape_Align@TSpan_List_Manager@@QAEXPAEPAUShape_Info@@HHH@Z"},
+    "004BE090": {"status": "scratch", "symbol": "?AddLine_Align@TSpan_List_Manager@@QAEXHHHH@Z"},
+    "004BE1F0": {"status": "matching", "symbol": "?AddMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z"},
+    "004BE240": {"status": "matching", "symbol": "?SubtractMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z"},
+    "004BE290": {"status": "matching", "symbol": "?DeleteSpan@TSpan_List_Manager@@QAEXHHH@Z"},
+    "004BE4B0": {"status": "scratch", "symbol": "?DeleteShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z"},
+    "004BE5B0": {"status": "matching", "symbol": "?PointVisible@TSpan_List_Manager@@QAEHHH@Z"},
+    "004BE5F0": {"status": "matching", "symbol": "?Merge_n_Align@TSpan_List_Manager@@QAEXPAV1@0@Z"},
+    "004BE690": {"status": "matching", "symbol": "?AlignamizeSpans@TSpan_List_Manager@@QAEXXZ"},
+    "004BE750": {"status": "matching", "symbol": "?ScrollSpansHorizontally@TSpan_List_Manager@@QAEXHH@Z"},
+    "004BE850": {"status": "matching", "symbol": "?ScrollSpansVertically@TSpan_List_Manager@@QAEXHH@Z"},
+    "004BE9E0": {"status": "matching", "symbol": "?ValidateSpan@TSpan_List_Manager@@QAEHH@Z"},
+    "004BEAD0": {"status": "accepted_drift", "symbol": "?DecodeLine@TSpan_List_Manager@@QAEHPAEHEH@Z"},
+    "004BEB10": {"status": "scratch", "symbol": "?take_snapshot@TSpan_List_Manager@@QAEXPADAAHPAVTDrawArea@@HPAPAV1@PAHH@Z"}
+  }
+}

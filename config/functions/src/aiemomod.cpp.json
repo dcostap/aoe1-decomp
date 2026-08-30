@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "header": "include/aiemomod.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aiemomod.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0040C7C0": {"status": "matching", "symbol": "??0EmotionalAIModule@@QAE@PAXH@Z"},
+    "0040C920": {"status": "matching", "symbol": "??0EmotionalAIModule@@QAE@HH@Z"},
+    "0040CA90": {"status": "matching", "symbol": "??1EmotionalAIModule@@UAE@XZ"},
+    "0040CAA0": {"status": "matching", "symbol": "?setMainDecisionAI@EmotionalAIModule@@QAEXPAVMainDecisionAIModule@@@Z"},
+    "0040CAB0": {"status": "matching", "symbol": "?save@EmotionalAIModule@@UAEHH@Z"},
+    "0040CAE0": {"status": "matching", "symbol": "?stateName@EmotionalAIModule@@QAEPADH@Z"},
+    "0040CB10": {"status": "matching", "symbol": "?state@EmotionalAIModule@@QBEHH@Z"},
+    "0040CB30": {"status": "matching", "symbol": "?setState@EmotionalAIModule@@QAEXHH@Z"},
+    "0040CB50": {"status": "matching", "symbol": "?incrementState@EmotionalAIModule@@QAEXHH@Z"},
+    "0040CB80": {"status": "matching", "symbol": "?decrementState@EmotionalAIModule@@QAEXHH@Z"},
+    "0040CBB0": {"status": "matching", "symbol": "?overallState@EmotionalAIModule@@QBEHXZ"},
+    "0040CBE0": {"status": "matching", "symbol": "?setOverallState@EmotionalAIModule@@QAEXH@Z"},
+    "0040CD80": {"status": "matching", "symbol": "?defaultState@EmotionalAIModule@@QBEHXZ"}
+  }
+}

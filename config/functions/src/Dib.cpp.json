@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "header": "include/dib.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Dib.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00438820": {"status": "scratch", "symbol": "?DibBlt@@YAXPAUBITMAPINFO256@@PAEPAUtagRECT@@JJJJ01JJJJHHH@Z"},
+    "00438AA0": {"status": "scratch", "symbol": "?TransDibBlt@@YAXPAUBITMAPINFO256@@PAEPAUtagRECT@@JJJJ01PAUTRANSINFO@@JJJJHHHH@Z"},
+    "00438E80": {"status": "matching", "symbol": "?ClipDibBlt@@YAHPAUBITMAPINFO256@@PAUtagRECT@@AAJ2222222HH@Z"},
+    "00439060": {"status": "matching", "symbol": "?GetDibDim@@YAXPAUBITMAPINFO256@@AAJ11@Z"},
+    "004390A0": {"status": "scratch", "symbol": "?TileDibBlt@@YAJPAUBITMAPINFO256@@PAEPAUtagRECT@@JJJJJJ01PAUTRANSINFO@@JJJJHHH@Z"},
+    "004395A0": {"status": "scratch", "symbol": "?DibCheckTrans@@YAHPAUBITMAPINFO256@@PAUTRANSINFO@@PAE@Z"},
+    "00439700": {"status": "matching", "symbol": "?GetPaletteFromDib@@YAPAXPADH@Z"},
+    "00439750": {"status": "scratch", "symbol": "?ReadPalette@@YAPAXPADJH@Z"},
+    "00439A10": {"status": "matching", "symbol": "?DibOpenFile@@YAPAUtagBITMAPINFOHEADER@@PAD@Z"},
+    "00439B50": {"status": "matching", "symbol": "?ReadDibBits@@YAPAEPAD@Z"},
+    "00439BE0": {"status": "matching", "symbol": "?DibWriteClipped@@YAHPAUtagBITMAPINFOHEADER@@PADJJJJ@Z"},
+    "00439CC0": {"status": "matching", "symbol": "?DibWriteFile@@YAHPAUtagBITMAPINFOHEADER@@PAD@Z"},
+    "00439D80": {"status": "scratch", "symbol": "?DibCreatePalette@@YAPAXPAUtagBITMAPINFOHEADER@@@Z"},
+    "00439E50": {"status": "scratch", "symbol": "?DibReadBitmapInfo@@YAPAUtagBITMAPINFOHEADER@@H@Z"},
+    "0043A070": {"status": "matching", "symbol": "?DibFromBitmap@@YAPAUtagBITMAPINFOHEADER@@PAXKI0I@Z"},
+    "0043A330": {"status": "matching", "symbol": "?DibSetUsage@@YAHPAUtagBITMAPINFOHEADER@@PAXI@Z"},
+    "0043A420": {"status": "matching", "symbol": "?DibDraw@@YAHPAXHHHHPAUtagBITMAPINFOHEADER@@HHHHJI@Z"},
+    "0043A4B0": {"status": "matching", "symbol": "?DibCopy@@YAPAUtagBITMAPINFOHEADER@@PAU1@@Z"},
+    "0043A500": {"status": "matching", "symbol": "?DibCreate@@YAPAUtagBITMAPINFOHEADER@@HHH@Z"},
+    "0043A660": {"status": "scratch", "symbol": "?DibMapToPalette@@YAXPAUtagBITMAPINFOHEADER@@PAXHH@Z"},
+    "0043AA60": {"status": "matching", "symbol": "?xlatClut8@@YAXPAEK0@Z"},
+    "0043AA90": {"status": "accepted_drift", "symbol": "xlatClut4"},
+    "0043AAD0": {"status": "accepted_drift", "symbol": "xlatRle8"},
+    "0043AB40": {"status": "matching", "symbol": "?xlatRle4@@YAXPAEK0@Z"},
+    "0043AB50": {"status": "scratch", "symbol": "memmove"},
+    "0043AB80": {"status": "matching", "symbol": "?CreateIdentityPalette@@YAXPAX@Z"},
+    "0043ACB0": {"status": "matching", "symbol": "?CopyPalette@@YAPAXPAX@Z"},
+    "0043AD40": {"status": "matching", "symbol": "?DibFree@@YAXPAUtagBITMAPINFOHEADER@@@Z"}
+  }
+}

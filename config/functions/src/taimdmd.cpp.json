@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "header": "include/taimdmd.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taimdmd.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004E4800": {"status": "scratch", "symbol": "??0TribeMainDecisionAIModule@@QAE@PAXHPADPAVTRIBE_Player@@111@Z"},
+    "004E4B80": {"status": "scratch", "symbol": "??0TribeMainDecisionAIModule@@QAE@HPADPAVTRIBE_Player@@H@Z"},
+    "004E4EC0": {"status": "matching", "symbol": "??1TribeMainDecisionAIModule@@UAE@XZ"},
+    "004E4FA0": {"status": "matching", "symbol": "?setLogHistory@TribeMainDecisionAIModule@@UAEXH@Z"},
+    "004E5050": {"status": "scratch", "symbol": "?update@TribeMainDecisionAIModule@@UAEHH@Z"},
+    "004E5DB0": {"status": "matching", "symbol": "?save@TribeMainDecisionAIModule@@UAEHH@Z"},
+    "004E5F30": {"status": "matching", "symbol": "?kick@TribeMainDecisionAIModule@@QAEXH@Z"},
+    "004E5FA0": {"status": "matching", "symbol": "?addObject@TribeMainDecisionAIModule@@UAEHPAVRGE_Static_Object@@@Z"},
+    "004E5FE0": {"status": "matching", "symbol": "?removeObject@TribeMainDecisionAIModule@@UAEHH@Z"},
+    "004E6020": {"status": "matching", "symbol": "?objectGroupThatCanPerformAction@TribeMainDecisionAIModule@@UAEHH@Z"},
+    "004E6090": {"status": "matching", "symbol": "?canPerformAction@TribeMainDecisionAIModule@@UAEHHH@Z"},
+    "004E60D0": {"status": "matching", "symbol": "?detask@TribeMainDecisionAIModule@@QAEXH@Z"},
+    "004E60F0": {"status": "matching", "symbol": "?isMoveable@TribeMainDecisionAIModule@@QAEHH@Z"},
+    "004E6160": {"status": "matching", "symbol": "?updateBuildAIWithObjects@TribeMainDecisionAIModule@@QAEXXZ"},
+    "004E6250": {"status": "matching", "symbol": "?tributeNotify@TribeMainDecisionAIModule@@QAEXHHH@Z"},
+    "004E6490": {"status": "matching", "symbol": "?revokeTributeAlliance@TribeMainDecisionAIModule@@QAEXXZ"},
+    "004E6580": {"status": "matching", "symbol": "?setTributeChat@TribeMainDecisionAIModule@@IAEXXZ"},
+    "004E6600": {"status": "matching", "symbol": "?processAICommand@TribeMainDecisionAIModule@@QAEHHHHHH@Z"},
+    "004E6870": {"status": "matching", "symbol": "?currentScore@TribeMainDecisionAIModule@@QAEHH@Z"}
+  }
+}

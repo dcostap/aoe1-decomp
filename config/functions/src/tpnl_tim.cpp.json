@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "header": "include/tpnl_tim.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tpnl_tim.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0051D790": {"status": "matching", "symbol": "??0TRIBE_Panel_Time@@QAE@PAVTDrawArea@@PAVTPanel@@@Z"},
+    "0051D8B0": {"status": "matching", "symbol": "??1TRIBE_Panel_Time@@UAE@XZ"},
+    "0051D940": {"status": "matching", "symbol": "?set_rect@TRIBE_Panel_Time@@UAEXJJJJ@Z"},
+    "0051DAD0": {"status": "matching", "symbol": "?startup@TRIBE_Panel_Time@@QAEXXZ"},
+    "0051DB00": {"status": "matching", "symbol": "?set_clock_type@TRIBE_Panel_Time@@QAEXHH@Z"},
+    "0051DC60": {"status": "matching", "symbol": "?get_clock_type@TRIBE_Panel_Time@@QAEHXZ"},
+    "0051DC70": {"status": "matching", "symbol": "?get_player_id@TRIBE_Panel_Time@@QAEHXZ"},
+    "0051DC90": {"status": "matching", "symbol": "?draw@TRIBE_Panel_Time@@UAEXXZ"},
+    "0051E0E0": {"status": "matching", "symbol": "?get_true_render_rect@TRIBE_Panel_Time@@UAEXAAUtagRECT@@@Z"},
+    "0051E150": {"status": "matching", "symbol": "?handle_idle@TRIBE_Panel_Time@@UAEJXZ"},
+    "0051E2B0": {"status": "scratch", "symbol": "?render_to_image_buffer@TRIBE_Panel_Time@@IAEHXZ"}
+  }
+}

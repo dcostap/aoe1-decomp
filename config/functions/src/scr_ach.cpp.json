@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "header": "include/scr_ach.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_ach.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0048D530": {"status": "scratch", "symbol": "??0TribeAchievementsScreen@@QAE@PADH@Z"},
+    "0048E210": {"status": "scratch", "symbol": "??1TribeAchievementsScreen@@UAE@XZ"},
+    "0048E400": {"status": "scratch", "symbol": "?set_mode@TribeAchievementsScreen@@IAEXJ@Z"},
+    "0048F0B0": {"status": "matching", "symbol": "?draw@TribeAchievementsScreen@@UAEXXZ"},
+    "0048F190": {"status": "matching", "symbol": "?handle_mouse_down@TribeAchievementsScreen@@UAEJEJJHH@Z"},
+    "0048F280": {"status": "matching", "symbol": "?action@TribeAchievementsScreen@@UAEJPAVTPanel@@JKK@Z"},
+    "0048F500": {"status": "matching", "symbol": "?handle_idle@TribeAchievementsScreen@@UAEJXZ"},
+    "0048F530": {"status": "matching", "symbol": "?wnd_proc@TribeAchievementsScreen@@UAEJPAXIIJ@Z"}
+  }
+}

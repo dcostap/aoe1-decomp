@@ -13,12 +13,12 @@ from common import (
     ensure_build_subdir,
     format_hex,
     function_record_by_va,
+    function_entry_for_va,
     function_slug,
     load_binaries,
     load_layout,
     owned_function_ranges,
     repo_path,
-    translation_unit_for_va,
 )
 from original_fpo import load_original_owner_symbols
 
@@ -234,13 +234,12 @@ def main() -> None:
     if record is None:
         symbol = find_function_symbol(obj, lambda candidate: True)
     else:
-        group = translation_unit_for_va(va)
-        symbols = (
-            group.get("functions") or group.get("symbols") or {}
-            if group is not None
-            else {}
+        entry = function_entry_for_va(va)
+        exact_symbol = (
+            str(entry.get("symbol") or "")
+            if entry is not None and entry.get("status") == "matching"
+            else ""
         )
-        exact_symbol = symbols.get(f"{va:08X}") if isinstance(symbols, dict) else None
         if not exact_symbol:
             original_symbols, _linkages = load_original_owner_symbols()
             exact_symbol = original_symbols.get(f"{va:08X}")

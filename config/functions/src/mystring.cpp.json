@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "header": "include/mystring.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\mystring.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00462D70": {"status": "matching", "symbol": "?convert_us@@YAXPAD@Z"},
+    "00462D90": {"status": "matching", "symbol": "?unconvert_us@@YAXPAD@Z"},
+    "00462DB0": {"status": "matching", "symbol": "?addstring@@YAXPAPADPAD1@Z"},
+    "00462E30": {"status": "matching", "symbol": "?getstring@@YAXPAPADPAD@Z"}
+  }
+}

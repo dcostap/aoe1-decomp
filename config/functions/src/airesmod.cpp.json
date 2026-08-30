@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "header": "include/airesmod.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\airesmod.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00412310": {"status": "scratch", "symbol": "??0ResourceAIModule@@QAE@PAXHHHHH@Z"},
+    "00412480": {"status": "matching", "symbol": "??1ResourceAIModule@@UAE@XZ"},
+    "00412540": {"status": "matching", "symbol": "?processMessage@ResourceAIModule@@UAEHPAVAIModuleMessage@@@Z"},
+    "00412550": {"status": "matching", "symbol": "?update@ResourceAIModule@@UAEHH@Z"},
+    "00412560": {"status": "matching", "symbol": "?setCallbackMessage@ResourceAIModule@@UAEXPAVAIModuleMessage@@@Z"},
+    "00412570": {"status": "matching", "symbol": "?setMainDecisionAI@ResourceAIModule@@QAEXPAVMainDecisionAIModule@@@Z"},
+    "00412580": {"status": "matching", "symbol": "?numberResources@ResourceAIModule@@QBEHXZ"},
+    "00412590": {"status": "matching", "symbol": "?resource@ResourceAIModule@@QBEHH@Z"},
+    "004125C0": {"status": "matching", "symbol": "?resourcesAvailable@ResourceAIModule@@QAEHPAVResourceItem@@@Z"},
+    "00412640": {"status": "matching", "symbol": "?unavailableResource@ResourceAIModule@@QAEHPAVResourceItem@@@Z"},
+    "004126B0": {"status": "matching", "symbol": "?minValueOfResource@ResourceAIModule@@QBEHH@Z"},
+    "004126E0": {"status": "matching", "symbol": "?maxValueOfResource@ResourceAIModule@@QBEHH@Z"},
+    "00412710": {"status": "matching", "symbol": "?setResource@ResourceAIModule@@QAEXHH@Z"},
+    "00412770": {"status": "matching", "symbol": "?setResources@ResourceAIModule@@QAEXPAVResourceItem@@@Z"},
+    "004127C0": {"status": "matching", "symbol": "?incrementResource@ResourceAIModule@@QAEXHH@Z"},
+    "00412820": {"status": "matching", "symbol": "?incrementResources@ResourceAIModule@@QAEXPAVResourceItem@@@Z"},
+    "00412870": {"status": "matching", "symbol": "?decrementResource@ResourceAIModule@@QAEXHH@Z"},
+    "004128D0": {"status": "matching", "symbol": "?decrementResources@ResourceAIModule@@QAEXPAVResourceItem@@@Z"},
+    "00412920": {"status": "matching", "symbol": "?setResourceMin@ResourceAIModule@@QAEXHH@Z"},
+    "00412940": {"status": "matching", "symbol": "?setResourceMax@ResourceAIModule@@QAEXHH@Z"},
+    "00412960": {"status": "matching", "symbol": "?filterOutMessage@ResourceAIModule@@MAEHPAVAIModuleMessage@@@Z"},
+    "00412970": {"status": "matching", "symbol": "?addResourceType@ResourceAIModule@@QAEXHH@Z"},
+    "00412A10": {"status": "matching", "symbol": "?isResourceType@ResourceAIModule@@QAEHHH@Z"},
+    "00412AD0": {"status": "matching", "symbol": "?numberResourceTypes@ResourceAIModule@@QAEHH@Z"},
+    "00412AE0": {"status": "matching", "symbol": "?lowestResourceType@ResourceAIModule@@QBEHXZ"}
+  }
+}

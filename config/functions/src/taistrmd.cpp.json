@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "header": "include/taistrmd.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taistrmd.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004E6E10": {"status": "matching", "symbol": "??0VictoryConditionRuleSystem@@QAE@XZ"},
+    "004E7430": {"status": "matching", "symbol": "??1VictoryConditionRuleSystem@@UAE@XZ"},
+    "004E7440": {"status": "matching", "symbol": "?loadRules@VictoryConditionRuleSystem@@QAEHPAD@Z"},
+    "004E75D0": {"status": "matching", "symbol": "?setRule@VictoryConditionRuleSystem@@QAEXHH@Z"},
+    "004E75F0": {"status": "matching", "symbol": "?rule@VictoryConditionRuleSystem@@QAEHH@Z"},
+    "004E7610": {"status": "matching", "symbol": "?evaluateAsInProgress@VictoryConditionRuleSystem@@QAEHPAVTRIBE_Player@@H@Z"},
+    "004E7620": {"status": "matching", "symbol": "?evaluateAsNonInProgress@VictoryConditionRuleSystem@@QAEHPAVTRIBE_Player@@H@Z"},
+    "004E7690": {"status": "matching", "symbol": "?execute@VictoryConditionRuleSystem@@QAEHPAVTRIBE_Player@@HH@Z"},
+    "004E8D10": {"status": "matching", "symbol": "?stopExecution@VictoryConditionRuleSystem@@QAEHPAVTRIBE_Player@@H@Z"},
+    "004E8D20": {"status": "matching", "symbol": "?modifyForDifficultyLevel@VictoryConditionRuleSystem@@QAEXH@Z"},
+    "004E9100": {"status": "matching", "symbol": "??0TribeStrategyAIModule@@QAE@PAXH@Z"},
+    "004E9260": {"status": "scratch", "symbol": "??0TribeStrategyAIModule@@QAE@HH@Z"},
+    "004E9730": {"status": "matching", "symbol": "??1TribeStrategyAIModule@@UAE@XZ"},
+    "004E9820": {"status": "scratch", "symbol": "?update@TribeStrategyAIModule@@UAEHH@Z"},
+    "004E9D90": {"status": "matching", "symbol": "?setMainDecisionAI@TribeStrategyAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z"},
+    "004E9DA0": {"status": "matching", "symbol": "?save@TribeStrategyAIModule@@UAEHH@Z"},
+    "004EA130": {"status": "matching", "symbol": "?ruleSetName@TribeStrategyAIModule@@QAEPADXZ"},
+    "004EA140": {"status": "matching", "symbol": "?loadRules@TribeStrategyAIModule@@QAEHPAD@Z"},
+    "004EA180": {"status": "matching", "symbol": "?setRule@TribeStrategyAIModule@@QAEXHH@Z"},
+    "004EA1B0": {"status": "matching", "symbol": "?rule@TribeStrategyAIModule@@QAEHH@Z"},
+    "004EA1D0": {"status": "matching", "symbol": "?setDifficultyLevel@TribeStrategyAIModule@@QAEXH@Z"},
+    "004EA1F0": {"status": "matching", "symbol": "?currentVictoryCondition@TribeStrategyAIModule@@QBEHXZ"},
+    "004EA200": {"status": "matching", "symbol": "?targetID@TribeStrategyAIModule@@QBEHXZ"},
+    "004EA210": {"status": "matching", "symbol": "?targetType@TribeStrategyAIModule@@QBEHXZ"},
+    "004EA220": {"status": "matching", "symbol": "?secondTargetID@TribeStrategyAIModule@@QBEHXZ"},
+    "004EA230": {"status": "matching", "symbol": "?secondTargetType@TribeStrategyAIModule@@QBEHXZ"},
+    "004EA240": {"status": "matching", "symbol": "?targetPoint1@TribeStrategyAIModule@@QBEABUWaypoint@@XZ"},
+    "004EA250": {"status": "matching", "symbol": "?targetPoint2@TribeStrategyAIModule@@QBEABUWaypoint@@XZ"},
+    "004EA260": {"status": "matching", "symbol": "?targetAttribute@TribeStrategyAIModule@@QBEHXZ"},
+    "004EA270": {"status": "matching", "symbol": "?targetNumber@TribeStrategyAIModule@@QBEHXZ"},
+    "004EA280": {"status": "matching", "symbol": "?setVictoryCondition@TribeStrategyAIModule@@QAEXH@Z"},
+    "004EA7C0": {"status": "matching", "symbol": "?isRuleExecuting@TribeStrategyAIModule@@QAEHH@Z"},
+    "004EA810": {"status": "matching", "symbol": "?isRuleIdle@TribeStrategyAIModule@@QAEHH@Z"}
+  }
+}

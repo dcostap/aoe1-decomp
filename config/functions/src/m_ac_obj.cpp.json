@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "header": "include/m_ac_obj.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\m_ac_obj.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0044F070": {"status": "matching", "symbol": "??0RGE_Master_Action_Object@@QAE@PAV0@H@Z"},
+    "0044F0F0": {"status": "matching", "symbol": "??0RGE_Master_Action_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z"},
+    "0044F160": {"status": "matching", "symbol": "??0RGE_Master_Action_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z"},
+    "0044F1E0": {"status": "matching", "symbol": "?setup@RGE_Master_Action_Object@@IAEHPAV1@@Z"},
+    "0044F290": {"status": "matching", "symbol": "?setup@RGE_Master_Action_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
+    "0044F3C0": {"status": "matching", "symbol": "?setup@RGE_Master_Action_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
+    "0044F4D0": {"status": "matching", "symbol": "??1RGE_Master_Action_Object@@UAE@XZ"},
+    "0044F540": {"status": "matching", "symbol": "?create_task_list@RGE_Master_Action_Object@@UAEPAVRGE_Task_List@@XZ"},
+    "0044F5A0": {"status": "matching", "symbol": "?make_new_obj@RGE_Master_Action_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z"},
+    "0044F670": {"status": "matching", "symbol": "?make_new_master@RGE_Master_Action_Object@@UAEPAVRGE_Master_Static_Object@@XZ"},
+    "0044F6E0": {"status": "matching", "symbol": "?get_task@RGE_Master_Action_Object@@QAEPAVRGE_Task@@F@Z"},
+    "0044F710": {"status": "matching", "symbol": "?getTaskByTaskID@RGE_Master_Action_Object@@QBEPAVRGE_Task@@H@Z"},
+    "0044F760": {"status": "matching", "symbol": "?copy_obj@RGE_Master_Action_Object@@UAEXPAVRGE_Master_Static_Object@@@Z"},
+    "0044F7F0": {"status": "matching", "symbol": "?modify@RGE_Master_Action_Object@@UAEXME@Z"},
+    "0044F820": {"status": "matching", "symbol": "?modify_delta@RGE_Master_Action_Object@@UAEXME@Z"},
+    "0044F850": {"status": "matching", "symbol": "?modify_percent@RGE_Master_Action_Object@@UAEXME@Z"},
+    "0044F880": {"status": "matching", "symbol": "?save@RGE_Master_Action_Object@@UAEXH@Z"},
+    "0044F980": {"status": "matching", "symbol": "?play_command_sound@RGE_Master_Action_Object@@UAEXXZ"},
+    "0044F9A0": {"status": "matching", "symbol": "?play_move_sound@RGE_Master_Action_Object@@UAEXXZ"}
+  }
+}

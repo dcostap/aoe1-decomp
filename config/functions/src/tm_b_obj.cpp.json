@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "header": "include/tm_b_obj.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tm_b_obj.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0050E040": {"status": "matching", "symbol": "??0TRIBE_Master_Building_Object@@QAE@PAV0@H@Z"},
+    "0050E0C0": {"status": "matching", "symbol": "??0TRIBE_Master_Building_Object@@QAE@HPAPAVRGE_Sprite@@PAPAVRGE_Sound@@H@Z"},
+    "0050E130": {"status": "matching", "symbol": "??0TRIBE_Master_Building_Object@@QAE@PAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@FH@Z"},
+    "0050E1B0": {"status": "matching", "symbol": "?setup@TRIBE_Master_Building_Object@@IAEHPAV1@@Z"},
+    "0050E250": {"status": "scratch", "symbol": "?setup@TRIBE_Master_Building_Object@@IAEHHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
+    "0050E360": {"status": "scratch", "symbol": "?setup@TRIBE_Master_Building_Object@@IAEHPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
+    "0050E430": {"status": "matching", "symbol": "??1TRIBE_Master_Building_Object@@UAE@XZ"},
+    "0050E440": {"status": "matching", "symbol": "?copy_obj@TRIBE_Master_Building_Object@@UAEXPAVRGE_Master_Static_Object@@@Z"},
+    "0050E4D0": {"status": "matching", "symbol": "?modify@TRIBE_Master_Building_Object@@UAEXME@Z"},
+    "0050E500": {"status": "matching", "symbol": "?modify_delta@TRIBE_Master_Building_Object@@UAEXME@Z"},
+    "0050E530": {"status": "matching", "symbol": "?modify_percent@TRIBE_Master_Building_Object@@UAEXME@Z"},
+    "0050E550": {"status": "matching", "symbol": "?save@TRIBE_Master_Building_Object@@UAEXH@Z"},
+    "0050E630": {"status": "matching", "symbol": "?make_new_obj@TRIBE_Master_Building_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMMH@Z"},
+    "0050E6B0": {"status": "matching", "symbol": "?make_new_obj@TRIBE_Master_Building_Object@@UAEPAVRGE_Static_Object@@PAVRGE_Player@@MMM@Z"},
+    "0050E730": {"status": "matching", "symbol": "?make_new_master@TRIBE_Master_Building_Object@@UAEPAVRGE_Master_Static_Object@@XZ"},
+    "0050E7A0": {"status": "matching", "symbol": "?draw@TRIBE_Master_Building_Object@@UAEXPAVTDrawArea@@FFPAVRGE_Color_Table@@JJHE@Z"},
+    "0050E950": {"status": "matching", "symbol": "?alignment@TRIBE_Master_Building_Object@@UAEEAAM0PAVRGE_Game_World@@E@Z"}
+  }
+}

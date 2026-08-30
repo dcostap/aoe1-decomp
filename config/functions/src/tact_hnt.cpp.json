@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "header": "include/tact_hnt.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_hnt.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004CF090": {"status": "matching", "symbol": "??0TRIBE_Action_Hunt@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "004CF130": {"status": "matching", "symbol": "??0TRIBE_Action_Hunt@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"},
+    "004CF1C0": {"status": "matching", "symbol": "??0TRIBE_Action_Hunt@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"},
+    "004CF210": {"status": "matching", "symbol": "?save@TRIBE_Action_Hunt@@UAEXH@Z"},
+    "004CF240": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Hunt@@UAEXE@Z"},
+    "004CF300": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Hunt@@MAEXE@Z"},
+    "004CF860": {"status": "scratch", "symbol": "?update@TRIBE_Action_Hunt@@UAEEXZ"},
+    "004CFF20": {"status": "matching", "symbol": "?get_move_sprite@TRIBE_Action_Hunt@@IAEPAVRGE_Sprite@@XZ"},
+    "004CFF50": {"status": "matching", "symbol": "?get_wait_sprite@TRIBE_Action_Hunt@@IAEPAVRGE_Sprite@@XZ"},
+    "004CFF90": {"status": "matching", "symbol": "?stop@TRIBE_Action_Hunt@@UAEHXZ"},
+    "004CFFD0": {"status": "accepted_drift", "symbol": "?move_to@TRIBE_Action_Hunt@@UAEHPAVRGE_Static_Object@@MMM@Z"},
+    "004D0080": {"status": "matching", "symbol": "?work@TRIBE_Action_Hunt@@UAEHPAVRGE_Static_Object@@MMM@Z"}
+  }
+}

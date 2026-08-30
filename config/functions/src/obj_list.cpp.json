@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "header": "include/obj_list.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\obj_list.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00462E80": {"status": "matching", "symbol": "??0RGE_Object_List@@QAE@XZ"},
+    "00462EA0": {"status": "matching", "symbol": "??1RGE_Object_List@@QAE@XZ"},
+    "00462EF0": {"status": "matching", "symbol": "?removeAllObjects@RGE_Object_List@@QAEXXZ"},
+    "00462F30": {"status": "matching", "symbol": "?add_node@RGE_Object_List@@QAEPAURGE_Object_Node@@PAVRGE_Static_Object@@@Z"},
+    "00462F70": {"status": "matching", "symbol": "?remove_node@RGE_Object_List@@QAEXPAVRGE_Static_Object@@PAURGE_Object_Node@@@Z"},
+    "00462FD0": {"status": "matching", "symbol": "?invert@RGE_Object_List@@IAEXXZ"},
+    "00463000": {"status": "matching", "symbol": "?draw@RGE_Object_List@@QAEXPAVTDrawArea@@FFE@Z"},
+    "00463100": {"status": "matching", "symbol": "?shadow_draw@RGE_Object_List@@QAEXPAVTDrawArea@@FFEE@Z"},
+    "00463180": {"status": "matching", "symbol": "?normal_draw@RGE_Object_List@@QAEXPAVTDrawArea@@FFE@Z"},
+    "00463210": {"status": "matching", "symbol": "?update@RGE_Object_List@@QAEXXZ"},
+    "00463260": {"status": "matching", "symbol": "?sort@RGE_Object_List@@QAEPAURGE_Object_Node@@XZ"},
+    "004632E0": {"status": "matching", "symbol": "?find_by_group@RGE_Object_List@@QAEPAVRGE_Static_Object@@J@Z"},
+    "00463310": {"status": "matching", "symbol": "?find_by_group@RGE_Object_List@@QAEPAVRGE_Static_Object@@JMMEEPAV2@@Z"},
+    "00463490": {"status": "matching", "symbol": "?find_by_id@RGE_Object_List@@QAEPAVRGE_Static_Object@@J@Z"},
+    "004634C0": {"status": "matching", "symbol": "?find_by_master_id@RGE_Object_List@@QAEPAVRGE_Static_Object@@JMMEEPAV2@@Z"},
+    "00463640": {"status": "matching", "symbol": "?find_by_master_ids@RGE_Object_List@@QAEPAVRGE_Static_Object@@JJMMEEPAV2@@Z"},
+    "004637C0": {"status": "matching", "symbol": "?find_by_type@RGE_Object_List@@QAEPAVRGE_Static_Object@@EMMEE@Z"},
+    "00463890": {"status": "matching", "symbol": "?save@RGE_Object_List@@QAEXH@Z"},
+    "004638D0": {"status": "matching", "symbol": "?load_list@RGE_Object_List@@QAEXHPAVRGE_Game_World@@@Z"},
+    "00463910": {"status": "matching", "symbol": "?rehook_list@RGE_Object_List@@QAEXXZ"},
+    "00463930": {"status": "matching", "symbol": "?load@RGE_Object_List@@MAEXEHPAVRGE_Game_World@@@Z"}
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "header": "include/Pnl_scr.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Pnl_scr.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0047BA70": {"status": "matching", "symbol": "??0TScreenPanel@@QAE@XZ"},
+    "0047BAB0": {"status": "matching", "symbol": "??0TScreenPanel@@QAE@PAD@Z"},
+    "0047BAD0": {"status": "matching", "symbol": "??1TScreenPanel@@UAE@XZ"},
+    "0047BAE0": {"status": "matching", "symbol": "?setup@TScreenPanel@@QAEJPAVTDrawArea@@PADJH@Z"},
+    "0047BB10": {"status": "matching", "symbol": "?setup@TScreenPanel@@QAEJPAVTDrawArea@@PADJEH@Z"},
+    "0047BB40": {"status": "matching", "symbol": "?draw@TScreenPanel@@UAEXXZ"},
+    "0047BB50": {"status": "matching", "symbol": "?handle_paint@TScreenPanel@@UAEJXZ"},
+    "0047BB60": {"status": "scratch", "symbol": "?set_focus@TScreenPanel@@UAEXH@Z"}
+  }
+}

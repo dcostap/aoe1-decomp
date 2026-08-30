@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "header": "include/chat.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Chat.cpp",
+  "build": {
+    "flags": "gx_no_fpo"
+  },
+  "functions": {
+    "00423C30": {"status": "matching", "symbol": "??0TChat@@QAE@PAX@Z"},
+    "00423CD0": {"status": "matching", "symbol": "??1TChat@@QAE@XZ"},
+    "00423D00": {"status": "matching", "symbol": "?AddChatMsg@TChat@@QAEHPAD0E@Z"},
+    "00423DF0": {"status": "matching", "symbol": "?GetChatMsg@TChat@@QAEPADH@Z"},
+    "00423E10": {"status": "matching", "symbol": "?ClearChat@TChat@@QAEXXZ"},
+    "00423E50": {"status": "matching", "symbol": "?MaxArraySize@TChat@@QAEHXZ"},
+    "00423E60": {"status": "matching", "symbol": "?setWindowHandle@TChat@@QAEXPAX@Z"},
+    "00423E70": {"status": "matching", "symbol": "?setInChatGroup@TChat@@QAEXHH@Z"},
+    "00423E90": {"status": "matching", "symbol": "?inChatGroup@TChat@@QAEHH@Z"},
+    "00423EB0": {"status": "matching", "symbol": "?StopSoundSystem@TChat@@QAEXXZ"},
+    "00423EC0": {"status": "matching", "symbol": "?RestartSoundSystem@TChat@@QAEHPAVTSound_Driver@@@Z"}
+  }
+}

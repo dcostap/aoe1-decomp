@@ -24,16 +24,32 @@ VA = "0050B840"
 SYMBOL = "??0TRIBE_Tech@@QAE@HPAVTRIBE_World@@@Z"
 
 
-def _source_module(status: str = "scratch") -> dict[str, object]:
-    return {
+def _source_module(status: str = "unresolved") -> dict[str, object]:
+    entry = {"status": status}
+    payload: dict[str, object] = {
         "schema": 1,
-        "name": "tech_test",
         "pdb_source_path": ".\\Release\\tech.obj",
         "pdb_no_line_info": True,
         "pdb_module_stream_evidence": "inventory/pdb/module_streams/0027_tech.json",
-        "source": "src/tech.cpp",
         "header": "include/tech.h",
-        "functions": {VA: {"status": status}},
+        "functions": {VA: entry},
+    }
+    if status != "unresolved":
+        entry["symbol"] = SYMBOL
+        payload["build"] = {"flags": "default"}
+    return payload
+
+
+def _normalized_module(status: str = "matching") -> dict[str, object]:
+    payload = _source_module(status)
+    build = payload.get("build")
+    if isinstance(build, dict):
+        build = {**build, "flags_path": "config/flags/default.rsp"}
+    return {
+        **payload,
+        "name": "tech",
+        "source": "src/tech.cpp",
+        "build": build,
     }
 
 
@@ -41,43 +57,52 @@ def _source_module(status: str = "scratch") -> dict[str, object]:
 def _source_module_config(payload: dict[str, object]):
     with tempfile.TemporaryDirectory(dir=REPO_ROOT / "build") as temp_dir:
         module_dir = Path(temp_dir)
-        module_dir.joinpath("tech_test.json").write_text(
+        path = module_dir / "src" / "tech.cpp.json"
+        path.parent.mkdir(parents=True)
+        path.write_text(
             json.dumps(payload), encoding="utf-8"
         )
-        old_dir = common.SOURCE_MODULES_DIR
-        common.SOURCE_MODULES_DIR = module_dir
-        common.load_source_modules.cache_clear()
+        old_dir = common.FUNCTIONS_CONFIG_DIR
+        old_flags = common.FLAGS_DIR
+        common.FUNCTIONS_CONFIG_DIR = module_dir
+        common.FLAGS_DIR = module_dir / "flags"
+        common.load_function_modules.cache_clear()
+        common.function_entries_by_va.cache_clear()
         try:
             yield
         finally:
-            common.SOURCE_MODULES_DIR = old_dir
-            common.load_source_modules.cache_clear()
+            common.FUNCTIONS_CONFIG_DIR = old_dir
+            common.FLAGS_DIR = old_flags
+            common.load_function_modules.cache_clear()
+            common.function_entries_by_va.cache_clear()
 
 
 class PdbNoLineInfoTests(unittest.TestCase):
     def test_tech_is_a_no_line_source_module(self) -> None:
-        tech = common.source_module_for_name("tech")
+        tech = common.function_module_for_name("tech")
         self.assertIsNotNone(tech)
         assert tech is not None
         self.assertTrue(tech["pdb_no_line_info"])
         self.assertEqual(tech["source"], "src/tech.cpp")
         self.assertEqual(len(tech["functions"]), 33)
-        self.assertEqual([], common.validate_source_modules())
+        self.assertEqual([], common.validate_function_registry())
 
     def test_common_rejects_non_boolean_no_line_flag(self) -> None:
         payload = _source_module()
         payload["pdb_no_line_info"] = "true"
         with _source_module_config(payload):
             with self.assertRaisesRegex(ValueError, "must be Boolean"):
-                common.load_source_modules()
+                common.load_function_modules()
 
     def test_common_accepts_empty_stream_metadata(self) -> None:
         with _source_module_config(_source_module()), patch.object(
             common,
             "load_pdb_function_source_map",
             return_value={VA: {"has_line_info": "0", "primary_source_path": ""}},
+        ), patch.object(
+            common, "load_functions", return_value=[{"va": VA, "name": "TRIBE_Tech"}]
         ):
-            self.assertEqual([], common.validate_source_modules())
+            self.assertEqual([], common.validate_function_registry())
 
     def test_common_rejects_line_or_source_data(self) -> None:
         with _source_module_config(_source_module()), patch.object(
@@ -89,16 +114,18 @@ class PdbNoLineInfoTests(unittest.TestCase):
                     "primary_source_path": "C:\\msdev\\work\\tech.cpp",
                 }
             },
+        ), patch.object(
+            common, "load_functions", return_value=[{"va": VA, "name": "TRIBE_Tech"}]
         ):
-            issues = common.validate_source_modules()
+            issues = common.validate_function_registry()
         self.assertTrue(any("PDB line/source data" in issue for issue in issues))
 
     def test_candidate_accepts_stream_owned_no_line_symbol(self) -> None:
-        source_module = _source_module("matching")
+        source_module = _normalized_module("matching")
         payload = {
             "module": ".\\Release\\tech.obj",
             "source": "src/tech.cpp",
-            "flags": "config/flags/tech.rsp",
+            "flags": "config/flags/default.rsp",
             "owners": {VA: "src/tech.cpp"},
             "observed": {},
             "generated": {},
@@ -107,7 +134,7 @@ class PdbNoLineInfoTests(unittest.TestCase):
         entry = {"module": source_module, "status": "matching"}
         pdb_symbol = common.function_record_by_va(int(VA, 16))["name"]
         with patch.object(
-            candidate_module, "source_module_entry_for_va", return_value=entry
+            candidate_module, "function_entry_for_va", return_value=entry
         ), patch.object(
             candidate_module,
             "preferred_source_path",
@@ -124,11 +151,11 @@ class PdbNoLineInfoTests(unittest.TestCase):
             self.assertEqual([], candidate_module.validate_proposal(payload))
 
     def test_candidate_rejects_config_symbol_without_pdb_owner(self) -> None:
-        source_module = _source_module("matching")
+        source_module = _normalized_module("matching")
         payload = {
             "module": ".\\Release\\tech.obj",
             "source": "src/tech.cpp",
-            "flags": "config/flags/tech.rsp",
+            "flags": "config/flags/default.rsp",
             "owners": {VA: "src/tech.cpp"},
             "observed": {},
             "generated": {},
@@ -136,7 +163,7 @@ class PdbNoLineInfoTests(unittest.TestCase):
         }
         entry = {"module": source_module, "status": "matching"}
         with patch.object(
-            candidate_module, "source_module_entry_for_va", return_value=entry
+            candidate_module, "function_entry_for_va", return_value=entry
         ), patch.object(
             candidate_module,
             "preferred_source_path",
@@ -146,12 +173,12 @@ class PdbNoLineInfoTests(unittest.TestCase):
         self.assertIn(f"{VA} has no PDB-qualified symbol ownership", issues)
 
     def test_candidate_observation_requires_stream_evidence(self) -> None:
-        source_module = _source_module()
+        source_module = _normalized_module("unresolved")
         source_module["pdb_module_stream_evidence"] = ""
         payload = {
             "module": ".\\Release\\tech.obj",
             "source": "src/tech.cpp",
-            "flags": "config/flags/tech.rsp",
+            "flags": "config/flags/default.rsp",
             "owners": {},
             "observed": {VA: {"source": "src/tech.cpp", "status": "unresolved"}},
             "generated": {},
@@ -159,7 +186,7 @@ class PdbNoLineInfoTests(unittest.TestCase):
         }
         entry = {"module": source_module, "status": "scratch"}
         with patch.object(
-            candidate_module, "source_module_entry_for_va", return_value=entry
+            candidate_module, "function_entry_for_va", return_value=entry
         ), patch.object(
             candidate_module,
             "preferred_source_path",
@@ -169,19 +196,9 @@ class PdbNoLineInfoTests(unittest.TestCase):
         self.assertTrue(any("PDB module '' does not match" in issue for issue in issues))
 
     def test_group_rejects_config_symbol_without_pdb_owner(self) -> None:
-        source_module = _source_module("matching")
-        group = {
-            "name": "tech_test",
-            "source": "src/tech.cpp",
-            "module": "tech_test",
-            "flags": "config/flags/tech.rsp",
-            "functions": {VA: SYMBOL},
-            "owners": {VA: "src/tech.cpp"},
-            "symbols": {VA: SYMBOL},
-        }
+        source_module = _normalized_module("matching")
+        group = copy.deepcopy(source_module)
         with patch.object(
-            tu_module, "source_module_for_name", return_value=copy.deepcopy(source_module)
-        ), patch.object(
             tu_module,
             "preferred_source_path",
             return_value=REPO_ROOT / "src" / "tech.cpp",
@@ -190,20 +207,10 @@ class PdbNoLineInfoTests(unittest.TestCase):
         self.assertIn("missing-pdb-symbol", {issue.code for issue in issues})
 
     def test_group_accepts_stream_owned_no_line_symbol(self) -> None:
-        source_module = _source_module("matching")
-        group = {
-            "name": "tech_test",
-            "source": "src/tech.cpp",
-            "module": "tech_test",
-            "flags": "config/flags/tech.rsp",
-            "functions": {VA: SYMBOL},
-            "owners": {VA: "src/tech.cpp"},
-            "symbols": {VA: SYMBOL},
-        }
+        source_module = _normalized_module("matching")
+        group = copy.deepcopy(source_module)
         pdb_symbol = common.function_record_by_va(int(VA, 16))["name"]
         with patch.object(
-            tu_module, "source_module_for_name", return_value=copy.deepcopy(source_module)
-        ), patch.object(
             tu_module,
             "preferred_source_path",
             return_value=REPO_ROOT / "src" / "tech.cpp",

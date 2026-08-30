@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "header": "include/aiinfmod.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aiinfmod.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0040CD90": {"status": "matching", "symbol": "??0InformationAIModule@@QAE@PAXH@Z"},
+    "0040CDE0": {"status": "matching", "symbol": "??1InformationAIModule@@UAE@XZ"}
+  }
+}

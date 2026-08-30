@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "header": "include/task.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\task.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00508670": {"status": "matching", "symbol": "??0RGE_Task@@QAE@F@Z"},
+    "005086F0": {"status": "matching", "symbol": "??1RGE_Task@@QAE@XZ"},
+    "00508700": {"status": "matching", "symbol": "?copy@RGE_Task@@QAEXPAV1@@Z"},
+    "005087C0": {"status": "matching", "symbol": "?load@RGE_Task@@QAEXHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
+    "00508A20": {"status": "matching", "symbol": "?load@RGE_Task@@QAEXPAU_iobuf@@PAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
+    "00508BB0": {"status": "matching", "symbol": "?save@RGE_Task@@QAEXH@Z"}
+  }
+}

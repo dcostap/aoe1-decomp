@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "header": "include/action.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\action.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00407460": {"status": "matching", "symbol": "??0RGE_Action@@QAE@HPAVRGE_Action_Object@@H@Z"},
+    "004074C0": {"status": "matching", "symbol": "??0RGE_Action@@QAE@PAVRGE_Action_Object@@H@Z"},
+    "004074F0": {"status": "matching", "symbol": "??1RGE_Action@@UAE@XZ"},
+    "00407530": {"status": "matching", "symbol": "?setup@RGE_Action@@UAEHHPAVRGE_Action_Object@@@Z"},
+    "00407680": {"status": "matching", "symbol": "?setup@RGE_Action@@UAEHPAVRGE_Action_Object@@@Z"},
+    "004076D0": {"status": "matching", "symbol": "?create_action_list@RGE_Action@@UAEPAVRGE_Action_List@@PAVRGE_Action_Object@@@Z"},
+    "00407740": {"status": "matching", "symbol": "?rehook@RGE_Action@@UAEXXZ"},
+    "00407790": {"status": "matching", "symbol": "?save@RGE_Action@@UAEXH@Z"},
+    "004078D0": {"status": "matching", "symbol": "?type@RGE_Action@@UAEFXZ"},
+    "004078E0": {"status": "matching", "symbol": "?first_in_stack@RGE_Action@@UAEXE@Z"},
+    "004078F0": {"status": "matching", "symbol": "?stop@RGE_Action@@UAEHXZ"},
+    "00407900": {"status": "matching", "symbol": "?move_to@RGE_Action@@UAEHPAVRGE_Static_Object@@MMM@Z"},
+    "00407910": {"status": "matching", "symbol": "?work@RGE_Action@@UAEHPAVRGE_Static_Object@@MMM@Z"},
+    "00407920": {"status": "matching", "symbol": "?attack_response@RGE_Action@@UAEEPAVRGE_Static_Object@@@Z"},
+    "00407930": {"status": "matching", "symbol": "?relation_response@RGE_Action@@UAEEJE@Z"},
+    "00407940": {"status": "matching", "symbol": "?set_state@RGE_Action@@MAEXE@Z"},
+    "00407950": {"status": "matching", "symbol": "?inside_obj_update@RGE_Action@@UAEEXZ"},
+    "00407990": {"status": "matching", "symbol": "?idle_update@RGE_Action@@UAEEXZ"},
+    "004079D0": {"status": "matching", "symbol": "?update@RGE_Action@@UAEEXZ"},
+    "00407A20": {"status": "matching", "symbol": "?set_target_obj@RGE_Action@@UAEXPAVRGE_Static_Object@@@Z"},
+    "00407A90": {"status": "matching", "symbol": "?set_target_obj2@RGE_Action@@UAEXPAVRGE_Static_Object@@@Z"},
+    "00407B00": {"status": "matching", "symbol": "?copy_obj@RGE_Action@@UAEXPAVRGE_Master_Action_Object@@@Z"},
+    "00407C00": {"status": "matching", "symbol": "?copy_obj_sprites@RGE_Action@@UAEXPAVRGE_Master_Action_Object@@PAVRGE_Task@@1@Z"},
+    "00407C10": {"status": "matching", "symbol": "?get_state_name@RGE_Action@@UAEXPAD@Z"},
+    "00407D30": {"status": "matching", "symbol": "?targetX@RGE_Action@@QBEMXZ"},
+    "00407D40": {"status": "matching", "symbol": "?targetY@RGE_Action@@QBEMXZ"},
+    "00407D50": {"status": "matching", "symbol": "?targetZ@RGE_Action@@QBEMXZ"},
+    "00407D60": {"status": "matching", "symbol": "?subAction@RGE_Action@@QBEEXZ"},
+    "00407D70": {"status": "matching", "symbol": "?setSubAction@RGE_Action@@QAEXE@Z"}
+  }
+}

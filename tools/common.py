@@ -13,8 +13,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_DIR = REPO_ROOT / "config"
-TRANSLATION_UNITS_PATH = CONFIG_DIR / "translation_units.json"
-SOURCE_MODULES_DIR = CONFIG_DIR / "source_modules"
+FUNCTIONS_CONFIG_DIR = CONFIG_DIR / "functions"
+FLAGS_DIR = CONFIG_DIR / "flags"
 INVENTORY_DIR = REPO_ROOT / "inventory"
 BUILD_DIR = REPO_ROOT / "build"
 PDB_INVENTORY_DIR = INVENTORY_DIR / "pdb"
@@ -347,7 +347,7 @@ def function_slug(record: dict[str, str]) -> str:
     return f"{record['va'].upper()}_{slugify_name(record['name'])}"
 
 
-_SOURCE_MODULE_STATUSES = {
+_FUNCTION_STATUSES = {
     "matching",
     "accepted_drift",
     "verified_logic",
@@ -357,35 +357,55 @@ _SOURCE_MODULE_STATUSES = {
 
 
 @lru_cache(maxsize=1)
-def load_source_modules() -> list[dict[str, object]]:
-    """Load natural source modules and their per-function states."""
-    if not SOURCE_MODULES_DIR.exists():
+def load_function_modules() -> list[dict[str, object]]:
+    """Load the canonical function registry grouped by natural source file."""
+    if not FUNCTIONS_CONFIG_DIR.exists():
         return []
-    module_paths = sorted(SOURCE_MODULES_DIR.glob("*.json"))
+    module_paths = sorted(FUNCTIONS_CONFIG_DIR.rglob("*.json"))
 
     modules: list[dict[str, object]] = []
     seen_names: set[str] = set()
+    seen_sources: set[str] = set()
     seen_vas: set[str] = set()
     for module_path in module_paths:
         raw_module = load_json(module_path)
         label = module_path.relative_to(REPO_ROOT).as_posix()
-        if raw_module.get("schema") != 1:
-            raise ValueError(f"{label}: schema must be 1")
         if not isinstance(raw_module, dict):
             raise ValueError(f"{label}: module must be an object")
-        name = str(raw_module.get("name") or "").strip()
-        source = str(raw_module.get("source") or "").replace("\\", "/").strip()
+        if raw_module.get("schema") != 1:
+            raise ValueError(f"{label}: schema must be 1")
+
+        relative_registry = module_path.relative_to(FUNCTIONS_CONFIG_DIR).as_posix()
+        if not relative_registry.endswith(".json"):
+            raise ValueError(f"{label}: registry file must end in .json")
+        source = relative_registry[:-5]
+        source_path = Path(source)
+        suffix = source_path.suffix.casefold()
+        if (
+            not source_path.parts
+            or source_path.parts[0] not in {"src", "include"}
+            or suffix not in {".c", ".cc", ".cpp", ".cxx", ".h", ".hpp"}
+        ):
+            raise ValueError(f"{label}: registry path does not name a natural source file")
+        name = source_path.stem.casefold()
+        if suffix in {".h", ".hpp"}:
+            name += "_h"
+
         pdb_source_path = str(raw_module.get("pdb_source_path") or "").strip()
         pdb_no_line_info = raw_module.get("pdb_no_line_info", False)
         pdb_module_stream_evidence = str(
             raw_module.get("pdb_module_stream_evidence") or ""
         ).replace("\\", "/").strip()
         header = str(raw_module.get("header") or "").replace("\\", "/").strip()
+        raw_build = raw_module.get("build")
         raw_functions = raw_module.get("functions")
-        if not name or not source or not pdb_source_path or not isinstance(raw_functions, dict) or not raw_functions:
+        if not source or not pdb_source_path or not isinstance(raw_functions, dict) or not raw_functions:
             raise ValueError(
-                f"{label}: module needs name, source, pdb_source_path, and functions"
+                f"{label}: module needs pdb_source_path and functions"
             )
+        if source in seen_sources:
+            raise ValueError(f"{label}: duplicate source {source!r}")
+        seen_sources.add(source)
         if not isinstance(pdb_no_line_info, bool):
             raise ValueError(f"{label}: pdb_no_line_info must be Boolean")
         if pdb_no_line_info and not pdb_module_stream_evidence:
@@ -395,6 +415,19 @@ def load_source_modules() -> list[dict[str, object]]:
         if name in seen_names:
             raise ValueError(f"{label}: duplicate module name {name!r}")
         seen_names.add(name)
+
+        build: dict[str, str] | None = None
+        if raw_build is not None:
+            if not isinstance(raw_build, dict):
+                raise ValueError(f"{label}: build must be an object")
+            profile = str(raw_build.get("flags") or "").strip()
+            if not profile or Path(profile).name != profile:
+                raise ValueError(f"{label}: build needs one flag profile name")
+            flags_path = FLAGS_DIR / f"{profile}.rsp"
+            build = {
+                "flags": profile,
+                "flags_path": flags_path.relative_to(REPO_ROOT).as_posix(),
+            }
 
         functions: dict[str, dict[str, str]] = {}
         for raw_va, raw_entry in raw_functions.items():
@@ -406,12 +439,25 @@ def load_source_modules() -> list[dict[str, object]]:
             if not isinstance(raw_entry, dict):
                 raise ValueError(f"{label}: {va} must be an object")
             status = str(raw_entry.get("status") or "").strip()
-            if status not in _SOURCE_MODULE_STATUSES:
+            if status not in _FUNCTION_STATUSES:
                 raise ValueError(
                     f"{label}: {va} has invalid status {status!r}"
                 )
+            symbol = str(raw_entry.get("symbol") or "").strip()
+            if symbol and any(character.isspace() for character in symbol):
+                raise ValueError(f"{label}: {va} has invalid symbol")
+            if build is not None and not symbol:
+                raise ValueError(f"{label}: buildable function {va} needs a symbol")
+            if build is None and symbol:
+                raise ValueError(f"{label}: function {va} has a symbol without a build")
+            if build is None and status != "unresolved":
+                raise ValueError(
+                    f"{label}: function {va} without a build must be unresolved"
+                )
             seen_vas.add(va)
             functions[va] = {"status": status}
+            if symbol:
+                functions[va]["symbol"] = symbol
         modules.append(
             {
                 "name": name,
@@ -420,23 +466,24 @@ def load_source_modules() -> list[dict[str, object]]:
                 "pdb_source_path": pdb_source_path,
                 "pdb_no_line_info": pdb_no_line_info,
                 "pdb_module_stream_evidence": pdb_module_stream_evidence,
+                "build": build,
                 "functions": functions,
             }
         )
     return modules
 
 
-def source_module_for_name(name: str) -> dict[str, object] | None:
-    for module in load_source_modules():
+def function_module_for_name(name: str) -> dict[str, object] | None:
+    for module in load_function_modules():
         if str(module["name"]) == name:
             return module
     return None
 
 
 @lru_cache(maxsize=1)
-def source_module_entries_by_va() -> dict[str, dict[str, object]]:
+def function_entries_by_va() -> dict[str, dict[str, object]]:
     entries: dict[str, dict[str, object]] = {}
-    for module in load_source_modules():
+    for module in load_function_modules():
         functions = module["functions"]
         assert isinstance(functions, dict)
         for va, entry in functions.items():
@@ -445,9 +492,9 @@ def source_module_entries_by_va() -> dict[str, dict[str, object]]:
     return entries
 
 
-def source_module_entry_for_va(va: int | str) -> dict[str, object] | None:
+def function_entry_for_va(va: int | str) -> dict[str, object] | None:
     va_text = f"{va:08X}" if isinstance(va, int) else str(va).upper()
-    return source_module_entries_by_va().get(va_text)
+    return function_entries_by_va().get(va_text)
 
 
 def _sha256(path: Path) -> str:
@@ -522,12 +569,14 @@ def pdb_module_stream_procedure_for_va(
     return None
 
 
-def validate_source_modules() -> list[str]:
-    """Return durable configuration problems for migrated source modules."""
+def validate_function_registry() -> list[str]:
+    """Return durable function-registry problems."""
     records = {row["va"].upper(): row for row in load_functions()}
     pdb_sources = load_pdb_function_source_map()
     issues: list[str] = []
-    for module in load_source_modules():
+    configured_vas: set[str] = set()
+    used_profiles: set[str] = set()
+    for module in load_function_modules():
         name = str(module["name"])
         source = repo_path(str(module["source"]))
         if not source.is_file():
@@ -539,9 +588,16 @@ def validate_source_modules() -> list[str]:
         no_line_info = bool(module.get("pdb_no_line_info"))
         if no_line_info:
             issues.extend(pdb_module_stream_evidence_issues(module))
+        build = module.get("build")
+        if isinstance(build, dict):
+            used_profiles.add(str(build["flags"]))
+            flags_path = repo_path(str(build["flags_path"]))
+            if not flags_path.is_file():
+                issues.append(f"{name}: compiler flag profile is missing: {flags_path}")
         functions = module["functions"]
         assert isinstance(functions, dict)
         for va, entry in functions.items():
+            configured_vas.add(va)
             if va not in records:
                 issues.append(f"{name}: function {va} is absent from inventory")
                 continue
@@ -559,247 +615,141 @@ def validate_source_modules() -> list[str]:
                 issues.append(
                     f"{name}: function {va} PDB source {pdb_path!r} does not match {module['pdb_source_path']!r}"
                 )
+    normal_vas = {
+        va
+        for va, record in records.items()
+        if classify_corpus_bucket(record)[0] == "normal"
+    }
+    for va in sorted(normal_vas - configured_vas):
+        issues.append(f"function {va} is absent from the function registry")
+    for va in sorted(configured_vas - normal_vas):
+        issues.append(f"non-normal function {va} appears in the function registry")
+    profile_paths = sorted(FLAGS_DIR.glob("*.rsp")) if FLAGS_DIR.is_dir() else []
+    available_profiles = {path.stem for path in profile_paths}
+    for profile in sorted(used_profiles - available_profiles):
+        issues.append(f"compiler flag profile {profile!r} is missing")
+    for profile in sorted(available_profiles - used_profiles):
+        issues.append(f"compiler flag profile {profile!r} is unused")
+    profiles_by_signature: dict[tuple[str, ...], list[str]] = {}
+    for path in profile_paths:
+        signature = tuple(path.read_text(encoding="utf-8").split())
+        profiles_by_signature.setdefault(signature, []).append(path.stem)
+    for names in profiles_by_signature.values():
+        if len(names) > 1:
+            issues.append(
+                "compiler flag profiles have duplicate settings: " + ", ".join(names)
+            )
     return issues
 
 
-@lru_cache(maxsize=1)
-def load_translation_units() -> list[dict[str, object]]:
-    """Load build recipes for all natural source-module functions.
-
-    The tracked ``functions`` map records every configured VA and symbol.
-    Compatibility ``owners`` and ``symbols`` maps contain only functions whose
-    source-module status is ``matching``.
-    """
-    if not TRANSLATION_UNITS_PATH.exists():
-        return []
-    payload = load_json(TRANSLATION_UNITS_PATH)
-    if payload.get("schema") != 2:
-        raise ValueError("config/translation_units.json: schema must be 2")
-    groups = payload.get("translation_units")
-    if not isinstance(groups, list):
-        raise ValueError("config/translation_units.json: translation_units must be a list")
-    normalized: list[dict[str, object]] = []
-    seen_vas: set[str] = set()
-    for group in groups:
-        if not isinstance(group, dict):
-            raise ValueError("config/translation_units.json: each translation unit must be an object")
-        name = str(group.get("name") or "").strip()
-        source = str(group.get("source") or "").strip()
-        raw_functions = group.get("functions")
-        if not name or not source or not isinstance(raw_functions, dict) or not raw_functions:
-            raise ValueError(
-                "config/translation_units.json: each unit needs name, source, and functions"
-            )
-        function_map: dict[str, str] = {}
-        for raw_va, raw_symbol in raw_functions.items():
-            va = str(raw_va).upper()
-            if len(va) != 8 or any(character not in "0123456789ABCDEF" for character in va):
-                raise ValueError(f"config/translation_units.json: invalid function VA {raw_va!r}")
-            if va in seen_vas:
-                raise ValueError(f"config/translation_units.json: VA {va} appears in multiple units")
-            symbol = str(raw_symbol).strip()
-            if not symbol or any(character.isspace() for character in symbol):
-                raise ValueError(f"config/translation_units.json: invalid function symbol for {va}")
-            seen_vas.add(va)
-            function_map[va] = symbol
-        flags = str(group.get("flags") or "").replace("\\", "/").strip()
-        module = str(group.get("module") or "").strip()
-        source_module = source_module_for_name(module) if module else None
-        if source_module is None:
-            raise ValueError(f"config/translation_units.json: {name} has unknown module {module!r}")
-        module_functions = source_module["functions"]
-        assert isinstance(module_functions, dict)
-        exact_vas = {
-            va
-            for va, entry in module_functions.items()
-            if isinstance(entry, dict) and str(entry.get("status") or "") == "matching"
-        }
-        owner_map = {va: source.replace("\\", "/") for va in function_map if va in exact_vas}
-        symbol_map = {va: symbol for va, symbol in function_map.items() if va in exact_vas}
-        normalized.append(
-            {
-                "name": name,
-                "source": source.replace("\\", "/"),
-                "flags": flags,
-                "functions": function_map,
-                "owners": owner_map,
-                "symbols": symbol_map,
-                "module": module,
-            }
-        )
-    return normalized
+def load_build_modules() -> list[dict[str, object]]:
+    """Return natural source modules that have a proven compiler recipe."""
+    return [module for module in load_function_modules() if module.get("build")]
 
 
-def translation_unit_for_va(va: int) -> dict[str, object] | None:
-    """Return the group that registers this VA as an exact owner."""
-    target = f"{va:08X}"
-    for group in load_translation_units():
-        owners = group["owners"]
-        if isinstance(owners, dict) and target in owners:
-            validate_translation_unit(group)
-            return group
-    return None
+def matching_build_for_va(va: int) -> dict[str, object] | None:
+    """Return the build module for one matching function."""
+    entry = function_entry_for_va(va)
+    if entry is None or entry.get("status") != "matching":
+        return None
+    module = entry["module"]
+    assert isinstance(module, dict)
+    if module.get("build") is None:
+        return None
+    validate_build_module(module)
+    return module
 
 
-def compiler_translation_unit_for_va(va: int) -> dict[str, object] | None:
-    """Return the configured compiler recipe for one function."""
-    target = f"{va:08X}"
-    for group in load_translation_units():
-        functions = group.get("functions")
-        if isinstance(functions, dict) and target in functions:
-            validate_translation_unit(group)
-            return group
-    return None
+def build_module_for_va(va: int) -> dict[str, object] | None:
+    """Return the proven compiler recipe for one function."""
+    entry = function_entry_for_va(va)
+    if entry is None or not entry.get("symbol"):
+        return None
+    module = entry["module"]
+    assert isinstance(module, dict)
+    validate_build_module(module)
+    return module
 
 
-def translation_unit_for_source(source_path: Path) -> dict[str, object] | None:
+def build_module_for_source(source_path: Path) -> dict[str, object] | None:
     try:
-        relative = source_path.resolve().relative_to(REPO_ROOT.resolve())
+        relative = source_path.resolve().relative_to(REPO_ROOT.resolve()).as_posix()
     except ValueError:
         return None
-    normalized = str(relative).replace("\\", "/")
-    for group in load_translation_units():
-        if str(group["source"]) == normalized:
-            validate_translation_unit(group)
-            return group
+    for module in load_build_modules():
+        if str(module["source"]) == relative:
+            validate_build_module(module)
+            return module
     return None
 
 
-def validate_translation_unit(group: dict[str, object]) -> None:
-    """Verify one translation unit once per process and unique group payload."""
-    payload = json.dumps(group, sort_keys=True, separators=(",", ":"))
-    _validate_translation_unit_cached(payload)
+def build_module_signature(module: dict[str, object]) -> dict[str, object]:
+    """Return the status-neutral inputs that define one module build."""
+    functions = module["functions"]
+    assert isinstance(functions, dict)
+    return {
+        "name": module["name"],
+        "source": module["source"],
+        "build": module["build"],
+        "functions": {
+            va: entry["symbol"]
+            for va, entry in functions.items()
+            if isinstance(entry, dict)
+        },
+    }
+
+
+def validate_build_module(module: dict[str, object]) -> None:
+    """Verify one natural source build once per process."""
+    payload = json.dumps(module, sort_keys=True, separators=(",", ":"))
+    _validate_build_module_cached(payload)
 
 
 @lru_cache(maxsize=None)
-def _validate_translation_unit_cached(payload: str) -> None:
-    group = json.loads(payload)
-    _validate_translation_unit_uncached(group)
+def _validate_build_module_cached(payload: str) -> None:
+    module = json.loads(payload)
+    _validate_build_module_uncached(module)
 
 
-def _validate_translation_unit_uncached(group: dict[str, object]) -> None:
-    """Verify one direct natural source-module build recipe."""
-    source = repo_path(str(group["source"]))
-    configured_functions = group.get("functions")
-    owners = group.get("owners")
+def _validate_build_module_uncached(module: dict[str, object]) -> None:
+    source = repo_path(str(module["source"]))
+    build = module.get("build")
+    functions = module.get("functions")
     if (
         not source.is_file()
-        or not isinstance(configured_functions, dict)
-        or not configured_functions
-        or not isinstance(owners, dict)
+        or not isinstance(build, dict)
+        or not isinstance(functions, dict)
+        or not functions
     ):
-        raise ValueError(f"translation unit is incomplete: {source}")
-    module_name = str(group.get("module") or "").strip()
-    source_module = source_module_for_name(module_name) if module_name else None
-    if module_name and source_module is None:
-        raise ValueError(f"translation unit {source} has unknown source module {module_name!r}")
-    if source_module is not None:
-        module_source = repo_path(str(source_module["source"])).resolve()
-        if source.resolve() != module_source:
-            raise ValueError(
-                f"translation unit {source} does not use source module {module_name}: {module_source}"
-            )
-        module_functions = source_module["functions"]
-        assert isinstance(module_functions, dict)
-        expected_vas = {
-            va
-            for va, entry in module_functions.items()
-            if isinstance(entry, dict) and str(entry.get("status") or "") != "unresolved"
-        }
-        configured_vas = {str(va).upper() for va in configured_functions}
-        if configured_vas != expected_vas:
-            missing = sorted(expected_vas - configured_vas)
-            extra = sorted(configured_vas - expected_vas)
-            raise ValueError(
-                f"translation unit {source} function map differs from module {module_name}; "
-                f"missing={missing}, extra={extra}"
-            )
-    try:
-        source_parent = source.resolve().parent
-        source_text = source.read_text(encoding="utf-8")
-    except OSError as error:
-        raise ValueError(f"cannot read translation unit {source}: {error}") from error
-    for va, owner in owners.items():
-        owner_path = repo_path(str(owner))
-        if not owner_path.is_file():
-            raise ValueError(f"translation unit owner {va} is missing: {owner_path}")
-        if source_module is not None:
-            functions = source_module["functions"]
-            assert isinstance(functions, dict)
-            if str(va).upper() not in functions:
-                raise ValueError(f"translation unit owner {va} is absent from source module {module_name}")
-            if owner_path.resolve() != source.resolve():
-                raise ValueError(
-                    f"translation unit owner {va} must map to direct module source {source}"
-                )
-            if str(functions[str(va).upper()].get("status") or "") != "matching":
-                raise ValueError(f"translation unit owner {va} is not matching in source module {module_name}")
-        canonical_owner = preferred_source_path(function_record_by_va(int(str(va), 16))).resolve()
-        if owner_path.resolve() != canonical_owner:
-            raise ValueError(
-                f"translation unit owner {va} is not its canonical source: "
-                f"{owner_path} != {canonical_owner}"
-            )
-        if source_module is not None:
-            continue
-        try:
-            include_name = str(owner_path.resolve().relative_to(source_parent)).replace("\\", "/")
-        except ValueError as error:
-            raise ValueError(f"owner {owner_path} is outside wrapper directory {source_parent}") from error
-        count = sum(
-            1
-            for line in source_text.splitlines()
-            if line.strip() == f'#include "{include_name}"'
-        )
-        if count != 1:
-            raise ValueError(
-                f"translation unit {source} must include owner {owner} exactly once; found {count}"
-            )
+        raise ValueError(f"build module is incomplete: {source}")
+    flags_path = repo_path(str(build.get("flags_path") or ""))
+    if not flags_path.is_file():
+        raise ValueError(f"build module flag profile is missing: {flags_path}")
+    for va, entry in functions.items():
+        if not isinstance(entry, dict) or not str(entry.get("symbol") or ""):
+            raise ValueError(f"buildable function {va} has no symbol")
 
 
 def compiler_source_path(record: dict[str, str]) -> Path:
-    group = compiler_translation_unit_for_va(int(record["va"], 16))
-    if group is not None:
-        return repo_path(str(group["source"]))
+    module = build_module_for_va(int(record["va"], 16))
+    if module is not None:
+        return repo_path(str(module["source"]))
     return preferred_source_path(record)
 
 
 def compiler_artifact_slug(record: dict[str, str]) -> str:
-    group = compiler_translation_unit_for_va(int(record["va"], 16))
-    if group is not None:
-        return f"tu_{slugify_name(str(group['name']))}"
+    module = build_module_for_va(int(record["va"], 16))
+    if module is not None:
+        return f"tu_{slugify_name(str(module['name']))}"
     return function_slug(record)
 
 
-def header_source_path(record: dict[str, str]) -> Path | None:
-    """Return a natural header owner recorded by the PDB."""
-    source_name = Path(str(record.get("pdb_source_file") or "")).name
-    if Path(source_name).suffix.casefold() not in {".h", ".hpp"}:
-        return None
-    include_dir = REPO_ROOT / "include"
-    direct = include_dir / source_name
-    if direct.is_file():
-        return direct
-    source_key = source_name.casefold()
-    if include_dir.is_dir():
-        for candidate in include_dir.iterdir():
-            if candidate.is_file() and candidate.name.casefold() == source_key:
-                return candidate
-    return None
-
-
 def preferred_source_path(record: dict[str, str]) -> Path:
-    module_entry = source_module_entry_for_va(record["va"])
-    if module_entry is not None:
-        module = module_entry["module"]
+    entry = function_entry_for_va(record["va"])
+    if entry is not None:
+        module = entry["module"]
         assert isinstance(module, dict)
         return repo_path(str(module["source"]))
-    header = header_source_path(record)
-    if header is not None:
-        return header
-    pdb_source = Path(str(record.get("pdb_source_file") or "")).name
-    if Path(pdb_source).suffix.casefold() in {".c", ".cc", ".cpp", ".cxx"}:
-        return REPO_ROOT / "src" / pdb_source
     raise FileNotFoundError(
         f"No natural source is configured for {record['va']} {record['name']}"
     )
@@ -914,13 +864,11 @@ def byte_diff_metrics(left: bytes, right: bytes) -> dict[str, int | float | str 
 
 
 def preferred_flags_rsp_path(record: dict[str, str], toolchain: dict) -> Path:
-    group = compiler_translation_unit_for_va(int(record["va"], 16))
-    if group is not None and str(group.get("flags") or ""):
-        return repo_path(str(group["flags"]))
-    slug = function_slug(record)
-    candidate = CONFIG_DIR / "flags" / f"{slug}.rsp"
-    if candidate.exists():
-        return candidate
+    module = build_module_for_va(int(record["va"], 16))
+    if module is not None:
+        build = module["build"]
+        assert isinstance(build, dict)
+        return repo_path(str(build["flags_path"]))
     return repo_path(toolchain["compiler"]["default_rsp"])
 
 

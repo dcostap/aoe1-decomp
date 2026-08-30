@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "header": "include/com_err.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_err.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00424E40": {"status": "matching", "symbol": "??0RGE_Comm_Error@@QAE@PAX@Z"},
+    "00424E60": {"status": "matching", "symbol": "?NotifyWindowParam@RGE_Comm_Error@@QAEXW4COMMMESSAGES@@J@Z"},
+    "00424EA0": {"status": "matching", "symbol": "??1RGE_Comm_Error@@QAE@XZ"},
+    "00424EB0": {"status": "matching", "symbol": "?ShowReturn@RGE_Comm_Error@@QAEXJPAD@Z"}
+  }
+}

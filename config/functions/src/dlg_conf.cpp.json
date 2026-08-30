@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "header": "include/dlg_conf.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\dlg_conf.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0043B560": {"status": "accepted_drift", "symbol": "??0TribeConfigDialog@@QAE@W4Mode@0@PAVTScreenPanel@@@Z"},
+    "0043C0C0": {"status": "matching", "symbol": "??1TribeConfigDialog@@UAE@XZ"},
+    "0043C2B0": {"status": "scratch", "symbol": "?action@TribeConfigDialog@@UAEJPAVTPanel@@JKK@Z"}
+  }
+}

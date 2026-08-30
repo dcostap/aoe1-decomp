@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "header": "include/tact_cnv.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_cnv.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004CD9E0": {"status": "matching", "symbol": "??0TRIBE_Action_Convert@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "004CDA90": {"status": "matching", "symbol": "??0TRIBE_Action_Convert@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"},
+    "004CDB20": {"status": "matching", "symbol": "??0TRIBE_Action_Convert@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"},
+    "004CDB70": {"status": "matching", "symbol": "?save@TRIBE_Action_Convert@@UAEXH@Z"},
+    "004CDBB0": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Convert@@UAEXE@Z"},
+    "004CDE10": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Convert@@MAEXE@Z"},
+    "004CE070": {"status": "matching", "symbol": "?update@TRIBE_Action_Convert@@UAEEXZ"},
+    "004CE450": {"status": "matching", "symbol": "?work@TRIBE_Action_Convert@@UAEHPAVRGE_Static_Object@@MMM@Z"},
+    "004CE4B0": {"status": "matching", "symbol": "?martyrdom@TRIBE_Action_Convert@@QAEXXZ"}
+  }
+}

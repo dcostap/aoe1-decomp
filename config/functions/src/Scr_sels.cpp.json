@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "header": "include/scr_sels.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Scr_sels.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004B3C90": {"status": "matching", "symbol": "??0TribeSelectScenarioScreen@@QAE@XZ"},
+    "004B4120": {"status": "matching", "symbol": "?init_vars@TribeSelectScenarioScreen@@IAEXXZ"},
+    "004B4190": {"status": "scratch", "symbol": "??1TribeSelectScenarioScreen@@UAE@XZ"},
+    "004B4280": {"status": "matching", "symbol": "?handle_idle@TribeSelectScenarioScreen@@UAEJXZ"},
+    "004B42E0": {"status": "matching", "symbol": "?action@TribeSelectScenarioScreen@@MAEJPAVTPanel@@JKK@Z"},
+    "004B44F0": {"status": "scratch", "symbol": "?fillScenarios@TribeSelectScenarioScreen@@IAEXXZ"},
+    "004B4720": {"status": "matching", "symbol": "?fillMissionText@TribeSelectScenarioScreen@@IAEXXZ"},
+    "004B4770": {"status": "matching", "symbol": "?getSettings@TribeSelectScenarioScreen@@IAEXXZ"},
+    "004B47D0": {"status": "matching", "symbol": "?sendSettings@TribeSelectScenarioScreen@@IAEXXZ"},
+    "004B4810": {"status": "matching", "symbol": "?activatePanels@TribeSelectScenarioScreen@@IAEXXZ"}
+  }
+}

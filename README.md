@@ -6,8 +6,8 @@ This project recovers the 1998-07-17 Rise of Rome beta source.
 
 - `src/` contains natural translation units.
 - `include/` contains shared declarations and inline functions.
-- `config/source_modules/` maps each function to its source and status.
-- `config/translation_units.json` records each module build recipe and function symbol.
+- `config/functions/` is the formal registry for every normal function.
+- `config/flags/` contains the six canonical VC5 compiler profiles.
 - `inventory/` contains generated reference data. Do not edit it.
 - `decomp_notes/` contains durable function and module notes.
 
@@ -26,11 +26,11 @@ Use one of these values:
 - `scratch`: The natural source still needs matching work.
 - `unresolved`: Source exists, but exact ownership cannot be proved.
 
-`unresolved` covers functions without one provable translation-unit recipe.
+`unresolved` covers functions without one provable compiler recipe.
 
-Every other normal function appears in one translation-unit `functions` map.
-That map stores its compiler recipe and symbol for every status.
-Only the source-module manifest stores whether the function is matching.
+The registry path identifies the natural source file.
+Each function entry stores its status and its symbol when a build exists.
+For example, `config/functions/src/point.cpp.json` owns `src/point.cpp`.
 
 ## Common commands
 

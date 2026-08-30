@@ -61,16 +61,26 @@ class BuildCacheTests(unittest.TestCase):
             group = {
                 "name": "unit",
                 "source": str(source),
-                "flags": str(rsp),
-                "owners": {"00100000": "src/00100000_x.cpp"},
+                "build": {"flags": "default", "flags_path": str(rsp)},
+                "functions": {
+                    "00100000": {"status": "matching", "symbol": "?x@@YAHXZ"}
+                },
             }
 
-            with patch("build_cache.translation_unit_for_source", return_value=group):
+            with patch("build_cache.build_module_for_source", return_value=group):
                 manifest = build_cache.build_input_manifest(source, rsp, toolchain)
 
             input_paths = {row["path"] for row in manifest["inputs"]}
-            self.assertNotIn("config/translation_units.json", input_paths)
-            self.assertEqual(group, manifest["translation_unit"])
+            self.assertNotIn("config/functions", "\n".join(input_paths))
+            self.assertEqual(
+                {
+                    "name": "unit",
+                    "source": str(source),
+                    "build": group["build"],
+                    "functions": {"00100000": "?x@@YAHXZ"},
+                },
+                manifest["translation_unit"],
+            )
 
     def test_artifact_lock_serializes_processes(self) -> None:
         context = multiprocessing.get_context("spawn")

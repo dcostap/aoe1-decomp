@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "header": "include/ani_obj.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\ani_obj.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0041A150": {"status": "matching", "symbol": "??0RGE_Animated_Object@@QAE@PAVRGE_Master_Animated_Object@@PAVRGE_Player@@MMMH@Z"},
+    "0041A210": {"status": "matching", "symbol": "??0RGE_Animated_Object@@QAE@HPAVRGE_Game_World@@H@Z"},
+    "0041A280": {"status": "matching", "symbol": "?recycle_in_to_game@RGE_Animated_Object@@UAEXPAVRGE_Master_Static_Object@@PAVRGE_Player@@MMM@Z"},
+    "0041A2C0": {"status": "matching", "symbol": "?setup@RGE_Animated_Object@@MAEHPAVRGE_Master_Animated_Object@@PAVRGE_Player@@MMM@Z"},
+    "0041A310": {"status": "matching", "symbol": "?setup@RGE_Animated_Object@@MAEHHPAVRGE_Game_World@@@Z"},
+    "0041A350": {"status": "matching", "symbol": "?update@RGE_Animated_Object@@UAEEXZ"},
+    "0041A3D0": {"status": "matching", "symbol": "?save@RGE_Animated_Object@@UAEXH@Z"},
+    "0041A400": {"status": "matching", "symbol": "?transform@RGE_Animated_Object@@UAEXPAVRGE_Master_Static_Object@@@Z"},
+    "0041A410": {"status": "matching", "symbol": "?set_being_worked_on@RGE_Animated_Object@@UAEXPAVRGE_Action_Object@@FE@Z"},
+    "0041A430": {"status": "matching", "symbol": "?release_being_worked_on@RGE_Animated_Object@@UAEXPAVRGE_Static_Object@@@Z"}
+  }
+}

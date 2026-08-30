@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "header": "include/Shape.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Shape.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "004B8B30": {"status": "matching", "symbol": "??0TShape@@QAE@XZ"},
+    "004B8B50": {"status": "scratch", "symbol": "??0TShape@@QAE@PADJ@Z"},
+    "004B8DD0": {"status": "matching", "symbol": "??1TShape@@QAE@XZ"},
+    "004B8E40": {"status": "matching", "symbol": "?Check_shape@TShape@@AAEEJPAD@Z"},
+    "004B8F90": {"status": "matching", "symbol": "?is_loaded@TShape@@QAEHXZ"},
+    "004B8FB0": {"status": "matching", "symbol": "?shape_bounds@TShape@@QAEEJAAF0@Z"},
+    "004B9040": {"status": "matching", "symbol": "?shape_count@TShape@@QAEJXZ"},
+    "004B9070": {"status": "matching", "symbol": "?shape_minmax@TShape@@QAEEAAJ000J@Z"},
+    "004B9140": {"status": "scratch", "symbol": "?shape_check@TShape@@QAEEJJJ@Z"},
+    "004B9440": {"status": "scratch", "symbol": "?shape_draw@TShape@@QAEEPAVTDrawArea@@JJJEPAE@Z"},
+    "004B97F0": {"status": "matching", "symbol": "?shape_draw_unclipped@TShape@@AAEEPAVTDrawArea@@JJJ@Z"},
+    "004B98E0": {"status": "scratch", "symbol": "?shape_color_trans_unclipped@TShape@@AAEEPAVTDrawArea@@JJJPAE@Z"},
+    "004B99F0": {"status": "matching", "symbol": "?shape_shadow_unclipped@TShape@@AAEEPAVTDrawArea@@JJPAE@Z"},
+    "004B9AF0": {"status": "scratch", "symbol": "?shape_draw_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJ@Z"},
+    "004B9E20": {"status": "scratch", "symbol": "?shape_color_trans_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJJPAE@Z"},
+    "004BA1C0": {"status": "scratch", "symbol": "?shape_shadow_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJPAE@Z"},
+    "004BA550": {"status": "scratch", "symbol": "?shape_mirror@TShape@@QAEEPAVTDrawArea@@JJJEPAE@Z"},
+    "004BA900": {"status": "matching", "symbol": "?shape_mirror_unclipped@TShape@@AAEEPAVTDrawArea@@JJ@Z"},
+    "004BA9E0": {"status": "scratch", "symbol": "?shape_mirror_color_trans_unclipped@TShape@@AAEEPAVTDrawArea@@JJJPAE@Z"},
+    "004BAAF0": {"status": "matching", "symbol": "?shape_mirror_shadow_unclipped@TShape@@AAEEPAVTDrawArea@@JJPAE@Z"},
+    "004BAC00": {"status": "scratch", "symbol": "?shape_mirror_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJ@Z"},
+    "004BAF20": {"status": "scratch", "symbol": "?shape_mirror_color_trans_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJJPAE@Z"},
+    "004BB280": {"status": "scratch", "symbol": "?shape_mirror_shadow_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJPAE@Z"},
+    "004BB5E0": {"status": "scratch", "symbol": "?shape_dither@TShape@@QAEEPAVTDrawArea@@JJJJJ@Z"},
+    "004BB770": {"status": "scratch", "symbol": "?shape_dithered_unclipped@TShape@@AAEEPAVTDrawArea@@JJJJ@Z"},
+    "004BB910": {"status": "scratch", "symbol": "?shape_dithered_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJJJ@Z"}
+  }
+}

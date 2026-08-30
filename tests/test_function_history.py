@@ -315,39 +315,45 @@ class FunctionHistoryTests(unittest.TestCase):
     def test_grouped_checkpoint_saves_complete_translation_unit_context(self) -> None:
         record = {"va": "00001000", "name": "demo", "size_bytes": "4"}
         group = {
-            "name": "demo_unit",
-            "source": "src/demo_unit_tu.cpp",
-            "flags": "config/flags/demo.rsp",
-            "owners": {
-                "00001000": "src/00001000_demo.cpp",
-                "00001010": "src/00001010_other.cpp",
+            "name": "demo",
+            "source": "src/demo.cpp",
+            "build": {
+                "flags": "demo",
+                "flags_path": "config/flags/demo.rsp",
             },
-            "symbols": {"00001010": "?other@@YAHXZ"},
+            "functions": {
+                "00001000": {"status": "matching", "symbol": "?demo@@YAHXZ"},
+                "00001010": {"status": "matching", "symbol": "?other@@YAHXZ"},
+            },
+        }
+        signature = {
+            "name": "demo",
+            "source": "src/demo.cpp",
+            "build": group["build"],
+            "functions": {
+                "00001000": "?demo@@YAHXZ",
+                "00001010": "?other@@YAHXZ",
+            },
         }
         manifest = {
             "schema": 2,
             "fingerprint": "complete-build-fingerprint",
             "source": group["source"],
-            "response_file": group["flags"],
+            "response_file": group["build"]["flags_path"],
             "compiler": {"path": "cl.exe", "size": 1, "mtime_ns": 2},
-            "translation_unit": group,
+            "translation_unit": signature,
             "inputs": [
                 {"path": "config/flags/demo.rsp", "sha256": "flags"},
                 {"path": "include/declaration_context.h", "sha256": "declarations"},
-                {"path": "src/demo_unit_tu.cpp", "sha256": "wrapper"},
-                {"path": "src/00001000_demo.cpp", "sha256": "owner"},
-                {"path": "src/00001010_other.cpp", "sha256": "other-owner"},
+                {"path": "src/demo.cpp", "sha256": "source"},
             ],
         }
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             for relative, content in (
                 ("config/flags/demo.rsp", "/O2\n"),
-                ("config/translation_units.json", "mapping\n"),
                 ("include/declaration_context.h", "int declaration;\n"),
-                ("src/demo_unit_tu.cpp", '#include "owner.cpp"\n'),
-                ("src/00001000_demo.cpp", "int demo;\n"),
-                ("src/00001010_other.cpp", "int other;\n"),
+                ("src/demo.cpp", "int demo;\nint other;\n"),
             ):
                 path = root / relative
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -370,15 +376,15 @@ class FunctionHistoryTests(unittest.TestCase):
             )
             (root / "build" / "asm" / f"rebuilt_{slug}.bin").write_bytes(b"\x90")
             with patch("function_history.REPO_ROOT", root), patch(
-                "function_history.translation_unit_for_va", return_value=group
+                "function_history.matching_build_for_va", return_value=group
             ), patch(
-                "function_history.compiler_source_path", return_value=root / "src/demo_unit_tu.cpp"
+                "function_history.compiler_source_path", return_value=root / "src/demo.cpp"
             ), patch(
-                "function_history.preferred_source_path", return_value=root / "src/00001000_demo.cpp"
+                "function_history.preferred_source_path", return_value=root / "src/demo.cpp"
             ), patch(
                 "function_history.preferred_flags_rsp_path", return_value=root / "config/flags/demo.rsp"
             ), patch(
-                "function_history.compiler_artifact_slug", return_value="tu_demo_unit"
+                "function_history.compiler_artifact_slug", return_value="tu_demo"
             ), patch(
                 "function_history.load_toolchain",
                 return_value={"compiler": {"default_rsp": "config/flags/default.rsp"}},
@@ -386,24 +392,19 @@ class FunctionHistoryTests(unittest.TestCase):
                 "function_history.load_build_manifest", return_value=None
             ):
                 run = record_checkpoint(record, "grouped")
-                (root / "src/demo_unit_tu.cpp").write_text("changed wrapper\n", encoding="utf-8")
-                (root / "src/00001000_demo.cpp").write_text("changed target\n", encoding="utf-8")
-                (root / "src/00001010_other.cpp").write_text("changed owner\n", encoding="utf-8")
+                (root / "src/demo.cpp").write_text("changed source\n", encoding="utf-8")
                 (root / "config/flags/demo.rsp").write_text("/Od\n", encoding="utf-8")
                 restore_checkpoint(record, "grouped")
 
             self.assertEqual(run["build_context"]["fingerprint"], "complete-build-fingerprint")
-            self.assertEqual(run["build_context"]["translation_unit"]["owners"]["00001010"], group["owners"]["00001010"])
-            self.assertEqual(run["build_context"]["translation_unit"]["symbols"]["00001010"], "?other@@YAHXZ")
+            self.assertEqual(run["build_context"]["translation_unit"]["functions"]["00001010"], "?other@@YAHXZ")
             self.assertEqual(run["build_context"]["pdb_owner"]["status"], "match")
             context_root = root / run["artifact_path"] / "context"
-            self.assertTrue((context_root / "files/src/demo_unit_tu.cpp").is_file())
-            self.assertTrue((context_root / "files/src/00001010_other.cpp").is_file())
+            self.assertTrue((context_root / "files/src/demo.cpp").is_file())
             self.assertTrue((context_root / "files/include/declaration_context.h").is_file())
             self.assertTrue((context_root / "build_context.json").is_file())
-            self.assertEqual((root / "src/demo_unit_tu.cpp").read_text(encoding="utf-8"), '#include "owner.cpp"\n')
-            self.assertEqual((root / "src/00001010_other.cpp").read_text(encoding="utf-8"), "int other;\n")
-            self.assertEqual((root / "config/flags/demo.rsp").read_text(encoding="utf-8"), "/O2\n")
+            self.assertEqual((root / "src/demo.cpp").read_text(encoding="utf-8"), "int demo;\nint other;\n")
+            self.assertEqual((root / "config/flags/demo.rsp").read_text(encoding="utf-8"), "/Od\n")
 
 
 if __name__ == "__main__":

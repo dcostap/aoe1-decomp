@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "header": "include/pathsys.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\pathsys.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0046B0F0": {"status": "matching", "symbol": "??0PathingSystem@@QAE@HHHPAVRGE_Map@@PAVRGE_Game_World@@@Z"},
+    "0046B270": {"status": "matching", "symbol": "??1PathingSystem@@UAE@XZ"},
+    "0046B310": {"status": "matching", "symbol": "?initialize@PathingSystem@@QAEHHHPAVRGE_Map@@PAVRGE_Game_World@@@Z"},
+    "0046B360": {"status": "matching", "symbol": "?printToFile@PathingSystem@@QAEXPAD@Z"},
+    "0046B550": {"status": "matching", "symbol": "?lookupMisc@PathingSystem@@QAEEHH@Z"},
+    "0046B570": {"status": "matching", "symbol": "?setMisc@PathingSystem@@QAEXHHE@Z"},
+    "0046B590": {"status": "matching", "symbol": "?initMisc@PathingSystem@@QAEXE@Z"},
+    "0046B5C0": {"status": "matching", "symbol": "?zeroObstructionMap@PathingSystem@@QAEXXZ"},
+    "0046B5E0": {"status": "scratch", "symbol": "?obstruction@PathingSystem@@QAEEHH@Z"},
+    "0046B620": {"status": "scratch", "symbol": "?incrementObstruction@PathingSystem@@QAEXHH@Z"},
+    "0046B680": {"status": "matching", "symbol": "?decrementObstruction@PathingSystem@@QAEXHH@Z"},
+    "0046B6E0": {"status": "scratch", "symbol": "PathingSystem::findTilePath"},
+    "0046D250": {"status": "matching", "symbol": "?incrementInitialPaths@PathingSystem@@QAEXXZ"},
+    "0046D260": {"status": "matching", "symbol": "?incrementContinuePaths@PathingSystem@@QAEXXZ"},
+    "0046D270": {"status": "matching", "symbol": "?incrementCanPaths@PathingSystem@@QAEXXZ"},
+    "0046D280": {"status": "scratch", "symbol": "?passable@PathingSystem@@QAEHPAVRGE_Moving_Object@@MMH@Z"},
+    "0046D740": {"status": "matching", "symbol": "?checksum@PathingSystem@@QAEJXZ"},
+    "0046D770": {"status": "matching", "symbol": "?printState@PathingSystem@@IAEXPAVRGE_Moving_Object@@@Z"},
+    "0046D830": {"status": "scratch", "symbol": "?copyPath@PathingSystem@@IAEHH@Z"},
+    "0046DCB0": {"status": "matching", "symbol": "?copyUnobstructibles@PathingSystem@@QAEXAAV?$ManagedArray@H@@@Z"}
+  }
+}

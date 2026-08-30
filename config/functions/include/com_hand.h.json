@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_hand.h",
+  "functions": {
+    "00426450": {"status": "unresolved"},
+    "004264A0": {"status": "unresolved"},
+    "004265E0": {"status": "unresolved"},
+    "00426600": {"status": "unresolved"}
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/act_bird.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\act_bird.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00401FE0": {"status": "matching", "symbol": "??0RGE_Action_Bird@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "00402040": {"status": "matching", "symbol": "??0RGE_Action_Bird@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"},
+    "00402080": {"status": "matching", "symbol": "?first_in_stack@RGE_Action_Bird@@UAEXE@Z"},
+    "004020C0": {"status": "matching", "symbol": "?set_state@RGE_Action_Bird@@MAEXE@Z"},
+    "00402180": {"status": "matching", "symbol": "?update@RGE_Action_Bird@@UAEEXZ"}
+  }
+}

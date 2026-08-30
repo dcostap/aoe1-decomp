@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "header": "include/aitacmod.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aitacmod.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00412B50": {"status": "matching", "symbol": "??0TacticalAIModule@@QAE@PAXH@Z"},
+    "00412BA0": {"status": "matching", "symbol": "??1TacticalAIModule@@UAE@XZ"}
+  }
+}

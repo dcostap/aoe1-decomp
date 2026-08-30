@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "header": "include/rpnl_tim.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rpnl_tim.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0048A680": {"status": "matching", "symbol": "??0RGE_Panel_Time@@QAE@PAVTDrawArea@@PAVTPanel@@PAX@Z"},
+    "0048A740": {"status": "matching", "symbol": "?draw@RGE_Panel_Time@@UAEXXZ"},
+    "0048AA70": {"status": "matching", "symbol": "?handle_idle@RGE_Panel_Time@@UAEJXZ"}
+  }
+}

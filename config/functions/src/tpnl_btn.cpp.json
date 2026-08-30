@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "header": "include/tpnl_btn.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tpnl_btn.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00519DA0": {"status": "matching", "symbol": "??0TRIBE_Panel_Button@@QAE@PAVTDrawArea@@PAVTPanel@@PAVTDigital@@PAXJJPAVTShape@@@Z"},
+    "00519EA0": {"status": "matching", "symbol": "?set_text_msg@TRIBE_Panel_Button@@QAEXPAD@Z"},
+    "00519EE0": {"status": "matching", "symbol": "?is_inside@TRIBE_Panel_Button@@UAEHJJ@Z"},
+    "00519F40": {"status": "scratch", "symbol": "?draw@TRIBE_Panel_Button@@UAEXXZ"},
+    "0051A570": {"status": "matching", "symbol": "?set_display_garrison@TRIBE_Panel_Button@@QAEXH@Z"},
+    "0051A590": {"status": "matching", "symbol": "?set_garrison_number@TRIBE_Panel_Button@@QAEXH@Z"},
+    "0051A5B0": {"status": "matching", "symbol": "?get_garrison_number@TRIBE_Panel_Button@@QAEHXZ"}
+  }
+}

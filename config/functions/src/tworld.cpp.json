@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "header": "include/tworld.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tworld.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0052DF60": {"status": "matching", "symbol": "??0TRIBE_World@@QAE@XZ"},
+    "0052E040": {"status": "matching", "symbol": "??1TRIBE_World@@UAE@XZ"},
+    "0052E0B0": {"status": "matching", "symbol": "?logStatus@TRIBE_World@@MAEXPAU_iobuf@@H@Z"},
+    "0052E220": {"status": "accepted_drift", "symbol": "?data_load_players_type@TRIBE_World@@UAEXFFPAU_iobuf@@@Z"},
+    "0052E2B0": {"status": "matching", "symbol": "?data_load_map@TRIBE_World@@UAEXPAD000FFFPAPAVRGE_Sound@@0@Z"},
+    "0052E350": {"status": "matching", "symbol": "?data_load_world@TRIBE_World@@UAEEPAU_iobuf@@@Z"},
+    "0052E400": {"status": "matching", "symbol": "?init_player_type@TRIBE_World@@UAEEHFE@Z"},
+    "0052E4C0": {"status": "accepted_drift", "symbol": "?map_init@TRIBE_World@@UAEXHPAVTSound_Driver@@@Z"},
+    "0052E530": {"status": "accepted_drift", "symbol": "?command_init@TRIBE_World@@UAEXHPAVTCommunications_Handler@@@Z"},
+    "0052E590": {"status": "accepted_drift", "symbol": "?scenario_init@TRIBE_World@@UAEXHPAVRGE_Game_World@@@Z"},
+    "0052E5F0": {"status": "accepted_drift", "symbol": "?scenario_init@TRIBE_World@@UAEXPAVRGE_Game_World@@@Z"},
+    "0052E650": {"status": "accepted_drift", "symbol": "?effects_init@TRIBE_World@@UAEXH@Z"},
+    "0052E6B0": {"status": "matching", "symbol": "?world_init@TRIBE_World@@UAEXHPAVTSound_Driver@@PAVTCommunications_Handler@@@Z"},
+    "0052E750": {"status": "matching", "symbol": "?init@TRIBE_World@@UAEEPADPAVTSound_Driver@@PAVTCommunications_Handler@@@Z"},
+    "0052E770": {"status": "matching", "symbol": "?base_save@TRIBE_World@@UAEXH@Z"},
+    "0052E790": {"status": "matching", "symbol": "?save@TRIBE_World@@UAEXH@Z"},
+    "0052E830": {"status": "matching", "symbol": "?load_player@TRIBE_World@@UAEXHEF@Z"},
+    "0052E920": {"status": "accepted_drift", "symbol": "?setup_gaia@TRIBE_World@@UAEXXZ"},
+    "0052E990": {"status": "matching", "symbol": "?setup_players@TRIBE_World@@UAEXAAURGE_Player_Info@@@Z"},
+    "0052EAC0": {"status": "scratch", "symbol": "?check_destructables@TRIBE_World@@QAEXFFMME@Z"},
+    "0052ECF0": {"status": "matching", "symbol": "?scenario_make_player@TRIBE_World@@UAEXFEEEPAD@Z"},
+    "0052EDF0": {"status": "matching", "symbol": "?load_world@TRIBE_World@@UAEEH@Z"},
+    "0052EF30": {"status": "scratch", "symbol": "?new_game@TRIBE_World@@UAEEAAURGE_Player_Info@@H@Z"},
+    "00530370": {"status": "matching", "symbol": "?new_scenario@TRIBE_World@@UAEEAAURGE_Player_Info@@H@Z"},
+    "005303F0": {"status": "scratch", "symbol": "?check_game_state@TRIBE_World@@UAEEXZ"},
+    "00530A70": {"status": "matching", "symbol": "?get_achievement@TRIBE_World@@QAEJEPAPAD@Z"},
+    "00530AC0": {"status": "matching", "symbol": "?send_cheat@TRIBE_World@@QAEXF@Z"},
+    "00530AE0": {"status": "matching", "symbol": "?cheat@TRIBE_World@@QAEXFF@Z"},
+    "00531240": {"status": "matching", "symbol": "?fill_in_score@TRIBE_World@@QAEXAAUTRIBE_Zone_High_Score_Info@@J@Z"},
+    "00531350": {"status": "matching", "symbol": "?send_zone_score_info@TRIBE_World@@QAEXXZ"}
+  }
+}

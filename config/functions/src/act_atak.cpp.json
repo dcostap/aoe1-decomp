@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "header": "include/act_atak.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Act_atak.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00401000": {"status": "matching", "symbol": "??0RGE_Action_Attack@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "00401170": {"status": "accepted_drift", "symbol": "??0RGE_Action_Attack@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@PAVRGE_Sprite@@22MMFF@Z"},
+    "004012B0": {"status": "accepted_drift", "symbol": "??0RGE_Action_Attack@@QAE@PAVRGE_Action_Object@@MMMPAVRGE_Sprite@@11MMFF@Z"},
+    "004013A0": {"status": "matching", "symbol": "??1RGE_Action_Attack@@UAE@XZ"},
+    "004013B0": {"status": "matching", "symbol": "?save@RGE_Action_Attack@@UAEXH@Z"},
+    "004014B0": {"status": "scratch", "symbol": "?first_in_stack@RGE_Action_Attack@@UAEXE@Z"},
+    "00401540": {"status": "matching", "symbol": "?stop@RGE_Action_Attack@@UAEHXZ"},
+    "00401550": {"status": "matching", "symbol": "?set_state@RGE_Action_Attack@@MAEXE@Z"},
+    "00401780": {"status": "scratch", "symbol": "?update@RGE_Action_Attack@@UAEEXZ"},
+    "00401AD0": {"status": "matching", "symbol": "?work@RGE_Action_Attack@@UAEHPAVRGE_Static_Object@@MMM@Z"},
+    "00401B30": {"status": "scratch", "symbol": "?ready_to_attack@RGE_Action_Attack@@IAEHAAH@Z"},
+    "00401EC0": {"status": "scratch", "symbol": "?do_attack@RGE_Action_Attack@@IAEXXZ"},
+    "00401F00": {"status": "scratch", "symbol": "?copy_obj_sprites@RGE_Action_Attack@@MAEXPAVRGE_Master_Action_Object@@PAVRGE_Task@@1@Z"}
+  }
+}

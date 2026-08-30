@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "header": "include/rmm_elev.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "004846C0": {"status": "matching", "symbol": "??0RGE_RMM_Elevation_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@PAURGE_Elevation_Info@@@Z"},
+    "00484700": {"status": "scratch", "symbol": "?generate@RGE_RMM_Elevation_Generator@@UAEEXZ"},
+    "004847C0": {"status": "scratch", "symbol": "?check_start_elevation@RGE_RMM_Elevation_Generator@@IAEEJJEEE@Z"},
+    "004848A0": {"status": "scratch", "symbol": "?check_elevation@RGE_RMM_Elevation_Generator@@IAEEEJJJEE@Z"},
+    "00484A40": {"status": "scratch", "symbol": "?generate_modifiers@RGE_RMM_Elevation_Generator@@IAEXXZ"},
+    "00484B30": {"status": "matching", "symbol": "?fig_chance@RGE_RMM_Elevation_Generator@@IAEMJJJ@Z"},
+    "00484B50": {"status": "matching", "symbol": "?count_map_tiles@RGE_RMM_Elevation_Generator@@IAEJE@Z"},
+    "00484B90": {"status": "accepted_drift", "symbol": "?link_stack_randomly@RGE_RMM_Elevation_Generator@@IAEXPAUMap_Stack@@@Z"},
+    "00484C80": {"status": "scratch", "symbol": "?remove_area_from_lists@RGE_RMM_Elevation_Generator@@IAEXJJJ@Z"},
+    "00484D00": {"status": "scratch", "symbol": "?base_elevation_generate@RGE_RMM_Elevation_Generator@@IAEEURGE_Elevation_Info_Line@@@Z"}
+  }
+}

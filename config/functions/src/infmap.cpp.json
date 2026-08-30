@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "header": "include/infmap.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\infmap.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0044DF80": {"status": "matching", "symbol": "??0InfluenceMap@@QAE@HHE@Z"},
+    "0044E050": {"status": "matching", "symbol": "??0InfluenceMap@@QAE@H@Z"},
+    "0044E080": {"status": "matching", "symbol": "??1InfluenceMap@@UAE@XZ"},
+    "0044E0B0": {"status": "matching", "symbol": "?initialize@InfluenceMap@@QAEHE@Z"},
+    "0044E0F0": {"status": "matching", "symbol": "?save@InfluenceMap@@QAEXH@Z"},
+    "0044E1A0": {"status": "matching", "symbol": "?load@InfluenceMap@@QAEXH@Z"},
+    "0044E250": {"status": "accepted_drift", "symbol": "?printToFile@InfluenceMap@@QAEXPAD@Z"},
+    "0044E4C0": {"status": "matching", "symbol": "?setReferencePoint@InfluenceMap@@QAEXHH@Z"},
+    "0044E4E0": {"status": "matching", "symbol": "?lookupValue@InfluenceMap@@QAEHHH@Z"},
+    "0044E510": {"status": "matching", "symbol": "?setValue@InfluenceMap@@QAEHHHE@Z"},
+    "0044E560": {"status": "matching", "symbol": "?setValue@InfluenceMap@@QAEHHHHHE@Z"},
+    "0044E600": {"status": "scratch", "symbol": "?incrementValue@InfluenceMap@@QAEHHHE@Z"},
+    "0044E680": {"status": "matching", "symbol": "?incrementValue@InfluenceMap@@QAEHHHHHE@Z"},
+    "0044E790": {"status": "matching", "symbol": "?decrementValue@InfluenceMap@@QAEHHHE@Z"},
+    "0044E800": {"status": "matching", "symbol": "?decrementValue@InfluenceMap@@QAEHHHHHE@Z"},
+    "0044E900": {"status": "matching", "symbol": "?setCoverageCount@InfluenceMap@@QAEHABUXYPoint@@0H@Z"},
+    "0044E9E0": {"status": "scratch", "symbol": "?setConnectionCount@InfluenceMap@@QAEHABUXYPoint@@0HHHH@Z"},
+    "0044EC00": {"status": "verified_logic", "symbol": "?coverageIncluding@InfluenceMap@@QAEHABUXYPoint@@0EE@Z"},
+    "0044ED20": {"status": "scratch", "symbol": "?connectionsIncluding@InfluenceMap@@QAEHABUXYPoint@@0EEHHH@Z"},
+    "0044F030": {"status": "matching", "symbol": "?setUnchangeableLimit@InfluenceMap@@QAEXE@Z"},
+    "0044F040": {"status": "matching", "symbol": "?maxValue@InfluenceMap@@QAEHXZ"}
+  }
+}

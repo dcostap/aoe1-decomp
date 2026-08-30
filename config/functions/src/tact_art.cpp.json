@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "header": "include/tact_art.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_art.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004CCBA0": {"status": "matching", "symbol": "??0TRIBE_Action_Artifact@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "004CCC00": {"status": "matching", "symbol": "??0TRIBE_Action_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"},
+    "004CCC30": {"status": "matching", "symbol": "??0TRIBE_Action_Artifact@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"},
+    "004CCC70": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Artifact@@UAEXE@Z"},
+    "004CCCB0": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Artifact@@MAEXE@Z"},
+    "004CCDF0": {"status": "matching", "symbol": "?update@TRIBE_Action_Artifact@@UAEEXZ"},
+    "004CCF30": {"status": "matching", "symbol": "?check_ownership@TRIBE_Action_Artifact@@IAEPAVRGE_Player@@XZ"},
+    "004CD120": {"status": "matching", "symbol": "?stop@TRIBE_Action_Artifact@@MAEHXZ"},
+    "004CD130": {"status": "matching", "symbol": "?move_to@TRIBE_Action_Artifact@@MAEHPAVRGE_Static_Object@@MMM@Z"},
+    "004CD160": {"status": "matching", "symbol": "?work@TRIBE_Action_Artifact@@MAEHPAVRGE_Static_Object@@MMM@Z"},
+    "004CD1A0": {"status": "matching", "symbol": "?reset_owner@TRIBE_Action_Artifact@@QAEXXZ"}
+  }
+}

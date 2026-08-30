@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "header": "include/tpnl_pop.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tpnl_pop.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0051CCA0": {"status": "matching", "symbol": "??0TRIBE_Panel_Pop@@QAE@PAVTDrawArea@@PAVTPanel@@@Z"},
+    "0051CDB0": {"status": "matching", "symbol": "??1TRIBE_Panel_Pop@@UAE@XZ"},
+    "0051CE40": {"status": "matching", "symbol": "?set_rect@TRIBE_Panel_Pop@@UAEXJJJJ@Z"},
+    "0051CFD0": {"status": "matching", "symbol": "?startup@TRIBE_Panel_Pop@@QAEXXZ"},
+    "0051D040": {"status": "matching", "symbol": "?get_player_id@TRIBE_Panel_Pop@@QAEHXZ"},
+    "0051D060": {"status": "matching", "symbol": "?draw@TRIBE_Panel_Pop@@UAEXXZ"},
+    "0051D470": {"status": "matching", "symbol": "?get_true_render_rect@TRIBE_Panel_Pop@@UAEXAAUtagRECT@@@Z"},
+    "0051D4E0": {"status": "matching", "symbol": "?handle_idle@TRIBE_Panel_Pop@@UAEJXZ"},
+    "0051D4F0": {"status": "scratch", "symbol": "?render_to_image_buffer@TRIBE_Panel_Pop@@IAEHXZ"}
+  }
+}

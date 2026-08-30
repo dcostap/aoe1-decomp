@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "header": "include/mst_play.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\mst_play.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00460FD0": {"status": "matching", "symbol": "??0RGE_Master_Player@@QAE@PAU_iobuf@@@Z"},
+    "004610C0": {"status": "matching", "symbol": "??0RGE_Master_Player@@QAE@H@Z"},
+    "00461150": {"status": "matching", "symbol": "??1RGE_Master_Player@@UAE@XZ"},
+    "004611D0": {"status": "matching", "symbol": "?finish_init@RGE_Master_Player@@UAEXHPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
+    "00461270": {"status": "matching", "symbol": "?load_master_object@RGE_Master_Player@@UAEXHEPAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
+    "00461530": {"status": "matching", "symbol": "?create_master_object_space@RGE_Master_Player@@UAEXF@Z"},
+    "00461560": {"status": "matching", "symbol": "?load_object@RGE_Master_Player@@UAEXPAU_iobuf@@EPAPAVRGE_Sprite@@PAPAVRGE_Sound@@F@Z"},
+    "00461840": {"status": "matching", "symbol": "?save@RGE_Master_Player@@UAEXH@Z"}
+  }
+}

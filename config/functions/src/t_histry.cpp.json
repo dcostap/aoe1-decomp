@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "header": "include/t_histry.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\t_histry.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "004CC730": {"status": "matching", "symbol": "??0TRIBE_History_Info@@QAE@H@Z"},
+    "004CC760": {"status": "matching", "symbol": "??1TRIBE_History_Info@@QAE@XZ"},
+    "004CC7A0": {"status": "matching", "symbol": "?save@TRIBE_History_Info@@QAEXH@Z"},
+    "004CC840": {"status": "matching", "symbol": "?load@TRIBE_History_Info@@QAEXH@Z"},
+    "004CC8E0": {"status": "matching", "symbol": "?add_history_entry@TRIBE_History_Info@@QAEXEE@Z"},
+    "004CC950": {"status": "matching", "symbol": "?get_history_entry_num@TRIBE_History_Info@@QAEJXZ"},
+    "004CC960": {"status": "matching", "symbol": "?get_history_entry@TRIBE_History_Info@@QAEEEJ@Z"},
+    "004CC990": {"status": "matching", "symbol": "?add_history_event@TRIBE_History_Info@@QAEXE@Z"},
+    "004CC9E0": {"status": "matching", "symbol": "?get_history_event_num@TRIBE_History_Info@@QAEJXZ"},
+    "004CC9F0": {"status": "matching", "symbol": "?get_history_event@TRIBE_History_Info@@QAEEJAAEAAJ@Z"},
+    "004CCA30": {"status": "matching", "symbol": "?get_history_event@TRIBE_History_Info@@QAEEJAAE@Z"}
+  }
+}

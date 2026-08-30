@@ -24,7 +24,7 @@ There are extra reusable documents that contain specific instructions. Read the 
 - Exactness also requires the original boundary, provable owning symbol, and known direct call or tail-jump symbol identity.
 - Never infer exactness from folder placement, old metrics, or relocation masking.
 - Validate standalone exact claims with `tools\check_function.py`.
-- Validate grouped claims with the candidate or registered translation-unit checks.
+- Validate grouped claims with the candidate or configured module checks.
 - Require `MATCH`, `0.0000%`, correct ownership, boundaries, relocations, and direct targets.
 - A valid exact result says `Result: MATCH` and `0.0000%`.
 
@@ -77,8 +77,7 @@ Repository source roles are:
 - `include\`: reviewed shared declarations and layouts;
 - `src\game_globals.cpp`: reviewed shared global definitions;
 - natural `src\*.c` and `src\*.cpp` modules: compiler-facing handwritten owners;
-- `config\source_modules\`: current per-function status in natural modules;
-- `config\translation_units.json`: module build recipes and function symbols;
+- `config\functions\`: source, status, build recipe, and symbol registry;
 - `decomp_notes\`: durable function and module notes;
 - `logic_reviews\`: versioned semantic-review ledgers;
 - `LESSONS.md`: reusable VC5 matching knowledge.
@@ -87,23 +86,23 @@ The source tree uses final, original-like modules:
 
 - one normal `.c` or `.cpp` file owns all handwritten functions in source order;
 - normal headers own shared declarations;
-- `config/source_modules/<module>.json` records each function status;
+- one registry file under `config/functions/` owns each natural source file;
 - function notes store facts, tested approaches, and useful next steps;
 - function and module note paths are deterministic;
 - function notes do not store status or source ownership; and
 - wrapper files, function fragments, and context-selection macros are forbidden.
 
-`unresolved` means source exists, but one translation-unit recipe cannot be proved.
+`unresolved` means source exists, but one compiler recipe cannot be proved.
 Header-owned functions and PDB modules without procedure records can use it.
 
-Each other normal function must appear in one translation-unit `functions` map.
-The source-module manifest remains the only status source.
+Every normal function must appear once in the function registry.
+A buildable function must have one symbol and one module flag profile.
 
 A VA has one compiler-facing source owner. Never keep duplicate owners across
 modules or headers. Edit only that natural owner.
 
-Do not reopen accepted drift without specific new evidence. The source-module
-manifest is the current reviewed status.
+Do not reopen accepted drift without specific new evidence. The function
+registry is the current reviewed status.
 
 ## Shared-worktree conduct
 

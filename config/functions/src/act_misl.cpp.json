@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "header": "include/act_misl.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\ACT_misl.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00404BB0": {"status": "matching", "symbol": "??0RGE_Action_Missile@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "00404C90": {"status": "matching", "symbol": "??0RGE_Action_Missile@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@1MMM@Z"},
+    "00404D10": {"status": "matching", "symbol": "?first_in_stack@RGE_Action_Missile@@UAEXE@Z"},
+    "00404D50": {"status": "matching", "symbol": "?intercept@RGE_Action_Missile@@IAEXAAM00@Z"},
+    "00404DB0": {"status": "scratch", "symbol": "?set_state@RGE_Action_Missile@@MAEXE@Z"},
+    "004050F0": {"status": "scratch", "symbol": "?update@RGE_Action_Missile@@UAEEXZ"},
+    "004054B0": {"status": "matching", "symbol": "?save@RGE_Action_Missile@@UAEXH@Z"}
+  }
+}

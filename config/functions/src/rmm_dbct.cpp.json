@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "header": "include/rmm_dbct.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00482B70": {"status": "scratch", "symbol": "??0RGE_RMM_Database_Controller@@QAE@PAD000@Z"},
+    "00483020": {"status": "matching", "symbol": "??0RGE_RMM_Database_Controller@@QAE@H@Z"},
+    "00483200": {"status": "matching", "symbol": "??1RGE_RMM_Database_Controller@@QAE@XZ"},
+    "004832E0": {"status": "matching", "symbol": "?save@RGE_RMM_Database_Controller@@QAEEH@Z"},
+    "00483430": {"status": "matching", "symbol": "?generate@RGE_RMM_Database_Controller@@UAEEXZ"},
+    "00483540": {"status": "matching", "symbol": "?init@RGE_RMM_Database_Controller@@UAEEPAVRGE_Map@@PAVRGE_Game_World@@EJE@Z"},
+    "004835A0": {"status": "matching", "symbol": "?de_init@RGE_RMM_Database_Controller@@UAEEXZ"},
+    "00483600": {"status": "scratch", "symbol": "?calc_land_start@RGE_RMM_Database_Controller@@IAEXJJJPAURGE_Land_Data_Entry@@@Z"},
+    "00483A20": {"status": "scratch", "symbol": "?add_land_module@RGE_RMM_Database_Controller@@MAEXE@Z"},
+    "00484160": {"status": "scratch", "symbol": "?add_terrain_module@RGE_RMM_Database_Controller@@MAEXXZ"},
+    "00484320": {"status": "scratch", "symbol": "?add_object_module@RGE_RMM_Database_Controller@@MAEXXZ"},
+    "00484470": {"status": "accepted_drift", "symbol": "?add_elevation_module@RGE_RMM_Database_Controller@@MAEXXZ"}
+  }
+}

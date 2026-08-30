@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "header": "include/pnl_sld.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\pnl_sld.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0047BCE0": {"status": "matching", "symbol": "??0TVerticalSliderPanel@@QAE@XZ"},
+    "0047BD30": {"status": "matching", "symbol": "??1TVerticalSliderPanel@@UAE@XZ"},
+    "0047BD40": {"status": "matching", "symbol": "?setup@TVerticalSliderPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAD2JJJJHH@Z"},
+    "0047BDC0": {"status": "matching", "symbol": "?set_rect@TVerticalSliderPanel@@UAEXJJJJ@Z"},
+    "0047BDE0": {"status": "matching", "symbol": "?draw@TVerticalSliderPanel@@UAEXXZ"},
+    "0047BDF0": {"status": "matching", "symbol": "??0THorizontalSliderPanel@@QAE@XZ"},
+    "0047BE30": {"status": "matching", "symbol": "??1THorizontalSliderPanel@@UAE@XZ"},
+    "0047BE40": {"status": "matching", "symbol": "?setup@THorizontalSliderPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAD2JJJJHH@Z"},
+    "0047BEC0": {"status": "matching", "symbol": "?set_rect@THorizontalSliderPanel@@UAEXJJJJ@Z"},
+    "0047BF30": {"status": "matching", "symbol": "?draw@THorizontalSliderPanel@@UAEXXZ"}
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "header": "include/rmm_base.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rmm_base.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00480790": {"status": "matching", "symbol": "??0RGE_Random_Map_Module@@QAE@PAVRGE_Map@@PAV0@E@Z"},
+    "00480840": {"status": "matching", "symbol": "??1RGE_Random_Map_Module@@QAE@XZ"},
+    "004808C0": {"status": "matching", "symbol": "?get_schedule@RGE_Random_Map_Module@@IAEMXZ"},
+    "004808D0": {"status": "matching", "symbol": "?generate@RGE_Random_Map_Module@@UAEEXZ"},
+    "004809E0": {"status": "matching", "symbol": "?add_module@RGE_Random_Map_Module@@IAEEPAV1@@Z"},
+    "00480A20": {"status": "accepted_drift", "symbol": "?remove_module@RGE_Random_Map_Module@@IAEEPAV1@@Z"},
+    "00480A80": {"status": "matching", "symbol": "?create_shared_resources@RGE_Random_Map_Module@@IAEXXZ"},
+    "00480B60": {"status": "matching", "symbol": "?destroy_shared_resources@RGE_Random_Map_Module@@IAEXXZ"},
+    "00480BC0": {"status": "matching", "symbol": "?update_child_resources@RGE_Random_Map_Module@@IAEXXZ"},
+    "00480BE0": {"status": "matching", "symbol": "?update_resources@RGE_Random_Map_Module@@IAEXXZ"},
+    "00480C10": {"status": "matching", "symbol": "?update_child_map_info@RGE_Random_Map_Module@@IAEXXZ"},
+    "00480C30": {"status": "matching", "symbol": "?update_map_info@RGE_Random_Map_Module@@IAEXPAVRGE_Map@@@Z"},
+    "00480C80": {"status": "matching", "symbol": "?share_resources@RGE_Random_Map_Module@@IAEXPAPAEPAPAPAEPAPAUMap_Stack@@PAPAPAU2@@Z"},
+    "00480CC0": {"status": "matching", "symbol": "?init_stack@RGE_Random_Map_Module@@IAEXAAUMap_Stack@@@Z"},
+    "00480CF0": {"status": "matching", "symbol": "?deinit_stack@RGE_Random_Map_Module@@IAEXAAUMap_Stack@@@Z"},
+    "00480D10": {"status": "matching", "symbol": "?push_stack@RGE_Random_Map_Module@@IAEXAAUMap_Stack@@JJMM@Z"},
+    "00480DA0": {"status": "matching", "symbol": "?pop_stack@RGE_Random_Map_Module@@IAEPAUMap_Stack@@AAU2@AAJ1AAM@Z"},
+    "00480DE0": {"status": "matching", "symbol": "?add_stack_node@RGE_Random_Map_Module@@IAEXPAUMap_Stack@@0@Z"},
+    "00480E20": {"status": "matching", "symbol": "?remove_stack_node@RGE_Random_Map_Module@@IAEXPAUMap_Stack@@@Z"},
+    "00480E50": {"status": "matching", "symbol": "?clear_stack@RGE_Random_Map_Module@@IAEXXZ"},
+    "00480EA0": {"status": "matching", "symbol": "?check_stack@RGE_Random_Map_Module@@IAEEPAUMap_Stack@@@Z"},
+    "00480EC0": {"status": "scratch", "symbol": "?randomize_stack@RGE_Random_Map_Module@@IAEXPAUMap_Stack@@@Z"},
+    "00480FB0": {"status": "matching", "symbol": "?find_path@RGE_Random_Map_Module@@IAEEJJAAJ0PAM@Z"},
+    "00481000": {"status": "scratch", "symbol": "?find_path@RGE_Random_Map_Module@@IAEEAAUMap_Stack@@JJAAJ1PAM@Z"}
+  }
+}

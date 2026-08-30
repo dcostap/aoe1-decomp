@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "header": "include/dlg_dip.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\dlg_dip.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0043C930": {"status": "scratch", "symbol": "??0TribeDiplomacyDialog@@QAE@PAVTScreenPanel@@@Z"},
+    "0043D6E0": {"status": "scratch", "symbol": "??1TribeDiplomacyDialog@@UAE@XZ"},
+    "0043D8A0": {"status": "scratch", "symbol": "?action@TribeDiplomacyDialog@@MAEJPAVTPanel@@JKK@Z"},
+    "0043E530": {"status": "matching", "symbol": "?check_gold@TribeDiplomacyDialog@@IAEHXZ"},
+    "0043E5C0": {"status": "matching", "symbol": "?check_wood@TribeDiplomacyDialog@@IAEHXZ"},
+    "0043E650": {"status": "scratch", "symbol": "?check_food@TribeDiplomacyDialog@@IAEHXZ"},
+    "0043E6E0": {"status": "scratch", "symbol": "?check_stone@TribeDiplomacyDialog@@IAEHXZ"},
+    "0043E770": {"status": "accepted_drift", "symbol": "?draw@TribeDiplomacyDialog@@MAEXXZ"}
+  }
+}

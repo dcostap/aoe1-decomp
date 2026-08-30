@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/scr_stms.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_stms.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004B7140": {"status": "matching", "symbol": "??0TRIBE_Screen_Status_Message@@QAE@PAD00J@Z"},
+    "004B7330": {"status": "matching", "symbol": "??0TRIBE_Screen_Status_Message@@QAE@PADJ0J@Z"},
+    "004B7500": {"status": "matching", "symbol": "??1TRIBE_Screen_Status_Message@@UAE@XZ"},
+    "004B7560": {"status": "matching", "symbol": "?set_text@TRIBE_Screen_Status_Message@@QAEXPAD@Z"},
+    "004B7580": {"status": "matching", "symbol": "?set_text@TRIBE_Screen_Status_Message@@QAEXJ@Z"}
+  }
+}

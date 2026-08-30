@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "header": "include/tpnl_txl.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tpnl_txl.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00520D70": {"status": "matching", "symbol": "??0TRIBE_Panel_Text_Line@@QAE@PAVTDrawArea@@PAVTPanel@@PAX@Z"},
+    "00520E30": {"status": "matching", "symbol": "?set_info@TRIBE_Panel_Text_Line@@QAEXEPADJ@Z"},
+    "00520ED0": {"status": "matching", "symbol": "?draw@TRIBE_Panel_Text_Line@@UAEXXZ"}
+  }
+}

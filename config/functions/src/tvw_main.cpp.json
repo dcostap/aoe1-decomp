@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "header": "include/vw_main.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tvw_main.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0052CAF0": {"status": "scratch", "symbol": "?draw_multi_object_outline@TRIBE_Main_View@@UAEXXZ"},
+    "0052D060": {"status": "matching", "symbol": "?draw_wall_outline@TRIBE_Main_View@@IAEHJJPAVTRIBE_Master_Building_Object@@J@Z"},
+    "0052D1F0": {"status": "matching", "symbol": "?command_place_object@TRIBE_Main_View@@UAEHJJH@Z"},
+    "0052D320": {"status": "matching", "symbol": "?command_place_multi_object@TRIBE_Main_View@@UAEHJJJJH@Z"},
+    "0052D4F0": {"status": "matching", "symbol": "?place_line_of_walls@TRIBE_Main_View@@IAEXPAVTRIBE_Player@@PAVTRIBE_Master_Building_Object@@HHHH@Z"},
+    "0052D600": {"status": "accepted_drift", "symbol": "?mouse_left_up_action@TRIBE_Main_View@@UAEJJJHH@Z"},
+    "0052D970": {"status": "accepted_drift", "symbol": "?mouse_right_up_action@TRIBE_Main_View@@UAEJJJHH@Z"},
+    "0052DCE0": {"status": "matching", "symbol": "?pick_through_fog@TRIBE_Main_View@@UAEHPAVRGE_Static_Object@@@Z"},
+    "0052DD10": {"status": "matching", "symbol": "?pick_weight@TRIBE_Main_View@@UAEHPAVRGE_Static_Object@@H@Z"},
+    "0052DE20": {"status": "matching", "symbol": "?command_make_do@TRIBE_Main_View@@UAEHJJHF@Z"},
+    "0052DE40": {"status": "matching", "symbol": "?mouse_left_dbl_click_action@TRIBE_Main_View@@UAEJJJHH@Z"}
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/act_make.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\ACT_make.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "004049B0": {"status": "matching", "symbol": "??0RGE_Action_Make@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "00404A10": {"status": "matching", "symbol": "??0RGE_Action_Make@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@@Z"},
+    "00404A40": {"status": "matching", "symbol": "?first_in_stack@RGE_Action_Make@@UAEXE@Z"},
+    "00404A70": {"status": "matching", "symbol": "?set_state@RGE_Action_Make@@MAEXE@Z"},
+    "00404A90": {"status": "scratch", "symbol": "?update@RGE_Action_Make@@UAEEXZ"}
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "header": "include/campaign.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\campaign.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00423230": {"status": "matching", "symbol": "??0RGE_Campaign@@QAE@PAD@Z"},
+    "00423330": {"status": "matching", "symbol": "??0RGE_Campaign@@QAE@PAD0JPAPAD1@Z"},
+    "00423480": {"status": "matching", "symbol": "??1RGE_Campaign@@QAE@XZ"},
+    "004234B0": {"status": "matching", "symbol": "?create_file@RGE_Campaign@@QAEXXZ"},
+    "00423690": {"status": "matching", "symbol": "?open_scenario@RGE_Campaign@@QAEHJ@Z"},
+    "00423710": {"status": "matching", "symbol": "?get_name@RGE_Campaign@@QAEPADXZ"},
+    "00423720": {"status": "matching", "symbol": "?scenario_number@RGE_Campaign@@QAEJXZ"},
+    "00423730": {"status": "matching", "symbol": "?scenario_info@RGE_Campaign@@QAEJPAPAPAD@Z"},
+    "004237A0": {"status": "matching", "symbol": "?get_scenario_name@RGE_Campaign@@QAEPADJ@Z"}
+  }
+}

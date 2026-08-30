@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "header": "include/Res_file.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Res_file.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0047EE90": {"status": "scratch", "symbol": "RESFILE_open_new_resource_file"},
+    "0047F180": {"status": "matching", "symbol": "?RESFILE_close_new_resource_file@@YAXPAD@Z"},
+    "0047F230": {"status": "matching", "symbol": "?RESFILE_locate_resource@@YAHKKAAH0AAPAE0@Z"},
+    "0047F320": {"status": "verified_logic", "symbol": "?RESFILE_load@@YAPAEKKAAH0@Z"},
+    "0047F480": {"status": "matching", "symbol": "?RESFILE_Extract_to_File@@YAHKKPADAAPAU_iobuf@@@Z"},
+    "0047F580": {"status": "matching", "symbol": "?RESFILE_Set_Missing_Flag@@YAXH@Z"},
+    "0047F590": {"status": "matching", "symbol": "?RESFILE_Decommit_Mapped_Memory@@YAHPAEH@Z"},
+    "0047F5C0": {"status": "scratch", "symbol": "?RESFILE_build_res_file@@YAHPAD00@Z"},
+    "0047FC50": {"status": "matching", "symbol": "?BUILDRES_get_files_resource_type@@YAKPAD@Z"}
+  }
+}

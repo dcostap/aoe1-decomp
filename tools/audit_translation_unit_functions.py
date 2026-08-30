@@ -15,13 +15,13 @@ from common import (
     function_record_by_va,
     function_slug,
     load_pdb_function_source_map,
-    load_translation_units,
+    load_build_modules,
     repo_path,
 )
 from extract_obj_function import select_record_function_symbol
 from original_fpo import load_original_owner_symbols
 from status_core import build_status_rows
-from translation_unit_prefixes import _compile_wrapper, compare_object_owner
+from function_compare import compile_source, compare_object_function
 from validate_candidate_tu import _source_closure, _source_policy_issues
 
 
@@ -89,8 +89,8 @@ def integer(value: object) -> int | None:
 def classify(
     status: dict[str, str],
     comparison: dict[str, object],
-    registered_here: bool,
-    registered_anywhere: bool,
+    matching_here: bool,
+    matching_anywhere: bool,
     policy_issues: list[str],
 ) -> tuple[str, str, str]:
     result = str(comparison.get("result") or "ERROR")
@@ -102,29 +102,29 @@ def classify(
     boundary_errors = integer(comparison.get("boundary_escape_count")) or 0
 
     if result == "MATCH":
-        if registered_here:
-            category = "registered_owner_match"
+        if matching_here:
+            category = "matching_result"
             action = "none"
             reason = "The matching function remains exact in its natural translation unit."
-        elif registered_anywhere:
-            category = "registered_elsewhere_match"
+        elif matching_anywhere:
+            category = "matching_elsewhere_result"
             action = "none"
-            reason = "The function is exact here and already owned by another registered group."
+            reason = "The function is exact here and already matches in another module."
         elif policy_issues:
             category = "grouped_match_policy_review"
             action = "repair_policy_then_review_promotion"
             reason = "Grouped code is exact, but source-policy findings block promotion."
         else:
-            category = "grouped_match_not_registered"
+            category = "grouped_match_needs_review"
             action = "review_for_promotion"
             reason = "A non-matching function now produces an exact result."
     elif result == "MISMATCH":
-        if registered_here:
-            category = "registered_owner_regression"
+        if matching_here:
+            category = "matching_regression"
             action = "repair_before_integration"
             reason = "A matching function no longer produces an exact result."
-        elif registered_anywhere:
-            category = "registered_elsewhere_context_mismatch"
+        elif matching_anywhere:
+            category = "matching_elsewhere_mismatch"
             action = "review_context_ownership"
             reason = "The owner is exact in another group but differs in this included context."
         elif new_diff == 0 and owner_status != "match":
@@ -148,12 +148,12 @@ def classify(
             action = "assign_matching_worker"
             reason = "The function is in its natural translation unit but still differs."
     elif result == "NOT_EMITTED":
-        if registered_here:
-            category = "registered_owner_regression"
+        if matching_here:
+            category = "matching_regression"
             action = "repair_before_integration"
             reason = "A matching function no longer emits its required symbol."
-        elif registered_anywhere:
-            category = "registered_elsewhere_context_missing"
+        elif matching_anywhere:
+            category = "matching_elsewhere_missing"
             action = "review_context_ownership"
             reason = "The required symbol is absent here but owned by another group."
         elif status.get("source_bucket") == "accepted_drift":
@@ -189,7 +189,7 @@ def difficulty_band(row: dict[str, object]) -> str:
         "ownership_problem",
         "relocation_problem",
         "boundary_problem",
-        "registered_owner_regression",
+        "matching_regression",
         "missing_grouped_symbol",
     }:
         return "structural"
@@ -212,47 +212,43 @@ def compile_and_compare_group(
     targets: list[dict[str, object]],
     original_symbols: dict[str, str],
     pdb_owner_names: dict[str, str],
-    owner_groups: dict[str, list[str]],
+    matching_groups_by_va: dict[str, list[str]],
     output_dir: Path,
 ) -> dict[str, object]:
     name = str(group["name"])
     wrapper = repo_path(str(group["source"]))
-    flags = repo_path(str(group.get("flags") or "config/flags/default.rsp"))
+    build = group["build"]
+    assert isinstance(build, dict)
+    flags = repo_path(str(build["flags_path"]))
     object_path = output_dir / "objects" / f"{name}.obj"
     object_path.parent.mkdir(parents=True, exist_ok=True)
     try:
-        _compile_wrapper(wrapper, object_path, flags, wrapper.parent)
+        compile_source(wrapper, object_path, flags, wrapper.parent)
         obj = load_coff_object(object_path)
     except (OSError, RuntimeError, ValueError) as error:
         return {
             "group": name,
             "source": str(group["source"]),
-            "flags": str(group.get("flags") or "config/flags/default.rsp"),
+            "flags": str(build["flags_path"]),
             "compile_error": str(error),
             "rows": [],
         }
 
-    owners = group.get("owners")
-    symbols = group.get("functions") or group.get("symbols")
-    assert isinstance(owners, dict)
-    configured_symbols = symbols if isinstance(symbols, dict) else {}
+    functions = group["functions"]
+    assert isinstance(functions, dict)
     rows: list[dict[str, object]] = []
     for target in targets:
         status = target["status"]
         assert isinstance(status, dict)
         va = str(status["va"]).upper()
-        expected_symbol = str(configured_symbols.get(va) or original_symbols.get(va) or "")
+        function_entry = functions.get(va)
+        assert isinstance(function_entry, dict)
+        expected_symbol = str(function_entry.get("symbol") or original_symbols.get(va) or "")
         if not expected_symbol:
             expected_symbol = isolated_symbol_name(int(va, 16))
         expected_owner_name = pdb_owner_names.get(va, "")
-        selection: dict[str, object] = {
-            "owners": {va: status["source_path"]},
-            "symbols": {va: expected_symbol} if expected_symbol else {},
-        }
         try:
-            result = compare_object_owner(
-                obj, int(va, 16), selection, expected_owner_name
-            )
+            result = compare_object_function(obj, int(va, 16), group, expected_owner_name)
             relocations = result["relocations"]
             owner = result["owner_symbol"]
             assert isinstance(relocations, dict)
@@ -293,16 +289,16 @@ def compile_and_compare_group(
                 "error": message,
             }
 
-        registered_here = va in owners
-        registered_groups = owner_groups.get(va, [])
-        registered_anywhere = bool(registered_groups)
+        matching_here = function_entry.get("status") == "matching"
+        matching_groups = matching_groups_by_va.get(va, [])
+        matching_anywhere = bool(matching_groups)
         policy_issues = target["policy_issues"]
         assert isinstance(policy_issues, list)
         category, action, reason = classify(
             status,
             comparison,
-            registered_here,
-            registered_anywhere,
+            matching_here,
+            matching_anywhere,
             policy_issues,
         )
         row = {
@@ -311,9 +307,9 @@ def compile_and_compare_group(
                 "name": status["name"],
                 "source_path": status["source_path"],
                 "source_bucket": status["source_bucket"],
-                "registered_in_group": registered_here,
-                "registered_anywhere": registered_anywhere,
-                "registered_groups": registered_groups,
+                "matching_in_group": matching_here,
+                "matching_anywhere": matching_anywhere,
+                "matching_groups": matching_groups,
                 "previous_result": status.get("diff_result") or "UNKNOWN",
                 "previous_diff_bytes": status.get("diff_bytes") or "",
                 "grouped_result": comparison["result"],
@@ -338,7 +334,7 @@ def compile_and_compare_group(
     return {
         "group": name,
         "source": str(group["source"]),
-        "flags": str(group.get("flags") or "config/flags/default.rsp"),
+        "flags": str(build["flags_path"]),
         "compile_error": "",
         "rows": rows,
     }
@@ -354,8 +350,8 @@ def text_report(report: dict[str, object]) -> str:
         f"Groups requested: {summary['group_count']}",
         f"Groups compiled: {summary['compiled_group_count']}",
         f"Included normal functions: {summary['function_count']}",
-        f"Exact validation targets: {summary['registered_owner_count']}",
-        f"Other configured functions: {summary['unregistered_count']}",
+        f"Exact validation targets: {summary['matching_count']}",
+        f"Other configured functions: {summary['nonmatching_count']}",
         "",
         "Categories:",
     ]
@@ -413,8 +409,8 @@ def console_summary(report: dict[str, object]) -> str:
         f"Groups requested: {summary['group_count']}",
         f"Groups compiled: {summary['compiled_group_count']}",
         f"Included normal functions: {summary['function_count']}",
-        f"Exact validation targets: {summary['registered_owner_count']}",
-        f"Other configured functions: {summary['unregistered_count']}",
+        f"Exact validation targets: {summary['matching_count']}",
+        f"Other configured functions: {summary['nonmatching_count']}",
         "Categories:",
     ]
     category_counts = summary["category_counts"]
@@ -438,18 +434,18 @@ def build_queue(
     assignments: list[dict[str, object]] = []
     assigned_group_by_va: dict[str, str] = {}
     for va, contexts in sorted(contexts_by_va.items()):
-        registered_groups = {
+        matching_groups = {
             str(group_name)
             for context in contexts
-            for group_name in context.get("registered_groups", [])
+            for group_name in context.get("matching_groups", [])
         }
-        registered_contexts = [
-            context for context in contexts if str(context["group"]) in registered_groups
+        matching_contexts = [
+            context for context in contexts if str(context["group"]) in matching_groups
         ]
         exact_contexts = [
             context for context in contexts if context["grouped_result"] == "MATCH"
         ]
-        candidates = registered_contexts or exact_contexts or contexts
+        candidates = matching_contexts or exact_contexts or contexts
         canonical = max(
             candidates,
             key=lambda context: (
@@ -467,7 +463,7 @@ def build_queue(
                 "canonical_group": canonical_group,
                 "selection_reason": (
                     "matching function context"
-                    if registered_contexts
+                    if matching_contexts
                     else "largest exact context"
                     if exact_contexts
                     else "largest included context"
@@ -489,7 +485,7 @@ def build_queue(
     group_metadata = {
         str(group["name"]): {
             "source": str(group["source"]),
-            "flags": str(group.get("flags") or "config/flags/default.rsp"),
+            "flags": str(group["build"]["flags_path"]),
         }
         for group in groups
     }
@@ -631,13 +627,14 @@ def main() -> int:
     args = parse_args()
     output_dir = repo_path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    groups = load_translation_units()
-    owner_groups: dict[str, list[str]] = {}
+    groups = load_build_modules()
+    matching_groups_by_va: dict[str, list[str]] = {}
     for group in groups:
-        owners = group.get("owners")
-        assert isinstance(owners, dict)
-        for va in owners:
-            owner_groups.setdefault(str(va).upper(), []).append(str(group["name"]))
+        functions = group.get("functions")
+        assert isinstance(functions, dict)
+        for va, entry in functions.items():
+            if isinstance(entry, dict) and entry.get("status") == "matching":
+                matching_groups_by_va.setdefault(str(va).upper(), []).append(str(group["name"]))
     requested = set(args.group)
     if requested:
         known = {str(group["name"]) for group in groups}
@@ -692,7 +689,7 @@ def main() -> int:
                 targets_by_group[str(group["name"])],
                 original_symbols,
                 pdb_owner_names,
-                owner_groups,
+                matching_groups_by_va,
                 output_dir,
             ): str(group["name"])
             for group in groups
@@ -719,8 +716,8 @@ def main() -> int:
             "compiled_group_count": len(groups) - len(compile_errors),
             "compile_error_count": len(compile_errors),
             "function_count": len(rows),
-            "registered_owner_count": sum(bool(row["registered_anywhere"]) for row in rows),
-            "unregistered_count": sum(not bool(row["registered_anywhere"]) for row in rows),
+            "matching_count": sum(bool(row["matching_anywhere"]) for row in rows),
+            "nonmatching_count": sum(not bool(row["matching_anywhere"]) for row in rows),
             "category_counts": dict(sorted(category_counts.items())),
         },
         "compile_errors": compile_errors,
@@ -740,9 +737,9 @@ def main() -> int:
         "name",
         "source_path",
         "source_bucket",
-        "registered_in_group",
-        "registered_anywhere",
-        "registered_groups",
+        "matching_in_group",
+        "matching_anywhere",
+        "matching_groups",
         "previous_result",
         "previous_diff_bytes",
         "grouped_result",

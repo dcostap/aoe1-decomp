@@ -27,7 +27,7 @@ from common import (
     load_functions,
     load_layout,
     load_pdb_function_source_map,
-    load_translation_units,
+    load_build_modules,
     parse_hex,
     preferred_source_path,
     repo_path,
@@ -333,7 +333,7 @@ def _current_group_maps(groups: Iterable[dict[str, object]]) -> tuple[dict[str, 
     duplicates: dict[str, list[str]] = defaultdict(list)
     for group in groups:
         name = str(group.get("name") or "").strip()
-        functions = group.get("functions") or group.get("owners") or {}
+        functions = group.get("functions") or {}
         if not isinstance(functions, dict):
             continue
         for raw_va in functions:
@@ -374,10 +374,7 @@ def _owner_row(
     va = str(record["va"]).upper()
     owner_path = preferred_source_path(record)
     if group is not None:
-        owner_map = group.get("owners") or {}
-        configured_path = owner_map.get(va) if isinstance(owner_map, dict) else None
-        if configured_path:
-            owner_path = _resolve(configured_path, root)
+        owner_path = _resolve(group.get("source"), root)
     expected_language = _expected_language(source_row, owner_path)
     individual_path = root / "config" / "flags" / f"{record.get('slug') or function_slug(record)}.rsp"
     individual_flags, individual_custom = _read_flags(
@@ -394,7 +391,9 @@ def _owner_row(
     wrapper_language = "unknown"
     if group is not None:
         group_name = str(group.get("name") or "")
-        configured_path = _resolve(group.get("flags") or default_path, root)
+        build = group.get("build")
+        assert isinstance(build, dict)
+        configured_path = _resolve(build.get("flags_path") or default_path, root)
         wrapper_language = _owner_language_from_group(group, root)
         configured_flags, _ = _read_flags(
             configured_path,
@@ -543,7 +542,7 @@ def audit_translation_units(
     flag_loader: Callable[[Path], str] | None = None,
 ) -> dict[str, Any]:
     """Build a stable audit report from configured groups and owner evidence."""
-    configured_groups = list(load_translation_units() if groups is None else groups)
+    configured_groups = list(load_build_modules() if groups is None else groups)
     configured_records = list(load_functions() if records is None else records)
     source_rows_raw = load_pdb_function_source_map() if source_map is None else source_map
     source_rows = {str(key).upper(): value for key, value in source_rows_raw.items()}
@@ -674,7 +673,9 @@ def audit_translation_units(
                         vas=[owner["va"]],
                     )
                 )
-        flags_value = _portable(group.get("flags")) or _display(default_path, root)
+        build = group.get("build")
+        assert isinstance(build, dict)
+        flags_value = _portable(build.get("flags_path")) or _display(default_path, root)
         if len(owners) > 1 and _VA_STEM_RE.match(Path(flags_value).stem):
             unit_issues.append(
                 _issue(
@@ -726,60 +727,34 @@ def audit_translation_units(
             )
         )
 
-    counts = Counter(issue["code"] for issue in issues)
-    migration_plan = [
-        {
-            "step": 1,
-            "action": "Freeze evidence",
-            "detail": "Use the PDB module path, original EXE EH setup, original prologue, and wrapper language as the owner evidence.",
-        },
-        {
-            "step": 2,
-            "action": "Replace target-named TU flags",
-            "detail": "Give each source-module group one reviewed module-level response file. Copy no per-function overlay without evidence.",
-        },
-        {
-            "step": 3,
-            "action": "Resolve stale exceptions",
-            "detail": "For each stale per-function response file, either prove the flag is module-wide or keep the owner out of that grouped TU.",
-        },
-        {
-            "step": 4,
-            "action": "Split incompatible modules",
-            "detail": "Split C/C++ language, EH, or EBP/FPO basins before testing source-shape changes.",
-        },
-        {
-            "step": 5,
-            "action": "Revalidate anchors",
-            "detail": "Rebuild all owners together and run check_function.py for every exact claim after each flag migration.",
-        },
+    current_issues = [
+        issue
+        for issue in issues
+        if not str(issue.get("scope") or "").startswith("proposed:")
     ]
+    counts = Counter(issue["code"] for issue in current_issues)
     return {
         "schema_version": SCHEMA_VERSION,
         "evidence": {
             "pdb": "inventory/pdb/function_source_map.csv",
             "original_image": "config/binaries.json -> original_exe",
             "original_layout": "config/binaries.json -> ghidra_layout",
-            "configured_translation_units": "config/translation_units.json",
+            "function_registry": "config/functions/",
             "response_files": "config/flags/*.rsp",
         },
         "summary": {
-            "owner_count": len(included_vas),
-            "current_translation_unit_count": len(current_units),
-            "proposed_module_count": len(proposed_units),
-            "issue_count": len(issues),
+            "function_count": sum(len(rows) for rows in current_rows.values()),
+            "module_count": len(current_units),
+            "issue_count": len(current_issues),
             "issue_counts": dict(sorted(counts.items())),
             "blocking_issue_count": sum(
                 1
-                for issue in issues
+                for issue in current_issues
                 if issue["severity"] == "error"
-                and not str(issue.get("scope") or "").startswith("proposed:")
             ),
         },
-        "current_translation_units": current_units,
-        "proposed_translation_units": proposed_units,
-        "issues": issues,
-        "migration_plan": migration_plan,
+        "modules": current_units,
+        "issues": current_issues,
     }
 
 
@@ -794,7 +769,7 @@ def write_report(report: dict[str, Any], output: Path, *, root: Path = REPO_ROOT
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Audit grouped and proposed translation-unit compiler flags against PDB and original-code evidence."
+        description="Audit configured module flags against PDB and original-code evidence."
     )
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="JSON report path under build/.")
     parser.add_argument("--no-original-needs", action="store_true", help="Skip original EXE EH/frame extraction.")

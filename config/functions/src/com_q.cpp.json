@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "header": "include/com_q.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_q.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00431720": {"status": "matching", "symbol": "??0RGE_Communications_Queue@@QAE@H@Z"},
+    "00431760": {"status": "matching", "symbol": "??1RGE_Communications_Queue@@QAE@XZ"},
+    "00431810": {"status": "matching", "symbol": "?AllocateQueue@RGE_Communications_Queue@@IAEHI@Z"},
+    "004319E0": {"status": "matching", "symbol": "?ExpectedNextSequence@RGE_Communications_Queue@@QAEEKI@Z"},
+    "00431A40": {"status": "matching", "symbol": "?QueuedForTurn@RGE_Communications_Queue@@IAEIK@Z"},
+    "00431A70": {"status": "matching", "symbol": "?FlushAll@RGE_Communications_Queue@@QAEXXZ"},
+    "00431A80": {"status": "scratch", "symbol": "?FlushTurnRange@RGE_Communications_Queue@@QAEIKK@Z"},
+    "00431B10": {"status": "scratch", "symbol": "?FlushForPlayer@RGE_Communications_Queue@@QAEXI@Z"},
+    "00431BD0": {"status": "matching", "symbol": "?FlushForTurn@RGE_Communications_Queue@@QAEIK@Z"},
+    "00431BE0": {"status": "matching", "symbol": "?FlushThruTurn@RGE_Communications_Queue@@QAEIK@Z"},
+    "00431BF0": {"status": "matching", "symbol": "?AddItem@RGE_Communications_Queue@@QAEHKPAXKIEH@Z"},
+    "00431D10": {"status": "matching", "symbol": "?GetQueueDepth@RGE_Communications_Queue@@QAEIXZ"},
+    "00431D20": {"status": "matching", "symbol": "?GetHighQueueDepth@RGE_Communications_Queue@@QAEIXZ"},
+    "00431D30": {"status": "accepted_drift", "symbol": "?GetSpecificItem@RGE_Communications_Queue@@QAEPAXIKEPAI@Z"},
+    "00431DD0": {"status": "matching", "symbol": "?GetNextItemSingle@RGE_Communications_Queue@@QAEPAXXZ"},
+    "00431E40": {"status": "matching", "symbol": "?GetNextItemOrdered@RGE_Communications_Queue@@QAEPAXK@Z"},
+    "00431F10": {"status": "matching", "symbol": "?GetNextSequence@RGE_Communications_Queue@@QAEEK@Z"},
+    "00431F50": {"status": "matching", "symbol": "?TestShowQueue@RGE_Communications_Queue@@QAEXXZ"}
+  }
+}

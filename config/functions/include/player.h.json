@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\player.h",
+  "functions": {
+    "0046EC80": {"status": "unresolved"},
+    "0046EC90": {"status": "unresolved"},
+    "0046ECA0": {"status": "unresolved"},
+    "0046ECB0": {"status": "unresolved"},
+    "0046ECC0": {"status": "unresolved"},
+    "0046ECD0": {"status": "unresolved"},
+    "0046ED30": {"status": "unresolved"},
+    "0046ED40": {"status": "unresolved"}
+  }
+}

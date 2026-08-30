@@ -32,11 +32,11 @@ def comparison(
     }
 
 
-def test_exact_unregistered_function_enters_promotion_review() -> None:
+def test_exact_nonmatching_function_enters_promotion_review() -> None:
     category, action, _ = classify(
         status(), comparison("MATCH", 0), False, False, []
     )
-    assert category == "grouped_match_not_registered"
+    assert category == "grouped_match_needs_review"
     assert action == "review_for_promotion"
 
 
@@ -92,28 +92,28 @@ def test_missing_accepted_drift_symbol_stays_closed() -> None:
     assert action == "hold_accepted_drift"
 
 
-def test_other_registered_context_is_not_duplicate_work() -> None:
+def test_other_matching_context_is_not_duplicate_work() -> None:
     category, action, _ = classify(
         status("matching"), comparison(), False, True, []
     )
-    assert category == "registered_elsewhere_context_mismatch"
+    assert category == "matching_elsewhere_mismatch"
     assert action == "review_context_ownership"
 
 
 def test_queue_assigns_overlapping_va_to_largest_exact_context() -> None:
     groups = [
-        {"name": "prefix", "source": "src/prefix.cpp", "owners": {}, "flags": ""},
-        {"name": "complete", "source": "src/complete.cpp", "owners": {}, "flags": ""},
+        {"name": "prefix", "source": "src/prefix.cpp", "build": {"flags_path": "config/flags/default.rsp"}},
+        {"name": "complete", "source": "src/complete.cpp", "build": {"flags_path": "config/flags/default.rsp"}},
     ]
     base = {
         "va": "00401000",
         "name": "target",
         "source_path": "src/00401000_target.cpp",
         "source_bucket": "scratch",
-        "registered_groups": [],
+        "matching_groups": [],
         "grouped_result": "MATCH",
         "grouped_diff_bytes": 0,
-        "category": "grouped_match_not_registered",
+        "category": "grouped_match_needs_review",
         "recommended_action": "review_for_promotion",
         "difficulty_band": "0-1",
         "error": "",
@@ -126,11 +126,11 @@ def test_queue_assigns_overlapping_va_to_largest_exact_context() -> None:
             "group": "complete",
             "va": "00401010",
             "name": "anchor",
-            "registered_groups": ["complete"],
-            "registered_anywhere": True,
-            "registered_in_group": True,
+            "matching_groups": ["complete"],
+            "matching_anywhere": True,
+            "matching_in_group": True,
             "recommended_action": "none",
-            "category": "registered_owner_match",
+            "category": "matching_result",
         },
     ]
 
@@ -146,7 +146,7 @@ def test_queue_assigns_overlapping_va_to_largest_exact_context() -> None:
 
 def test_queue_retains_exact_policy_review() -> None:
     groups = [
-        {"name": "complete", "source": "src/complete.cpp", "owners": {}, "flags": ""}
+        {"name": "complete", "source": "src/complete.cpp", "build": {"flags_path": "config/flags/default.rsp"}}
     ]
     rows = [
         {
@@ -155,7 +155,7 @@ def test_queue_retains_exact_policy_review() -> None:
             "name": "target",
             "source_path": "src/00401000_target.cpp",
             "source_bucket": "scratch",
-            "registered_groups": [],
+            "matching_groups": [],
             "grouped_result": "MATCH",
             "grouped_diff_bytes": 0,
             "category": "grouped_match_policy_review",

@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "header": "include/scr_end.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_end.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004936D0": {"status": "matching", "symbol": "??0TribeEndScreen@@QAE@PADPAPADH@Z"},
+    "00493C00": {"status": "matching", "symbol": "??1TribeEndScreen@@UAE@XZ"},
+    "00493C90": {"status": "matching", "symbol": "?action@TribeEndScreen@@MAEJPAVTPanel@@JKK@Z"}
+  }
+}

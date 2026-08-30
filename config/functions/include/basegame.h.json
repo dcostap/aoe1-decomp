@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\basegame.h",
+  "functions": {
+    "0041C240": {"status": "unresolved"},
+    "0041C250": {"status": "unresolved"},
+    "0041C260": {"status": "unresolved"},
+    "0041C6E0": {"status": "unresolved"},
+    "0041C6F0": {"status": "unresolved"},
+    "0041C700": {"status": "unresolved"},
+    "0041C710": {"status": "unresolved"},
+    "0041C720": {"status": "unresolved"},
+    "0041C730": {"status": "unresolved"},
+    "0041C740": {"status": "unresolved"},
+    "0041C750": {"status": "unresolved"},
+    "0041C760": {"status": "unresolved"},
+    "0041C770": {"status": "unresolved"},
+    "0041C780": {"status": "unresolved"},
+    "0041C790": {"status": "unresolved"},
+    "0041C7A0": {"status": "unresolved"},
+    "0041C7B0": {"status": "unresolved"},
+    "0041C7C0": {"status": "unresolved"}
+  }
+}

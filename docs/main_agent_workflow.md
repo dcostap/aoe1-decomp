@@ -144,7 +144,7 @@ Require:
 - no boundary escape;
 - compatible relocations;
 - correct direct call and tail targets;
-- no registered exact-neighbor regression; and
+- no matching-neighbor regression; and
 - the smallest supported natural source.
 
 Do not accept a match that depends on a wrapper, dummy declaration, fake ABI,
@@ -175,7 +175,7 @@ rebuilt instructions, calls, effects, cleanup, ABI, exceptions, and fault order.
 Reject broad drift, wrong targets, changed predicates, missing calls, changed
 memory effects, or unexplained control flow.
 
-Record the decision in the function notes and source-module status.
+Record the decision in the function notes and function registry.
 
 ## Verified logic
 

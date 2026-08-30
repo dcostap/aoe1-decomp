@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "header": "include/tact_lst.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_lst.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004D0150": {"status": "matching", "symbol": "??0TRIBE_Action_List@@QAE@PAVRGE_Action_Object@@@Z"},
+    "004D0170": {"status": "matching", "symbol": "?create_action@TRIBE_Action_List@@UAEPAVRGE_Action@@HF@Z"},
+    "004D05D0": {"status": "matching", "symbol": "?create_task_action@TRIBE_Action_List@@UAEPAVRGE_Action@@PAVRGE_Task@@PAVRGE_Static_Object@@MMM@Z"},
+    "004D0C50": {"status": "matching", "symbol": "?get_action_name@TRIBE_Action_List@@UAEXPAD@Z"}
+  }
+}

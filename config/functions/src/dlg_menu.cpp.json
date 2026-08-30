@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "header": "include/dlg_menu.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\dlg_menu.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0043F340": {"status": "scratch", "symbol": "??0TribeMenuDialog@@QAE@PAVTScreenPanel@@@Z"},
+    "0043F6B0": {"status": "scratch", "symbol": "??1TribeMenuDialog@@UAE@XZ"},
+    "0043F720": {"status": "matching", "symbol": "?action@TribeMenuDialog@@MAEJPAVTPanel@@JKK@Z"}
+  }
+}

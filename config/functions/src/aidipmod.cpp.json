@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "header": "include/aidipmod.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aidipmod.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0040BEC0": {"status": "matching", "symbol": "??0DiplomacyAIModule@@QAE@PAXH@Z"},
+    "0040BF40": {"status": "matching", "symbol": "??0DiplomacyAIModule@@QAE@HH@Z"},
+    "0040BFF0": {"status": "matching", "symbol": "??1DiplomacyAIModule@@UAE@XZ"},
+    "0040C000": {"status": "matching", "symbol": "?setMainDecisionAI@DiplomacyAIModule@@QAEXPAVMainDecisionAIModule@@@Z"},
+    "0040C010": {"status": "matching", "symbol": "?update@DiplomacyAIModule@@UAEHH@Z"},
+    "0040C0A0": {"status": "matching", "symbol": "?save@DiplomacyAIModule@@UAEHH@Z"},
+    "0040C100": {"status": "scratch", "symbol": "?stance@DiplomacyAIModule@@QBEHHH@Z"},
+    "0040C190": {"status": "matching", "symbol": "?changeStance@DiplomacyAIModule@@QAEXHHH@Z"},
+    "0040C2B0": {"status": "matching", "symbol": "?setStance@DiplomacyAIModule@@QAEXHHH@Z"},
+    "0040C3B0": {"status": "matching", "symbol": "?isDisliked@DiplomacyAIModule@@QBEHH@Z"},
+    "0040C3F0": {"status": "matching", "symbol": "?isAmbivalent@DiplomacyAIModule@@QBEHH@Z"},
+    "0040C420": {"status": "matching", "symbol": "?isLiked@DiplomacyAIModule@@QBEHH@Z"},
+    "0040C460": {"status": "matching", "symbol": "?isChangeable@DiplomacyAIModule@@QBEHH@Z"},
+    "0040C4A0": {"status": "matching", "symbol": "?setChangeable@DiplomacyAIModule@@QAEXHE@Z"},
+    "0040C4D0": {"status": "matching", "symbol": "?mostHated@DiplomacyAIModule@@QBEHHHHH@Z"},
+    "0040C5B0": {"status": "matching", "symbol": "?mostLiked@DiplomacyAIModule@@QBEHHH@Z"},
+    "0040C660": {"status": "matching", "symbol": "?isEnemy@DiplomacyAIModule@@QBEHH@Z"},
+    "0040C6A0": {"status": "matching", "symbol": "?isNeutral@DiplomacyAIModule@@QBEHH@Z"},
+    "0040C6E0": {"status": "matching", "symbol": "?isAlly@DiplomacyAIModule@@QBEHH@Z"},
+    "0040C730": {"status": "matching", "symbol": "?isAlliedWithMe@DiplomacyAIModule@@QBEHH@Z"},
+    "0040C780": {"status": "matching", "symbol": "?setRelation@DiplomacyAIModule@@QAEXHH@Z"}
+  }
+}

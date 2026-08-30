@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "header": "include/pnl_lst.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Pnl_lst.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "004782A0": {"status": "matching", "symbol": "??0TListPanel@@QAE@XZ"},
+    "00478330": {"status": "matching", "symbol": "??1TListPanel@@UAE@XZ"},
+    "00478340": {"status": "matching", "symbol": "?set_auto_track@TListPanel@@QAEXH@Z"},
+    "00478350": {"status": "matching", "symbol": "?set_bevel_info@TListPanel@@UAEXHHHHHHH@Z"},
+    "004783F0": {"status": "matching", "symbol": "?handle_idle@TListPanel@@UAEJXZ"},
+    "004784A0": {"status": "matching", "symbol": "?mouse_move_action@TListPanel@@UAEJJJHH@Z"},
+    "00478510": {"status": "matching", "symbol": "?mouse_left_down_action@TListPanel@@UAEJJJHH@Z"},
+    "00478540": {"status": "matching", "symbol": "?mouse_left_move_action@TListPanel@@UAEJJJHH@Z"},
+    "00478610": {"status": "matching", "symbol": "?mouse_left_up_action@TListPanel@@UAEJJJHH@Z"},
+    "00478660": {"status": "matching", "symbol": "?mouse_left_dbl_click_action@TListPanel@@UAEJJJHH@Z"},
+    "004786B0": {"status": "accepted_drift", "symbol": "?item_at@TListPanel@@QAEFJJ@Z"},
+    "00478700": {"status": "matching", "symbol": "?goto_item@TListPanel@@QAEXJJ@Z"},
+    "00478730": {"status": "matching", "symbol": "?key_down_action@TListPanel@@UAEJJFHHH@Z"},
+    "00478850": {"status": "matching", "symbol": "?char_action@TListPanel@@UAEJJF@Z"},
+    "00478900": {"status": "matching", "symbol": "?action@TListPanel@@UAEJPAVTPanel@@JKK@Z"},
+    "00478920": {"status": "matching", "symbol": "?scroll_cur_line@TListPanel@@QAEXEFH@Z"},
+    "00478BA0": {"status": "matching", "symbol": "?draw@TListPanel@@UAEXXZ"},
+    "00478CD0": {"status": "matching", "symbol": "?draw_highlight_bar@TListPanel@@QAEXXZ"},
+    "00478EE0": {"status": "matching", "symbol": "?setDrawHighlightBar@TListPanel@@QAEXH@Z"},
+    "00478EF0": {"status": "matching", "symbol": "?set_focus@TListPanel@@UAEXH@Z"}
+  }
+}

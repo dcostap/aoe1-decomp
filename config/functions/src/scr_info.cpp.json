@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "header": "include/scr_info.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_info.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0049D550": {"status": "matching", "symbol": "??0TRIBE_Screen_Info@@QAE@PAD0JK@Z"},
+    "0049D600": {"status": "matching", "symbol": "??1TRIBE_Screen_Info@@UAE@XZ"},
+    "0049D610": {"status": "matching", "symbol": "?handle_idle@TRIBE_Screen_Info@@UAEJXZ"},
+    "0049D690": {"status": "matching", "symbol": "?key_down_action@TRIBE_Screen_Info@@UAEJJFHHH@Z"},
+    "0049D6B0": {"status": "matching", "symbol": "?mouse_left_down_action@TRIBE_Screen_Info@@UAEJJJHH@Z"},
+    "0049D6C0": {"status": "matching", "symbol": "?action@TRIBE_Screen_Info@@UAEJPAVTPanel@@JKK@Z"},
+    "0049D6E0": {"status": "matching", "symbol": "?close_screen@TRIBE_Screen_Info@@QAEXXZ"}
+  }
+}

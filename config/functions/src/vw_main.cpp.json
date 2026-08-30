@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "header": "include/vw_main.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\vw_main.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0053DAB0": {"status": "matching", "symbol": "??0RGE_Main_View@@QAE@XZ"},
+    "0053DB40": {"status": "matching", "symbol": "?handle_idle@RGE_Main_View@@UAEJXZ"},
+    "0053DBA0": {"status": "matching", "symbol": "?do_auto_scroll@RGE_Main_View@@QAEHXZ"},
+    "0053DEB0": {"status": "scratch", "symbol": "?handle_keys@RGE_Main_View@@QAEHXZ"},
+    "0053E280": {"status": "matching", "symbol": "?handle_mouse_up@RGE_Main_View@@UAEJEJJHH@Z"},
+    "0053E2F0": {"status": "matching", "symbol": "?mouse_move_action@RGE_Main_View@@UAEJJJHH@Z"},
+    "0053E340": {"status": "scratch", "symbol": "?mouse_left_down_action@RGE_Main_View@@UAEJJJHH@Z"},
+    "0053E7F0": {"status": "scratch", "symbol": "?mouse_left_move_action@RGE_Main_View@@UAEJJJHH@Z"},
+    "0053E910": {"status": "scratch", "symbol": "?mouse_left_up_action@RGE_Main_View@@UAEJJJHH@Z"},
+    "0053F220": {"status": "scratch", "symbol": "?mouse_right_down_action@RGE_Main_View@@UAEJJJHH@Z"},
+    "0053F2F0": {"status": "scratch", "symbol": "?mouse_right_move_action@RGE_Main_View@@UAEJJJHH@Z"},
+    "0053F3D0": {"status": "scratch", "symbol": "?mouse_right_up_action@RGE_Main_View@@UAEJJJHH@Z"},
+    "0053F660": {"status": "matching", "symbol": "?start_scroll_view@RGE_Main_View@@UAEHEJJHH@Z"},
+    "0053F6B0": {"status": "matching", "symbol": "?handle_scroll_view@RGE_Main_View@@UAEHJJ@Z"},
+    "0053F6F0": {"status": "matching", "symbol": "?draw@RGE_Main_View@@UAEXXZ"},
+    "0053F800": {"status": "matching", "symbol": "?draw_multi_object_outline@RGE_Main_View@@UAEXXZ"},
+    "0053F810": {"status": "matching", "symbol": "?command_place_object@RGE_Main_View@@UAEHJJH@Z"},
+    "0053FA10": {"status": "matching", "symbol": "?command_make_do@RGE_Main_View@@UAEHJJHF@Z"},
+    "0053FBD0": {"status": "scratch", "symbol": "?pick1@RGE_Main_View@@QAEEEEJJPAURGE_Pick_Info@@PAVRGE_Static_Object@@H@Z"},
+    "0053FFB0": {"status": "matching", "symbol": "?pick_objects1@RGE_Main_View@@QAEHJJPAPAVRGE_Static_Object@@H@Z"},
+    "00540010": {"status": "scratch", "symbol": "?pick_best_target@RGE_Main_View@@QAEPAVRGE_Static_Object@@JJPAHF@Z"},
+    "00540350": {"status": "matching", "symbol": "?command_make_move@RGE_Main_View@@UAEHJJ@Z"},
+    "00540420": {"status": "matching", "symbol": "?command_make_work@RGE_Main_View@@UAEHJJ@Z"},
+    "005405C0": {"status": "matching", "symbol": "?command_place_multi_object@RGE_Main_View@@UAEHJJJJH@Z"},
+    "005405E0": {"status": "matching", "symbol": "?get_help_info@RGE_Main_View@@MAEEAAPADAAJJJ@Z"},
+    "00540680": {"status": "matching", "symbol": "?fixup_pick_info@RGE_Main_View@@IAEXPAURGE_Pick_Info@@@Z"},
+    "00540700": {"status": "matching", "symbol": "?reset_display_object_selection@RGE_Main_View@@QAEXH@Z"}
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\panel.h",
+  "functions": {
+    "00437110": {"status": "unresolved"},
+    "00437230": {"status": "unresolved"},
+    "00437240": {"status": "unresolved"},
+    "00437250": {"status": "unresolved"},
+    "00437260": {"status": "unresolved"},
+    "00437270": {"status": "unresolved"},
+    "00437280": {"status": "unresolved"},
+    "00437290": {"status": "unresolved"},
+    "004372A0": {"status": "unresolved"},
+    "004372B0": {"status": "unresolved"},
+    "00437490": {"status": "unresolved"},
+    "004374A0": {"status": "unresolved"},
+    "004374B0": {"status": "unresolved"},
+    "00437610": {"status": "unresolved"}
+  }
+}

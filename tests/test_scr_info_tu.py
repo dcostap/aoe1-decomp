@@ -47,13 +47,12 @@ class ScrInfoTranslationUnitTests(unittest.TestCase):
                 list((REPO_ROOT / "src").glob(f"**/{va:08X}_*.cpp")), []
             )
 
-    def test_module_metadata_registers_all_owners(self) -> None:
+    def test_registry_contains_all_functions(self) -> None:
         metadata = json.loads(
-            (REPO_ROOT / "config" / "source_modules" / "scr_info.json").read_text(
+            (REPO_ROOT / "config" / "functions" / "src" / "scr_info.cpp.json").read_text(
                 encoding="utf-8"
             )
         )
-        self.assertEqual(metadata["source"], "src/scr_info.cpp")
         self.assertEqual(metadata["header"], "include/scr_info.h")
         self.assertEqual(tuple(int(va, 16) for va in metadata["functions"]), self.VAS)
         self.assertEqual(

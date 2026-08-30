@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "header": "include/registry.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\registry.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0047EB80": {"status": "matching", "symbol": "??0TRegistry@@QAE@PBD@Z"},
+    "0047EC00": {"status": "matching", "symbol": "??1TRegistry@@QAE@XZ"},
+    "0047EC40": {"status": "matching", "symbol": "?RegSet@TRegistry@@QAEHHPBDPAEK@Z"},
+    "0047ECA0": {"status": "matching", "symbol": "?RegSetInt@TRegistry@@QAEHHPBDH@Z"},
+    "0047ED00": {"status": "matching", "symbol": "?RegSetAscii@TRegistry@@QAEHHPBDPAEK@Z"},
+    "0047ED60": {"status": "matching", "symbol": "?RegGetAscii@TRegistry@@QAEPADHPBD@Z"},
+    "0047EDD0": {"status": "matching", "symbol": "?RegGet@TRegistry@@QAEJHPBDPAEPAK@Z"},
+    "0047EE20": {"status": "matching", "symbol": "?RegGetInt@TRegistry@@QAEHHPBD@Z"}
+  }
+}

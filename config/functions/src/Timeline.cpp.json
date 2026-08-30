@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "header": "include/Timeline.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Timeline.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0050D5B0": {"status": "accepted_drift", "symbol": "??0RGE_Timeline@@QAE@HPAVRGE_Game_World@@@Z"},
+    "0050D7B0": {"status": "matching", "symbol": "??0RGE_Timeline@@QAE@PAVRGE_Game_World@@@Z"},
+    "0050D7E0": {"status": "matching", "symbol": "??1RGE_Timeline@@UAE@XZ"},
+    "0050D830": {"status": "matching", "symbol": "?save@RGE_Timeline@@QAEXH@Z"},
+    "0050D9A0": {"status": "matching", "symbol": "?update@RGE_Timeline@@QAEXXZ"},
+    "0050DB10": {"status": "matching", "symbol": "?mock_update@RGE_Timeline@@QAEXM@Z"},
+    "0050DD30": {"status": "matching", "symbol": "?find_id@RGE_Timeline@@AAEFPAVRGE_Static_Object@@@Z"},
+    "0050DD70": {"status": "accepted_drift", "symbol": "?add@RGE_Timeline@@QAEPAURGE_Time_Entry@@M@Z"},
+    "0050DE00": {"status": "matching", "symbol": "?add_attack@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@0@Z"},
+    "0050DE50": {"status": "matching", "symbol": "?add_create@RGE_Timeline@@QAEPAURGE_Time_Entry@@MFEMMM@Z"},
+    "0050DEF0": {"status": "matching", "symbol": "?add_move@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@MMM@Z"},
+    "0050DF40": {"status": "matching", "symbol": "?add_delete@RGE_Timeline@@QAEPAURGE_Time_Entry@@MPAVRGE_Static_Object@@@Z"},
+    "0050DFD0": {"status": "scratch", "symbol": "?sub@RGE_Timeline@@QAEXPAURGE_Time_Entry@@@Z"}
+  }
+}

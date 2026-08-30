@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "header": "include/aimdmod.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aimdmod.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0040CDF0": {"status": "matching", "symbol": "??0MainDecisionAIModule@@QAE@PAXHPAVRGE_Player@@@Z"},
+    "0040CE90": {"status": "scratch", "symbol": "??0MainDecisionAIModule@@QAE@HPAVRGE_Player@@H@Z"},
+    "0040D020": {"status": "matching", "symbol": "??1MainDecisionAIModule@@UAE@XZ"},
+    "0040D090": {"status": "matching", "symbol": "?setLogHistory@MainDecisionAIModule@@UAEXH@Z"},
+    "0040D0A0": {"status": "scratch", "symbol": "?save@MainDecisionAIModule@@UAEHH@Z"},
+    "0040D180": {"status": "matching", "symbol": "?addObject@MainDecisionAIModule@@UAEHPAVRGE_Static_Object@@@Z"},
+    "0040D250": {"status": "matching", "symbol": "?removeObject@MainDecisionAIModule@@UAEHH@Z"},
+    "0040D2C0": {"status": "matching", "symbol": "?numberObjects@MainDecisionAIModule@@QAEHXZ"},
+    "0040D2D0": {"status": "scratch", "symbol": "?numberObjectsWithAction@MainDecisionAIModule@@QAEHH@Z"},
+    "0040D3B0": {"status": "matching", "symbol": "?numberObjectsWithGroup@MainDecisionAIModule@@QAEHH@Z"},
+    "0040D480": {"status": "scratch", "symbol": "?numberObjectsWithActionAndTarget@MainDecisionAIModule@@QAEHHH@Z"},
+    "0040D580": {"status": "scratch", "symbol": "?numberObjectsWithTargetType@MainDecisionAIModule@@QAEHH@Z"},
+    "0040D660": {"status": "scratch", "symbol": "?numberObjectsWithActionAndTargetType@MainDecisionAIModule@@QAEHHH@Z"},
+    "0040D760": {"status": "matching", "symbol": "?object@MainDecisionAIModule@@QAEPAVRGE_Static_Object@@H@Z"},
+    "0040D780": {"status": "scratch", "symbol": "?object@MainDecisionAIModule@@QAEPAVRGE_Static_Object@@HHHHHHHHHH@Z"},
+    "0040D9D0": {"status": "scratch", "symbol": "?object@MainDecisionAIModule@@QAEPAVRGE_Static_Object@@HHHHHH@Z"},
+    "0040DB20": {"status": "matching", "symbol": "?objectGroupThatCanPerformAction@MainDecisionAIModule@@UAEHH@Z"},
+    "0040DB40": {"status": "matching", "symbol": "?canPerformAction@MainDecisionAIModule@@UAEHHH@Z"},
+    "0040DB50": {"status": "scratch", "symbol": "?numberBusyObjects@MainDecisionAIModule@@QAEHXZ"},
+    "0040DC30": {"status": "scratch", "symbol": "?mostDamaged@MainDecisionAIModule@@QAEPAVRGE_Static_Object@@HH@Z"}
+  }
+}

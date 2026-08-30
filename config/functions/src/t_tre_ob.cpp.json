@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "header": "include/t_tre_ob.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\t_tre_ob.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004CCA60": {"status": "matching", "symbol": "??0TRIBE_Tree_Object@@QAE@PAVTRIBE_Master_Tree_Object@@PAVRGE_Player@@MMMH@Z"},
+    "004CCB20": {"status": "matching", "symbol": "??0TRIBE_Tree_Object@@QAE@HPAVRGE_Game_World@@H@Z"},
+    "004CCB90": {"status": "matching", "symbol": "?set_object_state@TRIBE_Tree_Object@@UAEXE@Z"}
+  }
+}

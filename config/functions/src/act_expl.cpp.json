@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "header": "include/act_expl.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\act_expl.cpp",
+  "build": {
+    "flags": "gx_no_fpo"
+  },
+  "functions": {
+    "00402B40": {"status": "matching", "symbol": "??0RGE_Action_Explore@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "00402BA0": {"status": "matching", "symbol": "??0RGE_Action_Explore@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"},
+    "00402BE0": {"status": "matching", "symbol": "?first_in_stack@RGE_Action_Explore@@UAEXE@Z"},
+    "00402C00": {"status": "matching", "symbol": "?set_state@RGE_Action_Explore@@MAEXE@Z"},
+    "00402D90": {"status": "matching", "symbol": "?update@RGE_Action_Explore@@UAEEXZ"},
+    "00402E40": {"status": "matching", "symbol": "?work@RGE_Action_Explore@@UAEHPAVRGE_Static_Object@@MMM@Z"}
+  }
+}

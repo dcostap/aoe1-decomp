@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "header": "include/tairesmd.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tairesmd.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004E6B40": {"status": "matching", "symbol": "??0TribeResourceAIModule@@QAE@PAXHHHHH@Z"},
+    "004E6BA0": {"status": "scratch", "symbol": "??0TribeResourceAIModule@@QAE@HH@Z"},
+    "004E6C20": {"status": "matching", "symbol": "??1TribeResourceAIModule@@UAE@XZ"},
+    "004E6C30": {"status": "matching", "symbol": "?setMainDecisionAI@TribeResourceAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z"},
+    "004E6C40": {"status": "matching", "symbol": "?save@TribeResourceAIModule@@UAEHH@Z"},
+    "004E6C60": {"status": "matching", "symbol": "?numberResources@TribeResourceAIModule@@QBEHXZ"},
+    "004E6C70": {"status": "matching", "symbol": "?resource@TribeResourceAIModule@@QBEHH@Z"},
+    "004E6CA0": {"status": "scratch", "symbol": "?resourcesAvailable@TribeResourceAIModule@@QAEHPAVResourceItem@@@Z"},
+    "004E6D40": {"status": "matching", "symbol": "?unavailableResource@TribeResourceAIModule@@QAEHPAVResourceItem@@@Z"},
+    "004E6DD0": {"status": "matching", "symbol": "?resourceName@TribeResourceAIModule@@QAEPADH@Z"}
+  }
+}

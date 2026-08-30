@@ -41,14 +41,14 @@ class ScrAchTranslationUnitTests(unittest.TestCase):
         self.assertNotIn("#if 0", source)
         self.assertIn('#include "../include/scr_ach.h"', source)
 
-    def test_scr_ach_module_metadata_owns_all_functions(self) -> None:
+    def test_scr_ach_registry_contains_all_functions(self) -> None:
         metadata = json.loads(
-            (REPO_ROOT / "config" / "source_modules" / "scr_ach.json").read_text(
+            (REPO_ROOT / "config" / "functions" / "src" / "scr_ach.cpp.json").read_text(
                 encoding="utf-8"
             )
         )
-        self.assertEqual(metadata["source"], "src/scr_ach.cpp")
         self.assertEqual(metadata["header"], "include/scr_ach.h")
+        self.assertEqual(metadata["build"]["flags"], "gx")
         self.assertEqual(len(metadata["functions"]), 8)
         self.assertEqual(
             {entry["status"] for entry in metadata["functions"].values()},

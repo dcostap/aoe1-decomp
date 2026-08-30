@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "header": "include/ttsk_lst.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\ttsk_lst.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0052C3F0": {"status": "scratch", "symbol": "?get_target_task@TRIBE_Task_List@@UAEPAVRGE_Task@@PAVRGE_Action_Object@@PAVRGE_Static_Object@@MMM@Z"},
+    "0052C8D0": {"status": "matching", "symbol": "?is_attack_task@TRIBE_Task_List@@UAEHPAVRGE_Task@@@Z"}
+  }
+}

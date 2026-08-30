@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "header": "include/sound.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Sound.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004BBE40": {"status": "matching", "symbol": "??0RGE_Sound@@QAE@PAU_iobuf@@F@Z"},
+    "004BBF30": {"status": "verified_logic", "symbol": "??0RGE_Sound@@QAE@HPAVTSound_Driver@@@Z"},
+    "004BC070": {"status": "matching", "symbol": "??0RGE_Sound@@QAE@XZ"},
+    "004BC080": {"status": "matching", "symbol": "??1RGE_Sound@@QAE@XZ"},
+    "004BC0F0": {"status": "matching", "symbol": "?save@RGE_Sound@@QAEXH@Z"},
+    "004BC190": {"status": "matching", "symbol": "?restart_sound@RGE_Sound@@QAEXPAVTSound_Driver@@@Z"},
+    "004BC270": {"status": "accepted_drift", "symbol": "?update@RGE_Sound@@QAEXK@Z"},
+    "004BC2D0": {"status": "matching", "symbol": "?set_cache_time@RGE_Sound@@QAEXK@Z"},
+    "004BC2E0": {"status": "matching", "symbol": "?play_at_update@RGE_Sound@@QAEXXZ"},
+    "004BC2F0": {"status": "matching", "symbol": "?update_play@RGE_Sound@@QAEXXZ"},
+    "004BC310": {"status": "verified_logic", "symbol": "?play@RGE_Sound@@QAEXH@Z"},
+    "004BC470": {"status": "matching", "symbol": "?get_file_name@RGE_Sound@@QAEPADXZ"},
+    "004BC4F0": {"status": "matching", "symbol": "?stop@RGE_Sound@@QAEXXZ"},
+    "004BC540": {"status": "matching", "symbol": "?is_playing@RGE_Sound@@QAEHXZ"}
+  }
+}

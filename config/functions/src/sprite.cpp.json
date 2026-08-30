@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "header": "include/sprite.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\sprite.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004BF720": {"status": "matching", "symbol": "??0RGE_Sprite@@QAE@F@Z"},
+    "004BF790": {"status": "accepted_drift", "symbol": "??0RGE_Sprite@@QAE@HPAPAVRGE_Sound@@PAPAVRGE_Color_Table@@@Z"},
+    "004BFA20": {"status": "accepted_drift", "symbol": "??0RGE_Sprite@@QAE@PAU_iobuf@@FPAPAVRGE_Sound@@@Z"},
+    "004BFCE0": {"status": "matching", "symbol": "??1RGE_Sprite@@QAE@XZ"},
+    "004BFD40": {"status": "matching", "symbol": "?rehook@RGE_Sprite@@QAEXPAPAV1@@Z"},
+    "004BFDA0": {"status": "matching", "symbol": "?save@RGE_Sprite@@QAEXH@Z"},
+    "004BFFE0": {"status": "matching", "symbol": "?load_facets@RGE_Sprite@@QAEXPAPAV1@@Z"},
+    "004BFFF0": {"status": "matching", "symbol": "?play_sound@RGE_Sprite@@QAEXFFF@Z"},
+    "004C00E0": {"status": "accepted_drift", "symbol": "?get_facetindex@RGE_Sprite@@QAEEJJAAJ@Z"},
+    "004C01A0": {"status": "scratch", "symbol": "?do_draw@RGE_Sprite@@QAEXJJJJPAVRGE_Color_Table@@PAVTDrawArea@@E@Z"},
+    "004C04F0": {"status": "matching", "symbol": "?draw@RGE_Sprite@@QAEEJJJJJJPAVRGE_Color_Table@@PAVTDrawArea@@E@Z"},
+    "004C0620": {"status": "matching", "symbol": "?normal_draw@RGE_Sprite@@QAEEJJJJPAVRGE_Color_Table@@PAVTDrawArea@@@Z"},
+    "004C0720": {"status": "scratch", "symbol": "?shadow_draw@RGE_Sprite@@QAEEJJJJPAVRGE_Color_Table@@PAVTDrawArea@@E@Z"},
+    "004C0840": {"status": "matching", "symbol": "?get_size@RGE_Sprite@@QAEHAAJ000J@Z"},
+    "004C0960": {"status": "matching", "symbol": "?get_frame@RGE_Sprite@@QAEHAAF000JJ@Z"},
+    "004C0B70": {"status": "accepted_drift", "symbol": "?get_frame_min_max@RGE_Sprite@@QAEHAAF000JJFF@Z"},
+    "004C0C50": {"status": "matching", "symbol": "?get_lowest_draw_level@RGE_Sprite@@QAEEXZ"},
+    "004C0C90": {"status": "scratch", "symbol": "?hit_test@RGE_Sprite@@QAEEFFJJ@Z"},
+    "004C0D80": {"status": "accepted_drift", "symbol": "?shape_hit_test@RGE_Sprite@@QAEEFFJJ@Z"},
+    "004C0F90": {"status": "matching", "symbol": "?make_active_sprite@RGE_Sprite@@QAEPAVRGE_Active_Sprite@@XZ"},
+    "004C1030": {"status": "matching", "symbol": "?check_for_shadows@RGE_Sprite@@QAEHXZ"},
+    "004C1080": {"status": "verified_logic", "symbol": "?update@RGE_Sprite@@QAEXK@Z"}
+  }
+}

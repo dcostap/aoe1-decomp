@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "header": "include/music.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\music.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00461910": {"status": "matching", "symbol": "??0TMusic_System@@QAE@EPAX0PAVTSound_Driver@@PAD@Z"},
+    "00461A20": {"status": "matching", "symbol": "??1TMusic_System@@QAE@XZ"},
+    "00461A30": {"status": "scratch", "symbol": "?open_device@TMusic_System@@QAEHXZ"},
+    "00461C60": {"status": "matching", "symbol": "?close_device@TMusic_System@@QAEXXZ"},
+    "00461D20": {"status": "matching", "symbol": "?open_mixer@TMusic_System@@IAEHXZ"},
+    "00461EC0": {"status": "matching", "symbol": "?close_mixer@TMusic_System@@IAEXXZ"},
+    "00461F00": {"status": "matching", "symbol": "?set_music_type@TMusic_System@@QAEHE@Z"},
+    "00461F40": {"status": "matching", "symbol": "?set_fade_out@TMusic_System@@QAEXHK@Z"},
+    "00461F60": {"status": "matching", "symbol": "?set_volume@TMusic_System@@QAEXJH@Z"},
+    "00462010": {"status": "matching", "symbol": "?play_track@TMusic_System@@QAEHHHK@Z"},
+    "00462090": {"status": "matching", "symbol": "?play_file@TMusic_System@@QAEHPADHK@Z"},
+    "00462140": {"status": "matching", "symbol": "?play_tracks@TMusic_System@@QAEHHHHHK@Z"},
+    "00462200": {"status": "matching", "symbol": "?play@TMusic_System@@IAEHHHPADHK@Z"},
+    "004625C0": {"status": "matching", "symbol": "?pause_play@TMusic_System@@QAEHXZ"},
+    "00462670": {"status": "matching", "symbol": "?resume_play@TMusic_System@@QAEHXZ"},
+    "00462740": {"status": "matching", "symbol": "?stop_track@TMusic_System@@QAEHXZ"},
+    "00462770": {"status": "matching", "symbol": "?stop_playing@TMusic_System@@IAEHXZ"},
+    "00462820": {"status": "matching", "symbol": "?fade_track@TMusic_System@@QAEHXZ"},
+    "00462860": {"status": "matching", "symbol": "?start_fade@TMusic_System@@IAEXXZ"},
+    "004628A0": {"status": "matching", "symbol": "?do_fade@TMusic_System@@IAEXXZ"},
+    "004629B0": {"status": "matching", "symbol": "?end_fade@TMusic_System@@IAEXXZ"},
+    "00462A10": {"status": "matching", "symbol": "?handle_messages@TMusic_System@@QAEIPAXIIJ@Z"},
+    "00462B40": {"status": "matching", "symbol": "?after_end_track@TMusic_System@@IAEXXZ"},
+    "00462C30": {"status": "scratch", "symbol": "?get_play_info@TMusic_System@@QAEHPAEPAH11PAD1PAK@Z"}
+  }
+}

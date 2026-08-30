@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "header": "include/scr_sedo.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_sedo.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004B33D0": {"status": "matching", "symbol": "??0TRIBE_Screen_Sed_Open@@QAE@XZ"},
+    "004B36A0": {"status": "scratch", "symbol": "??1TRIBE_Screen_Sed_Open@@UAE@XZ"},
+    "004B3740": {"status": "scratch", "symbol": "?fillList@TRIBE_Screen_Sed_Open@@IAEXXZ"},
+    "004B38A0": {"status": "scratch", "symbol": "?action@TRIBE_Screen_Sed_Open@@MAEJPAVTPanel@@JKK@Z"}
+  }
+}

@@ -16,11 +16,11 @@ from common import (
     function_slug,
     load_functions,
     load_pdb_function_source_map,
-    load_source_modules,
+    load_function_modules,
     load_toolchain,
     preferred_flags_rsp_path,
     preferred_source_path,
-    translation_unit_for_va,
+    matching_build_for_va,
 )
 from function_diagnostics import owning_function_symbol_validation
 
@@ -145,7 +145,7 @@ def collect_audit_rows(repo_root: Path = REPO_ROOT) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
 
     normal_sources: list[tuple[str, int, dict[str, str]]] = []
-    for module in load_source_modules():
+    for module in load_function_modules():
         source_path = str(module["source"]).replace("\\", "/")
         functions = module["functions"]
         assert isinstance(functions, dict)
@@ -210,7 +210,7 @@ def collect_audit_rows(repo_root: Path = REPO_ROOT) -> list[dict[str, Any]]:
             status = "DUPLICATE_SOURCE_OWNER"
         mismatch_kind = owner_mismatch_kind(validation) if validation["status"] == "mismatch" else ""
         priority, reason = _repair_priority(status, mismatch_kind)
-        group = translation_unit_for_va(va)
+        group = matching_build_for_va(va)
         row = {
             "va": f"{va:08X}",
             "name": record["name"],
@@ -266,14 +266,14 @@ def collect_function_audit_rows(path: Path) -> list[dict[str, Any]]:
         owner_status = str(audit_row.get("owner_status") or "unverified")
         checker_status = str(audit_row.get("grouped_result") or "")
         category = str(audit_row.get("category") or "")
-        duplicate = len(audit_row.get("registered_groups") or []) > 1
+        duplicate = len(audit_row.get("matching_groups") or []) > 1
         if duplicate:
             status = "DUPLICATE_SOURCE_OWNER"
         elif owner_status == "mismatch":
             status = "OWNER_MISMATCH"
         elif owner_status != "match":
             status = "OWNER_UNVERIFIED"
-        elif category == "registered_owner_match" and checker_status == "MATCH":
+        elif category == "matching_result" and checker_status == "MATCH":
             status = "MATCH"
         else:
             status = "MISMATCH"

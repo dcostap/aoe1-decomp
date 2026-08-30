@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "header": "include/act_move.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\act_move.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00405510": {"status": "matching", "symbol": "??0RGE_Action_Move_To@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "004055A0": {"status": "matching", "symbol": "??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@MMMMPAVRGE_Sprite@@@Z"},
+    "00405620": {"status": "matching", "symbol": "??0RGE_Action_Move_To@@QAE@PAVRGE_Action_Object@@PAVRGE_Static_Object@@MPAVRGE_Sprite@@@Z"},
+    "004056E0": {"status": "matching", "symbol": "??1RGE_Action_Move_To@@UAE@XZ"},
+    "00405750": {"status": "matching", "symbol": "?save@RGE_Action_Move_To@@UAEXH@Z"},
+    "00405780": {"status": "matching", "symbol": "?first_in_stack@RGE_Action_Move_To@@UAEXE@Z"},
+    "004057E0": {"status": "matching", "symbol": "?set_state@RGE_Action_Move_To@@MAEXE@Z"},
+    "00405850": {"status": "scratch", "symbol": "?update@RGE_Action_Move_To@@UAEEXZ"},
+    "00405BF0": {"status": "matching", "symbol": "?is_in_range@RGE_Action_Move_To@@IAEEXZ"}
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "header": "include/com_sess.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_sess.cpp",
+  "build": {
+    "flags": "ole32_directplay"
+  },
+  "functions": {
+    "00432200": {"status": "matching", "symbol": "??0TCommunications_Sessions@@QAE@PAVTCommunications_Handler@@@Z"},
+    "00432290": {"status": "matching", "symbol": "??1TCommunications_Sessions@@QAE@XZ"},
+    "004322A0": {"status": "matching", "symbol": "?EraseInformation@TCommunications_Sessions@@AAEXXZ"},
+    "004322C0": {"status": "matching", "symbol": "?GetSessionCount@TCommunications_Sessions@@QAEHXZ"},
+    "004322D0": {"status": "matching", "symbol": "?GetSessionName@TCommunications_Sessions@@QAEPADH@Z"},
+    "004322F0": {"status": "matching", "symbol": "?GetSessionMaxPlayers@TCommunications_Sessions@@QAEKH@Z"},
+    "00432320": {"status": "matching", "symbol": "?GetSessionCurrentPlayers@TCommunications_Sessions@@QAEKH@Z"},
+    "00432350": {"status": "matching", "symbol": "?GetSessionGUID@TCommunications_Sessions@@QAEPAU_GUID@@H@Z"},
+    "00432380": {"status": "matching", "symbol": "?IncSessionCount@TCommunications_Sessions@@QAEHXZ"},
+    "00432390": {"status": "matching", "symbol": "?AddSession@TCommunications_Sessions@@QAEHU_GUID@@0KKPAD1KKKK@Z"},
+    "004324F0": {"status": "matching", "symbol": "?Refresh@TCommunications_Sessions@@QAEHXZ"},
+    "00432560": {"status": "matching", "symbol": "?EnumSessionCallback@@YGHPAUDPSESSIONDESC2@@PAKKPAX@Z"},
+    "004325E0": {"status": "matching", "symbol": "?IsEqualGuid@TCommunications_Sessions@@QAEHPAU_GUID@@0@Z"}
+  }
+}

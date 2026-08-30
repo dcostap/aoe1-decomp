@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "header": "include/file_stf.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\file_stf.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00449710": {"status": "matching", "symbol": "?compareFilenameStrings@@YAHPBX0@Z"},
+    "00449750": {"status": "matching", "symbol": "?driveAsLetter@@YADH@Z"},
+    "00449760": {"status": "matching", "symbol": "?driveAsInt@@YAHD@Z"},
+    "00449770": {"status": "matching", "symbol": "??0DriveInformation@@QAE@XZ"},
+    "004497C0": {"status": "matching", "symbol": "?initialDrive@DriveInformation@@QBEHXZ"},
+    "004497D0": {"status": "matching", "symbol": "?initialDriveAsLetter@DriveInformation@@QBEDXZ"},
+    "004497E0": {"status": "matching", "symbol": "?initialDirectory@DriveInformation@@QAEPADXZ"},
+    "004497F0": {"status": "matching", "symbol": "?currentDrive@DriveInformation@@QBEHXZ"},
+    "00449800": {"status": "matching", "symbol": "?currentDriveAsLetter@DriveInformation@@QBEDXZ"},
+    "00449810": {"status": "matching", "symbol": "?currentDirectory@DriveInformation@@QAEPADXZ"},
+    "00449820": {"status": "matching", "symbol": "?numberDrives@DriveInformation@@QBEHXZ"},
+    "00449830": {"status": "matching", "symbol": "?validDrive@DriveInformation@@QBEHH@Z"},
+    "00449840": {"status": "matching", "symbol": "?checkDrives@DriveInformation@@QAEXXZ"},
+    "004498A0": {"status": "matching", "symbol": "?numberOfFilesWithFilename@DriveInformation@@QAEHPAD@Z"},
+    "00449910": {"status": "matching", "symbol": "?numberOfFilesWithAttribute@DriveInformation@@QAEHH@Z"},
+    "00449990": {"status": "scratch", "symbol": "?numberOfFilesWithFilenameOrAttribute@DriveInformation@@QAEHPADH@Z"},
+    "00449A20": {"status": "matching", "symbol": "?resetCurrentDriveAndDirectory@DriveInformation@@QAEHXZ"},
+    "00449A40": {"status": "matching", "symbol": "?resetCurrentDrive@DriveInformation@@QAEHXZ"},
+    "00449A50": {"status": "matching", "symbol": "?resetCurrentDirectory@DriveInformation@@QAEHXZ"},
+    "00449A60": {"status": "matching", "symbol": "?changeDrive@DriveInformation@@QAEHH@Z"},
+    "00449A90": {"status": "matching", "symbol": "?changeDirectory@DriveInformation@@QAEHPAD@Z"},
+    "00449AC0": {"status": "matching", "symbol": "?updateDirectory@DriveInformation@@IAEXXZ"}
+  }
+}

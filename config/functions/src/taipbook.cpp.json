@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/taipbook.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\taipbook.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "004E68B0": {"status": "matching", "symbol": "??0TribeAIPlayBook@@QAE@XZ"},
+    "004E6900": {"status": "matching", "symbol": "?convertTargetNameToIntType@TribeAIPlayBook@@UBEHPAD@Z"},
+    "004E6910": {"status": "matching", "symbol": "?convertTargetCharacteristicNameToIntType@TribeAIPlayBook@@UBEHPAD@Z"},
+    "004E6920": {"status": "matching", "symbol": "?convertUnitNameToIntType@TribeAIPlayBook@@UBEHPAD@Z"},
+    "004E6AD0": {"status": "matching", "symbol": "?convertUnitToIntType@TribeAIPlayBook@@UBEHPAVRGE_Static_Object@@@Z"}
+  }
+}

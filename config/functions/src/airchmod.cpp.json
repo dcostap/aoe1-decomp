@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "header": "include/airchmod.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\airchmod.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00411670": {"status": "matching", "symbol": "??0ResearchAIModule@@QAE@PAXH@Z"},
+    "00411740": {"status": "matching", "symbol": "??0ResearchAIModule@@QAE@HH@Z"},
+    "00411940": {"status": "matching", "symbol": "??1ResearchAIModule@@UAE@XZ"},
+    "004119B0": {"status": "matching", "symbol": "?setMainDecisionAI@ResearchAIModule@@QAEXPAVMainDecisionAIModule@@@Z"},
+    "004119C0": {"status": "matching", "symbol": "?save@ResearchAIModule@@UAEHH@Z"},
+    "00411B40": {"status": "matching", "symbol": "?resourceCost@ResearchAIModule@@QAEPAVResourceItem@@H@Z"},
+    "00411B60": {"status": "matching", "symbol": "?buildable@ResearchAIModule@@UAEHPAVBuildItem@@@Z"},
+    "00411B70": {"status": "matching", "symbol": "?research@ResearchAIModule@@UAEXPAVBuildItem@@@Z"},
+    "00411B80": {"status": "matching", "symbol": "?loadTechnologyTree@ResearchAIModule@@QAEHPAD@Z"},
+    "00411E00": {"status": "matching", "symbol": "?numberTechnologyItems@ResearchAIModule@@QBEHXZ"},
+    "00411E10": {"status": "matching", "symbol": "?technologyTreeName@ResearchAIModule@@QAEPADXZ"},
+    "00411E20": {"status": "matching", "symbol": "?removeOldTechTree@ResearchAIModule@@IAEXXZ"},
+    "00411E70": {"status": "matching", "symbol": "?item@ResearchAIModule@@IAEPAVTechnologyItem@@H@Z"}
+  }
+}

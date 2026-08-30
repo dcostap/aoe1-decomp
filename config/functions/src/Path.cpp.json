@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "header": "include/path.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Path.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0046A740": {"status": "scratch", "symbol": "??0Path@@QAE@H@Z"},
+    "0046A7F0": {"status": "matching", "symbol": "??1Path@@QAE@XZ"},
+    "0046A810": {"status": "matching", "symbol": "??6@YAAAVostream@@AAV0@ABVPath@@@Z"},
+    "0046A8E0": {"status": "matching", "symbol": "??HPath@@QBE?AV0@ABV0@@Z"},
+    "0046A9E0": {"status": "matching", "symbol": "??4Path@@QAEAAV0@ABV0@@Z"},
+    "0046AAE0": {"status": "accepted_drift", "symbol": "??8Path@@QBEHABV0@@Z"},
+    "0046AB60": {"status": "matching", "symbol": "?insertAtCurrent@Path@@QAEHABUWaypoint@@@Z"},
+    "0046AC10": {"status": "matching", "symbol": "?insertAtEnd@Path@@QAEHUWaypoint@@@Z"},
+    "0046ACE0": {"status": "matching", "symbol": "?contains@Path@@QBEHABUWaypoint@@@Z"},
+    "0046ADA0": {"status": "matching", "symbol": "?killPath@Path@@QAEXXZ"},
+    "0046ADB0": {"status": "matching", "symbol": "?maxNumberOfWaypoints@Path@@QBE?BHXZ"},
+    "0046ADC0": {"status": "matching", "symbol": "?numberOfWaypoints@Path@@QBE?BHXZ"},
+    "0046ADD0": {"status": "matching", "symbol": "?timeStamp@Path@@QBEKXZ"},
+    "0046ADE0": {"status": "matching", "symbol": "?setTimeStamp@Path@@QAEXK@Z"},
+    "0046ADF0": {"status": "matching", "symbol": "?length@Path@@QBEMXZ"},
+    "0046AE50": {"status": "matching", "symbol": "?start@Path@@QBEABUWaypoint@@XZ"},
+    "0046AE60": {"status": "matching", "symbol": "?goal@Path@@QBEABUWaypoint@@XZ"},
+    "0046AE70": {"status": "matching", "symbol": "?waypoint@Path@@QBEPBUWaypoint@@H@Z"},
+    "0046AEA0": {"status": "matching", "symbol": "?currentWaypoint@Path@@QBEPAUWaypoint@@XZ"},
+    "0046AEC0": {"status": "matching", "symbol": "?currentWaypointNumber@Path@@QBE?BHXZ"},
+    "0046AED0": {"status": "matching", "symbol": "?setCurrentWaypointNumber@Path@@QAEXH@Z"},
+    "0046AEE0": {"status": "matching", "symbol": "?nextWaypoint@Path@@QBEPBUWaypoint@@XZ"},
+    "0046AF10": {"status": "matching", "symbol": "?previousWaypoint@Path@@QBEPBUWaypoint@@XZ"},
+    "0046AF40": {"status": "matching", "symbol": "?firstWaypoint@Path@@QBEPBUWaypoint@@XZ"},
+    "0046AF60": {"status": "matching", "symbol": "?lastWaypoint@Path@@QBEPBUWaypoint@@XZ"},
+    "0046AF80": {"status": "matching", "symbol": "?initToStart@Path@@QAEXXZ"},
+    "0046AF90": {"status": "matching", "symbol": "?initToEnd@Path@@QAEXXZ"},
+    "0046AFA0": {"status": "matching", "symbol": "?moveToNextWaypoint@Path@@QAEHXZ"},
+    "0046AFC0": {"status": "matching", "symbol": "?moveToLastWaypoint@Path@@QAEHXZ"},
+    "0046AFE0": {"status": "matching", "symbol": "?distanceToNextWaypoint@Path@@QBEMXZ"}
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "header": "include/zone_map.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\zone_map.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00546720": {"status": "matching", "symbol": "?zone_pop@@YAEPAPAUZone_Queue@@0AAJ1@Z"},
+    "00546770": {"status": "matching", "symbol": "?zone_push@@YAXPAPAUZone_Queue@@0JJ@Z"},
+    "005467B0": {"status": "accepted_drift", "symbol": "??0RGE_Zone_Map@@QAE@HPAVRGE_Map@@@Z"},
+    "005468C0": {"status": "scratch", "symbol": "??0RGE_Zone_Map@@QAE@PAVRGE_Map@@PAMJ@Z"},
+    "005469C0": {"status": "matching", "symbol": "??1RGE_Zone_Map@@QAE@XZ"},
+    "00546A00": {"status": "matching", "symbol": "?save@RGE_Zone_Map@@QAEXH@Z"},
+    "00546A90": {"status": "accepted_drift", "symbol": "?do_zone_map@RGE_Zone_Map@@QAEEXZ"},
+    "00546BB0": {"status": "matching", "symbol": "?do_zone_map_area@RGE_Zone_Map@@AAEXJJEE@Z"},
+    "00546E50": {"status": "matching", "symbol": "?check_info@RGE_Zone_Map@@QAEPAV1@PAMJ@Z"},
+    "00546EB0": {"status": "matching", "symbol": "?get_zone_info@RGE_Zone_Map@@QAEEJJ@Z"},
+    "00546ED0": {"status": "matching", "symbol": "?withinRange@RGE_Zone_Map@@QAEHUXYPoint@@0M@Z"},
+    "00546F00": {"status": "matching", "symbol": "?withinRange@RGE_Zone_Map@@QAEHEUXYPoint@@M@Z"},
+    "00547000": {"status": "matching", "symbol": "?numberTilesInZone@RGE_Zone_Map@@QAEHE@Z"},
+    "00547080": {"status": "matching", "symbol": "?findClosestPointInTerrainType@RGE_Zone_Map@@QAEHUXYPoint@@AAU2@HHH@Z"},
+    "00547180": {"status": "matching", "symbol": "??0RGE_Zone_Map_List@@QAE@HPAVRGE_Map@@@Z"},
+    "00547240": {"status": "matching", "symbol": "??0RGE_Zone_Map_List@@QAE@PAVRGE_Map@@@Z"},
+    "00547260": {"status": "matching", "symbol": "??1RGE_Zone_Map_List@@QAE@XZ"},
+    "00547270": {"status": "matching", "symbol": "?save@RGE_Zone_Map_List@@QAEXH@Z"},
+    "005472B0": {"status": "matching", "symbol": "?create_zone_map@RGE_Zone_Map_List@@QAEJPAMJ@Z"},
+    "005473B0": {"status": "matching", "symbol": "?get_zone_map@RGE_Zone_Map_List@@QAEPAVRGE_Zone_Map@@PAMJAAH@Z"},
+    "005474B0": {"status": "matching", "symbol": "?get_zone_map@RGE_Zone_Map_List@@QAEPAVRGE_Zone_Map@@J@Z"},
+    "005474D0": {"status": "matching", "symbol": "?delete_zone_maps@RGE_Zone_Map_List@@QAEXXZ"}
+  }
+}

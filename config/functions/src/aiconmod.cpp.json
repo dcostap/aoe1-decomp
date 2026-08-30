@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "header": "include/aiconmod.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aiconmod.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0040AA90": {"status": "matching", "symbol": "??0ConstructionAIModule@@QAE@PAXH@Z"},
+    "0040ABB0": {"status": "matching", "symbol": "??0ConstructionAIModule@@QAE@HH@Z"},
+    "0040B120": {"status": "matching", "symbol": "??1ConstructionAIModule@@UAE@XZ"},
+    "0040B1A0": {"status": "accepted_drift", "symbol": "?save@ConstructionAIModule@@UAEHH@Z"},
+    "0040B690": {"status": "matching", "symbol": "?loadConstructionPlan@ConstructionAIModule@@UAEHPADHHMMM@Z"},
+    "0040B970": {"status": "matching", "symbol": "?constructionPlanName@ConstructionAIModule@@QAEPADXZ"},
+    "0040B980": {"status": "accepted_drift", "symbol": "?setReferencePoint@ConstructionAIModule@@QAEXHHMMM@Z"},
+    "0040BB70": {"status": "matching", "symbol": "?xReferencePoint@ConstructionAIModule@@QAEMXZ"},
+    "0040BB80": {"status": "matching", "symbol": "?yReferencePoint@ConstructionAIModule@@QAEMXZ"},
+    "0040BB90": {"status": "matching", "symbol": "?placeStructure@ConstructionAIModule@@UAEPAVConstructionItem@@PAVBuildItem@@@Z"},
+    "0040BBA0": {"status": "matching", "symbol": "?lastPlacementReturnCode@ConstructionAIModule@@QAE?AW4PlacementResult@1@XZ"},
+    "0040BBB0": {"status": "matching", "symbol": "?setBuilt@ConstructionAIModule@@UAEXPAVConstructionItem@@H@Z"},
+    "0040BC00": {"status": "matching", "symbol": "?unplaceStructure@ConstructionAIModule@@UAEHPAVConstructionItem@@H@Z"},
+    "0040BC80": {"status": "matching", "symbol": "?unplaceStructure@ConstructionAIModule@@UAEHMMH@Z"},
+    "0040BD10": {"status": "matching", "symbol": "?decrementBuildAttempts@ConstructionAIModule@@UAEXMMH@Z"},
+    "0040BD40": {"status": "matching", "symbol": "?incrementBuildAttempts@ConstructionAIModule@@UAEXMMH@Z"},
+    "0040BD70": {"status": "matching", "symbol": "?lot@ConstructionAIModule@@QAEPAVConstructionItem@@MM@Z"},
+    "0040BE10": {"status": "matching", "symbol": "?randomLot@ConstructionAIModule@@QAEPAVConstructionItem@@MM@Z"},
+    "0040BE70": {"status": "matching", "symbol": "?removeOldLots@ConstructionAIModule@@IAEXXZ"}
+  }
+}

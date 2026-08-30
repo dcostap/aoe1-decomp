@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "header": "include/tact_tek.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tact_tek.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "004D21B0": {"status": "scratch", "symbol": "??0TRIBE_Action_Make_Tech@@QAE@HPAVRGE_Action_Object@@@Z"},
+    "004D2250": {"status": "accepted_drift", "symbol": "??0TRIBE_Action_Make_Tech@@QAE@PAVRGE_Action_Object@@FH@Z"},
+    "004D2290": {"status": "scratch", "symbol": "??1TRIBE_Action_Make_Tech@@UAE@XZ"},
+    "004D2370": {"status": "matching", "symbol": "?save@TRIBE_Action_Make_Tech@@UAEXH@Z"},
+    "004D23B0": {"status": "scratch", "symbol": "?first_in_stack@TRIBE_Action_Make_Tech@@UAEXE@Z"},
+    "004D2440": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Make_Tech@@MAEXE@Z"},
+    "004D2450": {"status": "matching", "symbol": "?update@TRIBE_Action_Make_Tech@@UAEEXZ"},
+    "004D2550": {"status": "scratch", "symbol": "?stop@TRIBE_Action_Make_Tech@@UAEHXZ"},
+    "004D25E0": {"status": "accepted_drift", "symbol": "?get_info@TRIBE_Action_Make_Tech@@QAEXAAF0PADF@Z"}
+  }
+}

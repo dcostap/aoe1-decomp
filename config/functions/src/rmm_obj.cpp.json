@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "header": "include/rmm_obj.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "00485C50": {"status": "matching", "symbol": "??0RGE_RMM_Object_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@PAVRGE_Game_World@@PAURGE_Object_Info@@E@Z"},
+    "00485CB0": {"status": "matching", "symbol": "?add_quick_obj@RGE_RMM_Object_Generator@@QAEXJJJ@Z"},
+    "00485DC0": {"status": "matching", "symbol": "?generate@RGE_RMM_Object_Generator@@UAEEXZ"},
+    "00485E50": {"status": "scratch", "symbol": "?generate_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@@Z"},
+    "00485F10": {"status": "scratch", "symbol": "?make_placement_stack@RGE_RMM_Object_Generator@@IAEXAAUMap_Stack@@JJJJ@Z"},
+    "00486110": {"status": "matching", "symbol": "?to_close@RGE_RMM_Object_Generator@@IAEEAAURGE_Object_Info_Line@@JJ@Z"},
+    "00486180": {"status": "matching", "symbol": "?set_search_area@RGE_RMM_Object_Generator@@IAEXJJJE@Z"},
+    "00486210": {"status": "matching", "symbol": "?remove_area_from_lists@RGE_RMM_Object_Generator@@IAEXJJJ@Z"},
+    "004862B0": {"status": "accepted_drift", "symbol": "?place_avoid_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@J@Z"},
+    "004864F0": {"status": "scratch", "symbol": "?place_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@@Z"},
+    "00486700": {"status": "matching", "symbol": "?place_land_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@JJJJJ@Z"},
+    "00486A60": {"status": "matching", "symbol": "?place_group@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@JJPAVRGE_Player@@@Z"},
+    "00486C40": {"status": "scratch", "symbol": "?place_cluster@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@JJPAVRGE_Player@@@Z"}
+  }
+}

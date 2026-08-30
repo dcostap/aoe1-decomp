@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "header": "include/pnl_msg.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Pnl_msg.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "00478F40": {"status": "scratch", "symbol": "??0TMessagePanel@@QAE@PAXJJ@Z"},
+    "00479050": {"status": "scratch", "symbol": "??1TMessagePanel@@UAE@XZ"},
+    "004790E0": {"status": "scratch", "symbol": "?set_rect@TMessagePanel@@UAEXJJJJ@Z"},
+    "00479270": {"status": "matching", "symbol": "?set_justification@TMessagePanel@@QAEXW4JustType@1@0H@Z"},
+    "004792A0": {"status": "matching", "symbol": "?show_message@TMessagePanel@@QAEXW4MessageType@1@PADEEPAXJJ@Z"},
+    "004793C0": {"status": "matching", "symbol": "?show_message2@TMessagePanel@@QAEXW4MessageType@1@PADKKPAXJJPAVTShape@@H3H@Z"},
+    "00479540": {"status": "matching", "symbol": "?remove_message@TMessagePanel@@QAEXXZ"},
+    "00479590": {"status": "scratch", "symbol": "?draw@TMessagePanel@@UAEXXZ"},
+    "00479A10": {"status": "matching", "symbol": "?get_true_render_rect@TMessagePanel@@UAEXAAUtagRECT@@@Z"},
+    "00479A80": {"status": "matching", "symbol": "?handle_idle@TMessagePanel@@UAEJXZ"},
+    "00479AE0": {"status": "scratch", "symbol": "?render_to_image_buffer@TMessagePanel@@IAEHXZ"},
+    "0047A190": {"status": "matching", "symbol": "?set_font@TMessagePanel@@UAEXPAXJJ@Z"}
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "header": "include/com_loby.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_loby.cpp",
+  "build": {
+    "flags": "gx_directplay"
+  },
+  "functions": {
+    "0042F290": {"status": "matching", "symbol": "??0RGE_Lobby@@QAE@PAX@Z"},
+    "0042F300": {"status": "matching", "symbol": "??1RGE_Lobby@@QAE@XZ"},
+    "0042F330": {"status": "matching", "symbol": "?ClearLobbyInfo@RGE_Lobby@@QAEXXZ"},
+    "0042F370": {"status": "matching", "symbol": "?IsLobbyLaunched@RGE_Lobby@@QAEHXZ"},
+    "0042F3A0": {"status": "matching", "symbol": "?EnumPlayersCallbackLobby@@YGHKKPAUDPNAME@@KPAX@Z"},
+    "0042F430": {"status": "scratch", "symbol": "?CheckForLobbyLaunch@RGE_Lobby@@QAEEAAPAUIDirectPlay3@@@Z"},
+    "0042F640": {"status": "matching", "symbol": "?IsThisHost@RGE_Lobby@@QAEEXZ"},
+    "0042F660": {"status": "matching", "symbol": "?GetPlayerInfo@RGE_Lobby@@QAEEPAPAD@Z"},
+    "0042F680": {"status": "matching", "symbol": "?GetSessionInfo@RGE_Lobby@@QAEEAAUDPSESSIONDESC2@@@Z"},
+    "0042F6B0": {"status": "matching", "symbol": "?SendZoneHandshakeResponse@RGE_Lobby@@QAEJXZ"},
+    "0042F6C0": {"status": "matching", "symbol": "?GameIsOver@RGE_Lobby@@QAEHXZ"},
+    "0042F6D0": {"status": "matching", "symbol": "?ReceiveZoneMessages@RGE_Lobby@@QAEJXZ"},
+    "0042F830": {"status": "scratch", "symbol": "?SendZoneMessage@RGE_Lobby@@QAEJPADKU_GUID@@@Z"}
+  }
+}

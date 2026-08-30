@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "header": "include/scr_cam.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scr_cam.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0048F5D0": {"status": "matching", "symbol": "??0TRIBE_Campaign_Editor_Screen@@QAE@XZ"},
+    "0048FA40": {"status": "matching", "symbol": "??1TRIBE_Campaign_Editor_Screen@@UAE@XZ"},
+    "0048FBC0": {"status": "matching", "symbol": "?fill_campaign_drop@TRIBE_Campaign_Editor_Screen@@IAEXXZ"},
+    "0048FD20": {"status": "matching", "symbol": "?fill_scenario_list@TRIBE_Campaign_Editor_Screen@@IAEXXZ"},
+    "0048FE80": {"status": "matching", "symbol": "?fill_campaign_scenario_list@TRIBE_Campaign_Editor_Screen@@IAEXXZ"},
+    "0048FF00": {"status": "matching", "symbol": "?check_lists@TRIBE_Campaign_Editor_Screen@@IAEEXZ"},
+    "0048FF80": {"status": "matching", "symbol": "?load_campaign@TRIBE_Campaign_Editor_Screen@@IAEXXZ"},
+    "00490120": {"status": "matching", "symbol": "?make_campaign@TRIBE_Campaign_Editor_Screen@@IAEXXZ"},
+    "00490380": {"status": "matching", "symbol": "?add_scenario@TRIBE_Campaign_Editor_Screen@@IAEXXZ"},
+    "00490400": {"status": "matching", "symbol": "?remove_scenario@TRIBE_Campaign_Editor_Screen@@IAEXXZ"},
+    "00490480": {"status": "matching", "symbol": "?move_scenario_up@TRIBE_Campaign_Editor_Screen@@IAEXXZ"},
+    "00490520": {"status": "matching", "symbol": "?move_scenario_down@TRIBE_Campaign_Editor_Screen@@IAEXXZ"},
+    "004905D0": {"status": "matching", "symbol": "?action@TRIBE_Campaign_Editor_Screen@@MAEJPAVTPanel@@JKK@Z"}
+  }
+}

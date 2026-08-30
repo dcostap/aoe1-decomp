@@ -117,10 +117,9 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
                 patch.object(status_core, "classify_corpus_bucket", return_value=("normal", "")),
                 patch.object(
                     status_core,
-                    "source_module_entry_for_va",
+                    "function_entry_for_va",
                     side_effect=lambda va: entries.get(str(va).upper()),
                 ),
-                patch.object(status_core, "header_source_path", return_value=None),
             ):
                 full_rows = status_core.build_status_rows(
                     include_source_preview=False,

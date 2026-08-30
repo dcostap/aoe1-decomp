@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "header": "include/misl_obj.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\misl_obj.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0045A740": {"status": "matching", "symbol": "??0RGE_Missile_Object@@QAE@PAVRGE_Master_Combat_Object@@PAVRGE_Player@@MMMH@Z"},
+    "0045A800": {"status": "matching", "symbol": "??0RGE_Missile_Object@@QAE@HPAVRGE_Game_World@@H@Z"},
+    "0045A870": {"status": "matching", "symbol": "?setup@RGE_Missile_Object@@MAEHPAVRGE_Master_Combat_Object@@PAVRGE_Player@@MMM@Z"},
+    "0045A8A0": {"status": "matching", "symbol": "?setup@RGE_Missile_Object@@MAEHHPAVRGE_Game_World@@@Z"},
+    "0045A900": {"status": "matching", "symbol": "?rehook@RGE_Missile_Object@@UAEXXZ"},
+    "0045A910": {"status": "matching", "symbol": "?save@RGE_Missile_Object@@UAEXH@Z"},
+    "0045A940": {"status": "matching", "symbol": "?update@RGE_Missile_Object@@UAEEXZ"},
+    "0045A950": {"status": "matching", "symbol": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@PAVRGE_Static_Object@@M@Z"},
+    "0045A9E0": {"status": "matching", "symbol": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@MMMM@Z"},
+    "0045AA70": {"status": "matching", "symbol": "?missile_move@RGE_Missile_Object@@QAEEXZ"},
+    "0045AB20": {"status": "scratch", "symbol": "?make_object_collision_list@RGE_Missile_Object@@QAEPAVRGE_Check_List@@M@Z"}
+  }
+}

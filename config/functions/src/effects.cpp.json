@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "header": "include/effects.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\effects.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "004490E0": {"status": "accepted_drift", "symbol": "??0RGE_Effects@@QAE@H@Z"},
+    "00449260": {"status": "accepted_drift", "symbol": "??0RGE_Effects@@QAE@PAD@Z"},
+    "00449440": {"status": "matching", "symbol": "??1RGE_Effects@@UAE@XZ"},
+    "004494B0": {"status": "matching", "symbol": "?save@RGE_Effects@@UAEXH@Z"},
+    "004495C0": {"status": "matching", "symbol": "?do_effect@RGE_Effects@@UAEXFPAVRGE_Player@@@Z"}
+  }
+}

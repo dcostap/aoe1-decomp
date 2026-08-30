@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "header": "include/tmap.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\tmap.cpp",
+  "build": {
+    "flags": "gx"
+  },
+  "functions": {
+    "0050F410": {"status": "scratch", "symbol": "??0TRIBE_Map@@QAE@HPAPAVRGE_Sound@@E@Z"},
+    "0050F760": {"status": "matching", "symbol": "??0TRIBE_Map@@QAE@PAD000FFFPAPAVRGE_Sound@@@Z"},
+    "0050F7A0": {"status": "matching", "symbol": "??1TRIBE_Map@@UAE@XZ"},
+    "0050F7B0": {"status": "matching", "symbol": "?save@TRIBE_Map@@UAEXH@Z"},
+    "0050F7C0": {"status": "matching", "symbol": "?map_generate@TRIBE_Map@@UAEXPAVRGE_Player@@PAVRGE_Game_World@@PAURGE_Player_Info@@PAE@Z"},
+    "0050F7F0": {"status": "matching", "symbol": "?map_generate@TRIBE_Map@@QAEXPAURGE_Player_Info@@@Z"},
+    "0050F800": {"status": "matching", "symbol": "?data_load_random_map@TRIBE_Map@@UAEXH@Z"},
+    "0050F860": {"status": "matching", "symbol": "?load_random_map@TRIBE_Map@@UAEXPAD000@Z"},
+    "0050F8D0": {"status": "scratch", "symbol": "?check_tile_for_forest_change@TRIBE_Map@@QAEXFFPAVRGE_Game_World@@@Z"},
+    "0050FA90": {"status": "scratch", "symbol": "?change_terrain@TRIBE_Map@@QAEXFFEPAVRGE_Game_World@@@Z"},
+    "0050FC40": {"status": "matching", "symbol": "?do_terrain_brush@TRIBE_Map@@UAEEJJJE@Z"},
+    "0050FD40": {"status": "matching", "symbol": "?do_terrain_brush_stroke@TRIBE_Map@@UAEEJJJJJE@Z"},
+    "0050FDD0": {"status": "matching", "symbol": "?do_elevation_brush_stroke@TRIBE_Map@@UAEEJJJJJE@Z"},
+    "0050FE90": {"status": "matching", "symbol": "?setup_cliff_type@TRIBE_Map@@QAEXJJJJJJJJMM@Z"},
+    "0050FF20": {"status": "scratch", "symbol": "?find_cliff@TRIBE_Map@@QAEPAVRGE_Static_Object@@JJ@Z"},
+    "00510020": {"status": "scratch", "symbol": "?get_cliff_info@TRIBE_Map@@QAE?AUTRIBE_Cliff_Info@@PAVRGE_Static_Object@@@Z"},
+    "005100D0": {"status": "matching", "symbol": "?check_cliff_valid@TRIBE_Map@@QAEEUTRIBE_Cliff_Info@@@Z"},
+    "00510110": {"status": "scratch", "symbol": "?make_new_cliff@TRIBE_Map@@QAEPAVRGE_Static_Object@@JJUTRIBE_Cliff_Info@@@Z"},
+    "005102A0": {"status": "matching", "symbol": "?remove_cliff_edge@TRIBE_Map@@QAEXJJJ@Z"},
+    "00510410": {"status": "matching", "symbol": "?reverse_cliff_direction@TRIBE_Map@@QAEJJ@Z"},
+    "00510430": {"status": "scratch", "symbol": "?add_cliff_edge@TRIBE_Map@@QAEJJJJJJ@Z"},
+    "00510960": {"status": "scratch", "symbol": "?delete_cliff@TRIBE_Map@@UAEXJJ@Z"},
+    "00510A50": {"status": "scratch", "symbol": "?do_cliff_brush@TRIBE_Map@@UAEEJJEE@Z"},
+    "00510C10": {"status": "matching", "symbol": "?do_cliff_brush_stroke@TRIBE_Map@@UAEEJJJJEE@Z"},
+    "00510C90": {"status": "matching", "symbol": "?water@TRIBE_Map@@QAEEE@Z"},
+    "00510CB0": {"status": "matching", "symbol": "?clean_borders@TRIBE_Map@@QAEXJJJJE@Z"},
+    "00511000": {"status": "matching", "symbol": "?do_terrain_brush_check@TRIBE_Map@@QAEEJJ@Z"},
+    "005110E0": {"status": "scratch", "symbol": "?tribe_clean_elevation@TRIBE_Map@@QAEXJJJJ@Z"},
+    "005111A0": {"status": "scratch", "symbol": "?tribe_clean_terrain@TRIBE_Map@@QAEXJJJJEE@Z"}
+  }
+}

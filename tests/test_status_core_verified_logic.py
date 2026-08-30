@@ -27,7 +27,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                 "status": "verified_logic",
             }
             with patch.object(common, "REPO_ROOT", root), patch.object(
-                common, "source_module_entry_for_va", return_value=entry
+                common, "function_entry_for_va", return_value=entry
             ):
                 selected = common.preferred_source_path(record)
         self.assertEqual(selected, source)
@@ -64,7 +64,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                 patch.object(status_core, "classify_corpus_bucket", return_value=("normal", "")),
                 patch.object(
                     status_core,
-                    "source_module_entry_for_va",
+                    "function_entry_for_va",
                     return_value={
                         "module": {"name": "demo", "source": "src/demo.cpp"},
                         "status": "verified_logic",
@@ -109,7 +109,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                 patch.object(status_core, "classify_corpus_bucket", return_value=("normal", "")),
                 patch.object(
                     status_core,
-                    "source_module_entry_for_va",
+                    "function_entry_for_va",
                     return_value={
                         "module": {"name": "demo", "source": "src/demo.cpp"},
                         "status": "verified_logic",

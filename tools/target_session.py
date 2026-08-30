@@ -17,7 +17,7 @@ from common import (
     REPO_ROOT,
     compiler_artifact_slug,
     compiler_source_path,
-    compiler_translation_unit_for_va,
+    build_module_for_va,
     function_decomp_note_relative_path,
     function_record_by_va,
     function_slug,
@@ -26,7 +26,7 @@ from common import (
     module_decomp_note_relative_path,
     preferred_flags_rsp_path,
     preferred_source_path,
-    source_module_entry_for_va,
+    function_entry_for_va,
 )
 from function_diagnostics import owning_function_symbol_validation
 from function_history import (
@@ -801,7 +801,7 @@ def _validate_grouped_checkpoint(
     if require_exact and str(metrics.get("build_input_fingerprint") or "") != current_fingerprint:
         raise RuntimeError("grouped exact result has no matching current build fingerprint")
 
-    fields = ("name", "source", "flags", "owners", "symbols")
+    fields = ("name", "source", "build", "functions")
     saved_unit = saved_context.get("translation_unit") or {}
     current_unit = current_context.get("translation_unit") or {}
     for field in fields:
@@ -1120,7 +1120,7 @@ def decomp_note_paths(record: dict[str, str]) -> tuple[str, str]:
         else ""
     )
     module_note = ""
-    module_entry = source_module_entry_for_va(record["va"])
+    module_entry = function_entry_for_va(record["va"])
     if module_entry is not None:
         module = module_entry["module"]
         assert isinstance(module, dict)
@@ -1439,8 +1439,7 @@ def format_history(record: dict[str, str], session: dict | None, limit: int) -> 
                 lines.append(
                     f"    build context: TU={translation_unit.get('name') or '?'} "
                     f"fingerprint={str(context.get('fingerprint') or '')[:16]} "
-                    f"owners={len(translation_unit.get('owners') or {})} "
-                    f"symbols={len(translation_unit.get('symbols') or {})} "
+                    f"functions={len(translation_unit.get('functions') or {})} "
                     f"pdb_owner={pdb_owner.get('status') or 'unverified'}"
                 )
     lines.append("")
@@ -1476,12 +1475,18 @@ def format_brief(
     """Return a bounded worker handoff without raw checkpoint/session payloads."""
     status_lines = format_session(record, session, metrics).split("\n\nUseful commands:", 1)[0]
     lines = [status_lines]
-    translation_unit = compiler_translation_unit_for_va(int(record["va"], 16))
+    translation_unit = build_module_for_va(int(record["va"], 16))
     if translation_unit is not None:
+        functions = translation_unit.get("functions") or {}
+        matching_neighbors = sum(
+            1
+            for entry in functions.values()
+            if isinstance(entry, dict) and entry.get("status") == "matching"
+        )
         lines.extend(
             [
                 f"Translation unit: {translation_unit['name']} / {translation_unit['source']}",
-                f"Registered exact neighbors: {len(translation_unit.get('owners') or {})}",
+                f"Matching neighbors: {matching_neighbors}",
             ]
         )
     if session is None:

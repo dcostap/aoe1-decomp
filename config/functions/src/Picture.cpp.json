@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "header": "include/Picture.h",
+  "pdb_source_path": "C:\\msdev\\work\\age1_x1\\Picture.cpp",
+  "build": {
+    "flags": "default"
+  },
+  "functions": {
+    "0046DDE0": {"status": "matching", "symbol": "??0TPicture@@QAE@PADJHPAXH@Z"},
+    "0046DE30": {"status": "scratch", "symbol": "??0TPicture@@QAE@HH@Z"},
+    "0046DFA0": {"status": "matching", "symbol": "??0TPicture@@QAE@XZ"},
+    "0046DFC0": {"status": "matching", "symbol": "??1TPicture@@QAE@XZ"},
+    "0046E020": {"status": "matching", "symbol": "?Save@TPicture@@QAEXH@Z"},
+    "0046E0B0": {"status": "scratch", "symbol": "?Load@TPicture@@QAEXPADJHPAXH@Z"},
+    "0046E270": {"status": "accepted_drift", "symbol": "?Init@TPicture@@QAEXPAUBITMAPINFO256@@PAEPAUTRANSINFO@@@Z"},
+    "0046E2C0": {"status": "matching", "symbol": "?AlignedWidth@TPicture@@QAEJXZ"},
+    "0046E2D0": {"status": "matching", "symbol": "?Draw@TPicture@@QAEXPAVTDrawArea@@JJHH@Z"},
+    "0046E370": {"status": "matching", "symbol": "?Tile@TPicture@@QAEJPAVTDrawArea@@JJJJJJJJJJ@Z"},
+    "0046E3E0": {"status": "scratch", "symbol": "?GetPixel@TPicture@@QAEEJJHH@Z"}
+  }
+}
