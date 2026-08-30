@@ -415,13 +415,12 @@ int TMessagePanel::render_to_image_buffer() {
         used_y = 0;
         display_hgt = ts.cy + 2;
         used_w = ts.cx + 2;
-        int message_type = this->message_type;
         tight = 1;
 
-        if (message_type == 1) {
+        if (this->message_type == 1) {
             flags = 0x21;
             used_x = ((this->pnl_wid - used_w) >> 1) - 1;
-        } else if (message_type == 5) {
+        } else if (this->message_type == 5) {
             flags = 0x22;
             used_x = (this->pnl_wid - used_w) - 1;
             used_y = 0;
