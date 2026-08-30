@@ -43,8 +43,8 @@ class TranslationUnitTests(unittest.TestCase):
             for va, entry in module["functions"].items()
         ]
         self.assertEqual(242, len(modules))
-        self.assertEqual(5428, len(entries))
-        self.assertEqual(5428, len({va for va, _, _ in entries}))
+        self.assertEqual(5427, len(entries))
+        self.assertEqual(5427, len({va for va, _, _ in entries}))
         self.assertEqual([], validate_function_registry())
 
     def test_build_modules_keep_every_known_symbol(self) -> None:
@@ -55,7 +55,7 @@ class TranslationUnitTests(unittest.TestCase):
             for entry in module["functions"].values()
         ]
         self.assertEqual(224, len(modules))
-        self.assertEqual(5261, len(entries))
+        self.assertEqual(5260, len(entries))
         self.assertTrue(all(entry.get("symbol") for entry in entries))
         self.assertEqual([], validate_translation_units(modules, require_complete=True))
 

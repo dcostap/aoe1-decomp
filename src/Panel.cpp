@@ -4,10 +4,6 @@
 
 unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
-void $E1(void) {
-    panel_system.TPanelSystem::TPanelSystem();
-}
-
 TPanelSystem::TPanelSystem(void) {
     int* counts;
     char (*files)[260];

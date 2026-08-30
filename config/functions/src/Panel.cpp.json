@@ -6,7 +6,6 @@
     "flags": "default"
   },
   "functions": {
-    "00463BB0": {"status": "scratch", "symbol": "$E1"},
     "00463BE0": {"status": "matching", "symbol": "??0TPanelSystem@@QAE@XZ"},
     "00463C50": {"status": "matching", "symbol": "??1TPanelSystem@@QAE@XZ"},
     "00463D00": {"status": "matching", "symbol": "?currentPanel@TPanelSystem@@QBEPAVTPanel@@XZ"},
