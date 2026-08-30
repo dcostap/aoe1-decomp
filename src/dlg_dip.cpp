@@ -394,14 +394,14 @@ TribeDiplomacyDialog::~TribeDiplomacyDialog()
         if (this->playerCivilization[i] != 0) {
             delete this->playerCivilization[i];
         }
-        if (this->goldTributeButton[i] != 0) {
-            delete this->goldTributeButton[i];
-        }
         if (this->woodTributeButton[i] != 0) {
             delete this->woodTributeButton[i];
         }
         if (this->foodTributeButton[i] != 0) {
             delete this->foodTributeButton[i];
+        }
+        if (this->goldTributeButton[i] != 0) {
+            delete this->goldTributeButton[i];
         }
         if (this->stoneTributeButton[i] != 0) {
             delete this->stoneTributeButton[i];
@@ -611,14 +611,14 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                         cost += 1.0f;
                         if (rge_base_game->get_player()->attributes[3] -
                                 this->goldTotal >= cost * 100.0f) {
-                            this->goldTributeAmount[index] += 100.0f;
+                            this->goldTributeAmount[player_id - 1] += 100.0f;
                             this->goldTotal += cost * 100.0f;
                         } else {
                             float amount =
                                 (rge_base_game->get_player()->attributes[3] -
                                  this->goldTotal) / cost;
-                            this->goldTributeAmount[index] =
-                                amount + this->goldTributeAmount[index];
+                            this->goldTributeAmount[player_id - 1] =
+                                amount + this->goldTributeAmount[player_id - 1];
                             this->goldTotal = amount * cost + this->goldTotal;
                         }
                         sprintf(temp_str, "%ld",
@@ -627,7 +627,7 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                                     this->goldTotal));
                         this->playerGold->set_text(temp_str);
                         sprintf(temp_str, "%ld",
-                                static_cast<long>(this->goldTributeAmount[index]));
+                                static_cast<long>(this->goldTributeAmount[player_id - 1]));
                         this->goldTributeButton[index]->set_text(0, temp_str);
                         this->check_gold();
                         return 1;
@@ -646,14 +646,14 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                         cost += 1.0f;
                         if (rge_base_game->get_player()->attributes[4] -
                                 this->woodTotal >= cost * 100.0f) {
-                            this->woodTributeAmount[index] += 100.0f;
+                            this->woodTributeAmount[player_id - 1] += 100.0f;
                             this->woodTotal += cost * 100.0f;
                         } else {
                             float amount =
                                 (rge_base_game->get_player()->attributes[4] -
                                  this->woodTotal) / cost;
-                            this->woodTributeAmount[index] =
-                                amount + this->woodTributeAmount[index];
+                            this->woodTributeAmount[player_id - 1] =
+                                amount + this->woodTributeAmount[player_id - 1];
                             this->woodTotal = amount * cost + this->woodTotal;
                         }
                         sprintf(temp_str, "%ld",
@@ -662,7 +662,7 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                                     this->woodTotal));
                         this->playerWood->set_text(temp_str);
                         sprintf(temp_str, "%ld",
-                                static_cast<long>(this->woodTributeAmount[index]));
+                                static_cast<long>(this->woodTributeAmount[player_id - 1]));
                         this->woodTributeButton[index]->set_text(0, temp_str);
                         this->check_wood();
                         return 1;
@@ -681,14 +681,14 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                         cost += 1.0f;
                         if (rge_base_game->get_player()->attributes[0] -
                                 this->foodTotal >= cost * 100.0f) {
-                            this->foodTributeAmount[index] += 100.0f;
+                            this->foodTributeAmount[player_id - 1] += 100.0f;
                             this->foodTotal += cost * 100.0f;
                         } else {
                             float amount =
                                 (rge_base_game->get_player()->attributes[0] -
                                  this->foodTotal) / cost;
-                            this->foodTributeAmount[index] =
-                                amount + this->foodTributeAmount[index];
+                            this->foodTributeAmount[player_id - 1] =
+                                amount + this->foodTributeAmount[player_id - 1];
                             this->foodTotal = amount * cost + this->foodTotal;
                         }
                         sprintf(temp_str, "%ld",
@@ -697,7 +697,7 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                                     this->foodTotal));
                         this->playerFood->set_text(temp_str);
                         sprintf(temp_str, "%ld",
-                                static_cast<long>(this->foodTributeAmount[index]));
+                                static_cast<long>(this->foodTributeAmount[player_id - 1]));
                         this->foodTributeButton[index]->set_text(0, temp_str);
                         this->check_food();
                         return 1;
@@ -716,14 +716,14 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                         cost += 1.0f;
                         if (rge_base_game->get_player()->attributes[2] -
                                 this->stoneTotal >= cost * 100.0f) {
-                            this->stoneTributeAmount[index] += 100.0f;
+                            this->stoneTributeAmount[player_id - 1] += 100.0f;
                             this->stoneTotal += cost * 100.0f;
                         } else {
                             float amount =
                                 (rge_base_game->get_player()->attributes[2] -
                                  this->stoneTotal) / cost;
-                            this->stoneTributeAmount[index] =
-                                amount + this->stoneTributeAmount[index];
+                            this->stoneTributeAmount[player_id - 1] =
+                                amount + this->stoneTributeAmount[player_id - 1];
                             this->stoneTotal = amount * cost + this->stoneTotal;
                         }
                         sprintf(temp_str, "%ld",
@@ -732,7 +732,7 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                                     this->stoneTotal));
                         this->playerStone->set_text(temp_str);
                         sprintf(temp_str, "%ld",
-                                static_cast<long>(this->stoneTributeAmount[index]));
+                                static_cast<long>(this->stoneTributeAmount[player_id - 1]));
                         this->stoneTributeButton[index]->set_text(0, temp_str);
                         this->check_stone();
                         return 1;
@@ -834,31 +834,39 @@ int TribeDiplomacyDialog::check_wood()
 int TribeDiplomacyDialog::check_food()
 {
     int has_food;
+    int i;
+    TButtonPanel** buttons;
+    RGE_Player* player;
 
-    if (rge_base_game->prog_mode == 5 ||
-        (rge_base_game->get_player()->attributes[0] - this->foodTotal <= 0.0f)) {
+    if (rge_base_game->prog_mode == 5) {
         has_food = 1;
     } else {
-        has_food = 0;
+        player = rge_base_game->get_player();
+        if (player->attributes[0] - this->foodTotal > 0.0f) {
+            has_food = 0;
+        } else {
+            has_food = 1;
+        }
     }
 
-    int i = 0;
+    i = 0;
+    buttons = this->foodTributeButton;
     do {
-        TButtonPanel* button = this->foodTributeButton[i];
-        if (button != 0) {
+        if (*buttons != 0) {
             if (i == this->cur_player_row) {
-                button->set_disabled(1);
+                (*buttons)->set_disabled(1);
             } else {
-                button->set_disabled(has_food);
+                (*buttons)->set_disabled(has_food);
             }
 
             if (this->tribute_flag != 0) {
-                button->set_active(1);
+                (*buttons)->set_active(1);
             } else {
-                button->set_active(0);
+                (*buttons)->set_active(0);
             }
         }
         ++i;
+        ++buttons;
     } while (i < 8);
 
     return has_food;
@@ -867,11 +875,14 @@ int TribeDiplomacyDialog::check_food()
 int TribeDiplomacyDialog::check_stone()
 {
     int result;
+    int i;
+    TButtonPanel** buttons;
+    RGE_Player* player;
 
     if (rge_base_game->prog_mode == 5) {
         result = 1;
     } else {
-        RGE_Player* player = rge_base_game->get_player();
+        player = rge_base_game->get_player();
         if (player->attributes[2] - this->stoneTotal > 0.0f) {
             result = 0;
         } else {
@@ -879,23 +890,24 @@ int TribeDiplomacyDialog::check_stone()
         }
     }
 
-    int i = 0;
+    i = 0;
+    buttons = this->stoneTributeButton;
     do {
-        TButtonPanel* button = this->stoneTributeButton[i];
-        if (button != 0) {
+        if (*buttons != 0) {
             if (i == this->cur_player_row) {
-                button->set_disabled(1);
+                (*buttons)->set_disabled(1);
             } else {
-                button->set_disabled(result);
+                (*buttons)->set_disabled(result);
             }
 
             if (this->tribute_flag != 0) {
-                button->set_active(1);
+                (*buttons)->set_active(1);
             } else {
-                button->set_active(0);
+                (*buttons)->set_active(0);
             }
         }
         ++i;
+        ++buttons;
     } while (i < 8);
 
     return result;

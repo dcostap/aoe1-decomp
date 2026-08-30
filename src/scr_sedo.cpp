@@ -84,18 +84,12 @@ TRIBE_Screen_Sed_Open::TRIBE_Screen_Sed_Open()
 }
 
 TRIBE_Screen_Sed_Open::~TRIBE_Screen_Sed_Open() {
-    delete title;
-    title = 0;
-    delete list;
-    list = 0;
-    delete scrollbar;
-    scrollbar = 0;
-    delete okButton;
-    okButton = 0;
-    delete cancelButton;
-    cancelButton = 0;
-    delete deleteButton;
-    deleteButton = 0;
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->list);
+    this->delete_panel((TPanel**)&this->scrollbar);
+    this->delete_panel((TPanel**)&this->okButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
+    this->delete_panel((TPanel**)&this->deleteButton);
 }
 
 void TRIBE_Screen_Sed_Open::fillList()
@@ -111,8 +105,8 @@ void TRIBE_Screen_Sed_Open::fillList()
     sprintf(file_name, "%s*.scn", rge_base_game->prog_info->scenario_dir);
     handle = _findfirst(file_name, &fileInfo);
     while (handle != -1) {
-        len = strlen(fileInfo.name + 4) - 4;
-        strncpy(file_name, fileInfo.name + 4, len);
+        len = strlen(fileInfo.name) - 4;
+        strncpy(file_name, fileInfo.name, len);
         file_name[len] = 0;
         this->list->append_line(file_name, 0);
         if (_findnext(handle, &fileInfo) == -1) {
@@ -123,8 +117,8 @@ void TRIBE_Screen_Sed_Open::fillList()
     sprintf(file_name, "%s*.scx", rge_base_game->prog_info->scenario_dir);
     handle = _findfirst(file_name, &fileInfo);
     while (handle != -1) {
-        len = strlen(fileInfo.name + 4) - 4;
-        strncpy(file_name, fileInfo.name + 4, len);
+        len = strlen(fileInfo.name) - 4;
+        strncpy(file_name, fileInfo.name, len);
         file_name[len] = 0;
         this->list->append_line(file_name, 0);
         if (_findnext(handle, &fileInfo) == -1) {

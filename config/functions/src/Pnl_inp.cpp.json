@@ -6,7 +6,7 @@
     "flags": "gx"
   },
   "functions": {
-    "00476C10": {"status": "scratch", "symbol": "??0TInputPanel@@QAE@XZ"},
+    "00476C10": {"status": "matching", "symbol": "??0TInputPanel@@QAE@XZ"},
     "00476CF0": {"status": "matching", "symbol": "??1TInputPanel@@UAE@XZ"},
     "00476D80": {"status": "matching", "symbol": "?setup@TInputPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXJJPADHEHEEFPAVTDigital@@3W4FormatType@1@@Z"},
     "00476EE0": {"status": "matching", "symbol": "?set_focus@TInputPanel@@UAEXH@Z"},
@@ -23,7 +23,7 @@
     "00477AF0": {"status": "scratch", "symbol": "?delete_character@TInputPanel@@IAEHXZ"},
     "00477C90": {"status": "matching", "symbol": "?backspace_character@TInputPanel@@IAEHXZ"},
     "00477CB0": {"status": "matching", "symbol": "?paste@TInputPanel@@IAEHXZ"},
-    "00477E90": {"status": "scratch", "symbol": "?reformat@TInputPanel@@IAEXXZ"},
+    "00477E90": {"status": "matching", "symbol": "?reformat@TInputPanel@@IAEXXZ"},
     "00477EF0": {"status": "matching", "symbol": "?calc_input_pos@TInputPanel@@IAEXXZ"},
     "00478010": {"status": "matching", "symbol": "?calc_cur_line_col@TInputPanel@@IAEXXZ"},
     "00478150": {"status": "matching", "symbol": "?is_blank@TInputPanel@@QAEHXZ"},

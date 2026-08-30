@@ -10,7 +10,7 @@
     "00484700": {"status": "scratch", "symbol": "?generate@RGE_RMM_Elevation_Generator@@UAEEXZ"},
     "004847C0": {"status": "scratch", "symbol": "?check_start_elevation@RGE_RMM_Elevation_Generator@@IAEEJJEEE@Z"},
     "004848A0": {"status": "scratch", "symbol": "?check_elevation@RGE_RMM_Elevation_Generator@@IAEEEJJJEE@Z"},
-    "00484A40": {"status": "scratch", "symbol": "?generate_modifiers@RGE_RMM_Elevation_Generator@@IAEXXZ"},
+    "00484A40": {"status": "matching", "symbol": "?generate_modifiers@RGE_RMM_Elevation_Generator@@IAEXXZ"},
     "00484B30": {"status": "matching", "symbol": "?fig_chance@RGE_RMM_Elevation_Generator@@IAEMJJJ@Z"},
     "00484B50": {"status": "matching", "symbol": "?count_map_tiles@RGE_RMM_Elevation_Generator@@IAEJE@Z"},
     "00484B90": {"status": "accepted_drift", "symbol": "?link_stack_randomly@RGE_RMM_Elevation_Generator@@IAEXPAUMap_Stack@@@Z"},

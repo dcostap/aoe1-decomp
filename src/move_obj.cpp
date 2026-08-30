@@ -604,7 +604,9 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
 {
     if (this->master_obj->radius_z <= 0.0f) {
         this->setWaitingToMove(0);
-        this->setStart(this->world_x, this->world_y, this->world_z);
+        this->startValue.x = this->world_x;
+        this->startValue.y = this->world_y;
+        this->startValue.z = this->world_z;
         this->pathingGroupMembers.zeroNumber();
         this->pathValue.setTimeStamp(this->owner->world->world_time);
         this->pathValue.killPath();
@@ -637,7 +639,9 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
     } else {
         this->continueCounter = this->numberUserDefinedWaypointsValue + 0x0f;
     }
-    this->setStart(this->world_x, this->world_y, this->world_z);
+    this->startValue.x = this->world_x;
+    this->startValue.y = this->world_y;
+    this->startValue.z = this->world_z;
     this->closestDistanceToWaypoint = 100000.0f;
     pathSystem.incrementInitialPaths();
 
@@ -692,7 +696,22 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
     }
 
     this->pathValue.setTimeStamp(this->owner->world->world_time);
-    this->displayPath(displayPathObjectID);
+    int display_object_id = displayPathObjectID;
+    if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
+        this->pathValue.initToStart();
+        int i = 0;
+        int n = this->pathValue.numberOfWaypoints();
+        while (i < n) {
+            this->owner->master_objects[display_object_id]->make_new_obj(
+                this->owner, this->pathValue.currentWaypoint()->x,
+                this->pathValue.currentWaypoint()->y, 1.0f);
+            ++i;
+            this->pathValue.moveToNextWaypoint();
+            n = this->pathValue.numberOfWaypoints();
+        }
+        this->pathValue.initToStart();
+        this->pathValue.moveToNextWaypoint();
+    }
     this->pathValue.initToStart();
     this->pathValue.moveToNextWaypoint();
     return PathFound;
@@ -1837,7 +1856,8 @@ int RGE_Moving_Object::findFirstTerrainAlongExceptionPath(
     p2.y = (int)path->currentWaypoint()->y;
     i = 1;
     while (i < path->numberOfWaypoints()) {
-        if (this->firstTileAlongLine(&p1, &p2, &rVal,
+        if (this->firstTileAlongLine((const XYPoint&)p1, (const XYPoint&)p2,
+                                     rVal,
                                      terrain, terrain, 1) == 1) {
             // The original 00460210 body writes the x-derived
             // result to both output pointers at 0046038D-0046039E.

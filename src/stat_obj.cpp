@@ -673,8 +673,8 @@ void RGE_Static_Object::draw_front_frame(TDrawArea* param_1, short param_2, shor
     if (ot > 3) return;
     switch (ot) {
     case 0: this->draw_frame(param_1, param_2, param_3); return;
-    case 2: case 3: this->draw_frame_3d_square_front(param_1,param_2,param_3); return;
-    case 1: this->draw_frame_3d_cube_front(param_1,param_2,param_3); return;
+    case 2: case 3: this->draw_frame_3d_cube_front(param_1,param_2,param_3); return;
+    case 1: this->draw_frame_3d_square_front(param_1,param_2,param_3); return;
     }
 }
 
@@ -1109,9 +1109,8 @@ void RGE_Static_Object::draw_frame_3d_square_front(
                 int bar_left = (-12) + x1;
                 area->FillRect(bar_left, bar_bottom - 1,
                                bar_left + 24, bar_bottom, 0x97);
-                int fill_height = (value * 24) / denom;
-                int fill_right = fill_height + x1 - 12;
-                area->FillRect(x1 - 12, y1 - 2, fill_right,
+                area->FillRect(x1 - 12, y1 - 2,
+                               (value * 24) / denom + x1 - 12,
                                y1 - 1, 0x4a);
             }
         }
@@ -1991,8 +1990,8 @@ void RGE_Static_Object::modify(float value, unsigned char type) {
         break;
     case 1:
         if (this->tile != 0 && this->object_state == 2) {
-            this->setDamage(this->owner, 0, -1);
-            this->setHealth(this->owner, 0, (long)value);
+            this->unexplore_terrain(this->owner, 0, -1);
+            this->explore_terrain(this->owner, 0, (int)value);
             return;
         }
         break;
@@ -2015,9 +2014,9 @@ void RGE_Static_Object::modify_delta(float delta, unsigned char type)
         }
         return;
     case 0: {
-        RGE_Master_Static_Object* master = this->master_obj;
-        float max_hp = (float)master->hp;
-        this->hp = (float)(int)(short)((delta + max_hp) * this->hp / max_hp);
+        this->hp = (float)(int)(short)
+            ((delta + this->master_obj->hp) * this->hp /
+             this->master_obj->hp);
         break;
     }
     default:
@@ -2875,7 +2874,8 @@ unsigned char RGE_Static_Object::find_drop_location(
             case 0: {
                 x = radius_x + drop_x;
                 int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf3e);
-                y = (float)value * radius_2y * (1.0f / 32767.0f) - radius_y + drop_y;
+                y = drop_y +
+                    ((float)value * radius_2y * (1.0f / 32767.0f) - radius_y);
                 break;
             }
             case 1: {
@@ -2888,13 +2888,15 @@ unsigned char RGE_Static_Object::find_drop_location(
             case 2: {
                 y = radius_y + drop_y;
                 int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf46);
-                x = (float)value * radius_2x * (1.0f / 32767.0f) - radius_x + drop_x;
+                x = drop_x +
+                    ((float)value * radius_2x * (1.0f / 32767.0f) - radius_x);
                 break;
             }
             case 3: {
                 y = drop_y - radius_y;
                 int value = debug_rand("C:\\msdev\\work\\age1_x1\\stat_obj.cpp", 0xf4a);
-                x = (float)value * radius_2x * (1.0f / 32767.0f) - radius_x + drop_x;
+                x = drop_x +
+                    ((float)value * radius_2x * (1.0f / 32767.0f) - radius_x);
                 break;
             }
             }

@@ -217,12 +217,11 @@ void RGE_RMM_Elevation_Generator::generate_modifiers()
                 do {
                     modifier = 0;
                     if (this->info.hot_spot_num > 0) {
-                        RGE_Elevation_Hot_Spots* hot_spot =
-                            this->info.hot_spots;
+                        long* hot_spot = &this->info.hot_spots[0].y;
                         long hot_spot_num = this->info.hot_spot_num;
                         do {
-                            long dx = x - hot_spot->x;
-                            long dy = y - hot_spot->y;
+                            long dx = x - hot_spot[-1];
+                            long dy = y - hot_spot[0];
 
                             if (dx < 0)
                                 dx = -dx;
@@ -231,11 +230,11 @@ void RGE_RMM_Elevation_Generator::generate_modifiers()
 
                             long distance = (long)sqrt(
                                 (double)(dx * dx + dy * dy));
-                            long contribution = hot_spot->radius - distance;
+                            long contribution = hot_spot[1] - distance;
                             if (contribution > 0)
-                                modifier += hot_spot->fade * contribution;
+                                modifier += hot_spot[2] * contribution;
 
-                            ++hot_spot;
+                            hot_spot += 4;
                             --hot_spot_num;
                         } while (hot_spot_num != 0);
                     }

@@ -367,43 +367,41 @@ RGE_Static_Object* TRIBE_Map::find_cliff(long param_1, long param_2)
         return 0;
 
     if (RGE_Object_Node* node = this->map_row_offset[y1][x1].objects.list) {
-        do {
-            RGE_Static_Object* object = node->node;
-            short tid = object->master_obj->id;
-            if (tid >= 0x108 && tid <= 0x111)
-                return object;
+        while (node) {
+            if (node->node->master_obj->id >= 0x108 &&
+                node->node->master_obj->id <= 0x111)
+                return node->node;
             node = node->next;
-        } while (node != 0);
+        }
     }
 
     if (RGE_Object_Node* node = this->map_row_offset[y1 + 1][x1].objects.list) {
-        do {
-            RGE_Static_Object* object = node->node;
-            short tid = object->master_obj->id;
-            if (tid >= 0x108 && tid <= 0x111)
-                return object;
+        while (node) {
+            if (node->node->master_obj->id >= 0x108 &&
+                node->node->master_obj->id <= 0x111)
+                return node->node;
             node = node->next;
-        } while (node != 0);
+        }
     }
 
-    if (RGE_Object_Node* node = this->map_row_offset[y1][x1 + 1].objects.list) {
-        do {
-            RGE_Static_Object* object = node->node;
-            short tid = object->master_obj->id;
-            if (tid >= 0x108 && tid <= 0x111)
-                return object;
+    if (RGE_Object_Node* node =
+            this->map_row_offset[y1][x1 + 1].objects.list) {
+        while (node) {
+            if (node->node->master_obj->id >= 0x108 &&
+                node->node->master_obj->id <= 0x111)
+                return node->node;
             node = node->next;
-        } while (node != 0);
+        }
     }
 
-    if (RGE_Object_Node* node = this->map_row_offset[y1 + 1][x1 + 1].objects.list) {
-        do {
-            RGE_Static_Object* object = node->node;
-            short tid = object->master_obj->id;
-            if (tid >= 0x108 && tid <= 0x111)
-                return object;
+    if (RGE_Object_Node* node =
+            this->map_row_offset[y1 + 1][x1 + 1].objects.list) {
+        while (node) {
+            if (node->node->master_obj->id >= 0x108 &&
+                node->node->master_obj->id <= 0x111)
+                return node->node;
             node = node->next;
-        } while (node != 0);
+        }
     }
 
     return 0;
@@ -418,12 +416,15 @@ TRIBE_Cliff_Info TRIBE_Map::get_cliff_info(RGE_Static_Object* obj)
 
     int facet = (int)obj->facet;
     int masterObjId = (int)obj->master_obj->id;
-    for (int i = 0; i < 256; ++i) {
-        const TRIBE_Master_Cliff_Info& entry = this->cliff_master_table[i];
-        if ((entry.id == masterObjId && entry.facet == facet) ||
-            (entry.id2 == masterObjId && entry.facet2 == facet)) {
-            return entry.info;
+    long* entryPtr = &this->cliff_master_table[0].facet;
+    int i;
+    for (i = 0; i < 256;) {
+        if ((entryPtr[-1] == masterObjId && entryPtr[0] == facet) ||
+            (entryPtr[1] == masterObjId && entryPtr[2] == facet)) {
+            return this->cliff_master_table[i].info;
         }
+        ++i;
+        entryPtr += 10;
     }
 
     return ret;
@@ -440,7 +441,8 @@ unsigned char TRIBE_Map::check_cliff_valid(TRIBE_Cliff_Info param_1)
 RGE_Static_Object* TRIBE_Map::make_new_cliff(long x, long y,
                                               TRIBE_Cliff_Info info)
 {
-    int table_index = info.info[0] * 16 + info.info[1] * 4 + info.info[2];
+    long info0 = info.info[0];
+    int table_index = info0 * 16 + info.info[1] * 4 + info.info[2];
     int cliff_index = table_index * 4 + info.info[3] + 0x55;
     long facet;
     float x_pos = (float)(x * 3) +
@@ -791,6 +793,13 @@ unsigned char TRIBE_Map::do_cliff_brush(long x, long y, unsigned char a,
 
     if (b != 0) {
         this->delete_cliff(cliff_x, cliff_y);
+        return 1;
+    }
+
+    if (old_x == -1) {
+        this->old_cliff_direction = -1;
+        this->old_cliff_x = cliff_x;
+        this->old_cliff_y = cliff_y;
         return 1;
     }
 

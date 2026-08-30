@@ -366,44 +366,36 @@ void RGE_Combat_Object::reset_attack_timer() {
 
 void RGE_Combat_Object::get_armor(short& armor, short& original_armor) {
     int i;
-    RGE_Master_Combat_Object* combat_master =
-        static_cast<RGE_Master_Combat_Object*>(master_obj);
 
-    armor = combat_master->base_armor;
-    for (i = 0; i < combat_master->armor_num; ++i) {
-        if (combat_master->armor[i].value > armor) {
-            armor = combat_master->armor[i].value;
+    armor = static_cast<RGE_Master_Combat_Object*>(master_obj)->base_armor;
+    for (i = 0; i < static_cast<RGE_Master_Combat_Object*>(master_obj)->armor_num; ++i) {
+        if (static_cast<RGE_Master_Combat_Object*>(master_obj)->armor[i].value > armor) {
+            armor = static_cast<RGE_Master_Combat_Object*>(master_obj)->armor[i].value;
         }
     }
-    original_armor = combat_master->orig_armor;
+    original_armor = static_cast<RGE_Master_Combat_Object*>(master_obj)->orig_armor;
 }
 
 void RGE_Combat_Object::get_weapon(short& weapon, short& original_weapon) {
     int i;
-    RGE_Master_Combat_Object* combat_master =
-        static_cast<RGE_Master_Combat_Object*>(master_obj);
 
     weapon = 0;
-    for (i = 0; i < combat_master->weapon_num; ++i) {
-        if (combat_master->weapon[i].value > weapon) {
-            weapon = combat_master->weapon[i].value;
+    for (i = 0; i < static_cast<RGE_Master_Combat_Object*>(master_obj)->weapon_num; ++i) {
+        if (static_cast<RGE_Master_Combat_Object*>(master_obj)->weapon[i].value > weapon) {
+            weapon = static_cast<RGE_Master_Combat_Object*>(master_obj)->weapon[i].value;
         }
     }
-    original_weapon = combat_master->orig_weapon;
+    original_weapon = static_cast<RGE_Master_Combat_Object*>(master_obj)->orig_weapon;
 }
 
 void RGE_Combat_Object::get_weapon_range(float& a, float& b) {
-    RGE_Master_Combat_Object* combat_master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
-    a = combat_master->weapon_range;
-    b = combat_master->orig_weapon_range;
+    a = static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_range;
+    b = static_cast<RGE_Master_Combat_Object*>(this->master_obj)->orig_weapon_range;
 }
 
 void RGE_Combat_Object::get_speed_of_attack(float& a, float& b) {
-    RGE_Master_Combat_Object* combat_master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
-    a = combat_master->speed_of_attack;
-    b = combat_master->orig_speed_of_attack;
+    a = static_cast<RGE_Master_Combat_Object*>(this->master_obj)->speed_of_attack;
+    b = static_cast<RGE_Master_Combat_Object*>(this->master_obj)->orig_speed_of_attack;
 }
 
 void RGE_Combat_Object::release_being_worked_on(RGE_Static_Object* target) {
@@ -617,6 +609,7 @@ int RGE_Combat_Object::moveTo(int param_1, float param_2, int param_3)
     RGE_Action* action;
     RGE_Action_Move_To* moveAction;
     RGE_Sprite* sprite;
+    RGE_Sprite* running_sprite;
     RGE_Master_Moving_Object* moving_master;
 
     world = this->owner->world;
@@ -637,8 +630,10 @@ int RGE_Combat_Object::moveTo(int param_1, float param_2, int param_3)
     }
 
     moving_master = static_cast<RGE_Master_Moving_Object*>(this->master_obj);
-    sprite = moving_master->run_sprite;
-    if (sprite == 0)
+    running_sprite = moving_master->run_sprite;
+    if (running_sprite != 0)
+        sprite = running_sprite;
+    else
         sprite = moving_master->move_sprite;
     moveAction = new RGE_Action_Move_To(this, obj, param_2, sprite);
     if (moveAction == 0)
@@ -793,12 +788,8 @@ int RGE_Combat_Object::enter(int param_1, int param_2)
 
     if (param_2 == 0) {
         if (this->actions->have_action() == 1) {
-            RGE_Action* action = this->actions->get_action();
-            RGE_Static_Object* target = (RGE_Static_Object*)action->target_obj;
-            if (target == obj) {
-                RGE_Action* action2 = this->actions->get_action();
-                short action_val = action2->action_type;
-                if (action_val == 3)
+            if (this->actions->get_action()->get_target_obj() == obj) {
+                if (this->actions->get_action()->type() == 3)
                     goto success;
             }
         }

@@ -305,11 +305,11 @@ unsigned char TRIBE_Action_Trade::update()
         return 0;
 
     case 6:
-    update_state_6:
         if (this->target_obj == 0) {
             this->set_state(3);
             return 0;
         }
+    update_state_6:
         if (this->obj->turn_towards(this->target_obj, 0.0f, 0.0f) != 0) {
             if (this->target_obj->attribute_amount_held > DAT_00575348 ||
                 this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) != 0) {
@@ -336,10 +336,11 @@ unsigned char TRIBE_Action_Trade::update()
             this->obj->attribute_type_held = 1;
         }
         {
+            RGE_Player* owner = this->obj->owner;
             float capacity = (float)this->obj->master_obj->attribute_max_amount;
             max_hold = capacity - this->obj->attribute_amount_held;
-            if (this->obj->owner->attributes[this->obj->attribute_type_held] < max_hold) {
-                max_hold = this->obj->owner->attributes[this->obj->attribute_type_held];
+            if (owner->attributes[this->obj->attribute_type_held] < max_hold) {
+                max_hold = owner->attributes[this->obj->attribute_type_held];
             }
             if (this->target_obj->owner->attributes[9] < max_hold) {
                 max_hold = this->target_obj->owner->attributes[9];
@@ -377,8 +378,8 @@ unsigned char TRIBE_Action_Trade::update()
             }
             if (this->obj->attribute_amount_held > DAT_00575350) {
                 RGE_Task* trade_task = (RGE_Task*)this->task;
-                if (trade_task->work_sound != 0) {
-                    trade_task->work_sound->play(1);
+                if (trade_task->work_sound2 != 0) {
+                    trade_task->work_sound2->play(1);
                 }
                 if (this->pick_up_x < DAT_00575350 || this->pick_up_y < DAT_00575350) {
                     take_amount = DAT_00575360;

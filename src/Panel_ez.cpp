@@ -85,7 +85,7 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
     char background_pic_file_name_c1[260];
     char button_pics_file_name[260];
     char background_pic_file_name_a1[260];
-    char popup_info_file_name_in[260];
+    char popup_info_file_name_in[256];
 
     f2g = -1;
     this->allow_shadow_area = allow_shadow;
@@ -293,12 +293,12 @@ void TEasy_Panel::prepare_for_close() {
 
 void TEasy_Panel::setup_shadow_area(int force)
 {
-    char area_name[260];
+    char area_name[256];
 
     TDrawArea* area = this->shadow_area;
     if ((area == 0 || force != 0) &&
         this->background_pic != 0 && this->shadow_color_table != 0) {
-        int old_flags = this->render_area->DrawSystem->Flags;
+        unsigned long old_flags = this->render_area->DrawSystem->Flags;
 
         if (area == 0) {
             this->render_area->DrawSystem->Flags &= 1;

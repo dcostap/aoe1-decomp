@@ -409,7 +409,7 @@ void TRIBE_Action_Repair::meet_target()
         dest.y = (int)this->obj->world_y;
         start.x = (int)this->target_obj->world_x;
         start.y = (int)this->target_obj->world_y;
-        if (this->obj->firstTileAlongLine(&dest, &start, &rVal, 2, 2, 1) == 1) {
+        if (this->obj->firstTileAlongLine(dest, start, rVal, 2, 2, 1) == 1) {
             this->target_x = (float)rVal.x + 0.5f;
             this->target_y = (float)rVal.y + 0.5f;
             this->target_obj->moveTo((float)rVal.x + 0.5f,

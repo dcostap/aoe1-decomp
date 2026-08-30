@@ -435,9 +435,7 @@ void RGE_Flic_Player::black()
 void RGE_Flic_Player::byte_run()
 {
     char* chunk = this->chunk;
-    int count = this->y1;
-    count += this->flic_size_y;
-    count--;
+    int count = this->y1 + this->flic_size_y - 1;
     if (count < 0) {
         return;
     }
