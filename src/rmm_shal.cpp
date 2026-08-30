@@ -113,14 +113,14 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
     terrain[0x17] = 14.0f;
     terrain[5] = 2.0f;
 
-    this->find_path(stack, end_x, done, tx1, ty, &terrain[1]);
+    this->find_path(end_x, done, tx1, ty, &terrain[1]);
 
     if (tx1 != iVar2 || ty != iVar9) return;
 
     // Keep the first step coordinates live before the bounds guard. The
     // original loop carries these values across its back edge.
-    ty2 = ty;
     y = tx1;
+    ty2 = ty;
 
     if (tx1 < 0 || tx1 >= this->map_width) return;
     if (ty < 0 || ty >= this->map_height) return;
@@ -130,9 +130,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
     tx2 = 0;
 
     while (1) {
-        unsigned char tile_type = this->search_map_rows[ty][tx1];
-
-        switch (tile_type) {
+        switch (this->search_map_rows[ty][tx1]) {
         case 7: // tile type 7
             --ty2;
             break;
