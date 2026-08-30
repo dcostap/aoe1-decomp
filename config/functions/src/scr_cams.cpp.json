@@ -13,6 +13,6 @@
     "00490FF0": {"status": "matching", "symbol": "?action@TRIBE_Screen_Campaign_Selection@@MAEJPAVTPanel@@JKK@Z"},
     "004911A0": {"status": "matching", "symbol": "?fillCampaigns@TRIBE_Screen_Campaign_Selection@@IAEXXZ"},
     "00491290": {"status": "matching", "symbol": "?fillScenarios@TRIBE_Screen_Campaign_Selection@@IAEXXZ"},
-    "00491350": {"status": "scratch", "symbol": "?startGame@TRIBE_Screen_Campaign_Selection@@IAEXXZ"}
+    "00491350": {"status": "matching", "symbol": "?startGame@TRIBE_Screen_Campaign_Selection@@IAEXXZ"}
   }
 }

@@ -257,7 +257,6 @@ void TRIBE_Screen_Campaign_Selection::fillScenarios()
 
 void TRIBE_Screen_Campaign_Selection::startGame()
 {
-    TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
     int player_count;
     if (this->scenarioList->get_line() == -1) {
         return;
@@ -268,24 +267,27 @@ void TRIBE_Screen_Campaign_Selection::startGame()
     rge_base_game->setScenarioGame(1);
     rge_base_game->setCampaignGame(1);
     rge_base_game->setSavedGame(0);
-    game->setVictoryType(TRIBE_Game::VictoryDefault, 0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setVictoryType(
+        TRIBE_Game::VictoryDefault, 0);
     rge_base_game->setDifficulty(this->difficultyDrop->get_id());
     rge_base_game->set_single_player_difficulty(
         this->difficultyDrop->get_id());
-    game->setDeathMatch(0);
-    game->setQuickStartGame(0);
-    game->setAnimals(1);
-    game->setPredators(1);
+    static_cast<TRIBE_Game*>(rge_base_game)->setDeathMatch(0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setQuickStartGame(0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setAnimals(1);
+    static_cast<TRIBE_Game*>(rge_base_game)->setPredators(1);
     rge_base_game->setFullVisibility(0);
     rge_base_game->setFogOfWar(1);
     rge_base_game->setAllowCheatCodes(1);
-    game->setRandomizePositions(0);
-    game->setLongCombat(0);
-    game->setAllowTrading(1);
-    game->setFullTechTree(0);
-    game->setResourceLevel(TRIBE_Game::DefaultResources);
-    game->setStartingAge(TRIBE_Game::DefaultAge);
-    game->setStartingUnits(0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setRandomizePositions(0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setLongCombat(0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setAllowTrading(1);
+    static_cast<TRIBE_Game*>(rge_base_game)->setFullTechTree(0);
+    static_cast<TRIBE_Game*>(rge_base_game)->setResourceLevel(
+        TRIBE_Game::DefaultResources);
+    static_cast<TRIBE_Game*>(rge_base_game)->setStartingAge(
+        TRIBE_Game::DefaultAge);
+    static_cast<TRIBE_Game*>(rge_base_game)->setStartingUnits(0);
 
     int first_human = -1;
     int first_color = 0;
@@ -298,9 +300,11 @@ void TRIBE_Screen_Campaign_Selection::startGame()
     player_count = 0;
     for (int i = 0; i < 9; ++i) {
         if (scen->Get_player_Active(i)) {
-            game->setScenarioPlayer(player_count, i);
+            static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
+                player_count, i);
             int color = i + 1;
-            game->setPlayerColor(player_count, color);
+            static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(player_count,
+                                                                    color);
             rge_base_game->setPlayerTeam(player_count, 1);
             ++player_count;
             if (first_human == -1 && scen->Get_player_Type(i) == 1) {
@@ -319,14 +323,18 @@ void TRIBE_Screen_Campaign_Selection::startGame()
     if (first_human != -1) {
         int j;
         for (j = 1; j < player_count; ++j) {
-            if (game->scenarioPlayer(j) == first_human) {
-                game->setScenarioPlayer(j, game->scenarioPlayer(0));
-                game->setPlayerColor(j, game->playerColor(0));
+            if (static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(j) ==
+                first_human) {
+                static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(
+                    j, static_cast<TRIBE_Game*>(rge_base_game)->scenarioPlayer(0));
+                static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(
+                    j, static_cast<TRIBE_Game*>(rge_base_game)->playerColor(0));
                 break;
             }
         }
-        game->setScenarioPlayer(0, first_human);
-        game->setPlayerColor(0, first_color);
+        static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(0,
+                                                                   first_human);
+        static_cast<TRIBE_Game*>(rge_base_game)->setPlayerColor(0, first_color);
     }
 
     comm->SetPlayerHumanity(1, ME_HUMAN);
@@ -337,7 +345,7 @@ void TRIBE_Screen_Campaign_Selection::startGame()
         comm->SetPlayerHumanity(q + 1, ME_ABSENT);
     }
 
-    if (!game->start_game(0)) {
+    if (!static_cast<TRIBE_Game*>(rge_base_game)->start_game(0)) {
         this->popupOKDialog(0x961, 0, 0x1c2, 100);
     }
 }
