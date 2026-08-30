@@ -181,24 +181,28 @@ void RGE_Action_Gather::set_state(unsigned char param_1) {
                     this->set_target_obj2(0);
                 } else {
                     if (this->obj->useSameZoneDropsite() == 1) {
-                        this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
+                        RGE_Static_Object* found_target =
+                            this->obj->owner->objects->find_by_master_ids(
                             ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
                             ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
                             this->obj->world_x,
                             this->obj->world_y,
                             1,
                             2,
-                            (RGE_Static_Object*)this->obj));
+                            (RGE_Static_Object*)this->obj);
+                        this->set_target_obj2(found_target);
                         goto gather_lookup_done;
                     }
-                    this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
-                        ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
-                        ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
-                        this->obj->world_x,
-                        this->obj->world_y,
-                        1,
-                        2,
-                        0));
+                    RGE_Static_Object* found_target =
+                        this->obj->owner->objects->find_by_master_ids(
+                            ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
+                            ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
+                            this->obj->world_x,
+                            this->obj->world_y,
+                            1,
+                            2,
+                            0);
+                    this->set_target_obj2(found_target);
                 }
             }
 
@@ -441,14 +445,14 @@ unsigned char RGE_Action_Gather::update() {
                 {
                     short attr = this->task->attribute_type3;
                     if (attr == -1) {
-                        attr = this->obj->owner->attribute_num;
+                        attr = this->obj->attribute_type_held;
                     }
                     this->obj->owner->add_attribute_num(
-                        attr, this->obj->attribute_amount_held, 0);
-                }
+                        attr, this->obj->attribute_amount_held, 1);
                 this->obj->owner->trackUnitGather(
-                    (int)this->obj->id, (int)this->obj->id,
-                    (int)this->obj->attribute_amount_held);
+                        (int)this->obj->id, attr,
+                        (int)this->obj->attribute_amount_held);
+                }
                 this->obj->set_attribute(-1, 0.0f);
                 if (this->target_obj != 0) {
                     this->set_target_obj2(0);
