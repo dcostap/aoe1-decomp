@@ -39,7 +39,7 @@
     "0045FBC0": {"status": "matching", "symbol": "?canBidirectionPath@RGE_Moving_Object@@UAEHHHMPAMHHH@Z"},
     "0045FED0": {"status": "matching", "symbol": "?canPathWithObstructions@RGE_Moving_Object@@UAEHHMPAMHHHAAV?$ManagedArray@H@@@Z"},
     "004600F0": {"status": "matching", "symbol": "?canPathWithAdditionalPassability@RGE_Moving_Object@@UAEHUXYZPoint@@MHPAMHHHHH@Z"},
-    "00460210": {"status": "scratch", "symbol": "?findFirstTerrainAlongExceptionPath@RGE_Moving_Object@@UAEHHPAM0@Z"},
+    "00460210": {"status": "matching", "symbol": "?findFirstTerrainAlongExceptionPath@RGE_Moving_Object@@UAEHHPAM0@Z"},
     "004603B0": {"status": "matching", "symbol": "?canLinePath@RGE_Moving_Object@@UAEHABUXYPoint@@0MAAU2@H@Z"},
     "00460570": {"status": "matching", "symbol": "?canLinePath@RGE_Moving_Object@@UAEHHHHHMH@Z"},
     "00460710": {"status": "matching", "symbol": "?firstTileAlongLine@RGE_Moving_Object@@UAEHABUXYPoint@@0AAU2@HHH@Z"},
