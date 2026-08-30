@@ -13,6 +13,6 @@
     "0047BB10": {"status": "matching", "symbol": "?setup@TScreenPanel@@QAEJPAVTDrawArea@@PADJEH@Z"},
     "0047BB40": {"status": "matching", "symbol": "?draw@TScreenPanel@@UAEXXZ"},
     "0047BB50": {"status": "matching", "symbol": "?handle_paint@TScreenPanel@@UAEJXZ"},
-    "0047BB60": {"status": "scratch", "symbol": "?set_focus@TScreenPanel@@UAEXH@Z"}
+    "0047BB60": {"status": "matching", "symbol": "?set_focus@TScreenPanel@@UAEXH@Z"}
   }
 }

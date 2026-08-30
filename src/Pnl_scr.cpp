@@ -43,11 +43,13 @@ long TScreenPanel::handle_paint()
 void TScreenPanel::set_focus(int focus)
 {
     PALETTEENTRY color;
-    int save_focus;
-    PALETTEENTRY color_table[256];
+    struct {
+        int save_focus;
+        PALETTEENTRY color_table[256];
+    } local;
     bool is_new;
 
-    save_focus = this->have_focus;
+    local.save_focus = this->have_focus;
     is_new = (this != last_screen) ? 1 : 0;
 
     if (this->render_area && this->render_area->DrawSystem && focus && is_new) {
@@ -57,9 +59,9 @@ void TScreenPanel::set_focus(int focus)
             color.peGreen = 0;
             color.peBlue = 0;
             if (!this->palette) {
-                this->render_area->GetPalette(color_table + 1);
+                this->render_area->GetPalette(local.color_table);
             } else {
-                GetPaletteEntries(this->palette, 0, 0x100, color_table + 1);
+                GetPaletteEntries(this->palette, 0, 0x100, local.color_table);
             }
 
             RGE_fade_palette(this->render_area, color, 0.13f, 1, 0, -1, -1);
@@ -74,15 +76,15 @@ void TScreenPanel::set_focus(int focus)
         TDrawSystem* system = this->render_area->DrawSystem;
         if (system->ScreenMode == 2 || system->DrawType == 1) {
             RGE_fade_palette(this->render_area, color, 0.0f, 2,
-                             color_table + 1, -1, -1);
+                             local.color_table, -1, -1);
             this->handle_paint();
             RGE_fade_palette(this->render_area, color, 0.0f, 1, 0, -1, -1);
             this->render_area->DrawSystem->Paint(0);
             RGE_fade_palette(this->render_area, color, 0.13f, 2,
-                             color_table + 1, -1, -1);
+                             local.color_table, -1, -1);
         }
     }
 
-    if (focus != save_focus && this->have_focus)
+    if (focus != local.save_focus && this->have_focus)
         last_screen = this;
 }
