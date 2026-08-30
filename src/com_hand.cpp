@@ -135,8 +135,16 @@ int TCommunications_Handler::CalculatePlayerRange(void) {
     this->PlayerOptions.HighPlayerNumber = 0;
     this->PlayerOptions.LowPlayerNumber = maxPlayers + 1;
 
-    while (static_cast<int>(i) <= static_cast<int>(maxPlayers)) {
-        if (this->IsPlayerHuman(i) || this->IsPlayerComputer(i)) {
+    if (static_cast<int>(maxPlayers) < 1)
+        goto done;
+
+    do {
+        if (this->IsPlayerHuman(i))
+            goto update;
+        if (!this->IsPlayerComputer(i))
+            goto skip;
+update:
+        {
             int high = static_cast<int>(this->PlayerOptions.HighPlayerNumber);
             if (high <= static_cast<int>(i))
                 high = i;
@@ -147,8 +155,12 @@ int TCommunications_Handler::CalculatePlayerRange(void) {
                 low = i;
             this->PlayerOptions.LowPlayerNumber = static_cast<unsigned short>(low);
         }
+skip:
         ++i;
-    }
+    } while (static_cast<int>(i) <=
+             static_cast<int>(static_cast<unsigned short>(this->MaxGamePlayers)));
+
+done:
     return 1;
 }
 
@@ -2964,9 +2976,10 @@ int TCommunications_Handler::TXAcknowledgeMessage(uint param_1, uint param_2)
         return 0;
     }
 
-    MSGFORMAT_ACKNOWLEDGE_GUARANTEED ack;
-    ack.Command = 0x41;
-    ack.Serialno = param_1;
+    MSGFORMAT_ACKNOWLEDGE_GUARANTEED* ack =
+        static_cast<MSGFORMAT_ACKNOWLEDGE_GUARANTEED*>(operator new(sizeof(*ack)));
+    ack->Command = 0x41;
+    ack->Serialno = param_1;
 
     if (local_player_dpid == 0) {
         L->Log("+++BAD DCOID=0 NO TX");
@@ -2977,7 +2990,7 @@ int TCommunications_Handler::TXAcknowledgeMessage(uint param_1, uint param_2)
 
     unsigned int dco = this->PlayerOptions.dcoID[param_2];
     long result = direct_play_interface->Send(local_player_dpid, dco, 0,
-                                              &ack, sizeof(ack));
+                                              ack, sizeof(*ack));
 
     unsigned long elapsed = debug_timeGetTime(com_hand_source_path, 0xD5E) - start;
     if (elapsed > 0x32) {
@@ -2985,6 +2998,7 @@ int TCommunications_Handler::TXAcknowledgeMessage(uint param_1, uint param_2)
     }
 
     this->TXPacketLength += 8;
+    operator delete(ack);
 
     if (result == 0) {
         return 1;
@@ -4537,7 +4551,7 @@ COMMSTATUS TCommunications_Handler::AnalyzeCommunicationsStatus(void) {
 
 void TCommunications_Handler::ResetLastCommunicationTimes(void) {
     unsigned long now = debug_timeGetTime(com_hand_source_path, 0x1282);
-    for (unsigned int i = 1; i <= this->MaxGamePlayers; ++i) {
+    for (int i = 1; i <= this->MaxGamePlayers; ++i) {
         this->LastPlayerCommunication[i] = now;
         this->LastTXPing[i] = now;
     }
@@ -4878,11 +4892,13 @@ void TCommunications_Handler::UpdatePlayerInformation(unsigned long player_id, c
         if (static_cast<int>(player) <= static_cast<int>(high)) {
             for (; static_cast<int>(player) <= static_cast<int>(high); player++) {
                 if (this->PlayerOptions.dcoID[player] == player_id) {
-                    break;
+                    goto found;
                 }
             }
         }
     }
+    player = 0;
+found:
     if (player == 0) {
         this->InitPlayerInformation(0, player_id, name, formal_name);
     }
@@ -5025,7 +5041,7 @@ void* TCommunications_Handler::SetWindowHandle(void* v) {
 
 long TCommunications_Handler::CreateDirectPlayConversation()
 {
-    IDirectPlay* lpIDC = 0;
+    IDirectPlay* lpIDC;
     long result;
 
     result = DirectPlayCreate(&this->ServiceGUID, &lpIDC, 0);
@@ -5043,16 +5059,14 @@ long TCommunications_Handler::CreateDirectPlayConversation()
 
     if (lpIDC) {
         long hr;
-        void* queried_object = 0;
 
-        hr = lpIDC->QueryInterface(IID_IDirectPlay3A, &queried_object);
+        hr = lpIDC->QueryInterface(IID_IDirectPlay3A,
+                                    reinterpret_cast<void**>(&direct_play_interface));
 
         if (hr) {
             L->Log("Get glpIDC returns...%ld", hr);
             return hr;
         }
-
-        direct_play_interface = static_cast<IDirectPlay3*>(queried_object);
 
         unsigned long links = lpIDC->Release();
         L->Log("Release: Links=%d", links);
@@ -5789,23 +5803,28 @@ int TCommunications_Handler::AllPlayersReady() {
 long TCommunications_Handler::DPlayGetSessionDesc() {
     unsigned long dwSize;
     long result;
-    DPSESSIONDESC2 session_record;
-    DPSESSIONDESC2* session = &session_record;
+    void* buf;
 
-    IDirectPlay3* dp = direct_play_interface;
-    if (dp == 0) {
+    if (direct_play_interface == 0) {
         return 0x80004005;
     }
 
-    dwSize = sizeof(session_record);
-    result = dp->GetSessionDesc(session, &dwSize);
+    direct_play_interface->GetSessionDesc(0, &dwSize);
+    buf = calloc(dwSize, 1);
+    if (buf == 0) {
+        return 0x8007000E;
+    }
+
+    result = direct_play_interface->GetSessionDesc(buf, &dwSize);
     Err->ShowReturn(result, "Get Session Desc");
 
     if (result == 0) {
+        DPSESSIONDESC2* session = static_cast<DPSESSIONDESC2*>(buf);
         SessionGUID = session->guidInstance;
         CurrentPlayers = session->dwCurrentPlayers;
         L->Log("RX Current Players=%d", CurrentPlayers);
     }
+    free(buf);
     return result;
 }
 
@@ -6105,10 +6124,10 @@ void TCommunications_Handler::DebugSessionInformation(DPSESSIONDESC2* desc)
 
 long TCommunications_Handler::EnableNewPlayers(IDirectPlay2* dp, int enable) {
     if (dp == 0) return 0x80070057;
-    void* queried_object;
-    long hr = dp->QueryInterface(IID_IDirectPlay, &queried_object);
+    IDirectPlay* base;
+    long hr = dp->QueryInterface(IID_IDirectPlay,
+                                 reinterpret_cast<void**>(&base));
     if (hr < 0) return hr;
-    IDirectPlay* base = static_cast<IDirectPlay*>(queried_object);
     hr = base->EnableNewPlayers(enable);
     unsigned long links = base->Release();
     L->Log("Released to links=%d", links);
@@ -6160,17 +6179,23 @@ int __stdcall EnumPlayersCallback2(
 {
     TCommunications_Handler* handler =
         static_cast<TCommunications_Handler*>(param_5);
-    int foundIndex = 0;
+    int i;
+    int foundIndex;
     if (param_1 != 0) {
-        int first = handler->PlayerOptions.LowPlayerNumber;
-        int last = handler->PlayerOptions.HighPlayerNumber;
-        for (int i = first; i <= last; ++i) {
-            if (handler->PlayerOptions.dcoID[i] == param_1) {
-                foundIndex = i;
-                break;
+        i = handler->PlayerOptions.LowPlayerNumber;
+        int endIndex = handler->PlayerOptions.HighPlayerNumber;
+        if (i <= endIndex) {
+            unsigned long* array = handler->PlayerOptions.dcoID;
+            for (; i <= endIndex; ++i) {
+                if (array[i] == param_1) {
+                    foundIndex = i;
+                    goto logging;
+                }
             }
         }
     }
+    foundIndex = 0;
+logging:
     sprintf(comm_enum_buffer, "ENUM %d name=%s id=%d", param_1, param_3->lpszShortNameA, foundIndex);
     L->Log("ENUM DEBUG: %s", comm_enum_buffer);
     L->Log("FORCEENUM %d name=%s id=%d", param_1, param_3->lpszShortNameA, foundIndex);
