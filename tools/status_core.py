@@ -143,22 +143,16 @@ def logic_review_files(path: Path) -> dict[str, Path]:
     return files
 
 
-def read_source_preview(path: Path | None, max_lines: int = 140, max_chars: int = 12000) -> str:
+def read_source_preview(path: Path | None) -> str:
     if path is None or not path.exists():
         return ""
 
     text = path.read_text(encoding="utf-8", errors="replace")
-    return read_source_preview_text(text, max_lines=max_lines, max_chars=max_chars)
+    return read_source_preview_text(text)
 
 
-def read_source_preview_text(text: str, max_lines: int = 140, max_chars: int = 12000) -> str:
-    if len(text) > max_chars:
-        text = text[:max_chars]
-    lines = text.splitlines()
-    if len(lines) > max_lines:
-        lines = lines[:max_lines]
-        lines.append("// ... truncated ...")
-    return "\n".join(lines)
+def read_source_preview_text(text: str) -> str:
+    return text
 
 
 def count_comment_lines(path: Path | None) -> int:

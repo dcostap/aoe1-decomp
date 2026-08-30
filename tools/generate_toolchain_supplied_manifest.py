@@ -155,9 +155,6 @@ SAFE_EXTRA_IMPORT_THUNK_NAMES = {
 }
 
 GENERIC_INVENTORY_NAME_PREFIXES = ("FUN_", "case")
-MAX_PROBABLE_REGION_SPAN_BYTES = 0x600
-MAX_PROBABLE_ANCHOR_DISTANCE_BYTES = 0x400
-MAX_PROBABLE_ANCHOR_SCAN_FUNCTIONS = 8
 
 
 def parse_args() -> argparse.Namespace:
@@ -191,6 +188,25 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=REPO_ROOT / "build" / "toolchain_probable_helper_island_candidates.tsv",
         help="Review-only probable helper-island region candidate report output path.",
+    )
+    integer = lambda value: int(value, 0)
+    parser.add_argument(
+        "--max-probable-region-span-bytes",
+        type=integer,
+        required=True,
+        help="User-selected maximum candidate-region span.",
+    )
+    parser.add_argument(
+        "--max-probable-anchor-distance-bytes",
+        type=integer,
+        required=True,
+        help="User-selected maximum distance to a toolchain anchor.",
+    )
+    parser.add_argument(
+        "--max-probable-anchor-scan-functions",
+        type=int,
+        required=True,
+        help="User-selected function count scanned on each side.",
     )
     return parser.parse_args()
 
@@ -333,12 +349,14 @@ def find_probable_toolchain_anchors(
     toolchain_regions: list[tuple[int, int, str]],
     asm_special_names: set[str],
     asm_special_regions: list[tuple[int, int, str]],
+    max_anchor_distance_bytes: int,
+    max_anchor_scan_functions: int,
 ) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
     run_start_va = record_start(records[run_start_index])
     run_end_va = record_end(records[run_end_index])
 
     left_anchors: list[dict[str, str]] = []
-    for index in range(run_start_index - 1, max(-1, run_start_index - MAX_PROBABLE_ANCHOR_SCAN_FUNCTIONS - 1), -1):
+    for index in range(run_start_index - 1, max(-1, run_start_index - max_anchor_scan_functions - 1), -1):
         record = records[index]
         bucket, _ = classify_record_bucket(
             record,
@@ -350,13 +368,13 @@ def find_probable_toolchain_anchors(
         if bucket in {"asm_special", "asm_region"}:
             break
         distance = run_start_va - record_end(record) - 1
-        if distance > MAX_PROBABLE_ANCHOR_DISTANCE_BYTES:
+        if distance > max_anchor_distance_bytes:
             break
         if bucket == "toolchain_supplied":
             left_anchors.append(record)
 
     right_anchors: list[dict[str, str]] = []
-    for index in range(run_end_index + 1, min(len(records), run_end_index + MAX_PROBABLE_ANCHOR_SCAN_FUNCTIONS + 1)):
+    for index in range(run_end_index + 1, min(len(records), run_end_index + max_anchor_scan_functions + 1)):
         record = records[index]
         bucket, _ = classify_record_bucket(
             record,
@@ -368,7 +386,7 @@ def find_probable_toolchain_anchors(
         if bucket in {"asm_special", "asm_region"}:
             break
         distance = record_start(record) - run_end_va - 1
-        if distance > MAX_PROBABLE_ANCHOR_DISTANCE_BYTES:
+        if distance > max_anchor_distance_bytes:
             break
         if bucket == "toolchain_supplied":
             right_anchors.append(record)
@@ -384,6 +402,9 @@ def collect_probable_helper_island_rows(
     toolchain_regions: list[tuple[int, int, str]],
     asm_special_names: set[str],
     asm_special_regions: list[tuple[int, int, str]],
+    max_region_span_bytes: int,
+    max_anchor_distance_bytes: int,
+    max_anchor_scan_functions: int,
 ) -> list[dict[str, str]]:
     sorted_records = sorted(records, key=record_start)
     rows: list[dict[str, str]] = []
@@ -421,7 +442,7 @@ def collect_probable_helper_island_rows(
         run_end_index = run_start_index + len(run_records) - 1
 
         run_span_bytes = record_end(run_records[-1]) - record_start(run_records[0]) + 1
-        if run_span_bytes > MAX_PROBABLE_REGION_SPAN_BYTES:
+        if run_span_bytes > max_region_span_bytes:
             continue
 
         left_anchors, right_anchors = find_probable_toolchain_anchors(
@@ -432,6 +453,8 @@ def collect_probable_helper_island_rows(
             toolchain_regions,
             asm_special_names,
             asm_special_regions,
+            max_anchor_distance_bytes,
+            max_anchor_scan_functions,
         )
         if not left_anchors or not right_anchors:
             continue
@@ -477,7 +500,11 @@ def collect_probable_helper_island_rows(
     return rows
 
 
-def collect_candidates() -> tuple[
+def collect_candidates(
+    max_region_span_bytes: int,
+    max_anchor_distance_bytes: int,
+    max_anchor_scan_functions: int,
+) -> tuple[
     list[dict[str, str]],
     list[dict[str, str]],
     list[dict[str, str]],
@@ -586,6 +613,9 @@ def collect_candidates() -> tuple[
         toolchain_regions,
         asm_special_names,
         asm_special_regions,
+        max_region_span_bytes,
+        max_anchor_distance_bytes,
+        max_anchor_scan_functions,
     )
 
     return manifest_rows, report_rows, hidden_label_rows, hidden_label_unhandled_rows, probable_region_rows
@@ -680,7 +710,18 @@ def write_probable_region_report(path: Path, rows: list[dict[str, str]]) -> None
 
 def main() -> None:
     args = parse_args()
-    manifest_rows, report_rows, hidden_label_rows, hidden_label_unhandled_rows, probable_region_rows = collect_candidates()
+    for name in (
+        "max_probable_region_span_bytes",
+        "max_probable_anchor_distance_bytes",
+        "max_probable_anchor_scan_functions",
+    ):
+        if getattr(args, name) < 0:
+            raise SystemExit(f"--{name.replace('_', '-')} must be zero or positive")
+    manifest_rows, report_rows, hidden_label_rows, hidden_label_unhandled_rows, probable_region_rows = collect_candidates(
+        args.max_probable_region_span_bytes,
+        args.max_probable_anchor_distance_bytes,
+        args.max_probable_anchor_scan_functions,
+    )
     write_manifest(args.output, manifest_rows)
     write_report(args.report, report_rows)
     write_hidden_label_report(args.hidden_label_report, hidden_label_rows)

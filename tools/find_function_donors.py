@@ -1,11 +1,22 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 from pathlib import Path
 
-from common import REPO_ROOT, function_record_by_va, function_slug, load_functions, preferred_source_path
+from common import (
+    BUILD_DIR,
+    INVENTORY_DIR,
+    REPO_ROOT,
+    function_entry_for_va,
+    function_record_by_va,
+    function_slug,
+    load_functions,
+    preferred_source_path,
+)
+from build_cache import build_artifact_lock
 from target_dossier import infer_class_name
 
 
@@ -14,6 +25,9 @@ VSLOT_RE = re.compile(r"\bcall\s+dword\s+\[e(?:ax|bx|cx|dx|si|di|bp)\+([0-9a-f]+
 MEMORY_RE = re.compile(r"\[[^\]]*?([+-])([0-9a-f]+)h(?:[^\]]*)\]", re.IGNORECASE)
 SUB_ESP_RE = re.compile(r"\bsub\s+esp,([0-9a-f]+)h?\b", re.IGNORECASE)
 PUSH_REG_RE = re.compile(r"\bpush\s+(e(?:bx|bp|si|di))\b", re.IGNORECASE)
+FEATURE_CACHE_SCHEMA = 1
+FEATURE_CACHE_PATH = BUILD_DIR / "donor_features.json"
+FEATURE_CACHE_LOCK = BUILD_DIR / "locks" / "donor_features.lock"
 
 
 def parse_args() -> argparse.Namespace:
@@ -26,33 +40,26 @@ def parse_args() -> argparse.Namespace:
             "proof of shared source, layout, or ABI. Inspect same-TU and same-class hits first.\n"
             "\n"
             "Example:\n"
-            "  python tools/find_function_donors.py --va 004407A0 --limit 20\n"
+            "  python tools/find_function_donors.py --va 004407A0 --limit LIMIT\n"
         ),
     )
     parser.add_argument("--va", required=True, help="Target function VA in hex.")
-    parser.add_argument("--limit", type=int, default=20, help="Maximum donors (default 20; 0 all scored candidates).")
-    parser.add_argument("--min-score", type=float, default=5.0)
+    parser.add_argument("--limit", type=int, default=0, help="Maximum donors (default 0, all candidates).")
+    parser.add_argument(
+        "--candidate-pool",
+        type=int,
+        default=0,
+        help="Preliminary candidates scored with packet evidence (default 0, all candidates).",
+    )
+    parser.add_argument("--min-score", type=float, help="Optional minimum heuristic score.")
     parser.add_argument("--include-accepted-drift", action="store_true")
+    parser.add_argument("--refresh-cache", action="store_true", help="Rebuild generated packet features.")
     parser.add_argument("--json", action="store_true")
     return parser.parse_args()
 
 
 def packet_path(record: dict[str, str]) -> Path:
     return REPO_ROOT / "inventory" / "functions" / record["va"][:4] / f"{function_slug(record)}.txt"
-
-
-def source_owner_paths(include_accepted: bool = False) -> dict[str, tuple[str, Path]]:
-    buckets = [("matching", REPO_ROOT / "src" / "matching")]
-    if include_accepted:
-        buckets.append(("accepted_drift", REPO_ROOT / "src" / "accepted_drift"))
-    result: dict[str, tuple[str, Path]] = {}
-    for bucket, root in buckets:
-        if not root.exists():
-            continue
-        for path in root.iterdir():
-            if path.suffix.lower() in {".c", ".cpp"}:
-                result[path.stem] = (bucket, path)
-    return result
 
 
 def _original_asm_lines(path: Path) -> list[str]:
@@ -109,6 +116,71 @@ def packet_features(path: Path, names_by_va: dict[int, str]) -> dict[str, object
     }
 
 
+def _feature_cache_fingerprint(records: list[dict[str, str]]) -> str:
+    inventory = INVENTORY_DIR / "all_functions.csv"
+    stat = inventory.stat()
+    value = f"schema={FEATURE_CACHE_SCHEMA};records={len(records)};inventory={stat.st_size}:{stat.st_mtime_ns}"
+    return hashlib.sha256(value.encode("ascii")).hexdigest()
+
+
+def _encode_features(features: dict[str, object]) -> dict[str, object]:
+    return {
+        key: sorted(value) if isinstance(value, set) else value
+        for key, value in features.items()
+    }
+
+
+def _decode_features(features: dict[str, object]) -> dict[str, object]:
+    decoded = dict(features)
+    for key in ("calls", "vslots", "displacements"):
+        decoded[key] = set(decoded.get(key) or [])
+    return decoded
+
+
+def load_packet_feature_cache(
+    records: list[dict[str, str]], names_by_va: dict[int, str], refresh: bool = False
+) -> dict[str, dict[str, object]]:
+    fingerprint = _feature_cache_fingerprint(records)
+    with build_artifact_lock(FEATURE_CACHE_LOCK):
+        if not refresh and FEATURE_CACHE_PATH.is_file():
+            try:
+                payload = json.loads(FEATURE_CACHE_PATH.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                payload = {}
+            if (
+                payload.get("schema") == FEATURE_CACHE_SCHEMA
+                and payload.get("fingerprint") == fingerprint
+                and isinstance(payload.get("features"), dict)
+            ):
+                return {
+                    str(va): _decode_features(value)
+                    for va, value in payload["features"].items()
+                    if isinstance(value, dict)
+                }
+
+        features = {
+            record["va"]: packet_features(packet_path(record), names_by_va)
+            for record in records
+        }
+        FEATURE_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        temporary = FEATURE_CACHE_PATH.with_suffix(".json.tmp")
+        temporary.write_text(
+            json.dumps(
+                {
+                    "schema": FEATURE_CACHE_SCHEMA,
+                    "fingerprint": fingerprint,
+                    "features": {
+                        va: _encode_features(value) for va, value in features.items()
+                    },
+                },
+                separators=(",", ":"),
+            ),
+            encoding="utf-8",
+        )
+        temporary.replace(FEATURE_CACHE_PATH)
+        return features
+
+
 def _jaccard(left: set, right: set) -> float:
     if not left and not right:
         return 0.0
@@ -117,7 +189,7 @@ def _jaccard(left: set, right: set) -> float:
 
 def _name_tokens(value: str) -> set[str]:
     spaced = re.sub(r"([a-z0-9])([A-Z])", r"\1 \2", value)
-    return {token.casefold() for token in re.split(r"[^A-Za-z0-9]+", spaced) if len(token) >= 3}
+    return {token.casefold() for token in re.split(r"[^A-Za-z0-9]+", spaced) if token}
 
 
 def _function_family(record: dict[str, str], class_name: str) -> str:
@@ -153,7 +225,7 @@ def preliminary_score(target: dict, donor: dict) -> tuple[float, list[str]]:
     donor_size = max(1, int(donor["size_bytes"]))
     size_score = 8 * min(target_size, donor_size) / max(target_size, donor_size)
     score += size_score
-    if size_score >= 5:
+    if size_score:
         reasons.append(f"similar size +{size_score:.1f}")
     token_score = 10 * _jaccard(_name_tokens(target["name"]), _name_tokens(donor["name"]))
     score += token_score
@@ -175,7 +247,7 @@ def score_donor(target: dict, donor: dict) -> tuple[float, list[str]]:
         overlap = _jaccard(set(target_features.get(key) or []), set(donor_features.get(key) or []))
         contribution = weight * overlap
         score += contribution
-        if contribution >= 1:
+        if contribution:
             reasons.append(f"{label} +{contribution:.1f}")
     if target_features.get("eh_frame") == donor_features.get("eh_frame"):
         score += 5
@@ -194,8 +266,14 @@ def score_donor(target: dict, donor: dict) -> tuple[float, list[str]]:
     return score, reasons
 
 
-def _record_feature(record: dict[str, str], source: Path) -> dict[str, object]:
-    class_name = infer_class_name(source) if source.exists() else ""
+def _record_feature(
+    record: dict[str, str], source: Path, class_cache: dict[Path, str] | None = None
+) -> dict[str, object]:
+    cache = class_cache if class_cache is not None else {}
+    resolved = source.resolve()
+    if resolved not in cache:
+        cache[resolved] = infer_class_name(source) if source.exists() else ""
+    class_name = cache[resolved]
     return {
         "va": record["va"],
         "name": record["name"],
@@ -211,22 +289,37 @@ def _record_feature(record: dict[str, str], source: Path) -> dict[str, object]:
     }
 
 
-def find_donors(va: int, include_accepted: bool = False, limit: int = 20, min_score: float = 5.0) -> dict[str, object]:
+def find_donors(
+    va: int,
+    include_accepted: bool = False,
+    limit: int = 0,
+    min_score: float | None = None,
+    candidate_pool: int = 0,
+    refresh_cache: bool = False,
+) -> dict[str, object]:
     target_record = function_record_by_va(va)
     target_source = preferred_source_path(target_record)
-    target = _record_feature(target_record, target_source)
-    owners = source_owner_paths(include_accepted)
+    class_cache: dict[Path, str] = {}
+    target = _record_feature(target_record, target_source, class_cache)
     records = load_functions()
+    records_by_va = {record["va"]: record for record in records}
     names_by_va = {int(row["va"], 16): row["name"] for row in records}
+    features_by_va = load_packet_feature_cache(records, names_by_va, refresh_cache)
     candidates = []
     for record in records:
         if record["va"] == target_record["va"]:
             continue
-        owner = owners.get(function_slug(record))
-        if owner is None:
+        entry = function_entry_for_va(record["va"])
+        if entry is None:
             continue
-        bucket, source = owner
-        donor = _record_feature(record, source)
+        bucket = str(entry.get("status") or "")
+        if bucket != "matching" and not (include_accepted and bucket == "accepted_drift"):
+            continue
+        module = entry.get("module")
+        if not isinstance(module, dict):
+            continue
+        source = REPO_ROOT / str(module["source"])
+        donor = _record_feature(record, source, class_cache)
         donor["source_bucket"] = bucket
         score, reasons = preliminary_score(target, donor)
         donor["preliminary_score"] = score
@@ -234,16 +327,17 @@ def find_donors(va: int, include_accepted: bool = False, limit: int = 20, min_sc
         candidates.append(donor)
 
     candidates.sort(key=lambda row: (-float(row["preliminary_score"]), abs(int(row["size_bytes"]) - int(target["size_bytes"])), row["va"]))
-    pool_size = min(len(candidates), max(300, (limit or 20) * 20))
-    pool = candidates[:pool_size]
-    target["packet_features"] = packet_features(packet_path(target_record), names_by_va)
+    pool = candidates[:candidate_pool] if candidate_pool else candidates
+    pool_size = len(pool)
+    target["packet_features"] = features_by_va[target_record["va"]]
     for donor in pool:
-        donor_record = next(row for row in records if row["va"] == donor["va"])
-        donor["packet_features"] = packet_features(packet_path(donor_record), names_by_va)
+        donor_record = records_by_va[str(donor["va"])]
+        donor["packet_features"] = features_by_va[donor_record["va"]]
         score, reasons = score_donor(target, donor)
         donor["score"] = round(score, 3)
         donor["reasons"] = reasons
-    pool = [row for row in pool if float(row["score"]) >= min_score]
+    if min_score is not None:
+        pool = [row for row in pool if float(row["score"]) >= min_score]
     pool.sort(key=lambda row: (-float(row["score"]), -float(row["preliminary_score"]), row["va"]))
     if limit:
         pool = pool[:limit]
@@ -277,7 +371,7 @@ def format_report(payload: dict[str, object]) -> str:
     assert isinstance(donors, list)
     lines.extend(["", f"Ranked donors ({len(donors)}):"])
     if not donors:
-        lines.append("  <none above threshold>")
+        lines.append("  <none>")
     for index, donor in enumerate(donors, 1):
         lines.append(
             f"  {index:02d} score={float(donor['score']):6.2f} {donor['va']} {donor['name']} "
@@ -295,11 +389,15 @@ def main() -> None:
     args = parse_args()
     if args.limit < 0:
         raise SystemExit("--limit must be zero or positive")
+    if args.candidate_pool < 0:
+        raise SystemExit("--candidate-pool must be zero or positive")
     payload = find_donors(
         int(args.va, 16),
         include_accepted=args.include_accepted_drift,
         limit=args.limit,
         min_score=args.min_score,
+        candidate_pool=args.candidate_pool,
+        refresh_cache=args.refresh_cache,
     )
     print(json.dumps(payload, indent=2, default=list) if args.json else format_report(payload))
 

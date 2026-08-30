@@ -324,7 +324,7 @@ def classify_mismatch(
             [left.offset for left, _ in register_pairs],
         )
     elif register_conflicts:
-        add("REGISTER_MAP_CONFLICT", "high", register_conflicts[:4], [left.offset for left, _ in register_pairs])
+        add("REGISTER_MAP_CONFLICT", "high", register_conflicts, [left.offset for left, _ in register_pairs])
     elif register_pairs:
         add(
             "PARTIAL_REGISTER_RECOLOR",
@@ -402,7 +402,7 @@ def classify_mismatch(
         add(
             "INSTRUCTION_SELECTION_OR_EXPRESSION_SHAPE",
             "medium",
-            [f"changed mnemonic counts: {', '.join(changed_mnemonics[:12])}"],
+            [f"changed mnemonic counts: {', '.join(changed_mnemonics)}"],
         )
 
     by_id = {str(row["id"]): row for row in labels}

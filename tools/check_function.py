@@ -45,8 +45,8 @@ def parse_args() -> argparse.Namespace:
             "\n"
             "Examples:\n"
             "  python tools/check_function.py --va 00449750\n"
-            "  python tools/check_function.py --va 00449750 --call-map-unmatched --map-limit 40\n"
-            "  python tools/check_function.py --va 00449750 --block-map-differences --map-limit 40\n"
+            "  python tools/check_function.py --va 00449750 --call-map-unmatched\n"
+            "  python tools/check_function.py --va 00449750 --block-map-differences\n"
             "  python tools/check_function.py --va 00449750 --range orig:+40-+80\n"
             "  python tools/check_function.py --va 00449750 --stack-map --no-build\n"
         ),
@@ -141,13 +141,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--history-diff-limit",
         type=int,
-        default=500,
+        default=0,
         metavar="N",
         help="Maximum unified-diff lines shown by --compare-history-source (0 means unlimited).",
     )
-    parser.add_argument("--history-limit", type=int, default=20, help="Maximum checkpoints shown by --history.")
+    parser.add_argument("--history-limit", type=int, default=0, help="Maximum checkpoints shown by --history (0 means all).")
     parser.add_argument("--prune-history", action="store_true", help="Plan removal of old dominated, unlabeled checkpoints.")
-    parser.add_argument("--prune-keep", type=int, default=20, help="Recent checkpoints always retained by --prune-history.")
+    parser.add_argument("--prune-keep", type=int, help="Recent checkpoints retained by --prune-history. Supply this with --prune-history.")
     parser.add_argument("--apply-prune", action="store_true", help="Actually perform --prune-history deletions.")
     parser.add_argument(
         "--restore-checkpoint",
@@ -260,12 +260,18 @@ def main() -> None:
 
     if args.apply_prune and not args.prune_history:
         raise SystemExit("--apply-prune requires --prune-history")
+    if args.prune_history and args.prune_keep is None:
+        raise SystemExit("--prune-history requires --prune-keep")
     if args.map_limit is not None and args.map_limit < 0:
         raise SystemExit("--map-limit must be zero or positive")
     if args.history_diff_limit < 0:
         raise SystemExit("--history-diff-limit must be zero or positive")
+    if args.history_limit < 0:
+        raise SystemExit("--history-limit must be zero or positive")
+    if args.prune_keep is not None and args.prune_keep < 0:
+        raise SystemExit("--prune-keep must be zero or positive")
     if args.history:
-        print("\n".join(format_history(record, max(args.history_limit, 1))))
+        print("\n".join(format_history(record, args.history_limit)))
         return
     if args.compare_history:
         print("\n".join(format_history_comparison(record, args.compare_history[0], args.compare_history[1])))
@@ -283,6 +289,7 @@ def main() -> None:
         )
         return
     if args.prune_history:
+        assert args.prune_keep is not None
         print("\n".join(prune_history(record, args.prune_keep, args.apply_prune)))
         return
     if args.restore_checkpoint:

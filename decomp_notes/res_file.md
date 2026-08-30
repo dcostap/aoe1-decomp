@@ -226,7 +226,7 @@ ABI checks as follows:
 | `src/matching/0046E0B0_Load.cpp` | `RESFILE_Extract_to_File` | Confirm `FILE*&` output ABI and direct target. |
 | `src/matching/0041D0A0_setup_cmd_options.cpp` | `RESFILE_Set_Missing_Flag` | Confirm the shared `DAT_0086b258` store. |
 | `src/tribegam.cpp` | open, close, build | Confirm C++ cdecl declarations and argument constness against PDB symbols. |
-| `src/Res_file.cpp` | all nine owners and all seven records | Run exactly one grouped candidate validation owned by the lead. |
+| `src/Res_file.cpp` | all nine owners and all seven records | The lead owns grouped candidate validation. |
 
 The requested minimum fanout is `Dib`, `Shape`, and Sounddrv `004BCD30`. The
 other rows identify all direct repository consumers found in this checkout and

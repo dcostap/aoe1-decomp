@@ -552,12 +552,10 @@ def call_fingerprint(
                 }
             )
         if calls and int(calls[-1].get("instruction_index", -1)) == instruction_index:
-            setup_start = max(block_start, instruction_index - 4)
-            calls[-1]["setup"] = [instruction_shape(item) for item in instructions[setup_start:instruction_index]]
+            calls[-1]["setup"] = [instruction_shape(item) for item in instructions[block_start:instruction_index]]
             calls[-1]["block_end_offset"] = instructions[block_end - 1].end
-            post_end = min(block_end, instruction_index + 3)
             calls[-1]["post"] = [
-                instruction_shape(item) for item in instructions[instruction_index + 1:post_end]
+                instruction_shape(item) for item in instructions[instruction_index + 1:block_end]
             ]
             cleanup = 0
             if instruction_index + 1 < block_end:
@@ -569,7 +567,7 @@ def call_fingerprint(
             calls[-1]["caller_cleanup_bytes"] = cleanup
             push_count = 0
             scan = instruction_index - 1
-            while scan >= block_start and instruction_index - scan <= 12:
+            while scan >= block_start:
                 previous = instructions[scan]
                 if previous.flow_control in (
                     FlowControl.CALL,
@@ -585,10 +583,10 @@ def call_fingerprint(
             calls[-1]["nearby_push_count"] = push_count
     for index, row in enumerate(calls):
         row["previous_targets"] = [
-            str(item["target"]) for item in calls[max(0, index - 2):index]
+            str(item["target"]) for item in calls[:index]
         ]
         row["next_targets"] = [
-            str(item["target"]) for item in calls[index + 1:index + 3]
+            str(item["target"]) for item in calls[index + 1:]
         ]
     return calls
 
@@ -720,11 +718,11 @@ def call_alignment(original: list[dict[str, object]], rebuilt: list[dict[str, ob
                 left_counts[(str(left["kind"]), str(left["target"]))],
                 right_counts[(str(right["kind"]), str(right["target"]))],
             )
-            if exact and (frequency == 1 or setup >= 0.75):
+            if exact and frequency == 1:
                 confidence = "high"
             elif exact:
                 confidence = "medium"
-            elif left["kind"] == right["kind"] and setup >= 0.5:
+            elif left["kind"] == right["kind"]:
                 confidence = "medium"
             else:
                 confidence = "low"
@@ -779,7 +777,7 @@ def call_alignment(original: list[dict[str, object]], rebuilt: list[dict[str, ob
         )
         if frequency == 1 and anchors == 2:
             row["confidence"] = "high"
-        elif frequency <= 2 and anchors >= 1:
+        elif anchors >= 1:
             row["confidence"] = "medium"
     exact_count = sum(row["status"] == "equal" for row in rows)
     prefix = 0
@@ -812,7 +810,7 @@ def block_alignment(original: list[dict[str, object]], rebuilt: list[dict[str, o
 
     def pair_score(left: dict[str, object], right: dict[str, object]) -> float:
         if left["signature"] == right["signature"]:
-            return 30.0 + min(int(left["instruction_count"]), 20) / 2.0
+            return 30.0 + int(left["instruction_count"]) / 2.0
         ratio = difflib.SequenceMatcher(
             a=list(left["shapes"]), b=list(right["shapes"]), autojunk=False
         ).ratio()
@@ -848,7 +846,7 @@ def block_alignment(original: list[dict[str, object]], rebuilt: list[dict[str, o
             rows.append(
                 {
                     "status": "equal" if exact else "fuzzy",
-                    "confidence": "high" if exact else ("medium" if ratio >= 0.65 else "low"),
+                    "confidence": "high" if exact else "low",
                     "original": left,
                     "rebuilt": right,
                     "shape_similarity": ratio,
@@ -927,8 +925,7 @@ def block_alignment(original: list[dict[str, object]], rebuilt: list[dict[str, o
             ratio = difflib.SequenceMatcher(
                 a=list(left["shapes"]), b=list(right["shapes"]), autojunk=False
             ).ratio()
-            if ratio >= 0.78:
-                candidates.append((ratio, right))
+            candidates.append((ratio, right))
         candidates.sort(key=lambda item: -item[0])
         if len(candidates) != 1:
             continue
@@ -954,8 +951,8 @@ def block_alignment(original: list[dict[str, object]], rebuilt: list[dict[str, o
             sum(int(row["instruction_count"]) for row in original), 1
         ),
         "first_difference_row": first_difference,
-        "strong_islands": islands[:8],
-        "relocated_pairs": relocated_pairs[:32],
+        "strong_islands": islands,
+        "relocated_pairs": relocated_pairs,
     }
 
 
@@ -1100,7 +1097,7 @@ def paired_instruction_context(
 def prologue_summary(instructions: list[DecodedInstruction]) -> dict[str, object]:
     frame_size: int | None = None
     saved: list[str] = []
-    for instruction in instructions[:16]:
+    for instruction in instructions:
         text = instruction.text.lower()
         match = re.fullmatch(r"sub esp,([0-9a-f]+)h?", text)
         if match and frame_size is None:

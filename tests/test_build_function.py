@@ -118,6 +118,10 @@ def _grouped_owner_worker(
 
 
 class BuildFunctionTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        (REPO_ROOT / "build").mkdir(parents=True, exist_ok=True)
+
     def _run_build(
         self,
         root: Path,

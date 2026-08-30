@@ -102,7 +102,6 @@ def _sessions_lock():
         handle.flush()
     acquired = False
     try:
-        deadline = time.monotonic() + 60.0
         while True:
             try:
                 handle.seek(0)
@@ -117,11 +116,7 @@ def _sessions_lock():
                 acquired = True
                 break
             except OSError:
-                if time.monotonic() >= deadline:
-                    break
                 time.sleep(0.05)
-        if not acquired:
-            raise TimeoutError(f"Timed out waiting for target-session lock: {path}")
         yield
     finally:
         if acquired:
@@ -195,7 +190,6 @@ def target_session_summary(session: dict) -> dict:
         "claimed_at": str(session.get("claimed_at", "")),
         "updated_at": str(session.get("updated_at", "")),
         "lease_expires_at": str(session.get("lease_expires_at", "")),
-        "meaningful_probe_budget": int(session.get("meaningful_probe_budget") or 0),
         "meaningful_probe_count": meaningful_probe_count(session),
         "meaningful_probe_total": meaningful_probe_count(session, current_claim_only=False),
         "claim_count": session_claim_count(session),
@@ -580,19 +574,14 @@ def classify_next_stage(metrics: dict[str, object]) -> str:
     rebuilt_frame = metrics.get("rebuilt_frame")
     if original_frame is not None and rebuilt_frame is not None and original_frame != rebuilt_frame:
         return "Stack/local topology: investigate parameter homes, address-taken locals, and declaration lifetimes."
-    shape = metrics.get("shape_percent")
-    if shape is None or float(shape) < 75.0:
-        return "Structural reconstruction: fix the first block/control-flow divergence; do not run broad variant sweeps."
     return (
-        "Focused emitted-code work: preserve aligned regions and the clean-source baseline while using a "
-        "localized range or deliberate variant lab."
+        "Use the first objective mismatch, current source evidence, and clean-source baseline to select the next check."
     )
 
 
 def _new_session(
     record: dict[str, str],
     owner: str,
-    budget: int,
     lease_hours: float,
     prior: dict | None,
     metric_summary: dict[str, object] | None = None,
@@ -627,7 +616,6 @@ def _new_session(
         "updated_at": _iso(now),
         "lease_expires_at": _iso(now + timedelta(hours=lease_hours)),
         "lease_hours": lease_hours,
-        "meaningful_probe_budget": budget,
         "probe_start_index": int(prior.get("probe_start_index") or 0)
         if continuing_active_claim
         else len(probes),
@@ -641,7 +629,6 @@ def _new_session(
 def start_session(
     record: dict[str, str],
     owner: str,
-    budget: int,
     lease_hours: float,
     force: bool = False,
     collect_metrics: bool = True,
@@ -660,7 +647,6 @@ def start_session(
             session = _new_session(
                 record,
                 checked_owner,
-                budget,
                 lease_hours,
                 prior,
                 dict(prior.get("last_metric_summary") or {}),
@@ -706,7 +692,6 @@ def start_session(
         session = _new_session(
             record,
             checked_owner,
-            budget,
             lease_hours,
             prior,
             metric_summary,
@@ -1167,7 +1152,7 @@ def format_session(
             lines.append(
                 f"Clean source [{baseline_state}]: {str(baseline.get('checkpoint_id') or '')[:18]} "
                 f"diff={baseline_metrics.get('diff_bytes')} "
-                f"note={str(baseline.get('note') or '-')[:180]}"
+                f"note={str(baseline.get('note') or '-')}"
             )
         else:
             lines.append("Clean source: <not pinned>")
@@ -1187,7 +1172,7 @@ def format_session(
                 f"checkpoint={last_probe.get('checkpoint') or '-'}"
             )
             if changed:
-                lines.append("Last emitted-code metric delta: " + ", ".join(changed[:8]))
+                lines.append("Last emitted-code metric delta: " + ", ".join(changed))
             if last_probe.get("same_emitted_code_as_probe") is not None:
                 lines.append(
                     "Codegen duplicate: emitted code is unchanged from probe "
@@ -1255,10 +1240,10 @@ def format_session(
             "Useful commands:",
             f"  python tools/target_session.py history --va {record['va']}",
             f"  python tools/target_dossier.py --va {record['va']}",
-            f"  python tools/query_abi.py --va {record['va']} --limit 40",
-            f"  python tools/find_function_donors.py --va {record['va']} --limit 20",
+            f"  python tools/query_abi.py --va {record['va']}",
+            f"  python tools/find_function_donors.py --va {record['va']}",
             f"  python tools/check_function.py --va {record['va']} --detail concise",
-            f"  python tools/check_function.py --va {record['va']} --call-map-unmatched --map-limit 40",
+            f"  python tools/check_function.py --va {record['va']} --call-map-unmatched",
             f"  python tools/check_function.py --va {record['va']} --stack-map --no-build",
             f"  python tools/check_function.py --va {record['va']} --history",
         ]
@@ -1453,7 +1438,7 @@ def format_history(record: dict[str, str], session: dict | None, limit: int) -> 
             if limit > 0 and shown >= limit:
                 break
             shown += 1
-            note = str(probe.get("note") or "").replace("\n", " ")[:90]
+            note = str(probe.get("note") or "").replace("\n", " ")
             lines.append(
                 f"#{str(probe.get('number', '?')):<4} {str(probe.get('kind')):<15} "
                 f"{str(probe.get('at'))[:19].replace('T', ' '):<19} {str(probe.get('checkpoint') or '-'):<17} {note}"
@@ -1472,7 +1457,7 @@ def format_brief(
     note_limit: int,
     metrics: dict[str, object] | None = None,
 ) -> str:
-    """Return a bounded worker handoff without raw checkpoint/session payloads."""
+    """Return a worker handoff without raw checkpoint/session payloads."""
     status_lines = format_session(record, session, metrics).split("\n\nUseful commands:", 1)[0]
     lines = [status_lines]
     translation_unit = build_module_for_va(int(record["va"], 16))
@@ -1515,7 +1500,8 @@ def format_brief(
             f"  best_positional_diff={min(best_diffs) if best_diffs else '-'} "
             f"last_positional_gain={('#' + str(improvement.get('number'))) if improvement else 'none recorded'}",
             "",
-            f"Recent meaningful notes (newest first, max {note_limit}):",
+            "Recent meaningful notes (newest first):"
+            + ("" if note_limit == 0 else f" maximum {note_limit}"),
         ]
     )
     if not meaningful:
@@ -1526,7 +1512,7 @@ def format_brief(
             metrics = probe.get("metrics") or {}
             duplicate = probe.get("same_emitted_code_as_probe")
             duplicate_text = f" duplicate=#{duplicate}" if duplicate is not None else ""
-            note = " ".join(str(probe.get("note") or "").split())[:220]
+            note = " ".join(str(probe.get("note") or "").split())
             lines.append(
                 f"  #{probe.get('number', '?')} claim_probe={probe.get('claim_number', '?')} "
                 f"{probe.get('kind', '?')} diff={metrics.get('diff_bytes', '-')}{duplicate_text}: {note}"
@@ -1535,7 +1521,7 @@ def format_brief(
         [
             "",
             "Read the function notes when present. Search LESSONS.md only for narrow blocker terms.",
-            "Do not load raw target-session JSON. Use bounded history only for a specific open question.",
+            "Load detailed history when it answers a specific open question.",
         ]
     )
     return "\n".join(lines)
@@ -1576,11 +1562,12 @@ def parse_args() -> argparse.Namespace:
             "  pause/release require --reason (--note is an alias for it)\n"
             "  status      takes --va only; --owner is NOT accepted\n"
             "  list        flags are --active and --json only (there is no --all flag)\n"
-            "  brief       shows a bounded worker handoff with recent meaningful notes\n"
+            "  brief       shows a worker handoff with meaningful notes\n"
             "  history     shows a target's checker checkpoints and notebook probes\n"
             "\n"
             "Examples:\n"
-            '  python tools/target_session.py start --va 00425A40 --owner sa-1234\n'
+            '  python tools/target_session.py start --va 00425A40 --owner sa-1234 '
+            '--lease-hours HOURS\n'
             '  python tools/target_session.py check --va 00425A40 --owner sa-1234 '
             '--kind abi --note "hypothesis note" -- --detail concise\n'
             '  python tools/target_session.py status --va 00425A40\n'
@@ -1604,12 +1591,11 @@ def parse_args() -> argparse.Namespace:
     start.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
     start.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
     start.add_argument(
-        "--budget",
-        type=int,
-        default=20,
-        help=argparse.SUPPRESS,
+        "--lease-hours",
+        type=float,
+        required=True,
+        help="Lease duration in hours. The current orchestration supplies this value.",
     )
-    start.add_argument("--lease-hours", type=float, default=8.0, help="Lease duration in hours (default 8.0).")
     start.add_argument("--force", action="store_true", help="Deliberately take over another active lease (use with care).")
     start.add_argument(
         "--preclaim",
@@ -1691,12 +1677,12 @@ def parse_args() -> argparse.Namespace:
 
     brief = subparsers.add_parser(
         "brief",
-        help="Show a bounded worker handoff. Takes --va only and never emits raw session JSON.",
+        help="Show a worker handoff. Takes --va only and never emits raw session JSON.",
     )
     brief.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
     brief.add_argument(
-        "--notes", type=int, default=20,
-        help="Maximum recent meaningful notes (0 = all; default 20).",
+        "--notes", type=int, default=0,
+        help="Maximum recent meaningful notes (0 = all; default 0).",
     )
 
     history = subparsers.add_parser(
@@ -1706,8 +1692,8 @@ def parse_args() -> argparse.Namespace:
     history.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
     history.add_argument("--json", action="store_true", help="Emit JSON instead of the human tables.")
     history.add_argument(
-        "--limit", type=int, default=15,
-        help="Max rows per section, newest first (0 = all; default 15).",
+        "--limit", type=int, default=0,
+        help="Maximum rows per section, newest first (0 = all; default 0).",
     )
 
     listing = subparsers.add_parser(
@@ -1731,14 +1717,11 @@ def main() -> None:
     record = function_record_by_va(int(args.va, 16))
     try:
         if args.command == "start":
-            if args.budget < 0:
-                raise ValueError("--budget must be zero or positive")
             if args.lease_hours <= 0:
                 raise ValueError("--lease-hours must be positive")
             session = start_session(
                 record,
                 args.owner,
-                args.budget,
                 args.lease_hours,
                 args.force,
                 collect_metrics=not args.preclaim,

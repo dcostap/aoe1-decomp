@@ -14,6 +14,8 @@ This project recovers the 1998-07-17 Rise of Rome beta source.
 
 A function note stores durable facts, failed approaches, and the next useful approach.
 It does not store status or source ownership.
+Attempt counts, cohort sizes, and resource budgets in notes describe historical runs.
+They do not constrain later work.
 Its path is `decomp_notes/functions/<VA-prefix>/<VA>.md`.
 A module note uses `decomp_notes/<module>.md`.
 
@@ -44,7 +46,7 @@ python tools/query_project_status.py --summary --normal
 Select ordinary matching work:
 
 ```text
-python tools/query_project_status.py --scratch --normal --unleased --smallest --limit 20
+python tools/query_project_status.py --scratch --normal --unleased --smallest --limit <LIMIT>
 ```
 
 Inspect one function:
@@ -62,7 +64,7 @@ python tools/check_function.py --va 0047A3A0
 Compile and audit all configured translation units:
 
 ```text
-python tools/audit_translation_unit_functions.py --jobs 40 --output-dir build/audits/current
+python tools/audit_translation_unit_functions.py --jobs <JOBS> --output-dir build/audits/current
 ```
 
 Run the tests:

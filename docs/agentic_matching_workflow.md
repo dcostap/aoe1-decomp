@@ -12,8 +12,8 @@ The assignment gives you:
 - allowed source and function-note paths; and
 - a unique build output directory.
 
-One worker owns the translation unit at a time. Other workers can edit other
-translation units in the same worktree.
+One worker owns a translation unit in a shared worktree. Separate worktrees
+use the coordination plan selected for the current orchestration.
 
 Edit only the assigned function body and its function notes. Do not edit
 another function in the source file.
@@ -24,7 +24,8 @@ Do not edit headers, global storage, config, tests, tools, shared notes, or
 Do not stage or commit files. Do not use Git restore, reset, clean, or checkout.
 Preserve all unrelated worktree changes.
 
-Do not use web search. Use repository evidence and the original executable.
+Use evidence sources allowed by the current assignment. The original
+executable remains the behavior oracle.
 
 ## Goal
 
@@ -64,7 +65,8 @@ Run each tool with `--help` before its first use.
    Otherwise, start the session:
 
    ```text
-   python tools/target_session.py start --va <VA> --owner <OWNER>
+   python tools/target_session.py start --va <VA> --owner <OWNER> \
+     --lease-hours <HOURS>
    ```
 
    The command rejects another active lease in the same translation unit.
@@ -107,10 +109,10 @@ Use these evidence tools only when they answer a current question:
 - `find_function_donors.py` for ranked exact donors;
 - `query_abi.py` for ABI provenance;
 - `search_asm_donors.py` for a distinctive assembly block; and
-- `variant_lab.py --jobs 1` for controlled late-stage source variants.
+- `variant_lab.py` for controlled late-stage source variants.
 
-Use one compiler job at a time. Do not start concurrent compiler processes
-from one worker.
+Use the job count, timeout, and search bounds from the current assignment.
+Do not invent local resource limits.
 
 Generated metadata and decompiler text are reference evidence. They are not the
 behavior oracle.
@@ -154,7 +156,7 @@ An exact result starts a short source review.
 7. Audit the assigned translation unit with a worker-specific output directory:
 
    ```text
-   python tools/audit_translation_unit_functions.py --group <GROUP> --jobs 1 \
+   python tools/audit_translation_unit_functions.py --group <GROUP> --jobs <JOBS> \
      --output-dir build/audits/workers/<OWNER>/<GROUP>
    ```
 

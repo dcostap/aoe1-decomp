@@ -11,13 +11,14 @@ from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Iterable
 
-from build_cache import build_input_manifest
+from build_cache import build_artifact_lock, build_input_manifest
 from common import (
     BUILD_DIR,
     INVENTORY_DIR,
     REPO_ROOT,
     compiler_artifact_slug,
     compiler_source_path,
+    function_entry_for_va,
     function_record_by_va,
     function_slug,
     load_functions,
@@ -29,6 +30,7 @@ from source_listing import source_line_for_offset
 
 INDEX_SCHEMA = 1
 INDEX_PATH = BUILD_DIR / "asm_search" / f"matching-index-v{INDEX_SCHEMA}.json.gz"
+INDEX_LOCK = BUILD_DIR / "locks" / "asm_search_index.lock"
 PACKET_LINE_RE = re.compile(r"^\s*([0-9A-Fa-f]{8})\s+([0-9A-Fa-f]{2,})\s+(.+?)\s*$")
 ADDRESS_LINE_RE = re.compile(r"^\s*([0-9A-Fa-f]{8})\s*[: ]\s*(.+?)\s*$")
 DIRECT_TARGET_RE = re.compile(r"^(?:call|jmp)\s+([0-9A-Fa-f]{6,8})h?$", re.IGNORECASE)
@@ -103,12 +105,16 @@ def packet_path(record: dict[str, str]) -> Path:
 
 
 def matching_source_paths() -> dict[str, Path]:
-    root = REPO_ROOT / "src" / "matching"
-    return {
-        path.stem: path
-        for path in root.iterdir()
-        if path.is_file() and path.suffix.lower() in {".c", ".cpp"}
-    }
+    result: dict[str, Path] = {}
+    for record in load_functions():
+        entry = function_entry_for_va(record["va"])
+        if entry is None or entry.get("status") != "matching":
+            continue
+        module = entry.get("module")
+        if not isinstance(module, dict):
+            continue
+        result[record["va"].upper()] = REPO_ROOT / str(module["source"])
+    return result
 
 
 def _strip_comment(text: str) -> str:
@@ -276,7 +282,7 @@ def parse_asm_text(text: str, names_by_va: dict[int, str]) -> list[Instruction]:
 def _index_fingerprint(sources: dict[str, Path]) -> str:
     inventory = INVENTORY_DIR / "all_functions.csv"
     payload = [f"schema={INDEX_SCHEMA}", f"inventory={inventory.stat().st_mtime_ns}:{inventory.stat().st_size}"]
-    payload.extend(sorted(f"{stem}{path.suffix.lower()}" for stem, path in sources.items()))
+    payload.extend(sorted(f"{va}:{path.relative_to(REPO_ROOT).as_posix()}" for va, path in sources.items()))
     return hashlib.sha256("\n".join(payload).encode("utf-8")).hexdigest()
 
 
@@ -288,7 +294,7 @@ def build_index() -> dict[str, object]:
     missing_packets = 0
     for record in records:
         slug = function_slug(record)
-        source = sources.get(slug)
+        source = sources.get(record["va"].upper())
         if source is None:
             continue
         packet = packet_path(record)
@@ -322,23 +328,36 @@ def build_index() -> dict[str, object]:
         "functions": functions,
     }
     INDEX_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with gzip.open(INDEX_PATH, "wt", encoding="utf-8", compresslevel=6) as handle:
+    temporary = INDEX_PATH.with_name(INDEX_PATH.name + ".tmp")
+    with gzip.open(temporary, "wt", encoding="utf-8", compresslevel=6) as handle:
         json.dump(payload, handle, separators=(",", ":"))
+    temporary.replace(INDEX_PATH)
     return payload
 
 
 def load_index(refresh: bool = False) -> tuple[dict[str, object], str]:
     sources = matching_source_paths()
     fingerprint = _index_fingerprint(sources)
-    if not refresh and INDEX_PATH.exists():
+    def cached() -> dict[str, object] | None:
+        if refresh or not INDEX_PATH.exists():
+            return None
         try:
             with gzip.open(INDEX_PATH, "rt", encoding="utf-8") as handle:
                 payload = json.load(handle)
             if payload.get("schema") == INDEX_SCHEMA and payload.get("fingerprint") == fingerprint:
-                return payload, "cache"
+                return payload
         except (OSError, json.JSONDecodeError):
-            pass
-    return build_index(), "rebuilt"
+            return None
+        return None
+
+    payload = cached()
+    if payload is not None:
+        return payload, "cache"
+    with build_artifact_lock(INDEX_LOCK):
+        payload = cached()
+        if payload is not None:
+            return payload, "cache"
+        return build_index(), "rebuilt"
 
 
 def _instruction_similarity(left: Instruction, right: Instruction, profile: str) -> float:
@@ -507,10 +526,10 @@ def _source_excerpt(
             index for index, line in enumerate(lines)
             if name in line and "(" in line and not line.lstrip().startswith("//") and ";" not in line
         ]
-        start = (candidates[-1] + 1) if candidates else max(1, len(lines) - max_lines + 1)
-        end = min(len(lines), start + max_lines - 1)
+        start = (candidates[-1] + 1) if candidates else 1
+        end = len(lines)
         mapping = "function fallback"
-    if end - start + 1 > max_lines:
+    if max_lines and end - start + 1 > max_lines:
         end = start + max_lines - 1
     rendered = [f"{number:5d}: {lines[number - 1]}" for number in range(start, end + 1)]
     return {"mapping": mapping, "start_line": start, "end_line": end, "text": "\n".join(rendered)}
@@ -585,16 +604,16 @@ def search_index(
     profile: str = "mapped",
     exclude_va: str = "",
     include_self: bool = False,
-    min_score: float = 25.0,
-    min_coverage: float = 0.5,
-    limit: int = 8,
-    source_context: int = 4,
-    max_source_lines: int = 32,
-    source_results: int = 5,
+    min_score: float | None = None,
+    min_coverage: float | None = None,
+    limit: int = 0,
+    source_context: int = 0,
+    max_source_lines: int = 0,
+    source_results: int = 0,
     query_pdb_source: str = "",
-    candidate_pool: int = 500,
+    candidate_pool: int = 0,
     validation: str = "fresh",
-    validation_scan: int = 80,
+    validation_scan: int = 0,
 ) -> list[dict[str, object]]:
     def ngrams(values: list[str], size: int) -> set[tuple[str, ...]]:
         return {tuple(values[index:index + size]) for index in range(max(0, len(values) - size + 1))}
@@ -626,7 +645,7 @@ def search_index(
         prescored.append((prefilter_score, row))
     prescored.sort(key=lambda item: (-item[0], str(item[1]["va"])))
     if candidate_pool:
-        prescored = prescored[:max(candidate_pool, limit)]
+        prescored = prescored[:candidate_pool]
 
     candidates: list[dict[str, object]] = []
     for prefilter_score, row in prescored:
@@ -634,7 +653,9 @@ def search_index(
         alignment = align_fragment(query, donor, profile)
         if alignment is None:
             continue
-        if float(alignment["score"]) < min_score or float(alignment["query_coverage"]) < min_coverage:
+        if min_score is not None and float(alignment["score"]) < min_score:
+            continue
+        if min_coverage is not None and float(alignment["query_coverage"]) < min_coverage:
             continue
         same_tu = (
             bool(query_pdb_source)
@@ -669,10 +690,10 @@ def search_index(
     selected: list[dict[str, object]] = []
     scanned = 0
     for candidate in candidates:
-        if len(selected) >= limit:
+        if limit and len(selected) >= limit:
             break
         if validation == "fresh":
-            if scanned >= validation_scan:
+            if validation_scan and scanned >= validation_scan:
                 break
             scanned += 1
             evidence = current_validation(candidate, toolchain, records_by_va)
@@ -687,7 +708,7 @@ def search_index(
         selected.append(candidate)
     for index, result in enumerate(selected):
         matched = result.pop("_matched_instructions")
-        if index < source_results:
+        if source_results == 0 or index < source_results:
             result["source_excerpt"] = _source_excerpt(result, matched, source_context, max_source_lines)
         else:
             result["source_excerpt"] = None
@@ -756,7 +777,7 @@ def format_report(report: dict[str, object], source_results: int) -> str:
     assert isinstance(results, list)
     lines.extend(["", f"Ranked donors ({len(results)}):"])
     if not results:
-        lines.append("  <none above score/coverage thresholds>")
+        lines.append("  <none>")
     for index, row in enumerate(results, 1):
         same_tu = " same-TU" if row["same_pdb_tu"] else ""
         lines.extend(
@@ -774,7 +795,7 @@ def format_report(report: dict[str, object], source_results: int) -> str:
         )
         lines.extend(f"      {item}" for item in row["matched_asm"])
         excerpt = row.get("source_excerpt")
-        if excerpt and index <= source_results:
+        if excerpt and (source_results == 0 or index <= source_results):
             lines.append(
                 f"    Source excerpt ({excerpt['mapping']}, lines {excerpt['start_line']}-{excerpt['end_line']}):"
             )
@@ -809,18 +830,15 @@ def parse_args() -> argparse.Namespace:
         help="Inclusive VA/offset range: +70-+A5 or 00401070-004010A5.",
     )
     selection.add_argument("--at", help="VA/offset inside a basic block; selects that complete block.")
-    parser.add_argument(
-        "--whole", action="store_true", help="Allow a whole query function longer than 24 instructions."
-    )
     parser.add_argument("--profile", choices=("strict", "mapped", "structural"), default="mapped")
-    parser.add_argument("--limit", type=int, default=8)
-    parser.add_argument("--min-score", type=float, default=25.0)
-    parser.add_argument("--min-coverage", type=float, default=0.5)
+    parser.add_argument("--limit", type=int, default=0, help="Maximum results (default 0, all results).")
+    parser.add_argument("--min-score", type=float, help="Optional minimum alignment score.")
+    parser.add_argument("--min-coverage", type=float, help="Optional minimum query coverage.")
     parser.add_argument(
         "--candidate-pool",
         type=int,
-        default=500,
-        help="N-gram-prefiltered functions to align (default 500; 0 searches the full matching bank).",
+        default=0,
+        help="N-gram-prefiltered functions to align (default 0, full matching bank).",
     )
     parser.add_argument(
         "--validation",
@@ -831,13 +849,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--validation-scan",
         type=int,
-        default=80,
-        help="Maximum aligned hits fingerprinted while seeking fresh matches (default 80).",
+        default=0,
+        help="Maximum aligned hits fingerprinted while seeking fresh matches (default 0, all hits).",
     )
     parser.add_argument("--include-self", action="store_true", help="Include the query VA in results.")
-    parser.add_argument("--source-results", type=int, default=5, help="Number of top hits with inline source excerpts.")
-    parser.add_argument("--source-context", type=int, default=4)
-    parser.add_argument("--max-source-lines", type=int, default=32)
+    parser.add_argument("--source-results", type=int, default=0, help="Top hits with source excerpts (default 0, all hits).")
+    parser.add_argument("--source-context", type=int, default=0)
+    parser.add_argument("--max-source-lines", type=int, default=0, help="Maximum source lines per excerpt (default 0, all lines).")
     parser.add_argument("--refresh-index", action="store_true")
     parser.add_argument("--json", action="store_true")
     return parser.parse_args()
@@ -845,9 +863,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    if args.limit < 1 or args.source_results < 0 or args.candidate_pool < 0 or args.validation_scan < 1:
+    if args.limit < 0 or args.source_results < 0 or args.candidate_pool < 0 or args.validation_scan < 0:
         raise SystemExit(
-            "--limit/--validation-scan must be positive; --source-results and --candidate-pool must be nonnegative"
+            "--limit, --validation-scan, --source-results, and --candidate-pool must be nonnegative"
         )
     records = load_functions()
     names_by_va = {int(record["va"], 16): record["name"] for record in records}
@@ -868,18 +886,14 @@ def main() -> None:
             at = _parse_at(args.at, base)
             query_instructions = _basic_block_at(query_instructions, at)
             description += f" basic block at {at:08X}"
-        elif len(query_instructions) > 24 and not args.whole:
-            raise SystemExit(
-                "Query function exceeds 24 instructions; select --range/--at or explicitly pass --whole"
-            )
     else:
         path = args.asm_file if args.asm_file.is_absolute() else REPO_ROOT / args.asm_file
         query_instructions = parse_asm_text(path.read_text(encoding="utf-8", errors="replace"), names_by_va)
         description = str(path)
         if args.asm_range or args.at:
             raise SystemExit("--range/--at currently require --va")
-    if len(query_instructions) < 2:
-        raise SystemExit("Query must contain at least two parsed instructions")
+    if not query_instructions:
+        raise SystemExit("Query contains no parsed instructions")
 
     payload, index_status = load_index(args.refresh_index)
     results = search_index(

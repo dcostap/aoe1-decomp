@@ -72,16 +72,24 @@ class QueryAbiTests(unittest.TestCase):
     def test_source_evidence_defaults_to_exact_bucket(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            matching = root / "src" / "matching"
-            scratch = root / "src" / "scratch"
-            matching.mkdir(parents=True)
-            scratch.mkdir(parents=True)
-            (matching / "00001000_exact.cpp").write_text("void helper(int);\n", encoding="utf-8")
-            (scratch / "00002000_work.cpp").write_text("void helper(short);\n", encoding="utf-8")
-            with patch.object(query_abi, "REPO_ROOT", root):
+            source = root / "src"
+            source.mkdir(parents=True)
+            (source / "exact.cpp").write_text(
+                "\n".join(f"void helper(int value_{index});" for index in range(5)) + "\n",
+                encoding="utf-8",
+            )
+            (source / "work.cpp").write_text("void helper(short);\n", encoding="utf-8")
+            modules = [
+                {"source": "src/exact.cpp", "functions": {"00001000": {"status": "matching"}}},
+                {"source": "src/work.cpp", "functions": {"00002000": {"status": "scratch"}}},
+            ]
+            with (
+                patch.object(query_abi, "REPO_ROOT", root),
+                patch.object(query_abi, "load_function_modules", return_value=modules),
+            ):
                 exact = query_abi.source_evidence("helper")
                 all_rows = query_abi.source_evidence("helper", include_nonexact=True)
-            self.assertEqual([row["bucket"] for row in exact], ["matching"])
+            self.assertEqual([row["bucket"] for row in exact], ["matching"] * 5)
             self.assertEqual({row["bucket"] for row in all_rows}, {"matching", "scratch"})
 
     def test_symbol_class_lookup_can_find_method_without_dumping_unrelated_methods(self) -> None:

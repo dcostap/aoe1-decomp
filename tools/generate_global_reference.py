@@ -49,9 +49,13 @@ def read_raw_bytes(image, va: int, size: int) -> bytes:
         return b""
 
 
-def read_c_string(image, va: int, max_length: int = 256) -> bytes:
+def read_c_string(image, va: int) -> bytes:
     data = bytearray()
-    for offset in range(max_length):
+    section = image.section_for_va(va)
+    if section is None:
+        return bytes(data)
+    section_end = image.image_base + section.end_virtual_address
+    for offset in range(section_end - va):
         raw = read_raw_bytes(image, va + offset, 1)
         if len(raw) != 1:
             break
@@ -168,8 +172,7 @@ def build_global_rows(listing_path: Path, image) -> list[dict[str, object]]:
             if name.startswith(("s_", "u_")) and not str(entry["primary_name"]).startswith(("s_", "u_")):
                 entry["primary_name"] = name
 
-            if len(entry["references"]) < 5:
-                entry["references"].append(line.rstrip())
+            entry["references"].append(line.rstrip())
 
             if hint_info is not None:
                 hint, size = hint_info

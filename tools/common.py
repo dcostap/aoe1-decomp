@@ -828,7 +828,6 @@ def edit_diff_metrics(left: bytes, right: bytes) -> dict[str, int | float | bool
         edit_bytes > 0
         and (insert_bytes > 0 or delete_bytes > 0)
         and edit_bytes < positional_diff_bytes
-        and equal_bytes >= max(1, min(len(left), len(right)) // 2)
     )
 
     return {

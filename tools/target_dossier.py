@@ -529,7 +529,7 @@ def _class_check(class_name: str, fields: list[dict[str, object]]) -> dict[str, 
         if int(field["offset"]) >= 0 and end > size:
             impossible.append(field)
     if impossible:
-        offsets = ", ".join(str(field["offset_hex"]) for field in impossible[:8])
+        offsets = ", ".join(str(field["offset_hex"]) for field in impossible)
         warnings.append(
             f"Candidate {class_name} size 0x{size:X} cannot contain observed fixed access(es) at {offsets}."
         )
@@ -936,11 +936,11 @@ def format_dossier(dossier: dict[str, object]) -> str:
         [
             "",
             "Next checks:",
-            f"  python tools/query_abi.py --va {target['va']} --limit 40",
-            f"  python tools/find_function_donors.py --va {target['va']} --limit 20",
-            f"  python tools/check_function.py --va {target['va']} --call-map-unmatched --map-limit 40",
+            f"  python tools/query_abi.py --va {target['va']}",
+            f"  python tools/find_function_donors.py --va {target['va']}",
+            f"  python tools/check_function.py --va {target['va']} --call-map-unmatched",
             f"  python tools/check_function.py --va {target['va']} --stack-map --no-build",
-            f"  python tools/check_function.py --va {target['va']} --block-map-differences --map-limit 40",
+            f"  python tools/check_function.py --va {target['va']} --block-map-differences",
         ]
     )
     return "\n".join(lines) + "\n"

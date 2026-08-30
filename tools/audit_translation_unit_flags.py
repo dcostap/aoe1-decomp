@@ -255,7 +255,7 @@ def _frame_need(instructions: list[Any]) -> tuple[bool | None, int | None]:
     # FPO remains active.  Only the frame-base assignment proves an EBP frame.
     frame_pointer = any(
         instruction.text.casefold() == "mov ebp,esp"
-        for instruction in instructions[:16]
+        for instruction in instructions
     )
     if not instructions:
         return None, None

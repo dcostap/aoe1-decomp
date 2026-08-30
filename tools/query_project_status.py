@@ -42,8 +42,8 @@ def parse_args() -> argparse.Namespace:
             "\n"
             "Examples:\n"
             "  python tools/query_project_status.py --va 0047A3A0 --paths --notes --leases\n"
-            "  python tools/query_project_status.py --scratch --normal --unleased --smallest --limit 12\n"
-            "  python tools/query_project_status.py --scratch --normal --work-history --notes --limit 12\n"
+            "  python tools/query_project_status.py --scratch --normal --unleased --smallest --limit LIMIT\n"
+            "  python tools/query_project_status.py --scratch --normal --work-history --notes --limit LIMIT\n"
             "  python tools/query_project_status.py --logic-review-in-progress --paths\n"
             "  python tools/query_project_status.py --summary --normal\n"
         ),
@@ -115,7 +115,7 @@ def parse_args() -> argparse.Namespace:
         help="Sort key (default: size)",
     )
     parser.add_argument("--desc", action="store_true", help="Descending sort")
-    parser.add_argument("--limit", type=int, default=30, help="Maximum rows to print (default: 30; 0 = all)")
+    parser.add_argument("--limit", type=int, default=0, help="Maximum rows to print (default: 0, all rows)")
 
     parser.add_argument("--paths", action="store_true", help="Include source and packet paths in table output")
     parser.add_argument("--notes", action="store_true", help="Include blocker/note/next columns in table output")
@@ -277,10 +277,7 @@ def annotate_leases(
                 if improvement else "none"
             )
             row["work_last_worker"] = str((session or {}).get("owner", ""))
-            recommendation = classify_next_stage(current_metrics)
-            if total_probes >= 30 or claim_count >= 4:
-                recommendation = "readiness/specialist audit; " + recommendation
-            row["work_next"] = recommendation
+            row["work_next"] = classify_next_stage(current_metrics)
     return rows
 
 
@@ -325,7 +322,7 @@ def lease_prefilter_vas(
 
 
 def annotate_triage(rows: list[dict[str, str]]) -> list[dict[str, str]]:
-    """Attach bounded packet evidence to already-sorted/limited status rows."""
+    """Attach packet evidence to the selected status rows."""
     if not rows:
         return rows
     from find_function_donors import packet_features
@@ -338,11 +335,9 @@ def annotate_triage(rows: list[dict[str, str]]) -> list[dict[str, str]]:
         features = packet_features(packet_text_path, names_by_va)
         header = ""
         if packet_text_path.exists():
-            with packet_text_path.open("r", encoding="utf-8", errors="replace") as handle:
-                header = "".join(handle.readline() for _ in range(16))
-                has_decomp = any(
-                    line.rstrip() == "=== GhidraDecompilerExcerpt ===" for line in handle
-                )
+            packet_text = packet_text_path.read_text(encoding="utf-8", errors="replace")
+            header = packet_text.split("===", 1)[0]
+            has_decomp = "=== GhidraDecompilerExcerpt ===" in packet_text
         else:
             has_decomp = False
         line_span = re.search(r"^PdbLineSpan:\s*(.+)$", header, re.MULTILINE)
@@ -501,8 +496,8 @@ def emit_table(rows: list[dict[str, str]], args: argparse.Namespace, total_befor
 
 def main() -> None:
     args = parse_args()
-    if args.triage and (args.limit <= 0 or args.limit > 50):
-        raise SystemExit("--triage requires a bounded --limit between 1 and 50")
+    if args.limit < 0:
+        raise SystemExit("--limit must be zero or positive")
     if args.max_lifetime_probes is not None and args.max_lifetime_probes < 0:
         raise SystemExit("--max-lifetime-probes must be zero or positive")
     if args.max_claims is not None and args.max_claims < 0:

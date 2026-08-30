@@ -67,24 +67,24 @@ def audit_status(
     return "MATCH" if checker_status == "MATCH" else "MISMATCH"
 
 
-def _repair_priority(status: str, mismatch_kind: str) -> tuple[int, str]:
+def _repair_reason(status: str, mismatch_kind: str) -> str:
     if status == "DUPLICATE_SOURCE_OWNER":
-        return (1, "keep one compiler-facing source owner")
+        return "keep one compiler-facing source owner"
     if status in {"OWNER_MISMATCH", "OWNER_MISMATCH_STALE"}:
         if mismatch_kind in {"class_owner", "free_function_owner", "unexpected_class_owner"}:
-            return (0, "repair class/free-function owner first")
-        return (1, "repair method or function kind")
+            return "repair class/free-function owner"
+        return "repair method or function kind"
     if status in {"PDB_OWNER_MISSING", "PDB_OWNER_MISSING_STALE"}:
-        return (2, "restore or verify PDB owner evidence")
+        return "restore or verify PDB owner evidence"
     if status in {"OWNER_UNVERIFIED", "OWNER_UNVERIFIED_STALE"}:
-        return (3, "verify special or overloaded owner identity")
+        return "verify special or overloaded owner identity"
     if status in {"STALE_METADATA", "MISSING_METADATA"}:
-        return (4, "rebuild metadata")
+        return "rebuild metadata"
     if status == "OWNER_MATCH_NO_DIFF":
-        return (5, "run the current function checker")
+        return "run the current function checker"
     if status == "MISMATCH":
-        return (6, "continue byte matching")
-    return (99, "")
+        return "continue byte matching"
+    return ""
 
 
 def _metadata_paths(record: dict[str, str]) -> tuple[Path, Path, Path, Path]:
@@ -209,7 +209,7 @@ def collect_audit_rows(repo_root: Path = REPO_ROOT) -> list[dict[str, Any]]:
         if duplicate_source_owner:
             status = "DUPLICATE_SOURCE_OWNER"
         mismatch_kind = owner_mismatch_kind(validation) if validation["status"] == "mismatch" else ""
-        priority, reason = _repair_priority(status, mismatch_kind)
+        reason = _repair_reason(status, mismatch_kind)
         group = matching_build_for_va(va)
         row = {
             "va": f"{va:08X}",
@@ -236,7 +236,6 @@ def collect_audit_rows(repo_root: Path = REPO_ROOT) -> list[dict[str, Any]]:
             "checker_status": checker_status,
             "diff_state": diff_state,
             "status": status,
-            "repair_priority": priority,
             "repair_reason": reason,
             "metadata_path": _relative(metadata_path) if metadata is not None else "",
             "diff_path": _relative(diff_path) if diff is not None else "",
@@ -278,7 +277,7 @@ def collect_function_audit_rows(path: Path) -> list[dict[str, Any]]:
         else:
             status = "MISMATCH"
         mismatch_kind = ""
-        priority, reason = _repair_priority(status, mismatch_kind)
+        reason = _repair_reason(status, mismatch_kind)
         source = str(audit_row.get("source_path") or "")
         rows.append(
             {
@@ -302,7 +301,6 @@ def collect_function_audit_rows(path: Path) -> list[dict[str, Any]]:
                 "checker_status": checker_status,
                 "diff_state": "grouped",
                 "status": status,
-                "repair_priority": priority,
                 "repair_reason": reason,
                 "metadata_path": str(path),
                 "diff_path": str(path),
@@ -325,7 +323,6 @@ def build_report(rows: list[dict[str, Any]]) -> dict[str, Any]:
         {
             "va": row["va"],
             "status": row["status"],
-            "priority": row["repair_priority"],
             "reason": row["repair_reason"],
             "owner_mismatch_kind": row["owner_mismatch_kind"],
             "pdb_qualified_owner": row["pdb_qualified_owner"],
@@ -334,9 +331,9 @@ def build_report(rows: list[dict[str, Any]]) -> dict[str, Any]:
             "grouped_tu": row["grouped_tu"],
         }
         for row in rows
-        if int(row["repair_priority"]) < 99
+        if row["repair_reason"]
     ]
-    repair_queue.sort(key=lambda row: (int(row["priority"]), int(str(row["va"]), 16)))
+    repair_queue.sort(key=lambda row: int(str(row["va"]), 16))
     exact_claims = sum(
         row["status"] == "MATCH" and row["owner_status"] == "match" for row in rows
     )

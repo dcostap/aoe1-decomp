@@ -109,9 +109,13 @@ def listing_excerpt(lines: list[str], listing_index: dict[str, int], decoded_blo
     if start_line is None or end_line is None:
         return [f"<listing excerpt unavailable for {first_address}-{last_address}>"]
 
-    excerpt_start = max(0, start_line - 12)
-    excerpt_end = min(len(lines), end_line + 13)
-    for probe in range(end_line + 1, excerpt_end):
+    excerpt_start = 0
+    for probe in range(start_line - 1, -1, -1):
+        if "****************************************************************" in lines[probe]:
+            excerpt_start = probe + 1
+            break
+    excerpt_end = len(lines)
+    for probe in range(end_line + 1, len(lines)):
         if "****************************************************************" in lines[probe]:
             excerpt_end = probe
             break

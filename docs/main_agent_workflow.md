@@ -16,13 +16,11 @@ integration.
 
 ## Shared-worktree model
 
-Use one active matching worker per natural translation unit.
+Prevent concurrent writes to one natural translation unit in the same worktree.
+Separate worktrees can use their own coordination plan.
 
-A worker gets one function at a time. The worker can process more functions from
-that translation unit after each reviewed handoff.
-
-Recycle a worker after three or four functions. Use a fresh agent to limit stale
-context.
+The user or current orchestration defines each worker's task size and lifetime.
+Do not impose a fixed function count or worker lifetime.
 
 Workers use the coordinator worktree unless the assignment says otherwise.
 They do not commit.
@@ -41,7 +39,8 @@ Do not assign another function from an actively leased translation unit.
 Preclaim large waves without metric work:
 
 ```text
-python tools/target_session.py start --preclaim --va <VA> --owner <OWNER>
+python tools/target_session.py start --preclaim --va <VA> --owner <OWNER> \
+  --lease-hours <HOURS>
 ```
 
 Tell each worker that its lease is active. The worker must use `brief`, not
@@ -63,7 +62,8 @@ Give the worker a compact task. Include:
 
 Require the worker to read `docs/agentic_matching_workflow.md`.
 
-Do not send complete history dumps. Function notes are the durable handoff.
+Send the history required by the current orchestration.
+Function notes remain the durable handoff.
 
 Workers can choose their investigative methods. Do not set a hypothesis quota
 or fixed stop count.
@@ -96,17 +96,18 @@ notes, the Git index, or commits.
 
 The worker uses target checks for each meaningful hypothesis.
 
-The worker can run a final function audit for only its assigned group. Require a
-unique output directory under:
+The current orchestration defines each worker's validation scope and job count.
+Use a unique output directory under:
 
 ```text
 build/audits/workers/<OWNER>/<GROUP>
 ```
 
-Workers must not run repository-wide audits or full test suites.
+Run repository-wide audits or full test suites only when the current
+orchestration assigns that work.
 
-One worker per translation unit prevents compiler-object collisions. Unique
-report directories prevent report collisions.
+Coordinated translation-unit access prevents source and compiler-object
+collisions. Unique report directories prevent report collisions.
 
 ## Review a return
 

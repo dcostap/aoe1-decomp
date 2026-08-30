@@ -6,7 +6,7 @@ import json
 import re
 from pathlib import Path
 
-from common import REPO_ROOT, function_slug, load_functions
+from common import REPO_ROOT, function_slug, load_function_modules, load_functions
 from shared_abi_evidence import (
     load_shared_global_evidence,
     shared_global_matches,
@@ -44,7 +44,7 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Include accepted_drift, verified_logic, and scratch source references after exact evidence.",
     )
-    parser.add_argument("--limit", type=int, default=40, help="Maximum source evidence rows (default 40; 0 unlimited).")
+    parser.add_argument("--limit", type=int, default=0, help="Maximum source evidence rows (default 0, unlimited).")
     parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
     return parser.parse_args()
 
@@ -220,23 +220,30 @@ def class_matches(
 
 
 def _source_paths(include_nonexact: bool) -> list[tuple[str, Path]]:
-    buckets = [("matching", REPO_ROOT / "src" / "matching")]
-    if include_nonexact:
-        buckets.extend(
-            [
-                ("accepted_drift", REPO_ROOT / "src" / "accepted_drift"),
-                ("verified_logic", REPO_ROOT / "src" / "verified_logic"),
-                ("scratch", REPO_ROOT / "src" / "scratch"),
-            ]
-        )
-    paths = []
-    for bucket, root in buckets:
-        if not root.exists():
+    result: dict[Path, str] = {}
+    precedence = ("matching", "accepted_drift", "verified_logic", "scratch", "unresolved")
+    for module in load_function_modules():
+        functions = module.get("functions")
+        if not isinstance(functions, dict):
             continue
-        for path in sorted(root.iterdir()):
+        statuses = {
+            str(entry.get("status") or "")
+            for entry in functions.values()
+            if isinstance(entry, dict)
+        }
+        bucket = next((status for status in precedence if status in statuses), "unresolved")
+        if bucket != "matching" and not include_nonexact:
+            continue
+        candidates = [REPO_ROOT / str(module["source"])]
+        header = str(module.get("header") or "")
+        if header:
+            candidates.append(REPO_ROOT / header)
+        for path in candidates:
             if path.is_file() and path.suffix.lower() in SOURCE_SUFFIXES:
-                paths.append((bucket, path))
-    return paths
+                previous = result.get(path)
+                if previous is None or precedence.index(bucket) < precedence.index(previous):
+                    result[path] = bucket
+    return [(bucket, path) for path, bucket in sorted(result.items(), key=lambda item: str(item[0]))]
 
 
 def _reference_kind(line: str, query: str) -> str:
@@ -261,14 +268,13 @@ def _reference_kind(line: str, query: str) -> str:
     return "name_or_layout_context"
 
 
-def source_evidence(query: str, include_nonexact: bool = False, limit: int = 40) -> list[dict[str, object]]:
+def source_evidence(query: str, include_nonexact: bool = False, limit: int = 0) -> list[dict[str, object]]:
     rows: list[dict[str, object]] = []
     needle = query.casefold()
     for bucket, path in _source_paths(include_nonexact):
         text = path.read_text(encoding="utf-8", errors="replace")
         if needle not in text.casefold():
             continue
-        per_file = 0
         lines = text.splitlines()
         for index, line in enumerate(lines):
             if needle not in line.casefold():
@@ -287,8 +293,7 @@ def source_evidence(query: str, include_nonexact: bool = False, limit: int = 40)
                     "caveat": "An exact function proves this declaration/context can produce that function's bytes; it does not make every local stub canonical semantic ABI.",
                 }
             )
-            per_file += 1
-            if per_file >= 3 or (limit and len(rows) >= limit):
+            if limit and len(rows) >= limit:
                 break
         if limit and len(rows) >= limit:
             break
@@ -445,7 +450,7 @@ def build_query(
     global_name: str = "",
     va: str = "",
     include_nonexact: bool = False,
-    limit: int = 40,
+    limit: int = 0,
 ) -> dict[str, object]:
     if limit < 0:
         raise ValueError("--limit must be zero or positive")
@@ -609,7 +614,7 @@ def format_query(payload: dict[str, object]) -> str:
             f"{row['declaration']}"
         )
         locations = row["locations"]
-        lines.append(f"    evidence: {', '.join(locations[:6])}")
+        lines.append(f"    evidence: {', '.join(locations)}")
     consensus = payload["abi_consensus"]
     assert isinstance(consensus, list)
     lines.extend(["", f"Normalized ABI candidates ({len(consensus)}):"])

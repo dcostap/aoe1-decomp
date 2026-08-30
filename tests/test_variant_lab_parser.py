@@ -16,15 +16,25 @@ import variant_lab  # noqa: E402
 
 
 class VariantLabParserTests(unittest.TestCase):
-    def test_compile_jobs_default_to_one(self) -> None:
+    def test_compile_limits_are_user_supplied(self) -> None:
         args = variant_lab.parse_args(["--va", "00400000", "--template", "demo.cpp"])
-        self.assertEqual(args.jobs, 1)
-        self.assertEqual(args.max_variants, 1024)
+        self.assertIsNone(args.jobs)
+        self.assertEqual(args.max_variants, 0)
+        self.assertEqual(args.compile_timeout, 0)
 
         args = variant_lab.parse_args(
             ["--va", "00400000", "--template", "demo.cpp", "--jobs", "3"]
         )
         self.assertEqual(args.jobs, 3)
+
+    def test_compile_run_requires_user_selected_jobs(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            template = Path(temporary) / "demo.cpp"
+            template.write_text("int demo() { return 0; }\n", encoding="utf-8")
+            with self.assertRaisesRegex(SystemExit, "--jobs is required"):
+                variant_lab.main(
+                    ["--va", "00400000", "--template", str(template)]
+                )
 
     def test_nested_choice_only_activates_inner_axis_for_selected_parent(self) -> None:
         text = """A
@@ -117,10 +127,10 @@ B
         self.assertEqual(
             [variant_lab.label_text(spec, plan.axes) for spec in specs],
             [
-                "src.ambient=n0000",
-                "src.ambient=n0001",
-                "src.ambient=n0002",
-                "src.ambient=n0003",
+                "src.ambient=n0",
+                "src.ambient=n1",
+                "src.ambient=n2",
+                "src.ambient=n3",
             ],
         )
         baseline = variant_lab.expand_source(plan, specs[0])
@@ -141,6 +151,8 @@ B
         )
 
     def test_ambient_declarations_validate_arguments(self) -> None:
+        with self.assertRaisesRegex(ValueError, "requires samples"):
+            variant_lab.parse_template("@ambient_declarations ctx\n")
         with self.assertRaisesRegex(ValueError, "must be positive"):
             variant_lab.parse_template("@ambient_declarations ctx samples=0\n")
         with self.assertRaisesRegex(ValueError, "unknown.*argument"):

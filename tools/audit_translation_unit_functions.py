@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import os
 import sys
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -41,8 +40,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--jobs",
         type=int,
-        default=min(40, os.cpu_count() or 1),
-        help="Maximum groups compiled in parallel. Default: up to 40.",
+        required=True,
+        help="Groups compiled in parallel. The current orchestration supplies this value.",
     )
     parser.add_argument(
         "--output-dir",
@@ -196,15 +195,7 @@ def difficulty_band(row: dict[str, object]) -> str:
     difference = integer(row.get("grouped_diff_bytes"))
     if difference is None:
         return "unknown"
-    if difference <= 1:
-        return "0-1"
-    if difference <= 4:
-        return "2-4"
-    if difference <= 16:
-        return "5-16"
-    if difference <= 64:
-        return "17-64"
-    return "65+"
+    return f"difference={difference}"
 
 
 def compile_and_compare_group(
@@ -625,6 +616,8 @@ def queue_text(queue: dict[str, object]) -> str:
 
 def main() -> int:
     args = parse_args()
+    if args.jobs < 1:
+        raise SystemExit("--jobs must be positive")
     output_dir = repo_path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     groups = load_build_modules()
@@ -680,7 +673,7 @@ def main() -> int:
         for va, entry in load_pdb_function_source_map().items()
     }
     results: list[dict[str, object]] = []
-    jobs = max(1, min(args.jobs, len(groups) or 1))
+    jobs = min(args.jobs, len(groups))
     with ThreadPoolExecutor(max_workers=jobs) as executor:
         futures = {
             executor.submit(

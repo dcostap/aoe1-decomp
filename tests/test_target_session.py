@@ -38,7 +38,7 @@ def _concurrent_start_worker(root_path, record, records, result_queue) -> None:
         patch.object(target_session, "_all_sessions", unexpected_full_scan),
     ):
         try:
-            target_session.start_session(record, "AgentA", 4, 2.0)
+            target_session.start_session(record, "AgentA", 2.0)
         except Exception as error:  # pragma: no cover - exercised in child process
             result_queue.put(("error", type(error).__name__, str(error)))
         else:
@@ -102,12 +102,12 @@ class TargetSessionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):
-                first = target_session.start_session(self.record, "AgentA", 4, 2.0)
+                first = target_session.start_session(self.record, "AgentA", 2.0)
                 self.assertTrue(target_session._lease_active(first))
                 with self.assertRaises(RuntimeError):
-                    target_session.start_session(self.record, "AgentB", 4, 2.0)
+                    target_session.start_session(self.record, "AgentB", 2.0)
                 target_session.change_state(self.record, "AgentA", "pause", "needs ABI facts")
-                second = target_session.start_session(self.record, "AgentB", 6, 2.0)
+                second = target_session.start_session(self.record, "AgentB", 2.0)
                 self.assertEqual(second["owner"], "AgentB")
                 self.assertEqual(second["probe_start_index"], len(second["probes"]))
                 self.assertTrue(any(event["kind"] == "takeover" for event in second["events"]))
@@ -137,7 +137,7 @@ class TargetSessionTests(unittest.TestCase):
                 patch.object(target_session, "current_output_snapshot", require_unlocked),
                 patch.object(target_session, "current_input_snapshot", require_unlocked),
             ):
-                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 target_session.record_probe(
                     self.record,
                     "AgentA",
@@ -149,8 +149,8 @@ class TargetSessionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):
-                first = target_session.start_session(self.record, "AgentA", 4, 2.0)
-                second = target_session.start_session(self.record, "AgentA", 4, 2.0)
+                first = target_session.start_session(self.record, "AgentA", 2.0)
+                second = target_session.start_session(self.record, "AgentA", 2.0)
         self.assertEqual(target_session.session_claim_count(first), 1)
         self.assertEqual(target_session.session_claim_count(second), 1)
 
@@ -161,9 +161,9 @@ class TargetSessionTests(unittest.TestCase):
                 patch.object(target_session, "REPO_ROOT", root),
                 patch.object(target_session, "current_metric_summary", return_value={}) as metrics,
             ):
-                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 metrics.reset_mock()
-                session = target_session.start_session(self.record, "AgentA", 4, 2.0)
+                session = target_session.start_session(self.record, "AgentA", 2.0)
         metrics.assert_not_called()
         self.assertTrue(session["_start_reused_active"])
 
@@ -177,7 +177,6 @@ class TargetSessionTests(unittest.TestCase):
                 session = target_session.start_session(
                     self.record,
                     "AgentA",
-                    4,
                     2.0,
                     collect_metrics=False,
                 )
@@ -194,9 +193,9 @@ class TargetSessionTests(unittest.TestCase):
                 patch.object(target_session, "compiler_source_path", return_value=shared_source),
                 patch.object(target_session, "function_record_by_va", return_value=self.record),
             ):
-                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                    target_session.start_session(other_record, "AgentB", 4, 2.0)
+                    target_session.start_session(other_record, "AgentB", 2.0)
 
     def test_start_uses_current_index_for_translation_unit_conflict(self) -> None:
         other_record = {**self.record, "va": "00002000", "name": "other"}
@@ -208,14 +207,14 @@ class TargetSessionTests(unittest.TestCase):
                 patch.object(target_session, "compiler_source_path", return_value=shared_source),
                 patch.object(target_session, "function_record_by_va", return_value=self.record),
             ):
-                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 with patch.object(
                     target_session,
                     "_all_sessions",
                     side_effect=AssertionError("current session index was not used"),
                 ):
                     with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+                        target_session.start_session(other_record, "AgentB", 2.0)
 
     def test_semantically_stale_index_entry_preserves_translation_unit_conflict(self) -> None:
         other_record = {**self.record, "va": "00002000", "name": "other"}
@@ -227,7 +226,7 @@ class TargetSessionTests(unittest.TestCase):
                 patch.object(target_session, "compiler_source_path", return_value=shared_source),
                 patch.object(target_session, "function_record_by_va", return_value=self.record),
             ):
-                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 index = target_session._read_session_index()
                 self.assertIsNotNone(index)
                 session_files_fingerprint = target_session._session_file_fingerprint()
@@ -243,7 +242,7 @@ class TargetSessionTests(unittest.TestCase):
                     target_session, "_all_sessions", wraps=target_session._all_sessions
                 ) as all_sessions:
                     with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+                        target_session.start_session(other_record, "AgentB", 2.0)
         all_sessions.assert_called_once_with()
 
     def test_start_skips_invalid_session_payloads_during_conflict_scan(self) -> None:
@@ -263,14 +262,14 @@ class TargetSessionTests(unittest.TestCase):
                     patch.object(target_session, "compiler_source_path", return_value=shared_source),
                     patch.object(target_session, "function_record_by_va", return_value=self.record),
                 ):
-                    target_session.start_session(self.record, "AgentA", 4, 2.0)
+                    target_session.start_session(self.record, "AgentA", 2.0)
                     invalid_path = target_session._sessions_root() / "00000001_bad.json"
                     invalid_path.write_bytes(payload)
                     with patch.object(
                         target_session, "_all_sessions", wraps=target_session._all_sessions
                     ) as all_sessions:
                         with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                            target_session.start_session(other_record, "AgentB", 4, 2.0)
+                            target_session.start_session(other_record, "AgentB", 2.0)
                 all_sessions.assert_called_once_with()
 
     def test_matching_empty_index_falls_back_to_active_session_files(self) -> None:
@@ -283,7 +282,7 @@ class TargetSessionTests(unittest.TestCase):
                 patch.object(target_session, "compiler_source_path", return_value=shared_source),
                 patch.object(target_session, "function_record_by_va", return_value=self.record),
             ):
-                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 index = target_session._read_session_index()
                 self.assertIsNotNone(index)
                 index["sessions"] = {}
@@ -298,7 +297,7 @@ class TargetSessionTests(unittest.TestCase):
                     target_session, "_all_sessions", wraps=target_session._all_sessions
                 ) as all_sessions:
                     with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+                        target_session.start_session(other_record, "AgentB", 2.0)
         all_sessions.assert_called_once_with()
 
     def test_matching_index_with_missing_entry_falls_back_to_full_scan(self) -> None:
@@ -323,8 +322,8 @@ class TargetSessionTests(unittest.TestCase):
                 patch.object(target_session, "compiler_source_path", source_path),
                 patch.object(target_session, "function_record_by_va", record_by_va),
             ):
-                target_session.start_session(self.record, "AgentA", 4, 2.0)
-                target_session.start_session(second_record, "AgentB", 4, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(second_record, "AgentB", 2.0)
                 index = target_session._read_session_index()
                 self.assertIsNotNone(index)
                 del index["sessions"][second_record["va"]]
@@ -339,7 +338,7 @@ class TargetSessionTests(unittest.TestCase):
                     target_session, "_all_sessions", wraps=target_session._all_sessions
                 ) as all_sessions:
                     with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentC", 4, 2.0)
+                        target_session.start_session(other_record, "AgentC", 2.0)
         all_sessions.assert_called_once_with()
 
     def test_matching_index_with_extra_entry_falls_back_to_full_scan(self) -> None:
@@ -352,7 +351,7 @@ class TargetSessionTests(unittest.TestCase):
                 patch.object(target_session, "compiler_source_path", return_value=shared_source),
                 patch.object(target_session, "function_record_by_va", return_value=self.record),
             ):
-                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 index = target_session._read_session_index()
                 self.assertIsNotNone(index)
                 index["sessions"]["00009999"] = {
@@ -371,7 +370,7 @@ class TargetSessionTests(unittest.TestCase):
                     target_session, "_all_sessions", wraps=target_session._all_sessions
                 ) as all_sessions:
                     with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+                        target_session.start_session(other_record, "AgentB", 2.0)
         all_sessions.assert_called_once_with()
 
     def test_matching_index_with_non_dict_entry_falls_back_to_full_scan(self) -> None:
@@ -385,7 +384,7 @@ class TargetSessionTests(unittest.TestCase):
                     patch.object(target_session, "compiler_source_path", return_value=shared_source),
                     patch.object(target_session, "function_record_by_va", return_value=self.record),
                 ):
-                    target_session.start_session(self.record, "AgentA", 4, 2.0)
+                    target_session.start_session(self.record, "AgentA", 2.0)
                     index = target_session._read_session_index()
                     self.assertIsNotNone(index)
                     index["sessions"][self.record["va"]] = invalid_entry
@@ -400,7 +399,7 @@ class TargetSessionTests(unittest.TestCase):
                         target_session, "_all_sessions", wraps=target_session._all_sessions
                     ) as all_sessions:
                         with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                            target_session.start_session(other_record, "AgentB", 4, 2.0)
+                            target_session.start_session(other_record, "AgentB", 2.0)
                 all_sessions.assert_called_once_with()
 
     def test_start_falls_back_to_full_scan_for_stale_index(self) -> None:
@@ -419,7 +418,7 @@ class TargetSessionTests(unittest.TestCase):
                 patch.object(target_session, "compiler_source_path", return_value=shared_source),
                 patch.object(target_session, "function_record_by_va", return_value=self.record),
             ):
-                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 index = target_session._read_session_index()
                 self.assertIsNotNone(index)
                 index["session_files_fingerprint"] = "stale"
@@ -430,7 +429,7 @@ class TargetSessionTests(unittest.TestCase):
                     target_session, "_all_sessions", return_value=[active_other]
                 ) as all_sessions:
                     with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+                        target_session.start_session(other_record, "AgentB", 2.0)
         all_sessions.assert_called_once_with()
 
     def test_start_falls_back_to_full_scan_for_corrupt_index(self) -> None:
@@ -449,13 +448,13 @@ class TargetSessionTests(unittest.TestCase):
                 patch.object(target_session, "compiler_source_path", return_value=shared_source),
                 patch.object(target_session, "function_record_by_va", return_value=self.record),
             ):
-                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 target_session._session_index_path().write_text("[]", encoding="utf-8")
                 with patch.object(
                     target_session, "_all_sessions", return_value=[active_other]
                 ) as all_sessions:
                     with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+                        target_session.start_session(other_record, "AgentB", 2.0)
         all_sessions.assert_called_once_with()
 
     def test_start_falls_back_for_invalid_utf8_index(self) -> None:
@@ -468,13 +467,13 @@ class TargetSessionTests(unittest.TestCase):
                 patch.object(target_session, "compiler_source_path", return_value=shared_source),
                 patch.object(target_session, "function_record_by_va", return_value=self.record),
             ):
-                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 target_session._session_index_path().write_bytes(b"\xff\xfe")
                 with patch.object(
                     target_session, "_all_sessions", wraps=target_session._all_sessions
                 ) as all_sessions:
                     with self.assertRaisesRegex(RuntimeError, "translation unit"):
-                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+                        target_session.start_session(other_record, "AgentB", 2.0)
         all_sessions.assert_called_once_with()
 
     def test_concurrent_starts_reject_duplicate_translation_unit_claims(self) -> None:
@@ -617,7 +616,7 @@ class TargetSessionTests(unittest.TestCase):
             with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary)
                 with patch.object(target_session, "REPO_ROOT", root):
-                    target_session.start_session(self.record, "AgentA", 4, 2.0)
+                    target_session.start_session(self.record, "AgentA", 2.0)
                     index = target_session._read_session_index()
                     self.assertIsNotNone(index)
                     mutate(index["sessions"], self.record["va"])
@@ -737,7 +736,7 @@ class TargetSessionTests(unittest.TestCase):
                 encoding="utf-8",
             )
             with patch.object(target_session, "REPO_ROOT", root):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 session = target_session.record_probe(
                     self.record, "AgentA", "control-flow", "inverted the final guard", "guard-v1"
                 )
@@ -776,7 +775,7 @@ class TargetSessionTests(unittest.TestCase):
         self.assertEqual(snapshot["flags_sha256"], expected_flags_hash)
         self.assertEqual(snapshot["build_input_fingerprint"], "complete-build-fingerprint")
 
-    def test_stage_classification_prioritizes_calls_then_frame_then_shape(self) -> None:
+    def test_stage_classification_uses_objective_differences(self) -> None:
         self.assertIn(
             "stale",
             target_session.classify_next_stage({"artifact_fresh": False, "call_target_count_gap": 1}),
@@ -789,7 +788,7 @@ class TargetSessionTests(unittest.TestCase):
             ),
         )
         self.assertIn(
-            "Structural",
+            "objective mismatch",
             target_session.classify_next_stage(
                 {"call_target_count_gap": 0, "wrong_direct_targets": 0, "shape_percent": 50}
             ),
@@ -825,7 +824,7 @@ class TargetSessionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 with patch.object(
                     target_session.subprocess, "run", return_value=SimpleNamespace(returncode=1)
                 ) as run, patch.object(
@@ -851,7 +850,7 @@ class TargetSessionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 with self.assertRaisesRegex(ValueError, "managed"):
                     target_session.run_checked_probe(
                         self.record, "AgentA", "layout", "note", "", ["--no-history"]
@@ -861,7 +860,7 @@ class TargetSessionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 with (
                     patch.object(
                         target_session.subprocess,
@@ -883,7 +882,7 @@ class TargetSessionTests(unittest.TestCase):
             recorded = {"owner": "AgentA", "probes": [{"number": 1}]}
             pinned = {"owner": "AgentA", "clean_baseline": {"checkpoint_id": "clean"}}
             with patch.object(target_session, "REPO_ROOT", root):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 with patch.object(
                     target_session.subprocess, "run", return_value=SimpleNamespace(returncode=1)
                 ), patch.object(
@@ -912,7 +911,7 @@ class TargetSessionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 session = target_session._load_session(self.record)
                 session["clean_baseline"] = {"checkpoint_id": "clean-id"}
                 target_session._write_session(self.record, session)
@@ -951,7 +950,7 @@ class TargetSessionTests(unittest.TestCase):
             with patch.object(target_session, "REPO_ROOT", root), patch.object(
                 target_session, "current_metric_summary", return_value=metrics
             ) as metric_summary, patch.object(target_session, "current_input_snapshot", return_value={}):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 first = target_session.record_probe(self.record, "AgentA", "baseline", "first")
                 second = target_session.record_probe(self.record, "AgentA", "liveness", "same code")
                 metric_summary.return_value = {
@@ -1010,7 +1009,7 @@ class TargetSessionTests(unittest.TestCase):
             with patch.object(target_session, "REPO_ROOT", root), patch.object(
                 target_session, "current_metric_summary", return_value=metrics
             ), patch.object(target_session, "current_input_snapshot", return_value={}):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 target_session.record_probe(self.record, "AgentA", "baseline", "first")
                 session = target_session.record_probe(
                     self.record,
@@ -1033,7 +1032,7 @@ class TargetSessionTests(unittest.TestCase):
                 "current_metric_summary",
                 return_value={"result": "MISMATCH", "artifact_fresh": True},
             ):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 target_session.record_probe(
                     self.record, "AgentA", "control-flow", "changed guard"
                 )
@@ -1057,7 +1056,7 @@ class TargetSessionTests(unittest.TestCase):
                 "record_checkpoint",
                 return_value={"id": "checkpoint-clean"},
             ):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 session = target_session.pin_clean_baseline(
                     self.record,
                     "AgentA",
@@ -1076,7 +1075,7 @@ class TargetSessionTests(unittest.TestCase):
                 "current_metric_summary",
                 return_value={"result": "MISMATCH", "artifact_fresh": True},
             ), patch.object(target_session, "current_input_snapshot", return_value={}):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
+                target_session.start_session(self.record, "AgentA", 2.0)
                 target_session.record_probe(self.record, "AgentA", "baseline", "first")
                 released = target_session.change_state(
                     self.record, "AgentA", "release", "stop"
@@ -1105,7 +1104,6 @@ class TargetSessionTests(unittest.TestCase):
                         "updated_at": "2026-08-02T11:00:00Z",
                         "lease_expires_at": "2026-08-02T12:00:00Z",
                         "lease_hours": 2.0,
-                        "meaningful_probe_budget": 4,
                         "probe_start_index": 0,
                         "probes": [
                             {"number": 1, "kind": "baseline", "at": "2026-08-02T10:01:00Z",

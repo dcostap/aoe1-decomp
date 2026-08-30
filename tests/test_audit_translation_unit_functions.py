@@ -115,7 +115,7 @@ def test_queue_assigns_overlapping_va_to_largest_exact_context() -> None:
         "grouped_diff_bytes": 0,
         "category": "grouped_match_needs_review",
         "recommended_action": "review_for_promotion",
-        "difficulty_band": "0-1",
+        "difficulty_band": "difference=0",
         "error": "",
     }
     rows = [
@@ -160,7 +160,7 @@ def test_queue_retains_exact_policy_review() -> None:
             "grouped_diff_bytes": 0,
             "category": "grouped_match_policy_review",
             "recommended_action": "repair_policy_then_review_promotion",
-            "difficulty_band": "0-1",
+            "difficulty_band": "difference=0",
             "error": "",
         }
     ]

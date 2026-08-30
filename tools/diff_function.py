@@ -38,10 +38,10 @@ from source_listing import parse_listing_file, source_line_for_offset
 from target_dossier import collect_memory_evidence, direct_call_cleanups
 
 
-def format_edit_hunks(metrics: dict, original: bytes, rebuilt: bytes, limit: int = 8) -> list[str]:
+def format_edit_hunks(metrics: dict, original: bytes, rebuilt: bytes) -> list[str]:
     lines: list[str] = []
     opcodes = metrics.get("edit_opcodes") or []
-    for opcode in opcodes[:limit]:
+    for opcode in opcodes:
         tag = str(opcode["tag"])
         i1 = int(opcode["i1"])
         i2 = int(opcode["i2"])
@@ -54,12 +54,10 @@ def format_edit_hunks(metrics: dict, original: bytes, rebuilt: bytes, limit: int
             left_hex = original[i1:i2].hex()
             right_hex = rebuilt[j1:j2].hex()
             if left_hex:
-                line += f"  orig={left_hex[:32]}"
+                line += f"  orig={left_hex}"
             if right_hex:
-                line += f"  rebuilt={right_hex[:32]}"
+                line += f"  rebuilt={right_hex}"
         lines.append(line)
-    if len(opcodes) > limit:
-        lines.append(f"  ... {len(opcodes) - limit} more raw-byte hunks (diagnostic only)")
     return lines
 
 
@@ -370,9 +368,6 @@ def _format_focus_range(
             or ["      (none)"]
         )
         return lines
-    if len(selected) > 80:
-        selected = selected[:80]
-        lines.append("  Range overlaps more than 80 aligned rows; output truncated. Narrow --range for full detail.")
     for row in selected:
         marker = {"equal": "=", "fuzzy": "~", "delete": "-", "insert": "+"}.get(str(row.get("status")), "?")
         confidence = str(row.get("confidence", "low"))[:1].upper()
@@ -405,27 +400,23 @@ def _format_focus_range(
     return lines
 
 
-def _format_call_count_deltas(rows: list[dict], limit: int = 14) -> list[str]:
+def _format_call_count_deltas(rows: list[dict]) -> list[str]:
     lines: list[str] = []
-    for row in rows[:limit]:
+    for row in rows:
         label = f"{row['kind']} {row['target']}"
         lines.append(
             f"  {int(row['delta']):+4d}  {int(row['rebuilt']):3d}/{int(row['original']):3d}  {label}"
         )
-    if len(rows) > limit:
-        lines.append(f"  ... {len(rows) - limit} more target-count difference(s)")
     return lines
 
 
-def _format_iteration_call_deltas(rows: list[dict], limit: int = 10) -> list[str]:
+def _format_iteration_call_deltas(rows: list[dict]) -> list[str]:
     lines: list[str] = []
-    for row in rows[:limit]:
+    for row in rows:
         label = f"{row['kind']} {row['target']}"
         lines.append(
             f"  {int(row['delta']):+4d}  now {int(row['rebuilt']):3d}, previous {int(row['original']):3d}  {label}"
         )
-    if len(rows) > limit:
-        lines.append(f"  ... {len(rows) - limit} more changed call target(s)")
     return lines
 
 
@@ -594,21 +585,19 @@ def _relocated_call_pairs(
     return rows
 
 
-def _format_relocated_call_pairs(rows: list[dict[str, object]], function_va: int, limit: int = 16) -> list[str]:
+def _format_relocated_call_pairs(rows: list[dict[str, object]], function_va: int) -> list[str]:
     lines = ["Calls explained by order-independent relocated blocks (not added to ordered alignment):"]
-    for row in rows[:limit]:
+    for row in rows:
         lines.append(
             f"  [{str(row['confidence']).upper():6}] "
             f"{_call_text(row['original'], function_va, True):<58} -> "
             f"{_call_text(row['rebuilt'], function_va, False)} "
             f"(block delta {int(row['block_offset_delta']):+d})"
         )
-    if len(rows) > limit:
-        lines.append(f"  ... {len(rows) - limit} more relocated call site(s)")
     return lines
 
 
-def _cfg_alignment_issues(alignment: dict, limit: int = 12) -> list[dict[str, object]]:
+def _cfg_alignment_issues(alignment: dict) -> list[dict[str, object]]:
     issues: list[dict[str, object]] = []
     for index, row in enumerate(alignment.get("rows") or []):
         left = row.get("original")
@@ -640,8 +629,6 @@ def _cfg_alignment_issues(alignment: dict, limit: int = 12) -> list[dict[str, ob
                     "rebuilt": _compact_block(right),
                 }
             )
-        if len(issues) >= limit:
-            break
     return issues
 
 
@@ -657,7 +644,6 @@ def _format_cfg_issues(rows: list[dict[str, object]]) -> list[str]:
 
 def _workflow_guidance(
     size_meta: dict,
-    shape: dict,
     original_prologue: dict,
     rebuilt_prologue: dict,
     call_difference: tuple[int, int] | None,
@@ -670,7 +656,6 @@ def _workflow_guidance(
     expected_size = size_meta.get("expected_size_bytes")
     effective_size = size_meta.get("effective_size_bytes", size_meta.get("meaningful_size_bytes"))
     size_delta = 0 if expected_size is None or effective_size is None else int(effective_size) - int(expected_size)
-    shape_percent = float(shape["similarity_percent"])
     frame_differs = original_prologue.get("frame_size") != rebuilt_prologue.get("frame_size")
     known_wrong_transfers = len(relocation_validation.get("target_mismatches") or [])
     wrong_owner = owner_symbol_validation.get("status") == "mismatch"
@@ -681,27 +666,25 @@ def _workflow_guidance(
             "Workflow stage: COMPLETE",
             "Source gate: exact emitted code still requires a plausibility and policy audit before promotion.",
         ]
-    if wrong_owner and shape_percent >= 95.0 and not size_delta:
+    if wrong_owner:
         return [
             "Workflow stage: FUNCTION SYMBOL IDENTITY",
             "Why: emitted instructions align, but the rebuilt owner names a different function.",
             "Next: define the assigned function with its real C/C++ owner and method kind.",
         ]
-    if known_wrong_transfers and shape_percent >= 95.0 and not size_delta:
+    if known_wrong_transfers:
         return [
             "Workflow stage: CONTROL TARGET INTEGRITY",
             f"Why: instruction structure is aligned, but {known_wrong_transfers} direct control transfer(s) name the wrong external symbol.",
             "Next: fix the member/helper declaration or symbol binding; do not reshape the surrounding control flow.",
         ]
-    if size_delta or shape_percent < 75.0 or call_difference is not None or known_wrong_transfers or wrong_owner:
+    if size_delta or call_difference is not None:
         lines.append("Workflow stage: STRUCTURAL RECONSTRUCTION")
         reasons: list[str] = []
         if overflow:
             reasons.append(f"rebuilt has {overflow} non-padding byte(s) after the original boundary")
         elif size_delta:
             reasons.append(f"rebuilt effective code size differs by {size_delta:+d} byte(s)")
-        if shape_percent < 75.0:
-            reasons.append(f"instruction-shape similarity is only {shape_percent:.1f}%")
         if call_difference is not None:
             reasons.append("call/virtual-slot sequence is not aligned")
         if call_target_deltas:
@@ -724,9 +707,6 @@ def _workflow_guidance(
         lines.append("Workflow stage: STACK/LOCAL TOPOLOGY")
         lines.append("Why: calls and instruction structure are close, but the frame size differs.")
         lines.append("Next: compare address-taken/overlapping locals and their scopes; avoid synthetic frame padding.")
-    elif shape_percent < 95.0:
-        lines.append("Workflow stage: BLOCK SHAPE AND LIVENESS")
-        lines.append("Next: work from the first paired instruction hunk; keep already aligned regions stable.")
     elif int(metrics["diff_bytes"]) > 0:
         lines.append("Workflow stage: EXACT CODEGEN")
         lines.append(
@@ -896,16 +876,16 @@ def _hard_discrepancies(
     return rows
 
 
-def _top_changed_ranges(delta: dict, limit: int = 3) -> tuple[list[dict], list[dict]]:
+def _top_changed_ranges(delta: dict) -> tuple[list[dict], list[dict]]:
     ranges = list(delta.get("ranges") or [])
     improved = sorted(
         (row for row in ranges if int(row["improved"]) > int(row["regressed"])),
         key=lambda row: (-(int(row["improved"]) - int(row["regressed"])), -int(row["changed"])),
-    )[:limit]
+    )
     regressed = sorted(
         (row for row in ranges if int(row["regressed"]) > int(row["improved"])),
         key=lambda row: (-(int(row["regressed"]) - int(row["improved"])), -int(row["changed"])),
-    )[:limit]
+    )
     return improved, regressed
 
 
@@ -996,11 +976,7 @@ def main() -> None:
     )
     stack_home_pairing = _stack_home_pairing(original_memory, rebuilt_lines)
     shape = instruction_alignment(original_instructions, rebuilt_instructions)
-    actionable_target_mismatches = (
-        relocation_validation["target_mismatches"]
-        if float(shape["similarity_percent"]) >= 85.0
-        else []
-    )
+    actionable_target_mismatches = relocation_validation["target_mismatches"]
     guidance_relocation_validation = {
         **relocation_validation,
         "target_mismatches": actionable_target_mismatches,
@@ -1073,7 +1049,6 @@ def main() -> None:
 
     guidance = _workflow_guidance(
         rebuilt_meta,
-        shape,
         original_prologue,
         rebuilt_prologue,
         None if call_difference_row is None else (0, 0),
@@ -1174,8 +1149,8 @@ def main() -> None:
             f"neutral {delta['neutral_changes']}, size {delta['size_delta']:+d}"
         )
         improved_ranges, regressed_ranges = _top_changed_ranges(delta)
-        summary.append(_format_changed_ranges("Top assembly-closer ranges", improved_ranges))
-        summary.append(_format_changed_ranges("Top assembly-farther ranges", regressed_ranges))
+        summary.append(_format_changed_ranges("Assembly-closer ranges", improved_ranges))
+        summary.append(_format_changed_ranges("Assembly-farther ranges", regressed_ranges))
 
     summary.append(f"Result: {'MATCH' if exact else 'MISMATCH'}")
     if mismatch is not None:
@@ -1185,14 +1160,14 @@ def main() -> None:
     if not exact:
         detail.append("")
         detail.append("Mismatch pattern evidence (audit only; exactness and status are unchanged):")
-        for label in list(mismatch_classification.get("labels") or [])[:6]:
+        for label in list(mismatch_classification.get("labels") or []):
             detail.append(f"  [{str(label['confidence']).upper():6}] {label['id']}")
-            for evidence in list(label.get("evidence") or [])[:4]:
+            for evidence in list(label.get("evidence") or []):
                 detail.append(f"           - {evidence}")
     if hard_discrepancies:
         detail.append("")
         detail.append("Prioritized call-surface discrepancies (diagnostic confidence shown):")
-        for row in hard_discrepancies[:8]:
+        for row in hard_discrepancies:
             detail.append(f"  [{str(row['confidence']).upper():6}] {row['kind']}: {row['message']}")
     if iteration_call_deltas:
         detail.append("")
@@ -1205,7 +1180,7 @@ def main() -> None:
     if block_map.get("strong_islands"):
         detail.append("")
         detail.append("Strongest exact basic-block islands:")
-        for island in block_map["strong_islands"][:5]:
+        for island in block_map["strong_islands"]:
             detail.append(
                 f"  {int(island['instructions']):4d} insn / {int(island['blocks']):3d} block(s): "
                 f"orig +{int(island['original_start']):04X}..+{int(island['original_end']):04X} | "
@@ -1214,7 +1189,7 @@ def main() -> None:
     if block_map.get("relocated_pairs"):
         detail.append("")
         detail.append("Order-insensitive relocated cold-block candidates:")
-        for pair in block_map["relocated_pairs"][:8]:
+        for pair in block_map["relocated_pairs"]:
             detail.append(
                 f"  [{str(pair['confidence']).upper():6}] {int(pair['instruction_count']):3d} insn: "
                 f"orig +{int(pair['original']['offset']):04X} -> rebuilt +{int(pair['rebuilt']['offset']):04X} "
@@ -1226,7 +1201,7 @@ def main() -> None:
     if cfg_issues:
         detail.append("")
         detail.append("Attributed CFG edge/terminator differences:")
-        detail.extend(_format_cfg_issues(cfg_issues[:8]))
+        detail.extend(_format_cfg_issues(cfg_issues))
     if block_map.get("first_difference_row") is not None:
         detail.append("")
         detail.append("First context-aware basic-block divergence:")
@@ -1250,7 +1225,7 @@ def main() -> None:
     if actionable_target_mismatches:
         detail.append("")
         detail.append("Known direct-control target mismatches (not masked):")
-        for row in actionable_target_mismatches[:12]:
+        for row in actionable_target_mismatches:
             detail.append(
                 f"  +{int(row['offset']):04X} {row.get('kind', 'call')}: "
                 f"original {row['original']} | rebuilt {row['rebuilt']}"
@@ -1323,7 +1298,7 @@ def main() -> None:
 
     if args.verbose or args.detail == "full":
         console_detail = detail + raw_detail
-    elif args.detail == "concise" or (args.detail == "auto" and expected_size >= 2000):
+    elif args.detail == "concise":
         # Giant-function mode: keep hard discrepancies and only the first local
         # block/instruction/call contexts. Aggregate tables and raw byte hunks
         # remain in the report and JSON.
@@ -1334,7 +1309,7 @@ def main() -> None:
             console_detail.append(f"  [{str(row['confidence']).upper()}] {row['kind']}: {row['message']}")
         if call_target_deltas:
             console_detail += ["", "Call target count differences (delta, rebuilt/original):"]
-            console_detail += _format_call_count_deltas(call_target_deltas, limit=10)
+            console_detail += _format_call_count_deltas(call_target_deltas)
         if block_map.get("first_difference_row") is not None:
             console_detail += ["", "First basic-block divergence:"] + _format_block_context(block_map, radius=1)
         if cfg_issues and not call_target_deltas:

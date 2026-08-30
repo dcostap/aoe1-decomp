@@ -48,9 +48,7 @@ from target_session import current_metric_summary, record_probe, require_clean_b
 # Variant labs are intentionally allowed to get large: sticky VC5 codegen-family
 # problems are often cheaper to solve with controlled sweeps than with manual
 # churn. Keep the default safe for shared workers. An explicit option can raise it.
-DEFAULT_MAX_VARIANTS = 1_024
-DEFAULT_AMBIENT_SAMPLES = 512
-DEFAULT_COMPILE_TIMEOUT_SECONDS = 120.0
+DEFAULT_MAX_VARIANTS = 0
 
 VARIANT_TEMPLATE_DIRS = [
     REPO_ROOT / "config" / "variant_templates",
@@ -124,17 +122,18 @@ Quick workflow
 
   python tools/variant_lab.py --init --va 0051ACA0
   # edit build/temp/<slug>_lab.tpl.cpp
-  python tools/variant_lab.py --template build/temp/<slug>_lab.tpl.cpp --preview-variants 3
+  python tools/variant_lab.py --template build/temp/<slug>_lab.tpl.cpp --preview-variants COUNT
   # add --preview-full only when complete generated sources are really needed
-  python tools/variant_lab.py --va 0051ACA0 --template build/temp/<slug>_lab.tpl.cpp --session-owner AgentName
+  python tools/variant_lab.py --va 0051ACA0 --template build/temp/<slug>_lab.tpl.cpp \
+    --session-owner AgentName --jobs JOBS
 
 Inspection commands (no compile; --va not required):
 
   python tools/variant_lab.py --list-templates
   python tools/variant_lab.py --template-help vc5_guard
   python tools/variant_lab.py --template build/temp/lab.tpl.cpp --expand-only
-  python tools/variant_lab.py --template build/temp/lab.tpl.cpp --preview-variants 3
-  python tools/variant_lab.py --template build/temp/lab.tpl.cpp --preview-variants 1 --preview-full
+  python tools/variant_lab.py --template build/temp/lab.tpl.cpp --preview-variants COUNT
+  python tools/variant_lab.py --template build/temp/lab.tpl.cpp --preview-variants COUNT --preview-full
   python tools/variant_lab.py --template build/temp/lab.tpl.cpp --show-variant V000042
 
 Source choices
@@ -156,17 +155,17 @@ Ambient declaration sweeps
 
 Insert a deterministic file-scope declaration-count axis at the directive site:
 
-  @ambient_declarations ambient samples=512 seed=aoe1
+  @ambient_declarations ambient samples=<N> seed=aoe1
 
-Sample n0000 emits no declarations. Sample n0001 emits one declaration, and so
+The first sample emits no declarations. The second emits one declaration, and so
 on. Every later sample retains the prior declarations. This tests whether VC5
 code generation changes with ambient front-end declaration state. The directive
 keeps the generated preamble's line count constant across samples. It is
 diagnostic only. A matching generated preamble does not prove original source.
 
-Optional `prefix=NAME` controls the neutral generated struct-name prefix. The
-default sample count is 512. Place the directive after includes and before the
-target function or its supporting declarations.
+Optional `prefix=NAME` controls the neutral generated struct-name prefix.
+The directive requires a user-selected sample count. Place it after includes
+and before the target function or its supporting declarations.
 
 Localized splice templates
 --------------------------
@@ -176,7 +175,7 @@ unique marker lines in an unchanged full source delimit the replacement:
 
   python tools/variant_lab.py --va 004F21F0 --template build/temp/gate.tpl.cpp \
     --splice-base src/taitacmd.cpp \
-    --splice-start "// LAB START gate" --splice-end "// LAB END gate"
+    --splice-start "// LAB START gate" --splice-end "// LAB END gate" --jobs JOBS
 
 The marker lines remain in the generated source; text between them is replaced by
 the fragment before @choice expansion. Preview/show/expand modes support the same
@@ -285,16 +284,15 @@ matches need normal review and justification.
 Run controls
 ------------
 
-  --max-variants N     refuse larger expanded labs (default 1024)
-  --max-variants 0     disable the cap for an intentional huge run
-  --jobs N             run at most N compiler jobs at once (default 1)
+  --max-variants N     refuse larger expanded labs; 0 means unlimited
+  --jobs N             run N compiler jobs at once; required for compile runs
   --no-dedupe-expanded compile identical expanded source/flag variants separately
   --focus-range A-B    score one inclusive original offset/VA band
   --require-size       reject leads with the wrong checker-effective function size
   --require-frame      require the original prologue frame size
   --require-call-set   require direct/virtual/indirect target counts and COFF symbol identity
   --session-owner NAME record one meaningful `variant` probe for the whole lab family
-  --compile-timeout S stop one compiler job after S seconds; 0 disables the limit
+  --compile-timeout S stop one compiler job after S seconds; default 0 disables it
 
 Identical expanded source+flags are deduped before compile by default. Duplicate
 work dirs contain dedup_alias.txt pointing to the representative object.
@@ -861,7 +859,7 @@ def detect_ret_ends(code: bytes) -> list[int]:
 def stable_hash(data: bytes | str) -> str:
     if isinstance(data, str):
         data = data.encode("utf-8", "replace")
-    return hashlib.sha256(data).hexdigest()[:16]
+    return hashlib.sha256(data).hexdigest()
 
 
 def parse_directive(line: str) -> tuple[str, str | None] | None:
@@ -900,20 +898,24 @@ def parse_ambient_declarations(
         if key not in {"samples", "seed", "prefix"}:
             raise ValueError(f"unknown @ambient_declarations argument {key!r} on line {line_no}")
         values[key] = value
+    if "samples" not in values:
+        raise ValueError(
+            f"@ambient_declarations requires samples=<N> on line {line_no}"
+        )
     try:
-        samples = int(values.get("samples", str(DEFAULT_AMBIENT_SAMPLES)), 10)
+        samples = int(values["samples"], 10)
     except ValueError as exc:
         raise ValueError(f"ambient sample count must be an integer on line {line_no}") from exc
     if samples < 1:
         raise ValueError(f"ambient sample count must be positive on line {line_no}")
     seed = values.get("seed", axis)
     prefix = sanitize_identifier(values.get("prefix", f"codegen_ambient_{axis}"))
-    width = max(4, len(str(samples - 1)))
+    width = len(str(samples - 1))
     labels = [f"n{index:0{width}d}" for index in range(samples)]
     declarations = []
     for index in range(samples - 1):
-        digest = hashlib.sha256(f"{seed}:{index}".encode("utf-8")).hexdigest()[:10]
-        declarations.append(f"struct {prefix}_{index:06d}_{digest};\n")
+        digest = hashlib.sha256(f"{seed}:{index}".encode("utf-8")).hexdigest()
+        declarations.append(f"struct {prefix}_{index}_{digest};\n")
     return AmbientDeclarationsBlock(
         name=axis,
         samples=samples,
@@ -1306,8 +1308,6 @@ def render_variant_template(name: str, values: dict[str, str], slots: dict[str, 
 
 def expand_variant_templates(text: str, *, stack: tuple[str, ...] = ()) -> tuple[str, list[dict]]:
     """Expand @template preset directives into ordinary @choice template text."""
-    if len(stack) > 20:
-        raise ValueError("@template expansion exceeded maximum recursion depth")
     lines = text.splitlines(keepends=True)
     out: list[str] = []
     records: list[dict] = []
@@ -1616,7 +1616,7 @@ def build_variant(
     va: int,
     slug: str,
     constraints: LabConstraints,
-    compile_timeout_seconds: float | None = DEFAULT_COMPILE_TIMEOUT_SECONDS,
+    compile_timeout_seconds: float | None = None,
     source_body: str | None = None,
     extra_flags: str | None = None,
 ) -> VariantResult:
@@ -1641,17 +1641,11 @@ def build_variant(
         flags_path_text = str(flags_path)
 
     command = [str(cl_path), f"@{default_rsp}"]
-    # Make copied repo sources/templates compile from variant work directories without
-    # include-path surgery. This supports root-relative includes such as
-    # "include/game_globals.h" and scratch/matching-relative includes such as
-    # "../../include/game_globals.h" when a scratch file is copied into build/temp.
+    # Make copied natural sources compile from variant work directories.
     include_roots = [
         REPO_ROOT,
         REPO_ROOT / "include",
-        REPO_ROOT / "src" / "scratch",
-        REPO_ROOT / "src" / "matching",
-        REPO_ROOT / "src" / "accepted_drift",
-        REPO_ROOT / "src" / "verified_logic",
+        REPO_ROOT / "src",
     ]
     command.extend(f"/I{path}" for path in include_roots)
     if extra_flags.strip():
@@ -2047,7 +2041,7 @@ def write_group_artifacts(
                         tofile="rebuilt.asm",
                         lineterm="",
                     )
-                )[:240]
+                )
             )
         (group_dir / "diff.txt").write_text("\n".join(diff_lines) + "\n", encoding="utf-8")
 
@@ -2134,13 +2128,8 @@ def axis_template_note(axis: Axis, template_expansions: list[dict] | None) -> st
     return " from @template " + ",".join(unique)
 
 
-def axis_labels_text(axis: Axis, limit: int = 24) -> str:
-    labels = axis.labels
-    if len(labels) <= limit:
-        return ", ".join(labels)
-    head = limit // 2
-    tail = limit - head
-    return ", ".join([*labels[:head], f"... +{len(labels) - limit}", *labels[-tail:]])
+def axis_labels_text(axis: Axis) -> str:
+    return ", ".join(axis.labels)
 
 
 def write_axis_sensitivity(
@@ -2181,13 +2170,9 @@ def write_axis_sensitivity(
         nonmatching = [f"{label}(0/{stats['total']})" for label, stats in active_stats if not stats["exact"]]
         if matching:
             prefix = "flags" if axis.kind == "flags" else "source"
-            line = f"  {prefix}.{axis.name}: matching " + ", ".join(matching[:12])
-            if len(matching) > 12:
-                line += f", ... +{len(matching) - 12}"
+            line = f"  {prefix}.{axis.name}: matching " + ", ".join(matching)
             if nonmatching:
-                line += "; nonmatching " + ", ".join(nonmatching[:12])
-                if len(nonmatching) > 12:
-                    line += f", ... +{len(nonmatching) - 12}"
+                line += "; nonmatching " + ", ".join(nonmatching)
             summary_lines.append(line)
 
     with (run_dir / "axis_sensitivity.tsv").open("w", encoding="utf-8", newline="") as f:
@@ -2213,7 +2198,7 @@ def write_reports(
     compile_jobs: int | None = None,
     deduped_variants: int = 0,
     workers: int | None = None,
-    compile_timeout_seconds: float | None = DEFAULT_COMPILE_TIMEOUT_SECONDS,
+    compile_timeout_seconds: float | None = None,
     constraints: LabConstraints | None = None,
 ) -> None:
     constraints = constraints or LabConstraints()
@@ -2426,7 +2411,7 @@ def write_reports(
             (match_dir / "labels.txt").write_text(result.labels_text + "\n", encoding="utf-8")
 
     original_asm_path = REPO_ROOT / "build" / "asm" / f"orig_{slug}.txt"
-    write_group_artifacts(groups[:50], run_dir, original_bytes, original_asm_path, expected_size, int(va_text, 16))
+    write_group_artifacts(groups, run_dir, original_bytes, original_asm_path, expected_size, int(va_text, 16))
 
     elapsed = time.time() - started_at
     compile_ok = sum(1 for result in results if result.status in ("match", "mismatch"))
@@ -2516,9 +2501,7 @@ def write_reports(
     if axis_sensitivity_lines:
         summary.append("")
         summary.append("Exact-match axis sensitivity:")
-        summary.extend(axis_sensitivity_lines[:30])
-        if len(axis_sensitivity_lines) > 30:
-            summary.append(f"  ... +{len(axis_sensitivity_lines) - 30} more axes; see axis_sensitivity.tsv")
+        summary.extend(axis_sensitivity_lines)
     summary.append("")
     summary.append("Text-size histogram:")
     if size_hist_items:
@@ -2528,7 +2511,7 @@ def write_reports(
         summary.append("  <none>")
     summary.append("")
     summary.append("Top emitted-code groups (ranking does not assess source plausibility):")
-    for group in groups[:20]:
+    for group in groups:
         rep = group.representative
         tail_note = " context-tail" if group.likely_context_tail else ""
         summary.append(
@@ -2550,7 +2533,7 @@ def write_reports(
     if edit_groups:
         summary.append("")
         summary.append("Smallest resync edit diffs (diagnostic, not source quality):")
-        for group in edit_groups[:10]:
+        for group in edit_groups:
             rep = group.representative
             summary.append(
                 f"  {group.group_id} count={group.count} edit_diff={group.edit_diff_bytes} "
@@ -2565,7 +2548,7 @@ def write_reports(
     if deepest_groups:
         summary.append("")
         summary.append("Deepest first mismatches (diagnostic, not source quality):")
-        for group in deepest_groups[:10]:
+        for group in deepest_groups:
             rep = group.representative
             tail_note = " context-tail" if group.likely_context_tail else ""
             summary.append(
@@ -2597,19 +2580,11 @@ def write_reports(
             if rep and rep.source_path:
                 summary.append(f"  Representative source: {rep.source_path}")
             summary.append("  This usually means the generated C/C++ structure is wrong, not that one case is bad.")
-        elif len(specs) and top_error.count / len(specs) >= 0.80:
-            rep = top_error.representative
-            summary.append("LIKELY TEMPLATE STRUCTURE ERROR: more than 80% of variants share one error group.")
-            summary.append(f"  Error group: {top_error.error_id} count={top_error.count}/{len(specs)}")
-            summary.append(f"  Representative: {rep.variant_id if rep else ''}")
-            if rep and rep.source_path:
-                summary.append(f"  Representative source: {rep.source_path}")
-            summary.append("  Inspect this generated source before continuing the lab.")
         summary.append("")
         summary.append("Compile/extract error groups:")
-        for error in errors[:10]:
+        for error in errors:
             rep = error.representative
-            text = error.text.replace("\r", " ").replace("\n", " | ")[:240]
+            text = error.text.replace("\r", " ").replace("\n", " | ")
             summary.append(f"  {error.error_id} count={error.count} example={rep.variant_id if rep else ''} {text}")
 
     (run_dir / "summary.txt").write_text("\n".join(summary) + "\n", encoding="utf-8")
@@ -2722,18 +2697,17 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument(
         "--compile-timeout",
         type=float,
-        default=DEFAULT_COMPILE_TIMEOUT_SECONDS,
+        default=0,
         metavar="SECONDS",
         help=(
             "Stop one compiler job after this many seconds "
-            f"(default: {DEFAULT_COMPILE_TIMEOUT_SECONDS:g}; 0 disables the limit)."
+            "(default: 0, disabled)."
         ),
     )
     parser.add_argument(
         "--jobs",
         type=int,
-        default=1,
-        help="Maximum concurrent compiler jobs. Default: 1 for shared-worker safety.",
+        help="Concurrent compiler jobs. Required for compile runs.",
     )
     parser.add_argument(
         "--focus-range",
@@ -2803,7 +2777,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.compile_timeout < 0:
         raise SystemExit("--compile-timeout must be zero or positive")
-    if args.jobs < 1:
+    if args.jobs is not None and args.jobs < 1:
         raise SystemExit("--jobs must be positive")
     splice_values = (args.splice_base, args.splice_start, args.splice_end)
     if any(splice_values) and not all(splice_values):
@@ -2903,6 +2877,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if not args.va:
         raise SystemExit("--va is required for compile runs; preview/expand modes do not need it")
+    if args.jobs is None:
+        raise SystemExit("--jobs is required for compile runs")
     va_text = format_hex(int(args.va, 16))
     va = int(va_text, 16)
     record = function_record_by_va(va)
@@ -3000,7 +2976,7 @@ def main(argv: list[str] | None = None) -> int:
                 dedupe_children[rep.variant_id].append(spec)
         specs_to_build = [children[0] for children in dedupe_children.values()]
 
-    workers = max(1, min(args.jobs, len(specs_to_build)))
+    workers = min(args.jobs, len(specs_to_build))
     print(f"Variant lab for {slug} ({va_text})")
     print(f"Template: {template_name}")
     if args.flag_preset:
@@ -3017,7 +2993,7 @@ def main(argv: list[str] | None = None) -> int:
         "Compile timeout: "
         + ("disabled" if args.compile_timeout == 0 else f"{args.compile_timeout:g}s")
     )
-    print(f"Maximum in-flight jobs: {max(workers, workers * 2)}")
+    print(f"Maximum in-flight jobs: {workers}")
     if constraints.enabled():
         print(
             "Constraints: "
@@ -3030,7 +3006,7 @@ def main(argv: list[str] | None = None) -> int:
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
         pending: dict[concurrent.futures.Future[VariantResult], VariantSpec] = {}
         spec_iter = iter(specs_to_build)
-        in_flight_limit = max(workers, workers * 2)
+        in_flight_limit = workers
 
         def submit(spec: VariantSpec) -> None:
             future = executor.submit(
@@ -3082,8 +3058,7 @@ def main(argv: list[str] | None = None) -> int:
                             error_text=text,
                         )
                     )
-                if completed == total_jobs or completed % max(1, total_jobs // 20) == 0:
-                    print(f"  completed {completed}/{total_jobs}")
+                print(f"  completed {completed}/{total_jobs}")
             fill_pending()
 
     analyze_unique_groups(built_results, original_bytes, expected_size, va, constraints)

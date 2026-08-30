@@ -14,4 +14,8 @@ Depending on the task, we may have to design the orchestration. We do it in a wa
 
 # On the workhorse model
 
-For luna, we have to take max advantage of how cheap they are. Generally, 40 concurrent max of them. Each should be assigned enough tasks or a big enough job to justify having the subagent running. If it's a small task, you can just do it yourself! Each of their tasks should be considerable enough so they get to take advtange of their context window before they return. They should always be given ENOUGH freedom to handle the problems in their own way. Only instruct them precisely on the objectives and requirements and constraints, but always leave them have somewhat enough freedom on the approaches and methods to get there, as long as they are not illegal. They ARE NOT dumb models, so they should be treated as such. We can't micromanage what they do, their usefulness lies on delegating enough volume of tasks to each of them and letting them work, only validating after they declare they are done. Validation of a worker's results and changes by a more smart agent is necessary, but it shouldn't become a bottleneck.
+For Luna, use the concurrency, task size, and resource limits that the user
+sets for the current orchestration. Do not invent fixed limits. Give each
+worker enough useful work and freedom to choose its method. State objectives,
+requirements, and constraints without micromanagement. Validate completed work
+without making review the throughput bottleneck.

@@ -89,7 +89,7 @@ def _history_lock(slug: str):
         if lock_path.stat().st_size == 0:
             handle.write(b"\0")
             handle.flush()
-        for _ in range(200):
+        while True:
             try:
                 handle.seek(0)
                 if os.name == "nt":
@@ -104,8 +104,6 @@ def _history_lock(slug: str):
                 break
             except OSError:
                 time.sleep(0.05)
-        if not acquired:
-            raise TimeoutError(f"Timed out waiting for history lock: {lock_path}")
         yield
     finally:
         try:
@@ -268,7 +266,7 @@ def _context_storage_path(value: str) -> Path:
         relative = candidate.resolve().relative_to(REPO_ROOT.resolve())
     except ValueError:
         safe_name = re.sub(r"[^A-Za-z0-9_.-]+", "_", Path(normalized).name) or "input"
-        digest = hashlib.sha256(normalized.encode("utf-8", errors="surrogateescape")).hexdigest()[:16]
+        digest = hashlib.sha256(normalized.encode("utf-8", errors="surrogateescape")).hexdigest()
         return Path("external") / f"{digest}_{safe_name}"
     return Path("files") / relative
 
@@ -425,7 +423,7 @@ def _record_checkpoint_unlocked(record: dict[str, str], label: str | None = None
 
     now = datetime.now(timezone.utc)
     timestamp = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-    run_id = now.strftime("%Y%m%dT%H%M%S.%fZ") + "-" + source_sha[:10]
+    run_id = now.strftime("%Y%m%dT%H%M%S.%fZ") + "-" + source_sha
     run_dir = _history_root(slug) / "runs" / run_id
     for source, relative in _artifact_candidates(
         slug, source_path, custom_flags, compiler_slug, build_context
@@ -652,7 +650,7 @@ def _tree_size(path: Path) -> int:
     return sum(item.stat().st_size for item in path.rglob("*") if item.is_file())
 
 
-def prune_history(record: dict[str, str], keep_recent: int = 20, apply: bool = False) -> list[str]:
+def prune_history(record: dict[str, str], keep_recent: int, apply: bool = False) -> list[str]:
     slug = function_slug(record)
     with _history_lock(slug):
         index = _load_index(slug)
@@ -663,14 +661,12 @@ def prune_history(record: dict[str, str], keep_recent: int = 20, apply: bool = F
             f"History prune {mode} for {slug}: {len(candidates)} candidate(s), "
             f"{total_bytes / (1024 * 1024):.2f} MiB"
         ]
-        for run in candidates[:30]:
+        for run in candidates:
             summary = run.get("summary") or {}
             lines.append(
                 f"  {str(run.get('id', ''))[:24]} diff={int(summary.get('diff_bytes') or 0)} "
                 f"shape={float(summary.get('shape_percent') or 0):.1f}"
             )
-        if len(candidates) > 30:
-            lines.append(f"  ... {len(candidates) - 30} more")
         if not apply:
             lines.append("Nothing deleted. Re-run with --apply-prune to remove these dominated, unlabeled runs.")
             return lines
@@ -695,7 +691,7 @@ def prune_history(record: dict[str, str], keep_recent: int = 20, apply: bool = F
         return lines
 
 
-def format_history(record: dict[str, str], limit: int = 20) -> list[str]:
+def format_history(record: dict[str, str], limit: int = 0) -> list[str]:
     slug = function_slug(record)
     index = _load_index(slug)
     runs = list(index.get("runs") or [])
@@ -708,7 +704,8 @@ def format_history(record: dict[str, str], limit: int = 20) -> list[str]:
         f"History for {slug}: {len(runs)} checkpoint(s)",
         "F  timestamp             id prefix          diff      shape  calls  blocks size  labels",
     ]
-    for run in reversed(runs[-limit:]):
+    selected = runs[-limit:] if limit else runs
+    for run in reversed(selected):
         summary = run.get("summary") or {}
         labels = ",".join(sorted(label_by_id.get(str(run["id"]), []))) or "-"
         lines.append(
@@ -789,20 +786,18 @@ def format_checkpoint_comparison(
             if not rows_for_key:
                 lines.append(f"  {label}s: none")
                 continue
-            for row in rows_for_key[:8]:
+            for row in rows_for_key:
                 suffix = "" if int(row["count"]) == 1 else f" x{int(row['count'])}"
                 lines.append(f"  {label}: {row['issue']}{suffix}")
-            if len(rows_for_key) > 8:
-                lines.append(f"  ... {len(rows_for_key) - 8} more {label}s")
         new_blocks = list(structural["new_exact_original_blocks"])
         lost_blocks = list(structural["lost_exact_original_blocks"])
         lines.append(
             "  newly exact original blocks: "
-            + (", ".join(f"+{int(value):04X}" for value in new_blocks[:12]) or "none")
+            + (", ".join(f"+{int(value):04X}" for value in new_blocks) or "none")
         )
         lines.append(
             "  lost exact original blocks:  "
-            + (", ".join(f"+{int(value):04X}" for value in lost_blocks[:12]) or "none")
+            + (", ".join(f"+{int(value):04X}" for value in lost_blocks) or "none")
         )
         current_first = structural["current_first_block_difference"]
         baseline_first = structural["baseline_first_block_difference"]
@@ -848,9 +843,9 @@ def format_history_source_comparison(
     left_selector: str,
     right_selector: str,
     *,
-    limit: int = 500,
+    limit: int = 0,
 ) -> list[str]:
-    """Return a bounded unified source diff between two persistent checkpoints."""
+    """Return a unified source diff between two persistent checkpoints."""
     index = _load_index(function_slug(record))
     left = _resolve_run(index, left_selector)
     right = _resolve_run(index, right_selector)

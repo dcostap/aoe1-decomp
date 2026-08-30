@@ -4,15 +4,39 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
+import find_function_donors  # noqa: E402
 from find_function_donors import packet_features, score_donor  # noqa: E402
 
 
 class FindFunctionDonorsTests(unittest.TestCase):
+    def test_packet_feature_cache_reuses_complete_index(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            packet = root / "packet.txt"
+            packet.write_text(
+                "=== OriginalAsm ===\n  00401000  c3  ret\n=== GhidraListingExcerpt ===\n",
+                encoding="utf-8",
+            )
+            records = [{"va": "00401000", "name": "demo", "slug": "00401000_demo"}]
+            cache = root / "features.json"
+            lock = root / "features.lock"
+            with (
+                patch.object(find_function_donors, "FEATURE_CACHE_PATH", cache),
+                patch.object(find_function_donors, "FEATURE_CACHE_LOCK", lock),
+                patch.object(find_function_donors, "packet_path", return_value=packet),
+            ):
+                first = find_function_donors.load_packet_feature_cache(records, {})
+                with patch.object(find_function_donors, "packet_features") as parser:
+                    second = find_function_donors.load_packet_feature_cache(records, {})
+            parser.assert_not_called()
+            self.assertEqual(first, second)
+
     def test_packet_features_extract_calls_slots_frame_and_eh(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             packet = Path(temporary) / "f.txt"
