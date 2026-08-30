@@ -24,18 +24,14 @@ Path::Path(int max_size)
         Waypoint* new_path = (Waypoint*)operator_new(max_size << 4);
         int i = 0;
         if (currentSizeValue > 0) {
-            int off = 0;
             Waypoint* dst = new_path;
-            do {
-                dst->x = *(float*)((char*)pathValue + off);
-                dst->y = *(float*)((char*)pathValue + off + 4);
-                dst->z = *(float*)((char*)pathValue + off + 8);
-                dst->facetToNextWaypoint =
-                    *(unsigned char*)((char*)pathValue + off + 12);
-                ++i;
-                ++dst;
-                off += 16;
-            } while (i < currentSizeValue);
+            for (; i < currentSizeValue; ++i) {
+                dst[i].x = pathValue[i].x;
+                dst[i].y = pathValue[i].y;
+                dst[i].z = pathValue[i].z;
+                dst[i].facetToNextWaypoint =
+                    pathValue[i].facetToNextWaypoint;
+            }
         }
         if (pathValue) {
             operator_delete(pathValue);
