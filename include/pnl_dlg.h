@@ -15,8 +15,8 @@ public:
 
     TDialogPanel(char*);
     virtual ~TDialogPanel();
-    virtual int setup(TDrawArea*, TPanel*, long, long, unsigned char, int);
     virtual int setup(TDrawArea*, TPanel*, long, long, char*, long, int);
+    virtual int setup(TDrawArea*, TPanel*, long, long, unsigned char, int);
     virtual void set_focus(int);
 };
 

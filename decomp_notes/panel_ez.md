@@ -29,9 +29,13 @@ Final grouped validation records explicit symbols for two overloaded selections.
 `00467A70` selects `set_background(char *, long)`.
 `00468530` selects the character-text `create_button` overload.
 
-`00468C20` is scratch. The PDB text-overload order calls virtual offset `+0xF8`.
-The original calls `+0x100`. It differs by two bytes and has no relocation or
-boundary issue. Do not reorder PDB declarations to restore this old byte result.
+VC5 emits each overloaded virtual group in reverse declaration order. The
+header now declares each group in reverse vtable order. This produces the
+binary-proven slots without casts or call-site changes.
+
+The numeric button wrapper at `00468490` now calls slot `+0xEC` and matches.
+The integer text wrapper at `00468C20` now calls slot `+0x100` and matches.
+The character and array overloads remain in their proven slots.
 
 `004675C0 draw_background` remains accepted drift. Its fresh check differs by
 756 positional bytes but only 169 raw edit-cost bytes. The frame, 20 calls,

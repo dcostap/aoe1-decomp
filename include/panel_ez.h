@@ -82,20 +82,20 @@ public:
 protected:
     virtual void set_ideal_size(long, long);
 
-    // text array, then character text.
-    virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long,
-                              long, long, long, long, long);
+    // VC5 emits each overload group in reverse declaration order.
     virtual int create_button(TPanel*, TButtonPanel**, char*, char*, long,
                               long, long, long, long, long, long);
+    virtual int create_button(TPanel*, TButtonPanel**, long, long, long, long,
+                              long, long, long, long, long);
     virtual int create_check_box(TPanel*, TButtonPanel**, long, long, long,
                                  long, long, long);
     virtual int create_radio_button(TPanel*, TButtonPanel**, long, long, long,
                                     long, long, long);
-    virtual int create_text(TPanel*, TTextPanel**, int, long, long, long,
+    virtual int create_text(TPanel*, TTextPanel**, char*, long, long, long,
                             long, long, int, int, int);
     virtual int create_text(TPanel*, TTextPanel**, char**, long, long, long,
                             long, long, long, int, int);
-    virtual int create_text(TPanel*, TTextPanel**, char*, long, long, long,
+    virtual int create_text(TPanel*, TTextPanel**, int, long, long, long,
                             long, long, int, int, int);
     virtual int create_input(TPanel*, TInputPanel**, char*, short, int, long,
                              long, long, long, long);
