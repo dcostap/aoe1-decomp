@@ -43,11 +43,17 @@ void RGE_Action_Make::set_state(unsigned char param_1)
 
 unsigned char RGE_Action_Make::update()
 {
-    float work;
-    float old_attribute_amount;
-
     switch (this->state) {
+    case 1:
+        goto success;
     case 6:
+        break;
+    default:
+        goto failure;
+    }
+    {
+        float work;
+        float old_attribute_amount;
         if (this->timer <= 0.0) {
             if (this->obj->owner->attributes[0x24] > 0.0) {
                 if (this->obj->attribute_amount_held <= 0.0) {
@@ -56,7 +62,7 @@ unsigned char RGE_Action_Make::update()
                         (int)this->obj->world_x, (int)this->obj->world_y);
                     this->obj->die_die_die();
                 }
-                return 0;
+                goto failure;
             }
         }
 
@@ -73,11 +79,11 @@ unsigned char RGE_Action_Make::update()
         }
         this->timer -= this->obj->attribute_amount_held -
                        old_attribute_amount;
-
-        break;
-
-    case 1:
-        return 1;
     }
+
+failure:
     return 0;
+
+success:
+    return 1;
 }

@@ -10,6 +10,6 @@
     "00404A10": {"status": "matching", "symbol": "??0RGE_Action_Make@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@@Z"},
     "00404A40": {"status": "matching", "symbol": "?first_in_stack@RGE_Action_Make@@UAEXE@Z"},
     "00404A70": {"status": "matching", "symbol": "?set_state@RGE_Action_Make@@MAEXE@Z"},
-    "00404A90": {"status": "scratch", "symbol": "?update@RGE_Action_Make@@UAEEXZ"}
+    "00404A90": {"status": "matching", "symbol": "?update@RGE_Action_Make@@UAEEXZ"}
   }
 }
