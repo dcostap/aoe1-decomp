@@ -108,22 +108,19 @@ RGE_Action* RGE_Action_List::create_action(int file, short type) {
 
 RGE_Action* RGE_Action_List::create_task_action(
     RGE_Task* task, RGE_Static_Object* target, float x, float y, float z) {
-    RGE_Action* action;
     RGE_Action_Bird* bird_action;
     RGE_Action_Attack* attack_action;
     RGE_Action_Explore* explore_action;
     RGE_Action_Gather* gather_action;
     RGE_Action_Make* make_action;
-    RGE_Master_Combat_Object* master;
 
     switch (task->action_type) {
     case 10:
         bird_action = new RGE_Action_Bird(this->obj, task, x, y, z);
         if (bird_action == 0) {
-            goto fail;
+            return 0;
         }
-        action = bird_action;
-        goto done;
+        return bird_action;
 
     case 7:
         if (this->obj->unitAI() != 0) {
@@ -136,32 +133,38 @@ RGE_Action* RGE_Action_List::create_task_action(
             }
         }
 
-        // The Action Object master is a combat master on the attack path.
-        master = static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj);
         if (target != 0) {
             attack_action = new RGE_Action_Attack(
-                this->obj, target, task->work_sprite, task->move_sprite, 0,
-                task->work_range, master->minimum_weapon_range,
-                master->missile_id, master->fire_missile_at_frame);
+                this->obj, target, task->move_sprite, task->work_sprite, 0,
+                task->work_range,
+                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
+                    ->minimum_weapon_range,
+                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
+                    ->missile_id,
+                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
+                    ->fire_missile_at_frame);
         } else {
             attack_action = new RGE_Action_Attack(
-                this->obj, x, y, z, task->work_sprite, task->move_sprite, 0,
-                task->work_range, master->minimum_weapon_range,
-                master->missile_id, master->fire_missile_at_frame);
+                this->obj, x, y, z, task->move_sprite, task->work_sprite, 0,
+                task->work_range,
+                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
+                    ->minimum_weapon_range,
+                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
+                    ->missile_id,
+                static_cast<RGE_Master_Combat_Object*>(this->obj->master_obj)
+                    ->fire_missile_at_frame);
         }
         if (attack_action == 0) {
-            goto fail;
+            return 0;
         }
-        action = attack_action;
-        goto done;
+        return attack_action;
 
     case 4:
         explore_action = new RGE_Action_Explore(this->obj, task, x, y, z);
         if (explore_action == 0) {
-            goto fail;
+            return 0;
         }
-        action = explore_action;
-        goto done;
+        return explore_action;
 
     case 5:
         if (target != 0) {
@@ -170,27 +173,20 @@ RGE_Action* RGE_Action_List::create_task_action(
             gather_action = new RGE_Action_Gather(this->obj, task, x, y, z);
         }
         if (gather_action == 0) {
-            goto fail;
+            return 0;
         }
-        action = gather_action;
-        goto done;
+        return gather_action;
 
     case 21:
         make_action = new RGE_Action_Make(this->obj, task);
         if (make_action == 0) {
-            goto fail;
+            return 0;
         }
-        action = make_action;
-        goto done;
+        return make_action;
 
     default:
-        goto fail;
+        return 0;
     }
-
-fail:
-    action = 0;
-done:
-    return action;
 }
 
 unsigned char RGE_Action_List::inside_obj_update() {

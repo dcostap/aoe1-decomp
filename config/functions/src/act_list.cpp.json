@@ -13,7 +13,7 @@
     "00403F60": {"status": "matching", "symbol": "?save@RGE_Action_List@@QAEXH@Z"},
     "00403FA0": {"status": "matching", "symbol": "?delete_list@RGE_Action_List@@QAEXXZ"},
     "00403FC0": {"status": "matching", "symbol": "?create_action@RGE_Action_List@@UAEPAVRGE_Action@@HF@Z"},
-    "00404200": {"status": "scratch", "symbol": "?create_task_action@RGE_Action_List@@UAEPAVRGE_Action@@PAVRGE_Task@@PAVRGE_Static_Object@@MMM@Z"},
+    "00404200": {"status": "matching", "symbol": "?create_task_action@RGE_Action_List@@UAEPAVRGE_Action@@PAVRGE_Task@@PAVRGE_Static_Object@@MMM@Z"},
     "004044A0": {"status": "matching", "symbol": "?inside_obj_update@RGE_Action_List@@UAEEXZ"},
     "004044F0": {"status": "matching", "symbol": "?update@RGE_Action_List@@UAEEXZ"},
     "00404540": {"status": "matching", "symbol": "?add_action@RGE_Action_List@@QAEXPAVRGE_Action@@@Z"},
