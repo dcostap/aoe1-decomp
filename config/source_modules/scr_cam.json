@@ -6,8 +6,7 @@
   "header": "include/scr_cam.h",
   "functions": {
     "0048F5D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0048/0048F5D0_TRIBE_Campaign_Editor_Screen.md"
+      "status": "matching"
     },
     "0048FA40": { "status": "matching" },
     "0048FBC0": { "status": "matching" },
@@ -16,22 +15,18 @@
     "0048FF00": { "status": "matching" },
     "0048FF80": { "status": "matching" },
     "00490120": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0049/00490120_make_campaign.md"
+      "status": "matching"
     },
     "00490380": { "status": "matching" },
     "00490400": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0049/00490400_remove_scenario.md"
+      "status": "matching"
     },
     "00490480": { "status": "matching" },
     "00490520": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0049/00490520_move_scenario_down.md"
+      "status": "matching"
     },
     "004905D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0049/004905D0_action.md"
+      "status": "matching"
     }
   }
 }

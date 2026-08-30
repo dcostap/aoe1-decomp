@@ -6,20 +6,16 @@
   "header": "include/scr_sedo.h",
   "functions": {
     "004B33D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sedo_module.md"
+      "status": "matching"
     },
     "004B36A0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/scr_sedo_module.md"
+      "status": "scratch"
     },
     "004B3740": {
-      "status": "scratch",
-      "note_path": "decomp_notes/scr_sedo_module.md"
+      "status": "scratch"
     },
     "004B38A0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/scr_sedo_module.md"
+      "status": "scratch"
     }
   }
 }

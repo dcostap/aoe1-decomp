@@ -89,6 +89,7 @@ The source tree uses final, original-like modules:
 - normal headers own shared declarations;
 - `config/source_modules/<module>.json` records each function status;
 - function notes store facts, tested approaches, and useful next steps;
+- function and module note paths are deterministic;
 - function notes do not store status or source ownership; and
 - wrapper files, function fragments, and context-selection macros are forbidden.
 

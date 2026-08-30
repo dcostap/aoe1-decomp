@@ -5,18 +5,18 @@
   "source": "src/Timeline.cpp",
   "header": "include/Timeline.h",
   "functions": {
-    "0050D5B0": { "status": "accepted_drift", "note_path": "decomp_notes/Timeline_module.md" },
-    "0050D7B0": { "status": "matching", "note_path": "decomp_notes/Timeline_module.md" },
-    "0050D7E0": { "status": "matching", "note_path": "decomp_notes/Timeline_module.md" },
-    "0050D830": { "status": "matching", "note_path": "decomp_notes/Timeline_module.md" },
-    "0050D9A0": { "status": "matching", "note_path": "decomp_notes/Timeline_module.md" },
-    "0050DB10": { "status": "matching", "note_path": "decomp_notes/Timeline_module.md" },
-    "0050DD30": { "status": "matching", "note_path": "decomp_notes/Timeline_module.md" },
-    "0050DD70": { "status": "accepted_drift", "note_path": "decomp_notes/Timeline_module.md" },
-    "0050DE00": { "status": "matching", "note_path": "decomp_notes/Timeline_module.md" },
-    "0050DE50": { "status": "matching", "note_path": "decomp_notes/Timeline_module.md" },
-    "0050DEF0": { "status": "matching", "note_path": "decomp_notes/Timeline_module.md" },
-    "0050DF40": { "status": "matching", "note_path": "decomp_notes/Timeline_module.md" },
-    "0050DFD0": { "status": "scratch", "note_path": "decomp_notes/Timeline_module.md" }
+    "0050D5B0": { "status": "accepted_drift" },
+    "0050D7B0": { "status": "matching" },
+    "0050D7E0": { "status": "matching" },
+    "0050D830": { "status": "matching" },
+    "0050D9A0": { "status": "matching" },
+    "0050DB10": { "status": "matching" },
+    "0050DD30": { "status": "matching" },
+    "0050DD70": { "status": "accepted_drift" },
+    "0050DE00": { "status": "matching" },
+    "0050DE50": { "status": "matching" },
+    "0050DEF0": { "status": "matching" },
+    "0050DF40": { "status": "matching" },
+    "0050DFD0": { "status": "scratch" }
   }
 }

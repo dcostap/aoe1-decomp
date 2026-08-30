@@ -10,18 +10,15 @@
     "00480400": { "status": "matching" },
     "00480460": { "status": "matching" },
     "00480480": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rge_tslc.md"
+      "status": "scratch"
     },
     "00480510": { "status": "matching" },
     "00480540": { "status": "matching" },
     "00480570": {
-      "status": "matching",
-      "note_path": "decomp_notes/rge_tslc.md"
+      "status": "matching"
     },
     "00480610": {
-      "status": "matching",
-      "note_path": "decomp_notes/rge_tslc.md"
+      "status": "matching"
     },
     "004806A0": { "status": "matching" },
     "004806C0": { "status": "matching" },

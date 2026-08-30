@@ -6,14 +6,14 @@
   "header": "include/rmm_tdbc.h",
   "functions": {
     "004876C0": { "status": "matching" },
-    "004876F0": { "status": "matching", "note_path": "decomp_notes/rmm_tdbc_module.md" },
-    "00487710": { "status": "scratch", "note_path": "decomp_notes/rmm_tdbc_module.md" },
-    "00487930": { "status": "matching", "note_path": "decomp_notes/rmm_tdbc_module.md" },
-    "00487940": { "status": "scratch", "note_path": "decomp_notes/rmm_tdbc_module.md" },
-    "00487DD0": { "status": "accepted_drift", "note_path": "decomp_notes/rmm_tdbc_module.md" },
-    "00487FA0": { "status": "verified_logic", "note_path": "logic_reviews/00487FA0_add_object_module.md" },
-    "00488700": { "status": "matching", "note_path": "decomp_notes/rmm_tdbc_module.md" },
-    "004887A0": { "status": "matching", "note_path": "decomp_notes/rmm_tdbc_module.md" },
-    "00488870": { "status": "scratch", "note_path": "decomp_notes/rmm_tdbc_module.md" }
+    "004876F0": { "status": "matching" },
+    "00487710": { "status": "scratch" },
+    "00487930": { "status": "matching" },
+    "00487940": { "status": "scratch" },
+    "00487DD0": { "status": "accepted_drift" },
+    "00487FA0": { "status": "verified_logic" },
+    "00488700": { "status": "matching" },
+    "004887A0": { "status": "matching" },
+    "00488870": { "status": "scratch" }
   }
 }

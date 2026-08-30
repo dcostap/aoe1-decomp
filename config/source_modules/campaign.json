@@ -13,8 +13,7 @@
     "00423710": { "status": "matching" },
     "00423720": { "status": "matching" },
     "00423730": {
-      "status": "matching",
-      "note_path": "decomp_notes/campaign_module.md"
+      "status": "matching"
     },
     "004237A0": { "status": "matching" }
   }

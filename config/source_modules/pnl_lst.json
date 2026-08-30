@@ -10,43 +10,36 @@
   },
   "functions": {
     "004782A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/pnl_lst.md"
+      "status": "matching"
     },
     "00478330": { "status": "matching" },
     "00478340": { "status": "matching" },
     "00478350": { "status": "matching" },
     "004783F0": { "status": "matching" },
     "004784A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/pnl_lst.md"
+      "status": "matching"
     },
     "00478510": { "status": "matching" },
     "00478540": {
-      "status": "matching",
-      "note_path": "decomp_notes/pnl_lst.md"
+      "status": "matching"
     },
     "00478610": { "status": "matching" },
     "00478660": { "status": "matching" },
     "004786B0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/pnl_lst.md"
+      "status": "accepted_drift"
     },
     "00478700": { "status": "matching" },
     "00478730": { "status": "matching" },
     "00478850": { "status": "matching" },
     "00478900": { "status": "matching" },
     "00478920": {
-      "status": "matching",
-      "note_path": "decomp_notes/pnl_lst.md"
+      "status": "matching"
     },
     "00478BA0": {
-      "status": "matching",
-      "note_path": "decomp_notes/pnl_lst.md"
+      "status": "matching"
     },
     "00478CD0": {
-      "status": "matching",
-      "note_path": "decomp_notes/pnl_lst.md"
+      "status": "matching"
     },
     "00478EE0": { "status": "matching" },
     "00478EF0": { "status": "matching" }

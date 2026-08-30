@@ -7,30 +7,24 @@
   "functions": {
     "00411EC0": { "status": "matching" },
     "00411F10": {
-      "status": "scratch",
-      "note_path": "decomp_notes/functions/0041/00411F10_ResourceItem.md"
+      "status": "scratch"
     },
     "00411F80": {
-      "status": "scratch",
-      "note_path": "decomp_notes/functions/0041/00411F80_ResourceItem.md"
+      "status": "scratch"
     },
     "00411FF0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0041/00411FF0_ResourceItem.md"
+      "status": "matching"
     },
     "00412050": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0041/00412050_ResourceItem.md"
+      "status": "matching"
     },
     "004120B0": { "status": "matching" },
     "004120C0": { "status": "matching" },
     "00412100": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0041/00412100_operator.md"
+      "status": "matching"
     },
     "00412140": {
-      "status": "scratch",
-      "note_path": "decomp_notes/functions/0041/00412140_operator.md"
+      "status": "scratch"
     },
     "00412180": { "status": "matching" },
     "004121A0": { "status": "matching" },
@@ -39,8 +33,7 @@
     "00412200": { "status": "matching" },
     "00412210": { "status": "matching" },
     "00412240": {
-      "status": "scratch",
-      "note_path": "decomp_notes/functions/0041/00412240_sortLarge.md"
+      "status": "scratch"
     }
   }
 }

@@ -301,18 +301,20 @@ def function_record_by_va(va: int) -> dict[str, str]:
         raise KeyError(f"No function record for VA {target}") from error
 
 
-def function_decomp_note_relative_path(va: str, slug: str) -> Path:
+def function_decomp_note_relative_path(va: str) -> Path:
     """Return the optional tracked note path for one function."""
     va_text = str(va).upper()
     if len(va_text) != 8 or any(character not in "0123456789ABCDEF" for character in va_text):
         raise ValueError(f"Invalid function VA: {va!r}")
-    if not slug or Path(slug).name != slug:
-        raise ValueError(f"Invalid function slug: {slug!r}")
-    return Path("decomp_notes") / "functions" / va_text[:4] / f"{slug}.md"
+    return Path("decomp_notes") / "functions" / va_text[:4] / f"{va_text}.md"
 
 
-def function_decomp_note_path(va: str, slug: str) -> Path:
-    return REPO_ROOT / function_decomp_note_relative_path(va, slug)
+def module_decomp_note_relative_path(module_name: str) -> Path:
+    """Return the optional tracked note path for one source module."""
+    name = str(module_name).strip()
+    if not name or Path(name).name != name:
+        raise ValueError(f"Invalid source-module name: {module_name!r}")
+    return Path("decomp_notes") / f"{name}.md"
 
 
 def parse_hex(value: str | None) -> int | None:
@@ -404,15 +406,12 @@ def load_source_modules() -> list[dict[str, object]]:
             if not isinstance(raw_entry, dict):
                 raise ValueError(f"{label}: {va} must be an object")
             status = str(raw_entry.get("status") or "").strip()
-            note_path = str(raw_entry.get("note_path") or "").replace("\\", "/").strip()
             if status not in _SOURCE_MODULE_STATUSES:
                 raise ValueError(
                     f"{label}: {va} has invalid status {status!r}"
                 )
-            if note_path and Path(note_path).suffix.casefold() != ".md":
-                raise ValueError(f"{label}: {va} note_path must name a Markdown file")
             seen_vas.add(va)
-            functions[va] = {"status": status, "note_path": note_path}
+            functions[va] = {"status": status}
         modules.append(
             {
                 "name": name,
@@ -560,9 +559,6 @@ def validate_source_modules() -> list[str]:
                 issues.append(
                     f"{name}: function {va} PDB source {pdb_path!r} does not match {module['pdb_source_path']!r}"
                 )
-            note_path = str(entry.get("note_path") or "")
-            if note_path and not repo_path(note_path).is_file():
-                issues.append(f"{name}: function {va} note is missing: {repo_path(note_path)}")
     return issues
 
 

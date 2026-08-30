@@ -5,10 +5,10 @@
   "source": "src/scr_load.cpp",
   "header": "include/scr_load.h",
   "functions": {
-    "0049DD40": { "status": "matching", "note_path": "decomp_notes/scr_load_module.md" },
-    "0049E0A0": { "status": "matching", "note_path": "decomp_notes/scr_load_module.md" },
-    "0049E150": { "status": "matching", "note_path": "decomp_notes/scr_load_module.md" },
-    "0049E2B0": { "status": "matching", "note_path": "decomp_notes/scr_load_module.md" },
-    "0049E2E0": { "status": "scratch", "note_path": "decomp_notes/scr_load_module.md" }
+    "0049DD40": { "status": "matching" },
+    "0049E0A0": { "status": "matching" },
+    "0049E150": { "status": "matching" },
+    "0049E2B0": { "status": "matching" },
+    "0049E2E0": { "status": "scratch" }
   }
 }

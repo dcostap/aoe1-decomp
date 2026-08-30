@@ -6,36 +6,28 @@
   "header": "include/mst_play.h",
   "functions": {
     "00460FD0": {
-      "status": "matching",
-      "note_path": "decomp_notes/mst_play_module.md"
+      "status": "matching"
     },
     "004610C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/mst_play_module.md"
+      "status": "matching"
     },
     "00461150": {
-      "status": "matching",
-      "note_path": "decomp_notes/mst_play_module.md"
+      "status": "matching"
     },
     "004611D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/mst_play_module.md"
+      "status": "matching"
     },
     "00461270": {
-      "status": "matching",
-      "note_path": "decomp_notes/mst_play_module.md"
+      "status": "matching"
     },
     "00461530": {
-      "status": "matching",
-      "note_path": "decomp_notes/mst_play_module.md"
+      "status": "matching"
     },
     "00461560": {
-      "status": "matching",
-      "note_path": "decomp_notes/mst_play_module.md"
+      "status": "matching"
     },
     "00461840": {
-      "status": "matching",
-      "note_path": "decomp_notes/mst_play_module.md"
+      "status": "matching"
     }
   }
 }

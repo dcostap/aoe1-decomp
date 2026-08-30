@@ -9,8 +9,7 @@
     "00462D90": { "status": "matching" },
     "00462DB0": { "status": "matching" },
     "00462E30": {
-      "status": "matching",
-      "note_path": "decomp_notes/mystring_module.md"
+      "status": "matching"
     }
   }
 }

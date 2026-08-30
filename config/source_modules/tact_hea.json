@@ -10,12 +10,10 @@
     "004CEA10": { "status": "matching" },
     "004CEA50": { "status": "matching" },
     "004CEA90": {
-      "status": "matching",
-      "note_path": "decomp_notes/tact_hea_module.md"
+      "status": "matching"
     },
     "004CECF0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tact_hea_module.md"
+      "status": "scratch"
     },
     "004CF030": { "status": "matching" }
   }

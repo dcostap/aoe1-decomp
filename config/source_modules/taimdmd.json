@@ -6,18 +6,15 @@
   "header": "include/taimdmd.h",
   "functions": {
     "004E4800": {
-      "status": "scratch",
-      "note_path": "decomp_notes/taimdmd_module.md"
+      "status": "scratch"
     },
     "004E4B80": {
-      "status": "scratch",
-      "note_path": "decomp_notes/taimdmd_module.md"
+      "status": "scratch"
     },
     "004E4EC0": { "status": "matching" },
     "004E4FA0": { "status": "matching" },
     "004E5050": {
-      "status": "scratch",
-      "note_path": "decomp_notes/taimdmd_module.md"
+      "status": "scratch"
     },
     "004E5DB0": { "status": "matching" },
     "004E5F30": { "status": "matching" },
@@ -26,8 +23,7 @@
     "004E6020": { "status": "matching" },
     "004E6090": { "status": "matching" },
     "004E60D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/taimdmd_module.md"
+      "status": "matching"
     },
     "004E60F0": { "status": "matching" },
     "004E6160": { "status": "matching" },

@@ -7,19 +7,16 @@
   "functions": {
     "004D0DD0": { "status": "matching" },
     "004D0EB0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/tact_mob_module.md"
+      "status": "accepted_drift"
     },
     "004D0EF0": { "status": "matching" },
     "004D0F70": { "status": "matching" },
     "004D0FC0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tact_mob_module.md"
+      "status": "scratch"
     },
     "004D10E0": { "status": "matching" },
     "004D10F0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tact_mob_module.md"
+      "status": "scratch"
     },
     "004D12B0": { "status": "matching" },
     "004D1550": { "status": "matching" },

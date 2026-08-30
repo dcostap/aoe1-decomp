@@ -14,8 +14,7 @@
     "0044FBF0": { "status": "matching" },
     "0044FC00": { "status": "matching" },
     "0044FCD0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0044/0044FCD0_make_new_master.md"
+      "status": "matching"
     },
     "0044FD40": { "status": "matching" },
     "0044FD60": { "status": "matching" },

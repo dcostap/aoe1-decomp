@@ -10,80 +10,61 @@
   },
   "functions": {
     "004ADC80": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004ADD00": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004ADD50": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004ADD60": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004AE070": {
-      "status": "scratch",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "scratch"
     },
     "004AE620": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004AE9D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004AECB0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004AED50": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004AEE10": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004AF320": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004AF6C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004B1A50": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004B29E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004B2AA0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004B2BC0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004B2C50": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004B2DD0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     },
     "004B2E60": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_sed2_module.md"
+      "status": "matching"
     }
   }
 }

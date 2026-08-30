@@ -6,33 +6,26 @@
   "header": "include/com_addr.h",
   "functions": {
     "004249D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0042/004249D0_RGE_Communications_Addresses.md"
+      "status": "matching"
     },
     "00424B10": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0042/00424B10_RGE_Communications_Addresses.md"
+      "status": "matching"
     },
     "00424B60": { "status": "matching" },
     "00424B80": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0042/00424B80_SetIPAliases.md"
+      "status": "matching"
     },
     "00424C20": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0042/00424C20_GetAddress.md"
+      "status": "matching"
     },
     "00424C50": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0042/00424C50_GetAlias.md"
+      "status": "matching"
     },
     "00424C80": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0042/00424C80_SetIPAddresses.md"
+      "status": "matching"
     },
     "00424D90": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0042/00424D90_EraseInformation.md"
+      "status": "matching"
     }
   }
 }

@@ -5,17 +5,17 @@
   "source": "src/tact_trd.cpp",
   "header": "include/tact_trd.h",
   "functions": {
-    "004D2660": { "status": "matching", "note_path": "decomp_notes/tact_trd_module.md" },
-    "004D2710": { "status": "matching", "note_path": "decomp_notes/tact_trd_module.md" },
-    "004D27A0": { "status": "matching", "note_path": "decomp_notes/tact_trd_module.md" },
-    "004D27F0": { "status": "matching", "note_path": "decomp_notes/tact_trd_module.md" },
-    "004D2830": { "status": "matching", "note_path": "decomp_notes/tact_trd_module.md" },
-    "004D2880": { "status": "matching", "note_path": "decomp_notes/tact_trd_module.md" },
-    "004D2CB0": { "status": "scratch", "note_path": "decomp_notes/tact_trd_module.md" },
-    "004D32C0": { "status": "matching", "note_path": "decomp_notes/tact_trd_module.md" },
-    "004D32F0": { "status": "matching", "note_path": "decomp_notes/tact_trd_module.md" },
-    "004D3330": { "status": "matching", "note_path": "decomp_notes/tact_trd_module.md" },
-    "004D3340": { "status": "matching", "note_path": "decomp_notes/tact_trd_module.md" },
-    "004D33C0": { "status": "matching", "note_path": "decomp_notes/tact_trd_module.md" }
+    "004D2660": { "status": "matching" },
+    "004D2710": { "status": "matching" },
+    "004D27A0": { "status": "matching" },
+    "004D27F0": { "status": "matching" },
+    "004D2830": { "status": "matching" },
+    "004D2880": { "status": "matching" },
+    "004D2CB0": { "status": "scratch" },
+    "004D32C0": { "status": "matching" },
+    "004D32F0": { "status": "matching" },
+    "004D3330": { "status": "matching" },
+    "004D3340": { "status": "matching" },
+    "004D33C0": { "status": "matching" }
   }
 }

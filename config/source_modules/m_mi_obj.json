@@ -11,13 +11,11 @@
     "004515B0": { "status": "matching" },
     "00451620": { "status": "matching" },
     "004516C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0045/004516C0_setup.md"
+      "status": "matching"
     },
     "00451760": { "status": "matching" },
     "00451770": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0045/00451770_make_new_obj.md"
+      "status": "matching"
     },
     "00451840": { "status": "matching" },
     "004518B0": { "status": "matching" },

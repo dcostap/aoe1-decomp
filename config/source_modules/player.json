@@ -9,8 +9,7 @@
       "status": "matching"
     },
     "0046E770": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/player_module.md"
+      "status": "accepted_drift"
     },
     "0046EB00": {
       "status": "matching"
@@ -100,8 +99,7 @@
       "status": "matching"
     },
     "0046F420": {
-      "status": "matching",
-      "note_path": "decomp_notes/player_module.md"
+      "status": "matching"
     },
     "0046F6B0": {
       "status": "matching"
@@ -125,8 +123,7 @@
       "status": "matching"
     },
     "0046FF90": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/player_module.md"
+      "status": "accepted_drift"
     },
     "004700B0": {
       "status": "matching"
@@ -165,8 +162,7 @@
       "status": "matching"
     },
     "004705A0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/player_module.md"
+      "status": "scratch"
     },
     "004705C0": {
       "status": "matching"
@@ -181,8 +177,7 @@
       "status": "matching"
     },
     "004706B0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/player_module.md"
+      "status": "accepted_drift"
     },
     "00470750": {
       "status": "matching"
@@ -215,8 +210,7 @@
       "status": "matching"
     },
     "00470CB0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/player_module.md"
+      "status": "accepted_drift"
     },
     "00470D20": {
       "status": "matching"
@@ -276,8 +270,7 @@
       "status": "matching"
     },
     "00471550": {
-      "status": "scratch",
-      "note_path": "decomp_notes/player_module.md"
+      "status": "scratch"
     },
     "004715D0": {
       "status": "matching"
@@ -286,8 +279,7 @@
       "status": "matching"
     },
     "00471760": {
-      "status": "matching",
-      "note_path": "decomp_notes/player_module.md"
+      "status": "matching"
     },
     "004717D0": {
       "status": "matching"
@@ -299,12 +291,10 @@
       "status": "matching"
     },
     "004718C0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/player_module.md"
+      "status": "scratch"
     },
     "00471940": {
-      "status": "scratch",
-      "note_path": "decomp_notes/player_module.md"
+      "status": "scratch"
     },
     "004719D0": {
       "status": "matching"
@@ -322,8 +312,7 @@
       "status": "matching"
     },
     "00471AA0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/player_module.md"
+      "status": "scratch"
     },
     "00471B20": {
       "status": "matching"
@@ -344,8 +333,7 @@
       "status": "matching"
     },
     "00471C90": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/player_module.md"
+      "status": "accepted_drift"
     },
     "00471D00": {
       "status": "matching"

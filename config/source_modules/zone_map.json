@@ -8,18 +8,15 @@
     "00546720": { "status": "matching" },
     "00546770": { "status": "matching" },
     "005467B0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/zone_map_module.md"
+      "status": "accepted_drift"
     },
     "005468C0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/zone_map_module.md"
+      "status": "scratch"
     },
     "005469C0": { "status": "matching" },
     "00546A00": { "status": "matching" },
     "00546A90": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/zone_map_module.md"
+      "status": "accepted_drift"
     },
     "00546BB0": { "status": "matching" },
     "00546E50": { "status": "matching" },

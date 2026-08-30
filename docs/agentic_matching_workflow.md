@@ -121,7 +121,7 @@ Use named fields and record sizes instead of numeric offsets or element strides.
 Optional function notes use this path:
 
 ```text
-decomp_notes/functions/<VA-prefix>/<slug>.md
+decomp_notes/functions/<VA-prefix>/<VA>.md
 ```
 
 Keep raw objects, diffs, and experiment files under `build/`.

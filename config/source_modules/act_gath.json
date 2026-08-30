@@ -10,12 +10,12 @@
     "00402FD0": { "status": "matching" },
     "00403020": { "status": "matching" },
     "00403050": { "status": "matching" },
-    "00403110": { "status": "scratch", "note_path": "decomp_notes/act_gath_module.md" },
-    "00403590": { "status": "scratch", "note_path": "decomp_notes/act_gath_module.md" },
+    "00403110": { "status": "scratch" },
+    "00403590": { "status": "scratch" },
     "00403C60": { "status": "matching" },
     "00403C90": { "status": "matching" },
     "00403CD0": { "status": "matching" },
-    "00403CE0": { "status": "accepted_drift", "note_path": "decomp_notes/act_gath_module.md" },
-    "00403D90": { "status": "accepted_drift", "note_path": "decomp_notes/act_gath_module.md" }
+    "00403CE0": { "status": "accepted_drift" },
+    "00403D90": { "status": "accepted_drift" }
   }
 }

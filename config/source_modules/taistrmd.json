@@ -19,8 +19,7 @@
     "004E9260": { "status": "scratch" },
     "004E9730": { "status": "matching" },
     "004E9820": {
-      "status": "scratch",
-      "note_path": "decomp_notes/taistrmd_module.md"
+      "status": "scratch"
     },
     "004E9D90": { "status": "matching" },
     "004E9DA0": { "status": "matching" },

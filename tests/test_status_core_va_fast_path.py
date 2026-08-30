@@ -15,7 +15,7 @@ import status_core  # noqa: E402
 
 
 class StatusCoreVaFastPathTests(unittest.TestCase):
-    def test_migrated_module_uses_manifest_state_and_decomp_note(self) -> None:
+    def test_migrated_module_uses_manifest_state_and_deterministic_notes(self) -> None:
         rows = status_core.build_status_rows(
             include_source_preview=False,
             include_source_notes=True,
@@ -29,10 +29,11 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
         self.assertEqual(row["source_bucket"], "scratch")
         self.assertEqual(row["source_path"], "src/point.cpp")
         self.assertEqual(
-            row["decomp_note_path"],
-            "decomp_notes/functions/0047/0047E530_operator.md",
+            row["function_note_path"],
+            "decomp_notes/functions/0047/0047E530.md",
         )
-        self.assertIn("Function notes:", row["source_note"])
+        self.assertEqual(row["module_note_path"], "")
+        self.assertIn("Notes:", row["source_note"])
 
     def test_logic_review_lookup_includes_sparse_tracked_files(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -94,9 +95,9 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
             source = root / "src" / "demo.cpp"
             source.parent.mkdir(parents=True)
             source.write_text("// NOTE: target note\nint target() { return 1; }\n", encoding="utf-8")
-            module = {"source": "src/demo.cpp"}
+            module = {"name": "demo", "source": "src/demo.cpp"}
             entries = {
-                "00400000": {"module": module, "status": "scratch", "note_path": ""},
+                "00400000": {"module": module, "status": "scratch"},
             }
 
             with (

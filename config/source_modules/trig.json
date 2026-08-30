@@ -6,8 +6,7 @@
   "header": "include/trig.h",
   "functions": {
     "0052A730": {
-      "status": "matching",
-      "note_path": "decomp_notes/trig_module.md"
+      "status": "matching"
     },
     "0052A830": { "status": "matching" },
     "0052A850": { "status": "matching" },

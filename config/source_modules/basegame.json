@@ -12,19 +12,16 @@
       "status": "matching"
     },
     "0041E7A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "matching"
     },
     "0041B6A0": {
       "status": "matching"
     },
     "0041BAA0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "accepted_drift"
     },
     "0041C270": {
-      "status": "matching",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "matching"
     },
     "0041C7D0": {
       "status": "matching"
@@ -87,8 +84,7 @@
       "status": "matching"
     },
     "0041CCA0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "scratch"
     },
     "0041CDA0": {
       "status": "matching"
@@ -112,23 +108,19 @@
       "status": "matching"
     },
     "0041CFD0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "scratch"
     },
     "0041D0A0": {
       "status": "matching"
     },
     "0041E700": {
-      "status": "scratch",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "scratch"
     },
     "0041E7D0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/final_grouped_compile_debt.md"
+      "status": "accepted_drift"
     },
     "0041E920": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "accepted_drift"
     },
     "0041EBC0": {
       "status": "matching"
@@ -164,8 +156,7 @@
       "status": "matching"
     },
     "0041F560": {
-      "status": "verified_logic",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "verified_logic"
     },
     "0041F730": {
       "status": "matching"
@@ -183,8 +174,7 @@
       "status": "matching"
     },
     "0041F9F0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "scratch"
     },
     "0041FA90": {
       "status": "matching"
@@ -199,8 +189,7 @@
       "status": "matching"
     },
     "0041FDE0": {
-      "status": "matching",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "matching"
     },
     "0041FE50": {
       "status": "matching"
@@ -290,15 +279,13 @@
       "status": "matching"
     },
     "004206D0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "scratch"
     },
     "00420F60": {
       "status": "matching"
     },
     "00421110": {
-      "status": "scratch",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "scratch"
     },
     "004211D0": {
       "status": "matching"
@@ -340,12 +327,10 @@
       "status": "matching"
     },
     "00421BF0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "accepted_drift"
     },
     "00421FA0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "scratch"
     },
     "00422030": {
       "status": "matching"
@@ -534,8 +519,7 @@
       "status": "matching"
     },
     "00422960": {
-      "status": "scratch",
-      "note_path": "decomp_notes/basegame_module.md"
+      "status": "scratch"
     },
     "00422A10": {
       "status": "matching"

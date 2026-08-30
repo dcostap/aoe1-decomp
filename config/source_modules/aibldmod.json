@@ -11,15 +11,13 @@
     "00408DF0": { "status": "matching" },
     "004092F0": { "status": "matching" },
     "00409430": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0040/00409430_loadBuildList.md"
+      "status": "matching"
     },
     "004098A0": { "status": "matching" },
     "004098B0": { "status": "matching" },
     "004098C0": { "status": "matching" },
     "00409950": {
-      "status": "scratch",
-      "note_path": "decomp_notes/functions/0040/00409950_insertItem.md"
+      "status": "scratch"
     },
     "00409B70": { "status": "matching" },
     "00409BB0": { "status": "matching" },

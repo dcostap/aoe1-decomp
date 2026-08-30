@@ -10,12 +10,10 @@
     "0050E130": { "status": "matching" },
     "0050E1B0": { "status": "matching" },
     "0050E250": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tm_b_obj_module.md"
+      "status": "scratch"
     },
     "0050E360": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tm_b_obj_module.md"
+      "status": "scratch"
     },
     "0050E430": { "status": "matching" },
     "0050E440": { "status": "matching" },
@@ -27,8 +25,7 @@
     "0050E6B0": { "status": "matching" },
     "0050E730": { "status": "matching" },
     "0050E7A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/tm_b_obj_module.md"
+      "status": "matching"
     },
     "0050E950": { "status": "matching" }
   }

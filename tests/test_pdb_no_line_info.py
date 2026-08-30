@@ -104,7 +104,7 @@ class PdbNoLineInfoTests(unittest.TestCase):
             "generated": {},
             "symbols": {VA: SYMBOL},
         }
-        entry = {"module": source_module, "status": "matching", "note_path": ""}
+        entry = {"module": source_module, "status": "matching"}
         pdb_symbol = common.function_record_by_va(int(VA, 16))["name"]
         with patch.object(
             candidate_module, "source_module_entry_for_va", return_value=entry
@@ -134,7 +134,7 @@ class PdbNoLineInfoTests(unittest.TestCase):
             "generated": {},
             "symbols": {VA: SYMBOL},
         }
-        entry = {"module": source_module, "status": "matching", "note_path": ""}
+        entry = {"module": source_module, "status": "matching"}
         with patch.object(
             candidate_module, "source_module_entry_for_va", return_value=entry
         ), patch.object(
@@ -157,7 +157,7 @@ class PdbNoLineInfoTests(unittest.TestCase):
             "generated": {},
             "symbols": {VA: SYMBOL},
         }
-        entry = {"module": source_module, "status": "scratch", "note_path": ""}
+        entry = {"module": source_module, "status": "scratch"}
         with patch.object(
             candidate_module, "source_module_entry_for_va", return_value=entry
         ), patch.object(

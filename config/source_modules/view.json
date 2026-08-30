@@ -18,16 +18,13 @@
       "status": "matching"
     },
     "00533AF0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00533E10": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "accepted_drift"
     },
     "00533EC0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "accepted_drift"
     },
     "00533F70": {
       "status": "scratch"
@@ -39,8 +36,7 @@
       "status": "matching"
     },
     "00534340": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00534420": {
       "status": "matching"
@@ -52,34 +48,28 @@
       "status": "matching"
     },
     "00534530": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "005345D0": {
       "status": "matching"
     },
     "005346F0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00534A00": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00534AE0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00535210": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00535480": {
       "status": "matching"
     },
     "00535610": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "005358B0": {
       "status": "matching"
@@ -88,8 +78,7 @@
       "status": "matching"
     },
     "00535A80": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00535C70": {
       "status": "matching"
@@ -119,16 +108,13 @@
       "status": "matching"
     },
     "00535FE0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00536B40": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "005381C0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00538280": {
       "status": "matching"
@@ -143,38 +129,31 @@
       "status": "matching"
     },
     "00538710": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00538B80": {
       "status": "matching"
     },
     "00538D60": {
-      "status": "verified_logic",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "verified_logic"
     },
     "00538E60": {
       "status": "scratch"
     },
     "00538F00": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00539030": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "accepted_drift"
     },
     "005390D0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00539510": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "005396F0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "00539930": {
       "status": "matching"
@@ -198,12 +177,10 @@
       "status": "scratch"
     },
     "0053A290": {
-      "status": "verified_logic",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "verified_logic"
     },
     "0053A9C0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "scratch"
     },
     "0053AAF0": {
       "status": "scratch"
@@ -248,8 +225,7 @@
       "status": "matching"
     },
     "0053B300": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/view_module.md"
+      "status": "accepted_drift"
     },
     "0053B370": {
       "status": "matching"

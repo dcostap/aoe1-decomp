@@ -6,24 +6,19 @@
   "header": "include/taction.h",
   "functions": {
     "004D38E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/taction_module.md"
+      "status": "matching"
     },
     "004D3980": {
-      "status": "matching",
-      "note_path": "decomp_notes/taction_module.md"
+      "status": "matching"
     },
     "004D39E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/taction_module.md"
+      "status": "matching"
     },
     "004D3A00": {
-      "status": "matching",
-      "note_path": "decomp_notes/taction_module.md"
+      "status": "matching"
     },
     "004D3A10": {
-      "status": "matching",
-      "note_path": "decomp_notes/taction_module.md"
+      "status": "matching"
     }
   }
 }

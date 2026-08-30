@@ -12,8 +12,7 @@
     "004CE700": { "status": "matching" },
     "004CE720": { "status": "matching" },
     "004CE740": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/tact_dar_module.md"
+      "status": "accepted_drift"
     },
     "004CE7A0": { "status": "matching" }
   }

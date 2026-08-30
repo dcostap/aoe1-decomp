@@ -6,24 +6,19 @@
   "header": "include/taicrule.h",
   "functions": {
     "004D68D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/taicrule_module.md"
+      "status": "matching"
     },
     "004D6900": {
-      "status": "matching",
-      "note_path": "decomp_notes/taicrule_module.md"
+      "status": "matching"
     },
     "004D6910": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/taicrule_module.md"
+      "status": "accepted_drift"
     },
     "004D6AA0": {
-      "status": "matching",
-      "note_path": "decomp_notes/taicrule_module.md"
+      "status": "matching"
     },
     "004D6AB0": {
-      "status": "matching",
-      "note_path": "decomp_notes/taicrule_module.md"
+      "status": "matching"
     }
   }
 }

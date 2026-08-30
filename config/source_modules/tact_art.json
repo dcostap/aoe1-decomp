@@ -9,27 +9,22 @@
     "004CCC00": { "status": "matching" },
     "004CCC30": { "status": "matching" },
     "004CCC70": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/004C/004CCC70_first_in_stack.md"
+      "status": "matching"
     },
     "004CCCB0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/004C/004CCCB0_set_state.md"
+      "status": "matching"
     },
     "004CCDF0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/004C/004CCDF0_update.md"
+      "status": "matching"
     },
     "004CCF30": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/004C/004CCF30_check_ownership.md"
+      "status": "matching"
     },
     "004CD120": { "status": "matching" },
     "004CD130": { "status": "matching" },
     "004CD160": { "status": "matching" },
     "004CD1A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/004C/004CD1A0_reset_owner.md"
+      "status": "matching"
     }
   }
 }

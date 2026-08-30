@@ -8,8 +8,7 @@
     "00406D60": { "status": "matching" },
     "00406DC0": { "status": "matching" },
     "00406E00": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/act_tran_module.md"
+      "status": "accepted_drift"
     },
     "00406E50": { "status": "matching" },
     "00406F90": { "status": "matching" },

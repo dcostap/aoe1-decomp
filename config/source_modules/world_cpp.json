@@ -9,8 +9,7 @@
       "status": "matching"
     },
     "00540A40": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "00540CF0": {
       "status": "matching"
@@ -40,15 +39,13 @@
       "status": "matching"
     },
     "005412B0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "00541380": {
       "status": "matching"
     },
     "005414A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "matching"
     },
     "00541500": {
       "status": "matching"
@@ -57,8 +54,7 @@
       "status": "matching"
     },
     "005415B0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "00541720": {
       "status": "matching"
@@ -82,20 +78,16 @@
       "status": "matching"
     },
     "00541B60": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "00541BC0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "00541C20": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "00541C90": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "00541CF0": {
       "status": "matching"
@@ -125,8 +117,7 @@
       "status": "matching"
     },
     "005420F0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "00542360": {
       "status": "matching"
@@ -135,8 +126,7 @@
       "status": "matching"
     },
     "00542480": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "005424F0": {
       "status": "matching"
@@ -148,12 +138,10 @@
       "status": "matching"
     },
     "00542750": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "00542BF0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "00542D10": {
       "status": "matching"
@@ -195,12 +183,10 @@
       "status": "matching"
     },
     "00543E00": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "00544090": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     },
     "00544250": {
       "status": "matching"
@@ -290,8 +276,7 @@
       "status": "matching"
     },
     "005462D0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/world_module.md"
+      "status": "scratch"
     }
   }
 }

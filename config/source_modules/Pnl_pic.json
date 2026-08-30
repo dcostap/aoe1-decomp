@@ -6,22 +6,18 @@
   "header": "include/pnl_pic.h",
   "functions": {
     "0047A1D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0047/0047A1D0_TPicturePanel.md"
+      "status": "matching"
     },
     "0047A250": { "status": "matching" },
     "0047A2A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0047/0047A2A0_setup.md"
+      "status": "matching"
     },
     "0047A3A0": { "status": "matching" },
     "0047A3E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0047/0047A3E0_load_pic.md"
+      "status": "matching"
     },
     "0047A5B0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0047/0047A5B0_free_pic.md"
+      "status": "matching"
     },
     "0047A630": { "status": "matching" }
   }

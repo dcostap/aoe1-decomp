@@ -6,8 +6,7 @@
   "header": "include/airesmod.h",
   "functions": {
     "00412310": {
-      "status": "scratch",
-      "note_path": "decomp_notes/functions/0041/00412310_ResourceAIModule.md"
+      "status": "scratch"
     },
     "00412480": { "status": "matching" },
     "00412540": { "status": "matching" },
@@ -17,20 +16,17 @@
     "00412580": { "status": "matching" },
     "00412590": { "status": "matching" },
     "004125C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0041/004125C0_resourcesAvailable.md"
+      "status": "matching"
     },
     "00412640": { "status": "matching" },
     "004126B0": { "status": "matching" },
     "004126E0": { "status": "matching" },
     "00412710": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0041/00412710_setResource.md"
+      "status": "matching"
     },
     "00412770": { "status": "matching" },
     "004127C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0041/004127C0_incrementResource.md"
+      "status": "matching"
     },
     "00412820": { "status": "matching" },
     "00412870": { "status": "matching" },

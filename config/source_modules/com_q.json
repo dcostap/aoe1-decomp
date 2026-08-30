@@ -8,28 +8,25 @@
     "00431720": { "status": "matching" },
     "00431760": { "status": "matching" },
     "00431810": { "status": "matching" },
-    "004319E0": { "status": "matching", "note_path": "decomp_notes/com_q_module.md" },
+    "004319E0": { "status": "matching" },
     "00431A40": {
-      "status": "matching",
-      "note_path": "decomp_notes/com_q_module.md"
+      "status": "matching"
     },
     "00431A70": { "status": "matching" },
-    "00431A80": { "status": "scratch", "note_path": "decomp_notes/com_q_module.md" },
-    "00431B10": { "status": "scratch", "note_path": "decomp_notes/com_q_module.md" },
+    "00431A80": { "status": "scratch" },
+    "00431B10": { "status": "scratch" },
     "00431BD0": { "status": "matching" },
     "00431BE0": { "status": "matching" },
-    "00431BF0": { "status": "matching", "note_path": "decomp_notes/com_q_module.md" },
+    "00431BF0": { "status": "matching" },
     "00431D10": { "status": "matching" },
     "00431D20": { "status": "matching" },
     "00431D30": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/com_q_module.md"
+      "status": "accepted_drift"
     },
     "00431DD0": { "status": "matching" },
     "00431E40": { "status": "matching" },
     "00431F10": {
-      "status": "matching",
-      "note_path": "decomp_notes/com_q_module.md"
+      "status": "matching"
     },
     "00431F50": { "status": "matching" }
   }

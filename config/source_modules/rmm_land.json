@@ -7,20 +7,16 @@
   "functions": {
     "00485200": { "status": "matching" },
     "00485240": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_land_module.md"
+      "status": "scratch"
     },
     "004852D0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_land_module.md"
+      "status": "scratch"
     },
     "00485480": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_land_module.md"
+      "status": "scratch"
     },
     "00485520": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_land_module.md"
+      "status": "scratch"
     }
   }
 }

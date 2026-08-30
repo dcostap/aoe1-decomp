@@ -7,12 +7,10 @@
   "functions": {
     "00412BB0": { "status": "matching" },
     "00412C20": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0041/00412C20_TechnologyItem.md"
+      "status": "matching"
     },
     "00412CD0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0041/00412CD0_TechnologyItem.md"
+      "status": "matching"
     },
     "00412D70": { "status": "matching" },
     "00412D90": { "status": "matching" },

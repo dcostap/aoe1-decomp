@@ -7,37 +7,29 @@
   "functions": {
     "004846C0": { "status": "matching" },
     "00484700": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_elev_natural_candidate.md"
+      "status": "scratch"
     },
     "004847C0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_elev_natural_candidate.md"
+      "status": "scratch"
     },
     "004848A0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_elev_natural_candidate.md"
+      "status": "scratch"
     },
     "00484A40": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_elev_natural_candidate.md"
+      "status": "scratch"
     },
     "00484B30": { "status": "matching" },
     "00484B50": {
-      "status": "matching",
-      "note_path": "decomp_notes/rmm_elev_natural_candidate.md"
+      "status": "matching"
     },
     "00484B90": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/rmm_elev_natural_candidate.md"
+      "status": "accepted_drift"
     },
     "00484C80": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_elev_natural_candidate.md"
+      "status": "scratch"
     },
     "00484D00": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_elev_natural_candidate.md"
+      "status": "scratch"
     }
   }
 }

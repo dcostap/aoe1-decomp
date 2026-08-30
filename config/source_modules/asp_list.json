@@ -14,8 +14,7 @@
     "0041A8B0": { "status": "matching" },
     "0041A8F0": { "status": "matching" },
     "0041A910": {
-      "status": "verified_logic",
-      "note_path": "decomp_notes/asp_list_module.md"
+      "status": "verified_logic"
     },
     "0041A9B0": { "status": "matching" },
     "0041AA20": { "status": "matching" },

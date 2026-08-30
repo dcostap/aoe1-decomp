@@ -6,8 +6,7 @@
   "header": "include/com_serv.h",
   "functions": {
     "00431FB0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0043/00431FB0_TCommunications_Services.md"
+      "status": "matching"
     },
     "00432030": { "status": "matching" },
     "00432040": { "status": "matching" },
@@ -19,8 +18,7 @@
     "00432120": { "status": "matching" },
     "00432150": { "status": "matching" },
     "00432180": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0043/00432180_DPEnumCallback.md"
+      "status": "matching"
     }
   }
 }

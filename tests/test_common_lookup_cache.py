@@ -37,8 +37,8 @@ class CommonLookupCacheTests(unittest.TestCase):
                 "name": "demo",
                 "source": "src/demo.cpp",
                 "functions": {
-                    "00001000": {"status": "scratch", "note_path": ""},
-                    "00002000": {"status": "matching", "note_path": ""},
+                    "00001000": {"status": "scratch"},
+                    "00002000": {"status": "matching"},
                 },
             }
         ]

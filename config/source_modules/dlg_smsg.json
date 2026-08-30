@@ -6,40 +6,31 @@
   "header": "include/dlg_smsg.h",
   "functions": {
     "004407A0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/functions/0044/004407A0_TribeSendMessageDialog.md"
+      "status": "accepted_drift"
     },
     "00440E20": {
-      "status": "scratch",
-      "note_path": "decomp_notes/functions/0044/00440E20_TribeSendMessageDialog.md"
+      "status": "scratch"
     },
     "00440F20": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0044/00440F20_action.md"
+      "status": "matching"
     },
     "00441410": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0044/00441410_checkButtons.md"
+      "status": "matching"
     },
     "00441460": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0044/00441460_draw.md"
+      "status": "matching"
     },
     "00441530": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0044/00441530_TribeSendQuickMessageDialog.md"
+      "status": "matching"
     },
     "00441650": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0044/00441650_TribeSendQuickMessageDialog.md"
+      "status": "matching"
     },
     "004416C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0044/004416C0_action.md"
+      "status": "matching"
     },
     "00441840": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0044/00441840_handle_mouse_down.md"
+      "status": "matching"
     }
   }
 }

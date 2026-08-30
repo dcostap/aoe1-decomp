@@ -23,9 +23,8 @@ class VerifiedLogicStatusTests(unittest.TestCase):
             source.parent.mkdir(parents=True)
             source.write_text("int demo() { return 1; }\n", encoding="utf-8")
             entry = {
-                "module": {"source": "src/demo.cpp"},
+                "module": {"name": "demo", "source": "src/demo.cpp"},
                 "status": "verified_logic",
-                "note_path": "",
             }
             with patch.object(common, "REPO_ROOT", root), patch.object(
                 common, "source_module_entry_for_va", return_value=entry
@@ -67,9 +66,8 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                     status_core,
                     "source_module_entry_for_va",
                     return_value={
-                        "module": {"source": "src/demo.cpp"},
+                        "module": {"name": "demo", "source": "src/demo.cpp"},
                         "status": "verified_logic",
-                        "note_path": "",
                     },
                 ),
             ):
@@ -113,9 +111,8 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                     status_core,
                     "source_module_entry_for_va",
                     return_value={
-                        "module": {"source": "src/demo.cpp"},
+                        "module": {"name": "demo", "source": "src/demo.cpp"},
                         "status": "verified_logic",
-                        "note_path": "",
                     },
                 ),
             ):

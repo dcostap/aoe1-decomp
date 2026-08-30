@@ -9,12 +9,10 @@
     "00436930": { "status": "matching" },
     "004369C0": { "status": "matching" },
     "00436A10": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/diam_map_module.md"
+      "status": "accepted_drift"
     },
     "00436C30": {
-      "status": "scratch",
-      "note_path": "decomp_notes/diam_map_module.md"
+      "status": "scratch"
     },
     "00437070": { "status": "matching" },
     "00437090": { "status": "matching" },
@@ -22,40 +20,32 @@
     "00437120": { "status": "matching" },
     "004372C0": { "status": "matching" },
     "004374C0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/diam_map_module.md"
+      "status": "scratch"
     },
     "00437620": { "status": "matching" },
     "00437660": { "status": "matching" },
     "004376D0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/diam_map_module.md"
+      "status": "scratch"
     },
     "00437760": {
-      "status": "scratch",
-      "note_path": "decomp_notes/diam_map_module.md"
+      "status": "scratch"
     },
     "00437C20": { "status": "matching" },
     "00437CC0": { "status": "matching" },
     "00437EC0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/diam_map_module.md"
+      "status": "scratch"
     },
     "00438060": {
-      "status": "matching",
-      "note_path": "decomp_notes/diam_map_module.md"
+      "status": "matching"
     },
     "004381D0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/diam_map_module.md"
+      "status": "scratch"
     },
     "00438250": {
-      "status": "scratch",
-      "note_path": "decomp_notes/diam_map_module.md"
+      "status": "scratch"
     },
     "00438530": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/diam_map_module.md"
+      "status": "accepted_drift"
     },
     "00438630": { "status": "matching" },
     "00438670": { "status": "matching" },

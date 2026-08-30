@@ -32,8 +32,7 @@
     "004BCCC0": { "status": "matching" },
     "004BCCF0": { "status": "matching" },
     "004BCD30": {
-      "status": "scratch",
-      "note_path": "decomp_notes/sounddrv_module.md"
+      "status": "scratch"
     },
     "004BD300": { "status": "matching" },
     "004BD370": { "status": "matching" },

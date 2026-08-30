@@ -9,13 +9,11 @@
     "004BEE30": { "status": "matching" },
     "004BEE40": { "status": "matching" },
     "004BEE70": {
-      "status": "scratch",
-      "note_path": "decomp_notes/spnl_obj_module.md"
+      "status": "scratch"
     },
     "004BF4D0": { "status": "matching" },
     "004BF6C0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/spnl_obj_module.md"
+      "status": "scratch"
     },
     "004BF6E0": { "status": "matching" }
   }

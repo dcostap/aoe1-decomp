@@ -6,48 +6,37 @@
   "header": "include/tpnl_tim.h",
   "functions": {
     "0051D790": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_tim_module.md"
+      "status": "matching"
     },
     "0051D8B0": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_tim_module.md"
+      "status": "matching"
     },
     "0051D940": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_tim_module.md"
+      "status": "matching"
     },
     "0051DAD0": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_tim_module.md"
+      "status": "matching"
     },
     "0051DB00": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_tim_module.md"
+      "status": "matching"
     },
     "0051DC60": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_tim_module.md"
+      "status": "matching"
     },
     "0051DC70": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_tim_module.md"
+      "status": "matching"
     },
     "0051DC90": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_tim_module.md"
+      "status": "matching"
     },
     "0051E0E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_tim_module.md"
+      "status": "matching"
     },
     "0051E150": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_tim_module.md"
+      "status": "matching"
     },
     "0051E2B0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tpnl_tim_module.md"
+      "status": "scratch"
     }
   }
 }

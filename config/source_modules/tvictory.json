@@ -5,11 +5,11 @@
   "source": "src/tvictory.cpp",
   "header": "include/tvictory.h",
   "functions": {
-    "0052C8F0": { "status": "matching", "note_path": "decomp_notes/tvictory_module.md" },
-    "0052C920": { "status": "matching", "note_path": "decomp_notes/tvictory_module.md" },
-    "0052C940": { "status": "matching", "note_path": "decomp_notes/tvictory_module.md" },
-    "0052C950": { "status": "matching", "note_path": "decomp_notes/tvictory_module.md" },
-    "0052C970": { "status": "matching", "note_path": "decomp_notes/tvictory_module.md" },
-    "0052C9B0": { "status": "matching", "note_path": "decomp_notes/tvictory_module.md" }
+    "0052C8F0": { "status": "matching" },
+    "0052C920": { "status": "matching" },
+    "0052C940": { "status": "matching" },
+    "0052C950": { "status": "matching" },
+    "0052C970": { "status": "matching" },
+    "0052C9B0": { "status": "matching" }
   }
 }

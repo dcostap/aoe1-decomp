@@ -7,57 +7,46 @@
   "functions": {
     "00462E80": { "status": "matching" },
     "00462EA0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00462EA0_RGE_Object_List.md"
+      "status": "matching"
     },
     "00462EF0": { "status": "matching" },
     "00462F30": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00462F30_add_node.md"
+      "status": "matching"
     },
     "00462F70": { "status": "matching" },
     "00462FD0": { "status": "matching" },
     "00463000": { "status": "matching" },
     "00463100": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00463100_shadow_draw.md"
+      "status": "matching"
     },
     "00463180": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00463180_normal_draw.md"
+      "status": "matching"
     },
     "00463210": { "status": "matching" },
     "00463260": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00463260_sort.md"
+      "status": "matching"
     },
     "004632E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/004632E0_find_by_group.md"
+      "status": "matching"
     },
     "00463310": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00463310_find_by_group.md"
+      "status": "matching"
     },
     "00463490": { "status": "matching" },
     "004634C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/004634C0_find_by_master_id.md"
+      "status": "matching"
     },
     "00463640": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00463640_find_by_master_ids.md"
+      "status": "matching"
     },
     "004637C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/004637C0_find_by_type.md"
+      "status": "matching"
     },
     "00463890": { "status": "matching" },
     "004638D0": { "status": "matching" },
     "00463910": { "status": "matching" },
     "00463930": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00463930_load.md"
+      "status": "matching"
     }
   }
 }

@@ -11,308 +11,232 @@
   },
   "functions": {
     "00466A20": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00466A90": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "scratch"
     },
     "00467100": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467150": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467250": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "004672A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467380": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "scratch"
     },
     "00467560": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467570": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "004675C0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "accepted_drift"
     },
     "004679A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "004679F0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467A50": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467A70": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467BE0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467D50": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467DA0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467EF0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467F40": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467F50": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467F60": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467FA0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467FC0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00467FE0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468000": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "accepted_drift"
     },
     "00468060": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "004681D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "004682D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468300": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468310": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468320": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468330": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468340": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468350": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468360": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468370": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468380": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "004683D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "004683F0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468410": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468420": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468440": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468450": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468460": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468470": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468480": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468490": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "scratch"
     },
     "00468530": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468760": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "004689C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468C20": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "scratch"
     },
     "00468CB0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00468E50": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00469000": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "scratch"
     },
     "004691C0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "scratch"
     },
     "00469380": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "004696B0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "scratch"
     },
     "00469910": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00469A80": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00469AD0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00469C40": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00469DB0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00469E10": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00469EE0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "00469F30": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "0046A040": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "0046A090": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "0046A150": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "0046A1A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "0046A260": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "0046A2E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "0046A360": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "0046A3C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "0046A410": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "0046A4E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     },
     "0046A670": {
-      "status": "matching",
-      "note_path": "decomp_notes/Panel_ez_module.md"
+      "status": "matching"
     }
   }
 }

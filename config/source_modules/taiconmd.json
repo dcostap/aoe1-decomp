@@ -11,14 +11,12 @@
     "004D5EF0": { "status": "matching" },
     "004D5F00": { "status": "matching" },
     "004D60E0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/taiconmd_module.md"
+      "status": "scratch"
     },
     "004D6780": { "status": "matching" },
     "004D6800": { "status": "matching" },
     "004D68A0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/taiconmd_module.md"
+      "status": "accepted_drift"
     }
   }
 }

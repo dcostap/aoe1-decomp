@@ -11,12 +11,10 @@
     "0048ACA0": { "status": "matching" },
     "0048ACC0": { "status": "matching" },
     "0048AD60": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/scenario_module.md"
+      "status": "accepted_drift"
     },
     "0048AE10": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/scenario_module.md"
+      "status": "accepted_drift"
     },
     "0048B5A0": { "status": "matching" },
     "0048B6C0": { "status": "matching" },
@@ -41,17 +39,14 @@
     "0048BCA0": { "status": "matching" },
     "0048BCB0": { "status": "matching" },
     "0048BCC0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/scenario_module.md"
+      "status": "accepted_drift"
     },
     "0048BEC0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/scenario_module.md"
+      "status": "accepted_drift"
     },
     "0048C0D0": { "status": "matching" },
     "0048C0E0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/scenario_module.md"
+      "status": "accepted_drift"
     },
     "0048C2F0": { "status": "matching" },
     "0048C360": { "status": "matching" },

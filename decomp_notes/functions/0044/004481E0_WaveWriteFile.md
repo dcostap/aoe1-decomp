@@ -1,7 +1,0 @@
-# Function notes: 004481E0 `_WaveWriteFile`
-
-Module notes: `decomp_notes/dsutil_module.md`.
-
-## Recovered attempt history
-
-No function-specific cleanup block was mapped automatically. Review the earlier note and Git history before work.

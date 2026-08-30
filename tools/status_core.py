@@ -20,6 +20,7 @@ from common import (
     load_padding_only_functions,
     load_parent_owned_fragments,
     load_translation_units,
+    module_decomp_note_relative_path,
     source_module_entry_for_va,
     load_toolchain_supplied_function_names,
     load_toolchain_supplied_regions,
@@ -52,7 +53,8 @@ STATUS_FIELDNAMES = [
     "source_path",
     "translation_unit",
     "compiler_flags",
-    "decomp_note_path",
+    "function_note_path",
+    "module_note_path",
     "logic_review_path",
     "has_logic_review",
     "corpus_bucket",
@@ -241,16 +243,16 @@ def enrich_status_rows(
                 notes["BLOCKER"] = (
                     f"{notes['BLOCKER']} | {missing_ledger}" if notes["BLOCKER"] else missing_ledger
                 )
-            module_entry = source_module_entry_for_va(row["va"])
-            note_relative = function_decomp_note_relative_path(row["va"], row["slug"])
-            note_path = REPO_ROOT / note_relative
-            note_path = (
-                note_relative.as_posix()
-                if note_path.is_file()
-                else str((module_entry or {}).get("note_path") or "")
-            )
-            if note_path:
-                note_label = f"Function notes: {note_path}"
+            note_paths = [
+                path
+                for path in (
+                    row.get("function_note_path", ""),
+                    row.get("module_note_path", ""),
+                )
+                if path
+            ]
+            if note_paths:
+                note_label = "Notes: " + " | ".join(note_paths)
                 notes["NOTE"] = (
                     f"{notes['NOTE']} | {note_label}" if notes["NOTE"] else note_label
                 )
@@ -265,7 +267,6 @@ def enrich_status_rows(
                     "source_why": notes["WHY"],
                     "source_next": notes["NEXT"],
                     "has_blocker": "yes" if notes["BLOCKER"] else "no",
-                    "decomp_note_path": note_path,
                 }
             )
         if include_source_preview:
@@ -441,13 +442,21 @@ def build_status_rows(
         parent_name_text = parent_fragment[1] if parent_fragment else ""
         parent_reason_text = parent_fragment[2] if parent_fragment else ""
 
-        note_relative = function_decomp_note_relative_path(record["va"], slug)
-        configured_note_path = str((module_entry or {}).get("note_path") or "")
-        decomp_note_path = (
-            note_relative.as_posix()
-            if (REPO_ROOT / note_relative).is_file()
-            else configured_note_path
+        function_note_relative = function_decomp_note_relative_path(record["va"])
+        function_note_path = (
+            function_note_relative.as_posix()
+            if (REPO_ROOT / function_note_relative).is_file()
+            else ""
         )
+        module_note_path = ""
+        if module_entry is not None:
+            source_module = module_entry["module"]
+            assert isinstance(source_module, dict)
+            module_note_relative = module_decomp_note_relative_path(
+                str(source_module["name"])
+            )
+            if (REPO_ROOT / module_note_relative).is_file():
+                module_note_path = module_note_relative.as_posix()
         recipe = recipes_by_va.get(record_va)
 
         row = {
@@ -463,7 +472,8 @@ def build_status_rows(
             "source_path": source_path,
             "translation_unit": str((recipe or {}).get("name") or ""),
             "compiler_flags": str((recipe or {}).get("flags") or ""),
-            "decomp_note_path": decomp_note_path,
+            "function_note_path": function_note_path,
+            "module_note_path": module_note_path,
             "logic_review_path": str(Path("logic_reviews") / logic_review_path.name) if logic_review_path is not None else "",
             "has_logic_review": "yes" if logic_review_path is not None else "no",
             "corpus_bucket": corpus_bucket,

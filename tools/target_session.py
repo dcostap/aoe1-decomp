@@ -23,8 +23,10 @@ from common import (
     function_slug,
     load_pdb_function_source_map,
     load_toolchain,
+    module_decomp_note_relative_path,
     preferred_flags_rsp_path,
     preferred_source_path,
+    source_module_entry_for_va,
 )
 from function_diagnostics import owning_function_symbol_validation
 from function_history import (
@@ -1110,6 +1112,24 @@ def change_state(record: dict[str, str], owner: str, state: str, reason: str) ->
     return session
 
 
+def decomp_note_paths(record: dict[str, str]) -> tuple[str, str]:
+    function_relative = function_decomp_note_relative_path(record["va"])
+    function_note = (
+        function_relative.as_posix()
+        if (REPO_ROOT / function_relative).is_file()
+        else ""
+    )
+    module_note = ""
+    module_entry = source_module_entry_for_va(record["va"])
+    if module_entry is not None:
+        module = module_entry["module"]
+        assert isinstance(module, dict)
+        module_relative = module_decomp_note_relative_path(str(module["name"]))
+        if (REPO_ROOT / module_relative).is_file():
+            module_note = module_relative.as_posix()
+    return function_note, module_note
+
+
 def format_session(
     record: dict[str, str],
     session: dict | None,
@@ -1118,13 +1138,13 @@ def format_session(
     source = preferred_source_path(record)
     if metrics is None:
         metrics = current_metric_summary(record)
-    note_relative = function_decomp_note_relative_path(record["va"], function_slug(record))
-    note_exists = (REPO_ROOT / note_relative).is_file()
+    function_note, module_note = decomp_note_paths(record)
     lines = [
         f"Target: {record['va']} {record['name']} ({record['size_bytes']} bytes)",
         f"Source: {_source_bucket(source)} / {source.relative_to(REPO_ROOT) if source.exists() else '<none>'}",
         f"PDB donor: {record.get('pdb_source_file', '') or '<none>'}",
-        f"Function notes: {note_relative.as_posix() if note_exists else '<none>'}",
+        f"Function notes: {function_note or '<none>'}",
+        f"Module notes: {module_note or '<none>'}",
     ]
     if session is None:
         lines.append("Session: unclaimed")
@@ -1249,7 +1269,7 @@ def format_session(
 def session_status_payload(record: dict[str, str], session: dict | None) -> dict[str, object]:
     source = preferred_source_path(record)
     metrics = current_metric_summary(record)
-    note_relative = function_decomp_note_relative_path(record["va"], function_slug(record))
+    function_note, module_note = decomp_note_paths(record)
     try:
         codegen_best = checkpoint_info(record, "@best-positional")
     except (KeyError, OSError, json.JSONDecodeError):
@@ -1262,9 +1282,8 @@ def session_status_payload(record: dict[str, str], session: dict | None) -> dict
             "pdb_source_file": record.get("pdb_source_file", ""),
             "source_bucket": _source_bucket(source),
             "source_path": str(source.relative_to(REPO_ROOT)) if source.exists() else "",
-            "decomp_note_path": note_relative.as_posix()
-            if (REPO_ROOT / note_relative).is_file()
-            else "",
+            "function_note_path": function_note,
+            "module_note_path": module_note,
         },
         "session": session,
         "current_metrics": metrics,

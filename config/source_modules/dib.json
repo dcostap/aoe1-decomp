@@ -6,56 +6,47 @@
   "header": "include/dib.h",
   "functions": {
     "00438820": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Dib_module.md"
+      "status": "scratch"
     },
     "00438AA0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Dib_module.md"
+      "status": "scratch"
     },
     "00438E80": { "status": "matching" },
     "00439060": { "status": "matching" },
     "004390A0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Dib_module.md"
+      "status": "scratch"
     },
     "004395A0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Dib_module.md"
+      "status": "scratch"
     },
     "00439700": { "status": "matching" },
-    "00439750": { "status": "scratch", "note_path": "decomp_notes/Dib_module.md" },
-    "00439A10": { "status": "matching", "note_path": "decomp_notes/Dib_module.md" },
+    "00439750": { "status": "scratch" },
+    "00439A10": { "status": "matching" },
     "00439B50": { "status": "matching" },
-    "00439BE0": { "status": "matching", "note_path": "decomp_notes/Dib_module.md" },
+    "00439BE0": { "status": "matching" },
     "00439CC0": { "status": "matching" },
-    "00439D80": { "status": "scratch", "note_path": "decomp_notes/Dib_module.md" },
-    "00439E50": { "status": "scratch", "note_path": "decomp_notes/Dib_module.md" },
+    "00439D80": { "status": "scratch" },
+    "00439E50": { "status": "scratch" },
     "0043A070": {
-      "status": "matching",
-      "note_path": "decomp_notes/Dib_module.md"
+      "status": "matching"
     },
-    "0043A330": { "status": "matching", "note_path": "decomp_notes/Dib_module.md" },
-    "0043A420": { "status": "matching", "note_path": "decomp_notes/Dib_module.md" },
+    "0043A330": { "status": "matching" },
+    "0043A420": { "status": "matching" },
     "0043A4B0": { "status": "matching" },
     "0043A500": { "status": "matching" },
-    "0043AA60": { "status": "matching", "note_path": "decomp_notes/Dib_module.md" },
+    "0043AA60": { "status": "matching" },
     "0043AA90": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/Dib_module.md"
+      "status": "accepted_drift"
     },
     "0043AAD0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/Dib_module.md"
+      "status": "accepted_drift"
     },
     "0043AB40": { "status": "matching" },
     "0043AB50": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Dib_module.md"
+      "status": "scratch"
     },
     "0043A660": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Dib_module.md"
+      "status": "scratch"
     },
     "0043AB80": { "status": "matching" },
     "0043ACB0": { "status": "matching" },

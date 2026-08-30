@@ -6,8 +6,7 @@
   "header": "include/panel.h",
   "functions": {
     "00463BB0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_module.md"
+      "status": "scratch"
     },
     "00463BE0": {
       "status": "matching"
@@ -73,20 +72,16 @@
       "status": "matching"
     },
     "00464150": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_module.md"
+      "status": "scratch"
     },
     "004641B0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_module.md"
+      "status": "scratch"
     },
     "00464260": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_module.md"
+      "status": "scratch"
     },
     "004642C0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/Panel_module.md"
+      "status": "accepted_drift"
     },
     "00464480": {
       "status": "matching"
@@ -131,12 +126,10 @@
       "status": "matching"
     },
     "00464720": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_module.md"
+      "status": "scratch"
     },
     "004648B0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_module.md"
+      "status": "scratch"
     },
     "004649E0": {
       "status": "matching"
@@ -172,8 +165,7 @@
       "status": "matching"
     },
     "00464F20": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/Panel_module.md"
+      "status": "accepted_drift"
     },
     "00465050": {
       "status": "matching"
@@ -203,19 +195,16 @@
       "status": "matching"
     },
     "004653E0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_module.md"
+      "status": "scratch"
     },
     "00465780": {
       "status": "matching"
     },
     "00465820": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Panel_module.md"
+      "status": "scratch"
     },
     "00465A70": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/Panel_module.md"
+      "status": "accepted_drift"
     },
     "00465B30": {
       "status": "matching"
@@ -239,8 +228,7 @@
       "status": "matching"
     },
     "00465DC0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/Panel_module.md"
+      "status": "accepted_drift"
     },
     "00465F70": {
       "status": "matching"

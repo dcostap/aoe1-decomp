@@ -5,13 +5,13 @@
   "source": "src/Pnl_scr.cpp",
   "header": "include/Pnl_scr.h",
   "functions": {
-    "0047BA70": { "status": "matching", "note_path": "decomp_notes/Pnl_scr_module.md" },
-    "0047BAB0": { "status": "matching", "note_path": "decomp_notes/Pnl_scr_module.md" },
-    "0047BAD0": { "status": "matching", "note_path": "decomp_notes/Pnl_scr_module.md" },
-    "0047BAE0": { "status": "matching", "note_path": "decomp_notes/Pnl_scr_module.md" },
-    "0047BB10": { "status": "matching", "note_path": "decomp_notes/Pnl_scr_module.md" },
-    "0047BB40": { "status": "matching", "note_path": "decomp_notes/Pnl_scr_module.md" },
-    "0047BB50": { "status": "matching", "note_path": "decomp_notes/Pnl_scr_module.md" },
-    "0047BB60": { "status": "scratch", "note_path": "decomp_notes/Pnl_scr_module.md" }
+    "0047BA70": { "status": "matching" },
+    "0047BAB0": { "status": "matching" },
+    "0047BAD0": { "status": "matching" },
+    "0047BAE0": { "status": "matching" },
+    "0047BB10": { "status": "matching" },
+    "0047BB40": { "status": "matching" },
+    "0047BB50": { "status": "matching" },
+    "0047BB60": { "status": "scratch" }
   }
 }

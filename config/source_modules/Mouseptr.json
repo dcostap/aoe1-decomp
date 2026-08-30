@@ -5,7 +5,7 @@
   "source": "src/Mouseptr.cpp",
   "header": "include/Mouseptr.h",
   "functions": {
-    "0045AE50": { "status": "scratch", "note_path": "decomp_notes/mouseptr_module.md" },
+    "0045AE50": { "status": "scratch" },
     "0045B000": { "status": "matching" },
     "0045B040": { "status": "matching" },
     "0045B0A0": { "status": "matching" },
@@ -16,18 +16,18 @@
     "0045B2C0": { "status": "matching" },
     "0045B2E0": { "status": "matching" },
     "0045B310": { "status": "matching" },
-    "0045B560": { "status": "accepted_drift", "note_path": "decomp_notes/mouseptr_module.md" },
+    "0045B560": { "status": "accepted_drift" },
     "0045B5D0": { "status": "matching" },
     "0045B760": { "status": "matching" },
-    "0045BA60": { "status": "accepted_drift", "note_path": "decomp_notes/mouseptr_module.md" },
+    "0045BA60": { "status": "accepted_drift" },
     "0045BD60": { "status": "matching" },
     "0045BE20": { "status": "matching" },
-    "0045BE80": { "status": "accepted_drift", "note_path": "decomp_notes/mouseptr_module.md" },
+    "0045BE80": { "status": "accepted_drift" },
     "0045BEE0": { "status": "matching" },
     "0045BF40": { "status": "matching" },
     "0045BF80": { "status": "matching" },
     "0045BF90": { "status": "matching" },
-    "0045C010": { "status": "matching", "note_path": "decomp_notes/mouseptr_module.md" },
+    "0045C010": { "status": "matching" },
     "0045C300": { "status": "matching" }
   }
 }

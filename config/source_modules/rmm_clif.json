@@ -11,8 +11,7 @@
     "00481CD0": { "status": "matching" },
     "00481FC0": { "status": "matching" },
     "004820A0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_clif_module.md"
+      "status": "scratch"
     }
   }
 }

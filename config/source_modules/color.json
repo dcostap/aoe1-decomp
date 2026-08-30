@@ -6,36 +6,28 @@
   "header": "include/color.h",
   "functions": {
     "00423EE0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/color_module.md"
+      "status": "scratch"
     },
     "004240B0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/color_module.md"
+      "status": "accepted_drift"
     },
     "00424350": {
-      "status": "matching",
-      "note_path": "decomp_notes/color_module.md"
+      "status": "matching"
     },
     "00424440": {
-      "status": "matching",
-      "note_path": "decomp_notes/color_module.md"
+      "status": "matching"
     },
     "004244F0": {
-      "status": "matching",
-      "note_path": "decomp_notes/color_module.md"
+      "status": "matching"
     },
     "004245F0": {
-      "status": "matching",
-      "note_path": "decomp_notes/color_module.md"
+      "status": "matching"
     },
     "004247A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/color_module.md"
+      "status": "matching"
     },
     "004247B0": {
-      "status": "matching",
-      "note_path": "decomp_notes/color_module.md"
+      "status": "matching"
     }
   }
 }

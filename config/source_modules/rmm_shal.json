@@ -8,8 +8,7 @@
     "00487010": { "status": "matching" },
     "00487050": { "status": "matching" },
     "00487200": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_shal_module.md"
+      "status": "scratch"
     }
   }
 }

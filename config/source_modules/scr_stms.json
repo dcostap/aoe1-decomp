@@ -5,10 +5,10 @@
   "source": "src/scr_stms.cpp",
   "header": "include/scr_stms.h",
   "functions": {
-    "004B7140": { "status": "matching", "note_path": "decomp_notes/scr_stms_module.md" },
-    "004B7330": { "status": "matching", "note_path": "decomp_notes/scr_stms_module.md" },
-    "004B7500": { "status": "matching", "note_path": "decomp_notes/scr_stms_module.md" },
-    "004B7560": { "status": "matching", "note_path": "decomp_notes/scr_stms_module.md" },
-    "004B7580": { "status": "matching", "note_path": "decomp_notes/scr_stms_module.md" }
+    "004B7140": { "status": "matching" },
+    "004B7330": { "status": "matching" },
+    "004B7500": { "status": "matching" },
+    "004B7560": { "status": "matching" },
+    "004B7580": { "status": "matching" }
   }
 }

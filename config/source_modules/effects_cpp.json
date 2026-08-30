@@ -6,12 +6,10 @@
   "header": "include/effects.h",
   "functions": {
     "004490E0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/effects_module.md"
+      "status": "accepted_drift"
     },
     "00449260": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/effects_module.md"
+      "status": "accepted_drift"
     },
     "00449440": { "status": "matching" },
     "004494B0": { "status": "matching" },

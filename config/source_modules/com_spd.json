@@ -29,7 +29,7 @@
     "00432D20": { "status": "scratch" },
     "00432D90": { "status": "matching" },
     "00432DA0": { "status": "matching" },
-    "00432DE0": { "status": "accepted_drift", "note_path": "decomp_notes/com_spd_module.md" },
+    "00432DE0": { "status": "accepted_drift" },
     "00432FB0": { "status": "matching" },
     "00432FD0": { "status": "matching" }
   }

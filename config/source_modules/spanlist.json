@@ -19,27 +19,22 @@
     "004BDA00": { "status": "matching" },
     "004BDA70": { "status": "matching" },
     "004BDB00": {
-      "status": "scratch",
-      "note_path": "decomp_notes/spanlist_module.md"
+      "status": "scratch"
     },
     "004BDEA0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/spanlist_module.md"
+      "status": "accepted_drift"
     },
     "004BDFA0": { "status": "matching" },
     "004BE090": {
-      "status": "scratch",
-      "note_path": "decomp_notes/spanlist_module.md"
+      "status": "scratch"
     },
     "004BE1F0": {
-      "status": "matching",
-      "note_path": "decomp_notes/spanlist_module.md"
+      "status": "matching"
     },
     "004BE240": { "status": "matching" },
     "004BE290": { "status": "matching" },
     "004BE4B0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/spanlist_module.md"
+      "status": "scratch"
     },
     "004BE5B0": { "status": "matching" },
     "004BE5F0": { "status": "matching" },
@@ -48,12 +43,10 @@
     "004BE850": { "status": "matching" },
     "004BE9E0": { "status": "matching" },
     "004BEAD0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/spanlist_module.md"
+      "status": "accepted_drift"
     },
     "004BEB10": {
-      "status": "scratch",
-      "note_path": "decomp_notes/spanlist_module.md"
+      "status": "scratch"
     }
   }
 }

@@ -7,25 +7,20 @@
   "functions": {
     "004CD9E0": { "status": "matching" },
     "004CDA90": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/004C/004CDA90_TRIBE_Action_Convert.md"
+      "status": "matching"
     },
     "004CDB20": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/004C/004CDB20_TRIBE_Action_Convert.md"
+      "status": "matching"
     },
     "004CDB70": { "status": "matching" },
     "004CDBB0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/004C/004CDBB0_first_in_stack.md"
+      "status": "matching"
     },
     "004CDE10": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/004C/004CDE10_set_state.md"
+      "status": "matching"
     },
     "004CE070": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/004C/004CE070_update.md"
+      "status": "matching"
     },
     "004CE450": { "status": "matching" },
     "004CE4B0": { "status": "matching" }

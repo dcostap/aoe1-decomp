@@ -5,16 +5,16 @@
   "source": "src/scr_name.cpp",
   "header": "include/scr_name.h",
   "functions": {
-    "004A63D0": { "status": "matching", "note_path": "decomp_notes/scr_name_module.md" },
-    "004A66E0": { "status": "accepted_drift", "note_path": "decomp_notes/scr_name_module.md" },
-    "004A67C0": { "status": "matching", "note_path": "decomp_notes/scr_name_module.md" },
-    "004A6800": { "status": "matching", "note_path": "decomp_notes/scr_name_module.md" },
-    "004A68C0": { "status": "matching", "note_path": "decomp_notes/scr_name_module.md" },
-    "004A6980": { "status": "matching", "note_path": "decomp_notes/scr_name_module.md" },
-    "004A69B0": { "status": "matching", "note_path": "decomp_notes/scr_name_module.md" },
-    "004A6D50": { "status": "accepted_drift", "note_path": "decomp_notes/scr_name_module.md" },
-    "004A6F60": { "status": "accepted_drift", "note_path": "decomp_notes/scr_name_module.md" },
-    "004A6FF0": { "status": "matching", "note_path": "decomp_notes/scr_name_module.md" },
-    "004A71D0": { "status": "matching", "note_path": "decomp_notes/scr_name_module.md" }
+    "004A63D0": { "status": "matching" },
+    "004A66E0": { "status": "accepted_drift" },
+    "004A67C0": { "status": "matching" },
+    "004A6800": { "status": "matching" },
+    "004A68C0": { "status": "matching" },
+    "004A6980": { "status": "matching" },
+    "004A69B0": { "status": "matching" },
+    "004A6D50": { "status": "accepted_drift" },
+    "004A6F60": { "status": "accepted_drift" },
+    "004A6FF0": { "status": "matching" },
+    "004A71D0": { "status": "matching" }
   }
 }

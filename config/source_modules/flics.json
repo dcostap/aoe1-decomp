@@ -6,64 +6,49 @@
   "header": "include/flics.h",
   "functions": {
     "00449B30": {
-      "status": "matching",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "matching"
     },
     "00449BE0": {
-      "status": "matching",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "matching"
     },
     "00449C40": {
-      "status": "matching",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "matching"
     },
     "00449C50": {
-      "status": "scratch",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "scratch"
     },
     "00449DF0": {
-      "status": "matching",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "matching"
     },
     "00449E00": {
-      "status": "matching",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "matching"
     },
     "00449E10": {
-      "status": "matching",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "matching"
     },
     "00449E20": {
-      "status": "matching",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "matching"
     },
     "00449E80": {
-      "status": "matching",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "matching"
     },
     "00449E90": {
-      "status": "matching",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "matching"
     },
     "0044A090": {
-      "status": "matching",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "matching"
     },
     "0044A100": {
-      "status": "scratch",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "scratch"
     },
     "0044A2A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "matching"
     },
     "0044A390": {
-      "status": "matching",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "matching"
     },
     "0044A3E0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/flics_module.md"
+      "status": "scratch"
     }
   }
 }

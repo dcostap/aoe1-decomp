@@ -11,8 +11,7 @@
     "004808D0": { "status": "matching" },
     "004809E0": { "status": "matching" },
     "00480A20": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/rmm_base_module.md"
+      "status": "accepted_drift"
     },
     "00480A80": { "status": "matching" },
     "00480B60": { "status": "matching" },
@@ -30,13 +29,11 @@
     "00480E50": { "status": "matching" },
     "00480EA0": { "status": "matching" },
     "00480EC0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_base_module.md"
+      "status": "scratch"
     },
     "00480FB0": { "status": "matching" },
     "00481000": {
-      "status": "scratch",
-      "note_path": "decomp_notes/rmm_base_module.md"
+      "status": "scratch"
     }
   }
 }

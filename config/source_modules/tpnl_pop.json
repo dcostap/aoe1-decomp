@@ -6,40 +6,31 @@
   "header": "include/tpnl_pop.h",
   "functions": {
     "0051CCA0": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_pop_module.md"
+      "status": "matching"
     },
     "0051CDB0": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_pop_module.md"
+      "status": "matching"
     },
     "0051CE40": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_pop_module.md"
+      "status": "matching"
     },
     "0051CFD0": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_pop_module.md"
+      "status": "matching"
     },
     "0051D040": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_pop_module.md"
+      "status": "matching"
     },
     "0051D060": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_pop_module.md"
+      "status": "matching"
     },
     "0051D470": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_pop_module.md"
+      "status": "matching"
     },
     "0051D4E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/tpnl_pop_module.md"
+      "status": "matching"
     },
     "0051D4F0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tpnl_pop_module.md"
+      "status": "scratch"
     }
   }
 }

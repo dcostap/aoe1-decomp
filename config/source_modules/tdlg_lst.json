@@ -5,11 +5,11 @@
   "source": "src/tdlg_lst.cpp",
   "header": "include/tdlg_lst.h",
   "functions": {
-    "0050B450": { "status": "matching", "note_path": "decomp_notes/tdlg_lst_module.md" },
-    "0050B4A0": { "status": "matching", "note_path": "decomp_notes/tdlg_lst_module.md" },
-    "0050B4D0": { "status": "matching", "note_path": "decomp_notes/tdlg_lst_module.md" },
-    "0050B5E0": { "status": "matching", "note_path": "decomp_notes/tdlg_lst_module.md" },
-    "0050B700": { "status": "matching", "note_path": "decomp_notes/tdlg_lst_module.md" },
-    "0050B820": { "status": "scratch", "note_path": "decomp_notes/tdlg_lst_module.md" }
+    "0050B450": { "status": "matching" },
+    "0050B4A0": { "status": "matching" },
+    "0050B4D0": { "status": "matching" },
+    "0050B5E0": { "status": "matching" },
+    "0050B700": { "status": "matching" },
+    "0050B820": { "status": "scratch" }
   }
 }

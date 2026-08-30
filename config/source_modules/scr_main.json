@@ -6,48 +6,37 @@
   "header": "include/scr_main.h",
   "functions": {
     "0049E6D0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/scr_main.md"
+      "status": "scratch"
     },
     "0049EC00": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_main.md"
+      "status": "matching"
     },
     "0049ECD0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_main.md"
+      "status": "matching"
     },
     "0049ED00": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_main.md"
+      "status": "matching"
     },
     "0049EE00": {
-      "status": "scratch",
-      "note_path": "decomp_notes/scr_main.md"
+      "status": "scratch"
     },
     "0049F0D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_main.md"
+      "status": "matching"
     },
     "0049F240": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_main.md"
+      "status": "matching"
     },
     "0049F2B0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_main.md"
+      "status": "matching"
     },
     "0049F2D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_main.md"
+      "status": "matching"
     },
     "0049F2F0": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_main.md"
+      "status": "matching"
     },
     "0049F340": {
-      "status": "matching",
-      "note_path": "decomp_notes/scr_main.md"
+      "status": "matching"
     }
   }
 }

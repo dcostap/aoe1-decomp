@@ -30,20 +30,16 @@
       "status": "matching"
     },
     "0046B5E0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/pathsys_module.md"
+      "status": "scratch"
     },
     "0046B620": {
-      "status": "scratch",
-      "note_path": "decomp_notes/pathsys_module.md"
+      "status": "scratch"
     },
     "0046B680": {
-      "status": "matching",
-      "note_path": "decomp_notes/pathsys_module.md"
+      "status": "matching"
     },
     "0046B6E0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/pathsys_module.md"
+      "status": "scratch"
     },
     "0046D250": {
       "status": "matching"
@@ -55,8 +51,7 @@
       "status": "matching"
     },
     "0046D280": {
-      "status": "scratch",
-      "note_path": "decomp_notes/pathsys_module.md"
+      "status": "scratch"
     },
     "0046D740": {
       "status": "matching"
@@ -65,12 +60,10 @@
       "status": "matching"
     },
     "0046D830": {
-      "status": "scratch",
-      "note_path": "decomp_notes/pathsys_module.md"
+      "status": "scratch"
     },
     "0046DCB0": {
-      "status": "matching",
-      "note_path": "decomp_notes/pathsys_module.md"
+      "status": "matching"
     }
   }
 }

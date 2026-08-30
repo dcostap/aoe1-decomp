@@ -7,12 +7,10 @@
   "functions": {
     "004BF720": { "status": "matching" },
     "004BF790": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/functions/004B/004BF790_RGE_Sprite.md"
+      "status": "accepted_drift"
     },
     "004BFA20": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/functions/004B/004BFA20_RGE_Sprite.md"
+      "status": "accepted_drift"
     },
     "004BFCE0": { "status": "matching" },
     "004BFD40": { "status": "matching" },
@@ -20,39 +18,32 @@
     "004BFFE0": { "status": "matching" },
     "004BFFF0": { "status": "matching" },
     "004C00E0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/functions/004C/004C00E0_get_facetindex.md"
+      "status": "accepted_drift"
     },
     "004C01A0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/functions/004C/004C01A0_do_draw.md"
+      "status": "scratch"
     },
     "004C04F0": { "status": "matching" },
     "004C0620": { "status": "matching" },
     "004C0720": {
-      "status": "scratch",
-      "note_path": "decomp_notes/sprite_module.md"
+      "status": "scratch"
     },
     "004C0840": { "status": "matching" },
     "004C0960": { "status": "matching" },
     "004C0B70": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/functions/004C/004C0B70_get_frame_min_max.md"
+      "status": "accepted_drift"
     },
     "004C0C50": { "status": "matching" },
     "004C0C90": {
-      "status": "scratch",
-      "note_path": "decomp_notes/sprite_module.md"
+      "status": "scratch"
     },
     "004C0D80": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/functions/004C/004C0D80_shape_hit_test.md"
+      "status": "accepted_drift"
     },
     "004C0F90": { "status": "matching" },
     "004C1030": { "status": "matching" },
     "004C1080": {
-      "status": "verified_logic",
-      "note_path": "decomp_notes/functions/004C/004C1080_update.md"
+      "status": "verified_logic"
     }
   }
 }

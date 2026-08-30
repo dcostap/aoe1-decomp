@@ -6,12 +6,10 @@
   "header": "include/aitacmod.h",
   "functions": {
     "00412B50": {
-      "status": "matching",
-      "note_path": "decomp_notes/aitacmod_module.md"
+      "status": "matching"
     },
     "00412BA0": {
-      "status": "matching",
-      "note_path": "decomp_notes/aitacmod_module.md"
+      "status": "matching"
     }
   }
 }

@@ -8,17 +8,14 @@
     "004D3470": { "status": "matching" },
     "004D34C0": { "status": "matching" },
     "004D34F0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tact_wnd_module.md"
+      "status": "scratch"
     },
     "004D3690": { "status": "matching" },
     "004D36B0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tact_wnd_module.md"
+      "status": "scratch"
     },
     "004D3810": {
-      "status": "matching",
-      "note_path": "decomp_notes/tact_wnd_module.md"
+      "status": "matching"
     }
   }
 }

@@ -11,8 +11,7 @@
     "0044FFB0": { "status": "matching" },
     "00450170": { "status": "matching" },
     "00450450": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/m_co_obj_module.md"
+      "status": "accepted_drift"
     },
     "00450680": { "status": "matching" },
     "004506D0": { "status": "matching" },
@@ -23,8 +22,7 @@
     "00450D00": { "status": "matching" },
     "00450E20": { "status": "matching" },
     "00451000": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/m_co_obj_module.md"
+      "status": "accepted_drift"
     }
   }
 }

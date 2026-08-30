@@ -5,13 +5,13 @@
   "source": "src/registry.cpp",
   "header": "include/registry.h",
   "functions": {
-    "0047EB80": { "status": "matching", "note_path": "decomp_notes/registry_module.md" },
-    "0047EC00": { "status": "matching", "note_path": "decomp_notes/registry_module.md" },
-    "0047EC40": { "status": "matching", "note_path": "decomp_notes/registry_module.md" },
-    "0047ECA0": { "status": "matching", "note_path": "decomp_notes/registry_module.md" },
-    "0047ED00": { "status": "matching", "note_path": "decomp_notes/registry_module.md" },
-    "0047ED60": { "status": "matching", "note_path": "decomp_notes/registry_module.md" },
-    "0047EDD0": { "status": "matching", "note_path": "decomp_notes/registry_module.md" },
-    "0047EE20": { "status": "matching", "note_path": "decomp_notes/registry_module.md" }
+    "0047EB80": { "status": "matching" },
+    "0047EC00": { "status": "matching" },
+    "0047EC40": { "status": "matching" },
+    "0047ECA0": { "status": "matching" },
+    "0047ED00": { "status": "matching" },
+    "0047ED60": { "status": "matching" },
+    "0047EDD0": { "status": "matching" },
+    "0047EE20": { "status": "matching" }
   }
 }

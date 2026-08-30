@@ -9,14 +9,12 @@
     "0040ABB0": { "status": "matching" },
     "0040B120": { "status": "matching" },
     "0040B1A0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/aiconmod_module.md"
+      "status": "accepted_drift"
     },
     "0040B690": { "status": "matching" },
     "0040B970": { "status": "matching" },
     "0040B980": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/aiconmod_module.md"
+      "status": "accepted_drift"
     },
     "0040BB70": { "status": "matching" },
     "0040BB80": { "status": "matching" },

@@ -6,8 +6,7 @@
   "header": "include/com_sess.h",
   "functions": {
     "00432200": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0043/00432200_TCommunications_Sessions.md"
+      "status": "matching"
     },
     "00432290": { "status": "matching" },
     "004322A0": { "status": "matching" },
@@ -18,17 +17,14 @@
     "00432350": { "status": "matching" },
     "00432380": { "status": "matching" },
     "00432390": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0043/00432390_AddSession.md"
+      "status": "matching"
     },
     "004324F0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0043/004324F0_Refresh.md"
+      "status": "matching"
     },
     "00432560": { "status": "matching" },
     "004325E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0043/004325E0_IsEqualGuid.md"
+      "status": "matching"
     }
   }
 }

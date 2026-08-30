@@ -6,255 +6,193 @@
   "header": "include/map.h",
   "functions": {
     "00455000": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "004550A0": {
       "status": "matching"
     },
     "00455430": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00455570": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "004557C0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00455820": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00455890": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "004558A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "004558B0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00455910": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00455C20": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00455CB0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00455D60": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00455DB0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00455DD0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00455F10": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00455FF0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00456140": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00456150": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00456160": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00456170": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "004564E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "004568C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00456E90": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00457300": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00457310": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00457320": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "004573C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00457510": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "004575C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00457750": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00457760": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "004578A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "004578B0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "004579C0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00457C50": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00457DF0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00457EB0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00457F80": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00458280": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00458350": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00458600": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00458760": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "004587D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00458820": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00458B40": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00458C90": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00458FD0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00459020": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00459060": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "004593A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "004593D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00459400": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00459460": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "004594B0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "004595E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00459900": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00459A00": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "00459A90": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "00459D20": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "0045A030": {
-      "status": "scratch",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "scratch"
     },
     "0045A490": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "0045A500": {
-      "status": "matching",
-      "note_path": "decomp_notes/map_module.md"
+      "status": "matching"
     },
     "0045A6D0": {
       "status": "matching"

@@ -5,8 +5,8 @@
   "source": "src/tpnl_txl.cpp",
   "header": "include/tpnl_txl.h",
   "functions": {
-    "00520D70": { "status": "matching", "note_path": "decomp_notes/tpnl_txl_module.md" },
-    "00520E30": { "status": "matching", "note_path": "decomp_notes/tpnl_txl_module.md" },
-    "00520ED0": { "status": "matching", "note_path": "decomp_notes/tpnl_txl_module.md" }
+    "00520D70": { "status": "matching" },
+    "00520E30": { "status": "matching" },
+    "00520ED0": { "status": "matching" }
   }
 }

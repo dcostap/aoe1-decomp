@@ -6,76 +6,60 @@
   "header": "include/music.h",
   "functions": {
     "00461910": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00461910_TMusic_System.md"
+      "status": "matching"
     },
     "00461A20": { "status": "matching" },
     "00461A30": {
-      "status": "scratch",
-      "note_path": "decomp_notes/functions/0046/00461A30_open_device.md"
+      "status": "scratch"
     },
     "00461C60": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00461C60_close_device.md"
+      "status": "matching"
     },
     "00461D20": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00461D20_open_mixer.md"
+      "status": "matching"
     },
     "00461EC0": { "status": "matching" },
     "00461F00": { "status": "matching" },
     "00461F40": { "status": "matching" },
     "00461F60": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00461F60_set_volume.md"
+      "status": "matching"
     },
     "00462010": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00462010_play_track.md"
+      "status": "matching"
     },
     "00462090": { "status": "matching" },
     "00462140": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00462140_play_tracks.md"
+      "status": "matching"
     },
     "00462200": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00462200_play.md"
+      "status": "matching"
     },
     "004625C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/004625C0_pause_play.md"
+      "status": "matching"
     },
     "00462670": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00462670_resume_play.md"
+      "status": "matching"
     },
     "00462740": { "status": "matching" },
     "00462770": { "status": "matching" },
     "00462820": { "status": "matching" },
     "00462860": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00462860_start_fade.md"
+      "status": "matching"
     },
     "004628A0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/004628A0_do_fade.md"
+      "status": "matching"
     },
     "004629B0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/004629B0_end_fade.md"
+      "status": "matching"
     },
     "00462A10": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00462A10_handle_messages.md"
+      "status": "matching"
     },
     "00462B40": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0046/00462B40_after_end_track.md"
+      "status": "matching"
     },
     "00462C30": {
-      "status": "scratch",
-      "note_path": "decomp_notes/functions/0046/00462C30_get_play_info.md"
+      "status": "scratch"
     }
   }
 }

@@ -5,10 +5,10 @@
   "source": "src/scr_save.cpp",
   "header": "include/scr_save.h",
   "functions": {
-    "004A71F0": { "status": "matching", "note_path": "decomp_notes/scr_save_module.md" },
-    "004A75C0": { "status": "scratch", "note_path": "decomp_notes/scr_save_module.md" },
-    "004A7670": { "status": "matching", "note_path": "decomp_notes/scr_save_module.md" },
-    "004A7850": { "status": "scratch", "note_path": "decomp_notes/scr_save_module.md" },
-    "004A8060": { "status": "matching", "note_path": "decomp_notes/scr_save_module.md" }
+    "004A71F0": { "status": "matching" },
+    "004A75C0": { "status": "scratch" },
+    "004A7670": { "status": "matching" },
+    "004A7850": { "status": "scratch" },
+    "004A8060": { "status": "matching" }
   }
 }

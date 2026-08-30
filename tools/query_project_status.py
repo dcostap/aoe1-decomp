@@ -449,7 +449,8 @@ def table_columns(args: argparse.Namespace) -> list[tuple[str, str, int]]:
         ])
     if args.notes:
         cols.extend([
-            ("function_note", "decomp_note_path", 60),
+            ("function_note", "function_note_path", 44),
+            ("module_note", "module_note_path", 36),
             ("blocker", "source_blocker", 28),
         ])
     if args.leases or args.work_history or args.unleased or args.active_leases or args.owner:

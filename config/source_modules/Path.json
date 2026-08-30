@@ -6,25 +6,20 @@
   "header": "include/path.h",
   "functions": {
     "0046A740": {
-      "status": "scratch",
-      "note_path": "decomp_notes/Path_module.md"
+      "status": "scratch"
     },
     "0046A7F0": { "status": "matching" },
     "0046A810": {
-      "status": "matching",
-      "note_path": "decomp_notes/Path_module.md"
+      "status": "matching"
     },
     "0046A8E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Path_module.md"
+      "status": "matching"
     },
     "0046A9E0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Path_module.md"
+      "status": "matching"
     },
     "0046AAE0": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/Path_module.md"
+      "status": "accepted_drift"
     },
     "0046AB60": { "status": "matching" },
     "0046AC10": { "status": "matching" },
@@ -35,8 +30,7 @@
     "0046ADD0": { "status": "matching" },
     "0046ADE0": { "status": "matching" },
     "0046ADF0": {
-      "status": "matching",
-      "note_path": "decomp_notes/Path_module.md"
+      "status": "matching"
     },
     "0046AE50": { "status": "matching" },
     "0046AE60": { "status": "matching" },

@@ -9,42 +9,34 @@
     "00509770": { "status": "matching" },
     "00509910": { "status": "matching" },
     "00509980": {
-      "status": "matching",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "matching"
     },
     "00509AF0": {
-      "status": "matching",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "matching"
     },
     "00509C60": {
       "status": "matching"
     },
     "00509E10": {
-      "status": "matching",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "matching"
     },
     "0050A010": { "status": "matching" },
     "0050A140": { "status": "scratch" },
     "0050A1D0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050A490": {
-      "status": "matching",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "matching"
     },
     "0050A4C0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050A510": { "status": "matching" },
     "0050A6A0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050A6E0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050A730": { "status": "matching" },
     "0050A7B0": { "status": "matching" },
@@ -53,57 +45,46 @@
     "0050A8D0": { "status": "matching" },
     "0050A940": { "status": "matching" },
     "0050A9B0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050AA90": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050AB30": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050AC70": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050AD00": { "status": "matching" },
     "0050AD70": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050ADF0": { "status": "matching" },
     "0050AE40": { "status": "matching" },
     "0050AE80": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050AEE0": { "status": "matching" },
     "0050AF30": { "status": "matching" },
     "0050AF80": { "status": "matching" },
     "0050AFD0": { "status": "matching" },
     "0050B020": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050B0D0": { "status": "matching" },
     "0050B130": { "status": "matching" },
     "0050B190": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050B230": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050B290": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050B330": {
-      "status": "scratch",
-      "note_path": "decomp_notes/tcommand_module.md"
+      "status": "scratch"
     },
     "0050B3E0": { "status": "matching" }
   }

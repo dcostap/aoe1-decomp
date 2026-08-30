@@ -74,9 +74,10 @@ class SourceModuleInventoryTests(unittest.TestCase):
             },
         )
         self.assertEqual(
-            owners["0047E530"]["decomp_note_path"],
-            "decomp_notes/functions/0047/0047E530_operator.md",
+            owners["0047E530"]["function_note_path"],
+            "decomp_notes/functions/0047/0047E530.md",
         )
+        self.assertEqual(owners["0047E530"]["module_note_path"], "")
 
     def test_pdb_module_line_and_class_context_is_preserved(self) -> None:
         module = self.modules["scr_info"]

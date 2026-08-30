@@ -8,12 +8,10 @@
     "0040A820": { "status": "matching" },
     "0040A870": { "status": "matching" },
     "0040A8D0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0040/0040A8D0_ConstructionItem.md"
+      "status": "matching"
     },
     "0040A910": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0040/0040A910_ConstructionItem.md"
+      "status": "matching"
     },
     "0040A950": { "status": "matching" },
     "0040A960": { "status": "matching" },

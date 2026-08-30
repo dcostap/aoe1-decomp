@@ -5,7 +5,7 @@
   "source": "src/file_stf.cpp",
   "header": "include/file_stf.h",
   "functions": {
-    "00449710": { "status": "matching", "note_path": "decomp_notes/file_stf_module.md" },
+    "00449710": { "status": "matching" },
     "00449750": { "status": "matching" },
     "00449760": { "status": "matching" },
     "00449770": { "status": "matching" },

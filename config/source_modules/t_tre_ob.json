@@ -6,8 +6,7 @@
   "header": "include/t_tre_ob.h",
   "functions": {
     "004CCA60": {
-      "status": "matching",
-      "note_path": "decomp_notes/t_tre_ob_module.md"
+      "status": "matching"
     },
     "004CCB20": { "status": "matching" },
     "004CCB90": { "status": "matching" }

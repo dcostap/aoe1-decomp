@@ -5,12 +5,12 @@
   "source": "src/scr_info.cpp",
   "header": "include/scr_info.h",
   "functions": {
-    "0049D550": { "status": "matching", "note_path": "decomp_notes/scr_info.md" },
-    "0049D600": { "status": "matching", "note_path": "decomp_notes/scr_info.md" },
-    "0049D610": { "status": "matching", "note_path": "decomp_notes/scr_info.md" },
-    "0049D690": { "status": "matching", "note_path": "decomp_notes/scr_info.md" },
-    "0049D6B0": { "status": "matching", "note_path": "decomp_notes/scr_info.md" },
-    "0049D6C0": { "status": "matching", "note_path": "decomp_notes/scr_info.md" },
-    "0049D6E0": { "status": "matching", "note_path": "decomp_notes/scr_info.md" }
+    "0049D550": { "status": "matching" },
+    "0049D600": { "status": "matching" },
+    "0049D610": { "status": "matching" },
+    "0049D690": { "status": "matching" },
+    "0049D6B0": { "status": "matching" },
+    "0049D6C0": { "status": "matching" },
+    "0049D6E0": { "status": "matching" }
   }
 }

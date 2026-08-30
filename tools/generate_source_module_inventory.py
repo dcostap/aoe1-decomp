@@ -32,7 +32,7 @@ from function_diagnostics import owning_function_symbol_validation
 from validate_translation_units import validate_translation_units
 
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 DEFAULT_JSON_PATH = BUILD_DIR / "source_module_inventory.json"
 DEFAULT_CSV_PATH = BUILD_DIR / "source_module_inventory.csv"
 
@@ -441,10 +441,11 @@ def build_source_module_inventory(
                 "va": va,
                 "owner_path": _portable(owner_paths[va]),
                 "exact_validation": va in exact_vas,
-                "decomp_note_path": (
-                    str((functions.get(va) or {}).get("note_path") or "")
-                    if source_module is not None
-                    else ""
+                "function_note_path": str(
+                    (status_row or {}).get("function_note_path") or ""
+                ),
+                "module_note_path": str(
+                    (status_row or {}).get("module_note_path") or ""
                 ),
                 "name": str((status_row or {}).get("name") or "").strip(),
                 "symbol_name": symbol_name,
@@ -514,7 +515,8 @@ CSV_FIELDS = [
     "va",
     "owner_path",
     "exact_validation",
-    "decomp_note_path",
+    "function_note_path",
+    "module_note_path",
     "function_name",
     "symbol_name",
     "class_owner",
@@ -549,7 +551,8 @@ def _csv_rows(inventory: dict[str, Any]) -> Iterable[dict[str, str]]:
                 "va": str(owner["va"]),
                 "owner_path": str(owner["owner_path"]),
                 "exact_validation": str(owner["exact_validation"]).lower(),
-                "decomp_note_path": str(owner["decomp_note_path"]),
+                "function_note_path": str(owner["function_note_path"]),
+                "module_note_path": str(owner["module_note_path"]),
                 "function_name": str(owner["name"]),
                 "symbol_name": str(owner["symbol_name"]),
                 "class_owner": str(owner["class_owner"]),

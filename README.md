@@ -13,6 +13,8 @@ This project recovers the 1998-07-17 Rise of Rome beta source.
 
 A function note stores durable facts, failed approaches, and the next useful approach.
 It does not store status or source ownership.
+Its path is `decomp_notes/functions/<VA-prefix>/<VA>.md`.
+A module note uses `decomp_notes/<module>.md`.
 
 ## Function status
 

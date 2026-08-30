@@ -5,9 +5,9 @@
   "source": "src/dlg_abt.cpp",
   "header": "include/dlg_abt.h",
   "functions": {
-    "0043AD70": { "status": "matching", "note_path": "decomp_notes/dlg_abt_module.md" },
-    "0043B300": { "status": "matching", "note_path": "decomp_notes/dlg_abt_module.md" },
-    "0043B400": { "status": "matching", "note_path": "decomp_notes/dlg_abt_module.md" },
-    "0043B550": { "status": "matching", "note_path": "decomp_notes/dlg_abt_module.md" }
+    "0043AD70": { "status": "matching" },
+    "0043B300": { "status": "matching" },
+    "0043B400": { "status": "matching" },
+    "0043B550": { "status": "matching" }
   }
 }

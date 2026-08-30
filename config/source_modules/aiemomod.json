@@ -6,12 +6,10 @@
   "header": "include/aiemomod.h",
   "functions": {
     "0040C7C0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0040/0040C7C0_EmotionalAIModule.md"
+      "status": "matching"
     },
     "0040C920": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0040/0040C920_EmotionalAIModule.md"
+      "status": "matching"
     },
     "0040CA90": { "status": "matching" },
     "0040CAA0": { "status": "matching" },
@@ -23,8 +21,7 @@
     "0040CB80": { "status": "matching" },
     "0040CBB0": { "status": "matching" },
     "0040CBE0": {
-      "status": "matching",
-      "note_path": "decomp_notes/functions/0040/0040CBE0_setOverallState.md"
+      "status": "matching"
     },
     "0040CD80": { "status": "matching" }
   }

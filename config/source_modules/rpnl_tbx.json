@@ -13,8 +13,7 @@
     "00489E90": { "status": "matching" },
     "00489F50": { "status": "matching" },
     "0048A320": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/rpnl_tbx_module.md"
+      "status": "accepted_drift"
     },
     "0048A520": { "status": "matching" },
     "0048A640": { "status": "matching" }

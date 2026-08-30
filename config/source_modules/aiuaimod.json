@@ -6,19 +6,16 @@
   "header": "include/aiuaimod.h",
   "functions": {
     "00412F00": {
-      "status": "scratch",
-      "note_path": "decomp_notes/aiuaimod_module.md"
+      "status": "scratch"
     },
     "00413090": {
       "status": "matching"
     },
     "00413150": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/aiuaimod_module.md"
+      "status": "accepted_drift"
     },
     "00413450": {
-      "status": "scratch",
-      "note_path": "decomp_notes/aiuaimod_module.md"
+      "status": "scratch"
     },
     "00413810": {
       "status": "matching"
@@ -117,20 +114,16 @@
       "status": "matching"
     },
     "00413AB0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/aiuaimod_module.md"
+      "status": "scratch"
     },
     "00414040": {
-      "status": "scratch",
-      "note_path": "decomp_notes/aiuaimod_module.md"
+      "status": "scratch"
     },
     "00414800": {
-      "status": "scratch",
-      "note_path": "decomp_notes/aiuaimod_module.md"
+      "status": "scratch"
     },
     "00414D40": {
-      "status": "scratch",
-      "note_path": "decomp_notes/aiuaimod_module.md"
+      "status": "scratch"
     },
     "00414E80": {
       "status": "matching"
@@ -154,8 +147,7 @@
       "status": "matching"
     },
     "004151B0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/aiuaimod_module.md"
+      "status": "scratch"
     },
     "00415A10": {
       "status": "matching"
@@ -251,8 +243,7 @@
       "status": "matching"
     },
     "00416F30": {
-      "status": "scratch",
-      "note_path": "decomp_notes/aiuaimod_module.md"
+      "status": "scratch"
     },
     "004171F0": {
       "status": "matching"
@@ -318,12 +309,10 @@
       "status": "matching"
     },
     "00417B50": {
-      "status": "scratch",
-      "note_path": "decomp_notes/aiuaimod_module.md"
+      "status": "scratch"
     },
     "004180C0": {
-      "status": "scratch",
-      "note_path": "decomp_notes/aiuaimod_module.md"
+      "status": "scratch"
     },
     "00419510": {
       "status": "matching"
@@ -350,8 +339,7 @@
       "status": "matching"
     },
     "0041A020": {
-      "status": "accepted_drift",
-      "note_path": "decomp_notes/aiuaimod_module.md"
+      "status": "accepted_drift"
     },
     "0041A0D0": {
       "status": "matching"
