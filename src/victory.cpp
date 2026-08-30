@@ -799,16 +799,21 @@ void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* entry) {
         if (entry->ally_flag != 0 && this->player->allied_victory != 0) {
             RGE_Game_World* world = this->player->world;
             int i = world->player_num - 1;
-            while (i >= 0) {
-                if (this->player->relations[i] == 0) {
-                    RGE_Player* p = world->players[i];
-                    if (p->relations[this->player->id] == 0 &&
-                        i != this->player->id && p->allied_victory != 0) {
-                        total += p->victory_conditions->get_victory_points();
-                        count++;
+            RGE_Player** players = world->players;
+            if (i >= 0) {
+                RGE_Player** pp = players + i;
+                do {
+                    if (this->player->relations[i] == 0) {
+                        RGE_Player* other = *pp;
+                        if (other->relations[this->player->id] == 0 &&
+                            i != this->player->id && other->allied_victory != 0) {
+                            total += other->victory_conditions->get_victory_points();
+                            count++;
+                        }
                     }
-                }
-                i--;
+                    i--;
+                    pp--;
+                } while (i >= 0);
             }
         }
 
