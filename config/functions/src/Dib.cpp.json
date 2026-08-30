@@ -13,7 +13,7 @@
     "004390A0": {"status": "scratch", "symbol": "?TileDibBlt@@YAJPAUBITMAPINFO256@@PAEPAUtagRECT@@JJJJJJ01PAUTRANSINFO@@JJJJHHH@Z"},
     "004395A0": {"status": "scratch", "symbol": "?DibCheckTrans@@YAHPAUBITMAPINFO256@@PAUTRANSINFO@@PAE@Z"},
     "00439700": {"status": "matching", "symbol": "?GetPaletteFromDib@@YAPAXPADH@Z"},
-    "00439750": {"status": "scratch", "symbol": "?ReadPalette@@YAPAXPADJH@Z"},
+    "00439750": {"status": "matching", "symbol": "?ReadPalette@@YAPAXPADJH@Z"},
     "00439A10": {"status": "matching", "symbol": "?DibOpenFile@@YAPAUtagBITMAPINFOHEADER@@PAD@Z"},
     "00439B50": {"status": "matching", "symbol": "?ReadDibBits@@YAPAEPAD@Z"},
     "00439BE0": {"status": "matching", "symbol": "?DibWriteClipped@@YAHPAUtagBITMAPINFOHEADER@@PADJJJJ@Z"},
