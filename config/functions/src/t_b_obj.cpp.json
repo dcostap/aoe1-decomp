@@ -6,10 +6,10 @@
     "flags": "gx"
   },
   "functions": {
-    "004C7F50": {"status": "scratch", "symbol": "??0TRIBE_Building_Object@@QAE@PAVTRIBE_Master_Building_Object@@PAVRGE_Player@@MMMHH@Z"},
-    "004C80B0": {"status": "scratch", "symbol": "??0TRIBE_Building_Object@@QAE@PAVTRIBE_Master_Building_Object@@PAVRGE_Player@@MMMH@Z"},
+    "004C7F50": {"status": "matching", "symbol": "??0TRIBE_Building_Object@@QAE@PAVTRIBE_Master_Building_Object@@PAVRGE_Player@@MMMHH@Z"},
+    "004C80B0": {"status": "matching", "symbol": "??0TRIBE_Building_Object@@QAE@PAVTRIBE_Master_Building_Object@@PAVRGE_Player@@MMMH@Z"},
     "004C81D0": {"status": "scratch", "symbol": "??0TRIBE_Building_Object@@QAE@HPAVRGE_Game_World@@H@Z"},
-    "004C82A0": {"status": "scratch", "symbol": "??1TRIBE_Building_Object@@UAE@XZ"},
+    "004C82A0": {"status": "matching", "symbol": "??1TRIBE_Building_Object@@UAE@XZ"},
     "004C8370": {"status": "matching", "symbol": "?recycle_out_of_game@TRIBE_Building_Object@@UAEXXZ"},
     "004C83E0": {"status": "scratch", "symbol": "?setup@TRIBE_Building_Object@@MAEHPAVTRIBE_Master_Building_Object@@PAVRGE_Player@@MMM@Z"},
     "004C8490": {"status": "matching", "symbol": "?setup@TRIBE_Building_Object@@MAEHHPAVRGE_Game_World@@@Z"},
@@ -21,7 +21,7 @@
     "004C8A60": {"status": "matching", "symbol": "?rehook@TRIBE_Building_Object@@UAEXXZ"},
     "004C8A80": {"status": "scratch", "symbol": "?update@TRIBE_Building_Object@@UAEEXZ"},
     "004C8B80": {"status": "matching", "symbol": "?explore_terrain@TRIBE_Building_Object@@UAEHPAVRGE_Player@@EH@Z"},
-    "004C8BC0": {"status": "scratch", "symbol": "?save@TRIBE_Building_Object@@UAEXH@Z"},
+    "004C8BC0": {"status": "matching", "symbol": "?save@TRIBE_Building_Object@@UAEXH@Z"},
     "004C8CB0": {"status": "accepted_drift", "symbol": "?change_ownership@TRIBE_Building_Object@@UAEXPAVRGE_Player@@@Z"},
     "004C8E60": {"status": "matching", "symbol": "?modify@TRIBE_Building_Object@@UAEXME@Z"},
     "004C8E90": {"status": "matching", "symbol": "?transform@TRIBE_Building_Object@@QAEXPAVTRIBE_Master_Building_Object@@@Z"},
@@ -31,11 +31,11 @@
     "004C9230": {"status": "scratch", "symbol": "?lay_down_impassable_terrain@TRIBE_Building_Object@@QAEXXZ"},
     "004C9360": {"status": "scratch", "symbol": "?lay_down_passable_terrain@TRIBE_Building_Object@@QAEXXZ"},
     "004C9480": {"status": "matching", "symbol": "?cancel_object@TRIBE_Building_Object@@UAEXXZ"},
-    "004C9490": {"status": "scratch", "symbol": "?cancel_build@TRIBE_Building_Object@@QAEXXZ"},
+    "004C9490": {"status": "matching", "symbol": "?cancel_build@TRIBE_Building_Object@@QAEXXZ"},
     "004C9560": {"status": "scratch", "symbol": "?build@TRIBE_Building_Object@@QAEEM@Z"},
-    "004C9620": {"status": "scratch", "symbol": "?work_status@TRIBE_Building_Object@@QAEHAAF00PADF@Z"},
-    "004C96C0": {"status": "scratch", "symbol": "?get_construction_progress@TRIBE_Building_Object@@QAEFXZ"},
-    "004C9710": {"status": "scratch", "symbol": "?copy_obj@TRIBE_Building_Object@@UAEXPAVRGE_Master_Static_Object@@@Z"},
+    "004C9620": {"status": "matching", "symbol": "?work_status@TRIBE_Building_Object@@QAEHAAF00PADF@Z"},
+    "004C96C0": {"status": "matching", "symbol": "?get_construction_progress@TRIBE_Building_Object@@QAEFXZ"},
+    "004C9710": {"status": "matching", "symbol": "?copy_obj@TRIBE_Building_Object@@UAEXPAVRGE_Master_Static_Object@@@Z"},
     "004C9760": {"status": "matching", "symbol": "?rotate@TRIBE_Building_Object@@UAEXJ@Z"},
     "004C9770": {"status": "scratch", "symbol": "?damage@TRIBE_Building_Object@@UAEXHPAURGE_Armor_Weapon_Info@@MPAVRGE_Player@@PAVRGE_Static_Object@@@Z"},
     "004C9870": {"status": "accepted_drift", "symbol": "?add_to_production_queue@TRIBE_Building_Object@@QAEXFF@Z"},
@@ -44,7 +44,7 @@
     "004C9D20": {"status": "scratch", "symbol": "?empty_production_queue@TRIBE_Building_Object@@QAEXXZ"},
     "004C9D90": {"status": "matching", "symbol": "?enable_production_queue@TRIBE_Building_Object@@QAEXH@Z"},
     "004C9DA0": {"status": "scratch", "symbol": "?update_production_queue@TRIBE_Building_Object@@QAEXXZ"},
-    "004CA030": {"status": "scratch", "symbol": "?production_queue_status@TRIBE_Building_Object@@QAEHAAF0@Z"},
+    "004CA030": {"status": "matching", "symbol": "?production_queue_status@TRIBE_Building_Object@@QAEHAAF0@Z"},
     "004CA0B0": {"status": "matching", "symbol": "?stop@TRIBE_Building_Object@@UAEXXZ"}
   }
 }
