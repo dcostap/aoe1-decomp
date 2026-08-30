@@ -105,10 +105,21 @@ int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* src) {
     outline_radius_y = src->outline_radius_y;
     outline_radius_z = src->outline_radius_z;
 
-    for (int i = 0; i < 3; ++i) {
-        attribute_type_held[i] = src->attribute_type_held[i];
-        attribute_amount_held[i] = src->attribute_amount_held[i];
-        attribute_flag[i] = src->attribute_flag[i];
+    {
+        unsigned char* fp = attribute_flag;
+        float* ap = attribute_amount_held;
+        short* tp = attribute_type_held;
+        int diff = (int)src - (int)(RGE_Master_Static_Object*)this;
+        int cnt = 3;
+        do {
+            *tp = *(short*)((int)tp + diff);
+            *ap = *(float*)((int)ap + diff);
+            *fp = *(unsigned char*)((int)fp + diff);
+            tp++;
+            ap++;
+            fp++;
+            cnt--;
+        } while (cnt != 0);
     }
 
     {
@@ -296,131 +307,150 @@ int RGE_Master_Static_Object::setup(
 
 int RGE_Master_Static_Object::setup(
     FILE* fp, RGE_Sprite** sprites, RGE_Sound** sounds, short object_id) {
-    char object_name[120];
-    short sprite_id;
-    short death_sprite_id;
-    short undead_sprite_id;
-    short undead_flag_value;
-    short obj_max_value;
-    short movement_type_value;
-    short sort_number_value;
-    short fog_flag_value;
-    short terrain_value;
-    short elevation_flag_value;
-    short can_be_built_on_value;
-    short created_sound_id;
-    short available_value;
-    short hide_in_scenario_editor_value;
-    short area_effect_object_level_value;
-    short combat_level_value;
-    short select_level_value;
-    short map_draw_level_value;
-    short attack_reaction_value;
-    short unit_level_value;
-    short map_color_value;
-    short track_as_resource_value;
-    short convert_terrain_flag_value;
-    short create_doppleganger_value;
-    short resource_group_value;
-    short draw_flag_value;
-    short draw_color_value;
-    short attribute_flag_value;
-    short damage_sprite_count;
-    short damage_sprite_id;
-    short damage_percent;
-    short damage_flag;
-    short selected_sound_id;
-    short death_sound_id;
+    struct RGE_Master_Static_Object_Setup_Locals {
+        unsigned char pad_00[2];
+        short temp_damage_sprite;
+        short temp_select_level;
+        short temp_flag;
+        short temp_map_draw_level;
+        short temp_death_sound;
+        short temp_command_level;
+        short temp_sprite;
+        short temp_terrain;
+        short temp_undead_sprite;
+        short temp_undead_flag;
+        short temp_fog_flag;
+        short temp_hide;
+        short temp_sort_number;
+        short temp_attack_reaction;
+        short temp_available;
+        short temp_convert_terrain_flag;
+        short temp_attribute_flag;
+        short temp_map_color;
+        short temp_selected_sound;
+        short temp_track_as_resource;
+        short temp_death_sprite;
+        short temp_create_doppleganger_on_death;
+        short temp_obj_max;
+        short temp_resource_group;
+        short temp_movement;
+        short temp_draw_flag;
+        short temp_created_sound;
+        short temp_draw_color;
+        short temp_can_be_built_on;
+        short temp_elevation_flag;
+        short temp_damage_percent;
+        unsigned char local_84[2];
+        unsigned char local_82[2];
+        int count;
+        char temp_name[120];
+        unsigned char tail[4];
+    } local;
+
+    unsigned char* attribute_flags;
+    float* attribute_amounts;
+    short* attribute_types;
     RGE_Sound* sound_value;
     RGE_Sprite* sprite_value;
 
     master_type = 10;
     id = object_id;
 
-    fscanf(fp, "%s %hd %hd %hd %hd %hd %hd %hd %hd %f %hd %f %f %f %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %d %d %d %hd %hd %hd %hd %hd %f %f %f", object_name, &string_id, &string_id2, &object_group, &sprite_id,
-           &death_sprite_id, &undead_sprite_id, &undead_flag_value, &hp, &los, &obj_max_value, &radius_x,
-           &radius_y, &radius_z, &death_spawn_obj_id, &sort_number_value, &can_be_built_on_value,
-           &button_pict, &hide_in_scenario_editor_value, &portrait_pict, &available_value, &tile_req1,
+    fscanf(fp, "%s %hd %hd %hd %hd %hd %hd %hd %hd %f %hd %f %f %f %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %f %f %hd %hd %hd %hd %hd %hd %d %d %d %hd %hd %hd %hd %hd %f %f %f", local.temp_name + 4, &string_id, &string_id2, &object_group, &local.temp_undead_sprite,
+           &local.temp_obj_max, &local.temp_fog_flag, &local.temp_hide, &hp, &los, &local.temp_movement, &radius_x,
+           &radius_y, &radius_z, &death_spawn_obj_id, &local.temp_available, &local.temp_damage_percent,
+           &button_pict, &local.temp_attack_reaction, &portrait_pict, &local.temp_attribute_flag, &tile_req1,
            &tile_req2, &center_tile_req1, &center_tile_req2, &construction_radius_x,
-           &construction_radius_y, &elevation_flag_value, &fog_flag_value, &terrain_value,
-           &created_sound_id, &movement_type_value, &attribute_max_amount,
-           &multiple_attribute_mod, &attribute_rot,
-           &area_effect_object_level_value, &combat_level_value, &select_level_value,
-           &map_draw_level_value, &unit_level_value, &map_color_value,
-           &help_string_id, &help_page_id, &hotkey_id, &track_as_resource_value,
-           &create_doppleganger_value, &resource_group_value, &draw_flag_value,
-           &draw_color_value,
+           &construction_radius_y, local.local_84, &local.temp_sort_number, &local.temp_undead_flag,
+           &local.temp_can_be_built_on, &local.temp_created_sound, &attribute_max_amount,
+           &multiple_attribute_mod, &attribute_rot, &local.temp_damage_sprite, &local.temp_select_level,
+           &local.temp_map_draw_level, &local.temp_command_level, &local.temp_terrain, &local.temp_track_as_resource,
+           &help_string_id, &help_page_id, &hotkey_id, &local.temp_create_doppleganger_on_death,
+           &local.temp_resource_group, &local.temp_draw_flag, &local.temp_draw_color, &local.temp_elevation_flag,
            &outline_radius_x, &outline_radius_y, &outline_radius_z);
 
-    for (int i = 0; i < 3; ++i) {
-        fscanf(fp, "%hd %f %hd", &attribute_type_held[i],
-               &attribute_amount_held[i], &attribute_flag_value);
-        attribute_flag[i] = static_cast<unsigned char>(attribute_flag_value);
-    }
+    attribute_flags = this->attribute_flag;
+    attribute_types = this->attribute_type_held;
+    attribute_amounts = this->attribute_amount_held;
+    local.count = 3;
+    do {
+        fscanf(fp, "%hd %f %hd", attribute_types, attribute_amounts,
+               &local.temp_selected_sound);
+        *attribute_flags = (unsigned char)local.temp_selected_sound;
+        attribute_amounts++;
+        attribute_types++;
+        attribute_flags++;
+        local.count--;
+    } while (local.count != 0);
 
-    fscanf(fp, "%hd", &damage_sprite_count);
-    damage_sprite_num = static_cast<unsigned char>(damage_sprite_count);
+    fscanf(fp, "%hd", local.temp_name);
+    damage_sprite_num = (unsigned char)*(int*)local.temp_name;
     if (damage_sprite_num > 0) {
         damage_sprites = static_cast<RGE_Damage_Sprite_Info*>(
-            calloc(damage_sprite_num, sizeof(*damage_sprites)));
-        for (short i = 0; i < damage_sprite_num; ++i) {
-            fscanf(fp, "%hd %hd %hd", &damage_sprite_id, &damage_percent,
-                   &damage_flag);
-            damage_sprites[i].sprite = damage_sprite_id >= 0
-                ? sprites[damage_sprite_id] : 0;
-            damage_sprites[i].damage_percent =
-                static_cast<unsigned char>(damage_percent);
-            damage_sprites[i].flag = static_cast<unsigned char>(damage_flag);
+            calloc((int)damage_sprite_num, 8));
+        short i = 0;
+        if (damage_sprite_num > 0) {
+            do {
+                fscanf(fp, "%hd %hd %hd", &local.temp_flag, local.local_82,
+                       &local.temp_death_sound);
+                RGE_Sprite* damage_sprite;
+                if (local.temp_flag >= 0) damage_sprite = sprites[local.temp_flag];
+                else damage_sprite = 0;
+                damage_sprites[i].sprite = damage_sprite;
+                damage_sprites[i].damage_percent = local.local_82[0];
+                damage_sprites[i].flag = (unsigned char)local.temp_death_sound;
+                i++;
+            } while (i < (short)damage_sprite_num);
         }
     } else {
         damage_sprites = 0;
     }
 
-    fscanf(fp, "%hd %hd %hd %hd", &selected_sound_id, &death_sound_id,
-           &attack_reaction_value, &convert_terrain_flag_value);
+    fscanf(fp, "%hd %hd %hd %hd", &local.temp_death_sprite, &local.temp_sprite,
+           &local.temp_convert_terrain_flag, &local.temp_map_color);
 
-    if (selected_sound_id >= 0) sound_value = sounds[selected_sound_id];
+    if (local.temp_death_sprite >= 0) sound_value = sounds[local.temp_death_sprite];
     else sound_value = 0;
     selected_sound = sound_value;
-    if (death_sound_id >= 0) sound_value = sounds[death_sound_id];
+    if (local.temp_sprite >= 0) sound_value = sounds[local.temp_sprite];
     else sound_value = 0;
     death_sound = sound_value;
-    if (created_sound_id >= 0) sound_value = sounds[created_sound_id];
+    if (local.temp_can_be_built_on >= 0) sound_value = sounds[local.temp_can_be_built_on];
     else sound_value = 0;
     created_sound = sound_value;
-    if (sprite_id >= 0) sprite_value = sprites[sprite_id];
+    if (local.temp_undead_sprite >= 0) sprite_value = sprites[local.temp_undead_sprite];
     else sprite_value = 0;
     sprite = sprite_value;
-    if (death_sprite_id >= 0) sprite_value = sprites[death_sprite_id];
+    if (local.temp_obj_max >= 0) sprite_value = sprites[local.temp_obj_max];
     else sprite_value = 0;
     death_sprite = sprite_value;
-    if (undead_sprite_id >= 0) sprite_value = sprites[undead_sprite_id];
+    if (local.temp_fog_flag >= 0) sprite_value = sprites[local.temp_fog_flag];
     else sprite_value = 0;
     undead_sprite = sprite_value;
 
-    elevation_flag = static_cast<unsigned char>(elevation_flag_value);
-    sort_number = static_cast<unsigned char>(sort_number_value);
-    movement_type = static_cast<unsigned char>(movement_type_value);
-    fog_flag = static_cast<unsigned char>(fog_flag_value);
-    select_level = static_cast<unsigned char>(select_level_value);
-    obj_max = static_cast<unsigned char>(obj_max_value);
-    can_be_built_on = static_cast<unsigned char>(can_be_built_on_value);
-    available = static_cast<unsigned char>(available_value);
-    area_effect_object_level = static_cast<unsigned char>(area_effect_object_level_value);
-    terrain = static_cast<unsigned char>(terrain_value);
-    combat_level = static_cast<unsigned char>(combat_level_value);
-    map_draw_level = static_cast<unsigned char>(map_draw_level_value);
-    attack_reaction = static_cast<unsigned char>(attack_reaction_value);
-    unit_level = static_cast<unsigned char>(unit_level_value);
-    undead_flag = static_cast<unsigned char>(undead_flag_value);
-    track_as_resource = static_cast<unsigned char>(track_as_resource_value);
-    hide_in_scenario_editor = static_cast<unsigned char>(hide_in_scenario_editor_value);
-    convert_terrain_flag = static_cast<unsigned char>(convert_terrain_flag_value);
-    draw_flag = static_cast<unsigned char>(draw_flag_value);
-    map_color = static_cast<unsigned char>(map_color_value);
-    create_doppleganger_on_death = static_cast<unsigned char>(create_doppleganger_value);
-    resource_group = static_cast<unsigned char>(resource_group_value);
-    draw_color = static_cast<unsigned char>(draw_color_value);
+    elevation_flag = local.local_84[0];
+    sort_number = (unsigned char)local.temp_available;
+    movement_type = (unsigned char)local.temp_created_sound;
+    fog_flag = (unsigned char)local.temp_sort_number;
+    select_level = (unsigned char)local.temp_map_draw_level;
+    obj_max = (unsigned char)local.temp_movement;
+    can_be_built_on = (unsigned char)local.temp_damage_percent;
+    available = (unsigned char)local.temp_attribute_flag;
+    area_effect_object_level = (unsigned char)local.temp_damage_sprite;
+    terrain = (unsigned char)local.temp_undead_flag;
+    combat_level = (unsigned char)local.temp_select_level;
+    map_draw_level = (unsigned char)local.temp_command_level;
+    attack_reaction = (unsigned char)local.temp_convert_terrain_flag;
+    unit_level = (unsigned char)local.temp_terrain;
+    undead_flag = (unsigned char)local.temp_hide;
+    track_as_resource = (unsigned char)local.temp_create_doppleganger_on_death;
+    hide_in_scenario_editor = (unsigned char)local.temp_attack_reaction;
+    convert_terrain_flag = (unsigned char)local.temp_map_color;
+    draw_flag = (unsigned char)local.temp_draw_color;
+    map_color = (unsigned char)local.temp_track_as_resource;
+    create_doppleganger_on_death = (unsigned char)local.temp_resource_group;
+    resource_group = (unsigned char)local.temp_draw_flag;
+    draw_color = (unsigned char)local.temp_elevation_flag;
 
     if (outline_radius_x == DAT_00570618) outline_radius_x = radius_x;
     if (outline_radius_y == DAT_00570618) outline_radius_y = radius_y;
@@ -430,9 +460,9 @@ int RGE_Master_Static_Object::setup(
     copy_id = id;
     if (object_group == 11) recyclable = 1;
 
-    if (strlen(object_name) > 0) {
+    if ((short)strlen(local.temp_name + 4) > 0) {
         name = 0;
-        getstring(&name, object_name);
+        getstring(&name, local.temp_name + 4);
     }
     return 1;
 }
