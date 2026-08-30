@@ -478,8 +478,9 @@ void RGE_Diamond_Map::draw_explored_tiles() {
       int i;
       i = 0;
       while (i < count) {
-        this->draw_tile((short)list[i].col, (short)list[i].row, 0, 0);
+        this->draw_tile((short)list->col, (short)list->row, 0, 0);
         i++;
+        list++;
       }
       this->save_area->Unlock("diam_map::draw_explored_tiles");
     }
