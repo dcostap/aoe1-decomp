@@ -2203,11 +2203,13 @@ unsigned char RGE_Map::get_elev(short x, short y)
 unsigned char RGE_Map::get_terrain(short x, short y)
 {
     unsigned char id = this->map_row_offset[y][x].terrain_type & 0x1F;
-    if (id > 0x20 ||
-        (this->terrain_types[id].loaded == 0 &&
-         this->terrain_types[id].terrain_to_draw < 0))
-        id = 0;
-    return id;
+    if (id <= 0x20) {
+        unsigned int idx = id;
+        RGE_Tile_Set* terrain = &this->terrain_types[idx];
+        if (terrain->loaded != 0 || terrain->terrain_to_draw >= 0)
+            return id;
+    }
+    return 0;
 }
 
 unsigned char RGE_Map::get_border(short x, short y)

@@ -58,7 +58,7 @@
     "00459060": {"status": "scratch", "symbol": "?tile_map_coords@RGE_Map@@QAEXFFPAURGE_Tile@@PAM1@Z"},
     "004593A0": {"status": "matching", "symbol": "?check_map_coords@RGE_Map@@QAEEFF@Z"},
     "004593D0": {"status": "matching", "symbol": "?get_elev@RGE_Map@@QAEEFF@Z"},
-    "00459400": {"status": "matching", "symbol": "?get_terrain@RGE_Map@@QAEEFF@Z"},
+    "00459400": {"status": "scratch", "symbol": "?get_terrain@RGE_Map@@QAEEFF@Z"},
     "00459460": {"status": "matching", "symbol": "?get_border@RGE_Map@@QAEEFF@Z"},
     "004594B0": {"status": "scratch", "symbol": "?set_terrain_passablity@RGE_Map@@QAEXFFFFE@Z"},
     "004595E0": {"status": "matching", "symbol": "?set_elev@RGE_Map@@QAEXFFFFEFE@Z"},
