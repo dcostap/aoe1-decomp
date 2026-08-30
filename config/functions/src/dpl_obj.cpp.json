@@ -17,7 +17,7 @@
     "00442050": {"status": "matching", "symbol": "?validate@RGE_Doppleganger_Object@@UAEXXZ"},
     "00442100": {"status": "matching", "symbol": "??0RGE_Doppleganger_Creator@@QAE@PAVRGE_Player@@H@Z"},
     "00442180": {"status": "matching", "symbol": "??1RGE_Doppleganger_Creator@@QAE@XZ"},
-    "004421F0": {"status": "scratch", "symbol": "?add_doppleganger_check@RGE_Doppleganger_Creator@@QAEHPAVRGE_Static_Object@@PAK@Z"},
+    "004421F0": {"status": "accepted_drift", "symbol": "?add_doppleganger_check@RGE_Doppleganger_Creator@@QAEHPAVRGE_Static_Object@@PAK@Z"},
     "004422B0": {"status": "matching", "symbol": "?remove_doppleganger_check@RGE_Doppleganger_Creator@@QAEHPAVRGE_Static_Object@@@Z"},
     "00442390": {"status": "matching", "symbol": "?perform_doppleganger_checks@RGE_Doppleganger_Creator@@QAEXXZ"},
     "00442540": {"status": "matching", "symbol": "?expand_allocations@RGE_Doppleganger_Creator@@IAEXH@Z"}
