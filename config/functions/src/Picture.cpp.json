@@ -7,7 +7,7 @@
   },
   "functions": {
     "0046DDE0": {"status": "matching", "symbol": "??0TPicture@@QAE@PADJHPAXH@Z"},
-    "0046DE30": {"status": "scratch", "symbol": "??0TPicture@@QAE@HH@Z"},
+    "0046DE30": {"status": "matching", "symbol": "??0TPicture@@QAE@HH@Z"},
     "0046DFA0": {"status": "matching", "symbol": "??0TPicture@@QAE@XZ"},
     "0046DFC0": {"status": "matching", "symbol": "??1TPicture@@QAE@XZ"},
     "0046E020": {"status": "matching", "symbol": "?Save@TPicture@@QAEXH@Z"},
