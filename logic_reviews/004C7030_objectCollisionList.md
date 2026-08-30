@@ -29,5 +29,5 @@ invalid-return tail clears `EBP` before moving it to `EAX`, instead of clearing
 `EAX` directly. Both forms return zero and restore the same state. The FPU pop
 also remains on the same invalid-radius path.
 
-Promote the normalized candidate to `src/verified_logic`. This is not an exact
+Promote the normalized candidate to `verified_logic` status. This is not an exact
 match. The remaining drift is compiler EH and tail lowering.

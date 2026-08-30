@@ -7,7 +7,7 @@
   "functions": {
     "00432200": {
       "status": "matching",
-      "note_path": "recovery_notes/00432200_TCommunications_Sessions.md"
+      "note_path": "decomp_notes/functions/0043/00432200_TCommunications_Sessions.md"
     },
     "00432290": { "status": "matching" },
     "004322A0": { "status": "matching" },
@@ -19,16 +19,16 @@
     "00432380": { "status": "matching" },
     "00432390": {
       "status": "matching",
-      "note_path": "recovery_notes/00432390_AddSession.md"
+      "note_path": "decomp_notes/functions/0043/00432390_AddSession.md"
     },
     "004324F0": {
       "status": "matching",
-      "note_path": "recovery_notes/004324F0_Refresh.md"
+      "note_path": "decomp_notes/functions/0043/004324F0_Refresh.md"
     },
     "00432560": { "status": "matching" },
     "004325E0": {
       "status": "matching",
-      "note_path": "recovery_notes/004325E0_IsEqualGuid.md"
+      "note_path": "decomp_notes/functions/0043/004325E0_IsEqualGuid.md"
     }
   }
 }

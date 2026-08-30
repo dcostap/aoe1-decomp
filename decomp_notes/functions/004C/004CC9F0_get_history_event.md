@@ -1,0 +1,13 @@
+# Function notes: 004CC9F0 `get_history_event`
+
+## Earlier notes from `decomp_notes/functions/004C/004CC9F0_get_history_event.md`
+
+This section is historical. Use the status query for current state.
+
+## 004CC9F0 `TRIBE_History_Info::get_history_event`
+
+- PDB source: `t_histry.cpp`, lines 198 to 211.
+- Original size: 54 bytes.
+- Historical status: registered exact owner.
+
+The recovered loop has the form `while (node != 0)`. A prior `while (1)` form changed the loop branch. The method returns the first event only when `index` is zero.

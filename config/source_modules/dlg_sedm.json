@@ -5,8 +5,8 @@
   "source": "src/dlg_sedm.cpp",
   "header": "include/dlg_sedm.h",
   "functions": {
-    "00440140": { "status": "matching", "note_path": "recovery_notes/dlg_sedm_module.md" },
-    "00440360": { "status": "scratch", "note_path": "recovery_notes/dlg_sedm_module.md" },
-    "00440400": { "status": "matching", "note_path": "recovery_notes/dlg_sedm_module.md" }
+    "00440140": { "status": "matching", "note_path": "decomp_notes/dlg_sedm_module.md" },
+    "00440360": { "status": "scratch", "note_path": "decomp_notes/dlg_sedm_module.md" },
+    "00440400": { "status": "matching", "note_path": "decomp_notes/dlg_sedm_module.md" }
   }
 }

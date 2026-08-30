@@ -391,7 +391,6 @@ void RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int value) {
     this->SendChatMsgs = value;
 }
 
-// separate matching pass is complete.
 int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     unsigned int playerNo, unsigned long commTurn) {
     unsigned long myWorldTime = 0;

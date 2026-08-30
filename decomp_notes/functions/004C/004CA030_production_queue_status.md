@@ -1,0 +1,15 @@
+# Function notes: 004CA030 `production_queue_status`
+
+Module notes: `decomp_notes/t_b_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:1f0110326e095fda2301 -->
+### `target-session` `build/target_sessions/004CA030_production_queue_status.json:1-1`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 abi; result=MISMATCH; diff=3; shape=92.6829268292683: Restore original short-reference production_queue_status ABI from FPO symbol QAEHAAF0.
+```
+<!-- end-recovered:1f0110326e095fda2301 -->

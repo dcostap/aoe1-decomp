@@ -1,0 +1,19 @@
+# Function notes: 004C1DC0 `create_sprite_list`
+
+Module notes: `decomp_notes/stat_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:0bc84609715563882e5a -->
+### `9f29dc381200` `src/matching/004C1DC0_create_sprite_list.cpp:1-5`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// attempt log:
+// first pass: straight new-expression wrapper with the live EH/new prolog in mind
+// second pass: add a per-function /GX rsp because this helper lives in the EH/new constructor family
+// rsp used: config/flags/004C1DC0_create_sprite_list.rsp = /nologo /c /O2 /Oy /GX
+// target shape: return new RGE_Active_Sprite_List(this);
+```
+<!-- end-recovered:0bc84609715563882e5a -->

@@ -9,8 +9,8 @@
     "00404C90": { "status": "matching" },
     "00404D10": { "status": "matching" },
     "00404D50": { "status": "matching" },
-    "00404DB0": { "status": "scratch", "note_path": "recovery_notes/act_misl_migration.md" },
-    "004050F0": { "status": "scratch", "note_path": "recovery_notes/act_misl_migration.md" },
+    "00404DB0": { "status": "scratch", "note_path": "decomp_notes/act_misl_migration.md" },
+    "004050F0": { "status": "scratch", "note_path": "decomp_notes/act_misl_migration.md" },
     "004054B0": { "status": "matching" }
   }
 }

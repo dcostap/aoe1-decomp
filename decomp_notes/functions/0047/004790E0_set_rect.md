@@ -1,0 +1,19 @@
+# Function notes: 004790E0 `set_rect`
+
+Module notes: `decomp_notes/pnl_msg_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:d78d18b592401c8d42c8 -->
+### `44679cc1b979` `src/matching/004790E0_set_rect.cpp:1-5`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// MODULE NOTE: the standalone /GX owner is exact. The complete Pnl_msg.cpp
+// wrapper uses the reviewed shared context and observes a 228-byte mismatch;
+// keep this owner natural and do not tune it for the wrapper metric.
+// first pass: typed local reconstruction of image-buffer recreate path
+// FLAGS: config/flags/004790E0_set_rect.rsp uses /GX for new/delete EH state around TDrawArea construction
+```
+<!-- end-recovered:d78d18b592401c8d42c8 -->

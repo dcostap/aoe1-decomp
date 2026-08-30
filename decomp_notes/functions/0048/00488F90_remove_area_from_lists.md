@@ -1,0 +1,17 @@
+# Function notes: 00488F90 `remove_area_from_lists`
+
+Module notes: `decomp_notes/rmm_terr_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:dea297908d7d36f09650 -->
+### `a9a8fe10cd56` `src/matching/00488F90_remove_area_from_lists.cpp:1-3`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00488F90 RGE_RMM_Terrain_Generator::remove_area_from_lists (154B)
+// rmm_terr.cpp:279-300
+// void __thiscall remove_area_from_lists(long param_1, long param_2, long param_3)
+```
+<!-- end-recovered:dea297908d7d36f09650 -->

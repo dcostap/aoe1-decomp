@@ -1,0 +1,25 @@
+# Function notes: 004CCF30 `check_ownership`
+
+## Earlier notes from `decomp_notes/functions/004C/004CCF30_check_ownership.md`
+
+This section is historical. Use the status query for current state.
+
+## 004CCF30 `TRIBE_Action_Artifact::check_ownership`
+
+- PDB source: `tact_art.cpp`, lines 168 to 224.
+- Original size: 495 bytes.
+
+### Recovery record
+
+1. Named action-object, master-object, player, world, map, tile, and list
+   fields replaced raw cursor and absolute-address access.
+2. The declaration order of `best_player` before `unique_owner` restored the
+   scan prologue.
+3. The positive byte test (`> 0`) preserves the executable's unsigned branch.
+4. The typed map scan preserves the coordinate clipping and unique-owner lookup.
+
+### Module merge transition
+
+The function moved from its matching fragment into `src/tact_art.cpp` in PDB
+order. The merge uses the one module header and removes duplicate fallback
+class declarations. It does not change the ownership scan.

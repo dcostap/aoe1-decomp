@@ -1,11 +1,13 @@
 # Logic review: 00538D60 `RGE_View::draw_terrain_obstruction_map`
 
+Current source: `src/view.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after eight claims, 47
 meaningful probes, 69 checks, donor and ABI work, and focused natural source
 variants. The candidate remains
-`src/scratch/00538D60_draw_terrain_obstruction_map.cpp`.
+`src/view.cpp`.
 
 Current validated checker state:
 
@@ -160,5 +162,5 @@ strict differing SIB bytes.
 
 ## Final decision
 
-Promote to `src/verified_logic`. Two fresh cohorts found no behavioral
+Promote to `verified_logic` status. Two fresh cohorts found no behavioral
 uncertainty. The remaining two bytes are equivalent address register encoding.

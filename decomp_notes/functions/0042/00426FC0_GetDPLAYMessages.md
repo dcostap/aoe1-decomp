@@ -1,0 +1,88 @@
+# Function notes: 00426FC0 `GetDPLAYMessages`
+
+Module notes: `decomp_notes/com_hand_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:641cc3f7babacd098bad -->
+### `target-session` `build/target_sessions/00426FC0_GetDPLAYMessages.json:1-25`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=759; shape=87.95620437956204: Baseline clean scratch source before new probes; establish current metrics and call/frame state.
+probe 2 abi; result=MISMATCH; diff=327; shape=93.7269372693727: Hypothesis 2: replace raw globals and literal strings with typed external TU symbols; test whether period declaration surface restores relocation and call setup without raw addresses.
+probe 3 control-flow; result=MISMATCH; diff=324; shape=93.7269372693727: Hypothesis 3: use direct typed dcoID[i] in the duplicated do/while scans instead of a pointer local; test whether VC5 stops peeling the first comparison and recovers the oracle loop CFG.
+probe 4 control-flow; result=MISMATCH; diff=231; shape=95.91078066914498: Hypothesis 4: mirror exact same-TU UpdatePlayerInformation scan syntax: signed int bounds, direct dcoID[i], and for-loop update with goto found label.
+probe 5 control-flow; result=MISMATCH; diff=300; shape=93.35793357933579: Hypothesis 5: express the second player-ID scan as result initialization plus break assignment, instead of a goto label, to test an out-of-line found path and original near-branch topology.
+probe 6 liveness; result=MISMATCH; diff=231; shape=95.91078066914498: Hypothesis 6: use a distinct local for the second player number, matching possible source lifetime separation; test whether VC5 outlines the found branch and preserves the original late move. [same emitted code as probe 4]
+probe 7 control-flow; result=MISMATCH; diff=231; shape=95.91078066914498: Hypothesis 7: add an explicit common second-player logging label and a not-found goto, testing whether explicit source block topology creates the oracle's out-of-line found assignment.
+probe 8 abi; result=MISMATCH; diff=231; shape=95.91078066914498: Hypothesis 8: widen the player-number result to unsigned int, matching the unsigned short field extension and vararg ABI; test whether this changes the late result register and branch placement. [same emitted code as probe 6]
+probe 9 layout; result=MISMATCH; diff=231; shape=95.91078066914498: Hypothesis 9: use a typed moving dcoID pointer with a for-loop and comma update, matching the oracle's LEA plus pointer increment while retaining signed bounds. [same emitted code as probe 8]
+probe 10 control-flow; result=MISMATCH; diff=231; shape=95.91078066914498: Hypothesis 10: express the second scan as an explicit infinite loop with post-increment bound break, testing whether source control-flow placement reproduces the oracle's late found block. [same emitted code as probe 9]
+probe 11 abi; result=MISMATCH; diff=231; shape=95.91078066914498: Hypothesis 11: use the period const-char debug timer declaration and external Rcv MSG string symbol, removing source casts while preserving the reviewed call ABI.
+probe 12 control-flow; result=MISMATCH; diff=253; shape=95.53903345724908: Hypothesis 12: invert only the second dcoFromID guard to a zero case plus scan else, testing whether source branch polarity affects the compiler's rare found-block placement.
+probe 13 liveness; result=MISMATCH; diff=231; shape=95.91078066914498: Hypothesis 13: hoist both scan indices and high bounds to function scope and reuse them, testing declaration lifetime and register coloring against the original second scan. [same emitted code as probe 11]
+probe 14 context; result=MISMATCH; diff=231; shape=95.91078066914498: Hypothesis 14: keep typed external globals but restore natural source literals for the period path and messages; isolate whether named string declarations caused the current basin.
+probe 15 control-flow; result=MISMATCH; diff=229; shape=96.26865671641791: Hypothesis 15b: move timer locals to function scope so the late second-found label can legally jump to the log block; test the PDB-proven out-of-line branch topology without compiler scaffolding.
+probe 16 layout; result=MISMATCH; diff=231; shape=95.91078066914498: Hypothesis 16: cache the proven dcoID array base in a local pointer shared by both scans, testing whether one canonical owner recovers the late branch without inventing layout. [same emitted code as probe 14]
+probe 17 liveness; result=MISMATCH; diff=194; shape=95.18518518518519: Hypothesis 17: initialize the shared player-number result at declaration and remove redundant zero arms, testing whether original xor-zero placement comes from early local initialization.
+probe 18 control-flow; result=MISMATCH; diff=231; shape=95.91078066914498: Hypothesis 18: assign pno in the second scan match arm and jump directly to a common log label, testing whether explicit result flow moves the found assignment to the oracle's rare branch.
+probe 19 layout; result=MISMATCH; diff=231; shape=95.91078066914498: Hypothesis 19: restore direct this->dcoID ownership after the pointer-cache probe; validate the simplest canonical array model and check whether it changes the late branch. [same emitted code as probe 16]
+probe 20 control-flow; result=MISMATCH; diff=239; shape=95.53903345724908: Hypothesis 20: use a top-tested while scan without a separate guard block for the second player lookup, testing the natural loop form against the oracle's initial compare and late found edge.
+probe 26 control-flow; result=MISMATCH; diff=98; shape=99.23664122137404: Use the exact same-TU EnumPlayersCallback2 scan shape: assign a separate result in the match arm, set fallback after the loop, then join the log label. This tests the documented late found move without scaffolding.
+probe 27 behavior; result=MISMATCH; diff=1; shape=100.0: Preserve the binary-supported overflow logging operand: the condition uses the peek count, but the oracle reloads the separate receive-size home on the error arm. Test the shipped uninitialized-size behavior and fault order.
+probe 28 layout; result=MISMATCH; diff=1; shape=100.0: Use the binary-proven reversed pointer-plus-offset spelling for the packet terminator. The only mismatch was the SIB base/index encoding, with target [dwSize + buf] and rebuilt [buf + dwSize]. [same emitted code as probe 27]
+probe 29 layout; result=MATCH; diff=0; shape=100.0: Test direct canonical member indexing for the terminator while retaining the named buffer for all calls. This probes whether member ownership changes the SIB base/index order naturally.
+probe 32 context; result=MISMATCH; diff=676; shape=97.32824427480917: Fresh standalone check before grouped diagnosis; preserve existing pinned exact source.
+```
+<!-- end-recovered:641cc3f7babacd098bad -->
+
+<!-- recovered:625d390f22e8bf6e5585 -->
+### `33193e99b43d` `src/scratch/00426FC0_GetDPLAYMessages.cpp:1-40`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 00426FC0 TCommunications_Handler::GetDPLAYMessages
+// PDB source: Com_hand.cpp lines 965-1113
+// attempt log:
+// 1: natural reconstruction from packet/decompiler, COM v44/v64 as __stdcall virtuals; exact 819B but broad 79.61% positional / 94.14% edit mismatch, first diff frame 0x18 vs 0x14.
+// 2: inlined duplicated player-index scans instead of helper; edit diff improved to 59.46%, positional still broad and frame 0x14.
+// 3: added volatile local_4 stack pressure; no frame improvement and worsened diff to 81.20%/61.54%, rolled back.
+// 4: flag probes: /O2 no-/Oy and /GX same mismatch; /O1 shrinks to 733B; /Od same size but broad mismatch from offset 0. Rolled back to default /O2 /Oy.
+// 5: kept direct COM vtable calls and direct member calls for PreprocessMessages/EvaluateSystemMessage; call set/behavior plausible but prologue/local scheduling differs from original.
+// session: terminal EvaluateSystemMessage return restored the oracle's 21-call/3-return
+// CFG. Unsigned HighPlayerNumber(+1710)/LowPlayerNumber(+1712) bounds recover the
+// zero-extend loop shape; explicit persistent COM caching and raw vtable surfaces
+// were worse. Remaining drift is frame/local-home and COM argument scheduling.
+// probe: use signed loop indices with unsigned-short bounds; original scan branches
+// use signed JG after zero-extension, unlike the current unsigned JA branches.
+// follow-up: removing the pre-guard dcoFromID zero-init shrank code by 4 bytes,
+// but positional diff worsened from 792 to 807; rolled back to the clean source.
+// FLAGS: config/flags/00426FC0_GetDPLAYMessages.rsp (/nologo /c /O2 /Oy)
+// left in scratch: the remaining drift is the initial timer-call cleanup and
+// the duplicated player-ID scan register shape; calls and frame are aligned.
+// fresh pass: model the binary's separate peek-size and receive-size homes; the
+// oracle copies the peek result into the receive size before the second call.
+// probe: the peek count, not the receive size, drives the overflow check.
+// probe: the peek Receive preserves the prologue-zeroed from-ID; it is not reset
+// at the top of each loop.
+// probe: loading a guard receiver before ID zeroing reproduces the exact prologue
+// and keeps the repeated global DirectPlay loads in the call sites.
+// subagent pass: typed external L/DAT globals removed raw global dereferences;
+// this reduced the size gap from +37B to -10B and raised block coverage to 93.89%.
+// subagent pass: a same-TU for scan with signed int bounds and direct dcoID
+// ownership recovered both loop blocks exactly. Pointer and while variants did not.
+// subagent pass: separate result locals, result initialization, guard inversion,
+// hoisted scan locals, pointer-base caching, and explicit log labels did not fix
+// the second found arm. The literal strings and const timer declaration were neutral.
+// subagent pass: a late label after the receive loop was tested from the PDB late
+// block, but VC5 folded it back into the hot path. The clean natural source remains
+// 809B versus 819B, 21/21 ordered calls, 231 strict-diff bytes (28.2051%),
+// and 93.89% block coverage.
+// final unresolved pass: 20 meaningful hypotheses tested. The remaining mismatch
+// is the second player scan's rare found arm: the oracle branches to +32EC, moves
+// EBP, then jumps to the log block; natural VC5 source keeps that move inline.
+```
+<!-- end-recovered:625d390f22e8bf6e5585 -->

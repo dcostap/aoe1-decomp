@@ -1,0 +1,21 @@
+# Function notes: 0047A3E0 `load_pic`
+
+## Earlier notes from `decomp_notes/functions/0047/0047A3E0_load_pic.md`
+
+This section is historical. Use the status query for current state.
+
+## 0047A3E0 TPicturePanel::load_pic
+
+### Exact source evidence before migration
+
+The owner uses an 80-byte `file_name` buffer and enables exception handling
+for the allocation paths. It first tries a shape. An empty name with resource
+ID minus one returns before the BMP fallback.
+
+The failed shape path uses `this->shape` and a local `old_shape`. The picture
+path assigns directly to `this->pic`, tests `Dib`, and deletes an unloaded
+picture. These forms recovered the original cleanup blocks and call order.
+
+The shared header models `TShape` as 0x20 bytes. It models `TPicture` as 0x1C
+bytes, while the original allocation uses 0x20 bytes. Do not change that
+layout during source migration. Reopen it only with ABI evidence.

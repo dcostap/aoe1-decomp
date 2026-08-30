@@ -5,13 +5,13 @@
   "source": "src/scr_ach.cpp",
   "header": "include/scr_ach.h",
   "functions": {
-    "0048D530": { "status": "scratch", "note_path": "recovery_notes/scr_ach_module.md" },
-    "0048E210": { "status": "scratch", "note_path": "recovery_notes/scr_ach_module.md" },
-    "0048E400": { "status": "scratch", "note_path": "recovery_notes/scr_ach_module.md" },
-    "0048F0B0": { "status": "matching", "note_path": "recovery_notes/scr_ach_module.md" },
-    "0048F190": { "status": "matching", "note_path": "recovery_notes/scr_ach_module.md" },
-    "0048F280": { "status": "matching", "note_path": "recovery_notes/scr_ach_module.md" },
-    "0048F500": { "status": "matching", "note_path": "recovery_notes/scr_ach_module.md" },
-    "0048F530": { "status": "matching", "note_path": "recovery_notes/scr_ach_module.md" }
+    "0048D530": { "status": "scratch", "note_path": "decomp_notes/scr_ach_module.md" },
+    "0048E210": { "status": "scratch", "note_path": "decomp_notes/scr_ach_module.md" },
+    "0048E400": { "status": "scratch", "note_path": "decomp_notes/scr_ach_module.md" },
+    "0048F0B0": { "status": "matching", "note_path": "decomp_notes/scr_ach_module.md" },
+    "0048F190": { "status": "matching", "note_path": "decomp_notes/scr_ach_module.md" },
+    "0048F280": { "status": "matching", "note_path": "decomp_notes/scr_ach_module.md" },
+    "0048F500": { "status": "matching", "note_path": "decomp_notes/scr_ach_module.md" },
+    "0048F530": { "status": "matching", "note_path": "decomp_notes/scr_ach_module.md" }
   }
 }

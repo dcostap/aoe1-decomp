@@ -7,7 +7,7 @@
   "functions": {
     "004CCA60": {
       "status": "matching",
-      "note_path": "recovery_notes/t_tre_ob_module.md"
+      "note_path": "decomp_notes/t_tre_ob_module.md"
     },
     "004CCB20": { "status": "matching" },
     "004CCB90": { "status": "matching" }

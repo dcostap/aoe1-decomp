@@ -19,10 +19,17 @@ class VerifiedLogicStatusTests(unittest.TestCase):
         record = {"va": "00400000", "name": "demo"}
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            source = root / "src" / "verified_logic" / "00400000_demo.cpp"
+            source = root / "src" / "demo.cpp"
             source.parent.mkdir(parents=True)
             source.write_text("int demo() { return 1; }\n", encoding="utf-8")
-            with patch.object(common, "REPO_ROOT", root):
+            entry = {
+                "module": {"source": "src/demo.cpp"},
+                "status": "verified_logic",
+                "note_path": "",
+            }
+            with patch.object(common, "REPO_ROOT", root), patch.object(
+                common, "source_module_entry_for_va", return_value=entry
+            ):
                 selected = common.preferred_source_path(record)
         self.assertEqual(selected, source)
 
@@ -39,7 +46,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            source = root / "src" / "verified_logic" / "00400000_demo.cpp"
+            source = root / "src" / "demo.cpp"
             source.parent.mkdir(parents=True)
             source.write_text("int demo() { return 1; }\n", encoding="utf-8")
             ledger = root / "logic_reviews" / "00400000_demo.md"
@@ -56,6 +63,15 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                 patch.object(status_core, "load_parent_owned_fragments", return_value={}),
                 patch.object(status_core, "load_padding_only_functions", return_value={}),
                 patch.object(status_core, "classify_corpus_bucket", return_value=("normal", "")),
+                patch.object(
+                    status_core,
+                    "source_module_entry_for_va",
+                    return_value={
+                        "module": {"source": "src/demo.cpp"},
+                        "status": "verified_logic",
+                        "note_path": "",
+                    },
+                ),
             ):
                 rows = status_core.build_status_rows(
                     include_source_preview=False,
@@ -80,7 +96,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            source = root / "src" / "verified_logic" / "00400000_demo.cpp"
+            source = root / "src" / "demo.cpp"
             source.parent.mkdir(parents=True)
             source.write_text("int demo() { return 1; }\n", encoding="utf-8")
             with (
@@ -93,6 +109,15 @@ class VerifiedLogicStatusTests(unittest.TestCase):
                 patch.object(status_core, "load_parent_owned_fragments", return_value={}),
                 patch.object(status_core, "load_padding_only_functions", return_value={}),
                 patch.object(status_core, "classify_corpus_bucket", return_value=("normal", "")),
+                patch.object(
+                    status_core,
+                    "source_module_entry_for_va",
+                    return_value={
+                        "module": {"source": "src/demo.cpp"},
+                        "status": "verified_logic",
+                        "note_path": "",
+                    },
+                ),
             ):
                 rows = status_core.build_status_rows(
                     include_source_preview=False,

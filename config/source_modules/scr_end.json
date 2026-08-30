@@ -5,8 +5,8 @@
   "source": "src/scr_end.cpp",
   "header": "include/scr_end.h",
   "functions": {
-    "004936D0": { "status": "matching", "note_path": "recovery_notes/scr_end.md" },
-    "00493C00": { "status": "matching", "note_path": "recovery_notes/scr_end.md" },
-    "00493C90": { "status": "matching", "note_path": "recovery_notes/scr_end.md" }
+    "004936D0": { "status": "matching", "note_path": "decomp_notes/scr_end.md" },
+    "00493C00": { "status": "matching", "note_path": "decomp_notes/scr_end.md" },
+    "00493C90": { "status": "matching", "note_path": "decomp_notes/scr_end.md" }
   }
 }

@@ -139,10 +139,10 @@ def parse_args() -> argparse.Namespace:
             "Proposal schema:\n"
             "  {\n"
             "    \"schema\": 1, \"name\": \"module_name\",\n"
-            "    \"module\": \"PDB_file.cpp\", \"source\": \"src/module_tu.cpp\",\n"
+            "    \"module\": \"PDB_file.cpp\", \"source\": \"src/module.cpp\",\n"
             "    \"flags\": \"config/flags/module.rsp\",\n"
-            "    \"owners\": {\"00401000\": \"src/matching/00401000_name.cpp\"},\n"
-            "    \"observed\": {\"00401100\": {\"source\": \"src/scratch/00401100_name.cpp\", \"status\": \"scratch\"}},\n"
+            "    \"owners\": {\"00401000\": \"src/module.cpp\"},\n"
+            "    \"observed\": {\"00401100\": {\"source\": \"src/module.cpp\", \"status\": \"scratch\"}},\n"
             "    \"generated\": {\"00401200\": \"??_EClass@@UAEPAXI@Z\"},\n"
             "    \"symbols\": {\"00401000\": \"?name@Class@@QAEXXZ\"}\n"
             "  }"
@@ -416,11 +416,7 @@ def validate_proposal(payload: dict[str, object]) -> list[str]:
                 if str(module_entry["status"]) != "matching":
                     issues.append(f"{va} exact owner is not matching in its source module")
             else:
-                matching = (REPO_ROOT / "src" / "matching").resolve()
-                try:
-                    source.resolve().relative_to(matching)
-                except ValueError:
-                    issues.append(f"{va} exact owner is not in src/matching: {source_value}")
+                issues.append(f"{va} exact owner is outside its natural source module: {source_value}")
         positions = [] if direct_module else [
             index for index, included in include_rows if included == source.resolve()
         ]

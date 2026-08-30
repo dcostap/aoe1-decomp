@@ -31,4 +31,4 @@ The original shares the zero-return EH cleanup tail. VC5 emits a cloned tail.
 Both forms use the same EH cleanup, state, output values, and return values on
 all reviewed paths.
 
-Promote it to `src/verified_logic`. This is not an exact match.
+Promote it to `verified_logic` status. This is not an exact match.

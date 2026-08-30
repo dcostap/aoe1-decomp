@@ -1,0 +1,13 @@
+# Function notes: 00462140 `play_tracks`
+
+## Earlier notes from `decomp_notes/functions/0046/00462140_play_tracks.md`
+
+This section is historical. Use the status query for current state.
+
+## 00462140 play_tracks
+
+The original source is `music.cpp`, lines 493 through 519.
+
+The function stores a track range and clamps it to the available count. It starts a fade when needed. Otherwise it calls the protected play helper.
+
+A comparison with the parameter on the left of the upper-bound test gave the prior exact result.

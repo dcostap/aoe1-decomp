@@ -7,33 +7,33 @@
   "functions": {
     "004D21B0": {
       "status": "scratch",
-      "note_path": "recovery_notes/tact_tek_module.md"
+      "note_path": "decomp_notes/tact_tek_module.md"
     },
     "004D2250": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/tact_tek_module.md"
+      "note_path": "decomp_notes/tact_tek_module.md"
     },
     "004D2290": {
       "status": "scratch",
-      "note_path": "recovery_notes/tact_tek_module.md"
+      "note_path": "decomp_notes/tact_tek_module.md"
     },
     "004D2370": { "status": "matching" },
     "004D23B0": {
       "status": "scratch",
-      "note_path": "recovery_notes/tact_tek_module.md"
+      "note_path": "decomp_notes/tact_tek_module.md"
     },
     "004D2440": { "status": "matching" },
     "004D2450": {
       "status": "matching",
-      "note_path": "recovery_notes/tact_tek_module.md"
+      "note_path": "decomp_notes/tact_tek_module.md"
     },
     "004D2550": {
       "status": "scratch",
-      "note_path": "recovery_notes/tact_tek_module.md"
+      "note_path": "decomp_notes/tact_tek_module.md"
     },
     "004D25E0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/tact_tek_module.md"
+      "note_path": "decomp_notes/tact_tek_module.md"
     }
   }
 }

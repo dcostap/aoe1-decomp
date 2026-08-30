@@ -1,0 +1,70 @@
+# Function notes: 00460900 `waitingToMove`
+
+Module notes: `decomp_notes/move_obj_module.md`.
+
+## Translation-unit context
+
+- PDB module: `move_obj.cpp`; compiler-facing owner: `src/move_obj.cpp`.
+- Source order: `maximumSpeed` at 004608D0, `waitingToMove` at 00460900,
+  and `setWaitingToMove` at 00460930.
+- Original body: one `__thiscall` function, 38 bytes, with one indirect call at
+  vtable offset `0x134`, then two tests and a byte load at `this + 0x155`.
+
+## Current mismatch
+
+- Fresh baseline checkpoint `probe-002-baseline` (2026-08-29) rebuilt 35
+  bytes versus the 38-byte original. The rebuilt direct call to
+  `movement_state` replaced the original virtual call at `vslot + 0x134`.
+- Baseline result: `MISMATCH`, 34 differing bytes, 0.00% call alignment, and
+  53.33% exact-block coverage. Frame and saved-register shape still match.
+- The exact 38-byte result from `probe-003-abi` used a declaration-only
+  77-slot caller view with inline local virtual stubs. This is not retained:
+  it is artificial source machinery, not the natural class declaration.
+- A pure-virtual declaration-only local view was rejected by VC5 because local
+  class virtual members require definitions. The failed validation did not
+  record a checker result.
+
+## Recovered attempt history
+
+- The stale 2026-08-24 standalone-source checkpoint was exact. It used the
+  old narrow class context where `movement_state` occupied `vslot + 0x134`.
+- Rebuilding the current natural source after module reunification disproved
+  that stale exact result. The current shared header declares
+  `movement_state()` as nonvirtual, so VC5 emits a direct call.
+
+## Rejected approaches
+
+- A local class with 77 inline virtual stubs reproduced all 38 bytes exactly,
+  but it retains a fake caller surface only to steer code generation.
+- A local class with pure-virtual stubs failed to compile under the pinned VC5
+  compiler. Do not retry this form.
+
+## Open questions
+
+- The canonical shared declaration does not model the proven virtual call at
+  `vslot + 0x134`. Confirm the original class or base declaration before any
+  further source change. Header edits were outside this assignment.
+- Determine whether the natural fix belongs in the reviewed class hierarchy,
+  rather than in this function body.
+
+## Next useful approaches
+
+- Review original vtable ownership and the `movement_state` declaration.
+- If the shared ABI is corrected by the integrator, rebuild this function in
+  the authentic translation unit before considering exact promotion.
+- Do not retain the local virtual-view experiment without ABI review.
+
+## Worker updates
+
+- `wave10-moveobj`: Rebuilt stale evidence first. Fresh natural source was
+  34-byte nonexact. A binary-supported local virtual view reached an exact
+  38-byte result, but policy review rejected its artificial stubs. Restored
+  the natural source. Target-session lock contention caused one failed
+  baseline bookkeeping attempt. The final bookkeeping attempt reached the
+  compiler and failed on the pure-virtual local view; no lock was forced or
+  deleted.
+- Coordinator mini-integration: vtable and PDB evidence proves the original
+  call is inherited `actionState() const`, not `movement_state()`. The natural
+  call emits `MATCH`, `0.0000%`, 38/38 bytes, and vslot `+0x134`. The fresh
+  grouped audit confirms the exact owner. The function is registered as
+  matching.

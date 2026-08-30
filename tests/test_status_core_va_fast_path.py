@@ -15,7 +15,7 @@ import status_core  # noqa: E402
 
 
 class StatusCoreVaFastPathTests(unittest.TestCase):
-    def test_migrated_module_uses_manifest_state_and_recovery_note(self) -> None:
+    def test_migrated_module_uses_manifest_state_and_decomp_note(self) -> None:
         rows = status_core.build_status_rows(
             include_source_preview=False,
             include_source_notes=True,
@@ -29,10 +29,10 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
         self.assertEqual(row["source_bucket"], "scratch")
         self.assertEqual(row["source_path"], "src/point.cpp")
         self.assertEqual(
-            row["recovery_note_path"],
-            "recovery_notes/functions/0047/0047E530_operator.md",
+            row["decomp_note_path"],
+            "decomp_notes/functions/0047/0047E530_operator.md",
         )
-        self.assertIn("Recovery notes:", row["source_note"])
+        self.assertIn("Function notes:", row["source_note"])
 
     def test_logic_review_lookup_includes_sparse_tracked_files(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -55,15 +55,15 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
             root / "logic_reviews" / "0040CDF0_MainDecisionAIModule.md",
         )
 
-    def test_source_file_lookup_normalizes_hex_case(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            directory = Path(temporary)
-            source = directory / "0040a000_target.cpp"
-            source.write_text("int target() { return 1; }\n", encoding="utf-8")
-
-            files = status_core.source_files(directory)
-
-        self.assertEqual(files["0040A000_TARGET"], source)
+    def test_header_owned_function_is_observed(self) -> None:
+        rows = status_core.build_status_rows(
+            include_source_preview=False,
+            include_diff_metrics=False,
+            va="0041A480",
+        )
+        self.assertEqual(rows[0]["source_bucket"], "observed")
+        self.assertEqual(rows[0]["source_path"], "include/stat_obj.h")
+        self.assertEqual(rows[0]["is_remaining"], "no")
 
     def test_va_build_matches_the_same_row_from_a_full_build(self) -> None:
         records = [
@@ -91,9 +91,13 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
         records_by_va = {int(record["va"], 16): record for record in records}
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            source = root / "src" / "scratch" / "00400000_target.cpp"
+            source = root / "src" / "demo.cpp"
             source.parent.mkdir(parents=True)
             source.write_text("// NOTE: target note\nint target() { return 1; }\n", encoding="utf-8")
+            module = {"source": "src/demo.cpp"}
+            entries = {
+                "00400000": {"module": module, "status": "scratch", "note_path": ""},
+            }
 
             with (
                 patch.object(status_core, "REPO_ROOT", root),
@@ -110,6 +114,12 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
                 patch.object(status_core, "load_parent_owned_fragments", return_value={}),
                 patch.object(status_core, "load_padding_only_functions", return_value={}),
                 patch.object(status_core, "classify_corpus_bucket", return_value=("normal", "")),
+                patch.object(
+                    status_core,
+                    "source_module_entry_for_va",
+                    side_effect=lambda va: entries.get(str(va).upper()),
+                ),
+                patch.object(status_core, "header_source_path", return_value=None),
             ):
                 full_rows = status_core.build_status_rows(
                     include_source_preview=False,

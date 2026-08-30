@@ -1,0 +1,145 @@
+# Function notes: 00437EC0 `draw_visible_object`
+
+Module notes: `decomp_notes/diam_map_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:5bbca72dcff64ab2778d -->
+### `target-session` `build/target_sessions/00437EC0_draw_visible_object.json:1-45`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=339; shape=65.18518518518519: Current clean int-level ordinary switch reconstruction; establish baseline before new natural probes.
+probe 2 context; result=MISMATCH; diff=339; shape=65.18518518518519: Used the exact diam_map.cpp TPanel declaration and field context from matching draw_objects; tests donor-supported TU context for this/player register coloring.
+probe 4 control-flow; result=MISMATCH; diff=384; shape=64.44444444444444: Natural shared tail with a local short mode: test whether making case 1/3 mode an explicit value prevents VC5 from folding case-2 and case-3 draw_object calls.
+probe 6 control-flow; result=MISMATCH; diff=339; shape=65.18518518518519: Natural case-3 call uses color1 directly, removing the redundant color2 assignment; test whether source equivalence still preserves the original two virtual call sites. [same emitted code as probe 1]
+probe 8 layout; result=MISMATCH; diff=339; shape=65.18518518518519: Restored the complete reviewed RGE_Diamond_Map field surface through save_area at +0x168; test whether canonical object size and unused members recover target register homes. [same emitted code as probe 6]
+probe 10 liveness; result=MISMATCH; diff=339; shape=65.18518518518519: Moved the player pointer declaration next to its first assignment after the coordinate ftol values; declaration order is a natural VC5 register-color axis. [same emitted code as probe 8]
+probe 11 context; result=MISMATCH; diff=339; shape=65.18518518518519: Expanded the TPanel gap into the reviewed complete data surface without changing offsets or vslot count; test whether named base fields alter VC5 allocation. [same emitted code as probe 10]
+probe 13 control-flow; result=MISMATCH; diff=339; shape=65.18518518518519: Natural case-2 call passes the selected level value instead of a duplicate literal 2; test whether source expression identity preserves the original separate case-2 call. [same emitted code as probe 11]
+probe 15 abi; result=MISMATCH; diff=339; shape=65.92592592592592: Changed unified_map_offsets to the proven absolute 0x00886808 table address, matching the original absolute memory operand and testing relocation identity.
+probe 16 liveness; result=MISMATCH; diff=339; shape=65.92592592592592: Split col and row declaration from assignment while retaining the proven absolute map table; test whether VC5 preserves the original row copy into its stack home. [same emitted code as probe 15]
+probe 17 layout; result=MISMATCH; diff=339; shape=65.92592592592592: Changed the map row local from int to the decompiler-supported short width; test whether the original CX carry and signed row extension recover naturally. [same emitted code as probe 16]
+probe 18 control-flow; result=MISMATCH; diff=336; shape=66.66666666666667: Reversed the visible-map guard into the original-positive form: compute visibility when player is visible and map is not fully visible, otherwise assign 0x0F.
+probe 19 control-flow; result=MISMATCH; diff=336; shape=67.4074074074074: Recast visibility as one natural early full-visibility condition with short-circuit OR; test whether VC5 emits the original shared 0x0F tail and map test order.
+probe 20 liveness; result=MISMATCH; diff=336; shape=66.66666666666667: Hoisted the visibility mask declaration to function scope while keeping its assignment inside the map-compute guard; test local scope as a register-color axis. [same emitted code as probe 18]
+probe 21 liveness; result=MISMATCH; diff=336; shape=66.66666666666667: Hoisted the int draw-level declaration to function scope; test declaration order against the original level-in-EDI dispatch topology. [same emitted code as probe 20]
+probe 22 layout; result=MISMATCH; diff=336; shape=66.66666666666667: Made the short row conversion explicit, matching the decompiler's short local rather than assigning an int conversion into short storage. [same emitted code as probe 21]
+probe 23 control-flow; result=MISMATCH; diff=336; shape=66.66666666666667: Used the short row directly in case 3 while case 2 retains an explicit short cast; test whether source argument expression identity preserves the original two case call sites.
+probe 25 baseline; result=MISMATCH; diff=336; shape=65.92592592592592: Fresh baseline after resuming paused target; validate pinned natural source before new probes.
+probe 26 layout; result=MISMATCH; diff=336; shape=66.66666666666667: Corrected the reviewed RGE_Master_Static_Object map_color ownership: map_draw_level is +0x8E, unit_level is +0x8F, map_color is +0x90. The original reads +0x90; current source emitted +0x8F.
+probe 27 control-flow; result=MISMATCH; diff=336; shape=66.66666666666667: Rewrote the fully-visible map guard as the original-positive natural condition: map_visible_flag != 0 && fog_flag == 0 assigns 0x0F, otherwise runs the visibility lookup. This tests the observed mov/test polarity without raw control-flow scaffolding.
+probe 28 liveness; result=MISMATCH; diff=336; shape=66.66666666666667: Swapped the semantic local names while preserving values: row carries world_x and col carries world_y, matching the dossier's row home at the overwritten object slot. The indexed lookup and draw arguments remain x/y equivalent; test declaration and register colors. [same emitted code as probe 27]
+probe 29 liveness; result=MISMATCH; diff=336; shape=66.66666666666667: Hoisted only the RGE_Map pointer declaration while keeping its assignment inside the visible-player guard. This is a natural declaration-scope test for the original EBP map home, without changing fault order or ownership. [same emitted code as probe 28]
+probe 30 abi; result=MISMATCH; diff=336; shape=66.66666666666667: Changed the reviewed unified_map_offsets declaration from incomplete pointer array to its known 256-row extent. This tests canonical global type without absolute addressing or behavior change. [same emitted code as probe 29]
+probe 31 behavior; result=MISMATCH; diff=336; shape=66.66666666666667: Removed the named map-mask temporary and repeated the typed player-mask AND expressions. The original uses one loaded map cell directly in two memory-operand tests; this preserves the natural repeated member reads and tests the proven mask topology. [same emitted code as probe 26]
+probe 32 context; result=MISMATCH; diff=336; shape=66.66666666666667: Restored proven polymorphic ownership for the master, player, and map pointer types by adding their vptr-bearing declarations while preserving every used offset. Test whether canonical pointer type context changes VC5 register coloring.
+probe 33 control-flow; result=MISMATCH; diff=334; shape=65.18518518518519: Moved the proven level-3 color2=color1 assignment into the normal master-level branch. The assignment remains behavior-equivalent because case 3 requires level 3, and this matches the original pre-switch map-color load topology.
+probe 35 context; result=MISMATCH; diff=336; shape=67.4074074074074: Added period-supported stdlib header context to test whether TU declaration state recovers original this/player register colors.
+probe 36 control-flow; result=MISMATCH; diff=336; shape=67.4074074074074: Removed the case-3 color2 assignment and passed the already selected color1 directly, matching the original ECX map-color path and testing separate case-2 call topology. [same emitted code as probe 35]
+probe 37 context; result=MISMATCH; diff=337; shape=65.18518518518519: Replaced generic TPanel virtual slots and gap with the exact diam_map donor's period signatures and field surface; test whether canonical TU context recovers original register homes.
+probe 39 control-flow; result=MISMATCH; diff=336; shape=67.4074074074074: Added an explicit unsigned-char cast only to case-2 color1, testing whether the original's distinct call site came from source expression identity without changing behavior or ABI.
+probe 40 liveness; result=MISMATCH; diff=336; shape=67.4074074074074: Added a branch-local byte copy for case-2 color1, a natural declaration-scope test for the original separate case-2 call without ABI or behavior changes. [same emitted code as probe 39]
+probe 41 layout; result=MISMATCH; diff=336; shape=67.4074074074074: Swapped explicit short spelling between case-2 and case-3 draw arguments, testing whether row expression type identity controls the original two-call switch layout.
+probe 42 context; result=MISMATCH; diff=336; shape=67.4074074074074: Restored the reviewed full RGE_Static_Object virtual surface from an exact local donor, testing canonical object-type context without changing offsets or call ABI.
+probe 43 liveness; result=MISMATCH; diff=337; shape=66.66666666666667: Introduced a natural selected_color local for the level-3 color path while retaining color1/color2 parameter behavior, testing whether distinct source value identity preserves the original case-2 call.
+probe 44 liveness; result=MISMATCH; diff=336; shape=67.4074074074074: Removed the player alias and used direct this->player member expressions, testing whether natural alias scope recovers the original self/player register colors.
+probe 45 liveness; result=MISMATCH; diff=336; shape=67.4074074074074: Moved the visibility declaration before the player alias while keeping all statements natural, testing declaration-order register coloring. [same emitted code as probe 42]
+probe 46 liveness; result=MISMATCH; diff=336; shape=67.4074074074074: Moved the player alias declaration after the coordinate declarations, testing natural declaration order as a register-color axis. [same emitted code as probe 45]
+probe 47 layout; result=MISMATCH; diff=336; shape=67.4074074074074: Widened the level local to unsigned int, preserving byte assignment and switch behavior, to test whether original unsigned dispatch type controls the separate case call. [same emitted code as probe 46]
+probe 48 layout; result=MISMATCH; diff=338; shape=64.44444444444444: Tested unsigned-short level storage as a natural width hypothesis for the zero-extended map draw level and jump dispatch.
+probe 51 layout; result=MISMATCH; diff=336; shape=67.4074074074074: Removed the unused world member from the local class surface and retained its proven +0xF4 slot as padding; test whether the target TU omits this member and thereby recovers the original this/player register colors. [same emitted code as probe 50]
+probe 53 liveness; result=MISMATCH; diff=336; shape=67.4074074074074: Removed the local map alias and used direct this->map member expressions in the visibility block; test whether the target's persistent EBP map value comes from direct member reloads rather than an alias.
+probe 55 liveness; result=MISMATCH; diff=336; shape=67.4074074074074: Introduced a natural source_object alias for the incoming object and used it through all phases; test whether the target's named pRVar3 lifetime preserves the original this/player register colors and separate call setup.
+probe 58 context; result=MISMATCH; diff=336; shape=67.4074074074074: Changed draw_visible_object to protected, matching the target's Ghidra decorated access class (MAE versus current U A E); test ABI symbol identity independently of body codegen. [same emitted code as probe 51]
+probe 59 liveness; result=MISMATCH; diff=336; shape=67.4074074074074: Declared the int draw level before the player alias, using the decompiler's long-lived local ordering as a natural register-color hypothesis; test whether level reuses target EDI and moves this to EBX. [same emitted code as probe 58]
+probe 60 liveness; result=MISMATCH; diff=336; shape=67.4074074074074: Joined the short coordinate declarations with their ftol initializers, testing whether natural initializer scope keeps the second coordinate in ECX across the player load and recovers target register topology. [same emitted code as probe 59]
+```
+<!-- end-recovered:5bbca72dcff64ab2778d -->
+
+<!-- recovered:dad3ccf86d3d7d4b6423 -->
+### `5c06e112e88d` `src/scratch/00437EC0_draw_visible_object.cpp:3-79`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00437EC0 RGE_Diamond_Map::draw_visible_object (diam_map.cpp:1021-1112)
+// Attempt log (sa-d55a5d35-draw_visible_object, bounded 10-probe pass):
+// - Reconstructed the typed object/master/player/map and doppleganger surfaces, coordinate
+//   ftol results, visibility masks, and the vslot +0xEC draw_object call surface.
+// - Corrected master fog/map field offsets; all bytes remain exact-size and the direct ftol
+//   sequence is stable. The natural candidate remains broad (340 differing bytes) because
+//   this/player callee-save coloring, shared visibility tails, global map-offset relocation,
+//   and case-1/case-3 versus case-2 virtual-call topology are unresolved.
+// - Explicit shared-label and common-tail switch experiments were diagnostic only and rolled
+//   back; retain ordinary nested visibility and switch source in scratch for the next worker.
+// - Fresh pass: testing an int draw-level local. The original zero-extends map_draw_level into
+//   a callee-save register before its jump table, while the prior unsigned-char source lowered
+//   the dispatch into a decrement chain and lost one draw_object call.
+// - int level plus an explicit case 0 produced the closest clean dispatch basin (339 differing
+//   bytes, 384 emitted bytes), but VC5 still folded case 2 into the case-3 draw_object site.
+// - Switch-arm order, case-zero/default exit spelling, and an inline case-3 color assignment
+//   did not change that basin. Int working-color locals and a common call tail added a frame or
+//   widened the function, so those diagnostics were rolled back.
+// - Final validated candidate keeps the ordinary typed switch and separate case-two return;
+//   remaining structural gaps are this/player register coloring and the folded virtual call.
+// - Current pass: a byte working color was codegen-identical; one full-width working color
+//   restored four calls but widened the body by 31 bytes. A natural common tail added a frame
+//   and still folded the case-two call; both diagnostics were rolled back.
+// - Current pause: the int-level ordinary switch remains authoritative. The next lead must
+//   explain the this/player register homes and the case-call topology without compiler tricks.
+// Follow-up sa012838e7_draw_visible:
+// - Restored the clean candidate before each probe. Byte-width level improved size by 13 bytes
+//   but did not recover the missing case-2 virtual call. A named self receiver was codegen-neutral.
+// - Replaced the switch with ordered if dispatch; it reduced size and still folded case 2.
+// - Donor search confirms the target's case layout is a natural switch-family shape. Paused with
+//   the clean int-level switch; unresolved gap is register-home allocation plus call topology.
+// - Tested the recovered natural shared tail: case 2 calls and returns, while cases 1 and 3
+//   assign mode and call once after the switch. VC5 added a frame, emitted 416 bytes, and still
+//   folded the case-2 virtual call; restored the clean switch.
+// - Follow-up orch-437EC0-a: rechecked the best self/goto basin and short-row baseline; neither
+//   changed the missing call or the this/player register swap. Splitting case 2 from the switch,
+//   short or branch-local full-width color temporaries, and hoisting map were nonproductive.
+// - Final source restores the clean int-level ordinary switch. The remaining structural gap is
+//   compiler folding of equivalent case-2/case-3 calls; no evidence-backed natural variant remains.
+// Follow-up sa-11cad2ac:
+// - An absolute unified_map_offsets probe improved relocation masking only.
+//   Restore the named global declaration for the living source.
+// - A positive nested visibility guard reached exact 397-byte size and 336 differing bytes;
+//   a combined short-circuit guard had better shape but worse edit distance, so it was rolled back.
+// - Complete TPanel and RGE_Diamond_Map field surfaces, declaration scope, short row spelling,
+//   and distinct case argument spellings did not change emitted code. The two call sites still fold.
+// - Current natural source keeps the positive nested visibility guard, named map table, short
+//   row, ordinary int switch, and separate case-two return. No exact result; pause for new evidence.
+
+// Follow-up sa-52e29a9a:
+// - Rechecked the target dossier, local ABI evidence, same-TU donors, and bounded target history.
+// - Corrected the reviewed master layout: unit_level is +0x8F, so map_color is +0x90. The old
+//   source read +0x8F. This changes one emitted displacement but not the 336-byte mismatch.
+// - Positive map visibility polarity, semantic coordinate-name variants, the 256-row map symbol,
+//   repeated direct mask expressions, and proven pointer vptr surfaces were codegen-duplicate.
+// - Moving level-3 color assignment before the switch reduced the diff by two bytes but shortened
+//   the body by 13 bytes and lowered shape; restore the 397-byte natural switch source.
+// - The clean natural source retains typed ownership, the named map symbol, and ordinary switch flow.
+// Follow-up sa-83abdfae:
+// - The period-supported stdlib context improved shape to 67.41% and edit cost to 274,
+//   but the result stayed 336 bytes different with one missing draw_object call.
+// - Exact donor TPanel signatures worsened the result to 337 bytes and 65.19% shape;
+//   restore the local generic slot surface. The reviewed full object virtual surface was neutral.
+// - Direct case-3 color1, explicit casts, branch-local color copies, player alias removal,
+//   declaration-order changes, and unsigned level widths did not recover the separate call.
+// - Final validation remains 397 bytes, 336 differing bytes, 3/4 calls, and MISMATCH.
+//   The unresolved gap is the original case-2 call topology and this/player register homes.
+// Follow-up sa-326d096d:
+// - Removing the unused world member, direct map-member reloads, an object alias, joined
+//   coordinate initializers, and level-before-player declaration order were codegen-duplicate.
+//   Restore the pinned natural body after each test.
+// - The target listing marks this method protected. Retain protected access so the rebuilt
+//   decorated symbol uses MAE, matching the target's Ghidra symbol; body bytes are unchanged.
+// - A register hint for the local player is rejected by VC5 (C2071). No compiler steering remains.
+// - Current claim: using color2 in level 2 reached exact size and 335 differing
+//   bytes but still folded one mode-2 call. Lifting that call before the switch
+//   worsened the result to 341 bytes. The original color1 switch source remains.
+```
+<!-- end-recovered:dad3ccf86d3d7d4b6423 -->

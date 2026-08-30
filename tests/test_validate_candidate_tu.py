@@ -90,10 +90,10 @@ class CandidateTranslationUnitTests(unittest.TestCase):
             "module": "demo.cpp",
             "source": "src/demo_tu.cpp",
             "flags": "config/flags/default.rsp",
-            "owners": {"00401010": "src/matching/00401010_demo.cpp"},
+            "owners": {"00401010": "src/00401010_demo.cpp"},
             "observed": {
                 "00401020": {
-                    "source": "src/scratch/00401020_demo.cpp",
+                    "source": "src/00401020_demo.cpp",
                     "status": "scratch",
                 }
             },
@@ -105,7 +105,7 @@ class CandidateTranslationUnitTests(unittest.TestCase):
             path.write_text(json.dumps(payload), encoding="utf-8")
             result = load_proposal(path)
 
-        self.assertEqual(result["owners"]["00401010"], "src/matching/00401010_demo.cpp")
+        self.assertEqual(result["owners"]["00401010"], "src/00401010_demo.cpp")
         self.assertEqual(result["observed"]["00401020"]["status"], "scratch")
         self.assertEqual(result["generated"]["00401030"], "??_GDemo@@UAEPAXI@Z")
 
@@ -116,8 +116,8 @@ class CandidateTranslationUnitTests(unittest.TestCase):
             "module": "demo.cpp",
             "source": "src/demo_tu.cpp",
             "flags": "config/flags/default.rsp",
-            "owners": {"00401010": "src/matching/00401010_demo.cpp"},
-            "observed": {"00401010": "src/scratch/00401010_demo.cpp"},
+            "owners": {"00401010": "src/00401010_demo.cpp"},
+            "observed": {"00401010": "src/00401010_demo.cpp"},
         }
         with tempfile.TemporaryDirectory() as temporary:
             path = Path(temporary) / "proposal.json"

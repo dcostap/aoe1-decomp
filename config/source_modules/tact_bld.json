@@ -8,20 +8,20 @@
     "004CD1B0": { "status": "matching" },
     "004CD210": {
       "status": "matching",
-      "note_path": "recovery_notes/tact_bld_module.md"
+      "note_path": "decomp_notes/tact_bld_module.md"
     },
     "004CD2A0": { "status": "matching" },
     "004CD2E0": { "status": "matching" },
     "004CD310": { "status": "matching" },
     "004CD5E0": {
       "status": "scratch",
-      "note_path": "recovery_notes/tact_bld_module.md"
+      "note_path": "decomp_notes/tact_bld_module.md"
     },
     "004CD910": { "status": "matching" },
     "004CD920": { "status": "matching" },
     "004CD960": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/tact_bld_module.md"
+      "note_path": "decomp_notes/tact_bld_module.md"
     }
   }
 }

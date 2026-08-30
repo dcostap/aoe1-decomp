@@ -1,0 +1,13 @@
+# Function notes: 00461C60 `close_device`
+
+## Earlier notes from `decomp_notes/functions/0046/00461C60_close_device.md`
+
+This section is historical. Use the status query for current state.
+
+## 00461C60 close_device
+
+The original source is `music.cpp`, lines 221 through 290.
+
+The function stops active playback. It then closes the type-specific device and mixer. Types 1 and 2 restore the start volume. Type 3 clears its device state.
+
+The natural type switch and canonical field ownership gave the prior exact result.

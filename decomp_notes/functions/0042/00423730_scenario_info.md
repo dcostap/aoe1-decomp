@@ -1,0 +1,25 @@
+# Function notes: 00423730 `scenario_info`
+
+Module notes: `decomp_notes/campaign_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:679f563b4dca72e437b7 -->
+### `0c00f3d2dd72` `src/scratch/00423730_scenario_info.cpp:1-3`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// attempt 1: direct scenario table walk with calloc(count, 4), out-param store, and per-entry getstring copies
+// attempt 2: switch to the decompiler-style iVar shape and direct *param_1 access; the first exact-match clue was a 4-byte code-size overshoot, so this is a small basin probe
+// attempt 3 rolled back: a local source pointer pulled the whole function into the wrong register basin, so keep the decompiler-style shape and only track the remaining LEA-byte drift
+```
+<!-- end-recovered:679f563b4dca72e437b7 -->
+
+## Worker updates
+
+- The read-only campaign study tested 13 natural forms. Typed pointer addition
+  through `*list + i` and `scenario_offsets + i` emits the original 100 bytes.
+- Coordinator mini-integration applied that one-line form. Focused and grouped
+  checks report `MATCH`, `0.0000%`, correct owner, two aligned calls, safe
+  relocations, and a closed boundary. The function is registered as matching.

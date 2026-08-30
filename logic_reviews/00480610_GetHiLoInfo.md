@@ -1,10 +1,12 @@
 # Logic review: 00480610 `RGE_TimeSinceLastCall::GetHiLoInfo`
 
+Current source: `src/rge_tslc.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after numerous independent passes, more than thirty meaningful source/type/control-flow/liveness hypotheses, a focused 48-case variant lab, and repeated convergence on stable VC5 parameter-home/register-allocation basins. An independent phase-readiness audit found no unresolved behavior, ABI, layout, call, or memory-effect fact, but required removal of codegen-only control-flow residue before ledger entry.
 
-The reviewed candidate was `src/scratch/00480610_GetHiLoInfo.cpp`. Before entry, the main agent removed a redundant positive-count guard already implied by the `1..100` range and normalized an empty positive branch to `if (idx <= 0) idx = 100`. The previously pinned 11-byte diagnostic used fake volatile/home-read scaffolding and is not the review candidate.
+The reviewed candidate was `src/rge_tslc.cpp`. Before entry, the main agent removed a redundant positive-count guard already implied by the `1..100` range and normalized an empty positive branch to `if (idx <= 0) idx = 100`. The previously pinned 11-byte diagnostic used fake volatile/home-read scaffolding and is not the review candidate.
 
 Current validated normalized checker state:
 
@@ -93,5 +95,5 @@ valid-path-only output assignments. The candidate passed fresh grouped validatio
 132 of 132 bytes, `MATCH`, `0.0000%`, correct owner, boundary, relocations,
 and direct `sprintf` target.
 
-The exact source now lives in `src/matching/00480610_GetHiLoInfo.cpp`.
+The exact source now lives in `src/rge_tslc.cpp`.
 The prior verified-logic decision is historical only.

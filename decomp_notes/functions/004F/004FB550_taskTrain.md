@@ -1,0 +1,32 @@
+# Function notes: 004FB550 `taskTrain`
+
+## Recovered attempt history
+
+<!-- recovered:a51d61cab2d5feffa213 -->
+### `b6e159352e2d` `src/scratch/004FB550_taskTrain.cpp:1-20`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004FB550 TribeTacticalAIModule::taskTrain (448 B)
+// PDB source: taitacmd.cpp:9185-9217
+// __thiscall, returns 0/1
+//
+// Attempt log:
+// - Fresh typed reconstruction from the taskTrain packet and same-TU task
+//   donors. The source models BuildItem, MainDecisionAIModule::object,
+//   RGE_Static_Object::unitAI, TRIBE_Player::trainUnit, and the proven
+//   unitsTaskedThisUpdate ManagedArray layout.
+// - Baseline reached 448/448 bytes, 17/17 ordered calls, and 4 differing
+//   bytes. The remaining bytes are four swapped local-home displacements:
+//   VC5 stores the found object in the incoming parameter home and the
+//   object ID in the compiler local home.
+// - Tried early object-ID/object declarations, pointer initialization,
+//   assignment-in-condition, long ID types, and parameter reuse. The
+//   parameter-reuse form moved two swaps but added prologue drift. The
+//   natural baseline remained best. No ABI, call-set, or layout blocker.
+// - Mirrored the adjacent taskResearch source order: declare objectID at
+//   entry, assign it before the ManagedIntArray alias. This restored all four
+//   local-home bytes and produced MATCH (448/448). Default flags; no asm.
+```
+<!-- end-recovered:a51d61cab2d5feffa213 -->

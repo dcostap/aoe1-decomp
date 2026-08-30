@@ -1,0 +1,16 @@
+# Function notes: 0042D120 `UpdatePlayerInformation`
+
+Module notes: `decomp_notes/com_hand_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:cff44ae8a8cae330d544 -->
+### `5868718576a8` `src/scratch/0042D120_UpdatePlayerInformation.cpp:1-2`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// tried pointer-walk, direct indexing, and the decompiler-shaped loop; VC5 stayed in the wrong register basin and kept saving ebx
+// remaining mismatch is the prolog/register allocation around the first stack arg load
+```
+<!-- end-recovered:cff44ae8a8cae330d544 -->

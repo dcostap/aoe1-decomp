@@ -7,7 +7,7 @@
   "functions": {
     "00431FB0": {
       "status": "matching",
-      "note_path": "recovery_notes/00431FB0_TCommunications_Services.md"
+      "note_path": "decomp_notes/functions/0043/00431FB0_TCommunications_Services.md"
     },
     "00432030": { "status": "matching" },
     "00432040": { "status": "matching" },
@@ -20,7 +20,7 @@
     "00432150": { "status": "matching" },
     "00432180": {
       "status": "matching",
-      "note_path": "recovery_notes/00432180_DPEnumCallback.md"
+      "note_path": "decomp_notes/functions/0043/00432180_DPEnumCallback.md"
     }
   }
 }

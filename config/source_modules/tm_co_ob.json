@@ -7,37 +7,37 @@
   "functions": {
     "0050E970": {
       "status": "matching",
-      "note_path": "recovery_notes/0050E970_TRIBE_Master_Combat_Object.md"
+      "note_path": "decomp_notes/functions/0050/0050E970_TRIBE_Master_Combat_Object.md"
     },
     "0050E9F0": {
       "status": "matching",
-      "note_path": "recovery_notes/0050E9F0_TRIBE_Master_Combat_Object.md"
+      "note_path": "decomp_notes/functions/0050/0050E9F0_TRIBE_Master_Combat_Object.md"
     },
     "0050EA60": {
       "status": "matching",
-      "note_path": "recovery_notes/0050EA60_TRIBE_Master_Combat_Object.md"
+      "note_path": "decomp_notes/functions/0050/0050EA60_TRIBE_Master_Combat_Object.md"
     },
     "0050EAE0": {
       "status": "matching",
-      "note_path": "recovery_notes/0050EAE0_setup.md"
+      "note_path": "decomp_notes/functions/0050/0050EAE0_setup.md"
     },
     "0050EB60": {
       "status": "matching",
-      "note_path": "recovery_notes/0050EB60_setup.md"
+      "note_path": "decomp_notes/functions/0050/0050EB60_setup.md"
     },
     "0050EC90": {
       "status": "matching",
-      "note_path": "recovery_notes/0050EC90_setup.md"
+      "note_path": "decomp_notes/functions/0050/0050EC90_setup.md"
     },
     "0050EDA0": { "status": "matching" },
     "0050EDB0": {
       "status": "matching",
-      "note_path": "recovery_notes/0050EDB0_create_task_list.md"
+      "note_path": "decomp_notes/functions/0050/0050EDB0_create_task_list.md"
     },
     "0050EE00": { "status": "matching" },
     "0050EE80": {
       "status": "matching",
-      "note_path": "recovery_notes/0050EE80_modify.md"
+      "note_path": "decomp_notes/functions/0050/0050EE80_modify.md"
     },
     "0050EF70": { "status": "matching" },
     "0050EFC0": { "status": "matching" },

@@ -5,8 +5,8 @@
   "source": "src/dlg_conf.cpp",
   "header": "include/dlg_conf.h",
   "functions": {
-    "0043B560": { "status": "accepted_drift", "note_path": "recovery_notes/dlg_conf_module.md" },
-    "0043C0C0": { "status": "matching", "note_path": "recovery_notes/dlg_conf_module.md" },
-    "0043C2B0": { "status": "scratch", "note_path": "recovery_notes/dlg_conf_module.md" }
+    "0043B560": { "status": "accepted_drift", "note_path": "decomp_notes/dlg_conf_module.md" },
+    "0043C0C0": { "status": "matching", "note_path": "decomp_notes/dlg_conf_module.md" },
+    "0043C2B0": { "status": "scratch", "note_path": "decomp_notes/dlg_conf_module.md" }
   }
 }

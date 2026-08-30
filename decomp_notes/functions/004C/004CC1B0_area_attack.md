@@ -1,0 +1,38 @@
+# Function notes: 004CC1B0 `area_attack`
+
+Module notes: `decomp_notes/t_c_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:18e85bb757d6510fcd06 -->
+### `2105118ec047` `src/scratch/004CC1B0_area_attack.cpp:1-24`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004CC1B0 TRIBE_Combat_Object::area_attack
+// Attempt log:
+// 1: direct reconstruction from packet/decompiler with local offset stubs.
+// 2: removed explicit vtbl data member after dump showed virtual class already has hidden vptr and had shifted type/owner offsets by 4.
+// 3: tried dummy frame local to force original 0x28 frame; optimized out, rebuilt stays 0x24 frame and 752B.
+// 4: scoped initial master/owner locals; compiler returned to the prior 737B basin.
+// 5: rebuilt the owning surfaces as RGE master combat, player/world/map, combat target,
+//    and typed damage/death virtual calls. Corrected the random threshold to division
+//    by 0x7fff and passed the attacker as the fifth damage argument.
+// 6: moved map acquisition before radius-square evaluation; frame and size reached 0x28/776B.
+// 7: initial master/player locals were codegen-neutral.
+// 8: inverted footprint clamp predicates to match the original FPU block layout.
+// 9: squared-distance x-first order improved the localized FPU hunk.
+// 10: radius-first comparison produced 100% instruction-shape and 771/776 positional bytes.
+// 11: restored same-TU polymorphic player/world declarations with proven offsets;
+//     emitted code was unchanged, so rolled back and retained the clean source.
+// 12: direct-member early master/player accesses were codegen-neutral.
+// 13: function-scope modifier local, split initialization, reference/const/register
+//     aliases, separate static-object surface, and standard-header context were
+//     all codegen-neutral in focused variants.
+// left in scratch: five positional bytes differ only in initial register coloring
+// and relocations; clean typed source remains authoritative.
+// Behavior retained: ignored-target filtering, special owner gate, level gate, footprint distance,
+// random hit chance, modifier calculation, typed damage argument order, and post-damage death call.
+```
+<!-- end-recovered:18e85bb757d6510fcd06 -->

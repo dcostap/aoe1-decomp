@@ -1,0 +1,96 @@
+# Function notes: 004B9140 `shape_check`
+
+Module notes: `decomp_notes/Shape_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:bfd08faf32dd224f8add -->
+### `target-session` `build/target_sessions/004B9140_shape_check.json:1-35`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=503; shape=81.74904942965779: Initial clean scratch reconstruction; establish current behavior, call set, frame, and mismatch.
+probe 2 other; result=MISMATCH; diff=503; shape=81.74904942965779: Replaced raw string address with natural period string literal RGL_shape_draw; test relocation and codegen without prohibited raw address.
+probe 3 layout; result=MISMATCH; diff=505; shape=81.74904942965779: Use typed short outline and int offset arrays with indexed rows; replace raw byte offsets with period-plausible record arrays.
+probe 4 control-flow; result=MISMATCH; diff=503; shape=81.74904942965779: Reordered typed and legacy paths under natural frame-valid and Check_shape guards, matching original source line topology.
+probe 5 abi; result=MISMATCH; diff=542; shape=80.84291187739464: Replace invented TShape overlay with canonical Shape_Header, Shape_Offsets, SLhape_File_Header, and Shape_Info ownership from exact Shape.cpp donors.
+probe 6 liveness; result=MISMATCH; diff=542; shape=80.84291187739464: Match original PDB declaration timing: branch-local info, px, py, width declarations before assignments. [same emitted code as probe 5]
+probe 7 abi; result=MISMATCH; diff=542; shape=80.84291187739464: Model the SLP owner as a typed local and access its Version data member, following the decompiler's pSVar2 owner and sibling SLhape declarations.
+probe 8 context; result=MISMATCH; diff=542; shape=80.84291187739464: Use the reviewed Shape_File_Header type for the unused +10 TShape member, consistent with sibling Shape.cpp source.
+probe 9 liveness; result=MISMATCH; diff=542; shape=80.84291187739464: Test a natural named frame-array owner before indexed frame selection, based on original EAX frame-base then scaled index sequence.
+probe 10 layout; result=MISMATCH; diff=542; shape=80.84291187739464: Use signed long for proven Shape_Info offsets, matching reviewed Shape.cpp donor field declarations and VC5-era record types. [same emitted code as probe 9]
+probe 11 variant; result=MISMATCH; diff=542; shape=80.84291187739464: variant lab build\variant_lab\004B9140_shape_check\20260817_130429: 4 variants, 0 invariant-eligible, 0 exact
+probe 12 layout; result=MISMATCH; diff=542; shape=80.84291187739464: Use canonical indexed-array address spelling &shape_info[frame] for the SLP per-frame record. [same emitted code as probe 8]
+probe 13 layout; result=MISMATCH; diff=534; shape=81.22605363984674: Adopt exact nearby sprite_check donor's typed short outline and int data-offset array indexing for SLP rows.
+probe 14 liveness; result=MISMATCH; diff=538; shape=79.69924812030075: Use an ordinary byte opcode local instead of explicit x-parameter mutation; this follows the nearby typed decoder and avoids prohibited parameter-home scaffolding.
+probe 15 control-flow; result=MISMATCH; diff=639; shape=80.6949806949807: Restore the decompiler-supported switch source: case 11 alone, with cases 14 and 15 reaching default zero.
+probe 16 control-flow; result=MISMATCH; diff=538; shape=79.69924812030075: Test the alternative natural early-guard topology against the original's shared failure return and typed/legacy branch.
+probe 17 layout; result=MISMATCH; diff=527; shape=79.7752808988764: Name the legacy Shape_Header owner, store it to shape_header, then read typed fields through that local as shown by original pSVar12 ownership.
+probe 18 liveness; result=MISMATCH; diff=527; shape=79.7752808988764: Use bool completion flags in both legacy packed-row walks, matching the decompiler's bool bVar3 evidence. [same emitted code as probe 17]
+probe 19 liveness; result=MISMATCH; diff=527; shape=79.7752808988764: Use unsigned count locals in the SLP opcode arms, matching the exact nearby decoder's proven uint n surface. [same emitted code as probe 18]
+probe 20 context; result=MISMATCH; diff=501; shape=80.52434456928839: Test the nearby exact sprite decoder's period <memory.h> context as a supported translation-unit hypothesis.
+probe 21 layout; result=MISMATCH; diff=499; shape=80.52434456928839: Retest direct row-offset field access under the winning <memory.h> context; compare typed array lowering with the original's row-index SIB sequence.
+probe 22 abi; result=MISMATCH; diff=499; shape=80.52434456928839: Retest direct FShape base ownership under the winning memory-header and direct-row context; compare typed Version owner against original base register use.
+probe 24 layout; result=MISMATCH; diff=499; shape=80.52434456928839: Use one natural direct data-offset expression so VC5 can preserve the original base + Shape_Info offset + row-offset address order; test against the named data cursor.
+probe 25 liveness; result=MISMATCH; diff=499; shape=80.52434456928839: Swap the natural function-scope opcode and stream-pointer declaration order to test whether VC5 selects the original EAX stream basin without aliases or home steering. [same emitted code as probe 23]
+probe 26 liveness; result=MISMATCH; diff=499; shape=80.52434456928839: Scope the natural opcode local to the SLP decoder branch, while keeping the stream pointer shared for both format paths; test liveness pressure against the original stream register. [same emitted code as probe 25]
+probe 27 liveness; result=MISMATCH; diff=499; shape=80.52434456928839: Use separate natural stream-pointer locals in the mutually exclusive SLP and legacy branches, instead of one function-scope cursor; test branch-local register coloring.
+probe 28 liveness; result=MISMATCH; diff=499; shape=80.52434456928839: Mirror the decompiler's natural two-cursor packed-stream walk: read code from p, seed next=p+1, advance next in each arm, then assign p=next. Test whether this recovers the original EAX stream cursor and switch topology.
+probe 29 liveness; result=MISMATCH; diff=499; shape=80.52434456928839: Lift the legacy Shape_Header pointer to function scope before the stream pointer, matching the decompiler's persistent header local and testing the original ECX-header/EAX-stream register pairing.
+probe 30 liveness; result=MISMATCH; diff=499; shape=80.52434456928839: Keep a function-scope next cursor for the SLP decoder, matching the decompiler's pcVar7/pcVar8 pair and testing cross-branch cursor liveness without casts or home reuse. [same emitted code as probe 28]
+probe 31 abi; result=MISMATCH; diff=518; shape=82.37547892720306: Use the decompiler's byte-char opcode type instead of unsigned char, testing whether VC5 removes the extra zero-extension/reload before the jump table while preserving byte reads.
+probe 32 abi; result=MISMATCH; diff=503; shape=81.74904942965779: Widen the natural opcode local to int, testing whether VC5's byte load and switch lowering move toward the original direct EDX mask path.
+probe 33 abi; result=MISMATCH; diff=499; shape=80.52434456928839: Restore inventory-documented unsigned offset fields for Shape_Info under the winning typed source, testing whether pointer arithmetic selects the original data-offset lowering. [same emitted code as probe 26]
+probe 34 liveness; result=MISMATCH; diff=498; shape=79.02621722846442: Use the legacy header's ymax directly in the bounds guard, matching the decompiler's direct member read and testing whether removal of a long-lived maxY local recovers the original header/stream register colors.
+probe 35 liveness; result=MISMATCH; diff=499; shape=80.52434456928839: Lift the legacy curx accumulator to function scope before the stream pointer, matching the decompiler's persistent iVar13 and testing the original EAX stream/ECX accumulator coloring.
+probe 36 liveness; result=MISMATCH; diff=499; shape=80.52434456928839: Reuse one natural byte done flag across the legacy row-skip loop and final scan, matching the decompiler's single bVar3 and testing whether separate flag lifetimes caused the code/done stack-home mismatch.
+```
+<!-- end-recovered:bfd08faf32dd224f8add -->
+
+<!-- recovered:167f01c9631416c9e6fd -->
+### `0923cad7edb1` `src/scratch/004B9140_shape_check.cpp:1-38`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004B9140 TShape::shape_check
+// Attempt log:
+// 1: The initial typed overlay matched calls and frame shape, but differed by 503 bytes.
+// 2: The string literal removed a raw address. Relocations changed; code bytes did not.
+// 3: Typed row arrays worsened the overlay by two bytes.
+// 4: Nested guards matched the original size and CFG better than early returns.
+// 5: The canonical TShape surface worsened the prologue, but removed invented fields.
+// 6: Shape_Info pointer declaration forms were duplicates under that surface.
+// 7: A four-variant ownership lab found one 688-byte basin and no exact result.
+// 8: The nearby sprite decoder supported typed row arrays. They improved canonical output.
+// 9: An ordinary opcode local reached 701 bytes, but moved the stream register basin.
+// 10: The decompiler-supported default-only switch worsened size and block coverage.
+// 11: A named legacy Shape_Header improved the mismatch to 527 bytes.
+// 12: bool flags and unsigned count locals emitted duplicate code.
+// 13: <memory.h> context moved the mismatch to 501 bytes and restored exact blocks.
+// 14: Direct row-offset access under that context reached the best 499-byte mismatch.
+// 15: Direct FShape base ownership was codegen-equivalent to the typed owner.
+// Current clean model: canonical TShape and records, natural guards, typed row ownership,
+// a real packed-payload stream pointer, and no raw address or explicit home reuse.
+// Remaining drift is the stream pointer basin, switch register coloring, and legacy tail.
+// Result remains unresolved. It is not accepted_drift-safe.
+//
+// sa-513701e4-r1 (2026-08-22):
+// - Direct nested data-offset addressing, declaration-order changes, branch-local
+//   stream cursors, and the decompiler's two-cursor SLP walk were codegen duplicates.
+// - Char and int opcode locals moved to shorter or different basins and worsened
+//   strict drift or size. Unsigned offset fields were also codegen-equivalent.
+// - Direct legacy ymax access improved strict drift by one byte, but lost shape and
+//   exact blocks. Function-scope curx and one shared done flag were duplicates.
+// - The Ghidra packet confirms the original EAX stream cursor, x-home opcode, and
+//   separate legacy cursor/flag topology. Natural source variants did not recover it.
+//
+// continuation Shape-prefix audit:
+// - PDB locals identify one shared uchar `command`, uchar `done`, and long `r`.
+//   Using that natural shared command improved strict drift from 499 to 498 bytes.
+// - Typed data-table indexing, nested offset expressions, branch-local cursors,
+//   and FShape->Version ownership were duplicate or worse. The EAX cursor basin
+//   remains unresolved, so this owner stays outside the prefix wrapper.
+```
+<!-- end-recovered:167f01c9631416c9e6fd -->

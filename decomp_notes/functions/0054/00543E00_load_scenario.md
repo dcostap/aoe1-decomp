@@ -1,0 +1,114 @@
+# Function notes: 00543E00 `load_scenario`
+
+Module notes: `decomp_notes/world_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:f4b2460fea78e774f0bc -->
+### `target-session` `build/target_sessions/00543E00_load_scenario.json:1-44`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=147; shape=86.78414096916299: Baseline current natural typed world/scenario load reconstruction.
+probe 2 control-flow; result=MISMATCH; diff=147; shape=86.78414096916299: Split the 1.09 and 1.11 guards into the decompiler-proven separate goto form; test late block order. [same emitted code as probe 1]
+probe 4 liveness; result=MISMATCH; diff=147; shape=86.78414096916299: Test a period-supported register hint on the read-only scenario-name parameter to recover the original ESI parameter and EDI this colors. [same emitted code as probe 2]
+probe 6 control-flow; result=MISMATCH; diff=147; shape=86.78414096916299: Use one natural positive late-version validity guard for 1.09/1.11/1.10 before load_110; test compiler block order without aliases. [same emitted code as probe 4]
+probe 8 abi; result=MISMATCH; diff=147; shape=85.90308370044053: Restore the donor-backed polymorphic RGE_Base_Game ownership surface while retaining the proven prog_info offset.
+probe 10 layout; result=MISMATCH; diff=163; shape=78.8546255506608: Use the decompiler-proven 300-byte scenario-name array instead of the padded 304-byte source array; test natural local ownership and stack homes.
+probe 12 layout; result=MISMATCH; diff=147; shape=86.78414096916299: Model the proven 304-byte scenario header/path stack window as a typed local record; test ownership without raw header casts. [same emitted code as probe 6]
+probe 13 control-flow; result=MISMATCH; diff=147; shape=86.78414096916299: Put the 1.09/1.11/1.10 load_110 call in one natural positive branch, matching the decompiler's final handler shape. [same emitted code as probe 12]
+probe 15 liveness; result=MISMATCH; diff=147; shape=86.78414096916299: Reorder natural local declarations to the decompiler's scalar-before-buffer order; test entry register colors and proven stack window. [same emitted code as probe 13]
+probe 17 liveness; result=MISMATCH; diff=147; shape=86.78414096916299: Test one explicit world receiver alias for natural member ownership; determine whether it recovers the original this register without raw dispatch. [same emitted code as probe 15]
+probe 19 liveness; result=MISMATCH; diff=592; shape=85.90308370044053: Test a typed scenario-directory local to separate base ownership from filename formatting; retain only if binary scheduling improves.
+probe 24 context; result=MISMATCH; diff=147; shape=86.78414096916299: Use the World.cpp-supported save_prog_info receiver and one natural positive 1.09/1.11/1.10 branch, with rge_close as the final failure tail.
+probe 28 baseline; result=MISMATCH; diff=147; shape=86.78414096916299: Rebuild the pinned natural source in the current authentic World.cpp grouped /O2 /Oy /GX context. Measure the new wrapper state before source changes. [same emitted code as probe 27]
+probe 29 control-flow; result=MISMATCH; diff=464; shape=88.06584362139918: Restore one shared setup_player_colors and success return after the version dispatch. PDB line 2382 repeats at every emitted success block, which supports compiler tail duplication from one source statement.
+probe 30 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Merge both 1.02 and 1.03 paths at one version2 label. Keep one PDB-supported shared success statement and explicit 1.09/1.11/1.10 late labels.
+probe 31 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Express the late versions as one positive natural load_scenario8 arm before the failure edge. Test whether VC5 keeps the final 1.10 JNE and success-before-close layout. [same emitted code as probe 30]
+probe 32 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Place the binary-proven close in the final invalid-version else before the one shared success statement. The PDB orders close at line 2377 before setup at 2382, while VC5 can outline this failure arm. [same emitted code as probe 31]
+probe 33 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Use one structured version chain with a shared version2 label inside the 1.03 arm. Keep the invalid close else before the one common setup statement, as the PDB line order shows. [same emitted code as probe 32]
+probe 34 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Nest one negative late-version validity guard inside the final else. Keep close and return in that guard, then let load_scenario8 reach the common setup naturally. [same emitted code as probe 33]
+probe 35 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Put the one shared setup label inside the final positive late-version arm. Route all earlier loaders to it, keep close after that arm, and route both old formats through one late version2 label. [same emitted code as probe 34]
+probe 36 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Use a two-level negative late guard. The first 1.09/1.11 test skips the nested 1.10 failure check, so load_scenario8 is the natural fallthrough before close. [same emitted code as probe 35]
+probe 37 control-flow; result=MISMATCH; diff=445; shape=45.90909090909091: Use explicit early failure edges to one final zero return. Let close_failed fall directly into that same failure label after the shared success block, matching the oracle's one failure epilogue.
+probe 38 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Keep the outer positive nesting that triggers PDB-proven success tail duplication. Add an explicit close-to-final-failure edge without changing either early guard. [same emitted code as probe 36]
+probe 39 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Place shared setup and return inside the final positive version arm. Put the one close label in its explicit else, then let that else fall to the outer zero return. [same emitted code as probe 38]
+probe 40 abi; result=MISMATCH; diff=77; shape=94.7136563876652: Restore the PDB-decorated protected reference ABI for both load_scenario overloads. Update the two World.cpp callers from pointer syntax to the same reference without changing call bytes. [same emitted code as probe 39]
+probe 41 variant; result=MISMATCH; diff=77; shape=94.7136563876652: variant lab build\variant_lab\00543E00_load_scenario\20260823_231719: 12 variants, 12 invariant-eligible, 0 exact
+probe 42 liveness; result=MISMATCH; diff=77; shape=94.7136563876652: Remove the unused decompiler-only header_size local. The packet marks it unmapped, while the executable uses only the scenario_name header word and version scalar. [same emitted code as probe 41]
+probe 43 control-flow; result=MISMATCH; diff=554; shape=45.0: Replace the two positive outer guards with natural direct zero returns. Keep the shared success source and close else unchanged, then test VC5 epilogue merging and tail duplication.
+probe 44 control-flow; result=MISMATCH; diff=135; shape=86.78414096916299: Keep one shared success source for versions 1 through 7 and the merged old-format arm. Give the final late-version arm its own natural setup and return before close.
+probe 45 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Represent 1.09 and 1.11 as empty accepted arms, then reject only a non-1.10 value. Let load_scenario8 and the shared success statement follow naturally. [same emitted code as probe 42]
+probe 46 liveness; result=MISMATCH; diff=77; shape=94.7136563876652: Declare and initialize the allocation pointer only in the positive 1.03 size arm. Its executable lifetime starts at malloc and ends at free or close. [same emitted code as probe 45]
+probe 47 layout; result=MISMATCH; diff=77; shape=94.7136563876652: Restore the packet-proven 300-byte path and separate header word. The oracle formats at frame -0x12c, reads the header at -0x130, and keeps version at -0x134. [same emitted code as probe 46]
+probe 49 control-flow; result=MISMATCH; diff=499; shape=82.89473684210526: Restore the decompiler-proven 1.03 else ownership. A null allocation now falls naturally to close, while all later versions stay in the non-1.03 arm and share one success statement.
+probe 51 liveness; result=MISMATCH; diff=77; shape=94.7136563876652: Use one initialized byte result for the outer failure return while keeping direct success returns. Test whether the shared zero value prevents failure-epilogue duplication. [same emitted code as probe 48]
+probe 52 control-flow; result=MISMATCH; diff=78; shape=94.27312775330397: Put the final 1.10 inequality global on the source left. Test whether VC5 retains the needed JNE successor while still selecting the target EAX-to-memory compare.
+probe 54 context; result=MISMATCH; diff=77; shape=94.7136563876652: Test the exact-donor-supported void rge_close declaration as World.cpp's caller-side surface. The linked C symbol and ignored call result stay unchanged. [same emitted code as probe 51]
+probe 55 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Match PDB source order: load_scenario8 at line 2374, close in its else at 2377, then one common setup at 2382. Route close to the outer shared zero return. [same emitted code as probe 54]
+probe 56 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Use a positive 1.10 if/else after 1.09 and 1.11 jump into its version-8 body. Keep close before the common setup in PDB source order. [same emitted code as probe 55]
+probe 57 behavior; result=MISMATCH; diff=85; shape=95.11111111111111: Diagnostic only: remove 1.10 from the final valid set to test whether VC5 lays a two-term positive arm before close. Restore 1.10 immediately after measuring.
+probe 59 control-flow; result=MISMATCH; diff=110; shape=90.04329004329004: Normalize 1.09 and 1.11 to the local 1.10 header value, then use one negative 1.10 guard. Test whether VC5 folds the normalization into the oracle's two JE edges and final JNE.
+probe 61 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Use one assigned byte result and one final return. Success assigns one after setup; every outer or close failure assigns zero before the final return. [same emitted code as probe 56]
+probe 63 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Move the close label after the shared zero return in source, then jump back to that return. Test whether VC5 orders the cold close between the last success and failure epilogue. [same emitted code as probe 61]
+probe 65 variant; result=MISMATCH; diff=77; shape=94.7136563876652: variant lab build\variant_lab\00543E00_load_scenario\20260823_233143: 48 variants, 48 invariant-eligible, 0 exact
+probe 66 control-flow; result=MISMATCH; diff=77; shape=94.7136563876652: Reduce the diagnostic empty accepted arms to one natural negative validity guard for 1.09, 1.11, and 1.10. Preserve the 77-byte frontier. [same emitted code as probe 63]
+```
+<!-- end-recovered:f4b2460fea78e774f0bc -->
+
+<!-- recovered:6e5fb54d92086168288e -->
+### `0a758d91edb3` `src/scratch/00543E00_load_scenario.cpp:1-47`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 00543E00 RGE_Game_World::load_scenario
+// Attempt log:
+// initial natural version-chain reconstruction from packet.
+// tried direct 4-byte version comparisons against packet globals and immediate return tails after each virtual load/post_load pair.
+// modeled 1.03 extra header-size read/malloc/read/free path and failure close path.
+// used local stack buffer shaped as scenario_name[300] plus int locals; the
+// first draft merged the identical post-load tails and emitted only 544 bytes.
+// tried vtable padding so load variants land at +0x7c..+0x98 and post_load at +0xa8.
+// - The typed scenario-directory surface, 0x134 frame, positive outer guards,
+//   shared v1.02/v1.03 label, and repeated per-version post-load returns now
+//   recover all 24 calls and the nine original returns.  The best source is
+//   634 bytes versus 642 (145 strict bytes, 88.84% shape); its remaining
+//   structural drift is the late-version compare/block layout and the initial
+//   parameter-versus-this register coloring.
+// - Distinct view-type aliases for the A8 call and a return-width ABI probe
+//   did not inhibit VC5 tail merging and were removed.  The literal Ghidra
+//   nested source shape was retained only where it explains the observed
+//   repeated tails; compiler steering is not retained beyond that.
+// - Changed the player-info ABI from reference syntax to the exact donor's
+//   pointer syntax; VC5 emitted identical bytes, so no register lead remains.
+// - Rewrote the allocation failure as an explicit close guard; VC5 emitted
+//   identical bytes, confirming the resource lifetime was already modeled.
+// - Corrected the late 1.10 path with nested negative guards.  This adds the
+//   proven 1.10 success behavior, but VC5 places the close block before the
+//   shared load-110 tail: 657 bytes, 147 strict bytes, 10 returns.
+// - This claim's successful-allocation guard probe emitted no change.
+// - Grouping the v1.09/v1.11 transfer and letting v1.10 fall through also
+//   emitted no change.  The current source keeps both natural forms and the
+//   proven v1.10 success behavior.
+// - This claim tried positive, negative, labelled, and explicit-else late
+//   guards; VC5 emitted the same close-before-load_110 block in each form.
+// - A scenario-name alias and the donor's stdio/stdlib headers also emitted
+//   duplicates; neither changed the initial parameter register coloring.
+// - Restored the clean natural source after these duplicate structural probes.
+// - Remaining drift is structural block placement and the initial parameter
+//   register coloring; the historic best is 145 strict bytes.
+// - Follow-up baseline validation retained the clean typed source at 657 bytes
+//   versus the 642-byte oracle: 24 ordered calls, a 0x134 frame, and 147 strict
+//   differing bytes. The late close/load-110 block remains the only call-order
+//   drift; the early mismatch is parameter/this register coloring.
+// - Separate 1.09/1.11 guards, one combined 1.09/1.11/1.10 positive guard,
+//   a typed 304-byte header/path record, a 300-byte path array, a world receiver
+//   alias, a register hint, local declaration reorder, and donor-backed base
+//   polymorphism were tested. The guards and alias forms were codegen duplicates;
+//   the 300-byte array and polymorphic base were worse. The typed record removed
+//   raw header casts but was also a codegen duplicate, so the clean source keeps
+//   the proven stack-window form. A scenario-directory local caused broad drift.
+```
+<!-- end-recovered:6e5fb54d92086168288e -->

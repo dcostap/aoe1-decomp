@@ -5,11 +5,11 @@
   "source": "src/sceninfo.cpp",
   "header": "include/sceninfo.h",
   "functions": {
-    "0048CEA0": { "status": "matching", "note_path": "recovery_notes/sceninfo_module.md" },
-    "0048CFD0": { "status": "matching", "note_path": "recovery_notes/sceninfo_module.md" },
-    "0048D040": { "status": "matching", "note_path": "recovery_notes/sceninfo_module.md" },
-    "0048D0E0": { "status": "accepted_drift", "note_path": "recovery_notes/sceninfo_module.md" },
-    "0048D4D0": { "status": "matching", "note_path": "recovery_notes/sceninfo_module.md" },
-    "0048D500": { "status": "matching", "note_path": "recovery_notes/sceninfo_module.md" }
+    "0048CEA0": { "status": "matching", "note_path": "decomp_notes/sceninfo_module.md" },
+    "0048CFD0": { "status": "matching", "note_path": "decomp_notes/sceninfo_module.md" },
+    "0048D040": { "status": "matching", "note_path": "decomp_notes/sceninfo_module.md" },
+    "0048D0E0": { "status": "accepted_drift", "note_path": "decomp_notes/sceninfo_module.md" },
+    "0048D4D0": { "status": "matching", "note_path": "decomp_notes/sceninfo_module.md" },
+    "0048D500": { "status": "matching", "note_path": "decomp_notes/sceninfo_module.md" }
   }
 }

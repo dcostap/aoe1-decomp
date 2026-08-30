@@ -1,0 +1,135 @@
+# Function notes: 0048E400 `set_mode`
+
+Module notes: `decomp_notes/scr_ach_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:4f333b7b21be3bcf43dc -->
+### `d050eea3c` `src/scr_ach.cpp:375-376`
+
+Mapping: `exact`. removed comment declares this PDB source owner VA.
+
+```text
+// 0048E400 TribeAchievementsScreen::set_mode
+// BINARY NOTE: Mode 6 is emitted before mode 5 in the original handler
+```
+<!-- end-recovered:4f333b7b21be3bcf43dc -->
+
+<!-- recovered:c2cb2d4834e788af31bb -->
+### `target-session` `build/target_sessions/0048E400_set_mode.json:1-73`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=2934; shape=91.17330462863293: Baseline clean scratch source before new hypotheses; compare full bytes, call map, frame, and stack homes.
+probe 2 liveness; result=MISMATCH; diff=2912; shape=90.17278617710583: Hypothesis 1: zero-initialize temptxt because Ghidra maps initial tail bytes 0x23..0x2f and local_5 writes; test prologue stores and register basin.
+probe 3 liveness; result=MISMATCH; diff=3110; shape=91.00758396533044: Hypothesis 2: explicit binary-supported tail zero assignments at temptxt[31,35,39,43,47,49] reproduce the original partial stack stores without full aggregate initialization.
+probe 4 liveness; result=MISMATCH; diff=2704; shape=91.55844155844156: Hypothesis 3: empty-string initialization of temptxt may select the original compiler's partial zero-fill basin instead of aggregate rep-stos.
+probe 5 liveness; result=MISMATCH; diff=2934; shape=91.17330462863293: Hypothesis 5: move the persistent player pointer declaration before player_num and temptxt to test original local declaration coloring and scratch-register alternation. [same emitted code as probe 1]
+probe 6 abi; result=MISMATCH; diff=2934; shape=91.17330462863293: Hypothesis 6: use PDB-reported long mode instead of int mode; test parameter type and caller ABI without changing 32-bit behavior. [same emitted code as probe 5]
+probe 7 context; result=MISMATCH; diff=2934; shape=91.17330462863293: Hypothesis 7: add period memory.h to scr_ach translation-unit context; header state can alter old VC5 register and intrinsic choices.
+probe 8 liveness; result=MISMATCH; diff=2934; shape=91.17330462863293: Hypothesis 8: scope each player pointer inside its mode loop, as PDB line 519/branch-local use may shorten liveness and recover original scratch colors.
+probe 10 liveness; result=MISMATCH; diff=2123; shape=99.6742671009772: Hypothesis 9: initialize only the binary-observed 19-byte tail with memset(temptxt+31,0,19), testing whether VC5 emits the original dword/word/byte stack stores.
+probe 11 behavior; result=MISMATCH; diff=306; shape=99.67462039045553: Hypothesis 10: mode-0 backButton set_active argument is proven zero by original push ebp at +165; correct source's erroneous 1 and retain the binary-observed tail memset.
+probe 12 behavior; result=MATCH; diff=0; shape=99.8914223669924: Hypothesis 11: case-6 time_line set_active is proven 1 by original push 1 at +0B3D; correct source's erroneous 0 to restore the one-byte tail length.
+probe 13 abi; result=MATCH; diff=0; shape=99.8914223669924: Exact-finish reversion A: changed long mode back to int; prior ABI probe showed identical emitted bytes, testing whether PDB long spelling is incidental. [same emitted code as probe 12]
+probe 14 liveness; result=MATCH; diff=0; shape=99.8914223669924: Exact-finish reversion B: restored one function-scope player pointer and removed loop-local declarations; test declaration scope as incidental after memset and behavior fixes.
+probe 15 liveness; result=MISMATCH; diff=2970; shape=95.26372443487621: Exact-finish reversion C: remove the binary-tail memset while keeping both proven behavior corrections; test whether partial zero stores are required.
+probe 16 behavior; result=MISMATCH; diff=2449; shape=98.18376068376068: Exact-finish reversion D: restore mode-0 backButton set_active(1) while keeping memset and case-6 correction; isolate the first behavior fix.
+probe 17 behavior; result=MISMATCH; diff=306; shape=99.67462039045553: Exact-finish reversion E: restore case-6 time_line set_active(0) while keeping memset and mode-0 correction; isolate the second behavior fix.
+probe 19 other; result=MATCH; diff=0; shape=99.8914223669924: Exact-finish source reduction F: replace magic tail length with &temptxt[31] and sizeof(temptxt)-31; test clearer equivalent spelling. [same emitted code as probe 18]
+probe 21 abi; result=MISMATCH; diff=34; shape=99.6742671009772: Policy hypothesis 1: replace fake panel vslots with the canonical TPanel/TTextPanel surface and name scrollbar, timeline, and shape types from exact scr_ach donors.
+probe 22 abi; result=MISMATCH; diff=2; shape=99.6742671009772: Policy hypothesis 2: use the same-TU canonical TTextPanel overload order char*, long, char**, short; this should restore char at vslot E8 while retaining long at E4.
+probe 23 control-flow; result=MISMATCH; diff=2; shape=99.6742671009772: Policy hypothesis 3: reverse the mode-3 sum operands so the canonical panel surface preserves the original call order: id(16) call before id(15). [same emitted code as probe 22]
+probe 24 liveness; result=MISMATCH; diff=31; shape=99.5656894679696: Policy hypothesis 4: split the mode-3 score sum into a named accumulator with id(16) then id(15), matching the original call order under canonical panel types.
+probe 25 layout; result=MISMATCH; diff=75; shape=99.1313789359392: Policy hypothesis 5: replace all raw byte-cursor player loads with typed players[player_index] access, starting at player 1 and incrementing naturally.
+probe 26 liveness; result=MISMATCH; diff=75; shape=99.1313789359392: Policy hypothesis 6: move typed player_index declaration after row and remaining declarations to restore the original loop setup order without raw byte offsets. [same emitted code as probe 25]
+probe 27 layout; result=MISMATCH; diff=2490; shape=93.96551724137932: Policy hypothesis 7: bind each world players pointer to a typed RGE_Player** alias and index it, testing whether canonical ownership preserves the observed setup and loop loads.
+probe 28 layout; result=MISMATCH; diff=75; shape=99.1313789359392: Policy hypothesis 8: use unsigned int for the typed player index; test whether its proven nonnegative domain restores the original byte-offset setup schedule. [same emitted code as probe 26]
+probe 29 layout; result=MISMATCH; diff=75; shape=99.1313789359392: Policy hypothesis 9: derive each statistics row base from the same typed player_index (plus one for mode 2), creating a proven index/row relation before the loop. [same emitted code as probe 28]
+probe 30 layout; result=MISMATCH; diff=2446; shape=93.12567132116004: Policy hypothesis 10: use a typed RGE_Player** cursor initialized at players + 1 and incremented after each row, avoiding raw byte arithmetic.
+probe 31 layout; result=MISMATCH; diff=2561; shape=93.02083333333333: Policy hypothesis 11: retain typed players[] access while storing a 4-byte cursor and indexing by player_index / 4; test whether VC5 recovers the original byte addressing without a raw cast.
+probe 32 liveness; result=MISMATCH; diff=2684; shape=90.76433121019109: Policy hypothesis 12: replace manual tail memset with natural aggregate zero initialization of temptxt; test whether canonical panel context produces the observed partial stores.
+probe 33 liveness; result=MISMATCH; diff=75; shape=99.1313789359392: Policy hypothesis 13: split typed player_index declaration from its initialization, testing VC5 scheduling of the proven four-byte index setup. [same emitted code as probe 29]
+probe 34 liveness; result=MISMATCH; diff=104; shape=98.47991313789359: Policy hypothesis 14: use a declaration initializer for score with id(16)+id(15), testing a natural source form that may preserve the original evaluation order.
+probe 35 liveness; result=MISMATCH; diff=91; shape=99.0228013029316: Policy hypothesis 15: use a comma expression with a named score to force id(16) before id(15) without a helper or raw ABI form.
+probe 36 liveness; result=MISMATCH; diff=104; shape=98.47991313789359: Policy hypothesis 16: keep the original operand order but bind the sum to a natural score initializer; test canonical panel scheduling around the two swapped pushes. [same emitted code as probe 34]
+probe 37 layout; result=MISMATCH; diff=2548; shape=85.71428571428571: Policy hypothesis 17: bind a typed RGE_Game_World* owner in each loop and index its players array, testing named ownership and setup scheduling.
+probe 38 abi; result=MISMATCH; diff=75; shape=99.1313789359392: Policy hypothesis 18: add canonical TTextPanel, TButtonPanel, and TScrollBarPanel named fields from exact Pnl_txt and scr_ach donors; unused layout must not alter target code. [same emitted code as probe 33]
+probe 39 abi; result=MISMATCH; diff=73; shape=99.3485342019544: Policy hypothesis 19 retry: canonical named TPanel fields and TEasy/TScreen destructor inheritance after defining tagRECT.
+probe 40 liveness; result=MISMATCH; diff=73; shape=99.3485342019544: Policy hypothesis 20: initialize typed player_index at zero and increment once before the row setup, testing a natural one-based loop form. [same emitted code as probe 39]
+probe 41 control-flow; result=MISMATCH; diff=63; shape=98.8056460369164: Policy hypothesis 21: use a natural for-header typed player index with the existing countdown guard, testing whether VC5 emits the original early index initialization.
+probe 44 liveness; result=MISMATCH; diff=2968; shape=94.72551130247578: Hypothesis 1: remove full aggregate initialization of temptxt while retaining canonical panel and typed player ownership. Test whether the original partial stack stores come from an uninitialized buffer context and recover the original prologue basin.
+probe 45 liveness; result=MISMATCH; diff=2928; shape=92.11663066954644: Hypothesis 2: scope each RGE_Player* declaration inside its mode loop. The assembly carries one player through each row only; a loop-local lifetime may restore the original EBX-this and EBP-zero allocation without raw cursor or fake virtual declarations.
+probe 46 abi; result=MISMATCH; diff=2928; shape=92.11663066954644: Hypothesis 3: restore the PDB-proven long set_mode ABI. The original symbol is ?set_mode@TribeAchievementsScreen@@IAEXJ@Z, while the policy source used int despite equal width. [same emitted code as probe 45]
+probe 47 liveness; result=MISMATCH; diff=73; shape=99.3485342019544: Hypothesis 4: model the binary-proven partial buffer zeroing directly with natural memset(temptxt + 31, 0, 19), while keeping typed player indexing and canonical panel ownership. This tests whether the unexplained tail stores, rather than full aggregate init, control the entry shape.
+probe 48 control-flow; result=MISMATCH; diff=62; shape=98.914223669924: Hypothesis 5: use a natural for-header player index increment, with the countdown as the loop condition and no duplicate body increment. This preserves one player step per row while testing whether VC5 schedules the proven index initialization before each row-base setup.
+probe 49 liveness; result=MISMATCH; diff=62; shape=98.914223669924: Hypothesis 6: declare and initialize player_index before row and remaining, then use an empty for initializer. This is a natural declaration-order test for the original early mov ebp,4 before the statistics LEA and remaining spill. [same emitted code as probe 48]
+probe 50 layout; result=MISMATCH; diff=64; shape=98.6970684039088: Hypothesis 7: derive each statistics row origin from the proven one-based player_index, using player_index plus one for mode 2. This tests a natural index/row relation that may force the original early index initialization without raw cursor arithmetic.
+probe 51 liveness; result=MISMATCH; diff=62; shape=98.914223669924: Hypothesis 8: sequence the proven player-index initialization with row setup through a comma expression. This tests whether an explicit source dependency restores mov ebp,4 before the row LEA, without raw cursors or an unused steering counter. [same emitted code as probe 49]
+probe 52 control-flow; result=MISMATCH; diff=43; shape=99.3485342019544: Hypothesis 9: keep a natural pre-tested for loop but move player_index increment into the body. This preserves one increment and tests whether VC5's update placement recovers the original per-row register topology.
+probe 53 liveness; result=MISMATCH; diff=45; shape=99.1313789359392: Hypothesis 10: bind a natural row_index from player_index before row setup, so the first player row and player array share one semantic index. Test whether this dependency preserves the original early index move.
+probe 54 layout; result=MISMATCH; diff=2596; shape=93.521421107628: Hypothesis 11: derive the initial statistics row from typed statistics[player_index - 1], plus the mode-specific column offset. This is a natural player-to-row relation and tests whether VC5 must initialize the index before row address formation.
+probe 55 control-flow; result=MISMATCH; diff=43; shape=99.3485342019544: Hypothesis 12: retain the standard player-index initializer and body increment, but express the count-controlled loop as a pre-tested for with an empty update clause. This tests whether the closer 43-byte basin requires the comma expression or only the loop form. [same emitted code as probe 52]
+probe 56 control-flow; result=MISMATCH; diff=43; shape=99.3485342019544: Hypothesis 13: replace the empty-update for loop with the equivalent natural while loop. Test whether the compiler basin depends on loop spelling while preserving the same count test and body update. [same emitted code as probe 55]
+probe 57 liveness; result=MISMATCH; diff=43; shape=99.3485342019544: Hypothesis 14: move the remaining-count declaration before the statistics row declaration while keeping player_index first. This tests declaration order against the original mov index, row LEA, then count-spill sequence. [same emitted code as probe 56]
+probe 60 liveness; result=MISMATCH; diff=45; shape=99.1313789359392: Separate the three loop-entry assignments into full expressions. Test whether VC5 preserves the PDB-proven index, row, then remaining setup order.
+probe 61 liveness; result=MISMATCH; diff=43; shape=99.3485342019544: Derive each initial statistics column from the established one-based player index while retaining the current count-controlled loop.
+probe 62 control-flow; result=MISMATCH; diff=73; shape=99.3485342019544: Use the PDB-supported positive-count guard with a do-while row loop. Test whether loop form restores the five index-before-row setup blocks.
+probe 63 layout; result=MISMATCH; diff=43; shape=99.3485342019544: Correct the earlier row-ownership probe: initialize player_index to one, then derive row from statistics[player_index - 1] before the count loop. [same emitted code as probe 61]
+probe 64 abi; result=MISMATCH; diff=43; shape=99.3485342019544: Use the module's period-natural long type for the one-based player index. Test whether VC5 retains its initialization before row setup. [same emitted code as probe 63]
+probe 65 liveness; result=MISMATCH; diff=45; shape=99.1313789359392: Sequence the proven one-based index assignment with constant row initialization, but retain the exact-basin while loop and body increment. [same emitted code as probe 60]
+probe 66 liveness; result=MISMATCH; diff=45; shape=99.1313789359392: Declare each one-based player index before its positive-count guard. Test whether VC5 sinks initialization into the taken path before row setup, as the oracle does. [same emitted code as probe 65]
+probe 67 liveness; result=MISMATCH; diff=45; shape=99.1313789359392: Use the period-natural register storage hint for the loop-carried player index that the oracle keeps in EBP. [same emitted code as probe 66]
+probe 68 behavior; result=MISMATCH; diff=2; shape=99.6742671009772: Test the binary-proven four-byte player offset induction while retaining canonical world and players ownership. This is the prior exact loop model under the complete shared context.
+probe 69 behavior; result=MISMATCH; diff=31; shape=99.5656894679696: Spell the binary-proven victory total order explicitly: read id 16, then id 15, then add. This preserves fault and effect order under the complete TU context.
+probe 70 behavior; result=MISMATCH; diff=2; shape=99.6742671009772: Keep the single total expression, but place id 16 on the left and id 15 on the right. This preserves the oracle's call and fault order in the current VC5 context. [same emitted code as probe 68]
+probe 71 behavior; result=MISMATCH; diff=18; shape=99.5656894679696: Sequence id 16 before the sum's id 15 call inside the existing itoa argument. Retain outer argument setup and the oracle's EBP accumulation shape.
+probe 72 behavior; result=MISMATCH; diff=2; shape=99.6742671009772: Express the same total as id15 minus negative id16. Test whether noncommutative operand order retains outer itoa setup and reads id16 before id15. [same emitted code as probe 70]
+probe 73 variant; result=MISMATCH; diff=31; shape=99.0228013029316: Diagnostic only: inline a pure two-value addition to test VC5 argument order without changing calls or arithmetic.
+probe 74 abi; result=MISMATCH; diff=2; shape=99.6742671009772: Use an explicit long conversion on the id-15 operand. Test whether the PDB-long arithmetic type prevents commutative call reordering.
+probe 75 abi; result=MISMATCH; diff=2; shape=99.6742671009772: Test an unsigned-long left operand for the nonnegative victory-point total. Preserve the same 32-bit addition and result bits. [same emitted code as probe 74]
+probe 76 abi; result=MISMATCH; diff=2; shape=99.6742671009772: Qualify the id-16 direct owner explicitly while keeping the id-15 call ordinary. Test whether distinct source ownership blocks operand canonicalization. [same emitted code as probe 72]
+probe 77 variant; result=MISMATCH; diff=2; shape=99.6742671009772: Test an algebraically neutral scale on id 16 to retain the natural single total expression while distinguishing its operand tree. [same emitted code as probe 76]
+probe 79 behavior; result=MISMATCH; diff=2; shape=99.6742671009772: Authentic context raw four-byte player cursor reduces fresh strict diff 45->2, but original at +0920 pushes ID 16 then calls it, then ID 15; the natural direct sum still emits 15 then 16. Reject this closer basin because it changes victory-ID fault order. [same emitted code as probe 77]
+probe 80 behavior; result=MISMATCH; diff=61; shape=99.0228013029316: Preserve the original mode-3 victory-ID fault order with a natural comma-sequenced local: ID 16 completes before ID 15. This tests behavior-first recovery against the 2-byte raw-cursor basin.
+probe 81 behavior; result=MISMATCH; diff=45; shape=99.1313789359392: Test a natural-looking nested zero expression for mode-3 victory IDs. Require ID 16 before ID 15 without a dummy helper or volatility; reject if VC5 keeps the wrong order or changes the basin. [same emitted code as probe 78]
+```
+<!-- end-recovered:c2cb2d4834e788af31bb -->
+
+<!-- recovered:4bf38bbd71bee381f9fc -->
+### `437ea7f4c2b5` `src/scratch/0048E400_set_mode.cpp:1-28`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0048E400 TribeAchievementsScreen::set_mode (3205 B)
+// PDB source: scr_ach.cpp (lines 441-744)
+//
+// Attempt log:
+// - Replaced the unrelated mode shim with the packet-grounded screen-mode
+//   setup: common panel reset, switch cases 0-6, per-player statistics, and
+//   final active-state updates.
+// - Recovered mode-1's six columns and mode-3's attribute-14 column from the
+//   ordered original call stream; the canonical ownership remains the named
+//   victory-condition/player surface above.
+// - The original uses a count-controlled player loop and a row cursor beginning
+//   at statistics[0] + 1 (or +2 for mode 2); the source uses typed player and
+//   statistics arrays with the same one-based ownership.
+// - Next lead: the original switch emits mode 6 before mode 5; keep that
+//   compiler handler order rather than numeric source order.
+// - Removed the loop-local victory pointer: the oracle carries each player
+//   pointer and rereads player->victory_conditions at every helper call.
+// - Policy cleanup: replaced the fake panel slot surface with named same-TU
+//   TPanel/TTextPanel inheritance and recovered the panel field ownership.
+// - Policy cleanup: replaced raw player byte offsets with players[index].
+// - BINARY NOTE: the entry block zeroes only the final 19 bytes of temptxt.
+//   The natural aggregate initialization below emits a full zero fill instead.
+//   The exact tail stores still need a natural source explanation.
+// - BINARY NOTE: mode 0 disables backButton; mode 6 enables time_line.
+//   These values are opposite to the first clean reconstruction.
+// - Exact baseline: the prior raw-cursor source matched 3205 bytes. This
+//   policy cleanup changes 2928 bytes because VC5 emits a different init and
+//   typed-index setup. Do not restore the rejected raw forms.
+```
+<!-- end-recovered:4bf38bbd71bee381f9fc -->

@@ -1,12 +1,14 @@
 # Logic review: 004A61A0 `TRIBE_Screen_Disconnect::TRIBE_Screen_Disconnect`
 
+Current source: `src/scr_mps.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after nine claims, 54 meaningful
 probes, same-TU donor work, EH and flag experiments, and final source
 normalization.
 
-The candidate is `src/scratch/004A61A0_TRIBE_Screen_Disconnect.cpp`.
+The candidate is `src/scr_mps.cpp`.
 
 Current validation:
 
@@ -121,7 +123,7 @@ known 19-byte duplicated EH return tail.
 
 ## Final decision
 
-Promote to `src/verified_logic`. Both reviewers verified constructor behavior,
+Promote to `verified_logic` status. Both reviewers verified constructor behavior,
 EH cleanup, and vtable order. The main agent adjudicated every ABI finding and
 corrected the complete 74-slot callable surface. No behavioral uncertainty
 remains. Exact matching stays suspended only for the VC5 EH-tail sharing basin.

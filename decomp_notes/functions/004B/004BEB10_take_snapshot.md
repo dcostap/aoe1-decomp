@@ -1,0 +1,93 @@
+# Function notes: 004BEB10 `take_snapshot`
+
+Module notes: `decomp_notes/spanlist_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:80b571d5a154e67e0b4c -->
+### `target-session` `build/target_sessions/004BEB10_take_snapshot.json:1-27`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=538; shape=91.54228855721394: Current natural source baseline; verify exact calls, frame, CFG, and mismatch stage before new hypotheses.
+probe 2 variant; result=MISMATCH; diff=538; shape=91.54228855721394: Typed header: use named Width before bmWide in bfSize product; tests operand order and early ECX reuse without raw views. [same emitted code as probe 1]
+probe 4 context; result=MISMATCH; diff=538; shape=91.54228855721394: Period typed Windows header context: use SDK BITMAPFILEHEADER/BITMAPINFOHEADER/RGBQUAD/PALETTEENTRY via windows.h; test canonical declarations without raw views.
+probe 6 liveness; result=MISMATCH; diff=538; shape=91.54228855721394: Natural named fileSize local for BMP total; tests whether original ECX product survives into bfSize store without stack-byte views. [same emitted code as probe 2]
+probe 8 layout; result=MISMATCH; diff=541; shape=80.59701492537313: Binary-supported palette overrun model: 257-entry typed arrays with API/copy/write at element 1, plus filename payload at BMPFile+4; tests observed address anchors naturally.
+probe 10 layout; result=MISMATCH; diff=541; shape=81.09452736318408: Filename-buffer layout: 0x40-byte typed-independent local with payload at +4 and observed leading zero; tests the original BMPFile+4 addresses without changing palette arrays.
+probe 12 liveness; result=MISMATCH; diff=538; shape=91.54228855721394: Drawarea-donor product form: separate natural total = Width * bmWide, then bfSize = total + 0x436; tests the exact donor's accumulator lifetime and operand order. [same emitted code as probe 6]
+probe 15 layout; result=MISMATCH; diff=538; shape=91.54228855721394: Natural declaration-order axis: place the filename buffer before the typed bitmap headers; tests whether VC5 reproduces the observed four-byte buffer gap and header scheduling. [same emitted code as probe 14]
+probe 17 variant; result=MISMATCH; diff=538; shape=91.54228855721394: Typed header field order: assign biHeight before biWidth, matching the original early store and delayed biWidth store; tests source sequencing rather than steering. [same emitted code as probe 15]
+probe 19 context; result=MISMATCH; diff=538; shape=91.54228855721394: Period donor spelling: use literal 0x28 for the bitmap info header size, matching the exact Drawarea snapshot donor and original immediate store. [same emitted code as probe 17]
+probe 20 control-flow; result=MISMATCH; diff=538; shape=91.54228855721394: Retry-loop topology: express the natural terminal guard as if (tries > 1000) return, matching the original jle backedge and fallthrough return block. [same emitted code as probe 19]
+probe 22 control-flow; result=MISMATCH; diff=526; shape=90.68627450980392: Retry-loop form: replace infinite loop plus terminal guard with a natural do-while (tries <= 1000), preserving observed bottom jle and fallthrough return.
+probe 23 control-flow; result=MISMATCH; diff=538; shape=91.54228855721394: Evidence-led label topology: do-while retry with explicit found-file goto and fallthrough return, matching original fd==-1 jump and attempt-limit early epilogue. [same emitted code as probe 20]
+probe 25 liveness; result=MISMATCH; diff=567; shape=92.53731343283582: Drawarea-style natural setup: initialize bitmap dimensions before bmWide, then type, separate total product, and bfSize; tests donor-proven declaration and scheduling order.
+probe 27 layout; result=MISMATCH; diff=351; shape=91.08910891089108: Diagnostic buffer probe: remove the untyped BMPFile zero store to test whether the observed leading zero belongs to another typed local; do not retain without binary ownership.
+probe 28 liveness; result=MISMATCH; diff=351; shape=91.08910891089108: Best typed basin liveness axis: declare the line pointer at function scope and assign it after the retry return; original has an early epilogue before allocation. [same emitted code as probe 27]
+probe 29 control-flow; result=MISMATCH; diff=351; shape=91.08910891089108: Explicit retry/found labels: source-level backward goto for the jle retry edge and forward goto for fd failure, with a separate fallthrough return. [same emitted code as probe 28]
+probe 30 liveness; result=MISMATCH; diff=351; shape=91.08910891089108: Best no-zero basin product axis: use named Width * bmWide for bfSize, testing the original ECX=Width multiply without an opaque aggregate. [same emitted code as probe 29]
+probe 31 layout; result=MISMATCH; diff=358; shape=87.12871287128714: Diagnostic palette-anchor model: pass and copy through element one while retaining 256-entry typed arrays; tests pointer displacement evidence without an extra array.
+probe 32 context; result=MISMATCH; diff=351; shape=91.08910891089108: Best no-zero basin header spelling: replace sizeof(bmIH) with period literal 0x28, donor-supported and matching original immediate store. [same emitted code as probe 30]
+probe 33 variant; result=MISMATCH; diff=351; shape=91.08910891089108: variant lab build\variant_lab\004BEB10_take_snapshot\20260817_131127: 4 variants, 0 invariant-eligible, 0 exact
+probe 34 abi; result=MISMATCH; diff=351; shape=91.08910891089108: Period C ABI axis: mark malloc/free/open/close/write extern C, matching CRT call ownership and testing relocation symbol identity without changing source behavior.
+probe 39 control-flow; result=MISMATCH; diff=351; shape=91.54228855721394: Header initialization-order hypothesis: assign biHeight before rounded width and defer biWidth, following the original early store and Drawarea donor order. [same emitted code as probe 38]
+probe 40 liveness; result=MISMATCH; diff=627; shape=89.55223880597015: Joined Width/Height declaration initialization was tested with fresh direct checker: 659 bytes, 627 strict bytes, first mismatch at entry, so restored separate assignments.
+probe 41 control-flow; result=MISMATCH; diff=627; shape=89.55223880597015: Explicit retry and file-found labels were a fresh direct-check duplicate: 666 bytes, 351 strict bytes, and the compiler retained the forward jump to shared cleanup. Restored natural loop.
+probe 42 layout; result=MISMATCH; diff=351; shape=91.54228855721394: Scalar declaration permutations and compound Width accumulator were fresh direct-check duplicates at 666 bytes and 351 strict bytes; restored canonical declaration order and direct product.
+probe 43 control-flow; result=MISMATCH; diff=351; shape=91.54228855721394: Bottom-tested retry with explicit file-found label was a fresh direct-check duplicate: 666 bytes, 351 strict bytes, one shared epilogue. Restored the natural loop.
+```
+<!-- end-recovered:80b571d5a154e67e0b4c -->
+
+<!-- recovered:fe740b657ab1905e14fd -->
+### `b43c4c888d33` `src/scratch/004BEB10_take_snapshot.cpp:1-43`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 004BEB10 TSpan_List_Manager::take_snapshot(char*, int&, TDrawArea*, int, TSpan_List_Manager**, int*, int)
+// Source: spanlist.cpp lines 1817-1950
+// Attempt log:
+// - Initial natural reconstruction used 256-entry palette arrays; the original
+//   addresses confirm no extra palette entry is part of this frame.
+// - Restored the original direct open/close/write call surfaces and changed the
+//   span precheck to a pointer cursor with a redundant i<count guard. This
+//   makes the complete call multiset/order and the first 0x38 bytes exact.
+// - Replaced hand-written zero loops with memset(line, 0, bmWide), matching the
+//   observed variable-size rep stosd/rep stosb sequence and recovering exact
+//   palette/zero/decode/write islands.
+// - Width-first member initialization is the current best header basin; a
+//   typed packed bitmap-header probe moved the header broadly and was rolled
+//   back. The inverted attempt-limit spelling was codegen-identical.
+// - Reordered the natural BMP file-size assignment before bfType, as shown by
+//   the first paired hunk and the spanlist source order; codegen was identical.
+// - Final best check: 661 rebuilt bytes vs 673 original, frame 0x888, all 14
+//   calls aligned, 359 strict differing bytes, 85.51% shape, 57.21% exact
+//   block coverage. Remaining drift starts in bitmap-header scheduling/stack
+//   ownership (notably the BMPFile base is +4) and the late open-loop/return
+//   topology. This is unresolved scratch work, not accepted drift.
+// - Fresh probe: using BMPFile itself for the filename calls moved the pointer
+//   to the observed stack address, improving the result to 356 differing
+//   bytes, 87.44% shape, and 74.63% exact-block coverage. The packed file
+//   header, product operand order, direct Num_Lines product, and a named total
+//   were duplicate codegen or did not improve this basin.
+// - A bounded filename-search loop reproduced the original jle backedge and
+//   near-size, but introduced an extra fd test and broad register drift; it
+//   was rolled back. The remaining structural lead is the early header local
+//   reuse and the original fallthrough return topology.
+// - Restored named bitmap-header fields, the default file-name literal, and
+//   parallel spans/colors indexing. Raw stack-buffer stores and cross-array
+//   cursor arithmetic were diagnostic scaffolding, not living source.
+// - Revisit: removing the untyped BMPFile zero store from the typed source
+//   resynchronized the exact palette/open/body islands. Best result is 666
+//   bytes, frame 0x888, 202 instructions, 351 strict differing bytes, and
+//   91.09% shape. The original final zero is a bitmap-header field, not a
+//   filename initialization.
+// - Tested 257-entry palettes, a 0x40-byte filename buffer, +1 palette
+//   anchors, SDK Windows headers, declaration and field order, named totals,
+//   retry-loop forms, and CRT C linkage. No exact result; several were
+//   duplicate codegen. The current source keeps the typed period model and
+//   extern-C CRT declarations.
+```
+<!-- end-recovered:fe740b657ab1905e14fd -->

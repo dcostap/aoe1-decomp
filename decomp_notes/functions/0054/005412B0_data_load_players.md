@@ -1,0 +1,41 @@
+# Function notes: 005412B0 `data_load_players`
+
+Module notes: `decomp_notes/world_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:f2f49ecf2605fd9a9fa4 -->
+### `d7b30a95b149` `src/scratch/005412B0_data_load_players.cpp:1-42`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 005412B0 data_load_players (World.cpp:539-564)
+// PDB source: World.cpp (RGE_Game_World::data_load_players)
+//
+// Attempt log:
+// a1: goto-based; wrong reg alloc, missing vtable call. 176/197b.
+// a2: virtual funcs in RGE_Game_World; vtable call matches, extra push ebx+offset shift.
+// a3: separate helper struct for vtable call; same issue.
+// a4: scoped ebx locals inside fp!=NULL block; no change.
+// a5: removed helper struct; still has push ebx (not struct-caused).
+// a6: this->vtable before fopen; extra push ebp too.
+// a7: self=this at start; push ecx for local self.
+// a8: param_1 slot reuse for count; virtual funcs. 12.7% diff.
+// a9: no mpn pointer; direct access. Same push ebx.
+// a10: do-while loop; different structure, worse match.
+// a11: separate virtual struct; same 12.7% diff.
+//
+// Remaining diff (12.7% positional, 6% edit): pure VC5 register scheduling.
+// - Original: push esi; push edi at entry; push ebx only after fp==NULL check.
+// - Rebuilt:  push ebx; push esi; push edi at entry (ebx pushed unconditionally).
+// Function body from offset 8 onward byte-for-byte matches original.
+// Vtable call (this->data_load_players_type) pattern matches exactly.
+//
+// Parked: register scheduling difference cannot be resolved with source changes.
+// TU context (World.cpp including RGE_Game_World.h with virtual declarations)
+// would likely resolve, but single-function compilation lacks that context.
+// [non-comment lines omitted during migration]
+// Helper struct to generate correct __thiscall vtable dispatch at slot 7
+```
+<!-- end-recovered:f2f49ecf2605fd9a9fa4 -->

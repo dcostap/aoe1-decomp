@@ -1,0 +1,7 @@
+# Function notes: 00426470 `AddCommand`
+
+Module notes: `decomp_notes/com_hand_module.md`.
+
+## Recovered attempt history
+
+No function-specific cleanup block was mapped automatically. Review the earlier note and Git history before work.

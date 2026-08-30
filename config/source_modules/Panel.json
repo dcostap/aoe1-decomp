@@ -7,7 +7,7 @@
   "functions": {
     "00463BB0": {
       "status": "scratch",
-      "note_path": "recovery_notes/Panel_module.md"
+      "note_path": "decomp_notes/Panel_module.md"
     },
     "00463BE0": {
       "status": "matching"
@@ -74,19 +74,19 @@
     },
     "00464150": {
       "status": "scratch",
-      "note_path": "recovery_notes/Panel_module.md"
+      "note_path": "decomp_notes/Panel_module.md"
     },
     "004641B0": {
       "status": "scratch",
-      "note_path": "recovery_notes/Panel_module.md"
+      "note_path": "decomp_notes/Panel_module.md"
     },
     "00464260": {
       "status": "scratch",
-      "note_path": "recovery_notes/Panel_module.md"
+      "note_path": "decomp_notes/Panel_module.md"
     },
     "004642C0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/Panel_module.md"
+      "note_path": "decomp_notes/Panel_module.md"
     },
     "00464480": {
       "status": "matching"
@@ -132,11 +132,11 @@
     },
     "00464720": {
       "status": "scratch",
-      "note_path": "recovery_notes/Panel_module.md"
+      "note_path": "decomp_notes/Panel_module.md"
     },
     "004648B0": {
       "status": "scratch",
-      "note_path": "recovery_notes/Panel_module.md"
+      "note_path": "decomp_notes/Panel_module.md"
     },
     "004649E0": {
       "status": "matching"
@@ -173,7 +173,7 @@
     },
     "00464F20": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/Panel_module.md"
+      "note_path": "decomp_notes/Panel_module.md"
     },
     "00465050": {
       "status": "matching"
@@ -204,18 +204,18 @@
     },
     "004653E0": {
       "status": "scratch",
-      "note_path": "recovery_notes/Panel_module.md"
+      "note_path": "decomp_notes/Panel_module.md"
     },
     "00465780": {
       "status": "matching"
     },
     "00465820": {
       "status": "scratch",
-      "note_path": "recovery_notes/Panel_module.md"
+      "note_path": "decomp_notes/Panel_module.md"
     },
     "00465A70": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/Panel_module.md"
+      "note_path": "decomp_notes/Panel_module.md"
     },
     "00465B30": {
       "status": "matching"
@@ -240,7 +240,7 @@
     },
     "00465DC0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/Panel_module.md"
+      "note_path": "decomp_notes/Panel_module.md"
     },
     "00465F70": {
       "status": "matching"

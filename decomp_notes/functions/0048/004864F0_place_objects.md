@@ -1,0 +1,172 @@
+# Function notes: 004864F0 `place_objects`
+
+Module notes: `decomp_notes/rmm_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:8ea166071d0d18564dff -->
+### `d050eea3c` `src/rmm_obj.cpp:349-350`
+
+Mapping: `exact`. removed comment declares this PDB source owner VA.
+
+```text
+// VA: 004864F0 RGE_RMM_Object_Generator::place_objects
+// SCRATCH: The source model and call sequence are understood. The executable
+```
+<!-- end-recovered:8ea166071d0d18564dff -->
+
+<!-- recovered:20953526e878100a8ff7 -->
+### `target-session` `build/target_sessions/004864F0_place_objects.json:1-44`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=31; shape=97.29729729729729: Current typed random-map reconstruction: exact size/frame/CFG/calls, 31 strict bytes; setup register scheduling differs at +4A.
+probe 2 variant; result=MISMATCH; diff=43; shape=97.29729729729729: Restored natural player lookup before group count, using direct this->world ownership; tests original pre-loop initializer order.
+probe 4 variant; result=MISMATCH; diff=31; shape=97.29729729729729: Keep group count assignment first but remove cached world alias; test direct typed this->world ownership with current loop.
+probe 5 variant; result=MISMATCH; diff=43; shape=97.29729729729729: Move count declaration/initialization after direct player lookup; test source scope and original setup order without aliases. [same emitted code as probe 2]
+probe 7 abi; result=MISMATCH; diff=31; shape=97.29729729729729: Use binary-decompiler-supported long count for the group counter instead of int; test width in the natural loop. [same emitted code as probe 1]
+probe 8 variant; result=MISMATCH; diff=31; shape=97.29729729729729: Materialize a typed player index and apply the mask in place; test whether natural compound assignment recovers original EAX index and EDX mask.
+probe 10 variant; result=MISMATCH; diff=31; shape=97.29729729729729: Use the decompiler-supported integer mask form ; test natural lowering of the original SETLE/DEC/AND sequence. [same emitted code as probe 7]
+probe 12 liveness; result=MISMATCH; diff=31; shape=97.29729729729729: Cache the typed player_id before the signed mask; test whether a named index extends the source value and recovers original mask register color. [same emitted code as probe 8]
+probe 14 liveness; result=MISMATCH; diff=31; shape=97.29729729729729: Declare and initialize count at the pre-loop assignment site while retaining typed world alias; test local declaration scope. [same emitted code as probe 10]
+probe 19 liveness; result=MISMATCH; diff=43; shape=97.29729729729729: Explicit player-id and decrementing mask lifetimes, with count initialized after player lookup.
+probe 21 liveness; result=MISMATCH; diff=31; shape=97.29729729729729: Typed players-table slot address before count and masked player lookup. [same emitted code as probe 14]
+probe 23 liveness; result=MISMATCH; diff=31; shape=97.29729729729729: Typed reference alias for the world players table before count and player lookup. [same emitted code as probe 21]
+probe 25 liveness; result=MISMATCH; diff=31; shape=97.29729729729729: Function-scope player declaration before stack setup, with assignment retained after count initialization. [same emitted code as probe 18]
+probe 28 liveness; result=MISMATCH; diff=43; shape=97.29729729729729: Source-order hypothesis: evaluate direct player lookup before count assignment while retaining the clean direct mask expression; tests PDB/decompiler line 350 then count read order. [same emitted code as probe 5]
+probe 30 liveness; result=MISMATCH; diff=31; shape=97.29729729729729: Declaration-scope hypothesis: move the player pointer to function scope, matching the decompiler's top-level pRVar2, while retaining the original line-350 player lookup before count. [same emitted code as probe 27]
+probe 31 liveness; result=MISMATCH; diff=31; shape=97.29729729729729: Alias-order hypothesis: bind world and its players table in sequential locals before the direct player-id mask; tests whether explicit dependency recovers original ECX world load without opaque steering. [same emitted code as probe 12]
+probe 33 liveness; result=MISMATCH; diff=43; shape=97.29729729729729: Reference-alias hypothesis: bind the world players field as a typed lvalue reference before the mask, then read count; tests proven world/table load order without raw offsets or volatility.
+probe 35 liveness; result=MISMATCH; diff=31; shape=97.29729729729729: Initializer-shape hypothesis: use a direct player declaration initializer, matching ordinary period C++ style, while preserving the clean count-before-lookup ordering. [same emitted code as probe 30]
+probe 36 liveness; result=MISMATCH; diff=43; shape=97.29729729729729: Scope hypothesis: declare and initialize count at its first use after the player lookup, matching a natural loop-local count and testing whether delayed initialization changes the early register basin. [same emitted code as probe 28]
+probe 38 liveness; result=MISMATCH; diff=43; shape=97.29729729729729: Source-alias hypothesis: materialize the decompiler-supported info pointer immediately after stack setup, then use it for player lookup and count; tests line-345 ownership against the original line-350/354 read order. [same emitted code as probe 33]
+probe 40 context; result=MISMATCH; diff=33; shape=96.21621621621621: Period-context hypothesis: use the standard string.h memset declaration used by nearby rmm_obj reconstructions instead of the local prototype; tests header-driven VC5 scheduling.
+probe 42 context; result=MISMATCH; diff=31; shape=97.29729729729729: Period-context hypothesis: use memory.h for memset, testing the other supported old-MSVC header declaration basin without changing the body.
+probe 44 abi; result=MISMATCH; diff=31; shape=97.29729729729729: ABI hypothesis: use the period-supported reference surfaces for all Map_Stack helpers, as in the exact same-TU donor, and let natural reference calls form the output addresses.
+probe 46 variant; result=MISMATCH; diff=43; shape=97.29729729729729: Combined ABI/source-order hypothesis: exact same-TU reference Map_Stack helpers with player lookup before count, testing whether both natural source facts recover the original setup basin.
+probe 50 liveness; result=MISMATCH; diff=43; shape=97.29729729729729: Restore PDB local order and names, typed x/y outputs, float pop cost, and player-before-count fault order; test the authentic rmm_obj source model.
+probe 52 baseline; result=MISMATCH; diff=45; shape=96.21621621621621: Fresh complete-world grouped baseline: audit clear-size and player/count setup basins.
+probe 53 layout; result=MISMATCH; diff=45; shape=96.21621621621621: Use inherited width/height aliases for the clear product under complete world context. [same emitted code as probe 52]
+probe 54 layout; result=MISMATCH; diff=45; shape=96.21621621621621: Reverse the inherited alias product to test complete-world operand scheduling; multiplication remains equivalent. [same emitted code as probe 53]
+probe 56 baseline; result=MISMATCH; diff=45; shape=96.21621621621621: Fresh authentic rmm_obj baseline. Measure current complete-world source before schedule work. [same emitted code as probe 55]
+probe 57 layout; result=MISMATCH; diff=45; shape=96.21621621621621: Reverse the direct PDB map dimensions. Test whether VC5 restores width-first clear scheduling without changing the product.
+probe 58 context; result=MISMATCH; diff=45; shape=96.21621621621621: Restore the period C memset declaration before the authentic context include. Test its known VC5 front-end basin with PDB locals and player-before-count order.
+probe 59 liveness; result=MISMATCH; diff=45; shape=96.21621621621621: Use a natural width-initialized size accumulator, then compound-multiply height. Preserve the executable width-before-height fault order.
+probe 60 liveness; result=MISMATCH; diff=33; shape=96.21621621621621: Re-establish the 31-byte count-before-player basin under complete rmm_obj context. Use it only to isolate the remaining schedule hunk.
+probe 61 variant; result=MISMATCH; diff=33; shape=96.21621621621621: variant lab build\variant_lab\004864F0_place_objects\20260823_182848: 112 variants, 112 invariant-eligible, 0 exact
+probe 62 variant; result=MISMATCH; diff=33; shape=96.21621621621621: variant lab build\variant_lab\004864F0_place_objects\20260823_182912: 112 variants, 105 invariant-eligible, 0 exact
+probe 63 context; result=MISMATCH; diff=31; shape=97.29729729729729: Include the period memory header at the target site under complete context. Test whether its declarations restore the standalone context-before-string clear basin.
+probe 64 variant; result=MISMATCH; diff=31; shape=97.29729729729729: variant lab build\variant_lab\004864F0_place_objects\20260823_183041: 112 variants, 105 invariant-eligible, 0 exact
+probe 65 variant; result=MISMATCH; diff=43; shape=97.29729729729729: variant lab build\variant_lab\004864F0_place_objects\20260823_183341: 217 variants, 210 invariant-eligible, 0 exact
+probe 69 liveness; result=MISMATCH; diff=31; shape=97.29729729729729: Bind the canonical world as a reference before the indexed player lookup. Test whether reference binding makes the world receiver load precede the player-id mask without changing calls, frame, or fault order.
+probe 70 liveness; result=MISMATCH; diff=43; shape=97.29729729729729: Use the same canonical world reference binding, but restore player lookup before count assignment. Test whether declaration/reference scope preserves world-first lowering while retaining the executable player-before-count source order.
+probe 71 control-flow; result=MISMATCH; diff=31; shape=97.29729729729729: Use a comma expression to evaluate the world receiver before indexed player selection. Test whether this supported sequencing form reproduces the original world-first load without fake volatility or added calls. [same emitted code as probe 64]
+probe 72 context; result=MISMATCH; diff=33; shape=96.21621621621621: Introduce a local inline player-selection helper with canonical world and player-id types. Test whether a period-plausible inlined helper preserves world receiver evaluation before the mask without adding a call or changing fault behavior.
+probe 73 liveness; result=MISMATCH; diff=31; shape=97.29729729729729: Cache the canonical players table in a const pointer after count publication, then index it. Test whether this liveness shape changes register pressure toward the original world-first setup without altering memory ownership or calls. [same emitted code as probe 69]
+probe 74 abi; result=MISMATCH; diff=31; shape=97.29729729729729: Qualify the inherited pop_stack call through this while keeping canonical pointer ABI and count-first diagnostic basin. Test whether member lookup qualification changes the initial output-address schedule toward the original. [same emitted code as probe 71]
+```
+<!-- end-recovered:20953526e878100a8ff7 -->
+
+<!-- recovered:facd6b5642b428c95662 -->
+### `c4b894f45a6e` `src/scratch/004864F0_place_objects.cpp:1-94`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 004864F0 RGE_RMM_Object_Generator::place_objects
+// Attempt log:
+// 1: initial natural implementation from packet/decompiler and rmm_obj neighbor stubs: exact size but 78% diff; compiler emitted counted byte loop and used edi=this.
+// 2: use memset plus explicit self local to try original rep stosd clear and ebp=this register: first 74 bytes match; count kept in esi and player load scheduled later.
+// 3: make count volatile to force stack local and memory test/dec: edit diff improved to 16.7%, but world/player load still scheduled after mask and stack arg LEAs shifted.
+// 4: split world load to a separate local before player-id mask: no codegen change.
+// 5: use <= -1 spelling for player-id mask to match cmp -1/setle: improved to 13.4%; remaining early mismatch is world load scheduled after mask and pop-argument order.
+// 6: split players pointer load before mask: no codegen change.
+// 7: store player id in a temp before indexing to probe load scheduling: no codegen change.
+// 8: volatile world local to force load before mask: worsened to 27% edit diff with extra stack store; rolled back.
+// 9: restored the proven Map_Stack/pop_stack ABI, long coordinate outputs, and
+//    natural while(pop_stack && count > 0) tail; this reached exact size/CFG and
+//    a 43-byte positional diff, with only the early setup hunk unresolved.
+// 10: a focused 15-variant pre-loop lab (world/player declaration forms and
+//     loop predicates) collapsed to duplicate codegen groups; reversing the
+//     commutative mask operands was also a duplicate. The remaining drift is
+//     VC5 world/mask/register and pop-argument scheduling, not behavior/calls.
+// 11: ABI audit replaced the fake float cast at pop_stack with the proven
+//     float cost output. Emitted bytes are unchanged; retain the safe typed form.
+// 12: direct typed world local before the player-id mask plus swapped pop_stack
+//     output order moved 10 bytes farther and lost aligned blocks; rolled back.
+// 13: hoisted the typed master lookup before the placement loop to test the
+//     original pre-pop lifetime; frame grew by 4 bytes and diff widened to 462,
+//     so restored the clean loop-local lookup.
+// 14: materialized the initial and bottom pop_stack result as next_stack to
+//     mirror the decompiler's pMVar7 loop state; this widened the diff to 158
+//     bytes and added one byte, so restored the direct natural while form.
+// 15: tested the signed-negative conditional mask spelling; diff widened to
+//     428 bytes, so restored the proven <= -1 form.
+// 16: hoisted a typed world local to the function-local declarations; diff
+//     widened to 88 bytes and moved the mismatch into the clear loop.
+// 17: routed all record accesses through a natural info pointer alias; codegen
+//     stayed at 43 bytes, so kept the simpler direct record accesses.
+// 18: bound a typed world reference before the player lookup; codegen was an
+//     unchanged 43-byte duplicate.
+// 19: tested the exact decompiler mask idiom ((player_id < 0) - 1); diff widened
+//     to 428 bytes, so restored the conditional mask.
+// 20: modeled the high-confidence Random_Map_Module base layout; codegen stayed
+//     at 43 bytes and confirmed the existing offsets.
+// 21: added the virtual base declaration with a duplicate explicit vtable slot;
+//     this produced a 46-byte diff and was rejected.
+// 22: removed the duplicate vtable slot from the virtual base; diff was 45
+//     bytes with changed operand scheduling, so restored the known stub shape.
+// 23: tested the equivalent nonnegative mask idiom; diff widened to 428 bytes.
+// 24: replaced the mask with an explicit negative-to-zero clamp; CFG and size
+//     diverged and diff widened to 429 bytes.
+// 25: combined a world local with a materialized masked index; codegen stayed
+//     at 43 bytes.
+// 26: added an explicit players-table local to that combination; codegen stayed
+//     at 43 bytes.
+// 27: moved count assignment before player lookup; diff improved from 43 to 31
+//     bytes while size, frame, CFG, and calls stayed exact.
+// 28: cached world before the improved count-before-player order; codegen stayed
+//     at the 31-byte best.
+// 29: restored the high-confidence base ownership with the 31-byte source; the
+//     result stayed unchanged. Remaining drift is setup register scheduling.
+// 30: direct this->world access with count-first setup was a 31-byte duplicate;
+//     the simpler direct member form is now canonical.
+// 31: long count, a named player index, the integer decompiler mask, and a
+//     declaration-local count were all codegen duplicates or worse. The typed
+//     while/pop loop and 31-byte clean source remain authoritative.
+// Fresh bounded pass: explicit mask lifetimes with count-after-player widened
+// the mismatch to 43 bytes. Players-slot, players-reference, and function-scope
+// player locals reproduced the 31-byte basin. The remaining schedule changes
+// world, info-field, player-table, and count read order. Keep this in scratch.
+// Fresh claim pass: count-after-player with the direct mask widened to 43 bytes;
+// top-scope player, world/table aliases, direct initialization, and reference
+// Map_Stack helpers were 31-byte duplicates. A reference players alias, a
+// loop-local count, an info alias, and reference helpers with count-after-player
+// were 43-byte results. string.h changed the clear order and memory.h was the
+// 31-byte basin. Restore the 31-byte direct-pointer clean source.
+// Current context audit: the PDB-ordered base and derived surfaces preserve all
+// six exact anchors. 00485E50 is now exact, and 004862B0 is 40 bytes off.
+// PDB symbols prove the local order y, x, tile_y, tile_x, count, obj_stack,
+// then float zone. The complete PDB world surface required by promoted
+// 00485E50 changes this target to a 45-byte setup residual. The frame and all
+// 12 calls remain exact. Every block after the first pop is exact.
+// It makes VC5 read map_height before map_width in the clear. The executable
+// reads map_width first, so invalid storage can also change that fault order.
+// Keep this function in scratch. Count-before-player reaches 31 bytes but reads
+// count before world. The retained source restores player-before-count.
+// The compiler still reads player_id before world, while the executable reads
+// world first. Invalid input storage can therefore change fault order.
+// The complete-world audit also tested both orders of the inherited width and
+// height aliases. VC5 emits the same height-first clear in each case. A named
+// map-size local was also a duplicate. Keep the direct PDB field expression.
+// Session exact-finish: the qualified owner is RGE_RMM_Object_Generator and the
+// PDB boundary is 004864F0-00486700, with direct anchors at init_stack,
+// make_placement_stack, both pop_stack calls, placement virtuals, and cleanup.
+// Reference-world, comma, players-table, and qualified pop_stack forms all
+// duplicated the 31-byte count-first basin. An inline selector worsened the
+// clear and gave 33 bytes. The 31-byte basin reads count before world, so it is
+// not safe under the executable's world-first fault order. Restore the direct
+// player-before-count source as the clean unresolved reconstruction.
+```
+<!-- end-recovered:facd6b5642b428c95662 -->

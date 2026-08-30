@@ -1,0 +1,21 @@
+# Function notes: 004A94A0 `~TRIBE_Screen_Sed`
+
+Module notes: `decomp_notes/scr_sed.md`.
+
+## Recovered attempt history
+
+<!-- recovered:d96fdd5829ba3d3f40ca -->
+### `748d8fedf57a` `src/matching/004A94A0_TRIBE_Screen_Sed.cpp:1-7`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004A94A0 TRIBE_Screen_Sed::~TRIBE_Screen_Sed
+// PDB: scr_sed.cpp:890-1144
+// virtual __thiscall ~TRIBE_Screen_Sed()
+// Attempt log:
+// 1: broad reconstruction from packet/decompiler + scr_sed field layout; /GX EH destructor.
+// Main-agent plausibility audit: replaced explicit destructor/operator_delete
+// plumbing with ordinary `delete p`; emitted bytes remained exactly identical.
+```
+<!-- end-recovered:d96fdd5829ba3d3f40ca -->

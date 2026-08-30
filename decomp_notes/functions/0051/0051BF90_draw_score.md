@@ -1,0 +1,131 @@
+# Function notes: 0051BF90 `draw_score`
+
+Module notes: `decomp_notes/tpnl_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:d4167e1890413d7c3dec -->
+### `d050eea3c` `src/tpnl_obj.cpp:583-583`
+
+Mapping: `strong`. next mapped function definition is draw_score at old line 639.
+
+```text
+                    // BINARY NOTE: an invalid resource type skips this draw.
+```
+<!-- end-recovered:d4167e1890413d7c3dec -->
+
+<!-- recovered:6171b1bb30ad72fd32d0 -->
+### `target-session` `build/target_sessions/0051BF90_draw_score.json:1-50`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=627; shape=82.79069767441861: Current readable reconstruction: behavior and ordered 17-call set are understood; baseline before local-topology probes.
+probe 2 liveness; result=MISMATCH; diff=623; shape=81.86046511627907: Move y_offset initialization into the successful GetDc arm to test whether EBP remains the zero/row accumulator while preserving valid behavior.
+probe 3 layout; result=MISMATCH; diff=437; shape=74.0: Remove persistent y and use direct panel-y expressions to test whether EBP becomes the original zero/row accumulator.
+probe 4 liveness; result=MISMATCH; diff=464; shape=70.69767441860465: Force proven stack-resident y through a narrow volatile local to test the original 0x94 frame and EBP accumulator topology.
+probe 5 liveness; result=MISMATCH; diff=627; shape=82.79069767441861: Use an address-taken regular short y to preserve narrow loads while forcing its proven stack home and leaving EBP for y_offset.
+probe 6 liveness; result=MISMATCH; diff=627; shape=82.79069767441861: Add register qualification to y_offset with the real y local to test VC5 callee-saved coloring without fake pointer plumbing. [same emitted code as probe 1]
+probe 7 context; result=MISMATCH; diff=437; shape=74.0: Restore matching same-TU game_globals include context while retaining direct-y typed reconstruction.
+probe 8 layout; result=MISMATCH; diff=628; shape=74.88372093023256: Represent x and y as a natural two-short coordinate array to test stack homes without assigning y to EBP.
+probe 9 layout; result=MISMATCH; diff=628; shape=74.88372093023256: Use a natural local Coordinates aggregate for the proven adjacent x/y values and test whether VC5 preserves stack homes with EBP as row offset.
+probe 10 layout; result=MISMATCH; diff=613; shape=82.62910798122066: Use the proven 32-bit y candidate to test the original 0x94 frame and compare its wider arithmetic basin.
+probe 11 context; result=MISMATCH; diff=439; shape=73.0: Use the canonical same-TU TPanel field surface while preserving the direct-y source model, testing class declarations as a codegen basin.
+probe 12 layout; result=MISMATCH; diff=439; shape=73.5: Increase only the local text buffer by 8 bytes to test whether the 0x94 frame is padding rather than a missing live scalar.
+probe 13 layout; result=MISMATCH; diff=436; shape=75.5: Retest the 108-byte buffer frame hypothesis after restoring the proven TPanel active/visible offsets.
+probe 14 liveness; result=MISMATCH; diff=462; shape=71.36150234741784: Force y through a volatile pointer, keeping short width, to test the exact stack-home and EBP-row topology.
+probe 15 liveness; result=MISMATCH; diff=437; shape=74.0: Scope temp_player inside the valid-player arm to test its original stack home and reduce cross-loop local lifetime. [same emitted code as probe 7]
+probe 16 liveness; result=MISMATCH; diff=445; shape=74.24242424242425: Scope RECT to the valid-player arm to test whether its proven stack home and later API setup match block-local PDB lifetimes.
+probe 17 liveness; result=MISMATCH; diff=627; shape=82.79069767441861: Move the short y declaration after the buffer to test declaration-order-driven stack allocation and EBP reuse.
+probe 18 liveness; result=MISMATCH; diff=627; shape=82.79069767441861: Split short y initialization and decrement to test whether VC5 emits the original narrow load/decrement into a stack home. [same emitted code as probe 17]
+probe 22 liveness; result=MISMATCH; diff=627; shape=82.79069767441861: Use the live zero row accumulator for the proven need_redraw zero store, testing whether EBP naturally carries y_offset and removes the extra local home. [same emitted code as probe 21]
+probe 24 liveness; result=MISMATCH; diff=621; shape=80.46511627906976: Remove the explicit y_offset initializer to test whether the original EBP zero register naturally serves the row accumulator, while observing first-row behavior evidence.
+probe 26 liveness; result=MISMATCH; diff=623; shape=81.86046511627907: Move y_offset initialization after the guard and before draw setup to test whether its live range then coalesces with the original EBP zero accumulator.
+probe 29 liveness; result=MISMATCH; diff=452; shape=85.20408163265306: Use a narrow short y_offset with the proven short y local to test whether VC5 keeps the row accumulator in EBP while preserving the target's narrow coordinate homes.
+probe 31 context; result=MISMATCH; diff=627; shape=82.79069767441861: Use the complete period TPanel field surface from the exact same-TU constructor donor, preserving all target offsets, to test whether aggregate member declarations select the original local allocation basin. [same emitted code as probe 28]
+probe 33 liveness; result=MISMATCH; diff=623; shape=81.86046511627907: Scope the y_offset declaration inside the successful GetDc arm, testing whether its shorter source lifetime lets VC5 reuse EBP as the target zero and row accumulator. [same emitted code as probe 2]
+probe 35 layout; result=MISMATCH; diff=463; shape=72.09302325581395: Combine the binary-proven stack-resident narrow y with a 104-byte local text buffer to test whether the observed target 0x94 frame and string/RECT stack window arise from natural local extent.
+probe 36 liveness; result=MISMATCH; diff=628; shape=81.3953488372093: Use a regular address-taken short y instead of volatility, with the 104-byte buffer, to test whether VC5 preserves target narrow y loads while keeping EBP as row accumulator.
+probe 38 liveness; result=MISMATCH; diff=627; shape=82.79069767441861: Swap declaration order so the narrow y local precedes y_offset, testing the remaining source-order axis for the target EBP row register and stack homes. [same emitted code as probe 31]
+probe 40 liveness; result=MISMATCH; diff=627; shape=82.79069767441861: Scope and initialize the loop index at the coordinate setup site, testing whether the PDB-local loop lifetime changes saved-register placement and the target row accumulator topology. [same emitted code as probe 38]
+probe 42 layout; result=MISMATCH; diff=628; shape=81.3953488372093: Keep the proven named short y and increase only the text buffer to 108 bytes, testing whether the best direct-y frame basin survives the target y stack home.
+probe 44 liveness; result=MISMATCH; diff=627; shape=82.79069767441861: Take the address of the real short y through a nonvolatile pointer, testing whether a natural address-taken lifetime moves y to its target stack home and leaves EBP for y_offset. [same emitted code as probe 5]
+probe 46 liveness; result=MISMATCH; diff=619; shape=82.32558139534883: Join the short y declaration with its initializer, testing whether VC5's declaration-time lifetime changes the y/y_offset register basin and coordinate load placement.
+probe 48 context; result=MISMATCH; diff=627; shape=82.79069767441861: Restore the exact same-TU donor's game_globals header context while retaining local target declarations, testing whether VC5 front-end state selects the target local basin.
+probe 50 liveness; result=MISMATCH; diff=627; shape=82.79069767441861: Expand the row update from compound assignment to explicit addition, testing whether VC5's accumulator expression form selects the target EBP row register. [same emitted code as probe 40]
+probe 52 liveness; result=MISMATCH; diff=627; shape=82.79069767441861: Use a non-const local pointer alias for the real short y, testing whether VC5 preserves a natural address-taken stack home without volatile width changes. [same emitted code as probe 44]
+probe 55 liveness; result=MISMATCH; diff=625; shape=81.86046511627907: Move natural y_offset declaration and zero initialization after coordinate setup, testing whether entry EBP zero becomes the row accumulator while y retains its stack home.
+probe 56 liveness; result=MISMATCH; diff=627; shape=82.79069767441861: Scope the natural short y declaration to the successful GetDc block after old_font and coordinate setup, testing whether VC5 spills y while keeping the row offset in EBP. [same emitted code as probe 54]
+probe 57 liveness; result=MISMATCH; diff=451; shape=84.77157360406092: Name the repeated row coordinate as a natural current_y local, testing whether VC5 recovers the target's stored TextOut/SetRect coordinate and shifts y_offset into EBP.
+probe 58 liveness; result=MISMATCH; diff=451; shape=84.77157360406092: Swap natural current_y and y_offset declaration order, testing whether VC5 assigns the long-lived row accumulator to EBP and restores the target stack homes. [same emitted code as probe 57]
+probe 59 liveness; result=MISMATCH; diff=237; shape=83.91959798994975: Keep current_y function-scope but move y_offset declaration and zero initialization to the coordinate setup site, testing a natural split lifetime for target EBP row state and homes.
+probe 60 liveness; result=MISMATCH; diff=237; shape=83.91959798994975: Scope temp_player inside the valid-player arm while retaining current_y and delayed y_offset, testing the target object home and its fault-order path. [same emitted code as probe 59]
+probe 61 layout; result=MISMATCH; diff=236; shape=85.42713567839196: Increase only the local text buffer by four bytes in the current_y/delayed-row basin, testing whether the target 0x94 frame and stack offsets arise from natural buffer extent.
+probe 62 layout; result=MISMATCH; diff=237; shape=83.91959798994975: Increase the current_y/delayed-row buffer from 104 to 108 bytes, testing the next natural stack basin for target string and RECT homes.
+probe 63 liveness; result=MISMATCH; diff=236; shape=85.42713567839196: Place the natural current_y declaration after the coordinate, RECT, and text locals, testing whether declaration order recovers target stack homes without changing behavior. [same emitted code as probe 61]
+probe 64 liveness; result=MISMATCH; diff=236; shape=85.42713567839196: Take a natural pointer to current_y and use it for the TextOut/SetRect coordinate, testing whether the target's stored row coordinate is an address-taken local.
+probe 65 liveness; result=MISMATCH; diff=236; shape=85.42713567839196: Scope current_y inside each valid-player arm after name copy, testing whether a block-local coordinate spill matches the original row publication order.
+probe 66 liveness; result=MISMATCH; diff=626; shape=80.46511627906976: Remove the explicit current_y temporary while keeping delayed y_offset and the 104-byte exploratory frame, testing whether direct repeated expressions preserve target evaluation order and EBP allocation.
+probe 67 liveness; result=MISMATCH; diff=224; shape=85.42713567839196: Evaluate strlen into a natural text_len before current_y, testing whether explicit source sequencing recovers the target's post-copy length scan and coordinate spill.
+probe 68 liveness; result=MISMATCH; diff=224; shape=85.42713567839196: Place current_y assignment inside the TextOut coordinate argument after text_len, testing natural evaluation-order evidence for the target EDX spill and later SetRect reuse. [same emitted code as probe 67]
+probe 69 liveness; result=MISMATCH; diff=224; shape=85.42713567839196: Promote text_len to a function-scope local before x_val, testing whether a real adjacent scalar shifts target x_val/old_font/coordinate homes without changing calls.
+probe 70 liveness; result=MISMATCH; diff=440; shape=85.35353535353535: Restore top-scope y_offset initialization while retaining the current_y/text_len experiment, testing whether the target EBP zero basin survives authentic early initialization.
+```
+<!-- end-recovered:6171b1bb30ad72fd32d0 -->
+
+<!-- recovered:81081905c9031c407dbf -->
+### `ab874ff73095` `src/scratch/0051BF90_draw_score.cpp:1-48`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0051BF90 TRIBE_Panel_Object::draw_score (614B)
+// PDB: tpnl_obj.cpp:741-814
+//
+// Attempt log:
+// - canonical baseline: named TPanel coordinates/render surface, typed game /
+//   world / player / victory / communications ownership, and natural score
+//   row drawing with the period GDI and string surfaces.
+// - binary behavior correction: vertical row advance is inside the valid-player
+//   arm, so skipped players do not consume a row.
+// - probes of declaration scope, self/register aliases, while/do-while forms,
+//   and coordinate temporaries did not recover the original EBP accumulator /
+//   stack-home topology. A direct-expression variant reached the original size
+//   but lost the 0x94 frame and block alignment; the readable named-coordinate
+//   source is retained here.
+// - restored the PDB-local declaration order by placing y_offset before the
+//   coordinate locals; VC5 emitted identical bytes, so no codegen lead remains.
+// - typed the victory-point return as long, matching the exact same-TU score
+//   donor and the decompiler's original long return; this tests score text ABI.
+// - current bounded pass: moving y before y_offset was a codegen duplicate.
+// - direct-y plus a natural base-x local reached the best diagnostic 614B/0x8C
+//   frame basin (diff 437), but it lost the proven 0x94 local topology.
+// - a 32-bit y local reached diff 613 with a 0x94 frame, but kept EDI as the
+//   zero/row register and broadened the structural mismatch.
+// - right-edge coordinate locals produced 0x90 and 0x98 frames (diffs 456/640);
+//   y/x combined declaration, <new.h>, full TPanel fields, and block-scoped y
+//   were duplicates. The readable 0x94 source remains the canonical candidate.
+// - The batch left the direct-y 0x8C diagnostic in the file. Main review
+//   restored the named y local and the proven 0x94 clean-source topology.
+// - left in scratch: calls/behavior are understood, but VC5 local coloring and
+//   the GDI/string scheduling remain broadly nonexact.
+// - Claim sa-941e59a9: a short y_offset reduced the diff to 452 but changed the
+//   proven 0x94 frame to 0x90; the clean int source remains required.
+// - Claim sa-941e59a9: a volatile short y plus a 104-byte buffer restored the
+//   0x94 frame and EBP row shape (diff 463), but width, homes, and buffer extent
+//   were unsupported. Regular pointer aliases and full TPanel context did not
+//   improve the clean source. Joined y initialization reached diff 619 but
+//   hoisted the load. All probes were restored to the clean source.
+// - Claim sa-b64ba1f9: delaying y_offset until coordinate setup, naming the
+//   repeated row coordinate, and using a 104-byte buffer reached diff 224 with
+//   exact size and frame. The direct-expression form stayed at diff 626. The
+//   winning form still missed the target stack homes and used an unsupported
+//   buffer width, so it was discarded and this clean source was restored.
+// - Captain pass: the scoped current_y form with a 104-byte buffer reproduced
+//   the exact 614-byte boundary and 0x94 frame. It is rejected because Ghidra
+//   identifies a 100-byte source buffer. The canonical 100-byte source stays.
+// - Captain pass: the authentic wrapper declares draw_score public, so it emits
+//   QAEXXZ instead of the packet's protected IAEXXZ owner. This needs a shared
+//   context-header access repair before an exact grouped claim is possible.
+```
+<!-- end-recovered:81081905c9031c407dbf -->

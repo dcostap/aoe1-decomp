@@ -12,7 +12,7 @@ from source_listing import parse_listing, source_line_for_offset  # noqa: E402
 
 class SourceListingTests(unittest.TestCase):
     def test_parses_line_changes_and_overlapping_locals(self) -> None:
-        text = """\tTITLE\tsrc/scratch/demo.cpp
+        text = """\tTITLE\tsrc/demo.cpp
 _first$12 = -8
 _second$13 = -8
 _parameter$ = 8
@@ -23,7 +23,7 @@ _parameter$ = 8
   00023\t8b 55 08\t mov edx, DWORD PTR _parameter$[ebp]
 """
         metadata = parse_listing(text)
-        self.assertEqual(metadata["source"], "src/scratch/demo.cpp")
+        self.assertEqual(metadata["source"], "src/demo.cpp")
         self.assertEqual(source_line_for_offset(metadata, 0x0A), 41)
         self.assertEqual(source_line_for_offset(metadata, 0x1F), 41)
         self.assertEqual(source_line_for_offset(metadata, 0x20), 52)

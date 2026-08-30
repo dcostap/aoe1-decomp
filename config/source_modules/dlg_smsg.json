@@ -7,39 +7,39 @@
   "functions": {
     "004407A0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/004407A0_TribeSendMessageDialog.md"
+      "note_path": "decomp_notes/functions/0044/004407A0_TribeSendMessageDialog.md"
     },
     "00440E20": {
       "status": "scratch",
-      "note_path": "recovery_notes/00440E20_TribeSendMessageDialog.md"
+      "note_path": "decomp_notes/functions/0044/00440E20_TribeSendMessageDialog.md"
     },
     "00440F20": {
       "status": "matching",
-      "note_path": "recovery_notes/00440F20_action.md"
+      "note_path": "decomp_notes/functions/0044/00440F20_action.md"
     },
     "00441410": {
       "status": "matching",
-      "note_path": "recovery_notes/00441410_checkButtons.md"
+      "note_path": "decomp_notes/functions/0044/00441410_checkButtons.md"
     },
     "00441460": {
       "status": "matching",
-      "note_path": "recovery_notes/00441460_draw.md"
+      "note_path": "decomp_notes/functions/0044/00441460_draw.md"
     },
     "00441530": {
       "status": "matching",
-      "note_path": "recovery_notes/00441530_TribeSendQuickMessageDialog.md"
+      "note_path": "decomp_notes/functions/0044/00441530_TribeSendQuickMessageDialog.md"
     },
     "00441650": {
       "status": "matching",
-      "note_path": "recovery_notes/00441650_TribeSendQuickMessageDialog.md"
+      "note_path": "decomp_notes/functions/0044/00441650_TribeSendQuickMessageDialog.md"
     },
     "004416C0": {
       "status": "matching",
-      "note_path": "recovery_notes/004416C0_action.md"
+      "note_path": "decomp_notes/functions/0044/004416C0_action.md"
     },
     "00441840": {
       "status": "matching",
-      "note_path": "recovery_notes/00441840_handle_mouse_down.md"
+      "note_path": "decomp_notes/functions/0044/00441840_handle_mouse_down.md"
     }
   }
 }

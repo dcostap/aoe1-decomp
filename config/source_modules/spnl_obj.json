@@ -10,12 +10,12 @@
     "004BEE40": { "status": "matching" },
     "004BEE70": {
       "status": "scratch",
-      "note_path": "recovery_notes/spnl_obj_module.md"
+      "note_path": "decomp_notes/spnl_obj_module.md"
     },
     "004BF4D0": { "status": "matching" },
     "004BF6C0": {
       "status": "scratch",
-      "note_path": "recovery_notes/spnl_obj_module.md"
+      "note_path": "decomp_notes/spnl_obj_module.md"
     },
     "004BF6E0": { "status": "matching" }
   }

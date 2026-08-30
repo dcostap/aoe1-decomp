@@ -7,21 +7,21 @@
   "functions": {
     "0047A1D0": {
       "status": "matching",
-      "note_path": "recovery_notes/0047A1D0_TPicturePanel.md"
+      "note_path": "decomp_notes/functions/0047/0047A1D0_TPicturePanel.md"
     },
     "0047A250": { "status": "matching" },
     "0047A2A0": {
       "status": "matching",
-      "note_path": "recovery_notes/0047A2A0_setup.md"
+      "note_path": "decomp_notes/functions/0047/0047A2A0_setup.md"
     },
     "0047A3A0": { "status": "matching" },
     "0047A3E0": {
       "status": "matching",
-      "note_path": "recovery_notes/0047A3E0_load_pic.md"
+      "note_path": "decomp_notes/functions/0047/0047A3E0_load_pic.md"
     },
     "0047A5B0": {
       "status": "matching",
-      "note_path": "recovery_notes/0047A5B0_free_pic.md"
+      "note_path": "decomp_notes/functions/0047/0047A5B0_free_pic.md"
     },
     "0047A630": { "status": "matching" }
   }

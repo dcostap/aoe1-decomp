@@ -7,23 +7,23 @@
   "functions": {
     "004D68D0": {
       "status": "matching",
-      "note_path": "recovery_notes/taicrule_module.md"
+      "note_path": "decomp_notes/taicrule_module.md"
     },
     "004D6900": {
       "status": "matching",
-      "note_path": "recovery_notes/taicrule_module.md"
+      "note_path": "decomp_notes/taicrule_module.md"
     },
     "004D6910": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taicrule_module.md"
+      "note_path": "decomp_notes/taicrule_module.md"
     },
     "004D6AA0": {
       "status": "matching",
-      "note_path": "recovery_notes/taicrule_module.md"
+      "note_path": "decomp_notes/taicrule_module.md"
     },
     "004D6AB0": {
       "status": "matching",
-      "note_path": "recovery_notes/taicrule_module.md"
+      "note_path": "decomp_notes/taicrule_module.md"
     }
   }
 }

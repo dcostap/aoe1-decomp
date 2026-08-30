@@ -1,0 +1,16 @@
+# Function notes: 0042C7A0 `ResetLastCommunicationTimes`
+
+Module notes: `decomp_notes/com_hand_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:58e0903e889a36b20828 -->
+### `037950f4de84` `src/scratch/0042C7A0_ResetLastCommunicationTimes.cpp:1-2`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// tried a direct time refresh with the ping arrays laid out at 0x1348/0x1398
+// tried the asm-shaped loop pointer; remaining mismatch is the first loop body scheduling, specifically the xor edi / second-store order
+```
+<!-- end-recovered:58e0903e889a36b20828 -->

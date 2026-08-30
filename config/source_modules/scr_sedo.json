@@ -7,19 +7,19 @@
   "functions": {
     "004B33D0": {
       "status": "matching",
-      "note_path": "recovery_notes/scr_sedo_module.md"
+      "note_path": "decomp_notes/scr_sedo_module.md"
     },
     "004B36A0": {
       "status": "scratch",
-      "note_path": "recovery_notes/scr_sedo_module.md"
+      "note_path": "decomp_notes/scr_sedo_module.md"
     },
     "004B3740": {
       "status": "scratch",
-      "note_path": "recovery_notes/scr_sedo_module.md"
+      "note_path": "decomp_notes/scr_sedo_module.md"
     },
     "004B38A0": {
       "status": "scratch",
-      "note_path": "recovery_notes/scr_sedo_module.md"
+      "note_path": "decomp_notes/scr_sedo_module.md"
     }
   }
 }

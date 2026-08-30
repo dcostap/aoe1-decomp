@@ -1,0 +1,40 @@
+# Function notes: 00541C20 `map_init`
+
+Module notes: `decomp_notes/world_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:841e426b72d8e0a131ad -->
+### `f88f697d2423` `src/scratch/00541C20_map_init.cpp:1-26`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// RGE_Game_World::map_init
+// VA: 00541C20
+// World.cpp:831-833
+// FLAGS: /GX
+//
+// BLOCKER: same /GX new-expression common-tail scheduling family as
+// 005414A0/00541BC0/0052E5F0. Natural direct new emits exact EH prologue,
+// allocation size, ctor args/order, and constructor call family, but sinks the
+// member store into the non-null path and sends the null path to a cleanup tail
+// after the compared range. Volatile-read source preserves the original short
+// null branch and common join, matching the first 81 bytes, but spills EAX
+// through [esp+18h] and reloads before `mov [esi+28h], eax` instead of the
+// original direct store.
+//
+// Attempt log:
+// v1: prior new RGE_Map(...) — correct sizeof(0x8DD0), exact EH frame/allocation/ctor family, but store sinks into non-null path.
+// v2: volatile read of local: first 81B exact/common join retained, but spills EAX through [esp+18h].
+// v3: explicit if/else assignment: adds unwanted post-join test/jne.
+// v4: volatile member with direct assignment: no change from direct sunk-store basin.
+// v5: volatile local pointer: no change from direct sunk-store basin.
+// v6: explicit operator new + ctor wrapper: no EH new-expression frame, 64-byte body.
+// v7: variant_lab over direct/local/ternary/ifelse/volread/slot shapes, preloaded sounds vs direct member, member pointer/void/volatile surfaces, and vc5-risky flags: no exact. Best default-compatible family remains /GX volread (first mismatch 81, edit 16); /GX /Oa volread has slightly smaller edit diff 14 but still spills EAX.
+// v8: retried direct/local/ternary/slot/no-op-if shapes under default /GX; all fell back to sunk-member-store basin, first mismatch 53.
+// v9: explicit null/goto/common-tail/self-assignment shapes keep the common join but add dead `test eax,eax; jne +0` after the join, first mismatch 76.
+// v10: broad focused flag sweep (/Oa, /Ob0, /Gs, /GF, /GA, /G5, /Og, /Oi, /Ot, /Os) across direct/volread/explicit shapes: no exact; only /Oa volread changed tail ordering and remained worse/last-resort.
+// v11: changed member surface to typed RGE_Map* and retested direct/volread/explicit; no codegen change versus void* member.
+```
+<!-- end-recovered:841e426b72d8e0a131ad -->

@@ -13,7 +13,7 @@
     "0040C0A0": { "status": "matching" },
     "0040C100": {
       "status": "scratch",
-      "note_path": "recovery_notes/aidipmod_module.md"
+      "note_path": "decomp_notes/aidipmod_module.md"
     },
     "0040C190": { "status": "matching" },
     "0040C2B0": { "status": "matching" },

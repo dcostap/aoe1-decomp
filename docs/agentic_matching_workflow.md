@@ -9,13 +9,13 @@ The assignment gives you:
 - one function VA;
 - one natural translation unit;
 - one lease owner name;
-- allowed source and journal paths; and
+- allowed source and function-note paths; and
 - a unique build output directory.
 
 One worker owns the translation unit at a time. Other workers can edit other
 translation units in the same worktree.
 
-Edit only the assigned function body and its function journal. Do not edit
+Edit only the assigned function body and its function notes. Do not edit
 another function in the source file.
 
 Do not edit headers, global storage, config, tests, tools, shared notes, or
@@ -69,7 +69,7 @@ Run each tool with `--help` before its first use.
 
    The command rejects another active lease in the same translation unit.
 
-3. Read the tracked journal shown in the briefing.
+3. Read the function notes when they exist.
 4. Read the function inventory packet and configured module note.
 5. Search `LESSONS.md` only for terms that match the current blocker.
 6. Inspect focused original assembly and relevant exact donors.
@@ -116,19 +116,18 @@ Keep only a better natural reconstruction. Do not retain aliases, fake helpers,
 dummy declarations, volatility, raw offsets, or source tricks for metrics alone.
 Use named fields and record sizes instead of numeric offsets or element strides.
 
-## Function journal
+## Function notes
 
-The tracked journal is:
+Optional function notes use this path:
 
 ```text
-recovery_notes/functions/<VA-prefix>/<slug>.md
+decomp_notes/functions/<VA-prefix>/<slug>.md
 ```
 
 Keep raw objects, diffs, and experiment files under `build/`.
 
-Update the journal with:
+Create or update notes only when you have durable evidence:
 
-- the current natural source model;
 - baseline and final metrics;
 - useful tested hypotheses;
 - repeated code-generation results;
@@ -136,7 +135,7 @@ Update the journal with:
 - proved facts and open questions; and
 - the next useful approaches.
 
-Separate facts from hypotheses. Do not copy every compiler run into the journal.
+Separate facts from hypotheses. Do not copy every compiler run into the notes.
 Do not put attempt history in production source comments.
 
 ## Exact result
@@ -156,8 +155,8 @@ An exact result starts a short source review.
      --output-dir build/audits/workers/<OWNER>/<GROUP>
    ```
 
-8. Confirm that every registered exact neighbor still matches.
-9. Update the function journal.
+8. Confirm that every matching neighbor still matches.
+9. Update the function notes when you learned something durable.
 10. Release the session. Do not change status or commit.
 
 ## Improved scratch result
@@ -173,7 +172,7 @@ Run a final recorded check. Record the exact improvement and remaining blocker.
 Pin the final clean source. Pause the session.
 
 If no source improvement survives, restore the pinned clean source. Keep only
-the useful journal evidence.
+useful function notes.
 
 ## Accepted-drift proposal
 
@@ -191,7 +190,7 @@ The proposal must prove:
 Broad drift, changed predicates, missing calls, wrong targets, or changed effects
 remain `scratch`.
 
-Record the complete proof in the function journal. Report it as a proposal. The
+Record the complete proof in the function notes. Report it as a proposal. The
 main agent makes the decision.
 
 ## Report

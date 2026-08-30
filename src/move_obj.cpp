@@ -461,9 +461,6 @@ unsigned char RGE_Moving_Object::turn_towards(RGE_Static_Object* object,
     return 0;
 }
 
-// moved to src\matching\0045D360_set_angle.cpp after local validation
-
-
 void RGE_Moving_Object::set_angle() {
     RGE_Sprite* sprite = this->sprite;
     if (sprite == 0 || (sprite->flags & 2) == 0 || sprite->facet_num <= 0) {

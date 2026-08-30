@@ -235,7 +235,11 @@ def main() -> None:
         symbol = find_function_symbol(obj, lambda candidate: True)
     else:
         group = translation_unit_for_va(va)
-        symbols = group.get("symbols", {}) if group is not None else {}
+        symbols = (
+            group.get("functions") or group.get("symbols") or {}
+            if group is not None
+            else {}
+        )
         exact_symbol = symbols.get(f"{va:08X}") if isinstance(symbols, dict) else None
         if not exact_symbol:
             original_symbols, _linkages = load_original_owner_symbols()

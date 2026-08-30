@@ -7,75 +7,75 @@
   "functions": {
     "00461910": {
       "status": "matching",
-      "note_path": "recovery_notes/00461910_TMusic_System.md"
+      "note_path": "decomp_notes/functions/0046/00461910_TMusic_System.md"
     },
     "00461A20": { "status": "matching" },
     "00461A30": {
       "status": "scratch",
-      "note_path": "recovery_notes/00461A30_open_device.md"
+      "note_path": "decomp_notes/functions/0046/00461A30_open_device.md"
     },
     "00461C60": {
       "status": "matching",
-      "note_path": "recovery_notes/00461C60_close_device.md"
+      "note_path": "decomp_notes/functions/0046/00461C60_close_device.md"
     },
     "00461D20": {
       "status": "matching",
-      "note_path": "recovery_notes/00461D20_open_mixer.md"
+      "note_path": "decomp_notes/functions/0046/00461D20_open_mixer.md"
     },
     "00461EC0": { "status": "matching" },
     "00461F00": { "status": "matching" },
     "00461F40": { "status": "matching" },
     "00461F60": {
       "status": "matching",
-      "note_path": "recovery_notes/00461F60_set_volume.md"
+      "note_path": "decomp_notes/functions/0046/00461F60_set_volume.md"
     },
     "00462010": {
       "status": "matching",
-      "note_path": "recovery_notes/00462010_play_track.md"
+      "note_path": "decomp_notes/functions/0046/00462010_play_track.md"
     },
     "00462090": { "status": "matching" },
     "00462140": {
       "status": "matching",
-      "note_path": "recovery_notes/00462140_play_tracks.md"
+      "note_path": "decomp_notes/functions/0046/00462140_play_tracks.md"
     },
     "00462200": {
       "status": "matching",
-      "note_path": "recovery_notes/00462200_play.md"
+      "note_path": "decomp_notes/functions/0046/00462200_play.md"
     },
     "004625C0": {
       "status": "matching",
-      "note_path": "recovery_notes/004625C0_pause_play.md"
+      "note_path": "decomp_notes/functions/0046/004625C0_pause_play.md"
     },
     "00462670": {
       "status": "matching",
-      "note_path": "recovery_notes/00462670_resume_play.md"
+      "note_path": "decomp_notes/functions/0046/00462670_resume_play.md"
     },
     "00462740": { "status": "matching" },
     "00462770": { "status": "matching" },
     "00462820": { "status": "matching" },
     "00462860": {
       "status": "matching",
-      "note_path": "recovery_notes/00462860_start_fade.md"
+      "note_path": "decomp_notes/functions/0046/00462860_start_fade.md"
     },
     "004628A0": {
       "status": "matching",
-      "note_path": "recovery_notes/004628A0_do_fade.md"
+      "note_path": "decomp_notes/functions/0046/004628A0_do_fade.md"
     },
     "004629B0": {
       "status": "matching",
-      "note_path": "recovery_notes/004629B0_end_fade.md"
+      "note_path": "decomp_notes/functions/0046/004629B0_end_fade.md"
     },
     "00462A10": {
       "status": "matching",
-      "note_path": "recovery_notes/00462A10_handle_messages.md"
+      "note_path": "decomp_notes/functions/0046/00462A10_handle_messages.md"
     },
     "00462B40": {
       "status": "matching",
-      "note_path": "recovery_notes/00462B40_after_end_track.md"
+      "note_path": "decomp_notes/functions/0046/00462B40_after_end_track.md"
     },
     "00462C30": {
       "status": "scratch",
-      "note_path": "recovery_notes/00462C30_get_play_info.md"
+      "note_path": "decomp_notes/functions/0046/00462C30_get_play_info.md"
     }
   }
 }

@@ -56,15 +56,14 @@ Give the worker a compact task. Include:
 - target VA and name;
 - natural translation unit;
 - lease owner ID;
-- allowed source and journal paths;
+- allowed source and function-note paths;
 - known blocker or useful prior evidence;
 - unique validation output directory; and
 - the required final report.
 
 Require the worker to read `docs/agentic_matching_workflow.md`.
 
-Do not send complete history dumps. The tracked function journal is the durable
-handoff.
+Do not send complete history dumps. Function notes are the durable handoff.
 
 Workers can choose their investigative methods. Do not set a hypothesis quota
 or fixed stop count.
@@ -86,7 +85,7 @@ Workers do not select `verified_logic`.
 A normal matching worker may change only:
 
 - its assigned function body in the natural source module; and
-- its assigned function journal.
+- its assigned function notes.
 
 Authorize any other path explicitly.
 
@@ -119,7 +118,7 @@ When a worker reports completion:
 1. Tell the worker to stop editing the leased translation unit.
 2. Inspect the complete diff for its allowed paths.
 3. Confirm that no other path changed.
-4. Read the final source and function journal.
+4. Read the final source and function notes.
 5. Check source plausibility and behavior.
 6. Rerun the authoritative target check.
 7. Rerun focused grouped validation when source changed.
@@ -161,9 +160,9 @@ Accept it when:
 - the source is simpler or more authentic;
 - important structure or metrics improve;
 - no correct call, effect, fault, or boundary is lost; and
-- the journal explains the improvement and remaining blocker.
+- the function notes explain the improvement and remaining blocker.
 
-If only the investigation improved, commit the journal and reject the source
+If only the investigation improved, commit the function notes and reject the source
 change.
 
 ## Accepted drift
@@ -176,7 +175,7 @@ rebuilt instructions, calls, effects, cleanup, ABI, exceptions, and fault order.
 Reject broad drift, wrong targets, changed predicates, missing calls, changed
 memory effects, or unexplained control flow.
 
-Record the decision in the function journal and source-module status.
+Record the decision in the function notes and source-module status.
 
 ## Verified logic
 
@@ -205,7 +204,7 @@ For a shared-worktree trial, assess:
 - source and build-output conflicts;
 - canonical owner selection;
 - baseline and final check reliability;
-- journal quality;
+- function-note quality;
 - accepted-drift understanding;
 - grouped-neighbor protection; and
 - ease of independent review and staging.

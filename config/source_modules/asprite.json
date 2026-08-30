@@ -26,30 +26,30 @@
     "0041B000": { "status": "matching" },
     "0041B010": {
       "status": "scratch",
-      "note_path": "recovery_notes/0041B010_RGE_Active_Animated_Sprite.md"
+      "note_path": "decomp_notes/functions/0041/0041B010_RGE_Active_Animated_Sprite.md"
     },
     "0041B140": { "status": "matching" },
     "0041B200": { "status": "matching" },
     "0041B210": { "status": "matching" },
     "0041B290": {
       "status": "scratch",
-      "note_path": "recovery_notes/0041B290_update.md"
+      "note_path": "decomp_notes/functions/0041/0041B290_update.md"
     },
     "0041B430": {
       "status": "matching",
-      "note_path": "recovery_notes/0041B430_draw.md"
+      "note_path": "decomp_notes/functions/0041/0041B430_draw.md"
     },
     "0041B4A0": { "status": "matching" },
     "0041B4F0": { "status": "matching" },
     "0041B520": { "status": "matching" },
     "0041B530": {
       "status": "matching",
-      "note_path": "recovery_notes/0041B530_is_animating.md"
+      "note_path": "decomp_notes/functions/0041/0041B530_is_animating.md"
     },
     "0041B550": { "status": "matching" },
     "0041B560": {
       "status": "matching",
-      "note_path": "recovery_notes/0041B560_frame_passed.md"
+      "note_path": "decomp_notes/functions/0041/0041B560_frame_passed.md"
     },
     "0041B590": { "status": "matching" },
     "0041B5A0": { "status": "matching" },

@@ -1,6 +1,71 @@
-# aoe1-decomp
+# Age of Empires 1 decompilation
 
-Decompilation of Age of Empires 1. Specifically, a leaked release from
-1998-07-17, where the Rise of Rome expansion was still in beta. This release
-contained the PDB and other artifacts, which made this project substantially
-easier.
+This project recovers the 1998-07-17 Rise of Rome beta source.
+
+## Source tree
+
+- `src/` contains natural translation units.
+- `include/` contains shared declarations and inline functions.
+- `config/source_modules/` maps each function to its source and status.
+- `config/translation_units.json` records each module build recipe and function symbol.
+- `inventory/` contains generated reference data. Do not edit it.
+- `decomp_notes/` contains durable function and module notes.
+
+A function note stores durable facts, failed approaches, and the next useful approach.
+It does not store status or source ownership.
+
+## Function status
+
+Use one of these values:
+
+- `matching`: A fresh validation produces an exact match.
+- `accepted_drift`: The reviewed source has accepted code generation drift.
+- `verified_logic`: A semantic review approved the source.
+- `scratch`: The natural source still needs matching work.
+- `observed`: Source exists, but exact ownership cannot be proved.
+
+`observed` covers functions without one provable translation-unit recipe.
+
+Every other normal function appears in one translation-unit `functions` map.
+That map stores its compiler recipe and symbol for every status.
+Only the source-module manifest stores whether the function is matching.
+
+## Common commands
+
+Show the current project state:
+
+```text
+python tools/query_project_status.py --summary --normal
+```
+
+Select ordinary matching work:
+
+```text
+python tools/query_project_status.py --scratch --normal --unleased --smallest --limit 20
+```
+
+Inspect one function:
+
+```text
+python tools/query_project_status.py --va 0047A3A0 --paths --notes --leases --work-history
+```
+
+Check one function:
+
+```text
+python tools/check_function.py --va 0047A3A0
+```
+
+Compile and audit all configured translation units:
+
+```text
+python tools/audit_translation_unit_observed.py --jobs 40 --output-dir build/audits/current
+```
+
+Run the tests:
+
+```text
+python -m pytest -q
+```
+
+Generated files belong under `build/`. You can remove that directory when no worker is active.

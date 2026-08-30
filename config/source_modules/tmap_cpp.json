@@ -7,11 +7,11 @@
   "functions": {
     "0050F410": {
       "status": "scratch",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "0050F760": {
       "status": "matching",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "0050F7A0": {
       "status": "matching"
@@ -21,30 +21,30 @@
     },
     "0050F7C0": {
       "status": "matching",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "0050F7F0": {
       "status": "matching",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "0050F800": {
       "status": "matching"
     },
     "0050F860": {
       "status": "matching",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "0050F8D0": {
       "status": "scratch",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "0050FA90": {
       "status": "scratch",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "0050FC40": {
       "status": "matching",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "0050FD40": {
       "status": "matching"
@@ -57,38 +57,38 @@
     },
     "0050FF20": {
       "status": "scratch",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "00510020": {
       "status": "scratch",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "005100D0": {
       "status": "matching",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "00510110": {
       "status": "scratch",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "005102A0": {
       "status": "matching",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "00510410": {
       "status": "matching"
     },
     "00510430": {
       "status": "scratch",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "00510960": {
       "status": "scratch",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "00510A50": {
       "status": "scratch",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "00510C10": {
       "status": "matching"
@@ -104,11 +104,11 @@
     },
     "005110E0": {
       "status": "scratch",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     },
     "005111A0": {
       "status": "scratch",
-      "note_path": "recovery_notes/tmap_module.md"
+      "note_path": "decomp_notes/tmap_module.md"
     }
   }
 }

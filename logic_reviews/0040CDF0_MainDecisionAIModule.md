@@ -1,8 +1,10 @@
 # Logic review: 0040CDF0 `MainDecisionAIModule::MainDecisionAIModule`
 
+Current source: `src/aimdmod.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
-Ordinary exact matching is suspended after repeated independent assignments and a final faithful full-`aimdmod.cpp` translation-unit experiment under `/O2 /Oy /GX`. The canonical candidate remains `src/scratch/0040CDF0_MainDecisionAIModule.cpp`.
+Ordinary exact matching is suspended after repeated independent assignments and a final faithful full-`aimdmod.cpp` translation-unit experiment under `/O2 /Oy /GX`. The canonical candidate remains `src/aimdmod.cpp`.
 
 Current validated checker state:
 
@@ -106,7 +108,7 @@ custom flags or manual EH/vptr machinery were added.
 
 ## Final decision
 
-Remain in `src/scratch`. Do not promote to `src/verified_logic` from this round.
+Remain in `scratch` status. Do not promote to `verified_logic` status from this round.
 The player-first emitted store-order issue is now resolved. The remaining blocker
 is the executable's FS-first three-slot registration versus the pinned compiler's
 no-EH output (or incompatible push-first family under forced lifetime surfaces).
@@ -147,7 +149,7 @@ unobservable for every executable-reachable exceptional/asynchronous or
 FS-chain-inspecting context. Under the project's original-executable behavior
 policy, that remains a substantive open behavioral uncertainty rather than a
 mere byte-codegen difference. No source change is justified; remain in
-`src/scratch` and do not promote to `verified_logic`.
+`scratch` status and do not promote to `verified_logic`.
 
 ### Round 3 — concurrent blind cohort, 2026-08-12
 
@@ -169,12 +171,12 @@ Main-agent adjudication: retain the stricter conclusion. The registration is a
 definite executable-state difference. The absence of a proved normal cleanup
 path does not establish that nested SEH, asynchronous observation, or exception
 processing cannot observe the frame. Keep the normalized candidate in
-`src/scratch`; do not promote it to `verified_logic` or `accepted_drift`.
+`scratch` status; do not promote it to `verified_logic` or `accepted_drift`.
 
 ## User-approved promotion — 2026-08-13
 
 The user explicitly approved promotion after review. The user judged the
 remaining FS registration difference to have no practical result difference.
 
-Move the normalized candidate to `src/verified_logic`. Keep this ledger as the
+Move the normalized candidate to `verified_logic` status. Keep this ledger as the
 record of the unmatched EH-frame difference. This is not an exact match.

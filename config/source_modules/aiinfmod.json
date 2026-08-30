@@ -5,7 +5,7 @@
   "source": "src/aiinfmod.cpp",
   "header": "include/aiinfmod.h",
   "functions": {
-    "0040CD90": { "status": "matching", "note_path": "recovery_notes/aiinfmod_module.md" },
-    "0040CDE0": { "status": "matching", "note_path": "recovery_notes/aiinfmod_module.md" }
+    "0040CD90": { "status": "matching", "note_path": "decomp_notes/aiinfmod_module.md" },
+    "0040CDE0": { "status": "matching", "note_path": "decomp_notes/aiinfmod_module.md" }
   }
 }

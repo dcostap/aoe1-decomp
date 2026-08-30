@@ -1,0 +1,128 @@
+# Function notes: 0045AE50 `TMousePointer`
+
+Module notes: `decomp_notes/mouseptr_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:96772f4b33e393c393a2 -->
+### `target-session` `build/target_sessions/0045AE50_TMousePointer.json:1-38`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 layout; result=MISMATCH; diff=323; shape=55.96330275229358: Probe mixed direct save_rect top/right/bottom stores with ptVar1 left store, matching Ghidra's observed ownership before aggregate copies.
+probe 2 liveness; result=MISMATCH; diff=323; shape=55.96330275229358: Probe a second named RECT source alias after save_rect.top, testing whether VC5 schedules the target's edx save_rect-base copy before remaining zero stores. [same emitted code as probe 1]
+probe 4 layout; result=MISMATCH; diff=418; shape=48.62385321100918: Probe full decompiler-derived per-field RECT copies and scalar lVar temporaries, preserving observed initialization order and ownership.
+probe 6 context; result=MISMATCH; diff=340; shape=53.211009174311926: Probe period SDK/CRT header context only, with canonical clean source restored; test whether front-end context selects the target constructor basin.
+probe 7 abi; result=MISMATCH; diff=340; shape=53.211009174311926: Probe SDK RECT typedef identity with windows.h, retaining the clean natural constructor; test whether aggregate lowering changes to target. [same emitted code as probe 6]
+probe 8 variant; result=MISMATCH; diff=354; shape=52.293577981651374: Probe direct RECT aggregate assignments without save_rect pointer alias, the known natural aggregate basin; compare destination/source LEA scheduling to target.
+probe 9 liveness; result=MISMATCH; diff=354; shape=52.293577981651374: Probe hybrid Ghidra ownership: ptVar1 only for save_rect.left, direct aggregate RECT copies for all four destinations. [same emitted code as probe 8]
+probe 11 abi; result=MISMATCH; diff=340; shape=53.211009174311926: Probe canonical header widths for mouse_x/mouse_y/save_x/save_y as long rather than int; layout remains identical but type provenance matches TMousePointer.h. [same emitted code as probe 7]
+probe 12 control-flow; result=MISMATCH; diff=338; shape=63.30275229357798: Probe target-PDB tail order: active/drawn before restore_rect, Shutdown/Setup after it, then save coordinates and mode before surfaces/game flags.
+probe 13 layout; result=MISMATCH; diff=339; shape=58.71559633027523: Probe hybrid restore_rect per-field lowering only: preserve aggregate mouse/cursor/new-save copies while matching target restore left/top/right/bottom interleave with active/drawn and Shutdown/Setup.
+probe 14 liveness; result=MISMATCH; diff=343; shape=66.05504587155963: Probe combined mixed save_rect ownership and target-PDB tail order: direct top/right/bottom stores, ptVar1 left, active/drawn before aggregate restore copy.
+probe 15 layout; result=MISMATCH; diff=369; shape=57.79816513761468: Probe first RECT hybrid: explicit mouse_rect field copies and lVar2/lVar3 scheduling from Ghidra, aggregate cursor/new-save/restore copies retained.
+probe 16 variant; result=MISMATCH; diff=354; shape=56.88073394495413: Probe mixed save_rect stores with direct aggregate RECT assignments and the improved target-PDB tail order; this separates initial ownership from aggregate source alias.
+probe 17 layout; result=MISMATCH; diff=358; shape=66.97247706422019: Probe cursor_rect-only Ghidra interleave with one lVar2, retaining aggregate mouse/new-save/restore copies and improved tail order.
+probe 20 context; result=MISMATCH; diff=338; shape=63.30275229357798: Replace forbidden absolute source-string address with the proven literal C:\msdev\work\age1_x1\Mouseptr.cpp; measure relocation and codegen impact.
+probe 21 abi; result=MISMATCH; diff=338; shape=63.30275229357798: Restore the inventory-proven TMousePointer field types: long mouse coordinates and typed RECT4 game_window at +10C, while keeping pointer ownership natural. [same emitted code as probe 20]
+probe 22 layout; result=MISMATCH; diff=354; shape=56.88073394495413: Test direct typed aggregate copies from this->save_rect instead of a local pointer alias; this preserves RECT and UI ownership while probing the first source hunk.
+probe 23 layout; result=MISMATCH; diff=339; shape=64.22018348623853: Move the typed mouse_rect aggregate copy after custom_draw/render_area, matching the original target's first save_rect-load interleave without raw cursor plumbing.
+probe 24 liveness; result=MISMATCH; diff=339; shape=64.22018348623853: Test a const typed source alias over the proven RECT storage to see if VC5 preserves target-like aggregate load scheduling without volatility or raw cursor access. [same emitted code as probe 23]
+probe 25 context; result=MISMATCH; diff=339; shape=64.22018348623853: Test the period SDK RECT type and windows.h context for the typed UI aggregate surface; retain only if it improves target evidence. [same emitted code as probe 24]
+probe 26 variant; result=MISMATCH; diff=425; shape=57.79816513761468: Test the direct typed RECT member-copy interleave suggested by the original PDB/decompiler order, without raw cursor arithmetic or volatility.
+probe 29 layout; result=MISMATCH; diff=419; shape=51.37614678899082: Reconstructed the complete PDB/Ghidra scalar RECT interleave with typed RECT4 pointer and long temporaries; compare the target's source-shaped loads before restoring if it worsens.
+probe 32 layout; result=MISMATCH; diff=359; shape=66.05504587155963: Test direct save_rect top/right stores with pointer left/bottom and pointer-based aggregate copies; target uses direct C0/C4/C8 stores but [eax] for left.
+probe 33 layout; result=MISMATCH; diff=343; shape=66.05504587155963: Refine mixed RECT initialization: direct save_rect top/right/bottom with pointer-only left, matching original direct C0/C4/C8 and [eax] left stores.
+probe 34 layout; result=MISMATCH; diff=349; shape=65.13761467889908: Reorder mixed RECT zero stores: pointer left before direct right, testing whether pointer use moves target-like mov edx,eax ahead of direct right while retaining direct field encodings.
+probe 35 layout; result=MISMATCH; diff=349; shape=65.13761467889908: Test direct typed mouse_rect = save_rect while retaining pointer-only left initialization; separates aggregate source ownership from pointer alias scheduling. [same emitted code as probe 34]
+probe 36 layout; result=MISMATCH; diff=343; shape=66.05504587155963: Restore target-PDB order top/right/pointer-left/direct-bottom after pointer-left-first worsened structural placement; retain direct mouse_rect aggregate form to compare order. [same emitted code as probe 33]
+probe 38 context; result=MISMATCH; diff=338; shape=63.30275229357798: Add the full period TMousePointer member declaration surface from the local header while keeping canonical fields and constructor source; test TU class-context effects. [same emitted code as probe 31]
+probe 39 layout; result=MISMATCH; diff=338; shape=63.30275229357798: Use a scoped destination RECT pointer for mouse_rect aggregate copy to test whether explicit source and destination aliases reproduce target ECX/EDX pointer copy topology. [same emitted code as probe 38]
+probe 41 liveness; result=MISMATCH; diff=343; shape=66.05504587155963: Declare the save_rect pointer after direct zero initialization, testing whether local lifetime and pointer materialization recover the target's early LEA and mixed direct/pointer store order. [same emitted code as probe 36]
+probe 43 layout; result=MISMATCH; diff=339; shape=64.22018348623853: Move custom_draw/render_area before mouse_rect aggregate copy, matching target's first copy stores after those fields and testing source statement order. [same emitted code as probe 25]
+probe 44 context; result=MISMATCH; diff=338; shape=63.30275229357798: Restore clean source, then add period TU headers string.h and stdio.h before windows.h, matching local Mouseptr.cpp context; test supported header-basin effect. [same emitted code as probe 39]
+probe 46 layout; result=MISMATCH; diff=338; shape=63.30275229357798: Use direct mouse_rect = save_rect for only the first aggregate copy while retaining pointer-based cursor/new/restore copies; test destination/source alias split. [same emitted code as probe 44]
+probe 48 layout; result=MISMATCH; diff=347; shape=56.88073394495413: Replace only mouse_rect aggregate assignment with pointer-based scalar RECT field copies; test whether destination alias yields target ECX/EDX topology before extending scalar recovery.
+probe 51 layout; result=MISMATCH; diff=338; shape=64.22018348623853: Move mouse_rect aggregate copy after all four initial area/pointer zero stores, testing whether source placement recovers target's copy-store interleave.
+probe 52 layout; result=MISMATCH; diff=339; shape=64.22018348623853: Move cWidth initialization before cursor_rect aggregate copy, following target's cWidth store before cursor destination LEA and testing source lifetime order.
+probe 54 context; result=MISMATCH; diff=338; shape=63.30275229357798: Move constructor declaration before fields, matching the period TMousePointer header method-first order; test declaration ordering as TU compiler context. [same emitted code as probe 46]
+probe 56 liveness; result=MISMATCH; diff=359; shape=66.05504587155963: Declare save_rect_ptr between top and right initialization while retaining pointer-based remaining stores and aggregate copies; test declaration point as scheduler input. [same emitted code as probe 32]
+```
+<!-- end-recovered:96772f4b33e393c393a2 -->
+
+<!-- recovered:f948649deb50c734136b -->
+### `50b5370a53e2` `src/scratch/0045AE50_TMousePointer.cpp:1-67`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 0045AE50 TMousePointer::TMousePointer
+// Source: Mouseptr.cpp lines 27-106
+// Attempt log:
+// 1: natural field-layout constructor from packet/decompiler; broad mismatch, but prologue/tail and cursor rep-stos loop close.
+// 2: raw offset stores in original asm order; worsened because VC5 no longer kept save_rect base pointer/copy loads.
+// 3: decompiler-style explicit lVar temps; worsened because VC5 proved the zero source and emitted direct stores.
+// 4: aggregate RECT assignments are needed for the load/copy family, but VC5 reschedules independent zero stores too broadly.
+// 5: tried raw pointer copy blocks with macros; generated fewer instructions and direct [esi+offset] loads, not original lea/copy shape.
+// 6: restored natural source as best readable scratch basis.
+// 7: expanded RECT aggregate assignments into per-field copies; worsened badly, so aggregate assignments are closer.
+// 8: rewrote cursor zero loop as explicit pointer do/while; same codegen as for-loop (rep stosd), kept acceptable spelling.
+// 9: split LastDrawTime assignment/subtract into two statements; no codegen change.
+// 10: class-field declaration compaction did not affect emitted code; remaining blocker is broad VC5 store scheduling around RECT copies and zero stores.
+// 11: corrected the constructor's canonical class order: Num_Cursors/Max_Cursors
+// are at +10/+14, the cursor array starts at +18, and the surface pointers are
+// at +11C/+120/+124. This is required by sibling Mouseptr methods and the type dump.
+// 12: reordered RECT zero statements; size improved by four bytes but the copy
+// schedule became less like the target, so restored the source order.
+// 13: an explicit save_rect pointer improved resync metrics but added an early
+// mouse_rect LEA and changed the first hunk; restored aggregate member copies.
+// 14: PDB-guided state-order probes did not improve the canonical source basin.
+// 15: restored the natural indexed cursor loop; VC5 still emits rep stosd.
+// 16: chained RECT zero assignment changed the first hunk and was rolled back.
+// Final: canonical layout and readable aggregate RECT initialization retained;
+// no EH frame, vptr, member lifetime, or destructor work is proven for this body.
+// Recovery probes: original Ghidra interleaving with a named RECT pointer and
+// scalar copy temporaries grew the body to 477-483 bytes and was rolled back.
+// A PDB-guided tail assignment order kept the 357-byte diff but did not improve
+// positional output; the aggregate source order remains the clean basis.
+// Fresh claim probe: binary-observed per-member RECT copy order grew the body
+// by 58 bytes and moved the first mismatch to the prologue; rolled back.
+// Fresh claim probe: moved the natural mouse_rect aggregate copy before the
+// independent custom_draw/render_area stores; diff improved 357 -> 354 bytes,
+// but the first mismatch stayed at save_rect scheduling. Kept this source order.
+// Fresh claim probe: a named RECT4* save_rect_ptr for all aggregate copies
+// follows the target's long-lived save_rect base and Ghidra's ptVar1 alias;
+// diff improved 354 -> 340 bytes, size 425 -> 416, and shape 52.29 -> 53.21.
+// Kept as the best typed reconstruction; first mismatch remains save_rect init.
+// Fresh claim probes: direct top/right/bottom stores, full scalar Ghidra copies,
+// SDK header context, canonical long widths, and mixed aggregate aliases did
+// not beat the typed source. A target-PDB tail order moved diff 340 -> 338 and
+// shape 53.21 -> 63.30 with the same 416-byte body; retained as current basis.
+// Cursor-only and restore-only scalar interleaves increased size or diff.
+// Revisit probe: the complete typed scalar RECT interleave reconstructed from
+// the Ghidra statements grew the body to 471 bytes and worsened the diff to
+// 419 bytes. Restored the natural aggregate-copy source.
+// Revisit probes: replaced the forbidden absolute source-string address with
+// the proven Mouseptr.cpp literal; strict diff stayed 338. Added the typed
+// game_window RECT and long coordinate fields from the local type dump; bytes
+// stayed unchanged. Direct aggregate copies from this->save_rect worsened to
+// 354 bytes, while moving mouse_rect after the first pointer stores gave 339;
+// both were rolled back. A const RECT alias and SDK RECT context were neutral.
+// The direct per-field Ghidra interleave grew to 483 bytes and was rolled back.
+// Left in scratch: behavior is straightforward but codegen is broad mismatch; not an accepted_drift candidate.
+// Current-claim probes: direct top/right/bottom stores with a pointer-only left
+// store improved shape but worsened strict diff to 343-359 bytes; changing the
+// pointer declaration point did not recover the target hunk. Full member
+// declarations and period string/stdio headers were codegen-neutral. A scalar
+// mouse_rect copy worsened shape and strict diff. Moving the aggregate copy
+// after the four initial area stores kept strict diff at 338 and improved only
+// resync diagnostics; a cWidth reorder worsened strict diff to 339. Restored
+// the pinned pointer-based aggregate source; the first mismatch remains at
+// save_rect initialization (+0D).
+// Current-claim probes: direct save_rect member stores and a reordered pointer
+// left store changed the first hunk but worsened strict diff to 343, 359, and
+// 340 bytes. Restored the pinned typed pointer source; no shared ABI issue was
+// found.
+```
+<!-- end-recovered:f948649deb50c734136b -->

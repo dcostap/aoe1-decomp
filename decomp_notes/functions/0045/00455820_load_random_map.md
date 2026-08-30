@@ -1,0 +1,23 @@
+# Function notes: 00455820 `load_random_map`
+
+Module notes: `decomp_notes/map_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:1e4b783159ac77c30e5e -->
+### `489810cbdcd9` `src/matching/00455820_load_random_map.cpp:1-9`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00455820 RGE_Map::load_random_map
+// Source: map.cpp lines 262-264
+// public: virtual void __thiscall RGE_Map::load_random_map(char*,char*,char*,char*)
+//
+// Attempt log:
+// Probe 1: natural new-expression, default flags -> 80 vs 109, missing EH
+// Probe 2: Added /GX rsp, size fixed with dummy array
+// BINARY NOTE (map TU wave02): The target controller has size 0x4F5C.
+// The shared map TU declaration omits that storage.  No source-only repair is supported.
+```
+<!-- end-recovered:1e4b783159ac77c30e5e -->

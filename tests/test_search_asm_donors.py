@@ -107,7 +107,7 @@ class SearchAsmDonorsTests(unittest.TestCase):
                 "rebuilt_extraction": {"size_status": "within-expected-span", "boundary_escape_offsets": []},
             }
             diff.write_text(json.dumps(good_diff), encoding="utf-8")
-            row = {"slug": "00401000_demo", "source_path": "src/matching/00401000_demo.cpp", "va": "00401000"}
+            row = {"slug": "00401000_demo", "source_path": "src/00401000_demo.cpp", "va": "00401000"}
             records = {"00401000": {"va": "00401000", "slug": "00401000_demo"}}
             with (
                 patch("search_asm_donors.REPO_ROOT", root),

@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
-import subprocess
 from collections import Counter
 from pathlib import Path
 from typing import Any
@@ -25,29 +23,6 @@ from common import (
     translation_unit_for_va,
 )
 from function_diagnostics import owning_function_symbol_validation
-
-
-_SOURCE_RE = re.compile(r"(?:^|/)([0-9A-Fa-f]{8})_[^/]+\.(?:c|cc|cpp|cxx)$")
-_SOURCE_SUFFIXES = (".c", ".cc", ".cpp", ".cxx")
-
-
-def _tracked_matching_paths(repo_root: Path = REPO_ROOT) -> list[str]:
-    result = subprocess.run(
-        ["git", "-C", str(repo_root), "ls-files", "--", "src/matching"],
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    return sorted(
-        path.replace("\\", "/")
-        for path in result.stdout.splitlines()
-        if path.lower().endswith(_SOURCE_SUFFIXES)
-    )
-
-
-def _va_from_source_path(path: str) -> int | None:
-    match = _SOURCE_RE.search(path.replace("\\", "/"))
-    return None if match is None else int(match.group(1), 16)
 
 
 def owner_mismatch_kind(validation: dict[str, str]) -> str:
@@ -170,20 +145,6 @@ def collect_audit_rows(repo_root: Path = REPO_ROOT) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
 
     normal_sources: list[tuple[str, int, dict[str, str]]] = []
-    for source_path in _tracked_matching_paths(repo_root):
-        va = _va_from_source_path(source_path)
-        if va is None:
-            continue
-        record = records.get(va)
-        if record is None:
-            raise ValueError(f"{source_path}: no inventory record for {va:08X}")
-        bucket, _ = classify_corpus_bucket(record)
-        if bucket != "normal":
-            continue
-
-        normal_sources.append((source_path, va, record))
-
-    legacy_vas = {va for _, va, _ in normal_sources}
     for module in load_source_modules():
         source_path = str(module["source"]).replace("\\", "/")
         functions = module["functions"]
@@ -192,8 +153,6 @@ def collect_audit_rows(repo_root: Path = REPO_ROOT) -> list[dict[str, Any]]:
             if str(entry.get("status") or "") != "matching":
                 continue
             va = int(str(va_text), 16)
-            if va in legacy_vas:
-                continue
             record = records.get(va)
             if record is None:
                 raise ValueError(f"{source_path}: no inventory record for {va:08X}")

@@ -1,0 +1,16 @@
+# Function notes: 00534530 `set_selection_area`
+
+Module notes: `decomp_notes/view_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:7ec3170ebc834b89f74f -->
+### `056a20c24f68` `src/scratch/00534530_set_selection_area.cpp:1-2`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00534530 set_selection_area (157 bytes) — MATCHED
+// PDB: view.cpp (RGE_View::set_selection_area)
+```
+<!-- end-recovered:7ec3170ebc834b89f74f -->

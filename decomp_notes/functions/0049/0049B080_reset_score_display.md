@@ -1,0 +1,131 @@
+# Function notes: 0049B080 `reset_score_display`
+
+## Recovered attempt history
+
+<!-- recovered:a4e253a36e2bd742b459 -->
+### `target-session` `build/target_sessions/0049B080_reset_score_display.json:1-37`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 variant; result=MISMATCH; diff=1120; shape=72.5: H1: replace persistent score/team cursor pointers with natural array indexing and branch-local references; tests whether VC5 recovers oracle EDI byte-stride addressing.
+probe 3 liveness; result=MISMATCH; diff=1066; shape=75.65217391304348: H2: move PLAYER_SCORE and str declarations before icon locals, testing whether original declaration order recovers EBP=this and target local homes without changing behavior.
+probe 4 liveness; result=MISMATCH; diff=1066; shape=75.65217391304348: H3: mark the two player-ID temporaries register, testing whether VC5 assigns player_id to EBX and preserves EBP for this as in the oracle. [same emitted code as probe 3]
+probe 6 layout; result=MISMATCH; diff=1120; shape=72.5: H4: use direct indexed PLAYER_SCORE member expressions with one-based-to-zero-based indices, testing whether VC5 emits the oracle's EDI 0x14 byte-stride cursor.
+probe 8 layout; result=MISMATCH; diff=1170; shape=72.6775956284153: H5: bias typed score/team cursors by one element and address with compensating offsets, testing whether VC5 lowers the proven 0x14 stride as an EDI offset.
+probe 10 liveness; result=MISMATCH; diff=1115; shape=72.29916897506925: H6: scope the score cursor inside the valid-player guard and recompute it from icon_num2, testing whether shorter cursor lifetime frees the oracle EBP=this and stack-home pattern.
+probe 12 control-flow; result=MISMATCH; diff=1067; shape=75.3623188405797: H7: express the outer player scan as a for loop with condition and update in the header, testing whether VC5 restores the oracle's loop-edge layout and EDI stride.
+probe 14 control-flow; result=MISMATCH; diff=1066; shape=75.65217391304348: H8: express the allied-player scan as a for loop with its update in the header, testing whether the oracle's inner backedge and team cursor scheduling depend on loop form.
+probe 16 liveness; result=MISMATCH; diff=1066; shape=75.65217391304348: H9: promote player_id and player_id2 to function-scope locals, testing whether longer live ranges reproduce the oracle's EBX player ID and EBP this assignment. [same emitted code as probe 4]
+probe 18 layout; result=MISMATCH; diff=1139; shape=67.41573033707866: H10: cache this->world in a typed local and use it throughout, testing whether world ownership changes register coloring toward the oracle; this is an explicit ABI/layout experiment.
+probe 20 liveness; result=MISMATCH; diff=1066; shape=75.65217391304348: H11: declare icon2/icon_frame2 before icon1/icon_frame1, testing whether local declaration order swaps the oracle's icon register and stack-home assignments. [same emitted code as probe 16]
+probe 22 liveness; result=MISMATCH; diff=1066; shape=75.65217391304348: H12: scope all icon temporaries inside the nonempty panel branch, testing whether branch-local lifetimes recover target icon stack homes and the late register schedule. [same emitted code as probe 20]
+probe 24 control-flow; result=MISMATCH; diff=1074; shape=78.85714285714286: H13: replace the ternary font selector with explicit if/else get_font calls, matching PDB's separate 4450 and 4452 bands and target immediate push topology.
+probe 25 liveness; result=MISMATCH; diff=1074; shape=78.85714285714286: H14: with explicit font branches retained, swap i and icon_num2 declaration order, testing whether the target's +1C i and +20 icon homes are declaration-colored. [same emitted code as probe 24]
+probe 26 control-flow; result=MISMATCH; diff=1074; shape=78.85714285714286: H15: use a count-down do/while for the eight low-FPS records, testing the oracle's EBP counter and register backedge instead of the current stack-based for counter.
+probe 27 liveness; result=MISMATCH; diff=1070; shape=78.55072463768116: H16: initialize both color locals before the color switch, testing whether explicit zero liveness recovers target EDI back_color and ESI font_color register carrying.
+probe 28 layout; result=MISMATCH; diff=1070; shape=78.55072463768116: H17: use unsigned long for font and background colors, matching binary color widths and testing whether signedness changes switch register allocation. [same emitted code as probe 27]
+probe 30 variant; result=MISMATCH; diff=1070; shape=78.55072463768116: variant lab build\variant_lab\0049B080_reset_score_display\20260817_144521: 128 variants, 128 invariant-eligible, 0 exact
+probe 31 layout; result=MISMATCH; diff=1065; shape=75.3623188405797: H18: add a separate zero-based score_index and derive the typed score pointer from it, testing whether VC5 emits the oracle's persistent 0x14 stride instead of a pointer cursor.
+probe 33 abi; result=MISMATCH; diff=1081; shape=77.80979827089337: H19: replace the reviewed storage accessor with the direct reviewed rge_base_game extern via a local macro, testing whether accessor declaration context controls the remaining register basin.
+probe 35 layout; result=MISMATCH; diff=1065; shape=75.3623188405797: H21: use explicit typed byte offsets for the proven 0x14 PLAYER_SCORE stride, testing whether VC5 lowers the oracle's stack-base-plus-EDI addressing; exploratory raw cursor only.
+probe 37 variant; result=MISMATCH; diff=1065; shape=75.3623188405797: variant lab build\variant_lab\0049B080_reset_score_display\20260817_144922: 512 variants, 512 invariant-eligible, 0 exact
+probe 38 variant; result=MISMATCH; diff=1065; shape=75.3623188405797: variant lab build\variant_lab\0049B080_reset_score_display\20260817_145029: 12 variants, 6 invariant-eligible, 0 exact
+probe 41 control-flow; result=MISMATCH; diff=1066; shape=75.65217391304348: H22: replace the outer score-building while with a positive initial guard and do/while, matching the oracle's numberPlayers precheck before the 0x14 stride setup; retain the clean typed score cursor to isolate control-flow impact.
+probe 43 layout; result=MISMATCH; diff=1122; shape=71.94444444444444: H23: recover the decompiler-supported positive initial player-count guard, do/while outer scan, and one-based indexed PLAYER_SCORE references; test whether VC5 recreates the oracle's EDI 0x14 record offset and EBP=this basin.
+probe 45 liveness; result=MISMATCH; diff=1066; shape=75.65217391304348: H24: carry a natural screen pointer alias initialized from this and use it for all screen members, testing whether the original saved-this EBP basin comes from an explicit receiver lifetime rather than implicit this.
+probe 47 control-flow; result=MISMATCH; diff=1066; shape=75.65217391304348: H25: move the natural score cursor declaration into the positive initial player-count guard and retain a do/while, testing whether the target's post-guard 0x14 setup is a scoped cursor lifetime. [same emitted code as probe 41]
+probe 49 layout; result=MISMATCH; diff=1065; shape=75.3623188405797: H26: use proven raw local PLAYER_SCORE byte cursors with explicit 0x14 increments and typed field widths, testing whether the oracle's stack-base-plus-EDI addressing and role swap require this lower-level but binary-supported packed-record form. [same emitted code as probe 35]
+probe 51 layout; result=MISMATCH; diff=1120; shape=72.5: H27: anchor the raw packed-record cursors one record past the array with proven 0x14 starts and negative field offsets, matching the oracle's explicit EDI/team values instead of a zero-based cursor.
+probe 53 liveness; result=MISMATCH; diff=1065; shape=75.3623188405797: H28: combine the only closer raw packed-record cursor basin with the oracle-shaped count-down eight-record low-FPS loop, testing whether both source forms jointly recover the target's EBP/EBX/ESI/EDI role topology. [same emitted code as probe 49]
+probe 55 liveness; result=MISMATCH; diff=1066; shape=75.65217391304348: H29: promote the outer score cursor declaration to function scope before all scalar locals, testing whether source declaration order gives the target's ESI loop index, EDI record cursor, and EBP receiver allocation. [same emitted code as probe 40]
+probe 57 liveness; result=MISMATCH; diff=1066; shape=75.65217391304348: H31: place the proven PLAYER_SCORE array and 512-byte string before scalar declarations, testing whether original local declaration order selects the target's saved-this and packed-record register basin. [same emitted code as probe 55]
+probe 59 liveness; result=MISMATCH; diff=1065; shape=75.3623188405797: H32: reuse the existing top-level team local as the inner packed-record cursor, replacing the added team_offset local; test whether the target's [esp+18] team home is declaration-backed rather than a temporary.
+probe 62 baseline; result=MISMATCH; diff=1066; shape=74.78260869565217: Fresh baseline: qualified TRIBE_Screen_Game::reset_score_display, scr_game.cpp lines 4310-4486, original boundary 0049B080-0049B535; current natural source has 24 calls and exact size/frame but wrong set_visible ABI at vslot +14.
+probe 63 abi; result=MISMATCH; diff=1066; shape=75.65217391304348: Target-local narrow six-slot TPanel ABI restored the proven virtual set_visible at vslot +0x14. Direct VC5 compilation with 004982E0_action.rsp produced 1206 bytes, 0x2D4 frame, 24/24 ordered calls, and 0 rebuilt/original call-target gaps; it did not change the 1066-byte positional diff.
+probe 65 control-flow; result=MISMATCH; diff=1066; shape=75.65217391304348: Distinct source-shape test: typed PLAYER_SCORE array indexing for outer and inner records. Pinned direct VC5 output grew to 1244 bytes and 1120 differing bytes, while ordered calls stayed 24/24. Restored typed cursor source.
+probe 66 liveness; result=MISMATCH; diff=1066; shape=75.65217391304348: Distinct lifetime/layout tests: score-index and direct packed byte-offset cursors reached 1065 differing bytes with exact size and ordered calls, but their opaque cursor forms did not match the original owner model. Receiver aliases and local declaration reorder were codegen-neutral. Restored the simplest typed cursor.
+```
+<!-- end-recovered:a4e253a36e2bd742b459 -->
+
+<!-- recovered:0ad78362976f8d9d9af5 -->
+### `7f9d273d677d` `src/scratch/0049B080_reset_score_display.cpp:1-73`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0049B080 TRIBE_Screen_Game::reset_score_display
+// PDB source: scr_game.cpp
+// Attempt log:
+// - baseline was a broad decompiler-shaped reconstruction with the right frame
+//   but the wrong owner/type and helper surfaces.
+// - rebuilt the source around the period PLAYER_SCORE, TRIBE_World,
+//   RGE_Player, communications, font, and message-panel ownership.  The
+//   score records are filled through a cursor, grouped by allied relations,
+//   then sorted and rendered through the eight named score panels.
+// - replacing the fake get_active/player_status/progress/score_value helpers
+//   with the proven base-game, communications, font, latency, and message
+//   surfaces aligned all 24 call sites and exact size; current diff is 1066
+//   bytes.
+// - indexed PLAYER_SCORE references regressed size/shape; restored the natural
+//   cursor form.  Stdio context and function-scope icon locals were codegen
+//   neutral.  Remaining drift is broad local register/home and cursor layout,
+//   beginning with the saved-this stack slot; left in scratch for a later pass.
+// - initialized back_color to mirror the target's zeroed color register; this
+//   kept size and calls but worsened the prior diff from 1063 to 1078 bytes and did
+//   not move the saved-this home, so restored the clean source.
+// - structural pass tried declaration/local order, explicit player-count
+//   guards, indexed records, and for-loop cursor spelling.  These either
+//   emitted the same clean basin or broke size; the target's EDI byte
+//   stride and saved-this home remain unresolved.
+// - binary low-fps scan checks player_id, not team_id; corrected that guard.
+//   A separate low-fps loop counter was codegen-neutral and remains natural.
+// - ABI audit: used the committed rge_base_game storage accessor and a typed
+//   communication storage accessor.  This removes unresolved global data
+//   symbols while preserving direct loads from 0062C574 and 0062C4C0.
+// - ABI audit: declared scr_game_score_compare with its C++ function ABI.
+//   The qsort relocation names the exact comparator instead of using an
+//   address cast.  These audit changes are byte-neutral in the clean basin.
+// - sustained pass sa-8efe6dbe-r1: 23 meaningful probes, plus ambient and
+//   flag labs.  The clean source is restored below.  It has 1206 bytes, a
+//   0x2D4 frame, four saved registers, and all 24 ordered calls.
+// - BINARY NOTE: the oracle saves this in [esp+14] and keeps this in EBP.
+//   The clean source keeps this in EBX and saves it in [esp+1C].
+// - BINARY NOTE: the oracle uses an EDI byte stride for PLAYER_SCORE.  The
+//   clean typed cursor uses ESI.  Direct indexed and raw byte-cursor forms
+//   grew or weakened the function, so they are not retained.
+// - BINARY NOTE: the font choice has two explicit push blocks at lines 4450
+//   and 4452.  An explicit source if/else restored the conditional count and
+//   many exact blocks, but increased the strict diff to 1074 bytes.
+// - LIKELY INTENT: the shipped source initializes the background color and
+//   uses an explicit font branch.  That form reached 345 instructions and a
+//   1070-byte diff, but its register map remains wrong.
+// - Ambient declarations produced one codegen group across 128 samples.
+//   Risky flag variants did not improve the default flag result.  No exact
+//   source or compiler-context basin was found.
+// - Fresh claim sa-a8885e99-r1: positive outer guards, scoped do/while cursors,
+//   direct one-based record indexing, receiver aliases, array declaration order,
+//   and top-scope cursor declarations were neutral or worse.  The proven raw
+//   byte-cursor form reproduced the prior 1065-byte diagnostic result but not
+//   the target register basin, so the natural typed cursor remains authoritative.
+// - Fresh claim validation: restored clean source is 1206 bytes, frame 0x2D4,
+//   four saved registers, 24 ordered calls, and 1066 differing bytes.  The first
+//   mismatch remains the saved receiver at +9; no accepted-drift residue is safe.
+// - Fresh claim sa-d51a4bbf-r1 context gate: PDB source is scr_game.cpp,
+//   lines 4310-4486, and the qualified owner is
+//   TRIBE_Screen_Game::reset_score_display.  The executable boundary is
+//   0049B080-0049B535.  The next normal unleased sibling after setup_buttons
+//   in this PDB order is this target at 0049B080.
+// - BINARY NOTE: the target-local six-slot panel surface is required.  It puts
+//   set_visible at virtual slot +0x14 and preserves the +0x58C panel array and
+//   +0x5B4 world field.  The pinned VC5 direct build then aligns all 24 calls.
+// - Fresh claim probes tested receiver aliases, indexed records, declaration
+//   order, score-index and packed field-pointer forms.  They did not reach
+//   exact output.  The packed forms reached 1065 differing bytes but retained
+//   an unsupported opaque cursor shape, so the typed cursor remains clean.
+// - Fresh claim validation first hit an unrelated in-flight
+//   config/translation_units.json owner conflict at 00543E00.  After that
+//   conflict cleared, the authoritative checker confirmed the direct pinned
+//   VC5 result: 1206 bytes, 24 ordered calls, and 1066 differing bytes.
+```
+<!-- end-recovered:0ad78362976f8d9d9af5 -->

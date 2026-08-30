@@ -1,0 +1,91 @@
+# Function notes: 0052EAC0 `check_destructables`
+
+Module notes: `decomp_notes/tworld_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:9e4a5fc695db9b5253df -->
+### `target-session` `build/target_sessions/0052EAC0_check_destructables.json:1-27`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=526; shape=61.142857142857146: Baseline current typed traversal source before new probes; establish metrics and call/block alignment.
+probe 2 layout; result=MISMATCH; diff=526; shape=61.142857142857146: Natural typed world alias hypothesis: retain a local TRIBE_World* owner for later map and player accesses, matching the oracle's stored world pointer without raw or parameter-home tricks.
+probe 4 control-flow; result=MISMATCH; diff=321; shape=62.56983240223464: Natural typed traversal probe: index map_row_offset by a typed row index each outer iteration, instead of caching a row-pointer alias; no byte cursor or parameter-home mutation.
+probe 5 layout; result=MISMATCH; diff=532; shape=62.285714285714285: Natural typed array probe: use map_row_offset[row_index] + x_min as a RGE_Tile pointer, removing the explicit byte-offset local while preserving row/object ownership.
+probe 6 layout; result=MISMATCH; diff=529; shape=65.14285714285714: Natural owner alias probe: cache the typed RGE_Map* once after the master guard, then use it for bounds and row-table traversal; no raw cursor or steering.
+probe 7 liveness; result=MISMATCH; diff=321; shape=62.56983240223464: Natural typed row-owner probe: name the selected RGE_Tile row before applying the known tile offset, to preserve object/row ownership without a raw cursor.
+probe 8 liveness; result=MISMATCH; diff=315; shape=61.87845303867403: Natural scalar-lifetime probe: retain a named int first_column for the proven x-bound conversion and use it for column count and tile offset; this avoids parameter-home mutation.
+probe 9 behavior; result=MISMATCH; diff=318; shape=65.36312849162012: Natural overlap predicate probe: combine the two typed absolute-distance bounds in one short-circuit condition, matching the source-level geometry without raw FPU or compiler steering.
+probe 10 behavior; result=MISMATCH; diff=319; shape=62.56983240223464: Natural operand-order probe: put each radius sum on the left of its relational bound, matching C++ evaluation order suggested by the oracle's early radius load.
+probe 11 liveness; result=MISMATCH; diff=309; shape=81.4207650273224: Natural object-radius scope probe: bind both proven object radius fields before coordinate math, then use them in the combined overlap test; no raw or volatile access.
+probe 12 liveness; result=MISMATCH; diff=313; shape=78.80434782608695: Natural declaration-order probe: declare the tile offset before row and count locals, reflecting the first source value consumed by typed row traversal.
+probe 13 context; result=MISMATCH; diff=309; shape=81.4207650273224: Natural typed world-owner probe with the improved object-radius locals: name the world receiver and use it for all player/map ownership.
+probe 14 behavior; result=MISMATCH; diff=311; shape=77.04918032786885: Natural operand-direction probe with named object radii: compare each radius sum on the left without changing the typed overlap behavior.
+probe 15 layout; result=MISMATCH; diff=522; shape=71.19565217391305: Natural scoped map-owner probe: bind RGE_Map* only after coordinate clamps and use it for row traversal, avoiding early map-load hoisting.
+probe 17 layout; result=MISMATCH; diff=530; shape=77.71428571428571: Canonical class-dump virtual names, inheritance surface, and direct typed tile-row indexing; replace vf68 with destroy_obj.
+probe 20 liveness; result=MISMATCH; diff=530; shape=77.71428571428571: Parameter-home lifetime hypothesis: remove target_master_id copy and compare the incoming master_id directly. Original uses BX for the short id after pushing EBX, while this spills to [esp+4]; test whether direct parameter use recovers the prologue and row loop topology.
+probe 21 control-flow; result=MISMATCH; diff=327; shape=78.68852459016394: Loop setup hypothesis: move the typed row/tile address calculation before the x_min <= x_max gate. Original computes row_offset[y_min] + x_min and LEA tile+0x10 before the compare at +133, so the natural source should preserve that evaluation and fault order even when the horizontal range is empty.
+probe 22 liveness; result=MISMATCH; diff=306; shape=84.15300546448087: Loop-local lifetime hypothesis: compute the horizontal column count inside each row's positive-range arm instead of precomputing column_count. Original recomputes x_max - x_min + 1 after the row pointer and x-range gate, with the count in EDI; this also removes an unsupported long-lived local.
+probe 23 layout; result=MISMATCH; diff=310; shape=80.8743169398907: Typed-stride hypothesis: retain a named tile_offset = x_min * sizeof(RGE_Tile), then add it to each row base before the horizontal gate. Original stores x_min at +24, separately lowers x_min*0x18 through LEA/SHL, and computes the row tile before the gate; test this period-plausible stride local against direct typed indexing.
+probe 24 liveness; result=MISMATCH; diff=306; shape=84.15300546448087: List-walk lifetime hypothesis: name the observed next-node value before assigning node = next. Original loads the initial list head in EAX, then carries the successor in ESI across the body; test whether an explicit next local recovers that two-pointer register topology without raw cursor tricks.
+probe 25 layout; result=MISMATCH; diff=501; shape=64.0: Row-owner hypothesis: use one typed RGE_Tile** row_cursor initialized at map_row_offset + y_min and increment it per row. Original carries a row-table cursor in a stack home, loads [row_cursor], then adds four each outer iteration; this avoids raw byte arithmetic while matching the proven moving-owner topology.
+probe 26 liveness; result=MISMATCH; diff=306; shape=84.15300546448087: Declaration-order hypothesis: declare row_count before row_index. The original outer-loop homes keep row_count at [esp+20] and the row-table cursor at [esp+10]; VC5 declaration order can change their storage and setup schedule without adding aliases. [same emitted code as probe 22]
+probe 27 liveness; result=MISMATCH; diff=311; shape=81.4207650273224: Parameter-home coalescing hypothesis: widen x_min once into an int x_index and use it for typed tile indexing and the per-row column count, while retaining the proven short gate. Original stores a sign-extended x bound in the dead player-id home [esp+24] and reloads it after the gate.
+probe 28 context; result=MISMATCH; diff=306; shape=84.15300546448087: Member-expression hypothesis: use the inherited TRIBE_World members unqualified rather than spelling this-> for players and map. The original source line emits an early implicit-this spill and direct [ecx+40]/[ecx+28] accesses; test whether the simpler period C++ spelling changes only compiler liveness and homes. [same emitted code as probe 26]
+probe 29 liveness; result=MISMATCH; diff=306; shape=84.15300546448087: Narrow/wide lifetime split: keep typed indexing on short x_min, but retain a separate widened x_index only for the per-row count. The original reloads a dword x bound after its short gate; test whether this preserves the direct-pointer basin while recovering the dead player-home use. [same emitted code as probe 24]
+probe 32 baseline; result=MISMATCH; diff=306; shape=88.0: Fresh authoritative baseline after coordinator input repair; preserve current clean source.
+probe 33 context; result=MISMATCH; diff=306; shape=88.0: Fresh TU-context hypothesis: use an authentic TRIBE_World* alias for world accesses, because the current baseline context changed the implicit-this home versus the prior standalone result. [same emitted code as probe 32]
+```
+<!-- end-recovered:9e4a5fc695db9b5253df -->
+
+<!-- recovered:55e3947e7ac35258170d -->
+### `57de5af98e5d` `src/scratch/0052EAC0_check_destructables.cpp:1-41`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0052EAC0 TRIBE_World::check_destructables (560 B)
+// PDB source: tworld.cpp
+// Packet-grounded: inspect nearby master objects and notify/destruct objects
+// whose bounding radii overlap the requested map coordinate.
+// Attempt log:
+// - Recovered typed ownership: players[short] -> master_objects,
+//   RGE_Map rows of 0x18-byte RGE_Tile records, inline tile object lists, and
+//   RGE_Static_Object/master radius fields.  All six oracle calls are aligned.
+// - Short coordinate locals reproduce the word clamps and four __ftol calls.
+//   The typed row/tile do-while preserves the natural object-list traversal.
+// - A direct row index plus the known 0x18-byte tile stride is closer than a
+//   cached row pointer. Raw byte cursors and parameter-home mutation are not
+//   retained because policy forbids them.
+// - Naming both real object radius fields before coordinate math, then using a
+//   combined overlap predicate, reaches 560 B/frame 0x20 and 84.15% shape.
+//   It also raises exact-block coverage to 43.43% with all six calls aligned.
+// - World/map aliases and alternate radius operand directions were tested and
+//   discarded when they worsened or did not change the natural code shape.
+// - Canonical class-dump audit: replaced the world/object/list vfXX surfaces
+//   with their reviewed names and signatures, retained TRIBE_World inheritance,
+//   and used the canonical RGE_Tile/RGE_Object_Node fields.
+// - Structural probes moved the row/tile calculation before the horizontal
+//   gate and moved the column count into that gate.  This reduced the mismatch
+//   from 530 to 306 bytes and reached the original 560-byte body size.
+// - Direct master_id use, a typed stride local, a moving row cursor, widened
+//   x-index locals, an explicit next pointer, and unqualified members were
+//   tested.  The stride and cursor forms regressed.  The other forms were
+//   neutral or are retained only when they simplify the source.
+// - Current validation: 306 strict bytes differ; rebuilt instructions are
+//   183 versus 175 original.  The first mismatch is the implicit-this home
+//   at +0008.  All six calls remain aligned and the frame is 0x20.
+// - A separated coordinate declaration order was codegen-neutral. The pinned
+//   natural source remains the best supported reconstruction.
+// BINARY NOTE: Keep the initial players[player_id] and master_objects[master_id]
+//   reads before radius, map, or coordinate work. Do not add defensive guards.
+// BINARY NOTE: Advance the list node before reading object_master. Publish the
+//   delete or destroy action only after the complete overlap predicate.
+// Prefix TU pass: use the shared canonical world, map, tile, object-list, and
+// object surfaces. The source keeps the observed fault and action order.
+// Shared-context check: the 560-byte boundary, 0x20 frame, six aligned calls,
+// and 306 strict-byte drift are unchanged.
+```
+<!-- end-recovered:55e3947e7ac35258170d -->

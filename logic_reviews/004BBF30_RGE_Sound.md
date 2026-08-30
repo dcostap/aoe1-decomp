@@ -1,11 +1,13 @@
 # Logic review: 004BBF30 `RGE_Sound::RGE_Sound`
 
+Current source: `src/Sound.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended exact matching after bounded work exhausted natural
 sources for the post-`calloc` compare/store scheduling drift.
 
-Candidate: `src/scratch/004BBF30_RGE_Sound.cpp`.
+Candidate: `src/Sound.cpp`.
 
 Current validation:
 
@@ -51,4 +53,4 @@ memory result and control behavior are the same.
 
 No behavioral uncertainty remains in the reviewed paths. The three-byte size
 and allocation-hunk scheduling difference is VC5 code generation drift.
-Promote to `src/verified_logic`.
+Promote to `verified_logic` status.

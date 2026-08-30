@@ -1,0 +1,89 @@
+# Function notes: 004463B0 `take_snapshot`
+
+Module notes: `decomp_notes/drawarea_reunification.md`.
+
+## Recovered attempt history
+
+<!-- recovered:11a1146a27614db51f5c -->
+### `d050eea3c` `src/drawarea.cpp:2309-2309`
+
+Mapping: `strong`. comment lies after mapped function take_snapshot at old line 2261.
+
+```text
+            // BINARY NOTE: 0x005845E4 is the shared default snapshot format.
+```
+<!-- end-recovered:11a1146a27614db51f5c -->
+
+<!-- recovered:dbba36e0623e5449df44 -->
+### `target-session` `build/target_sessions/004463B0_take_snapshot.json:1-17`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=326; shape=91.61676646706587: Current typed TDrawArea snapshot source: validate frame, calls, and clean baseline before revisit.
+probe 2 liveness; result=MISMATCH; diff=496; shape=92.72727272727273: Use the binary-proven bmHeight local for bfSize product; test original EDI height copy and early scheduling.
+probe 5 control-flow; result=MISMATCH; diff=422; shape=93.33333333333333: Use a bounded while plus post-loop file-status return to test the original conditional-backedge and return topology.
+probe 7 control-flow; result=MISMATCH; diff=326; shape=91.61676646706587: Use a natural do-while bounded retry loop with a post-loop open-status guard; test the original conditional backedge and early return. [same emitted code as probe 4]
+probe 12 liveness; result=MISMATCH; diff=503; shape=72.72727272727273: Test natural sibling-style bitmap header order without a private height local; use direct Height for the row origin.
+probe 14 liveness; result=MISMATCH; diff=326; shape=91.61676646706587: Test direct bfSize product while retaining the binary-sized height local and all clean body topology. [same emitted code as probe 11]
+probe 15 layout; result=MISMATCH; diff=326; shape=91.61676646706587: Test the binary-documented palette +1 source ownership instead of the accepted-drift physical-address simplification.
+probe 17 control-flow; result=MISMATCH; diff=422; shape=93.33333333333333: Test a natural bounded while retry loop with a post-loop open-status return, preserving close and number-update fault order. [same emitted code as probe 5]
+probe 19 liveness; result=MISMATCH; diff=496; shape=92.72727272727273: Test direct bfSize assignment from the named binary-height local, removing the separate total temporary. [same emitted code as probe 2]
+probe 21 behavior; result=MISMATCH; diff=497; shape=74.4047619047619: Test the original stack-evidenced row-count ownership: use the aligned width local for the bottom-up row index instead of the height alias.
+probe 23 context; result=MISMATCH; diff=505; shape=74.25149700598803: Test whether the authentic palette call and conversion precede header setup, allowing VC5 to schedule the palette-address LEA in the original initial block.
+probe 25 liveness; result=MISMATCH; diff=326; shape=91.61676646706587: Test period-plausible register qualification for the height value to recover the original EDI height copy without fake volatility. [same emitted code as probe 14]
+probe 27 context; result=MISMATCH; diff=326; shape=92.72727272727273: Test io.h with its period write declaration, retaining the target's direct __open and close surfaces.
+probe 28 context; result=MISMATCH; diff=326; shape=92.72727272727273: Test the period CRT header combination windows.h, stdio.h, io.h, and malloc.h against the Drawarea snapshot call surface. [same emitted code as probe 27]
+probe 30 context; result=MISMATCH; diff=481; shape=86.66666666666667: Test moving only the GetPalette call before bitmap-header stores, while retaining the original palette conversion and snapshot flow.
+probe 32 layout; result=MISMATCH; diff=326; shape=92.72727272727273: Test declaration-order context: keep the binary-sized height local but declare it after the bitmap and palette objects. [same emitted code as probe 28]
+probe 33 layout; result=MISMATCH; diff=326; shape=92.72727272727273: Test the alternate top-local order height then aligned width, after restoring the natural bitmap object declaration order. [same emitted code as probe 32]
+```
+<!-- end-recovered:dbba36e0623e5449df44 -->
+
+<!-- recovered:cd8786872ec65232b385 -->
+### `96097dc8ba81` `src/scratch/004463B0_take_snapshot.cpp:1-39`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004463B0 TDrawArea::take_snapshot
+// Attempt log:
+// - Replaced the prior unrelated BMP shim with the binary-backed Drawarea.cpp
+//   snapshot pipeline: typed Win32 bitmap records, palette conversion, the
+//   numbered-open loop, and the Lock/write/unlock row walk.
+// - Baseline: natural typed source matched all 14 ordered calls but was 14
+//   bytes short (frame 0x878); adding the binary-backed height local restored
+//   the exact 0x87C frame and 540-byte effective size.
+// - Tried delayed biHeight initialization, commutative product reversal,
+//   declaration reordering, and a register product temporary; these were
+//   duplicate or worse codegen basins. A 24-variant init/product/open-loop
+//   lab likewise found no exact variant; keep the ordinary inline-return
+//   loop shape.
+// - Diagnostic predecessor-pointer offsets aligned some palette/filename
+//   displacements but made the local pointer long-lived, changed register
+//   roles, shortened the function, and changed the Unlock call; rolled back.
+// - Fresh pass: using this->Height for bfSize improved the early liveness
+//   basin. Binary pointer evidence then removed decompiler-only +1 palette
+//   and +4 filename offsets, improving the result to 326 differing bytes,
+//   91.62% shape, and 63.64% exact-block coverage.
+// - Tested direct/local product forms, register-qualified height, call
+//   placement, and explicit continue-at-limit spelling. They were duplicate
+//   or worse. The current typed source keeps the natural zero-based buffers.
+// - Best clean reconstruction: exact frame/size/call set, remaining drift is
+//   VC5 local/register/block scheduling around the header and early returns;
+//   no inline asm or other codegen-only scaffold is retained.
+// - Tried named width and height locals for all header and row uses; the
+//   natural source changed the frame to 0x880 and lost exact blocks. Rolled
+//   back to the prior clean Drawarea form.
+// - Fresh claim probes: named-height product/order, register-qualified
+//   height/width, delayed rounded-width spill, direct-height header reload,
+//   compound total accumulation, and declaration initialization were
+//   duplicate or worse. Removing the BMPFile zero also worsened the basin.
+//   Keep the clean source; the first paired hunk still needs the original
+//   EDI height copy, delayed EDX spill, and header-store schedule.
+// - Revisit probes: using bmHeight for the file-size product worsened the
+//   result to 496 differing bytes. A bounded while retry changed size and
+//   control flow; a do-while form was codegen-duplicate. Restored this clean
+//   natural snapshot flow and retained typed CurDisplayOffsets ownership.
+```
+<!-- end-recovered:cd8786872ec65232b385 -->

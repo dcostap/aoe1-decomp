@@ -1,0 +1,17 @@
+# Function notes: 004B4190 `~TribeSelectScenarioScreen`
+
+## Recovered attempt history
+
+<!-- recovered:817e1f28fcb1cc826d51 -->
+### `28def1a56af5` `src/matching/004B4190_TribeSelectScenarioScreen.cpp:1-5`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004B4190 | TribeSelectScenarioScreen::~TribeSelectScenarioScreen() | Scr_sels.cpp:167-179 | 226 bytes
+// /GX EH-framed virtual destructor: restores derived vtable, deletes 11 panels in
+// member order via TPanel::delete_panel, then tails into base ~TScreenPanel.
+// Pattern mirrors matched sibling 004A75C0 TribeSaveGameScreen::~TribeSaveGameScreen.
+// FLAGS: config/flags/004B4190_TribeSelectScenarioScreen.rsp (/GX for original EH frame)
+```
+<!-- end-recovered:817e1f28fcb1cc826d51 -->

@@ -108,7 +108,7 @@ def test_queue_assigns_overlapping_va_to_largest_exact_context() -> None:
     base = {
         "va": "00401000",
         "name": "target",
-        "source_path": "src/scratch/00401000_target.cpp",
+        "source_path": "src/00401000_target.cpp",
         "source_bucket": "scratch",
         "registered_groups": [],
         "grouped_result": "MATCH",
@@ -153,7 +153,7 @@ def test_queue_retains_exact_policy_review() -> None:
             "group": "complete",
             "va": "00401000",
             "name": "target",
-            "source_path": "src/scratch/00401000_target.cpp",
+            "source_path": "src/00401000_target.cpp",
             "source_bucket": "scratch",
             "registered_groups": [],
             "grouped_result": "MATCH",

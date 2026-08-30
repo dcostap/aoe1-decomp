@@ -1,10 +1,12 @@
 # Logic review: 0041E7D0 `RGE_Base_Game::setup_main_window`
 
+Current source: `src/basegame.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after seven claims and 24 meaningful probes.
 
-The candidate is `src/scratch/0041E7D0_setup_main_window.cpp`.
+The candidate is `src/basegame.cpp`.
 
 Current validation:
 
@@ -46,4 +48,4 @@ The review found no open behavioral uncertainty. The retained source uses normal
 Win32 types and direct arithmetic. Exact matching remains suspended because only
 unsupported volatile storage reproduced the executable load schedule.
 
-Promote to `src/verified_logic`.
+Promote to `verified_logic` status.

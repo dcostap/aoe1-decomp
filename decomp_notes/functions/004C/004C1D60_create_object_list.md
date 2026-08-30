@@ -1,0 +1,20 @@
+# Function notes: 004C1D60 `create_object_list`
+
+Module notes: `decomp_notes/stat_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:f08940f138a4d79c8ef1 -->
+### `6e3d5b45eb37` `src/scratch/004C1D60_create_object_list.cpp:1-6`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// quick-win attempt log:
+// no existing work file for 004C1D60; the oracle is an EH-framed new-expression helper
+// from stat_obj.cpp. Tried direct `new`, `try/catch`, and placement-new shapes; the
+// remaining mismatch stayed at the prolog / first instruction basin.
+// Tried moving the target function first in the TU; that changed the emitted basin
+// but still did not reproduce the original `push -1` / FS:[0] EH entry sequence.
+```
+<!-- end-recovered:f08940f138a4d79c8ef1 -->

@@ -1,0 +1,46 @@
+# Function notes: 004C8ED0 `check`
+
+Module notes: `decomp_notes/t_b_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:f43ac525e9f9a1aa15a3 -->
+### `229902baf232` `src/scratch/004C8ED0_check.cpp:1-32`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004C8ED0, TRIBE_Building_Object::check, 467 bytes
+// Source: t_b_obj.cpp lines 577-642
+// Attempt log:
+// - v1: natural reconstruction from packet/decompiler; local object/master/world/map list layout.
+// - v2: modeled four neighbor checks with direct RGE_Object_List::find_by_master_id calls and stack counter local.
+// - v3: first build had extra frame/register pressure (EDI=this), not original ESI=this.
+// - v4: rewrote to use direct member access and only original-like locals (counter,w,h,max_y).
+// - v5: route world_x through long wx before assigning w; no register change, rolled back.
+// - v6: predeclared y before w assignment; no change.
+// - v7: swapped source variable roles (w=world_y, y=world_x) while preserving behavior; worsened size, rolled back.
+// - v8: tried register short w to force x into EBX; no change.
+// - v9: declared y in local block before w to probe allocation; no change.
+// - v10: paused in scratch. Best earlier check: 467/467 bytes, positional diff
+//   64.8822%, edit diff 11.9914%, first mismatch +0x1e.
+// - v11-v12: restored the binary-backed RGE_Tile/RGE_Player/RGE_Master_Static_Object
+//   ownership instead of raw row/master/world offsets; VC5 emitted identical
+//   bytes, confirming the typed model without a metric-only cursor scaffold.
+// - v13: changed the neighbor counter to its period-accurate `long` spelling;
+//   this improves block coverage/shape (98.67%) but does not change the
+//   persistent world_x/world_y EBX/EBP coloring.
+// - v14: declaration/initialization placement of map locals was a codegen
+//   duplicate. Current source remains typed and natural; no inline asm.
+//
+// Remaining blocker: localized but cascading EBX/EBP allocation swap for tile
+// x/y after the two __ftol calls. Original keeps world_x in EBX and world_y in
+// EBP, then reuses EBX for out pointer; rebuilt keeps world_x in EBP and
+// world_y in EBX. A separate late-tail difference is the original stack store
+// of the incremented counter before its success epilogue. Control flow, call
+// set, stack cleanup, map/list arithmetic, owner checks, and return behavior
+// are otherwise close. No raw offset plumbing or inline asm is retained.
+// Main-agent audit restored canonical polymorphic master/static/map/world/player
+// ownership and retained typed neighboring-tile searches.
+```
+<!-- end-recovered:f43ac525e9f9a1aa15a3 -->

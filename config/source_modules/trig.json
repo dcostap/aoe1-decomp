@@ -7,7 +7,7 @@
   "functions": {
     "0052A730": {
       "status": "matching",
-      "note_path": "recovery_notes/trig_module.md"
+      "note_path": "decomp_notes/trig_module.md"
     },
     "0052A830": { "status": "matching" },
     "0052A850": { "status": "matching" },

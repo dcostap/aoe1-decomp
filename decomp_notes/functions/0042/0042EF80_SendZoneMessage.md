@@ -1,0 +1,15 @@
+# Function notes: 0042EF80 `SendZoneMessage`
+
+Module notes: `decomp_notes/com_hand_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:3486907d3a439476ff6e -->
+### `target-session` `build/target_sessions/0042EF80_SendZoneMessage.json:1-1`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 abi; result=MATCH; diff=0; shape=100.0: Module closure probe: corrected original-FPO member access/return/parameter declaration; final grouped object emits the expected symbol. Body remains a grouped mismatch and is not changed beyond declaration repair.
+```
+<!-- end-recovered:3486907d3a439476ff6e -->

@@ -1,0 +1,208 @@
+# Function notes: 0045D6C0 `findPath`
+
+Module notes: `decomp_notes/move_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:cde70ba3031af8722a69 -->
+### `d050eea3c` `src/move_obj.cpp:937-939`
+
+Mapping: `ambiguous`. comment lies after mapped function findPath at old line 829.
+
+```text
+// Attempt log:
+// - Reconstructed the moving-object, Path, PathingSystem, player, and waypoint
+//   ownership from the packet, exact move_obj.cpp donors, and original x87 flow.
+```
+<!-- end-recovered:cde70ba3031af8722a69 -->
+
+<!-- recovered:9155ce6f504910cb287f -->
+### `target-session` `build/target_sessions/0045D6C0_findPath.json:1-107`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=1098; shape=76.94300518134715: Baseline current scratch source before new hypotheses; establish exact metrics and call/block/stack diagnostics.
+probe 2 layout; result=MISMATCH; diff=1098; shape=71.50259067357513: Hypothesis 1: model inherited pathingGroupMembers as canonical ManagedArrayInt and reset its numberValue; tests whether typed ownership changes first-branch scheduling.
+probe 4 liveness; result=MISMATCH; diff=1100; shape=77.20207253886011: Hypothesis 2: volatile start waypoint forces the original observed x87 load/store path for startValue writes; test whether volatile is the source-level cause.
+probe 6 behavior; result=MISMATCH; diff=1098; shape=76.94300518134715: Hypothesis 3: explicit float-to-double-to-float casts on start waypoint coordinates reproduce the original x87 fld/fstp stores without volatile or raw offsets.
+probe 8 liveness; result=MISMATCH; diff=1097; shape=80.05181347150258: Hypothesis 4: stage x/y/z in local float temporaries before startValue stores; tests whether declaration/liveness explains original load and store order.
+probe 9 control-flow; result=MISMATCH; diff=931; shape=82.98969072164948: Hypothesis 5: source-level null guard on pathingGroupMembers.value explains the original unreachable line-693 block and adds its missing setWaitingToMove call.
+probe 10 abi; result=MISMATCH; diff=1105; shape=83.12020460358056: Hypothesis 6: model the dead guard as a null comparison of a virtual pointer-to-member function; tests whether VC5 emits the observed vcall-thunk address constant.
+probe 12 control-flow; result=MISMATCH; diff=929; shape=82.98969072164948: Hypothesis 8: reverse the guard body statements so setWaitingToMove precedes numberValue reset; tests whether VC5 schedules the original store/push/call order.
+probe 13 liveness; result=MISMATCH; diff=929; shape=82.64248704663213: Hypothesis 9: name branch-local and main-path Path pointers, preserving the original early path LEA and pointer reuse across Path calls.
+probe 14 liveness; result=MISMATCH; diff=931; shape=82.98969072164948: Hypothesis 10: declare x/y/z before the waiting-state call but assign them after; tests declaration scope and liveness against original EBP pointer coloring. [same emitted code as probe 9]
+probe 15 liveness; result=MISMATCH; diff=931; shape=82.98969072164948: Hypothesis 11: make the staged x/y/z locals function-scope rather than branch-local; tests shared home and register color effects across both path branches.
+probe 16 liveness; result=MISMATCH; diff=1027; shape=79.27461139896373: Hypothesis 12: name startValue address as a typed Waypoint* in both path setup arms; tests whether the original EBP-held start pointer is source-driven.
+probe 17 layout; result=MISMATCH; diff=931; shape=82.98969072164948: Hypothesis 13: use the canonical XYZBYTEPoint user-waypoint type and named x/y fields; tests whether typed byte ownership changes the path argument block.
+probe 18 abi; result=MISMATCH; diff=931; shape=82.98969072164948: Hypothesis 14: restore the PDB-proven nested PathResult enum return ABI instead of int; tests symbol decoration and whether enum typing changes body codegen.
+probe 19 control-flow; result=MISMATCH; diff=945; shape=82.21649484536083: Hypothesis 15: duplicate the two natural findTilePath calls inside user-defined and goal arms; tests whether VC5 tail-merges them while retaining the original branch-local push setup.
+probe 20 control-flow; result=MISMATCH; diff=993; shape=81.58567774936061: Hypothesis 16: keep one findTilePath call but use direct branch-local ternary waypoint arguments; tests whether VC5 preserves original branch-local push setup.
+probe 21 control-flow; result=MISMATCH; diff=1005; shape=84.67336683417085: Hypothesis 17: duplicate direct-expression findTilePath calls, including natural float-to-int conversions in each arm; tests the likely original source statement form.
+probe 22 liveness; result=MISMATCH; diff=1058; shape=85.14851485148515: Hypothesis 18: retain direct branch calls but stage common start x/y conversions in branch-local ex/ey homes; tests frame recovery and original branch-tail scheduling.
+probe 23 liveness; result=MISMATCH; diff=1005; shape=84.67336683417085: Hypothesis 19: make the debug-loop index one function-scope local reused by both loops; tests the original 0x10 frame and parameter-home topology.
+probe 24 liveness; result=MISMATCH; diff=1008; shape=85.17587939698493: Hypothesis 20: name the Path pointer only for the action-log scan; tests whether the original early path ownership and frame scratch arise from this natural alias.
+probe 27 layout; result=MISMATCH; diff=931; shape=82.98969072164948: Hypothesis 21: replace opaque Path bytes with the canonical 0x34-byte period Path member layout; tests whether typed aggregate ownership changes alias scheduling. [same emitted code as probe 26]
+probe 28 abi; result=MISMATCH; diff=1007; shape=82.64248704663213: Hypothesis 22: replace the fake cdecl _ftol declaration with natural VC5 float-to-int casts; original calls preserve ST0 and perform no caller stack cleanup.
+probe 29 liveness; result=MISMATCH; diff=1007; shape=82.64248704663213: Hypothesis 23: combine natural float-to-int conversion with function-scope x/y/z and i locals; tests whether shared local homes restore the original frame.
+probe 30 control-flow; result=MISMATCH; diff=1012; shape=86.92307692307692: Hypothesis 24: combine natural ST0 float-to-int casts with duplicated direct findTilePath arm expressions; tests whether this source form retains original branch-local setup.
+probe 31 abi; result=MISMATCH; diff=1012; shape=86.92307692307692: Hypothesis 25: use the canonical RGE_Moving_Object* receiver type in PathingSystem findTilePath/passable declarations instead of void*; tests ABI ownership effects on call setup.
+probe 32 behavior; result=MISMATCH; diff=1012; shape=86.92307692307692: Hypothesis 27: add explicit float-to-double before natural __ftol conversions in direct path arms; tests whether original x87 precision boundary needs a named double conversion.
+probe 33 liveness; result=MISMATCH; diff=1012; shape=86.92307692307692: Hypothesis 28: remove function-scope debug index and restore separate loop-local i variables while keeping direct natural path calls.
+probe 35 control-flow; result=MISMATCH; diff=1001; shape=90.41450777202073: Hypothesis 1: use a typed pointer-to-member initialized to setWaitingToMove and test it for null; tests whether the original 00460FC0 vcall-thunk constant/test is source-generated rather than unreachable scaffolding.
+probe 36 behavior; result=MISMATCH; diff=1105; shape=83.12020460358056: Hypothesis 3: restore the natural staged coordinate source from the best earlier basin: branch-local sx/sy, explicit _ftol calls for goal and start, and one common findTilePath call. Tests call argument evaluation and x87 lowering independently of the new typed member-pointer guard.
+probe 37 abi; result=MISMATCH; diff=994; shape=89.43298969072166: Hypothesis 4: invoke the tested member-function pointer in the null branch instead of naming setWaitingToMove directly; tests whether VC5 then materializes the virtual member pointer as the observed vcall thunk while preserving the proven call slot.
+probe 38 abi; result=MISMATCH; diff=1001; shape=90.41450777202073: Hypothesis 5: bind the guard to a declared virtual slot at +0x1C8, the exact slot named by the 00460FC0 vcall thunk; tests whether a correctly surfaced member-pointer slot produces the immediate while leaving the body call direct.
+probe 39 liveness; result=MISMATCH; diff=1001; shape=90.41450777202073: Hypothesis 6: name the first-branch Path address before coordinate stores and use it through the fast-path calls; tests whether the original EDI path LEA and delayed owner load require an explicit path lifetime.
+probe 40 control-flow; result=MISMATCH; diff=1001; shape=90.41450777202073: Hypothesis 7: model the observed 00460FC0 thunk as the virtual get_waypoint_checksum member at slot +0x1C8 and test the source-style member-function truth condition directly; tests the strongest source explanation for the constant vcall guard.
+probe 41 liveness; result=MISMATCH; diff=1001; shape=90.41450777202073: Hypothesis 8: materialize the fast-path timestamp in a declaration after the +0x58 reset before calling Path::setTimeStamp; tests whether declaration point blocks the observed premature owner-load hoist. [same emitted code as probe 39]
+probe 42 liveness; result=MISMATCH; diff=998; shape=92.74611398963731: Hypothesis 10: cache displayPathObjectID before the display guard and index the owner's object array with that local; tests the original pre-loop EBX load, EBP*4 offset, and [esp+14] saved-index topology.
+probe 43 liveness; result=MISMATCH; diff=998; shape=92.74611398963731: Hypothesis 11 retry: reuse one function-scope debug-loop index for both logging and display loops while retaining the cached display object ID; tests whether the original [esp+10] home is a shared index home.
+probe 44 abi; result=MISMATCH; diff=992; shape=90.88607594936708: Hypothesis 12: replace the raw display-object call with a typed RGE_Static_Object virtual method at slot +0x18, passing the owner as the proven first argument; tests natural thiscall scheduling and the observed object-vptr reload.
+probe 45 liveness; result=MISMATCH; diff=994; shape=93.36734693877551: Hypothesis 13: cache this->owner in a loop-local RGE_Player* before object lookup and pass that alias to the typed virtual display method; tests the original EBX owner reuse across lookup and call.
+probe 46 liveness; result=MISMATCH; diff=997; shape=94.84536082474227: Hypothesis 14: remove the loop-local display-object alias and call owner->objects[objectID]->display directly, while keeping the owner alias; tests the original reload-after-waypoint-call lifetime and avoids an unsupported spill.
+probe 47 liveness; result=MISMATCH; diff=1123; shape=93.35038363171356: Hypothesis 15: use a typed pointer-to-slot for owner->objects[objectID] and reload the object through that slot at the virtual call; tests the original receiver-before-waypoint evaluation without preserving an object alias across calls.
+probe 48 liveness; result=MISMATCH; diff=994; shape=93.36734693877551: Hypothesis 16: bind the display receiver as a typed reference instead of a pointer before evaluating currentWaypoint arguments; tests whether VC5 keeps receiver evaluation early without an explicit pointer spill. [same emitted code as probe 45]
+probe 49 layout; result=MISMATCH; diff=997; shape=94.84536082474227: Hypothesis 17: model the +0x24 owner table as master_objects and call the donor-backed RGE_Master_Static_Object::make_new_object slot +0x18; tests canonical path-display ownership rather than an existing static-object receiver.
+probe 50 liveness; result=MISMATCH; diff=997; shape=94.84536082474227: Hypothesis 18: assign a fast-path-local RGE_Player* only after the +0x58 reset and use it for the timestamp; tests whether explicit receiver scope prevents the original owner-load hoist before the path LEA.
+probe 51 behavior; result=MISMATCH; diff=997; shape=95.87628865979381: Hypothesis 19: restore the period global DAT_00570B80 (-0.5f) and explicit double floor operands for centered passable/move_to coordinates; tests the original x87 FSUB dword and floor stack topology.
+probe 52 abi; result=MISMATCH; diff=914; shape=97.40932642487047: Hypothesis 20: restore the proven three-float move_to ABI and pass this->z as the third argument; the original +0x34 block pushes z before the centered y/x values.
+probe 53 liveness; result=MISMATCH; diff=1119; shape=95.61855670103093: Hypothesis 21 retry: establish the fast-path Path alias at function scope and use it for the early reset calls; tests whether a longer proven path lifetime moves the original EDI LEA before start-value stores.
+probe 55 layout; result=MISMATCH; diff=1017; shape=93.26424870466322: Hypothesis 22: replace the raw master pointer plus +0x38 read with a typed RGE_Master_Moving_Object field; tests canonical ownership while preserving the proven offset.
+probe 57 other; result=MISMATCH; diff=1026; shape=86.78756476683938: Replace the vf0-vf5 placeholder surface with PDB and same-TU canonical RGE_Master_Static_Object names through make_new_obj at the observed slot. Stage waypoint y then x to test owner cache and master-table reload order. Keep the proven three-float move_to and floor form.
+probe 58 other; result=MISMATCH; diff=1017; shape=93.26424870466322: Retain only the PDB-supported canonical master virtual names and make_new_obj ABI. Restore the direct waypoint argument expressions after the staged-coordinate probe changed the frame. Verify whether the loop-local owner cache keeps the original owner reload order.
+probe 61 behavior; result=MISMATCH; diff=1015; shape=87.8238341968912: Hypothesis: make the proven canonical one-waypoint branch unconditional, removing the legacy move_to fallback so the checker sees the observed setWaitingToMove vslot and PathNoPath result.
+probe 65 liveness; result=MISMATCH; diff=1013; shape=92.48704663212435: Hypothesis 1: keep the fast-path Path address in a block-local typed pointer before the timestamp call; this may preserve the original early +0xA4 LEA and coordinate/x87 ordering without changing calls.
+probe 66 abi; result=MISMATCH; diff=1013; shape=92.48704663212435: Hypothesis 2: model the owner timestamp through the canonical RGE_Player::world->world_time field instead of a raw time pointer; this preserves the proven +0x3C/+4 dereference and may restore fault and load order. [same emitted code as probe 65]
+probe 67 control-flow; result=MISMATCH; diff=1016; shape=96.38242894056847: Hypothesis 3: retain the binary-proven vcall-thunk null guard as a natural pointer-to-member check; its 00460FC0 address, +0x58 write, and extra virtual call should restore the omitted CFG island and call count.
+probe 68 layout; result=MISMATCH; diff=1016; shape=96.38242894056847: Hypothesis 4 retry: compare the complete raw master and owner/time basin with the vcall guard after correcting the conditional macro.
+probe 69 abi; result=MISMATCH; diff=1016; shape=96.38242894056847: Hypothesis 5: restore the historical minimal master-object slot surface and make_new_object spelling around the publication call; compare the exact donor basin while retaining the guard.
+probe 70 context; result=MISMATCH; diff=1016; shape=96.38242894056847: Hypothesis 6: remove the unused moving-master declaration introduced by the canonical audit; VC5 file-scope state may be the source of the 914-byte historical basin.
+probe 71 context; result=MISMATCH; diff=914; shape=97.40932642487047: Hypothesis 7: restore the complete known 20260822 guarded source text without wrapper macros or later TU declarations; this tests the historical 914-byte compiler basin exactly.
+probe 72 liveness; result=MISMATCH; diff=914; shape=97.40932642487047: Hypothesis 8: a fast-path block-local Path pointer declared before the timestamp expression should keep the +0xA4 address live across coordinate stores and restore the original early EDI LEA.
+probe 73 liveness; result=MISMATCH; diff=914; shape=97.40932642487047: Hypothesis 9: use a block-local Path reference rather than a pointer or repeated member expressions; the reference may preserve a real +0xA4 address live before owner/time rereads. [same emitted code as probe 72]
+probe 74 liveness; result=MISMATCH; diff=914; shape=97.40932642487047: Hypothesis 10: initialize the fast-path Path pointer immediately after setWaitingToMove and carry it through coordinate stores; test whether earlier address liveness reproduces the original EDI path anchor. [same emitted code as probe 73]
+probe 75 abi; result=MISMATCH; diff=422; shape=97.92746113989638: Hypothesis 11: use the reviewed RGE_Player::availablePathingAttempts(int) ABI; original zero-extends numberWaitDelays into EAX before the call, unlike the current unsigned-char CL push.
+probe 76 behavior; result=MISMATCH; diff=470; shape=96.12403100775194: Hypothesis 12: materialize passableX/passableY as float results from casted floor before the passable call; this tests the original x87 float-store and coordinate evaluation basin.
+probe 77 behavior; result=MISMATCH; diff=331; shape=98.18652849740933: Hypothesis 14: preserve the binary selected-bit mask in the display publication guard; original uses test byte +0x36,1 while a truth test emits a load/test pair.
+probe 78 liveness; result=MISMATCH; diff=416; shape=98.96373056994818: Hypothesis 15: reread owner and master-object table directly in the publication call; original reloads owner+0x24 after both currentWaypoint calls, so a cached owner alias changes fault and register order.
+probe 79 liveness; result=MISMATCH; diff=399; shape=97.66839378238342: Hypothesis 16: cache owner only for the make_new_object self argument but reread this->owner for the master table receiver; this separates publication argument and map/object fault order.
+probe 80 abi; result=MISMATCH; diff=416; shape=98.96373056994818: Hypothesis 17: use the authentic RGE_Moving_Object::teleport virtual at slot +0x34, not the decompiler's move_to label; this protects the moving-object anchor and tests whether the source ABI controls x87 fallback lowering. [same emitted code as probe 78]
+probe 81 abi; result=MISMATCH; diff=416; shape=98.96373056994818: Hypothesis 18: replace the raw owner time pointer with the period owner->world->world_time field while keeping the +0x3C/+4 layout; this tests canonical timestamp ownership and fault order.
+probe 82 behavior; result=MISMATCH; diff=424; shape=92.74611398963731: Hypothesis 19: add explicit float casts to floor results in the half-cell coordinate tests, matching the period source spelling used by adjacent doMove and testing x87 rounding boundaries.
+probe 86 variant; result=MISMATCH; diff=331; shape=98.18652849740933: variant lab build\variant_lab\0045D6C0_findPath\20260823_230729: 9 variants, 9 invariant-eligible, 0 exact
+probe 87 variant; result=MISMATCH; diff=331; shape=98.18652849740933: variant lab build\variant_lab\0045D6C0_findPath\20260823_231029: 36 variants, 36 invariant-eligible, 0 exact
+probe 88 variant; result=MISMATCH; diff=331; shape=98.18652849740933: variant lab build\variant_lab\0045D6C0_findPath\20260823_231350: 15 variants, 15 invariant-eligible, 0 exact
+probe 89 variant; result=MISMATCH; diff=331; shape=98.18652849740933: variant lab build\variant_lab\0045D6C0_findPath\20260823_231503: 8 variants, 8 invariant-eligible, 0 exact
+probe 90 context; result=MISMATCH; diff=35; shape=99.48186528497409: Restore the PDB-listed inline displayPath helper and cast each floor result before subtracting the float bias. The helper explains the single-line 168-byte PDB band, and exact doMove siblings show the same x87 argument shape.
+probe 91 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_231859: 5 variants, 5 invariant-eligible, 0 exact
+probe 92 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_231935: 9 variants, 9 invariant-eligible, 0 exact
+probe 93 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_232044: 7 variants, 7 invariant-eligible, 0 exact
+probe 94 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_232139: 7 variants, 7 invariant-eligible, 0 exact
+probe 95 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_232224: 7 variants, 3 invariant-eligible, 0 exact
+probe 96 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_232301: 6 variants, 6 invariant-eligible, 0 exact
+probe 97 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_232426: 10 variants, 10 invariant-eligible, 0 exact
+probe 98 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_232532: 1 variants, 1 invariant-eligible, 0 exact
+probe 99 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_232615: 4 variants, 4 invariant-eligible, 0 exact
+probe 100 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_232719: 5 variants, 5 invariant-eligible, 0 exact
+probe 101 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_232805: 7 variants, 7 invariant-eligible, 0 exact
+probe 102 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_232840: 2 variants, 2 invariant-eligible, 0 exact
+probe 103 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_232916: 4 variants, 4 invariant-eligible, 0 exact
+probe 104 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_233041: 6 variants, 6 invariant-eligible, 0 exact
+probe 105 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_233149: 1 variants, 1 invariant-eligible, 0 exact
+probe 106 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_233302: 1 variants, 1 invariant-eligible, 0 exact
+probe 107 variant; result=MISMATCH; diff=35; shape=99.48186528497409: variant lab build\variant_lab\0045D6C0_findPath\20260823_233506: 2 variants, 2 invariant-eligible, 1 exact
+probe 108 abi; result=MATCH; diff=0; shape=100.0: Use the PDB-proven ManagedArray<int>::zeroNumber inline method at both resets. Its protected numberValue field rules out direct external writes, and this natural call restores the fast-path receiver schedule.
+probe 109 abi; result=MISMATCH; diff=35; shape=99.48186528497409: Exact-finish walkback: replace both zeroNumber calls with direct numberValue stores while leaving the helper available. This tests whether helper use, not declaration context, is required.
+probe 110 behavior; result=MISMATCH; diff=381; shape=99.48186528497409: Exact-finish walkback: cast each complete floor-minus-bias expression instead of casting the floor result. This tests the x87 rounding boundary and stack-store schedule independently.
+probe 111 context; result=MISMATCH; diff=115; shape=99.22279792746114: Exact-finish walkback: expand displayPath at the call site while leaving the inline method available. This tests the PDB single-line helper boundary independently from declaration context.
+probe 112 abi; result=MATCH; diff=0; shape=100.0: Exact-finish walkback: keep the fast-path zeroNumber call but use a direct reset in the unreachable member-pointer arm. This isolates the second inline call from the controlling fast-path call.
+probe 113 layout; result=MATCH; diff=0; shape=100.0: Exact-finish ownership audit: model the PDB type as ManagedArray<int>, put its storage under protected access, and retain public zeroNumber. This removes the flat public overlay without changing layout.
+probe 114 abi; result=MATCH; diff=0; shape=100.0: Exact-finish ABI audit: use Path::setTimeStamp(unsigned long) and insertAtCurrent(const Waypoint&), as their PDB-qualified direct targets require. Keep the same calls and reference objects.
+probe 115 layout; result=MATCH; diff=0; shape=100.0: Exact-finish ownership audit: replace the raw player time pointer with the PDB-backed RGE_Player::world and RGE_Game_World::world_time fields, including their vptr-bearing layouts.
+probe 116 layout; result=MATCH; diff=0; shape=100.0: Exact-finish ownership audit: type master_obj as RGE_Master_Static_Object, restore its radius_z field, and use the PDB factory name make_new_obj at virtual slot +0x18.
+probe 117 layout; result=MATCH; diff=0; shape=100.0: Exact-finish naming audit: restore PDB field and method names for master_obj, world coordinates, pathValue, exceptionPathValue, NoPathFound, maxUserDefinedWaypointsValue, make_new_obj, and teleport. [same emitted code as probe 116]
+probe 118 variant; result=MATCH; diff=0; shape=100.0: variant lab build\variant_lab\0045D6C0_findPath\20260823_234120: 1 variants, 1 invariant-eligible, 1 exact
+probe 119 layout; result=MATCH; diff=0; shape=100.0: Exact-finish ownership audit: restore the PDB-proven RGE_Static_Object and RGE_Animated_Object bases, named base fields through +0x88, and moving fields through pathValue at +0xA4.
+probe 120 context; result=MATCH; diff=0; shape=100.0: Exact-finish simplification: restore the PDB-listed inline setStart(float,float,float) helper and remove three steering locals. The inlined helper preserves both observed coordinate-copy blocks.
+probe 121 context; result=MATCH; diff=0; shape=100.0: Exact-finish declaration-order audit: place findPath before inline displayPath, as the PDB RGE_Moving_Object method list orders them. Keep setStart before both. [same emitted code as probe 120]
+probe 122 liveness; result=MATCH; diff=0; shape=100.0: Exact-finish simplification: pass displayPathObjectID directly to the PDB-listed inline displayPath method. Remove the caller-side objectID alias and let the helper parameter own its lifetime. [same emitted code as probe 121]
+probe 123 layout; result=MATCH; diff=0; shape=100.0: Exact-finish layout audit: replace residual base and moving gaps with PDB-backed fields, use uchar aliases, and put Path storage under protected access after its public methods. [same emitted code as probe 122]
+probe 124 context; result=MATCH; diff=0; shape=100.0: Exact-finish simplification: remove the redundant fprintf redeclaration and use the period stdio.h declaration already present in the authentic module context.
+```
+<!-- end-recovered:9155ce6f504910cb287f -->
+
+<!-- recovered:b2b22256b4a68fceff24 -->
+### `2341ac47c0af` `src/scratch/0045D6C0_findPath.cpp:1-26`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 0045D6C0 RGE_Moving_Object::findPath
+// Attempt log:
+// 1: reconstructed behavior from packet/Ghidra, with raw offsets for moving object, Path, player, pathing system and debug globals.
+// 2: initial virtual calls via raw function-pointer casts compiled but default cdecl cleanup was wrong for original thiscall virtuals and text was 1152 (<1232).
+// 3: replaced raw vf pointer with a padded virtual surface so stop_action is slot +0x12c and move_to is slot +0x34; this gives natural thiscall virtual dispatch but still 1152 bytes under /O2.
+// 4: /Op probe grew only to 1168 and remained under-size; /Od produced 1232 bytes but wrong EBP/debug-frame basin (82.3864% positional, 111.5260% edit) and was removed.
+// 5: remaining model is behavior-oriented but incomplete for exact shape: original has aligned /O2 frame, explicit [esp+10]/[esp+14] scratch use, precise __ftol/floor stack choreography, and exact pathing/debug loops not reproduced. Not accepted_drift-safe.
+// 6: direct currentWaypoint() expressions restored the oracle's two call sites per coordinate pair and aligned all 50 calls.
+// 7: the original 0045D76B block is an unreachable compiler-generated vcall-thunk guard; an address-based diagnostic reproduced its CFG/size but was removed from the living source as opaque scaffolding.
+// 8: canonicalized Waypoint and moving-object field ownership (selected +36, actionRange +134, targetID +138); remaining drift is source/VC5 topology, not a proven field offset.
+// 9: paused after the bounded assignment; clean source is frame-exact with 49/50 calls, while the diagnostic guard reached size/CFG/call parity but was not a plausible source reconstruction.
+// 10: tested the natural pre-gate waiting-state reset from the ordered call map; it improved size but changed the later virtual call to an indirect register call, so it was restored.
+// 11: named a local start waypoint pointer to follow the original EBP-preserved address; first mismatch shifted earlier and diff worsened to 1120, so it was restored.
+// 12: donor-backed typed member-pointer null guard plus canonical ManagedArray ownership restored the missing vcall and matched 50/50 calls and CFG, but worsened positional diff to 1106; rolled back as opaque compiler steering.
+// 13: fresh pass tested 27 distinct source, ABI, layout, liveness, and control-flow hypotheses. The best clean guarded model reached 50/50 calls, 1207 bytes, and diff 931, but its null guard is not supported by the constant vcall-thunk condition and was not retained.
+// 14: natural float-to-int casts preserve the original ST0 __ftol ABI. Direct branch-local findTilePath calls preserve the original user-waypoint setup and tail-merge to one emitted call; the clean result remains unresolved at 49/50 calls because the unreachable compiler block is omitted.
+// 15: caching displayPathObjectID before the display guard recovered the 0x10 frame and the original stack-home shape.
+// 16: a typed master-object call at vslot +0x18 recovered the donor-backed path-display ownership and improved block coverage.
+// 17: a loop-local owner alias plus a direct typed master-object call removed the raw call surface and improved block coverage.
+// 18: DAT_00570B80 and explicit double floor operands recovered the shipped float subtraction form.
+// 19: the +0x34 virtual move_to call takes three floats; passing z recovered the full move-to block and reduced diff to 914 bytes in the guarded diagnostic.
+// 20: a typed master pointer at +0x38 produced the same bytes as the proven raw access and is retained as the simpler ownership model.
+// 21: the pointer-to-member guard reached 50 calls, 1232 bytes, and 914-byte diff, but it used metric-only scaffolding and was removed.
+// 22: same-TU and PDB evidence replace the master vf placeholders with the canonical destructor, copy, modify, save, and make_new_obj names.
+// 23: staging waypoint coordinates before the master lookup changed the frame to 0x18 and worsened the result; direct expressions were restored.
+// 24: the owner cache keeps the owner in EBX, but VC5 emits the master-table reload before currentWaypoint in this source form. The original reload is after both waypoint calls.
+```
+<!-- end-recovered:b2b22256b4a68fceff24 -->
+
+<!-- recovered:6bc30b0336d2c800b04d -->
+### `2341ac47c0af` `src/scratch/0045D6C0_findPath.cpp:88-88`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+    // BINARY NOTE: the +0x24 table uses the master-object make_new_obj slot.
+```
+<!-- end-recovered:6bc30b0336d2c800b04d -->
+
+<!-- recovered:727ba60c51ea98020dac -->
+### `2341ac47c0af` `src/scratch/0045D6C0_findPath.cpp:138-138`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+    // BINARY NOTE: the +0x34 call pushes three float arguments.
+```
+<!-- end-recovered:727ba60c51ea98020dac -->
+
+<!-- recovered:cdab70635531a62a0dc7 -->
+### `2341ac47c0af` `src/scratch/0045D6C0_findPath.cpp:250-250`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+        // BINARY NOTE: this is the ManagedArray count at object offset +0x58.
+```
+<!-- end-recovered:cdab70635531a62a0dc7 -->
+
+<!-- recovered:9068b06a70ef605b0310 -->
+### `2341ac47c0af` `src/scratch/0045D6C0_findPath.cpp:328-328`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+    // BINARY NOTE: the original caches this global before the display guard.
+```
+<!-- end-recovered:9068b06a70ef605b0310 -->

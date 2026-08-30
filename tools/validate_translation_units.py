@@ -21,6 +21,7 @@ from common import (
     REPO_ROOT,
     load_functions,
     load_pdb_function_source_map,
+    load_source_modules,
     load_translation_units,
     pdb_module_stream_procedure_for_va,
     preferred_source_path,
@@ -259,6 +260,7 @@ def validate_translation_units(
     root: Path = REPO_ROOT,
     manifests_dir: Path | None = None,
     object_dir: Path | None = None,
+    require_complete: bool = False,
 ) -> list[ValidationIssue]:
     """Return all structural issues in grouped translation-unit manifests."""
     groups = list(groups)
@@ -268,6 +270,7 @@ def validate_translation_units(
     issues: list[ValidationIssue] = []
     seen_names: dict[str, str] = {}
     seen_sources: dict[str, str] = {}
+    seen_functions: dict[str, str] = {}
     seen_vas: dict[str, str] = {}
     seen_owner_paths: dict[str, str] = {}
 
@@ -329,8 +332,40 @@ def validate_translation_units(
                     ),
                 )
 
+        configured_functions = group.get("functions")
+        if not isinstance(configured_functions, dict) or not configured_functions:
+            issues.append(_issue("missing-functions", f"{group_label} has no configured functions"))
+            configured_functions = {}
+        module_functions = (
+            source_module["functions"] if source_module is not None else {}
+        )
+        assert isinstance(module_functions, dict)
+        for raw_va, raw_symbol in configured_functions.items():
+            va = str(raw_va).upper()
+            symbol = str(raw_symbol).strip()
+            if not _HEX_VA.fullmatch(va):
+                issues.append(_issue("invalid-va", f"{group_label} has invalid function VA {raw_va!r}"))
+                continue
+            if va in seen_functions:
+                issues.append(
+                    _issue("duplicate-function", f"VA {va} is also configured by {seen_functions[va]}")
+                )
+            else:
+                seen_functions[va] = group_label
+            if va not in records:
+                issues.append(_issue("unknown-va", f"{group_label} function {va} is absent from inventory"))
+            if va not in module_functions:
+                issues.append(
+                    _issue(
+                        "module-function-missing",
+                        f"{group_label} function {va} is absent from source module {module_name}",
+                    )
+                )
+            if not symbol or any(character.isspace() for character in symbol):
+                issues.append(_issue("invalid-symbol", f"{group_label} has invalid function symbol for {va}"))
+
         owners = group.get("owners")
-        if not isinstance(owners, dict) or not owners:
+        if not isinstance(owners, dict):
             issues.append(_issue("missing-owners", f"{group_label} has no owners"))
             continue
         owner_records: list[tuple[str, Path, dict[str, str] | None]] = []
@@ -533,6 +568,27 @@ def validate_translation_units(
 
     if manifests_dir is not None:
         issues.extend(find_isolated_owner_overlaps(groups, manifests_dir=manifests_dir, root=root))
+    if require_complete:
+        registered = set(seen_vas)
+        for module in load_source_modules():
+            functions = module["functions"]
+            assert isinstance(functions, dict)
+            for va, entry in functions.items():
+                status = str(entry.get("status") or "")
+                if status != "observed" and va not in seen_functions:
+                    issues.append(
+                        _issue(
+                            "unconfigured-function",
+                            f"{module['name']} function {va} has no translation-unit recipe",
+                        )
+                    )
+                if status == "matching" and va not in registered:
+                    issues.append(
+                        _issue(
+                            "unregistered-matching",
+                            f"{module['name']} function {va} is matching but has no exact validation target",
+                        )
+                    )
     return issues
 
 
@@ -564,7 +620,9 @@ def main() -> int:
     if not args.no_build_checks:
         kwargs["manifests_dir"] = args.manifests_dir
         kwargs["object_dir"] = args.objects_dir
-    issues = validate_translation_units(load_translation_units(), **kwargs)
+    issues = validate_translation_units(
+        load_translation_units(), require_complete=True, **kwargs
+    )
     if issues:
         for issue in issues:
             print(issue, file=sys.stderr)

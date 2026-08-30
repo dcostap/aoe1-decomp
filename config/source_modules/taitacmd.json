@@ -169,7 +169,7 @@
     },
     "004EB6F0": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004ECD80": {
       "status": "matching"
@@ -218,7 +218,7 @@
     },
     "004ED4F0": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004EEB40": {
       "status": "matching"
@@ -240,14 +240,14 @@
     },
     "004F0190": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F0BC0": {
       "status": "matching"
     },
     "004F0D70": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F1090": {
       "status": "matching"
@@ -257,14 +257,14 @@
     },
     "004F1600": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F1E10": {
       "status": "matching"
     },
     "004F21F0": {
       "status": "verified_logic",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F4760": {
       "status": "matching"
@@ -274,11 +274,11 @@
     },
     "004F4D90": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F57C0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F5FB0": {
       "status": "matching"
@@ -324,29 +324,29 @@
     },
     "004F62C0": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F7350": {
       "status": "matching"
     },
     "004F7590": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F7870": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F7D90": {
       "status": "matching"
     },
     "004F7E80": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F81A0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F8570": {
       "status": "scratch"
@@ -362,11 +362,11 @@
     },
     "004F8C40": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F8E20": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F9380": {
       "status": "matching"
@@ -382,11 +382,11 @@
     },
     "004F95B0": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F99B0": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004F9AD0": {
       "status": "scratch"
@@ -399,7 +399,7 @@
     },
     "004FA170": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004FA820": {
       "status": "matching"
@@ -427,7 +427,7 @@
     },
     "004FB2D0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004FB500": {
       "status": "matching"
@@ -455,18 +455,18 @@
     },
     "004FBC30": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004FC500": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004FD2F0": {
       "status": "matching"
     },
     "004FD4F0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004FD6D0": {
       "status": "matching"
@@ -476,18 +476,18 @@
     },
     "004FDE00": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004FE950": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004FF4E0": {
       "status": "matching"
     },
     "004FF6E0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "004FF8E0": {
       "status": "matching"
@@ -515,11 +515,11 @@
     },
     "005004C0": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "00500670": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "005007B0": {
       "status": "matching"
@@ -550,7 +550,7 @@
     },
     "00500AD0": {
       "status": "matching",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "00500AF0": {
       "status": "matching"
@@ -635,45 +635,45 @@
     },
     "00502310": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "00502600": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "00502920": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "00502BF0": {
       "status": "matching"
     },
     "00502D50": {
       "status": "scratch",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "00502F30": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "00502FC0": {
       "status": "matching",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "00502FF0": {
       "status": "matching",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "00503020": {
       "status": "matching"
     },
     "00503040": {
       "status": "matching",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "00503070": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "005032E0": {
       "status": "scratch"
@@ -683,7 +683,7 @@
     },
     "005034B0": {
       "status": "verified_logic",
-      "note_path": "recovery_notes/taitacmd_module.md"
+      "note_path": "decomp_notes/taitacmd_module.md"
     },
     "00503580": {
       "status": "matching"

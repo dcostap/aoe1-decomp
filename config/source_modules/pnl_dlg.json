@@ -5,10 +5,10 @@
   "source": "src/pnl_dlg.cpp",
   "header": "include/pnl_dlg.h",
   "functions": {
-    "00473C10": { "status": "matching", "note_path": "recovery_notes/pnl_dlg_module.md" },
-    "00473C80": { "status": "matching", "note_path": "recovery_notes/pnl_dlg_module.md" },
-    "00473D60": { "status": "scratch", "note_path": "recovery_notes/pnl_dlg_module.md" },
-    "00473E40": { "status": "matching", "note_path": "recovery_notes/pnl_dlg_module.md" },
-    "00473EC0": { "status": "matching", "note_path": "recovery_notes/pnl_dlg_module.md" }
+    "00473C10": { "status": "matching", "note_path": "decomp_notes/pnl_dlg_module.md" },
+    "00473C80": { "status": "matching", "note_path": "decomp_notes/pnl_dlg_module.md" },
+    "00473D60": { "status": "scratch", "note_path": "decomp_notes/pnl_dlg_module.md" },
+    "00473E40": { "status": "matching", "note_path": "decomp_notes/pnl_dlg_module.md" },
+    "00473EC0": { "status": "matching", "note_path": "decomp_notes/pnl_dlg_module.md" }
   }
 }

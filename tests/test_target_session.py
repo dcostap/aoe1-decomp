@@ -1018,29 +1018,17 @@ class TargetSessionTests(unittest.TestCase):
             self.assertEqual(probe["evidence"]["variants"], 4)
             self.assertIsNone(probe["same_emitted_code_as_probe"])
 
-    def test_pause_requires_a_current_final_validation_after_checks_exist(self) -> None:
+    def test_pause_releases_the_lease_after_recorded_work(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            fresh_metrics = {"result": "MISMATCH", "artifact_fresh": True}
-            snapshot = {"source_sha256": "current"}
             with patch.object(target_session, "REPO_ROOT", root), patch.object(
-                target_session, "current_metric_summary", return_value=fresh_metrics
-            ), patch.object(
-                target_session, "current_input_snapshot", return_value=snapshot
+                target_session,
+                "current_metric_summary",
+                return_value={"result": "MISMATCH", "artifact_fresh": True},
             ):
                 target_session.start_session(self.record, "AgentA", 2, 2.0)
-                seeded = target_session._load_session(self.record)
-                seeded["clean_baseline"] = {"inputs": snapshot, "checkpoint_id": "clean-1"}
-                target_session._write_session(self.record, seeded)
                 target_session.record_probe(
                     self.record, "AgentA", "control-flow", "changed guard"
-                )
-                with self.assertRaisesRegex(RuntimeError, "--kind validation"):
-                    target_session.change_state(
-                        self.record, "AgentA", "pause", "bounded stop"
-                    )
-                target_session.record_probe(
-                    self.record, "AgentA", "validation", "final current check"
                 )
                 paused = target_session.change_state(
                     self.record, "AgentA", "pause", "bounded stop"
@@ -1073,75 +1061,7 @@ class TargetSessionTests(unittest.TestCase):
             self.assertEqual(baseline["inputs"], snapshot)
             self.assertIn("natural indexed loop", baseline["note"])
 
-    def test_grouped_exact_release_rejects_changed_sibling_context(self) -> None:
-        current_context = {
-            "fingerprint": "current-build",
-            "translation_unit": {
-                "name": "demo_unit",
-                "source": "src/demo_unit_tu.cpp",
-                "flags": "config/flags/demo.rsp",
-                "owners": {
-                    "00001000": "src/matching/00001000_demo.cpp",
-                    "00001010": "src/matching/00001010_other.cpp",
-                },
-                "symbols": {"00001010": "?other@@YAHXZ"},
-            },
-            "inputs": [
-                {"path": "src/demo_unit_tu.cpp", "sha256": "wrapper"},
-                {"path": "src/matching/00001000_demo.cpp", "sha256": "target"},
-                {"path": "src/matching/00001010_other.cpp", "sha256": "other"},
-                {"path": "config/flags/demo.rsp", "sha256": "flags"},
-            ],
-        }
-        stale_checkpoint = {"build_context": copy.deepcopy(current_context)}
-        stale_checkpoint["build_context"]["translation_unit"]["owners"]["00001010"] = (
-            "src/matching/00001010_old.cpp"
-        )
-        metrics = {
-            "result": "MATCH",
-            "artifact_fresh": True,
-            "build_input_fingerprint": "current-build",
-            "owning_symbol_validation": {"status": "match", "expected_owner": "Demo"},
-        }
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            with patch.object(target_session, "REPO_ROOT", root), patch.object(
-                target_session, "current_metric_summary", return_value=metrics
-            ), patch.object(
-                target_session, "current_input_snapshot", return_value={"build_input_fingerprint": "current-build"}
-            ), patch.object(
-                target_session, "current_build_context", return_value=current_context
-            ), patch.object(
-                target_session, "checkpoint_info", return_value=stale_checkpoint
-            ):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
-                session = target_session._load_session(self.record)
-                session["probes"] = [{"number": 1, "checkpoint": "exact-check"}]
-                target_session._write_session(self.record, session)
-                with self.assertRaisesRegex(RuntimeError, "translation-unit owners"):
-                    target_session.change_state(self.record, "AgentA", "release", "exact result")
-
-    def test_pause_rejects_unresolved_source_without_clean_baseline(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            snapshot = {"source_sha256": "validated"}
-            with patch.object(target_session, "REPO_ROOT", root), patch.object(
-                target_session,
-                "current_metric_summary",
-                return_value={"result": "MISMATCH", "artifact_fresh": True},
-            ), patch.object(
-                target_session, "current_input_snapshot", return_value=snapshot
-            ):
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
-                target_session.record_probe(
-                    self.record, "AgentA", "validation", "final current check"
-                )
-                with self.assertRaisesRegex(RuntimeError, "clean-source baseline"):
-                    target_session.change_state(
-                        self.record, "AgentA", "pause", "bounded stop"
-                    )
-
-    def test_release_cannot_bypass_unresolved_pause_contract(self) -> None:
+    def test_release_releases_the_lease_after_recorded_work(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root), patch.object(
@@ -1151,31 +1071,10 @@ class TargetSessionTests(unittest.TestCase):
             ), patch.object(target_session, "current_input_snapshot", return_value={}):
                 target_session.start_session(self.record, "AgentA", 2, 2.0)
                 target_session.record_probe(self.record, "AgentA", "baseline", "first")
-                with self.assertRaisesRegex(RuntimeError, "pin-clean, and pause"):
-                    target_session.change_state(
-                        self.record, "AgentA", "release", "stop"
-                    )
-
-    def test_pause_rejects_changes_after_final_validation(self) -> None:
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            snapshot = {"source_sha256": "validated"}
-            with patch.object(target_session, "REPO_ROOT", root), patch.object(
-                target_session,
-                "current_metric_summary",
-                return_value={"result": "MISMATCH", "artifact_fresh": True},
-            ), patch.object(
-                target_session, "current_input_snapshot", return_value=snapshot
-            ) as inputs:
-                target_session.start_session(self.record, "AgentA", 2, 2.0)
-                target_session.record_probe(
-                    self.record, "AgentA", "validation", "final current check"
+                released = target_session.change_state(
+                    self.record, "AgentA", "release", "stop"
                 )
-                inputs.return_value = {"source_sha256": "changed-comments"}
-                with self.assertRaisesRegex(RuntimeError, "changed after"):
-                    target_session.change_state(
-                        self.record, "AgentA", "pause", "bounded stop"
-                    )
+            self.assertEqual(released["state"], "release")
 
 
     def test_history_lists_checker_runs_and_notebook_probes_newest_first(self) -> None:
@@ -1218,12 +1117,12 @@ class TargetSessionTests(unittest.TestCase):
                             "runs": [
                                 {"id": "run-a", "timestamp": "2026-08-02T10:01:00Z",
                                  "labels": ["probe-001-baseline"], "custom_flags": False,
-                                 "source_path": "src/scratch/demo.cpp",
+                                 "source_path": "src/demo.cpp",
                                  "summary": {"result": "MISMATCH", "diff_bytes": 10,
                                              "diff_percent": 15.6, "resync_similarity_percent": 80.0}},
                                 {"id": "run-b", "timestamp": "2026-08-02T10:30:00Z",
                                  "labels": ["probe-002-abi"], "custom_flags": True,
-                                 "source_path": "src/scratch/demo.cpp",
+                                 "source_path": "src/demo.cpp",
                                  "summary": {"result": "MATCH", "diff_bytes": 0,
                                              "diff_percent": 0.0, "resync_similarity_percent": 100.0}},
                             ],

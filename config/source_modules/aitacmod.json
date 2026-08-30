@@ -7,11 +7,11 @@
   "functions": {
     "00412B50": {
       "status": "matching",
-      "note_path": "recovery_notes/aitacmod_module.md"
+      "note_path": "decomp_notes/aitacmod_module.md"
     },
     "00412BA0": {
       "status": "matching",
-      "note_path": "recovery_notes/aitacmod_module.md"
+      "note_path": "decomp_notes/aitacmod_module.md"
     }
   }
 }

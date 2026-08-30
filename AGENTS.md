@@ -78,33 +78,31 @@ Repository source roles are:
 - `src\game_globals.cpp`: reviewed shared global definitions;
 - natural `src\*.c` and `src\*.cpp` modules: compiler-facing handwritten owners;
 - `config\source_modules\`: current per-function status in natural modules;
-- `src\scratch`, `src\matching`, `src\accepted_drift`, and `src\verified_logic`:
-  legacy standalone sources for functions not yet moved into natural modules;
+- `config\translation_units.json`: module build recipes and function symbols;
+- `decomp_notes\`: durable function and module notes;
 - `logic_reviews\`: versioned semantic-review ledgers;
 - `LESSONS.md`: reusable VC5 matching knowledge.
 
-The active source-reunification phase moves recovered functions into their
-final, original-like source modules. For a migrated PDB compiland:
+The source tree uses final, original-like modules:
 
 - one normal `.c` or `.cpp` file owns all handwritten functions in source order;
 - normal headers own shared declarations;
 - `config/source_modules/<module>.json` records each function status;
-- recovery notes live under `recovery_notes/` when they do not belong in source;
-- wrapper files, function-fragment includes, context-selection macros, and
-  duplicate fallback declarations are removed.
+- function notes store facts, tested approaches, and useful next steps;
+- function notes do not store status or source ownership; and
+- wrapper files, function fragments, and context-selection macros are forbidden.
 
-During this structural phase, a temporary exactness regression does not block a
-natural module migration. Record every regression. Do not change behavior to
-cause or hide one. Exact repair resumes on the final source tree.
+`observed` means source exists, but one translation-unit recipe cannot be proved.
+Header-owned functions and PDB modules without procedure records can use it.
+
+Each other normal function must appear in one translation-unit `functions` map.
+The source-module manifest remains the only status source.
 
 A VA has one compiler-facing source owner. Never keep duplicate owners across
-source banks.
+modules or headers. Edit only that natural owner.
 
-For a migrated function, edit only its natural module. A legacy standalone file
-does not establish current ownership or exactness.
-
-Do not reopen accepted drift without specific new evidence. Folder placement is
-the current reviewed status.
+Do not reopen accepted drift without specific new evidence. The source-module
+manifest is the current reviewed status.
 
 ## Shared-worktree conduct
 

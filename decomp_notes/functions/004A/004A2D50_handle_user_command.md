@@ -1,0 +1,17 @@
+# Function notes: 004A2D50 `handle_user_command`
+
+Module notes: `decomp_notes/scr_mps_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:c82529656d15e99985c5 -->
+### `bf81de068f12` `src/scratch/004A2D50_handle_user_command.cpp:1-3`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004A2D50 handle_user_command (2551B)
+// scr_mps.cpp
+// EH frame (/GX)
+```
+<!-- end-recovered:c82529656d15e99985c5 -->

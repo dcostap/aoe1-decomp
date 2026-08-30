@@ -7,11 +7,11 @@
   "functions": {
     "0053C1B0": {
       "status": "matching",
-      "note_path": "recovery_notes/visible.md"
+      "note_path": "decomp_notes/visible.md"
     },
     "0053C290": {
       "status": "scratch",
-      "note_path": "recovery_notes/visible.md"
+      "note_path": "decomp_notes/visible.md"
     },
     "0053C3C0": { "status": "matching" },
     "0053C400": { "status": "matching" },
@@ -19,29 +19,29 @@
     "0053C4D0": { "status": "matching" },
     "0053C5D0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/visible.md"
+      "note_path": "decomp_notes/visible.md"
     },
     "0053C670": { "status": "matching" },
     "0053C680": {
       "status": "matching",
-      "note_path": "recovery_notes/visible.md"
+      "note_path": "decomp_notes/visible.md"
     },
     "0053C6C0": { "status": "matching" },
     "0053C6F0": {
       "status": "scratch",
-      "note_path": "recovery_notes/visible.md"
+      "note_path": "decomp_notes/visible.md"
     },
     "0053C920": {
       "status": "scratch",
-      "note_path": "recovery_notes/visible.md"
+      "note_path": "decomp_notes/visible.md"
     },
     "0053CAC0": {
       "status": "scratch",
-      "note_path": "recovery_notes/visible.md"
+      "note_path": "decomp_notes/visible.md"
     },
     "0053CCF0": {
       "status": "scratch",
-      "note_path": "recovery_notes/visible.md"
+      "note_path": "decomp_notes/visible.md"
     },
     "0053CE70": { "status": "matching" },
     "0053CE80": { "status": "matching" },
@@ -54,13 +54,13 @@
     "0053D0C0": { "status": "matching" },
     "0053D0D0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/visible.md"
+      "note_path": "decomp_notes/visible.md"
     },
     "0053D110": { "status": "matching" },
     "0053D150": { "status": "matching" },
     "0053D200": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/visible.md"
+      "note_path": "decomp_notes/visible.md"
     }
   }
 }

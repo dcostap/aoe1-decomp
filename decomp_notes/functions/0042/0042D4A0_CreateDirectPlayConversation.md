@@ -1,0 +1,16 @@
+# Function notes: 0042D4A0 `CreateDirectPlayConversation`
+
+Module notes: `decomp_notes/com_hand_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:d77e653d957b6a5f71d4 -->
+### `c9edebbc790d` `src/matching/0042D4A0_CreateDirectPlayConversation.cpp:1-2`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 0042D4A0 TCommunications_Handler::CreateDirectPlayConversation (Com_hand.cpp:5525-5568)
+// Attempt 1
+```
+<!-- end-recovered:d77e653d957b6a5f71d4 -->

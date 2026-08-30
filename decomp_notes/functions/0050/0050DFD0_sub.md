@@ -1,0 +1,114 @@
+# Function notes: 0050DFD0 `sub`
+
+Module notes: `decomp_notes/Timeline_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:3de975274c6be77cfc45 -->
+### `eeb404b93df8` `src/scratch/0050DFD0_sub.cpp:1-100`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0050DFD0 RGE_Timeline::sub(RGE_Time_Entry*) (100 B)
+// PDB source: Timeline.cpp lines 499-530
+// Attempt log (orch-w2):
+// 1 (baseline): while (p != entry) + inner if (p==0) return -> rotated loop with shared
+//   exit, EBX save, folded dup guard (92B/98).
+// 2 (control-flow): while (p != 0) { if (p == entry) break; ... } -> folded dup guard,
+//   shared not-found exit, EBX save (90B).
+// 3 (control-flow): compound-cond for + post if (p==0) return -> extra redundant post-test
+//   and found path runs through it (55.81% blocks).
+// 4 (control-flow): if (p == 0) return; INSIDE compound-cond for body -> loop rotation now
+//   matches original (head cmp / bottom test jne head / inline not-found epilogue); remaining:
+//   EBX save (entry kept live in EAX across loop), lea edx vs lea ecx, je else vs je join.
+// 5 (liveness): duplicate this->sub(entry) in BOTH command arms + volatile stack-home read on
+//   the else path -> EBX eliminated, register family matches, loop matches; 96B/86 diff
+//   shape 95.35%; only missing 4-byte second guard test (504/509 fold).
+// 6 (liveness): find copy for loop compare regressed (94B); rolled back.
+// 7 (control-flow): outer guard on member (this->time_list) folded identically; rolled back.
+// 8 (control-flow): member in for-cond regressed (104B, EBX); rolled back.
+// 9 (control-flow): while+break+post-check -> right rotation but shared not-found exit (95B).
+// 10 (restore): restored the best source (probe 6): compound-cond for with inner return,
+//   duplicated sub(entry) call + volatile stack-home read on the else path. 96B / 86 diff /
+//   95.35% shape / 76.74% blocks / edit-diff 11. EVERYTHING matches the original except the
+//   redundant second guard test (test esi,esi; je) at +0x0E (line 509) - a 4-byte /Og
+//   redundant-branch elimination artifact: ~35 harness experiments (nested ifs, &&, comma,
+//   member reads, goto, while-wrap, for-header, for(;;), do-while, /O1 /G5 /G6 /GX /Og-
+//   flags) all fold the duplicate guard; /Og- keeps it but destroys the rest of the codegen.
+//
+// Key findings this session:
+// - Loop rotation requires the COMPOUND cond: for (; p != 0 && p != entry; ) with
+//   if (p == 0) return; INSIDE the body -> head cmp / bottom test jne head / inline
+//   not-found epilogue. Single-cond while/for/for(;;) forms rotate differently
+//   (bottom cmp re-test + shared not-found exit) and never match.
+// - Register family (link=eax, &time_list=ecx, entry=edx, no EBX) requires the
+//   DUPLICATED this->sub(entry) call in both command arms PLUS a forced stack-home
+//   reload of the param on the else path (mov eax,[esp+0Ch]). Without the forced
+//   reload VC5 keeps entry live in a register across the loop and saves EBX for the
+//   unlink temp (the original kills entry at the unlink, reusing edx for p->next).
+// - The volatile read only reproduces the binary-proven else-path stack reload; it
+//   is a codegen steer for the observed mov eax,[esp+0Ch], not a semantic claim.
+//
+// Fresh pass (orch-luna-50dfd0-w1):
+// - Revalidated the clean candidate at 96B/100 (86 positional diff, 95.35% shape);
+//   the only body-byte gap is the original redundant `test esi,esi; je` at +0x0E.
+// - Moving link declaration/init into the outer guard reached 100B but worsened to
+//   88 diff; splitting declaration from init emitted the same 100B basin.
+// - A valid guard-spelling lab (9 variants: aliases, nested/compound/while/comma
+//   forms) produced 5 codegen groups, none size-eligible; the clean current basin
+//   remained best among those forms. Ghidra-backed comma-condition forms likewise
+//   worsened structural shape or collapsed the repeated test.
+// - A 32-bit cast on the repeated null conjunct, nested outer+compound guards, and
+//   compiling the exact find_id sibling before sub all emitted the unchanged clean
+//   96B code. No new TU-context lead was found.
+// - Remaining blocker: VC5 /O2 eliminates the binary's redundant top null test while
+//   preserving all later instructions; prior and fresh natural/context variants do
+//   not retain it. Keep the canonical compound link-walk source below.
+//
+// Normalization (non-probe, main-agent source-plausibility audit):
+// - Removed the fake volatile stack-home reload and duplicated recursive-call arms.
+// - The ordinary source now selects the recursive argument only for command 1, then
+//   performs one shared this->sub(entry) call. This preserves the executable's odd
+//   command-1 tail behavior while leaving the prior scheduling evidence above as
+//   diagnostic history rather than compiler-steering source.
+// Main-agent audit confirmed canonical timeline/event ownership and retained
+// the ordinary linked-list source without volatile or duplicated-call steering.
+// Fresh worker probes (sa-011f8785-r1):
+// - Reintroduced the explicit duplicated null guard and do/while tail scan from
+//   the decompiler evidence; this emitted 92B with worse CFG/shape, so restored.
+// - A comma-assignment guard was a codegen duplicate of that 92B basin.
+// - Unqualified versus `this->sub(entry)` was a codegen duplicate of the clean
+//   94B source. The remaining blocker is the known VC5 redundant head test and
+//   self-call relocation basin; keep the normalized shared-call source.
+// Fresh bounded pass (orch-timeline-01):
+// - Baseline revalidated at 94B/96 compared (99 strict diff, 86.36% shape).
+// - Branch-local recursive-entry locals, with initialized and uninitialized
+//   declaration forms, both compiled to the unchanged clean basin; explicit
+//   command-else assignment was optimized away.
+// - Nested positive guards with link initialization between them and the
+//   compound walk were neutral; moving link initialization into the outer guard
+//   with `while (p != entry)` worsened to 92B/98 and was restored.
+// - Adding donor-used game_globals.h was a context duplicate. A one-case switch
+//   on command improved strict bytes only to 97 but worsened CFG/shape; it is
+//   diagnostic, not living source. Stable-head/moving-link plus branch-local
+//   result likewise duplicated the clean bytes.
+// - Remaining structural blocker is unchanged: default VC5 keeps the compare
+//   parameter live, saves EBX, and folds the binary's redundant head null test.
+//
+// Fresh assignment (orch-timeline-fresh-04):
+// - Exact-decompiler guard with link-before-p declaration order and compound
+//   assignment reached 92B/98 but still folded the repeated test and worsened
+//   CFG/shape; restored.
+// - `*link = (*link)->next` reached 96B/93 and improved size/edit alignment,
+//   but emitted the wrong two-load unlink sequence; it is not the binary-backed
+//   source spelling and was restored.
+// - A short-lived `next = p->next` local was a codegen duplicate of the clean
+//   94B/99 basin.
+// - A 144-case `vc5-small` x `vc5-risky` flag sweep produced no size-eligible
+//   variant; default flags remained the only plausible basin. (Lab probe 106.)
+// - Moving the null return to the top of the `while (p != entry)` body reached
+//   92B/99 with worse CFG/shape; restored. The redundant binary head test and
+//   self-call relocation remain unresolved without compiler-steering scaffolds.
+```
+<!-- end-recovered:3de975274c6be77cfc45 -->

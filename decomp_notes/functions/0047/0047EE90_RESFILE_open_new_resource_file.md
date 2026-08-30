@@ -1,0 +1,115 @@
+# Function notes: 0047EE90 `RESFILE_open_new_resource_file`
+
+Module notes: `decomp_notes/res_file_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:65e5171ef5aa96d6fefa -->
+### `d050eea3c` `src/Res_file.cpp:1-2`
+
+Mapping: `strong`. next mapped function definition is RESFILE_open_new_resource_file at old line 20.
+
+```text
+// PDB source module: C:/msdev/work/age1_x1/Res_file.cpp.
+// Definitions follow the original PDB source order.
+```
+<!-- end-recovered:65e5171ef5aa96d6fefa -->
+
+<!-- recovered:0b8cc733110e988fa87f -->
+### `target-session` `build/target_sessions/0047EE90_RESFILE_open_new_resource_file.json:1-3`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=354; shape=71.06227106227107: Baseline natural typed resource-file ownership and mapped/file open flow.
+probe 2 abi; result=MISMATCH; diff=354; shape=71.06227106227107: Replaced generic node fields with the canonical typed resource-file header ownership used by RESFILE_locate_resource; preserved offsets and flow.
+probe 8 baseline; result=MISMATCH; diff=357; shape=99.63503649635037: Fresh grouped baseline before structural repair; inspect owner, boundary, and range alignment.
+```
+<!-- end-recovered:0b8cc733110e988fa87f -->
+
+<!-- recovered:8d796b7eb3b22d9d82a4 -->
+### `d4bc51c85cfb` `src/scratch/0047EE90_RESFILE_open_new_resource_file.cpp:1-67`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// RESFILE_open_new_resource_file (0047EE90, 541 bytes, Res_file.cpp)
+// Lines 70-233
+//
+// STATUS: PAUSED — multi-range parent-fragment alignment issue
+//
+// This function spans 3 body ranges + 2 parent-owned fragments (0047F00C, 0047F076).
+// The checker concatenates only the 3 body ranges into the comparison buffer, skipping
+// the fragments entirely. The rebuilt generates contiguous code including equivalent
+// code for those fragment areas, so the byte-level comparison from offset ~380 onward
+// compares fragment-equivalent code against completely different range-2 code —
+// guaranteed misalignment, not real source-model drift.
+//
+// After restoring the natural Win32 imports, exact global-list ownership, strcmp
+// surface, and mapped/file branch order, the first body range is byte-identical
+// apart from relocation bytes and the one-byte INT3 parent-fragment boundary.
+// The ~48% whole-function diff is misleading because the checker concatenates
+// ranges while skipping the parent-owned INT3/message and list-validation blocks.
+//
+// Resolving this properly likely requires either:
+//   - tooling that compares body ranges individually instead of concatenating, or
+//   - parent-owned-fragment-aware comparison, or
+//   - inline asm (int3) which is policy-restricted for real functions.
+// Not forcing either approach right now per Boss direction. Leave in scratch.
+//
+// Attempt log:
+// - attempt 1 (scratch): wrong layout, no EBP frame — 73% diff (most from tooling gap)
+// - probes 1-5: added /Oy- per-function rsp, fixed init order — 64%
+// - probes 6-11: clean if/else, decl/assign ordering — 55% (misleading, real range-1 gap is tiny)
+// - bounded pass: swapped mapped/fHandle declarations, used period Win32/C
+//   linkage, modeled the 0x114 node/0x40 header, inverted node setup, restored
+//   typed g_resFileList, and used the compiler's strcmp idiom. Frame and the
+//   first 0x17B-byte range now match structurally; the remaining mismatch starts
+//   at the excluded INT3 fragment and includes extra rebuilt fragment calls.
+// - decision: paused. Fragment alignment blocks whole-function exact comparison.
+// - current pass: removing the first header-error MessageBox as an early-return
+//   probe reduced the extra ordered calls from four to three, but changed the
+//   executable's error behavior; restored the natural typed error path.
+// - current pass: typed node->directory as resfile_header and used named
+//   version/password fields; emitted code was unchanged, so the first hunk is
+//   the parent-owned header-error fragment rather than directory layout.
+// - shardE pass: rechecked the canonical source and donor evidence; the first
+//   mismatch remains the manifest-excluded 0047F00C error fragment, so no
+//   behavior-changing probe was kept.
+// - luna-r2 probe 12: inverted the header-read guard into a natural success
+//   block; error layout moved, but size grew 4 bytes, exact-block coverage
+//   fell 8.2%, and diff grew 5 bytes. Restored the clean negative guard.
+// - current revisit: replaced the generic ResFileNode/void* surface with the
+//   canonical ResFileHdr ownership (mapped_file, handle, header, next,
+//   res_name) shared by the adjacent resource-file reader. The emitted code
+//   and metrics were unchanged; the source now has the correct typed global
+//   identity. The first body range remains an island match, while the checker
+//   still crosses the excluded 0047F00C and 0047F076 parent fragments.
+// - Accepted-drift blocker: when the first 0x40-byte header read is short, the
+//   executable runs INT3 at 0047F00B before the error dialog. The natural
+//   rebuild goes directly to MessageBoxA. Inline assembly is forbidden, and a
+//   DebugBreak call would change stack and exception context. Keep in scratch.
+//   ORIGINAL BUG: The shipped fault order is INT3, then the header error dialog.
+// - fresh audit: inventory body ranges are 0047EE90-0047F00B, 0047F027-0047F075,
+//   and 0047F122-0047F173. The rebuilt matches each range's instruction shape;
+//   the checker still compares them as one contiguous stream. Its four extra
+//   calls are the header-error, list-validation, and version blocks owned by
+//   0047F00C/0047F076, not a missing API or cleanup operation in this source.
+// - fresh claim validation: --rebuild kept the owner symbol, 0x19C frame, and
+//   the 19 original calls. It still built 739 bytes against 541 bytes. The
+//   first hunk is the required 0047F00C header-error fragment. The other three
+//   extra calls are in the required 0047F076 publication and version fragment.
+//   The target source is unchanged and remains the pinned clean source.
+```
+<!-- end-recovered:8d796b7eb3b22d9d82a4 -->
+
+<!-- recovered:3fe8a28f21e10fc041c4 -->
+### `d4bc51c85cfb` `src/scratch/0047EE90_RESFILE_open_new_resource_file.cpp:214-215`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+            // BINARY NOTE: Publication occurs before password and version checks.
+            // Failure returns keep the published node and any raw file handle.
+```
+<!-- end-recovered:3fe8a28f21e10fc041c4 -->

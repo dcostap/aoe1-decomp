@@ -30,7 +30,7 @@ from common import (
 
 
 _HISTORY_VERSION = 1
-_BUILD_CONTEXT_VERSION = 1
+_BUILD_CONTEXT_VERSION = 2
 _LABEL_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$")
 
 
@@ -345,6 +345,7 @@ def _build_context(record: dict[str, str], metrics: dict | None = None) -> dict 
             "name": str(group.get("name") or ""),
             "source": str(group.get("source") or ""),
             "flags": str(group.get("flags") or ""),
+            "functions": dict(group.get("functions") or {}),
             "owners": dict(group.get("owners") or {}),
             "symbols": dict(group.get("symbols") or {}),
         },
@@ -903,8 +904,11 @@ def _run_source_path(record: dict[str, str], run: dict) -> Path:
     if not run_root.is_relative_to(history_root):
         raise ValueError(f"Checkpoint artifact is outside function history: {run_root}")
     source_root = run_root / "source"
-    preferred = source_root / preferred_source_path(record).name
-    if preferred.is_file():
+    try:
+        preferred = source_root / preferred_source_path(record).name
+    except FileNotFoundError:
+        preferred = None
+    if preferred is not None and preferred.is_file():
         return preferred
     candidates = sorted(path for path in source_root.iterdir() if path.is_file()) if source_root.is_dir() else []
     if len(candidates) != 1:

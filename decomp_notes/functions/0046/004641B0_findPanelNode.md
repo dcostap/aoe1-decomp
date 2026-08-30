@@ -1,0 +1,7 @@
+# Function notes: 004641B0 `findPanelNode`
+
+Module notes: `decomp_notes/Panel_module.md`.
+
+## Recovered attempt history
+
+No function-specific cleanup block was mapped automatically. Review the earlier note and Git history before work.

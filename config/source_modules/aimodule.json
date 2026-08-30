@@ -36,7 +36,7 @@
     "0040E510": { "status": "matching" },
     "0040E520": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/aimodule_module.md"
+      "note_path": "decomp_notes/aimodule_module.md"
     },
     "0040E5C0": { "status": "matching" },
     "0040E5D0": { "status": "matching" },

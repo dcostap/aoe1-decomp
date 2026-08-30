@@ -62,7 +62,7 @@ class BuildCacheTests(unittest.TestCase):
                 "name": "unit",
                 "source": str(source),
                 "flags": str(rsp),
-                "owners": {"00100000": "src/matching/00100000_x.cpp"},
+                "owners": {"00100000": "src/00100000_x.cpp"},
             }
 
             with patch("build_cache.translation_unit_for_source", return_value=group):

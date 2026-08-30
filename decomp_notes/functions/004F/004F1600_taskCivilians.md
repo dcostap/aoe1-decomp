@@ -1,0 +1,336 @@
+# Function notes: 004F1600 `taskCivilians`
+
+Module notes: `decomp_notes/taitacmd_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:804c9f56e66c42b20142 -->
+### `d050eea3c` `src/taitacmd.cpp:4809-4822`
+
+Mapping: `ambiguous`. next mapped function definition is taskCivilians at old line 4997.
+
+```text
+// - Worker audit, 2026-08-22: Ghidra confirms a low-count civilian-count local
+// [non-comment lines omitted during migration]
+//   and comma sequencing all emitted the same 514-byte, 75-byte-diff basin.
+// [non-comment lines omitted during migration]
+// - Fresh contextual pass restored the exact same-TU TacticalAIModule virtual
+// [non-comment lines omitted during migration]
+//   also codegen duplicates. The observable count-reread blocker remained.
+```
+<!-- end-recovered:804c9f56e66c42b20142 -->
+
+<!-- recovered:ef6a1189cdcfa090fd08 -->
+### `d050eea3c` `src/taitacmd.cpp:4900-4900`
+
+Mapping: `ambiguous`. next mapped function definition is taskCivilians at old line 4997.
+
+```text
+            // BINARY NOTE: Reread the count before publishing explorer demand.
+```
+<!-- end-recovered:ef6a1189cdcfa090fd08 -->
+
+<!-- recovered:3221bcfa36481ecca177 -->
+### `d050eea3c` `src/taitacmd.cpp:5184-5209`
+
+Mapping: `ambiguous`. comment lies after mapped function taskCivilians at old line 4997.
+
+```text
+// Attempt log:
+// try 1-11: prior broad scaffold used placeholder canUse/object/command
+// [non-comment lines omitted during migration]
+// probe 12: restored the binary-backed TacticalAIGroup, MainDecisionAI,
+// [non-comment lines omitted during migration]
+// the clean typed reconstruction to check before any codegen-only probes.
+// probe 13: proper direct method names/layout reached exact size, 0x10 frame,
+// [non-comment lines omitted during migration]
+// probe 14: moved the invalid-group advance to an out-of-line source label
+// and shared the loop-test; rebuilt remained exact-size/frame and improved to
+// [non-comment lines omitted during migration]
+// positive-predicate variants were codegen duplicates.
+// probe 15: structured/common setAction-tail and action-result liveness
+// variants were codegen duplicates or larger; rolled back to the cleanest
+// [non-comment lines omitted during migration]
+// left in scratch: exact matching is paused at the 10-hypothesis budget.  The
+// best rebuilt code is 989 bytes, 0x10 frame, 51 calls, 85.08% shape, 756
+// [non-comment lines omitted during migration]
+//   source ownership.
+// probe 24: reordered the ready/task arms to follow the original PDB line
+```
+<!-- end-recovered:3221bcfa36481ecca177 -->
+
+<!-- recovered:4f86247ca8ae37d26a0a -->
+### `6a2aef2e2` `src/taitacmd.cpp:4084-4116`
+
+Mapping: `ambiguous`. next mapped function definition is taskCivilians at old line 4248.
+
+```text
+//   TribeTacticalAIModule fields through zoomingToNextAge. This fixed the +0xFA4 field and gave the
+// - Kept the visible-map chain, shared ManagedArray pointer local, ceil expression, and zero local;
+//   these reproduce the original prologue and main path through the low-count tail.
+// - Modeled the low-count result as desired=1, a gatherer cap, and one final explorer assignment.
+//   This removed the extra display/update calls and recovered all 13 ordered calls, 3 jumps, 2 returns,
+//   and 90.97% exact-block coverage. Best current output is 509 effective bytes versus 514, 73 strict
+// - A focused direct explorer-result assignment with a live one-count predicate added two final-call
+// - A typed low-count field-order spelling assigned explorer and gatherer results in separate arms;
+// - A direct low-count field-order rewrite added a second civilian-count test and widened the function
+// - A natural typed field assignment in each low-count arm reproduced the 539-byte, two-extra-call
+//   cap tail. This restored 514-byte size and 144 instructions, but VC5 hoisted the sn[3] load
+//   where VC5 keeps the low-count cap in a different register/lifetime shape. No policy-invalid steering kept.
+//   sequences now use the exact operator[] body. The emitted bytes are equal,
+//   but method ownership is canonical and resize remains out of line.
+// - Restored the binary-supported low-count local reuse from the decompiler:
+//   one result holds 1, sn[5], then sn[3], and the computed explorer demand is
+//   stored before its cap. This gives exact 514-byte size, 144 instructions,
+// - Exact addObject and removeObject predecessor contexts did not change this
+//   target. Register hints, branch-local result scopes, references, and store
+//   sequencing were duplicates or worse. No compiler-context shim is retained.
+//   and one reused result local. Pre-branch count reuse, result-local reuse,
+//   branch-local cap declarations, direct member rereads, assignment order,
+//   Restore the pinned source. The first unproved register divergence remains
+//   the sn[5] load and later civilian-count reload at +0x178.
+//   reloads civilians.numberValue after it updates desiredNumberGatherers. The
+//   rebuild reuses the earlier count read. Concurrent count changes can produce
+//   a different civilianExplorers result and different later stores.
+//   inheritance. The emitted body is unchanged. The decompiler-shaped local
+//   reuse, stored-field cap comparison, and inline numberCivilians accessor are
+// - Exact finish: use the canonical ManagedArray number and setDesiredNumber
+//   inline methods at the low-count publication boundary. This preserves the
+//   executable's civilian-count reread and keeps the explorer-demand store
+//   before the sn[3] load. Direct field access loses one or both properties.
+```
+<!-- end-recovered:4f86247ca8ae37d26a0a -->
+
+<!-- recovered:81d767132a39ccb9d3c1 -->
+### `6a2aef2e2` `src/taitacmd.cpp:4409-4455`
+
+Mapping: `ambiguous`. comment lies after mapped function taskCivilians at old line 4248.
+
+```text
+                // Binary-proven capacity touch: ensure room for civilians[i-1]
+                // before returning, matching the inline operator[] grow.
+// [non-comment lines omitted during migration]
+// taitacmd.cpp
+// helpers and was 704 bytes; it was structurally short and did not preserve
+// the original direct-call set.
+// information/strategy subobjects, object/zone APIs, and the nested
+// skip-invalid-group loop from the same-TU decompiler control flow.  This is
+// 47/47 conditional CFG, and 51 calls; the first broad result was 777 bytes
+// different.  The remaining call topology is concentrated in the action
+// selection tail (rebuilt 4 setAction/16 type versus original 1 setAction/19
+// type), while the task call is in a relocated cold block.
+// 756 differing bytes with 73.77% exact-block coverage.  Direct-sentinel and
+// typed form.  No inline asm, fake imports, or custom flags retained.
+// strict differing bytes (76.4408%), and 63.50% bounded edit similarity.
+// - Named the debug source file. The previous literal address was not valid
+// order, with task before action selection. This moved task into the original
+//
+// delayed isGathered initialization, the int currentZone() & 0xff form, the
+// inverted zone test, and the explicit fully-explored failure edge are all
+// supported by closer code. The best clean checkpoint is 1008 bytes, 0x10
+// frame, 51 calls, 90.97% shape, 274 differing bytes, and 81.35% bounded
+// similarity. The action tail remains unresolved: the executable has 19 type
+// calls and four setAction calls. Fresh predicates, nested assignments,
+// scopes, initializers, and shared-label forms did not reach that call set.
+//
+// as direct setAction calls. VC5 merged their common call tail, recovered all
+// 19 type calls, and proved that setType(0x69) continues to action 8. This
+// reached 35 differing bytes with exact frame, calls, and call order.
+```
+<!-- end-recovered:81d767132a39ccb9d3c1 -->
+
+<!-- recovered:19594c309fdca53902a5 -->
+### `target-session` `build/target_sessions/004F1600_taskCivilians.json:1-59`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=1563; shape=90.49844236760124: Baseline of existing natural typed ManagedArray reconstruction; establish current behavior, call set, frame, and first mismatch.
+probe 2 variant; result=MISMATCH; diff=1563; shape=90.49844236760124: Hypothesis 1: comma expression for x/y coordinate assignments may preserve second fld before first store, as original emits fld y before storing x. [same emitted code as probe 1]
+probe 3 control-flow; result=MISMATCH; diff=1563; shape=90.49844236760124: Hypothesis 2: move the tasked != -1 guard outside the known tasked == -1 outer block, matching the decompiler's redundant loop-head check and original B010 block.
+probe 4 control-flow; result=MISMATCH; diff=1584; shape=94.42724458204334: Hypothesis 3: use a top-tested while resource loop, so the tasked != -1 guard emits at the original loop entry before each resource probe.
+probe 5 liveness; result=MISMATCH; diff=1260; shape=96.28482972136223: Hypothesis 4: bind civilianExplorers to a scoped typed reference at append, to recover the original EDI array-base lifetime while retaining the top-tested resource loop.
+probe 6 variant; result=MISMATCH; diff=1261; shape=95.51083591331269: Hypothesis 5: reverse source x/y assignment order may make VC5 schedule fld y before storing x while preserving the original x/y conversion sequence.
+probe 7 liveness; result=MISMATCH; diff=1847; shape=95.04643962848297: Hypothesis 6: hold converted x/y in separate block locals before assigning tcPosition, which may let VC5 perform both fld/__ftol operations before the first stack store.
+probe 9 control-flow; result=MISMATCH; diff=1269; shape=96.57853810264386: Hypothesis 7: express excess-explorer removal as a top-tested while loop, matching original outer count guard and avoiding the emitted redundant bottom zero test.
+probe 10 control-flow; result=MISMATCH; diff=1150; shape=96.58385093167702: Hypothesis 8: explicit label loop with a single pre-body number<=0 guard should reproduce the original excess-removal CFG without VC5's redundant bottom zero test.
+probe 11 control-flow; result=MISMATCH; diff=1260; shape=96.28482972136223: Hypothesis 9: move the explicit removal label before the number<=0 guard, so the backedge returns to the original zero-check block.
+probe 12 liveness; result=MISMATCH; diff=1260; shape=96.28482972136223: Hypothesis 10: reorder local declarations to the PDB/decompiler order j, newExplorer, taskedCount, tcPosition, which may alter VC5 homes and coordinate scheduling. [same emitted code as probe 11]
+probe 13 abi; result=MISMATCH; diff=1260; shape=96.28482972136223: Hypothesis 11: pass obj->id directly to removeGatherer so VC5 can load this before the argument, matching original mov receiver then push id order. [same emitted code as probe 12]
+probe 14 liveness; result=MISMATCH; diff=1260; shape=96.28482972136223: Hypothesis 12: initialize taskedCount directly as i+1 before multiplying, aiming for original lea ebx,[ebp+1] and lea eax,[ebx*4] refresh setup. [same emitted code as probe 13]
+probe 15 liveness; result=MISMATCH; diff=1260; shape=96.28482972136223: Hypothesis 13: combine taskedCount assignment and newExplorer multiplication, testing whether VC5 preserves the original ebx index then lea-scaled byte offset setup. [same emitted code as probe 14]
+probe 16 liveness; result=MISMATCH; diff=1260; shape=96.28482972136223: Hypothesis 14: reuse the existing tasked local for excess-explorer id, matching Ghidra's reused iVar2 and testing liveness-driven branch/register topology. [same emitted code as probe 8]
+probe 17 control-flow; result=MISMATCH; diff=1260; shape=96.59442724458205: Hypothesis 15: reverse elapsed-time comparison operands to source spelling elapsed >= budget, matching original cmp elapsed,budget branch polarity at both timed exits.
+probe 18 control-flow; result=MISMATCH; diff=1260; shape=96.59442724458205: Hypothesis 16: use an infinite loop with explicit pre-body zero and post-body desired-count breaks, seeking original top zero test, tail desired compare, and init order. [same emitted code as probe 17]
+probe 19 liveness; result=MISMATCH; diff=1265; shape=96.89922480620154: Hypothesis 17: use a scoped civilians reference for the refresh search, testing whether canonical array ownership recovers the original growth and index setup.
+probe 20 liveness; result=MISMATCH; diff=1941; shape=95.82043343653251: Hypothesis 18: aggregate-initialize tcPosition, testing whether VC5's initialization and later member stores reproduce the original delayed coordinate-store schedule.
+probe 22 control-flow; result=MISMATCH; diff=1260; shape=96.59442724458205: Hypothesis 19: preserve the natural candidate but spell both timeout guards as elapsed >= budget, matching original compare operand order without aliases or labels. [same emitted code as probe 18]
+probe 24 behavior; result=MISMATCH; diff=1260; shape=96.59442724458205: Replace the manual explorer scan/append with the exact ManagedArray add body while preserving duplicate failure to skip_append.
+probe 26 control-flow; result=MISMATCH; diff=1457; shape=96.56786271450858: Hypothesis 1: remove the explicit civilianExplorers.numberValue <= 0 break from excess removal. Original +0214 is the inline operator[] maximum-size guard, not a number guard; this should remove the extra CFG block before stopUnit.
+probe 28 control-flow; result=MISMATCH; diff=1260; shape=96.59442724458205: Hypothesis 2: express the refresh backedge as an explicit positive if i < civilians.numberValue goto refresh_body with a fall-through no_more target. Original +06E0 has JL to +0480 followed by JMP +1D72; the prior natural do/while emitted inverted JGE plus JMP.
+probe 30 liveness; result=MISMATCH; diff=1260; shape=96.59442724458205: Hypothesis 3: remove the dead taskedCount = id assignment after selecting a gatherer for explorer conversion. The original line 3379 block carries obj->id into tasked, and the later refresh phase overwrites taskedCount; this tests whether the extra alias drives the removeGatherer setup or register topology. [same emitted code as probe 25]
+probe 32 liveness; result=MISMATCH; diff=1761; shape=91.07981220657277: Hypothesis 4: remove the refresh civilian value local and compare civilianExplorers.value[k] directly with civilians[i]. Original +04EB checks civilianExplorers.number before loading civilians[i]; the current named local forces the civilians[i] load first.
+probe 34 liveness; result=MISMATCH; diff=1239; shape=91.39280125195619: Hypothesis 5: mirror the decompiler and original assembly by removing the refresh civilian local and reading civilians.value[i] directly in the explorer-membership scan. The preceding capacity touch uses civilians[i], but the original +04EB scan loads explorer metadata first and then direct array bases.
+probe 36 liveness; result=MISMATCH; diff=1259; shape=96.60493827160494: Hypothesis 6: bind the refresh civilian element as a function-scope pointer before the explorer scan. This preserves the operator[] capacity side effect but delays the value load until the direct membership compare, matching the original +04EB metadata-before-value topology.
+probe 38 control-flow; result=MISMATCH; diff=1150; shape=96.8944099378882: Hypothesis 7: use the binary-proven excess-removal topology: an initial number <= 0 guard, a named removal block, and a bottom jg backedge to that guard. Original +020C is the shared guard and +02E6 jumps back to it; this is a source-level CFG test, not register steering.
+probe 39 abi; result=MISMATCH; diff=1154; shape=96.27329192546584: Hypothesis 8: model RGE_Static_Object as the polymorphic period class with a declared virtual destructor. The executable proves a four-byte vptr before world_x at +38; this tests whether the real class category changes coordinate scheduling without changing offsets.
+probe 40 abi; result=MISMATCH; diff=1150; shape=96.8944099378882: Hypothesis 9: use the reviewed idleCivilian three-argument reference ABI instead of a pointer spelling. The generated donor for 004F81A0 uses XYPoint&; the call ABI remains one address, but reference ownership may recover the original VC5 coordinate scheduling.
+probe 41 liveness; result=MISMATCH; diff=1153; shape=96.11801242236025: Hypothesis 10: reverse the two coordinate assignments in both object paths while retaining the reviewed XYPoint reference ABI. This tests whether the target line order is y then x, rather than relying on the prior pointer-spelling result.
+probe 42 layout; result=MISMATCH; diff=1845; shape=96.27329192546584: Hypothesis 11: model XYPoint as a period class with an inline two-int constructor and assign one temporary per object. This tests whether VC5 evaluates both __ftol results before copying the aggregate, which could explain original fld-x, fld-y, store-x, call-ftol-y order.
+probe 45 context; result=MISMATCH; diff=1150; shape=96.8944099378882: Restore the canonical nested inline operator[] grow in the shared ManagedArray surface; grouped taskCivilians now equals all 2083 standalone bytes. [same emitted code as probe 44]
+probe 47 liveness; result=MISMATCH; diff=1847; shape=95.65217391304348: Hold converted x and y in named branch locals before assigning XYPoint, matching the target's delayed coordinate stores.
+probe 49 liveness; result=MISMATCH; diff=1150; shape=96.8944099378882: Assign both XYPoint coordinates in one sequenced expression, testing the target's delayed x store between the two conversions. [same emitted code as probe 46]
+probe 51 variant; result=MISMATCH; diff=1150; shape=96.8944099378882: variant lab build\variant_lab\004F1600_taskCivilians\20260823_173138: 8 variants, 8 invariant-eligible, 0 exact
+probe 52 liveness; result=MISMATCH; diff=1152; shape=97.20062208398134: Compare nextCivilianToTaskValue against civilians[i], matching the target's direct memory compare and avoiding a redundant value register.
+probe 53 liveness; result=MISMATCH; diff=1152; shape=97.20062208398134: Initialize taskedCount directly as i + 1 after the exact reversed search comparison, targeting the original direct EBX induction value. [same emitted code as probe 52]
+probe 54 control-flow; result=MISMATCH; diff=1153; shape=97.80907668231612: Remove the redundant outer capacity guard around civilians[i-1]; canonical operator[] owns the single target guard.
+probe 55 liveness; result=MISMATCH; diff=914; shape=98.125: Keep the civilians array owner across the setup resize and first publication, matching the target's EDI array receiver.
+probe 56 liveness; result=MISMATCH; diff=914; shape=98.125: Mark the long-lived taskedCount induction value as a period register local, targeting the target's direct EBX initialization. [same emitted code as probe 55]
+probe 57 liveness; result=MISMATCH; diff=914; shape=98.125: Combine taskedCount initialization with its byte-count expression after recovering the shared civilians owner. [same emitted code as probe 56]
+probe 58 variant; result=MISMATCH; diff=914; shape=98.125: variant lab build\variant_lab\004F1600_taskCivilians\20260823_173826: 6 variants, 6 invariant-eligible, 0 exact
+probe 59 liveness; result=MISMATCH; diff=914; shape=98.125: Declare taskedCount before newExplorer, testing the original EBX induction home while keeping their stack publications. [same emitted code as probe 57]
+probe 60 liveness; result=MISMATCH; diff=1616; shape=97.5: Aggregate-initialize one branch-local XYPoint before assigning tcPosition, preserving member order across both conversions.
+probe 61 liveness; result=MISMATCH; diff=914; shape=98.125: Reuse taskedCount through preincrement in the byte-count expression, testing direct EBX ownership without a separate result temporary. [same emitted code as probe 59]
+probe 62 liveness; result=MISMATCH; diff=1898; shape=91.54929577464789: Read civilians[i] directly in the explorer membership comparison, matching the target's delayed civilian value load.
+probe 63 liveness; result=MISMATCH; diff=1898; shape=91.54929577464789: Keep the civilian local but assign it inside the explorer scan, matching the target's per-iteration delayed civilians[i] load.
+probe 64 liveness; result=MISMATCH; diff=914; shape=98.125: Keep the refresh civilian value in a period register local across its explorer membership scan. [same emitted code as probe 61]
+probe 67 layout; result=MISMATCH; diff=2047; shape=88.26979472140762: Hypothesis 1: reverse the XYPoint member assignments in both object paths. Target emits the first conversion result after loading the second coordinate; test whether its source field order is y then x.
+probe 69 abi; result=MISMATCH; diff=2047; shape=88.41642228739003: Hypothesis 2: specialize the shared ManagedArray<int>::resize declaration before taskCivilians, preserving the proven out-of-line resize call surface despite the concurrent header edit. This tests a minimal ABI bridge without changing anchors before this owner.
+probe 71 liveness; result=MISMATCH; diff=1726; shape=94.83568075117371: Hypothesis 2: publish the converted object ID directly through tasked, matching the target EBX call argument and avoiding an unproved id local; retain branch-local point aggregates.
+probe 73 liveness; result=MISMATCH; diff=900; shape=98.4375: Hypothesis 3: keep the local conversion ID but copy through tasked before taskedCount and removeGatherer, targeting the target EBX push without changing ownership.
+probe 74 liveness; result=MISMATCH; diff=900; shape=98.4375: Hypothesis 4: combine tasked assignment and taskedCount publication before removeGatherer, testing a natural sequencing dependency for the target EBX call setup.
+probe 75 liveness; result=MISMATCH; diff=900; shape=98.4375: Hypothesis 5: assign taskedCount from the object ID, then copy it into tasked before removeGatherer; test source lifetime order for target EBX setup. [same emitted code as probe 72]
+probe 76 liveness; result=MISMATCH; diff=900; shape=98.4375: Hypothesis 6: pass taskedCount directly to removeGatherer after publishing tasked, testing whether the target call takes the durable stack-home value. [same emitted code as probe 75]
+probe 77 liveness; result=MISMATCH; diff=900; shape=98.4375: Hypothesis 8: move the converted-object ID to function scope, testing whether authentic declaration lifetime recovers target EBX call setup without stack steering. [same emitted code as probe 76]
+probe 78 liveness; result=MISMATCH; diff=900; shape=98.4375: Hypothesis 10: assign the durable tasked value inside the removeGatherer argument, testing a natural expression dependency for target EBX push.
+probe 79 liveness; result=MISMATCH; diff=1726; shape=94.83568075117371: Hypothesis 11: assign tasked from the local object ID before the explorer scan, then use tasked for scan, publication, and removeGatherer; test target EBX lifetime with preserved ID storage. [same emitted code as probe 71]
+```
+<!-- end-recovered:19594c309fdca53902a5 -->
+
+<!-- recovered:7719cb0afc592c6c6c80 -->
+### `cf4b323f4c4e` `src/scratch/004F1600_taskCivilians.cpp:1-97`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004F1600 TribeTacticalAIModule::taskCivilians(unsigned long, unsigned long)
+// PDB source: taitacmd.cpp lines 3313-3548
+// __thiscall, int, ret 8
+//
+// Attempt log (dsb2-004F1600, 30 meaningful probes across sessions):
+// - Fresh canonical reset: prior rejected source manually expanded five
+//   ManagedArray grow blocks. This reconstruction uses the natural typed
+//   ManagedArray<int> surface (inline operator[] grow, remove, out-of-line
+//   resize) and the plain source-level algorithm: new-explorer creation,
+//   gatherer->explorer conversion by needed-resource priority, excess-
+//   explorer removal, gatherer creation, and the refresh loop that tasks
+//   civilians one per tick (return j = count tasked).
+// - probe 5 baseline: typed operator[]/remove/resize surface; first-mismatch
+//   at +9 (< 1 guard); frame 0x14 achieved after probe 6.
+// - probe 6: `<= 0` guard (test/jg encoding) + declaration-only resize so
+//   VC5 emits real ManagedArray<int>::resize calls (call set then fully
+//   aligned; target-count gap 0).
+// - probe 7/9/10: resource-conversion loop shapes. The two object() calls
+//   inside it pass the `tasked` variable (register pushes, not -1 literals);
+//   the loop is `do { if (tasked != -1) goto append; ... } while (newExplorer
+//   > -1)` under an early-exit check. VC5 still rotates the loop-top tasked
+//   check to the loop bottom (proves tasked == -1 at the head) so the
+//   original's separate B010 top-check block is not reproduced.
+// - probe 8: operator[] copy loop as combined `&&` bound (max && index+1) per
+//   004DC1B0 lesson; grow copy loops now match the original shape exactly.
+// - probe 11: task_done dispatch written as `if (highLevelTaskGatherer(...)
+//   == 0) { addGatherer path }` keeps the addGatherer path inline and
+//   task_done as the skip target (original's jne layout); call sites 100%
+//   aligned.
+// - probe 12: operator[] grow uses a named `new_size = index + 1` local;
+//   grow blocks byte-match the original (shape 84%).
+// - probes 13-14 (explicit grow expansion using taskedCount/newExplorer and
+//   indexing civilians[taskedCount-1]): both regressed; VC5 emits extra
+//   frames/arith instead of the original's induction-locals codegen. Reverted.
+// - probes 19-24: a scoped civilian pointer/reference or value before the
+//   explorer scan exposed the refresh-loop operator[] grow at the original
+//   top block and restored the 0x14 frame. The value form is the cleanest
+//   source reconstruction (1563B diff, 90.50% shape); pointer/reference
+//   forms added an unnecessary address alias. Split taskedCount initialization
+//   was emitted identically to `i + 1`.
+// - Worker session sa-9f7395fa-r1 ran 20 meaningful probes. The baseline was
+//   1563B strict diff and 90.50% shape. Comma and reverse coordinate forms,
+//   separate coordinate locals, local declaration order, direct member-call
+//   arguments, and combined refresh IV expressions were duplicate or worse.
+// - A top-tested resource loop plus a scoped civilianExplorers reference
+//   restored the original redundant tasked check and improved the clean source
+//   to 1260B diff, 96.59% shape, and 86.70% exact-block coverage. Explicit
+//   excess-removal labels gave 1150B strict diff but poor resynchronization and
+//   were rejected as a non-natural metric-only form. Timeout operand reversal
+//   improved compare parity without changing size or strict diff.
+// - The final unresolved candidate is 2083B versus 2062B, 39/39 ordered calls,
+//   frame 0x14, and first mismatch +003C in coordinate/FPU scheduling. The
+//   remaining evidence points to VC5 scheduling and refresh register homes.
+// - Canonical ownership: md +0xF0, civilians +0xF4 (ManagedArray<int>),
+//   civilianExplorers +0x104 (ManagedArray<int>), numberGatherersValue +0x9CC,
+//   desiredNumberGatherersValue +0x9D0, neededResourceValue[4] +0xD88,
+//   nextCivilianToTaskValue +0xF7C. taskCivilians returns j, the number of
+//   civilians tasked this tick.
+// - Call set (39): object x5, __ftol x6, idleCivilian x4, removeGatherer,
+//   resize x2, operator_new/delete (inline grows), stopUnit, addGatherer x2,
+//   highLevelTaskGatherer, highLevelTaskExplorer, updateGathererDistribution,
+//   debug_timeGetTime x2.
+// - ManagedArray audit: the local template remains the canonical utmarray.h
+//   inline operator[]/remove surface, matching exact 004EA750/004F1390 donors;
+//   resize stays declaration-only for the real 004147A0 out-of-line call.
+// - Main-agent audit removed an impossible `tasked != -1` check nested directly
+//   under `tasked == -1`; it was non-emitting experiment residue. Codegen and
+//   all metrics remained unchanged.
+// - ManagedArray recovery pass, 2026-08-19: the exact add body replaces the
+//   caller-side explorer scan and append. Duplicate failure still exits through
+//   skip_append. This is codegen-identical to the 2083-byte frontier and gives
+//   the scan to its canonical method owner; resize remains declaration-only.
+// - Shared-context pass: restore the nested inline operator[] allocation body.
+//   The grouped function then equaled all 2083 standalone bytes. The prior
+//   declaration-only shared resize surface had collapsed it to 1312 bytes.
+// - Contextual matching pass: retain a civilian-array owner across the setup
+//   resize and publication, compare the requested ID against civilians[i],
+//   and let operator[] own the timed-return capacity guard. The grouped and
+//   standalone bodies now equal 2064 bytes, with exact frame, calls, and CFG.
+//   The remaining 914-byte drift starts in coordinate-store scheduling. A
+//   two-byte induction-value register move remains after the refresh search.
+//   Adding exact 004F4760 after the excluded 004F21F0 did not change this body.
+// - Exact-finish pass: two branch-local aggregate XYPoint initializers match
+//   both observed x87 conversion/store orders and improve the drift to 900
+//   bytes. PDB symbols list two tcPosition locals at the same stack home.
+//   ID lifetime and argument-order variants were duplicate or worse.
+//   The shared context still declares removeGatherer as void, while the exact
+//   donor and PDB ABI prove int. Shared helper edits are outside this task.
+// - Final pin was blocked by a concurrent config/translation_units.json edit:
+//   the loader rejects 00543E00 as an owner of world_scenario_sparse. No shared
+//   config or helper file was changed by this pass.
+// - Child exact-finish pass, 2026-08-23: fresh grouped baseline was 2064 bytes,
+//   914 differing bytes, and 39/39 ordered calls. During the pass, the shared
+//   taitacmd header changed ManagedArray::resize from declaration-only to an
+//   inline body. That changed this owner to 2236 bytes with 10 new/delete calls
+//   and removed both resize calls. It also changed 004F13F0 to 679 bytes.
+//   The target source was restored; no context bridge was retained.
+```
+<!-- end-recovered:7719cb0afc592c6c6c80 -->
+
+<!-- recovered:9b6e38a7b81d460526b6 -->
+### `cf4b323f4c4e` `src/scratch/004F1600_taskCivilians.cpp:180-181`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+    // Real out-of-line ManagedArray<int>::resize call in the original (004147A0);
+    // keep declaration-only so VC5 emits a call instead of inlining the template body.
+```
+<!-- end-recovered:9b6e38a7b81d460526b6 -->
+
+<!-- recovered:c935ae2d02b0bbe101a5 -->
+### `cf4b323f4c4e` `src/scratch/004F1600_taskCivilians.cpp:362-363`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+                // Binary-proven capacity touch: ensure room for civilians[i-1]
+                // before returning, matching the inline operator[] grow.
+```
+<!-- end-recovered:c935ae2d02b0bbe101a5 -->

@@ -13,19 +13,19 @@
     "00436360": { "status": "matching" },
     "004363A0": {
       "status": "matching",
-      "note_path": "recovery_notes/004363A0_Time.md"
+      "note_path": "decomp_notes/functions/0043/004363A0_Time.md"
     },
     "00436430": { "status": "matching" },
     "00436470": { "status": "matching" },
     "004364B0": { "status": "matching" },
     "004365A0": {
       "status": "matching",
-      "note_path": "recovery_notes/004365A0_FlushLog.md"
+      "note_path": "decomp_notes/functions/0043/004365A0_FlushLog.md"
     },
     "004365C0": { "status": "matching" },
     "00436610": {
       "status": "matching",
-      "note_path": "recovery_notes/00436610_Log.md"
+      "note_path": "decomp_notes/functions/0043/00436610_Log.md"
     },
     "00436810": { "status": "matching" }
   }

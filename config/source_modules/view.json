@@ -19,15 +19,15 @@
     },
     "00533AF0": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00533E10": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00533EC0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00533F70": {
       "status": "scratch"
@@ -40,7 +40,7 @@
     },
     "00534340": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00534420": {
       "status": "matching"
@@ -53,33 +53,33 @@
     },
     "00534530": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "005345D0": {
       "status": "matching"
     },
     "005346F0": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00534A00": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00534AE0": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00535210": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00535480": {
       "status": "matching"
     },
     "00535610": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "005358B0": {
       "status": "matching"
@@ -89,7 +89,7 @@
     },
     "00535A80": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00535C70": {
       "status": "matching"
@@ -120,15 +120,15 @@
     },
     "00535FE0": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00536B40": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "005381C0": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00538280": {
       "status": "matching"
@@ -144,37 +144,37 @@
     },
     "00538710": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00538B80": {
       "status": "matching"
     },
     "00538D60": {
       "status": "verified_logic",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00538E60": {
       "status": "scratch"
     },
     "00538F00": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00539030": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "005390D0": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00539510": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "005396F0": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "00539930": {
       "status": "matching"
@@ -199,11 +199,11 @@
     },
     "0053A290": {
       "status": "verified_logic",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "0053A9C0": {
       "status": "scratch",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "0053AAF0": {
       "status": "scratch"
@@ -249,7 +249,7 @@
     },
     "0053B300": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/view_module.md"
+      "note_path": "decomp_notes/view_module.md"
     },
     "0053B370": {
       "status": "matching"

@@ -7,7 +7,7 @@
   "functions": {
     "0052C3F0": {
       "status": "scratch",
-      "note_path": "recovery_notes/ttsk_lst_migration.md"
+      "note_path": "decomp_notes/ttsk_lst_migration.md"
     },
     "0052C8D0": { "status": "matching" }
   }

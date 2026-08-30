@@ -5,8 +5,8 @@
   "source": "src/dlg_menu.cpp",
   "header": "include/dlg_menu.h",
   "functions": {
-    "0043F340": { "status": "scratch", "note_path": "recovery_notes/dlg_menu_module.md" },
-    "0043F6B0": { "status": "scratch", "note_path": "recovery_notes/dlg_menu_module.md" },
-    "0043F720": { "status": "matching", "note_path": "recovery_notes/dlg_menu_module.md" }
+    "0043F340": { "status": "scratch", "note_path": "decomp_notes/dlg_menu_module.md" },
+    "0043F6B0": { "status": "scratch", "note_path": "decomp_notes/dlg_menu_module.md" },
+    "0043F720": { "status": "matching", "note_path": "decomp_notes/dlg_menu_module.md" }
   }
 }

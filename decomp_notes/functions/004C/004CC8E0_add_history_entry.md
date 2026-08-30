@@ -1,0 +1,15 @@
+# Function notes: 004CC8E0 `add_history_entry`
+
+## Earlier notes from `decomp_notes/functions/004C/004CC8E0_add_history_entry.md`
+
+This section is historical. Use the status query for current state.
+
+## 004CC8E0 `TRIBE_History_Info::add_history_entry`
+
+- PDB source: `t_histry.cpp`, lines 110 to 137.
+- Original size: 106 bytes.
+- Historical status: registered exact owner.
+
+The entry buffer grows by 60 bytes. The method copies only the previous capacity, then frees the old buffer. It records a population value only when `flag` is zero.
+
+`memcpy` is intrinsic in this module. This matches the recovered source dependency.

@@ -7,7 +7,7 @@
   "functions": {
     "00423C30": {
       "status": "matching",
-      "note_path": "recovery_notes/00423C30_TChat.md"
+      "note_path": "decomp_notes/functions/0042/00423C30_TChat.md"
     },
     "00423CD0": { "status": "matching" },
     "00423D00": { "status": "matching" },

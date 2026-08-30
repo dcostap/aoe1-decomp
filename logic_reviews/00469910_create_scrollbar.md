@@ -27,5 +27,5 @@ and return the same value on each valid execution path.
 The candidate is a readable typed reconstruction. It has no retained inline
 assembly, volatile state, raw vtable store, or synthetic stack-layout source.
 
-Promote it to `src/verified_logic`. This is not an exact match. The residual
+Promote it to `verified_logic` status. This is not an exact match. The residual
 output difference is the compiler's EH tail lowering.

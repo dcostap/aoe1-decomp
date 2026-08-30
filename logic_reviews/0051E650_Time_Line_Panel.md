@@ -1,12 +1,14 @@
 # Logic review: 0051E650 `Time_Line_Panel::Time_Line_Panel`
 
+Current source: `src/tpnl_tml.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after three claims, 22 meaningful
 probes, 32 checks, donor work, initializer variants, and canonical base-layout
 reconstruction.
 
-The candidate is `src/scratch/0051E650_Time_Line_Panel.cpp`. It now models the
+The candidate is `src/tpnl_tml.cpp`. It now models the
 canonical 0xF4-byte `TPanel` and `TEasy_Panel` ownership through 0x478.
 
 Current validation:
@@ -76,5 +78,5 @@ after both review rounds.
 
 ## Final decision
 
-Promote to `src/verified_logic`. Two fresh blind cohorts converged with no open
+Promote to `verified_logic` status. Two fresh blind cohorts converged with no open
 behavior uncertainty. The remaining drift is independent store scheduling.

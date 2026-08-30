@@ -11,11 +11,11 @@
     "004CEA50": { "status": "matching" },
     "004CEA90": {
       "status": "matching",
-      "note_path": "recovery_notes/tact_hea_module.md"
+      "note_path": "decomp_notes/tact_hea_module.md"
     },
     "004CECF0": {
       "status": "scratch",
-      "note_path": "recovery_notes/tact_hea_module.md"
+      "note_path": "decomp_notes/tact_hea_module.md"
     },
     "004CF030": { "status": "matching" }
   }

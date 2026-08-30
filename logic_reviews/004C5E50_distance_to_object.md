@@ -1,10 +1,12 @@
 # Logic review: 004C5E50 `RGE_Static_Object::distance_to_object`
 
+Current source: `src/stat_obj.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after five or more independent bounded assignments, roughly seventy source/type/FPU/liveness hypotheses, seven focused variant-lab runs covering roughly seventy variants, and repeated convergence on the same natural and size-matching VC5 basins. An independent phase-readiness audit found no credible unexplored exact lead and no unresolved source-level behavior, ABI, layout, call, or memory-effect fact.
 
-The candidate remains `src/scratch/004C5E50_distance_to_object.cpp` and was normalized to the proven `RGE_Master_Static_Object` radius-owner name before phase entry.
+The candidate remains `src/stat_obj.cpp` and was normalized to the proven `RGE_Master_Static_Object` radius-owner name before phase entry.
 
 Current validated checker state:
 
@@ -152,7 +154,7 @@ retained.
 This strengthens matching-exhaustion evidence but does not clear semantic
 review. Other-Y arithmetic and its possible memory/x87 fault still occur after
 the X branch in the candidate rather than between the executable's X `fcomp` and
-status consumption. Consequently the function remains in `src/scratch` and is
+status consumption. Consequently the function remains in `scratch` status and is
 not eligible for either accepted drift or verified-logic promotion.
 
 ### Post-round-2 CSE follow-up
@@ -199,7 +201,7 @@ existing blocker. The reconstructed candidate cannot enter `verified_logic` or
 `accepted_drift`: the original's read/exception occurs before the candidate's
 conditional X clamp and can be distinguished by a fault/exception observer or
 aliasing of the transient stack home. Formal logic review is stopped and the
-function remains a `src/scratch` exact-matching target, with the exact
+function remains a `scratch` status exact-matching target, with the exact
 pre-branch other-Y scheduling problem documented for any future bounded pass.
 
 ### Round 4 — concurrent blind cohort, 2026-08-12
@@ -227,5 +229,5 @@ changes first-fault instruction context and partial stack-home mutation in a
 reachable malformed-pointer or unmasked-exception case. These effects are part
 of executable behavior. No new source change is justified because matching
 work has already isolated the pinned VC5 scheduling limitation. Keep the
-candidate in `src/scratch`; do not promote it to `accepted_drift` or
+candidate in `scratch` status; do not promote it to `accepted_drift` or
 `verified_logic`.

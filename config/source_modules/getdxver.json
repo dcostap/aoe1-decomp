@@ -5,7 +5,7 @@
   "source": "src/getdxver.cpp",
   "header": "include/getdxver.h",
   "functions": {
-    "0044DAC0": { "status": "matching", "note_path": "recovery_notes/getdxver_module.md" },
-    "0044DEE0": { "status": "matching", "note_path": "recovery_notes/getdxver_module.md" }
+    "0044DAC0": { "status": "matching", "note_path": "decomp_notes/getdxver_module.md" },
+    "0044DEE0": { "status": "matching", "note_path": "decomp_notes/getdxver_module.md" }
   }
 }

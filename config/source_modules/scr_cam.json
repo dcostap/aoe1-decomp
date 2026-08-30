@@ -7,7 +7,7 @@
   "functions": {
     "0048F5D0": {
       "status": "matching",
-      "note_path": "recovery_notes/0048F5D0_TRIBE_Campaign_Editor_Screen.md"
+      "note_path": "decomp_notes/functions/0048/0048F5D0_TRIBE_Campaign_Editor_Screen.md"
     },
     "0048FA40": { "status": "matching" },
     "0048FBC0": { "status": "matching" },
@@ -17,21 +17,21 @@
     "0048FF80": { "status": "matching" },
     "00490120": {
       "status": "matching",
-      "note_path": "recovery_notes/00490120_make_campaign.md"
+      "note_path": "decomp_notes/functions/0049/00490120_make_campaign.md"
     },
     "00490380": { "status": "matching" },
     "00490400": {
       "status": "matching",
-      "note_path": "recovery_notes/00490400_remove_scenario.md"
+      "note_path": "decomp_notes/functions/0049/00490400_remove_scenario.md"
     },
     "00490480": { "status": "matching" },
     "00490520": {
       "status": "matching",
-      "note_path": "recovery_notes/00490520_move_scenario_down.md"
+      "note_path": "decomp_notes/functions/0049/00490520_move_scenario_down.md"
     },
     "004905D0": {
       "status": "matching",
-      "note_path": "recovery_notes/004905D0_action.md"
+      "note_path": "decomp_notes/functions/0049/004905D0_action.md"
     }
   }
 }

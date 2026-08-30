@@ -5,11 +5,11 @@
   "source": "src/scr_mp.cpp",
   "header": "include/scr_mp.h",
   "functions": {
-    "0049F370": { "status": "scratch", "note_path": "recovery_notes/scr_mp_module.md" },
-    "0049F890": { "status": "scratch", "note_path": "recovery_notes/scr_mp_module.md" },
-    "0049F9A0": { "status": "matching", "note_path": "recovery_notes/scr_mp_module.md" },
-    "0049F9D0": { "status": "matching", "note_path": "recovery_notes/scr_mp_module.md" },
-    "0049FED0": { "status": "matching", "note_path": "recovery_notes/scr_mp_module.md" },
-    "004A00A0": { "status": "matching", "note_path": "recovery_notes/scr_mp_module.md" }
+    "0049F370": { "status": "scratch", "note_path": "decomp_notes/scr_mp_module.md" },
+    "0049F890": { "status": "scratch", "note_path": "decomp_notes/scr_mp_module.md" },
+    "0049F9A0": { "status": "matching", "note_path": "decomp_notes/scr_mp_module.md" },
+    "0049F9D0": { "status": "matching", "note_path": "decomp_notes/scr_mp_module.md" },
+    "0049FED0": { "status": "matching", "note_path": "decomp_notes/scr_mp_module.md" },
+    "004A00A0": { "status": "matching", "note_path": "decomp_notes/scr_mp_module.md" }
   }
 }

@@ -1,0 +1,38 @@
+# Function notes: 0046A810 `operator<<`
+
+Module notes: `decomp_notes/Path_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:0ca5cf138c0807b43758 -->
+### `434b724dbf24` `src/scratch/0046A810_operator.cpp:1-24`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0046A810 operator<<(ostream&, const Path&)
+// Path.cpp lines 57-65
+// 206 bytes
+//
+// ATTEMPT LOG:
+// - Replaced free ostream helper stubs with the real C++ ostream member overloads.
+// - Restored the binary-observed chained z/comma and facet/closing-text calls.
+// - Carried the returned ostream pointer through the coordinate output and loaded
+//   the single float temporary before setting x_floatused; this reproduces all 61
+//   instruction shapes and the original frame/register topology.
+// - Normalized the proven class layouts (ostream vbptr, padded Waypoint records,
+//   and Path's Waypoint subobjects) without changing emitted code.
+// - Fresh ABI probe: replaced the local ostream stub/manual float-flag stores
+//   with VC5's period <iostream.h> ostream surface and its natural inline float
+//   overload. The body remains 206 bytes/61 instructions and byte-identical
+//   after relocation masking, proving the remaining mismatch is not caused by
+//   the local stub or float source spelling.
+// - Two independent readiness audits established that the nine direct-call
+//   targets are the exact original VC5 ostream overloads. The original packets
+//   retain their decorated identities, but inventory/all_functions.csv had
+//   reduced all three to generic operator<< names.
+// - After restoring those overload-specific original symbols in checker
+//   metadata, this unchanged natural <iostream.h> source validates exactly:
+//   206/206 bytes, all nine ordered calls, and full CFG/block parity.
+```
+<!-- end-recovered:0ca5cf138c0807b43758 -->

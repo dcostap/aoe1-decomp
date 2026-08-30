@@ -1,0 +1,23 @@
+# Function notes: 0046DE30 `TPicture`
+
+Module notes: `decomp_notes/Picture_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:f570c2f675ddf65845bd -->
+### `a5fb96a1e6de` `src/scratch/0046DE30_TPicture.cpp:1-9`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0046DE30 TPicture::TPicture(int file_handle, int param_2)
+// Picture.cpp lines 25-76
+
+// attempt 3: proper file-read / bitmap-allocation constructor
+// ret 8, takes 2 params (file handle + transinfo flag)
+// 366/366 exact size, 14 diff bytes
+// Remaining: push order for calloc (1 vs dib_size first) + extra mov ecx,esi before malloc
+// Both are VC5 optimizer scheduling artifacts
+// Left in scratch.
+```
+<!-- end-recovered:f570c2f675ddf65845bd -->

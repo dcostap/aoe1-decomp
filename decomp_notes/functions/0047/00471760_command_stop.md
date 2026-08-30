@@ -1,0 +1,74 @@
+# Function notes: 00471760 `command_stop`
+
+Module notes: `decomp_notes/player_module.md`.
+
+## Translation-unit context
+
+- Owning compiland: `player.cpp`, natural source owner `src/player.cpp`.
+- Owning method: `RGE_Player::command_stop()`; calling convention `__thiscall`.
+- PDB span: `player.cpp:2390-2403`; original body `00471760-004717C0` (97 bytes).
+- The source uses the natural `list` and `short count` locals.
+
+## Current result
+
+- Fresh focused result: `MATCH`, `0.0000%`, 97/97 bytes.
+- Frame and saved register set match: `0x8`, `esi`.
+- Calls align exactly: `get_selected_objects_to_command`, virtual slot `+0xAC`,
+  direct `command_stop`, and `free`.
+- Relocations are safely masked: 3/3. The `RGE_Player::command_stop` owner
+  symbol and original boundaries match.
+- The natural source calls `play_command_sound` through virtual slot `+0xAC`,
+  then submits the same list and count to `command_stop` before freeing it.
+- The fresh target-session baseline before this repair was 103 bytes with a 43
+  byte diff. It called virtual slot `+0xB0` and `command_order`.
+
+## Recovered attempt history
+
+<!-- recovered:e13b1e0b0a6caf284be1 -->
+### `de90bbea477a` `src/matching/00471760_command_stop.cpp:1-6`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// attempt log:
+// first pass: natural local list/list_num spelling around the selection helper and follow-up command dispatch
+// second pass: switch to the decompiler-ish local_4 array spelling to mirror the helper call/stack shape
+// third pass: explicitly copy the returned short into list_num before the command dispatch
+// fourth pass: revert to the original fallthrough success block so the branch layout matches the asm
+// target shape: get selected objects, call the selected object's +0xAC vfunc, forward to command_stop, free the list, return 1/0
+```
+<!-- end-recovered:e13b1e0b0a6caf284be1 -->
+
+## Rejected approaches
+
+- The prior `play_move_sound` plus `command_order` form is rejected. It produced
+  the 103-byte baseline with a 43-byte diff and wrong direct targets.
+- Decompiler-only `_list_num` and `local_4` spellings are not retained. Named
+  `list` and `short count` produce the exact result in the natural module.
+
+## Open questions
+
+- None for the emitted body. Promotion and status remain coordinator decisions.
+
+## Next useful approaches
+
+- No further source change is indicated. Recheck only if the owning module
+  changes or new binary evidence disproves the current call targets.
+
+## Worker updates
+
+### wave21-player
+
+- Reviewed the reunified function. The existing `list`, `short count`,
+  `play_command_sound`, and `command_stop` form is the only retained source.
+- Replaced `play_move_sound` with `play_command_sound` and `command_order` with
+  `command_stop`. This follows the original call targets and virtual slot.
+- Fresh `target_session.py check` checkpoint `wave21-command-stop-natural-final`
+  reports `MATCH`, `0.0000%`, with no emitted-code movement.
+- `python tools/check_function.py --va 00471760 --no-build --call-map
+  --stack-map --detail full --map-limit 40`: all four call sites align.
+- `python tools/audit_translation_unit_observed.py --group player --jobs 1
+  --output-dir build/audits/workers/wave21-player/player`: target is an exact
+  unregistered included function; 105 registered owners also match.
+- Grouped sweep reports 117 included normal functions, 105 registered-owner
+  matches, and no grouped mismatch for this target.

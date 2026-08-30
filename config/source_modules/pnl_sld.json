@@ -9,15 +9,15 @@
     "summary": "Consumes the canonical Pnl_scbr, pnl_lst, panel, drawarea, Shape, and color owners; declares only the Pnl_sld slider surfaces."
   },
   "functions": {
-    "0047BCE0": { "status": "matching", "note_path": "recovery_notes/pnl_sld_module.md" },
-    "0047BD30": { "status": "matching", "note_path": "recovery_notes/pnl_sld_module.md" },
-    "0047BD40": { "status": "matching", "note_path": "recovery_notes/pnl_sld_module.md" },
-    "0047BDC0": { "status": "matching", "note_path": "recovery_notes/pnl_sld_module.md" },
-    "0047BDE0": { "status": "matching", "note_path": "recovery_notes/pnl_sld_module.md" },
-    "0047BDF0": { "status": "matching", "note_path": "recovery_notes/pnl_sld_module.md" },
-    "0047BE30": { "status": "matching", "note_path": "recovery_notes/pnl_sld_module.md" },
-    "0047BE40": { "status": "matching", "note_path": "recovery_notes/pnl_sld_module.md" },
-    "0047BEC0": { "status": "matching", "note_path": "recovery_notes/pnl_sld_module.md" },
-    "0047BF30": { "status": "matching", "note_path": "recovery_notes/pnl_sld_module.md" }
+    "0047BCE0": { "status": "matching", "note_path": "decomp_notes/pnl_sld_module.md" },
+    "0047BD30": { "status": "matching", "note_path": "decomp_notes/pnl_sld_module.md" },
+    "0047BD40": { "status": "matching", "note_path": "decomp_notes/pnl_sld_module.md" },
+    "0047BDC0": { "status": "matching", "note_path": "decomp_notes/pnl_sld_module.md" },
+    "0047BDE0": { "status": "matching", "note_path": "decomp_notes/pnl_sld_module.md" },
+    "0047BDF0": { "status": "matching", "note_path": "decomp_notes/pnl_sld_module.md" },
+    "0047BE30": { "status": "matching", "note_path": "decomp_notes/pnl_sld_module.md" },
+    "0047BE40": { "status": "matching", "note_path": "decomp_notes/pnl_sld_module.md" },
+    "0047BEC0": { "status": "matching", "note_path": "decomp_notes/pnl_sld_module.md" },
+    "0047BF30": { "status": "matching", "note_path": "decomp_notes/pnl_sld_module.md" }
   }
 }

@@ -15,11 +15,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 CONFIG_DIR = REPO_ROOT / "config"
 TRANSLATION_UNITS_PATH = CONFIG_DIR / "translation_units.json"
 SOURCE_MODULES_DIR = CONFIG_DIR / "source_modules"
-AUXILIARY_CONTRIBUTIONS_DIR = CONFIG_DIR / "auxiliary_contributions"
 INVENTORY_DIR = REPO_ROOT / "inventory"
 BUILD_DIR = REPO_ROOT / "build"
 PDB_INVENTORY_DIR = INVENTORY_DIR / "pdb"
-FUNCTION_RECOVERY_NOTES_DIR = REPO_ROOT / "recovery_notes" / "functions"
+FUNCTION_DECOMP_NOTES_DIR = REPO_ROOT / "decomp_notes" / "functions"
 TOOLCHAIN_SUPPLIED_FUNCTIONS_PATH = CONFIG_DIR / "toolchain_supplied_functions.txt"
 TOOLCHAIN_SUPPLIED_REGIONS_PATH = CONFIG_DIR / "toolchain_supplied_regions.txt"
 ASM_SPECIAL_FUNCTIONS_PATH = CONFIG_DIR / "asm_special_functions.txt"
@@ -302,18 +301,18 @@ def function_record_by_va(va: int) -> dict[str, str]:
         raise KeyError(f"No function record for VA {target}") from error
 
 
-def function_recovery_note_relative_path(va: str, slug: str) -> Path:
-    """Return the deterministic tracked recovery-journal path for one function."""
+def function_decomp_note_relative_path(va: str, slug: str) -> Path:
+    """Return the optional tracked note path for one function."""
     va_text = str(va).upper()
     if len(va_text) != 8 or any(character not in "0123456789ABCDEF" for character in va_text):
         raise ValueError(f"Invalid function VA: {va!r}")
     if not slug or Path(slug).name != slug:
         raise ValueError(f"Invalid function slug: {slug!r}")
-    return Path("recovery_notes") / "functions" / va_text[:4] / f"{slug}.md"
+    return Path("decomp_notes") / "functions" / va_text[:4] / f"{slug}.md"
 
 
-def function_recovery_note_path(va: str, slug: str) -> Path:
-    return REPO_ROOT / function_recovery_note_relative_path(va, slug)
+def function_decomp_note_path(va: str, slug: str) -> Path:
+    return REPO_ROOT / function_decomp_note_relative_path(va, slug)
 
 
 def parse_hex(value: str | None) -> int | None:
@@ -351,19 +350,13 @@ _SOURCE_MODULE_STATUSES = {
     "accepted_drift",
     "verified_logic",
     "scratch",
+    "observed",
 }
-
-_AUXILIARY_CONTRIBUTION_STATUSES = {"observed"}
 
 
 @lru_cache(maxsize=1)
 def load_source_modules() -> list[dict[str, object]]:
-    """Load migrated original-source modules and their per-function states.
-
-    Old source banks remain the default.  A module entry overrides that default
-    only for its listed VAs.  This lets one normal source file hold functions
-    in different recovery states.
-    """
+    """Load natural source modules and their per-function states."""
     if not SOURCE_MODULES_DIR.exists():
         return []
     module_paths = sorted(SOURCE_MODULES_DIR.glob("*.json"))
@@ -408,14 +401,10 @@ def load_source_modules() -> list[dict[str, object]]:
                 raise ValueError(f"{label}: invalid function VA {raw_va!r}")
             if va in seen_vas:
                 raise ValueError(f"{label}: VA {va} appears in multiple modules")
-            if isinstance(raw_entry, str):
-                status = raw_entry.strip()
-                note_path = ""
-            elif isinstance(raw_entry, dict):
-                status = str(raw_entry.get("status") or "").strip()
-                note_path = str(raw_entry.get("note_path") or "").replace("\\", "/").strip()
-            else:
-                raise ValueError(f"{label}: {va} must be a status or object")
+            if not isinstance(raw_entry, dict):
+                raise ValueError(f"{label}: {va} must be an object")
+            status = str(raw_entry.get("status") or "").strip()
+            note_path = str(raw_entry.get("note_path") or "").replace("\\", "/").strip()
             if status not in _SOURCE_MODULE_STATUSES:
                 raise ValueError(
                     f"{label}: {va} has invalid status {status!r}"
@@ -460,77 +449,6 @@ def source_module_entries_by_va() -> dict[str, dict[str, object]]:
 def source_module_entry_for_va(va: int | str) -> dict[str, object] | None:
     va_text = f"{va:08X}" if isinstance(va, int) else str(va).upper()
     return source_module_entries_by_va().get(va_text)
-
-
-@lru_cache(maxsize=1)
-def load_auxiliary_contributions() -> list[dict[str, object]]:
-    """Load reviewed executable contributions without C/C++ source modules."""
-    if not AUXILIARY_CONTRIBUTIONS_DIR.exists():
-        return []
-
-    contributions: list[dict[str, object]] = []
-    seen_names: set[str] = set()
-    seen_vas: set[str] = set()
-    for contribution_path in sorted(AUXILIARY_CONTRIBUTIONS_DIR.glob("*.json")):
-        raw = load_json(contribution_path)
-        label = contribution_path.relative_to(REPO_ROOT).as_posix()
-        if not isinstance(raw, dict) or raw.get("schema") != 1:
-            raise ValueError(f"{label}: schema must be 1")
-        name = str(raw.get("name") or "").strip()
-        kind = str(raw.get("kind") or "").strip()
-        source = str(raw.get("source") or "").replace("\\", "/").strip()
-        header = str(raw.get("header") or "").replace("\\", "/").strip()
-        pdb_source_path = str(raw.get("pdb_source_path") or "").strip()
-        no_line_info = raw.get("pdb_no_line_info")
-        evidence = str(raw.get("pdb_module_stream_evidence") or "").replace("\\", "/").strip()
-        raw_functions = raw.get("functions")
-        if (
-            not name
-            or kind != "no_line_compiland"
-            or not source
-            or not pdb_source_path
-            or not isinstance(raw_functions, dict)
-            or not raw_functions
-        ):
-            raise ValueError(
-                f"{label}: no-line contribution needs name, kind, source, pdb_source_path, and functions"
-            )
-        if no_line_info is not True:
-            raise ValueError(f"{label}: pdb_no_line_info must be true")
-        if not evidence:
-            raise ValueError(f"{label}: pdb_no_line_info needs pdb_module_stream_evidence")
-        if name in seen_names:
-            raise ValueError(f"{label}: duplicate contribution name {name!r}")
-        seen_names.add(name)
-
-        functions: dict[str, dict[str, str]] = {}
-        for raw_va, raw_entry in raw_functions.items():
-            va = str(raw_va).upper()
-            if len(va) != 8 or any(character not in "0123456789ABCDEF" for character in va):
-                raise ValueError(f"{label}: invalid function VA {raw_va!r}")
-            if va in seen_vas:
-                raise ValueError(f"{label}: VA {va} appears in multiple contributions")
-            if not isinstance(raw_entry, dict):
-                raise ValueError(f"{label}: {va} must be an object")
-            status = str(raw_entry.get("status") or "").strip()
-            if status not in _AUXILIARY_CONTRIBUTION_STATUSES:
-                raise ValueError(f"{label}: {va} has invalid status {status!r}")
-            seen_vas.add(va)
-            functions[va] = {"status": status}
-
-        contributions.append(
-            {
-                "name": name,
-                "kind": kind,
-                "source": source,
-                "header": header,
-                "pdb_source_path": pdb_source_path,
-                "pdb_no_line_info": True,
-                "pdb_module_stream_evidence": evidence,
-                "functions": functions,
-            }
-        )
-    return contributions
 
 
 def _sha256(path: Path) -> str:
@@ -648,42 +566,19 @@ def validate_source_modules() -> list[str]:
     return issues
 
 
-def validate_auxiliary_contributions() -> list[str]:
-    """Return durable problems in no-line executable contribution manifests."""
-    records = {row["va"].upper(): row for row in load_functions()}
-    pdb_sources = load_pdb_function_source_map()
-    issues: list[str] = []
-    for contribution in load_auxiliary_contributions():
-        name = str(contribution["name"])
-        source = repo_path(str(contribution["source"]))
-        if not source.is_file():
-            issues.append(f"{name}: contribution source is missing: {source}")
-        header_value = str(contribution.get("header") or "")
-        if header_value and not repo_path(header_value).is_file():
-            issues.append(f"{name}: contribution header is missing: {repo_path(header_value)}")
-        issues.extend(pdb_module_stream_evidence_issues(contribution))
-        functions = contribution["functions"]
-        assert isinstance(functions, dict)
-        for va in functions:
-            if va not in records:
-                issues.append(f"{name}: function {va} is absent from inventory")
-                continue
-            pdb_entry = pdb_sources.get(va)
-            if pdb_entry and any(
-                str(pdb_entry.get(field) or "").strip()
-                for field in ("primary_source_path", "symbol_name")
-            ):
-                issues.append(f"{name}: function {va} has PDB source or symbol ownership")
-            if pdb_entry and pdb_entry.get("has_line_info") not in (None, "0"):
-                issues.append(f"{name}: function {va} has PDB line information")
-    return issues
-
-
 @lru_cache(maxsize=1)
 def load_translation_units() -> list[dict[str, object]]:
+    """Load build recipes for all natural source-module functions.
+
+    The tracked ``functions`` map records every configured VA and symbol.
+    Compatibility ``owners`` and ``symbols`` maps contain only functions whose
+    source-module status is ``matching``.
+    """
     if not TRANSLATION_UNITS_PATH.exists():
         return []
     payload = load_json(TRANSLATION_UNITS_PATH)
+    if payload.get("schema") != 2:
+        raise ValueError("config/translation_units.json: schema must be 2")
     groups = payload.get("translation_units")
     if not isinstance(groups, list):
         raise ValueError("config/translation_units.json: translation_units must be a list")
@@ -694,44 +589,43 @@ def load_translation_units() -> list[dict[str, object]]:
             raise ValueError("config/translation_units.json: each translation unit must be an object")
         name = str(group.get("name") or "").strip()
         source = str(group.get("source") or "").strip()
-        owners = group.get("owners")
-        if not name or not source or not isinstance(owners, dict) or not owners:
+        raw_functions = group.get("functions")
+        if not name or not source or not isinstance(raw_functions, dict) or not raw_functions:
             raise ValueError(
-                "config/translation_units.json: each unit needs name, source, and owners"
+                "config/translation_units.json: each unit needs name, source, and functions"
             )
-        owner_map: dict[str, str] = {}
-        for raw_va, owner in owners.items():
+        function_map: dict[str, str] = {}
+        for raw_va, raw_symbol in raw_functions.items():
             va = str(raw_va).upper()
             if len(va) != 8 or any(character not in "0123456789ABCDEF" for character in va):
-                raise ValueError(f"config/translation_units.json: invalid owner VA {raw_va!r}")
+                raise ValueError(f"config/translation_units.json: invalid function VA {raw_va!r}")
             if va in seen_vas:
                 raise ValueError(f"config/translation_units.json: VA {va} appears in multiple units")
-            owner_path = str(owner).replace("\\", "/").strip()
-            if not owner_path:
-                raise ValueError(f"config/translation_units.json: empty owner path for {va}")
-            seen_vas.add(va)
-            owner_map[va] = owner_path
-        raw_symbols = group.get("symbols", {})
-        if not isinstance(raw_symbols, dict):
-            raise ValueError(f"config/translation_units.json: symbols for {name} must be an object")
-        symbol_map: dict[str, str] = {}
-        for raw_va, raw_symbol in raw_symbols.items():
-            va = str(raw_va).upper()
-            if va not in owner_map:
-                raise ValueError(
-                    f"config/translation_units.json: symbol VA {va} is not an owner of {name}"
-                )
             symbol = str(raw_symbol).strip()
-            if not symbol:
-                raise ValueError(f"config/translation_units.json: empty symbol for {va}")
-            symbol_map[va] = symbol
+            if not symbol or any(character.isspace() for character in symbol):
+                raise ValueError(f"config/translation_units.json: invalid function symbol for {va}")
+            seen_vas.add(va)
+            function_map[va] = symbol
         flags = str(group.get("flags") or "").replace("\\", "/").strip()
         module = str(group.get("module") or "").strip()
+        source_module = source_module_for_name(module) if module else None
+        if source_module is None:
+            raise ValueError(f"config/translation_units.json: {name} has unknown module {module!r}")
+        module_functions = source_module["functions"]
+        assert isinstance(module_functions, dict)
+        exact_vas = {
+            va
+            for va, entry in module_functions.items()
+            if isinstance(entry, dict) and str(entry.get("status") or "") == "matching"
+        }
+        owner_map = {va: source.replace("\\", "/") for va in function_map if va in exact_vas}
+        symbol_map = {va: symbol for va, symbol in function_map.items() if va in exact_vas}
         normalized.append(
             {
                 "name": name,
                 "source": source.replace("\\", "/"),
                 "flags": flags,
+                "functions": function_map,
                 "owners": owner_map,
                 "symbols": symbol_map,
                 "module": module,
@@ -752,20 +646,13 @@ def translation_unit_for_va(va: int) -> dict[str, object] | None:
 
 
 def compiler_translation_unit_for_va(va: int) -> dict[str, object] | None:
-    """Return the compiler module for an exact owner or observed member."""
-    group = translation_unit_for_va(va)
-    if group is not None:
-        return group
+    """Return the configured compiler recipe for one function."""
     target = f"{va:08X}"
     for group in load_translation_units():
-        module_name = str(group.get("module") or "").strip()
-        source_module = source_module_for_name(module_name) if module_name else None
-        if source_module is not None:
-            functions = source_module["functions"]
-            assert isinstance(functions, dict)
-            if target in functions:
-                validate_translation_unit(group)
-                return group
+        functions = group.get("functions")
+        if isinstance(functions, dict) and target in functions:
+            validate_translation_unit(group)
+            return group
     return None
 
 
@@ -795,10 +682,16 @@ def _validate_translation_unit_cached(payload: str) -> None:
 
 
 def _validate_translation_unit_uncached(group: dict[str, object]) -> None:
-    """Verify legacy wrapper includes or one direct migrated module source."""
+    """Verify one direct natural source-module build recipe."""
     source = repo_path(str(group["source"]))
+    configured_functions = group.get("functions")
     owners = group.get("owners")
-    if not source.is_file() or not isinstance(owners, dict):
+    if (
+        not source.is_file()
+        or not isinstance(configured_functions, dict)
+        or not configured_functions
+        or not isinstance(owners, dict)
+    ):
         raise ValueError(f"translation unit is incomplete: {source}")
     module_name = str(group.get("module") or "").strip()
     source_module = source_module_for_name(module_name) if module_name else None
@@ -809,6 +702,21 @@ def _validate_translation_unit_uncached(group: dict[str, object]) -> None:
         if source.resolve() != module_source:
             raise ValueError(
                 f"translation unit {source} does not use source module {module_name}: {module_source}"
+            )
+        module_functions = source_module["functions"]
+        assert isinstance(module_functions, dict)
+        expected_vas = {
+            va
+            for va, entry in module_functions.items()
+            if isinstance(entry, dict) and str(entry.get("status") or "") != "observed"
+        }
+        configured_vas = {str(va).upper() for va in configured_functions}
+        if configured_vas != expected_vas:
+            missing = sorted(expected_vas - configured_vas)
+            extra = sorted(configured_vas - expected_vas)
+            raise ValueError(
+                f"translation unit {source} function map differs from module {module_name}; "
+                f"missing={missing}, extra={extra}"
             )
     try:
         source_parent = source.resolve().parent
@@ -867,27 +775,38 @@ def compiler_artifact_slug(record: dict[str, str]) -> str:
     return function_slug(record)
 
 
+def header_source_path(record: dict[str, str]) -> Path | None:
+    """Return a natural header owner recorded by the PDB."""
+    source_name = Path(str(record.get("pdb_source_file") or "")).name
+    if Path(source_name).suffix.casefold() not in {".h", ".hpp"}:
+        return None
+    include_dir = REPO_ROOT / "include"
+    direct = include_dir / source_name
+    if direct.is_file():
+        return direct
+    source_key = source_name.casefold()
+    if include_dir.is_dir():
+        for candidate in include_dir.iterdir():
+            if candidate.is_file() and candidate.name.casefold() == source_key:
+                return candidate
+    return None
+
+
 def preferred_source_path(record: dict[str, str]) -> Path:
     module_entry = source_module_entry_for_va(record["va"])
     if module_entry is not None:
         module = module_entry["module"]
         assert isinstance(module, dict)
         return repo_path(str(module["source"]))
-    slug = function_slug(record)
-    candidates = [
-        REPO_ROOT / "src" / "matching" / f"{slug}.c",
-        REPO_ROOT / "src" / "matching" / f"{slug}.cpp",
-        REPO_ROOT / "src" / "accepted_drift" / f"{slug}.c",
-        REPO_ROOT / "src" / "accepted_drift" / f"{slug}.cpp",
-        REPO_ROOT / "src" / "verified_logic" / f"{slug}.c",
-        REPO_ROOT / "src" / "verified_logic" / f"{slug}.cpp",
-        REPO_ROOT / "src" / "scratch" / f"{slug}.c",
-        REPO_ROOT / "src" / "scratch" / f"{slug}.cpp",
-    ]
-    for candidate in candidates:
-        if candidate.exists():
-            return candidate
-    return REPO_ROOT / "src" / "scratch" / f"{slug}.c"
+    header = header_source_path(record)
+    if header is not None:
+        return header
+    pdb_source = Path(str(record.get("pdb_source_file") or "")).name
+    if Path(pdb_source).suffix.casefold() in {".c", ".cc", ".cpp", ".cxx"}:
+        return REPO_ROOT / "src" / pdb_source
+    raise FileNotFoundError(
+        f"No natural source is configured for {record['va']} {record['name']}"
+    )
 
 
 def positional_byte_diff_metrics(left: bytes, right: bytes) -> dict[str, int | float | str]:

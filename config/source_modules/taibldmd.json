@@ -12,17 +12,17 @@
     "004D3B20": { "status": "matching" },
     "004D3D60": {
       "status": "scratch",
-      "note_path": "recovery_notes/taibldmd_module.md"
+      "note_path": "decomp_notes/taibldmd_module.md"
     },
     "004D4460": { "status": "matching" },
     "004D4540": {
       "status": "scratch",
-      "note_path": "recovery_notes/taibldmd_module.md"
+      "note_path": "decomp_notes/taibldmd_module.md"
     },
     "004D4DB0": { "status": "matching" },
     "004D4E10": {
       "status": "matching",
-      "note_path": "recovery_notes/taibldmd_module.md"
+      "note_path": "decomp_notes/taibldmd_module.md"
     },
     "004D4F80": { "status": "matching" },
     "004D5090": { "status": "matching" },
@@ -32,7 +32,7 @@
     "004D5590": { "status": "matching" },
     "004D5600": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taibldmd_module.md"
+      "note_path": "decomp_notes/taibldmd_module.md"
     },
     "004D5690": { "status": "matching" },
     "004D56F0": { "status": "matching" },
@@ -44,11 +44,11 @@
     "004D5C20": { "status": "matching" },
     "004D5CA0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taibldmd_module.md"
+      "note_path": "decomp_notes/taibldmd_module.md"
     },
     "004D5D40": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/taibldmd_module.md"
+      "note_path": "decomp_notes/taibldmd_module.md"
     },
     "004D5DE0": { "status": "matching" }
   }

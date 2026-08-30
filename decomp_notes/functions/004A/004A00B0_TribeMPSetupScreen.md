@@ -1,0 +1,146 @@
+# Function notes: 004A00B0 `TribeMPSetupScreen`
+
+Module notes: `decomp_notes/scr_mps_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:65efb20fa5c989d2af07 -->
+### `d050eea3c` `src/scr_mps.cpp:1-2`
+
+Mapping: `strong`. next mapped function definition is TribeMPSetupScreen at old line 40.
+
+```text
+// PDB source module: C:\msdev\work\age1_x1\scr_mps.cpp.
+// Definitions follow the original PDB source order.
+```
+<!-- end-recovered:65efb20fa5c989d2af07 -->
+
+<!-- recovered:4ea893961e0480e5446c -->
+### `d050eea3c` `src/scr_mps.cpp:44-45`
+
+Mapping: `exact`. removed comment declares this PDB source owner VA.
+
+```text
+// VA: 004A00B0 TribeMPSetupScreen::TribeMPSetupScreen
+// PDB donor: scr_mps.cpp:203-437
+```
+<!-- end-recovered:4ea893961e0480e5446c -->
+
+<!-- recovered:ff3170ff4e558d8d9092 -->
+### `target-session` `build/target_sessions/004A00B0_TribeMPSetupScreen.json:1-39`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=2452; shape=97.98850574712644: Baseline current scratch reconstruction before new hypotheses; establish metrics and call topology.
+probe 2 control-flow; result=MISMATCH; diff=2399; shape=88.06390977443608: Hypothesis 2: restore decompiler-proven do/while row loop, materialize short team state, and set active on civ_drop[-56] (player CD text) instead of team; tests source topology and original shipped target.
+probe 4 liveness; result=MISMATCH; diff=2462; shape=98.27751196172248: Hypothesis 3: retain baseline for-loop and change final virtual set_active receiver to decompiler-proven civ_drop[-56] player CD text.
+probe 6 liveness; result=MISMATCH; diff=2462; shape=98.27751196172248: Hypothesis 4: keep baseline loop but name the player CD output-pointer local and reuse it for final set_active, matching the original EBP-carrying local.
+probe 8 liveness; result=MISMATCH; diff=2452; shape=97.98850574712644: Hypothesis 5: name the scenario-player dropdown pointer at its original post-list setup point to suppress the baseline early spill and test original cursor lifetime.
+probe 10 liveness; result=MISMATCH; diff=2452; shape=97.98850574712644: Hypothesis 6: reverse row-loop initialization order, declaring the player-civ cursor before assigning y, to test VC5 declaration scheduling. [same emitted code as probe 1]
+probe 12 liveness; result=MISMATCH; diff=2452; shape=97.98850574712644: Hypothesis 7: move y into the row setup and initialize it at declaration, testing whether VC5 preserves the original pre-loop stack store order. [same emitted code as probe 10]
+probe 14 liveness; result=MISMATCH; diff=2452; shape=97.98850574712644: Hypothesis 8: reuse one dropdown output-pointer local for name, civ, and scenario panels, as shown by the decompiler's ppTVar1 reuse. [same emitted code as probe 12]
+probe 16 liveness; result=MISMATCH; diff=2452; shape=97.98850574712644: Hypothesis 9: materialize the original row text_y = y+2, then update it to y+3 before CD/version text calls, matching decompiler iVar7 reuse. [same emitted code as probe 8]
+probe 18 variant; result=MISMATCH; diff=2452; shape=97.98850574712644: variant lab build\variant_lab\004A00B0_TribeMPSetupScreen\20260817_155654: 4 variants, 2 invariant-eligible, 0 exact
+probe 19 variant; result=MISMATCH; diff=2452; shape=97.98850574712644: variant lab build\variant_lab\004A00B0_TribeMPSetupScreen\20260817_155714: 4 variants, 0 invariant-eligible, 0 exact
+probe 21 control-flow; result=MISMATCH; diff=2452; shape=97.98850574712644: Hypothesis 10: move the civ-drop cursor declaration into the for initializer while keeping y initialization before it, testing initialization emission order. [same emitted code as probe 14]
+probe 23 liveness; result=MISMATCH; diff=2448; shape=97.42857142857143: Hypothesis 11: carry a separate row_start copy of y through the loop and update it with y, testing whether an explicit early y dependency restores the original store-before-cursor setup.
+probe 26 liveness; result=MISMATCH; diff=2462; shape=98.27751196172248: Hypothesis 12: make the CD output-pointer a function-scope local, assign it before creation, and carry it to set_active to preserve original cross-call EBP liveness. [same emitted code as probe 6]
+probe 28 liveness; result=MISMATCH; diff=2462; shape=98.27751196172248: Hypothesis 13: dereference the function-scope player-CD output pointer into a panel local before set_active, matching original mov ebp,[ebp] then use.
+probe 30 control-flow; result=MISMATCH; diff=2452; shape=97.98850574712644: Hypothesis 14: chain the three ordinary row text-create failure tests with short-circuit OR, matching the decompiler's compound failure expression and shared target.
+probe 32 liveness; result=MISMATCH; diff=2497; shape=97.32057416267942: Hypothesis 15: preserve the original short team-state value across set_text and set_id instead of recomputing button_id-1.
+probe 34 control-flow; result=MISMATCH; diff=2403; shape=89.08748824082785: Hypothesis 16: use the decompiler-proven do/while row loop without changing receivers or local types, isolating loop topology from other row hypotheses.
+probe 36 liveness; result=MISMATCH; diff=2462; shape=98.27751196172248: Hypothesis 17: initialize the function-scope player-CD output pointer to zero before row assignment, testing whether its added lifetime changes final register reuse. [same emitted code as probe 26]
+probe 38 abi; result=MISMATCH; diff=2462; shape=98.27751196172248: Hypothesis 18: use the decompiler's base TPanel** output-pointer surface for the CD panel and cast only at create_text, testing ABI type coloring. [same emitted code as probe 28]
+probe 41 layout; result=MISMATCH; diff=2522; shape=89.01515151515152: Hypothesis 19: replace the proven contiguous row cursor with direct indexed member arrays, while retaining the binary-proven playerCDText active target. This tests canonical field ownership against the cursor lowering.
+probe 44 liveness; result=MISMATCH; diff=2497; shape=97.13467048710602: Hypothesis 20: keep the one-site for-loop topology, but bind player_cd immediately before the final create_text and reuse that output-pointer local for the proven vslot+0x14 active call. This tests pointer-home liveness without the do-loop duplication.
+probe 46 layout; result=MISMATCH; diff=2462; shape=98.27751196172248: Hypothesis 21: scope the scenario-player dropdown output pointer at its creation point, then retain the binary-proven playerCDText active target. This tests whether explicit local lifetime removes the early scenario-pointer spill while preserving one for-loop body. [same emitted code as probe 36]
+probe 48 layout; result=MISMATCH; diff=1718; shape=98.09160305343511: Hypothesis 22: use direct indexed member arrays in a single-site for loop, not a do-loop. This tests the natural source ownership model while retaining the proven CD-text active behavior and avoids the prior do-loop duplicate body.
+probe 49 liveness; result=MISMATCH; diff=1517; shape=98.37008628954938: Hypothesis 23: retain the indexed for-loop basin, but use a scoped short team state across set_text and set_id. The original loop materializes next id while passing the previous narrow state, so this tests the proven width and lifetime without changing row ownership.
+probe 50 liveness; result=MISMATCH; diff=1517; shape=98.37008628954938: Hypothesis 24: move the indexed row local to function scope before str, then assign it before the row loop. The original stack map has a 4-byte local-home gap and a higher str address than the indexed basin, so this tests declaration order and stack-slot ownership. [same emitted code as probe 49]
+probe 51 liveness; result=MISMATCH; diff=1480; shape=99.3282149712092: Hypothesis 25: derive next_button_id as a separate short-lived value before set_id, then assign it back after the call. This models the original lea button_id+1 and preserves the narrow prior state as a distinct argument.
+probe 52 liveness; result=MISMATCH; diff=1480; shape=99.3282149712092: Hypothesis 26: name the canonical playerTeam row output slot as a typed team pointer, then use it through the button setup loop. This tests whether the original EBP team-pointer lifetime naturally recolors the later y reload.
+probe 53 layout; result=MISMATCH; diff=1478; shape=99.52015355086372: Hypothesis 27: use the stack buffer base directly for sprintf and set_text instead of str+4. Original LEAs are four bytes earlier at both vararg and panel calls, which directly supports this address correction.
+probe 54 liveness; result=MISMATCH; diff=1478; shape=99.52015355086372: Hypothesis 28: materialize one row text_y local from y before the team-text call and reuse text_y+2/text_y+3 for all later text panels. This tests the original EBP-held base y and LEA-based text offsets.
+probe 55 liveness; result=MISMATCH; diff=1478; shape=99.52015355086372: Hypothesis 29: remove the named short state while keeping the separate next_button_id expression. This tests whether inline narrow casts let VC5 preserve button_id in the original home and use the desired old-value/new-value call setup. [same emitted code as probe 54]
+probe 56 liveness; result=MISMATCH; diff=155; shape=99.52015355086372: Hypothesis 30: initialize text_y to y+2 immediately after the team-text call and pass it directly to the three middle text panels. This tests whether the original lea y+2 is a real named intermediate rather than repeated y+2 expressions.
+probe 57 liveness; result=MISMATCH; diff=1791; shape=99.32885906040268: Hypothesis 31: materialize text_y=y+2 before the team-text call and pass text_y-2 there, then reuse text_y for the middle labels. This tests whether the earlier live y+2 value selects the original EBP/LEA basin.
+probe 58 behavior; result=MISMATCH; diff=1631; shape=99.32885906040268: Hypothesis 32: correct the text_y intermediate so CD/version receive text_y+1 after text_y=y+2, preserving the proven shipped y+3 behavior. This separates the prior codegen lead from an accidental coordinate change.
+probe 59 behavior; result=MISMATCH; diff=1478; shape=99.52015355086372: Hypothesis 33: retain the high-gain post-team text_y=y+2 basin but correct CD/version to text_y+1, restoring the actual y+3 coordinates. This tests whether the codegen gain survives behavior-preserving reduction. [same emitted code as probe 55]
+probe 60 liveness; result=MISMATCH; diff=1478; shape=99.52015355086372: Hypothesis 34: preserve y+3 behavior through a separate cd_y=text_y+1 local after the three middle labels. This tests whether a named final coordinate restores the original LEA register path without changing runtime coordinates.
+probe 61 liveness; result=MISMATCH; diff=1478; shape=99.52015355086372: Hypothesis 35: end the typed team-pointer scope immediately after set_id, before the text-panel creation phase. This tests whether earlier EBP death naturally lets VC5 reload y into EBP for the LEA y+2 block. [same emitted code as probe 60]
+probe 62 liveness; result=MISMATCH; diff=409; shape=99.3282149712092: Hypothesis 36: materialize the final row coordinate text_y=y+3 before the team-text call, pass derived y/y+2 forms to earlier text panels, and use text_y for CD/version. This preserves all coordinates while testing a final-coordinate live range for EBP reuse.
+probe 63 liveness; result=MISMATCH; diff=409; shape=99.3282149712092: Hypothesis 37: in the final-coordinate basin, name the player-CD output slot and reuse that typed pointer for both create_text and the proven vslot+0x14 call. This tests whether the original final dereference survives the changed y live range.
+```
+<!-- end-recovered:ff3170ff4e558d8d9092 -->
+
+<!-- recovered:d4d2a8311b19e27f4147 -->
+### `7a7d40948229` `src/scratch/004A00B0_TribeMPSetupScreen.cpp:1-62`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004A00B0 TribeMPSetupScreen::TribeMPSetupScreen
+// PDB donor: scr_mps.cpp:203-437
+// Baseline reconstruction: period-plausible screen construction with the
+// proven TScreenPanel/TEasy_Panel hierarchy, named panel arrays, and natural
+// creation/setup call order.  The response file supplies /GX for the original
+// constructor EH frame.
+//
+// Attempt log:
+// - baseline: canonical panel ownership from the destructor and generated class
+//   layout; direct TEasy_Panel helper calls, TPanel/TTextPanel virtual surfaces,
+//   and natural single/multiplayer setup branches.
+// - context: hoisted the proven draw_area member before nested setup-id
+//   evaluation; VC5 then reproduced the original setup argument push order.
+// - liveness: removing the synthetic row-index and scenario-pointer homes did
+//   not change code until the row was expressed as a contiguous cursor.
+// - layout: the named row arrays proved contiguous around playerCivDrop; using
+//   those neighboring row offsets restored the 0x10C frame and removed 120
+//   emitted bytes while substantially improving block coverage.
+// - control-flow: a guarded for loop for the eight player rows removed VC5's
+//   peeled duplicate dropdown site and aligned the static row call topology.
+// - behavior: spelling the title resource as a conditional -1/0 offset matched
+//   the original neg/sbb/add lowering and moved the first useful frontier deeper.
+// - final control-flow (prior session): the settings rows use one guarded loop
+//   site; the old remaining drift was a missing create_button site and late
+//   branch gaps.
+// - control-flow: reversed the host/nonhost dispatch arms.  The host arm now
+//   follows IsHost in source order, with the nonhost arm as the fallback.  This
+//   restored all 127 ordered calls, exact function size, and the original host
+//   and nonhost block placement; the row setup still differs locally.
+// - source recovery: removed an unused multiplayer declaration; emitted output
+//   stayed unchanged, and the natural source no longer carries dead machinery.
+// - unresolved pass: twenty source hypotheses were compiled and checked.  The
+//   clean baseline remains 3240 bytes, 0x10C frame, and 127 ordered calls.
+// - BINARY NOTE: the shipped row setup stores y at entry-relative [esp+10],
+//   then loads playerCivDrop and carries the row cursor through the calls.
+//   The clean source still emits a three-instruction local-order drift there.
+// - BINARY NOTE: the final row virtual call dereferences the player-CD output
+//   slot before calling vslot +0x14.  Direct typed and base-pointer forms add
+//   nine bytes, so the clean baseline remains pinned until a better source
+//   model explains that register reuse.
+// - LIKELY INTENT: the row cursor is one contiguous panel family centered on
+//   playerCivDrop.  This explains the proven negative pointer offsets, but it
+//   does not prove the original local declarations.
+// - indexed-row recovery: direct indexed member arrays with one for-loop body,
+//   a separate next_button_id, and the stack buffer base reduced the checked
+//   difference from 2452 to 1478 bytes.  The frame, size, and 127 ordered calls
+//   remain exact in this source model.
+// - BINARY NOTE: the indexed source now reproduces the row setup through the
+//   team-text block at +0x5A4, and reproduces the final CD-text virtual block.
+//   The first remaining row mismatch is the y+2 register/arithmetic lowering.
+// - BINARY NOTE: the shipped coordinates are y, y+2, and y+3.  The current
+//   source uses text_y = y + 2 and text_y + 1 for the last two panels.
+// - unresolved pass: direct indexed arrays are a strong shape lead, but the
+//   remaining add ebx,2 versus lea ebx,[ebp+2] basin is not exact.
+// - context gate: scr_mps.cpp lines 203-437 own this TribeMPSetupScreen
+//   constructor. The address sequence starts at 004A00B0 and has exact anchors
+//   at setup, row creation, final virtual calls, and the shared epilogue.
+// - Tested direct coordinate expressions, a scoped team alias, and a row-local
+//   button_id. All three emitted the same 1478-byte mismatch; the clean source
+//   remains the natural indexed reconstruction.
+// - Authentic scr_mps.cpp context used the canonical screen layout and /GX.
+//   PDB-ordered compilation kept 3240 bytes, 127 calls, and the 1478-byte diff.
+```
+<!-- end-recovered:d4d2a8311b19e27f4147 -->

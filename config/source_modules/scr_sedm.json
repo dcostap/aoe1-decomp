@@ -5,9 +5,9 @@
   "source": "src/scr_sedm.cpp",
   "header": "include/scr_sedm.h",
   "functions": {
-    "004B2EF0": { "status": "scratch", "note_path": "recovery_notes/scr_sedm_module.md" },
-    "004B3110": { "status": "scratch", "note_path": "recovery_notes/scr_sedm_module.md" },
-    "004B31A0": { "status": "matching", "note_path": "recovery_notes/scr_sedm_module.md" },
-    "004B31D0": { "status": "matching", "note_path": "recovery_notes/scr_sedm_module.md" }
+    "004B2EF0": { "status": "scratch", "note_path": "decomp_notes/scr_sedm_module.md" },
+    "004B3110": { "status": "scratch", "note_path": "decomp_notes/scr_sedm_module.md" },
+    "004B31A0": { "status": "matching", "note_path": "decomp_notes/scr_sedm_module.md" },
+    "004B31D0": { "status": "matching", "note_path": "decomp_notes/scr_sedm_module.md" }
   }
 }

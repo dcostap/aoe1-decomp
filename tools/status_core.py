@@ -11,24 +11,33 @@ from common import (
     REPO_ROOT,
     classify_corpus_bucket,
     function_record_by_va,
-    function_recovery_note_relative_path,
+    function_decomp_note_relative_path,
+    header_source_path,
     load_asm_special_function_names,
     load_asm_special_regions,
     load_compiler_generated_functions,
     load_functions,
     load_padding_only_functions,
     load_parent_owned_fragments,
+    load_translation_units,
     source_module_entry_for_va,
     load_toolchain_supplied_function_names,
     load_toolchain_supplied_regions,
 )
 
-HEADER_NOTE_RE = re.compile(r"^//\s*([A-Z_]+):\s*(.*)$")
 COMMENT_TOKEN_RE = re.compile(
     r'"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|//[^\r\n]*|/\*.*?(?:\*/|\Z)',
     re.DOTALL,
 )
-SOURCE_BUCKETS = ["matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict"]
+SOURCE_BUCKETS = [
+    "matching",
+    "accepted_drift",
+    "verified_logic",
+    "scratch",
+    "observed",
+    "unclaimed",
+    "conflict",
+]
 CORPUS_BUCKETS = ["normal", "padding_only", "compiler_generated", "parent_owned_fragment", "toolchain_supplied", "asm_special", "asm_region"]
 STATUS_FIELDNAMES = [
     "va",
@@ -41,7 +50,9 @@ STATUS_FIELDNAMES = [
     "pdb_source_path",
     "source_bucket",
     "source_path",
-    "recovery_note_path",
+    "translation_unit",
+    "compiler_flags",
+    "decomp_note_path",
     "logic_review_path",
     "has_logic_review",
     "corpus_bucket",
@@ -103,19 +114,6 @@ def default_header_notes() -> dict[str, str]:
     }
 
 
-def source_files(path: Path) -> dict[str, Path]:
-    files: dict[str, Path] = {}
-    if not path.exists():
-        return files
-    for child in sorted(path.iterdir()):
-        if child.suffix.lower() not in {".c", ".cpp"}:
-            continue
-        # Function VAs are case-insensitive. Older source files contain lower-
-        # case hex digits while inventory slugs use upper-case hex digits.
-        files[child.stem.upper()] = child
-    return files
-
-
 def logic_review_files(path: Path) -> dict[str, Path]:
     """Return present and tracked ledgers, including sparse-checkout files."""
     files: dict[str, Path] = {}
@@ -142,53 +140,6 @@ def logic_review_files(path: Path) -> dict[str, Path]:
             continue
         files.setdefault(tracked.stem.upper(), REPO_ROOT / tracked)
     return files
-
-
-def parse_header_notes(path: Path) -> dict[str, str]:
-    if not path.exists():
-        return default_header_notes()
-    notes = default_header_notes()
-    with path.open("r", encoding="utf-8", errors="replace") as handle:
-        for line in handle:
-            stripped = line.strip()
-            if not stripped:
-                continue
-            if not stripped.startswith("//"):
-                break
-            match = HEADER_NOTE_RE.match(stripped)
-            if match is None:
-                continue
-            key = match.group(1)
-            value = match.group(2).strip()
-            if key not in notes:
-                continue
-            if key == "NOTE" and notes[key]:
-                notes[key] = notes[key] + " | " + value
-            else:
-                notes[key] = value
-    return notes
-
-
-def parse_header_notes_text(text: str) -> dict[str, str]:
-    notes = default_header_notes()
-    for line in text.splitlines():
-        stripped = line.strip()
-        if not stripped:
-            continue
-        if not stripped.startswith("//"):
-            break
-        match = HEADER_NOTE_RE.match(stripped)
-        if match is None:
-            continue
-        key = match.group(1)
-        value = match.group(2).strip()
-        if key not in notes:
-            continue
-        if key == "NOTE" and notes[key]:
-            notes[key] = notes[key] + " | " + value
-        else:
-            notes[key] = value
-    return notes
 
 
 def read_source_preview(path: Path | None, max_lines: int = 140, max_chars: int = 12000) -> str:
@@ -265,12 +216,6 @@ def _source_path_for_row(row: dict[str, str]) -> Path | None:
     raw_paths = [value.strip() for value in row.get("source_path", "").split(" | ") if value.strip()]
     if not raw_paths:
         return None
-    priorities = ("src/scratch/", "src/verified_logic/", "src/accepted_drift/", "src/matching/")
-    normalized = [(value.replace("\\", "/"), value) for value in raw_paths]
-    for prefix in priorities:
-        for portable, original in normalized:
-            if portable.startswith(prefix):
-                return REPO_ROOT / original
     return REPO_ROOT / raw_paths[0]
 
 
@@ -290,27 +235,22 @@ def enrich_status_rows(
             source_text = source_path.read_text(encoding="utf-8", errors="replace")
 
         if include_source_notes:
-            if source_path is None:
-                notes = default_header_notes()
-            elif source_text is not None:
-                notes = parse_header_notes_text(source_text)
-            else:
-                notes = parse_header_notes(source_path)
+            notes = default_header_notes()
             if row.get("source_bucket") == "verified_logic" and row.get("has_logic_review") != "yes":
                 missing_ledger = "verified_logic source has no logic-review ledger"
                 notes["BLOCKER"] = (
                     f"{notes['BLOCKER']} | {missing_ledger}" if notes["BLOCKER"] else missing_ledger
                 )
             module_entry = source_module_entry_for_va(row["va"])
-            journal_relative = function_recovery_note_relative_path(row["va"], row["slug"])
-            journal_path = REPO_ROOT / journal_relative
+            note_relative = function_decomp_note_relative_path(row["va"], row["slug"])
+            note_path = REPO_ROOT / note_relative
             note_path = (
-                journal_relative.as_posix()
-                if journal_path.is_file()
+                note_relative.as_posix()
+                if note_path.is_file()
                 else str((module_entry or {}).get("note_path") or "")
             )
             if note_path:
-                note_label = f"Recovery notes: {note_path}"
+                note_label = f"Function notes: {note_path}"
                 notes["NOTE"] = (
                     f"{notes['NOTE']} | {note_label}" if notes["NOTE"] else note_label
                 )
@@ -325,7 +265,7 @@ def enrich_status_rows(
                     "source_why": notes["WHY"],
                     "source_next": notes["NEXT"],
                     "has_blocker": "yes" if notes["BLOCKER"] else "no",
-                    "recovery_note_path": note_path,
+                    "decomp_note_path": note_path,
                 }
             )
         if include_source_preview:
@@ -341,24 +281,6 @@ def enrich_status_rows(
                     diff_metrics = json.loads(diff_metrics_path.read_text(encoding="utf-8"))
                 except json.JSONDecodeError:
                     diff_metrics = {}
-            elif row.get("source_bucket") == "matching":
-                diff_metrics = {
-                    "result": "MATCH",
-                    "diff_percent": 0.0,
-                    "diff_bytes": 0,
-                    "diff_spans": 0,
-                    "positional_diff_percent": 0.0,
-                    "positional_diff_bytes": 0,
-                    "positional_diff_spans": 0,
-                    "edit_diff_percent": 0.0,
-                    "edit_diff_bytes": 0,
-                    "edit_insert_bytes": 0,
-                    "edit_delete_bytes": 0,
-                    "edit_replace_bytes": 0,
-                    "edit_equal_bytes": int(row.get("size_bytes") or 0),
-                    "likely_shifted_alignment": "no",
-                    "first_mismatch_offset": "",
-                }
             row.update(
                 {
                     "diff_result": str(diff_metrics.get("result", "")),
@@ -406,16 +328,8 @@ def build_status_rows(
     When ``va`` is supplied, only that record is classified. Corpus-wide rank
     fields stay empty because targeted agent queries do not need global ranks.
     """
-    scratch_dir = REPO_ROOT / "src" / "scratch"
-    matching_dir = REPO_ROOT / "src" / "matching"
-    accepted_drift_dir = REPO_ROOT / "src" / "accepted_drift"
-    verified_logic_dir = REPO_ROOT / "src" / "verified_logic"
     logic_reviews_dir = REPO_ROOT / "logic_reviews"
     flags_dir = REPO_ROOT / "config" / "flags"
-    scratch_files = source_files(scratch_dir)
-    matching_files = source_files(matching_dir)
-    accepted_drift_files = source_files(accepted_drift_dir)
-    verified_logic_files = source_files(verified_logic_dir)
     logic_review_ledgers = logic_review_files(logic_reviews_dir)
     custom_flag_files = {
         child.stem.upper(): child
@@ -443,28 +357,27 @@ def build_status_rows(
     pdb_norm = pdb_source_file.lower() if pdb_source_file else None
     include_vas_norm = {value.upper() for value in include_vas} if include_vas is not None else None
     exclude_vas_norm = {value.upper() for value in exclude_vas or set()}
+    recipes_by_va: dict[str, dict[str, object]] = {}
+    for group in load_translation_units():
+        functions = group.get("functions")
+        if isinstance(functions, dict):
+            for function_va in functions:
+                recipes_by_va[str(function_va).upper()] = group
 
     for record in records:
         slug = record["slug"]
         slug_key = slug.upper()
-        scratch_path = scratch_files.get(slug_key)
-        matching_path = matching_files.get(slug_key)
-        accepted_drift_path = accepted_drift_files.get(slug_key)
-        verified_logic_path = verified_logic_files.get(slug_key)
-        legacy_paths = [
-            path
-            for path in (matching_path, accepted_drift_path, verified_logic_path, scratch_path)
-            if path is not None
-        ]
         module_entry = source_module_entry_for_va(record["va"])
         module_path: Path | None = None
+        header_path: Path | None = None
         if module_entry is not None:
             module = module_entry["module"]
             assert isinstance(module, dict)
             module_path = REPO_ROOT / str(module["source"])
-            present_paths = [module_path, *legacy_paths]
+            present_paths = [module_path]
         else:
-            present_paths = legacy_paths
+            header_path = header_source_path(record)
+            present_paths = [header_path] if header_path is not None else []
 
         corpus_bucket, corpus_reason = classify_corpus_bucket(
             record,
@@ -477,24 +390,21 @@ def build_status_rows(
             compiler_generated_functions=compiler_generated_functions,
         )
 
-        if module_entry is not None and legacy_paths:
-            source_bucket = "conflict"
-        elif module_entry is not None and module_path is not None and module_path.is_file():
+        if module_entry is not None and module_path is not None and module_path.is_file():
             source_bucket = str(module_entry["status"])
-        elif len(present_paths) > 1:
+        elif module_entry is not None:
             source_bucket = "conflict"
-        elif matching_path:
-            source_bucket = "matching"
-        elif accepted_drift_path:
-            source_bucket = "accepted_drift"
-        elif verified_logic_path:
-            source_bucket = "verified_logic"
-        elif scratch_path:
-            source_bucket = "scratch"
+        elif header_path is not None:
+            source_bucket = "observed"
         else:
             source_bucket = "unclaimed"
 
-        is_remaining = "yes" if corpus_bucket == "normal" and source_bucket not in {"matching", "accepted_drift", "verified_logic"} else "no"
+        is_remaining = (
+            "yes"
+            if corpus_bucket == "normal"
+            and source_bucket in {"scratch", "unclaimed", "conflict"}
+            else "no"
+        )
         if is_remaining == "yes":
             remaining_records.append(record)
         record_va = record["va"].upper()
@@ -531,13 +441,14 @@ def build_status_rows(
         parent_name_text = parent_fragment[1] if parent_fragment else ""
         parent_reason_text = parent_fragment[2] if parent_fragment else ""
 
-        journal_relative = function_recovery_note_relative_path(record["va"], slug)
+        note_relative = function_decomp_note_relative_path(record["va"], slug)
         configured_note_path = str((module_entry or {}).get("note_path") or "")
-        recovery_note_path = (
-            journal_relative.as_posix()
-            if (REPO_ROOT / journal_relative).is_file()
+        decomp_note_path = (
+            note_relative.as_posix()
+            if (REPO_ROOT / note_relative).is_file()
             else configured_note_path
         )
+        recipe = recipes_by_va.get(record_va)
 
         row = {
             "va": record["va"],
@@ -550,7 +461,9 @@ def build_status_rows(
             "pdb_source_path": record.get("pdb_source_path", ""),
             "source_bucket": source_bucket,
             "source_path": source_path,
-            "recovery_note_path": recovery_note_path,
+            "translation_unit": str((recipe or {}).get("name") or ""),
+            "compiler_flags": str((recipe or {}).get("flags") or ""),
+            "decomp_note_path": decomp_note_path,
             "logic_review_path": str(Path("logic_reviews") / logic_review_path.name) if logic_review_path is not None else "",
             "has_logic_review": "yes" if logic_review_path is not None else "no",
             "corpus_bucket": corpus_bucket,

@@ -1,5 +1,7 @@
 # Logic review: 0052B080 `T_Scenario::InitializePlayerValues`
 
+Current source: `src/tscenaro.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching on 2026-08-02 after many
@@ -16,7 +18,7 @@ without genuinely new compiler-IR or translation-unit evidence.
 
 Current validated checker state:
 
-- source remains `src/scratch/0052B080_InitializePlayerValues.cpp`;
+- source remains `src/tscenaro.cpp`;
 - original/rebuilt size: 123/123 bytes;
 - frame: none/none;
 - saved registers: `ebx, ebp, esi, edi` / `ebx, ebp, esi, edi`;
@@ -196,7 +198,7 @@ uncertainty.
 
 ## Final decision
 
-Promote to `src/matching`, not `src/verified_logic`. Natural source normalization
+Promote to `matching` status, not `verified_logic` status. Natural source normalization
 reopened and completed exact matching: `check_function.py --va 0052B080` reports
 `Result: MATCH`, 123/123 bytes, and 0.0000% difference. The full review ledger is
 retained because it records the discovered offset defect and its correction.

@@ -7,7 +7,7 @@
   "functions": {
     "004CF090": {
       "status": "matching",
-      "note_path": "recovery_notes/tact_hnt_module.md"
+      "note_path": "decomp_notes/tact_hnt_module.md"
     },
     "004CF130": { "status": "matching" },
     "004CF1C0": { "status": "matching" },
@@ -15,18 +15,18 @@
     "004CF240": { "status": "matching" },
     "004CF300": {
       "status": "matching",
-      "note_path": "recovery_notes/tact_hnt_module.md"
+      "note_path": "decomp_notes/tact_hnt_module.md"
     },
     "004CF860": {
       "status": "scratch",
-      "note_path": "recovery_notes/004CF860_update.md"
+      "note_path": "decomp_notes/functions/004C/004CF860_update.md"
     },
     "004CFF20": { "status": "matching" },
     "004CFF50": { "status": "matching" },
     "004CFF90": { "status": "matching" },
     "004CFFD0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/004CFFD0_move_to.md"
+      "note_path": "decomp_notes/functions/004C/004CFFD0_move_to.md"
     },
     "004D0080": { "status": "matching" }
   }

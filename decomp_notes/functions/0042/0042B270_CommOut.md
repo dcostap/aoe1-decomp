@@ -1,0 +1,84 @@
+# Function notes: 0042B270 `CommOut`
+
+Module notes: `decomp_notes/com_hand_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:7c200e2bc8d790f1eb60 -->
+### `target-session` `build/target_sessions/0042B270_CommOut.json:1-25`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=1136; shape=91.51515151515152: Baseline current clean source: 31/31 calls, frame 0x24, rebuilt 1504 vs original 1505; first mismatch +006F local home [esp+1c] versus original [esp+18], with broad control-flow drift.
+probe 2 other; result=MISMATCH; diff=1136; shape=91.51515151515152: Hypothesis 1: reverse sync_turn operands so the byte increment is copied into ECX before current_turn loads into EAX, matching original 0042B386-39A schedule. [same emitted code as probe 1]
+probe 3 control-flow; result=MISMATCH; diff=1169; shape=95.16129032258064: Hypothesis 2: remove the explicit hr=0 before the delivery branch. Original preserves outgoing_count in EBX at 0042B4C3 and only zeros EBX at shared no-send fallback 0042B728.
+probe 4 liveness; result=MISMATCH; diff=1169; shape=95.16129032258064: Hypothesis 3: bind CommandTurnIncrement to a typed local before sync_turn, testing whether VC5 preserves the original AL-to-ECX copy before loading current_turn. [same emitted code as probe 3]
+probe 5 control-flow; result=MISMATCH; diff=957; shape=96.76767676767676: Hypothesis 4: split guaranteed-success TXPacketLength update and StoreForResend into two independent hr==0 tests. Original has TEST EBX both before the accounting store and before StoreForResend.
+probe 6 liveness; result=MISMATCH; diff=957; shape=96.76767676767676: Hypothesis 5: stage sync_turn as current_turn then compound-add the increment local, testing whether assignment form recovers the original two-register schedule. [same emitted code as probe 5]
+probe 7 control-flow; result=MISMATCH; diff=1173; shape=96.96969696969697: Hypothesis 6: assign hr=0 only in each no-send arm, not before the delivery branch. Original converges no-recipient paths at 0042B728 with xor EBX.
+probe 9 control-flow; result=MISMATCH; diff=1173; shape=96.96969696969697: Hypothesis 9: model no-recipient paths with explicit hr=0 else arms in both guaranteed and non-guaranteed branches, expecting VC5 to merge their common xor at 0042B728. [same emitted code as probe 7]
+probe 10 other; result=MISMATCH; diff=1173; shape=96.96969696969697: Hypothesis 10: assign sync_turn from the byte increment first, then compound-add current_turn, testing explicit accumulator lowering for original mov ecx,eax; mov eax,current_turn. [same emitted code as probe 9]
+probe 12 liveness; result=MISMATCH; diff=957; shape=96.76767676767676: Hypothesis 11: bind packet[header_length] to a branch-local signed char before the final vararg Log, testing payload value lifetime and register color. [same emitted code as probe 11]
+probe 13 variant; result=MISMATCH; diff=957; shape=96.76767676767676: variant lab build\variant_lab\0042B270_CommOut\20260817_144631: 12 variants, 12 invariant-eligible, 0 exact
+probe 14 control-flow; result=MISMATCH; diff=1181; shape=96.7741935483871: Hypothesis 12: initialize hr only in the non-guaranteed no-recipient arm, testing whether this single explicit zero merges the original shared fallback without the full two-arm register basin.
+probe 16 liveness; result=MISMATCH; diff=957; shape=96.76767676767676: Hypothesis 13: move i's zero initialization into its declaration, preserving entry xor while changing VC5 declaration/init scheduling. [same emitted code as probe 15]
+probe 17 abi; result=MISMATCH; diff=1166; shape=94.76861167002012: Hypothesis 14: test signed short MaxGamePlayers field, checking whether VC5's 16-bit load color follows the original EDX path.
+probe 18 control-flow; result=MISMATCH; diff=1173; shape=96.96969696969697: Hypothesis 15: place a single hr=0 after the delivery arms and add goto sent after the non-guaranteed send. Send paths bypass the zero, while both no-send paths converge through one original xor EBX. [same emitted code as probe 10]
+probe 20 variant; result=MISMATCH; diff=957; shape=96.76767676767676: variant lab build\variant_lab\0042B270_CommOut\20260817_145130: 384 variants, 384 invariant-eligible, 0 exact
+probe 21 control-flow; result=MISMATCH; diff=1173; shape=96.96969696969697: Hypothesis 16: use explicit no_send and sent labels, with all send paths jumping over one hr=0 block. This models the binary shared xor target without duplicated else arms. [same emitted code as probe 18]
+probe 22 liveness; result=MISMATCH; diff=957; shape=96.76767676767676: Hypothesis 17: move hr's declaration beside outgoing_count, testing declaration-order register coloring while preserving the proven seven stack locals. [same emitted code as probe 20]
+probe 23 liveness; result=MISMATCH; diff=1013; shape=96.36363636363636: Hypothesis 18: widen out->Sequence into a branch-local int before AddCommand, testing the original AL/EAX sequence push and final register topology.
+probe 24 liveness; result=MISMATCH; diff=1024; shape=96.37096774193549: Hypothesis 19: use a branch-local unsigned-char sequence for AddCommand, testing narrow-byte forwarding without widening the call argument.
+probe 25 abi; result=MISMATCH; diff=957; shape=96.76767676767676: Follow-up ABI hypothesis: use exact NewCommand donor's int,int,int,int,uchar,int AddCommand surface and explicit int casts, testing final call setup against original register sequence.
+probe 27 behavior; result=MISMATCH; diff=1430; shape=84.63073852295409: Initialized hr. The no-recipient path now returns zero without ShowReturn, matching original EBX zeroing.
+probe 28 liveness; result=MISMATCH; diff=1305; shape=85.0: Moved hr zeroing after header allocation to avoid a stack home while preserving the no-recipient result.
+probe 29 control-flow; result=MISMATCH; diff=1173; shape=96.96969696969697: Initialized hr only on the two no-send arms to match the original zero at their shared join without extending its full-function lifetime.
+probe 32 context; result=MISMATCH; diff=963; shape=96.76767676767676: Evidence gate: inventory/all_functions.csv and inventory/functions/0042/0042B270_CommOut.txt identify the VA as protected TCommunications_Handler::CommOut in Com_hand.cpp lines 4087-4459; no AnalyzeSyncMessage exists in the repository or PDB line map. Tested best-source sync-turn forms and authentic DirectPlay virtual surface; no emitted-code gain. Restoring clean accepted-drift source before pause.
+```
+<!-- end-recovered:7c200e2bc8d790f1eb60 -->
+
+<!-- recovered:15de613b0cf8c32ec2b7 -->
+### `83d45b91e694` `src/scratch/0042B270_CommOut.cpp:1-36`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0042B270 TCommunications_Handler::CommOut
+// Com_hand.cpp:4087-4459
+//
+// Canonical reconstruction of the period communications packet builder.  The
+// header/packet records, PlayerOptions fields, DestMap, and DirectPlay Send
+// slot are named owners of the binary-proven accesses; helper calls retain the
+// real Com_hand.cpp member ABIs.
+//
+// Attempt log:
+// - prior scaffold used fake C wrappers and an incorrect local class surface;
+//   replaced with typed packet records, named member helpers, and DirectPlay.
+// - reordered the guaranteed-delivery and final HRESULT arms to reproduce the
+//   original inline block/call order; ordered calls reached 31/31.
+// - reordered packet locals to the FullLength/HeaderLength/OutCommBuff/
+//   packet/OutgoingCount/SyncTurn/GTDString topology; frame stayed 0x24 and
+//   code size reached 1504 versus the 1505-byte original.
+// - caching the DirectPlay object before Send reproduced the original single
+//   global load and improved the call-site basin; signed count temporaries were
+//   codegen-neutral.  A post-scan hr initialization changed the local-home
+//   basin, so the best codegen source leaves that assignment out.
+// - split the guaranteed-delivery accounting and StoreForResend tests.  This
+//   reproduces the original second TEST EBX, exact size, and 84.24% block
+//   coverage, but the function remains non-exact.
+// - BINARY NOTE: the original no-send path zeros EBX at 0042B728.  Several
+//   explicit hr-zero source forms reproduced that block but changed the wider
+//   register basin.  The no-send source model remains unresolved.
+// - BINARY NOTE: exact donor 00426530 uses int,int,int,int,uchar,int for
+//   AddCommand.  This local declaration emits the same bytes.
+// - restored the typed packet-header owner for the four binary-proven fields;
+//   emitted code was unchanged, so kept the natural typed source.
+// - scoped send/count temporaries to mirror the original seven named stack
+//   locals; first diff improved by one byte, but size and CFG parity worsened,
+//   so restored the clean source.
+// - left in scratch: current best is a broad local-home/CFG mismatch.  The
+//   rebuilt OutCommBuff home remains [esp+1c] versus original [esp+18], while
+//   the original outgoing count home is [esp+20] versus rebuilt [esp+14].
+```
+<!-- end-recovered:15de613b0cf8c32ec2b7 -->

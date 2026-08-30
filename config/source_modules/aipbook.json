@@ -44,11 +44,11 @@
     "0040F500": { "status": "matching" },
     "0040F530": {
       "status": "scratch",
-      "note_path": "recovery_notes/aipbook_module.md"
+      "note_path": "decomp_notes/aipbook_module.md"
     },
     "0040F9B0": {
       "status": "scratch",
-      "note_path": "recovery_notes/aipbook_module.md"
+      "note_path": "decomp_notes/aipbook_module.md"
     },
     "0040FA40": { "status": "matching" },
     "0040FB60": { "status": "matching" },
@@ -68,7 +68,7 @@
     "0040FF70": { "status": "matching" },
     "00410050": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/aipbook_module.md"
+      "note_path": "decomp_notes/aipbook_module.md"
     },
     "00410100": { "status": "matching" },
     "00410150": { "status": "matching" },
@@ -76,7 +76,7 @@
     "004101F0": { "status": "matching" },
     "00410220": {
       "status": "scratch",
-      "note_path": "recovery_notes/aipbook_module.md"
+      "note_path": "decomp_notes/aipbook_module.md"
     },
     "00411340": { "status": "matching" },
     "00411370": { "status": "matching" },

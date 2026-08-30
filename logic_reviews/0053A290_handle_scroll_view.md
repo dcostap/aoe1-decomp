@@ -1,5 +1,7 @@
 # Logic review: 0053A290 `RGE_View::handle_scroll_view`
 
+Current source: `src/view.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching on 2026-08-02 after two
@@ -10,7 +12,7 @@ found and the remaining source-shape lead has low expected value.
 
 Current validated checker state:
 
-- source remains `src/scratch/0053A290_handle_scroll_view.cpp`;
+- source remains `src/view.cpp`;
 - original/rebuilt size: 1801/1801 bytes;
 - frame: `0x24`/`0x24`;
 - saved registers: `ebx, ebp, esi, edi` / `ebx, ebp, esi, edi`;
@@ -241,7 +243,7 @@ No substantive finding remains open after formal round 2.
 
 ## Final decision
 
-Approved for `src/verified_logic` on 2026-08-02 after two complete fresh blind
+Approved for `verified_logic` status on 2026-08-02 after two complete fresh blind
 cohorts (four independent reviews), main-agent instruction-level adjudication,
 and a bounded correction followed by fresh post-fix review.
 

@@ -1,0 +1,13 @@
+# Function notes: 00462A10 `handle_messages`
+
+## Earlier notes from `decomp_notes/functions/0046/00462A10_handle_messages.md`
+
+This section is historical. Use the status query for current state.
+
+## 00462A10 handle_messages
+
+The original source is `music.cpp`, lines 969 through 1065.
+
+The function handles activation, timer, MCI notify, and streamed-wave completion messages. It pauses or resumes for activation. It advances tracks after completion.
+
+A nested message dispatch with the timer and notify arms in this order gave the prior exact result.

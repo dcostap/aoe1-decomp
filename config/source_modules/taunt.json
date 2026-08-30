@@ -5,13 +5,13 @@
   "source": "src/taunt.cpp",
   "header": "include/taunt.h",
   "functions": {
-    "00509450": { "status": "matching", "note_path": "recovery_notes/taunt_module.md" },
-    "00509480": { "status": "matching", "note_path": "recovery_notes/taunt_module.md" },
-    "00509490": { "status": "matching", "note_path": "recovery_notes/taunt_module.md" },
-    "00509530": { "status": "matching", "note_path": "recovery_notes/taunt_module.md" },
-    "00509610": { "status": "matching", "note_path": "recovery_notes/taunt_module.md" },
-    "00509640": { "status": "matching", "note_path": "recovery_notes/taunt_module.md" },
-    "00509670": { "status": "matching", "note_path": "recovery_notes/taunt_module.md" },
-    "005096A0": { "status": "matching", "note_path": "recovery_notes/taunt_module.md" }
+    "00509450": { "status": "matching", "note_path": "decomp_notes/taunt_module.md" },
+    "00509480": { "status": "matching", "note_path": "decomp_notes/taunt_module.md" },
+    "00509490": { "status": "matching", "note_path": "decomp_notes/taunt_module.md" },
+    "00509530": { "status": "matching", "note_path": "decomp_notes/taunt_module.md" },
+    "00509610": { "status": "matching", "note_path": "decomp_notes/taunt_module.md" },
+    "00509640": { "status": "matching", "note_path": "decomp_notes/taunt_module.md" },
+    "00509670": { "status": "matching", "note_path": "decomp_notes/taunt_module.md" },
+    "005096A0": { "status": "matching", "note_path": "decomp_notes/taunt_module.md" }
   }
 }

@@ -1,11 +1,13 @@
 # Logic review: 004F21F0 `taskActiveSoldiers`
 
+Current source: `src/taitacmd.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended exact matching after repeated assignments stopped
 producing useful structural progress.
 
-Candidate: `src/scratch/004F21F0_taskActiveSoldiers.cpp`.
+Candidate: `src/taitacmd.cpp`.
 
 Cumulative evidence includes:
 
@@ -418,7 +420,7 @@ direct executable review cleared its three reported questions.
 
 ## Final decision
 
-Promote to `src/verified_logic`.
+Promote to `verified_logic` status.
 
 Final normalized checker state before the move:
 

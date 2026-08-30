@@ -17,7 +17,7 @@
     "0045AA70": { "status": "matching" },
     "0045AB20": {
       "status": "scratch",
-      "note_path": "recovery_notes/misl_obj_module.md"
+      "note_path": "decomp_notes/misl_obj_module.md"
     }
   }
 }

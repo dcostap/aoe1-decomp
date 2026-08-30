@@ -1,10 +1,12 @@
 # Logic review: 0041A910 `RGE_Active_Sprite_List::add_sprite`
 
+Current source: `src/asp_list.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after numerous independent passes, 27 meaningful target-session hypotheses, additional May experiments, and three variant-lab runs repeatedly converged on the same exact-size register/CFG basin. An independent phase-readiness audit found no credible high-value exact lead and no unresolved behavior, ABI, layout, call, ownership, or memory-effect fact.
 
-Before phase entry, the candidate was `src/scratch/0041A910_add_sprite.cpp`. Matching-era traversal labels/gotos were normalized to ordinary typed `while` loops; emitted code and metrics were unchanged. The verified-logic owner now resides in `src/asp_list.cpp`, with status recorded in `config/source_modules/asp_list.json`.
+Before phase entry, the candidate was `src/asp_list.cpp`. Matching-era traversal labels/gotos were normalized to ordinary typed `while` loops; emitted code and metrics were unchanged. The verified-logic owner now resides in `src/asp_list.cpp`, with status recorded in `config/source_modules/asp_list.json`.
 
 Current validated checker state:
 

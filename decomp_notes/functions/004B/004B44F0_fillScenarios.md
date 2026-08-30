@@ -1,0 +1,24 @@
+# Function notes: 004B44F0 `fillScenarios`
+
+## Recovered attempt history
+
+<!-- recovered:9293744b9f96db4ff2bf -->
+### `6e2375c51785` `src/scratch/004B44F0_fillScenarios.cpp:1-12`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// Attempt log for 004B44F0 TribeSelectScenarioScreen::fillScenarios
+// try 1: natural reconstruction from packet/decompiler with minimal local class surfaces; close (56.5% positional/32.9% edit), but frame 0x220 vs original 0x224 and member offsets 4 low.
+// try 2: add missing field before scenarioCount so offsets become 494/49C/4A0/4A4; edit diff improved to 15.16%, frame still 0x220.
+// try 3: make pad_local volatile and assign it to force 0x224 frame; worsened due extra store, rolled back.
+// try 4: remove forced volatile store, keep dead pad local (compiler ignores).
+// try 5: reorder len copy statements to match original lea eax before mov esi/sub esi; edit diff improved to 8.84%, first loop exact except frame size.
+// try 6: add address-taken dummy local; worsened due emitted check, rolled back.
+// try 7: /Od flag probe; much worse from offset 0, rolled back.
+// try 8: /Oy- flag probe; worse from offset 0, rolled back.
+// try 9: reviewed calloc/strcpy include context; default /O2 remains best.
+// try 10: reviewed loop topology; first name-enumeration loop now instruction-identical after frame-size displacement except call relocs.
+// BLOCKER: best default source is very close by edit diff (8.84%) and exact size, but frame allocation remains 0x220 vs original 0x224 causing broad positional shift; later second loop has localized scheduling/block drift. Not accepted_drift-safe yet.
+```
+<!-- end-recovered:9293744b9f96db4ff2bf -->

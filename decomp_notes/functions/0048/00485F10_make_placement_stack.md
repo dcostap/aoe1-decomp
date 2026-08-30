@@ -1,0 +1,118 @@
+# Function notes: 00485F10 `make_placement_stack`
+
+Module notes: `decomp_notes/rmm_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:72245a002308880d7779 -->
+### `d050eea3c` `src/rmm_obj.cpp:107-108`
+
+Mapping: `exact`. removed comment declares this PDB source owner VA.
+
+```text
+// VA: 00485F10 RGE_RMM_Object_Generator::make_placement_stack
+// The clean reconstruction retains the proven Map_Stack reference, typed row
+```
+<!-- end-recovered:72245a002308880d7779 -->
+
+<!-- recovered:49443afc09dcc44e953c -->
+### `target-session` `build/target_sessions/00485F10_make_placement_stack.json:1-36`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=446; shape=90.60773480662984: Baseline current typed stack reconstruction: 507-byte size/frame/calls, broad 446-byte positional diff; first mismatch is prologue scheduling and source uses flat but typed fields.
+probe 2 layout; result=MISMATCH; diff=446; shape=90.60773480662984: Corrected Map_Stack float fields and modeled RGE_Random_Map_Module inheritance with typed base ownership; body unchanged. Test whether canonical base surface alters the 507-byte basin.
+probe 3 liveness; result=MISMATCH; diff=446; shape=90.60773480662984: Changed clipping temporaries iVar1/iVar3/iVar5 from int to long to test source-width and register-color evidence against original move/sub/add sequence. [same emitted code as probe 2]
+probe 5 control-flow; result=MISMATCH; diff=439; shape=88.46153846153847: Moved the proven inner index initialization y1=x before the x<=range guard; original has mov ebp,esi between cmp and jg, and this should recover stride/index register roles.
+probe 6 abi; result=MISMATCH; diff=439; shape=88.46153846153847: Changed the live last bound to the packet-proven Map_Stack* typed local with explicit integer comparisons, testing whether pointer-typed ownership recovers original EDX/EBP loop roles. [same emitted code as probe 5]
+probe 7 liveness; result=MISMATCH; diff=439; shape=87.36263736263736: Moved local_c=&stack into the successful outer-loop guard, preserving the original stack-pointer load/store immediately around the row bound test.
+probe 8 liveness; result=MISMATCH; diff=439; shape=88.46153846153847: Swapped outer-loop local_4/local_8 initialization to match the original row setup's last-base load, row LEA, subtraction, and count-store order. [same emitted code as probe 6]
+probe 9 liveness; result=MISMATCH; diff=439; shape=88.46153846153847: Separated random-iteration count from the range parameter to test the original delayed [esp+34] spill after count positivity, while preserving clipping bounds. [same emitted code as probe 8]
+probe 10 liveness; result=MISMATCH; diff=392; shape=91.11111111111111: Rewrote clipping through four typed bound locals: copy x/y, subtract range from minima, add range to maxima, then assign mutable bounds. This tests the original mov/sub/sub/add/add register topology.
+probe 11 liveness; result=MISMATCH; diff=439; shape=88.46153846153847: Retested outer row setup with local_8=y*4 before local_4=last+(1-y) after the four-bound clipping rewrite; compare operand scheduling and count cursor topology.
+probe 12 variant; result=MISMATCH; diff=439; shape=88.46153846153847: variant lab build\variant_lab\00485F10_make_placement_stack\20260817_112548: 4 variants, 4 invariant-eligible, 0 exact
+probe 13 variant; result=MISMATCH; diff=439; shape=88.46153846153847: variant lab build\variant_lab\00485F10_make_placement_stack\20260817_112607: 128 variants, 128 invariant-eligible, 0 exact
+probe 14 abi; result=MISMATCH; diff=493; shape=72.6775956284153: Naturalized proven random-map ownership: typed inherited base, float Map_Stack fields, row/column indexing, and typed stack element addresses. This is a policy-focused source test against raw cursor arithmetic.
+probe 16 liveness; result=MISMATCH; diff=442; shape=88.58695652173913: Simplified clipping to typed minimum locals plus in-place x/y maxima, then saved maxima into range/last before restoring minima. This tests whether direct parameter add operations recover original ECX/EDX add form.
+probe 18 liveness; result=MISMATCH; diff=397; shape=91.66666666666667: Assigned the positive random count to the dead range parameter only after its guard, then used range as the decrementing loop count; tests original delayed range-home spill.
+probe 21 other; result=MISMATCH; diff=392; shape=91.11111111111111: Main review removed compiler-steering ownership forms and retained natural typed source. [same emitted code as probe 20]
+probe 23 liveness; result=MISMATCH; diff=442; shape=88.58695652173913: Used direct parameter additions for max bounds before restoring min locals, testing original mov/sub/add register topology.
+probe 25 context; result=MISMATCH; diff=392; shape=91.11111111111111: Replaced the virtual base declaration with the exact same-TU donor's explicit vtable pointer, testing whether polymorphic front-end context changes register allocation. [same emitted code as probe 22]
+probe 26 liveness; result=MISMATCH; diff=439; shape=88.46153846153847: Replaced four min/max locals with three decompiler-proven bound temporaries (x-range, y-range, x+range, y+range), while keeping typed row ownership.
+probe 28 liveness; result=MISMATCH; diff=392; shape=91.11111111111111: Applied register storage to the mutated x parameter, testing whether it preserves the original ECX x live range instead of ESI. [same emitted code as probe 25]
+probe 29 liveness; result=MISMATCH; diff=392; shape=91.11111111111111: Named the generator receiver before stack initialization and used it across field accesses, testing early ECX-to-EDI ownership and receiver liveness.
+probe 30 liveness; result=MISMATCH; diff=392; shape=91.11111111111111: Reused the proven dead range parameter home for the random-loop count after the positive-area guard, testing original delayed count spill and loop-home topology. [same emitted code as probe 28]
+probe 31 liveness; result=MISMATCH; diff=392; shape=91.11111111111111: Mirrored exact same-TU set_search_area declaration and arithmetic form for min/max bounds, testing VC5's period loop-bound lowering basin. [same emitted code as probe 30]
+probe 33 liveness; result=MISMATCH; diff=454; shape=68.71508379888269: Named the current search-map row inside the typed inner-loop guard, testing whether explicit row ownership recovers the original row-load and count setup order.
+probe 35 liveness; result=MISMATCH; diff=500; shape=69.61325966850829: Used typed row-table pointers advanced once per outer iteration, testing whether explicit row-stride ownership recovers the original LEA-before-count setup.
+probe 37 liveness; result=MISMATCH; diff=392; shape=91.11111111111111: Named a const zero value for stack links and clipping comparisons, testing whether a source zero lifetime selects the original EBX zero register. [same emitted code as probe 31]
+probe 39 liveness; result=MISMATCH; diff=392; shape=91.11111111111111: Swapped the two long local declarations to test stack-home assignment and pre-loop register-color ordering against original last/y1 homes. [same emitted code as probe 37]
+probe 41 context; result=MISMATCH; diff=392; shape=91.62011173184358: Replaced the unresolved extern random-map source symbol with the PDB path literal used by exact rmm_obj donors, testing whether the two debug_rand call relocations and ordered literal pushes recover the original.
+probe 42 liveness; result=MISMATCH; diff=456; shape=74.58563535911603: Made the binary-reported local_8 row-stride home explicit and advanced it by four bytes while retaining typed search-map and stack-offset indexing; test whether declaration and byte-stride liveness recover the original outer-loop setup.
+probe 45 liveness; result=MISMATCH; diff=392; shape=91.62011173184358: Changed clipping bound initializers to direct x/range and y/range expressions, matching the PDB/decompiler order of copy-subtract before add while retaining typed fields and source bounds. [same emitted code as probe 44]
+probe 46 liveness; result=MISMATCH; diff=392; shape=91.62011173184358: Swapped row and outer-count initialization order; VC5 emitted an unchanged 503-byte/392-diff body, so the declaration-order axis is negative and source was retained only until the next restore. [same emitted code as probe 45]
+probe 47 liveness; result=MISMATCH; diff=471; shape=91.06145251396649: Swapped final h/w declaration order to test the original post-scan register topology: original computes width in ECX, height in EDX, then reloads EBP into EAX before multiply.
+probe 48 liveness; result=MISMATCH; diff=392; shape=91.62011173184358: Rewrote the outer count as last - y + 1, the period-natural form suggested by the decompiler's signed bound arithmetic, while keeping row initialization first. [same emitted code as probe 46]
+probe 49 liveness; result=MISMATCH; diff=392; shape=91.62011173184358: Named one real const zero for stack-link stores and signed bound tests, testing whether VC5 keeps zero in the original EBX color without volatile or fake state. [same emitted code as probe 48]
+probe 50 layout; result=MISMATCH; diff=392; shape=91.62011173184358: Switched proven width and height field aliases to the canonical map_width/map_height names used by adjacent random-map source, testing whether union-member spelling selects the original register basin. [same emitted code as probe 49]
+probe 51 layout; result=MISMATCH; diff=392; shape=91.62011173184358: Used the reviewed rows alias for typed search-map reads, testing whether the original source field spelling changes this-relative load scheduling without raw cursor arithmetic. [same emitted code as probe 50]
+```
+<!-- end-recovered:49443afc09dcc44e953c -->
+
+<!-- recovered:713c5c162f0ae32781d3 -->
+### `22d6b2c78c14` `src/scratch/00485F10_make_placement_stack.cpp:1-48`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 00485F10 RGE_RMM_Object_Generator::make_placement_stack
+// Attempt log:
+// initial natural implementation from packet/decompiler: correct size but broad diff, frame 0x14 due extra locals.
+// switched to decompiler-style mutable parameters and explicit local_c/local_8/local_4 topology: exact size but broad scheduling/register diff (401 edit-equal bytes).
+// tried pointer signature for stack instead of reference; produced mov-before-sub prologue and same broad family, rolled back to reference.
+// tried pstack local alias for &stack; no improvement, same broad family.
+// tried early local_c=&stack before stack next/prev stores; fixed initial sub/mov placement but delayed push edi and worsened diff, rolled back.
+// tried explicit zero local/casts for null stores and comparisons; no codegen change.
+// tried natural row/column implementation first; correct size but worse frame/local pressure (0x14 frame) and broad diff.
+// fresh typed rows/stack reconstruction with natural current_y/current_x loops worsened to 494 bytes, 0xC frame, and CFG drift; restored.
+// direct zero spelling duplicated the clean 507-byte output; retained the simpler literal form only where it does not alter codegen.
+// early local_c initialization worsened resync and added five instructions; restored.
+// named search_map_rows/stack_offsets, full 24-byte Map_Stack, and long last bound preserved the 507-byte output; retained as canonical local ownership.
+// explicit self alias was neutral in positional bytes but worsened edit resync; restored.
+// this-session H1/H2: moving the live tail pointer before stack-link stores,
+// then using it for those stores, worsened the first prologue hunk to 480 bytes;
+// both forms were rolled back.
+// this-session H3: a four-form stack-initialization lab kept the same 507-byte
+// size and 446-byte clean-source diff; no form changed the initial parameter load.
+// this-session H4: modeled the ABI-proven RGE_Random_Map_Module base with typed
+// inherited stack rows and list fields; codegen was unchanged at 446 bytes, so
+// restored the clean local surface.
+// shardD10 H1: hoisted the typed Map_Stack node local to function scope to
+// mirror its binary-persistent value across add_stack_node; codegen was an
+// unchanged 507-byte/446-diff duplicate, so restored the clean source.
+// luna-r2 H1: hoisted the packet's iVar1/iVar2/iVar3/lVar4/iVar5/pMVar6
+// temporaries to function scope to test its local-lifetime and declaration-order
+// evidence; codegen was an unchanged 507-byte/446-diff duplicate, so restored
+// the clean typed source.
+// luna-r3 H1: split the bound copies and arithmetic to mirror the original
+// move/sub/sub/add/add line-band order; codegen stayed an unchanged 507-byte/
+// 446-diff duplicate, so restored the clean typed source.
+// luna-r4 H1: chained next/prev zero initialization was a structural source
+// form for the binary's store/compare/store ordering; it was a 507-byte/446-diff
+// codegen duplicate, so restored the separate typed stores.
+// left in scratch: behavior/calls understood, but source shape for VC5 register allocation in clipping and scan loops is still wrong; not an accepted_drift candidate due broad positional diff from function start.
+// this-session: pre-guard y1=x recovers the original inner index/stride shape;
+// four typed clipping bounds improve the measured result to 392 positional
+// bytes while preserving the 507-byte body. Typed row indexing was rejected
+// because it added 20 bytes and a 0x14 frame. Keep the natural ownership model
+// below, but retain the binary-proven row/stride lowering in this body.
+// Main review removed the manual vptr and raw row/stride lowering. The living
+// source now uses a virtual base and typed row indexing.
+// this-claim probes: direct max-bound arithmetic worsened to 442/439 bytes;
+// same-TU set_search_area arithmetic was a 392-byte duplicate. Explicit base
+// vtable, receiver alias, register x, range-home count, zero local, and local
+// declaration-order forms were codegen duplicates. A typed row alias or row
+// table cursor worsened frame/shape (454 or 500 bytes); restored clean source.
+```
+<!-- end-recovered:713c5c162f0ae32781d3 -->

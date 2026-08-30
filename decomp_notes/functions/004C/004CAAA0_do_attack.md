@@ -1,0 +1,19 @@
+# Function notes: 004CAAA0 `do_attack`
+
+Module notes: `decomp_notes/t_c_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:5fce8af320579ca829ee -->
+### `0923cad7edb1` `src/matching/004CAAA0_do_attack.cpp:1-5`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004CAAA0 TRIBE_Combat_Object::do_attack
+// Source: t_c_obj.cpp lines 500-542
+// Attempt log:
+// 1: explicit thiscall vtable pointer typedefs rejected by VC5.
+// 2: natural virtual declarations for vtable calls.
+```
+<!-- end-recovered:5fce8af320579ca829ee -->

@@ -1,5 +1,7 @@
 # Logic review: 00487FA0 `TRIBE_RMM_Database_Controller::add_object_module`
 
+Current source: `src/rmm_tdbc.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching on 2026-08-02 after multiple
@@ -13,7 +15,7 @@ whole-TU evidence.
 
 Current validated checker state:
 
-- source remains `src/scratch/00487FA0_add_object_module.cpp`;
+- source remains `src/rmm_tdbc.cpp`;
 - original/rebuilt size: 1749/1749 bytes;
 - frame: `0x14`/`0x14`;
 - saved registers: `ebx, ebp, esi, edi` / `ebx, ebp, esi, edi`;
@@ -195,7 +197,7 @@ None during logic review yet.
 
 ## Final decision
 
-Approved for `src/verified_logic` on 2026-08-02 after a complete concurrent blind
+Approved for `verified_logic` status on 2026-08-02 after a complete concurrent blind
 cohort, direct main-agent instruction-level adjudication, and unchanged final
 validation. Both reviewers independently found no behavioral discrepancy. The
 only explicit concern—whether source reference aliasing could cache `land_num`

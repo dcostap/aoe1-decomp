@@ -1,0 +1,32 @@
+# Function notes: 00478F40 `TMessagePanel`
+
+Module notes: `decomp_notes/pnl_msg_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:c6bc13da62e40971d832 -->
+### `ed599f2a6eab` `src/accepted_drift/00478F40_TMessagePanel.cpp:1-18`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// ACCEPTED_DRIFT: exact bytes differ only by VC5 scheduling of the font_wid store at +0x308.
+// The rebuilt constructor stores font_wid just before the scalar zero-init block; the original stores the same value just after show_message_interval.
+// There are no intervening calls or reads of that field, EH state is already active in both forms, and all constructor stores/calls/return behavior are preserved.
+// first pass: natural constructor with explicit local TPanel surface and packet-observed init order
+// FLAGS: config/flags/00478F40_TMessagePanel.rsp uses /GX; needed to reproduce the EH frame/base cleanup context
+// adding visible virtual destructors produced the right EH-framed size/control skeleton
+// explicit late vptr store matches the original late TMessagePanel vtable restore; natural generated vptr was too early
+// remaining mismatch is localized to early param2/param3 register scheduling around font_wid/font_hgt stores, plus masked call relocations
+// tried volatile saved font_wid to force an early param2 load; it added stack spill code and worsened the diff, rolled back
+// tried swapped formal names while preserving observed stores; no codegen change, rolled back
+// tried volatile font_hgt member to force the early +30C store; no codegen change, rolled back
+// tried raw offset stores for the constructor params; no codegen change, rolled back
+// tried swapped local field names/order (same physical offsets); no codegen change, rolled back
+// tried an initializer list for the early parameter/LastIB stores; no codegen change, rolled back
+// tried a volatile-this store for font_hgt; no codegen change, rolled back
+// pointer-mediated font_hgt assignment moved the +30C store early but loaded param3 into EDX and worsened the diff; saved-font_wid did not help, rolled back
+// early source assignment of font_wid before font_hgt produced the right early param2 load but stores +308 before the zero-init block
+// saved font_wid temp, duplicate store, and reference-mediated delayed store did not preserve the original later +308 store; keeping the closest early-load version
+```
+<!-- end-recovered:c6bc13da62e40971d832 -->

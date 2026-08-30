@@ -9,17 +9,17 @@
     "00546770": { "status": "matching" },
     "005467B0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/zone_map_module.md"
+      "note_path": "decomp_notes/zone_map_module.md"
     },
     "005468C0": {
       "status": "scratch",
-      "note_path": "recovery_notes/zone_map_module.md"
+      "note_path": "decomp_notes/zone_map_module.md"
     },
     "005469C0": { "status": "matching" },
     "00546A00": { "status": "matching" },
     "00546A90": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/zone_map_module.md"
+      "note_path": "decomp_notes/zone_map_module.md"
     },
     "00546BB0": { "status": "matching" },
     "00546E50": { "status": "matching" },

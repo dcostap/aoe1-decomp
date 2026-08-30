@@ -1,0 +1,25 @@
+# Function notes: 00424C50 `GetAlias`
+
+## Earlier notes from `decomp_notes/functions/0042/00424C50_GetAlias.md`
+
+This section is historical. Use the status query for current state.
+
+## 00424C50 `RGE_Communications_Addresses::GetAlias`
+
+- PDB source: `com_addr.cpp`, lines 146 to 154.
+- Original size: 42 bytes.
+
+### Recovery record
+
+The direct `winsock.h` and `stdio.h` context fixed the final SIB byte.
+Removing `stdio.h` restored a one-byte difference. Other natural forms kept that difference.
+
+Fresh grouped validation after migration and IPAD restoration produced
+`MATCH`, `0.0000%`, with the complete owner and boundary checks.
+
+The method keeps the shipped `>` count test. The count itself selects the next record.
+
+The fallback now uses the natural empty string literal. The unnamed storage at
+`00580460` has no PDB GDATA or reviewed source provider. The fresh grouped
+check still reports `MATCH`, `0.0000%`, and no boundary or relocation-target
+errors.

@@ -3,11 +3,7 @@
 
 #include "xy_point.h"
 
-// Canonical infmap.cpp class surface.
-//
-// InfluenceMap. The vptr is compiler-owned. The source owners below include
-// this header through the grouped wrapper; their private fallback declarations
-// remain available for isolated work.
+// InfluenceMap. The vptr is compiler-owned.
 
 class InfluenceMap {
 public:

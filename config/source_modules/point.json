@@ -12,12 +12,12 @@
     "0047E510": { "status": "matching" },
     "0047E530": {
       "status": "scratch",
-      "note_path": "recovery_notes/0047E530_operator.md"
+      "note_path": "decomp_notes/functions/0047/0047E530_operator.md"
     },
     "0047E580": { "status": "matching" },
     "0047E5D0": {
       "status": "scratch",
-      "note_path": "recovery_notes/0047E5D0_rotateXYByFacet.md"
+      "note_path": "decomp_notes/functions/0047/0047E5D0_rotateXYByFacet.md"
     }
   }
 }

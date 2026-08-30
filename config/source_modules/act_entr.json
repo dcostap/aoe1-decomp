@@ -10,6 +10,6 @@
     "004025F0": { "status": "matching" },
     "00402600": { "status": "matching" },
     "00402610": { "status": "matching" },
-    "00402740": { "status": "scratch", "note_path": "recovery_notes/act_entr_module.md" }
+    "00402740": { "status": "scratch", "note_path": "decomp_notes/act_entr_module.md" }
   }
 }

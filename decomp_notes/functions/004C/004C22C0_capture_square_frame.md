@@ -1,0 +1,145 @@
+# Function notes: 004C22C0 `capture_square_frame`
+
+Module notes: `decomp_notes/stat_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:fd24c58bd77ab4d738b5 -->
+### `d050eea3c` `src/stat_obj.cpp:753-754`
+
+Mapping: `exact`. removed comment declares this PDB source owner VA.
+
+```text
+// 004C22C0 RGE_Static_Object::capture_square_frame
+// - ORIGINAL BUG: the original first AddGDINode setup reuses screen_y_offset
+```
+<!-- end-recovered:fd24c58bd77ab4d738b5 -->
+
+<!-- recovered:3ec50e5b06d9cc9aeb6b -->
+### `6a2aef2e2` `src/stat_obj.cpp:732-732`
+
+Mapping: `strong`. comment lies after mapped function capture_square_frame at old line 729.
+
+```text
+// - the original first AddGDINode setup reuses screen_y_offset
+```
+<!-- end-recovered:3ec50e5b06d9cc9aeb6b -->
+
+<!-- recovered:2846c072ad4f672ffe14 -->
+### `target-session` `build/target_sessions/004C22C0_capture_square_frame.json:1-38`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=158; shape=84.54545454545455: Baseline current natural reconstruction before new probes
+probe 2 layout; result=MISMATCH; diff=158; shape=84.54545454545455: Move y0 declaration and initialization into successful frame block [same emitted code as probe 1]
+probe 4 variant; result=MISMATCH; diff=218; shape=77.67857142857143: Inline x2 only at first AddGDINode argument, following PDB line placement
+probe 6 liveness; result=MISMATCH; diff=158; shape=84.54545454545455: Hoist all four coordinate locals to function scope with separate assignments [same emitted code as probe 2]
+probe 8 liveness; result=MISMATCH; diff=185; shape=75.45454545454545: Reuse incoming y parameter home for the y0 coordinate
+probe 10 variant; result=MISMATCH; diff=292; shape=63.84615384615385: Use only PDB-named y0 plus direct coordinate expressions
+probe 13 liveness; result=MISMATCH; diff=158; shape=84.54545454545455: Initialize y0 from y before guards, then overwrite on successful frame [same emitted code as probe 12]
+probe 15 variant; result=MISMATCH; diff=218; shape=77.67857142857143: Inline x2 with field before final increment in first node setup [same emitted code as probe 4]
+probe 17 liveness; result=MISMATCH; diff=158; shape=84.54545454545455: Split x2 offset calculation from its final increment [same emitted code as probe 13]
+probe 19 layout; result=MISMATCH; diff=158; shape=84.54545454545455: Declare x2 before y0 inside successful frame scope [same emitted code as probe 17]
+probe 21 context; result=MISMATCH; diff=158; shape=84.54545454545455: Use PDB parameter names render_area, x, and y [same emitted code as probe 19]
+probe 22 liveness; result=MISMATCH; diff=162; shape=85.71428571428571: Reuse x2 for the health-bar right bound after the first node
+probe 24 liveness; result=MISMATCH; diff=158; shape=84.54545454545455: Declare max_health before health but preserve original load order [same emitted code as probe 21]
+probe 27 baseline; result=MISMATCH; diff=158; shape=84.54545454545455: Rebuilt current pinned clean natural source before new typed-owner probes [same emitted code as probe 26]
+probe 28 context; result=MISMATCH; diff=158; shape=84.54545454545455: Restore full stat_obj RGE_Static_Object virtual and typed member surface from exact draw_frame donor [same emitted code as probe 27]
+probe 29 variant; result=MISMATCH; diff=218; shape=77.67857142857143: Inline x2 only in the first typed AddGDINode call while preserving y0 and coordinate ownership
+probe 31 liveness; result=MISMATCH; diff=158; shape=84.54545454545455: Split x1 and y1 declarations from assignments to preserve original coordinate statement boundaries [same emitted code as probe 28]
+probe 32 liveness; result=MISMATCH; diff=158; shape=84.54545454545455: Swap x1 and y1 local declaration order while retaining typed coordinate statements [same emitted code as probe 31]
+probe 33 liveness; result=MISMATCH; diff=199; shape=85.58558558558559: Keep a natural local copy of the x coordinate live across frame-bound arithmetic
+probe 36 liveness; result=MISMATCH; diff=158; shape=84.54545454545455: Function-scope x1/y1/x2 with the existing named y0 model; test whether longer coordinate locals recover the original x1/y1 register basin. [same emitted code as probe 35]
+probe 41 behavior; result=MISMATCH; diff=158; shape=85.3211009174312: Fresh baseline before recovering original AddGDINode coordinate values from register data.
+probe 42 behavior; result=MISMATCH; diff=210; shape=85.3211009174312: Model original AddGDINode y-line spill and observed x2 argument data flow, replacing the assumed clean-coordinate call.
+probe 43 behavior; result=MISMATCH; diff=237; shape=73.04347826086956: Test direct source expressions for the raw AddGDINode coordinate data flow, without a y-line alias.
+probe 44 behavior; result=MISMATCH; diff=223; shape=77.47747747747748: Test the original first-call x2 field data flow while keeping the y-line behavior model unchanged.
+probe 45 context; result=MISMATCH; diff=158; shape=85.3211009174312: Restore the full period RGE_Static_Object virtual surface from the exact stat_obj donor before further source-shape work. [same emitted code as probe 41]
+probe 46 liveness; result=MISMATCH; diff=158; shape=85.3211009174312: Hoist x1, y1, and x2 to function scope beside the proven y0 local, then compare the full frame and health register basin. [same emitted code as probe 45]
+probe 47 behavior; result=MISMATCH; diff=218; shape=84.40366972477064: Test the same natural local model with x2 sourced from the original observed screen-offset register flow.
+probe 48 liveness; result=MISMATCH; diff=158; shape=85.3211009174312: Test period register storage on the x coordinate parameter to recover the original EDX/EAX/ECX coordinate basin. [same emitted code as probe 46]
+probe 49 liveness; result=MISMATCH; diff=158; shape=85.3211009174312: Add period register storage to both short coordinate parameters and test whether parameter colors rotate toward the original. [same emitted code as probe 48]
+probe 50 variant; result=MISMATCH; diff=158; shape=85.3211009174312: variant lab build\variant_lab\004C22C0_capture_square_frame\20260823_191636: 256 variants, 0 invariant-eligible, 0 exact
+probe 51 liveness; result=MISMATCH; diff=218; shape=79.81651376146789: Test x1/y1 function locals with x2 kept as a direct first-call expression, following PDB optimizer-only x2 evidence.
+probe 52 liveness; result=MISMATCH; diff=158; shape=85.3211009174312: Apply DIA-proven local declaration order min_y, min_x, y0, max_y, max_x before codegen tuning. [same emitted code as probe 49]
+probe 53 behavior; result=MISMATCH; diff=210; shape=85.3211009174312: Test the raw original coordinate values: y-line reused as y0 plus screen-y plus one, and x2 using screen-y plus screen-x. [same emitted code as probe 42]
+probe 55 context; result=MISMATCH; diff=158; shape=85.3211009174312: Use DIA-proven parameter names render_area/x/y and local order min_y/min_x/y0/max_y/max_x in the natural source. [same emitted code as probe 52]
+probe 56 liveness; result=MISMATCH; diff=158; shape=85.3211009174312: Name the repeated y-line as a second natural local to test whether VC5 spills the proven y0 value through the dead x home. [same emitted code as probe 55]
+probe 57 context; result=MISMATCH; diff=158; shape=85.3211009174312: Fresh validation of the reduced DIA-named source: render_area/x/y, get_frame names, and min_y/min_x/y0/max_y/max_x local order. [same emitted code as probe 56]
+probe 58 behavior; result=MISMATCH; diff=210; shape=85.3211009174312: Fresh authoritative check after restoring the binary-proven original coordinate bug: y-line and x2 use screen_y_offset data flow. [same emitted code as probe 53]
+probe 59 liveness; result=MISMATCH; diff=210; shape=85.3211009174312: Raw coordinate model with y_line promoted to function scope, testing whether its cross-call lifetime recovers the original stack-home spill. [same emitted code as probe 58]
+```
+<!-- end-recovered:2846c072ad4f672ffe14 -->
+
+<!-- recovered:f5b8a5e76859df58230f -->
+### `0c00e81023bd` `src/scratch/004C22C0_capture_square_frame.cpp:1-63`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004C22C0 RGE_Static_Object::capture_square_frame
+// PDB source: stat_obj.cpp lines 941-997
+//
+// Attempt log:
+// - Replaced the placeholder with a period-plausible typed reconstruction:
+//   sprite-list facet lookup, frame bounds, the square capture node, and the
+//   health-bar capture node.  Layout and call surfaces follow exact stat_obj
+//   donors and the binary-proven offsets.
+// - Baseline had exact size/frame/call-set parity; the remaining drift was in
+//   frame-bound local homes, arithmetic scheduling, and the health-bar tail.
+// - Confirmed the PDB short-reference get_frame ABI and the sprite output order
+//   (min_x, min_y, max_x, max_y).  Pointer/reference and ordinary expression
+//   variants mostly collapsed to the same VC5 codegen basin.
+// - An inline x2 expression added a frame slot and was rolled back.  Spelling
+//   object_state <= 2 and health_right >= x1 + 26 recovered the original branch
+//   polarity; declaring/calculating y2 before x2 recovered the original local
+//   LEA block and is the current natural candidate (207 strict differing bytes).
+// - A 512-case lab over plausible coordinate expression/declaration orders was
+//   one emitted-code group with no exact variant; remaining drift is the
+//   localized VC5 arithmetic/call scheduling after get_frame, not an unresolved
+//   ownership or call-set question.
+// - Main-agent audit confirmed canonical static/master/active-sprite ownership
+//   and retained the natural named coordinate reconstruction.
+// - DIA inspection of the original PDB confirms the parameter names render_area,
+//   x, and y, the four short frame outputs, and one direct int local y0; y0 is
+//   the reused y-line value and the first AddGDINode setup writes back an
+//   incoming parameter home.  The current source keeps that ordinary ownership.
+// - This session tried inline x2/direct-coordinate forms, operand reversals,
+//   split arithmetic, declaration/initialization order, and y0 scope.  Inline
+//   and direct forms changed the frame to 0xc/0x10 or expanded the function;
+//   the remaining natural y0 candidate is emitted-code-duplicate with the
+//   prior 207-byte frontier.
+// - Added the exact stat_obj.cpp donor-era <stdlib.h> context from 004C1F30;
+//   strict diff improved to 158 bytes and shape to 84.55%, with the exact
+//   five-call set and coordinate ownership preserved.
+// - Fresh bounded retry: the complete stat_obj virtual surface, direct
+//   coordinate expressions, alternate output identities, local declaration
+//   scopes, assignment order, arithmetic grouping, and the canonical long
+//   SDI_Object_ID global were checked.  Only direct expressions and swapped
+//   output identities changed structure; the remaining natural forms emitted
+//   the same 158-byte frontier.
+// - Final bounded pause: size/frame/saved-registers and all five ordered calls
+//   remain exact; the first unresolved hunk is coordinate register/liveness at
+//   004C230E, followed by health-bar scheduling.
+// - Fresh worker pass: cvdump confirms one named int local y0 at the incoming
+//   y home (+0x0c); x1, y1, and x2 are optimizer-only locals, as in draw_frame.
+//   The clean source already has the matching natural local model.
+// - Fresh probes tested y0 scope and initialization, direct and split x2
+//   arithmetic, direct coordinate expressions, declaration order, PDB parameter
+//   names, x2 reuse for the health bound, and health-local order.  Scope and
+//   arithmetic variants were codegen duplicates or worse.  x2 reuse improved
+//   shape but increased strict drift to 162 bytes; the clean 158-byte frontier
+//   remains the best natural result.
+// - Fresh pass final: all source variants were restored.  The unresolved hunk
+//   remains the post-get_frame register/liveness basin at 004C230E and the
+//   AddGDINode argument scheduler.  New compiler/TU evidence is needed.
+// - Revisit: restoring the full typed RGE_Static_Object surface from exact
+//   draw_frame was codegen-neutral.  Direct x2 evaluation still added a frame
+//   slot.  Splitting x1/y1 declarations and swapping their order were also
+//   duplicates.  A named x-coordinate alias worsened the strict diff to 199.
+//   The clean natural source remains the 158-byte frontier.
+// - Revisit probe: hoisting x1, y1, and x2 to function scope while retaining
+//   the named y0 local was codegen-neutral.  The clean source was restored.
+```
+<!-- end-recovered:f5b8a5e76859df58230f -->

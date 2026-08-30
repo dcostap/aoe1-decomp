@@ -8,56 +8,56 @@
     "00462E80": { "status": "matching" },
     "00462EA0": {
       "status": "matching",
-      "note_path": "recovery_notes/00462EA0_RGE_Object_List.md"
+      "note_path": "decomp_notes/functions/0046/00462EA0_RGE_Object_List.md"
     },
     "00462EF0": { "status": "matching" },
     "00462F30": {
       "status": "matching",
-      "note_path": "recovery_notes/00462F30_add_node.md"
+      "note_path": "decomp_notes/functions/0046/00462F30_add_node.md"
     },
     "00462F70": { "status": "matching" },
     "00462FD0": { "status": "matching" },
     "00463000": { "status": "matching" },
     "00463100": {
       "status": "matching",
-      "note_path": "recovery_notes/00463100_shadow_draw.md"
+      "note_path": "decomp_notes/functions/0046/00463100_shadow_draw.md"
     },
     "00463180": {
       "status": "matching",
-      "note_path": "recovery_notes/00463180_normal_draw.md"
+      "note_path": "decomp_notes/functions/0046/00463180_normal_draw.md"
     },
     "00463210": { "status": "matching" },
     "00463260": {
       "status": "matching",
-      "note_path": "recovery_notes/00463260_sort.md"
+      "note_path": "decomp_notes/functions/0046/00463260_sort.md"
     },
     "004632E0": {
       "status": "matching",
-      "note_path": "recovery_notes/004632E0_find_by_group.md"
+      "note_path": "decomp_notes/functions/0046/004632E0_find_by_group.md"
     },
     "00463310": {
       "status": "matching",
-      "note_path": "recovery_notes/00463310_find_by_group.md"
+      "note_path": "decomp_notes/functions/0046/00463310_find_by_group.md"
     },
     "00463490": { "status": "matching" },
     "004634C0": {
       "status": "matching",
-      "note_path": "recovery_notes/004634C0_find_by_master_id.md"
+      "note_path": "decomp_notes/functions/0046/004634C0_find_by_master_id.md"
     },
     "00463640": {
       "status": "matching",
-      "note_path": "recovery_notes/00463640_find_by_master_ids.md"
+      "note_path": "decomp_notes/functions/0046/00463640_find_by_master_ids.md"
     },
     "004637C0": {
       "status": "matching",
-      "note_path": "recovery_notes/004637C0_find_by_type.md"
+      "note_path": "decomp_notes/functions/0046/004637C0_find_by_type.md"
     },
     "00463890": { "status": "matching" },
     "004638D0": { "status": "matching" },
     "00463910": { "status": "matching" },
     "00463930": {
       "status": "matching",
-      "note_path": "recovery_notes/00463930_load.md"
+      "note_path": "decomp_notes/functions/0046/00463930_load.md"
     }
   }
 }

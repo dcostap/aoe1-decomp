@@ -32,13 +32,17 @@ class SourceModuleInventoryTests(unittest.TestCase):
         configured = load_translation_units()
         self.assertEqual(self.inventory["translation_unit_count"], len(configured))
         self.assertEqual(
-            self.inventory["registered_owner_count"],
+            self.inventory["function_count"],
+            sum(len(group["functions"]) for group in configured),
+        )
+        self.assertEqual(
+            self.inventory["exact_validation_count"],
             sum(len(group["owners"]) for group in configured),
         )
         self.assertEqual(self.inventory["translation_unit_count"], len(self.modules))
         self.assertEqual(self.modules.keys(), {str(group["name"]) for group in configured})
         for module in self.modules.values():
-            owners = module["owners"]
+            owners = module["functions"]
             self.assertEqual(
                 [owner["va"] for owner in owners],
                 sorted((owner["va"] for owner in owners), key=lambda va: int(va, 16)),
@@ -47,11 +51,11 @@ class SourceModuleInventoryTests(unittest.TestCase):
 
     def test_point_module_keeps_per_function_state_outside_source_paths(self) -> None:
         point = self.modules["point"]
-        owners = {owner["va"]: owner for owner in point["owners"]}
+        owners = {owner["va"]: owner for owner in point["functions"]}
 
         self.assertEqual(point["translation_unit_source"], "src/point.cpp")
-        self.assertEqual(point["owner_count"], 8)
-        self.assertEqual(point["registered_owner_count"], 6)
+        self.assertEqual(point["function_count"], 8)
+        self.assertEqual(point["exact_validation_count"], 6)
         self.assertEqual(
             {owner["owner_path"] for owner in owners.values()},
             {"src/point.cpp"},
@@ -70,8 +74,8 @@ class SourceModuleInventoryTests(unittest.TestCase):
             },
         )
         self.assertEqual(
-            owners["0047E530"]["recovery_note_path"],
-            "recovery_notes/0047E530_operator.md",
+            owners["0047E530"]["decomp_note_path"],
+            "decomp_notes/functions/0047/0047E530_operator.md",
         )
 
     def test_pdb_module_line_and_class_context_is_preserved(self) -> None:
@@ -79,11 +83,11 @@ class SourceModuleInventoryTests(unittest.TestCase):
         self.assertEqual(module["module_name"], "scr_info.cpp")
         self.assertEqual(module["module_name_source"], "pdb_source_file")
         self.assertEqual(
-            [owner["source_line"] for owner in module["owners"]],
+            [owner["source_line"] for owner in module["functions"]],
             [32, 58, 65, 91, 101, 110, 118],
         )
         self.assertEqual(
-            {owner["class_owner"] for owner in module["owners"]},
+            {owner["class_owner"] for owner in module["functions"]},
             {"TRIBE_Screen_Info"},
         )
         self.assertIn("pdb_source_module", module["context"]["flags"])
@@ -93,7 +97,7 @@ class SourceModuleInventoryTests(unittest.TestCase):
 
     def test_bank_and_exact_status_are_per_owner(self) -> None:
         module = self.modules["zone_map"]
-        owners = {owner["va"]: owner for owner in module["owners"]}
+        owners = {owner["va"]: owner for owner in module["functions"]}
         self.assertEqual(
             {va: owner["bank"] for va, owner in owners.items()},
             {
@@ -131,11 +135,11 @@ class SourceModuleInventoryTests(unittest.TestCase):
             module["context"]["exact_anchor_count"],
             sum(owner["exact_anchor"] for owner in owners.values()),
         )
-        self.assertEqual(module["exact_owner_count"], module["context"]["exact_anchor_count"])
+        self.assertEqual(module["exact_result_count"], module["context"]["exact_anchor_count"])
 
     def test_exact_anchor_always_has_generated_diff_evidence(self) -> None:
         for module in self.modules.values():
-            for owner in module["owners"]:
+            for owner in module["functions"]:
                 if owner["exact_anchor"]:
                     self.assertTrue(owner["exact_evidence"].startswith("build/diff/"))
                     self.assertEqual(owner["exact_status"], "MATCH")

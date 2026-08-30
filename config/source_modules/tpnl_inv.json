@@ -5,13 +5,13 @@
   "source": "src/tpnl_inv.cpp",
   "header": "include/tpnl_inv.h",
   "functions": {
-    "0051A5C0": { "status": "matching", "note_path": "recovery_notes/tpnl_inv_module.md" },
-    "0051A6B0": { "status": "matching", "note_path": "recovery_notes/tpnl_inv_module.md" },
-    "0051A6D0": { "status": "matching", "note_path": "recovery_notes/tpnl_inv_module.md" },
-    "0051A770": { "status": "matching", "note_path": "recovery_notes/tpnl_inv_module.md" },
-    "0051AAD0": { "status": "matching", "note_path": "recovery_notes/tpnl_inv_module.md" },
-    "0051ABF0": { "status": "matching", "note_path": "recovery_notes/tpnl_inv_module.md" },
-    "0051AC10": { "status": "matching", "note_path": "recovery_notes/tpnl_inv_module.md" },
-    "0051ACA0": { "status": "matching", "note_path": "recovery_notes/tpnl_inv_module.md" }
+    "0051A5C0": { "status": "matching", "note_path": "decomp_notes/tpnl_inv_module.md" },
+    "0051A6B0": { "status": "matching", "note_path": "decomp_notes/tpnl_inv_module.md" },
+    "0051A6D0": { "status": "matching", "note_path": "decomp_notes/tpnl_inv_module.md" },
+    "0051A770": { "status": "matching", "note_path": "decomp_notes/tpnl_inv_module.md" },
+    "0051AAD0": { "status": "matching", "note_path": "decomp_notes/tpnl_inv_module.md" },
+    "0051ABF0": { "status": "matching", "note_path": "decomp_notes/tpnl_inv_module.md" },
+    "0051AC10": { "status": "matching", "note_path": "decomp_notes/tpnl_inv_module.md" },
+    "0051ACA0": { "status": "matching", "note_path": "decomp_notes/tpnl_inv_module.md" }
   }
 }

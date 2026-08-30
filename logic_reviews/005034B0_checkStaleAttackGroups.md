@@ -1,11 +1,13 @@
 # Logic review: 005034B0 `checkStaleAttackGroups`
 
+Current source: `src/taitacmd.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended exact matching after repeated bounded attempts found
 no natural source lead for the remaining local-home and register drift.
 
-Candidate: `src/scratch/005034B0_checkStaleAttackGroups.cpp`.
+Candidate: `src/taitacmd.cpp`.
 
 Current validation:
 
@@ -49,4 +51,4 @@ The reviewers found no changed call order, writes, bounds, or null behavior.
 ## Final decision
 
 No behavioral uncertainty remains in the reviewed paths. The residual drift is
-VC5 local-home and register allocation. Promote to `src/verified_logic`.
+VC5 local-home and register allocation. Promote to `verified_logic` status.

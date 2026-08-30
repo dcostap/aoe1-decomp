@@ -5,15 +5,15 @@
   "source": "src/tairesmd.cpp",
   "header": "include/tairesmd.h",
   "functions": {
-    "004E6B40": { "status": "matching", "note_path": "recovery_notes/tairesmd_module.md" },
-    "004E6BA0": { "status": "scratch", "note_path": "recovery_notes/tairesmd_module.md" },
-    "004E6C20": { "status": "matching", "note_path": "recovery_notes/tairesmd_module.md" },
-    "004E6C30": { "status": "matching", "note_path": "recovery_notes/tairesmd_module.md" },
-    "004E6C40": { "status": "matching", "note_path": "recovery_notes/tairesmd_module.md" },
-    "004E6C60": { "status": "matching", "note_path": "recovery_notes/tairesmd_module.md" },
-    "004E6C70": { "status": "matching", "note_path": "recovery_notes/tairesmd_module.md" },
-    "004E6CA0": { "status": "scratch", "note_path": "recovery_notes/tairesmd_module.md" },
-    "004E6D40": { "status": "matching", "note_path": "recovery_notes/tairesmd_module.md" },
-    "004E6DD0": { "status": "matching", "note_path": "recovery_notes/tairesmd_module.md" }
+    "004E6B40": { "status": "matching", "note_path": "decomp_notes/tairesmd_module.md" },
+    "004E6BA0": { "status": "scratch", "note_path": "decomp_notes/tairesmd_module.md" },
+    "004E6C20": { "status": "matching", "note_path": "decomp_notes/tairesmd_module.md" },
+    "004E6C30": { "status": "matching", "note_path": "decomp_notes/tairesmd_module.md" },
+    "004E6C40": { "status": "matching", "note_path": "decomp_notes/tairesmd_module.md" },
+    "004E6C60": { "status": "matching", "note_path": "decomp_notes/tairesmd_module.md" },
+    "004E6C70": { "status": "matching", "note_path": "decomp_notes/tairesmd_module.md" },
+    "004E6CA0": { "status": "scratch", "note_path": "decomp_notes/tairesmd_module.md" },
+    "004E6D40": { "status": "matching", "note_path": "decomp_notes/tairesmd_module.md" },
+    "004E6DD0": { "status": "matching", "note_path": "decomp_notes/tairesmd_module.md" }
   }
 }

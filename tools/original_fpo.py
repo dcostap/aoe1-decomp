@@ -6,7 +6,7 @@ from pathlib import Path
 from common import REPO_ROOT
 
 
-DEFAULT_FPO_PATH = REPO_ROOT / "build" / "004AB300_dumpbin_fpo.txt"
+DEFAULT_FPO_PATH = REPO_ROOT / "inventory" / "original_executable_fpo.txt"
 DEFAULT_OWNER_OVERRIDES_PATH = (
     REPO_ROOT / "config" / "original_owner_symbol_overrides.txt"
 )

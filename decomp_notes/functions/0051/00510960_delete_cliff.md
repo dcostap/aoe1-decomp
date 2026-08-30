@@ -1,0 +1,53 @@
+# Function notes: 00510960 `delete_cliff`
+
+Module notes: `decomp_notes/tmap_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:e4a9f7b207b8c2a2cccc -->
+### `target-session` `build/target_sessions/00510960_delete_cliff.json:1-1`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 abi; result=MATCH; diff=0; shape=100.0: Renamed the +0x6C tile-list member to canonical diam_tile_list, matching the grouped declaration surface and change_terrain ownership.
+```
+<!-- end-recovered:e4a9f7b207b8c2a2cccc -->
+
+<!-- recovered:a23d48011fcb66ffefbf -->
+### `f760ff4ab641` `src/scratch/00510960_delete_cliff.cpp:1-29`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00510960 TRIBE_Map::delete_cliff(long, long)
+// Source: tmap.cpp lines 819-838
+// Size: 228 bytes
+// NC: no custom flags (default /O2 /Oy)
+//
+// Status: PARKED — VC5 codegen drift (70.2% positional, 52.6% edit diff)
+//
+// Attempt log:
+// Probe 1: initial impl — 72.4% positional, full 228 bytes
+// Probe 2: fix game_world offset + virtual dispatch — 72.4%
+// Probe 3: minimize locals, direct float access — 70.2%
+// Probe 4: use (long) cast for ftol — 70.2%, virtual call matches pattern
+//
+// Key findings:
+// - this->game_world at +0x8DC0 (RGE_Map base, confirmed via type dump)
+// - game_world->players at +0x40, game_world->curr_player at +0x7C
+// - player->diam_tile_list at +0x6C (RGE_Tile_List, 0x14 bytes)
+// - cliff->y at +0x38 (float), cliff->z at +0x3C (float)
+// - RGE_Tile_List::add_node is a direct call, not virtual
+// - Unused find_cliff result after first get_cliff_info call is normal
+// - cliff release via vtable[0] with arg 1
+// - Prologue first 7 bytes match (mov/sub pattern)
+//
+// Remaining drift (VC5 register/scheduling):
+// - Register allocation: this in edi(me) vs ebp(orig), cliff in ebp(me) vs ebx(orig)
+// - Info copy from stack slots vs get_cliff_info return pointer
+// - Epilogue register save order + truncated (no room for add esp,ret)
+
+// __ftol is an intrinsic — use (long) cast instead
+```
+<!-- end-recovered:a23d48011fcb66ffefbf -->

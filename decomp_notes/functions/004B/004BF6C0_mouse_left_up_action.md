@@ -1,0 +1,85 @@
+# Function notes: 004BF6C0 `mouse_left_up_action`
+
+Module notes: `decomp_notes/spnl_obj_module.md`.
+
+## Translation-unit context
+
+- PDB module: `spnl_obj.cpp`; source order is constructor, destructor,
+  `set_master_info`, `draw`, `draw_item`, this function, then
+  `get_pierce_armor`.
+- The owning class is `TRIBE_Scenario_Editor_Panel_Object`.
+- The original body is 24 bytes at `004BF6C0-004BF6D7`.
+- The exact call target is `TPanel::release_mouse` at `00466280`.
+- The original also reads `rge_base_game->prog_mode` at offset `0x1B0`.
+  The read is after the call and before return value publication.
+
+## Current mismatch
+
+- Fresh natural baseline: rebuilt code is 13 bytes with three instructions.
+- The original is 24 bytes with five instructions and no frame.
+- Calls, owner symbol, boundary, cleanup, and the relocated `release_mouse`
+  target match. The first mismatch is offset `+5`.
+- The natural source emits the call, `mov eax,1`, and `ret 0x10`.
+  VC5 removes the unused non-volatile member read.
+- Focused result: `MISMATCH`, 18 differing bytes, 75.0000% positional
+  difference, structural instruction difference.
+
+## Recovered attempt history
+
+<!-- recovered:677c47b004c10fa3602d -->
+### `target-session` `build/target_sessions/004BF6C0_mouse_left_up_action.json:1-4`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 2 context; result=MISMATCH; diff=1; shape=100.0: Authentic spnl_obj context probe: adding polymorphic TPanel and virtual target owner corrected the decorated symbol to UAE, while the minimal proven global offset still emitted the same five-instruction body. Full RGE field declarations did not solve the load destination. [same emitted code as probe 1]
+probe 3 layout; result=MISMATCH; diff=1; shape=100.0: Layout probe: RGE_Base_Game vptr plus gap 0x1AC places prog_mode at +0x1B0. TRIBE_Panel_Object intermediate inheritance and proven Scenario panel offsets did not change target bytes. [same emitted code as probe 2]
+probe 4 liveness; result=MISMATCH; diff=1; shape=100.0: Liveness probe: direct nonvolatile unused prog_mode expression is removed by VC5 in complete context; volatile field/reference forms preserve the load but violate the no-fake-volatility rule. [same emitted code as probe 3]
+probe 5 variant; result=MISMATCH; diff=1; shape=100.0: Exact-finish probe: complete polymorphic context plus an explicit volatile local RGE_Base_Game pointer produced MATCH, 0.0000%, correct owner, calls, boundary, and ret 0x10. Walkback removed volatility and restored baseline; candidate rejected by policy. [same emitted code as probe 4]
+```
+<!-- end-recovered:677c47b004c10fa3602d -->
+
+<!-- recovered:2be713025337d7dd7abd -->
+### `912332e8f578` `src/accepted_drift/004BF6C0_mouse_left_up_action.cpp:2-7`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// ACCEPTED_DRIFT: unused fault-preserving member load goes to eax in original and volatile ecx in rebuilt before eax is set to 1; same call, read address, return, and stack cleanup.
+// Attempt log:
+// - Baseline is exact in size, call set, boundary, and cleanup. It differs only in the load destination byte.
+// - Virtual TPanel/RGE context restored the PDB owner and field offset but kept the ECX load destination.
+// - An exact probe used a volatile local object pointer with the complete class context. It was rejected as fake volatility.
+// - Restored this clean source. Needed evidence: a policy-compliant source form that keeps the proven unused read in EAX.
+```
+<!-- end-recovered:2be713025337d7dd7abd -->
+
+## Rejected approaches
+
+- A direct `rge_base_game->prog_mode;` expression does not compile because
+  `prog_mode` is protected in the reviewed `RGE_Base_Game` declaration.
+- Earlier standalone and complete-context attempts used volatile fields,
+  volatile references, or a volatile local game pointer. These preserved the
+  read, but changed its destination register or used fake volatility. They
+  are not valid natural source.
+
+## Open questions
+
+- The original source line 393 causes an unused load of the protected
+  `prog_mode` field. No policy-compliant access path is known in the current
+  natural declarations.
+
+## Next useful approaches
+
+- Check period source or a reviewed friend/accessor declaration for the
+  original `prog_mode` statement. Do not add a raw offset or volatile stub.
+
+## Worker updates
+
+### wave20-spnl-obj (2026-08-29)
+
+- Kept the initial natural body: `release_mouse(); return 1;`.
+- Recorded a fresh target-session baseline. A direct member-read test was
+  rejected at compile time because `prog_mode` is protected.
+- No source improvement survived the policy review. The target remains
+  unresolved because of the unused `prog_mode` read.

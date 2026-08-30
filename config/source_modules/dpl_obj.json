@@ -7,7 +7,7 @@
   "functions": {
     "004418A0": { "status": "matching" },
     "00441A70": { "status": "matching" },
-    "00441BB0": { "status": "accepted_drift", "note_path": "recovery_notes/dpl_obj_module.md" },
+    "00441BB0": { "status": "accepted_drift", "note_path": "decomp_notes/dpl_obj_module.md" },
     "00441D30": { "status": "matching" },
     "00441DA0": { "status": "matching" },
     "00441E00": { "status": "matching" },
@@ -16,7 +16,7 @@
     "00442050": { "status": "matching" },
     "00442100": { "status": "matching" },
     "00442180": { "status": "matching" },
-    "004421F0": { "status": "scratch", "note_path": "recovery_notes/dpl_obj_module.md" },
+    "004421F0": { "status": "scratch", "note_path": "decomp_notes/dpl_obj_module.md" },
     "004422B0": { "status": "matching" },
     "00442390": { "status": "matching" },
     "00442540": { "status": "matching" }

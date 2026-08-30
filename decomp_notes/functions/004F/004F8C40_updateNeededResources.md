@@ -1,0 +1,150 @@
+# Function notes: 004F8C40 `updateNeededResources`
+
+Module notes: `decomp_notes/taitacmd_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:6d85cbb604706ae465c7 -->
+### `d050eea3c` `src/taitacmd.cpp:9512-9521`
+
+Mapping: `ambiguous`. comment lies after mapped function updateNeededResources at old line 9371.
+
+```text
+// 16: tested weighted percentage operand order; VC5 emitted the same arithmetic basin.
+// 17: cached the proven object gameID after the action/type/state guard; this matches the original EDI overwrite before the first task-list scan and improved the first scan block.
+// 18: separated literal actual-distribution clears from the outer loop index; this improved positional diff by four bytes but did not solve the prologue.
+// 19: tried a structured found-label task scan to mirror the original skip-zero CFG; it worsened block shape and was rolled back.
+// 20: declared the special-result local before the desired cursor; this improved whole-function liveness by seven bytes and remains plausible source order.
+// 21: used pointer dereference spelling for first-slot desired writes; VC5 emitted a duplicate, so no codegen lead was found.
+// 22: moved outer-index initialization between the first two clears to mirror stack-store order; it worsened codegen and was rolled back.
+// Final clean reconstruction: natural typed ownership, corrected age dispatch and slot writes, 15 ordered calls aligned; remaining gap is structural prologue/CFG layout.
+// Managed pass: 20 meaningful probes confirmed the pinned 1369-byte source as
+// the best clean natural reconstruction (1237 positional bytes, 83.93% shape,
+```
+<!-- end-recovered:6d85cbb604706ae465c7 -->
+
+<!-- recovered:e7c85a08e45f1dd5e63c -->
+### `target-session` `build/target_sessions/004F8C40_updateNeededResources.json:1-40`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=419; shape=90.0: Baseline natural typed reconstruction from existing source; measure frame, calls, and first mismatch.
+probe 2 control-flow; result=MISMATCH; diff=419; shape=92.85714285714286: Removed unsupported +4 cursor bias; original writes and reads temporary arrays at slots +24/+34 plus offset.
+probe 3 liveness; result=MISMATCH; diff=419; shape=92.85714285714286: Moved diff/output pointer declarations to function scope to test original pointer register colors and final direct output loop. [same emitted code as probe 2]
+probe 4 layout; result=MISMATCH; diff=419; shape=93.57142857142857: Moved the resourceDifferenceValue pointer initialization before the final three init stores, matching original LEA placement between store groups.
+probe 5 liveness; result=MISMATCH; diff=423; shape=93.57142857142857: Moved first-scan index initialization after local-array stores to test whether VC5 hoists it while preserving independent zero-register coloring.
+probe 6 liveness; result=MISMATCH; diff=419; shape=93.57142857142857: Introduced three named initialization-value locals to test whether distinct natural live values recover EDX/EAX/ECX register colors. [same emitted code as probe 4]
+probe 7 liveness; result=MISMATCH; diff=419; shape=93.57142857142857: Removed register qualifier from loop index to test period-default register allocation against original ESI index and independent init constants. [same emitted code as probe 6]
+probe 8 layout; result=MISMATCH; diff=422; shape=83.21678321678321: Separated the three local arrays from the artificial aggregate to test whether independent array ownership preserves the original final output-pointer lowering.
+probe 9 control-flow; result=MISMATCH; diff=419; shape=94.28571428571429: Reversed independent selection-loop offset read and assigned-flag store to test original emitted load-before-store ordering.
+probe 10 liveness; result=MISMATCH; diff=424; shape=93.5251798561151: Started fallback assigned-resource cursor at assignedResource+1 instead of preincrementing its base, testing preservation of original EDX cursor update.
+probe 11 liveness; result=MISMATCH; diff=419; shape=94.28571428571429: Used the already-zero loop index in each initial assigned-flag expression to test whether VC5 materializes a separate ECX zero value. [same emitted code as probe 9]
+probe 12 liveness; result=MISMATCH; diff=419; shape=94.28571428571429: Moved pointer declarations ahead of best-value locals to test VC5 declaration-order register coloring. [same emitted code as probe 11]
+probe 13 liveness; result=MISMATCH; diff=451; shape=92.85714285714286: Joined index declaration and zero initialization to test declaration-site scheduling and register liveness.
+probe 14 control-flow; result=MISMATCH; diff=403; shape=92.85714285714286: Rewrote final temporary-to-member copy as a natural indexed four-entry loop to test whether VC5 strength-reduces it to the original two moving pointers.
+probe 15 layout; result=MISMATCH; diff=414; shape=89.36170212765957: Kept assigned/temp-needed aggregate but separated temp-difference storage to test whether final pointer algebra came from aggregate adjacency.
+probe 16 liveness; result=MISMATCH; diff=423; shape=92.0863309352518: Used the existing byte offset as the final copy-loop cursor and derived an element index, testing whether VC5 retains original EAX offset plus direct output pointer.
+probe 17 liveness; result=MISMATCH; diff=403; shape=92.85714285714286: Hoisted bestResource=-1 before local initialization as a source-scheduling probe for the original second -1 register. [same emitted code as probe 14]
+probe 18 control-flow; result=MISMATCH; diff=403; shape=92.85714285714286: Changed final indexed copy from do-while to a natural counted for loop to test count-up lowering versus VC5 fixed-count countdown. [same emitted code as probe 17]
+probe 21 layout; result=MISMATCH; diff=425; shape=84.02777777777777: Replaced the artificial five-entry assigned array with three natural four-entry arrays and a separate output offset, matching the proven four-array stack ownership.
+probe 23 liveness; result=MISMATCH; diff=403; shape=92.85714285714286: Moved the difference-array pointer declaration after the scalar selection locals to test natural VC5 saved-register color assignment without changing control flow or ownership. [same emitted code as probe 19]
+probe 25 layout; result=MISMATCH; diff=414; shape=87.23404255319149: Removed the invented local aggregate and used direct typed arrays with a register loop index, testing a policy-valid source while preserving the proven five-slot stack shape.
+probe 27 control-flow; result=MISMATCH; diff=419; shape=91.42857142857143: Changed only the final copy to a typed parallel-pointer do loop, testing whether natural pointer induction recovers the original EAX offset and EDX output-pointer lowering.
+probe 30 layout; result=MISMATCH; diff=410; shape=94.32624113475177: Restored PDB-proven four-entry assignedResource array and separate byte offset; tested original flag indexing and local ownership.
+probe 31 liveness; result=MISMATCH; diff=414; shape=94.32624113475177: Moved the first-scan index initialization after the four-entry local initialization, testing whether VC5 keeps a separate zero register while retaining ESI as the loop index.
+probe 32 liveness; result=MISMATCH; diff=410; shape=94.32624113475177: Named the three repeated initialization values (-1, -1, 0) to test whether VC5 preserves separate constant registers for the PDB array stores. [same emitted code as probe 30]
+probe 33 liveness; result=MISMATCH; diff=410; shape=94.32624113475177: Separated the fallback assigned and difference cursors from the first-loop diffPtr, testing whether independent pointer locals preserve original EDX/ECX addressing. [same emitted code as probe 32]
+probe 34 control-flow; result=MISMATCH; diff=413; shape=97.16312056737588: Replaced fallback pointer cursors with natural indexed array reads, testing whether VC5 emits the original independent assigned and difference bases.
+probe 35 liveness; result=MISMATCH; diff=446; shape=86.52482269503547: Used natural four-entry array initializers for assigned, needed, and difference locals, testing VC5's initializer lowering against the original repeated constants.
+probe 36 liveness; result=MISMATCH; diff=413; shape=97.16312056737588: Moved the separate byte-offset declaration before loop and selection locals, testing the PDB local-slot order and register-color basin. [same emitted code as probe 34]
+probe 37 layout; result=MISMATCH; diff=413; shape=97.16312056737588: Reordered the two PDB array declarations to test whether symbol-order context selects the original initialization register and stack basin. [same emitted code as probe 36]
+probe 38 liveness; result=MISMATCH; diff=413; shape=97.16312056737588: Split the first difference scan index from the later selection index, testing whether separate source scopes recover the original zero register and retain the ESI loop color. [same emitted code as probe 37]
+probe 39 control-flow; result=MISMATCH; diff=413; shape=94.32624113475177: Reordered direct-array initialization to the decompiler's proven [1],[2],[3], pointer setup, then [0] sequence, testing source scheduling for the original register pair.
+probe 40 liveness; result=MISMATCH; diff=413; shape=97.16312056737588: Spelled the repeated difference sentinel as bitwise complement of zero while retaining -1 for needed values, testing whether distinct natural constant expressions recover EDX and EAX. [same emitted code as probe 38]
+probe 41 liveness; result=MISMATCH; diff=413; shape=97.16312056737588: Used the source expression i-i for the proven zero flag values, testing whether a non-literal zero preserves ESI for the loop and emits ECX for stores. [same emitted code as probe 40]
+probe 42 liveness; result=MISMATCH; diff=445; shape=95.74468085106383: Changed the first-scan index from a post-call assignment to a declaration initializer, testing VC5 declaration-site scheduling for the separate zero register.
+probe 43 liveness; result=MISMATCH; diff=413; shape=97.16312056737588: Restored the natural scalar declaration order i, difference pointer, selected resource, selected difference, offset, testing first-loop EBX/EBP color recovery with direct arrays. [same emitted code as probe 41]
+probe 44 control-flow; result=MISMATCH; diff=421; shape=96.47887323943662: Combined the first resource-minus-needed calculation into one natural expression, testing whether VC5 carries the resource result in EBP and keeps the difference cursor in EBX.
+probe 45 layout; result=MISMATCH; diff=403; shape=94.28571428571429: Grouped the three PDB-proven four-entry arrays in one local aggregate while keeping offset separate, testing aggregate stack ownership without the prior invented fifth slot.
+probe 46 liveness; result=MISMATCH; diff=413; shape=97.16312056737588: Removed the aggregate and marked the first difference cursor register, testing whether an explicit period register hint restores original EBX cursor and EBP result colors. [same emitted code as probe 43]
+probe 47 liveness; result=MISMATCH; diff=413; shape=97.16312056737588: Marked the first resource result register, testing whether VC5 preserves it in original EBP across the needed-resource call. [same emitted code as probe 46]
+```
+<!-- end-recovered:e7c85a08e45f1dd5e63c -->
+
+<!-- recovered:3d9a709633c458d238be -->
+### `3789ccb1ae1e` `src/scratch/004F8C40_updateNeededResources.cpp:2-58`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 004F8C40 TribeTacticalAIModule::updateNeededResources
+// PDB: taitacmd.cpp:7453-7527, 478 bytes
+// Attempt log:
+// - v1: direct reconstruction from packet/decompiler with local arrays and real member-call surfaces.
+// - v2: corrected sn from pointer to embedded array at +0x194 (sn[0x93] observed at +0x3e0).
+// - v3: added/reused output pointer local to probe original 0x34 frame and register allocation; optimized out.
+// - v4: modeled assignedResource as 5 ints: counter at [0], flags at [1..4], matching original 0x34 frame.
+// - v5: made loop index register to try to force ESI index / EDI this allocation.
+// - v6: introduced self local and used it for member accesses to probe this-pointer register allocation.
+// - v7: reordered local array declarations so assignedResource occupies low stack offsets like original.
+// - v8: grouped arrays in a local struct to force assigned/tempNeeded/tempDiff contiguous stack layout.
+// - v9: reordered one-time array initialization to match original flag/temp output stack stores.
+// - v10: tried a fixed four-entry initialization loop; VC5 kept the loop and
+//   lost the original unrolled stores, so it was restored.
+// - v11: replaced raw md subobject casts with canonical buildAI/resourceAI
+//   members and restored the proven AIModule, ResourceItem, and tactical sizes;
+//   emitted code stayed unchanged while source ownership became typed.
+// - v12: reordered initialization to the decompiler/PDB order; block shape
+//   worsened, so the original interleaved source order was restored.
+// - v13: removed the self alias; emitted code stayed unchanged.
+// - v14: initialized the fallback assigned-resource pointer at slot 1; this
+//   changed prologue register coloring and was restored.
+// - v15: separated the local arrays as a control; it preserved the frame but
+//   changed the prologue and was restored.
+// - v16: rewrote the final copy as an indexed four-entry loop. VC5 reduced the
+//   size to 478 bytes and kept the natural member ownership; this is the
+//   current clean reconstruction.
+// - v17: tested an early best-resource sentinel; VC5 emitted the same code.
+// - v18: changed the final indexed loop to a counted for form; VC5 emitted the
+//   same code.
+// Revisit v19: restored three direct four-entry arrays and a separate scalar;
+// VC5 reduced the frame to 0x30 and worsened the result to diff 425.
+// Revisit v20: moved the difference-pointer declaration after scalar locals;
+// VC5 emitted duplicate code at diff 403.
+// Revisit v21: removed the invented aggregate and used direct typed arrays;
+// VC5 kept the frame but worsened the result to diff 414.
+// Revisit v22: used typed parallel pointers for the final copy; VC5 emitted
+// 482 bytes and worsened the result to diff 419.
+// Revisit v23: restored the PDB-proven four-entry assignedResource array and
+// kept the byte offset as its own scalar, rather than folding the offset into
+// a fifth array slot. This tests the original local ownership and indexing.
+// Revisit v24: replaced the fallback pointer walk with direct indexed array
+// reads. VC5 now emits the original independent pointer setup and loop bytes;
+// the remaining mismatch is the earlier initialization register basin.
+// Revisit v25: a four-entry local aggregate plus a separate offset retained
+// the 403-byte metric but changed the final copy to a countdown basin. It was
+// rejected because the PDB names three separate arrays.
+// Revisit v26: register hints for the difference cursor and first result were
+// codegen duplicates. The natural unqualified declarations remain authoritative.
+// BLOCKER: the current typed reconstruction has the exact frame and 478-byte
+// size, eight ordered calls, and correct field offsets. It remains non-exact:
+// the first mismatch is local initialization at +0x2B. The original keeps -1
+// in EDX and EAX and zero in ECX. VC5 keeps only -1 in EAX and zero in ESI.
+// The first difference scan also swaps the original EBP result and EBX cursor.
+// The indexed fallback and final copy preserve the original pointer topology,
+// but no period-plausible source change has recovered the early colors. Leave
+// this source in scratch.
+```
+<!-- end-recovered:3d9a709633c458d238be -->
+
+<!-- recovered:8578b217b9f93f794f74 -->
+### `3789ccb1ae1e` `src/scratch/004F8C40_updateNeededResources.cpp:216-217`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+        *(int*)((char*)tempNeededResource + offset) = bestResource;
+        *(int*)((char*)tempResourceDifference + offset) = bestDifference;
+```
+<!-- end-recovered:8578b217b9f93f794f74 -->

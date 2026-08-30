@@ -1,10 +1,12 @@
 # Logic review: 0047F320 `RESFILE_load`
 
+Current source: `src/Res_file.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after four claims and 25 meaningful probes.
 
-The candidate is `src/scratch/0047F320_RESFILE_load.cpp`.
+The candidate is `src/Res_file.cpp`.
 
 Current validation:
 
@@ -60,4 +62,4 @@ arguments, leaks, malformed-value behavior, and fault order.
 No behavioral uncertainty remains. The one-byte difference selects the opposite
 SIB base and index for the same pointer addition.
 
-Promote to `src/verified_logic`.
+Promote to `verified_logic` status.

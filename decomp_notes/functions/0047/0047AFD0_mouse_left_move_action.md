@@ -1,0 +1,107 @@
+# Function notes: 0047AFD0 `mouse_left_move_action`
+
+Module notes: `decomp_notes/Pnl_scbr_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:2e2f442c15b3e9a0f0c9 -->
+### `target-session` `build/target_sessions/0047AFD0_mouse_left_move_action.json:1-23`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=320; shape=92.38754325259515: Current compound-update source: exact size and 19 ordered calls; positional diff 320, shape 92.39%; first mismatch is switch-table relocation and first attributed CFG drift is horizontal clamp block.
+probe 2 control-flow; result=MISMATCH; diff=445; shape=91.1864406779661: Hypothesis 2: reconstruct the decompiler's single OR edge-event guard in each orientation, with direct member expressions and original operand order. Test whether the original dead reloads and shared block topology come from one compound condition.
+probe 4 liveness; result=MISMATCH; diff=320; shape=92.38754325259515: Hypothesis 3: flatten each lower-edge short-circuit guard into one && expression while retaining a separate upper-edge guard. Test whether VC5's declaration of the first comparison chain controls the dead lower-bound reload.
+probe 6 liveness; result=MISMATCH; diff=320; shape=92.38754325259515: Hypothesis 4: carry the movement through the existing delta () instead of a compound member update. Test whether the original EDI accumulator and explicit EAX copy come from delta reuse. [same emitted code as probe 1]
+probe 8 liveness; result=MISMATCH; diff=320; shape=92.38754325259515: Hypothesis 5: expand the member compound update to direct assignment from member plus delta. Test whether VC5 preserves the original accumulator register and store ordering only for the expanded form. [same emitted code as probe 6]
+probe 10 liveness; result=MISMATCH; diff=894; shape=86.44067796610169: Hypothesis 6: cache current and minimum tab positions as branch-local locals before the edge guards. Test whether the original guard reloads indicate a carried position local or direct member rereads.
+probe 12 liveness; result=MISMATCH; diff=320; shape=92.38754325259515: Hypothesis 7: scope delta separately inside the horizontal and vertical orientation arms. Test whether the original shared EAX delta is a branch-local value rather than a function-scope local.
+probe 14 control-flow; result=MISMATCH; diff=320; shape=92.04152249134948: Hypothesis 8: reverse only the horizontal lower clamp operand order (`tab_min_x > tab_x`) while leaving vertical and upper clamps unchanged. Test whether one original comparison direction is asymmetric.
+probe 16 context; result=MISMATCH; diff=320; shape=92.38754325259515: Hypothesis 9: restore the period Windows SDK RECT context by including windows.h and using its tagRECT definition. Test whether the remaining edge/clamp register basin depends on the SDK header context.
+probe 18 liveness; result=MISMATCH; diff=320; shape=92.38754325259515: Hypothesis 10: reverse the declaration order of the function-scope result and movement locals. Test whether VC5 local declaration order controls the horizontal and vertical accumulator colors. [same emitted code as probe 8]
+probe 20 liveness; result=MISMATCH; diff=320; shape=92.38754325259515: Hypothesis 11: express vertical delta as one subtraction (`y - item_y`) instead of a split assignment and compound subtraction. Original loads y into EDI and item_y into EDX, unlike the clean split form, so this tests the proven operand-home clue. [same emitted code as probe 18]
+probe 22 liveness; result=MISMATCH; diff=320; shape=92.38754325259515: Hypothesis 12: mark only the read-only y parameter as register. Original vertical code keeps y in EDI and later reloads x from its home, so this tests the documented VC5 parameter-coloring axis without addressing an output. [same emitted code as probe 20]
+probe 24 liveness; result=MISMATCH; diff=426; shape=91.6955017301038: Hypothesis 13: use a local reference to the horizontal tab position for the real read-modify-write. This tests whether the original EDI accumulator and field store reflect a source alias, not a direct member compound update.
+probe 27 liveness; result=MISMATCH; diff=320; shape=92.38754325259515: Hypothesis 14: reverse the compound-update operand order by assigning `delta + tab_*`. Test whether the original field-first accumulator register depends on expression order. [same emitted code as probe 26]
+probe 29 control-flow; result=MISMATCH; diff=320; shape=92.38754325259515: Hypothesis 15: use the original decompiler operand spelling `0 < delta` for both lower-edge guards. Test whether VC5 preserves a source-level compare-direction distinction in this branch. [same emitted code as probe 27]
+probe 31 control-flow; result=MISMATCH; diff=318; shape=93.0795847750865: Hypothesis 16: reverse only the final value clamp predicate to the original-looking `value > (list_len - 1)` form. The original uses cmp value,max followed by JLE, while clean source uses max < value.
+probe 32 control-flow; result=MISMATCH; diff=320; shape=92.73356401384083: Hypothesis 17: retain the improved vertical `value > max_value` predicate but revert the horizontal predicate. This isolates whether the two compare-direction improvements are independent.
+probe 33 control-flow; result=MISMATCH; diff=325; shape=91.72413793103448: Hypothesis 18: use the original decompiler single OR edge-event condition only in the vertical arm, while retaining the improved value clamp predicates. Test whether the vertical block topology comes from one compound condition.
+probe 35 liveness; result=MISMATCH; diff=318; shape=93.0795847750865: Hypothesis 19: remove the max_value temporary and repeat the natural list_len minus one expression at the compare and assignment. Test whether the original LEA and register liveness require a named bound.
+probe 36 control-flow; result=MISMATCH; diff=464; shape=91.0958904109589: Hypothesis 20: make the horizontal upper-edge guard the semantically equivalent else arm of the positive-delta guard. Test whether original shared edge blocks use this source topology.
+probe 39 control-flow; result=MISMATCH; diff=886; shape=62.333333333333336: Hypothesis: use the full period-plausible Pnl_scbr source shape from the sibling source reconstruction: negative edge arms, branch-local deltas and positions, compound edge OR, lexical case 3 placement, and explicit default.
+probe 41 liveness; result=MISMATCH; diff=318; shape=93.0795847750865: Hypothesis: reverse the lower-edge equality operands in both orientation guards. The original loads each minimum field before the current position, so the period source may spell minimum-left comparisons.
+probe 44 liveness; result=MISMATCH; diff=318; shape=93.0795847750865: Hypothesis: use branch-local int delta declarations and direct int-cast coordinate subtraction, as in the recovered Pnl_scbr source, while preserving the known best edge topology and function-scope value.
+```
+<!-- end-recovered:2e2f442c15b3e9a0f0c9 -->
+
+<!-- recovered:042736604a78ca73aefb -->
+### `e9092786ed36` `src/scratch/0047AFD0_mouse_left_move_action.cpp:1-61`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0047AFD0 TScrollBarPanel::mouse_left_move_action(long, long, int, int)
+// PDB source: Pnl_scbr.cpp lines 400-547 (991 bytes, 286 asm lines)
+// Default flags.
+//
+// Attempt log:
+// Baseline prior worker: decompiler-shaped field aliases and wrong helper/virtual surfaces; exact size was not
+// meaningful because calls/offset ownership were broad. Reconstructed here with the proven TPanel base/vtable,
+// canonical scrollbar fields, switch-on-item_down topology, and natural arrow/thumb drag control flow.
+// Probe 1: baseline had exact size/prologue but five extra direct scroll sites because the small arrow cases did
+// not tail-merge; first structural gap was the switch table/case layout.
+// Probe 2: ordered cases 1,2,4,5,3 to follow PDB line order; calls became 19/19 and shape rose to 87.84%, with
+// the remaining drift localized to the two thumb-drag arms.
+// Probe 3: put delta positivity before the first edge-field loads; 453-byte drift and a smaller body.
+// Probe 4: split both edge guards into delta-first nested checks and use x/y >= edge spelling; restored exact size,
+// 19 calls, and the best 428-byte mismatch / 86.33% shape.
+// Probe 5: reversed the first edge equality operands; only a two-byte neutral change.
+// Probes 6-8: current/min locals and a scoped min load moved or left code unchanged; restored probe-4 source.
+// Probe 9: separate new_pos locals were compiler-equivalent and left the 428-byte best unchanged.
+// Paused: canonical ownership, ABI, switch case order, call set, and behavior are established. Remaining drift is
+// localized to VC5 register/field-reload topology in the horizontal/vertical clamp guards and switch-table base;
+// further blind variants are not justified without a new donor/source-order lead.
+// New worker: natural member compound updates (`tab_x += delta`, `tab_y += delta`) improved the exact-size basin from
+// 428 to 320 bytes with 92.39% shape and 81.47% exact-block coverage. Current-position and operand-order variants
+// were worse or duplicate; retain the compound-update source as the best plausible candidate. Remaining drift is
+// localized to edge/clamp reload/register topology and the extracted switch-table relocation.
+// Probe 25: reversed both upper clamp operands to max < updated tab; diff worsened 320 to 321 with lower shape,
+// so restored the clean compound-update source.
+// Probe 27: reversed both lower clamp operands to min > updated tab; positional diff stayed 320 but shape fell,
+// so restored the clean compound-update source. No bound-update spelling improved the first paired hunk.
+// Probe 30: used the typed scrollbar edge-event short-circuit form from the original paired blocks; horizontal
+// lower-or-upper and vertical lower-else-upper guards improved shape to 93.81% but worsened positional diff to 443.
+// Probe 32: isolated the vertical lower-else-upper guard with the clean horizontal guard; diff worsened to 327 and
+// shape fell to 91.38%, so restored the clean compound-update source. This branch-layout lead did not beat clean.
+// Probe 35: scoped lower-edge min locals in both orientations were compiler-equivalent; the switch-table relocation
+// and 320-byte clean result did not move.
+// Probe 36: paired scoped min/current locals were also compiler-equivalent; the relocation stayed unchanged.
+// Probe 37: added the explicit binary-supported switch default arm; VC5 emitted identical code and relocation.
+// Probe 38: carried current/min locals through each orientation while keeping compound updates; this added a stack
+// home and worsened the mismatch to 894 bytes, so restored the clean source.
+// Follow-up claim: tested 20 additional source and context hypotheses. Combined edge guards, cached edge fields,
+// reference aliases, branch-local delta, register-qualified y, SDK RECT context, and alternate update forms were
+// worse or codegen duplicates. The original value-clamp compare is value > (list_len - 1), not the decompiler's
+// reversed spelling; using that source form in both orientation arms improves the clean result from 320 to 318
+// changed bytes, 93.08% shape, and 83.57% exact-block coverage. A partial reversion returned 320 bytes.
+// Unresolved: the remaining drift is the horizontal/vertical edge reload topology and the resulting branch spans.
+// Accepted-drift blocker: in each positive thumb-delta guard, the executable
+// reads the minimum edge before the current position and then rereads the
+// minimum. The rebuild reads the current position first and reads the minimum
+// once. A damaged or concurrently changed panel can fault or branch
+// differently. Keep this function in scratch.
+// Follow-up worker: the local Pnl_scbr.cpp reconstruction confirms the same
+// scrollbar fields and action values, but it is reference evidence only. Its
+// full negative-arm and compound-OR form produced 1020 bytes, 21 calls, and
+// 886 changed bytes here. Restore the clean positive-arm source.
+// Follow-up probes: lower-edge equality reversal, branch-local delta casts,
+// scoped minimum/current aliases, combined lower guards, and reversed edge
+// addition were duplicate codegen or worse. The first paired blocker remains
+// minimum-read order and the EDX/EDI liveness through the clamp.
+// Current shard pass:
+// - Named new-position locals reached 428 changed bytes; combined edge guards reached 909; restored.
+// - Reversing both position upper-bound comparisons reached 319 changed bytes; restored.
+```
+<!-- end-recovered:042736604a78ca73aefb -->

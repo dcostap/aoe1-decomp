@@ -5,17 +5,17 @@
   "source": "src/rmm_dbct.cpp",
   "header": "include/rmm_dbct.h",
   "functions": {
-    "00482B70": { "status": "scratch", "note_path": "recovery_notes/rmm_dbct_module.md" },
+    "00482B70": { "status": "scratch", "note_path": "decomp_notes/rmm_dbct_module.md" },
     "00483020": { "status": "matching" },
     "00483200": { "status": "matching" },
     "004832E0": { "status": "matching" },
     "00483430": { "status": "matching" },
     "00483540": { "status": "matching" },
     "004835A0": { "status": "matching" },
-    "00483600": { "status": "scratch", "note_path": "recovery_notes/rmm_dbct_module.md" },
-    "00483A20": { "status": "scratch", "note_path": "recovery_notes/rmm_dbct_module.md" },
-    "00484160": { "status": "scratch", "note_path": "recovery_notes/rmm_dbct_module.md" },
-    "00484320": { "status": "scratch", "note_path": "recovery_notes/rmm_dbct_module.md" },
-    "00484470": { "status": "accepted_drift", "note_path": "recovery_notes/rmm_dbct_module.md" }
+    "00483600": { "status": "scratch", "note_path": "decomp_notes/rmm_dbct_module.md" },
+    "00483A20": { "status": "scratch", "note_path": "decomp_notes/rmm_dbct_module.md" },
+    "00484160": { "status": "scratch", "note_path": "decomp_notes/rmm_dbct_module.md" },
+    "00484320": { "status": "scratch", "note_path": "decomp_notes/rmm_dbct_module.md" },
+    "00484470": { "status": "accepted_drift", "note_path": "decomp_notes/rmm_dbct_module.md" }
   }
 }

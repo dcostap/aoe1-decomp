@@ -1,12 +1,14 @@
 # Logic review: 00435110 `RGE_Command::duplicate_check_command_order`
 
+Current source: `src/Command.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after repeated independent assignments, more than one hundred documented source/type/control-flow/liveness hypotheses, and four focused variant labs covering approximately sixty variants. Independent phase-readiness audit found repeated convergence on the same exact-size 24-byte register/scheduling basin and no credible unexplored exact-match lead.
 
 Current validated checker state:
 
-- candidate: `src/scratch/00435110_duplicate_check_command_order.cpp`;
+- candidate: `src/Command.cpp`;
 - original/rebuilt size: 153/153 bytes;
 - frame: none/none;
 - saved registers: `ebx, ebp, esi, edi` / `ebx, ebp, esi, edi`;

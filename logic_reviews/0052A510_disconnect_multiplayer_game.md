@@ -1,11 +1,13 @@
 # Logic review: 0052A510 `TRIBE_Game::disconnect_multiplayer_game`
 
+Current source: `src/tribegam.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after seven claims, 28
 meaningful probes, 46 checks, a 36-case focused variant lab, exact donor work,
 and repeated convergence on one register-color basin. The candidate remains
-`src/scratch/0052A510_disconnect_multiplayer_game.cpp`.
+`src/tribegam.cpp`.
 
 Current validated checker state:
 
@@ -151,5 +153,5 @@ and EDI allocation.
 
 ## Final decision
 
-Promote to `src/verified_logic`. Two fresh cohorts found no behavioral
+Promote to `verified_logic` status. Two fresh cohorts found no behavioral
 uncertainty. The remaining 16 bytes are equivalent register allocation.

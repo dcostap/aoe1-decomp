@@ -1,0 +1,52 @@
+# Function notes: 004350A0 `RGE_Command::do_command_remove_from_group`
+
+- Source owner: `src/Command.cpp`.
+- PDB source: `Command.cpp`, lines 1045-1052.
+- Worker: `wave21-command`.
+- These are the first durable notes for this function.
+
+## Natural source model
+
+The function resolves `command->groupCommander` through `this->world->object`. It then checks that the object exists and that `object->owner->id` equals the zero-extended `command->player_id`. On success, it calls `object->commanderRemoveFromGroup(command->unit)`.
+
+The current body in `src/Command.cpp` is the simplest period-plausible form that matches the recovered behavior. No source change was retained.
+
+## Binary facts
+
+- Original span: `004350A0-004350D1`, 50 bytes.
+- Calling convention: `__thiscall`; no stack frame; saved `esi`.
+- Original body: 18 instructions, two direct calls, two conditional exits, and one return.
+- The first call resolves `RGE_Game_World::object` with the packet field at `+4`.
+- The owner pointer is read from the object at `+0x0C`; the owner id is read at `+0x4A`.
+- The second call is `RGE_Static_Object::commanderRemoveFromGroup` with the packet field at `+8`.
+- Fresh checks prove the rebuilt owner symbol, closed boundary, two direct targets, and safe relocation masking.
+
+## Checks
+
+Fresh natural translation-unit baseline, checkpoint `probe-001-baseline`:
+
+- Result: `MISMATCH`.
+- Size: 50/50 bytes.
+- Strict difference: 3 bytes, 6.0000%.
+- Shape: 100.00%; exact blocks: 100.00%; calls: 2/2 aligned.
+- First difference: offset `+0x18` (`004350B8`).
+- Diagnostic: `CONSISTENT_REGISTER_RECOLOR`.
+- Original bytes decode as `movzx dx,[esi+1]`, `mov ecx,[eax+0x0C]`, and `cmp [ecx+0x4A],dx`.
+- Rebuilt bytes decode as `movzx cx,[esi+1]`, `mov edx,[eax+0x0C]`, and `cmp [edx+0x4A],cx`.
+
+The archived standalone matching source from the 2025-08-25 checkpoint uses the same natural body and produced all 50 bytes in its isolated command context. The current full natural `Command.cpp` context produces the register recolor above.
+
+A focused variant lab tested 49 natural source forms. These forms covered nested guards, local argument and owner values, cast and signedness forms, aliases, and early-return forms. All valid 50-byte variants stayed in the same 3-byte mismatch basin. An ambient declaration sweep of 128 samples also stayed in that basin. No artificial alias, volatility, raw offset, wrapper, or compiler-steering form was retained.
+
+Grouped validation:
+
+- Command audit: `build/audits/workers/wave21-command/Command/report.txt`.
+- The audit compiled 51 normal functions. It reports 27 registered matches and 14 grouped mismatches.
+- Target `004350A0` remains a grouped 3-byte mismatch with a closed boundary.
+- Registered exact neighbors remained intact in this audit.
+
+## Open result and next approach
+
+The current source is behavior-complete but not byte-exact in the natural full translation unit. The three differences are a narrow register recolor. They preserve the same predicate, memory reads, call targets, argument values and order, control flow, fault order, and boundary.
+
+Accepted-drift proposal for coordinator review: accept only offsets `+0x18`, `+0x1B`, and `+0x1F` as a consistent ECX/EDX recolor. Exact status remains unchanged until reviewed. If exact codegen is required, compare the shared `RGE_Player::id` declaration and full Command translation-unit context against the archived isolated context. Do not replace the natural source with an artificial register or layout form.

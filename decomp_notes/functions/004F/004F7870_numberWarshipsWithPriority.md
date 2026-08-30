@@ -1,0 +1,193 @@
+# Function notes: 004F7870 `numberWarshipsWithPriority`
+
+Module notes: `decomp_notes/taitacmd_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:9d3dd5f03202ccb86ff5 -->
+### `d050eea3c` `src/taitacmd.cpp:8349-8365`
+
+Mapping: `ambiguous`. next mapped function definition is numberWarshipsWithPriority at old line 8552.
+
+```text
+// revisit probes:
+// [non-comment lines omitted during migration]
+//   size and raised shape similarity to 92.03%; calls and frame also match.
+// [non-comment lines omitted during migration]
+//   variants were tested.  They were worse or codegen duplicates.
+// [non-comment lines omitted during migration]
+// BLOCKER: After a soldier resize, the executable reads the soldier value
+```
+<!-- end-recovered:9d3dd5f03202ccb86ff5 -->
+
+<!-- recovered:32ea1d99cd3ba0ba5909 -->
+### `6a2aef2e2` `src/taitacmd.cpp:7247-7282`
+
+Mapping: `ambiguous`. next mapped function definition is numberWarshipsWithPriority at old line 7436.
+
+```text
+//   ordered calls and behavior-backed array/priority topology align, but the
+//   frame/prologue and several branch/register blocks remain structurally
+//   the out-of-line ManagedArray resize/contains surface, and the repeated
+//   restores the inline operator[] only for the zero-priority soldiers read.
+//   zero-priority soldier growth as the one inline allocation/copy/delete path;
+//   the other soldier reads retain the six out-of-line resize call sites.
+//   matching the original inline positive block and late zero block.
+//   busy-array register reuse; no byte-stride cursor was retained yet.
+//   byte-stride cursor, matching the original EBP offset and zero-arm
+//   allocation-size topology.
+//   test the original EBX=this, EDI=result, EBP=offset callee-save coloring.
+//   original compare operand spellings for bounds/duplicate scans.
+//   element access; removed the byte-stride cursor and excess owner alias.
+//   frame stayed 0x10 and the first structural hunk remained unchanged.
+//   stayed exact, but the natural branch source moved to 808B and diff 719.
+//   frame stayed 0xC, calls stayed aligned, and size moved to 688B with diff
+//   compiler layout moved one resize call before the positive arm.
+//   76.10%, but the label-crossing source was not a clean original model.
+//   647, exact calls and frame. The remaining structural gap is register
+//   coloring, block placement, and the original shared append tail order.
+// - The old countedSoldier label was outside the valid-object block.  The
+//   original null object and null UnitAI paths skip the result increment, so
+//   the label now stays inside that block.
+// - A shared negative/positive append tail restored the original 726-byte
+// - Delaying the soldiers alias until after the outer count guard, then
+//   assigning the working count before the soldier value, restored the exact
+//   prologue and 248-instruction size.  The best current result is 353 strict
+//   differing bytes, 93.55% shape similarity, and 78.63% exact-block coverage.
+// - Direct working-area expressions, a branch pointer alias, an inline add
+//   helper, alternate loop forms, ABI declaration changes, and local-order
+// MANAGEDARRAY AUDIT: resize guards, inline growth, copies, publication,
+// contains bounds, append count, and field offsets match the executable. No
+// shared template change is required.
+// pointer before the working-area count. The rebuild reads the count first.
+// Soldier element and working-array reads therefore have different mutation
+// and fault order.
+```
+<!-- end-recovered:32ea1d99cd3ba0ba5909 -->
+
+<!-- recovered:eaa7d5f9852f5a28c805 -->
+### `target-session` `build/target_sessions/004F7870_numberWarshipsWithPriority.json:1-36`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=1297; shape=67.36596736596736: Baseline current clean scratch source: verify size, frame, call set, and first mismatch before source changes.
+probe 2 liveness; result=MISMATCH; diff=1283; shape=66.51270207852194: Hypothesis 1: mirror the decompiler's two temporary this-pointer assignments in the soldier tasked scan; test whether VC5 reproduces the original ebp alias/register topology.
+probe 4 liveness; result=MISMATCH; diff=1297; shape=67.36596736596736: Hypothesis 2: move the this-pointer alias declaration to the decompiler variable order before array pointers; test declaration-order pressure on the prologue and locals. [same emitted code as probe 1]
+probe 6 liveness; result=MISMATCH; diff=1297; shape=67.36596736596736: Hypothesis 3: initialize the this alias before loop counters and reset through that alias; test source initialization order against the target's early local_4 home. [same emitted code as probe 4]
+probe 8 liveness; result=MISMATCH; diff=1297; shape=67.36596736596736: Hypothesis 4: use the explicit local_4 alias for every receiver and array access; test whether canonical source aliasing preserves the target's this-pointer stack home. [same emitted code as probe 6]
+probe 10 abi; result=MISMATCH; diff=1332; shape=65.67505720823799: Hypothesis 5: model the period inline ManagedArray operator[] for the first warboat object lookup, while retaining the observed explicit growth guard; test whether inline indexer context changes register and line topology.
+probe 12 abi; result=MISMATCH; diff=1292; shape=67.36596736596736: Hypothesis 6: replace the first explicit warboat growth guard with the inline operator[] growth path; test whether the target's first resize call is sourced from operator[] rather than duplicated source code.
+probe 14 liveness; result=MISMATCH; diff=1297; shape=67.36596736596736: Hypothesis 7: mark the reassigned warships array pointer register-qualified, a period-plausible source input; test whether VC5 selects the target ESI/EDI array-pointer colors. [same emitted code as probe 8]
+probe 16 liveness; result=MISMATCH; diff=1275; shape=62.639821029082775: Hypothesis 8: introduce the neighboring exact function's natural workingArea reference alias and use it through both loops; test whether this restores the target's array receiver colors and local home.
+probe 18 liveness; result=MISMATCH; diff=1297; shape=67.36596736596736: Hypothesis 9: move the byte-stride local declaration ahead of result/index locals; test declaration-order effects on the target stack-home permutation. [same emitted code as probe 14]
+probe 20 context; result=MISMATCH; diff=1297; shape=67.36596736596736: Hypothesis 11: restore the neighboring exact same-TU <stdlib.h> header context without changing behavior; test the VC5 front-end basin.
+probe 22 abi; result=MISMATCH; diff=1297; shape=67.36596736596736: Hypothesis 12: model a polymorphic TribeTacticalAIModule surface while preserving the proven +0xF0 md offset; test class virtual context as a codegen input. [same emitted code as probe 18]
+probe 24 liveness; result=MISMATCH; diff=1297; shape=67.36596736596736: Hypothesis 13: use prefix increment for accepted-result array counts; test whether VC5 emits the target's direct memory INC and shared append tail. [same emitted code as probe 22]
+probe 26 liveness; result=MISMATCH; diff=1297; shape=67.36596736596736: Hypothesis 14: remove the unneeded ai temporary and use natural chained UnitAI calls; test whether this changes the callee-saved register permutation without changing the ordered call set. [same emitted code as probe 24]
+probe 28 abi; result=MISMATCH; diff=1297; shape=67.36596736596736: Hypothesis 15: restore polymorphic period surfaces for UnitAI, master objects, and static objects while preserving all proven field offsets; test class ABI context. [same emitted code as probe 26]
+probe 30 liveness; result=MISMATCH; diff=1297; shape=67.36596736596736: Hypothesis 16: scope each result-array pointer to its append arm instead of a function-scope declaration; test branch-local lifetime pressure against the target receiver coloring. [same emitted code as probe 28]
+probe 32 liveness; result=MISMATCH; diff=1297; shape=67.36596736596736: Hypothesis 17: remove the unused decompiler count local; test whether its declaration context affects VC5 register allocation. [same emitted code as probe 30]
+probe 34 control-flow; result=MISMATCH; diff=1295; shape=68.53146853146853: Hypothesis 18: reverse all bounds to the target-observed index-left compare form (index > max-1, scan >= max); test direct compare operand order and branch encoding.
+probe 35 control-flow; result=MISMATCH; diff=1295; shape=70.16317016317016: Hypothesis 19: reverse priority comparison operands to match target CMP result-versus-parameter forms (value >= priority, value <= priority, value > priority).
+probe 36 control-flow; result=MISMATCH; diff=1307; shape=72.16981132075472: Hypothesis 20: express tasked duplicate scans as combined count-and-capacity for loops; target emits initial count test then in-loop capacity compare, unlike the current hoisted-capacity do loops.
+probe 38 control-flow; result=MISMATCH; diff=1295; shape=70.16317016317016: Revalidation after restoring the pinned H18 source: reapply target-observed priority compare operand order; confirm the best clean source before unresolved finish. [same emitted code as probe 35]
+probe 44 abi; result=MISMATCH; diff=1332; shape=70.16317016317016: Hypothesis 1: restore canonical polymorphic period surfaces for RGE_Player, AI modules, static/master/unit objects, and template ManagedArray<int>; test whether ABI context recovers target EBP/EBX topology and original decorated array calls.
+probe 46 control-flow; result=MISMATCH; diff=1331; shape=71.36150234741784: Hypothesis 2: express both unitsTaskedThisUpdate duplicate scans as natural top-tested while loops with the count as the loop condition and capacity as an in-loop break; test target's initial count test plus per-iteration capacity test without changing call surface.
+probe 48 control-flow; result=MISMATCH; diff=1286; shape=39.523809523809526: Hypothesis 3: change only the first warboat tasked-list scan to a top-tested while form; isolate whether the target's per-iteration capacity guard is recoverable without the second-loop topology or call-site merge.
+probe 51 control-flow; result=MISMATCH; diff=1331; shape=71.36150234741784: Hypothesis 4: combine the while-loop tasked-scan topology with branch-local result-array pointers; test whether local ownership prevents VC5 tail merging and restores all three warboat contains sites. [same emitted code as probe 46]
+probe 53 control-flow; result=MISMATCH; diff=1329; shape=72.30046948356808: Hypothesis 5: model the two tasked-list scans as an inline array contains method with count-top and capacity-in-loop logic, while keeping workingArea.contains as the observed out-of-line call; test whether target's inlined scan topology and 47-call surface arise naturally.
+probe 56 liveness; result=MISMATCH; diff=1295; shape=70.16317016317016: Hypothesis 6: scope separate warboat and soldier ManagedArray pointer aliases to their loop blocks, matching the source-level ownership while allowing VC5 to reuse distinct register lifetimes; test target ESI/EDI receiver topology. [same emitted code as probe 50]
+probe 58 abi; result=MISMATCH; diff=1295; shape=70.16317016317016: Hypothesis 7: isolate the ManagedArray<int> template spelling from class-layout changes; test whether canonical decorated array methods and template context change the target receiver/register topology.
+probe 60 abi; result=MISMATCH; diff=1295; shape=70.16317016317016: Hypothesis 8: add only the target class's reviewed polymorphic base slot while preserving all proven field offsets and other local ABI surfaces; test whether the real owner vptr is the controlling register basin. [same emitted code as probe 56]
+probe 62 liveness; result=MISMATCH; diff=1295; shape=70.16317016317016: Hypothesis 9: mark the shared outer index as register-qualified, testing a period-plausible source hint against the target's EBX/ESI index colors and stack-home reuse. [same emitted code as probe 60]
+probe 64 liveness; result=MISMATCH; diff=1273; shape=59.73154362416108: Hypothesis 10: restore the natural workingArea reference alias across both loops with the current binary-observed compare operand order; test whether the alias drives the target's EBP/EBX receiver topology or tail sharing.
+probe 66 liveness; result=MISMATCH; diff=1295; shape=70.16317016317016: Hypothesis 11: add a natural soldiers ManagedArray reference that owns the second loop, testing a distinct long-lived array alias against the target's EBP/EBX register permutation. [same emitted code as probe 62]
+probe 68 liveness; result=MISMATCH; diff=1307; shape=69.85981308411215: Hypothesis 12: add a natural warBoats ManagedArray reference for the first loop, testing whether this long-lived array owner selects the target EBP/EBX register basin.
+probe 70 control-flow; result=MISMATCH; diff=1419; shape=71.93763919821826: Hypothesis 13: retain the while-loop tasked-scan topology but route the greater-priority warboat append through the existing count local; test whether a real append-index lifetime prevents VC5 from merging distinct target contains/resize sites.
+probe 72 abi; result=MISMATCH; diff=1295; shape=70.16317016317016: Hypothesis 14: restore the canonical RGE_Static_Object interior layout with vptr-sized gap, id at +4, and master_obj at +8; test whether the untouched id member changes VC5 type context without changing proven offsets. [same emitted code as probe 66]
+probe 74 context; result=MISMATCH; diff=1295; shape=70.16317016317016: Hypothesis 15: restore the exact PDB donor's file-scope taitacmd.cpp string context used by neighboring reconstructed functions; test whether old VC5 translation-unit state changes this function's register and branch basin. [same emitted code as probe 72]
+```
+<!-- end-recovered:eaa7d5f9852f5a28c805 -->
+
+<!-- recovered:9172bbcf443c49508192 -->
+### `3789ccb1ae1e` `src/scratch/004F7870_numberWarshipsWithPriority.cpp:1-73`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 004F7870 TribeTacticalAIModule::numberWarshipsWithPriority
+// taitacmd.cpp: 6953-7056
+// Attempt log:
+// - Prior source factored the repeated ManagedArray growth, duplicate scan,
+//   and priority branches into helpers (752B); the packet instead shows two
+//   long, source-level near-duplicate loops and the real resize/contains ABI.
+// - Baseline candidate restores named warBoats/soldiers/workingArea/
+//   unitsTaskedThisUpdate ownership, the binary's three priority modes, and
+//   direct world/object/UnitAI calls.  Keep this file in scratch until the
+//   repeated-loop register and stack-home topology is audited.
+// - Duplicating the three warboat priority append arms recovered their six
+//   missing resize/contains sites; restoring the negative soldier arm and
+//   sharing its binary-proven workingArea tail recovered the full 47-call
+//   multiset.  The best clean reconstruction is still 1425 bytes versus
+//   1300, with a 0x14 versus 0x10 frame and first-register topology drift.
+// - Separate Ghidra-backed soldier scan variables did not change emitted
+//   code.  Left unresolved: source/context needed to keep this in ebp/ebx
+//   topology and remove the remaining structural tail drift.
+// - Reversed the soldier append forms to match the binary call order: the
+//   equality arm scans workingArea, while the greater-priority arm uses
+//   contains.  This restored the ordered 47-call surface.
+// - Using local_8 as the proven byte offset in the warboat tasked-unit test
+//   reduced the frame from 0x14 to 0x10.  The remaining prologue still uses
+//   esi for this instead of the original ebp and keeps a 120-byte tail drift.
+// - A direct workingArea.numberValue store in the greater arm preserves all
+//   47 calls.  A separate pointer alias and declaration reorder had no effect.
+// - Reordered each dispatch as negative, greater, equal to match the target's
+//   jge/jle block layout.  This reduced the size gap to 24 bytes and raised
+//   shape similarity, but the compiler merged three warboat append calls.
+// - Keeping the binary-backed byte-offset load only in the negative warboat
+//   arm restores all 47 calls and gives the best clean structural result:
+//   1383 bytes, 67.37% shape, and 23.02% exact-block coverage.  Applying the
+//   offset spelling to all arms merges the same calls and loses three calls.
+// - Nested nonnegative dispatch and entry initialization reorder were codegen
+//   duplicates.  Remaining structural gap is target ebp/ebx allocation and
+//   an 83-byte tail.
+// - Probe 18: reversed array-capacity tests to `index > maximum - 1` and
+//   `index >= maximum`.  This matches the original CMP operand order, raises
+//   shape similarity to 68.53%, and raises exact-block coverage to 31.41%.
+// - Probe 19: reversed priority tests to compare the returned value with the
+//   parameter.  This matches the original CMP operand order, raises shape to
+//   70.16%, and raises exact-block coverage to 37.17%.
+// - Probe 20: combined tasked-list count and capacity for loops improved
+//   shape and resynchronization, but lost two required calls and the 0x10
+//   frame.  Restore the pinned probe-19 source.
+// - Final unresolved checkpoint: 1383 bytes versus 1300, 0x10 frame, 47/47
+//   ordered calls, 70.16% shape, 37.17% exact-block coverage, 1295 strict
+//   differing bytes.  The remaining lead is the target EBP/EBX register and
+//   stack-home topology, then the 83-byte structural tail.
+// MANAGEDARRAY AUDIT: resize, contains, capacity guards, duplicate scans,
+// append publication, count increments, and field offsets use the expected
+// ABI on both warboat and soldier paths. No shared template change is needed.
+// BLOCKER: The rebuild remains 83 bytes too large, with four extra conditionals
+// and two missing jumps. This is broad branch topology, not localized drift.
+//
+// Current worker probes (sa-c48f2f74-r1):
+// - Canonical polymorphic AI/object/master declarations, template
+//   ManagedArray<int>, the target-class vptr, and the RGE object id field did
+//   not improve the clean 1383-byte basin. The template and object-id forms
+//   were codegen duplicates; the combined polymorphic form was worse.
+// - Top-tested while scans for both tasked-list loops removed the four extra
+//   invariant capacity tests and reached 61/61 conditionals, but VC5 merged
+//   two required contains/resize call sites and produced 45 calls. Inline
+//   contains and branch-local result pointers did not prevent that merge.
+// - Separate array scopes, register-qualified local_c, soldiers/warBoats
+//   references, and donor file-string context were duplicates or worse.
+// - A workingArea reference moved this to EBX and a 0x14 frame. A count-based
+//   greater-arm append restored 47 calls but grew the body to 1463 bytes.
+//   Restore the pinned probe-19 source after each test.
+// - Final claim validation: pinned source remains 1383/1300 bytes, 0x10
+//   frame, 47/47 ordered calls, 70.16% shape, 37.17% exact-block coverage,
+//   and 1295 strict differing bytes. No tested source/context axis recovered
+//   the target EBP/EBX topology or broad tail CFG.
+```
+<!-- end-recovered:9172bbcf443c49508192 -->

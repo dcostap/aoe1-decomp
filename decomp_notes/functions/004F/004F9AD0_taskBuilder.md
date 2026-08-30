@@ -1,0 +1,90 @@
+# Function notes: 004F9AD0 `taskBuilder`
+
+## Recovered attempt history
+
+<!-- recovered:b6c092368931a09e9c30 -->
+### `d050eea3c` `src/taitacmd.cpp:9964-9968`
+
+Mapping: `strong`. next mapped function definition is taskBuilder at old line 10026.
+
+```text
+// Attempt log:
+// - Baseline used waypoint and count temporaries plus a hand-shaped array
+// [non-comment lines omitted during migration]
+// - Probe 1: use the incoming waypoint/count parameters directly in the
+```
+<!-- end-recovered:b6c092368931a09e9c30 -->
+
+<!-- recovered:e427135996c49b9d7ff4 -->
+### `d050eea3c` `src/taitacmd.cpp:10026-10042`
+
+Mapping: `strong`. comment lies after mapped function taskBuilder at old line 10026.
+
+```text
+// 3: tried /GX and /O2 no /Oy: still 784B; /O1 shrinks to 706B; /Od reaches 801B but broad mismatch from offset 0 (wrong debug/EBP codegen), rolled back.
+// 4: natural array-removal/tasked-update loops retained; behavior/call set plausible but exact source/register scheduling unresolved.
+// [non-comment lines omitted during migration]
+//    as shown by the original +0xC parameter-home destructor call.
+// [non-comment lines omitted during migration]
+// 9-10: typed PlacementState and used the donor's reference ABI for the direct
+// [non-comment lines omitted during migration]
+// 11: replaced manual deleting-vtable calls with natural delete ConstructionItem;
+// [non-comment lines omitted during migration]
+// Final: exact default-flags match; source retains named object/module ownership,
+```
+<!-- end-recovered:e427135996c49b9d7ff4 -->
+
+<!-- recovered:8a865a52d36f9f7a2be0 -->
+### `6a2aef2e2` `src/taitacmd.cpp:8627-8632`
+
+Mapping: `strong`. next mapped function definition is taskBuilder at old line 8677.
+
+```text
+//
+//   scan; it was 285 bytes and first diverged while loading the waypoint
+//   parameter.
+//   natural do/decrement loop, then mirror the exact same-TU ManagedArray
+//   scan/growth source and typed mission virtual surface.  Pending checker
+//   result.
+```
+<!-- end-recovered:8a865a52d36f9f7a2be0 -->
+
+<!-- recovered:70f85c9a504905d1c46f -->
+### `6a2aef2e2` `src/taitacmd.cpp:8679-8691`
+
+Mapping: `strong`. comment lies after mapped function taskBuilder at old line 8677.
+
+```text
+// 2: fixed vtable padding for RGE_Static_Object task slot +0x198 and AiPlayer builderTask +0xFC; /O2 /Oy remains 784B vs original 801B, extraction stops.
+// 5: restored the binary-proven PlacementState anchor at +0xE4C and the
+//    three-int XYZPoint task ABI; the previously dead z conversion is an
+//    observed fifth __ftol call and the task record reserves 0x0c bytes.
+// 6: restored md->player->world ownership (+0xF0/+0x3C) and the canonical
+//    TribeConstructionAIModule placement offset (+0x6C4).
+// 7: corrected task-failure cleanup to destroy the ConstructionItem argument,
+// 8: mirrored the same-TU indexed task scan and un-nested bounded growth copy;
+//    these recover the target count/register topology and exact CFG.
+//    placeStructure relocation without changing emitted code.
+//     default VC5 /O2 /Oy now matches 801/801 bytes exactly.
+// FLAGS: config/flags/004F9AD0_taskBuilder.rsp (/nologo /c /O2 /Oy)
+// natural same-TU ManagedArray-style loops, typed XYZPoint/PlacementState ABIs,
+```
+<!-- end-recovered:70f85c9a504905d1c46f -->
+
+<!-- recovered:842ff1d1dd8928414549 -->
+### `a31dfd78d9df` `src/scratch/004F9AD0_taskBuilder.cpp:1-9`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004F9AD0 TribeTacticalAIModule::taskBuilder
+// PDB source: taitacmd.cpp lines 8257-8344
+// attempt log:
+// 1: natural decompiler-shaped source with local class stubs.
+// 2: fixed vtable padding for RGE_Static_Object task slot +0x198 and AiPlayer builderTask +0xFC; /O2 /Oy remains 784B vs original 801B, extraction stops.
+// 3: tried /GX and /O2 no /Oy: still 784B; /O1 shrinks to 706B; /Od reaches 801B but broad mismatch from offset 0 (wrong debug/EBP codegen), rolled back.
+// 4: natural array-removal/tasked-update loops retained; behavior/call set plausible but exact source/register scheduling unresolved.
+// FLAGS: config/flags/004F9AD0_taskBuilder.rsp (/nologo /c /O2 /Oy)
+// left in scratch: needs real taitacmd.cpp class/context or focused source-shape variants to recover missing optimized bytes.
+```
+<!-- end-recovered:842ff1d1dd8928414549 -->

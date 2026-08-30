@@ -1,0 +1,105 @@
+# Function notes: 00414800 `selectNewPlayPhase`
+
+Module notes: `decomp_notes/aiuaimod_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:c304c8d62c8168ab0d0b -->
+### `target-session` `build/target_sessions/00414800_selectNewPlayPhase.json:1-53`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=1186; shape=47.24220623501199: Baseline current typed common-tail reconstruction before new hypotheses.
+probe 2 control-flow; result=MISMATCH; diff=1086; shape=51.55875299760192: Removed common sendOrder guard, added branch-local assignments and explicit next-member skip to model original switch fall-through and late skip edges.
+probe 3 control-flow; result=MISMATCH; diff=1228; shape=74.10071942446044: Duplicated typed order calls per switch arm so VC5 can tail-merge the indirect call while keeping immediate arm setup and no sendOrder locals.
+probe 4 liveness; result=MISMATCH; diff=1228; shape=74.10071942446044: Retained per-arm direct calls but named each returned unitAI before order, testing whether VC5 tail-merges the receiver and common virtual call.
+probe 5 liveness; result=MISMATCH; diff=1244; shape=76.01918465227818: Hoisted the natural phase counter declaration before early guards to test whether its zero value recovers the original EBP zero register and frame.
+probe 6 control-flow; result=MISMATCH; diff=1230; shape=73.14148681055156: Mixed direct order arms with one explicit common label for case 4, testing whether its order call joins original common-tail lowering without changing other arm call counts.
+probe 7 layout; result=MISMATCH; diff=1230; shape=73.14148681055156: Modeled contiguous originalPointValue as a typed three-int aggregate, matching decompiler ownership and the original +198/+19c/+1a0 loads.
+probe 8 behavior; result=MISMATCH; diff=1230; shape=73.38129496402878: Corrected case-5 grouping predicate from typeValue (+5) to binary-observed groupValue (+4), matching original mov byte [cursor+4] before lookup.
+probe 9 liveness; result=MISMATCH; diff=1232; shape=75.53444180522565: Materialized case-1, case-4, and case-8 coordinates before unitAI calls, matching original pre-call integer stores and FILD stack-home use.
+probe 10 liveness; result=MISMATCH; diff=1232; shape=75.77197149643706: Split coordinate declarations from assignments and preserved decompiler-observed x,z,y assignment order to test VC5 load scheduling.
+probe 11 liveness; result=MISMATCH; diff=1232; shape=75.77197149643706: Reordered split coordinate assignments to x,y,z as a distinct VC5 scheduling hypothesis.
+probe 12 abi; result=MISMATCH; diff=1232; shape=75.77197149643706: Restored the repository-proven full UnitAIModule virtual surface after order, testing whether canonical vtable context changes target register and tail lowering.
+probe 13 layout; result=MISMATCH; diff=1228; shape=76.73860911270984: Tested a natural by-value AIPlayPoint local for case 4 to recover the original aggregate member-copy schedule.
+probe 14 liveness; result=MISMATCH; diff=1228; shape=76.73860911270984: Hoisted the member-loop index and member pointer to function scope, matching decompiler local ownership and testing register/frame lifetimes. [same emitted code as probe 13]
+probe 15 liveness; result=MISMATCH; diff=1228; shape=76.73860911270984: Hoisted play, phaseObject, target, and phase declarations to function scope, matching decompiler local ownership and testing long-lived register colors. [same emitted code as probe 14]
+probe 16 liveness; result=MISMATCH; diff=1228; shape=76.73860911270984: Hoisted the typed point aggregate to function scope, testing the decompiler's function-level point lifetime and frame pressure.
+probe 17 behavior; result=MISMATCH; diff=1186; shape=47.24220623501199: Baseline-source case-5 field correction: groupValue at +4 is the binary-observed predicate, not typeValue at +5.
+probe 18 liveness; result=MISMATCH; diff=1186; shape=47.24220623501199: Used one early zero-valued phase local for typed null guards, testing the original EBP-zero prologue and cmp-against-zero lowering.
+probe 19 liveness; result=MISMATCH; diff=1188; shape=47.721822541966425: Reused incoming param_1 as the case-5 found-id result, matching original direct parameter-home write and avoiding an extra result local.
+probe 20 control-flow; result=MISMATCH; diff=1188; shape=48.201438848920866: Changed case-5 grouping scan from for to a natural do-while, matching original body-first cursor loop and post-increment compare.
+probe 23 liveness; result=MISMATCH; diff=1188; shape=48.201438848920866: Hypothesis: register-qualified outer phase counter should preserve the original EBP phase register and move this to ESI. Test prologue, frame, and CFG. [same emitted code as probe 22]
+probe 24 control-flow; result=MISMATCH; diff=1084; shape=51.55875299760192: Hypothesis: use uninitialized per-arm order locals with explicit skip labels and one fall-through common order call. Original has no default stores before its jump table and all successful arms converge at 00414CCEh.
+probe 25 liveness; result=MISMATCH; diff=1077; shape=51.55875299760192: Hypothesis: reverse case-2 target field evaluation to owner id before target id. Original loads target owner/id in that order while keeping target in EBX across the switch.
+probe 26 liveness; result=MISMATCH; diff=981; shape=51.3189448441247: Hypothesis: mirror original nested member/unitAI/group/currentAction guards and reuse incoming param_1 as the command group byte before group(). PDB/assembly show parameter-home writes in this band.
+probe 27 liveness; result=MISMATCH; diff=951; shape=51.798561151079134: Hypothesis: materialize currentPhaseValue as a narrow local before gatherTolerance. Original case-1 has a byte stack store/reload at +0x24 rather than a direct zero-extended member argument.
+probe 28 control-flow; result=MISMATCH; diff=1233; shape=74.58033573141486: Hypothesis: express each recognized command as a direct memberAI->order call with skip labels. VC5 can tail-merge identical calls, while direct arm expressions preserve original target/member lifetimes and branch setup.
+probe 29 control-flow; result=MISMATCH; diff=1239; shape=73.621103117506: Hypothesis: retain direct order expressions for arms but route case 4 through one explicit issue_order common tail. Original has one shared virtual order tail, and the prior all-direct source emitted two virtual calls.
+probe 31 liveness; result=MISMATCH; diff=951; shape=51.798561151079134: Hypothesis: hoist the command pointer declaration to function scope. Original reuses one callee-saved register for phaseObject/command across the outer loop; declaration scope may select that topology. [same emitted code as probe 30]
+probe 32 control-flow; result=MISMATCH; diff=1067; shape=52.038369304556355: Hypothesis: the original loop accesses this->objectValue->groupMembers directly and declares member only from lookup. Its end block reloads objectValue but does not assign a member reset; removing the prior member alias should recover ESI=this and EBP=member/array topology.
+probe 33 liveness; result=MISMATCH; diff=1076; shape=52.99760191846523: Hypothesis: use one self pointer alias for all member accesses and calls. This tests whether original ESI=this reflects a source-level stable self object rather than direct this expression.
+probe 34 control-flow; result=MISMATCH; diff=951; shape=52.278177458033575: Hypothesis: spell the case-5 bounded scan as while (offset < 0x190), not do-while. The original emits a post-body jl backedge with fall-through exit; VC5 may recognize this loop topology after constant pretest elimination.
+probe 35 liveness; result=MISMATCH; diff=944; shape=51.798561151079134: Hypothesis: bind target owner id and target id to separate case-2 locals before the common order call. Original keeps target in EBX while loading owner/id through distinct registers; shared param_1 lowering currently destroys that pointer.
+probe 36 layout; result=MISMATCH; diff=1085; shape=52.038369304556355: Hypothesis: model the command group filter as a narrow unsigned-char local, not an int parameter reuse. Original emits a byte stack write before group() and a byte compare after it.
+probe 37 liveness; result=MISMATCH; diff=943; shape=52.278177458033575: Hypothesis: preload case-3 savedAttackerValue before member->unitAI(), matching original status load/store before the unitAI call and reload at the common tail. This should preserve target register lifetime.
+probe 38 liveness; result=MISMATCH; diff=955; shape=53.71702637889688: Hypothesis: preload case-4 original-point fields before member->unitAI(), matching the original stack copies and only then the unitAI call.
+probe 39 liveness; result=MISMATCH; diff=952; shape=55.15587529976019: Hypothesis: keep the separate case-2 id locals but call member->unitAI() before loading target owner/id. This follows the original case-2 call order while retaining distinct homes.
+probe 41 behavior; result=MISMATCH; diff=950; shape=54.91606714628298: Corrected case-5 hit-point read to found->hitPoints with master maximumHitPoints, as original reads object +0x30 then master +0x26. This tests the corrected canonical ABI from updateGroup.
+probe 42 liveness; result=MISMATCH; diff=980; shape=54.67625899280576: Moved phase, target, command, member, order arguments, and scan temporaries to function scope, following the PDB-listed original locals and testing whether authentic VC5 liveness recreates the 0x44 frame.
+probe 43 liveness; result=MISMATCH; diff=950; shape=54.91606714628298: Tested register-qualified phase counter. The original initializes phase in EBP at entry and carries it through guards; this tests whether period VC5 honors that persistent counter without synthetic homes. [same emitted code as probe 41]
+probe 44 liveness; result=MISMATCH; diff=1184; shape=55.63549160671463: Materialized command coordinates and original-point coordinates before member unitAI calls, matching original stack reads and fault order. This tests the PDB local-value flow behind case 1, 4, and 8.
+probe 46 liveness; result=MISMATCH; diff=1186; shape=55.39568345323741: Introduced three shared command/point integer temporaries, as supported by the decompiler's reused iVar10/iVar11/iVar4 values. Assignments precede the unitAI calls to preserve original field-read fault order.
+probe 47 behavior; result=MISMATCH; diff=950; shape=54.91606714628298: Materialized member id before the group-byte assignment, matching original load order: member id, command group byte, status receiver, group call. This preserves the proven fault and call setup order.
+probe 48 layout; result=MISMATCH; diff=1085; shape=55.39568345323741: Replaced parameter-home group-byte reuse with a narrow unsigned-char local. Original writes one byte to the phase filter home and rereads that byte after group(); this tests the canonical byte ABI and fault order.
+probe 49 behavior; result=MISMATCH; diff=938; shape=56.115107913669064: Named playNumber before loading the object/world/playbook receiver. Original reads status +0x190 before objectValue; this preserves the initial fault order and corrected ABI.
+probe 50 control-flow; result=MISMATCH; diff=1045; shape=55.15587529976019: Used direct this->objectValue group-list indexing and a lookup-local member, matching original reloads of objectValue before each array operation and avoiding an unsupported persistent object alias.
+probe 51 behavior; result=MISMATCH; diff=946; shape=56.354916067146284: Materialized original point X/Y/Z before member unitAI in case 4, preserving the executable's point-field reads before the call and retaining those values for the order.
+probe 52 behavior; result=MISMATCH; diff=947; shape=56.354916067146284: Reordered case-4 point conversion after member unitAI while keeping point field loads before the call. This matches original memory and x87 fault order.
+probe 53 behavior; result=MISMATCH; diff=934; shape=52.038369304556355: Materialized case-8 command coordinates before member unitAI and converted them after the call, preserving original command-field fault order.
+probe 54 behavior; result=MISMATCH; diff=1179; shape=54.91606714628298: Materialized case-1 command coordinates before member unitAI and converted them after the call, matching the original post-gather field reads and fault order.
+probe 56 liveness; result=MISMATCH; diff=934; shape=52.038369304556355: Hoisted the phase-object declaration to function scope, matching the PDB-listed phase local lifetime while preserving the same phase call and loop. [same emitted code as probe 55]
+probe 57 liveness; result=MISMATCH; diff=934; shape=52.038369304556355: Hoisted the target declaration to function scope, matching the PDB-listed target local lifetime while preserving lookup order and later coordinate reads. [same emitted code as probe 56]
+probe 58 liveness; result=MISMATCH; diff=934; shape=52.038369304556355: Hoisted play declaration to the function scope listed by PDB, preserving playNumber evaluation and play lookup receiver order. [same emitted code as probe 57]
+probe 59 behavior; result=MISMATCH; diff=1179; shape=54.91606714628298: Used function-scope command coordinate temporaries for case 1, matching the original field reads before unitAI while testing whether PDB-style shared locals avoid the scoped declaration shift.
+```
+<!-- end-recovered:c304c8d62c8168ab0d0b -->
+
+<!-- recovered:9c304864dd5ab16e2d6c -->
+### `761e25b75976` `src/scratch/00414800_selectNewPlayPhase.cpp:1-29`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 00414800 UnitAIModule::selectNewPlayPhase (1298B)
+// aiuaimod.cpp
+// Period-plausible reconstruction of play-phase command selection.
+//
+// Attempt log:
+// - Replaced the raw-pointer placeholder with typed playbook, phase-command,
+//   group-member, and UnitAIModule ownership.
+// - The source keeps all 25 ordered calls and the original direct-call ABI set.
+// - Binary tests covered branch shape, loop form, local scope, point layout,
+//   coordinate load order, vtable context, and case-5 result lifetime.
+// - The case-5 scan uses groupValue at grouping offset +4. The original loads
+//   this byte before lookup. It reuses param_1 for the found object id.
+// - The case-5 scan uses a body-first do-while. The original increments its
+//   8-byte cursor after the body and compares it with 0x190.
+// - The best natural source is 1248 rebuilt bytes versus 1298 original bytes.
+//   It has a 0x38 frame versus 0x44 and 1188 strict differing bytes.
+// - The earlier clean common-tail source had 1186 differing bytes, but kept
+//   an extra found-id local and a for loop. Those forms conflict with assembly.
+// - Twenty recorded probes did not reach an exact result. The main remaining
+//   gap is the original local frame and register schedule.
+//
+// Current status: structural reconstruction remains incomplete. Keep this
+// readable common-tail source as the best behavior-backed candidate.
+// MANAGEDARRAY AUDIT: group-member capacity checks, resize calls, value reads,
+// and field offsets follow the expected template behavior. No shared template
+// change is required.
+// BLOCKER: The rebuild is 50 bytes short, with a 0x38 frame versus 0x44 and 29
+// fewer instructions. Broad CFG and local-lifetime recovery remains incomplete
+// despite all 25 calls aligning.
+```
+<!-- end-recovered:9c304864dd5ab16e2d6c -->

@@ -105,7 +105,7 @@ def classify(
         if registered_here:
             category = "registered_owner_match"
             action = "none"
-            reason = "The registered owner remains exact in its natural translation unit."
+            reason = "The matching function remains exact in its natural translation unit."
         elif registered_anywhere:
             category = "registered_elsewhere_match"
             action = "none"
@@ -117,12 +117,12 @@ def classify(
         else:
             category = "grouped_match_not_registered"
             action = "review_for_promotion"
-            reason = "The included normal function is exact but is not a registered owner."
+            reason = "A non-matching function now produces an exact result."
     elif result == "MISMATCH":
         if registered_here:
             category = "registered_owner_regression"
             action = "repair_before_integration"
-            reason = "A registered exact owner no longer matches."
+            reason = "A matching function no longer produces an exact result."
         elif registered_anywhere:
             category = "registered_elsewhere_context_mismatch"
             action = "review_context_ownership"
@@ -151,7 +151,7 @@ def classify(
         if registered_here:
             category = "registered_owner_regression"
             action = "repair_before_integration"
-            reason = "A registered owner no longer emits its required symbol."
+            reason = "A matching function no longer emits its required symbol."
         elif registered_anywhere:
             category = "registered_elsewhere_context_missing"
             action = "review_context_ownership"
@@ -233,7 +233,7 @@ def compile_and_compare_group(
         }
 
     owners = group.get("owners")
-    symbols = group.get("symbols")
+    symbols = group.get("functions") or group.get("symbols")
     assert isinstance(owners, dict)
     configured_symbols = symbols if isinstance(symbols, dict) else {}
     rows: list[dict[str, object]] = []
@@ -354,8 +354,8 @@ def text_report(report: dict[str, object]) -> str:
         f"Groups requested: {summary['group_count']}",
         f"Groups compiled: {summary['compiled_group_count']}",
         f"Included normal functions: {summary['function_count']}",
-        f"Rows with a registered owner: {summary['registered_owner_count']}",
-        f"Unregistered included functions: {summary['unregistered_count']}",
+        f"Exact validation targets: {summary['registered_owner_count']}",
+        f"Other configured functions: {summary['unregistered_count']}",
         "",
         "Categories:",
     ]
@@ -413,8 +413,8 @@ def console_summary(report: dict[str, object]) -> str:
         f"Groups requested: {summary['group_count']}",
         f"Groups compiled: {summary['compiled_group_count']}",
         f"Included normal functions: {summary['function_count']}",
-        f"Rows with a registered owner: {summary['registered_owner_count']}",
-        f"Unregistered included functions: {summary['unregistered_count']}",
+        f"Exact validation targets: {summary['registered_owner_count']}",
+        f"Other configured functions: {summary['unregistered_count']}",
         "Categories:",
     ]
     category_counts = summary["category_counts"]
@@ -466,7 +466,7 @@ def build_queue(
                 "source_path": canonical["source_path"],
                 "canonical_group": canonical_group,
                 "selection_reason": (
-                    "registered owner context"
+                    "matching function context"
                     if registered_contexts
                     else "largest exact context"
                     if exact_contexts
@@ -650,7 +650,11 @@ def main() -> int:
     by_source: dict[Path, list[dict[str, str]]] = {}
     for status in statuses:
         source_path = str(status.get("source_path") or "")
-        if status.get("corpus_bucket") != "normal" or not source_path:
+        if (
+            status.get("corpus_bucket") != "normal"
+            or status.get("source_bucket") == "observed"
+            or not source_path
+        ):
             continue
         by_source.setdefault(repo_path(source_path).resolve(), []).append(status)
 

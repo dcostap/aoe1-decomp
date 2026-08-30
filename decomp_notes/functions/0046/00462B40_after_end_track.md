@@ -1,0 +1,13 @@
+# Function notes: 00462B40 `after_end_track`
+
+## Earlier notes from `decomp_notes/functions/0046/00462B40_after_end_track.md`
+
+This section is historical. Use the status query for current state.
+
+## 00462B40 after_end_track
+
+The original source is `music.cpp`, lines 1069 through 1123.
+
+The function continues looped playback after a track ends. Types 2 and 3 advance within a range. They restart a file or range when looping is enabled.
+
+Separate type 2 and type 3 bodies preserve the observed duplicated behavior. The module keeps this direct form.

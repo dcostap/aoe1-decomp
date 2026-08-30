@@ -1,0 +1,74 @@
+# Function notes: 0046B5E0 `obstruction`
+
+Module notes: `decomp_notes/pathsys_module.md`.
+
+## Translation-unit context
+
+- PDB module: `C:\msdev\work\age1_x1\pathsys.cpp`.
+- Natural owner: `PathingSystem::obstruction(int, int)` in `src/pathsys.cpp`.
+- PDB lines: 632-635. Body range: `0046B5E0-0046B613` (52 bytes).
+- Calling convention: `__thiscall`; the owner symbol and `ret 8` boundary match.
+- The current source uses the reviewed two-dimensional
+  `obstructionValue[x][y >> 2]` layout.
+- The pathsys grouped audit has 15 registered exact neighbors.
+
+## Current mismatch
+
+- Baseline and final natural checks are `MISMATCH`: rebuilt code is 54 bytes
+  versus 52 original bytes, with 39 differing bytes (72.2222%).
+- Shape similarity is 65.00% (19 original instructions, 20 rebuilt).
+  The original saves `esi, edi`; the rebuilt source saves `ebx, esi`.
+- The owner symbol matches. Both sides have no calls and one return.
+  One relocation is safely masked, but the rebuilt body escapes the boundary by
+  two bytes. First strict mismatch: `0046B5E1`.
+- Final grouped audit: `pathsys` compiled 20 included functions. It reported
+  15 registered owner matches. This target remained `MISMATCH`, diff 39,
+  boundary problem 1. Other registered exact neighbors remained matched.
+
+## Recovered attempt history
+
+- Baseline source was the direct natural two-dimensional expression. It emitted
+  the 54-byte result above.
+- Tested named `row`/`column` locals, a typed row pointer, and a first-row
+  arithmetic form. Each emitted the same 54-byte code.
+- Tested a local flat pointer and an explicit byte flattening cast only as
+  diagnostics. They also emitted the same code and were not retained.
+- After the lease pause, focused rebuilds tested shift-before-value locals,
+  division by four, no result cast, named row/shift-index locals, and unsigned
+  integer temporaries. The natural shift/no-cast forms stayed at 54 bytes;
+  division worsened to 60 bytes. The final source was restored to the simpler
+  direct expression.
+- An older standalone flat-array source has a generated revalidation record
+  with 52-byte `MATCH`, but that source uses a flat obstruction view. It is not
+  a valid natural source for the current reviewed two-dimensional layout.
+
+## Rejected approaches
+
+- Flat pointers, casts, and raw stride indexing violate the source-recovery
+  policy. They also gave no code-generation gain in this translation unit.
+- Extra locals did not alter VC5 register allocation, instruction order, size,
+  or boundary. Do not retain them for metrics.
+
+## Open questions
+
+- What period source declaration or compiler context caused the original to
+  load `y` first, save `esi, edi`, and keep the byte result in `eax`?
+- Can that context be proved without a flat alias, raw offset, header change,
+  or compiler-steering source form?
+
+## Next useful approaches
+
+- Search period source or exact natural donors for a typed declaration that
+  preserves the two-dimensional layout and original evaluation order.
+- If no such evidence exists, review this as a localized structural drift
+  proposal only after proving the same access, shift table, return value, and
+  fault behavior.
+
+## Worker updates
+
+- `wave20-pathsys`: No natural source improvement survived six meaningful
+  variant probes. Final source is the direct two-dimensional expression.
+  Focused final check is `MISMATCH`, diff 39, 72.2222%. Grouped audit kept 15
+  exact registered neighbors. Four post-pause focused rebuilds added no
+  improvement. The active lease is paused after this report; no status or
+  registration change was made.

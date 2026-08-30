@@ -1,0 +1,17 @@
+# Function notes: 004A6050 `~TRIBE_Screen_Wait`
+
+Module notes: `decomp_notes/scr_mps_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:03c0962e82610e1dd901 -->
+### `bf81de068f12` `src/scratch/004A6050_TRIBE_Screen_Wait.cpp:1-3`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 004A6050 ~TRIBE_Screen_Wait
+// 143 bytes, __thiscall, TRIBE_Screen_Wait destructor
+// probe 2: /GX EH, delete panels, loop through settingText array
+```
+<!-- end-recovered:03c0962e82610e1dd901 -->

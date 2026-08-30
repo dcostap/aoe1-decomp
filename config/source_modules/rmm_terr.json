@@ -11,15 +11,15 @@
     "004889F0": { "status": "matching" },
     "00488B90": {
       "status": "scratch",
-      "note_path": "recovery_notes/rmm_terr_module.md"
+      "note_path": "decomp_notes/rmm_terr_module.md"
     },
     "00488D50": { "status": "matching" },
     "00488E40": { "status": "matching" },
-    "00488E60": { "status": "accepted_drift", "note_path": "recovery_notes/rmm_terr_module.md" },
+    "00488E60": { "status": "accepted_drift", "note_path": "decomp_notes/rmm_terr_module.md" },
     "00488EA0": { "status": "matching" },
     "00488F90": {
       "status": "scratch",
-      "note_path": "recovery_notes/rmm_terr_module.md"
+      "note_path": "decomp_notes/rmm_terr_module.md"
     },
     "00489030": { "status": "matching" }
   }

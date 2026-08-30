@@ -1,11 +1,13 @@
 # Logic review: 0044EC00 `InfluenceMap::coverageIncluding`
 
+Current source: `src/infmap.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after six independent claims,
 26 meaningful probes, 45 recorded checks, focused variant labs, exact donor
 searches, and one final same-TU donor-order test. The candidate remains
-`src/scratch/0044EC00_coverageIncluding.cpp`.
+`src/infmap.cpp`.
 
 Current validated checker state:
 
@@ -149,6 +151,6 @@ bytes before and after both rounds.
 
 ## Final decision
 
-Promote to `src/verified_logic`. Two fresh blind cohorts converged with no open
+Promote to `verified_logic` status. Two fresh blind cohorts converged with no open
 behavior uncertainty. The four byte drift is one independent instruction-order
 swap with no memory or control-flow effect.

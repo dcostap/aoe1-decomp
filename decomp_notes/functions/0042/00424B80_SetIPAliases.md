@@ -1,0 +1,20 @@
+# Function notes: 00424B80 `SetIPAliases`
+
+## Earlier notes from `decomp_notes/functions/0042/00424B80_SetIPAliases.md`
+
+This section is historical. Use the status query for current state.
+
+## 00424B80 `RGE_Communications_Addresses::SetIPAliases`
+
+- PDB source: `com_addr.cpp`, lines 100 to 135.
+- Original size: 152 bytes.
+
+### Recovery record
+
+1. A character array and library calls produced the wrong offsets.
+2. A pointer hostname kept the same 144-byte result.
+3. Manual copy loops removed the required repeated string instructions.
+4. A register hint changed saved registers but kept the wrong copy loop.
+5. The `strcpy` form produced the exact body.
+
+The merged source keeps the direct socket call, alias copy, and counter order.

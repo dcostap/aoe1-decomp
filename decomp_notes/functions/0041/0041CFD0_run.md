@@ -1,0 +1,7 @@
+# Function notes: 0041CFD0 `run`
+
+Module notes: `decomp_notes/basegame_module.md`.
+
+## Recovered attempt history
+
+No function-specific cleanup block was mapped automatically. Review the earlier note and Git history before work.

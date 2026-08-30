@@ -1,0 +1,76 @@
+# Function notes: 004608D0 `maximumSpeed`
+
+Module notes: `decomp_notes/move_obj_module.md`.
+
+## Translation-unit context
+
+- PDB module: `move_obj.cpp`; source owner: `src/move_obj.cpp`.
+- Owner: `RGE_Moving_Object::maximumSpeed`, `__thiscall`, `004608D0-004608FD`.
+- The original reads `this + 0x10` as `RGE_Sprite*` and tests its
+  `base_speed` at `+0x64`. It reads `this + 0x08` as the moving master and
+  returns its `speed` at `+0xB8`.
+- `DAT_00570B98` is the original zero-valued double used for the positive
+  `base_speed` test.
+
+## Current mismatch
+
+- No current mismatch. The natural source now emits 46/46 bytes with a closed
+  `004608D0-004608FD` boundary, no calls, and one safely masked data
+  relocation.
+
+## Recovered attempt history
+
+<!-- recovered:42acbe0572e2042dfdb1 -->
+### `d050eea3c` `src/move_obj.cpp:2451-2451`
+
+Mapping: `strong`. next mapped function definition is maximumSpeed at old line 2519.
+
+```text
+// Current source is the paused natural line scan; calls and frame are aligned.
+```
+<!-- end-recovered:42acbe0572e2042dfdb1 -->
+
+### `wave21-move-obj` `src/move_obj.cpp:2075-2081`
+
+Mapping: `strong`; exact direct check after the source recovery.
+
+```text
+if (this->sprite != 0 && this->sprite->base_speed > 0.0) {
+    return ((RGE_Master_Moving_Object*)this->master_obj)->speed *
+           this->sprite->base_speed;
+}
+return ((RGE_Master_Moving_Object*)this->master_obj)->speed;
+```
+
+The fresh direct check reports `MATCH`, 46/46 bytes, 15/15 instructions,
+100.00% shape, and 0.0000% positional difference.
+
+## Rejected approaches
+
+- The prior `master_obj->radius_x`/`radius_y` form was based on a wrong field
+  interpretation. It emitted 34 bytes and read master radii, not sprite speed
+  and moving-master speed.
+- A local moving-master alias loaded `this->master_obj` before the sprite. It
+  emitted 43 bytes and changed the original load order. Direct casts at each
+  return preserve the original order and match exactly.
+
+## Open questions
+
+- None for this function. The worker grouped audit confirms the exact owner
+  and all registered exact neighbors.
+
+## Next useful approaches
+
+- Review the worker-specific `move_obj` grouped audit and confirm registered
+  exact neighbors remain unchanged. The coordinator should then save the
+  exact checkpoint and review promotion.
+
+## Worker updates
+
+- `wave21-move-obj`: Recovered sprite `base_speed` scaling over the moving
+  master's `speed`. Direct validation and the worker grouped audit both report
+  `MATCH`, `0.0000%`, correct owner, closed boundaries, and safe relocations.
+  The required target-session notebook update and pause were blocked by the
+  shared `sessions.lock`; no retry was made.
+- Coordinator mini-integration: the fresh `move_obj` audit confirms the exact
+  grouped owner. The function is registered as matching.

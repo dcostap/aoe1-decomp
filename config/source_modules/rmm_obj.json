@@ -10,28 +10,28 @@
     "00485DC0": { "status": "matching" },
     "00485E50": {
       "status": "scratch",
-      "note_path": "recovery_notes/rmm_obj_module.md"
+      "note_path": "decomp_notes/rmm_obj_module.md"
     },
     "00485F10": {
       "status": "scratch",
-      "note_path": "recovery_notes/rmm_obj_module.md"
+      "note_path": "decomp_notes/rmm_obj_module.md"
     },
     "00486110": { "status": "matching" },
     "00486180": { "status": "matching" },
     "00486210": { "status": "matching" },
     "004862B0": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/rmm_obj_module.md"
+      "note_path": "decomp_notes/rmm_obj_module.md"
     },
     "004864F0": {
       "status": "scratch",
-      "note_path": "recovery_notes/rmm_obj_module.md"
+      "note_path": "decomp_notes/rmm_obj_module.md"
     },
     "00486700": { "status": "matching" },
     "00486A60": { "status": "matching" },
     "00486C40": {
       "status": "scratch",
-      "note_path": "recovery_notes/rmm_obj_module.md"
+      "note_path": "decomp_notes/rmm_obj_module.md"
     }
   }
 }

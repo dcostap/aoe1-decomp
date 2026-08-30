@@ -9,26 +9,26 @@
     "004CC760": { "status": "matching" },
     "004CC7A0": {
       "status": "matching",
-      "note_path": "recovery_notes/004CC7A0_save.md"
+      "note_path": "decomp_notes/functions/004C/004CC7A0_save.md"
     },
     "004CC840": {
       "status": "matching",
-      "note_path": "recovery_notes/004CC840_load.md"
+      "note_path": "decomp_notes/functions/004C/004CC840_load.md"
     },
     "004CC8E0": {
       "status": "matching",
-      "note_path": "recovery_notes/004CC8E0_add_history_entry.md"
+      "note_path": "decomp_notes/functions/004C/004CC8E0_add_history_entry.md"
     },
     "004CC950": { "status": "matching" },
     "004CC960": { "status": "matching" },
     "004CC990": {
       "status": "matching",
-      "note_path": "recovery_notes/t_histry_module.md"
+      "note_path": "decomp_notes/t_histry_module.md"
     },
     "004CC9E0": { "status": "matching" },
     "004CC9F0": {
       "status": "matching",
-      "note_path": "recovery_notes/004CC9F0_get_history_event.md"
+      "note_path": "decomp_notes/functions/004C/004CC9F0_get_history_event.md"
     },
     "004CCA30": { "status": "matching" }
   }

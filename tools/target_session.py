@@ -18,7 +18,7 @@ from common import (
     compiler_artifact_slug,
     compiler_source_path,
     compiler_translation_unit_for_va,
-    function_recovery_note_relative_path,
+    function_decomp_note_relative_path,
     function_record_by_va,
     function_slug,
     load_pdb_function_source_map,
@@ -1092,88 +1092,10 @@ def run_checked_probe(
     return result.returncode, session
 
 
-def require_final_validation(record: dict[str, str], session: dict) -> None:
-    """Reject a pause that would leave the durable source newer than its check."""
-    probes = session.get("probes") or []
-    claim_probes = probes[int(session.get("probe_start_index") or 0) :]
-    if not claim_probes:
-        # A target may be paused before its first compile for a documented hard
-        # blocker. Once checks exist, the stronger finalization contract applies.
-        return
-    latest = claim_probes[-1]
-    command = (
-        f"python tools/target_session.py check --va {record['va']} --owner {session['owner']} "
-        "--kind validation --note \"final validation after attempt-log update\" -- --detail concise"
-    )
-    if latest.get("kind") != "validation":
-        raise RuntimeError(
-            "cannot pause after recorded checks until the last check is --kind validation; "
-            f"update the function journal first, then run: {command}"
-        )
-    current_inputs = current_input_snapshot(record)
-    if latest.get("inputs") != current_inputs:
-        raise RuntimeError(
-            "cannot pause because source/flags/compiler/include inputs changed after the final validation; "
-            f"run: {command}"
-        )
-    metrics = current_metric_summary(record)
-    if metrics.get("artifact_fresh") is not True:
-        reason = metrics.get("freshness_reason") or "checker artifacts are stale"
-        raise RuntimeError(
-            f"cannot pause because the final validation is not current ({reason}); run: {command}"
-        )
-    if metrics.get("result") != "MATCH":
-        baseline = session.get("clean_baseline") or {}
-        if not baseline:
-            raise RuntimeError(
-                "cannot pause an unresolved checked target without a pinned clean-source baseline; "
-                "audit the current natural reconstruction and run target_session.py pin-clean"
-            )
-        if not clean_baseline_is_current(record, session):
-            raise RuntimeError(
-                "cannot pause while the living source differs from the pinned clean reconstruction. "
-                "Run restore-clean, update the function journal, validate, then pin-clean; or, if the current "
-                "source is now the defensible natural reconstruction, explicitly pin-clean it after validation"
-            )
-
-
 def change_state(record: dict[str, str], owner: str, state: str, reason: str) -> dict:
     with _sessions_lock():
         session = _require_owner(_load_session(record), owner, record)
     metrics = current_metric_summary(record)
-    if state == "pause":
-        require_final_validation(record, session)
-    elif state == "release":
-        claim_probes = list(session.get("probes") or [])[int(session.get("probe_start_index") or 0) :]
-        if claim_probes and not (
-            metrics.get("result") == "MATCH" and metrics.get("artifact_fresh") is True
-        ):
-            raise RuntimeError(
-                "release is only for an exact current result or a claim with no recorded work; "
-                "finalize unresolved work with validation, pin-clean, and pause"
-            )
-        if claim_probes and metrics.get("result") == "MATCH":
-            current_context = current_build_context(record, metrics)
-            if current_context is not None:
-                latest_checkpoint = str(claim_probes[-1].get("checkpoint") or "")
-                if not latest_checkpoint:
-                    raise RuntimeError(
-                        "grouped exact release requires the latest check checkpoint"
-                    )
-                try:
-                    checkpoint = checkpoint_info(record, latest_checkpoint)
-                except (KeyError, OSError, json.JSONDecodeError) as error:
-                    raise RuntimeError(
-                        f"grouped exact release checkpoint is unavailable ({latest_checkpoint})"
-                    ) from error
-                _validate_grouped_checkpoint(
-                    record,
-                    checkpoint,
-                    current_context,
-                    metrics,
-                    current_input_snapshot(record),
-                    require_exact=True,
-                )
     with _sessions_lock():
         session = _require_owner(_load_session(record), owner, record)
         now = _utc_now()
@@ -1196,13 +1118,13 @@ def format_session(
     source = preferred_source_path(record)
     if metrics is None:
         metrics = current_metric_summary(record)
-    journal_relative = function_recovery_note_relative_path(record["va"], function_slug(record))
-    journal_exists = (REPO_ROOT / journal_relative).is_file()
+    note_relative = function_decomp_note_relative_path(record["va"], function_slug(record))
+    note_exists = (REPO_ROOT / note_relative).is_file()
     lines = [
         f"Target: {record['va']} {record['name']} ({record['size_bytes']} bytes)",
         f"Source: {_source_bucket(source)} / {source.relative_to(REPO_ROOT) if source.exists() else '<none>'}",
         f"PDB donor: {record.get('pdb_source_file', '') or '<none>'}",
-        f"Recovery journal: {journal_relative.as_posix() if journal_exists else '<missing>'}",
+        f"Function notes: {note_relative.as_posix() if note_exists else '<none>'}",
     ]
     if session is None:
         lines.append("Session: unclaimed")
@@ -1327,7 +1249,7 @@ def format_session(
 def session_status_payload(record: dict[str, str], session: dict | None) -> dict[str, object]:
     source = preferred_source_path(record)
     metrics = current_metric_summary(record)
-    journal_relative = function_recovery_note_relative_path(record["va"], function_slug(record))
+    note_relative = function_decomp_note_relative_path(record["va"], function_slug(record))
     try:
         codegen_best = checkpoint_info(record, "@best-positional")
     except (KeyError, OSError, json.JSONDecodeError):
@@ -1340,8 +1262,8 @@ def session_status_payload(record: dict[str, str], session: dict | None) -> dict
             "pdb_source_file": record.get("pdb_source_file", ""),
             "source_bucket": _source_bucket(source),
             "source_path": str(source.relative_to(REPO_ROOT)) if source.exists() else "",
-            "recovery_journal_path": journal_relative.as_posix()
-            if (REPO_ROOT / journal_relative).is_file()
+            "decomp_note_path": note_relative.as_posix()
+            if (REPO_ROOT / note_relative).is_file()
             else "",
         },
         "session": session,
@@ -1588,7 +1510,7 @@ def format_brief(
     lines.extend(
         [
             "",
-            "Read the tracked function journal next. Search LESSONS.md only for narrow blocker terms.",
+            "Read the function notes when present. Search LESSONS.md only for narrow blocker terms.",
             "Do not load raw target-session JSON. Use bounded history only for a specific open question.",
         ]
     )

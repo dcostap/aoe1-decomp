@@ -1,10 +1,12 @@
 # Logic review: 004BE850 `TSpan_List_Manager::ScrollSpansVertically`
 
+Current source: `src/spanlist.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after six claims and 28 meaningful probes.
 
-The candidate is `src/scratch/004BE850_ScrollSpansVertically.cpp`.
+The candidate is `src/spanlist.cpp`.
 
 Current validation:
 
@@ -46,4 +48,4 @@ and out-of-bounds negative-scroll behavior. The source and executable touch the
 same addresses in the same order. The four changed bytes only reverse two
 loop-invariant bound reloads.
 
-Promote to `src/verified_logic`.
+Promote to `verified_logic` status.

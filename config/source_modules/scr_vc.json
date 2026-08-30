@@ -5,11 +5,11 @@
   "source": "src/scr_vc.cpp",
   "header": "include/scr_vc.h",
   "functions": {
-    "004B8100": { "status": "matching", "note_path": "recovery_notes/scr_vc_module.md" },
-    "004B87D0": { "status": "matching", "note_path": "recovery_notes/scr_vc_module.md" },
-    "004B88B0": { "status": "matching", "note_path": "recovery_notes/scr_vc_module.md" },
-    "004B88E0": { "status": "matching", "note_path": "recovery_notes/scr_vc_module.md" },
-    "004B89A0": { "status": "matching", "note_path": "recovery_notes/scr_vc_module.md" },
-    "004B8AE0": { "status": "matching", "note_path": "recovery_notes/scr_vc_module.md" }
+    "004B8100": { "status": "matching", "note_path": "decomp_notes/scr_vc_module.md" },
+    "004B87D0": { "status": "matching", "note_path": "decomp_notes/scr_vc_module.md" },
+    "004B88B0": { "status": "matching", "note_path": "decomp_notes/scr_vc_module.md" },
+    "004B88E0": { "status": "matching", "note_path": "decomp_notes/scr_vc_module.md" },
+    "004B89A0": { "status": "matching", "note_path": "decomp_notes/scr_vc_module.md" },
+    "004B8AE0": { "status": "matching", "note_path": "decomp_notes/scr_vc_module.md" }
   }
 }

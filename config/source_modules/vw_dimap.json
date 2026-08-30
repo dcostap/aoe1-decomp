@@ -7,20 +7,20 @@
   "functions": {
     "0053D360": {
       "status": "matching",
-      "note_path": "recovery_notes/0053D360_vw_dimap.md"
+      "note_path": "decomp_notes/functions/0053/0053D360_RGE_Diamond_Map_View.md"
     },
     "0053D3B0": { "status": "matching" },
     "0053D400": { "status": "matching" },
     "0053D480": { "status": "matching" },
     "0053D500": {
       "status": "matching",
-      "note_path": "recovery_notes/0053D500_mouse_left_up_action.md"
+      "note_path": "decomp_notes/functions/0053/0053D500_mouse_left_up_action.md"
     },
     "0053D620": { "status": "matching" },
     "0053D6A0": { "status": "matching" },
     "0053D720": {
       "status": "matching",
-      "note_path": "recovery_notes/0053D720_mouse_right_up_action.md"
+      "note_path": "decomp_notes/functions/0053/0053D720_mouse_right_up_action.md"
     },
     "0053D890": { "status": "matching" },
     "0053D8E0": { "status": "matching" },

@@ -1,0 +1,32 @@
+# Function notes: 0042FCA0 `area_attack`
+
+Module notes: `decomp_notes/com_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:ccac66efd87d532c1cca -->
+### `7f88a6b3f46f` `src/scratch/0042FCA0_area_attack.cpp:1-18`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0042FCA0 RGE_Combat_Object::area_attack
+// Attempt log:
+// try 1: behavioral reconstruction from packet/Ghidra: scan map cells around attack point, filter combat targets, distance vs footprint/radius, random chance, apply damage.
+// try 2: split x/y bound conversions into named statements to mirror four __ftol calls; no size/register recovery.
+// try 3: /Od probe exact-size but completely wrong debug-basin codegen; removed.
+// try 4: /GX probe no useful change; removed.
+// try 5: modeled map rows/cells using row pointer + 0x10 + x*0x18 cell offset; high-level struct still not same addressing family.
+// try 6: modeled skip-self, min blast level, skip-object tests in original order.
+// try 7: modeled footprint-distance clamp separately for x/y before radius-square test.
+// try 8: modeled random chance via debug_rand path/line and integer division; compiler uses simpler division than original magic multiply sequence.
+// try 9: modeled virtual calc_attack_modifier and target damage call with observed parameter order.
+// try 10: leaving in scratch: clean source is 672B vs 683B and mismatch is broad loop/FPU/register/addressing drift, not accepted_drift-safe.
+// try 11: reversed the radius predicate to r2 > dx * dx + dy * dy; this reduced the mismatch to 5 bytes with full block and call alignment.
+// session baseline: frame/CFG and all seven call sites were close, but the local class surface put calc_attack_modifier at vslot +0x70 and damage at +0x6C.
+// session probes: restored Action_Object vtable ownership, player->world->map, master area/weapon fields, 0x18-byte map cells, typed footprint radii, and the fourth/fifth pointer affiliation proved by stack homes.
+// best emitted candidate: 683B/frame 0x24, all seven calls aligned, 96.38% instruction-shape similarity and 207 positional diff bytes after restoring the real source-path literal; remaining drift is localized to the radius-square FPU expression and initial register order.
+// paused after bounded matching: readable typed source retained; no frame padding, fake volatility, raw cursor arithmetic, or register-forcing aliases.
+// session probe: initialized player before master; emitted code stayed identical, so restored the prior order.
+```
+<!-- end-recovered:ccac66efd87d532c1cca -->

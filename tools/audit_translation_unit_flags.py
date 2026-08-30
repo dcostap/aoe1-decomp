@@ -333,10 +333,10 @@ def _current_group_maps(groups: Iterable[dict[str, object]]) -> tuple[dict[str, 
     duplicates: dict[str, list[str]] = defaultdict(list)
     for group in groups:
         name = str(group.get("name") or "").strip()
-        owners = group.get("owners") or {}
-        if not isinstance(owners, dict):
+        functions = group.get("functions") or group.get("owners") or {}
+        if not isinstance(functions, dict):
             continue
-        for raw_va in owners:
+        for raw_va in functions:
             va = str(raw_va).upper()
             if va in by_va:
                 duplicates[va].extend([str(by_va[va].get("name") or ""), name])

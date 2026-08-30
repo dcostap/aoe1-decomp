@@ -1,0 +1,114 @@
+# Function notes: 0053E340 `mouse_left_down_action`
+
+Module notes: `decomp_notes/vw_main_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:60dd65303f5795425339 -->
+### `target-session` `build/target_sessions/0053E340_mouse_left_down_action.json:1-51`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=17; shape=98.06629834254143: Baseline current scratch reconstruction before new edits; establish exact size, frame, calls, and mismatch.
+probe 2 layout; result=MISMATCH; diff=21; shape=97.51381215469613: Hypothesis 1: swap max_y/max_x aggregate field order while keeping output expressions; tests whether original post-get_frame homes follow natural field order.
+probe 4 layout; result=MISMATCH; diff=27; shape=96.40883977900552: Hypothesis 2: replace the typed frame aggregate with four separate short locals in observed output order; tests whether original homes came from independent locals.
+probe 6 layout; result=MISMATCH; diff=21; shape=97.51381215469613: Hypothesis 3: keep the winning four-short aggregate order but pass its members in declaration order; tests whether source get_frame argument order controls original stack homes.
+probe 8 liveness; result=MISMATCH; diff=17; shape=98.06629834254143: Hypothesis 4: declare point before the four-short frame aggregate; tests declaration order as the source of the anomalous get_frame output homes. [same emitted code as probe 1]
+probe 9 context; result=MISMATCH; diff=17; shape=98.06629834254143: Hypothesis 5: restore the period Windows SDK header and native POINT type, with SDK import declarations; tests whether API declarations and header context control the residual frame and import basin.
+probe 11 abi; result=MISMATCH; diff=822; shape=98.34254143646409: Hypothesis 6: use a one-function absolute global macro for rge_base_game; tests whether the residual global load is a relocation identity problem rather than source ownership.
+probe 13 abi; result=MISMATCH; diff=17; shape=98.06629834254143: Hypothesis 7: give rge_base_game C linkage in this source only; tests whether symbol linkage changes the one unmasked global relocation without changing the natural pointer expression.
+probe 15 liveness; result=MISMATCH; diff=17; shape=98.06629834254143: Hypothesis 8: declare pick_info before frame and point; tests whether original stack-home assignment follows source declaration order across the three address-taken locals. [same emitted code as probe 8]
+probe 17 layout; result=MISMATCH; diff=17; shape=98.06629834254143: Hypothesis 9: use the opposite aggregate order and opposite output argument order together; tests the remaining frame-layout combination rather than changing only one axis.
+probe 19 liveness; result=MISMATCH; diff=350; shape=95.3168044077135: Hypothesis 10: cache pick_info.object in one typed local for case 15; tests whether original reload topology requires one persistent object owner or direct member expressions.
+probe 21 liveness; result=MISMATCH; diff=260; shape=96.69421487603306: Hypothesis 11: cache only pick_info.object->master_obj for the group guard and master-id store; tests whether the original pre-global object reload is a master-pointer liveness effect.
+probe 23 liveness; result=MISMATCH; diff=17; shape=98.06629834254143: Hypothesis 12: create the master pointer only after set_player and use it for the master-id store; tests a narrow lifetime change at the one register-conflict block.
+probe 25 liveness; result=MISMATCH; diff=17; shape=98.06629834254143: Hypothesis 13: bind pick_info.object through a scoped reference only at the master-id assignment; tests whether alias semantics preserve the original object register while deferring master load. [same emitted code as probe 15]
+probe 27 liveness; result=MISMATCH; diff=4; shape=98.34254143646409: Hypothesis 14: cache rge_base_game only for the master-id assignment; tests whether the original global load before the draw-level test is a receiver-lifetime effect.
+probe 28 layout; result=MISMATCH; diff=8; shape=97.79005524861878: Hypothesis 15: retain the successful base_game receiver alias but swap max_x/max_y field order; tests whether the improved register basin also selects original frame output homes.
+probe 29 layout; result=MISMATCH; diff=8; shape=97.79005524861878: Hypothesis 16: retain the successful base_game receiver alias with the same aggregate order, but reverse both get_frame output expressions; tests the second paired frame-order combination.
+probe 31 liveness; result=MISMATCH; diff=4; shape=98.34254143646409: Hypothesis 17: combine the successful base_game alias with point-before-frame declaration order; tests whether the improved receiver basin exposes a stack-home change hidden in the baseline. [same emitted code as probe 27]
+probe 32 abi; result=MISMATCH; diff=4; shape=98.34254143646409: Hypothesis 18: declare get_frame output arguments as pointers and pass explicit addresses; tests whether reference alias rules select the original post-call stack homes.
+probe 34 layout; result=MISMATCH; diff=4; shape=98.34254143646409: Hypothesis 19: model the four get_frame outputs as a short array with indexed references; tests whether the original homes require array addressing rather than a named aggregate. [same emitted code as probe 31]
+probe 36 layout; result=MISMATCH; diff=66; shape=82.59668508287292: Hypothesis 20 continuation: use volatile short references in get_frame to compile the volatile frame test; tests whether forced memory reads recover the original output homes.
+probe 38 abi; result=MISMATCH; diff=8; shape=97.23756906077348: Hypothesis 21: keep the successful base_game alias and permute get_frame outputs to min_x,max_x,min_y,max_y; tests whether the target frame homes reflect a different helper ABI ordering.
+probe 40 layout; result=MISMATCH; diff=14; shape=96.68508287292818: Hypothesis 23: use donor-proven independent short locals with the successful base_game alias; tests whether the aggregate itself hides the original frame home allocation.
+probe 43 layout; result=MISMATCH; diff=34; shape=96.13259668508287: Hypothesis 25: use separate shorts in min_x,max_x,min_y,max_y declaration order with the successful base_game alias; tests declaration coloring as the source of the target frame homes.
+probe 45 abi; result=MISMATCH; diff=10; shape=97.23756906077348: Hypothesis 26: permute get_frame outputs to min_x,max_y,min_y,max_x with the successful base_game alias; tests another ABI argument order against the fixed original LEA sequence.
+probe 47 liveness; result=MISMATCH; diff=4; shape=98.34254143646409: Hypothesis 27: keep base_game as an uninitialized function-scope pointer and assign it only before master_obj_id; tests scope/lifetime context without moving the global load. [same emitted code as probe 34]
+probe 49 layout; result=MISMATCH; diff=14; shape=96.68508287292818: Hypothesis 28: use donor-style separate shorts in min_x,min_y,max_x,max_y order with the successful base_game alias; tests the natural declaration order matching the helper signature. [same emitted code as probe 40]
+probe 51 context; result=MISMATCH; diff=4; shape=98.34254143646409: Hypothesis 29: add the period stdlib header used by exact stat_obj donors while keeping the successful base_game alias; tests translation-unit header context for the frame-load basin.
+probe 53 liveness; result=MISMATCH; diff=24; shape=96.40883977900552: Hypothesis 30: use point-before-frame donor-style short locals before pick_info, with the successful base_game alias; tests local declaration placement and home reuse.
+probe 55 abi; result=MISMATCH; diff=347; shape=93.71584699453553: Hypothesis 31: cache rge_base_game for every case-15 call, not only master_obj_id; tests whether the original case keeps one game receiver live across get_player, set_player, and set_game_mode.
+probe 58 abi; result=MISMATCH; diff=4; shape=98.34254143646409: Hypothesis 32: bind rge_base_game as a branch-local reference instead of a pointer; tests whether receiver alias category selects the target global and register basin. [same emitted code as probe 47]
+probe 60 liveness; result=MISMATCH; diff=4; shape=98.34254143646409: Hypothesis 33: bind frame members to branch-local short references before subtracting them; tests whether explicit field aliases recover the original output-load homes.
+probe 63 liveness; result=MISMATCH; diff=4; shape=98.34254143646409: Hypothesis 1: restore the prior branch-local RGE_Base_Game pointer before master_obj_id; confirms the previously observed case-15 register basin before frame-shape tests. [same emitted code as probe 58]
+probe 64 layout; result=MISMATCH; diff=14; shape=96.68508287292818: Hypothesis 2: replace the four-short aggregate with donor-supported standalone min_x, min_y, max_y, max_x locals; tests whether aggregate identity, not field order, controls the two frame-load homes. [same emitted code as probe 49]
+probe 65 layout; result=MISMATCH; diff=4; shape=98.34254143646409: Hypothesis 3: declare point before the typed frame aggregate; tests whether declaration order shifts the original frame-load homes while retaining the best case-15 alias. [same emitted code as probe 63]
+probe 66 layout; result=MISMATCH; diff=4; shape=98.34254143646409: Hypothesis 4: represent the four short outputs as one indexed four-element array with the same proven output mapping; tests array addressing versus named aggregate members. [same emitted code as probe 65]
+probe 67 liveness; result=MISMATCH; diff=4; shape=98.34254143646409: Hypothesis 5: bind all four frame members to branch-local short references before get_frame, then use those references; tests whether address-taken alias lifetime changes the post-call load homes. [same emitted code as probe 60]
+probe 68 behavior; result=MATCH; diff=0; shape=99.4475138121547: Hypothesis 6: use pick_info.scr_x/scr_y minus frame.min_x/min_y for the point deltas; original assembly reads the pick record's two short fields at +0x28/+0x2A, proving this shipped source behavior rather than frame.max_x/max_y.
+probe 70 liveness; result=MATCH; diff=0; shape=99.4475138121547: Walkback 1: remove branch-local frame references while retaining the proven behavior expression and case-15 base_game alias; tests whether the references were incidental.
+probe 71 layout; result=MATCH; diff=0; shape=99.4475138121547: Walkback 2: restore the clean frame-then-point declaration order; tests whether the exact transition needed that incidental reorder. [same emitted code as probe 70]
+probe 72 liveness; result=MISMATCH; diff=13; shape=99.17127071823204: Walkback 3: remove the branch-local base_game alias while retaining the binary-proven pick_info screen-coordinate bug; isolates whether the alias is required for exactness.
+probe 73 layout; result=MATCH; diff=0; shape=99.4475138121547: Reduction test: replace the local aggregate with donor-supported standalone short locals while retaining the proven pick_info screen-coordinate bug and base_game alias; tests whether the aggregate is truly required.
+probe 76 context; result=MISMATCH; diff=26; shape=98.06629834254143: Reduction test: keep only a forward declaration of the unused frame type; tests whether the exact codegen needs the full invented aggregate or only declaration context.
+probe 77 context; result=MISMATCH; diff=26; shape=98.06629834254143: Reduction test: replace the unused four-short struct with an unused four-short array typedef; tests whether aggregate storage context or only type-token context controls the exact frontier. [same emitted code as probe 76]
+probe 78 context; result=MATCH; diff=0; shape=99.4475138121547: Context hypothesis: replace the unused frame aggregate with a period Windows-like tagRECT declaration; tests whether donor-supported SDK type context recovers the exact register basin without an invented short aggregate. [same emitted code as probe 75]
+probe 79 context; result=MISMATCH; diff=26; shape=98.06629834254143: Context reduction: use the real windows.h POINT/RECT and ClientToScreen declarations instead of local Windows-like clones; tests period SDK context against the exact custom tagRECT basin.
+probe 82 abi; result=MISMATCH; diff=2; shape=98.89502762430939: Canonical surface pass 1: replace macro-generated player/view slots, generic panel methods, and the RGE_Game_World manual vtable field with named inherited virtual declarations from repository dumps and matching donors.
+probe 83 layout; result=MATCH; diff=0; shape=99.4475138121547: Canonical world layout fix: replace the manual vtable-plus-gap with named RGE_Game_World fields through players at +0x40, preserving canonical ownership and observed addressing.
+probe 84 abi; result=MISMATCH; diff=26; shape=98.06629834254143: Canonical reduction 1: retain only named RGE_View slots through start_scroll_view, which the target calls; remove unused trailing view slots to test the smallest policy-valid surface.
+probe 86 variant; result=MATCH; diff=0; shape=99.4475138121547: Grouped codegen hypothesis: name the screen x value before subtracting frame min_x to restore original load order.
+probe 87 variant; result=MATCH; diff=0; shape=99.4475138121547: Grouped codegen hypothesis: use the canonical pick-info screen aliases and union declaration to restore coordinate load order.
+```
+<!-- end-recovered:60dd65303f5795425339 -->
+
+<!-- recovered:f2d08e024b96e96f5e42 -->
+### `2ea081d63629` `src/scratch/0053E340_mouse_left_down_action.cpp:1-40`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA 0053E340 RGE_Main_View::mouse_left_down_action
+// vw_main.cpp:461-630
+//
+// Behavior-first reconstruction from the original switch and same-TU donors.
+// The render area, pick record, world/player ownership, and virtual command
+// surfaces use the period layout.  The source does not use decompiler offsets.
+//
+// Attempt log:
+// - Prior scratch source had direct helper calls and incorrect player/object
+//   fields.  It was not a canonical behavior baseline.
+// - Current baseline: restored RGE_View/TPanel render-area ownership, the
+//   master-object placement path, selected-object checks, and start-scroll
+//   command dispatch from the original ordered call list.
+// - Structural probe: kept the local-player and scenario-player placement
+//   arms separate.  This restored both alignment and command-place call sites,
+//   exact size, and call-target parity.  Broader block order still differs.
+// - Nested the paused and allowed-mode guards to restore the shared false
+//   return path used by the original.
+// - Ordered switch arms by the PDB line bands: selection, placement, scroll,
+//   drag, then the default capture path.  This restored all ordered calls.
+// - Binary stack offsets identify player+0x130 as the selected object and
+//   pick_info.object as the picked static object.  The decompiler tile label
+//   was not canonical ownership.
+// - Direct object reloads improve the case-15 and case-18 block shape.  The
+//   exact donor reference ABI for get_frame produced no useful movement.
+// - Widened master_obj_id's local to int; this restored the original size and
+//   reduced the strict diff from 755 to 585 bytes.
+// - Removed the fallback command-player alias.  Repeated named world/player
+//   access restored the original reload topology and reduced the diff to 27.
+// - A typed four-short frame aggregate, with max_y before max_x, reduced the
+//   remaining local-output drift to 17 bytes.  The candidate stays in scratch.
+// - Sustained probe pass: 32 meaningful source, ABI, layout, liveness, and
+//   context hypotheses were tested.  The clean aggregate source remains best.
+// - A branch-local RGE_Base_Game* alias reduced the strict diff from 17 to 4
+//   bytes and made all 30 relocations safe, but it did not fix the frame loads.
+//   It was diagnostic-only and is not retained in the clean source.
+// - Separate short locals, arrays, field permutations, pointer/reference
+//   get_frame forms, Windows/stdlib headers, receiver scopes, and volatile
+//   outputs were worse or codegen duplicates.  Exact donor 004C3B30 confirms
+//   the natural get_frame ABI and output order, but not this target's homes.
+```
+<!-- end-recovered:f2d08e024b96e96f5e42 -->

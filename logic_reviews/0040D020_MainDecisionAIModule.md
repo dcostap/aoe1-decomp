@@ -1,8 +1,10 @@
 # Logic review: 0040D020 `MainDecisionAIModule::~MainDecisionAIModule`
 
+Current source: `src/aimdmod.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
-Ordinary exact matching is suspended after repeated independent assignments, source/flag/EH experiments, canonical polymorphic normalization, and a final faithful full-`aimdmod.cpp` translation-unit experiment under `/O2 /Oy /GX`. The candidate remains `src/scratch/0040D020_MainDecisionAIModule.cpp`.
+Ordinary exact matching is suspended after repeated independent assignments, source/flag/EH experiments, canonical polymorphic normalization, and a final faithful full-`aimdmod.cpp` translation-unit experiment under `/O2 /Oy /GX`. The candidate remains `src/aimdmod.cpp`.
 
 Current validated checker state:
 
@@ -115,6 +117,6 @@ fault-path exclusion is used.
 ## Final decision
 
 Resolved by exact matching. The source is promoted to
-`src/matching/0040D020_MainDecisionAIModule.cpp`; the prior semantic blocker and
+`src/aimdmod.cpp`; the prior semantic blocker and
 verified-logic consideration are closed because the rebuilt object now matches
 the executable on all checked bytes, EH topology, calls, and cleanup paths.

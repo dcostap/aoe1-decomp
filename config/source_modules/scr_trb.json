@@ -5,10 +5,10 @@
   "source": "src/scr_trb.cpp",
   "header": "include/scr_trb.h",
   "functions": {
-    "004B75A0": { "status": "matching", "note_path": "recovery_notes/scr_trb_module.md" },
-    "004B7DF0": { "status": "matching", "note_path": "recovery_notes/scr_trb_module.md" },
-    "004B7EE0": { "status": "matching", "note_path": "recovery_notes/scr_trb_module.md" },
-    "004B7F70": { "status": "matching", "note_path": "recovery_notes/scr_trb_module.md" },
-    "004B8070": { "status": "matching", "note_path": "recovery_notes/scr_trb_module.md" }
+    "004B75A0": { "status": "matching", "note_path": "decomp_notes/scr_trb_module.md" },
+    "004B7DF0": { "status": "matching", "note_path": "decomp_notes/scr_trb_module.md" },
+    "004B7EE0": { "status": "matching", "note_path": "decomp_notes/scr_trb_module.md" },
+    "004B7F70": { "status": "matching", "note_path": "decomp_notes/scr_trb_module.md" },
+    "004B8070": { "status": "matching", "note_path": "decomp_notes/scr_trb_module.md" }
   }
 }

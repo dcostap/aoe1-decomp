@@ -24,7 +24,6 @@ from common import (
     load_toolchain,
     slugify_name,
     source_module_for_name,
-    validate_auxiliary_contributions,
     validate_source_modules,
     load_translation_units,
 )
@@ -33,7 +32,7 @@ from function_diagnostics import owning_function_symbol_validation
 from validate_translation_units import validate_translation_units
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 DEFAULT_JSON_PATH = BUILD_DIR / "source_module_inventory.json"
 DEFAULT_CSV_PATH = BUILD_DIR / "source_module_inventory.csv"
 
@@ -109,10 +108,7 @@ def _exact_fields(
 ) -> tuple[str, bool, str]:
     """Return status, anchor state, and the evidence source.
 
-    ``status_core`` uses the matching source bank as a compact default when a
-    diff file is absent.  That default is useful for status views, but it is
-    not an exact anchor for this evidence inventory.  Require the generated
-    diff artifact before setting ``exact_anchor``.
+    Require a generated diff artifact before setting ``exact_anchor``.
     """
 
     raw_status = str((row or {}).get("diff_result") or "").strip().upper()
@@ -343,17 +339,15 @@ def build_source_module_inventory(
     """Join the configured groups with PDB metadata and live status.
 
     The returned list keeps one entry per configured compiler-facing group.
-    Owners are sorted by their original image address, not by source-file
-    spelling or current source-bank placement.
+    Functions are sorted by their original image address.
     """
 
     configured_groups = list(load_translation_units() if groups is None else groups)
-    manifest_issues = validate_translation_units(configured_groups)
+    manifest_issues = validate_translation_units(
+        configured_groups, require_complete=True
+    )
     if manifest_issues:
         raise ValueError("; ".join(str(issue) for issue in manifest_issues))
-    auxiliary_issues = validate_auxiliary_contributions()
-    if auxiliary_issues:
-        raise ValueError("; ".join(auxiliary_issues))
     source_map = load_pdb_function_source_map()
     line_changes = load_pdb_function_line_changes()
     all_vas: set[str] = set()
@@ -386,7 +380,7 @@ def build_source_module_inventory(
             raise ValueError(f"translation-unit group {group_name!r} has no owner map")
         module_name = str(group.get("module") or "").strip()
         source_module = source_module_for_name(module_name) if module_name else None
-        registered_vas = {str(va).upper() for va in raw_owners}
+        exact_vas = {str(va).upper() for va in raw_owners}
         if source_module is not None:
             functions = source_module["functions"]
             assert isinstance(functions, dict)
@@ -446,8 +440,8 @@ def build_source_module_inventory(
                 "address_order": index,
                 "va": va,
                 "owner_path": _portable(owner_paths[va]),
-                "registered_owner": va in registered_vas,
-                "recovery_note_path": (
+                "exact_validation": va in exact_vas,
+                "decomp_note_path": (
                     str((functions.get(va) or {}).get("note_path") or "")
                     if source_module is not None
                     else ""
@@ -486,12 +480,12 @@ def build_source_module_inventory(
                 "translation_unit_source": wrapper_source,
                 "flags": raw_flags,
                 "uses_custom_flags": custom_flags,
-                "owner_count": len(owners),
-                "registered_owner_count": sum(owner["registered_owner"] for owner in owners),
+                "function_count": len(owners),
+                "exact_validation_count": sum(owner["exact_validation"] for owner in owners),
                 # Count only anchors backed by a generated diff artifact.  A
                 # matching-bank row without that artifact remains unvalidated.
-                "exact_owner_count": sum(1 for owner in owners if owner["exact_anchor"]),
-                "owners": owners,
+                "exact_result_count": sum(1 for owner in owners if owner["exact_anchor"]),
+                "functions": owners,
                 "context": context,
             }
         )
@@ -499,8 +493,8 @@ def build_source_module_inventory(
     return {
         "schema_version": SCHEMA_VERSION,
         "translation_unit_count": len(modules),
-        "owner_count": sum(module["owner_count"] for module in modules),
-        "registered_owner_count": sum(module["registered_owner_count"] for module in modules),
+        "function_count": sum(module["function_count"] for module in modules),
+        "exact_validation_count": sum(module["exact_validation_count"] for module in modules),
         "modules": modules,
     }
 
@@ -513,15 +507,15 @@ CSV_FIELDS = [
     "translation_unit_source",
     "flags",
     "uses_custom_flags",
-    "owner_count",
-    "registered_owner_count",
-    "exact_owner_count",
+    "function_count",
+    "exact_validation_count",
+    "exact_result_count",
     "address_order",
     "va",
     "owner_path",
-    "registered_owner",
-    "recovery_note_path",
-    "owner_name",
+    "exact_validation",
+    "decomp_note_path",
+    "function_name",
     "symbol_name",
     "class_owner",
     "pdb_source_file",
@@ -539,7 +533,7 @@ CSV_FIELDS = [
 
 def _csv_rows(inventory: dict[str, Any]) -> Iterable[dict[str, str]]:
     for module in inventory["modules"]:
-        for owner in module["owners"]:
+        for owner in module["functions"]:
             yield {
                 "name": str(module["name"]),
                 "module_name": str(module["module_name"]),
@@ -548,15 +542,15 @@ def _csv_rows(inventory: dict[str, Any]) -> Iterable[dict[str, str]]:
                 "translation_unit_source": str(module["translation_unit_source"]),
                 "flags": str(module["flags"]),
                 "uses_custom_flags": str(module["uses_custom_flags"]).lower(),
-                "owner_count": str(module["owner_count"]),
-                "registered_owner_count": str(module["registered_owner_count"]),
-                "exact_owner_count": str(module["exact_owner_count"]),
+                "function_count": str(module["function_count"]),
+                "exact_validation_count": str(module["exact_validation_count"]),
+                "exact_result_count": str(module["exact_result_count"]),
                 "address_order": str(owner["address_order"]),
                 "va": str(owner["va"]),
                 "owner_path": str(owner["owner_path"]),
-                "registered_owner": str(owner["registered_owner"]).lower(),
-                "recovery_note_path": str(owner["recovery_note_path"]),
-                "owner_name": str(owner["name"]),
+                "exact_validation": str(owner["exact_validation"]).lower(),
+                "decomp_note_path": str(owner["decomp_note_path"]),
+                "function_name": str(owner["name"]),
                 "symbol_name": str(owner["symbol_name"]),
                 "class_owner": str(owner["class_owner"]),
                 "pdb_source_file": str(owner["pdb_source_file"]),
@@ -612,7 +606,7 @@ def _validate_strict(inventory: dict[str, Any]) -> None:
     for module in inventory["modules"]:
         if len(module["pdb_source_files"]) != 1:
             raise ValueError(f"{module['name']}: PDB source module is missing or mixed")
-        for owner in module["owners"]:
+        for owner in module["functions"]:
             if not owner["pdb_source_file"] or owner["source_line"] is None:
                 raise ValueError(f"{module['name']} {owner['va']}: incomplete PDB source metadata")
 
@@ -627,8 +621,8 @@ def main() -> None:
     print(
         f"Wrote {output}\n"
         f"Translation units: {inventory['translation_unit_count']}\n"
-        f"Owners: {inventory['owner_count']}\n"
-        f"Registered owners: {inventory['registered_owner_count']}"
+        f"Functions: {inventory['function_count']}\n"
+        f"Exact validation targets: {inventory['exact_validation_count']}"
     )
 
 

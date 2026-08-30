@@ -13,13 +13,13 @@
     "004B44F0": { "status": "scratch" },
     "004B4720": {
       "status": "matching",
-      "note_path": "recovery_notes/004B4720_fillMissionText.md"
+      "note_path": "decomp_notes/functions/004B/004B4720_fillMissionText.md"
     },
     "004B4770": { "status": "matching" },
     "004B47D0": { "status": "matching" },
     "004B4810": {
       "status": "matching",
-      "note_path": "recovery_notes/004B4810_activatePanels.md"
+      "note_path": "decomp_notes/functions/004B/004B4810_activatePanels.md"
     }
   }
 }

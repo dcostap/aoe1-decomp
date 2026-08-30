@@ -1,0 +1,94 @@
+# Function notes: 0045C700 `~RGE_Moving_Object`
+
+Module notes: `decomp_notes/move_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:b5db4c9b92f47af617ac -->
+### `d050eea3c` `src/move_obj.cpp:74-83`
+
+Mapping: `strong`. next mapped function definition is ~RGE_Moving_Object at old line 121.
+
+```text
+// FLAGS: config/flags/0045C5C0_RGE_Moving_Object.rsp (/GX)
+// Attempt log:
+// - Baseline scaffold only called two Path constructors through a fake cdecl
+// [non-comment lines omitted during migration]
+//   position; result is an exact 308-byte MATCH with no manual vptr code.
+```
+<!-- end-recovered:b5db4c9b92f47af617ac -->
+
+<!-- recovered:580ae11b18b89abc1e40 -->
+### `6a2aef2e2` `src/move_obj.cpp:66-71`
+
+Mapping: `strong`. next mapped function definition is ~RGE_Moving_Object at old line 109.
+
+```text
+// move_obj.cpp lines 130-146
+//   helper and omitted the base ctor, EH-owned members, and setup branch.
+//   RGE_Animated_Object base construction with doSetup=0, two Path members,
+//   named moving-object fields, setGoal(0,0,0), and conditional setup.
+// - Member-initializing the range/sentinel fields (instead of assigning them
+//   in the body) naturally delayed the derived-vptr store to the original
+```
+<!-- end-recovered:580ae11b18b89abc1e40 -->
+
+<!-- recovered:e663fb610beb87756961 -->
+### `6a2aef2e2` `src/move_obj.cpp:127-157`
+
+Mapping: `strong`. comment lies after mapped function ~RGE_Moving_Object at old line 109.
+
+```text
+// move_obj.cpp lines 164-202
+//   hierarchy, Path temporary/assignment, reset sequence, base recycle call,
+//   and sprite-facet random-angle normalization shown by the packet.
+// - Scoped the temporary Path: this reproduces its assignment/destructor
+//   sequence before the movement-state reset (294 strict diff bytes).
+// - The oracle compares facet_num in memory and sign-extends it again after
+//   the guard.  A narrow member preserves those binary-observed accesses;
+//   nested positive guards retain the common set_angle tail.
+// - Inlined debug_rand into the angle expression (best 99 strict diff bytes).
+//   and the quotient sign-adjust register; the Path call identity is recorded
+//   by the target-specific original-symbol override.
+// - Removed the explicit float cast from the double angle quotient. This
+//   only three quotient sign-adjust register bytes differ.
+// - A named quotient temp was much worse (123 bytes). A named debug_rand
+//   result with the no-fxch expression reached 13 bytes but changed the
+//   original multiply setup. Restored the direct period expression.
+// - Tried the natural temporary assignment `this->pathValue = Path(10);` to
+//   test the original Path lifetime. It lost the exact block topology (407
+//   bytes); restored the scoped named Path source.
+// - Tried a natural `short facings` declaration to mirror the sprite member;
+// - Tried natural copy-initialization `Path path = Path(10)`; VC5 emitted
+//   unchanged code, so restored direct named construction.
+//   facings, register-qualified facings, reversed product operands, and an
+// - Function-scope or register-qualified random-result locals were worse
+// - Function-scope sprite declaration also emitted unchanged code. Restored
+//   the clean direct-expression source; only quotient sign-adjust coloring
+//   remains unresolved.
+//   const lifetime, explicit volatile reads, long quotient typing, and math
+//   long debug_rand return typing, and redundant cast removal. Each kept the
+// - Direct this->sprite ownership removed the pointer local and selected the
+//   original ECX sign-adjust register. The natural direct-member source was an
+```
+<!-- end-recovered:e663fb610beb87756961 -->
+
+<!-- recovered:9eaf160ebe07e499a705 -->
+### `a519105cb914` `src/matching/0045C700_RGE_Moving_Object.cpp:1-11`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0045C700 RGE_Moving_Object::~RGE_Moving_Object
+// move_obj.cpp lines 152-158
+// FLAGS: config/flags/0045C700_RGE_Moving_Object.rsp (/GX)
+//
+// Attempt log:
+// - Initial scratch destructor was empty and had the wrong class surface.
+// - Explicit manual vptr/path/base calls over-constrained the destructor and mismatched.
+// - SpruceGlow MATCH: model the real members/base and let VC5 synthesize the destructor chain under /GX. Source only
+//   deletes `userDefinedWaypoints` and clears it; compiler emits vptr restore, EH state transitions, member Path
+//   destructors, and base RGE_Static_Object destructor in the original order.
+// Result: MATCH locally with `python tools/check_function.py --va 0045C700`.
+```
+<!-- end-recovered:9eaf160ebe07e499a705 -->

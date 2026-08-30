@@ -55,13 +55,14 @@ def _source_module_config(payload: dict[str, object]):
 
 
 class PdbNoLineInfoTests(unittest.TestCase):
-    def test_tech_is_an_auxiliary_no_line_contribution(self) -> None:
-        contributions = common.load_auxiliary_contributions()
-        self.assertEqual([item["name"] for item in contributions], ["tech"])
-        tech = contributions[0]
-        self.assertEqual(tech["kind"], "no_line_compiland")
+    def test_tech_is_a_no_line_source_module(self) -> None:
+        tech = common.source_module_for_name("tech")
+        self.assertIsNotNone(tech)
+        assert tech is not None
+        self.assertTrue(tech["pdb_no_line_info"])
+        self.assertEqual(tech["source"], "src/tech.cpp")
         self.assertEqual(len(tech["functions"]), 33)
-        self.assertEqual([], common.validate_auxiliary_contributions())
+        self.assertEqual([], common.validate_source_modules())
 
     def test_common_rejects_non_boolean_no_line_flag(self) -> None:
         payload = _source_module()
@@ -174,6 +175,7 @@ class PdbNoLineInfoTests(unittest.TestCase):
             "source": "src/tech.cpp",
             "module": "tech_test",
             "flags": "config/flags/tech.rsp",
+            "functions": {VA: SYMBOL},
             "owners": {VA: "src/tech.cpp"},
             "symbols": {VA: SYMBOL},
         }
@@ -194,6 +196,7 @@ class PdbNoLineInfoTests(unittest.TestCase):
             "source": "src/tech.cpp",
             "module": "tech_test",
             "flags": "config/flags/tech.rsp",
+            "functions": {VA: SYMBOL},
             "owners": {VA: "src/tech.cpp"},
             "symbols": {VA: SYMBOL},
         }

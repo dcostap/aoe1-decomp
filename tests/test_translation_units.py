@@ -51,7 +51,7 @@ class TranslationUnitTests(unittest.TestCase):
         self.assertEqual(slugs, {"tu_zone_map"})
         self.assertIsNone(translation_unit_for_va(0x005468C0))
 
-    def test_com_obj_owners_use_natural_source_module_without_stale_group(self) -> None:
+    def test_com_obj_exact_owners_use_registered_natural_module(self) -> None:
         expected_vas = (
             0x0042FC90,
             0x00430EC0,
@@ -64,26 +64,27 @@ class TranslationUnitTests(unittest.TestCase):
 
         for va in expected_vas:
             record = function_record_by_va(va)
-            self.assertIsNone(translation_unit_for_va(va))
-            self.assertIsNone(compiler_translation_unit_for_va(va))
+            group = translation_unit_for_va(va)
+            self.assertIsNotNone(group)
+            assert group is not None
+            self.assertEqual(group["name"], "com_obj")
+            self.assertIsNotNone(compiler_translation_unit_for_va(va))
             paths.add(compiler_source_path(record))
             slugs.add(compiler_artifact_slug(record))
 
         self.assertEqual(paths, {REPO_ROOT / "src" / "com_obj.cpp"})
-        self.assertEqual(
-            slugs,
-            {
-                f"{va:08X}_{function_record_by_va(va)['name']}"
-                for va in expected_vas
-            },
-        )
+        self.assertEqual(slugs, {"tu_com_obj"})
 
     def test_point_module_maps_multiple_exact_owners_to_one_normal_source(self) -> None:
         point = next(group for group in load_translation_units() if group["name"] == "point")
         owners = point["owners"]
+        functions = point["functions"]
         assert isinstance(owners, dict)
+        assert isinstance(functions, dict)
 
         self.assertEqual(set(owners.values()), {"src/point.cpp"})
+        self.assertIn("0047E530", functions)
+        self.assertNotIn("0047E530", owners)
         self.assertEqual(
             compiler_source_path(function_record_by_va(0x0047E480)),
             REPO_ROOT / "src" / "point.cpp",
@@ -99,6 +100,16 @@ class TranslationUnitTests(unittest.TestCase):
             "tu_point",
         )
         self.assertEqual([], validate_translation_units([point]))
+
+    def test_tracked_schema_maps_all_functions_without_exact_owner_fields(self) -> None:
+        payload = json.loads(
+            (REPO_ROOT / "config" / "translation_units.json").read_text(encoding="utf-8")
+        )
+        groups = payload["translation_units"]
+
+        self.assertEqual(5261, sum(len(group["functions"]) for group in groups))
+        self.assertTrue(all("owners" not in group for group in groups))
+        self.assertTrue(all("symbols" not in group for group in groups))
 
     def test_view_owner_symbols_keep_original_incomplete_record_tags(self) -> None:
         view = next(group for group in load_translation_units() if group["name"] == "view")

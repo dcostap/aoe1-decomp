@@ -1,0 +1,19 @@
+# Function notes: 00490520 `move_scenario_down`
+
+## Earlier notes from `decomp_notes/functions/0049/00490520_move_scenario_down.md`
+
+This section is historical. Use the status query for current state.
+
+## 00490520 `TRIBE_Campaign_Editor_Screen::move_scenario_down`
+
+- PDB source: `scr_cam.cpp`, lines 526 to 543.
+- Original size: 170 bytes.
+- Flags: `config/flags/0048F5D0_TRIBE_Campaign_Editor_Screen.rsp`.
+
+The prior fragment had an exact result.
+
+The function reads the last valid list index before it reads the current line. It moves a selected entry down by one index.
+
+The dirty flag changes only when the current line is below that final index. This is the shipped behavior.
+
+The body now belongs to `src/scr_cam.cpp`. The migration removes only fragment scaffolding.

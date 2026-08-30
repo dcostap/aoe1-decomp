@@ -1,12 +1,14 @@
 # Logic review: 0042A6E0 `TCommunications_Handler::PurgeAcknowledgedStoredMessages`
 
+Current source: `src/com_hand.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after five claims, 39 meaningful
 probes, 47 checks, donor work, focused pointer/index variants, and final source
 normalization.
 
-The candidate is `src/scratch/0042A6E0_PurgeAcknowledgedStoredMessages.cpp`.
+The candidate is `src/com_hand.cpp`.
 It uses the proven 0x38-byte `RESENDER` layout and named fields `TimeSent`,
 `Serial`, `ResendMsg`, `Length`, and `DestMap`.
 
@@ -79,5 +81,5 @@ and after both review rounds.
 
 ## Final decision
 
-Promote to `src/verified_logic`. Two fresh blind cohorts converged with no open
+Promote to `verified_logic` status. Two fresh blind cohorts converged with no open
 behavior uncertainty after direct callee inspection.

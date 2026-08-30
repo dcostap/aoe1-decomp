@@ -1,0 +1,78 @@
+# Function notes: 00435EA0 `command_group_ai_order`
+
+Module notes: `decomp_notes/Command_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:2257667fe31760f1a2c4 -->
+### `target-session` `build/target_sessions/00435EA0_command_group_ai_order.json:1-13`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=38; shape=83.9622641509434: Clean typed PDB-plausible source baseline before new probes; verify current drift and call set.
+probe 2 liveness; result=MISMATCH; diff=64; shape=81.13207547169812: Move player_id assignment into the early packet group while preserving canonical count-late order; test whether original EBX player lifetime is natural.
+probe 4 liveness; result=MISMATCH; diff=58; shape=83.01886792452831: Move player_id before issuer in the early packet group; test whether player becomes the original long-lived EBX value without aliases.
+probe 5 control-flow; result=MISMATCH; diff=55; shape=89.62264150943396: Use player-first plus decompiler packet store order, including early recipient_count; test whether early count and player lifetime recover original assignment scheduling.
+probe 7 liveness; result=MISMATCH; diff=38; shape=83.9622641509434: Introduce one natural log_player local before packet stores, while keeping canonical packet order; test whether the original early EBX player lifetime is driven by a named value. [same emitted code as probe 1]
+probe 9 liveness; result=MISMATCH; diff=38; shape=83.9622641509434: Apply register to the read-only player parameter; test a period-plausible register-color hint against the original EBX player topology. [same emitted code as probe 7]
+probe 11 abi; result=MISMATCH; diff=38; shape=83.9622641509434: Use signed char packet-byte fields with the same proven layout; test whether generated metadata's unsigned-byte labels control VC5 assignment scheduling. [same emitted code as probe 9]
+probe 13 context; result=MISMATCH; diff=38; shape=83.9622641509434: Restore historical static-string context as a translation-unit hypothesis; test whether the old local string basin explains packet assignment scheduling.
+probe 17 liveness; result=MISMATCH; diff=64; shape=83.01886792452831: Move recipient_count next to targetOwner, following the generated command.cpp field sequence; test natural typed packet ownership against the first packet-store hunk.
+probe 19 variant; result=MISMATCH; diff=64; shape=83.01886792452831: variant lab build\variant_lab\00435EA0_command_group_ai_order\20260817_104902: 4 variants, 4 invariant-eligible, 1 exact
+probe 20 layout; result=MISMATCH; diff=38; shape=83.9622641509434: Move the typed packet declaration before the ID-copy loop while keeping typed ownership and natural object dispatch; test whether packet lifetime controls the first store schedule. [same emitted code as probe 16]
+probe 21 liveness; result=MATCH; diff=0; shape=100.0: Use the typed command's declaration order for packet stores: command, player, issuer, count, orderType, priority, target, owner, coordinates, range, and flags. The natural variant lab emitted an exact candidate under size, frame, and call-set constraints.
+probe 24 abi; result=MATCH; diff=0; shape=100.0: Tested typed compact master-name views at +8 for target and first-unit logging.
+```
+<!-- end-recovered:2257667fe31760f1a2c4 -->
+
+<!-- recovered:dd7bd4d200f54b7430d8 -->
+### `e3c2995c58b6` `src/scratch/00435EA0_command_group_ai_order.cpp:1-42`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 00435EA0 RGE_Command::command_group_ai_order (315B)
+// PDB: Command.cpp lines 1942-1997
+// Attempt log:
+// - Reconstructed the group AI-order packet from the proven 0x24-byte header,
+//   selected-object ID array, world object lookup, and logging call.
+// - Baseline uses the exact Command.cpp sibling surfaces for command/world/
+//   object/master declarations and the ABI proven by command_stand_ground.
+// - Typed packet fields emitted the same 62-byte drift as the raw known-offset
+//   stores.  Count/priority and nearby source-order probes either duplicated
+//   that basin or changed the frame; the clean typed record remains canonical.
+// - Moving recipient_count into the late packet-tail assignment group reached
+//   a 36-byte diagnostic best while preserving size, frame, calls, and packet
+//   behavior.  A 24-variant store-order lab found no exact candidate (best
+//   invariant-eligible group was still nonexact), so no generated variant is
+//   retained as living source.
+// - Original log stack evidence shows the third integer is issuer, not
+//   target_owner.  The final source keeps issuer for behavioral fidelity; its
+//   current codegen is 38 bytes different and remains in scratch after the
+//   bounded 10-probe assignment.
+// - New claim confirmed that a typed packet-plus-one surface is codegen-neutral
+//   here.  Early player preservation plus delayed target-owner assignment
+//   improved the diagnostic drift to 32 bytes and recovered the original log
+//   register/stack topology, but conflicts with the PDB packet-store line
+//   order; it is not retained as living source.  Other early-player and
+//   late-issuer-local probes were worse or compiler duplicates.
+// - Current canonical source is restored to the typed PDB-plausible packet
+//   order (38-byte drift); remaining mismatch is the packet assignment
+//   scheduling/register basin beginning at 00435F13.
+// - Follow-up claim: allocating through the typed packet, restoring the fuller
+//   same-TU command class surface, nesting the guards, and replacing typed
+//   stores with raw scalar stores were codegen-neutral.  Moving the command
+//   constant or recipient count earlier, and a 24-way issuer/priority/player/
+//   owner order lab, all remained nonexact; the early-count form regressed to
+//   62 bytes.  An explicit vptr/nonvirtual-destructor surface was also neutral.
+//   The clean typed PDB-plausible source is restored; the unresolved hunk is
+//   not justified by compiler-steering scaffolding.
+// - New claim: early recipient-count/player order with delayed target-owner
+//   regressed the packet hunk to 62 bytes.  The exact same-TU command_ai_order
+//   field order improved block coverage but regressed to 58 bytes; both were
+//   restored.  A 24-variant priority/count/owner/player permutation lab kept
+//   size, frame, and calls exact but found no exact code; its best was 55 bytes.
+//   The clean typed PDB-plausible source remains the best living reconstruction.
+```
+<!-- end-recovered:dd7bd4d200f54b7430d8 -->

@@ -1,0 +1,26 @@
+# Function notes: 004C9DA0 `update_production_queue`
+
+Module notes: `decomp_notes/t_b_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:78fadaaf03b6af7bd50c -->
+### `a31dfd78d9df` `src/scratch/004C9DA0_update_production_queue.cpp:1-12`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 004C9DA0 TRIBE_Building_Object::update_production_queue
+// Attempt log:
+// 1: natural implementation from packet/decompiler; /GX required for original EH frame around new+ctor. First compile lacked EH and was 560B because helper functions were outlined and fields were 2 bytes early.
+// 2: fix production_queue_count/enabled offsets and inline need counter/send logic: offsets fixed but text still short/no EH frame.
+// 3: use ordinary new expression instead of manual operator new + placement new to trigger VC5 EH cleanup around constructor: EH prologue now present, size 608B. Still missing EDI save and action-list list offset/float compare shape differ.
+// 4: fix RGE_Action_List list offset to +8 and spell resource check as negated less-than: list/float compare now match original family; body 608B, still 44B short.
+// 5: ordinary new now gives correct EH prologue/state stores around constructor; retained /GX flag file.
+// 6: remaining blocker: compiler does not save/use EDI like original send paths, and it tail-merges need-counter increments/returns differently, making text shorter.
+// 7: resource send paths are behaviorally modeled but original duplicates vtable-load/send/count update blocks with EDI; rebuilt uses EAX/EDX and shared jumps.
+// 8: early queue-clear loop and action creation call set look structurally close after field fixes, but broad layout/register drift remains.
+// 9: no accepted_drift proposal: check_function cannot compare because rebuilt .text 608 < configured 652, and drift is not localized.
+// 10: left in scratch after honest attempts.
+```
+<!-- end-recovered:78fadaaf03b6af7bd50c -->

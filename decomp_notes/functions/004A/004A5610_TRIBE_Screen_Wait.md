@@ -1,0 +1,17 @@
+# Function notes: 004A5610 `TRIBE_Screen_Wait`
+
+Module notes: `decomp_notes/scr_mps_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:65bb2e98e24c059e800b -->
+### `bf81de068f12` `src/scratch/004A5610_TRIBE_Screen_Wait.cpp:1-3`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004A5610 TRIBE_Screen_Wait ctor (2493B)
+// scr_mps.cpp
+// EH frame (/GX)
+```
+<!-- end-recovered:65bb2e98e24c059e800b -->

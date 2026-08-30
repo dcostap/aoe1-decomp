@@ -37,15 +37,12 @@ def parse_args() -> argparse.Namespace:
             "Triage and work-history views are for a small result set, not a full dump.\n"
             "\n"
             "BLOCKER semantics:\n"
-            "  A BLOCKER is a manual obstacle note in the living source's top comment header.\n"
-            "  The tool does not infer ordinary matching obstacles or enforce the note.\n"
-            "  A verified-logic source without its required ledger gets an integrity blocker.\n"
-            "  A blocker is not a lease, source status, or corpus class.\n"
-            "  Combine blocker filters with a source or remaining-work filter.\n"
+            "  A blocker is a status integrity error.\n"
+            "  A verified-logic function without its ledger has a blocker.\n"
             "\n"
             "Examples:\n"
             "  python tools/query_project_status.py --va 0047A3A0 --paths --notes --leases\n"
-            "  python tools/query_project_status.py --unclaimed --normal --unleased --smallest --limit 12\n"
+            "  python tools/query_project_status.py --scratch --normal --unleased --smallest --limit 12\n"
             "  python tools/query_project_status.py --scratch --normal --work-history --notes --limit 12\n"
             "  python tools/query_project_status.py --logic-review-in-progress --paths\n"
             "  python tools/query_project_status.py --summary --normal\n"
@@ -61,11 +58,12 @@ def parse_args() -> argparse.Namespace:
     source.add_argument("--matching", action="store_true", help="Only matching functions")
     source.add_argument("--accepted-drift", action="store_true", help="Only accepted-drift functions")
     source.add_argument("--verified-logic", action="store_true", help="Only verified-logic functions")
+    source.add_argument("--observed", action="store_true", help="Only source-owned functions without an exact ownership claim")
     source.add_argument("--conflict", action="store_true", help="Only conflict functions")
-    source.add_argument("--source-bucket", choices=["matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict"], help="Only this source bucket")
+    source.add_argument("--source-bucket", choices=["matching", "accepted_drift", "verified_logic", "scratch", "observed", "unclaimed", "conflict"], help="Only this source bucket")
 
     remaining = parser.add_mutually_exclusive_group()
-    remaining.add_argument("--remaining", action="store_true", help="Only remaining normal functions (scratch/unclaimed/conflict)")
+    remaining.add_argument("--remaining", action="store_true", help="Only ordinary remaining work (scratch/unclaimed/conflict)")
     remaining.add_argument("--done", action="store_true", help="Only non-remaining functions")
 
     logic_review = parser.add_mutually_exclusive_group()
@@ -90,7 +88,7 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help=(
             "Include local generated claims, probes, progress, and last worker. "
-            "This data can reset with build cleanup; tracked recovery journals are durable."
+            "This data can reset with build cleanup; tracked function notes are durable."
         ),
     )
     parser.add_argument("--max-lifetime-probes", type=int, help="Maximum lifetime meaningful probes")
@@ -177,6 +175,8 @@ def source_bucket_from_args(args: argparse.Namespace) -> str | None:
         return "accepted_drift"
     if args.verified_logic:
         return "verified_logic"
+    if args.observed:
+        return "observed"
     if args.conflict:
         return "conflict"
     return None
@@ -370,6 +370,7 @@ def print_summary(rows: list[dict[str, str]]) -> None:
         f"accepted_drift={counts['accepted_drift']} "
         f"verified_logic={counts['verified_logic']} "
         f"scratch={counts['scratch']} "
+        f"observed={counts['observed']} "
         f"unclaimed={counts['unclaimed']} "
         f"conflict={counts['conflict']}"
     )
@@ -379,7 +380,7 @@ def print_summary(rows: list[dict[str, str]]) -> None:
             for row in rows
             if row.get("source_bucket") == bucket
         )
-        for bucket in ("matching", "accepted_drift", "verified_logic", "scratch", "unclaimed", "conflict")
+        for bucket in ("matching", "accepted_drift", "verified_logic", "scratch", "observed", "unclaimed", "conflict")
     }
     print(
         "source_bytes: "
@@ -441,14 +442,15 @@ def table_columns(args: argparse.Namespace) -> list[tuple[str, str, int]]:
     if args.paths:
         cols.extend([
             ("source_path", "source_path", 46),
+            ("TU", "translation_unit", 24),
+            ("flags", "compiler_flags", 36),
             ("logic_review", "logic_review_path", 46),
             ("packet", "packet_path", 56),
         ])
     if args.notes:
         cols.extend([
+            ("function_note", "decomp_note_path", 60),
             ("blocker", "source_blocker", 28),
-            ("note", "source_note", 36),
-            ("next", "source_next", 36),
         ])
     if args.leases or args.work_history or args.unleased or args.active_leases or args.owner:
         cols.extend([
@@ -586,7 +588,11 @@ def main() -> None:
         rows = annotate_triage(rows)
 
     if args.json:
-        print(json.dumps(rows, ensure_ascii=False, indent=2))
+        compact = [
+            {key: value for key, value in row.items() if value not in ("", None)}
+            for row in rows
+        ]
+        print(json.dumps(compact, ensure_ascii=False, indent=2))
     elif args.csv:
         emit_csv(rows)
     else:

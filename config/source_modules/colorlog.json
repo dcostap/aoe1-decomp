@@ -11,7 +11,7 @@
   "functions": {
     "00424810": {
       "status": "matching",
-      "note_path": "recovery_notes/colorlog_module.md"
+      "note_path": "decomp_notes/colorlog_module.md"
     }
   }
 }

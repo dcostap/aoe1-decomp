@@ -1,0 +1,24 @@
+# Function notes: 004165F0 `healObject`
+
+## Recovered attempt history
+
+<!-- recovered:a9be6978073fc7be66c5 -->
+### `d050eea3c` `src/aiuaimod.cpp:2280-2280`
+
+Mapping: `strong`. comment lies after mapped function healObject at old line 2278.
+
+```text
+// --- matching/004165F0_healObject.cpp ---
+```
+<!-- end-recovered:a9be6978073fc7be66c5 -->
+
+<!-- recovered:7342f946b37955ebff17 -->
+### `6a2aef2e2` `src/aiuaimod.cpp:2138-2139`
+
+Mapping: `strong`. next mapped function definition is healObject at old line 2160.
+
+```text
+// Based on matched gatherObject/buildObject siblings.
+// Sibling pattern: inverted condition, nested success, shared return-0 tail.
+```
+<!-- end-recovered:7342f946b37955ebff17 -->

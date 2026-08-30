@@ -681,8 +681,8 @@ def search_index(
             candidate["validation"] = evidence
         else:
             candidate["validation"] = {
-                "status": "matching-bank",
-                "reason": "source is owned by src/matching; current checker freshness was not required",
+                "status": "matching-status",
+                "reason": "the source-module status is matching; fresh checker evidence was not required",
             }
         selected.append(candidate)
     for index, result in enumerate(selected):
@@ -915,7 +915,7 @@ def main() -> None:
             "asm": [f"{row.address:08X}  {row.data:<16}  {row.text}" for row in query_instructions],
         },
         "policy": [
-            "The corpus contains only src/matching owners; default fresh validation also requires "
+            "The corpus contains only matching-status owners. Default fresh validation also requires "
             "current checker MATCH evidence.",
             "A similar emitted block is empirical source/codegen evidence, not proof of common "
             "original source.",

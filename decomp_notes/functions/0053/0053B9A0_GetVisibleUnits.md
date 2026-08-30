@@ -1,0 +1,124 @@
+# Function notes: 0053B9A0 `GetVisibleUnits`
+
+Module notes: `decomp_notes/vis_unit_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:b2bff36496ef7ed9142b -->
+### `target-session` `build/target_sessions/0053B9A0_GetVisibleUnits.json:1-50`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=308; shape=58.156028368794324: Baseline clean typed byte-distance reconstruction: 392 bytes vs original 387, frame 0x1c, 141 vs 139 instructions, no calls, CFG cond/jumps/returns 14/2/3, strict diff 308 bytes. Source preserves proven bucket layout, 5-entry globals, bounded list scans, and output copy plus distance overwrite.
+probe 2 layout; result=MISMATCH; diff=317; shape=57.4468085106383: Promoted distance-table byte to int local. This removes the redundant table reload and yields 382 bytes, 141 instructions, frame 0x18, strict diff 317; cleaner than unsigned-char home but still misses original 0x1c frame and prologue/register topology.
+probe 5 layout; result=MISMATCH; diff=308; shape=58.156028368794324: Direct bound initializers x+distance, x-distance, y-distance, y+distance emit byte-identically to the compound-init baseline. Coordinate expression grouping is not the current mismatch axis. [same emitted code as probe 1]
+probe 6 control-flow; result=MISMATCH; diff=290; shape=60.0: Ternary clamp  recovers original prologue zero register and player-check load: bytes at +6..+0x35 align. Metrics improve to 391 bytes, 140 instructions, frame 0x1c, strict diff 290, shape 60%, 25.18% exact blocks. Original still has a clamp-home store and differs in inner register/dataflow.
+probe 7 liveness; result=MISMATCH; diff=290; shape=60.0: With ternary clamp fixed, reversing distTable/PDP assignment order keeps the clamp mismatch but worsens strict diff 290 to 311. Original load order cannot be recovered by statement order alone; restored distTable-first source. [same emitted code as probe 6]
+probe 8 variant; result=MISMATCH; diff=290; shape=60.0: variant lab build\variant_lab\0053B9A0_GetVisibleUnits\20260816_213936: 4 variants, 0 invariant-eligible, 0 exact
+probe 9 variant; result=MISMATCH; diff=290; shape=60.0: variant lab build\variant_lab\0053B9A0_GetVisibleUnits\20260816_214014: 4 variants, 0 invariant-eligible, 0 exact
+probe 11 baseline; result=MISMATCH; diff=290; shape=60.0: New claim baseline: preserved prior natural typed source before revisiting local ownership and traversal. [same emitted code as probe 10]
+probe 12 layout; result=MISMATCH; diff=309; shape=58.57142857142857: Typed used-field read: replace the dword alias with the canonical short field; test whether VC5 preserves the observed count load naturally.
+probe 14 layout; result=MISMATCH; diff=290; shape=60.0: Natural bucket ownership: remove the named bucket alias and read typed PDP[category] members directly, while retaining the proven width mask for this probe. [same emitted code as probe 11]
+probe 15 layout; result=MISMATCH; diff=309; shape=58.57142857142857: Natural typed count through PDP[category].used without a bucket alias; test width and ownership together. [same emitted code as probe 12]
+probe 16 control-flow; result=MISMATCH; diff=294; shape=59.15492957746479: Natural inner traversal: replace source gotos to the record-step tail with continue, preserving typed record scans and observed branch behavior.
+probe 17 layout; result=MISMATCH; diff=290; shape=60.0: Function-scope count lifetime: declare the bounded record count before the guards, matching the original local count role without raw traversal changes. [same emitted code as probe 14]
+probe 18 control-flow; result=MISMATCH; diff=308; shape=58.156028368794324: Binary-supported clamp form: restore an explicit if assignment for the observed parameter-home store and natural branch layout.
+probe 19 control-flow; result=MISMATCH; diff=369; shape=56.737588652482266: Natural guard spelling: use category_count < 1, matching the decompiler's source-level lower bound and observed signed zero compare.
+probe 21 layout; result=MISMATCH; diff=309; shape=58.57142857142857: Policy-clean typed ownership: remove the dword alias and read the canonical short used field through PDP[category].used. [same emitted code as probe 15]
+probe 23 abi; result=MISMATCH; diff=306; shape=53.191489361702125: Changed VisibleUnitPtr::used to unsigned short; original masking proves zero extension, and typed access replaces the overlapping dword read.
+probe 25 baseline; result=MISMATCH; diff=306; shape=53.191489361702125: Revisit baseline: current policy-clean typed source, verify live mismatch before source probes. [same emitted code as probe 24]
+probe 26 layout; result=MISMATCH; diff=364; shape=51.06382978723404: Natural direct distanceTable member expression: test whether removing the named table local recovers original parameter-home reuse and inner byte load.
+probe 28 liveness; result=MISMATCH; diff=342; shape=51.773049645390074: Late found initialization after early guards: test whether VC5 selects original EDX zero while preserving the observed zero store.
+probe 30 layout; result=MISMATCH; diff=308; shape=58.156028368794324: Binary-proven overlap probe: canonical short used field with an explicit dword read and 16-bit mask; compare structural recovery without raw addresses. [same emitted code as probe 20]
+probe 31 layout; result=MISMATCH; diff=308; shape=58.156028368794324: Natural named bucket/reference and function-scope record pointer with proven masked used read: compare loop topology and count branch against original. [same emitted code as probe 30]
+probe 33 control-flow; result=MISMATCH; diff=306; shape=53.191489361702125: Natural ternary clamp with the masked typed-field overlap probe: test whether the original zero-register and branch shape return without compiler steering. [same emitted code as probe 25]
+probe 34 abi; result=MISMATCH; diff=309; shape=58.57142857142857: Canonical signed short used field with natural ternary clamp: test signedness and typed access without overlap alias. [same emitted code as probe 22]
+probe 36 abi; result=MISMATCH; diff=299; shape=51.74825174825175: Promote distance-table result to natural int: test whether EAX materialization restores original range spill and byte/register topology.
+probe 38 liveness; result=MISMATCH; diff=307; shape=53.90070921985816: Reorder natural PDP then distanceTable assignments: verify whether source order recovers original member-load order and player-home reuse.
+probe 39 liveness; result=MISMATCH; diff=307; shape=53.90070921985816: Named owner-index local: test a natural long-lived player index for original ESI coloring and PlayerDataPtrs indexing. [same emitted code as probe 38]
+probe 43 layout; result=MISMATCH; diff=279; shape=58.86524822695036: Typed ownership with prior natural bucket-reference shape and explicit observed dword-overlap count extraction; test whether original EDX/ESI and scan topology return.
+probe 44 abi; result=MISMATCH; diff=290; shape=60.0: Change only distance-table result from int to typed unsigned byte in the prior natural bucket-reference shape; test original byte materialization, distance-home reload, and count local topology. [same emitted code as probe 17]
+probe 45 liveness; result=MISMATCH; diff=290; shape=60.0: Move the count declaration into the per-category block, matching original line-local count scope; test whether distance remains in its parameter home and count uses the original local slot. [same emitted code as probe 44]
+probe 46 control-flow; result=MISMATCH; diff=308; shape=58.156028368794324: Use the explicit distance clamp assignment required by original B9DB/B9E2/B9E5 block topology, while retaining typed count and bucket source shape. [same emitted code as probe 31]
+probe 47 layout; result=MISMATCH; diff=290; shape=60.0: Replace indexed reference with a typed bucket pointer and explicit LEA owner; test the original bucket LEA/load topology without changing behavior. [same emitted code as probe 45]
+probe 48 layout; result=MISMATCH; diff=290; shape=60.0: Use separate typed array owner and player-row locals so the source preserves canonical PlayerDataPtrs ownership and row selection. [same emitted code as probe 47]
+probe 49 layout; result=MISMATCH; diff=311; shape=57.857142857142854: Place row selection before the distanceTable assignment to test whether a real source dependency restores the original PlayerDataPtrs-before-table load order.
+probe 50 liveness; result=MISMATCH; diff=290; shape=60.0: Address the distance parameter and compare the table result through that typed alias; test whether natural parameter-home liveness recovers original EAX result and distance reload. [same emitted code as probe 48]
+probe 51 abi; result=MISMATCH; diff=279; shape=58.86524822695036: Restore int distance-table result in the typed-owner source; compare its register carry and output topology against the original before deciding byte width. [same emitted code as probe 43]
+probe 52 liveness; result=MISMATCH; diff=300; shape=56.737588652482266: Delay the distanceTable local declaration until after PlayerDataPtrs row selection, matching its PDB-adjacent assignment line and testing parameter-home reuse.
+probe 53 abi; result=MISMATCH; diff=279; shape=58.86524822695036: Test opaque global output-bucket declaration with an explicit typed cast, preserving record ownership while checking global pointer register topology.
+probe 54 control-flow; result=MISMATCH; diff=293; shape=51.74825174825175: Use a guarded do-while with pre-decrement count, matching original direct stack decrement and zero-count outer-tail edge.
+probe 55 control-flow; result=MISMATCH; diff=279; shape=58.86524822695036: Use a pre-decrement outer do-while so category_count lowers to the original direct parameter-home decrement. [same emitted code as probe 53]
+probe 56 layout; result=MISMATCH; diff=279; shape=58.86524822695036: Spell typed bucket address as &row[category] rather than pointer addition; test whether VC5 preserves the original bucket LEA. [same emitted code as probe 55]
+probe 57 layout; result=MISMATCH; diff=279; shape=58.86524822695036: Reduce pointer-owner declarations to one typed player-row PDP local after confirming the split array/row form was codegen-equivalent. [same emitted code as probe 56]
+probe 58 liveness; result=MISMATCH; diff=279; shape=58.86524822695036: Move the category local to function scope, testing the original EAX category value and outer-scan lifetime without adding fake aliases. [same emitted code as probe 51]
+probe 60 control-flow; result=MISMATCH; diff=317; shape=57.4468085106383: Restore the binary-proved statement clamp. This tests the exact compiled C++ setup before the likely inline-assembly scan boundary.
+probe 63 behavior; result=MISMATCH; diff=291; shape=88.48920863309353: Reconstruct the executable-proved original inline assembly scan while retaining natural C++ setup and return code.
+probe 64 liveness; result=MISMATCH; diff=291; shape=88.48920863309353: Name the PlayerDataPtrs owner before distanceTable and row selection. This tests the original EDI owner lifetime in the compiled C++ setup. [same emitted code as probe 63]
+probe 65 behavior; result=MISMATCH; diff=348; shape=82.01438848920863: Extend the approved assembly recovery across the setup instructions whose scheduling depends on the following assembly parameter-home reads.
+probe 66 liveness; result=MISMATCH; diff=289; shape=92.0863309352518: Use narrow approved assembly blocks for the original owner loads and delayed PDP home, while leaving zero stores and bounds in C++.
+probe 67 behavior; result=MATCH; diff=0; shape=94.96402877697842: Use an approved naked assembly recovery of the complete shipped function to preserve its exact manual instruction stream and stack homes.
+probe 68 flags; result=MATCH; diff=0; shape=94.96402877697842: Remove the target-only /Oy- override. The approved naked recovery owns its frame and should match with default flags. [same emitted code as probe 67]
+```
+<!-- end-recovered:b2bff36496ef7ed9142b -->
+
+<!-- recovered:e7f55eb24f41c8d86991 -->
+### `eb59273cd003` `src/scratch/0053B9A0_GetVisibleUnits.cpp:1-51`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// vis_unit.cpp target: Visible_Unit_Manager::GetVisibleUnits
+// initial reconstruction from packet; scans requested categories for unit records within distance table radius.
+// FLAGS: config\flags\0053B9A0_GetVisibleUnits.rsp
+// Attempt log:
+// - Baseline was structurally close in CFG but 26 bytes long; explicit five-field output stores were the main size drift.
+// - A typed eight-byte record assignment followed by the binary-observed distance-byte overwrite reduced the size gap to 6 bytes.
+// - Promoting the distance-table byte to the natural promoted int preserved the EAX/EDX carry into the output path and reduced the rebuilt size to 383 bytes (best positional diff 320).
+// - Function-scope PDP/distance locals, shared-coordinate compound bounds,
+//   bucket references, and the proven dword-overlapping used-field read were
+//   retained as the cleanest ownership model; the best ordinary source emits
+//   382 bytes with a 317-byte positional diff.
+// - Volatile-pointer diagnostics improved emitted metrics locally (313 bytes)
+//   but were rolled back as compiler-steering scaffolding; they did not recover
+//   the original frame or local homes.
+// - A natural inner for-loop post-expression produced identical code; restored
+//   the while form and left the structural frame gap unchanged.
+// - Restoring the natural unsigned-byte distance result recovered the original
+//   0x1c frame and improved the positional diff to 308 with 50.26% resync
+//   similarity; VC5 still spills the byte at -0x1c and emits five extra bytes.
+// - Unsigned count spelling and implicit byte promotion were codegen duplicates.
+// - A natural pre-decrement outer category loop was tested against the original
+//   direct parameter-home decrement; VC5 retained the same load/decrement/store.
+// - Reordering y2 before y1 was tested against the proven stack homes; VC5
+//   emitted the same code, so both structural leads were rolled back.
+// - Inventory type dumps confirm VISIBLE_UNIT_REC is five packed bytes after
+//   object_id, VISIBLE_UNIT_PTR is 8 bytes, and the manager is 0x24 bytes.
+// - Ternary distance clamping recovers the original entry zero register and
+//   early guard shape. It is the best current basin at 391 bytes and 290
+//   positional mismatches; the statement-form clamp exposes the original
+//   parameter-home store but falls to 392 bytes and 308 mismatches.
+// - Direct member and pointer-bucket forms, loop-scoped count, typed globals,
+//   and direct bound initializers were tested. Several are codegen duplicates.
+// - A direct typed PDP[category] traversal and function-scope count are source
+//   cleaner but codegen duplicates. A continue-based skip adds a jump and is
+//   not retained. Main review made used unsigned because the original masks it
+//   to 16 bits. The retained expression keeps the typed bucket owner but uses
+//   the executable-proven overlapping dword read and mask for codegen shape.
+// - Revisit probes confirmed that direct distanceTable access, late found
+//   initialization, named owner-index locals, and PDP-before-table assignment
+//   do not recover the original frame or register topology.
+// - A signed short used field emits movsx and worsens the clean frontier.
+//   A promoted distance result reduces the mismatch but drops the frame to
+//   0x18. The current probe restores the earlier natural bucket-reference
+//   shape while keeping typed visible-unit ownership and the observed
+//   16-bit count extraction.
+// - This claim tested pointer-owner splitting, declaration scope, direct
+//   decrement loop forms, bucket address spellings, and an opaque output
+//   bucket declaration. The only useful basin is the typed source with an
+//   integer-promoted table result, dword-overlap count extraction, and the
+//   pre-decrement category loop; it emits 381 bytes with 279 mismatches.
+//   The original remains 387 bytes with a distinct inner-save topology.
+```
+<!-- end-recovered:e7f55eb24f41c8d86991 -->

@@ -1,0 +1,135 @@
+# Function notes: 004180C0 `processNotify`
+
+Module notes: `decomp_notes/aiuaimod_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:8915c9cde19ab8c5c129 -->
+### `d050eea3c` `src/aiuaimod.cpp:3194-3194`
+
+Mapping: `ambiguous`. next mapped function definition is processNotify at old line 3363.
+
+```text
+            // BINARY NOTE: A local range keeps this distinct +0x90 call site.
+```
+<!-- end-recovered:8915c9cde19ab8c5c129 -->
+
+<!-- recovered:76d974bbc387a3d9bcf3 -->
+### `d050eea3c` `src/aiuaimod.cpp:3325-3325`
+
+Mapping: `strong`. next mapped function definition is processNotify at old line 3363.
+
+```text
+                // ORIGINAL BUG: The shipped shift omits the range dword at +0x20.
+```
+<!-- end-recovered:76d974bbc387a3d9bcf3 -->
+
+<!-- recovered:a97dcf9260f7cc65937a -->
+### `6a2aef2e2` `src/aiuaimod.cpp:2932-2936`
+
+Mapping: `ambiguous`. next mapped function definition is processNotify at old line 3162.
+
+```text
+// aiuaimod.cpp
+//
+// The binary passes range bits directly in one order path.
+//
+// The source keeps the proven range and dispatcher state.
+```
+<!-- end-recovered:a97dcf9260f7cc65937a -->
+
+<!-- recovered:da4a4e05d94db8781008 -->
+### `target-session` `build/target_sessions/004180C0_processNotify.json:1-52`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=4563; shape=60.93567251461988: Baseline current typed reconstruction before new hypotheses; establish size, CFG, calls, frame, and positional diff.
+probe 2 abi; result=MISMATCH; diff=4618; shape=56.68571428571428: Hypothesis 1: target health is target.damageCapability(), while this object computes damageCapability(target) for ratio and again for the 1.0 test; this should move two calls from vslot 108 to 104 and align original ABI.
+probe 4 context; result=MISMATCH; diff=4563; shape=60.93567251461988: Hypothesis 2: use the exact same-TU logging declaration and literals from matching aiuaimod donors, rather than unresolved string externs; this tests actionFile/string relocation and logging branch codegen.
+probe 5 control-flow; result=MISMATCH; diff=4578; shape=59.29824561403509: Hypothesis 3: restore lexical switch-arm order from PDB/assembly: 508, 510, 514, then order notifications 505-507, followed by 523/600/699. The prior source placed order arms first and moved the 508 cold block.
+probe 7 layout; result=MISMATCH; diff=4563; shape=61.05263157894737: Hypothesis 4: RGE_Player.id is at +0x4A, not the prior +0x40 model. Original target-owner comparisons use [owner+4A], while visibleMap remains +0x38; add only the proven tail gap.
+probe 8 liveness; result=MISMATCH; diff=4617; shape=61.0655737704918: Hypothesis 5: mirror exact processNotify donor loop topology with an attacker pointer, caller local, and goto labels. The original caches caller in EBX and uses one shared already-in-list path; found flags caused extra homes and CFG.
+probe 10 liveness; result=MISMATCH; diff=4600; shape=61.111111111111114: Hypothesis 6: cache event->caller in a first-loop local while retaining the existing found-flag CFG. This isolates caller-home liveness from the larger goto rewrite.
+probe 12 abi; result=MISMATCH; diff=4618; shape=56.8: Hypothesis 7: restore the binary overload surface: zero-argument damageCapability precedes the object-argument overload, and target health uses the zero-argument target getter while the ratio and final test use object-argument calls.
+probe 14 liveness; result=MISMATCH; diff=4564; shape=36.75263774912075: Hypothesis 8: cache current target X and Y before bestUnitToAttack, then pass those locals to moveTo. Original stores X/Y in stack homes before the best-unit call and reloads them afterward.
+probe 16 control-flow; result=MISMATCH; diff=4563; shape=61.05263157894737: Hypothesis 9: spell dispatch as switch(event->mType - 0x1F4) with relative case values, matching exact sibling sources and the original add-based jump-table index.
+probe 17 liveness; result=MISMATCH; diff=4563; shape=61.111111111111114: Hypothesis 10: cache the attacking-list pointer only for the second membership scan, matching the original indexed loop pointer lifetime while preserving the existing found-flag CFG.
+probe 18 liveness; result=MISMATCH; diff=4591; shape=58.27969572849619: Hypothesis 11: move the attacker-pointer alias from the first scan to the second scan. This isolates which scan needs pointer liveness for the original indexed addressing.
+probe 20 context; result=MISMATCH; diff=4563; shape=61.05263157894737: Hypothesis 12: use the same FILE*/literal logging surface as exact aiuaimod donors, avoiding unresolved string extern aliases and preserving period fprintf argument types.
+probe 21 control-flow; result=MISMATCH; diff=4644; shape=61.228070175438596: Hypothesis 13: spell the observed p2 guard as <= 0, not < 1. Original emits test/jg, while the prior spelling emitted cmp 1/jge.
+probe 23 abi; result=MISMATCH; diff=4563; shape=61.05263157894737: Hypothesis 14: swap only the two damageCapability declaration orderings, without changing source expressions, to test whether VC5 overload/vtable slot order controls the three disputed damage calls.
+probe 24 control-flow; result=MISMATCH; diff=4606; shape=65.33018867924528: Hypothesis 15: model original shared no-log stop tails with forward labels. Action-file paths keep their own stop call; no-log order paths jump to common stop(1)/stop(0) tails, testing the six excess stop calls.
+probe 26 behavior; result=MISMATCH; diff=4566; shape=62.08308952603862: Hypothesis 16: reconstruct the 699 removal arm as the donor-proven two-stage bounded search followed by full-capacity search and compaction, instead of the compact macro.
+probe 27 liveness; result=MISMATCH; diff=4566; shape=62.08308952603862: Hypothesis 17: retain one AttackingUnits pointer through the two-stage 699 removal search and compaction, matching the exact donor array-owner lifetime.
+probe 28 abi; result=MISMATCH; diff=4566; shape=62.08308952603862: Hypothesis 18: use the canonical sibling ABI notifyCommander(void*) at slot +0x1C instead of a target-local NotifyEvent* spelling; pointer width and slot stay fixed while declaration provenance improves. [same emitted code as probe 27]
+probe 29 control-flow; result=MISMATCH; diff=4566; shape=62.08308952603862: Hypothesis 19: restore the exact sibling dispatch spelling switch(mType - 0x1F4) with relative labels while retaining the donor-proven 699 arm.
+probe 33 control-flow; result=MISMATCH; diff=4645; shape=57.46791131855309: Hypothesis 1: replace the first attacking-unit found flag with a binary-shaped goto that jumps directly over askForHelp when the caller is already present. Original assembly has a match edge to the post-help block and no found store.
+probe 35 control-flow; result=MISMATCH; diff=4643; shape=57.32632807939288: Hypothesis 2: mirror the decompiler-proven two attack-list scans with direct goto edges, count-before-index declaration order, and a caller local before the second scan. This tests the original LAB_004181b7 and LAB_0041823e topology instead of found flags.
+probe 37 behavior; result=MISMATCH; diff=4638; shape=62.5: Hypothesis 3: replace the simplified non-special target branch with the decompiler-supported call sequence: target zero-argument damage, conditional object capability, first canAttack/range/path/attack attempt, then target and attacker capability ratios using the proven +0x30 hp field, followed by the second canAttack/range/path/attack attempt.
+probe 38 abi; result=MISMATCH; diff=4638; shape=62.5: Hypothesis 4: swap the proven damageCapability virtual declaration order so zero-argument maps to +0x108 and object-argument maps to +0x104, matching original call slots in the reconstructed branch.
+probe 39 liveness; result=MISMATCH; diff=4638; shape=62.5: Hypothesis 5: keep a named NotifyEvent alias live through the attack arm, matching original EBP parameter ownership and the decompiler's preserved pNVar14 event pointer, while leaving order-notify macro uses unchanged.
+probe 40 behavior; result=MISMATCH; diff=4600; shape=63.31018518518518: Hypothesis 6: model the original branch-local floating stores explicitly. First capability is assigned by the target-damage zero branch, and both target/attacker ratios receive the constant only on the positive-capability branch.
+probe 41 context; result=MISMATCH; diff=4599; shape=63.31018518518518: Hypothesis 7: use the reviewed DAT_0056ebc8 zero global for x87 comparisons and 25000.0f for the proven 0x46C35000 ratio default. This tests relocation and literal provenance from the original reads and stores.
+probe 42 behavior; result=MISMATCH; diff=4613; shape=57.656612529002324: Hypothesis 8: restore the decompiler-proven no-target attack ladder: canAttack, then inAttackRange, then weaponRange/canPath when needed, then attackObject, with the shared runAway failure label.
+probe 43 liveness; result=MISMATCH; diff=4980; shape=58.83289124668435: Hypothesis 9: retain the proven no-target path calls but carry canAttack status in one natural local, avoiding a source goto while preserving shared runAway behavior.
+probe 44 control-flow; result=MISMATCH; diff=4857; shape=46.15384615384615: Hypothesis 10: invert the target test to match original CFG. The executable tests target null and runs the no-target attack fallthrough before jumping forward to the target branch; source now uses if (target == 0) first.
+probe 46 context; result=MISMATCH; diff=4893; shape=59.51219512195122: Qualified owner and boundary from PDB: UnitAIModule::processNotify at 004180C0-004193F3; first unowned normal aiuaimod.cpp sibling after processOrder. Retained behavior-backed source after exact-finish reduction.
+probe 48 baseline; result=MISMATCH; diff=4599; shape=63.36805555555556: Baseline of the inherited clean source. This pins current behavior, call order, frame, and CFG before natural source recovery. [same emitted code as probe 47]
+probe 49 variant; result=MISMATCH; diff=4599; shape=63.36805555555556: variant lab build\variant_lab\004180C0_processNotify\20260823_230016: 1 variants, 0 invariant-eligible, 0 exact
+probe 50 control-flow; result=MISMATCH; diff=4624; shape=86.94096601073345: Reconstruct the PDB source-order switch and copy the exact 00506320 attack-list donor shape. Restore all four nested weaponRange/canPath ladders, corrected zero-capability behavior, explicit notification tails, and two-stage 699 removal.
+probe 51 variant; result=MISMATCH; diff=4624; shape=86.94096601073345: variant lab build\variant_lab\004180C0_processNotify\20260823_230303: 1 variants, 0 invariant-eligible, 0 exact
+probe 52 behavior; result=MISMATCH; diff=2983; shape=92.76315789473684: Use the exact beta virtual overload order, keep one real target-X local at function scope, and pass event->caller through every attack/path call. The executable rereads the event ID instead of attacker->id, which preserves malformed-event fault order.
+probe 53 control-flow; result=MISMATCH; diff=2987; shape=95.38922155688623: Use the original independent order predicates, a positive resource-target arm, and a nested special-target success guard. PDB bands and CFG prove three redundant order tests, resource handling before fallback, and success before retreat.
+probe 54 control-flow; result=MISMATCH; diff=3070; shape=98.44590555887628: Place each move failure before its order-state publication and keep all four retry cleanup tails distinct. Original edges fall through cleanup and jump to publication; PDB bands show separate 13CE, 13DA, 1396, and 13A6 stop/callback tails.
+probe 55 control-flow; result=MISMATCH; diff=31; shape=99.40047961630695: Chain current-order and priority publication in the 505 and 507 arms only. This keeps their proved shared publication tail while preserving the distinct 506 tail. A 100-variant lab reduced the result to 31 bytes.
+probe 56 variant; result=MISMATCH; diff=31; shape=99.40047961630695: variant lab build\variant_lab\004180C0_processNotify\20260823_231400: 12 variants, 12 invariant-eligible, 0 exact
+probe 57 variant; result=MISMATCH; diff=31; shape=99.40047961630695: variant lab build\variant_lab\004180C0_processNotify\20260823_231513: 6 variants, 6 invariant-eligible, 0 exact
+probe 58 variant; result=MISMATCH; diff=31; shape=99.40047961630695: variant lab build\variant_lab\004180C0_processNotify\20260823_231639: 81 variants, 81 invariant-eligible, 0 exact
+probe 59 variant; result=MISMATCH; diff=31; shape=99.40047961630695: variant lab build\variant_lab\004180C0_processNotify\20260823_231832: 8 variants, 8 invariant-eligible, 0 exact
+probe 60 variant; result=MISMATCH; diff=31; shape=99.40047961630695: variant lab build\variant_lab\004180C0_processNotify\20260823_231952: 27 variants, 1 invariant-eligible, 0 exact
+probe 61 variant; result=MISMATCH; diff=31; shape=99.40047961630695: variant lab build\variant_lab\004180C0_processNotify\20260823_232140: 5 variants, 5 invariant-eligible, 0 exact
+probe 62 variant; result=MISMATCH; diff=31; shape=99.40047961630695: variant lab build\variant_lab\004180C0_processNotify\20260823_232210: 5 variants, 5 invariant-eligible, 0 exact
+probe 63 variant; result=MISMATCH; diff=31; shape=99.40047961630695: variant lab build\variant_lab\004180C0_processNotify\20260823_232255: 7 variants, 7 invariant-eligible, 0 exact
+probe 64 liveness; result=MISMATCH; diff=17; shape=99.70023980815348: Use XYZ declaration order for the retained retry coordinates and publish 506 directly from currentOrder. The coordinate order exactly fixes the best-target call block; direct publication exactly fixes the distinct 506 state tail.
+probe 65 variant; result=MISMATCH; diff=17; shape=99.70023980815348: variant lab build\variant_lab\004180C0_processNotify\20260823_232533: 1 variants, 1 invariant-eligible, 0 exact
+probe 66 variant; result=MISMATCH; diff=17; shape=99.70023980815348: variant lab build\variant_lab\004180C0_processNotify\20260823_232648: 1 variants, 1 invariant-eligible, 0 exact
+probe 67 variant; result=MISMATCH; diff=17; shape=99.70023980815348: variant lab build\variant_lab\004180C0_processNotify\20260823_232757: 8 variants, 8 invariant-eligible, 0 exact
+probe 68 context; result=MISMATCH; diff=12; shape=99.70023980815348: Compile the real target against the complete PDB-backed UnitAI context. A narrow conditional preserves existing sibling callers while exposing the target's proved weaponRange, canPath, and commander ABIs.
+```
+<!-- end-recovered:da4a4e05d94db8781008 -->
+
+<!-- recovered:b7c2edc0840f7cbe0691 -->
+### `4d8e2101e925` `src/scratch/004180C0_processNotify.cpp:1-26`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004180C0 UnitAIModule::processNotify (4916 bytes)
+// PDB owner: aiuaimod.cpp, lines 4423-5186.
+//
+// Recovery notes:
+// - The PDB gives one body at 004180C0-004193F3.
+// - The authentic UnitAIModule type is 0x134 bytes.
+// - Exact donor 00506320 proves both attacking-unit scans and array growth.
+// - Source case order is 508, 506, 505, 507, 514, 523, 510, 600, 699.
+// - Four nested weaponRange and canPath ladders restore all 148 calls.
+// - BINARY NOTE: every attack and path call rereads event->caller.
+// - This differs from attacker->id when the event or object graph changes.
+// - BINARY NOTE: zero target damage stores zero currentTargetDC.
+// - Nonzero target damage calls objectValue->damageCapability(target).
+// - The 505 and 507 arms share one chained order-publication tail.
+// - The 506 arm keeps a distinct direct order-publication tail.
+// - Direct cleanup tails preserve all stop and commander notifications.
+// - PDB locals name currentTargetDC, both kill times, three target coordinates,
+//   tileY, and tileX. Their proven homes overlap parameters and scoped locals.
+// - The authentic context removes five register-only byte differences.
+// - Current best has exact size, frame, CFG, 148 calls, and 12 byte differences.
+// - Residual drift is one move argument register map and two publication stores.
+// - Tested aliases, accessors, literal forms, condition forms, and local scopes.
+// - Those forms duplicated this basin or changed valid behavior and layout.
+// - Needed evidence is the original 4757 call spelling or fuller header context.
+// - Captain probe: direct currentOrder rereads in case 506 were codegen-identical
+//   to the saved local form. The natural local remains authoritative.
+```
+<!-- end-recovered:b7c2edc0840f7cbe0691 -->

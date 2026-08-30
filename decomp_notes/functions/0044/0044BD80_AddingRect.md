@@ -1,0 +1,134 @@
+# Function notes: 0044BD80 `AddingRect`
+
+Module notes: `decomp_notes/fractal_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:46de93936fdd94079421 -->
+### `target-session` `build/target_sessions/0044BD80_AddingRect.json:1-55`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=222; shape=94.18604651162791: Current typed parameter-home rectangle subdivision reconstruction before revisit.
+probe 2 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Test whether the second vertical countdown naturally mutates the dead y parameter home, matching the original [esp+1c] loop state. [same emitted code as probe 1]
+probe 3 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Reuse the first-edge cursor local for the second vertical countdown, testing whether one source home produces the original y-slot loop state. [same emitted code as probe 2]
+probe 5 control-flow; result=MISMATCH; diff=222; shape=94.18604651162791: Use a block-scoped for-header row count with truth-test and predecrement, testing declaration scope and loop lowering against the original second edge. [same emitted code as probe 3]
+probe 7 layout; result=MISMATCH; diff=222; shape=94.18604651162791: Cache the post-edge Width load in a branch-local typed scalar, testing the original EDI load and EBX add order without changing fractal ownership. [same emitted code as probe 5]
+probe 9 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Reverse the row-advance operand order to test whether the original loaded Width register and add destination reflect direct expression ordering. [same emitted code as probe 7]
+probe 11 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Swap top-level edge-loop local declaration order, testing VC5 home allocation for the original second-row y-slot countdown. [same emitted code as probe 9]
+probe 13 variant; result=MISMATCH; diff=222; shape=94.18604651162791: variant lab build\variant_lab\0044BD80_AddingRect\20260817_112752: 16 variants, 16 invariant-eligible, 0 exact
+probe 14 abi; result=MISMATCH; diff=236; shape=81.3953488372093: Replace the flat point overlay with the reviewed typed PrimaryPt/PtToPt PointMaker ownership; AddingRect does not access these fields.
+probe 15 abi; result=MISMATCH; diff=222; shape=94.18604651162791: Complete the typed PointMaker prefix with the four reviewed mask-pointer fields, restoring canonical offsets before judging ownership. [same emitted code as probe 11]
+probe 16 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Use the dead h parameter as the second vertical countdown after the compiler already reuses its home for rowCount. [same emitted code as probe 15]
+probe 17 liveness; result=MISMATCH; diff=228; shape=93.02325581395348: Carry the first horizontal cursor and second vertical countdown through the same dead y parameter, testing the original y-home reuse as a source-level live value.
+probe 18 control-flow; result=MISMATCH; diff=222; shape=94.18604651162791: Make the second edge guard an explicit repeated signed predicate, testing whether VC5 preserves the original separate zero test and delayed countdown store. [same emitted code as probe 16]
+probe 21 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Use only the dead y parameter as the second vertical countdown while retaining iVar2 as the first edge cursor; test the original y-home reuse without changing first-edge setup. [same emitted code as probe 20]
+probe 22 control-flow; result=MISMATCH; diff=222; shape=93.6046511627907: Use the dead y parameter as the second countdown with a positive loop test; compare natural signed loop spelling against the original separate zero gate.
+probe 24 control-flow; result=MISMATCH; diff=224; shape=95.93023255813954: Rewrite the second edge as an explicit dead-y guarded do-while with predecrement; test whether the original redundant dec/test/inc setup comes from this natural loop form.
+probe 26 control-flow; result=MISMATCH; diff=226; shape=94.76744186046511: Place the second-row cursor advance inside the positive row-count guard; test whether natural guard scope recovers the original Width-load and count setup ordering.
+probe 28 control-flow; result=MISMATCH; diff=227; shape=96.51162790697674: Use a top-tested postdecrement second-row loop under the observed nonnegative gate; test whether the source condition explains the original pre-loop decrement and zero check.
+probe 30 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Assign the original row count into the dead y parameter, then use y-- as the second-edge while condition; this directly tests the binary's pre-loop mov/dec/test/inc pattern and y-home reuse. [same emitted code as probe 21]
+probe 32 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Introduce a block-scoped rowCount initialized from iVar3, then use rowCount-- as the natural loop condition; test whether a distinct count lvalue recovers EAX and the dead y home. [same emitted code as probe 30]
+probe 34 liveness; result=MISMATCH; diff=226; shape=94.76744186046511: Keep a distinct rowCount live across the guarded row advance before its postdecrement loop; test whether overlapping iVar3 and rowCount lifetimes prevent home coalescing. [same emitted code as probe 26]
+probe 36 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Initialize a separate rowCount immediately after the proven iVar3/iVar8 setup and retain iVar3 for the guard; test persistent liveness for the original EAX and y-home count path. [same emitted code as probe 32]
+probe 38 control-flow; result=MISMATCH; diff=232; shape=95.40229885057471: Test a source-level decrement/copy/increment sequence before the second y-count loop, matching the observed dec/test/inc setup while preserving row semantics.
+probe 42 variant; result=MISMATCH; diff=222; shape=94.18604651162791: variant lab build\variant_lab\0044BD80_AddingRect\20260817_130329: 16 variants, 3 invariant-eligible, 0 exact
+probe 43 layout; result=MISMATCH; diff=222; shape=94.18604651162791: Restore the complete reviewed PointMaker tail from the exact CreateShape donor, testing whether canonical class extent changes VC5's second-row register and home basin. [same emitted code as probe 42]
+probe 44 abi; result=MISMATCH; diff=222; shape=94.18604651162791: Match the original decorated IAEX access surface by declaring AddingRect protected instead of public; test symbol ownership and codegen without changing behavior. [same emitted code as probe 43]
+probe 45 context; result=MISMATCH; diff=222; shape=94.18604651162791: Restore the reviewed same-TU PointMaker method declaration surface from nearby fractal.cpp exact donors, testing a period-supported front-end context axis. [same emitted code as probe 44]
+probe 47 layout; result=MISMATCH; diff=227; shape=96.51162790697674: Pair the evidence-led postdecrement row loop with a named Width load before the advance; test whether separate row-width and row-count values recover original EDI/EAX setup. [same emitted code as probe 28]
+probe 49 control-flow; result=MISMATCH; diff=221; shape=89.71428571428571: Use explicit nonnegative and nonzero guards around a direct do-while with predecrement; test whether the original two entry tests and countdown tail arise from this period-plausible form.
+probe 51 liveness; result=MISMATCH; diff=267; shape=86.44067796610169: Model proven stack-home reuse directly: x carries the first horizontal cursor, y carries the base row cursor, then y becomes the vertical countdown. Test the original x/y home ownership rather than local aliases.
+probe 53 liveness; result=MISMATCH; diff=310; shape=82.55813953488372: Move the proven iVar3 computation into its declaration while retaining source assignment order for iVar5 and iVar6; test declaration initialization as a VC5 source basin axis.
+probe 55 control-flow; result=MISMATCH; diff=227; shape=95.93023255813954: Use a signed postdecrement positive loop condition under the proven nonnegative guard; test whether source comparison order selects the original entry test and countdown lowering.
+probe 57 control-flow; result=MISMATCH; diff=222; shape=93.6046511627907: Use a top-tested positive while with an explicit body decrement, preserving the proven row count semantics; test compare/update placement against the original entry and tail. [same emitted code as probe 22]
+probe 59 control-flow; result=MISMATCH; diff=222; shape=94.18604651162791: Use a truth-test for the second countdown instead of explicit != 0; test the natural decompiler-supported loop predicate against the original signed entry checks. [same emitted code as probe 45]
+probe 61 liveness; result=MISMATCH; diff=494; shape=88.37209302325581: Explicitly spill the base cursor into the proven y home before the first loop, then reuse y for the second countdown while keeping iVar2 as the first cursor.
+probe 63 variant; result=MISMATCH; diff=494; shape=88.37209302325581: variant lab build\variant_lab\0044BD80_AddingRect\20260817_130921: 7 variants, 0 invariant-eligible, 0 exact
+probe 68 control-flow; result=MISMATCH; diff=221; shape=91.27906976744185: Hypothesis: restore the natural guarded do-while postdecrement form from the prior clean source, while retaining the protected PointMaker class and typed probability references. This tests the original dec/test/inc vertical setup without changing probability writes.
+probe 71 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Hypothesis: mirror CodeView/Ghidra function-scope probability temporaries (probAdd, value, and p) across all loops. The result preserves the protected typed owner and changes no semantic writes, but emits the same 506-byte/222-byte basin, so scoped declarations remain cleaner.
+probe 77 layout; result=MISMATCH; diff=226; shape=98.25581395348837: Hypothesis: follow the authenticated fractal.cpp local evidence: keep a separate local w for the first horizontal countdown, preserve function-scope narrow probability temporaries and typed cell pointers, and use a signed postdecrement vertical loop. This fixes the original y-home tail and all probability-byte add direction, reaching 97.09% exact-block coverage; remaining drift is the Width/count preheader.
+probe 80 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Hypothesis: reuse the first-loop width parameter home as the second-edge countdown by assigning w = iVar3 before the natural row loop; original stores and reloads this home at BEBE/BF6B. [same emitted code as probe 79]
+probe 81 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Hypothesis: copy the vertical extent into a distinct rowCount local before the second edge loop, so VC5 can reuse the dead width/row home as in the original BEBE/BF6B countdown. [same emitted code as probe 80]
+probe 82 control-flow; result=MISMATCH; diff=224; shape=94.76744186046511: Hypothesis: express the second edge as a guarded do-while with a copied rowCount and post-body decrement; this tests the original mov/dec/test/inc preheader while keeping zero-row fault order.
+probe 83 layout; result=MISMATCH; diff=222; shape=94.18604651162791: Hypothesis: combine the original postdecrement row-count basin with a scoped rowWidth load before the vertical advance, testing the observed Width-load and separate EAX countdown setup. [same emitted code as probe 81]
+probe 84 layout; result=MISMATCH; diff=477; shape=58.72093023255814: Hypothesis: use one authentic width local for the rectangle index and both vertical advances, testing whether the original second-edge Width load comes from a retained dimension value.
+probe 86 layout; result=MISMATCH; diff=227; shape=96.51162790697674: Hypothesis: retain the postdecrement vertical loop and give only the second-edge advance a scoped rowWidth carrier, testing whether VC5 emits the original standalone Width load without changing the exact first half. [same emitted code as probe 47]
+probe 87 layout; result=MISMATCH; diff=227; shape=96.51162790697674: Hypothesis: reverse the commutative vertical advance to Width + iVar5, testing whether operand order recovers the original standalone Width load and EDI add. [same emitted code as probe 86]
+probe 89 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Hypothesis: reuse the existing first-edge cursor variable iVar2 as a separate second-edge countdown after assigning iVar3, preserving iVar3 for the signed guard and testing the original EAX copy path. [same emitted code as probe 83]
+probe 90 liveness; result=MISMATCH; diff=222; shape=94.18604651162791: Hypothesis: use the incoming width parameter itself as the second-edge countdown with postdecrement semantics, matching the original w-home store and reload while preserving the signed outer guard. [same emitted code as probe 89]
+probe 91 liveness; result=MISMATCH; diff=222; shape=95.93023255813954: Hypothesis: model the decompiler's unmapped local w as a real local distinct from the width parameter, then use that local for both edge countdowns; this tests the original w-home ownership and postdecrement lowering.
+probe 92 control-flow; result=MISMATCH; diff=227; shape=98.25581395348837: Hypothesis: retain the authentic local w for the first countdown but drive the vertical edge with iVar3--, matching the Ghidra second-loop variable and testing the original dec/test/inc pattern with the w home.
+probe 93 liveness; result=MISMATCH; diff=222; shape=95.93023255813954: Hypothesis: keep local w distinct but copy iVar3 into the existing first-edge cursor variable before the vertical postdecrement loop, testing whether VC5 assigns the countdown to EAX as in the original. [same emitted code as probe 91]
+probe 94 liveness; result=MISMATCH; diff=220; shape=95.93023255813954: Hypothesis: restore the authenticated fractal.cpp function-scope probability temporaries cVar1/cVar4/pcVar7 while retaining local w and the vertical countdown copy, testing declaration lifetime and register color.
+probe 95 control-flow; result=MISMATCH; diff=226; shape=98.25581395348837: Hypothesis: with authenticated function-scope probability temporaries and local w, drive the vertical edge directly with iVar3-- to recover the original preheader decrement and signed zero predicate. [same emitted code as probe 77]
+probe 96 control-flow; result=MISMATCH; diff=222; shape=95.93023255813954: Hypothesis: preserve iVar3 as the signed outer predicate and use a nested rowCount do-while for the second edge, testing the original separate copy, zero test, decrement, and count-home sequence.
+probe 97 control-flow; result=MISMATCH; diff=220; shape=95.93023255813954: Hypothesis: use a for-header rowCount initialized from iVar3, testing declaration scope and the natural top-tested signed countdown against the original EAX copy and w-home setup. [same emitted code as probe 94]
+```
+<!-- end-recovered:46de93936fdd94079421 -->
+
+<!-- recovered:7307342dcc072105afcc -->
+### `a4713d7b79bc` `src/scratch/0044BD80_AddingRect.cpp:1-43`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// PointMaker::AddingRect
+// VA: 0044BD80
+//
+// Attempt log:
+// - The initial width/parallel-cursor reconstruction emitted a frame and a
+//   507-byte body; it was replaced with the parameter-home loop shape.
+// - Direct Width expressions plus the redundant nested edge guard removed the
+//   frame and recovered the two edge-loop CFG and saturation blocks.
+// - >= 1 bounds and int ProbabilityAdd temporaries reproduce the original
+//   compare and dword signed-saturation topology.
+// - The donor-era <stdlib.h>/<string.h> context is retained: it moved the
+//   source into the 494-byte, 89.53%-shape / 62-edit-byte basin.
+// - The binary's duplicated edge gate is best expressed as the natural
+//   arithmetic predicate `w - x >= 0`; moving the first cursor assignment
+//   before that gate restores the complete first setup block.
+// - The second and third edge updates use indexed ProbArray reads beside
+//   their store pointers, matching the close fractal.cpp donor forms.
+//   This reaches a 506-byte body, 94.19%-shape, and 31-edit-byte basin.
+// - Direct `w >= x`, h/y parameter-home mutations, and a one-shot row-width
+//   local were regressive or codegen duplicates and were not retained.
+// - A typed `rowCount = iVar3` second-edge loop-counter copy was also a
+//   codegen duplicate (506 bytes, diff 222); the clean source was restored.
+// - A 16-variant lab of row-advance and vertical-loop spellings produced
+//   only the existing 506-byte group or a 510-byte regressive group.
+//   Remaining drift is the second-edge-row setup and later schedule; no
+//   calls or ABI uncertainties remain.
+// - Restored the reviewed PrimaryPt/PtToPt and mask-pointer PointMaker
+//   ownership. It preserves all observed field offsets and emits the same
+//   506-byte reconstruction.
+// - Revisit probes tested dead-y and block-scoped row counters, explicit
+//   do-while forms, guarded row advances, and postdecrement conditions.
+//   The postdecrement form reproduced the original dec/test/inc pattern but
+//   kept the count in the h home; explicit y forms coalesced to the same code.
+//   No policy-valid exact source was found. The clean final check remains a
+//   506-byte body with diff 222 and first mismatch +0x40.
+// - The original IAEX decoration supports a protected method. The reviewed
+//   full PointMaker tail and same-TU method surface were restored; codegen did
+//   not change.
+// - A structured 16-variant loop lab found no exact result. Its closest
+//   size-valid postdecrement variant had diff 227. A seven-variant counter and
+//   Width-carrier lab produced only 505- and 511-byte groups.
+// - Direct signed while, truth-test, explicit do-while, named Width, local
+//   counter, and proven x/y-home reuse probes did not improve the clean basin.
+```
+<!-- end-recovered:7307342dcc072105afcc -->
+
+<!-- recovered:f428d106085822205383 -->
+### `a4713d7b79bc` `src/scratch/0044BD80_AddingRect.cpp:128-131`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// The executable reuses the incoming argument homes as the two edge cursors
+// and their countdowns.  Keep the source in the ordinary parameter-mutating
+// form suggested by the PDB/decompiler rather than introducing a frame-sized
+// collection of parallel cursor locals.
+```
+<!-- end-recovered:f428d106085822205383 -->

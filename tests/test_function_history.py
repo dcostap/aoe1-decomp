@@ -319,8 +319,8 @@ class FunctionHistoryTests(unittest.TestCase):
             "source": "src/demo_unit_tu.cpp",
             "flags": "config/flags/demo.rsp",
             "owners": {
-                "00001000": "src/matching/00001000_demo.cpp",
-                "00001010": "src/matching/00001010_other.cpp",
+                "00001000": "src/00001000_demo.cpp",
+                "00001010": "src/00001010_other.cpp",
             },
             "symbols": {"00001010": "?other@@YAHXZ"},
         }
@@ -335,8 +335,8 @@ class FunctionHistoryTests(unittest.TestCase):
                 {"path": "config/flags/demo.rsp", "sha256": "flags"},
                 {"path": "include/declaration_context.h", "sha256": "declarations"},
                 {"path": "src/demo_unit_tu.cpp", "sha256": "wrapper"},
-                {"path": "src/matching/00001000_demo.cpp", "sha256": "owner"},
-                {"path": "src/matching/00001010_other.cpp", "sha256": "other-owner"},
+                {"path": "src/00001000_demo.cpp", "sha256": "owner"},
+                {"path": "src/00001010_other.cpp", "sha256": "other-owner"},
             ],
         }
         with tempfile.TemporaryDirectory() as temporary:
@@ -346,8 +346,8 @@ class FunctionHistoryTests(unittest.TestCase):
                 ("config/translation_units.json", "mapping\n"),
                 ("include/declaration_context.h", "int declaration;\n"),
                 ("src/demo_unit_tu.cpp", '#include "owner.cpp"\n'),
-                ("src/matching/00001000_demo.cpp", "int demo;\n"),
-                ("src/matching/00001010_other.cpp", "int other;\n"),
+                ("src/00001000_demo.cpp", "int demo;\n"),
+                ("src/00001010_other.cpp", "int other;\n"),
             ):
                 path = root / relative
                 path.parent.mkdir(parents=True, exist_ok=True)
@@ -374,7 +374,7 @@ class FunctionHistoryTests(unittest.TestCase):
             ), patch(
                 "function_history.compiler_source_path", return_value=root / "src/demo_unit_tu.cpp"
             ), patch(
-                "function_history.preferred_source_path", return_value=root / "src/matching/00001000_demo.cpp"
+                "function_history.preferred_source_path", return_value=root / "src/00001000_demo.cpp"
             ), patch(
                 "function_history.preferred_flags_rsp_path", return_value=root / "config/flags/demo.rsp"
             ), patch(
@@ -387,8 +387,8 @@ class FunctionHistoryTests(unittest.TestCase):
             ):
                 run = record_checkpoint(record, "grouped")
                 (root / "src/demo_unit_tu.cpp").write_text("changed wrapper\n", encoding="utf-8")
-                (root / "src/matching/00001000_demo.cpp").write_text("changed target\n", encoding="utf-8")
-                (root / "src/matching/00001010_other.cpp").write_text("changed owner\n", encoding="utf-8")
+                (root / "src/00001000_demo.cpp").write_text("changed target\n", encoding="utf-8")
+                (root / "src/00001010_other.cpp").write_text("changed owner\n", encoding="utf-8")
                 (root / "config/flags/demo.rsp").write_text("/Od\n", encoding="utf-8")
                 restore_checkpoint(record, "grouped")
 
@@ -398,11 +398,11 @@ class FunctionHistoryTests(unittest.TestCase):
             self.assertEqual(run["build_context"]["pdb_owner"]["status"], "match")
             context_root = root / run["artifact_path"] / "context"
             self.assertTrue((context_root / "files/src/demo_unit_tu.cpp").is_file())
-            self.assertTrue((context_root / "files/src/matching/00001010_other.cpp").is_file())
+            self.assertTrue((context_root / "files/src/00001010_other.cpp").is_file())
             self.assertTrue((context_root / "files/include/declaration_context.h").is_file())
             self.assertTrue((context_root / "build_context.json").is_file())
             self.assertEqual((root / "src/demo_unit_tu.cpp").read_text(encoding="utf-8"), '#include "owner.cpp"\n')
-            self.assertEqual((root / "src/matching/00001010_other.cpp").read_text(encoding="utf-8"), "int other;\n")
+            self.assertEqual((root / "src/00001010_other.cpp").read_text(encoding="utf-8"), "int other;\n")
             self.assertEqual((root / "config/flags/demo.rsp").read_text(encoding="utf-8"), "/O2\n")
 
 

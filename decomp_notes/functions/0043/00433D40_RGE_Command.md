@@ -1,0 +1,79 @@
+# Function notes: 00433D40 `RGE_Command`
+
+Module notes: `decomp_notes/Command_module.md`.
+
+## Translation-unit context
+
+- PDB module: `Command.cpp`; natural owner: `src/Command.cpp`.
+- The target is the first normal source owner in this module. Its immediate
+  registered neighbors at `00433D90`, `00433DB0`, `00433DC0`, `00433DE0`, and
+  `00433E20` remain exact.
+- Original span: `00433D40-00433D60` (33 bytes, 10 instructions), with no
+  calls, no frame, and one `__thiscall` return.
+- Proven writes are `world` at `+0x4`, `com_hand` at `+0x14`, the vptr at
+  `+0x0`, and zero stores at `+0x8` and `+0xC`.
+
+## Current mismatch
+
+- The fresh natural assignment baseline differed by 8 bytes. The compiler
+  placed the vptr store before `com_hand`, so the store order did not align.
+- The final source uses member initializers for `world` and `com_hand`, then
+  assigns `last_order` and `last_order_size` to zero in the body. This emits
+  the original store order and keeps the uninitialized `last_order_time`
+  member untouched.
+- Final focused result: `MATCH`, `0.0000%`, 33/33 bytes, 10/10 instructions,
+  100.00% shape and block coverage, no calls, no frame, and one compatible
+  relocation. Owner, boundary, and direct-target checks pass.
+
+## Recovered attempt history
+
+<!-- recovered:de9bd1441356a0af6179 -->
+### `target-session` `build/target_sessions/00433D40_RGE_Command.json:1-3`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=8; shape=90.0: Standalone baseline before grouped repair; constructor differs by 8 bytes.
+probe 2 variant; result=MISMATCH; diff=11; shape=90.0: Store-order variant tested zeros before com_hand to seek the observed world/com_hand/vptr order.
+probe 3 liveness; result=MISMATCH; diff=14; shape=80.0: Tested a natural member-initializer constructor form to seek the observed delayed vptr store.
+```
+<!-- end-recovered:de9bd1441356a0af6179 -->
+
+## Rejected approaches
+
+- The natural body assignment form (`world`, `com_hand`, then the two zero
+  stores) differed by 8 bytes because VC5 emitted the vptr before `com_hand`.
+- Reordering the body to zero the tail before `com_hand` differed by 11 bytes
+  and placed `com_hand` last.
+- Initializing all four fields in the member-initializer list differed by 14
+  bytes and emitted the vptr after the tail stores.
+- No artificial source form was retained.
+
+## Open questions
+
+- Registration still lists this normal owner as `scratch`; promotion is a
+  coordinator action and remains unchanged.
+
+## Next useful approaches
+
+- No further code-generation work is needed. Review the exact source for
+  promotion.
+
+## Worker updates
+
+### 2026-08-29 — wave20-command
+
+- Recovered the exact natural form with `world(world)` and
+  `com_hand(com_hand)` member initializers. The body assigns only
+  `last_order = 0` and `last_order_size = 0`.
+- Focused validation: `target_session.py check --kind variant` and
+  `check_function.py --no-build` report `MATCH`, `0.0000%`, 33/33 bytes,
+  correct owner, closed boundary, and one safely masked relocation.
+- Grouped validation:
+  `build/audits/workers/wave20-command/Command/report.txt` compiled all 51
+  normal functions. It reports 25 registered exact rows, two grouped exact
+  rows that are not registered, eight grouped mismatches, six accepted-drift
+  rows, and four boundary problems. The target and one other unregistered row
+  are the two grouped exact rows; the five immediate registered neighbors
+  remain exact.
+- The exact source was pinned. No status or registration changes were made.

@@ -1,0 +1,160 @@
+# Function notes: 00410220 `loadPlays`
+
+Module notes: `decomp_notes/aipbook_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:6c6c381e3db2feeee89f -->
+### `d050eea3c` `src/aipbook.cpp:928-930`
+
+Mapping: `exact`. removed comment declares this PDB source owner VA.
+
+```text
+// 00410220 AIPlayBook::loadPlays
+// BINARY NOTE: The parser keeps the shipped two-pass file scan, /GX array
+// lifetime, named fields, and the 72 ordered call sites. It remains scratch.
+```
+<!-- end-recovered:6c6c381e3db2feeee89f -->
+
+<!-- recovered:0c1a7ab27ae86457bf1b -->
+### `target-session` `build/target_sessions/00410220_loadPlays.json:1-44`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=4084; shape=81.98504418762747: Baseline current /GX source: 72/72 ordered calls, owner match, size +83, frame 0x3A4 vs original 0x3A8; first drift is EH prologue and placeholder external relocations.
+probe 2 flags; result=MISMATCH; diff=4262; shape=77.9822767552829: Hypothesis 1: remove /GX; test whether the anomalous EH prologue is a custom-flag artifact.
+probe 3 abi; result=MISMATCH; diff=4085; shape=81.91706322229776: Hypothesis 2: replace visible virtual destructor with two declaration-only slots; retain convert-method slot offsets while testing whether destructor ownership causes the EH frame and this-home store.
+probe 4 liveness; result=MISMATCH; diff=4084; shape=81.98504418762747: Hypothesis 3: stage array allocation through a named newPlays local before assigning this->plays; test whether original allocation/this-home ordering reflects a separate result.
+probe 5 control-flow; result=MISMATCH; diff=4283; shape=81.80583842498302: Hypothesis 4: use direct temp[i+4] quote scans with two integer counters, matching the original's ECX/EDX counters and repeated direct byte tests instead of pointer/current temporaries.
+probe 7 liveness; result=MISMATCH; diff=4084; shape=81.98504418762747: Hypothesis 5: scope the two comment scan bytes inside the second-pass iteration; test whether original short-lived sscanf outputs explain the earlier stack homes at entry offsets -0x3A9/-0x3A1. [same emitted code as probe 1]
+probe 9 abi; result=MISMATCH; diff=4314; shape=79.79661016949153: Hypothesis 6: add inline empty destructors to branch-local command/trigger types; test whether VC5 needs a nontrivial local lifetime to emit the oracle's FS-first EH registration.
+probe 11 context; result=MISMATCH; diff=4226; shape=82.18898708361658: Hypothesis 7: add period stdlib header context; test whether allocator and EH declarations select the oracle codegen basin.
+probe 13 context; result=MISMATCH; diff=4084; shape=81.98504418762747: Hypothesis 8: add period memory.h context for memcpy; test whether intrinsic declaration order changes parser copy lowering without altering source behavior.
+probe 15 control-flow; result=MISMATCH; diff=4084; shape=81.98504418762747: Hypothesis 9: use a direct while on the quote-source pointer rather than an if plus do-while; original bytes show one initial quote test followed by a bottom-tested scan. [same emitted code as probe 7]
+probe 17 control-flow; result=MISMATCH; diff=3985; shape=81.51658767772511: Hypothesis 10: remove the pre-loop refPhase bound and rely on the existing post-Play limit break; original assembly places the 16000 test after refPhase increment.
+probe 19 liveness; result=MISMATCH; diff=4084; shape=81.98504418762747: Hypothesis 11: move the phase parser integer declaration after the two interleaved comment locals, following the decompiler's original local order; test stack-home and register coloring effects. [same emitted code as probe 15]
+probe 21 layout; result=MISMATCH; diff=4108; shape=83.89945652173913: Hypothesis 12: recover the original sscanf high-byte aliases:  writes into byte 3 of int j and int currentPhase, as Ghidra proves via commentTemp1/commentTemp2 stack offsets and the decompiler call casts.
+probe 22 control-flow; result=MISMATCH; diff=4108; shape=83.89945652173913: Hypothesis 13: reverse the high-byte comment predicate to j first, matching original compare order at +02BC then +02C3 while preserving the same shipped condition.
+probe 23 liveness; result=MISMATCH; diff=4108; shape=83.89945652173913: Hypothesis 14: place phaseValue1 after currentPhase and before j, matching the decompiler's temp4/comment/currentPhase/phase-value/comment/j local sequence. [same emitted code as probe 22]
+probe 24 behavior; result=MISMATCH; diff=4096; shape=82.30088495575221: Hypothesis 14: separate the int whose high byte receives comment  from the actual phase-state int. Ghidra proves iStack_3a8 is initialized/reset as phase state, while currentPhase is the comment alias.
+probe 25 liveness; result=MISMATCH; diff=4096; shape=82.30088495575221: Hypothesis 15: move FILE* file to the buffer-adjacent declaration group; original keeps fileIn at the stack home used by rewind/fgets, and the current alias model moved it to a wrong [esp+3C]. [same emitted code as probe 24]
+probe 26 control-flow; result=MISMATCH; diff=3969; shape=82.39292997960571: Hypothesis 16: with the recovered comment/phase aliases, use two direct temp[i+4] quote scans matching the decompiler's loop source rather than a source pointer/current temporary.
+probe 27 liveness; result=MISMATCH; diff=4096; shape=82.30088495575221: Hypothesis 17: make the quote-end counter a function-scope local, matching Ghidra's iStack_3b0 lifetime, while retaining the pointer scan and recovered phase/comment aliases. [same emitted code as probe 25]
+probe 28 layout; result=MISMATCH; diff=3969; shape=82.39292997960571: Hypothesis 18: final combined model before extended search: high-byte comment aliases, separate phase state, direct quote scans, and top-level quote counter. This tests whether the source recovery model stabilizes the improved 3969-byte basin. [same emitted code as probe 26]
+probe 29 behavior; result=MISMATCH; diff=4160; shape=79.24016282225237: Hypothesis 19: split the proven phase-state iStack_3a8 from the reused value1 iStack_3b0. Group ranges, commands, and triggers overwrite value1; Phase and EndPlay update only phaseState.
+probe 30 liveness; result=MISMATCH; diff=4160; shape=79.24016282225237: Hypothesis 20: restore the original inferred scalar declaration order temp4/value1/comment-int/phaseState/comment-int, now that the phase-state and value1 roles are separate. [same emitted code as probe 29]
+probe 31 liveness; result=MISMATCH; diff=4160; shape=79.24016282225237: Hypothesis 21: keep distinct trigger and rtrigger locals for Trigger and RTrigger arms; original stack evidence shows separate trigger windows at +0x290 and +0x2A4. [same emitted code as probe 30]
+probe 32 layout; result=MISMATCH; diff=4167; shape=78.64406779661017: Hypothesis 22: model the proven contiguous comment/phase/comment int window as one trivial LoadPlayParserState aggregate; test whether VC5 preserves the original [comment,phase,comment] stack geometry.
+probe 33 liveness; result=MISMATCH; diff=4280; shape=79.1864406779661: Hypothesis 23: restore the original per-line zero of iStack_3b0/value1. The decompiler shows temp4=0, iStack_3b0=0, i=0, fileIn=0, temp7=0 before comment parsing; phaseState remains separate.
+probe 34 liveness; result=MISMATCH; diff=4280; shape=79.1864406779661: Hypothesis 24: scope the reused value1 parser local inside each second-pass iteration, retaining its proven zero initialization while testing whether VC5 keeps the 256-byte buffers at original offsets. [same emitted code as probe 33]
+probe 35 flags; result=MISMATCH; diff=4313; shape=78.72628726287263: Hypothesis 25: diagnostic empty local destructor to test whether a visible non-array lifetime changes VC5 from push-first to the oracle's FS-first EH prologue; not source-plausible unless it reproduces the original call/cleanup surface.
+probe 36 layout; result=MISMATCH; diff=4280; shape=79.1864406779661: Hypothesis 26: reorder declarations to the decompiler's source-like order: scalar parser locals first, then file and three parser buffers. This tests whether the original frame keeps buffers at +0x70 while scalar aliases occupy the low window. [same emitted code as probe 34]
+probe 39 layout; result=MISMATCH; diff=4188; shape=36.332417582417584: Hypothesis 1: retain the proven late-loop source and destination AIPlay pointers across variant copies. The original keeps source and destination byte offsets in EBP/ESI across field, target, group, and phase loops; typed pointers are a natural owner model and should reduce repeated indexed address formation.
+probe 41 flags; result=MISMATCH; diff=4302; shape=77.89830508474576: Hypothesis 2: the original FS-first handler may come from a hidden empty destructor on the branch-local AIPlayPhaseCommand. Test a period-plausible inline no-op destructor, which should add EH metadata without a normal call if the original class had one.
+probe 43 liveness; result=MISMATCH; diff=4280; shape=79.1864406779661: Hypothesis 3: put the persistent Phase state immediately after temp4, before the reused phaseValue1 parser local. Original keeps phaseState at the stable [esp+1C] home while phaseValue1 is overwritten by quote, Group, and command scans; declaration order may recover that ownership without aliases. [same emitted code as probe 38]
+probe 45 flags; result=MISMATCH; diff=4319; shape=78.97227856659906: Hypothesis 4: the FS-first CxxFrameHandler may come from the branch-local XYZ objects, whose original class could have an inline empty destructor. Unlike AIPlayPhaseCommand, XYZ is not an AIPlay member, so this tests EH metadata without changing the array-new ABI.
+probe 47 control-flow; result=MISMATCH; diff=4203; shape=35.989010989010985: Hypothesis 5: model the oracle's proven destination stride as a natural AIPlay cursor. Initialize destinationPlay at sourcePlay, increment it once per variant, and keep sourcePlay fixed; this tests the original ESI += 0x608 topology without a byte cursor or raw overlay.
+probe 49 liveness; result=MISMATCH; diff=4267; shape=79.6736913664174: Hypothesis 6: use a separate targetIndex for the five target-copy pairs in EndPlay. The oracle zeroes EDI and keeps the parser i home untouched; the current shared i emits a late stack zero/store and wrong home topology.
+probe 50 liveness; result=MISMATCH; diff=4236; shape=81.78082191780823: Hypothesis 7: make the late group-element and trigger indices branch-local. Original reuses EDI for both six-element group copies and three-element trigger copies, while the parser i home remains separate; local indices should preserve that natural register lifetime.
+probe 52 context; result=MISMATCH; diff=4211; shape=81.78082191780823: Hypothesis 1: compile loadPlays against the recovered full aipbook.cpp declaration context instead of the narrow standalone class stubs. This tests canonical class ownership, constructor and helper declaration order, and all proven aggregate layouts.
+probe 53 control-flow; result=MISMATCH; diff=4004; shape=53.36538461538461: Hypothesis 2: use persistent sourcePlay and destinationPlay AIPlay cursors for EndPlay variant copies. Original assembly keeps EBP as the source byte offset and ESI as the destination pointer, then advances ESI by one 0x608 record per variant; this tests the natural cursor form without aliases or raw arithmetic.
+probe 54 control-flow; result=MISMATCH; diff=4113; shape=48.472505091649694: Hypothesis 3: retain only the persistent destinationPlay cursor, while source reads remain direct this->plays[oldPhase] expressions. This preserves EBX as the book receiver and tests the original EBP source-offset plus ESI destination-cursor topology without a long-lived source alias.
+probe 55 liveness; result=MISMATCH; diff=4086; shape=48.87983706720978: Hypothesis 4: scope destinationPlay inside the non-HP EndPlay arm. The original initializes the destination cursor only after the HP branch, so this tests the proven late lifetime and reduces pointer pressure before the branch.
+probe 56 layout; result=MISMATCH; diff=4212; shape=64.72602739726027: Hypothesis 5: recover the two source char comment locals from the PDB/decompiler stack window and pass their addresses naturally to the comment sscanf, instead of forcing high-byte aliases into int locals. This tests the binary-proven byte outputs and local-home topology.
+probe 57 liveness; result=MISMATCH; diff=4211; shape=81.78082191780823: Hypothesis 6: reverse the two quote-scan increment statements so the count local updates before the input index. Original keeps the input index in EDX and the count in EAX; this tests source update order as the natural register-coloring cause.
+probe 58 layout; result=MISMATCH; diff=4211; shape=81.78082191780823: Hypothesis 7: move the persistent quote index declaration before temp4. Original quote code colors the index in EDX and the count in EAX, unlike the current EAX/EDX assignment; this tests declaration-order register coloring without changing behavior. [same emitted code as probe 52]
+probe 60 liveness; result=MISMATCH; diff=4211; shape=81.78082191780823: Hypothesis 8: name the new[] result as allocatedPlays before publishing this->plays. The original EH trace has a distinct array result/temp5 and publishes the member after constructor completion; this tests natural allocation-result lifetime and fault order.
+probe 61 layout; result=MISMATCH; diff=4216; shape=49.38186813186813: Hypothesis 9: use a branch-local quoteEnd counter for Play-name extraction, leaving phaseValue1 available for later parser outputs. This tests the original quote scan's EAX count and EBP phase-index coloring while preserving malformed-input behavior.
+```
+<!-- end-recovered:0c1a7ab27ae86457bf1b -->
+
+<!-- recovered:96200df8803895e7c2c8 -->
+### `01b3d6e76bd6` `src/scratch/00410220_loadPlays.cpp:1-59`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00410220 AIPlayBook::loadPlays(char*)
+// PDB owner: AIPlayBook::loadPlays(char*)
+// Decorated owner: ?loadPlays@AIPlayBook@@QAEHPAD@Z
+//
+// Clean reconstruction baseline: AIPlayBook owns a counted array of 0x608-byte
+// AIPlay records.  The file is read once to count Play records and again to
+// populate the named play/phase/group fields.  The generated packet's odd stack
+// aliases are not used as the source model; parser buffers and the real AI play
+// aggregates are named below.
+//
+// Attempt log:
+// - baseline /O2: the first source draft omitted the second pass and allocation;
+//   corrected to count Play records, clamp, construct AIPlay[], rewind, and parse.
+// - /GX is retained in config/flags/00410220_loadPlays.rsp: it restores the
+//   oracle's EH-framed array-construction lifetime and exact call set; default
+//   flags omit the FS frame.
+// - bounded second-pass condition `refPhase < 16000 && fgets(...)` recovers the
+//   oracle's single fgets call site (72/72 ordered calls, no call-set gaps).
+// - named virtual AIPlayBook conversion surface and the AIPlay/phase/group
+//   overloads are complete; parser buffers and generation/copy loops are natural.
+// - explicit operator-new plus placement-constructor was diagnostic only: it
+//   removed the EH frame and was restored to natural `new AIPlay[]`.
+// - left in scratch: current /GX candidate is 66 bytes longer, frame 0x3A4 vs
+//   0x3A8, with the remaining drift concentrated in EH prologue/state ordering,
+//   scalar parser stack homes, and the late loop tail; no call or CFG behavior
+//   uncertainty remains in the reconstructed source.
+// - do-while reconstruction moved the positional diff to 4001 bytes, but it
+//   emitted a second-pass extra fgets (73/72 calls); rolled back to the exact
+//   ordered-call candidate.  The remaining lead is local lifetime/frame shape.
+// - corrected the Play-name quote scan to use the proven temp[4] fgets
+//   destination and the existing i/temp4 counters; diff improved to 4090.
+// - parsed Phase into temp4, then assigned currentPhase; original data flow
+//   stores the parsed value through that temporary.  Diff improved to 4073.
+// - high-byte comment aliases, a separate Group minimum local, and direct
+//   clamp expressions were tested and restored; they reduced source clarity or
+//   structural coverage.  One phaseValue1 local now names the shared phase
+//   parser value; it emits the same code as the prior value1 spelling.
+// - Ghidra stack evidence separates the phase state from the two `%c` outputs.
+//   The clean source now keeps phaseState and phaseValue1 separate.
+// - direct quote scans and the separated parser state improve structural
+//   coverage, but the current natural source remains nonexact.
+// - 28 meaningful probes covered flags, headers, ABI surfaces, lifetimes,
+//   declaration order, control flow, and local layout.  The best metric-only
+//   basin aliases phaseState with value1 and is not behavior-safe.
+// - final validation: 72/72 ordered calls, frame 0x3A8, size +95, diff 4280;
+//   the remaining blocker is VC5 EH/local-home topology.
+// - fresh late-loop evidence: the parser `i` home is not the five-element
+//   target-copy index.  A branch-local targetIndex and separate groupIndex /
+//   triggerIndex recover the oracle's EDI loop topology.  The natural source
+//   now measures size +43, shape 81.78%, and diff 4236 with all 72 calls.
+// - reusing the quote end counter and adding the unmapped temp3 local did not
+//   change emitted code; the narrow char comment locals remain preferred.
+// - canonical-context finish: this owner now uses the reviewed aipbook.cpp
+//   declarations and aggregate layouts.  Fresh direct checking improved the
+//   diff to 4211, kept the PDB owner and all 72 ordered calls, but did not
+//   reach exact bytes.  The canonical wrapper also compiles with /GX.
+// - restored after controlled tests: persistent EndPlay cursors, natural
+//   comment locals, a branch-local quote counter, and a named new[] result.
+//   These forms changed registers or behavior without an exact result.
+```
+<!-- end-recovered:96200df8803895e7c2c8 -->
+
+<!-- recovered:01782c403165149bfa5e -->
+### `01b3d6e76bd6` `src/scratch/00410220_loadPlays.cpp:197-198`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+    // This is the complete named virtual surface from the AIPlayBook ABI.  The
+    // data members consequently begin at their real post-vptr offsets.
+```
+<!-- end-recovered:01782c403165149bfa5e -->
+
+<!-- recovered:a75117b79d48c6bbebb6 -->
+### `01b3d6e76bd6` `src/scratch/00410220_loadPlays.cpp:300-301`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+        // BINARY NOTE: VC5 writes the two comment bytes into byte 3 of int
+        // homes.  The adjacent phase state has a separate home.
+```
+<!-- end-recovered:a75117b79d48c6bbebb6 -->

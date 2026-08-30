@@ -9,15 +9,15 @@
     "0053B670": { "status": "matching" },
     "0053B730": {
       "status": "accepted_drift",
-      "note_path": "recovery_notes/vis_unit_module.md"
+      "note_path": "decomp_notes/vis_unit_module.md"
     },
     "0053B7E0": {
       "status": "scratch",
-      "note_path": "recovery_notes/vis_unit_module.md"
+      "note_path": "decomp_notes/vis_unit_module.md"
     },
     "0053B9A0": {
       "status": "scratch",
-      "note_path": "recovery_notes/vis_unit_module.md"
+      "note_path": "decomp_notes/vis_unit_module.md"
     },
     "0053BB30": { "status": "matching" },
     "0053BBE0": { "status": "matching" },
@@ -28,7 +28,7 @@
     "0053BFD0": { "status": "matching" },
     "0053C050": {
       "status": "matching",
-      "note_path": "recovery_notes/vis_unit_module.md"
+      "note_path": "decomp_notes/vis_unit_module.md"
     }
   }
 }

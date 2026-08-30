@@ -14,7 +14,7 @@
     "004057E0": { "status": "matching" },
     "00405850": {
       "status": "scratch",
-      "note_path": "recovery_notes/act_move_module.md"
+      "note_path": "decomp_notes/act_move_module.md"
     },
     "00405BF0": { "status": "matching" }
   }

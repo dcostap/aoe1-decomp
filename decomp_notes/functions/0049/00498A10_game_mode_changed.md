@@ -1,0 +1,54 @@
+# Function notes: 00498A10 `game_mode_changed`
+
+## Translation-unit context
+
+The PDB module is `scr_game.cpp`. The owning class is `TRIBE_Screen_Game`.
+The function spans `00498A10-00498A40` and has a `__thiscall` ABI with two
+integer parameters. The original body saves `ESI`, checks `tool_box` at
+`this+0x57C`, calls `RGE_Panel_Tool_Box::game_mode_changed`, checks
+`button_panel[0]` at `this+0x4C8`, calls `reset_buttons`, and returns with
+`ret 8`.
+
+## Current mismatch
+
+The final focused check is exact: 49/49 bytes, 17/17 instructions, no frame,
+`ESI` saved, two aligned direct calls, two safely masked relocations, matching
+owner symbol, and the original boundary. Strict positional diff is 0 bytes
+(`0.0000%`).
+
+## Recovered attempt history
+
+The natural source initially used `this->button_panel != 0`. A fresh baseline
+emitted `lea eax,[esi+4C8h]` and differed by one byte from the original
+`mov eax,[esi+4C8h]`. The original load proves a check of the first array
+element, not the array address. Changing the condition to
+`this->button_panel[0] != 0` restored the original instruction and produced an
+exact match.
+
+## Rejected approaches
+
+The array-decay form `this->button_panel != 0` is rejected. It tests the array
+address and causes `LEA`; it does not explain the original first-element load.
+
+## Open questions
+
+No behavior or ABI question remains for this function. Promotion and source
+registration remain coordinator decisions.
+
+## Next useful approaches
+
+If exactness changes after another translation-unit edit, preserve the indexed
+array condition and inspect the first mismatch at `00498A2C`.
+
+## Worker updates
+
+- 2026-08-29 wave20-scr-game: Changed only `src/scr_game.cpp` to test
+  `button_panel[0]`. Focused `check_function.py --no-build` reports `MATCH`
+  and `0.0000%`. The grouped `scr_game` audit reports 96 included normal
+  functions, 64 registered owner matches, and the target as exact. The audit
+  also reports 32 unregistered included functions. The first target-session
+  check printed `MATCH`, but checkpoint recording timed out on the existing
+  history lock. After a direct checkpoint and refreshed grouped audit, the
+  final target-session check recorded `probe-003-validation`, pin-clean
+  succeeded, and the lease was released. The preclaimed session start timed
+  out on the session lock and was not retried.

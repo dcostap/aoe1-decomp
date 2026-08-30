@@ -1,0 +1,88 @@
+# Function notes: 0049BDB0 `command_building`
+
+## Recovered attempt history
+
+<!-- recovered:e351b7a0f6beb08ea259 -->
+### `d050eea3c` `src/scr_game.cpp:3743-3743`
+
+Mapping: `strong`. next mapped function definition is command_building at old line 3747.
+
+```text
+        // BINARY NOTE: The original clears the inherited start item.
+```
+<!-- end-recovered:e351b7a0f6beb08ea259 -->
+
+<!-- recovered:570467659e12eee623b9 -->
+### `5ef5aad6448d` `src/scratch/0049BDB0_command_building.cpp:1-66`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0049BDB0 command_building (225B)
+// scr_game.cpp
+// PDB line span 4903-4925.
+//
+// Canonical reconstruction (modeled on exact sibling command_research 0049CAF0):
+//   paused = get_paused(); if (!paused) {
+//     if (get_player()->check_obj_cost(obj_id, &attr, 1.0f, paused)) {
+//       rge_base_game->master_obj_id = obj_id;
+//       if (get_player()->master_objects[obj_id]->building_connect_flag)
+//           set_game_mode(0x15, 0);   // vt+0x10 (donors also named it build_mode/set_font)
+//       else set_game_mode(7, 0);
+//     } else {
+//       get_string2(0x67, 1, attr, msg, 0x200);   // vt+0x28
+//       message_panel->show_message(1, msg, 0x56, 0, 0, 0, 0);
+//     }
+//   }
+// Real get_player() is 0-arg (pops 0); the 4 pushed cost args are popped by the
+// real check_obj_cost (ret 10h). Chaining get_player()->check_obj_cost(args) makes
+// VC5 push the args before the get_player call (matching the binary), while a
+// separate `player` local makes it push them after (mismatch).
+//
+// Attempt log (sa-d356673f, budget 10, all under /O2 /Oy):
+// - baseline: args attached to get_player overload + 0-arg check_obj_cost: call
+//   site matches exactly, but VC5 hoists the rge_base_game load (mov ecx,[g],
+//   6B) above the cost test; original keeps it after the je in EAX (A1, 5B) and
+//   reloads it on the error path. -5 size, 151 diff, 84.9% shape.
+// - flags: /GX off -> byte-identical (stale /GX neutral; sibling uses default).
+// - register self, if/else outer, paused-as-arg4 variants: byte-identical.
+// - args on check_obj_cost + player local: load placement right but args pushed
+//   AFTER get_player (order mismatch); 94.3% shape but 182 diff.
+// - chained get_player()->check_obj_cost(...) + inline master_objects access +
+//   paused arg4: best. Call site, branch vtable registers (edx/eax), get_string2
+//   setup and show_message message_panel load all match; resync 83.6% (188/225
+//   equal bytes), shape 90.4%, exact-block 40%. Only remaining drift is the
+//   hoisted rge_base_game load (root cause of the -5 size, error-path reload
+//   omission, and master_objects/index register coloring: edx/eax/cl vs
+//   ecx/esi/al with load C before vs after the index).
+// - variant lab (8 combos of check-affiliation x store spelling): confirms the
+//   two basins; chained family is the closer one (edit-diff 46 vs 69).
+// Left in scratch: chained+inline+paused form (best); the single remaining
+// blocker is VC5's post-call load hoist, which no natural source spelling
+// tried (store casts, if/else, local vs chained, paused vs literal) avoided.
+//
+// Follow-up session (sa-66340ab1-command_building, budget 10):
+// - baseline: prior clean source remains 149 differing bytes, 220 rebuilt bytes,
+//   100% ordered calls, and the same post-check global-load hoist.
+// - removed the success-arm else; the cost block gained exact bytes but lost
+//   the original success-tail topology and grew the size gap to -10, so restored.
+// - materialized the unsigned cost result; VC5 emitted identical code, so no
+//   source change retained.
+// - restored the proven TScreenPanel inheritance boundary with message_panel at
+//   +0x544; emitted code was unchanged, so the minimal local screen surface is
+//   sufficient for this target.
+// - cleared the stale per-function /GX response file; default /O2 /Oy emitted
+//   identical bytes. Reversed cost-guard arms were worse (call order -2/+2),
+//   so restored the clean positive guard.
+// Left unresolved: natural typed source has the correct calls/frame/CFG and
+//   188/225 resynchronized bytes, but VC5 hoists one rge_base_game load before
+//   `test al`; forcing the six-load schedule would require fake volatility or
+//   opaque compiler steering, which is not retained.
+// Follow-up worker: direct absolute-global macro versus the validated extern
+//   global was codegen-close but one byte worse; restored the extern canonical
+//   source.  The remaining global-load hoist is therefore a documented
+//   compiler-basin blocker, not an unresolved call/layout ABI fact.
+// Main-agent audit restored canonical polymorphic game/player/master/screen
+// ownership and removed the residual self register alias.
+```
+<!-- end-recovered:570467659e12eee623b9 -->

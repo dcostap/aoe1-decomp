@@ -16,6 +16,6 @@
     "00433AA0": { "status": "matching" },
     "00433AB0": { "status": "matching" },
     "00433AC0": { "status": "matching" },
-    "00433AD0": { "status": "scratch", "note_path": "recovery_notes/com_sync_module.md" }
+    "00433AD0": { "status": "scratch", "note_path": "decomp_notes/com_sync_module.md" }
   }
 }

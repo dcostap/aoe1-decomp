@@ -1,0 +1,19 @@
+# Function notes: 00524530 `load_db_files`
+
+Module notes: `decomp_notes/tribegam_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:1c4c4eaa3a460982ff6a -->
+### `912332e8f578` `src/matching/00524530_load_db_files.cpp:1-5`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 00524530 TRIBE_Game::load_db_files
+// Source: tribegam.cpp lines 1850-1879
+// Attempt log:
+// initial: packet-modeled local TRIBE_Game/RGE_Game_World layout and natural source.
+// fixed: avoid non-polymorphic base subobject (+4 this adjustment); declare input methods on local TRIBE_Game.
+```
+<!-- end-recovered:1c4c4eaa3a460982ff6a -->

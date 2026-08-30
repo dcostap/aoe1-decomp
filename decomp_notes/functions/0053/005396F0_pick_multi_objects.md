@@ -1,0 +1,103 @@
+# Function notes: 005396F0 `pick_multi_objects`
+
+Module notes: `decomp_notes/view_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:feec754d722ba583ee85 -->
+### `target-session` `build/target_sessions/005396F0_pick_multi_objects.json:1-25`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=420; shape=72.09302325581395: Baseline current typed output and natural do-while traversal; 566B rebuilt, 420 strict diff, wrong register and block topology.
+probe 2 abi; result=MISMATCH; diff=420; shape=72.09302325581395: Replaced local world/master/player/object overlays with canonical repository type names and proven field ownership; test whether typed ABI context changes the natural traversal basin. [same emitted code as probe 1]
+probe 3 abi; result=MISMATCH; diff=420; shape=72.09302325581395: Matched the inventory's protected RGE_View member access so the rebuilt decorated symbol uses the original protected identity, while retaining canonical object/world types. [same emitted code as probe 2]
+probe 4 liveness; result=MISMATCH; diff=420; shape=72.09302325581395: Introduced one typed self alias and used it for view, world, and prior-object ownership; test natural receiver liveness against the original EBX receiver basin. [same emitted code as probe 3]
+probe 5 liveness; result=MISMATCH; diff=467; shape=57.47126436781609: Carried one typed node object_id local through the ownership checks, duplicate suppression, and output record; test whether the original repeated ID home reflects ordinary source liveness.
+probe 6 control-flow; result=MISMATCH; diff=420; shape=72.09302325581395: Split the geometric viewport guard from the min/max level guard, following the PDB line bands and original short-circuit groups; test whether natural guard scope recovers the early register and block shape. [same emitted code as probe 4]
+probe 7 context; result=MISMATCH; diff=422; shape=70.93023255813954: Replaced the flat view overlay with the repository-proven TPanel base and RGE_View tail, while keeping typed world, object, and selection records.
+probe 10 other; result=MISMATCH; diff=420; shape=72.09302325581395: Replaced manual vptr fields with typed virtual ownership; codegen unchanged. [same emitted code as probe 9]
+probe 12 liveness; result=MISMATCH; diff=459; shape=57.80346820809248: Hypothesis: the binary writes node Object_ID into the dead max_level parameter home at +34 and reloads it for duplicate/output; model that source mutation instead of a separate object_id local.
+probe 14 liveness; result=MISMATCH; diff=494; shape=59.65909090909091: Hypothesis: the original preloads node x2, x1, y1, and y2 into widened locals before the four overlap predicates; direct member expressions in the clean source emit one ECX reload per compare.
+probe 16 abi; result=MISMATCH; diff=429; shape=68.0: Hypothesis: the oracle's seven unmasked absolute references require a direct 0x87D4A4 Picked_Objects base rather than an unresolved extern relocation; test relocation and address-lowering parity.
+probe 18 layout; result=MISMATCH; diff=417; shape=72.09302325581395: Hypothesis: the target's output cursor is anchored at each record confidence field (+04), proven by LEA global+num*12 then object-id store at cursor-4 and cap at global+0x300; test a short cursor with six-short stride.
+probe 19 abi; result=MISMATCH; diff=429; shape=74.28571428571429: Hypothesis: combine the confidence-field cursor with a direct proven global base at 0x87D4A0; this should recover both the +04 output anchor and the duplicate-scan base literal.
+probe 21 layout; result=MISMATCH; diff=495; shape=55.932203389830505: Hypothesis: retain canonical Picked_Obj record ownership while exposing its confidence-field cursor as a natural short* alias; target LEA/store offsets prove the cursor anchor, without direct object-pointer type-punning.
+probe 23 liveness; result=MISMATCH; diff=470; shape=73.14285714285714: Hypothesis: only the node y1 field needs an explicit short local before the overlap guard; the target loads y1 into EBP before y2, unlike the clean direct-member basin.
+probe 25 layout; result=MISMATCH; diff=417; shape=72.09302325581395: Hypothesis: make the proven confidence-field cursor explicit as global short-base + 6*num + 2, rather than relying on a struct member address, to test whether VC5 removes the extra pointer-home lowering.
+probe 27 liveness; result=MISMATCH; diff=420; shape=72.09302325581395: Hypothesis: split num_picked declaration from its zero assignment; the target zeros EBP after saved-register setup but before loading min_x, unlike the clean initializer basin. [same emitted code as probe 11]
+probe 28 liveness; result=MISMATCH; diff=536; shape=64.73988439306359: Hypothesis: initialize the long-lived descending-level local at declaration, while keeping num_picked's separate zero assignment; declaration timing may select the target z home and register color.
+probe 30 layout; result=MISMATCH; diff=420; shape=72.09302325581395: Hypothesis: split the prior_objs head-table fetch from indexed node fetch; test whether an explicit level_heads owner recovers the target's retained z/EAX and two-load topology. [same emitted code as probe 27]
+probe 32 layout; result=MISMATCH; diff=420; shape=72.09302325581395: Hypothesis: +8C/+90/+94/+98 are one canonical tagRECT render_rect, as proven by same-TU draw_view; replace four independent fields with the aggregate member before tuning codegen. [same emitted code as probe 30]
+probe 33 layout; result=MISMATCH; diff=420; shape=72.09302325581395: Hypothesis: use the repository-proven full DClipInfo_Node ownership for unused fields while preserving the target's narrow Draw_X/Draw_Y accesses and offsets.
+probe 34 layout; result=MISMATCH; diff=417; shape=72.09302325581395: Hypothesis: keep the canonical render_rect owner and use the binary-proven confidence-field output cursor; source line records and LEA/store offsets support a short* confidence anchor.
+probe 35 liveness; result=MISMATCH; diff=412; shape=58.62068965517241: Hypothesis: combine the binary-proven confidence cursor with max_level parameter-home reuse for node Object_ID; test whether the short cursor removes the prior mutation probe's extra frame.
+probe 39 control-flow; result=MISMATCH; diff=523; shape=59.883720930232556: Hypothesis: use the period-plausible direct indexed scan from the recovered view.cpp sibling source, while preserving bounds, object reads, and publication.
+probe 41 liveness; result=MISMATCH; diff=417; shape=72.09302325581395: Hypothesis: make the binary-observed receiver lifetime explicit as a function-scope view pointer, declared before the count, while retaining the prior natural output cursor and scan. [same emitted code as probe 38]
+```
+<!-- end-recovered:feec754d722ba583ee85 -->
+
+<!-- recovered:3ad42224f2838878194f -->
+### `912332e8f578` `src/scratch/005396F0_pick_multi_objects.cpp:1-44`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 005396F0 RGE_View::pick_multi_objects
+// Attempt log:
+// current pass: canonicalized the local world, master, player, and object
+// overlays to the repository names and proven field ownership; matched the
+// protected member access from the original decorated symbol. Split the
+// viewport and level guards to follow the PDB bands; VC5 emitted the same
+// 566-byte body.
+// tested a loop-scoped object-id lifetime through duplicate suppression and
+// output; it grew to 571B with a 0x10 frame and was restored. A canonical
+// TPanel-base view surface moved 2 bytes farther and was restored.
+// initial decompiler-shaped source from packet: behavior/field offsets plausible but broad mismatch; VC5 chose EBP=this and ECX=count while original has EBX=this and EBP=count.
+// added local self alias and register num_picked; no register allocation improvement.
+// changed early returns to shared goto fail; improved positional diff from 88.69% to 70.85% by avoiding inline early-return epilogues, kept.
+// tried /O2 /Oy /Ob0; no codegen change from default, removed custom flag.
+// tried /O1 /Oy; function shrank to 454B and failed section-size check, removed custom flag.
+// tried /O2 /Oy /Og-; generated EBP frame and much worse 92.93% diff, removed custom flag.
+// tried explicit self alias throughout instead of direct member access; no prologue/register improvement but kept as part of current best shared-fail source.
+// tried register num_picked to force EBP=count; VC5 still used ECX for count and EBP for this.
+// local/global layout facts verified against asm: RGE_View +8c/+90/+94/+98 bounds, +fc world, +334 prior_objs; DClipInfo_Node +4 next, +8 object id, +2c type, +30..+36 bounds, +14/+18 draw coords; object +48 state, master +8d select_level.
+// left in scratch: remaining mismatch is not accepted-drift-safe. Current default build has correct broad behavior but wrong callee-saved register topology and block layout: original starts `push ebx; mov ebx,ecx; push ebp; push esi; xor ebp,ebp`, uses shared far fail epilogue at end, and later restores EBX/EBP around inner loops; rebuilt starts `push ebx; push ebp; mov ebp,ecx; ... xor ecx,ecx`, uses earlier fail block, and cascades broad branch/register differences.
+// matching-worker probes: one short-circuit bounds guard plus the in-loop z<min return improved CFG/shape but not bytes; the typed RGE_Pick_Obj_Info global was codegen-neutral.
+// matching-worker probe: natural RGE_Pick_Obj_Info output ownership recovered EBX=this and exact size, but retained a broad register/global-address mismatch; entry-plus-confidence cursor and field-cursor variants were worse or duplicate.
+// matching-worker probes: reusing max_level as the node object-id home (with local or direct object expressions) caused a larger frame and broad regression; rolled back because the stack write can be compiler local-home reuse rather than source parameter mutation.
+// matching-worker probe: restored the typed view.cpp donor context with an RGE_View : TPanel surface; VC5 emitted a codegen duplicate, so the prior clean source remains.
+// matching-worker probe: moved the proven z>=min_level test outside the descending loop, matching the original pre-loop compare and shared count-return path; emitted code was an exact duplicate with no metric movement.
+// matching-worker probe: a natural do-while duplicate scan removed the repeated output-pointer loop test; size reached 566B and strict diff improved to 420B, but register coloring remained broad.
+// matching-worker diagnostics: direct confidence-field cursor plus the do-while scan reached 566B/417B, but raw field-pointer writes were rolled back in favor of the typed record source.
+// matching-worker probes: self alias and register-qualified count were codegen duplicates; split record/confidence aliases regressed to 482B.
+// final bounded best: natural typed record output, split viewport/level
+// guards, and do-while duplicate scan; 566 rebuilt bytes, 420 strict diff,
+// 72.09% shape, 34.30% exact-block coverage. Remaining drift is broad VC5
+// register/block topology and global-address relocation, not safe localized drift.
+// Main review replaced manual vptr fields with typed virtual ownership.
+// matching-worker pass: same-TU draw_view proves the four +8c fields are one
+// render_rect aggregate; this changed source ownership but was codegen-neutral.
+// The target LEA/store pattern anchors the output cursor at confidence (+4),
+// so the retained cursor is short* with a six-short stride and the object id
+// store four bytes before it. This reduced strict diff to 417B at exact size.
+// Tested node-id reuse through max_level: 566B/412B but a 0x10 frame and broad
+// CFG loss; restored. Named bounds locals, absolute global, typed cursor alias,
+// and declaration-order variants were worse or duplicates and were restored.
+// Final claim validation: 566B, 0xC frame, 72.09% shape, 34.30% exact blocks,
+// 417 strict diff; no accepted-drift proposal. Remaining register/block drift
+// is broad and not policy-safe to call localized equivalent behavior.
+```
+<!-- end-recovered:3ad42224f2838878194f -->
+
+<!-- recovered:f9e3e26b004cfe830714 -->
+### `912332e8f578` `src/scratch/005396F0_pick_multi_objects.cpp:176-177`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+                            // BINARY NOTE: object_id is the dword before confidence.
+                            *((int*)(out - 2)) = node->Object_ID;
+```
+<!-- end-recovered:f9e3e26b004cfe830714 -->

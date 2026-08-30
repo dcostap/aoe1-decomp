@@ -7,47 +7,47 @@
   "functions": {
     "0049E6D0": {
       "status": "scratch",
-      "note_path": "recovery_notes/scr_main.md"
+      "note_path": "decomp_notes/scr_main.md"
     },
     "0049EC00": {
       "status": "matching",
-      "note_path": "recovery_notes/scr_main.md"
+      "note_path": "decomp_notes/scr_main.md"
     },
     "0049ECD0": {
       "status": "matching",
-      "note_path": "recovery_notes/scr_main.md"
+      "note_path": "decomp_notes/scr_main.md"
     },
     "0049ED00": {
       "status": "matching",
-      "note_path": "recovery_notes/scr_main.md"
+      "note_path": "decomp_notes/scr_main.md"
     },
     "0049EE00": {
       "status": "scratch",
-      "note_path": "recovery_notes/scr_main.md"
+      "note_path": "decomp_notes/scr_main.md"
     },
     "0049F0D0": {
       "status": "matching",
-      "note_path": "recovery_notes/scr_main.md"
+      "note_path": "decomp_notes/scr_main.md"
     },
     "0049F240": {
       "status": "matching",
-      "note_path": "recovery_notes/scr_main.md"
+      "note_path": "decomp_notes/scr_main.md"
     },
     "0049F2B0": {
       "status": "matching",
-      "note_path": "recovery_notes/scr_main.md"
+      "note_path": "decomp_notes/scr_main.md"
     },
     "0049F2D0": {
       "status": "matching",
-      "note_path": "recovery_notes/scr_main.md"
+      "note_path": "decomp_notes/scr_main.md"
     },
     "0049F2F0": {
       "status": "matching",
-      "note_path": "recovery_notes/scr_main.md"
+      "note_path": "decomp_notes/scr_main.md"
     },
     "0049F340": {
       "status": "matching",
-      "note_path": "recovery_notes/scr_main.md"
+      "note_path": "decomp_notes/scr_main.md"
     }
   }
 }

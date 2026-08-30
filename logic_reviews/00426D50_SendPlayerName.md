@@ -1,5 +1,7 @@
 # Logic review: 00426D50 `TCommunications_Handler::SendPlayerName`
 
+Current source: `src/com_hand.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching on 2026-08-02 after repeated
@@ -16,7 +18,7 @@ compiler-IR or whole-translation-unit evidence.
 
 Current validated checker state:
 
-- source remains `src/scratch/00426D50_SendPlayerName.cpp`;
+- source remains `src/com_hand.cpp`;
 - original/rebuilt size: 105/105 bytes;
 - frame: `0x10`/`0x10`;
 - saved registers: `esi, edi` / `esi, edi`;
@@ -263,7 +265,7 @@ ledger, prior reports, and Git history.
 - **Decision:** no source change was made. Reintroducing opaque raw-vtable or
   comma-expression scheduling merely to reduce this drift would violate the
   normalized-source gate without proof that it restores the complete original
-  fault context. The candidate remains in `src/scratch`; formal logic promotion
+  fault context. The candidate remains in `scratch` status; formal logic promotion
   is blocked unless a plausible source surface reproduces the original push-before-
   dereference sequence or project policy explicitly narrows the behavioral oracle.
 
@@ -291,5 +293,5 @@ scheduling, custom flags, or a narrowed behavior policy.
 ## Final decision
 
 Resolved by exact matching. The source is promoted to
-`src/matching/00426D50_SendPlayerName.cpp`; all prior semantic-review blockers
+`src/com_hand.cpp`; all prior semantic-review blockers
 are closed by byte-identical call setup, fault context, calls, and cleanup.

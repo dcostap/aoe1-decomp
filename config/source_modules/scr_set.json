@@ -9,17 +9,17 @@
     "summary": "Consumes canonical panel, control, tribe-game, scenario, communications, and settings-screen owners."
   },
   "functions": {
-    "004B4880": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
-    "004B5810": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
-    "004B5920": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
-    "004B5BB0": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
-    "004B5C70": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
-    "004B5CB0": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
-    "004B5E00": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
-    "004B6160": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
-    "004B6230": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
-    "004B6500": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
-    "004B6740": { "status": "matching", "note_path": "recovery_notes/scr_set.md" },
-    "004B6870": { "status": "matching", "note_path": "recovery_notes/scr_set.md" }
+    "004B4880": { "status": "matching", "note_path": "decomp_notes/scr_set.md" },
+    "004B5810": { "status": "matching", "note_path": "decomp_notes/scr_set.md" },
+    "004B5920": { "status": "matching", "note_path": "decomp_notes/scr_set.md" },
+    "004B5BB0": { "status": "matching", "note_path": "decomp_notes/scr_set.md" },
+    "004B5C70": { "status": "matching", "note_path": "decomp_notes/scr_set.md" },
+    "004B5CB0": { "status": "matching", "note_path": "decomp_notes/scr_set.md" },
+    "004B5E00": { "status": "matching", "note_path": "decomp_notes/scr_set.md" },
+    "004B6160": { "status": "matching", "note_path": "decomp_notes/scr_set.md" },
+    "004B6230": { "status": "matching", "note_path": "decomp_notes/scr_set.md" },
+    "004B6500": { "status": "matching", "note_path": "decomp_notes/scr_set.md" },
+    "004B6740": { "status": "matching", "note_path": "decomp_notes/scr_set.md" },
+    "004B6870": { "status": "matching", "note_path": "decomp_notes/scr_set.md" }
   }
 }

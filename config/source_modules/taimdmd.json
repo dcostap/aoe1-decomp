@@ -7,17 +7,17 @@
   "functions": {
     "004E4800": {
       "status": "scratch",
-      "note_path": "recovery_notes/taimdmd_module.md"
+      "note_path": "decomp_notes/taimdmd_module.md"
     },
     "004E4B80": {
       "status": "scratch",
-      "note_path": "recovery_notes/taimdmd_module.md"
+      "note_path": "decomp_notes/taimdmd_module.md"
     },
     "004E4EC0": { "status": "matching" },
     "004E4FA0": { "status": "matching" },
     "004E5050": {
       "status": "scratch",
-      "note_path": "recovery_notes/taimdmd_module.md"
+      "note_path": "decomp_notes/taimdmd_module.md"
     },
     "004E5DB0": { "status": "matching" },
     "004E5F30": { "status": "matching" },
@@ -27,7 +27,7 @@
     "004E6090": { "status": "matching" },
     "004E60D0": {
       "status": "matching",
-      "note_path": "recovery_notes/taimdmd_module.md"
+      "note_path": "decomp_notes/taimdmd_module.md"
     },
     "004E60F0": { "status": "matching" },
     "004E6160": { "status": "matching" },

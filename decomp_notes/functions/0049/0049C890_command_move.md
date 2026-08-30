@@ -1,0 +1,15 @@
+# Function notes: 0049C890 `command_move`
+
+## Recovered attempt history
+
+<!-- recovered:39dfc5c1b8e3b477e1a3 -->
+### `bf81de068f12` `src/scratch/0049C890_command_move.cpp:1-3`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 0049C890 command_move
+// 130 bytes, __thiscall, TRIBE_Screen_Game method
+// probe 2: get selected objects, show message, set move mode
+```
+<!-- end-recovered:39dfc5c1b8e3b477e1a3 -->

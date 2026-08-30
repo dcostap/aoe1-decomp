@@ -1,0 +1,15 @@
+# Function notes: 0040DC30 `mostDamaged`
+
+Module notes: `decomp_notes/aimdmod_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:52c14cf8923a81f06120 -->
+### `c1651ee04f47` `src/matching/0040DC30_mostDamaged.cpp:1-1`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// attempt 1: natural loop over tracked object ids, growing id array and selecting highest damage percentage
+```
+<!-- end-recovered:52c14cf8923a81f06120 -->

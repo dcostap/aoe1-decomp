@@ -1,0 +1,130 @@
+# Function notes: 0041C270 `~RGE_Base_Game`
+
+Module notes: `decomp_notes/basegame_module.md`.
+
+## Translation-unit context
+
+- Natural source owner: `src/basegame.cpp`, `RGE_Base_Game::~RGE_Base_Game`.
+- The target remains in the `basegame_cpp` translation unit.
+
+## Current mismatch
+
+- No current mismatch after the guarded font-loop reconstruction.
+- Final standalone check: 1136/1136 bytes, `0.0000%`, frame `0x110`, and saved
+  registers `ebx`, `ebp`, `esi`, `edi`.
+- Final control-flow counts: 37 conditional signals, 1 jump, and 1 return on
+  both sides. The owner symbol and original boundary match.
+- Final call map: 56/56 calls aligned. All 86/86 relocations are safe.
+
+## Recovered attempt history
+
+<!-- recovered:4e85036bf1463bf05414 -->
+### `target-session` `build/target_sessions/0041C270_RGE_Base_Game.json:1-29`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=266; shape=97.08454810495627: Current typed destructor reconstruction: exact size/frame and all 56 ordered calls; mismatch localized to font loop at +02B0, where source guard hoists font_num and emits cached AX/cmp instead of original direct memory compare and test.
+probe 2 control-flow; result=MISMATCH; diff=423; shape=95.6896551724138: Hypothesis 1: mirror decompiler do-while with separate positive guard, avoiding compiler's duplicated initial loop test and cached count.
+probe 3 control-flow; result=MISMATCH; diff=413; shape=95.97701149425288: Hypothesis 2: initialize loop count before the positive guard, matching original xor-ebp before direct font_num compare while retaining do-while body.
+probe 4 context; result=MISMATCH; diff=413; shape=95.97701149425288: Hypothesis 3: cache DeleteObject as a local stdcall function pointer inside the positive font-count arm, as the exact TPanelSystem donor does, while keeping the decompiler do-while shape. [same emitted code as probe 3]
+probe 6 context; result=MISMATCH; diff=266; shape=97.08454810495627: Hypothesis 4: replace windows.h's direct DeleteObject import with the period donor's external const stdcall function-pointer declaration, while retaining manual imported API declarations.
+probe 7 control-flow; result=MISMATCH; diff=413; shape=95.97701149425288: Hypothesis 5: combine the external DeleteObject pointer declaration with the decompiler's count-before-guard do-while loop.
+probe 9 context; result=MISMATCH; diff=266; shape=97.08454810495627: Hypothesis 6: use a non-const external stdcall DeleteObject pointer, matching alternate repository import declarations, with the clean for-loop source. [same emitted code as probe 6]
+probe 10 liveness; result=MISMATCH; diff=432; shape=95.07246376811594: Hypothesis 7: assign the non-const external DeleteObject pointer to a branch-local function pointer used by the font loop, testing whether mutable pointer liveness selects the original EBX import cache.
+probe 12 liveness; result=MISMATCH; diff=266; shape=97.08454810495627: Hypothesis 8: mark a branch-local DeleteObject function pointer register-qualified, testing whether VC5 assigns the import thunk to EBX and thereby selects test-zero for font handles. [same emitted code as probe 1]
+probe 14 control-flow; result=MISMATCH; diff=413; shape=95.97701149425288: Hypothesis 9: remove the explicit positive font-count guard and use a single top-tested while loop, testing whether VC5 naturally emits the original one initial count compare. [same emitted code as probe 4]
+probe 16 liveness; result=MISMATCH; diff=413; shape=95.97701149425288: Hypothesis 10: model the decompiler's separate element counter and font-array index with independent typed int locals, preserving natural RGE_Font indexing and do-while order. [same emitted code as probe 14]
+probe 19 context; result=MISMATCH; diff=406; shape=96.20991253644316: Hypothesis 11: combine a manual const external DeleteObject pointer, a branch-local const alias, and count-before-guard do-while control to reproduce the cached IAT call without volatile or helper code.
+probe 21 control-flow; result=MISMATCH; diff=266; shape=97.08454810495627: Hypothesis 12: reverse the positive-count comparison operand order to test VC5's compare-side scheduling while retaining the baseline for-loop and import surface. [same emitted code as probe 18]
+probe 23 context; result=MISMATCH; diff=413; shape=95.97701149425288: Hypothesis 13: use explicit function-pointer dereference syntax for the manual const DeleteObject import, combined with the original-looking do-while and pre-guard counter initialization. [same emitted code as probe 7]
+probe 25 liveness; result=MISMATCH; diff=266; shape=97.08454810495627: Hypothesis 14: bind each RGE_Font handle to a typed local before its null test and DeleteObject call, testing whether this natural value local selects the original test-zero shape. [same emitted code as probe 21]
+probe 27 abi; result=MISMATCH; diff=266; shape=97.08454810495627: Hypothesis 15: make the font handle's null comparison explicitly HGDIOBJ-typed, testing whether the original test-zero form depends on handle type rather than implicit truth conversion. [same emitted code as probe 25]
+probe 29 control-flow; result=MISMATCH; diff=266; shape=97.08454810495627: Hypothesis 16: express the font handle guard as a negated continue, which directly models the original skip edge before the cached DeleteObject call. [same emitted code as probe 27]
+probe 31 control-flow; result=MISMATCH; diff=266; shape=96.7930029154519: Hypothesis 17: reverse the font loop bound operands, testing VC5's compare scheduling and count reload behavior independently of the outer guard.
+probe 33 liveness; result=MISMATCH; diff=413; shape=95.97701149425288: Hypothesis 18: declare the DeleteObject pointer only inside the nonzero-handle arm of the do-while, testing whether VC5 hoists the invariant import load to the loop preheader without a persistent frame local. [same emitted code as probe 16]
+probe 35 context; result=MISMATCH; diff=426; shape=96.80232558139535: Hypothesis 19: apply __declspec(dllimport) to a const external DeleteObject function-pointer declaration, testing whether imported-data semantics select the original EBX thunk cache.
+probe 38 behavior; result=MISMATCH; diff=266; shape=97.08454810495627: Restore binary-proven uiParam=1 for both SystemParametersInfoA calls; prior source passed zero and changed system-setting behavior.
+probe 40 abi; result=MISMATCH; diff=433; shape=97.66763848396502: Restore binary-proven get_string(string_id, buffer, size) parameter order; prior declaration and call swapped the first two arguments.
+probe 43 control-flow; result=MISMATCH; diff=433; shape=97.96511627906976: Hypothesis 23: assign the font-loop counter before the positive count guard, then retain a natural for loop without initializer; this tests the original xor-before-cmp topology independently of the previously tested do-while form.
+probe 45 control-flow; result=MISMATCH; diff=418; shape=97.6878612716763: Hypothesis 24: model the proven font loop as separate count and byte-offset locals with a natural do-while, matching the executable's EBX cached import, EBP count, and EDI stride topology rather than typed index arithmetic.
+probe 46 abi; result=MISMATCH; diff=418; shape=97.6878612716763: Hypothesis 25: represent the proven font handle as an int local and cast only at DeleteObject, testing whether VC5 emits the original test-zero form instead of cmp against the global zero register. [same emitted code as probe 45]
+probe 47 liveness; result=MISMATCH; diff=418; shape=97.6878612716763: Hypothesis 26: cache DeleteObject in a natural branch-local function pointer while using the proven byte-offset cursor, testing whether removing EBX's long-lived zero role yields the original one-load EBX call cache without other scaffolding. [same emitted code as probe 46]
+probe 48 liveness; result=MISMATCH; diff=418; shape=97.6878612716763: Hypothesis 27: add register qualification to the cached DeleteObject pointer on the separate byte-cursor loop, testing whether VC5 honors EBX allocation and avoids the prior stack-home spill. [same emitted code as probe 47]
+probe 49 abi; result=MISMATCH; diff=418; shape=97.6878612716763: Hypothesis 28: make the branch-local DeleteObject alias const after initialization, testing whether VC5 preserves the binary-proven cached target in a register instead of folding or spilling a mutable alias. [same emitted code as probe 48]
+probe 50 context; result=MISMATCH; diff=1135; shape=0.2915451895043732: Hypothesis 29: use a file-scope const function-pointer alias for DeleteObject, testing whether internal const storage lets VC5 hoist the imported target into EBX while preserving the proven cursor loop.
+```
+<!-- end-recovered:4e85036bf1463bf05414 -->
+
+<!-- recovered:c16feb37f38e3e1b9d70 -->
+### `13232fffdf77` `src/scratch/0041C270_RGE_Base_Game.cpp:1-48`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0041C270 ~RGE_Base_Game (1136 B)
+// PDB source: basegame.cpp:877-1083
+// Attempt log:
+// - Baseline packet scaffold used free-function shims and missed the original
+//   member/destructor, CRT, Win32-import, and function-pointer call surfaces.
+// - Reconstructing the typed RGE_Base_Game ownership and ordinary destructor
+//   sequence is the current source-first candidate; exactness remains pending.
+// - Typed member calls, CRT/Win32 imports, and the two natural cleanup loops now
+//   reproduce all 56 ordered call sites and the 0x110 frame.
+// - The rollover conditional, mouse-style if/else, and saved scenario pointer
+//   progressively aligned the early body; the final remaining hunk begins at
+//   the fonts loop and leaves 413 positional bytes with exact size.
+// - A manual vptr restore was rejected by source policy; the natural virtual
+//   destructor surface is retained while the remaining codegen drift is paused.
+// - The original clears the +0x1B0 prog-mode slot before world cleanup; the
+//   generated field map does not support clearing game_mode at +0x1B4 here.
+// - Direct RegGetInt testing, nested player-info cleanup ownership, and local
+//   destructor pointers reproduce the original block structure through fonts.
+// - RGE_Font is a 0xC record with its DeleteObject handle at offset zero; the
+//   remaining drift is the imported-call cache and loop register coloring.
+// - A local cached DeleteObject pointer inside the positive-count guard added
+//   8 bytes to the frame and worsened the match; restored the direct call.
+// - An explicit positive font-count guard is a natural binary-supported source
+//   shape and reduced the localized drift from 413 to 266 bytes.
+// - The Windows header/HGDIOBJ surface and a const local API pointer were
+//   codegen duplicates; the local pointer was removed from the final source.
+// - Managed pass 2026-08-17: twenty focused probes kept this source as the
+//   clean best. A pre-guard do-while recovered the initial xor/cmp block but
+//   lost the natural loop basin. Typed counter/index locals, bound polarity,
+//   handle locals, continue form, import-pointer declarations, and local
+//   DeleteObject aliases were unchanged, worse, or added frame bytes.
+// - Original evidence still requires one cached DeleteObject IAT load in EBX,
+//   test EAX, and a post-call font_num reload. The clean source emits a direct
+//   IAT call and cmp EAX,EBX. No policy-compliant source cause is proven.
+// - Behavior audit fixed two source defects. SystemParametersInfoA uses the
+//   executable's uiParam value 1 for actions 0x11 and 0x55. get_string uses
+//   the binary-proven (string_id, buffer, size) parameter order.
+// BLOCKER: the executable caches the DeleteObject import target once before
+// the font loop. The rebuild reads the writable import slot for each call. A
+// prior external call can therefore change a later call target only in the
+// rebuild. Keep the corrected natural destructor in scratch.
+// - Managed pass 2026-08-22: a separate count and byte-offset do-while matched
+//   the original pre-loop guard and raised exact-block coverage to 95.34%.
+//   It still emitted cmp EAX,EBX and a direct IAT call, added three
+//   instructions, and caused call-map drift after the loop. Local mutable,
+//   register, const, and file-scope DeleteObject aliases did not change it;
+//   the file-scope alias also changed the extracted owner. Restored the
+//   smallest typed for-loop source as the clean reconstruction.
+```
+<!-- end-recovered:c16feb37f38e3e1b9d70 -->
+
+## Worker updates
+
+### `wave21-basegame-ctor-exact` — 2026-08-29
+
+- Applied `build/audits/workers/sa-9b48059f/0041C270/proposed_source_change.diff`.
+  The font-loop counter now initializes before the positive count guard and uses
+  a guarded `do`/`while` loop.
+- `python tools/check_function.py --va 0041C270 --rebuild --detail full` returned
+  `Result: MATCH`: 1136 equal bytes, `0.0000%`, 56 aligned calls, and 86/86
+  safe relocations. Frame, saved registers, owner, boundary, and CFG match.
+- The `basegame_cpp` observed-function audit returned grouped `MATCH` for
+  `0041C270` with zero grouped diff, relocation, and boundary errors. It retained
+  186 registered owner matches for the surrounding translation unit.
+- The fresh baseline record could not acquire `build/target_sessions/sessions.lock`
+  and timed out. The exact check and grouped audit completed successfully.

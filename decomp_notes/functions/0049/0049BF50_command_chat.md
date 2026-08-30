@@ -1,0 +1,15 @@
+# Function notes: 0049BF50 `command_chat`
+
+## Recovered attempt history
+
+<!-- recovered:be6cde217c4975b2597a -->
+### `bf81de068f12` `src/scratch/0049BF50_command_chat.cpp:1-3`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 0049BF50 command_chat (192B)
+// scr_game.cpp
+// EH frame (/GX)
+```
+<!-- end-recovered:be6cde217c4975b2597a -->

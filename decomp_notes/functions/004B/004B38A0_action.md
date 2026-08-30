@@ -1,0 +1,98 @@
+# Function notes: 004B38A0 `action`
+
+Module notes: `decomp_notes/scr_sedo_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:01acd742e9042feeb7e1 -->
+### `d050eea3c` `src/scr_sedo.cpp:144-146`
+
+Mapping: `exact`. removed comment declares this PDB source owner VA.
+
+```text
+// VA: 004B38A0 TRIBE_Screen_Sed_Open::action
+// PDB source: scr_sedo.cpp lines 155-245.
+// BINARY NOTE: The action keeps the shipped delete, open, panel-transition,
+```
+<!-- end-recovered:01acd742e9042feeb7e1 -->
+
+<!-- recovered:251e6ce479d427a4d371 -->
+### `target-session` `build/target_sessions/004B38A0_action.json:1-22`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=393; shape=95.5223880597015: Baseline current scratch source: 393 strict bytes, 1003 bytes/frame 0x434, 38 ordered calls; use as clean codegen frontier.
+probe 2 liveness; result=MISMATCH; diff=744; shape=93.25842696629213: Hypothesis 1: direct global prog_info->scenario_dir in first cancel sprintf may let VC5 schedule add before currentLine, matching original +E9 add then call.
+probe 4 liveness; result=MISMATCH; diff=403; shape=95.14925373134328: Hypothesis 2: keep the first prog_info local but remove only the scenario_dir alias, so the compiler can emit its field add before currentLine without changing global liveness.
+probe 7 abi; result=MISMATCH; diff=358; shape=94.8339483394834: Hypothesis 3: cache the imported OpenFile function pointer in a branch-local variable after sprintf; original proves mov ebx,[88A798] then two calls through EBX.
+probe 8 liveness; result=MISMATCH; diff=358; shape=94.8339483394834: Hypothesis 4: move the OpenFile pointer declaration to function scope while keeping assignment after sprintf; broader lifetime may color it to original EBX. [same emitted code as probe 7]
+probe 9 liveness; result=MISMATCH; diff=358; shape=94.8339483394834: Hypothesis 5: register-qualified OpenFile pointer may force a different VC5 register color, ideally original EBX, while preserving cached-import behavior. [same emitted code as probe 8]
+probe 10 control-flow; result=MISMATCH; diff=358; shape=94.8339483394834: Hypothesis 6: inline currentLine as the second sprintf argument in both cancel-delete paths; original schedules directory address completion before currentLine. [same emitted code as probe 9]
+probe 11 liveness; result=MISMATCH; diff=348; shape=95.20295202952029: Hypothesis 7: mirror the proven first cancel-path directory alias in the second .scx delete path; original also adds 0xC17 before currentLine there.
+probe 12 liveness; result=MISMATCH; diff=338; shape=95.5719557195572: Hypothesis 8: add a directory alias in the first scenario-open path; original schedules add 0xC17 before currentLine there too.
+probe 13 liveness; result=MISMATCH; diff=338; shape=95.5719557195572: Hypothesis 9: inline currentLine in the successful .scn suffix sprintf; original does not preload list before the OpenFile result compare. [same emitted code as probe 12]
+probe 14 liveness; result=MISMATCH; diff=338; shape=95.5719557195572: Hypothesis 10: create a branch-local loaded_list receiver after the OpenFile test to block VC5's observed pre-test ECX hoist.
+probe 15 liveness; result=MISMATCH; diff=338; shape=95.5719557195572: Hypothesis 11: move the cached OpenFile pointer declaration before all stack locals; declaration order can alter VC5 register colors without changing behavior. [same emitted code as probe 14]
+probe 16 abi; result=MISMATCH; diff=338; shape=95.5719557195572: Hypothesis 12: use a block-local const function-pointer initialization after sprintf; this may reproduce the original cached import without the prior EDI color. [same emitted code as probe 15]
+probe 17 liveness; result=MISMATCH; diff=338; shape=95.5719557195572: Hypothesis 13: use a branch-local loaded_line result in the successful .scn arm; a narrower lifetime may stop VC5 preloading the receiver before cmp. [same emitted code as probe 16]
+probe 18 liveness; result=MISMATCH; diff=333; shape=98.50187265917603: Hypothesis 14: reorder the fallback .scx path to load prog_info and add 0xC17 before currentLine, matching original +3B2C..+3B41.
+probe 19 liveness; result=MISMATCH; diff=335; shape=98.12734082397004: Hypothesis 15: keep prog_info assignment first but inline the fallback currentLine argument; test whether VC5 preserves original global/field/add ordering without breaking common sprintf tailing.
+probe 20 liveness; result=MISMATCH; diff=333; shape=98.50187265917603: Hypothesis 16: keep the fallback directory alias at function scope instead of block scope, testing whether common sprintf-tail merging returns while preserving original add-before-currentLine order. [same emitted code as probe 18]
+probe 22 liveness; result=MISMATCH; diff=333; shape=98.50187265917603: Hypothesis 18: reuse the existing first-path scenario_dir_open local in the fallback .scx path, instead of adding a new alias; this may preserve common tailing.
+probe 23 control-flow; result=MISMATCH; diff=340; shape=94.4649446494465: Hypothesis 19: express the two suffix paths with one explicit common sprintf after a suffix selection; original decomp shows a shared tail and format local.
+probe 24 control-flow; result=MISMATCH; diff=328; shape=92.85714285714286: Hypothesis 20: invert the OpenFile condition so the fallback arm is source-first; test a distinct branch-layout basin against the original JE fallback CFG.
+probe 28 behavior; result=MISMATCH; diff=338; shape=95.5719557195572: Restore .scx fallback read order: capture rge_base_game->prog_info before the external currentLine call, as the executable does.
+probe 29 behavior; result=MISMATCH; diff=335; shape=98.12734082397004: Validate the corrected fallback global/currentLine order.
+```
+<!-- end-recovered:251e6ce479d427a4d371 -->
+
+<!-- recovered:b37dc50e59c51c6d67b3 -->
+### `299febe5b908` `src/scratch/004B38A0_action.cpp:1-41`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004B38A0 TRIBE_Screen_Sed_Open::action
+// PDB source: scr_sedo.cpp
+
+// Attempt log:
+// - Prior scaffold used an early null return, a 128-byte OFSTRUCT stub, a
+//   direct OpenFile declaration, and a manual operator_new/construct pair.
+//   It had no EH frame, placed fields at +0x43C, and had the wrong OpenFile,
+//   constructor, and virtual-action call surfaces.
+// - Clean reconstruction: use the period TPanel vtable (action at +0xB4),
+//   the proven +0x47C panel ownership, a 0x100-byte OFSTRUCT scratch window,
+//   typed RGE_Base_Game/RGE_Prog_Info ownership, the IAT function-pointer
+//   surface for OpenFile, and natural `new TRIBE_Screen_Sed_Menu()`.
+// - Baseline: 1003 bytes/frame 0x434, but the cached panelName result removed
+//   one binary-proven call.  Repeating the predicate call restored all 38
+//   calls and reduced the strict diff to 678 bytes.
+// - Rejected game-pointer declaration/splitting probes: they did not change
+//   the emitted body or made the first path hunk worse, so the direct typed
+//   global surface was restored.
+// - Positive list-first dispatch restored the original ordered 38-call CFG
+//   and moved the checker to block-shape/liveness work.
+// - A named first-OK-path prog_info pointer improved the path preload shape;
+//   a plain cancel-path scenario_dir local then recovered the original global,
+//   list, path, currentLine, and sprintf ordering.  Best current result is
+//   449 differing bytes (82.84% shape, exact size/frame/calls/CFG).
+// - `register` on scenario_dir was a codegen duplicate and was removed from
+//   the living source.  Remaining drift is localized to stack-home/address
+//   offsets and late source-local scheduling; leave this target in scratch.
+// - The decomp local order is `_OFSTRUCT`, fileName, then text.  A 252-byte
+//   Reserved1 surface plus text[560] restores the target frame and local
+//   addresses; text[556] drops the frame by four bytes.  fileName[260] is the
+//   period +4 buffer form and emits the same bytes as the inferred 257 size.
+// - Reusing function-scope prog_info/line and curr_line follows the decomp
+//   pointer lifetimes.  A first-block scenario_dir alias fixes that paired
+//   hunk.  Best is now 338 differing bytes, 95.57% shape, exact frame and
+//   calls.  The second cancel-path alias and the first-open alias restore
+//   exact blocks through the first OpenFile path.
+// - A 20-probe pass tested source order, receiver lifetimes, imported-pointer
+//   caching, branch layout, and common-tail forms.  The clean natural source
+//   is pinned at 338 differing bytes with exact size, frame, calls, and CFG.
+//   Remaining drift is the fallback expression order, the pre-test receiver
+//   load, and the original EBX versus rebuilt EDI import-pointer color.
+```
+<!-- end-recovered:b37dc50e59c51c6d67b3 -->

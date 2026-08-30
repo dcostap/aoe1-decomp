@@ -1,0 +1,301 @@
+# Function notes: 004D4540 `nextBuildableItem`
+
+Module notes: `decomp_notes/taibldmd_module.md`.
+
+## Translation-unit context
+
+- PDB module: `taibldmd.cpp`, source band lines 464-891.
+- Source order: `004D4540` follows `004D4460` and precedes `004D4DB0` in `src/taibldmd.cpp`.
+- Owning class and symbol: `TribeBuildAIModule::nextBuildableItem(int)`, `?nextBuildableItem@TribeBuildAIModule@@QAEPAVBuildItem@@H@Z`.
+- The target is an observed normal function in the natural module, but it is not yet registered as an owner in `config/translation_units.json`.
+
+## Current mismatch
+
+- No focused positional mismatch remains under the module `/GX` response.
+- Final focused metrics: 2136/2136 bytes, frame `0xF4/0xF4`, 115/115 calls, 89/89 conditional signals, one return, and 117/117 relocations safely masked.
+- The checker reports `MATCH`, `0.0000%`, the expected owner symbol, and a closed target boundary.
+- Grouped audit reports target `MATCH`, but it also reports one registered neighbor (`004D4F80`) at a 9-byte mismatch after `/GX` was added. Review this module-wide flag effect before promotion.
+
+## Recovered attempt history
+
+<!-- recovered:e0aa66c6266675d9af8f -->
+### `target-session` `build/target_sessions/004D4540_nextBuildableItem.json:1-121`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=1066; shape=94.56: Baseline existing clean source: 2172 bytes, +36, 115/115 calls, 94.56% shape; confirms source model and exposes loop-tail and predicate differences.
+probe 2 control-flow; result=MISMATCH; diff=1183; shape=92.05607476635514: Removed the found result local and kept object/canPlace calls as direct success predicates; original branches test EAX directly and do not materialize bool.
+probe 4 control-flow; result=MISMATCH; diff=1073; shape=94.56: Re-tested direct object/canPlace predicates with one shared found_item label, avoiding duplicated success code while removing the result local.
+probe 6 control-flow; result=MISMATCH; diff=1066; shape=94.56: Inverted the loop-limit source predicate to positive continue () then fall-through return; original emits jle backedge and unconditional return rather than jg return plus backedge. [same emitted code as probe 1]
+probe 8 control-flow; result=MISMATCH; diff=1072; shape=94.09888357256779: Changed researchAvailable and objectAvailable rejection to two independent guards; original emits category test, direct call, and shared advance without the rebuilt else-chain jump.
+probe 10 control-flow; result=MISMATCH; diff=1240; shape=94.11764705882354: Added an explicit loop_top label and positive goto backedge so the compiler can preserve the original jle-to-header and fall-through return topology.
+probe 12 liveness; result=MISMATCH; diff=1066; shape=94.56: Introduced one function-scope const minusOne reused by both cost constructors and the object dispatcher; tests whether original EBX=-1 is a live shared source value rather than literal lowering.
+probe 14 control-flow; result=MISMATCH; diff=1240; shape=94.11764705882354: Replaced while(1) plus bottom guard with a natural do/while count condition and a single post-loop return; tests the original bottom jle backedge topology directly.
+probe 16 control-flow; result=MISMATCH; diff=1235; shape=93.13099041533546: Split the category-4 research-cost rejection into three sequential guards; tests whether separate source exits recover original EH state-store ordering at 4A49.
+probe 18 liveness; result=MISMATCH; diff=1066; shape=94.56: Added a mutable block-local amount initialized to -1 for both itemCost2 cost calls; tests whether non-const source liveness triggers the original EBX=-1 materialization.
+probe 20 liveness; result=MISMATCH; diff=1066; shape=94.56: Extended one mutable -1 amount through both cost helpers and all object-dispatch sentinel arguments; tests a real shared live range for the original EBX value. [same emitted code as probe 18]
+probe 22 control-flow; result=MISMATCH; diff=1240; shape=94.11764705882354: Moved sentinel/null tests into the while condition and left the count guard at the bottom; tests the natural list-loop source suggested by PDB loop ownership.
+probe 24 liveness; result=MISMATCH; diff=1066; shape=94.56: Built the shared -1 amount through zero initialization followed by decrement, then reused it in cost and object calls; tests whether assignment history prevents constant folding and selects EBX. [same emitted code as probe 20]
+probe 26 control-flow; result=MISMATCH; diff=1083; shape=92.99363057324841: Replaced the found local with one direct conditional predicate combining object and canPlace; tests whether short-circuit source preserves original direct EAX branch and common success tail.
+probe 28 liveness; result=MISMATCH; diff=1095; shape=94.4: Changed the object/canPlace result temporary from int to bool; tests whether the original direct predicate reflects narrow boolean lowering rather than an int result.
+probe 30 control-flow; result=MISMATCH; diff=299; shape=96.81020733652312: Rebuilt the resource-success region as negative direct guards with a shared success body and explicit no_build_location tail; tests branch polarity and direct EAX use.
+probe 31 control-flow; result=MISMATCH; diff=1214; shape=96.66136724960255: Converted the entire scan to explicit loop_top/loop_check gotos, with positive count backedge and fall-through return; tests whether while normalization caused the inverted bottom branch.
+probe 32 liveness; result=MISMATCH; diff=282; shape=97.12: Used an explicit integer cast for the object pointer status, avoiding bool normalization while retaining a common int result with canPlace.
+probe 33 control-flow; result=MISMATCH; diff=35; shape=99.02439024390245: Reversed availability guards and added an explicit cost_block success label; tests the original jne-to-resource and fall-through jump topology.
+probe 34 control-flow; result=MISMATCH; diff=35; shape=99.02439024390245: On the near-exact cost and pointer source, inverted only the bottom count guard to positive continue; tests whether the improved surrounding CFG lets VC5 select original jle backedge. [same emitted code as probe 33]
+probe 35 control-flow; result=MISMATCH; diff=1951; shape=96.98412698412699: Moved the strategic count test into the while condition and retained the sentinel body guard; tests whether VC5 rotates this natural bounded loop to the original bottom jle backedge.
+probe 36 control-flow; result=MISMATCH; diff=36; shape=98.86178861788618: Reversed count comparison operand order and used positive continue; tests whether VC5 emits the original jle target while retaining the near-exact body.
+probe 37 control-flow; result=MISMATCH; diff=9; shape=99.51219512195122: Split category mismatch from the combined research/resource availability guard in the first ResourceItem phase; tests whether separate category exit moves the EH state store before cmp.
+probe 38 control-flow; result=MISMATCH; diff=1215; shape=97.76714513556618: Added a loop_top label inside the near-exact while body and a positive goto backedge; tests whether explicit target identity selects the original jle edge without moving the whole body.
+probe 39 control-flow; result=MISMATCH; diff=1215; shape=97.76714513556618: Changed only the infinite loop spelling from while(1) to for(;;), testing a distinct VC5 loop-normalization basin for the bottom branch.
+probe 40 control-flow; result=MISMATCH; diff=9; shape=99.51219512195122: Moved the count-failure return outside while(1), using break at the bottom; tests whether return placement changes the branch target order without changing behavior. [same emitted code as probe 37]
+probe 42 variant; result=MISMATCH; diff=9; shape=99.51219512195122: Focused bottom-guard sweep: current negative return, positive continue, braced continue, empty positive arm, positive else, and negated return under /GX. All six forms stayed in one 2136-byte codegen group with the same jg-to-return/jmp-top branch; branch polarity is not selected by local if spelling. [same emitted code as probe 41]
+probe 43 control-flow; result=MISMATCH; diff=9; shape=99.51219512195122: Replaced while(1) bottom with a natural do/while(count <= strategicNumber(0x73)) and sentinel break, then swept combined/separate/positive/goto sentinel spellings. Every /GX form moved the sentinel check and shifted the body; no invariant-eligible result. The count jle/jmp shape needs more than a local do-while rewrite. [same emitted code as probe 42]
+probe 44 control-flow; result=MISMATCH; diff=9; shape=99.51219512195122: Added an outer loop_top label before while(1) and used explicit positive goto loop_top plus return at the count check. VC5 normalized it back to the same 2136-byte jg-to-return/jmp-top basin, while inner-label goto forms previously lost broad blocks. [same emitted code as probe 43]
+probe 45 control-flow; result=MISMATCH; diff=9; shape=99.51219512195122: Added an otherwise unused loop-entry label inside a natural do/while before the sentinel guard. All /GX variants remained in the shifted 2168-byte do-while basin; a label alone does not suppress VC5 loop normalization. [same emitted code as probe 44]
+probe 46 control-flow; result=MISMATCH; diff=9; shape=99.51219512195122: Tested strategy-left comparison spellings and positive/negative break forms with return outside while. Strategy-left changes cmp operand order and remains nonexact; break/continue forms all stay in the same 2136-byte jg/jmp basin. The original cmp operand order is already correct. [same emitted code as probe 45]
+probe 47 liveness; result=MISMATCH; diff=9; shape=99.51219512195122: Named, const, split-assignment, and positive named locals for the strategic count limit all stayed in the same current branch basin; VC5 folds the direct local and preserves jg/jmp. Moving sentinel/null tests into the while condition shifts the loop to a 2168-byte basin, with no valid frontier. [same emitted code as probe 46]
+probe 48 control-flow; result=MISMATCH; diff=9; shape=99.51219512195122: Removed while(1) and modeled the scan with explicit loop_top/loop_check gotos, positive count backedge, and final return. The /GX result shifts into the 2168-byte sentinel-normalized basin; explicit CFG does not recover the original branch without losing 18 exact blocks. [same emitted code as probe 47]
+probe 49 context; result=MISMATCH; diff=9; shape=99.51219512195122: Swept 16 file-scope ambient declaration counts combined with six bottom guard forms. All /GX ambient variants stayed in the same jg/jmp codegen group; front-end declaration context is not the controlling axis for this branch. [same emitted code as probe 48]
+probe 50 flags; result=MISMATCH; diff=9; shape=99.51219512195122: Classified /GX, /Oa, /Og-, /Ot-, /O1, and /Ox combinations with six bottom forms. Only /GX keeps the exact 2136-byte basin; all valid /GX forms retain jg/jmp. Alternative flags are not a supported branch fix. [same emitted code as probe 49]
+probe 51 abi; result=MISMATCH; diff=9; shape=99.51219512195122: Tested explicit signed/int/long casts, unsigned comparison, and short comparison at the count guard. Original jle proves signed dword semantics; explicit signed forms remain jg/jmp, unsigned emits ja, and short forms shift the frame/body. Width is not the blocker. [same emitted code as probe 50]
+probe 52 abi; result=MISMATCH; diff=9; shape=99.51219512195122: Width/signedness lab confirmed the original signed dword compare. Explicit signed casts duplicate the current jg/jmp bytes; unsigned emits ja; short casts alter the code and body. This is a control-flow layout issue, not a type-width issue. [same emitted code as probe 51]
+probe 53 control-flow; result=MISMATCH; diff=9; shape=99.51219512195122: Wrapped the positive backedge and failure goto in a nested do-while(0) at loop_check, with an explicit loop_top label and shared return tail. VC5 still normalized the sentinel loop into the 2168-byte basin; no jle/jmp recovery. [same emitted code as probe 52]
+probe 54 context; result=MISMATCH; diff=9; shape=99.51219512195122: Added donor-supported standard string.h and memory.h header contexts while sweeping bottom forms. All /GX builds remained in the same 2136-byte jg/jmp group; standard headers do not control this late branch. [same emitted code as probe 53]
+probe 56 control-flow; result=MISMATCH; diff=1215; shape=97.76714513556618: Hypothesis 1: use a natural do-while with the signed count <= strategicNumber condition as the actual bottom-tested loop, based on Ghidra decomp and oracle jle backedge; test whether VC5 preserves the bottom condition instead of inverting it. [same emitted code as probe 39]
+probe 58 control-flow; result=MISMATCH; diff=1215; shape=97.76714513556618: Hypothesis 2: natural do-while count condition with cost-path advances expressed as continue, so VC5 owns the bottom test as the loop terminator rather than a goto label; tests update location and cleanup ownership.
+probe 60 control-flow; result=MISMATCH; diff=1215; shape=97.76714513556618: Hypothesis 3: natural do-while with direct continue on both cost exits, after confirming the equivalent previous form was a duplicate; inspect whether the remaining +32 comes from ResourceItem lifetime and continue cleanup rather than loop polarity. [same emitted code as probe 58]
+probe 62 control-flow; result=MISMATCH; diff=1215; shape=97.76714513556618: Hypothesis 4: natural do-while count <= condition with the top sentinel/null path as break and one return after the loop; tests whether the oracle's shared zero tail reflects loop break ownership rather than direct return. [same emitted code as probe 56]
+probe 64 control-flow; result=MISMATCH; diff=1215; shape=97.76714513556618: Hypothesis 5: model the decompiler's positive outer max guard explicitly ( around a natural do-while), rather than an early negative return; tests PDB line-485 guard ownership and condition source order together. [same emitted code as probe 62]
+probe 67 control-flow; result=MISMATCH; diff=1282; shape=84.26966292134831: Hypothesis 6: move the item cursor update after the count guard to test whether the oracle's bottom-tested ownership is update-after-condition; binary order predicts this should lose the exact bottom hunk.
+probe 69 control-flow; result=MISMATCH; diff=1215; shape=97.76714513556618: Hypothesis 7: preserve a natural do-while count condition but express the item sentinel as a positive body guard with an explicit else return; tests whether an if/else guard avoids VC5's duplicated bottom sentinel check.
+probe 71 liveness; result=MISMATCH; diff=11; shape=99.34959349593495: Hypothesis 8: restore the PDB/decompiler local declaration order with count before realCount; source declaration order can control stack homes and loop-condition codegen without changing behavior.
+probe 73 liveness; result=MISMATCH; diff=9; shape=99.51219512195122: Hypothesis 9: split count and realCount declarations from their zero assignments while retaining declaration order; tests whether initialization site, not loop syntax, controls the late branch basin. [same emitted code as probe 55]
+probe 75 control-flow; result=MISMATCH; diff=1215; shape=97.76714513556618: Hypothesis 10: natural do-while count condition with the two sentinel exits as separate source if statements, matching the oracle's distinct cmp/jz and test/jz line sequence; test whether split guard ownership avoids loop rotation.
+probe 78 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_180408: 7 variants, 0 invariant-eligible, 0 exact
+probe 79 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_180426: 7 variants, 7 invariant-eligible, 0 exact
+probe 80 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_180507: 10 variants, 10 invariant-eligible, 0 exact
+probe 81 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_180652: 20 variants, 20 invariant-eligible, 0 exact
+probe 82 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_180754: 40 variants, 40 invariant-eligible, 0 exact
+probe 83 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_180811: 80 variants, 80 invariant-eligible, 0 exact
+probe 84 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_180832: 160 variants, 160 invariant-eligible, 0 exact
+probe 85 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_180853: 320 variants, 320 invariant-eligible, 0 exact
+probe 86 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_180918: 960 variants, 960 invariant-eligible, 0 exact
+probe 87 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_181003: 1920 variants, 1920 invariant-eligible, 0 exact
+probe 88 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_181146: 3840 variants, 3840 invariant-eligible, 0 exact
+probe 89 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_181436: 2 variants, 2 invariant-eligible, 0 exact
+probe 90 variant; result=MISMATCH; diff=9; shape=99.51219512195122: variant lab build\variant_lab\004D4540_nextBuildableItem\20260817_181503: 6 variants, 6 invariant-eligible, 0 exact
+probe 92 other; result=MISMATCH; diff=9; shape=99.51219512195122: PDB/DIA and COFF audit: original function symbol len=0x868, locals count=-0x100 realCount=-0xF4 numHouses=-0xF0 numStoragePits=-0xF8 numGranaries=-0xFC; two ResourceItem itemCost homes=-0xEC/-0x7C; no block or inline-site children, no compiland env/compiler records. Original FPO row is ProcSize 2152/Locals 256/Regs 4/Params 4; rebuilt .debug is 00 00 00 00 68 08 00 00 40 00 00 00 01 00 00 14 and matches length/frame shape. Original bottom line band 004D48A1-004D48C3 maps wholly to taibldmd.cpp:485 and contains cmp/jle plus jmp. No object/PDB evidence selects a different natural form; preserve clean baseline. [same emitted code as probe 91]
+probe 93 control-flow; result=MISMATCH; diff=9; shape=99.51219512195122: Same-TU exact-object comparison: build/obj/004D57A0_insert.obj has matching VC5 COFF defaults and a natural sentinel loop. Its emitted scan uses top cmp/je plus bottom cmp/jne backedge, proving VC5 can retain a positive backedge in this TU. Target rebuilt object instead emits cmp [esp+10], jg zero; jmp full-header, while oracle is cmp [esp+10], jle full-header; jmp zero. This is a localized source-CFG normalization basin, not a frame, ABI, relocation, or hidden flag issue. Parent loop-form probes already exhausted natural forms. [same emitted code as probe 92]
+probe 94 flags; result=MISMATCH; diff=9; shape=99.51219512195122: Compiler-object fingerprint: target .drectve contains only -defaultlib:LIBC and -defaultlib:OLDNAMES; response file is /nologo /c /O2 /Oy /GX. Target COFF .debug stores body metadata length 0x868 and 0x14000001 frame flags; original FPO row matches 2152-byte procedure, 256 locals, 4 regs, 4 params. PDB compiland env stores only obj=Release/taibldmd.obj; compiler front/back-end, language, pragma, macro, and inline metadata are absent. No compiler-version/profile/pragma state can be recovered from repository-local object/PDB records. [same emitted code as probe 93]
+probe 96 other; result=MISMATCH; diff=9; shape=99.51219512195122: Source-gate audit: BuildAIModule vtable surface is canonical and evidence-backed. Original vtable 0056E738 has scalar dtor, seven logging/history slots, load/save/glean/process/update/callback/filter, then save/display/loadBuildList/numberBuilt at +0x48; current declarations use named slots, not generic vfNN/VPAD. Original CFG has one shared item advance at 004D489E and one count-check tail at 004D48A1; next_item and loop_check are codegen-steering labels, while cost_block is an artificial merge. Canonical class spelling gaps remain: MainDecisionAIModule:RGE_Player:TRIBE_Player and AI submodules should retain proven inheritance; AIModule loggingHistory/loggingCommonHistory are const in PDB. No source edit made. [same emitted code as probe 95]
+probe 99 control-flow; result=MISMATCH; diff=1471; shape=76.89873417721519: Implemented source-gate cleanup: structured loop and cost nesting, one trailing advance/count check, canonical RGE_Player/MainDecision inheritance, const logging methods, protected filterOutMessage. Natural source regresses metrics; ordered calls retain all normal sites but VC5 removes the unreachable category-3 setBuildAttempts site (114/115).
+probe 101 liveness; result=MISMATCH; diff=1467; shape=76.77725118483413: Hypothesis: int rather than bool for the structured cap gate could preserve VC5's original cap flag lifetime without labels.
+probe 102 liveness; result=MISMATCH; diff=1476; shape=76.77725118483413: Hypothesis: int rather than bool for the post-escalation cost gate could preserve the original false-path lifetime in structured nesting.
+probe 103 control-flow; result=MISMATCH; diff=1471; shape=76.89873417721519: Hypothesis: use the source-shaped negative category-3 count guard instead of the equivalent positive disjunction in the structured body. [same emitted code as probe 100]
+probe 104 liveness; result=MISMATCH; diff=1471; shape=76.89873417721519: Hypothesis: an int availability flag may preserve the original resource-cost guard's register width in the structured success path.
+probe 105 control-flow; result=MISMATCH; diff=1477; shape=76.58227848101266: Hypothesis: reversing the two pointer guards in the structured loop header could retain the original sentinel/null test order after removing labels.
+probe 106 control-flow; result=MISMATCH; diff=1471; shape=76.89873417721519: Hypothesis: the natural truth test  may preserve the success block while reducing explicit comparison code in the structured cost path. [same emitted code as probe 103]
+probe 107 control-flow; result=MISMATCH; diff=1471; shape=76.89873417721519: Hypothesis: make the availability truth test explicit in the structured cost guard. [same emitted code as probe 106]
+probe 108 control-flow; result=MISMATCH; diff=1471; shape=76.58227848101266: Hypothesis: source category test order category-1 then category-2 could match the positive research/object branch spelling.
+probe 109 behavior; result=MISMATCH; diff=1471; shape=76.89873417721519: Hypothesis: express the category-4 resource precheck as a positive availability guard with an else failure, while preserving both fault and zero-return paths.
+probe 112 abi; result=MISMATCH; diff=1471; shape=76.89873417721519: Hypothesis: buildCategory is effectful, so removing the unsupported const qualifier may retain the binary-observed repeated category-3 accessor and setBuildAttempts branch.
+probe 113 control-flow; result=MISMATCH; diff=1485; shape=76.14533965244865: Hypothesis: a semantic selected-item pointer can preserve separate repeated buildCategory calls without a cached category value.
+probe 114 control-flow; result=MISMATCH; diff=1478; shape=75.0788643533123: Hypothesis: separate natural skip guards for category one and other categories avoid a compiler relation between the first filter and the repeated category-three accessor.
+probe 115 control-flow; result=MISMATCH; diff=1465; shape=77.70700636942675: Hypothesis: a structured one-item do/break guard preserves the first category filter, separate repeated category-3 accessor, and trailing outer advance without goto labels.
+probe 116 control-flow; result=MISMATCH; diff=1479; shape=75.31446540880503: Hypothesis: a category-specific structured guard evaluates category-three accessors sequentially before the common body, preserving the binary special branch without a one-item loop.
+probe 117 control-flow; result=MISMATCH; diff=1480; shape=75.4746835443038: Hypothesis: share the first non-category-one accessor across categories two and three, then nest the category-three repeated accessor in the equality arm. This matches the original five accessor sites.
+probe 118 control-flow; result=MISMATCH; diff=1480; shape=75.4746835443038: Hypothesis: split the category-three test from the repeated accessor comparison to keep the original second category call and special setBuildAttempts branch.
+probe 119 control-flow; result=MISMATCH; diff=1479; shape=74.60815047021944: Hypothesis: a natural category switch keeps the category-three repeated accessor independent from the shared category-one/default guards.
+probe 120 control-flow; result=MISMATCH; diff=1480; shape=75.4746835443038: Hypothesis: keep one shared non-category-one filter call site, then use a natural switch only for the category-three repeated accessor.
+probe 121 liveness; result=MISMATCH; diff=1480; shape=75.4746835443038: Hypothesis: a named first-category result, with the second category-three call kept direct, may retain the special setBuildAttempts branch.
+probe 122 control-flow; result=MISMATCH; diff=1480; shape=75.4746835443038: Hypothesis: explicit positive/else category-three accessor handling may retain the binary special call while preserving one shared first accessor site. [same emitted code as probe 121]
+probe 123 control-flow; result=MISMATCH; diff=1480; shape=75.4746835443038: Hypothesis: retain the shared first accessor, then name only the second category-three result inside its structured case. [same emitted code as probe 122]
+probe 124 liveness; result=MISMATCH; diff=1480; shape=75.4746835443038: Hypothesis: an address-taken request-category alias can preserve effectful repeated accessors without caching their values.
+probe 125 liveness; result=MISMATCH; diff=1480; shape=75.4746835443038: Hypothesis: an address-taken structured processing flag may keep the effectful special branch visible without changing accessor count. [same emitted code as probe 124]
+probe 126 control-flow; result=MISMATCH; diff=1471; shape=75.39432176656152: Hypothesis: evaluate the second category-three accessor as an independent structured guard after the shared first filter, preserving call order without a relation that erases the setter.
+probe 127 control-flow; result=MISMATCH; diff=1483; shape=75.2755905511811: Hypothesis: category-three special return handles every category-three mismatch, allowing the common body gate to use processItem or category-three without erasing the setter.
+probe 128 control-flow; result=MISMATCH; diff=1483; shape=76.26582278481013: Hypothesis: placing the category-three special guard after the separate category filter preserves the first accessor order and avoids predicate folding.
+probe 129 control-flow; result=MISMATCH; diff=1479; shape=74.84177215189874: Hypothesis: a separate pre-filter category-three guard may retain the missing setter call while keeping the common filter structured.
+probe 130 control-flow; result=MISMATCH; diff=1483; shape=74.60567823343848: Hypothesis: the natural integer range test for a category-three mismatch prevents false unreachable elimination while retaining one repeated accessor.
+probe 131 control-flow; result=MISMATCH; diff=1479; shape=74.84177215189874: Hypothesis: a natural switch over the repeated category accessor preserves the category-three mismatch setter without arithmetic steering.
+probe 132 abi; result=MISMATCH; diff=1508; shape=75.27386541471049: Final ABI source gate: buildCategory is non-const because the original separate calls can observe effects; specialFailure keeps both accessor order and the distinct setter call site.
+probe 135 control-flow; result=MISMATCH; diff=1496; shape=75.98116169544741: Hypothesis 1: replace processItem state with one helper-free positive category guard; preserve all direct accessors and specialFailure.
+probe 136 control-flow; result=MISMATCH; diff=1471; shape=76.89873417721519: Hypothesis 2: spell specialFailure as a direct category-3 mismatch guard with immediate setter and return; keep its accessor and fault order. [same emitted code as probe 112]
+probe 138 control-flow; result=MISMATCH; diff=1495; shape=75.8998435054773: Hypothesis 3: replace available state with a direct positive research/object availability guard; preserve category order and all calls.
+probe 139 liveness; result=MISMATCH; diff=1514; shape=76.29513343799059: Hypothesis 4: remove skipItem temporary and use the natural short-circuit skip guard; preserve accessor and fault order.
+probe 140 control-flow; result=MISMATCH; diff=1586; shape=74.43267776096823: Hypothesis 5: make object/canPlace status tests direct nested boolean guards instead of a found alias, while preserving category dispatch and call count.
+probe 141 liveness; result=MISMATCH; diff=1517; shape=75.50702028081123: Hypothesis 6: initialize withinCap from the first cap result and assign the natural non-overflow comparison; retain buildCap/buildCap/numberBuilds order.
+probe 143 control-flow; result=MISMATCH; diff=1514; shape=76.29513343799059: Hypothesis 7 syntax repair: positive specialFailure guard with deferred failure return; compile the structurally natural variant.
+probe 145 abi; result=MISMATCH; diff=1512; shape=76.76609105180533: Hypothesis 8: use a natural cap disjunction without withinCap locals; reject if it changes proven buildCap/buildCap/numberBuilds call order.
+probe 146 liveness; result=MISMATCH; diff=1540; shape=76.60910518053375: Hypothesis 9: use the same-TU donor's natural sentinel local for the loop; preserve direct item and all 115 calls.
+probe 148 liveness; result=MISMATCH; diff=1512; shape=76.76609105180533: Hypothesis 10: widen found local scope across itemCost2 construction and resource check; test whether original liveness supports that declaration site. [same emitted code as probe 145]
+probe 150 liveness; result=MISMATCH; diff=1453; shape=76.5625: Hypothesis 11: initialize tryCost from the natural threshold comparison, then enter the escalation guard only when false; preserve all threshold and skip calls.
+probe 151 liveness; result=MISMATCH; diff=1422; shape=76.95924764890282: Grouped H12: retain H11 threshold-initialized tryCost and remove skipItem temporary; require unchanged 115-call surface.
+probe 152 control-flow; result=MISMATCH; diff=1422; shape=76.95924764890282: Grouped H13: retain threshold-initialized tryCost and direct skip guard, then defer specialFailure return around a positive main phase; verify 115 calls.
+probe 153 liveness; result=MISMATCH; diff=1424; shape=76.8025078369906: Hypothesis 14: swap count and realCount declaration order to test original stack-home coloring; retain structured H13 and all calls.
+probe 155 abi; result=MISMATCH; diff=1506; shape=75.0: Hypothesis 15: test int versus bool for tryCost under the natural threshold guard; reject if it changes a proven boolean/local surface.
+probe 157 control-flow; result=MISMATCH; diff=1528; shape=76.75507020280811: Hypothesis 16: initialize specialFailure from the direct category predicate, then retain the call-preserving positive main guard and deferred return.
+probe 159 control-flow; result=MISMATCH; diff=1422; shape=76.95924764890282: Hypothesis 17: reverse only the threshold comparison operand spelling to strategicNumber(0x72) >= buildAttempts; preserve source evaluation and 115 calls.
+probe 160 control-flow; result=MISMATCH; diff=1422; shape=76.95924764890282: Hypothesis 18: attach the specialFailure return as the else arm of the positive main guard, preserving the setter call and 115-call surface.
+probe 161 liveness; result=MISMATCH; diff=1424; shape=76.8025078369906: Hypothesis 20: split realCount declaration from its zero assignment before the preflight guard; test original initialization timing without changing calls.
+probe 163 control-flow; result=MISMATCH; diff=1433; shape=76.88679245283019: Hypothesis 21: swap the loop sentinel and null guard order; use the emitted fault/CFG result to confirm original sentinel-first order.
+probe 166 control-flow; result=MISMATCH; diff=9; shape=99.51219512195122: Hypothesis: express the bottom count predicate as a positive continue arm with fall-through return; test for original jle-backedge then jmp-zero-tail order. [same emitted code as probe 98]
+probe 167 control-flow; result=MISMATCH; diff=1215; shape=97.76714513556618: Hypothesis: replace the bottom continue with a named goto to the loop body, preserving the hot jle backedge target while exposing source label order to VC5. [same emitted code as probe 38]
+probe 168 control-flow; result=MISMATCH; diff=10; shape=99.34959349593495: Hypothesis: reverse the bottom strict predicate to strategicNumber(0x73) < count, preserving semantic fault order while testing VC5 compare operand and branch polarity.
+probe 170 baseline; result=MISMATCH; diff=17; shape=98.21138211382114: Fresh standalone baseline; source owner, calls, and boundary checked before TU repair.
+```
+<!-- end-recovered:e0aa66c6266675d9af8f -->
+
+<!-- recovered:03d7a4a68f93854807c8 -->
+### `b9010b22e1ea` `src/scratch/004D4540_nextBuildableItem.cpp:1-124`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// VA: 004D4540 TribeBuildAIModule::nextBuildableItem
+// PDB donor: taibldmd.cpp:464-891
+// PDB-qualified owner: TribeBuildAIModule::nextBuildableItem(int)
+// Compiler-facing owner: this source file; decorated symbol is
+// ?nextBuildableItem@TribeBuildAIModule@@QAEPAVBuildItem@@H@Z.
+// Baseline reconstruction: natural build-list sentinel walk with the canonical
+// BuildItem/ResourceItem ownership and the direct AI submodule surfaces.
+// FLAGS: /nologo /c /O2 /Oy /GX
+// Attempt log:
+// 1: default-flags baseline had no EH registration (1924 bytes, frame 0xF8).
+// 2: /GX restored the constructor/destructor EH family (1936 bytes).
+// 3: corrected TribeMainDecision ownership gaps to resourceAI +0x10D7C,
+//    tacticalAI +0x1146C, and aiPlayer +0x1256C.
+// 4: restored the missing build-attempt threshold/skip-escalation phase and
+//    removed double sentinel advances; calls rose from 100 to 116.
+// 5: shared the observed setBuildAttempts(0) null-return tail; call count now
+//    equals the original (115).
+// 6-7: cap/number-builds source-order probes recovered first-cap, second-cap,
+//    number-builds call order but did not change the overall size.
+// 8: inlined researchState into the switch; removed the extra state home and
+//    recovered the exact 0xF4 frame (first mismatch moved from entry to +0x68).
+// 9: early negative max-count guard was codegen-duplicate.
+// 10: scoped the loop-bottom max-count local; exact-block coverage improved to
+//     59.35%, but the remaining mismatch is broad block placement/jump-table
+//     and late success-tail ordering. Left in scratch after the 10-probe budget.
+// 12: audited every skip path against the original 004D489E shared tail; these
+//     paths advance item before the loop-limit check rather than C++ continue.
+//     All 12 skip sites now target next_item; only the category-3/resource
+//     failure paths return 0, as shown by the original tail targets.
+// 13-14: independent category-4 spelling and numberBuilds > buildCap probes;
+//     the latter recovered the original cmp/jg hunk (+1 strict byte).
+// 15-19: explicit do/while and physical-tail CFG reorderings were codegen
+//     duplicates; restored the semantic-clean natural shared-tail source.
+// 20: restored semantic-clean shared-tail source after no-op CFG reorder
+//     probes; retained proven numberBuilds > currentCap operand spelling.
+// 21: final validation of the semantic-clean source (pause).
+// 22: session restart probe 1: converted the loop to do/while with the
+//     sentinel check as the first body statement and the count check as the
+//     loop condition, matching the original 004D48A1 bottom (call sn73; cmp
+//     count; jle 004D45B0 backedge to the full top; jmp return-0). The prior
+//     while+break form was loop-inverted by VC5 (sentinel re-check at bottom).
+// 23: session restart probe 2: condA then-arm (setInProgress/setBuilt) now
+//     falls through to the shared advance tail instead of goto next_item, and
+//     the whole remaining loop body (category-4 precheck, skip logic, filters,
+//     attempts escalation, cost/place check) is the else arm, mirroring the
+//     original 004D488C -> 004D489E fall-through and the out-of-line part B at
+//     004D49B8+. Category filter order swapped (category==1 first) to match
+//     the original 004D4B21 cmp ebp,1 / jne 004D4B46 dispatch.
+// 24: session restart probe 3 (big win): converted the loop to an infinite
+//     `while (1)` with the sentinel check as the first body statement and the
+//     count check as `loop_check: if (count > sn(0x73)) return 0;` at the
+//     bottom. The do/while and while forms were loop-inverted by VC5 (sentinel
+//     re-checked at the bottom, backedge to 45BE); the infinite loop has no
+//     condition to invert, so the count-check backedge (jmp 0045B0) goes to
+//     the FULL header and the sentinel re-check disappears. Part B's natural
+//     end advances once (line 829, before the itemCost2 destructor) and jumps
+//     to loop_check, skipping the shared advance at next_item (line 884) that
+//     the then-arm and all goto-next_item skips use. Result: shape 79.2% ->
+//     94.6%, exact-block 60.5% -> 84.7%, calls 99 -> 115/115 aligned, size
+//     +32 -> +36 (the residual +36 is the ebx=-1 register allocation: VC5
+//     materializes -1 in ebx in the original, used for push ebx and
+//     mov [esp+10Ch],ebx; the rebuilt pushes imm8/immediates instead. This is
+//     the liveness phase, deferred).
+// 25: buildAttempts() < 1 -> <= 0 (test eax,jg instead of cmp eax,1,jge);
+//     category-filter operand order (category != buildCategory() -> cmp ebp,eax);
+//     canBuild declared before the strategicNumber(0xA1) call (mov ebp,1 before
+//     the call). Recovers the 466D scheduling and the 4AAA test hunk.
+// 26: tried named -1 locals (int/const/register spellings) for the cost amounts
+//     and object() args; VC5 constant-folds them, so the ebx=-1 materialization
+//     is an allocator decision, not a source spelling. The precheck's -1 DOES
+//     materialize in ebx (or ebx,0FFFFFFFFh; push ebx matches), but the
+//     itemCost2 cost block and the object() call push imm8 instead (push
+//     0FFFFFFFFh) and the EH state resets use mov dword [esp+10Ch],-1 instead
+//     of mov [esp+10Ch],ebx. This accounts for the full residual +36 bytes
+//     (state stores +8, object pushes +7, cost amounts +2, shift effects). The
+//     do-while, while, and while(1) loop forms all converge on this same
+//     allocator basin; the ebx=-1 live range is the next (liveness-phase) lead.
+// 27: variant lab (build/variant_lab/004D4540_nextBuildableItem/20260806_001520):
+//     focused splice on the itemCost2 cost block, axes = amount spelling
+//     (literal -1 / 0xFFFFFFFF / const local / assign local) under /GX with
+//     size/frame/call-set gates. All 4 variants emit identical code (2172,
+//     first mismatch +0x6C) - the ebx=-1 materialization is NOT a source
+//     spelling axis.
+// 28: negative: do-while with the count as the loop condition and the sentinel
+//     as goto done (instead of return 0) still gets the sentinel re-check
+//     (backedge to 45BE) - the rotation is MSVC's loop normalization of the
+//     first-statement exit test, not a return-vs-goto artifact. Restored the
+//     while(1) form (best: 2172, 94.56% shape, 84.72% exact-block, 115/115).
+// 29: exact-finish restored the 20260817T141047.73 frontier. The natural
+//     source has the original 2136-byte boundary, 0xF4 EH frame, 115 ordered
+//     calls, 98.37% exact blocks, and a 9-byte positional mismatch.
+// 30: added the shared-context guard. A canonical-header target-only compile
+//     preserves the owner symbol and emitted call surface; it does not change
+//     the two unresolved mismatch hunks.
+// 31: bottom `count <= strategicNumber(0x73)` with `continue` is codegen-
+//     duplicate of the frontier. It remains the clearest natural source.
+// 32: a named bottom goto worsened the result to 1215 bytes and 2168 bytes.
+//     Restored the frontier.
+// 33: reversing the bottom comparison worsened the result to 10 bytes and
+//     changed the compare form. Restored the frontier.
+// 34: a prechecked do/while changed the sentinel register basin and worsened
+//     the result to 109 bytes. Restored the frontier.
+// 35: standalone compilation through include/taibldmd_context.h preserves
+//     the same natural 9-byte frontier. This confirms the reduced body is not
+//     dependent on a narrow local declaration bank.
+// BINARY NOTE: the remaining 7-byte hunk is at 004D48B8. The executable has
+//     `jle 004D45B0; jmp 004D499B`; natural VC5 emits the equivalent
+//     `jg 004D499B; jmp 004D45B0`. The other 2 bytes are the compiler switch
+//     table relocation at 004D4615, whose table starts at 004D4D98, outside
+//     the extracted function boundary.
+
+// Fresh wave1 context gate:
+// - PROVED PDB module: taibldmd.cpp, source band lines 464-891.
+// - PROVED owner and order: TribeBuildAIModule::nextBuildableItem at
+//   004D4540, after 004D4460 and before 004D4DB0.
+// - PROVED anchors: vslot+0x48 calls at 004D456B-004D4581, strategic
+//   calls at 004D45A3 and 004D48AF, and ResourceItem construction/destruction
+//   at 004D48D1/004D4992 and 004D4D8E.
+// - PROVED fields: this+0xF0, this+0x15C, this+0x3A6, this+0x4A7,
+//   this+0x5A8, and this+0x5BC.
+// - LIKELY source context: the real taibldmd.cpp class surface and /GX EH
+//   path. The grouped flag row omits /GX.
+// - UNKNOWN: whether a natural source form can recover the bottom branch
+//   polarity without the rejected proposal or unsupported steering.
+```
+<!-- end-recovered:03d7a4a68f93854807c8 -->
+
+## Worker updates
+
+### 2026-08-29 wave21-taibldmd-integrate
+
+- Integrated the proved proposal from `build/audits/workers/bonus-sol-taibldmd/proposed_taibldmd.cpp` into `src/taibldmd.cpp`.
+- The natural source now keeps the `0x67`, `0x44`, and `0x46` count calls in order, uses the count limit as the loop condition, and advances with `continue` after cost failure.
+- The module response `config/flags/004D5690_addResearch.rsp` lacked `/GX`. Added `/GX` because this function has the original EH prologue and needs the EH code path.
+- Focused check after integration: `MATCH`, `0.0000%`, 2136/2136 bytes, frame `0xF4/0xF4`, owner match, 115/115 calls, 89/89 conditional signals, and 117/117 relocations safely masked.
+- Grouped audit: `python tools/audit_translation_unit_observed.py --group taibldmd --jobs 1 --output-dir build/audits/workers/wave21-taibldmd-integrate/taibldmd`. Target `004D4540` is `MATCH` but remains unregistered. Twenty registered owners match. `/GX` changes registered `004D4F80` to a 9-byte mismatch; the parent must review module-wide flag ownership before promotion.
+
+### 2026-08-30 coordinator rollback
+
+- Restored the pre-integration function body because the exact body changed the source context and regressed registered owner `004D4F80`.
+- Kept module-wide `/GX`. Original `004D4540` and `004D4E10` use FS exception registration, so `/GX` is authentic.
+- Fresh grouped validation reports `004D4540` as a 9-byte mismatch.
+- `004D4F80`, `004D4E10`, and all 21 registered owners report `MATCH`, `0.0000%`.
+- Evidence: `build/audits/integration/taibld-rollback-validation/validation-summary.txt`.
+- Keep `004D4540` in `scratch`. Do not register the context-dependent exact form.

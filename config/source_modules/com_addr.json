@@ -7,32 +7,32 @@
   "functions": {
     "004249D0": {
       "status": "matching",
-      "note_path": "recovery_notes/004249D0_RGE_Communications_Addresses.md"
+      "note_path": "decomp_notes/functions/0042/004249D0_RGE_Communications_Addresses.md"
     },
     "00424B10": {
       "status": "matching",
-      "note_path": "recovery_notes/00424B10_RGE_Communications_Addresses.md"
+      "note_path": "decomp_notes/functions/0042/00424B10_RGE_Communications_Addresses.md"
     },
     "00424B60": { "status": "matching" },
     "00424B80": {
       "status": "matching",
-      "note_path": "recovery_notes/00424B80_SetIPAliases.md"
+      "note_path": "decomp_notes/functions/0042/00424B80_SetIPAliases.md"
     },
     "00424C20": {
       "status": "matching",
-      "note_path": "recovery_notes/00424C20_GetAddress.md"
+      "note_path": "decomp_notes/functions/0042/00424C20_GetAddress.md"
     },
     "00424C50": {
       "status": "matching",
-      "note_path": "recovery_notes/00424C50_GetAlias.md"
+      "note_path": "decomp_notes/functions/0042/00424C50_GetAlias.md"
     },
     "00424C80": {
       "status": "matching",
-      "note_path": "recovery_notes/00424C80_SetIPAddresses.md"
+      "note_path": "decomp_notes/functions/0042/00424C80_SetIPAddresses.md"
     },
     "00424D90": {
       "status": "matching",
-      "note_path": "recovery_notes/00424D90_EraseInformation.md"
+      "note_path": "decomp_notes/functions/0042/00424D90_EraseInformation.md"
     }
   }
 }

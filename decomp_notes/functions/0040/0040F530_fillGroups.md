@@ -1,0 +1,131 @@
+# Function notes: 0040F530 `fillGroups`
+
+Module notes: `decomp_notes/aipbook_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:9ea5593d155394457b8a -->
+### `d050eea3c` `src/aipbook.cpp:428-429`
+
+Mapping: `exact`. removed comment declares this PDB source owner VA.
+
+```text
+// 0040F530 AIPlay::fillGroups
+// BINARY NOTE: This natural reconstruction retains the shipped 22-call
+```
+<!-- end-recovered:9ea5593d155394457b8a -->
+
+<!-- recovered:e0c0ac059a64c0385082 -->
+### `target-session` `build/target_sessions/0040F530_fillGroups.json:1-46`
+
+Mapping: `exact`. target-session probe notes name this target.
+
+```text
+probe 1 baseline; result=MISMATCH; diff=833; shape=70.41095890410959: Baseline: current typed source has 22/22 ordered calls, exact 0x4F8 frame, 1112 rebuilt bytes, and first mismatch at play local home; clean natural source before new hypotheses.
+probe 2 layout; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 1: declaration order may control VC5 stack-home coloring; moved long-lived play declaration before arrays while preserving source behavior. [same emitted code as probe 1]
+probe 3 liveness; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 2: original computes bucket value before its address, then keeps value through addGrouping; replaced first-scan pointer temporary with named unitId and direct store. [same emitted code as probe 2]
+probe 4 liveness; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 3: source declaration and initialization site may affect VC5 local allocation; moved play lookup and null return before local declarations, matching executable line order. [same emitted code as probe 3]
+probe 6 layout; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 4: original first-scan address uses LEA of type row offset plus j; expressed the same typed storage through unitsByType[0][j + type * 50]. [same emitted code as probe 4]
+probe 8 liveness; result=MISMATCH; diff=835; shape=70.68493150684931: Hypothesis 5: original first group scan carries a count-array cursor in [esp+18]; added an explicit typed cursor and advances it per type.
+probe 10 liveness; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 6: PDB line bands may reflect block-scoped first-group temporaries; scoped minimum and assigned inside the type guard and a separate final minimum. [same emitted code as probe 6]
+probe 13 liveness; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 7: original LEA computes a named combined bucket index before load; added unitIndex = j + type * 50 for the first minimum scan. [same emitted code as probe 10]
+probe 15 liveness; result=MISMATCH; diff=827; shape=67.3913043478261: Hypothesis 8: original loads play maximum before marking a successful unit and before numberInPlay; cached maximumUnits at each proven call site.
+probe 16 liveness; result=MISMATCH; diff=827; shape=67.3913043478261: Hypothesis 9: maximumUnits should be a short-lived branch local so VC5 keeps it in BL; changed the cache from function scope to one declaration per successful branch. [same emitted code as probe 15]
+probe 18 behavior; result=MISMATCH; diff=1068; shape=77.44565217391305: Hypothesis 10: original operand order proves direct byte predicates: maximum(type) > numberOfTypeInGroup and minimum(j) > numberOfTypeInGroup, without named inType/maximum temporaries.
+probe 20 behavior; result=MISMATCH; diff=835; shape=71.11716621253406: Hypothesis 11: retain one final numberOfTypeInGroup result in a typed int local, while keeping direct max/min predicates, to avoid the extra call from h10.
+probe 21 liveness; result=MISMATCH; diff=839; shape=71.78082191780823: Hypothesis 12: use one narrow final inType temporary for the single call, preserving unsigned ABI width while keeping direct max/min operand order.
+probe 23 behavior; result=MISMATCH; diff=833; shape=70.68493150684931: Hypothesis 13: assignment inside the final minimum predicate may preserve one call and original minimum-left compare without adding a local.
+probe 25 liveness; result=MISMATCH; diff=832; shape=70.68493150684931: Hypothesis 14: original final loop may use a signed difference local; formed minimum - numberOfTypeInGroup once, then tested and accumulated that value.
+probe 27 liveness; result=MISMATCH; diff=832; shape=72.32876712328768: Hypothesis 15: final deviation scan may have its own group pointer lifetime, allowing VC5 to reuse the retired self/group home seen at original [esp+3c].
+probe 28 liveness; result=MISMATCH; diff=832; shape=72.32876712328768: Hypothesis 16: group pointers may be block-local in original source; scoped first, overflow-1, overflow-2, and final group receivers independently. [same emitted code as probe 27]
+probe 29 behavior; result=MISMATCH; diff=838; shape=68.76712328767124: Hypothesis 17: original overflow branches use maximum-left/direct numberOfType predicates and smallestGroupSize-left comparison; retained finalGroup local from h15.
+probe 31 control-flow; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 19: original final deviation scan may be while-shaped like the first group scan; changed only its for loop to explicit initialization, while test, and increment. [same emitted code as probe 13]
+probe 33 layout; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 20: Ghidra local ordering places minUnits before the two arrays; moved only its declaration to test VC5 stack-home order. [same emitted code as probe 31]
+probe 34 liveness; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 21: play is never reassigned; const-qualified local may alter VC5 liveness without changing the proven nonconst method ABI. [same emitted code as probe 33]
+probe 38 layout; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 22: the original first minimum scan loads unitsByType[type][j] before forming its slot address; remove the unit pointer only in this loop to match the observed load-before-LEA order. [same emitted code as probe 37]
+probe 40 liveness; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 23: original overflow scan has a separate candidate index (Ghidra iStack_4d4) instead of reusing the first input-loop j; name that natural local and use it only for the bucket scan. [same emitted code as probe 38]
+probe 42 layout; result=MISMATCH; diff=884; shape=52.602739726027394: Hypothesis 24: the original first group pass keeps an explicit count cursor and row offset (Ghidra j/rVal), so use typed pointer arithmetic over unitsByType[0][rowOffset+j] rather than recomputing the row from type.
+probe 44 liveness; result=MISMATCH; diff=827; shape=67.3913043478261: Hypothesis 25: original success arms cache maximumNumberUnitsValue only across the following numberInPlay call; branch-local narrow temporaries should preserve BL scheduling without a function-scope frame slot. [same emitted code as probe 16]
+probe 45 liveness; result=MISMATCH; diff=827; shape=67.3913043478261: Hypothesis 26: reuse the existing byte maximum local for the play cap across numberInPlay; this tests the original BL schedule without adding a new frame home. [same emitted code as probe 44]
+probe 47 behavior; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 27: source equality operands are reversed (play maximum on the left); VC5 may evaluate the field before the numberInPlay call, matching the original BL load and spill order.
+probe 49 liveness; result=MISMATCH; diff=827; shape=67.3913043478261: Hypothesis 28: narrow maximum locals are block-scoped at each capacity call, while group maximum locals are scoped to their guards; this may share byte homes and keep original BL scheduling without the extra frame. [same emitted code as probe 45]
+probe 51 liveness; result=MISMATCH; diff=827; shape=67.3913043478261: Hypothesis 29: combine the proven BL-cap cache with direct overflow bucket expressions; removing unitId should free the byte-cache frame slot while preserving the original load-before-call shape.
+probe 54 liveness; result=MISMATCH; diff=833; shape=70.41095890410959: Hypothesis 31: the first minimum scan carries the bucket value in a named int before testing and calling; this should delay slot-address formation until the proven post-call invalidation store. [same emitted code as probe 40]
+probe 56 layout; result=MISMATCH; diff=805; shape=66.57534246575342: Hypothesis 32: rebuild from the original PDB local surface (playStatus, groupMembers, numberGroupMembers, i/rVal/j, numAssigned, a, smallestGroupSize, and group) with pointer-like loop state, instead of the prior artificial type/count/bestGroup locals.
+probe 57 layout; result=MISMATCH; diff=803; shape=70.13698630136986: Hypothesis 33: remove compiler-visible type/count locals from the PDB-shaped source and reuse a/rVal/j after their proven phases; target PDB has no type/count names and the prior model spent one extra frame slot.
+probe 58 layout; result=MISMATCH; diff=833; shape=69.20980926430518: Hypothesis 34: eliminate the non-PDB k local by using PDB i/rVal/j across disjoint phases: i group, rVal type, j candidate; remove explicit row-offset and count temporaries while preserving typed arrays and call order.
+probe 59 layout; result=MISMATCH; diff=803; shape=70.13698630136986: Hypothesis 35: match the original PDB local declaration order (play, deviation, i/rVal, arrays, j, group, minUnits, numAssigned, a, smallestGroupSize) and separate play assignment from declaration. [same emitted code as probe 57]
+probe 60 liveness; result=MISMATCH; diff=803; shape=70.13698630136986: Hypothesis 36: the object conversion result is a short-lived register temporary, not a stack local; register-qualify the period-plausible object pointer to test frame pressure. [same emitted code as probe 59]
+probe 61 layout; result=MISMATCH; diff=829; shape=73.29700272479565: Hypothesis 37: rVal is a compiler cursor rather than a necessary source local; remove its explicit row and final-result uses to test whether the extra frame slot disappears.
+probe 62 liveness; result=MISMATCH; diff=829; shape=73.29700272479565: Hypothesis 38: the inner bucket index is register-resident like the optimized PDB compiler temp; register-qualify k to remove any stack-home pressure. [same emitted code as probe 61]
+probe 67 layout; result=MISMATCH; diff=803; shape=70.13698630136986: Hypothesis 1: scope the two candidate indices to their loops, removing the function-scope k home while preserving typed array traversal and call order. [same emitted code as probe 66]
+probe 69 context; result=MISMATCH; diff=831; shape=71.78082191780823: Hypothesis 2: use the reviewed aipbook_context.h declarations in the target owner, rather than a local narrow class surface; this tests authentic canonical TU context without changing behavior or call order.
+probe 71 liveness; result=MISMATCH; diff=803; shape=70.13698630136986: Hypothesis 3: scope the object conversion temporary to the input-loop iteration, matching the PDB local surface and avoiding a function-wide object lifetime. [same emitted code as probe 67]
+probe 73 layout; result=MISMATCH; diff=803; shape=70.13698630136986: Hypothesis 4: move minUnits into the PDB local declaration band before the array locals, testing its final return-home assignment while preserving all effects. [same emitted code as probe 71]
+probe 75 layout; result=MISMATCH; diff=876; shape=68.4931506849315: Hypothesis 5: replace compiler-index candidate loops with typed moving unit pointers and bounded remaining counts, matching the observed slot-pointer traversal while removing the unproven k local.
+probe 79 liveness; result=MISMATCH; diff=804; shape=67.67123287671232: Hypothesis 6: use separate block-scoped numAssigned locals for minimum assignment and overflow selection, allowing VC5 to reuse one home across disjoint lifetimes.
+probe 82 behavior; result=MISMATCH; diff=904; shape=74.93261455525607: Hypothesis 7b: use separate branch-scoped maximum-byte locals before each status count call, testing the original load-before-call fault order without a function-wide home.
+probe 84 liveness; result=MISMATCH; diff=904; shape=74.93261455525607: Hypothesis 8: register-qualify the cached maximum byte to test whether VC5 can preserve the original pre-call byte load and BL compare without adding stack stores. [same emitted code as probe 82]
+probe 86 layout; result=MISMATCH; diff=803; shape=70.13698630136986: Hypothesis 9: join play declaration and initialization to test the original early receiver materialization and frame-home placement. [same emitted code as probe 73]
+```
+<!-- end-recovered:e0c0ac059a64c0385082 -->
+
+<!-- recovered:8aaf3cfe2481360317a2 -->
+### `915ac67495c5` `src/scratch/0040F530_fillGroups.cpp:1-51`
+
+Mapping: `exact`. historical standalone source path names this target VA.
+
+```text
+// 0040F530 AIPlay::fillGroups
+// aipbook.cpp, lines 465-640
+//
+// Attempt log:
+// - Prior candidate used AIPlay/AIPlayStatus method stubs with the wrong owners.
+//   It emitted 18 calls instead of the original 22 and was 122 bytes short.
+// - Baseline: restore the call surface shown by the original assembly and the
+//   same-TU donors: AIPlayBook::convertUnitToIntType, AIPlay::group,
+//   AIPlayGroup::minimum/maximum, and AIPlayStatus grouping methods.
+// - Rebuilt the first group scan as a while loop; this removed one duplicated
+//   group call and aligned all 22 direct/virtual call sites.
+// - Made minimum and deviation arithmetic int locals; this restored the 0x4F8
+//   frame and the original zero-extension around AIPlayGroup::minimum.
+// - Tested inline capacity predicates. They improved local block shape but
+//   added four frame bytes and two bytes past the original boundary, so they
+//   were rolled back.
+// - Final validated state: 1112 rebuilt bytes, 0x4F8 frame, 22/22 calls, and
+//   849 positional diff bytes. Remaining drift starts at the play local home
+//   ([esp+10] versus original [esp+14]) and includes bucket index shape and
+//   late register allocation. Source keeps named period-plausible ownership.
+// - Store each accepted unit before incrementing its type count. This natural
+//   order matches the original memory effects and improved the diff to 834.
+// - Tested explicit row cursors for the minimum-assignment loop. They made the
+//   structural output worse (882-byte diff, 52.60% shape), so they were rolled back.
+// - Named the surviving bucket unit ID before the overflow-mode calls. This
+//   preserves the original spilled candidate value and improved the diff to 833.
+// - Reordered that local and used a play declaration initializer. Both emitted
+//   the same 833-byte result; the simple named-local form remains.
+// - Removed the first minimum-scan unit pointer temporary and used the typed
+//   bucket element directly. VC5 emitted the same 1112-byte code, so it was
+//   rolled back; this access spelling is compiler-neutral in the current TU.
+// - BINARY NOTE: 21 additional source probes kept the typed ABI and 22-call
+//   surface but did not move the first play-home mismatch or reach exactness.
+// - BINARY NOTE: direct maximum-left predicates improved block shape only when
+//   combined with a final-loop rewrite; they added a call or a 0x4FC frame.
+// - BINARY NOTE: a final-scan group local improved the diagnostic diff to 832
+//   bytes and 72.33% shape, but moved the early this home and was rolled back.
+// - BINARY NOTE: caching maximumNumberUnitsValue before numberInPlay added a
+//   0x4FC frame. The original loads this byte before the call without a home.
+// - Exact-finish probes: loop-scoped indices and scoped object storage emitted
+//   the same 803-byte result. The full context header emitted 831 bytes.
+//   Moving to typed unit cursors emitted 876 bytes. Scoped assignment state
+//   emitted 804 bytes. Cached maximum bytes emitted 904 bytes. All were
+//   restored.
+// - BINARY NOTE: the restored source emits 365 instructions, 1157 bytes, a
+//   0x4FC frame, and all 22 calls in the original order. The original emits
+//   365 instructions, 1150 bytes, and a 0x4F8 frame. Drift starts at +0002.
+// - BINARY NOTE: the local class declarations are guarded for the reviewed
+//   aipbook_tu.cpp context. Standalone checking keeps the same ABI surface.
+// - LIKELY INTENT: the remaining drift is source lifetime and register color,
+//   not ownership or direct-call ABI. The clean baseline remains authoritative.
+```
+<!-- end-recovered:8aaf3cfe2481360317a2 -->

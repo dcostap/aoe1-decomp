@@ -7,13 +7,13 @@
   "functions": {
     "00493D60": {
       "status": "scratch",
-      "note_path": "recovery_notes/scr_game.md"
+      "note_path": "decomp_notes/scr_game.md"
     },
     "004954A0": { "status": "matching" },
     "004959A0": { "status": "matching" },
     "004959B0": { "status": "matching" },
     "00495A90": { "status": "matching" },
-    "00495AE0": { "status": "scratch", "note_path": "recovery_notes/scr_game.md" },
+    "00495AE0": { "status": "scratch", "note_path": "decomp_notes/scr_game.md" },
     "00496550": { "status": "accepted_drift" },
     "00496700": { "status": "matching" },
     "00496800": { "status": "scratch" },
@@ -39,10 +39,10 @@
     "004996B0": { "status": "matching" },
     "004996C0": { "status": "scratch" },
     "0049A8A0": { "status": "scratch" },
-    "0049A8F0": { "status": "matching", "note_path": "recovery_notes/scr_game.md" },
+    "0049A8F0": { "status": "matching", "note_path": "decomp_notes/scr_game.md" },
     "0049AB10": { "status": "matching" },
     "0049AB60": { "status": "matching" },
-    "0049ADA0": { "status": "scratch", "note_path": "recovery_notes/scr_game.md" },
+    "0049ADA0": { "status": "scratch", "note_path": "decomp_notes/scr_game.md" },
     "0049B000": { "status": "scratch" },
     "0049B080": { "status": "scratch" },
     "0049B560": { "status": "matching" },
@@ -58,7 +58,7 @@
     "0049BF20": { "status": "matching" },
     "0049BF50": { "status": "scratch" },
     "0049C010": { "status": "scratch" },
-    "0049C0B0": { "status": "scratch", "note_path": "recovery_notes/scr_game.md" },
+    "0049C0B0": { "status": "scratch", "note_path": "decomp_notes/scr_game.md" },
     "0049C160": { "status": "matching" },
     "0049C1B0": { "status": "matching" },
     "0049C230": { "status": "matching" },
@@ -101,7 +101,7 @@
     "0049D370": { "status": "matching" },
     "0049D440": {
       "status": "scratch",
-      "note_path": "recovery_notes/scr_game.md"
+      "note_path": "decomp_notes/scr_game.md"
     },
     "0049D4B0": { "status": "matching" },
     "0049D4F0": { "status": "matching" },

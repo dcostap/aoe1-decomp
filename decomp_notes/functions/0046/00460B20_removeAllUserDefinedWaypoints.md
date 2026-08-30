@@ -1,0 +1,32 @@
+# Function notes: 00460B20 `removeAllUserDefinedWaypoints`
+
+Module notes: `decomp_notes/move_obj_module.md`.
+
+## Recovered attempt history
+
+<!-- recovered:5e01d83d0f4882d57cbe -->
+### `d050eea3c` `src/move_obj.cpp:2564-2565`
+
+Mapping: `strong`. next mapped function definition is removeAllUserDefinedWaypoints at old line 2626.
+
+```text
+//    one top guard; exact 425-byte match (all four calls and all CFG blocks).
+// Source audit: the +1C0 virtual call is the donor-backed
+```
+<!-- end-recovered:5e01d83d0f4882d57cbe -->
+
+<!-- recovered:869d84089644e975e896 -->
+### `6a2aef2e2` `src/move_obj.cpp:2326-2332`
+
+Mapping: `strong`. next mapped function definition is removeAllUserDefinedWaypoints at old line 2391.
+
+```text
+// 1: the old stub only modeled the final-waypoint guard.  The binary instead
+//    appends three-byte XYZBYTEPoint records and grows a 5/2x byte buffer.
+//    exact call set and 425-byte neighborhood but had reversed capacity
+//    operand order and a redundant nested copy-loop guard.
+// 3: wrote the capacity test as max > count and flattened the copy loop to
+// removeAllUserDefinedWaypoints slot; the surrounding ABI declarations retain
+// the proven inherited slot order without manual vtable stores.
+```
+<!-- end-recovered:869d84089644e975e896 -->

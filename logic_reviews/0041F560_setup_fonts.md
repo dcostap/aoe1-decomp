@@ -1,10 +1,12 @@
 # Logic review: 0041F560 `RGE_Base_Game::setup_fonts`
 
+Current source: `src/basegame.cpp`. This ledger contains historical review evidence.
+
 ## Phase transition
 
 The main agent suspended ordinary exact matching after five claims and 20 meaningful probes.
 
-The candidate is `src/scratch/0041F560_setup_fonts.cpp`.
+The candidate is `src/basegame.cpp`.
 
 Current validation:
 
@@ -72,4 +74,4 @@ No behavioral uncertainty remains. The retained source preserves the unusual
 interior metrics pointer and all resulting shifted values. Remaining drift is
 the four-byte frame and register allocation.
 
-Promote to `src/verified_logic`.
+Promote to `verified_logic` status.
