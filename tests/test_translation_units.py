@@ -228,8 +228,8 @@ class TranslationUnitTests(unittest.TestCase):
         self.assertIn("c-language-mode", {issue.code for issue in issues})
 
     def test_manifest_validation_requires_owner_include_order_and_count(self) -> None:
-        first_va = "00401746"
-        second_va = "00401A8E"
+        first_va = "00546A00"
+        second_va = "0052A990"
         first_record = function_record_by_va(int(first_va, 16))
         second_record = function_record_by_va(int(second_va, 16))
         first_path = preferred_source_path(first_record)
