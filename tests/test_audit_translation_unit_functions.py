@@ -72,7 +72,7 @@ def test_boundary_failure_precedes_ordinary_codegen_work() -> None:
     assert action == "repair_boundary_or_classification"
 
 
-def test_missing_normal_symbol_becomes_structural_captain_work() -> None:
+def test_missing_normal_symbol_becomes_structural_matching_worker_work() -> None:
     category, action, _ = classify(
         status(), comparison("NOT_EMITTED", 0, owner="error"), False, False, []
     )
@@ -171,4 +171,4 @@ def test_queue_retains_exact_policy_review() -> None:
     assert [row["va"] for row in complete["promotion_policy_reviews"]] == [
         "00401000"
     ]
-    assert complete["main_agent_task_count"] == 1
+    assert complete["orchestrator_task_count"] == 1

@@ -39,7 +39,7 @@ A useful result can be:
 - a disproved hypothesis that prevents repeated work; or
 - a complete accepted-drift proposal.
 
-Do not decide `accepted_drift`. The main agent reviews that proposal.
+Do not decide `accepted_drift`. The orchestrator reviews that proposal.
 
 Do not propose or select `verified_logic`. Leave a stuck function in `scratch`.
 
@@ -55,7 +55,7 @@ Run each tool with `--help` before its first use.
 
 2. Use the assigned session.
 
-   If the coordinator preclaimed the active lease, do not start it again. Read
+   If the orchestrator preclaimed the active lease, do not start it again. Read
    the briefing instead:
 
    ```text
@@ -96,9 +96,6 @@ ABI, layout, control-flow, lifetime, or compiler-context idea.
 
 Record meaningful checks through `target_session.py check`. Do not count syntax
 repairs, unchanged reruns, or renamed locals as new evidence.
-
-If the target-session lock times out, do not loop, force, or delete the lock.
-Keep the source safe, record the blocker, and report it to the main agent.
 
 Use `tools/check_function.py --no-build` for extra read-only diagnostics after a
 current check.
@@ -196,7 +193,7 @@ Broad drift, changed predicates, missing calls, wrong targets, or changed effect
 remain `scratch`.
 
 Record the complete proof in the function notes. Report it as a proposal. The
-main agent makes the decision.
+orchestrator makes the decision.
 
 ## Report
 

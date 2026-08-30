@@ -10,6 +10,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 RETIRED_TEXT = (
     "config/source_modules/",
     "config/translation_units.json",
+    "docs/main_agent_workflow.md",
     "audit_translation_unit_observed.py",
     "plan_translation_unit.py",
     "translation_unit_prefixes.py",
@@ -40,6 +41,37 @@ def present_markdown_files() -> list[Path]:
 
 
 class DocumentationTests(unittest.TestCase):
+    def test_orchestrator_is_the_only_orchestration_role_name(self) -> None:
+        result = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(REPO_ROOT),
+                "grep",
+                "-n",
+                "-I",
+                "-i",
+                "-e",
+                "main-agent",
+                "-e",
+                "main_agent",
+                "-e",
+                "main agent",
+                "-e",
+                "coordinator",
+                "--",
+                ".",
+                ":!orig/**",
+                ":!tests/test_documentation.py",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        self.assertIn(result.returncode, {0, 1})
+        self.assertEqual(result.stdout, "")
+        self.assertFalse((REPO_ROOT / "docs" / "main_agent_workflow.md").exists())
+        self.assertTrue((REPO_ROOT / "docs" / "orchestrator_workflow.md").is_file())
+
     def test_markdown_uses_current_paths(self) -> None:
         failures: list[str] = []
         for path in present_markdown_files():

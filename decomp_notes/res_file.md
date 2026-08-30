@@ -11,7 +11,7 @@
 - The lead owns grouped exact validation. Focused checks below record the
   current compile and representative owner results.
 
-The coordinator assigned all seven resource record types to `Res_file.cpp`.
+The orchestrator assigned all seven resource record types to `Res_file.cpp`.
 Their canonical declarations are in `include/Res_file.h`. The declarations use
 only the PDB field names and sizes recorded below. No virtual methods or other
 methods occur in these PDB records.
@@ -43,7 +43,7 @@ also contributes parent-owned blocks at `0047F00C` and `0047F076` inside the
 
 ### `ResFileHdr`
 
-- Owner: `Res_file.cpp`, by coordinator decision and use by the three PDB
+- Owner: `Res_file.cpp`, by orchestrator decision and use by the three PDB
   owners `0047EE90`, `0047F180`, and `0047F230`.
 - PDB record: `inventory/types/dumps/ResFileHdr.txt`.
 - Size: `0x114` (276 bytes).
@@ -62,7 +62,7 @@ also contributes parent-owned blocks at `0047F00C` and `0047F076` inside the
 
 ### `resfile_header`
 
-- Owner: `Res_file.cpp`, by coordinator decision and use by `0047EE90`,
+- Owner: `Res_file.cpp`, by orchestrator decision and use by `0047EE90`,
   `0047F230`, and `0047F5C0`.
 - PDB record: `inventory/types/dumps/resfile_header.txt`.
 - Size: `0x40` (64 bytes).
@@ -81,7 +81,7 @@ also contributes parent-owned blocks at `0047F00C` and `0047F076` inside the
 
 ### `resfile_type_dir_node`
 
-- Owner: `Res_file.cpp`, by coordinator decision and use by
+- Owner: `Res_file.cpp`, by orchestrator decision and use by
   `RESFILE_locate_resource` and `RESFILE_build_res_file`.
 - PDB record: `inventory/types/dumps/resfile_type_dir_node.txt`.
 - Size: `0x0C` (12 bytes).
@@ -97,7 +97,7 @@ also contributes parent-owned blocks at `0047F00C` and `0047F076` inside the
 
 ### `resfile_id_dir_node`
 
-- Owner: `Res_file.cpp`, by coordinator decision and use by
+- Owner: `Res_file.cpp`, by orchestrator decision and use by
   `RESFILE_locate_resource` and `RESFILE_build_res_file`.
 - PDB record: `inventory/types/dumps/resfile_id_dir_node.txt`.
 - Size: `0x0C` (12 bytes).
@@ -112,7 +112,7 @@ also contributes parent-owned blocks at `0047F00C` and `0047F076` inside the
 
 ### `res_file_type_info`
 
-- Owner: `Res_file.cpp`, by coordinator decision and use by
+- Owner: `Res_file.cpp`, by orchestrator decision and use by
   `BUILDRES_get_files_resource_type`.
 - PDB record: `inventory/types/dumps/res_file_type_info.txt`.
 - Size: `0x08` (8 bytes).
@@ -128,7 +128,7 @@ also contributes parent-owned blocks at `0047F00C` and `0047F076` inside the
 
 ### `BuildRes_type_node`
 
-- Owner: `Res_file.cpp`, by coordinator decision and use only by
+- Owner: `Res_file.cpp`, by orchestrator decision and use only by
   `RESFILE_build_res_file`.
 - PDB record: `inventory/types/dumps/BuildRes_type_node.txt`.
 - Size: `0x14` (20 bytes).
@@ -145,7 +145,7 @@ also contributes parent-owned blocks at `0047F00C` and `0047F076` inside the
 
 ### `BuildRes_id_node`
 
-- Owner: `Res_file.cpp`, by coordinator decision and use only by
+- Owner: `Res_file.cpp`, by orchestrator decision and use only by
   `RESFILE_build_res_file`.
 - PDB record: `inventory/types/dumps/BuildRes_id_node.txt`.
 - Size: `0x118` (280 bytes).
@@ -181,7 +181,7 @@ int __cdecl RESFILE_build_res_file(char*, char*, char*);
 unsigned long __cdecl BUILDRES_get_files_resource_type(char*);
 ```
 
-The following declarations remain coordinator-owned ABI requests. This module
+The following declarations remain orchestrator-owned ABI requests. This module
 does not edit shared global definitions or shared headers.
 
 1. `DAT_0086b254` at image VA `0x0086B254`.

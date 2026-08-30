@@ -39,7 +39,7 @@ evaluation and the pre-`SetClipRect` increments, and uses the direct
 calls, CFG, relocations, and fault order. The focused check reports 18
 positional bytes different (1.1443%), 99.81% shape similarity, and a
 `CONSISTENT_REGISTER_RECOLOR` diagnostic. Keep the function in scratch until
-the coordinator completes drift review.
+the orchestrator completes drift review.
 
 Evidence is under `build/audits/workers/semantic-00519F40/`.
 

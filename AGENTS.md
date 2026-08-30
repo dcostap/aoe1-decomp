@@ -7,7 +7,7 @@ The assigning prompt or assigned task(s) define your role and instructions. If n
 
 There are extra reusable documents that contain specific instructions. Read the documents if clearly related to your role:
 - For performing function matching, read `docs\agentic_matching_workflow.md`.
-- If you were assigned a main agent, or you have tasks that involve: project orchestration, subagent orchestration, logic review, semantic review: read `docs\main_agent_workflow.md`.
+- If you are an orchestrator, or your task involves orchestration or semantic review, read `docs\orchestrator_workflow.md`.
 - If the user is interacting and chatting with you directly, read `docs\user_agent.md`.
 - For the registry schema and command catalogue, read `docs\project_reference.md`.
 

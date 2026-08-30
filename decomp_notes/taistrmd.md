@@ -26,7 +26,7 @@ reviewed public `ManagedArray<int>::add` operation. Removed the old manual
 count.
 
 The protected-provider candidate regressed the registered exact
-`setVictoryCondition` owner. The coordinator restored its 13 explicit growth
+`setVictoryCondition` owner. The orchestrator restored its 13 explicit growth
 calls. A fresh focused check is `MATCH`, `0.0000%`, and the grouped audit keeps
 all 31 registered owners exact. Do not make `resize` protected until a legal
 source form preserves this owner.

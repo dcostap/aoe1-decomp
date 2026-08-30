@@ -95,5 +95,5 @@ valid migration check.
 - `DibRgeBaseGameView` and `DibDrawSystemView` are removed. `DibCreatePalette`
   now uses the canonical `RGE_Base_Game` and `TDrawSystem` providers.
 - No shared header currently owns `shape_file_first` or `RESFILE_load`. Their
-  module-local declarations use the target's reviewed C++ symbols. A coordinator
+  module-local declarations use the target's reviewed C++ symbols. A orchestrator
   may move them to shared headers when their global owners are reunified.

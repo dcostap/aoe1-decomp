@@ -635,7 +635,7 @@ def start_session(
 ) -> dict:
     checked_owner = _validate_owner(owner)
 
-    # Make a redundant worker start cheap after coordinator preclaiming.
+    # Make a redundant worker start cheap after orchestrator preclaiming.
     with _sessions_lock():
         prior = _load_session(record)
         if prior and _lease_active(prior) and prior.get("owner") != checked_owner and not force:

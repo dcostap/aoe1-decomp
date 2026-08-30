@@ -107,13 +107,13 @@ and `include/scr_cam.h`. Do not repair those files in this worker. Proposed
 shared declaration: the reviewed `RGE_Campaign` surface in `include/campaign.h`,
 including the `0x20C` record, both constructors, the destructor, and all seven
 helpers. Affected modules are `campaign`, `gameinfo`, and `scr_cam` in the Terra
-shard. After coordinator approval, rebuild all three translation units and
+shard. After orchestrator approval, rebuild all three translation units and
 all registered groups that consume `RGE_Campaign`; rerun ownership, boundary,
 relocation, and direct-target checks. This remains a blocking external fanout
 request for full-module integration, but it does not block this source move.
 
 The module also needs one shared owner for `campaign_version`, currently used
 as `extern long campaign_version`. Proposed declaration is the existing
-`extern long` surface. The coordinator should locate or assign its global
+`extern long` surface. The orchestrator should locate or assign its global
 owner, then rebuild `campaign` and the constructor callers. This is a
 non-blocking declaration-ownership request for this migration.

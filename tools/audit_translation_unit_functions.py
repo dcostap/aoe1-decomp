@@ -550,9 +550,9 @@ def build_queue(
                 "context_ownership_reviews": context_reviews,
                 "comparison_errors": errors,
                 "noncanonical_contexts": duplicate_contexts,
-                "captain_editable_files": editable,
-                "captain_task_count": len(ownership) + len(structural) + len(codegen),
-                "main_agent_task_count": (
+                "matching_worker_editable_files": editable,
+                "matching_worker_task_count": len(ownership) + len(structural) + len(codegen),
+                "orchestrator_task_count": (
                     len(promotions)
                     + len(policy_reviews)
                     + len(context_reviews)
@@ -561,11 +561,13 @@ def build_queue(
             }
         )
     return {
-        "schema": 1,
+        "schema": 2,
         "group_count": len(packets),
-        "captain_task_count": sum(int(packet["captain_task_count"]) for packet in packets),
-        "main_agent_task_count": sum(
-            int(packet["main_agent_task_count"]) for packet in packets
+        "matching_worker_task_count": sum(
+            int(packet["matching_worker_task_count"]) for packet in packets
+        ),
+        "orchestrator_task_count": sum(
+            int(packet["orchestrator_task_count"]) for packet in packets
         ),
         "assignments": assignments,
         "packets": packets,
@@ -578,8 +580,8 @@ def queue_text(queue: dict[str, object]) -> str:
     lines = [
         "Translation-unit repair queue",
         f"Groups: {queue['group_count']}",
-        f"Matching-worker tasks: {queue['captain_task_count']}",
-        f"Main-agent tasks: {queue['main_agent_task_count']}",
+        f"Matching-worker tasks: {queue['matching_worker_task_count']}",
+        f"Orchestrator tasks: {queue['orchestrator_task_count']}",
         "",
     ]
     for packet in packets:

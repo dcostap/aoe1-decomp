@@ -64,7 +64,7 @@ The report is under `build/candidate_tus/pnl_scbr/`.
 
 A direct compile of `src/Pnl_scbr.cpp` passed. Its local comparison matched 15
 normal owners and the generated destructor. The four nonexact owners remained
-nonexact. A fresh registered translation-unit check is pending the main-agent
+nonexact. A fresh registered translation-unit check is pending the orchestrator
 ownership registration. The migration changes source ownership by design. It
 does not change function behavior to hide a temporary exactness regression.
 

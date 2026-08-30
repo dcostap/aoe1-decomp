@@ -1,8 +1,8 @@
-# Main-agent workflow
+# Orchestrator workflow
 
 ## Authority
 
-The main agent owns:
+The orchestrator owns:
 
 - translation-unit leases and worker assignments;
 - shared headers, globals, config, tools, and tests;
@@ -22,7 +22,7 @@ Separate worktrees can use their own coordination plan.
 The user or current orchestration defines each worker's task size and lifetime.
 Do not impose a fixed function count or worker lifetime.
 
-Workers use the coordinator worktree unless the assignment says otherwise.
+Workers use the orchestrator worktree unless the assignment says otherwise.
 They do not commit.
 
 For each active worker, record:
@@ -36,7 +36,7 @@ For each active worker, record:
 Do not assign another function from an actively leased translation unit.
 `target_session.py start` enforces this rule.
 
-Preclaim large waves without metric work:
+Preclaim assigned targets without metric work:
 
 ```text
 python tools/target_session.py start --preclaim --va <VA> --owner <OWNER> \
@@ -111,8 +111,8 @@ collisions. Unique report directories prevent report collisions.
 
 ## Review a return
 
-Review completed work read-only while other workers remain active. Do not move
-`HEAD` or change shared files until the wave ends.
+Review completed work while other workers remain active. Do not change a source
+file that an active worker leases.
 
 When a worker reports completion:
 
@@ -126,15 +126,36 @@ When a worker reports completion:
 8. Accept, revise, or reject the source change.
 9. Review any accepted-drift proposal.
 
-After all workers in the wave stop:
-
 10. Update a function status only after proof.
-11. Make reviewed shared-header or tool repairs.
-12. Stage only the reviewed paths.
-13. Commit each logical result and clear any stale lease.
+11. Stage only the reviewed paths.
+12. Commit each logical result and clear its lease.
 
-Other workers can continue in unrelated translation units during read-only
-review. Defer shared edits and commits until they stop.
+The scheduler assigns a new target when a worker releases its lease. Other
+workers continue without an orchestration barrier.
+
+## Shared findings
+
+A worker reports a shared-header, global, config, tool, or test finding without
+editing the shared file. The report identifies the path, symbol, evidence,
+affected translation units, proposed correction, and validation needs.
+
+The orchestrator groups duplicate findings. A blocked worker records the
+evidence, releases its lease, and leaves the function in `scratch`. The
+scheduler assigns another target immediately.
+
+The orchestrator verifies each shared finding and assigns one authorized repair
+owner. Use a compiler integration gate for an accepted shared repair:
+
+1. Block new compiler jobs.
+2. Let active compiler jobs finish.
+3. Apply and commit only the reviewed shared paths.
+4. Reopen compiler admission.
+5. Notify affected workers.
+6. Require fresh checks for their targets.
+
+Workers remain active during the integration gate. Header fingerprints make
+affected modules rebuild. Return deferred targets to the matching pool after
+the repair.
 
 ## Exact review
 
@@ -168,7 +189,7 @@ change.
 
 ## Accepted drift
 
-Only the main agent can approve accepted drift.
+Only the orchestrator can approve accepted drift.
 
 Require a small, localized, proved equivalent difference. Review original and
 rebuilt instructions, calls, effects, cleanup, ABI, exceptions, and fault order.
@@ -185,7 +206,7 @@ Verified logic is outside the normal matching-worker loop.
 A stuck worker leaves the function in `scratch`. Do not ask matching workers to
 propose semantic promotion.
 
-Start semantic review only after a separate main-agent decision and a complete
+Start semantic review only after a separate orchestrator decision and a complete
 review plan.
 
 ## Quiet integration checks
