@@ -176,17 +176,17 @@ void TribeSelectScenarioScreen::init_vars() {
 }
 
 TribeSelectScenarioScreen::~TribeSelectScenarioScreen() {
-    delete this->title;
-    delete this->scenarioTitle;
-    delete this->scenarioPlayersTitle;
-    delete this->scenarioList;
-    delete this->scenarioScrollbar;
-    delete this->missionTitle;
-    delete this->missionText;
-    delete this->missionScrollbar;
-    delete this->okButton;
-    delete this->cancelButton;
-    delete this->close_button;
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->scenarioTitle);
+    this->delete_panel((TPanel**)&this->scenarioPlayersTitle);
+    this->delete_panel((TPanel**)&this->scenarioList);
+    this->delete_panel((TPanel**)&this->scenarioScrollbar);
+    this->delete_panel((TPanel**)&this->missionTitle);
+    this->delete_panel((TPanel**)&this->missionText);
+    this->delete_panel((TPanel**)&this->missionScrollbar);
+    this->delete_panel((TPanel**)&this->okButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
+    this->delete_panel((TPanel**)&this->close_button);
 }
 
 long TribeSelectScenarioScreen::handle_idle() {
@@ -267,8 +267,8 @@ void TribeSelectScenarioScreen::fillScenarios()
         this->scenarioList->append_line(file_name, this->scenarioCount);
         this->scenarioCount++;
     }
-    this->scenarioMission = new char*[this->scenarioCount]();
-    this->scenarioFixed = new int[this->scenarioCount]();
+    this->scenarioMission = (char**)calloc(this->scenarioCount, sizeof(char*));
+    this->scenarioFixed = (int*)calloc(this->scenarioCount, sizeof(int));
     if (this->scenarioMission == 0 || this->scenarioFixed == 0) return;
     i = 0;
     if (this->scenarioCount <= 0) return;
@@ -277,7 +277,7 @@ void TribeSelectScenarioScreen::fillScenarios()
         TRIBE_Scenario_Header* hdr = static_cast<TRIBE_Scenario_Header*>(
             scenario_info_file->get_scenario_info(id));
         if (hdr != 0) {
-            this->scenarioMission[i] = new char[0x1000]();
+            this->scenarioMission[i] = (char*)calloc(0x1000, sizeof(char));
             if (this->scenarioMission[i] != 0 && hdr->description != 0) {
                 strcpy(this->scenarioMission[i], hdr->description);
             }
