@@ -19,8 +19,6 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     char temp_str[0x200];
     int diff;
     int i;
-    TButtonPanel** const button_base = this->button;
-
     this->title1 = 0;
     this->title2 = 0;
     this->circle_p_pic = 0;
@@ -38,7 +36,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
 
     this->set_ideal_size(0x280, 0x1E0);
 
-    TButtonPanel** clear_button = button_base;
+    TButtonPanel** clear_button = this->button;
     for (long button_width = 0xB2; button_width < 0x1AC;
          button_width += 0x32, ++clear_button) {
         if (this->create_button(this, clear_button, "", 0, 0xAA,
@@ -75,11 +73,12 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
                                rect.top + 1, 0x0F, 0x0E,
                                "circlep2", 0xC4E6, 0, 1);
 
-                long x = this->circle_p_pic->xPosition() - this->pnl_x +
-                         this->circle_p_pic->width();
                 TTextPanel** copy2 = &this->ms_copy_text2;
-                this->create_text(this, copy2, 0x241C, x,
-                                  rect.top, 0x1F4, 0x12, 10, 0, 0, 0);
+                this->create_text(
+                    this, copy2, 0x241C,
+                    this->circle_p_pic->xPosition() - this->pnl_x +
+                        this->circle_p_pic->width(),
+                    rect.top, 0x1F4, 0x12, 10, 0, 0, 0);
 
                 if ((*copy2)->get_text_rect(&rect) != 0) {
                     diff = (this->pnl_wid - rect.right - 5) / 2;
@@ -121,7 +120,7 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     this->set_ideal_size(0x280, 0x1E0);
 
     TPanel** tab_dst = tab_list;
-    TButtonPanel** tab_src = button_base;
+    TButtonPanel** tab_src = this->button;
     for (i = 5; i != 0; --i) {
         *tab_dst++ = *tab_src++;
     }
