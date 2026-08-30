@@ -58,7 +58,7 @@ def parse_args() -> argparse.Namespace:
     source.add_argument("--matching", action="store_true", help="Only matching functions")
     source.add_argument("--accepted-drift", action="store_true", help="Only accepted-drift functions")
     source.add_argument("--verified-logic", action="store_true", help="Only verified-logic functions")
-    source.add_argument("--unresolved", action="store_true", help="Only source-owned functions without an exact ownership claim")
+    source.add_argument("--unresolved", action="store_true", help="Only source-owned functions without a proved build route")
     source.add_argument("--conflict", action="store_true", help="Only conflict functions")
     source.add_argument("--source-bucket", choices=["matching", "accepted_drift", "verified_logic", "scratch", "unresolved", "unclaimed", "conflict"], help="Only this source bucket")
 
