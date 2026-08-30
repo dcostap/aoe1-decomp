@@ -7,6 +7,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from build_cache import compiler_admission
 from coff import function_symbol_section
 from common import (
     REPO_ROOT,
@@ -155,7 +156,10 @@ def compile_source(
         f"/Fo{object_path}",
         str(source_path),
     ]
-    result = subprocess.run(command, capture_output=True, text=True, env=tool_env(toolchain))
+    with compiler_admission():
+        result = subprocess.run(
+            command, capture_output=True, text=True, env=tool_env(toolchain)
+        )
     manifest = {
         "command": command,
         "source": str(source_path),

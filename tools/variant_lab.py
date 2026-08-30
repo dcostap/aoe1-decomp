@@ -19,6 +19,7 @@ from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Iterable
 
+from build_cache import compiler_admission
 from coff import find_function_symbol, function_symbol_section, load_coff_object
 from common import (
     CONFIG_DIR,
@@ -1657,14 +1658,15 @@ def build_variant(
     env["TMP"] = str(work_dir / "tmp")
 
     try:
-        proc = subprocess.run(
-            command,
-            cwd=REPO_ROOT,
-            env=env,
-            capture_output=True,
-            text=True,
-            timeout=compile_timeout_seconds,
-        )
+        with compiler_admission():
+            proc = subprocess.run(
+                command,
+                cwd=REPO_ROOT,
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=compile_timeout_seconds,
+            )
     except subprocess.TimeoutExpired:
         text = f"compiler timeout after {compile_timeout_seconds:g} second(s)"
         return VariantResult(

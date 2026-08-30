@@ -8,6 +8,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from build_cache import compiler_admission
 from common import BUILD_DIR, edit_diff_metrics, load_toolchain, repo_path, tool_env
 
 
@@ -89,12 +90,13 @@ def main() -> None:
         f"/Fo{obj_path}",
         str(source),
     ]
-    result = subprocess.run(
-        command,
-        capture_output=True,
-        text=True,
-        env=tool_env(toolchain),
-    )
+    with compiler_admission():
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            env=tool_env(toolchain),
+        )
     compiler_text = result.stdout + result.stderr
     (output_dir / "compiler.txt").write_text(compiler_text, encoding="utf-8")
     if result.returncode != 0:

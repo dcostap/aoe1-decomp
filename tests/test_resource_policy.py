@@ -74,6 +74,41 @@ class ResourcePolicyTests(unittest.TestCase):
         ):
             self.assertEqual(target_session.parse_args().lease_hours, 19)
 
+    def test_translation_unit_review_commands_require_an_explicit_reason(self) -> None:
+        for command in ("hold-tu", "release-tu"):
+            with self.subTest(command=command), patch.object(
+                sys,
+                "argv",
+                [
+                    "target_session.py",
+                    command,
+                    "--va",
+                    "00400000",
+                    "--owner",
+                    "worker",
+                ],
+            ):
+                with self.assertRaises(SystemExit):
+                    target_session.parse_args()
+
+    def test_every_direct_compiler_entry_uses_the_integration_gate(self) -> None:
+        paths = (
+            "build_function.py",
+            "function_compare.py",
+            "probe_toolchain.py",
+            "validate_utmarray.py",
+            "vc5_ir_capture.py",
+            "variant_lab.py",
+        )
+        failures = [
+            name
+            for name in paths
+            if "with compiler_admission()" not in (
+                REPO_ROOT / "tools" / name
+            ).read_text(encoding="utf-8")
+        ]
+        self.assertEqual(failures, [])
+
     def test_manifest_classification_thresholds_are_user_supplied(self) -> None:
         with patch.object(sys, "argv", ["generate_toolchain_supplied_manifest.py"]):
             with self.assertRaises(SystemExit):

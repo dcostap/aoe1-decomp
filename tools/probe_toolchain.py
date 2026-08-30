@@ -8,6 +8,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+from build_cache import compiler_admission
 from common import ensure_build_subdir, load_toolchain, repo_path, tool_env
 
 
@@ -22,7 +23,8 @@ def compile_once(cl_path: Path, rsp_path: Path, source: Path, output: Path, env:
         f"/Fo{output}",
         str(source),
     ]
-    result = subprocess.run(command, capture_output=True, text=True, env=env)
+    with compiler_admission():
+        result = subprocess.run(command, capture_output=True, text=True, env=env)
     return {
         "command": command,
         "returncode": result.returncode,

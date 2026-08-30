@@ -22,7 +22,7 @@ from target_session import (
     load_target_sessions,
     meaningful_probe_count,
     session_claim_count,
-    session_is_active,
+    session_reserves_translation_unit,
 )
 
 
@@ -79,9 +79,19 @@ def parse_args() -> argparse.Namespace:
     blockers.add_argument("--blockers", action="store_true", help="Only rows with a parsed top-header BLOCKER note")
 
     leases = parser.add_mutually_exclusive_group()
-    leases.add_argument("--unleased", action="store_true", help="Only functions whose translation unit has no active lease")
-    leases.add_argument("--active-leases", action="store_true", help="Only functions in an actively leased translation unit")
-    parser.add_argument("--owner", help="Only active leases owned by this exact agent/session name")
+    leases.add_argument(
+        "--unleased",
+        action="store_true",
+        help="Only functions whose translation unit has no active lease or review hold",
+    )
+    leases.add_argument(
+        "--active-leases",
+        action="store_true",
+        help="Only functions in a reserved translation unit, including review holds",
+    )
+    parser.add_argument(
+        "--owner", help="Only reservations owned by this exact agent/session name"
+    )
     parser.add_argument("--leases", action="store_true", help="Include lease owner/state/probe columns in table output")
     parser.add_argument(
         "--work-history",
@@ -224,7 +234,7 @@ def annotate_leases(
     by_va = {str(session.get("va", "")).upper(): session for session in source_sessions}
     active_by_source: dict[Path, dict] = {}
     for session in source_sessions:
-        if not session_is_active(session):
+        if not session_reserves_translation_unit(session):
             continue
         try:
             record = function_record_by_va(int(str(session.get("va") or ""), 16))
@@ -233,7 +243,9 @@ def annotate_leases(
             continue
     for row in rows:
         session = by_va.get(row.get("va", "").upper())
-        lease_session = session if session and session_is_active(session) else None
+        lease_session = (
+            session if session and session_reserves_translation_unit(session) else None
+        )
         if lease_session is None and active_by_source:
             try:
                 source_text = str(row.get("source_path") or "")
@@ -248,8 +260,12 @@ def annotate_leases(
         row["lease_active"] = "yes" if active else "no"
         row["lease_owner"] = str((lease_session or {}).get("owner", "")) if active else ""
         row["lease_target_va"] = str((lease_session or {}).get("va", "")) if active else ""
-        row["lease_state"] = "active" if active else str((session or {}).get("state", ""))
-        row["lease_expires_at"] = str((lease_session or {}).get("lease_expires_at", "")) if active else ""
+        row["lease_state"] = str((lease_session or session or {}).get("state", ""))
+        row["lease_expires_at"] = (
+            str((lease_session or {}).get("lease_expires_at", ""))
+            if active and row["lease_state"] == "active"
+            else ""
+        )
         row["lease_probes"] = str(meaningful_probe_count(session or {})) if session else ""
         row["lease_probe_total"] = str(total_probes) if session else ""
         row["clean_pinned"] = "yes" if session and session.get("clean_baseline") else ""
@@ -391,7 +407,7 @@ def print_summary(rows: list[dict[str, str]]) -> None:
         f"asm_region={counts['asm_region']}"
     )
     active_leases = sum(row.get("lease_active") == "yes" for row in rows)
-    print(f"leases: active={active_leases} unleased={len(rows) - active_leases}")
+    print(f"leases: reserved={active_leases} unleased={len(rows) - active_leases}")
     logic_reviews = sum(row.get("has_logic_review") == "yes" for row in rows)
     logic_reviews_in_progress = sum(
         row.get("has_logic_review") == "yes" and row.get("source_bucket") == "scratch"

@@ -5,6 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+from build_cache import compiler_admission
 from coff import function_symbol_section, load_coff_object
 from common import (
     function_record_by_va,
@@ -70,18 +71,19 @@ def compile_header() -> None:
     toolchain = load_toolchain()
     compiler = repo_path(toolchain["compiler"]["cl"])
     response = ROOT / "config" / "flags" / "default.rsp"
-    result = subprocess.run(
-        [
-            str(compiler),
-            f"@{response}",
-            f"/Fo{OBJECT}",
-            str(SOURCE),
-        ],
-        cwd=ROOT,
-        env=tool_env(toolchain),
-        text=True,
-        capture_output=True,
-    )
+    with compiler_admission():
+        result = subprocess.run(
+            [
+                str(compiler),
+                f"@{response}",
+                f"/Fo{OBJECT}",
+                str(SOURCE),
+            ],
+            cwd=ROOT,
+            env=tool_env(toolchain),
+            text=True,
+            capture_output=True,
+        )
     if result.returncode != 0:
         sys.stdout.write(result.stdout)
         sys.stderr.write(result.stderr)

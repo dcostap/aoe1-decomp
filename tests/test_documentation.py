@@ -41,6 +41,34 @@ def present_markdown_files() -> list[Path]:
 
 
 class DocumentationTests(unittest.TestCase):
+    def test_workflows_define_continuous_translation_unit_review(self) -> None:
+        orchestrator = (REPO_ROOT / "docs" / "orchestrator_workflow.md").read_text(
+            encoding="utf-8"
+        )
+        worker = (REPO_ROOT / "docs" / "agentic_matching_workflow.md").read_text(
+            encoding="utf-8"
+        )
+        orchestrator = " ".join(orchestrator.split())
+        worker = " ".join(worker.split())
+        for required in (
+            "one worker to one natural translation unit",
+            "first unchecked item",
+            "TODO verification item",
+            "release-tu",
+            "compiler_gate.py close",
+            "compiler_gate.py open",
+        ):
+            self.assertIn(required, orchestrator)
+        for required in (
+            "one assigned natural translation unit",
+            "scratch function bodies",
+            "hold-tu",
+            "Send no intermediate progress reports",
+            "Do not use a report tool",
+        ):
+            self.assertIn(required, worker)
+        self.assertNotIn("wave", orchestrator.casefold())
+
     def test_orchestrator_is_the_only_orchestration_role_name(self) -> None:
         result = subprocess.run(
             [

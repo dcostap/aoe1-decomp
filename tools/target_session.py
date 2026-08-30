@@ -353,6 +353,10 @@ def _lease_active(session: dict, now: datetime | None = None) -> bool:
         return False
 
 
+def session_reserves_translation_unit(session: dict, now: datetime | None = None) -> bool:
+    return session.get("state") == "review" or _lease_active(session, now)
+
+
 def _probe_is_meaningful(probe: dict) -> bool:
     if "meaningful" in probe:
         return bool(probe["meaningful"])
@@ -590,7 +594,9 @@ def _new_session(
     events = list((prior or {}).get("events") or [])
     probes = list((prior or {}).get("probes") or [])
     continuing_active_claim = bool(
-        prior and prior.get("owner") == owner and _lease_active(prior, now)
+        prior
+        and prior.get("owner") == owner
+        and session_reserves_translation_unit(prior, now)
     )
     if continuing_active_claim:
         pass
@@ -638,12 +644,22 @@ def start_session(
     # Make a redundant worker start cheap after orchestrator preclaiming.
     with _sessions_lock():
         prior = _load_session(record)
-        if prior and _lease_active(prior) and prior.get("owner") != checked_owner and not force:
+        if (
+            prior
+            and session_reserves_translation_unit(prior)
+            and prior.get("owner") != checked_owner
+            and not force
+        ):
             raise RuntimeError(
-                f"{record['va']} is actively leased by {prior.get('owner')} until {prior.get('lease_expires_at')}; "
+                f"{record['va']} is reserved by {prior.get('owner')}; "
                 "coordinate with that owner or use --force for a deliberate takeover"
             )
-        if prior and _lease_active(prior) and prior.get("owner") == checked_owner:
+        if (
+            prior
+            and session_reserves_translation_unit(prior)
+            and prior.get("owner") == checked_owner
+        ):
+            was_active = _lease_active(prior)
             session = _new_session(
                 record,
                 checked_owner,
@@ -653,7 +669,9 @@ def start_session(
             )
             _write_session(record, session)
             result = dict(session)
-            result["_start_reused_active"] = True
+            result[
+                "_start_reused_active" if was_active else "_start_resumed_review"
+            ] = True
             return result
 
     metric_summary = current_metric_summary(record) if collect_metrics else {}
@@ -661,9 +679,14 @@ def start_session(
     # Recheck after unlocked metric work because another process can claim the unit.
     with _sessions_lock():
         prior = _load_session(record)
-        if prior and _lease_active(prior) and prior.get("owner") != checked_owner and not force:
+        if (
+            prior
+            and session_reserves_translation_unit(prior)
+            and prior.get("owner") != checked_owner
+            and not force
+        ):
             raise RuntimeError(
-                f"{record['va']} is actively leased by {prior.get('owner')} until {prior.get('lease_expires_at')}; "
+                f"{record['va']} is reserved by {prior.get('owner')}; "
                 "coordinate with that owner or use --force for a deliberate takeover"
             )
         target_source = compiler_source_path(record).resolve()
@@ -676,18 +699,24 @@ def start_session(
             other_sessions = _all_sessions()
         for other in other_sessions:
             other_va = str(other.get("va") or "").upper()
-            if other_va == record["va"].upper() or not _lease_active(other):
+            if (
+                other_va == record["va"].upper()
+                or not session_reserves_translation_unit(other)
+            ):
                 continue
             try:
                 other_record = function_record_by_va(int(other_va, 16))
                 other_source = compiler_source_path(other_record).resolve()
             except (KeyError, TypeError, ValueError):
                 continue
-            if other_source == target_source:
+            if (
+                other_source == target_source
+                and other.get("owner") != checked_owner
+                and not force
+            ):
                 raise RuntimeError(
-                    f"translation unit {target_source.relative_to(REPO_ROOT)} is actively leased "
-                    f"through {other_va} by {other.get('owner')} until "
-                    f"{other.get('lease_expires_at')}; pause or release that target first"
+                    f"translation unit {target_source.relative_to(REPO_ROOT)} is reserved "
+                    f"through {other_va} by {other.get('owner')}; release that translation unit first"
                 )
         session = _new_session(
             record,
@@ -1097,6 +1126,47 @@ def change_state(record: dict[str, str], owner: str, state: str, reason: str) ->
     return session
 
 
+def change_translation_unit_state(
+    record: dict[str, str], owner: str, state: str, reason: str
+) -> list[dict]:
+    if state not in {"review", "release"}:
+        raise ValueError(f"Unsupported translation-unit state: {state}")
+    checked_owner = _validate_owner(owner)
+    target_source = compiler_source_path(record).resolve()
+    with _sessions_lock():
+        _require_owner(_load_session(record), checked_owner, record)
+        owned: list[tuple[dict[str, str], dict]] = []
+        for session in _all_sessions():
+            if session.get("owner") != checked_owner:
+                continue
+            try:
+                session_record = function_record_by_va(int(str(session.get("va") or ""), 16))
+                session_source = compiler_source_path(session_record).resolve()
+            except (KeyError, TypeError, ValueError):
+                continue
+            if session_source == target_source:
+                owned.append((session_record, session))
+        if not owned:
+            raise RuntimeError(f"No sessions owned by {checked_owner} exist for {target_source}")
+        now = _utc_now()
+        changed: list[dict] = []
+        for session_record, session in owned:
+            session["state"] = state
+            session["updated_at"] = _iso(now)
+            session["lease_expires_at"] = "" if state == "review" else _iso(now)
+            session.setdefault("events", []).append(
+                {
+                    "at": _iso(now),
+                    "kind": state,
+                    "owner": checked_owner,
+                    "reason": reason.strip(),
+                }
+            )
+            _write_session(session_record, session)
+            changed.append(session)
+    return changed
+
+
 def decomp_note_paths(record: dict[str, str]) -> tuple[str, str]:
     function_relative = function_decomp_note_relative_path(record["va"])
     function_note = (
@@ -1337,13 +1407,9 @@ def load_target_sessions(vas: set[str] | None = None) -> list[dict]:
     return [index["sessions"][va] for va in sorted(index["sessions"])]
 
 
-def session_is_active(session: dict) -> bool:
-    return _lease_active(session)
-
-
 def format_session_list(rows: list[dict], active_only: bool = False) -> str:
     if active_only:
-        rows = [row for row in rows if _lease_active(row)]
+        rows = [row for row in rows if session_reserves_translation_unit(row)]
     if not rows:
         return "No target sessions."
     lines = ["VA       owner                state     probes clean  lease/update", "-" * 86]
@@ -1553,13 +1619,13 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=(
-            "Advisory target leases, clean-source checkpoints, and meaningful-probe bookkeeping "
+            "Translation-unit reservations, target checkpoints, and meaningful-probe bookkeeping "
             "for parallel matching work.\n"
             "\n"
             "Conventions:\n"
             "  --va        target VA as hex, e.g. 00425A40\n"
             "  --owner     stable agent/session name (use your subagent id)\n"
-            "  pause/release require --reason (--note is an alias for it)\n"
+            "  state changes require --reason (--note is an alias for it)\n"
             "  status      takes --va only; --owner is NOT accepted\n"
             "  list        flags are --active and --json only (there is no --all flag)\n"
             "  brief       shows a worker handoff with meaningful notes\n"
@@ -1573,8 +1639,10 @@ def parse_args() -> argparse.Namespace:
             '  python tools/target_session.py status --va 00425A40\n'
             '  python tools/target_session.py brief --va 00425A40\n'
             '  python tools/target_session.py history --va 00425A40\n'
-            '  python tools/target_session.py release --va 00425A40 --owner sa-1234 '
-            '--reason "exact match"\n'
+            '  python tools/target_session.py hold-tu --va 00425A40 --owner sa-1234 '
+            '--reason "worker finished; pending review"\n'
+            '  python tools/target_session.py release-tu --va 00425A40 --owner sa-1234 '
+            '--reason "review complete"\n'
             '  python tools/target_session.py list --active\n'
         ),
         epilog=(
@@ -1586,7 +1654,7 @@ def parse_args() -> argparse.Namespace:
 
     start = subparsers.add_parser(
         "start",
-        help="Claim or resume one target lease and print a briefing. Requires --va and --owner.",
+        help="Start one target notebook under its owner's translation-unit reservation.",
     )
     start.add_argument("--va", required=True, help="Target VA as hex, e.g. 00425A40.")
     start.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
@@ -1668,6 +1736,17 @@ def parse_args() -> argparse.Namespace:
         reason.add_argument("--reason", dest="reason", help="Why the lease is being paused/released (REQUIRED).")
         reason.add_argument("--note", dest="reason", help="Alias for --reason (REQUIRED either way).")
 
+    for command, description in (
+        ("hold-tu", "Reserve every owned session in the translation unit for orchestrator review."),
+        ("release-tu", "Release every owned session in the translation unit after review."),
+    ):
+        action = subparsers.add_parser(command, help=description)
+        action.add_argument("--va", required=True, help="Any owned target VA in the translation unit.")
+        action.add_argument("--owner", required=True, help="Stable agent/session name (use your subagent id).")
+        reason = action.add_mutually_exclusive_group(required=True)
+        reason.add_argument("--reason", dest="reason", help="Reason for the translation-unit state change.")
+        reason.add_argument("--note", dest="reason", help="Alias for --reason.")
+
     status = subparsers.add_parser(
         "status",
         help="Show one target's lease, metrics, and next stage. Takes --va only (no --owner).",
@@ -1700,7 +1779,11 @@ def parse_args() -> argparse.Namespace:
         "list",
         help="List target sessions. Flags are --active and --json only (no --all, no --va).",
     )
-    listing.add_argument("--active", action="store_true", help="Show only unexpired active leases.")
+    listing.add_argument(
+        "--active",
+        action="store_true",
+        help="Show only active leases and translation units held for review.",
+    )
     listing.add_argument("--json", action="store_true", help="Emit JSON instead of the human table.")
     return parser.parse_args()
 
@@ -1710,7 +1793,7 @@ def main() -> None:
     if args.command == "list":
         rows = load_target_sessions()
         if args.active:
-            rows = [row for row in rows if _lease_active(row)]
+            rows = [row for row in rows if session_reserves_translation_unit(row)]
         print(json.dumps(rows, indent=2) if args.json else format_session_list(rows))
         return
 
@@ -1728,6 +1811,8 @@ def main() -> None:
             )
             if session.pop("_start_reused_active", False):
                 print(f"Session already active: {record['va']} owner={args.owner}")
+            elif session.pop("_start_resumed_review", False):
+                print(f"Session resumed from review: {record['va']} owner={args.owner}")
             elif args.preclaim:
                 print(f"Session preclaimed: {record['va']} owner={args.owner}")
             else:
@@ -1759,6 +1844,16 @@ def main() -> None:
         elif args.command in {"pause", "release"}:
             session = change_state(record, args.owner, args.command, args.reason)
             print(format_session(record, session, session.get("last_metric_summary", {})))
+        elif args.command in {"hold-tu", "release-tu"}:
+            state = "review" if args.command == "hold-tu" else "release"
+            sessions = change_translation_unit_state(
+                record, args.owner, state, args.reason
+            )
+            source = compiler_source_path(record)
+            print(
+                f"Translation unit {source.relative_to(REPO_ROOT)}: "
+                f"state={state} owner={args.owner} sessions={len(sessions)}"
+            )
         elif args.command == "status":
             session = _load_session(record)
             print(

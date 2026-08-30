@@ -5,7 +5,12 @@ import json
 import subprocess
 import sys
 
-from build_cache import build_artifact_lock, build_input_manifest, build_manifest_matches
+from build_cache import (
+    build_artifact_lock,
+    build_input_manifest,
+    build_manifest_matches,
+    compiler_admission,
+)
 from common import (
     ensure_build_subdir,
     compiler_artifact_slug,
@@ -49,50 +54,53 @@ def main() -> None:
     log_path = manifest_dir / f"build_{slug}.json"
     listing_path = asm_dir / f"rebuilt_{slug}.cod"
     source_map_path = asm_dir / f"rebuilt_{slug}.lines.json"
-    input_manifest = build_input_manifest(source_path, rsp_path, toolchain)
-    fingerprint = str(input_manifest["fingerprint"])
-
     lock_path = lock_dir / f"{slug}.lock"
     with build_artifact_lock(lock_path):
-        # Recheck after waiting.  Another VA in this translation unit may
-        # have completed the build while this process was acquiring the lock.
-        if not args.force and build_manifest_matches(log_path, fingerprint, obj_path) and source_map_path.is_file():
-            print(f"Build cache hit: {slug} ({fingerprint[:12]})")
-            return
+        with compiler_admission():
+            input_manifest = build_input_manifest(source_path, rsp_path, toolchain)
+            fingerprint = str(input_manifest["fingerprint"])
+            # Recheck after waiting. Another VA in this translation unit may
+            # have completed the build while this process acquired the lock.
+            if (
+                not args.force
+                and build_manifest_matches(log_path, fingerprint, obj_path)
+                and source_map_path.is_file()
+            ):
+                print(f"Build cache hit: {slug} ({fingerprint[:12]})")
+                return
 
-        command = [
-            str(cl_path),
-            f"@{rsp_path}",
-            "/FAsc",
-            f"/Fa{listing_path}",
-            f"/Fo{obj_path}",
-            str(source_path),
-        ]
-        # Remove the cache marker before compiling.  If the process exits
-        # during compilation, an older object cannot look current just because
-        # the previous fingerprint happened to match this build.
-        if log_path.exists():
-            log_path.unlink()
-        for stale in (listing_path, source_map_path):
-            if stale.exists():
-                stale.unlink()
-        env = tool_env(toolchain)
-        result = subprocess.run(command, capture_output=True, text=True, env=env)
+            command = [
+                str(cl_path),
+                f"@{rsp_path}",
+                "/FAsc",
+                f"/Fa{listing_path}",
+                f"/Fo{obj_path}",
+                str(source_path),
+            ]
+            # Remove the cache marker before compiling. If the process exits
+            # during compilation, an older object cannot look current.
+            if log_path.exists():
+                log_path.unlink()
+            for stale in (listing_path, source_map_path):
+                if stale.exists():
+                    stale.unlink()
+            env = tool_env(toolchain)
+            result = subprocess.run(command, capture_output=True, text=True, env=env)
 
-        manifest = {
-            "command": command,
-            "source": str(source_path),
-            "object": str(obj_path),
-            "response_file": str(rsp_path),
-            "listing": str(listing_path),
-            "source_map": str(source_map_path),
-            "input_fingerprint": fingerprint,
-            "build_inputs": input_manifest,
-            "returncode": result.returncode,
-            "stdout": result.stdout,
-            "stderr": result.stderr,
-        }
-        log_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+            manifest = {
+                "command": command,
+                "source": str(source_path),
+                "object": str(obj_path),
+                "response_file": str(rsp_path),
+                "listing": str(listing_path),
+                "source_map": str(source_map_path),
+                "input_fingerprint": fingerprint,
+                "build_inputs": input_manifest,
+                "returncode": result.returncode,
+                "stdout": result.stdout,
+                "stderr": result.stderr,
+            }
+            log_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
         sys.stdout.write(result.stdout)
         sys.stderr.write(result.stderr)

@@ -165,6 +165,35 @@ class QueryProjectStatusLeaseTests(unittest.TestCase):
         self.assertEqual(annotated[1]["lease_owner"], "AgentA")
         self.assertEqual(annotated[1]["lease_target_va"], "00001000")
 
+    def test_review_hold_reserves_every_function_without_an_expiry(self) -> None:
+        rows = [
+            {"va": "00001000", "source_path": "src/module.cpp"},
+            {"va": "00003000", "source_path": "src/module.cpp"},
+        ]
+        review = {
+            "va": "00001000",
+            "owner": "AgentA",
+            "state": "review",
+            "lease_expires_at": "",
+            "probes": [],
+        }
+        with (
+            patch.object(
+                query_project_status,
+                "function_record_by_va",
+                return_value={"va": "00001000", "name": "demo"},
+            ),
+            patch.object(
+                query_project_status,
+                "compiler_source_path",
+                return_value=query_project_status.REPO_ROOT / "src" / "module.cpp",
+            ),
+        ):
+            annotated = annotate_leases(rows, [review])
+        self.assertTrue(all(row["lease_active"] == "yes" for row in annotated))
+        self.assertTrue(all(row["lease_state"] == "review" for row in annotated))
+        self.assertTrue(all(row["lease_expires_at"] == "" for row in annotated))
+
     def test_filters_support_unleased_active_and_owner(self) -> None:
         rows = annotate_leases([{"va": "00001000"}, {"va": "00002000"}, {"va": "00003000"}], self.sessions())
         self.assertNotIn("lease_claim_total", rows[0])

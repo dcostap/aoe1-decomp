@@ -38,7 +38,7 @@ def _concurrent_start_worker(root_path, record, records, result_queue) -> None:
         patch.object(target_session, "_all_sessions", unexpected_full_scan),
     ):
         try:
-            target_session.start_session(record, "AgentA", 2.0)
+            target_session.start_session(record, record.get("test_owner", "AgentA"), 2.0)
         except Exception as error:  # pragma: no cover - exercised in child process
             result_queue.put(("error", type(error).__name__, str(error)))
         else:
@@ -196,6 +196,68 @@ class TargetSessionTests(unittest.TestCase):
                 target_session.start_session(self.record, "AgentA", 2.0)
                 with self.assertRaisesRegex(RuntimeError, "translation unit"):
                     target_session.start_session(other_record, "AgentB", 2.0)
+
+    def test_active_translation_unit_allows_same_owner_targets(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        records = {record["va"]: record for record in (self.record, other_record)}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(
+                    target_session,
+                    "function_record_by_va",
+                    side_effect=lambda va: records[f"{int(va):08X}"],
+                ),
+            ):
+                target_session.start_session(self.record, "AgentA", 2.0)
+                second = target_session.start_session(other_record, "AgentA", 2.0)
+        self.assertEqual(second["owner"], "AgentA")
+        self.assertTrue(target_session._lease_active(second))
+
+    def test_translation_unit_review_hold_and_release_cover_owned_sessions(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        blocked_record = {**self.record, "va": "00003000", "name": "blocked"}
+        records = {
+            record["va"]: record
+            for record in (self.record, other_record, blocked_record)
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(
+                    target_session,
+                    "function_record_by_va",
+                    side_effect=lambda va: records[f"{int(va):08X}"],
+                ),
+            ):
+                target_session.start_session(self.record, "AgentA", 2.0)
+                target_session.start_session(other_record, "AgentA", 2.0)
+                held = target_session.change_translation_unit_state(
+                    self.record, "AgentA", "review", "worker complete"
+                )
+                self.assertEqual(len(held), 2)
+                self.assertTrue(
+                    all(target_session.session_reserves_translation_unit(row) for row in held)
+                )
+                self.assertTrue(all(row["state"] == "review" for row in held))
+                self.assertTrue(all(row["lease_expires_at"] == "" for row in held))
+                with self.assertRaisesRegex(RuntimeError, "reserved"):
+                    target_session.start_session(blocked_record, "AgentB", 2.0)
+                resumed = target_session.start_session(other_record, "AgentA", 2.0)
+                self.assertTrue(resumed["_start_resumed_review"])
+                target_session.change_translation_unit_state(
+                    self.record, "AgentA", "review", "review continues"
+                )
+                released = target_session.change_translation_unit_state(
+                    self.record, "AgentA", "release", "review complete"
+                )
+        self.assertEqual(len(released), 2)
+        self.assertTrue(all(row["state"] == "release" for row in released))
+        self.assertTrue(
+            all(not target_session.session_reserves_translation_unit(row) for row in released)
+        )
 
     def test_start_uses_current_index_for_translation_unit_conflict(self) -> None:
         other_record = {**self.record, "va": "00002000", "name": "other"}
@@ -478,7 +540,10 @@ class TargetSessionTests(unittest.TestCase):
 
     def test_concurrent_starts_reject_duplicate_translation_unit_claims(self) -> None:
         other_record = {**self.record, "va": "00002000", "name": "other"}
-        records = [self.record, other_record]
+        records = [
+            {**self.record, "test_owner": "AgentA"},
+            {**other_record, "test_owner": "AgentB"},
+        ]
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             with patch.object(target_session, "REPO_ROOT", root):

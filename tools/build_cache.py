@@ -5,6 +5,7 @@ import json
 import os
 import re
 import threading
+import uuid
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator
@@ -25,6 +26,119 @@ _FILE_HASH_CACHE: dict[tuple[Path, int, int], str] = {}
 _DIRECT_INCLUDE_CACHE: dict[
     tuple[Path, int, int, tuple[Path, ...]], tuple[Path, ...]
 ] = {}
+
+
+def _compiler_gate_root() -> Path:
+    return REPO_ROOT / "build" / "locks" / "compiler_gate"
+
+
+def _compiler_gate_state_path() -> Path:
+    return _compiler_gate_root() / "state.json"
+
+
+def _compiler_gate_control_path() -> Path:
+    return _compiler_gate_root() / "control.lock"
+
+
+def _compiler_gate_tokens_path() -> Path:
+    return _compiler_gate_root() / "active"
+
+
+def _compiler_gate_closed() -> bool:
+    path = _compiler_gate_state_path()
+    if not path.is_file():
+        return False
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return True
+    return bool(isinstance(payload, dict) and payload.get("closed"))
+
+
+def _write_compiler_gate_state(closed: bool) -> None:
+    path = _compiler_gate_state_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(".json.tmp")
+    temporary.write_text(json.dumps({"closed": closed}) + "\n", encoding="utf-8")
+    temporary.replace(path)
+
+
+def _process_is_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    if os.name == "nt":
+        import ctypes
+
+        process = ctypes.windll.kernel32.OpenProcess(0x1000, False, pid)
+        if not process:
+            return False
+        ctypes.windll.kernel32.CloseHandle(process)
+        return True
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def _active_compiler_tokens() -> list[Path]:
+    root = _compiler_gate_tokens_path()
+    if not root.is_dir():
+        return []
+    active: list[Path] = []
+    for path in root.glob("*.json"):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            pid = int(payload.get("pid") or 0)
+        except (OSError, TypeError, ValueError):
+            pid = 0
+        if _process_is_alive(pid):
+            active.append(path)
+        else:
+            path.unlink(missing_ok=True)
+    return active
+
+
+@contextmanager
+def compiler_admission() -> Iterator[None]:
+    """Register one compiler process unless shared-source integration is active."""
+    token: Path | None = None
+    while token is None:
+        with build_artifact_lock(_compiler_gate_control_path()):
+            if not _compiler_gate_closed():
+                root = _compiler_gate_tokens_path()
+                root.mkdir(parents=True, exist_ok=True)
+                token = root / f"{os.getpid()}-{uuid.uuid4().hex}.json"
+                token.write_text(json.dumps({"pid": os.getpid()}) + "\n", encoding="utf-8")
+        if token is None:
+            threading.Event().wait(0.01)
+    try:
+        yield
+    finally:
+        token.unlink(missing_ok=True)
+
+
+def close_compiler_gate() -> None:
+    """Stop new compiler jobs and wait for admitted jobs to finish."""
+    with build_artifact_lock(_compiler_gate_control_path()):
+        _write_compiler_gate_state(True)
+    while _active_compiler_tokens():
+        threading.Event().wait(0.01)
+
+
+def open_compiler_gate() -> None:
+    """Allow compiler jobs after shared-source integration."""
+    with build_artifact_lock(_compiler_gate_control_path()):
+        _write_compiler_gate_state(False)
+
+
+def compiler_gate_status() -> dict[str, object]:
+    return {
+        "closed": _compiler_gate_closed(),
+        "active_compiler_jobs": len(_active_compiler_tokens()),
+    }
 
 
 @contextmanager

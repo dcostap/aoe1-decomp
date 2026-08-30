@@ -70,7 +70,8 @@ The response files contain compiler arguments only.
 ## Daily commands
 
 - `query_project_status.py` queries status, paths, notes, leases, and history.
-- `target_session.py` manages one-function work sessions and recorded checks.
+- `target_session.py` manages function notebooks and translation-unit reservations.
+- `compiler_gate.py` protects live shared-source integration from compiler jobs.
 - `check_function.py` performs the authoritative one-function comparison.
 - `audit_translation_unit_functions.py` compiles and checks configured source files.
 - `validate_translation_units.py` validates configured natural-source builds.

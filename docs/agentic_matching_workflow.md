@@ -1,210 +1,234 @@
 # Matching worker workflow
 
-Use this workflow for one assigned normal function.
+Use this workflow for one assigned natural translation unit.
 
-## Scope
+## Assignment
 
 The assignment gives you:
 
-- one function VA;
-- one natural translation unit;
-- one lease owner name;
-- allowed source and function-note paths; and
-- a unique build output directory.
+- one natural translation unit and source path;
+- all current scratch-function VAs in that translation unit;
+- one primary VA for the translation-unit reservation;
+- one lease owner ID;
+- allowed source and function-note paths;
+- user-selected resource settings; and
+- one unique build output directory.
 
-One worker owns a translation unit in a shared worktree. Separate worktrees
-use the coordination plan selected for the current orchestration.
+You are the only active matching worker for that translation unit.
 
-Edit only the assigned function body and its function notes. Do not edit
-another function in the source file.
+You can edit:
 
-Do not edit headers, global storage, config, tests, tools, shared notes, or
-`LESSONS.md` unless the assignment permits it.
+- scratch function bodies in the assigned natural source file; and
+- their function notes.
 
-Do not stage or commit files. Do not use Git restore, reset, clean, or checkout.
-Preserve all unrelated worktree changes.
+Do not edit matching, accepted-drift, verified-logic, or unresolved function
+bodies. Matching functions are regression anchors.
 
-Use evidence sources allowed by the current assignment. The original
-executable remains the behavior oracle.
+Do not edit headers, globals, config, tools, tests, shared notes, status metadata,
+`LESSONS.md`, the Git index, or commits.
 
-## Goal
+Do not use Git restore, reset, clean, checkout, stage, or commit. Preserve all
+unrelated worktree changes.
 
-Make useful matching progress with natural, period-plausible source.
+## Objective
 
-A useful result can be:
+Improve the scratch functions in the assigned translation unit.
 
-- an exact match;
-- a better binary-supported reconstruction;
-- a proved ABI or source fact;
+Any supported improvement is useful. Examples include:
+
+- one or more exact matches;
+- more natural binary-supported source;
+- better objective comparison results;
+- a proved ABI, layout, ownership, or source fact;
 - a disproved hypothesis that prevents repeated work; or
 - a complete accepted-drift proposal.
 
-Do not decide `accepted_drift`. The orchestrator reviews that proposal.
+Do not select `accepted_drift` or `verified_logic`. The orchestrator makes those
+decisions.
 
-Do not propose or select `verified_logic`. Leave a stuck function in `scratch`.
+There is no fixed function or hypothesis quota. Do not give up after one failed
+idea or one code-generation basin.
+
+Continue useful work while reasonable evidence-backed approaches remain. Stop
+when the assignment has received enough useful work or a major issue blocks safe
+progress.
 
 ## Start
 
-Run each tool with `--help` before its first use.
+Run each repository tool with `--help` before its first use.
 
-1. Check the target and translation-unit lease:
+The orchestrator normally preclaims the primary VA. Confirm the reservation:
 
-   ```text
-   python tools/query_project_status.py --va <VA> --paths --notes --leases --work-history
-   ```
+```text
+python tools/target_session.py brief --va <PRIMARY_VA>
+```
 
-2. Use the assigned session.
+If no preclaim exists, start it with the assigned lease duration:
 
-   If the orchestrator preclaimed the active lease, do not start it again. Read
-   the briefing instead:
+```text
+python tools/target_session.py start --va <PRIMARY_VA> --owner <OWNER> \
+  --lease-hours <HOURS>
+```
 
-   ```text
-   python tools/target_session.py brief --va <VA>
-   ```
+The same owner can start sessions for other scratch functions in this translation
+unit. A different owner cannot reserve the translation unit.
 
-   Otherwise, start the session:
+Before work on each function:
 
-   ```text
-   python tools/target_session.py start --va <VA> --owner <OWNER> \
-     --lease-hours <HOURS>
-   ```
+1. Query its current status, paths, notes, and history.
+2. Start or resume its target session with the assigned owner ID.
+3. Read its function note and inventory packet.
+4. Read the configured module note when present.
+5. Inspect focused executable evidence and relevant exact donors.
+6. Record a fresh baseline check.
 
-   The command rejects another active lease in the same translation unit.
+Example:
 
-3. Read the function notes when they exist.
-4. Read the function inventory packet and configured module note.
-5. Search `LESSONS.md` only for terms that match the current blocker.
-6. Inspect focused original assembly and relevant exact donors.
-7. Record a fresh baseline:
+```text
+python tools/target_session.py start --va <VA> --owner <OWNER> \
+  --lease-hours <HOURS>
+python tools/target_session.py check --va <VA> --owner <OWNER> \
+  --kind baseline --note "fresh natural translation-unit baseline"
+```
 
-   ```text
-   python tools/target_session.py check --va <VA> --owner <OWNER> \
-     --kind baseline --note "fresh natural translation-unit baseline"
-   ```
-
-   The baseline check pins the clean natural source automatically.
+The baseline check pins the clean reconstruction.
 
 ## Work
 
-Recover the simplest source that explains executable behavior.
+Recover the simplest period-plausible source that explains executable behavior.
 
 Establish ownership, types, fields, widths, calls, and control flow before
-register or instruction scheduling work.
+instruction-scheduling work.
 
-Test distinct hypotheses. A useful hypothesis changes one supported source,
-ABI, layout, control-flow, lifetime, or compiler-context idea.
+Use `target_session.py check` for meaningful hypotheses. A useful hypothesis
+changes one supported source, ABI, layout, control-flow, lifetime, or compiler
+context idea.
 
-Record meaningful checks through `target_session.py check`. Do not count syntax
-repairs, unchanged reruns, or renamed locals as new evidence.
+Do not count syntax repairs, unchanged reruns, or renamed locals as evidence.
 
-Use `tools/check_function.py --no-build` for extra read-only diagnostics after a
-current check.
+Use focused tools only when they answer a current question:
 
-Use these evidence tools only when they answer a current question:
-
-- `target_dossier.py` for focused binary facts;
+- `target_dossier.py` for focused executable facts;
 - `find_function_donors.py` for ranked exact donors;
-- `query_abi.py` for ABI provenance;
-- `search_asm_donors.py` for a distinctive assembly block; and
-- `variant_lab.py` for controlled late-stage source variants.
+- `query_abi.py` for ABI evidence;
+- `search_asm_donors.py` for a distinctive assembly block;
+- `variant_lab.py` for controlled source variants; and
+- `check_function.py --no-build` for extra read-only diagnostics.
 
-Use the job count, timeout, and search bounds from the current assignment.
-Do not invent local resource limits.
+Use resource values from the assignment. Do not invent local limits.
 
-Generated metadata and decompiler text are reference evidence. They are not the
-behavior oracle.
+Keep only better natural source. Remove aliases, fake helpers, dummy declarations,
+fake volatility, raw offsets, and metric-only source tricks.
 
-Keep only a better natural reconstruction. Do not retain aliases, fake helpers,
-dummy declarations, volatility, raw offsets, or source tricks for metrics alone.
-Use named fields and record sizes instead of numeric offsets or element strides.
+A change to one scratch function must not regress another function in the
+translation unit.
 
 ## Function notes
 
-Optional function notes use this path:
+Function notes use:
 
 ```text
 decomp_notes/functions/<VA-prefix>/<VA>.md
 ```
 
-Keep raw objects, diffs, and experiment files under `build/`.
-
-Create or update notes only when you have durable evidence:
+Record durable evidence only:
 
 - baseline and final metrics;
 - useful tested hypotheses;
 - repeated code-generation results;
 - rejected artificial forms;
 - proved facts and open questions; and
-- the next useful approaches.
+- useful next approaches.
 
-Separate facts from hypotheses. Do not copy every compiler run into the notes.
-Do not put attempt history in production source comments.
+Separate facts from hypotheses. Keep raw objects, diffs, and experiments under
+`build/`.
 
-## Exact result
+## Exact and improved results
 
-An exact result starts a short source review.
+For an exact result:
 
 1. Save the exact checkpoint.
-2. Remove incidental source changes one at a time.
+2. Remove incidental changes one at a time.
 3. Recheck each useful reduction.
-4. Keep the smallest natural source that remains exact.
-5. Run the final target check.
-6. Require `MATCH`, `0.0000%`, correct owner, boundary, relocations, and direct targets.
-7. Audit the assigned translation unit with a worker-specific output directory:
+4. Keep the smallest natural exact source.
+5. Run a final target check.
+6. Confirm ownership, boundaries, relocations, and direct targets.
 
-   ```text
-   python tools/audit_translation_unit_functions.py --group <GROUP> --jobs <JOBS> \
-     --output-dir build/audits/workers/<OWNER>/<GROUP>
-   ```
+A nonexact change can remain when it is natural, behavior-supported, and clearly
+better than its baseline.
 
-8. Confirm that every matching neighbor still matches.
-9. Update the function notes when you learned something durable.
-10. Release the session. Do not change status or commit.
+Run a final recorded check for every retained change. Restore the pinned clean
+source when an experiment does not improve it.
 
-## Improved scratch result
+## Accepted-drift proposals
 
-A nonexact source change can remain when it is natural, behavior-supported, and
-clearly better than the baseline.
-
-Do not stop after one mismatch or one codegen basin. Test materially different
-natural forms for the main evidence-backed hypotheses. Stop after exactness, a
-proved blocker, or reasonable natural-source exhaustion.
-
-Run a final recorded check. Record the exact improvement and remaining blocker.
-Pin the final clean source. Pause the session.
-
-If no source improvement survives, restore the pinned clean source. Keep only
-useful function notes.
-
-## Accepted-drift proposal
-
-Suggest accepted drift only for a small and localized code-generation difference.
-
+You can suggest accepted drift for a small localized code-generation difference.
 The proposal must prove:
 
-- the same behavior for all relevant inputs;
-- the same calls, targets, arguments, and order;
-- the same memory effects and cleanup;
-- the same ABI, exceptions, faults, and fault order;
+- equal behavior for all relevant inputs;
+- equal calls, targets, arguments, and order;
+- equal memory effects and cleanup;
+- equal ABI, exceptions, faults, and fault order;
 - no unexplained control-flow difference; and
 - a narrow explained instruction, register, or encoding difference.
 
-Broad drift, changed predicates, missing calls, wrong targets, or changed effects
-remain `scratch`.
+Record the proof in the function note. The orchestrator accepts or rejects the
+proposal.
 
-Record the complete proof in the function notes. Report it as a proposal. The
-orchestrator makes the decision.
+## Major issues
 
-## Report
+Stop when a major issue prevents safe progress. Examples include:
 
-Report:
+- a proved shared-header or global declaration defect;
+- wrong canonical ownership that requires shared changes;
+- a tool correctness failure;
+- source corruption or an unauthorized conflicting edit; or
+- executable evidence that invalidates the assigned source model.
 
-- target VA and translation unit;
-- exact, improved, drift proposal, or unresolved outcome;
-- baseline and final metrics;
-- important evidence learned;
+Do not repair shared paths. Preserve safe source and record the evidence.
+
+## Final validation
+
+Before the final response:
+
+1. Run a final check for every retained function change.
+2. Audit the assigned translation unit with the assigned job count.
+3. Confirm that matching neighbors still match.
+4. Update function notes with durable evidence.
+5. Review your changed paths.
+6. Hold the complete translation unit for orchestrator review.
+
+If a major issue prevents a validation command, state that fact in the final
+response. Always hold the translation unit before the final response.
+
+Use the primary VA for the review hold:
+
+```text
+python tools/target_session.py hold-tu --va <PRIMARY_VA> --owner <OWNER> \
+  --reason "worker finished; pending orchestrator review"
+```
+
+Do not release or pause the translation unit. Stop editing after the hold.
+
+## Final response
+
+Send no intermediate progress reports. Do not use a report tool.
+
+Your final response must contain:
+
+- translation unit and owner ID;
+- scratch functions inspected;
+- functions changed;
+- baseline and final results for each retained change;
+- exact and accepted-drift proposals;
 - changed files;
-- validation commands and reports; and
-- open questions and next approaches.
+- validation commands and reports;
+- major blockers and shared findings;
+- untouched scratch functions; and
+- useful next steps.
 
-Do not commit. Stop editing the leased translation unit after the report.
+For a shared finding, include the path, symbol, facts, hypotheses, evidence,
+affected translation units, smallest proposed repair, and required validation.
+
+After the final response, remain stopped unless the orchestrator continues your
+session.

@@ -4,6 +4,8 @@ import multiprocessing
 import queue
 import sys
 import tempfile
+import threading
+import time
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -123,6 +125,57 @@ class BuildCacheTests(unittest.TestCase):
             self.assertEqual(first.exitcode, 0)
             self.assertEqual(second.exitcode, 0)
             self.assertTrue(lock_path.is_file())
+
+    def test_compiler_gate_drains_jobs_and_blocks_new_admission(self) -> None:
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT / "build") as temp:
+            root = Path(temp)
+            active_entered = threading.Event()
+            active_release = threading.Event()
+            close_finished = threading.Event()
+            waiting_entered = threading.Event()
+
+            def active_job() -> None:
+                with build_cache.compiler_admission():
+                    active_entered.set()
+                    active_release.wait()
+
+            def close_gate() -> None:
+                build_cache.close_compiler_gate()
+                close_finished.set()
+
+            def waiting_job() -> None:
+                with build_cache.compiler_admission():
+                    waiting_entered.set()
+
+            with patch.object(build_cache, "REPO_ROOT", root):
+                active = threading.Thread(target=active_job)
+                closer = threading.Thread(target=close_gate)
+                active.start()
+                self.assertTrue(active_entered.wait(1))
+                self.assertEqual(
+                    build_cache.compiler_gate_status()["active_compiler_jobs"], 1
+                )
+                closer.start()
+                deadline = time.monotonic() + 1
+                while not build_cache.compiler_gate_status()["closed"]:
+                    self.assertLess(time.monotonic(), deadline)
+                    time.sleep(0.01)
+                self.assertFalse(close_finished.is_set())
+                active_release.set()
+                active.join(1)
+                closer.join(1)
+                self.assertTrue(close_finished.is_set())
+
+                waiting = threading.Thread(target=waiting_job)
+                waiting.start()
+                self.assertFalse(waiting_entered.wait(0.1))
+                build_cache.open_compiler_gate()
+                self.assertTrue(waiting_entered.wait(1))
+                waiting.join(1)
+
+            self.assertFalse(active.is_alive())
+            self.assertFalse(closer.is_alive())
+            self.assertFalse(waiting.is_alive())
 
 
 if __name__ == "__main__":

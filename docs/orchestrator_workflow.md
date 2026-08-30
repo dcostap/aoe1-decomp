@@ -4,231 +4,197 @@
 
 The orchestrator owns:
 
-- translation-unit leases and worker assignments;
+- worker assignment and translation-unit reservations;
+- the continuous worker scheduler;
+- the TODO review backlog;
 - shared headers, globals, config, tools, and tests;
-- review of every worker result;
-- status changes and accepted-drift decisions;
+- worker-result review;
+- status and accepted-drift decisions;
 - staging and commits; and
-- final grouped and repository validation.
+- final repository validation.
 
-Every worker result is a proposal. Inspect the source and evidence before
-integration.
+Every worker result is a proposal. Verify it before integration.
 
-## Shared-worktree model
+## Continuous scheduler
 
-Prevent concurrent writes to one natural translation unit in the same worktree.
-Separate worktrees can use their own coordination plan.
+The user selects the active worker capacity. Keep that capacity full while
+eligible translation units remain.
 
-The user or current orchestration defines each worker's task size and lifetime.
-Do not impose a fixed function count or worker lifetime.
+Assign one worker to one natural translation unit. Never assign two active
+workers to the same translation unit.
 
-Workers use the orchestrator worktree unless the assignment says otherwise.
-They do not commit.
+An assignment contains:
 
-For each active worker, record:
+- the translation-unit name and source path;
+- all current scratch-function VAs in that translation unit;
+- one unique worker and lease owner ID;
+- allowed source and function-note paths;
+- one primary VA for the translation-unit reservation;
+- the user-selected lease duration and resource settings;
+- one unique build output directory; and
+- the required final-response format.
 
-- worker ID;
-- function VA;
-- translation-unit name and source path;
-- allowed changed paths; and
-- unique build output directory.
-
-Do not assign another function from an actively leased translation unit.
-`target_session.py start` enforces this rule.
-
-Preclaim assigned targets without metric work:
+Preclaim the primary VA before launch:
 
 ```text
-python tools/target_session.py start --preclaim --va <VA> --owner <OWNER> \
-  --lease-hours <HOURS>
+python tools/target_session.py start --preclaim --va <PRIMARY_VA> \
+  --owner <OWNER> --lease-hours <HOURS>
 ```
-
-Tell each worker that its lease is active. The worker must use `brief`, not
-`start`, for that preclaimed lease.
-
-Do not edit or stage a worker's leased source while that worker is active.
-
-## Worker assignment
-
-Give the worker a compact task. Include:
-
-- target VA and name;
-- natural translation unit;
-- lease owner ID;
-- allowed source and function-note paths;
-- known blocker or useful prior evidence;
-- unique validation output directory; and
-- the required final report.
 
 Require the worker to read `docs/agentic_matching_workflow.md`.
 
-Send the history required by the current orchestration.
-Function notes remain the durable handoff.
+Workers do not send progress reports. Managed completion delivers their final
+response to the orchestrator.
 
-Workers can choose their investigative methods. Do not set a hypothesis quota
-or fixed stop count.
+## Completion intake
 
-Do not accept an early stop after one mismatch or one codegen basin. Require
-materially different natural forms for the main evidence-backed hypotheses.
+A completion event must not replace the orchestrator's current review task.
+Perform only this intake work:
 
-Workers may seek:
+1. Confirm that the worker stopped editing.
+2. Confirm that its translation unit is held for review.
+3. Add one TODO verification item.
+4. Include the worker ID, translation unit, owner ID, outcome, and changed paths.
+5. Start a replacement worker on another eligible translation unit.
+6. Return to the first unchecked TODO item.
 
-- exact matches;
-- better natural scratch source;
-- proved source or ABI facts; and
-- accepted-drift proposals.
+Batch TODO additions when several workers finish together. Do not review their
+changes during intake.
 
-Workers do not select `verified_logic`.
+A held translation unit is not eligible for another matching assignment. It
+remains held until its TODO review completes.
 
-## Allowed worker changes
+If a worker exits before creating the hold, the orchestrator runs `hold-tu`
+with its primary VA and owner ID during completion intake.
 
-A normal matching worker may change only:
+## TODO review backlog
 
-- its assigned function body in the natural source module; and
-- its assigned function notes.
+The enabled TODO list is the authoritative integration backlog. The first
+unchecked item is the orchestrator's current task.
 
-Authorize any other path explicitly.
+Work only on that item. Mark it complete only after its result is integrated,
+rejected, or converted into a specific follow-up task.
 
-Workers must not change headers, global storage, config, tools, tests, shared
-notes, the Git index, or commits.
+For a normal worker return:
 
-## Validation during work
+1. Read the worker's final response.
+2. Inspect the complete diff for its allowed paths.
+3. Confirm that no unauthorized path changed.
+4. Read all changed function bodies and notes.
+5. Check source plausibility and executable behavior.
+6. Rerun authoritative checks for retained changes.
+7. Audit the translation unit and its matching neighbors.
+8. Accept, revise, or reject each change.
+9. Review each accepted-drift proposal.
+10. Update statuses only after proof.
+11. Stage only reviewed paths.
+12. Commit each logical result.
+13. Release the translation-unit reservation.
+14. Mark the TODO item complete.
 
-The worker uses target checks for each meaningful hypothesis.
-
-The current orchestration defines each worker's validation scope and job count.
-Use a unique output directory under:
+Release every session owned by the worker in that translation unit:
 
 ```text
-build/audits/workers/<OWNER>/<GROUP>
+python tools/target_session.py release-tu --va <PRIMARY_VA> --owner <OWNER> \
+  --reason "orchestrator review complete"
 ```
 
-Run repository-wide audits or full test suites only when the current
-orchestration assigns that work.
+The scheduler can assign that translation unit again after release.
 
-Coordinated translation-unit access prevents source and compiler-object
-collisions. Unique report directories prevent report collisions.
+## Worker continuation
 
-## Review a return
+Resume a completed worker when its existing context makes the current TODO item
+faster or safer.
 
-Review completed work while other workers remain active. Do not change a source
-file that an active worker leases.
+Good continuation tasks include:
 
-When a worker reports completion:
+- one missing validation;
+- one focused source correction;
+- clarification of reported evidence;
+- cleanup within the same translation unit; or
+- more work on its remaining scratch functions.
 
-1. Tell the worker to stop editing the leased translation unit.
-2. Inspect the complete diff for its allowed paths.
-3. Confirm that no other path changed.
-4. Read the final source and function notes.
-5. Check source plausibility and behavior.
-6. Rerun the authoritative target check.
-7. Rerun focused grouped validation when source changed.
-8. Accept, revise, or reject the source change.
-9. Review any accepted-drift proposal.
+Keep the translation unit held while the continuation runs. The worker resumes
+its target session with the same owner ID.
 
-10. Update a function status only after proof.
-11. Stage only the reviewed paths.
-12. Commit each logical result and clear its lease.
-
-The scheduler assigns a new target when a worker releases its lease. Other
-workers continue without an orchestration barrier.
+Start a new worker when the task needs different ownership, scope, model, or
+shared-file authority.
 
 ## Shared findings
 
-A worker reports a shared-header, global, config, tool, or test finding without
-editing the shared file. The report identifies the path, symbol, evidence,
-affected translation units, proposed correction, and validation needs.
+A matching worker reports a shared finding but never edits the shared path.
+The final response identifies:
 
-The orchestrator groups duplicate findings. A blocked worker records the
-evidence, releases its lease, and leaves the function in `scratch`. The
-scheduler assigns another target immediately.
+- the path and symbol;
+- facts and hypotheses;
+- executable, PDB, or exact-donor evidence;
+- affected functions and translation units;
+- the smallest proposed correction;
+- required validation; and
+- whether the finding blocked work.
 
-The orchestrator verifies each shared finding and assigns one authorized repair
-owner. Use a compiler integration gate for an accepted shared repair:
+Create or update a TODO item keyed by the shared path and symbol. Merge duplicate
+findings into that item.
 
-1. Block new compiler jobs.
-2. Let active compiler jobs finish.
-3. Apply and commit only the reviewed shared paths.
-4. Reopen compiler admission.
-5. Notify affected workers.
-6. Require fresh checks for their targets.
+Use one authorized repair owner for an accepted shared change. Close compiler
+admission before editing shared source:
 
-Workers remain active during the integration gate. Header fingerprints make
-affected modules rebuild. Return deferred targets to the matching pool after
-the repair.
+```text
+python tools/compiler_gate.py close
+```
 
-## Exact review
+The command blocks new compiler jobs and waits for admitted jobs to finish.
+Workers remain active and can continue noncompiler investigation.
 
-Require:
+Apply and commit only the reviewed shared paths. Then reopen admission:
+
+```text
+python tools/compiler_gate.py open
+```
+
+Always reopen the gate after the source is coherent. Use `status` to inspect the
+gate after an interrupted integration.
+
+Notify affected active workers after the change. Require fresh checks for every
+affected target. Header fingerprints force affected modules to rebuild.
+
+Return deferred targets to the eligible pool after the blocker is resolved.
+
+## Allowed matching-worker changes
+
+A matching worker can change only:
+
+- scratch function bodies in its assigned natural source file; and
+- function notes for those scratch functions.
+
+The worker cannot change headers, globals, config, tools, tests, shared notes,
+status metadata, the Git index, or commits.
+
+Authorize a different scope only through a separate assignment.
+
+## Review standards
+
+An exact result requires:
 
 - `MATCH` and `0.0000%`;
 - the correct owning symbol;
-- no boundary escape;
-- compatible relocations;
+- correct boundaries and relocations;
 - correct direct call and tail targets;
 - no matching-neighbor regression; and
 - the smallest supported natural source.
 
-Do not accept a match that depends on a wrapper, dummy declaration, fake ABI,
-raw address, or compiler steering.
+A nonexact improvement can remain when executable evidence supports it. It must
+be more natural or structurally better than the prior source.
 
-## Progress review
+Reject wrappers, fake ABI, raw addresses, dummy declarations, fake volatility,
+and other compiler-steering forms.
 
-A nonexact change can be useful.
+Only the orchestrator can approve accepted drift or start semantic review.
+Workers leave unresolved functions in `scratch`.
 
-Accept it when:
+## Repository checks
 
-- executable evidence supports the behavior;
-- the source is simpler or more authentic;
-- important structure or metrics improve;
-- no correct call, effect, fault, or boundary is lost; and
-- the function notes explain the improvement and remaining blocker.
+Run target and translation-unit checks during review. Run global audits and the
+full test suite when the current orchestration requires them.
 
-If only the investigation improved, commit the function notes and reject the source
-change.
-
-## Accepted drift
-
-Only the orchestrator can approve accepted drift.
-
-Require a small, localized, proved equivalent difference. Review original and
-rebuilt instructions, calls, effects, cleanup, ABI, exceptions, and fault order.
-
-Reject broad drift, wrong targets, changed predicates, missing calls, changed
-memory effects, or unexplained control flow.
-
-Record the decision in the function notes and function registry.
-
-## Verified logic
-
-Verified logic is outside the normal matching-worker loop.
-
-A stuck worker leaves the function in `scratch`. Do not ask matching workers to
-propose semantic promotion.
-
-Start semantic review only after a separate orchestrator decision and a complete
-review plan.
-
-## Quiet integration checks
-
-During active work, validate only changed targets and assigned groups.
-
-At a quiet checkpoint, run the global owner audit, grouped translation-unit
-audit, flag audit, and tests once.
-
-Do not run duplicate global checks while workers compile functions.
-
-## Worker trial review
-
-For a shared-worktree trial, assess:
-
-- path compliance;
-- source and build-output conflicts;
-- canonical owner selection;
-- baseline and final check reliability;
-- function-note quality;
-- accepted-drift understanding;
-- grouped-neighbor protection; and
-- ease of independent review and staging.
-
-Report workflow problems before scaling the fleet.
+Do not duplicate global checks while workers compile functions.
