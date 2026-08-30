@@ -27,6 +27,7 @@
 #include "../include/color.h"
 #include "../include/Mouseptr.h"
 #include "../include/pathsys.h"
+#include "../include/aiplaybook.h"
 #include "../include/panel.h"
 #include "../include/dpl_obj.h"
 #include "../include/visible.h"
@@ -1004,8 +1005,8 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int mode)
     world_update_counter = 0;
     pathSystem.zeroObstructionMap();
     aiPathSystem.zeroObstructionMap();
-    for (i = 0; i < 13; i++) computerPlayerSetup[i] = 0;
     this->currentUpdateComputerPlayer = -1;
+    for (i = 0; i < 13; i++) computerPlayerSetup[i] = 0;
     this->del_game_info();
     debug_random_reset();
     debug_timeGetTime_cnt = 0;
@@ -1024,7 +1025,7 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int mode)
     }
     this->random_seed = initial_seed;
     debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x50c, this->random_seed);
-    rge_base_game->random_map_seed = this->random_seed;
+    rge_base_game->save_random_game_seed = this->random_seed;
     this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x50f);
     L->Log("World: new_game (rand=%d)", this->random_seed);
 
@@ -3245,7 +3246,7 @@ void RGE_Game_World::update_mutual_allies() {
     for (i=0;i<player_num;i++) {
         fprintf(DVlogf, s_player, i);
         fprintf(DVlogf, s_masks, players[i]->mutualExploredMask, players[i]->mutualVisibleMask, players[i]->nonMutualVisibleMask);
-        fprintf(DVlogf, s_player_flags, players[i]->allied_LOS_Enable, players[i]->culture);
+        fprintf(DVlogf, s_player_flags, players[i]->allied_LOS_Enable, players[i]->allied_victory);
         fprintf(DVlogf, s_diplomacy);
         for (j=0;j<9;j++) {
             fprintf(DVlogf, s_decimal, players[i]->unitDiplomacy[j]);

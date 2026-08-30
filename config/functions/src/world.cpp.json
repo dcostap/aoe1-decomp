@@ -7,7 +7,7 @@
   },
   "functions": {
     "00540750": {"status": "matching", "symbol": "??0RGE_Game_World@@QAE@XZ"},
-    "00540A40": {"status": "scratch", "symbol": "??1RGE_Game_World@@UAE@XZ"},
+    "00540A40": {"status": "matching", "symbol": "??1RGE_Game_World@@UAE@XZ"},
     "00540CF0": {"status": "matching", "symbol": "?reset_object_count@RGE_Game_World@@QAEXXZ"},
     "00540D30": {"status": "matching", "symbol": "?pause@RGE_Game_World@@UAEXE@Z"},
     "00540D60": {"status": "matching", "symbol": "?set_map_visible@RGE_Game_World@@QAEXE@Z"},
@@ -96,6 +96,6 @@
     "00546030": {"status": "matching", "symbol": "?initializePathingSystem@RGE_Game_World@@QAEHXZ"},
     "00546070": {"status": "matching", "symbol": "?recycle_object_out_of_game@RGE_Game_World@@QAEEEPAVRGE_Static_Object@@@Z"},
     "00546180": {"status": "matching", "symbol": "?recycle_object_in_to_game@RGE_Game_World@@QAEPAVRGE_Static_Object@@E@Z"},
-    "005462D0": {"status": "scratch", "symbol": "?update_mutual_allies@RGE_Game_World@@QAEXXZ"}
+    "005462D0": {"status": "matching", "symbol": "?update_mutual_allies@RGE_Game_World@@QAEXXZ"}
   }
 }
