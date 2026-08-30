@@ -7,7 +7,7 @@
   },
   "functions": {
     "004A71F0": {"status": "matching", "symbol": "??0TribeSaveGameScreen@@QAE@W4Mode@0@PADH@Z"},
-    "004A75C0": {"status": "scratch", "symbol": "??1TribeSaveGameScreen@@UAE@XZ"},
+    "004A75C0": {"status": "matching", "symbol": "??1TribeSaveGameScreen@@UAE@XZ"},
     "004A7670": {"status": "matching", "symbol": "?fillList@TribeSaveGameScreen@@IAEXXZ"},
     "004A7850": {"status": "scratch", "symbol": "?action@TribeSaveGameScreen@@MAEJPAVTPanel@@JKK@Z"},
     "004A8060": {"status": "matching", "symbol": "?save_for_scenario_editor@TribeSaveGameScreen@@IAEXXZ"}
