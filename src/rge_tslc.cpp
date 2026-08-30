@@ -68,12 +68,11 @@ unsigned long RGE_TimeSinceLastCall::Set()
 
     aTSLC[Offset] = TSLC;
 
-    if (TSLC < lowTSLC)
-        lowTSLC = TSLC;
-    if (TSLC > highTSLC)
-        highTSLC = TSLC;
+    unsigned long result = TSLC;
+    lowTSLC = result < lowTSLC ? result : lowTSLC;
+    highTSLC = result > highTSLC ? result : highTSLC;
 
-    return TSLC;
+    return result;
 }
 
 void RGE_TimeSinceLastCall::Skip()

@@ -10,7 +10,7 @@
     "004803F0": {"status": "matching", "symbol": "??1RGE_TimeSinceLastCall@@QAE@XZ"},
     "00480400": {"status": "matching", "symbol": "?GetAvg@RGE_TimeSinceLastCall@@QAEKH@Z"},
     "00480460": {"status": "matching", "symbol": "?Get@RGE_TimeSinceLastCall@@QAEKXZ"},
-    "00480480": {"status": "scratch", "symbol": "?Set@RGE_TimeSinceLastCall@@QAEKXZ"},
+    "00480480": {"status": "matching", "symbol": "?Set@RGE_TimeSinceLastCall@@QAEKXZ"},
     "00480510": {"status": "matching", "symbol": "?Skip@RGE_TimeSinceLastCall@@QAEXXZ"},
     "00480540": {"status": "matching", "symbol": "?GetAvgInfo@RGE_TimeSinceLastCall@@QAEPADH@Z"},
     "00480570": {"status": "matching", "symbol": "?GetHiLoMaxInfo@RGE_TimeSinceLastCall@@QAEPADH@Z"},
