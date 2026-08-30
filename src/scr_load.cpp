@@ -193,7 +193,7 @@ long TribeLoadSavedGameScreen::action(TPanel* panel, long message,
 
         if (panel == this->deleteButton && message == 1) {
             if (*this->list->currentLine() != 0) {
-                char confirmation[512];
+                char confirmation[556];
 
                 this->get_string(0x24CA, file_name, 0x100);
                 sprintf(confirmation, file_name, this->list->currentLine());
