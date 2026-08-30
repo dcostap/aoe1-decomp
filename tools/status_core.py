@@ -10,6 +10,7 @@ from typing import Iterable
 from common import (
     REPO_ROOT,
     classify_corpus_bucket,
+    function_record_by_va,
     function_recovery_note_relative_path,
     load_asm_special_function_names,
     load_asm_special_regions,
@@ -402,9 +403,8 @@ def build_status_rows(
     are generated human-facing artifacts and may be stale; callers that need fresh
     answers should use this function directly.
 
-    When ``va`` is supplied, all records are still classified for corpus-wide
-    remaining-rank parity, but source notes and diff metrics are read only for the
-    selected function.
+    When ``va`` is supplied, only that record is classified. Corpus-wide rank
+    fields stay empty because targeted agent queries do not need global ranks.
     """
     scratch_dir = REPO_ROOT / "src" / "scratch"
     matching_dir = REPO_ROOT / "src" / "matching"
@@ -423,7 +423,14 @@ def build_status_rows(
         if child.suffix.lower() == ".rsp"
     } if flags_dir.exists() else {}
 
-    records = load_functions()
+    va_norm = va.upper() if va else None
+    if va_norm is not None:
+        try:
+            records = [function_record_by_va(int(va_norm, 16))]
+        except (KeyError, ValueError):
+            records = []
+    else:
+        records = load_functions()
     toolchain_supplied_names = load_toolchain_supplied_function_names()
     toolchain_supplied_regions = load_toolchain_supplied_regions()
     asm_special_names = load_asm_special_function_names()
@@ -433,7 +440,6 @@ def build_status_rows(
     compiler_generated_functions = load_compiler_generated_functions()
     remaining_records: list[dict[str, str]] = []
     rows: list[dict[str, str]] = []
-    va_norm = va.upper() if va else None
     pdb_norm = pdb_source_file.lower() if pdb_source_file else None
     include_vas_norm = {value.upper() for value in include_vas} if include_vas is not None else None
     exclude_vas_norm = {value.upper() for value in exclude_vas or set()}
@@ -602,12 +608,13 @@ def build_status_rows(
             include_diff_metrics=include_diff_metrics,
         )
 
-    size_ranks = rank_map(remaining_records, "size_bytes")
-    asm_ranks = rank_map(remaining_records, "asm_lines")
-    for row in rows:
-        if row["is_remaining"] == "yes":
-            row["remaining_size_rank"] = str(size_ranks[row["va"]])
-            row["remaining_asm_rank"] = str(asm_ranks[row["va"]])
+    if va_norm is None:
+        size_ranks = rank_map(remaining_records, "size_bytes")
+        asm_ranks = rank_map(remaining_records, "asm_lines")
+        for row in rows:
+            if row["is_remaining"] == "yes":
+                row["remaining_size_rank"] = str(size_ranks[row["va"]])
+                row["remaining_asm_rank"] = str(asm_ranks[row["va"]])
 
     return rows
 

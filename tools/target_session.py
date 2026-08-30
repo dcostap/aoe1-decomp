@@ -162,6 +162,18 @@ def _session_file_fingerprint() -> str:
     return digest.hexdigest()
 
 
+def _session_file_names() -> set[str]:
+    root = _sessions_root()
+    if not root.exists():
+        return set()
+    with os.scandir(root) as children:
+        return {
+            child.name
+            for child in children
+            if child.is_file() and child.name.lower().endswith(".json")
+        }
+
+
 def target_session_summary(session: dict) -> dict:
     """Reduce one complete session to fields needed by project status queries."""
     probes = list(session.get("probes") or [])
@@ -203,11 +215,66 @@ def _read_session_index() -> dict | None:
         return None
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
+    except (json.JSONDecodeError, OSError, UnicodeError):
         return None
-    if payload.get("version") != SESSION_INDEX_VERSION or not isinstance(payload.get("sessions"), dict):
+    if (
+        not isinstance(payload, dict)
+        or payload.get("version") != SESSION_INDEX_VERSION
+        or not isinstance(payload.get("sessions"), dict)
+    ):
         return None
     return payload
+
+
+def _session_index_content_fingerprint(sessions: dict) -> str | None:
+    try:
+        content = json.dumps(
+            sessions,
+            ensure_ascii=True,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("ascii")
+    except (TypeError, ValueError, UnicodeError):
+        return None
+    return hashlib.sha256(content).hexdigest()
+
+
+def _session_index_is_current(index: dict | None, fingerprint: str) -> bool:
+    if (
+        not isinstance(index, dict)
+        or index.get("session_files_fingerprint") != fingerprint
+        or index.get("session_index_content_fingerprint")
+        != _session_index_content_fingerprint(index.get("sessions"))
+    ):
+        return False
+    sessions = index.get("sessions")
+    if not isinstance(sessions, dict):
+        return False
+
+    session_files = _session_file_names()
+    indexed_files: set[str] = set()
+    for va, summary in sessions.items():
+        if not isinstance(va, str) or not isinstance(summary, dict):
+            return False
+        if str(summary.get("va") or "").upper() != va.upper():
+            return False
+        if not isinstance(summary.get("owner"), str):
+            return False
+        if not isinstance(summary.get("state"), str):
+            return False
+        if not isinstance(summary.get("lease_expires_at"), str):
+            return False
+        slug = summary.get("slug")
+        if not isinstance(slug, str) or not slug:
+            return False
+        file_name = f"{slug}.json"
+        if (
+            file_name not in session_files
+            or slug.split("_", 1)[0].upper() != va.upper()
+        ):
+            return False
+        indexed_files.add(file_name)
+    return len(indexed_files) == len(sessions) and indexed_files == session_files
 
 
 def _write_session_index(sessions: dict[str, dict], fingerprint: str) -> None:
@@ -217,6 +284,7 @@ def _write_session_index(sessions: dict[str, dict], fingerprint: str) -> None:
     payload = {
         "version": SESSION_INDEX_VERSION,
         "session_files_fingerprint": fingerprint,
+        "session_index_content_fingerprint": _session_index_content_fingerprint(sessions),
         "sessions": sessions,
     }
     temporary.write_text(
@@ -233,14 +301,17 @@ def _rebuild_session_index() -> dict:
         for path in sorted(root.glob("*.json")):
             try:
                 session = json.loads(path.read_text(encoding="utf-8"))
+                if not isinstance(session, dict):
+                    raise TypeError("session payload is not an object")
                 summary = target_session_summary(session)
-            except (json.JSONDecodeError, OSError, TypeError, ValueError):
+            except (json.JSONDecodeError, OSError, TypeError, UnicodeError, ValueError):
                 summary = {
                     "summary_version": SESSION_INDEX_VERSION,
                     "va": path.name.split("_", 1)[0].upper(),
                     "slug": path.stem,
                     "owner": "",
                     "state": "invalid",
+                    "lease_expires_at": "",
                 }
             va = str(summary.get("va", "")).upper()
             if va:
@@ -250,6 +321,7 @@ def _rebuild_session_index() -> dict:
     return {
         "version": SESSION_INDEX_VERSION,
         "session_files_fingerprint": fingerprint,
+        "session_index_content_fingerprint": _session_index_content_fingerprint(summaries),
         "sessions": summaries,
     }
 
@@ -258,9 +330,7 @@ def _write_session(record: dict[str, str], payload: dict) -> None:
     payload["version"] = SESSION_VERSION
     prior_fingerprint = _session_file_fingerprint()
     index = _read_session_index()
-    index_was_current = bool(
-        index and index.get("session_files_fingerprint") == prior_fingerprint
-    )
+    index_was_current = _session_index_is_current(index, prior_fingerprint)
     path = _session_path(record)
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(".json.tmp")
@@ -609,7 +679,14 @@ def start_session(
                 "coordinate with that owner or use --force for a deliberate takeover"
             )
         target_source = compiler_source_path(record).resolve()
-        for other in _all_sessions():
+        session_index_fingerprint = _session_file_fingerprint()
+        session_index = _read_session_index()
+        if _session_index_is_current(session_index, session_index_fingerprint):
+            other_sessions = list(session_index["sessions"].values())
+        else:
+            # An external edit or an invalid index needs the complete locked scan.
+            other_sessions = _all_sessions()
+        for other in other_sessions:
             other_va = str(other.get("va") or "").upper()
             if other_va == record["va"].upper() or not _lease_active(other):
                 continue
@@ -1283,8 +1360,11 @@ def _all_sessions() -> list[dict]:
     rows = []
     for path in sorted(root.glob("*.json")):
         try:
-            rows.append(json.loads(path.read_text(encoding="utf-8")))
-        except json.JSONDecodeError:
+            session = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(session, dict):
+                raise TypeError("session payload is not an object")
+            rows.append(session)
+        except (json.JSONDecodeError, OSError, TypeError, UnicodeError):
             rows.append({"slug": path.stem, "state": "invalid", "owner": "", "updated_at": ""})
     return rows
 
@@ -1304,8 +1384,11 @@ def load_target_sessions(vas: set[str] | None = None) -> list[dict]:
             matches = sorted(root.glob(f"{va}_*.json"))
             for path in matches:
                 try:
-                    rows.append(target_session_summary(json.loads(path.read_text(encoding="utf-8"))))
-                except (json.JSONDecodeError, OSError, TypeError, ValueError):
+                    session = json.loads(path.read_text(encoding="utf-8"))
+                    if not isinstance(session, dict):
+                        raise TypeError("session payload is not an object")
+                    rows.append(target_session_summary(session))
+                except (json.JSONDecodeError, OSError, TypeError, UnicodeError, ValueError):
                     rows.append(
                         {
                             "summary_version": SESSION_INDEX_VERSION,
@@ -1319,11 +1402,11 @@ def load_target_sessions(vas: set[str] | None = None) -> list[dict]:
 
     fingerprint = _session_file_fingerprint()
     index = _read_session_index()
-    if index is None or index.get("session_files_fingerprint") != fingerprint:
+    if not _session_index_is_current(index, fingerprint):
         with _sessions_lock():
             fingerprint = _session_file_fingerprint()
             index = _read_session_index()
-            if index is None or index.get("session_files_fingerprint") != fingerprint:
+            if not _session_index_is_current(index, fingerprint):
                 index = _rebuild_session_index()
     return [index["sessions"][va] for va in sorted(index["sessions"])]
 
@@ -1693,8 +1776,10 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     if args.command == "list":
-        rows = _all_sessions()
-        print(json.dumps(rows, indent=2) if args.json else format_session_list(rows, args.active))
+        rows = load_target_sessions()
+        if args.active:
+            rows = [row for row in rows if _lease_active(row)]
+        print(json.dumps(rows, indent=2) if args.json else format_session_list(rows))
         return
 
     record = function_record_by_va(int(args.va, 16))
@@ -1722,7 +1807,7 @@ def main() -> None:
             session = record_probe(record, args.owner, args.kind, args.note, args.checkpoint)
             if args.kind == "baseline":
                 session = pin_clean_baseline(record, args.owner, args.note)
-            print(format_session(record, session))
+            print(format_session(record, session, session.get("last_metric_summary") or None))
         elif args.command == "check":
             checker_args = list(args.checker_args)
             if checker_args and checker_args[0] == "--":
@@ -1735,16 +1820,16 @@ def main() -> None:
                 args.checkpoint,
                 checker_args,
             )
-            print(format_session(record, session))
+            print(format_session(record, session, session.get("last_metric_summary") or None))
         elif args.command == "pin-clean":
             session = pin_clean_baseline(record, args.owner, args.note)
-            print(format_session(record, session))
+            print(format_session(record, session, session.get("last_metric_summary") or None))
         elif args.command == "restore-clean":
             session = restore_clean_baseline(record, args.owner)
             print(format_session(record, session))
         elif args.command in {"pause", "release"}:
             session = change_state(record, args.owner, args.command, args.reason)
-            print(format_session(record, session))
+            print(format_session(record, session, session.get("last_metric_summary") or None))
         elif args.command == "status":
             session = _load_session(record)
             print(

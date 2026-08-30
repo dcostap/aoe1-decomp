@@ -47,9 +47,16 @@ def load_binaries() -> dict:
     return load_json(CONFIG_DIR / "binaries.json")
 
 
+@lru_cache(maxsize=1)
 def load_functions() -> list[dict[str, str]]:
     with (INVENTORY_DIR / "all_functions.csv").open("r", encoding="utf-8", newline="") as handle:
         return list(csv.DictReader(handle))
+
+
+@lru_cache(maxsize=1)
+def function_records_by_va() -> dict[str, dict[str, str]]:
+    """Return the immutable function inventory indexed by normalized VA."""
+    return {record["va"].upper(): record for record in load_functions()}
 
 
 def load_optional_csv(path: Path) -> list[dict[str, str]]:
@@ -289,10 +296,10 @@ def load_pdb_function_line_changes() -> dict[str, list[dict[str, str]]]:
 
 def function_record_by_va(va: int) -> dict[str, str]:
     target = f"{va:08X}"
-    for record in load_functions():
-        if record["va"].upper() == target:
-            return record
-    raise KeyError(f"No function record for VA {target}")
+    try:
+        return function_records_by_va()[target]
+    except KeyError as error:
+        raise KeyError(f"No function record for VA {target}") from error
 
 
 def function_recovery_note_relative_path(va: str, slug: str) -> Path:
@@ -438,15 +445,21 @@ def source_module_for_name(name: str) -> dict[str, object] | None:
     return None
 
 
-def source_module_entry_for_va(va: int | str) -> dict[str, object] | None:
-    va_text = f"{va:08X}" if isinstance(va, int) else str(va).upper()
+@lru_cache(maxsize=1)
+def source_module_entries_by_va() -> dict[str, dict[str, object]]:
+    entries: dict[str, dict[str, object]] = {}
     for module in load_source_modules():
         functions = module["functions"]
         assert isinstance(functions, dict)
-        entry = functions.get(va_text)
-        if isinstance(entry, dict):
-            return {"module": module, **entry}
-    return None
+        for va, entry in functions.items():
+            if isinstance(entry, dict):
+                entries[str(va).upper()] = {"module": module, **entry}
+    return entries
+
+
+def source_module_entry_for_va(va: int | str) -> dict[str, object] | None:
+    va_text = f"{va:08X}" if isinstance(va, int) else str(va).upper()
+    return source_module_entries_by_va().get(va_text)
 
 
 @lru_cache(maxsize=1)
@@ -770,6 +783,18 @@ def translation_unit_for_source(source_path: Path) -> dict[str, object] | None:
 
 
 def validate_translation_unit(group: dict[str, object]) -> None:
+    """Verify one translation unit once per process and unique group payload."""
+    payload = json.dumps(group, sort_keys=True, separators=(",", ":"))
+    _validate_translation_unit_cached(payload)
+
+
+@lru_cache(maxsize=None)
+def _validate_translation_unit_cached(payload: str) -> None:
+    group = json.loads(payload)
+    _validate_translation_unit_uncached(group)
+
+
+def _validate_translation_unit_uncached(group: dict[str, object]) -> None:
     """Verify legacy wrapper includes or one direct migrated module source."""
     source = repo_path(str(group["source"]))
     owners = group.get("owners")

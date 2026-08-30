@@ -521,7 +521,8 @@ def main() -> None:
         or args.max_lifetime_probes is not None
         or args.max_claims is not None
     )
-    sessions = load_target_sessions() if needs_sessions else []
+    session_vas = {args.va.upper()} if needs_sessions and args.va else None
+    sessions = load_target_sessions(session_vas) if needs_sessions else []
     include_vas, exclude_vas = lease_prefilter_vas(args, sessions) if needs_sessions else (None, set())
     rows = load_rows(args, include_vas=include_vas, exclude_vas=exclude_vas)
     if needs_sessions:

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import json
+import multiprocessing
 import sys
 import tempfile
 import unittest
@@ -17,6 +18,33 @@ sys.path.insert(0, str(REPO_ROOT / "tools"))
 import target_session  # noqa: E402
 
 
+def _concurrent_start_worker(root_path, record, records, result_queue) -> None:
+    root = Path(root_path)
+    records_by_va = {item["va"].upper(): item for item in records}
+
+    def source_path(_record):
+        return root / "src" / "shared_module.cpp"
+
+    def record_by_va(va):
+        return records_by_va[f"{int(va):08X}"]
+
+    def unexpected_full_scan():
+        raise AssertionError("current session index was not used")
+
+    with (
+        patch.object(target_session, "REPO_ROOT", root),
+        patch.object(target_session, "compiler_source_path", source_path),
+        patch.object(target_session, "function_record_by_va", record_by_va),
+        patch.object(target_session, "_all_sessions", unexpected_full_scan),
+    ):
+        try:
+            target_session.start_session(record, "AgentA", 4, 2.0)
+        except Exception as error:  # pragma: no cover - exercised in child process
+            result_queue.put(("error", type(error).__name__, str(error)))
+        else:
+            result_queue.put(("ok", record["va"], ""))
+
+
 class TargetSessionTests(unittest.TestCase):
     def setUp(self) -> None:
         self.record = {
@@ -26,6 +54,42 @@ class TargetSessionTests(unittest.TestCase):
             "calling_convention": "__thiscall",
             "pdb_source_file": "demo.cpp",
         }
+
+    def test_active_json_list_uses_compact_index_and_filters_rows(self) -> None:
+        rows = [
+            {
+                "summary_version": target_session.SESSION_INDEX_VERSION,
+                "va": "00001000",
+                "slug": "00001000_demo",
+                "owner": "AgentA",
+                "state": "active",
+                "lease_expires_at": "2999-01-01T00:00:00Z",
+                "updated_at": "2026-01-01T00:00:00Z",
+            },
+            {
+                "summary_version": target_session.SESSION_INDEX_VERSION,
+                "va": "00002000",
+                "slug": "00002000_other",
+                "owner": "AgentB",
+                "state": "pause",
+                "lease_expires_at": "",
+                "updated_at": "2026-01-01T00:00:00Z",
+            },
+        ]
+        args = SimpleNamespace(command="list", active=True, json=True)
+
+        with (
+            patch.object(target_session, "parse_args", return_value=args),
+            patch.object(target_session, "load_target_sessions", return_value=rows) as load,
+            patch.object(target_session, "_all_sessions", side_effect=AssertionError("full scan")),
+            patch("builtins.print") as output,
+        ):
+            target_session.main()
+
+        load.assert_called_once_with()
+        payload = json.loads(output.call_args.args[0])
+        self.assertEqual([row["va"] for row in payload], ["00001000"])
+        self.assertNotIn("probes", payload[0])
 
     def test_active_lease_rejects_other_owner_then_allows_paused_takeover(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
@@ -127,6 +191,332 @@ class TargetSessionTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "translation unit"):
                     target_session.start_session(other_record, "AgentB", 4, 2.0)
 
+    def test_start_uses_current_index_for_translation_unit_conflict(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            shared_source = root / "src" / "module.cpp"
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(target_session, "compiler_source_path", return_value=shared_source),
+                patch.object(target_session, "function_record_by_va", return_value=self.record),
+            ):
+                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                with patch.object(
+                    target_session,
+                    "_all_sessions",
+                    side_effect=AssertionError("current session index was not used"),
+                ):
+                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
+                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+
+    def test_semantically_stale_index_entry_preserves_translation_unit_conflict(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            shared_source = root / "src" / "module.cpp"
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(target_session, "compiler_source_path", return_value=shared_source),
+                patch.object(target_session, "function_record_by_va", return_value=self.record),
+            ):
+                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                index = target_session._read_session_index()
+                self.assertIsNotNone(index)
+                session_files_fingerprint = target_session._session_file_fingerprint()
+                index["sessions"][self.record["va"]]["state"] = "pause"
+                target_session._session_index_path().write_text(
+                    json.dumps(index), encoding="utf-8"
+                )
+                self.assertEqual(
+                    session_files_fingerprint,
+                    target_session._session_file_fingerprint(),
+                )
+                with patch.object(
+                    target_session, "_all_sessions", wraps=target_session._all_sessions
+                ) as all_sessions:
+                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
+                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+        all_sessions.assert_called_once_with()
+
+    def test_start_skips_invalid_session_payloads_during_conflict_scan(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        payloads = {
+            "invalid-utf8": b"\xff\xfe",
+            "null": b"null",
+            "list": b"[]",
+            "string": b'"session"',
+        }
+        for label, payload in payloads.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                shared_source = root / "src" / "module.cpp"
+                with (
+                    patch.object(target_session, "REPO_ROOT", root),
+                    patch.object(target_session, "compiler_source_path", return_value=shared_source),
+                    patch.object(target_session, "function_record_by_va", return_value=self.record),
+                ):
+                    target_session.start_session(self.record, "AgentA", 4, 2.0)
+                    invalid_path = target_session._sessions_root() / "00000001_bad.json"
+                    invalid_path.write_bytes(payload)
+                    with patch.object(
+                        target_session, "_all_sessions", wraps=target_session._all_sessions
+                    ) as all_sessions:
+                        with self.assertRaisesRegex(RuntimeError, "translation unit"):
+                            target_session.start_session(other_record, "AgentB", 4, 2.0)
+                all_sessions.assert_called_once_with()
+
+    def test_matching_empty_index_falls_back_to_active_session_files(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            shared_source = root / "src" / "module.cpp"
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(target_session, "compiler_source_path", return_value=shared_source),
+                patch.object(target_session, "function_record_by_va", return_value=self.record),
+            ):
+                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                index = target_session._read_session_index()
+                self.assertIsNotNone(index)
+                index["sessions"] = {}
+                target_session._session_index_path().write_text(
+                    json.dumps(index), encoding="utf-8"
+                )
+                self.assertEqual(
+                    index["session_files_fingerprint"],
+                    target_session._session_file_fingerprint(),
+                )
+                with patch.object(
+                    target_session, "_all_sessions", wraps=target_session._all_sessions
+                ) as all_sessions:
+                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
+                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+        all_sessions.assert_called_once_with()
+
+    def test_matching_index_with_missing_entry_falls_back_to_full_scan(self) -> None:
+        second_record = {**self.record, "va": "00002000", "name": "second"}
+        other_record = {**self.record, "va": "00003000", "name": "other"}
+        records_by_va = {
+            record["va"]: record for record in (self.record, second_record, other_record)
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+
+            def source_path(record):
+                return root / "src" / (
+                    "first.cpp" if record["va"] == self.record["va"] else "second.cpp"
+                )
+
+            def record_by_va(va):
+                return records_by_va[f"{int(va):08X}"]
+
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(target_session, "compiler_source_path", source_path),
+                patch.object(target_session, "function_record_by_va", record_by_va),
+            ):
+                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session.start_session(second_record, "AgentB", 4, 2.0)
+                index = target_session._read_session_index()
+                self.assertIsNotNone(index)
+                del index["sessions"][second_record["va"]]
+                target_session._session_index_path().write_text(
+                    json.dumps(index), encoding="utf-8"
+                )
+                self.assertEqual(
+                    index["session_files_fingerprint"],
+                    target_session._session_file_fingerprint(),
+                )
+                with patch.object(
+                    target_session, "_all_sessions", wraps=target_session._all_sessions
+                ) as all_sessions:
+                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
+                        target_session.start_session(other_record, "AgentC", 4, 2.0)
+        all_sessions.assert_called_once_with()
+
+    def test_matching_index_with_extra_entry_falls_back_to_full_scan(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            shared_source = root / "src" / "module.cpp"
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(target_session, "compiler_source_path", return_value=shared_source),
+                patch.object(target_session, "function_record_by_va", return_value=self.record),
+            ):
+                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                index = target_session._read_session_index()
+                self.assertIsNotNone(index)
+                index["sessions"]["00009999"] = {
+                    "va": "00009999",
+                    "slug": "00009999_missing",
+                    "state": "active",
+                }
+                target_session._session_index_path().write_text(
+                    json.dumps(index), encoding="utf-8"
+                )
+                self.assertEqual(
+                    index["session_files_fingerprint"],
+                    target_session._session_file_fingerprint(),
+                )
+                with patch.object(
+                    target_session, "_all_sessions", wraps=target_session._all_sessions
+                ) as all_sessions:
+                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
+                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+        all_sessions.assert_called_once_with()
+
+    def test_matching_index_with_non_dict_entry_falls_back_to_full_scan(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        for invalid_entry in (None, ["invalid"]):
+            with self.subTest(invalid_entry=invalid_entry), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                shared_source = root / "src" / "module.cpp"
+                with (
+                    patch.object(target_session, "REPO_ROOT", root),
+                    patch.object(target_session, "compiler_source_path", return_value=shared_source),
+                    patch.object(target_session, "function_record_by_va", return_value=self.record),
+                ):
+                    target_session.start_session(self.record, "AgentA", 4, 2.0)
+                    index = target_session._read_session_index()
+                    self.assertIsNotNone(index)
+                    index["sessions"][self.record["va"]] = invalid_entry
+                    target_session._session_index_path().write_text(
+                        json.dumps(index), encoding="utf-8"
+                    )
+                    self.assertEqual(
+                        index["session_files_fingerprint"],
+                        target_session._session_file_fingerprint(),
+                    )
+                    with patch.object(
+                        target_session, "_all_sessions", wraps=target_session._all_sessions
+                    ) as all_sessions:
+                        with self.assertRaisesRegex(RuntimeError, "translation unit"):
+                            target_session.start_session(other_record, "AgentB", 4, 2.0)
+                all_sessions.assert_called_once_with()
+
+    def test_start_falls_back_to_full_scan_for_stale_index(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        active_other = {
+            "va": "00001000",
+            "owner": "AgentA",
+            "state": "active",
+            "lease_expires_at": "2999-01-01T00:00:00Z",
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            shared_source = root / "src" / "module.cpp"
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(target_session, "compiler_source_path", return_value=shared_source),
+                patch.object(target_session, "function_record_by_va", return_value=self.record),
+            ):
+                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                index = target_session._read_session_index()
+                self.assertIsNotNone(index)
+                index["session_files_fingerprint"] = "stale"
+                target_session._session_index_path().write_text(
+                    json.dumps(index), encoding="utf-8"
+                )
+                with patch.object(
+                    target_session, "_all_sessions", return_value=[active_other]
+                ) as all_sessions:
+                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
+                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+        all_sessions.assert_called_once_with()
+
+    def test_start_falls_back_to_full_scan_for_corrupt_index(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        active_other = {
+            "va": "00001000",
+            "owner": "AgentA",
+            "state": "active",
+            "lease_expires_at": "2999-01-01T00:00:00Z",
+        }
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            shared_source = root / "src" / "module.cpp"
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(target_session, "compiler_source_path", return_value=shared_source),
+                patch.object(target_session, "function_record_by_va", return_value=self.record),
+            ):
+                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session._session_index_path().write_text("[]", encoding="utf-8")
+                with patch.object(
+                    target_session, "_all_sessions", return_value=[active_other]
+                ) as all_sessions:
+                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
+                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+        all_sessions.assert_called_once_with()
+
+    def test_start_falls_back_for_invalid_utf8_index(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            shared_source = root / "src" / "module.cpp"
+            with (
+                patch.object(target_session, "REPO_ROOT", root),
+                patch.object(target_session, "compiler_source_path", return_value=shared_source),
+                patch.object(target_session, "function_record_by_va", return_value=self.record),
+            ):
+                target_session.start_session(self.record, "AgentA", 4, 2.0)
+                target_session._session_index_path().write_bytes(b"\xff\xfe")
+                with patch.object(
+                    target_session, "_all_sessions", wraps=target_session._all_sessions
+                ) as all_sessions:
+                    with self.assertRaisesRegex(RuntimeError, "translation unit"):
+                        target_session.start_session(other_record, "AgentB", 4, 2.0)
+        all_sessions.assert_called_once_with()
+
+    def test_concurrent_starts_reject_duplicate_translation_unit_claims(self) -> None:
+        other_record = {**self.record, "va": "00002000", "name": "other"}
+        records = [self.record, other_record]
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            with patch.object(target_session, "REPO_ROOT", root):
+                target_session._sessions_root().mkdir(parents=True)
+                target_session._write_session_index(
+                    {}, target_session._session_file_fingerprint()
+                )
+            context = multiprocessing.get_context("spawn")
+            result_queue = context.Queue()
+            processes = [
+                context.Process(
+                    target=_concurrent_start_worker,
+                    args=(str(root), record, records, result_queue),
+                )
+                for record in records
+            ]
+            try:
+                for process in processes:
+                    process.start()
+                for process in processes:
+                    process.join(15)
+                self.assertTrue(all(not process.is_alive() for process in processes))
+                self.assertTrue(all(process.exitcode == 0 for process in processes))
+                results = [result_queue.get(timeout=2) for _ in processes]
+            finally:
+                for process in processes:
+                    if process.is_alive():
+                        process.terminate()
+                        process.join()
+                result_queue.close()
+            self.assertEqual(sum(result[0] == "ok" for result in results), 1)
+            errors = [result for result in results if result[0] == "error"]
+            self.assertEqual(len(errors), 1)
+            self.assertEqual(errors[0][1], "RuntimeError")
+            self.assertIn("translation unit", errors[0][2])
+            with patch.object(target_session, "REPO_ROOT", root):
+                index = target_session._read_session_index()
+                self.assertIsNotNone(index)
+                self.assertEqual(
+                    index["session_files_fingerprint"],
+                    target_session._session_file_fingerprint(),
+                )
+                self.assertEqual(len(index["sessions"]), 1)
+
     def test_compact_summary_preserves_status_aggregates(self) -> None:
         session = {
             "va": "00001000",
@@ -199,6 +589,114 @@ class TargetSessionTests(unittest.TestCase):
                 second = target_session.load_target_sessions()
         self.assertEqual(first[0]["meaningful_probe_total"], 0)
         self.assertEqual(second[0]["meaningful_probe_total"], 1)
+
+    def test_broad_load_repairs_structural_and_semantic_index_staleness(self) -> None:
+        mutations = {
+            "null": lambda sessions, va: sessions.__setitem__(va, None),
+            "missing": lambda sessions, va: sessions.pop(va),
+            "extra": lambda sessions, va: sessions.__setitem__(
+                "00009999",
+                {
+                    "va": "00009999",
+                    "slug": "00009999_missing",
+                    "owner": "AgentB",
+                    "state": "pause",
+                    "lease_expires_at": "",
+                },
+            ),
+            "semantic-stale": lambda sessions, va: sessions[va].__setitem__("state", "pause"),
+        }
+        for label, mutate in mutations.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                with patch.object(target_session, "REPO_ROOT", root):
+                    target_session.start_session(self.record, "AgentA", 4, 2.0)
+                    index = target_session._read_session_index()
+                    self.assertIsNotNone(index)
+                    mutate(index["sessions"], self.record["va"])
+                    target_session._session_index_path().write_text(
+                        json.dumps(index), encoding="utf-8"
+                    )
+                    rows = target_session.load_target_sessions()
+                    repaired = target_session._read_session_index()
+                    self.assertTrue(
+                        target_session._session_index_is_current(
+                            repaired, target_session._session_file_fingerprint()
+                        )
+                    )
+                self.assertEqual([row["va"] for row in rows], [self.record["va"]])
+                self.assertEqual(rows[0]["state"], "active")
+
+    def test_broad_load_handles_invalid_session_payloads(self) -> None:
+        payloads = {
+            "invalid-utf8": b"\xff\xfe",
+            "null": b"null",
+            "list": b"[]",
+            "string": b'"session"',
+        }
+        for label, payload in payloads.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                sessions = root / "build" / "target_sessions"
+                sessions.mkdir(parents=True)
+                (sessions / "00001000_demo.json").write_text(
+                    json.dumps(
+                        {
+                            "va": "00001000",
+                            "owner": "AgentA",
+                            "state": "active",
+                            "lease_expires_at": "2999-01-01T00:00:00Z",
+                            "probes": [],
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                (sessions / "00000001_bad.json").write_bytes(payload)
+                with patch.object(target_session, "REPO_ROOT", root):
+                    rows = target_session.load_target_sessions()
+                by_va = {row["va"]: row for row in rows}
+                self.assertEqual(by_va["00001000"]["state"], "active")
+                self.assertEqual(by_va["00000001"]["state"], "invalid")
+
+    def test_broad_load_reuses_index_after_corrupt_session_rebuild(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            sessions = root / "build" / "target_sessions"
+            sessions.mkdir(parents=True)
+            (sessions / "00001000_bad.json").write_bytes(b"\xff\xfe")
+            with patch.object(target_session, "REPO_ROOT", root):
+                first = target_session.load_target_sessions()
+                index = target_session._read_session_index()
+                self.assertTrue(
+                    target_session._session_index_is_current(
+                        index, target_session._session_file_fingerprint()
+                    )
+                )
+                with patch.object(
+                    target_session,
+                    "_rebuild_session_index",
+                    side_effect=AssertionError("rebuild repeated for unchanged corrupt file"),
+                ):
+                    second = target_session.load_target_sessions()
+        self.assertEqual(second, first)
+
+    def test_bounded_summary_load_handles_invalid_session_payloads(self) -> None:
+        payloads = {
+            "invalid-utf8": b"\xff\xfe",
+            "null": b"null",
+            "list": b"[]",
+            "string": b'"session"',
+        }
+        for label, payload in payloads.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                sessions = root / "build" / "target_sessions"
+                sessions.mkdir(parents=True)
+                (sessions / "00001000_bad.json").write_bytes(payload)
+                with patch.object(target_session, "REPO_ROOT", root):
+                    rows = target_session.load_target_sessions({"00001000"})
+                self.assertEqual(rows[0]["va"], "00001000")
+                self.assertEqual(rows[0]["state"], "invalid")
 
     def test_probe_snapshots_current_metrics_and_counts_meaningful_attempts(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

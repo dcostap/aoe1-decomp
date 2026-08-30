@@ -88,6 +88,7 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
                 "pdb_source_path": "demo.cpp",
             },
         ]
+        records_by_va = {int(record["va"], 16): record for record in records}
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             source = root / "src" / "scratch" / "00400000_target.cpp"
@@ -97,6 +98,11 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
             with (
                 patch.object(status_core, "REPO_ROOT", root),
                 patch.object(status_core, "load_functions", return_value=records),
+                patch.object(
+                    status_core,
+                    "function_record_by_va",
+                    side_effect=records_by_va.__getitem__,
+                ),
                 patch.object(status_core, "load_toolchain_supplied_function_names", return_value=set()),
                 patch.object(status_core, "load_toolchain_supplied_regions", return_value=[]),
                 patch.object(status_core, "load_asm_special_function_names", return_value=set()),
@@ -142,11 +148,14 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
                     include_diff_metrics=False,
                 )
 
-        self.assertEqual(target_rows, [row for row in full_rows if row["va"] == "00400000"])
-        self.assertEqual(target_rows[0]["remaining_size_rank"], "2")
-        self.assertEqual(target_rows[0]["remaining_asm_rank"], "2")
+        expected_target = dict(next(row for row in full_rows if row["va"] == "00400000"))
+        expected_target["remaining_size_rank"] = ""
+        expected_target["remaining_asm_rank"] = ""
+        self.assertEqual(target_rows, [expected_target])
+        self.assertEqual(target_rows[0]["remaining_size_rank"], "")
+        self.assertEqual(target_rows[0]["remaining_asm_rank"], "")
         self.assertEqual(missing_rows, [])
-        self.assertEqual(enriched_rows, [row for row in full_rows if row["va"] == "00400000"])
+        self.assertEqual(enriched_rows, [expected_target])
         self.assertEqual(
             filtered_rows,
             status_core.filter_status_rows(
