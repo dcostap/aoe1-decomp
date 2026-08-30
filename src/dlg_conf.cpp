@@ -441,12 +441,10 @@ long TribeConfigDialog::action(TPanel* panel, long event,
         goto base_action;
 
     if ((TButtonPanel*)panel == this->okButton && event == 1) {
-            int mode = this->modeValue;
-            if (mode == 0) {
+            if (this->modeValue == 0) {
                 if (rge_base_game->singlePlayerGame() == param_3 && rge_base_game->save_paused == 0) {
                     rge_base_game->set_paused(0, 0);
                 }
-
                 if (this->mouseButton[0]->get_state() != 0) {
                     rge_base_game->prog_info->interface_style = 2;
                 } else {
@@ -573,12 +571,12 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 this->newMusicVolume = param_3;
                 TMusic_System* music = rge_base_game->music_system;
                 if (music == 0) {
-                    return 1;
+                    goto destroy;
                 }
                 music->set_volume(param_3 * -100, 1);
                 TSound_Driver* sound = rge_base_game->sound_system;
                 if (sound == 0) {
-                    return 1;
+                    goto destroy;
                 }
                 slider_sound = sound;
                 param_3 = this->newSoundVolume;
@@ -588,7 +586,7 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 this->newSoundVolume = param_3;
                 slider_sound = rge_base_game->sound_system;
                 if (slider_sound == 0) {
-                    return 1;
+                    goto destroy;
                 }
                 goto slider_sound_call;
             }
