@@ -118,6 +118,9 @@ Function notes use:
 decomp_notes/functions/<VA-prefix>/<VA>.md
 ```
 
+Preserve the note's existing line-ending style. Do not append LF lines to a
+CRLF file or CRLF lines to an LF file.
+
 Record durable evidence only:
 
 - baseline and final metrics;
@@ -183,6 +186,7 @@ Before the final response:
 3. Confirm that matching neighbors still match.
 4. Update function notes with durable evidence.
 5. Review your changed paths.
+6. Confirm that changed files have one consistent line-ending style.
 
 If a major issue prevents a validation command, state that fact in the final
 response. Stop editing before the final response.

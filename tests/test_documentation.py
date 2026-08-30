@@ -67,6 +67,7 @@ class DocumentationTests(unittest.TestCase):
             "target_session.py start",
             "Do not copy active-worker capacity into `--jobs`",
             "repository-managed caches, target notebooks, and standard diff paths",
+            "Preserve the note's existing line-ending style",
             "Send no intermediate progress reports",
             "Do not use a report tool",
         ):

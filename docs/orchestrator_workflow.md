@@ -95,15 +95,16 @@ For a normal worker return:
 2. Inspect the complete diff for its allowed paths.
 3. Confirm that no unauthorized path changed.
 4. Read all changed function bodies and notes.
-5. Check source plausibility and executable behavior.
-6. Rerun authoritative checks for retained changes.
-7. Audit the translation unit and its matching neighbors.
-8. Accept, revise, or reject each change.
-9. Review each accepted-drift proposal.
-10. Update statuses only after proof.
-11. Stage only reviewed paths.
-12. Commit each logical result.
-13. Mark the TODO item complete.
+5. Confirm that each changed file keeps its existing line-ending style.
+6. Check source plausibility and executable behavior.
+7. Rerun authoritative checks for retained changes.
+8. Audit the translation unit and its matching neighbors.
+9. Accept, revise, or reject each change.
+10. Review each accepted-drift proposal.
+11. Update statuses only after proof.
+12. Stage only reviewed paths.
+13. Commit each logical result.
+14. Mark the TODO item complete.
 
 The scheduler can assign that translation unit again after TODO completion.
 
