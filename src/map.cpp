@@ -342,7 +342,7 @@ void RGE_Map::clear_map(unsigned char param_1, unsigned char param_2)
 {
     for (long y = 0; y < this->map_height; ++y) {
         RGE_Tile* row = this->map_row_offset[y];
-        for (long x = 0; x < this->map_width; ++x, ++row) {
+        for (long x = 0; x < this->map_width; ++row, ++x) {
             row->tile_type = 0;
             row->terrain_type = param_1;
             row->height = param_2;

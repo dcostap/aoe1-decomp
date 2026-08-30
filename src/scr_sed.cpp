@@ -322,29 +322,36 @@ int TRIBE_Screen_Sed::create_drop_down(TPanel* parent, TDropDownPanel** out)
         out == &this->AiRules ||
         out == &this->victory_time) {
         height = 0xDC;
-    } else if (out == &this->victory_drop_down) {
-        height = 0xB4;
-    } else if (out == this->cinematic_input ||
-               out == this->cinematic_input + 1 ||
-               out == this->cinematic_input + 2 ||
-               out == this->cinematic_input + 3 ||
-               out == &this->default_terrain_drop ||
-               out == &this->map_size_drop ||
-               out == &this->map_style_drop) {
-        height = 0xAA;
-    } else if (out == &this->player_advance_civilization_drop ||
-               out == &this->player_list ||
-               out == &this->player_number_list ||
-               out == &this->unit_player_list ||
-               out == &this->victory_player_list ||
-               out == &this->options_player_list ||
-               out == &this->Diplomacy_player_list ||
-               out == &this->victory_enemy_player_list) {
-        height = 0x96;
-    } else {
+        goto create;
+    }
+    if (out != &this->victory_drop_down) {
+        if (out == this->cinematic_input ||
+            out == this->cinematic_input + 1 ||
+            out == this->cinematic_input + 2 ||
+            out == this->cinematic_input + 3 ||
+            out == &this->default_terrain_drop ||
+            out == &this->map_size_drop ||
+            out == &this->map_style_drop) {
+            height = 0xAA;
+            goto create;
+        }
+        if (out == &this->player_advance_civilization_drop ||
+            out == &this->player_list ||
+            out == &this->player_number_list ||
+            out == &this->unit_player_list ||
+            out == &this->victory_player_list ||
+            out == &this->options_player_list ||
+            out == &this->Diplomacy_player_list ||
+            out == &this->victory_enemy_player_list) {
+            height = 0x96;
+            goto create;
+        }
         height = 0x82;
+    } else {
+        height = 0xB4;
     }
 
+create:
     if (this->TEasy_Panel::create_drop_down(parent, out, height, 100, 0, 0,
                                              height, 0x16, 10) == 0) {
         return 0;
@@ -562,71 +569,70 @@ int TRIBE_Screen_Sed::create_list(TPanel* panel, TListPanel** out, TScrollBarPan
 TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
 {
     int i;
-    int j;
     panel_system.destroyPanel(s_QuitSaveDialog);
     panel_system.destroyPanel(s_OpenSaveDialog);
     panel_system.destroyPanel(s_NewSaveDialog);
     panel_system.destroyPanel(s_Save_Game_Screen);
     panel_system.destroyPanel(s_Scenario_Menu_Dialog);
 
-    delete this->map_type_label;
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->map_type_label));
     for (i = 0; i < 3; ++i) {
-        delete this->map_type_button[i];
-        delete this->map_type_text[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->map_type_button[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->map_type_text[i]));
     }
-    delete this->default_terrain_label;
-    delete this->default_terrain_drop;
-    delete this->map_size_label;
-    delete this->map_size_drop;
-    delete this->map_style_drop;
-    delete this->map_style_label;
-    delete this->map_generating_text;
-    delete this->random_seed_label;
-    delete this->random_seed_input;
-    delete this->random_seed_used_label;
-    delete this->random_seed_used_text;
-    delete this->generate_map_button;
-    delete this->brush_size_label;
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->default_terrain_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->default_terrain_drop));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->map_size_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->map_size_drop));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->map_style_drop));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->map_style_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->map_generating_text));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->random_seed_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->random_seed_input));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->random_seed_used_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->random_seed_used_text));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->generate_map_button));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->brush_size_label));
     for (i = 0; i < 5; ++i) {
-        delete this->brush_size_button[i];
-        delete this->brush_size_button_label[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->brush_size_button[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->brush_size_button_label[i]));
     }
-    delete this->paint_type_label;
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->paint_type_label));
     for (i = 0; i < 3; ++i) {
-        delete this->paint_type_button[i];
-        delete this->paint_type_button_label[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->paint_type_button[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->paint_type_button_label[i]));
     }
-    delete this->paint_terrain_label;
-    delete this->paint_terrain_list;
-    delete this->paint_terrain_scrollbar;
-    delete this->paint_elevation_list;
-    delete this->paint_elevation_scrollbar;
-    delete this->player_advance_civilization_drop;
-    delete this->player_label;
-    delete this->player_starting_age_label;
-    delete this->player_build_text;
-    delete this->player_city_text;
-    delete this->AiRules_text;
-    delete this->player_list;
-    delete this->player_number_list;
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->paint_terrain_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->paint_terrain_list));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->paint_terrain_scrollbar));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->paint_elevation_list));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->paint_elevation_scrollbar));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->player_advance_civilization_drop));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->player_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->player_starting_age_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->player_build_text));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->player_city_text));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->AiRules_text));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->player_list));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->player_number_list));
     for (i = 0; i < 5; ++i) {
-        delete this->player_inven_label[i];
-        delete this->player_inven_input[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->player_inven_label[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->player_inven_input[i]));
     }
     for (i = 0; i < 2; ++i) {
-        delete this->player_setting_label[i];
-        delete this->player_setting_drop[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->player_setting_label[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->player_setting_drop[i]));
     }
-    delete this->BuildList;
-    delete this->CityLayout;
-    delete this->AiRules;
-    delete this->unit_player_list;
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->BuildList));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->CityLayout));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->AiRules));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->unit_player_list));
     for (i = 0; i < 4; ++i) {
-        delete this->unit_mode_select[i];
-        delete this->unit_mode_select_label[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->unit_mode_select[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->unit_mode_select_label[i]));
     }
-    delete this->unit_list;
-    delete this->unit_scrollbar;
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->unit_list));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->unit_scrollbar));
     if (this->unit_list_info != 0) {
         free(this->unit_list_info);
         this->unit_list_info = 0;
@@ -635,93 +641,109 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
         delete this->object_panel;
         this->object_panel = 0;
     }
-    delete this->button_unit_pics;
-    for (i = 0; i < 5; ++i)
-        delete this->button_bldg_pics[i];
+    if (this->button_unit_pics != 0) {
+        delete this->button_unit_pics;
+        this->button_unit_pics = 0;
+    }
+    {
+        TShape** pp = this->button_bldg_pics;
+        int count = 5;
+        do {
+            TShape* p = *pp;
+            if (p != 0) {
+                delete p;
+                *pp = 0;
+            }
+            pp++;
+            count--;
+        } while (count != 0);
+    }
     for (i = 0; i < 6; ++i)
-        delete this->victory_cond_on[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_cond_on[i]));
     for (i = 0; i < 2; ++i) {
-        delete this->victory_and_or[i];
-        delete this->victory_text_and_or[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_and_or[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_text_and_or[i]));
     }
-    delete this->victory_amount_label;
-    delete this->victory_long_label;
-    delete this->victory_condition_label;
-    delete this->victory_label_conquest;
-    delete this->victory_label_explore;
-    delete this->victory_label_explore_percent;
-    delete this->victory_label_ruins;
-    delete this->victory_label_artifacts;
-    delete this->victory_label_discoveries;
-    delete this->victory_label_gold;
-    delete this->victory_condition_explore;
-    delete this->victory_condition_ruins;
-    delete this->victory_condition_artifacts;
-    delete this->victory_condition_discoveries;
-    delete this->victory_condition_gold;
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_amount_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_long_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_condition_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_label_conquest));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_label_explore));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_label_explore_percent));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_label_ruins));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_label_artifacts));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_label_discoveries));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_label_gold));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_condition_explore));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_condition_ruins));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_condition_artifacts));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_condition_discoveries));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_condition_gold));
     for (i = 0; i < 5; ++i) {
-        delete this->victory_cond_type_label[i];
-        delete this->victory_cond_type[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_cond_type_label[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_cond_type[i]));
     }
-    delete this->victory_score_label;
-    delete this->victory_score;
-    delete this->victory_time_label;
-    delete this->victory_time;
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_score_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_score));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_time_label));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_time));
     for (i = 0; i < 12; ++i)
-        delete this->victory_button[i];
-    delete this->victory_drop_down;
-    delete this->victory_object_list;
-    delete this->victory_player_list;
-    delete this->victory_ages_list;
-    delete this->victory_tech_list;
-    delete this->victory_button_set_object;
-    delete this->victory_button_set_destination;
-    delete this->victory_button_go_to_dest;
-    delete this->victory_condition_text;
-    delete this->victory_condition_type;
-    delete this->victory_amount_text;
-    delete this->victory_amount_input;
-    delete this->victory_enemy_player_list;
-    delete this->victory_attribute_list;
-    delete this->victory_which_enemy_text;
-    delete this->victory_object_scrollbar;
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_button[i]));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_drop_down));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_object_list));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_player_list));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_ages_list));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_tech_list));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_button_set_object));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_button_set_destination));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_button_go_to_dest));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_condition_text));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_condition_type));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_amount_text));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_amount_input));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_enemy_player_list));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_attribute_list));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_which_enemy_text));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->victory_object_scrollbar));
     for (i = 0; i < 5; ++i) {
-        delete this->message_button[i];
-        delete this->message_button_label[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->message_button[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->message_button_label[i]));
     }
-    delete this->message_input;
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->message_input));
     for (i = 0; i < 4; ++i) {
-        delete this->cinematic_label[i];
-        delete this->cinematic_input[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->cinematic_label[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->cinematic_input[i]));
     }
     for (i = 0; i < 1; ++i) {
-        delete this->options_label[i];
-        delete this->options_button[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->options_label[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->options_button[i]));
     }
-    delete this->options_player_list;
-    delete this->options_disable_tech_text;
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->options_player_list));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->options_disable_tech_text));
     for (i = 0; i < 16; ++i) {
-        delete this->options_disable_button[i];
-        delete this->options_disable_text[i];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->options_disable_button[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->options_disable_text[i]));
     }
-    delete this->Diplomacy_player_list;
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_player_list));
     for (i = 0; i < 8; ++i) {
-        delete this->Diplomacy_opponent_label[i];
-        delete this->Diplomacy_player_text[i];
-        delete this->Diplomacy_AlliedVictory[i];
-        for (j = 0; j < 3; ++j)
-            delete this->Diplomacy_friend_box[i][j];
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_opponent_label[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_player_text[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_AlliedVictory[i]));
+        for (int j = 0; j < 3; ++j)
+            this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_friend_box[i][j]));
     }
-    for (i = 0; i < 4; ++i)
-        delete this->Diplomacy_status_label[i];
-    delete this->menu_button;
-    delete this->help_button;
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_status_label[0]));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_status_label[1]));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_status_label[2]));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_status_label[3]));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->menu_button));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->help_button));
     for (i = 0; i < 10; ++i)
-        delete this->scenario_mode_button[i];
-    delete this->bottom_panel;
-    delete this->message_panel;
-    delete this->main_view;
-    delete this->map_view;
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->scenario_mode_button[i]));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->bottom_panel));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->message_panel));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->main_view));
+    this->delete_panel(reinterpret_cast<TPanel**>(&this->map_view));
     if (this->background_pic != 0) {
         TShape* p = this->background_pic;
         delete p;
@@ -1437,13 +1459,16 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
     if (player != 0) {
         this->unit_list_size = 1;
         short n = player->master_object_num;
-        short i = 0;
         if (n > 0) {
-            for (i = 0; i < n; ++i) {
-                RGE_Master_Static_Object* m = player->master_objects[i];
+            int count = n;
+            int index = 0;
+            do {
+                RGE_Master_Static_Object* m = player->master_objects[index];
                 if (m != 0 && m->hide_in_scenario_editor == 0)
                     this->unit_list_size++;
-            }
+                ++index;
+                --count;
+            } while (count != 0);
         }
         if (this->unit_list_size == 0) return;
         this->unit_list_info = static_cast<List_Info*>(
@@ -1453,6 +1478,7 @@ void TRIBE_Screen_Sed::set_unit_player(short p)
         this->set_string(this->unit_list_info[0].text, 0x2775, 0x14);
 
         short out = 1; // The original loads this index as a word.
+        short i = 0;
         // the offset zero store follows the positive-count test.
         if (n > 0) {
             int master_index = 0;
@@ -1938,7 +1964,6 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 InvalidateRect(rge_base_game->prog_window, 0, 0);
                 rge_base_game->draw_window();
                 i = this->map_size_drop->currentLineNumber();
-                f1 = static_cast<float>(this->map_style_drop->currentLineNumber());
                 switch (i) {
                 case 0: map_size = 0x48; break;
                 case 1: map_size = 0x60; break;
@@ -1948,6 +1973,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 case 5: map_size = 0xFA; break;
                 default: map_size = i; break;
                 }
+                i = this->map_style_drop->currentLineNumber();
                 line = this->player_number_list->get_line();
                 if (this->map_type == MapTypeBlankValue) {
                     switch (this->default_terrain_drop->currentLineNumber()) {
@@ -1989,7 +2015,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                     for (i = 0; i < 9; i++) this->world->players[i]->reset_selected();
                     this->world->map->map_generate2(
                         this->world, map_size, map_size,
-                        static_cast<unsigned char>(f1), line + 1);
+                        static_cast<unsigned char>(i), line + 1);
                     rge_base_game->random_map_seed = saved_random_map_seed;
                     itoa(rge_base_game->save_random_map_seed, random_seed_text, 10);
                     this->random_seed_used_text->set_text(random_seed_text);

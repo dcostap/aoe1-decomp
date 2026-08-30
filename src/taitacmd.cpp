@@ -6457,9 +6457,15 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
     if (0 < self->soldiers.numberValue) {
         ManagedArray<int>& soldiers = self->soldiers;
         do {
+            if (reset > soldiers.maximumSizeValue - 1)
+                soldiers.resize(reset + 1);
+
             RGE_Static_Object* object =
-                self->md->aiPlayer->world->object(soldiers[reset]);
+                self->md->aiPlayer->world->object(soldiers.value[reset]);
             if ((object != 0) && (object->unitAI() != 0)) {
+                if (reset > soldiers.maximumSizeValue - 1)
+                    soldiers.resize(reset + 1);
+
                 int taskedNumber = self->unitsTaskedThisUpdate.numberValue;
                 int taskedIndex = 0;
                 if (0 < taskedNumber) {
@@ -6467,24 +6473,28 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                          taskedIndex < taskedNumber &&
                          taskedIndex < self->unitsTaskedThisUpdate.maximumSizeValue;
                          taskedIndex++) {
-                        if (self->unitsTaskedThisUpdate[taskedIndex] ==
-                            soldiers[reset])
+                        if (self->unitsTaskedThisUpdate.value[taskedIndex] ==
+                            soldiers.value[reset])
                             goto nextSoldier;
                     }
                 }
 
                 int value;
+                int number;
                 if (priority < 0) {
                     if (object->unitAI()->currentAction() != -1) {
                         if (object->unitAI()->currentOrderPriority() >= threshold)
                             goto nextSoldier;
                     }
 
-                    value = soldiers[reset];
+                    if (reset > soldiers.maximumSizeValue - 1)
+                        soldiers.resize(reset + 1);
+                    number = workingArea.numberValue;
+                    value = soldiers.value[reset];
                     int index = 0;
-                    if (0 < workingArea.numberValue) {
+                    if (0 < number) {
                         for (;
-                             index < workingArea.numberValue &&
+                             index < number &&
                              index < workingArea.maximumSizeValue;
                              index++) {
                             if (workingArea.value[index] == value)
@@ -6496,11 +6506,14 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                 else if (priority > 0) {
                     if (object->unitAI()->currentAction() != -1) {
                         if (object->unitAI()->currentOrderPriority() > threshold) {
-                            value = soldiers[reset];
+                            if (reset > soldiers.maximumSizeValue - 1)
+                                soldiers.resize(reset + 1);
+                            number = workingArea.numberValue;
+                            value = soldiers.value[reset];
                             int index = 0;
-                            if (0 < workingArea.numberValue) {
+                            if (0 < number) {
                                 for (;
-                                     index < workingArea.numberValue &&
+                                     index < number &&
                                      index < workingArea.maximumSizeValue;
                                      index++) {
                                     if (workingArea.value[index] == value)
@@ -6535,7 +6548,11 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
 
                             int value = soldiers.value[reset];
                             if (workingArea.contains(value) != 1) {
-                                workingArea.add(value);
+                                int number = workingArea.numberValue;
+                                if (number > workingArea.maximumSizeValue - 1)
+                                    workingArea.resize(number + 1);
+                                workingArea.value[workingArea.numberValue] = value;
+                                workingArea.numberValue = workingArea.numberValue + 1;
                             }
                             rNum = rNum + 1;
                         }
@@ -6543,7 +6560,10 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                     goto nextSoldier;
                 }
 appendWorking:
-                workingArea.add(value);
+                if (number > workingArea.maximumSizeValue - 1)
+                    workingArea.resize(number + 1);
+                workingArea.value[workingArea.numberValue] = value;
+                workingArea.numberValue = workingArea.numberValue + 1;
 countedSoldier:
                 rNum = rNum + 1;
             }
@@ -7575,17 +7595,17 @@ int TribeTacticalAIModule::taskBuilder(int id, BuildItem* item, ConstructionItem
     }
     item->setInProgress(1);
     item->setBuilt(0);
-    int count = this->civilians.maximumSizeValue;
+    int count = this->civilianExplorers.maximumSizeValue;
     int i = 0;
     if (count > 0) {
-        while (i < count) { if (this->civilians.value[i] == id) break; i++; }
+        while (i < count) { if (this->civilianExplorers.value[i] == id) break; i++; }
     }
     if (i < count) {
         if (i < count - 1) {
-            do { this->civilians.value[i] = this->civilians.value[i+1]; i++; } while (i < this->civilians.maximumSizeValue - 1);
+            do { this->civilianExplorers.value[i] = this->civilianExplorers.value[i+1]; i++; } while (i < this->civilianExplorers.maximumSizeValue - 1);
         }
-        this->civilians.numberValue--;
-        if (this->civilians.numberValue < 0) this->civilians.numberValue = 0;
+        this->civilianExplorers.numberValue--;
+        if (this->civilianExplorers.numberValue < 0) this->civilianExplorers.numberValue = 0;
     }
     count = this->unitsTaskedThisUpdate.numberValue;
     for (i = 0; i < count; i++) {
@@ -8050,12 +8070,12 @@ int TribeTacticalAIModule::taskExplorer(int unit, float x, float y, int flag)
 tasked_done:
     if (flag == 1) {
         i = 0;
-        for (; i < this->civilians.numberValue; i++) {
-            if (i >= this->civilians.maximumSizeValue) break;
-            if (this->civilians.value[i] == unit) goto haveExplorer;
+        for (; i < this->civilianExplorers.numberValue; i++) {
+            if (i >= this->civilianExplorers.maximumSizeValue) break;
+            if (this->civilianExplorers.value[i] == unit) goto haveExplorer;
         }
         {
-            ManagedArray<int>& civiliansArray = this->civilians;
+            ManagedArray<int>& civiliansArray = this->civilianExplorers;
             i = 0;
             count = civiliansArray.numberValue;
             for (; i < count; i++) {
@@ -11596,7 +11616,9 @@ next:
 void TribeTacticalAIModule::checkForCoopTributeGift()
 {
     if (this->sn[0xBA] == -1) return;
-    if (this->md->object(-1, 0x54, -1, -1, -1, -1, -1, -1, -1, -1) == 0) return;
+    if (this->md->player->objects->find_by_master_id(
+            0x54, -1.0f, -1.0f, 0, 0, 0) == 0)
+        return;
 
     int now = this->md->player->world->world_time;
     if ((now - this->lastCoopTributeGiftTime) / 1000 < this->sn[0xBA])
@@ -11918,7 +11940,7 @@ void TribeTacticalAIModule::checkTradeBoats()
             RGE_Static_Object* object =
                 this->md->object(this->tradeBoats[i]);
             if (object != 0) {
-                short attribute = object->type;
+                short attribute = object->attribute_type_held;
                 if (this->md->resourceAI.resource((int)attribute) <
                     this->sn[0xD8]) {
                     int resource = 2;

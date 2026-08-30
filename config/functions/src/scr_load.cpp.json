@@ -10,6 +10,6 @@
     "0049E0A0": {"status": "matching", "symbol": "??1TribeLoadSavedGameScreen@@UAE@XZ"},
     "0049E150": {"status": "matching", "symbol": "?fillList@TribeLoadSavedGameScreen@@IAEXXZ"},
     "0049E2B0": {"status": "matching", "symbol": "?handle_idle@TribeLoadSavedGameScreen@@UAEJXZ"},
-    "0049E2E0": {"status": "scratch", "symbol": "?action@TribeLoadSavedGameScreen@@UAEJPAVTPanel@@JKK@Z"}
+    "0049E2E0": {"status": "matching", "symbol": "?action@TribeLoadSavedGameScreen@@UAEJPAVTPanel@@JKK@Z"}
   }
 }

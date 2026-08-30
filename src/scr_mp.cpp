@@ -49,9 +49,7 @@ TribeMPStartupScreen::TribeMPStartupScreen()
                           0x14, 0x14, 600, 0x1E, 1, 1, 0, 0) &&
         this->create_text(this, &this->inputTitle, 0x258C,
                           0x14, 0x4B, 500, 0x14, 4, 0, 0, 0)) {
-        char* player_name = Regs->RegGetAscii(
-            1, "Default Age Of Empires Player Name");
-        if (player_name != 0) {
+        if (Regs->RegGetAscii(1, "Default Age Of Empires Player Name") != 0) {
             strcpy(str, Regs->RegGetAscii(
                 1, "Default Age Of Empires Player Name"));
         } else {
@@ -95,7 +93,7 @@ TribeMPStartupScreen::TribeMPStartupScreen()
                                 this->zone_exec[0] = 0;
                                 this->browser_exec[0] = 0;
                                 RegCreateKeyExA(
-                                    HKEY_CURRENT_USER,
+                                    HKEY_CLASSES_ROOT,
                                     "http\\shell\\open\\command", 0, 0, 0,
                                     0xF003F, 0, &ghUserKey, &gdwDisp);
                                 dwType = 1;
@@ -123,7 +121,7 @@ TribeMPStartupScreen::TribeMPStartupScreen()
 
                                     char* zone = Regs->RegGetAscii(0, "Zone");
                                     if (zone != 0) {
-                                        strcpy(Data, zone);
+                                        strcat(Data, zone);
                                         strcpy(this->zone_exec, Data);
                                     }
                                 }
@@ -148,16 +146,16 @@ TribeMPStartupScreen::TribeMPStartupScreen()
 
 
 TribeMPStartupScreen::~TribeMPStartupScreen() {
-    delete this->title;
-    delete this->inputTitle;
-    delete this->input;
-    delete this->connectionTitle;
-    delete this->list;
-    delete this->scrollbar;
-    delete this->okButton;
-    delete this->cancelButton;
-    delete this->help_button;
-    delete this->close_button;
+    this->delete_panel((TPanel**)&this->title);
+    this->delete_panel((TPanel**)&this->inputTitle);
+    this->delete_panel((TPanel**)&this->input);
+    this->delete_panel((TPanel**)&this->connectionTitle);
+    this->delete_panel((TPanel**)&this->list);
+    this->delete_panel((TPanel**)&this->scrollbar);
+    this->delete_panel((TPanel**)&this->okButton);
+    this->delete_panel((TPanel**)&this->cancelButton);
+    this->delete_panel((TPanel**)&this->help_button);
+    this->delete_panel((TPanel**)&this->close_button);
 
     panel_system.destroyPanel("Create Dialog");
     panel_system.destroyPanel("OKDialog");

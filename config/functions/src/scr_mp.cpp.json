@@ -6,8 +6,8 @@
     "flags": "gx"
   },
   "functions": {
-    "0049F370": {"status": "scratch", "symbol": "??0TribeMPStartupScreen@@QAE@XZ"},
-    "0049F890": {"status": "scratch", "symbol": "??1TribeMPStartupScreen@@UAE@XZ"},
+    "0049F370": {"status": "matching", "symbol": "??0TribeMPStartupScreen@@QAE@XZ"},
+    "0049F890": {"status": "matching", "symbol": "??1TribeMPStartupScreen@@UAE@XZ"},
     "0049F9A0": {"status": "matching", "symbol": "?handle_idle@TribeMPStartupScreen@@UAEJXZ"},
     "0049F9D0": {"status": "matching", "symbol": "?action@TribeMPStartupScreen@@UAEJPAVTPanel@@JKK@Z"},
     "0049FED0": {"status": "matching", "symbol": "?fillList@TribeMPStartupScreen@@IAEXXZ"},

@@ -336,10 +336,7 @@ TribeAchievementsScreen::~TribeAchievementsScreen()
         delete this->instruction_bar;
     }
 
-    if (this->close_button != 0) {
-        delete this->close_button;
-        this->close_button = 0;
-    }
+    this->delete_panel((TPanel**)&this->close_button);
 
     for (int column = 0; column < 7; ++column) {
         if (this->title_bar[column] != 0) {

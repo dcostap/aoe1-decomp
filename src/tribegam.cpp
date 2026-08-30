@@ -186,8 +186,8 @@ TRIBE_Game::TRIBE_Game(RGE_Prog_Info* prog_info, int setup_game)
     int player;
     int civilization;
 
-    this->is_mouse_on = 1;
-    this->windows_mouse = 0;
+    this->input_enabled = 1;
+    this->input_disabled_window = 0;
     this->testing_scenario[0] = 0;
     StringTableX = 0;
     this->startup_scenario[0] = 0;
@@ -262,9 +262,9 @@ TRIBE_Game::~TRIBE_Game()
     this->inHandleIdle = 0;
     this->prog_mode = 0;
 
-    if (this->windows_mouse != 0) {
-        DestroyWindow(reinterpret_cast<HWND>(this->windows_mouse));
-        this->windows_mouse = 0;
+    if (this->input_disabled_window != 0) {
+        DestroyWindow(reinterpret_cast<HWND>(this->input_disabled_window));
+        this->input_disabled_window = 0;
     }
 
     this->close_game_screens(1);
@@ -1605,7 +1605,7 @@ int TRIBE_Game::load_db_files()
         this->world = 0;
     }
 
-    this->world = this->createGameWorld();
+    this->world = this->create_world();
     if (this->world != 0) {
         if (this->world->data_load(this->prog_info->game_data_file,
                                    this->prog_info->world_db_file)) {
@@ -1626,7 +1626,7 @@ int TRIBE_Game::load_db_files()
 int TRIBE_Game::load_game_data()
 {
     if (this->world == 0) {
-        this->world = this->createGameWorld();
+        this->world = this->create_world();
         if (this->world == 0)
             return 0;
 
@@ -2368,7 +2368,7 @@ int TRIBE_Game::start_game(int param_1)
     if (param_1 != 0)
         return this->create_game_screen();
 
-    this->start_video(3, this->world->scenario->Get_Cine_PreGame());
+    this->start_video(3, this->world->scenario->Cine_PreGame);
     return 1;
 }
 
@@ -2856,10 +2856,10 @@ void TRIBE_Game::do_game_over(void) {
 
             RGE_Player* player = get_player();
             if (player->game_status == 1) {
-                start_video(4, this->world->scenario->Get_Cine_Victory());
+                start_video(4, this->world->scenario->Cine_Victory);
                 return;
             }
-            start_video(4, this->world->scenario->Get_Cine_Loss());
+            start_video(4, this->world->scenario->Cine_Loss);
         }
     }
 }
@@ -3622,7 +3622,7 @@ int TRIBE_Game::start_scenario_editor(char* scenario_filename, int mode)
 
     TRIBE_Screen_Sed* editor =
         new TRIBE_Screen_Sed(scenario_filename, mode);
-    if (editor != 0 && editor->need_to_save_flag == 0) {
+    if (editor != 0 && editor->error_code == 0) {
         if (this->music_system != 0) {
             this->music_system->stop_track();
             this->started_menu_music = 0;
@@ -3949,7 +3949,7 @@ long __stdcall TRIBE_Game::wnd_proc(void* hWnd, unsigned int msg,
     if (msg <= 0x200) {
         if (msg != 0x200) {
             if (msg == 7) {
-                if (this->is_mouse_on == 0) {
+                if (this->input_enabled == 0) {
                     this->disable_input();
                 } else {
                     this->enable_input();
@@ -4421,7 +4421,7 @@ int TRIBE_Game::setup_video_system()
     this->video_double_size = 1;
     this->video_changed_res = 0;
     this->video_hi_color = 0;
-    this->video_save_palette = this->draw_system->palette;
+    this->video_save_palette = this->draw_system->Pal;
 
     if (this->draw_system->ScreenMode == 2) {
         SetCursor(0);

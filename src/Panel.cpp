@@ -1326,7 +1326,8 @@ long TPanel::handle_size(long wid, long hgt)
         }
     }
 
-    this->set_rect(left, top, right, bottom);
+    tagRECT rect = { left, top, right, bottom };
+    this->set_rect(rect);
     int pass = 0;
     do {
         for (PanelNode* node = this->first_child_node; node != 0; node = node->next_node) {

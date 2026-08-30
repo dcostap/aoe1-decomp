@@ -44,7 +44,7 @@
     "0040F4E0": {"status": "matching", "symbol": "?group@AIPlay@@QAEPAVAIPlayGroup@@H@Z"},
     "0040F500": {"status": "matching", "symbol": "?phase@AIPlay@@QAEPAVAIPlayPhase@@H@Z"},
     "0040F530": {"status": "scratch", "symbol": "?fillGroups@AIPlay@@QAEHPAVAIPlayStatus@@PAHHPAVRGE_Game_World@@@Z"},
-    "0040F9B0": {"status": "scratch", "symbol": "?groupGivenCommandOnPhase@AIPlay@@QAEHHHH@Z"},
+    "0040F9B0": {"status": "matching", "symbol": "?groupGivenCommandOnPhase@AIPlay@@QAEHHHH@Z"},
     "0040FA40": {"status": "matching", "symbol": "?convertToIntType@AIPlay@@IBEEPAD@Z"},
     "0040FB60": {"status": "matching", "symbol": "?convertToNameType@AIPlay@@IBEPADE@Z"},
     "0040FBB0": {"status": "matching", "symbol": "?locationsOnMap@AIPlay@@QAEHHHHH@Z"},

@@ -416,6 +416,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
     unsigned long sel_start_after;
     unsigned long sel_end_after;
     int track_selection;
+    RECT rect;
 
     if (this->edit_wnd == 0) goto default_processing;
     if (this->active == 0) goto default_processing;
@@ -428,7 +429,6 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
                 InvalidateRect((HWND)hwnd, 0, 1);
             }
         } else if (this->brush != 0) {
-            RECT rect;
             HDC hdc = (HDC)wparam;
             SelectObject(hdc, (HGDIOBJ)this->brush);
             GetClientRect((HWND)hwnd, &rect);
@@ -444,12 +444,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
             }
             break;
         case 0x100:
-            if (this->parent_panel == 0) {
-                if (wparam == 0x1B) {
-                    SendMessageA((HWND)this->edit_wnd, 0xC7, 0, 0);
-                    return 0;
-                }
-            } else {
+            if (this->parent_panel != 0) {
                 long handled = this->parent_panel->wnd_proc(
                     hwnd, msg, wparam, lparam);
                 if (handled != 0) {
@@ -477,6 +472,9 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
                     SendMessageA((HWND)this->edit_wnd, 0xC7, 0, 0);
                     return 0;
                 }
+            } else if (wparam == 0x1B) {
+                SendMessageA((HWND)this->edit_wnd, 0xC7, 0, 0);
+                return 0;
             }
             break;
         case 0x101:
@@ -504,7 +502,6 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
 default_processing:
     sel_start_before = 0;
     sel_end_before = 0;
-    sel_start_after = 0;
     sel_end_after = 0;
     if (this->edit_wnd == 0 || msg == 0xB0) {
         track_selection = 0;

@@ -6,8 +6,8 @@
     "flags": "gx"
   },
   "functions": {
-    "0043F340": {"status": "scratch", "symbol": "??0TribeMenuDialog@@QAE@PAVTScreenPanel@@@Z"},
-    "0043F6B0": {"status": "scratch", "symbol": "??1TribeMenuDialog@@UAE@XZ"},
+    "0043F340": {"status": "matching", "symbol": "??0TribeMenuDialog@@QAE@PAVTScreenPanel@@@Z"},
+    "0043F6B0": {"status": "matching", "symbol": "??1TribeMenuDialog@@UAE@XZ"},
     "0043F720": {"status": "matching", "symbol": "?action@TribeMenuDialog@@MAEJPAVTPanel@@JKK@Z"}
   }
 }

@@ -206,7 +206,7 @@ void TRIBE_Combat_Object::transform(RGE_Master_Static_Object* master)
 {
     RGE_Master_Static_Object* old_master = this->master_obj;
     RGE_Action_Object::transform(master);
-    if (this->own_master != 0) {
+    if (this->own_master == 1) {
         if (old_master != 0) {
             delete old_master;
         }
@@ -258,7 +258,7 @@ void TRIBE_Combat_Object::damage(int amount, RGE_Armor_Weapon_Info* armor,
         }
 
         if (this->owner->id > 0 && this->hp < DAT_00574c78) {
-            this->owner->add_attribute_num(0x14, 1.0f, 0);
+            player->add_attribute_num(0x14, 1.0f, 0);
         }
     }
 }
@@ -389,15 +389,18 @@ void TRIBE_Combat_Object::get_armor(short& armor, short& original)
 
 void TRIBE_Combat_Object::get_pierce_armor(short& armor, short& original)
 {
-    RGE_Master_Combat_Object* master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     armor = 0;
-    for (int i = 0; i < master->armor_num; ++i) {
+    for (int i = 0;
+         i < static_cast<RGE_Master_Combat_Object*>(this->master_obj)->armor_num;
+         ++i) {
+        RGE_Master_Combat_Object* master =
+            static_cast<RGE_Master_Combat_Object*>(this->master_obj);
         if (master->armor[i].type == 3 && master->armor[i].value > armor) {
             armor = master->armor[i].value;
         }
     }
-    original = static_cast<TRIBE_Master_Combat_Object*>(master)->orig_pierce_armor;
+    original = static_cast<TRIBE_Master_Combat_Object*>(this->master_obj)
+                   ->orig_pierce_armor;
 }
 
 void TRIBE_Combat_Object::reposition_artifact()
@@ -657,14 +660,18 @@ int TRIBE_Combat_Object::trade(int id, int force)
 
 unsigned char TRIBE_Combat_Object::keepGatheringWhenObjectIsOut(int value) const
 {
-    return value == 0x32 || value == 0x2D;
+    if (value != 0x32 && value != 0x2D) {
+        return 0;
+    }
+    return 1;
 }
 
 unsigned char TRIBE_Combat_Object::produceWhenKilledBy(int cause) const
 {
     const int group = this->master_obj->object_group;
     if (group != 9 && group != 10) return 1;
-    return cause == 4;
+    if (cause != 4) return 0;
+    return 1;
 }
 
 unsigned char TRIBE_Combat_Object::useSameZoneDropsite() const

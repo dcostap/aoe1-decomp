@@ -888,7 +888,7 @@ extern int rge_close(int fd);
 RGE_Scenario_Header* RGE_Base_Game::get_scenario_header(char* param1, int param2)
 {
     char temp_name[300];
-    char version[4];
+    long version;
     int fd;
     RGE_Scenario_Header* result;
 
@@ -905,18 +905,18 @@ RGE_Scenario_Header* RGE_Base_Game::get_scenario_header(char* param1, int param2
     if (fd == -1)
         return 0;
 
-    rge_read_uncompressed(fd, version, sizeof(version));
+    rge_read_uncompressed(fd, &version, sizeof(version));
 
     result = 0;
-    if (memcmp(version, "1.03", sizeof(version)) == 0 ||
-        memcmp(version, "1.04", sizeof(version)) == 0 ||
-        memcmp(version, "1.05", sizeof(version)) == 0 ||
-        memcmp(version, "1.06", sizeof(version)) == 0 ||
-        memcmp(version, "1.07", sizeof(version)) == 0 ||
-        memcmp(version, "1.08", sizeof(version)) == 0 ||
-        memcmp(version, "1.09", sizeof(version)) == 0 ||
-        memcmp(version, "1.10", sizeof(version)) == 0 ||
-        memcmp(version, "1.11", sizeof(version)) == 0)
+    if (version == *(const long*)"1.03" ||
+        version == *(const long*)"1.04" ||
+        version == *(const long*)"1.05" ||
+        version == *(const long*)"1.06" ||
+        version == *(const long*)"1.07" ||
+        version == *(const long*)"1.08" ||
+        version == *(const long*)"1.09" ||
+        version == *(const long*)"1.10" ||
+        version == *(const long*)"1.11")
     {
         result = this->new_scenario_header(fd);
     }
@@ -1004,7 +1004,7 @@ int RGE_Base_Game::run()
         if (this->prog_active != 0 && (this->prog_mode == 4 || this->prog_mode == 2)) {
             TCommunications_Handler* comm = this->comm_handler;
             if (comm == 0 || comm->IsPaused() == 0) {
-                if (PeekMessageA(&msg, 0, 0, 0, PM_NOREMOVE) != 0) {
+                if (PeekMessageA(&msg, 0, 0, 0, PM_REMOVE) != 0) {
                     if (msg.message == WM_QUIT) {
                         return (int)msg.wParam;
                     }
@@ -3787,15 +3787,15 @@ void RGE_Base_Game::calc_timing_text()
     sprintf(this->timing_text,
         "fps=%lu, rend=%lu, view=%lu, map=%lu, scr=%lu, draw=%lu, prog=%lu, ui=%lu, sfx=%lu, misc=%lu",
         this->fps,
-        this->world_update_count / divisor,
-        this->view_update_count / divisor,
-        this->timings[0].last_time / divisor,
-        this->timings[0].accum_time / divisor,
-        this->timings[0].start_time / divisor,
+        this->timings[2].last_time / divisor,
+        this->timings[6].last_time / divisor,
+        this->timings[7].last_time / divisor,
+        this->timings[3].last_time / divisor,
         this->timings[1].last_time / divisor,
-        this->timings[1].accum_time / divisor,
-        this->timings[1].start_time / divisor,
-        this->timings[0].last_single_time / divisor);
+        this->timings[10].last_time / divisor,
+        this->timings[13].last_time / divisor,
+        this->timings[4].last_time / divisor,
+        this->timings[0].last_time / divisor);
 }
 void RGE_Base_Game::show_timings()
 {
