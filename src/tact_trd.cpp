@@ -323,7 +323,7 @@ unsigned char TRIBE_Action_Trade::update()
 
     case 7:
         if (this->target_obj == 0) {
-            if (this->pick_up_y > DAT_00575350) {
+            if (this->obj->attribute_amount_held > DAT_00575348) {
                 this->set_state(8);
                 return 0;
             }
@@ -375,7 +375,7 @@ unsigned char TRIBE_Action_Trade::update()
             if (this->target_obj2 == 0) {
                 goto update_state_8;
             }
-            if (this->pick_up_y > DAT_00575350) {
+            if (this->obj->attribute_amount_held > DAT_00575350) {
                 RGE_Task* trade_task = (RGE_Task*)this->task;
                 if (trade_task->work_sound != 0) {
                     trade_task->work_sound->play(1);
@@ -387,7 +387,7 @@ unsigned char TRIBE_Action_Trade::update()
                     float dy = this->pick_up_y - this->target_obj2->world_y;
                     take_amount = (dy * dy + dx * dx) * DAT_00575358 * DAT_0057535c;
                 }
-                if (this->obj->owner->culture == 0x0F) {
+                if (this->obj->owner->master_player_id == 0x0F) {
                     take_amount += take_amount;
                 }
                 if (take_amount < DAT_00575360) {
