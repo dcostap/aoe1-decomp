@@ -107,7 +107,10 @@ Use these evidence tools only when they answer a current question:
 - `find_function_donors.py` for ranked exact donors;
 - `query_abi.py` for ABI provenance;
 - `search_asm_donors.py` for a distinctive assembly block; and
-- `variant_lab.py` for controlled late-stage source variants.
+- `variant_lab.py --jobs 1` for controlled late-stage source variants.
+
+Use one compiler job at a time. Do not start concurrent compiler processes
+from one worker.
 
 Generated metadata and decompiler text are reference evidence. They are not the
 behavior oracle.

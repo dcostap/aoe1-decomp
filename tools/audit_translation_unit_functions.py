@@ -46,7 +46,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--output-dir",
-        default="build/audits/translation_unit_observed",
+        default="build/audits/translation_units",
         help="Directory for objects and JSON, CSV, and text reports.",
     )
     parser.add_argument(

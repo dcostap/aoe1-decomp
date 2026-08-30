@@ -93,6 +93,20 @@ The response files contain compiler arguments only.
 - `variant_lab.py` compares controlled source variants.
 - `vc5_ir_capture.py` captures VC5 compiler-stage output.
 
+`variant_lab.py` uses one compiler job and a 1,024-variant cap by default.
+Increase either limit only when the main agent has reserved that capacity.
+
+## Shared-worker resource rules
+
+- Run no more than 40 matching workers at one time.
+- Assign only one worker to each natural translation unit.
+- Workers must use one-function queries and focused checks.
+- Workers must use `--jobs 1` for grouped audits and variant runs.
+- Only the main agent runs repository-wide audits and full tests.
+
+Build artifacts use content fingerprints and per-module operating-system locks.
+Concurrent cache users wait without running duplicate compiler work.
+
 ## Low-level comparison commands
 
 - `build_function.py` builds one configured function.

@@ -310,7 +310,8 @@ def main() -> None:
         )
     if not build_current:
         snapshot_previous(slug)
-        run_step("build_function.py", args.va, verbose=args.verbose, extra=["--force"])
+        build_extra = ["--force"] if args.rebuild else None
+        run_step("build_function.py", args.va, verbose=args.verbose, extra=build_extra)
         did_rebuild = True
         extraction_current = False
     if not extraction_current:

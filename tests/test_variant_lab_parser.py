@@ -16,6 +16,16 @@ import variant_lab  # noqa: E402
 
 
 class VariantLabParserTests(unittest.TestCase):
+    def test_compile_jobs_default_to_one(self) -> None:
+        args = variant_lab.parse_args(["--va", "00400000", "--template", "demo.cpp"])
+        self.assertEqual(args.jobs, 1)
+        self.assertEqual(args.max_variants, 1024)
+
+        args = variant_lab.parse_args(
+            ["--va", "00400000", "--template", "demo.cpp", "--jobs", "3"]
+        )
+        self.assertEqual(args.jobs, 3)
+
     def test_nested_choice_only_activates_inner_axis_for_selected_parent(self) -> None:
         text = """A
 @choice outer

@@ -7,7 +7,6 @@ import concurrent.futures
 import difflib
 import hashlib
 import json
-import os
 import re
 import shutil
 import shlex
@@ -47,10 +46,9 @@ from target_session import current_metric_summary, record_probe, require_clean_b
 
 
 # Variant labs are intentionally allowed to get large: sticky VC5 codegen-family
-# problems are often cheaper to solve with broad structured sweeps than with
-# hours of manual churn. Keep a high default cap so accidental million-variant
-# explosions still fail early; pass --max-variants 0 to disable the cap.
-DEFAULT_MAX_VARIANTS = 250_000
+# problems are often cheaper to solve with controlled sweeps than with manual
+# churn. Keep the default safe for shared workers. An explicit option can raise it.
+DEFAULT_MAX_VARIANTS = 1_024
 DEFAULT_AMBIENT_SAMPLES = 512
 DEFAULT_COMPILE_TIMEOUT_SECONDS = 120.0
 
@@ -287,8 +285,9 @@ matches need normal review and justification.
 Run controls
 ------------
 
-  --max-variants N     refuse larger expanded labs (default 250000)
+  --max-variants N     refuse larger expanded labs (default 1024)
   --max-variants 0     disable the cap for an intentional huge run
+  --jobs N             run at most N compiler jobs at once (default 1)
   --no-dedupe-expanded compile identical expanded source/flag variants separately
   --focus-range A-B    score one inclusive original offset/VA band
   --require-size       reject leads with the wrong checker-effective function size
@@ -2731,6 +2730,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--jobs",
+        type=int,
+        default=1,
+        help="Maximum concurrent compiler jobs. Default: 1 for shared-worker safety.",
+    )
+    parser.add_argument(
         "--focus-range",
         metavar="START-END",
         help="Score one inclusive original offset/VA range, e.g. +0490-+04B0.",
@@ -2798,6 +2803,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     if args.compile_timeout < 0:
         raise SystemExit("--compile-timeout must be zero or positive")
+    if args.jobs < 1:
+        raise SystemExit("--jobs must be positive")
     splice_values = (args.splice_base, args.splice_start, args.splice_end)
     if any(splice_values) and not all(splice_values):
         raise SystemExit("--splice-base, --splice-start, and --splice-end must be supplied together")
@@ -2993,7 +3000,7 @@ def main(argv: list[str] | None = None) -> int:
                 dedupe_children[rep.variant_id].append(spec)
         specs_to_build = [children[0] for children in dedupe_children.values()]
 
-    workers = max(1, (os.cpu_count() or 2) - 1)
+    workers = max(1, min(args.jobs, len(specs_to_build)))
     print(f"Variant lab for {slug} ({va_text})")
     print(f"Template: {template_name}")
     if args.flag_preset:
