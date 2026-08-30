@@ -17,6 +17,6 @@
     "004D1F50": {"status": "matching", "symbol": "?stop@TRIBE_Action_Repair@@UAEHXZ"},
     "004D1F60": {"status": "matching", "symbol": "?move_to@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z"},
     "004D1FA0": {"status": "matching", "symbol": "?work@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z"},
-    "004D2020": {"status": "scratch", "symbol": "?meet_target@TRIBE_Action_Repair@@IAEXXZ"}
+    "004D2020": {"status": "matching", "symbol": "?meet_target@TRIBE_Action_Repair@@IAEXXZ"}
   }
 }
