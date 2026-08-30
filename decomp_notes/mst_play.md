@@ -32,7 +32,7 @@ from the canonical animated-master owner.
 The source uses natural C++ class construction, destruction, virtual dispatch,
 and derived-to-base conversion. It does not use `mst_play_context.h`, a
 function-fragment include, a local carrier, a copied foreign layout, or a
-manual vptr store. The source uses `config/flags/00461270_load_master_object.rsp`
+manual vptr store. The source uses `config/flags/gx.rsp`
 with `/nologo /c /O2 /Oy /GX`.
 
 The save loop uses the declared base-pointer array directly. It does not use a

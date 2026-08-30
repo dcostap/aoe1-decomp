@@ -38,5 +38,4 @@ The compiler-generated `0049F870` destructor also reports `MATCH` and
 destructor reports 223 differing bytes. Neither is part of the exact
 registration.
 
-The translation-unit registry lists four exact bodies. The source-module
-manifest records all six normal owners and their current statuses.
+The migration check found four exact bodies among the six normal functions.

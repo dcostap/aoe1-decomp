@@ -13,7 +13,7 @@
 The PDB assigns all 32 normal owners to `Dsutil.c`. Their source line bands and
 address sequence increase from `ShowErrMsg` through `ds_stream_time_func`.
 The source keeps this order. The module uses C mode and the reviewed
-`/Oi- /TC` flags from `config/flags/00448BA0_ds_stream_time_func.rsp`.
+`/Oi- /TC` flags from `config/flags/c_no_intrinsics.rsp`.
 
 The source keeps the proven DirectSound C-interface and WinMM call surfaces.
 It uses the period SDK `MMCKINFO`, `MMIOINFO`, `PCMWAVEFORMAT`, and
@@ -36,14 +36,13 @@ The prior grouped exact owners need fresh checks against
 
 The merge moves all 32 function bodies into one C source module in PDB order.
 It renames `include/dsutil_context.h` to `include/dsutil.h`, removes the prefix
-wrapper, and removes the 32 module-owned source-bank fragments. The translation
-unit entry now points to `src/Dsutil.c` and maps each existing exact owner to
-that source file. No generated owner was present.
+wrapper, and removes the 32 module-owned source-bank fragments.
+The function registry now names `src/Dsutil.c`. No generated function was present.
 
 ## Validation
 
 `build/dsutil_candidate_tu.c` includes `src/Dsutil.c` once. The pinned VC5
-candidate check uses `config/flags/00448BA0_ds_stream_time_func.rsp`.
+candidate check uses `config/flags/c_no_intrinsics.rsp`.
 
 The pre-SDK candidate compiled all 32 owners. It matched 27 owners with zero
 byte, relocation, and boundary differences. The 23 prior `matching` owners

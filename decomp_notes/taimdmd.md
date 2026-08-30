@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\taimdmd.cpp`.
 - Source: `src/taimdmd.cpp`.
 - Header: `include/taimdmd.h`.
-- Flags: `config/flags/004E4800_TribeMainDecisionAIModule.rsp`.
+- Flags: `config/flags/gx.rsp`.
 - Normal owners: 19.
 - Address range: `004E4800` to `004E6870`.
 
@@ -14,8 +14,8 @@ compiler-facing source owner and one module-local header. The old wrapper,
 fragment includes, context macro, fallback declarations, and per-function
 source owners were removed.
 
-The module manifest records all 19 normal owners. It has 15 matching and four
-scratch owners. The compiler-generated scalar
+The migration check found 15 exact and four nonexact normal functions.
+The compiler-generated scalar
 deleting destructor at `004E4B60` remains outside the normal owner manifest.
 
 ## Context evidence

@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\Scr_main.cpp`.
 - Source: `src/scr_main.cpp`.
 - Header: `include/scr_main.h`.
-- Flags: `config/flags/default_gx.rsp`.
+- Flags: `config/flags/gx.rsp`.
 
 The PDB owns eleven normal functions in this order:
 

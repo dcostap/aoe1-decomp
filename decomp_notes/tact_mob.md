@@ -51,9 +51,9 @@ offset and complete size without explicit padding fields.
 `src/tact_mob.cpp` now uses that owner for both +0x15A reads. It does not use a
 local field carrier or a raw offset.
 
-The seven exact owners are now registered in `config/translation_units.json`.
-The two former accepted-drift owners are scratch in
-`config/source_modules/tact_mob.json`. 004D10F0 remains scratch pending a
+The migration check found seven exact functions. The two former
+accepted-drift functions were scratch in
+`config/functions/src/tact_mob.cpp.json`. 004D10F0 remains scratch pending a
 separate owner review. 004D15F0 is now promoted only after its final target
 check; this does not promote the rest of the Tact Mob chain.
 

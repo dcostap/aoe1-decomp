@@ -13,8 +13,8 @@ source has one compiler-facing owner for each function.
 The old wrapper, source-bank fragments, fallback declarations, and context
 header are removed. The source uses no wrapper include or recovery macro.
 
-The module metadata status names the reviewed source bank. It is not a byte
-match claim. Exact claims live in `config/translation_units.json`.
+The old module metadata named the reviewed source bank. It did not prove a
+byte match. Fresh function checks remain the exactness authority.
 
 ## Current exact claims
 

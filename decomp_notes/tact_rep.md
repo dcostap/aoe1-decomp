@@ -8,7 +8,7 @@
 - All owners belong to `TRIBE_Action_Repair`.
 - The nearby `004D16F0` vector deleting destructor is compiler-generated.
 - The canonical declaration surface is `include/tact_rep.h`.
-- The module uses `config/flags/004CD210_TRIBE_Action_Build.rsp`.
+- The module uses `config/flags/gx.rsp`.
 
 ## Status
 

@@ -86,7 +86,5 @@ flow, typed object/resource calls, and 0x73 limit behavior.
 ## Migration effects
 
 The old `src/taibldmd_tu.cpp` wrapper and its 28 source-bank fragments are no
-longer compiler-facing owners. The direct translation-unit entry now points to
-`src/taibldmd.cpp` and registers only the 22 matching owners. The module
-metadata carries all 28 statuses, so accepted-drift and scratch owners remain
-observed without stale exact claims.
+longer compiler-facing owners. The function registry now names
+`src/taibldmd.cpp` and all 28 normal functions.

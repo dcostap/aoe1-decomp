@@ -36,7 +36,7 @@ The Player source has no local class layouts or raw field offsets.
 
 ## Direct validation
 
-The canonical full source compiled with `config/flags/0046E4B0_RGE_Player.rsp`.
+The canonical full source compiled with `config/flags/gx.rsp`.
 The resulting object matched all 106 registered exact owners.
 Each result was `MATCH` and `0.0000%`.
 

@@ -5,7 +5,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\view.cpp`.
 - Source: `src/view.cpp`.
 - Header: `include/view.h`.
-- Flags: `config/flags/00533510_RGE_View.rsp`.
+- Flags: `config/flags/gx.rsp`.
 
 The module has 79 normal owners. `src/view.cpp` keeps them in PDB source
 order. It is their only compiler-facing source.

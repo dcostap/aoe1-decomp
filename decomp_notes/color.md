@@ -91,11 +91,9 @@ boundary escape from its known structural overflow. No relocation target
 mismatch exists. Its source status is scratch; the natural body remains
 unchanged.
 
-The grouped candidate validation is the authoritative migration check. A
-focused cached check was attempted with `--no-build --no-history`, but the
-registered global `color_cpp` entry still points to the removed wrapper. The
-checker therefore stopped before cache selection. The coordinator must update
-that registry before focused checks can run on the final source tree.
+The grouped candidate validation was the migration check. A focused cached
+check stopped because the old registry still named the removed wrapper.
+The completed registry migration now names the natural source.
 
 The paired grouped checks ran after this header repair. Color used
 `build/candidate_tus/color_natural/proposal.json` and wrote
@@ -140,5 +138,4 @@ the full-module result false.
 
 ## Integration note
 
-The global `color_cpp` translation-unit registry points to `src/color.cpp` and
-maps its exact owners to that source.
+The function registry names `src/color.cpp` and all its normal functions.

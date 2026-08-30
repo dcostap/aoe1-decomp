@@ -5,7 +5,7 @@
 - Header: `include/t_c_obj.h`.
 - Normal owners: 39, from `004CA0F0` through `004CC5B0`.
 - Generated neighbor: `004CA180`, the scalar deleting destructor.
-- Flags: `config/flags/004CA0F0_TRIBE_Combat_Object.rsp`.
+- Flags: `config/flags/gx.rsp`.
 
 ## Source ownership
 

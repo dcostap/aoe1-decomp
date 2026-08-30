@@ -55,7 +55,7 @@ validate both complete translation units after the header correction.
 ## Grouped candidate validation
 
 The candidate used `src/t_tre_ob.cpp`, `include/t_tre_ob.h`, and
-`config/flags/default_gx.rsp`. It contains all three normal PDB owners and the
+`config/flags/gx.rsp`. It contains all three normal PDB owners and the
 nearby compiler-generated scalar deleting destructor at `004CCAF0`.
 
 The grouped result is `full_module_exact: true`. All three normal owners are

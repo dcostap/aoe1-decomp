@@ -63,14 +63,13 @@ accepted-drift status remains supported by this strict register-map mismatch.
 ## Migration effects
 
 The old `src/tact_bld_tu.cpp` wrapper and nine source-bank fragments are no
-longer compiler-facing owners. The direct translation-unit entry now points
-to `src/tact_bld.cpp` and registers the six exact owners. The module metadata
-records all nine handwritten statuses, including both accepted-drift owners.
+longer compiler-facing owners. The function registry now names
+`src/tact_bld.cpp` and all nine handwritten functions.
 The generated compiler destructor remains an emitted class artifact and is not
 a handwritten source owner.
 
 The original constructors and `set_state` contain C++ EH registration and
-unwind-state stores. The existing `004CD210_TRIBE_Action_Build.rsp` flags remain
+unwind-state stores. The `config/flags/gx.rsp` profile remains
 the module flags. `set_state` also retains the prior `/GX` evidence in its
 source notes.
 

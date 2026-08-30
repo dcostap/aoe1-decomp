@@ -127,7 +127,7 @@ When a worker reports completion:
 
 After all workers in the wave stop:
 
-10. Update status and exact registration only after proof.
+10. Update a function status only after proof.
 11. Make reviewed shared-header or tool repairs.
 12. Stage only the reviewed paths.
 13. Commit each logical result and clear any stale lease.

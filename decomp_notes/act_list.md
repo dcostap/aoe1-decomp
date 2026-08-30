@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\act_list.cpp`.
 - Source: `src/act_list.cpp`.
 - Header: `include/act_list.h`.
-- Flags: `config/flags/00404200_create_task_action.rsp`.
+- Flags: `config/flags/gx.rsp`.
 - Normal owners: 25. The PDB line order is `00403EA0` through `004048C0`.
 
 ## Ownership
@@ -45,6 +45,6 @@ downcast. The source uses one typed `static_cast` at that boundary.
 build/act_list_natural_proposal.json --output-dir
 build/candidate_tus/act_list_natural` compiled the direct source.
 
-All 22 matching owners report `MATCH`, `0.0000%`, correct ownership,
-relocations, and boundaries. The three nonexact owners have correct owner and
-relocation identity. The source-module manifest records their honest status.
+All 22 matching functions report `MATCH`, `0.0000%`, correct ownership,
+relocations, and boundaries. The three nonexact functions have correct owner
+and relocation identity.

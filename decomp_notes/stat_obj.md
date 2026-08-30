@@ -41,7 +41,7 @@ The source compiles with the pinned VC5 compiler and
 - 24 owners remain scratch. `004C7030` remains verified logic.
 - The report has zero comparison errors.
 
-The current direct source classifies these prior exact owners as scratch:
+The migration check found differences in these prior exact functions:
 `004C1100`, `004C11E0`, `004C1D60`, `004C1DC0`, `004C3B30`, `004C3C70`,
 `004C4D80`,
 `004C4E00`, `004C4F10`, `004C5210`, `004C52F0`, `004C6400`, `004C6DA0`,

@@ -5,7 +5,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\tact_trd.cpp`.
 - Source owner: `src/tact_trd.cpp`.
 - Class owner: `TRIBE_Action_Trade`, derived from `RGE_Action`.
-- Flags: `config/flags/004D2660_TRIBE_Action_Trade.rsp`.
+- Flags: `config/flags/gx.rsp`.
 - Context header: `include/tact_trd.h`.
 - The PDB line bands and address order are:
   `42-47/004D2660`, `55-70/004D2710`, `77-91/004D27A0`,

@@ -54,4 +54,4 @@ no comparison errors. It did not find a fully exact module.
 The source order and owner set come from `build/tu_plans/Mouseptr_cpp/packet.json`.
 The `TMousePointer` size is `0x254` in the reviewed layout. The canonical
 `TDrawArea` surface comes from `include/drawarea.h`. The original module uses
-`/nologo /c /O2 /Oy /GX` from `config/flags/mouseptr_module_gx.rsp`.
+`/nologo /c /O2 /Oy /GX` from `config/flags/gx.rsp`.

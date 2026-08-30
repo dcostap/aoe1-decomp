@@ -72,9 +72,9 @@ The pinned VC5 build of `src/scr_sedm.cpp` produced these results:
 - `004B31D0`: `MATCH`, 502 of 502 bytes;
 - generated `004B30F0`: `MATCH`, 30 of 30 bytes.
 
-The two exact normal symbols are registered in `config/translation_units.json`
-and `config/source_modules/scr_sedm.json`. The constructor and destructor stay
-honest `scratch` rows.
+The migration check found two exact normal symbols. The constructor and
+destructor remained nonexact. The registry is
+`config/functions/src/scr_sedm.cpp.json`.
 
 Direct authoritative checks for `004B31A0` and `004B31D0` report `MATCH` and
 `0.0000%`. The grouped check covers all four normal bodies and the generated

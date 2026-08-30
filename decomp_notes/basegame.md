@@ -5,7 +5,7 @@ The PDB module is `C:\msdev\work\age1_x1\basegame.cpp`.
 ## Direct owners
 
 `src/basegame.cpp` owns all 202 normal BaseGame bodies in PDB order.
-The group uses `config/flags/0041BAA0_setup.rsp`.
+The group uses `config/flags/gx.rsp`.
 No candidate source or context owns a BaseGame body.
 
 ## Provider evidence

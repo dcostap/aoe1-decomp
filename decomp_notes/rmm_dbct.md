@@ -10,7 +10,7 @@ raw byte cursor, integer cursor, or alias union.
 ## Current validation
 
 The grouped source compile succeeds with
-`config/flags/00483020_RGE_RMM_Database_Controller.rsp`.
+`config/flags/gx.rsp`.
 
 These direct owners report `MATCH` and `0.0000%`:
 

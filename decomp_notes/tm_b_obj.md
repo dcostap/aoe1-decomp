@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\tm_b_obj.cpp`.
 - Source: `src/tm_b_obj.cpp`.
 - Header: `include/tm_b_obj.h`.
-- Flags: `config/flags/0050E040_TRIBE_Master_Building_Object.rsp`.
+- Flags: `config/flags/gx.rsp`.
 - Normal owners: 17. The PDB line order is `0050E040` through `0050E950`.
 
 ## Ownership

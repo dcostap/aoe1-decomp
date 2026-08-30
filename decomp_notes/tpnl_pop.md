@@ -3,7 +3,7 @@
 - PDB source: `tpnl_pop.cpp`.
 - Source: `src/tpnl_pop.cpp`.
 - Header: `include/tpnl_pop.h`.
-- Flags: `config/flags/0051CDB0_TRIBE_Panel_Pop.rsp`.
+- Flags: `config/flags/gx.rsp`.
 
 ## Transition
 

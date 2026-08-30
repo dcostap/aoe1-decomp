@@ -7,7 +7,7 @@
   00407420.
 - The module has 10 normal owners and 1,629 normal bytes.
 - The 00406D90 vector-deleting destructor is compiler generated.
-- The module uses `config/flags/00406E50_set_state.rsp`.
+- The module uses `config/flags/gx.rsp`.
   This response file keeps `/GX` for the original EH frame.
 
 ## Ownership

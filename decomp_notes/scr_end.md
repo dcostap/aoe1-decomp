@@ -5,7 +5,7 @@
 - PDB source: `C:\msdev\work\age1_x1\scr_end.cpp`.
 - Direct source: `src/scr_end.cpp`.
 - Owner header: `include/scr_end.h`.
-- Flags: `config/flags/004936D0_TribeEndScreen.rsp`.
+- Flags: `config/flags/gx.rsp`.
 
 The PDB owns three normal functions in this order:
 

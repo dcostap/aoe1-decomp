@@ -7,7 +7,7 @@
 - The normal owner byte total is 27,557 bytes.
 - The source owner is `src/aiuaimod.cpp`.
 - The shared module header is `include/aiuaimod.h`.
-- The module uses `/O2 /Oy /GX` from `config/flags/00412F00_UnitAIModule.rsp`.
+- The module uses `/O2 /Oy /GX` from `config/flags/gx.rsp`.
 - `UnitAIModule` has the proven 0x134-byte layout and complete 56-slot virtual
   surface. Its destructor is a real virtual destructor.
 
@@ -16,7 +16,7 @@
 - Removed `__declspec(novtable)` from `UnitAIModule`.
 - Removed all handwritten vptr stores. VC5 now emits the class vtable and the
   scalar and vector deleting surfaces. `00413070` stays compiler generated.
-- Kept `00413070` out of normal source ownership and out of the TU owner map.
+- Kept compiler-generated `00413070` outside the normal function set.
 - Moved the UnitAIModule class to the canonical owner header.
 - Replaced copied provider class views with the owner headers for action lists,
   AI playbooks, base game, map, master objects, players, static objects,
@@ -31,20 +31,18 @@
   `game_globals.h` and `game_globals.cpp`.
 - Removed source attempt logs and compiler-shaping macros.
 
-## Status
+## Migration checkpoint
 
-The source module manifest keeps 114 normal owners in PDB order. Current source
-status is:
+The migration check covered 114 normal functions in PDB order:
 
-- 102 `matching` owners in the source manifest after removing the two
+- 102 exact functions after removing the two
   natural-shape regressions below.
-- 2 `accepted_drift` owners: `00413150` and `0041A020`.
-- 10 `scratch` owners: the seven prior scratch owners, `00414D40`, and the
+- 2 accepted-drift functions: `00413150` and `0041A020`.
+- 10 nonexact functions: the seven prior nonexact functions, `00414D40`, and the
   natural-shape regressions `00412F00` and `00413450`.
 
-The current exact TU registration excludes all accepted-drift and scratch
-owners. It contains 101 owners. `004195F0` remains a matching source owner but
-is not registered in the grouped TU.
+The old exact-only build map contained 101 functions. It excluded `004195F0`
+despite its exact result.
 
 ## Focused validation
 

@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\Pnl_drop.cpp`.
 - Source: `src/Pnl_drop.cpp`.
 - Header: `include/pnl_drop.h`.
-- Manifest: `config/source_modules/Pnl_drop.json`.
+- Manifest: `config/functions/src/Pnl_drop.cpp.json`.
 
 ## Source ownership
 

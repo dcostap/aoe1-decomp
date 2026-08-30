@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import csv
 from pathlib import Path
 
@@ -46,6 +47,10 @@ def function_ranges(entry: dict) -> list[tuple[int, int]]:
 
 
 def main() -> None:
+    argparse.ArgumentParser(
+        description="Generate the master function inventory from the original executable."
+    ).parse_args()
+
     binaries = load_binaries()
     exe = load_pe_image(repo_path(binaries["original_exe"]))
     layout = load_layout(repo_path(binaries["ghidra_layout"]))

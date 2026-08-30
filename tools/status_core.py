@@ -116,11 +116,11 @@ def default_header_notes() -> dict[str, str]:
 
 
 def logic_review_files(path: Path) -> dict[str, Path]:
-    """Return present and tracked ledgers, including sparse-checkout files."""
+    """Return ledgers by VA, including tracked sparse-checkout files."""
     files: dict[str, Path] = {}
     if path.exists():
         for child in sorted(path.iterdir()):
-            if child.suffix.lower() == ".md" and child.name.lower() != "readme.md":
+            if re.fullmatch(r"[0-9A-Fa-f]{8}\.md", child.name):
                 files[child.stem.upper()] = child
 
     try:
@@ -137,7 +137,7 @@ def logic_review_files(path: Path) -> dict[str, Path]:
         return files
     for raw_line in result.stdout.splitlines():
         tracked = Path(raw_line.strip())
-        if tracked.suffix.lower() != ".md" or tracked.name.lower() == "readme.md":
+        if re.fullmatch(r"[0-9A-Fa-f]{8}\.md", tracked.name) is None:
             continue
         files.setdefault(tracked.stem.upper(), REPO_ROOT / tracked)
     return files
@@ -360,7 +360,6 @@ def build_status_rows(
 
     for record in records:
         slug = record["slug"]
-        slug_key = slug.upper()
         module_entry = function_entry_for_va(record["va"])
         module_path: Path | None = None
         if module_entry is not None:
@@ -423,7 +422,7 @@ def build_status_rows(
             else str(path)
             for path in present_paths
         )
-        logic_review_path = logic_review_ledgers.get(slug_key)
+        logic_review_path = logic_review_ledgers.get(str(record["va"]).upper())
 
         parent_fragment = parent_owned_fragments.get(int(record["va"], 16))
         parent_va_text = f"{parent_fragment[0]:08X}" if parent_fragment else ""

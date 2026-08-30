@@ -25,7 +25,7 @@ no handwritten PDB source owner.
 `src/taiconmd.cpp` now owns all nine normal bodies in PDB order. It uses
 `include/taiconmd.h` with the canonical item, AI, object, world, and map
 providers. The old wrapper, context header, and source-bank bodies are removed.
-`config/source_modules/taiconmd.json` records the complete module.
+`config/functions/src/taiconmd.cpp.json` records the complete module.
 
 ## Status evidence
 

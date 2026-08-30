@@ -53,7 +53,7 @@ The candidate used `config/flags/default.rsp` through
   `004304B0`, `00430510`, `00430570`, `004305A0`, `004308C0`, `00430A90`,
   `00430C30`, `00431150`, `00431340`, and `004314F0`.
 - `0042FCA0` has three boundary escapes. `004314F0` has one.
-- The six prior observed bodies remain observed. Their statuses stay unchanged.
+- The six prior nonexact bodies remained nonexact.
 - The report has zero comparison errors.
 
 Exact repair resumes on this source tree.

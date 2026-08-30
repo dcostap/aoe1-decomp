@@ -71,31 +71,29 @@ The candidate proposal is:
 
 `build/candidate_tus/act_move_direct/proposal.json`
 
-The direct source-module manifest is in `config/source_modules/act_move.json`.
-The direct translation-unit entry is in `config/translation_units.json`.
+The function registry is `config/functions/src/act_move.cpp.json`.
 Manual VC5 compilation of `src/act_move.cpp` succeeds with the module response
 file.
 
 ## Direct candidate result
 
-The direct source metadata is now staged in `config/source_modules/act_move.json`
-and `config/translation_units.json`. The grouped candidate report is
+The direct source metadata is in `config/functions/src/act_move.cpp.json`.
+The grouped candidate report was
 `build/candidate_tus/act_move_direct/current_main_command_waypoint_rebased/report.txt`.
 
 Against current `main` `ddd2ec833`, which includes the shared Static/Moving
 ABI repair from `ad4b69dab`, the candidate compiled all eight exact owners and
 the generated destructor. All eight exact owners match. The generated
-destructor also matches. The scratch `00405850 update` remains observed and
-has 212 changed bytes in the current source context. Its current check has a
+destructor also matches. The `00405850 update` candidate has 212 changed bytes.
+Its check has a
 high-severity control-flow difference and one missing cold block. Every exact
-and observed row has owner status `match`, zero relocation mismatches, and
+and nonexact row has zero relocation mismatches and
 zero boundary escapes. The generated destructor is `unverified` with zero
 relocations and zero boundary escapes.
 
 This current-main source and metadata chain removes the former wrapper,
 context header, accepted-drift fragment, and eight matching fragments.
-Direct metadata registers `src/act_move.cpp` in
-`config/source_modules/act_move.json` and `config/translation_units.json`.
+`config/functions/src/act_move.cpp.json` records the direct source metadata.
 `command_waypoint.h` is the only shared-header addition in this chain.
 
 The vslot repair follows the original PDB-backed vtable. The executable's
@@ -126,7 +124,7 @@ accepted drift. All rows have zero relocation mismatches and zero boundary
 escapes. Every exact owner has owner status `match`.
 
 The grouped `ani_obj` candidate has 10/10 exact owners matching and generated
-`0041A1E0` matching. The current registered Action candidate, including
+`0041A1E0` matching. The Action candidate, including
 `00407C10 get_state_name`, has 29/29 exact owners matching and generated
 `004074A0` matching. This is 30/30 compiled rows. Every exact owner has owner
 status `match`; the generated row is `unverified`. All rows have zero

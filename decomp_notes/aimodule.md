@@ -8,7 +8,7 @@
 - The owning classes are `AIModuleID`, `AIModuleMessage`, and `AIModule`.
 - The module header proves the 0x48-byte `AIModuleID`, 0x138-byte
   `AIModuleMessage`, and 0xF0-byte `AIModule` layouts.
-- The registered module uses `config/flags/group_009_gx.rsp`.
+- The registered module uses `config/flags/gx.rsp`.
 
 ## Source result
 

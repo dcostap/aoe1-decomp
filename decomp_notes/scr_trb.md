@@ -23,13 +23,13 @@
 - `include/scr_trb.h` is the owner-only canonical declaration header.
 - The old wrapper `src/scr_trb_tu.cpp` and five per-function source-bank files are obsolete after grouped proof.
 - No context header remains for this module.
-- The module manifest is `config/source_modules/scr_trb.json`.
-- The five normal owners retain matching status.
+- The function registry is `config/functions/src/scr_trb.cpp.json`.
+- The migration check found all five normal functions exact.
 
 ## Validation
 
 - The plan packet reports five normal owners and 2,758 normal bytes. All five owners remain exact after migration.
-- The grouped candidate uses `config/flags/004B75A0_TribeSelectTribeScreen.rsp` (`/nologo /c /O2 /Oy /GX`).
+- The grouped candidate uses `config/flags/gx.rsp` (`/nologo /c /O2 /Oy /GX`).
 - Require `MATCH`, `0.0000%`, correct ownership, boundaries, relocations, and direct targets for all five owners.
 
 ## Natural string data

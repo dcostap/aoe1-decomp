@@ -11,7 +11,7 @@ fragment `.cpp` includes, context macros, or fallback class declarations.
 
 The source keeps the reviewed owner bodies and direct field names. It keeps
 binary-supported packed palette storage and narrow ABI forms where the source
-bodies prove them. The module uses `config/flags/004982E0_action.rsp`.
+bodies prove them. The module uses `config/flags/gx.rsp`.
 
 The migration is structural. Exact owners can regress when the compiler sees
 one natural source file instead of the old prefix wrapper. The final grouped

@@ -10,6 +10,7 @@ This project recovers the 1998-07-17 Rise of Rome beta source.
 - `config/flags/` contains the six canonical VC5 compiler profiles.
 - `inventory/` contains generated reference data. Do not edit it.
 - `decomp_notes/` contains durable function and module notes.
+- `logic_reviews/` contains semantic-review ledgers at `logic_reviews/<VA>.md`.
 
 A function note stores durable facts, failed approaches, and the next useful approach.
 It does not store status or source ownership.
@@ -24,7 +25,7 @@ Use one of these values:
 - `accepted_drift`: The reviewed source has accepted code generation drift.
 - `verified_logic`: A semantic review approved the source.
 - `scratch`: The natural source still needs matching work.
-- `unresolved`: Source exists, but exact ownership cannot be proved.
+- `unresolved`: Source exists, but no build route is proved.
 
 `unresolved` covers functions without one provable compiler recipe.
 
@@ -71,3 +72,5 @@ python -m pytest -q
 ```
 
 Generated files belong under `build/`. You can remove that directory when no worker is active.
+
+See `docs/project_reference.md` for the registry schema and command catalogue.

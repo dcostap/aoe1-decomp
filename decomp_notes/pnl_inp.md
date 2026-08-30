@@ -4,7 +4,7 @@
 
 The PDB source is `C:\\msdev\\work\\age1_x1\\Pnl_inp.cpp`.
 The module has 22 normal owners in the order recorded in
-`config/source_modules/Pnl_inp.json`, from `00476C10` through `004781A0`.
+`config/functions/src/Pnl_inp.cpp.json`, from `00476C10` through `004781A0`.
 The nearby scalar deleting destructor at `00476CD0` is compiler-generated.
 
 This module owns `TInputPanel` only. Its owned record surface is the nested

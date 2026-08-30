@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\tpnl_txl.cpp`.
 - Source: `src/tpnl_txl.cpp`.
 - Header: `include/tpnl_txl.h`.
-- Flags: `config/flags/00520D70_TRIBE_Panel_Text_Line.rsp`.
+- Flags: `config/flags/gx.rsp`.
 
 ## Context gate
 

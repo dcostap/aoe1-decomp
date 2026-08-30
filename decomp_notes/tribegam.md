@@ -64,7 +64,7 @@ table. This changes a scalar placeholder into its proven array provider.
 - The packet lists the compiler-generated vector-deleting destructor at `00521380`, symbol `??_ETRIBE_Game@@UAEPAXI@Z`, size 30. It is emitted by the natural `TRIBE_Game` virtual destructor surface. It is not a normal source owner.
 - The pre-migration wrapper and final source object both emit the weak `??_E` identity and the defined `??_G` fallback body. The generated body has the same four relocation-placeholder differences in both objects.
 - The grouped source order is the packet order. It is not VA order at the start because `video_sub_wnd_proc` precedes the constructor in the PDB line stream.
-- Before this header split, the full source compiled with the pinned VC5 compiler and `config/flags/00521120_TRIBE_Game.rsp` (`/nologo /c /O2 /Oy /GX`).
+- Before this header split, the full source compiled with the pinned VC5 compiler and `config/flags/gx.rsp` (`/nologo /c /O2 /Oy /GX`).
 - The earlier mechanical consolidation matched the pre-migration wrapper for the 115 publicly named normal owners checked. Static owners at `00523AE0` and `00526170` need address-based grouped validation.
 - The final source cleanup uses the period SDK record and API names in `setup`. This changes that existing scratch owner from the wrapper's 1984-byte emitted body to a 2000-byte emitted body. The packet boundary is 2061 bytes. This is a recorded source-recovery regression, not an exactness promotion.
 - The existing 21 registered exact anchors remain byte-identical in the final source object. The 2-byte `calc_timing_text` difference was already present between the wrapper and the normalized source context.

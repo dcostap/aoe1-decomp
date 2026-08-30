@@ -48,7 +48,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
             source = root / "src" / "demo.cpp"
             source.parent.mkdir(parents=True)
             source.write_text("int demo() { return 1; }\n", encoding="utf-8")
-            ledger = root / "logic_reviews" / "00400000_demo.md"
+            ledger = root / "logic_reviews" / "00400000.md"
             ledger.parent.mkdir(parents=True)
             ledger.write_text("# Review\n", encoding="utf-8")
 
@@ -78,7 +78,7 @@ class VerifiedLogicStatusTests(unittest.TestCase):
 
         self.assertEqual(rows[0]["source_bucket"], "verified_logic")
         self.assertEqual(rows[0]["is_remaining"], "no")
-        self.assertEqual(Path(rows[0]["logic_review_path"]), Path("logic_reviews/00400000_demo.md"))
+        self.assertEqual(Path(rows[0]["logic_review_path"]), Path("logic_reviews/00400000.md"))
         self.assertEqual(rows[0]["has_logic_review"], "yes")
 
     def test_verified_logic_without_ledger_is_flagged(self) -> None:

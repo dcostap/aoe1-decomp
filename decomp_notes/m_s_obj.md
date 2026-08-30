@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\m_s_obj.cpp`.
 - Source: `src/m_s_obj.cpp`.
 - Header: `include/m_s_obj.h`.
-- Flags: `config/flags/00452FE0_make_new_obj.rsp`.
+- Flags: `config/flags/gx.rsp`.
 - Normal owners: 23, in source and address order from `00452120` to
   `00454980`.
 

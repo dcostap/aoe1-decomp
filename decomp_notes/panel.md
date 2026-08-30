@@ -17,7 +17,7 @@
   and context guard macros are removed.
 - The Panel and PanelSystem layouts use named fields with measured offsets.
 - The source keeps accepted-drift and scratch bodies in place. Their status is
-  recorded in `config/source_modules/Panel.json`.
+  recorded in `config/functions/src/Panel.cpp.json`.
 
 ## Translation-unit context
 

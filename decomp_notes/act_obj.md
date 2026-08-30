@@ -5,7 +5,7 @@
 - Header: `include/act_obj.h`.
 - Normal owners: 35, in PDB source order from `00405C60` through `00406D30`.
 - Compiler-generated neighbor: `00405F70`, the scalar deleting destructor.
-- Flags: `config/flags/act_obj.rsp` (`/O2 /Oy /GX`).
+- Flags: `config/flags/gx.rsp` (`/O2 /Oy /GX`).
 
 ## Context and ownership
 
@@ -44,7 +44,7 @@ local `static_cast<RGE_Master_Action_Object*>` only where needed. Task lookup
 uses `RGE_Task_List::get_target_task`. It does not use `RGE_Master_Command`.
 
 The full candidate is `build/candidate_tus/act_obj_direct/report.txt`. It
-compiled with `config/flags/act_obj.rsp` and compared all 35 normal bodies.
+compiled with `config/flags/gx.rsp` and compared all 35 normal bodies.
 
 - 25 normal owners match with zero relocation mismatches and no boundary
   escapes.

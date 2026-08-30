@@ -18,7 +18,7 @@
 
 The packet command was:
 
-`python tools/plan_translation_unit.py --module campaign.cpp --output-dir build/tu_plans`
+A retired translation-unit planning pass recorded the initial migration data.
 
 It reports nine normal owners, 1325 normal bytes, eight matching-bank owners,
 one accepted-drift owner, and eight registered exact owners.
@@ -53,7 +53,7 @@ Before migration, the packet reported these eight registered exact owners:
   `00423720`, and `004237A0`.
 
 `00423730` was in `src/accepted_drift` and had no registered exact result.
-After migration, `config/source_modules/campaign.json` records the same eight
+After migration, `config/functions/src/campaign.cpp.json` records the same eight
 owners as `matching` and records `00423730` as `scratch`. No status was
 promoted by this structural move. No generated entry was present before or
 after.

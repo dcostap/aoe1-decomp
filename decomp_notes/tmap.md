@@ -12,7 +12,7 @@ foreign class, manual vptr, raw Tile layout, or field alias.
 ## Validation
 
 The pinned VC5 compiler builds `src/tmap.cpp` with
-`config/flags/0050F410_TRIBE_Map.rsp`.
+`config/flags/gx.rsp`.
 
 Candidate validation at `build/candidate_tus/tmap_natural_exact` compiled all
 29 owners. The following 12 exact claims have explicit PDB symbols, matching

@@ -5,7 +5,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\aimdmod.cpp`.
 - Source: `src/aimdmod.cpp`.
 - Header: `include/aimdmod.h`.
-- Flags: `config/flags/group_009_gx.rsp` (`/O2 /Oy /GX`).
+- Flags: `config/flags/gx.rsp` (`/O2 /Oy /GX`).
 - The module owns 20 normal functions in PDB source order:
   `0040CDF0`, `0040CE90`, `0040D020`, `0040D090`, `0040D0A0`, `0040D180`,
   `0040D250`, `0040D2C0`, `0040D2D0`, `0040D3B0`, `0040D480`, `0040D580`,
@@ -52,7 +52,7 @@ The pre-migration wrapper recorded exact grouped results for the 19 matching
 owners and an observed mismatch for the verified-logic constructor. The final
 source-module grouped results are recorded below after the focused audit:
 
-- `audit_translation_unit_observed.py --group aimdmod` compiled one authentic
+- `audit_translation_unit_functions.py --group aimdmod` compiled one authentic
   source module and included all 20 normal owners.
 - The 19 registered matching owners returned `MATCH`, with zero byte
   differences, zero relocation-target mismatches, and zero boundary escapes.

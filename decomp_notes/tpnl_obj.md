@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\tpnl_obj.cpp`.
 - Source: `src/tpnl_obj.cpp`.
 - Header: `include/tpnl_obj.h`.
-- Flags: `config/flags/tpnl_obj.rsp`.
+- Flags: `config/flags/gx.rsp`.
 
 ## Context gate
 

@@ -42,7 +42,7 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
             git_result = subprocess.CompletedProcess(
                 args=[],
                 returncode=0,
-                stdout="logic_reviews/0040CDF0_MainDecisionAIModule.md\n",
+                stdout="logic_reviews/0040CDF0.md\n",
                 stderr="",
             )
             with (
@@ -52,8 +52,8 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
                 files = status_core.logic_review_files(ledgers)
 
         self.assertEqual(
-            files["0040CDF0_MAINDECISIONAIMODULE"],
-            root / "logic_reviews" / "0040CDF0_MainDecisionAIModule.md",
+            files["0040CDF0"],
+            root / "logic_reviews" / "0040CDF0.md",
         )
 
     def test_header_owned_function_is_unresolved(self) -> None:

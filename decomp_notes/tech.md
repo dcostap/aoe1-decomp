@@ -21,8 +21,8 @@ reconstructed bodies in contribution order. It is not a proven PDB source
 owner. The bodies use `RGE_Player`, `TRIBE_World`, `RGE_Effects`, and
 `TRIBE_History_Info` from their providers.
 
-The source manifest is `config/source_modules/tech.json`.
-Every body has status `observed`. No body has a PDB source or symbol owner.
+The function registry is `config/functions/src/tech.cpp.json`.
+No function has a proved PDB source or build symbol.
 
 Sources:
 
@@ -33,7 +33,7 @@ Sources:
 - `inventory/types/dumps/TRIBE_Tech.txt`
 - `inventory/types/dumps/TRIBE_Player_Tech.txt`
 
-## Current nonexact functions
+## Historical direct-source results
 
 `0050C730` keeps ordinary local variables. The prior exact form used a
 synthetic local record. It is not a source fact. Direct-source validation
@@ -43,16 +43,15 @@ gives 27 differing bytes, or 3.0752%.
 synthetic local record. It is not a source fact. Direct-source validation
 gives 33 differing bytes, or 8.4399%.
 
-`0050CC25` remains accepted drift. The remaining difference is stack-slot
-allocation for the integer attribute and float cost locals. Direct-source
-validation gives 22 differing bytes, or 6.5868%.
+The `0050CC25` candidate differed only in stack-slot allocation.
+Direct-source validation found 22 differing bytes, or 6.5868%.
 
 `0050CE68` keeps ordinary scan variables. The prior exact form used a
 synthetic local record. The executable proves that `changed` is cleared and
 never set. Direct-source validation gives 28 differing bytes, or 5.2830%.
 
-The other 29 normal functions pass direct-source validation with `MATCH` and
-`0.0000%`. The compiled object has no compiler-generated entry in this range.
+The other 29 normal functions passed the historical direct-source comparison.
+The compiled object had no compiler-generated entry in this range.
 
 ## No-line PDB validation
 
@@ -63,9 +62,8 @@ The raw `cvdump -s -M039` dump identifies `Release\tech.obj`. It has zero
 `S_GPROC32` records.
 
 This proves only that the PDB has a Tech compiland. It does not identify an
-owning function or decorated symbol for any VA. The 29 byte-equal functions
-are observed. They are not registered as exact owners.
+owning function or decorated symbol for any VA. The 29 byte-equal results do
+not prove source ownership or a build route.
 
-`validate_candidate_tu.py` compiled the complete direct source. Its report
-has 29 observed byte matches, four observed mismatches, and no generated
-entry.
+`validate_candidate_tu.py` compiled the complete direct source.
+Its report had 29 byte matches, four mismatches, and no generated entry.

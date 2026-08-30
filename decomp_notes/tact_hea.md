@@ -41,7 +41,7 @@ coordinates use `target_x`, `target_y`, and `target_z`. Task work data uses
 ## Candidate validation
 
 The direct source compiled with the pinned VC5 compiler and
-`config/flags/004CE990_TRIBE_Action_Heal.rsp`. The candidate proposal is
+`config/flags/gx.rsp`. The candidate proposal is
 `build/candidate_tus/tact_hea_direct/proposal.json`.
 
 | VA | kind | result | rebuilt | diff | relocations | boundary escapes |

@@ -11,7 +11,7 @@ normal bodies in source order:
 The source-line bands are 48-125, 131-152, 158-171, 177-190, 196-241,
 247-278, 284-312, and 318-419. `00490E10` is the compiler-generated
 vector-deleting destructor. The constructor is the exact context anchor. The
-module uses `config/flags/004909D0_TRIBE_Screen_Campaign_Selection.rsp` with
+module uses `config/flags/gx.rsp` with
 `/O2 /Oy /GX`.
 
 ## Canonical ownership
@@ -34,9 +34,8 @@ raw address, raw vptr, inline assembly, C-style pointer cast, or private-symbol
 alias remains.
 
 The old `src/scr_cams_tu.cpp`, `include/scr_cams_context.h`, and eight matching
-source-bank owners were removed after the complete candidate passed. The
-source-module manifest and translation-unit registry now point every owner at
-`src/scr_cams.cpp`.
+source-bank files were removed after the complete candidate passed.
+The function registry now names `src/scr_cams.cpp`.
 
 ## Status and validation
 

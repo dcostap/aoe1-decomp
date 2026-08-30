@@ -3,7 +3,7 @@
 - PDB source: `m_mo_obj.cpp`.
 - Source: `src/m_mo_obj.cpp`.
 - Header: `include/m_mo_obj.h`.
-- Flags: `config/flags/00451A20_RGE_Master_Moving_Object.rsp`.
+- Flags: `config/flags/gx.rsp`.
 
 ## Transition
 

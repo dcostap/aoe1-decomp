@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import csv
 import re
 from pathlib import Path
@@ -115,6 +116,10 @@ def write_type_packets(entries: list[dict[str, object]], packet_root: Path) -> N
 
 
 def main() -> None:
+    argparse.ArgumentParser(
+        description="Generate type reference files from the configured type dump."
+    ).parse_args()
+
     binaries = load_binaries()
     source_path = repo_path(binaries["type_dump"])
     source_text = source_path.read_text(encoding="utf-8", errors="replace")

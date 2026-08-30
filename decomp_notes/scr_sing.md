@@ -5,7 +5,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\Scr_sing.cpp`.
 - Source: `src/scr_sing.cpp`.
 - Header: `include/scr_sing.h`.
-- Flags: `config/flags/004B69A0_TribeSPMenuScreen.rsp` (`/GX`).
+- Flags: `config/flags/gx.rsp` (`/GX`).
 - Owners: four normal functions in PDB source order; three are exact claims.
 - Generated entry: `004B6BE0`, vector-deleting destructor. It has no handwritten source owner.
 

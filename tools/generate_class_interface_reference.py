@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import csv
 import re
 from dataclasses import dataclass
@@ -346,6 +347,10 @@ def write_csv(classes: list[DonorClass], csv_path: Path) -> None:
 
 
 def main() -> None:
+    argparse.ArgumentParser(
+        description="Generate class interface references from layout and donor evidence."
+    ).parse_args()
+
     layout_types = load_layout_types()
     packet_methods = build_packet_method_index()
     classes = parse_donor_headers(layout_types, packet_methods)

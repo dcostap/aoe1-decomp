@@ -33,10 +33,8 @@ relocation target mismatch occurred.
 | `00484C80` | MISMATCH | 128 | 122 | 73 | 0 | scratch |
 | `00484D00` | MISMATCH | 1273 | 1276 | 1223 | 1 | scratch |
 
-The two matching rows are the only exact owners in
-`config/translation_units.json`. The seven non-exact rows are observed in the
-module manifest and are not exact registration claims. There are no generated
-entries.
+The migration check found two exact functions and seven nonexact functions.
+There are no generated entries.
 
 Validation command:
 

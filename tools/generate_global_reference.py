@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import csv
 import math
 import re
@@ -252,6 +253,10 @@ def write_section_inventory(image, data_root: Path) -> None:
 
 
 def main() -> None:
+    argparse.ArgumentParser(
+        description="Generate global-object reference packets from the original executable."
+    ).parse_args()
+
     binaries = load_binaries()
     image = load_pe_image(repo_path(binaries["original_exe"]))
     listing_path = repo_path(binaries["ghidra_listing"])

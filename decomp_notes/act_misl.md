@@ -17,8 +17,8 @@ not `object`. Commit `60a5de34c` corrected the field accesses. Commit
 `7e6eeecdf` removed the temporary friend declaration.
 
 The resumed grouped candidate validation completed with no comparison errors.
-All five exact owners matched. Both compiler-generated destructors matched.
-The two observed owners remain mismatches under their reviewed statuses.
+All five exact functions matched. Both compiler-generated destructors matched.
+The two prior nonexact functions remained mismatches.
 
 ## PDB source order and ownership
 

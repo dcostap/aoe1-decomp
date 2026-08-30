@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\Path.cpp`.
 - Source: `src/Path.cpp`.
 - Header: `include/path.h`.
-- Flags: `config/flags/0046A8E0_operator.rsp`.
+- Flags: `config/flags/gx.rsp`.
 - PDB lines: 36 to 367.
 - Normal owners: 30, in PDB address order from `0046A740` through `0046AFE0`.
 
@@ -25,15 +25,14 @@ The source owns all 30 normal bodies in PDB order:
 7. `0046AB60` through `0046AFE0` path operations and accessors.
 
 The previous wrapper, context header, per-function source fragments, fallback
-class declarations, and recovery context macros are removed. The translation
-unit entry now points to `src/Path.cpp` and keeps only its prior registered
-exact owners. The module manifest records all 30 normal owners, including the
-unregistered observed owners.
+class declarations, and recovery context macros are removed.
+The function registry now names `src/Path.cpp` and all 30 normal functions.
 
 ## Recovery state
 
-The manifest records 26 matching owners, three scratch owners, and one accepted
-source drift owner. The accepted owner is `0046AAE0`. The scratch owners are
+The migration checkpoint had 26 exact functions, three nonexact functions,
+and one accepted source-drift function. The accepted function was `0046AAE0`.
+The nonexact functions were
 `0046A740`, `0046A810`, and `0046A9E0`. These are source-bank classifications
 from the reviewed pre-migration work. They are not grouped exact claims.
 

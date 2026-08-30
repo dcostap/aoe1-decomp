@@ -33,6 +33,6 @@ The module header records the reviewed `RGE_Action`, `RGE_Action_List`, and
 keeps the definitions in PDB order and uses `include/taction.h`. The former
 `src/taction_tu.cpp` wrapper and five source fragments are removed.
 
-The registered module uses `config/flags/default_gx.rsp`. The three former
+The registered module uses `config/flags/gx.rsp`. The three former
 per-function response files had the same `/O2 /Oy /GX` flags and are stale after
 this direct-source move, so they are removed.

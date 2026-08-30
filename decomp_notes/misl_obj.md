@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\misl_obj.cpp`.
 - Source: `src/misl_obj.cpp`.
 - Header: `include/misl_obj.h`.
-- Flags: `config/flags/0045AB20_make_object_collision_list.rsp`.
+- Flags: `config/flags/gx.rsp`.
 - Normal owners: 11. The PDB line order is `0045A740` through `0045AB20`.
 
 ## Ownership
@@ -47,6 +47,5 @@ relocations, and boundaries. Both compiler-generated destructor neighbors also
 report `MATCH`. The scratch owner reports a correct owner, zero relocation
 target mismatches, and zero boundary escapes.
 
-The shared `config/translation_units.json` entry still names the removed
-wrapper. The parent integration pass must update it to `src/misl_obj.cpp` and
-register the direct owners.
+The migration proposal still named the removed wrapper. The completed
+registry migration now uses `src/misl_obj.cpp`.

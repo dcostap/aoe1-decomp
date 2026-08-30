@@ -72,7 +72,7 @@ class declarations, and per-function source fragments. It does not change the
 module header or the reviewed state labels.
 
 The former destructor-only `/GX` response file was stale after consolidation
-and is removed. The module uses the tracked `config/flags/default_gx.rsp`
+and is removed. The module uses the tracked `config/flags/gx.rsp`
 response file because the constructor and destructor both use EH frames. The
 two target-specific response files are removed. No shared header, ABI, tool,
 or global flag changed.

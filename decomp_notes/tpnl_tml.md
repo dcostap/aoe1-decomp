@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\tpnl_tml.cpp`.
 - Source: `src/tpnl_tml.cpp`.
 - Header: `include/tpnl_tml.h`.
-- Flags: `config/flags/0051E860_create_timeline.rsp`.
+- Flags: `config/flags/gx.rsp`.
 
 ## Context gate
 

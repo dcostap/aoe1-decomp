@@ -38,9 +38,8 @@ does not declare a local static-object class, master-object class, or vtable.
 
 The old wrapper and five source-bank fragments were removed. The source has no
 `.cpp` includes, context-selection macro, fallback declaration block, inline
-assembly, fake virtual slot, or raw vtable field. The module uses direct source
-ownership in `config/translation_units.json`, and
-`config/source_modules/taipbook.json` records all five matching owners.
+assembly, fake virtual slot, or raw vtable field.
+`config/functions/src/taipbook.cpp.json` records all five functions.
 
 ## Validation
 

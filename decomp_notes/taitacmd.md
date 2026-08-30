@@ -75,7 +75,7 @@ now use typed string literals. One mutable source-path provider serves the
 existing `TacticalAIGroup::task`, time, and tribute source forms. No absolute
 data address remains in `src/taitacmd.cpp`.
 
-The final full-module build uses `config/flags/004ED4F0_TribeTacticalAIModule.rsp`.
+The final full-module build uses `config/flags/gx.rsp`.
 The registered grouped gate passes. The module has 169 matching, 10
 accepted-drift, 35 scratch, and 2 verified-logic normal owners. Fresh checks
 prove `004EA9C0`, `004EEE40`, `00501660`, `00502100`, `00501C70`, and

@@ -31,7 +31,7 @@ Shard-local repair block:
 
 Validation on 2026-08-27:
 
-- `plan_translation_unit.py --module Com_hand.cpp`: 146 normal owners.
+- The retired translation-unit planner found 146 normal functions.
 - Candidate validation: 146 normal bodies and two generated entries compiled.
 - Candidate result: 90 exact owner matches and 19 exact observed matches.
 - `check_function.py --va 00425750 --rebuild`: `Result: MATCH`, `0.0000%`.

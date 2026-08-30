@@ -69,8 +69,8 @@ bytes and has two boundary escapes. No scratch owner is promoted in this pass.
 
 - Added `include/tact_wnd.h`.
 - Added `src/tact_wnd.cpp`.
-- Added `config/source_modules/tact_wnd.json`.
+- Added `config/functions/src/tact_wnd.cpp.json`.
 - Added `decomp_notes/tact_wnd.md`.
-- Updated `config/translation_units.json` to register the unified source.
+- Recorded the unified source in the function registry.
 - Removed `include/tact_wnd_context.h`.
 - Removed `src/tact_wnd_tu.cpp` and six source-bank fragments.

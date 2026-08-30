@@ -19,7 +19,7 @@ The remaining owners stay in their prior honest states until direct validation:
   and `00488870` are scratch.
 - `00487DD0` is accepted drift.
 - `00487FA0` remains verified logic. Its ledger is
-  `logic_reviews/00487FA0_add_object_module.md`.
+  `logic_reviews/00487FA0.md`.
 
 The direct natural `00488870` body compiles. It differs by 78 bytes. The
 current direct loop changes the old register and zero setup order.

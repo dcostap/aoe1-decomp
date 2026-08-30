@@ -21,8 +21,8 @@ wrapper source.
 The packet identifies the PDB source module and its line bands from
 `Pnl_txt.cpp:73-1916`. The owner sequence runs from `0047BF40` through
 `0047E410`, with the compiler-generated destructor at `0047C090` between the
-constructor and destructor. The existing registered group was `Pnl_txt_cpp`;
-its source now points directly to `src/Pnl_txt.cpp`.
+constructor and destructor. The old build group was `Pnl_txt_cpp`.
+The function registry now names `src/Pnl_txt.cpp`.
 
 ## Pre-migration check
 
@@ -34,12 +34,9 @@ boundary-crossing `0047D9E0` row as scratch.
 
 ## Post-migration check
 
-The direct source module compiled all 65 owners. The 56 registered owners
-remain exact. The nine unregistered owners remain observations or known
-nonexact owners. Their direct checks need temporary observed-owner support in
-the current checker; the checker rejects symbols for unregistered module
-members. The candidate-TU validator has the same limitation because it only
-accepts old wrapper includes and matching-bank exact owners.
+The migration build compiled all 65 functions. It retained 56 exact results.
+The old checker could not select nine functions through its exact-only map.
+The candidate validator had the same old-wrapper limitation.
 
 Observed direct checks from the rebuilt module gave these results:
 

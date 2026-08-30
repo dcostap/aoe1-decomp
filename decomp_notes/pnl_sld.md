@@ -50,9 +50,8 @@ removed.
 
 The old `src/pnl_sld_tu.cpp` wrapper, ten source-bank fragments, and
 `include/pnl_sld_context.h` are removed. The module-local header is now
-`include/pnl_sld.h`. The source-module manifest records all ten normal owners as
-`matching` and records the repaired header composition. The two scalar deleting
-destructors remain outside the handwritten owner list.
+`include/pnl_sld.h`. The migration check found all ten normal functions exact.
+The two scalar deleting destructors remain outside the handwritten function set.
 
 ## Validation
 
@@ -64,6 +63,5 @@ inherited fields, the final run reported `MATCH` for all twelve rows, with
 zero positional difference, boundary escapes, and relocation target
 mismatches. Its report is under `build/candidate_tus/pnl_sld/`.
 
-The global translation-unit registry already points all ten normal owners to
-`src/pnl_sld.cpp` and keeps the qualified symbols. No registry update is
-needed for this module.
+The function registry names `src/pnl_sld.cpp`, all ten normal functions, and
+their qualified symbols.

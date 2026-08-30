@@ -3,8 +3,8 @@
 - PDB source: `C:\msdev\work\age1_x1\scr_sed2.cpp`.
 - Source: `src/scr_sed2.cpp`.
 - Header: `include/scr_sed2.h`.
-- Manifest: `config/source_modules/scr_sed2.json`.
-- Flags: `config/flags/scr_sed2.rsp`.
+- Manifest: `config/functions/src/scr_sed2.cpp.json`.
+- Flags: `config/flags/gx.rsp`.
 
 ## Source order
 
@@ -69,8 +69,7 @@ The focused checks covered all 19 normal owners. The module test passed:
 `python -m unittest tests/test_scr_sed2_tu.py`.
 
 The old wrapper, old context header, and 19 per-function source files are
-removed. The direct translation-unit registry points to `src/scr_sed2.cpp`
-and records the module name `scr_sed2`.
+removed. The function registry names `src/scr_sed2.cpp`.
 
 ## Blockers
 
@@ -80,5 +79,5 @@ permutation. Further work needs a new source-context lead.
 
 The assigned `build/source_reunification/terra_system/orchestrator_contract.md`
 file was not present in this checkout. The generated packet from
-`tools/plan_translation_unit.py --module scr_sed2.cpp` supplied the available
+The retired translation-unit planner supplied the available
 module evidence.

@@ -15,7 +15,7 @@ The former `src/move_obj_tu.cpp` wrapper included one fragment per owner. The
 module now defines all 51 normal owners in one source file, in PDB order.
 Fallback class declarations, source-bank includes, context macros, and wrapper
 machinery are removed. The source keeps the reviewed owner status for each
-function in `config/source_modules/move_obj.json`.
+function in `config/functions/src/move_obj.cpp.json`.
 
 The matching owners had standalone exact checks before this structural move.
 Grouped output can change when the full source context changes. Such changes
@@ -30,9 +30,8 @@ checks before exact promotion.
 - `00460210`, `004608D0`, `00460900`, and `00460B20` also remain scratch.
 - All other normal owners retain matching status.
 
-The wave20 full audit confirms `00460940 userDefinedWaypoint` as an exact
-natural owner. It is now registered as matching. The other reviewed statuses
-remain unchanged.
+The wave20 full audit found `00460940 userDefinedWaypoint` exact in the
+natural source. The other reviewed results did not change.
 
 ## Structural audit
 
@@ -89,7 +88,6 @@ No declaration in `include/move_obj.h` had a safe shape-only replacement. Its
 virtual order, inherited surfaces, field widths, and size check remain tied to
 the reviewed PDB and relocation evidence.
 
-Canonical providers changed the emitted result for ten former matching
-claims. The changed owners are now scratch in the module manifest. Their
-current grouped differences are 3, 2, 113, 1120, 2977, 2912, 1, 29, 34, and
-5 bytes in address order. The three accepted-drift entries remain closed.
+Canonical providers changed ten former exact results. Their grouped differences
+were 3, 2, 113, 1120, 2977, 2912, 1, 29, 34, and 5 bytes.
+The three accepted-drift entries remained closed.

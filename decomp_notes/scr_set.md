@@ -1,7 +1,7 @@
 # `scr_set.cpp`
 
 - PDB source: `C:\msdev\work\age1_x1\scr_set.cpp`.
-- Flags: `config/flags/scr_set.rsp`.
+- Flags: `config/flags/gx.rsp`.
 - Normal functions: 12.
 - Address range: `004B4880` to `004B6870`.
 
@@ -26,10 +26,8 @@ labels, and the numeric format. The shared empty string remains
 
 ## Exactness classification
 
-Fresh grouped candidate validation reports `MATCH` and `0.0000%` for every
-registered owner. All existing manifest claims remain honest `matching` claims.
-The source-module manifest records the same 12 owners and their shared recovery
-note.
+Fresh grouped candidate validation reported `MATCH` and `0.0000%` for all 12
+normal functions.
 
 | VA | owner | result | size |
 | --- | --- | --- | ---: |

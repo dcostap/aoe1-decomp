@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\ACT_GATH.cpp`.
 - Source: `src/act_gath.cpp`.
 - Header: `include/act_gath.h`.
-- Flags: `config/flags/default_gx.rsp`.
+- Flags: `config/flags/gx.rsp`.
 
 ## Context gate
 

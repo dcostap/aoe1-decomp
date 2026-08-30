@@ -71,7 +71,7 @@ macro. The migrated source uses one direct compiler-facing owner and the
 module-local header.
 
 The constrained grouped audit was run once as
-`python tools/audit_translation_unit_observed.py --group scr_ach --jobs 1
+`python tools/audit_translation_unit_functions.py --group scr_ach --jobs 1
 --output-dir build/audits/scr_ach_final --print-full`. It compiled all eight
 owners and found six registered exact owners with zero positional differences,
 zero relocation mismatches, and zero boundary escapes. This result predates

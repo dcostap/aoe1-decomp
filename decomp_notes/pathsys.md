@@ -16,7 +16,7 @@ class, flat obstruction alias, or synthetic carrier.
 ## Validation
 
 The pinned VC5 compiler builds the module with
-`config/flags/0046B0F0_PathingSystem.rsp`. The module passed an IL capture
+`config/flags/gx.rsp`. The module passed an IL capture
 compile after the typed Map tile repair.
 
 Exact owners are `0046B0F0`, `0046B270`, `0046B310`, `0046B360`, `0046B550`,

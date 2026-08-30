@@ -579,7 +579,7 @@ def write_inventory(inventory: dict[str, Any], output_path: Path, output_format:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate PDB-backed source-module and translation-unit context inventory."
+        description="Generate PDB-backed function-registry and build-context inventory."
     )
     parser.add_argument("--format", choices=("json", "csv"), default="json")
     parser.add_argument("--output", type=Path, help="Generated output path under build/.")

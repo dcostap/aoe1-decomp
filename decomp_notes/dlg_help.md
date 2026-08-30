@@ -3,8 +3,8 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\dlg_help.cpp`.
 - Source: `src/dlg_help.cpp`.
 - Header: `include/dlg_help.h`.
-- Manifest: `config/source_modules/dlg_help.json`.
-- Flags: `config/flags/0043E840_THelpDialog.rsp`.
+- Manifest: `config/functions/src/dlg_help.cpp.json`.
+- Flags: `config/flags/gx.rsp`.
 
 ## Context gate
 
@@ -28,8 +28,7 @@ include, fallback declaration, or context macro. The header owns the reviewed
 panel hierarchy, virtual slots, fields, API declarations, and global surface.
 
 The old wrapper, context header, and six per-function source files are removed.
-The direct translation-unit registry points to `src/dlg_help.cpp`. The unresolved
-`setup_help` body remains in the direct source with its scratch status.
+The function registry names `src/dlg_help.cpp` and all six normal functions.
 
 The four dialog child pointers use the proven `TTextPanel` and `TButtonPanel`
 member types. This preserves the measured `THelpDialog` size and the observed

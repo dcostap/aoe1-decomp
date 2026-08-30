@@ -5,7 +5,7 @@
 - PDB source: `C:\msdev\work\age1_x1\scr_info.cpp`.
 - Direct source: `src/scr_info.cpp`.
 - Owner header: `include/scr_info.h`.
-- Flags: `config/flags/0049D550_TRIBE_Screen_Info.rsp`.
+- Flags: `config/flags/gx.rsp`.
 
 The PDB owns seven normal functions in this order:
 

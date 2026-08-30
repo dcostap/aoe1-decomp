@@ -45,12 +45,10 @@ that entry and ordinary source must not contain inline assembly.
 
 ## Status and checks
 
-The source-module manifest is `config/source_modules/scr_cj.json`. It records
-four matching owners and five scratch owners. The translation-unit registry
-points its four exact owners to the direct module source and records module
-name `scr_cj`.
+The function registry is `config/functions/src/scr_cj.cpp.json`.
+The migration check found four exact functions and five nonexact functions.
 
-The source uses `config/flags/scr_cj.rsp`. It enables `/GX` and the canonical
+The source uses `config/flags/gx_directplay.rsp`. It enables `/GX` and the canonical
 DirectPlay include provider. The four focused response files use the same
 settings. `/GX` agrees with the original EH registration.
 

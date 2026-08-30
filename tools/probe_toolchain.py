@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import shutil
@@ -33,6 +34,10 @@ def compile_once(cl_path: Path, rsp_path: Path, source: Path, output: Path, env:
 
 
 def main() -> None:
+    argparse.ArgumentParser(
+        description="Compile a probe twice and verify deterministic toolchain output."
+    ).parse_args()
+
     toolchain = load_toolchain()
     cl_path = repo_path(toolchain["compiler"]["cl"])
     rsp_path = repo_path(toolchain["compiler"]["default_rsp"])

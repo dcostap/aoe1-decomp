@@ -38,7 +38,7 @@ VC5 output.
 ## Validation
 
 The pinned VC5 candidate build uses
-`config/flags/0044F070_RGE_Master_Action_Object.rsp`.
+`config/flags/gx.rsp`.
 The grouped candidate check reports 19/19 exact normal owners.
 Every owner reports `Result: MATCH`, `0.0000%`, the expected owner symbol,
 zero relocation mismatches, and zero boundary escapes.

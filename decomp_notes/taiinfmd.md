@@ -3,7 +3,7 @@
 - PDB source: `C:\\msdev\\work\\age1_x1\\taiinfmd.cpp`.
 - Source: `src/taiinfmd.cpp`.
 - Header: `include/taiinfmd.h`.
-- Flags: `config/flags/004D6BB0_TribeInformationAIModule.rsp`.
+- Flags: `config/flags/gx.rsp`.
 - Normal owners: 121.
 - Address range: `004D6AD0` to `004E4790`.
 
@@ -14,10 +14,10 @@ compiler-facing source owner and one module-local header. The old wrapper,
 fragment includes, fallback declarations, context macro, and per-function
 source owners were removed.
 
-The source module manifest records all 121 normal owners. It has 84 matching,
-9 accepted-drift, and 28 scratch owners.
+The migration checkpoint had 84 exact, 9 accepted-drift, and 28 nonexact
+normal functions.
 Compiler-generated entries `004D6AD0`, `004D6B20`, `004D6B70`, `004D7050`,
-`004DE980`, and `004DE9D0` remain outside the normal owner manifest.
+`004DE980`, and `004DE9D0` remain outside the normal function set.
 
 The module defines `iMap`, `losMap`, and `attackMap` as ordinary global
 `InfluenceMap` objects. Their constructor arguments and declaration order

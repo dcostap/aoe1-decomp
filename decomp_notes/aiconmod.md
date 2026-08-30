@@ -7,7 +7,7 @@
 - Owners follow PDB source-line order from lines 36-599.
 - The owning class is `ConstructionAIModule` for all 19 owners.
 - The reviewed module header is `include/aiconmod.h`.
-- The registered source uses `config/flags/0040AA90_ConstructionAIModule.rsp`.
+- The registered source uses `config/flags/gx.rsp`.
   The constructor and destructor require the `/GX` exception frame.
 - The scalar deleting destructor at `0040AB90` is compiler generated. It has no
   PDB source line and is not a normal source owner.

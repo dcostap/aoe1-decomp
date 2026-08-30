@@ -1,44 +1,72 @@
-# map.cpp source module
+# map.cpp reconstruction
 
-`src/map.cpp` is the compiler-facing source for
-`C:\msdev\work\age1_x1\map.cpp`. It owns all 64 normal functions in PDB
-source order. The vector-deleting destructor at `00455080` is generated.
+`src/map.cpp` is the natural source for `C:\msdev\work\age1_x1\map.cpp`.
+It contains all 64 normal functions in PDB order.
 
-The module uses `map.h` and canonical Map dependencies. It has no source
-wrapper, context selection, copied class, raw Map layout, or Tile alias.
-Tiles use named `terrain_type`, `height`, `border_type`, `border_shape`, and
-`RGE_Object_List` fields.
+The vector-deleting destructor at `00455080` is compiler-generated.
 
-## Validation
+The module uses `include/map.h` and the canonical Map dependencies.
+It has no source wrapper, context-selection header, copied class, or Tile alias.
 
-A pinned VC5 module build completed. Candidate validation used
-`build/map_natural_candidate.json` and compiled all 64 normal owners.
+## `RGE_Tile` layout
 
-`004550A0` and `0045A6D0` are current exact claims. Both report `MATCH`,
-`0.0000%`, correct owner, relocation targets, and boundary.
+CodeView records prove this packed layout:
 
-The candidate also found 30 other byte matches. They remain scratch. The
-candidate has 18 unresolved overloaded-symbol rows. Do not promote them from
-this migration checkpoint.
+```cpp
+unsigned char terrain_type : 5;
+unsigned char height       : 3;
+unsigned char border_type  : 4;
+unsigned char border_shape : 4;
+```
 
-The natural Tile rewrite changes `00457510` from an old exact row to scratch.
-It now differs by 56 bytes. This is a source composition regression.
+The first two fields share byte `+0x05`.
+The last two fields share byte `+0x06`.
+The complete structure size is `0x18`.
 
-## Current status
+The CodeView records use `T_UCHAR` for all four fields.
+They prove each field width, bit position, name, and byte offset.
 
-All rows except `004550A0` and `0045A6D0` remain scratch. This preserves the
-natural module without false exact claims.
+| Field | CodeView record | Bits | Byte |
+| --- | --- | ---: | ---: |
+| `terrain_type` | `0x28AD` | 0-4 | `+0x05` |
+| `height` | `0x28AE` | 5-7 | `+0x05` |
+| `border_type` | `0x28AF` | 0-3 | `+0x06` |
+| `border_shape` | `0x28B0` | 4-7 | `+0x06` |
 
-The stale `map_context.h` and `map_tile_context.h` headers had no Map consumer.
-The RMM terrain header now includes the complete canonical `map.h` owner. Both
-stale headers were removed after this consumer audit.
+`last_drawn_as` starts at `+0x07`.
+`objects` starts at `+0x0C`.
 
-## Compile-blocker repair
+Original instructions confirm the layout:
+
+- `get_terrain` masks byte `+0x05` with `0x1F`.
+- `get_elev` shifts byte `+0x05` right by five.
+- `get_border` masks byte `+0x06` with `0x0F`.
+- `save_map` shifts byte `+0x06` right by four.
+- `set_elev` preserves the low five bits of byte `+0x05`.
+
+A pinned VC5 probe emitted the same CodeView records and field operations.
+A signed `char` control emitted different types and different shift behavior.
+
+No union, accessor mask, explicit padding, or raw offset is necessary.
+
+## Historical migration validation
+
+A pinned VC5 module build compiled all 64 normal functions.
+The migration candidate used `build/map_natural_candidate.json`.
+
+The migration exposed a source-composition change in `00457510`.
+It also exposed overloaded-symbol lookup failures in the old audit route.
+These results described the migration checkpoint, not current function status.
+
+Use the function registry and fresh checks for current status.
+
+## Compile repair
 
 `debug_rand` and `debug_srand` use the canonical C++ declarations from
-`basegame.h`. The old `old_map_cutoff` label had no owner. `load_map` uses the
-canonical `DAT_005706a8` owner at `005706A8`.
+`include/basegame.h`.
 
-The full direct-module candidate build now compiles without diagnostics. Both
-configured exact owners, `004550A0` and `0045A6D0`, report `MATCH`, `0.0000%`,
-correct ownership, relocations, and boundaries.
+The old `old_map_cutoff` label had no owner.
+`load_map` uses the canonical `DAT_005706a8` object at `005706A8`.
+
+The stale `map_context.h` and `map_tile_context.h` headers had no Map consumer.
+The RMM terrain header now includes the canonical `include/map.h` declaration.

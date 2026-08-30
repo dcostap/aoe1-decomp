@@ -4,7 +4,7 @@
 - Source: `src/sprite.cpp`.
 - Header: `include/sprite.h`.
 - The source keeps all 22 normal owners in PDB order.
-- The module uses `/O2 /Oy /GX` from `config/flags/004C0960_get_frame.rsp`.
+- The module uses `/O2 /Oy /GX` from `config/flags/gx.rsp`.
 
 ## Module merge
 
@@ -28,10 +28,9 @@ still match. The five accepted-drift owners keep their reviewed classifications:
 `004C0B70` has 37, and `004C0D80` has 33. Each has matching calls,
 relocations, and boundary evidence for its reviewed scope.
 
-The merge introduces two local context regressions. `004C0720 shadow_draw`
-has two SIB-register bytes changed, and `004C0C90 hit_test` has two changed
-bytes. Both remain `matching` in the module manifest with this regression
-record. Exact repair resumes after the final source context is fixed.
+The merge introduced two local context regressions. `004C0720 shadow_draw`
+had two SIB-register bytes changed. `004C0C90 hit_test` had two changed bytes.
+Exact repair resumes after the final source context is fixed.
 
 `004C01A0 do_draw` remains `scratch` with 375 differing bytes. `004C1080
 update` remains `verified_logic`; its grouped rebuild is 125 bytes with 75

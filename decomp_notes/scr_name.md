@@ -15,7 +15,7 @@ the first seven bodies. The dialog owns the last four bodies. `004A66C0` and
 
 The constructor, screen action, dialog constructor, dialog action, and both
 generated destructors are exact anchors. The module uses
-`config/flags/scr_name.rsp` with `/O2 /Oy /GX`.
+`config/flags/gx.rsp` with `/O2 /Oy /GX`.
 
 ## Canonical ownership
 
@@ -37,9 +37,8 @@ address, or private-symbol alias.
 
 ## Status and validation
 
-Eight normal owners remain `matching`. The two destructors and
-`004A6D50 TRIBE_Dialog_Name` are honest `accepted_drift` owners. The
-source-module manifest records these statuses.
+The migration check found eight exact functions. It retained three reviewed
+code-generation differences.
 
 The grouped provider candidate is
 `build/candidate_tus/scr_name_natural_final_cleanup2/report.json`. It compiled the canonical

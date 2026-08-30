@@ -15,7 +15,7 @@
 - The old wrapper `src/scr_mps_tu.cpp` and all 34 source-bank fragments were removed.
 - The obsolete unregistered `src/screen_disconnect_tu.cpp` wrapper was also removed; it included two owners now owned by this module.
 - The old module context header `include/scr_mps_context.h` was replaced by `include/scr_mps.h`.
-- `config/source_modules/scr_mps.json` records all 34 normal owners and this note.
+- `config/functions/src/scr_mps.cpp.json` records all 34 normal owners and this note.
 - The registered exact owners remain the natural owners that still match after
   provider cleanup. The scratch and accepted-drift owners are not exact-owner
   claims.

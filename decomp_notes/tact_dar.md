@@ -45,10 +45,8 @@ reference. File I/O uses the canonical `rge_fio.h` declarations.
 ## Migration effects
 
 The former `tact_dar_context.h` and wrapper are removed. The eight handwritten
-definitions now live in `src/tact_dar.cpp`. The source-module configuration
-records all eight original statuses. The translation-unit registry records the
-seven matching owners; accepted drift remains source-module-owned but is not an
-exact owner.
+definitions now live in `src/tact_dar.cpp`. The function registry records all
+eight functions. The migration check found seven exact functions.
 
 ## Scoped validation
 

@@ -32,14 +32,13 @@ owners. The source uses the real enum values and dialog-name string literals.
 
 `src/dlg_menu.cpp` contains all three normal bodies in PDB order. The old
 `src/dlg_menu_tu.cpp` wrapper, `include/dlg_menu_context.h`, and three matching
-fragments are removed. `config/source_modules/dlg_menu.json` records the three
-owners. `config/translation_units.json` registers the exact action owner and
-leaves the two scratch owners out of the exact-owner map.
+fragments are removed. `config/functions/src/dlg_menu.cpp.json` records all
+three functions and their status.
 
 ## Validation
 
 The typed-array candidate compiles the direct source with
-`config/flags/0043F340_TribeMenuDialog.rsp`. The constructor and destructor
+`config/flags/gx.rsp`. The constructor and destructor
 remain semantically equivalent, but their source-safe array forms produce
 broad codegen drift:
 

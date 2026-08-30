@@ -60,8 +60,7 @@ entries are observed mismatches or accepted source states. The generated
 `004C8090` destructor also matched through its VC5 weak `??_G` fallback.
 
 The grouped result is diagnostic. Source recovery did not byte-tune the scratch
-owners. The direct module now registers its seven exact owners in
-`config/translation_units.json`.
+functions. The migration check found seven exact functions.
 
 ## Compile debt validation
 

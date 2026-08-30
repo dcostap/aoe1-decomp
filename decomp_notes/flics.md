@@ -51,7 +51,7 @@ banks are not claims about the merged source.
 
 The grouped packet recorded 13 matching-bank owners and two scratch owners.
 The two scratch owners were `00449C50 palette` and `0044A100 delta_flc`.
-The other 13 owners remain marked `matching` in the module manifest.
+The migration checkpoint had 13 other exact functions.
 
 Before migration, the registered exact set had 12 owners. `byte_run` was an
 exact isolated owner but was not registered in the old translation-unit entry.

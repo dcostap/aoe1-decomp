@@ -89,7 +89,6 @@ mismatch with a boundary escape. The audit report is
 
 ## Integration handoff
 
-The global `config/translation_units.json` registry still points to the old wrappers.
-The main agent owns that shared file.
-It must map all 63 owners to `src/taiuaimd.cpp` and set the module source.
+The migration proposal still pointed to old wrappers. The completed registry
+migration maps the normal functions to `src/taiuaimd.cpp`.
 It must remove the obsolete prefix and soldier groups.

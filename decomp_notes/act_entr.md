@@ -16,7 +16,7 @@ functions. The functions stay in PDB address order:
 6. `00402740` `RGE_Action_Enter::update()`.
 
 `00402740` remains `scratch` and unregistered in
-`config/source_modules/act_entr.json`. It has no separate source owner.
+`config/functions/src/act_entr.cpp.json`. It has no separate source owner.
 `src/scratch/00402740_update.cpp` was removed.
 
 `004023F0` is the compiler-generated scalar deleting destructor. It is not a
