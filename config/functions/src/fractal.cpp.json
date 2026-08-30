@@ -21,7 +21,7 @@
     "0044B610": {"status": "matching", "symbol": "?MakeFirstLink@PointMaker@@IAEHXZ"},
     "0044B760": {"status": "accepted_drift", "symbol": "?MakeNewLink@PointMaker@@IAEHXZ"},
     "0044B950": {"status": "matching", "symbol": "?MakeSatelliteLink@PointMaker@@IAEHXZ"},
-    "0044BAA0": {"status": "accepted_drift", "symbol": "?DrawPrimaryIntoProbabilityArray@PointMaker@@IAEXXZ"},
+    "0044BAA0": {"status": "scratch", "symbol": "?DrawPrimaryIntoProbabilityArray@PointMaker@@IAEXXZ"},
     "0044BB60": {"status": "accepted_drift", "symbol": "?DrawCurrentBranchIntoProbArray@PointMaker@@IAEXH@Z"},
     "0044BCD0": {"status": "accepted_drift", "symbol": "?DrawCurrentSatelliteIntoProbArray@PointMaker@@IAEXH@Z"},
     "0044BD80": {"status": "scratch", "symbol": "?AddingRect@PointMaker@@IAEXHHHH@Z"},
