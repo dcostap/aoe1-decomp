@@ -28,35 +28,19 @@ ResourceItem::ResourceItem(int count)
 
 ResourceItem::ResourceItem(int count, int* values)
     : next(0), prev(0), numberValue(count) {
-    int i = 0;
+    int i;
 
-    if (count > 0) {
-        do {
-            if (i < 8) {
-                this->valueValue[i] = values[i];
-                this->sortedValue[i] = -1;
-                this->sortedIndexValue[i] = -1;
-                ++i;
-            } else {
-                goto done;
-            }
-        } while (i < this->numberValue);
+    for (i = 0; i < count && i < 8; ++i) {
+        valueValue[i] = values[i];
+        sortedValue[i] = -1;
+        sortedIndexValue[i] = -1;
     }
 
-    if (i < 8) {
-        int* dst = this->sortedValue + i;
-        int remaining = 8 - i;
-        do {
-            dst[-8] = -1;
-            *dst = -1;
-            dst[8] = -1;
-            ++dst;
-            --remaining;
-        } while (remaining != 0);
+    for (; i < 8; ++i) {
+        valueValue[i] = -1;
+        sortedValue[i] = -1;
+        sortedIndexValue[i] = -1;
     }
-
-done:
-    ;
 }
 
 ResourceItem::ResourceItem(const ResourceItem& source)
@@ -106,21 +90,17 @@ not_equal:
 }
 
 int operator!=(const ResourceItem& left, const ResourceItem& right) {
-    const ResourceItem* lhs = &left;
-    const ResourceItem* rhs = &right;
-    int count = lhs->numberValue;
-    if (count == rhs->numberValue) {
-        for (int i = 0; i < count; ++i) {
-            if (lhs->valueValue[i] != rhs->valueValue[i]) {
-                goto not_equal;
-            }
-        }
-
-        return 0;
+    if (left.numberValue != right.numberValue) {
+        return 1;
     }
 
-not_equal:
-    return 1;
+    for (int i = 0; i < left.numberValue; ++i) {
+        if (left.valueValue[i] != right.valueValue[i]) {
+            return 1;
+        }
+    }
+
+    return 0;
 }
 
 int ResourceItem::value(int index) const {
