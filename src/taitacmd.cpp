@@ -1621,7 +1621,7 @@ TribeTacticalAIModule::TribeTacticalAIModule(void* param_1, int param_2)
 }
 
 
-TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
+TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int file)
     : TacticalAIModule(0, param_1),
       md(0),
       civilians(),
@@ -1647,9 +1647,7 @@ TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
   int iVar4;
   TacticalAIGroup *pTVar5;
   int iVar6;
-  int i;
   int tempInt;
-  int file;
   int local_2c;
   int local_28;
 
@@ -1677,7 +1675,6 @@ TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
   this->averageUpdateAreaTimeValue = -1;
   this->updateAreaAverageCount = 0;
   this->updateAreaAverageTotal = 0;
-  file = param_2;
   rge_read(file,&param_1,4);
   tempInt = 0;
   if (0 < param_1) {
@@ -1715,7 +1712,6 @@ TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int param_2)
       (this->civilians).numberValue = (this->civilians).numberValue + 1;
 LAB_004ed829:
       tempInt = tempInt + 1;
-      iVar6 = param_2;
     } while (tempInt < param_1);
   }
   rge_read(file,&param_1,4);
@@ -1755,30 +1751,17 @@ LAB_004ed829:
       (this->civilianExplorers).numberValue = (this->civilianExplorers).numberValue + 1;
 LAB_004ed92c:
       tempInt = tempInt + 1;
-      iVar6 = param_2;
     } while (tempInt < param_1);
   }
   rge_read(file,&this->numberGatherersValue,4);
   rge_read(file,&this->desiredNumberGatherersValue,4);
-  if (save_game_version < 7.19f) {
+  if (!(save_game_version < 7.19f)) {
+    rge_read(file,this->gatherers,0x4b0);
+  }
+  else {
     piVar2 = &this->gatherers[0].data1;
     iVar6 = 0x32;
-    if (save_game_version < 7.17f) {
-      OldUnitData oldUnitData;
-
-      do {
-        rge_read(file,&oldUnitData,0x10);
-        ((UnitData *)(piVar2 + -1))->id = oldUnitData.id;
-        *piVar2 = oldUnitData.data1;
-        piVar2[1] = oldUnitData.data2;
-        piVar2[2] = oldUnitData.data3;
-        piVar2[3] = -1;
-        piVar2[4] = 0;
-        piVar2 = piVar2 + 6;
-        iVar6 = iVar6 + -1;
-      } while (iVar6 != 0);
-    }
-    else {
+    if (!(save_game_version < 7.17f)) {
       OldUnitData2 oldUnitData;
 
       do {
@@ -1793,10 +1776,21 @@ LAB_004ed92c:
         iVar6 = iVar6 + -1;
       } while (iVar6 != 0);
     }
-  }
-  else {
-                    /* language.dll match for 0x4b0: "Ready" */
-    rge_read(file,this->gatherers,0x4b0);
+    else {
+      OldUnitData oldUnitData;
+
+      do {
+        rge_read(file,&oldUnitData,0x10);
+        ((UnitData *)(piVar2 + -1))->id = oldUnitData.id;
+        *piVar2 = oldUnitData.data1;
+        piVar2[1] = oldUnitData.data2;
+        piVar2[2] = oldUnitData.data3;
+        piVar2[3] = -1;
+        piVar2[4] = 0;
+        piVar2 = piVar2 + 6;
+        iVar6 = iVar6 + -1;
+      } while (iVar6 != 0);
+    }
   }
   rge_read(file,&param_1,4);
   tempInt = 0;
@@ -2114,7 +2108,6 @@ LAB_004ee277:
       } while (tempInt < param_1);
     }
   }
-  iVar6 = param_2;
   rge_read(file,&param_1,4);
   iVar1 = 0;
   if (0 < param_1) {
@@ -2281,7 +2274,6 @@ LAB_004ee6c3:
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
-  iVar6 = param_2;
   piVar2 = this->actualGathererDistribution;
   iVar1 = 4;
   do {
@@ -2410,15 +2402,15 @@ LAB_004ee6c3:
     }
   }
   (this->attackStateValue).active = 0;
-  if (save_game_version < 7.15f) {
+  if (!(save_game_version < 7.15f)) {
+    rge_read(file,this->hitsByPlayer,0x24);
+  }
+  else {
     piVar2 = this->hitsByPlayer;
     for (iVar6 = 9; iVar6 != 0; iVar6 = iVar6 + -1) {
       *piVar2 = 0;
       piVar2 = piVar2 + 1;
     }
-  }
-  else {
-    rge_read(file,this->hitsByPlayer,0x24);
   }
 }
 
