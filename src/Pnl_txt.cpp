@@ -1139,21 +1139,21 @@ void TTextPanel::calc_line_pos(void* dc, short line, short current,
         text_size.cx = 0;
     }
 
-    long horizontal = this->horz_align;
-    if (horizontal != 0 && horizontal != 6) {
+    Alignment horizontal = this->horz_align;
+    if (horizontal != AlignCenter && horizontal != AlignWordwrap) {
         col_offset += 5;
     }
 
     long x;
     switch (horizontal) {
-    case 1:
+    case AlignLeft:
         x = this->pnl_x + this->border_size;
         break;
-    case 2:
+    case AlignRight:
         x = this->pnl_x + this->pnl_wid - this->border_size
             - text_size.cx - 7;
         break;
-    case 5:
+    case AlignHorizontalScroll:
         x = this->pnl_x + this->border_size;
         if (col_offset + 1 >= this->pnl_wid) {
             x += this->pnl_wid - col_offset - 2;
@@ -1173,11 +1173,11 @@ void TTextPanel::calc_line_pos(void* dc, short line, short current,
 
     long y;
     switch (this->vert_align) {
-    case 3:
+    case AlignTop:
         y = line * row_size + this->pnl_y + this->border_size
             + this->spacer_size;
         break;
-    case 4:
+    case AlignBottom:
         y = this->pnl_y - (this->num_lines - line) * row_size;
         y += this->pnl_hgt - this->border_size - this->spacer_size - 1;
         break;
