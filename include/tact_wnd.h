@@ -13,8 +13,6 @@ public:
     virtual ~TRIBE_Action_Wonder();
     virtual void first_in_stack(unsigned char);
     virtual unsigned char update();
-
-protected:
     virtual void set_state(unsigned char);
 };
 
