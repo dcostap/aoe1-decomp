@@ -353,25 +353,31 @@ unsigned char TRIBE_Combat_Object::do_attack(RGE_Static_Object* target,
         return 0;
     }
 
-    RGE_Master_Combat_Object* master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     if (rge_base_game->quick_build != 0 &&
-        (master->id == 0x7A || master->id == 0x7B)) {
+        (this->master_obj->id == 0x7A || this->master_obj->id == 0x7B)) {
         this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
         target->die_die_die();
         return 1;
     }
 
-    if (master->area_effect_range > 0.0f && master->weapon_range < 0.99f) {
+    if (static_cast<RGE_Master_Combat_Object*>(this->master_obj)
+                ->area_effect_range > 0.0f &&
+        static_cast<RGE_Master_Combat_Object*>(this->master_obj)
+                ->weapon_range < 0.99f) {
         this->area_attack(x, y, z, attacker, target);
         this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
         const int chance =
             debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp", 0x211) *
             100 / 0x7FFF;
-        if (chance <= master->base_hit_chance) {
-            target->damage(master->weapon_num, master->weapon,
-                           this->calc_attack_modifier(target), this->owner,
-                           attacker);
+        if (chance <= static_cast<RGE_Master_Combat_Object*>(this->master_obj)
+                         ->base_hit_chance) {
+            const float modifier = this->calc_attack_modifier(target);
+            target->damage(
+                static_cast<RGE_Master_Combat_Object*>(this->master_obj)
+                    ->weapon_num,
+                static_cast<RGE_Master_Combat_Object*>(this->master_obj)
+                    ->weapon,
+                modifier, this->owner, attacker);
         }
         return 1;
     }
@@ -411,10 +417,21 @@ void TRIBE_Combat_Object::get_pierce_armor(short& armor, short& original)
 void TRIBE_Combat_Object::reposition_artifact()
 {
     RGE_Static_Object* parent = this->inside_obj;
-    float x = parent != 0 ? parent->world_x : this->world_x;
-    float y = parent != 0 ? parent->world_y : this->world_y;
-    int min_x = static_cast<int>(x);
-    int min_y = static_cast<int>(y);
+    float x;
+    float y;
+    int min_x;
+    int min_y;
+    if (parent != 0) {
+        min_x = static_cast<int>(parent->world_x);
+        x = parent->world_x;
+        min_y = static_cast<int>(parent->world_y);
+        y = parent->world_y;
+    } else {
+        min_x = (int)this->world_x;
+        y = this->world_y;
+        min_y = (int)this->world_y;
+        x = this->world_x;
+    }
     int max_x = min_x;
     int max_y = min_y;
 
@@ -422,38 +439,53 @@ void TRIBE_Combat_Object::reposition_artifact()
     const int map_max_x = map->map_width - 1;
     const int map_max_y = map->map_height - 1;
 
+    unsigned char terrain;
+    int edge;
     for (;;) {
-        for (int row = min_x; row <= max_x; ++row) {
-            const int columns[2] = {min_y, max_y};
-            for (int side = 0; side < 2; ++side) {
-                if (map->get_terrain(static_cast<short>(row),
-                                     static_cast<short>(columns[side])) != 1 &&
-                    map->get_terrain(static_cast<short>(row),
-                                     static_cast<short>(columns[side])) != 2) {
-                    x = static_cast<float>(row) - DAT_00574ca0;
-                    y = static_cast<float>(columns[side]) - DAT_00574ca0;
-                    if (this->master_obj->check_placement(this->owner, x, y, 0,
-                                                          1, 1, 1, 0, 1, 1) == 0) {
-                        goto found_position;
-                    }
+        for (edge = min_x; edge <= max_x; ++edge) {
+            terrain = map->get_terrain(static_cast<short>(edge),
+                                       static_cast<short>(min_y));
+            if (terrain != 1 && terrain != 2) {
+                x = static_cast<float>(edge) - DAT_00574ca0;
+                y = static_cast<float>(min_y) - DAT_00574ca0;
+                if (this->master_obj->check_placement(this->owner, x, y, 0,
+                                                      1, 1, 1, 0, 1, 1) == 0) {
+                    goto found_position;
+                }
+            }
+
+            terrain = map->get_terrain(static_cast<short>(edge),
+                                       static_cast<short>(max_y));
+            if (terrain != 1 && terrain != 2) {
+                x = static_cast<float>(edge) - DAT_00574ca0;
+                y = static_cast<float>(max_y) - DAT_00574ca0;
+                if (this->master_obj->check_placement(this->owner, x, y, 0,
+                                                      1, 1, 1, 0, 1, 1) == 0) {
+                    goto found_position;
                 }
             }
         }
 
-        for (int col = min_y + 1; col <= max_y - 1; ++col) {
-            const int rows[2] = {min_x, max_x};
-            for (int side = 0; side < 2; ++side) {
-                if (map->get_terrain(static_cast<short>(rows[side]),
-                                     static_cast<short>(col)) != 1 &&
-                    map->get_terrain(static_cast<short>(rows[side]),
-                                     static_cast<short>(col)) != 2) {
-                    x = static_cast<float>(rows[side]) - DAT_00574ca0;
-                    y = static_cast<float>(col) - DAT_00574ca0;
-                    if (this->master_obj->check_placement(this->owner, x, y, 0,
-                                                          side == 0, 1, 1, 0, 1,
-                                                          1) == 0) {
-                        goto found_position;
-                    }
+        for (edge = min_y + 1; edge <= max_y - 1; ++edge) {
+            terrain = map->get_terrain(static_cast<short>(min_x),
+                                       static_cast<short>(edge));
+            if (terrain != 1 && terrain != 2) {
+                x = static_cast<float>(min_x) - DAT_00574ca0;
+                y = static_cast<float>(edge) - DAT_00574ca0;
+                if (this->master_obj->check_placement(this->owner, x, y, 0,
+                                                      1, 1, 1, 0, 1, 1) == 0) {
+                    goto found_position;
+                }
+            }
+
+            terrain = map->get_terrain(static_cast<short>(max_x),
+                                       static_cast<short>(edge));
+            if (terrain != 1 && terrain != 2) {
+                x = static_cast<float>(max_x) - DAT_00574ca0;
+                y = static_cast<float>(edge) - DAT_00574ca0;
+                if (this->master_obj->check_placement(this->owner, x, y, 0,
+                                                      0, 1, 1, 0, 1, 1) == 0) {
+                    goto found_position;
                 }
             }
         }
