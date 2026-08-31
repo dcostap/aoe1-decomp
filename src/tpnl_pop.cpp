@@ -249,45 +249,52 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
 
     if (this->ImageBuffer == 0) return 0;
     this->ImageBuffer->PtrClear(&this->ImageRect, 1);
-    if (this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer") == 0)
+    old_font = this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer");
+    if (old_font == 0)
         return 0;
     this->ImageBuffer->SetClipRect(&this->ImageRect);
     SelectClipRgn(this->ImageBuffer->DrawDc, this->image_clip_region);
     old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
     SetBkMode(this->ImageBuffer->DrawDc, 1);
-    sprintf(str, "%s%ld/%ld", this->TPanel::get_string(0x2b2a),
+    sprintf(str + 4, "%s%ld/%ld", this->TPanel::get_string(0x2b2a),
             this->pop, this->max_pop);
     SetTextColor(this->ImageBuffer->DrawDc, this->color2);
-    long width = this->pnl_wid;
-    long height = this->pnl_hgt;
-    SetRect(&rect, 0, 0, width - 3, height - 3);
-    DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
-    SetRect(&rect, 0, 2, width - 3, height - 1);
-    DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
-    SetRect(&rect, 2, 0, width - 1, height - 3);
-    DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
-    SetRect(&rect, 2, 2, width - 1, height - 1);
-    DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
-    SetTextColor(this->ImageBuffer->DrawDc,
-                 this->mode == 1 ? this->color3 : this->color1);
-    --height;
-    --width;
-    SetRect(&rect, 1, 1, width, height);
-    DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
+    {
+        const int width = this->pnl_wid - 1;
+        const int height = this->pnl_hgt - 1;
+        SetRect(&rect, 0, 0, width - 2, height - 2);
+        DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
+        SetRect(&rect, 0, 2, width - 2, height);
+        DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
+        SetRect(&rect, 2, 0, width, height - 2);
+        DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
+        SetRect(&rect, 2, 2, width, height);
+        DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
+        SetTextColor(this->ImageBuffer->DrawDc,
+                     this->mode == 1 ? this->color3 : this->color1);
+        SetRect(&rect, 1, 1, width - 1, height - 1);
+        DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
+    }
     SelectObject(this->ImageBuffer->DrawDc, old_font);
     SelectClipRgn(this->ImageBuffer->DrawDc, 0);
     this->ImageBuffer->ReleaseDc("tpnl_tim::render_to_image_buffer");
 
-    int right = this->pnl_wid - 1;
-    int bottom = this->pnl_hgt - 1;
+    int width = this->pnl_wid;
+    int height = this->pnl_hgt;
+    int screen_left = this->render_rect.left;
     this->UsedImageRect.left = 0;
     this->UsedImageRect.top = 0;
-    this->UsedScreenRect.left = this->render_rect.left;
-    this->UsedScreenRect.top = this->render_rect.top;
-    this->UsedImageRect.right = right;
-    this->UsedImageRect.bottom = bottom;
-    this->UsedScreenRect.right = this->render_rect.left + right;
-    this->UsedScreenRect.bottom = this->render_rect.top + bottom;
+    int screen_top = this->render_rect.top;
+    --width;
+    this->UsedScreenRect.left = screen_left;
+    --height;
+    this->UsedScreenRect.top = screen_top;
+    screen_left += width;
+    this->UsedImageRect.right = width;
+    this->UsedImageRect.bottom = height;
+    this->UsedScreenRect.right = screen_left;
+    screen_top += height;
+    this->UsedScreenRect.bottom = screen_top;
     this->ImageTextActive = 1;
     return 1;
 }
