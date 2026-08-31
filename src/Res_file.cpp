@@ -568,13 +568,11 @@ int __cdecl RESFILE_build_res_file(
 
     {
         BuildRes_id_node* pNode;
-        BuildRes_type_node* tnode;
         BuildRes_type_node* nextType;
         BuildRes_id_node* nextNode;
 
-        tnode = ID_List;
-        while (tnode) {
-            pNode = tnode->idList;
+        while (ID_List) {
+            pNode = ID_List->idList;
             while (pNode) {
                 if (pNode->resData != 0) {
                     free(pNode->resData);
@@ -584,9 +582,9 @@ int __cdecl RESFILE_build_res_file(
                 delete pNode;
                 pNode = nextNode;
             }
-            nextType = tnode->next;
-            delete tnode;
-            tnode = nextType;
+            nextType = ID_List->next;
+            delete ID_List;
+            ID_List = nextType;
         }
     }
 
