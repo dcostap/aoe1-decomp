@@ -46,7 +46,7 @@
     "004289A0": {"status": "matching", "symbol": "?TEST@TCommunications_Handler@@IAEHXZ"},
     "00428A70": {"status": "matching", "symbol": "?SetSelfPlayer@TCommunications_Handler@@IAEXXZ"},
     "00428B10": {"status": "matching", "symbol": "?DropDeadPlayer@TCommunications_Handler@@QAEXIK@Z"},
-    "00428DA0": {"status": "scratch", "symbol": "?EvaluateSystemMessage@TCommunications_Handler@@IAEXKPADKK@Z"},
+    "00428DA0": {"status": "matching", "symbol": "?EvaluateSystemMessage@TCommunications_Handler@@IAEXKPADKK@Z"},
     "00429760": {"status": "matching", "symbol": "?SendGroupChatMsg@TCommunications_Handler@@QAEXPAD@Z"},
     "004297D0": {"status": "matching", "symbol": "?SendChatMsgAll@TCommunications_Handler@@QAEXPAD@Z"},
     "00429810": {"status": "matching", "symbol": "?SendChatMsg@TCommunications_Handler@@QAEXIIPAD@Z"},
