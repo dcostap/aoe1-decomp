@@ -272,6 +272,9 @@ public:
     long pick_touched_object(void*, long, long, long, long, long*);
     void get_string(long, char*, long);
     int Get_Cursor_Position(tagPOINT&, int, int);
+    // Original slots: pick +0xE0/+0xE4, scroll +0xE8 through +0xF4.
+    virtual int pick_through_fog(RGE_Static_Object*);
+    virtual int pick_weight(RGE_Static_Object*, int);
     virtual int start_scroll_view(unsigned char, long, long, int, int);
     virtual int handle_scroll_view(long, long);
     virtual void end_scroll_view();
@@ -284,8 +287,6 @@ public:
     int get_game_enable();
     unsigned char pick_multi(unsigned char, long, long, long, long);
     int pick_through_fog(int);
-    virtual int pick_through_fog(RGE_Static_Object*);
-    virtual int pick_weight(RGE_Static_Object*, int);
     unsigned char pick(unsigned char, unsigned char, tagPOINT*, tagPOINT*,
                        void**, float*, float*, short*, short*);
     unsigned char pick(unsigned char, unsigned char, long, long,

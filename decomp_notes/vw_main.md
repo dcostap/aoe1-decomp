@@ -64,3 +64,10 @@ both report `MATCH`, `0.0000%`, correct ownership, boundaries, and all
 relocations. The PDB source map identifies `0053DBA0` as
 `RGE_Main_View::do_auto_scroll` in `vw_main.cpp`. It covers the repaired
 scrolling-global references.
+
+## 2026-08-31 inherited view-slot repair
+
+The corrected `RGE_View` virtual order made four natural main-view owners
+exact: `0053E7F0`, `0053F220`, `0053F2F0`, and `00540010`. Standalone checks
+report `MATCH`, `0.0000%`, correct ownership, boundaries, relocations, and
+direct targets for all four functions.

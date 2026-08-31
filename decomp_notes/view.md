@@ -122,3 +122,12 @@ The sequential wave20 audit promotes exact `00534500 set_player`. It removes
 the stale `00539AA0 get_tile_picture` exact claim after a 120-byte mismatch and
 one boundary escape. The module retains 47 matching, 26 scratch, four
 accepted-drift, and two verified-logic owners. All 47 registered owners match.
+
+## 2026-08-31 virtual-order repair
+
+Original vtable `005775B8` places object `pick_through_fog` and `pick_weight`
+at `+0xE0/+0xE4`. Scroll methods follow at `+0xE8` through `+0xF4`, and
+`draw_multi_object_outline` uses `+0xF8`. The header now follows that order.
+
+The full affected audit kept all 1,789 matching owners exact. It also made
+`0053A0D0 start_scroll_view` and `0053A9C0 end_scroll_view` exact.
