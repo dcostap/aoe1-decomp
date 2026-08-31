@@ -1912,13 +1912,12 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     int basePlacementTotal;
     int y;
     int candidate;
-    int maximumDistance;
-    XYPoint centerPoint;
+    int maximumPlacementDistance;
+    XYPoint placementCenter;
     XYPoint maxClear;
     XYPoint minClear;
-    int bestPointValue;
     int minimumDistanceValue;
-    int local_154;
+    int minimumPlacementDistance;
     XYPoint max;
     ulong availableTime;
     int firstTimeThrough;
@@ -1926,8 +1925,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     XYPoint min;
     XYPoint maxExclude;
     XYPoint minExclude;
-    int blockingObject;
-    int local_120;
+    int placementResult;
     XYPoint newPosition;
     char buildingName[0x100];
     RGE_Static_Object* townCenter;
@@ -1955,7 +1953,6 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
 
     strncpy(buildingName + 4, objectName, 0xff);
     buildingType = (int)buildingSize;
-    newPosition.x = buildingType;
     y = buildingType * buildingType * 0x14;
 
     if (this->md->player->master_objects[x] != 0) {
@@ -1969,10 +1966,10 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
             builderObject = this->md->object(builderID);
 
     if (item == 0 && state.active != 1) {
-        centerPoint.x = centerX;
-        local_154 = minimumDistance;
-        centerPoint.y = centerY;
-        maxClear.x = maxClearX;
+        maximumPlacementDistance = centerX;
+        minimumPlacementDistance = minimumDistance;
+        placementCenter.x = centerY;
+        placementCenter.y = maxClearX;
     } else {
         coordinateObject = townCenter;
         if (coordinateObject == 0)
@@ -1980,8 +1977,8 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         if (coordinateObject == 0)
             coordinateObject = placementObject;
 
-        centerPoint.y = (int)coordinateObject->world_x;
-        maxClear.x = (int)coordinateObject->world_y;
+        placementCenter.x = (int)coordinateObject->world_x;
+        placementCenter.y = (int)coordinateObject->world_y;
     }
 
     placement = this->placementCode(x);
@@ -1994,36 +1991,30 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         placementObject->lookupZone(centerY, maxClearX);
     } else {
         if (placement == 1) {
-            local_154 = 7;
-            int placementRadius;
-            placementRadius = this->md->tacticalAI.inAge(2);
-            if (placementRadius == 0) {
-                placementRadius = this->md->tacticalAI.inAge(3);
-                if (placementRadius == 0) {
-                    placementRadius = this->md->tacticalAI.inAge(4);
-                    if (placementRadius != 0)
-                        placementRadius = 4;
-                    else
-                        placementRadius = 1;
-                } else {
-                    placementRadius = 3;
-                }
-            } else {
+            minimumPlacementDistance = 7;
+            int placementRadius = placement;
+            if (this->md->tacticalAI.inAge(2) != 0) {
                 placementRadius = 2;
+            } else if (this->md->tacticalAI.inAge(3) != 0) {
+                placementRadius = 3;
+            } else if (this->md->tacticalAI.inAge(4) != 0) {
+                placementRadius = 4;
             }
-            centerPoint.x = this->md->tacticalAI.strategicNumber(0x56) *
-                            placementRadius;
+            maximumPlacementDistance =
+                this->md->tacticalAI.strategicNumber(0x56) * placementRadius;
         } else if (placement == 2) {
-            int placementValue =
+            maximumPlacementDistance =
                 this->md->tacticalAI.strategicNumber(0x57);
-            local_154 = 4;
-            centerPoint.x = placementValue;
+            minimumPlacementDistance = 4;
         } else if (placement == 3 || placement == 4) {
-            local_154 = this->md->tacticalAI.strategicNumber(0x49);
-            centerPoint.x = this->md->tacticalAI.strategicNumber(0x4a);
+            minimumPlacementDistance =
+                this->md->tacticalAI.strategicNumber(0x49);
+            maximumPlacementDistance =
+                this->md->tacticalAI.strategicNumber(0x4a);
         } else {
-            local_154 = 4;
-            centerPoint.x = this->md->tacticalAI.strategicNumber(0x4a);
+            minimumPlacementDistance = 4;
+            maximumPlacementDistance =
+                this->md->tacticalAI.strategicNumber(0x4a);
         }
 
         if (townCenter == 0)
@@ -2032,21 +2023,21 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
 
     }
 
-    if (local_154 < centerPoint.x) {
-        min.x = centerPoint.y - centerPoint.x;
-        min.y = maxClear.x - centerPoint.x;
+    if (minimumPlacementDistance < maximumPlacementDistance) {
+        min.x = placementCenter.x - maximumPlacementDistance;
+        min.y = placementCenter.y - maximumPlacementDistance;
         this->mapBound(&min);
 
-        max.x = centerPoint.y + centerPoint.x;
-        max.y = maxClear.x + centerPoint.x;
+        max.x = placementCenter.x + maximumPlacementDistance;
+        max.y = placementCenter.y + maximumPlacementDistance;
         this->mapBound(&max);
 
-        minExclude.x = centerPoint.y - local_154;
-        minExclude.y = maxClear.x - local_154;
+        minExclude.x = placementCenter.x - minimumPlacementDistance;
+        minExclude.y = placementCenter.y - minimumPlacementDistance;
         this->mapBound(&minExclude);
 
-        maxExclude.x = centerPoint.y + local_154;
-        maxExclude.y = maxClear.x + local_154;
+        maxExclude.x = placementCenter.x + minimumPlacementDistance;
+        maxExclude.y = placementCenter.y + minimumPlacementDistance;
         this->mapBound(&maxExclude);
 
         if (item != 0 && state.active == 0) {
@@ -2079,7 +2070,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         }
 
         if (item == 0 && state.active == 0)
-            this->setupInfluenceMap(placement, x, &centerPoint, &min, &max);
+            this->setupInfluenceMap(placement, x, &placementCenter, &min, &max);
 
         if (state.active == 0) {
             int maxInfluence = this->md->tacticalAI.strategicNumber(0xa8);
@@ -2111,8 +2102,8 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
             strncpy(state.buildingName, buildingName + 4, 0xff);
             state.buildingSize = buildingSize;
             state.builderID = builderID;
-            state.minimumDistance = local_154;
-            state.maximumDistance = centerPoint.x;
+            state.minimumDistance = minimumPlacementDistance;
+            state.maximumDistance = maximumPlacementDistance;
             state.bestPoint.x = bestPoint.x;
             state.active = 1;
             state.bestPoint.y = basePlacementTotal;
@@ -2132,18 +2123,16 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
             do {
                 if (useExcludeRegion != 0) {
                     useExcludeRegion = 0;
-                    maximumDistance = min.y;
                 } else {
                     firstTimeThrough = debug_timeGetTime(
                         (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
                         0xb16);
-                    maximumDistance = min.y;
                     if (availableTime <= firstTimeThrough - currentTime) {
                         goto save_state_second;
                     }
                 }
 
-                candidate = maximumDistance;
+                candidate = min.y;
                 if (candidate <= max.y) {
                     do {
                         if (min.x != 1 || randSelect < minExclude.x ||
@@ -2155,7 +2144,6 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                 minClear.y = candidate - 2;
                                 maxClear.x = randSelect + 2;
                                 maxClear.y = candidate + 2;
-                                bestPointValue = candidate - 2;
                             } else if (buildingSize == DAT_0057557c) {
                                 if (placement == 6 || placement == 3 ||
                                     placement == 4 || placement == 1 ||
@@ -2164,28 +2152,24 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                     minClear.y = candidate - 1;
                                     maxClear.x = randSelect + 1;
                                     maxClear.y = candidate + 1;
-                                    bestPointValue = candidate - 1;
                                 } else {
                                     minClear.x = randSelect - 2;
                                     minClear.y = candidate - 2;
                                     maxClear.x = randSelect + 2;
                                     maxClear.y = candidate + 2;
-                                    bestPointValue = candidate - 2;
                                 }
                             } else if (buildingSize == DAT_00575574) {
                                 if (placement == 6 || placement == 3 ||
                                     placement == 4) {
-                                    minClear.x = randSelect;
+                                    minClear.x = randSelect - 1;
                                     minClear.y = candidate - 1;
-                                    maxClear.x = randSelect - 1;
+                                    maxClear.x = randSelect;
                                     maxClear.y = candidate;
-                                    bestPointValue = candidate - 1;
                                 } else {
-                                    minClear.x = randSelect + 1;
+                                    minClear.x = randSelect - 2;
                                     minClear.y = candidate - 2;
-                                    maxClear.x = randSelect - 2;
+                                    maxClear.x = randSelect + 1;
                                     maxClear.y = candidate + 1;
-                                    bestPointValue = candidate - 2;
                                 }
                             } else {
                                 if (buildingSize != DAT_00575564) {
@@ -2195,25 +2179,24 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                 minClear.y = candidate;
                                 maxClear.x = randSelect;
                                 maxClear.y = candidate;
-                                bestPointValue = candidate;
                                 if (placement != 6 &&
                                     placement != 3 && placement != 4) {
                                     minClear.x = randSelect - 1;
                                     minClear.y = candidate - 1;
                                     maxClear.x = randSelect + 1;
                                     maxClear.y = candidate + 1;
-                                    bestPointValue = candidate - 1;
                                 }
                             }
 
                             if (this->mapBound(&minClear) != 1 &&
                                 this->mapBound(&maxClear) != 1) {
-                                local_120 = -1;
+                                placementResult = -1;
                                 if (masterObj->check_placement(
                                         this->md->player,
                                         (float)randSelect - DAT_00575570,
                                         (float)candidate - DAT_00575570,
-                                        &local_120, 1, 1, 1, 1, 1, 1) == 0) {
+                                        &placementResult,
+                                        1, 1, 1, 1, 1, 1) == 0) {
                                     int score = 0;
                                     int blocked = 0;
                                     int row = minClear.x;
@@ -2251,7 +2234,8 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                         }
 
                                         if (placement == 4) {
-                                            newPosition.y = randSelect;
+                                            newPosition.x = randSelect;
+                                            newPosition.y = candidate;
                                             if (this->lastWallPosition.x != -1 &&
                                                 this->isNextTo(
                                                     &this->lastWallPosition,
@@ -2261,7 +2245,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                             int direction = this->facetTo(
                                                 this->lastWallPosition,
                                                 newPosition);
-                                            if ((abs(direction) & 1) == 1)
+                                            if (direction % 2 == 1)
                                                 score *= 3;
 
                                             int previousDirection = this->facetTo(
@@ -2271,9 +2255,9 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                                 score *= 3;
 
                                             int dx = abs(this->lastWallPosition.x -
-                                                         centerPoint.y);
+                                                         placementCenter.x);
                                             int dy = abs(this->lastWallPosition.y -
-                                                         maxClear.x);
+                                                         placementCenter.y);
                                             if (dy < dx) {
                                                 if (direction == 1 || direction == 5)
                                                     score *= 3;
@@ -2290,23 +2274,24 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                         } else if (placement != 6) {
                                             if (this->undesirableLot(
                                                     x, (uchar)randSelect,
-                                                    (uchar)candidate, newPosition.x) == 1)
+                                                    (uchar)candidate,
+                                                    buildingType) == 1)
                                                 score /= 10;
                                         }
 
                                         if (placement == 1 ||
                                             placement == 2) {
                                             int distanceSquared =
-                                                (randSelect - centerPoint.y) *
-                                                    (randSelect - centerPoint.y) +
-                                                (candidate - maxClear.x) *
-                                                    (candidate - maxClear.x);
+                                                (randSelect - placementCenter.x) *
+                                                    (randSelect - placementCenter.x) +
+                                                (candidate - placementCenter.y) *
+                                                    (candidate - placementCenter.y);
                                             int distance =
                                                 (int)sqrt((float)distanceSquared);
                                             if (distance > 10) {
                                                 int adjusted = score -
                                                     (distance - 10) / 5;
-                                                if (candidate < adjusted)
+                                                if (y < adjusted)
                                                     score = adjusted;
                                             }
                                         }
@@ -2385,8 +2370,8 @@ save_state_second:
     strncpy(state.buildingName, buildingName + 4, 0xff);
     state.buildingSize = buildingSize;
     state.builderID = builderID;
-    state.minimumDistance = local_154;
-    state.maximumDistance = centerPoint.x;
+    state.minimumDistance = minimumPlacementDistance;
+    state.maximumDistance = maximumPlacementDistance;
     state.bestPoint.x = bestPoint.x;
     state.active = 1;
     state.bestPoint.y = basePlacementTotal;
