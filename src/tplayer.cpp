@@ -1035,10 +1035,11 @@ void TRIBE_Player::reimburse_obj_cost(short obj_idx)
     TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
     if (object->master_type < 0x46) return;
     for (int i = 0; i < 3; ++i) {
-        if (combat->build_inventory[i].type >= 0 &&
-            combat->build_inventory[i].flag != 0)
-            this->attributes[combat->build_inventory[i].type] +=
-                combat->build_inventory[i].amount;
+        Attribute_Cost* cost = &combat->build_inventory[i];
+        int type = cost->type;
+        unsigned char flag = cost->flag;
+        if (type >= 0 && flag != 0)
+            this->attributes[type] += cost->amount;
     }
 }
 
