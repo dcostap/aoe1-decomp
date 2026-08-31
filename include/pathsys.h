@@ -109,8 +109,8 @@ public:
     long checksum(void);
 protected:
     void printState(RGE_Moving_Object* obj);
-public:
     int copyPath(int step);
+public:
     void copyUnobstructibles(ManagedArray<int>& out);
     void printToFile(char* filename);
 };
