@@ -57,3 +57,20 @@ The candidate used `config/flags/default.rsp` through
 - The report has zero comparison errors.
 
 Exact repair resumes on this source tree.
+
+## 2026-08-31 coordinated vtable review
+
+Root tested the moving, action, and combat slot proposal as one change. It
+removed the two unsupported moving overloads and made `work2` and `set_task`
+virtual. It also reversed the adjacent combat `attack` declarations. The full
+change preserved exact `00401EC0` and `00430230`, but changed 16 bytes in exact
+`0045AA70 missile_move`.
+
+Root then tested only the combat overload reversal. It preserved exact
+`0042FCA0`, `0045AA70`, and `004C6DA0`. However, it changed two bytes in exact
+`00401EC0` and one byte in exact `00430230`. Both changes also selected wrong
+direct call targets. Root restored all three headers.
+
+The binary slot evidence remains useful, but the proposal is not a safe shared
+repair. Do not change these declarations until one source model preserves all
+three exact anchors: `00401EC0`, `00430230`, and `0045AA70`.
