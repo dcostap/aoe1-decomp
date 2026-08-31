@@ -46,3 +46,17 @@ written behavior review. The natural body remains unchanged.
 `00468000 set_popup_info_file` remains accepted drift. Its fresh grouped result
 differs by two bytes with matching ownership, relocation, and boundary checks.
 Exact repair resumes from this canonical source tree.
+
+## Nested format enums
+
+The original `create_input` and `create_edit` symbols use nested `FormatType`
+enums. A full class-visible repair makes both bodies exact.
+
+VC5 cannot name either nested enum from an incomplete class. Full foreign class
+definitions therefore become compiler context for every `panel_ez.h` dependent.
+
+The latest narrow trials preserved `0048E400` but regressed exact `00473C80`.
+Header order, reduced dependency includes, and natural text/list header
+ownership did not remove that regression. All trials were restored.
+
+Do not use a symbol alias, copied class, context macro, or wrong integer owner.
