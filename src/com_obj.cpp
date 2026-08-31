@@ -15,7 +15,7 @@
 #include "../include/player.h"
 #include "../include/rge_fio.h"
 #include "../include/task_lst.h"
-#include "../include/unit_ai_module.h"
+#include "../include/aiuaimod.h"
 #include "../include/world.h"
 #include <math.h>
 #include <stddef.h>
