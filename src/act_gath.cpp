@@ -390,11 +390,13 @@ unsigned char RGE_Action_Gather::update() {
         } else {
             modifier = this->obj->owner->attributes[attr];
         }
-        max_hold = modifier * (float)this->obj->master_obj->attribute_max_amount -
-                   this->obj->attribute_amount_held;
-        if (modifier * give_amount > max_hold) {
+        max_hold = modifier * (float)this->obj->master_obj->attribute_max_amount;
+        if (modifier * give_amount >
+            max_hold - this->obj->attribute_amount_held) {
             give_amount = give_amount -
-                          (modifier * give_amount - max_hold) / modifier;
+                          (modifier * give_amount -
+                           (max_hold - this->obj->attribute_amount_held)) /
+                          modifier;
         }
         this->target_obj->set_attribute_amount(-give_amount, 1, 1);
         this->obj->set_attribute_amount(give_amount * modifier, 1, 0);
