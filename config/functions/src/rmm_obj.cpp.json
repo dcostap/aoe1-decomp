@@ -9,7 +9,7 @@
     "00485C50": {"status": "matching", "symbol": "??0RGE_RMM_Object_Generator@@QAE@PAVRGE_Map@@PAVRGE_Random_Map_Module@@PAVRGE_Game_World@@PAURGE_Object_Info@@E@Z"},
     "00485CB0": {"status": "matching", "symbol": "?add_quick_obj@RGE_RMM_Object_Generator@@QAEXJJJ@Z"},
     "00485DC0": {"status": "matching", "symbol": "?generate@RGE_RMM_Object_Generator@@UAEEXZ"},
-    "00485E50": {"status": "scratch", "symbol": "?generate_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@@Z"},
+    "00485E50": {"status": "matching", "symbol": "?generate_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@@Z"},
     "00485F10": {"status": "scratch", "symbol": "?make_placement_stack@RGE_RMM_Object_Generator@@IAEXAAUMap_Stack@@JJJJ@Z"},
     "00486110": {"status": "matching", "symbol": "?to_close@RGE_RMM_Object_Generator@@IAEEAAURGE_Object_Info_Line@@JJ@Z"},
     "00486180": {"status": "matching", "symbol": "?set_search_area@RGE_RMM_Object_Generator@@IAEXJJJE@Z"},

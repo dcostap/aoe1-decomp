@@ -1,4 +1,5 @@
 #include <string.h>
+#include <memory.h>
 #include "../include/m_s_obj.h"
 #include "../include/rmm_obj.h"
 #include "../include/map.h"
@@ -332,7 +333,6 @@ void RGE_RMM_Object_Generator::place_avoid_objects(
 }
 
 // still differs in the initial world/player/count scheduling block.
-#include <memory.h>
 
 void RGE_RMM_Object_Generator::place_objects(RGE_Object_Info_Line& info)
 {
