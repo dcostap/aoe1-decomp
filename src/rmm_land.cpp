@@ -61,11 +61,15 @@ unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
     do {
         if (row < 0) {
             if (row > cy0) {
-                count += 5;
+                if (row > octogon_y0) {
+                    count += 5;
+                }
             }
         } else if (row >= this->map_height) {
             if (row < cy1) {
-                count += 5;
+                if (row < octogon_y1) {
+                    count += 5;
+                }
             }
         } else {
             column = x0;
@@ -106,43 +110,35 @@ unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_id)
 {
     unsigned char fade;
     long wall_1;
-    long x_chance;
     long wall_3;
-    long a;
-    long xpos;
-    long right;
-    long wall_2;
-    long wall_4;
-    long ypos;
 
     fade = this->info.land[land_id].wall_fade;
     if (fade > 0) {
         wall_1 = this->info.land[land_id].wall_1_avoidance_line;
         wall_3 = this->info.land[land_id].wall_3_avoidance_line;
-        a = wall_1 - x;
-        xpos = x - wall_3;
-        x_chance = a;
+        long a = wall_1 - x;
+        long xpos = x - wall_3;
+        long x_chance = a;
         if (a <= xpos)
             x_chance = xpos;
 
-        right = this->map_width;
+        long right = this->map_width;
         a += wall_1;
         right -= wall_3;
         xpos += right;
         if (a <= xpos)
             a = xpos;
 
-        wall_2 = this->info.land[land_id].wall_2_avoidance_line;
+        long wall_2 = this->info.land[land_id].wall_2_avoidance_line;
         if (a > 0) {
-            ypos = y;
-            wall_4 = this->info.land[land_id].wall_4_avoidance_line;
+            long wall_4 = this->info.land[land_id].wall_4_avoidance_line;
             wall_2 += a;
             a -= wall_4;
-            wall_2 -= ypos;
-            a += ypos;
+            wall_2 -= y;
+            a += y;
         } else {
             a = y;
-            wall_4 = this->info.land[land_id].wall_4_avoidance_line;
+            long wall_4 = this->info.land[land_id].wall_4_avoidance_line;
             wall_2 -= a;
             a -= wall_4;
         }
@@ -167,7 +163,7 @@ unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_id)
 // map rows use [row][column]. The stack outputs are column then
 // row, and the helper calls use that same coordinate order.
 unsigned char RGE_RMM_Land_Generator::base_land_generate() {
-    long land_size[100];
+    long land_size[99];
     Map_Stack stack[99];
 
     long land_id;
