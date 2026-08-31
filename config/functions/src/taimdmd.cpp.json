@@ -6,8 +6,8 @@
     "flags": "gx"
   },
   "functions": {
-    "004E4800": {"status": "scratch", "symbol": "??0TribeMainDecisionAIModule@@QAE@PAXHPADPAVTRIBE_Player@@111@Z"},
-    "004E4B80": {"status": "scratch", "symbol": "??0TribeMainDecisionAIModule@@QAE@HPADPAVTRIBE_Player@@H@Z"},
+    "004E4800": {"status": "matching", "symbol": "??0TribeMainDecisionAIModule@@QAE@PAXHPADPAVTRIBE_Player@@111@Z"},
+    "004E4B80": {"status": "matching", "symbol": "??0TribeMainDecisionAIModule@@QAE@HPADPAVTRIBE_Player@@H@Z"},
     "004E4EC0": {"status": "matching", "symbol": "??1TribeMainDecisionAIModule@@UAE@XZ"},
     "004E4FA0": {"status": "matching", "symbol": "?setLogHistory@TribeMainDecisionAIModule@@UAEXH@Z"},
     "004E5050": {"status": "scratch", "symbol": "?update@TribeMainDecisionAIModule@@UAEHH@Z"},
