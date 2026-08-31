@@ -590,7 +590,6 @@ void RGE_Command::do_command_ai_order(RGE_Command_AI_Order* cmd) {
 
 void RGE_Command::do_command_group_ai_order(RGE_Command_Group_AI_Order* command)
 {
-    RGE_Command* self = this;
     int count = command->recipient_count;
     RGE_Obj_Info* recipient_base = reinterpret_cast<RGE_Obj_Info*>(
         reinterpret_cast<unsigned char*>(command) + sizeof(*command));
@@ -599,7 +598,7 @@ void RGE_Command::do_command_group_ai_order(RGE_Command_Group_AI_Order* command)
         RGE_Obj_Info* recipients = recipient_base;
         int loop_count = count;
         do {
-            RGE_Static_Object* object = self->get_obj(*recipients);
+            RGE_Static_Object* object = this->get_obj(*recipients);
             if (object != 0) {
                 float target_x;
                 if (command->targetX != -1.0f)
@@ -621,13 +620,12 @@ void RGE_Command::do_command_group_ai_order(RGE_Command_Group_AI_Order* command)
 
                 object->removeAllFromPathingGroup();
 
-                RGE_Player* player = self->world->players[command->player_id];
-                player->processAIOrder(command->issuer, object->id,
-                                       command->orderType, command->target,
-                                       command->targetOwner, target_x, target_y,
-                                       target_z, command->range,
-                                       command->immediate, command->inFront,
-                                       command->orderPriority);
+                RGE_Game_World* world = this->world;
+                world->players[command->player_id]->processAIOrder(
+                    command->issuer, object->id, command->orderType,
+                    command->target, command->targetOwner, target_x, target_y,
+                    target_z, command->range, command->immediate,
+                    command->inFront, command->orderPriority);
             }
             ++recipients;
             --loop_count;
