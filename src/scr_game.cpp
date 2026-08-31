@@ -110,12 +110,12 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->last_view_time = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_game_c, 0x142);
     this->player_quit = 0;
 
-    this->save_age = *this->get_string(0x103f);
-    this->save_culture = 0;
-    this->save_screen_width = *this->get_string(0x104a);
-    this->game_over_time = 0;
-    this->showing_game_over = *this->get_string(0x103a);
-    this->chat_line = 0x41;
+    this->view_town_center_hotkey = *this->get_string(0x103f);
+    this->work_hotkey = 0;
+    this->move_hotkey = *this->get_string(0x104a);
+    this->attack_hotkey = 0;
+    this->ungroup_hotkey = *this->get_string(0x103a);
+    this->watch_hotkey = 0x41;
     for (i = 0; i < 8; i++) {
         this->select_building_hotkey[i] = *this->get_string(i + 0x1040);
     }
@@ -125,6 +125,8 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->watch_mode = 0;
     this->game_ended = 0;
     this->game_over_sound = 0;
+    this->last_game_speed_change = 0;
+    this->last_pause_change = 0;
 
     if (!this->setup(rge_base_game->draw_area, s_scr6, 0xc388, 1)) {
         this->error_code = 1;
@@ -195,31 +197,25 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->map_view->main_view = main_view_for_map;
 
     RGE_Font* font = rge_base_game->get_font(0xb);
-    {
-    TRIBE_Panel_Inven* inven = new TRIBE_Panel_Inven(
+    this->inven_panel = new TRIBE_Panel_Inven(
         this->render_area, this, font->font,
         static_cast<TRIBE_Player*>(rge_base_game->get_player()));
-    this->inven_panel = inven;
-    if (inven == 0 || inven->error_code != 0) {
+    if (this->inven_panel == 0 || this->inven_panel->error_code != 0) {
         this->error_code = 1;
         return;
     }
-    inven->set_help_info(0x4e25, -1);
-    }
+    this->inven_panel->set_help_info(0x4e25, -1);
 
     font = rge_base_game->get_font(7);
-    {
-    TRIBE_Panel_Object* object_panel = new TRIBE_Panel_Object(
+    this->object_panel = new TRIBE_Panel_Object(
         this->render_area, this, font->font, font->font_wid, font->font_hgt,
         this->button_unit_pic, this->button_bldg_pics,
         static_cast<TRIBE_Player*>(rge_base_game->get_player()));
-    this->object_panel = object_panel;
-    if (object_panel == 0 || object_panel->error_code != 0) {
+    if (this->object_panel == 0 || this->object_panel->error_code != 0) {
         this->error_code = 1;
         return;
     }
-    object_panel->set_help_info(0x19bb8, 0x265ac);
-    }
+    this->object_panel->set_help_info(0x19bb8, 0x265ac);
 
     font = rge_base_game->get_font(0xb);
     TDigital* sound = rge_base_game->get_sound(1);
@@ -245,14 +241,15 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->button_panel[16]->set_help_info(0x1d4dc, -1);
 
     for (i = 12; i < 15; ++i) {
-        TRIBE_Panel_Button* button = this->button_panel[i];
-        button->setDrawType(TButtonPanel::DrawPicture);
-        button->tribe_button_type = 3;
-        button->set_text(0, rge_base_game->get_string2(0x66, button->get_id(),
-                                                        0, str, 0x200));
-        button->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
-                               this->bevel_color3, this->bevel_color4,
-                               this->bevel_color5, this->bevel_color6);
+        this->button_panel[i]->setDrawType(TButtonPanel::DrawPicture);
+        this->button_panel[i]->tribe_button_type = 3;
+        this->button_panel[i]->set_text(
+            0, rge_base_game->get_string2(0x66,
+                                          this->button_panel[i]->get_id(),
+                                          0, str, 0x200));
+        this->button_panel[i]->set_bevel_info(
+            3, this->bevel_color1, this->bevel_color2, this->bevel_color3,
+            this->bevel_color4, this->bevel_color5, this->bevel_color6);
     }
     if (rge_base_game->singlePlayerGame() == 1) {
         this->button_panel[12]->set_active(0);
