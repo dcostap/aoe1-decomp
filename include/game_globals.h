@@ -8,7 +8,7 @@ class RGE_Base_Game;
 class RGE_Static_Object;
 class TDrawArea;
 class Visible_Unit_Manager;
-class LOSTBL;
+struct LOSTBL;
 class VC_LOG;
 struct VISIBLE_UNIT_REC;
 class IDirectPlay3;

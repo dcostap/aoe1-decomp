@@ -69,7 +69,7 @@ class InfluenceMap;
 class InformationAIModule;
 struct Item_Avail;
 class LINEINFO;
-class LOSTBL;
+struct LOSTBL;
 struct MSGFORMAT_ACKNOWLEDGE_GUARANTEED;
 struct MSGFORMAT_ALL_DONE;
 struct MSGFORMAT_CHAT;

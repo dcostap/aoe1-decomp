@@ -5,7 +5,7 @@
 #include "xyz_point.h"
 
 class InfluenceMap;
-class LOSTBL;
+struct LOSTBL;
 class Path;
 class RGE_Action_Object;
 class RGE_Active_Sprite_List;

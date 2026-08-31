@@ -63,7 +63,7 @@
     "004C58C0": {"status": "scratch", "symbol": "?more_room@RGE_Static_Object@@QAEEXZ"},
     "004C58E0": {"status": "matching", "symbol": "?enter_obj@RGE_Static_Object@@UAEXPAV1@@Z"},
     "004C5960": {"status": "matching", "symbol": "?exit_obj@RGE_Static_Object@@UAEXXZ"},
-    "004C5980": {"status": "scratch", "symbol": "?get_los_table@RGE_Static_Object@@UAEPAULOSTBL@@XZ"},
+    "004C5980": {"status": "matching", "symbol": "?get_los_table@RGE_Static_Object@@UAEPAULOSTBL@@XZ"},
     "004C59B0": {"status": "matching", "symbol": "?explore_terrain@RGE_Static_Object@@UAEHPAVRGE_Player@@EH@Z"},
     "004C5AA0": {"status": "matching", "symbol": "?unexplore_terrain@RGE_Static_Object@@UAEXPAVRGE_Player@@EH@Z"},
     "004C5B90": {"status": "scratch", "symbol": "?damage@RGE_Static_Object@@UAEXHPAURGE_Armor_Weapon_Info@@MPAVRGE_Player@@PAV1@@Z"},
