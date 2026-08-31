@@ -41,7 +41,7 @@
     "0041CFC0": {"status": "matching", "symbol": "?set_campaign_win@RGE_Base_Game@@QAEXXZ"},
     "0041CFD0": {"status": "matching", "symbol": "?run@RGE_Base_Game@@UAEHXZ"},
     "0041D0A0": {"status": "matching", "symbol": "?setup_cmd_options@RGE_Base_Game@@MAEHXZ"},
-    "0041E700": {"status": "scratch", "symbol": "?setup_class@RGE_Base_Game@@MAEHXZ"},
+    "0041E700": {"status": "matching", "symbol": "?setup_class@RGE_Base_Game@@MAEHXZ"},
     "0041E7A0": {"status": "matching", "symbol": "?rge_base_game_wnd_proc@@YGJPAXIIJ@Z"},
     "0041E7D0": {"status": "accepted_drift", "symbol": "?setup_main_window@RGE_Base_Game@@MAEHXZ"},
     "0041E920": {"status": "accepted_drift", "symbol": "?setup_graphics_system@RGE_Base_Game@@MAEHXZ"},
