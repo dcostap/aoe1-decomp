@@ -91,16 +91,17 @@ void PointMaker::DrawMask(int param_1, int param_2, int param_3)
     char* pcVar2;
     int len;
     int iVar6;
-    int iVar7 = param_1;
+    int iVar7;
     int iVar8;
     int iVar9;
 
-    if (iVar7 > Width) return;
+    iVar9 = Width;
+    if (param_1 > iVar9) return;
     if (param_2 > Height) return;
-    if (param_3 + 2 + iVar7 < 0) return;
+    if (param_3 + 2 + param_1 < 0) return;
     if (param_3 + 2 + param_2 < 0) return;
 
-    iVar9 = Width;
+    iVar7 = param_1;
     iVar1 = param_3 + 2;
     iVar6 = param_2;
     if (param_3 == 2) {
