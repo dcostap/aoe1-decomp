@@ -756,16 +756,14 @@ void TRIBE_Command::command_build(int player_id, int* ids, int count,
             for (int i = 0; i < count; ++i) {
                 unit_ids[i].id = ids[i];
             }
-            short build_short = (short)build_id;
-            int cat_for_log = build_id;
             cmd->location_x = x;
             cmd->location_y = y;
             cmd->command = 0x66;
             cmd->unit_num = static_cast<unsigned char>(count);
-            cmd->obj_id = build_short;
+            cmd->obj_id = static_cast<short>(build_id);
             cmd->unique_id = terrain;
             cmd->unit_player_id = static_cast<unsigned char>(player_id);
-            L->Log("      >SEND CMD BUILD2 (CNT=%d,CAT=%d)", count, cat_for_log);
+            L->Log("      >SEND CMD BUILD2 (CNT=%d,CAT=%d)", count, build_id);
             this->submit(cmd, size);
         }
     }
@@ -924,11 +922,9 @@ void TRIBE_Command::command_inventory(short player_id, short inventory_id, float
     TRIBE_Command_Game* cmd = static_cast<TRIBE_Command_Game*>(
         calloc(1, sizeof(TRIBE_Command_Game)));
     if (cmd) {
-        short inv = inventory_id;
-        short player = player_id;
-        cmd->var2 = inv;
+        cmd->var2 = inventory_id;
         cmd->var3 = amount;
-        cmd->var1 = player;
+        cmd->var1 = player_id;
         cmd->command = 0x67;
         cmd->game_command = 2;
         L->Log("      >SEND CMD INV (PLR=%d,INV=%d)",
