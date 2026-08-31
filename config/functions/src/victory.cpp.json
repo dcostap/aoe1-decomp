@@ -57,7 +57,7 @@
     "005330E0": {"status": "matching", "symbol": "?add_points_high_attribute_amount@RGE_Victory_Conditions@@QAEEEEJJJ@Z"},
     "00533120": {"status": "matching", "symbol": "?handle_points_attribute_amount@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Point_Entry@@@Z"},
     "00533180": {"status": "matching", "symbol": "?handle_points_attribute_first@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Point_Entry@@@Z"},
-    "00533240": {"status": "scratch", "symbol": "?handle_points_highest_attribute@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Point_Entry@@@Z"},
+    "00533240": {"status": "accepted_drift", "symbol": "?handle_points_highest_attribute@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Point_Entry@@@Z"},
     "00533330": {"status": "matching", "symbol": "?handle_points_high_attribute_once@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Point_Entry@@@Z"},
     "00533410": {"status": "matching", "symbol": "?handle_points_high_attribute_amount@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Point_Entry@@@Z"},
     "00533480": {"status": "matching", "symbol": "?get_victory_points@RGE_Victory_Conditions@@QAEJXZ"},
