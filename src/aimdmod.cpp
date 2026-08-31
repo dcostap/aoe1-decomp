@@ -300,16 +300,16 @@ RGE_Static_Object* MainDecisionAIModule::mostDamaged(int class_id, int type_id)
             continue;
         }
 
-        int maximum_hit_points = object->master_obj->hp;
-        if ((float)maximum_hit_points <= object->hp || object->canRepair() != 1) {
+        int maxhp = object->master_obj->hp;
+        if ((float)maxhp <= object->hp || object->canRepair() != 1) {
             continue;
         }
         if (type_id != -1 && type_id != (int)object->master_obj->id) {
             continue;
         }
 
-        int damage = (long)((float)maximum_hit_points - object->hp) * 100 /
-                     maximum_hit_points;
+        int hp = object->master_obj->hp;
+        int damage = (long)((float)hp - object->hp) * 100 / hp;
         if (damage > damage_percentage) {
             result = object;
             damage_percentage = damage;
