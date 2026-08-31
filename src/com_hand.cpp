@@ -2727,7 +2727,9 @@ void TCommunications_Handler::ClearRXandTX()
         entry->ResendMsg = 0;
         entry->Serial = 0;
         entry->Length = 0;
-        memset(entry->DestMap, 0, sizeof(entry->DestMap));
+        for (unsigned int j = 0; j < 10; ++j) {
+            entry->DestMap[j] = 0;
+        }
     }
 }
 
