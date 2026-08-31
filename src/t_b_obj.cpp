@@ -306,7 +306,7 @@ void TRIBE_Building_Object::set_object_state(unsigned char state)
         } else {
             unexplore_terrain(owner, 1, -1);
             explore_terrain(owner, 0, -1);
-            new_sprite(static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_sprite);
+            new_sprite(static_cast<TRIBE_Master_Building_Object*>(master_obj)->sprite);
             facet = (unsigned char)static_cast<TRIBE_Master_Building_Object*>(master_obj)->building_facet;
             if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->building_connect_flag != 0) {
                 connect();
@@ -319,21 +319,19 @@ void TRIBE_Building_Object::set_object_state(unsigned char state)
         }
 
         if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tile > -1) {
-            RGE_Game_World* build_world = owner->world;
-            RGE_Map* build_map = build_world->map;
-            short x1 = (short)(world_x - static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_x);
-            short y1 = (short)(world_y - static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_y);
-            short x2 = (short)(world_x + static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_x - DAT_005749e8);
-            short y2 = (short)(world_y + static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_y - DAT_005749e8);
-            build_map->set_terrain(build_world->players[0], build_world,
-                                   y1, x1, y2, x2,
-                                   (unsigned char)static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tile,
-                                   1, 0);
-            build_map->request_redraw(
-                (short)(world_x - static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_x) - 1,
-                (short)(world_y - static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_y) - 1,
-                (short)(world_x + static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_x - DAT_005749e8) + 1,
-                (short)(world_y + static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_y - DAT_005749e8) + 1,
+            short x1 = (short)(world_x - static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x);
+            short y1 = (short)(world_y - static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y);
+            short x2 = (short)(world_x + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x - DAT_005749e8);
+            short y2 = (short)(world_y + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y - DAT_005749e8);
+            owner->world->map->set_terrain(owner->world->players[0], owner->world,
+                                          x1, y1, x2, y2,
+                                          (unsigned char)static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tile,
+                                          1, 0);
+            owner->world->map->request_redraw(
+                (short)(world_x - static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x) - 1,
+                (short)(world_y - static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y) - 1,
+                (short)(world_x + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_x - DAT_005749e8) + 1,
+                (short)(world_y + static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_radius_y - DAT_005749e8) + 1,
                 0);
         }
 
