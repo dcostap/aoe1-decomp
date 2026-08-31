@@ -1775,13 +1775,14 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
 {
     int i;
     int map_size;
+    int player_count;
     int center;
     long line;
-    long x2;
     long x1;
     long y1;
     long y2;
-    char random_seed_text[28];
+    long x2;
+    char random_seed_text[24];
     long saved_random_map_seed;
     float f1;
     float f2;
@@ -1906,11 +1907,14 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
             this->CurrentVictory = 0;
             this->load_victory_cond_from_scenario(0);
             this->activate_victory_panel(1);
-            line = this->victory_drop_down->get_line();
-            this->activate_victory_proper_fields(line, 1);
+            this->activate_victory_proper_fields(
+                this->victory_drop_down->get_line(), 1);
         }
         if (param_2 == 0 && param_1 == this->victory_amount_input) this->bottom_panel->set_curr_child(0);
-        if (param_2 == 2 && param_1 == this->victory_drop_down) { line = this->victory_drop_down->get_line(); this->activate_victory_proper_fields(line, 1); }
+        if (param_2 == 2 && param_1 == this->victory_drop_down) {
+            this->activate_victory_proper_fields(
+                this->victory_drop_down->get_line(), 1);
+        }
         if (param_2 == 1) {
             if (param_1 != this->victory_amount_input) {
                 line = this->victory_drop_down->get_line();
@@ -1925,66 +1929,77 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                     if (destination_object != 0) {
                         rge_base_game->get_player()->select_one_object(destination_object, 0);
                     }
-                } else if (param_1 == this->victory_button_set_destination && line != 1) {
-                    this->SelectRegionFlag = SelectArea;
-                    rge_base_game->get_player()->unselect_object();
-                    RGE_Static_Object* selected_object = this->SelectedObject;
-                    if (selected_object != 0) {
-                        rge_base_game->get_player()->select_one_object(selected_object, 0);
-                    }
-                    rge_base_game->set_game_mode(0, 0);
                     return 1;
-                } else if (param_1 == this->victory_button_set_destination) {
-                    this->SelectRegionFlag = SelectDestinationObject;
-                    rge_base_game->set_game_mode(0x10, 0);
-                    rge_base_game->get_player()->unselect_object();
-                    RGE_Static_Object* selected_object = this->SelectedObject;
-                    if (selected_object != 0) {
-                        rge_base_game->get_player()->select_one_object(selected_object, 0);
+                } else {
+                    if (param_1 == this->victory_button_set_destination && line != 1) {
+                        this->SelectRegionFlag = SelectArea;
+                        rge_base_game->get_player()->unselect_object();
+                        RGE_Static_Object* selected_object = this->SelectedObject;
+                        if (selected_object != 0) {
+                            rge_base_game->get_player()->select_one_object(selected_object, 0);
+                        }
+                        rge_base_game->set_game_mode(0x11, 0);
+                        return 1;
                     }
-                } else if (param_1 == this->victory_button_go_to_dest && line != 1) {
-                    this->main_view->get_selection_area(y1, y2, x1,
-                                                        x2, 1);
-                    f1 = static_cast<float>(x1);
-                    f2 = static_cast<float>(x2);
-                    this->px1 = static_cast<float>(y1);
-                    this->py1 = static_cast<float>(y2);
-                    this->SelectRegionFlag = SelectOff;
-                    this->px2 = f1;
-                    this->py2 = f2;
-                    if (f1 != -1.0f) {
+                    if (param_1 == this->victory_button_set_destination && line == 1) {
+                        this->SelectRegionFlag = SelectDestinationObject;
+                        rge_base_game->set_game_mode(0x10, 0);
+                        rge_base_game->get_player()->unselect_object();
+                        RGE_Static_Object* selected_object = this->SelectedObject;
+                        if (selected_object != 0) {
+                            rge_base_game->get_player()->select_one_object(selected_object, 0);
+                        }
+                        return 1;
+                    } else if (param_1 == this->victory_button_go_to_dest && line != 1) {
+                        this->main_view->get_selection_area(y1, y2, x1,
+                                                            x2, 1);
+                        f1 = static_cast<float>(x1);
+                        this->px1 = static_cast<float>(y1);
+                        this->py1 = static_cast<float>(y2);
+                        this->SelectRegionFlag = SelectOff;
+                        f2 = static_cast<float>(x2);
+                        this->px2 = f1;
+                        this->py2 = f2;
+                        if (f1 == -1.0f) {
+                            return 1;
+                        }
                         f1 = f1 - (f1 - static_cast<float>(y1)) * 0.5f;
                         f2 = f2 - (f2 - static_cast<float>(y2)) * 0.5f;
                         rge_base_game->get_player()->set_view_loc(f1, f2);
                         rge_base_game->get_player()->set_map_loc(static_cast<short>(f1), static_cast<short>(f2));
-                    }
-                } else {
-                    if (param_1 == this->victory_drop_down) { line = this->victory_drop_down->get_line(); this->activate_victory_proper_fields(line, 0); }
-                    for (i = 0; i < 12; i++) {
-                        if (param_1 == this->victory_button[i] && this->CurrentVictory != i) {
-                            line = this->victory_drop_down->get_line();
-                            this->activate_victory_proper_fields(line, 0);
-                            this->save_victory_cond_in_scenario(this->CurrentVictory);
-                            this->activate_victory_panel(0);
-                            rge_base_game->get_player()->unselect_object();
-                            this->CurrentVictory = i;
-                            this->load_victory_cond_from_scenario(i);
-                            this->activate_victory_panel(1);
-                            line = this->victory_drop_down->get_line();
-                            this->activate_victory_proper_fields(line, 1);
-                            RGE_Static_Object* selected_object = this->SelectedObject;
-                            if (selected_object != 0) {
-                                rge_base_game->get_player()->select_one_object(selected_object, 0);
-                            }
-                            RGE_Static_Object* destination_object = this->DestinationObject;
-                            if (destination_object != 0) {
-                                rge_base_game->get_player()->select_one_object(destination_object, 0);
+                        return 1;
+                    } else {
+                        if (param_1 == this->victory_drop_down) {
+                            this->activate_victory_proper_fields(
+                                this->victory_drop_down->get_line(), 0);
+                        }
+                        for (i = 0; i < 12; i++) {
+                            if (param_1 == this->victory_button[i] && this->CurrentVictory != i) {
+                                this->activate_victory_proper_fields(
+                                    this->victory_drop_down->get_line(), 0);
+                                this->save_victory_cond_in_scenario(this->CurrentVictory);
+                                this->activate_victory_panel(0);
+                                rge_base_game->get_player()->unselect_object();
+                                this->CurrentVictory = i;
+                                this->load_victory_cond_from_scenario(i);
+                                this->activate_victory_panel(1);
+                                this->activate_victory_proper_fields(
+                                    this->victory_drop_down->get_line(), 1);
+                                RGE_Static_Object* selected_object = this->SelectedObject;
+                                if (selected_object != 0) {
+                                    rge_base_game->get_player()->select_one_object(selected_object, 0);
+                                }
+                                RGE_Static_Object* destination_object = this->DestinationObject;
+                                if (destination_object != 0) {
+                                    rge_base_game->get_player()->select_one_object(destination_object, 0);
+                                }
                             }
                         }
                     }
                 }
+            } else {
+                return 1;
             }
-            return 1;
         }
         break;
 
@@ -2003,6 +2018,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 InvalidateRect(rge_base_game->prog_window, 0, 0);
                 rge_base_game->draw_window();
                 i = this->map_size_drop->currentLineNumber();
+                int map_style = this->map_style_drop->currentLineNumber();
                 switch (i) {
                 case 0: map_size = 0x48; break;
                 case 1: map_size = 0x60; break;
@@ -2010,10 +2026,9 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 case 3: map_size = 0x90; break;
                 case 4: map_size = 0xC8; break;
                 case 5: map_size = 0xFA; break;
-                default: map_size = i; break;
+                default: map_size = map_style; break;
                 }
-                i = this->map_style_drop->currentLineNumber();
-                line = this->player_number_list->get_line();
+                player_count = this->player_number_list->get_line() + 1;
                 if (this->map_type == MapTypeBlankValue) {
                     switch (this->default_terrain_drop->currentLineNumber()) {
                     case 0:
@@ -2054,7 +2069,7 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                     for (i = 0; i < 9; i++) this->world->players[i]->reset_selected();
                     this->world->map->map_generate2(
                         this->world, map_size, map_size,
-                        static_cast<unsigned char>(i), line + 1);
+                        static_cast<unsigned char>(map_style), player_count);
                     rge_base_game->random_map_seed = saved_random_map_seed;
                     itoa(rge_base_game->save_random_map_seed, random_seed_text, 10);
                     this->random_seed_used_text->set_text(random_seed_text);
@@ -2104,6 +2119,8 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
         if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
         if (param_2 == 0) {
             for (i = 0; i < 5; i++) if (param_1 == this->player_inven_input[i]) { this->bottom_panel->set_curr_child(0); break; }
+        }
+        if (param_2 == 0) {
             if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
             if (param_1 == this->player_advance_civilization_drop) {
                 if (this->valid_save_spot_flag != 0) this->need_to_save_flag = 1;
@@ -2111,8 +2128,9 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 static_cast<T_Scenario*>(this->world->scenario)->SetPlayerAge(this->player_num - 1, i);
             }
             if (param_1 == this->player_list) {
-                line = this->player_list->get_line();
-                this->set_player(static_cast<short>(line + 1), 1, 1);
+                this->set_player(
+                    static_cast<short>(this->player_list->get_line() + 1),
+                    1, 1);
                 line = this->player_list->get_line();
                 i = static_cast<T_Scenario*>(this->world->scenario)->GetPlayerAge(line);
                 this->player_advance_civilization_drop->setCurrentLineNumber(i);
@@ -2143,37 +2161,33 @@ long TRIBE_Screen_Sed::action(TPanel* param_1, long param_2, unsigned long param
                 } else {
                     rge_base_game->set_game_mode(rge_base_game->game_mode, 4);
                     // master ownership is world->players[id].
-                    RGE_Master_Static_Object* player_master;
-                    TRIBE_Player* player_tribe;
-                    short master_id = rge_base_game->master_obj_id;
                     if (rge_base_game->master_obj_id == -1 || rge_base_game->get_player() == 0) {
-                        player_tribe = 0;
-                        player_master = 0;
+                        this->object_panel->set_master_info(0, 0);
                     } else {
-                        player_master = this->world->players[rge_base_game->get_player()->id]->master_objects[master_id];
-                        player_tribe = static_cast<TRIBE_Player*>(rge_base_game->get_player());
+                        short master_id = rge_base_game->master_obj_id;
+                        this->object_panel->set_master_info(
+                            this->world->players[rge_base_game->get_player()->id]->master_objects[master_id],
+                            static_cast<TRIBE_Player*>(rge_base_game->get_player()));
                     }
-                    this->object_panel->set_master_info(player_master, player_tribe);
                     this->set_paint_object_mode();
-                        this->object_panel->set_redraw(TPanel::RedrawImmediate);
+                    this->object_panel->set_redraw(TPanel::RedrawImmediate);
                     return 1;
                 }
             }
         }
         if (param_2 == 2 || param_2 == 1) {
             if (param_1 == this->unit_list) {
-                RGE_Master_Static_Object* list_master;
-                TRIBE_Player* list_tribe;
                 i = this->unit_list->currentLineNumber();
                 this->set_unit(static_cast<short>(i));
                 if (rge_base_game->game_mode != 8 && rge_base_game->game_mode != 0x15) this->unit_mode_select[0]->set_radio_button();
-                if (rge_base_game->master_obj_id == -1 || rge_base_game->get_player() == 0) { list_tribe = 0; list_master = 0; }
-                else {
+                if (rge_base_game->master_obj_id == -1 || rge_base_game->get_player() == 0) {
+                    this->object_panel->set_master_info(0, 0);
+                } else {
                     short master_id = rge_base_game->master_obj_id;
-                    list_master = this->world->players[rge_base_game->get_player()->id]->master_objects[master_id];
-                    list_tribe = static_cast<TRIBE_Player*>(rge_base_game->get_player());
+                    this->object_panel->set_master_info(
+                        this->world->players[rge_base_game->get_player()->id]->master_objects[master_id],
+                        static_cast<TRIBE_Player*>(rge_base_game->get_player()));
                 }
-                this->object_panel->set_master_info(list_master, list_tribe);
                 this->set_paint_object_mode();
                 this->object_panel->set_redraw(TPanel::RedrawNormal);
                 return 1;

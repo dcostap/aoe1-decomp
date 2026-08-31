@@ -52,8 +52,8 @@ public:
     enum MapType {
         MapTypeNone = 0,
         MapTypeBlankValue = 1,
-        MapTypeSeedValue = 2,
-        MapTypeRandomValue = 3
+        MapTypeRandomValue = 2,
+        MapTypeSeedValue = 3
     };
     enum VictoryType {
         VictoryTypeNone = 0,

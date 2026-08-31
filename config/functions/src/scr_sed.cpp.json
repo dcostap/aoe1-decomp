@@ -36,7 +36,7 @@
     "004AB710": {"status": "matching", "symbol": "?handle_size@TRIBE_Screen_Sed@@UAEJJJ@Z"},
     "004AB740": {"status": "matching", "symbol": "?handle_idle@TRIBE_Screen_Sed@@UAEJXZ"},
     "004AB7D0": {"status": "matching", "symbol": "?key_down_action@TRIBE_Screen_Sed@@UAEJJFHHH@Z"},
-    "004ABCD0": {"status": "scratch", "symbol": "?action@TRIBE_Screen_Sed@@UAEJPAVTPanel@@JKK@Z"},
+    "004ABCD0": {"status": "accepted_drift", "symbol": "?action@TRIBE_Screen_Sed@@UAEJPAVTPanel@@JKK@Z"},
     "004AD0F0": {"status": "matching", "symbol": "?draw@TRIBE_Screen_Sed@@UAEXXZ"},
     "004AD240": {"status": "matching", "symbol": "?command_cancel@TRIBE_Screen_Sed@@QAEXXZ"},
     "004AD270": {"status": "matching", "symbol": "?command_menu@TRIBE_Screen_Sed@@QAEHXZ"},
