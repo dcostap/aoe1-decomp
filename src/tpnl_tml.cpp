@@ -799,12 +799,13 @@ void Time_Line_Panel::draw_special_events()
                  event != 0; event = event->next) {
                 switch (event->event) {
                 case 0:
-                case 1:
-                case 2:
-                    this->draw_icon(event, -1, event->event);
+                    this->draw_icon(event, -1, 0);
                     break;
-                case 3:
-                    this->draw_icon(event, -1, 3);
+                case 1:
+                    this->draw_icon(event, -1, 1);
+                    break;
+                case 2:
+                    this->draw_icon(event, -1, 2);
                     break;
                 case 4:
                     this->draw_icon(event, 0, 4);
@@ -820,6 +821,9 @@ void Time_Line_Panel::draw_special_events()
                     break;
                 case 8:
                     this->draw_icon(event, 4, 8);
+                    break;
+                case 3:
+                    this->draw_icon(event, -1, 3);
                     break;
                 }
             }
