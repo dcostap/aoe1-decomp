@@ -4979,7 +4979,7 @@ void TribeInformationAIModule::loadLearnInfo(char* suffix)
                 float local_4;
                 rge_read(file, &temp.type, 0x24);
                 this->addObjectMemory(
-                    temp.id,
+                    *(int*)&temp.type,
                     *(short*)&temp.x,
                     *(short*)&temp.z,
                     *((unsigned char*)&temp.hitPoints),
@@ -4987,12 +4987,13 @@ void TribeInformationAIModule::loadLearnInfo(char* suffix)
                     temp.kills,
                     *((unsigned char*)&temp.kills + 1),
                     *(short*)&temp.attackAttempts,
-                    *(int*)&temp.range,
+                    *(int*)&temp.damageCapability,
                     *((unsigned char*)&temp.damageCapability),
                     temp.rateOfFire,
                     temp.range,
                     local_4,
                     0);
+                temp.id = *(int*)&temp.type;
                 this->importantUnits.add(temp.id);
                 suffix = suffix + 1;
             } while ((int)suffix < numToLoad);

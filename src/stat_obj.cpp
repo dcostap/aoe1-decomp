@@ -1722,19 +1722,15 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
     ty = (int)param_2;
     rx = param_1 - (float)tx;
     rz = param_2 - (float)ty;
-    if (tx < map->map_width) {
-        if (tx < 0) {
-            tx = 0;
-        }
-    } else {
+    if (tx >= map->map_width) {
         tx = map->map_width - 1;
+    } else if (tx < 0) {
+        tx = 0;
     }
-    if (ty < map->map_height) {
-        if (ty < 0) {
-            ty = 0;
-        }
-    } else {
+    if (ty >= map->map_height) {
         ty = map->map_height - 1;
+    } else if (ty < 0) {
+        ty = 0;
     }
 
     new_tile = map->map_row_offset[ty] + tx;
@@ -1750,9 +1746,9 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         if (this->tile != 0) {
             this->unexplore_terrain(this->owner, 0, -1);
         }
-        this->world_z = param_3;
         this->world_x = param_1;
         this->world_y = param_2;
+        this->world_z = param_3;
         this->tile = new_tile;
         if (this->object_state == 2) {
             this->explore_terrain(this->owner, 0, -1);
@@ -1866,9 +1862,9 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         break;
     }
 
+    result += (float)this->tile->height;
     RGE_Master_Static_Object* master = this->master_obj;
-    unsigned char movement = master->movement_type;
-    result += (float)new_tile->height;
+    int movement = master->movement_type;
     if (movement == 0 || (movement == 1 && this->world_z < result)) {
         this->world_z = result;
     }
@@ -1878,10 +1874,10 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
     this->screen_y_offset =
         (short)((result + rx - rz - this->world_z) * map->tile_half_height);
 
-    if (movement == 0) {
+    if (master->movement_type == 0) {
         this->shadow_x_offset = this->screen_x_offset;
         this->shadow_y_offset = this->screen_y_offset;
-    } else if (movement == 1) {
+    } else if (master->movement_type == 1) {
         this->shadow_x_offset =
             (short)((rx + rz) * map->tile_half_width);
         this->shadow_y_offset =

@@ -311,8 +311,9 @@ void RGE_Flic_Player::delta_flc()
 {
     ushort* p;
     long cur_y = 0;
-    int lines = (int)*(short*)this->chunk;
-    p = (ushort*)(this->chunk + 2);
+    p = (ushort*)this->chunk;
+    int lines = (int)(short)*p;
+    p++;
     if (lines <= 0) {
         return;
     }
