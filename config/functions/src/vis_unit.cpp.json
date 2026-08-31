@@ -10,7 +10,7 @@
     "0053B670": {"status": "matching", "symbol": "??1Visible_Unit_Manager@@QAE@XZ"},
     "0053B730": {"status": "accepted_drift", "symbol": "?Build_Distance_Table@Visible_Unit_Manager@@QAEXXZ"},
     "0053B7E0": {"status": "scratch", "symbol": "?Update_Unit_Info@Visible_Unit_Manager@@QAEXHHHHHKKPAPAUVISIBLE_UNIT_REC@@@Z"},
-    "0053B9A0": {"status": "scratch", "symbol": "Visible_Unit_Manager::GetVisibleUnits"},
+    "0053B9A0": {"status": "scratch", "symbol": "?GetVisibleUnits@Visible_Unit_Manager@@QAEHHHHHPAHH0@Z"},
     "0053BB30": {"status": "matching", "symbol": "??0Visible_Resource_Manager@@QAE@PAVRGE_Player@@H@Z"},
     "0053BBE0": {"status": "matching", "symbol": "??0Visible_Resource_Manager@@QAE@HPAVRGE_Player@@@Z"},
     "0053BD10": {"status": "matching", "symbol": "??1Visible_Resource_Manager@@QAE@XZ"},
