@@ -2312,10 +2312,10 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
         if (y1 > y2) return 0;
         do {
             short x = x1;
+            RGE_Tile* tile = map->map_row_offset[y_index] + x1;
             if (x1 <= x2) {
                 do {
-                    RGE_Object_Node* n =
-                        map->map_row_offset[y_index][x].objects.list;
+                    RGE_Object_Node* n = tile->objects.list;
                     if (n != 0) {
                         do {
                             RGE_Static_Object* obj = n->node;
@@ -2337,6 +2337,7 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
                             n = n->next;
                         } while (n != 0);
                     }
+                    ++tile;
                     x++;
                 } while (x <= x2);
             }
