@@ -25,16 +25,16 @@ TRIBE_Map::TRIBE_Map(int p1, RGE_Sound** p2, unsigned char load)
 
     for (int i = 0; i < 0x100; i++) {
         TRIBE_Master_Cliff_Info& cliff = this->cliff_master_table[i];
-        cliff.id = -1;
-        cliff.facet = -1;
-        cliff.id2 = -1;
-        cliff.facet2 = -1;
+        cliff.offset_x = 0.0f;
+        cliff.offset_y = 0.0f;
         cliff.info.info[0] = 0;
         cliff.info.info[1] = 0;
         cliff.info.info[2] = 0;
         cliff.info.info[3] = 0;
-        cliff.offset_x = 0.0f;
-        cliff.offset_y = 0.0f;
+        cliff.id = -1;
+        cliff.facet = -1;
+        cliff.id2 = -1;
+        cliff.facet2 = -1;
     }
 
     setup_cliff_type(1,0,0,0,0x108,0x10,-1,-1,1.5f,1.5f);
@@ -555,10 +555,11 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing,
     possible_facing1 = -1;
     possible_direction2 = 0;
 
-    if (cliff_info.info[facing] != 0) {
+    long current_direction = cliff_info.info[facing];
+    if (current_direction != 0) {
         if (existing == 0)
-            return existing;
-        if (existing == cliff_info.info[facing])
+            return current_direction;
+        if (existing == current_direction)
             return existing;
     }
 
@@ -569,8 +570,8 @@ long TRIBE_Map::add_cliff_edge(long x, long y, long facing, long existing,
             do {
                 RGE_Game_World* world = this->game_world;
                 world->players[world->curr_player]->diam_tile_list.add_node(
-                    y_offset + (long)cliff->world_y,
-                    x_offset + (long)cliff->world_z);
+                    y_offset + (long)cliff->world_x,
+                    x_offset + (long)cliff->world_y);
                 ++x_offset;
             } while (x_offset < 2);
             ++y_offset;
