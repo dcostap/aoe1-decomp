@@ -185,11 +185,13 @@ public:
     virtual long get_action_checksum();
     virtual long get_waypoint_checksum();
     // overload at +0x1D8 and the master overload at +0x1DC.
+protected:
     virtual int setup(RGE_Master_Static_Object*, RGE_Player*, float, float, float);
     virtual int setup(int, RGE_Game_World*);
     virtual RGE_Object_List* create_object_list();
     virtual RGE_Active_Sprite_List* create_sprite_list();
 
+public:
     void release_from_holder();
     unsigned char more_room();
     float distance_to_position(float, float, float);
