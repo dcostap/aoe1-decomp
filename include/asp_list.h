@@ -48,8 +48,8 @@ class RGE_Active_Animated_Sprite : public RGE_Active_Sprite {
 public:
     RGE_Active_Animated_Sprite(RGE_Sprite* sprite);
     short frame;
-    long animate_interval;
-    long animate_last;
+    float animate_interval;
+    float animate_last;
     short last_frame;
     unsigned char frame_changed;
     unsigned char frame_looped;
