@@ -998,8 +998,9 @@ void TRIBE_Building_Object::empty_production_queue()
     if (production_queue_need_attr != -1) {
         if (production_queue_need_attr == 4) {
             int id = owner->id;
-            TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
-            long* value = &game->queue_is_waiting_on_pop_counter[id];
+            long* value =
+                &static_cast<TRIBE_Game*>(rge_base_game)
+                     ->queue_is_waiting_on_pop_counter[id];
             long old = *value;
             long result = old - 1;
             *value = result;
