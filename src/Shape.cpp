@@ -329,8 +329,7 @@ byte TShape::shape_check(long x, long y, long frame)
                 ++p;
                 break;
             }
-            case 11:
-            case 14: {
+            case 11: {
                 unsigned int n = ((unsigned int)command) >> 4;
                 if (n == 0)
                     n = *p++;
@@ -1363,46 +1362,65 @@ byte TShape::shape_mirror(TDrawArea* td, long x, long y, long shape_num,
                     clipped_x1 != shape_x1 || clipped_y1 != shape_y1) {
                     switch ((unsigned char)mode) {
                     case 2:
-                        if (table != 0)
-                            return this->shape_mirror_shadow_clipped(
+                        if (table != 0) {
+                            ret_num = this->shape_mirror_shadow_clipped(
                                 td, shape_x1, clip_y0, shape_x0, clip_y0,
                                 clipped_x1, clipped_y1, table);
+                        } else {
+                            ret_num = this->shape_mirror_clipped(
+                                td, shape_x1, clip_y0, shape_x0, clip_y0,
+                                clipped_x1, clipped_y1);
+                        }
                         break;
                     case 1:
-                        if (table != 0)
-                            return this->shape_mirror_color_trans_clipped(
+                        if (table != 0) {
+                            ret_num = this->shape_mirror_color_trans_clipped(
                                 td, shape_x1, clip_y0, shape_num, shape_x0,
                                 clip_y0, clipped_x1, clipped_y1, table);
+                        } else {
+                            ret_num = this->shape_mirror_clipped(
+                                td, shape_x1, clip_y0, shape_x0, clip_y0,
+                                clipped_x1, clipped_y1);
+                        }
                         break;
                     case 0:
+                        ret_num = this->shape_mirror_clipped(
+                            td, shape_x1, clip_y0, shape_x0, clip_y0,
+                            clipped_x1, clipped_y1);
                         break;
                     default:
-                        return ret_num;
+                        break;
                     }
-                    return this->shape_mirror_clipped(
-                        td, shape_x1, clip_y0, shape_x0, clip_y0,
-                        clipped_x1, clipped_y1);
+                    return ret_num;
                 }
 
                 switch ((unsigned char)mode) {
                 case 2:
-                    if (table == 0)
-                        return this->shape_mirror_unclipped(td, shape_x1,
-                                                            clip_y0);
-                    return this->shape_mirror_shadow_unclipped(
-                        td, shape_x1, clip_y0, table);
+                    if (table == 0) {
+                        ret_num = this->shape_mirror_unclipped(
+                            td, shape_x1, clip_y0);
+                    } else {
+                        ret_num = this->shape_mirror_shadow_unclipped(
+                            td, shape_x1, clip_y0, table);
+                    }
+                    break;
                 case 1:
-                    if (table == 0)
-                        return this->shape_mirror_unclipped(td, shape_x1,
-                                                            clip_y0);
-                    return this->shape_mirror_color_trans_unclipped(
-                        td, shape_x1, clip_y0, shape_num, table);
+                    if (table == 0) {
+                        ret_num = this->shape_mirror_unclipped(
+                            td, shape_x1, clip_y0);
+                    } else {
+                        ret_num = this->shape_mirror_color_trans_unclipped(
+                            td, shape_x1, clip_y0, shape_num, table);
+                    }
+                    break;
                 case 0:
-                    return this->shape_mirror_unclipped(td, shape_x1,
-                                                        clip_y0);
+                    ret_num = this->shape_mirror_unclipped(
+                        td, shape_x1, clip_y0);
+                    break;
                 default:
-                    return ret_num;
+                    break;
                 }
+                return ret_num;
             }
         }
     }
