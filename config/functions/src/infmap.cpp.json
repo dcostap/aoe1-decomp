@@ -22,7 +22,7 @@
     "0044E790": {"status": "matching", "symbol": "?decrementValue@InfluenceMap@@QAEHHHE@Z"},
     "0044E800": {"status": "matching", "symbol": "?decrementValue@InfluenceMap@@QAEHHHHHE@Z"},
     "0044E900": {"status": "matching", "symbol": "?setCoverageCount@InfluenceMap@@QAEHABUXYPoint@@0H@Z"},
-    "0044E9E0": {"status": "scratch", "symbol": "?setConnectionCount@InfluenceMap@@QAEHABUXYPoint@@0HHHH@Z"},
+    "0044E9E0": {"status": "accepted_drift", "symbol": "?setConnectionCount@InfluenceMap@@QAEHABUXYPoint@@0HHHH@Z"},
     "0044EC00": {"status": "verified_logic", "symbol": "?coverageIncluding@InfluenceMap@@QAEHABUXYPoint@@0EE@Z"},
     "0044ED20": {"status": "scratch", "symbol": "?connectionsIncluding@InfluenceMap@@QAEHABUXYPoint@@0EEHHH@Z"},
     "0044F030": {"status": "matching", "symbol": "?setUnchangeableLimit@InfluenceMap@@QAEXE@Z"},
