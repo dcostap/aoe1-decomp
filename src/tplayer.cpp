@@ -255,30 +255,32 @@ void TRIBE_Player::save(int file)
 
 void TRIBE_Player::update()
 {
-    float* attributes = this->attributes;
     this->update_time += this->world->world_time_delta_seconds;
     while (this->update_time > 1.0f) {
         this->update_time -= 1.0f;
         ++this->update_history_count;
         if (this->update_history_count >= 15) {
             this->update_history_count -= 15;
-            unsigned char population = attributes[11] < 0.0f
-                ? 0 : static_cast<unsigned char>(static_cast<long>(attributes[11]));
-            this->history->add_history_entry(0, population);
+            if (this->attributes[11] < 0.0f)
+                this->history->add_history_entry(0, 0);
+            else
+                this->history->add_history_entry(
+                    0, static_cast<unsigned char>(static_cast<long>(this->attributes[11])));
         }
-        if (rge_base_game->fullVisibility()) attributes[22] = 100.0f;
-        else attributes[22] = this->visible->percentExplored() * 100.0f;
-        attributes[44] = attributes[20] - (attributes[19] - attributes[11]);
-        if (attributes[44] < 0.0) attributes[44] = 0.0f;
-        attributes[9] += attributes[10];
-        if (attributes[9] > 100.0) attributes[9] = 100.0f;
+        if (rge_base_game->fullVisibility()) this->attributes[22] = 100.0f;
+        else this->attributes[22] = this->visible->percentExplored() * 100.0f;
+        this->attributes[44] = this->attributes[20] -
+            (this->attributes[19] - this->attributes[11]);
+        if (this->attributes[44] < 0.0) this->attributes[44] = 0.0f;
+        this->attributes[9] += this->attributes[10];
+        if (this->attributes[9] > 100.0) this->attributes[9] = 100.0f;
         if (this->update_count > 0) --this->update_count;
         if (this->updateCountNeedHelp > 0) --this->updateCountNeedHelp;
         if (this->id > 0) {
             RGE_Object_Node* node = this->objects->list;
             while (node != 0) {
                 RGE_Static_Object* object = node->node;
-                short group = object->master_obj->object_group;
+                int group = object->master_obj->object_group;
                 if (group != 0xb && group != 0x1e && group != 0x1b &&
                     group != 1 && group != 0x15 && group != 0x14 &&
                     group != 2 && group != 0x25 && object->object_state == 2)
@@ -287,13 +289,14 @@ void TRIBE_Player::update()
             }
             if (node == 0) {
                 this->set_game_status(2);
-                attributes[45] = 0.0f;
+                this->attributes[45] = 0.0f;
             }
         }
     }
     RGE_Player::update();
-    attributes[0] -= this->world->world_time_delta_seconds * attributes[33] * attributes[11] * 0.0166666675f;
-    if (attributes[0] < 0.0) attributes[0] = 0.0f;
+    this->attributes[0] -= this->world->world_time_delta_seconds *
+        this->attributes[33] * this->attributes[11] * 0.0166666675f;
+    if (this->attributes[0] < 0.0) this->attributes[0] = 0.0f;
     int seed = debug_rand(tplayerSourceName, 0x25f);
     int old = debug_random_on;
     global_save_debug_random_on1 = old;
