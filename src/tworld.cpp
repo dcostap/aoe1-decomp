@@ -329,14 +329,11 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
                 y_max = map->map_height - 1;
 
             if (y_min <= y_max) {
-                int row_index = y_min;
-                int row_count = static_cast<int>(y_max) - static_cast<int>(y_min) + 1;
-                do {
+                for (short row = y_min; row <= y_max; ++row) {
                     RGE_Tile* tile =
-                        map->map_row_offset[row_index] + x_min;
+                        map->map_row_offset[row] + x_min;
                     if (x_min <= x_max) {
-                        int columns = static_cast<int>(x_max) - static_cast<int>(x_min) + 1;
-                        do {
+                        for (short column = x_min; column <= x_max; ++column) {
                             RGE_Object_Node* node = tile->objects.list;
                             while (node != 0) {
                                 RGE_Static_Object* object = node->node;
@@ -366,12 +363,9 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
                                 }
                             }
                             ++tile;
-                            --columns;
-                        } while (columns != 0);
+                        }
                     }
-                    ++row_index;
-                    --row_count;
-                } while (row_count != 0);
+                }
             }
         }
     }
