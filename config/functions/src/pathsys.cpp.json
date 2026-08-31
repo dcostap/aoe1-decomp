@@ -24,7 +24,7 @@
     "0046D280": {"status": "scratch", "symbol": "?passable@PathingSystem@@QAEHPAVRGE_Moving_Object@@MMH@Z"},
     "0046D740": {"status": "matching", "symbol": "?checksum@PathingSystem@@QAEJXZ"},
     "0046D770": {"status": "matching", "symbol": "?printState@PathingSystem@@IAEXPAVRGE_Moving_Object@@@Z"},
-    "0046D830": {"status": "scratch", "symbol": "?copyPath@PathingSystem@@IAEHH@Z"},
+    "0046D830": {"status": "accepted_drift", "symbol": "?copyPath@PathingSystem@@IAEHH@Z"},
     "0046DCB0": {"status": "matching", "symbol": "?copyUnobstructibles@PathingSystem@@QAEXAAV?$ManagedArray@H@@@Z"}
   }
 }
