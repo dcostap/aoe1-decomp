@@ -28,7 +28,7 @@
     "004A5210": {"status": "matching", "symbol": "?setupSinglePlayerPlayers@TribeMPSetupScreen@@IAEXXZ"},
     "004A5440": {"status": "matching", "symbol": "?fillNumberPlayers@TribeMPSetupScreen@@IAEXXZ"},
     "004A54C0": {"status": "matching", "symbol": "?fillPlayerColors@TribeMPSetupScreen@@IAEXXZ"},
-    "004A5610": {"status": "scratch", "symbol": "??0TRIBE_Screen_Wait@@QAE@XZ"},
+    "004A5610": {"status": "matching", "symbol": "??0TRIBE_Screen_Wait@@QAE@XZ"},
     "004A6050": {"status": "matching", "symbol": "??1TRIBE_Screen_Wait@@UAE@XZ"},
     "004A60E0": {"status": "matching", "symbol": "?set_text@TRIBE_Screen_Wait@@QAEXPAD@Z"},
     "004A6100": {"status": "matching", "symbol": "?set_text@TRIBE_Screen_Wait@@QAEXJ@Z"},
