@@ -19,7 +19,7 @@
     "00492F80": {"status": "matching", "symbol": "?set_text@TScrollTextPanel@@UAEXPAD@Z"},
     "00492FB0": {"status": "accepted_drift", "symbol": "?handle_idle@TScrollTextPanel@@UAEJXZ"},
     "00493070": {"status": "matching", "symbol": "?draw@TScrollTextPanel@@UAEXXZ"},
-    "00493160": {"status": "scratch", "symbol": "?draw_scrolled_line@TScrollTextPanel@@QAEXPAXFFKK@Z"},
+    "00493160": {"status": "matching", "symbol": "?draw_scrolled_line@TScrollTextPanel@@QAEXPAXFFKK@Z"},
     "00493420": {"status": "scratch", "symbol": "?RGE_fade_palette_start@@YAXPAVTDrawArea@@UtagPALETTEENTRY@@MEPAU2@HH@Z"},
     "00493540": {"status": "matching", "symbol": "?RGE_fade_palette_step@@YAHXZ"}
   }
