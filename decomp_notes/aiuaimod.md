@@ -80,3 +80,15 @@ owners remain scratch. Their full natural bodies remain in this source file.
 The repaired static-object overload surface makes `00416340`, `004163C0`,
 and `004174A0` exact. Standalone checks report `MATCH`, `0.0000%`, correct
 owners, boundaries, relocations, direct targets, and aligned calls.
+
+## `stopObject` dispatch boundary
+
+The original `00460B20` and `0042FC50` call `UnitAIModule::stopObject(int)`
+through vtable slot `+0x58`. The donor class surface also marks this method
+virtual. The current partial class declaration cannot add this one virtual in
+isolation. Its preceding virtual surface is incomplete, so the slot changes.
+
+A prior full donor-surface test made `0042FC50` exact but changed
+`0042FF50`. Root therefore retained the current declaration. A future repair
+must recover the full ordered `UnitAIModule` virtual surface and preserve both
+combat callers. Do not add a local virtual-call helper or raw slot call.
