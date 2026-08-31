@@ -3487,7 +3487,7 @@ void TRIBE_Game::let_game_begin()
     }
 
     sprintf(str, "    randomgame=%d, randommap=%d, mapsize=%s, maptype=%s",
-            this->randomGame(), this->random_map_seed != -1,
+            this->save_random_game_seed, this->save_random_map_seed,
             map_size_str, map_type_str);
     run_log(str, 0);
 
