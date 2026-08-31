@@ -23,6 +23,7 @@
 0050248F 00502310 checkForAttackResponseBuildInsertions switch_case_codelet
 0050249B 00502310 checkForAttackResponseBuildInsertions switch_case_codelet
 005024A7 00502310 checkForAttackResponseBuildInsertions switch_case_codelet
+# The reviewed 005024B3 fragment extent continues through 005025C9.
 005024B3 00502310 checkForAttackResponseBuildInsertions switch_shared_body
 
 00536912 00535FE0 view_function switch_case_codelet
