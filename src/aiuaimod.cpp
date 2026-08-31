@@ -3048,23 +3048,21 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
     }
 
     if (result == 1) {
-        int orderType = order->orderType;
-        if (orderType == 0x2C2) {
-            orderType = -1;
+        if (order->orderType == 0x2C2) {
             this->currentOrderValue = -1;
+            this->currentOrderPriorityValue = -1;
         } else {
-            if (orderType == 0x2D9) {
+            if (order->orderType == 0x2D9) {
                 this->currentOrderValue = 700;
-            } else if (orderType == 700 &&
+            } else if (order->orderType == 700 &&
                        this->objectValue->master_obj->id == 0x7D) {
                 this->currentOrderValue = -1;
                 this->currentTargetValue = -1;
             } else {
-                this->currentOrderValue = orderType;
+                this->currentOrderValue = order->orderType;
             }
-            orderType = order->priority;
+            this->currentOrderPriorityValue = order->priority;
         }
-        this->currentOrderPriorityValue = orderType;
     }
 
     if (param_2 >= 0 && param_2 < this->orderQueueSizeValue &&
