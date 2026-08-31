@@ -37,34 +37,33 @@ extern int __ftol();
 
 
 TacticalAIGroup::TacticalAIGroup()
+    : idValue(-1),
+      inUseValue(0),
+      typeValue(-1),
+      subTypeValue(-1),
+      numberUnitsValue(0),
+      desiredNumberUnitsValue(0),
+      commanderValue(-1),
+      originalHitPointsValue(-1),
+      originalUnitNumberValue(-1),
+      actionValue(0),
+      targetValue(-1),
+      targetTypeValue(-1),
+      priorityValue(0),
+      waitCodeValue(-1),
+      assistGroupIDValue(-1),
+      assistGroupTypeValue(-1),
+      consecutiveIdleUnitCountValue(0),
+      playNumberValue(-1),
+      numberAttackWaypointsValue(0),
+      currentAttackWaypointValue(0),
+      consecutiveGatherAttemptsValue(0),
+      numberObjectsToDestroyValue(0),
+      objectsToDestroyOwnerValue(-1),
+      objectsToDestroyCommanderZoneValue(-1),
+      lastAttackRoundupTime(0),
+      lastAddedUnitTimeValue(0)
 {
-    idValue = -1;
-    inUseValue = 0;
-    typeValue = -1;
-    subTypeValue = -1;
-    numberUnitsValue = 0;
-    desiredNumberUnitsValue = 0;
-    commanderValue = -1;
-    originalHitPointsValue = -1;
-    originalUnitNumberValue = -1;
-    actionValue = 0;
-    targetValue = -1;
-    targetTypeValue = -1;
-    priorityValue = 0;
-    waitCodeValue = -1;
-    assistGroupIDValue = -1;
-    assistGroupTypeValue = -1;
-    consecutiveIdleUnitCountValue = 0;
-    playNumberValue = -1;
-    numberAttackWaypointsValue = 0;
-    currentAttackWaypointValue = 0;
-    consecutiveGatherAttemptsValue = 0;
-    numberObjectsToDestroyValue = 0;
-    objectsToDestroyOwnerValue = -1;
-    objectsToDestroyCommanderZoneValue = -1;
-    lastAttackRoundupTime = 0;
-    lastAddedUnitTimeValue = 0;
-
     setTargetLocation(-1.0f, -1.0f, -1.0f);
     setGatherLocation(-1.0f, -1.0f, -1.0f);
     setRetreatLocation(-1.0f, -1.0f, -1.0f);

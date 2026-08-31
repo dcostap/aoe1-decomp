@@ -6,7 +6,7 @@
     "flags": "gx"
   },
   "functions": {
-    "004EA860": {"status": "scratch", "symbol": "??0TacticalAIGroup@@QAE@XZ"},
+    "004EA860": {"status": "matching", "symbol": "??0TacticalAIGroup@@QAE@XZ"},
     "004EA9B0": {"status": "matching", "symbol": "??1TacticalAIGroup@@UAE@XZ"},
     "004EA9C0": {"status": "matching", "symbol": "?load@TacticalAIGroup@@QAEHH@Z"},
     "004EACA0": {"status": "matching", "symbol": "?save@TacticalAIGroup@@QAEHH@Z"},
