@@ -5053,12 +5053,11 @@ int TCommunications_Handler::LaunchLobbyGame()
 
     r = Lobby->CheckForLobbyLaunch(np);
     if (r == 0) {
-        LobbyLaunched = r;
-        return r;
+        goto done;
     }
     if (direct_play_interface) {
-        r = direct_play_interface->Release();
-        L->Log("Release count = %d", r);
+        int release_count = direct_play_interface->Release();
+        L->Log("Release count = %d", release_count);
     }
     direct_play_interface = np;
     if (np == 0) return 0;
@@ -5075,17 +5074,14 @@ int TCommunications_Handler::LaunchLobbyGame()
     if (MeHost) {
         Me = 1;
         PlayerOptions.dcoID[1] = local_player_dpid;
-
-
-
-        unsigned int& me = this->Me;
-        PlayerOptions.Humanity[me] = ME_HUMAN;
+        PlayerOptions.Humanity[this->Me] = ME_HUMAN;
         HaveHostInit = 1;
         PlayerOptions.ProgramState = COMM_STATE_JOINNOW;
         SetRandomSeed(rge_base_game->random_game_seed);
         GTDSerialNo = 0x7D1;
     }
     UpdatePlayers();
+done:
     LobbyLaunched = r;
     return r;
 }
