@@ -64,18 +64,15 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1)
     if (param_1 == 0) return;
 
     if (this->obj_id < 0) {
-        RGE_Action_Object* objp = this->obj;
-        static_cast<TRIBE_Player*>(objp->owner)->logMessage(
+        static_cast<TRIBE_Player*>(this->obj->owner)->logMessage(
             "Canceling Train #1a:  obj_id=%d, obj->id=%d",
-            (int)this->obj_id, (int)objp->id, this->unique_id);
+            (int)this->obj_id, (int)this->obj->id, this->unique_id);
     } else {
-        RGE_Action_Object* objp = this->obj;
-
         if (static_cast<TRIBE_Player*>(this->obj->owner)
                 ->master_objects[this->obj_id] == 0) {
             static_cast<TRIBE_Player*>(this->obj->owner)->logMessage(
                 "Canceling Train #1b:  obj_id=%d, obj->id=%d",
-                (int)this->obj_id, (int)objp->id, this->unique_id);
+                (int)this->obj_id, (int)this->obj->id, this->unique_id);
         } else {
             if (!this->pre_paid) {
                 uchar paid = static_cast<TRIBE_Player*>(this->obj->owner)
@@ -83,10 +80,10 @@ void TRIBE_Action_Make_Obj::first_in_stack(uchar param_1)
                 if (paid == 0) {
                     static_cast<TRIBE_Player*>(this->obj->owner)->logMessage(
                         "Canceling Train #1c:  obj_id=%d, obj->id=%d",
-                        (int)this->obj_id, (int)objp->id, this->unique_id);
+                        (int)this->obj_id, (int)this->obj->id, this->unique_id);
                     static_cast<TRIBE_Player*>(this->obj->owner)->cancelTrain(
-                        0, (int)this->obj_id, (int)objp->id, this->unique_id);
-                    objp->notify((int)objp->id, (int)objp->id,
+                        0, (int)this->obj_id, (int)this->obj->id, this->unique_id);
+                    this->obj->notify((int)this->obj->id, (int)this->obj->id,
                                  0x1F9, (long)0x26B, (long)0, (long)0);
                     this->set_state(1);
                     return;
