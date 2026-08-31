@@ -6,7 +6,7 @@
     "flags": "gx"
   },
   "functions": {
-    "00455000": {"status": "scratch", "symbol": "??0RGE_Map@@QAE@HPAPAVRGE_Sound@@E@Z"},
+    "00455000": {"status": "matching", "symbol": "??0RGE_Map@@QAE@HPAPAVRGE_Sound@@E@Z"},
     "004550A0": {"status": "matching", "symbol": "??0RGE_Map@@QAE@PAD00FFFPAPAVRGE_Sound@@@Z"},
     "00455430": {"status": "matching", "symbol": "??1RGE_Map@@UAE@XZ"},
     "00455570": {"status": "matching", "symbol": "?init_tile_sizes@RGE_Map@@QAEXXZ"},
@@ -17,7 +17,7 @@
     "004558B0": {"status": "matching", "symbol": "?clear_map@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@EJJ@Z"},
     "00455910": {"status": "scratch", "symbol": "?new_map@RGE_Map@@QAEXJJ@Z"},
     "00455C20": {"status": "matching", "symbol": "?clear_map@RGE_Map@@QAEXEE@Z"},
-    "00455CB0": {"status": "scratch", "symbol": "?request_redraw@RGE_Map@@QAEXHHHHE@Z"},
+    "00455CB0": {"status": "accepted_drift", "symbol": "?request_redraw@RGE_Map@@QAEXHHHHE@Z"},
     "00455D60": {"status": "matching", "symbol": "?clear_map_view_info@RGE_Map@@QAEXXZ"},
     "00455DB0": {"status": "matching", "symbol": "?coordinate_map@RGE_Map@@QAEXXZ"},
     "00455DD0": {"status": "matching", "symbol": "?set_map_screen_pos@RGE_Map@@QAEXHHHH@Z"},
@@ -41,7 +41,7 @@
     "004578A0": {"status": "matching", "symbol": "?map_generate@RGE_Map@@UAEXPAVRGE_Player@@PAVRGE_Game_World@@PAURGE_Player_Info@@PAE@Z"},
     "004578B0": {"status": "matching", "symbol": "?map_generate2@RGE_Map@@UAEXPAVRGE_Game_World@@JJEJ@Z"},
     "004579C0": {"status": "matching", "symbol": "?load_map@RGE_Map@@QAEXH@Z"},
-    "00457C50": {"status": "scratch", "symbol": "?save_map@RGE_Map@@QAEXH@Z"},
+    "00457C50": {"status": "accepted_drift", "symbol": "?save_map@RGE_Map@@QAEXH@Z"},
     "00457DF0": {"status": "scratch", "symbol": "?save@RGE_Map@@UAEXH@Z"},
     "00457EB0": {"status": "matching", "symbol": "?load_terrain_types@RGE_Map@@QAEXPAPAVRGE_Sound@@@Z"},
     "00457F80": {"status": "scratch", "symbol": "?load_terrain_types@RGE_Map@@QAEXPADPAPAVRGE_Sound@@@Z"},
