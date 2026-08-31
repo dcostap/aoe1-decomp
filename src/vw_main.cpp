@@ -465,6 +465,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
     int mode = rge_base_game->prog_mode;
     int game_mode;
     RGE_Pick_Info pick_info;
+    unsigned char status;
 
     if (mode != 4 && mode != 6 && mode != 7 && mode != 5)
         return 0;
@@ -599,7 +600,6 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
 
     case 0:
     case 6: {
-        unsigned char ret;
         if (game_mode == 6)
             rge_base_game->set_game_mode(0, 0);
 
@@ -609,10 +609,10 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
                 exclude = this->player->selected_obj;
             else
                 exclude = 0;
-            ret = this->pick1(0x29, 2, x, y, &pick_info, exclude, 0);
+            status = this->pick1(0x29, 2, x, y, &pick_info, exclude, 0);
             this->mouse_last_x = -1;
             this->mouse_last_y = -1;
-            if (ret == 0x34) {
+            if (status == 0x34) {
                 if (pick_info.object->selected & 1) {
                     if (this->player->sel_count <= 1)
                         break;
@@ -635,13 +635,13 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
             break;
         }
 
-        ret = this->pick1(
+        status = this->pick1(
             0x2A, 1, x, y, &pick_info,
             (x == this->mouse_last_x && y == this->mouse_last_y)
                 ? this->player->selected_obj : 0,
             1);
 
-        if (ret == 0x34 && x == this->mouse_last_x &&
+        if (status == 0x34 && x == this->mouse_last_x &&
             y == this->mouse_last_y &&
             pick_info.object != this->player->selected_obj) {
             this->player->unselect_object();
@@ -651,7 +651,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
         this->mouse_last_x = -1;
         this->mouse_last_y = -1;
 
-        if (ret == 0x34) {
+        if (status == 0x34) {
             if (rge_base_game->prog_mode != 5 &&
                 this->player->sel_count > 0 &&
                 rge_base_game->prog_mode != 7) {
@@ -709,7 +709,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
         }
 
     no_pick:
-        if (ret == 0x33 && rge_base_game->prog_mode != 5 &&
+        if (status == 0x33 && rge_base_game->prog_mode != 5 &&
             rge_base_game->prog_mode != 7) {
             if (flags == 0) {
                 if (this->command_make_do(x, y, 1, -1) == 0)
