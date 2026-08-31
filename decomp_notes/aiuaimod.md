@@ -92,3 +92,20 @@ A prior full donor-surface test made `0042FC50` exact but changed
 `0042FF50`. Root therefore retained the current declaration. A future repair
 must recover the full ordered `UnitAIModule` virtual surface and preserve both
 combat callers. Do not add a local virtual-call helper or raw slot call.
+
+## Final canonical-owner review
+
+The complete donor order proves `stopObject` at `+0x58`. It makes `00460B20`,
+`0042FC50`, `00406D30`, and `00509E10` exact with broad AI-play context.
+
+That broad context regresses exact `004350E0`, `004C3B30`, `004E0FD0`,
+`004FB710`, and `0050A140`. Narrow `AIPlayStatus` and `game_types.h` contexts
+do not preserve the same anchors.
+
+A complete virtual prefix remains safe through `exploreAndDestroy`. Adding the
+real `importantObject` declaration changes exact `00406D30` scheduling.
+Declaration order and a complete owner alone therefore do not solve the
+compiler-context conflict.
+
+Root restored all trials. Keep the proven slot evidence, but do not replace
+exact anchors with broad declarations, a raw vtable call, or a local wrapper.
