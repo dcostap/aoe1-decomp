@@ -42,10 +42,12 @@ void MainDecisionAIModule::setLogHistory(int)
 
 int MainDecisionAIModule::save(int file)
 {
-    int count = this->objects.number();
-    rge_write(file, &count, sizeof(count));
+    {
+        int count = this->objects.number();
+        rge_write(file, &count, sizeof(count));
+    }
 
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < this->objects.number(); ++i) {
         int object_id = this->objects[i];
         rge_write(file, &object_id, sizeof(object_id));
     }
