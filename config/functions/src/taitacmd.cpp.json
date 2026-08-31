@@ -143,7 +143,7 @@
     "004FB2D0": {"status": "accepted_drift", "symbol": "?taskAttacker@TribeTacticalAIModule@@QAEHHMMHHPAUWaypoint@@HHH@Z"},
     "004FB500": {"status": "matching", "symbol": "?taskDefender@TribeTacticalAIModule@@QAEHHH@Z"},
     "004FB520": {"status": "matching", "symbol": "?taskDefender@TribeTacticalAIModule@@QAEHHMM@Z"},
-    "004FB550": {"status": "scratch", "symbol": "?taskTrain@TribeTacticalAIModule@@QAEHPAVBuildItem@@@Z"},
+    "004FB550": {"status": "matching", "symbol": "?taskTrain@TribeTacticalAIModule@@QAEHPAVBuildItem@@@Z"},
     "004FB710": {"status": "matching", "symbol": "?taskResearch@TribeTacticalAIModule@@QAEHPAVBuildItem@@@Z"},
     "004FB8D0": {"status": "matching", "symbol": "?taskToEnter@TribeTacticalAIModule@@QAEHHH@Z"},
     "004FB9E0": {"status": "matching", "symbol": "?taskTransporter@TribeTacticalAIModule@@QAEHHMM@Z"},

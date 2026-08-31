@@ -8011,7 +8011,7 @@ int TribeTacticalAIModule::taskDefender(int groupId, float x, float y) {
 
 int TribeTacticalAIModule::taskTrain(BuildItem* item)
 {
-    int objectID;
+    int objectID = 0;
 
     if (item == 0) {
         this->logCommonHistory("Invalid taskTrain item, returning FALSE.");
