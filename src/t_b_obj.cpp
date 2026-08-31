@@ -1047,13 +1047,13 @@ void TRIBE_Building_Object::update_production_queue()
 
     if (production_queue_enabled == 0 || production_queue_count == 0) {
         if (production_queue_need_attr == 4) {
+            production_queue_need_attr = -1;
             int id = owner->id;
             TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
             long* value = &game->queue_is_waiting_on_pop_counter[id];
             long old = *value;
             long result = old - 1;
             *value = result;
-            production_queue_need_attr = -1;
         }
         return;
     }
@@ -1062,20 +1062,23 @@ void TRIBE_Building_Object::update_production_queue()
         (work_type != 0x66 && work_type != 0x67)) {
         if (production_queue_actions->list == 0) {
             float* attributes = owner->attributes;
-            if (attributes[0x2C / 4] < attributes[0x80 / 4]) {
+            if (attributes[0x2C / 4] >= attributes[0x80 / 4]) {
                 if (production_queue_need_attr == 0x20) {
                     return;
                 }
                 production_queue_need_attr = 0x20;
                 rge_base_game->notification(0x7D, owner->id, 0x20, 0, 0);
+                static_cast<TRIBE_Game*>(rge_base_game)
+                    ->queue_is_waiting_on_pop_counter[owner->id]++;
                 return;
             }
 
             if (attributes[0x10 / 4] > DAT_005749f4) {
                 if (production_queue_need_attr == 4) {
                     int id = owner->id;
-                    TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
-                    long* value = &game->queue_is_waiting_on_pop_counter[id];
+                    long* value =
+                        &static_cast<TRIBE_Game*>(rge_base_game)
+                             ->queue_is_waiting_on_pop_counter[id];
                     long old = *value;
                     long result = old - 1;
                     *value = result;
@@ -1103,7 +1106,7 @@ void TRIBE_Building_Object::update_production_queue()
             }
         }
 
-        unsigned char action_state = production_queue_actions->update();
+        char action_state = production_queue_actions->update();
         if (action_state == 3 || action_state == 2 || action_state == 1) {
             production_queue_actions->remove_action();
             advance_production_queue();
