@@ -21,7 +21,7 @@
     "004D91F0": {"status": "matching", "symbol": "?setTileExplored@TribeInformationAIModule@@QAEXHH@Z"},
     "004D9230": {"status": "matching", "symbol": "?ownerOfGameID@TribeInformationAIModule@@QAEHH@Z"},
     "004D9240": {"status": "scratch", "symbol": "?gameIDOfResourceObject@TribeInformationAIModule@@QAEHHHAAM0AAHPAHH@Z"},
-    "004D96B0": {"status": "scratch", "symbol": "?gameIDsOfObjectType@TribeInformationAIModule@@QAEHHPAPAH0H@Z"},
+    "004D96B0": {"status": "matching", "symbol": "?gameIDsOfObjectType@TribeInformationAIModule@@QAEHHPAPAH0H@Z"},
     "004D9970": {"status": "matching", "symbol": "?gameIDsOwnedBy@TribeInformationAIModule@@QAEHHPAPAHH@Z"},
     "004D9A90": {"status": "matching", "symbol": "?numberGameIDsOwnedBy@TribeInformationAIModule@@QAEHHH@Z"},
     "004D9B20": {"status": "matching", "symbol": "?placeDock@TribeInformationAIModule@@QAEPAVConstructionItem@@PAVBuildItem@@MMHH@Z"},
@@ -109,7 +109,7 @@
     "004E3530": {"status": "matching", "symbol": "?inRangeOfUnits@TribeInformationAIModule@@QAEHHHHH@Z"},
     "004E3640": {"status": "scratch", "symbol": "?wonderToAttack@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
     "004E3840": {"status": "matching", "symbol": "?ruinToCapture@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
-    "004E39D0": {"status": "scratch", "symbol": "?artifactToCapture@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
+    "004E39D0": {"status": "matching", "symbol": "?artifactToCapture@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
     "004E3B80": {"status": "matching", "symbol": "?resourceTypeToPlaceDropsiteBy@TribeInformationAIModule@@QAEHH@Z"},
     "004E3C90": {"status": "matching", "symbol": "?dropsitesWithinRequiredDistance@TribeInformationAIModule@@QAEHAAHHH@Z"},
     "004E3E90": {"status": "matching", "symbol": "?numberAvailableStoragePits@TribeInformationAIModule@@QAEHH@Z"},
@@ -125,7 +125,7 @@
     "004E4500": {"status": "scratch", "symbol": "?loadUnitHistory@TribeInformationAIModule@@QAEXXZ"},
     "004E45A0": {"status": "matching", "symbol": "?unitsThatAreMostBuilt@TribeInformationAIModule@@QAEXAAH0@Z"},
     "004E4610": {"status": "matching", "symbol": "?unitsThatAreLeastBuilt@TribeInformationAIModule@@QAEXAAH0@Z"},
-    "004E4680": {"status": "scratch", "symbol": "?acceptablePotentialDropsiteArea@TribeInformationAIModule@@QAEHHH@Z"},
+    "004E4680": {"status": "matching", "symbol": "?acceptablePotentialDropsiteArea@TribeInformationAIModule@@QAEHHH@Z"},
     "004E4790": {"status": "matching", "symbol": "?percentTilesExploredInPositionQuadrant@TribeInformationAIModule@@QAEHHH@Z"}
   }
 }

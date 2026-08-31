@@ -1098,7 +1098,7 @@ int TribeInformationAIModule::gameIDsOfObjectType(int objectType, int** ids, int
                     if (this->md->aiPlayer->id == obj->owner->id) goto next;
                 }
                 if (playerFilter == -6) {
-                    if (this->md->aiPlayer->relation(obj->owner->id) != 0) goto next;
+                    if (this->md->aiPlayer->isEnemy(obj->owner->id) != 0) goto next;
                 }
                 if (playerFilter != -1 && obj->owner->id != playerFilter) goto next;
                 if (objectType != -1 && objectType !=
@@ -1373,7 +1373,7 @@ int TribeInformationAIModule::closestDockDistance(int x, int y)
 }
 
 int TribeInformationAIModule::hasAdjacentTileType(int param_1,int param_2,int param_3){
-    RGE_Map* map = this->md->player->world->map;
+    RGE_Map* map = this->md->aiPlayer->world->map;
     int x = param_1;
     int y = param_2;
     for (int i = 0; i < 8; i++) {
@@ -6121,8 +6121,8 @@ ObjectMemory* TribeInformationAIModule::artifactToCapture(int player)
                 if (player == -1 ||
                     (int)this->importantObjectMemory[i].owner == player) {
                     if (player != -1 ||
-                        (this->md->player->mutualVisibleMask &
-                         (1UL << this->importantObjectMemory[i].owner)) != 0) {
+                        this->md->player->isEnemy(
+                            this->importantObjectMemory[i].owner) != 0) {
                         RGE_Static_Object* artifact = this->md->object(
                             this->importantObjectMemory[i].id);
                         if (artifact != 0 && artifact->object_state <= 2) {
@@ -6552,12 +6552,12 @@ void TribeInformationAIModule::unitsThatAreLeastBuilt(int& out1, int& out2) {
 
 int TribeInformationAIModule::acceptablePotentialDropsiteArea(int param1, int param2)
 {
-    int strategicNumber = this->md->tacticalAI.strategicNumber(0xCA);
-    int s = strategicNumber * strategicNumber;
+    int s = this->md->tacticalAI.strategicNumber(0xCA) *
+            this->md->tacticalAI.strategicNumber(0xCA);
 
     for (int i = 0; i < this->maxImportantObjectMemory; i++) {
         uchar owner = this->importantObjectMemory[i].owner;
-        if ((this->md->player->mutualVisibleMask & (1UL << owner)) != 0) {
+        if (this->md->player->isEnemy(owner) != 0) {
             short type = this->importantObjectMemory[i].type;
             if (type == 0x6D || type == 0x67 || type == 0x44 ||
                 type == 0x4F || type == 0xC7 || type == 0x45) {
