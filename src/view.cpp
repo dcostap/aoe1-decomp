@@ -1580,7 +1580,7 @@ long RGE_View::view_function(unsigned char a1, unsigned char a2, tagPOINT* p1, t
     start_map_row2 = this->start_map_col;
     direction = this->start_map_row;
     cur_col_num = this->start_scr_row;
-    list_size = (short)(this->max_row_num + 6) << 1;
+    list_size = (this->max_row_num + 6) << 1;
     picked_type = this->max_col_num + 4;
     max_row_num2 = picked_type;
     tile_screen_row = 4;
@@ -3197,7 +3197,7 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
     int confidence;
     int object_id;
     int selected_level;
-    short draw_level;
+    int draw_level;
     int i;
     int keep;
     int total_picked = 0;
@@ -3263,6 +3263,9 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
                         output->draw_y = current->draw_y;
                         ++total_picked;
                         ++output;
+                        if (total_picked >= 0x40) {
+                            return 0x40;
+                        }
                         current = current->next;
                     } while (current != 0);
                 }
@@ -3384,7 +3387,7 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
                             tail[confidence] = current;
                         } else {
                             do {
-                                if (found->draw_level <= draw_level) {
+                                if (draw_level >= found->draw_level) {
                                     current->next = found;
                                     previous = found->prev;
                                     current->prev = previous;
