@@ -122,7 +122,7 @@
     "004E43E0": {"status": "matching", "symbol": "?closestDropsiteResID@TribeInformationAIModule@@QBEHH@Z"},
     "004E4400": {"status": "matching", "symbol": "?calculatePlayVariation@TribeInformationAIModule@@QAEHH@Z"},
     "004E4450": {"status": "matching", "symbol": "?convertUnitToIntType@TribeInformationAIModule@@QBEHPAVRGE_Static_Object@@@Z"},
-    "004E4500": {"status": "scratch", "symbol": "?loadUnitHistory@TribeInformationAIModule@@QAEXXZ"},
+    "004E4500": {"status": "matching", "symbol": "?loadUnitHistory@TribeInformationAIModule@@QAEXXZ"},
     "004E45A0": {"status": "matching", "symbol": "?unitsThatAreMostBuilt@TribeInformationAIModule@@QAEXAAH0@Z"},
     "004E4610": {"status": "matching", "symbol": "?unitsThatAreLeastBuilt@TribeInformationAIModule@@QAEXAAH0@Z"},
     "004E4680": {"status": "matching", "symbol": "?acceptablePotentialDropsiteArea@TribeInformationAIModule@@QAEHHH@Z"},

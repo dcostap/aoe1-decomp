@@ -7,6 +7,7 @@
 #include "ai_placement_state.h"
 #include "aiplaybook.h"
 #include "infmap.h"
+#include "rge_fio.h"
 #include "taiinf_records.h"
 #include "tactical_group.h"
 #include "utmarray.h"
@@ -47,10 +48,6 @@ extern InfluenceMap attackMap;
 
 void* operator new(unsigned int size);
 void operator delete(void* pointer);
-extern "C" void __cdecl rge_read(int file, void* buffer, int size);
-extern "C" int __cdecl rge_open(char* path, int mode, int attr = 0);
-extern "C" void __cdecl rge_write(int file, void* buffer, int size);
-extern "C" int __cdecl rge_close(int file);
 
 class TribeInformationAIModule : public InformationAIModule {
 public:

@@ -3,6 +3,7 @@
 #include "../include/taimdmd.h"
 #include "../include/basegame.h"
 #include "../include/player.h"
+#include "../include/rge_fio.h"
 #include "../include/tplayer.h"
 #include "../include/stat_obj.h"
 #include "../include/m_s_obj.h"
@@ -879,7 +880,6 @@ TribeStrategyAIModule::TribeStrategyAIModule(void* object, int parameter)
 }
 
 
-extern "C" void __cdecl rge_read(int file, void* dst, int size);
 extern float save_game_version;
 extern float DAT_00575690;
 

@@ -2,10 +2,9 @@
 #include "../include/tairesmd.h"
 #include "../include/taimdmd.h"
 #include "../include/player.h"
+#include "../include/rge_fio.h"
 
 extern const char s_Resource_AI[];
-void rge_read(int handle, void* buffer, int size);
-extern "C" void __cdecl rge_write(int file_handle, void* data, int size);
 
 TribeResourceAIModule::TribeResourceAIModule(void* param_1, int param_2,
                                              int param_3, int param_4,
