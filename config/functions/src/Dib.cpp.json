@@ -18,7 +18,7 @@
     "00439B50": {"status": "matching", "symbol": "?ReadDibBits@@YAPAEPAD@Z"},
     "00439BE0": {"status": "matching", "symbol": "?DibWriteClipped@@YAHPAUtagBITMAPINFOHEADER@@PADJJJJ@Z"},
     "00439CC0": {"status": "matching", "symbol": "?DibWriteFile@@YAHPAUtagBITMAPINFOHEADER@@PAD@Z"},
-    "00439D80": {"status": "scratch", "symbol": "?DibCreatePalette@@YAPAXPAUtagBITMAPINFOHEADER@@@Z"},
+    "00439D80": {"status": "accepted_drift", "symbol": "?DibCreatePalette@@YAPAXPAUtagBITMAPINFOHEADER@@@Z"},
     "00439E50": {"status": "scratch", "symbol": "?DibReadBitmapInfo@@YAPAUtagBITMAPINFOHEADER@@H@Z"},
     "0043A070": {"status": "matching", "symbol": "?DibFromBitmap@@YAPAUtagBITMAPINFOHEADER@@PAXKI0I@Z"},
     "0043A330": {"status": "matching", "symbol": "?DibSetUsage@@YAHPAUtagBITMAPINFOHEADER@@PAXI@Z"},
