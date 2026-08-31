@@ -383,7 +383,7 @@ def write_text_report(report: dict[str, Any], path: Path) -> None:
     lines.extend(["", "Repair queue:"])
     for row in report["repair_queue"]:
         lines.append(
-            f"  P{row['priority']} {row['va']} {row['status']} {row['source']}"
+            f"  {row['va']} {row['status']} {row['source']}"
             f" | {row['pdb_qualified_owner'] or '<no PDB owner>'}"
             f" | {row['rebuilt_decorated_symbol'] or '<no rebuilt symbol>'}"
             f" | TU={row['grouped_tu'] or '-'}"

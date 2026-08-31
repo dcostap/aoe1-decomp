@@ -12,6 +12,7 @@ from audit_matching_owners import (  # noqa: E402
     build_report,
     collect_function_audit_rows,
     owner_mismatch_kind,
+    write_text_report,
 )
 from function_diagnostics import owning_function_symbol_validation  # noqa: E402
 
@@ -171,6 +172,30 @@ class MatchingOwnerAuditTests(unittest.TestCase):
             rows = collect_function_audit_rows(path)
         self.assertEqual(rows[0]["status"], "MATCH")
         self.assertEqual(rows[0]["metadata_state"], "grouped")
+
+    def test_text_report_renders_queue_without_obsolete_priority(self) -> None:
+        rows = [
+            {
+                "va": "00400020",
+                "status": "MISMATCH",
+                "owner_status": "match",
+                "owner_mismatch_kind": "",
+                "repair_reason": "continue byte matching",
+                "pdb_qualified_owner": "Owner::work",
+                "rebuilt_decorated_symbol": "?work@Owner@@QAEXXZ",
+                "source": "src/sample.cpp",
+                "grouped_tu": "sample",
+                "metadata_state": "grouped",
+                "checker_status": "MISMATCH",
+            }
+        ]
+        report = build_report(rows)
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "owner_audit.txt"
+            write_text_report(report, path)
+            text = path.read_text(encoding="utf-8")
+        self.assertIn("00400020 MISMATCH src/sample.cpp", text)
+        self.assertNotIn("P99", text)
 
 
 if __name__ == "__main__":
