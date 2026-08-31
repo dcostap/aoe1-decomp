@@ -82,7 +82,10 @@ def compare_object_function(
     record = function_record_by_va(va)
     symbol = select_configured_symbol(obj, va, module)
     section = function_symbol_section(obj, symbol)
-    expected_size = int(record["size_bytes"], 10)
+    original, original_meta = _original_artifacts(va)
+    # Extraction can extend the inventory procedure through reviewed,
+    # contiguous parent-owned fragments. Use that resolved owner boundary.
+    expected_size = len(original)
     symbol_by_index = {candidate.index: candidate for candidate in obj.symbols}
     indirect_targets: list[int] = []
     for relocation in section.relocations:
@@ -103,7 +106,6 @@ def compare_object_function(
         for relocation in section.relocations
         if relocation.offset < len(rebuilt)
     ]
-    original, original_meta = _original_artifacts(va)
     masked_original, masked_rebuilt, relocation_validation = compatible_relocation_masks(
         original,
         rebuilt,
