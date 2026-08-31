@@ -266,21 +266,16 @@ unsigned char RGE_Action_Missile::update()
             RGE_Check_Node* node = collision_list->list;
             while (node != 0) {
                 RGE_Combat_Object* attack_target;
-                RGE_Static_Object* attack_object;
                 int collision_mode =
                     ((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_hit_info;
 
                 switch (collision_mode) {
                 case 0: {
-                    if (node->node == this->target_obj) {
-                        attack_object = this->target_obj;
+                    if (this->target_obj == node->node) {
                         if (this->target_obj2 != 0) {
-                            attack_target =
-                                (RGE_Combat_Object*)this->target_obj2;
-                        } else {
-                            attack_target = (RGE_Combat_Object*)this->obj;
+                            goto collision_target2_attack;
                         }
-                        goto collision_do_attack;
+                        goto collision_object_attack;
                     }
                     break;
                 }
@@ -288,20 +283,14 @@ unsigned char RGE_Action_Missile::update()
                 case 1: {
                     if (node->node->owner != this->obj->owner &&
                         node->node->owner->id != 0) {
-                        attack_object = node->node;
                         if (this->target_obj2 == 0) {
-                            ((RGE_Combat_Object*)this->obj)->do_attack(
-                                attack_object,
-                                (RGE_Combat_Object*)this->obj,
-                                this->obj->world_x, this->obj->world_y,
-                                this->obj->world_z);
-                        } else {
-                            ((RGE_Combat_Object*)this->target_obj2)->do_attack(
-                                attack_object,
-                                (RGE_Combat_Object*)this->target_obj2,
-                                this->obj->world_x, this->obj->world_y,
-                                this->obj->world_z);
+                            goto collision_object_attack;
                         }
+                        ((RGE_Combat_Object*)this->target_obj2)->do_attack(
+                            node->node,
+                            (RGE_Combat_Object*)this->target_obj2,
+                            this->obj->world_x, this->obj->world_y,
+                            this->obj->world_z);
                         goto collision_state;
                     }
                     break;
@@ -316,8 +305,7 @@ unsigned char RGE_Action_Missile::update()
                         }
                         if (node->node->owner != this->obj->owner &&
                             node->node->owner->id != 0) {
-                            attack_object = node->node;
-                            goto collision_do_attack;
+                            goto collision_target2_attack;
                         } else {
                             attack_target->area_attack(this->obj->world_x,
                                                         this->obj->world_y,
@@ -327,9 +315,7 @@ unsigned char RGE_Action_Missile::update()
                         }
                     } else if (node->node->owner != this->obj->owner &&
                                node->node->owner->id != 0) {
-                        attack_object = node->node;
-                        attack_target = (RGE_Combat_Object*)this->obj;
-                        goto collision_do_attack;
+                        goto collision_object_attack;
                     } else {
                         attack_target = (RGE_Combat_Object*)this->obj;
                         attack_target->area_attack(this->obj->world_x,
@@ -344,10 +330,18 @@ unsigned char RGE_Action_Missile::update()
 
                 goto collision_next;
 
-            collision_do_attack:
-                attack_target->do_attack(attack_object, attack_target,
-                                         this->obj->world_x, this->obj->world_y,
-                                         this->obj->world_z);
+            collision_target2_attack:
+                ((RGE_Combat_Object*)this->target_obj2)->do_attack(
+                    node->node, (RGE_Combat_Object*)this->target_obj2,
+                    this->obj->world_x, this->obj->world_y,
+                    this->obj->world_z);
+                goto collision_state;
+
+            collision_object_attack:
+                ((RGE_Combat_Object*)this->obj)->do_attack(
+                    node->node, (RGE_Combat_Object*)this->obj,
+                    this->obj->world_x, this->obj->world_y,
+                    this->obj->world_z);
             collision_state:
                 this->set_state(1);
 
