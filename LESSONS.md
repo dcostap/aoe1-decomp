@@ -81,6 +81,9 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 ## Types, ownership, layout, and addressing
 
 - Establish width, signedness, ownership, offsets, alignment, stride, and `sizeof` early.
+- Inspect procedure-scoped PDB symbols before treating fixed-address data as shared globals.
+- `S_LDATA32` inside a procedure can prove function-static ownership, name, address, and type.
+- PDB absence is weaker evidence because optimized builds can omit automatic locals.
 - Model pointer members as pointers and inline arrays as inline arrays.
 - Include vptrs, base sizes, tail padding, and derived alignment.
 - Derived fields start at aligned `sizeof(Base)`, not the last visible base field.
