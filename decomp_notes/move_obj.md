@@ -88,6 +88,22 @@ No declaration in `include/move_obj.h` had a safe shape-only replacement. Its
 virtual order, inherited surfaces, field widths, and size check remain tied to
 the reviewed PDB and relocation evidence.
 
+## Root moving/action ABI review
+
+Removing two unsupported moving overloads places the later action slots at the
+original offsets. `work2` and `set_task` then occupy `+0x1F8` and `+0x1FC`.
+
+The trial used direct `xy_point.h` ownership. It did not rely on the removed
+incidental `zone_map.h` include.
+
+The corrected surface changed exact missile owner `0045AA70` by 16 x87 operand
+bytes. Nonvirtual copies of the removed declarations did not change that
+result. This proves the vtable topology, not declaration count, causes the
+compiler change.
+
+Root restored the current surface. Do not retain unsupported overloads as
+nonvirtual compiler context.
+
 Canonical providers changed ten former exact results. Their grouped differences
 were 3, 2, 113, 1120, 2977, 2912, 1, 29, 34, and 5 bytes.
 The three accepted-drift entries remained closed.

@@ -49,3 +49,19 @@ target mismatches, and zero boundary escapes.
 
 The migration proposal still named the removed wrapper. The completed
 registry migration now uses `src/misl_obj.cpp`.
+
+## Moving/action surface blocker
+
+A corrected moving/action virtual surface changes exact `0045AA70
+missile_move` by 16 bytes. The size remains 172 bytes. All 60 instructions,
+blocks, two calls, relocations, owner, and boundary remain aligned.
+
+Only two commutative x87 additions change operand order. The original loads
+`world_x` and `world_y` first. The corrected context loads each velocity first.
+
+Reversed sums, declaration initializers, split additions, and ordinary
+temporary lifetimes did not recover the original order. Split additions also
+changed the wider schedule. Fake volatility and field aliases remain rejected.
+
+Root restored the exact source and current headers. Do not reopen this anchor
+without a natural expression or authentic declaration context.

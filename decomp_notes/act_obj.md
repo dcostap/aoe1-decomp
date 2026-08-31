@@ -71,3 +71,15 @@ The following owners are `scratch`:
 
 The direct source preserves all bodies. Exact repair can start from this source
 tree. The module has no accepted-drift rows.
+
+## Root moving/action ABI review
+
+Binary vtables place `RGE_Action_Object::work2` and `set_task` at `+0x1F8`
+and `+0x1FC`. They are virtual methods, not ordinary helpers.
+
+The natural declaration repair also needs removal of two unsupported moving
+overloads. That combined repair changes exact `0045AA70` by 16 commutative x87
+operand bytes.
+
+All moving/action trials were restored. The slot result is proved, but no
+shared repair may replace the exact missile anchor.
