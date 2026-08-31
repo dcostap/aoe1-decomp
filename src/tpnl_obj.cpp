@@ -641,7 +641,6 @@ void TRIBE_Panel_Object::draw_score()
     short x_val;
     HGDIOBJ old_font;
     RGE_Player* temp_player;
-    int y_offset = 0;
     short x;
     short y;
     RECT rect;
@@ -656,6 +655,7 @@ void TRIBE_Panel_Object::draw_score()
     this->render_area->Clear(&this->clip_rect, 0);
 
     if (this->render_area->GetDc("tpnl_obj::draw_score") != 0) {
+        int y_offset;
         SetBkMode(this->render_area->DrawDc, 1);
         SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
         old_font = SelectObject(this->render_area->DrawDc,
@@ -665,6 +665,7 @@ void TRIBE_Panel_Object::draw_score()
         x_val = (short)this->pnl_x + 0x5A;
         y = (short)this->pnl_y - 1;
 
+        y_offset = 0;
         i = 1;
         do {
             int player_id = rge_base_game->playerID(i);
@@ -705,13 +706,15 @@ void TRIBE_Panel_Object::draw_score()
 
                 SetTextColor(this->render_area->DrawDc, color);
                 strcpy(str, comm->GetPlayerName(i));
-                TextOutA(this->render_area->DrawDc, x, y + y_offset,
-                         str, strlen(str));
+                int text_len = strlen(str);
+                int current_y = y + y_offset;
+                TextOutA(this->render_area->DrawDc, x, current_y, str,
+                         text_len);
                 sprintf(str, "%d",
                         temp_player->victory_conditions->get_victory_points());
-                SetRect(&rect, x_val, y + y_offset,
+                SetRect(&rect, x_val, current_y,
                         this->pnl_x + this->pnl_wid - 3,
-                        y + y_offset + 0x0E);
+                        current_y + 0x0E);
                 DrawTextA(this->render_area->DrawDc, str, -1, &rect, 0x22);
                 y_offset += 0x0E;
             }
