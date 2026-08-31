@@ -959,17 +959,13 @@ void TRIBE_Map::tribe_clean_elevation(long x_start, long y_start,
         y_end = map_height - 1;
 
     for (; y_start <= y_end; ++y_start) {
-        if (x_start <= x_end) {
-            long x = x_start;
-            do {
-                if (water(map_row_offset[y_start][x].terrain_type)) {
-                    if (!do_terrain_brush_check(x, y_start)) {
-                        RGE_Map::set_terrain(game_world, (short)x,
-                                             (short)y_start, 0, 0, 0);
-                    }
+        for (long x = x_start; x <= x_end; ++x) {
+            if (water(map_row_offset[y_start][x].terrain_type)) {
+                if (!do_terrain_brush_check(x, y_start)) {
+                    RGE_Map::set_terrain(game_world, (short)x,
+                                         (short)y_start, 0, 0, 0);
                 }
-                ++x;
-            } while (x <= x_end);
+            }
         }
     }
 }
