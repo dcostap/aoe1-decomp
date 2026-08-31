@@ -2,6 +2,7 @@
 #include "../include/zone_map.h"
 
 void rge_read(int handle, void* buffer, int count);
+void rge_write(int file, void* data, int size);
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -104,8 +105,6 @@ RGE_Zone_Map::~RGE_Zone_Map()
     free(this->zone_map_rows);
     free(this->terrain_passability_rules);
 }
-
-extern void rge_write(int file, void* data, int size);
 
 void RGE_Zone_Map::save(int file)
 {
