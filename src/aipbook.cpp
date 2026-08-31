@@ -922,9 +922,9 @@ AIPlayBook::~AIPlayBook() {
 int AIPlayBook::loadPlays(char* filename) {
     int temp4;
     int phaseValue1;
-    int currentPhase;
+    char commentTemp2;
     int phaseState;
-    int j;
+    char commentTemp1;
     int groupPhase;
     int currentPlay;
     int refPhase;
@@ -938,7 +938,11 @@ int AIPlayBook::loadPlays(char* filename) {
     char temp6[0x100];
 
     if (filename == 0 || strcmp(filename, s_NONE) == 0) {
-        strcpy(this->nameValue, filename != 0 ? s_NONE : s_NULL);
+        if (filename == 0) {
+            strcpy(this->nameValue, s_NULL);
+        } else {
+            strcpy(this->nameValue, s_NONE);
+        }
         return 0;
     }
 
@@ -993,10 +997,10 @@ int AIPlayBook::loadPlays(char* filename) {
         temp7 = 0;
 
         if (sscanf(temp + 4, s_format_comment,
-                  ((char*)&j) + 3, ((char*)&currentPhase) + 3) == -1) {
+                  &commentTemp1, &commentTemp2) == -1) {
             continue;
         }
-        if (((char*)&j)[3] == '/' && ((char*)&currentPhase)[3] == '/') {
+        if (commentTemp1 == '/' && commentTemp2 == '/') {
             continue;
         }
 
@@ -1086,19 +1090,21 @@ int AIPlayBook::loadPlays(char* filename) {
             if (temp4 >= 0 && temp4 < 5) {
                 int groupType = this->convertUnitNameToIntType(temp6 + 4);
                 if (groupType != -1) {
-                    int minimumValue = phaseValue1;
-                    if (minimumValue < 0) {
-                        minimumValue = 0;
+                    if (phaseValue1 < 0) {
+                        this->plays[refPhase].group(temp4)->setMinimum(
+                            groupType, 0);
+                    } else {
+                        this->plays[refPhase].group(temp4)->setMinimum(
+                            groupType, phaseValue1);
                     }
-                    this->plays[refPhase].group(temp4)->setMinimum(
-                        groupType, (unsigned char)minimumValue);
 
-                    int maximumValue = i;
-                    if (maximumValue > 50) {
-                        maximumValue = 50;
+                    if (i > 50) {
+                        this->plays[refPhase].group(temp4)->setMaximum(
+                            groupType, 50);
+                    } else {
+                        this->plays[refPhase].group(temp4)->setMaximum(
+                            groupType, i);
                     }
-                    this->plays[refPhase].group(temp4)->setMaximum(
-                        groupType, (unsigned char)maximumValue);
                 }
             }
         } else if (strcmp(temp2 + 4, s_Phase) == 0 && refPhase != -1) {
@@ -1130,13 +1136,12 @@ int AIPlayBook::loadPlays(char* filename) {
                 (unsigned char)phaseState, (unsigned char)temp4, fileValue);
             phase->addTrigger(rtrigger);
         } else if (strcmp(temp2 + 4, s_EndPlay) == 0 && refPhase != -1) {
-            int oldPhase = refPhase;
             phaseState = -1;
-            strcpy(temp2 + 4, this->plays[oldPhase].nameValue);
+            strcpy(temp2 + 4, this->plays[refPhase].nameValue);
             if (temp2[4] == 'H' && temp2[5] == 'P') {
                 this->numberPlaysValue -= 7;
-                refPhase = oldPhase;
             } else {
+                int oldPhase = refPhase;
                 refPhase = oldPhase + 7;
                 temp8 = 1;
                 do {
@@ -1171,15 +1176,16 @@ int AIPlayBook::loadPlays(char* filename) {
                         this->plays[oldPhase].numberGroupsValue;
                     groupPhase = 0;
                     do {
-                        AIPlayGroup* source = this->plays[oldPhase].group(groupPhase);
-                        AIPlayGroup* destination =
+                        AIPlayGroup* sourceGroup =
+                            this->plays[oldPhase].group(groupPhase);
+                        AIPlayGroup* destinationGroup =
                             this->plays[oldPhase + temp8].group(groupPhase);
                         int groupIndex = 0;
                         do {
-                            destination->setMinimum(
-                                groupIndex, source->minimum(groupIndex));
-                            destination->setMaximum(
-                                groupIndex, source->maximum(groupIndex));
+                            destinationGroup->setMinimum(
+                                groupIndex, sourceGroup->minimum(groupIndex));
+                            destinationGroup->setMaximum(
+                                groupIndex, sourceGroup->maximum(groupIndex));
                             ++groupIndex;
                         } while (groupIndex < 6);
                         ++groupPhase;
@@ -1193,23 +1199,24 @@ int AIPlayBook::loadPlays(char* filename) {
                             this->plays[oldPhase + temp8].phase(groupPhase);
                         currentPlay = 0;
                         do {
-                            AIPlayPhaseCommand* command =
+                            AIPlayPhaseCommand* phaseCommand =
                                 sourcePhase->command(currentPlay);
-                            if (command->type() == 1) {
+                            if (phaseCommand->type() != 1) {
+                                destinationPhase->addCommand(*phaseCommand);
+                            } else {
                                 XYZ origin(0, 0, 0);
                                 XYZ rotatedPoint;
-                                XYZ originalPoint(command->value1(),
-                                                  command->value2(),
-                                                  command->value3());
+                                XYZ originalPoint(phaseCommand->value1(),
+                                                  phaseCommand->value2(),
+                                                  phaseCommand->value3());
                                 originalPoint.rotateXYByFacet(
                                     origin, rotatedPoint, (unsigned char)temp8);
                                 AIPlayPhaseCommand newCommand(
-                                    command->group(), command->type(),
+                                    phaseCommand->group(), phaseCommand->type(),
                                     rotatedPoint.yValue, rotatedPoint.zValue,
                                     originalPoint.xValue);
-                                command = &newCommand;
+                                destinationPhase->addCommand(newCommand);
                             }
-                            destinationPhase->addCommand(*command);
                             ++currentPlay;
                         } while (currentPlay < 5);
 
