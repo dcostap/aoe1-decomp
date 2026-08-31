@@ -1107,7 +1107,7 @@ unsigned char RGE_Main_View::pick1(unsigned char command, unsigned char small_ob
             return 0x32;
         }
 
-        int seen_exclude = 0;
+        bool seen_exclude = false;
         RGE_Static_Object* chosen = 0;
         short chosen_x = 0;
         short chosen_y = 0;
