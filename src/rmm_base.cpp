@@ -534,7 +534,7 @@ uchar RGE_Random_Map_Module::find_path(
                         calc_cost[1] = 0;
                     }
                 } else if (state == 2) {
-                    *cell = 6;
+                    this->search_map_rows[y - 1][x] = 6;
                     target_x = x;
                     target_y = y - 1;
                     return 1;
@@ -569,7 +569,7 @@ uchar RGE_Random_Map_Module::find_path(
                         calc_cost[3] = 0;
                     }
                 } else if (state == 2) {
-                    *cell = 4;
+                    this->search_map_rows[y][x - 1] = 4;
                     target_x = x - 1;
                     target_y = y;
                     return 1;
