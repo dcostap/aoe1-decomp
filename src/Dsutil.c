@@ -1149,10 +1149,12 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
             if (ds_stream_loop == 0) {
                 LPWAVEFORMATEX wave = _wiWave;
                 if (wave && lpWrite1) {
-                    unsigned int bits = wave->wBitsPerSample;
-                    unsigned int fill = ((bits != 8) - 1) & 0x80;
-                    if (bits == 8 || bits == 16)
-                        memset(lpWrite1 + uChkErr, fill, dwLen1 - uChkErr);
+                    if (wave->wBitsPerSample == 8)
+                        memset(lpWrite1 + uChkErr, 0x80,
+                               dwLen1 - uChkErr);
+                    else if (wave->wBitsPerSample == 16)
+                        memset(lpWrite1 + uChkErr, 0,
+                               dwLen1 - uChkErr);
                 }
                 if (ds_write_cursor <= dwLen2)
                     ds_silence_chunks = (ds_buffer_size + ds_write_cursor - dwLen2) / ds_chunk_size;
@@ -1206,8 +1208,7 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
         if (wave && lpWrite2) {
             unsigned int bits = wave->wBitsPerSample;
             unsigned int fill = ((bits != 8) - 1) & 0x80;
-            if (bits == 8 || bits == 16)
-                memset(lpWrite2, fill, dwLen2);
+            memset(lpWrite2, fill, dwLen2);
         }
     }
 
