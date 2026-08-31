@@ -47,7 +47,7 @@
     "00524880": {"status": "scratch", "symbol": "?calc_timing_text@TRIBE_Game@@UAEXXZ"},
     "00524A60": {"status": "matching", "symbol": "?show_timings@TRIBE_Game@@UAEXXZ"},
     "00524A80": {"status": "matching", "symbol": "?show_comm@TRIBE_Game@@UAEXXZ"},
-    "00524AF0": {"status": "scratch", "symbol": "?show_ai@TRIBE_Game@@UAEXXZ"},
+    "00524AF0": {"status": "matching", "symbol": "?show_ai@TRIBE_Game@@UAEXXZ"},
     "00524D70": {"status": "scratch", "symbol": "?notification@TRIBE_Game@@UAEXHJJJJ@Z"},
     "00525D20": {"status": "matching", "symbol": "?start_game@TRIBE_Game@@QAEHH@Z"},
     "00525E50": {"status": "matching", "symbol": "?test_scenario@TRIBE_Game@@QAEHPAD@Z"},

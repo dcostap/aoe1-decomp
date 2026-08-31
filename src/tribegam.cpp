@@ -1815,10 +1815,8 @@ void TRIBE_Game::show_ai()
     if (this->world->players == 0) {
         return;
     }
-    RGE_Player* player = this->world->players[this->world->curr_player];
-
-    if (player->computerPlayer() == 1) {
-        const char* n = player->aiStatus(1);
+    if (this->world->players[this->world->curr_player]->computerPlayer() == 1) {
+        const char* n = this->world->players[this->world->curr_player]->aiStatus(1);
         if (n == 0) {
             sprintf(s[0], "Player #%d: AI is not functional.",
                     this->world->curr_player);
@@ -1829,7 +1827,7 @@ void TRIBE_Game::show_ai()
         i = 2;
         char (*destination)[256] = &s[2];
         for (; i <= 6; ++i) {
-            const char* p = player->aiStatus(i);
+            const char* p = this->world->players[this->world->curr_player]->aiStatus(i);
             char* output = destination[-1];
             const char* source = "";
             if (p != 0) {
@@ -1839,7 +1837,7 @@ void TRIBE_Game::show_ai()
             ++destination;
         }
     } else {
-        const char* p = player->aiStatus(0);
+        const char* p = this->world->players[this->world->curr_player]->aiStatus(0);
         strcpy(s[0], p);
         sprintf(s[1], "Player #%d is not a computer player.",
                 this->world->curr_player);
@@ -1850,7 +1848,7 @@ void TRIBE_Game::show_ai()
     }
 
     if (this->game_screen != 0) {
-        if (player->computerPlayer() == 1) {
+        if (this->world->players[this->world->curr_player]->computerPlayer() == 1) {
             this->game_screen->show_ai(s[5], s[4], s[3], s[2], s[1], s[0]);
         } else {
             this->game_screen->show_ai(s[0], s[1], s[2], s[3], s[4], s[5]);
@@ -4322,7 +4320,7 @@ extern "C" int atoi(const char*);
 extern "C" int debug_rand(const char* file, int line);
 
 int TRIBE_Game::randomComputerName(int param1) {
-    char s[12];
+    char s[10];
     int max;
     int slot;
     int i;
