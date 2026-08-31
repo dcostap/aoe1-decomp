@@ -27,7 +27,7 @@
     "005102A0": {"status": "matching", "symbol": "?remove_cliff_edge@TRIBE_Map@@QAEXJJJ@Z"},
     "00510410": {"status": "matching", "symbol": "?reverse_cliff_direction@TRIBE_Map@@QAEJJ@Z"},
     "00510430": {"status": "scratch", "symbol": "?add_cliff_edge@TRIBE_Map@@QAEJJJJJJ@Z"},
-    "00510960": {"status": "scratch", "symbol": "?delete_cliff@TRIBE_Map@@UAEXJJ@Z"},
+    "00510960": {"status": "matching", "symbol": "?delete_cliff@TRIBE_Map@@UAEXJJ@Z"},
     "00510A50": {"status": "matching", "symbol": "?do_cliff_brush@TRIBE_Map@@UAEEJJEE@Z"},
     "00510C10": {"status": "matching", "symbol": "?do_cliff_brush_stroke@TRIBE_Map@@UAEEJJJJEE@Z"},
     "00510C90": {"status": "matching", "symbol": "?water@TRIBE_Map@@QAEEE@Z"},
