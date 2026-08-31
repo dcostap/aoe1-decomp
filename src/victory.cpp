@@ -756,21 +756,20 @@ void RGE_Victory_Conditions::handle_attribute(RGE_Victory_Entry* entry)
 
 
 void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
-    RGE_Victory_Conditions* self = this;
     if (entry->state != 0) return;
 
-    if (self->player) {
-        if (entry->ally_flag != 0 && self->player->allied_victory != 0) {
-            RGE_Game_World* world = self->player->world;
+    if (this->player) {
+        if (entry->ally_flag != 0 && this->player->allied_victory != 0) {
+            RGE_Game_World* world = this->player->world;
             int num = world->player_num;
             RGE_Player** players = world->players;
             int i = num - 1;
             if (i < 0) return;
             RGE_Player** pp = players + i;
             while (i >= 0) {
-                if ((self->player->relations[i] == 0 &&
-                     (*pp)->relations[self->player->id] == 0 &&
-                     (*pp)->allied_victory != 0) || i == self->player->id) {
+                if ((this->player->relations[i] == 0 &&
+                     (*pp)->relations[this->player->id] == 0 &&
+                     (*pp)->allied_victory != 0) || i == this->player->id) {
                     float explored = (*pp)->visible->percentExplored();
                     if (explored * 100.0f >= (float)entry->count) {
                         entry->state = 2;
@@ -781,7 +780,7 @@ void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
                 pp--;
             }
         } else {
-            float explored = self->player->visible->percentExplored();
+            float explored = this->player->visible->percentExplored();
             if (explored * 100.0f >= (float)entry->count) {
                 entry->state = 2;
             }
