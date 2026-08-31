@@ -9,7 +9,7 @@ struct LOSTBL;
 class Path;
 class RGE_Action_Object;
 class RGE_Active_Sprite_List;
-class RGE_Armor_Weapon_Info;
+struct RGE_Armor_Weapon_Info;
 class RGE_Color_Table;
 class RGE_Game_World;
 class RGE_Master_Static_Object;

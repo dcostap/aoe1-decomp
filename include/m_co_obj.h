@@ -14,6 +14,7 @@ class RGE_Static_Object;
 class TDrawArea;
 class RGE_Color_Table;
 
+struct RGE_Armor_Weapon_Info;
 class RGE_Armor_Weapon_Info {
 public:
     short type;

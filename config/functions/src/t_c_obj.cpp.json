@@ -19,7 +19,7 @@
     "004CA740": {"status": "matching", "symbol": "?set_object_state@TRIBE_Combat_Object@@UAEXE@Z"},
     "004CA780": {"status": "matching", "symbol": "?cancel_object@TRIBE_Combat_Object@@UAEXXZ"},
     "004CA790": {"status": "matching", "symbol": "?die_die_die@TRIBE_Combat_Object@@UAEXXZ"},
-    "004CA7F0": {"status": "scratch", "symbol": "?damage@TRIBE_Combat_Object@@UAEXHPAURGE_Armor_Weapon_Info@@MPAVRGE_Player@@PAVRGE_Static_Object@@@Z"},
+    "004CA7F0": {"status": "matching", "symbol": "?damage@TRIBE_Combat_Object@@UAEXHPAURGE_Armor_Weapon_Info@@MPAVRGE_Player@@PAVRGE_Static_Object@@@Z"},
     "004CA8C0": {"status": "matching", "symbol": "?change_ownership@TRIBE_Combat_Object@@MAEXPAVRGE_Player@@@Z"},
     "004CAA00": {"status": "matching", "symbol": "?calc_attack_modifier@TRIBE_Combat_Object@@UAEMPAVRGE_Static_Object@@@Z"},
     "004CAA50": {"status": "matching", "symbol": "?attack@TRIBE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAVRGE_Combat_Object@@@Z"},
