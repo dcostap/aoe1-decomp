@@ -4158,19 +4158,25 @@ int RGE_View::do_paint(long param_1, long param_2, long param_3, long param_4, i
 
     switch (rge_base_game->game_mode) {
     case 9:
-        if (param_5 != 0 && rge_base_game->terrain_id != -1) {
-            this->map->do_terrain_brush_stroke(
-                this->real_old_map_col, this->real_old_map_row,
-                new_col, new_row, (int)rge_base_game->brush_size,
-                (unsigned char)rge_base_game->terrain_id);
+        if (param_5 != 0) {
+            short terrain_id = rge_base_game->terrain_id;
+            if (terrain_id != -1) {
+                this->map->do_terrain_brush_stroke(
+                    this->real_old_map_col, this->real_old_map_row,
+                    new_col, new_row, (int)rge_base_game->brush_size,
+                    terrain_id);
+            }
         }
         break;
     case 10:
-        if (param_5 != 0 && rge_base_game->elevation_height != -1) {
-            this->map->do_elevation_brush_stroke(
-                this->real_old_map_col, this->real_old_map_row,
-                new_col, new_row, (int)rge_base_game->brush_size,
-                (unsigned char)rge_base_game->elevation_height);
+        if (param_5 != 0) {
+            short elevation_height = rge_base_game->elevation_height;
+            if (elevation_height != -1) {
+                this->map->do_elevation_brush_stroke(
+                    this->real_old_map_col, this->real_old_map_row,
+                    new_col, new_row, (int)rge_base_game->brush_size,
+                    elevation_height);
+            }
         }
         break;
     case 0x13:
