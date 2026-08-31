@@ -3212,30 +3212,33 @@ void TRIBE_Screen_Game::reset_clocks() {
     int clock_count = 0;
 
     if (player_id < this->world->player_num) {
+        TRIBE_Panel_Time** clock = this->countdown_clock;
         do {
-            TRIBE_Player* player = static_cast<TRIBE_Player*>(
-                this->world->players[player_id]);
             long countdown_timer;
             rge_base_game->get_countdown_timer(player_id, countdown_timer);
             if (countdown_timer > 0) {
-                this->countdown_clock[clock_count]->set_clock_type(4, player_id);
                 ++clock_count;
+                (*clock++)->set_clock_type(4, player_id);
                 if (clock_count > 9) {
                     break;
                 }
             }
 
-            if (player->artifact_held_time != -1.0f) {
+            if (static_cast<TRIBE_Player*>(this->world->players[player_id])
+                    ->artifact_held_time != -1.0f) {
                 int countdown = 0;
-                if (player->allied_victory != 0) {
+                if (static_cast<TRIBE_Player*>(this->world->players[player_id])
+                        ->allied_victory != 0) {
                     int other_player = 1;
                     if (player_id > 1) {
                         do {
-                            RGE_Player* other =
-                                this->world->players[other_player];
-                            if (player->relation(other_player) == 0 &&
-                                other->relation(player_id) == 0 &&
-                                other->allied_victory != 0) {
+                            if (static_cast<TRIBE_Player*>(
+                                    this->world->players[player_id])
+                                    ->relation(other_player) == 0 &&
+                                this->world->players[other_player]
+                                    ->relation(player_id) == 0 &&
+                                this->world->players[other_player]
+                                    ->allied_victory != 0) {
                                 countdown = 1;
                                 break;
                             }
@@ -3245,25 +3248,29 @@ void TRIBE_Screen_Game::reset_clocks() {
                 }
 
                 if (countdown == 0) {
-                    this->countdown_clock[clock_count]->set_clock_type(5, player_id);
                     ++clock_count;
+                    (*clock++)->set_clock_type(5, player_id);
                     if (clock_count > 9) {
                         break;
                     }
                 }
             }
 
-            if (player->ruin_held_time != -1.0f) {
+            if (static_cast<TRIBE_Player*>(this->world->players[player_id])
+                    ->ruin_held_time != -1.0f) {
                 int countdown = 0;
-                if (player->allied_victory != 0) {
+                if (static_cast<TRIBE_Player*>(this->world->players[player_id])
+                        ->allied_victory != 0) {
                     int other_player = 1;
                     if (player_id > 1) {
                         do {
-                            RGE_Player* other =
-                                this->world->players[other_player];
-                            if (player->relation(other_player) == 0 &&
-                                other->relation(player_id) == 0 &&
-                                other->allied_victory != 0) {
+                            if (static_cast<TRIBE_Player*>(
+                                    this->world->players[player_id])
+                                    ->relation(other_player) == 0 &&
+                                this->world->players[other_player]
+                                    ->relation(player_id) == 0 &&
+                                this->world->players[other_player]
+                                    ->allied_victory != 0) {
                                 countdown = 1;
                                 break;
                             }
@@ -3273,8 +3280,8 @@ void TRIBE_Screen_Game::reset_clocks() {
                 }
 
                 if (countdown == 0) {
-                    this->countdown_clock[clock_count]->set_clock_type(6, player_id);
                     ++clock_count;
+                    (*clock++)->set_clock_type(6, player_id);
                     if (clock_count > 9) {
                         break;
                     }
@@ -3286,9 +3293,12 @@ void TRIBE_Screen_Game::reset_clocks() {
     }
 
     if (clock_count < 10) {
-        for (; clock_count < 10; ++clock_count) {
-            this->countdown_clock[clock_count]->set_clock_type(0, 0);
-        }
+        TRIBE_Panel_Time** clock = &this->countdown_clock[clock_count];
+        int remaining = 10 - clock_count;
+        do {
+            (*clock++)->set_clock_type(0, 0);
+            --remaining;
+        } while (remaining != 0);
     }
 }
 
