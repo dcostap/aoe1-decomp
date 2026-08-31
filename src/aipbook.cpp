@@ -441,7 +441,6 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
     int a;
     int smallestGroupSize;
     int k;
-    RGE_Static_Object* object;
 
     play = world->playbook->play(playStatus->playNumberValue);
 
@@ -456,7 +455,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
 
     if (numberGroupMembers > 0) {
         for (i = 0; i < numberGroupMembers; i++) {
-            object = world->object(groupMembers[i]);
+            RGE_Static_Object* object = world->object(groupMembers[i]);
             if (object == 0) {
                 minUnits = 0;
             } else {
@@ -512,8 +511,8 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
     i = 0;
     rVal = 0;
     do {
-        a = unitsByTypeCount[i];
-        for (k = 0; k < a; k++) {
+        numAssigned = unitsByTypeCount[i];
+        for (k = 0; k < numAssigned; k++) {
             if (unitsByType[i][k] == -1) {
                 continue;
             }
