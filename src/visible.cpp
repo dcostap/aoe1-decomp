@@ -541,13 +541,10 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
             this->world->players[this->world->curr_player];
     }
 
-    int width = this->widthValue;
-    int height = this->heightValue;
-
-    if ((x1 >= width) || (x2 < 0)) {
+    if ((x1 >= this->widthValue) || (x2 < 0)) {
         return 0;
     }
-    if (y1 >= height) {
+    if (y1 >= this->heightValue) {
         return 0;
     }
     if (y2 < 0) {
@@ -556,14 +553,14 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
     if (x1 < 0) {
         x1 = 0;
     }
-    if (x2 >= width) {
-        x2 = width - 1;
+    if (x2 >= this->widthValue) {
+        x2 = this->widthValue - 1;
     }
     if (y1 < 0) {
         y1 = 0;
     }
-    if (y2 >= height) {
-        y2 = height - 1;
+    if (y2 >= this->heightValue) {
+        y2 = this->heightValue - 1;
     }
 
     for (; y1 <= y2; ++y1) {
