@@ -293,18 +293,17 @@ void TEasy_Panel::prepare_for_close() {
 
 void TEasy_Panel::setup_shadow_area(int force)
 {
-    char area_name[256];
-
     TDrawArea* area = this->shadow_area;
     if ((area == 0 || force != 0) &&
         this->background_pic != 0 && this->shadow_color_table != 0) {
         unsigned long old_flags = this->render_area->DrawSystem->Flags;
 
         if (area == 0) {
+            char area_name[256];
             TDrawSystem* draw_system = this->render_area->DrawSystem;
             draw_system->Flags &= 1;
-            sprintf(area_name + 4, "%s Shadow Panel", this->panel_name);
-            this->shadow_area = new TDrawArea(area_name + 4, 0);
+            sprintf(area_name, "%s Shadow Panel", this->panel_name);
+            this->shadow_area = new TDrawArea(area_name, 0);
         }
 
         if (this->shadow_area != 0) {
