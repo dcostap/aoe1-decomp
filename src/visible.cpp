@@ -481,7 +481,7 @@ void RGE_Visible_Map::unexplore_terrain(int x, int y, int radius, int square,
                         }
                         if (value == 0) {
                             if (update_tiles != 0) {
-                                tile->last_drawn_shape2 = 0x80;
+                                tile->draw_as = 0x80;
                             }
                             *explored &= this->PlayerVisibleMaskInvertValue;
                         }
@@ -665,7 +665,7 @@ void RGE_Visible_Map::unexplore_terrain_sq(int x1, int y1, int x2, int y2,
                     }
                     if (value == 0) {
                         if (update_tiles != 0) {
-                            tile->last_drawn_shape2 = 0x80;
+                            tile->draw_as = 0x80;
                         }
                         *explored &= self->PlayerVisibleMaskInvertValue;
                     }
