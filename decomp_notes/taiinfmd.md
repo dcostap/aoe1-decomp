@@ -136,3 +136,9 @@ The full `taiinfmd` observed audit completed in
 `build/audits/workers/wave21-resize-taiinfmd/taiinfmd`. It kept all 81
 registered owner matches. The six changed source calls are limited to
 `checkDefend`; `include/utmarray.h` was not changed.
+
+## 2026-08-31 exact reconciliation
+
+Final shared ABI repairs make `004DA5F0`, `004E21E0`, `004E41C0`, and
+`004E4240` exact. Standalone checks report `MATCH`, `0.0000%`, correct owners,
+boundaries, relocations, direct targets, and aligned calls for all four.

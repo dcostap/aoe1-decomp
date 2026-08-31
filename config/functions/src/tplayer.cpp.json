@@ -102,7 +102,7 @@
     "00519570": {"status": "accepted_drift", "symbol": "?add_attribute_num@TRIBE_Player@@UAEXFME@Z"},
     "005195D0": {"status": "matching", "symbol": "?analyize_selected_objects@TRIBE_Player@@UAEXXZ"},
     "005196E0": {"status": "matching", "symbol": "?get_mouse_pointer_action_vars@TRIBE_Player@@UAEHHAAH0@Z"},
-    "00519AF0": {"status": "scratch", "symbol": "??0TRIBE_Gaia@@QAE@HPAVTRIBE_World@@E@Z"},
+    "00519AF0": {"status": "matching", "symbol": "??0TRIBE_Gaia@@QAE@HPAVTRIBE_World@@E@Z"},
     "00519BD0": {"status": "matching", "symbol": "??0TRIBE_Gaia@@QAE@PAVTRIBE_World@@PAVRGE_Master_Player@@EPADE@Z"},
     "00519C40": {"status": "matching", "symbol": "?save@TRIBE_Gaia@@UAEXH@Z"},
     "00519CA0": {"status": "matching", "symbol": "?update@TRIBE_Gaia@@UAEXXZ"},
