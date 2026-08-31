@@ -116,7 +116,7 @@
     "0042DA50": {"status": "matching", "symbol": "?InitJoinGame@TCommunications_Handler@@QAEJXZ"},
     "0042DA80": {"status": "scratch", "symbol": "?JoinMultiplayerGame@TCommunications_Handler@@QAEHPAU_GUID@@@Z"},
     "0042DC20": {"status": "matching", "symbol": "?LaunchMultiplayerGame@TCommunications_Handler@@QAEXXZ"},
-    "0042DD70": {"status": "scratch", "symbol": "?GetMyMultiPlayerCaps@TCommunications_Handler@@IAEJXZ"},
+    "0042DD70": {"status": "matching", "symbol": "?GetMyMultiPlayerCaps@TCommunications_Handler@@IAEJXZ"},
     "0042DEA0": {"status": "matching", "symbol": "?SetApplicationGUID@TCommunications_Handler@@QAEXU_GUID@@@Z"},
     "0042DED0": {"status": "matching", "symbol": "?GetDPInterface@TCommunications_Handler@@QAEPAUIDirectPlay3@@XZ"},
     "0042DEE0": {"status": "matching", "symbol": "?SetServiceGUID@TCommunications_Handler@@QAEXU_GUID@@@Z"},
