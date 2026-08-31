@@ -21,39 +21,15 @@ Do not access the web or search online. Do not use network tools, remote URLs,
 online repositories, or external services. Use only repository-local evidence
 and files that the orchestrator supplies.
 
-You can retain edits to:
+You work in an isolated worktree. You may edit any repository source needed to
+test a binary-supported hypothesis for the assigned function. This includes
+shared headers, globals, declarations, and exact anchors.
 
-- scratch function bodies in the assigned natural source file; and
-- their function notes.
+Root reviews every retained change. Do not edit the behavior oracle, generated
+inventory, or registry status. Do not retain a shared model that regresses an
+exact anchor. Validate the affected closure before you propose a shared change.
 
-In your isolated worktree, you can also test a shared source hypothesis when
-binary evidence points to a declaration, layout, ABI, ownership, or compiler
-context defect. Shared experiments can edit related headers, global
-definitions, and natural source declarations. They can also edit an exact
-anchor temporarily when the experiment tests a shared source model.
-
-Do not use shared experiments as general search. First establish the target
-local blocker and state the shared hypothesis. Keep each experiment narrow.
-Use the compiler gate. Audit the complete transitive affected closure with one
-job. A shared candidate is valid only when all affected exact anchors remain
-exact.
-
-Restore a shared experiment when it regresses an exact anchor or lacks source
-evidence. Record the tested model and regressions in the function note. You can
-leave a non-regressing shared proposal for orchestrator review, but mark every
-shared path clearly in the final response. The orchestrator decides whether to
-retain and integrate it.
-
-Do not retain edits to matching, accepted-drift, verified-logic, or unresolved
-function bodies. Matching functions are regression anchors. Temporary edits
-are permitted only as part of a stated shared-source experiment.
-
-Do not edit registry status, tools, tests, shared notes, `LESSONS.md`, the Git
-index, or commits. Do not change flags, source order, or include context only to
-steer code generation.
-
-Do not use Git restore, reset, clean, checkout, stage, or commit. Preserve all
-unrelated worktree changes.
+Preserve unrelated work. Commit only when the assignment permits it.
 
 ## Objective
 
@@ -190,25 +166,6 @@ The proposal must prove:
 
 Record the proof in the function note. The orchestrator accepts or rejects the
 proposal.
-
-## Shared source experiments
-
-Use this path only after target-local evidence identifies a shared blocker.
-
-1. Record the clean target and affected-anchor baseline.
-2. State the exact shared type, layout, ABI, or ownership hypothesis.
-3. Make the smallest source-model change that tests it.
-4. Run the target check.
-5. Use the compiler gate and audit all affected translation units with
-   `--jobs 1`.
-6. Compare every configured exact anchor.
-7. Restore a candidate that causes any unexplained regression.
-8. Report the changed paths, affected groups, results, and smallest safe repair.
-
-Mixed-width access, overlapping addresses, or one exact target do not by
-themselves prove a union, raw view, duplicate declaration, or ownership model.
-Treat these forms as hypotheses until PDB, period source, exact donors, or a
-clean affected audit supports them.
 
 ## Major issues
 

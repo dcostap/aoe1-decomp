@@ -297,13 +297,9 @@ Each orchestrator owns shared repairs in its isolated worktree. This authority
 includes headers, globals, registry data, tools, tests, and compiler settings.
 It does not require case-by-case root approval.
 
-Matching workers can test narrow shared source hypotheses in their isolated
-worktrees. They must use the compiler gate and audit the complete affected
-closure. They cannot update status metadata or integrate the repair.
-
-The orchestrator reviews each shared experiment. It restores regressing or
-unsupported models, then validates and commits each accepted repair. Root keeps
-the final integration decision.
+Matching workers can test shared source hypotheses in their isolated
+worktrees. The orchestrator reviews the result and its affected closure. Root
+keeps the final integration decision.
 
 An orchestrator must use the compiler gate for shared source changes. It must
 audit the complete transitive dependency closure and preserve exact anchors.
