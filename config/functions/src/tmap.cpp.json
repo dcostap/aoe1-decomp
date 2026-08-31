@@ -6,7 +6,7 @@
     "flags": "gx"
   },
   "functions": {
-    "0050F410": {"status": "scratch", "symbol": "??0TRIBE_Map@@QAE@HPAPAVRGE_Sound@@E@Z"},
+    "0050F410": {"status": "matching", "symbol": "??0TRIBE_Map@@QAE@HPAPAVRGE_Sound@@E@Z"},
     "0050F760": {"status": "matching", "symbol": "??0TRIBE_Map@@QAE@PAD000FFFPAPAVRGE_Sound@@@Z"},
     "0050F7A0": {"status": "matching", "symbol": "??1TRIBE_Map@@UAE@XZ"},
     "0050F7B0": {"status": "matching", "symbol": "?save@TRIBE_Map@@UAEXH@Z"},
