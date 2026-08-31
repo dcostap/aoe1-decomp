@@ -97,7 +97,7 @@
     "0049D2F0": {"status": "matching", "symbol": "?command_attack_ground@TRIBE_Screen_Game@@IAEXXZ"},
     "0049D340": {"status": "matching", "symbol": "?command_trade_attribute@TRIBE_Screen_Game@@IAEXJ@Z"},
     "0049D370": {"status": "matching", "symbol": "?command_tab_selected@TRIBE_Screen_Game@@IAEXH@Z"},
-    "0049D440": {"status": "scratch", "symbol": "?any_selected_have_action@TRIBE_Screen_Game@@IAEHXZ"},
+    "0049D440": {"status": "matching", "symbol": "?any_selected_have_action@TRIBE_Screen_Game@@IAEHXZ"},
     "0049D4B0": {"status": "matching", "symbol": "?set_focus@TRIBE_Screen_Game@@UAEXH@Z"},
     "0049D4F0": {"status": "matching", "symbol": "?stop_sound_system@TRIBE_Screen_Game@@MAEXXZ"},
     "0049D530": {"status": "matching", "symbol": "?restart_sound_system@TRIBE_Screen_Game@@MAEHXZ"},

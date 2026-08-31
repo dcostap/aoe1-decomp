@@ -4463,7 +4463,7 @@ int TRIBE_Screen_Game::any_selected_have_action() {
         RGE_Action_Object* object =
             static_cast<RGE_Action_Object*>(player->sel_list[slot]);
         if (object != 0) {
-            unsigned char type = object->master_obj->unit_level;
+            unsigned char type = object->master_obj->master_type;
             if (type >= 0x28 && type <= 0x50 &&
                 object->have_action() != 0) {
                 return 1;
