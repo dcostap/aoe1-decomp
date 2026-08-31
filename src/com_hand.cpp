@@ -5601,10 +5601,13 @@ long TCommunications_Handler::GetMyMultiPlayerCaps()
         return result;
 
     this->dwFlags = dpCaps.dwFlags;
-    if (dpCaps.dwFlags & 0x40) {}
+    if (dpCaps.dwFlags & 0x40) {
+        this->RGE_Guaranteed_Delivery = 1;
+    } else {
+        this->RGE_Guaranteed_Delivery = 1;
+    }
     this->dwMaxBufferSize = dpCaps.dwMaxBufferSize;
     this->dwMaxQueueSize = dpCaps.dwMaxQueueSize;
-    this->RGE_Guaranteed_Delivery = 1;
     this->dwMaxPlayers = dpCaps.dwMaxPlayers;
     this->dwHundredBaud = dpCaps.dwHundredBaud;
     this->dwLatency = dpCaps.dwLatency;
