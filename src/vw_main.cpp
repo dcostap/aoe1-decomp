@@ -158,7 +158,7 @@ int RGE_Main_View::handle_keys() {
         GetForegroundWindow() == this->TPanel::render_area->Wnd &&
         this->have_focus != 0) {
         changed = 0;
-        GetKeyboardState(keys + 4);
+        GetKeyboardState(keys);
         horz_scroll = 0;
         vert_scroll = 0;
         info = rge_base_game->prog_info;
@@ -166,58 +166,57 @@ int RGE_Main_View::handle_keys() {
         if (rge_base_game->game_mode == 0x12 &&
             this->player != 0 && this->player->selected_obj != 0) {
             RGE_Static_Object* obj = this->player->selected_obj;
-            if (keys[0x2A] > 1) {
+            if (keys[0x26] > 1) {
                 obj->teleport(obj->world_x + info->key_scroll_object_move,
                               obj->world_y - info->key_scroll_object_move, 0);
                 changed = 1;
             }
-            if (keys[0x2C] > 1) {
+            if (keys[0x28] > 1) {
                 RGE_Static_Object* obj2 = this->player->selected_obj;
                 obj2->teleport(obj->world_x - info->key_scroll_object_move,
                                obj->world_y + info->key_scroll_object_move, 0);
                 changed = 1;
             }
-            if (keys[0x29] > 1) {
+            if (keys[0x25] > 1) {
                 RGE_Static_Object* obj2 = this->player->selected_obj;
                 obj2->teleport(obj->world_x - info->key_scroll_object_move,
                                obj->world_y - info->key_scroll_object_move, 0);
                 changed = 1;
             }
-            if (keys[0x2B] > 1) {
+            if (keys[0x27] > 1) {
                 RGE_Static_Object* obj2 = this->player->selected_obj;
                 obj2->teleport(obj->world_x + info->key_scroll_object_move,
                                obj->world_y + info->key_scroll_object_move, 0);
                 changed = 1;
             }
         } else if (this->player != 0) {
-            if (keys[0x29] > 1)
+            if (keys[0x25] > 1)
                 horz_scroll = -1;
-            else if (keys[0x2B] > 1)
+            else if (keys[0x27] > 1)
                 horz_scroll = 1;
 
-            if (keys[0x2A] > 1)
+            if (keys[0x26] > 1)
                 vert_scroll = -1;
-            else if (keys[0x2C] > 1)
+            else if (keys[0x28] > 1)
                 vert_scroll = 1;
 
             if (horz_scroll != 0 || vert_scroll != 0) {
                 now = debug_timeGetTime(
                     "C:\\msdev\\work\\age1_x1\\vw_main.cpp", 0x153);
+                elapsed = now - this->last_key_scroll_time;
                 if (this->key_scrolling == 0) {
                     scroll_dist2 = DAT_00577900;
                     this->key_scrolling = 1;
                 } else {
-                    elapsed = now - this->last_key_scroll_time;
                     scroll_dist2 = (float)elapsed / info->key_scroll_interval;
                     long whole = (long)scroll_dist2;
                     scroll_dist2 -= (float)whole;
                     if (scroll_dist2 < DAT_00577904) {
                         scroll_dist2 = 0.0f;
-                        scroll_dist2 += (float)whole;
                     } else {
                         scroll_dist2 = DAT_00577904;
-                        scroll_dist2 += (float)whole;
                     }
+                    scroll_dist2 += (float)whole;
                 }
                 if (scroll_dist2 > info->key_scroll_max_dist)
                     scroll_dist2 = info->key_scroll_max_dist;
