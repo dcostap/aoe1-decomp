@@ -1891,6 +1891,7 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
     unsigned long row_index;
     long rows_2_scan;
     long terrain_index;
+    long gm;
     Ov_Sprite_Draw_Rec* sprite;
     Ov_Sprite_Draw_Rec* next_sprite;
     unsigned char remove_sprite;
@@ -1995,8 +1996,8 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
 
                         fog_mask_num = -1;
                         black_mask_num = -1;
-                        clip_to = 0;
                         full_visibility = 0;
+                        clip_to = 0;
                         if (this->render_terrain_mode != 0 &&
                             tile->last_drawn_as == draw_as) {
                             if (draw_as == 0x0f) {
@@ -2260,14 +2261,14 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
             this->mouse_down_y - rect.top,
             this->mouse_last_x - rect.left,
             this->mouse_last_y - rect.top,
-            0, 0, 0, 0, 0x28, 0xFF, 0);
+            0, 0, 0, 0, 0, 0x28, 0xFF);
     }
 
-    if (rge_base_game->game_mode == 1 ||
-        (rge_base_game->game_mode > 6 && rge_base_game->game_mode <= 8)) {
+    gm = rge_base_game->game_mode;
+    if (gm == 1 || (gm > 6 && gm < 9)) {
         this->draw_object_outline();
     }
-    if (rge_base_game->game_mode == 0x15) {
+    if (gm == 0x15) {
         this->draw_multi_object_outline();
     }
 
@@ -2289,8 +2290,8 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                         unsigned long elapsed = now - sprite->LastDrawTime;
                         do {
                             ++sprite->thefacet;
-                            if (sprite->thefacet >=
-                                sprite->theShape->shape_count()) {
+                            if (sprite->theShape->shape_count() <=
+                                sprite->thefacet) {
                                 sprite->thefacet = 0;
                                 if (sprite->displayfunction == 2) {
                                     remove_sprite = 1;
@@ -2299,7 +2300,7 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                             }
                             elapsed -= sprite->DrawTimeInterval;
                             sprite->LastDrawTime += sprite->DrawTimeInterval;
-                        } while (elapsed >= sprite->DrawTimeInterval);
+                        } while (sprite->DrawTimeInterval <= elapsed);
                     }
                     if (!remove_sprite) {
                         SDI_Draw_Level = sprite->drawLevel;
@@ -2313,6 +2314,7 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                     }
                 }
                 if (remove_sprite) {
+                    next_sprite = sprite->next;
                     if (sprite->prev != 0) {
                         sprite->prev->next = sprite->next;
                     }
@@ -2322,7 +2324,6 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                     if (sprite->prev == 0) {
                         this->extra_sprites = sprite->next;
                     }
-                    next_sprite = sprite->next;
                     delete sprite;
                     sprite = next_sprite;
                 } else {
@@ -2401,7 +2402,7 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
         unsigned long now = debug_timeGetTime(
             s_C__msdev_work_age1_x1_view_cpp, 0xF11);
         if (this->Get_Cursor_Position(&pt, -rect.left, -rect.top) != 0) {
-            long touched;
+            long touched = 0;
             if (this->pick_touched_object(this->futur_objs, pt.x, pt.y, 10, 0x28, &touched) == 1) {
                 if (this->UC_ObjectTouched == 0 || this->UC_TouchedObj != touched) {
                     this->UC_ObjectTouched = 1;
@@ -2450,8 +2451,8 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
             if (x1 < 0) x1 = 0;
             if (y1 < 0) y1 = 0;
             added = this->futur_objs->AddGDINode(
-                3, y1, x1, y1, x2, y2, 0, 0, 0, 0, 0x1E,
-                panel->display_changed_count, 0);
+                3, y1, x1, y1, x2, y2, y1, 0, 0, 0, 0, 0x1E,
+                panel->display_changed_count);
             if (added != 0) {
                 list = this->futur_objs;
                 tail = list->Draw_Level_Tail[0x1E];
@@ -2477,6 +2478,8 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
     } else {
         long y;
         this->Master_Clip_Mask->Merge_n_Align(this->Terrain_Clip_Mask, this->Terrain_Fog_Clip_Mask);
+        Clip_draw = 0;
+        Clip_remove = 0;
         if (this->Limited_Render_Rect != 0) {
             if (this->Render_Rect1.left >= 0) {
                 y = this->Render_Rect1.top;
@@ -2578,7 +2581,7 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
         this->Master_Clip_Mask->Line_Tail_Ptrs, this->Master_Clip_Mask->Min_Span_Px,
         this->Master_Clip_Mask->Min_Line, this->Master_Clip_Mask->Max_Span_Px,
         this->Master_Clip_Mask->Max_Line);
-    this->render_area->CurSpanList = this->Master_Clip_Mask;
+    this->save_area1->CurSpanList = this->Master_Clip_Mask;
 
     {
         list = this->futur_objs;
