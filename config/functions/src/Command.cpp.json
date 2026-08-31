@@ -54,7 +54,7 @@
     "00435D90": {"status": "matching", "symbol": "?command_ai_order@RGE_Command@@QAEXHHHHHHMMMMEEE@Z"},
     "00435EA0": {"status": "matching", "symbol": "?command_group_ai_order@RGE_Command@@QAEXHHPAPAVRGE_Static_Object@@FHHHMMMMEEE@Z"},
     "00435FE0": {"status": "accepted_drift", "symbol": "?command_resign@RGE_Command@@QAEXHHH@Z"},
-    "00436030": {"status": "scratch", "symbol": "?command_add_waypoint@RGE_Command@@QAEXHHPAUXYZBYTEPoint@@H@Z"},
+    "00436030": {"status": "matching", "symbol": "?command_add_waypoint@RGE_Command@@QAEXHHPAUXYZBYTEPoint@@H@Z"},
     "004360D0": {"status": "matching", "symbol": "?command_add_waypoint@RGE_Command@@QAEXHHEEE@Z"},
     "00436150": {"status": "matching", "symbol": "?command_group_waypoint@RGE_Command@@QAEXPAPAVRGE_Static_Object@@FEE@Z"}
   }
