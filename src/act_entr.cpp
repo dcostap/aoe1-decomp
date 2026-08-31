@@ -151,10 +151,13 @@ unsigned char RGE_Action_Enter::update()
         this->set_target_obj2(0);
     }
 
+    if (this->target_obj != 0 && this->target_obj->object_state >= 3) {
+        goto invalid_target;
+    }
+
     if (this->target_obj == 0 ||
-        (this->target_obj->object_state < 3 &&
-         this->obj->owner->isAlly(
-             (int)(short)this->target_obj->owner->id) != 0)) {
+        this->obj->owner->isAlly(
+            (int)(short)this->target_obj->owner->id) != 0) {
         goto handle_state;
     }
 
@@ -209,7 +212,14 @@ handle_state:
         if (this->task->work_range >=
             this->obj->distance_to_object(this->target_obj) - DAT_0056e1a4) {
             this->obj->enter_obj(this->target_obj);
-            goto entered_target;
+
+entered_target:
+            if (this->subActionValue == 0) {
+                this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x269,
+                                  0, 0);
+            }
+            this->set_state(1);
+            return 2;
         }
 
         if (this->target_obj->actionState() == 2) {
@@ -253,14 +263,6 @@ handle_state:
 
         this->set_state(4);
         return 0;
-
-entered_target:
-        if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1FA, 0x269, 0,
-                              0);
-        }
-        this->set_state(1);
-        return 2;
 
     case 1:
         return 1;
