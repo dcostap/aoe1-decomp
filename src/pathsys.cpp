@@ -243,7 +243,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     int dist;
     int currentEstimate;
     int MGP_goalTolerance;
-    int iterationCap;
+    int numberIterationCap;
     int iterations;
     int i;
     int SkipBit;
@@ -273,7 +273,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     int h;
     int maskIndex;
     int foundBlockingOwnGroup;
-    int newCost;
+    int newTotal;
     int parentCost;
     int oldHeuristic;
     int newHeuristic;
@@ -490,14 +490,14 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     tmp2 = goalY - startY;
     dist = (int)(sqrt((double)(tmp * tmp) + (double)(tmp2 * tmp2)) * DAT_00570e78);
     dist = (dist + ((dist >> 31) & 0x0f)) >> 4;
-    if (dist <= 10) iterationCap = (dist * numberPathingIterations) / 10;
-    else iterationCap = (dist * numberPathingIterations) / 100;
-    if (this->currentObject->owner->id == 0 && iterationCap > 100) iterationCap = 100;
-    if (this->currentObject->owner->computerPlayer() == 1) iterationCap = (dist * 0x9c4) / 100;
+    if (dist <= 10) numberIterationCap = (dist * numberPathingIterations) / 10;
+    else numberIterationCap = (dist * numberPathingIterations) / 100;
+    if (this->currentObject->owner->id == 0 && numberIterationCap > 100) numberIterationCap = 100;
+    if (this->currentObject->owner->computerPlayer() == 1) numberIterationCap = (dist * 0x9c4) / 100;
 
     iterations = 0;
     while (this->numberOpenPathsValue > 0) {
-        if (numberPathingIterations != -1 && useIterationCap == 1 && iterations > iterationCap) break;
+        if (numberPathingIterations != -1 && useIterationCap == 1 && iterations > numberIterationCap) break;
         if (iterations > 0x4e20) break;
 
         bestPathPoint.x = this->MGP_openPaths[1].x;
@@ -584,12 +584,12 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             parentCost = this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
             oldHeuristic = estimateDistanceOrdered(goalX, goalY, bestPathPoint.x, bestPathPoint.y);
             newHeuristic = estimateDistanceOrdered(goalX, goalY, temp.x, temp.y);
-            newCost = newHeuristic + tmp + parentCost - oldHeuristic;
+            newTotal = newHeuristic + tmp + parentCost - oldHeuristic;
 
             facetByte = this->facetValue[temp.x][temp.y];
             if ((facetByte & 0xf8) == this->CurrentFacetMask) directionFromHere = facetByte & 7;
             else directionFromHere = 0xff;
-            if (directionFromHere < 8 && this->MGP_costValue[temp.x][temp.y] <= newCost) goto next_direction;
+            if (directionFromHere < 8 && this->MGP_costValue[temp.x][temp.y] <= newTotal) goto next_direction;
 
             terrainStatus = 1;
             switch (i) {
@@ -818,24 +818,24 @@ obstruction_done:
             }
 
             misc = this->miscValue[temp.x][temp.y];
-            newCost += misc * 0x10;
+            newTotal += misc * 0x10;
             if (reached == 1) {
-                if (unobstructibleObjectHitpoints < 10.0f) newCost += 0x10;
-                else newCost += 0x3c;
+                if (unobstructibleObjectHitpoints < 10.0f) newTotal += 0x10;
+                else newTotal += 0x3c;
             }
             facetByte = this->facetValue[bestPathPoint.x][bestPathPoint.y];
             if ((facetByte & 0xf8) == this->CurrentFacetMask) facetLow = facetByte & 7;
             else facetLow = 0xff;
-            if (i != facetLow) ++newCost;
-            if (status == 0) newCost = 0;
+            if (i != facetLow) ++newTotal;
+            if (status == 0) newTotal = 0;
 
-            this->MGP_costValue[temp.x][temp.y] = newCost;
+            this->MGP_costValue[temp.x][temp.y] = newTotal;
             this->facetValue[temp.x][temp.y] = (unsigned char)((i & 7) | this->CurrentFacetMask);
             openIndex = this->numberOpenPathsValue + 1;
             this->numberOpenPathsValue = openIndex;
             this->MGP_openPaths[openIndex].x = (unsigned char)temp.x;
             this->MGP_openPaths[openIndex].y = (unsigned char)temp.y;
-            this->MGP_openPaths[openIndex].total = newCost;
+            this->MGP_openPaths[openIndex].total = newTotal;
 
             insertIndex = openIndex;
             if (insertIndex > 0) {
