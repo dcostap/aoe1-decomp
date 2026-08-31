@@ -3606,8 +3606,8 @@ int TCommunications_Handler::TXResendRequest(unsigned int serial, unsigned int p
 
 unsigned char TCommunications_Handler::GetNextSequence(unsigned long value) {
     if (value != comm_ping_sequence_turn) {
-        comm_ping_sequence_turn = value;
         comm_ping_sequence = 1;
+        comm_ping_sequence_turn = value;
         return 1;
     }
 
