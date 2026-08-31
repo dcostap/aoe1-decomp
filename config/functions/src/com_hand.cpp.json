@@ -28,7 +28,7 @@
     "00426D40": {"status": "matching", "symbol": "?HasKicked@TCommunications_Handler@@QAEHI@Z"},
     "00426D50": {"status": "matching", "symbol": "?SendPlayerName@TCommunications_Handler@@IAEJXZ"},
     "00426DC0": {"status": "matching", "symbol": "?LogRXMsg@TCommunications_Handler@@IAEXIIKEE@Z"},
-    "00426E10": {"status": "scratch", "symbol": "?ReceiveGameMessages@TCommunications_Handler@@QAEXXZ"},
+    "00426E10": {"status": "matching", "symbol": "?ReceiveGameMessages@TCommunications_Handler@@QAEXXZ"},
     "00426FB0": {"status": "matching", "symbol": "?ShutdownGameMessages@TCommunications_Handler@@QAEXXZ"},
     "00426FC0": {"status": "scratch", "symbol": "?GetDPLAYMessages@TCommunications_Handler@@QAEXXZ"},
     "00427300": {"status": "matching", "symbol": "?CheckPingTime@TCommunications_Handler@@QAEXH@Z"},
