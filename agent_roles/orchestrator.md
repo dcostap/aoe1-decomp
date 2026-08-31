@@ -8,14 +8,17 @@ Follow `agent_roles/root_orchestrator.md` only when acting as the root orchestra
 When a root orchestrator assigns this role:
 
 - work only in the assigned worktree;
-- use only the assigned translation-unit set;
+- use the assigned translation-unit set for worker and normal function-body ownership;
 - use the assigned exact matching worker model and thinking level;
 - follow the assigned worker capacity and tool job settings;
 - use the enabled TODO feature for worker-result review;
-- report major blockers to the root orchestrator; and
+- report policy, oracle, and integration blockers to the root orchestrator; and
 - stop editing before the completed handoff.
 
 The root assignment overrides this document only where it is explicit.
+
+Shared repairs can affect translation units outside the assigned set. This does
+not grant normal function-body ownership outside that set.
 
 ## Authority
 
@@ -193,13 +196,19 @@ Good continuation tasks include:
 Keep the TODO item open while the continuation runs. The worker resumes its
 target notebooks with the same owner ID.
 
-Start a new worker when the task needs different ownership, scope, model, or
-shared-file authority.
+Start a new worker when the task needs different TU ownership, scope, or model.
+Handle shared repairs as orchestrator work. Do not delegate them to a matching
+worker.
 
-## Shared findings
+## Shared repairs
 
 A matching worker reports a shared finding but never edits the shared path.
-The final response identifies:
+The orchestrator owns shared repairs in its isolated worktree. It does not need
+root approval before it changes a shared header, global, registry, tool, test,
+or compiler setting.
+
+Create or update a TODO item keyed by the shared path and symbol. Merge duplicate
+findings into that item. Record:
 
 - the path and symbol;
 - facts and hypotheses;
@@ -209,13 +218,7 @@ The final response identifies:
 - required validation; and
 - whether the finding blocked work.
 
-Create or update a TODO item keyed by the shared path and symbol. Merge duplicate
-findings into that item.
-
-In a root-managed worktree, send accepted shared findings to the root
-orchestrator. Do not edit shared paths unless the assignment grants authority.
-
-Use one authorized repair owner for an accepted shared change. Close compiler
+Use one repair owner for each shared change in this worktree. Close compiler
 admission before editing shared source:
 
 ```text
@@ -225,7 +228,7 @@ python tools/compiler_gate.py close
 The command blocks new compiler jobs and waits for admitted jobs to finish.
 Workers remain active and can continue noncompiler investigation.
 
-Apply and commit only the reviewed shared paths. Then reopen admission:
+Apply the smallest coherent repair. Then reopen admission:
 
 ```text
 python tools/compiler_gate.py open
@@ -246,6 +249,24 @@ python tools/audit_translation_unit_functions.py \
 
 Repeat `--affected-by` for more paths. The tool audits the union of dependent
 translation units and records the selected groups in its report.
+
+Audit the complete dependency closure. The closure can include translation
+units outside the original assignment. Do not edit an active worker's natural
+source file. Schedule collateral exact results for review after that worker
+stops.
+
+Commit each shared repair separately. Include its notes, registry updates, and
+tests when they form one reviewed result. This lets the root select or reject
+the repair without taking unrelated work.
+
+An orchestrator can repair a proved tool or test defect. It must not weaken the
+behavior oracle, exact-match rules, ownership checks, boundaries, relocations,
+direct-target checks, or source policy. Do not edit original game files or
+generated inventory evidence.
+
+Root and other worktrees can change the same shared path. Do not stop safe local
+work only because a future integration conflict is possible. Record the base,
+evidence, and affected closure so the root can select the supported result.
 
 Do not run a full repository audit after each shared-header repair. Use one
 after shared changes stabilize, after toolchain or compiler-flag changes, or

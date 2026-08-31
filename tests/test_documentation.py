@@ -114,6 +114,38 @@ class DocumentationTests(unittest.TestCase):
         ):
             self.assertIn(required, text)
 
+    def test_isolated_orchestrators_own_shared_repairs(self) -> None:
+        orchestrator = (REPO_ROOT / "agent_roles" / "orchestrator.md").read_text(
+            encoding="utf-8"
+        )
+        root = (REPO_ROOT / "agent_roles" / "root_orchestrator.md").read_text(
+            encoding="utf-8"
+        )
+        orchestrator = " ".join(orchestrator.split())
+        root = " ".join(root.split())
+
+        for required in (
+            "The orchestrator owns shared repairs in its isolated worktree",
+            "does not need root approval",
+            "Audit the complete dependency closure",
+            "Commit each shared repair separately",
+            "must not weaken the behavior oracle",
+        ):
+            self.assertIn(required, orchestrator)
+
+        for required in (
+            "Each orchestrator owns shared repairs in its isolated worktree",
+            "does not require case-by-case root approval",
+            "Matching workers remain restricted",
+            "audit the complete transitive dependency closure",
+            "selects the strongest binary-supported source model",
+        ):
+            self.assertIn(required, root)
+
+        self.assertNotIn(
+            "Normal orchestrator assignments cannot edit shared", root
+        )
+
     def test_markdown_has_no_assignment_lease_language(self) -> None:
         pattern = re.compile(r"\b(?:lease|leases|leased|unleased)\b", re.IGNORECASE)
         failures = [

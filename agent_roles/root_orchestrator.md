@@ -43,7 +43,7 @@ The root orchestrator owns:
 - the root integration TODO backlog;
 - orchestrator assignments and guidance;
 - cross-worktree blockers and conflicts;
-- shared headers, globals, config, tools, and tests;
+- final integration decisions for shared headers, globals, config, tools, and tests;
 - second verification of completed orchestrator work;
 - branch integration and worktree cleanup; and
 - final repository validation.
@@ -79,6 +79,8 @@ Do not multiply concurrency at each hierarchy level.
 ## Translation-unit sets
 
 Assign each orchestrator a disjoint set of natural translation units.
+A shared repair can affect translation units outside that set. Disjoint sets
+control normal function-body ownership, not header dependency closure.
 A normal set contains approximately 30 translation units.
 This is a planning target, not a fixed limit.
 Adjust the set for function count, complexity, blockers, and review cost.
@@ -99,8 +101,8 @@ Each assignment contains:
 - the worktree and branch paths;
 - the pinned integration base commit;
 - all assigned translation units and source paths;
-- allowed source, note, and registry paths;
-- forbidden shared paths;
+- primary source, note, and registry paths;
+- known concurrent root and worktree changes;
 - exact orchestrator model and thinking level;
 - exact matching worker model and thinking level;
 - maximum concurrent matching workers;
@@ -176,15 +178,16 @@ Give focused guidance and continue the same orchestrator session when its contex
 
 The root handles:
 
-- shared declaration defects;
-- tool or compiler failures;
+- conflicts between independently supported shared repairs;
+- unresolved tool or compiler failures;
 - cross-worktree ownership conflicts;
 - integration conflicts;
 - user decisions; and
-- changes outside an orchestrator's authority.
+- policy or oracle questions.
 
-Do not let two orchestrators repair the same shared issue.
-Assign one repair owner or perform the repair in the root worktree.
+Two isolated worktrees can repair the same shared issue. The root selects the
+best supported model during integration. Do not ask an orchestrator to stop safe
+local work only to prevent a possible future conflict.
 
 ## Completed orchestrator handoff
 
@@ -214,15 +217,16 @@ For each completed result:
 
 1. Read the complete handoff.
 2. Inspect the assignment branch and commit series.
-3. Confirm that all changed paths were authorized.
+3. Confirm that all changed paths follow repository policy.
 4. Inspect all retained source and new note text.
 5. Confirm natural source, ownership, and line endings.
 6. Apply risk-based verification to every retained result.
 7. Independently review every accepted-drift approval.
 8. Confirm registry changes only follow proved results.
 9. Check matching neighbors in every changed translation unit.
-10. Merge only reviewed commits.
-11. Validate the merged integration state.
+10. Review each shared repair and its complete affected closure.
+11. Merge only reviewed commits.
+12. Validate the merged integration state.
 
 For note-only work, inspect only the added note text.
 For a scratch improvement, run one authoritative target check.
@@ -256,25 +260,32 @@ Do not run one after each independent worktree merge.
 
 ## Shared changes
 
-Normal orchestrator assignments cannot edit shared headers, globals, tools, tests, or compiler settings.
-They report shared findings to the root.
+Each orchestrator owns shared repairs in its isolated worktree. This authority
+includes headers, globals, registry data, tools, tests, and compiler settings.
+It does not require case-by-case root approval.
 
-Defer a nonblocking shared repair until affected orchestrator work stabilizes.
-This reduces invalidated branches and audits.
+Matching workers remain restricted. They report shared findings to their
+orchestrator. The orchestrator applies, validates, and commits each accepted
+repair.
 
-For a blocking shared repair:
+An orchestrator must use the compiler gate for shared source changes. It must
+audit the complete transitive dependency closure and preserve exact anchors.
+It must keep shared repairs in separate logical commits.
 
-1. Stop affected orchestrators at safe points.
-2. Close compiler admission where required.
-3. Apply and verify one root-owned repair.
-4. Audit the transitive affected translation units.
-5. Reopen compiler admission.
-6. Synchronize each affected worktree.
-7. Continue the orchestrators.
-8. Require fresh checks for invalidated targets.
+No worktree can change the behavior oracle or weaken exact-match rules. Original
+game files and generated inventory evidence remain read-only. Tool and test
+changes must repair a proved defect, not hide a failure.
 
-A special assignment can authorize one orchestrator to repair shared paths.
-State that authority and its required validation explicitly.
+The root can make a different shared repair on the integration branch. It does
+not synchronize every independent worktree after each root change. Divergent
+worktree results remain proposals tied to their base commits.
+
+During integration, the root compares overlapping repairs, selects the strongest
+binary-supported source model, and rejects or revises the others. Prefer
+selective commits when a full branch merge would take unrelated shared changes.
+
+After integration changes a shared input, rerun each stale affected group. Do
+not reuse an orchestrator audit whose input fingerprint no longer matches.
 
 ## Final validation
 
