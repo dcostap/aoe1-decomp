@@ -763,8 +763,8 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
         this->delete_panel(reinterpret_cast<TPanel**>(&this->options_disable_button[i]));
         this->delete_panel(reinterpret_cast<TPanel**>(&this->options_disable_text[i]));
     }
-    this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_player_list));
     for (i = 0; i < 8; ++i) {
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_player_list));
         this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_player_text[i]));
         this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_friend_box[i][0]));
         this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_friend_box[i][1]));
@@ -1755,7 +1755,7 @@ int mode = this->scenario_mode;
                     } else {
                         draw_level = 0x14;
                     }
-                    object->selected = 1;
+                    delete object;
                     if (draw_level == 0) {
                         this->main_view->set_redraw(TPanel::RedrawImmediate);
                     }
