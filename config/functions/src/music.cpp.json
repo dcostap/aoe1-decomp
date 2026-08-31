@@ -8,7 +8,7 @@
   "functions": {
     "00461910": {"status": "matching", "symbol": "??0TMusic_System@@QAE@EPAX0PAVTSound_Driver@@PAD@Z"},
     "00461A20": {"status": "matching", "symbol": "??1TMusic_System@@QAE@XZ"},
-    "00461A30": {"status": "scratch", "symbol": "?open_device@TMusic_System@@QAEHXZ"},
+    "00461A30": {"status": "matching", "symbol": "?open_device@TMusic_System@@QAEHXZ"},
     "00461C60": {"status": "matching", "symbol": "?close_device@TMusic_System@@QAEXXZ"},
     "00461D20": {"status": "matching", "symbol": "?open_mixer@TMusic_System@@IAEHXZ"},
     "00461EC0": {"status": "matching", "symbol": "?close_mixer@TMusic_System@@IAEXXZ"},
@@ -29,6 +29,6 @@
     "004629B0": {"status": "matching", "symbol": "?end_fade@TMusic_System@@IAEXXZ"},
     "00462A10": {"status": "matching", "symbol": "?handle_messages@TMusic_System@@QAEIPAXIIJ@Z"},
     "00462B40": {"status": "matching", "symbol": "?after_end_track@TMusic_System@@IAEXXZ"},
-    "00462C30": {"status": "scratch", "symbol": "?get_play_info@TMusic_System@@QAEHPAEPAH11PAD1PAK@Z"}
+    "00462C30": {"status": "matching", "symbol": "?get_play_info@TMusic_System@@QAEHPAEPAH11PAD1PAK@Z"}
   }
 }
