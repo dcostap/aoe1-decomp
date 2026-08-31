@@ -14,7 +14,7 @@
     "00509C60": {"status": "matching", "symbol": "?do_command_build@TRIBE_Command@@AAEXPAUTRIBE_Command_Build@@@Z"},
     "00509E10": {"status": "matching", "symbol": "?do_command_build_wall@TRIBE_Command@@AAEXPAUTRIBE_Command_Build_Wall@@@Z"},
     "0050A010": {"status": "matching", "symbol": "?place_line_of_walls@TRIBE_Command@@AAEXPAVTRIBE_Player@@PAVTRIBE_Master_Building_Object@@HHHHHPAPAVRGE_Static_Object@@@Z"},
-    "0050A140": {"status": "accepted_drift", "symbol": "?do_command_explore@TRIBE_Command@@AAEXPAUTRIBE_Command_Explore@@@Z"},
+    "0050A140": {"status": "matching", "symbol": "?do_command_explore@TRIBE_Command@@AAEXPAUTRIBE_Command_Explore@@@Z"},
     "0050A1D0": {"status": "scratch", "symbol": "?do_command_game@TRIBE_Command@@AAEXPAUTRIBE_Command_Game@@@Z"},
     "0050A490": {"status": "matching", "symbol": "?do_command_cancel_build@TRIBE_Command@@AAEXPAUTRIBE_Command_Cancel_Build@@@Z"},
     "0050A4C0": {"status": "scratch", "symbol": "?do_command_attack_ground@TRIBE_Command@@AAEXPAUTRIBE_Command_Attack_Ground@@@Z"},

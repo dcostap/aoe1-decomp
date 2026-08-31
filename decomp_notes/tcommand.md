@@ -61,3 +61,9 @@ virtual slot is `+0x208`. `RGE_Action_List` owns `add_action`.
 
 `0050A1D0` constructs `TRIBE_Screen_Status_Message` at `004B7140`. The source
 uses `scr_stms.h`.
+
+## 2026-08-31 exact reconciliation
+
+`0050A140 do_command_explore` now reports `MATCH`, `0.0000%`, 136 bytes,
+53 instructions, and five aligned calls. The exact result supersedes its
+accepted-drift status.

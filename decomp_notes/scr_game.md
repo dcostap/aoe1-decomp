@@ -146,3 +146,9 @@ emit its expected decorated symbol, so it cannot remain an exact owner.
 34 differing bytes, the original 425-byte boundary, 13 aligned calls, matching
 control-flow counts, and 93.28% exact-block coverage. The difference is a
 localized scheduling and register-order change.
+
+## 2026-08-31 exact reconciliation
+
+The final shared ABI repairs make `004992E0 object_changed` and
+`0049BEA0 command_cancel` exact. Standalone checks report `MATCH`, `0.0000%`,
+correct owners, boundaries, relocations, direct targets, and aligned calls.

@@ -74,3 +74,9 @@ Natural source regressions are deliberate and documented:
 
 No new provider was invented for unresolved behavior. The seven prior scratch
 owners remain scratch. Their full natural bodies remain in this source file.
+
+## 2026-08-31 exact reconciliation
+
+The repaired static-object overload surface makes `00416340`, `004163C0`,
+and `004174A0` exact. Standalone checks report `MATCH`, `0.0000%`, correct
+owners, boundaries, relocations, direct targets, and aligned calls.
