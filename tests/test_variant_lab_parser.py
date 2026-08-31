@@ -7,6 +7,7 @@ import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -238,6 +239,32 @@ B
             variant_lab.normalize_relocation_symbol_for_group("?external@@YAXXZ"),
             "?external@@YAXXZ",
         )
+
+    def test_variant_symbol_selection_uses_exact_configured_symbol(self) -> None:
+        partial = SimpleNamespace(
+            name="?mouse_move_action@TribeConfigDialog@@UAEJXZ",
+            section_number=1,
+            is_function=True,
+            value=0,
+            index=0,
+        )
+        expected = SimpleNamespace(
+            name="?action@TribeConfigDialog@@UAEJPAVTPanel@@JKK@Z",
+            section_number=1,
+            is_function=True,
+            value=5,
+            index=1,
+        )
+        obj = SimpleNamespace(symbols=[partial, expected])
+        with patch.object(
+            variant_lab,
+            "function_entry_for_va",
+            return_value={"symbol": expected.name},
+        ):
+            selected = variant_lab._select_variant_function_symbol(
+                obj, Path("0043C2B0_action.obj")
+            )
+        self.assertIs(selected, expected)
 
     def test_variant_preview_is_compact_unless_full_is_requested(self) -> None:
         plan = variant_lab.parse_template(

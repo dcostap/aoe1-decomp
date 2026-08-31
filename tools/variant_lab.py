@@ -25,6 +25,7 @@ from common import (
     CONFIG_DIR,
     REPO_ROOT,
     edit_diff_metrics,
+    function_entry_for_va,
     ensure_dir,
     format_hex,
     function_record_by_va,
@@ -671,6 +672,22 @@ def load_text_from_obj(path: Path) -> LoadedText:
     raise ValueError(f"no usable code section in {path}; sections: {available}")
 
 
+def _select_variant_function_symbol(obj, path: Path):
+    match = re.match(r"^([0-9A-Fa-f]{8})_(.+)$", path.stem)
+    if match is None:
+        raise KeyError(f"variant object name has no target VA: {path.name}")
+    function_entry = function_entry_for_va(match.group(1))
+    expected_symbol = str(function_entry.get("symbol") or "") if function_entry else ""
+    if not expected_symbol:
+        raise KeyError(f"target {match.group(1).upper()} has no configured symbol")
+    symbol = find_function_symbol(
+        obj, lambda candidate: candidate.name == expected_symbol
+    )
+    if symbol.name != expected_symbol:
+        raise KeyError(f"configured target function symbol {expected_symbol!r} not found")
+    return symbol
+
+
 def load_variant_function_from_obj(path: Path) -> LoadedText:
     """Select the target function's COFF symbol section like the normal checker.
 
@@ -680,14 +697,9 @@ def load_variant_function_from_obj(path: Path) -> LoadedText:
     match = re.match(r"^[0-9A-Fa-f]{8}_(.+)$", path.stem)
     if match is None:
         return load_text_from_obj(path)
-    wanted_name = match.group(1).lower()
     try:
         obj = load_coff_object(path)
-        symbol = find_function_symbol(
-            obj, lambda candidate: wanted_name in candidate.name.lower()
-        )
-        if wanted_name not in symbol.name.lower():
-            raise KeyError(f"target function symbol containing {wanted_name!r} not found")
+        symbol = _select_variant_function_symbol(obj, path)
         section = function_symbol_section(obj, symbol)
     except (KeyError, OSError, ValueError) as exc:
         raise ValueError(f"cannot select target function from {path}: {exc}") from exc
@@ -792,14 +804,9 @@ def variant_indirect_targets(obj_path: Path, expected_size: int) -> list[int]:
     match = re.match(r"^[0-9A-Fa-f]{8}_(.+)$", obj_path.stem)
     if match is None:
         return []
-    wanted_name = match.group(1).lower()
     try:
         obj = load_coff_object(obj_path)
-        symbol = find_function_symbol(
-            obj, lambda candidate: wanted_name in candidate.name.lower()
-        )
-        if wanted_name not in symbol.name.lower():
-            return []
+        symbol = _select_variant_function_symbol(obj, obj_path)
         section = function_symbol_section(obj, symbol)
     except (KeyError, OSError, ValueError):
         return []
