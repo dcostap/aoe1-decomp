@@ -480,8 +480,6 @@ unsigned char RGE_Action_Object::update()
 
     unsigned char result = RGE_Animated_Object::update();
     unsigned char state = this->object_state;
-    RGE_Master_Action_Object* master =
-        static_cast<RGE_Master_Action_Object*>(this->master_obj);
 
     if (state > 2) {
         if (this->actions->list != 0) {
@@ -491,8 +489,10 @@ unsigned char RGE_Action_Object::update()
     } else {
         if (this->actions->list == 0) {
             if (state == 2 &&
-                master->default_task != -1) {
-                this->set_task(master->default_task);
+                static_cast<RGE_Master_Action_Object*>(this->master_obj)
+                        ->default_task != -1) {
+                this->set_task(static_cast<RGE_Master_Action_Object*>(
+                                   this->master_obj)->default_task);
                 return result;
             }
         } else {
