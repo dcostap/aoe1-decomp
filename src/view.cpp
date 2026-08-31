@@ -777,10 +777,8 @@ void RGE_View::draw()
     tagRECT new_rect;
     tagRECT old_rect;
     tagRECT clip_rect1;
-    int redraw_all = view_debug_redraw_all;
-
     tiles_drawn = 0;
-    if (redraw_all != 0) {
+    if (view_debug_redraw_all != 0) {
         this->render_terrain_mode = 0;
         view_debug_redraw_all = 0;
     }
@@ -815,9 +813,9 @@ void RGE_View::draw()
             goto label_done;
         }
 
-        long dx = (short)this->map_scr_x_offset - old_map_scr_x_offset;
-        long dy = (short)this->map_scr_y_offset - old_map_scr_y_offset;
-        if (dx == 0 && dy == 0) goto label_done;
+        long dx = (short)((short)this->map_scr_x_offset - (short)old_map_scr_x_offset);
+        long dy = (short)((short)this->map_scr_y_offset - (short)old_map_scr_y_offset);
+        if ((short)dx == 0 && (short)dy == 0) goto label_done;
 
         int screen_width = this->pnl_wid;
         int screen_height = this->pnl_hgt;
@@ -836,22 +834,22 @@ void RGE_View::draw()
             goto label_done;
         }
 
-        if ((dx & 7) != 0) {
+        if (((short)dx & 7) != 0) {
             long t = dx;
-            if (dx <= 0) t = dx + 7;
+            if ((short)dx <= 0) t = dx + 7;
             long a = (t & ~7) - dx;
             dx += a;
             this->map_scr_x_offset += a;
         }
-        if ((dy & 7) != 0) {
+        if (((short)dy & 7) != 0) {
             long t = dy;
-            if (dy <= 0) t = dy + 7;
+            if ((short)dy <= 0) t = dy + 7;
             long a = (t & ~7) - dy;
             dy += a;
             this->map_scr_y_offset += a;
         }
 
-        if (dx < 0) {
+        if ((short)dx < 0) {
             old_rect.left = 0;
             old_rect.right = (int)dx + screen_width - 1;
             new_rect.left = -(int)dx;
@@ -863,7 +861,7 @@ void RGE_View::draw()
         }
         new_rect.right = screen_width - 1;
 
-        if (dy < 0) {
+        if ((short)dy < 0) {
             old_rect.top = 0;
             old_rect.bottom = (int)dy + screen_height - 1;
             new_rect.top = -(int)dy;
@@ -895,10 +893,9 @@ void RGE_View::draw()
         this->Float_X_Delta = fxd;
         if (fxd >= this->save_area1->Width) {
             if (this->save_area1->Lock("view::draw", 1) != 0) {
-                memcpy(this->save_area1->Bits,
-                       this->save_area1->Bits +
-                           (this->save_area1->Height - 1) * this->save_area1->Pitch +
-                           this->save_area1->Width,
+                memcpy(this->save_area1->DisplayOffsets[0],
+                       (unsigned char*)this->save_area1->DisplayOffsets[
+                           this->save_area1->Height - 1] + this->save_area1->Width,
                        this->Float_X_Delta - xd);
                 this->Float_X_Delta -= this->save_area1->Width;
                 this->Float_Y_Delta += 1;
@@ -910,10 +907,9 @@ void RGE_View::draw()
                 this->Float_X_Delta += this->save_area1->Width;
                 this->Float_Y_Delta -= 1;
                 if (this->Float_Y_Delta < 0) this->Float_Y_Delta = this->save_area1->Height - 1;
-                memcpy(this->save_area1->Bits,
-                       this->save_area1->Bits +
-                           (this->save_area1->Height - 1) * this->save_area1->Pitch +
-                           this->save_area1->Width,
+                memcpy(this->save_area1->DisplayOffsets[0],
+                       (unsigned char*)this->save_area1->DisplayOffsets[
+                           this->save_area1->Height - 1] + this->save_area1->Width,
                        this->Float_X_Delta);
                 this->save_area1->Unlock("view::draw3");
             }
