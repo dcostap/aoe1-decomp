@@ -25,18 +25,15 @@ public:
     RGE_Combat_Object(int, RGE_Game_World*, int);
     virtual ~RGE_Combat_Object();
 
-protected:
-    virtual int setup(int, RGE_Game_World*);
-
-public:
     virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
                                     float, float, float);
     virtual void save(int);
     virtual void stop();
     virtual uchar area_attack(float, float, float, RGE_Combat_Object*,
                               RGE_Static_Object*);
-    virtual uchar attack(float, float, float, RGE_Combat_Object*);
+    // VC5 reverses this adjacent overload pair in the emitted vtable.
     virtual uchar attack(RGE_Static_Object*, RGE_Combat_Object*);
+    virtual uchar attack(float, float, float, RGE_Combat_Object*);
     virtual uchar do_attack(RGE_Static_Object*, RGE_Combat_Object*, float,
                             float, float);
     virtual void damage(int, RGE_Armor_Weapon_Info*, float, RGE_Player*,
@@ -89,6 +86,7 @@ public:
                                   RGE_Player*, RGE_Static_Object*);
 
 protected:
+    virtual int setup(int, RGE_Game_World*);
     virtual int setup(RGE_Master_Combat_Object*, RGE_Player*, float, float,
                       float);
     float base_teleport(float, float, float);
