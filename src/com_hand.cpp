@@ -3803,7 +3803,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
 
             if (to == 0) {
                 recipient_count = 0;
-                if (this->MaxGamePlayers != 0) {
+                if (this->MaxGamePlayers >= 1) {
                     i = 1;
                     do {
                         if (this->IsPlayerHuman(i) != 0 &&
@@ -3830,6 +3830,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
                 --this->GTDSerialNo;
                 this->Err->ShowReturn(hr, "TX RGTGTD");
             }
+            goto sent;
         }
         hr = 0;
     } else if (outgoing_count != 0) {
@@ -3849,7 +3850,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
 
         if (to == 0) {
             recipient_count = 0;
-            if (this->MaxGamePlayers != 0) {
+            if (this->MaxGamePlayers >= 1) {
                 i = 1;
                 do {
                     if (this->IsPlayerHuman(i) != 0 &&
@@ -3870,6 +3871,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
         hr = 0;
     }
 
+sent:
     if (outgoing_count != 0) {
         if (this->RGE_Guaranteed_Delivery != 0) {
             strcpy(GTDString, "GTD");
@@ -3878,8 +3880,8 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
         }
         L->Log("COMM: Ser#%d %s TX To=%d Len=%d+%d HDR> Seq=%d",
                out->Serialno,
-               GTDString + 4, to, length, header_length,
-               out->Sequence, sync_turn,
+               GTDString, to, length, header_length,
+               out->Sequence, out->ExecuteOnTurn,
                out->Command,
                out->Command,
                static_cast<int>(static_cast<char>(packet[header_length])),
