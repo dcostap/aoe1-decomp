@@ -69,7 +69,9 @@ public:
                char*, char*, char*, char*, long, long, TPanel*, long,
                Orientation);
     virtual void set_rect(long, long, long, long);
+protected:
     void calc_item_rects();
+public:
     void set_tab_pos(long);
     void set_list_len(long, long);
     void set_buttons(TShape*, int, int, int, int);
