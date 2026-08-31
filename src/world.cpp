@@ -1678,8 +1678,23 @@ byte RGE_Game_World::save_scenario(char* name)
 
 unsigned char RGE_Game_World::load_scenario(char* name, RGE_Player_Info& info)
 {
+    union ScenarioVersionWord {
+        char bytes[4];
+        unsigned long word;
+    };
+    static const ScenarioVersionWord version_word_101 = {{'1', '.', '0', '1'}};
+    static const ScenarioVersionWord version_word_102 = {{'1', '.', '0', '2'}};
+    static const ScenarioVersionWord version_word_103 = {{'1', '.', '0', '3'}};
+    static const ScenarioVersionWord version_word_104 = {{'1', '.', '0', '4'}};
+    static const ScenarioVersionWord version_word_105 = {{'1', '.', '0', '5'}};
+    static const ScenarioVersionWord version_word_106 = {{'1', '.', '0', '6'}};
+    static const ScenarioVersionWord version_word_107 = {{'1', '.', '0', '7'}};
+    static const ScenarioVersionWord version_word_108 = {{'1', '.', '0', '8'}};
+    static const ScenarioVersionWord version_word_109 = {{'1', '.', '0', '9'}};
+    static const ScenarioVersionWord version_word_110 = {{'1', '.', '1', '0'}};
+    static const ScenarioVersionWord version_word_111 = {{'1', '.', '1', '1'}};
     char scenario_name[300];
-    char scenario_version[5];
+    unsigned long scenario_version;
     int version;
     int file;
     world_update_counter = 0;
@@ -1687,16 +1702,15 @@ unsigned char RGE_Game_World::load_scenario(char* name, RGE_Player_Info& info)
     if (name != 0) {
         file = rge_open(scenario_name, 0x8000);
         if (file != -1) {
-            rge_read_uncompressed(file, scenario_version, 4);
-            scenario_version[4] = 0;
-            if (strcmp(scenario_version, version_101) == 0) {
+            rge_read_uncompressed(file, &scenario_version, 4);
+            if (scenario_version == version_word_101.word) {
                 this->load_scenario1(file, info);
                 goto success;
             }
-            if (strcmp(scenario_version, version_102) == 0) {
+            if (scenario_version == version_word_102.word) {
                 goto version2;
             }
-            if (strcmp(scenario_version, version_103) == 0) {
+            if (scenario_version == version_word_103.word) {
                 rge_read_uncompressed(file, &version, 4);
                 if (version <= 0) {
                     goto version2;
@@ -1709,29 +1723,29 @@ unsigned char RGE_Game_World::load_scenario(char* name, RGE_Player_Info& info)
                 free(buf);
                 goto version2;
             }
-            if (strcmp(scenario_version, version_104) == 0) {
+            if (scenario_version == version_word_104.word) {
                 this->load_scenario3(file, info);
                 goto success;
             }
-            if (strcmp(scenario_version, version_105) == 0) {
+            if (scenario_version == version_word_105.word) {
                 this->load_scenario4(file, info);
                 goto success;
             }
-            if (strcmp(scenario_version, version_106) == 0) {
+            if (scenario_version == version_word_106.word) {
                 this->load_scenario5(file, info);
                 goto success;
             }
-            if (strcmp(scenario_version, version_107) == 0) {
+            if (scenario_version == version_word_107.word) {
                 this->load_scenario6(file, info);
                 goto success;
             }
-            if (strcmp(scenario_version, version_108) == 0) {
+            if (scenario_version == version_word_108.word) {
                 this->load_scenario7(file, info);
                 goto success;
             }
-            if (strcmp(scenario_version, version_109) != 0 &&
-                strcmp(scenario_version, version_111) != 0 &&
-                strcmp(scenario_version, version_110) != 0) {
+            if (scenario_version != version_word_109.word &&
+                scenario_version != version_word_111.word &&
+                scenario_version != version_word_110.word) {
                 goto close_failed;
             }
             this->load_scenario8(file, info);
@@ -1750,7 +1764,22 @@ version2:
 }
 
 unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
-    char scenario_version[5];
+    union ScenarioVersionWord {
+        char bytes[4];
+        unsigned long word;
+    };
+    static const ScenarioVersionWord version_word_101 = {{'1', '.', '0', '1'}};
+    static const ScenarioVersionWord version_word_102 = {{'1', '.', '0', '2'}};
+    static const ScenarioVersionWord version_word_103 = {{'1', '.', '0', '3'}};
+    static const ScenarioVersionWord version_word_104 = {{'1', '.', '0', '4'}};
+    static const ScenarioVersionWord version_word_105 = {{'1', '.', '0', '5'}};
+    static const ScenarioVersionWord version_word_106 = {{'1', '.', '0', '6'}};
+    static const ScenarioVersionWord version_word_107 = {{'1', '.', '0', '7'}};
+    static const ScenarioVersionWord version_word_108 = {{'1', '.', '0', '8'}};
+    static const ScenarioVersionWord version_word_109 = {{'1', '.', '0', '9'}};
+    static const ScenarioVersionWord version_word_110 = {{'1', '.', '1', '0'}};
+    static const ScenarioVersionWord version_word_111 = {{'1', '.', '1', '1'}};
+    unsigned long scenario_version;
     int version;
     int file;
 
@@ -1760,19 +1789,18 @@ unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
         goto cleanup;
     }
 
-    rge_read_uncompressed(file, scenario_version, 4);
-    scenario_version[4] = 0;
+    rge_read_uncompressed(file, &scenario_version, 4);
 
-    if (strcmp(scenario_version, version_101) == 0) {
+    if (scenario_version == version_word_101.word) {
         this->load_scenario1(file, info);
         goto success;
     }
 
-    if (strcmp(scenario_version, version_102) == 0) {
+    if (scenario_version == version_word_102.word) {
         goto shared_80;
     }
 
-    if (strcmp(scenario_version, version_103) == 0) {
+    if (scenario_version == version_word_103.word) {
         rge_read_uncompressed(file, &version, 4);
         if (version > 0) {
             void* buffer = malloc(version);
@@ -1785,29 +1813,29 @@ unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
         goto shared_80;
     }
 
-    if (strcmp(scenario_version, version_104) == 0) {
+    if (scenario_version == version_word_104.word) {
         this->load_scenario3(file, info);
         goto success;
     }
-    if (strcmp(scenario_version, version_105) == 0) {
+    if (scenario_version == version_word_105.word) {
         this->load_scenario4(file, info);
         goto success;
     }
-    if (strcmp(scenario_version, version_106) == 0) {
+    if (scenario_version == version_word_106.word) {
         this->load_scenario5(file, info);
         goto success;
     }
-    if (strcmp(scenario_version, version_107) == 0) {
+    if (scenario_version == version_word_107.word) {
         this->load_scenario6(file, info);
         goto success;
     }
-    if (strcmp(scenario_version, version_108) == 0) {
+    if (scenario_version == version_word_108.word) {
         this->load_scenario7(file, info);
         goto success;
     }
-    if (strcmp(scenario_version, version_109) == 0 ||
-        strcmp(scenario_version, version_111) == 0 ||
-        strcmp(scenario_version, version_110) == 0) {
+    if (scenario_version == version_word_109.word ||
+        scenario_version == version_word_111.word ||
+        scenario_version == version_word_110.word) {
         this->load_scenario8(file, info);
         goto success;
     } else {
