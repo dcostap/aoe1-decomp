@@ -76,7 +76,7 @@
     "004ED170": {"status": "matching", "symbol": "?objectToDestroy@TacticalAIGroup@@QAEHH@Z"},
     "004ED190": {"status": "matching", "symbol": "?addObjectToDestroy@TacticalAIGroup@@QAEHH@Z"},
     "004ED1C0": {"status": "matching", "symbol": "??0TribeTacticalAIModule@@QAE@PAXH@Z"},
-    "004ED4F0": {"status": "scratch", "symbol": "??0TribeTacticalAIModule@@QAE@HH@Z"},
+    "004ED4F0": {"status": "matching", "symbol": "??0TribeTacticalAIModule@@QAE@HH@Z"},
     "004EEB40": {"status": "matching", "symbol": "??1TribeTacticalAIModule@@UAE@XZ"},
     "004EEE40": {"status": "matching", "symbol": "?updateAreaName@TribeTacticalAIModule@@QAEPADXZ"},
     "004EEF40": {"status": "matching", "symbol": "?update@TribeTacticalAIModule@@UAEHH@Z"},

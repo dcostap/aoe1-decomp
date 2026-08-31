@@ -1635,78 +1635,45 @@ TribeTacticalAIModule::TribeTacticalAIModule(int param_1, int file)
       playersToDefend(),
       workingArea(),
       unitsTaskedThisUpdate(),
-      neededResources(4)
+      neededResources(4),
+      attackEnabledValue(0),
+      updateArea(0),
+      firstNeededResourceUpdateDone(0),
+      wonderInProgressValue(0),
+      wonderBuiltValue(0),
+      nextCivilianToTaskValue(-1),
+      nextIdleSoldierGroupToTaskValue(-1),
+      nextActiveSoldierGroupToTaskValue(-1),
+      builtFirstStoragePit(0),
+      builtFirstGranary(0),
+      lastBuildTime(0),
+      lastAttackResponseBuildInsertionTime(0),
+      lastCoopTributeDemandTime(0),
+      lastCoopTributeGiftTime(0),
+      lastCoopAttackDemandTime(0),
+      zoomingToNextAge(0),
+      lastUngroupedSoldierTaskTime(0),
+      lastUpdateAreaTimeValue(-1),
+      averageUpdateAreaTimeValue(-1),
+      updateAreaAverageCount(0),
+      updateAreaAverageTotal(0)
 {
   int iVar1;
   int *piVar2;
-  int iVar3;
-  int iVar4;
   TacticalAIGroup *pTVar5;
   int iVar6;
   int tempInt;
   int local_2c;
-  int local_28;
 
   TacticalAIGroup *group = &this->groups;
   this->groups.next = group;
   this->groups.prev = group;
-  this->attackEnabledValue = 0;
-  this->updateArea = 0;
-  this->firstNeededResourceUpdateDone = 0;
-  this->wonderInProgressValue = 0;
-  this->wonderBuiltValue = 0;
-  this->nextCivilianToTaskValue = -1;
-  this->nextIdleSoldierGroupToTaskValue = -1;
-  this->nextActiveSoldierGroupToTaskValue = -1;
-  this->builtFirstStoragePit = 0;
-  this->builtFirstGranary = 0;
-  this->lastBuildTime = 0;
-  this->lastAttackResponseBuildInsertionTime = 0;
-  this->lastCoopTributeDemandTime = 0;
-  this->lastCoopTributeGiftTime = 0;
-  this->lastCoopAttackDemandTime = 0;
-  this->zoomingToNextAge = 0;
-  this->lastUngroupedSoldierTaskTime = 0;
-  this->lastUpdateAreaTimeValue = -1;
-  this->averageUpdateAreaTimeValue = -1;
-  this->updateAreaAverageCount = 0;
-  this->updateAreaAverageTotal = 0;
   rge_read(file,&param_1,4);
   tempInt = 0;
   if (0 < param_1) {
     do {
       rge_read(file,&local_2c,4);
-      iVar6 = (this->civilians).numberValue;
-      iVar1 = 0;
-      local_28 = local_2c;
-      if (0 < iVar6) {
-        do {
-          if (iVar1 >= (this->civilians).maximumSizeValue) break;
-          if ((this->civilians).value[iVar1] == local_2c) goto LAB_004ed829;
-          iVar1 = iVar1 + 1;
-        } while (iVar1 < iVar6);
-      }
-      if (iVar6 > (this->civilians).maximumSizeValue - 1) {
-        iVar6 = iVar6 + 1;
-        piVar2 = (int *)operator_new(iVar6 * 4);
-        if (piVar2 != (int *)0x0) {
-          iVar1 = 0;
-          if (0 < (this->civilians).maximumSizeValue) {
-            do {
-              if (iVar1 >= iVar6) break;
-              iVar3 = iVar1 + 1;
-              piVar2[iVar1] = (this->civilians).value[iVar1];
-              iVar1 = iVar3;
-            } while (iVar3 < (this->civilians).maximumSizeValue);
-          }
-          operator_delete((this->civilians).value);
-          (this->civilians).value = piVar2;
-          (this->civilians).maximumSizeValue = iVar6;
-        }
-      }
-      (this->civilians).value[(this->civilians).numberValue] = local_28;
-      (this->civilians).numberValue = (this->civilians).numberValue + 1;
-LAB_004ed829:
+      this->civilians.add(local_2c);
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
@@ -1715,37 +1682,7 @@ LAB_004ed829:
   if (0 < param_1) {
     do {
       rge_read(file,&local_2c,4);
-      iVar6 = (this->civilianExplorers).numberValue;
-      iVar1 = 0;
-      local_28 = local_2c;
-      if (0 < iVar6) {
-        do {
-          if (iVar1 >= (this->civilianExplorers).maximumSizeValue) break;
-          if ((this->civilianExplorers).value[iVar1] == local_2c) goto LAB_004ed92c;
-          iVar1 = iVar1 + 1;
-        } while (iVar1 < iVar6);
-      }
-      if (iVar6 > (this->civilianExplorers).maximumSizeValue - 1) {
-        iVar6 = iVar6 + 1;
-        piVar2 = (int *)operator_new(iVar6 * 4);
-        if (piVar2 != (int *)0x0) {
-          iVar1 = 0;
-          if (0 < (this->civilianExplorers).maximumSizeValue) {
-            do {
-              if (iVar1 >= iVar6) break;
-              iVar3 = iVar1 + 1;
-              piVar2[iVar1] = (this->civilianExplorers).value[iVar1];
-              iVar1 = iVar3;
-            } while (iVar3 < (this->civilianExplorers).maximumSizeValue);
-          }
-          operator_delete((this->civilianExplorers).value);
-          (this->civilianExplorers).value = piVar2;
-          (this->civilianExplorers).maximumSizeValue = iVar6;
-        }
-      }
-      (this->civilianExplorers).value[(this->civilianExplorers).numberValue] = local_28;
-      (this->civilianExplorers).numberValue = (this->civilianExplorers).numberValue + 1;
-LAB_004ed92c:
+      this->civilianExplorers.add(local_2c);
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
@@ -1793,37 +1730,7 @@ LAB_004ed92c:
   if (0 < param_1) {
     do {
       rge_read(file,&local_2c,4);
-      iVar6 = (this->soldiers).numberValue;
-      iVar1 = 0;
-      local_28 = local_2c;
-      if (0 < iVar6) {
-        do {
-          if (iVar1 >= (this->soldiers).maximumSizeValue) break;
-          if ((this->soldiers).value[iVar1] == local_2c) goto LAB_004edb26;
-          iVar1 = iVar1 + 1;
-        } while (iVar1 < iVar6);
-      }
-      if (iVar6 > (this->soldiers).maximumSizeValue - 1) {
-        iVar6 = iVar6 + 1;
-        piVar2 = (int *)operator_new(iVar6 * 4);
-        if (piVar2 != (int *)0x0) {
-          iVar1 = 0;
-          if (0 < (this->soldiers).maximumSizeValue) {
-            do {
-              if (iVar1 >= iVar6) break;
-              iVar3 = iVar1 + 1;
-              piVar2[iVar1] = (this->soldiers).value[iVar1];
-              iVar1 = iVar3;
-            } while (iVar3 < (this->soldiers).maximumSizeValue);
-          }
-          operator_delete((this->soldiers).value);
-          (this->soldiers).value = piVar2;
-          (this->soldiers).maximumSizeValue = iVar6;
-        }
-      }
-      (this->soldiers).value[(this->soldiers).numberValue] = local_28;
-      (this->soldiers).numberValue = (this->soldiers).numberValue + 1;
-LAB_004edb26:
+      this->soldiers.add(local_2c);
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
@@ -1833,37 +1740,7 @@ LAB_004edb26:
     if (0 < param_1) {
       do {
         rge_read(file,&local_2c,4);
-        iVar6 = (this->ungroupedSoldiers).numberValue;
-        iVar1 = 0;
-        local_28 = local_2c;
-        if (0 < iVar6) {
-          do {
-            if (iVar1 >= (this->ungroupedSoldiers).maximumSizeValue) break;
-            if ((this->ungroupedSoldiers).value[iVar1] == local_2c) goto LAB_004edc44;
-            iVar1 = iVar1 + 1;
-          } while (iVar1 < iVar6);
-        }
-        if (iVar6 > (this->ungroupedSoldiers).maximumSizeValue - 1) {
-          iVar6 = iVar6 + 1;
-          piVar2 = (int *)operator_new(iVar6 * 4);
-          if (piVar2 != (int *)0x0) {
-            iVar1 = 0;
-            if (0 < (this->ungroupedSoldiers).maximumSizeValue) {
-              do {
-                if (iVar1 >= iVar6) break;
-                iVar3 = iVar1 + 1;
-                piVar2[iVar1] = (this->ungroupedSoldiers).value[iVar1];
-                iVar1 = iVar3;
-              } while (iVar3 < (this->ungroupedSoldiers).maximumSizeValue);
-            }
-            operator_delete((this->ungroupedSoldiers).value);
-            (this->ungroupedSoldiers).value = piVar2;
-            (this->ungroupedSoldiers).maximumSizeValue = iVar6;
-          }
-        }
-        (this->ungroupedSoldiers).value[(this->ungroupedSoldiers).numberValue] = local_28;
-        (this->ungroupedSoldiers).numberValue = (this->ungroupedSoldiers).numberValue + 1;
-LAB_004edc44:
+        this->ungroupedSoldiers.add(local_2c);
         tempInt = tempInt + 1;
       } while (tempInt < param_1);
     }
@@ -1873,37 +1750,7 @@ LAB_004edc44:
   if (0 < param_1) {
     do {
       rge_read(file,&local_2c,4);
-      iVar6 = (this->boats).numberValue;
-      iVar1 = 0;
-      local_28 = local_2c;
-      if (0 < iVar6) {
-        do {
-          if (iVar1 >= (this->boats).maximumSizeValue) break;
-          if ((this->boats).value[iVar1] == local_2c) goto LAB_004edd4b;
-          iVar1 = iVar1 + 1;
-        } while (iVar1 < iVar6);
-      }
-      if (iVar6 > (this->boats).maximumSizeValue - 1) {
-        iVar6 = iVar6 + 1;
-        piVar2 = (int *)operator_new(iVar6 * 4);
-        if (piVar2 != (int *)0x0) {
-          iVar1 = 0;
-          if (0 < (this->boats).maximumSizeValue) {
-            do {
-              if (iVar1 >= iVar6) break;
-              iVar3 = iVar1 + 1;
-              piVar2[iVar1] = (this->boats).value[iVar1];
-              iVar1 = iVar3;
-            } while (iVar3 < (this->boats).maximumSizeValue);
-          }
-          operator_delete((this->boats).value);
-          (this->boats).value = piVar2;
-          (this->boats).maximumSizeValue = iVar6;
-        }
-      }
-      (this->boats).value[(this->boats).numberValue] = local_28;
-      (this->boats).numberValue = (this->boats).numberValue + 1;
-LAB_004edd4b:
+      this->boats.add(local_2c);
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
@@ -1912,37 +1759,7 @@ LAB_004edd4b:
   if (0 < param_1) {
     do {
       rge_read(file,&local_2c,4);
-      iVar1 = local_2c;
-      iVar6 = (this->warBoats).numberValue;
-      iVar3 = 0;
-      if (0 < iVar6) {
-        do {
-          if (iVar3 >= (this->warBoats).maximumSizeValue) break;
-          if ((this->warBoats).value[iVar3] == local_2c) goto LAB_004ede4c;
-          iVar3 = iVar3 + 1;
-        } while (iVar3 < iVar6);
-      }
-      if (iVar6 > (this->warBoats).maximumSizeValue - 1) {
-        iVar6 = iVar6 + 1;
-        piVar2 = (int *)operator_new(iVar6 * 4);
-        if (piVar2 != (int *)0x0) {
-          iVar3 = 0;
-          if (0 < (this->warBoats).maximumSizeValue) {
-            do {
-              if (iVar6 <= iVar3) break;
-              iVar4 = iVar3 + 1;
-              piVar2[iVar3] = (this->warBoats).value[iVar3];
-              iVar3 = iVar4;
-            } while (iVar4 < (this->warBoats).maximumSizeValue);
-          }
-          operator_delete((this->warBoats).value);
-          (this->warBoats).value = piVar2;
-          (this->warBoats).maximumSizeValue = iVar6;
-        }
-      }
-      (this->warBoats).value[(this->warBoats).numberValue] = iVar1;
-      (this->warBoats).numberValue = (this->warBoats).numberValue + 1;
-LAB_004ede4c:
+      this->warBoats.add(local_2c);
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
@@ -1951,37 +1768,7 @@ LAB_004ede4c:
   if (0 < param_1) {
     do {
       rge_read(file,&local_2c,4);
-      iVar1 = local_2c;
-      iVar6 = (this->fishingBoats).numberValue;
-      iVar3 = 0;
-      if (0 < iVar6) {
-        do {
-          if (iVar3 >= (this->fishingBoats).maximumSizeValue) break;
-          if ((this->fishingBoats).value[iVar3] == local_2c) goto LAB_004edf51;
-          iVar3 = iVar3 + 1;
-        } while (iVar3 < iVar6);
-      }
-      if (iVar6 > (this->fishingBoats).maximumSizeValue - 1) {
-        iVar6 = iVar6 + 1;
-        piVar2 = (int *)operator_new(iVar6 * 4);
-        if (piVar2 != (int *)0x0) {
-          iVar3 = 0;
-          if (0 < (this->fishingBoats).maximumSizeValue) {
-            do {
-              if (iVar6 <= iVar3) break;
-              iVar4 = iVar3 + 1;
-              piVar2[iVar3] = (this->fishingBoats).value[iVar3];
-              iVar3 = iVar4;
-            } while (iVar4 < (this->fishingBoats).maximumSizeValue);
-          }
-          operator_delete((this->fishingBoats).value);
-          (this->fishingBoats).value = piVar2;
-          (this->fishingBoats).maximumSizeValue = iVar6;
-        }
-      }
-      (this->fishingBoats).value[(this->fishingBoats).numberValue] = iVar1;
-      (this->fishingBoats).numberValue = (this->fishingBoats).numberValue + 1;
-LAB_004edf51:
+      this->fishingBoats.add(local_2c);
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
@@ -1990,37 +1777,7 @@ LAB_004edf51:
   if (0 < param_1) {
     do {
       rge_read(file,&local_2c,4);
-      iVar1 = local_2c;
-      iVar6 = (this->tradeBoats).numberValue;
-      iVar3 = 0;
-      if (0 < iVar6) {
-        do {
-          if (iVar3 >= (this->tradeBoats).maximumSizeValue) break;
-          if ((this->tradeBoats).value[iVar3] == local_2c) goto LAB_004ee056;
-          iVar3 = iVar3 + 1;
-        } while (iVar3 < iVar6);
-      }
-      if (iVar6 > (this->tradeBoats).maximumSizeValue - 1) {
-        iVar6 = iVar6 + 1;
-        piVar2 = (int *)operator_new(iVar6 * 4);
-        if (piVar2 != (int *)0x0) {
-          iVar3 = 0;
-          if (0 < (this->tradeBoats).maximumSizeValue) {
-            do {
-              if (iVar6 <= iVar3) break;
-              iVar4 = iVar3 + 1;
-              piVar2[iVar3] = (this->tradeBoats).value[iVar3];
-              iVar3 = iVar4;
-            } while (iVar4 < (this->tradeBoats).maximumSizeValue);
-          }
-          operator_delete((this->tradeBoats).value);
-          (this->tradeBoats).value = piVar2;
-          (this->tradeBoats).maximumSizeValue = iVar6;
-        }
-      }
-      (this->tradeBoats).value[(this->tradeBoats).numberValue] = iVar1;
-      (this->tradeBoats).numberValue = (this->tradeBoats).numberValue + 1;
-LAB_004ee056:
+      this->tradeBoats.add(local_2c);
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
@@ -2029,37 +1786,7 @@ LAB_004ee056:
   if (0 < param_1) {
     do {
       rge_read(file,&local_2c,4);
-      iVar1 = local_2c;
-      iVar6 = (this->transportBoats).numberValue;
-      iVar3 = 0;
-      if (0 < iVar6) {
-        do {
-          if (iVar3 >= (this->transportBoats).maximumSizeValue) break;
-          if ((this->transportBoats).value[iVar3] == local_2c) goto LAB_004ee15b;
-          iVar3 = iVar3 + 1;
-        } while (iVar3 < iVar6);
-      }
-      if (iVar6 > (this->transportBoats).maximumSizeValue - 1) {
-        iVar6 = iVar6 + 1;
-        piVar2 = (int *)operator_new(iVar6 * 4);
-        if (piVar2 != (int *)0x0) {
-          iVar3 = 0;
-          if (0 < (this->transportBoats).maximumSizeValue) {
-            do {
-              if (iVar6 <= iVar3) break;
-              iVar4 = iVar3 + 1;
-              piVar2[iVar3] = (this->transportBoats).value[iVar3];
-              iVar3 = iVar4;
-            } while (iVar4 < (this->transportBoats).maximumSizeValue);
-          }
-          operator_delete((this->transportBoats).value);
-          (this->transportBoats).value = piVar2;
-          (this->transportBoats).maximumSizeValue = iVar6;
-        }
-      }
-      (this->transportBoats).value[(this->transportBoats).numberValue] = iVar1;
-      (this->transportBoats).numberValue = (this->transportBoats).numberValue + 1;
-LAB_004ee15b:
+      this->transportBoats.add(local_2c);
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
@@ -2069,37 +1796,7 @@ LAB_004ee15b:
     if (0 < param_1) {
       do {
         rge_read(file,&local_2c,4);
-        iVar1 = local_2c;
-        iVar6 = (this->artifacts).numberValue;
-        iVar3 = 0;
-        if (0 < iVar6) {
-          do {
-            if (iVar3 >= (this->artifacts).maximumSizeValue) break;
-            if ((this->artifacts).value[iVar3] == local_2c) goto LAB_004ee277;
-            iVar3 = iVar3 + 1;
-          } while (iVar3 < iVar6);
-        }
-        if (iVar6 > (this->artifacts).maximumSizeValue - 1) {
-          iVar6 = iVar6 + 1;
-          piVar2 = (int *)operator_new(iVar6 * 4);
-          if (piVar2 != (int *)0x0) {
-            iVar3 = 0;
-            if (0 < (this->artifacts).maximumSizeValue) {
-              do {
-                if (iVar6 <= iVar3) break;
-                iVar4 = iVar3 + 1;
-                piVar2[iVar3] = (this->artifacts).value[iVar3];
-                iVar3 = iVar4;
-              } while (iVar4 < (this->artifacts).maximumSizeValue);
-            }
-            operator_delete((this->artifacts).value);
-            (this->artifacts).value = piVar2;
-            (this->artifacts).maximumSizeValue = iVar6;
-          }
-        }
-        (this->artifacts).value[(this->artifacts).numberValue] = iVar1;
-        (this->artifacts).numberValue = (this->artifacts).numberValue + 1;
-LAB_004ee277:
+        this->artifacts.add(local_2c);
         tempInt = tempInt + 1;
       } while (tempInt < param_1);
     }
@@ -2119,37 +1816,7 @@ LAB_004ee277:
   if (0 < param_1) {
     do {
       rge_read(file,&local_2c,4);
-      iVar1 = local_2c;
-      iVar6 = (this->playersToAttack).numberValue;
-      iVar3 = 0;
-      if (0 < iVar6) {
-        do {
-          if (iVar3 >= (this->playersToAttack).maximumSizeValue) break;
-          if ((this->playersToAttack).value[iVar3] == local_2c) goto LAB_004ee3b4;
-          iVar3 = iVar3 + 1;
-        } while (iVar3 < iVar6);
-      }
-      if (iVar6 > (this->playersToAttack).maximumSizeValue - 1) {
-        iVar6 = iVar6 + 1;
-        piVar2 = (int *)operator_new(iVar6 * 4);
-        if (piVar2 != (int *)0x0) {
-          iVar3 = 0;
-          if (0 < (this->playersToAttack).maximumSizeValue) {
-            do {
-              if (iVar6 <= iVar3) break;
-              iVar4 = iVar3 + 1;
-              piVar2[iVar3] = (this->playersToAttack).value[iVar3];
-              iVar3 = iVar4;
-            } while (iVar4 < (this->playersToAttack).maximumSizeValue);
-          }
-          operator_delete((this->playersToAttack).value);
-          (this->playersToAttack).value = piVar2;
-          (this->playersToAttack).maximumSizeValue = iVar6;
-        }
-      }
-      (this->playersToAttack).value[(this->playersToAttack).numberValue] = iVar1;
-      (this->playersToAttack).numberValue = (this->playersToAttack).numberValue + 1;
-LAB_004ee3b4:
+      this->playersToAttack.add(local_2c);
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
@@ -2158,37 +1825,7 @@ LAB_004ee3b4:
   if (0 < param_1) {
     do {
       rge_read(file,&local_2c,4);
-      iVar1 = local_2c;
-      iVar6 = (this->playersToDefend).numberValue;
-      iVar3 = 0;
-      if (0 < iVar6) {
-        do {
-          if (iVar3 >= (this->playersToDefend).maximumSizeValue) break;
-          if ((this->playersToDefend).value[iVar3] == local_2c) goto LAB_004ee4b9;
-          iVar3 = iVar3 + 1;
-        } while (iVar3 < iVar6);
-      }
-      if (iVar6 > (this->playersToDefend).maximumSizeValue - 1) {
-        iVar6 = iVar6 + 1;
-        piVar2 = (int *)operator_new(iVar6 * 4);
-        if (piVar2 != (int *)0x0) {
-          iVar3 = 0;
-          if (0 < (this->playersToDefend).maximumSizeValue) {
-            do {
-              if (iVar6 <= iVar3) break;
-              iVar4 = iVar3 + 1;
-              piVar2[iVar3] = (this->playersToDefend).value[iVar3];
-              iVar3 = iVar4;
-            } while (iVar4 < (this->playersToDefend).maximumSizeValue);
-          }
-          operator_delete((this->playersToDefend).value);
-          (this->playersToDefend).value = piVar2;
-          (this->playersToDefend).maximumSizeValue = iVar6;
-        }
-      }
-      (this->playersToDefend).value[(this->playersToDefend).numberValue] = iVar1;
-      (this->playersToDefend).numberValue = (this->playersToDefend).numberValue + 1;
-LAB_004ee4b9:
+      this->playersToDefend.add(local_2c);
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
@@ -2197,37 +1834,7 @@ LAB_004ee4b9:
   if (0 < param_1) {
     do {
       rge_read(file,&local_2c,4);
-      iVar1 = local_2c;
-      iVar6 = (this->workingArea).numberValue;
-      iVar3 = 0;
-      if (0 < iVar6) {
-        do {
-          if (iVar3 >= (this->workingArea).maximumSizeValue) break;
-          if ((this->workingArea).value[iVar3] == local_2c) goto LAB_004ee5be;
-          iVar3 = iVar3 + 1;
-        } while (iVar3 < iVar6);
-      }
-      if (iVar6 > (this->workingArea).maximumSizeValue - 1) {
-        iVar6 = iVar6 + 1;
-        piVar2 = (int *)operator_new(iVar6 * 4);
-        if (piVar2 != (int *)0x0) {
-          iVar3 = 0;
-          if (0 < (this->workingArea).maximumSizeValue) {
-            do {
-              if (iVar6 <= iVar3) break;
-              iVar4 = iVar3 + 1;
-              piVar2[iVar3] = (this->workingArea).value[iVar3];
-              iVar3 = iVar4;
-            } while (iVar4 < (this->workingArea).maximumSizeValue);
-          }
-          operator_delete((this->workingArea).value);
-          (this->workingArea).value = piVar2;
-          (this->workingArea).maximumSizeValue = iVar6;
-        }
-      }
-      (this->workingArea).value[(this->workingArea).numberValue] = iVar1;
-      (this->workingArea).numberValue = (this->workingArea).numberValue + 1;
-LAB_004ee5be:
+      this->workingArea.add(local_2c);
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
@@ -2236,37 +1843,7 @@ LAB_004ee5be:
   if (0 < param_1) {
     do {
       rge_read(file,&local_2c,4);
-      iVar1 = local_2c;
-      iVar6 = (this->unitsTaskedThisUpdate).numberValue;
-      iVar3 = 0;
-      if (0 < iVar6) {
-        do {
-          if (iVar3 >= (this->unitsTaskedThisUpdate).maximumSizeValue) break;
-          if ((this->unitsTaskedThisUpdate).value[iVar3] == local_2c) goto LAB_004ee6c3;
-          iVar3 = iVar3 + 1;
-        } while (iVar3 < iVar6);
-      }
-      if (iVar6 > (this->unitsTaskedThisUpdate).maximumSizeValue - 1) {
-        iVar6 = iVar6 + 1;
-        piVar2 = (int *)operator_new(iVar6 * 4);
-        if (piVar2 != (int *)0x0) {
-          iVar3 = 0;
-          if (0 < (this->unitsTaskedThisUpdate).maximumSizeValue) {
-            do {
-              if (iVar6 <= iVar3) break;
-              iVar4 = iVar3 + 1;
-              piVar2[iVar3] = (this->unitsTaskedThisUpdate).value[iVar3];
-              iVar3 = iVar4;
-            } while (iVar4 < (this->unitsTaskedThisUpdate).maximumSizeValue);
-          }
-          operator_delete((this->unitsTaskedThisUpdate).value);
-          (this->unitsTaskedThisUpdate).value = piVar2;
-          (this->unitsTaskedThisUpdate).maximumSizeValue = iVar6;
-        }
-      }
-      (this->unitsTaskedThisUpdate).value[(this->unitsTaskedThisUpdate).numberValue] = iVar1;
-      (this->unitsTaskedThisUpdate).numberValue = (this->unitsTaskedThisUpdate).numberValue + 1;
-LAB_004ee6c3:
+      this->unitsTaskedThisUpdate.add(local_2c);
       tempInt = tempInt + 1;
     } while (tempInt < param_1);
   }
@@ -2326,7 +1903,7 @@ LAB_004ee6c3:
     do {
       pTVar5 = this->createGroup(0);
       if (pTVar5 != (TacticalAIGroup *)0x0) {
-        TacticalAIGroup::load(pTVar5,file);
+        pTVar5->load(file);
       }
       iVar1 = iVar1 + 1;
     } while (iVar1 < *piVar2);
@@ -2352,11 +1929,7 @@ LAB_004ee6c3:
     rge_read(file,&this->placementStateValue,0x130);
   }
   else {
-    piVar2 = (int *)&this->placementStateValue;
-    for (iVar1 = 0x4c; iVar1 != 0; iVar1 = iVar1 + -1) {
-      *piVar2 = 0;
-      piVar2 = piVar2 + 1;
-    }
+    memset(&this->placementStateValue, 0, sizeof(this->placementStateValue));
   }
   (this->placementStateValue).active = 0;
   if (!(save_game_version < 6.3f)) {
@@ -2391,11 +1964,7 @@ LAB_004ee6c3:
     rge_read(file,&this->attackStateValue,0x2c);
   }
   else {
-    piVar2 = (int *)&this->attackStateValue;
-    for (iVar1 = 0xb; iVar1 != 0; iVar1 = iVar1 + -1) {
-      *piVar2 = 0;
-      piVar2 = piVar2 + 1;
-    }
+    memset(&this->attackStateValue, 0, sizeof(this->attackStateValue));
   }
   (this->attackStateValue).active = 0;
   if (!(save_game_version < 7.15f)) {
