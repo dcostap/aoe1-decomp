@@ -411,10 +411,10 @@ int TMessagePanel::render_to_image_buffer() {
         SetRect(&this->UsedImageRect, 0, 0, 1, 1);
         this->ImageTextActive = 0;
     } else {
-        used_x = 0;
-        used_y = 0;
         display_hgt = ts.cy + 2;
         used_w = ts.cx + 2;
+        used_y = 0;
+        used_x = 0;
         tight = 1;
 
         if (this->message_type == 1) {
@@ -427,17 +427,17 @@ int TMessagePanel::render_to_image_buffer() {
         } else {
             if (this->word_wrap == 0 || ts.cx <= wid) {
                 used_w = ts.cx + 1;
-                display_hgt = ts.cy + 1;
                 flags = 0x20;
+                display_hgt = ts.cy + 1;
                 tight = 1;
             } else {
                 used_w = this->pnl_wid;
                 display_hgt = this->pnl_hgt;
+                used_x = 0;
+                used_y = 0;
                 flags = 0x10;
                 tight = 0;
             }
-            used_x = 0;
-            used_y = 0;
             if (this->horz_just == 4) {
                 flags |= 1;
                 if (tight) used_x = ((this->pnl_wid - used_w) >> 1) - 1;
@@ -498,12 +498,13 @@ int TMessagePanel::render_to_image_buffer() {
         if (this->Icon2 != 0) {
             Shape_Info* info = this->Icon2->shape_info;
             long frame = this->IconFrame2;
-            long width = info[frame].Width;
+            Shape_Info* frame_info = info + frame;
+            long width = frame_info->Width;
             this->Icon2->shape_draw(
                 this->ImageBuffer,
-                info[frame].Hotspot_X - width - 4 +
+                frame_info->Hotspot_X - width - 4 +
                     this->UsedImageRect.left,
-                info[frame].Hotspot_Y + 6 + this->UsedImageRect.top,
+                frame_info->Hotspot_Y + 6 + this->UsedImageRect.top,
                 frame, 0, 0);
             this->UsedImageRect.left += -4 - width;
         }

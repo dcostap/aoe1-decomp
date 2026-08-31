@@ -16,7 +16,7 @@
     "00479590": {"status": "scratch", "symbol": "?draw@TMessagePanel@@UAEXXZ"},
     "00479A10": {"status": "matching", "symbol": "?get_true_render_rect@TMessagePanel@@UAEXAAUtagRECT@@@Z"},
     "00479A80": {"status": "matching", "symbol": "?handle_idle@TMessagePanel@@UAEJXZ"},
-    "00479AE0": {"status": "scratch", "symbol": "?render_to_image_buffer@TMessagePanel@@IAEHXZ"},
+    "00479AE0": {"status": "matching", "symbol": "?render_to_image_buffer@TMessagePanel@@IAEHXZ"},
     "0047A190": {"status": "matching", "symbol": "?set_font@TMessagePanel@@UAEXPAXJJ@Z"}
   }
 }
