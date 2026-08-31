@@ -420,18 +420,16 @@ int RGE_Visible_Map::explore_terrain(int x, int y, int radius, int square,
 void RGE_Visible_Map::unexplore_terrain(int x, int y, int radius, int square,
                                         int update_tiles, int p6) {
     RGE_Tile* tile = 0;
-    int plNum;
 
     log_map_call(this->world->world_time, (int)this->player->id, 3, p6,
                  x, y, radius, square, Map_Update_Suppresion);
 
     if (Map_Update_Suppresion == 0) {
         p6 = this->input_csum;
-        plNum = (int)this->player->id;
         p6 = _rotl(p6, 3);
         p6 ^= 0x20202020;
         p6 = _rotl(p6, 2);
-        p6 ^= plNum;
+        p6 ^= (int)this->player->id;
         p6 = _rotl(p6, 3);
         p6 ^= x;
         p6 = _rotl(p6, 4);
@@ -610,14 +608,13 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
 
 void RGE_Visible_Map::unexplore_terrain_sq(int x1, int y1, int x2, int y2,
                                            int update_tiles, int p6) {
-    RGE_Visible_Map* self = this;
     RGE_Tile* tile = 0;
 
-    log_map_call(self->world->world_time, (int)self->player->id, 4, p6,
+    log_map_call(this->world->world_time, (int)this->player->id, 4, p6,
                  x1, y1, x2, y2, Map_Update_Suppresion);
 
     if (Map_Update_Suppresion == 0) {
-        p6 = self->input_csum;
+        p6 = this->input_csum;
         p6 = _rotl(p6, 3);
         p6 ^= 0x56565656;
         p6 = _rotl(p6, 2);
@@ -628,31 +625,31 @@ void RGE_Visible_Map::unexplore_terrain_sq(int x1, int y1, int x2, int y2,
         p6 ^= x2;
         p6 = _rotl(p6, 3);
         p6 ^= y2;
-        self->input_csum = p6;
+        this->input_csum = p6;
 
-        if ((x1 >= self->widthValue) || (x2 < 0) ||
-            (y1 >= self->heightValue) || (y2 < 0)) {
+        if ((x1 >= this->widthValue) || (x2 < 0) ||
+            (y1 >= this->heightValue) || (y2 < 0)) {
             return;
         }
         if (x1 < 0) {
             x1 = 0;
         }
-        if (x2 >= self->widthValue) {
-            x2 = self->widthValue - 1;
+        if (x2 >= this->widthValue) {
+            x2 = this->widthValue - 1;
         }
         if (y1 < 0) {
             y1 = 0;
         }
-        if (y2 >= self->heightValue) {
-            y2 = self->heightValue - 1;
+        if (y2 >= this->heightValue) {
+            y2 = this->heightValue - 1;
         }
 
         for (; y1 <= y2; ++y1) {
-            unsigned char* visible = self->map_offsets[y1] + x1;
+            unsigned char* visible = this->map_offsets[y1] + x1;
             unsigned long* explored = unified_map_offsets[y1] + x1;
 
             if (update_tiles != 0) {
-                tile = self->map->map_row_offset[y1] + x1;
+                tile = this->map->map_row_offset[y1] + x1;
             }
 
             if (x1 <= x2) {
@@ -667,7 +664,7 @@ void RGE_Visible_Map::unexplore_terrain_sq(int x1, int y1, int x2, int y2,
                         if (update_tiles != 0) {
                             tile->draw_as = 0x80;
                         }
-                        *explored &= self->PlayerVisibleMaskInvertValue;
+                        *explored &= this->PlayerVisibleMaskInvertValue;
                     }
                     *visible = value;
                     ++visible;
