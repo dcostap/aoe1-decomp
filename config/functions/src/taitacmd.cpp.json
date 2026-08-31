@@ -208,7 +208,7 @@
     "00502230": {"status": "matching", "symbol": "?stuffAvoidancePath@TribeTacticalAIModule@@QAEXPAVTacticalAIGroup@@PAVPath@@@Z"},
     "00502310": {"status": "scratch", "symbol": "?checkForAttackResponseBuildInsertions@TribeTacticalAIModule@@QAEXH@Z"},
     "00502600": {"status": "accepted_drift", "symbol": "?checkForCoopTributeDemand@TribeTacticalAIModule@@QAEXXZ"},
-    "00502920": {"status": "scratch", "symbol": "?checkForCoopTributeGift@TribeTacticalAIModule@@QAEXXZ"},
+    "00502920": {"status": "matching", "symbol": "?checkForCoopTributeGift@TribeTacticalAIModule@@QAEXXZ"},
     "00502BF0": {"status": "matching", "symbol": "?checkForASAPAgeResearch@TribeTacticalAIModule@@QAEXXZ"},
     "00502D50": {"status": "matching", "symbol": "?checkForCoopAttack@TribeTacticalAIModule@@QAEXHHH@Z"},
     "00502F30": {"status": "accepted_drift", "symbol": "?processCoopAttack@TribeTacticalAIModule@@QAEHHHHH@Z"},

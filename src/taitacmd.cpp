@@ -11170,12 +11170,12 @@ next:
 void TribeTacticalAIModule::checkForCoopTributeGift()
 {
     if (this->sn[0xBA] == -1) return;
-    if (this->md->player->objects->find_by_master_id(
-            0x54, -1.0f, -1.0f, 0, 0, 0) == 0)
+    if (this->md->aiPlayer->objects->find_by_master_id(
+            0x54, -1.0f, -1.0f, 0, 2, 0) == 0)
         return;
 
     int now = this->md->player->world->world_time;
-    if ((now - this->lastCoopTributeGiftTime) / 1000 < this->sn[0xBA])
+    if ((int)(now - this->lastCoopTributeGiftTime) / 1000 < this->sn[0xBA])
         return;
     this->lastCoopTributeGiftTime = now;
 

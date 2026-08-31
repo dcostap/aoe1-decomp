@@ -17,7 +17,7 @@
     "004C8630": {"status": "scratch", "symbol": "?give_building_attribute_to_owner@TRIBE_Building_Object@@UAEXXZ"},
     "004C8690": {"status": "matching", "symbol": "?destroy_obj@TRIBE_Building_Object@@UAEXXZ"},
     "004C86C0": {"status": "accepted_drift", "symbol": "?heal@TRIBE_Building_Object@@UAEEM@Z"},
-    "004C8740": {"status": "scratch", "symbol": "?set_object_state@TRIBE_Building_Object@@UAEXE@Z"},
+    "004C8740": {"status": "matching", "symbol": "?set_object_state@TRIBE_Building_Object@@UAEXE@Z"},
     "004C8A60": {"status": "matching", "symbol": "?rehook@TRIBE_Building_Object@@UAEXXZ"},
     "004C8A80": {"status": "scratch", "symbol": "?update@TRIBE_Building_Object@@UAEEXZ"},
     "004C8B80": {"status": "matching", "symbol": "?explore_terrain@TRIBE_Building_Object@@UAEHPAVRGE_Player@@EH@Z"},
