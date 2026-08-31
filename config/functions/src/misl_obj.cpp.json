@@ -16,6 +16,6 @@
     "0045A950": {"status": "matching", "symbol": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@PAVRGE_Static_Object@@M@Z"},
     "0045A9E0": {"status": "matching", "symbol": "?init_missile@RGE_Missile_Object@@QAEXPAVRGE_Combat_Object@@MMMM@Z"},
     "0045AA70": {"status": "matching", "symbol": "?missile_move@RGE_Missile_Object@@QAEEXZ"},
-    "0045AB20": {"status": "scratch", "symbol": "?make_object_collision_list@RGE_Missile_Object@@QAEPAVRGE_Check_List@@M@Z"}
+    "0045AB20": {"status": "matching", "symbol": "?make_object_collision_list@RGE_Missile_Object@@QAEPAVRGE_Check_List@@M@Z"}
   }
 }
