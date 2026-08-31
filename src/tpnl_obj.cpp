@@ -242,11 +242,11 @@ void TRIBE_Panel_Object::draw()
     }
 
     if (this->render_area->GetDc("tpnl_obj::draw") != 0) {
-        HDC dc = this->render_area->DrawDc;
-        SetBkMode(dc, 1);
-        SetTextColor(dc, 0x00ffffff);
-        SelectClipRgn(dc, (HRGN)this->clip_rgn);
-        HGDIOBJ old_font = SelectObject(dc, (HGDIOBJ)this->font);
+        SetBkMode(this->render_area->DrawDc, 1);
+        SetTextColor(this->render_area->DrawDc, 0x00ffffff);
+        SelectClipRgn(this->render_area->DrawDc, (HRGN)this->clip_rgn);
+        HGDIOBJ old_font = SelectObject(
+            this->render_area->DrawDc, (HGDIOBJ)this->font);
 
         if (this->game_obj->owner->id != 0) {
             if (rge_base_game->campaignGame() == 0) {
@@ -265,7 +265,8 @@ void TRIBE_Panel_Object::draw()
                     100);
             }
 
-            TextOutA(dc, this->pnl_x + 3, this->pnl_y - 2,
+            TextOutA(this->render_area->DrawDc,
+                     this->pnl_x + 3, this->pnl_y - 2,
                      name, (int)strlen(name));
         }
 
@@ -284,27 +285,29 @@ void TRIBE_Panel_Object::draw()
         else
             sprintf(name, "%s", str);
 
-        TextOutA(dc, this->pnl_x + 3, this->pnl_y + 0x0d,
+        TextOutA(this->render_area->DrawDc,
+                 this->pnl_x + 3, this->pnl_y + 0x0d,
                  name, (int)strlen(name));
 
         if (this->game_obj->hp > 0.0f) {
             sprintf(str, "%d/%d",
                     (int)this->game_obj->hp,
                     (int)this->game_obj->master_obj->hp);
-            TextOutA(dc, this->pnl_x + 3, this->pnl_y + 0x5c,
+            TextOutA(this->render_area->DrawDc,
+                     this->pnl_x + 3, this->pnl_y + 0x5c,
                      str, (int)strlen(str));
         }
 
-        SelectObject(dc, old_font);
-        SelectClipRgn(dc, 0);
+        SelectObject(this->render_area->DrawDc, old_font);
+        SelectClipRgn(this->render_area->DrawDc, 0);
         this->render_area->ReleaseDc("tpnl_obj::draw");
     }
 
     int row = 0;
     unsigned char level = this->game_obj->master_obj->unit_level;
 
-    if (level == 3 || level == 4 || level == 5 || level == 6 ||
-        level == 7 || level == 9) {
+    if (level == 3 || level == 9 || level == 4 || level == 5 ||
+        level == 6 || level == 7) {
         if (level == 3 || level == 4) {
             this->game_obj->get_weapon(cur_val, orig_val);
             this->draw_item(0, 7, ValueTypeBonus, orig_val, cur_val);
@@ -622,6 +625,8 @@ resource_done:
             }
         }
     }
+    goto finish;
+
 invalid_item:
     this->draw_finish();
     return;
