@@ -18,7 +18,7 @@ RGE_RMM_Controller::RGE_RMM_Controller(RGE_Map* map, RGE_Game_World* world,
     RGE_Land_Info land_info;
     this->add_land_module(land_info, type, number_of_players);
     this->add_terrain_module(terrain_info, land_info, type);
-    this->add_object_module(world, &land_info);
+    this->add_object_module(world, land_info);
 }
 
 uchar RGE_RMM_Controller::generate()
@@ -172,7 +172,7 @@ long RGE_RMM_Controller::count_map_tiles(uchar ignored)
 }
 
 void RGE_RMM_Controller::add_object_module(RGE_Game_World* world,
-    RGE_Land_Info* lands)
+    RGE_Land_Info& lands)
 {
     RGE_Object_Info info;
     long i;
@@ -209,9 +209,9 @@ void RGE_RMM_Controller::add_object_module(RGE_Game_World* world,
     predator.object_number_per_group = 1; predator.object_number_varience = 5;
     predator.number_of_groups = 2; predator.group_area = 1; predator.player_id = 3;
     predator.land_id = 0; predator.land_inner_radius = 0; predator.land_outer_radius = 9; predator.object_exclusion_zone = 15;
-    for (i = 0; i < lands->land_num; ++i) {
-        info.lands[i].x = lands->land[i].x;
-        info.lands[i].y = lands->land[i].y;
+    for (i = 0; i < lands.land_num; ++i) {
+        info.lands[i].x = lands.land[i].x;
+        info.lands[i].y = lands.land[i].y;
         info.lands[i].id = 0;
         info.lands[i].player_id = i + 1;
     }

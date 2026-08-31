@@ -21,7 +21,7 @@ protected:
         long map_type, long number_of_players);
     void add_terrain_module(RGE_Terrain_Info& terrain_info,
         RGE_Land_Info& land_info, long map_type);
-    void add_object_module(RGE_Game_World* world, RGE_Land_Info* land_info);
+    void add_object_module(RGE_Game_World* world, RGE_Land_Info& land_info);
     long count_map_tiles(uchar ignored);
 };
 
