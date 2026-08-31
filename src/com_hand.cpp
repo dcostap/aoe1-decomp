@@ -1930,15 +1930,17 @@ int TCommunications_Handler::TEST()
 void TCommunications_Handler::SetSelfPlayer()
 {
     unsigned int i = 1;
-    unsigned long* dco = this->PlayerOptions.dcoID + 1;
-    for (; i <= this->MaxGamePlayers; ++i, ++dco) {
-        L->Log("Check dcoID %d to Me %d ?", *dco, local_player_dpid);
+    if (i <= this->MaxGamePlayers) {
+        unsigned long* dco = this->PlayerOptions.dcoID + 1;
+        for (; i <= this->MaxGamePlayers; ++i, ++dco) {
+            L->Log("Check dcoID %d to Me %d ?", *dco, local_player_dpid);
 
-        if (*dco == local_player_dpid) {
-            L->Log("Match! - ID set.");
-            this->Me = i;
-            this->NotifyWindowParam(static_cast<COMMMESSAGES>(0x17B8), i);
-            return;
+            if (*dco == local_player_dpid) {
+                L->Log("Match! - ID set.");
+                this->Me = i;
+                this->NotifyWindowParam(static_cast<COMMMESSAGES>(0x17B8), i);
+                return;
+            }
         }
     }
 
