@@ -535,65 +535,25 @@ TPanel::TPanel(char* name)
     }
 }
 
-TPanel::TPanel(void) {
-    previous_panel = 0;
-    previous_modal_panel = 0;
-    pnl_x = 0;
-    pnl_y = 0;
-    pnl_wid = 0;
-    pnl_hgt = 0;
-    panel_name = 0;
-    render_area = 0;
-    position_mode = 0;
-    need_redraw = 2;
-    curr_child = 0;
-    parent_panel = 0;
-    left_panel = 0;
-    top_panel = 0;
-    right_panel = 0;
-    bottom_panel = 0;
-    node = 0;
-    first_child_node = 0;
-    last_child_node = 0;
-    tab_prev_panel = 0;
-    tab_next_panel = 0;
-    mouse_captured = 0;
-    active = 1;
-    visible = 0;
-    tab_stop = 0;
-    have_focus = 0;
-    have_focus = 0;
-    overlapping_children = 1;
-    handle_mouse_input = 1;
-    clip_rgn = 0;
-    left_border = 0;
-    top_border = 0;
-    right_border = 0;
-    bottom_border = 0;
-    min_wid = 0;
-    max_wid = 0;
-    min_hgt = 0;
-    max_hgt = 0;
-    mouse_move_tolerance = 0;
-    mouse_down_x = 0;
-    mouse_down_y = 0;
-    mouse_down_ctrl = 0;
-    mouse_down_shift = 0;
-    mouse_down_time = 0;
-    error_code = 0;
-    z_order = 0;
-    display_changed_count = 0;
-    mouse_action = 0;
-    mouse_down_button = 0;
-    panel_type = 0;
-    color = 0;
-    fill_in_background = 0;
-    draw_rect2_flag = 0;
+TPanel::TPanel(void)
+    : previous_panel(0), previous_modal_panel(0), pnl_x(0), pnl_y(0),
+      pnl_wid(0), pnl_hgt(0), panel_name(0), render_area(0), position_mode(0),
+      need_redraw(2), curr_child(0), parent_panel(0), left_panel(0),
+      top_panel(0), right_panel(0), bottom_panel(0), node(0),
+      first_child_node(0), last_child_node(0), tab_prev_panel(0),
+      tab_next_panel(0), mouse_captured(0), active(1), visible(0), tab_stop(0),
+      have_focus(0), overlapping_children(1), handle_mouse_input(1),
+      clip_rgn(0), left_border(0), top_border(0), right_border(0),
+      bottom_border(0), min_wid(0), max_wid(0), min_hgt(0), max_hgt(0),
+      mouse_hold_interval(250), mouse_move_tolerance(0), mouse_down_x(0),
+      mouse_down_y(0), mouse_down_ctrl(0), mouse_down_shift(0),
+      mouse_down_time(0), error_code(0), z_order(0), display_changed_count(0),
+      mouse_action(0), mouse_down_button(0), panel_type(0), color(0),
+      fill_in_background(0), draw_rect2_flag(0) {
     render_rect.left = 0;
     render_rect.top = 0;
     render_rect.right = 0;
     render_rect.bottom = 0;
-    mouse_hold_interval = 250;
     help_string_id = -1;
     help_page_id = -1;
 }
