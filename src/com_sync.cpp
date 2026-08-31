@@ -393,6 +393,8 @@ void RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int value) {
 
 int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     unsigned int playerNo, unsigned long commTurn) {
+    CHECKSUMARRAY* record = &this->Check[1];
+    unsigned int searchIndex = 1;
     unsigned long myWorldTime = 0;
     int differentCount = 0;
     int sameCount = 0;
@@ -405,21 +407,27 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     unsigned long myRandom = 0;
     int humanPlayerCount = 0;
 
-    unsigned int recordIndex = 1;
-    for (; recordIndex <= 0x36; ++recordIndex) {
-        CHECKSUMARRAY& entry = this->Check[recordIndex];
-        if (entry.PlayerNo == playerNo && entry.WTurn == commTurn) {
-            myChecksumNew = entry.cs2;
-            myPositionChecksum = entry.cs3;
-            myWorldTime = entry.WTime;
-            myActionChecksum = entry.cs4;
-            myObstructionChecksum = entry.cs5;
-            myUnifiedVisible = entry.cs1;
-            myRandom = entry.Random;
-            foundMyValues = 1;
-            break;
+    while (searchIndex <= 0x36) {
+        if (record->PlayerNo == playerNo && record->WTurn == commTurn) {
+            goto found_record;
         }
+        ++searchIndex;
+        ++record;
     }
+
+    goto finished_search;
+
+found_record:
+    foundMyValues = 1;
+    myChecksumNew = this->Check[searchIndex].cs2;
+    myPositionChecksum = this->Check[searchIndex].cs3;
+    myWorldTime = this->Check[searchIndex].WTime;
+    myActionChecksum = this->Check[searchIndex].cs4;
+    myObstructionChecksum = this->Check[searchIndex].cs5;
+    myUnifiedVisible = this->Check[searchIndex].cs1;
+    myRandom = this->Check[searchIndex].Random;
+
+finished_search:
 
     if (!foundMyValues) {
         L->Log("OUTOFSYNC: DIDN'T FIND MY VALUES");
@@ -430,31 +438,32 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
            myWorldTime, myUnifiedVisible, myChecksumNew,
            myPositionChecksum, myActionChecksum, myObstructionChecksum);
 
-    recordIndex = 1;
+    record = &this->Check[1];
+    unsigned int recordIndex = 1;
     do {
-        CHECKSUMARRAY& entry = this->Check[recordIndex];
-        if (entry.PlayerNo != playerNo && commTurn == entry.WTurn) {
-            if (myWorldTime == entry.WTime &&
-                myUnifiedVisible == entry.cs1 &&
-                myChecksumNew == entry.cs2 &&
-                myPositionChecksum == entry.cs3 &&
-                myActionChecksum == entry.cs4 &&
-                myObstructionChecksum == entry.cs5 &&
-                myRandom == entry.Random) {
+        if (playerNo != record->PlayerNo && commTurn == record->WTurn) {
+            if (myWorldTime == record->WTime &&
+                myUnifiedVisible == record->cs1 &&
+                myChecksumNew == record->cs2 &&
+                myPositionChecksum == record->cs3 &&
+                myActionChecksum == record->cs4 &&
+                myObstructionChecksum == record->cs5 &&
+                myRandom == record->Random) {
                 ++sameCount;
                 L->Log("OUTOFSYNC: %d same: %d %d %d %d %d %d",
-                       recordIndex, myWorldTime, myUnifiedVisible,
-                       entry.WTurn, myPositionChecksum,
-                       myActionChecksum, myObstructionChecksum);
+                       recordIndex, myWorldTime, myUnifiedVisible, record->WTurn,
+                       myPositionChecksum, myActionChecksum,
+                       myObstructionChecksum);
             } else {
                 ++differentCount;
                 L->Log("OUTOFSYNC: %d diff: %d %d %d %d %d %d",
-                       recordIndex, myWorldTime, myUnifiedVisible,
-                       entry.WTurn, myPositionChecksum,
-                       myActionChecksum, myObstructionChecksum);
+                       recordIndex, myWorldTime, myUnifiedVisible, record->WTurn,
+                       myPositionChecksum, myActionChecksum,
+                       myObstructionChecksum);
             }
         }
         ++recordIndex;
+        ++record;
     } while (recordIndex <= 0x36);
 
     int playerIndex = 1;
