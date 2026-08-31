@@ -154,9 +154,8 @@ int MainDecisionAIModule::numberObjectsWithActionAndTargetType(
         RGE_Static_Object* object =
             this->player->world->object(this->objects[i]);
         if (object != 0) {
-            UnitAIModule* unit_ai = object->unitAI();
-            if (unit_ai != 0) {
-                unit_ai = object->unitAI();
+            if (object->unitAI() != 0) {
+                UnitAIModule* unit_ai = object->unitAI();
                 if (unit_ai->currentAction() == action) {
                     unit_ai = object->unitAI();
                     if (unit_ai->currentTargetType() == target_type) {
