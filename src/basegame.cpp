@@ -2977,7 +2977,7 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPA
         goto panel_return_after_exit_menu;
 
     case 0x112:
-        if (wparam == 0xF100 && self->prog_info->skip_startup != 0 &&
+        if (wparam == 0xF100 && self->prog_info->full_screen != 0 &&
             IsIconic(self->prog_window) == 0)
             return 0;
         goto default_window_proc;
