@@ -106,11 +106,29 @@ class DocumentationTests(unittest.TestCase):
         text = " ".join(text.split())
         for required in (
             "Each slot owns one reusable worktree",
-            "approximately 30 translation units",
+            "30 to 40 translation units",
             "Enable its TODO feature with `todo: true`",
-            "Perform the second verification",
+            "perform the second verification",
             "NEEDS_ROOT",
             "Refill the slot when eligible work remains",
+        ):
+            self.assertIn(required, text)
+
+    def test_root_orchestrator_runs_a_continuous_pipeline(self) -> None:
+        text = (REPO_ROOT / "agent_roles" / "root_orchestrator.md").read_text(
+            encoding="utf-8"
+        )
+        text = " ".join(text.split())
+        for required in (
+            "Run orchestration as a continuous pipeline",
+            "Continue useful root work whenever a safe ready item exists",
+            "Do not wait for other orchestrators to finish",
+            "A free translation unit has useful scratch work",
+            "Maintain a pool of free translation units",
+            "proactively launch an orchestrator",
+            "At the next safe boundary, perform the second verification",
+            "Do not let the integration backlog grow without limit",
+            "Do not poll or start a duplicate audit",
         ):
             self.assertIn(required, text)
 

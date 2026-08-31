@@ -76,22 +76,47 @@ Each orchestrator must stay at or below its assigned limit.
 Repository-tool job counts are separate from both capacity values.
 Do not multiply concurrency at each hierarchy level.
 
+## Continuous pipeline
+
+Run orchestration as a continuous pipeline. Do not divide independent work into
+cycles that require all orchestrators to finish together.
+
+Continue useful root work whenever a safe ready item exists. Root work includes
+shared repairs, completed-result integration, conflict resolution, slot reuse,
+and repository validation.
+
+Do not wait for other orchestrators to finish before reviewing one completed
+result. Do not wait for workers while independent root work is ready.
+
+Preserve atomic operations. Finish a compiler-gate repair, coherent file edit,
+or required validation step before you switch tasks.
+
 ## Translation-unit sets
 
 Assign each orchestrator a disjoint set of natural translation units.
 A shared repair can affect translation units outside that set. Disjoint sets
 control normal function-body ownership, not header dependency closure.
-A normal set contains approximately 30 translation units.
+A normal set contains 30 to 40 translation units when review cost permits.
 This is a planning target, not a fixed limit.
 Adjust the set for function count, complexity, blockers, and review cost.
 
-A translation unit is ineligible when it belongs to:
+A free translation unit has useful scratch work and no current owner.
+It is not part of:
 
 - an active orchestrator;
-- a completed result awaiting root review; or
-- an unresolved root integration task.
+- a completed result awaiting root review;
+- an unresolved root integration task;
+- a user-owned experiment; or
+- a known root task that requires normal source ownership.
 
 It becomes eligible again after integration, rejection, or a specific follow-up decision.
+
+Maintain a pool of free translation units. When the pool supports a useful
+assignment and a configured slot is available, proactively launch an
+orchestrator. Do not wait for a user reminder.
+
+Shared dependency closure alone does not permanently reserve a translation unit.
+Record known overlap. Rebuild stale groups after the final shared inputs settle.
 
 ## Orchestrator assignment
 
@@ -159,13 +184,21 @@ When an orchestrator completes:
 2. Confirm that all descendant matching workers stopped.
 3. Add one root integration TODO item.
 4. Record its ID, worktree, base, head, translation units, and outcome.
-5. Perform the second verification.
-6. Merge, revise, reject, or return the result.
-7. Leave the worktree clean.
-8. Refill the slot when eligible work remains.
+5. Return to the current atomic root step when it is not complete.
+6. At the next safe boundary, perform the second verification.
+7. Merge, revise, reject, or return the result.
+8. Leave the worktree clean.
+9. Refill the slot when eligible work remains.
 
 Do not assign new work to a dirty or unresolved slot.
 Refill a clean slot without waiting for unrelated integration work.
+Do not wait for other orchestrators before you integrate a ready result.
+
+A completed result that blocks slot reuse has high priority. Do not let the
+integration backlog grow without limit.
+
+When a root audit runs in the background, continue another independent ready
+item. Do not poll or start a duplicate audit.
 
 ## Orchestrator help and blockers
 
