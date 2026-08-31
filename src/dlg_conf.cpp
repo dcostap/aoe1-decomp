@@ -447,10 +447,10 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 }
                 int mouse_state = this->mouseButton[0]->get_state();
                 RGE_Base_Game* game = rge_base_game;
-                if (mouse_state) {
-                    game->prog_info->interface_style = 2;
-                } else {
+                if (mouse_state == 0) {
                     game->prog_info->interface_style = event;
+                } else {
+                    game->prog_info->interface_style = 2;
                 }
                 static_cast<TRIBE_Game*>(rge_base_game)->set_interface_messages();
 
