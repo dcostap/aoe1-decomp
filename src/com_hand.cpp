@@ -2735,8 +2735,8 @@ void TCommunications_Handler::ClearRXandTX()
 
 void TCommunications_Handler::ClearRXForPlayer(unsigned int player) {
     for (unsigned int i = 0; i <= 501; ++i) {
-        HOLDER* entry = &this->OnHold[i];
-        if (entry->dcoFromID == this->PlayerOptions.dcoID[player]) {
+        if (this->OnHold[i].dcoFromID == this->PlayerOptions.dcoID[player]) {
+            HOLDER* entry = &this->OnHold[i];
             if (entry->HoldMsg != 0) {
                 delete[] entry->HoldMsg;
             }
