@@ -30,7 +30,7 @@
     "0045D680": {"status": "matching", "symbol": "?setActionRange@RGE_Moving_Object@@QAEXM@Z"},
     "0045D690": {"status": "matching", "symbol": "?setTargetID@RGE_Moving_Object@@QAEXH@Z"},
     "0045D6A0": {"status": "matching", "symbol": "?setTargetRadius@RGE_Moving_Object@@QAEXMM@Z"},
-    "0045D6C0": {"status": "scratch", "symbol": "?findPath@RGE_Moving_Object@@QAE?AW4PathResult@1@XZ"},
+    "0045D6C0": {"status": "matching", "symbol": "?findPath@RGE_Moving_Object@@QAE?AW4PathResult@1@XZ"},
     "0045DB90": {"status": "scratch", "symbol": "?doMove@RGE_Moving_Object@@QAEHXZ"},
     "0045E970": {"status": "scratch", "symbol": "?doTrivialMove@RGE_Moving_Object@@QAEHMM@Z"},
     "0045F7F0": {"status": "matching", "symbol": "?passableTile@RGE_Moving_Object@@UAEHMMH@Z"},

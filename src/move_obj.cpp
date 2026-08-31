@@ -598,15 +598,39 @@ void RGE_Moving_Object::setTargetRadius(float a, float b) {
     this->targetRadiusY = b;
 }
 
+inline void RGE_Moving_Object::setStart(float x, float y, float z)
+{
+    this->startValue.x = x;
+    this->startValue.y = y;
+    this->startValue.z = z;
+}
+
+inline void RGE_Moving_Object::displayPath(int object_id)
+{
+    if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
+        this->pathValue.initToStart();
+        int i = 0;
+        int n = this->pathValue.numberOfWaypoints();
+        while (i < n) {
+            this->owner->master_objects[object_id]->make_new_obj(
+                this->owner, this->pathValue.currentWaypoint()->x,
+                this->pathValue.currentWaypoint()->y, 1.0f);
+            ++i;
+            this->pathValue.moveToNextWaypoint();
+            n = this->pathValue.numberOfWaypoints();
+        }
+        this->pathValue.initToStart();
+        this->pathValue.moveToNextWaypoint();
+    }
+}
+
 
 
 RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
 {
     if (this->master_obj->radius_z <= 0.0f) {
         this->setWaitingToMove(0);
-        this->startValue.x = this->world_x;
-        this->startValue.y = this->world_y;
-        this->startValue.z = this->world_z;
+        this->setStart(this->world_x, this->world_y, this->world_z);
         this->pathingGroupMembers.zeroNumber();
         this->pathValue.setTimeStamp(this->owner->world->world_time);
         this->pathValue.killPath();
@@ -639,9 +663,7 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
     } else {
         this->continueCounter = this->numberUserDefinedWaypointsValue + 0x0f;
     }
-    this->startValue.x = this->world_x;
-    this->startValue.y = this->world_y;
-    this->startValue.z = this->world_z;
+    this->setStart(this->world_x, this->world_y, this->world_z);
     this->closestDistanceToWaypoint = 100000.0f;
     pathSystem.incrementInitialPaths();
 
@@ -696,22 +718,7 @@ RGE_Moving_Object::PathResult RGE_Moving_Object::findPath()
     }
 
     this->pathValue.setTimeStamp(this->owner->world->world_time);
-    int display_object_id = displayPathObjectID;
-    if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
-        this->pathValue.initToStart();
-        int i = 0;
-        int n = this->pathValue.numberOfWaypoints();
-        while (i < n) {
-            this->owner->master_objects[display_object_id]->make_new_obj(
-                this->owner, this->pathValue.currentWaypoint()->x,
-                this->pathValue.currentWaypoint()->y, 1.0f);
-            ++i;
-            this->pathValue.moveToNextWaypoint();
-            n = this->pathValue.numberOfWaypoints();
-        }
-        this->pathValue.initToStart();
-        this->pathValue.moveToNextWaypoint();
-    }
+    this->displayPath(displayPathObjectID);
     this->pathValue.initToStart();
     this->pathValue.moveToNextWaypoint();
     return PathFound;
