@@ -223,29 +223,28 @@ RGE_Static_Object* TRIBE_Player::make_scenario_obj(float x, float y, float z, sh
 
 void TRIBE_Player::save(int file)
 {
-    int save_file = file;
     int present;
     color_log(0x16, 0x16, 2);
-    RGE_Player::save(save_file);
+    RGE_Player::save(file);
     color_log(0x16, 0x24, 2);
-    rge_write(save_file, &this->type, 1);
-    rge_write(save_file, &this->update_count, 4);
-    rge_write(save_file, &this->updateCountNeedHelp, 4);
-    rge_write(save_file, &this->fog_update, 4);
-    rge_write(save_file, &this->update_time, 4);
-    this->tech_tree->save(save_file);
-    rge_write(save_file, &this->update_history_count, 4);
-    this->history->save(save_file);
-    rge_write(save_file, &this->ruin_held_time, 4);
-    rge_write(save_file, &this->artifact_held_time, 4);
+    rge_write(file, &this->type, 1);
+    rge_write(file, &this->update_count, 4);
+    rge_write(file, &this->updateCountNeedHelp, 4);
+    rge_write(file, &this->fog_update, 4);
+    rge_write(file, &this->update_time, 4);
+    this->tech_tree->save(file);
+    rge_write(file, &this->update_history_count, 4);
+    this->history->save(file);
+    rge_write(file, &this->ruin_held_time, 4);
+    rge_write(file, &this->artifact_held_time, 4);
     color_log(0x16, 0x4C, 2);
     if (this->type == 1 && this->playerAI != 0 && comm->IsHost() == 1) {
         present = 1;
-        rge_write(save_file, &present, 4);
-        this->playerAI->save(save_file);
+        rge_write(file, &present, 4);
+        this->playerAI->save(file);
     } else {
         present = 0;
-        rge_write(save_file, &present, 4);
+        rge_write(file, &present, 4);
     }
     color_log(0x16, 0x5F, 2);
 }
@@ -540,7 +539,7 @@ RGE_Static_Object* TRIBE_Player::find_obj(short id, RGE_Static_Object* after)
             if (object != 0) {
                 if (found) {
                     if (object->master_obj->id == id && object->object_state <= 2)
-                        return object;
+                        return node->node;
                 } else if (object == after) {
                     found = 1;
                 }
@@ -970,12 +969,12 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* out, float facto
 {
     float population = this->attributes[3];
     if (out != 0) *out = -1;
-    RGE_Master_Static_Object* object = this->master_objects[obj_id];
-    TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
-    if (object->master_type < 0x46) return 0;
-    unsigned char population_available =
+    bool population_available =
         this->attributes[29] >= 1.0f;
     if (!population_available) population = 0.0f;
+    RGE_Master_Static_Object* object = this->master_objects[obj_id];
+    TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
+    if (object == 0 || object->master_type < 0x46) return 0;
     for (int i = 0; i < 3; ++i) {
         int type = combat->build_inventory[i].type;
         if (type < 0) continue;
