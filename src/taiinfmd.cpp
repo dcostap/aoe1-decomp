@@ -2214,17 +2214,17 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                         &placementResult,
                                         1, 1, 1, 1, 1, 1) == 0) {
                                     int score = 0;
-                                    int blocked = 0;
+                                    bool blocked = false;
                                     int row = minClear.x;
 
-                                    while (blocked == 0 && row <= maxClear.x) {
+                                    while (!blocked && row <= maxClear.x) {
                                         int column = minClear.y;
-                                        while (blocked == 0 &&
+                                        while (!blocked &&
                                                column <= maxClear.y) {
                                             int value = iMap.lookupValue(
                                                 row, column);
                                             if (value == 0xff)
-                                                blocked = 1;
+                                                blocked = true;
                                             else
                                                 score += value;
                                             column++;
@@ -2232,7 +2232,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                         row++;
                                     }
 
-                                    if (blocked == 0) {
+                                    if (!blocked) {
                                         int connectionsBefore =
                                             iMap.connectionCountValue;
                                         if (placement == 4 ||
