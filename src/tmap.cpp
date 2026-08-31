@@ -17,8 +17,7 @@ TRIBE_Map::TRIBE_Map(int p1, RGE_Sound** p2, unsigned char load)
       old_cliff_x(-1),
       old_cliff_y(-1),
       safe_cliff_x(-1),
-      safe_cliff_y(-1),
-      old_cliff_direction(-1)
+      safe_cliff_y(-1)
 {
     if (load != 0) {
         this->data_load_random_map(p1);
@@ -156,7 +155,7 @@ void TRIBE_Map::check_tile_for_forest_change(short x, short y,
         for (RGE_Object_Node* node = tile->objects.list; node != 0;
              node = node->next) {
             RGE_Static_Object* object = node->node;
-            if (object->master_obj->id == 0x0F && object->object_state < 8)
+            if (object->master_obj->object_group == 0x0F && object->object_state < 8)
                 object_found = 1;
         }
 
@@ -740,8 +739,8 @@ void TRIBE_Map::delete_cliff(long param_1, long param_2)
             do {
                 RGE_Game_World* world = this->game_world;
                 world->players[world->curr_player]->diam_tile_list.add_node(
-                    param_2 + (long)cliff->world_y,
-                    inner + (long)cliff->world_z);
+                    param_2 + (long)cliff->world_x,
+                    inner + (long)cliff->world_y);
                 inner++;
             } while (inner < 2);
             param_2++;
