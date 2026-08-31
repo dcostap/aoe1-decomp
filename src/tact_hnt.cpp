@@ -297,16 +297,18 @@ unsigned char TRIBE_Action_Hunt::update()
             goto computer_fallback;
         case 3:
             if (this->obj->owner->computerPlayer() == 1) { this->set_state(13); return 0; }
-            this->set_state(3); return 0;
+            goto state_default;
         }
         break;
+state_default:
+        this->set_state(3); return 0;
     case 4:
         switch (this->sub_actions->update()) {
         case 3:
             if (this->obj->owner->computerPlayer() != 0) {
                 this->set_state(13); return 0;
             }
-            this->set_state(3); return 0;
+            goto state_default;
         case 1:
         case 2:
             this->set_state(6); return 0;
@@ -326,8 +328,6 @@ unsigned char TRIBE_Action_Hunt::update()
         case 2:
         case 5:
             if (this->target_obj != 0) { this->set_state(4); return 0; }
-            this->set_state(8);
-            return 0;
         case 3:
             this->set_state(3); return 0;
         }
@@ -340,32 +340,32 @@ unsigned char TRIBE_Action_Hunt::update()
             }
             this->set_state(7); return 0;
         }
-        this->set_state(3); return 0;
+        goto state_default;
     case 7: {
-        if (this->target_obj == 0) {
-            if (this->obj->attribute_amount_held <= DAT_00575150) {
-                this->set_state(3);
-                return 0;
-            }
+        RGE_Static_Object* holder = this->target_obj;
+        if (holder == 0) {
+            holder = (RGE_Static_Object*)this->obj;
+            if (holder->attribute_amount_held <= DAT_00575150)
+                goto state_default;
             this->set_state(8);
             return 0;
         }
         if (rge_base_game->quick_build != 0)
-            give_amount = this->target_obj->attribute_amount_held;
+            give_amount = holder->attribute_amount_held;
         else {
             give_amount = this->task->work_val1 *
                 static_cast<RGE_Master_Action_Object*>(this->obj->master_obj)->work_rate *
                 this->obj->owner->world->world_time_delta_seconds;
         }
-        if (this->target_obj->attribute_amount_held < give_amount)
-            give_amount = this->target_obj->attribute_amount_held;
+        if (holder->attribute_amount_held < give_amount)
+            give_amount = holder->attribute_amount_held;
         short attr = this->task->attribute_type2;
         if (attr == -1) modifier = 1.0f;
         else modifier = this->obj->owner->attributes[attr];
         max_hold = (float)static_cast<RGE_Master_Static_Object*>(this->obj->master_obj)->attribute_max_amount * modifier - this->obj->attribute_amount_held;
         if (max_hold < modifier * give_amount)
             give_amount = give_amount - (modifier * give_amount - max_hold) / modifier;
-        this->target_obj->set_attribute_amount(-give_amount, 1, 1);
+        holder->set_attribute_amount(-give_amount, 1, 1);
         this->obj->set_attribute_amount(give_amount, 1, 0);
         if (this->obj->attribute_amount_held <= give_amount || this->obj->attribute_amount_held <= DAT_00575150)
             this->set_state(8);
