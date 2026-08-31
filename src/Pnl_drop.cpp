@@ -329,8 +329,6 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
             }
             if (this->parent_panel) {
                 this->parent_panel->action(this, 2, 0, 0);
-                this->mode = mode;
-                return;
             }
         }
     } else if (mode == ModeList) {
