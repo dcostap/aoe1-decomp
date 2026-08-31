@@ -38,7 +38,7 @@
     "00513A80": {"status": "matching", "symbol": "?command_make_unload@TRIBE_Player@@QAEEMM@Z"},
     "00513AF0": {"status": "scratch", "symbol": "?check_obj_cost@TRIBE_Player@@QAEEFPAFMH@Z"},
     "00513C50": {"status": "matching", "symbol": "?pay_obj_cost@TRIBE_Player@@QAEEFMH@Z"},
-    "00513D00": {"status": "scratch", "symbol": "?reimburse_obj_cost@TRIBE_Player@@QAEXF@Z"},
+    "00513D00": {"status": "matching", "symbol": "?reimburse_obj_cost@TRIBE_Player@@QAEXF@Z"},
     "00513D60": {"status": "matching", "symbol": "?check_tech_cost@TRIBE_Player@@QAEEFPAF@Z"},
     "00513D80": {"status": "matching", "symbol": "?pay_tech_cost@TRIBE_Player@@QAEEF@Z"},
     "00513DA0": {"status": "matching", "symbol": "?tech_abling@TRIBE_Player@@QAEXJE@Z"},

@@ -123,7 +123,7 @@
     "0042DF10": {"status": "matching", "symbol": "?SetSessionGUID@TCommunications_Handler@@QAEXU_GUID@@@Z"},
     "0042DF40": {"status": "matching", "symbol": "?UpdatePlayers@TCommunications_Handler@@QAEXXZ"},
     "0042DF90": {"status": "scratch", "symbol": "?UpdatePlayer@TCommunications_Handler@@QAEXIH@Z"},
-    "0042E380": {"status": "scratch", "symbol": "?SetMyReadiness@TCommunications_Handler@@QAEHHKKKKKKK@Z"},
+    "0042E380": {"status": "matching", "symbol": "?SetMyReadiness@TCommunications_Handler@@QAEHHKKKKKKK@Z"},
     "0042E500": {"status": "matching", "symbol": "?GetClientReadiness@TCommunications_Handler@@QAEHIPAHPAK111111@Z"},
     "0042E580": {"status": "matching", "symbol": "?IsPlayerReady@TCommunications_Handler@@QAEHI@Z"},
     "0042E5B0": {"status": "matching", "symbol": "?ComputerPlayerGameStart@TCommunications_Handler@@QAEHXZ"},
