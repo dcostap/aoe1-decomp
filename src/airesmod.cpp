@@ -10,11 +10,9 @@ void operator delete(void* ptr);
 ResourceAIModule::ResourceAIModule(void* owner, int player, int resourceCount,
                                    int initialValue, int minimumValue,
                                    int maximumValue)
-    : AIModule("Resource AI", 0x3EF, player, owner)
+    : AIModule("Resource AI", 0x3EF, player, owner), md(0),
+      numberResourcesValue(resourceCount)
 {
-    this->md = 0;
-    this->numberResourcesValue = resourceCount;
-
     int bytes = resourceCount * 4;
     this->resourceValue = (int*)operator new(bytes);
     this->minValue = (int*)operator new(this->numberResourcesValue * 4);
