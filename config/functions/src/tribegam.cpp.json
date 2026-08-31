@@ -55,7 +55,7 @@
     "00526170": {"status": "scratch", "symbol": "?load_game@TRIBE_Game@@QAEHPAD@Z"},
     "00526DC0": {"status": "matching", "symbol": "?do_game_over@TRIBE_Game@@QAEXXZ"},
     "00526E60": {"status": "scratch", "symbol": "?create_game@TRIBE_Game@@IAEHH@Z"},
-    "00527830": {"status": "scratch", "symbol": "?create_game_screen@TRIBE_Game@@QAEHXZ"},
+    "00527830": {"status": "matching", "symbol": "?create_game_screen@TRIBE_Game@@QAEHXZ"},
     "00527A70": {"status": "scratch", "symbol": "?processCheatCode@TRIBE_Game@@UAEHHPAD@Z"},
     "00528670": {"status": "matching", "symbol": "?let_game_begin@TRIBE_Game@@IAEXXZ"},
     "00528DE0": {"status": "matching", "symbol": "?start_scenario_editor@TRIBE_Game@@QAEHPADH@Z"},

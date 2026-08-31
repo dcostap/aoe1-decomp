@@ -46,7 +46,7 @@
     "00464680": {"status": "matching", "symbol": "?restore_system_colors@TPanelSystem@@QAEXXZ"},
     "004646F0": {"status": "matching", "symbol": "?set_restore@TPanelSystem@@QAEXXZ"},
     "00464720": {"status": "matching", "symbol": "??0TPanel@@QAE@PAD@Z"},
-    "004648B0": {"status": "scratch", "symbol": "??0TPanel@@QAE@XZ"},
+    "004648B0": {"status": "matching", "symbol": "??0TPanel@@QAE@XZ"},
     "004649E0": {"status": "matching", "symbol": "??1TPanel@@UAE@XZ"},
     "00464A80": {"status": "matching", "symbol": "?setup@TPanel@@UAEJPAVTDrawArea@@PAV1@JJJJE@Z"},
     "00464B50": {"status": "matching", "symbol": "?add_panel_node@TPanel@@QAEXPAUPanelNode@@0H@Z"},

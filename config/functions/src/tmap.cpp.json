@@ -33,7 +33,7 @@
     "00510C90": {"status": "matching", "symbol": "?water@TRIBE_Map@@QAEEE@Z"},
     "00510CB0": {"status": "matching", "symbol": "?clean_borders@TRIBE_Map@@QAEXJJJJE@Z"},
     "00511000": {"status": "matching", "symbol": "?do_terrain_brush_check@TRIBE_Map@@QAEEJJ@Z"},
-    "005110E0": {"status": "scratch", "symbol": "?tribe_clean_elevation@TRIBE_Map@@QAEXJJJJ@Z"},
+    "005110E0": {"status": "matching", "symbol": "?tribe_clean_elevation@TRIBE_Map@@QAEXJJJJ@Z"},
     "005111A0": {"status": "scratch", "symbol": "?tribe_clean_terrain@TRIBE_Map@@QAEXJJJJEE@Z"}
   }
 }
