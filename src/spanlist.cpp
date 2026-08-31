@@ -1141,8 +1141,7 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number,
         if (fd == -1) break;
         number++;
         close(fd);
-        if (tries <= 1000) continue;
-        return;
+        if (tries > 1000) return;
     }
 
     unsigned char* line = (unsigned char*)malloc(bmWide);
