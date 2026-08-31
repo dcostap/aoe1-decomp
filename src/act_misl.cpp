@@ -243,21 +243,23 @@ unsigned char RGE_Action_Missile::update()
         hit_ground = ((RGE_Missile_Object*)this->obj)->missile_move();
     }
 
-    if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type == 3) {
-        RGE_Combat_Object* target =
-            (RGE_Combat_Object*)this->target_obj2;
-        if (target != 0) {
-            target->do_attack(this->target_obj, target,
-                              this->obj->world_x, this->obj->world_y,
-                              this->obj->world_z);
-        } else {
-            ((RGE_Missile_Object*)this->obj)->do_attack(
-                this->target_obj, (RGE_Combat_Object*)this->obj,
-                this->obj->world_x, this->obj->world_y,
-                this->obj->world_z);
+    if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type > 2) {
+        if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type == 3) {
+            RGE_Combat_Object* target =
+                (RGE_Combat_Object*)this->target_obj2;
+            if (target != 0) {
+                target->do_attack(this->target_obj, target,
+                                  this->obj->world_x, this->obj->world_y,
+                                  this->obj->world_z);
+            } else {
+                ((RGE_Missile_Object*)this->obj)->do_attack(
+                    this->target_obj, (RGE_Combat_Object*)this->obj,
+                    this->obj->world_x, this->obj->world_y,
+                    this->obj->world_z);
+            }
+            this->set_state(1);
         }
-        this->set_state(1);
-    } else if (((RGE_Master_Missile_Object*)this->obj->master_obj)->missile_type <= 2) {
+    } else {
         RGE_Check_List* collision_list =
             ((RGE_Missile_Object*)this->obj)->make_object_collision_list(time);
         if (collision_list != 0) {
