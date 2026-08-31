@@ -413,7 +413,9 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
             myChecksumNew = entry.cs2;
             myPositionChecksum = entry.cs3;
             myWorldTime = entry.WTime;
-            myActionChecksum = entry.cs4;
+            // The original rereads the checksum-four value through the
+            // player field two records past the selected record.
+            myActionChecksum = this->Check[searchIndex + 2].PlayerNo;
             myObstructionChecksum = entry.cs5;
             myUnifiedVisible = entry.cs1;
             myRandom = entry.Random;
