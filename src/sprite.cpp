@@ -715,7 +715,6 @@ unsigned char RGE_Sprite::shadow_draw(long param_1, long param_2,
 {
     RGE_Sprite* sprite;
     long facet = param_1;
-    int entry_offset;
     if (param_1 >= this->facet_num) {
         facet = 0;
     }
@@ -729,24 +728,22 @@ unsigned char RGE_Sprite::shadow_draw(long param_1, long param_2,
     } else {
         param_1 = 0;
         if (0 < this->draw_list_num) {
-            entry_offset = 0;
             do {
-                sprite = *(RGE_Sprite**)((char*)this->draw_list +
-                                         entry_offset + 4);
-                RGE_Picture_List* entry =
-                    (RGE_Picture_List*)((char*)this->draw_list + entry_offset);
+                sprite = this->draw_list[param_1].sprite;
                 if ((sprite->draw_level != param_7) &&
                     (sprite->draw_level < 0x14) &&
-                    ((entry->facet < 0) || (entry->facet == facet))) {
+                    ((this->draw_list[param_1].facet < 0) ||
+                     (this->draw_list[param_1].facet == facet))) {
                     sprite->do_draw((sprite->facet_num * facet) /
                                         (int)this->facet_num,
                                     param_2,
-                                    (long)entry->offset_x + param_3,
-                                    (long)entry->offset_y + param_4,
+                                    (long)this->draw_list[param_1].offset_x +
+                                        param_3,
+                                    (long)this->draw_list[param_1].offset_y +
+                                        param_4,
                                     param_5, param_6, 0);
                 }
                 param_1++;
-                entry_offset = entry_offset + 0x10;
             } while (param_1 < this->draw_list_num);
             return (unsigned char)param_1;
         }
@@ -905,8 +902,6 @@ unsigned char RGE_Sprite::get_lowest_draw_level(void)
 
 unsigned char RGE_Sprite::hit_test(short x, short y, long facet, long value)
 {
-    int index = 0;
-
     if (((this->box_x1 != 0) || (this->box_x2 != 0)) &&
         ((this->box_y1 != 0) || (this->box_y2 != 0))) {
         if ((x >= this->box_x1) && (x <= this->box_x2) &&
@@ -919,17 +914,15 @@ unsigned char RGE_Sprite::hit_test(short x, short y, long facet, long value)
         int i = 0;
         if (this->draw_list_num > 0) {
             while (i < this->draw_list_num) {
-                RGE_Sprite* sprite =
-                    *(RGE_Sprite**)((char*)&this->draw_list->sprite + index);
+                RGE_Sprite* sprite = this->draw_list[i].sprite;
                 if (sprite->shape_hit_test(
-                        x - *(short*)((char*)&this->draw_list->offset_x + index),
-                        y - *(short*)((char*)&this->draw_list->offset_y + index),
+                        x - this->draw_list[i].offset_x,
+                        y - this->draw_list[i].offset_y,
                         (sprite->facet_num * facet) /
                             (int)this->facet_num,
                         value)) {
                     return 1;
                 }
-                index += 0x10;
                 i++;
             }
         }

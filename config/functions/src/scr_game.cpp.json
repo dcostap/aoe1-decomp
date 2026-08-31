@@ -56,7 +56,7 @@
     "0049BF20": {"status": "matching", "symbol": "?command_cancel_building@TRIBE_Screen_Game@@IAEXXZ"},
     "0049BF50": {"status": "matching", "symbol": "?command_chat@TRIBE_Screen_Game@@IAEXXZ"},
     "0049C010": {"status": "matching", "symbol": "?command_quick_chat@TRIBE_Screen_Game@@IAEXXZ"},
-    "0049C0B0": {"status": "scratch", "symbol": "?command_comm_info@TRIBE_Screen_Game@@IAEXXZ"},
+    "0049C0B0": {"status": "accepted_drift", "symbol": "?command_comm_info@TRIBE_Screen_Game@@IAEXXZ"},
     "0049C160": {"status": "matching", "symbol": "?command_convert@TRIBE_Screen_Game@@IAEXXZ"},
     "0049C1B0": {"status": "matching", "symbol": "?command_diplomacy@TRIBE_Screen_Game@@IAEXXZ"},
     "0049C230": {"status": "matching", "symbol": "?command_fog_of_war@TRIBE_Screen_Game@@IAEXXZ"},

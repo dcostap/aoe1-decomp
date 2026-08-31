@@ -3095,19 +3095,17 @@ int RGE_View::Get_Cursor_Position(tagPOINT& point, int offset_x, int offset_y) {
     GetCursorPos(&point);
     TDrawSystem* draw_system = this->render_area->DrawSystem;
     if (draw_system->ScreenMode == 1) {
-        ScreenToClient(draw_system->Wnd, &point);
+        ScreenToClient(this->render_area->Wnd, &point);
         if (point.x > 0x7FFF)
             point.x -= 0x10000;
         if (point.y > 0x7FFF)
             point.y -= 0x10000;
     }
     point.x += offset_x;
-    int new_x = point.x;
     point.y += offset_y;
-    int new_y = point.y;
 
-    if (new_x < this->render_rect.left || new_x > this->render_rect.right ||
-        new_y < this->render_rect.top || new_y > this->render_rect.bottom)
+    if (point.x < this->render_rect.left || point.x > this->render_rect.right ||
+        point.y < this->render_rect.top || point.y > this->render_rect.bottom)
         return 0;
     return 1;
 }
@@ -4197,7 +4195,7 @@ int RGE_View::do_paint(long param_1, long param_2, long param_3, long param_4, i
                 this->real_old_map_col, this->real_old_map_row,
                 new_col, new_row, 0, 0);
         }
-        this->redraw(2);
+        this->set_redraw(TPanel::RedrawImmediate);
         break;
     }
 

@@ -132,39 +132,38 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
 void TScrollBarPanel::calc_item_rects()
 {
     int x, w, r, dl;
+    tagRECT& tab = this->tab_rect;
+    tagRECT& top = this->top_rect;
+    tagRECT& bottom = this->bottom_rect;
 
     if (this->orientationValue == 1) {
         x = this->tab_x;
         w = this->pnl_hgt;
         r = this->up_rect.right;
-        this->tab_rect.left = x;
+        int top_left = r + 1;
+        tab.left = x;
         w = w + x - 5;
         x--;
-        this->tab_rect.right = w;
-        this->top_rect.right = x;
+        tab.right = w;
+        top.right = x;
         dl = this->down_rect.left;
-        r++;
-        w++;
-        dl--;
-        this->top_rect.left = r;
-        this->bottom_rect.left = w;
-        this->bottom_rect.right = dl;
+        top.left = top_left;
+        bottom.left = w + 1;
+        bottom.right = dl - 1;
     } else {
         x = this->tab_y;
         w = this->pnl_wid;
         r = this->up_rect.bottom;
-        this->tab_rect.top = x;
+        int top_top = r + 1;
+        tab.top = x;
         w = w + x - 5;
         x--;
-        this->tab_rect.bottom = w;
-        this->top_rect.bottom = x;
+        tab.bottom = w;
+        top.bottom = x;
         dl = this->down_rect.top;
-        r++;
-        w++;
-        dl--;
-        this->top_rect.top = r;
-        this->bottom_rect.top = w;
-        this->bottom_rect.bottom = dl;
+        top.top = top_top;
+        bottom.top = w + 1;
+        bottom.bottom = dl - 1;
     }
 }
 

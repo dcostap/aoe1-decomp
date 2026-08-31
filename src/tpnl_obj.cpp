@@ -868,26 +868,22 @@ long TRIBE_Panel_Object::handle_idle()
                 changed = 1; do_buttons = 1;
             }
             if (!changed) {
-                static_cast<RGE_Combat_Object*>(this->game_obj)->get_armor(
-                    orig_val, cur_val);
+                this->game_obj->get_armor(orig_val, cur_val);
                 if (orig_val != this->save_armor) { changed = 1; }
                 if (!changed) {
                     this->game_obj->get_pierce_armor(orig_val, cur_val);
                     if (orig_val != this->save_pierce_armor) { changed = 1; }
                 }
                 if (!changed) {
-                    static_cast<RGE_Combat_Object*>(this->game_obj)->get_weapon(
-                        orig_val, cur_val);
+                    this->game_obj->get_weapon(orig_val, cur_val);
                     if (orig_val != this->save_weapon) { changed = 1; }
                 }
                 if (!changed) {
-                    static_cast<RGE_Combat_Object*>(this->game_obj)
-                        ->get_weapon_range(cur_fval, orig_fval);
+                    this->game_obj->get_weapon_range(cur_fval, orig_fval);
                     if (cur_fval != this->save_weapon_range) { changed = 1; }
                 }
                 if (!changed) {
-                    static_cast<RGE_Combat_Object*>(this->game_obj)
-                        ->get_speed_of_attack(cur_fval, orig_fval);
+                    this->game_obj->get_speed_of_attack(cur_fval, orig_fval);
                     if (cur_fval != this->save_speed_of_attack) { changed = 1; }
                 }
             }
@@ -996,16 +992,12 @@ void TRIBE_Panel_Object::save_object_info()
     if (object->master_obj->master_type >= 0x46 &&
         object->master_obj->master_type != 0x5A) {
         this->save_have_action = object->have_action();
-        static_cast<RGE_Combat_Object*>(this->game_obj)->get_armor(
-            this->save_armor, orig_val);
-        static_cast<RGE_Combat_Object*>(this->game_obj)->get_armor(
-            this->save_pierce_armor, orig_val);
-        static_cast<RGE_Combat_Object*>(this->game_obj)->get_weapon(
-            this->save_weapon, orig_val);
-        static_cast<RGE_Combat_Object*>(this->game_obj)->get_weapon_range(
-            this->save_weapon_range, orig_fval);
-        static_cast<RGE_Combat_Object*>(this->game_obj)->get_speed_of_attack(
-            this->save_speed_of_attack, orig_fval);
+        this->game_obj->get_armor(this->save_armor, orig_val);
+        this->game_obj->get_armor(this->save_pierce_armor, orig_val);
+        this->game_obj->get_weapon(this->save_weapon, orig_val);
+        this->game_obj->get_weapon_range(this->save_weapon_range, orig_fval);
+        this->game_obj->get_speed_of_attack(this->save_speed_of_attack,
+                                            orig_fval);
     }
 
     TRIBE_Building_Object* building =

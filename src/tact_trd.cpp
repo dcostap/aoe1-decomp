@@ -250,9 +250,9 @@ unsigned char TRIBE_Action_Trade::update()
 
     switch (this->state) {
     case 11:
-        if (this->timer < DAT_00575350) {
+        if (this->timer < 0.0) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > DAT_00575350) {
+            if (this->timer > 0.0) {
                 this->timer = 0.0f;
                 if (this->target_obj != 0) {
                     this->set_state(4);
@@ -277,9 +277,9 @@ unsigned char TRIBE_Action_Trade::update()
         return 0;
 
     case 4:
-        if (this->timer < DAT_00575350) {
+        if (this->timer < 0.0) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > DAT_00575350) {
+            if (this->timer > 0.0) {
                 this->timer = 0.0f;
                 if (this->target_obj != 0) {
                     this->set_state(4);
@@ -339,14 +339,15 @@ unsigned char TRIBE_Action_Trade::update()
             RGE_Player* owner = this->obj->owner;
             float capacity = (float)this->obj->master_obj->attribute_max_amount;
             max_hold = capacity - this->obj->attribute_amount_held;
-            if (owner->attributes[this->obj->attribute_type_held] < max_hold) {
-                max_hold = owner->attributes[this->obj->attribute_type_held];
+            short attr = this->obj->attribute_type_held;
+            if (owner->attributes[attr] < max_hold) {
+                max_hold = owner->attributes[attr];
             }
             if (this->target_obj->owner->attributes[9] < max_hold) {
                 max_hold = this->target_obj->owner->attributes[9];
             }
             this->target_obj->owner->add_attribute_num(
-                this->obj->attribute_type_held, -max_hold, 1);
+                attr, -max_hold, 1);
             this->target_obj->owner->attributes[9] -= max_hold;
             this->obj->attribute_amount_held += max_hold;
             if (this->obj->attribute_amount_held >= capacity) {
@@ -361,9 +362,9 @@ unsigned char TRIBE_Action_Trade::update()
         return 0;
 
     case 8:
-        if (this->timer < DAT_00575350) {
+        if (this->timer < 0.0) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > DAT_00575350) {
+            if (this->timer > 0.0) {
                 this->timer = 0.0f;
                 this->set_state(8);
                 return 0;
@@ -379,12 +380,12 @@ unsigned char TRIBE_Action_Trade::update()
         case 1:
         case 2:
             if (this->target_obj2 != 0) {
-                if (this->obj->attribute_amount_held > DAT_00575350) {
+                if (this->obj->attribute_amount_held > 0.0) {
                     RGE_Task* trade_task = (RGE_Task*)this->task;
                     if (trade_task->work_sound2 != 0) {
                         trade_task->work_sound2->play(1);
                     }
-                    if (this->pick_up_x < DAT_00575350 || this->pick_up_y < DAT_00575350) {
+                    if (this->pick_up_x < 0.0 || this->pick_up_y < 0.0) {
                         take_amount = DAT_00575360;
                     } else {
                         float dx = this->pick_up_x - this->target_obj2->world_x;

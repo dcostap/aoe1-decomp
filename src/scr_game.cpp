@@ -3406,7 +3406,7 @@ void TRIBE_Screen_Game::reset_score_display()
             return;
         }
         if (p->player_id == 0) {
-            panel->visible = 0;
+            panel->set_active(0);
         } else {
             sprintf(str + 4, "%s: %d/%d", comm->GetPlayerName(p->comm_id),
                     p->player_score, p->team_score);

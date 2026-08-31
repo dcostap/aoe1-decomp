@@ -6,7 +6,7 @@
     "flags": "gx"
   },
   "functions": {
-    "00412310": {"status": "scratch", "symbol": "??0ResourceAIModule@@QAE@PAXHHHHH@Z"},
+    "00412310": {"status": "matching", "symbol": "??0ResourceAIModule@@QAE@PAXHHHHH@Z"},
     "00412480": {"status": "matching", "symbol": "??1ResourceAIModule@@UAE@XZ"},
     "00412540": {"status": "matching", "symbol": "?processMessage@ResourceAIModule@@UAEHPAVAIModuleMessage@@@Z"},
     "00412550": {"status": "matching", "symbol": "?update@ResourceAIModule@@UAEHH@Z"},

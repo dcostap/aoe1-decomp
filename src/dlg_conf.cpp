@@ -440,8 +440,8 @@ long TribeConfigDialog::action(TPanel* panel, long event,
     if (panel == 0)
         goto base_action;
 
-    if ((TButtonPanel*)panel == this->okButton && event == 1) {
-            if (this->modeValue == 0) {
+    if (panel == this->okButton && event == 1) {
+            if (this->modeValue == InGame) {
                 if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
                     rge_base_game->set_paused(0, 0);
                 }
@@ -549,25 +549,25 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 goto destroy;
             }
         } else {
-            if ((TButtonPanel*)panel == this->speedButton[0] && event == 1) {
+            if (panel == this->speedButton[0] && event == 1) {
                 return event;
             }
-            if ((TButtonPanel*)panel == this->speedButton[1] && event == 1) {
+            if (panel == this->speedButton[1] && event == 1) {
                 return event;
             }
-            if ((TButtonPanel*)panel == this->speedButton[2] && event == 1) {
+            if (panel == this->speedButton[2] && event == 1) {
                 return event;
             }
-            if ((TButtonPanel*)panel == this->sizeButton[0]) {
+            if (panel == this->sizeButton[0]) {
                 return 1;
             }
-            if ((TButtonPanel*)panel == this->sizeButton[1]) {
+            if (panel == this->sizeButton[1]) {
                 return 1;
             }
-            if ((TButtonPanel*)panel == this->sizeButton[2]) {
+            if (panel == this->sizeButton[2]) {
                 return 1;
             }
-            if ((TVerticalSliderPanel*)panel == this->musicSlider && event == 4) {
+            if (panel == this->musicSlider && event == 4) {
                 this->newMusicVolume = param_3;
                 TMusic_System* music = rge_base_game->music_system;
                 if (music == 0) {
@@ -582,7 +582,7 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 param_3 = this->newSoundVolume;
                 goto slider_sound_call;
             }
-            if ((TVerticalSliderPanel*)panel == this->soundSlider && event == 4) {
+            if (panel == this->soundSlider && event == 4) {
                 this->newSoundVolume = param_3;
                 slider_sound = rge_base_game->sound_system;
                 if (slider_sound == 0) {
@@ -590,12 +590,12 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 }
                 goto slider_sound_call;
             }
-            if ((TVerticalSliderPanel*)panel == this->scrollSpeedSlider && event == 4) {
+            if (panel == this->scrollSpeedSlider && event == 4) {
                 rge_base_game->prog_info->mouse_scroll_interval = param_3 + 10;
                 rge_base_game->prog_info->key_scroll_interval = param_3 + 10;
                 goto base_action;
             }
-            if ((TButtonPanel*)panel == this->cancelButton && event == 1) {
+            if (panel == this->cancelButton && event == 1) {
                 if (rge_base_game->music_system != 0) {
                     rge_base_game->music_system->set_volume(this->musicVolume * -100, 1);
                 }
@@ -604,7 +604,7 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 }
                 rge_base_game->prog_info->mouse_scroll_interval = this->scrollSpeed;
                 rge_base_game->prog_info->key_scroll_interval = this->scrollSpeed;
-                if (this->modeValue == 0) {
+                if (this->modeValue == InGame) {
                     if (rge_base_game->singlePlayerGame() == 1 && rge_base_game->save_paused == 0) {
                         rge_base_game->set_paused(0, 0);
                     }

@@ -32,7 +32,7 @@
     "004BCCB0": {"status": "matching", "symbol": "??1TDigital@@QAE@XZ"},
     "004BCCC0": {"status": "matching", "symbol": "?init_vars@TDigital@@QAEXXZ"},
     "004BCCF0": {"status": "matching", "symbol": "?exit@TDigital@@QAEXXZ"},
-    "004BCD30": {"status": "scratch", "symbol": "?load@TDigital@@QAEHPADJ@Z"},
+    "004BCD30": {"status": "accepted_drift", "symbol": "?load@TDigital@@QAEHPADJ@Z"},
     "004BD300": {"status": "matching", "symbol": "?unload@TDigital@@QAEXXZ"},
     "004BD370": {"status": "matching", "symbol": "?play@TDigital@@QAEHXZ"},
     "004BD490": {"status": "matching", "symbol": "?stop@TDigital@@QAEXXZ"},
