@@ -968,13 +968,20 @@ unsigned char TRIBE_Player::check_obj_cost(short obj_id, short* out, float facto
                                              int skip_farm)
 {
     float population = this->attributes[3];
-    if (out != 0) *out = -1;
-    bool population_available =
-        this->attributes[29] >= 1.0f;
-    if (!population_available) population = 0.0f;
+    if (out != 0) *out = static_cast<short>(-1);
+    bool population_available;
+    if (this->attributes[29] < 1.0) {
+        population = 0.0f;
+        population_available = false;
+    } else {
+        population_available = true;
+    }
     RGE_Master_Static_Object* object = this->master_objects[obj_id];
     TRIBE_Master_Combat_Object* combat = static_cast<TRIBE_Master_Combat_Object*>(object);
-    if (object == 0 || object->master_type < 0x46) return 0;
+    if (object == 0 || object->master_type < 0x46) {
+        if (out != 0) *out = static_cast<short>(-1);
+        return 0;
+    }
     for (int i = 0; i < 3; ++i) {
         int type = combat->build_inventory[i].type;
         if (type < 0) continue;
