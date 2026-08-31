@@ -475,10 +475,11 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
             float radius = sqrt(master->radius_x * master->radius_x +
                                 master->radius_y * master->radius_y);
             float max_distance = radius + this->range - DAT_0056e0cc;
-            if (distance <= max_distance) {
-                range_status = 1;
-            } else {
+            if (distance > max_distance) {
                 range_status = 2;
+            } else {
+                range_status = 1;
+                return this->obj->can_attack() != 0;
             }
         }
     } else {
