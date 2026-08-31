@@ -22,13 +22,12 @@ MainDecisionAIModule::MainDecisionAIModule(int player_number,
       player(player_value),
       objects()
 {
-    int object_id;
     int count;
 
     rge_read(file, &count, sizeof(count));
     for (int i = 0; i < count; ++i) {
-        rge_read(file, &object_id, sizeof(object_id));
-        this->objects.add(object_id);
+        rge_read(file, &player_value, sizeof(player_value));
+        this->objects.add((int)player_value);
     }
 }
 
@@ -45,9 +44,9 @@ int MainDecisionAIModule::save(int file)
     int count = this->objects.number();
     rge_write(file, &count, sizeof(count));
 
-    for (int i = 0; i < count; ++i) {
-        int object_id = this->objects[i];
-        rge_write(file, &object_id, sizeof(object_id));
+    for (int i = 0; i < this->objects.number(); ++i) {
+        count = this->objects[i];
+        rge_write(file, &count, sizeof(count));
     }
     return 1;
 }
@@ -79,11 +78,9 @@ int MainDecisionAIModule::numberObjectsWithAction(int action)
     for (int i = 0; i < this->objects.number(); ++i) {
         RGE_Static_Object* object =
             this->player->world->object(this->objects[i]);
-        if (object != 0) {
-            UnitAIModule* unit_ai = object->unitAI();
-            if (unit_ai != 0 && unit_ai->currentAction() == action) {
-                ++count;
-            }
+        if (object != 0 && object->unitAI() != 0 &&
+            object->unitAI()->currentAction() == action) {
+            ++count;
         }
     }
 
@@ -113,12 +110,10 @@ int MainDecisionAIModule::numberObjectsWithActionAndTarget(int action,
     for (int i = 0; i < this->objects.number(); ++i) {
         RGE_Static_Object* object =
             this->player->world->object(this->objects[i]);
-        if (object != 0) {
-            UnitAIModule* unit_ai = object->unitAI();
-            if (unit_ai != 0 && unit_ai->currentAction() == action &&
-                unit_ai->currentTarget() == target) {
-                ++count;
-            }
+        if (object != 0 && object->unitAI() != 0 &&
+            object->unitAI()->currentAction() == action &&
+            object->unitAI()->currentTarget() == target) {
+            ++count;
         }
     }
 
@@ -132,11 +127,9 @@ int MainDecisionAIModule::numberObjectsWithTargetType(int target_type)
     for (int i = 0; i < this->objects.number(); ++i) {
         RGE_Static_Object* object =
             this->player->world->object(this->objects[i]);
-        if (object != 0) {
-            UnitAIModule* unit_ai = object->unitAI();
-            if (unit_ai != 0 && unit_ai->currentTargetType() == target_type) {
-                ++count;
-            }
+        if (object != 0 && object->unitAI() != 0 &&
+            object->unitAI()->currentTargetType() == target_type) {
+            ++count;
         }
     }
 
@@ -151,12 +144,10 @@ int MainDecisionAIModule::numberObjectsWithActionAndTargetType(
     for (int i = 0; i < this->objects.number(); ++i) {
         RGE_Static_Object* object =
             this->player->world->object(this->objects[i]);
-        if (object != 0) {
-            UnitAIModule* unit_ai = object->unitAI();
-            if (unit_ai != 0 && unit_ai->currentAction() == action &&
-                unit_ai->currentTargetType() == target_type) {
-                ++count;
-            }
+        if (object != 0 && object->unitAI() != 0 &&
+            object->unitAI()->currentAction() == action &&
+            object->unitAI()->currentTargetType() == target_type) {
+            ++count;
         }
     }
 
@@ -180,8 +171,7 @@ RGE_Static_Object* MainDecisionAIModule::object(
             continue;
         }
 
-        UnitAIModule* unit_ai = object->unitAI();
-        if (unit_ai == 0) {
+        if (object->unitAI() == 0) {
             continue;
         }
 
@@ -194,18 +184,19 @@ RGE_Static_Object* MainDecisionAIModule::object(
         if (class_id != -1 && object->master_obj->object_group != class_id) {
             continue;
         }
-        if (action != -1 && unit_ai->currentAction() != action) {
+        if (action != -1 && object->unitAI()->currentAction() != action) {
             continue;
         }
         if (can_perform_action != -1 &&
             !this->canPerformAction(this->objects[i], can_perform_action)) {
             continue;
         }
-        if (current_target != -1 && unit_ai->currentTarget() != current_target) {
+        if (current_target != -1 &&
+            object->unitAI()->currentTarget() != current_target) {
             continue;
         }
         if (current_target_type != -1 &&
-            unit_ai->currentTargetType() != current_target_type) {
+            object->unitAI()->currentTargetType() != current_target_type) {
             continue;
         }
         if ((state == -1 || (int)object->object_state == state) &&
@@ -228,8 +219,7 @@ RGE_Static_Object* MainDecisionAIModule::object(int p1, int p2, int p3,
             continue;
         }
 
-        UnitAIModule* unit_ai = object->unitAI();
-        if (unit_ai == 0) {
+        if (object->unitAI() == 0) {
             continue;
         }
         if (p1 != -1 && object->id != p1) {
@@ -241,10 +231,10 @@ RGE_Static_Object* MainDecisionAIModule::object(int p1, int p2, int p3,
         if (p3 != -1 && object->master_obj->object_group != p3) {
             continue;
         }
-        if (unit_ai->currentAction() == p4) {
+        if (object->unitAI()->currentAction() == p4) {
             continue;
         }
-        if (unit_ai->currentAction() == p5) {
+        if (object->unitAI()->currentAction() == p5) {
             continue;
         }
         if (p6 != -1 && (int)object->object_state != p6) {
@@ -274,11 +264,9 @@ int MainDecisionAIModule::numberBusyObjects()
     for (int i = 0; i < this->objects.number(); ++i) {
         RGE_Static_Object* object =
             this->player->world->object(this->objects[i]);
-        if (object != 0) {
-            UnitAIModule* unit_ai = object->unitAI();
-            if (unit_ai != 0 && unit_ai->currentAction() == -1) {
-                ++count;
-            }
+        if (object != 0 && object->unitAI() != 0 &&
+            object->unitAI()->currentAction() == -1) {
+            ++count;
         }
     }
 
@@ -300,16 +288,17 @@ RGE_Static_Object* MainDecisionAIModule::mostDamaged(int class_id, int type_id)
             continue;
         }
 
-        int maximum_hit_points = object->master_obj->hp;
-        if ((float)maximum_hit_points <= object->hp || object->canRepair() != 1) {
+        if ((float)object->master_obj->hp <= object->hp ||
+            object->canRepair() != 1) {
             continue;
         }
         if (type_id != -1 && type_id != (int)object->master_obj->id) {
             continue;
         }
 
-        int damage = (long)((float)maximum_hit_points - object->hp) * 100 /
-                     maximum_hit_points;
+        int damage =
+            (long)((float)object->master_obj->hp - object->hp) * 100 /
+            object->master_obj->hp;
         if (damage > damage_percentage) {
             result = object;
             damage_percentage = damage;
