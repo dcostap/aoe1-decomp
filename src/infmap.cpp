@@ -519,15 +519,15 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                         (int)amount >= (int)minimum) {
                     if (rowsMap[y - this->yReferencePointValue][xOffset] >= minimum) {
                         edgeResult = result;
-                        int neighborX = x;
-                        int neighborY = y;
+                        int neighborY;
+                        int neighborX;
+                        neighborX = x;
+                        neighborY = y;
 
                         for (int direction = 0; direction < 8; ++direction) {
                             switch (direction) {
                             case 0:
                                 --neighborX;
-                                // fall through
-                            case 7:
                                 --neighborY;
                                 break;
                             case 1:
@@ -542,13 +542,16 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                             case 6:
                                 --neighborX;
                                 break;
+                            case 7:
+                                --neighborY;
+                                break;
                             }
 
-                            if (allDirections || (abs(direction) & 1) != 0) {
+                            if (allDirections || direction % 2 != 0) {
                                 if (neighborX < 0 || neighborX >= this->xSizeValue ||
                                     neighborY < 0 || neighborY >= this->ySizeValue) {
-                                    if ((mode1 == 1 && (abs(direction) == 1)) ||
-                                        (mode2 == 1 && (abs(direction) == 0))) {
+                                    if ((mode1 == 1 && direction % 2 == 1) ||
+                                        (mode2 == 1 && direction % 2 == 0)) {
                                         --edgeResult;
                                     }
                                     if (edgeResult <= 0)
@@ -583,11 +586,11 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                             break;
                         }
 
-                        if (allDirections || (abs(direction) & 1) != 0) {
+                        if (allDirections || direction % 2 != 0) {
                             if (neighborX < 0 || neighborX >= this->xSizeValue ||
                                 neighborY < 0 || neighborY >= this->ySizeValue) {
-                                if ((mode1 == 1 && (abs(direction) == 1)) ||
-                                    (mode2 == 1 && (abs(direction) == 0))) {
+                                if ((mode1 == 1 && direction % 2 == 1) ||
+                                    (mode2 == 1 && direction % 2 == 0)) {
                                     --result;
                                 }
                             } else if (rowsMap[neighborY - this->yReferencePointValue]
