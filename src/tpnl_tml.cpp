@@ -801,8 +801,10 @@ void Time_Line_Panel::draw_special_events()
                 case 0:
                 case 1:
                 case 2:
-                case 3:
                     this->draw_icon(event, -1, event->event);
+                    break;
+                case 3:
+                    this->draw_icon(event, -1, 3);
                     break;
                 case 4:
                     this->draw_icon(event, 0, 4);
