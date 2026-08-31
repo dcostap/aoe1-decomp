@@ -6,7 +6,7 @@
     "flags": "default"
   },
   "functions": {
-    "00471EC0": {"status": "scratch", "symbol": "??0TButtonPanel@@QAE@XZ"},
+    "00471EC0": {"status": "matching", "symbol": "??0TButtonPanel@@QAE@XZ"},
     "00472030": {"status": "matching", "symbol": "??1TButtonPanel@@UAE@XZ"},
     "004720A0": {"status": "matching", "symbol": "?setup@TButtonPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJW4DrawType@1@PAVTDigital@@W4NotifyType@1@J@Z"},
     "00472110": {"status": "matching", "symbol": "?buttonType@TButtonPanel@@QBE?AW4ButtonType@1@XZ"},
