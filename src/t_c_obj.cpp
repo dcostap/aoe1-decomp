@@ -159,10 +159,13 @@ void TRIBE_Combat_Object::save(int file)
         this->master_obj->save(file);
     }
 
-    int has_unit_ai = this->unitAIValue != 0;
-    rge_write(file, &has_unit_ai, 4);
     if (this->unitAIValue != 0) {
+        int has_unit_ai = 1;
+        rge_write(file, &has_unit_ai, 4);
         this->unitAIValue->save(file);
+    } else {
+        int has_unit_ai = 0;
+        rge_write(file, &has_unit_ai, 4);
     }
 }
 
@@ -183,19 +186,21 @@ unsigned char TRIBE_Combat_Object::update()
 void TRIBE_Combat_Object::modify(float value, unsigned char attribute)
 {
     if (attribute == 0x65) {
-        RGE_Master_Static_Object* master = this->master_obj;
         for (int i = 0; i < 3; ++i) {
-            if (master->attribute_type_held[i] == 4) {
-                this->owner->attributes[4] -= master->attribute_amount_held[i];
+            if (this->master_obj->attribute_type_held[i] == 4) {
+                this->owner->attributes[4] -=
+                    this->master_obj->attribute_amount_held[i];
                 this->owner->attributes[4] += value;
             }
-            if (master->attribute_type_held[i] == 0x0B) {
-                this->owner->attributes[11] -= master->attribute_amount_held[i];
-                this->owner->attributes[11] += value;
+            if (this->master_obj->attribute_type_held[i] == 0x0B) {
+                this->owner->attributes[11] -=
+                    this->master_obj->attribute_amount_held[i];
+                this->owner->attributes[11] -= value;
             }
-            if (master->attribute_type_held[i] == 0x13) {
-                this->owner->attributes[19] -= master->attribute_amount_held[i];
-                this->owner->attributes[19] += value;
+            if (this->master_obj->attribute_type_held[i] == 0x13) {
+                this->owner->attributes[19] -=
+                    this->master_obj->attribute_amount_held[i];
+                this->owner->attributes[19] -= value;
             }
         }
     }
@@ -480,8 +485,10 @@ found_position:
 
 int TRIBE_Combat_Object::can_debark()
 {
-    return this->master_obj->unit_level == 7 && this->objects != 0 &&
-           this->objects->number_of_objects != 0;
+    if (this->master_obj->unit_level != 7) {
+        return 0;
+    }
+    return this->objects->number_of_objects != 0;
 }
 
 int TRIBE_Combat_Object::hunt(int object_id, int force)
@@ -774,16 +781,14 @@ int TRIBE_Combat_Object::higher_check_for_cliff(
                 if (result < DAT_00574c98) angle = result - DAT_00574ca4;
             }
 
-            if (lines_intersect(x1, y1, x2, y2,
-                                TRIBE_Cliff_Higher_Check_Table[cliff->facet].line_x1 + x1,
-                                TRIBE_Cliff_Higher_Check_Table[cliff->facet].line_y1 + y1,
-                                TRIBE_Cliff_Higher_Check_Table[cliff->facet].line_x2 + x2,
-                                TRIBE_Cliff_Higher_Check_Table[cliff->facet].line_y2 + y2)) {
+            TRIBE_Cliff_Higher_Check_Record* check =
+                &TRIBE_Cliff_Higher_Check_Table[cliff->facet];
+            if (lines_intersect(x1, y1, x2, y2, check->line_x1 + x1,
+                                check->line_y1 + y1, check->line_x2 + x2,
+                                check->line_y2 + y2)) {
                 if ((cliff->facet >= 0x19 ||
-                     angle < TRIBE_Cliff_Higher_Check_Table[cliff->facet].from_angle1 ||
-                     TRIBE_Cliff_Higher_Check_Table[cliff->facet].to_angle1 > angle) &&
-                    (angle < TRIBE_Cliff_Higher_Check_Table[cliff->facet].from_angle2 ||
-                     TRIBE_Cliff_Higher_Check_Table[cliff->facet].to_angle2 > angle)) {
+                     angle < check->from_angle1 || check->to_angle1 > angle) &&
+                    (angle < check->from_angle2 || check->to_angle2 > angle)) {
                     --direction;
                 } else {
                     ++direction;
@@ -798,73 +803,101 @@ int TRIBE_Combat_Object::higher_check_for_cliff(
 
 int TRIBE_Combat_Object::higher_than_target(RGE_Static_Object* target)
 {
-    if (this->world_z > target->world_z) return 1;
-
-    const float target_x = target->world_x;
-    const float target_y = target->world_y;
-    const float x_distance = target_x - this->world_x;
-    const float y_distance = target_y - this->world_y;
-    if (x_distance == 0.0f && y_distance == 0.0f) return 0;
-
-    const int steps = fabs(y_distance) > fabs(x_distance)
-        ? abs(static_cast<int>(y_distance)) * 2
-        : abs(static_cast<int>(x_distance)) * 2;
-    const float x_step = x_distance / steps;
-    const float y_step = y_distance / steps;
-    const float abs_x = x_step < 0.0f ? -x_step : x_step;
-    const float abs_y = y_step < 0.0f ? -y_step : y_step;
-
-    int second_x_offset;
-    int second_y_offset;
-    int third_x_offset;
-    int third_y_offset;
-    if (abs_x > abs_y) {
-        second_x_offset = 0;
-        second_y_offset = -1;
-        third_x_offset = 0;
-        third_y_offset = 1;
-    } else {
-        second_x_offset = -1;
-        second_y_offset = 0;
-        third_x_offset = 1;
-        third_y_offset = 0;
+    if (this->world_z > target->world_z) {
+        return 1;
     }
 
-    float x = this->world_x;
-    float y = this->world_y;
-    int old_x = -999;
-    int old_y = -999;
+    float dest_x = target->world_x;
+    float start_x = this->world_x;
+    float dest_y = target->world_y;
+    float start_y = this->world_y;
+    float x_distance = dest_x - start_x;
+    float y_distance = dest_y - start_y;
+
+    if ((x_distance == 0.0f) && (y_distance == 0.0f)) {
+        return 0;
+    }
+
+    int num_steps;
+    if (fabs(y_distance) > fabs(x_distance)) {
+        num_steps = abs(static_cast<int>(y_distance)) * 2;
+    } else {
+        num_steps = abs(static_cast<int>(x_distance)) * 2;
+    }
+
+    float x_step;
+    float y_step;
+    x_step = x_distance / static_cast<float>(num_steps);
+    y_step = y_distance / static_cast<float>(num_steps);
+
+    float abs_x = x_step;
+    float abs_y = y_step;
+    if (abs_x < 0.0f) {
+        abs_x = -x_step;
+    }
+    if (abs_y < 0.0f) {
+        abs_y = -y_step;
+    }
+
+    int dx1;
+    int dy2;
+    int dx2;
+    int diagonal;
+    if (abs_x > abs_y) {
+        dx1 = -1;
+        dy2 = 0;
+        diagonal = 0;
+        dx2 = 1;
+    } else {
+        dy2 = -1;
+        dx1 = 0;
+        diagonal = 1;
+        dx2 = 0;
+    }
+
+    float x = start_x;
+    float y = start_y;
+    int prior_x = -999;
+    int prior_y = -999;
+    RGE_Map* map = this->owner->world->map;
     float angle = -1.0f;
     int direction = 0;
-    RGE_Map* map = this->owner->world->map;
-
-    for (int i = steps; i > 0; --i) {
-        x += x_step;
-        y += y_step;
-        const int tile_x = static_cast<int>(x);
-        const int tile_y = static_cast<int>(y);
-        if (tile_x == old_x && tile_y == old_y) continue;
-        old_x = tile_x;
-        old_y = tile_y;
-
-        if (this->higher_check_for_cliff(target, tile_x, tile_y,
-                                         this->world_x, this->world_y,
-                                         target_x, target_y, map, 0, angle,
-                                         direction) == 0 &&
-            this->higher_check_for_cliff(target, tile_x + second_x_offset,
-                                         tile_y + second_y_offset, this->world_x,
-                                         this->world_y, target_x, target_y,
-                                         map, 0, angle, direction) == 0) {
-            this->higher_check_for_cliff(target, tile_x + third_x_offset,
-                                         tile_y + third_y_offset, this->world_x,
-                                         this->world_y, target_x, target_y,
-                                         map, 0, angle, direction);
-        }
+    int i;
+    if (num_steps > 0) {
+        i = num_steps;
+        do {
+            x += x_step;
+            y += y_step;
+            int tile_x = static_cast<int>(x);
+            int tile_y = static_cast<int>(y);
+            if (tile_x != prior_x || tile_y != prior_y) {
+                prior_x = tile_x;
+                prior_y = tile_y;
+                if (this->higher_check_for_cliff(
+                        target, tile_x, tile_y, start_x, start_y, dest_x,
+                        dest_y, map, 0, angle, direction) == 0) {
+                    if (this->higher_check_for_cliff(
+                            target, tile_x + dy2, tile_y + dx1, start_x,
+                            start_y, dest_x, dest_y, map, 0, angle,
+                            direction) == 0) {
+                        this->higher_check_for_cliff(
+                            target, tile_x + diagonal, tile_y + dx2, start_x,
+                            start_y, dest_x, dest_y, map, 0, angle,
+                            direction);
+                    }
+                }
+            }
+            --i;
+        } while (i != 0);
     }
 
-    if (direction < 1) direction = 0;
-    if (direction > 0) direction = 1;
-    return direction;
+    if (direction < 1) {
+        direction = 0;
+    }
+    if (direction > 0) {
+        direction = 1;
+    }
+    return direction > 0;
 }
 
 unsigned char TRIBE_Combat_Object::area_attack(
@@ -877,8 +910,10 @@ unsigned char TRIBE_Combat_Object::area_attack(
         static_cast<RGE_Master_Combat_Object*>(this->master_obj);
     const float radius = master->area_effect_range;
     const float radius_squared = radius * radius;
-    const short max_x = static_cast<short>(map->map_width - 1);
-    const short max_y = static_cast<short>(map->map_height - 1);
+    short max_x = static_cast<short>(map->map_width);
+    short max_y = static_cast<short>(map->map_height);
+    --max_x;
+    --max_y;
     if (!(radius > DAT_00574ca8)) return 0;
 
     short first_x = static_cast<short>(x - radius) - 2;
@@ -892,36 +927,45 @@ unsigned char TRIBE_Combat_Object::area_attack(
 
     for (short row = first_y; row < last_y; ++row) {
         for (short col = first_x; col < last_x; ++col) {
-            for (RGE_Object_Node* link = map->map_row_offset[row][col].objects.list;
+            for (RGE_Object_Node* link =
+                     map->map_row_offset[row][col].objects.list;
                  link != 0; link = link->next) {
                 RGE_Combat_Object* object =
                     static_cast<RGE_Combat_Object*>(link->node);
                 if (object == ignored) continue;
 
-                const short master_id = master->id;
+                const short master_id = this->master_obj->id;
                 RGE_Master_Static_Object* object_master = object->master_obj;
                 if (((master_id == 0x2E || master_id == 0x28 ||
                       master_id == 0x153 || master_id == 0x159) &&
-                     object->owner == owner) || object == this ||
-                    object_master->area_effect_object_level <
-                    master->area_effect_level) continue;
+                    object->owner == this->owner) || object == this) continue;
+
+                if (object_master->area_effect_object_level <
+                    static_cast<RGE_Master_Combat_Object*>(
+                        this->master_obj)->area_effect_level) continue;
 
                 float dx = object->world_x - x;
                 float dy = object->world_y - y;
-                if (dx < 0.0f) dx = -dx;
-                if (dy < 0.0f) dy = -dy;
+                if (dx < DAT_00574c98) dx = -dx;
+                if (dy < DAT_00574c98) dy = -dy;
                 if (dx > object_master->radius_x) dx -= object_master->radius_x;
-                else dx = 0.0f;
+                else dx = DAT_00574c98;
                 if (dy > object_master->radius_y) dy -= object_master->radius_y;
-                else dy = 0.0f;
+                else dy = DAT_00574c98;
 
                 if (radius_squared > dx * dx + dy * dy &&
                     static_cast<short>(
                         debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp",
                                    0x653) * 100 / 0x7FFF) <=
-                        master->base_hit_chance) {
-                    object->damage(master->weapon_num, master->weapon,
-                                   this->calc_attack_modifier(object), owner,
+                        static_cast<RGE_Master_Combat_Object*>(
+                            this->master_obj)->base_hit_chance) {
+                    object->damage(
+                        static_cast<RGE_Master_Combat_Object*>(
+                            this->master_obj)->weapon_num,
+                        static_cast<RGE_Master_Combat_Object*>(
+                            this->master_obj)->weapon,
+                                   this->calc_attack_modifier(object),
+                                   this->owner,
                                    attacker);
                     if (object->hp < DAT_00574c78) {
                         object->set_attribute_amount(0.0f, 0, 1);
@@ -966,60 +1010,93 @@ int TRIBE_Combat_Object::canRepair()
 
 void TRIBE_Combat_Object::do_repair(RGE_Static_Object* target)
 {
-    if (static_cast<RGE_Action_Object*>(target) == this) return;
-
-    if (this->master_obj->id != 0x9C) {
-        RGE_Master_Static_Object* repair_master =
-            this->owner->master_objects[0x9C];
-        if (repair_master != 0) this->transform(repair_master);
-    }
-
-    RGE_Task_List* tasks =
-        static_cast<RGE_Master_Action_Object*>(this->master_obj)->tasks;
     RGE_Task* repair_task;
-    if (tasks->list_num > 0) {
+    RGE_Task_List* repair_list;
+    int i;
+    int task_count;
+    RGE_Task** task_list;
+    RGE_Task* current_task;
+    short action_type;
+    int action_worked;
+    RGE_Action* action;
+    int order;
+    int current_action;
+
+    if (static_cast<RGE_Action_Object*>(target) != this) {
+        if (this->master_obj->id != 0x9C) {
+            this->transform(this->owner->master_objects[0x9C]);
+        }
+
+        repair_list =
+            static_cast<RGE_Master_Action_Object*>(this->master_obj)->tasks;
+        i = 0;
+        task_count = static_cast<int>(repair_list->list_num);
+        if (task_count > 0) {
+            task_list = repair_list->list;
         repair_task = 0;
-        for (int i = 0; i < tasks->list_num; ++i) {
-            RGE_Task* task = tasks->list[i];
-            if (task->action_type == 0x6A &&
-                (task->object_group == target->master_obj->object_group ||
-                 (target->master_obj->master_type == 'P' &&
-                  (task->object_group == -1 || task->object_group == 0)))) {
-                repair_task = task;
-                break;
+            do {
+                repair_task = *task_list;
+                if (repair_task->action_type == 0x6A) {
+                    RGE_Master_Static_Object* target_master =
+                        target->master_obj;
+                    if (target_master->master_type == 'P') {
+                        if (repair_task->object_group == -1 ||
+                            repair_task->object_group == 0) {
+                            break;
+                        }
+                    }
+                    if (repair_task->object_group ==
+                        target_master->object_group) {
+                        break;
+                    }
+                }
+                repair_task = 0;
+                ++i;
+                ++task_list;
+            } while (i < task_count);
+        }
+
+        current_task = this->actions->get_task();
+        action_type = 0;
+        action_worked = 0;
+        if (current_task != 0 && repair_task == current_task &&
+            this->actions->action_work(target, target->world_x,
+                                       target->world_y,
+                                       target->world_z) != 0) {
+            action_type = this->actions->get_action()->type();
+            action_worked = 1;
+        }
+
+        if (action_worked == 0) {
+            if (repair_task != 0) {
+                action = this->actions->create_task_action(
+                    repair_task, target, target->world_x, target->world_y,
+                    target->world_z);
+            } else {
+                action = 0;
+            }
+
+            if (action != 0) {
+                action_type = action->type();
+                this->set_only_action(action);
+            } else {
+                action_type = 0;
             }
         }
-    }
 
-    short action_type = 0;
-    RGE_Task* current_task = this->actions->get_task();
-    if (current_task != 0 && repair_task == current_task &&
-        this->actions->action_work(target, target->world_x, target->world_y,
-                                   target->world_z) != 0) {
-        action_type = this->actions->get_action()->type();
-    } else {
-        RGE_Action* action = repair_task == 0 ? 0 :
-            this->actions->create_task_action(repair_task, target,
-                                              target->world_x, target->world_y,
-                                              target->world_z);
-        if (action != 0) {
-            action_type = action->type();
-            this->set_only_action(action);
-        }
-    }
-
-    if (this->unitAIValue != 0) {
-        int order = -1;
-        int current_action = -1;
+        if (this->unitAIValue != 0) {
+            order = -1;
+            current_action = -1;
         if (action_type == 0x6A) {
             current_action = 0x26A;
             order = 0x2CE;
         }
-        this->unitAIValue->setCurrentOrder(order);
-        this->unitAIValue->setCurrentAction(current_action);
-        this->unitAIValue->setCurrentTarget(
-            target->id, target->master_obj->object_group, target->world_x,
-            target->world_y, target->world_z);
-        this->unitAIValue->setTaskedByPlayer();
+            this->unitAIValue->setCurrentOrder(order);
+            this->unitAIValue->setCurrentAction(current_action);
+            this->unitAIValue->setCurrentTarget(
+                target->id, target->master_obj->object_group, target->world_x,
+                target->world_y, target->world_z);
+            this->unitAIValue->setTaskedByPlayer();
+        }
     }
 }

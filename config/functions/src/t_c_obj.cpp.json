@@ -12,9 +12,9 @@
     "004CA300": {"status": "matching", "symbol": "?setup@TRIBE_Combat_Object@@MAEHPAVTRIBE_Master_Combat_Object@@PAVRGE_Player@@MMM@Z"},
     "004CA3E0": {"status": "matching", "symbol": "?setup@TRIBE_Combat_Object@@MAEHHPAVRGE_Game_World@@@Z"},
     "004CA510": {"status": "matching", "symbol": "?create_action_list@TRIBE_Combat_Object@@UAEPAVRGE_Action_List@@XZ"},
-    "004CA570": {"status": "scratch", "symbol": "?save@TRIBE_Combat_Object@@UAEXH@Z"},
+    "004CA570": {"status": "matching", "symbol": "?save@TRIBE_Combat_Object@@UAEXH@Z"},
     "004CA5F0": {"status": "matching", "symbol": "?update@TRIBE_Combat_Object@@UAEEXZ"},
-    "004CA640": {"status": "scratch", "symbol": "?modify@TRIBE_Combat_Object@@UAEXME@Z"},
+    "004CA640": {"status": "matching", "symbol": "?modify@TRIBE_Combat_Object@@UAEXME@Z"},
     "004CA700": {"status": "matching", "symbol": "?transform@TRIBE_Combat_Object@@UAEXPAVRGE_Master_Static_Object@@@Z"},
     "004CA740": {"status": "matching", "symbol": "?set_object_state@TRIBE_Combat_Object@@UAEXE@Z"},
     "004CA780": {"status": "matching", "symbol": "?cancel_object@TRIBE_Combat_Object@@UAEXXZ"},
@@ -27,7 +27,7 @@
     "004CAC10": {"status": "accepted_drift", "symbol": "?get_armor@TRIBE_Combat_Object@@UAEXAAF0@Z"},
     "004CAC80": {"status": "matching", "symbol": "?get_pierce_armor@TRIBE_Combat_Object@@UAEXAAF0@Z"},
     "004CACE0": {"status": "scratch", "symbol": "?reposition_artifact@TRIBE_Combat_Object@@QAEXXZ"},
-    "004CB040": {"status": "scratch", "symbol": "?can_debark@TRIBE_Combat_Object@@QAEHXZ"},
+    "004CB040": {"status": "matching", "symbol": "?can_debark@TRIBE_Combat_Object@@QAEHXZ"},
     "004CB060": {"status": "matching", "symbol": "?hunt@TRIBE_Combat_Object@@UAEHHH@Z"},
     "004CB1B0": {"status": "matching", "symbol": "?convert@TRIBE_Combat_Object@@UAEHHH@Z"},
     "004CB300": {"status": "matching", "symbol": "?heal@TRIBE_Combat_Object@@UAEHHH@Z"},
@@ -44,6 +44,6 @@
     "004CC1B0": {"status": "scratch", "symbol": "?area_attack@TRIBE_Combat_Object@@MAEEMMMPAVRGE_Combat_Object@@PAVRGE_Static_Object@@@Z"},
     "004CC4C0": {"status": "accepted_drift", "symbol": "?heal@TRIBE_Combat_Object@@MAEEM@Z"},
     "004CC570": {"status": "matching", "symbol": "?canRepair@TRIBE_Combat_Object@@MAEHXZ"},
-    "004CC5B0": {"status": "scratch", "symbol": "?do_repair@TRIBE_Combat_Object@@QAEXPAVRGE_Static_Object@@@Z"}
+    "004CC5B0": {"status": "matching", "symbol": "?do_repair@TRIBE_Combat_Object@@QAEXPAVRGE_Static_Object@@@Z"}
   }
 }
