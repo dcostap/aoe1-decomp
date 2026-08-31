@@ -8,6 +8,7 @@
 #include "../include/rge_base_game_global.h"
 #include "../include/rge_fio.h"
 #include "../include/sound.h"
+#include "../include/sprite.h"
 #include "../include/tact_mob.h"
 #include "../include/tact_tek.h"
 #include "../include/tech.h"
@@ -120,7 +121,8 @@ TRIBE_Building_Object::TRIBE_Building_Object(
       production_queue(0), production_queue_size(0),
       production_queue_count(0), production_queue_enabled(1),
       production_queue_actions(0), production_queue_change_flag(0),
-      production_queue_auto_paused(0), DoppleInstalled(0)
+      production_queue_auto_paused(0), production_queue_need_attr(-1),
+      DoppleInstalled(0)
 {
     if (do_setup != 0) {
         setup(mode, world);
@@ -311,12 +313,12 @@ void TRIBE_Building_Object::set_object_state(unsigned char state)
             }
         }
 
-        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_obj >= 0) {
+        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_obj > -1) {
             owner->master_objects[static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_obj]->make_new_obj(
                 owner, world_x, world_y, world_z);
         }
 
-        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tile >= 0) {
+        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tile > -1) {
             RGE_Game_World* build_world = owner->world;
             RGE_Map* build_map = build_world->map;
             short x1 = (short)(world_x - static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_x);
@@ -327,11 +329,15 @@ void TRIBE_Building_Object::set_object_state(unsigned char state)
                                    y1, x1, y2, x2,
                                    (unsigned char)static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tile,
                                    1, 0);
-            build_map->request_redraw(x1 - 1, y1 - 1,
-                                      x2 + 1, y2 + 1, 0);
+            build_map->request_redraw(
+                (short)(world_x - static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_x) - 1,
+                (short)(world_y - static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_y) - 1,
+                (short)(world_x + static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_x - DAT_005749e8) + 1,
+                (short)(world_y + static_cast<TRIBE_Master_Building_Object*>(master_obj)->radius_y - DAT_005749e8) + 1,
+                0);
         }
 
-        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech >= 0) {
+        if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech > -1) {
             static_cast<TRIBE_Player*>(owner)->tech_tree->do_tech(
                 static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech);
         }
@@ -358,7 +364,7 @@ void TRIBE_Building_Object::set_object_state(unsigned char state)
             static_cast<TRIBE_Master_Building_Object*>(master_obj)->id,
             -1.0f, -1.0f, 1, 2, 0);
         if (object == 0) {
-            if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech >= 0) {
+            if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech > -1) {
                 static_cast<TRIBE_Player*>(owner)->tech_tree->undo_tech(
                     static_cast<TRIBE_Master_Building_Object*>(master_obj)->on_build_make_tech);
             }
@@ -378,10 +384,12 @@ void TRIBE_Building_Object::rehook()
 unsigned char TRIBE_Building_Object::update()
 {
     if (object_state == 0) {
-        short max_value = building_master(this)->center_tile_req2;
-        int build_time = building_master(this)->build_pts_required;
+        short max_value = sprite->facet_num;
+        TRIBE_Master_Building_Object* master =
+            static_cast<TRIBE_Master_Building_Object*>(master_obj);
+        int build_time = master->build_pts_required;
         unsigned char result = (unsigned char)((long)(
-            (float)(int)max_value * build_pts / (float)build_time));
+            (float)(int)max_value * build_pts / build_time));
 
         if ((short)result < max_value && result != facet) {
             facet = result;
@@ -571,10 +579,10 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
 
 void TRIBE_Building_Object::connect()
 {
-    if (this->master_obj == 0) {
+    if (this->sprite == 0) {
         return;
     }
-    if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->center_tile_req2 != 3) {
+    if (this->sprite->facet_num != 3) {
         facet = 0;
         return;
     }
@@ -601,10 +609,10 @@ void TRIBE_Building_Object::connect()
 
 void TRIBE_Building_Object::connect2()
 {
-    if (this->master_obj == 0) {
+    if (this->sprite == 0) {
         return;
     }
-    if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->center_tile_req2 != 3) {
+    if (this->sprite->facet_num != 3) {
         facet = 0;
         return;
     }
@@ -627,7 +635,7 @@ void TRIBE_Building_Object::lay_down_impassable_terrain()
     RGE_Map* map = owner->world->map;
     TRIBE_Master_Building_Object* object_master =
         static_cast<TRIBE_Master_Building_Object*>(master_obj);
-    if (object_master->on_build_make_tile >= 0) {
+    if (object_master->on_build_make_tile > -1) {
         return;
     }
 
@@ -645,22 +653,21 @@ void TRIBE_Building_Object::lay_down_impassable_terrain()
             RGE_Tile* tile = &map->map_row_offset[y][x];
             unsigned char terrain =
                 (unsigned char)(tile->terrain_type | (tile->height << 5));
-            unsigned char replacement;
             switch (terrain & 0x1F) {
             case 0:
-                replacement = (terrain & 0xF0) | 0x10;
+                terrain = (terrain & 0xF0) | 0x10;
                 break;
             case 1:
-                replacement = (terrain & 0xEF) | 0x0F;
+                terrain = (terrain & 0xEF) | 0x0F;
                 break;
             case 6:
-                replacement = (terrain & 0xEE) | 0x0E;
+                terrain = (terrain & 0xEE) | 0x0E;
                 break;
             default:
                 continue;
             }
-            tile->terrain_type = replacement & 0x1F;
-            tile->height = replacement >> 5;
+            tile->terrain_type = terrain & 0x1F;
+            tile->height = terrain >> 5;
         }
     }
 }
@@ -670,7 +677,7 @@ void TRIBE_Building_Object::lay_down_passable_terrain()
     RGE_Map* map = owner->world->map;
     TRIBE_Master_Building_Object* object_master =
         static_cast<TRIBE_Master_Building_Object*>(master_obj);
-    if (object_master->on_build_make_tile >= 0) {
+    if (object_master->on_build_make_tile > -1) {
         return;
     }
 
@@ -688,22 +695,21 @@ void TRIBE_Building_Object::lay_down_passable_terrain()
             RGE_Tile* tile = &map->map_row_offset[y][x];
             unsigned char terrain =
                 (unsigned char)(tile->terrain_type | (tile->height << 5));
-            unsigned char replacement;
             switch (terrain & 0x1F) {
             case 0x0E:
-                replacement = (terrain & 0xE6) | 6;
+                terrain = (terrain & 0xE6) | 6;
                 break;
             case 0x0F:
-                replacement = (terrain & 0xE1) | 1;
+                terrain = (terrain & 0xE1) | 1;
                 break;
             case 0x10:
-                replacement = terrain & 0xE0;
+                terrain = terrain & 0xE0;
                 break;
             default:
                 continue;
             }
-            tile->terrain_type = replacement & 0x1F;
-            tile->height = replacement >> 5;
+            tile->terrain_type = terrain & 0x1F;
+            tile->height = terrain >> 5;
         }
     }
 }
@@ -747,26 +753,25 @@ void TRIBE_Building_Object::cancel_build()
 
 unsigned char TRIBE_Building_Object::build(float amount)
 {
-    if (object_state != 0) {
-        return 1;
+    if (object_state == 0) {
+        TRIBE_Master_Building_Object* object_master =
+            static_cast<TRIBE_Master_Building_Object*>(master_obj);
+        float needed = (float)(int)object_master->build_pts_required;
+        if (amount + build_pts > needed) {
+            amount = needed - build_pts;
+        }
+        hp = (float)(int)object_master->hp * amount / needed + hp;
+        if (hp > (float)(int)object_master->hp) {
+            hp = (float)(int)object_master->hp;
+        }
+        build_pts += amount;
+        if (build_pts >= needed) {
+            set_object_state(2);
+            return 1;
+        }
+        return 0;
     }
-
-    TRIBE_Master_Building_Object* object_master =
-        static_cast<TRIBE_Master_Building_Object*>(master_obj);
-    float needed = (float)(int)object_master->build_pts_required;
-    if (amount + build_pts > needed) {
-        amount = needed - build_pts;
-    }
-    hp = (float)(int)object_master->hp * amount / needed + hp;
-    if (hp > (float)(int)object_master->hp) {
-        hp = (float)(int)object_master->hp;
-    }
-    build_pts += amount;
-    if (build_pts >= needed) {
-        set_object_state(2);
-        return 1;
-    }
-    return 0;
+    return 1;
 }
 
 int TRIBE_Building_Object::work_status(short& type_out, short& p2,
@@ -1024,61 +1029,60 @@ void TRIBE_Building_Object::update_production_queue()
         return;
     }
 
-    if (work_status(work_type, unused_1, unused_2, 0, 0) != 0 &&
-        (work_type == 0x66 || work_type == 0x67)) {
-        while (production_queue_count > 0) {
-            remove_from_production_queue(production_queue->master_id, -1);
-        }
-        return;
-    }
-
-    if (production_queue_actions->list == 0) {
-        float* attributes = owner->attributes;
-        if (attributes[0x2C / 4] < attributes[0x80 / 4]) {
-            if (production_queue_need_attr == 0x20) {
+    if (work_status(work_type, unused_1, unused_2, 0, 0) == 0 ||
+        (work_type != 0x66 && work_type != 0x67)) {
+        if (production_queue_actions->list == 0) {
+            float* attributes = owner->attributes;
+            if (attributes[0x2C / 4] < attributes[0x80 / 4]) {
+                if (production_queue_need_attr == 0x20) {
+                    return;
+                }
+                production_queue_need_attr = 0x20;
+                rge_base_game->notification(0x7D, owner->id, 0x20, 0, 0);
                 return;
             }
-            production_queue_need_attr = 0x20;
-            rge_base_game->notification(0x7D, owner->id, 0x20, 0, 0);
-            return;
-        }
 
-        if (attributes[0x10 / 4] > DAT_005749f4) {
-            if (production_queue_need_attr == 4) {
+            if (attributes[0x10 / 4] > DAT_005749f4) {
+                if (production_queue_need_attr == 4) {
+                    int id = owner->id;
+                    TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
+                    long* value = &game->queue_is_waiting_on_pop_counter[id];
+                    long old = *value;
+                    long result = old - 1;
+                    *value = result;
+                }
+                production_queue_need_attr = -1;
+                TRIBE_Action_Make_Obj* action =
+                    new TRIBE_Action_Make_Obj(this,
+                                               production_queue->master_id, -1, 1);
+                if (action != 0) {
+                    production_queue_actions->add_action(action);
+                }
+            } else {
+                if (production_queue_need_attr == 4) {
+                    return;
+                }
+                production_queue_need_attr = 4;
+                rge_base_game->notification(0x7D, owner->id, 4, 0, 0);
                 int id = owner->id;
                 TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
                 long* value = &game->queue_is_waiting_on_pop_counter[id];
                 long old = *value;
-                long result = old - 1;
+                long result = old + 1;
                 *value = result;
-            }
-            production_queue_need_attr = -1;
-            TRIBE_Action_Make_Obj* action =
-                new TRIBE_Action_Make_Obj(this,
-                                           production_queue->master_id, -1, 1);
-            if (action != 0) {
-                production_queue_actions->add_action(action);
-            }
-        } else {
-            if (production_queue_need_attr == 4) {
                 return;
             }
-            production_queue_need_attr = 4;
-            rge_base_game->notification(0x7D, owner->id, 4, 0, 0);
-            int id = owner->id;
-            TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
-            long* value = &game->queue_is_waiting_on_pop_counter[id];
-            long old = *value;
-            long result = old + 1;
-            *value = result;
-            return;
         }
-    }
 
-    unsigned char action_state = production_queue_actions->update();
-    if (action_state == 3 || action_state == 2 || action_state == 1) {
-        production_queue_actions->remove_action();
-        advance_production_queue();
+        unsigned char action_state = production_queue_actions->update();
+        if (action_state == 3 || action_state == 2 || action_state == 1) {
+            production_queue_actions->remove_action();
+            advance_production_queue();
+        }
+    } else if (production_queue_count > 0) {
+        do {
+            remove_from_production_queue(production_queue->master_id, -1);
+        } while (production_queue_count > 0);
     }
 }
 
