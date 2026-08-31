@@ -1632,7 +1632,10 @@ int RGE_Base_Game::setup_class() {
 
     WNDCLASSA cls;
     cls.hCursor = 0;
-    cls.lpszMenuName = prog_info->menu_name[0] ? prog_info->menu_name : 0;
+    cls.lpszMenuName = "";
+    if (prog_info->menu_name[0] != 0) {
+        cls.lpszMenuName = prog_info->menu_name;
+    }
     cls.hIcon = LoadIconA(prog_info->instance, prog_info->icon_name);
     cls.lpszClassName = prog_info->prog_name;
     cls.hbrBackground = 0;
@@ -4303,14 +4306,14 @@ unsigned char RGE_Base_Game::GetWorldChecksums(long& checksum1, long& checksum2,
     int i;
     RGE_Game_World* w;
 
-    i = 0;
     c1 = 0;
+    c2 = 0;
+    c3 = 0;
+    i = 0;
     checksum1 = 0;
     checksum2 = 0;
     checksum3 = 0;
     w = world;
-    c2 = 0;
-    c3 = 0;
     if (w != 0) {
         if (w->player_num > 0) {
             do {
