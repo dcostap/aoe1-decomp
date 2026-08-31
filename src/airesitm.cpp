@@ -11,12 +11,16 @@ ResourceItem::ResourceItem()
 
 ResourceItem::ResourceItem(int count)
     : next(0), prev(0), numberValue(count) {
-    int i;
+    int i = 0;
 
-    for (i = 0; i < count && i < 8; ++i) {
+    while (i < numberValue) {
+        if (i >= 8) {
+            return;
+        }
         valueValue[i] = 0;
         sortedValue[i] = -1;
         sortedIndexValue[i] = -1;
+        i = i + 1;
     }
 
     for (; i < 8; ++i) {
@@ -28,12 +32,16 @@ ResourceItem::ResourceItem(int count)
 
 ResourceItem::ResourceItem(int count, int* values)
     : next(0), prev(0), numberValue(count) {
-    int i;
+    int i = 0;
 
-    for (i = 0; i < count && i < 8; ++i) {
+    while (i < numberValue) {
+        if (i >= 8) {
+            return;
+        }
         valueValue[i] = values[i];
         sortedValue[i] = -1;
         sortedIndexValue[i] = -1;
+        i = i + 1;
     }
 
     for (; i < 8; ++i) {

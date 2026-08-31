@@ -106,3 +106,13 @@ The direct checks remain exact for `00447D50`, `00447950`, `00448040`,
 change the instruction layout of `00448250` and `00448340`, while preserving
 their observed API call sequence and behavior. The module needs a fresh grouped
 audit after integration because the local worktree lacks the FPO reference file.
+
+## Worker `sa-6541272a-r1` audit
+
+The serial assigned-TU audit is
+`build/root-orchestration/direct-cycle-004/dsutil/report.txt`. It compiled all
+32 normal owners. It reported 28 matching results, three grouped mismatches,
+and one accepted-drift observation. The three assigned scratch functions remain
+nonexact: `004481E0` diff 96, `00448250` diff 160, and `00448BA0` diff 1029.
+All three keep their owner symbols and boundaries. Existing matching neighbors
+remain exact in the grouped audit.

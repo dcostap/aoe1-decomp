@@ -606,7 +606,6 @@ int __cdecl WaveWriteFile(HMMIO hmmio, unsigned int cBytes,
                           unsigned int* pdwWritten, MMIOINFO* lpmmio)
 {
     unsigned int i = 0;
-    (void)pad;
     *pdwWritten = 0;
     if (cBytes <= 0) return;
     do {
@@ -1115,10 +1114,9 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
             ds_write_cursor, ds_chunk_size, (void**)&lpWrite1, &dwLen1,
             (void**)&lpWrite2, &dwLen2, 0)) goto done;
         {
-            LPWAVEFORMATEX wave = _wiWave;
-            if (wave && lpWrite1 && wave->wBitsPerSample == 8)
+            if (_wiWave && lpWrite1 && _wiWave->wBitsPerSample == 8)
                 memset(lpWrite1, 0x80, dwLen1);
-            else if (wave && lpWrite1 && wave->wBitsPerSample == 16)
+            else if (_wiWave && lpWrite1 && _wiWave->wBitsPerSample == 16)
                 memset(lpWrite1, 0, dwLen1);
         }
         IDirectSoundBuffer_Unlock((LPDIRECTSOUNDBUFFER)ds_stream_buffer,
@@ -1147,12 +1145,11 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
                      &uChkErr);
         if (uChkErr < dwLen1) {
             if (ds_stream_loop == 0) {
-                LPWAVEFORMATEX wave = _wiWave;
-                if (wave && lpWrite1) {
-                    if (wave->wBitsPerSample == 8)
+                if (_wiWave && lpWrite1) {
+                    if (_wiWave->wBitsPerSample == 8)
                         memset(lpWrite1 + uChkErr, 0x80,
                                dwLen1 - uChkErr);
-                    else if (wave->wBitsPerSample == 16)
+                    else if (_wiWave->wBitsPerSample == 16)
                         memset(lpWrite1 + uChkErr, 0,
                                dwLen1 - uChkErr);
                 }
@@ -1204,10 +1201,8 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
             }
         }
     } else if (dwLen2 != 0 && ds_stream_stop_requested != 0) {
-        LPWAVEFORMATEX wave = _wiWave;
-        if (wave && lpWrite2) {
-            unsigned int bits = wave->wBitsPerSample;
-            unsigned int fill = ((bits != 8) - 1) & 0x80;
+        if (_wiWave && lpWrite2) {
+            unsigned int fill = ((_wiWave->wBitsPerSample != 8) - 1) & 0x80;
             memset(lpWrite2, fill, dwLen2);
         }
     }

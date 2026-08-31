@@ -7,8 +7,8 @@
   },
   "functions": {
     "00411EC0": {"status": "matching", "symbol": "??0ResourceItem@@QAE@XZ"},
-    "00411F10": {"status": "scratch", "symbol": "??0ResourceItem@@QAE@H@Z"},
-    "00411F80": {"status": "scratch", "symbol": "??0ResourceItem@@QAE@HPAH@Z"},
+    "00411F10": {"status": "matching", "symbol": "??0ResourceItem@@QAE@H@Z"},
+    "00411F80": {"status": "matching", "symbol": "??0ResourceItem@@QAE@HPAH@Z"},
     "00411FF0": {"status": "matching", "symbol": "??0ResourceItem@@QAE@ABV0@@Z"},
     "00412050": {"status": "matching", "symbol": "??0ResourceItem@@QAE@PAV0@@Z"},
     "004120B0": {"status": "matching", "symbol": "??1ResourceItem@@UAE@XZ"},
