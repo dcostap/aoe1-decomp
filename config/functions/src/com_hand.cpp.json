@@ -52,7 +52,7 @@
     "00429810": {"status": "matching", "symbol": "?SendChatMsg@TCommunications_Handler@@QAEXIIPAD@Z"},
     "00429870": {"status": "matching", "symbol": "?TXChat@TCommunications_Handler@@QAEJIPAEPAD@Z"},
     "00429A30": {"status": "matching", "symbol": "?SendSpeedChange@TCommunications_Handler@@QAEXII@Z"},
-    "00429A90": {"status": "scratch", "symbol": "?SendIResignMsg@TCommunications_Handler@@QAEXXZ"},
+    "00429A90": {"status": "matching", "symbol": "?SendIResignMsg@TCommunications_Handler@@QAEXXZ"},
     "00429BD0": {"status": "matching", "symbol": "?HiTurnAcknowledged@TCommunications_Handler@@QAEKXZ"},
     "00429C40": {"status": "matching", "symbol": "?AllPlayersAcknowledged@TCommunications_Handler@@QAEHXZ"},
     "00429CE0": {"status": "matching", "symbol": "?SendChecksumMessage@TCommunications_Handler@@QAEJKIJJJJJ@Z"},

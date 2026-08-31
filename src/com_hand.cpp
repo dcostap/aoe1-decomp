@@ -2449,9 +2449,9 @@ void TCommunications_Handler::SendIResignMsg()
     L->Log("  >TX RSGN (%d)", 4);
     this->CommOut(0, 0x51, &resign, sizeof(resign), 0);
 
-    done.Command = 'D';
     done.HighLatencyCenti = this->Speed->GetHighLatencyCenti();
     done.FrameRateMsec = this->Speed->GetAvgFrameRate();
+    done.Command = 'D';
 
     done.ExecuteOnTurn = this->current_turn +
                          this->PlayerOptions.CommandTurnIncrement + 1;
