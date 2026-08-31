@@ -13,7 +13,7 @@
     "004D1850": {"status": "matching", "symbol": "?save@TRIBE_Action_Repair@@UAEXH@Z"},
     "004D1880": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Repair@@UAEXE@Z"},
     "004D18B0": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Repair@@MAEXE@Z"},
-    "004D1BB0": {"status": "scratch", "symbol": "?update@TRIBE_Action_Repair@@UAEEXZ"},
+    "004D1BB0": {"status": "accepted_drift", "symbol": "?update@TRIBE_Action_Repair@@UAEEXZ"},
     "004D1F50": {"status": "matching", "symbol": "?stop@TRIBE_Action_Repair@@UAEHXZ"},
     "004D1F60": {"status": "matching", "symbol": "?move_to@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z"},
     "004D1FA0": {"status": "matching", "symbol": "?work@TRIBE_Action_Repair@@UAEHPAVRGE_Static_Object@@MMM@Z"},
