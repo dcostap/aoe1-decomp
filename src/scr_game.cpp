@@ -3230,20 +3230,17 @@ void TRIBE_Screen_Game::reset_clocks() {
                 if (static_cast<TRIBE_Player*>(this->world->players[player_id])
                         ->allied_victory != 0) {
                     int other_player = 1;
-                    if (player_id > 1) {
-                        do {
-                            if (static_cast<TRIBE_Player*>(
-                                    this->world->players[player_id])
-                                    ->relation(other_player) == 0 &&
-                                this->world->players[other_player]
-                                    ->relation(player_id) == 0 &&
-                                this->world->players[other_player]
-                                    ->allied_victory != 0) {
-                                countdown = 1;
-                                break;
-                            }
-                            ++other_player;
-                        } while (other_player < player_id);
+                    for (; other_player < player_id; ++other_player) {
+                        if (static_cast<TRIBE_Player*>(
+                                this->world->players[player_id])
+                                ->relation(other_player) == 0 &&
+                            this->world->players[other_player]
+                                ->relation(player_id) == 0 &&
+                            this->world->players[other_player]
+                                ->allied_victory != 0) {
+                            countdown = 1;
+                            break;
+                        }
                     }
                 }
 
@@ -3262,20 +3259,17 @@ void TRIBE_Screen_Game::reset_clocks() {
                 if (static_cast<TRIBE_Player*>(this->world->players[player_id])
                         ->allied_victory != 0) {
                     int other_player = 1;
-                    if (player_id > 1) {
-                        do {
-                            if (static_cast<TRIBE_Player*>(
-                                    this->world->players[player_id])
-                                    ->relation(other_player) == 0 &&
-                                this->world->players[other_player]
-                                    ->relation(player_id) == 0 &&
-                                this->world->players[other_player]
-                                    ->allied_victory != 0) {
-                                countdown = 1;
-                                break;
-                            }
-                            ++other_player;
-                        } while (other_player < player_id);
+                    for (; other_player < player_id; ++other_player) {
+                        if (static_cast<TRIBE_Player*>(
+                                this->world->players[player_id])
+                                ->relation(other_player) == 0 &&
+                            this->world->players[other_player]
+                                ->relation(player_id) == 0 &&
+                            this->world->players[other_player]
+                                ->allied_victory != 0) {
+                            countdown = 1;
+                            break;
+                        }
                     }
                 }
 
