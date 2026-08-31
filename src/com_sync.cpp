@@ -393,6 +393,7 @@ void RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int value) {
 
 int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     unsigned int playerNo, unsigned long commTurn) {
+    unsigned int searchIndex = 1;
     unsigned long myWorldTime = 0;
     int differentCount = 0;
     int sameCount = 0;
@@ -401,14 +402,14 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     long myPositionChecksum = 0;
     long myActionChecksum = 0;
     long myObstructionChecksum = 0;
-    int foundMyValues = 0;
+    bool foundMyValues = false;
     unsigned long myRandom = 0;
     int humanPlayerCount = 0;
 
-    unsigned int recordIndex = 1;
-    for (; recordIndex <= 0x36; ++recordIndex) {
-        CHECKSUMARRAY& entry = this->Check[recordIndex];
+    for (; searchIndex <= 0x36; ++searchIndex) {
+        CHECKSUMARRAY& entry = this->Check[searchIndex];
         if (entry.PlayerNo == playerNo && entry.WTurn == commTurn) {
+            foundMyValues = true;
             myChecksumNew = entry.cs2;
             myPositionChecksum = entry.cs3;
             myWorldTime = entry.WTime;
@@ -416,7 +417,6 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
             myObstructionChecksum = entry.cs5;
             myUnifiedVisible = entry.cs1;
             myRandom = entry.Random;
-            foundMyValues = 1;
             break;
         }
     }
@@ -430,10 +430,10 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
            myWorldTime, myUnifiedVisible, myChecksumNew,
            myPositionChecksum, myActionChecksum, myObstructionChecksum);
 
-    recordIndex = 1;
+    unsigned int recordIndex = 1;
     do {
         CHECKSUMARRAY& entry = this->Check[recordIndex];
-        if (entry.PlayerNo != playerNo && commTurn == entry.WTurn) {
+        if (entry.PlayerNo != playerNo && entry.WTurn == commTurn) {
             if (myWorldTime == entry.WTime &&
                 myUnifiedVisible == entry.cs1 &&
                 myChecksumNew == entry.cs2 &&
