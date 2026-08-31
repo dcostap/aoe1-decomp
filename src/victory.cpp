@@ -11,7 +11,6 @@ extern "C" void* calloc(unsigned int count, unsigned int size);
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
 extern "C" void __cdecl getstring(char** destination, char* source);
 extern "C" void __cdecl free(void* block);
-extern float DAT_005775a0;
 
 
 
@@ -773,7 +772,7 @@ void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
                      (*pp)->relations[self->player->id] == 0 &&
                      (*pp)->allied_victory != 0) || i == self->player->id) {
                     float explored = (*pp)->visible->percentExplored();
-                    if (explored * DAT_005775a0 >= (float)entry->count) {
+                    if (explored * 100.0f >= (float)entry->count) {
                         entry->state = 2;
                         return;
                     }
@@ -783,7 +782,7 @@ void RGE_Victory_Conditions::handle_explore(RGE_Victory_Entry* entry) {
             }
         } else {
             float explored = self->player->visible->percentExplored();
-            if (explored * DAT_005775a0 >= (float)entry->count) {
+            if (explored * 100.0f >= (float)entry->count) {
                 entry->state = 2;
             }
         }

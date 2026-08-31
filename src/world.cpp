@@ -1679,7 +1679,7 @@ byte RGE_Game_World::save_scenario(char* name)
 unsigned char RGE_Game_World::load_scenario(char* name, RGE_Player_Info& info)
 {
     char scenario_name[300];
-    long scenario_version;
+    char scenario_version[5];
     int version;
     int file;
     world_update_counter = 0;
@@ -1687,15 +1687,16 @@ unsigned char RGE_Game_World::load_scenario(char* name, RGE_Player_Info& info)
     if (name != 0) {
         file = rge_open(scenario_name, 0x8000);
         if (file != -1) {
-            rge_read_uncompressed(file, &scenario_version, 4);
-            if (scenario_version == *(long*)version_101) {
+            rge_read_uncompressed(file, scenario_version, 4);
+            scenario_version[4] = 0;
+            if (strcmp(scenario_version, version_101) == 0) {
                 this->load_scenario1(file, info);
                 goto success;
             }
-            if (scenario_version == *(long*)version_102) {
+            if (strcmp(scenario_version, version_102) == 0) {
                 goto version2;
             }
-            if (scenario_version == *(long*)version_103) {
+            if (strcmp(scenario_version, version_103) == 0) {
                 rge_read_uncompressed(file, &version, 4);
                 if (version <= 0) {
                     goto version2;
@@ -1708,29 +1709,29 @@ unsigned char RGE_Game_World::load_scenario(char* name, RGE_Player_Info& info)
                 free(buf);
                 goto version2;
             }
-            if (scenario_version == *(long*)version_104) {
+            if (strcmp(scenario_version, version_104) == 0) {
                 this->load_scenario3(file, info);
                 goto success;
             }
-            if (scenario_version == *(long*)version_105) {
+            if (strcmp(scenario_version, version_105) == 0) {
                 this->load_scenario4(file, info);
                 goto success;
             }
-            if (scenario_version == *(long*)version_106) {
+            if (strcmp(scenario_version, version_106) == 0) {
                 this->load_scenario5(file, info);
                 goto success;
             }
-            if (scenario_version == *(long*)version_107) {
+            if (strcmp(scenario_version, version_107) == 0) {
                 this->load_scenario6(file, info);
                 goto success;
             }
-            if (scenario_version == *(long*)version_108) {
+            if (strcmp(scenario_version, version_108) == 0) {
                 this->load_scenario7(file, info);
                 goto success;
             }
-            if (scenario_version != *(long*)version_109 &&
-                scenario_version != *(long*)version_111 &&
-                scenario_version != *(long*)version_110) {
+            if (strcmp(scenario_version, version_109) != 0 &&
+                strcmp(scenario_version, version_111) != 0 &&
+                strcmp(scenario_version, version_110) != 0) {
                 goto close_failed;
             }
             this->load_scenario8(file, info);
@@ -1749,7 +1750,7 @@ version2:
 }
 
 unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
-    long scenario_version;
+    char scenario_version[5];
     int version;
     int file;
 
@@ -1759,18 +1760,19 @@ unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
         goto cleanup;
     }
 
-    rge_read_uncompressed(file, &scenario_version, 4);
+    rge_read_uncompressed(file, scenario_version, 4);
+    scenario_version[4] = 0;
 
-    if (scenario_version == *(long*)version_101) {
+    if (strcmp(scenario_version, version_101) == 0) {
         this->load_scenario1(file, info);
         goto success;
     }
 
-    if (scenario_version == *(long*)version_102) {
+    if (strcmp(scenario_version, version_102) == 0) {
         goto shared_80;
     }
 
-    if (scenario_version == *(long*)version_103) {
+    if (strcmp(scenario_version, version_103) == 0) {
         rge_read_uncompressed(file, &version, 4);
         if (version > 0) {
             void* buffer = malloc(version);
@@ -1783,29 +1785,29 @@ unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
         goto shared_80;
     }
 
-    if (scenario_version == *(long*)version_104) {
+    if (strcmp(scenario_version, version_104) == 0) {
         this->load_scenario3(file, info);
         goto success;
     }
-    if (scenario_version == *(long*)version_105) {
+    if (strcmp(scenario_version, version_105) == 0) {
         this->load_scenario4(file, info);
         goto success;
     }
-    if (scenario_version == *(long*)version_106) {
+    if (strcmp(scenario_version, version_106) == 0) {
         this->load_scenario5(file, info);
         goto success;
     }
-    if (scenario_version == *(long*)version_107) {
+    if (strcmp(scenario_version, version_107) == 0) {
         this->load_scenario6(file, info);
         goto success;
     }
-    if (scenario_version == *(long*)version_108) {
+    if (strcmp(scenario_version, version_108) == 0) {
         this->load_scenario7(file, info);
         goto success;
     }
-    if (scenario_version == *(long*)version_109 ||
-        scenario_version == *(long*)version_111 ||
-        scenario_version == *(long*)version_110) {
+    if (strcmp(scenario_version, version_109) == 0 ||
+        strcmp(scenario_version, version_111) == 0 ||
+        strcmp(scenario_version, version_110) == 0) {
         this->load_scenario8(file, info);
         goto success;
     } else {
