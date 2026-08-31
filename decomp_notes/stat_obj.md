@@ -86,3 +86,20 @@ escapes the original boundary, and `004C58C0 more_room` because its body
 escapes the original boundary. The other accepted rows remain observed. Their
 current results have no relocation or boundary error, and their differences
 are localized register, width, or instruction-order changes.
+
+## 2026-08-31 group-slot review
+
+Original `00414040` calls `groupUnitCommand(index, 1)` at slot `+0x1B8`,
+`groupUnitCallback(command)` at `+0x1BC`, and `groupUnitCount()` at `+0x1C8`.
+Root retyped those three existing static-object slots and removed the duplicate
+nonvirtual declarations. Root also tested the related moving waypoint methods
+as nonvirtual helpers.
+
+Both forms changed 16 bytes in exact `0045AA70 missile_move`. The change
+reversed the x87 load order for fields `+0x38` and `+0x90`. Exact `00401000`
+and `004C6DA0` remained unchanged, while `00414040` remained broadly
+nonexact. Root restored both headers.
+
+The three slot identities are strong binary evidence. They still need one
+coordinated source model that preserves the ambient VC5 expression order in
+`missile_move`. Do not append duplicate virtuals or accept that regression.
