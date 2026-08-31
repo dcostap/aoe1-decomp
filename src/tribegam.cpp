@@ -417,7 +417,6 @@ int TRIBE_Game::setup()
 
     video_codec_available = ICInfo(0x63646976, 0x31347669, &ici);
 
-    int setup_mp = 0;
     if (this->check_prog_argument("LOBBY") != 0) {
         new TRIBE_Screen_Status_Message("Status Screen", 0x4BF, "scr1", 0xC383);
         panel_system.setCurrentPanel("Status Screen", 0);
@@ -426,8 +425,8 @@ int TRIBE_Game::setup()
             this->setMultiplayerGame(1);
             TribeMPSetupScreen* mp = new TribeMPSetupScreen;
             if (!mp || mp->error_code)
-                return 0;
-            setup_mp = 1;
+                goto ret_zero;
+            goto setup_mp;
         } else if (cmd == -1) {
             TRIBE_Screen_Main_Error* err = new TRIBE_Screen_Main_Error;
             if (!err || err->error_code)
@@ -435,56 +434,15 @@ int TRIBE_Game::setup()
             err->set_text(0x96A);
             panel_system.setCurrentPanel("Main Error Screen", 0);
             panel_system.destroyPanel("Status Screen");
+            goto setup_done;
         } else {
             this->close();
             return 1;
         }
-    } else {
-        cmd = this->comm_handler->LaunchLobbyGame();
-        if (cmd == 1) {
-            this->setMultiplayerGame(1);
-            new TribeMPSetupScreen;
-            setup_mp = 1;
-        } else if (!this->startup_scenario[0]) {
-            if (!this->startup_game[0]) {
-                if (!this->prog_info->skip_startup) {
-                    this->start_video(0, "logo1");
-                } else {
-                    cmd = this->start_menu();
-                    if (cmd == 0)
-                        return 0;
-                }
-            } else {
-                cmd = this->load_game(this->startup_game);
-                if (cmd == 0) {
-                    cmd = this->start_menu();
-                    if (cmd == 0)
-                        return 0;
-                    TEasy_Panel* q = static_cast<TEasy_Panel*>(
-                        panel_system.panel("Main Menu"));
-                    if (q)
-                        q->popupOKDialog(0x961, 0, 0x1C2, 0x64);
-                }
-            }
-        } else {
-            cmd = this->start_scenario(this->startup_scenario);
-            if (cmd == 0) {
-                cmd = this->start_menu();
-                if (cmd == 0)
-                    return 0;
-                TEasy_Panel* q = static_cast<TEasy_Panel*>(
-                    panel_system.panel("Main Menu"));
-                if (q)
-                    q->popupOKDialog(0x961, 0, 0x1C2, 0x64);
-            }
-        }
     }
+    goto normal_start;
 
-    if (setup_mp) {
-        panel_system.setCurrentPanel("MP Setup Screen", 0);
-        panel_system.destroyPanel("Status Screen");
-    }
-
+setup_done:
     this->set_interface_messages();
 
     run_log("------------------------------", 0);
@@ -518,6 +476,44 @@ int TRIBE_Game::setup()
     run_log(&str[4], 0);
 
     return 1;
+
+normal_start:
+    cmd = this->comm_handler->LaunchLobbyGame();
+    if (cmd == 1) {
+        this->setMultiplayerGame(1);
+        new TribeMPSetupScreen;
+        goto setup_mp;
+    }
+    if (this->startup_scenario[0]) {
+        cmd = this->start_scenario(this->startup_scenario);
+    } else if (this->startup_game[0]) {
+        cmd = this->load_game(this->startup_game);
+    } else if (!this->prog_info->skip_startup) {
+        this->start_video(0, "logo1");
+        goto setup_done;
+    } else {
+        if (this->start_menu() == 0)
+            return 0;
+        goto setup_done;
+    }
+    if (cmd == 0) {
+        if (this->start_menu() == 0)
+            return 0;
+        TEasy_Panel* q = static_cast<TEasy_Panel*>(
+            panel_system.panel("Main Menu"));
+        if (q)
+            q->popupOKDialog(0x961, 0, 0x1C2, 0x64);
+    }
+    goto setup_done;
+
+setup_mp:
+    panel_system.setCurrentPanel("MP Setup Screen", 0);
+    panel_system.destroyPanel("Status Screen");
+    goto setup_done;
+
+ret_zero:
+    return 0;
+
 }
 
 
