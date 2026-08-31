@@ -14,7 +14,7 @@
     "00484B30": {"status": "matching", "symbol": "?fig_chance@RGE_RMM_Elevation_Generator@@IAEMJJJ@Z"},
     "00484B50": {"status": "matching", "symbol": "?count_map_tiles@RGE_RMM_Elevation_Generator@@IAEJE@Z"},
     "00484B90": {"status": "accepted_drift", "symbol": "?link_stack_randomly@RGE_RMM_Elevation_Generator@@IAEXPAUMap_Stack@@@Z"},
-    "00484C80": {"status": "scratch", "symbol": "?remove_area_from_lists@RGE_RMM_Elevation_Generator@@IAEXJJJ@Z"},
+    "00484C80": {"status": "matching", "symbol": "?remove_area_from_lists@RGE_RMM_Elevation_Generator@@IAEXJJJ@Z"},
     "00484D00": {"status": "scratch", "symbol": "?base_elevation_generate@RGE_RMM_Elevation_Generator@@IAEEURGE_Elevation_Info_Line@@@Z"}
   }
 }

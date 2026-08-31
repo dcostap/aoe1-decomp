@@ -322,13 +322,11 @@ void RGE_RMM_Elevation_Generator::remove_area_from_lists(
     long row = start_y;
     while (row <= max_x) {
         if (start_x <= max_x) {
-            Map_Stack* node = this->stack_offsets[row] + start_x;
-            long count = max_x - start_x + 1;
-            do {
-                this->remove_stack_node(node);
-                ++node;
-                --count;
-            } while (count != 0);
+            long column = start_x;
+            while (column <= max_x) {
+                this->remove_stack_node(this->stack_offsets[row] + column);
+                ++column;
+            }
         }
         ++row;
     }
