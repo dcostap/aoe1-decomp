@@ -4156,7 +4156,6 @@ int RGE_View::do_paint(long param_1, long param_2, long param_3, long param_4, i
     long new_col;
     long new_row;
     int mode;
-    short brush;
 
     if (this->pick(0x28, 0, param_3, param_4, &pick_info, 0) != 0x33) {
         return 0;
@@ -4167,13 +4166,12 @@ int RGE_View::do_paint(long param_1, long param_2, long param_3, long param_4, i
     this->pick(0x28, 0, param_1, param_2, &pick_info, 0);
 
     mode = rge_base_game->game_mode;
-    brush = rge_base_game->brush_size;
     switch (mode) {
     case 9:
         if (param_5 != 0 && rge_base_game->terrain_id != -1) {
             this->map->do_terrain_brush_stroke(
                 this->real_old_map_col, this->real_old_map_row,
-                new_col, new_row, brush,
+                new_col, new_row, (int)rge_base_game->brush_size,
                 (unsigned char)rge_base_game->terrain_id);
         }
         break;
@@ -4181,7 +4179,7 @@ int RGE_View::do_paint(long param_1, long param_2, long param_3, long param_4, i
         if (param_5 != 0 && rge_base_game->elevation_height != -1) {
             this->map->do_elevation_brush_stroke(
                 this->real_old_map_col, this->real_old_map_row,
-                new_col, new_row, brush,
+                new_col, new_row, (int)rge_base_game->brush_size,
                 (unsigned char)rge_base_game->elevation_height);
         }
         break;
