@@ -312,6 +312,17 @@ int TRIBE_Screen_Sed::create_edit(TPanel* panel, TEditPanel** out_edit,
 int TRIBE_Screen_Sed::create_drop_down(TPanel* parent, TDropDownPanel** out)
 {
     long height;
+    TDropDownPanel* file_list;
+    char* file_directory;
+    char* file_extension;
+    unsigned char file_flag1;
+    unsigned char file_flag2;
+
+    file_list = 0;
+    file_directory = 0;
+    file_extension = 0;
+    file_flag1 = 0;
+    file_flag2 = 0;
 
     if (out == &this->victory_object_list ||
         out == &this->victory_attribute_list ||
@@ -380,8 +391,14 @@ create:
         (*out)->append_line(0x2971, 0);
         (*out)->append_line(0x2972, 0);
         (*out)->set_line(3);
-    } else if (out == &this->player_number_list ||
-               out == &this->victory_enemy_player_list) {
+    } else if (out == &this->player_number_list) {
+        int i = 0;
+        do {
+            (*out)->append_line(i + 0x2877, 0);
+            i++;
+        } while (i < 8);
+        (*out)->set_line(0);
+    } else if (out == &this->victory_enemy_player_list) {
         int i = 0;
         do {
             (*out)->append_line(i + 0x2877, 0);
@@ -473,26 +490,42 @@ create:
         }
         (*out)->set_line(0);
     } else if (out == &this->AiRules) {
-        this->MakeFileList(this->AiRules, rge_base_game->prog_info->ai_dir,
-                           ".per", 0, 1);
-        (*out)->set_line(0);
+        file_list = this->AiRules;
+        file_directory = rge_base_game->prog_info->ai_dir;
+        file_extension = ".per";
+        file_flag1 = 0;
+        file_flag2 = 1;
+        goto make_file_list;
     } else if (out == &this->BuildList) {
-        this->MakeFileList(*out, rge_base_game->prog_info->ai_dir,
-                           ".ai", 1, 1);
-        (*out)->set_line(0);
+        file_list = *out;
+        file_directory = rge_base_game->prog_info->ai_dir;
+        file_extension = ".ai";
+        file_flag1 = 1;
+        file_flag2 = 1;
+        goto make_file_list;
     } else if (out == &this->CityLayout) {
-        this->MakeFileList(*out, rge_base_game->prog_info->ai_dir,
-                           ".cty", 1, 0);
-        (*out)->set_line(0);
+        file_list = *out;
+        file_directory = rge_base_game->prog_info->ai_dir;
+        file_extension = ".cty";
+        file_flag1 = 1;
+        file_flag2 = 0;
+        goto make_file_list;
     } else if (out == this->cinematic_input ||
                out == this->cinematic_input + 1 ||
                out == this->cinematic_input + 2) {
-        this->MakeFileList(*out, rge_base_game->prog_info->avi_dir,
-                           ".avi", 1, 0);
-        (*out)->set_line(0);
+        file_list = *out;
+        file_directory = rge_base_game->prog_info->avi_dir;
+        file_extension = ".avi";
+        file_flag1 = 1;
+        file_flag2 = 0;
+        goto make_file_list;
     } else if (out == this->cinematic_input + 3) {
-        this->MakeFileList(*out, s_592A40, ".bmp", 1, 0);
-        (*out)->set_line(0);
+        file_list = *out;
+        file_directory = s_592A40;
+        file_extension = ".bmp";
+        file_flag1 = 1;
+        file_flag2 = 0;
+        goto make_file_list;
     } else if (out == &this->victory_object_list) {
         this->victory_object_list->set_sorted(1);
         this->victory_object_list->empty_list();
@@ -518,6 +551,12 @@ create:
         this->victory_object_list->set_line(0);
     }
 
+    return this->error_code == 0;
+
+make_file_list:
+    this->MakeFileList(file_list, file_directory, file_extension,
+                       file_flag1, file_flag2);
+    file_list->set_line(0);
     return this->error_code == 0;
 }
 
@@ -726,11 +765,11 @@ TRIBE_Screen_Sed::~TRIBE_Screen_Sed()
     }
     this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_player_list));
     for (i = 0; i < 8; ++i) {
-        this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_opponent_label[i]));
         this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_player_text[i]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_friend_box[i][0]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_friend_box[i][1]));
+        this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_friend_box[i][2]));
         this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_AlliedVictory[i]));
-        for (int j = 0; j < 3; ++j)
-            this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_friend_box[i][j]));
     }
     this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_status_label[0]));
     this->delete_panel(reinterpret_cast<TPanel**>(&this->Diplomacy_status_label[1]));
