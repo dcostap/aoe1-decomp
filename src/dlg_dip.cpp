@@ -20,11 +20,11 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     int i;
     TButtonPanel** ally;
     TButtonPanel** tab_buttons;
+    int tab_count = 0;
     int disable_buttons;
     tagPALETTEENTRY palette_color;
     char temp_str[100];
     TPanel* tab_list[35];
-    int tab_count = 0;
 
     for (i = 0; i < 8; ++i) {
         this->title[i] = 0;
@@ -68,13 +68,11 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
         return;
     }
 
-    this->buttonPics = new TShape("tradicon.shp", 0xC62C);
-    if (this->buttonPics == 0) {
+    if ((this->buttonPics = new TShape("tradicon.shp", 0xC62C)) == 0) {
         return;
     }
 
-    this->backgroundPics = new TShape("dlg_plbn.shp", 0xC63A);
-    if (this->backgroundPics == 0) {
+    if ((this->backgroundPics = new TShape("dlg_plbn.shp", 0xC63A)) == 0) {
         return;
     }
 
@@ -122,12 +120,12 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
 
     this->cur_player_row = -1;
     world = rge_base_game->world;
+    player_id = 1;
     if (world->player_num - 1 > 0) {
         button = this->woodTributeButton;
         tab_buttons = this->allyButton;
         y = 0x50;
-        for (player_id = 1; player_id < world->player_num;
-             ++player_id, ++button, tab_buttons += 3, y += 0x1E) {
+        do {
             const int row = player_id - 1;
             RGE_Player* player = world->players[player_id];
 
@@ -256,7 +254,12 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
                 button[-8]->set_help_info(0x7689, -1);
                 button[16]->set_help_info(0x768A, -1);
             }
-        }
+
+            ++player_id;
+            ++button;
+            tab_buttons += 3;
+            y += 0x1E;
+        } while (player_id < world->player_num);
     }
 
     if (this->create_check_box(this, &this->allianceButton,
@@ -644,13 +647,13 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                 if (panel == this->woodTributeButton[index]) {
                     if (this->check_wood() == 0) {
                         cost += 1.0f;
-                        if (rge_base_game->get_player()->attributes[4] -
+                        if (rge_base_game->get_player()->attributes[1] -
                                 this->woodTotal >= cost * 100.0f) {
                             this->woodTributeAmount[player_id - 1] += 100.0f;
                             this->woodTotal += cost * 100.0f;
                         } else {
                             float amount =
-                                (rge_base_game->get_player()->attributes[4] -
+                                (rge_base_game->get_player()->attributes[1] -
                                  this->woodTotal) / cost;
                             this->woodTributeAmount[player_id - 1] =
                                 amount + this->woodTributeAmount[player_id - 1];
@@ -658,7 +661,7 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                         }
                         sprintf(temp_str, "%ld",
                                 static_cast<long>(
-                                    rge_base_game->get_player()->attributes[4] -
+                                    rge_base_game->get_player()->attributes[1] -
                                     this->woodTotal));
                         this->playerWood->set_text(temp_str);
                         sprintf(temp_str, "%ld",
@@ -669,7 +672,7 @@ long TribeDiplomacyDialog::action(TPanel* panel, long event,
                     }
                     sprintf(temp_str, "%ld",
                             static_cast<long>(
-                                rge_base_game->get_player()->attributes[4] -
+                                rge_base_game->get_player()->attributes[1] -
                                 this->woodTotal));
                     this->playerWood->set_text(temp_str);
                     this->check_wood();
