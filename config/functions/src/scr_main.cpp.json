@@ -6,11 +6,11 @@
     "flags": "gx"
   },
   "functions": {
-    "0049E6D0": {"status": "scratch", "symbol": "??0TRIBE_Screen_Main_Menu@@QAE@XZ"},
+    "0049E6D0": {"status": "matching", "symbol": "??0TRIBE_Screen_Main_Menu@@QAE@XZ"},
     "0049EC00": {"status": "matching", "symbol": "??1TRIBE_Screen_Main_Menu@@UAE@XZ"},
     "0049ECD0": {"status": "matching", "symbol": "?handle_idle@TRIBE_Screen_Main_Menu@@UAEJXZ"},
     "0049ED00": {"status": "matching", "symbol": "?key_down_action@TRIBE_Screen_Main_Menu@@UAEJJFHHH@Z"},
-    "0049EE00": {"status": "scratch", "symbol": "?action@TRIBE_Screen_Main_Menu@@UAEJPAVTPanel@@JKK@Z"},
+    "0049EE00": {"status": "matching", "symbol": "?action@TRIBE_Screen_Main_Menu@@UAEJPAVTPanel@@JKK@Z"},
     "0049F0D0": {"status": "matching", "symbol": "??0TRIBE_Screen_Main_Error@@QAE@XZ"},
     "0049F240": {"status": "matching", "symbol": "??1TRIBE_Screen_Main_Error@@UAE@XZ"},
     "0049F2B0": {"status": "matching", "symbol": "?set_text@TRIBE_Screen_Main_Error@@QAEXPAD@Z"},
