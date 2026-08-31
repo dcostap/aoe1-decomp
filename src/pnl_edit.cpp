@@ -98,7 +98,10 @@ long TEditPanel::setup(
         return 0;
     }
 
-    int styleVal = ((this->format != 7 ? -1 : 0) & 0xFFE0003C) + 0x40200044;
+    int styleVal;
+    if (this->format != TEditPanel::FormatMultiLine)
+        styleVal = 0x40000080;
+    else styleVal = 0x40200044;
     this->edit_wnd = CreateWindowExA(
         0, "edit", 0, styleVal,
         param_3 + 1, param_4 + 1, param_5 - 2, param_6 - 2,
@@ -134,15 +137,9 @@ long TEditPanel::setup(
         SendMessageA(this->edit_wnd, 0x30, (unsigned int)this->font, 0);
     }
     this->draw_format = 0x2000;
-    {
-        int df2 = this->format - 7;
-        if (df2) {
-            df2 = -1;
-        }
-        df2 &= 0x10;
-        df2 += 0x2010;
-        this->draw_format = df2;
-    }
+    if (this->format != TEditPanel::FormatMultiLine)
+        this->draw_format = 0x2020;
+    else this->draw_format = 0x2010;
     return 1;
 }
 
