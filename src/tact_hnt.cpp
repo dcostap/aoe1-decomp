@@ -388,14 +388,14 @@ state_default:
             case 3:
             case 4:
             case 5:
-                this->timer = -1.5f;
+                this->timer = -3.0f;
                 this->obj->stop_moving();
                 return 0;
             case 1:
             case 2:
                 if (this->target_obj2 == 0) { this->set_state(8); return 0; }
                 if (this->obj->distance_to_object(this->target_obj2) > DAT_00575168) {
-                    this->timer = -1.5f;
+                    this->timer = -3.0f;
                     this->obj->stop_moving();
                     return 0;
                 }

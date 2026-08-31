@@ -134,64 +134,58 @@ unsigned int RGE_Communications_Queue::FlushTurnRange(
     unsigned int i = 0;
     unsigned int index = 0;
 
-    while (index <= HighQueueDepth) {
-        MsgQueue* mq = &Queue[index];
-        unsigned int execTurn = mq->ExecTurn;
-        ++index;
-
-        if (((execTurn < param_1) || (execTurn > param_2)) &&
-            !((param_1 == 0) && (param_2 == 0))) {
-            continue;
+    do {
+        unsigned int execTurn = Queue[index].ExecTurn;
+        MsgQueue* entry = &Queue[index];
+        if (((execTurn >= param_1) && (execTurn <= param_2)) ||
+            ((param_1 == 0) && (param_2 == 0))) {
+            i++;
+            if (entry->Size > 0) {
+                entry->Code = 0;
+                entry->ExecTurn = 0;
+                entry->SeqNo = 0;
+                entry->From = 0;
+                entry->Size = 0;
+                entry->ControlCommand = 0;
+                if (entry->msgptr != 0) {
+                    operator delete(entry->msgptr);
+                }
+                entry->msgptr = 0;
+            }
         }
-
-        i++;
-        if (mq->Size <= 0) {
-            continue;
-        }
-
-        mq->Code = 0;
-        mq->ExecTurn = 0;
-        mq->SeqNo = 0;
-        mq->From = 0;
-        mq->Size = 0;
-        mq->ControlCommand = 0;
-
-        if (mq->msgptr != 0) {
-            operator delete(mq->msgptr);
-        }
-        mq->msgptr = 0;
-    }
+        index++;
+    } while (index <= HighQueueDepth);
 
     return i;
 }
 
 void RGE_Communications_Queue::FlushForPlayer(unsigned int param_1) {
-    RGE_Communications_Queue* th = this;
     L->Log("Flushing queue for player %d", param_1);
 
     unsigned int i = 0;
     do {
-        MsgQueue* q = &th->Queue[i];
-        unsigned int from = q->From;
-        if (from == param_1 && q->Size > 0) {
+        unsigned int from = Queue[i].From;
+        MsgQueue* entry = &Queue[i];
+        if (from == param_1 && entry->Size > 0) {
             L->Log("Remove Q #%d Seq=%d ToExecute %ld From P#%d Size=%d CtrlCmd=%d",
-                i, q->SeqNo, q->ExecTurn, from, q->Size,
-                q->ControlCommand, q->Code);
+                i, entry->SeqNo, entry->ExecTurn, from, entry->Size,
+                entry->ControlCommand, entry->Code);
 
-            void* data = q->msgptr;
-            q->Code = 0;
-            q->ExecTurn = 0;
-            q->SeqNo = 0;
-            q->From = 0;
-            q->Size = 0;
-            q->ControlCommand = 0;
+            entry = &Queue[i];
+            void* data = entry->msgptr;
+            entry->Code = 0;
+            entry->ExecTurn = 0;
+            entry->SeqNo = 0;
+            entry->From = 0;
+            entry->Size = 0;
+            entry->ControlCommand = 0;
             if (data != 0) {
                 operator delete(data);
             }
-            q->msgptr = 0;
+            entry->msgptr = 0;
         }
         i++;
-    } while (i <= th->HighQueueDepth);
+    } while (i <= HighQueueDepth);
 }
 
 unsigned int RGE_Communications_Queue::FlushForTurn(unsigned long turn) {

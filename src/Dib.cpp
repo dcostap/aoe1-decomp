@@ -436,7 +436,6 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
                 param_5 += param_9;
                 --param_17;
             } while (param_17 != 0);
-            return param_7 * param_6;
         }
     } else {
         iVar1 = param_18;

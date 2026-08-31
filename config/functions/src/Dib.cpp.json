@@ -30,7 +30,7 @@
     "0043AA90": {"status": "accepted_drift", "symbol": "xlatClut4"},
     "0043AAD0": {"status": "accepted_drift", "symbol": "xlatRle8"},
     "0043AB40": {"status": "matching", "symbol": "?xlatRle4@@YAXPAEK0@Z"},
-    "0043AB50": {"status": "scratch", "symbol": "memmove"},
+    "0043AB50": {"status": "scratch", "symbol": "_memmove"},
     "0043AB80": {"status": "matching", "symbol": "?CreateIdentityPalette@@YAXPAX@Z"},
     "0043ACB0": {"status": "matching", "symbol": "?CopyPalette@@YAPAXPAX@Z"},
     "0043AD40": {"status": "matching", "symbol": "?DibFree@@YAXPAUtagBITMAPINFOHEADER@@@Z"}
