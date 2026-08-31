@@ -6,7 +6,7 @@
     "flags": "gx"
   },
   "functions": {
-    "00478F40": {"status": "scratch", "symbol": "??0TMessagePanel@@QAE@PAXJJ@Z"},
+    "00478F40": {"status": "matching", "symbol": "??0TMessagePanel@@QAE@PAXJJ@Z"},
     "00479050": {"status": "matching", "symbol": "??1TMessagePanel@@UAE@XZ"},
     "004790E0": {"status": "matching", "symbol": "?set_rect@TMessagePanel@@UAEXJJJJ@Z"},
     "00479270": {"status": "matching", "symbol": "?set_justification@TMessagePanel@@QAEXW4JustType@1@0H@Z"},
