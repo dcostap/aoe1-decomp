@@ -301,7 +301,8 @@ void TEasy_Panel::setup_shadow_area(int force)
         unsigned long old_flags = this->render_area->DrawSystem->Flags;
 
         if (area == 0) {
-            this->render_area->DrawSystem->Flags &= 1;
+            TDrawSystem* draw_system = this->render_area->DrawSystem;
+            draw_system->Flags &= 1;
             sprintf(area_name + 4, "%s Shadow Panel", this->panel_name);
             this->shadow_area = new TDrawArea(area_name + 4, 0);
         }

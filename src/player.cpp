@@ -1839,7 +1839,7 @@ unsigned char RGE_Player::command_make_move(RGE_Static_Object* target, float x, 
     short count;
     if (get_selected_objects_to_command(&list, &count, -1, -1, -1, -1)) {
         list[0]->play_move_sound();
-        this->world->commands->command_order(list, count, target, x, y);
+        this->world->commands->command_move(list, count, target, x, y);
         free(list);
         return 1;
     }
@@ -1937,7 +1937,7 @@ unsigned char RGE_Player::command_formation(int formation) {
         int iVar1 = formation;
         short count;
         if (this->get_selected_objects_to_command(&list, &count, -1, -1, -1, -1)) {
-            (*list)->play_move_sound();
+            (*list)->play_command_sound();
             this->world->commands->command_formation(list, count, iVar1);
             free(list);
             return 1;
@@ -1952,7 +1952,7 @@ unsigned char RGE_Player::command_stand_ground() {
     short count;
 
     if (get_selected_objects_to_command(&list, &count, -1, -1, -1, -1)) {
-        list[0]->play_move_sound();
+        list[0]->play_command_sound();
         this->world->commands->command_group_ai_order(this->id, this->id, list, count, 0x2d5, -1, -1, -1.0f, -1.0f, -1.0f, 1.0f, 1, 0, 100);
         free(list);
         return 1;
@@ -1997,7 +1997,7 @@ unsigned char RGE_Player::command_add_waypoint(float x, float y, float z) {
     short list_num;
 
     if (this->get_selected_objects_to_command(&list, &list_num, -1, -1, -1, -1)) {
-        list[0]->play_move_sound();
+        list[0]->play_command_sound();
         this->world->commands->command_group_waypoint(list, list_num, (int)x, (int)y);
         free(list);
         return 1;

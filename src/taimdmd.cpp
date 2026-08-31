@@ -36,22 +36,22 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
       resourceAI(p1, p2, 4, 500, 0, 1000),
       strategyAI(p1, p2),
       tacticalAI(p1, p2),
-      tradeAI(p1, p2)
+      tradeAI(p1, p2),
+      aiPlayer((TRIBE_Player*)player),
+      firstUpdate(1),
+      veryFirstUpdate(1),
+      updateDelay(p2),
+      lastDiplomacyUpdateTime(0),
+      lastTacticalUpdateTime(0),
+      lastTributeChatTime(0),
+      tributeChatTimeout(0),
+      waitingOnTribute(0),
+      tributeExpirationTimeout(0),
+      tributeAddressed(0),
+      tributeAmount(0),
+      decidedInitialDiplomacy(0),
+      requiredDiplomacyTributeAmount(0)
 {
-    this->firstUpdate = 1;
-    this->veryFirstUpdate = 1;
-    this->aiPlayer = (TRIBE_Player*)player;
-    this->updateDelay = p2;
-    this->lastDiplomacyUpdateTime = 0;
-    this->lastTacticalUpdateTime = 0;
-    this->lastTributeChatTime = 0;
-    this->tributeChatTimeout = 0;
-    this->waitingOnTribute = 0;
-    this->tributeExpirationTimeout = 0;
-    this->tributeAddressed = 0;
-    this->tributeAmount = 0;
-    this->decidedInitialDiplomacy = 0;
-    this->requiredDiplomacyTributeAmount = 0;
     this->setPlayer(p2, p3);
     if (startLoggingAI != 0) {
         this->setLogCommonHistory(1);
@@ -111,15 +111,15 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
       resourceAI(p1, file),
       strategyAI(p1, file),
       tacticalAI(p1, file),
-      tradeAI(p1, file)
+      tradeAI(p1, file),
+      firstUpdate(0),
+      veryFirstUpdate(0),
+      updateDelay(p1),
+      lastDiplomacyUpdateTime(0),
+      lastTacticalUpdateTime(0),
+      decidedInitialDiplomacy(0),
+      requiredDiplomacyTributeAmount(0)
 {
-    this->firstUpdate = 0;
-    this->veryFirstUpdate = 0;
-    this->updateDelay = p1;
-    this->lastDiplomacyUpdateTime = 0;
-    this->lastTacticalUpdateTime = 0;
-    this->decidedInitialDiplomacy = 0;
-    this->requiredDiplomacyTributeAmount = 0;
     this->aiPlayer = p3;
     this->setPlayer(p1, p2);
     if (rgeLog != 0) {

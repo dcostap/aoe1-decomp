@@ -359,9 +359,10 @@ int BuildAIModule::insertItem(RGE_Player* player, int objType, int count, int it
     BuildItem* pos;
     int i;
     int j;
-    char name[64];
     float sx;
     float sy;
+    BuildItem* item;
+    char name[64];
 
     if (index > this->buildListLengthValue) return 0;
     pos = this->buildList.next;
@@ -392,9 +393,9 @@ int BuildAIModule::insertItem(RGE_Player* player, int objType, int count, int it
     }
 
 name_done:
-    int seq = this->buildListLengthValue;
+    i = this->buildListLengthValue;
     for (j = 0; j < count; ++j) {
-        BuildItem* item = new BuildItem(itemType, objType, seq, 1, 0, p5, name + 4, sx, sy, 1.0f, -1, -1, -1, 0);
+        item = new BuildItem(itemType, objType, i, 1, 0, p5, name + 4, sx, sy, 1.0f, -1, -1, -1, 0);
         if (item == 0) return 0;
         item->setBuilt(0);
         item->setInProgress(0);
@@ -411,7 +412,7 @@ name_done:
         item->prev = pos;
         BuildItem* next = pos->next;
         item->next = next;
-        seq++;
+        i++;
         next->prev = item;
         pos->next = item;
         this->buildListLengthValue++;

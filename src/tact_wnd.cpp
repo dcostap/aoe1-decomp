@@ -66,13 +66,12 @@ TRIBE_Action_Wonder::~TRIBE_Action_Wonder()
 
             if (rge_base_game->world[1].world_time == 0) {
                 int found = 0;
-                RGE_Action_Object* object = this->obj;
-                RGE_Player* owner = object->owner;
+                RGE_Player* owner = this->obj->owner;
                 RGE_Object_Node* node = owner->objects->list;
 
                 while (node != 0) {
                     RGE_Static_Object* action = node->node;
-                    if (action != object) {
+                    if (action != this->obj) {
                         RGE_Master_Static_Object* master = action->master_obj;
                         if (master->id == 0x114 && action->object_state >= 2) {
                             found = 1;
@@ -84,7 +83,7 @@ TRIBE_Action_Wonder::~TRIBE_Action_Wonder()
 
                 rge_base_game->reset_countdown_timer(owner->id);
                 if (found) {
-                    rge_base_game->set_countdown_timer(object->owner->id, 2000);
+                    rge_base_game->set_countdown_timer(this->obj->owner->id, 2000);
                 }
             }
         }

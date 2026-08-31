@@ -13,7 +13,7 @@
     "0042FB40": {"status": "matching", "symbol": "?setup@RGE_Combat_Object@@MAEHPAVRGE_Master_Combat_Object@@PAVRGE_Player@@MMM@Z"},
     "0042FBA0": {"status": "matching", "symbol": "?setup@RGE_Combat_Object@@MAEHHPAVRGE_Game_World@@@Z"},
     "0042FC10": {"status": "matching", "symbol": "?save@RGE_Combat_Object@@UAEXH@Z"},
-    "0042FC50": {"status": "scratch", "symbol": "?stop@RGE_Combat_Object@@UAEXXZ"},
+    "0042FC50": {"status": "matching", "symbol": "?stop@RGE_Combat_Object@@UAEXXZ"},
     "0042FC90": {"status": "matching", "symbol": "?calc_attack_modifier@RGE_Combat_Object@@UAEMPAVRGE_Static_Object@@@Z"},
     "0042FCA0": {"status": "matching", "symbol": "?area_attack@RGE_Combat_Object@@UAEEMMMPAV1@PAVRGE_Static_Object@@@Z"},
     "0042FF50": {"status": "scratch", "symbol": "?attack@RGE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAV1@@Z"},

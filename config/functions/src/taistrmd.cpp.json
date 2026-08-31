@@ -17,7 +17,7 @@
     "004E8D10": {"status": "matching", "symbol": "?stopExecution@VictoryConditionRuleSystem@@QAEHPAVTRIBE_Player@@H@Z"},
     "004E8D20": {"status": "matching", "symbol": "?modifyForDifficultyLevel@VictoryConditionRuleSystem@@QAEXH@Z"},
     "004E9100": {"status": "matching", "symbol": "??0TribeStrategyAIModule@@QAE@PAXH@Z"},
-    "004E9260": {"status": "scratch", "symbol": "??0TribeStrategyAIModule@@QAE@HH@Z"},
+    "004E9260": {"status": "matching", "symbol": "??0TribeStrategyAIModule@@QAE@HH@Z"},
     "004E9730": {"status": "matching", "symbol": "??1TribeStrategyAIModule@@UAE@XZ"},
     "004E9820": {"status": "scratch", "symbol": "?update@TribeStrategyAIModule@@UAEHH@Z"},
     "004E9D90": {"status": "matching", "symbol": "?setMainDecisionAI@TribeStrategyAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z"},

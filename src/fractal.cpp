@@ -162,35 +162,31 @@ void PointMaker::DrawMask(int param_1, int param_2, int param_3)
     }
 
     iVar7 = iVar6 * iVar9 + iVar7;
-    int row_count = iVar8;
-    if (row_count != 0) {
-        do {
-            if (param_2 > 0) {
-                iVar9 = iVar7;
-                param_3 = param_2;
-                len = param_1 - iVar7;
-                do {
-                    cVar3 = *(char*)(len + iVar9);
-                    if (iVar9 > 0 && iVar9 < SizeArrays - 1) {
-                        cVar4 = ProbArray[iVar9];
-                        pcVar2 = ProbArray + iVar9;
-                        if (cVar4 == 0) {
-                            *pcVar2 = (char)cVar3;
-                            ProbabilityTiles++;
-                        } else if (cVar3 + (int)cVar4 < 0xFF) {
-                            *pcVar2 = (char)(cVar3 + cVar4);
-                        } else {
-                            *pcVar2 = (char)-1;
-                        }
+    for (; iVar8 != 0; iVar8--) {
+        if (param_2 > 0) {
+            iVar9 = iVar7;
+            param_3 = param_2;
+            len = param_1 - iVar7;
+            do {
+                cVar3 = *(char*)(len + iVar9);
+                if (iVar9 > 0 && iVar9 < SizeArrays - 1) {
+                    cVar4 = ProbArray[iVar9];
+                    pcVar2 = ProbArray + iVar9;
+                    if (cVar4 == 0) {
+                        *pcVar2 = (char)cVar3;
+                        ProbabilityTiles++;
+                    } else if (cVar3 + (int)cVar4 < 0xFF) {
+                        *pcVar2 = (char)(cVar3 + cVar4);
+                    } else {
+                        *pcVar2 = (char)-1;
                     }
-                    iVar9++;
-                    param_3--;
-                } while (param_3 != 0);
-            }
-            param_1 += iVar1;
-            iVar7 += Width;
-            row_count--;
-        } while (row_count != 0);
+                }
+                iVar9++;
+                param_3--;
+            } while (param_3 != 0);
+        }
+        param_1 += iVar1;
+        iVar7 += Width;
     }
 }
 

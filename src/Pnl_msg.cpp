@@ -9,28 +9,28 @@ extern "C" char* strncpy(char*, const char*, unsigned int);
 long __cdecl debug_timeGetTime(const char*, int);
 
 TMessagePanel::TMessagePanel(void* font, long font_wid, long font_hgt)
-    : TPanel() {
-    this->font = font;
-    this->font_wid = font_wid;
-    this->font_hgt = font_hgt;
-    this->LastIBWidth = -1;
-    this->LastIBHeight = -1;
-    this->message_type = InfoMessage;
-    this->showing_message = 0;
-    this->start_time = 0;
-    this->show_message_interval = 8000;
-    this->font_color = 0;
-    this->back_color = 0;
-    this->horz_just = LeftJust;
-    this->vert_just = TopJust;
-    this->word_wrap = 0;
-    this->image_clip_region = 0;
-    this->ImageBuffer = 0;
-    this->ImageTextActive = 0;
-    this->Icon1 = 0;
-    this->Icon2 = 0;
-    this->IconFrame1 = 0;
-    this->IconFrame2 = 0;
+    : TPanel(),
+      message_type(InfoMessage),
+      showing_message(0),
+      start_time(0),
+      show_message_interval(8000),
+      font(font),
+      font_wid(font_wid),
+      font_hgt(font_hgt),
+      font_color(0),
+      back_color(0),
+      horz_just(LeftJust),
+      vert_just(TopJust),
+      word_wrap(0),
+      image_clip_region(0),
+      ImageBuffer(0),
+      ImageTextActive(0),
+      Icon1(0),
+      Icon2(0),
+      IconFrame1(0),
+      IconFrame2(0),
+      LastIBWidth(-1),
+      LastIBHeight(-1) {
     this->text[0] = 0;
     this->handle_mouse_input = 0;
     this->set_active(0);
