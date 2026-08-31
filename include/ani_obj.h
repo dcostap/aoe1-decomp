@@ -10,7 +10,6 @@ public:
                         float, float, int);
     RGE_Animated_Object(int, RGE_Game_World*, int);
 
-    virtual ~RGE_Animated_Object();
     virtual float getSpeed() const { return this->speed; }
 
 protected:

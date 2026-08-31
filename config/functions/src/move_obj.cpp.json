@@ -8,7 +8,7 @@
   "functions": {
     "0045C450": {"status": "matching", "symbol": "??0RGE_Moving_Object@@QAE@PAVRGE_Master_Moving_Object@@PAVRGE_Player@@MMMH@Z"},
     "0045C5C0": {"status": "matching", "symbol": "??0RGE_Moving_Object@@QAE@HPAVRGE_Game_World@@H@Z"},
-    "0045C700": {"status": "scratch", "symbol": "??1RGE_Moving_Object@@UAE@XZ"},
+    "0045C700": {"status": "matching", "symbol": "??1RGE_Moving_Object@@UAE@XZ"},
     "0045C790": {"status": "scratch", "symbol": "?recycle_in_to_game@RGE_Moving_Object@@UAEXPAVRGE_Master_Static_Object@@PAVRGE_Player@@MMM@Z"},
     "0045C970": {"status": "matching", "symbol": "?setup@RGE_Moving_Object@@MAEHPAVRGE_Master_Moving_Object@@PAVRGE_Player@@MMM@Z"},
     "0045CAA0": {"status": "matching", "symbol": "?setup@RGE_Moving_Object@@MAEHHPAVRGE_Game_World@@@Z"},
