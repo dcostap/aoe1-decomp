@@ -177,7 +177,7 @@
     "00422900": {"status": "matching", "symbol": "?turn_world_sound_off@RGE_Base_Game@@QAEXXZ"},
     "00422910": {"status": "matching", "symbol": "?campaign_open_scenario@RGE_Base_Game@@QAEHXZ"},
     "00422920": {"status": "matching", "symbol": "?GetChecksum@RGE_Base_Game@@QAEJJ@Z"},
-    "00422960": {"status": "scratch", "symbol": "?GetWorldChecksums@RGE_Base_Game@@QAEEAAJ00@Z"},
+    "00422960": {"status": "matching", "symbol": "?GetWorldChecksums@RGE_Base_Game@@QAEEAAJ00@Z"},
     "00422A10": {"status": "matching", "symbol": "?GetWorldChecksum@RGE_Base_Game@@QAEJXZ"},
     "00422A50": {"status": "matching", "symbol": "?disable_input@RGE_Base_Game@@QAEXXZ"},
     "00422AB0": {"status": "matching", "symbol": "?enable_input@RGE_Base_Game@@QAEXXZ"},
