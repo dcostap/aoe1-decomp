@@ -276,17 +276,17 @@ void RGE_View::Init_Tile_Edge_Tables()
     int base;
     int count;
     int ok;
-    Tile_BlackEdge_Table** black_roots;
 
     fd = _open(s_tile_file, _O_BINARY);
     if (fd != -1) {
         _lseek(fd,0,SEEK_END); len = _tell(fd); this->Tile_Edge_Tables = (Tile_FogEdge_Table**)calloc(1,len); _lseek(fd,0,SEEK_SET); _read(fd,this->Tile_Edge_Tables,len); _close(fd);
         base = (int)this->Tile_Edge_Tables;
-        unsigned char* tile_edge_data = (unsigned char*)this->Tile_Edge_Tables;
-        for (i=0;i<0x44;i+=4)
-            *(int*)(tile_edge_data + i) += base;
-        for (i=0;i<0x44;i+=4) {
-            fog_table = *(Tile_FogEdge_Table**)(tile_edge_data + i);
+        int* tile_roots = (int*)this->Tile_Edge_Tables;
+        for (i=0;i<0x11;i++, tile_roots++)
+            *tile_roots += base;
+        Tile_FogEdge_Table** tile_tables = this->Tile_Edge_Tables;
+        for (i=0;i<0x11;i++, tile_tables++) {
+            fog_table = *tile_tables;
             for (j=0;j<0x2f;j++) {
                 if (fog_table[j].normal_draw)
                     fog_table[j].normal_draw = (VSpanMiniList*)((unsigned char*)fog_table[j].normal_draw + base);
@@ -299,12 +299,12 @@ void RGE_View::Init_Tile_Edge_Tables()
     if (fd != -1) {
         _lseek(fd,0,SEEK_END); len = _tell(fd); this->Black_Edge_Tables = (Tile_BlackEdge_Table**)calloc(1,len); _lseek(fd,0,SEEK_SET); _read(fd,this->Black_Edge_Tables,len); _close(fd);
         base = (int)this->Black_Edge_Tables;
-        unsigned char* black_edge_data = (unsigned char*)this->Black_Edge_Tables;
-        black_roots = this->Black_Edge_Tables;
-        for (i=0;i<0x11;i++,black_roots++)
-            *black_roots = (Tile_BlackEdge_Table*)((unsigned char*)*black_roots + base);
-        for (i=0;i<0x44;i+=4) {
-            black_table = *(Tile_BlackEdge_Table**)(black_edge_data + i);
+        int* black_roots = (int*)this->Black_Edge_Tables;
+        for (i=0;i<0x11;i++, black_roots++)
+            *black_roots += base;
+        Tile_BlackEdge_Table** black_tables = this->Black_Edge_Tables;
+        for (i=0;i<0x11;i++, black_tables++) {
+            black_table = *black_tables;
             for (j=0;j<0x2f;j++) {
                 if (black_table[j].black_UNdraw)
                     black_table[j].black_UNdraw = (VSpanMiniList*)((unsigned char*)black_table[j].black_UNdraw + base);
