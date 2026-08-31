@@ -4487,17 +4487,18 @@ COMMSTATUS TCommunications_Handler::UnlinkToLevel(COMMSTATUS param_1) {
     new_status = original_status;
 
 
-    do {
-        if (new_status <= param_1) {
-            L->Log("AFTER UNLINKING...Status=%d   Reported=%d",
-                this->GetCommunicationsStatus(), this->CommunicationsStatus);
-            return AnalyzeCommunicationsStatus();
-        }
-
+    while (new_status > param_1) {
         new_status = UnlinkCurrentLevel();
         CommunicationsStatus = new_status;
-    } while (new_status != original_status);
+        if (new_status == original_status)
+            goto unlink_failed;
+    }
 
+    L->Log("AFTER UNLINKING...Status=%d   Reported=%d",
+        this->GetCommunicationsStatus(), this->CommunicationsStatus);
+    return AnalyzeCommunicationsStatus();
+
+unlink_failed:
     sprintf(TBuff, "Unlink from level [ %d ] Failed.\n Stopping connections",
             original_status);
     L->Log(TBuff);
