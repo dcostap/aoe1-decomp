@@ -100,7 +100,7 @@ int __cdecl debug_rand(char*, int);
 void __cdecl debug_srand(char*, int, unsigned int);
 
 struct RGE_Font {
-    HFONT font;
+    void* font;
     long font_wid;
     long font_hgt;
 };
