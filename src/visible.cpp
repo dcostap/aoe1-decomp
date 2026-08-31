@@ -591,7 +591,7 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
             }
             if (value == 1) {
                 if (update_tiles != 0) {
-                    tile->last_drawn_shape2 = 0x0F;
+                    tile->draw_as = 0x0F;
                 }
                 *unified |= this->PlayerVisibleMaskValue;
             }
