@@ -3,6 +3,8 @@
 #include "../include/Res_file.h"
 #include "../include/visible.h"
 
+struct PLAYER_SCORE;
+
 int DAT_0086b258 = 0;
 res_file_type_info res_extension_table[] = {
     {"voc", 0x766F6320},
@@ -21,6 +23,9 @@ res_file_type_info res_extension_table[] = {
     {"rgb", 0x72676270},
     {"xxx", 0}
 };
+
+const PLAYER_SCORE* DAT_0086babc = 0;
+const PLAYER_SCORE* DAT_0086bac0 = 0;
 
 FILE* actionFile = 0;
 int taskedThisUpdate = 0;

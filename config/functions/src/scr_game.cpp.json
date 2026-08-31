@@ -41,7 +41,7 @@
     "0049AB10": {"status": "matching", "symbol": "?calc_button_loc@TRIBE_Screen_Game@@IAEFE@Z"},
     "0049AB60": {"status": "matching", "symbol": "?set_button@TRIBE_Screen_Game@@IAEXPAVTShape@@FFJJJJJPAEPAD2H@Z"},
     "0049ADA0": {"status": "scratch", "symbol": "?reset_clocks@TRIBE_Screen_Game@@QAEXXZ"},
-    "0049B000": {"status": "scratch", "symbol": "?scr_game_score_compare@@YAHPBX0@Z"},
+    "0049B000": {"status": "matching", "symbol": "?scr_game_score_compare@@YAHPBX0@Z"},
     "0049B080": {"status": "scratch", "symbol": "?reset_score_display@TRIBE_Screen_Game@@QAEXXZ"},
     "0049B560": {"status": "matching", "symbol": "?draw@TRIBE_Screen_Game@@UAEXXZ"},
     "0049B830": {"status": "matching", "symbol": "?handle_anim_pal@TRIBE_Screen_Game@@IAEXXZ"},

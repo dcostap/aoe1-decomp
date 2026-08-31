@@ -52,6 +52,9 @@ struct PLAYER_SCORE {
     long team_score;
 };
 
+extern const PLAYER_SCORE* DAT_0086babc;
+extern const PLAYER_SCORE* DAT_0086bac0;
+
 class TRIBE_Screen_Game : public TScreenPanel {
 public:
     struct PortInfo {

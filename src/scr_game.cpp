@@ -3296,6 +3296,9 @@ int scr_game_score_compare(const void* param_b, const void* param_a) {
     const PLAYER_SCORE* a = static_cast<const PLAYER_SCORE*>(param_a);
     const PLAYER_SCORE* b = static_cast<const PLAYER_SCORE*>(param_b);
 
+    DAT_0086babc = a;
+    DAT_0086bac0 = b;
+
     if (a->team_score > b->team_score) return 1;
     if (a->team_score < b->team_score) return -1;
     if (a->team_id > b->team_id) return 1;

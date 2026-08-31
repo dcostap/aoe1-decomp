@@ -46,6 +46,34 @@
           "observation": "BUILDRES_get_files_resource_type scans eight-byte entries from 00585520 until the type word is zero."
         }
       ]
+    },
+    {
+      "name": "DAT_0086babc",
+      "storage_va": "0086BABC",
+      "declaration": "extern const PLAYER_SCORE* DAT_0086babc;",
+      "header": "include/scr_game.h",
+      "definition": "src/game_globals.cpp",
+      "codegen_note": "The score comparison callback stores its first typed comparison operand here.",
+      "evidence": [
+        {
+          "va": "0049B000",
+          "observation": "The exact callback stores parameter a before reading the PLAYER_SCORE fields."
+        }
+      ]
+    },
+    {
+      "name": "DAT_0086bac0",
+      "storage_va": "0086BAC0",
+      "declaration": "extern const PLAYER_SCORE* DAT_0086bac0;",
+      "header": "include/scr_game.h",
+      "definition": "src/game_globals.cpp",
+      "codegen_note": "The score comparison callback stores its second typed comparison operand here.",
+      "evidence": [
+        {
+          "va": "0049B000",
+          "observation": "The exact callback stores parameter b before reading the PLAYER_SCORE fields."
+        }
+      ]
     }
   ]
 }
