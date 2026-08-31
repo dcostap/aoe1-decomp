@@ -524,10 +524,12 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
             .find_by_master_id(
                 static_cast<TRIBE_Master_Building_Object*>(master_obj)->id,
                 -1.0f, -1.0f, 0, 0, 0));
-        if (out[0] != 0 && out[0]->owner == owner) {
-            ++count;
-        } else {
-            out[0] = 0;
+        if (out[0] != 0) {
+            if (out[0]->owner == owner) {
+                ++count;
+            } else {
+                out[0] = 0;
+            }
         }
     } else {
         out[0] = 0;
@@ -538,10 +540,12 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
             .find_by_master_id(
                 static_cast<TRIBE_Master_Building_Object*>(master_obj)->id,
                 -1.0f, -1.0f, 0, 0, 0));
-        if (out[1] != 0 && out[1]->owner == owner) {
-            ++count;
-        } else {
-            out[1] = 0;
+        if (out[1] != 0) {
+            if (out[1]->owner == owner) {
+                ++count;
+            } else {
+                out[1] = 0;
+            }
         }
     } else {
         out[1] = 0;
@@ -552,10 +556,12 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
             .find_by_master_id(
                 static_cast<TRIBE_Master_Building_Object*>(master_obj)->id,
                 -1.0f, -1.0f, 0, 0, 0));
-        if (out[2] != 0 && out[2]->owner == owner) {
-            ++count;
-        } else {
-            out[2] = 0;
+        if (out[2] != 0) {
+            if (out[2]->owner == owner) {
+                ++count;
+            } else {
+                out[2] = 0;
+            }
         }
     } else {
         out[2] = 0;
@@ -566,10 +572,12 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
             .find_by_master_id(
                 static_cast<TRIBE_Master_Building_Object*>(master_obj)->id,
                 -1.0f, -1.0f, 0, 0, 0));
-        if (out[3] != 0 && out[3]->owner == owner) {
-            ++count;
-        } else {
-            out[3] = 0;
+        if (out[3] != 0) {
+            if (out[3]->owner == owner) {
+                ++count;
+            } else {
+                out[3] = 0;
+            }
         }
     } else {
         out[3] = 0;
