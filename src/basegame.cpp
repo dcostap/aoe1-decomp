@@ -1632,8 +1632,9 @@ int RGE_Base_Game::setup_class() {
 
     WNDCLASSA cls;
     cls.hCursor = 0;
-    cls.lpszMenuName = "";
-    if (prog_info->menu_name[0] != 0) {
+    char menu_name_first = *prog_info->menu_name;
+    cls.lpszMenuName = s_592A40;
+    if (menu_name_first != 0) {
         cls.lpszMenuName = prog_info->menu_name;
     }
     cls.hIcon = LoadIconA(prog_info->instance, prog_info->icon_name);
