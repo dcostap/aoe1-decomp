@@ -13,15 +13,16 @@ typedef unsigned char uchar;
 extern int __cdecl debug_rand(char*, int);
 
 TRIBE_Map::TRIBE_Map(int p1, RGE_Sound** p2, unsigned char load)
-    : RGE_Map(p1, p2, 0),
-      old_cliff_x(-1),
-      old_cliff_y(-1),
-      safe_cliff_x(-1),
-      safe_cliff_y(-1)
+    : RGE_Map(p1, p2, 0)
 {
     if (load != 0) {
         this->data_load_random_map(p1);
     }
+
+    this->old_cliff_x = -1;
+    this->old_cliff_y = -1;
+    this->safe_cliff_x = -1;
+    this->safe_cliff_y = -1;
 
     for (int i = 0; i < 0x100; i++) {
         TRIBE_Master_Cliff_Info& cliff = this->cliff_master_table[i];
