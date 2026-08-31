@@ -181,52 +181,51 @@ void TRIBE_Main_View::draw_multi_object_outline() {
                 }
             }
         }
-        this->render_area->SetClipRect(0);
-        return;
     }
-
-    calc_row1 = start_row;
-    calc_row2 = end_row;
-    if (calc_row2 < calc_row1) {
-        calc_row1 = end_row;
-        calc_row2 = start_row;
-    }
-
-    main_col = -1;
-    if (start_col < end_col) {
-        main_col = end_row;
-        calc_col1 = start_col + 1;
-        calc_col2 = end_col;
-    } else if (end_col < start_col) {
-        main_col = end_row;
-        calc_col1 = end_col;
-        calc_col2 = start_col - 1;
-    }
-
-    if (main_col == -1 || calc_col2 < start_col) {
-        if (calc_row1 <= calc_row2) {
-            for (row = calc_row1; row <= calc_row2; ++row) {
-                endpoint = (row == start_row || row == end_row) ? 2 : 0;
-                this->draw_wall_outline(start_col, row, master, endpoint);
-            }
+    else {
+        calc_row1 = start_row;
+        calc_row2 = end_row;
+        if (calc_row2 < calc_row1) {
+            calc_row1 = end_row;
+            calc_row2 = start_row;
         }
-        if (main_col != -1 && calc_col1 <= calc_col2) {
-            for (col = calc_col1; col <= calc_col2; ++col) {
-                endpoint = (col == start_col || col == end_col) ? 2 : 1;
-                this->draw_wall_outline(col, main_col, master, endpoint);
-            }
+
+        main_col = -1;
+        if (start_col < end_col) {
+            main_col = end_row;
+            calc_col1 = start_col + 1;
+            calc_col2 = end_col;
+        } else if (end_col < start_col) {
+            main_col = end_row;
+            calc_col1 = end_col;
+            calc_col2 = start_col - 1;
         }
-    } else {
-        if (main_col != -1 && calc_col1 <= calc_col2) {
-            for (col = calc_col1; col <= calc_col2; ++col) {
-                endpoint = (col == start_col || col == end_col) ? 2 : 1;
-                this->draw_wall_outline(col, main_col, master, endpoint);
+
+        if (main_col == -1 || calc_col2 < start_col) {
+            if (calc_row1 <= calc_row2) {
+                for (row = calc_row1; row <= calc_row2; ++row) {
+                    endpoint = (row == start_row || row == end_row) ? 2 : 0;
+                    this->draw_wall_outline(start_col, row, master, endpoint);
+                }
             }
-        }
-        if (calc_row1 <= calc_row2) {
-            for (row = calc_row1; row <= calc_row2; ++row) {
-                endpoint = (row == start_row || row == end_row) ? 2 : 0;
-                this->draw_wall_outline(start_col, row, master, endpoint);
+            if (main_col != -1 && calc_col1 <= calc_col2) {
+                for (col = calc_col1; col <= calc_col2; ++col) {
+                    endpoint = (col == start_col || col == end_col) ? 2 : 1;
+                    this->draw_wall_outline(col, main_col, master, endpoint);
+                }
+            }
+        } else {
+            if (main_col != -1 && calc_col1 <= calc_col2) {
+                for (col = calc_col1; col <= calc_col2; ++col) {
+                    endpoint = (col == start_col || col == end_col) ? 2 : 1;
+                    this->draw_wall_outline(col, main_col, master, endpoint);
+                }
+            }
+            if (calc_row1 <= calc_row2) {
+                for (row = calc_row1; row <= calc_row2; ++row) {
+                    endpoint = (row == start_row || row == end_row) ? 2 : 0;
+                    this->draw_wall_outline(start_col, row, master, endpoint);
+                }
             }
         }
     }
