@@ -212,6 +212,14 @@ does not edit shared global definitions or shared headers.
 These requests are shared ABI work. They are not private fallback declarations.
 Do not use `include/tcommand.h` as a source for any of them.
 
+### 2026-08-31 ownership result
+
+`DAT_0086b258` is a writable `int` owned by `game_globals.cpp`.
+`res_extension_table` is a `res_file_type_info[]` owned by the same file. The
+definition copies all 14 original eight-byte records from `00585520` and the
+terminal `xxx`/zero sentinel. `Res_file.h` owns both declarations. No source
+file has a private fallback declaration or guessed table.
+
 ## Consumers and validation fanout
 
 Direct source references were checked with `rg` across `src` and `include`.

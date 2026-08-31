@@ -1,6 +1,26 @@
 #include "..\include\game_globals.h"
 #include "../include/dsutil.h"
+#include "../include/Res_file.h"
 #include "../include/visible.h"
+
+int DAT_0086b258 = 0;
+res_file_type_info res_extension_table[] = {
+    {"voc", 0x766F6320},
+    {"wav", 0x77617620},
+    {"xmi", 0x6D696469},
+    {"lbm", 0x696C626D},
+    {"pcx", 0x70637820},
+    {"gif", 0x67696620},
+    {"shp", 0x73687020},
+    {"slp", 0x736C7020},
+    {"cel", 0x63656C6C},
+    {"flc", 0x63656C6C},
+    {"fli", 0x63656C6C},
+    {"ccs", 0x63637372},
+    {"fnt", 0x726F6E74},
+    {"rgb", 0x72676270},
+    {"xxx", 0}
+};
 
 FILE* actionFile = 0;
 int taskedThisUpdate = 0;

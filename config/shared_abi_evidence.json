@@ -14,6 +14,38 @@
           "observation": "The extern form reduced the strict positional difference from 1,581 bytes to 122 bytes. It also restored exact size, frame, and call parity."
         }
       ]
+    },
+    {
+      "name": "DAT_0086b258",
+      "storage_va": "0086B258",
+      "declaration": "extern int DAT_0086b258;",
+      "header": "include/Res_file.h",
+      "definition": "src/game_globals.cpp",
+      "codegen_note": "RESFILE_Set_Missing_Flag stores one dword. RESFILE_load tests the same dword.",
+      "evidence": [
+        {
+          "va": "0047F580",
+          "observation": "The setter writes the function argument to storage VA 0086B258."
+        },
+        {
+          "va": "0047F320",
+          "observation": "RESFILE_load reads storage VA 0086B258 as the missing-resource flag."
+        }
+      ]
+    },
+    {
+      "name": "res_extension_table",
+      "storage_va": "00585520",
+      "declaration": "extern res_file_type_info res_extension_table[];",
+      "header": "include/Res_file.h",
+      "definition": "src/game_globals.cpp",
+      "codegen_note": "The original .rdata table has 14 eight-byte extension/type entries and one zero sentinel.",
+      "evidence": [
+        {
+          "va": "0047FC50",
+          "observation": "BUILDRES_get_files_resource_type scans eight-byte entries from 00585520 until the type word is zero."
+        }
+      ]
     }
   ]
 }

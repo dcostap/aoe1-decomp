@@ -71,8 +71,7 @@ extern ResFileHdr* DAT_0086b254;
 
 extern int DAT_0086b258;
 
-// The image table begins at 00585520. Its first entry's type word is the
-// DAT_00585524 value 0x766F6320. The table is not redefined here.
+// The image table begins at 00585520. game_globals.cpp owns the shipped data.
 extern res_file_type_info res_extension_table[];
 
 void __cdecl RESFILE_open_new_resource_file(
