@@ -1023,27 +1023,24 @@ void TCommunications_Handler::ReceiveGameMessages()
         this->ExecuteIncoming();
     }
 
-    int read_messages = 1;
-    unsigned long current_dplay_id = local_player_dpid;
-    if (current_dplay_id != 0) {
-        IDirectPlay3* current_dplay = direct_play_interface;
+    if (local_player_dpid != 0) {
         unsigned long wait_count = zero;
-        long result = current_dplay->GetMessageCount(current_dplay_id,
-                                                      &wait_count);
+        long result = direct_play_interface->GetMessageCount(local_player_dpid,
+                                                              &wait_count);
         if (result != zero) {
             this->Err->ShowReturn(result, "MsgWait");
-            read_messages = 0;
-        } else if (wait_count == zero) {
-            read_messages = 0;
+            goto done_reading;
         }
+        if (wait_count == zero)
+            goto done_reading;
     }
 
-    if (read_messages != 0) {
-        this->GetDPLAYMessages();
-        if (this->RGE_Guaranteed_Delivery != 0) {
-            this->ExecuteIncoming();
-        }
+    this->GetDPLAYMessages();
+    if (this->RGE_Guaranteed_Delivery != 0) {
+        this->ExecuteIncoming();
     }
+
+done_reading:
 
     if (this->RGE_Guaranteed_Delivery != 0) {
         this->SendStoredMessages();
