@@ -10,6 +10,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "tools"))
 
 from extract_obj_function import (  # noqa: E402
+    configured_symbol_name,
     decode_bytes,
     extraction_extent,
     select_exact_function_symbol,
@@ -18,6 +19,17 @@ from extract_obj_function import (  # noqa: E402
 
 
 class ExtractObjFunctionTests(unittest.TestCase):
+    def test_scratch_entry_uses_configured_symbol(self) -> None:
+        entry = {
+            "status": "scratch",
+            "symbol": "?create@Thing@@QAEHPAPAD@Z",
+        }
+
+        self.assertEqual(
+            configured_symbol_name(entry),
+            "?create@Thing@@QAEHPAPAD@Z",
+        )
+
     def test_decoded_instruction_carries_symbolic_coff_relocation(self) -> None:
         relocation = SimpleNamespace(
             offset=1,

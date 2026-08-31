@@ -172,13 +172,14 @@ unsigned char PathingSystem::obstruction(int x, int y) {
 }
 
 void PathingSystem::incrementObstruction(int x, int y) {
-    unsigned char* ptr = &obstructionValue[x][y >> 2];
-    unsigned char val = *ptr;
+    unsigned char val = obstructionValue[x][y >> 2];
     unsigned char field = (val >> ObstructionValueShift[y & 3]) & 3;
     if (field >= 3) {
         return;
     }
-    *ptr = (ObstructionValueMask[y & 3] & val) | ((field + 1) << ObstructionValueShift[y & 3]);
+    obstructionValue[x][y >> 2] =
+        (ObstructionValueMask[y & 3] & val) |
+        ((field + 1) << ObstructionValueShift[y & 3]);
 }
 
 void PathingSystem::decrementObstruction(int x, int y) {
@@ -1019,17 +1020,19 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                         if (this->initialTile.x != local_14 ||
                             this->initialTile.y != row) {
                             terrain = tile->terrain_type & 0x1F;
-                            if (this->currentTerrainTable[terrain] <=
-                                DAT_00570e80) {
-                                if (terrain != this->currentTerrainException1 &&
-                                    terrain != this->currentTerrainException2) {
-                                    int border = tile->border_type & 0x0F;
-                                    if (border == 0 ||
-                                        this->currentTerrainTable[
-                                            this->mapValue->border_types[border]
-                                                .underlay_terrain] <= DAT_00570e80)
-                                        return 0;
-                                }
+                            if (terrain != this->currentTerrainException1 &&
+                                terrain != this->currentTerrainException2 &&
+                                this->currentTerrainTable[terrain] <=
+                                    DAT_00570e80) {
+                                int border = tile->border_type & 0x0F;
+                                if (border == 0)
+                                    return 0;
+                                int underlay =
+                                    this->mapValue->border_types[border]
+                                        .underlay_terrain;
+                                if (this->currentTerrainTable[underlay] <=
+                                    DAT_00570e80)
+                                    return 0;
                             }
                         }
                         tile++;

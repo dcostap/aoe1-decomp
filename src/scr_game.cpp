@@ -3657,7 +3657,7 @@ void TRIBE_Screen_Game::handle_mouse_pointing_at() {
     this->mouse_last_x = point.x;
     this->mouse_last_y = point.y;
 
-    if (this->text_line_panel->showing_message == 0) {
+    if (this->main_view->UC_ObjectTouched == 0) {
         this->text_line_panel->remove_message();
     }
 
@@ -3676,9 +3676,9 @@ void TRIBE_Screen_Game::handle_mouse_pointing_at() {
     short found = -1;
     short i = 0;
     while (i < 0x11) {
-        TRIBE_Panel_Button* button = this->button_panel[i];
-        if (button->active != 0 && button->get_id() != -1 &&
-            button->hit_button(point.x, point.y) != 0) {
+        TRIBE_Panel_Button** slot = &this->button_panel[i];
+        if ((*slot)->active != 0 && (*slot)->get_id() != -1 &&
+            (*slot)->hit_button(point.x, point.y) != 0) {
             found = i;
             break;
         }

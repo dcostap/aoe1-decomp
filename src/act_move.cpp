@@ -123,9 +123,6 @@ void RGE_Action_Move_To::set_state(unsigned char param_1) {
 }
 
 unsigned char RGE_Action_Move_To::update() {
-    XYZBYTEPoint waypoint;
-    int move_result;
-
     if (this->targetID != -1 &&
         this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
@@ -163,6 +160,7 @@ unsigned char RGE_Action_Move_To::update() {
         }
 
         this->obj->setGoal(this->target_x, this->target_y, 1.0f);
+        XYZBYTEPoint waypoint;
         waypoint.x = (unsigned char)this->target_x;
         waypoint.y = (unsigned char)this->target_y;
         waypoint.z = (unsigned char)this->target_z;
@@ -181,13 +179,14 @@ unsigned char RGE_Action_Move_To::update() {
             this->obj->setTargetRadius(0.0f, 0.0f);
         }
 
-        if (this->obj->findPath() == 0) {
+        if (this->obj->findPath() == RGE_Moving_Object::PathFound) {
             this->set_state(4);
             return 0;
         }
         break;
 
     case 4:
+        int move_result;
         if (this->target_obj != 0) {
             float x_diff = this->target_x - this->target_obj->world_x;
             float y_diff = this->target_y - this->target_obj->world_y;
@@ -222,9 +221,6 @@ unsigned char RGE_Action_Move_To::update() {
 
     case 13:
         goto state_done;
-
-    default:
-        return 0;
 
     reached_target:
         this->obj->notify(this->obj->id, this->obj->id, 0x1FC, 0, 0, 0);

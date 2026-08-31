@@ -17,7 +17,7 @@
     "0053E910": {"status": "scratch", "symbol": "?mouse_left_up_action@RGE_Main_View@@UAEJJJHH@Z"},
     "0053F220": {"status": "matching", "symbol": "?mouse_right_down_action@RGE_Main_View@@UAEJJJHH@Z"},
     "0053F2F0": {"status": "matching", "symbol": "?mouse_right_move_action@RGE_Main_View@@UAEJJJHH@Z"},
-    "0053F3D0": {"status": "scratch", "symbol": "?mouse_right_up_action@RGE_Main_View@@UAEJJJHH@Z"},
+    "0053F3D0": {"status": "matching", "symbol": "?mouse_right_up_action@RGE_Main_View@@UAEJJJHH@Z"},
     "0053F660": {"status": "matching", "symbol": "?start_scroll_view@RGE_Main_View@@UAEHEJJHH@Z"},
     "0053F6B0": {"status": "matching", "symbol": "?handle_scroll_view@RGE_Main_View@@UAEHJJ@Z"},
     "0053F6F0": {"status": "matching", "symbol": "?draw@RGE_Main_View@@UAEXXZ"},

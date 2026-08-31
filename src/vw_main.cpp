@@ -467,8 +467,6 @@ long RGE_Main_View::mouse_left_move_action(long x, long y, int key, int flags) {
 long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
     int mode = rge_base_game->prog_mode;
     int game_mode;
-    RGE_Static_Object** selected_objects;
-    short selected_count;
     RGE_Pick_Info pick_info;
 
     if (mode != 4 && mode != 6 && mode != 7 && mode != 5)
@@ -719,20 +717,24 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
             if (flags == 0) {
                 if (this->command_make_do(x, y, 1, -1) == 0)
                     goto done;
-            } else if (this->player->get_selected_objects_to_command(
-                           &selected_objects, &selected_count,
-                           -1, -1, -1, -1) != 0) {
-                free(selected_objects);
-                if (allow_user_commands) {
-                    this->fixup_pick_info(&pick_info);
-                    this->player->command_add_waypoint(
-                        pick_info.x, pick_info.y, 1.0f);
-                    this->reset_display_object_selection(2);
-                    this->add_overlay_sprite(
-                        rge_base_game->shapes[1], 0,
-                        this->map_scr_x_offset + x,
-                        this->map_scr_y_offset + y, 0, 0xF, 0, 1, 0xFA);
-                    this->set_redraw(TPanel::RedrawNormal);
+            } else {
+                RGE_Static_Object** selected_objects;
+                short selected_count;
+                if (this->player->get_selected_objects_to_command(
+                        &selected_objects, &selected_count,
+                        -1, -1, -1, -1) != 0) {
+                    free(selected_objects);
+                    if (allow_user_commands) {
+                        this->fixup_pick_info(&pick_info);
+                        this->player->command_add_waypoint(
+                            pick_info.x, pick_info.y, 1.0f);
+                        this->reset_display_object_selection(2);
+                        this->add_overlay_sprite(
+                            rge_base_game->shapes[1], 0,
+                            this->map_scr_x_offset + x,
+                            this->map_scr_y_offset + y, 0, 0xF, 0, 1, 0xFA);
+                        this->set_redraw(TPanel::RedrawNormal);
+                    }
                 }
             }
         }
@@ -798,8 +800,6 @@ long RGE_Main_View::mouse_right_move_action(long x, long y, int key, int flags) 
 }
 
 long RGE_Main_View::mouse_right_up_action(long x, long y, int key, int flags) {
-    RGE_Static_Object** selected_objects;
-    short selected_count;
     RGE_Pick_Info pick_info;
     int mode = rge_base_game->prog_mode;
 
@@ -831,23 +831,27 @@ long RGE_Main_View::mouse_right_up_action(long x, long y, int key, int flags) {
                         if (rge_base_game->game_mode == 0) {
                             if (flags == 0) {
                                 this->command_make_do(x, y, 1, -1);
-                            } else if (this->player->get_selected_objects_to_command(
-                                           &selected_objects, &selected_count,
-                                           -1, -1, -1, -1)) {
-                                free(selected_objects);
-                                if (allow_user_commands != 0) {
-                                    if (this->pick1(0x28, 0, x, y,
-                                                    &pick_info, 0, 1) == 0x33) {
-                                        this->fixup_pick_info(&pick_info);
-                                        this->player->command_add_waypoint(
-                                            pick_info.x, pick_info.y, 1.0f);
-                                        this->reset_display_object_selection(2);
-                                        this->add_overlay_sprite(
-                                            rge_base_game->shapes[1], 0,
-                                            this->map_scr_x_offset + x,
-                                            this->map_scr_y_offset + y,
-                                            0, 0x0F, 0, 1, 0xFA);
-                                        this->set_redraw(TPanel::RedrawNormal);
+                            } else {
+                                RGE_Static_Object** selected_objects;
+                                short selected_count;
+                                if (this->player->get_selected_objects_to_command(
+                                        &selected_objects, &selected_count,
+                                        -1, -1, -1, -1)) {
+                                    free(selected_objects);
+                                    if (allow_user_commands != 0) {
+                                        if (this->pick1(0x28, 0, x, y,
+                                                        &pick_info, 0, 1) == 0x33) {
+                                            this->fixup_pick_info(&pick_info);
+                                            this->player->command_add_waypoint(
+                                                pick_info.x, pick_info.y, 1.0f);
+                                            this->reset_display_object_selection(2);
+                                            this->add_overlay_sprite(
+                                                rge_base_game->shapes[1], 0,
+                                                this->map_scr_x_offset + x,
+                                                this->map_scr_y_offset + y,
+                                                0, 0x0F, 0, 1, 0xFA);
+                                            this->set_redraw(TPanel::RedrawNormal);
+                                        }
                                     }
                                 }
                             }

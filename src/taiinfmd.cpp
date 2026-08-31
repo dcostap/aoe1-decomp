@@ -4852,12 +4852,7 @@ int TribeInformationAIModule::storeAttackMemory(
     int count;
 
     if (this->mapXSizeValue > 0 && this->mapYSizeValue > 0) {
-        int nMaxX = *(int*)&param_4;
-        int nMinX = *(int*)&param_2;
-        nMaxX &= 0xFF;
-        nMinX &= 0xFF;
-        int sum = nMaxX + nMinX;
-        int product = sum * 4;
+        int product = ((int)param_4 + (int)param_2) * 4;
         int cx = product / this->mapXSizeValue;
         product = product / this->mapYSizeValue;
         cx /= 2;
