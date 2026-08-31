@@ -62,7 +62,7 @@
     "00469000": {"status": "scratch", "symbol": "?create_input@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTInputPanel@@PADFW4FormatType@3@JJJJJ@Z"},
     "004691C0": {"status": "scratch", "symbol": "?create_edit@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTEditPanel@@PADFW4FormatType@3@JJJJJHH@Z"},
     "00469380": {"status": "matching", "symbol": "?create_drop_down@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTDropDownPanel@@JJJJJJJ@Z"},
-    "004696B0": {"status": "scratch", "symbol": "?create_list@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTListPanel@@JJJJJ@Z"},
+    "004696B0": {"status": "matching", "symbol": "?create_list@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTListPanel@@JJJJJ@Z"},
     "00469910": {"status": "matching", "symbol": "?create_scrollbar@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTScrollBarPanel@@PAVTTextPanel@@JJJJJ@Z"},
     "00469A80": {"status": "matching", "symbol": "?create_auto_scrollbar@TEasy_Panel@@MAEHPAPAVTScrollBarPanel@@PAVTTextPanel@@J@Z"},
     "00469AD0": {"status": "matching", "symbol": "?create_vert_slider@TEasy_Panel@@MAEHPAVTPanel@@PAPAVTVerticalSliderPanel@@JJJJJJJ@Z"},
