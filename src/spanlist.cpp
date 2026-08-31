@@ -750,15 +750,13 @@ void TSpan_List_Manager::DeleteShape(TShape* shape, int shape_number,
                                       int x, int y, int mirror)
 {
     if (shape != 0 && shape->FShape != 0) {
-        Shape_Info* info;
         unsigned short* outline;
         int right;
         int line;
         unsigned short start;
         unsigned short end;
 
-        info = shape->shape_info;
-        info = info + shape_number;
+        Shape_Info* info = &shape->shape_info[shape_number];
         outline =
             (unsigned short*)(shape->FShape->Version +
                                info->Shape_Outline_Offset);
