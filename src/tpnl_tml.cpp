@@ -994,9 +994,10 @@ void Time_Line_Panel::draw_civilization_names()
             old_font = SelectObject(this->render_area->DrawDc, this->body_font);
             pop_total = 0.0f;
             int player_index = 0;
+            TRIBE_Player* player;
             if (rge_base_game->world->player_num - 1 > 0) {
                 do {
-                    TRIBE_Player* player = static_cast<TRIBE_Player*>(
+                    player = static_cast<TRIBE_Player*>(
                         rge_base_game->world->players[player_index + 1]);
                     pop_total += static_cast<float>(
                         player->history->get_history_entry(0, 0) & 0xff);
@@ -1008,25 +1009,31 @@ void Time_Line_Panel::draw_civilization_names()
                 Y_line_pos = this->Y_start_line_pos;
                 if (rge_base_game->world->player_num - 1 > 0) {
                     y_line_segment_length = 0;
-                    player_index = 0;
                     do {
-                        TRIBE_Player* player = static_cast<TRIBE_Player*>(
-                            rge_base_game->world->players[player_index + 1]);
+                        player = static_cast<TRIBE_Player*>(
+                            rge_base_game->world->players[y_line_segment_length + 1]);
                         int seg = static_cast<int>((static_cast<float>(
                             player->history->get_history_entry(0, 0) & 0xff) /
                             pop_total) *
                             static_cast<float>(this->Y_line_max_length));
+                        player = static_cast<TRIBE_Player*>(
+                            rge_base_game->world->players[y_line_segment_length + 1]);
                         rge_base_game->get_string2(
-                            0x69, player->master_player_id, 0, civ_str, 100);
-                        strcpy(name_str, player->name);
+                            0x69,
+                            player->master_player_id,
+                            0, civ_str, 100);
+                        player = static_cast<TRIBE_Player*>(
+                            rge_base_game->world->players[y_line_segment_length + 1]);
+                        strcpy(name_str,
+                               player->name);
                         sprintf(temp_str, "%s - %s", name_str, civ_str);
                         TextOutA(this->render_area->DrawDc, X_line_pos,
                                  Y_line_pos + (seg / 2 - this->body_font_hgt / 2),
                                  temp_str, strlen(temp_str));
                         Y_line_pos += seg;
-                        player_index++;
                         y_line_segment_length++;
-                    } while (y_line_segment_length < rge_base_game->world->player_num - 1);
+                    } while (y_line_segment_length <
+                             rge_base_game->world->player_num - 1);
                 }
                 SelectObject(this->render_area->DrawDc, old_font);
                 this->render_area->ReleaseDc("tpnl_tml::draw_civilization_names");
