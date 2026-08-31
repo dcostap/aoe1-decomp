@@ -300,7 +300,7 @@ unsigned char TRIBE_Action_Trade::update()
             this->timer = -0.5f;
             return 0;
         case 5:
-            goto update_state_6;
+            goto update_state_6_failed;
         }
         return 0;
 
@@ -309,13 +309,13 @@ unsigned char TRIBE_Action_Trade::update()
             this->set_state(3);
             return 0;
         }
-    update_state_6:
         if (this->obj->turn_towards(this->target_obj, 0.0f, 0.0f) != 0) {
             if (this->target_obj->attribute_amount_held > DAT_00575348 ||
                 this->obj->keepGatheringWhenObjectIsOut(this->target_obj->master_obj->id) != 0) {
                 this->set_state(7);
                 return 0;
             }
+        update_state_6_failed:
             this->set_target_obj(0);
             this->set_state(3);
         }
@@ -371,49 +371,53 @@ unsigned char TRIBE_Action_Trade::update()
             return 0;
         }
         switch (this->sub_actions->update()) {
-        case 1:
-        case 2:
-            if (this->target_obj2 == 0) {
-                goto update_state_8;
-            }
-            if (this->obj->attribute_amount_held > DAT_00575350) {
-                RGE_Task* trade_task = (RGE_Task*)this->task;
-                if (trade_task->work_sound2 != 0) {
-                    trade_task->work_sound2->play(1);
-                }
-                if (this->pick_up_x < DAT_00575350 || this->pick_up_y < DAT_00575350) {
-                    take_amount = DAT_00575360;
-                } else {
-                    float dx = this->pick_up_x - this->target_obj2->world_x;
-                    float dy = this->pick_up_y - this->target_obj2->world_y;
-                    take_amount = (dy * dy + dx * dx) * DAT_00575358 * DAT_0057535c;
-                }
-                if (this->obj->owner->master_player_id == 0x0F) {
-                    take_amount += take_amount;
-                }
-                if (take_amount < DAT_00575360) {
-                    take_amount = DAT_00575360;
-                }
-                take_amount *= this->obj->attribute_amount_held;
-                if (take_amount > DAT_00575370) {
-                    take_amount = DAT_00575370;
-                }
-                this->obj->owner->add_attribute_num(3, take_amount, 1);
-                this->obj->set_attribute(this->obj->attribute_type_held, 0.0f);
-            }
-            if (this->target_obj != 0) {
-                this->set_state(4);
-                return 0;
-            }
-            this->set_state(3);
-            return 0;
         case 3:
         case 4:
         case 5:
             this->timer = -0.5f;
             return 0;
+        case 1:
+        case 2:
+            if (this->target_obj2 != 0) {
+                if (this->obj->attribute_amount_held > DAT_00575350) {
+                    RGE_Task* trade_task = (RGE_Task*)this->task;
+                    if (trade_task->work_sound2 != 0) {
+                        trade_task->work_sound2->play(1);
+                    }
+                    if (this->pick_up_x < DAT_00575350 || this->pick_up_y < DAT_00575350) {
+                        take_amount = DAT_00575360;
+                    } else {
+                        float dx = this->pick_up_x - this->target_obj2->world_x;
+                        float dy = this->pick_up_y - this->target_obj2->world_y;
+                        take_amount = dx * dx;
+                        take_amount += dy * dy;
+                        take_amount *= DAT_00575358;
+                        take_amount *= DAT_0057535c;
+                    }
+                    if (this->obj->owner->master_player_id == 0x0F) {
+                        take_amount += take_amount;
+                    }
+                    if (take_amount < DAT_00575368) {
+                        take_amount = DAT_00575360;
+                    }
+                    take_amount *= this->obj->attribute_amount_held;
+                    if (take_amount > DAT_00575370) {
+                        take_amount = DAT_00575370;
+                    }
+                    this->obj->owner->add_attribute_num(3, take_amount, 1);
+                    this->obj->set_attribute(this->obj->attribute_type_held, 0.0f);
+                }
+                if (this->target_obj != 0) {
+                    this->set_state(4);
+                    return 0;
+                }
+                this->set_state(3);
+                return 0;
+            }
+            goto update_state_8;
+        default:
+            return 0;
         }
-        return 0;
 
     update_state_8:
         this->set_state(8);
