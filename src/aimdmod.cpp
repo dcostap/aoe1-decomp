@@ -228,8 +228,8 @@ RGE_Static_Object* MainDecisionAIModule::object(int p1, int p2, int p3,
             continue;
         }
 
-        UnitAIModule* unit_ai = object->unitAI();
-        if (unit_ai == 0) {
+        UnitAIModule* ai = object->unitAI();
+        if (ai == 0) {
             continue;
         }
         if (p1 != -1 && object->id != p1) {
@@ -241,10 +241,12 @@ RGE_Static_Object* MainDecisionAIModule::object(int p1, int p2, int p3,
         if (p3 != -1 && object->master_obj->object_group != p3) {
             continue;
         }
-        if (unit_ai->currentAction() == p4) {
+        ai = object->unitAI();
+        if (ai->currentAction() == p4) {
             continue;
         }
-        if (unit_ai->currentAction() == p5) {
+        ai = object->unitAI();
+        if (ai->currentAction() == p5) {
             continue;
         }
         if (p6 != -1 && (int)object->object_state != p6) {
