@@ -369,6 +369,8 @@ void TribeAchievementsScreen::set_mode(long mode)
     int player_num = static_cast<int>(rge_base_game->world->player_num) - 1;
     char temptxt[50];
 
+    memset(temptxt + 31, 0, sizeof(temptxt) - 31);
+
     rge_base_game->disable_input();
 
     if (this->win_loss_text != 0) {
