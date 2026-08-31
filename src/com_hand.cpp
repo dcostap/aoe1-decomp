@@ -1662,57 +1662,52 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long size,
         return 0;
     switch (opcode) {
     case 0x44: {
-        MSGFORMAT_ALL_DONE done;
-        memcpy(&done, data, sizeof(done));
-        this->Speed->SetPlayerTurnSpeed(player, done.FrameRateMsec,
-                                        done.HighLatencyCenti);
+        MSGFORMAT_ALL_DONE* done = (MSGFORMAT_ALL_DONE*)data;
+        this->Speed->SetPlayerTurnSpeed(player, done->FrameRateMsec,
+                                        done->HighLatencyCenti);
         if ((this->PlayerOptions.ProgramState < COMM_STATE_RUNNING ||
-             this->current_turn < 6) && done.ExecuteOnTurn < this->current_turn) {
+             this->current_turn < 6) && done->ExecuteOnTurn < this->current_turn) {
             L->Log("+++REGRESSION WARNING, Current=%d ExecuteOnTurn=%d",
-                   this->current_turn, done.ExecuteOnTurn);
+                   this->current_turn, done->ExecuteOnTurn);
             return 0;
         }
-        unsigned int next = done.ExecuteOnTurn -
-            this->PlayerOptions.CommandTurnIncrement;
+        unsigned int next = done->ExecuteOnTurn;
+        next -= this->PlayerOptions.CommandTurnIncrement;
         if (next < this->LastTurnAck[player])
             next = this->LastTurnAck[player];
         this->LastTurnAck[player] = next;
         return 1;
     }
     case 0x51: {
-        MSGFORMAT_ONTURN stop_turn;
-        memcpy(&stop_turn, data, sizeof(stop_turn));
-        this->SetPlayerStopTurn(player, stop_turn.ExecuteOnTurn);
+        MSGFORMAT_ONTURN* stop_turn = (MSGFORMAT_ONTURN*)data;
+        this->SetPlayerStopTurn(player, stop_turn->ExecuteOnTurn);
         return 1;
     }
     case 0x4D: {
-        MSGFORMAT_CHECKSUM checksum;
-        memcpy(&checksum, data, sizeof(checksum));
-        this->Sync->Add(player, checksum.WorldTime, checksum.WorldTurn,
-                        checksum.Random, checksum.cs1, checksum.cs2,
-                        checksum.cs3, checksum.cs4, checksum.cs5);
+        MSGFORMAT_CHECKSUM* checksum = (MSGFORMAT_CHECKSUM*)data;
+        this->Sync->Add(player, checksum->WorldTime, checksum->WorldTurn,
+                        checksum->Random, checksum->cs1, checksum->cs2,
+                        checksum->cs3, checksum->cs4, checksum->cs5);
         return 1;
     }
     case 0x3E:
         this->AddCommand(turn, data, size, static_cast<int>(player), flags, 0);
         return 1;
     case 0x53: {
-        MSGFORMAT_SPEEDCHANGE speed_change;
-        memcpy(&speed_change, data, sizeof(speed_change));
-        this->Speed->SetFutureSpeedChange(speed_change.BufferFrames,
-                                           speed_change.FrameSizeMsec, turn);
+        MSGFORMAT_SPEEDCHANGE* speed_change = (MSGFORMAT_SPEEDCHANGE*)data;
+        this->Speed->SetFutureSpeedChange(speed_change->BufferFrames,
+                                           speed_change->FrameSizeMsec, turn);
         return 1;
     }
     case 0x43: {
-        MSGFORMAT_CHAT chat;
-        memcpy(&chat, data, sizeof(chat));
+        MSGFORMAT_CHAT* chat = (MSGFORMAT_CHAT*)data;
         L->Log("CHAT-RX from P#%d(%d) RXID=%d Chat content='%s' MsgSize=%d TotalSize=%d pregame=%d",
-               player, from, to, chat.ChatMsg, chat.TextSize, length,
-               chat.Pregame);
-        if (chat.DestPlayers[this->Me] == 'Y' ||
+               player, from, to, chat->ChatMsg, chat->TextSize, length,
+               chat->Pregame);
+        if (chat->DestPlayers[this->Me] == 'Y' ||
             this->PlayerOptions.ProgramState == COMM_STATE_JOINNOW) {
-            this->Chat->AddChatMsg(this->FriendlyName[chat.FromGamerID].Text,
-                                   chat.ChatMsg, 0);
+            this->Chat->AddChatMsg(this->FriendlyName[chat->FromGamerID].Text,
+                                   chat->ChatMsg, 0);
         }
         return 1;
     }
@@ -1728,6 +1723,7 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long size,
     case 0x2B:
         if (this->MeHost) {
             this->SendPauseGame(0);
+            L->Log("Non-host requested resume");
             this->LocalResumeGame(player);
             return 1;
         }
@@ -1740,23 +1736,29 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long size,
         }
         break;
     case 0x4B: {
-        MSGFORMAT_KILL_PLAYER kill_message;
-        memcpy(&kill_message, data, sizeof(kill_message));
+        MSGFORMAT_KILL_PLAYER* kill_message = (MSGFORMAT_KILL_PLAYER*)data;
         L->Log("KILL Message recieved from %d to kill P#%d ",
-               player, kill_message.PlayerNo);
-        int found = 0;
-        if (kill_message.dcoID != 0) {
-            for (int i = this->PlayerOptions.LowPlayerNumber;
-                 i <= this->PlayerOptions.HighPlayerNumber; ++i) {
-                if (this->PlayerOptions.dcoID[i] == kill_message.dcoID) {
-                    found = i;
-                    break;
-                }
+               player, kill_message->PlayerNo);
+        unsigned long dco_id = kill_message->dcoID;
+        int found;
+        int high;
+        found = 0;
+        if (dco_id != 0) {
+            found = this->PlayerOptions.LowPlayerNumber;
+            high = this->PlayerOptions.HighPlayerNumber;
+            while (found <= high) {
+                if (this->PlayerOptions.dcoID[found] == dco_id)
+                    goto found_player;
+                ++found;
             }
+            found = 0;
+        } else {
+            found = 0;
         }
+found_player:
         if (found != 0) {
             if (this->PlayerStopTurn[found] == 0)
-                this->DropDeadPlayer(found, kill_message.dcoID);
+                this->DropDeadPlayer(found, dco_id);
             if (found == this->Me) {
                 this->NotifyWindow(COMM_PLAYER_KICKED);
                 return 1;
