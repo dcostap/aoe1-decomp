@@ -364,8 +364,8 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
         } while (count != 0);
     }
 
+    local_stack.next = 0;
     local_stack.prev = 0;
-    stack[0].x = 0;
     this->link_stack_randomly(&local_stack);
 
     clump_size = (long)sqrt((double)line.elevation_size / (double)line.clumps);
