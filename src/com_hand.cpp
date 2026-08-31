@@ -5719,16 +5719,17 @@ int TCommunications_Handler::SetMyReadiness(int ready, ulong user1, ulong user2,
     this->PlayerOptions.User6[this->Me] = user6;
     this->PlayerOptions.User7[this->Me] = user7;
 
-    rdy.Command = 0x52;
     rdy.Ready = static_cast<unsigned char>(ready);
     rdy.User1 = user1;
-    rdy.User2 = user2;
-    rdy.User3 = user3;
     rdy.User4 = user4;
+    rdy.User2 = user2;
     rdy.User5 = user5;
+    rdy.User3 = user3;
     rdy.User6 = user6;
-    rdy.User7 = user7;
     rdy.CommunicationsVersionCode = this->CommunicationsVersionCode;
+    rdy.User7 = user7;
+    rdy.RGEGuaranteed = this->RGE_Guaranteed_Delivery;
+    rdy.Command = 0x52;
     int meHost = this->MeHost;
 
     if (meHost == 0) {
