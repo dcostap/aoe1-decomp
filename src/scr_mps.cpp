@@ -179,20 +179,19 @@ TribeMPSetupScreen::TribeMPSetupScreen()
             return;
         }
 
-        TButtonPanel** team = &this->playerTeam[row];
-        if (this->create_button(this, team, 0x25B0,
+        if (this->create_button(this, &this->playerTeam[row], 0x25B0,
                                 0, 0x17C, y, 0x1E, 0x14, 0x0B, 0, 1) == 0) {
             return;
         }
-        (*team)->set_help_info(0x7603, -1);
-        (*team)->set_state_info(5);
+        this->playerTeam[row]->set_help_info(0x7603, -1);
+        this->playerTeam[row]->set_state_info(5);
 
         button_id = 1;
         do {
             sprintf(str, "%d", button_id);
-            (*team)->set_text(static_cast<short>(button_id), str);
+            this->playerTeam[row]->set_text(static_cast<short>(button_id), str);
             int next_button_id = button_id + 1;
-            (*team)->set_id(static_cast<short>(button_id), next_button_id, 0);
+            this->playerTeam[row]->set_id(static_cast<short>(button_id), next_button_id, 0);
             button_id = next_button_id;
         } while (button_id < 5);
 
@@ -213,8 +212,7 @@ TribeMPSetupScreen::TribeMPSetupScreen()
                               0x159, text_y, 0x28, 0x16, 0x0B, 0, 0, 0) == 0) {
             return;
         }
-        TTextPanel** player_cd = &this->playerCDText[row];
-        if (this->create_text(this, player_cd, 0x25DF,
+        if (this->create_text(this, &this->playerCDText[row], 0x25DF,
                               0x151, text_y + 1, 0x14, 0x16, 6, 0, 0, 0) == 0) {
             return;
         }
@@ -223,7 +221,7 @@ TribeMPSetupScreen::TribeMPSetupScreen()
             return;
         }
 
-        (*player_cd)->set_active(0);
+        this->playerCDText[row]->set_active(0);
     }
 
     if (rge_base_game->singlePlayerGame() || comm->IsHost()) {
