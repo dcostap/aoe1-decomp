@@ -387,7 +387,7 @@ void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
     RECT line_rect;
     long text_x;
     long text_y;
-    temp_text2 = 0;
+    text_len = 0;
     text2_length = 0;
     text = this->get_text((long)line_index);
     temp_text2 = this->get_text2((long)line_index);
@@ -407,7 +407,7 @@ void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
     if ((this->horz_align != 0) && (this->horz_align != 6)) {
         text_x += 5;
     }
-    text_x = this->second_column_pos + text_x;
+    long second_text_x = this->second_column_pos + text_x;
     text_y = this->pnl_hgt - this->scroll + line_rect.top;
     if ((line_index == (short)this->num_lines - 1) &&
         (this->font_hgt + text_y < this->pnl_y)) {
@@ -458,19 +458,21 @@ void TScrollTextPanel::draw_scrolled_line(void* hdc, short draw_index,
     switch (this->text_style) {
     case 0:
         SetTextColor(hdc, color1);
-        TextOutA(hdc, text_x, text_y, temp_text2, (int)text2_length);
+        TextOutA(hdc, second_text_x, text_y, temp_text2, (int)text2_length);
         return;
     case 1:
         SetTextColor(hdc, color1);
-        TextOutA(hdc, text_x - 1, text_y + 1, temp_text2, (int)text2_length);
+        TextOutA(hdc, second_text_x - 1, text_y + 1,
+                 temp_text2, (int)text2_length);
         SetTextColor(hdc, color2);
-        TextOutA(hdc, text_x, text_y, temp_text2, (int)text2_length);
+        TextOutA(hdc, second_text_x, text_y, temp_text2, (int)text2_length);
         return;
     case 2:
         SetTextColor(hdc, color2);
-        TextOutA(hdc, text_x - 1, text_y + 1, temp_text2, (int)text2_length);
+        TextOutA(hdc, second_text_x - 1, text_y + 1,
+                 temp_text2, (int)text2_length);
         SetTextColor(hdc, color1);
-        TextOutA(hdc, text_x, text_y, temp_text2, (int)text2_length);
+        TextOutA(hdc, second_text_x, text_y, temp_text2, (int)text2_length);
         return;
     default:
         return;
