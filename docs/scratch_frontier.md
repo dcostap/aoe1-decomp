@@ -1,8 +1,8 @@
 # Scratch function frontier
 
-Generated from `93f60848663f221ee1a34739010da24b7e1020cc` and the current full translation-unit audit.
+Generated from `f05cecd4d01469dccc4d640fc97eadf76347e8c2` and the current full translation-unit audit.
 
-Scratch functions: **375**.
+Scratch functions: **373**.
 
 Mechanical tiers rank evidence only. Manual review overrides the score.
 
@@ -16,11 +16,9 @@ Mechanical tiers rank evidence only. Manual review overrides the score.
 
 | Decision | VA | Function | TU | Diff | Reason | Next step |
 |---|---|---|---|---:|---|---|
-| try_now | `004FB550` | `taskTrain` | `taitacmd` | 4 | Four local-home bytes remain. Durable history records an exact natural declaration order from the adjacent taskResearch donor. | Recheck the donor order in current TU context, then run a full taitacmd audit. |
 | try_now | `0042C690` | `AnalyzeCommunicationsStatus` | `com_hand` | 4 | Only four GUID comparison scheduling bytes remain. Prior work tested few natural forms. | Use exact same-TU GUID donors and a small operand-order lab. Do not accept changed pointer-fault order. |
 | try_now | `004C8A80` | `update` | `t_b_obj` | 8 | Eight bytes remain in one reversed movsx pair. Size, instructions, and five calls align. | Test binary-backed field ownership and declaration order without aliases or raw access. |
 | try_now | `00512EC0` | `find_obj` | `tplayer` | 22 | The retained typed rewrite reduced the mismatch to 22 bytes. Only fallback return topology remains. | Test a bounded set of natural return and loop shapes, then audit tplayer. |
-| try_now | `00429A90` | `SendIResignMsg` | `com_hand` | 59 | The note contains only the first reconstruction. The current 313-byte body differs by 59 bytes. | Establish a fresh detailed baseline and compare exact Com_hand packet-building donors. |
 | drift_review | `0042A060` | `ClearRXForPlayer` | `com_hand` | 16 | Sixteen bytes remain after the loop bound repair. Evidence describes register and address scheduling only. | Compare every read, write, branch, residue, and invalid-pointer fault before acceptance. |
 | drift_review | `00429FD0` | `ClearRXandTX` | `com_hand` | 10 | Ten bytes remain in two cleanup-loop register and address schedules. | Prove identical bounds, writes, read order, and fault behavior across both loops. |
 | drift_review | `005110E0` | `tribe_clean_elevation` | `tmap` | 22 | Twenty-two bytes are a localized this and x register-color swap. Size and three calls align. | Perform a full machine-effect review, including exception-time register state. |
@@ -107,9 +105,9 @@ Mechanical tiers rank evidence only. Manual review overrides the score.
 
 | TU | Scratch functions | Mechanical candidates | Candidate VAs |
 |---|---:|---:|---|
-| `com_hand` | 27 | 8 | `0042CD50`, `0042C690`, `0042A060`, `00429FD0`, `004261E0`, `00429A90`, `00428A70`, `0042C5D0` |
+| `com_hand` | 26 | 6 | `0042CD50`, `0042A060`, `00429FD0`, `004261E0`, `00428A70`, `0042C5D0` |
 | `aimdmod` | 10 | 5 | `0040CE90`, `0040D0A0`, `0040D2D0`, `0040D580`, `0040DB50` |
-| `t_b_obj` | 10 | 4 | `004C8A80`, `004C8ED0`, `004C83E0`, `004C9D20` |
+| `t_b_obj` | 10 | 3 | `004C8ED0`, `004C83E0`, `004C9D20` |
 | `tplayer` | 8 | 3 | `00512EC0`, `00513D00`, `00515070` |
 | `stat_obj` | 15 | 3 | `004C1100`, `004C11E0`, `004C5F00` |
 | `command` | 4 | 2 | `004348B0`, `004348F0` |
@@ -117,7 +115,6 @@ Mechanical tiers rank evidence only. Manual review overrides the score.
 | `tmap` | 6 | 2 | `005110E0`, `00510020` |
 | `victory` | 3 | 2 | `00532880`, `005327A0` |
 | `tcommand` | 6 | 2 | `0050A4C0`, `0050A6E0` |
-| `taitacmd` | 24 | 1 | `004FB550` |
 | `basegame` | 4 | 1 | `00421110` |
 | `scr_cj` | 2 | 1 | `004920C0` |
 | `pnl_scbr` | 3 | 1 | `0047B970` |
