@@ -2063,7 +2063,8 @@ void RGE_Static_Object::transform(RGE_Master_Static_Object* param_1) {
     master_obj = param_1;
 
     if (tile != 0) {
-        explore_terrain(owner, 0, (int)param_1->los);
+        register const int no_range = -1;
+        explore_terrain(owner, 0, no_range);
     }
 
     addToObstructionMap(2);
@@ -2074,7 +2075,7 @@ void RGE_Static_Object::transform(RGE_Master_Static_Object* param_1) {
     hp = hp * ratio;
     object_state = 0;
 
-    update(2);
+    set_object_state(2);
 }
 
 
@@ -3811,7 +3812,22 @@ int RGE_Static_Object::destroyGroup() {
 }
 
 
-int RGE_Static_Object::commanderDestroyGroup(){ this->destroyGroup(); return 1; }
+int RGE_Static_Object::commanderDestroyGroup()
+{
+    int i = 0;
+    if (this->groupMembers.numberValue > 0) {
+        do {
+            RGE_Static_Object* object =
+                this->owner->world->object(this->groupMembers[i]);
+            if (object != 0 && object->id != this->id) {
+                object->destroyGroup();
+            }
+            ++i;
+        } while (i < this->groupMembers.numberValue);
+    }
+    this->destroyGroup();
+    return 1;
+}
 
 
 
