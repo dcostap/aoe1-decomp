@@ -26,7 +26,7 @@
     "004BE1F0": {"status": "matching", "symbol": "?AddMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z"},
     "004BE240": {"status": "matching", "symbol": "?SubtractMiniList@TSpan_List_Manager@@QAEXPAUVSpanMiniList@@HH@Z"},
     "004BE290": {"status": "matching", "symbol": "?DeleteSpan@TSpan_List_Manager@@QAEXHHH@Z"},
-    "004BE4B0": {"status": "scratch", "symbol": "?DeleteShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z"},
+    "004BE4B0": {"status": "accepted_drift", "symbol": "?DeleteShape@TSpan_List_Manager@@QAEXPAVTShape@@HHHH@Z"},
     "004BE5B0": {"status": "matching", "symbol": "?PointVisible@TSpan_List_Manager@@QAEHHH@Z"},
     "004BE5F0": {"status": "matching", "symbol": "?Merge_n_Align@TSpan_List_Manager@@QAEXPAV1@0@Z"},
     "004BE690": {"status": "matching", "symbol": "?AlignamizeSpans@TSpan_List_Manager@@QAEXXZ"},
