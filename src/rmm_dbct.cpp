@@ -521,15 +521,17 @@ void RGE_RMM_Database_Controller::add_land_module(uchar group_players)
     long team;
     long candidate;
     long other_team;
-    long team_size[9];
+    long team_size[8];
     long player_teams[9];
     long land_teams[9];
     long distances[8][8];
+    long map_width = this->map_width;
+    long map_height = this->map_height;
 
     RGE_Land_Data* land_data =
         &this->map_info.maps[this->map_type].land_info;
-    land_area = land_data->grown_land_percent * this->map_width *
-        this->map_height / 100;
+    land_area = land_data->grown_land_percent * map_width *
+        map_height / 100;
     placement_edge = land_data->land_placement_edge;
 
     this->land_info.land_num = 0;
@@ -553,23 +555,28 @@ void RGE_RMM_Database_Controller::add_land_module(uchar group_players)
     land_index = 0;
     for (map_land_index = 0; map_land_index < land_data->land_num;
          ++map_land_index) {
-        RGE_Land_Data_Entry& map_land = land_data->land[map_land_index];
-        if (map_land.by_player_flag != 0) {
+        if (land_data->land[map_land_index].by_player_flag != 0) {
             this->calc_land_start(land_index, placement_edge,
-                                  this->number_of_players, &map_land);
+                                  this->number_of_players,
+                                  &land_data->land[map_land_index]);
             for (group_index = 0; group_index < this->number_of_players;
                  ++group_index) {
                 RGE_Land_Info_Line& land = this->land_info.land[land_index];
-                land.terrain_type = map_land.terrain_type;
-                land.area = map_land.land_avoidance_tiles;
-                land.base_size = map_land.base_square_radius;
-                if (map_land.by_player_flag == 1)
-                    land.zone = map_land.zone;
+                land.terrain_type =
+                    land_data->land[map_land_index].terrain_type;
+                land.area =
+                    land_data->land[map_land_index].land_avoidance_tiles;
+                land.base_size =
+                    land_data->land[map_land_index].base_square_radius;
+                if (land_data->land[map_land_index].by_player_flag == 1)
+                    land.zone = land_data->land[map_land_index].zone;
                 else
                     land.zone = (uchar)group_index;
-                land.land_size = map_land.amount_of_land_used_percent *
+                land.land_size =
+                    land_data->land[map_land_index].amount_of_land_used_percent *
                     land_area / (this->number_of_players * 100);
-                land.clumpiness_factor = map_land.clumpiness_factor;
+                land.clumpiness_factor =
+                    land_data->land[map_land_index].clumpiness_factor;
                 land.wall_1_avoidance_line =
                     this->land_info.wall_1_avoidance_line;
                 land.wall_2_avoidance_line =
@@ -584,14 +591,21 @@ void RGE_RMM_Database_Controller::add_land_module(uchar group_players)
         }
         else {
             RGE_Land_Info_Line& land = this->land_info.land[land_index];
-            land.terrain_type = map_land.terrain_type;
-            land.area = map_land.land_avoidance_tiles;
-            land.base_size = map_land.base_square_radius;
-            land.zone = map_land.zone;
-            this->calc_land_start(land_index, placement_edge, 1, &map_land);
-            land.land_size = map_land.amount_of_land_used_percent * land_area /
-                100;
-            land.clumpiness_factor = map_land.clumpiness_factor;
+            land.terrain_type =
+                land_data->land[map_land_index].terrain_type;
+            land.area =
+                land_data->land[map_land_index].land_avoidance_tiles;
+            land.base_size =
+                land_data->land[map_land_index].base_square_radius;
+            land.zone = land_data->land[map_land_index].zone;
+            this->calc_land_start(
+                land_index, placement_edge, 1,
+                &land_data->land[map_land_index]);
+            land.land_size =
+                land_data->land[map_land_index].amount_of_land_used_percent *
+                land_area / 100;
+            land.clumpiness_factor =
+                land_data->land[map_land_index].clumpiness_factor;
             land.wall_1_avoidance_line = this->land_info.wall_1_avoidance_line;
             land.wall_2_avoidance_line = this->land_info.wall_2_avoidance_line;
             land.wall_3_avoidance_line = this->land_info.wall_3_avoidance_line;
