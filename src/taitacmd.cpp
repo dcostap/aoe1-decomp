@@ -6497,15 +6497,13 @@ int TribeTacticalAIModule::civilian(XYPoint& pos, int chooseMode, int order1, in
     int bestUnitID;
     int i;
     RGE_Static_Object* obj;
-    ManagedArray<int>& civilians = this->civilians;
-    ManagedArray<int>& tasked = this->unitsTaskedThisUpdate;
 
     bestUnitID = -1;
     bestUnitDistance = 0;
     i = 0;
     if (this->civilians.numberValue > 0) {
         do {
-            if (tasked.contains(civilians[i]) != 0)
+            if (this->unitsTaskedThisUpdate.contains(this->civilians[i]) != 0)
                 goto next;
 
             obj = this->md->player->world->object(this->civilians[i]);
@@ -10813,7 +10811,7 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int count, int prio
 {
     switch (type) {
     case 0x32:
-        if (this->sn[0x32] != 1 || this->inAge(4) == 0)
+        if (this->sn[0xCE] != 1 || this->inAge(4) == 0)
             break;
         {
             ResourceItem itemCost(4);
@@ -10834,7 +10832,7 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int count, int prio
         break;
 
     case 0x44:
-        if (this->sn[0x44] != 1)
+        if (this->sn[0xCD] != 1)
             break;
         if (this->md->informationAI.closestDropsiteValue[0] == -1)
             break;
@@ -10851,7 +10849,7 @@ void TribeTacticalAIModule::checkForBuildInsertion(int type, int count, int prio
         break;
 
     case 0x4F:
-        if (this->sn[0x4F] != 1)
+        if (this->sn[0xCF] != 1)
             break;
         {
             ResourceItem itemCost(4);
@@ -11290,12 +11288,10 @@ void TribeTacticalAIModule::checkForASAPAgeResearch()
 
 void TribeTacticalAIModule::checkForCoopAttack(int p1, int p2, int p3)
 {
-    int coopAttackEnabled = this->sn[0xC4];
-    int coopAttackInterval = this->sn[0xC5];
-    if (coopAttackEnabled != 1) return;
+    if (this->sn[0xC4] != 1) return;
 
     int now = this->md->player->world->world_time;
-    if ((now - this->lastCoopAttackDemandTime) / 1000 < coopAttackInterval) return;
+    if ((long)(now - this->lastCoopAttackDemandTime) / 1000 < this->sn[0xC5]) return;
     this->lastCoopAttackDemandTime = now;
 
     TRIBE_World* world = static_cast<TRIBE_World*>(this->md->player->world);
