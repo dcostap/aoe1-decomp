@@ -1710,6 +1710,9 @@ void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* persona
 }
 
 
+extern int global_save_debug_random_on3;
+extern int global_save_debug_random_on4;
+
 
 void TRIBE_Player::notify(int first, int second, int third,
                           long fourth, long fifth, long sixth)
@@ -1724,6 +1727,7 @@ void TRIBE_Player::notify(int first, int second, int third,
                 int seed = debug_rand(tplayerSourceName, 0x920);
                 int saved = debug_random_on;
                 debug_random_on = 0;
+                global_save_debug_random_on3 = saved;
                 if (this->world->curr_player == this->id) {
                     RGE_Sound* sound = this->world->sounds[static_cast<short>(this->attributes[26])];
                     if (sound != 0) sound->play(1);
@@ -1748,6 +1752,7 @@ void TRIBE_Player::notify(int first, int second, int third,
     }
     int seed = debug_rand(tplayerSourceName, 0x949);
     int saved = debug_random_on;
+    global_save_debug_random_on4 = saved;
     debug_random_on = 0;
     if (this->playerAI != 0)
         this->notifyAI(first, second, third, fourth, fifth, sixth);
