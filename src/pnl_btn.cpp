@@ -6,46 +6,39 @@
 #include <string.h>
 
 TButtonPanel::TButtonPanel()
+    : buttonTypeValue(Normal),
+      drawTypeValue(DrawClear),
+      notifyTypeValue(NotifyAction),
+      sound(0),
+      auto_pic_pos(1),
+      pic_x(0),
+      pic_y(0),
+      all_hot(1),
+      draw_reverse(0),
+      text_x(-1),
+      text_y(-1),
+      font(0),
+      font_wid(0),
+      font_hgt(0),
+      num_states(1),
+      cur_state(0),
+      is_down(0),
+      radio_buttons(0),
+      num_radio_buttons(0),
+      button_down_time(0),
+      hotkey(0),
+      hotkey_shift(0),
+      bevel_type(1),
+      bevel_color1(0),
+      bevel_color2(0),
+      bevel_color3(0),
+      bevel_color4(0),
+      bevel_color5(0),
+      bevel_color6(0),
+      key_down(0),
+      disabled(0),
+      sound_number(-1)
 {
-
-    buttonTypeValue = Normal;
-    drawTypeValue = DrawClear;
-    notifyTypeValue = NotifyAction;
-
-    sound = 0;
-
-    auto_pic_pos = 1;
-    pic_x = 0;
-    pic_y = 0;
-    all_hot = 1;
-    draw_reverse = 0;
-
-    text_x = -1;
-    text_y = -1;
-    font = 0;
-    font_wid = 0;
-    font_hgt = 0;
-
-    num_states = 1;
-    cur_state = 0;
-    is_down = 0;
-    radio_buttons = 0;
-    num_radio_buttons = 0;
-    button_down_time = 0;
-
-    hotkey = 0;
-    hotkey_shift = 0;
-    bevel_type = 1;
-    bevel_color1 = 0;
-    bevel_color2 = 0;
-    bevel_color3 = 0;
-    bevel_color4 = 0;
-    bevel_color5 = 0;
-    bevel_color6 = 0;
-    key_down = 0;
-    disabled = 0;
-    sound_number = -1;
-
     // The compiler emits the derived vptr as part of normal construction.
     ((TPanel*)this)->panel_type = 3;
 
