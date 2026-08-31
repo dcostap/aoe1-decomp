@@ -183,7 +183,7 @@ void TRIBE_Panel_Object::draw()
     this->draw_setup(0);
     this->render_area->Clear(&this->clip_rect, 0);
 
-    if (this->render_area->Lock("tpnl_obj.cpp", 1) != 0) {
+    if (this->render_area->Lock("tpnl_obj::draw", 1) != 0) {
         short shape = this->game_obj->master_obj->button_pict;
         if (shape != -1) {
             TShape* picture;
@@ -238,10 +238,10 @@ void TRIBE_Panel_Object::draw()
                 0);
         }
 
-        this->render_area->Unlock("tpnl_obj.cpp");
+        this->render_area->Unlock("tpnl_obj::draw");
     }
 
-    if (this->render_area->GetDc("tpnl_obj.cpp") != 0) {
+    if (this->render_area->GetDc("tpnl_obj::draw") != 0) {
         HDC dc = this->render_area->DrawDc;
         SetBkMode(dc, 1);
         SetTextColor(dc, 0x00ffffff);
@@ -297,7 +297,7 @@ void TRIBE_Panel_Object::draw()
 
         SelectObject(dc, old_font);
         SelectClipRgn(dc, 0);
-        this->render_area->ReleaseDc("tpnl_obj.cpp");
+        this->render_area->ReleaseDc("tpnl_obj::draw");
     }
 
     int row = 0;
@@ -650,7 +650,7 @@ void TRIBE_Panel_Object::draw_score()
     this->draw_setup(0);
     this->render_area->Clear(&this->clip_rect, 0);
 
-    if (this->render_area->GetDc("tpnl_obj.cpp") != 0) {
+    if (this->render_area->GetDc("tpnl_obj::draw_score") != 0) {
         SetBkMode(this->render_area->DrawDc, 1);
         SetTextColor(this->render_area->DrawDc, 0xFFFFFF);
         old_font = SelectObject(this->render_area->DrawDc,
@@ -714,7 +714,7 @@ void TRIBE_Panel_Object::draw_score()
         } while (i < 9);
 
         SelectObject(this->render_area->DrawDc, old_font);
-        this->render_area->ReleaseDc("tpnl_obj.cpp");
+        this->render_area->ReleaseDc("tpnl_obj::draw_score");
     }
 
     this->draw_finish();
