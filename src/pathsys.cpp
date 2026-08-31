@@ -1045,7 +1045,7 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
     }
 
     int removed = object->removeFromObstructionMap(this->aiPS);
-    bool foundBlockingGroup = false;
+    int foundBlockingGroup = 0;
     uchar* obstruction;
     int height = yMax - yMin - 1;
 
@@ -1098,7 +1098,7 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                             this->maxTarget.y < (int)local_14) {
                             goto blocked;
                         }
-                        foundBlockingGroup = true;
+                        foundBlockingGroup = 1;
                     }
                     ++col;
                 }
@@ -1108,7 +1108,7 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
             } while (row < xMax);
         }
 
-        if (foundBlockingGroup)
+        if (foundBlockingGroup == 1)
             goto blocked;
     }
 
