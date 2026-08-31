@@ -407,8 +407,8 @@ int TribeMainDecisionAIModule::update(int timeLimit)
                 } else {
                     numberComputerPlayers++;
                     if (player->isAllNeutral() == 1) {
-                        neutralList[playerIndex] = 1;
                         numberNeutralCPs++;
+                        neutralList[playerIndex] = 1;
                     } else {
                         neutralList[playerIndex] = 0;
                     }

@@ -16,7 +16,7 @@
     "0051BF90": {"status": "scratch", "symbol": "?draw_score@TRIBE_Panel_Object@@IAEXXZ"},
     "0051C220": {"status": "matching", "symbol": "?draw_item@TRIBE_Panel_Object@@MAEXHHW4ValueType@1@HH@Z"},
     "0051C3F0": {"status": "scratch", "symbol": "?handle_idle@TRIBE_Panel_Object@@UAEJXZ"},
-    "0051CA10": {"status": "scratch", "symbol": "?save_object_info@TRIBE_Panel_Object@@IAEXXZ"},
+    "0051CA10": {"status": "matching", "symbol": "?save_object_info@TRIBE_Panel_Object@@IAEXXZ"},
     "0051CC80": {"status": "matching", "symbol": "?mouse_left_down_action@TRIBE_Panel_Object@@UAEJJJHH@Z"},
     "0051CC90": {"status": "matching", "symbol": "?mouse_left_up_action@TRIBE_Panel_Object@@UAEJJJHH@Z"}
   }

@@ -72,8 +72,8 @@ public:
                                float);
     virtual void sendAddWaypointCommand(int, XYZBYTEPoint*, int);
     virtual void processAddWaypointCommand(int, XYZBYTEPoint*, int);
-    virtual void sendPlayCommand(int, int*, int, int, int);
     virtual void sendPlayCommand(int, int, int);
+    virtual void sendPlayCommand(int, int*, int, int, int);
     virtual int sendAICommand(int, int, int, int, int) { return 0; }
     virtual int objectCostByType(int) { return -1; }
     virtual void trackUnitGather(int, int, int) {}

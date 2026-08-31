@@ -17,10 +17,10 @@ stay in the module source, but are not registered as exact owners.
 
 ## Recovery state
 
-The module retains 48 matching owners, six accepted-drift owners, and four
+The module retains 48 matching owners, seven accepted-drift owners, and three
 scratch owners. The accepted-drift owners are `00531DB0`, `005324A0`, `005326F0`,
-`00532C10`, `00532ED0`, and `00532FA0`. The scratch owners are `00531750`,
-`005327A0`, `00532880`, and `00533240`.
+`00532C10`, `00532ED0`, `00532FA0`, and `00533240`. The scratch owners are
+`00531750`, `005327A0`, and `00532880`.
 
 The source uses one module-owned declaration surface. It removes source-bank
 fallback declarations, `.cpp` includes, wrapper files, context selection, and
@@ -113,16 +113,21 @@ The module is not fully exact. No compiler-generated owners were included.
 
 The final result does not retain the five earlier exact regressions as a set:
 `00532050`, `00532CC0`, and `00533410` now match. Their source-module statuses
-remain unchanged. `00532610` and `00533120` remain exact mismatches. Their
-status is demoted to `scratch`, and their registered exact-owner entries are
-removed.
+remain unchanged. That candidate found mismatches at `00532610` and `00533120`.
+A later current audit reports `MATCH` for both owners. The registry now marks
+both as matching.
+
+## Current Cycle 006 validation
+
+The Cycle 006 audit reports 48 matching, seven accepted-drift, and three
+scratch owners. All 48 matching owners report `MATCH`. The three current
+scratch owners are `00531750`, `005327A0`, and `00532880`.
 
 ## Open issues
 
 - `00531750` keeps its typed natural reconstruction but remains scratch because
   its constructor has broad register and vtable-context drift.
-- `00533240` keeps its typed natural reconstruction but remains scratch because
-  its player-id spill and local-frame layout remain unresolved.
+- `00533240` keeps its reviewed accepted-drift status.
 - `00531750` is a scratch overloaded constructor. The registered exact-owner
   map cannot store its symbol without making a false exact claim.
 - The six accepted-drift owners retain their previously reviewed localized

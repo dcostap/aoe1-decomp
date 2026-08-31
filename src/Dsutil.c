@@ -1153,10 +1153,10 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
                         memset(lpWrite1 + uChkErr, 0,
                                dwLen1 - uChkErr);
                 }
-                if (ds_write_cursor <= dwLen2)
-                    ds_silence_chunks = (ds_buffer_size + ds_write_cursor - dwLen2) / ds_chunk_size;
+                if (ds_write_cursor < dwWrite)
+                    ds_silence_chunks = (ds_buffer_size + ds_write_cursor - dwWrite) / ds_chunk_size;
                 else
-                    ds_silence_chunks = (ds_write_cursor - dwLen2) / ds_chunk_size;
+                    ds_silence_chunks = (ds_write_cursor - dwWrite) / ds_chunk_size;
                 ds_stream_at_end = 1;
             } else if (lpWrite1) {
                 unsigned char* retryWrite1 = lpWrite1;
@@ -1183,10 +1183,10 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
                 else if (lpWrite2 && _wiWave != 0 &&
                          ((LPWAVEFORMATEX)_wiWave)->wBitsPerSample == 16)
                     memset(lpWrite2 + uChkErr, 0, dwLen2 - uChkErr);
-                if (ds_write_cursor <= dwLen2)
-                    ds_silence_chunks = (ds_buffer_size + ds_write_cursor - dwLen2) / ds_chunk_size;
+                if (ds_write_cursor < dwWrite)
+                    ds_silence_chunks = (ds_buffer_size + ds_write_cursor - dwWrite) / ds_chunk_size;
                 else
-                    ds_silence_chunks = (ds_write_cursor - dwLen2) / ds_chunk_size;
+                    ds_silence_chunks = (ds_write_cursor - dwWrite) / ds_chunk_size;
                 ds_stream_at_end = 1;
             } else if (lpWrite2) {
                 unsigned char* retryWrite2 = lpWrite2;

@@ -12,7 +12,7 @@
     "00467150": {"status": "matching", "symbol": "?init_vars@TEasy_Panel@@IAEXXZ"},
     "00467250": {"status": "matching", "symbol": "??1TEasy_Panel@@UAE@XZ"},
     "004672A0": {"status": "matching", "symbol": "?prepare_for_close@TEasy_Panel@@QAEXXZ"},
-    "00467380": {"status": "scratch", "symbol": "?setup_shadow_area@TEasy_Panel@@QAEXH@Z"},
+    "00467380": {"status": "matching", "symbol": "?setup_shadow_area@TEasy_Panel@@QAEXH@Z"},
     "00467560": {"status": "matching", "symbol": "?draw_setup@TEasy_Panel@@UAEXH@Z"},
     "00467570": {"status": "matching", "symbol": "?draw@TEasy_Panel@@UAEXXZ"},
     "004675C0": {"status": "accepted_drift", "symbol": "?draw_background@TEasy_Panel@@UAEXH@Z"},
