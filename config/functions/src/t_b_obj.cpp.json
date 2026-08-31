@@ -8,7 +8,7 @@
   "functions": {
     "004C7F50": {"status": "matching", "symbol": "??0TRIBE_Building_Object@@QAE@PAVTRIBE_Master_Building_Object@@PAVRGE_Player@@MMMHH@Z"},
     "004C80B0": {"status": "matching", "symbol": "??0TRIBE_Building_Object@@QAE@PAVTRIBE_Master_Building_Object@@PAVRGE_Player@@MMMH@Z"},
-    "004C81D0": {"status": "scratch", "symbol": "??0TRIBE_Building_Object@@QAE@HPAVRGE_Game_World@@H@Z"},
+    "004C81D0": {"status": "matching", "symbol": "??0TRIBE_Building_Object@@QAE@HPAVRGE_Game_World@@H@Z"},
     "004C82A0": {"status": "matching", "symbol": "??1TRIBE_Building_Object@@UAE@XZ"},
     "004C8370": {"status": "matching", "symbol": "?recycle_out_of_game@TRIBE_Building_Object@@UAEXXZ"},
     "004C83E0": {"status": "scratch", "symbol": "?setup@TRIBE_Building_Object@@MAEHPAVTRIBE_Master_Building_Object@@PAVRGE_Player@@MMM@Z"},
