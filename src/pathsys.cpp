@@ -192,21 +192,6 @@ void PathingSystem::decrementObstruction(int x, int y) {
     }
 }
 
-static __inline void restoreCollidingObjects(PathingSystem* ps)
-{
-    RGE_Moving_Object* object = ps->currentObject;
-    int index = 0;
-    while (index < object->pathingGroupMembers.numberValue) {
-        RGE_Static_Object* other =
-            ps->worldValue->object(object->pathingGroupMembers[index]);
-        if (other != 0 && other->id != ps->currentObject->id &&
-            other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
-            other->addToObstructionMap(ps->aiPS);
-        }
-        ++index;
-    }
-}
-
 static __inline int estimateDistanceOrdered(int ax, int ay, int bx, int by)
 {
     int swap;
@@ -299,7 +284,6 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     int openIndex;
     int parentIndex;
     int insertIndex;
-    int restoreResult;
     int reached;
     float unobstructibleObjectHitpoints;
     float fx;
@@ -519,13 +503,29 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             if (mode == 1 && this->copyPath(step) == 0) {
                 path = obj->storePathInExceptionPath == 0 ? &obj->pathValue : &obj->exceptionPathValue;
                     path->killPath();
-                restoreCollidingObjects(this);
-                restoreResult = 0;
+                curObj = this->currentObject;
+                i = 0;
+                while (i < curObj->pathingGroupMembers.numberValue) {
+                    other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+                    if (other != 0 && other->id != this->currentObject->id &&
+                        other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
+                        other->addToObstructionMap(this->aiPS);
+                    }
+                    ++i;
+                }
                 goto final_failure_restore;
             }
             if (costOut != 0) *costOut = (float)this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
-            restoreCollidingObjects(this);
-            restoreResult = 1;
+            curObj = this->currentObject;
+            i = 0;
+            while (i < curObj->pathingGroupMembers.numberValue) {
+                other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+                if (other != 0 && other->id != this->currentObject->id &&
+                    other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
+                    other->addToObstructionMap(this->aiPS);
+                }
+                ++i;
+            }
             goto final_success_restore;
         }
 
@@ -537,7 +537,11 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
 
         ++this->numberTraversedPathsValue;
         heapCount = this->numberOpenPathsValue;
-        this->MGP_openPaths[1] = this->MGP_openPaths[heapCount];
+        // The original heap node copies only the fields used by path search.
+        // The two-byte next field is not copied here.
+        this->MGP_openPaths[1].x = this->MGP_openPaths[heapCount].x;
+        this->MGP_openPaths[1].y = this->MGP_openPaths[heapCount].y;
+        this->MGP_openPaths[1].total = this->MGP_openPaths[heapCount].total;
         --heapCount;
         this->numberOpenPathsValue = heapCount;
         copiedX = this->MGP_openPaths[1].x;
@@ -861,13 +865,29 @@ obstruction_done:
                 if (mode == 1 && this->copyPath(step) == 0) {
                     path = obj->storePathInExceptionPath == 0 ? &obj->pathValue : &obj->exceptionPathValue;
                     path->killPath();
-                    restoreCollidingObjects(this);
-                    restoreResult = 0;
+                    curObj = this->currentObject;
+                    i = 0;
+                    while (i < curObj->pathingGroupMembers.numberValue) {
+                        other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+                        if (other != 0 && other->id != this->currentObject->id &&
+                            other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
+                            other->addToObstructionMap(this->aiPS);
+                        }
+                        ++i;
+                    }
                     goto final_failure_restore;
                 }
                 if (costOut != 0) *costOut = (float)this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
-                restoreCollidingObjects(this);
-                restoreResult = 1;
+                curObj = this->currentObject;
+                i = 0;
+                while (i < curObj->pathingGroupMembers.numberValue) {
+                    other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+                    if (other != 0 && other->id != this->currentObject->id &&
+                        other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
+                        other->addToObstructionMap(this->aiPS);
+                    }
+                    ++i;
+                }
                 goto final_success_restore;
             }
 
@@ -916,12 +936,28 @@ path_exhausted:
     if (mode == 1 && this->copyPath(step) == 0) {
         path = obj->storePathInExceptionPath == 0 ? &obj->pathValue : &obj->exceptionPathValue;
                     path->killPath();
-        restoreCollidingObjects(this);
-        restoreResult = 0;
+        curObj = this->currentObject;
+        i = 0;
+        while (i < curObj->pathingGroupMembers.numberValue) {
+            other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+            if (other != 0 && other->id != this->currentObject->id &&
+                other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
+                other->addToObstructionMap(this->aiPS);
+            }
+            ++i;
+        }
     } else {
         if (costOut != 0) *costOut = (float)this->MGP_bestTraversedPath.total;
-        restoreCollidingObjects(this);
-        restoreResult = 0;
+        curObj = this->currentObject;
+        i = 0;
+        while (i < curObj->pathingGroupMembers.numberValue) {
+            other = this->worldValue->object(curObj->pathingGroupMembers[i]);
+            if (other != 0 && other->id != this->currentObject->id &&
+                other->lastInObstructionMapValue == 1 && other->inside_obj == 0) {
+                other->addToObstructionMap(this->aiPS);
+            }
+            ++i;
+        }
     }
 
     goto final_failure_restore;
@@ -930,7 +966,7 @@ final_failure_restore:
     if (this->currentObjectInObMap == 1 && this->currentObject->inside_obj == 0) {
         this->currentObject->addToObstructionMap(this->aiPS);
     }
-    return restoreResult;
+    return 0;
 }
 #pragma optimize("y", on)
 
