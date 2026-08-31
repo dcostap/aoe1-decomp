@@ -75,20 +75,19 @@ int TMusic_System::open_device()
     switch (this->music_type) {
     case 1: {
         MCI_SEND_COMMAND_PROC mci = mciSendCommandA;
-        open_info.lpstrElementName = MAKEINTRESOURCEA(0x204);
+        open_info.lpstrDeviceType = MAKEINTRESOURCEA(0x204);
         if (mci(0, 0x803, 0x3102,
-                (DWORD)&open_info.wDeviceID) == 0) {
+                (DWORD)&open_info) == 0) {
             this->device_open = 1;
-            this->device_id = open_info.lpstrDeviceType != 0
-                                ? (unsigned int)open_info.lpstrDeviceType : 0;
-            set_info.dwAudio = 10;
+            this->device_id = open_info.wDeviceID;
+            set_info.dwTimeFormat = 10;
             mci(this->device_id, 0x80D, 0x402,
-                (DWORD)&set_info.dwTimeFormat);
+                (DWORD)&set_info);
 
-            status_info.dwTrack = 3;
+            status_info.dwItem = 3;
             if (mci(this->device_id, 0x814, 0x102,
-                    (DWORD)&status_info.dwReturn) == 0) {
-                this->track_count = status_info.dwItem;
+                    (DWORD)&status_info) == 0) {
+                this->track_count = status_info.dwReturn;
             }
 
             if (this->open_mixer() != 0) {
@@ -851,19 +850,19 @@ int TMusic_System::get_play_info(unsigned char* music_type,
 
     switch (this->music_type) {
     case 2: {
-        status_info.dwTrack = 2;
+        status_info.dwItem = 2;
         int result = mciSendCommandA(this->device_id, 0x814, 0x102,
-                                     (unsigned long)&status_info.dwReturn);
+                                     (unsigned long)&status_info);
         if (result == 0)
-            *position = status_info.dwItem;
+            *position = status_info.dwReturn;
         break;
     }
     case 1: {
-        status_info.dwTrack = 2;
+        status_info.dwItem = 2;
         int result = mciSendCommandA(this->device_id, 0x814, 0x102,
-                                     (unsigned long)&status_info.dwReturn);
+                                     (unsigned long)&status_info);
         if (result == 0)
-            *position = status_info.dwItem;
+            *position = status_info.dwReturn;
         break;
     }
     default:
