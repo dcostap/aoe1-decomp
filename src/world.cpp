@@ -402,25 +402,20 @@ unsigned char RGE_Game_World::data_load_players(char* param_1) {
     short id;
 
     fp = fopen(param_1, "r");
-    if (fp == NULL)
-        goto done;
-
-    if (fscanf(fp, "%hd %hd", &this->master_player_num, &master_player_count) != -1) {
-        this->master_players = (RGE_Master_Player**)calloc(this->master_player_num, 4);
-        for (short i = 0; i < master_player_count; i++) {
-            if (fscanf(fp, "%hd %hd", &type, &id) != -1) {
-                this->data_load_players_type(type, id, fp);
+    if (fp != 0) {
+        if (fscanf(fp, "%hd %hd", &this->master_player_num, &master_player_count) != -1) {
+            this->master_players = (RGE_Master_Player**)calloc(this->master_player_num, 4);
+            for (short i = 0; i < master_player_count; i++) {
+                if (fscanf(fp, "%hd %hd", &type, &id) != -1) {
+                    this->data_load_players_type(type, id, fp);
+                }
             }
+        } else {
+            this->master_player_num = 0;
+            this->master_players = 0;
         }
         fclose(fp);
-        return 1;
     }
-
-    this->master_player_num = 0;
-    this->master_players = 0;
-    fclose(fp);
-
-done:
     return 1;
 }
 
@@ -613,31 +608,21 @@ void RGE_Game_World::init_sprites(int param_1)
 
 void RGE_Game_World::scenario_init(int param1, RGE_Game_World* param2) {
     RGE_Scenario* p = new RGE_Scenario(param1, param2);
-    if (p == 0) {
-        p = 0;
-    }
     scenario = p;
 }
 
 void RGE_Game_World::scenario_init(RGE_Game_World* param_1) {
     RGE_Scenario* s = new RGE_Scenario(param_1);
-    if (s == 0) {
-        s = 0;
-    }
     this->scenario = s;
 }
 
 void RGE_Game_World::map_init(int param_1, TSound_Driver* param_2) {
     RGE_Map* new_map = new RGE_Map(param_1, this->sounds, 1);
-    if (new_map == 0) {
-        new_map = 0;
-    }
     this->map = new_map;
 }
 
 void RGE_Game_World::effects_init(int param_1) {
     RGE_Effects* e = new RGE_Effects(param_1);
-    if (e == 0) { e = 0; }
     this->effects = e;
 }
 
@@ -906,9 +891,6 @@ void RGE_Game_World::set_game_speed(float v) { this->game_speed = v; }
 
 void RGE_Game_World::setup_gaia() {
     RGE_Player* p = new RGE_Player(this, *master_players, 0, "GAIA", 0, 1);
-    if (p == 0) {
-        p = 0;
-    }
     *players = p;
 }
 
