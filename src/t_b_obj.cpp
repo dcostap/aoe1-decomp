@@ -936,44 +936,68 @@ void TRIBE_Building_Object::add_to_production_queue(short master_id,
 void TRIBE_Building_Object::remove_from_production_queue(short master_id,
                                                           short max_remove)
 {
-    if (production_queue_count == 0) {
-        return;
-    }
+    int remove_count;
+    short index;
+    short copy_index;
 
-    short index = production_queue_count - 1;
-    while (index >= 0 && production_queue[index].master_id != master_id) {
-        --index;
-    }
-    if (index < 0) {
-        return;
-    }
+    index = production_queue_count;
+    if (index != 0) {
+        index--;
+        while (index >= 0) {
+            if (production_queue[index].master_id == master_id) {
+                remove_count = max_remove;
+                if (production_queue[index].unit_count <= max_remove) {
+                    remove_count = production_queue[index].unit_count;
+                }
 
-    short remove_count = max_remove;
-    if (production_queue[index].unit_count <= max_remove) {
-        remove_count = production_queue[index].unit_count;
-    }
-    while (remove_count > 0) {
-        tribe_player(owner)->reimburse_obj_cost(master_id);
-        --remove_count;
-    }
+                if (remove_count > 0) {
+                    do {
+                        static_cast<TRIBE_Player*>(owner)->reimburse_obj_cost(
+                            master_id);
+                        remove_count--;
+                    } while (remove_count != 0);
+                }
 
-    production_queue[index].unit_count -= max_remove;
-    production_queue_change_flag++;
-    if (production_queue[index].unit_count <= 0) {
-        --production_queue_count;
-        for (short i = index; i < production_queue_count; ++i) {
-            production_queue[i] = production_queue[i + 1];
-        }
-        if (index == 0) {
-            if (production_queue_need_attr == 4) {
-                adjust_pop_waiting(owner, -1);
-                production_queue_need_attr = -1;
+                production_queue[index].unit_count -= max_remove;
+                production_queue_change_flag++;
+
+                if (production_queue[index].unit_count <= 0) {
+                    production_queue_count--;
+                    copy_index = index;
+                    if (index < production_queue_count) {
+                        do {
+                            production_queue[copy_index].master_id =
+                                production_queue[copy_index + 1].master_id;
+                            production_queue[copy_index].unit_count =
+                                production_queue[copy_index + 1].unit_count;
+                            copy_index++;
+                        } while (copy_index < production_queue_count);
+                    }
+
+                    if (index == 0) {
+                        if (production_queue_need_attr != -1) {
+                            if (production_queue_need_attr == 4) {
+                                int id = owner->id;
+                                long* value =
+                                    &static_cast<TRIBE_Game*>(rge_base_game)
+                                         ->queue_is_waiting_on_pop_counter[id];
+                                long old = *value;
+                                long result = old - 1;
+                                *value = result;
+                            }
+                            production_queue_need_attr = -1;
+                        }
+                        production_queue_actions->action_stop();
+                        production_queue_actions->delete_list();
+                    }
+                }
+                break;
             }
-            production_queue_actions->action_stop();
-            production_queue_actions->delete_list();
+            index--;
         }
+
+        rge_base_game->notification(0x7C, owner->id, 0, 0, 0);
     }
-    rge_base_game->notification(0x7C, owner->id, 0, 0, 0);
 }
 
 void TRIBE_Building_Object::advance_production_queue()
