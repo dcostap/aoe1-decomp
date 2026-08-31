@@ -1929,13 +1929,12 @@ int TCommunications_Handler::TEST()
 
 void TCommunications_Handler::SetSelfPlayer()
 {
-    for (unsigned int i = 1; i <= this->MaxGamePlayers; ++i) {
+    unsigned int i = 1;
+    unsigned long* dco = this->PlayerOptions.dcoID + 1;
+    for (; i <= this->MaxGamePlayers; ++i, ++dco) {
+        L->Log("Check dcoID %d to Me %d ?", *dco, local_player_dpid);
 
-
-        unsigned long dco = this->PlayerOptions.dcoID[i];
-        L->Log("Check dcoID %d to Me %d ?", dco, local_player_dpid);
-
-        if (dco == local_player_dpid) {
+        if (*dco == local_player_dpid) {
             L->Log("Match! - ID set.");
             this->Me = i;
             this->NotifyWindowParam(static_cast<COMMMESSAGES>(0x17B8), i);
@@ -2707,7 +2706,7 @@ void TCommunications_Handler::ClearAllSerialNumbers() {
 
 void TCommunications_Handler::ClearRXandTX()
 {
-    for (unsigned int i = 0; i < 502; ++i) {
+    for (unsigned int i = 0; i < 501; ++i) {
         HOLDER* entry = &this->OnHold[i];
         if (entry->HoldMsg != 0) {
             delete[] entry->HoldMsg;
@@ -2719,7 +2718,7 @@ void TCommunications_Handler::ClearRXandTX()
         entry->dcoReceiveID = 0;
     }
 
-    for (unsigned int resend_index = 0; resend_index < 502; ++resend_index) {
+    for (unsigned int resend_index = 0; resend_index < 501; ++resend_index) {
         RESENDER* entry = &this->Resend[resend_index];
         entry->TimeSent = 0;
         if (entry->ResendMsg != 0) {
@@ -2733,7 +2732,7 @@ void TCommunications_Handler::ClearRXandTX()
 }
 
 void TCommunications_Handler::ClearRXForPlayer(unsigned int player) {
-    for (unsigned int i = 0; i < 502; ++i) {
+    for (unsigned int i = 0; i <= 501; ++i) {
         HOLDER* entry = &this->OnHold[i];
         if (entry->dcoFromID == this->PlayerOptions.dcoID[player]) {
             if (entry->HoldMsg != 0) {
@@ -3024,10 +3023,10 @@ int TCommunications_Handler::RXAcknowledgeStoredMessage(unsigned int param_1, un
     L->Log("COMM: RX ACK from P#%d for Ser#%d", param_2, param_1);
     this->WaitingForAck = 0;
 
-    for (unsigned int slot = 0; slot < 502; ++slot) {
-        RESENDER* resend = &this->Resend[slot];
-        if (resend->Serial == param_1 && resend->Serial != 0) {
-            resend->DestMap[param_2] = 0;
+    for (unsigned int slot = 0; slot <= 501; ++slot) {
+        if (this->Resend[slot].Serial == param_1 &&
+            this->Resend[slot].Serial != 0) {
+            this->Resend[slot].DestMap[param_2] = 0;
         }
     }
     return 1;
@@ -3552,9 +3551,9 @@ int TCommunications_Handler::TXResendRequest(unsigned int serial, unsigned int p
     }
     this->LastSerialRequestedTX[player] = serial;
     this->LastRequestHonoredTX[player] = now;
-    MSGFORMAT_RESEND msg;
-    msg.Command = 0x58;
-    msg.Serialno = serial;
+    MSGFORMAT_RESEND* msg = new MSGFORMAT_RESEND;
+    msg->Command = 0x58;
+    msg->Serialno = serial;
     L->Log("GTD: TX RESEND REQ to P#%d  Ser#%d ", player, serial);
     if (local_player_dpid == 0) {
         L->Log("+++BAD DCOID=0 NO TX");
@@ -3564,11 +3563,12 @@ int TCommunications_Handler::TXResendRequest(unsigned int serial, unsigned int p
     L->Log("  >TX RES REQ #%d %d (%d)", player, serial, 8);
     int to = this->PlayerOptions.dcoID[player];
     IDirectPlay3* dp = direct_play_interface;
-    int ok = dp->Send(local_player_dpid, to, 0, &msg, sizeof(msg));
+    int ok = dp->Send(local_player_dpid, to, 0, msg, sizeof(*msg));
     unsigned long elapsed2 = debug_timeGetTime(com_hand_source_path, 4024) - sendStart;
     if (elapsed2 > 50) {
         L->Log("  TX RES REQ took %d", elapsed2);
     }
+    delete msg;
     if (ok == 0) {
         this->TXPacketLength += 8;
         return 1;
@@ -5188,9 +5188,9 @@ void TCommunications_Handler::PackPlayersDown()
             L->Log("Position %d *LOCKED*.   Plr=%s", pos, this->GetPlayerName(pos));
         } else {
             int src = pos;
-            while (src <= static_cast<int>(this->MaxGamePlayers)) {
-                if (this->IsPlayerHuman(src) || this->IsPlayerComputer(src))
-                    break;
+            while (src <= static_cast<int>(this->MaxGamePlayers) &&
+                   !this->IsPlayerHuman(src) &&
+                   !this->IsPlayerComputer(src)) {
                 ++src;
             }
             if (src <= static_cast<int>(this->MaxGamePlayers)) {
@@ -6143,7 +6143,7 @@ void TCommunications_Handler::OutOfSync(int a, unsigned long b) {
 
 
 int TCommunications_Handler::SendZoneMessage(char* msg, unsigned long param_2) {
-    if (!this->LobbyLaunched) {
+    if (!this->IsLobbyLaunched()) {
         L->Log("NOT LOBBY LAUNCHED.  EXITING");
         return 0;
     }
