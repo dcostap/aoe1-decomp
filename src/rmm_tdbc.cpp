@@ -60,15 +60,15 @@ uchar TRIBE_RMM_Database_Controller::init(
         if (variance < 3)
             variance = 3;
 
-        cliffs.number_of_cliffs_variance = base_size;
-        cliffs.average_cliff_size = 2;
+        cliffs.number_of_cliffs = base_size;
+        cliffs.number_of_cliffs_variance = 2;
+        cliffs.cliff_terrain_spacing = 2;
         cliffs.cliff_to_cliff_spacing = 2;
-        cliffs.hot_spots[0].x = 2;
         if (variance - 3 <= 0)
-            cliffs.cliff_terrain_spacing = 0;
+            cliffs.cliff_size_variance = 0;
         else
-            cliffs.cliff_terrain_spacing = (variance - 3) / 2;
-        cliffs.cliff_size_variance = variance - cliffs.cliff_terrain_spacing;
+            cliffs.cliff_size_variance = (variance - 3) / 2;
+        cliffs.average_cliff_size = variance - cliffs.cliff_size_variance;
 
         long count = this->terrain_info.hot_spot_num;
         cliffs.hot_spot_num = count;
@@ -85,8 +85,7 @@ uchar TRIBE_RMM_Database_Controller::init(
             } while (count != 0);
         }
 
-        if (cliffs.cliff_size_variance > 0 &&
-            cliffs.number_of_cliffs_variance > 0) {
+        if (cliffs.average_cliff_size > 0 && cliffs.number_of_cliffs > 0) {
             new RGE_RMM_Cliffs_Generator(this->map, this, cliffs);
         }
     }
