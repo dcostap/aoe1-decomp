@@ -73,7 +73,7 @@
     "00515310": {"status": "matching", "symbol": "?taskTrader@TRIBE_Player@@UAEXHHHMM@Z"},
     "00515360": {"status": "matching", "symbol": "?taskResourceGatherer@TRIBE_Player@@UAEXHHHMM@Z"},
     "005153B0": {"status": "matching", "symbol": "?setDiplomaticStance@TRIBE_Player@@UAEXHH@Z"},
-    "005153D0": {"status": "scratch", "symbol": "?loadAIInformation@TRIBE_Player@@UAEXPAD00HH@Z"},
+    "005153D0": {"status": "matching", "symbol": "?loadAIInformation@TRIBE_Player@@UAEXPAD00HH@Z"},
     "005159D0": {"status": "scratch", "symbol": "?notify@TRIBE_Player@@UAEXHHHJJJ@Z"},
     "00515BB0": {"status": "scratch", "symbol": "?notifyAI@TRIBE_Player@@UAEXHHHJJJ@Z"},
     "00515DF0": {"status": "matching", "symbol": "?intelligentCivSelection@TRIBE_Player@@QAEHHHH@Z"},

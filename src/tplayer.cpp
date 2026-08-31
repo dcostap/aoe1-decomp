@@ -1641,17 +1641,24 @@ void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* persona
             } while (this->playerAI->buildAI.loadBuildList(buildListName, this) == 0);
         }
 
-        if (ruleFile != 0 && strcmp(ruleFile, randomString) != 0) {
-            this->playerAI->logCommonHistory(tplayerFileMessage, ruleFile);
-            this->playerAI->constructionAI.loadConstructionPlan(
-                ruleFile, this->world->map->map_width,
-                this->world->map->map_height, 0, 0, 0);
+        if (ruleFile != 0) {
+            if (strcmp(ruleFile, randomString) == 0) {
+                this->playerAI->logCommonHistory(tplayerDefaultMessage);
+            } else {
+                this->playerAI->logCommonHistory(tplayerFileMessage, ruleFile);
+                this->playerAI->constructionAI.loadConstructionPlan(
+                    ruleFile, this->world->map->map_width,
+                    this->world->map->map_height, 0, 0, 0);
+                goto constructionLoaded;
+            }
         } else {
             this->playerAI->logCommonHistory(tplayerDefaultMessage);
-            this->playerAI->constructionAI.loadConstructionPlan(
-                tplayerDefaultPlan, this->world->map->map_width,
-                this->world->map->map_height, 0, 0, 0);
         }
+        this->playerAI->constructionAI.loadConstructionPlan(
+            tplayerDefaultPlan, this->world->map->map_width,
+            this->world->map->map_height, 0, 0, 0);
+
+    constructionLoaded:
 
         if (personalityFile && strcmp(personalityFile, randomString) != 0) {
             this->playerAI->logCommonHistory(tplayerFileMessage, personalityFile);
@@ -1689,7 +1696,7 @@ void TRIBE_Player::loadAIInformation(char* aiFile, char* ruleFile, char* persona
         }
 
         this->playerAI->emotionalAI.setOverallState(buildId);
-        char* learn = static_cast<T_Scenario*>(this->world->scenario)->hints;
+        char* learn = this->world->scenario->scenario_name;
         if (learn && strlen(learn) != 0) this->playerAI->informationAI.loadLearnInfo(learn);
     }
 
