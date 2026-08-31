@@ -60,6 +60,8 @@ int TRIBE_Master_Building_Object::setup(
     int file, RGE_Sprite** sprites, RGE_Sound** sounds) {
     short sprite_id;
     short sound_id;
+    RGE_Sprite* selected_sprite;
+    RGE_Sound* selected_sound;
 
     TRIBE_Master_Combat_Object::setup(file, sprites, sounds);
     this->master_type = 0x50;
@@ -74,17 +76,19 @@ int TRIBE_Master_Building_Object::setup(
     rge_read(file, &this->on_build_make_tech, 2);
     rge_read(file, &sound_id, 2);
 
-    if (sprite_id >= 0) {
-        this->construction_sprite = sprites[sprite_id];
+    if (sprite_id > -1) {
+        selected_sprite = sprites[sprite_id];
     } else {
-        this->construction_sprite = 0;
+        selected_sprite = 0;
     }
+    this->construction_sprite = selected_sprite;
 
-    if (sound_id >= 0) {
-        this->construction_sound = sounds[sound_id];
+    if (sound_id > -1) {
+        selected_sound = sounds[sound_id];
     } else {
-        this->construction_sound = 0;
+        selected_sound = 0;
     }
+    this->construction_sound = selected_sound;
     return 1;
 }
 
@@ -94,6 +98,8 @@ int TRIBE_Master_Building_Object::setup(
     short connect_flag;
     short build_and_go_away;
     short sound_id;
+    RGE_Sprite* selected_sprite;
+    RGE_Sound* selected_sound;
 
     TRIBE_Master_Combat_Object::setup(file, sprites, sounds, id);
     this->master_type = 0x50;
@@ -107,17 +113,19 @@ int TRIBE_Master_Building_Object::setup(
     this->building_connect_flag = static_cast<unsigned char>(connect_flag);
     this->build_and_go_away = static_cast<unsigned char>(build_and_go_away);
 
-    if (sprite_id >= 0) {
-        this->construction_sprite = sprites[sprite_id];
+    if (sprite_id > -1) {
+        selected_sprite = sprites[sprite_id];
     } else {
-        this->construction_sprite = 0;
+        selected_sprite = 0;
     }
+    this->construction_sprite = selected_sprite;
 
-    if (sound_id >= 0) {
-        this->construction_sound = sounds[sound_id];
+    if (sound_id > -1) {
+        selected_sound = sounds[sound_id];
     } else {
-        this->construction_sound = 0;
+        selected_sound = 0;
     }
+    this->construction_sound = selected_sound;
     return 1;
 }
 
