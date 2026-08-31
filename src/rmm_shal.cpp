@@ -86,7 +86,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
     long tx2;
     long in_zone;
     Map_Stack stack;
-    float terrain[40];
+    float terrain[41];
     terrain[1] = 0.0f;
     end_x = this->info.shallows[param_1].x;
     done = this->info.shallows[param_1].y;
