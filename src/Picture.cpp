@@ -185,11 +185,13 @@ void TPicture::Load(char* file_name, long resource_id, int palette_id,
     if (bitmap != 0) {
         this->BitmapInfo = bitmap;
         unsigned char* bits;
-        if (bitmap->bmiHeader.biCompression == 3) {
-            bits = (unsigned char*)bitmap + bitmap->bmiHeader.biSize + 0xc;
+        if (((BITMAPINFO256*)this->Dib)->bmiHeader.biCompression == 3) {
+            bits = (unsigned char*)this->Dib +
+                ((BITMAPINFO256*)this->Dib)->bmiHeader.biSize + 0xc;
         } else {
-            bits = (unsigned char*)bitmap + bitmap->bmiHeader.biSize +
-                bitmap->bmiHeader.biClrUsed * 4;
+            bits = (unsigned char*)this->Dib +
+                ((BITMAPINFO256*)this->Dib)->bmiHeader.biSize +
+                ((BITMAPINFO256*)this->Dib)->bmiHeader.biClrUsed * 4;
         }
         this->Bits = bits;
         this->Width = bitmap->bmiHeader.biWidth;
@@ -215,15 +217,16 @@ void TPicture::Load(char* file_name, long resource_id, int palette_id,
         if (info != 0) {
             bitmap = (BITMAPINFO256*)this->Dib;
             unsigned char* transparency_bits;
-            if (bitmap->bmiHeader.biCompression == 3) {
-                transparency_bits = (unsigned char*)bitmap +
-                    bitmap->bmiHeader.biSize + 0xc;
+            if (((BITMAPINFO256*)this->Dib)->bmiHeader.biCompression == 3) {
+                transparency_bits = (unsigned char*)this->Dib +
+                    ((BITMAPINFO256*)this->Dib)->bmiHeader.biSize + 0xc;
             } else {
-                transparency_bits = (unsigned char*)bitmap +
-                    bitmap->bmiHeader.biSize +
-                    bitmap->bmiHeader.biClrUsed * 4;
+                transparency_bits = (unsigned char*)this->Dib +
+                    ((BITMAPINFO256*)this->Dib)->bmiHeader.biSize +
+                    ((BITMAPINFO256*)this->Dib)->bmiHeader.biClrUsed * 4;
             }
-            DibCheckTrans(bitmap, info, transparency_bits);
+            DibCheckTrans((BITMAPINFO256*)this->Dib, info,
+                transparency_bits);
             return;
         }
 
