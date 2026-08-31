@@ -775,14 +775,17 @@ foundTrigger:
                         ++groupCount;
                         ++groupListCursor;
                         int commandIndex = 0;
-                        int commandCount = this->objectValue->groupUnitCount();
+                        int commandCount =
+                            this->objectValue->numberUserDefinedWaypoints();
                         if (commandCount > 0) {
                             do {
-                                int commandValue = this->objectValue->groupUnitCommand(
-                                    commandIndex, 1);
-                                member->groupUnitCallback(commandValue);
+                                member->addUserDefinedWaypoint(
+                                    this->objectValue->userDefinedWaypoint(
+                                        commandIndex),
+                                    1);
                                 ++commandIndex;
-                                commandCount = this->objectValue->groupUnitCount();
+                                commandCount = this->objectValue
+                                                   ->numberUserDefinedWaypoints();
                             } while (commandIndex < commandCount);
                         }
                     }

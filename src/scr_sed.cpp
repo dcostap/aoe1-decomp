@@ -23,6 +23,7 @@
 #include "../include/tscenaro.h"
 #include "../include/map.h"
 #include "../include/m_s_obj.h"
+#include "../include/tm_b_obj.h"
 #include "../include/stat_obj.h"
 #include "../include/sprite.h"
 #include "../include/asp_list.h"
@@ -1117,7 +1118,7 @@ void TRIBE_Screen_Sed::set_paint_object_mode() {
         RGE_Master_Static_Object* obj = this->world->players[pn]->master_objects[mo_id];
 
         if (obj != 0 && obj->master_type == 0x50 &&
-            obj->hide_in_scenario_editor != 0) {
+            static_cast<TRIBE_Master_Building_Object*>(obj)->building_connect_flag != 0) {
             enabled = 1;
         }
     }

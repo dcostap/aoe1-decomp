@@ -364,8 +364,8 @@ void TRIBE_Player::scenario_load(int file, long* pos, float version)
     tech = new TRIBE_Player_Tech(static_cast<TRIBE_World*>(this->world)->tech, this, 0);
     this->tech_tree = tech;
 
-    if (this->culture >= 0 && !static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree() && !static_cast<T_Scenario*>(static_cast<TRIBE_World*>(this->world)->scenario)->GetScenarioOption(2)) {
-        static_cast<TRIBE_Effects*>(static_cast<TRIBE_World*>(this->world)->effects)->do_tech_effect(static_cast<short>(this->culture), this);
+    if (this->tribe_effect >= 0 && !static_cast<TRIBE_Game*>(rge_base_game)->fullTechTree() && !static_cast<T_Scenario*>(static_cast<TRIBE_World*>(this->world)->scenario)->GetScenarioOption(2)) {
+        static_cast<TRIBE_Effects*>(static_cast<TRIBE_World*>(this->world)->effects)->do_tech_effect(static_cast<short>(this->tribe_effect), this);
     }
     else {
         static_cast<TRIBE_Effects*>(static_cast<TRIBE_World*>(this->world)->effects)->do_tech_effect(0xD2, this);

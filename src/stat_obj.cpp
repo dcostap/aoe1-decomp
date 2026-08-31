@@ -130,7 +130,7 @@ RGE_Static_Object::~RGE_Static_Object() {
         RGE_Object_Node* node = this->objects->list;
         while (node != 0) {
             RGE_Object_Node* next = node->next;
-            node->node->release_from_holder();
+            node->node->exit_obj();
             node = next;
         }
 

@@ -12,7 +12,7 @@
 # The target destructor is emitted as the explicit ManagedArray<int> template
 # instantiation from utmarray.h; retain its decorated call identity.
 00408D20 ??1?$ManagedArray@H@@QAE@XZ
-0046A9E0 ??4Path@@QAEAAU0@ABU0@@Z
+0046A9E0 ??4Path@@QAEAAV0@ABV0@@Z
 # Equality overloads called through wrappers in aibitm.cpp and aiconmod.cpp.
 # Their original packets preserve the complete decorated identities.
 00407F80 ??8@YAHABVBaseItem@@0@Z

@@ -14,7 +14,7 @@
     "005123B0": {"status": "matching", "symbol": "?update@TRIBE_Player@@UAEXXZ"},
     "00512620": {"status": "matching", "symbol": "?update_dopplegangers@TRIBE_Player@@UAEXXZ"},
     "00512630": {"status": "matching", "symbol": "?scenario_save@TRIBE_Player@@UAEXH@Z"},
-    "00512690": {"status": "scratch", "symbol": "?scenario_load@TRIBE_Player@@UAEXHPAJM@Z"},
+    "00512690": {"status": "matching", "symbol": "?scenario_load@TRIBE_Player@@UAEXHPAJM@Z"},
     "005128A0": {"status": "matching", "symbol": "?load@TRIBE_Player@@UAEXH@Z"},
     "00512A90": {"status": "matching", "symbol": "?load_master_object@TRIBE_Player@@QAEXHFEPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
     "00512BF0": {"status": "matching", "symbol": "?tech_cost@TRIBE_Player@@QAEXFAAF00000@Z"},
