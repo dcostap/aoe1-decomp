@@ -333,8 +333,10 @@ protected:
 public:
     void DropDeadPlayer(unsigned int player, unsigned long dcoID);
     void NotifyWindowParam(COMMMESSAGES msg, long param);
+protected:
     int AddCommand(unsigned long a, void* b, unsigned long c, int d,
                    unsigned char e, int f);
+public:
     int NewCommand(void* command, int size, int ordered);
     int DoCycle(unsigned long param_1);
     char* WaitingOnNamedInfo(unsigned int playerIndex);
@@ -364,8 +366,8 @@ public:
     int TXDebugPing(void);
     long FastSend(unsigned long to, void* data, unsigned long size, int param_4, int param_5);
     void NotifyWindow(COMMMESSAGES message);
-    int EvaluatePlayerMessage(unsigned long a1, unsigned int player, unsigned long a3, unsigned char opcode, unsigned char p5, char* data, unsigned int p7, unsigned long p8, unsigned long p9);
 protected:
+    int EvaluatePlayerMessage(unsigned long a1, unsigned int player, unsigned long a3, unsigned char opcode, unsigned char p5, char* data, unsigned int p7, unsigned long p8, unsigned long p9);
     void SetPlayerStopTurn(unsigned int i, unsigned long v);
 public:
     void ReleaseSettings();
@@ -407,8 +409,8 @@ public:
 protected:
     void LocalResumeGame(unsigned int player);
     void LocalPauseGame(unsigned int player);
-public:
     void SendPauseGame(int param_1);
+public:
     int TogglePauseGame();
     void RequestPauseGame(int);
     void RequestResumeGame(int);
@@ -442,7 +444,9 @@ public:
     int IsPlayerReady(unsigned int player);
     int ComputerPlayerGameStart();
     int MultiplayerGameStart();
+protected:
     long GetMyMultiPlayerCaps();
+public:
     void SetApplicationGUID(_GUID guid);
     IDirectPlay3* GetDPInterface();
     void SetServiceGUID(_GUID guid);
