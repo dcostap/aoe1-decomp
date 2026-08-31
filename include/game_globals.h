@@ -1022,7 +1022,7 @@ extern unsigned int buildListCategoryCount7;
 extern unsigned int attackTimingCategoryCount;
 extern unsigned int fastAttackListCount;
 extern unsigned int defaultAttackListCount;
-extern unsigned int selectedBuildListCount;
+extern int selectedBuildListCount;
 extern unsigned int aggressiveBuildListCount;
 }
 extern unsigned int DAT_00886c60;

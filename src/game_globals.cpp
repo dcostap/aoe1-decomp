@@ -37,7 +37,7 @@ unsigned int buildListCategoryCount7 = 0;
 unsigned int attackTimingCategoryCount = 0;
 unsigned int fastAttackListCount = 0;
 unsigned int defaultAttackListCount = 0;
-unsigned int selectedBuildListCount = 0;
+int selectedBuildListCount = 0;
 unsigned int aggressiveBuildListCount = 0;
 }
 
@@ -954,6 +954,7 @@ unsigned char comm_ping_sequence = 1;
 char ready_player_buffer[64] = {0};
 char ready_player_template[64] = "Ready=                         ";
 char com_hand_source_path[] = "C:\\msdev\\work\\age1_x1\\Com_hand.cpp";
+unsigned int DAT_0086bc88 = 0;
 unsigned int DAT_0088c000 = 0x00000000u;
 unsigned int DAT_0088c004 = 0x00000000u;
 unsigned int DAT_0088c008 = 0x00000000u;

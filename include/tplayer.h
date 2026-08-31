@@ -11,6 +11,7 @@ class ResourceItem;
 
 extern unsigned long tribe_group_properties[0x28];
 extern int tribe_group_properties_num;
+extern unsigned int DAT_0086bc88;
 
 struct Item_Avail {
 public:

@@ -9,6 +9,7 @@
 #include "../include/tcommand.h"
 #include "../include/tobj_lst.h"
 #include "../include/stat_obj.h"
+#include "../include/dpl_obj.h"
 #include "../include/m_s_obj.h"
 #include "../include/m_mi_obj.h"
 #include "../include/m_ac_obj.h"
@@ -1241,15 +1242,16 @@ void TRIBE_Player::objectCost(int object_id, int second, ResourceItem* item, int
 
 int TRIBE_Player::objectCostByType(int input)
 {
-    short first;
-    short inv_3;
-    short inv_2;
-    short inv_1;
-    short selectedCount;
-    short firstType;
+    short type1;
+    short amount1;
+    short type2;
+    short amount2;
+    short type3;
+    short amount3;
 
-    obj_cost(static_cast<short>(input), 0, firstType, first, selectedCount, inv_2, inv_1, inv_3, 1.0f);
-    return first + inv_3 + inv_2;
+    obj_cost(static_cast<short>(input), 0, type1, amount1, type2, amount2,
+             type3, amount3, 1.0f);
+    return amount1 + amount2 + amount3;
 }
 
 
@@ -1953,7 +1955,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
         case 8:
             weights[(0x14) - 1] += 40;
             weights[(0x15) - 1] += 40;
-            if (static_cast<int>(tplayer_globals::selectedBuildListCount) > 0) {
+            if (tplayer_globals::selectedBuildListCount > 0) {
                 weights[(0x0E) - 1] += 50;
                 weights[(0x0F) - 1] += 50;
             }
@@ -3331,40 +3333,230 @@ void TRIBE_Player::analyize_selected_objects()
 
 int TRIBE_Player::get_mouse_pointer_action_vars(int id, int& action, int& var)
 {
+    int object_type;
+    int object_player;
+    RGE_Static_Object* object;
+    int max_hp;
+    int master_id;
+    RGE_Master_Static_Object* master;
+    MouseClickInfo* entry;
+    int use_selection;
+    MouseClickInfo* table;
+    int table_count;
+    int action_code;
+    int action_var;
+    int current;
+
+    object = this->world->object(id);
+    entry = 0;
     action = 0;
     var = 0;
-    RGE_Static_Object* object = this->world->object(id);
-    if (object == 0) return 0;
-    this->analyize_selected_objects();
+    current = 0;
+    if (object != 0) {
+        if (object->type == 0x19) {
+            RGE_Doppleganger_Object* dopple =
+                static_cast<RGE_Doppleganger_Object*>(object);
+            master = dopple->doppled_master_obj;
+            object_type = dopple->doppled_player;
+            object_player = master->object_group;
+            master_id = master->id;
+            max_hp = master->hp;
+        } else {
+            master = object->master_obj;
+            object_player = master->object_group;
+            object_type = object->owner->id;
+            master_id = master->id;
+            max_hp = master->hp;
+        }
 
-    TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
-    MouseClickInfo* table = game->MouseRightClickTable;
-    int table_count = game->MouseRightClickTableSize;
-    if (this->sel_object_properties != 0) {
-        table = game->MouseLeftClickTable;
-        table_count = game->MouseLeftClickTableSize;
-    }
-    int group = object->master_obj->object_group;
-    if (table == 0 || group < 0 || group >= table_count) return 0;
+        if (object_type < 0 || object_type >= this->world->player_num) {
+            return 0;
+        }
 
-    MouseClickInfo* info = &table[group];
-    if (object->owner == this) {
-        action = info->self_action;
-        var = info->self_text_id;
-    } else if (object->owner == 0 || object->owner->id == 0) {
-        action = info->gaia_action;
-        var = info->gaia_text_id;
-    } else if (this->isAlly(object->owner->id) != 0) {
-        action = info->ally_action;
-        var = info->ally_text_id;
-    } else if (this->isNeutral(object->owner->id) != 0) {
-        action = info->neutral_action;
-        var = info->neutral_text_id;
-    } else {
-        action = info->enemy_action;
-        var = info->enemy_text_id;
+        this->analyize_selected_objects();
+        if (master_id == 0x9E || master_id == 0xA3) {
+            current = 50;
+        }
+
+    retry_table:
+        if (this->sel_count == 0 || this->sel_object_properties == 0) {
+            TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
+            use_selection = 0;
+            table = game->MouseLeftClickTable;
+            table_count = game->MouseLeftClickTableSize;
+        } else {
+            TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
+            use_selection = 1;
+            table = game->MouseRightClickTable;
+            table_count = game->MouseRightClickTableSize;
+        }
+
+        if (object_player >= 0 && object_player < table_count) {
+            MouseClickInfo* probe = table + object_player;
+            if (probe->object_group == object_player) {
+                entry = probe;
+            }
+        }
+        if (entry == 0) {
+            int i = 0;
+            while (i < table_count) {
+                MouseClickInfo* scan = table + i;
+                if (scan->object_group == object_player) {
+                    entry = table + i;
+                    break;
+                }
+                ++i;
+            }
+        }
+        if (entry == 0) {
+            return 0;
+        }
+
+        switch (this->unitDiplomacy[object_type]) {
+        case 0:
+            action_code = entry->gaia_action;
+            action_var = entry->gaia_text_id;
+            break;
+        case 1:
+            action_code = entry->self_action;
+            action_var = entry->self_text_id;
+            break;
+        case 2:
+            action_code = entry->ally_action;
+            action_var = entry->ally_text_id;
+            break;
+        case 3:
+            action_code = entry->neutral_action;
+            action_var = entry->neutral_text_id;
+            break;
+        case 4:
+            action_code = entry->enemy_action;
+            action_var = entry->enemy_text_id;
+            break;
+        default:
+            action_code = -1;
+            action_var = -1;
+            break;
+        }
+        if (action_code == -1) {
+            return 0;
+        }
+
+    redo_mouseFunc:
+        do {
+            switch (action_code) {
+            case 0:
+                action = 0;
+                var = current + action_var;
+                goto finish;
+            case 1:
+            case 8:
+                if ((this->sel_object_properties & 1) != 0 &&
+                    object->object_state <= 2) {
+                    action = 4;
+                    var = current + action_var;
+                    goto finish;
+                }
+                if (action_code != 8) {
+                    goto finish;
+                }
+                current = 50;
+                action_code = 7;
+                continue;
+            case 2:
+                if ((this->sel_object_properties & 2) == 0) {
+                    goto finish;
+                }
+                action = 5;
+                var = current + action_var;
+                goto finish;
+            case 3:
+                if ((this->sel_object_properties & 4) == 0) {
+                    goto finish;
+                }
+                action = 5;
+                var = current + action_var;
+                goto finish;
+            case 4:
+                if ((this->sel_object_properties & 0x10) == 0) {
+                    goto finish;
+                }
+                if (DAT_0086bc8c == 1 && id == DAT_0086bc88) {
+                    goto finish;
+                }
+                {
+                    int hp = static_cast<int>(object->hp);
+                    if (hp <= 0 || hp >= max_hp) {
+                        goto finish;
+                    }
+                }
+                action = 5;
+                var = current + action_var;
+                goto finish;
+            case 5:
+                if ((this->sel_object_properties & 0x20) == 0) {
+                    goto finish;
+                }
+                if (object->object_state == 0) {
+                    current = 50;
+                }
+                {
+                    int hp = static_cast<int>(object->hp);
+                    if (hp <= 0 || hp >= max_hp) {
+                        goto finish;
+                    }
+                }
+                action = 3;
+                var = current + action_var;
+                goto finish;
+            case 6:
+            case 9:
+                if ((this->sel_object_properties & 0x40) != 0) {
+                    action = 3;
+                    var = current + action_var;
+                    goto finish;
+                }
+                if (action_code != 9) {
+                    goto finish;
+                }
+                current = 50;
+                action_code = 1;
+                continue;
+            case 7:
+                if ((this->sel_object_properties & 0x80) == 0) {
+                    goto finish;
+                }
+                if (object_player == 0x12 &&
+                    this->attributes[27] == DAT_00576828) {
+                    goto finish;
+                }
+                if (object_player == 3 &&
+                    this->attributes[28] == DAT_00576828) {
+                    goto finish;
+                }
+                if (object_player == 3 &&
+                    (master_id == 0x6D || master_id == 0x114)) {
+                    goto finish;
+                }
+                action = 5;
+                var = current + action_var;
+                goto finish;
+            default:
+                action = 0;
+                var = 0;
+                goto finish;
+            }
+        } while (1);
+
+    finish:
+        if (use_selection == 1 && action == 0 && var == 0) {
+            this->sel_object_properties = 0;
+            entry = 0;
+            goto retry_table;
+        }
+        return 1;
     }
-    return action >= 0;
+    return 0;
 }
 
 
