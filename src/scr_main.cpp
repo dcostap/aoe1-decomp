@@ -27,7 +27,10 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
     this->ms_copy_text2 = 0;
     this->warning_text = 0;
 
-    memset(this->button, 0, sizeof(this->button));
+    TButtonPanel** clear_button = this->button;
+    for (i = 7; i != 0; --i) {
+        *clear_button++ = 0;
+    }
 
     if (this->setup(rge_base_game->draw_area, "scr1", 0xC383, 1) == 0) {
         this->error_code = 1;
@@ -36,8 +39,9 @@ TRIBE_Screen_Main_Menu::TRIBE_Screen_Main_Menu()
 
     this->set_ideal_size(0x280, 0x1E0);
 
-    TButtonPanel** clear_button = this->button;
-    for (long button_width = 0xB2; button_width < 0x1AC;
+    long button_width = 0xB2;
+    clear_button = this->button;
+    for (; button_width < 0x1AC;
          button_width += 0x32, ++clear_button) {
         if (this->create_button(this, clear_button, "", 0, 0xAA,
                                 button_width, 0x12C, 0x28, 0, 0, 0) == 0) {
@@ -193,20 +197,22 @@ long TRIBE_Screen_Main_Menu::action(TPanel* panel, long event,
             goto done;
         }
 
-        result = 1;
         if (event == 1) {
             if (panel == this->button[0]) {
                 if (rge_base_game->save_check_for_cd == 0) {
                     if (rge_base_game->check_for_cd(0) == 0) {
                         this->popupOKDialog(0x7D8, 0, 0x1C2, 100);
+                        result = 1;
                         goto done;
                     }
-                    rge_base_game->save_check_for_cd = 1;
+                    RGE_Base_Game* game = rge_base_game;
+                    game->save_check_for_cd = 1;
                 }
                 rge_base_game->disable_input();
                 new TribeSPMenuScreen;
                 panel_system.setCurrentPanel("Single Player Menu", 0);
                 panel_system.destroyPanel("Main Menu");
+                result = 1;
                 goto done;
             }
 
@@ -215,11 +221,13 @@ long TRIBE_Screen_Main_Menu::action(TPanel* panel, long event,
                 new TribeMPStartupScreen;
                 panel_system.setCurrentPanel("MP Startup Screen", 0);
                 panel_system.destroyPanel("Main Menu");
+                result = 1;
                 goto done;
             }
 
             if (panel == this->button[2]) {
                 this->popupOKDialog(0x1D4F7, "Confirm Dialog", 0x1C2, 100);
+                result = 1;
                 goto done;
             }
 
@@ -227,19 +235,23 @@ long TRIBE_Screen_Main_Menu::action(TPanel* panel, long event,
                 if (rge_base_game->save_check_for_cd == 0) {
                     if (rge_base_game->check_for_cd(0) == 0) {
                         this->popupOKDialog(0x7DA, 0, 0x1C2, 100);
+                        result = 1;
                         goto done;
                     }
-                    rge_base_game->save_check_for_cd = 1;
+                    RGE_Base_Game* game = rge_base_game;
+                    game->save_check_for_cd = 1;
                 }
                 rge_base_game->disable_input();
                 new TRIBE_Screen_Sed_Menu;
                 panel_system.setCurrentPanel("Scenario Editor Menu", 0);
                 panel_system.destroyPanel("Main Menu");
+                result = 1;
                 goto done;
             }
 
             if (panel == this->button[4]) {
                 rge_base_game->close();
+                result = 1;
                 goto done;
             }
         }
