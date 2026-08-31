@@ -75,14 +75,14 @@ void __cdecl DibBlt(BITMAPINFO256* dest_info, BYTE* dest_bits, RECT* dest_rect,
         DestTotWid = DestOrien * DestTotWid;
         dy = SrcOrien * dy;
         int row = 0;
-        if (dest_height < 1)
-            return;
-        do {
-            memcpy(dest, src, dest_width);
-            dest += DestTotWid;
-            src += dy;
-            ++row;
-        } while (row < dest_height);
+        if (dest_height > 0) {
+            do {
+                memcpy(dest, src, dest_width);
+                dest += DestTotWid;
+                src += dy;
+                ++row;
+            } while (row < dest_height);
+        }
         return;
     }
 
