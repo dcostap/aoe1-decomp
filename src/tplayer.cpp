@@ -1473,7 +1473,7 @@ RGE_Object_Node* TRIBE_Player::addObject(RGE_Static_Object* obj, int param2, int
     }
     this->playerAI->addObject(obj);
     int flag = 1;
-    if (obj->object_state == 2) {
+    if (this->world->game_state == 2) {
         flag = 0;
     }
     this->playerAI->buildAI.addItem(obj, flag);
