@@ -67,8 +67,8 @@ void XYZ::rotateXYByFacet(const XYZ& facet, XYZ& output, unsigned char facet_idx
         float s = sin(angle);
         float c = cos(angle);
         output.xValue = (int)(c * dx - s * dy);
-        // Keep this product separate to preserve the shipped FPU order.
         float y1 = c * dy;
-        output.yValue = (int)(y1 + s * dx);
+        float x1 = s * dx;
+        output.yValue = (int)(y1 + x1);
     }
 }
