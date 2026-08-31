@@ -87,6 +87,7 @@ struct MSGFORMAT_ALL_DONE {
 struct MSGFORMAT_SETREADYOPTIONS {
     unsigned char Command;
     unsigned char Ready;
+    unsigned short Reserved;
     unsigned long User1;
     unsigned long User2;
     unsigned long User3;
@@ -94,8 +95,9 @@ struct MSGFORMAT_SETREADYOPTIONS {
     unsigned long User5;
     unsigned long User6;
     unsigned long User7;
-    unsigned long Reserved20;
     unsigned long CommunicationsVersionCode;
+    unsigned char RGEGuaranteed;
+    unsigned char Reserved25[3];
 };
 
 struct MSGFORMAT_CHAT {
