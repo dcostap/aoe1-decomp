@@ -1521,7 +1521,6 @@ void TRIBE_Game::quit_game()
     } else {
         if (this->comm_handler->IsLobbyLaunched() != 0) {
             this->close();
-            this->testing_scenario[0] = 0;
             return;
         }
 
@@ -4156,7 +4155,7 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
             if (this->game_screen == 0) {
                 break;
             }
-            this->world->players[this->world->player_num]
+            this->world->players[this->world->curr_player]
                 ->loss_if_game_on();
             this->do_game_over();
             panel = panel_system.currentPanel();
@@ -4197,7 +4196,7 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
                     player = this->comm_handler->WhoAmI();
                     sprintf(msg, "syncerr%d.gam", player);
                     this->save_game(msg);
-                    this->world->players[this->world->player_num]
+                    this->world->players[this->world->curr_player]
                         ->loss_if_game_on();
                     this->do_game_over();
                     panel = panel_system.currentPanel();
