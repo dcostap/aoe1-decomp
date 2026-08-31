@@ -96,9 +96,9 @@ unsigned char RGE_Lobby::CheckForLobbyLaunch(IDirectPlay3*& dplay) {
         return 0;
     }
 
-    LPVOID lobbyObject;
-    this->glpDPL->QueryInterface(IID_IDirectPlayLobby2A, &lobbyObject);
-    this->glpDPL2 = static_cast<IDirectPlayLobby2*>(lobbyObject);
+    this->glpDPL->QueryInterface(
+        IID_IDirectPlayLobby2A,
+        reinterpret_cast<void**>(&this->glpDPL2));
     if (this->glpDPL2 == 0) {
         return 0;
     }
@@ -134,9 +134,8 @@ unsigned char RGE_Lobby::CheckForLobbyLaunch(IDirectPlay3*& dplay) {
     }
 
     L->Log("Pre QI");
-    LPVOID dplayObject;
-    result = this->glpDP->QueryInterface(IID_IDirectPlay3A, &dplayObject);
-    dplay = static_cast<IDirectPlay3*>(dplayObject);
+    result = this->glpDP->QueryInterface(
+        IID_IDirectPlay3A, reinterpret_cast<void**>(&dplay));
     this->Err->ShowReturn(result, "Lobby QI");
     if (result < 0) {
         L->Log("Queryinterface failed.");
@@ -259,16 +258,16 @@ long RGE_Lobby::SendZoneMessage(char* data, unsigned long dataSize,
     L->Log("Sending %d bytes to the Zone (Total message size = %d)",
            dataSize, total);
 
-    ZoneMessageHeader header;
-    header.type = 5;
-    header.flags = 0;
-    header.nullGuid = GUID_NULL;
-    header.messageGuid = guid;
-    header.size = total;
-
     char* message = new char[total];
-    memcpy(message, &header, sizeof(header));
-    memcpy(message + sizeof(header), data, dataSize);
+    ZoneMessageHeader* header =
+        reinterpret_cast<ZoneMessageHeader*>(message);
+    header->type = 5;
+    header->flags = 0;
+    header->nullGuid = GUID_NULL;
+    header->messageGuid = guid;
+    header->size = total;
+
+    memcpy(message + sizeof(*header), data, dataSize);
 
     long result = this->glpDPL2->SendLobbyMessage(0, 0, message, total);
     delete[] message;
