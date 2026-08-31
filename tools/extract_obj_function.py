@@ -199,6 +199,13 @@ def select_exact_function_symbol(obj, symbol_name: str):
     return matches[0]
 
 
+def configured_symbol_name(entry) -> str:
+    """Return the configured symbol for any buildable registry entry."""
+    if entry is None:
+        return ""
+    return str(entry.get("symbol") or "")
+
+
 def main() -> None:
     args = parse_args()
     if not args.va and not args.obj:
@@ -235,11 +242,7 @@ def main() -> None:
         symbol = find_function_symbol(obj, lambda candidate: True)
     else:
         entry = function_entry_for_va(va)
-        exact_symbol = (
-            str(entry.get("symbol") or "")
-            if entry is not None and entry.get("status") == "matching"
-            else ""
-        )
+        exact_symbol = configured_symbol_name(entry)
         if not exact_symbol:
             original_symbols, _linkages = load_original_owner_symbols()
             exact_symbol = original_symbols.get(f"{va:08X}")
