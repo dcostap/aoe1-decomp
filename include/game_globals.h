@@ -977,7 +977,7 @@ extern int DAT_0086b2a0;
 extern unsigned char DAT_0086b2a4;
 extern tagPALETTEENTRY DAT_0086b2a8;
 extern float DAT_0086b2ac;
-extern tagPALETTEENTRY DAT_0086b2b0[256];
+extern tagPALETTEENTRY DAT_0086b2b0[];
 extern tagPALETTEENTRY DAT_0086b6b0[256];
 extern TDrawArea* DAT_0086bab0;
 extern float DAT_0086bc08;
