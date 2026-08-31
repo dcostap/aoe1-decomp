@@ -936,73 +936,84 @@ unsigned char TRIBE_Combat_Object::area_attack(
     float x, float y, float, RGE_Combat_Object* attacker,
     RGE_Static_Object* ignored)
 {
-    RGE_Player* owner = this->owner;
-    RGE_Map* map = owner->world->map;
-    RGE_Master_Combat_Object* master =
-        static_cast<RGE_Master_Combat_Object*>(this->master_obj);
-    const float radius = master->area_effect_range;
-    const float radius_squared = radius * radius;
-    short max_x = static_cast<short>(map->map_width);
-    short max_y = static_cast<short>(map->map_height);
+    float attack_modifier;
+    RGE_Map* map = this->owner->world->map;
+    float radius =
+        static_cast<RGE_Master_Combat_Object*>(this->master_obj)
+            ->area_effect_range;
+    short max_x = (short)map->map_width;
+    short max_y = (short)map->map_height;
+    float radius_squared = radius * radius;
     --max_x;
     --max_y;
     if (!(radius > DAT_00574ca8)) return 0;
 
-    short first_x = static_cast<short>(x - radius) - 2;
-    short last_x = static_cast<short>(x + radius) + 2;
-    short first_y = static_cast<short>(y - radius) - 2;
-    short last_y = static_cast<short>(y + radius) + 2;
+    short first_x;
+    first_x = (short)(x - radius);
+    first_x = first_x - 2;
+    short last_x;
+    last_x = (short)(x + radius);
+    last_x = last_x + 2;
+    short first_y;
+    first_y = (short)(y - radius);
+    first_y = first_y - 2;
+    short last_y;
+    last_y = (short)(y + radius);
+    last_y = last_y + 2;
     if (first_x < 0) first_x = 0;
     if (last_x > max_x + 1) last_x = max_x + 1;
     if (first_y < 0) first_y = 0;
     if (last_y > max_y + 1) last_y = max_y + 1;
 
-    for (short row = first_y; row < last_y; ++row) {
-        for (short col = first_x; col < last_x; ++col) {
-            for (RGE_Object_Node* link =
-                     map->map_row_offset[row][col].objects.list;
-                 link != 0; link = link->next) {
+    for (short row = first_y; row < last_y; row++) {
+        for (short col = first_x; col < last_x; col++) {
+            RGE_Object_Node* link =
+                map->map_row_offset[row][col].objects.list;
+            while (link != 0) {
                 RGE_Combat_Object* object =
                     static_cast<RGE_Combat_Object*>(link->node);
-                if (object == ignored) continue;
-
-                const short master_id = this->master_obj->id;
-                RGE_Master_Static_Object* object_master = object->master_obj;
-                if (((master_id == 0x2E || master_id == 0x28 ||
-                      master_id == 0x153 || master_id == 0x159) &&
-                    object->owner == this->owner) || object == this) continue;
-
-                if (object_master->area_effect_object_level <
-                    static_cast<RGE_Master_Combat_Object*>(
-                        this->master_obj)->area_effect_level) continue;
-
-                float dx = object->world_x - x;
-                float dy = object->world_y - y;
-                if (dx < DAT_00574c98) dx = -dx;
-                if (dy < DAT_00574c98) dy = -dy;
-                if (dx > object_master->radius_x) dx -= object_master->radius_x;
-                else dx = DAT_00574c98;
-                if (dy > object_master->radius_y) dy -= object_master->radius_y;
-                else dy = DAT_00574c98;
-
-                if (radius_squared > dx * dx + dy * dy &&
-                    static_cast<short>(
-                        debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp",
-                                   0x653) * 100 / 0x7FFF) <=
-                        static_cast<RGE_Master_Combat_Object*>(
-                            this->master_obj)->base_hit_chance) {
-                    object->damage(
-                        static_cast<RGE_Master_Combat_Object*>(
-                            this->master_obj)->weapon_num,
-                        static_cast<RGE_Master_Combat_Object*>(
-                            this->master_obj)->weapon,
-                                   this->calc_attack_modifier(object),
-                                   this->owner,
-                                   attacker);
-                    if (object->hp < DAT_00574c78) {
-                        object->set_attribute_amount(0.0f, 0, 1);
+                if (object != ignored) {
+                    const short master_id = this->master_obj->id;
+                    if (!(((master_id == 0x2E || master_id == 0x28 ||
+                            master_id == 0x153 || master_id == 0x159) &&
+                           object->owner == this->owner) ||
+                          object == this) &&
+                        object->master_obj->area_effect_object_level >=
+                            static_cast<RGE_Master_Combat_Object*>(
+                                this->master_obj)->area_effect_level) {
+                        float dx = object->world_x - x;
+                        float dy = object->world_y - y;
+                        if (dx < DAT_00574c98) dx = -dx;
+                        if (dy < DAT_00574c98) dy = -dy;
+                        float radius_x = object->master_obj->radius_x;
+                        float radius_y = object->master_obj->radius_y;
+                        if (dx > radius_x) dx -= radius_x;
+                        else dx = DAT_00574c98;
+                        if (dy > radius_y) dy -= radius_y;
+                        else dy = DAT_00574c98;
+                        if (radius_squared > dx * dx + dy * dy) {
+                            int chance =
+                                debug_rand("C:\\msdev\\work\\age1_x1\\t_c_obj.cpp",
+                                           0x653) * 100 / 0x7fff;
+                            if ((short)chance <=
+                                static_cast<RGE_Master_Combat_Object*>(
+                                    this->master_obj)->base_hit_chance) {
+                                attack_modifier =
+                                    this->calc_attack_modifier(object);
+                                object->damage(
+                                    static_cast<RGE_Master_Combat_Object*>(
+                                        this->master_obj)->weapon_num,
+                                    static_cast<RGE_Master_Combat_Object*>(
+                                        this->master_obj)->weapon,
+                                    attack_modifier, this->owner, attacker);
+                                if (object->hp < DAT_00574c78) {
+                                    object->set_attribute_amount(0.0f, 0, 1);
+                                }
+                            }
+                        }
                     }
                 }
+                link = link->next;
             }
         }
     }
