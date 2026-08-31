@@ -937,15 +937,19 @@ unsigned char TRIBE_World::check_game_state()
                 for (i = 1; i < this->player_num; ++i) {
                     team_size[i] = this->players[i]->victory_conditions->get_victory_points();
                     held_time = 1;
-                    if (this->players[i]->allied_victory != 0 && this->player_num > 1) {
-                        for (local_1a0 = 1; local_1a0 < this->player_num; ++local_1a0) {
-                            if (local_1a0 != i &&
-                                this->players[i]->relation(local_1a0) == 0 &&
-                                this->players[local_1a0]->relation(i) == 0 &&
-                                this->players[local_1a0]->allied_victory != 0) {
-                                team_size[i] += this->players[local_1a0]->victory_conditions->get_victory_points();
-                                ++held_time;
-                            }
+                    if (this->players[i]->allied_victory != 0) {
+                        local_1a0 = 1;
+                        if (this->player_num > 1) {
+                            do {
+                                if (local_1a0 != i &&
+                                    this->players[i]->relation(local_1a0) == 0 &&
+                                    this->players[local_1a0]->relation(i) == 0 &&
+                                    this->players[local_1a0]->allied_victory != 0) {
+                                    team_size[i] += this->players[local_1a0]->victory_conditions->get_victory_points();
+                                    ++held_time;
+                                }
+                                ++local_1a0;
+                            } while (local_1a0 < this->player_num);
                         }
                     }
                     team_size[i] /= held_time;
