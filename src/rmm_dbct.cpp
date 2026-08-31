@@ -67,9 +67,11 @@ RGE_RMM_Database_Controller::RGE_RMM_Database_Controller(
             this->map_info.maps = (RGE_Map_Data_Entry*)calloc(
                 this->map_info.map_num, sizeof(RGE_Map_Data_Entry));
             if (this->map_info.map_num > 0) {
-                for (index = 0; index < this->map_info.map_num; ++index) {
+                index = 0;
+                do {
                     fscanf(infile, "%d", &this->map_info.maps[index].map_id);
-                }
+                    ++index;
+                } while (index < this->map_info.map_num);
                 fclose(infile);
                 goto map_database_loaded;
             }
