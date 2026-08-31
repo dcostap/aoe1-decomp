@@ -335,7 +335,7 @@ void TRIBE_Panel_Object::draw()
         if (level == 6) {
             this->draw_item(row, 9, ValueTypePercent,
                             (int)(this->game_obj->attribute_amount_held -
-                                  0.0f), 0);
+                                  DAT_00576D84), 0);
             ++row;
         }
 
@@ -356,7 +356,7 @@ void TRIBE_Panel_Object::draw()
             if (this->game_obj->attribute_type_held == 0x11 ||
                 this->game_obj->attribute_type_held == 0)
                 cur_val = (short)(int)(this->game_obj->attribute_amount_held -
-                                       0.0f);
+                                       DAT_00576D84);
             else
                 cur_val = 0;
             this->draw_item(row, 2, ValueTypeNumber, cur_val, 0);
@@ -389,10 +389,10 @@ void TRIBE_Panel_Object::draw()
                 goto invalid_item;
             }
 
-            if ((int)(this->game_obj->attribute_amount_held - 0.0f) > 0) {
+            if ((int)(this->game_obj->attribute_amount_held - DAT_00576D84) > 0) {
                 this->draw_item(row, 3, ValueTypeNumber,
                                 (int)(this->game_obj->attribute_amount_held -
-                                      0.0f), 0);
+                                      DAT_00576D84), 0);
             } else {
                 this->draw_item(row, item_type, ValueTypeNone, -1, 0);
             }
@@ -429,7 +429,7 @@ void TRIBE_Panel_Object::draw()
         }
         this->draw_item(row, item_type, ValueTypeNumber,
                         (int)(this->game_obj->attribute_amount_held -
-                              0.0f), 0);
+                              DAT_00576D84), 0);
         goto finish;
     }
 
@@ -459,7 +459,7 @@ void TRIBE_Panel_Object::draw()
         }
         this->draw_item(
             0, item_type, ValueTypeNumber,
-            (int)(this->game_obj->attribute_amount_held - 0.0f),
+            (int)(this->game_obj->attribute_amount_held - DAT_00576D84),
             0);
         this->draw_finish();
         return;
@@ -521,7 +521,7 @@ void TRIBE_Panel_Object::draw()
                                 row, 2, ValueTypeNumber,
                                 (int)(action->timer +
                                       this->game_obj->attribute_amount_held -
-                                      0.0f),
+                                      DAT_00576D84),
                                 0);
                     }
                 }
@@ -580,12 +580,12 @@ void TRIBE_Panel_Object::draw()
                     this->draw_item(
                         row, item_type, ValueTypeNumber,
                         (int)(this->game_obj->owner->attributes[9] -
-                              0.0f), 0);
+                              DAT_00576D84), 0);
                 } else {
                     this->draw_item(
                         row, item_type, ValueTypeNumber,
                         (int)(this->game_obj->attribute_amount_held -
-                              0.0f), 0);
+                              DAT_00576D84), 0);
                 }
                 ++row;
             }
@@ -618,7 +618,7 @@ resource_done:
                     distance = DAT_00576da8;
                 this->draw_item(
                     row, 3, ValueTypeCompare,
-                    (int)(distance - 0.0f), 0x14);
+                    (int)(distance - DAT_00576D84), 0x14);
             }
         }
     }
@@ -944,7 +944,7 @@ finish:
         RGE_Action* action = bldg->actions->get_action();
         if (action != 0 &&
             (int)(action->timer + bldg->attribute_amount_held -
-                  0.0f) != this->save_farm_amt) {
+                  DAT_00576D84) != this->save_farm_amt) {
             changed = 1;
         }
     }
@@ -1039,7 +1039,7 @@ void TRIBE_Panel_Object::save_object_info()
                 this->save_farm_amt =
                     (int)(action_amount +
                           this->game_obj->attribute_amount_held -
-                          0.0f);
+                          DAT_00576D84);
             }
         }
     }

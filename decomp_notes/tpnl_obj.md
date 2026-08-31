@@ -90,3 +90,15 @@ functions' `scratch` status. The nine exact owners keep `matching` status.
   virtual slot `+0x230`. The oracle uses `+0x22C`. The natural `0.0f` literal
   also removes the oracle `fsub` instruction. No local ABI view or unresolved
   global was added to hide this difference.
+
+## 2026-08-31 rounding constant ownership
+
+Original `.rdata` bytes at `00576D84` decode as the float `-0.5f`. The 12
+panel conversion sites subtract this value before integer conversion. The
+module header now declares `DAT_00576D84`, and `game_globals.cpp` owns its one
+definition. No source-local declaration exists.
+
+This restores all 12 `FSUB` operations. `0051CA10` now differs by five bytes
+with exact size, frame, instruction count, and 15 calls. Its remaining call
+slots need the shared group/combat ABI repair. The nine-TU affected audit kept
+all 279 matching functions exact.

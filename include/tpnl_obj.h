@@ -14,6 +14,8 @@ class RGE_Sprite;
 class RGE_Static_Object;
 struct RGE_Object_Node;
 
+extern const float DAT_00576D84;
+
 class TRIBE_Panel_Object : public TPanel {
 public:
     enum ValueType {
