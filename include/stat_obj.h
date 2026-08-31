@@ -127,8 +127,8 @@ public:
     virtual float getAngle() const { return 0.0f; }
     virtual float maximumSpeed() { return 0.0f; }
     virtual float rateOfFire() { return 0.0f; }
-    virtual float damageCapability(RGE_Static_Object*) { return 0.0f; }
     virtual float damageCapability() { return 0.0f; }
+    virtual float damageCapability(RGE_Static_Object*) { return 0.0f; }
     virtual float weaponRange() { return 0.0f; }
     virtual float minimumWeaponRange() { return 0.0f; }
     virtual int passableTile(float, float, int) { return 0; }
@@ -145,8 +145,8 @@ public:
     virtual unsigned char useSameZoneDropsite() const { return 1; }
     virtual void __cdecl logDebug(const char*, ...);
     virtual void notify(int, int, int, long, long, long) {}
-    virtual int attack(float, float, float, int) { return 0; }
     virtual int attack(int, int) { return 0; }
+    virtual int attack(float, float, float, int) { return 0; }
     virtual int moveTo(int, int) { return 0; }
     virtual int moveTo(int, float, int) { return 0; }
     virtual int moveTo(float, float, float, float, int) { return 0; }
