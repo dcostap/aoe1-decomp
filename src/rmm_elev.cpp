@@ -24,14 +24,13 @@ uchar RGE_RMM_Elevation_Generator::generate()
         long row = 0;
         if (row < this->map_height) {
             do {
-                RGE_Tile* tile = this->map_row_offset[row];
-                long col = 0;
-                if (col < this->map_width) {
+                long col;
+                if ((col = 0) < this->map_width) {
                     do {
+                        RGE_Tile* tile = this->map_row_offset[row] + col;
                         tile->height =
                             (uchar)this->info.elevation[0].base_elevation;
                         ++col;
-                        ++tile;
                     } while (col < this->map_width);
                 }
                 ++row;
@@ -137,7 +136,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(
         row_ptr = this->map_row_offset + y1;
         row = *row_ptr + x1;
         index1 = y1;
-        for (; index1 <= y2; ++index1) {
+        while (index1 <= y2) {
             if (x1 <= x2) {
                 RGE_Tile* cell = row;
                 long xx = x1;
@@ -150,6 +149,7 @@ uchar RGE_RMM_Elevation_Generator::check_elevation(
                     ++cell;
                 } while (xx <= x2);
             }
+            ++index1;
             ++row_ptr;
             row = *row_ptr + x1;
         }
@@ -339,7 +339,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
 {
     long x;
     long y;
-    uchar ok;
+    long ok;
     char done;
     long clump_size;
     long chance;
