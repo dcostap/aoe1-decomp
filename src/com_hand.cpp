@@ -1132,22 +1132,23 @@ void TCommunications_Handler::GetDPLAYMessages() {
         if (hr == static_cast<long>(0x887700BE)) return;
         if (dwSize == 0) return;
         if (hr != 0) { this->Err->ShowReturn(hr, "Rcv MSG"); return; }
-        int pno = 0;
+        int pno;
         if (dcoFromID != 0) {
             int i = this->PlayerOptions.LowPlayerNumber;
             int hi = this->PlayerOptions.HighPlayerNumber;
             if (i <= hi) {
                 ulong* p = this->PlayerOptions.dcoID + i;
                 for (; i <= hi; i++, p++) {
-                    if (*p == dcoFromID) {
-                        pno = i;
-                        break;
-                    }
+                    if (*p == dcoFromID)
+                        goto found_first_player;
                 }
             }
-        }
+            i = 0;
+found_first_player:
+            pno = i;
+        } else pno = 0;
         L->Log("  >RX #%d %c-%d (%u)", pno, static_cast<int>(*buf), static_cast<int>(*buf), dwSize);
-        int pno2 = 0;
+        int pno2;
 
         if (dcoFromID != 0) {
             int i = this->PlayerOptions.LowPlayerNumber;
@@ -1157,11 +1158,13 @@ void TCommunications_Handler::GetDPLAYMessages() {
                 for (; i <= hi; i++, p++) {
                     if (*p == dcoFromID) {
                         pno2 = i;
-                        break;
+                        goto found_second_player;
                     }
                 }
             }
         }
+        pno2 = 0;
+found_second_player:
         L->Log("COMM: RX P#%d ID(%ld) siz=%db   MSG=%d '%c'", pno2, dcoFromID, dwSize, static_cast<int>(*buf), static_cast<int>(*buf), debug_timeGetTime(com_hand_source_path, 0x435));
         this->RXPacketLength += dwSize;
         this->RXPackets++;
