@@ -8,7 +8,7 @@
   "functions": {
     "004755C0": {"status": "matching", "symbol": "??0TEditPanel@@QAE@XZ"},
     "00475690": {"status": "matching", "symbol": "??1TEditPanel@@UAE@XZ"},
-    "00475770": {"status": "scratch", "symbol": "?setup@TEditPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXFPADW4FormatType@1@H@Z"},
+    "00475770": {"status": "matching", "symbol": "?setup@TEditPanel@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJPAXFPADW4FormatType@1@H@Z"},
     "00475930": {"status": "matching", "symbol": "?pnl_sub_wnd_proc@@YGJPAXIIJ@Z"},
     "00475970": {"status": "matching", "symbol": "?set_text@TEditPanel@@QAEXPAD@Z"},
     "00475A30": {"status": "matching", "symbol": "?update_text@TEditPanel@@QAEXXZ"},
