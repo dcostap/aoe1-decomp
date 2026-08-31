@@ -133,10 +133,7 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
                                    unsigned long param_3,
                                    unsigned long param_4)
 {
-    OFSTRUCT of;
     char file_name[260];
-    char format[256];
-    char text[560];
     char* line;
     RGE_Prog_Info* prog_info;
     long curr_line;
@@ -147,18 +144,19 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
             strcmp(param_1->panelName(), "Cancel Dialog") == 0) {
             panel_system.destroyPanel("Cancel Dialog");
             if (param_2 == 0) {
+                char work_name[256];
                 prog_info = rge_base_game->prog_info;
                 char* scenario_dir = prog_info->scenario_dir;
-                sprintf(file_name, "%s%s.scn",
+                sprintf(work_name, "%s%s.scn",
                         scenario_dir, list->currentLine());
-                _unlink(file_name);
+                _unlink(work_name);
 
                 prog_info = rge_base_game->prog_info;
                 char* scenario_dir_scx = prog_info->scenario_dir;
                 line = list->currentLine();
-                sprintf(file_name, "%s%s.scx",
+                sprintf(work_name, "%s%s.scx",
                         scenario_dir_scx, line);
-                _unlink(file_name);
+                _unlink(work_name);
 
                 curr_line = list->get_line();
                 list->delete_line(curr_line);
@@ -176,8 +174,10 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
         if (param_1 == deleteButton && param_2 == 1) {
             line = list->currentLine();
             if (line[0] != 0) {
-                get_string(0x24CA, format, 0x100);
-                sprintf(text, format, list->currentLine());
+                char work_name[256];
+                char text[556];
+                get_string(0x24CA, work_name, 0x100);
+                sprintf(text, work_name, list->currentLine());
                 popupYesNoDialog(text, "Cancel Dialog", 0x1C2, 100);
             }
         }
@@ -191,11 +191,12 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
         else if (param_1 == okButton) {
             if (param_2 == 1) {
                 if (list->numberLines() > 0) {
+                    OFSTRUCT of;
                     prog_info = rge_base_game->prog_info;
-                    char* scenario_dir_open = prog_info->scenario_dir;
+                    char* scenario_dir = prog_info->scenario_dir;
                     line = list->currentLine();
                     sprintf(file_name, "%s%s.scn",
-                            scenario_dir_open, line);
+                            scenario_dir, line);
 
                     if (OpenFile(file_name, &of, 0x4000) != -1) {
                         line = list->currentLine();
@@ -203,9 +204,10 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
                     }
                     else {
                         prog_info = rge_base_game->prog_info;
+                        scenario_dir = prog_info->scenario_dir;
                         line = list->currentLine();
                         sprintf(file_name, "%s%s.scx",
-                                prog_info->scenario_dir, line);
+                                scenario_dir, line);
                         if (OpenFile(file_name, &of, 0x4000) != -1) {
                             line = list->currentLine();
                             file_format = "%s.scx";
@@ -216,8 +218,9 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
                         }
                     }
                     sprintf(file_name, file_format, line);
-                    static_cast<TRIBE_Game*>(rge_base_game)
-                        ->start_scenario_editor(file_name, 0);
+                    TRIBE_Game* game =
+                        static_cast<TRIBE_Game*>(rge_base_game);
+                    game->start_scenario_editor(file_name, 0);
                     return 1;
                 }
                 return 1;
