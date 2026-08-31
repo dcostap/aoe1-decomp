@@ -9,7 +9,7 @@
     "0053DAB0": {"status": "matching", "symbol": "??0RGE_Main_View@@QAE@XZ"},
     "0053DB40": {"status": "matching", "symbol": "?handle_idle@RGE_Main_View@@UAEJXZ"},
     "0053DBA0": {"status": "matching", "symbol": "?do_auto_scroll@RGE_Main_View@@QAEHXZ"},
-    "0053DEB0": {"status": "scratch", "symbol": "?handle_keys@RGE_Main_View@@QAEHXZ"},
+    "0053DEB0": {"status": "matching", "symbol": "?handle_keys@RGE_Main_View@@QAEHXZ"},
     "0053E280": {"status": "matching", "symbol": "?handle_mouse_up@RGE_Main_View@@UAEJEJJHH@Z"},
     "0053E2F0": {"status": "matching", "symbol": "?mouse_move_action@RGE_Main_View@@UAEJJJHH@Z"},
     "0053E340": {"status": "scratch", "symbol": "?mouse_left_down_action@RGE_Main_View@@UAEJJJHH@Z"},
