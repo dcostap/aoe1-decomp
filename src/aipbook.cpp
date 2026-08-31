@@ -525,11 +525,11 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                 for (j = 0; j < play->numberGroupsValue; j++) {
                     group = play->group(j);
                     if (group != 0) {
-                        if (playStatus->numberOfTypeInGroup(j, i) <
-                                group->maximum(i) &&
+                        if (group->maximum(i) >
+                                playStatus->numberOfTypeInGroup(j, i) &&
                             (numAssigned == -1 ||
-                             playStatus->numberInGroup(j) <
-                                 smallestGroupSize)) {
+                             smallestGroupSize >
+                                 playStatus->numberInGroup(j))) {
                             smallestGroupSize = playStatus->numberInGroup(j);
                             numAssigned = j;
                         }
@@ -553,8 +553,8 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                 for (j = 0; j < play->numberGroupsValue; j++) {
                     group = play->group(j);
                     if (group != 0) {
-                        if (playStatus->numberOfTypeInGroup(j, i) <
-                                group->maximum(i)) {
+                        if (group->maximum(i) >
+                                playStatus->numberOfTypeInGroup(j, i)) {
                             if (playStatus->addGrouping(
                                     unitsByType[i][k], (unsigned char)j,
                                     (unsigned char)i) == 1) {
@@ -585,7 +585,7 @@ CountDeviation:
             for (j = 0; j < 6; j++) {
                 a = group->minimum(j);
                 rVal = playStatus->numberOfTypeInGroup(i, j);
-                if (rVal < a) {
+                if (a > rVal) {
                     deviation += a - rVal;
                 }
             }
@@ -1116,23 +1116,19 @@ int AIPlayBook::loadPlays(char* filename) {
         } else if (strcmp(temp2 + 4, s_Trigger) == 0 && refPhase != -1 && phaseState != -1) {
             sscanf(temp + 4, s_format_trigger,
                    &temp4, temp6 + 4, &phaseValue1, &temp7);
-            if (temp4 >= 0 && temp4 < 5) {
-                AIPlayPhase* phase = this->plays[refPhase].phase(phaseState);
-                AIPlayPhaseTrigger trigger(
-                    temp6 + 4, phaseValue1, temp7,
-                    (unsigned char)phaseState, (unsigned char)temp4, 0);
-                phase->addTrigger(trigger);
-            }
+            AIPlayPhase* phase = this->plays[refPhase].phase(phaseState);
+            AIPlayPhaseTrigger trigger(
+                temp6 + 4, phaseValue1, temp7,
+                (unsigned char)phaseState, (unsigned char)temp4, 0);
+            phase->addTrigger(trigger);
         } else if (strcmp(temp2 + 4, s_RTrigger) == 0 && refPhase != -1 && phaseState != -1) {
             sscanf(temp + 4, s_format_command,
                    &temp4, temp6 + 4, &phaseValue1, &temp7, &fileValue);
-            if (temp4 >= 0 && temp4 < 5) {
-                AIPlayPhase* phase = this->plays[refPhase].phase(phaseState);
-                AIPlayPhaseTrigger rtrigger(
-                    temp6 + 4, phaseValue1, temp7,
-                    (unsigned char)phaseState, (unsigned char)temp4, fileValue);
-                phase->addTrigger(rtrigger);
-            }
+            AIPlayPhase* phase = this->plays[refPhase].phase(phaseState);
+            AIPlayPhaseTrigger rtrigger(
+                temp6 + 4, phaseValue1, temp7,
+                (unsigned char)phaseState, (unsigned char)temp4, fileValue);
+            phase->addTrigger(rtrigger);
         } else if (strcmp(temp2 + 4, s_EndPlay) == 0 && refPhase != -1) {
             int oldPhase = refPhase;
             phaseState = -1;
