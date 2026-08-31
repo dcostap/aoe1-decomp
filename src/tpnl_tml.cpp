@@ -1052,6 +1052,7 @@ void Time_Line_Panel::draw_timeline()
     float cntr_droped_slice_rate;
     long pop_sample_cntr;
     int player_index;
+    int local_38;
     int local_34;
     long error_correction_drop_time_slice_rate;
     long time_slice_cntr;
@@ -1072,6 +1073,7 @@ void Time_Line_Panel::draw_timeline()
 
     this->X_line_pos = this->X_start_line_pos;
     player_index = 0;
+    local_38 = 0;
     local_10 = 0;
     time_slice_cntr = 0;
     pop_sample_cntr = 0;
@@ -1136,12 +1138,12 @@ void Time_Line_Panel::draw_timeline()
                     if (float_remainder == 0.0f) return;
                 }
 
-                if ((local_28 == this->pop_reading_rate - 1) || (next_pop_total == 0)) {
+                if ((local_38 == this->pop_reading_rate - 1) || (next_pop_total == 0)) {
                     this->add_pop_total_special_event(next_pop_total,
                         static_cast<long>(temp_pop_num), this->X_line_pos, 1);
-                    local_28 = 0;
+                    local_38 = 0;
                 } else {
-                    local_28++;
+                    local_38++;
                 }
 
                 y_line_segment_length = static_cast<long>(next_pop_total) + 1;
