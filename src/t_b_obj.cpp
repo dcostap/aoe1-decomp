@@ -568,9 +568,9 @@ long TRIBE_Building_Object::check(TRIBE_Building_Object** out)
                 -1.0f, -1.0f, 0, 0, 0));
         if (out[3] != 0 && out[3]->owner == owner) {
             ++count;
-            return count;
+        } else {
+            out[3] = 0;
         }
-        out[3] = 0;
     } else {
         out[3] = 0;
     }
@@ -582,29 +582,28 @@ void TRIBE_Building_Object::connect()
     if (this->sprite == 0) {
         return;
     }
-    if (this->sprite->facet_num != 3) {
-        facet = 0;
-        return;
-    }
+    if (this->sprite->facet_num == 3) {
+        set_angle();
+        TRIBE_Building_Object* checks[4];
+        check(checks);
 
-    set_angle();
-    TRIBE_Building_Object* checks[4];
-    check(checks);
+        if (checks[0] != 0 && checks[3] != 0 &&
+            checks[1] == 0 && checks[2] == 0) {
+            RGE_Moving_Object::rotate(1 - facet);
+        } else if (checks[1] != 0 && checks[2] != 0 &&
+                   checks[0] == 0 && checks[3] == 0) {
+            RGE_Moving_Object::rotate(-facet);
+        } else {
+            RGE_Moving_Object::rotate(2 - facet);
+        }
 
-    if (checks[0] != 0 && checks[3] != 0 &&
-        checks[1] == 0 && checks[2] == 0) {
-        RGE_Moving_Object::rotate(1 - facet);
-    } else if (checks[1] != 0 && checks[2] != 0 &&
-               checks[0] == 0 && checks[3] == 0) {
-        RGE_Moving_Object::rotate(-facet);
+        if (checks[0] != 0) checks[0]->connect2();
+        if (checks[1] != 0) checks[1]->connect2();
+        if (checks[2] != 0) checks[2]->connect2();
+        if (checks[3] != 0) checks[3]->connect2();
     } else {
-        RGE_Moving_Object::rotate(2 - facet);
+        facet = 0;
     }
-
-    if (checks[0] != 0) checks[0]->connect2();
-    if (checks[1] != 0) checks[1]->connect2();
-    if (checks[2] != 0) checks[2]->connect2();
-    if (checks[3] != 0) checks[3]->connect2();
 }
 
 void TRIBE_Building_Object::connect2()
@@ -612,21 +611,20 @@ void TRIBE_Building_Object::connect2()
     if (this->sprite == 0) {
         return;
     }
-    if (this->sprite->facet_num != 3) {
-        facet = 0;
-        return;
-    }
-
-    TRIBE_Building_Object* checks[4];
-    check(checks);
-    if (checks[0] != 0 && checks[3] != 0 &&
-        checks[1] == 0 && checks[2] == 0) {
-        RGE_Moving_Object::rotate(1 - facet);
-    } else if (checks[1] != 0 && checks[2] != 0 &&
-               checks[0] == 0 && checks[3] == 0) {
-        RGE_Moving_Object::rotate(-facet);
+    if (this->sprite->facet_num == 3) {
+        TRIBE_Building_Object* checks[4];
+        check(checks);
+        if (checks[0] != 0 && checks[3] != 0 &&
+            checks[1] == 0 && checks[2] == 0) {
+            RGE_Moving_Object::rotate(1 - facet);
+        } else if (checks[1] != 0 && checks[2] != 0 &&
+                   checks[0] == 0 && checks[3] == 0) {
+            RGE_Moving_Object::rotate(-facet);
+        } else {
+            RGE_Moving_Object::rotate(2 - facet);
+        }
     } else {
-        RGE_Moving_Object::rotate(2 - facet);
+        facet = 0;
     }
 }
 
