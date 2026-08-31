@@ -15,6 +15,12 @@ The assignment gives you:
 
 You are the only active matching worker for that translation unit.
 
+## Network prohibition
+
+Do not access the web or search online. Do not use network tools, remote URLs,
+online repositories, or external services. Use only repository-local evidence
+and files that the orchestrator supplies.
+
 You can edit:
 
 - scratch function bodies in the assigned natural source file; and
