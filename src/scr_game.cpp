@@ -4044,18 +4044,18 @@ void TRIBE_Screen_Game::command_more() {
         return;
 
     if (rge_base_game->game_mode == 6 && rge_base_game->sub_game_mode == 1) {
-        this->last_item = (this->last_item != 0) ? 0 : 10;
+        this->start_item = (this->start_item != 0) ? 0 : 10;
         this->setup_buttons();
         return;
     }
 
-    if (this->last_item < this->start_item - 1) {
-        this->last_item = this->last_item + 1;
+    if (this->last_item < this->item_cnt - 1) {
+        this->start_item = this->last_item + 1;
         this->setup_buttons();
         return;
     }
 
-    this->last_item = 0;
+    this->start_item = 0;
     this->setup_buttons();
 }
 

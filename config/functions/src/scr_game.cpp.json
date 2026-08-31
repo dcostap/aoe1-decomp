@@ -69,7 +69,7 @@
     "0049C650": {"status": "matching", "symbol": "?command_score@TRIBE_Screen_Game@@IAEXH@Z"},
     "0049C710": {"status": "matching", "symbol": "?command_select_group@TRIBE_Screen_Game@@IAEXHH@Z"},
     "0049C770": {"status": "matching", "symbol": "?command_menu@TRIBE_Screen_Game@@IAEXXZ"},
-    "0049C800": {"status": "scratch", "symbol": "?command_more@TRIBE_Screen_Game@@IAEXXZ"},
+    "0049C800": {"status": "matching", "symbol": "?command_more@TRIBE_Screen_Game@@IAEXXZ"},
     "0049C890": {"status": "matching", "symbol": "?command_move@TRIBE_Screen_Game@@IAEXXZ"},
     "0049C920": {"status": "matching", "symbol": "?command_outline@TRIBE_Screen_Game@@IAEXXZ"},
     "0049C970": {"status": "matching", "symbol": "?command_pause@TRIBE_Screen_Game@@IAEXXZ"},
