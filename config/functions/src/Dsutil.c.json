@@ -29,7 +29,7 @@
     "00448400": {"status": "matching", "symbol": "_riffCopyChunk"},
     "004484D0": {"status": "matching", "symbol": "_WaveLoadFile"},
     "004485C0": {"status": "matching", "symbol": "_WaveSaveFile"},
-    "00448660": {"status": "scratch", "symbol": "_ds_stream_init"},
+    "00448660": {"status": "accepted_drift", "symbol": "_ds_stream_init"},
     "004486B0": {"status": "matching", "symbol": "_ds_stream_exit"},
     "004486F0": {"status": "matching", "symbol": "_ds_stream_file"},
     "00448A40": {"status": "matching", "symbol": "_ds_stream_volume"},
