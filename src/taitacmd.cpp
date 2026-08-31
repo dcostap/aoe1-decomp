@@ -750,9 +750,11 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
             }
         }
         inUseValue = 0;
-        if (firstTime != 1)
-            goto return_one_tail;
-        break;
+        if (firstTime == 1) {
+            originalHitPointsValue = taskID;
+            originalUnitNumberValue = numberUnitsValue;
+        }
+        return 1;
     }
 
 
@@ -834,9 +836,9 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         int* unitp;
         RGE_Static_Object* obj;
         tactical->logGroupDebug(idValue, s_log_32);
-        taskID = 0;
+        oHP = 0;
         int roll = debug_rand(s_file, 0x3af) % 100;
-        busyOK = 0;
+        taskID = 0;
         unitp = unitsValue;
         do {
             if (*unitp != -1) {
@@ -844,11 +846,10 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
                 obj = md->object(*unitp);
                 if (obj == 0 || obj->unitAI() == 0) {
                     tactical->logGroupDebug(idValue, s_log_34, *unitp);
-                    removeUnitByIndex(busyOK, md);
+                    removeUnitByIndex(taskID, md);
                 } else {
-                    oHP = ((int)obj->hp);
-                    unitp[40] = oHP;
-                    taskID += oHP;
+                    unitp[40] = (int)obj->hp;
+                    oHP += unitp[40];
                     if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
                         int busyAction = obj->unitAI()->currentAction();
                         tactical->logGroupDebug(idValue, s_log_35, *unitp, busyAction);
@@ -865,12 +866,12 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
                 }
             }
             ++unitp;
-            ++busyOK;
-        } while (busyOK < 40);
+            ++taskID;
+        } while (taskID < 40);
         inUseValue = 1;
         if (firstTime != 1)
             goto return_one_tail;
-        goto store_return_one;
+        goto store_return_one_mid;
     }
 
 
@@ -880,8 +881,8 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         int* unitp;
         RGE_Static_Object* obj;
         tactical->logGroupDebug(idValue, s_log_39);
+        oHP = 0;
         taskID = 0;
-        busyOK = 0;
         unitp = unitsValue;
         do {
             if (*unitp != -1) {
@@ -889,11 +890,10 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
                 obj = md->object(*unitp);
                 if (obj == 0 || obj->unitAI() == 0) {
                     tactical->logGroupDebug(idValue, s_log_41, *unitp);
-                    removeUnitByIndex(busyOK, md);
+                    removeUnitByIndex(taskID, md);
                 } else {
-                    oHP = ((int)obj->hp);
-                    unitp[40] = oHP;
-                    taskID += oHP;
+                    unitp[40] = (int)obj->hp;
+                    oHP += unitp[40];
                     if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
                         int busyAction = obj->unitAI()->currentAction();
                         tactical->logGroupDebug(idValue, s_log_42, *unitp, busyAction);
@@ -903,8 +903,8 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
                 }
             }
             ++unitp;
-            ++busyOK;
-        } while (busyOK < 40);
+            ++taskID;
+        } while (taskID < 40);
         inUseValue = 1;
         if (firstTime != 1)
             goto return_one_tail;
@@ -928,7 +928,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
             return 0;
         }
         int stored20 = 0;
-        busyOK = 0;
+        taskID = 0;
         int* unitp;
         RGE_Static_Object* obj;
         unitp = unitsValue;
@@ -938,7 +938,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
                 obj = md->object(*unitp);
                 if (obj == 0 || obj->unitAI() == 0) {
                     tactical->logGroupDebug(idValue, s_log_61, *unitp);
-                    removeUnitByIndex(busyOK, md);
+                    removeUnitByIndex(taskID, md);
                 } else {
                     tactical->logGroupDebug(idValue, s_log_62, obj->unitAI()->currentAction());
                     oHP = ((int)obj->hp); unitp[40] = oHP; stored20 += oHP;
@@ -964,8 +964,8 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
             }
 case20_next:
             ++unitp;
-            ++busyOK;
-        } while (busyOK < 40);
+            ++taskID;
+        } while (taskID < 40);
         inUseValue = 1;
         if (firstTime != 1)
             goto return_one_tail;
@@ -984,15 +984,14 @@ case20_next:
         else
             tactical->logGroupDebug(idValue, s_log_06);
         lastAttackRoundupTime = md->player->world->world_time;
-        int stored = 0;
         int madeMemory = 1;
-        int i;
+        int stored = 0;
         int* unitp;
-        RGE_Static_Object* obj;
-        for (i = 0, unitp = unitsValue; i < 40; ++i, ++unitp) {
+        unitp = unitsValue;
+        for (int i = 0; i < 40; ++i, ++unitp) {
             if (*unitp == -1) continue;
             tactical->logGroupDebug(idValue, s_log_08, *unitp);
-            obj = md->object(*unitp);
+            RGE_Static_Object* obj = md->object(*unitp);
             if (obj == 0 || obj->unitAI() == 0) {
                 tactical->logGroupDebug(idValue, s_log_09, *unitp);
                 removeUnitByIndex(i, md);
@@ -1020,9 +1019,9 @@ case20_next:
                         tactical->logGroupDebug(idValue, s_log_15);
                         XYPoint min;
                         XYPoint max;
-                        TribeInformationAIModule* info = &md->informationAI;
                         min.x = (int)targ->world_x - 7;
                         min.y = (int)targ->world_y - 7;
+                        TribeInformationAIModule* info = &md->informationAI;
                         info->mapBound(&min);
                         max.x = (int)targ->world_x + 7;
                         max.y = (int)targ->world_y + 7;
@@ -1091,8 +1090,8 @@ case20_next:
         int* unitp;
         RGE_Static_Object* obj;
         tactical->logGroupDebug(idValue, s_log_25, targetValue, targetLocationValue.x, targetLocationValue.y);
+        oHP = 0;
         taskID = 0;
-        busyOK = 0;
         unitp = unitsValue;
         do {
             if (*unitp != -1) {
@@ -1100,11 +1099,10 @@ case20_next:
                 obj = md->object(*unitp);
                 if (obj == 0 || obj->unitAI() == 0) {
                     tactical->logGroupDebug(idValue, s_log_27, *unitp);
-                    removeUnitByIndex(busyOK, md);
+                    removeUnitByIndex(taskID, md);
                 } else {
-                    oHP = ((int)obj->hp);
-                    unitp[40] = oHP;
-                    taskID += oHP;
+                    unitp[40] = (int)obj->hp;
+                    oHP += unitp[40];
                     if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
                         int busyAction = obj->unitAI()->currentAction();
                         tactical->logGroupDebug(idValue, s_log_28, *unitp, busyAction);
@@ -1126,8 +1124,8 @@ case20_next:
                 }
             }
             ++unitp;
-            ++busyOK;
-        } while (busyOK < 40);
+            ++taskID;
+        } while (taskID < 40);
         inUseValue = 1;
         if (firstTime != 1)
             goto return_one_tail;
@@ -1142,8 +1140,8 @@ case20_next:
         int* unitp;
         RGE_Static_Object* obj;
         tactical->logGroupDebug(idValue, s_log_43);
+        oHP = 0;
         taskID = 0;
-        busyOK = 0;
         unitp = unitsValue;
         do {
             if (*unitp != -1) {
@@ -1151,11 +1149,10 @@ case20_next:
                 obj = md->object(*unitp);
                 if (obj == 0 || obj->unitAI() == 0) {
                     tactical->logGroupDebug(idValue, s_log_45, *unitp);
-                    removeUnitByIndex(busyOK, md);
+                    removeUnitByIndex(taskID, md);
                 } else {
-                    oHP = ((int)obj->hp);
-                    unitp[40] = oHP;
-                    taskID += oHP;
+                    unitp[40] = (int)obj->hp;
+                    oHP += unitp[40];
                     if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
                         int busyAction = obj->unitAI()->currentAction();
                         tactical->logGroupDebug(idValue, s_log_46, *unitp, busyAction);
@@ -1169,18 +1166,17 @@ case20_next:
                 }
             }
             ++unitp;
-            ++busyOK;
-        } while (busyOK < 40);
+            ++taskID;
+        } while (taskID < 40);
         inUseValue = 1;
         if (firstTime != 1)
             return 1;
-        goto store_return_one_mid;
-    }
 
 store_return_one_mid:
-    originalHitPointsValue = taskID;
-    originalUnitNumberValue = numberUnitsValue;
-    return 1;
+        originalHitPointsValue = oHP;
+        originalUnitNumberValue = numberUnitsValue;
+        return 1;
+    }
 
     case 11: {
         int* unitp;
@@ -1188,7 +1184,7 @@ store_return_one_mid:
         TribeTacticalAIModule* tt = tactical;
         int total = 0;
         tt->logGroupDebug(idValue, s_log_49);
-        busyOK = 0;
+        taskID = 0;
         unitp = unitsValue;
         do {
             if (*unitp != -1) {
@@ -1196,7 +1192,7 @@ store_return_one_mid:
                 obj = md->object(*unitp);
                 if (obj == 0 || obj->unitAI() == 0) {
                     tt->logGroupDebug(idValue, s_log_51, *unitp);
-                    removeUnitByIndex(busyOK, md);
+                    removeUnitByIndex(taskID, md);
                 } else {
                     oHP = ((int)obj->hp);
                     unitp[40] = oHP;
@@ -1214,8 +1210,8 @@ store_return_one_mid:
                 }
             }
             ++unitp;
-            ++busyOK;
-        } while (busyOK < 40);
+            ++taskID;
+        } while (taskID < 40);
         inUseValue = 1;
         if (firstTime != 1)
             goto return_one_tail;
@@ -1284,7 +1280,7 @@ return_zero_tail:
 
 
 store_return_one:
-    originalHitPointsValue = taskID;
+    originalHitPointsValue = oHP;
     originalUnitNumberValue = numberUnitsValue;
     return 1;
 
