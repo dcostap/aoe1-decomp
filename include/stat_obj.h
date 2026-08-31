@@ -143,7 +143,7 @@ public:
     virtual unsigned char keepGatheringWhenObjectIsOut(int) const { return 0; }
     virtual unsigned char produceWhenKilledBy(int) const { return 1; }
     virtual unsigned char useSameZoneDropsite() const { return 1; }
-    virtual void __cdecl logDebug(const char*, ...);
+    virtual void __cdecl logDebug(char*, ...);
     virtual void notify(int, int, int, long, long, long) {}
     virtual int attack(int, int) { return 0; }
     virtual int attack(float, float, float, int) { return 0; }

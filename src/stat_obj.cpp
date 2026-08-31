@@ -3303,7 +3303,7 @@ RGE_Check_List* RGE_Static_Object::objectCollisionList(float extra)
 // logDebug is a public virtual cdecl member.
 
 
-void __cdecl RGE_Static_Object::logDebug(const char* format, ...)
+void __cdecl RGE_Static_Object::logDebug(char* format, ...)
 {
     char textOut[1024];
 

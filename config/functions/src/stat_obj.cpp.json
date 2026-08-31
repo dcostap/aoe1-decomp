@@ -96,7 +96,7 @@
     "004C6C90": {"status": "matching", "symbol": "?removeFromObstructionMap@RGE_Static_Object@@QAEHH@Z"},
     "004C6DA0": {"status": "matching", "symbol": "?changeInfluenceMap@RGE_Static_Object@@QAEXPAVInfluenceMap@@HHH@Z"},
     "004C7030": {"status": "verified_logic", "symbol": "?objectCollisionList@RGE_Static_Object@@QAEPAVRGE_Check_List@@M@Z"},
-    "004C7340": {"status": "scratch", "symbol": "?logDebug@RGE_Static_Object@@UAAXPADZZ"},
+    "004C7340": {"status": "matching", "symbol": "?logDebug@RGE_Static_Object@@UAAXPADZZ"},
     "004C7420": {"status": "matching", "symbol": "?unitAI@RGE_Static_Object@@QAEPAVUnitAIModule@@XZ"},
     "004C7430": {"status": "matching", "symbol": "?lookupZone@RGE_Static_Object@@QAEEUXYPoint@@@Z"},
     "004C74B0": {"status": "matching", "symbol": "?lookupZone@RGE_Static_Object@@QAEEHH@Z"},
