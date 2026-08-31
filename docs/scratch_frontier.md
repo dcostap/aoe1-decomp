@@ -1,6 +1,6 @@
 # Scratch function frontier
 
-Generated from `f05cecd4d01469dccc4d640fc97eadf76347e8c2` and the current full translation-unit audit.
+Generated from `0d38c9ad3362fbc441ba3303bdbe3ce1e7becb9f` and the current full translation-unit audit.
 
 Scratch functions: **373**.
 
@@ -16,9 +16,6 @@ Mechanical tiers rank evidence only. Manual review overrides the score.
 
 | Decision | VA | Function | TU | Diff | Reason | Next step |
 |---|---|---|---|---:|---|---|
-| try_now | `0042C690` | `AnalyzeCommunicationsStatus` | `com_hand` | 4 | Only four GUID comparison scheduling bytes remain. Prior work tested few natural forms. | Use exact same-TU GUID donors and a small operand-order lab. Do not accept changed pointer-fault order. |
-| try_now | `004C8A80` | `update` | `t_b_obj` | 8 | Eight bytes remain in one reversed movsx pair. Size, instructions, and five calls align. | Test binary-backed field ownership and declaration order without aliases or raw access. |
-| try_now | `00512EC0` | `find_obj` | `tplayer` | 22 | The retained typed rewrite reduced the mismatch to 22 bytes. Only fallback return topology remains. | Test a bounded set of natural return and loop shapes, then audit tplayer. |
 | drift_review | `0042A060` | `ClearRXForPlayer` | `com_hand` | 16 | Sixteen bytes remain after the loop bound repair. Evidence describes register and address scheduling only. | Compare every read, write, branch, residue, and invalid-pointer fault before acceptance. |
 | drift_review | `00429FD0` | `ClearRXandTX` | `com_hand` | 10 | Ten bytes remain in two cleanup-loop register and address schedules. | Prove identical bounds, writes, read order, and fault behavior across both loops. |
 | drift_review | `005110E0` | `tribe_clean_elevation` | `tmap` | 22 | Twenty-two bytes are a localized this and x register-color swap. Size and three calls align. | Perform a full machine-effect review, including exception-time register state. |
@@ -29,14 +26,17 @@ Mechanical tiers rank evidence only. Manual review overrides the score.
 | defer | `0042CD50` | `GetCommInfo` | `com_hand` | 2 | The two-byte exact form uses rejected signed integer pointer comparisons. | Wait for authentic pointer-loop source evidence. |
 | defer | `00421110` | `handle_mouse_move` | `basegame` | 6 | The mismatch depends on a distinct uninitialized stack home and a four-byte frame difference. | Wait for original declaration context. |
 | defer | `004348B0` | `do_command_create` | `command` | 5 | Several workers exhausted natural forms. Parameter and world load order can change the first fault. | Do not retry without a source-context donor. |
+| defer | `0042C690` | `AnalyzeCommunicationsStatus` | `com_hand` | 4 | The completed try-now pass left four GUID read-order bytes. Operand swaps and named pointers did not match. | Wait for authentic source context. Do not accept changed pointer-fault order. |
 | defer | `0040CE90` | `MainDecisionAIModule` | `aimdmod` | 15 | The exact form reuses pointer parameter homes as unrelated integers and failed source policy. | Keep the natural constructor until new period-source evidence exists. |
 | defer | `00487940` | `add_land_module` | `rmm_tdbc` | 2 | Two bytes reverse map width and height reads. Invalid receivers can fault in a different order. | Do not reopen without a real source dependency. |
 | defer | `004920C0` | `TribeMPCreateDialog` | `scr_cj` | 31 | The remaining constructor hunk changes initialization and EH timing. | Wait for authentic constructor context. |
 | defer | `004348F0` | `do_command_add_attribute` | `command` | 5 | Several workers exhausted natural forms. Parameter and world load order can change the first fault. | Do not retry without a source-context donor. |
 | defer | `0047B970` | `draw_button_pic` | `pnl_scbr` | 9 | Many natural expression families emitted the same nine-byte schedule. The alternative uses a parameter-home alias. | Wait for period source. |
+| defer | `004C8A80` | `update` | `t_b_obj` | 8 | The completed try-now pass left the reversed master and sprite movsx read order unchanged. | Wait for a source-backed dependency that preserves fault order. |
 | defer | `00412240` | `sortLarge` | `airesitm` | 1 | The one-byte result depends on shared declaration context and rejected compiler steering. | Preserve the existing user note and exact neighbors. |
 | defer | `0044A3E0` | `byte_run` | `flics` | 2 | The two-byte schedule changes potentially faulting read order. | Do not accept as encoding-only drift. |
 | defer | `00473930` | `hit_button` | `pnl_btn` | 18 | Eighty-four natural variants kept the same coordinate field-load order. | Do not retry without new class or source evidence. |
+| defer | `00512EC0` | `find_obj` | `tplayer` | 22 | The completed try-now pass recovered more tail structure but changed the fallback node reload and loop topology. | Wait for original control-flow evidence. Do not accept the changed concurrent-list behavior. |
 | defer | `0047D9E0` | `calc_line_pos` | `pnl_txt` | 24 | Repeated labs exhausted natural alignment expressions. The residual includes field-load order. | Keep the typed source. |
 | defer | `00412F00` | `UnitAIModule` | `aiuaimod` | 46 | The constructor requires unresolved vptr and member initialization scheduling. Manual vptr work is forbidden. | Resolve UnitAIModule ownership first. |
 | defer | `004261E0` | `~TCommunications_Handler` | `com_hand` | 38 | Many variant labs exhausted destructor, loop, flag, type, and context axes. | Wait for original destructor source or a new exact donor. |
