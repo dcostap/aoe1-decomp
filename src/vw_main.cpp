@@ -293,12 +293,10 @@ long RGE_Main_View::mouse_move_action(long x, long y, int key, int flags) {
 }
 
 long RGE_Main_View::mouse_left_down_action(long x, long y, int key, int flags) {
-    struct {
-        short min_x;
-        short min_y;
-        short max_y;
-        short max_x;
-    } frame;
+    short min_x;
+    short min_y;
+    short max_y;
+    short max_x;
     tagPOINT point;
     RGE_Pick_Info pick_info;
 
@@ -316,10 +314,10 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int key, int flags) {
                     this->player->select_one_object(pick_info.object, 1);
                     this->set_redraw(TPanel::RedrawNormal);
                     if (pick_info.object->sprite != 0) {
-                        pick_info.object->get_frame(&frame.min_x, &frame.min_y,
-                                                   &frame.max_x, &frame.max_y);
-                        point.x = pick_info.scr_x - frame.min_x;
-                        point.y = pick_info.scr_y - frame.min_y;
+                        pick_info.object->get_frame(&min_x, &min_y, &max_x,
+                                                   &max_y);
+                        point.x = pick_info.scr_x - min_x;
+                        point.y = pick_info.scr_y - min_y;
                         if (this->TPanel::render_area->DrawSystem->ScreenMode == 1)
                             ClientToScreen(this->TPanel::render_area->Wnd, &point);
                         if (this->TPanel::render_area->DrawSystem->ScreenMode == 1)
@@ -404,10 +402,9 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int key, int flags) {
                         rge_base_game->set_game_mode(8, 1);
                         if (this->movable_object->sprite != 0) {
                             this->movable_object->get_frame(
-                                &frame.min_x, &frame.min_y,
-                                &frame.max_x, &frame.max_y);
-                            point.x = pick_info.scr_x - frame.min_x;
-                            point.y = pick_info.scr_y - frame.min_y;
+                                &min_x, &min_y, &max_x, &max_y);
+                            point.x = pick_info.scr_x - min_x;
+                            point.y = pick_info.scr_y - min_y;
                             if (this->TPanel::render_area->DrawSystem
                                     ->ScreenMode == 1)
                                 ClientToScreen(this->TPanel::render_area->Wnd,
