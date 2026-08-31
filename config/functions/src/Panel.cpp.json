@@ -45,7 +45,7 @@
     "00464640": {"status": "matching", "symbol": "?restart_sound_system@TPanelSystem@@QAEHXZ"},
     "00464680": {"status": "matching", "symbol": "?restore_system_colors@TPanelSystem@@QAEXXZ"},
     "004646F0": {"status": "matching", "symbol": "?set_restore@TPanelSystem@@QAEXXZ"},
-    "00464720": {"status": "scratch", "symbol": "??0TPanel@@QAE@PAD@Z"},
+    "00464720": {"status": "matching", "symbol": "??0TPanel@@QAE@PAD@Z"},
     "004648B0": {"status": "scratch", "symbol": "??0TPanel@@QAE@XZ"},
     "004649E0": {"status": "matching", "symbol": "??1TPanel@@UAE@XZ"},
     "00464A80": {"status": "matching", "symbol": "?setup@TPanel@@UAEJPAVTDrawArea@@PAV1@JJJJE@Z"},
