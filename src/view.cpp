@@ -1017,20 +1017,17 @@ label_done:
 
 void RGE_View::update()
 {
+    RGE_Tile* tile;
     RGE_Player* p;
     short sVar6;
     short sVar7;
     short sVar8;
     short sVar9;
     short sVar10;
-    RGE_Tile* tile;
     p = this->player;
     if (p && (p->view_x != this->last_view_x || p->view_y != this->last_view_y)) {
-        sVar6 = (short)(int)p->view_x;
-        this->center_map_col = sVar6;
-        sVar7 = (short)(int)p->view_y;
-        sVar6 = this->center_map_col;
-        this->center_map_row = sVar7;
+        this->center_map_col = (short)(int)p->view_x;
+        this->center_map_row = (short)(int)p->view_y;
         sVar9 = (short)(this->render_rect.left + this->pnl_wid / 2) - this->tile_half_wid;
         sVar10 = (short)(this->render_rect.top + this->pnl_hgt / 2) - this->tile_half_hgt;
         this->last_view_x = p->view_x;
@@ -1039,26 +1036,26 @@ void RGE_View::update()
         this->center_scr_row = sVar10;
         sVar7 = (short)(int)(((p->view_y - (float)this->center_map_row) * DAT_005776b4 *
                               (float)this->tile_wid) +
-                             ((p->view_x - (float)sVar6) *
+                              ((p->view_x - (float)this->center_map_col) * DAT_005776b4 *
                               (float)this->tile_wid));
         sVar8 = (short)(int)(((p->view_y - (float)this->center_map_row) * DAT_005776b4 *
                               (float)this->tile_hgt) -
-                             ((p->view_x - (float)sVar6) *
+                             ((p->view_x - (float)this->center_map_col) * DAT_005776b4 *
                               (float)this->tile_hgt));
         sVar9 -= sVar7;
         sVar10 -= sVar8 + this->tile_half_hgt;
         this->center_scr_col = sVar9;
         this->center_scr_row = sVar10;
-        tile = this->map->map_row_offset[this->center_map_row] + sVar6;
+        tile = this->map->map_row_offset[this->center_map_row] + this->center_map_col;
         this->map_scr_x_offset = (int)tile->screen_xpos - (int)sVar9;
         this->map_scr_y_offset = ((int)this->elev_hgt * tile->height +
                                   (int)tile->screen_ypos) - (int)sVar10;
-        this->center_scr_col_offset = (short)((sVar6 + this->center_map_row) * this->tile_half_wid - sVar7);
-        this->center_scr_row_offset = (short)((this->center_map_row - sVar6) * this->tile_half_hgt - sVar8 - this->tile_half_hgt);
+        this->center_scr_col_offset = (short)((this->center_map_col + this->center_map_row) * this->tile_half_wid - sVar7);
+        this->center_scr_row_offset = (short)((this->center_map_row - this->center_map_col) * this->tile_half_hgt - sVar8 - this->tile_half_hgt);
         sVar7 = this->max_col_num / 2 + 2;
         this->start_map_row = this->center_map_row;
         this->start_map_row -= sVar7;
-        this->start_map_col = sVar6 - sVar7;
+        this->start_map_col = this->center_map_col - sVar7;
         this->start_scr_col = (short)(sVar9 - sVar7 * this->tile_half_wid * 2);
         sVar6 = this->max_row_num / 2 + 1;
         this->start_map_col += sVar6;
