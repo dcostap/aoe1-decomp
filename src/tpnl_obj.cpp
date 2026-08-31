@@ -993,7 +993,7 @@ void TRIBE_Panel_Object::save_object_info()
         object->master_obj->master_type != 0x5A) {
         this->save_have_action = object->have_action();
         this->game_obj->get_armor(this->save_armor, orig_val);
-        this->game_obj->get_pierce_armor(this->save_pierce_armor, orig_val);
+        this->game_obj->get_armor(this->save_pierce_armor, orig_val);
         this->game_obj->get_weapon(this->save_weapon, orig_val);
         this->game_obj->get_weapon_range(this->save_weapon_range, orig_fval);
         this->game_obj->get_speed_of_attack(this->save_speed_of_attack,
