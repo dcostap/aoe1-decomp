@@ -1543,7 +1543,7 @@ long RGE_View::view_function(unsigned char a1, unsigned char a2, tagPOINT* p1, t
     short find_row;
     short max_col_num2;
     short max_row_num2;
-    int list_size;
+    short list_size;
 
     this->function_mode = a1;
     this->function_parm = a2;
@@ -1586,9 +1586,10 @@ long RGE_View::view_function(unsigned char a1, unsigned char a2, tagPOINT* p1, t
 
     start_scr_row2 = this->start_scr_col;
     start_map_row2 = this->start_map_col;
-    direction = this->start_map_row;
     cur_col_num = this->start_scr_row;
-    list_size = (short)(this->max_row_num + 6) << 1;
+    direction = this->start_map_row;
+    list_size = this->max_row_num + 6;
+    list_size <<= 1;
     picked_type = this->max_col_num + 4;
     max_row_num2 = picked_type;
     tile_screen_row = 4;
@@ -1602,7 +1603,7 @@ long RGE_View::view_function(unsigned char a1, unsigned char a2, tagPOINT* p1, t
             row_num = 0;
             if (picked_type > 0) {
                 do {
-                    bool in_bounds;
+                    int in_bounds;
                     int draw_flag;
                     if (start_scr_col2 >= 0 && start_scr_col2 < this->map->map_width &&
                         map_col >= 0 && map_col < this->map->map_height) {
@@ -1642,16 +1643,18 @@ long RGE_View::view_function(unsigned char a1, unsigned char a2, tagPOINT* p1, t
                         this->function_mode != 0x3C && this->function_mode != 0x2A) {
                         goto col_continue;
                     }
+                    unsigned char tile_height;
                     if (in_bounds) {
                         tile_ptr = this->map->map_row_offset[map_col] + start_scr_col2;
                         col_num = tile_ptr->tile_type;
-                        last_picked_obj = (short)(cur_col_num -
-                            tile_ptr->height * this->elev_hgt);
+                        tile_height = tile_ptr->height;
                     } else {
                         tile_ptr = 0;
                         col_num = 0;
-                        last_picked_obj = cur_col_num;
+                        tile_height = 0;
                     }
+                    last_picked_obj = (short)(cur_col_num -
+                        tile_height * this->elev_hgt);
                     switch (col_num) {
                     case 2:
                     case 6:
