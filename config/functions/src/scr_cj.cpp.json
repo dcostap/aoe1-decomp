@@ -14,6 +14,6 @@
     "00491E20": {"status": "scratch", "symbol": "?action@TribeJoinScreen@@UAEJPAVTPanel@@JKK@Z"},
     "004920C0": {"status": "scratch", "symbol": "??0TribeMPCreateDialog@@QAE@PAVTPanel@@@Z"},
     "00492330": {"status": "matching", "symbol": "??1TribeMPCreateDialog@@UAE@XZ"},
-    "004923C0": {"status": "scratch", "symbol": "?action@TribeMPCreateDialog@@MAEJPAVTPanel@@JKK@Z"}
+    "004923C0": {"status": "accepted_drift", "symbol": "?action@TribeMPCreateDialog@@MAEJPAVTPanel@@JKK@Z"}
   }
 }

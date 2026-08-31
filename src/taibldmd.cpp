@@ -108,11 +108,13 @@ void TribeBuildAIModule::initialize()
         } else {
             step = 10;
         }
-        int val = step;
-        while (remaining > 0) {
-            insert(0x2D, -1, val);
-            val += step;
-            remaining--;
+        if (remaining > 0) {
+            int val = step;
+            while (remaining > 0) {
+                insert(0x2D, -1, val);
+                val += step;
+                remaining--;
+            }
         }
     }
 
@@ -168,11 +170,13 @@ void TribeBuildAIModule::initialize()
         (totalPercentage != -1 || count != -1)) {
         int remaining = this->md->tacticalAI.strategicNumber(0xE0) - resourceCount;
         int step = (totalPercentage != -1 ? totalPercentage : count) / remaining;
-        int val = step;
-        while (remaining > 0) {
-            insertResearch(0x13, val);
-            val += step;
-            remaining--;
+        if (remaining > 0) {
+            int val = step;
+            while (remaining > 0) {
+                insertResearch(0x13, val);
+                val += step;
+                remaining--;
+            }
         }
 
         if (ironAgeIndex == 0 && count != -1) {

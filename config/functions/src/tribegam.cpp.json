@@ -38,7 +38,7 @@
     "00523B10": {"status": "matching", "symbol": "?stop_video@TRIBE_Game@@QAEXE@Z"},
     "00523F10": {"status": "matching", "symbol": "?start_campaign_menu@TRIBE_Game@@QAEHXZ"},
     "00524030": {"status": "matching", "symbol": "?start_menu@TRIBE_Game@@QAEHXZ"},
-    "00524150": {"status": "scratch", "symbol": "?quit_game@TRIBE_Game@@QAEXXZ"},
+    "00524150": {"status": "matching", "symbol": "?quit_game@TRIBE_Game@@QAEXXZ"},
     "005243A0": {"status": "matching", "symbol": "?restart_game@TRIBE_Game@@QAEXXZ"},
     "00524530": {"status": "matching", "symbol": "?load_db_files@TRIBE_Game@@QAEHXZ"},
     "005245D0": {"status": "matching", "symbol": "?load_game_data@TRIBE_Game@@QAEHXZ"},

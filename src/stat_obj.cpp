@@ -332,7 +332,6 @@ int RGE_Static_Object::setup(RGE_Master_Static_Object* master, RGE_Player* playe
 
 
 int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
-    int save_file = file;
     int long_val;
     int byte_val;
     int numberUnits;
@@ -342,14 +341,14 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     short index;
 
     this->type = 10;
-    rge_read(save_file, &long_val, 1);
+    rge_read(file, &long_val, 1);
     this->owner = world->players[long_val & 0xff];
 
     // The shipped loader reuses the incoming file home for this index.
-    rge_read(save_file, &index, 2);
+    rge_read(file, &index, 2);
     this->master_obj = this->owner->master_objects[index];
 
-    rge_read(save_file, &index, 2);
+    rge_read(file, &index, 2);
     if (index >= 0) {
         this->sprite = world->sprites[index];
     } else {
@@ -357,53 +356,53 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     }
 
     this->old_sprite = 0;
-    rge_read(save_file, &tempInt, 4);
+    rge_read(file, &tempInt, 4);
     if (tempInt == -1) {
         this->inside_obj = 0;
     } else {
-        this->inside_obj = world->object(tempInt);
+        this->inside_obj = (RGE_Static_Object*)tempInt;
     }
 
-    rge_read(save_file, &this->hp, 4);
-    rge_read(save_file, &this->object_state, 1);
-    rge_read(save_file, &this->sleep_flag, 1);
+    rge_read(file, &this->hp, 4);
+    rge_read(file, &this->object_state, 1);
+    rge_read(file, &this->sleep_flag, 1);
     if (save_game_version >= 7.09f) {
-        rge_read(save_file, &this->dopple_flag, 1);
+        rge_read(file, &this->dopple_flag, 1);
     }
-    rge_read(save_file, &this->goto_sleep_flag, 1);
-    rge_read(save_file, &this->id, 4);
-    rge_read(save_file, &this->facet, 1);
-    rge_read(save_file, &this->world_x, 4);
-    rge_read(save_file, &this->world_y, 4);
-    rge_read(save_file, &this->world_z, 4);
-    rge_read(save_file, &this->screen_x_offset, 2);
-    rge_read(save_file, &this->screen_y_offset, 2);
-    rge_read(save_file, &this->shadow_x_offset, 2);
-    rge_read(save_file, &this->shadow_y_offset, 2);
-    rge_read(save_file, &this->selected_group, 1);
-    rge_read(save_file, &this->attribute_type_held, 2);
-    rge_read(save_file, &this->attribute_amount_held, 4);
-    rge_read(save_file, &this->worker_num, 1);
-    rge_read(save_file, &this->curr_damage_percent, 1);
-    rge_read(save_file, &this->underAttackValue, 1);
+    rge_read(file, &this->goto_sleep_flag, 1);
+    rge_read(file, &this->id, 4);
+    rge_read(file, &this->facet, 1);
+    rge_read(file, &this->world_x, 4);
+    rge_read(file, &this->world_y, 4);
+    rge_read(file, &this->world_z, 4);
+    rge_read(file, &this->screen_x_offset, 2);
+    rge_read(file, &this->screen_y_offset, 2);
+    rge_read(file, &this->shadow_x_offset, 2);
+    rge_read(file, &this->shadow_y_offset, 2);
+    rge_read(file, &this->selected_group, 1);
+    rge_read(file, &this->attribute_type_held, 2);
+    rge_read(file, &this->attribute_amount_held, 4);
+    rge_read(file, &this->worker_num, 1);
+    rge_read(file, &this->curr_damage_percent, 1);
+    rge_read(file, &this->underAttackValue, 1);
     this->tile = 0;
-    rge_read(save_file, &this->groupCommanderValue, 4);
-    rge_read(save_file, &this->groupRangeValue, 4);
+    rge_read(file, &this->groupCommanderValue, 4);
+    rge_read(file, &this->groupRangeValue, 4);
 
     if (save_game_version == 6.991f) {
-        rge_read(save_file, &numberUnits, 4);
-        rge_read(save_file, &numberUnits, 4);
-        rge_read(save_file, &numberUnits, 4);
-        rge_read(save_file, &local_4, 4);
-        rge_read(save_file, &tempInt_fffffff8, 4);
-        rge_read(save_file, &tempInt_fffffff8, 4);
+        rge_read(file, &numberUnits, 4);
+        rge_read(file, &numberUnits, 4);
+        rge_read(file, &numberUnits, 4);
+        rge_read(file, &local_4, 4);
+        rge_read(file, &tempInt_fffffff8, 4);
+        rge_read(file, &tempInt_fffffff8, 4);
     }
 
-    rge_read(save_file, &byte_val, 4);
+    rge_read(file, &byte_val, 4);
     numberUnits = 0;
     if (0 < byte_val) {
         do {
-            rge_read(save_file, &tempInt_fffffff8, 4);
+            rge_read(file, &tempInt_fffffff8, 4);
             // The duplicate scan checks count before capacity.
             int number = this->groupMembers.numberValue;
             int index = 0;
@@ -435,11 +434,11 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
         } while (numberUnits < byte_val);
     }
 
-    rge_read(save_file, &byte_val, 4);
+    rge_read(file, &byte_val, 4);
     numberUnits = 0;
     if (0 < byte_val) {
         do {
-            rge_read(save_file, &local_4, 4);
+            rge_read(file, &local_4, 4);
             int number = this->pathingGroupMembers.numberValue;
             int index = 0;
             tempInt_fffffff8 = local_4;
@@ -471,7 +470,7 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     }
 
     this->sprite_list = this->create_sprite_list();
-    this->sprite_list->load(save_file, world->sprites);
+    this->sprite_list->load(file, world->sprites);
     this->owner->world->addObject(this);
 
     if (this->sleep_flag != 0) {
@@ -1412,10 +1411,10 @@ uchar RGE_Static_Object::update()
             if (this->master_obj->undead_flag != 0) { this->set_object_state(6); this->new_sprite(this->master_obj->undead_sprite); break; }
             this->set_object_state(7); this->spawn_death_obj(); break;
         }
-        if (this->groupRangeValue > 0.0f) {
+        if (this->master_obj->attribute_rot > 0.0f) {
             this->attribute_amount_held = this->attribute_amount_held -
                 this->owner->world->world_time_delta_seconds *
-                this->groupRangeValue;
+                this->master_obj->attribute_rot;
             if (this->attribute_amount_held < 0.0f) {
                 this->attribute_amount_held = 0.0f;
             }

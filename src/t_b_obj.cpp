@@ -197,7 +197,7 @@ int TRIBE_Building_Object::setup(TRIBE_Master_Building_Object* master,
 
     static_cast<TRIBE_World*>(owner->world)->check_destructables(
         player->id, static_cast<TRIBE_Master_Building_Object*>(master_obj)->id,
-        world_y, world_x, 0);
+        world_x, world_y, 0);
     production_queue_actions = create_action_list();
     return 1;
 }
@@ -387,14 +387,14 @@ unsigned char TRIBE_Building_Object::update()
         short max_value = sprite->facet_num;
         TRIBE_Master_Building_Object* master =
             static_cast<TRIBE_Master_Building_Object*>(master_obj);
-        int build_time = master->build_pts_required;
         unsigned char result = (unsigned char)((long)(
-            (float)(int)max_value * build_pts / build_time));
+            (float)(int)max_value * build_pts /
+            (float)(int)master->build_pts_required));
 
         if ((short)result < max_value && result != facet) {
             facet = result;
         }
-        if ((float)build_time <= build_pts) {
+        if ((float)(int)master->build_pts_required <= build_pts) {
             set_object_state(2);
         }
     }
@@ -754,16 +754,17 @@ unsigned char TRIBE_Building_Object::build(float amount)
     if (object_state == 0) {
         TRIBE_Master_Building_Object* object_master =
             static_cast<TRIBE_Master_Building_Object*>(master_obj);
-        float needed = (float)(int)object_master->build_pts_required;
-        if (amount + build_pts > needed) {
-            amount = needed - build_pts;
+        if (amount + build_pts >
+            (float)(int)object_master->build_pts_required) {
+            amount = (float)(int)object_master->build_pts_required - build_pts;
         }
-        hp = (float)(int)object_master->hp * amount / needed + hp;
+        hp = (float)(int)object_master->hp * amount /
+             (float)(int)object_master->build_pts_required + hp;
         if (hp > (float)(int)object_master->hp) {
             hp = (float)(int)object_master->hp;
         }
         build_pts += amount;
-        if (build_pts >= needed) {
+        if (build_pts >= (float)(int)object_master->build_pts_required) {
             set_object_state(2);
             return 1;
         }
