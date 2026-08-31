@@ -1034,7 +1034,6 @@ void Time_Line_Panel::draw_civilization_names()
 void Time_Line_Panel::draw_timeline()
 {
     unsigned char event;
-    float pop_total;
     float temp_pop_num;
     float time_slice;
     long next_pop_total;
