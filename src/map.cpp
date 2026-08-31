@@ -41,8 +41,8 @@ RGE_Map::RGE_Map(int fd, RGE_Sound** sounds, unsigned char load_random)
     this->map_zones = 0;
     rge_read(fd, this, 0x8DD0);
     RGE_Game_World* world = rge_base_game->world;
-    this->map = 0;
     this->game_world = world;
+    this->map = 0;
     this->search_map = 0;
     this->map_row_offset = 0;
     this->search_map_rows = 0;
