@@ -742,18 +742,18 @@ void TribeInformationAIModule::blotExploredMap(int p1, int p2, int p3, int p4)
     XYPoint min;
     XYPoint max;
 
-    max.y = p1;
-    max.x = p2;
-    this->mapBound((XYPoint*)&max);
+    max.x = p1;
+    max.y = p2;
+    this->mapBound(max);
 
-    min.y = p3;
-    min.x = p4;
-    this->mapBound((XYPoint*)&min);
+    min.x = p3;
+    min.y = p4;
+    this->mapBound(min);
 
-    for (int y = max.y; y <= min.y; y++) {
-        for (int x = max.x; x <= min.x; x++) {
-            if (this->pathMap.lookupValue(y, x) != 1)
-                this->pathMap.setValue(y, x, 2);
+    for (int x = max.x; x <= min.x; x++) {
+        for (int y = max.y; y <= min.y; y++) {
+            if (this->pathMap.lookupValue(x, y) != 1)
+                this->pathMap.setValue(x, y, 2);
         }
     }
 }
