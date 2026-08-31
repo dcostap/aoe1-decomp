@@ -1866,7 +1866,6 @@ void TRIBE_Game::notification(int type, long player, long value,
 {
     char msg[256];
     char temp_str[256];
-    TRIBE_World* world = static_cast<TRIBE_World*>(this->world);
 
     switch (type) {
     case 0x7E:
@@ -1895,14 +1894,12 @@ void TRIBE_Game::notification(int type, long player, long value,
 
     case 0x64:
         if (player == this->world->curr_player && this->game_screen != 0) {
-            int sound;
             if (value == 0x65 || value == 0x66 || value == 0x67) {
-                sound = 5;
+                this->play_sound(5);
             }
             else {
-                sound = 0x0F;
+                this->play_sound(0x0F);
             }
-            this->play_sound(sound);
             this->game_screen->setup_buttons();
             this->add_notification_loc(value2, value3);
             return;
@@ -1987,11 +1984,11 @@ void TRIBE_Game::notification(int type, long player, long value,
         if (player != this->world->curr_player && this->game_screen != 0 &&
             player > 0) {
             this->play_sound(6);
-            if (value == 0) {
-                this->get_string(0xBC5, temp_str, 256);
+            if (value != 0) {
+                this->get_string(0xBC4, temp_str, 256);
             }
             else {
-                this->get_string(0xBC4, temp_str, 256);
+                this->get_string(0xBC5, temp_str, 256);
             }
             sprintf(msg, temp_str, this->world->players[player]->name);
             this->game_screen->display_system_message(msg);
@@ -2015,17 +2012,19 @@ void TRIBE_Game::notification(int type, long player, long value,
     case 7:
         if (value == this->world->curr_player && this->game_screen != 0) {
             this->play_sound(4);
-            if (value2 == 0) {
+            switch (value2) {
+            case 0:
                 this->get_string(0xBC8, temp_str, 256);
-            }
-            else if (value2 == 1) {
+                break;
+            case 1:
                 this->get_string(0xBC7, temp_str, 256);
-            }
-            else if (value2 == 3) {
+                break;
+            case 3:
                 this->get_string(0xBC1, temp_str, 256);
-            }
-            else {
+                break;
+            default:
                 this->get_string(0xBC9, temp_str, 256);
+                break;
             }
             sprintf(msg, temp_str,
                     this->world->players[player]->name, value3);
@@ -2044,18 +2043,16 @@ void TRIBE_Game::notification(int type, long player, long value,
         if (this->game_screen == 0) {
             return;
         }
-        if (value2 == 0) {
+        switch (value2) {
+        case 0:
             this->get_string(0xBD2, temp_str, 256);
-        }
-        else {
-            if (value2 != 1) {
-                if (value2 == 3) {
-                    this->get_string(0xBD3, temp_str, 256);
-                }
-            }
-            else {
-                this->get_string(0xBD1, temp_str, 256);
-            }
+            break;
+        case 1:
+            this->get_string(0xBD1, temp_str, 256);
+            break;
+        case 3:
+            this->get_string(0xBD3, temp_str, 256);
+            break;
         }
         sprintf(msg, temp_str, this->world->players[player]->name);
         this->game_screen->display_system_message(msg);
@@ -2069,12 +2066,12 @@ void TRIBE_Game::notification(int type, long player, long value,
                 this->game_screen->display_system_message(msg);
             }
             else {
+                RGE_Player* p = this->world->players[player];
                 this->get_string(0xBCB, temp_str, 256);
-                sprintf(msg, temp_str,
-                        this->world->players[player]->name);
+                sprintf(msg, temp_str, p->name);
                 this->game_screen->display_system_message(msg);
             }
-            this->add_notification_loc(value2, value);
+            this->add_notification_loc(value, value2);
             return;
         }
         break;
@@ -2090,7 +2087,7 @@ void TRIBE_Game::notification(int type, long player, long value,
         p1 = this->world->players[player];
         p2 = this->world->players[this->world->curr_player];
         if (p1 == p2) {
-            if (world->victory_type == 0) {
+            if (static_cast<TRIBE_World*>(this->world)->victory_type == 0) {
                 this->get_string(0xBCC, msg, 256);
             }
             else {
@@ -2102,19 +2099,19 @@ void TRIBE_Game::notification(int type, long player, long value,
                  p1->relation(p2->id) != 0) ||
                 (p2->allied_victory == 0 ||
                  p2->relation(p1->id) != 0)) {
-                if (world->victory_type == 0) {
+                if (static_cast<TRIBE_World*>(this->world)->victory_type == 0) {
                     this->get_string(0xBCE, temp_str, 256);
                 } else {
                     this->get_string(0xBEF, temp_str, 256);
                 }
-            } else if (world->victory_type == 0) {
+            } else if (static_cast<TRIBE_World*>(this->world)->victory_type == 0) {
                 this->get_string(0xBCD, temp_str, 256);
             } else {
                 this->get_string(0xBEF, temp_str, 256);
             }
             sprintf(msg, temp_str, p1->name);
         }
-        this->add_notification_loc(value2, value);
+        this->add_notification_loc(value, value2);
         this->game_screen->display_system_message(msg);
         this->game_screen->reset_clocks();
         return;
@@ -2127,7 +2124,7 @@ void TRIBE_Game::notification(int type, long player, long value,
         if (this->game_screen == 0) {
             return;
         }
-        if (world->victory_type != 0) {
+        if (static_cast<TRIBE_World*>(this->world)->victory_type != 0) {
             return;
         }
         this->play_sound(10);
@@ -2142,12 +2139,13 @@ void TRIBE_Game::notification(int type, long player, long value,
                 (p2->allied_victory == 0 ||
                  p2->relation(p1->id) != 0)) {
                 this->get_string(0xBD0, temp_str, 256);
+                sprintf(msg, temp_str, p1->name);
             } else {
                 this->get_string(0xBD0, temp_str, 256);
+                sprintf(msg, temp_str, p1->name);
             }
-            sprintf(msg, temp_str, p1->name);
         }
-        this->add_notification_loc(value2, value);
+        this->add_notification_loc(value, value2);
         this->game_screen->display_system_message(msg);
         this->game_screen->reset_clocks();
         return;
@@ -2164,7 +2162,7 @@ void TRIBE_Game::notification(int type, long player, long value,
         this->play_sound(0x0B);
         p1 = this->world->players[player];
         p2 = this->world->players[this->world->curr_player];
-        if (world->victory_type == 0) {
+        if (static_cast<TRIBE_World*>(this->world)->victory_type == 0) {
             if (p1 == p2) {
                 this->get_string(0xBD4, msg, 256);
             }
@@ -2200,7 +2198,7 @@ void TRIBE_Game::notification(int type, long player, long value,
         if (this->game_screen == 0) {
             return;
         }
-        if (world->victory_type != 0) {
+        if (static_cast<TRIBE_World*>(this->world)->victory_type != 0) {
             return;
         }
         this->play_sound(0x0C);
@@ -2220,7 +2218,7 @@ void TRIBE_Game::notification(int type, long player, long value,
         this->play_sound(0x0B);
         p1 = this->world->players[player];
         p2 = this->world->players[this->world->curr_player];
-        if (world->victory_type == 0) {
+        if (static_cast<TRIBE_World*>(this->world)->victory_type == 0) {
             if (p1 == p2) {
                 this->get_string(0xBD9, msg, 256);
             }
@@ -2256,7 +2254,7 @@ void TRIBE_Game::notification(int type, long player, long value,
         if (this->game_screen == 0) {
             return;
         }
-        if (world->victory_type != 0) {
+        if (static_cast<TRIBE_World*>(this->world)->victory_type != 0) {
             return;
         }
         this->play_sound(0x0C);
