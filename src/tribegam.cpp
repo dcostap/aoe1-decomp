@@ -3233,30 +3233,38 @@ int TRIBE_Game::create_game(int param_1)
 
 int TRIBE_Game::create_game_screen()
 {
+    TRIBE_Screen_Game* screen;
+
     this->disable_input();
     this->set_game_mode(0, 0);
 
-    TRIBE_Screen_Game* screen = new TRIBE_Screen_Game;
+    screen = new TRIBE_Screen_Game;
     this->game_screen = screen;
 
     if (screen != 0 && screen->error_code == 0) {
-        int waiting_for_players = 0;
-        int multiplayer_started = this->comm_handler->MultiplayerGameStart();
-        if (multiplayer_started == 0) {
-            TRIBE_Screen_Wait* wait = new TRIBE_Screen_Wait;
-            if (wait != 0) {
-                wait->set_text(0x454);
-                panel_system.setCurrentPanel("Multiplayer Wait Screen", 0);
-                panel_system.destroyPanel("Status Screen");
-                this->set_prog_mode(3);
-                waiting_for_players = 1;
+            if (this->comm_handler->MultiplayerGameStart() == 0) {
+                TRIBE_Screen_Wait* wait = new TRIBE_Screen_Wait;
+                if (wait != 0) {
+                    wait->set_text(0x454);
+                    panel_system.setCurrentPanel("Multiplayer Wait Screen", 0);
+                    panel_system.destroyPanel("Status Screen");
+                    this->set_prog_mode(3);
+                    goto create_game_screen_common;
+                }
+
+                if (this->game_screen != 0) {
+                    delete this->game_screen;
+                }
+                RGE_Game_World* world = this->world;
+                this->game_screen = 0;
+                world->del_game_info();
+                goto create_game_screen_failed;
             }
-        } else {
+
             panel_system.setCurrentPanel("Game Screen", 0);
             panel_system.destroyPanel("Status Screen");
-        }
 
-        if (waiting_for_players || multiplayer_started != 0) {
+create_game_screen_common:
             panel_system.destroyPanel("Single Player Menu");
             panel_system.destroyPanel("Game Setup Screen");
             panel_system.destroyPanel("Select Scenario Screen");
@@ -3271,7 +3279,6 @@ int TRIBE_Game::create_game_screen()
                 this->let_game_begin();
             }
             return 1;
-        }
     }
 
     if (this->game_screen != 0) {
@@ -3280,6 +3287,8 @@ int TRIBE_Game::create_game_screen()
     }
 
     this->world->del_game_info();
+
+create_game_screen_failed:
     this->close_status_message();
     this->enable_input();
     return 0;
