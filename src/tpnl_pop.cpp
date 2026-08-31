@@ -270,8 +270,11 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
         DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
         SetRect(&rect, 2, 2, width, height);
         DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
-        SetTextColor(this->ImageBuffer->DrawDc,
-                     this->mode == 1 ? this->color3 : this->color1);
+        if (this->mode == 1) {
+            SetTextColor(this->ImageBuffer->DrawDc, this->color3);
+        } else {
+            SetTextColor(this->ImageBuffer->DrawDc, this->color1);
+        }
         SetRect(&rect, 1, 1, width - 1, height - 1);
         DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
     }
