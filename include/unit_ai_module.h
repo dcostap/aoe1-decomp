@@ -7,6 +7,7 @@
 class RGE_Static_Object;
 class RGE_Master_Object;
 class RGE_Player;
+class AIPlayStatus;
 class NotifyEvent;
 class OrderEvent;
 struct RGE_Visible_Map;
@@ -58,7 +59,7 @@ public:
     float defenseBufferValue;                           // +0x120
     int* importantObjects;                              // +0x124
     int numberImportantObjects;                         // +0x128
-    void* playStatus;                                   // +0x12C (AIPlayStatus*)
+    AIPlayStatus* playStatus;                           // +0x12C
     unsigned char stopAfterTargetKilledValue;           // +0x130
 
 
@@ -144,6 +145,7 @@ public:
                           float z);
     void setCurrentTarget(int target, float x, float y, float z);
     void setDefenseBuffer(float v);
+    void setPlayStatus(AIPlayStatus* status);
     int stopObject(int param);
     int transportObject(float param_1, float param_2, float param_3, int param_4);
     void unload(int a1);

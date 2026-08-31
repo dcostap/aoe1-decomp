@@ -2266,8 +2266,8 @@ void RGE_Static_Object::set_object_state(unsigned char state)
                             }
                             object->groupCommanderValue = newCommander;
                             if (this->groupMembers[i] == newCommander) {
-                                object->unitAI()->playStatus =
-                                    this->unitAIValue->playStatus;
+                                object->unitAI()->setPlayStatus(
+                                    this->unitAIValue->playStatus);
                             }
                         }
                     }

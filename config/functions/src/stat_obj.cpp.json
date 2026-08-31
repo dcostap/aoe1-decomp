@@ -54,7 +54,7 @@
     "004C50C0": {"status": "matching", "symbol": "?die_die_die@RGE_Static_Object@@UAEXXZ"},
     "004C50F0": {"status": "matching", "symbol": "?remove_visible_resource@RGE_Static_Object@@UAEXXZ"},
     "004C5210": {"status": "scratch", "symbol": "?create_doppleganger_when_dying@RGE_Static_Object@@UAEXXZ"},
-    "004C52F0": {"status": "scratch", "symbol": "?set_object_state@RGE_Static_Object@@UAEXE@Z"},
+    "004C52F0": {"status": "matching", "symbol": "?set_object_state@RGE_Static_Object@@UAEXE@Z"},
     "004C5610": {"status": "scratch", "symbol": "?check_object_bounds@RGE_Static_Object@@QAEPAV1@XZ"},
     "004C5820": {"status": "matching", "symbol": "?get_terrain_speed@RGE_Static_Object@@QAEME@Z"},
     "004C5850": {"status": "matching", "symbol": "?is_moving@RGE_Static_Object@@UAEEXZ"},
