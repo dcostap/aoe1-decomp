@@ -521,7 +521,7 @@ void RGE_RMM_Database_Controller::add_land_module(uchar group_players)
     long team;
     long candidate;
     long other_team;
-    long team_size[8];
+    long team_size[9];
     long player_teams[9];
     long land_teams[9];
     long distances[8][8];
