@@ -25,6 +25,6 @@
     "0040DB20": {"status": "matching", "symbol": "?objectGroupThatCanPerformAction@MainDecisionAIModule@@UAEHH@Z"},
     "0040DB40": {"status": "matching", "symbol": "?canPerformAction@MainDecisionAIModule@@UAEHHH@Z"},
     "0040DB50": {"status": "scratch", "symbol": "?numberBusyObjects@MainDecisionAIModule@@QAEHXZ"},
-    "0040DC30": {"status": "scratch", "symbol": "?mostDamaged@MainDecisionAIModule@@QAEPAVRGE_Static_Object@@HH@Z"}
+    "0040DC30": {"status": "matching", "symbol": "?mostDamaged@MainDecisionAIModule@@QAEPAVRGE_Static_Object@@HH@Z"}
   }
 }

@@ -59,7 +59,7 @@
     "00514FB0": {"status": "matching", "symbol": "?strategicNumber@TRIBE_Player@@UAEHH@Z"},
     "00514FE0": {"status": "matching", "symbol": "?logMessage@TRIBE_Player@@UAAXPADZZ"},
     "00515040": {"status": "matching", "symbol": "?sendAICommand@TRIBE_Player@@UAEHHHHHH@Z"},
-    "00515070": {"status": "scratch", "symbol": "?addObject@TRIBE_Player@@UAEPAURGE_Object_Node@@PAVRGE_Static_Object@@HH@Z"},
+    "00515070": {"status": "matching", "symbol": "?addObject@TRIBE_Player@@UAEPAURGE_Object_Node@@PAVRGE_Static_Object@@HH@Z"},
     "005150E0": {"status": "matching", "symbol": "?removeObject@TRIBE_Player@@UAEXPAVRGE_Static_Object@@HHPAURGE_Object_Node@@@Z"},
     "00515130": {"status": "matching", "symbol": "?buildObject@TRIBE_Player@@UAEXHHMMH@Z"},
     "00515180": {"status": "matching", "symbol": "?cancelBuild@TRIBE_Player@@UAEXHHHMMHH@Z"},

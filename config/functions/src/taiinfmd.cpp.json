@@ -13,7 +13,7 @@
     "004D8300": {"status": "matching", "symbol": "?update@TribeInformationAIModule@@UAEHH@Z"},
     "004D84D0": {"status": "matching", "symbol": "?setMainDecisionAI@TribeInformationAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z"},
     "004D84E0": {"status": "matching", "symbol": "?save@TribeInformationAIModule@@QAEHH@Z"},
-    "004D8C80": {"status": "scratch", "symbol": "?blotExploredMap@TribeInformationAIModule@@QAEXHHHH@Z"},
+    "004D8C80": {"status": "matching", "symbol": "?blotExploredMap@TribeInformationAIModule@@QAEXHHHH@Z"},
     "004D8D20": {"status": "scratch", "symbol": "?closestUnexploredTile@TribeInformationAIModule@@QAEHHMMPAM0@Z"},
     "004D9110": {"status": "accepted_drift", "symbol": "?fullyExploredZone@TribeInformationAIModule@@QAEHH@Z"},
     "004D9160": {"status": "accepted_drift", "symbol": "?setFullyExploredZone@TribeInformationAIModule@@QAEXHH@Z"},
