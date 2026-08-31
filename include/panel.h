@@ -9,10 +9,12 @@
 
 struct PanelNode;
 class TPanel;
+class THelpDialog;
 extern char DAT_0062E670[0x200];
 void* __cdecl ReadPalette(char*, long, int);
 
 class TPanelSystem {
+    friend class THelpDialog;
 public:
     TPanel* mouse_owner;
     TPanel* keyboard_owner;
@@ -54,9 +56,11 @@ public:
     int destroyPanel(char* name);
     int inSystem(char* name);
     int inSystem(TPanel* panel);
+protected:
     int setup(void);
     PanelNode* findPanelNode(char* name);
     void setCurrentPanel(TPanel* panel, int mode);
+public:
     void* get_palette(char* name, long mode);
     void release_palette(void* target_palette);
     void DisableIME(void);
