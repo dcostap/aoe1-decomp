@@ -907,7 +907,7 @@ long TRIBE_Panel_Object::handle_idle()
         bldg->work_status(work_type, work_target, progress_value, name, 100);
         if (work_type != 0x67 && work_type != 0x66 && bldg->production_queue_status(work_target, temp) != 0) {
             work_type = 0x66;
-            orig_fval = (float)temp;
+            progress_value = temp;
         }
         if (work_type == this->save_work_type &&
             work_target == this->save_work_target &&
