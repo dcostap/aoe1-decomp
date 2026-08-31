@@ -431,8 +431,7 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* cmd)
         TRIBE_Screen_Status_Message* status = new TRIBE_Screen_Status_Message("Temp Screen", "", 0, -1);
         (void)status;
         panel_system.setCurrentPanel("Temp Screen", 0);
-        TRIBE_Game* game = static_cast<TRIBE_Game*>(rge_base_game);
-        game->close_game_screens(1);
+        static_cast<TRIBE_Game*>(rge_base_game)->close_game_screens(1);
         if (do_debug_random != 0) {
             debug_random_write();
             dump_vismap_log();
@@ -441,9 +440,9 @@ void TRIBE_Command::do_command_game(TRIBE_Command_Game* cmd)
             if (DDlogf != 0) { fclose(DDlogf); DDlogf = 0; }
         }
         sprintf(file_name, "syncerr%d.gam", comm->WhoAmI());
-        game->save_game(file_name);
+        static_cast<TRIBE_Game*>(rge_base_game)->save_game(file_name);
         this->world->players[this->world->curr_player]->loss_if_game_on();
-        game->do_game_over();
+        static_cast<TRIBE_Game*>(rge_base_game)->do_game_over();
         TEasy_Panel* panel = static_cast<TEasy_Panel*>(
             panel_system.currentPanel());
         if (panel != 0) {
