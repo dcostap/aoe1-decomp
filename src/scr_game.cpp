@@ -26,7 +26,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     allow_user_commands = (do_fixed_update == 0);
     die_die_die = 0;
 
-    register int i;
+    int i;
     this->game_screen_pic = 0;
     this->button_border1_pic = 0;
     this->button_other_pic = 0;
