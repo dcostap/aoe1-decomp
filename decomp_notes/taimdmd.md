@@ -115,3 +115,10 @@ added.
   current natural declaration was retained.
 - `004E6870`: The canonical field path emits `MATCH`, `0.0000%`, with matching
   ownership and zero relocation and boundary errors. It is registered exact.
+
+## 004E5050 boundary review
+
+The `update` owner ends at `004E5D94`; its `RET 4` starts at `004E5D92`.
+Entry `004E5D95` contains only `NOP` and `MOV EDI,EDI`. The switch table starts
+at `004E5D98` and belongs to `update` as data. Keep `004E5D95` in the reviewed
+padding-only manifest. Do not create a normal function or parent code fragment.

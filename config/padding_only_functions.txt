@@ -126,6 +126,8 @@
 004D90F1 reviewed_padding_only
 004DA16D reviewed_padding_only
 004E0165 reviewed_padding_only
+# 004E5050 returns at 004E5D92. These three bytes are NOP/MOV EDI,EDI
+# alignment before the owner switch table, which starts at 004E5D98.
 004E5D95 reviewed_padding_only
 004E6841 reviewed_padding_only
 004E68EE reviewed_padding_only
