@@ -297,8 +297,11 @@ int MainDecisionAIModule::numberBusyObjects()
             this->player->world->object(this->objects[i]);
         if (object != 0) {
             UnitAIModule* unit_ai = object->unitAI();
-            if (unit_ai != 0 && unit_ai->currentAction() == -1) {
-                ++count;
+            if (unit_ai != 0) {
+                unit_ai = object->unitAI();
+                if (unit_ai->currentAction() == -1) {
+                    ++count;
+                }
             }
         }
     }
