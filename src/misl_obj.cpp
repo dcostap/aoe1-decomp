@@ -156,8 +156,8 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
     }
 
     for (short row = min_y; row <= max_y; ++row) {
+        RGE_Tile* tile = map->map_row_offset[row] + min_x;
         for (short column = min_x; column <= max_x; ++column) {
-            RGE_Tile* tile = &map->map_row_offset[row][column];
             RGE_Object_Node* node = tile->objects.list;
 
             while (node != 0) {
@@ -188,6 +188,7 @@ RGE_Check_List* RGE_Missile_Object::make_object_collision_list(float extra) {
                 }
                 node = node->next;
             }
+            ++tile;
         }
     }
 
