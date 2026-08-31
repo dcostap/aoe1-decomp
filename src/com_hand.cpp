@@ -5091,26 +5091,28 @@ typedef unsigned long ulong;
 
 int TCommunications_Handler::CreateMultiplayerGame(void)
 {
-    DPSESSIONDESC2 dSess2 = {0};
     int one = 1;
+    TChat* chat = this->Chat;
 
     this->Multiplayer = one;
     this->HaveHostInit = 0;
-    this->PlayerOptions.ProgramState = COMM_STATE_INITIALIZE;
+    this->PlayerOptions.CommandTurnIncrement = 2;
     this->current_turn = 4;
-    this->PlayerOptions.ProgramState = COMM_STATE_PAUSE;
-    this->Chat->ClearChat();
+    this->PlayerOptions.CurrentTurn = 4;
+    chat->ClearChat();
 
     long result = this->CreateDirectPlayConversation();
     this->Err->ShowReturn(result, "CreateDirectPlayConversation");
 
-    this->HaveHostInit = one;
+    DPSESSIONDESC2 dSess2;
+    memset(&dSess2, 0, sizeof(dSess2));
+    this->MeHost = one;
     dSess2.dwMaxPlayers = this->MaxGamePlayers;
     dSess2.dwSize = 0x50;
     dSess2.dwCurrentPlayers = one;
     dSess2.guidApplication = this->ApplicationGUID;
-    dSess2.guidInstance.Data1 = 0x44;
-    dSess2.lpszPasswordA = this->MyGameTitle;
+    dSess2.dwFlags = 0x44;
+    dSess2.lpszSessionNameA = this->MyGameTitle;
 
     this->DebugSessionInformation(&dSess2);
 
