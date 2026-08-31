@@ -770,7 +770,7 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
         clip_bottom = clip_bottom - shape_y + 1;
         do {
             long xpos = shape_x;
-            byte state;
+            byte* dst = save_buffer;
 
             if (shape_x < clip_left) {
                 clip_top = 0;
@@ -785,7 +785,7 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                                     clip_top = 2;
                                 else {
                                     clip_top = 1;
-                                    save_buffer += xpos - clip_left;
+                                    dst += xpos - clip_left;
                                 }
                             }
                         } else {
@@ -802,8 +802,8 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                                     copy_count = xpos - clip_left;
                                     copy_source = src + count - copy_count;
                                 }
-                                memcpy(save_buffer, copy_source, copy_count);
-                                save_buffer += copy_count;
+                                memcpy(dst, copy_source, copy_count);
+                                dst += copy_count;
                             }
                             src += count;
                         }
@@ -822,8 +822,8 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                                     clip_top = 1;
                                     fill_count = xpos - clip_left;
                                 }
-                                memset(save_buffer, *src, fill_count);
-                                save_buffer += fill_count;
+                                memset(dst, *src, fill_count);
+                                dst += fill_count;
                             }
                             ++src;
                         }
@@ -841,20 +841,20 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                     if (count == 0) {
                         count = *src++;
                         xpos += count;
-                        save_buffer += count;
+                        dst += count;
                         if (xpos > clip_right)
                             clip_top = 1;
                     } else {
                         xpos += count;
                         if (xpos > clip_right) {
                             clip_top = 1;
-                            memcpy(save_buffer, src,
+                            memcpy(dst, src,
                                    clip_right - xpos + 1 + count);
-                            save_buffer += count;
+                            dst += count;
                             src += count;
                         } else {
-                            memcpy(save_buffer, src, count);
-                            save_buffer += count;
+                            memcpy(dst, src, count);
+                            dst += count;
                             src += count;
                         }
                     }
@@ -869,8 +869,8 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                             fill_count = count + clip_right - xpos + 1;
                             clip_top = 1;
                         }
-                        memset(save_buffer, *src, fill_count);
-                        save_buffer += count;
+                        memset(dst, *src, fill_count);
+                        dst += count;
                         ++src;
                     }
                 }
