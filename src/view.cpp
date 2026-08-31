@@ -507,16 +507,12 @@ int RGE_View::create_surfaces()
 
 
 void RGE_View::calc_draw_vars() {
-    int pw;
-
     if (this->visible != 0 && this->tile_wid != 0 && this->tile_hgt != 0) {
-        pw = this->pnl_wid;
-
         this->center_scr_col_offset = 0;
-        this->max_col_num = (short)(pw / (int)this->tile_wid);
+        this->max_col_num = (short)(this->pnl_wid / (int)this->tile_wid);
         this->center_scr_row_offset = 0;
         this->max_row_num = (short)(this->pnl_hgt / (int)this->tile_hgt);
-        this->center_scr_col = (this->render_rect.left - this->tile_half_wid) + (short)(pw / 2);
+        this->center_scr_col = (this->render_rect.left - this->tile_half_wid) + (short)(this->pnl_wid / 2);
         this->center_scr_row = (this->render_rect.top - this->tile_half_hgt) + (short)(this->pnl_hgt / 2);
     } else {
         this->max_row_num = 0;
