@@ -2617,41 +2617,49 @@ uint TCommunications_Handler::ExecuteIncoming()
     if (this->Multiplayer == 0) {
         return 0;
     } else {
-        for (uint pno = 0; pno < 502; ++pno) {
-            HOLDER* entry = &this->OnHold[pno];
-            if (entry->Length != 0) {
+        for (uint pno = 0; pno <= 501; ++pno) {
+            if (this->OnHold[pno].Length != 0) {
                 for (uint player = 1; player <= this->MaxGamePlayers; ++player) {
                     if (this->IsPlayerHuman(player) && player != this->Me) {
                         uint humanSerial = this->PlayerHighSerialNumber[player] + 1;
-                        uint dco = this->PlayerOptions.dcoID[player];
-                        if (entry->Serial < humanSerial && entry->dcoFromID == dco) {
-                            L->Log(s_clear_past, pno, entry->Serial, entry->Length,
-                                   entry->dcoFromID, entry->dcoReceiveID, humanSerial);
-                            if (entry->HoldMsg != 0) {
-                                delete[] entry->HoldMsg;
+                        uint serial = this->OnHold[pno].Serial;
+                        if (serial < humanSerial &&
+                            this->OnHold[pno].dcoFromID == this->PlayerOptions.dcoID[player]) {
+                            L->Log(s_clear_past, pno, serial,
+                                   this->OnHold[pno].Length,
+                                   this->OnHold[pno].dcoFromID,
+                                   this->OnHold[pno].dcoReceiveID, humanSerial);
+                            HOLDER* clear_entry = &this->OnHold[pno];
+                            if (clear_entry->HoldMsg != 0) {
+                                delete[] clear_entry->HoldMsg;
                             }
-                            entry->HoldMsg = 0;
-                            entry->Serial = 0;
-                            entry->Length = 0;
-                            entry->dcoFromID = 0;
-                            entry->dcoReceiveID = 0;
+                            clear_entry->HoldMsg = 0;
+                            clear_entry->Serial = 0;
+                            clear_entry->Length = 0;
+                            clear_entry->dcoFromID = 0;
+                            clear_entry->dcoReceiveID = 0;
                         }
-                        if (entry->Serial == humanSerial && entry->dcoFromID == dco) {
+                        if (this->OnHold[pno].Serial == humanSerial &&
+                            this->OnHold[pno].dcoFromID == this->PlayerOptions.dcoID[player]) {
                             sprintf(this->TBuff, s_cached, humanSerial, pno);
                             L->Log(this->TBuff);
-                            this->PreprocessMessages(entry->Length, entry->HoldMsg,
-                                                     entry->dcoFromID,
-                                                     entry->dcoReceiveID, 1);
-                            L->Log(s_clearing, pno, entry->Length,
-                                   entry->dcoFromID, entry->dcoReceiveID);
-                            if (entry->HoldMsg != 0) {
-                                delete[] entry->HoldMsg;
+                            this->PreprocessMessages(this->OnHold[pno].Length,
+                                                     this->OnHold[pno].HoldMsg,
+                                                     this->OnHold[pno].dcoFromID,
+                                                     this->OnHold[pno].dcoReceiveID,
+                                                     1);
+                            L->Log(s_clearing, pno, this->OnHold[pno].Length,
+                                   this->OnHold[pno].dcoFromID,
+                                   this->OnHold[pno].dcoReceiveID);
+                            HOLDER* clear_entry2 = &this->OnHold[pno];
+                            if (clear_entry2->HoldMsg != 0) {
+                                delete[] clear_entry2->HoldMsg;
                             }
-                            entry->HoldMsg = 0;
-                            entry->Serial = 0;
-                            entry->Length = 0;
-                            entry->dcoFromID = 0;
-                            entry->dcoReceiveID = 0;
+                            clear_entry2->HoldMsg = 0;
+                            clear_entry2->Serial = 0;
+                            clear_entry2->Length = 0;
+                            clear_entry2->dcoFromID = 0;
+                            clear_entry2->dcoReceiveID = 0;
                         }
                     }
                 }
