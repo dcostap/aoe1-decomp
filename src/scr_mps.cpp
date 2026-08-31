@@ -2023,36 +2023,30 @@ void TribeMPSetupScreen::updateSummary()
     ++setting;
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
-    case 7:
-        strcpy(str1, this->get_string(0x10E9));
-        sprintf(str2, this->get_string(0x25BE), str1,
-                static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount());
-        break;
-    case 8:
-        strcpy(str1, this->get_string(0x10EA));
-        sprintf(str2, this->get_string(0x25BE), str1,
-                static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount());
-        break;
     case 1:
         strcpy(str1, this->get_string(0x10E1));
-        sprintf(str2, this->get_string(0x25BC), str1);
-        break;
-    case 9:
-        strcpy(str1, this->get_string(0x10EC));
-        sprintf(str2, this->get_string(0x25BC), str1);
-        break;
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 6:
+        goto victory_plain;
+    case 7:
+        strcpy(str1, this->get_string(0x10E9));
+        goto victory_amount;
+    case 8:
+        strcpy(str1, this->get_string(0x10EA));
+    victory_amount:
+        sprintf(str2, this->get_string(0x25BE), str1,
+                static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount());
+        goto victory_done;
     default:
         if (rge_base_game->randomGame()) {
             strcpy(str1, this->get_string(0x10EC));
         } else {
             strcpy(str1, this->get_string(0x10E7));
         }
+        goto victory_plain;
+    case 9:
+        strcpy(str1, this->get_string(0x10EC));
+    victory_plain:
         sprintf(str2, this->get_string(0x25BC), str1);
+    victory_done:
         break;
     }
     this->settingText[setting]->set_text(str2);
@@ -2528,31 +2522,30 @@ TRIBE_Screen_Wait::TRIBE_Screen_Wait() : TScreenPanel("Multiplayer Wait Screen")
     i++;
 
     switch (static_cast<TRIBE_Game*>(rge_base_game)->victoryType()) {
-    case 7:                            // Time
-        strcpy(str1, get_string(0x10E9));
-        sprintf(str2, get_string(0x25BE), str1,
-                static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount()); // "Victory: %s (%d)"
-        break;
-    case 8:                            // Score
-        strcpy(str1, get_string(0x10EA));
-        sprintf(str2, get_string(0x25BE), str1,
-                static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount()); // "Victory: %s (%d)"
-        break;
     case 1:                            // Conquest
         strcpy(str1, get_string(0x10E1));
-        sprintf(str2, get_string(0x25BC), str1);            // "Victory: %s"
-        break;
-    case 9:                            // Standard
-        strcpy(str1, get_string(0x10EC));
-        sprintf(str2, get_string(0x25BC), str1);            // "Victory: %s"
-        break;
+        goto victory_plain_wait;
+    case 7:                            // Time
+        strcpy(str1, get_string(0x10E9));
+        goto victory_amount_wait;
+    case 8:                            // Score
+        strcpy(str1, get_string(0x10EA));
+    victory_amount_wait:
+        sprintf(str2, get_string(0x25BE), str1,
+                static_cast<TRIBE_Game*>(rge_base_game)->victoryAmount()); // "Victory: %s (%d)"
+        goto victory_done_wait;
     default:
         if (rge_base_game->randomGame()) {
             strcpy(str1, get_string(0x10EC));
         } else {
             strcpy(str1, get_string(0x10E7));
         }
+        goto victory_plain_wait;
+    case 9:                            // Standard
+        strcpy(str1, get_string(0x10EC));
+    victory_plain_wait:
         sprintf(str2, get_string(0x25BC), str1);            // "Victory: %s"
+    victory_done_wait:
         break;
     }
     this->settingText[i]->set_text(str2);

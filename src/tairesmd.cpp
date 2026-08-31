@@ -61,9 +61,7 @@ int TribeResourceAIModule::resourcesAvailable(ResourceItem* item)
     int i = 0;
     int n = item->number();
     while (i < n) {
-        float* available = this->md->player->attributes;
-        int needed = item->value(i);
-        if ((float)needed > available[i])
+        if (this->md->player->attributes[i] < (float)item->value(i))
             return 0;
         ++i;
         n = item->number();

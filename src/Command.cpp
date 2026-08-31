@@ -1427,7 +1427,9 @@ void RGE_Command::command_add_waypoint(int player, int obj_id, XYZBYTEPoint* pts
     packet->numberWaypoints = static_cast<unsigned char>(count);
 
     for (int i = 0; i < count; i++) {
-        packet->waypoint[i] = pts[i];
+        packet->waypoint[i].x = pts[i].x;
+        packet->waypoint[i].y = pts[i].y;
+        packet->waypoint[i].z = pts[i].z;
     }
 
     RGE_Static_Object* obj = this->world->object(obj_id);

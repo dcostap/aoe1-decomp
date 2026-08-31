@@ -519,7 +519,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
             }
 
             if (this->overflowValue == 1) {
-                numAssigned = -1;
+                a = -1;
                 smallestGroupSize = 0;
 
                 for (j = 0; j < play->numberGroupsValue; j++) {
@@ -527,18 +527,18 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                     if (group != 0) {
                         if (group->maximum(i) >
                                 playStatus->numberOfTypeInGroup(j, i) &&
-                            (numAssigned == -1 ||
+                            (a == -1 ||
                              smallestGroupSize >
                                  playStatus->numberInGroup(j))) {
                             smallestGroupSize = playStatus->numberInGroup(j);
-                            numAssigned = j;
+                            a = j;
                         }
                     }
                 }
 
-                if (numAssigned != -1) {
+                if (a != -1) {
                     if (playStatus->addGrouping(
-                            unitsByType[i][k], (unsigned char)numAssigned,
+                            unitsByType[i][k], a,
                             (unsigned char)i) == 1) {
                         unitsByType[i][k] = -1;
                         if (playStatus->numberInPlay() ==

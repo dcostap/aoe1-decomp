@@ -1372,25 +1372,41 @@ int TribeInformationAIModule::closestDockDistance(int x, int y)
     return distance;
 }
 
-int TribeInformationAIModule::hasAdjacentTileType(int param_1,int param_2,int param_3){
+int TribeInformationAIModule::hasAdjacentTileType(int param_1, int param_2,
+                                                   int param_3)
+{
     RGE_Map* map = this->md->aiPlayer->world->map;
     int x = param_1;
     int y = param_2;
-    for (int i = 0; i < 8; i++) {
+
+    for (int i = 0; i < 8; ++i) {
         switch (i) {
-        case 0: x = param_1 - 1; y = param_2 - 1; break;
-        case 1: x = param_1;     y = param_2 - 1; break;
-        case 2: x = param_1 + 1; y = param_2 - 1; break;
-        case 3: x = param_1 + 1; y = param_2;     break;
-        case 4: x = param_1 + 1; y = param_2 + 1; break;
-        case 5: x = param_1;     y = param_2 + 1; break;
-        case 6: x = param_1 - 1; y = param_2 + 1; break;
-        default: x = param_1 - 1; y = param_2;     break;
+        case 0:
+            x = param_1 - 1;
+            y = param_2;
+        case 7:
+            --y;
+            break;
+        case 1:
+        case 2:
+            ++x;
+            break;
+        case 3:
+        case 4:
+            ++y;
+            break;
+        case 5:
+        case 6:
+            --x;
+            break;
         }
+
         if (x >= 0 && y >= 0 && x < map->map_width && y < map->map_height &&
-            map->get_terrain((short)x, (short)y) == param_3)
+            (map->map_row_offset[y][x].terrain_type & 0x1F) == param_3) {
             return 1;
+        }
     }
+
     return 0;
 }
 
@@ -2425,7 +2441,7 @@ void TribeInformationAIModule::addObject(RGE_Static_Object* obj)
         ++this->playerObjects.numberValue;
 after_objects:
 
-        if (this->includeObject(object) == 1) {
+        if (this->isBuilding(object) == 1) {
             id = object->id;
             count = this->playerBuildings.numberValue;
             i = 0;
@@ -2451,12 +2467,12 @@ after_objects:
             ++this->playerBuildings.numberValue;
 after_buildings:
 
-            short type = object->master_obj->object_group;
+            short type = object->master_obj->id;
             if (type == 0x6d || type == 0x67 || type == 0x44) {
-                this->addDocks();
+                this->updateAllResourceDropsites();
             }
-            if (object->master_obj->object_group == 0x32) {
-                this->addHouse(object);
+            if (object->master_obj->id == 0x32) {
+                this->addResourceObject(object);
             }
         }
     }
@@ -5880,11 +5896,10 @@ float TribeInformationAIModule::damagePerSecond(int param_1, int param_2, int pa
 
     int i = 0;
     if (maxImportantObjectMemory > 0) {
-        int base = 0;
         do {
-            unsigned char owner = *(unsigned char*)(importantObjectMemory + base + 0x0B);
+            unsigned char owner = importantObjectMemory[i].owner;
             if (md->player->isEnemy(owner)) {
-                int id = *(int*)(importantObjectMemory + base);
+                int id = importantObjectMemory[i].id;
                 RGE_Static_Object* unit = (RGE_Static_Object*)md->object(id);
                 if (unit != 0 && unit->object_state <= 2) {
                     float dist = unit->distance_to_position(
@@ -5899,7 +5914,6 @@ float TribeInformationAIModule::damagePerSecond(int param_1, int param_2, int pa
                 }
             }
             i++;
-            base += 0x24;
         } while (i < maxImportantObjectMemory);
     }
 
