@@ -114,7 +114,7 @@
     "0052A000": {"status": "matching", "symbol": "?action_close@TRIBE_Game@@UAEHXZ"},
     "0052A030": {"status": "matching", "symbol": "?game_over_msg@TRIBE_Game@@QAEPADXZ"},
     "0052A080": {"status": "matching", "symbol": "?get_achievement_info@TRIBE_Game@@QAEJEPAPAD@Z"},
-    "0052A0B0": {"status": "scratch", "symbol": "?randomComputerName@TRIBE_Game@@QAEHH@Z"},
+    "0052A0B0": {"status": "accepted_drift", "symbol": "?randomComputerName@TRIBE_Game@@QAEHH@Z"},
     "0052A170": {"status": "matching", "symbol": "?resetRandomComputerName@TRIBE_Game@@QAEXXZ"},
     "0052A190": {"status": "matching", "symbol": "?video_wnd_proc@TRIBE_Game@@QAEJPAXIIJ@Z"},
     "0052A1E0": {"status": "matching", "symbol": "?SetClickTables@TRIBE_Game@@QAEXPAUMouseClickInfo@@H0H@Z"},
