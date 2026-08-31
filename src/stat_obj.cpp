@@ -42,15 +42,16 @@ extern char STR_STAT_OBJ[];
 
 
 RGE_Static_Object::RGE_Static_Object(RGE_Master_Static_Object* master, RGE_Player* player, float x, float y, float z, int do_setup)
-    : sprite(0), old_sprite(0)
+    : sprite(0),
+      old_sprite(0),
+      unitAIValue(0),
+      groupCommanderValue(-1),
+      zoneMapIndex(-1),
+      groupRangeValue(5.0f),
+      inObstructionMapValue(0),
+      lastInObstructionMapValue(0),
+      underAttackValue(0)
 {
-    this->unitAIValue = 0;
-    this->groupCommanderValue = -1;
-    this->zoneMapIndex = -1;
-    this->groupRangeValue = 5.0f;
-    this->inObstructionMapValue = 0;
-    this->lastInObstructionMapValue = 0;
-    this->underAttackValue = 0;
     this->player_object_node = 0;
     if (do_setup != 0) {
         this->setup(master, player, x, y, z);
@@ -63,15 +64,16 @@ RGE_Static_Object::RGE_Static_Object(RGE_Master_Static_Object* master, RGE_Playe
 
 
 RGE_Static_Object::RGE_Static_Object(int id, RGE_Game_World* world, int do_setup)
-    : sprite(0), old_sprite(0)
+    : sprite(0),
+      old_sprite(0),
+      unitAIValue(0),
+      groupCommanderValue(-1),
+      zoneMapIndex(-1),
+      groupRangeValue(5.0f),
+      inObstructionMapValue(0),
+      lastInObstructionMapValue(0),
+      underAttackValue(0)
 {
-    this->unitAIValue = 0;
-    this->groupCommanderValue = -1;
-    this->zoneMapIndex = -1;
-    this->groupRangeValue = 5.0f;
-    this->inObstructionMapValue = 0;
-    this->lastInObstructionMapValue = 0;
-    this->underAttackValue = 0;
     this->player_object_node = 0;
     if (do_setup != 0) {
         this->setup(id, world);
