@@ -843,15 +843,14 @@ void TRIBE_Building_Object::damage(int param_1,
     RGE_Combat_Object::damage(param_1, param_2, param_3, param_4, param_5);
     RGE_Master_Static_Object* master = param_5->master_obj;
     short group = master->object_group;
-    float damage_taken = old_hp - hp;
 
     if (group == 0 || group == 0x17 || group == 0x24 || group == 0x1A ||
         master->id == 0x4F || master->id == 0x45 || master->id == 0xC7 ||
         master->id == 0x17F || master->id == 0x17C) {
-        if (damage_taken < DAT_00574a10) {
+        if (old_hp - hp < DAT_00574a10) {
             hp = old_hp - DAT_00574a18;
         }
-    } else if (damage_taken < DAT_00574a00) {
+    } else if (old_hp - hp < DAT_00574a00) {
         hp = old_hp - DAT_00574a08;
     }
 
