@@ -127,7 +127,7 @@
     "004F9420": {"status": "matching", "symbol": "?groupGatherUnit@TribeTacticalAIModule@@QAEHHHMMMMH@Z"},
     "004F9470": {"status": "matching", "symbol": "?highLevelTaskExplorer@TribeTacticalAIModule@@QAEHHH@Z"},
     "004F95B0": {"status": "scratch", "symbol": "?highLevelTaskGatherer@TribeTacticalAIModule@@QAEHHK@Z"},
-    "004F99B0": {"status": "scratch", "symbol": "?taskPlay@TribeTacticalAIModule@@QAEHHPAHHHHPAUWaypoint@@H@Z"},
+    "004F99B0": {"status": "matching", "symbol": "?taskPlay@TribeTacticalAIModule@@QAEHHPAHHHHPAUWaypoint@@H@Z"},
     "004F9AD0": {"status": "matching", "symbol": "?taskBuilder@TribeTacticalAIModule@@QAEHHPAVBuildItem@@PAVConstructionItem@@K@Z"},
     "004F9E00": {"status": "matching", "symbol": "?taskBuilder@TribeTacticalAIModule@@QAEHHPAVRGE_Static_Object@@@Z"},
     "004FA000": {"status": "matching", "symbol": "?taskRepairer@TribeTacticalAIModule@@QAEHHPAVRGE_Static_Object@@@Z"},
