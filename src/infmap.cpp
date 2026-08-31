@@ -499,7 +499,6 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                                        unsigned char amount, int mode1,
                                        int mode2, int allDirections)
 {
-    int edgeResult;
     int result = this->connectionCountValue;
 
     if (from.x < 0 || from.y < 0 || from.x >= this->xSizeValue ||
@@ -510,7 +509,7 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
 
     for (int x = from.x; x <= to.x; ++x) {
         int y = from.y;
-        if (from.y <= to.y) {
+        if (y <= to.y) {
             unsigned char** rowsMap = this->rowValue;
             int xOffset = x - this->xReferencePointValue;
 
@@ -518,11 +517,9 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                 if ((int)rowsMap[y - this->yReferencePointValue][xOffset] +
                         (int)amount >= (int)minimum) {
                     if (rowsMap[y - this->yReferencePointValue][xOffset] >= minimum) {
-                        edgeResult = result;
-                        int neighborY;
-                        int neighborX;
-                        neighborX = x;
-                        neighborY = y;
+                        int edgeResult = result;
+                        int neighborX = x;
+                        int neighborY = y;
 
                         for (int direction = 0; direction < 8; ++direction) {
                             switch (direction) {
