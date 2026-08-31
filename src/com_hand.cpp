@@ -837,7 +837,7 @@ int TCommunications_Handler::DoCycle(ulong param_1)
                             this->Kick(i);
                         }
                         this->LastPlayerCommunication[i] = now;
-                        this->LastPlayerWarning[i] = now;
+                        this->LastTXPing[i] = now;
                     }
                 }
                 i++;
@@ -3894,14 +3894,10 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
 
 
 
-static char* const empty_string = " ";
-static char* const log_string = "Initialize Player List";
-static char* const com_hand_h = com_hand_source_path;
-
 void TCommunications_Handler::DestroyMultiplayerGame()
 {
     this->DestroyMyPlayer();
-    long t = debug_timeGetTime(com_hand_h, 0x267);
+    long t = debug_timeGetTime(com_hand_source_path, 0x267);
     int zero = 0;
     this->RXPacketLength = zero;
     this->RXPacketLengthHigh = zero;
@@ -3927,9 +3923,9 @@ void TCommunications_Handler::DestroyMultiplayerGame()
     this->StepMode = zero;
     this->IntentionallyDropPackets = zero;
     this->PlayerOptions.LastSentTime = t;
-    strcpy(this->MyGameTitle, empty_string);
-    strcpy(this->MyFriendlyName, empty_string);
-    strcpy(this->MyFormalName, empty_string);
+    strcpy(this->MyGameTitle, " ");
+    strcpy(this->MyFriendlyName, " ");
+    strcpy(this->MyFormalName, " ");
     unsigned short cx = this->MaxGamePlayers;
     this->TickStart = zero;
     this->TickCount = zero;
@@ -3949,11 +3945,11 @@ void TCommunications_Handler::DestroyMultiplayerGame()
     this->Multiplayer = zero;
     this->turnstart = zero;
     this->mselapsed = zero;
-    L->Log(log_string);
+    L->Log("Initialize Player List");
     int i = 1;
     if (this->MaxGamePlayers >= i) {
         do {
-            this->InitPlayerInformation(i, zero, empty_string, empty_string);
+            this->InitPlayerInformation(i, zero, " ", " ");
             i++;
         } while (i <= this->MaxGamePlayers);
     }
@@ -4719,15 +4715,13 @@ char* TCommunications_Handler::GetReadyPlayerStr() {
 
     unsigned int i = 1;
     if (i <= this->MaxGamePlayers) {
-        PLAYERHUMANITY* humanity = this->PlayerOptions.Humanity + 1;
-        unsigned long* ack = this->LastTurnAck + 1;
         char defc;
         defc = '?';
         do {
-            if (*ack >= this->current_turn) {
+            if (this->LastTurnAck[i] >= this->current_turn) {
                 ready_player_buffer[i + 6] = 'A';
             } else {
-                switch (*humanity) {
+                switch (this->PlayerOptions.Humanity[i]) {
                 case 2: ready_player_buffer[i + 6] = 'W'; break;
                 case 4: ready_player_buffer[i + 6] = 'C'; break;
                 case 0: ready_player_buffer[i + 6] = '-'; break;
@@ -4737,8 +4731,6 @@ char* TCommunications_Handler::GetReadyPlayerStr() {
                 }
             }
             ++i;
-            ++humanity;
-            ++ack;
         } while (i <= this->MaxGamePlayers);
     }
     return ready_player_buffer;
@@ -4927,7 +4919,7 @@ int TCommunications_Handler::LaunchLobbyGame()
 {
     IDirectPlay3* np = 0;
     DPSESSIONDESC2 session;
-    char* pn = 0;
+    char* pn;
     int r;
 
     r = Lobby->CheckForLobbyLaunch(np);
@@ -5188,45 +5180,45 @@ void TCommunications_Handler::PackPlayersDown()
             L->Log("Position %d *LOCKED*.   Plr=%s", pos, this->GetPlayerName(pos));
         } else {
             int src = pos;
-            while (src <= static_cast<int>(this->MaxGamePlayers) &&
-                   !this->IsPlayerHuman(src) &&
-                   !this->IsPlayerComputer(src)) {
+            while (src <= static_cast<int>(this->MaxGamePlayers)) {
+                if (this->IsPlayerHuman(src) ||
+                    this->IsPlayerComputer(src)) {
+                    strcpy(this->FriendlyName[pos].Text,
+                           this->FriendlyName[src].Text);
+                    strcpy(this->FormalName[pos].Text,
+                           this->FormalName[src].Text);
+
+                    this->PlayerOptions.PlayerReady[pos] =
+                        this->PlayerOptions.PlayerReady[src];
+                    this->PlayerOptions.dcoID[pos] =
+                        this->PlayerOptions.dcoID[src];
+                    this->PlayerOptions.User1[pos] =
+                        this->PlayerOptions.User1[src];
+                    this->PlayerOptions.User2[pos] =
+                        this->PlayerOptions.User2[src];
+                    this->PlayerOptions.User3[pos] =
+                        this->PlayerOptions.User3[src];
+                    this->PlayerOptions.User4[pos] =
+                        this->PlayerOptions.User4[src];
+                    this->PlayerOptions.User5[pos] =
+                        this->PlayerOptions.User5[src];
+                    this->PlayerOptions.User6[pos] =
+                        this->PlayerOptions.User6[src];
+                    this->PlayerOptions.User7[pos] =
+                        this->PlayerOptions.User7[src];
+                    this->PlayerOptions.Humanity[pos] =
+                        this->PlayerOptions.Humanity[src];
+                    this->LastTurnAck[pos] = this->LastTurnAck[src];
+                    this->LastPlayerCommunication[pos] =
+                        this->LastPlayerCommunication[src];
+
+                    save = pos;
+                    L->Log("Moved %d->%d", src, save);
+                    L->Log("Position %d *LOCKED*.   Plr=%s", save, this->GetPlayerName(save));
+                    this->InitPlayerInformation(src, 0, "", "");
+                    break;
+                }
                 ++src;
-            }
-            if (src <= static_cast<int>(this->MaxGamePlayers)) {
-                strcpy(this->FriendlyName[pos].Text,
-                       this->FriendlyName[src].Text);
-                strcpy(this->FormalName[pos].Text,
-                       this->FormalName[src].Text);
-
-                this->PlayerOptions.PlayerReady[pos] =
-                    this->PlayerOptions.PlayerReady[src];
-                this->PlayerOptions.dcoID[pos] =
-                    this->PlayerOptions.dcoID[src];
-                this->PlayerOptions.User1[pos] =
-                    this->PlayerOptions.User1[src];
-                this->PlayerOptions.User2[pos] =
-                    this->PlayerOptions.User2[src];
-                this->PlayerOptions.User3[pos] =
-                    this->PlayerOptions.User3[src];
-                this->PlayerOptions.User4[pos] =
-                    this->PlayerOptions.User4[src];
-                this->PlayerOptions.User5[pos] =
-                    this->PlayerOptions.User5[src];
-                this->PlayerOptions.User6[pos] =
-                    this->PlayerOptions.User6[src];
-                this->PlayerOptions.User7[pos] =
-                    this->PlayerOptions.User7[src];
-                this->PlayerOptions.Humanity[pos] =
-                    this->PlayerOptions.Humanity[src];
-                this->LastTurnAck[pos] = this->LastTurnAck[src];
-                this->LastPlayerCommunication[pos] =
-                    this->LastPlayerCommunication[src];
-
-                save = pos;
-                L->Log("Moved %d->%d", src, save);
-                L->Log("Position %d *LOCKED*.   Plr=%s", save, this->GetPlayerName(save));
-                this->InitPlayerInformation(src, 0, "", "");
             }
         }
             ++pos;
@@ -5467,7 +5459,7 @@ long TCommunications_Handler::GetMyMultiPlayerCaps()
         return 0x80004005;
 
     DPCAPS dpCaps;
-    { unsigned long* p = &dpCaps.dwSize; int i; for (i = 0; i < 10; i++) *p++ = 0; }
+    memset(&dpCaps, 0, sizeof(dpCaps));
 
     dpCaps.dwSize = 0x28;
 
