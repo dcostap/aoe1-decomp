@@ -23,7 +23,7 @@
     "004CA8C0": {"status": "matching", "symbol": "?change_ownership@TRIBE_Combat_Object@@MAEXPAVRGE_Player@@@Z"},
     "004CAA00": {"status": "matching", "symbol": "?calc_attack_modifier@TRIBE_Combat_Object@@UAEMPAVRGE_Static_Object@@@Z"},
     "004CAA50": {"status": "matching", "symbol": "?attack@TRIBE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAVRGE_Combat_Object@@@Z"},
-    "004CAAA0": {"status": "scratch", "symbol": "?do_attack@TRIBE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAVRGE_Combat_Object@@MMM@Z"},
+    "004CAAA0": {"status": "matching", "symbol": "?do_attack@TRIBE_Combat_Object@@UAEEPAVRGE_Static_Object@@PAVRGE_Combat_Object@@MMM@Z"},
     "004CAC10": {"status": "accepted_drift", "symbol": "?get_armor@TRIBE_Combat_Object@@UAEXAAF0@Z"},
     "004CAC80": {"status": "matching", "symbol": "?get_pierce_armor@TRIBE_Combat_Object@@UAEXAAF0@Z"},
     "004CACE0": {"status": "scratch", "symbol": "?reposition_artifact@TRIBE_Combat_Object@@QAEXXZ"},
