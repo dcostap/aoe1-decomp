@@ -1822,7 +1822,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     gameDifficulty = rge_base_game->difficulty();
     memset(weights, 0, sizeof(weights));
 
-    switch (this->culture) {
+    switch (this->master_player_id) {
     case 1:  this->setupEgyptian(weights, mapType, victoryType, mapSize); break;
     case 2:  this->setupGreek(weights, mapType, victoryType, mapSize); break;
     case 3:  this->setupBabylonian(weights, mapType, victoryType, mapSize); break;
@@ -1842,7 +1842,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     }
 
     if (static_cast<TRIBE_Game*>(rge_base_game)->deathMatch() == 0) {
-        int civ = this->culture - 1;
+        int civ = this->master_player_id - 1;
         if (civ == 3 || civ == 0 || civ == 1 || civ == 4 || civ == 8 ||
             civ == 6 || civ == 7 || civ == 10) {
             int aggressiveSelections = tplayer_globals::aggressiveBuildListCount;
@@ -1946,7 +1946,7 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
         case 8:
             weights[(0x14) - 1] += 40;
             weights[(0x15) - 1] += 40;
-            if (tplayer_globals::selectedBuildListCount > 0) {
+            if (static_cast<int>(tplayer_globals::selectedBuildListCount) > 0) {
                 weights[(0x0E) - 1] += 50;
                 weights[(0x0F) - 1] += 50;
             }
@@ -2073,9 +2073,9 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     rge_base_game->get_string(selectedBuildList + 0x26930, buildListName, 0x100);
 
     switch (selectedBuildList) {
-    case 0x0D: this->playerAI->strategyAI.setRule(0x3B, 4); this->playerAI->strategyAI.setRule(0x3C, 10); ++tplayer_globals::buildListCategoryCount7; ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x0E: this->playerAI->strategyAI.setRule(0x3B, 4); this->playerAI->strategyAI.setRule(0x3C, 10); ++tplayer_globals::buildListCategoryCount7; ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x0F: this->playerAI->strategyAI.setRule(0x3B, 4); this->playerAI->strategyAI.setRule(0x3C, 10); ++tplayer_globals::buildListCategoryCount7; ++tplayer_globals::aggressiveBuildListCount; break;
+    case 0x0D: this->playerAI->strategyAI.setRule(0x3B, 4); this->playerAI->strategyAI.setRule(0x3C, 10); ++tplayer_globals::buildListCategoryCount7; ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x0E: this->playerAI->strategyAI.setRule(0x3B, 4); this->playerAI->strategyAI.setRule(0x3C, 10); ++tplayer_globals::buildListCategoryCount7; ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x0F: this->playerAI->strategyAI.setRule(0x3B, 4); this->playerAI->strategyAI.setRule(0x3C, 10); ++tplayer_globals::buildListCategoryCount7; ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
     case 0x13: ++computerPlayerSetup[0]; break;
     case 0x14: ++computerPlayerSetup[0]; break;
     case 0x15: ++computerPlayerSetup[0]; break;
@@ -2101,52 +2101,52 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     case 0x76: break;
     case 0x77: break;
     case 0x78: break;
-    case 0x3C: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x3D: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x3E: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x3F: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x40: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x41: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x42: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x43: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x44: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x45: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x46: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x47: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x4B: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x4C: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x4D: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x4E: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x4F: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x53: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x55: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x56: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x57: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x58: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x59: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x5A: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x5B: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x5C: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x5D: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x5E: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x5F: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x60: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x61: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 100: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x65: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x69: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x6A: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x6E: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x6F: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x73: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x74: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x79: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x7A: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x7B: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x7C: ++tplayer_globals::aggressiveBuildListCount; break;
-    case 0x48: ++tplayer_globals::selectedBuildListCount; ++tplayer_globals::buildListCategoryCount5; break;
-    case 0x49: ++tplayer_globals::selectedBuildListCount; ++tplayer_globals::buildListCategoryCount5; break;
-    case 0x4A: ++tplayer_globals::selectedBuildListCount; ++tplayer_globals::buildListCategoryCount4; break;
+    case 0x3C: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x3D: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x3E: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x3F: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x40: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x41: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x42: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x43: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x44: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x45: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x46: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x47: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x4B: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x4C: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x4D: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x4E: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x4F: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x53: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x55: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x56: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x57: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x58: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x59: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x5A: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x5B: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x5C: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x5D: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x5E: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x5F: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x60: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x61: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 100: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x65: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x69: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x6A: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x6E: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x6F: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x73: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x74: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x79: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x7A: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x7B: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x7C: ++tplayer_globals::aggressiveBuildListCount; goto selectedCountersDone;
+    case 0x48: ++tplayer_globals::selectedBuildListCount; ++tplayer_globals::buildListCategoryCount5; goto selectedCountersDone;
+    case 0x49: ++tplayer_globals::selectedBuildListCount; ++tplayer_globals::buildListCategoryCount5; goto selectedCountersDone;
+    case 0x4A: ++tplayer_globals::selectedBuildListCount; ++tplayer_globals::buildListCategoryCount4; goto selectedCountersDone;
     case 6: ++tplayer_globals::buildListCategoryCount1; break;
     case 7: ++tplayer_globals::buildListCategoryCount1; break;
     case 8: ++tplayer_globals::buildListCategoryCount1; break;
@@ -2204,8 +2204,9 @@ void TRIBE_Player::intelligentBuildListAndRulesSelection(char* buildListName, ch
     }
     ++tplayer_globals::selectedBuildListCount;
 
-    rge_base_game->get_string(static_cast<int>(this->culture) + 0x27F6, tempString, 0x100);
-    this->playerAI->logCommonHistory(tplayerEmptyName, tempString, static_cast<int>(this->culture) - 1);
+selectedCountersDone:
+    rge_base_game->get_string(static_cast<int>(this->master_player_id) + 0x27F6, tempString, 0x100);
+    this->playerAI->logCommonHistory(tplayerEmptyName, tempString, static_cast<int>(this->master_player_id) - 1);
     this->playerAI->logCommonHistory(tplayerBuildMessage, buildListName);
     strcpy(ruleSetName, tplayerRandomName);
     this->playerAI->logCommonHistory(tplayerRulesMessage);
