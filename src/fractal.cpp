@@ -477,30 +477,43 @@ int PointMaker::MakeSatelliteLink()
 
 void PointMaker::DrawPrimaryIntoProbabilityArray()
 {
+    int ring;
+    int call_right;
+    int call_top;
+    int call_left;
+    int call_bottom;
+    int prime_x = Prime.x;
+    int prime_y = Prime.y;
     int radius = PrimaryRadius;
-    int left = Prime.x - radius;
-    int top = Prime.y - radius;
-    int bottom = Prime.y + radius;
-    int right = Prime.x + radius;
+    int left = prime_x - radius;
+    int top = prime_y - radius;
+    int bottom = prime_y + radius;
+    int right = prime_x + radius;
 
     if (left < 0) left = 0;
     if (top < 0) top = 0;
     int max_x = Width - 1;
     if (right > max_x) right = max_x;
     int max_y = Height - 1;
-    if (bottom > max_y) bottom = max_y;
+    if (bottom > max_y) {
+        bottom = max_y;
+    }
 
     ProbabilityAdd = 1;
-    int ring = 0;
+    ring = 0;
     if (radius > 0) {
         do {
-            AddingRect(left, top, right, bottom);
+            call_left = left;
+            call_top = top;
+            left++;
+            call_right = right;
+            top++;
+            call_bottom = bottom;
+            right--;
+            bottom--;
+            AddingRect(call_left, call_top, call_right, call_bottom);
             ProbabilityAdd++;
             ring++;
-            bottom--;
-            top++;
-            right--;
-            left++;
         } while (ring < PrimaryRadius);
     }
 }
@@ -597,6 +610,10 @@ void PointMaker::AddingRect(int x, int y, int w, int h)
     int iVar5;
     int iVar6;
     int iVar8;
+    int edge_count;
+    char cell_value;
+    char add_value;
+    char* cell;
     iVar5 = Width * y + x;
     iVar6 = w - x;
     iVar3 = h - y - 1;
@@ -606,7 +623,7 @@ void PointMaker::AddingRect(int x, int y, int w, int h)
         if (h - y >= 0) {
             iVar2 = iVar5;
             if (w - x >= 0) {
-                w = iVar6 + 1;
+                edge_count = iVar6 + 1;
                 do {
                     int prob_add = ProbabilityAdd;
                     if (iVar2 >= 1 && iVar2 < SizeArrays - 1) {
@@ -622,21 +639,22 @@ void PointMaker::AddingRect(int x, int y, int w, int h)
                     }
                     prob_add = ProbabilityAdd;
                     if (iVar8 >= 1 && iVar8 < SizeArrays - 1) {
-                        char* cell = ProbArray + iVar8;
-                        char value = ProbArray[iVar8];
-                        if (value == 0) {
-                            *cell = (char)prob_add;
+                        cell = ProbArray + iVar8;
+                        cell_value = ProbArray[iVar8];
+                        add_value = (char)prob_add;
+                        if (cell_value == 0) {
+                            *cell = add_value;
                             ProbabilityTiles++;
-                        } else if (prob_add + (int)value < 0xFF) {
-                            *cell = (char)(prob_add + (int)value);
+                        } else if (prob_add + (int)cell_value < 0xFF) {
+                            *cell = add_value + cell_value;
                         } else {
                             *cell = (char)-1;
                         }
                     }
                     iVar8++;
                     iVar2++;
-                    w--;
-                } while (w != 0);
+                    edge_count--;
+                } while (edge_count != 0);
             }
 
             iVar5 += Width;
