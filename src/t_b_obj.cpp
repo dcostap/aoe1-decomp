@@ -196,7 +196,7 @@ int TRIBE_Building_Object::setup(TRIBE_Master_Building_Object* master,
     culture = player->culture;
 
     static_cast<TRIBE_World*>(owner->world)->check_destructables(
-        player->id, static_cast<TRIBE_Master_Building_Object*>(master_obj)->id,
+        owner->id, static_cast<TRIBE_Master_Building_Object*>(master_obj)->id,
         world_x, world_y, 0);
     production_queue_actions = create_action_list();
     return 1;
