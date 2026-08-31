@@ -86,6 +86,23 @@ class TargetDossierTests(unittest.TestCase):
             )
             self.assertEqual(infer_class_name(source), "Derived")
 
+    def test_class_inference_uses_target_symbol_in_multi_class_source(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "demo.cpp"
+            source.write_text(
+                "long TRIBE_Screen_Main_Menu::action() { return 1; }\n"
+                "long TRIBE_Screen_Main_Error::action() { return 0; }\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                infer_class_name(
+                    source,
+                    target_symbol="?action@TRIBE_Screen_Main_Menu@@UAEJXZ",
+                    target_name="action",
+                ),
+                "TRIBE_Screen_Main_Menu",
+            )
+
     def test_class_check_flags_fixed_access_past_generated_size(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

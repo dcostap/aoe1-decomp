@@ -14,6 +14,7 @@ from iced_x86 import FlowControl
 from common import (
     REPO_ROOT,
     function_record_by_va,
+    function_entry_for_va,
     function_slug,
     load_binaries,
     load_functions,
@@ -500,12 +501,34 @@ def _load_csv_index(path: Path, key: str) -> dict[str, dict[str, str]]:
         return {row[key].upper(): row for row in csv.DictReader(handle)}
 
 
-def infer_class_name(source_path: Path) -> str:
+def _class_name_from_symbol(symbol: str) -> str:
+    constructor_or_operator = re.match(r"^\?\?[014]([^@]+)@@", symbol)
+    if constructor_or_operator:
+        return constructor_or_operator.group(1)
+    member = re.match(r"^\?[^@]+@([^@]+)@@", symbol)
+    return member.group(1) if member else ""
+
+
+def infer_class_name(
+    source_path: Path, *, target_symbol: str = "", target_name: str = ""
+) -> str:
+    symbol_class = _class_name_from_symbol(target_symbol)
+    if symbol_class:
+        return symbol_class
     if not source_path.exists():
         return ""
     text = source_path.read_text(encoding="utf-8", errors="replace")
     matches = QUALIFIED_DEFINITION_RE.findall(text)
-    return matches[-1] if matches else ""
+    if target_name:
+        target_pattern = re.compile(
+            rf"\b([A-Za-z_]\w*)::{re.escape(target_name)}\s*\([^;{{}}]*\)"
+            rf"(?:\s*const)?\s*\{{"
+        )
+        target_classes = list(dict.fromkeys(target_pattern.findall(text)))
+        if len(target_classes) == 1:
+            return target_classes[0]
+    unique_classes = list(dict.fromkeys(matches))
+    return unique_classes[0] if len(unique_classes) == 1 else ""
 
 
 def _class_check(class_name: str, fields: list[dict[str, object]]) -> dict[str, object]:
@@ -768,7 +791,13 @@ def build_dossier(record: dict[str, str], *, class_name: str = "", refresh: bool
             seen_shared_globals.add(name)
             shared_globals.append(shared)
     source_path = preferred_source_path(record)
-    inferred_class = class_name or infer_class_name(source_path)
+    function_entry = function_entry_for_va(record["va"])
+    target_symbol = str(function_entry.get("symbol") or "") if function_entry else ""
+    inferred_class = class_name or infer_class_name(
+        source_path,
+        target_symbol=target_symbol,
+        target_name=record["name"],
+    )
     calls = _call_rows(instructions, line_changes)
     evidence_bands = build_evidence_bands(instructions, line_changes, calls, memory)
     return {
