@@ -73,16 +73,14 @@ uchar TRIBE_RMM_Database_Controller::init(
         long count = this->terrain_info.hot_spot_num;
         cliffs.hot_spot_num = count;
         if (count > 0) {
-            RGE_Cliffs_Hot_Spots* cliff = cliffs.hot_spots;
-            RGE_Terrain_Hot_Spots* hot_spot = this->terrain_info.hot_spots;
-            do {
-                cliff->x = hot_spot->x;
-                cliff->y = hot_spot->y;
-                cliff->radius = hot_spot->radius;
-                ++cliff;
-                ++hot_spot;
-                --count;
-            } while (count != 0);
+            for (long index = 0; index < count; ++index) {
+                cliffs.hot_spots[index].x =
+                    this->terrain_info.hot_spots[index].x;
+                cliffs.hot_spots[index].y =
+                    this->terrain_info.hot_spots[index].y;
+                cliffs.hot_spots[index].radius =
+                    this->terrain_info.hot_spots[index].radius;
+            }
         }
 
         if (cliffs.average_cliff_size > 0 && cliffs.number_of_cliffs > 0) {
