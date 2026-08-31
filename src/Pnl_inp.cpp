@@ -1,6 +1,6 @@
 #include "../include/Pnl_inp.h"
 
-extern "C" short __cdecl __mbslen(const char*);
+extern "C" unsigned int __cdecl __mbslen(const char*);
 extern "C" int __cdecl _mbslen(const char*);
 extern "C" int __cdecl __mbscmp(const char*, const char*);
 extern "C" char* __cdecl __mbschr(const char*, unsigned int);
@@ -186,7 +186,7 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
             if (col <= 0) return 1;
             col--;
             this->cur_line = col;
-            col = __mbslen(this->get_text(this->cur_line));
+            col = (short)__mbslen(this->get_text(this->cur_line));
         }
         this->cur_col = col;
         this->calc_input_pos();
@@ -196,7 +196,7 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
     case 0x27:
         if (this->num_lines < 1) return 1;
         col = this->cur_col;
-        len = __mbslen(this->get_text(this->cur_line));
+        len = (short)__mbslen(this->get_text(this->cur_line));
         if (col < len) {
             this->cur_col = col + 1;
             this->calc_input_pos();
@@ -214,8 +214,8 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
         if (this->num_lines < 1) return 1;
         if (this->cur_line > 0) {
             this->cur_line--;
-            if (this->cur_col > __mbslen(this->get_text(this->cur_line)))
-                this->cur_col = __mbslen(this->get_text(this->cur_line));
+            if (this->cur_col > (short)__mbslen(this->get_text(this->cur_line)))
+                this->cur_col = (short)__mbslen(this->get_text(this->cur_line));
             this->calc_input_pos();
             this->set_redraw(TPanel::RedrawNormal);
             return 1;
@@ -249,15 +249,15 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
         if (this->num_lines < 1) return 1;
         if (param4 != 0) {
             if (this->cur_line == this->num_lines - 1) {
-                len = __mbslen(this->get_text(this->cur_line));
+                len = (short)__mbslen(this->get_text(this->cur_line));
                 if (this->cur_col == len) break;
             }
             this->cur_line = this->num_lines - 1;
-            this->cur_col = __mbslen(this->get_text(this->cur_line));
+            this->cur_col = (short)__mbslen(this->get_text(this->cur_line));
         } else {
-            len = __mbslen(this->get_text(this->cur_line));
+            len = (short)__mbslen(this->get_text(this->cur_line));
             if (this->cur_col == len) break;
-            this->cur_col = __mbslen(this->get_text(this->cur_line));
+            this->cur_col = (short)__mbslen(this->get_text(this->cur_line));
         }
         this->set_redraw(TPanel::RedrawNormal);
         this->calc_input_pos();
@@ -285,9 +285,9 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
         }
 page_update:
         this->cur_line = line;
-        len = __mbslen(this->get_text(this->cur_line));
+        len = (short)__mbslen(this->get_text(this->cur_line));
         if (this->cur_col > len)
-            this->cur_col = __mbslen(this->get_text(this->cur_line));
+            this->cur_col = (short)__mbslen(this->get_text(this->cur_line));
         this->calc_input_pos();
         this->set_redraw(TPanel::RedrawNormal);
         return 1;
