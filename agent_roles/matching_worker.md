@@ -21,16 +21,36 @@ Do not access the web or search online. Do not use network tools, remote URLs,
 online repositories, or external services. Use only repository-local evidence
 and files that the orchestrator supplies.
 
-You can edit:
+You can retain edits to:
 
 - scratch function bodies in the assigned natural source file; and
 - their function notes.
 
-Do not edit matching, accepted-drift, verified-logic, or unresolved function
-bodies. Matching functions are regression anchors.
+In your isolated worktree, you can also test a shared source hypothesis when
+binary evidence points to a declaration, layout, ABI, ownership, or compiler
+context defect. Shared experiments can edit related headers, global
+definitions, and natural source declarations. They can also edit an exact
+anchor temporarily when the experiment tests a shared source model.
 
-Do not edit headers, globals, config, tools, tests, shared notes, status metadata,
-`LESSONS.md`, the Git index, or commits.
+Do not use shared experiments as general search. First establish the target
+local blocker and state the shared hypothesis. Keep each experiment narrow.
+Use the compiler gate. Audit the complete transitive affected closure with one
+job. A shared candidate is valid only when all affected exact anchors remain
+exact.
+
+Restore a shared experiment when it regresses an exact anchor or lacks source
+evidence. Record the tested model and regressions in the function note. You can
+leave a non-regressing shared proposal for orchestrator review, but mark every
+shared path clearly in the final response. The orchestrator decides whether to
+retain and integrate it.
+
+Do not retain edits to matching, accepted-drift, verified-logic, or unresolved
+function bodies. Matching functions are regression anchors. Temporary edits
+are permitted only as part of a stated shared-source experiment.
+
+Do not edit registry status, tools, tests, shared notes, `LESSONS.md`, the Git
+index, or commits. Do not change flags, source order, or include context only to
+steer code generation.
 
 Do not use Git restore, reset, clean, checkout, stage, or commit. Preserve all
 unrelated worktree changes.
@@ -171,17 +191,38 @@ The proposal must prove:
 Record the proof in the function note. The orchestrator accepts or rejects the
 proposal.
 
+## Shared source experiments
+
+Use this path only after target-local evidence identifies a shared blocker.
+
+1. Record the clean target and affected-anchor baseline.
+2. State the exact shared type, layout, ABI, or ownership hypothesis.
+3. Make the smallest source-model change that tests it.
+4. Run the target check.
+5. Use the compiler gate and audit all affected translation units with
+   `--jobs 1`.
+6. Compare every configured exact anchor.
+7. Restore a candidate that causes any unexplained regression.
+8. Report the changed paths, affected groups, results, and smallest safe repair.
+
+Mixed-width access, overlapping addresses, or one exact target do not by
+themselves prove a union, raw view, duplicate declaration, or ownership model.
+Treat these forms as hypotheses until PDB, period source, exact donors, or a
+clean affected audit supports them.
+
 ## Major issues
 
 Stop when a major issue prevents safe progress. Examples include:
 
-- a proved shared-header or global declaration defect;
+- a proved shared-header or global declaration defect that no tested safe
+  shared model resolves;
 - wrong canonical ownership that requires shared changes;
 - a tool correctness failure;
 - source corruption or an unauthorized conflicting edit; or
 - executable evidence that invalidates the assigned source model.
 
-Do not repair shared paths. Preserve safe source and record the evidence.
+Do not retain a regressing shared repair. Preserve safe source and record the
+evidence.
 
 ## Final validation
 
@@ -192,7 +233,8 @@ Before the final response:
 3. Confirm that matching neighbors still match.
 4. Update function notes with durable evidence.
 5. Review your changed paths.
-6. Confirm that changed files have one consistent line-ending style.
+6. For a retained shared proposal, audit its complete affected closure.
+7. Confirm that changed files have one consistent line-ending style.
 
 If a major issue prevents a validation command, state that fact in the final
 response. Stop editing before the final response.
