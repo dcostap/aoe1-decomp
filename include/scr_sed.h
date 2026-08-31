@@ -299,8 +299,8 @@ protected:
     void set_player_active(short, int);
     void set_unit(short);
     void set_message_type(MessageType, int);
-public:
     void set_paint_object_mode();
+public:
     int command_new_map(char*, int, int, int, int, int);
     void command_cancel();
     int command_menu();
