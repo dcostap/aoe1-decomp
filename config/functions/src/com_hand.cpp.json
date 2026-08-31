@@ -24,7 +24,7 @@
     "00426510": {"status": "matching", "symbol": "?new_command@TCommunications_Handler@@QAEEPAXH@Z"},
     "00426530": {"status": "matching", "symbol": "?NewCommand@TCommunications_Handler@@QAEHPAXHH@Z"},
     "00426630": {"status": "matching", "symbol": "?LastWorldRandom@TCommunications_Handler@@QAEXH@Z"},
-    "00426650": {"status": "scratch", "symbol": "?DoCycle@TCommunications_Handler@@QAEHK@Z"},
+    "00426650": {"status": "accepted_drift", "symbol": "?DoCycle@TCommunications_Handler@@QAEHK@Z"},
     "00426D40": {"status": "matching", "symbol": "?HasKicked@TCommunications_Handler@@QAEHI@Z"},
     "00426D50": {"status": "matching", "symbol": "?SendPlayerName@TCommunications_Handler@@IAEJXZ"},
     "00426DC0": {"status": "matching", "symbol": "?LogRXMsg@TCommunications_Handler@@IAEXIIKEE@Z"},
