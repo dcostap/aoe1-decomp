@@ -571,12 +571,12 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 this->newMusicVolume = param_3;
                 TMusic_System* music = rge_base_game->music_system;
                 if (music == 0) {
-                    goto destroy;
+                    goto return_one;
                 }
                 music->set_volume(param_3 * -100, 1);
                 TSound_Driver* sound = rge_base_game->sound_system;
                 if (sound == 0) {
-                    goto destroy;
+                    goto return_one;
                 }
                 slider_sound = sound;
                 param_3 = this->newSoundVolume;
@@ -586,7 +586,7 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 this->newSoundVolume = param_3;
                 slider_sound = rge_base_game->sound_system;
                 if (slider_sound == 0) {
-                    goto destroy;
+                    goto return_one;
                 }
                 goto slider_sound_call;
             }
@@ -612,6 +612,8 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                     this->set_active(0);
                     goto destroy;
                 }
+            } else {
+                goto base_action;
             }
     }
     panel_system.setCurrentPanel("Main Menu", 0);
@@ -626,5 +628,6 @@ slider_sound_call:
 
 destroy:
     panel_system.destroyPanel("Config Dialog");
+return_one:
     return 1;
 }
