@@ -12,7 +12,7 @@
     "0053DEB0": {"status": "matching", "symbol": "?handle_keys@RGE_Main_View@@QAEHXZ"},
     "0053E280": {"status": "matching", "symbol": "?handle_mouse_up@RGE_Main_View@@UAEJEJJHH@Z"},
     "0053E2F0": {"status": "matching", "symbol": "?mouse_move_action@RGE_Main_View@@UAEJJJHH@Z"},
-    "0053E340": {"status": "scratch", "symbol": "?mouse_left_down_action@RGE_Main_View@@UAEJJJHH@Z"},
+    "0053E340": {"status": "matching", "symbol": "?mouse_left_down_action@RGE_Main_View@@UAEJJJHH@Z"},
     "0053E7F0": {"status": "matching", "symbol": "?mouse_left_move_action@RGE_Main_View@@UAEJJJHH@Z"},
     "0053E910": {"status": "scratch", "symbol": "?mouse_left_up_action@RGE_Main_View@@UAEJJJHH@Z"},
     "0053F220": {"status": "matching", "symbol": "?mouse_right_down_action@RGE_Main_View@@UAEJJJHH@Z"},
