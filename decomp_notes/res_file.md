@@ -273,3 +273,14 @@ decorated target.
 The full Res_file source now compiles. `0047F180`, `0047F230`, and
 `0047F480` remain `MATCH` with `0.0000%`. `0047F320` remains a one-byte
 `CONSISTENT_REGISTER_RECOLOR` mismatch documented above.
+
+## Parent-owned boundary review
+
+`0047F00C` is an internal error exit and `0047F076` is a shared continuation
+of `0047EE90 RESFILE_open_new_resource_file`. Owner control flow reaches both
+regions. The `INT3` at `0047F00B` is original and stays outside the first
+fragment boundary. Neither region is a standalone normal function.
+
+The parent-aware check compares the full 740-byte original extent. It keeps
+the correct owner and all 23 ordered calls, while the natural source remains a
+broad mismatch.

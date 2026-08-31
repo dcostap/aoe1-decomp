@@ -9,6 +9,8 @@
 # normal one-function-one-.cpp targets for them; match them by matching the
 # owning parent function.
 
+# Original owner control flow reaches both regions. The INT3 at 0047F00B is
+# real and remains outside the first fragment boundary.
 0047F00C 0047EE90 RESFILE_open_new_resource_file internal_error_exit
 0047F076 0047EE90 RESFILE_open_new_resource_file internal_shared_tail
 
