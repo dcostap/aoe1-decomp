@@ -1146,13 +1146,18 @@ cleanup:
 
 int TEasy_Panel::create_list(TPanel* parent, TListPanel** out, long x, long y, long w, long h, long font_id)
 {
-    long ideal_x = (x * this->pnl_wid) / this->ideal_width;
-    long ideal_y = (y * this->pnl_hgt) / this->ideal_height;
+    struct ScaledPoint {
+        long y;
+        long x;
+    } ideal;
+
+    ideal.x = (x * this->pnl_wid) / this->ideal_width;
+    ideal.y = (y * this->pnl_hgt) / this->ideal_height;
     char** list_items;
     RGE_Font* font;
 
     w = (w * this->pnl_wid) / this->ideal_width;
-    h = (h * this->pnl_hgt) / this->ideal_height;
+    long ideal_h = (h * this->pnl_hgt) / this->ideal_height;
 
     if (font_id >= 0) {
         rge_base_game->get_font(font_id);
@@ -1176,7 +1181,7 @@ int TEasy_Panel::create_list(TPanel* parent, TListPanel** out, long x, long y, l
         *out = list;
         if (list != 0 && list->error_code == 0) {
             font = rge_base_game->get_font(font_id);
-            if ((*out)->setup(this->render_area, parent, ideal_x, ideal_y, w, h, font->font, font->font_wid, font->font_hgt, 0, 0, 0, 1, 0xFF, 0, list_items, 1) != 0) {
+            if ((*out)->setup(this->render_area, parent, ideal.x, ideal.y, w, ideal_h, font->font, font->font_wid, font->font_hgt, 0, 0, 0, 1, 0xFF, 0, list_items, 1) != 0) {
                 (*out)->scroll_cur_line(1, 0, 1);
                 goto cleanup_success;
             }
