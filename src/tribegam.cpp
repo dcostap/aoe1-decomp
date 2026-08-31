@@ -2783,6 +2783,61 @@ int TRIBE_Game::load_game(char* file_name)
                             fprintf(debug_file,
                                     "    NULL doppled master obj.\n");
                         }
+
+                        RGE_Action_Object* moving_object =
+                            static_cast<RGE_Action_Object*>(object);
+                        if (object->master_obj->master_type >= 0x1E &&
+                            object->master_obj->master_type != 0x5A) {
+                            Path* path = &moving_object->pathValue;
+                            if (path->numberOfWaypoints() > 0) {
+                                path->initToStart();
+                                fprintf(debug_file,
+                                        "    path: s=%6.2f,%6.2f,%6.2f,g=%6.2f,%6.2f,%6.2f,cc=%d,wd=%d\n",
+                                        moving_object->startValue.x,
+                                        moving_object->startValue.y,
+                                        moving_object->startValue.z,
+                                        moving_object->goalValue.x,
+                                        moving_object->goalValue.y,
+                                        moving_object->goalValue.z,
+                                        moving_object->continueCounter,
+                                        moving_object->numberWaitDelays);
+                                int waypoint_index = 0;
+                                int waypoint_count = path->numberOfWaypoints();
+                                while (waypoint_index < waypoint_count) {
+                                    unsigned char facet =
+                                        path->currentWaypoint()->facetToNextWaypoint;
+                                    double y = path->currentWaypoint()->y;
+                                    double x = path->currentWaypoint()->x;
+                                    fprintf(debug_file,
+                                            "        w%i=%6.2f,%6.2f,%d\n",
+                                            waypoint_index, x, y, facet);
+                                    ++waypoint_index;
+                                    path->moveToNextWaypoint();
+                                    waypoint_count = path->numberOfWaypoints();
+                                }
+                                path->initToStart();
+                                path->moveToNextWaypoint();
+                            }
+                        }
+
+                        if (object->master_obj->master_type >= 0x28 &&
+                            object->master_obj->master_type != 0x5A &&
+                            moving_object->actions != 0) {
+                            act_node = moving_object->actions->list;
+                            while (act_node != 0) {
+                                RGE_Action* action = act_node->action;
+                                if (action != 0) {
+                                    fprintf(debug_file,
+                                            "    action: typ=%d, st=%d, tar1=%d, tar2=%d, tp=%6.2f,%6.2f,%6.2f, subac=%d, tim=%6.2f\n",
+                                            action->action_type, action->state,
+                                            action->targetID, action->target2ID,
+                                            action->targetX(), action->targetY(),
+                                            action->targetZ(), action->subAction(),
+                                            action->timer);
+                                }
+                                act_node = act_node->next;
+                            }
+                        }
                         list = list->next;
                     }
 
