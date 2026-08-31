@@ -3041,14 +3041,14 @@ int TRIBE_Game::create_game(int param_1)
         debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD24,
                     this->comm_handler->GetRandomSeed());
     }
-    else if (this->random_game_seed == -1) {
+    else if (this->random_game_seed != -1) {
+        debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD28,
+                    this->random_game_seed);
+    }
+    else {
         debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD2A,
                     debug_rand("C:\\msdev\\work\\age1_x1\\tribegam.cpp",
                                0xD2A));
-    }
-    else {
-        debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD28,
-                    this->random_game_seed);
     }
 
     player_info.player_num = 0;
@@ -3079,21 +3079,18 @@ int TRIBE_Game::create_game(int param_1)
         }
     }
 
-    int scenario_mode = -1;
-    char* scenario_name = 0;
-    scenario_info = 0;
     if (this->campaignGame()) {
-        scenario_mode = 1;
-        scenario_name = 0;
-    } else if (this->scenarioGame()) {
-        scenario_mode = 0;
-        scenario_name = player_info.scenario;
-    }
-    if (scenario_mode != -1) {
-        scenario_info = this->get_scenario_info(scenario_name, scenario_mode);
+        scenario_info = this->get_scenario_info(0, 1);
         if (scenario_info == 0) {
             return 0;
         }
+    } else if (this->scenarioGame()) {
+        scenario_info = this->get_scenario_info(player_info.scenario, 0);
+        if (scenario_info == 0) {
+            return 0;
+        }
+    } else {
+        scenario_info = 0;
     }
 
     for (i = 0; i < 9; ++i) {
