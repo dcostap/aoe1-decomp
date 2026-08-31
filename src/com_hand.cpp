@@ -2033,25 +2033,20 @@ void TCommunications_Handler::DropDeadPlayer(unsigned int player, unsigned long 
 void TCommunications_Handler::EvaluateSystemMessage(unsigned long unused_1, char* system_message_data,
                                                     unsigned long message_id_home, unsigned long unused_4)
 {
-    DPMSG_GENERIC message;
-    DPMSG_DESTROYPLAYERORGROUP destroy_player;
-    DPMSG_CREATEPLAYERORGROUP create_player;
-    DPMSG_SETPLAYERORGROUPDATA set_player_data;
-    memcpy(&message, system_message_data, sizeof(message));
-    memcpy(&destroy_player, system_message_data, sizeof(destroy_player));
-    memcpy(&create_player, system_message_data, sizeof(create_player));
-    memcpy(&set_player_data, system_message_data, sizeof(set_player_data));
+    DPMSG_GENERIC* message = (DPMSG_GENERIC*)system_message_data;
+    DPMSG_DESTROYPLAYERORGROUP* destroy_player =
+        (DPMSG_DESTROYPLAYERORGROUP*)message;
     if (this->Multiplayer == 0) {
         L->Log("!MP in DPANALYSIS");
         return;
     }
 
-    L->Log("DP Sys Msg %d", message.dwType);
+    L->Log("DP Sys Msg %d", message->dwType);
 
-    switch (message.dwType) {
+    switch (message->dwType) {
     case DPSYS_DESTROYPLAYERORGROUP: {
-        unsigned long victim = destroy_player.dpId;
-        unsigned int i = 0;
+        unsigned long victim = destroy_player->dpId;
+        unsigned int i;
         if (victim != 0) {
             int p = this->PlayerOptions.LowPlayerNumber;
             int high = this->PlayerOptions.HighPlayerNumber;
@@ -2059,13 +2054,15 @@ void TCommunications_Handler::EvaluateSystemMessage(unsigned long unused_1, char
                 for (; p <= high; p++) {
                     if (this->PlayerOptions.dcoID[p] == victim) {
                         i = p;
-                        break;
+                        goto found_destroy_player;
                     }
                 }
             }
         }
+        i = 0;
+found_destroy_player:
         L->Log("DPMSG_DESTRPYPLAYERORGROUP  (to debug dropping players)");
-        L->Log("FROM Player ID =		%d ", destroy_player.dpId);
+        L->Log("FROM Player ID =		%d ", destroy_player->dpId);
         L->Log("Equates to our player # %d ", i);
         L->Log("Program state is        %d ", this->PlayerOptions.ProgramState);
         L->FlushLog();
@@ -2079,7 +2076,7 @@ void TCommunications_Handler::EvaluateSystemMessage(unsigned long unused_1, char
             return;
         MSGFORMAT_KILL_PLAYER kp;
         kp.PlayerNo = i;
-        kp.dcoID = destroy_player.dpId;
+        kp.dcoID = destroy_player->dpId;
         kp.CurrentTurn = this->current_turn;
         L->Log("HOST Send to all - drop player %d ID=%d ", i, kp.dcoID);
         L->Log("  >TX KP2 #%d (%d)", i, 0xC);
@@ -2093,10 +2090,12 @@ void TCommunications_Handler::EvaluateSystemMessage(unsigned long unused_1, char
     }
 
     case DPSYS_CREATEPLAYERORGROUP: {
+        DPMSG_CREATEPLAYERORGROUP* create_player =
+            (DPMSG_CREATEPLAYERORGROUP*)message;
         unsigned long newid;
         unsigned int i;
 
-        message_id_home = create_player.dpId;
+        message_id_home = create_player->dpId;
         newid = message_id_home;
         L->Log("RX NEW PLR ID=%d", newid);
         L->Log("COMM: Create Player Request.");
@@ -2104,8 +2103,8 @@ void TCommunications_Handler::EvaluateSystemMessage(unsigned long unused_1, char
         L->Log(this->TBuff);
         if (this->PlayerOptions.ProgramState == 5 || this->current_turn > 6) {
             *this->TBuff = 'I';
-            L->Log("  >TX GIP %u (1)", create_player.dpId);
-            this->FastSend(create_player.dpId, this->TBuff, 1, 0, 0);
+            L->Log("  >TX GIP %u (1)", create_player->dpId);
+            this->FastSend(create_player->dpId, this->TBuff, 1, 0, 0);
             return;
         }
         if (this->MeHost == 0)
@@ -2113,14 +2112,14 @@ void TCommunications_Handler::EvaluateSystemMessage(unsigned long unused_1, char
         i = 1;
         for (; i <= this->MaxGamePlayers; i++) {
             if (this->PlayerOptions.Humanity[i] == 0)
-                break;
+                goto found_create_player;
         }
-        if (i > this->MaxGamePlayers)
-            i = 0;
+        i = 0;
+found_create_player:
         if (i != 0 && this->PlayerOptions.ProgramState == 3) {
-            this->InitPlayerInformation(i, static_cast<int>(create_player.dpId),
-                                         create_player.dpnName.lpszShortNameA,
-                                         create_player.dpnName.lpszLongNameA);
+            this->InitPlayerInformation(i, static_cast<int>(create_player->dpId),
+                                         create_player->dpnName.lpszShortNameA,
+                                         create_player->dpnName.lpszLongNameA);
             this->PlayerOptions.dcoID[i] = message_id_home;
             this->PlayerOptions.Humanity[i] = ME_HUMAN;
             this->PlayerOptions.NeedsToBeSent = 1;
@@ -2134,8 +2133,8 @@ void TCommunications_Handler::EvaluateSystemMessage(unsigned long unused_1, char
             return;
         }
         *this->TBuff = 'I';
-        L->Log("  >TX GIP2 %u (1)", create_player.dpId);
-        this->FastSend(create_player.dpId, this->TBuff, 1, 0, 0);
+        L->Log("  >TX GIP2 %u (1)", create_player->dpId);
+        this->FastSend(create_player->dpId, this->TBuff, 1, 0, 0);
         this->UpdatePlayers();
         return;
     }
@@ -2183,6 +2182,8 @@ void TCommunications_Handler::EvaluateSystemMessage(unsigned long unused_1, char
         return;
 
     case DPSYS_SETPLAYERORGROUPDATA: {
+        DPMSG_SETPLAYERORGROUPDATA* set_player_data =
+            (DPMSG_SETPLAYERORGROUPDATA*)message;
         sprintf(this->TBuff, " Player Data> P1=%d P2=%d P3=%d P4=%d P5=%d P6=%d P7=%d P8=%d ",
                 this->PlayerOptions.dcoID[1], this->PlayerOptions.dcoID[2],
                 this->PlayerOptions.dcoID[3], this->PlayerOptions.dcoID[4],
@@ -2210,14 +2211,13 @@ void TCommunications_Handler::EvaluateSystemMessage(unsigned long unused_1, char
         if (this->PlayerOptions.ProgramState != 3)
             return;
         L->Log("Group options rcvd from host.");
-        char* shared_data = static_cast<char*>(set_player_data.lpData);
-        if (set_player_data.dwDataSize >= sizeof(this->PlayerOptions)) {
-            memcpy(&this->PlayerOptions, shared_data,
+        if (set_player_data->dwDataSize >= sizeof(this->PlayerOptions)) {
+            memcpy(&this->PlayerOptions, set_player_data->lpData,
                    sizeof(this->PlayerOptions));
-            char* byte_tail = shared_data + sizeof(this->PlayerOptions);
-            if (set_player_data.dwDataSize >= this->PlayerOptions.DataSizeToFollow
+            if (set_player_data->dwDataSize >= this->PlayerOptions.DataSizeToFollow
                     + sizeof(this->PlayerOptions)) {
-                this->SetMyGameOptions(byte_tail,
+                this->SetMyGameOptions(static_cast<char*>(set_player_data->lpData)
+                                           + sizeof(this->PlayerOptions),
                                        this->PlayerOptions.DataSizeToFollow);
             }
             this->NotifyWindow(COMM_UPDATE_PARAMS);
@@ -2284,7 +2284,7 @@ void TCommunications_Handler::EvaluateSystemMessage(unsigned long unused_1, char
         L->Log(" *** NOTICE ***");
         return;
     }
-    L->Log("COMM:Unknown system message. %d", message.dwType);
+    L->Log("COMM:Unknown system message. %d", message->dwType);
 }
 
 
