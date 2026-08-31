@@ -22,11 +22,11 @@ MainDecisionAIModule::MainDecisionAIModule(int player_number,
       player(player_value),
       objects()
 {
-    int object_id;
     int count;
 
     rge_read(file, &count, sizeof(count));
     for (int i = 0; i < count; ++i) {
+        int object_id;
         rge_read(file, &object_id, sizeof(object_id));
         this->objects.add(object_id);
     }
