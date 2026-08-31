@@ -322,16 +322,16 @@ unsigned char RGE_Action_Attack::update()
 
     switch (this->state) {
     case 13:
-        goto state13_common;
+        goto state13_notify;
 
     case 4:
         switch (this->sub_actions->update()) {
         case 3:
-state13_common:
             this->set_state(13);
             if (this->subActionValue != 0) {
                 return 3;
             }
+state13_notify:
             this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x258,
                               0, 0);
             return 3;
@@ -508,9 +508,9 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
             float x_change = this->target_obj->world_x - this->target_x;
             float z_change = this->target_obj->world_z - this->target_z;
             float y_change = this->target_obj->world_y - this->target_y;
-            if ((x_change > -0.5f && x_change < 0.5f) &&
-                (y_change > -0.5f && y_change < 0.5f) &&
-                (z_change > -0.5f && z_change < 0.5f)) {
+            if ((x_change >= -0.5f && x_change <= 0.5f) &&
+                (y_change >= -0.5f && y_change <= 0.5f) &&
+                (z_change >= -0.5f && z_change <= 0.5f)) {
                 range_status = 1;
             } else {
                 float distance =
