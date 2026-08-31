@@ -38,7 +38,7 @@
     "00505A10": {"status": "matching", "symbol": "?retryableOrder@TribePriestUnitAIModule@@UAEHH@Z"},
     "00505A30": {"status": "matching", "symbol": "?canConvert@TribePriestUnitAIModule@@UAEHH@Z"},
     "00505AE0": {"status": "matching", "symbol": "?canAttackUnit@TribePriestUnitAIModule@@UAEHPAVRGE_Static_Object@@@Z"},
-    "00505B00": {"status": "scratch", "symbol": "?bestUnitToHeal@TribePriestUnitAIModule@@MAEHHPAM@Z"},
+    "00505B00": {"status": "matching", "symbol": "?bestUnitToHeal@TribePriestUnitAIModule@@MAEHHPAM@Z"},
     "00505CC0": {"status": "matching", "symbol": "?bestUnitToConvert@TribePriestUnitAIModule@@MAEHPAM@Z"},
     "00505DD0": {"status": "matching", "symbol": "?processNotify@TribePriestUnitAIModule@@MAEHPAUNotifyEvent@@K@Z"},
     "00505FD0": {"status": "matching", "symbol": "?processIdle@TribePriestUnitAIModule@@MAEHH@Z"},

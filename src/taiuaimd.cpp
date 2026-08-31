@@ -1170,29 +1170,28 @@ int TribePriestUnitAIModule::bestUnitToHeal(int param_1, float* param_2)
     while (a <= maxLimit) {
         i = 0;
         if (VisibleUnitList_Size[a - 1] > 0) {
-            VISIBLE_UNIT_REC** listPtr = &VisibleUnitList[a - 1];
             do {
-                if ((*listPtr)[i].object_id != this->objectValue->id) {
+                if (VisibleUnitList[a - 1][i].object_id != this->objectValue->id) {
                     RGE_Static_Object* unit =
-                        this->lookupObject((*listPtr)[i].object_id);
+                        this->lookupObject(VisibleUnitList[a - 1][i].object_id);
                     if (unit != 0) {
                         if (unit->master_obj->object_group != 3) {
                             if ((float)(int)unit->master_obj->hp > unit->hp) {
                                 if (unit->object_state < 3) {
                                     if (param_1 != 0 ||
-                                        (*listPtr)[i].distance <= 4) {
+                                        VisibleUnitList[a - 1][i].distance <= 4) {
                                         if (this->objectValue->owner->id != 0 ||
-                                            (*listPtr)[i].distance <= 2) {
+                                            VisibleUnitList[a - 1][i].distance <= 2) {
                                             if (this->objectValue->canPath(
-                                                    (*listPtr)[i].object_id,
+                                                    VisibleUnitList[a - 1][i].object_id,
                                                     1.0f, 0, 0, -1, -1)) {
                                                 float need = (float)(int)unit->master_obj->hp -
-                                                    unit->hp / (float)(int)(*listPtr)[i].distance;
+                                                    unit->hp / (float)(int)VisibleUnitList[a - 1][i].distance;
                                                 if (allyToHealID == -1 || need < allyNeed) {
                                                     allyNeed = need;
                                                     allyToHealID = unit->id;
                                                     if (param_2 != 0) {
-                                                        *param_2 = (float)(int)(*listPtr)[i].distance;
+                                                        *param_2 = (float)(int)VisibleUnitList[a - 1][i].distance;
                                                     }
                                                 }
                                             }
