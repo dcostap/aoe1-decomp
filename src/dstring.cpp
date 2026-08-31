@@ -275,7 +275,7 @@ next_index:
 istream& __cdecl operator>>(istream& stream, DString& value) {
     char buffer[256];
 
-    stream.get(buffer, 0x100);
+    stream.getline(buffer, 0x100);
     value = buffer;
     return stream;
 }
