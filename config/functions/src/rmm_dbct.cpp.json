@@ -16,7 +16,7 @@
     "00483600": {"status": "scratch", "symbol": "?calc_land_start@RGE_RMM_Database_Controller@@IAEXJJJPAURGE_Land_Data_Entry@@@Z"},
     "00483A20": {"status": "scratch", "symbol": "?add_land_module@RGE_RMM_Database_Controller@@MAEXE@Z"},
     "00484160": {"status": "scratch", "symbol": "?add_terrain_module@RGE_RMM_Database_Controller@@MAEXXZ"},
-    "00484320": {"status": "scratch", "symbol": "?add_object_module@RGE_RMM_Database_Controller@@MAEXXZ"},
+    "00484320": {"status": "accepted_drift", "symbol": "?add_object_module@RGE_RMM_Database_Controller@@MAEXXZ"},
     "00484470": {"status": "accepted_drift", "symbol": "?add_elevation_module@RGE_RMM_Database_Controller@@MAEXXZ"}
   }
 }
