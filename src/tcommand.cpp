@@ -388,23 +388,23 @@ void TRIBE_Command::place_line_of_walls(
     }
 }
 
-void TRIBE_Command::do_command_explore(TRIBE_Command_Explore* cmd)
+void TRIBE_Command::do_command_explore(TRIBE_Command_Explore* order)
 {
     RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
-        reinterpret_cast<unsigned char*>(cmd) + sizeof(*cmd));
-    if (this->world->players[cmd->unit_player_id] != 0) {
+        reinterpret_cast<unsigned char*>(order) + sizeof(*order));
+    if (this->world->players[order->unit_player_id] != 0) {
         int i = 0;
-        if (cmd->numUnits > 0) {
+        if (order->numUnits > 0) {
             do {
                 RGE_Static_Object* obj = this->get_obj(*ids);
                 if (obj != 0) {
                     obj->removeAllFromPathingGroup();
-                    obj->explore((int)cmd->targetXPosition,
-                                 (int)cmd->targetYPosition, 1);
+                    obj->explore((int)order->targetXPosition,
+                                 (int)order->targetYPosition, 1);
                 }
                 ++i;
                 ++ids;
-            } while (i < (int)cmd->numUnits);
+            } while (i < (int)order->numUnits);
         }
     }
 }

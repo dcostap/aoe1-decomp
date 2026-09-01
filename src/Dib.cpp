@@ -1255,17 +1255,17 @@ CreatePDIB __cdecl DibCreate(int bits, int dx, int dy)
     return (CreatePDIB)lpbi;
 }
 
-static void __cdecl xlatClut8(unsigned char* bits, unsigned long count,
-    unsigned char* clut)
+static void __cdecl xlatClut8(unsigned char* pb, unsigned long dwSize,
+    unsigned char* xlat)
 {
-    if (count <= 0) {
+    if (dwSize <= 0) {
         return;
     }
     do {
-        *bits = clut[*bits];
-        bits++;
-        count--;
-    } while (count != 0);
+        *pb = xlat[*pb];
+        pb++;
+        dwSize--;
+    } while (dwSize != 0);
 }
 
 void __cdecl xlatClut4(unsigned char *buf, unsigned int count,
