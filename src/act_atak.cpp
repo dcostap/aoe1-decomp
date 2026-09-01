@@ -458,27 +458,30 @@ int RGE_Action_Attack::work(RGE_Static_Object* target, float x, float y,
     return 0;
 }
 
-int RGE_Action_Attack::ready_to_attack(int& range_status)
+int RGE_Action_Attack::ready_to_attack(int& rangeState)
 {
     if (this->obj->turn_towards(this->target_obj, this->target_x,
                                  this->target_y) == 0) {
         return 0;
     }
 
+    float rangeDistance;
+    float y_change;
+    float z_change;
     if (this->target_obj == 0) {
-        float distance = this->obj->distance_to_position(
+        rangeDistance = this->obj->distance_to_position(
             this->target_x, this->target_y, this->target_z);
-        if (distance < this->min_range) {
-            range_status = 0;
+        if (rangeDistance < this->min_range) {
+            rangeState = 0;
         } else {
             RGE_Master_Static_Object* master = this->obj->master_obj;
             float radius = sqrt(master->radius_x * master->radius_x +
                                 master->radius_y * master->radius_y);
             float max_distance = radius + this->range - DAT_0056e0cc;
-            if (distance > max_distance) {
-                range_status = 2;
+            if (rangeDistance > max_distance) {
+                rangeState = 2;
             } else {
-                range_status = 1;
+                rangeState = 1;
                 return this->obj->can_attack() != 0;
             }
         }
@@ -504,37 +507,37 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
         if (this->target_obj->world_x == this->target_x &&
             this->target_obj->world_y == this->target_y &&
             this->target_obj->world_z == this->target_z) {
-            range_status = 1;
+            rangeState = 1;
         } else {
             float x_change = this->target_obj->world_x - this->target_x;
-            float z_change = this->target_obj->world_z - this->target_z;
-            float y_change = this->target_obj->world_y - this->target_y;
+            z_change = this->target_obj->world_z - this->target_z;
+            y_change = this->target_obj->world_y - this->target_y;
             if ((x_change >= -0.5f && x_change <= 0.5f) &&
                 (y_change >= -0.5f && y_change <= 0.5f) &&
                 (z_change >= -0.5f && z_change <= 0.5f)) {
-                range_status = 1;
+                rangeState = 1;
             } else {
-                float distance =
+                rangeDistance =
                     this->obj->distance_to_object(this->target_obj);
                 RGE_Master_Static_Object* master = this->obj->master_obj;
                 float radius = sqrt(master->radius_x * master->radius_x +
                                     master->radius_y * master->radius_y);
                 float max_distance = radius + this->range - DAT_0056e0cc;
-                if (distance < this->min_range) {
-                    range_status = 0;
-                } else if (distance <= max_distance) {
+                if (rangeDistance < this->min_range) {
+                    rangeState = 0;
+                } else if (rangeDistance <= max_distance) {
                     this->target_x = this->target_obj->world_x;
                     this->target_y = this->target_obj->world_y;
                     this->target_z = this->target_obj->world_z;
-                    range_status = 1;
+                    rangeState = 1;
                 } else {
-                    range_status = 2;
+                    rangeState = 2;
                 }
             }
         }
     }
 
-    if (range_status == 0) {
+    if (rangeState == 0) {
         if (this->subActionValue == 0) {
             this->obj->notify(this->obj->id, this->obj->id, 0x1FE, 0, 0, 0);
         }
@@ -552,7 +555,7 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
         return 0;
     }
 
-    if (range_status == 2) {
+    if (rangeState == 2) {
         if (this->subActionValue == 0) {
             this->obj->notify(this->obj->id, this->obj->id, 0x1FD, 0, 0, 0);
         }
@@ -572,7 +575,7 @@ int RGE_Action_Attack::ready_to_attack(int& range_status)
         return 0;
     }
 
-    range_status = 1;
+    rangeState = 1;
     return this->obj->can_attack() != 0;
 }
 
