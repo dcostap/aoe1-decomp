@@ -1340,7 +1340,7 @@ extern "C" void* __cdecl memmove(void* dst_arg, const void* src_arg,
             count = count - 1;
         } while (count != 0);
     }
-    return dst_arg;
+    return dst + 1;
 }
 
 #define DIB_RGB(r, g, b) \
