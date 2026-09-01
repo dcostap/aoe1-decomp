@@ -14,7 +14,7 @@ public:
     virtual ~TribeConstructionAIModule();
 
     void setMainDecisionAI(TribeMainDecisionAIModule* value);
-    int canPlace(BuildItem* item);
+    int canPlace(BuildItem* bi);
     ConstructionItem* placeStructure(BuildItem* item, int builder_id,
                                      PlacementState& state,
                                      unsigned long time);

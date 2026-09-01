@@ -1,4 +1,3 @@
-
 #include "../include/taiinfmd.h"
 #include "../include/taimdmd.h"
 #include "../include/game_globals.h"
@@ -4825,34 +4824,34 @@ early_fail:
 }
 
 int TribeInformationAIModule::storeAttackMemory(
-    unsigned char param_1, unsigned char param_2, unsigned char param_3,
-    unsigned char param_4, unsigned char param_5, short param_6,
-    unsigned char param_7, ulong param_8, int param_9) {
-    return this->storeAttackMemory(param_1, param_2, param_3, param_2, param_3,
-                                   param_4, param_5, param_6, param_7, param_8,
-                                   param_9);
+    unsigned char type, unsigned char x1, unsigned char y1,
+    unsigned char attackingOwner, unsigned char targetOwner, short kills,
+    unsigned char success, ulong timeStamp, int play) {
+    return this->storeAttackMemory(type, x1, y1, x1, y1, attackingOwner,
+                                   targetOwner, kills, success, timeStamp,
+                                   play);
 }
 
 #include <stdlib.h>
 
 int TribeInformationAIModule::storeAttackMemory(
-    unsigned char param_1,
-    unsigned char param_2,
-    unsigned char param_3,
-    unsigned char param_4,
-    unsigned char param_5,
-    unsigned char param_6,
-    unsigned char param_7,
-    short param_8,
-    unsigned char param_9,
-    unsigned long param_10,
-    int param_11)
+    unsigned char type,
+    unsigned char x1,
+    unsigned char y1,
+    unsigned char x2,
+    unsigned char y2,
+    unsigned char attackingOwner,
+    unsigned char targetOwner,
+    short kills,
+    unsigned char success,
+    unsigned long timeStamp,
+    int play)
 {
     int bestIdx;
     int count;
 
     if (this->mapXSizeValue > 0 && this->mapYSizeValue > 0) {
-        int product = ((int)param_4 + (int)param_2) * 4;
+        int product = ((int)x2 + (int)x1) * 4;
         int cx = product / this->mapXSizeValue;
         product = product / this->mapYSizeValue;
         cx /= 2;
@@ -4861,9 +4860,9 @@ int TribeInformationAIModule::storeAttackMemory(
         if (product > 4) product = 3;
 
         unsigned short playerID = this->md->player->id;
-        if (param_7 == playerID) {
+        if (targetOwner == playerID) {
             this->quadrantLog[cx][product].numberAttacksOnUs += 1;
-        } else if (param_6 == playerID) {
+        } else if (attackingOwner == playerID) {
             this->quadrantLog[cx][product].numberAttacksByUs += 1;
         }
     }
@@ -4886,17 +4885,17 @@ int TribeInformationAIModule::storeAttackMemory(
 
     if (bestIdx != -1) {
         this->attackMemories[bestIdx].id = count;
-        this->attackMemories[bestIdx].type = param_1;
-        this->attackMemories[bestIdx].minX = param_2;
-        this->attackMemories[bestIdx].minY = param_3;
-        this->attackMemories[bestIdx].maxX = param_4;
-        this->attackMemories[bestIdx].maxY = param_5;
-        this->attackMemories[bestIdx].attackingOwner = param_6;
-        this->attackMemories[bestIdx].targetOwner = param_7;
-        this->attackMemories[bestIdx].kills = param_8;
-        this->attackMemories[bestIdx].success = param_9;
-        this->attackMemories[bestIdx].timeStamp = param_10;
-        this->attackMemories[bestIdx].play = param_11;
+        this->attackMemories[bestIdx].type = type;
+        this->attackMemories[bestIdx].minX = x1;
+        this->attackMemories[bestIdx].minY = y1;
+        this->attackMemories[bestIdx].maxX = x2;
+        this->attackMemories[bestIdx].maxY = y2;
+        this->attackMemories[bestIdx].attackingOwner = attackingOwner;
+        this->attackMemories[bestIdx].targetOwner = targetOwner;
+        this->attackMemories[bestIdx].kills = kills;
+        this->attackMemories[bestIdx].success = success;
+        this->attackMemories[bestIdx].timeStamp = timeStamp;
+        this->attackMemories[bestIdx].play = play;
     }
 
     return bestIdx;

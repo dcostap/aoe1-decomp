@@ -31,21 +31,21 @@ void TribeConstructionAIModule::setMainDecisionAI(
     this->md = value;
 }
 
-int TribeConstructionAIModule::canPlace(BuildItem* item)
+int TribeConstructionAIModule::canPlace(BuildItem* bi)
 {
     if (this->xReferencePointValue <= 0.0 ||
         this->yReferencePointValue <= 0.0 ||
         (float)this->mapXSizeValue <= this->xReferencePointValue ||
         (float)this->mapYSizeValue <= this->yReferencePointValue) {
-        return this->md->informationAI.influenceCanPlaceStructure(item);
+        return this->md->informationAI.influenceCanPlaceStructure(bi);
     }
 
-    if (item->typeID() == 0x2d) {
+    if (bi->typeID() == 0x2d) {
         return 1;
     }
 
     if (useInfluencePlacement == 1 || this->numberConstructionLotsValue == 0) {
-        return this->md->informationAI.influenceCanPlaceStructure(item);
+        return this->md->informationAI.influenceCanPlaceStructure(bi);
     }
 
     ConstructionItem tempLots;
@@ -55,9 +55,9 @@ int TribeConstructionAIModule::canPlace(BuildItem* item)
     ConstructionItem* current = this->constructionLots.next;
     ConstructionItem* end = &this->constructionLots;
     while (current != end && current != 0) {
-        if (current->typeID() == item->typeID() ||
-            (current->xSize() == item->xSize() &&
-             current->ySize() == item->ySize() &&
+        if (current->typeID() == bi->typeID() ||
+            (current->xSize() == bi->xSize() &&
+             current->ySize() == bi->ySize() &&
              current->typeID() == -1)) {
             if (!current->built() && !current->inProgress()) {
                 return 1;

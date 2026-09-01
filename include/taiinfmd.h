@@ -197,15 +197,17 @@ public:
     void setupWalls(int param1, int param2, int param3, int param4,
                     int param5, int param6, int param7, int param8);
     int insideGate(int param1, int param2, int param3);
-    int storeAttackMemory(unsigned char p1, unsigned char p2,
-                          unsigned char p3, unsigned char p4,
-                          unsigned char p5, short p6, unsigned char p7,
-                          unsigned long p8, int p9);
-    int storeAttackMemory(unsigned char p1, unsigned char p2,
-                          unsigned char p3, unsigned char p4,
-                          unsigned char p5, unsigned char p6,
-                          unsigned char p7, short p8, unsigned char p9,
-                          unsigned long p10, int p11);
+    int storeAttackMemory(unsigned char type, unsigned char x1,
+                          unsigned char y1, unsigned char attackingOwner,
+                          unsigned char targetOwner, short kills,
+                          unsigned char success, unsigned long timeStamp,
+                          int play);
+    int storeAttackMemory(unsigned char type, unsigned char x1,
+                          unsigned char y1, unsigned char x2,
+                          unsigned char y2, unsigned char attackingOwner,
+                          unsigned char targetOwner, short kills,
+                          unsigned char success, unsigned long timeStamp,
+                          int play);
     int storeAttackMemory(unsigned char p1, unsigned char p2,
                           unsigned char p3, unsigned char p4,
                           unsigned char p5, unsigned char p6,

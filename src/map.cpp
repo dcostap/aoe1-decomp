@@ -2682,12 +2682,12 @@ void RGE_Map::check_for_border(unsigned char param_1,
         param_2 = param_1;
 }
 
-void RGE_Map::update(unsigned long time)
+void RGE_Map::update(unsigned long world_time)
 {
-    if (time - DAT_0062e65c < 100)
+    if (world_time - DAT_0062e65c < 100)
         return;
 
-    float cur_time = (float)time * DAT_005706e8;
+    float cur_time = (float)world_time * DAT_005706e8;
     short i;
 
     for (i = 0; i < this->num_terrain; ++i) {
@@ -2742,7 +2742,7 @@ void RGE_Map::update(unsigned long time)
         }
     }
 
-    DAT_0062e65c = time;
+    DAT_0062e65c = world_time;
 }
 
 void RGE_Map::get_point(short& out_x, short& out_y,
