@@ -443,14 +443,14 @@ int TInputPanel::insert_character(long ch)
 int TInputPanel::delete_character()
 {
     short deleted_len;
-    int bVar1;
     unsigned char* pcVar2;
     unsigned char* pcVar3;
     unsigned char* pcVar4;
     int move_back_one;
+    unsigned char* cur_dest;
     if (this->input_pos >= this->input_len) return 0;
     pcVar3 = (unsigned char*)this->input_buffer1;
-    bVar1 = 0;
+    move_back_one = 0;
     if (this->input_buffer == (char*)pcVar3) {
         pcVar4 = pcVar3;
         pcVar3 = (unsigned char*)this->input_buffer2;
@@ -460,11 +460,11 @@ int TInputPanel::delete_character()
     this->input_buffer = (char*)pcVar3;
     *pcVar3 = 0;
     pcVar2 = pcVar4;
-    move_back_one = (int)pcVar3;
+    cur_dest = pcVar3;
     if (this->input_pos > 0) {
         _mbsncpy(pcVar3, pcVar4, (int)this->input_pos);
         pcVar2 = (unsigned char*)_mbsninc(pcVar4, (int)this->input_pos);
-        move_back_one = (int)_mbsninc(pcVar3, (int)this->input_pos);
+        cur_dest = (unsigned char*)_mbsninc(pcVar3, (int)this->input_pos);
     }
     if (*pcVar2 == '\r') {
         pcVar3 = (unsigned char*)_mbsinc(pcVar2);
@@ -477,10 +477,10 @@ int TInputPanel::delete_character()
         if ((*pcVar2 == '\n') && (pcVar2 > pcVar4)) {
             pcVar4 = (unsigned char*)_mbsdec(pcVar4, pcVar2);
             if (*pcVar4 == '\r') {
-                move_back_one = (int)_mbsdec(pcVar3, (unsigned char*)move_back_one);
+                cur_dest = (unsigned char*)_mbsdec(pcVar3, cur_dest);
                 pcVar3 = (unsigned char*)_mbsninc(pcVar4, 2);
                 deleted_len = 2;
-                bVar1 = 1;
+                move_back_one = 1;
                 goto do_copy;
             }
             pcVar3 = (unsigned char*)_mbsninc(pcVar4, 2);
@@ -490,9 +490,9 @@ int TInputPanel::delete_character()
         deleted_len = 1;
     }
 do_copy:
-    _mbsncpy((unsigned char*)move_back_one, pcVar3,
+    _mbsncpy(cur_dest, pcVar3,
              ((int)this->input_len - (int)this->input_pos) + 1);
-    if (bVar1) --this->input_pos;
+    if (move_back_one) --this->input_pos;
     this->input_len -= deleted_len;
     this->reformat();
     this->calc_cur_line_col();
