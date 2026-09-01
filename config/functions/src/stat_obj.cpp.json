@@ -60,7 +60,7 @@
     "004C5850": {"status": "matching", "symbol": "?is_moving@RGE_Static_Object@@UAEEXZ"},
     "004C5860": {"status": "matching", "symbol": "?is_dying@RGE_Static_Object@@QAEEXZ"},
     "004C5880": {"status": "matching", "symbol": "?get_frame@RGE_Static_Object@@QAEHAAF000@Z"},
-    "004C58C0": {"status": "scratch", "symbol": "?more_room@RGE_Static_Object@@QAEEXZ"},
+    "004C58C0": {"status": "matching", "symbol": "?more_room@RGE_Static_Object@@QAEEXZ"},
     "004C58E0": {"status": "matching", "symbol": "?enter_obj@RGE_Static_Object@@UAEXPAV1@@Z"},
     "004C5960": {"status": "matching", "symbol": "?exit_obj@RGE_Static_Object@@UAEXXZ"},
     "004C5980": {"status": "matching", "symbol": "?get_los_table@RGE_Static_Object@@UAEPAULOSTBL@@XZ"},
