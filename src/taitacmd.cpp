@@ -7046,13 +7046,12 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
         ++i;
     } while (i < 4);
 
-    task = 0;
-    if (this->inAge(1) != 0 && this->sn[0xB5] == 1) {
-        triedTasking[1] = 1;
-    } else if (this->inAge(2) != 0 && this->sn[0xB6] == 1 && triedTasking[1] == 0) {
-        task = 0;
-        triedTasking[1] = 1;
-    } else if (this->inAge(3) != 0 && this->sn[0xB7] == 1) {
+    // With no enabled age branch, the original skips the ordinary task.
+    if ((this->inAge(1) == 0 || this->sn[0xB5] != 1) &&
+        (this->inAge(2) == 0 || this->sn[0xB6] != 1 || triedTasking[1] != 0)) {
+        if (this->inAge(3) == 0 || this->sn[0xB7] != 1)
+            goto fallback;
+
         if (triedTasking[1] == 0) {
             taskResult = this->taskGatherer(gatherer->id, 0, 1, param, 0);
             triedTasking[1] = 1;
@@ -7066,7 +7065,12 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
     }
 
     if (this->taskGatherer(gatherer->id, task, 1, param, 0) == 0)
-        this->taskGatherer(gatherer->id, -1, 1, param, triedTasking + 1);
+        goto fallback;
+
+    goto normal_success;
+
+fallback:
+    this->taskGatherer(gatherer->id, -1, 1, param, triedTasking + 1);
 
 normal_success:
         return 1;
