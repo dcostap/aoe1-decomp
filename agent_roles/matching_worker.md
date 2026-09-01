@@ -118,8 +118,9 @@ Put ad hoc experiments and translation-unit audit output in your private
 directory. Leave repository-managed caches, target notebooks, and standard
 diff paths at their tool-defined locations.
 
-A change to one scratch function must not regress another function in the
-translation unit.
+A change to one scratch function must audit every changed function in the
+translation unit. Do not reject stronger supported source only because another
+function loses exact bytes. Report the change for independent semantic review.
 
 ## Function notes
 
@@ -164,12 +165,13 @@ source when an experiment does not improve it.
 
 ## Accepted-drift proposals
 
-You can suggest accepted drift for an explained code-generation difference.
+You should propose accepted drift for an explained code-generation difference
+when canonical source and semantic evidence make more byte tuning wasteful.
 Use more evidence as the size or risk of the difference increases.
 The proposal must prove:
 
 - equal behavior for all relevant inputs;
-- equal calls, targets, arguments, and order;
+- equal call effects, targets, and arguments; explain any safe call reordering;
 - equal memory effects and cleanup;
 - equal ABI, exceptions, faults, and fault order;
 - no unexplained control-flow difference; and
