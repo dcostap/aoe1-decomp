@@ -838,8 +838,7 @@ void RGE_Diamond_Map::draw_visible_object(RGE_Static_Object *object,
     this->draw_object(col, (short)row, color2, 1, object);
     break;
   case 3:
-    color2 = color1;
-    this->draw_object(col, row, color2, 2, object);
+    this->draw_object(col, row, color1, 2, object);
     break;
   default:
     return;
