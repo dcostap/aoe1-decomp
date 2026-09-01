@@ -256,27 +256,27 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
     SelectClipRgn(this->ImageBuffer->DrawDc, this->image_clip_region);
     old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
     SetBkMode(this->ImageBuffer->DrawDc, 1);
-    sprintf(str + 4, "%s%ld/%ld", this->TPanel::get_string(0x2b2a),
+    sprintf(str, "%s%ld/%ld", this->TPanel::get_string(0x2b2a),
             this->pop, this->max_pop);
     SetTextColor(this->ImageBuffer->DrawDc, this->color2);
     {
         const int width = this->pnl_wid - 1;
         const int height = this->pnl_hgt - 1;
         SetRect(&rect, 0, 0, width - 2, height - 2);
-        DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
         SetRect(&rect, 0, 2, width - 2, height);
-        DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
         SetRect(&rect, 2, 0, width, height - 2);
-        DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
         SetRect(&rect, 2, 2, width, height);
-        DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
         if (this->mode == 1) {
             SetTextColor(this->ImageBuffer->DrawDc, this->color3);
         } else {
             SetTextColor(this->ImageBuffer->DrawDc, this->color1);
         }
         SetRect(&rect, 1, 1, width - 1, height - 1);
-        DrawTextA(this->ImageBuffer->DrawDc, str + 4, -1, &rect, 0x21);
+        DrawTextA(this->ImageBuffer->DrawDc, str, -1, &rect, 0x21);
     }
     SelectObject(this->ImageBuffer->DrawDc, old_font);
     SelectClipRgn(this->ImageBuffer->DrawDc, 0);
