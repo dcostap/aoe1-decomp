@@ -646,8 +646,10 @@ int __cdecl WaveCloseWriteFile(HMMIO* phmmioOut, MMCKINFO* pckOut,
                 result = mmioDescend(*phmmioOut, (LPMMCKINFO)pckOutRIFF, 0, 0);
                 if (result == 0) {
                     pckOut->ckid = 0x74636166;
-                    if (mmioDescend(*phmmioOut, (LPMMCKINFO)pckOut,
-                                    (LPMMCKINFO)pckOutRIFF, 0x10) == 0) {
+                    if ((result = mmioDescend(*phmmioOut,
+                                              (LPMMCKINFO)pckOut,
+                                              (LPMMCKINFO)pckOutRIFF,
+                                              0x10)) == 0) {
                         mmioWrite(*phmmioOut, (const char*)&cSamples,
                                   sizeof(DWORD));
                         mmioAscend(*phmmioOut, (LPMMCKINFO)pckOut, result);
