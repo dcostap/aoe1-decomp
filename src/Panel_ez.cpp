@@ -87,7 +87,7 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
     char background_pic_file_name_a1[260];
     char popup_info_file_name_in[256];
 
-    f2g = -1;
+    f2r = -1;
     this->allow_shadow_area = allow_shadow;
     set_info_file(info_file, info_id);
     if (use_area_size != 0) {
