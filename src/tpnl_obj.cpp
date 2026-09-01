@@ -825,13 +825,13 @@ long TRIBE_Panel_Object::handle_idle()
 
     int changed = 0;
     int do_buttons = 0;
-    TRIBE_Building_Object* bldg;
     short cur_val;
     short work_target;
     short orig_val;
     float cur_fval;
     short temp;
     short work_type;
+    TRIBE_Building_Object* bldg;
     short progress_value;
     float orig_fval;
     char name[100];
@@ -844,13 +844,19 @@ long TRIBE_Panel_Object::handle_idle()
     if (object->owner != this->save_owner) {
         changed = 1;
         do_buttons = 1;
-    } else if (object->selected_group != this->save_selected_group) {
+        goto identity_done;
+    }
+    if (object->selected_group != this->save_selected_group) {
         changed = 1;
         do_buttons = 1;
-    } else if (object->master_obj != this->save_obj_type) {
+        goto identity_done;
+    }
+    if (object->master_obj != this->save_obj_type) {
         changed = 1;
         do_buttons = 1;
-    } else {
+        goto identity_done;
+    }
+    {
         short n = object->objects->number_of_objects;
         if (n == this->save_number_of_objects) {
             if (object->attribute_type_held != this->save_attr_type ||
@@ -866,6 +872,8 @@ long TRIBE_Panel_Object::handle_idle()
             if (n == 0 || this->save_number_of_objects == 0) do_buttons = 1;
         }
     }
+
+identity_done:
 
     if (!changed) {
         unsigned char type = static_cast<RGE_Action_Object*>(this->game_obj)
