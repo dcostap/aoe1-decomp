@@ -16,7 +16,6 @@
 #include "../include/rge_base_game_global.h"
 
 extern float DAT_0056e278;
-extern double DAT_0056e280;
 extern double DAT_0056e290;
 
 RGE_Action_Gather::RGE_Action_Gather(int file, RGE_Action_Object* object)
@@ -286,9 +285,9 @@ unsigned char RGE_Action_Gather::update() {
 
     switch ((int)this->state) {
     case 3:
-        if (this->timer < DAT_0056e280) {
+        if (this->timer < 0.0) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > DAT_0056e280) {
+            if (this->timer > 0.0) {
                 this->timer = -10.0f;
                 this->obj->notify((int)this->obj->id, (int)this->obj->id,
                                   (int)0x202, 0x261L,
@@ -411,9 +410,9 @@ unsigned char RGE_Action_Gather::update() {
     }
 
     case 8:
-        if (this->timer < DAT_0056e280) {
+        if (this->timer < 0.0) {
             this->timer += this->obj->owner->world->world_time_delta_seconds;
-            if (this->timer > DAT_0056e280) {
+            if (this->timer > 0.0) {
                 this->timer = 0.0f;
                 this->set_state(8);
                 return 0;
