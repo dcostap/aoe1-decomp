@@ -530,8 +530,8 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2, int param_3,
     return;
   }
 
-  int x = (int)this->map_image_lines[row->image_line].start_x + x_offset;
-  int y = (int)this->map_image_start_y + (int)row->image_line;
+  long x = (long)this->map_image_lines[row->image_line].start_x + x_offset;
+  long y = (long)this->map_image_start_y + (long)row->image_line;
   unsigned char terrain = tile->terrain_type & 0x1F;
 
   if (param_3 == 0) {
