@@ -75,7 +75,7 @@
     "005153B0": {"status": "matching", "symbol": "?setDiplomaticStance@TRIBE_Player@@UAEXHH@Z"},
     "005153D0": {"status": "matching", "symbol": "?loadAIInformation@TRIBE_Player@@UAEXPAD00HH@Z"},
     "005159D0": {"status": "matching", "symbol": "?notify@TRIBE_Player@@UAEXHHHJJJ@Z"},
-    "00515BB0": {"status": "scratch", "symbol": "?notifyAI@TRIBE_Player@@UAEXHHHJJJ@Z"},
+    "00515BB0": {"status": "matching", "symbol": "?notifyAI@TRIBE_Player@@UAEXHHHJJJ@Z"},
     "00515DF0": {"status": "matching", "symbol": "?intelligentCivSelection@TRIBE_Player@@QAEHHHH@Z"},
     "00515E00": {"status": "matching", "symbol": "?intelligentBuildListAndRulesSelection@TRIBE_Player@@QAEXPAD0HHH@Z"},
     "00517B90": {"status": "matching", "symbol": "?setupEgyptian@TRIBE_Player@@QAEXPAHHHH@Z"},
