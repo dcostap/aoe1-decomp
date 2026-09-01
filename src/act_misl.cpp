@@ -76,7 +76,6 @@ void RGE_Action_Missile::set_state(unsigned char param_1)
     float dx;
     float dz;
     float speed;
-    float target_vz;
 
     this->state = param_1;
 
@@ -91,8 +90,7 @@ void RGE_Action_Missile::set_state(unsigned char param_1)
         d = tx - this->obj->world_x;
         dx = ty - this->obj->world_y;
         dz = tz - this->obj->world_z;
-        target_vz = dz * dz;
-        speed = (float)sqrt(d * d + dx * dx + target_vz);
+        speed = (float)sqrt(d * d + dx * dx + dz * dz);
 
         if (((RGE_Master_Missile_Object*)this->obj->master_obj)->targetting_type == 1 &&
             this->target_obj != 0 && this->target_obj->getSpeed() > 0.0) {
@@ -111,7 +109,7 @@ void RGE_Action_Missile::set_state(unsigned char param_1)
 
             float target_distance =
                 (float)sqrt((target_vy + dx) * (target_vy + dx) +
-                            (target_vx + d) * (target_vx + d) + target_vz);
+                            (target_vx + d) * (target_vx + d) + dz * dz);
 
             if (speed - target_distance +
                     ((RGE_Master_Missile_Object*)this->obj->master_obj)->speed >
@@ -121,7 +119,7 @@ void RGE_Action_Missile::set_state(unsigned char param_1)
                      ((RGE_Master_Missile_Object*)this->obj->master_obj)->speed);
                 d = scale * target_vx + d;
                 dx = scale * target_vy + dx;
-                speed = (float)sqrt(dx * dx + d * d + target_vz);
+                speed = (float)sqrt(dx * dx + d * d + dz * dz);
             }
         }
 
