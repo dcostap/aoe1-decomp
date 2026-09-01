@@ -24,6 +24,6 @@
     "0047B660": {"status": "matching", "symbol": "?draw_border@TScrollBarPanel@@IAEXHHPAUtagRECT@@@Z"},
     "0047B690": {"status": "matching", "symbol": "?draw_border@TScrollBarPanel@@IAEXHHJJJJ@Z"},
     "0047B8B0": {"status": "matching", "symbol": "?draw_back_pic@TScrollBarPanel@@IAEXXZ"},
-    "0047B970": {"status": "scratch", "symbol": "?draw_button_pic@TScrollBarPanel@@IAEXHHPAUtagRECT@@@Z"}
+    "0047B970": {"status": "accepted_drift", "symbol": "?draw_button_pic@TScrollBarPanel@@IAEXHHPAUtagRECT@@@Z"}
   }
 }
