@@ -181,7 +181,7 @@
     "00422A10": {"status": "matching", "symbol": "?GetWorldChecksum@RGE_Base_Game@@QAEJXZ"},
     "00422A50": {"status": "matching", "symbol": "?disable_input@RGE_Base_Game@@QAEXXZ"},
     "00422AB0": {"status": "matching", "symbol": "?enable_input@RGE_Base_Game@@QAEXXZ"},
-    "00422B10": {"status": "scratch", "symbol": "?set_screen_size@RGE_Base_Game@@QAEXJJ@Z"},
+    "00422B10": {"status": "accepted_drift", "symbol": "?set_screen_size@RGE_Base_Game@@QAEXJJ@Z"},
     "00422CC0": {"status": "matching", "symbol": "?check_prog_argument@RGE_Base_Game@@QAEEPAD@Z"},
     "00422D20": {"status": "matching", "symbol": "?get_scenario_checksum@RGE_Base_Game@@QAEJPAD@Z"},
     "00422D60": {"status": "matching", "symbol": "?check_scenario_checksum@RGE_Base_Game@@QAEEPADJ@Z"},
