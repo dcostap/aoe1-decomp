@@ -172,14 +172,12 @@ unsigned char PathingSystem::obstruction(int x, int y) {
 }
 
 void PathingSystem::incrementObstruction(int x, int y) {
-    int part = y & 3;
-    int row = y >> 2;
-    unsigned char value = obstructionValue[x][row];
-    unsigned char count = (value >> ObstructionValueShift[part]) & 3;
+    unsigned char value = obstructionValue[x][y >> 2];
+    unsigned char count = (value >> ObstructionValueShift[y & 3]) & 3;
     if (count < 3) {
-        obstructionValue[x][row] =
-            (ObstructionValueMask[part] & value) |
-            ((count + 1) << ObstructionValueShift[part]);
+        obstructionValue[x][y >> 2] =
+            (ObstructionValueMask[y & 3] & value) |
+            ((count + 1) << ObstructionValueShift[y & 3]);
     }
 }
 
