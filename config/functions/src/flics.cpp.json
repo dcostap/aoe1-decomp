@@ -20,6 +20,6 @@
     "0044A100": {"status": "scratch", "symbol": "?delta_flc@RGE_Flic_Player@@AAEXXZ"},
     "0044A2A0": {"status": "matching", "symbol": "?delta_fli@RGE_Flic_Player@@AAEXXZ"},
     "0044A390": {"status": "matching", "symbol": "?black@RGE_Flic_Player@@AAEXXZ"},
-    "0044A3E0": {"status": "scratch", "symbol": "?byte_run@RGE_Flic_Player@@AAEXXZ"}
+    "0044A3E0": {"status": "matching", "symbol": "?byte_run@RGE_Flic_Player@@AAEXXZ"}
   }
 }
