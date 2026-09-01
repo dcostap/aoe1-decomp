@@ -1364,26 +1364,26 @@ void TDrawArea::Clear(tagRECT* rect, int color)
                 y2 = this->Height - 1;
             }
 
-            if (x1 < x2 && y1 < y2) {
-                int width = x2 - x1 + 1;
+            if (x2 > x1 && y2 > y1) {
+                int wid = x2 - x1 + 1;
 
                 int step;
                 int offset;
                 if (this->Orien == 1) {
                     step = this->Pitch;
                     offset = y1 * step;
+                    p = p + offset + x1;
                 }
                 else {
                     offset = (this->Height - y1 - 1) * this->Pitch;
                     step = -this->Pitch;
+                    p = p + offset + x1;
                 }
-
-                p = p + offset + x1;
 
                 if (y1 <= y2) {
                     int rows = y2 - y1 + 1;
                     do {
-                        memset(p, color, width);
+                        memset(p, color, wid);
                         p += step;
                         --rows;
                     } while (rows != 0);
