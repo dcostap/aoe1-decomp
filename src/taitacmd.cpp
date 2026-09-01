@@ -3210,11 +3210,15 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
     percentExplored = (int)(this->md->player->visible->percentExplored() * 100.0f);
 
     list = &this->playersToAttack;
-    numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1, (*list)[0]);
+    if (list->maximumSizeValue - 1 < 0)
+        list->resize(1);
+    numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1, list->value[0]);
 
     if (this->civilians.numberValue >= 3) {
     list = &this->civilians;
-    if (this->md->informationAI.fullyExploredZone((*list)[0]) == 1) {
+    if (list->maximumSizeValue - 1 < 0)
+        list->resize(1);
+    if (this->md->informationAI.fullyExploredZone(list->value[0]) == 1) {
         zero = 0;
         this->civilianExplorers.desiredNumberValue = (int)ceil((float)((double)this->sn[0] * this->civilians.numberValue) * 0.01f);
         desired = this->numberSoldierExplorers();
