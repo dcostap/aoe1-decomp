@@ -3216,21 +3216,16 @@ void RGE_Static_Object::changeInfluenceMap(InfluenceMap* map, int mode, int grad
     float objectMaxX;
     float objectMinX;
 
-    int minY;
-    int maxY;
-    int minX;
-    int maxX;
-
     if (useRadius == 0) {
-        minY = (int)floor(this->world_x - this->master_obj->radius_x);
-        maxY = (int)ceil(this->master_obj->radius_x + this->world_x);
-        minX = (int)floor(this->world_y - this->master_obj->radius_y);
-        maxX = (int)ceil(this->master_obj->radius_y + this->world_y);
+        minYTile = (int)floor(this->world_x - this->master_obj->radius_x);
+        maxYTile = (int)ceil(this->master_obj->radius_x + this->world_x);
+        minXTile = (int)floor(this->world_y - this->master_obj->radius_y);
+        maxXTile = (int)ceil(this->master_obj->radius_y + this->world_y);
     } else {
-        minY = (int)floor(this->world_x - this->master_obj->radius_x - this->master_obj->los);
-        maxY = (int)ceil(this->master_obj->radius_x + this->master_obj->los + this->world_x);
-        minX = (int)floor(this->world_y - this->master_obj->radius_y - this->master_obj->los);
-        maxX = (int)ceil(this->master_obj->radius_y + this->master_obj->los + this->world_y);
+        minYTile = (int)floor(this->world_x - this->master_obj->radius_x - this->master_obj->los);
+        maxYTile = (int)ceil(this->master_obj->radius_x + this->master_obj->los + this->world_x);
+        minXTile = (int)floor(this->world_y - this->master_obj->radius_y - this->master_obj->los);
+        maxXTile = (int)ceil(this->master_obj->radius_y + this->master_obj->los + this->world_y);
     }
 
     if (useRadius == 0) {
@@ -3245,28 +3240,28 @@ void RGE_Static_Object::changeInfluenceMap(InfluenceMap* map, int mode, int grad
         objectMaxY = this->master_obj->radius_y + this->master_obj->los + this->world_y;
     }
 
-    for (int xTile = minX; xTile < maxX; xTile++) {
-        for (int yTile = minY; yTile < maxY; yTile++) {
+    for (int x = minXTile; x < maxXTile; x++) {
+        for (int y = minYTile; y < maxYTile; y++) {
             if (gradient) {
-                float left = (float)yTile;
-                if (objectMinX > (float)yTile) left = objectMinX;
-                float right = (float)(yTile + 1);
+                float left = (float)y;
+                if (objectMinX > (float)y) left = objectMinX;
+                float right = (float)(y + 1);
                 if (objectMaxX < right) right = objectMaxX;
-                float top = (float)xTile;
-                if (objectMinY > (float)xTile) top = objectMinY;
-                float bottom = (float)(xTile + 1);
+                float top = (float)x;
+                if (objectMinY > (float)x) top = objectMinY;
+                float bottom = (float)(x + 1);
                 if (objectMaxY < bottom) bottom = objectMaxY;
                 int value = (int)((right - left) * (bottom - top) * 255.0f);
                 if (mode == 1) {
-                    map->incrementValue(yTile, xTile, value);
+                    map->incrementValue(y, x, value);
                 } else {
-                    map->decrementValue(yTile, xTile, value);
+                    map->decrementValue(y, x, value);
                 }
             } else {
                 if (mode == 1) {
-                    map->incrementValue(yTile, xTile, 255);
+                    map->incrementValue(y, x, 255);
                 } else {
-                    map->decrementValue(yTile, xTile, 255);
+                    map->decrementValue(y, x, 255);
                 }
             }
         }
