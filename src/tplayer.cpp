@@ -550,13 +550,13 @@ RGE_Static_Object* TRIBE_Player::find_obj(short id, RGE_Static_Object* after)
 
     RGE_Object_Node* node = this->objects->list;
     if (node == 0) return 0;
-    for (;;) {
+    while (node != 0) {
         RGE_Static_Object* object = node->node;
         if (object != 0 && object->master_obj->id == id && object->object_state == 2)
-            return object;
+            return node->node;
         node = node->next;
-        if (node == 0) return 0;
     }
+    return 0;
 }
 
 
