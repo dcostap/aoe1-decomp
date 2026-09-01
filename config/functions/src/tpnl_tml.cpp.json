@@ -27,7 +27,7 @@
     "0051FA90": {"status": "matching", "symbol": "?draw_axis@Time_Line_Panel@@QAEXXZ"},
     "0051FD90": {"status": "accepted_drift", "symbol": "?draw_special_events@Time_Line_Panel@@QAEXXZ"},
     "00520080": {"status": "matching", "symbol": "?draw_background@Time_Line_Panel@@QAEXXZ"},
-    "00520220": {"status": "scratch", "symbol": "?draw_civilization_names@Time_Line_Panel@@QAEXXZ"},
+    "00520220": {"status": "accepted_drift", "symbol": "?draw_civilization_names@Time_Line_Panel@@QAEXXZ"},
     "005204A0": {"status": "scratch", "symbol": "?draw_timeline@Time_Line_Panel@@QAEXXZ"},
     "00520AE0": {"status": "matching", "symbol": "?draw_icon@Time_Line_Panel@@QAEXPAUSpecial_Events@@FE@Z"},
     "00520D50": {"status": "matching", "symbol": "?draw_legend@Time_Line_Panel@@QAEXXZ"}
