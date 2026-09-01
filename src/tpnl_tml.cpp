@@ -491,7 +491,7 @@ int Time_Line_Panel::calculate_icon_location(
     int bounds_result;
     int ok = 1;
     long start_y = 0;
-    int local_4 = 0;
+    long local_4 = 0;
     long start_x = 0;
 
     event->icon_flag = 0;
@@ -604,9 +604,9 @@ int Time_Line_Panel::calculate_icon_location(
 
     case 6:
     {
-        int top;
-        int max_length;
         int body_height;
+        int max_length;
+        int top;
         if (static_cast<int>(strlen(event->text1) * this->body_font_wid +
                              event->X_line_pos) >
             this->X_start_line_pos + this->X_line_max_width) {
@@ -633,9 +633,9 @@ int Time_Line_Panel::calculate_icon_location(
 
     case 8:
     {
-        int top;
-        int max_length;
         int body_height;
+        int max_length;
+        int top;
         if (static_cast<int>(strlen(event->text1) * this->body_font_wid +
                              event->X_line_pos) >
             this->X_start_line_pos + this->X_line_max_width) {
@@ -652,7 +652,7 @@ int Time_Line_Panel::calculate_icon_location(
         body_height = this->body_font_hgt;
         max_length = this->Y_line_max_length;
         top = this->Y_start_line_pos;
-        if (start_x + body_height + 1 + bounds_result > max_length + top) {
+        if (max_length + top < start_x + body_height + 1 + bounds_result) {
             start_x = (max_length - body_height) - bounds_result - 1 + top;
         }
         start_y = local_4;
