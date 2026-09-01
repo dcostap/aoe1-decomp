@@ -81,11 +81,9 @@ int MainDecisionAIModule::numberObjectsWithAction(int action)
     for (int i = 0; i < this->objects.number(); ++i) {
         RGE_Static_Object* object =
             this->player->world->object(this->objects[i]);
-        if (object != 0) {
-            UnitAIModule* unit_ai = object->unitAI();
-            if (unit_ai != 0 && unit_ai->currentAction() == action) {
-                ++count;
-            }
+        if (object != 0 && object->unitAI() != 0 &&
+            object->unitAI()->currentAction() == action) {
+            ++count;
         }
     }
 
