@@ -1412,26 +1412,27 @@ void RGE_Map::save_map(int file)
 void RGE_Map::save(int file)
 {
     RGE_Map* copy = (RGE_Map*)calloc(1, sizeof(RGE_Map));
-    *copy = *this;
+    memcpy(copy, this, sizeof(RGE_Map));
     int i;
 
     for (i = 0; i < 32; ++i) {
-        if (this->terrain_types[i].loaded != 0 &&
-            this->terrain_types[i].sound != 0) {
-            copy->terrain_types[i].sound =
-                (RGE_Sound*)this->terrain_types[i].sound->id;
-        } else {
-            copy->terrain_types[i].sound = (RGE_Sound*)-1;
+        if (this->terrain_types[i].loaded != 0) {
+            if (this->terrain_types[i].sound != 0) {
+                copy->terrain_types[i].sound =
+                    (RGE_Sound*)this->terrain_types[i].sound->id;
+            } else {
+                copy->terrain_types[i].sound = (RGE_Sound*)-1;
+            }
         }
     }
 
     for (i = 0; i < 16; ++i) {
-        if (this->border_types[i].loaded != 0 &&
-            this->border_types[i].sound != 0) {
+        if (this->border_types[i].sound == 0 ||
+            this->border_types[i].loaded == 0) {
+            copy->border_types[i].sound = (RGE_Sound*)-1;
+        } else {
             copy->border_types[i].sound =
                 (RGE_Sound*)this->border_types[i].sound->id;
-        } else {
-            copy->border_types[i].sound = (RGE_Sound*)-1;
         }
     }
 
