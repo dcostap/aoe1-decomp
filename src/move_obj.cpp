@@ -492,7 +492,10 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
             switch (((RGE_Master_Moving_Object*)this->master_obj)->obj_trail_options) {
             case 1: {
                 RGE_Static_Object* trail =
-                    trail_master->make_new_obj(this->owner, x, y, z);
+                    trail_master->make_new_obj(this->owner,
+                                               this->world_x,
+                                               this->world_y,
+                                               this->world_z);
                 if (trail->master_obj->id > 30) {
                     trail->new_angle(this->angle);
                 }
@@ -500,13 +503,13 @@ float RGE_Moving_Object::teleport(float x, float y, float z) {
             }
 
             case 2: {
+                float dx;
+                float dy;
                 float dz;
+                float distance;
                 float tx;
                 float ty;
                 float tz;
-                float distance;
-                float dx;
-                float dy;
                 // The original adds trail_remainder to distance
                 // at 0045D458, then adds it again in the count <= 0 branch at
                 dx = x - this->world_x;
