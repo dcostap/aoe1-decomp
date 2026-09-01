@@ -101,6 +101,7 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
         this->tab_x = this->tab_min_x;
     } else {
         const long base_left = this->pnl_x + 2;
+        const long down_top = (this->pnl_hgt + this->pnl_y - this->pnl_wid) + 2;
         const long track_right = this->pnl_x + this->pnl_wid - 5;
 
         this->up_rect.left = base_left;
@@ -108,7 +109,6 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
         this->up_rect.right = track_right;
         this->up_rect.bottom = (this->pnl_y + 2) + this->pnl_wid - 5;
 
-        const long down_top = (this->pnl_y + this->pnl_hgt - this->pnl_wid) + 2;
         this->down_rect.left = base_left;
         this->down_rect.top = down_top;
         this->down_rect.right = track_right;
@@ -117,11 +117,11 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
         this->tab_rect.left = base_left;
         this->top_rect.left = base_left;
         this->bottom_rect.left = base_left;
+        this->tab_max_y = (down_top - this->pnl_wid) + 4;
         this->tab_rect.right = track_right;
         this->top_rect.right = track_right;
         this->bottom_rect.right = track_right;
 
-        this->tab_max_y = (down_top - this->pnl_wid) + 4;
         this->tab_min_y = this->up_rect.bottom + 1;
         this->tab_y = this->tab_min_y;
     }
