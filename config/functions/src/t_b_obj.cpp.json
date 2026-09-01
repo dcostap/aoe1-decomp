@@ -43,7 +43,7 @@
     "004C9C80": {"status": "accepted_drift", "symbol": "?advance_production_queue@TRIBE_Building_Object@@QAEXXZ"},
     "004C9D20": {"status": "matching", "symbol": "?empty_production_queue@TRIBE_Building_Object@@QAEXXZ"},
     "004C9D90": {"status": "matching", "symbol": "?enable_production_queue@TRIBE_Building_Object@@QAEXH@Z"},
-    "004C9DA0": {"status": "scratch", "symbol": "?update_production_queue@TRIBE_Building_Object@@QAEXXZ"},
+    "004C9DA0": {"status": "matching", "symbol": "?update_production_queue@TRIBE_Building_Object@@QAEXXZ"},
     "004CA030": {"status": "matching", "symbol": "?production_queue_status@TRIBE_Building_Object@@QAEHAAF0@Z"},
     "004CA0B0": {"status": "matching", "symbol": "?stop@TRIBE_Building_Object@@UAEXXZ"}
   }
