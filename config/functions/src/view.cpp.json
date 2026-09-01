@@ -10,7 +10,7 @@
     "00533760": {"status": "matching", "symbol": "??1RGE_View@@UAE@XZ"},
     "00533940": {"status": "matching", "symbol": "?setup@RGE_View@@QAEJPAVTDrawArea@@PAVTPanel@@JJJJEHPAD@Z"},
     "00533AC0": {"status": "matching", "symbol": "?set_focus@RGE_View@@MAEXH@Z"},
-    "00533AF0": {"status": "scratch", "symbol": "?Init_Tile_Edge_Tables@RGE_View@@IAEXXZ"},
+    "00533AF0": {"status": "accepted_drift", "symbol": "?Init_Tile_Edge_Tables@RGE_View@@IAEXXZ"},
     "00533E10": {"status": "accepted_drift", "symbol": "?update_display_selected_objects@RGE_View@@QAEXXZ"},
     "00533EC0": {"status": "accepted_drift", "symbol": "?display_object_selection@RGE_View@@QAEXHHHH@Z"},
     "00533F70": {"status": "matching", "symbol": "?set_rect@RGE_View@@UAEXJJJJ@Z"},
