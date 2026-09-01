@@ -4654,10 +4654,10 @@ COMMSTATUS TCommunications_Handler::AnalyzeCommunicationsStatus(void) {
     if (this->MeHost != 0) {
         return static_cast<COMMSTATUS>(7);
     }
-    if (memcmp(&this->NullGUID, &this->SessionGUID, 16) != 0) {
+    if (memcmp(&this->SessionGUID, &this->NullGUID, 16) != 0) {
         return static_cast<COMMSTATUS>(6);
     }
-    if (memcmp(&this->ServiceGUID, &this->SessionGUID, 16) != 0) {
+    if (memcmp(&this->ServiceGUID, &this->NullGUID, 16) != 0) {
         return static_cast<COMMSTATUS>(5);
     }
     if (direct_play_interface != 0) {
