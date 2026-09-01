@@ -35,20 +35,19 @@ UnitAIModule::UnitAIModule(RGE_Static_Object* obj, int maxQueueSize)
       lastActionValue(-1),
       lastTargetValue(-1),
       lastTargetTypeValue(-1),
-      attackingUnitsValue(10) {
-
-    waypointQueueSizeValue = 0;
-    lastUpdateTimeValue = 0;
-    idleTimerValue = 0;
-    idleTimeoutValue = 3000;
-    secondaryTimerValue = 0;
-    lookAroundTimerValue = 0;
-    lookAroundTimeoutValue = 1000;
-    defenseBufferValue = 1.0f;
-    importantObjects = 0;
-    numberImportantObjects = 0;
-    playStatus = 0;
-    stopAfterTargetKilledValue = 0;
+      attackingUnitsValue(10),
+      waypointQueueSizeValue(0),
+      lastUpdateTimeValue(0),
+      idleTimerValue(0),
+      idleTimeoutValue(3000),
+      secondaryTimerValue(0),
+      lookAroundTimerValue(0),
+      lookAroundTimeoutValue(1000),
+      defenseBufferValue(1.0f),
+      importantObjects(0),
+      numberImportantObjects(0),
+      playStatus(0),
+      stopAfterTargetKilledValue(0) {
 
     if (obj != 0) {
         objectCategoryValue = obj->master_obj->object_group;
