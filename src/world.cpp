@@ -1840,9 +1840,13 @@ unsigned char RGE_Game_World::load_scenario(RGE_Player_Info& info) {
         this->load_scenario7(file, info);
         goto success;
     }
-    if (scenario_version == version_word_109.word ||
-        scenario_version == version_word_111.word ||
-        scenario_version == version_word_110.word) {
+    if (scenario_version == version_word_109.word) {
+        this->load_scenario8(file, info);
+        goto success;
+    } else if (scenario_version == version_word_111.word) {
+        this->load_scenario8(file, info);
+        goto success;
+    } else if (scenario_version == version_word_110.word) {
         this->load_scenario8(file, info);
         goto success;
     } else {
