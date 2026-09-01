@@ -17,7 +17,7 @@
     "00425990": {"status": "matching", "symbol": "?CalculatePlayerRange@TCommunications_Handler@@IAEHXZ"},
     "00425A20": {"status": "matching", "symbol": "?Step@TCommunications_Handler@@QAEXH@Z"},
     "00425A40": {"status": "matching", "symbol": "??0TCommunications_Handler@@QAE@PAXEPAVTChat@@U_GUID@@@Z"},
-    "004261E0": {"status": "scratch", "symbol": "??1TCommunications_Handler@@QAE@XZ"},
+    "004261E0": {"status": "accepted_drift", "symbol": "??1TCommunications_Handler@@QAE@XZ"},
     "00426350": {"status": "scratch", "symbol": "?KillAnyMissingPlayers@TCommunications_Handler@@IAEXXZ"},
     "00426470": {"status": "matching", "symbol": "?AddCommand@TCommunications_Handler@@IAEHKPAXKHEH@Z"},
     "004264D0": {"status": "matching", "symbol": "?get_command@TCommunications_Handler@@QAEPAXXZ"},
