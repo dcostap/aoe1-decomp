@@ -18,6 +18,11 @@ RGE_RMM_Elevation_Generator::RGE_RMM_Elevation_Generator(
 
 uchar RGE_RMM_Elevation_Generator::generate()
 {
+    struct Tile_Height_Byte {
+        uchar terrain_type : 5;
+        uchar height : 3;
+    };
+
     this->clear_stack();
 
     if (this->info.elevation_num > 0) {
@@ -27,9 +32,10 @@ uchar RGE_RMM_Elevation_Generator::generate()
                 long col;
                 if ((col = 0) < this->map_width) {
                     do {
-                        RGE_Tile* tile = this->map_row_offset[row] + col;
-                        tile->height =
-                            (uchar)this->info.elevation[0].base_elevation;
+                        Tile_Height_Byte* height_byte =
+                            (Tile_Height_Byte*)(this->map_row_offset[row] + col) + 5;
+                        height_byte->height =
+                            this->info.elevation[0].base_elevation;
                         ++col;
                     } while (col < this->map_width);
                 }
