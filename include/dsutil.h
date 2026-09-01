@@ -39,7 +39,6 @@ extern int ds_stream_at_end;
 extern unsigned int ds_silence_chunks;
 extern unsigned long ds_buffer_bytes;
 extern long ds_last_percent;
-extern int ds_stream_callback_active;
 
 #ifdef __cplusplus
 }

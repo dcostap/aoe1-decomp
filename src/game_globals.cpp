@@ -908,7 +908,6 @@ int ds_stream_at_end = 0;
 unsigned int ds_silence_chunks = 0;
 unsigned long ds_buffer_bytes = 0;
 long ds_last_percent = 0;
-int ds_stream_callback_active = 0;
 
 void* AppInst = 0;
 HMODULE StringTable = 0;
