@@ -413,7 +413,6 @@ protected:
 public:
     void request_pause();
     void get_mouse_info(WPARAM, LPARAM, tagPOINT&, int&, int&, int&, int&);
-    void get_mouse_info(WPARAM, LPARAM, long*, long*, int*, int*, int*);
     void set_windows_mouse(int);
     void set_game_options(RGE_Game_Options*);
     void get_game_options(RGE_Game_Options*);

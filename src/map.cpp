@@ -33,7 +33,6 @@ extern double DAT_005706c0;
 extern double DAT_005706d0;
 extern double DAT_005706d8;
 extern float DAT_005706e8;
-extern unsigned int DAT_0062e65c;
 extern TDebuggingLog* L;
 
 RGE_Map::RGE_Map(int fd, RGE_Sound** sounds, unsigned char load_random)
@@ -2684,7 +2683,9 @@ void RGE_Map::check_for_border(unsigned char param_1,
 
 void RGE_Map::update(unsigned long world_time)
 {
-    if (world_time - DAT_0062e65c < 100)
+    static unsigned long last_world_time;
+
+    if (world_time - last_world_time < 100)
         return;
 
     float cur_time = (float)world_time * DAT_005706e8;
@@ -2742,7 +2743,7 @@ void RGE_Map::update(unsigned long world_time)
         }
     }
 
-    DAT_0062e65c = world_time;
+    last_world_time = world_time;
 }
 
 void RGE_Map::get_point(short& out_x, short& out_y,
