@@ -502,13 +502,14 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square,
 
 int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
                                         int update_tiles, int p6) {
-    unsigned char* p;
-    unsigned long* unified;
-    int Revealed;
-    RGE_Player* curVisPlayer;
     int isCurPlayer;
+    RGE_Player* curVisPlayer;
+    int Revealed;
+    unsigned char* p;
     int csum;
+    unsigned long* unified;
     RGE_Tile* tile;
+    int y;
 
     Revealed = 0;
     log_map_call(this->world->world_time, (int)this->player->id, 2, p6,
@@ -565,12 +566,12 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
         y2 = this->heightValue - 1;
     }
 
-    for (; y1 <= y2; ++y1) {
-        p = this->map_offsets[y1] + x1;
-        unified = unified_map_offsets[y1] + x1;
+    for (y = y1; y <= y2; ++y) {
+        unified = unified_map_offsets[y] + x1;
+        p = this->map_offsets[y] + x1;
         int x = x1;
         if (update_tiles != 0) {
-            tile = this->map->map_row_offset[y1] + x1;
+            tile = this->map->map_row_offset[y] + x1;
         }
 
         while (x <= x2) {
@@ -579,9 +580,9 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
             if (value == 0) {
                 ++Revealed;
                 ++this->numberTilesExploredValue;
-                this->player->tile_list.add_node(x, y1);
+                this->player->tile_list.add_node(x, y);
                 if (isCurPlayer) {
-                    curVisPlayer->diam_tile_list.add_node(x, y1);
+                    curVisPlayer->diam_tile_list.add_node(x, y);
                 }
                 *unified |= this->PlayerExploredMaskValue;
                 value = 1;
