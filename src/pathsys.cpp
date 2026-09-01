@@ -570,7 +570,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             case 0: temp.x -= step; temp.y -= step; break;
             case 1:
             case 2: temp.x += step; break;
-            case 3: temp.y += step; break;
+            case 3:
             case 4: temp.y += step; break;
             case 5:
             case 6: temp.x -= step; break;
@@ -826,7 +826,7 @@ obstruction_done:
             misc = this->miscValue[temp.x][temp.y];
             newTotal += misc * 0x10;
             if (hitUnobstructibleObject == 1) {
-                if (unobstructibleObjectHitpoints < DAT_00570e88) newTotal += 0x10;
+                if (unobstructibleObjectHitpoints < 10.0f) newTotal += 0x10;
                 else newTotal += 0x3c;
             }
             facetByte = this->facetValue[bestPathPoint.x][bestPathPoint.y];
