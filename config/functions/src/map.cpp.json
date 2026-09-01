@@ -34,7 +34,7 @@
     "00457310": {"status": "matching", "symbol": "?clean_border_tile@RGE_Map@@QAEJJJQAY0CA@J@Z"},
     "00457320": {"status": "matching", "symbol": "?do_terrain_brush@RGE_Map@@UAEEJJJE@Z"},
     "004573C0": {"status": "matching", "symbol": "?do_terrain_brush_stroke@RGE_Map@@UAEEJJJJJE@Z"},
-    "00457510": {"status": "scratch", "symbol": "?do_elevation_brush@RGE_Map@@UAEEJJJE@Z"},
+    "00457510": {"status": "matching", "symbol": "?do_elevation_brush@RGE_Map@@UAEEJJJE@Z"},
     "004575C0": {"status": "matching", "symbol": "?do_elevation_brush_stroke@RGE_Map@@UAEEJJJJJE@Z"},
     "00457750": {"status": "matching", "symbol": "?do_cliff_brush@RGE_Map@@UAEEJJEE@Z"},
     "00457760": {"status": "matching", "symbol": "?do_cliff_brush_stroke@RGE_Map@@UAEEJJJJEE@Z"},
