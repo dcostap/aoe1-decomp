@@ -119,11 +119,7 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
 {
     // Both scans use clipped inclusive bounds and preserve the
     // executable's terrain predicate and byte-count return.
-    struct Scan_State {
-        long count;
-        long row_index;
-    } scan_state;
-    scan_state.count = 1;
+    long count = 1;
     long base_terrain =
         this->map->terrain_types[avoid_terrain].impassable_terrain;
 
@@ -141,8 +137,8 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
         RGE_Tile** row_ptr = this->map_row_offset + min_y;
         RGE_Tile* row = *row_ptr + min_x;
 
-        scan_state.row_index = min_y;
-        if (scan_state.row_index <= max_y) {
+        long row_index = min_y;
+        if (row_index <= max_y) {
             do {
                 if (min_x <= max_x) {
                     long xx = min_x;
@@ -158,9 +154,9 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
                     } while (xx <= max_x);
                 }
                 ++row_ptr;
-                ++scan_state.row_index;
+                ++row_index;
                 row = *row_ptr + min_x;
-            } while (scan_state.row_index <= max_y);
+            } while (row_index <= max_y);
         }
     }
 
@@ -184,7 +180,7 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
                 long col_count = max_x - min_x + 1;
                 do {
                     if ((tile->terrain_type & 0x1f) == terrain) {
-                        ++scan_state.count;
+                        ++count;
                     }
                     ++tile;
                     --col_count;
@@ -195,7 +191,7 @@ uchar RGE_RMM_Terrain_Generator::check_terrain(
             --row_count;
         } while (row_count != 0);
     }
-    return (uchar)scan_state.count;
+    return (uchar)count;
 }
 
 void RGE_RMM_Terrain_Generator::generate_modifiers()

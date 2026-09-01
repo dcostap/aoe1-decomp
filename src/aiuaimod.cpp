@@ -730,11 +730,8 @@ void UnitAIModule::updateGroup(unsigned long param_1)
 
                     object = this->objectValue;
                     if (object->groupMembers[memberIndex] != object->id) {
-                        if (memberIndex > object->groupMembers.maximumSizeValue - 1) {
-                            object->groupMembers.resize(memberIndex + 1);
-                        }
                         object = this->lookupObject(
-                            object->groupMembers.value[memberIndex]);
+                            object->groupMembers[memberIndex]);
                         if (object != 0 && object->unitAI() != 0) {
                             UnitAIModule* memberAI = object->unitAI();
                             newTarget = memberAI->bestUnitToAttack(1, 0, (float*)0);
