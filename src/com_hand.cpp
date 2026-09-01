@@ -5072,9 +5072,10 @@ int TCommunications_Handler::LaunchLobbyGame()
     AddSelfPlayer();
     MeHost = Lobby->IsThisHost();
     if (MeHost) {
+        COMMPLAYEROPTIONS& options = PlayerOptions;
         Me = 1;
-        PlayerOptions.dcoID[1] = local_player_dpid;
-        PlayerOptions.Humanity[this->Me] = ME_HUMAN;
+        options.dcoID[1] = local_player_dpid;
+        options.Humanity[this->Me] = ME_HUMAN;
         HaveHostInit = 1;
         PlayerOptions.ProgramState = COMM_STATE_JOINNOW;
         SetRandomSeed(rge_base_game->random_game_seed);
