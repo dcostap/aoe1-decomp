@@ -975,8 +975,6 @@ unsigned short guid_hex_digits[16] = {
 char comm_enum_buffer[0x100] = {0};
 char comm_info_buffers[0x700] = {0};
 char g_status_buffer[0x20] = {0};
-unsigned long comm_ping_sequence_turn = 0;
-unsigned char comm_ping_sequence = 1;
 char ready_player_buffer[64] = {0};
 char ready_player_template[64] = "Ready=                         ";
 char com_hand_source_path[] = "C:\\msdev\\work\\age1_x1\\Com_hand.cpp";
