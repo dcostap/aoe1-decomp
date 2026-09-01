@@ -722,25 +722,23 @@ void RGE_Command::do_command_destroy_group(RGE_Command_Destroy_Group* cmd) {
 
 
 
-unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* param_1)
+unsigned char RGE_Command::duplicate_check_command_order(RGE_Command_Order* order)
 {
-    unsigned int n = (unsigned char)param_1->unit_num;
-    RGE_Obj_Info* p1 = reinterpret_cast<RGE_Obj_Info*>(
-        reinterpret_cast<unsigned char*>(param_1) + sizeof(*param_1));
+    unsigned int n = (unsigned char)order->unit_num;
+    RGE_Obj_Info* last_units;
+    RGE_Obj_Info* units = reinterpret_cast<RGE_Obj_Info*>(order + 1);
     RGE_Command_Order* last_order =
         reinterpret_cast<RGE_Command_Order*>(this->last_order);
     unsigned int last_n = (unsigned char)last_order->unit_num;
-    RGE_Obj_Info* p2 = reinterpret_cast<RGE_Obj_Info*>(
-        reinterpret_cast<unsigned char*>(last_order) + sizeof(*last_order));
+    last_units = reinterpret_cast<RGE_Obj_Info*>(last_order + 1);
 
     if (n == last_n) {
 
-        if ((short)(int)last_order->location_x == (short)(int)param_1->location_x) {
-            if ((short)(int)param_1->location_y == (short)(int)last_order->location_y) {
-                long target_id = last_order->target.id;
-                if (target_id == param_1->target.id) {
+        if ((short)(int)last_order->location_x == (short)(int)order->location_x) {
+            if ((short)(int)last_order->location_y == (short)(int)order->location_y) {
+                if (last_order->target.id == order->target.id) {
                     for (int i = 0; i < (int)n; i++) {
-                        if (p1[i].id != p2[i].id)
+                        if (units[i].id != last_units[i].id)
                             goto fail;
                     }
                     return 1;
