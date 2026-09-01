@@ -15,7 +15,7 @@
     "0046B590": {"status": "matching", "symbol": "?initMisc@PathingSystem@@QAEXE@Z"},
     "0046B5C0": {"status": "matching", "symbol": "?zeroObstructionMap@PathingSystem@@QAEXXZ"},
     "0046B5E0": {"status": "accepted_drift", "symbol": "?obstruction@PathingSystem@@QAEEHH@Z"},
-    "0046B620": {"status": "scratch", "symbol": "?incrementObstruction@PathingSystem@@QAEXHH@Z"},
+    "0046B620": {"status": "matching", "symbol": "?incrementObstruction@PathingSystem@@QAEXHH@Z"},
     "0046B680": {"status": "matching", "symbol": "?decrementObstruction@PathingSystem@@QAEXHH@Z"},
     "0046B6E0": {"status": "scratch", "symbol": "?findTilePath@PathingSystem@@QAEHHHHHPAVRGE_Moving_Object@@MHHPAMHHHHHH@Z"},
     "0046D250": {"status": "matching", "symbol": "?incrementInitialPaths@PathingSystem@@QAEXXZ"},
