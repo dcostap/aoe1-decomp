@@ -28,7 +28,7 @@
     "0050A8D0": {"status": "matching", "symbol": "?command_research@TRIBE_Command@@QAEXPAVRGE_Static_Object@@F@Z"},
     "0050A940": {"status": "matching", "symbol": "?command_research@TRIBE_Command@@QAEXHHHH@Z"},
     "0050A9B0": {"status": "matching", "symbol": "?command_build@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FFMM@Z"},
-    "0050AA90": {"status": "scratch", "symbol": "?command_build@TRIBE_Command@@QAEXHPAHHHMMH@Z"},
+    "0050AA90": {"status": "matching", "symbol": "?command_build@TRIBE_Command@@QAEXHPAHHHMMH@Z"},
     "0050AB30": {"status": "matching", "symbol": "?command_build_wall@TRIBE_Command@@QAEXPAPAVRGE_Static_Object@@FFJJJJ@Z"},
     "0050AC70": {"status": "matching", "symbol": "?command_explore@TRIBE_Command@@QAEXHPAHHMM@Z"},
     "0050AD00": {"status": "matching", "symbol": "?command_allied_victory@TRIBE_Command@@QAEXFE@Z"},
