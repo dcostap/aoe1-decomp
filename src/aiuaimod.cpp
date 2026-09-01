@@ -730,6 +730,9 @@ void UnitAIModule::updateGroup(unsigned long param_1)
 
                     object = this->objectValue;
                     if (object->groupMembers[memberIndex] != object->id) {
+                        if (memberIndex > object->groupMembers.maximumSizeValue - 1) {
+                            object->groupMembers.resize(memberIndex + 1);
+                        }
                         object = this->lookupObject(
                             object->groupMembers.value[memberIndex]);
                         if (object != 0 && object->unitAI() != 0) {
