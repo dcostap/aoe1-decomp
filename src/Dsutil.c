@@ -22,7 +22,7 @@ extern int __cdecl WaveStartDataRead(HMMIO*, MMCKINFO*, MMCKINFO*);
 extern int __cdecl WaveReadFile(HMMIO, UINT, BYTE*, MMCKINFO*, UINT*);
 extern MMRESULT __cdecl WaveStartDataWrite(void*, MMCKINFO*, MMIOINFO*);
 extern int __cdecl WaveCreateFile(char*, HMMIO*, WAVEFORMATEX*, MMCKINFO*, MMCKINFO*);
-extern int __cdecl WaveWriteFile(HMMIO, unsigned int, const unsigned char*, unsigned int, unsigned int*, MMIOINFO*);
+extern int __cdecl WaveWriteFile(HMMIO, unsigned int, unsigned char*, MMCKINFO*, unsigned int*, MMIOINFO*);
 extern int __cdecl WaveCloseWriteFile(HMMIO*, MMCKINFO*, MMCKINFO*, MMIOINFO*, DWORD);
 extern int __cdecl riffCopyChunk(HMMIO, HMMIO, MMCKINFO*);
 
@@ -602,24 +602,27 @@ MMRESULT __cdecl WaveStartDataWrite(void* hmmioPtr, MMCKINFO* ckOut,
 }
 
 int __cdecl WaveWriteFile(HMMIO hmmio, unsigned int cBytes,
-                          const unsigned char* lpSrc, unsigned int pad,
+                          unsigned char* lpSrc, MMCKINFO* pckOut,
                           unsigned int* pdwWritten, MMIOINFO* lpmmio)
 {
-    unsigned int i = 0;
-    *pdwWritten = 0;
+    MMRESULT result = 0;
+    unsigned int i;
+    *pdwWritten = result;
+    i = 0;
     if (cBytes <= 0) return;
     do {
         if (lpmmio->pchNext == lpmmio->pchEndWrite) {
-            lpmmio->dwFlags = lpmmio->dwFlags | 0x10000000;
-            if (mmioAdvance(hmmio, (LPMMIOINFO)lpmmio, 1) != 0) {
-                return;
+            lpmmio->dwFlags = lpmmio->dwFlags | MMIO_DIRTY;
+            result = mmioAdvance(hmmio, lpmmio, MMIO_WRITE);
+            if (result != 0) {
+                return result;
             }
         }
-        *lpmmio->pchNext = lpSrc[i];
-        lpmmio->pchNext = lpmmio->pchNext + 1;
+        *lpmmio->pchNext++ = lpSrc[i];
+        (*pdwWritten)++;
         i = i + 1;
-        *pdwWritten = *pdwWritten + 1;
     } while (i < cBytes);
+    return result;
 }
 
 int __cdecl WaveCloseWriteFile(HMMIO* phmmioOut, MMCKINFO* pckOut,
@@ -813,8 +816,8 @@ void __cdecl WaveSaveFile(void* param_1, void* param_2, void* param_3,
                                (MMCKINFO*)(l.ckOut + 4),
                                (MMIOINFO*)l.mmioinfoOut) == 0) {
             if (WaveWriteFile((HMMIO)l.cbActualWrite, (unsigned int)param_2,
-                              (const unsigned char*)param_5,
-                              (unsigned int)(l.ckOut + 4),
+                              (unsigned char*)param_5,
+                              (MMCKINFO*)(l.ckOut + 4),
                               (unsigned int*)l.ckOut,
                               (MMIOINFO*)l.mmioinfoOut) == 0) {
                 WaveCloseWriteFile((HMMIO*)&l.cbActualWrite,
