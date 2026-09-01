@@ -75,19 +75,20 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
     TPanel::set_rect(param_1, param_2, param_3, param_4);
 
     if (this->orientationValue == Horizontal) {
-        const long base_top = this->pnl_y + 2;
-        const long track_bottom = this->pnl_y + this->pnl_hgt - 5;
+        const int base_top = this->pnl_y + 2;
+        const int track_bottom = this->pnl_y + this->pnl_hgt - 5;
+
+        this->up_rect.top = base_top;
+        this->down_rect.top = base_top;
 
         this->up_rect.left = this->pnl_x + 2;
-        this->up_rect.top = base_top;
-        this->up_rect.right = (this->pnl_x + 2) + this->pnl_hgt - 5;
         this->up_rect.bottom = track_bottom;
 
-        const long down_left = (this->pnl_x + this->pnl_wid - this->pnl_hgt) + 2;
+        const int down_left = (this->pnl_wid + this->pnl_x - this->pnl_hgt) + 2;
         this->down_rect.left = down_left;
-        this->down_rect.top = base_top;
-        this->down_rect.right = down_left + this->pnl_hgt - 5;
+        this->up_rect.right = (this->pnl_x + 2) + this->pnl_hgt - 5;
         this->down_rect.bottom = track_bottom;
+        this->down_rect.right = down_left + this->pnl_hgt - 5;
 
         this->tab_rect.top = base_top;
         this->tab_rect.bottom = track_bottom;
