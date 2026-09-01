@@ -2826,7 +2826,8 @@ extern void color_log(unsigned char a, unsigned char b, int c);
 
 
 
-LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
+                                       unsigned int wparam, long lparam)
 {
     RGE_Base_Game* self = this;
     color_log(0x24, 0x24, 3);
@@ -2874,11 +2875,12 @@ LRESULT CALLBACK RGE_Base_Game::wnd_proc(HWND hwnd, UINT msg, WPARAM wparam, LPA
         int size_handled = self->handle_size(hwnd, 5, wparam, lparam);
         if (size_handled != 0)
             goto default_window_proc;
-        if (mouse_down == 0)
-            goto wparam_return;
-        color_log(0x4C, 0x5F, 4);
-        color_log(0x24, 0x5F, 3);
-        return static_cast<LRESULT>(wparam);
+        if (mouse_down != 0) {
+            color_log(0x4C, 0x5F, 4);
+            color_log(0x24, 0x5F, 3);
+            return static_cast<LRESULT>(wparam);
+        }
+        goto wparam_return;
         }
 
     case 6:
