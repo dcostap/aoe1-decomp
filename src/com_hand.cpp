@@ -5459,12 +5459,13 @@ typedef unsigned long ulong;
 
 int TCommunications_Handler::JoinMultiplayerGame(_GUID* guid)
 {
-    DPSESSIONDESC2 dSess2 = {0};
-
     if (direct_play_interface == 0) {
         L->Log("JMPG: Create w/no valid glpIDC");
         return 0;
     }
+
+    DPSESSIONDESC2 dSess2;
+    memset(&dSess2, 0, sizeof(dSess2));
 
     memcpy(&this->SessionGUID, guid, sizeof(this->SessionGUID));
     this->MeHost = 0;
