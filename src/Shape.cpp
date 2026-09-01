@@ -2271,8 +2271,6 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
     long parity;
     long next_parity;
     long run;
-    byte done;
-    byte cmd;
     byte count;
     byte* end;
 
@@ -2283,22 +2281,22 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
     height = sh->ymax - sh->ymin + 1;
 
     if (orientation < 1) {
-        dst = area->Bits + x + (y - area->Height + 1) * pitch;
+        save_buffer = area->Bits + x + (y - area->Height + 1) * pitch;
     } else {
-        dst = area->Bits + x + y * pitch;
+        save_buffer = area->Bits + x + y * pitch;
     }
 
     parity = (param_5 + x) & 1;
     if (((param_6 + y) & 1) != 0)
         parity = (parity != 1);
 
-    save_buffer = dst;
     if (height > 0) {
         do {
             next_parity = (parity != 1);
-            done = 0;
+            byte done = 0;
+            dst = save_buffer;
             do {
-                cmd = *src++;
+                byte cmd = *src++;
                 if ((cmd & 1) == 1) {
                     count = (byte)(cmd >> 1);
                     if (count == 0) {
