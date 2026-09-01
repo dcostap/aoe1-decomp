@@ -861,18 +861,14 @@ void TRIBE_Command::command_relation(short player_id, short target_player_id, sh
     TRIBE_Command_Game* cmd = static_cast<TRIBE_Command_Game*>(
         calloc(1, sizeof(TRIBE_Command_Game)));
     if (cmd) {
-        short rel_s = relation;
-        short player_s = player_id;
-        short target_s = target_player_id;
-        int rel_i = (int)rel_s;
-        cmd->var2 = target_s;
-        cmd->var4 = rel_s;
-        cmd->var3 = static_cast<float>(rel_i);
-        L->Log("      >SEND CMD RELATION (PLR=%d,TAR=%d,REL=%d)",
-               (int)player_s, (int)target_s, rel_i);
-        cmd->var1 = player_s;
+        cmd->var1 = player_id;
+        cmd->var2 = target_player_id;
+        cmd->var3 = static_cast<float>((int)relation);
+        cmd->var4 = relation;
         cmd->command = 0x67;
         cmd->game_command = 0;
+        L->Log("      >SEND CMD RELATION (PLR=%d,TAR=%d,REL=%d)",
+               (int)player_id, (int)target_player_id, (int)relation);
         this->submit(cmd, sizeof(TRIBE_Command_Game));
     }
 }
