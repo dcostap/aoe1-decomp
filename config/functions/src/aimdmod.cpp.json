@@ -16,7 +16,7 @@
     "0040D2C0": {"status": "matching", "symbol": "?numberObjects@MainDecisionAIModule@@QAEHXZ"},
     "0040D2D0": {"status": "matching", "symbol": "?numberObjectsWithAction@MainDecisionAIModule@@QAEHH@Z"},
     "0040D3B0": {"status": "matching", "symbol": "?numberObjectsWithGroup@MainDecisionAIModule@@QAEHH@Z"},
-    "0040D480": {"status": "scratch", "symbol": "?numberObjectsWithActionAndTarget@MainDecisionAIModule@@QAEHHH@Z"},
+    "0040D480": {"status": "matching", "symbol": "?numberObjectsWithActionAndTarget@MainDecisionAIModule@@QAEHHH@Z"},
     "0040D580": {"status": "scratch", "symbol": "?numberObjectsWithTargetType@MainDecisionAIModule@@QAEHH@Z"},
     "0040D660": {"status": "matching", "symbol": "?numberObjectsWithActionAndTargetType@MainDecisionAIModule@@QAEHHH@Z"},
     "0040D760": {"status": "matching", "symbol": "?object@MainDecisionAIModule@@QAEPAVRGE_Static_Object@@H@Z"},
