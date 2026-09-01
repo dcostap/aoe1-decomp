@@ -18,7 +18,7 @@
     "00434320": {"status": "matching", "symbol": "?do_command_work@RGE_Command@@IAEXPAURGE_Command_Order@@@Z"},
     "00434400": {"status": "matching", "symbol": "?do_command_move@RGE_Command@@IAEXPAURGE_Command_Order@@@Z"},
     "004348B0": {"status": "scratch", "symbol": "?do_command_create@RGE_Command@@IAEXPAURGE_Command_Create@@@Z"},
-    "004348F0": {"status": "scratch", "symbol": "?do_command_add_attribute@RGE_Command@@IAEXPAURGE_Command_Add_Attribute@@@Z"},
+    "004348F0": {"status": "accepted_drift", "symbol": "?do_command_add_attribute@RGE_Command@@IAEXPAURGE_Command_Add_Attribute@@@Z"},
     "00434920": {"status": "matching", "symbol": "?do_command_give_attribute@RGE_Command@@MAEXPAURGE_Command_Give_Attribute@@@Z"},
     "00434A00": {"status": "matching", "symbol": "?do_command_formation@RGE_Command@@IAEXPAURGE_Command_Formation@@@Z"},
     "00434D40": {"status": "matching", "symbol": "?do_command_ai_order@RGE_Command@@IAEXPAURGE_Command_AI_Order@@@Z"},
