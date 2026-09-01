@@ -315,7 +315,8 @@ TribeMPCreateDialog::TribeMPCreateDialog(TPanel* parent)
                     str[0] = 0;
                 }
                 if (this->create_edit(this, inputGamename, str,
-                                      40, 0, 40, 0x6e, 0x1a4, 0x17,
+                                      40, TEditPanel::FormatText,
+                                      40, 0x6e, 0x1a4, 0x17,
                                       0xb, 1, 0)) {
                     if (this->create_button(this, &this->okButton,
                                             0x0fa1, 0, 0x3c, 0xb4,

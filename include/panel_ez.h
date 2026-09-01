@@ -3,6 +3,8 @@
 
 // This header owns TEasy_Panel. Foreign types stay in their own headers.
 #include "panel.h"
+#include "Pnl_inp.h"
+#include "pnl_edit.h"
 
 typedef unsigned char uchar;
 
@@ -11,8 +13,6 @@ class RGE_Color_Table;
 class TShape;
 class TButtonPanel;
 class TTextPanel;
-class TInputPanel;
-class TEditPanel;
 class TDropDownPanel;
 class TListPanel;
 class TScrollBarPanel;
@@ -97,10 +97,12 @@ protected:
                             long, long, long, int, int);
     virtual int create_text(TPanel*, TTextPanel**, int, long, long, long,
                             long, long, int, int, int);
-    virtual int create_input(TPanel*, TInputPanel**, char*, short, int, long,
-                             long, long, long, long);
-    virtual int create_edit(TPanel*, TEditPanel**, char*, short, int, long,
-                            long, long, long, long, int, int);
+    virtual int create_input(TPanel*, TInputPanel**, char*, short,
+                             TInputPanel::FormatType, long, long, long, long,
+                             long);
+    virtual int create_edit(TPanel*, TEditPanel**, char*, short,
+                            TEditPanel::FormatType, long, long, long, long,
+                            long, int, int);
     virtual int create_drop_down(TPanel*, TDropDownPanel**, long, long, long,
                                  long, long, long, long);
     virtual int create_list(TPanel*, TListPanel**, long, long, long, long,

@@ -56,7 +56,8 @@ TribeMPStartupScreen::TribeMPStartupScreen()
             str[0] = 0;
         }
 
-        if (this->create_edit(this, &this->input, str, 0x0F, 0,
+        if (this->create_edit(this, &this->input, str, 0x0F,
+                              TEditPanel::FormatText,
                               0x14, 100, 600, 0x17, 0x0B, 1, 0)) {
             this->input->set_help_info(0x7595, -1);
             if (this->create_text(this, &this->connectionTitle, 0x258D,

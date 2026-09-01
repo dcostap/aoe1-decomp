@@ -56,7 +56,8 @@ TRIBE_Campaign_Editor_Screen::TRIBE_Campaign_Editor_Screen()
 
     this->create_edit(this->filename_drop, &this->filename,
                       this->get_string(0x2BCA),
-                      100, 5, 0, 0, 0x168, 0x1E, 0xB, 1, 1);
+                      100, TEditPanel::FormatFileNoExt,
+                      0, 0, 0x168, 0x1E, 0xB, 1, 1);
 
     this->create_button(this, &this->save_button, 0x2BC4,
                         0, 0x1A4, 0x3C, 0xC8, 0x1E, 0, 0, 0);

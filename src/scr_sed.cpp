@@ -291,7 +291,10 @@ int TRIBE_Screen_Sed::create_text(TPanel* panel, TTextPanel** text_panel, char* 
 int TRIBE_Screen_Sed::create_input(TPanel* param_1, TInputPanel** param_2,
                                    char* param_3, short param_4,
                                    TInputPanel::FormatType param_5) {
-    if (this->TEasy_Panel::create_input(param_1, param_2, param_3, param_4, param_5, 0, 0, 0, 0, 10) == 0) {
+    if (this->TEasy_Panel::create_input(
+            param_1, param_2, param_3, param_4,
+            static_cast<TInputPanel::FormatType>(param_5),
+            0, 0, 0, 0, 10) == 0) {
         return 0;
     }
     (*param_2)->set_z_order(1, 0);
@@ -303,7 +306,10 @@ int TRIBE_Screen_Sed::create_edit(TPanel* panel, TEditPanel** out_edit,
                                   char* text, short width,
                                   TEditPanel::FormatType format, int a6,
                                   int a7) {
-    int result = this->TEasy_Panel::create_edit(panel, out_edit, text, width, format, 0, 0, 0, 0, 10, a6, a7);
+    int result = this->TEasy_Panel::create_edit(
+        panel, out_edit, text, width,
+        static_cast<TEditPanel::FormatType>(format),
+        0, 0, 0, 0, 10, a6, a7);
     if (result == 0) return 0;
     (*out_edit)->set_z_order(1, 0);
     (*out_edit)->set_active(0);

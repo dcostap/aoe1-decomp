@@ -383,7 +383,8 @@ TribeSendQuickMessageDialog::TribeSendQuickMessageDialog(TScreenPanel* parent,
         return;
     }
 
-    if (!this->create_edit(this, &this->chatInput, "", 0x41, 0,
+    if (!this->create_edit(this, &this->chatInput, "", 0x41,
+                           TEditPanel::FormatText,
                            0x82, 5, 0x195, 0x19, 0x0B, 1, 0)) {
         return;
     }

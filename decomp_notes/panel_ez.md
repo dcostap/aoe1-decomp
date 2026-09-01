@@ -52,11 +52,9 @@ Exact repair resumes from this canonical source tree.
 The original `create_input` and `create_edit` symbols use nested `FormatType`
 enums. A full class-visible repair makes both bodies exact.
 
-VC5 cannot name either nested enum from an incomplete class. Full foreign class
-definitions therefore become compiler context for every `panel_ez.h` dependent.
+VC5 cannot name either nested enum from an incomplete class. `panel_ez.h` now
+includes the two owning class headers and uses each nested enum directly.
 
-The latest narrow trials preserved `0048E400` but regressed exact `00473C80`.
-Header order, reduced dependency includes, and natural text/list header
-ownership did not remove that regression. All trials were restored.
-
-Do not use a symbol alias, copied class, context macro, or wrong integer owner.
+The integrated source makes `00469000` and `004691C0` exact. It also keeps
+`00467380` exact in the current canonical context. Do not use a symbol alias,
+copied class, context macro, or wrong integer owner.

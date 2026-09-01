@@ -1015,7 +1015,7 @@ int TEasy_Panel::create_text(TPanel* parent, TTextPanel** out, char** text, long
     return 0;
 }
 
-int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, int format,
+int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, short max_len, TInputPanel::FormatType format,
                               long x, long y, long w, long h, long font_id)
 {
     long ideal_x = (x * this->pnl_wid) / this->ideal_width;
@@ -1034,7 +1034,7 @@ int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, sho
         if ((*out)->setup(this->render_area, parent, ideal_x, ideal_y, ideal_w, ideal_h,
                           font->font, font->font_wid, font->font_hgt,
                           0, 0, 0, 1, 0xff, 0xff, max_len, 0, text,
-                          (TInputPanel::FormatType)format) != 0) {
+                          format) != 0) {
             if (this->use_bevels != 0) {
                 (*out)->set_bevel_info(3, this->bevel_color1, this->bevel_color2,
                                        this->bevel_color3, this->bevel_color4,
@@ -1050,7 +1050,7 @@ int TEasy_Panel::create_input(TPanel* parent, TInputPanel** out, char* text, sho
     return 0;
 }
 
-int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, int p5,
+int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, TEditPanel::FormatType p5,
                               long p6, long p7, long p8, long p9, long p10,
                               int p11, int p12)
 {
@@ -1071,7 +1071,7 @@ int TEasy_Panel::create_edit(TPanel* p1, TEditPanel** p2, char* p3, short p4, in
 
         if ((*p2)->setup(this->render_area, p1, x, y, width, p9,
                          font->font, p4, p3,
-                         (TEditPanel::FormatType)p5, multiline)) {
+                         p5, multiline)) {
 
             if (this->use_bevels) {
                 (*p2)->set_bevel_info(3,
