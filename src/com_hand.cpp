@@ -496,32 +496,50 @@ TCommunications_Handler::~TCommunications_Handler() {
 
 void TCommunications_Handler::KillAnyMissingPlayers()
 {
-    MSGFORMAT_KILL_PLAYER kp;
-    char* buf;
-    IDirectPlay3* dp;
+    struct DirectPlayVtbl {
+        char gap_00[0x54];
+        long (__stdcall* GetPlayerName)(void* self, unsigned long player,
+                                        void* data, unsigned long* size);
+    };
+    struct DirectPlay {
+        DirectPlayVtbl* vtbl;
+    };
+
+    struct KillPlayerPacket {
+        int PlayerNo;
+        unsigned long dcoID;
+        unsigned long CurrentTurn;
+        unsigned long current_turn;
+    } kp;
+    void* buf;
+    DirectPlay* dp;
     unsigned int i = 1;
 
     if (i <= this->MaxGamePlayers) {
         unsigned long* dcoID = this->PlayerOptions.dcoID + 1;
         do {
             if (this->IsPlayerHuman(i)) {
-                dp = direct_play_interface;
-                unsigned long name_size = 0;
-                dp->GetPlayerName(*dcoID, 0, &name_size);
+                dp = reinterpret_cast<DirectPlay*>(direct_play_interface);
+                long hr;
+                DirectPlayVtbl* dp_vtbl = dp->vtbl;
+                hr = 0;
+                dp_vtbl->GetPlayerName(dp, *dcoID, 0,
+                                       reinterpret_cast<unsigned long*>(&hr));
 
-                buf = new char[name_size];
-                dp = direct_play_interface;
-                long name_result = dp->GetPlayerName(*dcoID, buf, &name_size);
-                delete[] buf;
+                buf = operator new(hr);
+                dp = reinterpret_cast<DirectPlay*>(direct_play_interface);
+                kp.PlayerNo = dp->vtbl->GetPlayerName(
+                    dp, *dcoID, buf, reinterpret_cast<unsigned long*>(&hr));
+                operator delete(buf);
 
-                if (name_result != 0) {
-                    kp.PlayerNo = i;
-                    kp.dcoID = *dcoID;
-                    kp.CurrentTurn = this->current_turn;
+                if (kp.PlayerNo != 0) {
+                    kp.dcoID = i;
+                    kp.CurrentTurn = *dcoID;
+                    kp.current_turn = this->current_turn;
                     L->Log("  >TX KP #%d (%d)", i, 0x0C);
-                    this->CommOut(0, 0x4B, &kp.PlayerNo, 0x0C, 0);
+                    this->CommOut(0, 0x4B, &kp.dcoID, 0x0C, 0);
 
-                    if (this->PlayerStopTurn[i] == 0) {
+                    if (dcoID[-0x6A] == 0) {
                         this->DropDeadPlayer(i, *dcoID);
                     }
                 }
