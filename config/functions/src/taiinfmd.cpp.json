@@ -96,7 +96,7 @@
     "004E2490": {"status": "matching", "symbol": "?addResourceObject@TribeInformationAIModule@@QAEHPAVRGE_Static_Object@@@Z"},
     "004E2A00": {"status": "matching", "symbol": "?findClosestDropsite@TribeInformationAIModule@@QAEMPAVRGE_Static_Object@@HAAH@Z"},
     "004E2BA0": {"status": "matching", "symbol": "?findClosestReturnDropsite@TribeInformationAIModule@@QAEPAVRGE_Static_Object@@PAV2@@Z"},
-    "004E2D10": {"status": "scratch", "symbol": "?updateAllResourceDropsites@TribeInformationAIModule@@QAEXXZ"},
+    "004E2D10": {"status": "accepted_drift", "symbol": "?updateAllResourceDropsites@TribeInformationAIModule@@QAEXXZ"},
     "004E2E90": {"status": "matching", "symbol": "?updateResourceDropsites@TribeInformationAIModule@@QAEXH@Z"},
     "004E3020": {"status": "matching", "symbol": "?setResourceObjectValid@TribeInformationAIModule@@QAEHHHH@Z"},
     "004E3070": {"status": "matching", "symbol": "?numberStoragePits@TribeInformationAIModule@@QAEHXZ"},
