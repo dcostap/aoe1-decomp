@@ -10,7 +10,7 @@
     "00511E20": {"status": "matching", "symbol": "??0TRIBE_Player@@QAE@PAVTRIBE_World@@PAVRGE_Master_Player@@EPADEEE222@Z"},
     "005120F0": {"status": "matching", "symbol": "??1TRIBE_Player@@UAE@XZ"},
     "005121A0": {"status": "matching", "symbol": "?make_scenario_obj@TRIBE_Player@@UAEPAVRGE_Static_Object@@MMMFEM@Z"},
-    "00512250": {"status": "scratch", "symbol": "?save@TRIBE_Player@@UAEXH@Z"},
+    "00512250": {"status": "matching", "symbol": "?save@TRIBE_Player@@UAEXH@Z"},
     "005123B0": {"status": "matching", "symbol": "?update@TRIBE_Player@@UAEXXZ"},
     "00512620": {"status": "matching", "symbol": "?update_dopplegangers@TRIBE_Player@@UAEXXZ"},
     "00512630": {"status": "matching", "symbol": "?scenario_save@TRIBE_Player@@UAEXH@Z"},
