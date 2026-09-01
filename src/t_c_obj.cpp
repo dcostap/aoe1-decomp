@@ -416,102 +416,139 @@ void TRIBE_Combat_Object::get_pierce_armor(short& armor, short& original)
 
 void TRIBE_Combat_Object::reposition_artifact()
 {
+    int y2;
+    int x2;
+    float y1;
+    float x_pos;
+    int x1;
+    int found_pos;
+    int map_max_x;
+    int map_max_y;
+    int found;
+    unsigned char terrain;
+    char placement;
     RGE_Static_Object* parent = this->inside_obj;
-    float x;
-    float y;
-    int min_x;
-    int min_y;
     if (parent != 0) {
-        min_x = static_cast<int>(parent->world_x);
-        x = parent->world_x;
-        min_y = static_cast<int>(parent->world_y);
-        y = parent->world_y;
+        y2 = static_cast<int>(parent->world_x);
+        x2 = static_cast<int>(parent->world_y);
+        y1 = parent->world_x;
+        x_pos = parent->world_y;
     } else {
-        min_x = (int)this->world_x;
-        y = this->world_y;
-        min_y = (int)this->world_y;
-        x = this->world_x;
+        y2 = static_cast<int>(this->world_x);
+        x2 = static_cast<int>(this->world_y);
+        y1 = this->world_x;
+        x_pos = this->world_y;
     }
-    int max_x = min_x;
-    int max_y = min_y;
+    x1 = y2;
+    found_pos = x2;
 
     RGE_Map* map = this->owner->world->map;
-    const int map_max_x = map->map_width - 1;
-    const int map_max_y = map->map_height - 1;
-
-    unsigned char terrain;
-    int edge;
-    for (;;) {
-        for (edge = min_x; edge <= max_x; ++edge) {
-            terrain = map->get_terrain(static_cast<short>(edge),
-                                       static_cast<short>(min_y));
+    found = 0;
+    map_max_x = map->map_width - 1;
+    map_max_y = map->map_height - 1;
+    do {
+        int i = y2;
+        for (; i <= x1; ++i) {
+            terrain = map->get_terrain(
+                static_cast<short>(i), static_cast<short>(x2));
             if (terrain != 1 && terrain != 2) {
-                x = static_cast<float>(edge) - DAT_00574ca0;
-                y = static_cast<float>(min_y) - DAT_00574ca0;
-                if (this->master_obj->check_placement(this->owner, x, y, 0,
-                                                      1, 1, 1, 0, 1, 1) == 0) {
-                    goto found_position;
+                y1 = static_cast<float>(i) - DAT_00574ca0;
+                x_pos = static_cast<float>(x2) - DAT_00574ca0;
+                placement = this->master_obj->check_placement(
+                    this->owner, y1, x_pos, 0, 1, 1, 1, 0, 1, 1);
+                if (placement == 0) {
+                    found = 1;
+                    break;
                 }
             }
 
-            terrain = map->get_terrain(static_cast<short>(edge),
-                                       static_cast<short>(max_y));
+            terrain = map->get_terrain(static_cast<short>(i),
+                                       static_cast<short>(found_pos));
             if (terrain != 1 && terrain != 2) {
-                x = static_cast<float>(edge) - DAT_00574ca0;
-                y = static_cast<float>(max_y) - DAT_00574ca0;
-                if (this->master_obj->check_placement(this->owner, x, y, 0,
-                                                      1, 1, 1, 0, 1, 1) == 0) {
-                    goto found_position;
-                }
-            }
-        }
-
-        for (edge = min_y + 1; edge <= max_y - 1; ++edge) {
-            terrain = map->get_terrain(static_cast<short>(min_x),
-                                       static_cast<short>(edge));
-            if (terrain != 1 && terrain != 2) {
-                x = static_cast<float>(min_x) - DAT_00574ca0;
-                y = static_cast<float>(edge) - DAT_00574ca0;
-                if (this->master_obj->check_placement(this->owner, x, y, 0,
-                                                      1, 1, 1, 0, 1, 1) == 0) {
-                    goto found_position;
-                }
-            }
-
-            terrain = map->get_terrain(static_cast<short>(max_x),
-                                       static_cast<short>(edge));
-            if (terrain != 1 && terrain != 2) {
-                x = static_cast<float>(max_x) - DAT_00574ca0;
-                y = static_cast<float>(edge) - DAT_00574ca0;
-                if (this->master_obj->check_placement(this->owner, x, y, 0,
-                                                      0, 1, 1, 0, 1, 1) == 0) {
-                    goto found_position;
+                y1 = static_cast<float>(i) - DAT_00574ca0;
+                x_pos = static_cast<float>(found_pos) - DAT_00574ca0;
+                placement = this->master_obj->check_placement(
+                    this->owner, y1, x_pos, 0, 1, 1, 1, 0, 1, 1);
+                if (placement == 0) {
+                    found = 1;
+                    break;
                 }
             }
         }
 
-        if (min_x == 0 && max_x == map_max_x && min_y == 0 &&
-            max_y == map_max_y) {
-            parent = this->inside_obj;
-            x = parent != 0 ? parent->world_x : this->world_x;
-            y = parent != 0 ? parent->world_y : this->world_y;
+        if (found) {
             break;
         }
 
-        if (min_x > 0) --min_x;
-        if (min_y > 0) --min_y;
-        if (max_x < map_max_x) ++max_x;
-        if (max_y < map_max_y) ++max_y;
-    }
+        int j = x2 + 1;
+        for (; j <= found_pos - 1; ++j) {
 
-found_position:
-    this->set_location(x, y, this->world_z);
+            terrain = map->get_terrain(
+                static_cast<short>(y2), static_cast<short>(j));
+            if (terrain != 1 && terrain != 2) {
+                y1 = static_cast<float>(y2) - DAT_00574ca0;
+                x_pos = static_cast<float>(j) - DAT_00574ca0;
+                placement = this->master_obj->check_placement(
+                    this->owner, y1, x_pos, 0, 1, 1, 1, 0, 1, 1);
+                if (placement == 0) {
+                    found = 1;
+                    break;
+                }
+            }
+
+            terrain = map->get_terrain(static_cast<short>(x1),
+                                       static_cast<short>(j));
+            if (terrain == 1 || terrain == 2) {
+                continue;
+            }
+            y1 = static_cast<float>(x1) - DAT_00574ca0;
+            x_pos = static_cast<float>(j) - DAT_00574ca0;
+            placement = this->master_obj->check_placement(
+                this->owner, y1, x_pos, 0, 0, 1, 1, 0, 1, 1);
+            if (placement == 0) {
+                found = 1;
+                break;
+            }
+        }
+
+        if (found) {
+            break;
+        }
+
+        if (y2 == 0 && x1 == map_max_x && x2 == 0 &&
+            found_pos == map_max_y) {
+            parent = this->inside_obj;
+            if (parent != 0) {
+                y1 = parent->world_x;
+                x_pos = parent->world_y;
+            } else {
+                y1 = this->world_x;
+                x_pos = this->world_y;
+            }
+            break;
+        }
+
+        if (y2 > 0) {
+            --y2;
+        }
+        if (x2 > 0) {
+            --x2;
+        }
+        if (x1 < map_max_x) {
+            ++x1;
+        }
+        if (found_pos < map_max_y) {
+            ++found_pos;
+        }
+    } while (1);
+
+    this->set_location(y1, x_pos, this->world_z);
     if (this->inside_obj != 0) {
         this->exit_obj();
     }
-    this->teleport(x, y, this->world_z);
+    this->teleport(y1, x_pos, this->world_z);
     this->change_ownership(this->owner->world->players[0]);
-    this->move_to(0, x, y, this->world_z);
+    this->move_to(0, y1, x_pos, this->world_z);
     this->hp = 1.0f;
 }
 
