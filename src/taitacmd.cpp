@@ -9922,7 +9922,7 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
                                 break;
                             if (!valid)
                                 goto next_group;
-                            if (assist->assistGroupID() == group->id())
+                            if (group->id() == assist->assistGroupID())
                                 valid = 0;
                             assist = assist->next;
                             sentinel = &this->groups;
