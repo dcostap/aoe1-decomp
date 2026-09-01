@@ -9,7 +9,7 @@
     "00449B30": {"status": "matching", "symbol": "??0RGE_Flic_Player@@QAE@PAD@Z"},
     "00449BE0": {"status": "matching", "symbol": "??0RGE_Flic_Player@@QAE@H@Z"},
     "00449C40": {"status": "matching", "symbol": "??1RGE_Flic_Player@@QAE@XZ"},
-    "00449C50": {"status": "scratch", "symbol": "?palette@RGE_Flic_Player@@QAEXPAUtagRGBQUAD@@@Z"},
+    "00449C50": {"status": "matching", "symbol": "?palette@RGE_Flic_Player@@QAEXPAUtagRGBQUAD@@@Z"},
     "00449DF0": {"status": "matching", "symbol": "?resolution@RGE_Flic_Player@@QAEJXZ"},
     "00449E00": {"status": "matching", "symbol": "?time_delay@RGE_Flic_Player@@QAEJXZ"},
     "00449E10": {"status": "matching", "symbol": "?frames@RGE_Flic_Player@@QAEFXZ"},
