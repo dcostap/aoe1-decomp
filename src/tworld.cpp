@@ -921,7 +921,6 @@ unsigned char TRIBE_World::check_game_state()
     int local_1a0;
     int team_count;
     int local_198;
-    int team_size[9];
     int player_team[9];
     TRIBE_Player* team_player[9][9];
 
@@ -931,10 +930,11 @@ unsigned char TRIBE_World::check_game_state()
             if ((this->countdown_clock =
                      this->countdown_clock - (this->world_time_delta_seconds + this->world_time_delta_seconds)) <
                 one) {
+                long team_score[9];
                 for (i = 0; i < 9; ++i)
-                    team_size[i] = -1;
+                    team_score[i] = -1;
                 for (i = 1; i < this->player_num; ++i) {
-                    team_size[i] = this->players[i]->victory_conditions->get_victory_points();
+                    team_score[i] = this->players[i]->victory_conditions->get_victory_points();
                     held_time = 1;
                     if (this->players[i]->allied_victory != 0) {
                         local_1a0 = 1;
@@ -944,21 +944,21 @@ unsigned char TRIBE_World::check_game_state()
                                     this->players[i]->relation(local_1a0) == 0 &&
                                     this->players[local_1a0]->relation(i) == 0 &&
                                     this->players[local_1a0]->allied_victory != 0) {
-                                    team_size[i] += this->players[local_1a0]->victory_conditions->get_victory_points();
+                                    team_score[i] += this->players[local_1a0]->victory_conditions->get_victory_points();
                                     ++held_time;
                                 }
                                 ++local_1a0;
                             } while (local_1a0 < this->player_num);
                         }
                     }
-                    team_size[i] /= held_time;
+                    team_score[i] /= held_time;
                 }
                 TRIBE_Player* winner = 0;
                 int best = -1;
                 for (i = 1; i < this->player_num; ++i) {
-                    if (team_size[i] > best) {
+                    if (team_score[i] > best) {
                     winner = static_cast<TRIBE_Player*>(this->players[i]);
-                        best = team_size[i];
+                        best = team_score[i];
                     }
                 }
                 if (winner != 0) {
@@ -969,6 +969,7 @@ unsigned char TRIBE_World::check_game_state()
         }
 
         if (this->artifact_count > 0 || this->ruin_count > 0) {
+            int team_size[9];
             int player_count = this->player_num;
             if (player_count > 0) {
                 for (i = 0; i < player_count; ++i)
