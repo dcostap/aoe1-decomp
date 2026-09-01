@@ -2697,15 +2697,17 @@ float RGE_Static_Object::distance_to_position(float x, float y, float z)
     if (dy < 0.0f)
         dy = -dy;
 
-    float dx2 = dx - master_obj->radius_x;
-    float dy2 = dy - master_obj->radius_y;
+    float radius_x = master_obj->radius_x;
+    float radius_y = master_obj->radius_y;
+    dx = dx - radius_x;
+    dy = dy - radius_y;
 
-    if (dx2 < 0.0f)
-        dx2 = 0.0f;
-    if (dy2 < 0.0f)
-        dy2 = 0.0f;
+    if (dx < 0.0f)
+        dx = 0.0f;
+    if (dy < 0.0f)
+        dy = 0.0f;
 
-    return sqrt(dx2 * dx2 + dy2 * dy2);
+    return sqrt(dx * dx + dy * dy);
 }
 
 
