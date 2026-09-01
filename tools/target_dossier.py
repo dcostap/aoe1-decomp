@@ -25,6 +25,7 @@ from common import (
 )
 from function_diagnostics import basic_blocks, call_fingerprint, decode_instruction_ranges
 from shared_abi_evidence import load_shared_global_evidence, shared_globals_by_address
+from pdb_scoped_symbols import load_scoped_symbols
 
 
 MEMORY_RE = re.compile(r"\[([^\]]+)\]")
@@ -568,7 +569,10 @@ def _class_check(class_name: str, fields: list[dict[str, object]]) -> dict[str, 
     }
 
 
-def _annotate_globals(rows: list[dict[str, object]]) -> None:
+def _annotate_globals(
+    rows: list[dict[str, object]], function_static_owners: dict[str, object] | None = None
+) -> None:
+    function_static_owners = function_static_owners or {}
     globals_index = _load_csv_index(REPO_ROOT / "inventory" / "globals" / "all_globals.csv", "va")
     reviewed_index = shared_globals_by_address(load_shared_global_evidence(REPO_ROOT))
     for row in rows:
@@ -590,6 +594,17 @@ def _annotate_globals(rows: list[dict[str, object]]) -> None:
                 "provenance": reviewed["provenance"],
             }
             row["shared_global_evidence"] = reviewed
+        scoped_owners = function_static_owners.get(str(row["address"]).upper())
+        if scoped_owners:
+            row["function_static_owners"] = scoped_owners
+            owner_text = ", ".join(
+                f"{owner.get('function_va')} {owner.get('function_name')}::{owner.get('name')}"
+                for owner in scoped_owners
+            )
+            row["ownership_warning"] = (
+                "PDB procedure scope classifies this address as function-static: "
+                + owner_text
+            )
 
 
 def _call_rows(instructions, line_changes: list[dict[str, str]]) -> list[dict[str, object]]:
@@ -779,7 +794,18 @@ def build_dossier(record: dict[str, str], *, class_name: str = "", refresh: bool
     line_changes = load_pdb_function_line_changes().get(record["va"].upper(), [])
     callee_cleanups = direct_call_cleanups(instructions)
     memory = collect_memory_evidence(instructions, line_changes, callee_cleanups)
-    _annotate_globals(memory["absolute_memory"])
+    scoped_payload = load_scoped_symbols()
+    scoped_functions = scoped_payload.get("functions") or {}
+    function_static_owners = scoped_payload.get("function_static_address_owners") or {}
+    scoped = (
+        scoped_functions.get(record["va"].upper())
+        if isinstance(scoped_functions, dict)
+        else None
+    )
+    _annotate_globals(
+        memory["absolute_memory"],
+        function_static_owners if isinstance(function_static_owners, dict) else {},
+    )
     shared_globals = []
     seen_shared_globals: set[str] = set()
     for row in memory["absolute_memory"]:
@@ -818,7 +844,9 @@ def build_dossier(record: dict[str, str], *, class_name: str = "", refresh: bool
             "Stack rows use raw ESP/EBP displacements at each instruction and do not normalize transient pushes.",
             "The dossier does not infer true C++ inheritance, local lifetimes, source expressions, or compiler causation.",
             "Entry-relative stack coordinates are emitted only while stack adjustments and direct callee cleanup remain provable.",
+            "PDB scoped symbols provide strong ownership and type evidence, but absent symbols do not prove that no source variable existed.",
         ],
+        "pdb_scoped_symbols": scoped,
         "pdb_line_changes": line_changes,
         "calls": calls,
         "pdb_evidence_bands": evidence_bands,
@@ -850,6 +878,33 @@ def format_dossier(dossier: dict[str, object]) -> str:
     ]
     for caveat in dossier["scope_and_caveats"]:
         lines.append(f"  - {caveat}")
+
+    scoped = dossier.get("pdb_scoped_symbols")
+    lines.extend(["", "PDB scoped symbols:"])
+    if not isinstance(scoped, dict):
+        lines.append("  <none indexed>")
+    else:
+        lines.append(f"  module: {scoped.get('module_object_path', '<unknown>')}")
+        for label, key in (
+            ("function static", "function_statics"),
+            ("stack", "stack_symbols"),
+            ("register", "register_symbols"),
+        ):
+            symbols = scoped.get(key) or []
+            if not symbols:
+                lines.append(f"  {label}: <none>")
+                continue
+            for symbol in symbols:
+                location = (
+                    symbol.get("address")
+                    or symbol.get("offset_hex")
+                    or symbol.get("register")
+                    or "?"
+                )
+                type_name = symbol.get("type_name") or symbol.get("type_display") or "?"
+                lines.append(
+                    f"  {label}: {location} {type_name} {symbol.get('name')}"
+                )
 
     calls = dossier["calls"]
     assert isinstance(calls, list)
@@ -909,6 +964,8 @@ def format_dossier(dossier: dict[str, object]) -> str:
             f"  {row['address']} width={row['width'] or '?'} {row['access']:<10} "
             f"x{row['occurrence_count']:<3} {name}"
         )
+        if row.get("ownership_warning"):
+            lines.append(f"    WARNING: {row['ownership_warning']}")
 
     shared_globals = dossier["shared_global_evidence"]
     assert isinstance(shared_globals, list)

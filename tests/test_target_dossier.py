@@ -24,6 +24,22 @@ from target_dossier import (  # noqa: E402
 
 
 class TargetDossierTests(unittest.TestCase):
+    def test_global_annotation_warns_about_function_static_owner(self) -> None:
+        rows = [{"address": "0062CF2C"}]
+        owners = {
+            "0062CF2C": [
+                {
+                    "function_va": "0042B200",
+                    "function_name": "TCommunications_Handler::GetNextSequence",
+                    "name": "Sequence",
+                }
+            ]
+        }
+        with patch.object(target_dossier, "_load_csv_index", return_value={}):
+            target_dossier._annotate_globals(rows, owners)
+        self.assertIn("function-static", rows[0]["ownership_warning"])
+        self.assertEqual(rows[0]["function_static_owners"], owners["0062CF2C"])
+
     def test_absolute_address_joins_reviewed_shared_global_evidence(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

@@ -515,7 +515,7 @@ def pdb_module_stream_evidence_issues(module: dict[str, object]) -> list[str]:
         evidence = load_json(evidence_path)
     except (OSError, json.JSONDecodeError) as error:
         return [f"{name}: invalid PDB module-stream evidence: {error}"]
-    if evidence.get("schema") != 1:
+    if evidence.get("schema") not in {1, 2}:
         return [f"{name}: PDB module-stream evidence has invalid schema"]
 
     binaries = load_binaries()
@@ -547,6 +547,11 @@ def pdb_module_stream_evidence_issues(module: dict[str, object]) -> list[str]:
         return [f"{name}: PDB module-stream procedure metadata is invalid"]
     if raw_dump.count("S_GPROC32:") != len(procedures):
         return [f"{name}: PDB module-stream procedure metadata does not match the raw dump"]
+    if evidence.get("schema") == 2:
+        scoped_counts = evidence.get("scoped_symbol_counts")
+        scoped_symbols = evidence.get("scoped_symbols")
+        if not isinstance(scoped_counts, dict) or not isinstance(scoped_symbols, dict):
+            return [f"{name}: PDB module-stream scoped-symbol metadata is invalid"]
     return []
 
 

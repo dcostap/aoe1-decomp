@@ -119,6 +119,23 @@ dependencies, and each group's complete input fingerprint.
 - `variant_lab.py` compares controlled source variants.
 - `vc5_ir_capture.py` captures VC5 compiler-stage output.
 
+Function packets, `target_dossier.py`, and `query_abi.py` include procedure-scoped
+PDB symbols. These records identify function statics, stack symbols, register
+symbols, names, types, storage addresses, and owning procedures. Positive PDB
+ownership evidence is strong. A missing record does not prove that no source
+variable existed.
+
+The generated index is `inventory/pdb/scoped_symbols.json`. It binds
+`S_LDATA32`, `S_BPREL32`, and `S_REGISTER` records to their lexical procedure.
+
+Read `PdbScopedSymbols` before you infer locals or shared globals from assembly.
+The global inventory marks indexed function-static addresses and suppresses
+shared declarations for them. Regenerate the index with:
+
+```text
+python tools/generate_pdb_scoped_symbol_reference.py --cvdump <cvdump.exe>
+```
+
 Resource limits come from the user or the current orchestration.
 Tools do not select worker counts, job counts, timeouts, or search budgets.
 Parallel commands require an explicit `--jobs` value.
@@ -147,6 +164,7 @@ These commands regenerate reference data, reports, or reviewed manifests:
 - `generate_type_reference.py`
 - `generate_pdb_source_reference.py`
 - `generate_pdb_module_stream_reference.py`
+- `generate_pdb_scoped_symbol_reference.py`
 - `generate_toolchain_supplied_manifest.py`
 
 Do not edit generated inventory files by hand.

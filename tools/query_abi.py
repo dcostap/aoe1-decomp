@@ -12,6 +12,7 @@ from shared_abi_evidence import (
     shared_global_matches,
     shared_globals_referenced_by_text,
 )
+from pdb_scoped_symbols import load_scoped_symbols
 
 
 SOURCE_SUFFIXES = {".c", ".cpp", ".h", ".hpp", ".inl"}
@@ -124,6 +125,8 @@ def global_matches(query: str, *, va_only: bool = False) -> list[dict[str, objec
                 "hints": row.get("hints", ""),
                 "emit_c_type": row.get("emit_c_type", ""),
                 "emit_mode": row.get("emit_mode", ""),
+                "ownership": row.get("ownership", ""),
+                "function_static_owners": row.get("function_static_owners", ""),
                 "byte_preview": row.get("byte_preview", ""),
                 "packet": str(
                     Path("inventory") / "globals" / "dumps" / f"{row.get('va', '')}_{row.get('primary_name', '')}.txt"
@@ -455,6 +458,11 @@ def build_query(
     if limit < 0:
         raise ValueError("--limit must be zero or positive")
     reviewed_globals = load_shared_global_evidence(REPO_ROOT)
+    scoped_payload = load_scoped_symbols()
+    scoped_functions = scoped_payload.get("functions") or {}
+    scoped_address_owners = scoped_payload.get("function_static_address_owners") or {}
+    scoped_symbols = None
+    scoped_global_owners: list[dict[str, object]] = []
     if va:
         normalized = _normalized_va(va)
         functions = function_matches(normalized, va_only=True)
@@ -475,6 +483,10 @@ def build_query(
         query_kind = "va"
         query_value = normalized
         classes = []
+        if isinstance(scoped_functions, dict):
+            scoped_symbols = scoped_functions.get(normalized)
+        if isinstance(scoped_address_owners, dict):
+            scoped_global_owners = scoped_address_owners.get(normalized) or []
     elif class_name:
         functions = []
         globals_found = []
@@ -507,7 +519,7 @@ def build_query(
     )
     candidates = declaration_candidates(evidence, evidence_query)
     return {
-        "version": 2,
+        "version": 3,
         "query": {"kind": query_kind, "value": query_value},
         "policy": [
             "The original EXE is the behavior oracle; this command joins reference metadata and living-source provenance.",
@@ -519,6 +531,8 @@ def build_query(
         "functions": functions,
         "globals": globals_found,
         "shared_globals": shared_globals,
+        "pdb_scoped_symbols": scoped_symbols,
+        "pdb_function_static_owners": scoped_global_owners,
         "classes": classes,
         "source_evidence": evidence,
         "declaration_candidates": candidates,
@@ -545,6 +559,40 @@ def format_query(payload: dict[str, object]) -> str:
         )
         lines.append(f"    provenance: {row['provenance']}")
 
+    scoped = payload.get("pdb_scoped_symbols")
+    lines.extend(["", "PDB scoped symbols:"])
+    if not isinstance(scoped, dict):
+        lines.append("  <none indexed for this function>")
+    else:
+        lines.append(f"  module: {scoped.get('module_object_path', '<unknown>')}")
+        for label, key in (
+            ("function static", "function_statics"),
+            ("stack", "stack_symbols"),
+            ("register", "register_symbols"),
+        ):
+            symbols = scoped.get(key) or []
+            if not symbols:
+                lines.append(f"  {label}: <none>")
+            for symbol in symbols:
+                location = (
+                    symbol.get("address")
+                    or symbol.get("offset_hex")
+                    or symbol.get("register")
+                    or "?"
+                )
+                type_name = symbol.get("type_name") or symbol.get("type_display") or "?"
+                lines.append(f"  {label}: {location} {type_name} {symbol.get('name')}")
+
+    scoped_owners = payload.get("pdb_function_static_owners") or []
+    lines.extend(["", f"PDB function-static owners at queried VA ({len(scoped_owners)}):"])
+    if not scoped_owners:
+        lines.append("  <none>")
+    for owner in scoped_owners:
+        lines.append(
+            f"  {owner.get('function_va')} {owner.get('function_name')}::"
+            f"{owner.get('name')} {owner.get('type_name') or owner.get('type_display')}"
+        )
+
     globals_found = payload["globals"]
     assert isinstance(globals_found, list)
     lines.extend(["", f"Global metadata ({len(globals_found)}):"])
@@ -556,6 +604,10 @@ def format_query(payload: dict[str, object]) -> str:
             f"  {row['va']} {row['primary_name']} type={type_text} size={row['size_bytes']} "
             f"section={row['section']}"
         )
+        if row.get("ownership"):
+            lines.append(f"    ownership: {row['ownership']}")
+        if row.get("function_static_owners"):
+            lines.append(f"    function-static owners: {row['function_static_owners']}")
         if row["aliases"]:
             lines.append(f"    aliases: {row['aliases']}")
         lines.append(f"    provenance: {row['provenance']}")

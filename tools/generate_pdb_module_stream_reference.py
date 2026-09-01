@@ -9,7 +9,8 @@ import re
 import subprocess
 from pathlib import Path
 
-from common import PDB_INVENTORY_DIR, load_binaries, parse_hex, repo_path
+from common import PDB_INVENTORY_DIR, load_binaries, load_pe_image, repo_path
+from pdb_scoped_symbols import parse_scoped_symbols
 
 
 MODULE_HEADER = re.compile(r'^\*\* Module: "(?P<path>.+)"$', re.MULTILINE)
@@ -56,14 +57,16 @@ def _run(cvdump: Path, *args: str) -> str:
     return result.stdout
 
 
-def _procedures(raw_dump: str, image_base: int) -> list[dict[str, str]]:
+def _procedures(raw_dump: str, image) -> list[dict[str, str]]:
     procedures: list[dict[str, str]] = []
     for match in PROCEDURE.finditer(raw_dump):
         section = match.group("section")
         offset = match.group("offset")
         va = ""
-        if section == "0001":
-            va = f"{image_base + int(offset, 16):08X}"
+        section_index = int(section, 16) - 1
+        if 0 <= section_index < len(image.sections):
+            pe_section = image.sections[section_index]
+            va = f"{image.image_base + pe_section.virtual_address + int(offset, 16):08X}"
         procedures.append(
             {
                 "va": va,
@@ -86,9 +89,7 @@ def main() -> int:
 
     binaries = load_binaries()
     pdb_path = repo_path(str(binaries["original_pdb"]))
-    image_base = parse_hex(str(binaries["image_base"]))
-    if image_base is None:
-        raise SystemExit("config/binaries.json has invalid image_base")
+    image = load_pe_image(repo_path(str(binaries["original_exe"])))
     module_selector = f"{module_index:03d}"
     raw_dump = _run(cvdump, "-s", f"-M{module_selector}", str(pdb_path))
     header = MODULE_HEADER.search(raw_dump)
@@ -102,8 +103,10 @@ def main() -> int:
     json_path = output_dir / f"{stem}.json"
     raw_path.write_text(raw_dump.rstrip() + "\n", encoding="utf-8", newline="\n")
 
+    scoped = parse_scoped_symbols(raw_dump, image)
+    procedures = _procedures(raw_dump, image)
     evidence = {
-        "schema": 1,
+        "schema": 2,
         "pdb_path": str(binaries["original_pdb"]).replace("\\", "/"),
         "pdb_sha256": _sha256(pdb_path),
         "module_index": f"{module_index:04X}",
@@ -111,8 +114,10 @@ def main() -> int:
         "object_path": header.group("path"),
         "raw_dump": raw_path.relative_to(repo_path(".")).as_posix(),
         "raw_dump_sha256": _sha256(raw_path),
-        "procedure_count": len(_procedures(raw_dump, image_base)),
-        "procedures": _procedures(raw_dump, image_base),
+        "procedure_count": len(procedures),
+        "procedures": procedures,
+        "scoped_symbol_counts": scoped["counts"],
+        "scoped_symbols": scoped["functions"],
     }
     json_path.write_text(json.dumps(evidence, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {raw_path}")

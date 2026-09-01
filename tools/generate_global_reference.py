@@ -8,6 +8,7 @@ import struct
 from pathlib import Path
 
 from common import ensure_dir, format_hex, load_binaries, load_pe_image, repo_path
+from pdb_scoped_symbols import load_scoped_symbols
 
 
 GLOBAL_NAME_RE = re.compile(r"\b((?:DAT|PTR)_[0-9A-Fa-f]{8}|(?:s|u)_[A-Za-z0-9_]+_[0-9A-Fa-f]{8})\b")
@@ -73,6 +74,8 @@ def choose_emit_type(entry: dict[str, object]) -> tuple[str, str, str]:
     primary_name = str(entry["primary_name"])
     hints = set(str(hint) for hint in entry["hints"])
     raw_bytes = bytes(entry["raw_bytes"])
+    if entry.get("ownership") == "function_static":
+        return "", "", ""
     if str(entry["section_flags"]).startswith("x"):
         return "", "", ""
 
@@ -136,7 +139,11 @@ def choose_initializer(entry: dict[str, object]) -> str:
     return ""
 
 
-def build_global_rows(listing_path: Path, image) -> list[dict[str, object]]:
+def build_global_rows(
+    listing_path: Path,
+    image,
+    function_static_owners: dict[str, object] | None = None,
+) -> list[dict[str, object]]:
     entries: dict[int, dict[str, object]] = {}
     lines = listing_path.read_text(encoding="utf-8", errors="replace").splitlines()
 
@@ -180,8 +187,12 @@ def build_global_rows(listing_path: Path, image) -> list[dict[str, object]]:
                 if size > int(entry["size_bytes"]):
                     entry["size_bytes"] = size
 
+    function_static_owners = function_static_owners or {}
     rows: list[dict[str, object]] = []
     for va, entry in sorted(entries.items()):
+        owners = function_static_owners.get(format_hex(va)) or []
+        entry["ownership"] = "function_static" if owners else ""
+        entry["function_static_owners"] = owners
         primary_name = str(entry["primary_name"])
         if primary_name.startswith(("s_", "u_")):
             raw_bytes = read_c_string(image, va)
@@ -222,9 +233,19 @@ def write_global_packets(rows: list[dict[str, object]], packet_root: Path) -> No
             f"EmitType: {row['emit_c_type'] or '<skip>'}",
             f"EmitInitializer: {row['emit_initializer'] or '<none>'}",
             f"BytePreview: {row['byte_preview'] or '<none>'}",
+        ]
+        if row.get("ownership") == "function_static":
+            packet_lines.append("Ownership: function_static")
+            for owner in row.get("function_static_owners") or []:
+                packet_lines.append(
+                    f"FunctionStaticOwner: {owner.get('function_va')} "
+                    f"{owner.get('function_name')}::{owner.get('name')} "
+                    f"{owner.get('type_name') or owner.get('type_display')}"
+                )
+        packet_lines.extend([
             "",
             "=== FirstReferences ===",
-        ]
+        ])
         packet_lines.extend(str(reference) for reference in row["references"])
         packet_lines.append("")
         packet_lines.append("=== RawBytes ===")
@@ -256,20 +277,38 @@ def write_section_inventory(image, data_root: Path) -> None:
 
 
 def main() -> None:
-    argparse.ArgumentParser(
+    parser = argparse.ArgumentParser(
         description="Generate global-object reference packets from the original executable."
-    ).parse_args()
+    )
+    parser.add_argument(
+        "--function-statics-only",
+        action="store_true",
+        help="Write only packets whose addresses have PDB function-static ownership",
+    )
+    args = parser.parse_args()
 
     binaries = load_binaries()
     image = load_pe_image(repo_path(binaries["original_exe"]))
     listing_path = repo_path(binaries["ghidra_listing"])
+    scoped_payload = load_scoped_symbols()
+    function_static_owners = scoped_payload.get("function_static_address_owners") or {}
 
-    rows = build_global_rows(listing_path, image)
+    rows = build_global_rows(
+        listing_path,
+        image,
+        function_static_owners if isinstance(function_static_owners, dict) else {},
+    )
 
     inventory_root = repo_path("inventory") / "globals"
     dumps_root = inventory_root / "dumps"
     data_root = inventory_root / "data"
     ensure_dir(inventory_root)
+
+    if args.function_statics_only:
+        static_rows = [row for row in rows if row.get("ownership") == "function_static"]
+        write_global_packets(static_rows, dumps_root)
+        print(f"Wrote {len(static_rows)} function-static packets under {dumps_root}")
+        return
 
     csv_path = inventory_root / "all_globals.csv"
     with csv_path.open("w", encoding="utf-8", newline="") as handle:
@@ -290,6 +329,8 @@ def main() -> None:
                 "emit_mode",
                 "emit_initializer",
                 "byte_preview",
+                "ownership",
+                "function_static_owners",
             ],
         )
         writer.writeheader()
@@ -310,6 +351,11 @@ def main() -> None:
                     "emit_mode": row["emit_mode"],
                     "emit_initializer": row["emit_initializer"],
                     "byte_preview": row["byte_preview"],
+                    "ownership": row["ownership"],
+                    "function_static_owners": ";".join(
+                        f"{owner.get('function_va')}:{owner.get('name')}"
+                        for owner in row.get("function_static_owners") or []
+                    ),
                 }
             )
 

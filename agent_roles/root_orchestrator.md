@@ -272,6 +272,11 @@ Otherwise rerun only the stale translation-unit groups.
 The second verification must find review errors, stale evidence, and integration effects.
 It must not repeat unsupported source experiments.
 
+Review procedure-scoped PDB evidence before you approve local ownership or a
+shared declaration. A positive function-static record overrides an address-only
+global hypothesis. Require the function packet, dossier, or `query_abi.py` output
+to show that ownership in the review record. Absence is not negative proof.
+
 ## Integration
 
 Prefer a branch merge that preserves the orchestrator's logical commits.

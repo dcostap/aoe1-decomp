@@ -21,6 +21,7 @@ from common import (
     parse_hex,
     repo_path,
 )
+from pdb_scoped_symbols import load_scoped_symbols
 
 
 ADDRESS_LINE_RE = re.compile(r"^\s*([0-9A-Fa-f]{8})\b")
@@ -153,6 +154,50 @@ def pdb_line_comment_index(line_changes: list[dict[str, str]]) -> dict[str, str]
     return comments
 
 
+def append_pdb_scoped_symbols(
+    packet_lines: list[str], scoped: dict[str, object] | None
+) -> None:
+    packet_lines.append("=== PdbScopedSymbols ===")
+    if not scoped:
+        packet_lines.append("<scoped symbols unavailable>")
+        packet_lines.append("")
+        return
+
+    function_statics = scoped.get("function_statics") or []
+    stack_symbols = scoped.get("stack_symbols") or []
+    register_symbols = scoped.get("register_symbols") or []
+    packet_lines.append(f"Procedure: {scoped.get('name', '<unknown>')}")
+    packet_lines.append(f"Module: {scoped.get('module_object_path', '<unknown>')}")
+    packet_lines.append("FunctionStatic:")
+    if not function_statics:
+        packet_lines.append("  <none>")
+    for symbol in function_statics:
+        type_name = symbol.get("type_name") or symbol.get("type_display") or "<unknown>"
+        packet_lines.append(
+            f"  {symbol.get('address') or '<no-va>'}  {type_name}  {symbol.get('name')}"
+            f"  [CodeView {symbol.get('type_display')}]"
+        )
+    packet_lines.append("StackSymbols:")
+    if not stack_symbols:
+        packet_lines.append("  <none>")
+    for symbol in stack_symbols:
+        type_name = symbol.get("type_name") or symbol.get("type_display") or "<unknown>"
+        packet_lines.append(
+            f"  {symbol.get('offset_hex')}  {type_name}  {symbol.get('name')}"
+            f"  [CodeView {symbol.get('type_display')}]"
+        )
+    packet_lines.append("RegisterSymbols:")
+    if not register_symbols:
+        packet_lines.append("  <none>")
+    for symbol in register_symbols:
+        type_name = symbol.get("type_name") or symbol.get("type_display") or "<unknown>"
+        packet_lines.append(
+            f"  {symbol.get('register')}  {type_name}  {symbol.get('name')}"
+            f"  [CodeView {symbol.get('type_display')}]"
+        )
+    packet_lines.append("")
+
+
 def main() -> None:
     args = parse_args()
     binaries = load_binaries()
@@ -160,6 +205,8 @@ def main() -> None:
     layout = load_layout(repo_path(binaries["ghidra_layout"]))
     pdb_source_map = load_pdb_function_source_map()
     pdb_line_changes = load_pdb_function_line_changes()
+    scoped_payload = load_scoped_symbols()
+    scoped_functions = scoped_payload.get("functions") or {}
     listing_lines = repo_path(binaries["ghidra_listing"]).read_text(encoding="utf-8", errors="replace").splitlines()
     listing_index = build_listing_index(listing_lines)
     decomp_root = repo_path(binaries["ghidra_decomp_root"])
@@ -212,6 +259,12 @@ def main() -> None:
         packet_lines.append(f"PdbLineRecordCount: {(source_summary or {}).get('line_record_count', '0')}")
         packet_lines.append(f"BodyRangeCount: {len(ranges)}")
         packet_lines.append("")
+        append_pdb_scoped_symbols(
+            packet_lines,
+            scoped_functions.get(record["va"].upper())
+            if isinstance(scoped_functions, dict)
+            else None,
+        )
         packet_lines.append("=== PdbSource ===")
         if source_summary is None:
             packet_lines.append("<pdb source unavailable>")

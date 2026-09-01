@@ -70,7 +70,7 @@ class DocumentationTests(unittest.TestCase):
             self.assertIn(required, orchestrator)
         for required in (
             "one assigned natural translation unit",
-            "scratch function bodies",
+            "scratch functions",
             "target_session.py start",
             "Do not copy active-worker capacity into `--jobs`",
             "repository-managed caches, target notebooks, and standard diff paths",
@@ -154,7 +154,7 @@ class DocumentationTests(unittest.TestCase):
         for required in (
             "Each orchestrator owns shared repairs in its isolated worktree",
             "does not require case-by-case root approval",
-            "Matching workers remain restricted",
+            "Matching workers can test shared source hypotheses",
             "audit the complete transitive dependency closure",
             "selects the strongest binary-supported source model",
         ):

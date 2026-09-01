@@ -63,6 +63,8 @@ Before work on each function:
 1. Query its current status, paths, notes, and history.
 2. Start or resume its target session with the assigned owner ID.
 3. Read its function note and inventory packet.
+   Read the packet's `PdbScopedSymbols` section before you form local-variable
+   or global-ownership hypotheses.
 4. Read the configured module note when present.
 5. Inspect focused executable evidence and relevant exact donors.
 6. Record a fresh baseline check.
@@ -98,6 +100,11 @@ Use focused tools only when they answer a current question:
 - `search_asm_donors.py` for a distinctive assembly block;
 - `variant_lab.py` for controlled source variants; and
 - `check_function.py --no-build` for extra read-only diagnostics.
+
+Treat positive procedure-scoped PDB records as strong source evidence. Preserve
+proved names, types, storage classes, and procedure ownership when the binary
+supports them. Do not treat an indexed function static as a shared global.
+Missing PDB records do not prove that a source variable did not exist.
 
 Use resource values from the assignment. Do not copy active-worker capacity
 into `--jobs`. Do not invent local limits.
