@@ -412,11 +412,11 @@ simple:
     }
 }
 
-void RGE_Command::do_command_create(RGE_Command_Create* param_1) {
-    RGE_Player* player = this->world->players[param_1->player_id];
-    RGE_Master_Static_Object* master = player->master_objects[param_1->obj_catagory];
-    master->make_new_obj(player, param_1->location_x, param_1->location_y,
-                         param_1->location_z);
+void RGE_Command::do_command_create(RGE_Command_Create* order) {
+    RGE_Player* player = this->world->players[order->player_id];
+    RGE_Master_Static_Object* master = player->master_objects[order->obj_catagory];
+    master->make_new_obj(player, order->location_x, order->location_y,
+                         order->location_z);
 }
 
 void RGE_Command::do_command_add_attribute(RGE_Command_Add_Attribute* param_1) {
