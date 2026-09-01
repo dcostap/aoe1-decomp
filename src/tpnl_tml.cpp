@@ -979,7 +979,7 @@ void Time_Line_Panel::draw_civilization_names()
     HGDIOBJ old_font;
     int X_line_pos;
     int Y_line_pos;
-    int y_line_segment_length;
+    long y_line_segment_length;
     float pop_total;
 
     if (this->timeline_flag != 0) {
