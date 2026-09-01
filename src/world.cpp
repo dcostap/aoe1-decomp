@@ -1007,7 +1007,7 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int mode)
     }
     this->random_seed = initial_seed;
     debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x50c, this->random_seed);
-    (*(RGE_Base_Game**)0x62C574)->save_random_game_seed = this->random_seed;
+    rge_base_game->save_random_game_seed = this->random_seed;
     this->random_seed = debug_rand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x50f);
     L->Log("World: new_game (rand=%d)", this->random_seed);
 
