@@ -1137,8 +1137,11 @@ unsigned char RGE_Map::do_elevation_brush(long x, long y, long radius,
     if (maxy >= this->map_height) maxy = this->map_height - 1;
     for (long row = miny; row <= maxy; ++row) {
         if (minx <= maxx) {
-            for (long col = minx; col <= maxx; ++col)
-                this->map_row_offset[row][col].height = elevation;
+            RGE_Tile* tile;
+            for (long col = minx; col <= maxx; ++col) {
+                tile = &this->map_row_offset[row][col];
+                tile->height = elevation;
+            }
         }
     }
     return 1;
