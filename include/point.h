@@ -10,8 +10,8 @@ public:
     XYZ();
     XYZ(int x, int y, int z);
 
-    void rotateXYByFacet(const XYZ& facet, XYZ& output,
-                         unsigned char facetIndex);
+    void rotateXYByFacet(const XYZ& refPoint, XYZ& rPoint,
+                         unsigned char facet);
 
     XYZ& operator=(const XYZ& other);
     XYZ operator+(const XYZ& other) const;

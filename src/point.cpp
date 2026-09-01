@@ -53,22 +53,23 @@ XYZ XYZ::operator-(XYZ const& param_1) const {
     return newP;
 }
 
-void XYZ::rotateXYByFacet(const XYZ& facet, XYZ& output, unsigned char facet_idx)
+void XYZ::rotateXYByFacet(const XYZ& refPoint, XYZ& rPoint,
+                          unsigned char facet)
 {
-    output.xValue = this->xValue;
-    output.yValue = this->yValue;
-    output.zValue = this->zValue;
+    rPoint.xValue = this->xValue;
+    rPoint.yValue = this->yValue;
+    rPoint.zValue = this->zValue;
 
-    if (facet_idx)
+    if (facet)
     {
-        int dx = this->xValue - facet.xValue;
-        int dy = this->yValue - facet.yValue;
-        float angle = (float)(facet_idx & 0xFF) * 0.7853981852531433f;
+        int dx = this->xValue - refPoint.xValue;
+        int dy = this->yValue - refPoint.yValue;
+        float angle = (float)(facet & 0xFF) * 0.7853981852531433f;
         float s = sin(angle);
         float c = cos(angle);
-        output.xValue = (int)(c * dx - s * dy);
+        rPoint.xValue = (int)(c * dx - s * dy);
         float y1 = c * dy;
         float x1 = s * dx;
-        output.yValue = (int)(y1 + x1);
+        rPoint.yValue = (int)(y1 + x1);
     }
 }
