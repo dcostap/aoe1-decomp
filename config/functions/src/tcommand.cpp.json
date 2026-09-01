@@ -35,7 +35,7 @@
     "0050AD70": {"status": "scratch", "symbol": "?command_relation@TRIBE_Command@@QAEXFFF@Z"},
     "0050ADF0": {"status": "matching", "symbol": "?command_game_speed@TRIBE_Command@@QAEXM@Z"},
     "0050AE40": {"status": "matching", "symbol": "?command_save_game@TRIBE_Command@@QAEXXZ"},
-    "0050AE80": {"status": "scratch", "symbol": "?command_inventory@TRIBE_Command@@QAEXFFM@Z"},
+    "0050AE80": {"status": "matching", "symbol": "?command_inventory@TRIBE_Command@@QAEXFFM@Z"},
     "0050AEE0": {"status": "matching", "symbol": "?command_upgrade_town@TRIBE_Command@@QAEXF@Z"},
     "0050AF30": {"status": "matching", "symbol": "?command_quick_build@TRIBE_Command@@QAEXF@Z"},
     "0050AF80": {"status": "matching", "symbol": "?command_shared_los@TRIBE_Command@@QAEXF@Z"},
