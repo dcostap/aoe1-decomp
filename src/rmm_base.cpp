@@ -454,7 +454,7 @@ uchar RGE_Random_Map_Module::find_path(
     float ty;
     long map_h;
     long map_w;
-    long local_4;
+    int local_4;
     unsigned char state;
     unsigned char* cell;
 
