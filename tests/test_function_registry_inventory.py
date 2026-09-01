@@ -73,7 +73,7 @@ class FunctionRegistryInventoryTests(unittest.TestCase):
                 "0047E4B0": "matching",
                 "0047E4E0": "matching",
                 "0047E510": "matching",
-                "0047E530": "scratch",
+                "0047E530": "accepted_drift",
                 "0047E580": "matching",
                 "0047E5D0": "accepted_drift",
             },
