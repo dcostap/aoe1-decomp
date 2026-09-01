@@ -26,7 +26,7 @@
     "00532610": {"status": "matching", "symbol": "?handle_bring_object@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "005326F0": {"status": "accepted_drift", "symbol": "?handle_attribute@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "005327A0": {"status": "matching", "symbol": "?handle_explore@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
-    "00532880": {"status": "scratch", "symbol": "?handle_victory_points@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
+    "00532880": {"status": "matching", "symbol": "?handle_victory_points@RGE_Victory_Conditions@@IAEXPAURGE_Victory_Entry@@@Z"},
     "00532930": {"status": "matching", "symbol": "?add@RGE_Victory_Conditions@@IAEPAURGE_Victory_Entry@@EE@Z"},
     "00532970": {"status": "matching", "symbol": "?add_capture@RGE_Victory_Conditions@@QAEEEPAVRGE_Static_Object@@E@Z"},
     "005329A0": {"status": "matching", "symbol": "?add_create@RGE_Victory_Conditions@@QAEEEJJE@Z"},
