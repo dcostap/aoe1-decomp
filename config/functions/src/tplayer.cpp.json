@@ -46,7 +46,7 @@
     "00513FD0": {"status": "matching", "symbol": "?add_population_entry@TRIBE_Player@@QAEXXZ"},
     "00514010": {"status": "matching", "symbol": "?random_start@TRIBE_Player@@UAEXXZ"},
     "00514510": {"status": "matching", "symbol": "?objectCost@TRIBE_Player@@QAEXHHPAVResourceItem@@H@Z"},
-    "00514590": {"status": "matching", "symbol": "?objectCostByType@TRIBE_Player@@UAEHH@Z"},
+    "00514590": {"status": "accepted_drift", "symbol": "?objectCostByType@TRIBE_Player@@UAEHH@Z"},
     "005145E0": {"status": "matching", "symbol": "?researchCost@TRIBE_Player@@QAEXHHPAVResourceItem@@H@Z"},
     "00514660": {"status": "matching", "symbol": "?objectAvailable@TRIBE_Player@@QAEHH@Z"},
     "00514690": {"status": "matching", "symbol": "?researchAvailable@TRIBE_Player@@QAEHH@Z"},
