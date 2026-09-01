@@ -2270,9 +2270,9 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
     byte* save_buffer;
     long parity;
     long next_parity;
-    long run;
     byte count;
     byte* end;
+    byte command;
 
     orientation = area->Orien;
     pitch = area->AlignedWidth() * orientation;
@@ -2296,48 +2296,46 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
             byte done = 0;
             dst = save_buffer;
             do {
-                byte cmd = *src++;
-                if ((cmd & 1) == 1) {
-                    count = (byte)(cmd >> 1);
-                    if (count == 0) {
+                command = *src++;
+                if ((command & 1) == 1) {
+                    command >>= 1;
+                    if (command == 0) {
                         count = *src;
                         dst += (unsigned int)count;
                         if ((count & 1) != 0)
                             parity = (parity != 1);
                         src++;
                     } else {
+                        count = command;
                         if (parity != 0) {
                             count--;
                             dst++;
                         }
-                        run = (unsigned int)count;
-                        end = dst + run;
-                        run = ((unsigned int)count) & 1;
+                        end = dst + count;
                         while (dst < end) {
                             *dst = 0;
                             dst += 2;
                         }
-                        if (run != 0)
+                        if ((count & 1) != 0)
                             dst--;
-                        src += (unsigned int)count;
+                        src += (unsigned int)command;
                     }
                 } else {
-                    count = (byte)(cmd >> 1);
-                    if (count == 0) {
+                    command >>= 1;
+                    if (command == 0) {
                         done = 1;
                     } else {
+                        count = command;
                         if (parity != 0) {
                             count--;
                             dst++;
                         }
-                        run = (unsigned int)count;
-                        end = dst + run;
-                        run = ((unsigned int)count) & 1;
+                        end = dst + count;
                         while (dst < end) {
                             *dst = 0;
                             dst += 2;
                         }
-                        if (run != 0)
+                        if ((count & 1) != 0)
                             dst--;
                         src++;
                     }
