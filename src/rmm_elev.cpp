@@ -433,14 +433,14 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 (uchar)line.base_elevation);
 
                             if (tile->height
-                                == (uchar)line.base_elevation
+                                == line.base_elevation
                                 && ok > 0) {
                                 local_chance = this->fig_chance(ok, y, x);
                                 tile->height = (uchar)line.elevation;
 
                                 if (y > 0) {
                                     if (tile[-1].height
-                                        == (uchar)line.base_elevation) {
+                                        == line.base_elevation) {
                                         long random_value = (debug_rand(
                                             "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
                                             0x17D) * 100) / 0x7FFF;
@@ -451,7 +451,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 }
                                 if (y < max_x) {
                                     if (tile[1].height
-                                        == (uchar)line.base_elevation) {
+                                        == line.base_elevation) {
                                         long random_value = (debug_rand(
                                             "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
                                             0x17F) * 100) / 0x7FFF;
@@ -462,7 +462,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 }
                                 if (x > 0) {
                                     if (tile[-this->map_width].height
-                                        == (uchar)line.base_elevation) {
+                                        == line.base_elevation) {
                                         long random_value = (debug_rand(
                                             "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
                                             0x181) * 100) / 0x7FFF;
@@ -473,7 +473,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
                                 }
                                 if (x < max_y) {
                                     if (tile[this->map_width].height
-                                        == (uchar)line.base_elevation) {
+                                        == line.base_elevation) {
                                         long random_value = (debug_rand(
                                             "C:\\msdev\\work\\age1_x1\\rmm_elev.cpp",
                                             0x183) * 100) / 0x7FFF;
