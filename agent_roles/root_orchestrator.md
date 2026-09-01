@@ -307,8 +307,12 @@ worktrees. The orchestrator reviews the result and its affected closure. Root
 keeps the final integration decision.
 
 An orchestrator must use the compiler gate for shared source changes. It must
-audit the complete transitive dependency closure and preserve exact anchors.
-It must keep shared repairs in separate logical commits.
+audit the complete transitive dependency closure. Exact output is a goal, not a
+veto against stronger binary evidence. If a canonical repair changes an exact
+function, review that function on its own evidence. Require a complete semantic
+review and record proven differences as accepted drift. Reject unexplained or
+unsafe changes. Never add compensating source without independent evidence.
+Keep shared repairs in separate logical commits.
 
 No worktree can change the behavior oracle or weaken exact-match rules. Original
 game files and generated inventory evidence remain read-only. Tool and test

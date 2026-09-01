@@ -23,11 +23,13 @@ and files that the orchestrator supplies.
 
 You work in an isolated worktree. You may edit any repository source needed to
 test a binary-supported hypothesis for the assigned function. This includes
-shared headers, globals, declarations, and exact anchors.
+shared headers, globals, declarations, and currently exact functions.
 
 Root reviews every retained change. Do not edit the behavior oracle, generated
-inventory, or registry status. Do not retain a shared model that regresses an
-exact anchor. Validate the affected closure before you propose a shared change.
+inventory, or registry status. Validate the affected closure before you propose
+a shared change. Report every changed exact function. A regression does not
+automatically reject stronger binary-supported source. The orchestrator decides
+whether semantic review supports accepted drift.
 
 Preserve unrelated work. Commit only when the assignment permits it.
 
@@ -149,7 +151,8 @@ For an exact result:
 1. Save the exact checkpoint.
 2. Remove incidental changes one at a time.
 3. Recheck each useful reduction.
-4. Keep the smallest natural exact source.
+4. Keep the smallest supported natural source. Prefer exact output between
+   equally credible forms.
 5. Run a final target check.
 6. Confirm ownership, boundaries, relocations, and direct targets.
 
@@ -161,7 +164,8 @@ source when an experiment does not improve it.
 
 ## Accepted-drift proposals
 
-You can suggest accepted drift for a small localized code-generation difference.
+You can suggest accepted drift for an explained code-generation difference.
+Use more evidence as the size or risk of the difference increases.
 The proposal must prove:
 
 - equal behavior for all relevant inputs;
@@ -185,8 +189,9 @@ Stop when a major issue prevents safe progress. Examples include:
 - source corruption or an unauthorized conflicting edit; or
 - executable evidence that invalidates the assigned source model.
 
-Do not retain a regressing shared repair. Preserve safe source and record the
-evidence.
+Do not hide a shared regression. Preserve the strongest supported source, record
+the complete affected audit, and ask the orchestrator to review each changed
+exact function.
 
 ## Final validation
 
@@ -194,7 +199,7 @@ Before the final response:
 
 1. Run a final check for every retained function change.
 2. Audit the assigned translation unit with the assigned job count.
-3. Confirm that matching neighbors still match.
+3. Identify and explain every changed matching neighbor.
 4. Update function notes with durable evidence.
 5. Review your changed paths.
 6. For a retained shared proposal, audit its complete affected closure.

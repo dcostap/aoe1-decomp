@@ -33,7 +33,7 @@ Mechanical tiers rank evidence only. Manual review overrides the score.
 | defer | `004348F0` | `do_command_add_attribute` | `command` | 5 | Several workers exhausted natural forms. Parameter and world load order can change the first fault. | Do not retry without a source-context donor. |
 | defer | `0047B970` | `draw_button_pic` | `pnl_scbr` | 9 | Many natural expression families emitted the same nine-byte schedule. The alternative uses a parameter-home alias. | Wait for period source. |
 | defer | `004C8A80` | `update` | `t_b_obj` | 8 | The completed try-now pass left the reversed master and sprite movsx read order unchanged. | Wait for a source-backed dependency that preserves fault order. |
-| defer | `00412240` | `sortLarge` | `airesitm` | 1 | The one-byte result depends on shared declaration context and rejected compiler steering. | Preserve the existing user note and exact neighbors. |
+| defer | `00412240` | `sortLarge` | `airesitm` | 1 | The one-byte result depends on shared declaration context and rejected compiler steering. | Preserve the existing user note and audit all affected neighbors before a new proposal. |
 | defer | `0044A3E0` | `byte_run` | `flics` | 2 | The two-byte schedule changes potentially faulting read order. | Do not accept as encoding-only drift. |
 | defer | `00473930` | `hit_button` | `pnl_btn` | 18 | Eighty-four natural variants kept the same coordinate field-load order. | Do not retry without new class or source evidence. |
 | defer | `00512EC0` | `find_obj` | `tplayer` | 22 | The completed try-now pass recovered more tail structure but changed the fallback node reload and loop topology. | Wait for original control-flow evidence. Do not accept the changed concurrent-list behavior. |

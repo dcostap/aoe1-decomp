@@ -14,7 +14,7 @@ There are extra reusable documents that contain specific instructions. Read the 
 
 ## Universal correctness rules
 
-- The project is function-first and exact-match-first.
+- The project is function-first and evidence-first.
 - The original executable is the behavior oracle.
 - PDB, Ghidra, generated inventories, and comments are reference evidence.
 - Use the repo-local original files under
@@ -29,6 +29,18 @@ There are extra reusable documents that contain specific instructions. Read the 
 - Validate grouped claims with the candidate or configured module checks.
 - Require `MATCH`, `0.0000%`, correct ownership, boundaries, relocations, and direct targets.
 - A valid exact result says `Result: MATCH` and `0.0000%`.
+
+Use judgment. These rules are guardrails, not substitutes for evidence or
+common sense. Seek exact output, but do not keep source that strong evidence
+proves wrong only because it matches. Prefer correct behavior, canonical
+ownership, supported types, and natural source over an incidental compiler
+context match.
+
+A supported repair can change a current exact function. Audit the complete
+affected closure. If each changed function has equal behavior, ABI, calls,
+memory effects, exceptions, faults, and fault order, record it as accepted
+drift. Explain the cause and evidence. Do not add unsupported compensating
+source to recover a metric.
 
 Inline assembly is forbidden for real functions unless explicitly allowed.
 This includes `__asm`, `_asm`, naked functions, and handwritten wrappers.
@@ -103,8 +115,9 @@ A buildable function must have one symbol and one module flag profile.
 A VA has one compiler-facing source owner. Never keep duplicate owners across
 modules or headers. Edit only that natural owner.
 
-Do not reopen accepted drift without specific new evidence. The function
-registry is the current reviewed status.
+Revisit accepted drift when new evidence or a simpler supported model justifies
+review. The function registry is the current reviewed status, not a permanent
+barrier to better source.
 
 ## Shared-worktree conduct
 

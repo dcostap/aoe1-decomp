@@ -294,11 +294,16 @@ An exact result requires:
 - the correct owning symbol;
 - correct boundaries and relocations;
 - correct direct call and tail targets;
-- no matching-neighbor regression; and
+- a complete matching-neighbor audit with every change explained; and
 - the smallest supported natural source.
 
 A nonexact improvement can remain when executable evidence supports it. It must
 be more natural or structurally better than the prior source.
+
+Do not reject a canonical repair only because a prior exact function changes.
+Review the affected function on its own evidence. Approve accepted drift when
+the complete semantic review proves equality. Reject unexplained or unsafe
+changes, not the loss of an incidental metric by itself.
 
 Reject wrappers, fake ABI, raw addresses, dummy declarations, fake volatility,
 and other compiler-steering forms.

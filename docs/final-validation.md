@@ -118,8 +118,13 @@ The review closed all scheduled investigations. Four repairs remain unsupported:
 - Protected `ManagedArray<int>::resize` needs source-wide array access recovery.
 - Nested panel enums change exact `00473C80` compiler context.
 
-The repository keeps the exact anchors and documents each rejected trial.
-It does not use raw vtables, fake volatility, symbol aliases, or context macros.
+At this checkpoint, the repository kept all exact results and documented each
+rejected trial. This is a historical result, not a rule that blocks later
+canonical repairs. Stronger evidence can replace an exact result after a full
+affected audit and semantic review.
+
+The repository does not use raw vtables, fake volatility, symbol aliases, or
+context macros.
 
 ## Worktree state
 
