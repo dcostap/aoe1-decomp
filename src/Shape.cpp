@@ -2265,9 +2265,11 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
     byte* save_buffer;
     long parity;
     long next_parity;
+    long output_count;
     byte count;
     byte* end;
     byte command;
+    byte done;
 
     orientation = area->Orien;
     pitch = area->AlignedWidth() * orientation;
@@ -2288,7 +2290,7 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
     if (height > 0) {
         do {
             next_parity = (parity != 1);
-            byte done = 0;
+            done = 0;
             dst = save_buffer;
             do {
                 command = *src++;
@@ -2306,12 +2308,14 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
                             count--;
                             dst++;
                         }
-                        end = dst + count;
+                        output_count = (unsigned int)count;
+                        end = dst + output_count;
+                        parity = output_count & 1;
                         while (dst < end) {
                             *dst = 0;
                             dst += 2;
                         }
-                        if ((count & 1) != 0)
+                        if (parity != 0)
                             dst--;
                         src += (unsigned int)command;
                     }
@@ -2325,19 +2329,20 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
                             count--;
                             dst++;
                         }
-                        end = dst + count;
+                        output_count = (unsigned int)count;
+                        end = dst + output_count;
+                        parity = output_count & 1;
                         while (dst < end) {
                             *dst = 0;
                             dst += 2;
                         }
-                        if ((count & 1) != 0)
+                        if (parity != 0)
                             dst--;
                         src++;
                     }
                 }
             } while (!done);
             save_buffer += pitch;
-            dst = save_buffer;
             parity = next_parity;
         } while (--height);
     }
