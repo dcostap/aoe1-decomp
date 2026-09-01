@@ -741,11 +741,11 @@ void TRIBE_Command::command_build(int player_id, int* ids, int count,
             for (int i = 0; i < count; ++i) {
                 unit_ids[i].id = ids[i];
             }
-            cmd->location_x = x;
-            cmd->location_y = y;
             cmd->command = 0x66;
             cmd->unit_num = static_cast<unsigned char>(count);
             cmd->obj_id = static_cast<short>(build_id);
+            cmd->location_x = x;
+            cmd->location_y = y;
             cmd->unique_id = terrain;
             cmd->unit_player_id = static_cast<unsigned char>(player_id);
             L->Log("      >SEND CMD BUILD2 (CNT=%d,CAT=%d)", count, build_id);
