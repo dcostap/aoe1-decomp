@@ -505,7 +505,7 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
     int Revealed;
     RGE_Player* curVisPlayer;
     int isCurPlayer;
-    unsigned long checksum;
+    int csum;
     RGE_Tile* tile;
 
     Revealed = 0;
@@ -523,18 +523,18 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
     curVisPlayer = 0;
     tile = 0;
 
-    checksum = this->input_csum;
-    checksum = _rotl(checksum, 3);
-    checksum ^= 0x34343434;
-    checksum = _rotl(checksum, 2);
-    checksum ^= x1;
-    checksum = _rotl(checksum, 4);
-    checksum ^= y1;
-    checksum = _rotl(checksum, 3);
-    checksum ^= x2;
-    checksum = _rotl(checksum, 3);
-    checksum ^= y2;
-    this->input_csum = checksum;
+    csum = this->input_csum;
+    csum = _rotl(csum, 3);
+    csum ^= 0x34343434;
+    csum = _rotl(csum, 2);
+    csum ^= x1;
+    csum = _rotl(csum, 4);
+    csum ^= y1;
+    csum = _rotl(csum, 3);
+    csum ^= x2;
+    csum = _rotl(csum, 3);
+    csum ^= y2;
+    this->input_csum = csum;
 
     if (isCurPlayer) {
         curVisPlayer =
