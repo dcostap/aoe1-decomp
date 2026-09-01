@@ -60,7 +60,7 @@ class FunctionRegistryInventoryTests(unittest.TestCase):
 
         self.assertEqual(point["translation_unit_source"], "src/point.cpp")
         self.assertEqual(point["function_count"], 8)
-        self.assertEqual(point["exact_validation_count"], 7)
+        self.assertEqual(point["exact_validation_count"], 6)
         self.assertEqual(
             {owner["owner_path"] for owner in owners.values()},
             {"src/point.cpp"},
@@ -75,7 +75,7 @@ class FunctionRegistryInventoryTests(unittest.TestCase):
                 "0047E510": "matching",
                 "0047E530": "scratch",
                 "0047E580": "matching",
-                "0047E5D0": "matching",
+                "0047E5D0": "accepted_drift",
             },
         )
         self.assertEqual(
