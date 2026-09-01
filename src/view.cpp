@@ -3427,21 +3427,19 @@ int RGE_View::sprite_check(uchar* shape, Shape_Info* info, int x, int y)
     uchar* p;
     uchar code;
     unsigned int n;
-    Shape_Info* shape_info = info;
-
-    if (shape_info != 0) {
+    if (info != 0) {
         if (x >= 0) {
-                    width = shape_info->Width;
+                    width = info->Width;
             if (x < width) {
                 if (y >= 0) {
-                    if (y < shape_info->Height) {
-                        uchar* outline = shape + shape_info->Shape_Outline_Offset;
+                    if (y < info->Height) {
+                        uchar* outline = shape + info->Shape_Outline_Offset;
                         start = *(short*)(outline + y * 4);
                         right_pad = *(short*)(outline + y * 4 + 2);
                         if (start >= 0) {
                             if (x >= start) {
                                 if (x <= width - right_pad) {
-                                    int* data_offsets = (int*)(shape + shape_info->Shape_Data_Offsets);
+                                    int* data_offsets = (int*)(shape + info->Shape_Data_Offsets);
                                     p = shape + data_offsets[y];
                                     if (start < width) {
                                         while (start < width) {
