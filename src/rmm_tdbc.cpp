@@ -207,7 +207,8 @@ void TRIBE_RMM_Database_Controller::add_land_module(uchar value)
                 if (land.wall_4_avoidance_line < this->map_height) land.wall_4_avoidance_line = this->map_height - edge;
             }
         }
-        int area = (this->map_width - edge * 2) * (this->map_height - edge * 2);
+        int diameter = edge + edge;
+        int area = (this->map_width - diameter) * (this->map_height - diameter);
         int each = (long)((double)area * DAT_00571f20);
         for (int i = 0; i < this->land_info.land_num; ++i)
             this->land_info.land[i].land_size = each / this->land_info.land_num;
