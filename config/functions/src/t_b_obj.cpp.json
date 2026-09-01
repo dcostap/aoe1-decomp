@@ -28,7 +28,7 @@
     "004C8ED0": {"status": "matching", "symbol": "?check@TRIBE_Building_Object@@QAEJPAPAV1@@Z"},
     "004C90B0": {"status": "matching", "symbol": "?connect@TRIBE_Building_Object@@QAEXXZ"},
     "004C9180": {"status": "matching", "symbol": "?connect2@TRIBE_Building_Object@@QAEXXZ"},
-    "004C9230": {"status": "scratch", "symbol": "?lay_down_impassable_terrain@TRIBE_Building_Object@@QAEXXZ"},
+    "004C9230": {"status": "matching", "symbol": "?lay_down_impassable_terrain@TRIBE_Building_Object@@QAEXXZ"},
     "004C9360": {"status": "matching", "symbol": "?lay_down_passable_terrain@TRIBE_Building_Object@@QAEXXZ"},
     "004C9480": {"status": "matching", "symbol": "?cancel_object@TRIBE_Building_Object@@UAEXXZ"},
     "004C9490": {"status": "matching", "symbol": "?cancel_build@TRIBE_Building_Object@@QAEXXZ"},
