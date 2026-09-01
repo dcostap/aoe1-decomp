@@ -31,6 +31,8 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
 {
     long radius;
     long i;
+    uchar not_done;
+    long index2;
     info.land_num = land_num;
     switch (type) {
     default:
@@ -74,8 +76,8 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
     long min_y = (long)(this->map_height / 2 - radius2 * 0.9);
     long max_x = (long)(this->map_width / 2 + radius2 * 0.9);
     long max_y = (long)(this->map_height / 2 + radius2 * 0.9);
-    if (min_x < 9) min_x = 9;
-    if (min_y < 9) min_y = 9;
+    if (min_x <= 8) min_x = 9;
+    if (min_y <= 8) min_y = 9;
     if (max_x >= this->map_width - 9) max_x = this->map_width - 10;
     if (max_y >= this->map_height - 9) max_y = this->map_height - 10;
     i = 0;
@@ -95,29 +97,28 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
 set_land_defaults:
                 land->base_size = 5; land->zone = (uchar)i; break;
             }
-            uchar found;
             long x;
             long y;
             do {
-                found = 0;
+                not_done = 0;
                 x = debug_rand(s_rmm_cntr_path, 0xd1) * (this->map_width - 16) / 0x7fff + 8;
                 y = debug_rand(s_rmm_cntr_path, 0xd2) * (this->map_height - 16) / 0x7fff + 8;
-                if (x > min_x && x < max_x && y > min_y && y < max_y) found = 1;
+                if (x > min_x && x < max_x && y > min_y && y < max_y) not_done = 1;
                 else {
-                    long j;
-                    for (j = 0; j < i; ++j) {
-                        RGE_Land_Info_Line& prior = info.land[j];
+                    index2 = 0;
+                    for (; index2 < i; ++index2) {
+                        RGE_Land_Info_Line& prior = info.land[index2];
                         long dx = x - prior.x;
                         long dy = y - prior.y;
                         if (dx < 0) dx = -dx;
                         if (dy < 0) dy = -dy;
                         if ((float)(dx * dx + dy * dy) <= distance2) {
-                            if (!found && j == i - 1) { prior.y = y; prior.x = x; }
-                            found = 1;
+                            if (!not_done && index2 == i - 1) { prior.y = y; prior.x = x; }
+                            not_done = 1;
                         }
                     }
                 }
-            } while (found);
+            } while (not_done);
             land->x = x; land->y = y;
             land->land_size = tiles / info.land_num;
             ++i;
