@@ -336,8 +336,8 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
                         for (short column = x_min; column <= x_max; ++column) {
                             RGE_Object_Node* node = tile->objects.list;
                             while (node != 0) {
+                                RGE_Object_Node* next = node->next;
                                 RGE_Static_Object* object = node->node;
-                                node = node->next;
                                 RGE_Master_Static_Object* object_master = object->master_obj;
 
                                 if (object_master->id != master_id &&
@@ -361,6 +361,7 @@ void TRIBE_World::check_destructables(short player_id, short master_id,
                                         }
                                     }
                                 }
+                                node = next;
                             }
                             ++tile;
                         }
