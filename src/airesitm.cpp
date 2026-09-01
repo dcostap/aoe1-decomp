@@ -98,17 +98,18 @@ not_equal:
 }
 
 int operator!=(const ResourceItem& left, const ResourceItem& right) {
-    if (left.numberValue != right.numberValue) {
-        return 1;
-    }
-
-    for (int i = 0; i < left.numberValue; ++i) {
-        if (left.valueValue[i] != right.valueValue[i]) {
-            return 1;
+    if (left.numberValue == right.numberValue) {
+        for (int i = 0; i < left.numberValue; ++i) {
+            if (left.valueValue[i] != right.valueValue[i]) {
+                goto not_equal;
+            }
         }
+
+        return 0;
     }
 
-    return 0;
+not_equal:
+    return 1;
 }
 
 int ResourceItem::value(int index) const {
