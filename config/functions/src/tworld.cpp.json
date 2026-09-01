@@ -25,7 +25,7 @@
     "0052E830": {"status": "matching", "symbol": "?load_player@TRIBE_World@@UAEXHEF@Z"},
     "0052E920": {"status": "accepted_drift", "symbol": "?setup_gaia@TRIBE_World@@UAEXXZ"},
     "0052E990": {"status": "matching", "symbol": "?setup_players@TRIBE_World@@UAEXAAURGE_Player_Info@@@Z"},
-    "0052EAC0": {"status": "scratch", "symbol": "?check_destructables@TRIBE_World@@QAEXFFMME@Z"},
+    "0052EAC0": {"status": "matching", "symbol": "?check_destructables@TRIBE_World@@QAEXFFMME@Z"},
     "0052ECF0": {"status": "matching", "symbol": "?scenario_make_player@TRIBE_World@@UAEXFEEEPAD@Z"},
     "0052EDF0": {"status": "matching", "symbol": "?load_world@TRIBE_World@@UAEEH@Z"},
     "0052EF30": {"status": "scratch", "symbol": "?new_game@TRIBE_World@@UAEEAAURGE_Player_Info@@H@Z"},
