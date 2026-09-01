@@ -177,9 +177,7 @@ void RGE_Action_Gather::set_state(unsigned char param_1) {
     case 8:
         if (this->obj->attribute_amount_held > DAT_0056e278) {
             if (this->target_obj2 == 0) {
-                if (((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site == -1) {
-                    this->set_target_obj2(0);
-                } else {
+                if (((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site != -1) {
                     if (this->obj->useSameZoneDropsite() == 1) {
                         RGE_Static_Object* found_target =
                             this->obj->owner->objects->find_by_master_ids(
@@ -191,22 +189,21 @@ void RGE_Action_Gather::set_state(unsigned char param_1) {
                             2,
                             (RGE_Static_Object*)this->obj);
                         this->set_target_obj2(found_target);
-                        goto gather_lookup_done;
-                    }
-                    RGE_Static_Object* found_target =
-                        this->obj->owner->objects->find_by_master_ids(
+                    } else {
+                        this->set_target_obj2(this->obj->owner->objects->find_by_master_ids(
                             ((RGE_Master_Action_Object*)this->obj->master_obj)->drop_site,
                             ((RGE_Master_Action_Object*)this->obj->master_obj)->backup_drop_site,
                             this->obj->world_x,
                             this->obj->world_y,
                             1,
                             2,
-                            0);
-                    this->set_target_obj2(found_target);
+                            0));
+                    }
+                } else {
+                    this->set_target_obj2(0);
                 }
             }
 
-gather_lookup_done:
             if (this->target_obj2 != 0) {
                 move_to = new RGE_Action_Move_To(
                     this->obj,
