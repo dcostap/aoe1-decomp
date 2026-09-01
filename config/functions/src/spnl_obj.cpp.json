@@ -11,7 +11,7 @@
     "004BEE40": {"status": "matching", "symbol": "?set_master_info@TRIBE_Scenario_Editor_Panel_Object@@QAEXPAVRGE_Master_Static_Object@@PAVTRIBE_Player@@@Z"},
     "004BEE70": {"status": "accepted_drift", "symbol": "?draw@TRIBE_Scenario_Editor_Panel_Object@@UAEXXZ"},
     "004BF4D0": {"status": "matching", "symbol": "?draw_item@TRIBE_Scenario_Editor_Panel_Object@@UAEXHHW4ValueType@TRIBE_Panel_Object@@HH@Z"},
-    "004BF6C0": {"status": "scratch", "symbol": "?mouse_left_up_action@TRIBE_Scenario_Editor_Panel_Object@@UAEJJJHH@Z"},
+    "004BF6C0": {"status": "accepted_drift", "symbol": "?mouse_left_up_action@TRIBE_Scenario_Editor_Panel_Object@@UAEJJJHH@Z"},
     "004BF6E0": {"status": "matching", "symbol": "?get_pierce_armor@TRIBE_Scenario_Editor_Panel_Object@@QAEJXZ"}
   }
 }
