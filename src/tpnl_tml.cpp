@@ -865,7 +865,7 @@ void Time_Line_Panel::draw_special_events()
                              x_offset - (strlen(event->text2) >> 1)
                                  * this->axis_font_wid
                                  + event->X_line_pos,
-                             this->height() + this->yPosition()
+                             this->yPosition() + this->height()
                                  - this->axis_font_hgt * 2 - 7,
                              event->text2, strlen(event->text2));
                     break;
