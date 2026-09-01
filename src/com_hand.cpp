@@ -1610,7 +1610,6 @@ second_player_found:
                         header->ExecuteOnTurn;
         ulong turn = this->current_turn;
         MSGFORMAT_ALL_DONE done;
-        done.ExecuteOnTurn = this->PlayerOptions.CommandTurnIncrement + turn;
         if (this->Multiplayer != 0 && this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW &&
             this->LastTurnAck[this->Me] != turn) {
             this->LastTurnAck[this->Me] = turn;
@@ -1622,6 +1621,7 @@ second_player_found:
             }
             comm_last_sent_time = debug_timeGetTime(com_hand_source_path, 0xBF9);
             done.Command = 'D';
+            done.ExecuteOnTurn = this->PlayerOptions.CommandTurnIncrement + turn;
             L->Log("  >TX DONE (%d)", 0x0C);
             this->CommOut(0, 0x44, &done, 0x0C, 0);
         }
