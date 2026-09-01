@@ -1,6 +1,7 @@
 
 #include "../include/dlg_help.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 extern "C" char* strcpy(char*, const char*);
 
