@@ -554,22 +554,15 @@ void TRIBE_Command::do_command_trade_attribute(TRIBE_Command_Trade_Attribute* pa
 
 void TRIBE_Command::do_command_repair(TRIBE_Command_Repair* packet)
 {
-    RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
-        reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
-    RGE_Obj_Info target_info;
-    target_info.id = packet->target.id;
-    int unit_count = (int)packet->unit_num;
-    RGE_Static_Object* target = this->get_obj(target_info);
+    RGE_Obj_Info* ids = (RGE_Obj_Info*)(packet + 1);
+    int unit_count = packet->unit_num;
+    RGE_Static_Object* target = this->get_obj(packet->target);
 
-    if (unit_count > 0) {
-        do {
-            RGE_Static_Object* object = this->get_obj(*ids);
-            if (object != 0) {
-                static_cast<TRIBE_Combat_Object*>(object)->do_repair(target);
-            }
-            ++ids;
-            --unit_count;
-        } while (unit_count != 0);
+    for (int i = 0; i < unit_count; ++i) {
+        RGE_Static_Object* object = this->get_obj(ids[i]);
+        if (object != 0) {
+            static_cast<TRIBE_Combat_Object*>(object)->do_repair(target);
+        }
     }
 }
 
