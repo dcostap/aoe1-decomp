@@ -1420,6 +1420,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
     float enemyDistance;
     float distance;
     int currentTarget;
+    int baseDamage;
 
     this->search();
     difficulty = this->objectValue->owner->world->difficultyLevel();
@@ -1546,11 +1547,11 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                 }
                 numberNonCurrentTargets = this->currentTargetValue;
                 numberMovingTargets = target->damageCapability() * DAT_0056ebd8;
-                numberObjectsInRange =
+                baseDamage =
                     target->master_obj->calc_base_damage_ability(
                         (RGE_Master_Combat_Object*)this->objectValue->master_obj);
                 numberMovingTargets =
-                    (float)numberObjectsInRange * DAT_0056ebc0 + numberMovingTargets;
+                    (float)baseDamage * DAT_0056ebc0 + numberMovingTargets;
                 if (target->hp > DAT_0056ebc8) {
                     numberMovingTargets /= target->hp;
                 }
