@@ -998,10 +998,13 @@ foundTrigger:
 //
 int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
 {
-    int phase = 0;
-    AIPlayPhase* phaseObject;
     RGE_Static_Object* target;
     AIPlay* play;
+    AIPlayPhase* phase;
+    AIPlayPhaseCommand* command;
+    int i;
+    int a;
+    RGE_Static_Object* member;
 
     if (this->playStatus == 0) {
         return 0;
@@ -1019,8 +1022,8 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
         return 1;
     }
 
-    phaseObject = play->phase(param_1);
-    if (phaseObject == 0) {
+    phase = play->phase(param_1);
+    if (phase == 0) {
         return 0;
     }
 
@@ -1031,9 +1034,9 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
 
     this->playStatus->currentPhaseValue = (unsigned char)param_1;
 
-    phase = 0;
+    i = 0;
     do {
-        AIPlayPhaseCommand* command = phaseObject->command(phase);
+        command = phase->command(i);
         if (command != 0 && command->type() != 0) {
             if ((command->type() == 6 || command->type() == 7) &&
                 param_2 == 0) {
@@ -1048,15 +1051,15 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                     break;
                 }
             } else {
-                int i = 0;
-                RGE_Static_Object* member = this->objectValue;
+                a = 0;
+                member = this->objectValue;
                 if (member->groupMembers.numberValue > 0) {
                     do {
-                        if (member->groupMembers.maximumSizeValue - 1 < i) {
-                            member->groupMembers.resize(i + 1);
+                        if (member->groupMembers.maximumSizeValue - 1 < a) {
+                            member->groupMembers.resize(a + 1);
                         }
                         member = this->lookupObject(
-                            member->groupMembers.value[i]);
+                            member->groupMembers.value[a]);
                         if (member != 0 && member->unitAI() != 0) {
                             param_1 = command->group();
                             if (this->playStatus->group(member->id) !=
@@ -1085,13 +1088,16 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                 if (distance > play->gatherTolerance(
                                         command->group(),
                                         currentPhase)) {
+                                    int commandX = command->value1();
+                                    int commandZ = command->value3();
+                                    int commandY = command->value2();
                                     memberAI = member->unitAI();
                                     orderAction = 0x2C6;
                                     param_1 = -1;
                                     orderTargetOwner = -1;
-                                    orderX = (float)command->value1() + target->world_x;
-                                    orderY = (float)command->value2() + target->world_y;
-                                    orderZ = (float)command->value3() + target->world_z;
+                                    orderZ = (float)commandZ + target->world_z;
+                                    orderY = (float)commandY + target->world_y;
+                                    orderX = (float)commandX + target->world_x;
                                     break;
                                 }
                                 goto next_member;
@@ -1183,15 +1189,15 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                         }
 
                     next_member:
-                        ++i;
+                        ++a;
                         member = this->objectValue;
-                    } while (i < this->objectValue->groupMembers.numberValue);
+                    } while (a < this->objectValue->groupMembers.numberValue);
                 }
             }
         }
 
-        ++phase;
-    } while (phase < 5);
+        ++i;
+    } while (i < 5);
 
     return 1;
 }
