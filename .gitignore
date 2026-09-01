@@ -17,3 +17,11 @@ __pycache__/
 !orig/**
 nul
 vc50.idb
+
+# Keep the repository-local function status Pi extension under version control.
+!.pi/
+.pi/*
+!.pi/extensions/
+.pi/extensions/*
+!.pi/extensions/function-status-widget/
+!.pi/extensions/function-status-widget/**
