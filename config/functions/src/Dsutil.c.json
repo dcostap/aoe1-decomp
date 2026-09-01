@@ -23,7 +23,7 @@
     "00448040": {"status": "matching", "symbol": "_WaveCloseReadFile"},
     "00448080": {"status": "matching", "symbol": "_WaveCreateFile"},
     "004481A0": {"status": "matching", "symbol": "_WaveStartDataWrite"},
-    "004481E0": {"status": "scratch", "symbol": "_WaveWriteFile"},
+    "004481E0": {"status": "matching", "symbol": "_WaveWriteFile"},
     "00448250": {"status": "scratch", "symbol": "_WaveCloseWriteFile"},
     "00448340": {"status": "matching", "symbol": "_WaveCopyUselessChunks"},
     "00448400": {"status": "matching", "symbol": "_riffCopyChunk"},
