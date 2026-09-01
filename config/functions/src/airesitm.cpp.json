@@ -21,6 +21,6 @@
     "004121E0": {"status": "matching", "symbol": "?setAllValues@ResourceItem@@QAEXH@Z"},
     "00412200": {"status": "matching", "symbol": "?number@ResourceItem@@QBEHXZ"},
     "00412210": {"status": "matching", "symbol": "?largestValueIndex@ResourceItem@@QAEHH@Z"},
-    "00412240": {"status": "scratch", "symbol": "?sortLarge@ResourceItem@@IAEHXZ"}
+    "00412240": {"status": "accepted_drift", "symbol": "?sortLarge@ResourceItem@@IAEHXZ"}
   }
 }
