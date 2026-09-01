@@ -14,7 +14,7 @@
     "004120B0": {"status": "matching", "symbol": "??1ResourceItem@@UAE@XZ"},
     "004120C0": {"status": "matching", "symbol": "??YResourceItem@@QAEAAV0@ABV0@@Z"},
     "00412100": {"status": "matching", "symbol": "??8@YAHABVResourceItem@@0@Z"},
-    "00412140": {"status": "scratch", "symbol": "??9@YAHABVResourceItem@@0@Z"},
+    "00412140": {"status": "matching", "symbol": "??9@YAHABVResourceItem@@0@Z"},
     "00412180": {"status": "matching", "symbol": "?value@ResourceItem@@QBEHH@Z"},
     "004121A0": {"status": "matching", "symbol": "?setValue@ResourceItem@@QAEXHH@Z"},
     "004121C0": {"status": "matching", "symbol": "?incrementValue@ResourceItem@@QAEXHH@Z"},
