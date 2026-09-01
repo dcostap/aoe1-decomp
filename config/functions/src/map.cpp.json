@@ -47,7 +47,7 @@
     "00457F80": {"status": "scratch", "symbol": "?load_terrain_types@RGE_Map@@QAEXPADPAPAVRGE_Sound@@@Z"},
     "00458280": {"status": "matching", "symbol": "?load_border_types@RGE_Map@@QAEXPAPAVRGE_Sound@@@Z"},
     "00458350": {"status": "scratch", "symbol": "?load_border_types@RGE_Map@@QAEXPADPAPAVRGE_Sound@@@Z"},
-    "00458600": {"status": "scratch", "symbol": "?load_terrain_obj_types@RGE_Map@@QAEXPAD@Z"},
+    "00458600": {"status": "accepted_drift", "symbol": "?load_terrain_obj_types@RGE_Map@@QAEXPAD@Z"},
     "00458760": {"status": "matching", "symbol": "?delete_objects_on_tile@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@HHHH@Z"},
     "004587D0": {"status": "matching", "symbol": "?delete_all_objects_on_tile@RGE_Map@@QAEXHH@Z"},
     "00458820": {"status": "scratch", "symbol": "?create_terrain_object@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@FFFHHH@Z"},
