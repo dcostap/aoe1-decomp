@@ -42,7 +42,7 @@
     "004578B0": {"status": "matching", "symbol": "?map_generate2@RGE_Map@@UAEXPAVRGE_Game_World@@JJEJ@Z"},
     "004579C0": {"status": "matching", "symbol": "?load_map@RGE_Map@@QAEXH@Z"},
     "00457C50": {"status": "accepted_drift", "symbol": "?save_map@RGE_Map@@QAEXH@Z"},
-    "00457DF0": {"status": "scratch", "symbol": "?save@RGE_Map@@UAEXH@Z"},
+    "00457DF0": {"status": "matching", "symbol": "?save@RGE_Map@@UAEXH@Z"},
     "00457EB0": {"status": "matching", "symbol": "?load_terrain_types@RGE_Map@@QAEXPAPAVRGE_Sound@@@Z"},
     "00457F80": {"status": "scratch", "symbol": "?load_terrain_types@RGE_Map@@QAEXPADPAPAVRGE_Sound@@@Z"},
     "00458280": {"status": "matching", "symbol": "?load_border_types@RGE_Map@@QAEXPAPAVRGE_Sound@@@Z"},
