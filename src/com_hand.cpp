@@ -3035,35 +3035,44 @@ int TCommunications_Handler::StoreIncoming(uint SerialNumber, char* InBuff, uint
 
 
 
-int TCommunications_Handler::StoreForResend(unsigned int param_1, char* param_2, unsigned int param_3, unsigned int* param_4)
+int TCommunications_Handler::StoreForResend(unsigned int SerialNumber,
+                                             char* OutCommBuff,
+                                             unsigned int Length,
+                                             unsigned int* ResendDestMap)
 {
-    if (this->Multiplayer != 0) {
-        if (this->RGE_Guaranteed_Delivery == 0) {
-            L->Log("+++!RGEGTD Store");
-        } else {
+    if (this->Multiplayer == 0)
+        return 0;
+    if (this->RGE_Guaranteed_Delivery == 0) {
+        L->Log("+++!RGEGTD Store");
+        return 0;
+    }
 
-    unsigned int slot = 0;
-    RESENDER* e = this->Resend;
+    {
+            int slot = 0;
+            RESENDER* table = this->Resend;
+            RESENDER* e = table;
     do {
         if (e->Serial == 0) {
-            e->Length = param_3;
-            if (param_3 != 0) {
-                e->ResendMsg = new char[e->Length];
-                if (e->ResendMsg != 0) {
-                    memcpy(e->ResendMsg, param_2, e->Length);
-                    e->Length = param_3;
+            RESENDER* entry = &table[slot];
+            entry->Length = Length;
+            if (Length != 0) {
+                unsigned int length = entry->Length;
+                entry->ResendMsg = new char[length];
+                if (entry->ResendMsg != 0) {
+                    memcpy(entry->ResendMsg, OutCommBuff, length);
+                    entry->Length = Length;
                 }
             }
-            e->Serial = param_1;
+            entry->Serial = SerialNumber;
             unsigned int bytes = static_cast<unsigned int>(this->MaxGamePlayers) * 4 + 4;
-            memcpy(e->DestMap, param_4, bytes);
+            memcpy(entry->DestMap, ResendDestMap, bytes);
 
             L->Log("Stored %db for resend (Slot= %d ) SERIAL=%d  (MaxPlayers=%d)",
-                   param_3, slot, param_1, this->MaxGamePlayers);
+                   Length, slot, SerialNumber, this->MaxGamePlayers);
             unsigned int i = 1;
             if (i <= this->MaxGamePlayers) {
-                unsigned int* p = param_4 + 1;
-                unsigned int* usedp = &e->DestMap[1];
+                unsigned int* p = ResendDestMap + 1;
+                unsigned int* usedp = &entry->DestMap[1];
                 do {
                     if (*usedp != 0) {
                         L->Log("    %u %u", i, *p);
@@ -3073,21 +3082,21 @@ int TCommunications_Handler::StoreForResend(unsigned int param_1, char* param_2,
                     p++;
                 } while (i <= this->MaxGamePlayers);
             }
-            e->TimeSent = debug_timeGetTime(com_hand_source_path, 0xD12);
+            entry->TimeSent = debug_timeGetTime(com_hand_source_path, 0xD12);
             return 1;
         }
 
         int flag = e->Serial;
         char first = e->ResendMsg[0];
         L->Log("QUEUE Has Ser #%d (Slot=%d) Cmd=%d '%c' Len=%d not ackd yet by %d,%d,%d,%d,%d,%d,%d,%d",
-               flag, slot, static_cast<int>(first), static_cast<int>(first), e->Length,
-               e->DestMap[1], e->DestMap[2], e->DestMap[3], e->DestMap[4], e->DestMap[5],
-               e->DestMap[6], e->DestMap[7], e->DestMap[8]);
+               flag, slot, static_cast<int>(first), static_cast<int>(first),
+               e->Length,
+               e->DestMap[1], e->DestMap[2], e->DestMap[3], e->DestMap[4],
+               e->DestMap[5], e->DestMap[6], e->DestMap[7], e->DestMap[8]);
         e++;
         slot++;
-    } while (slot < 502);
+    } while (slot < 0x1F5);
             L->Log("RESEND buffer filled up, slots (i=%d).", slot);
-        }
     }
     return 0;
 }
