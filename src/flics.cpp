@@ -138,10 +138,15 @@ void RGE_Flic_Player::palette(tagRGBQUAD* palette)
                             color_index += count;
                             int color_count = count;
                             do {
+                                tagRGBQUAD* color_pixel =
+                                    (tagRGBQUAD*)(green - 1);
+                                color_pixel->rgbRed =
+                                    (unsigned char)(packet[0] << 2);
+                                color_pixel->rgbGreen =
+                                    (unsigned char)(packet[1] << 2);
+                                color_pixel->rgbBlue =
+                                    (unsigned char)(packet[2] << 2);
                                 green += 4;
-                                green[-3] = (unsigned char)(packet[0] << 2);
-                                green[-4] = (unsigned char)(packet[1] << 2);
-                                green[-5] = (unsigned char)(packet[2] << 2);
                                 packet += 3;
                             } while (--color_count != 0);
                         }
