@@ -588,11 +588,11 @@ void RGE_Command::do_command_ai_order(RGE_Command_AI_Order* cmd) {
     }
 }
 
-void RGE_Command::do_command_group_ai_order(RGE_Command_Group_AI_Order* command)
+void RGE_Command::do_command_group_ai_order(RGE_Command_Group_AI_Order* aiOrder)
 {
-    int count = command->recipient_count;
+    int count = aiOrder->recipient_count;
     RGE_Obj_Info* recipient_base = reinterpret_cast<RGE_Obj_Info*>(
-        reinterpret_cast<unsigned char*>(command) + sizeof(*command));
+        reinterpret_cast<unsigned char*>(aiOrder) + sizeof(*aiOrder));
 
     if (count > 0) {
         RGE_Obj_Info* recipients = recipient_base;
@@ -600,32 +600,32 @@ void RGE_Command::do_command_group_ai_order(RGE_Command_Group_AI_Order* command)
         do {
             RGE_Static_Object* object = this->get_obj(*recipients);
             if (object != 0) {
-                float target_x;
-                if (command->targetX != -1.0f)
-                    target_x = command->targetX;
+                float targetX;
+                if (aiOrder->targetX != -1.0f)
+                    targetX = aiOrder->targetX;
                 else
-                    target_x = object->world_x;
+                    targetX = object->world_x;
 
-                float target_y;
-                if (command->targetY != -1.0f)
-                    target_y = command->targetY;
+                float targetY;
+                if (aiOrder->targetY != -1.0f)
+                    targetY = aiOrder->targetY;
                 else
-                    target_y = object->world_y;
+                    targetY = object->world_y;
 
-                float target_z;
-                if (command->targetZ != -1.0f)
-                    target_z = command->targetZ;
+                float targetZ;
+                if (aiOrder->targetZ != -1.0f)
+                    targetZ = aiOrder->targetZ;
                 else
-                    target_z = object->world_z;
+                    targetZ = object->world_z;
 
                 object->removeAllFromPathingGroup();
 
                 RGE_Game_World* world = this->world;
-                world->players[command->player_id]->processAIOrder(
-                    command->issuer, object->id, command->orderType,
-                    command->target, command->targetOwner, target_x, target_y,
-                    target_z, command->range, command->immediate,
-                    command->inFront, command->orderPriority);
+                world->players[aiOrder->player_id]->processAIOrder(
+                    aiOrder->issuer, object->id, aiOrder->orderType,
+                    aiOrder->target, aiOrder->targetOwner, targetX, targetY,
+                    targetZ, aiOrder->range, aiOrder->immediate,
+                    aiOrder->inFront, aiOrder->orderPriority);
             }
             ++recipients;
             --loop_count;
