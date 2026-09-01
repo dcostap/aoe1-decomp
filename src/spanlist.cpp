@@ -1080,8 +1080,6 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number,
                                         TSpan_List_Manager** spans,
                                         int* colors, int count)
 {
-    int Width;
-    int Height;
     int infile;
     int bmWide;
     BITMAPFILEHEADER bmFH;
@@ -1102,6 +1100,8 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number,
         }
     }
 
+    int Width;
+    int Height;
     Width = this->Num_Lines;
     Height = this->Num_Pixels;
     bmWide = (Height + 3) & 0xfffc;
