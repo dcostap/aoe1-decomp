@@ -1318,7 +1318,7 @@ void RGE_Static_Object::draw_frame_3d_cube_front(TDrawArea* area, short x, short
 
 
 
-void RGE_Static_Object::draw_frame(TDrawArea* area, short x, short y)
+void RGE_Static_Object::draw_frame(TDrawArea* render_area, short x, short y)
 {
     short min_x;
     short min_y;
@@ -1338,25 +1338,26 @@ void RGE_Static_Object::draw_frame(TDrawArea* area, short x, short y)
             x2 = x + max_x + this->screen_x_offset + 1;
             y2 = y + max_y + this->screen_y_offset + 1;
 
-            area->DrawRect(x1, y1, x2, y2, 0xff);
+            render_area->DrawRect(x1, y1, x2, y2, 0xff);
 
             if (this->object_state <= 2) {
-                int health = (int)this->hp;
-                if (health < 1) {
-                    health = 0;
+                int cur_hp = (int)this->hp;
+                if (cur_hp < 1) {
+                    cur_hp = 0;
                 }
 
-                int max_health = (int)this->master_obj->hp;
-                if (max_health > 0) {
+                int tot_hp = (int)this->master_obj->hp;
+                if (tot_hp > 0) {
                     y1 -= 6;
                     x2 = x1 + 26;
                     y2 = y1 + 5;
-                    area->DrawRect(x1, y1, x2, y2, 0xff);
+                    render_area->DrawRect(x1, y1, x2, y2, 0xff);
 
-                    area->FillRect(++x1, ++y1, x2 -= 2, y2 -= 2, 0x55);
-                    area->FillRect(x1, y1,
-                                   (health * 25) / max_health + x1 - 1,
-                                   y1 + 3, 0x25);
+                    render_area->FillRect(++x1, ++y1, x2 -= 2, y2 -= 2,
+                                          0x55);
+                    render_area->FillRect(x1, y1,
+                                          (cur_hp * 25) / tot_hp + x1 - 1,
+                                          y1 + 3, 0x25);
                 }
             }
         }
