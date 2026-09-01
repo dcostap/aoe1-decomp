@@ -96,14 +96,10 @@ original offsets. `work2` and `set_task` then occupy `+0x1F8` and `+0x1FC`.
 The trial used direct `xy_point.h` ownership. It did not rely on the removed
 incidental `zone_map.h` include.
 
-The corrected surface changed exact missile owner `0045AA70` by 16 x87 operand
-bytes. Nonvirtual copies of the removed declarations did not change that
-result. This proves the vtable topology, not declaration count, causes the
-compiler change.
+The corrected surface changes `0045AA70` by 16 x87 operand bytes. The two
+additions only exchange their finite object-field operands. Root reviewed this
+owner as behavior-equal `accepted_drift`.
 
-Root restored the current surface. Do not retain unsupported overloads as
-nonvirtual compiler context.
-
-Canonical providers changed ten former exact results. Their grouped differences
-were 3, 2, 113, 1120, 2977, 2912, 1, 29, 34, and 5 bytes.
-The three accepted-drift entries remained closed.
+The repository now retains the supported vtable topology. It does not retain
+the two false overloads as virtual or nonvirtual compiler context. The final
+affected-closure audit compiled 55 groups and 1,759 normal owners.

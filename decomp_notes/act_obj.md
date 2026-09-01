@@ -77,9 +77,9 @@ tree. The module has no accepted-drift rows.
 Binary vtables place `RGE_Action_Object::work2` and `set_task` at `+0x1F8`
 and `+0x1FC`. They are virtual methods, not ordinary helpers.
 
-The natural declaration repair also needs removal of two unsupported moving
-overloads. That combined repair changes exact `0045AA70` by 16 commutative x87
-operand bytes.
+The natural declaration repair also removes two unsupported moving overloads.
+The repository now retains this canonical surface. `00406940` is exact.
 
-All moving/action trials were restored. The slot result is proved, but no
-shared repair may replace the exact missile anchor.
+The final closure audit found three former exact owners with behavior-equal
+code generation. Root classified `0045AA70`, `004CD210`, and `0050A1D0` as
+completed `accepted_drift` results. Their ledgers record the semantic proof.

@@ -27,7 +27,7 @@
     "00406840": {"status": "matching", "symbol": "?play_command_sound@RGE_Action_Object@@UAEXXZ"},
     "00406850": {"status": "matching", "symbol": "?play_move_sound@RGE_Action_Object@@UAEXXZ"},
     "00406860": {"status": "scratch", "symbol": "?get_command_master@RGE_Action_Object@@UAEPAVRGE_Master_Static_Object@@PAVRGE_Static_Object@@MMM@Z"},
-    "00406940": {"status": "scratch", "symbol": "?set_task@RGE_Action_Object@@UAEXF@Z"},
+    "00406940": {"status": "matching", "symbol": "?set_task@RGE_Action_Object@@UAEXF@Z"},
     "00406990": {"status": "matching", "symbol": "?setTaskByTaskID@RGE_Action_Object@@UAEXH@Z"},
     "004069E0": {"status": "matching", "symbol": "?set_action@RGE_Action_Object@@UAEXPAVRGE_Action@@@Z"},
     "00406A00": {"status": "matching", "symbol": "?set_only_action@RGE_Action_Object@@UAEXPAVRGE_Action@@@Z"},

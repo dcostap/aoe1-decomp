@@ -114,13 +114,11 @@ public:
     virtual int canPath(int, float, float*, int, int, int);
     virtual int canBidirectionPath(int, int, float, float*, int, int, int);
     virtual int canPathWithObstructions(int, float, float*, int, int, int, ManagedArray<int>&);
-    virtual int canPathWithAdditionalPassability(void*, float, int, float*, int, int, int, int, int);
     virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int, int, int, int, int);
     virtual int findFirstTerrainAlongExceptionPath(int, float*, float*);
     virtual int canLinePath(int, int, int, int, float, int);
     virtual int canLinePath(const XYPoint&, const XYPoint&, float, XYPoint&, int);
     virtual int firstTileAlongLine(const XYPoint&, const XYPoint&, XYPoint&, int, int, int);
-    virtual int firstTileAlongLine(XYPoint*, XYPoint*, XYPoint*, int, int, int);
     void setStart(float, float, float);
     void displayPath(int);
 };

@@ -7,7 +7,7 @@
   },
   "functions": {
     "004CD1B0": {"status": "matching", "symbol": "??0TRIBE_Action_Build@@QAE@HPAVRGE_Action_Object@@@Z"},
-    "004CD210": {"status": "matching", "symbol": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"},
+    "004CD210": {"status": "accepted_drift", "symbol": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@PAVRGE_Static_Object@@@Z"},
     "004CD2A0": {"status": "matching", "symbol": "??0TRIBE_Action_Build@@QAE@PAVRGE_Action_Object@@PAVRGE_Task@@MMM@Z"},
     "004CD2E0": {"status": "matching", "symbol": "?first_in_stack@TRIBE_Action_Build@@UAEXE@Z"},
     "004CD310": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Build@@MAEXE@Z"},
