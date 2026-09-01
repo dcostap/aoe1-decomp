@@ -77,7 +77,7 @@
     "004C5D40": {"status": "matching", "symbol": "?release_being_worked_on@RGE_Static_Object@@UAEXPAV1@@Z"},
     "004C5D80": {"status": "matching", "symbol": "?inRange@RGE_Static_Object@@QAEHPAV1@M@Z"},
     "004C5E50": {"status": "matching", "symbol": "?distance_to_object@RGE_Static_Object@@QAEMPAV1@@Z"},
-    "004C5F00": {"status": "scratch", "symbol": "?distance_to_position@RGE_Static_Object@@QAEMMMM@Z"},
+    "004C5F00": {"status": "matching", "symbol": "?distance_to_position@RGE_Static_Object@@QAEMMMM@Z"},
     "004C5FA0": {"status": "matching", "symbol": "?hit_test@RGE_Static_Object@@QAEEFFFFF@Z"},
     "004C60A0": {"status": "matching", "symbol": "?box_hit_test@RGE_Static_Object@@QAEEFFFFFF@Z"},
     "004C6240": {"status": "matching", "symbol": "?set_location@RGE_Static_Object@@QAEXMMM@Z"},
