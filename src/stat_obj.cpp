@@ -334,12 +334,10 @@ int RGE_Static_Object::setup(RGE_Master_Static_Object* master, RGE_Player* playe
 
 
 int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
-    int long_val;
+    long long_val;
     int byte_val;
     int numberUnits;
     int tempInt;
-    int tempInt_fffffff8;
-    int local_4;
     short index;
 
     this->type = 10;
@@ -395,43 +393,23 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
         rge_read(file, &numberUnits, 4);
         rge_read(file, &numberUnits, 4);
         rge_read(file, &numberUnits, 4);
-        rge_read(file, &local_4, 4);
-        rge_read(file, &tempInt_fffffff8, 4);
-        rge_read(file, &tempInt_fffffff8, 4);
+        {
+            int old_local;
+            int old_temp;
+            rge_read(file, &old_local, 4);
+            rge_read(file, &old_temp, 4);
+            rge_read(file, &old_temp, 4);
+        }
     }
 
     rge_read(file, &byte_val, 4);
     numberUnits = 0;
     if (0 < byte_val) {
         do {
-            rge_read(file, &tempInt_fffffff8, 4);
+            int local_4;
+            rge_read(file, &local_4, 4);
             // The duplicate scan checks count before capacity.
-            int number = this->groupMembers.numberValue;
-            int index = 0;
-            local_4 = tempInt_fffffff8;
-            for (; index < number && index < this->groupMembers.maximumSizeValue;
-                 index = index + 1) {
-                if (this->groupMembers.value[index] == tempInt_fffffff8) {
-                    goto group_member_found;
-                }
-            }
-            if (number > this->groupMembers.maximumSizeValue - 1) {
-                int newNumber = number + 1;
-                int* values = new int[newNumber];
-                if (values != 0) {
-                    index = 0;
-                    for (; index < this->groupMembers.maximumSizeValue && index < newNumber;
-                         index = index + 1) {
-                        values[index] = this->groupMembers.value[index];
-                    }
-                    delete[] this->groupMembers.value;
-                    this->groupMembers.value = values;
-                    this->groupMembers.maximumSizeValue = newNumber;
-                }
-            }
-            this->groupMembers.value[this->groupMembers.numberValue] = local_4;
-            this->groupMembers.numberValue = this->groupMembers.numberValue + 1;
-        group_member_found:
+            this->groupMembers.add(local_4);
             numberUnits = numberUnits + 1;
         } while (numberUnits < byte_val);
     }
@@ -440,33 +418,9 @@ int RGE_Static_Object::setup(int file, RGE_Game_World* world) {
     numberUnits = 0;
     if (0 < byte_val) {
         do {
+            int local_4;
             rge_read(file, &local_4, 4);
-            int number = this->pathingGroupMembers.numberValue;
-            int index = 0;
-            tempInt_fffffff8 = local_4;
-            for (; index < number && index < this->pathingGroupMembers.maximumSizeValue;
-                 index = index + 1) {
-                if (this->pathingGroupMembers.value[index] == local_4) {
-                    goto pathing_member_found;
-                }
-            }
-            if (number > this->pathingGroupMembers.maximumSizeValue - 1) {
-                int newNumber = number + 1;
-                int* values = new int[newNumber];
-                if (values != 0) {
-                    index = 0;
-                    for (; index < this->pathingGroupMembers.maximumSizeValue && index < newNumber;
-                         index = index + 1) {
-                        values[index] = this->pathingGroupMembers.value[index];
-                    }
-                    delete[] this->pathingGroupMembers.value;
-                    this->pathingGroupMembers.value = values;
-                    this->pathingGroupMembers.maximumSizeValue = newNumber;
-                }
-            }
-            this->pathingGroupMembers.value[this->pathingGroupMembers.numberValue] = tempInt_fffffff8;
-            this->pathingGroupMembers.numberValue = this->pathingGroupMembers.numberValue + 1;
-        pathing_member_found:
+            this->pathingGroupMembers.add(local_4);
             numberUnits = numberUnits + 1;
         } while (numberUnits < byte_val);
     }
