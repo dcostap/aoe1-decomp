@@ -1,6 +1,7 @@
 
 #include "../include/flics.h"
 #include <string.h>
+#include <sys/types.h>
 
 typedef unsigned char uchar;
 typedef unsigned short ushort;
