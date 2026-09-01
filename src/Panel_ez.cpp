@@ -33,8 +33,10 @@ TEasy_Panel::TEasy_Panel(char* name)
 }
 
 long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long info_id, int use_area_size,
-                        long x, long y, long w, long h, int allow_shadow)
+                        long x_in, long y_in, long wid_in, long hgt_in, int allow_shadow)
 {
+    long x;
+    long wid;
     int own_mem;
     int f2g;
     int f2r;
@@ -92,26 +94,30 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
     set_info_file(info_file, info_id);
     if (use_area_size != 0) {
         x = 0;
-        y = 0;
+        y_in = 0;
         if (area != 0) {
-            w = area->Width;
-            h = area->Height;
+            wid = area->Width;
+            hgt_in = area->Height;
         } else {
-            w = 0;
-            h = 0;
+            wid = 0;
+            hgt_in = 0;
         }
-    } else if (w > 0 && h > 0 && area != 0) {
-        if (x == -1) {
-            x = area->Width / 2 - w / 2;
-        }
-        if (y == -1) {
-            y = area->Height / 2 - h / 2;
+    } else {
+        x = x_in;
+        wid = wid_in;
+        if (wid > 0 && hgt_in > 0 && area != 0) {
+            if (x == -1) {
+                x = area->Width / 2 - wid / 2;
+            }
+            if (y_in == -1) {
+                y_in = area->Height / 2 - hgt_in / 2;
+            }
         }
     }
-    if (TPanel::setup(area, parent, x, y, w, h, 0) == 0) {
+    if (TPanel::setup(area, parent, x, y_in, wid, hgt_in, 0) == 0) {
         return 0;
     }
-    this->set_ideal_size(w, h);
+    this->set_ideal_size(wid, hgt_in);
     if (use_area_size != 0) {
         this->set_positioning((TPanel::PositionMode)1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
