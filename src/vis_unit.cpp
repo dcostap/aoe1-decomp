@@ -247,7 +247,7 @@ int Visible_Unit_Manager::GetVisibleUnits(
         categories++;
         VISIBLE_UNIT_PTR* bucket = &PDP[category];
         rec = bucket->unit_list;
-        unsigned int count = (unsigned short)bucket->used;
+        int count = (unsigned short)bucket->used;
         while (count != 0) {
             int dx;
             int dy;
