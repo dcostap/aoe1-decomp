@@ -4,7 +4,7 @@
 #include "../include/m_mo_obj.h"
 #include "../include/command_waypoint.h"
 #include "../include/pathsys.h"
-#include "../include/unit_ai_module.h"
+#include "../include/aiuaimod.h"
 #include "../include/world.h"
 #include "../include/game_globals.h"
 #include "../include/basegame.h"
