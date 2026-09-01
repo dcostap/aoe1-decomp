@@ -10,7 +10,7 @@
     "00488920": {"status": "matching", "symbol": "?generate@RGE_RMM_Terrain_Generator@@UAEEXZ"},
     "004889D0": {"status": "matching", "symbol": "?water@RGE_RMM_Terrain_Generator@@IAEEE@Z"},
     "004889F0": {"status": "matching", "symbol": "?check_borders@RGE_RMM_Terrain_Generator@@IAEXXZ"},
-    "00488B90": {"status": "scratch", "symbol": "?check_terrain@RGE_RMM_Terrain_Generator@@IAEEEJJJE@Z"},
+    "00488B90": {"status": "accepted_drift", "symbol": "?check_terrain@RGE_RMM_Terrain_Generator@@IAEEEJJJE@Z"},
     "00488D50": {"status": "matching", "symbol": "?generate_modifiers@RGE_RMM_Terrain_Generator@@IAEXXZ"},
     "00488E40": {"status": "matching", "symbol": "?fig_chance@RGE_RMM_Terrain_Generator@@IAEMJJJJ@Z"},
     "00488E60": {"status": "accepted_drift", "symbol": "?count_map_tiles@RGE_RMM_Terrain_Generator@@IAEJE@Z"},
