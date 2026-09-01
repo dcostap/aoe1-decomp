@@ -10,7 +10,7 @@
     "004D0EB0": {"status": "accepted_drift", "symbol": "??0TRIBE_Action_Make_Obj@@QAE@PAVRGE_Action_Object@@FHE@Z"},
     "004D0EF0": {"status": "matching", "symbol": "??1TRIBE_Action_Make_Obj@@UAE@XZ"},
     "004D0F70": {"status": "matching", "symbol": "?save@TRIBE_Action_Make_Obj@@UAEXH@Z"},
-    "004D0FC0": {"status": "scratch", "symbol": "?first_in_stack@TRIBE_Action_Make_Obj@@UAEXE@Z"},
+    "004D0FC0": {"status": "accepted_drift", "symbol": "?first_in_stack@TRIBE_Action_Make_Obj@@UAEXE@Z"},
     "004D10E0": {"status": "matching", "symbol": "?set_state@TRIBE_Action_Make_Obj@@MAEXE@Z"},
     "004D10F0": {"status": "matching", "symbol": "?update@TRIBE_Action_Make_Obj@@UAEEXZ"},
     "004D12B0": {"status": "matching", "symbol": "?place_obj@TRIBE_Action_Make_Obj@@IAEEPAPAVRGE_Static_Object@@@Z"},
