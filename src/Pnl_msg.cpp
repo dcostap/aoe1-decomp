@@ -259,7 +259,7 @@ void TMessagePanel::draw() {
                 back_rgb = this->font_color2;
             }
 
-            if (this->message_type == 2) {
+            if (this->message_type == DebugMessage) {
                 SetBkColor(this->render_area->DrawDc, 0);
                 SetBkMode(this->render_area->DrawDc, 2);
             } else {
@@ -275,19 +275,19 @@ void TMessagePanel::draw() {
             GetTextExtentPoint32A(this->render_area->DrawDc, msg, len, &ts);
 
             unsigned int flags;
-            if (this->message_type == 1) {
+            if (this->message_type == BadMessage) {
                 flags = 0x21;
-            } else if (this->message_type == 5) {
+            } else if (this->message_type == RightInfoMessage) {
                 flags = 0x22;
             } else {
                 len = strlen(msg);
                 GetTextExtentPoint32A(this->render_area->DrawDc, msg, len, &ts);
                 flags = (this->word_wrap == 0 ||
                          ts.cx <= this->pnl_wid - 2) ? 0x20 : 0x10;
-                if (this->horz_just == 4) flags |= 1;
-                else if (this->horz_just == 3) flags |= 2;
-                if (this->vert_just == 4) flags |= 4;
-                else if (this->vert_just == 1) flags |= 8;
+                if (this->horz_just == CenterJust) flags |= 1;
+                else if (this->horz_just == RightJust) flags |= 2;
+                if (this->vert_just == CenterJust) flags |= 4;
+                else if (this->vert_just == BottomJust) flags |= 8;
             }
 
             wid = wid + x + 1;
