@@ -80,3 +80,14 @@ byte proof.
 
 The `sort` body has the weakest call-site evidence. Its comparator signature is
 exact. Its simple comparison-and-swap implementation remains an inference.
+
+## Shared-ABI review result
+
+A compiler-gated review confirmed that moving `resize` outside the class does
+not stop VC5 from inlining it. The affected callers lose direct `resize` calls
+and gain allocation and deletion calls. The header remains unchanged.
+
+The PDB-proven protected access also conflicts with current direct caller
+source. Recover those callers before changing access or specialization
+ownership. Do not use compiler controls or wrappers to force an out-of-line
+call.
