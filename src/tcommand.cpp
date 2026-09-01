@@ -907,9 +907,9 @@ void TRIBE_Command::command_inventory(short player_id, short inventory_id, float
     TRIBE_Command_Game* cmd = static_cast<TRIBE_Command_Game*>(
         calloc(1, sizeof(TRIBE_Command_Game)));
     if (cmd) {
+        cmd->var1 = player_id;
         cmd->var2 = inventory_id;
         cmd->var3 = amount;
-        cmd->var1 = player_id;
         cmd->command = 0x67;
         cmd->game_command = 2;
         L->Log("      >SEND CMD INV (PLR=%d,INV=%d)",
