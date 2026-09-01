@@ -6,7 +6,7 @@
     "flags": "gx"
   },
   "functions": {
-    "00412F00": {"status": "scratch", "symbol": "??0UnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z"},
+    "00412F00": {"status": "matching", "symbol": "??0UnitAIModule@@QAE@PAVRGE_Static_Object@@H@Z"},
     "00413090": {"status": "matching", "symbol": "??1UnitAIModule@@UAE@XZ"},
     "00413150": {"status": "accepted_drift", "symbol": "?save@UnitAIModule@@UAEXH@Z"},
     "00413450": {"status": "matching", "symbol": "?load@UnitAIModule@@UAEXH@Z"},
