@@ -486,21 +486,15 @@ void TRIBE_Command::do_command_cancel_build(TRIBE_Command_Cancel_Build* cmd)
 
 void TRIBE_Command::do_command_attack_ground(TRIBE_Command_Attack_Ground* packet)
 {
-    RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(
-        reinterpret_cast<unsigned char*>(packet) + sizeof(*packet));
-    unsigned int count = (unsigned int)packet->unit_num;
-    if ((int)count <= 0) {
-        return;
-    }
-    do {
+    RGE_Obj_Info* ids = reinterpret_cast<RGE_Obj_Info*>(packet + 1);
+    for (int count = packet->unit_num; count > 0; --count) {
         RGE_Static_Object* object = this->get_obj(*ids);
-        if (object != 0) {
-            static_cast<RGE_Combat_Object*>(object)->attack(
+        if (object) {
+            object->attack(
                 packet->location_x, packet->location_y, 0.0f, 1);
         }
         ++ids;
-        --count;
-    } while (count != 0);
+    }
 }
 
 void TRIBE_Command::do_command_give_attribute(TRIBE_Command_Give_Attribute* ca)
