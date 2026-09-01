@@ -65,7 +65,7 @@
     "0053A0D0": {"status": "matching", "symbol": "?start_scroll_view@RGE_View@@UAEHEJJHH@Z"},
     "0053A290": {"status": "verified_logic", "symbol": "?handle_scroll_view@RGE_View@@UAEHJJ@Z"},
     "0053A9C0": {"status": "matching", "symbol": "?end_scroll_view@RGE_View@@UAEXXZ"},
-    "0053AAF0": {"status": "scratch", "symbol": "?do_paint@RGE_View@@UAEHJJJJH@Z"},
+    "0053AAF0": {"status": "matching", "symbol": "?do_paint@RGE_View@@UAEHJJJJH@Z"},
     "0053AC40": {"status": "matching", "symbol": "?reset_overlay_sprites@RGE_View@@QAEXXZ"},
     "0053AC70": {"status": "matching", "symbol": "?reset_cyclic_overlay_sprites@RGE_View@@QAEXXZ"},
     "0053ACD0": {"status": "matching", "symbol": "?add_overlay_sprite@RGE_View@@QAEXPAVTShape@@HHHHHPAEHK@Z"},
