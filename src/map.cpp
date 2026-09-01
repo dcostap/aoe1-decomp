@@ -2233,9 +2233,9 @@ void RGE_Map::set_terrain_passablity(short x1, short y1, short x2, short y2,
         y1 = temp;
     }
     if (x1 > x2) {
-        int temp = x2;
+        short temp = x2;
         x2 = x1;
-        x1 = (short)temp;
+        x1 = temp;
     }
 
     if (y1 < 0) y1 = 0;
@@ -2246,10 +2246,14 @@ void RGE_Map::set_terrain_passablity(short x1, short y1, short x2, short y2,
         x2 = (short)this->map_width - 1;
 
     if (y1 <= y2) {
-        for (int y = y1; y <= y2; ++y) {
+        int row_count = (int)y2 - (int)y1 + 1;
+        short row = y1;
+        do {
             if (x1 <= x2) {
-                for (int x = x1; x <= x2; ++x) {
-                    RGE_Tile* tile = &this->map_row_offset[y][x];
+                short col = x1;
+                int col_count = (int)x2 - (int)x1 + 1;
+                do {
+                    RGE_Tile* tile = &this->map_row_offset[row][col];
                     unsigned char old_terrain = tile->terrain_type;
                     short terrain_type = (short)(old_terrain & 0x1F);
                     unsigned char replacement;
@@ -2258,12 +2262,16 @@ void RGE_Map::set_terrain_passablity(short x1, short y1, short x2, short y2,
                         replacement = this->terrain_types[terrain_type].passable_terrain;
                     else
                         replacement = this->terrain_types[terrain_type].impassable_terrain;
+                    ++col;
                     tile->terrain_type =
                         (unsigned char)((replacement ^ old_terrain) & 0x1F) ^
                         old_terrain;
-                }
+                    --col_count;
+                } while (col_count != 0);
             }
-        }
+            ++row;
+            --row_count;
+        } while (row_count != 0);
     }
 }
 
