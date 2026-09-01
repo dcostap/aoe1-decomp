@@ -1542,7 +1542,6 @@ byte TShape::shape_mirror_color_trans_unclipped(TDrawArea* draw_area, long x,
 byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x,
                                            long y, byte* table)
 {
-    Shape_Byte_Table* table_view = (Shape_Byte_Table*)table;
     long pitch = draw_area->AlignedWidth() * draw_area->Orien;
 
     Shape_Header* hdr = this->shape_header;
@@ -1575,7 +1574,7 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x,
                             unsigned int count = c;
                             do {
                                 --d;
-                                *d = table_view->table[*d];
+                                *d = table[*d];
                             } while (--count);
                         }
                         src += c;
@@ -1589,7 +1588,7 @@ byte TShape::shape_mirror_shadow_unclipped(TDrawArea* draw_area, long x,
                             unsigned int count = c;
                             do {
                                 --d;
-                                *d = table_view->table[*d];
+                                *d = table[*d];
                             } while (--count);
                         }
                         src++;

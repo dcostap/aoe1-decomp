@@ -8012,26 +8012,27 @@ int TribeTacticalAIModule::taskDefender(int groupId, float x, float y) {
 int TribeTacticalAIModule::taskTrain(BuildItem* item)
 {
     int objectID = 0;
+    RGE_Static_Object* trainBuilding;
 
     if (item == 0) {
         this->logCommonHistory("Invalid taskTrain item, returning FALSE.");
         return 0;
     }
 
-    RGE_Static_Object* object =
+    trainBuilding =
         this->md->object(-1, item->buildFrom(), -1, 0x26B, 0x26C, 2);
-    if (object == 0 || object->unitAI() == 0) {
+    if (trainBuilding == 0 || trainBuilding->unitAI() == 0) {
         this->logCommonHistory("Could not find a building to train type %d (UniqueID=%d) at, returning FALSE.",
                                item->typeID(), item->uniqueID());
         return 0;
     }
 
     this->logCommonHistory("Training ID #%d (UniqueID=%d) from building with gameID=%d.",
-                           item->typeID(), item->uniqueID(), object->id);
+                           item->typeID(), item->uniqueID(), trainBuilding->id);
     item->setInProgress(1);
     item->setBuilt(0);
 
-    objectID = object->id;
+    objectID = trainBuilding->id;
     ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
     int i;
     for (i = 0; i < arr.numberValue; i++) {
@@ -8057,7 +8058,7 @@ int TribeTacticalAIModule::taskTrain(BuildItem* item)
     arr.numberValue++;
 
 dispatch:
-    this->md->aiPlayer->trainUnit(item->typeID(), object->id,
+    this->md->aiPlayer->trainUnit(item->typeID(), trainBuilding->id,
                                   item->uniqueID());
     return 1;
 }
