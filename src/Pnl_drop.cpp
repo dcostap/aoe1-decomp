@@ -264,10 +264,10 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
         return;
     }
 
-    long parent_x = 0;
-    long parent_y = 0;
-    long parent_w = 0;
-    long parent_h = 0;
+    long parent_x;
+    long parent_y;
+    long parent_w;
+    long parent_h;
     DropdownMode old_mode;
     if (this->parent_panel) {
         parent_x = this->parent_panel->xPosition();
