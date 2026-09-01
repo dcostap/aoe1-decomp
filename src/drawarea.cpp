@@ -594,6 +594,8 @@ int TDrawSystem::HandleQueryNewPalette(void* param1, unsigned int param2, unsign
 
 void TDrawSystem::Paint(tagRECT* param_1)
 {
+    int right;
+    int bottom;
     tagRECT dest;
     tagRECT src;
     long dest_top;
@@ -611,40 +613,38 @@ void TDrawSystem::Paint(tagRECT* param_1)
         ClientToScreen(this->Wnd, (POINT*)&dest.left);
         ClientToScreen(this->Wnd, (POINT*)&dest.right);
         } else {
-            int w = this->ScreenWidth;
-            int h = this->ScreenHeight;
             src.left = 0;
             src.top = 0;
-            src.right = w;
-            src.bottom = h;
+            src.right = this->ScreenWidth;
+            src.bottom = this->ScreenHeight;
             dest.left = 0;
             dest.top = 0;
-            dest.right = w;
-            dest.bottom = h;
+            dest.right = this->ScreenWidth;
+            dest.bottom = this->ScreenHeight;
         }
 
         if (param_1) {
         src.left = param_1->left;
         src.top = param_1->top;
-        src.right = param_1->right;
-        src.bottom = param_1->bottom;
+        right = param_1->right;
+        bottom = param_1->bottom;
 
         if (src.left < 0) src.left = 0;
         if (src.top < 0) src.top = 0;
-        if (src.right >= this->ScreenWidth)
-            src.right = this->ScreenWidth - 1;
-        if (src.bottom >= this->ScreenHeight)
-            src.bottom = this->ScreenHeight - 1;
+        if (right >= this->ScreenWidth)
+            right = this->ScreenWidth - 1;
+        if (bottom >= this->ScreenHeight)
+            bottom = this->ScreenHeight - 1;
 
         dest.left = dest.left + src.left;
         dest_top = dest.top;
         dest_top = dest_top + src.top;
         dest.top = dest_top;
-        dest.right = dest.left + src.right - src.left + 1;
-        dest.bottom = dest_top + src.bottom - src.top + 1;
+        dest.right = dest.left + right - src.left + 1;
+        dest.bottom = dest_top + bottom - src.top + 1;
 
-        src.right += 1;
-        src.bottom += 1;
+        src.right = right + 1;
+        src.bottom = bottom + 1;
         }
 
         this->PrimarySurface->Blt(&dest, this->DrawArea->DrawSurface,
