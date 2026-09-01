@@ -2202,11 +2202,11 @@ void RGE_Static_Object::create_doppleganger_when_dying() {
             int i = 0;
             do {
                 if ((explored & 1) == 1 && (mask & 1) == 0 && i > 0) {
-                    RGE_Player* player = this->owner->world->players[i >> 2];
+                    RGE_Player* player = this->owner->world->players[i];
                     static_cast<RGE_Master_Doppleganger_Object*>(player->master_objects[243])->make_new_obj(
                         player, this->world_x, this->world_y, this->world_z, this);
                 }
-                i += 4;
+                i++;
                 mask >>= 1;
                 explored >>= 1;
             } while (explored != 0);
