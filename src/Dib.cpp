@@ -1377,7 +1377,7 @@ void __cdecl DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm,
         if (bih->biCompression == 3)
             bits = (BYTE*)bih + bih->biSize + 12;
         else
-            bits = (BYTE*)bih + bih->biSize + nPalColors * 4;
+            bits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
 
         if (transparent) {
             if (zero)
@@ -1399,9 +1399,9 @@ void __cdecl DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm,
                     if (searchState)
                         break;
                     dir = -1;
-                    zeroBlue = rgb->rgbBlue;
-                    g = rgb->rgbGreen;
                     r = rgb->rgbRed;
+                    g = rgb->rgbGreen;
+                    zeroBlue = rgb->rgbBlue;
                     searchState = 1;
                 }
                 zeroIndex = (BYTE)GetNearestPaletteIndex(hbm,
