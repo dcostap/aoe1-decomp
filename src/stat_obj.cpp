@@ -3600,33 +3600,34 @@ int RGE_Static_Object::addToGroup(int groupIndex, float unused)
     }
 
     {
-        int count = this->groupMembers.numberValue;
+        ManagedArray<int>& members = this->groupMembers;
+        int count = members.numberValue;
         int i = 0;
         while (i < count) {
-            if (i >= this->groupMembers.maximumSizeValue) {
+            if (i >= members.maximumSizeValue) {
                 break;
             }
-            if (this->groupMembers.value[i] == groupIndex) {
+            if (members.value[i] == groupIndex) {
                 goto done;
             }
             i++;
         }
 
-        if (count > this->groupMembers.maximumSizeValue - 1) {
+        if (count > members.maximumSizeValue - 1) {
             int newMax = count + 1;
             int* newArray = new int[newMax];
             if (newArray != 0) {
-                for (i = 0; i < this->groupMembers.maximumSizeValue && i < newMax; i++) {
-                    newArray[i] = this->groupMembers.value[i];
+                for (i = 0; i < members.maximumSizeValue && i < newMax; i++) {
+                    newArray[i] = members.value[i];
                 }
-                delete[] this->groupMembers.value;
-                this->groupMembers.value = newArray;
-                this->groupMembers.maximumSizeValue = newMax;
+                delete[] members.value;
+                members.value = newArray;
+                members.maximumSizeValue = newMax;
             }
         }
 
-        this->groupMembers.value[this->groupMembers.numberValue] = groupIndex;
-        this->groupMembers.numberValue++;
+        members.value[members.numberValue] = groupIndex;
+        members.numberValue++;
     }
 
 done:
