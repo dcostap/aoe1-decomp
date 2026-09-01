@@ -109,7 +109,7 @@
     "004C7770": {"status": "matching", "symbol": "?unitIsInGroup@RGE_Static_Object@@QAEHH@Z"},
     "004C77B0": {"status": "matching", "symbol": "?createGroup@RGE_Static_Object@@QAEHPAHHHM@Z"},
     "004C78B0": {"status": "matching", "symbol": "?commanderCreateGroup@RGE_Static_Object@@QAEHPAHHHM@Z"},
-    "004C7920": {"status": "scratch", "symbol": "?addToGroup@RGE_Static_Object@@QAEHHM@Z"},
+    "004C7920": {"status": "matching", "symbol": "?addToGroup@RGE_Static_Object@@QAEHHM@Z"},
     "004C79D0": {"status": "matching", "symbol": "?commanderAddToGroup@RGE_Static_Object@@QAEHHM@Z"},
     "004C7B60": {"status": "matching", "symbol": "?removeFromGroup@RGE_Static_Object@@QAEHH@Z"},
     "004C7BD0": {"status": "matching", "symbol": "?commanderRemoveFromGroup@RGE_Static_Object@@QAEHH@Z"},
