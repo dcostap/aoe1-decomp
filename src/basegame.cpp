@@ -2903,7 +2903,7 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
         color_log(0x32, 0x45, 3);
         if (self->handle_paint(hwnd, 0x0F, wparam, lparam) != 0)
             goto default_window_proc;
-        goto panel_return;
+        goto panel_return_after_exit_menu;
 
     case 0x1C:
         if (self->prog_ready != 0) {
@@ -2945,7 +2945,7 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
         color_log(0x32, 0x54, 3);
         if (self->handle_activate(hwnd, 0x1C, wparam, lparam) != 0)
             goto default_window_proc;
-        goto panel_return;
+        goto panel_return_after_exit_menu;
 
     case 0x104:
         color_log(0x24, 0xBA, 3);
@@ -2954,7 +2954,7 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
             if (handled != 0)
                 goto default_window_proc;
         }
-        goto panel_return;
+        goto panel_return_after_exit_menu;
 
     case 0x100:
         color_log(0x24, 0xBA, 3);
@@ -2963,7 +2963,7 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
             if (handled != 0)
                 goto default_window_proc;
         }
-        goto panel_return;
+        goto panel_return_after_exit_menu;
 
     case 0x105:
         if (wparam == 0x12 && panel_system.currentPanel() != 0) {
@@ -2985,15 +2985,14 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
         goto default_window_proc;
 
     case 0x113:
-        if (self->handle_idle() != 0)
-            goto default_window_proc;
-        goto panel_return;
+        self->handle_idle();
+        goto default_window_proc;
 
     case 0x116:
         color_log(0x32, 0xBA, 3);
         if (self->handle_init_menu(hwnd, 0x116, wparam, lparam) != 0)
             goto default_window_proc;
-        goto panel_return;
+        goto panel_return_after_exit_menu;
 
     case 0x200:
         color_log(0x24, 0x54, 3);
@@ -3011,7 +3010,7 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
             }
             goto default_window_proc;
         }
-        goto panel_return;
+        goto panel_return_after_exit_menu;
 
     case 0x212:
         color_log(0x32, 0xBA, 3);
@@ -3071,12 +3070,12 @@ close_message:
     color_log(0x32, 0xBA, 3);
     if (self->handle_close(hwnd, msg, wparam, lparam) != 0)
         goto default_window_proc;
-    if (panel_result != 0) {
+    if (mouse_down != 0) {
         color_log(0x4C, 0x5F, 4);
         color_log(0x24, 0x5F, 3);
-        return static_cast<LRESULT>(panel_result);
+        return static_cast<LRESULT>(wparam);
     }
-    goto panel_return_alt;
+    goto wparam_return;
 
 music_done_message:
     {
@@ -3108,8 +3107,7 @@ panel_return:
 panel_return_alt:
     if (mouse_down != 0)
         color_log(0x4C, 0x5F, 4);
-    color_log(0x24, 0x5F, 3);
-    return static_cast<LRESULT>(wparam);
+    goto wparam_return;
 
 default_window_proc:
     {
