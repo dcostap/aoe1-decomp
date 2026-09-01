@@ -3419,81 +3419,82 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
 
 
 
-int RGE_View::sprite_check(uchar* shape, Shape_Info* info, int x, int y)
+int RGE_View::sprite_check(uchar* Shape_Base, Shape_Info* Shape,
+                           int check_x, int check_y)
 {
     int width;
-    int start;
+    int r;
     int right_pad;
     uchar* p;
-    uchar code;
+    uchar command;
     unsigned int n;
-    if (info != 0) {
-        if (x >= 0) {
-                    width = info->Width;
-            if (x < width) {
-                if (y >= 0) {
-                    if (y < info->Height) {
-                        uchar* outline = shape + info->Shape_Outline_Offset;
-                        start = *(short*)(outline + y * 4);
-                        right_pad = *(short*)(outline + y * 4 + 2);
-                        if (start >= 0) {
-                            if (x >= start) {
-                                if (x <= width - right_pad) {
-                                    int* data_offsets = (int*)(shape + info->Shape_Data_Offsets);
-                                    p = shape + data_offsets[y];
-                                    if (start < width) {
-                                        while (start < width) {
-                                            if (x < start) {
+    if (Shape != 0) {
+        if (check_x >= 0) {
+                    width = Shape->Width;
+            if (check_x < width) {
+                if (check_y >= 0) {
+                    if (check_y < Shape->Height) {
+                        uchar* outline = Shape_Base + Shape->Shape_Outline_Offset;
+                        r = *(short*)(outline + check_y * 4);
+                        right_pad = *(short*)(outline + check_y * 4 + 2);
+                        if (r >= 0) {
+                            if (check_x >= r) {
+                                if (check_x <= width - right_pad) {
+                                    int* data_offsets = (int*)(Shape_Base + Shape->Shape_Data_Offsets);
+                                    p = Shape_Base + data_offsets[check_y];
+                                    if (r < width) {
+                                        while (r < width) {
+                                            if (check_x < r) {
                                                 return 1;
                                             }
-                                        code = *p++;
-                                        switch (code & 0x0F) {
+                                        command = *p++;
+                                        switch (command & 0x0F) {
                                             case 0:
                                             case 4:
                                             case 8:
                                             case 12:
-                                                n = ((unsigned int)code) >> 2;
-                                                start += n;
-                                                if (x < start) goto ret2;
+                                                n = ((unsigned int)command) >> 2;
+                                                r += n;
+                                                if (check_x < r) goto ret2;
                                                 p += n;
                                                 break;
                                             case 2:
-                                                n = (((unsigned int)code) << 4) | (unsigned int)(*p++);
-                                                start += n;
-                                                if (x < start) goto ret2;
+                                                n = (((unsigned int)command) << 4) | (unsigned int)(*p++);
+                                                r += n;
+                                                if (check_x < r) goto ret2;
                                                 p += n;
                                                 break;
                                             case 1:
                                             case 5:
                                             case 9:
                                             case 13:
-                                                n = ((unsigned int)code) >> 2;
-                                                start += n;
+                                                n = ((unsigned int)command) >> 2;
+                                                r += n;
                                                 break;
                                             case 3:
-                                                n = (((unsigned int)code) << 4) | (unsigned int)(*p++);
-                                                start += n;
+                                                n = (((unsigned int)command) << 4) | (unsigned int)(*p++);
+                                                r += n;
                                                 break;
                                             case 6:
-                                                n = ((unsigned int)code) >> 4;
+                                                n = ((unsigned int)command) >> 4;
                                                 if (n == 0) n = *p++;
-                                                start += n;
-                                                if (x < start) goto ret2;
+                                                r += n;
+                                                if (check_x < r) goto ret2;
                                                 p += n;
                                                 break;
                                             case 7:
                                             case 10:
-                                                n = ((unsigned int)code) >> 4;
+                                                n = ((unsigned int)command) >> 4;
                                                 if (n == 0) n = *p++;
-                                                start += n;
-                                                if (x < start) goto ret2;
+                                                r += n;
+                                                if (check_x < r) goto ret2;
                                                 p++;
                                                 break;
                                             case 11:
-                                                n = ((unsigned int)code) >> 4;
+                                                n = ((unsigned int)command) >> 4;
                                                 if (n == 0) n = *p++;
-                                                start += n;
-                                                if (x < start) goto ret2;
+                                                r += n;
+                                                if (check_x < r) goto ret2;
                                                 break;
                                             case 14:
                                             case 15:
