@@ -303,17 +303,17 @@ int RGE_Visible_Map::explore_terrain(int x, int y, int radius, int square,
                                      int update_tiles, int p6) {
     int Revealed;
     int plNum;
-    int radius_value;
+    int csum;
     RGE_Player* curPlayer;
     int VisibleToCurPlayer;
     RGE_Player* curVisPlayer;
-    LOSTBL* offsets;
+    LOSTBL* Tbl;
     int offY;
     int y2;
     int x1;
     int x2;
     unsigned char* vis;
-    unsigned long* unified;
+    unsigned long* u;
     RGE_Tile* tile;
     unsigned char v;
 
@@ -324,20 +324,20 @@ int RGE_Visible_Map::explore_terrain(int x, int y, int radius, int square,
         return 0;
     }
 
-    p6 = this->input_csum;
+    csum = this->input_csum;
     plNum = (int)this->player->id;
-    p6 = _rotl(p6, 3);
-    p6 ^= 0x01010101;
-    p6 = _rotl(p6, 2);
-    p6 ^= plNum;
-    p6 = _rotl(p6, 3);
-    p6 ^= x;
-    p6 = _rotl(p6, 4);
-    p6 ^= y;
-    p6 = _rotl(p6, 3);
-    p6 ^= radius;
-    p6 += square;
-    this->input_csum = p6;
+    csum = _rotl(csum, 3);
+    csum ^= 0x01010101;
+    csum = _rotl(csum, 2);
+    csum ^= plNum;
+    csum = _rotl(csum, 3);
+    csum ^= x;
+    csum = _rotl(csum, 4);
+    csum ^= y;
+    csum = _rotl(csum, 3);
+    csum ^= radius;
+    csum += square;
+    this->input_csum = csum;
 
     curPlayer = this->world->players[this->world->curr_player];
     if (curPlayer != 0) {
@@ -353,32 +353,31 @@ int RGE_Visible_Map::explore_terrain(int x, int y, int radius, int square,
         curVisPlayer = curPlayer;
     }
 
-    radius_value = radius;
-    if (radius_value > 0x10) {
-        radius_value = 0x10;
+    if (radius > 0x10) {
+        radius = 0x10;
     }
 
     if (square != 0) {
-        offsets = SquareLOS[radius_value];
+        Tbl = SquareLOS[radius];
     } else {
-        offsets = NormalLOS[radius_value];
+        Tbl = NormalLOS[radius];
     }
 
-    offY = offsets->y;
+    offY = Tbl->y;
     while (offY != 999) {
         y2 = y + offY;
         if ((y2 >= 0) && (y2 < this->heightValue)) {
-            x1 = x + offsets->x1;
+            x1 = x + Tbl->x1;
             if (x1 < 0) {
                 x1 = 0;
             }
-            x2 = x + offsets->x2;
+            x2 = x + Tbl->x2;
             if (x2 >= this->widthValue) {
                 x2 = this->widthValue - 1;
             }
 
             vis = this->map_offsets[y2] + x1;
-            unified = unified_map_offsets[y2] + x1;
+            u = unified_map_offsets[y2] + x1;
             if (update_tiles != 0) {
                 tile = this->map->map_row_offset[y2] + x1;
             }
@@ -393,26 +392,26 @@ int RGE_Visible_Map::explore_terrain(int x, int y, int radius, int square,
                         curVisPlayer->diam_tile_list.add_node(x1, y2);
                     }
                     v = 1;
-                    *unified |= this->PlayerExploredMaskValue;
+                    *u |= this->PlayerExploredMaskValue;
                 }
                 if (v == 1) {
                     if (update_tiles != 0) {
                         tile->draw_as = 0x0F;
                     }
-                    *unified |= this->PlayerVisibleMaskValue;
+                    *u |= this->PlayerVisibleMaskValue;
                 }
                 if (v == 0xFA) {
                     v = 0xF9;
                 }
                 *vis = v;
                 ++vis;
-                ++unified;
+                ++u;
                 x1++;
                 ++tile;
             }
         }
-        ++offsets;
-        offY = offsets->y;
+        ++Tbl;
+        offY = Tbl->y;
     }
     return Revealed;
 }
