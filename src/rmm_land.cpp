@@ -41,6 +41,7 @@ unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
     long cy0 = y - 2;
     long cx1 = x + 2;
     long cy1 = y + 2;
+    unsigned char zone = this->info.land[land_id].zone;
 
     if (this->search_map_rows[y][x] != this->info.land_num) {
         return 0;
@@ -61,9 +62,7 @@ unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
     do {
         if (row < 0) {
             if (row > cy0) {
-                if (row > octogon_y0) {
-                    count += 5;
-                }
+                count += 5;
             }
         } else if (row >= this->map_height) {
             if (row < cy1) {
@@ -84,8 +83,7 @@ unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
                             count++;
                         }
                     } else {
-                        if (this->search_map_rows[row][column] ==
-                            this->info.land[land_id].zone) {
+                        if (this->search_map_rows[row][column] == zone) {
                             if (row >= cy0 && row <= cy1 &&
                                 column >= cx0 && column <= cx1) {
                                 count++;
