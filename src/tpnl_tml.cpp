@@ -786,13 +786,8 @@ void Time_Line_Panel::draw_special_events()
     HGDIOBJ old_font;
 
     if (this->timeline_flag != 0) {
-        {
-            unsigned int (__stdcall* nearest)(void*,
-                                              unsigned long) =
-                GetNearestPaletteIndex;
-            nearest(this->render_area->DrawSystem->Pal, 0xFFFFFF);
-            nearest(this->render_area->DrawSystem->Pal, 0);
-        }
+        GetNearestPaletteIndex(this->render_area->DrawSystem->Pal, 0xFFFFFF);
+        GetNearestPaletteIndex(this->render_area->DrawSystem->Pal, 0);
 
         if (this->render_area->Lock("tpnl_tml::draw_special_events", 1) != 0) {
             for (event = this->time_slice_events;
