@@ -71,7 +71,7 @@
     "0042A800": {"status": "scratch", "symbol": "?SendStoredMessages@TCommunications_Handler@@QAEHXZ"},
     "0042AD10": {"status": "scratch", "symbol": "?TXResendReply@TCommunications_Handler@@QAEHII@Z"},
     "0042B0A0": {"status": "matching", "symbol": "?TXResendRequest@TCommunications_Handler@@QAEHII@Z"},
-    "0042B200": {"status": "scratch", "symbol": "?GetNextSequence@TCommunications_Handler@@QAEEK@Z"},
+    "0042B200": {"status": "matching", "symbol": "?GetNextSequence@TCommunications_Handler@@QAEEK@Z"},
     "0042B270": {"status": "scratch", "symbol": "?CommOut@TCommunications_Handler@@IAEJKEPAXHE@Z"},
     "0042B860": {"status": "matching", "symbol": "?DestroyMultiplayerGame@TCommunications_Handler@@QAEXXZ"},
     "0042BAD0": {"status": "matching", "symbol": "?GetCommunicationsStatus@TCommunications_Handler@@QAE?AW4COMMSTATUS@@XZ"},

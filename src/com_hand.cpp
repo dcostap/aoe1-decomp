@@ -3719,28 +3719,28 @@ int TCommunications_Handler::TXResendRequest(unsigned int serial, unsigned int p
 
 
 unsigned char TCommunications_Handler::GetNextSequence(unsigned long value) {
-    if (value != comm_ping_sequence_turn) {
-        comm_ping_sequence = 1;
-        comm_ping_sequence_turn = value;
+    static unsigned char Sequence = 1;
+    static unsigned long LastCurrentTurn = 0;
+
+    if (value != LastCurrentTurn) {
+        Sequence = 1;
+        LastCurrentTurn = value;
         return 1;
     }
 
-    unsigned char seq = comm_ping_sequence;
-    ++seq;
-    comm_ping_sequence = seq;
-
-    if (seq >= 0xFF) {
+    ++Sequence;
+    if (Sequence >= 0xFF) {
         L->Log("+++Too many commands in one comm turn.  Seq#=%d",
-                static_cast<unsigned int>(comm_ping_sequence));
+                Sequence);
         return 0;
     }
 
-    if (this->PlayerOptions.ProgramState == 4 && seq > 100) {
-        comm_ping_sequence = 100;
+    if (this->PlayerOptions.ProgramState == 4 && Sequence > 100) {
+        Sequence = 100;
         return 100;
     }
 
-    return seq;
+    return Sequence;
 }
 
 
