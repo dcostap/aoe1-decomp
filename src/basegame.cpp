@@ -4394,18 +4394,18 @@ void RGE_Base_Game::enable_input() {
 }
 
 
-void RGE_Base_Game::set_screen_size(long width, long height)
+void RGE_Base_Game::set_screen_size(long wid, long hgt)
 {
     RECT win_rect;
     RECT client_rect;
 
-    if (this->draw_area->Width != width || this->draw_area->Height != height) {
+    if (this->draw_area->Width != wid || this->draw_area->Height != hgt) {
         if (this->draw_system->DrawType == 2 &&
             this->draw_system->ScreenMode == 2) {
             SetCursor(0);
             SetClassLongA(this->prog_window, -12, 0);
             this->mouse_pointer->Shutdown_Mouse();
-            this->draw_system->SetDisplaySize(width, height, 8);
+            this->draw_system->SetDisplaySize(wid, hgt, 8);
             this->draw_system->CheckSurfaces();
             this->draw_system->ClearRestored();
             this->set_render_all();
@@ -4413,17 +4413,17 @@ void RGE_Base_Game::set_screen_size(long width, long height)
             return;
         }
 
-        int display_width = 0;
-        int display_height = 0;
+        long horz_res = 0;
+        long vert_res = 0;
         HDC dc = CreateICA("DISPLAY", 0, 0, 0);
         if (dc != 0) {
-            display_width = GetDeviceCaps(dc, 8);
-            display_height = GetDeviceCaps(dc, 10);
+            horz_res = GetDeviceCaps(dc, 8);
+            vert_res = GetDeviceCaps(dc, 10);
             DeleteDC(dc);
         }
 
-        if (width <= display_width && height <= display_height) {
-            if (display_width == width && display_height == height) {
+        if (wid <= horz_res && hgt <= vert_res) {
+            if (horz_res == wid && vert_res == hgt) {
                 this->window_style = 0x92080000;
                 SetWindowLongA(this->prog_window, -16, 0x92080000);
                 SetWindowLongA(this->prog_window, -20, this->window_style);
@@ -4433,15 +4433,15 @@ void RGE_Base_Game::set_screen_size(long width, long height)
                 SetWindowLongA(this->prog_window, -16, this->window_style);
             }
 
-            SetWindowPos(this->prog_window, 0, 0, 0, width, height, 0);
+            SetWindowPos(this->prog_window, 0, 0, 0, wid, hgt, 0);
             GetWindowRect(this->prog_window, &win_rect);
             GetClientRect(this->prog_window, &client_rect);
 
-            if (client_rect.right != width || client_rect.bottom != height) {
+            if (client_rect.right != wid || client_rect.bottom != hgt) {
                 SetWindowPos(this->prog_window, 0,
                     win_rect.left, win_rect.top,
-                    width + win_rect.right - win_rect.left - client_rect.right,
-                    height + win_rect.bottom - win_rect.top - client_rect.bottom,
+                    wid + win_rect.right - win_rect.left - client_rect.right,
+                    hgt + win_rect.bottom - win_rect.top - client_rect.bottom,
                     0);
             }
         }
