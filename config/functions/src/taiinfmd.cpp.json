@@ -27,7 +27,7 @@
     "004D9B20": {"status": "matching", "symbol": "?placeDock@TribeInformationAIModule@@QAEPAVConstructionItem@@PAVBuildItem@@MMHH@Z"},
     "004D9EC0": {"status": "matching", "symbol": "?numberDocksInZone@TribeInformationAIModule@@QAEHHPAVRGE_Zone_Map@@@Z"},
     "004D9FC0": {"status": "matching", "symbol": "?closestDockDistance@TribeInformationAIModule@@QAEHHH@Z"},
-    "004DA0E0": {"status": "scratch", "symbol": "?hasAdjacentTileType@TribeInformationAIModule@@QAEHHHH@Z"},
+    "004DA0E0": {"status": "matching", "symbol": "?hasAdjacentTileType@TribeInformationAIModule@@QAEHHHH@Z"},
     "004DA190": {"status": "matching", "symbol": "?mapXSize@TribeInformationAIModule@@QAEHXZ"},
     "004DA1C0": {"status": "matching", "symbol": "?mapYSize@TribeInformationAIModule@@QAEHXZ"},
     "004DA1F0": {"status": "accepted_drift", "symbol": "?addEnemyInfluences@TribeInformationAIModule@@QAEXHH@Z"},
