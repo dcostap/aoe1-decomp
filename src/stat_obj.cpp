@@ -747,14 +747,14 @@ void RGE_Static_Object::capture_square_frame(TDrawArea* render_area,
         this->sprite_list->get_facetindex(this->sprite, this->facet);
 
         if (this->get_frame(min_x, min_y, max_x, max_y) != 0) {
-            int x1 = x + min_x - 1 + this->screen_x_offset;
-            int y1 = y + min_y - 1 + this->screen_y_offset;
+            int x1;
+            int y1;
+            int x2;
+            x1 = x + min_x - 1 + this->screen_x_offset;
+            y1 = y + min_y - 1 + this->screen_y_offset;
             y0 = y + max_y + 1 + this->screen_y_offset;
-            int y_line = y0 + this->screen_y_offset + 1;
-            int x2 = max_x + this->screen_y_offset +
-                     this->screen_x_offset + 1;
-
-            SDI_List->AddGDINode(4, y_line, x1, y1, x2, y_line,
+            x2 = x + max_x + this->screen_x_offset + 1;
+            SDI_List->AddGDINode(4, y0, x1, y1, x2, y0,
                                  0, 0, 0, 0, 10, 0xff, SDI_Object_ID);
 
             if (this->object_state <= 2) {
@@ -770,7 +770,7 @@ void RGE_Static_Object::capture_square_frame(TDrawArea* render_area,
                         health_right = x1 + 25;
                     }
 
-                    SDI_List->AddGDINode(2, y_line, x1, y1 - 6, x1 + 26,
+                    SDI_List->AddGDINode(2, y0, x1, y1 - 6, x1 + 26,
                                          y1 - 1, health_right, 0,
                                          health_right + 1, 0, 20, 0xff,
                                          SDI_Object_ID);
@@ -1866,7 +1866,7 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
 
     result += (float)this->tile->height;
     RGE_Master_Static_Object* master = this->master_obj;
-    int movement = master->movement_type;
+    unsigned char movement = master->movement_type;
     if (movement == 0 || (movement == 1 && this->world_z < result)) {
         this->world_z = result;
     }
