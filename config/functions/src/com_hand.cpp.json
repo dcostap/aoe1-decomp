@@ -77,7 +77,7 @@
     "0042BAD0": {"status": "matching", "symbol": "?GetCommunicationsStatus@TCommunications_Handler@@QAE?AW4COMMSTATUS@@XZ"},
     "0042BAE0": {"status": "matching", "symbol": "?UnlinkCurrentLevel@TCommunications_Handler@@QAE?AW4COMMSTATUS@@XZ"},
     "0042C5D0": {"status": "matching", "symbol": "?UnlinkToLevel@TCommunications_Handler@@QAE?AW4COMMSTATUS@@W42@@Z"},
-    "0042C690": {"status": "scratch", "symbol": "?AnalyzeCommunicationsStatus@TCommunications_Handler@@QAE?AW4COMMSTATUS@@XZ"},
+    "0042C690": {"status": "matching", "symbol": "?AnalyzeCommunicationsStatus@TCommunications_Handler@@QAE?AW4COMMSTATUS@@XZ"},
     "0042C7A0": {"status": "matching", "symbol": "?ResetLastCommunicationTimes@TCommunications_Handler@@QAEXXZ"},
     "0042C7F0": {"status": "matching", "symbol": "?IsPaused@TCommunications_Handler@@QAEHXZ"},
     "0042C800": {"status": "matching", "symbol": "?DropAllHostedPlayers@TCommunications_Handler@@QAEXXZ"},
