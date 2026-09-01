@@ -1002,6 +1002,8 @@ long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lP
     TPanel* target;
     PanelNode* node;
     long result;
+    int ctrl_key;
+    int shift_key;
 
     if (this->active == 0) {
         goto done;
@@ -1086,8 +1088,6 @@ mouse_input:
 keyboard_input:
 {
     int alt;
-    int ctrl;
-    int shift;
     if (this->render_area->Wnd != hwnd) {
         goto done;
     }
@@ -1107,9 +1107,9 @@ keyboard_input:
     }
 
     alt = GetKeyState(0x12) < 0;
-    ctrl = GetKeyState(0x11) < 0;
-    shift = GetKeyState(0x10) < 0;
-    return target->handle_key_down(wParam, (short)lParam, alt, ctrl, shift);
+    ctrl_key = GetKeyState(0x11) < 0;
+    shift_key = GetKeyState(0x10) < 0;
+    return target->handle_key_down(wParam, (short)lParam, alt, ctrl_key, shift_key);
 }
 }
 
