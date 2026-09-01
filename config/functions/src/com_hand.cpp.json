@@ -98,7 +98,7 @@
     "0042CC90": {"status": "matching", "symbol": "?GetActivePlayerCount@TCommunications_Handler@@QAEHXZ"},
     "0042CCD0": {"status": "matching", "symbol": "?IsPlayerHuman@TCommunications_Handler@@QAEHI@Z"},
     "0042CD10": {"status": "matching", "symbol": "?IsPlayerComputer@TCommunications_Handler@@QAEHI@Z"},
-    "0042CD50": {"status": "scratch", "symbol": "?GetCommInfo@TCommunications_Handler@@QAEPADE@Z"},
+    "0042CD50": {"status": "accepted_drift", "symbol": "?GetCommInfo@TCommunications_Handler@@QAEPADE@Z"},
     "0042D0E0": {"status": "matching", "symbol": "?GetPlayerName@TCommunications_Handler@@QAEPADI@Z"},
     "0042D120": {"status": "matching", "symbol": "?UpdatePlayerInformation@TCommunications_Handler@@QAEXKPAD0@Z"},
     "0042D170": {"status": "matching", "symbol": "?IsLobbyLaunched@TCommunications_Handler@@QAEHXZ"},
