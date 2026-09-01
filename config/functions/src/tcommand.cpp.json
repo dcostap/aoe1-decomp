@@ -20,7 +20,7 @@
     "0050A4C0": {"status": "scratch", "symbol": "?do_command_attack_ground@TRIBE_Command@@AAEXPAUTRIBE_Command_Attack_Ground@@@Z"},
     "0050A510": {"status": "matching", "symbol": "?do_command_give_attribute@TRIBE_Command@@EAEXPAUTRIBE_Command_Give_Attribute@@@Z"},
     "0050A6A0": {"status": "accepted_drift", "symbol": "?do_command_trade_attribute@TRIBE_Command@@AAEXPAUTRIBE_Command_Trade_Attribute@@@Z"},
-    "0050A6E0": {"status": "scratch", "symbol": "?do_command_repair@TRIBE_Command@@AAEXPAUTRIBE_Command_Repair@@@Z"},
+    "0050A6E0": {"status": "matching", "symbol": "?do_command_repair@TRIBE_Command@@AAEXPAUTRIBE_Command_Repair@@@Z"},
     "0050A730": {"status": "matching", "symbol": "?do_command_unload@TRIBE_Command@@AAEXPAUTRIBE_Command_Unload@@@Z"},
     "0050A7B0": {"status": "matching", "symbol": "?do_command_queue@TRIBE_Command@@AAEXPAUTRIBE_Command_Queue@@@Z"},
     "0050A7F0": {"status": "matching", "symbol": "?command_make@TRIBE_Command@@QAEXPAVRGE_Static_Object@@F@Z"},
