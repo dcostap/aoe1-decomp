@@ -1108,18 +1108,20 @@ unsigned char RGE_Game_World::new_game(RGE_Player_Info& info, int mode)
     return retval;
 }
 
-unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info, int seed) {
+unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info, int random_seed_in) {
+    unsigned char retval;
+
     world_update_counter = 0;
     this->del_game_info();
 
     curr_player = 0;
 
-    if (seed == 0) {
-        seed = commands->com_hand->GetRandomSeed();
+    if (random_seed_in == 0) {
+        random_seed_in = commands->com_hand->GetRandomSeed();
     }
 
-    random_seed = seed;
-    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5D5, seed);
+    random_seed = random_seed_in;
+    debug_srand("C:\\msdev\\work\\age1_x1\\World.cpp", 0x5D5, random_seed_in);
 
     this->map->new_map(info.map_width, info.map_height);
     this->map->clear_map((unsigned char)info.map_info->base_terrain, 1);
@@ -1138,23 +1140,22 @@ unsigned char RGE_Game_World::new_scenario(RGE_Player_Info& info, int seed) {
     temp_pause = 0;
     world_time_delta_seconds = 0.0f;
 
-    unsigned char result;
     if (info.scenario != 0) {
-        result = this->load_scenario(info.scenario, info);
+        retval = this->load_scenario(info.scenario, info);
     } else {
         this->setup_player_colors(info);
         this->scenario_init(this);
-        result = 1;
+        retval = 1;
     }
 
-    if (result != 0) {
+    if (retval != 0) {
         int i;
         for (i = 0; i < (int)player_num; i++) {
             players[i]->set_map_visible();
         }
     }
 
-    return result;
+    return retval;
 }
 
 unsigned char RGE_Game_World::new_random_game(RGE_Player_Info& param_1)
