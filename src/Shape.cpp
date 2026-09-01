@@ -1646,9 +1646,8 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
             long xpos = clip_right;
             byte state;
 
-            state = 1;
+            state = 0;
             if (xpos > x) {
-                state = 0;
                 while (state == 0) {
                     byte code = *src++;
                     if ((code & 1) == 1) {
@@ -1717,85 +1716,81 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                         }
                     }
                 }
+            } else {
+                state = 1;
             }
 
-            if (state != 0) {
-                --state;
-                if (state == 0) {
-                    while (state == 0) {
-                        byte code = *src++;
-                        if ((code & 1) == 1) {
-                            byte count = code >> 1;
-                            if (count == 0) {
-                                count = *src++;
-                                xpos -= count;
-                                save_buffer -= count;
-                                if (xpos < clip_left)
-                                    state = 1;
-                            } else {
-                                xpos -= count;
-                                if (xpos < clip_left) {
-                                    unsigned int visible = xpos;
-                                    visible -= clip_left;
-                                    visible += count;
-                                    state = 1;
-                                    if ((unsigned char)visible > 0) {
-                                        visible &= 0xff;
-                                        do {
-                                            *--save_buffer = *src++;
-                                        } while (--visible != 0);
-                                    }
-                                    src += count - (xpos - clip_left + count);
-                                } else {
-                                    unsigned int copy_count = x - xpos;
-                                    state = 1;
-                                    src += count - copy_count;
-                                    if ((unsigned char)copy_count > 0) {
-                                        do {
-                                            *--save_buffer = *src++;
-                                        } while (--copy_count != 0);
-                                    }
-                                }
+            --state;
+            while (state == 0) {
+                byte code = *src++;
+                if ((code & 1) == 1) {
+                    byte count = code >> 1;
+                    if (count == 0) {
+                        count = *src++;
+                        xpos -= count;
+                        save_buffer -= count;
+                        if (xpos < clip_left)
+                            state = 1;
+                    } else {
+                        xpos -= count;
+                        if (xpos < clip_left) {
+                            unsigned int visible = xpos;
+                            visible -= clip_left;
+                            visible += count;
+                            state = 1;
+                            if ((unsigned char)visible > 0) {
+                                visible &= 0xff;
+                                do {
+                                    *--save_buffer = *src++;
+                                } while (--visible != 0);
                             }
+                            src += count - (xpos - clip_left + count);
                         } else {
-                            byte count = code >> 1;
-                            if (count == 0) {
-                                state = 3;
-                            } else {
-                                xpos -= count;
-                                if (xpos < clip_left) {
-                                    long visible = xpos - clip_left + count;
-                                    state = 1;
-                                    save_buffer -= visible;
-                                    memset(save_buffer, *src, visible);
-                                } else {
-                                    save_buffer -= count;
-                                    memset(save_buffer, *src, count);
-                                }
-                                ++src;
+                            unsigned int copy_count = x - xpos;
+                            state = 1;
+                            src += count - copy_count;
+                            if ((unsigned char)copy_count > 0) {
+                                do {
+                                    *--save_buffer = *src++;
+                                } while (--copy_count != 0);
                             }
                         }
                     }
                 } else {
-                    --state;
-                    if (state == 0) {
-                        while (state == 0) {
-                            byte code = *src++;
-                            if ((code & 1) == 1) {
-                                byte count = code >> 1;
-                                if (count)
-                                    src += count;
-                                else
-                                    ++src;
-                            } else {
-                                byte count = code >> 1;
-                                if (count == 0)
-                                    state = 2;
-                                else
-                                    ++src;
-                            }
+                    byte count = code >> 1;
+                    if (count == 0) {
+                        state = 3;
+                    } else {
+                        xpos -= count;
+                        if (xpos < clip_left) {
+                            long visible = xpos - clip_left + count;
+                            state = 1;
+                            save_buffer -= visible;
+                            memset(save_buffer, *src, visible);
+                        } else {
+                            save_buffer -= count;
+                            memset(save_buffer, *src, count);
                         }
+                        ++src;
                     }
+                }
+            }
+
+            --state;
+            while (state == 0) {
+                byte code = *src++;
+                if ((code & 1) == 1) {
+                    byte count = code >> 1;
+                    if (count)
+                        src += count;
+                    else
+                        ++src;
+                } else {
+                    byte count = code >> 1;
+                    if (count == 0)
+                        state = 2;
+                    else
+                        ++src;
                 }
             }
 
