@@ -208,8 +208,8 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Ob
         RGE_Missile_Object* missile = (RGE_Missile_Object*)this->owner->master_objects[missile_id]->make_new_obj(this->owner,
             this->world_x + c * static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_offset_y -
                 s * static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_offset_x,
-            this->world_y + s * static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_offset_y +
-                c * static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_offset_x,
+            this->world_y + (s * static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_offset_y +
+                c * static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_offset_x),
             this->world_z + static_cast<RGE_Master_Combat_Object*>(this->master_obj)->weapon_offset_z);
         missile->init_missile(this, target, range);
         this->notify(this->id, this->id, 0x200, 0x258, target->id, 0);
