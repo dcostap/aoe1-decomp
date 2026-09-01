@@ -45,7 +45,7 @@
     "00413AB0": {"status": "scratch", "symbol": "?update@UnitAIModule@@QAEHK@Z"},
     "00414040": {"status": "scratch", "symbol": "?updateGroup@UnitAIModule@@QAEXK@Z"},
     "00414800": {"status": "scratch", "symbol": "?selectNewPlayPhase@UnitAIModule@@QAEHHH@Z"},
-    "00414D40": {"status": "scratch", "symbol": "?order@UnitAIModule@@UAEHHHHHMMMMHHH@Z"},
+    "00414D40": {"status": "accepted_drift", "symbol": "?order@UnitAIModule@@UAEHHHHHMMMMHHH@Z"},
     "00414E80": {"status": "matching", "symbol": "?notify@UnitAIModule@@UAEHHHHJJJ@Z"},
     "00414F40": {"status": "matching", "symbol": "?notifyCommander@UnitAIModule@@UAEHPAUNotifyEvent@@@Z"},
     "00414F70": {"status": "matching", "symbol": "?notifyCommander@UnitAIModule@@UAEHHHHJJJ@Z"},

@@ -30,7 +30,7 @@
     "00535610": {"status": "scratch", "symbol": "?draw_object_outline@RGE_View@@IAEXXZ"},
     "005358B0": {"status": "matching", "symbol": "?draw_paint_brush@RGE_View@@IAEXXZ"},
     "005359E0": {"status": "matching", "symbol": "?pick@RGE_View@@QAEEEEJJPAURGE_Pick_Info@@PAVRGE_Static_Object@@@Z"},
-    "00535A80": {"status": "scratch", "symbol": "?pick_multi@RGE_View@@QAEEEJJJJ@Z"},
+    "00535A80": {"status": "accepted_drift", "symbol": "?pick_multi@RGE_View@@QAEEEJJJJ@Z"},
     "00535C70": {"status": "matching", "symbol": "?pick@RGE_View@@QAEEEEPAUtagPOINT@@0PAPAXPAM2PAF3@Z"},
     "00535CB0": {"status": "matching", "symbol": "?pick_through_fog@RGE_View@@UAEHPAVRGE_Static_Object@@@Z"},
     "00535CC0": {"status": "matching", "symbol": "?pick_weight@RGE_View@@UAEHPAVRGE_Static_Object@@H@Z"},
