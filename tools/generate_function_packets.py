@@ -317,7 +317,9 @@ def main() -> None:
             packet_lines.extend(decomp_lines)
         packet_lines.append("")
 
-        packet_path.write_text("\n".join(packet_lines), encoding="utf-8")
+        packet_path.write_text(
+            "\n".join(line.rstrip() for line in packet_lines), encoding="utf-8"
+        )
         written += 1
 
     if args.va:

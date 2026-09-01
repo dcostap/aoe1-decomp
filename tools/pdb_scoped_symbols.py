@@ -58,6 +58,19 @@ TYPE_NAMES = {
     "T_32PREAL64": "double*",
 }
 
+TYPE_SIZES = {
+    "char": 1,
+    "unsigned char": 1,
+    "short": 2,
+    "unsigned short": 2,
+    "long": 4,
+    "unsigned long": 4,
+    "int": 4,
+    "unsigned int": 4,
+    "float": 4,
+    "double": 8,
+}
+
 
 def _section_offset_va(image: PeImage, section: str, offset: str) -> str:
     section_index = int(section, 16) - 1
@@ -99,6 +112,7 @@ def parse_type_summaries(raw_types: str) -> dict[str, dict[str, str]]:
             "element_type": "",
             "form": "",
             "qualifier": "",
+            "length_bytes": "",
         }
         name_match = re.search(
             r"(?:class|structure|union|enum) name\s*=\s*([^,\r\n]+)", text, re.IGNORECASE
@@ -120,6 +134,9 @@ def parse_type_summaries(raw_types: str) -> dict[str, dict[str, str]]:
             row["qualifier"] = "const"
         elif re.search(r"\bvolatile,\s+modifies type\b", text):
             row["qualifier"] = "volatile"
+        length_match = re.search(r"\blength\s*=\s*(\d+)\b", text, re.IGNORECASE)
+        if length_match:
+            row["length_bytes"] = length_match.group(1)
         entries[current_index] = row
 
     for raw_line in raw_types.splitlines():
@@ -162,6 +179,12 @@ def resolve_type_name(
         return resolved + "*"
     if row.get("form") == "reference":
         return resolved + "&"
+    if row.get("leaf") == "LF_ARRAY" and row.get("length_bytes"):
+        element_size = TYPE_SIZES.get(resolved)
+        length_bytes = int(row["length_bytes"])
+        if element_size and length_bytes % element_size == 0:
+            return f"{resolved}[{length_bytes // element_size}]"
+        return f"{resolved}[{length_bytes} bytes]"
     if row.get("qualifier"):
         return row["qualifier"] + " " + resolved
     return resolved

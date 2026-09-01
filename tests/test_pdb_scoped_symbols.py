@@ -106,6 +106,11 @@ def test_complex_pointer_type_resolution() -> None:
 0x2003 : Length = 10, Leaf = 0x1002 LF_POINTER
     const Pointer (NEAR32), Size: 0
     Element type : 0x2002
+
+0x2004 : Length = 14, Leaf = 0x1503 LF_ARRAY
+    Element type = T_INT4(0074)
+    Index type = T_SHORT(0011)
+    length = 24
 """
     raw = """
 ** Module: "sample.obj"
@@ -121,3 +126,4 @@ def test_complex_pointer_type_resolution() -> None:
     assert function["type_name"] == "Demo*"
     assert function["register_symbols"][0]["type_name"] == "Demo*"
     assert resolve_type_name("0x2003", summaries) == "const Demo*"
+    assert resolve_type_name("0x2004", summaries) == "int[6]"
