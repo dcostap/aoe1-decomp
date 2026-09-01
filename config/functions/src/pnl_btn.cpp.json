@@ -55,7 +55,7 @@
     "004736F0": {"status": "matching", "symbol": "?key_down_action@TButtonPanel@@UAEJJFHHH@Z"},
     "00473890": {"status": "matching", "symbol": "?wnd_proc@TButtonPanel@@UAEJPAXIIJ@Z"},
     "00473920": {"status": "matching", "symbol": "?char_action@TButtonPanel@@UAEJJF@Z"},
-    "00473930": {"status": "scratch", "symbol": "?hit_button@TButtonPanel@@UAEHJJ@Z"},
+    "00473930": {"status": "accepted_drift", "symbol": "?hit_button@TButtonPanel@@UAEHJJ@Z"},
     "004739B0": {"status": "matching", "symbol": "?do_action@TButtonPanel@@QAEXXZ"},
     "00473AA0": {"status": "matching", "symbol": "?do_right_action@TButtonPanel@@QAEXH@Z"},
     "00473B80": {"status": "matching", "symbol": "?reset@TButtonPanel@@QAEXXZ"},
