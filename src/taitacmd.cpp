@@ -6638,6 +6638,8 @@ void TribeTacticalAIModule::updateNeededResources()
     int tempResourceDifference[4];
     int i;
     int* diffPtr;
+    int* tempNeededPtr;
+    int* tempDifferencePtr;
     int bestResource;
     int bestDifference;
     int offset;
@@ -6668,6 +6670,8 @@ void TribeTacticalAIModule::updateNeededResources()
     } while (i < 4);
 
     offset = 0;
+    tempNeededPtr = tempNeededResource;
+    tempDifferencePtr = tempResourceDifference;
     do {
         bestResource = -1;
         bestDifference = 0x7fffffff;
@@ -6715,8 +6719,10 @@ next_resource:
         }
 
         assignedResource[bestResource] = 1;
-        *(int*)((char*)tempNeededResource + offset) = bestResource;
-        *(int*)((char*)tempResourceDifference + offset) = bestDifference;
+        *tempNeededPtr = bestResource;
+        *tempDifferencePtr = bestDifference;
+        tempNeededPtr++;
+        tempDifferencePtr++;
         offset += 4;
     } while (offset < 0x10);
 
