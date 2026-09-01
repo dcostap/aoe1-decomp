@@ -91,9 +91,8 @@ map_database_loaded:
         infile = fopen(terrain_file, "r");
         if (infile != 0) {
             fscanf(infile, "%d", &terrain_count);
-            index = 0;
-            if (index < terrain_count) {
-                do {
+            if (terrain_count > 0) {
+                for (index = 0; index < terrain_count; ++index) {
                     fscanf(infile, "%d", &map_index);
                     land_data = &this->map_info.maps[map_index].land_info;
                     fscanf(infile, "%d %d %d %d %d %d %d %d %d",
@@ -141,8 +140,7 @@ map_database_loaded:
                     else {
                         land_data->land = 0;
                     }
-                    ++index;
-                } while (index < terrain_count);
+                }
             }
             fclose(infile);
         }
@@ -150,37 +148,33 @@ map_database_loaded:
         infile = fopen(object_file, "r");
         if (infile != 0) {
             fscanf(infile, "%d", &object_count);
-            index = 0;
-            if (index < object_count) {
-                do {
+            if (object_count > 0) {
+                for (index = 0; index < object_count; ++index) {
                     fscanf(infile, "%d", &map_index);
                     terrain_data = &this->map_info.maps[map_index].terrain_info;
                     fscanf(infile, "%d", &terrain_data->terrain_num);
-                    if (terrain_data->terrain_num <= 0) {
-                        terrain_data->terrain = 0;
-                    }
-                    else {
+                    if (terrain_data->terrain_num > 0) {
                         terrain_data->terrain = (RGE_Terrain_Data_Entry*)calloc(
                             terrain_data->terrain_num,
                             sizeof(RGE_Terrain_Data_Entry));
-                        entry_index = 0;
-                        if (entry_index < terrain_data->terrain_num) {
-                            do {
-                                RGE_Terrain_Data_Entry& terrain =
-                                    terrain_data->terrain[entry_index];
-                                fscanf(infile, "%d %d %d %d %d",
-                                       &terrain.terrain_percent,
-                                       &terrain.terrain_type,
-                                       &terrain.clumps,
-                                       &terrain.spacing,
-                                       &terrain.base_terrain_type);
-                                terrain.clumpiness_factor = 0x14;
-                                ++entry_index;
-                            } while (entry_index < terrain_data->terrain_num);
+                        for (entry_index = 0;
+                             entry_index < terrain_data->terrain_num;
+                             ++entry_index) {
+                            RGE_Terrain_Data_Entry& terrain =
+                                terrain_data->terrain[entry_index];
+                            fscanf(infile, "%d %d %d %d %d",
+                                   &terrain.terrain_percent,
+                                   &terrain.terrain_type,
+                                   &terrain.clumps,
+                                   &terrain.spacing,
+                                   &terrain.base_terrain_type);
+                            terrain.clumpiness_factor = 0x14;
                         }
                     }
-                    ++index;
-                } while (index < object_count);
+                    else {
+                        terrain_data->terrain = 0;
+                    }
+                }
             }
             fclose(infile);
         }
@@ -188,46 +182,42 @@ map_database_loaded:
         infile = fopen(terrain_type_file, "r");
         if (infile != 0) {
             fscanf(infile, "%d", &object_type_count);
-            index = 0;
-            if (index < object_type_count) {
-                do {
+            if (object_type_count > 0) {
+                for (index = 0; index < object_type_count; ++index) {
                     fscanf(infile, "%d", &map_index);
                     object_data = &this->map_info.maps[map_index].object_info;
                     fscanf(infile, "%d", &object_data->object_num);
-                    if (object_data->object_num <= 0) {
-                        object_data->objects = 0;
-                    }
-                    else {
+                    if (object_data->object_num > 0) {
                         object_data->objects = (RGE_Object_Data_Entry*)calloc(
                             object_data->object_num,
                             sizeof(RGE_Object_Data_Entry));
-                        entry_index = 0;
-                        if (entry_index < object_data->object_num) {
-                            do {
-                                RGE_Object_Data_Entry& object =
-                                    object_data->objects[entry_index];
-                                fscanf(infile,
-                                       "%d %d %d %d %d %d %d %d %d %d %d %d",
-                                       &object.obj_id,
-                                       &object.terrain,
-                                       &scale_flag,
-                                       scale,
-                                       &object.object_number_per_group,
-                                       &object.object_number_varience,
-                                       &object.number_of_groups,
-                                       &object.group_area,
-                                       &object.player_id,
-                                       &object.land_id,
-                                       &object.land_inner_radius,
-                                       &object.land_outer_radius);
-                                object.group_flag = (uchar)scale_flag;
-                                object.scale_flag = scale[0];
-                                ++entry_index;
-                            } while (entry_index < object_data->object_num);
+                        for (entry_index = 0;
+                             entry_index < object_data->object_num;
+                             ++entry_index) {
+                            RGE_Object_Data_Entry& object =
+                                object_data->objects[entry_index];
+                            fscanf(infile,
+                                   "%d %d %d %d %d %d %d %d %d %d %d %d",
+                                   &object.obj_id,
+                                   &object.terrain,
+                                   &scale_flag,
+                                   scale,
+                                   &object.object_number_per_group,
+                                   &object.object_number_varience,
+                                   &object.number_of_groups,
+                                   &object.group_area,
+                                   &object.player_id,
+                                   &object.land_id,
+                                   &object.land_inner_radius,
+                                   &object.land_outer_radius);
+                            object.group_flag = (uchar)scale_flag;
+                            object.scale_flag = scale[0];
                         }
                     }
-                    ++index;
-                } while (index < object_type_count);
+                    else {
+                        object_data->objects = 0;
+                    }
+                }
             }
             fclose(infile);
         }
