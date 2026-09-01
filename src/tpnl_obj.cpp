@@ -304,6 +304,10 @@ void TRIBE_Panel_Object::draw()
     }
 
     int row = 0;
+    short final_frame;
+    ValueType final_type;
+    int final_value;
+    int final_value2;
     unsigned char level = this->game_obj->master_obj->unit_level;
 
     if (level == 3 || level == 9 || level == 4 || level == 5 ||
@@ -430,10 +434,12 @@ void TRIBE_Panel_Object::draw()
         default:
             goto invalid_item;
         }
-        this->draw_item(row, item_type, ValueTypeNumber,
-                        (int)(this->game_obj->attribute_amount_held -
-                              DAT_00576D84), 0);
-        goto finish;
+        final_frame = item_type;
+        final_type = ValueTypeNumber;
+        final_value = (int)(this->game_obj->attribute_amount_held -
+                            DAT_00576D84);
+        final_value2 = 0;
+        goto final_item;
     }
 
     if (level == 1) {
@@ -580,15 +586,19 @@ void TRIBE_Panel_Object::draw()
                 }
 
                 if (this->game_obj->master_obj->id == 0x2d) {
-                    this->draw_item(
-                        row, item_type, ValueTypeNumber,
+                    int resource_amount =
                         (int)(this->game_obj->owner->attributes[9] -
-                              DAT_00576D84), 0);
-                } else {
+                              DAT_00576D84);
                     this->draw_item(
                         row, item_type, ValueTypeNumber,
+                        resource_amount, 0);
+                } else {
+                    int resource_amount =
                         (int)(this->game_obj->attribute_amount_held -
-                              DAT_00576D84), 0);
+                              DAT_00576D84);
+                    this->draw_item(
+                        row, item_type, ValueTypeNumber,
+                        resource_amount, 0);
                 }
                 ++row;
             }
@@ -619,9 +629,11 @@ resource_done:
                 distance *= DAT_00576da4;
                 if (distance > DAT_00576da8)
                     distance = DAT_00576da8;
-                this->draw_item(
-                    row, 3, ValueTypeCompare,
-                    (int)(distance - DAT_00576D84), 0x14);
+                final_frame = 3;
+                final_type = ValueTypeCompare;
+                final_value = (int)(distance - DAT_00576D84);
+                final_value2 = 0x14;
+                goto final_item;
             }
         }
     }
@@ -631,6 +643,9 @@ invalid_item:
     this->draw_finish();
     return;
 
+final_item:
+    this->draw_item(row, final_frame, final_type,
+                    final_value, final_value2);
 finish:
     this->draw_finish();
 }
