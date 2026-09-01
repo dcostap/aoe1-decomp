@@ -5682,20 +5682,19 @@ void TribeInformationAIModule::updateAllResourceDropsites()
     for (int resourceType = 0; resourceType < 4; ++resourceType) {
         this->closestDropsiteValue[resourceType] = -1;
         this->closestDropsiteResourceID[resourceType] = -1;
-        ResourceMemory* resources = this->resources[resourceType];
-        int count = this->numResources[resourceType];
         int i = 0;
-        if (resources != 0 && count > 0) {
+        if (this->numResources[resourceType] > 0) {
             do {
                 RGE_Static_Object* obj =
-                    this->md->object(resources[i].id);
+                    this->md->object(this->resources[resourceType][i].id);
                 if (obj) {
                     int dropsiteID = -1;
                     float dist = this->findClosestDropsite(obj, 1, &dropsiteID);
-                    resources[i].gatherValue =
+                    this->resources[resourceType][i].gatherValue =
                         (int)(DAT_005755bc - dist * DAT_005755b8);
-                    resources[i].dropDistance = (unsigned char)(int)dist;
-                    resources[i].dropsiteID = dropsiteID;
+                    this->resources[resourceType][i].dropDistance =
+                        (unsigned char)(int)dist;
+                    this->resources[resourceType][i].dropsiteID = dropsiteID;
 
                     int grp = obj->master_obj->object_group;
                     if (grp == 0x0F) {
@@ -5721,7 +5720,7 @@ void TribeInformationAIModule::updateAllResourceDropsites()
                     }
                 }
                 i++;
-            } while (i < count);
+            } while (i < this->numResources[resourceType]);
         }
     }
 }
