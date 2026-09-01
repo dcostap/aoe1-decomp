@@ -180,65 +180,45 @@ RGE_Static_Object* MainDecisionAIModule::object(
     int attribute_amount)
 {
     int i = 0;
-    RGE_Static_Object* object;
-    UnitAIModule* unit_ai;
-    if (this->objects.number() <= 0) {
-        return 0;
-    }
-    do {
-        object = this->player->world->object(this->objects[i]);
-        if (object == 0) {
-            goto next_object;
-        }
+    for (; i < this->objects.numberValue; ++i) {
+        RGE_Static_Object* object =
+            this->player->world->object(this->objects[i]);
+        if (object != 0 && object->unitAI() != 0) {
 
-        unit_ai = object->unitAI();
-        if (unit_ai == 0) {
-            goto next_object;
-        }
-
-        if (object_id != -1 && object->id != object_id) {
-            goto next_object;
-        }
-        if (type != -1 && object->master_obj->id != type) {
-            goto next_object;
-        }
-        if (class_id != -1 && object->master_obj->object_group != class_id) {
-            goto next_object;
-        }
-        if (action != -1) {
-            unit_ai = object->unitAI();
-            if (unit_ai->currentAction() != action) {
+            if (object_id != -1 && object->id != object_id) {
                 goto next_object;
             }
-        }
-        if (can_perform_action != -1 &&
-            !this->canPerformAction(this->objects[i], can_perform_action)) {
-            goto next_object;
-        }
-        if (current_target != -1) {
-            unit_ai = object->unitAI();
-            if (unit_ai->currentTarget() != current_target) {
+            if (type != -1 && object->master_obj->id != type) {
                 goto next_object;
             }
-        }
-        if (current_target_type != -1) {
-            unit_ai = object->unitAI();
-            if (unit_ai->currentTargetType() != current_target_type) {
+            if (class_id != -1 && object->master_obj->object_group != class_id) {
                 goto next_object;
             }
-        }
-        if ((state == -1 || (int)object->object_state == state) &&
-            (attribute_amount == -1 ||
-             object->attribute_amount_held <= (float)attribute_amount)) {
-            return object;
+            if (action != -1 && object->unitAI()->currentAction() != action) {
+                goto next_object;
+            }
+            if (can_perform_action != -1 &&
+                !this->canPerformAction(this->objects[i], can_perform_action)) {
+                goto next_object;
+            }
+            if (current_target != -1 &&
+                object->unitAI()->currentTarget() != current_target) {
+                goto next_object;
+            }
+            if (current_target_type != -1 &&
+                object->unitAI()->currentTargetType() != current_target_type) {
+                goto next_object;
+            }
+            if ((state == -1 || (int)object->object_state == state) &&
+                (attribute_amount == -1 ||
+                 object->attribute_amount_held <= (float)attribute_amount)) {
+                return object;
+            }
         }
 
     next_object:
-        ++i;
-        if (this->objects.number() <= i) {
-            return 0;
-        }
-    } while (1);
+        ;
+    }
 
     return 0;
 }
