@@ -1383,24 +1383,31 @@ int TribeInformationAIModule::hasAdjacentTileType(int param_1, int param_2,
         case 0:
             x = param_1 - 1;
             y = param_2;
-        case 7:
-            --y;
-            break;
+            goto adjust_y;
+
         case 1:
         case 2:
             ++x;
             break;
+
         case 3:
         case 4:
             ++y;
             break;
+
         case 5:
         case 6:
             --x;
             break;
+
+        case 7:
+        adjust_y:
+            --y;
+            break;
         }
 
-        if (x >= 0 && y >= 0 && x < map->map_width && y < map->map_height &&
+        if (x >= 0 && y >= 0 &&
+            x <= map->map_width - 1 && y <= map->map_height - 1 &&
             (map->map_row_offset[y][x].terrain_type & 0x1F) == param_3) {
             return 1;
         }
