@@ -50,7 +50,7 @@
     "005424F0": {"status": "matching", "symbol": "?setup_players@RGE_Game_World@@MAEXAAURGE_Player_Info@@@Z"},
     "005425B0": {"status": "matching", "symbol": "?setup_player_colors@RGE_Game_World@@UAEXAAURGE_Player_Info@@@Z"},
     "005426E0": {"status": "matching", "symbol": "?setup_player_colors@RGE_Game_World@@UAEXXZ"},
-    "00542750": {"status": "scratch", "symbol": "?new_game@RGE_Game_World@@UAEEAAURGE_Player_Info@@H@Z"},
+    "00542750": {"status": "accepted_drift", "symbol": "?new_game@RGE_Game_World@@UAEEAAURGE_Player_Info@@H@Z"},
     "00542BF0": {"status": "scratch", "symbol": "?new_scenario@RGE_Game_World@@UAEEAAURGE_Player_Info@@H@Z"},
     "00542D10": {"status": "matching", "symbol": "?new_random_game@RGE_Game_World@@MAEEAAURGE_Player_Info@@@Z"},
     "00542E50": {"status": "matching", "symbol": "?update_sounds@RGE_Game_World@@QAEXK@Z"},
