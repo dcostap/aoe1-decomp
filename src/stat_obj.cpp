@@ -756,7 +756,7 @@ void RGE_Static_Object::capture_frame_3d_square(
     short sVar8;
     int sVar9;
     unsigned char draw_color;
-    unsigned char y2;
+    short y2;
     float x3_radius;
     float ry1;
     float radius_y;
@@ -768,20 +768,15 @@ void RGE_Static_Object::capture_frame_3d_square(
     short corner1_x;
     short corner1_y;
     short corner2_x;
-    short corner2_y;
     short corner3_x;
     short corner3_y;
     short corner4_x;
     short corner4_y;
-    short health_x;
-    short health_y;
     int idv[6];
-    RGE_Base_Game* base;
     unsigned char outline_type;
     int digit_x;
 
-    base = rge_base_game;
-    outline_type = base->outline_type;
+    outline_type = rge_base_game->outline_type;
     this_00 = this->owner->world->map;
     pRVar1 = this->master_obj;
     if (outline_type == 3) {
@@ -795,24 +790,24 @@ void RGE_Static_Object::capture_frame_3d_square(
     }
     if (startLoggingAI == 1 && this->groupCommanderValue == this->id &&
         this->id >= 0) {
-        y2 = 0;
+        draw_color = 0;
     } else if ((this->selected & 1) == 0) {
         if (outline_type == 3) {
-            y2 = 0x74;
+            draw_color = 0x74;
         } else if ((pRVar1->draw_flag & 1) == 1 &&
-                   base->prog_mode == 7) {
-            y2 = pRVar1->draw_color;
+                   rge_base_game->prog_mode == 7) {
+            draw_color = pRVar1->draw_color;
         } else {
-            y2 = 0xFF;
+            draw_color = 0xFF;
         }
     } else {
-        y2 = 0xFF;
+        draw_color = 0xFF;
     }
     if ((this->selected & 2) != 0) {
-        y2 = 0x4A;
+        draw_color = 0x4A;
     }
     if ((this->selected & 4) != 0) {
-        y2 = 0x97;
+        draw_color = 0x97;
     }
 
     sVar9 = param_4 + this->screen_y_offset;
@@ -821,7 +816,7 @@ void RGE_Static_Object::capture_frame_3d_square(
     ry1 = -radius_y;
     this_00->get_point(corner1_x, corner1_y,
                        x3_radius, ry1, 0.0f, sVar8, sVar9);
-    this_00->get_point(corner2_x, corner2_y, x3_radius, radius_y,
+    this_00->get_point(corner2_x, y2, x3_radius, radius_y,
                        0.0f, sVar8, sVar9);
     neg_x3 = -x3_radius;
     this_00->get_point(corner3_x, corner3_y, neg_x3, radius_y,
@@ -829,12 +824,12 @@ void RGE_Static_Object::capture_frame_3d_square(
     this_00->get_point(corner4_x, corner4_y, neg_x3, ry1,
                        0.0f, sVar8, sVar9);
 
-    tot_hp = y2;
+    tot_hp = draw_color;
     iVar4 = (int)sVar9;
     SDI_List->AddGDINode(
         1, iVar4, corner1_x, corner1_y,
-        corner2_x, corner2_y, corner3_x, corner3_y, corner4_x,
-        corner4_y, 10, y2, SDI_Object_ID);
+        corner2_x, y2, corner3_x, corner3_y, corner4_x,
+        corner4_y, 10, draw_color, SDI_Object_ID);
 
     if (this->selected != 0 && this->selected_group != 0 &&
         this->selected_group < 10 &&
@@ -847,47 +842,48 @@ void RGE_Static_Object::capture_frame_3d_square(
             0, 0, 0, 0x1E, SDI_Object_ID);
     }
 
-    int health = (int)this->hp;
-    if ((this->selected & 1) == 1 && (pRVar1->draw_flag & 2) == 0 &&
-        health > 0) {
-        this_00->get_point(health_x, health_y, x3_radius, ry1, radius_z,
-                           sVar8, sVar9);
-        int max_hp = pRVar1->hp;
-        if (max_hp > 0) {
-            int health_left = health_x - 12;
-            int health_top = health_y - 2;
-            int health_right = health_x + 11;
-            int health_bottom = health_y - 1;
-            int health_fill_end;
-            int health_fill_style;
-            int health_fill_start;
-            int health_draw;
+    if ((this->selected & 1) == 1 && (pRVar1->draw_flag & 2) == 0) {
+        int health = (int)this->hp;
+        if (health > 0) {
+            this_00->get_point(x0, y0, x3_radius, ry1, radius_z,
+                               sVar8, sVar9);
+            int max_hp = pRVar1->hp;
+            if (max_hp > 0) {
+                int health_left = x0 - 12;
+                int health_top = y0 - 2;
+                int health_right = x0 + 11;
+                int health_bottom = y0 - 1;
+                int health_fill_end;
+                int health_fill_style;
+                int health_fill_start;
+                int health_draw;
 
-            digit_x = health_right;
-            if (health == max_hp) {
-                health_fill_end = health_right;
-                health_fill_style = 1;
-                health_fill_start = -1;
-                health_draw = 0;
-            } else {
-                if (health == 0) {
-                    health_fill_end = -1;
-                    health_fill_style = 0;
-                    health_fill_start = health_left;
-                } else {
+                digit_x = health_right;
+                if (health == max_hp) {
+                    health_fill_end = health_right;
                     health_fill_style = 1;
-                    health_fill_end = health_top + (health * 24) / max_hp;
-                    if (health_right <= health_fill_end) {
-                        health_fill_end = health_x + 10;
+                    health_fill_start = -1;
+                    health_draw = 0;
+                } else {
+                    if (health == 0) {
+                        health_fill_end = -1;
+                        health_fill_style = 0;
+                        health_fill_start = health_left;
+                    } else {
+                        health_fill_style = 1;
+                        health_fill_end = health_top + (health * 24) / max_hp;
+                        if (health_right <= health_fill_end) {
+                            health_fill_end = x0 + 10;
+                        }
+                        health_fill_start = health_fill_end + 1;
                     }
-                    health_fill_start = health_fill_end + 1;
+                    health_draw = 1;
                 }
-                health_draw = 1;
+                SDI_List->AddGDINode(
+                    2, iVar4, health_left, health_top, health_right,
+                    health_bottom, health_fill_end, health_fill_style,
+                    health_fill_start, health_draw, 0x1E, tot_hp, SDI_Object_ID);
             }
-            SDI_List->AddGDINode(
-                2, iVar4, health_left, health_top, health_right,
-                health_bottom, health_fill_end, health_fill_style,
-                health_fill_start, health_draw, 0x1E, tot_hp, SDI_Object_ID);
         }
     }
 
@@ -905,7 +901,10 @@ void RGE_Static_Object::capture_frame_3d_square(
         iVar3 = iVar3 % 100;
         idv[4] = iVar3 / 10;
         idv[5] = iVar3 % 10;
-        uVar6 = (unsigned int)(iVar7 < 10000);
+        uVar6 = 0;
+        if (iVar7 < 10000) {
+            uVar6 = 1;
+        }
         if (iVar7 < 1000) {
             uVar6 = 2;
         }
@@ -918,8 +917,8 @@ void RGE_Static_Object::capture_frame_3d_square(
         if (iVar7 < 0) {
             digit_x += 7;
             SDI_List->AddGDINode(
-                4, iVar4, digit_x + 1, health_y + 2,
-                digit_x + 5, health_y + 2,
+                4, iVar4, digit_x + 1, y0 + 2,
+                digit_x + 5, y0 + 2,
                 0, 0, 0, 0, 0x1E, 0x97, SDI_Object_ID);
         }
         if (uVar6 < 5) {
@@ -932,12 +931,12 @@ void RGE_Static_Object::capture_frame_3d_square(
                     SDI_List->AddDrawNode(
                         pTVar2->FShape,
                         pTVar2->shape_info + *piVar5,
-                        iVar4, (int)sVar8, health_y - 1,
+                        iVar4, (int)sVar8, y0 - 1,
                         0, 0, 0, 0x1E, SDI_Object_ID);
                 } else {
                     SDI_List->AddGDINode(
-                        4, iVar4, sVar8 + 1, health_y - 1,
-                        sVar8 + 5, health_y + 4,
+                        4, iVar4, sVar8 + 1, y0 - 1,
+                        sVar8 + 5, y0 + 4,
                         0, 0, 0, 0, 0x1E, 0xFF, SDI_Object_ID);
                 }
                 ++piVar5;
