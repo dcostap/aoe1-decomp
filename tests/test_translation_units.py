@@ -81,7 +81,7 @@ class TranslationUnitTests(unittest.TestCase):
         self.assertEqual(point["source"], "src/point.cpp")
         self.assertEqual(point["build"]["flags"], "default")
         self.assertEqual(functions["0047E480"]["status"], "matching")
-        self.assertEqual(functions["0047E530"]["status"], "scratch")
+        self.assertEqual(functions["0047E530"]["status"], "accepted_drift")
         self.assertEqual(
             functions["0047E530"]["symbol"],
             "??HXYZ@@QBE?AV0@ABV0@@Z",
