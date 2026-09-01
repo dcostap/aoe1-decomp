@@ -1464,9 +1464,9 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         float nextDistance =
             (float)sqrt(dy * dy + (double)dx * (double)dx);
 
-        if ((this->closestDistanceToWaypoint < nextDistance && curDistance < DAT_00570bd8) ||
+        if ((this->closestDistanceToWaypoint < nextDistance && curDistance < 0.25f) ||
             (this->lastFacet2 == this->facet && this->lastFacet2 != this->lastFacet &&
-             curDistance < DAT_00570b7c)) {
+             curDistance < 0.5f)) {
             int ok = 1;
             waypoint = path->currentWaypoint();
             float waypointY = waypoint->y;
