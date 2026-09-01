@@ -1055,10 +1055,10 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                         if (this->initialTile.x != local_14 ||
                             this->initialTile.y != row) {
                             terrain = tile->terrain_type & 0x1F;
-                            if (terrain != this->currentTerrainException1 &&
-                                terrain != this->currentTerrainException2 &&
-                                this->currentTerrainTable[terrain] <=
-                                    DAT_00570e80) {
+                            if (this->currentTerrainTable[terrain] <=
+                                    DAT_00570e80 &&
+                                terrain != this->currentTerrainException1 &&
+                                terrain != this->currentTerrainException2) {
                                 int border = tile->border_type & 0x0F;
                                 if (border == 0)
                                     return 0;
