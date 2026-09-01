@@ -654,23 +654,19 @@ void TRIBE_Building_Object::lay_down_impassable_terrain()
     for (short y = y1; y <= y2; ++y) {
         for (short x = x1; x <= x2; ++x) {
             RGE_Tile* tile = &map->map_row_offset[y][x];
-            unsigned char terrain =
-                (unsigned char)(tile->terrain_type | (tile->height << 5));
-            switch (terrain & 0x1F) {
+            switch (tile->terrain_type) {
             case 0:
-                terrain = (terrain & 0xF0) | 0x10;
+                tile->terrain_type = 0x10;
                 break;
             case 1:
-                terrain = (terrain & 0xEF) | 0x0F;
+                tile->terrain_type = 0x0F;
                 break;
             case 6:
-                terrain = (terrain & 0xEE) | 0x0E;
+                tile->terrain_type = 0x0E;
                 break;
             default:
                 continue;
             }
-            tile->terrain_type = terrain & 0x1F;
-            tile->height = terrain >> 5;
         }
     }
 }
