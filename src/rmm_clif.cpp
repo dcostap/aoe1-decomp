@@ -336,8 +336,8 @@ void RGE_RMM_Cliffs_Generator::invalidate_cliff_area(
         cliff_y = 0;
     }
     if (cliff_x2 > cliff_width2) {
-        x = cliff_width2;
         cliff_x2 = cliff_width2;
+        x = cliff_x2;
     }
     if (cliff_x2 > cliff_height2) {
         cliff_y2 = cliff_height2;
