@@ -19,7 +19,7 @@
     "00406270": {"status": "matching", "symbol": "?transform@RGE_Action_Object@@UAEXPAVRGE_Master_Static_Object@@@Z"},
     "00406290": {"status": "matching", "symbol": "?destroy_obj@RGE_Action_Object@@UAEXXZ"},
     "004062B0": {"status": "matching", "symbol": "?notify_of_relation@RGE_Action_Object@@UAEXJE@Z"},
-    "004062C0": {"status": "scratch", "symbol": "?do_command@RGE_Action_Object@@UAEXPAVRGE_Static_Object@@MMM@Z"},
+    "004062C0": {"status": "matching", "symbol": "?do_command@RGE_Action_Object@@UAEXPAVRGE_Static_Object@@MMM@Z"},
     "00406300": {"status": "matching", "symbol": "?move_to@RGE_Action_Object@@UAEXPAVRGE_Static_Object@@MMM@Z"},
     "00406430": {"status": "scratch", "symbol": "?work@RGE_Action_Object@@UAEXPAVRGE_Static_Object@@MMM@Z"},
     "00406470": {"status": "scratch", "symbol": "?work2@RGE_Action_Object@@UAEXPAVRGE_Static_Object@@MMME@Z"},
