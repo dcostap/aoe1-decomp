@@ -797,8 +797,8 @@ void RGE_Victory_Conditions::handle_victory_points(RGE_Victory_Entry* entry) {
 
         if (entry->ally_flag != 0 && this->player->allied_victory != 0) {
             RGE_Game_World* world = this->player->world;
-            int i = world->player_num - 1;
             RGE_Player** players = world->players;
+            int i = world->player_num - 1;
             if (i >= 0) {
                 RGE_Player** pp = players + i;
                 do {
