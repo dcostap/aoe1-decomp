@@ -115,9 +115,15 @@ A buildable function must have one symbol and one module flag profile.
 A VA has one compiler-facing source owner. Never keep duplicate owners across
 modules or headers. Edit only that natural owner.
 
-Revisit accepted drift when new evidence or a simpler supported model justifies
-review. The function registry is the current reviewed status, not a permanent
-barrier to better source.
+Treat accepted drift as a completed recovery result. It is the preferred result
+when canonical source has a reviewed, behavior-equal code-generation difference.
+Do not spend time chasing its remaining bytes only to improve a metric. Revisit
+it only when new behavior, ownership, type, period-source, or simplification
+evidence justifies review.
+
+Write accepted-drift notes as completed reviews, not unresolved matching debt.
+Record the difference and semantic proof. State that no further matching work is
+required without new evidence. The registry records the current reviewed result.
 
 ## Shared-worktree conduct
 

@@ -266,6 +266,10 @@ For a scratch improvement, run one authoritative target check.
 For an exact promotion, review source policy and run one authoritative target check.
 For accepted drift, repeat the complete independent semantic review.
 
+After approval, treat accepted drift as a completed result. Do not schedule
+metric-only matching work for it. Reopen it only when new source or behavior
+evidence can improve the model.
+
 Reuse an orchestrator audit only when its input fingerprint matches integration inputs.
 Otherwise rerun only the stale translation-unit groups.
 

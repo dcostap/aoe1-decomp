@@ -305,6 +305,10 @@ Review the affected function on its own evidence. Approve accepted drift when
 the complete semantic review proves equality. Reject unexplained or unsafe
 changes, not the loss of an incidental metric by itself.
 
+Treat an approved accepted drift as complete. Remove it from matching work.
+Do not request more byte-tuning without new source or behavior evidence. Ensure
+its function note records completion and does not describe it as open debt.
+
 Reject wrappers, fake ABI, raw addresses, dummy declarations, fake volatility,
 and other compiler-steering forms.
 

@@ -178,6 +178,10 @@ The proposal must prove:
 Record the proof in the function note. The orchestrator accepts or rejects the
 proposal.
 
+An approved accepted drift is complete. Do not continue code-generation probes
+only to remove reviewed, insignificant differences. Reopen it only when new
+source evidence can improve correctness, ownership, types, or simplicity.
+
 ## Major issues
 
 Stop when a major issue prevents safe progress. Examples include:

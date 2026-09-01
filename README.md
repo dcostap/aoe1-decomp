@@ -25,12 +25,17 @@ A module note uses `decomp_notes/<module>.md`.
 Use one of these values:
 
 - `matching`: A fresh validation produces an exact match.
-- `accepted_drift`: The reviewed source has accepted code generation drift.
+- `accepted_drift`: Semantic review proves the canonical source behavior is
+  equal. This is a completed result, not matching debt.
 - `verified_logic`: A semantic review approved the source.
 - `scratch`: The natural source still needs matching work.
 - `unresolved`: Source exists, but no build route is proved.
 
 `unresolved` covers functions without one provable compiler recipe.
+
+Do not tune an `accepted_drift` function only to remove insignificant byte
+differences. Reopen it when new behavior, ownership, type, period-source, or
+simplification evidence can improve the source model.
 
 The registry path identifies the natural source file.
 Each function entry stores its status and its symbol when a build exists.

@@ -20,7 +20,7 @@ SHA-256:
 
 `9e1badab92670bfc3fc1e41f65b787c68c36dee3297065d7b3f7125a38d2699f`
 
-The report also records these nonexact categories:
+The report also records completed accepted drifts and unresolved categories:
 
 - 255 grouped mismatches
 - 206 observed accepted drifts
@@ -37,7 +37,7 @@ The four missing symbols are known unresolved declaration owners:
 - `004691C0 TEasy_Panel::create_edit`
 
 The two non-emitted accepted drifts are `0043AA90` and `0043AAD0` in `Dib.cpp`.
-They are not exact claims.
+They are completed reviewed results, not exact claims or matching debt.
 
 ## Owners and symbols
 

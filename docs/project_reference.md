@@ -62,6 +62,11 @@ A buildable source file has this form:
 - `status` is `matching`, `accepted_drift`, `verified_logic`, `scratch`, or `unresolved`.
 - `symbol` is the decorated object symbol for a configured build.
 
+`matching` and `accepted_drift` are both completed recovery results.
+`matching` has positional byte equality. `accepted_drift` has canonical source
+and a complete semantic review that proves equal behavior. Do not put accepted
+drift back into matching work only because bytes differ.
+
 A function without a proved build route has no `symbol` field.
 Source, symbol, and compiler profile do not depend on matching status.
 
