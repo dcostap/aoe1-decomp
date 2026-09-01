@@ -19,7 +19,7 @@
     "00512A90": {"status": "matching", "symbol": "?load_master_object@TRIBE_Player@@QAEXHFEPAPAVRGE_Sprite@@PAPAVRGE_Sound@@@Z"},
     "00512BF0": {"status": "matching", "symbol": "?tech_cost@TRIBE_Player@@QAEXFAAF00000@Z"},
     "00512C30": {"status": "scratch", "symbol": "?obj_cost@TRIBE_Player@@QAEXFPAPADAAF11111M@Z"},
-    "00512EC0": {"status": "scratch", "symbol": "?find_obj@TRIBE_Player@@QAEPAVRGE_Static_Object@@FPAV2@@Z"},
+    "00512EC0": {"status": "matching", "symbol": "?find_obj@TRIBE_Player@@QAEPAVRGE_Static_Object@@FPAV2@@Z"},
     "00512F60": {"status": "accepted_drift", "symbol": "?make_new_object@TRIBE_Player@@UAEPAVRGE_Static_Object@@JMMMH@Z"},
     "00513000": {"status": "matching", "symbol": "?interface_tech_avail@TRIBE_Player@@QAEXPAPAUItem_Avail@@PAFF@Z"},
     "005131C0": {"status": "accepted_drift", "symbol": "?interface_item_avail@TRIBE_Player@@QAEXPAPAUItem_Avail@@PAFF@Z"},
