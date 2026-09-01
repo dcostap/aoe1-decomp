@@ -1081,12 +1081,12 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
         bInTimer = 0;
         return;
     }
-    if (_lpDSBStreamBuffer == (void*)0) {
+    if (ds_stream_buffer == (void*)0) {
         bInTimer = 0;
         return;
     }
 
-    IDirectSoundBuffer_GetCurrentPosition((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer,
+    IDirectSoundBuffer_GetCurrentPosition((LPDIRECTSOUNDBUFFER)ds_stream_buffer,
         &dwPlay, &dwWrite);
     if (ds_write_cursor < dwPlay) {
         DWORD t = ds_write_cursor + ds_chunk_size;
@@ -1114,8 +1114,8 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
     if (ds_stream_at_end && ds_silence_chunks) {
         --ds_silence_chunks;
         if ((int)ds_silence_chunks <= 1) goto done;
-        if (_lpDSBStreamBuffer == (void*)0) goto done;
-        if (IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer,
+        if (ds_stream_buffer == (void*)0) goto done;
+        if (IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)ds_stream_buffer,
             ds_write_cursor, ds_chunk_size, (void**)&lpWrite1, &dwLen1,
             (void**)&lpWrite2, &dwLen2, 0)) goto done;
         {
@@ -1127,15 +1127,15 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
                     memset(lpWrite1, 0, dwLen1);
             }
         }
-        IDirectSoundBuffer_Unlock((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer,
+        IDirectSoundBuffer_Unlock((LPDIRECTSOUNDBUFFER)ds_stream_buffer,
             lpWrite1, dwLen1, lpWrite2, dwLen2);
         ds_write_cursor += ds_chunk_size;
         if (ds_write_cursor < ds_buffer_size) goto done;
         goto wrap_play;
     }
 
-    if (_lpDSBStreamBuffer == (void*)0) goto done;
-    if (IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer,
+    if (ds_stream_buffer == (void*)0) goto done;
+    if (IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)ds_stream_buffer,
         ds_write_cursor, ds_chunk_size, (void**)&lpWrite1, &dwLen1,
         (void**)&lpWrite2, &dwLen2, 0)) goto done;
 
@@ -1220,8 +1220,8 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
         }
     }
 
-    if (_lpDSBStreamBuffer) IDirectSoundBuffer_Unlock(
-        (LPDIRECTSOUNDBUFFER)_lpDSBStreamBuffer, lpWrite1, dwLen1,
+    if (ds_stream_buffer) IDirectSoundBuffer_Unlock(
+        (LPDIRECTSOUNDBUFFER)ds_stream_buffer, lpWrite1, dwLen1,
         lpWrite2, dwLen2);
     ds_write_cursor += ds_chunk_size;
     if (ds_write_cursor < ds_buffer_size) goto done;
