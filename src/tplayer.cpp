@@ -1778,8 +1778,6 @@ void TRIBE_Player::notify(int first, int second, int third,
 void TRIBE_Player::notifyAI(int first, int second, int third, long fourth, long fifth, long sixth)
 {
     RGE_Static_Object* obj = this->world->object(first);
-    float target_x;
-    float target_y;
     if (third != 0x20a && third != 0x72 && third != 0x74) {
         if (obj == 0) return;
         if (obj->unitAI() == 0) return;
@@ -1795,19 +1793,22 @@ void TRIBE_Player::notifyAI(int first, int second, int third, long fourth, long 
             this->playerAI->tacticalAI.removeGroup(group->id());
             return;
         }
-    case 0x202:
+    case 0x202: {
+        float unY;
+        float unX;
         switch (fourth) {
         case 0x25d:
         case 0x26f:
             if (this->playerAI->informationAI.fullyExploredZone(first) != 0 &&
-                this->playerAI->informationAI.closestUnexploredTile(first, obj->world_x, obj->world_y, &target_x, &target_y) == 1) {
-                this->playerAI->tacticalAI.taskExplorer(first, target_x, target_y);
+                this->playerAI->informationAI.closestUnexploredTile(first, obj->world_x, obj->world_y, &unY, &unX) == 1) {
+                this->playerAI->tacticalAI.taskExplorer(first, unY, unX);
                 return;
             }
             this->playerAI->tacticalAI.detask(first);
             return;
         }
         break;
+    }
     case 0x209:
         obj = this->world->object(fourth);
         if (obj != 0) {
