@@ -302,7 +302,7 @@ LOSTBL* RGE_Visible_Map::get_los_table(int distance, int diagonal) {
 int RGE_Visible_Map::explore_terrain(int x, int y, int radius, int square,
                                      int update_tiles, int p6) {
     int Revealed;
-    int checksum;
+    int plNum;
     int radius_value;
     RGE_Player* curPlayer;
     int VisibleToCurPlayer;
@@ -325,11 +325,11 @@ int RGE_Visible_Map::explore_terrain(int x, int y, int radius, int square,
     }
 
     p6 = this->input_csum;
-    checksum = (int)this->player->id;
+    plNum = (int)this->player->id;
     p6 = _rotl(p6, 3);
     p6 ^= 0x01010101;
     p6 = _rotl(p6, 2);
-    p6 ^= checksum;
+    p6 ^= plNum;
     p6 = _rotl(p6, 3);
     p6 ^= x;
     p6 = _rotl(p6, 4);
