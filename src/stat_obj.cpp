@@ -2281,22 +2281,21 @@ void RGE_Static_Object::set_object_state(unsigned char state)
 }
 
 
-// The executable's final X overlap accepts less, equal, and
+// The final X overlap accepts less, equal, and unordered comparisons.
 
 
 RGE_Static_Object* RGE_Static_Object::check_object_bounds()
 {
-    float radius_x;
-    float radius_y;
+    float rx;
+    float ry;
     short x1;
     short y1;
     short x2;
     short y2;
-    short y_index;
 
-    radius_x = this->master_obj->radius_x;
-    radius_y = this->master_obj->radius_y;
-    if (!(radius_x <= 0.0f && radius_y <= 0.0f)) {
+    rx = this->master_obj->radius_x;
+    ry = this->master_obj->radius_y;
+    if (rx > 0.0f || ry > 0.0f) {
         x1 = (short)(int)(this->world_x - 3.0f);
         y1 = (short)(int)(this->world_y - 3.0f);
         x2 = (short)(int)(this->world_x + 3.0f);
@@ -2306,41 +2305,34 @@ RGE_Static_Object* RGE_Static_Object::check_object_bounds()
         if (x2 >= map->map_width) x2 = (short)map->map_width - 1;
         if (y1 < 0) y1 = 0;
         if (y2 >= map->map_height) y2 = (short)map->map_height - 1;
-        y_index = y1;
-        if (y1 > y2) return 0;
-        do {
-            short x = x1;
+        for (short y_index = y1; y_index <= y2; ++y_index) {
             RGE_Tile* tile = map->map_row_offset[y_index] + x1;
-            if (x1 <= x2) {
-                do {
-                    RGE_Object_Node* n = tile->objects.list;
-                    if (n != 0) {
-                        do {
-                            RGE_Static_Object* obj = n->node;
-                            RGE_Master_Static_Object* master = obj->master_obj;
-                            float object_radius_y = master->radius_y;
-                            float object_radius_x = master->radius_x;
-                            if (object_radius_x > 0.0f && object_radius_y > 0.0f) {
-                                float dy = obj->world_y - this->world_y;
-                                float dx = obj->world_x - this->world_x;
-                                if (dy < 0.0f) dy = -dy;
-                                if (dx < 0.0f) dx = -dx;
-                                if (dy <= object_radius_y + radius_y) {
-                                    float x_limit = object_radius_x + radius_x;
-                                    if (!(dx > x_limit)) {
-                                        return obj;
-                                    }
+            for (short x = x1; x <= x2; ++x) {
+                RGE_Object_Node* n = tile->objects.list;
+                if (n != 0) {
+                    do {
+                        RGE_Static_Object* obj = n->node;
+                        RGE_Master_Static_Object* master = obj->master_obj;
+                        float ry2 = master->radius_y;
+                        float rx2 = master->radius_x;
+                        if (rx2 > 0.0f && ry2 > 0.0f) {
+                            float dy = obj->world_y - this->world_y;
+                            float dx = obj->world_x - this->world_x;
+                            if (dy < 0.0f) dy = -dy;
+                            if (dx < 0.0f) dx = -dx;
+                            if (dy <= ry2 + ry) {
+                                float x_limit = rx2 + rx;
+                                if (!(dx > x_limit)) {
+                                    return obj;
                                 }
                             }
-                            n = n->next;
-                        } while (n != 0);
-                    }
-                    ++tile;
-                    x++;
-                } while (x <= x2);
+                        }
+                        n = n->next;
+                    } while (n != 0);
+                }
+                ++tile;
             }
-            y_index++;
-        } while (y_index <= y2);
+        }
     }
     return 0;
 }
