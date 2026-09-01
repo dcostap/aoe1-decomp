@@ -239,7 +239,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     int copiedY;
     XYPoint bestPathPoint;
     XYPoint temp;
-    int status;
+    int badCollision;
     unsigned char terrainStatus;
     int found;
     int hitCount;
@@ -258,6 +258,8 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     int h;
     int maskIndex;
     int foundBlockingOwnGroup;
+    int newCost;
+    int oldTotal;
     int newTotal;
     int parentCost;
     int oldHeuristic;
@@ -269,20 +271,20 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     int yDeltaUp;
     int xDeltaRight;
     int yDeltaDown;
-    int quarterMinX;
-    int quarterMinY;
+    int xDeltaLeft4;
+    int yDeltaUp4;
     int yDeltaDown4;
     int xDeltaRight4;
-    int scanLeftRaw;
-    int scanTopRaw;
-    int scanRightRaw;
-    int scanBottomRaw;
+    int MinX4;
+    int MinY4;
+    int MaxX4;
+    int MaxY4;
     int tmp;
     int tmp2;
     int openIndex;
     int parentIndex;
     int insertIndex;
-    int reached;
+    int hitUnobstructibleObject;
     float unobstructibleObjectHitpoints;
     float fx;
     float fy;
@@ -462,12 +464,12 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     fx = (this->currentXOffset - DAT_00570e68) - master->radius_x;
     xDeltaLeft = (int)(fx - DAT_00570e6c) - 100;
     xDeltaRight = (int)((master->radius_x + this->currentXOffset) - DAT_00570e70) - 100;
-    quarterMinX = -400 - (int)(fx * DAT_00570e74);
+    xDeltaLeft4 = -400 - (int)(fx * DAT_00570e74);
     xDeltaRight4 = -400 - (int)((master->radius_x + this->currentXOffset - DAT_00570e68) * DAT_00570e74);
     fy = (this->currentYOffset - DAT_00570e68) - master->radius_y;
     yDeltaUp = (int)(fy - DAT_00570e6c) - 100;
     yDeltaDown = (int)((master->radius_y + this->currentYOffset) - DAT_00570e70) - 100;
-    quarterMinY = -400 - (int)(fy * DAT_00570e74);
+    yDeltaUp4 = -400 - (int)(fy * DAT_00570e74);
     yDeltaDown4 = -400 - (int)((master->radius_y + this->currentYOffset - DAT_00570e68) * DAT_00570e74);
 
     tmp = goalX - startX;
@@ -544,19 +546,19 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         this->numberOpenPathsValue = heapCount;
         copiedX = this->MGP_openPaths[1].x;
         copiedY = this->MGP_openPaths[1].y;
-        int savedTotal = this->MGP_openPaths[1].total;
+        oldTotal = this->MGP_openPaths[1].total;
         hole = 1;
         while (hole < heapCount / 2) {
             child = hole * 2;
             if (child < heapCount && this->MGP_openPaths[child + 1].total < this->MGP_openPaths[child].total) ++child;
-            if (savedTotal < this->MGP_openPaths[child].total) break;
+            if (oldTotal < this->MGP_openPaths[child].total) break;
             this->MGP_openPaths[hole] = this->MGP_openPaths[child];
             hole = child;
         }
         if (hole != 1) {
             this->MGP_openPaths[hole].x = (unsigned char)copiedX;
             this->MGP_openPaths[hole].y = (unsigned char)copiedY;
-            this->MGP_openPaths[hole].total = savedTotal;
+            this->MGP_openPaths[hole].total = oldTotal;
         }
 
         i = 0;
@@ -584,11 +586,11 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
 
             tmp = temp.x - bestPathPoint.x;
             tmp2 = temp.y - bestPathPoint.y;
-            tmp = (int)(sqrt((double)(tmp * tmp) + (double)(tmp2 * tmp2)) * DAT_00570e78);
+            newCost = (int)(sqrt((double)(tmp * tmp) + (double)(tmp2 * tmp2)) * DAT_00570e78);
             parentCost = this->MGP_costValue[bestPathPoint.x][bestPathPoint.y];
             oldHeuristic = estimateDistanceOrdered(goalX, goalY, bestPathPoint.x, bestPathPoint.y);
             newHeuristic = estimateDistanceOrdered(goalX, goalY, temp.x, temp.y);
-            newTotal = newHeuristic + tmp + parentCost - oldHeuristic;
+            newTotal = newHeuristic + newCost + parentCost - oldHeuristic;
 
             facetByte = this->facetValue[temp.x][temp.y];
             if ((facetByte & 0xf8) == this->CurrentFacetMask) directionFromHere = facetByte & 7;
@@ -602,90 +604,90 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                 minScanY = temp.y + yDeltaUp;
                 maxScanX = bestPathPoint.x + xDeltaRight;
                 maxScanY = bestPathPoint.y + yDeltaDown;
-                scanLeftRaw = temp.x * 4 + quarterMinX;
-                scanTopRaw = temp.y * 4 + quarterMinY;
-                scanRightRaw = bestPathPoint.x * 4 + xDeltaRight4;
-                scanBottomRaw = bestPathPoint.y * 4 + yDeltaDown4;
+                MinX4 = temp.x * 4 + xDeltaLeft4;
+                MinY4 = temp.y * 4 + yDeltaUp4;
+                MaxX4 = bestPathPoint.x * 4 + xDeltaRight4;
+                MaxY4 = bestPathPoint.y * 4 + yDeltaDown4;
                 break;
             case 1:
                 minScanX = bestPathPoint.x + xDeltaLeft;
                 minScanY = temp.y + yDeltaUp;
                 maxScanX = bestPathPoint.x + xDeltaRight;
                 maxScanY = bestPathPoint.y + yDeltaDown;
-                scanLeftRaw = bestPathPoint.x * 4 + quarterMinX;
-                scanTopRaw = temp.y * 4 + quarterMinY;
-                scanRightRaw = bestPathPoint.x * 4 + xDeltaRight4;
-                scanBottomRaw = bestPathPoint.y * 4 + yDeltaDown4;
+                MinX4 = bestPathPoint.x * 4 + xDeltaLeft4;
+                MinY4 = temp.y * 4 + yDeltaUp4;
+                MaxX4 = bestPathPoint.x * 4 + xDeltaRight4;
+                MaxY4 = bestPathPoint.y * 4 + yDeltaDown4;
                 break;
             case 2:
                 minScanX = bestPathPoint.x + xDeltaLeft;
                 minScanY = temp.y + yDeltaUp;
                 maxScanX = temp.x + xDeltaRight;
                 maxScanY = bestPathPoint.y + yDeltaDown;
-                scanLeftRaw = bestPathPoint.x * 4 + quarterMinX;
-                scanTopRaw = temp.y * 4 + quarterMinY;
-                scanRightRaw = temp.x * 4 + xDeltaRight4;
-                scanBottomRaw = bestPathPoint.y * 4 + yDeltaDown4;
+                MinX4 = bestPathPoint.x * 4 + xDeltaLeft4;
+                MinY4 = temp.y * 4 + yDeltaUp4;
+                MaxX4 = temp.x * 4 + xDeltaRight4;
+                MaxY4 = bestPathPoint.y * 4 + yDeltaDown4;
                 break;
             case 3:
                 minScanX = bestPathPoint.x + xDeltaLeft;
                 minScanY = bestPathPoint.y + yDeltaUp;
                 maxScanX = temp.x + xDeltaRight;
                 maxScanY = bestPathPoint.y + yDeltaDown;
-                scanLeftRaw = bestPathPoint.x * 4 + quarterMinX;
-                scanTopRaw = bestPathPoint.y * 4 + quarterMinY;
-                scanRightRaw = temp.x * 4 + xDeltaRight4;
-                scanBottomRaw = bestPathPoint.y * 4 + yDeltaDown4;
+                MinX4 = bestPathPoint.x * 4 + xDeltaLeft4;
+                MinY4 = bestPathPoint.y * 4 + yDeltaUp4;
+                MaxX4 = temp.x * 4 + xDeltaRight4;
+                MaxY4 = bestPathPoint.y * 4 + yDeltaDown4;
                 break;
             case 4:
                 minScanX = bestPathPoint.x + xDeltaLeft;
                 minScanY = bestPathPoint.y + yDeltaUp;
                 maxScanX = temp.x + xDeltaRight;
                 maxScanY = temp.y + yDeltaDown;
-                scanLeftRaw = bestPathPoint.x * 4 + quarterMinX;
-                scanTopRaw = bestPathPoint.y * 4 + quarterMinY;
-                scanRightRaw = temp.x * 4 + xDeltaRight4;
-                scanBottomRaw = temp.y * 4 + yDeltaDown4;
+                MinX4 = bestPathPoint.x * 4 + xDeltaLeft4;
+                MinY4 = bestPathPoint.y * 4 + yDeltaUp4;
+                MaxX4 = temp.x * 4 + xDeltaRight4;
+                MaxY4 = temp.y * 4 + yDeltaDown4;
                 break;
             case 5:
                 minScanX = bestPathPoint.x + xDeltaLeft;
                 minScanY = bestPathPoint.y + yDeltaUp;
                 maxScanX = bestPathPoint.x + xDeltaRight;
                 maxScanY = temp.y + yDeltaDown;
-                scanLeftRaw = bestPathPoint.x * 4 + quarterMinX;
-                scanTopRaw = bestPathPoint.y * 4 + quarterMinY;
-                scanRightRaw = bestPathPoint.x * 4 + xDeltaRight4;
-                scanBottomRaw = temp.y * 4 + yDeltaDown4;
+                MinX4 = bestPathPoint.x * 4 + xDeltaLeft4;
+                MinY4 = bestPathPoint.y * 4 + yDeltaUp4;
+                MaxX4 = bestPathPoint.x * 4 + xDeltaRight4;
+                MaxY4 = temp.y * 4 + yDeltaDown4;
                 break;
             case 6:
                 minScanX = temp.x + xDeltaLeft;
                 minScanY = bestPathPoint.y + yDeltaUp;
                 maxScanX = bestPathPoint.x + xDeltaRight;
                 maxScanY = temp.y + yDeltaDown;
-                scanLeftRaw = temp.x * 4 + quarterMinX;
-                scanTopRaw = bestPathPoint.y * 4 + quarterMinY;
-                scanRightRaw = bestPathPoint.x * 4 + xDeltaRight4;
-                scanBottomRaw = temp.y * 4 + yDeltaDown4;
+                MinX4 = temp.x * 4 + xDeltaLeft4;
+                MinY4 = bestPathPoint.y * 4 + yDeltaUp4;
+                MaxX4 = bestPathPoint.x * 4 + xDeltaRight4;
+                MaxY4 = temp.y * 4 + yDeltaDown4;
                 break;
             case 7:
                 minScanX = temp.x + xDeltaLeft;
                 minScanY = bestPathPoint.y + yDeltaUp;
                 maxScanX = bestPathPoint.x + xDeltaRight;
                 maxScanY = bestPathPoint.y + yDeltaDown;
-                scanLeftRaw = temp.x * 4 + quarterMinX;
-                scanTopRaw = bestPathPoint.y * 4 + quarterMinY;
-                scanRightRaw = bestPathPoint.x * 4 + xDeltaRight4;
-                scanBottomRaw = bestPathPoint.y * 4 + yDeltaDown4;
+                MinX4 = temp.x * 4 + xDeltaLeft4;
+                MinY4 = bestPathPoint.y * 4 + yDeltaUp4;
+                MaxX4 = bestPathPoint.x * 4 + xDeltaRight4;
+                MaxY4 = bestPathPoint.y * 4 + yDeltaDown4;
                 break;
             default:
                 minScanX = temp.x;
                 minScanY = temp.y;
                 maxScanX = temp.x;
                 maxScanY = temp.y;
-                scanLeftRaw = temp.x * 4 + quarterMinX;
-                scanTopRaw = temp.y * 4 + quarterMinY;
-                scanRightRaw = temp.x * 4 + xDeltaRight4;
-                scanBottomRaw = temp.y * 4 + yDeltaDown4;
+                MinX4 = temp.x * 4 + xDeltaLeft4;
+                MinY4 = temp.y * 4 + yDeltaUp4;
+                MaxX4 = temp.x * 4 + xDeltaRight4;
+                MaxY4 = temp.y * 4 + yDeltaDown4;
                 break;
             }
             if (minScanX < 0) ++minScanX;
@@ -720,13 +722,13 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                     ++terrainRow;
                 }
             }
-            status = terrainStatus;
+            badCollision = terrainStatus;
 
-            if (status == 1 && checkObstructions == 1) {
-                left = scanLeftRaw;
-                right = scanRightRaw;
-                top = scanTopRaw;
-                bottom = scanBottomRaw;
+            if (badCollision == 1 && checkObstructions == 1) {
+                left = MinX4;
+                right = MaxX4;
+                top = MinY4;
+                bottom = MaxY4;
                 if (left < 0) ++left;
                 if (right < 0) ++right;
                 if (top < 0) ++top;
@@ -777,18 +779,18 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
                         }
                     }
                 }
-                status = foundBlockingOwnGroup != 1;
+                badCollision = foundBlockingOwnGroup != 1;
                 goto obstruction_done;
 
 obstruction_found:
-                status = 0xfe;
+                badCollision = 0xfe;
 obstruction_done:
                 ;
             }
 
             unobstructibleObjectHitpoints = DAT_00570e5c;
-            reached = 0;
-            if (status == 0xfe) {
+            hitUnobstructibleObject = 0;
+            if (badCollision == 0xfe) {
                 if (this->currentUnobstructibleGroupID == -1) goto next_direction;
                 found = 0;
                 hitCount = 0;
@@ -810,7 +812,7 @@ obstruction_done:
                             other = this->worldValue->object(hitId);
                             if (other != 0) {
                                 unobstructibleObjectHitpoints = other->hp;
-                                reached = 1;
+                                hitUnobstructibleObject = 1;
                             }
                         }
                         ++col;
@@ -823,7 +825,7 @@ obstruction_done:
 
             misc = this->miscValue[temp.x][temp.y];
             newTotal += misc * 0x10;
-            if (reached == 1) {
+            if (hitUnobstructibleObject == 1) {
                 if (unobstructibleObjectHitpoints < 10.0f) newTotal += 0x10;
                 else newTotal += 0x3c;
             }
@@ -831,7 +833,7 @@ obstruction_done:
             if ((facetByte & 0xf8) == this->CurrentFacetMask) facetLow = facetByte & 7;
             else facetLow = 0xff;
             if (i != facetLow) ++newTotal;
-            if (status == 0) newTotal = 0;
+            if (badCollision == 0) newTotal = 0;
 
             this->MGP_costValue[temp.x][temp.y] = newTotal;
             this->facetValue[temp.x][temp.y] = (unsigned char)((i & 7) | this->CurrentFacetMask);
@@ -843,12 +845,11 @@ obstruction_done:
 
             insertIndex = openIndex;
             if (insertIndex > 0) {
-                int savedTotal;
                 copiedX = this->MGP_openPaths[insertIndex].x;
                 copiedY = this->MGP_openPaths[insertIndex].y;
-                savedTotal = this->MGP_openPaths[insertIndex].total;
+                oldTotal = this->MGP_openPaths[insertIndex].total;
                 parentIndex = insertIndex / 2;
-                while (savedTotal < this->MGP_openPaths[parentIndex].total) {
+                while (oldTotal < this->MGP_openPaths[parentIndex].total) {
                     this->MGP_openPaths[insertIndex] = this->MGP_openPaths[parentIndex];
                     insertIndex = insertIndex / 2;
                     parentIndex = parentIndex / 2;
@@ -856,10 +857,10 @@ obstruction_done:
                 if (insertIndex != openIndex) {
                     this->MGP_openPaths[insertIndex].x = (unsigned char)copiedX;
                     this->MGP_openPaths[insertIndex].y = (unsigned char)copiedY;
-                    this->MGP_openPaths[insertIndex].total = savedTotal;
+                    this->MGP_openPaths[insertIndex].total = oldTotal;
                 }
             }
-            if (status == 0) {
+            if (badCollision == 0) {
                 if (mode == 1 && this->copyPath(step) == 0) {
                     path = obj->storePathInExceptionPath == 0 ? &obj->pathValue : &obj->exceptionPathValue;
                     path->killPath();
@@ -913,13 +914,12 @@ path_exhausted:
     this->MGP_openPaths[openIndex].y = this->MGP_bestTraversedPath.y;
     this->MGP_openPaths[openIndex].total = 0;
     if (openIndex > 0) {
-        int savedTotal;
         copiedX = this->MGP_openPaths[openIndex].x;
         copiedY = this->MGP_openPaths[openIndex].y;
-        savedTotal = this->MGP_openPaths[openIndex].total;
+        oldTotal = this->MGP_openPaths[openIndex].total;
         insertIndex = openIndex;
         parentIndex = insertIndex / 2;
-        while (savedTotal < this->MGP_openPaths[parentIndex].total) {
+        while (oldTotal < this->MGP_openPaths[parentIndex].total) {
             this->MGP_openPaths[insertIndex] = this->MGP_openPaths[parentIndex];
             insertIndex = insertIndex / 2;
             parentIndex = parentIndex / 2;
@@ -927,7 +927,7 @@ path_exhausted:
         if (insertIndex != openIndex) {
             this->MGP_openPaths[insertIndex].x = (unsigned char)copiedX;
             this->MGP_openPaths[insertIndex].y = (unsigned char)copiedY;
-            this->MGP_openPaths[insertIndex].total = savedTotal;
+            this->MGP_openPaths[insertIndex].total = oldTotal;
         }
     }
 
