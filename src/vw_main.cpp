@@ -292,7 +292,8 @@ long RGE_Main_View::mouse_move_action(long x, long y, int key, int flags) {
     return 0;
 }
 
-long RGE_Main_View::mouse_left_down_action(long x, long y, int key, int flags) {
+long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key,
+                                           int shift_key) {
     short min_x;
     short min_y;
     short max_y;
@@ -322,7 +323,8 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int key, int flags) {
                             ClientToScreen(this->TPanel::render_area->Wnd, &point);
                         if (this->TPanel::render_area->DrawSystem->ScreenMode == 1)
                             ScreenToClient(this->TPanel::render_area->Wnd, &point);
-                        this->start_scroll_view(4, point.x, point.y, key, flags);
+                        this->start_scroll_view(4, point.x, point.y, ctrl_key,
+                                                shift_key);
                     }
                 }
                 break;
@@ -360,7 +362,7 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int key, int flags) {
                 }
                 if (mode == 19)
                     rge_base_game->set_game_mode(19, 0);
-                this->start_scroll_view(9, x, y, key, flags);
+                this->start_scroll_view(9, x, y, ctrl_key, shift_key);
                 break;
 
             case 2:
@@ -372,7 +374,7 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int key, int flags) {
                 }
                 // These modes share the scroll command used by mode 21.
             case 21:
-                this->start_scroll_view(3, x, y, key, flags);
+                this->start_scroll_view(3, x, y, ctrl_key, shift_key);
                 break;
 
             case 15:
@@ -410,7 +412,7 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int key, int flags) {
                                 ClientToScreen(this->TPanel::render_area->Wnd,
                                                &point);
                         }
-                        this->start_scroll_view(9, x, y, key, flags);
+                        this->start_scroll_view(9, x, y, ctrl_key, shift_key);
                     }
                 }
                 break;
