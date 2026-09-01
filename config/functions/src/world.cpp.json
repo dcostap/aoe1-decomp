@@ -66,7 +66,7 @@
     "005439C0": {"status": "matching", "symbol": "?base_save@RGE_Game_World@@UAEXPAD@Z"},
     "00543A00": {"status": "matching", "symbol": "?save_scenario@RGE_Game_World@@UAEEPAD@Z"},
     "00543E00": {"status": "matching", "symbol": "?load_scenario@RGE_Game_World@@MAEEPADAAURGE_Player_Info@@@Z"},
-    "00544090": {"status": "scratch", "symbol": "?load_scenario@RGE_Game_World@@MAEEAAURGE_Player_Info@@@Z"},
+    "00544090": {"status": "matching", "symbol": "?load_scenario@RGE_Game_World@@MAEEAAURGE_Player_Info@@@Z"},
     "00544250": {"status": "matching", "symbol": "?scenario_make_player@RGE_Game_World@@MAEXFEEEPAD@Z"},
     "005442E0": {"status": "matching", "symbol": "?scenario_make_map@RGE_Game_World@@MAEXH@Z"},
     "00544300": {"status": "matching", "symbol": "?load_scenario1@RGE_Game_World@@MAEXHAAURGE_Player_Info@@@Z"},
