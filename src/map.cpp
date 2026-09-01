@@ -1885,73 +1885,71 @@ void RGE_Map::create_terrain_object(RGE_Player* player,
     }
 }
 
-int RGE_Map::clear_terrain_object(RGE_Game_World* world, short col,
-                                  short row, short old_terrain,
+int RGE_Map::clear_terrain_object(RGE_Game_World* world, short row,
+                                  short col, short old_terrain,
                                   int remove_now, int min_id, int max_id)
 {
     short object_id;
-    RGE_Object_Node* node;
-    RGE_Object_Node* current_node;
+    RGE_Object_Node* list;
+    RGE_Object_Node* next_list;
+    short result;
     short object_type;
     RGE_Static_Object* object;
 
-    this->get_terrain(row, col);
-    node = this->map_row_offset[col][row].objects.list;
-    short result = -1;
+    result = -1;
+    this->get_terrain(col, row);
+    list = this->map_row_offset[row][col].objects.list;
 
-    while (node != 0) {
-        current_node = node;
-        object = current_node->node;
-        node = current_node->next;
+    do {
+        if (list == 0)
+            return result;
+
+        object = list->node;
+        next_list = list->next;
         object_id = object->master_obj->id;
 
-        if (object_id >= min_id && object_id <= max_id)
-            continue;
-
-        if (old_terrain < 0) {
-            if (remove_now != 0) {
-                if (object != 0)
-                    delete object;
+        if (object_id < min_id || object_id > max_id) {
+            if (old_terrain < 0) {
+                if (remove_now != 0) {
+                    if (object != 0)
+                        delete object;
+                } else {
+                    object->destroy_obj();
+                }
             } else {
-                object->destroy_obj();
-            }
-            continue;
-        }
+                object_type = this->terrain_types[old_terrain].num_obj_type;
+                result = object_id;
+                if (object_type >= 0) {
+                    do {
+                        if (this->terrain_types[old_terrain].obj_types[object_type] ==
+                            object_id)
+                            break;
+                        --object_type;
+                    } while (object_type >= 0);
+                }
 
-        result = object_id;
-        object_type = this->terrain_types[old_terrain].num_obj_type;
-        if (object_type >= 0) {
-            do {
-                if (this->terrain_types[old_terrain].obj_types[object_type] ==
-                    object_id)
-                    break;
-                --object_type;
-            } while (object_type >= 0);
-        }
-
-        if (object_type >= 0) {
-            if (remove_now != 0) {
-                if (object != 0)
-                    delete object;
-            } else {
-                object->destroy_obj();
-            }
-            continue;
-        }
-
-        if (object->master_obj->check_placement(
-                object->owner, object->world_x, object->world_y, 0,
-                0, 1, 1, 1, 0, 0)) {
-            if (remove_now != 0) {
-                if (object != 0)
-                    delete object;
-            } else {
-                object->destroy_obj();
+                if (object_type >= 0) {
+                    if (remove_now != 0) {
+                        if (object != 0)
+                            delete object;
+                    } else {
+                        object->destroy_obj();
+                    }
+                } else if (object->master_obj->check_placement(
+                               object->owner, object->world_x, object->world_y,
+                               0, 0, 1, 1, 1, 0, 0)) {
+                    if (remove_now != 0) {
+                        if (object != 0)
+                            delete object;
+                    } else {
+                        object->destroy_obj();
+                    }
+                }
             }
         }
-    }
 
-    return result;
+        list = next_list;
+    } while (1);
 }
 
 void RGE_Map::place_terrain_object(RGE_Player* player,
