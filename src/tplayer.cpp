@@ -1251,18 +1251,18 @@ void TRIBE_Player::objectCost(int object_id, int second, ResourceItem* item, int
 }
 
 
-int TRIBE_Player::objectCostByType(int input)
+int TRIBE_Player::objectCostByType(int id)
 {
-    short type1;
-    short amount1;
-    short type2;
-    short amount2;
-    short type3;
-    short amount3;
+    short inv_3;
+    short inv_amt_1;
+    short inv_2;
+    short inv_1;
+    short inv_amt_3;
+    short inv_amt_2;
 
-    obj_cost(static_cast<short>(input), 0, type1, amount1, type2, amount2,
-             type3, amount3, 1.0f);
-    return amount1 + amount2 + amount3;
+    obj_cost(static_cast<short>(id), 0, inv_1, inv_amt_1, inv_2, inv_amt_2,
+             inv_3, inv_amt_3, 1.0f);
+    return inv_amt_1 + inv_amt_2 + inv_amt_3;
 }
 
 
