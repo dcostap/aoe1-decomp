@@ -386,7 +386,7 @@ unsigned char TRIBE_Building_Object::update()
         TRIBE_Master_Building_Object* master =
             static_cast<TRIBE_Master_Building_Object*>(master_obj);
         unsigned char result = (unsigned char)((long)(
-            (float)(int)max_value * build_pts /
+            ((float)(int)max_value * build_pts) /
             (float)(int)master->build_pts_required));
 
         if ((short)result < max_value && result != facet) {
