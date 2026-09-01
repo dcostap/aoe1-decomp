@@ -102,7 +102,7 @@
     "0042D0E0": {"status": "matching", "symbol": "?GetPlayerName@TCommunications_Handler@@QAEPADI@Z"},
     "0042D120": {"status": "matching", "symbol": "?UpdatePlayerInformation@TCommunications_Handler@@QAEXKPAD0@Z"},
     "0042D170": {"status": "matching", "symbol": "?IsLobbyLaunched@TCommunications_Handler@@QAEHXZ"},
-    "0042D180": {"status": "scratch", "symbol": "?LaunchLobbyGame@TCommunications_Handler@@QAEHXZ"},
+    "0042D180": {"status": "matching", "symbol": "?LaunchLobbyGame@TCommunications_Handler@@QAEHXZ"},
     "0042D2D0": {"status": "matching", "symbol": "?InitPlayerInformation@TCommunications_Handler@@IAEXIKPAD0@Z"},
     "0042D3B0": {"status": "matching", "symbol": "?SetGameTitle@TCommunications_Handler@@QAEHPAD@Z"},
     "0042D3E0": {"status": "matching", "symbol": "?SetMyPlayerName@TCommunications_Handler@@QAEXPAD@Z"},
