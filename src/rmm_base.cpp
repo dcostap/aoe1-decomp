@@ -617,7 +617,7 @@ uchar RGE_Random_Map_Module::find_path(
                             if (calc_cost[2] && calc_cost[3]) {
                                 tcost = ty - terrain_cost[tile_type] * DAT_00571e50;
                                 *cell = 9;
-                                if (target_y < y) {
+                                if (target_y > y) {
                                     hcost = hcost - 0.41f;
                                 } else {
                                     hcost = hcost - -0.41f;
@@ -679,10 +679,10 @@ uchar RGE_Random_Map_Module::find_path(
                             if (calc_cost[1] && calc_cost[3]) {
                                 tcost = ty - terrain_cost[tile_type] * DAT_00571e50;
                                 *cell = 10;
-                                if (target_y <= y) {
-                                    hcost = hcost - -0.41f;
-                                } else {
+                                if (target_y < y) {
                                     hcost = hcost - 0.41f;
+                                } else {
+                                    hcost = hcost - -0.41f;
                                 }
                                 this->push_stack(path_stack, x + 1, map_h,
                                                  tcost, tcost + hcost);
