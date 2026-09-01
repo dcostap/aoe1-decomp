@@ -30,12 +30,10 @@ long TMessageDialog::setup(TPanel* parent, char* panel_file, long panel_id,
                            long button_width, long button_height)
 {
     TDrawArea* draw_area;
-    int num_buttons;
-    int space;
-    int button_y;
-    TButtonPanel** next_button;
-    int button_x;
-    int i;
+    long button_num;
+    long space;
+    long button_y;
+    long index;
     TButtonPanel* hotkey_button;
 
     button[0] = button[1] = button[2] = 0;
@@ -53,38 +51,35 @@ long TMessageDialog::setup(TPanel* parent, char* panel_file, long panel_id,
 
     switch (dlg_type) {
     case 0:
-        num_buttons = 1;
+        button_num = 1;
         break;
     case 4:
-        num_buttons = 3;
+        button_num = 3;
         break;
     case 1:
     case 2:
     case 3:
-        num_buttons = 2;
+        button_num = 2;
         break;
     default:
         return 0;
     }
 
-    space = pnl_wid - num_buttons * button_width;
+    space = pnl_wid - button_num * button_width;
     if (space < 1) {
         space = 0;
     } else {
-        space /= num_buttons + 1;
+        space /= button_num + 1;
     }
 
     button_y = pnl_hgt - button_height - 7;
-    next_button = button;
-    button_x = space;
-    for (i = 0; i < num_buttons; ++i) {
-        if (create_button(this, next_button, s_592A40, s_592A40,
-                          button_x, button_y, button_width, button_height,
+    for (index = 0; index < button_num; ++index) {
+        if (create_button(this, &button[index], s_592A40, s_592A40,
+                          space + index * (space + button_width), button_y,
+                          button_width, button_height,
                           0x0B, 0, 0) == 0) {
             return 0;
         }
-        button_x += space + button_width;
-        ++next_button;
     }
 
     switch (dlg_type) {
@@ -120,7 +115,7 @@ set_hotkey:
     hotkey_button->hotkey = 0x1B;
     hotkey_button->hotkey_shift = 0;
 set_tab_order:
-    set_tab_order((TPanel**)button, num_buttons);
+    set_tab_order((TPanel**)button, button_num);
     set_curr_child(button[0]);
     return 1;
 }
