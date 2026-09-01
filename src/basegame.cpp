@@ -2264,34 +2264,46 @@ void RGE_Base_Game::stop_music_system(void) {
 
 
 
+class RestartMusicSystemBody : public RGE_Base_Game {
+public:
+    static inline int run(RestartMusicSystemBody* self)
+    {
+        if (self->save_music_track_from) {
+            if (self->save_music_track_from == self->save_music_track_to) {
+                self->music_system->play_track(self->save_music_track_from,
+                                               self->save_music_loop,
+                                               self->save_music_pos);
+                return 1;
+            }
+        }
+
+        if (self->save_music_track_from != 0 && self->save_music_track_to) {
+            self->music_system->play_tracks(self->save_music_track_from,
+                                             self->save_music_track_to,
+                                             self->save_music_loop,
+                                             self->save_music_cur_track,
+                                             self->save_music_pos);
+            return 1;
+        }
+
+        if (self->save_music_file[0]) {
+            self->music_system->play_file(self->save_music_file,
+                                          self->save_music_loop,
+                                          self->save_music_pos);
+        }
+
+        return 1;
+    }
+};
+
 int RGE_Base_Game::restart_music_system()
 {
-    if (this->music_system == 0)
+    if (!this->music_system)
         return 1;
-
-    if (this->save_music_track_from != 0 &&
-        this->save_music_track_from == this->save_music_track_to) {
-        this->music_system->play_track(this->save_music_track_from,
-                                       this->save_music_loop,
-                                       this->save_music_pos);
-        return 1;
-    }
-
-    if (this->save_music_track_from != 0 && this->save_music_track_to != 0) {
-        this->music_system->play_tracks(this->save_music_track_from,
-                                        this->save_music_track_to,
-                                        this->save_music_loop,
-                                        this->save_music_cur_track,
-                                        this->save_music_pos);
-        return 1;
-    }
-
-    if (this->save_music_file[0] != 0)
-        this->music_system->play_file(this->save_music_file,
-                                      this->save_music_loop,
-                                      this->save_music_pos);
-    return 1;
+    return RestartMusicSystemBody::run(
+        static_cast<RestartMusicSystemBody*>(this));
 }
+
 
 
 
