@@ -497,38 +497,37 @@ TCommunications_Handler::~TCommunications_Handler() {
 void TCommunications_Handler::KillAnyMissingPlayers()
 {
     MSGFORMAT_KILL_PLAYER kp;
+    long hr;
+    unsigned long dwSize;
     char* buf;
-    IDirectPlay3* dp;
     unsigned int i = 1;
 
     if (i <= this->MaxGamePlayers) {
-        unsigned long* dcoID = this->PlayerOptions.dcoID + 1;
         do {
             if (this->IsPlayerHuman(i)) {
-                dp = direct_play_interface;
-                unsigned long name_size = 0;
-                dp->GetPlayerName(*dcoID, 0, &name_size);
+                dwSize = 0;
+                direct_play_interface->GetPlayerName(
+                    this->PlayerOptions.dcoID[i], 0, &dwSize);
 
-                buf = new char[name_size];
-                dp = direct_play_interface;
-                long name_result = dp->GetPlayerName(*dcoID, buf, &name_size);
+                buf = new char[dwSize];
+                hr = direct_play_interface->GetPlayerName(
+                    this->PlayerOptions.dcoID[i], buf, &dwSize);
                 delete[] buf;
 
-                if (name_result != 0) {
+                if (hr != 0) {
                     kp.PlayerNo = i;
-                    kp.dcoID = *dcoID;
+                    kp.dcoID = this->PlayerOptions.dcoID[i];
                     kp.CurrentTurn = this->current_turn;
                     L->Log("  >TX KP #%d (%d)", i, 0x0C);
                     this->CommOut(0, 0x4B, &kp.PlayerNo, 0x0C, 0);
 
                     if (this->PlayerStopTurn[i] == 0) {
-                        this->DropDeadPlayer(i, *dcoID);
+                        this->DropDeadPlayer(i, this->PlayerOptions.dcoID[i]);
                     }
                 }
             }
 
             ++i;
-            ++dcoID;
         } while (i <= this->MaxGamePlayers);
     }
 }
