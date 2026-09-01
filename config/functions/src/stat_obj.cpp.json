@@ -12,7 +12,7 @@
     "004C1420": {"status": "matching", "symbol": "?recycle_in_to_game@RGE_Static_Object@@UAEXPAVRGE_Master_Static_Object@@PAVRGE_Player@@MMM@Z"},
     "004C1590": {"status": "matching", "symbol": "?recycle_out_of_game@RGE_Static_Object@@UAEXXZ"},
     "004C16B0": {"status": "matching", "symbol": "?setup@RGE_Static_Object@@MAEHPAVRGE_Master_Static_Object@@PAVRGE_Player@@MMM@Z"},
-    "004C1840": {"status": "scratch", "symbol": "?setup@RGE_Static_Object@@MAEHHPAVRGE_Game_World@@@Z"},
+    "004C1840": {"status": "matching", "symbol": "?setup@RGE_Static_Object@@MAEHHPAVRGE_Game_World@@@Z"},
     "004C1CF0": {"status": "matching", "symbol": "?change_unique_id@RGE_Static_Object@@QAEXXZ"},
     "004C1D60": {"status": "matching", "symbol": "?create_object_list@RGE_Static_Object@@MAEPAVRGE_Object_List@@XZ"},
     "004C1DC0": {"status": "matching", "symbol": "?create_sprite_list@RGE_Static_Object@@MAEPAVRGE_Active_Sprite_List@@XZ"},
