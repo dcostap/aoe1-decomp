@@ -223,28 +223,32 @@ RGE_Static_Object* TRIBE_Player::make_scenario_obj(float x, float y, float z, sh
 
 void TRIBE_Player::save(int file)
 {
-    int present;
+    int save_file;
     color_log(0x16, 0x16, 2);
-    RGE_Player::save(file);
+    save_file = file;
+    RGE_Player::save(save_file);
     color_log(0x16, 0x24, 2);
-    rge_write(file, &this->type, 1);
-    rge_write(file, &this->update_count, 4);
-    rge_write(file, &this->updateCountNeedHelp, 4);
-    rge_write(file, &this->fog_update, 4);
-    rge_write(file, &this->update_time, 4);
-    this->tech_tree->save(file);
-    rge_write(file, &this->update_history_count, 4);
-    this->history->save(file);
-    rge_write(file, &this->ruin_held_time, 4);
-    rge_write(file, &this->artifact_held_time, 4);
+    rge_write(save_file, &this->type, 1);
+    rge_write(save_file, &this->update_count, 4);
+    rge_write(save_file, &this->updateCountNeedHelp, 4);
+    rge_write(save_file, &this->fog_update, 4);
+    rge_write(save_file, &this->update_time, 4);
+    this->tech_tree->save(save_file);
+    rge_write(save_file, &this->update_history_count, 4);
+    this->history->save(save_file);
+    rge_write(save_file, &this->ruin_held_time, 4);
+    rge_write(save_file, &this->artifact_held_time, 4);
     color_log(0x16, 0x4C, 2);
-    if (this->type == 1 && this->playerAI != 0 && comm->IsHost() == 1) {
-        present = 1;
-        rge_write(file, &present, 4);
-        this->playerAI->save(file);
-    } else {
-        present = 0;
-        rge_write(file, &present, 4);
+    if (this->computerPlayerValue == 1) {
+        if (this->playerAI != 0 && comm->IsHost() == 1) {
+            file = 1;
+            rge_write(save_file, &file, 4);
+            this->playerAI->save(save_file);
+            color_log(0x16, 0x5F, 2);
+            return;
+        }
+        file = 0;
+        rge_write(save_file, &file, 4);
     }
     color_log(0x16, 0x5F, 2);
 }
