@@ -229,8 +229,8 @@ int Visible_Unit_Manager::GetVisibleUnits(
     }
     distance = distance > 0x0f ? 0x0f : distance;
 
-    distTable = this->distanceTable;
     PDP = this->PlayerDataPtrs[player];
+    distTable = this->distanceTable;
     VisibleUnitList_Size[0] = 0;
     VisibleUnitList_Size[1] = 0;
     VisibleUnitList_Size[2] = 0;
@@ -273,10 +273,10 @@ int Visible_Unit_Manager::GetVisibleUnits(
                         if (size < 0x100) {
                             VISIBLE_UNIT_REC* out =
                                 VisibleUnitList[mapped] + size;
-                            VisibleUnitList_Size[mapped] = size + 1;
+                            VisibleUnitList_Size[mapped]++;
+                            found++;
                             *out = *rec;
                             out->distance = d;
-                            found++;
                         }
                     }
                 }
