@@ -393,26 +393,25 @@ void RGE_Diamond_Map::draw() {
 void RGE_Diamond_Map::clear_image() {
   unsigned char *p;
   TDrawArea *save_area;
-  short start_y;
   short pi;
-  p = this->save_area->Lock("diam_map::clear_image", 1);
-  if (p == 0)
+  if (this->save_area->Lock("diam_map::clear_image", 1) == 0)
     return;
 
   save_area = this->save_area;
-  start_y = this->map_image_start_y;
 
   if (save_area->Orien == 1) {
-    p = save_area->Bits + (int)start_y * save_area->Pitch;
+    p = save_area->Bits +
+        (int)this->map_image_start_y * save_area->Pitch;
     pi = (short)save_area->Pitch;
   } else {
     p = save_area->Bits +
-        ((save_area->Height - (int)start_y) - 1) * save_area->Pitch;
+        ((save_area->Height - (int)this->map_image_start_y) - 1) *
+            save_area->Pitch;
     pi = -(short)save_area->Pitch;
   }
 
   RGE_Map_Image_Line *line = this->map_image_lines;
-  short y = (short)this->pnl_y + start_y;
+  short y = (short)this->pnl_y + this->map_image_start_y;
   short end_y = this->map_image_hgt + y;
 
   for (; y < end_y; y++) {
