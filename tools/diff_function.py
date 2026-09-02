@@ -986,7 +986,11 @@ def main() -> None:
     original_flow = control_flow_summary(original_instructions)
     rebuilt_flow = control_flow_summary(rebuilt_instructions)
     original_calls = call_fingerprint(original_instructions, original=True)
-    rebuilt_calls = call_fingerprint(rebuilt_instructions, original=False)
+    rebuilt_calls = call_fingerprint(
+        rebuilt_instructions,
+        original=False,
+        owner_symbol=str((rebuilt_meta.get("symbol") or {}).get("name") or ""),
+    )
     for call in rebuilt_calls:
         line = source_line_for_offset(rebuilt_lines, int(call["offset"]))
         if line is not None:

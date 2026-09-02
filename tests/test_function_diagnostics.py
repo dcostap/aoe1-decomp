@@ -437,6 +437,23 @@ class CoffAndDiagnosticTests(unittest.TestCase):
         self.assertEqual([(row["kind"], row["target"]) for row in calls], [("virtual", "vslot+0x28")])
         self.assertEqual(calls[0]["block_offset"], 0)
 
+    def test_owner_relocation_is_identified_as_internal_entry_call(self) -> None:
+        owner = "?pick1@RGE_Main_View@@QAEXXZ"
+        instructions = decode_instructions(
+            bytes.fromhex("E8 00 00 00 00 C3"),
+            0x1000,
+            [{"offset": 1, "symbol_name": owner}],
+        )
+        calls = call_fingerprint(
+            instructions,
+            original=False,
+            owner_symbol=owner,
+        )
+        self.assertEqual(
+            [(row["kind"], row["target"]) for row in calls],
+            [("direct", "internal+0x0")],
+        )
+
     def test_stack_spilled_vtable_slot_tracks_push_adjustments(self) -> None:
         # mov eax,[ecx]; mov edx,[eax+10Ch]; mov [esp+14h],edx;
         # push four args; call dword [esp+24h]; ret

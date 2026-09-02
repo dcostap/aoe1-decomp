@@ -495,6 +495,7 @@ def call_fingerprint(
     instructions: list[DecodedInstruction],
     original: bool,
     names_by_va: dict[int, str] | None = None,
+    owner_symbol: str = "",
 ) -> list[dict[str, object]]:
     names = names_by_va or _function_names_by_va()
     loaded_slots = _loaded_virtual_slots(instructions)
@@ -511,7 +512,11 @@ def call_fingerprint(
         )
         if instruction.flow_control == FlowControl.CALL:
             if not original and instruction.relocation_symbol:
-                target = instruction.relocation_symbol
+                # COFF keeps a recursive call as a relocation to its owner.
+                if owner_symbol and instruction.relocation_symbol == owner_symbol:
+                    target = "internal+0x0"
+                else:
+                    target = instruction.relocation_symbol
             elif instruction.target in address_to_offset:
                 target = f"internal+0x{address_to_offset[instruction.target]:X}"
             else:
