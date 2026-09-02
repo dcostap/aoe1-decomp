@@ -901,9 +901,9 @@ void RGE_Diamond_Map::draw_clipped_horz_line(short x, short y, short len,
 
 void RGE_Diamond_Map::draw_view_rect() {
   short view_x = (short)(long)this->player->view_x;
-  long local_8 = (long)this->player->view_y;
+  short row = (short)(long)this->player->view_y;
 
-  if (view_x != this->view_col || (short)local_8 != this->view_row) {
+  if (view_x != this->view_col || row != this->view_row) {
     if (view_x < 0) {
       return;
     }
@@ -911,10 +911,10 @@ void RGE_Diamond_Map::draw_view_rect() {
     if ((int)view_x >= map->map_width) {
       return;
     }
-    if ((short)local_8 < 0) {
+    if (row < 0) {
       return;
     }
-    if ((int)(short)local_8 >= map->map_height) {
+    if ((int)row >= map->map_height) {
       return;
     }
 
@@ -924,37 +924,37 @@ void RGE_Diamond_Map::draw_view_rect() {
     RGE_Map_Tile_Row *tile_row =
         this->map_tile_rows + ((int)map_x - (int)tile_x) - 1 + (int)tile_y;
 
-    short row = (short)local_8;
-    if (view_x < (short)local_8) {
-      row = view_x;
+    short draw_row = row;
+    if (view_x < row) {
+      draw_row = view_x;
     }
     long x_offset;
     if (tile_row->ratio < 1.0f) {
-      x_offset = (long)((float)row * tile_row->ratio);
+      x_offset = (long)((float)draw_row * tile_row->ratio);
     } else {
-      x_offset = (long)((float)row * tile_row->draw_step);
+      x_offset = (long)((float)draw_row * tile_row->draw_step);
     }
 
     short image_line_num = tile_row->image_line;
     RGE_Map_Image_Line *image_line = this->map_image_lines + image_line_num;
-    long x = this->pnl_x + image_line->start_x + x_offset;
-    long y = this->pnl_y + this->map_image_start_y + image_line_num;
+    short x = (short)(this->pnl_x + image_line->start_x + x_offset);
+    short y = (short)(this->pnl_y + this->map_image_start_y + image_line_num);
 
+    short vwid;
     short vhgt;
-    short map_row;
-    this->main_view->get_max_size(&vhgt, &map_row);
+    this->main_view->get_max_size(&vwid, &vhgt);
 
-    int half_width = (int)vhgt / 2;
+    int half_width = (int)vwid / 2;
     this->view_rect.left =
         (long)((float)x - (float)half_width * this->map_col_ratio);
     this->view_rect.top =
-        (long)((float)y - (float)map_row * this->map_row_ratio);
+        (long)((float)y - (float)vhgt * this->map_row_ratio);
     this->view_rect.right =
         (long)((float)x + (float)(half_width + 2) * this->map_col_ratio);
     this->view_rect.bottom =
-        (long)((float)y + (float)(map_row + 4) * this->map_row_ratio);
+        (long)((float)y + (float)(vhgt + 4) * this->map_row_ratio);
     this->view_col = view_x;
-    this->view_row = (short)local_8;
+    this->view_row = row;
   }
 
   long current_y = this->view_rect.top;
