@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#pragma function(memset)
+
 RGE_Diamond_Map::RGE_Diamond_Map() {
   world = 0;
   player = 0;
@@ -401,8 +403,8 @@ void RGE_Diamond_Map::clear_image() {
   start_y = this->map_image_start_y;
 
   if (save_area->Orien == 1) {
-    pi = (short)save_area->Pitch;
     p = save_area->Bits + (int)start_y * save_area->Pitch;
+    pi = (short)save_area->Pitch;
   } else {
     p = save_area->Bits +
         ((save_area->Height - (int)start_y) - 1) * save_area->Pitch;
@@ -410,35 +412,29 @@ void RGE_Diamond_Map::clear_image() {
   }
 
   RGE_Map_Image_Line *line = this->map_image_lines;
-  short cur_y = (short)this->pnl_y + start_y;
-  short end_y = this->map_image_hgt + cur_y;
+  short y = (short)this->pnl_y + start_y;
+  short end_y = this->map_image_hgt + y;
 
-  if (cur_y < end_y) {
-    int yv = (int)cur_y;
-    int rm = (int)end_y - yv;
+  for (; y < end_y; y++) {
+    if ((int)y >= this->clip_rect.top &&
+        (int)y <= this->clip_rect.bottom) {
+      short sx = line->start_x;
+      short s2 = (short)this->pnl_x + sx;
+      short ex = s2 + line->line_len - 1;
 
-    do {
-      if (yv >= this->clip_rect.top && yv <= this->clip_rect.bottom) {
-        short sx = line->start_x;
-        int s2 = (short)(this->pnl_x + sx);
-        int ex = (short)(s2 + line->line_len - 1);
-
-        if (s2 < this->clip_rect.left) {
-          int adj = this->clip_rect.left - s2;
-          sx = (short)((int)sx + adj);
-          s2 = this->clip_rect.left;
-        }
-        if (ex > this->clip_rect.right)
-          ex = this->clip_rect.right;
-
-        if (s2 >= this->clip_rect.left && ex <= this->clip_rect.right)
-          memset(p + (int)sx, this->color, ex - s2 + 1);
+      if ((int)s2 < this->clip_rect.left) {
+        sx += (short)(this->clip_rect.left - (int)s2);
+        s2 = (short)this->clip_rect.left;
       }
-      line++;
-      p += (int)pi;
-      yv++;
-      rm--;
-    } while (rm);
+      if ((int)ex > this->clip_rect.right)
+        ex = (short)this->clip_rect.right;
+
+      if ((int)s2 >= this->clip_rect.left &&
+          (int)ex <= this->clip_rect.right)
+        memset(p + sx, this->color, (int)ex - (int)s2 + 1);
+    }
+    line++;
+    p += (int)pi;
   }
 
   this->save_area->Unlock("diam_map::clear_image");
