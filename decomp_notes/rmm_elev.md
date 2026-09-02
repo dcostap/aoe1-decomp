@@ -24,7 +24,7 @@ relocation target mismatch occurred.
 | --- | --- | ---: | ---: | ---: | ---: | --- |
 | `004846C0` | MATCH | 59 | 59 | 0 | 0 | matching |
 | `00484700` | MISMATCH | 191 | 187 | 158 | 0 | scratch |
-| `004847C0` | MISMATCH | 224 | 224 | 147 | 0 | scratch |
+| `004847C0` | MISMATCH | 224 | 224 | 147 | 0 | accepted drift |
 | `004848A0` | MISMATCH | 408 | 401 | 340 | 0 | scratch |
 | `00484A40` | MISMATCH | 240 | 240 | 7 | 0 | scratch |
 | `00484B30` | MATCH | 28 | 28 | 0 | 0 | matching |
@@ -49,9 +49,9 @@ result for the partial natural candidate.
 
 ## Remaining blockers
 
-Seven non-exact rows remain scratch. `00484B90` is accepted drift because the
-landed semantic review and this direct grouped build support that status. The
-semantic review commit `15b53a5f9` was read as evidence only. No wrapper or
-standalone status was transferred. `count_map_tiles` has five boundary escapes.
+Six non-exact rows remain scratch. `004847C0` and `00484B90` are accepted
+drift. Their semantic reviews and direct grouped builds support that status.
+The semantic review commit `15b53a5f9` was read as evidence only. No wrapper
+or standalone status was transferred. `count_map_tiles` has five boundary escapes.
 `base_elevation_generate` has one boundary escape and a large local frame
 mismatch. These rows stay out of exact registration.
