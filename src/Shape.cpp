@@ -2009,7 +2009,6 @@ byte TShape::shape_mirror_shadow_clipped(
     TDrawArea* draw_area, long shape_x1, long shape_y1, long clip_x0,
     long clip_y0, long clip_x1, long clip_y1, byte* table)
 {
-    Byte_Table* table_view = (Byte_Table*)table;
     long pitch = draw_area->AlignedWidth() * draw_area->Orien;
     Shape_Header* header = this->shape_header;
     byte* src = (byte*)(header + 1);
@@ -2054,9 +2053,9 @@ byte TShape::shape_mirror_shadow_clipped(
     if (shape_y1 > clip_y1)
         return 1;
 
-    dst = save_buffer;
     rows = clip_y1 - shape_y1 + 1;
     byte count;
+    dst = save_buffer;
     do {
         xpos = shape_x1;
         if (clip_x1 < xpos) {
@@ -2081,23 +2080,23 @@ byte TShape::shape_mirror_shadow_clipped(
                         src += count;
                         if (xpos <= clip_x1) {
                             if (xpos < clip_x0) {
-                                count = (byte)(clip_x1 - clip_x0 + 1);
                                 state = 2;
-                                transform_count = count;
-                                if (transform_count > 0) {
+                                transform_count = clip_x1 - clip_x0 + 1;
+                                if ((unsigned char)transform_count != 0) {
+                                    transform_count &= 0xff;
                                     do {
                                         --dst;
-                                        *dst = ((Byte_Table*)table)->value[*dst];
+                                        *dst = table[*dst];
                                     } while (--transform_count);
                                 }
                             } else {
-                                count = (byte)(clip_x1 - xpos);
                                 state = 1;
-                                transform_count = count;
-                                if (transform_count > 0) {
+                                transform_count = clip_x1 - xpos;
+                                if ((unsigned char)transform_count != 0) {
+                                    transform_count &= 0xff;
                                     do {
                                         --dst;
-                                        *dst = ((Byte_Table*)table)->value[*dst];
+                                        *dst = table[*dst];
                                     } while (--transform_count);
                                 }
                             }
@@ -2111,17 +2110,17 @@ byte TShape::shape_mirror_shadow_clipped(
                         xpos -= count;
                         if (xpos <= clip_x1) {
                             if (xpos < clip_x0) {
-                                count = (byte)(clip_x1 - clip_x0 + 1);
                                 state = 2;
+                                transform_count = clip_x1 - clip_x0 + 1;
                             } else {
-                                count = (byte)(clip_x1 - xpos);
                                 state = 1;
+                                transform_count = clip_x1 - xpos;
                             }
-                            transform_count = count;
-                            if (transform_count > 0) {
+                            if ((unsigned char)transform_count != 0) {
+                                transform_count &= 0xff;
                                 do {
                                     --dst;
-                                    *dst = table_view->value[*dst];
+                                    *dst = table[*dst];
                                 } while (--transform_count);
                             }
                         }
@@ -2134,7 +2133,8 @@ byte TShape::shape_mirror_shadow_clipped(
         }
 
         state--;
-        while (state == 0) {
+        if (state == 0) {
+            do {
             command = *src++;
             if ((command & 1) == 1) {
                 count = command >> 1;
@@ -2148,21 +2148,22 @@ byte TShape::shape_mirror_shadow_clipped(
                     xpos -= count;
                     src += count;
                     if (xpos < clip_x0) {
-                        count = (byte)(xpos - clip_x0 + count);
                         state = 1;
-                        transform_count = count;
-                        if (transform_count > 0) {
+                        transform_count = xpos - clip_x0 + count;
+                        if ((unsigned char)transform_count != 0) {
+                            transform_count &= 0xff;
                             do {
                                 --dst;
-                                *dst = table_view->value[*dst];
+                                *dst = table[*dst];
                             } while (--transform_count);
                         }
                     } else {
                         transform_count = count;
-                        if (transform_count > 0) {
+                        if ((unsigned char)transform_count != 0) {
+                            transform_count &= 0xff;
                             do {
                                 --dst;
-                                *dst = table_view->value[*dst];
+                                *dst = table[*dst];
                             } while (--transform_count);
                         }
                     }
@@ -2174,23 +2175,27 @@ byte TShape::shape_mirror_shadow_clipped(
                 } else {
                     xpos -= count;
                     if (xpos < clip_x0) {
-                        count = (byte)(xpos - clip_x0 + count);
                         state = 1;
+                        transform_count = xpos - clip_x0 + count;
+                    } else {
+                        transform_count = count;
                     }
-                    transform_count = count;
-                    if (transform_count > 0) {
+                    if ((unsigned char)transform_count != 0) {
+                        transform_count &= 0xff;
                         do {
                             --dst;
-                            *dst = table_view->value[*dst];
+                            *dst = table[*dst];
                         } while (--transform_count);
                     }
                     ++src;
                 }
             }
+            } while (state == 0);
         }
 
         state--;
-        while (state == 0) {
+        if (state == 0) {
+            do {
             command = *src++;
             if ((command & 1) == 1) {
                 count = command >> 1;
@@ -2204,6 +2209,7 @@ byte TShape::shape_mirror_shadow_clipped(
                 else
                     ++src;
             }
+            } while (state == 0);
         }
 
         save_buffer += pitch;
