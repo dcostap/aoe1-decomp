@@ -406,8 +406,10 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             if (other != 0 && other->id != this->currentObject->id) {
                 unsigned char canShare = other->waitingToMove();
                 float cap = other->getSpeed();
-                float held = other->attribute_amount_held;
-                if (canShare != 0 || cap != DAT_00570e5c || held > DAT_00570e5c) {
+                RGE_Moving_Object* movingOther = (RGE_Moving_Object*)other;
+                float avoidanceDistance = movingOther->collisionAvoidanceDistance;
+                if (canShare != 0 || cap != DAT_00570e5c ||
+                    avoidanceDistance > DAT_00570e5c) {
                     other->removeFromObstructionMap(this->aiPS);
                 }
             }
@@ -569,7 +571,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
             case 0: temp.x -= step; temp.y -= step; break;
             case 1:
             case 2: temp.x += step; break;
-            case 3:
+            case 3: temp.y += step; break;
             case 4: temp.y += step; break;
             case 5:
             case 6: temp.x -= step; break;

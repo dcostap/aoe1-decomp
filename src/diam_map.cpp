@@ -943,13 +943,12 @@ void RGE_Diamond_Map::draw_view_rect() {
     short vhgt;
     this->main_view->get_max_size(&vwid, &vhgt);
 
-    int half_width = (int)vwid / 2;
     this->view_rect.left =
-        (long)((float)x - (float)half_width * this->map_col_ratio);
+        (long)((float)x - (float)(vwid / 2) * this->map_col_ratio);
     this->view_rect.top =
         (long)((float)y - (float)vhgt * this->map_row_ratio);
     this->view_rect.right =
-        (long)((float)x + (float)(half_width + 2) * this->map_col_ratio);
+        (long)((float)x + (float)((vwid / 2) + 2) * this->map_col_ratio);
     this->view_rect.bottom =
         (long)((float)y + (float)(vhgt + 4) * this->map_row_ratio);
     this->view_col = view_x;
