@@ -983,78 +983,78 @@ void RGE_Master_Static_Object::make_available(unsigned char v) {
 }
 
 unsigned char RGE_Master_Static_Object::alignment(
-    float& param_1, float& param_2, RGE_Game_World* param_3,
-    unsigned char param_4) {
-    float fVar1;
-    float fVar2;
-    float fVar3;
-    float fVar4;
-    float fVar5;
-    float fVar6;
-    short sVar7;
+    float& col, float& row, RGE_Game_World* world,
+    unsigned char center_flag) {
+    float dx1;
+    float dy1;
+    float dx2;
+    float dy2;
+    float map_w;
+    float map_h;
+    short i;
 
-    fVar1 = param_1 - radius_x;
-    fVar2 = param_2 - radius_y;
-    fVar3 = param_1 + radius_x;
-    fVar4 = param_2 + radius_y;
-    fVar5 = (float)param_3->map->map_width - 0.00001f;
-    fVar6 = (float)param_3->map->map_height - 0.00001f;
+    dx1 = col - radius_x;
+    dy1 = row - radius_y;
+    dx2 = col + radius_x;
+    dy2 = row + radius_y;
+    map_w = (float)world->map->map_width - 0.00001f;
+    map_h = (float)world->map->map_height - 0.00001f;
 
-    if (fVar1 < 0.0f) {
-        fVar3 = fVar3 + (-fVar1);
-        param_1 = param_1 + (-fVar1);
-        fVar1 = 0.0f;
+    if (dx1 < 0.0f) {
+        dx2 = dx2 + (-dx1);
+        col = col + (-dx1);
+        dx1 = 0.0f;
     }
-    if (fVar2 < 0.0f) {
-        fVar4 = fVar4 + (-fVar2);
-        param_2 = param_2 + (-fVar2);
-        fVar2 = 0.0f;
+    if (dy1 < 0.0f) {
+        dy2 = dy2 + (-dy1);
+        row = row + (-dy1);
+        dy1 = 0.0f;
     }
-    if (!(fVar3 < fVar5))
-        param_1 = param_1 + (fVar5 - fVar3);
-    if (!(fVar4 < fVar6))
-        param_2 = param_2 + (fVar6 - fVar4);
+    if (!(dx2 < map_w))
+        col = col + (map_w - dx2);
+    if (!(dy2 < map_h))
+        row = row + (map_h - dy2);
 
-    if (param_4 == 0)
+    if (center_flag == 0)
         return 1;
 
-    if (fVar1 < 0.0f) fVar1 = -fVar1;
-    if (fVar2 < 0.0f) fVar2 = -fVar2;
-    if (fVar3 < 0.0f) fVar3 = -fVar3;
-    if (fVar4 < 0.0f) fVar4 = -fVar4;
+    if (dx1 < 0.0f) dx1 = -dx1;
+    if (dy1 < 0.0f) dy1 = -dy1;
+    if (dx2 < 0.0f) dx2 = -dx2;
+    if (dy2 < 0.0f) dy2 = -dy2;
 
-    sVar7 = (short)(long)fVar1;
-    fVar1 = fVar1 - (float)(int)sVar7;
-    sVar7 = (short)(long)fVar2;
-    fVar2 = fVar2 - (float)(int)sVar7;
-    sVar7 = (short)(long)fVar3;
-    fVar3 = 1.0f - (fVar3 - (float)(int)sVar7);
-    sVar7 = (short)(long)fVar4;
-    fVar4 = 1.0f - (fVar4 - (float)(int)sVar7);
+    i = (short)(long)dx1;
+    dx1 = dx1 - (float)(int)i;
+    i = (short)(long)dy1;
+    dy1 = dy1 - (float)(int)i;
+    i = (short)(long)dx2;
+    dx2 = 1.0f - (dx2 - (float)(int)i);
+    i = (short)(long)dy2;
+    dy2 = 1.0f - (dy2 - (float)(int)i);
 
-    if (fVar3 + fVar1 < 1.0f) {
-        fVar1 = param_1;
-    } else if (fVar1 <= fVar3) {
-        fVar1 = param_1 - (1.0f - fVar3);
+    if (dx2 + dx1 < 1.0f) {
+        dx1 = col;
+    } else if (dx1 <= dx2) {
+        dx1 = col - (1.0f - dx2);
     } else {
-        fVar1 = (1.0f - fVar1) + param_1;
+        dx1 = (1.0f - dx1) + col;
     }
 
-    if (1.0f <= fVar4 + fVar2) {
-        if (fVar4 < fVar2) {
-            fVar3 = param_2;
-            param_1 = fVar1;
-            param_2 = (1.0f - fVar2) + fVar3;
+    if (1.0f <= dy2 + dy1) {
+        if (dy2 < dy1) {
+            dx2 = row;
+            col = dx1;
+            row = (1.0f - dy1) + dx2;
             return 1;
         }
-        fVar2 = param_2;
-        param_1 = fVar1;
-        param_2 = fVar2 - (1.0f - fVar4);
+        dy1 = row;
+        col = dx1;
+        row = dy1 - (1.0f - dy2);
         return 1;
     }
-    fVar2 = param_2;
-    param_1 = fVar1;
-    param_2 = fVar2;
+    dy1 = row;
+    col = dx1;
+    row = dy1;
     return 1;
 }
 
