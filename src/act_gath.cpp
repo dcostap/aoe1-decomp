@@ -255,8 +255,6 @@ gather_depleted:
 }
 
 unsigned char RGE_Action_Gather::update() {
-    float give_amount;
-
     if (this->targetID != -1 &&
         this->obj->owner->world->object(this->targetID) == 0) {
         this->set_target_obj(0);
@@ -370,6 +368,7 @@ unsigned char RGE_Action_Gather::update() {
         break;
 
     case 7: {
+        float give_amount;
         float modifier;
         float max_hold;
         if (this->target_obj == 0) {
@@ -397,8 +396,7 @@ unsigned char RGE_Action_Gather::update() {
             modifier = this->obj->owner->attributes[attr];
         }
         max_hold = (float)this->obj->master_obj->attribute_max_amount * modifier;
-        if (modifier * give_amount >
-            max_hold - this->obj->attribute_amount_held) {
+        if (max_hold - this->obj->attribute_amount_held < modifier * give_amount) {
             give_amount = give_amount -
                           (modifier * give_amount -
                            (max_hold - this->obj->attribute_amount_held)) /
