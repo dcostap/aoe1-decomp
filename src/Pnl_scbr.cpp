@@ -398,9 +398,10 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
                 }
             }
             if (delta != 0) {
+                long min_x = this->tab_min_x;
                 this->tab_x += delta;
-                if (this->tab_x < this->tab_min_x) {
-                    this->tab_x = this->tab_min_x;
+                if (this->tab_x < min_x) {
+                    this->tab_x = min_x;
                 } else if (this->tab_x > this->tab_max_x) {
                     this->tab_x = this->tab_max_x;
                 }
@@ -437,9 +438,10 @@ long TScrollBarPanel::mouse_left_move_action(long x, long y, int key, int flags)
                 }
             }
             if (delta != 0) {
+                long min_y = this->tab_min_y;
                 this->tab_y += delta;
-                if (this->tab_y < this->tab_min_y) {
-                    this->tab_y = this->tab_min_y;
+                if (this->tab_y < min_y) {
+                    this->tab_y = min_y;
                 } else if (this->tab_y > this->tab_max_y) {
                     this->tab_y = this->tab_max_y;
                 }

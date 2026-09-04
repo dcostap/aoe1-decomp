@@ -2920,27 +2920,23 @@ void RGE_Check_List::add_node(RGE_Static_Object* object, float dx, float dy, uns
 
 
 RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float max_dist) {
-    float radius_x;
-    float radius_y;
-    short x2;
-    short y1;
-    short x1;
-    short y2;
+    float rx;
+    float ry;
     RGE_Map* map;
     RGE_Check_List* check_list;
     RGE_Check_List* result;
 
-    radius_x = this->master_obj->radius_x;
-    radius_y = this->master_obj->radius_y;
-    if (radius_x <= 0.0f || radius_y <= 0.0f ||
-        this->master_obj->radius_z <= 0.0f) {
+    rx = this->master_obj->radius_x;
+    ry = this->master_obj->radius_y;
+    if (rx <= 0.0f || ry <= 0.0f ||
+        this->master_obj->radius_z <= DAT_00574718) {
         return 0;
     }
 
-    x1 = (short)(this->world_x - 3.0f);
-    y1 = (short)(this->world_y - 3.0f);
-    x2 = (short)(this->world_x + 3.0f);
-    y2 = (short)(this->world_y + 3.0f);
+    short x1 = (short)(int)(this->world_x - DAT_00574748);
+    short y1 = (short)(int)(this->world_y - DAT_00574748);
+    short x2 = (short)(int)(this->world_x - DAT_0057474c);
+    short y2 = (short)(int)(this->world_y - DAT_0057474c);
 
     map = this->owner->world->map;
     check_list = new RGE_Check_List;
@@ -2960,10 +2956,10 @@ RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float max_dist) {
     }
 
     if (y1 <= y2) {
-        int row = (int)y1;
+        short row = y1;
         int row_count = (int)y2 - (int)y1 + 1;
         do {
-            RGE_Tile* tile = map->map_row_offset[row] + (int)x1;
+            RGE_Tile* tile = &map->map_row_offset[row][x1];
             if (x1 <= x2) {
                 int col_count = (int)x2 - (int)x1 + 1;
                 do {
@@ -2973,10 +2969,9 @@ RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float max_dist) {
                         if (object != this) {
                             RGE_Master_Static_Object* object_master =
                                 object->master_obj;
-                            float object_radius_y = object_master->radius_y;
-                            float object_radius_x = object_master->radius_x;
-                            if (object_radius_y > 0.0f &&
-                                object_radius_x > 0.0f) {
+                            float ry2 = object_master->radius_y;
+                            float rx2 = object_master->radius_x;
+                            if (ry2 > 0.0f && rx2 > 0.0f) {
                                 float z = object->world_z - this->world_z;
                                 if (z >= -object_master->radius_z &&
                                     z <= this->master_obj->radius_z) {
@@ -2995,8 +2990,8 @@ RGE_Check_List* RGE_Static_Object::make_object_bounds_list(float max_dist) {
                                         dy = -dy;
                                     }
 
-                                    dx -= object_radius_x + radius_x;
-                                    dy -= object_radius_y + radius_y;
+                                    dx -= rx2 + rx;
+                                    dy -= ry2 + ry;
                                     if (dx < max_dist && dy < max_dist &&
                                         (0.0f <= dy ||
                                          0.0f <= dx)) {
