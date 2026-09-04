@@ -16,7 +16,7 @@
 #include "../include/stat_obj.h"
 #include "../include/tplayer.h"
 #include "../include/tworld.h"
-#include "../include/unit_ai_module.h"
+#include "../include/aiuaimod.h"
 #include "../include/xyz_point.h"
 #include "../include/visible.h"
 #include "../include/victory.h"
@@ -3247,9 +3247,9 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup2(int group, int* i
                                     if ((dx <= 5 && dy <= 5) ||
                                         this->md->player->visible->get_visible(
                                             (int)object->world_x, (int)object->world_y) == 0x0f) {
-                                        // slot +0xC4 receives ObjectMemory::id.
                                         if (commanderIsPriest == 0 ||
-                                            commanderObj->unitAI()->canAttackUnit(object) != 0) {
+                                            commanderObj->unitAI()->canConvert(
+                                                this->importantObjectMemory[timeTK].id) != 0) {
                                             float damage;
                                             float hpOverDamage;
                                             float time;
