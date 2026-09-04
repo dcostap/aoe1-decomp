@@ -1064,7 +1064,7 @@ void Time_Line_Panel::draw_timeline()
 
     if (this->timeline_flag == 0) return;
 
-    if (this->render_area->Lock("tpnl_tml::draw_timeline", 1) == 0) return;
+    if (this->render_area->Lock("tpnl_tml::draw_timeline", 1) != 0) {
 
     this->X_line_pos = this->X_start_line_pos;
     local_38 = 0;
@@ -1253,12 +1253,13 @@ void Time_Line_Panel::draw_timeline()
             } else {
                 error_correction_drop_time_slice_rate++;
                 pop_sample_cntr = 0;
-                if (error_correction_drop_time_slice_rate > drop_rate) time_slice_cntr++;
+                if (error_correction > drop_rate) time_slice_cntr++;
             }
             next_pop_total++;
         } while (next_pop_total < this->num_history_entries);
     }
 
+    }
     this->render_area->Unlock("tpnl_tml::draw_timeline");
 }
 
