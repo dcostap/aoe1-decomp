@@ -13,7 +13,8 @@ extern int FullPalSets;
 extern int AniPalSets;
 // DAT_0062e650 is the unnamed dword adjacent to the proved
 // DAT_0062e64c storage at 0x0062E64C. No canonical symbol owns this dword.
-extern unsigned int DAT_0062e650;
+// PDB names this function-static status value `err` and types it as int.
+extern int DAT_0062e650;
 struct TRANSINFO;
 extern "C" void __cdecl TransDibBlt(
     BITMAPINFO256*, unsigned char*, RECT*, long, long, long, long,

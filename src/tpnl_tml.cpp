@@ -485,29 +485,29 @@ void Time_Line_Panel::record_special_event(
 int Time_Line_Panel::calculate_icon_location(
     Special_Events* param_1, short param_2, uchar param_3)
 {
-    Special_Events* event = param_1;
+    Special_Events* event_ptr = param_1;
     short width;
     short height;
-    int bounds_result;
-    long ok = 1;
-    long start_y = 0;
+    int ret_val;
+    long temp_start_txt_x1 = 1;
+    long temp_start_y = 0;
     long local_4 = 0;
-    long start_x = 0;
+    long temp_start_x = 0;
 
-    event->icon_flag = 0;
+    event_ptr->icon_flag = 0;
 
     if (this->special_events_pic == 0) {
-        ok = 0;
+        temp_start_txt_x1 = 0;
     }
     if (this->special_events_pic->shape_count() == 0) {
-        ok = 0;
+        temp_start_txt_x1 = 0;
     }
     if (this->special_events_pic->shape_count() <
         static_cast<long>(param_2)) {
-        ok = 0;
+        temp_start_txt_x1 = 0;
     }
 
-    if (ok != 0) {
+    if (temp_start_txt_x1 != 0) {
         this->special_events_pic->shape_bounds(param_2, width, height);
         if (width > 0) {
             this->special_events_pic_wid = width;
@@ -517,63 +517,63 @@ int Time_Line_Panel::calculate_icon_location(
         }
     }
 
-    if (ok != 0) {
-        if (this->special_events_pic_hgt > event->intermediate_y_line_segment) {
-            ok = 0;
+    if (temp_start_txt_x1 != 0) {
+        if (this->special_events_pic_hgt > event_ptr->intermediate_y_line_segment) {
+            temp_start_txt_x1 = 0;
         }
 
         int half_width = this->special_events_pic_wid / 2;
-        if (event->X_line_pos + half_width >
+        if (event_ptr->X_line_pos + half_width >
             this->X_line_max_width + this->X_start_line_pos) {
-            ok = 0;
+            temp_start_txt_x1 = 0;
         }
-        half_width = event->X_line_pos - half_width;
+        half_width = event_ptr->X_line_pos - half_width;
         if (half_width < this->X_start_line_pos) {
-            ok = 0;
+            temp_start_txt_x1 = 0;
         }
 
-        if (ok != 0) {
-            start_x = (event->intermediate_y_line_segment / 2 +
-                       event->Y_line_pos * 2) -
+        if (temp_start_txt_x1 != 0) {
+            temp_start_x = (event_ptr->intermediate_y_line_segment / 2 +
+                       event_ptr->Y_line_pos * 2) -
                       this->special_events_pic_hgt / 2;
             local_4 = half_width;
         }
     }
 
-    switch (event->event) {
+    switch (event_ptr->event) {
     case 0:
     {
         int text_x;
-        event->text_length1 = strlen(event->text1);
-        text_x = event->X_line_pos;
-        bounds_result = this->body_font_wid * event->text_length1;
-        if (bounds_result + 2 + text_x >=
+        event_ptr->text_length1 = strlen(event_ptr->text1);
+        text_x = event_ptr->X_line_pos;
+        ret_val = this->body_font_wid * event_ptr->text_length1;
+        if (ret_val + 2 + text_x >=
             this->X_line_max_width + this->X_start_line_pos) {
-            start_y = this->X_line_max_width - bounds_result - 3 +
+            temp_start_y = this->X_line_max_width - ret_val - 3 +
                       this->X_start_line_pos;
         } else {
-            start_y = text_x + 2;
+            temp_start_y = text_x + 2;
         }
-        bounds_result = event->Y_line_pos +
-                        event->intermediate_y_line_segment -
+        ret_val = event_ptr->Y_line_pos +
+                        event_ptr->intermediate_y_line_segment -
                         this->body_font_hgt;
         break;
     }
 
     case 1:
-        event->text_length1 = strlen(event->text1);
-        bounds_result = this->body_font_wid * event->text_length1;
-        if (bounds_result + 2 + event->X_line_pos >=
+        event_ptr->text_length1 = strlen(event_ptr->text1);
+        ret_val = this->body_font_wid * event_ptr->text_length1;
+        if (ret_val + 2 + event_ptr->X_line_pos >=
             this->X_line_max_width + this->X_start_line_pos) {
-            start_y = this->X_line_max_width - bounds_result - 8 +
+            temp_start_y = this->X_line_max_width - ret_val - 8 +
                       this->X_start_line_pos;
         } else {
-            start_y = event->X_line_pos + 2;
+            temp_start_y = event_ptr->X_line_pos + 2;
         }
-        bounds_result = event->Y_line_pos;
-        if (this->body_font_hgt + 2 + bounds_result >=
+        ret_val = event_ptr->Y_line_pos;
+        if (this->body_font_hgt + 2 + ret_val >=
             this->Y_start_line_pos + this->Y_line_max_length) {
-            bounds_result = this->Y_start_line_pos +
+            ret_val = this->Y_start_line_pos +
                             this->Y_line_max_length -
                             this->body_font_hgt - 2;
             goto store_location;
@@ -582,20 +582,20 @@ int Time_Line_Panel::calculate_icon_location(
 
     case 2:
     {
-        event->text_length1 = strlen(event->text1);
-        bounds_result = this->body_font_wid * event->text_length1;
+        event_ptr->text_length1 = strlen(event_ptr->text1);
+        ret_val = this->body_font_wid * event_ptr->text_length1;
         int case2_x;
-        if (bounds_result + 2 + event->X_line_pos >=
+        if (ret_val + 2 + event_ptr->X_line_pos >=
             this->X_line_max_width + this->X_start_line_pos) {
-            case2_x = this->X_line_max_width - bounds_result - 3 +
+            case2_x = this->X_line_max_width - ret_val - 3 +
                       this->X_start_line_pos;
         } else {
-            case2_x = event->X_line_pos + 2;
+            case2_x = event_ptr->X_line_pos + 2;
         }
-        bounds_result = event->Y_line_pos +
-                        event->intermediate_y_line_segment -
+        ret_val = event_ptr->Y_line_pos +
+                        event_ptr->intermediate_y_line_segment -
                         this->body_font_hgt;
-        start_y = case2_x;
+        temp_start_y = case2_x;
         break;
     }
 
@@ -607,27 +607,27 @@ int Time_Line_Panel::calculate_icon_location(
         int body_height;
         int max_length;
         int top;
-        if (static_cast<int>(strlen(event->text1) * this->body_font_wid +
-                             event->X_line_pos) >
+        if (static_cast<int>(strlen(event_ptr->text1) * this->body_font_wid +
+                             event_ptr->X_line_pos) >
             this->X_start_line_pos + this->X_line_max_width) {
-            event->text_length1 =
+            event_ptr->text_length1 =
                 (this->X_start_line_pos + this->X_line_max_width -
-                 event->X_line_pos) / this->body_font_wid;
+                 event_ptr->X_line_pos) / this->body_font_wid;
         } else {
-            event->text_length1 = strlen(event->text1);
+            event_ptr->text_length1 = strlen(event_ptr->text1);
         }
-        if (event->text_length1 > 2) {
-            event->text_length1 = 2;
+        if (event_ptr->text_length1 > 2) {
+            event_ptr->text_length1 = 2;
         }
-        bounds_result = this->special_events_pic_hgt;
+        ret_val = this->special_events_pic_hgt;
         body_height = this->body_font_hgt;
         max_length = this->Y_line_max_length;
         top = this->Y_start_line_pos;
-        if (start_x + body_height + 1 + bounds_result > max_length + top) {
-            start_x = (max_length - body_height) - bounds_result - 1 + top;
+        if (temp_start_x + body_height + 1 + ret_val > max_length + top) {
+            temp_start_x = (max_length - body_height) - ret_val - 1 + top;
         }
-        start_y = local_4;
-        bounds_result = start_x + 1 + bounds_result;
+        temp_start_y = local_4;
+        ret_val = temp_start_x + 1 + ret_val;
         goto store_location;
     }
 
@@ -636,58 +636,58 @@ int Time_Line_Panel::calculate_icon_location(
         int body_height;
         int max_length;
         int top;
-        if (static_cast<int>(strlen(event->text1) * this->body_font_wid +
-                             event->X_line_pos) >
+        if (static_cast<int>(strlen(event_ptr->text1) * this->body_font_wid +
+                             event_ptr->X_line_pos) >
             this->X_start_line_pos + this->X_line_max_width) {
-            event->text_length1 =
+            event_ptr->text_length1 =
                 (this->X_start_line_pos + this->X_line_max_width -
-                 event->X_line_pos) / this->body_font_wid;
+                 event_ptr->X_line_pos) / this->body_font_wid;
         } else {
-            event->text_length1 = strlen(event->text1);
+            event_ptr->text_length1 = strlen(event_ptr->text1);
         }
-        if (event->text_length1 > 5) {
-            event->text_length1 = 5;
+        if (event_ptr->text_length1 > 5) {
+            event_ptr->text_length1 = 5;
         }
-        bounds_result = this->special_events_pic_hgt;
+        ret_val = this->special_events_pic_hgt;
         body_height = this->body_font_hgt;
         max_length = this->Y_line_max_length;
         top = this->Y_start_line_pos;
-        if (max_length + top < start_x + body_height + 1 + bounds_result) {
-            start_x = (max_length - body_height) - bounds_result - 1 + top;
+        if (max_length + top < temp_start_x + body_height + 1 + ret_val) {
+            temp_start_x = (max_length - body_height) - ret_val - 1 + top;
         }
-        start_y = local_4;
-        bounds_result = start_x + 1 + bounds_result;
+        temp_start_y = local_4;
+        ret_val = temp_start_x + 1 + ret_val;
         goto store_location;
     }
     }
 
-    bounds_result -= 2;
+    ret_val -= 2;
     {
         int top = this->Y_start_line_pos;
-        if (top < bounds_result) {
+        if (top < ret_val) {
             int bottom = this->Y_line_max_length + top;
-            if (bottom <= bounds_result) {
-                bounds_result = bottom - this->body_font_hgt - 3;
+            if (bottom <= ret_val) {
+                ret_val = bottom - this->body_font_hgt - 3;
             }
         } else {
-            bounds_result = top + 2;
+            ret_val = top + 2;
         }
     }
     goto store_location;
 
 top_location:
-    bounds_result = event->Y_line_pos + 2;
+    ret_val = event_ptr->Y_line_pos + 2;
     goto store_location;
 
 store_location:
-    event->start_x = local_4;
-    event->start_txt_x1 = start_y;
-    event->start_y = start_x;
-    event->start_txt_y1 = bounds_result;
-    if (ok != 0) {
-        event->icon_flag = 1;
+    event_ptr->start_x = local_4;
+    event_ptr->start_txt_x1 = temp_start_y;
+    event_ptr->start_y = temp_start_x;
+    event_ptr->start_txt_y1 = ret_val;
+    if (temp_start_txt_x1 != 0) {
+        event_ptr->icon_flag = 1;
     }
-    return ok;
+    return temp_start_txt_x1;
 }
 
 void Time_Line_Panel::draw(void) {
