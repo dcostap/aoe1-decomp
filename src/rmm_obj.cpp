@@ -108,8 +108,7 @@ void RGE_RMM_Object_Generator::make_placement_stack(
     Map_Stack& stack, long x, long y, long unused, long range)
 {
     long y1;
-    long last;
-    Map_Stack* local_c;
+    Map_Stack* last;
     int local_4;
 
     stack.next = 0;
@@ -119,7 +118,7 @@ void RGE_RMM_Object_Generator::make_placement_stack(
         x = 0;
         y = 0;
         range = this->map_width - 1;
-        last = this->map_height - 1;
+        y1 = this->map_height - 1;
     } else {
         long min_x = x;
         long min_y = y;
@@ -131,29 +130,29 @@ void RGE_RMM_Object_Generator::make_placement_stack(
         max_y += range;
         x = min_x;
         y = min_y;
-        last = max_y;
+        y1 = max_y;
         range = max_x;
         if (x < 0) x = 0;
         if (y < 0) y = 0;
         if (range >= this->map_width) range = this->map_width - 1;
-        if (last >= this->map_height) last = this->map_height - 1;
+        if (y1 >= this->map_height) y1 = this->map_height - 1;
     }
 
-    local_c = &stack;
-    if (y <= last) {
-        local_4 = last + (1 - y);
+    last = &stack;
+    if (y <= y1) {
+        local_4 = y1 + (1 - y);
         long row = y;
         do {
-            y1 = x;
+            long x1 = x;
             if (x <= range) {
                 do {
-                    if (this->search_map_rows[row][y1] != 0) {
-                        Map_Stack* node = &this->stack_offsets[row][y1];
-                        this->add_stack_node(local_c, node);
-                        local_c = node;
+                    if (this->search_map_rows[row][x1] != 0) {
+                        Map_Stack* node = &this->stack_offsets[row][x1];
+                        this->add_stack_node(last, node);
+                        last = node;
                     }
-                    y1 = y1 + 1;
-                } while (y1 <= range);
+                    x1 = x1 + 1;
+                } while (x1 <= range);
             }
             row = row + 1;
             local_4 = local_4 - 1;
@@ -161,7 +160,7 @@ void RGE_RMM_Object_Generator::make_placement_stack(
     }
 
     int w = range - x - 1;
-    int h = last - y - 1;
+    int h = y1 - y - 1;
     if (w > 1 && h > 1) {
         int count = (h * w) / 4;
         if (count > 0) {
