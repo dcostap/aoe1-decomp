@@ -1652,8 +1652,8 @@ void RGE_Static_Object::save(int file)
 float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
     float result;
     RGE_Map* map;
-    float rx;
     float rz;
+    float rx;
     int tx;
     int ty;
     RGE_Tile* new_tile;
@@ -1850,10 +1850,10 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         (short)((slope_flag + rz - DAT_00574730 - rx - this->world_z) *
                 map->tile_half_height);
 
-    if (movement == 0) {
+    if (master->movement_type == 0) {
         this->shadow_x_offset = this->screen_x_offset;
         this->shadow_y_offset = this->screen_y_offset;
-    } else if (movement == 1) {
+    } else if (master->movement_type == 1) {
         this->shadow_x_offset =
             (short)((rx + rz) * map->tile_half_width);
         this->shadow_y_offset =

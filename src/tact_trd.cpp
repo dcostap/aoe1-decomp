@@ -382,7 +382,7 @@ unsigned char TRIBE_Action_Trade::update()
         case 2:
             if (this->target_obj2 != 0) {
                 if (this->obj->attribute_amount_held > 0.0) {
-                    RGE_Task* trade_task = (RGE_Task*)this->task;
+                    RGE_Task* trade_task = this->task;
                     if (trade_task->work_sound2 != 0) {
                         trade_task->work_sound2->play(1);
                     }

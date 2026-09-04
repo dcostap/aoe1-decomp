@@ -1,0 +1,73 @@
+# Shared-add-only exact candidate for 004F4AA0 taskUngroupedSoldiers.
+# Worker: wrap-alpha-438.
+# Tested commit: c0d8b72b8 (HEAD).
+#
+# 004F4AA0 with this patch: MATCH, 0.0000%, 740/740 bytes,
+# 258/258 instructions, 15/15 ordered calls, 0x1C frame, matching owner,
+# boundary, relocations, and direct targets.
+#
+# Joint focused checks with this patch:
+#   004E9260 TribeStrategyAIModule: MISMATCH, 1146 differing bytes,
+#     879/1231 bytes, 25/28 calls, 0x0C rebuilt frame versus 0x10 original.
+#   004F1600 taskCivilians: unchanged scratch result, MISMATCH, 1670 bytes,
+#     2242/2062 bytes, 41/39 calls; its relocation issue is unchanged.
+#   004FB710 taskResearch: MATCH, 0.0000%, 448/448 bytes, 17/17 calls.
+#   004DE9D0 ManagedArray<int>::add: original compiler-generated donor is
+#     154 bytes and uses direct operator_new/operator_delete. This header
+#     candidate changes its shared source body to call resize.
+#
+# Full one-job closure:
+#   python tools/audit_translation_unit_functions.py --affected-by include/utmarray.h --jobs 1 --output-dir build/worker_wrap_alpha_438/closure_shared_add
+#   build/worker_wrap_alpha_438/closure_shared_add/report.txt
+#   90/90 groups, 2764 normal functions, 2470 validation targets.
+#   2469 matching_result, one matching_regression (004E9260), one
+#   grouped_match_needs_review (004F4AA0). The 004F1600 and 004FB710 rows
+#   remain unchanged. No target source file changed.
+#
+# This candidate is evidence only. It is rejected because it changes the
+# canonical shared add ownership and regresses the exact 004E9260 owner.
+# Do not add a TU-local specialization or a compiler-context shim.
+
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 99ff66a92..582599683 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -183,32 +183,19 @@ int ManagedArray<T>::contains(const T& item) const
+ }
+ 
+ template <class T>
+-int ManagedArray<T>::add(T val)
++int ManagedArray<T>::add(T item)
+ {
+     int i;
+-
+     for (i = 0; i < this->numberValue; i++) {
+         if (i >= this->maximumSizeValue)
+             break;
+-        if (this->value[i] == val)
++        if (this->value[i] == item)
+             return 0;
+     }
+-    if (this->numberValue > this->maximumSizeValue - 1) {
+-        int newSize = this->numberValue + 1;
+-        T* newValue = (T*)operator_new(newSize * sizeof(T));
+-        if (newValue != 0) {
+-            int j;
+-            for (j = 0; j < this->maximumSizeValue; j++) {
+-                if (j >= newSize)
+-                    break;
+-                newValue[j] = this->value[j];
+-            }
+-            operator_delete(this->value);
+-            this->value = newValue;
+-            this->maximumSizeValue = newSize;
+-        }
+-    }
+-    this->value[this->numberValue] = val;
++
++    if (this->numberValue > this->maximumSizeValue - 1)
++        this->resize(this->numberValue + 1);
++    this->value[this->numberValue] = item;
+     this->numberValue++;
+     return 1;
+ }
