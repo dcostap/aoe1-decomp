@@ -105,7 +105,7 @@ int RGE_Master_Static_Object::setup(RGE_Master_Static_Object* src) {
     outline_radius_y = src->outline_radius_y;
     outline_radius_z = src->outline_radius_z;
 
-    for (int i = 0; i < 3; ++i) {
+    for (short i = 0; i < 3; i++) {
         attribute_type_held[i] = src->attribute_type_held[i];
         attribute_amount_held[i] = src->attribute_amount_held[i];
         attribute_flag[i] = src->attribute_flag[i];

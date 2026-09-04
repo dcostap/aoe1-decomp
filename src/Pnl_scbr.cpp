@@ -84,11 +84,10 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
         this->up_rect.left = this->pnl_x + 2;
         this->up_rect.bottom = track_bottom;
 
-        const int down_left = (this->pnl_wid + this->pnl_x - this->pnl_hgt) + 2;
-        this->down_rect.left = down_left;
-        this->up_rect.right = (this->pnl_x + 2) + this->pnl_hgt - 5;
+        this->down_rect.left = (this->pnl_wid + this->pnl_x - this->pnl_hgt) + 2;
+        this->up_rect.right = this->up_rect.left + this->pnl_hgt - 5;
         this->down_rect.bottom = track_bottom;
-        this->down_rect.right = down_left + this->pnl_hgt - 5;
+        this->down_rect.right = this->down_rect.left + this->pnl_hgt - 5;
 
         this->tab_rect.top = base_top;
         this->tab_rect.bottom = track_bottom;
@@ -98,33 +97,30 @@ void TScrollBarPanel::set_rect(long param_1, long param_2, long param_3, long pa
         this->bottom_rect.bottom = track_bottom;
 
         this->tab_min_x = this->up_rect.right + 1;
-        this->tab_max_x = (down_left - this->pnl_hgt) + 4;
+        this->tab_max_x = (this->down_rect.left - this->pnl_hgt) + 4;
         this->tab_x = this->tab_min_x;
     } else {
-        const long base_left = this->pnl_x + 2;
-        const long down_top = (this->pnl_hgt + this->pnl_y - this->pnl_wid) + 2;
-        const long track_right = this->pnl_x + this->pnl_wid - 5;
-
-        this->up_rect.left = base_left;
+        this->up_rect.left = this->pnl_x + 2;
         this->up_rect.top = this->pnl_y + 2;
-        this->up_rect.right = track_right;
-        this->up_rect.bottom = (this->pnl_y + 2) + this->pnl_wid - 5;
+        this->up_rect.right = this->up_rect.left + this->pnl_wid - 5;
+        this->up_rect.bottom = this->up_rect.top + this->pnl_wid - 5;
 
-        this->down_rect.left = base_left;
-        this->down_rect.top = down_top;
-        this->down_rect.right = track_right;
-        this->down_rect.bottom = down_top + this->pnl_wid - 5;
+        this->down_rect.left = this->up_rect.left;
+        this->down_rect.top = (this->pnl_hgt + this->pnl_y - this->pnl_wid) + 2;
+        this->down_rect.right = this->up_rect.right;
+        this->down_rect.bottom = this->down_rect.top + this->pnl_wid - 5;
 
-        this->tab_rect.left = base_left;
-        this->top_rect.left = base_left;
-        this->bottom_rect.left = base_left;
-        this->tab_max_y = (down_top - this->pnl_wid) + 4;
-        this->tab_rect.right = track_right;
-        this->top_rect.right = track_right;
-        this->bottom_rect.right = track_right;
+        this->tab_rect.left = this->up_rect.left;
+        this->top_rect.left = this->up_rect.left;
+        this->bottom_rect.left = this->up_rect.left;
+        const long tab_min = this->up_rect.bottom + 1;
+        this->tab_max_y = (this->down_rect.top - this->pnl_wid) + 4;
+        this->tab_rect.right = this->up_rect.right;
+        this->top_rect.right = this->up_rect.right;
+        this->bottom_rect.right = this->up_rect.right;
 
-        this->tab_min_y = this->up_rect.bottom + 1;
-        this->tab_y = this->tab_min_y;
+        this->tab_min_y = tab_min;
+        this->tab_y = tab_min;
     }
 
     this->calc_item_rects();
