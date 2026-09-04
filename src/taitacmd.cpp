@@ -749,10 +749,10 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
             }
         }
         inUseValue = 0;
-        if (firstTime == 1) {
-            originalHitPointsValue = taskID;
-            originalUnitNumberValue = numberUnitsValue;
-        }
+        if (firstTime != 1)
+            goto return_zero_tail;
+        originalHitPointsValue = taskID;
+        originalUnitNumberValue = numberUnitsValue;
         return 1;
     }
 
@@ -869,7 +869,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         } while (taskID < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            goto return_one_tail;
+            goto return_zero_tail;
         goto store_return_one_mid;
     }
 
@@ -906,7 +906,7 @@ int TacticalAIGroup::task(TribeTacticalAIModule* tactical, TribeMainDecisionAIMo
         } while (taskID < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            goto return_one_tail;
+            goto return_zero_tail;
         goto store_return_one;
     }
 
@@ -967,7 +967,7 @@ case20_next:
         } while (taskID < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            goto return_one_tail;
+            goto return_zero_tail;
         taskID = stored20;
         goto store_return_one_zero_waypoints;
     }
@@ -1079,7 +1079,7 @@ case20_next:
         }
         inUseValue = 1;
         if (firstTime != 1)
-            goto return_one_tail;
+            goto return_zero_tail;
         taskID = stored;
         goto store_return_one_zero_waypoints;
     }
@@ -1127,7 +1127,7 @@ case20_next:
         } while (taskID < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            goto return_one_tail;
+            goto return_zero_tail;
         goto store_return_one_mid;
     }
 
@@ -1169,7 +1169,7 @@ case20_next:
         } while (taskID < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            return 1;
+            goto return_zero_tail;
 
 store_return_one_mid:
         originalHitPointsValue = oHP;
@@ -1180,17 +1180,16 @@ store_return_one_mid:
     case 11: {
         int* unitp;
         RGE_Static_Object* obj;
-        TribeTacticalAIModule* tt = tactical;
         int total = 0;
-        tt->logGroupDebug(idValue, s_log_49);
+        tactical->logGroupDebug(idValue, s_log_49);
         taskID = 0;
         unitp = unitsValue;
         do {
             if (*unitp != -1) {
-                tt->logGroupDebug(idValue, s_log_50, *unitp);
+                tactical->logGroupDebug(idValue, s_log_50, *unitp);
                 obj = md->object(*unitp);
                 if (obj == 0 || obj->unitAI() == 0) {
-                    tt->logGroupDebug(idValue, s_log_51, *unitp);
+                    tactical->logGroupDebug(idValue, s_log_51, *unitp);
                     removeUnitByIndex(taskID, md);
                 } else {
                     oHP = ((int)obj->hp);
@@ -1198,13 +1197,13 @@ store_return_one_mid:
                     total += oHP;
                     if (busyOK == 0 && obj->unitAI()->currentAction() != -1) {
                         int busyAction = obj->unitAI()->currentAction();
-                        tt->logGroupDebug(idValue, s_log_52, *unitp, busyAction);
+                        tactical->logGroupDebug(idValue, s_log_52, *unitp, busyAction);
                     } else if (*unitp == commanderValue) {
-                        tt->logGroupDebug(idValue, s_log_53, *unitp);
-                        tt->taskWaterTrader(*unitp, targetValue);
+                        tactical->logGroupDebug(idValue, s_log_53, *unitp);
+                        tactical->taskWaterTrader(*unitp, targetValue);
                     } else {
-                        tt->logGroupDebug(idValue, s_log_54, *unitp);
-                        tt->taskDefender(*unitp, commanderValue, obj->master_obj->los * 0.5f, 99);
+                        tactical->logGroupDebug(idValue, s_log_54, *unitp);
+                        tactical->taskDefender(*unitp, commanderValue, obj->master_obj->los * 0.5f, 99);
                     }
                 }
             }
@@ -1213,7 +1212,7 @@ store_return_one_mid:
         } while (taskID < 40);
         inUseValue = 1;
         if (firstTime != 1)
-            goto return_one_tail;
+            goto return_zero_tail;
         originalHitPointsValue = total;
         originalUnitNumberValue = numberUnitsValue;
         return 1;
@@ -1267,9 +1266,6 @@ store_return_one_mid:
         originalHitPointsValue = taskID;
         originalUnitNumberValue = numberUnitsValue;
     }
-    return 1;
-
-return_one_tail:
     return 1;
 
 return_zero_tail:
