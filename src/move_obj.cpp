@@ -1342,8 +1342,8 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
 
     Path* path = &this->pathValue;
     if (found == 0 && path->numberOfWaypoints() == 1) {
-        dX = (float)floor((double)this->world_x) - DAT_00570b80;
         newY = (float)floor((double)this->world_y) - DAT_00570b80;
+        dX = (float)floor((double)this->world_x) - DAT_00570b80;
         if (pathSystem.passable(this, dX, newY, 1)) {
             if (this->world_x - floor((double)this->world_x) == DAT_00570b90 &&
                 this->world_y - floor((double)this->world_y) == DAT_00570b90) {

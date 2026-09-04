@@ -1,0 +1,120 @@
+# Exact candidate for 004F0D70 addObject.
+# Target result: MATCH, 0.0000%, 798/798 bytes, 11/11 ordered calls.
+# Owner, boundaries, and relocations are valid.
+#
+# Tested main commit: d7a6e4bcc.
+# Target check: python tools/check_function.py --va 004F0D70 --detail full
+#   --call-map --stack-map --rebuild -> MATCH, 0.0000%, 798 bytes.
+# Closure check: python tools/audit_translation_unit_functions.py --group
+#   taitacmd --jobs 1 --output-dir build/worker_wrap_alpha_264/shared_add_resize
+#   kept all 185 registered exact-validation owners MATCH.
+# Affected-header closure: python tools/audit_translation_unit_functions.py
+#   --affected-by include/utmarray.h --jobs 1 --output-dir
+#   build/worker_wrap_alpha_264/affected_utmarray_exact -> 90 groups,
+#   2468 matching results, and one matching regression: 004E9260
+#   taistrmd::TribeStrategyAIModule changed from MATCH to MISMATCH with
+#   1146 differing bytes. The report also includes 85 grouped mismatches and
+#   54 boundary problems among nonmatching or nonregistered rows.
+#
+# Review blocker: the header change is not canonical. Original 004DE9D0 add
+# proves that ManagedArray<int>::add uses direct operator_new/operator_delete,
+# while this candidate changes it to call resize. The target's six direct
+# resize calls are therefore a caller-context fact, not proof that add has a
+# different shared body. Do not retain this patch without a joint repair for
+# 004E9260, a reviewed shared ManagedArray ABI repair, and complete closure
+# review.
+#
+# Apply with:
+#   git apply decomp_notes/candidates/004F/004F0D70_exact_candidate.patch
+
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 99ff66a92..86991520a 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -193,21 +193,8 @@ int ManagedArray<T>::add(T val)
+         if (this->value[i] == val)
+             return 0;
+     }
+-    if (this->numberValue > this->maximumSizeValue - 1) {
+-        int newSize = this->numberValue + 1;
+-        T* newValue = (T*)operator_new(newSize * sizeof(T));
+-        if (newValue != 0) {
+-            int j;
+-            for (j = 0; j < this->maximumSizeValue; j++) {
+-                if (j >= newSize)
+-                    break;
+-                newValue[j] = this->value[j];
+-            }
+-            operator_delete(this->value);
+-            this->value = newValue;
+-            this->maximumSizeValue = newSize;
+-        }
+-    }
++    if (this->numberValue > this->maximumSizeValue - 1)
++        this->resize(this->numberValue + 1);
+     this->value[this->numberValue] = val;
+     this->numberValue++;
+     return 1;
+diff --git a/src/taitacmd.cpp b/src/taitacmd.cpp
+index 80001d911..d625ad011 100644
+--- a/src/taitacmd.cpp
++++ b/src/taitacmd.cpp
+@@ -3105,6 +3105,7 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
+ {
+     short group = obj->master_obj->object_group;
+     int id;
++    int number;
+     int i;
+     ManagedArray<int>* list;
+ 
+@@ -3121,8 +3122,10 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
+                 return;
+             if (this->md->player->world->difficultyLevel() >= 4)
+                 return;
++#pragma inline_depth(0)
+             // This call stays out of line. Later add calls inline.
+             this->artifacts.add(obj->id);
++#pragma inline_depth(255)
+             return;
+         }
+ 
+@@ -3134,8 +3137,12 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
+         if (obj->master_obj->object_group == 0x14) {
+             id = obj->id;
+             list = &this->transportBoats;
++#pragma inline_depth(0)
+             if (list->contains(id) != 1) {
+-                (*list)[list->numberValue] = id;
++                number = list->numberValue;
++                if (number > list->maximumSizeValue - 1)
++                    list->resize(number + 1);
++                list->value[list->numberValue] = id;
+                 list->numberValue++;
+             }
+         }
+@@ -3144,7 +3151,10 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
+             id = obj->id;
+             list = &this->warBoats;
+             if (list->contains(id) != 1) {
+-                (*list)[list->numberValue] = id;
++                number = list->numberValue;
++                if (number > list->maximumSizeValue - 1)
++                    list->resize(number + 1);
++                list->value[list->numberValue] = id;
+                 list->numberValue++;
+             }
+         }
+@@ -3154,8 +3164,12 @@ void TribeTacticalAIModule::addObject(RGE_Static_Object* obj)
+             list = &this->fishingBoats;
+             if (list->contains(id) == 1)
+                 return;
+-            (*list)[list->numberValue] = id;
++            number = list->numberValue;
++            if (number > list->maximumSizeValue - 1)
++                list->resize(number + 1);
++            list->value[list->numberValue] = id;
+             list->numberValue++;
++#pragma inline_depth(255)
+         }
+     }
+ }
