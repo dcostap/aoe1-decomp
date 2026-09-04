@@ -846,7 +846,7 @@ int TRIBE_Combat_Object::higher_check_for_cliff(
             if (angle == -1.0f) {
                 angle = atan2(target->world_y - this->world_y,
                               target->world_x - this->world_x);
-                if (DAT_00574c98 > angle) angle -= DAT_00574ca4;
+                if (angle < 0.0f) angle -= DAT_00574ca4;
             }
 
             const int facet = cliff->facet;
@@ -858,9 +858,9 @@ int TRIBE_Combat_Object::higher_check_for_cliff(
                     TRIBE_Cliff_Higher_Check_Table[facet].line_y2 + y2)) {
                 if ((facet >= 0x19 ||
                      angle < TRIBE_Cliff_Higher_Check_Table[facet].from_angle1 ||
-                     TRIBE_Cliff_Higher_Check_Table[facet].to_angle1 > angle) &&
+                     angle > TRIBE_Cliff_Higher_Check_Table[facet].to_angle1) &&
                     (angle < TRIBE_Cliff_Higher_Check_Table[facet].from_angle2 ||
-                     TRIBE_Cliff_Higher_Check_Table[facet].to_angle2 > angle)) {
+                     angle > TRIBE_Cliff_Higher_Check_Table[facet].to_angle2)) {
                     --direction;
                 } else {
                     ++direction;
