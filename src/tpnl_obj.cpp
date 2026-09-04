@@ -587,19 +587,18 @@ void TRIBE_Panel_Object::draw()
                 }
 
                 if (this->game_obj->master_obj->id == 0x2d) {
-                    int resource_amount =
+                    this->draw_item(
+                        row, item_type, ValueTypeNumber,
                         (int)(this->game_obj->owner->attributes[9] -
-                              DAT_00576D84);
+                              DAT_00576D84),
+                        0);
+                }
+                if (this->game_obj->master_obj->id != 0x2d) {
                     this->draw_item(
                         row, item_type, ValueTypeNumber,
-                        resource_amount, 0);
-                } else {
-                    int resource_amount =
                         (int)(this->game_obj->attribute_amount_held -
-                              DAT_00576D84);
-                    this->draw_item(
-                        row, item_type, ValueTypeNumber,
-                        resource_amount, 0);
+                              DAT_00576D84),
+                        0);
                 }
                 ++row;
             }
