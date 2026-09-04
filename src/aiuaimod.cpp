@@ -655,7 +655,8 @@ int UnitAIModule::update(unsigned long param_1)
         return 0;
     }
 
-    if (this->objectValue->groupCommanderValue == this->objectValue->id) {
+    int groupCommanderValue = this->objectValue->groupCommanderValue;
+    if (groupCommanderValue == this->objectValue->id) {
         this->updateGroup(param_1);
     }
 
