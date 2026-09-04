@@ -32,8 +32,10 @@ TEasy_Panel::TEasy_Panel(char* name)
     init_vars();
 }
 
-long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long info_id, int use_area_size,
-                        long x_in, long y_in, long wid_in, long hgt_in, int allow_shadow)
+long TEasy_Panel::setup(TDrawArea* render_area_in, TPanel* parent_in,
+                        char* info_file_name_in, long resource_file_id,
+                        int full_screen, long x_in, long y_in, long wid_in,
+                        long hgt_in, int allow_shadow_area_in)
 {
     long x;
     long wid;
@@ -90,14 +92,14 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
     char popup_info_file_name_in[260];
 
     own_mem = -1;
-    this->allow_shadow_area = allow_shadow;
-    set_info_file(info_file, info_id);
-    if (use_area_size != 0) {
+    this->allow_shadow_area = allow_shadow_area_in;
+    set_info_file(info_file_name_in, resource_file_id);
+    if (full_screen != 0) {
         x = 0;
         y_in = 0;
-        if (area != 0) {
-            wid = area->Width;
-            hgt_in = area->Height;
+        if (render_area_in != 0) {
+            wid = render_area_in->Width;
+            hgt_in = render_area_in->Height;
         } else {
             wid = 0;
             hgt_in = 0;
@@ -105,20 +107,20 @@ long TEasy_Panel::setup(TDrawArea* area, TPanel* parent, char* info_file, long i
     } else {
         x = x_in;
         wid = wid_in;
-        if (wid > 0 && hgt_in > 0 && area != 0) {
+        if (wid > 0 && hgt_in > 0 && render_area_in != 0) {
             if (x == -1) {
-                x = area->Width / 2 - wid / 2;
+                x = render_area_in->Width / 2 - wid / 2;
             }
             if (y_in == -1) {
-                y_in = area->Height / 2 - hgt_in / 2;
+                y_in = render_area_in->Height / 2 - hgt_in / 2;
             }
         }
     }
-    if (TPanel::setup(area, parent, x, y_in, wid, hgt_in, 0) == 0) {
+    if (TPanel::setup(render_area_in, parent_in, x, y_in, wid, hgt_in, 0) == 0) {
         return 0;
     }
     this->set_ideal_size(wid, hgt_in);
-    if (use_area_size != 0) {
+    if (full_screen != 0) {
         this->set_positioning((TPanel::PositionMode)1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     unsigned char* data = 0;

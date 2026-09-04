@@ -8283,6 +8283,24 @@ end:
     return;
 }
 
+static inline int appendSoldierGroupID(ManagedArray<int>& array, int item)
+{
+    int i;
+    for (i = 0; i < array.numberValue; ++i) {
+        if (i >= array.maximumSizeValue)
+            break;
+        if (array.value[i] == item)
+            return 0;
+    }
+    if (array.numberValue > array.maximumSizeValue - 1) {
+        int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+        (array.*resize)(array.numberValue + 1);
+    }
+    array.value[array.numberValue] = item;
+    ++array.numberValue;
+    return 1;
+}
+
 int TribeTacticalAIModule::calculatePriority(float value) {
     int priority;
 
@@ -8297,13 +8315,14 @@ int TribeTacticalAIModule::calculatePriority(float value) {
 void TribeTacticalAIModule::setupSoldierGroups()
 {
     ManagedArray<int> groupsToRemove;
+    int numPotentialAGroups;
     int newArtifact;
     int i;
     int numAGroups;
     int numDGroups;
     int numEGroups;
     int local_24;
-    int numPotentialAGroups;
+    int removalIndex;
     TacticalAIGroup* sentinel;
     TacticalAIGroup* group;
 
@@ -8311,7 +8330,7 @@ void TribeTacticalAIModule::setupSoldierGroups()
     sentinel = &this->groups;
     while (group != sentinel && group != 0) {
         if (group->numberUnits() == 0) {
-            groupsToRemove.add(group->id());
+            appendSoldierGroupID(groupsToRemove, group->id());
         }
         group = group->next;
     }
@@ -8325,16 +8344,16 @@ void TribeTacticalAIModule::setupSoldierGroups()
         group = this->groups.next;
         while (group != sentinel && group != 0) {
             if (group->type() == 100) {
-                groupsToRemove.add(group->id());
+                appendSoldierGroupID(groupsToRemove, group->id());
             }
             group = group->next;
         }
     }
 
-    numAGroups = 0;
-    while (numAGroups < groupsToRemove.numberValue) {
-        this->removeGroup(groupsToRemove[numAGroups]);
-        ++numAGroups;
+    removalIndex = 0;
+    while (removalIndex < groupsToRemove.numberValue) {
+        this->removeGroup(groupsToRemove[removalIndex]);
+        ++removalIndex;
     }
 
     if (this->md->informationAI.fullyExploredZone(this->soldiers[0]) == 0) {
@@ -8349,14 +8368,14 @@ void TribeTacticalAIModule::setupSoldierGroups()
     this->numberUngroupedArtifacts();
 
     while (this->workingArea.numberValue > 0) {
-        int object_id = this->workingArea[numAGroups];
+        int object_id = this->workingArea[removalIndex];
         RGE_Static_Object* object = this->md->object(object_id);
         if (object == 0) {
             this->workingArea.remove(object_id);
         }
         else {
             RGE_Static_Object* retreat = this->md->object(
-                -1, -1, 0x6D, -1, -1, -1, -1, -1, -1, -1);
+                -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
             if (retreat == 0) {
                 this->workingArea.remove(object_id);
             }
