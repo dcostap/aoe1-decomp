@@ -257,7 +257,6 @@ void TRIBE_Action_Hunt::set_state(unsigned char param_1)
 
 unsigned char TRIBE_Action_Hunt::update()
 {
-    float give_amount;
     if (this->targetID != -1 && this->obj->owner->world->object(this->targetID) == 0)
         this->set_target_obj(0);
     if (this->target2ID != -1 && this->obj->owner->world->object(this->target2ID) == 0)
@@ -340,6 +339,7 @@ unsigned char TRIBE_Action_Hunt::update()
 state_default:
         this->set_state(3); return 0;
     case 7: {
+        float give_amount;
         float modifier;
         float max_hold;
         if (this->target_obj == 0) {
@@ -368,11 +368,11 @@ state_default:
                  (max_hold - this->obj->attribute_amount_held)) / modifier;
         this->target_obj->set_attribute_amount(-give_amount, 1, 1);
         this->obj->set_attribute_amount(give_amount, 1, 0);
-        if (this->obj->attribute_amount_held < max_hold) {
-            if (this->target_obj->attribute_amount_held > DAT_00575150)
-                return 0;
+        if (this->obj->attribute_amount_held >= max_hold ||
+            this->target_obj->attribute_amount_held <= DAT_00575150) {
+            this->set_state(8);
+            return 0;
         }
-        this->set_state(8);
         break;
     }
     case 8:
@@ -402,8 +402,8 @@ state_default:
                 }
                 if (this->task->work_sound2 != 0) this->task->work_sound2->play(1);
                 { short attr = this->task->attribute_type3; if (attr == -1) attr = this->obj->attribute_type_held;
-                  this->obj->owner->add_attribute_num(attr, this->obj->attribute_amount_held, 0); }
-                this->obj->owner->trackUnitGather(this->obj->id, this->obj->id, (int)this->obj->attribute_amount_held);
+                  this->obj->owner->add_attribute_num(attr, this->obj->attribute_amount_held, 0);
+                  this->obj->owner->trackUnitGather(this->obj->id, attr, (int)this->obj->attribute_amount_held); }
                 this->obj->set_attribute(-1, 0.0f);
                 if (this->target_obj != 0) { this->set_target_obj2(0); this->set_state(4); return 0; }
                 if (this->target_x != -1.0f && this->target_y != -1.0f) { this->set_state(11); return 0; }
