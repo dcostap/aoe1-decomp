@@ -839,22 +839,24 @@ long TRIBE_Panel_Object::handle_idle()
         return 0;
     }
 
-    int changed = 0;
-    int do_buttons = 0;
+    RGE_Action_Object* object;
+    int changed;
+    int do_buttons;
     short cur_val;
     short work_target;
     short orig_val;
     float cur_fval;
     short work_type;
-    TRIBE_Building_Object* bldg;
     short progress_value;
     float orig_fval;
     char name[100];
+    TRIBE_Building_Object* bldg;
 
-    {
-    RGE_Action_Object* object =
-        static_cast<RGE_Action_Object*>(this->game_obj);
-    if (object == 0) goto finish;
+    changed = 0;
+    do_buttons = 0;
+
+    object = static_cast<RGE_Action_Object*>(this->game_obj);
+    if (object == 0) return 0;
 
     if (object->owner != this->save_owner) {
         changed = 1;
@@ -891,11 +893,9 @@ long TRIBE_Panel_Object::handle_idle()
 identity_done:
 
     if (!changed) {
-        unsigned char type = static_cast<RGE_Action_Object*>(this->game_obj)
-                                 ->master_obj->master_type;
+        unsigned char type = object->master_obj->master_type;
         if (type >= 0x46 && type != 0x5A) {
-            if (static_cast<RGE_Action_Object*>(this->game_obj)->have_action() !=
-                this->save_have_action) {
+            if (object->have_action() != this->save_have_action) {
                 changed = 1; do_buttons = 1;
             }
             if (!changed) {
@@ -921,9 +921,11 @@ identity_done:
         }
     }
 
-    if (changed && do_buttons) goto finish;
+    if (changed) {
+        if (do_buttons) goto update;
+    }
     bldg = static_cast<TRIBE_Building_Object*>(this->game_obj);
-    if (bldg->master_obj->master_type != 'P') goto finish;
+    if (bldg->master_obj->master_type != 'P') goto update;
     if (bldg->object_state != this->save_object_state) {
         changed = 1; do_buttons = 1;
     }
@@ -964,7 +966,6 @@ identity_done:
     }
 name_same:
     ;
-    }
 finish:
     if ((!changed || !do_buttons) && this->game_obj->master_obj->id == 0x46) {
         if ((int)this->player->attributes[11] != this->save_pop ||
@@ -981,6 +982,7 @@ finish:
             changed = 1;
         }
     }
+update:
     if (changed) {
         if (this->need_redraw == 0)
             this->set_redraw(TPanel::RedrawNormal);
