@@ -654,13 +654,13 @@ typedef unsigned long ulong;
 
 int TribeCivilianUnitAIModule::processNotify(NotifyEvent* event, ulong param_2)
 {
-    switch (event->mType - 0x1f4) {
-    case 0x1b:
+    switch (event->mType) {
+    case 0x20f:
         if (this->objectValue->owner->world->difficultyLevel() >= 3) {
             return 2;
         }
         // Intentional fall-through: 0x20f is the high-priority spelling of 0x1f4.
-    case 0: {
+    case 0x1f4: {
         if (event->p2 <= 0) {
             this->objectValue->owner->notify(
                 this->objectValue->id, this->objectValue->id, 0x209,
@@ -796,7 +796,7 @@ already_attacking:
         return 3;
     }
 
-    case 6:
+    case 0x1fa:
         if (this->currentActionValue == event->p1) {
             this->removeCurrentTarget();
             if (actionFile != 0) {
@@ -808,14 +808,14 @@ already_attacking:
                 }
                 fprintf(actionFile, "#%d call stopObject %s %d\n", id,
                         "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x3aa);
-                this->stopObject(1);
-                this->notifyCommander(event);
-                return 2;
             }
+            this->stopObject(1);
+            this->notifyCommander(event);
+            return 2;
         }
         break;
 
-    case 5:
+    case 0x1f9:
         if (this->currentActionValue == event->p1) {
             this->removeCurrentTarget();
             if (actionFile != 0) {
@@ -827,15 +827,15 @@ already_attacking:
                 }
                 fprintf(actionFile, "#%d call stopObject %s %d\n", id,
                         "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x3b9);
-                this->stopObject(1);
-                this->notifyCommander(event);
-                return 2;
             }
+            this->stopObject(1);
+            this->notifyCommander(event);
+            return 2;
         }
         break;
 
-    case 7:
-    case 0xe:
+    case 0x1fb:
+    case 0x202:
         if (this->currentActionValue == 0x265) {
             int type = this->currentTargetTypeValue;
             if (type == -1) {
@@ -1036,22 +1036,21 @@ already_attacking:
             }
         }
 
-        if (event->mType == 0x202) {
-            return 2;
-        }
-        this->removeCurrentTarget();
-        if (actionFile != 0) {
-            int id;
-            if (this->objectValue != 0) {
-                id = this->objectValue->id;
-            } else {
-                id = -1;
+        if (event->mType != 0x202) {
+            this->removeCurrentTarget();
+            if (actionFile != 0) {
+                int id;
+                if (this->objectValue != 0) {
+                    id = this->objectValue->id;
+                } else {
+                    id = -1;
+                }
+                fprintf(actionFile, "#%d call stopObject %s %d\n", id,
+                        "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x4cc);
             }
-            fprintf(actionFile, "#%d call stopObject %s %d\n", id,
-                    "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp", 0x4cc);
+            this->stopObject(1);
+            this->notifyCommander(event);
         }
-        this->stopObject(1);
-        this->notifyCommander(event);
         break;
 
     default:
