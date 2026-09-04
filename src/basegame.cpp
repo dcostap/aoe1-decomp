@@ -1056,8 +1056,6 @@ extern int DDlogAutoFlush;
 extern int debug_log_lock;
 extern int do_debug_random;
 extern int debugActions;
-extern int resend_adj1;
-extern int resend_adj2;
 extern int logDebugID;
 extern int speed_val1;
 extern int speed_val2;

@@ -7,6 +7,7 @@
 
 class RGE_Communications_Speed {
     friend class TRIBE_Screen_Game;
+    friend class TCommunications_Handler;
 
 private:
     char TBuff[255];                            // +0x00

@@ -957,6 +957,9 @@ unsigned long comm_drop_count = 0;
 unsigned long comm_resent_bytes = 0;
 unsigned long comm_resend_last_time = 0;
 unsigned long comm_highest_acknowledged_turn = 0;
+// C++ globals named by the original resend option references.
+int resend_adj1 = 0;
+int resend_adj2 = 0;
 int comm_resend_min_delay = 0;
 int comm_resend_latency_base = 0;
 float comm_resend_rate_limit = 0.0f;

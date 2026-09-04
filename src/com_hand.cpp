@@ -3331,72 +3331,84 @@ int TCommunications_Handler::PurgeAcknowledgedStoredMessages()
 
 int TCommunications_Handler::SendStoredMessages()
 {
+    static unsigned char resendMessagesInitialized = 0;
+    static unsigned long lastResendTime = 0;
+    static unsigned long lastResendBytes = 0;
+    char* error_text;
+    {
+    RESENDER* resend;
+    unsigned int* dest_map;
     unsigned long now;
     unsigned int items;
     unsigned long oldest_message_elapsed;
     unsigned int oldest_message_slot;
+    unsigned int max_dest_delay;
+    unsigned int player;
     long hr;
     MSGFORMAT_MISSING_PLAYER m;
-    unsigned int slot;
-    unsigned int max_dest_delay;
+    RESENDER* selected;
     unsigned int* map;
+    unsigned int* dest;
+    unsigned long* dco;
+    unsigned int slot;
     unsigned int count;
     unsigned int elapsed;
-    char* error_text;
+    unsigned int limit;
+    unsigned long send_start;
+    unsigned long send_elapsed;
+    char* name;
 
     if (this->RGE_Guaranteed_Delivery == 0) {
         error_text = "!RGEGTD SendStore";
         goto no_transmit;
     }
 
-    if ((comm_messages_initialized & 1) == 0) {
-        comm_messages_initialized |= 1;
-        comm_resend_last_time = debug_timeGetTime(com_hand_source_path, 0xE00);
+    if ((resendMessagesInitialized & 1) == 0) {
+        resendMessagesInitialized |= 1;
+        lastResendTime = debug_timeGetTime(com_hand_source_path, 0xE00);
     }
 
     now = debug_timeGetTime(com_hand_source_path, 0xE02);
-    if (!(static_cast<float>(comm_resent_bytes) / (now - comm_resend_last_time) <=
-          comm_resend_rate_limit)) {
+    if (!(static_cast<float>(lastResendBytes) / (now - lastResendTime) <=
+          DAT_0056f210)) {
         return 0;
     }
 
-    comm_resend_last_time = now;
-    comm_resent_bytes = 0;
+    lastResendTime = now;
+    lastResendBytes = 0;
     items = 0;
     oldest_message_elapsed = 0;
     oldest_message_slot = 0;
     this->PurgeAcknowledgedStoredMessages();
 
-    {
-    RESENDER* table = this->Resend;
+    resend = this->Resend;
+    dest_map = resend->DestMap + 1;
     slot = 0;
     max_dest_delay = 0;
     do {
-        RESENDER* entry = &table[slot];
-        if (entry->Serial != 0) {
+        if (resend->Serial != 0) {
             ++items;
-            elapsed = now - entry->TimeSent;
+            elapsed = now - resend->TimeSent;
             if (elapsed > oldest_message_elapsed) {
                 oldest_message_elapsed = elapsed;
                 oldest_message_slot = slot;
             }
 
-            map = entry->DestMap + 1;
+            map = dest_map;
             count = this->MaxGamePlayers;
-            if (count >= 1) {
-                do {
-                    unsigned int free_delay = 0xF0 - *map;
-                    if (free_delay > max_dest_delay) {
-                        max_dest_delay = free_delay;
-                    }
-                    ++map;
-                    --count;
-                } while (count != 0);
+            while (count != 0) {
+                unsigned int free_delay = 0xF0 - *map;
+                if (free_delay > max_dest_delay) {
+                    max_dest_delay = free_delay;
+                }
+                ++map;
+                --count;
             }
         }
         ++slot;
+        ++resend;
+        dest_map += 0xE;
     } while (slot <= 0x1F5);
-    }
 
     if (items == 0) {
         return 0;
@@ -3411,17 +3423,16 @@ int TCommunications_Handler::SendStoredMessages()
             return 0;
         }
     } else {
-        unsigned int limit = comm_resend_latency_base + this->Speed->GetHighestLatencyMsec() * 2;
-        if (limit < comm_resend_min_delay + 500U) {
-            limit = comm_resend_min_delay + 500U;
+        unsigned int limit = resend_adj2 + this->Speed->HighestLatencyMsec * 2;
+        if (limit < resend_adj1 + 500U) {
+            limit = resend_adj1 + 500U;
         }
         if (oldest_message_elapsed < limit) {
             return 0;
         }
     }
 
-    {
-    RESENDER* selected = &this->Resend[oldest_message_slot];
+    selected = &this->Resend[oldest_message_slot];
     selected->TimeSent =
         debug_timeGetTime(com_hand_source_path, 0xE55);
 
@@ -3429,9 +3440,9 @@ int TCommunications_Handler::SendStoredMessages()
         return this->ResentToOther;
     }
 
-    unsigned int* dest = selected->DestMap + 1;
-    unsigned long* dco = this->PlayerOptions.dcoID + 1;
-    unsigned int player = 1;
+    dest = selected->DestMap + 1;
+    dco = this->PlayerOptions.dcoID + 1;
+    player = 1;
 
     do {
         if (dest[0] != 0 && this->IsPlayerHuman(player) != 0 &&
@@ -3450,12 +3461,12 @@ int TCommunications_Handler::SendStoredMessages()
                 goto no_transmit;
             }
 
-            unsigned long send_start = debug_timeGetTime(com_hand_source_path, 0xE76);
+            send_start = debug_timeGetTime(com_hand_source_path, 0xE76);
             L->Log("  >TX STOR #%d %d (%d)", player, oldest_message_slot,
                    selected->Length);
             hr = direct_play_interface->Send(local_player_dpid, dco[0], 0,
                                     selected->ResendMsg, selected->Length);
-            unsigned long send_elapsed = debug_timeGetTime(com_hand_source_path, 0xE86) - send_start;
+            send_elapsed = debug_timeGetTime(com_hand_source_path, 0xE86) - send_start;
             if (send_elapsed > 0x32) {
                 L->Log("!!!SendStoredMessages slow - %ld msec",
                        send_elapsed);
@@ -3464,7 +3475,7 @@ int TCommunications_Handler::SendStoredMessages()
             if (hr == 0) {
                 ++this->ResentToOther;
                 this->TXPacketLength += selected->Length;
-                comm_resent_bytes += selected->Length;
+                lastResendBytes += selected->Length;
                 L->Log("COMM: RESENT TX Ser#%d To=P#%d Len=%d",
                        selected->Serial, player, selected->Length);
             } else {
@@ -3473,7 +3484,7 @@ int TCommunications_Handler::SendStoredMessages()
 
             if (dest[0] == 0 && this->IsPlayerHuman(player) != 0 &&
                 dco[0] != 0 && player != this->Me) {
-                char* name = this->GetPlayerName(player);
+                name = this->GetPlayerName(player);
                 sprintf(this->TBuff,
                         "Max resends to Player #%d '%s' ", player, name);
                 L->Log(this->TBuff);
@@ -3495,9 +3506,9 @@ int TCommunications_Handler::SendStoredMessages()
         ++dest;
         ++dco;
     } while (player <= this->MaxGamePlayers);
-    }
 
     return this->ResentToOther;
+    }
 
 no_transmit:
     L->Log(error_text);

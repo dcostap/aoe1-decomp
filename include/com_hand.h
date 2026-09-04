@@ -5,6 +5,10 @@
 #include "com_types.h"
 #include "../third_party/directplay/include/dplay.h"
 
+// C++ globals used by the communications resend paths.
+extern int resend_adj1;
+extern int resend_adj2;
+
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned char uchar;
