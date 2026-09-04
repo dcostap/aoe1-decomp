@@ -1136,14 +1136,11 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                     }
                     ++col;
                 }
-                if (foundBlockingGroup)
-                    break;
                 ++row;
             } while (row < xMax);
+            if (foundBlockingGroup == 1)
+                goto blocked;
         }
-
-        if (foundBlockingGroup == 1)
-            goto blocked;
     }
 
     if (removed != 0 && object->inside_obj == 0)
