@@ -733,7 +733,8 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
     long pitch = area->AlignedWidth() * area->Orien;
     byte* src = (byte*)(this->shape_header + 1);
     byte* save_buffer;
-    byte count;
+    byte command;
+    byte done;
 
     if (area->Orien < 1)
         save_buffer = area->Bits + (clip_top - area->Height + 1) * pitch;
@@ -745,17 +746,17 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
         clip_top = clip_top - shape_y;
         shape_y = shape_y + clip_top;
         do {
-            byte done = 0;
+            done = 0;
             do {
-                byte code = *src++;
-                if (code & 1) {
-                    count = code >> 1;
-                    if (count == 0)
+                command = *src++;
+                if (command & 1) {
+                    command >>= 1;
+                    if (command == 0)
                         ++src;
                     else
-                        src += count;
+                        src += command;
                 } else {
-                    if ((code & 0xfe) == 0)
+                    if ((command & 0xfe) == 0)
                         done = 1;
                     else
                         ++src;
@@ -774,10 +775,10 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
             if (shape_x < clip_left) {
                 clip_top = 0;
                 do {
-                    byte code = *src++;
-                    if (code & 1) {
-                        count = code >> 1;
-                        if (count == 0) {
+                    command = *src++;
+                    if (command & 1) {
+                        command >>= 1;
+                        if (command == 0) {
                             xpos += *src++;
                             if (xpos >= clip_left) {
                                 if (xpos > clip_right)
@@ -788,30 +789,30 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                                 }
                             }
                         } else {
-                            xpos += count;
+                            xpos += command;
                             if (xpos >= clip_left) {
                                 long copy_count;
                                 byte* copy_source;
                                 if (xpos > clip_right) {
                                     clip_top = 2;
                                     copy_count = clip_right - clip_left + 1;
-                                    copy_source = src + count + clip_left - xpos;
+                                    copy_source = src + command + clip_left - xpos;
                                 } else {
                                     clip_top = 1;
                                     copy_count = xpos - clip_left;
-                                    copy_source = src + count - copy_count;
+                                    copy_source = src + command - copy_count;
                                 }
                                 memcpy(dst, copy_source, copy_count);
                                 dst += copy_count;
                             }
-                            src += count;
+                            src += command;
                         }
                     } else {
-                        count = code >> 1;
-                        if (count == 0) {
+                        command >>= 1;
+                        if (command == 0) {
                             clip_top = 3;
                         } else {
-                            xpos += count;
+                            xpos += command;
                             if (xpos >= clip_left) {
                                 long fill_count;
                                 if (xpos > clip_right) {
@@ -834,42 +835,42 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
 
             clip_top = (byte)clip_top - 1;
             while ((byte)clip_top == 0) {
-                byte code = *src++;
-                if (code & 1) {
-                    count = code >> 1;
-                    if (count == 0) {
-                        count = *src++;
-                        xpos += count;
-                        dst += count;
+                command = *src++;
+                if (command & 1) {
+                    command >>= 1;
+                    if (command == 0) {
+                        command = *src++;
+                        xpos += command;
+                        dst += command;
                         if (xpos > clip_right)
                             clip_top = 1;
                     } else {
-                        xpos += count;
+                        xpos += command;
                         if (xpos > clip_right) {
                             clip_top = 1;
                             memcpy(dst, src,
-                                   clip_right - xpos + 1 + count);
-                            dst += count;
-                            src += count;
+                                   clip_right - xpos + 1 + command);
+                            dst += command;
+                            src += command;
                         } else {
-                            memcpy(dst, src, count);
-                            dst += count;
-                            src += count;
+                            memcpy(dst, src, command);
+                            dst += command;
+                            src += command;
                         }
                     }
                 } else {
-                    count = code >> 1;
-                    if (count == 0) {
+                    command >>= 1;
+                    if (command == 0) {
                         clip_top = 3;
                     } else {
-                        long fill_count = count;
-                        xpos += count;
+                        long fill_count = command;
+                        xpos += command;
                         if (xpos > clip_right) {
-                            fill_count = count + clip_right - xpos + 1;
+                            fill_count = command + clip_right - xpos + 1;
                             clip_top = 1;
                         }
                         memset(dst, *src, fill_count);
-                        dst += count;
+                        dst += command;
                         ++src;
                     }
                 }
@@ -877,15 +878,15 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
 
             clip_top = (byte)clip_top - 1;
             while ((byte)clip_top == 0) {
-                byte code = *src++;
-                if (code & 1) {
-                    count = code >> 1;
-                    if (count)
-                        src += count;
+                command = *src++;
+                if (command & 1) {
+                    command >>= 1;
+                    if (command)
+                        src += command;
                     else
                         ++src;
                 } else {
-                    if ((code & 0xfe) == 0)
+                    if ((command & 0xfe) == 0)
                         clip_top = 2;
                     else
                         ++src;
@@ -966,7 +967,7 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                         xpos += command;
                         if (xpos >= clip_x0) {
                             if (xpos > clip_x1) {
-                                unsigned int cnt = clip_x1 - clip_x0 + 1;
+                                long cnt = clip_x1 - clip_x0 + 1;
                                 state = 2;
                                 src += clip_x0 - xpos + command;
                                 byte* end = dst + cnt;
@@ -975,7 +976,7 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                                 src += command -
                                        (clip_x0 - xpos + command) - cnt;
                             } else {
-                                unsigned int cnt = xpos - clip_x0;
+                                long cnt = xpos - clip_x0;
                                 state = 1;
                                 src += command - cnt;
                                 byte* end = dst + cnt;
@@ -994,12 +995,12 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                         xpos += command;
                         if (xpos >= clip_x0) {
                             if (xpos > clip_x1) {
-                                unsigned int cnt = clip_x1 - clip_x0 + 1;
+                                long cnt = clip_x1 - clip_x0 + 1;
                                 state = 2;
                                 memset(dst, table[*src], cnt);
                                 dst += cnt;
                             } else {
-                                unsigned int cnt = xpos - clip_x0;
+                                long cnt = xpos - clip_x0;
                                 state = 1;
                                 memset(dst, table[*src], cnt);
                                 dst += cnt;
@@ -1028,7 +1029,7 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                     } else {
                         xpos += command;
                         if (xpos > clip_x1) {
-                            unsigned int cnt = command + clip_x1 - xpos + 1;
+                            long cnt = command + clip_x1 - xpos + 1;
                             state = 1;
                             byte* end = dst + cnt;
                             while (dst < end)
@@ -1048,7 +1049,7 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                     } else {
                         xpos += command;
                         if (xpos > clip_x1) {
-                            unsigned int cnt = command + clip_x1 - xpos + 1;
+                            long cnt = command + clip_x1 - xpos + 1;
                             state = 1;
                             memset(dst, table[*src], cnt);
                             dst += command;
