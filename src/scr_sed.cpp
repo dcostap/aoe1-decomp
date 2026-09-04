@@ -319,17 +319,6 @@ int TRIBE_Screen_Sed::create_edit(TPanel* panel, TEditPanel** out_edit,
 int TRIBE_Screen_Sed::create_drop_down(TPanel* parent, TDropDownPanel** out)
 {
     long height;
-    TDropDownPanel* file_list;
-    char* file_directory;
-    char* file_extension;
-    unsigned char file_flag1;
-    unsigned char file_flag2;
-
-    file_list = 0;
-    file_directory = 0;
-    file_extension = 0;
-    file_flag1 = 0;
-    file_flag2 = 0;
 
     if (out == &this->victory_object_list ||
         out == &this->victory_attribute_list ||
@@ -370,6 +359,7 @@ int TRIBE_Screen_Sed::create_drop_down(TPanel* parent, TDropDownPanel** out)
     }
 
 create:
+
     if (this->TEasy_Panel::create_drop_down(parent, out, height, 100, 0, 0,
                                              height, 0x16, 10) == 0) {
         return 0;
@@ -379,191 +369,246 @@ create:
     (*out)->set_active(0);
     (*out)->empty_list();
 
-    if (out == &this->map_size_drop) {
-        (*out)->append_line(0x2973, 0);
-        (*out)->append_line(0x2974, 0);
-        (*out)->append_line(0x2975, 0);
-        (*out)->append_line(0x2976, 0);
-        (*out)->append_line(0x2977, 0);
-        (*out)->append_line(0x2978, 0);
-        (*out)->set_line(3);
-    } else if (out == &this->map_style_drop) {
-        (*out)->append_line(0x296A, 0);
-        (*out)->append_line(0x296B, 0);
-        (*out)->append_line(0x296C, 0);
-        (*out)->append_line(0x296D, 0);
-        (*out)->append_line(0x296E, 0);
-        (*out)->append_line(0x296F, 0);
-        (*out)->append_line(0x2970, 0);
-        (*out)->append_line(0x2971, 0);
-        (*out)->append_line(0x2972, 0);
-        (*out)->set_line(3);
-    } else if (out == &this->player_number_list) {
-        int i = 0;
-        do {
-            (*out)->append_line(i + 0x2877, 0);
-            i++;
-        } while (i < 8);
-        (*out)->set_line(0);
-    } else if (out == &this->victory_enemy_player_list) {
-        int i = 0;
-        do {
-            (*out)->append_line(i + 0x2877, 0);
-            i++;
-        } while (i < 8);
-        (*out)->set_line(0);
-    } else if (out == &this->victory_attribute_list) {
-        (*out)->append_line(0x2882, 0x2B);
-        (*out)->append_line(0x2883, 0x29);
-        (*out)->append_line(0x2884, 0x2C);
-        (*out)->append_line(0x2886, 0x28);
-        (*out)->append_line(0x2887, 0x15);
-        (*out)->append_line(0x2888, 0x14);
-        (*out)->append_line(0x2889, 0x25);
-        (*out)->set_line(0);
-    } else if (out == &this->default_terrain_drop) {
-        (*out)->append_line(0x297D, 0);
-        (*out)->append_line(0x297E, 0);
-        (*out)->append_line(0x297F, 0);
-        (*out)->append_line(0x2980, 0);
-        (*out)->append_line(0x2981, 0);
-        (*out)->append_line(0x2982, 0);
-        (*out)->append_line(0x2983, 0);
-        (*out)->append_line(0x2984, 0);
-        (*out)->append_line(0x2985, 0);
-        (*out)->set_line(0);
-    } else if (out == this->player_setting_drop) {
-        (*out)->append_line(0x27E3, 0);
-        (*out)->append_line(0x27E4, 0);
-        (*out)->set_line(0);
-    } else if (out == &this->victory_drop_down) {
-        (*out)->append_line(0x2851, 0);
-        (*out)->append_line(0x2852, 0);
-        (*out)->append_line(0x2853, 0);
-        (*out)->append_line(0x2854, 0);
-        (*out)->append_line(0x2855, 0);
-        (*out)->append_line(0x2856, 0);
-        (*out)->append_line(0x2857, 0);
-        (*out)->append_line(0x2858, 0);
-        (*out)->append_line(0x2859, 0);
-        (*out)->append_line(0x285A, 0);
-        (*out)->append_line(0x285B, 0);
-        (*out)->append_line(0x285C, 0);
-        (*out)->append_line(0x285D, 0);
-        (*out)->append_line(0x285E, 0);
-        (*out)->append_line(0x285F, 0);
-        (*out)->append_line(0x2860, 0);
-        (*out)->append_line(0x2861, 0);
-        (*out)->append_line(0x2862, 0);
-        (*out)->append_line(0x284F, 0);
-        (*out)->set_line(0);
-    } else if (out == this->player_setting_drop + 1) {
-        (*out)->append_line(0x27F7, 0);
-        (*out)->append_line(0x27F8, 0);
-        (*out)->append_line(0x27F9, 0);
-        (*out)->append_line(0x27FA, 0);
-        (*out)->append_line(0x27FB, 0);
-        (*out)->append_line(0x27FC, 0);
-        (*out)->append_line(0x27FD, 0);
-        (*out)->append_line(0x27FE, 0);
-        (*out)->append_line(0x27FF, 0);
-        (*out)->append_line(0x2800, 0);
-        (*out)->append_line(0x2801, 0);
-        (*out)->append_line(0x2802, 0);
-        (*out)->append_line(0x2806, 0);
-        (*out)->append_line(0x2807, 0);
-        (*out)->append_line(0x2809, 0);
-        (*out)->append_line(0x2808, 0);
-        (*out)->set_line(0);
-    } else if (out == &this->victory_ages_list) {
-        (*out)->append_line(0x1069, 0);
-        (*out)->append_line(0x106A, 0);
-        (*out)->append_line(0x106B, 0);
-        (*out)->append_line(0x106C, 0);
-        (*out)->set_line(0);
-    } else if (out == &this->victory_tech_list) {
-        this->victory_tech_list->set_sorted(1);
-        int i = 0;
-        TRIBE_World* world = static_cast<TRIBE_World*>(rge_base_game->world);
-        if (world->tech->tech_tree_num > 0) {
-            do {
-                Tech_Tree* entry = world->tech->tech_tree + i;
-                char* text = this->get_string(entry->string_id);
-                if (text != 0 && *text != 0) {
-                    (*out)->append_line(text, i);
-                }
-                i++;
-            } while (i < world->tech->tech_tree_num);
-        }
-        (*out)->set_line(0);
-    } else if (out == &this->AiRules) {
-        file_list = this->AiRules;
-        file_directory = rge_base_game->prog_info->ai_dir;
-        file_extension = ".per";
-        file_flag1 = 0;
-        file_flag2 = 1;
-        goto make_file_list;
-    } else if (out == &this->BuildList) {
-        file_list = *out;
-        file_directory = rge_base_game->prog_info->ai_dir;
-        file_extension = ".ai";
-        file_flag1 = 1;
-        file_flag2 = 1;
-        goto make_file_list;
-    } else if (out == &this->CityLayout) {
-        file_list = *out;
-        file_directory = rge_base_game->prog_info->ai_dir;
-        file_extension = ".cty";
-        file_flag1 = 1;
-        file_flag2 = 0;
-        goto make_file_list;
-    } else if (out == this->cinematic_input ||
-               out == this->cinematic_input + 1 ||
-               out == this->cinematic_input + 2) {
-        file_list = *out;
-        file_directory = rge_base_game->prog_info->avi_dir;
-        file_extension = ".avi";
-        file_flag1 = 1;
-        file_flag2 = 0;
-        goto make_file_list;
-    } else if (out == this->cinematic_input + 3) {
-        file_list = *out;
-        file_directory = s_592A40;
-        file_extension = ".bmp";
-        file_flag1 = 1;
-        file_flag2 = 0;
-        goto make_file_list;
-    } else if (out == &this->victory_object_list) {
-        this->victory_object_list->set_sorted(1);
-        this->victory_object_list->empty_list();
+    TDropDownPanel** list;
 
-        int i = 0;
-        RGE_Player* player = this->world->players[1];
-        int count = player->master_object_num;
-        if (count > 0) {
-            char str[256];
-            do {
-                RGE_Master_Static_Object* object = player->master_objects[i];
-                if (object != 0 && object->hide_in_scenario_editor == 0) {
-                    if (object->string_id > 0) {
-                        rge_base_game->get_string(object->string_id, str, 0x100);
+    list = &this->map_size_drop;
+    if (out == list) {
+        (*list)->append_line(0x2973, 0);
+        (*list)->append_line(0x2974, 0);
+        (*list)->append_line(0x2975, 0);
+        (*list)->append_line(0x2976, 0);
+        (*list)->append_line(0x2977, 0);
+        (*list)->append_line(0x2978, 0);
+        (*list)->set_line(3);
+        goto done;
+    } else {
+        list = &this->map_style_drop;
+        if (out == list) {
+            (*list)->append_line(0x296A, 0);
+            (*list)->append_line(0x296B, 0);
+            (*list)->append_line(0x296C, 0);
+            (*list)->append_line(0x296D, 0);
+            (*list)->append_line(0x296E, 0);
+            (*list)->append_line(0x296F, 0);
+            (*list)->append_line(0x2970, 0);
+            (*list)->append_line(0x2971, 0);
+            (*list)->append_line(0x2972, 0);
+            (*list)->set_line(3);
+            goto done;
+        } else {
+            list = &this->player_number_list;
+            if (out == list) {
+                int i = 0;
+                do {
+                    (*list)->append_line(i + 0x2877, 0);
+                    i++;
+                } while (i < 8);
+                (*list)->set_line(0);
+                goto done;
+            } else {
+                list = &this->victory_enemy_player_list;
+                if (out == list) {
+                    int i = 0;
+                    do {
+                        (*list)->append_line(i + 0x2877, 0);
+                        i++;
+                    } while (i < 8);
+                    (*list)->set_line(0);
+                    goto done;
+                } else {
+                    list = &this->victory_attribute_list;
+                    if (out == list) {
+                        (*list)->append_line(0x2882, 0x2B);
+                        (*list)->append_line(0x2883, 0x29);
+                        (*list)->append_line(0x2884, 0x2C);
+                        (*list)->append_line(0x2886, 0x28);
+                        (*list)->append_line(0x2887, 0x15);
+                        (*list)->append_line(0x2888, 0x14);
+                        (*list)->append_line(0x2889, 0x25);
+                        (*list)->set_line(0);
+                        goto done;
                     } else {
-                        strcpy(str, object->name);
+                        list = &this->default_terrain_drop;
+                        if (out == list) {
+                            (*list)->append_line(0x297D, 0);
+                            (*list)->append_line(0x297E, 0);
+                            (*list)->append_line(0x297F, 0);
+                            (*list)->append_line(0x2980, 0);
+                            (*list)->append_line(0x2981, 0);
+                            (*list)->append_line(0x2982, 0);
+                            (*list)->append_line(0x2983, 0);
+                            (*list)->append_line(0x2984, 0);
+                            (*list)->append_line(0x2985, 0);
+                            (*list)->set_line(0);
+                            goto done;
+                        } else {
+                            list = this->player_setting_drop;
+                            if (out == list) {
+                                (*list)->append_line(0x27E3, 0);
+                                (*list)->append_line(0x27E4, 0);
+                                (*list)->set_line(0);
+                                goto done;
+                            } else {
+                                list = &this->victory_drop_down;
+                                if (out == list) {
+                                    (*list)->append_line(0x2851, 0);
+                                    (*list)->append_line(0x2852, 0);
+                                    (*list)->append_line(0x2853, 0);
+                                    (*list)->append_line(0x2854, 0);
+                                    (*list)->append_line(0x2855, 0);
+                                    (*list)->append_line(0x2856, 0);
+                                    (*list)->append_line(0x2857, 0);
+                                    (*list)->append_line(0x2858, 0);
+                                    (*list)->append_line(0x2859, 0);
+                                    (*list)->append_line(0x285A, 0);
+                                    (*list)->append_line(0x285B, 0);
+                                    (*list)->append_line(0x285C, 0);
+                                    (*list)->append_line(0x285D, 0);
+                                    (*list)->append_line(0x285E, 0);
+                                    (*list)->append_line(0x285F, 0);
+                                    (*list)->append_line(0x2860, 0);
+                                    (*list)->append_line(0x2861, 0);
+                                    (*list)->append_line(0x2862, 0);
+                                    (*list)->append_line(0x284F, 0);
+                                    (*list)->set_line(0);
+                                    goto done;
+                                } else {
+                                    list = this->player_setting_drop + 1;
+                                    if (out == list) {
+                                        (*list)->append_line(0x27F7, 0);
+                                        (*list)->append_line(0x27F8, 0);
+                                        (*list)->append_line(0x27F9, 0);
+                                        (*list)->append_line(0x27FA, 0);
+                                        (*list)->append_line(0x27FB, 0);
+                                        (*list)->append_line(0x27FC, 0);
+                                        (*list)->append_line(0x27FD, 0);
+                                        (*list)->append_line(0x27FE, 0);
+                                        (*list)->append_line(0x27FF, 0);
+                                        (*list)->append_line(0x2800, 0);
+                                        (*list)->append_line(0x2801, 0);
+                                        (*list)->append_line(0x2802, 0);
+                                        (*list)->append_line(0x2806, 0);
+                                        (*list)->append_line(0x2807, 0);
+                                        (*list)->append_line(0x2809, 0);
+                                        (*list)->append_line(0x2808, 0);
+                                        (*list)->set_line(0);
+                                        goto done;
+                                    } else {
+                                        list = &this->victory_ages_list;
+                                        if (out == list) {
+                                            (*list)->append_line(0x1069, 0);
+                                            (*list)->append_line(0x106A, 0);
+                                            (*list)->append_line(0x106B, 0);
+                                            (*list)->append_line(0x106C, 0);
+                                            (*list)->set_line(0);
+                                            goto done;
+                                        } else {
+                                            list = &this->victory_tech_list;
+                                            if (out == list) {
+                                                this->victory_tech_list->set_sorted(1);
+                                                int i = 0;
+                                                if (static_cast<TRIBE_World*>(rge_base_game->world)->tech->tech_tree_num > 0) {
+                                                    int offset = 0;
+                                                    do {
+                                                        Tech_Tree* tree = static_cast<TRIBE_World*>(rge_base_game->world)->tech->tech_tree;
+                                                        Tech_Tree* entry = (Tech_Tree*)((char*)tree + offset);
+                                                        char* text = this->get_string(
+                                                            entry->string_id);
+                                                        if (text != 0 && *text != 0) {
+                                                            (*list)->append_line(text, i);
+                                                        }
+                                                        i++;
+                                                        offset += 0x3C;
+                                                    } while (i < static_cast<TRIBE_World*>(rge_base_game->world)->tech->tech_tree_num);
+                                                }
+                                                (*list)->set_line(0);
+                                                goto done;
+                                            } else {
+                                                if (out == &this->AiRules) {
+                                                    this->MakeFileList(this->AiRules,
+                                                        rge_base_game->prog_info->ai_dir,
+                                                        (char*)".per", 0, 1);
+                                                    (*out)->set_line(0);
+                                                    goto done;
+                                                } else {
+                                                    list = &this->BuildList;
+                                                    if (out == list) {
+                                                        this->MakeFileList(*list,
+                                                            rge_base_game->prog_info->ai_dir,
+                                                            (char*)".ai", 1, 1);
+                                                        (*out)->set_line(0);
+                                                        goto done;
+                                                    } else {
+                                                        list = &this->CityLayout;
+                                                        if (out == list) {
+                                                            this->MakeFileList(*list,
+                                                                rge_base_game->prog_info->ai_dir,
+                                                                (char*)".cty", 1, 0);
+                                                            (*out)->set_line(0);
+                                                            goto done;
+                                                        } else {
+                                                            if (out == this->cinematic_input ||
+                                                                out == this->cinematic_input + 1 ||
+                                                                out == this->cinematic_input + 2) {
+                                                                this->MakeFileList(*out,
+                                                                    rge_base_game->prog_info->avi_dir,
+                                                                    (char*)".avi", 1, 0);
+                                                                (*out)->set_line(0);
+                                                                goto done;
+                                                            } else {
+                                                                if (out == this->cinematic_input + 3) {
+                                                                    this->MakeFileList(*out,
+                                                                        s_592A40,
+                                                                        (char*)".bmp", 1, 0);
+                                                                    (*out)->set_line(0);
+                                                                    goto done;
+                                                                } else {
+                                                                    list = &this->victory_object_list;
+                                                                    if (out != list) {
+                                                                        goto done;
+                                                                    }
+
+                                                                    this->victory_object_list->set_sorted(1);
+                                                                    this->victory_object_list->empty_list();
+
+                                                                    int i = 0;
+                                                                    RGE_Player* player = this->world->players[1];
+                                                                    int count = player->master_object_num;
+                                                                    if (count > 0) {
+                                                                        char str[256];
+                                                                        do {
+                                                                            RGE_Master_Static_Object* object = player->master_objects[i];
+                                                                            if (object != 0 && object->hide_in_scenario_editor == 0) {
+                                                                                if (object->string_id > 0) {
+                                                                                    rge_base_game->get_string(object->string_id, str, 0x100);
+                                                                                } else {
+                                                                                    strcpy(str, object->name);
+                                                                                }
+                                                                                this->victory_object_list->append_line(str, i);
+                                                                            }
+                                                                            i++;
+                                                                        } while (i < count);
+                                                                    }
+                                                                    this->victory_object_list->set_line(0);
+                                                                    goto done;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                    this->victory_object_list->append_line(str, i);
                 }
-                i++;
-            } while (i < count);
+            }
         }
-        this->victory_object_list->set_line(0);
     }
 
-    return this->error_code == 0;
-
-make_file_list:
-    this->MakeFileList(file_list, file_directory, file_extension,
-                       file_flag1, file_flag2);
-    file_list->set_line(0);
+done:
     return this->error_code == 0;
 }
 

@@ -15,7 +15,7 @@
     "004A8960": {"status": "matching", "symbol": "?create_text@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTTextPanel@@PAD@Z"},
     "004A89B0": {"status": "matching", "symbol": "?create_input@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTInputPanel@@PADFW4FormatType@3@@Z"},
     "004A8A00": {"status": "matching", "symbol": "?create_edit@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTEditPanel@@PADFW4FormatType@3@HH@Z"},
-    "004A8A60": {"status": "scratch", "symbol": "?create_drop_down@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTDropDownPanel@@@Z"},
+    "004A8A60": {"status": "accepted_drift", "symbol": "?create_drop_down@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTDropDownPanel@@@Z"},
     "004A9320": {"status": "matching", "symbol": "?SetupListOfTerrain@TRIBE_Screen_Sed@@IAEHPAVTListPanel@@@Z"},
     "004A93C0": {"status": "matching", "symbol": "?create_list@TRIBE_Screen_Sed@@IAEHPAVTPanel@@PAPAVTListPanel@@PAPAVTScrollBarPanel@@@Z"},
     "004A94A0": {"status": "matching", "symbol": "??1TRIBE_Screen_Sed@@UAE@XZ"},
