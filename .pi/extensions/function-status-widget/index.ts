@@ -1,3 +1,5 @@
+import { spawn } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 import {
 	scanFunctionStats,
@@ -7,11 +9,27 @@ import {
 	functionStatusErrorWidgetComponent,
 	functionStatusWidgetComponent,
 } from "./widget.ts";
+import {
+	restoreScratchEvents,
+	SCRATCH_EVENT_ENTRY,
+	summarizeScratchEvents,
+	type ScratchDecreaseEvent,
+	type ScratchEventSummary,
+} from "./events.ts";
 
 export const WIDGET_ID = "aoe1-function-status";
 export const DEFAULT_REFRESH_INTERVAL_MS = 10_000;
 export const MIN_REFRESH_INTERVAL_MS = 1_000;
 export const MAX_REFRESH_INTERVAL_MS = 300_000;
+const TAUNT_PATH = fileURLToPath(new URL("./taunt-20.mp3", import.meta.url));
+const TAUNT_PLAYBACK_MS = 3_500;
+const WORKTREE_MUTATING_TOOLS = new Set([
+	"apply_patch",
+	"bash",
+	"edit",
+	"powershell",
+	"write",
+]);
 
 type TimerHandle = ReturnType<typeof setInterval>;
 
@@ -29,6 +47,38 @@ function isAbortError(error: unknown): boolean {
 	return error instanceof Error && error.name === "AbortError";
 }
 
+function localTime(timestamp = Date.now()): string {
+	const now = new Date(timestamp);
+	return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+}
+
+function playScratchTaunt(): void {
+	if (process.platform !== "win32") return;
+
+	const escapedPath = TAUNT_PATH.replace(/'/g, "''");
+	const script = [
+		"$ErrorActionPreference = 'SilentlyContinue'",
+		"Add-Type -AssemblyName PresentationCore",
+		"$player = New-Object System.Windows.Media.MediaPlayer",
+		`$player.Open([Uri]'${escapedPath}')`,
+		"Start-Sleep -Milliseconds 500",
+		"$player.Play()",
+		`Start-Sleep -Milliseconds ${TAUNT_PLAYBACK_MS}`,
+		"$player.Close()",
+	].join("; ");
+
+	try {
+		const child = spawn(
+			"powershell.exe",
+			["-NoProfile", "-NonInteractive", "-Sta", "-Command", script],
+			{ stdio: "ignore", windowsHide: true },
+		);
+		child.on("error", () => {});
+	} catch {
+		// Sound is optional. A missing PowerShell or audio device must not affect Pi.
+	}
+}
+
 class FunctionStatusWidgetRuntime {
 	private enabled = true;
 	private disposed = false;
@@ -36,11 +86,18 @@ class FunctionStatusWidgetRuntime {
 	private inFlight: AbortController | undefined;
 	private pendingRefresh = false;
 	private lastSignature: string | undefined;
+	private scratchNotificationsEnabled = false;
+	private lastStats: FunctionStats | undefined;
+	private readonly scratchEvents: ScratchDecreaseEvent[];
 
 	constructor(
 		private readonly ctx: ExtensionContext,
 		private readonly intervalMs: number,
-	) {}
+		initialEvents: ScratchDecreaseEvent[],
+		private readonly appendScratchEvent: (event: ScratchDecreaseEvent) => void,
+	) {
+		this.scratchEvents = initialEvents;
+	}
 
 	start(): void {
 		this.timer = setInterval(() => this.requestRefresh(), this.intervalMs);
@@ -69,6 +126,19 @@ class FunctionStatusWidgetRuntime {
 		return true;
 	}
 
+	setScratchNotificationsEnabled(enabled: boolean): void {
+		this.scratchNotificationsEnabled = enabled;
+		if (enabled) this.requestRefresh();
+	}
+
+	isScratchNotificationsEnabled(): boolean {
+		return this.scratchNotificationsEnabled;
+	}
+
+	getScratchEventSummary(now = Date.now()): ScratchEventSummary {
+		return summarizeScratchEvents(this.scratchEvents, now);
+	}
+
 	dispose(): void {
 		if (this.disposed) return;
 		this.disposed = true;
@@ -95,7 +165,29 @@ class FunctionStatusWidgetRuntime {
 		this.inFlight = controller;
 		try {
 			const stats = await scanFunctionStats(this.ctx.cwd, controller.signal);
-			if (!this.disposed && this.enabled && !controller.signal.aborted) this.setStatsWidget(stats);
+			if (!this.disposed && this.enabled && !controller.signal.aborted) {
+				const scratchCount = stats.statusCounts.scratch;
+				const previousScratchCount = this.lastStats?.statusCounts.scratch;
+				const scratchDecreased = previousScratchCount !== undefined && scratchCount < previousScratchCount;
+				// Compare against the last displayed snapshot, not the last timer tick.
+				this.lastStats = stats;
+				if (scratchDecreased && previousScratchCount !== undefined) {
+					const event: ScratchDecreaseEvent = {
+						timestamp: Date.now(),
+						previousCount: previousScratchCount,
+						currentCount: scratchCount,
+						matches: previousScratchCount - scratchCount,
+					};
+					this.scratchEvents.push(event);
+					try {
+						this.appendScratchEvent(event);
+					} catch {
+						// Event history must not affect status refreshes.
+					}
+					if (this.scratchNotificationsEnabled) this.notifyScratchDecrease(event);
+				}
+				this.setStatsWidget(stats);
+			}
 		} catch (error) {
 			if (!isAbortError(error) && !this.disposed && this.enabled) this.setErrorWidget(errorMessage(error));
 		} finally {
@@ -104,6 +196,24 @@ class FunctionStatusWidgetRuntime {
 				this.pendingRefresh = false;
 				this.requestRefresh();
 			}
+		}
+	}
+
+	private notifyScratchDecrease(event: ScratchDecreaseEvent): void {
+		const summary = this.getScratchEventSummary(event.timestamp);
+		playScratchTaunt();
+		try {
+			const eventWord = summary.totalEvents === 1 ? "event" : "events";
+			const lastHourMatchWord = summary.lastHourMatches === 1 ? "match" : "matches";
+			const totalMatchWord = summary.totalMatches === 1 ? "match" : "matches";
+			this.ctx.ui.notify(
+				`Scratch count decreased at ${localTime(event.timestamp)}: ${event.previousCount} → ${event.currentCount}`
+					+ ` · last hour: ${summary.lastHourMatches} ${lastHourMatchWord}/hr`
+					+ ` · total: ${summary.totalEvents} ${eventWord}, ${summary.totalMatches} ${totalMatchWord}`,
+				"info",
+			);
+		} catch {
+			// The session can switch while a refresh is reading the registry.
 		}
 	}
 
@@ -154,13 +264,22 @@ export default function functionStatusWidget(pi: ExtensionAPI): void {
 		runtime?.dispose();
 		runtime = undefined;
 		if (!ctx.hasUI || ctx.mode !== "tui") return;
-		runtime = new FunctionStatusWidgetRuntime(ctx, refreshIntervalMs());
+		runtime = new FunctionStatusWidgetRuntime(
+			ctx,
+			refreshIntervalMs(),
+			restoreScratchEvents(ctx.sessionManager.getBranch()),
+			(event) => pi.appendEntry(SCRATCH_EVENT_ENTRY, event),
+		);
 		runtime.start();
 	});
 
 	pi.on("session_shutdown", () => {
 		runtime?.dispose();
 		runtime = undefined;
+	});
+
+	pi.on("tool_execution_end", (event) => {
+		if (WORKTREE_MUTATING_TOOLS.has(event.toolName)) runtime?.refreshNow();
 	});
 
 	pi.registerCommand("function-status-refresh", {
@@ -190,6 +309,47 @@ export default function functionStatusWidget(pi: ExtensionAPI): void {
 			const enabled = action === "on" ? true : action === "off" ? false : !runtime.isEnabled();
 			runtime.setEnabled(enabled);
 			if (ctx.hasUI) ctx.ui.notify(`Function status widget ${enabled ? "enabled" : "disabled"}`, "info");
+		},
+	});
+
+	pi.registerCommand("scratch_notifications", {
+		description: "Toggle the taunt sound when the scratch count decreases",
+		handler: async (args, ctx) => {
+			if (!runtime) {
+				if (ctx.hasUI) ctx.ui.notify("Scratch notifications are unavailable in this mode", "warning");
+				return;
+			}
+			const action = args.trim().toLowerCase();
+			if (action && action !== "on" && action !== "off" && action !== "toggle" && action !== "status" && action !== "test") {
+				if (ctx.hasUI) ctx.ui.notify("Usage: /scratch_notifications [on|off|toggle|status|test]", "warning");
+				return;
+			}
+			if (action === "test") {
+				playScratchTaunt();
+				if (ctx.hasUI) ctx.ui.notify("Scratch taunt played", "info");
+				return;
+			}
+			if (action === "status") {
+				if (ctx.hasUI) {
+					const summary = runtime.getScratchEventSummary();
+					const lastHourMatchWord = summary.lastHourMatches === 1 ? "match" : "matches";
+					const totalMatchWord = summary.totalMatches === 1 ? "match" : "matches";
+					ctx.ui.notify(
+						`Scratch notifications ${runtime.isScratchNotificationsEnabled() ? "enabled" : "disabled"}`
+							+ ` · total: ${summary.totalEvents} events, ${summary.totalMatches} ${totalMatchWord}`
+							+ ` · last hour: ${summary.lastHourMatches} ${lastHourMatchWord}/hr`,
+						"info",
+					);
+				}
+				return;
+			}
+			const enabled = action === "on"
+				? true
+				: action === "off"
+					? false
+					: !runtime.isScratchNotificationsEnabled();
+			runtime.setScratchNotificationsEnabled(enabled);
+			if (ctx.hasUI) ctx.ui.notify(`Scratch notifications ${enabled ? "enabled" : "disabled"}`, "info");
 		},
 	});
 }
