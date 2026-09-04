@@ -55,6 +55,7 @@ void TribeBuildAIModule::initialize()
     int ironAgeIndex = 0;
     int divisionSize = 0;
     int dockCount = 0;
+    int triremeUpgrade = 0;
 
     BuildItem* item = this->buildList.next;
     BuildItem* sentinel = &this->buildList;
@@ -88,7 +89,7 @@ void TribeBuildAIModule::initialize()
             } else if (item->typeID() == 5) {
                 ironAgeIndex = 1;
             } else if (item->typeID() == 7) {
-                divisionSize = 1;
+                triremeUpgrade = 1;
             } else if (item->typeID() == 8) {
                 dockCount = 1;
             }
@@ -182,7 +183,7 @@ void TribeBuildAIModule::initialize()
         if (ironAgeIndex == 0 && count != -1) {
             insertResearch(5, count + 5);
         }
-        if (divisionSize == 0 && totalPercentage != -1) {
+        if (triremeUpgrade == 0 && totalPercentage != -1) {
             insertResearch(7, totalPercentage + 5);
         }
     }
@@ -233,39 +234,41 @@ void TribeBuildAIModule::initialize()
 
         if (item2 != sentinel2) {
             bronzeAgeIndex = 0;
-            do {
-                if (item2 == 0) break;
-                if (item2->buildCategory() == 6) {
-                    item2 = item2->next;
-                    divisionSize++;
-                } else {
-                    if (item2->buildCategory() == 1 || item2->buildCategory() == 4) {
-                        this->md->aiPlayer->researchCost(item2->typeID(), -1, &resource, 1);
+            if (item2) {
+                do {
+                    if (item2->buildCategory() == 6) {
+                        item2 = item2->next;
+                        divisionSize++;
                     } else {
-                        this->md->aiPlayer->objectCost(item2->typeID(), -1, &resource, 1);
-                    }
-                    divisionSize++;
-
-                    if (divisionSize >= ironAgeIndex) {
-                        int total = 0;
-                        for (int i = 0; i < 4; i++) {
-                            total += resource.value(i);
+                        if (item2->buildCategory() == 1 || item2->buildCategory() == 4) {
+                            this->md->aiPlayer->researchCost(item2->typeID(), -1, &resource, 1);
+                        } else {
+                            this->md->aiPlayer->objectCost(item2->typeID(), -1, &resource, 1);
                         }
-                        if (total > 0) {
+                        divisionSize++;
+
+                        if (divisionSize >= ironAgeIndex) {
+                            int total = 0;
                             for (int i = 0; i < 4; i++) {
-                                insertGathererPercentage(i,
-                                    (resource.value(i) * valA0) / total,
-                                    bronzeAgeIndex);
+                                total += resource.value(i);
                             }
-                            resource.setAllValues(0);
-                            bronzeAgeIndex += ironAgeIndex;
-                            divisionSize = 0;
+                            if (total > 0) {
+                                for (int i = 0; i < 4; i++) {
+                                    insertGathererPercentage(i,
+                                        (resource.value(i) * valA0) / total,
+                                        bronzeAgeIndex);
+                                }
+                                resource.setAllValues(0);
+                                bronzeAgeIndex += ironAgeIndex;
+                                divisionSize = 0;
+                            }
                         }
-                    }
 
-                    item2 = item2->next;
+                        item2 = item2->next;
+                    }
                 }
-            } while (item2 != sentinel2);
+                while (item2 != sentinel2);
+            }
         }
     }
 }
