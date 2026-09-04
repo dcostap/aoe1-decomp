@@ -7316,7 +7316,7 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
     UnitData* g = this->gatherer(p1);
     int resourceType = p2;
     if (g != 0 && g->data2 > g->data3) {
-        resourceType = g->target;
+        resourceType = g->data1;
     }
 
     int i = -1;
@@ -7416,7 +7416,7 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
         g2 = 0;
         np = this->numberAvailableStoragePits(&g2, &maximumResourceDistance, resourceType);
         if (maximumResourceDistance != 0 || np < 1) goto tail;
-        exclusions[0] = this->sn[obj->type + 0xA3];
+        exclusions[0] = this->sn[obj->attribute_type_held + 0xA3];
         d = (int)gathererObj->distance_to_object(obj);
         if (d <= exclusions[0]) {
             if (g2 != 0) goto tail;
@@ -7460,7 +7460,7 @@ tail:
     }
 
 units_tasked:
-    ag->target = resourceType;
+    ag->data1 = resourceType;
     int amount = this->requiredGatherAmount(resourceType);
     if (p3 == 1) {
         amount = 10;
@@ -7491,9 +7491,10 @@ units_tasked:
     if (obj->master_obj->id == 0x32) {
         ManagedArray<int>& farms = this->md->informationAI.farmsTaskedThisUpdate;
         int fid = obj->id;
-        int bound = farms.numberValue;
         int fj;
-        for (fj = 0; fj < bound && fj < farms.maximumSizeValue; fj++) {
+        for (fj = 0; fj < farms.numberValue; fj++) {
+            if (fj >= farms.maximumSizeValue)
+                break;
             if (farms.value[fj] == fid) return 1;
         }
         farms[farms.numberValue] = fid;
