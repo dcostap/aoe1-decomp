@@ -25,7 +25,7 @@
     "00477CB0": {"status": "matching", "symbol": "?paste@TInputPanel@@IAEHXZ"},
     "00477E90": {"status": "matching", "symbol": "?reformat@TInputPanel@@IAEXXZ"},
     "00477EF0": {"status": "matching", "symbol": "?calc_input_pos@TInputPanel@@IAEXXZ"},
-    "00478010": {"status": "accepted_drift", "symbol": "?calc_cur_line_col@TInputPanel@@IAEXXZ"},
+    "00478010": {"status": "matching", "symbol": "?calc_cur_line_col@TInputPanel@@IAEXXZ"},
     "00478150": {"status": "matching", "symbol": "?is_blank@TInputPanel@@QAEHXZ"},
     "004781A0": {"status": "matching", "symbol": "?get_trimmed_str@TInputPanel@@QAEPADPADH@Z"}
   }
