@@ -4955,7 +4955,6 @@ void TribeInformationAIModule::loadLearnInfo(char* suffix)
     int numToLoad;
     int tempInt;
     int local_2c;
-    ObjectMemory temp;
     char* learnFileName = this->learnFileName;
 
     if (suffix == 0) {
@@ -4975,20 +4974,21 @@ void TribeInformationAIModule::loadLearnInfo(char* suffix)
 
         int i = 0;
         if (numToLoad > 0) {
+            AttackMemory temp;
             do {
-                rge_read(file, &temp.type, 0x18);
+                rge_read(file, &temp, 0x18);
                 this->storeAttackMemory(
-                    temp.x,
-                    temp.y,
-                    temp.z,
-                    temp.owner,
-                    *((unsigned char*)&temp.hitPoints),
-                    *((unsigned char*)&temp.hitPoints + 1),
+                    temp.type,
+                    temp.minX,
+                    temp.minY,
+                    temp.maxX,
+                    temp.maxY,
+                    temp.attackingOwner,
+                    temp.targetOwner,
                     temp.kills,
-                    *(short*)&temp.attackAttempts,
-                    *((unsigned char*)&temp.attackAttempts + 2),
-                    *(unsigned long*)&temp.range,
-                    *(int*)&temp.damageCapability);
+                    temp.success,
+                    temp.timeStamp,
+                    temp.play);
                 i++;
             } while (i < numToLoad);
         }
@@ -4996,42 +4996,37 @@ void TribeInformationAIModule::loadLearnInfo(char* suffix)
         rge_read(file, &numToLoad, 4);
         suffix = 0;
         if (numToLoad > 0) {
+            ObjectMemory temp;
             do {
-                float local_4;
-                rge_read(file, &temp.type, 0x24);
+                rge_read(file, &temp, 0x24);
                 this->addObjectMemory(
-                    *(int*)&temp.type,
-                    *(short*)&temp.x,
-                    *(short*)&temp.z,
-                    *((unsigned char*)&temp.hitPoints),
-                    *((unsigned char*)&temp.hitPoints + 1),
+                    temp.id,
+                    temp.type,
+                    temp.group,
+                    temp.x,
+                    temp.y,
+                    temp.z,
+                    temp.owner,
+                    temp.hitPoints,
+                    temp.attackAttempts,
                     temp.kills,
-                    *((unsigned char*)&temp.kills + 1),
-                    *(short*)&temp.attackAttempts,
-                    *(int*)&temp.damageCapability,
-                    *((unsigned char*)&temp.damageCapability),
+                    temp.damageCapability,
                     temp.rateOfFire,
                     temp.range,
-                    local_4,
                     0);
-                temp.id = *(int*)&temp.type;
                 this->importantUnits.add(temp.id);
                 suffix = suffix + 1;
             } while ((int)suffix < numToLoad);
         }
 
-        int* maxResources = this->maxResources;
-        int resourceCount = 4;
-        do {
-            rge_read(file, maxResources, 4);
-            rge_read(file, maxResources - 4, 4);
-            ResourceMemory* resourceMemory =
-                (ResourceMemory*)operator new((*maxResources) * sizeof(ResourceMemory));
-            *(ResourceMemory**)(maxResources - 8) = resourceMemory;
-            rge_read(file, resourceMemory, (*maxResources) * sizeof(ResourceMemory));
-            maxResources++;
-            resourceCount--;
-        } while (resourceCount != 0);
+        for (int resourceIndex = 0; resourceIndex < 4; resourceIndex++) {
+            rge_read(file, &this->maxResources[resourceIndex], 4);
+            rge_read(file, &this->numResources[resourceIndex], 4);
+            this->resources[resourceIndex] = (ResourceMemory*)operator new(
+                this->maxResources[resourceIndex] * sizeof(ResourceMemory));
+            rge_read(file, this->resources[resourceIndex],
+                     this->maxResources[resourceIndex] * sizeof(ResourceMemory));
+        }
 
         rge_read(file, &tempInt, 4);
         suffix = 0;

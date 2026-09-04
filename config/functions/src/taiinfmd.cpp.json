@@ -81,7 +81,7 @@
     "004E0FD0": {"status": "accepted_drift", "symbol": "?storeAttackMemory@TribeInformationAIModule@@QAEHEEEEEEEFEKH@Z"},
     "004E1190": {"status": "matching", "symbol": "?removeAttackMemory@TribeInformationAIModule@@QAEXH@Z"},
     "004E1230": {"status": "matching", "symbol": "?attackMemory@TribeInformationAIModule@@QAEPAUAttackMemory@@H@Z"},
-    "004E1260": {"status": "scratch", "symbol": "?loadLearnInfo@TribeInformationAIModule@@QAEXPAD@Z"},
+    "004E1260": {"status": "matching", "symbol": "?loadLearnInfo@TribeInformationAIModule@@QAEXPAD@Z"},
     "004E1720": {"status": "matching", "symbol": "?setSaveLearnInformation@TribeInformationAIModule@@QAEXH@Z"},
     "004E1730": {"status": "matching", "symbol": "?unexploredPlayerLocation@TribeInformationAIModule@@QAEHHAAUXYPoint@@@Z"},
     "004E1930": {"status": "matching", "symbol": "?numberUnitsWithinXTiles@TribeInformationAIModule@@QAEHHHHH@Z"},
