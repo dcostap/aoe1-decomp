@@ -32,8 +32,6 @@ void TRIBE_Main_View::draw_multi_object_outline() {
     long main_col;
     long calc_row1;
     long start_row;
-    long col;
-    long row;
     int row_distance;
     int col_distance;
     tagPOINT point;
@@ -80,6 +78,8 @@ void TRIBE_Main_View::draw_multi_object_outline() {
         row_distance = -row_distance;
 
     if (col_distance == row_distance) {
+        long col;
+        long row;
         if (end_col < start_col) {
             col = end_col;
             row = end_row;
@@ -133,6 +133,8 @@ void TRIBE_Main_View::draw_multi_object_outline() {
     }
 
     if (col_distance > row_distance) {
+        long col;
+        long row;
         calc_row2 = end_row;
         end_row = end_col;
         calc_col2 = start_col;
@@ -186,6 +188,8 @@ void TRIBE_Main_View::draw_multi_object_outline() {
         }
     }
     else {
+        long col;
+        long row;
         calc_row1 = start_row;
         calc_row2 = end_row;
         if (calc_row2 < calc_row1) {
