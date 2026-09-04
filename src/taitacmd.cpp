@@ -8616,9 +8616,10 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                 }
                             }
 
-                            int desiredAgain = bestGroup->desiredNumberUnits();
-                            int numberAgain = bestGroup->numberUnits();
-                            if (numberAgain < desiredAgain) {
+                            if (ungrouped > missing) {
+                                int desiredAgain = bestGroup->desiredNumberUnits();
+                                int numberAgain = bestGroup->numberUnits();
+                                if (numberAgain < desiredAgain) {
                                 do {
                                     int i = 0;
                                     float bestDistance = -1.0f;
@@ -8676,6 +8677,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                     desiredAgain = bestGroup->desiredNumberUnits();
                                     numberAgain = bestGroup->numberUnits();
                             } while (numberAgain < desiredAgain);
+                                }
                             }
 
                             int desiredAfter = bestGroup->desiredNumberUnits();
