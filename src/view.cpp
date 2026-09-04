@@ -510,8 +510,8 @@ void RGE_View::calc_draw_vars() {
         this->max_col_num = (short)(this->pnl_wid / (int)this->tile_wid);
         this->center_scr_row_offset = 0;
         this->max_row_num = (short)(this->pnl_hgt / (int)this->tile_hgt);
-        this->center_scr_col = (this->render_rect.left - this->tile_half_wid) + (short)(this->pnl_wid / 2);
-        this->center_scr_row = (this->render_rect.top - this->tile_half_hgt) + (short)(this->pnl_hgt / 2);
+        this->center_scr_col = (short)this->render_rect.left - this->tile_half_wid + (short)(this->pnl_wid / 2);
+        this->center_scr_row = (short)this->render_rect.top - this->tile_half_hgt + (short)(this->pnl_hgt / 2);
     } else {
         this->max_row_num = 0;
         this->max_col_num = 0;
