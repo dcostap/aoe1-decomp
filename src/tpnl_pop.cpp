@@ -249,13 +249,14 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
 
     if (this->ImageBuffer == 0) return 0;
     this->ImageBuffer->PtrClear(&this->ImageRect, 1);
-    if (this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer") == 0)
+    old_font = this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer");
+    if (old_font == 0)
         return 0;
     this->ImageBuffer->SetClipRect(&this->ImageRect);
     SelectClipRgn(this->ImageBuffer->DrawDc, this->image_clip_region);
     old_font = SelectObject(this->ImageBuffer->DrawDc, this->font);
     SetBkMode(this->ImageBuffer->DrawDc, 1);
-    sprintf(str, "%s%ld/%ld", this->TPanel::get_string(0x2b2a),
+    sprintf(str, "%s%ld/%ld", this->get_string(0x2b2a),
             this->pop, this->max_pop);
     SetTextColor(this->ImageBuffer->DrawDc, this->color2);
     {
