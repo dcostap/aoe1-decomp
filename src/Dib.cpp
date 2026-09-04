@@ -377,11 +377,11 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
     int iVar10;
     int iVar12;
     long lVar15;
-    int SrcBotHgt;
-    int SrcRtWid;
-    int DestBotHgt;
-    int SrcTopHgt;
-    int SrcLtWid;
+    long SrcBotHgt;
+    long SrcRtWid;
+    long DestBotHgt;
+    long SrcTopHgt;
+    long SrcLtWid;
     long xscale = (param_15 << 8) / param_8;
     long yscale = (param_16 << 8) / param_9;
 
