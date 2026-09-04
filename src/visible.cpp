@@ -347,7 +347,6 @@ int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square,
         VisibleToCurPlayer = 0;
     }
 
-    tile = 0;
     curVisPlayer = 0;
     if (VisibleToCurPlayer) {
         curVisPlayer = curPlayer;
@@ -357,6 +356,7 @@ int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square,
         radius = 0x10;
     }
 
+    tile = 0;
     if (Square != 0) {
         Tbl = SquareLOS[radius];
     } else {
