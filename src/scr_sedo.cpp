@@ -137,7 +137,6 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
     char* line;
     RGE_Prog_Info* prog_info;
     long curr_line;
-    const char* file_format;
 
     if (param_1 != 0) {
         if (param_1->panelName() != 0 &&
@@ -199,8 +198,10 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
                             scenario_dir, line);
 
                     if (OpenFile(file_name, &of, 0x4000) != -1) {
-                        line = list->currentLine();
-                        file_format = "%s.scn";
+                        sprintf(file_name, "%s.scn", list->currentLine());
+                        static_cast<TRIBE_Game*>(rge_base_game)->
+                            start_scenario_editor(file_name, 0);
+                        return 1;
                     }
                     else {
                         prog_info = rge_base_game->prog_info;
@@ -209,18 +210,16 @@ long TRIBE_Screen_Sed_Open::action(TPanel* param_1, long param_2,
                         sprintf(file_name, "%s%s.scx",
                                 scenario_dir, line);
                         if (OpenFile(file_name, &of, 0x4000) != -1) {
-                            line = list->currentLine();
-                            file_format = "%s.scx";
+                            sprintf(file_name, "%s.scx", list->currentLine());
+                            static_cast<TRIBE_Game*>(rge_base_game)->
+                                start_scenario_editor(file_name, 0);
+                            return 1;
                         }
                         else {
                             popupOKDialog(0x24CF, 0, 0x1C2, 100);
                             return 1;
                         }
                     }
-                    sprintf(file_name, file_format, line);
-                    TRIBE_Game* game =
-                        static_cast<TRIBE_Game*>(rge_base_game);
-                    game->start_scenario_editor(file_name, 0);
                     return 1;
                 }
                 return 1;
