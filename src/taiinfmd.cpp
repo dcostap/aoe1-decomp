@@ -763,15 +763,15 @@ int TribeInformationAIModule::closestUnexploredTile(
 {
     XYPoint cPoint;
     RGE_Static_Object* obj;
-    RGE_Visible_Map* visible;
+    RGE_Visible_Map* vMap;
 
-    visible = this->md->player->visible;
+    vMap = this->md->player->visible;
     obj = this->md->player->world->object(objectId);
 
     if (obj == 0)
         return 0;
 
-    int isBuilding = (obj->master_obj->object_group == 4);
+    int civilianObj = (obj->master_obj->object_group == 4);
     uchar initialZone = obj->currentZone();
     int direction = debug_rand(
         (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0x397) % 4;
@@ -782,9 +782,9 @@ int TribeInformationAIModule::closestUnexploredTile(
     int offRight = 0;
     int offTop = 0;
     int offBottom = 0;
-    int pathDistance = 0;
-    float pathResult;
-    int pass;
+    int stepSize = 0;
+    float pathDistance;
+    int j;
     int i;
 
     for (;;) {
@@ -793,12 +793,12 @@ int TribeInformationAIModule::closestUnexploredTile(
             return 0;
         }
 
-        ++pathDistance;
-        pass = 0;
+        ++stepSize;
+        j = 0;
         do {
             i = 0;
             direction = (direction + 1) & 3;
-            if (pathDistance > 0) {
+            if (stepSize > 0) {
                 do {
                 switch (direction) {
                 case 0:
@@ -826,13 +826,13 @@ int TribeInformationAIModule::closestUnexploredTile(
                 } else {
                     uchar explored = (uchar)this->pathMap.lookupValue(
                         cPoint.x, cPoint.y);
-                    uchar visibleValue = visible->get_visible(cPoint.x, cPoint.y);
+                    uchar visibleValue = vMap->get_visible(cPoint.x, cPoint.y);
                     if (visibleValue == 0x0f)
                         goto skipTile;
-                    if (isBuilding == 1) {
+                    if (civilianObj == 1) {
                         if (explored != 0xff)
                             goto skipTile;
-                    } else if (isBuilding == 0) {
+                    } else if (civilianObj == 0) {
                         if (explored != 0xff && explored != 2)
                             goto skipTile;
                     } else {
@@ -848,7 +848,7 @@ int TribeInformationAIModule::closestUnexploredTile(
                             point.z = (int)obj->world_z;
                             if (obj->canPath(
                                     point, obj->master_obj->los - DAT_00575564,
-                                    -1, &pathResult, 1, -1, -1) == 0) {
+                                    -1, &pathDistance, 1, -1, -1) == 0) {
                                 this->pathMap.setValue(cPoint.x, cPoint.y, 1);
 
                                 int bestScore = -1;
@@ -856,7 +856,7 @@ int TribeInformationAIModule::closestUnexploredTile(
                                 int bestY = 0;
                                 int quadrantX;
                                 int quadrantY;
-                                QuadrantLog* quadrant = &this->quadrantLog[0][0];
+                                QuadrantLog* quadrant = this->quadrantLog[0];
                                 for (quadrantX = 0; quadrantX < 4; ++quadrantX) {
                                     for (quadrantY = 0; quadrantY < 4; ++quadrantY) {
                                         int score = quadrant->numberExploredTiles +
@@ -903,10 +903,10 @@ skipTile:
                     ;
                 }
                     ++i;
-                } while (i < pathDistance);
+                } while (i < stepSize);
             }
-            ++pass;
-        } while (pass < 2);
+            ++j;
+        } while (j < 2);
     }
 }
 
