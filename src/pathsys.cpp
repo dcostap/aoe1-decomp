@@ -985,6 +985,11 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
                             int checkObjects)
 {
     int local_14 = 0;
+    int minY;
+    int maxY;
+    int minX;
+    int maxX;
+    int removed;
     uchar terrain;
     uchar mapByte;
     uchar shift;
@@ -1035,19 +1040,19 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
         ++yMin;
 
     if (checkObjects != 0) {
-        uchar minY = (uchar)(yMin >> 2);
-        uchar maxY = (uchar)(yMax >> 2);
-        uchar minX = (uchar)(xMin >> 2);
-        uchar maxX = (uchar)(xMax >> 2);
+        minY = yMin >> 2;
+        maxY = yMax >> 2;
+        minX = xMin >> 2;
+        maxX = xMax >> 2;
 
         if ((int)maxX >= this->mapValue->map_width ||
             (int)maxY >= this->mapValue->map_height)
             return 0;
 
         if (minY <= maxY) {
-            uchar row = minY;
+            uchar row = (uchar)minY;
             do {
-                uchar col = minX;
+                uchar col = (uchar)minX;
                 if (col <= maxX) {
                     RGE_Tile* tile =
                         &this->mapValue->map_row_offset[row][minX];
@@ -1080,7 +1085,7 @@ int PathingSystem::passable(RGE_Moving_Object* object, float x, float y,
         }
     }
 
-    int removed = object->removeFromObstructionMap(this->aiPS);
+    removed = object->removeFromObstructionMap(this->aiPS);
     int foundBlockingGroup = 0;
     uchar* obstruction;
     int height = yMax - yMin - 1;

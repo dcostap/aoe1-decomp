@@ -3339,7 +3339,6 @@ void TRIBE_Screen_Game::reset_score_display()
 {
     int i;
     int player_count;
-    int team;
     int icon_num2;
     int low_fps_player;
     TShape* icon1;
@@ -3375,11 +3374,11 @@ void TRIBE_Screen_Game::reset_score_display()
             player_count = 1;
 
             if (this->world->players[player_id]->allied_victory != 0) {
-                int team_player = 1;
+                int team = 1;
                 PLAYER_SCORE* team_score = player_score;
-                while (team_player <= rge_base_game->numberPlayers()) {
-                    if (team_player != icon_num2) {
-                        int player_id2 = rge_base_game->playerID(team_player);
+                while (team <= rge_base_game->numberPlayers()) {
+                    if (team != icon_num2) {
+                        int player_id2 = rge_base_game->playerID(team);
                         if (player_id2 != 0 && player_id2 < this->world->player_num &&
                             this->world->players[player_id]->relation(player_id2) == 0 &&
                             this->world->players[player_id2]->relation(player_id) == 0 &&
@@ -3392,7 +3391,7 @@ void TRIBE_Screen_Game::reset_score_display()
                             ++player_count;
                         }
                     }
-                    ++team_player;
+                    ++team;
                     ++team_score;
                 }
             }
@@ -3444,7 +3443,7 @@ void TRIBE_Screen_Game::reset_score_display()
 
             RGE_Player* player = this->world->players[p->player_id];
             int font_color;
-            int back_color = 0;
+            int back_color;
             switch (player->color_table->id) {
             case 0:
                 font_color = 0xFF0000;
