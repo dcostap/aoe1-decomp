@@ -1044,7 +1044,7 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode param_1)
                 if (lVar5 >= 0) {
                     ppv = this->Diplomacy_AlliedVictory;
                     do {
-                        this->Diplomacy_player_text[i]->set_active(active);
+                        ppv[-0x25]->set_active(active);
                         TButtonPanel* p = ppv[0];
                         if (i != this->player_num - 1) {
                             p->set_active(0);
@@ -1084,8 +1084,16 @@ void TRIBE_Screen_Sed::set_scenario_mode(TRIBE_Screen_Sed::ScenarioMode param_1)
                     this->options_player_list->setCurrentLineNumber(0);
                 }
             }
-            this->options_label[0]->set_active(active);
-            this->options_button[0]->set_active(active);
+            {
+                TButtonPanel** pp = this->options_button;
+                int count = 1;
+                do {
+                    pp[-1]->set_active(active);
+                    (*pp)->set_active(active);
+                    pp++;
+                    count--;
+                } while (count != 0);
+            }
             this->options_player_list->set_active(active);
             if (active) {
                 this->options_player_list->set_line(this->player_num - 1);

@@ -49,29 +49,30 @@ int TDialogPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3,
 }
 
 // This overload colors the panel before modal updates.
-int TDialogPanel::setup(TDrawArea* param_1, TPanel* param_2, long param_3,
-                        long param_4, unsigned char param_5, int param_6)
+int TDialogPanel::setup(TDrawArea* render_area_in, TPanel* parent_in,
+                        long wid_in, long hgt_in, unsigned char color_in,
+                        int allow_shadow_area_in)
 {
     int height;
     int width;
 
-    if (param_2) {
-        width = param_2->width();
-        height = param_2->height();
+    if (parent_in) {
+        width = parent_in->width();
+        height = parent_in->height();
     } else {
-        width = param_1->Width;
-        height = param_1->Height;
+        width = render_area_in->Width;
+        height = render_area_in->Height;
     }
 
-    if (TEasy_Panel::setup(param_1, param_2, (char*)0, -1, 0,
-                           width / 2 - param_3 / 2,
-                           height / 2 - param_4 / 2,
-                           param_3, param_4, param_6) == 0) {
+    if (TEasy_Panel::setup(render_area_in, parent_in, (char*)0, -1, 0,
+                           width / 2 - wid_in / 2,
+                           height / 2 - hgt_in / 2,
+                           wid_in, hgt_in, allow_shadow_area_in) == 0) {
         this->error_code = 1;
         return 0;
     }
 
-    this->set_color(param_5);
+    this->set_color(color_in);
     this->set_z_order(1, 0);
     panel_system.setModalPanel(this);
 

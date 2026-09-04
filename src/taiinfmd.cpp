@@ -3782,7 +3782,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                     this->mapBound(&bMin);
                                     bMax.x += 5;
                                     bMax.y += 5;
-                                    this->mapBound(&bMin);
+                                    this->mapBound(&bMax);
                                     iMap.incrementValue(bMin.x, bMin.y,
                                                           bMax.x, bMax.y, 2);
                                 }
@@ -3805,7 +3805,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                             this->mapBound(&bMin);
                             bMax.x += 3;
                             bMax.y += 3;
-                            this->mapBound(&bMin);
+                            this->mapBound(&bMax);
                             iMap.incrementValue(bMin.x, bMin.y,
                                                   bMax.x, bMax.y, 0x80);
                         }
@@ -3917,9 +3917,6 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
 
                 if (mode == 3 || mode == 0) {
                     float radiusValue = object->master_obj->los;
-                    if (mode == 0) {
-                        radiusValue *= DAT_005755b4;
-                    }
                     if (placement == 0x6d) {
                         radiusValue *= DAT_005755b4;
                     }
@@ -4033,7 +4030,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                           maxTerrain.x, maxTerrain.y, 10);
                 }
                 iMap.incrementValue(x, y, x, y,
-                                      (map->map_row_offset[y][x].height >> 5) * 5);
+                                      map->map_row_offset[y][x].height * 5);
             }
         }
     }

@@ -424,9 +424,9 @@ int TRIBE_Game::setup()
         if (cmd == 1) {
             this->setMultiplayerGame(1);
             TribeMPSetupScreen* mp = new TribeMPSetupScreen;
-            if (!mp || mp->error_code)
-                goto ret_zero;
-            goto setup_mp;
+            if (mp && !mp->error_code)
+                goto setup_mp;
+            goto ret_zero;
         } else if (cmd == -1) {
             TRIBE_Screen_Main_Error* err = new TRIBE_Screen_Main_Error;
             if (!err || err->error_code)
@@ -453,10 +453,10 @@ setup_done:
         SYSTEMTIME st;
         memset(&st, 0, sizeof(st));
         FileTimeToSystemTime(&file_data.ftLastWriteTime, &st);
-        sprintf(&str[4], "program=%s, size=%d, date=%d/%d/%d, time=%d:%d:%d",
+        sprintf(str, "program=%s, size=%d, date=%d/%d/%d, time=%d:%d:%d",
                 __pgmptr, file_data.nFileSizeLow,
                 st.wMonth, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond);
-        run_log(&str[4], 0);
+        run_log(str, 0);
         FindClose(h);
     }
 
@@ -465,15 +465,15 @@ setup_done:
         SYSTEMTIME st;
         memset(&st, 0, sizeof(st));
         FileTimeToSystemTime(&file_data.ftLastWriteTime, &st);
-        sprintf(&str[4], "data=%s, size=%d, date=%d/%d/%d, time=%d:%d:%d",
+        sprintf(str, "data=%s, size=%d, date=%d/%d/%d, time=%d:%d:%d",
                 this->prog_info->game_data_file, file_data.nFileSizeLow,
                 st.wMonth, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond);
-        run_log(&str[4], 0);
+        run_log(str, 0);
         FindClose(h);
     }
 
-    sprintf(&str[4], "options=%s", this->prog_info->cmd_line);
-    run_log(&str[4], 0);
+    sprintf(str, "options=%s", this->prog_info->cmd_line);
+    run_log(str, 0);
 
     return 1;
 

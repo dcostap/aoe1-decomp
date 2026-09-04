@@ -67,7 +67,7 @@ void RGE_Action_Missile::intercept(float& x, float& y, float& z)
     }
 }
 
-void RGE_Action_Missile::set_state(unsigned char param_1)
+void RGE_Action_Missile::set_state(unsigned char new_state)
 {
     float tx;
     float ty;
@@ -77,9 +77,9 @@ void RGE_Action_Missile::set_state(unsigned char param_1)
     float dz;
     float speed;
 
-    this->state = param_1;
+    this->state = new_state;
 
-    switch (param_1) {
+    switch (new_state) {
     case 1:
         this->obj->die_die_die();
         break;
@@ -107,15 +107,15 @@ void RGE_Action_Missile::set_state(unsigned char param_1)
             float target_vx = (float)cos(this->target_obj->getAngle()) * launch_speed;
             float target_vy = (float)sin(this->target_obj->getAngle()) * launch_speed;
 
-            float target_distance =
+            float virtual_speed =
                 (float)sqrt((target_vy + dx) * (target_vy + dx) +
                             (target_vx + d) * (target_vx + d) + dz * dz);
 
-            if (speed - target_distance +
+            if (speed - virtual_speed +
                     ((RGE_Master_Missile_Object*)this->obj->master_obj)->speed >
                 ((RGE_Master_Missile_Object*)this->obj->master_obj)->speed * 0.5f) {
                 float scale = speed /
-                    (speed - target_distance +
+                    (speed - virtual_speed +
                      ((RGE_Master_Missile_Object*)this->obj->master_obj)->speed);
                 d = scale * target_vx + d;
                 dx = scale * target_vy + dx;
