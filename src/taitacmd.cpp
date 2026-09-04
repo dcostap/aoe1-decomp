@@ -5022,7 +5022,7 @@ void TribeTacticalAIModule::taskBoats()
                 int number = group->numberUnits();
                 int desired = group->desiredNumberUnits();
 
-                if (number < desired ||
+                if (desired > number ||
                     (gathered == 0 && group->numberUnits() > 1) ||
                     group->allUnitsIdle(this->md, 1) == 0) {
                     ready = 0;
