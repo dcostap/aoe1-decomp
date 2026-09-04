@@ -452,7 +452,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
                     int ctrl_down = (GetKeyState(0x11) < 0);
                     int shift_down = (GetKeyState(0x10) < 0);
                     DAT_0086b240 = 1;
-                    this->parent_panel->handle_key_down(
+                    this->handle_key_down(
                         9, (short)lparam, alt_down, ctrl_down, shift_down);
                     DAT_0086b240 = 0;
                     return 0;
@@ -462,11 +462,9 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
                     return 0;
                 }
                 if (wparam == 0x1B) {
-                    long esc_handled = this->parent_panel->action(this, 1, 0, 0);
-                    if (esc_handled != 0) {
-                        return 0;
+                    if (this->parent_panel->action(this, 1, 0, 0) == 0) {
+                        SendMessageA((HWND)this->edit_wnd, 0xC7, 0, 0);
                     }
-                    SendMessageA((HWND)this->edit_wnd, 0xC7, 0, 0);
                     return 0;
                 }
             } else if (wparam == 0x1B) {
