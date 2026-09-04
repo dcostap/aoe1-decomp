@@ -445,12 +445,10 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 if (rge_base_game->singlePlayerGame() == event && rge_base_game->save_paused == 0) {
                     rge_base_game->set_paused(0, 0);
                 }
-                int mouse_state = this->mouseButton[0]->get_state();
-                RGE_Base_Game* game = rge_base_game;
-                if (mouse_state == 0) {
-                    game->prog_info->interface_style = event;
+                if (this->mouseButton[0]->get_state() != 0) {
+                    rge_base_game->prog_info->interface_style = 2;
                 } else {
-                    game->prog_info->interface_style = 2;
+                    rge_base_game->prog_info->interface_style = event;
                 }
                 static_cast<TRIBE_Game*>(rge_base_game)->set_interface_messages();
 
@@ -576,11 +574,10 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                     goto return_one;
                 }
                 music->set_volume(param_3 * -100, 1);
-                TSound_Driver* sound = rge_base_game->sound_system;
-                if (sound == 0) {
+                slider_sound = rge_base_game->sound_system;
+                if (slider_sound == 0) {
                     goto return_one;
                 }
-                slider_sound = sound;
                 param_3 = this->newSoundVolume;
                 goto slider_sound_call;
             }
@@ -593,8 +590,9 @@ long TribeConfigDialog::action(TPanel* panel, long event,
                 goto slider_sound_call;
             }
             if (panel == this->scrollSpeedSlider && event == 4) {
-                rge_base_game->prog_info->mouse_scroll_interval = param_3 + 10;
-                rge_base_game->prog_info->key_scroll_interval = param_3 + 10;
+                RGE_Prog_Info* info = rge_base_game->prog_info;
+                info->mouse_scroll_interval = param_3 + 10;
+                info->key_scroll_interval = param_3 + 10;
                 goto base_action;
             }
             if (panel == this->cancelButton && event == 1) {
