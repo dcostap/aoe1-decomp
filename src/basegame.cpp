@@ -2876,9 +2876,9 @@ long __stdcall RGE_Base_Game::wnd_proc(void* hwnd, unsigned int msg,
         if (mouse_down != 0) {
             color_log(0x4C, 0x5F, 4);
             color_log(0x24, 0x5F, 3);
-            return static_cast<LRESULT>(wparam);
+            return static_cast<LRESULT>(panel_result);
         }
-        goto wparam_return;
+        goto panel_result_return;
         }
 
     case 6:
@@ -3020,7 +3020,7 @@ panel_return_after_exit_menu:
         if (mouse_down != 0)
             color_log(0x4C, 0x5F, 4);
         color_log(0x24, 0x5F, 3);
-        return static_cast<LRESULT>(wparam);
+        return static_cast<LRESULT>(panel_result);
 
     case 0x218:
         if (wparam == 0)
@@ -3079,29 +3079,28 @@ music_done_message:
     if (mouse_down != 0)
         color_log(0x4C, 0x5F, 4);
     color_log(0x24, 0x5F, 3);
-    return static_cast<LRESULT>(wparam);
+    return static_cast<LRESULT>(panel_result);
     }
 
     default:
         goto default_window_proc;
     }
 
- wparam_return:
+ panel_result_return:
     color_log(0x24, 0x5F, 3);
-    return static_cast<LRESULT>(wparam);
+    return static_cast<LRESULT>(panel_result);
 
 panel_return:
     if (mouse_down == 0)
         goto panel_return_alt;
     color_log(0x4C, 0x5F, 4);
     color_log(0x24, 0x5F, 3);
-    return static_cast<LRESULT>(wparam);
+    return static_cast<LRESULT>(panel_result);
 
 panel_return_alt:
     if (mouse_down != 0)
         color_log(0x4C, 0x5F, 4);
-    goto wparam_return;
-
+    goto panel_result_return;
 default_window_proc:
     {
         color_log(0x24, 0x54, 3);

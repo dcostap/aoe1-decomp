@@ -1345,82 +1345,81 @@ extern "C" void* __cdecl memmove(void* dst_arg, const void* src_arg,
 void __cdecl DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm,
     int transparent, int zero)
 {
-    BYTE* bits;
+    BYTE* lpBits;
     int nDibColors = 0;
-    BYTE zeroIndex = 0;
-    DWORD sizeImage;
+    BYTE ZeroIndex = 0;
+    DWORD SizeImage;
     int nPalColors;
-    RGBQUAD* rgb;
+    RGBQUAD* lpRgb;
     PALETTEENTRY pe;
-    int zeroBlue;
-    BYTE hitEnd = 0;
-    int searchState = 0;
-    BYTE table[256];
+    int ZeroBlue;
+    BYTE TransIndex = 0;
+    int HitEnd = 0;
+    BYTE xlat[256];
     int i;
 
     if (hbm != 0 && bih != 0) {
-        rgb = (RGBQUAD*)((BYTE*)&bih->biSize + bih->biSize);
+        lpRgb = DibColors(bih);
         GetObjectA(hbm, 4, &nDibColors);
         if (bih->biClrUsed == 0 && bih->biBitCount <= 8)
             nPalColors = 1 << bih->biBitCount;
         else
             nPalColors = bih->biClrUsed;
-        sizeImage = bih->biSizeImage;
-        if (!sizeImage) {
+        SizeImage = bih->biSizeImage;
+        if (!SizeImage) {
             DWORD bitCountValue = bih->biBitCount;
-            sizeImage = ((((DWORD)bih->biWidth * bitCountValue + 31) >> 3) &
+            SizeImage = ((((DWORD)bih->biWidth * bitCountValue + 31) >> 3) &
                 0x1ffffffc) * bih->biHeight;
         }
         if (bih->biCompression == 3)
-            bits = (BYTE*)bih + bih->biSize + 12;
+            lpBits = (BYTE*)bih + bih->biSize + 12;
         else
-            bits = (BYTE*)&bih->biSize +
-                (bih->biSize + bih->biClrUsed * 4);
+            lpBits = (BYTE*)(DibColors(bih) + bih->biClrUsed);
 
         if (transparent) {
             if (zero)
-                hitEnd = 0;
+                TransIndex = 0;
             else
-                hitEnd = bits[((bih->biWidth + 3) & ~3) *
+                TransIndex = lpBits[((bih->biWidth + 3) & ~3) *
                     (bih->biHeight - 1)];
 
-            int r = rgb->rgbRed, g = rgb->rgbGreen;
-            zeroBlue = rgb->rgbBlue;
+            int r = lpRgb->rgbRed, g = lpRgb->rgbGreen;
+            ZeroBlue = lpRgb->rgbBlue;
             int dir = 1;
-            searchState = 0;
+            HitEnd = 0;
             do {
                 r += dir;
                 g += dir;
-                zeroBlue += dir;
-                if (r > 255 || g > 255 || zeroBlue > 255 ||
-                    r < 0 || g < 0 || zeroBlue < 0) {
-                    if (searchState)
+                ZeroBlue += dir;
+                if (r > 255 || g > 255 || ZeroBlue > 255 ||
+                    r < 0 || g < 0 || ZeroBlue < 0) {
+                    if (HitEnd)
                         break;
                     dir = -1;
-                    r = rgb->rgbRed;
-                    g = rgb->rgbGreen;
-                    zeroBlue = rgb->rgbBlue;
-                    searchState = 1;
+                    r = lpRgb->rgbRed;
+                    g = lpRgb->rgbGreen;
+                    ZeroBlue = lpRgb->rgbBlue;
+                    HitEnd = 1;
                 }
-                zeroIndex = (BYTE)GetNearestPaletteIndex(hbm,
-                    RGB(r, g, zeroBlue));
-            } while (zeroIndex == 0);
+                ZeroIndex = (BYTE)GetNearestPaletteIndex(hbm,
+                    RGB(r, g, ZeroBlue));
+            } while (ZeroIndex == 0);
         }
         i = 0;
         if (0 < nPalColors) {
-            BYTE* p = (BYTE*)rgb + 2;
+            BYTE* p = (BYTE*)lpRgb + 2;
             for (; i < nPalColors; i++, p += 4) {
                 if (transparent) {
-                    if (i == (BYTE)hitEnd) {
-                        table[i] = 0;
+                    if (i == (BYTE)TransIndex) {
+                        xlat[i] = 0;
                     } else {
                         BYTE v = (BYTE)GetNearestPaletteIndex(hbm,
                             RGB(p[0], p[-1], p[-2]));
-                        table[i] = v;
-                        if (v == 0) table[i] = zeroIndex;
+                        xlat[i] = v;
+                        if (v == 0) xlat[i] = ZeroIndex;
                     }
                 } else {
-                    table[i] = (BYTE)GetNearestPaletteIndex(hbm,
+                    xlat[i] = (BYTE)GetNearestPaletteIndex(hbm,
                         RGB(p[0], p[-1], p[-2]));
                 }
             }
@@ -1430,47 +1429,47 @@ void __cdecl DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm,
             void* (__stdcall *getHandle)(const void*) = GlobalHandle;
             GlobalUnlock(getHandle(bih));
             GlobalLock(GlobalReAlloc(getHandle(bih),
-                bih->biSize + nDibColors * 4 + sizeImage, 0));
+                bih->biSize + nDibColors * 4 + SizeImage, 0));
 
             memmove((bih->biCompression == 3) ?
                 (BYTE*)bih + bih->biSize + 12 :
                 (BYTE*)bih + bih->biSize + bih->biClrUsed * 4,
-                bits, sizeImage);
+                lpBits, SizeImage);
             if (bih->biCompression == 3)
-                bits = (BYTE*)bih + bih->biSize + 12;
+                lpBits = (BYTE*)bih + bih->biSize + 12;
             else
-                bits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
+                lpBits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
         } else if (nDibColors < nPalColors) {
             memcpy((bih->biCompression == 3) ?
                 (BYTE*)bih + bih->biSize + 12 :
                 (BYTE*)bih + bih->biSize + bih->biClrUsed * 4,
-                bits, sizeImage);
+                lpBits, SizeImage);
             void* (__stdcall *getHandle)(const void*) = GlobalHandle;
             GlobalUnlock(getHandle(bih));
             GlobalLock(GlobalReAlloc(getHandle(bih),
-                bih->biSize + nDibColors * 4 + sizeImage, 0));
+                bih->biSize + nDibColors * 4 + SizeImage, 0));
             if (bih->biCompression == 3)
-                bits = (BYTE*)bih + bih->biSize + 12;
+                lpBits = (BYTE*)bih + bih->biSize + 12;
             else
-                bits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
+                lpBits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
         }
         switch (bih->biCompression) {
         case 0:
             if (bih->biBitCount == 8)
-                xlatClut8(bits, sizeImage, table);
+                xlatClut8(lpBits, SizeImage, xlat);
             else
-                xlatClut4(bits, sizeImage, table);
+                xlatClut4(lpBits, SizeImage, xlat);
             break;
         case 1:
-            xlatRle8(bits, sizeImage, table);
+            xlatRle8(lpBits, SizeImage, xlat);
             break;
         case 2:
-            xlatRle4(bits, sizeImage, table);
+            xlatRle4(lpBits, SizeImage, xlat);
             break;
         }
         i = 0;
         if (0 < nDibColors) {
-            BYTE* p = (BYTE*)rgb + 1;
+            BYTE* p = (BYTE*)lpRgb + 1;
             do {
                 GetPaletteEntries(hbm, i, 1, &pe);
                 ++i;
