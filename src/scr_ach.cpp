@@ -97,7 +97,7 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     sprintf(str, "%02ld:%02ld:%02ld", hours, minutes, seconds);
 
     create_text(this, &this->time, str + 4, 0x1E0, 10, 0x6E, 0x14, 0x0B, 0, 0, 0);
-    this->time->set_alignment(TTextPanel::AlignRight, TTextPanel::AlignTop);
+    this->time->set_alignment(TTextPanel::AlignTop, TTextPanel::AlignRight);
     create_text(this, &this->title, 0x269E, 0, 5, 0x280, 0x1E, 1, 1, 0, 0);
     create_text(this, &this->summary_text, 0, 10, 0x23, 0x26C, 0x1E, 1, 1, 0, 0);
     create_text(this, &this->instruction, 0x26DB, 10, 0x19A, 0x26C, 0x14, 0x0B, 1, 0, 0);
@@ -146,12 +146,12 @@ TribeAchievementsScreen::TribeAchievementsScreen(char* title_text, int end_game_
     create_text(this, this->title_bar + 4, 0, 0x16C, 0x6F, 0x91, 0x1E, 0x0B, 0, 0, 0);
     create_text(this, this->title_bar + 5, 0, 0x172, 0x83, 200, 0x1E, 0x0B, 0, 0, 0);
     create_text(this, this->title_bar + 6, 0, 0x1A8, 0x97, 200, 0x1E, 0x0B, 0, 0, 0);
-    this->title_bar[4]->set_alignment(TTextPanel::AlignRight,
-                                      TTextPanel::AlignTop);
-    this->title_bar[5]->set_alignment(TTextPanel::AlignRight,
-                                      TTextPanel::AlignTop);
-    this->title_bar[6]->set_alignment(TTextPanel::AlignRight,
-                                      TTextPanel::AlignTop);
+    this->title_bar[4]->set_alignment(TTextPanel::AlignTop,
+                                      TTextPanel::AlignRight);
+    this->title_bar[5]->set_alignment(TTextPanel::AlignTop,
+                                      TTextPanel::AlignRight);
+    this->title_bar[6]->set_alignment(TTextPanel::AlignTop,
+                                      TTextPanel::AlignRight);
 
     create_text(this, this->achievement_choice, 0, 100, 0x97, 0x82, 0xFA, 0x0B, 0, 0, 0);
     create_text(this, this->achievement_choice + 1, 0, 0x9A, 0x83, 0x80, 0x112, 0x0B, 0, 0, 0);

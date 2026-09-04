@@ -417,9 +417,9 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
         if (0 < param_7) {
             param_17 = param_7;
             do {
+                lVar15 = param_4;
                 if (0 < param_6) {
                     param_18 = param_6;
-                    lVar15 = param_4;
                     do {
                         if (SrcBotHgt != 0) {
                             if (iVar12 != 0) TransDibBlt(param_1,param_2,param_3,lVar15,param_5,iVar12,SrcBotHgt,param_10,param_11,param_12,param_13,param_14,DestBotHgt,SrcLtWid,1,iVar1,iVar3,0);
@@ -444,9 +444,9 @@ long __cdecl TileDibBlt(BITMAPINFO256 *param_1, uchar *param_2, RECT *param_3, l
         if (0 < param_7) {
             param_17 = param_7;
             do {
+                lVar15 = param_4;
                 if (0 < param_6) {
                     param_19 = param_6;
-                    lVar15 = param_4;
                     do {
                         if (SrcBotHgt != 0) {
                             if (iVar12 != 0) DibBlt(param_1,param_2,param_3,lVar15,dest_y,iVar12,SrcBotHgt,param_10,param_11,param_13,param_14,DestBotHgt,SrcLtWid,1,iVar1,iVar3);
