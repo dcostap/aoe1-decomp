@@ -3357,43 +3357,48 @@ void TRIBE_Screen_Game::reset_score_display()
     }
 
     i = 0;
-    for (icon_num2 = 1; icon_num2 <= rge_base_game->numberPlayers(); ++icon_num2) {
-        PLAYER_SCORE& score = player_score[icon_num2 - 1];
+    icon_num2 = 1;
+    PLAYER_SCORE* score = player_score;
+    while (icon_num2 <= rge_base_game->numberPlayers()) {
         int player_id = rge_base_game->playerID(icon_num2);
         if (player_id != 0 && player_id < this->world->player_num) {
-            if (score.team_id == 0) {
+            if (score->team_id == 0) {
                 ++i;
-                score.team_id = i;
+                score->team_id = i;
             }
-            score.comm_id = icon_num2;
-            score.player_id = player_id;
-            score.player_score =
+            score->comm_id = icon_num2;
+            score->player_id = player_id;
+            score->player_score =
                 this->world->players[player_id]->victory_conditions->get_victory_points();
-            score.team_score = score.player_score;
+            score->team_score = score->player_score;
             local_2d4 = 1;
 
             if (this->world->players[player_id]->allied_victory != 0) {
-                for (int team_player = 1;
-                     team_player <= rge_base_game->numberPlayers(); ++team_player) {
+                int team_player = 1;
+                PLAYER_SCORE* team_score = player_score;
+                while (team_player <= rge_base_game->numberPlayers()) {
                     if (team_player != icon_num2) {
-                        PLAYER_SCORE& team_score = player_score[team_player - 1];
                         int player_id2 = rge_base_game->playerID(team_player);
                         if (player_id2 != 0 && player_id2 < this->world->player_num &&
                             this->world->players[player_id]->relation(player_id2) == 0 &&
                             this->world->players[player_id2]->relation(player_id) == 0 &&
                             this->world->players[player_id2]->allied_victory != 0) {
-                            if (team_score.team_id == 0) {
-                                team_score.team_id = score.team_id;
+                            if (team_score->team_id == 0) {
+                                team_score->team_id = score->team_id;
                             }
-                            score.team_score +=
+                            score->team_score +=
                                 this->world->players[player_id2]->victory_conditions->get_victory_points();
                             ++local_2d4;
                         }
                     }
+                    ++team_player;
+                    ++team_score;
                 }
             }
-            score.team_score /= local_2d4;
+            score->team_score /= local_2d4;
         }
+        ++score;
+        ++icon_num2;
     }
 
     qsort(player_score, rge_base_game->numberPlayers(), sizeof(PLAYER_SCORE),
@@ -3401,11 +3406,11 @@ void TRIBE_Screen_Game::reset_score_display()
     low_fps_player = 0;
     if (rge_base_game->multiplayerGame() != 0) {
         int low_fps = 11;
+        PLAYER_SCORE* p = player_score;
         for (j = 0; j < 8; ++j) {
-            PLAYER_SCORE& score = player_score[j];
-            if (score.player_id != 0 && comm->GetPlayerHumanity(score.comm_id) == 2) {
+            if (p->player_id != 0 && comm->GetPlayerHumanity(p->comm_id) == 2) {
                 unsigned long average =
-                    comm->Speed->GetPlayerAvgFramesMsec(score.comm_id);
+                    comm->Speed->PlayerAvgFramesMsec[p->comm_id];
                 int frame_rate;
                 if (average > 999) {
                     frame_rate = 1;
@@ -3415,22 +3420,23 @@ void TRIBE_Screen_Game::reset_score_display()
                     frame_rate = 1000 / average;
                 }
                 if (frame_rate < low_fps) {
-                    low_fps_player = score.comm_id;
+                    low_fps_player = p->comm_id;
                     low_fps = frame_rate;
                 }
             }
+            ++p;
         }
     }
 
     icon_num2 = 0;
-    for (; icon_num2 < 8; ++icon_num2) {
-        PLAYER_SCORE* p = &player_score[icon_num2];
-        TMessagePanel* panel = this->score_panel[icon_num2];
-        if (panel == 0) {
+    PLAYER_SCORE* p = player_score;
+    TMessagePanel** panel = this->score_panel;
+    for (; icon_num2 < 8; ++icon_num2, ++p, ++panel) {
+        if (*panel == 0) {
             return;
         }
         if (p->player_id == 0) {
-            panel->set_active(0);
+            (*panel)->set_active(0);
         } else {
             sprintf(str + 4, "%s: %d/%d", comm->GetPlayerName(p->comm_id),
                     p->player_score, p->team_score);
@@ -3484,9 +3490,9 @@ void TRIBE_Screen_Game::reset_score_display()
                 }
             }
 
-            panel->show_message2(TMessagePanel::RightInfoMessage, str + 4, font_color, back_color,
-                                 font->font, font->font_wid, font->font_hgt,
-                                 icon1, icon_frame1, icon2, icon_frame2);
+            (*panel)->show_message2(TMessagePanel::RightInfoMessage, str + 4, font_color, back_color,
+                                    font->font, font->font_wid, font->font_hgt,
+                                    icon1, icon_frame1, icon2, icon_frame2);
         }
     }
 }
