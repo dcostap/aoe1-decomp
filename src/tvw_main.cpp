@@ -34,7 +34,6 @@ void TRIBE_Main_View::draw_multi_object_outline() {
     long start_row;
     long col;
     long row;
-    long endpoint;
     int row_distance;
     int col_distance;
     tagPOINT point;
@@ -157,27 +156,31 @@ void TRIBE_Main_View::draw_multi_object_outline() {
         if (calc_row1 == -1 || start_row < point.x) {
             if (end_row <= calc_col2) {
                 for (col = calc_col2; col >= end_row; --col) {
-                    endpoint = (col == start_col || col == end_col) ? 2 : 0;
-                    this->draw_wall_outline(col, start_row, master, endpoint);
+                    this->draw_wall_outline(
+                        col, start_row, master,
+                        (col == start_col || col == end_col) ? 2 : 0);
                 }
             }
             if (calc_row1 != -1 && point.x <= calc_col1) {
                 for (row = point.x; row <= calc_col1; ++row) {
-                    endpoint = (row == start_row || row == calc_row2) ? 2 : 1;
-                    this->draw_wall_outline(calc_row1, row, master, endpoint);
+                    this->draw_wall_outline(
+                        calc_row1, row, master,
+                        (row == start_row || row == calc_row2) ? 2 : 1);
                 }
             }
         } else {
             if (calc_row1 != -1 && point.x <= calc_col1) {
                 for (row = point.x; row <= calc_col1; ++row) {
-                    endpoint = (row == start_row || row == calc_row2) ? 2 : 1;
-                    this->draw_wall_outline(calc_row1, row, master, endpoint);
+                    this->draw_wall_outline(
+                        calc_row1, row, master,
+                        (row == start_row || row == calc_row2) ? 2 : 1);
                 }
             }
             if (end_row <= calc_col2) {
                 for (col = calc_col2; col >= end_row; --col) {
-                    endpoint = (col == start_col || col == end_col) ? 2 : 0;
-                    this->draw_wall_outline(col, start_row, master, endpoint);
+                    this->draw_wall_outline(
+                        col, start_row, master,
+                        (col == start_col || col == end_col) ? 2 : 0);
                 }
             }
         }
@@ -204,27 +207,31 @@ void TRIBE_Main_View::draw_multi_object_outline() {
         if (main_col == -1 || calc_col2 < start_col) {
             if (calc_row1 <= calc_row2) {
                 for (row = calc_row1; row <= calc_row2; ++row) {
-                    endpoint = (row == start_row || row == end_row) ? 2 : 0;
-                    this->draw_wall_outline(start_col, row, master, endpoint);
+                    this->draw_wall_outline(
+                        start_col, row, master,
+                        (row == start_row || row == end_row) ? 2 : 0);
                 }
             }
             if (main_col != -1 && calc_col1 <= calc_col2) {
                 for (col = calc_col1; col <= calc_col2; ++col) {
-                    endpoint = (col == start_col || col == end_col) ? 2 : 1;
-                    this->draw_wall_outline(col, main_col, master, endpoint);
+                    this->draw_wall_outline(
+                        col, main_col, master,
+                        (col == start_col || col == end_col) ? 2 : 1);
                 }
             }
         } else {
             if (main_col != -1 && calc_col1 <= calc_col2) {
                 for (col = calc_col1; col <= calc_col2; ++col) {
-                    endpoint = (col == start_col || col == end_col) ? 2 : 1;
-                    this->draw_wall_outline(col, main_col, master, endpoint);
+                    this->draw_wall_outline(
+                        col, main_col, master,
+                        (col == start_col || col == end_col) ? 2 : 1);
                 }
             }
             if (calc_row1 <= calc_row2) {
                 for (row = calc_row1; row <= calc_row2; ++row) {
-                    endpoint = (row == start_row || row == end_row) ? 2 : 0;
-                    this->draw_wall_outline(start_col, row, master, endpoint);
+                    this->draw_wall_outline(
+                        start_col, row, master,
+                        (row == start_row || row == end_row) ? 2 : 0);
                 }
             }
         }
