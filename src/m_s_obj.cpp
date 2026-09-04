@@ -822,14 +822,12 @@ unsigned char RGE_Master_Static_Object::check_placement(
     short edge_x_max;
     short edge_y_max;
     short edge_x_min;
-    short req_center1 = center_tile_req1;
-
-    if (req_center1 >= 0 || center_tile_req2 >= 0) {
+    if (center_tile_req1 >= 0 || center_tile_req2 >= 0) {
         center_y = (short)y;
         center_x = (short)x;
         unsigned short center_terrain =
             (unsigned short)(map->map_row_offset[center_y][center_x].terrain_type & 0x1f);
-        if (center_terrain != (unsigned short)req_center1 &&
+        if (center_terrain != (unsigned short)center_tile_req1 &&
             center_terrain != (unsigned short)center_tile_req2) {
             return 1;
         }
@@ -846,16 +844,15 @@ unsigned char RGE_Master_Static_Object::check_placement(
 
     unsigned char req_terr1 = 0;
     unsigned char req_terr2 = 0;
-    short req_terrain1 = tile_req1;
 
-    if (req_terrain1 >= 0 || tile_req2 >= 0) {
+    if (tile_req1 >= 0 || tile_req2 >= 0) {
         short terrain_table = (short)(edge_x_min - 1);
 
         if ((short)(edge_y_min - 1) >= 0 && edge_x_min <= edge_x_max) {
             for (short col = edge_x_min; col <= edge_x_max; ++col) {
                 unsigned short t = static_cast<unsigned short>(
                     map->map_row_offset[edge_y_min - 1][col].terrain_type & 0x1f);
-                if (t == (unsigned short)req_terrain1) req_terr1 = 1;
+                if (t == (unsigned short)tile_req1) req_terr1 = 1;
                 if (t == (unsigned short)tile_req2) req_terr2 = 1;
             }
         }
@@ -864,7 +861,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
             for (short row = edge_y_min; row <= edge_y_max; ++row) {
                 unsigned short t = static_cast<unsigned short>(
                     map->map_row_offset[row][edge_x_max + 1].terrain_type & 0x1f);
-                if (t == (unsigned short)req_terrain1) req_terr1 = 1;
+                if (t == (unsigned short)tile_req1) req_terr1 = 1;
                 if (t == (unsigned short)tile_req2) req_terr2 = 1;
             }
         }
@@ -873,7 +870,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
             for (short col = edge_x_max; col >= edge_x_min; --col) {
                 unsigned short t = static_cast<unsigned short>(
                     map->map_row_offset[edge_y_max + 1][col].terrain_type & 0x1f);
-                if (t == (unsigned short)req_terrain1) req_terr1 = 1;
+                if (t == (unsigned short)tile_req1) req_terr1 = 1;
                 if (t == (unsigned short)tile_req2) req_terr2 = 1;
             }
         }
@@ -882,7 +879,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
             for (short row = edge_y_max; row >= edge_y_min; --row) {
                 unsigned short t = static_cast<unsigned short>(
                     map->map_row_offset[row][terrain_table].terrain_type & 0x1f);
-                if (t == (unsigned short)req_terrain1) req_terr1 = 1;
+                if (t == (unsigned short)tile_req1) req_terr1 = 1;
                 if (t == (unsigned short)tile_req2) req_terr2 = 1;
             }
         }
@@ -926,7 +923,7 @@ unsigned char RGE_Master_Static_Object::check_placement(
     }
 
     if (p5 == 1 && !part_vis) return 5;
-    if (radius_x_value <= 0.0f && radius_y_value <= 0.0f) return 0;
+    if (radius_x_value <= 0.0 && radius_y_value <= 0.0) return 0;
 
     x_min = (short)(x - 3.0f);
     y_min = (short)(y - 3.0f);
