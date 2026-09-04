@@ -172,8 +172,8 @@ public:
     virtual int canPathWithAdditionalPassability(XYZPoint, float, int, float*, int,
                                                  int, int, int, int) { return 0; }
     virtual int findFirstTerrainAlongExceptionPath(int, float*, float*) { return 0; }
-    virtual int canLinePath(int, int, int, int, float, int) { return 0; }
     virtual int canLinePath(const XYPoint&, const XYPoint&, float, XYPoint&, int) { return 0; }
+    virtual int canLinePath(int, int, int, int, float, int) { return 0; }
     virtual int firstTileAlongLine(const XYPoint&, const XYPoint&, XYPoint&, int,
                                    int, int) { return 0; }
     virtual XYZBYTEPoint* userDefinedWaypoint(int) { return 0; }
