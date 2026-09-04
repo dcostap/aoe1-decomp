@@ -5744,9 +5744,6 @@ void TCommunications_Handler::UpdatePlayers() {
 void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
 {
     unsigned int dcoID = this->PlayerOptions.dcoID[player];
-    void* lpData = 0;
-    MSGFORMAT_MISSING_PLAYER m;
-    unsigned long size;
 
     switch (this->PlayerOptions.Humanity[player]) {
     case ME_ABSENT:
@@ -5792,6 +5789,8 @@ void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
 get_name_log:
     if (dcoID != 0) {
         IDirectPlay3* dp = direct_play_interface;
+        void* lpData = 0;
+        unsigned long size;
         size = 0;
         dp->GetPlayerName(dcoID, 0, &size);
         lpData = calloc(size, 1);
@@ -5813,6 +5812,7 @@ get_name_log:
             if (this->PlayerOptions.ProgramState == 3) {
                 this->PlayerOptions.Humanity[player] = ME_HUMAN;
                 if (this->IsPlayerHuman(player)) {
+                    MSGFORMAT_MISSING_PLAYER m;
                     L->Log("INVALID PLAYER");
                     L->Log("TX Missing Player report for player=%d ", dcoID);
                     m.Command = '?';
@@ -5821,16 +5821,14 @@ get_name_log:
                     this->FastSend(0, &m, 8, 0, 0);
                 }
             }
-            free(lpData);
-            goto update;
+            goto release_data;
         } else if (result == 0) {
             strcpy(this->FriendlyName[player].Text,
                    static_cast<DPNAME*>(lpData)->lpszShortNameA);
             strcpy(this->FormalName[player].Text,
                    static_cast<DPNAME*>(lpData)->lpszLongNameA);
             this->PlayerOptions.Humanity[player] = ME_HUMAN;
-            free(lpData);
-            goto update;
+            goto release_data;
         } else {
             goto unknown_result;
         }
@@ -5845,6 +5843,9 @@ fatal_result:
         L->Log("Fatal error player info %ld", result);
         strcpy(this->FriendlyName[player].Text, "Error!");
         this->PlayerOptions.Humanity[player] = ME_ABSENT;
+        goto release_data;
+
+release_data:
         free(lpData);
         goto update;
     }
@@ -5852,10 +5853,6 @@ fatal_result:
 no_dcoid:
     L->Log("P#%d Not Defined (updateplayers).", player);
     return;
-
-release_data:
-    free(lpData);
-    goto update;
 
 closed_cleanup:
     this->PlayerOptions.dcoID[player] = 0;
