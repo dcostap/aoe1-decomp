@@ -1055,6 +1055,11 @@ int RGE_Main_View::command_make_do(long x, long y, int allow_move,
 unsigned char RGE_Main_View::pick1(unsigned char command, unsigned char small_object, long x, long y,
                            RGE_Pick_Info* out,
                            RGE_Static_Object* exclude, int alt) {
+    RGE_Pick_Obj_Info* info;
+    RGE_Static_Object* picked_obj;
+    short scr_x;
+    short scr_y;
+    int target_count;
     if (command == 0x29) {
         out->x = 0;
         out->y = 0;
@@ -1064,19 +1069,20 @@ unsigned char RGE_Main_View::pick1(unsigned char command, unsigned char small_ob
         out->tile = 0;
 
         if (!small_object)
-            y = this->pick_objects(x, y, 0, 40, 15, 4, 1);
+            target_count = this->pick_objects(x, y, 0, 40, 15, 4, 1);
         else
-            y = this->pick_objects(x, y, 10, 20, 15, 4, 1);
-        if (!y)
+            target_count = this->pick_objects(x, y, 10, 20, 15, 4, 1);
+        int high_confidence = target_count;
+        if (!target_count)
             return 0x32;
 
         if (!exclude) {
-            RGE_Static_Object* best = 0;
-            short bestx = 0;
-            short besty = 0;
+            picked_obj = 0;
+            scr_x = 0;
+            scr_y = 0;
             x = 0;
-            RGE_Pick_Obj_Info* info = Picked_Objects;
-            for (int i = 0; i < y; ++i, ++info) {
+            info = Picked_Objects;
+            for (int i = high_confidence; i > 0; --i, ++info) {
                 if (info->object_id >= 0) {
                     RGE_Static_Object* object =
                         this->world->objectsValue[info->object_id];
@@ -1090,73 +1096,79 @@ unsigned char RGE_Main_View::pick1(unsigned char command, unsigned char small_ob
                             int score = this->pick_weight(
                                 object, info->confidence);
                             if (score > x) {
-                                bestx = this->TPanel::render_rect.left + info->draw_x;
-                                besty = this->TPanel::render_rect.top + info->draw_y;
-                                best = object;
+                                scr_x = this->TPanel::render_rect.left + info->draw_x;
+                                scr_y = this->TPanel::render_rect.top + info->draw_y;
+                                picked_obj = object;
                                 x = score;
                             }
                         }
                     }
                 }
             }
-            if (best != 0) {
-                out->object = best;
-                out->scr_x = bestx;
-                out->scr_y = besty;
-                out->x = best->world_x;
-                out->y = best->world_y;
+            if (picked_obj != 0) {
+                out->object = picked_obj;
+                out->scr_x = scr_x;
+                out->scr_y = scr_y;
+                out->x = picked_obj->world_x;
+                out->y = picked_obj->world_y;
                 return 0x34;
             }
             return 0x32;
         }
 
-        bool seen_exclude = false;
-        RGE_Static_Object* chosen = 0;
-        short chosen_x = 0;
-        short chosen_y = 0;
-        RGE_Pick_Obj_Info* info = Picked_Objects;
-        for (int i = 0; i < y; ++i, ++info) {
+        int found_last = 0;
+        picked_obj = 0;
+        scr_x = 0;
+        scr_y = 0;
+        info = Picked_Objects;
+        int i = 0;
+        while (i < target_count) {
             if (info->object_id >= 0) {
                 RGE_Static_Object* object =
                 this->world->objectsValue[info->object_id];
                 if (object != 0 && object->object_state < 7 &&
                     object->master_obj->select_level >= small_object) {
-                    int score = this->pick_weight(object, info->confidence);
-                    if (score > 0 &&
+                    if (this->pick_weight(object, info->confidence) > 0 &&
                         (alt || this->map->map_visible_flag ||
                          this->pick_through_fog(object) ||
                          this->player->visible->get_visible(
                              (int)object->world_x,
                              (int)object->world_y) == 0x0F)) {
                         if (object == exclude) {
-                            seen_exclude = 1;
-                        } else if (!seen_exclude) {
-                            if (chosen == 0) {
-                                chosen = object;
-                                chosen_x = this->TPanel::render_rect.left + info->draw_x;
-                                chosen_y = this->TPanel::render_rect.top + info->draw_y;
+                            found_last = 1;
+                        } else if (!found_last) {
+                            if (picked_obj == 0) {
+                                picked_obj = object;
+                                scr_x = this->TPanel::render_rect.left;
+                                scr_y = this->TPanel::render_rect.top;
+                                scr_x += info->draw_x;
+                                scr_y += info->draw_y;
                             }
                         } else {
-                            chosen = object;
-                            chosen_x = this->TPanel::render_rect.left + info->draw_x;
-                            chosen_y = this->TPanel::render_rect.top + info->draw_y;
+                            picked_obj = object;
+                            scr_x = this->TPanel::render_rect.left;
+                            scr_y = this->TPanel::render_rect.top;
+                            scr_x += info->draw_x;
+                            scr_y += info->draw_y;
                             break;
                         }
                     }
                 }
             }
+            ++i;
+            ++info;
         }
-        if (seen_exclude && chosen == 0) {
-            chosen = exclude;
-            chosen_x = this->TPanel::render_rect.left + Picked_Objects[y].draw_x;
-            chosen_y = this->TPanel::render_rect.top + Picked_Objects[y].draw_y;
+        if (found_last && picked_obj == 0) {
+            picked_obj = exclude;
+            scr_x = this->TPanel::render_rect.left + Picked_Objects[target_count].draw_x;
+            scr_y = this->TPanel::render_rect.top + Picked_Objects[target_count].draw_y;
         }
-        if (chosen != 0) {
-            out->object = chosen;
-            out->scr_x = chosen_x;
-            out->scr_y = chosen_y;
-            out->x = chosen->world_x;
-            out->y = chosen->world_y;
+        if (picked_obj != 0) {
+            out->object = picked_obj;
+            out->scr_x = scr_x;
+            out->scr_y = scr_y;
+            out->x = picked_obj->world_x;
+            out->y = picked_obj->world_y;
             return 0x34;
         }
         return 0x32;
