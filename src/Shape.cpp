@@ -52,8 +52,9 @@ TShape::TShape(char* filename, long resource_file_id)
         color_log('T', 'T', 1);
 
         strcpy(NextFile, filename);
+        strcpy(NextFile + strlen(NextFile) - 4, ".slp");
         Shape_Loads++;
-        fd = open(strcpy(NextFile + strlen(NextFile) - 4, ".slp"), 0x8000);
+        fd = open(NextFile, 0x8000);
         if (fd != -1) {
             lseek(fd, 0, 2);
             int sz = tell(fd);
@@ -67,7 +68,8 @@ TShape::TShape(char* filename, long resource_file_id)
         }
 
         if (this->FShape == 0) {
-            fd = open(strcpy(NextFile + strlen(NextFile) - 4, ".shp"), 0x8000);
+            strcpy(NextFile + strlen(NextFile) - 4, ".shp");
+            fd = open(NextFile, 0x8000);
             if (fd != -1) {
                 lseek(fd, 0, 2);
                 int sz = tell(fd);
