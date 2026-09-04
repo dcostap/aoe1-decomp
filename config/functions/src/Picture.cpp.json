@@ -16,6 +16,6 @@
     "0046E2C0": {"status": "matching", "symbol": "?AlignedWidth@TPicture@@QAEJXZ"},
     "0046E2D0": {"status": "matching", "symbol": "?Draw@TPicture@@QAEXPAVTDrawArea@@JJHH@Z"},
     "0046E370": {"status": "matching", "symbol": "?Tile@TPicture@@QAEJPAVTDrawArea@@JJJJJJJJJJ@Z"},
-    "0046E3E0": {"status": "scratch", "symbol": "?GetPixel@TPicture@@QAEEJJHH@Z"}
+    "0046E3E0": {"status": "matching", "symbol": "?GetPixel@TPicture@@QAEEJJHH@Z"}
   }
 }
