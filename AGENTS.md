@@ -42,6 +42,11 @@ memory effects, exceptions, faults, and fault order, record it as accepted
 drift. Explain the cause and evidence. Do not add unsupported compensating
 source to recover a metric.
 
+Preserve each exact candidate that closure review rejects. Store a patch under
+`decomp_notes/candidates/<VA-prefix>/<VA>_exact_candidate.patch`. Record the
+exact target result, the regressed owners, and the tested main commit. Do not
+rely on a worker worktree, temporary file, or ignored build artifact.
+
 Inline assembly is forbidden for real functions unless explicitly allowed.
 This includes `__asm`, `_asm`, naked functions, and handwritten wrappers.
 
