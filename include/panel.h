@@ -173,9 +173,9 @@ public:
     TPanel* previousModalPanel() const;
     void setPreviousModalPanel(TPanel* panel);
     char* panelName() const;
+    long width() const;
     long xPosition() const;
     long yPosition() const;
-    long width() const;
     long height() const;
     TDrawArea* renderArea() const;
     tagRECT clipRectangle() const;
