@@ -337,17 +337,17 @@ unsigned char TRIBE_Action_Trade::update()
             this->obj->attribute_type_held = 1;
         }
         {
-            RGE_Player* owner = this->obj->owner;
             max_hold = (float)this->obj->master_obj->attribute_max_amount;
             give_amount = max_hold - this->obj->attribute_amount_held;
             short attr = this->obj->attribute_type_held;
+            RGE_Player* owner = this->obj->owner;
             if (owner->attributes[attr] < give_amount) {
                 give_amount = owner->attributes[attr];
             }
             if (this->target_obj->owner->attributes[9] < give_amount) {
                 give_amount = this->target_obj->owner->attributes[9];
             }
-            this->target_obj->owner->add_attribute_num(
+            this->obj->owner->add_attribute_num(
                 attr, -give_amount, 1);
             this->target_obj->owner->attributes[9] -= give_amount;
             this->obj->attribute_amount_held += give_amount;
