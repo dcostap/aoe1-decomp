@@ -447,7 +447,7 @@ uchar RGE_Random_Map_Module::find_path(
     Map_Stack& path_stack, long x, long y, long& target_x, long& target_y,
     float* terrain_cost)
 {
-    unsigned char calc_cost[4];  // [1]=up, [2]=right, [3]=down
+    unsigned char calc_cost[4];  // [1]=up, [2]=down, [3]=horizontal
     float tcost;
     unsigned char tile_type;
     float cost;
@@ -478,10 +478,10 @@ uchar RGE_Random_Map_Module::find_path(
         while (cost != 0.0) {
             if (y < map_w) {
                 float hcost;
-                if (target_y <= y) {
-                    hcost = cost - -1.0f;
-                } else {
+                if (target_y > y) {
                     hcost = cost - 1.0f;
+                } else {
+                    hcost = cost - -1.0f;
                 }
 
                 cell = this->search_map_rows[y + 1] + x;
@@ -639,10 +639,10 @@ uchar RGE_Random_Map_Module::find_path(
 
             if (x < local_4) {
                 float hcost;
-                if (target_x <= x) {
-                    hcost = cost - -1.0f;
-                } else {
+                if (target_x > x) {
                     hcost = cost - 1.0f;
+                } else {
+                    hcost = cost - -1.0f;
                 }
 
                 cell = this->search_map_rows[y] + x + 1;
@@ -680,9 +680,9 @@ uchar RGE_Random_Map_Module::find_path(
                                 tcost = ty - terrain_cost[tile_type] * DAT_00571e50;
                                 *cell = 10;
                                 if (target_y < y) {
-                                    hcost = hcost - 0.41f;
+                                    hcost = hcost - 0.4f;
                                 } else {
-                                    hcost = hcost - -0.41f;
+                                    hcost = hcost - -0.4f;
                                 }
                                 this->push_stack(path_stack, x + 1, map_h,
                                                  tcost, tcost + hcost);
@@ -708,10 +708,10 @@ uchar RGE_Random_Map_Module::find_path(
                             if (calc_cost[2] && calc_cost[3]) {
                                 tcost = ty - terrain_cost[tile_type] * DAT_00571e50;
                                 *cell = 11;
-                                if (target_y <= y) {
-                                    hcost = hcost - -0.41f;
+                                if (target_y > y) {
+                                    hcost = hcost - 0.4f;
                                 } else {
-                                    hcost = hcost - 0.41f;
+                                    hcost = hcost - -0.4f;
                                 }
                                 this->push_stack(path_stack, x + 1, map_h,
                                                  tcost, tcost + hcost);
