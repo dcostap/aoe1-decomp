@@ -1062,14 +1062,9 @@ void RGE_Static_Object::draw_frame_3d_square_front(
                 int bar_left = (-12) + x1;
                 area->FillRect(bar_left, bar_bottom - 1,
                                bar_left + 24, bar_bottom, 0x97);
-                int fill_bottom = y1;
-                fill_bottom--;
-                int fill_top = y1;
-                fill_top--;
-                fill_top--;
-                area->FillRect(x1 - 12, fill_top,
+                area->FillRect(x1 - 12, y1 - 2,
                                (value * 24) / denom + x1 - 12,
-                               fill_bottom, 0x4a);
+                               y1 - 1, 0x4a);
             }
         }
     }
