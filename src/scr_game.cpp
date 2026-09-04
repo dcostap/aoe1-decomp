@@ -3340,8 +3340,7 @@ int scr_game_score_compare(const void* param_b, const void* param_a) {
 void TRIBE_Screen_Game::reset_score_display()
 {
     int i;
-    int j;
-    int local_2d4;
+    int player_count;
     int team;
     int icon_num2;
     int low_fps_player;
@@ -3375,7 +3374,7 @@ void TRIBE_Screen_Game::reset_score_display()
             score->player_score =
                 this->world->players[player_id]->victory_conditions->get_victory_points();
             score->team_score = score->player_score;
-            local_2d4 = 1;
+            player_count = 1;
 
             if (this->world->players[player_id]->allied_victory != 0) {
                 int team_player = 1;
@@ -3392,14 +3391,14 @@ void TRIBE_Screen_Game::reset_score_display()
                             }
                             score->team_score +=
                                 this->world->players[player_id2]->victory_conditions->get_victory_points();
-                            ++local_2d4;
+                            ++player_count;
                         }
                     }
                     ++team_player;
                     ++team_score;
                 }
             }
-            score->team_score /= local_2d4;
+            score->team_score /= player_count;
         }
         ++score;
         ++icon_num2;
@@ -3411,7 +3410,7 @@ void TRIBE_Screen_Game::reset_score_display()
     if (rge_base_game->multiplayerGame() != 0) {
         int low_fps = 11;
         PLAYER_SCORE* p = player_score;
-        for (j = 0; j < 8; ++j) {
+        for (i = 0; i < 8; ++i) {
             if (p->player_id != 0 && comm->GetPlayerHumanity(p->comm_id) == 2) {
                 unsigned long average =
                     comm->Speed->PlayerAvgFramesMsec[p->comm_id];
@@ -3447,7 +3446,7 @@ void TRIBE_Screen_Game::reset_score_display()
 
             RGE_Player* player = this->world->players[p->player_id];
             int font_color;
-            int back_color;
+            int back_color = 0;
             switch (player->color_table->id) {
             case 0:
                 font_color = 0xFF0000;
