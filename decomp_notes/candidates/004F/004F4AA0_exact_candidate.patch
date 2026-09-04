@@ -1,0 +1,98 @@
+# Exact candidate for 004F4AA0 taskUngroupedSoldiers.
+# Worker: wrap-alpha-226.
+# Tested commit: 521852c4c (HEAD).
+#
+# Target result with this header change: MATCH, 0.0000%, 740/740 bytes,
+# 258/258 instructions, 15/15 ordered calls, 0x1C frame, matching owner,
+# boundary, relocations, and direct targets.
+#
+# Source ownership: the target source is already the canonical
+# src/taitacmd.cpp owner. No target-body edit is needed. The target source
+# calls ManagedArray<int>::add after its contains check. The candidate changes
+# only the add growth path to call the shared resize owner. The current
+# constructor is retained because the UnitAIModule exact constructor proves
+# that a capacity argument allocates and sets maximumSizeValue.
+#
+# Closure audit: python tools/audit_translation_unit_functions.py
+#   --affected-by include/utmarray.h --jobs 1
+# Full audit output:
+#   build/worker_wrap_alpha_226_final_b_closure/report.txt
+#   build/worker_wrap_alpha_226_final_b_closure/report.csv
+#   90/90 translation units, 2,764 normal functions, 2,466 validation targets.
+#   Candidate result: 2,465 matching results and one matching regression.
+#
+# The sole final candidate regression is:
+#   004E9260 TribeStrategyAIModule, src/taistrmd.cpp: MATCH baseline to
+#   MISMATCH, 1,146 differing bytes, 879/1,231 bytes, 25/28 calls, and
+#   three extra direct resize calls. Its constructor has three serialized
+#   ManagedArray<int>::add loops. The exact original body has three direct
+#   operator_new/operator_delete pairs. This is a real shared add ownership
+#   conflict, not a boundary or symbol defect.
+#
+# The complete earlier header repair also changed the constructor and moved
+# contains/add bodies in class. It made the target exact but affected 11
+# owners. The smaller candidate below keeps the binary-proven constructor and
+# current contains owner. It preserves these affected owners in the final
+# one-job closure: 0040CDF0, 00412F00, 004350E0, 00435110, 004421F0,
+# 0046B5E0, 0046B620, 004D4F80, 00510110, 00532610, and 00533410.
+#
+# Natural probes:
+# - Retaining the current constructor reduced the earlier 11-owner closure
+#   regression set. Replacing the current add body only restored the target
+#   without regressing those owners in the final closure.
+# - A source alias in add_doppleganger_check could hide a four-byte register
+#   drift in an isolated check, but it was redundant and was not retained.
+# - Pointer declaration and coordinate-operand changes in Command.cpp could
+#   improve isolated candidate bytes but regressed the clean header result.
+#   They were restored.
+# - Explicit target append source and direct duplicated add source both broke
+#   the target frame, call set, or control flow. They were restored.
+# - In-class direct allocation restored 004E9260 but lost the target exact
+#   result. It was not retained.
+#
+# This patch is evidence only until root review resolves the shared add
+# ownership conflict. It is not a promotion claim.
+
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 99ff66a92..582599683 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -183,32 +183,19 @@ int ManagedArray<T>::contains(const T& item) const
+ }
+ 
+ template <class T>
+-int ManagedArray<T>::add(T val)
++int ManagedArray<T>::add(T item)
+ {
+     int i;
+-
+     for (i = 0; i < this->numberValue; i++) {
+         if (i >= this->maximumSizeValue)
+             break;
+-        if (this->value[i] == val)
++        if (this->value[i] == item)
+             return 0;
+     }
+-    if (this->numberValue > this->maximumSizeValue - 1) {
+-        int newSize = this->numberValue + 1;
+-        T* newValue = (T*)operator_new(newSize * sizeof(T));
+-        if (newValue != 0) {
+-            int j;
+-            for (j = 0; j < this->maximumSizeValue; j++) {
+-                if (j >= newSize)
+-                    break;
+-                newValue[j] = this->value[j];
+-            }
+-            operator_delete(this->value);
+-            this->value = newValue;
+-            this->maximumSizeValue = newSize;
+-        }
+-    }
+-    this->value[this->numberValue] = val;
++
++    if (this->numberValue > this->maximumSizeValue - 1)
++        this->resize(this->numberValue + 1);
++    this->value[this->numberValue] = item;
+     this->numberValue++;
+     return 1;
+ }
