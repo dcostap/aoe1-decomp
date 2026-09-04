@@ -811,17 +811,19 @@ void RGE_View::draw()
             goto label_done;
         }
 
-        long dx = (short)((short)this->map_scr_x_offset - (short)old_map_scr_x_offset);
-        long dy = (short)((short)this->map_scr_y_offset - (short)old_map_scr_y_offset);
-        if ((short)dx == 0 && (short)dy == 0) goto label_done;
+        short x_diff = this->map_scr_x_offset - old_map_scr_x_offset;
+        short y_diff = this->map_scr_y_offset - old_map_scr_y_offset;
+        if (x_diff == 0 && y_diff == 0) goto label_done;
+        int dx = x_diff;
+        int dy = y_diff;
 
         int screen_width = this->pnl_wid;
         old_rect.left = 0;
         old_rect.top = 0;
         int screen_height = this->pnl_hgt;
         old_rect.right = screen_width - 1;
-        new_rect.left = (int)dx;
-        new_rect.top = (int)dy;
+        new_rect.left = dx;
+        new_rect.top = dy;
         old_rect.bottom = screen_height - 1;
         new_rect.right = old_rect.right + new_rect.left;
         new_rect.bottom = old_rect.bottom + new_rect.top;
@@ -848,10 +850,10 @@ void RGE_View::draw()
 
         if ((short)dx < 0) {
             old_rect.left = 0;
-            old_rect.right = (int)dx + screen_width - 1;
-            new_rect.left = -(int)dx;
+            old_rect.right = dx + screen_width - 1;
+            new_rect.left = -dx;
         } else {
-            old_rect.left = (int)dx;
+            old_rect.left = dx;
             old_rect.right = screen_width - 1;
             new_rect.left = 0;
             screen_width = screen_width - old_rect.left;
@@ -860,18 +862,18 @@ void RGE_View::draw()
 
         if ((short)dy < 0) {
             old_rect.top = 0;
-            old_rect.bottom = (int)dy + screen_height - 1;
-            new_rect.top = -(int)dy;
+            old_rect.bottom = dy + screen_height - 1;
+            new_rect.top = -dy;
         } else {
-            old_rect.top = (int)dy;
+            old_rect.top = dy;
             old_rect.bottom = screen_height - 1;
             new_rect.top = 0;
             screen_height = screen_height - old_rect.top;
         }
         new_rect.bottom = screen_height - 1;
 
-        int xd = (int)dx;
-        int yd = (int)dy;
+        int xd = dx;
+        int yd = dy;
 
         if (this->render_area->DrawSystem->DrawType == 1 || this->render_area->UsingVidMem == 0) {
             this->render_area->OverlayMemCopy(old_rect, new_rect, xd, yd,
