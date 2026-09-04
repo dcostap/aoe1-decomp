@@ -3556,20 +3556,23 @@ typedef unsigned int uint;
 
 int TCommunications_Handler::TXResendReply(uint serial, uint player)
 {
+    unsigned int offset;
     uint playerNumber;
     unsigned long now;
     uint GoodTransmitCount;
     uint i;
     long hr;
     MSGFORMAT_RESEND nosuch;
+    char* errorText;
 
     if (this->RGE_Guaranteed_Delivery == 0) {
         return 0;
     }
 
+    offset = 0;
     if (this->PlayerOptions.dcoID[player] == 0) {
-        L->Log("Invalid player req.");
-        return 0;
+        errorText = "Invalid player req.";
+        goto resend_failure;
     }
 
     playerNumber = player;
@@ -3592,31 +3595,33 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
     hr = 0;
     i = 0;
     GoodTransmitCount = 0;
+    player = player * 4 + 0x10;
 
     do {
-        RESENDER* entry = &this->Resend[GoodTransmitCount];
-        if (entry->Serial == serial) {
+        if (*(unsigned int*)((char*)this->Resend + offset + 4) == serial) {
             sprintf(this->TBuff, "Found Resend Ser#%d for P#%d",
-                    entry->Serial, playerNumber);
+                    *(unsigned int*)((char*)this->Resend + offset + 4),
+                    playerNumber);
             L->Log(this->TBuff);
 
-            char* allocated = new char[entry->Length];
-            entry->DestMap[playerNumber]--;
+            nosuch.Serialno = (uint)operator new(
+                *(unsigned int*)((char*)this->Resend + offset + 0xC));
+            (*(unsigned int*)((char*)this->Resend + player))--;
 
             if (local_player_dpid == 0) {
-                delete[] allocated;
-                L->Log("+++BAD DCOID=0 NO TX");
-                return 0;
+                errorText = "+++BAD DCOID=0 NO TX";
+                goto resend_failure;
             }
 
             unsigned long send_start =
                 debug_timeGetTime(com_hand_source_path, 0xF19);
             L->Log("  >TX RES REP #%d %d (%d)", playerNumber, serial,
-                   entry->Length);
+                   *(unsigned int*)((char*)this->Resend + offset + 0xC));
             int send_result = direct_play_interface->Send(
                 local_player_dpid,
                 this->PlayerOptions.dcoID[playerNumber], 0,
-                entry->ResendMsg, entry->Length);
+                *(char**)((char*)this->Resend + offset + 8),
+                *(unsigned int*)((char*)this->Resend + offset + 0xC));
             unsigned long send_elapsed =
                 debug_timeGetTime(com_hand_source_path, 0xF28)
                 - send_start;
@@ -3626,26 +3631,30 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
 
             if (send_result == 0) {
                 ++hr;
-                this->TXPacketLength += entry->Length;
+                this->TXPacketLength +=
+                    *(unsigned int*)((char*)this->Resend + offset + 0xC);
             } else {
                 this->Err->ShowReturn(send_result, "Resend TX");
                 ++i;
             }
 
-            nosuch.Serialno = static_cast<uint>(
-                static_cast<signed char>(entry->ResendMsg[0]));
+            nosuch.Serialno = (uint)(signed char)*(
+                *(char**)((char*)this->Resend + offset + 8));
             unsigned long log_time =
                 debug_timeGetTime(com_hand_source_path, 0xF42);
             L->Log("COMM: >>>>> RETRANSMIT P#%d Ser#%d (Slot#%d) Cmd %d '%c' MsgLength=%d Retx left=%d timeGetTime=%d",
                    playerNumber,
-                   entry->Serial,
+                   *(unsigned int*)((char*)this->Resend + offset + 4),
                    GoodTransmitCount, nosuch.Serialno, nosuch.Serialno,
-                   entry->Length, entry->DestMap[playerNumber],
+                   *(unsigned int*)((char*)this->Resend + offset + 0xC),
+                   *(unsigned int*)((char*)this->Resend + player),
                    log_time);
-            delete[] allocated;
+            operator delete((void*)nosuch.Serialno);
         }
+        offset += 0x38;
         ++GoodTransmitCount;
-    } while (GoodTransmitCount <= 501);
+        player += 0x38;
+    } while (offset <= 0x6D98);
 
     if ((hr == 0) && (i == 0)) {
         if (this->PlayerOptions.ProgramState == 3) {
@@ -3667,6 +3676,10 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
 
     this->PurgeAcknowledgedStoredMessages();
     return 1;
+
+resend_failure:
+    L->Log(errorText);
+    return 0;
 }
 
 
