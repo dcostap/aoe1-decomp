@@ -308,7 +308,7 @@ int TTextPanel::word_wrap_append(char* text)
 
     for (;;) {
     next_line:
-        text_len = __mbslen(text);
+        text_len = (short)__mbslen(text);
         found_break = 0;
         found_return = 0;
         found_space = 0;

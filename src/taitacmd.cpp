@@ -6608,7 +6608,9 @@ next_boat:
     return -1;
 
 found_civilian:
-    return (*resultArray)[i];
+    if (i > resultArray->maximumSizeValue - 1)
+        resultArray->resize(i + 1);
+    return resultArray->value[i];
 
 }
 
