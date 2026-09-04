@@ -2922,7 +2922,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
             object->object_state <= 2 &&
             commanderObject->canPath(
                 group->objectToDestroy(group->numberObjectsToDestroyValue - 1),
-                commanderObject->weaponRange(), 0, 0, -1, -1) == 1) {
+                commanderObject->weaponRange()) == 1) {
             objectID = group->objectToDestroy(group->numberObjectsToDestroyValue - 1);
             group->numberObjectsToDestroyValue = 0;
             group->addObjectToDestroy(objectID);
@@ -2941,7 +2941,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                 object->object_state <= 2 &&
                 commanderObject->canPath(
                     group->objectToDestroy(destroyIndex),
-                    commanderObject->weaponRange(), 0, 0, -1, -1) == 1) {
+                    commanderObject->weaponRange()) == 1) {
 
                 goto selected_destroy_object;
             }
@@ -2956,8 +2956,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                 goto done;
             }
             if (commanderObject->canPath(wonder->id,
-                                         commanderObject->weaponRange(),
-                                         0, 0, -1, -1) == 1) {
+                                         commanderObject->weaponRange()) == 1) {
                 group->numberObjectsToDestroyValue = 0;
                 group->addObjectToDestroy(wonder->id);
                 group->objectsToDestroyOwnerValue = wonder->owner;
@@ -3049,8 +3048,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         }
 
         if (commanderIsPriest != 0 &&
-            commanderObject->unitAI()->seekAndDestroy(
-                memory->id, memory->x, memory->y, 1) == 0) {
+            commanderObject->unitAI()->canConvert(memory->id) == 0) {
             continue;
         }
 
@@ -3156,8 +3154,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         ManagedArray<int> wallObjects;
         if (targetZone == commanderZone &&
             commanderObject->canPath(memory->id,
-                                     commanderObject->weaponRange(),
-                                     0, 0, -1, -1) != 1 &&
+                                     commanderObject->weaponRange()) != 1 &&
             commanderObject->canPathWithObstructions(
                 memory->id, commanderObject->weaponRange(), 0, 1, owner,
                 obstructionGroup, wallObjects) != 1) {

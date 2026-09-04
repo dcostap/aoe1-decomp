@@ -165,7 +165,7 @@ public:
     virtual int pause() { return 0; }
     // VC5 reverses this adjacent overload pair in the original vtable.
     virtual int canPath(XYZPoint, float, int, float*, int, int, int) { return 0; }
-    virtual int canPath(int, float, float*, int, int, int) { return 0; }
+    virtual int canPath(int, float, float* = 0, int = 1, int = -1, int = -1) { return 0; }
     virtual int canBidirectionPath(int, int, float, float*, int, int, int) { return 0; }
     virtual int canPathWithObstructions(int, float, float*, int, int, int,
                                         ManagedArray<int>&) { return 0; }
