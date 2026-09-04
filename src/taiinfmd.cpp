@@ -2708,7 +2708,10 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
     specialRating3 = -1;
     int dCRating;
     int i;
-    for (dCRating = 0, i = 0; dCRating < this->maxImportantObjectMemory; dCRating++, i += 0x24) {
+    dCRating = 0;
+    if (this->maxImportantObjectMemory > 0) {
+        i = 0;
+        do {
             if (*(uchar*)((char*)this->importantObjectMemory + i + 0x0B) == player) {
                 candidate = this->md->object(*(int*)((char*)this->importantObjectMemory + i));
                 if (candidate != 0 && candidate->object_state <= 2) {
@@ -2734,7 +2737,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
                         (candidate->master_obj->object_group == 3 ||
                          candidate->master_obj->object_group == 0x1B) &&
                         randomRating > 0) {
-                        continue;
+                        goto objectToAttack_loop_continue;
                     }
                     if (unitIsBoat == 0 && boats != 0 &&
                         (candidate->master_obj->id == 0x2D ||
@@ -2743,12 +2746,12 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
                          candidate->master_obj->object_group == 0x16 ||
                          candidate->master_obj->object_group == 0x14) &&
                         id > 0) {
-                        continue;
+                        goto objectToAttack_loop_continue;
                     }
                     if (numberNonSiegeTargets != 0) {
                         if (unit->unitAI()->canConvert(
                                 this->importantObjectMemory[dCRating].id) == 0)
-                            continue;
+                            goto objectToAttack_loop_continue;
                     }
                     int ix = (int)candidate->world_x;
                     int iy = (int)candidate->world_y;
@@ -2758,7 +2761,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
                     if (dy1 < 0) dy1 = -dy1;
                     if (dx1 > 5 || dy1 > 5) {
                         if (this->md->player->visible->get_visible(ix, iy) != 0x0F) {
-                            continue;
+                            goto objectToAttack_loop_continue;
                         }
                     }
                     int dx2 = (int)*(uchar*)((char*)this->importantObjectMemory + i + 0x08)
@@ -2877,6 +2880,10 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
                     }
                 }
             }
+objectToAttack_loop_continue:
+            dCRating++;
+            i += 0x24;
+        } while (dCRating < this->maxImportantObjectMemory);
     }
     return best;
 }

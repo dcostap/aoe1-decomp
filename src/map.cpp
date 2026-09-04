@@ -1676,8 +1676,8 @@ void RGE_Map::load_border_types(char* filename, RGE_Sound** sounds)
                     convert_us(name);
                     strcpy(border->name, name);
                     strcpy(border->pict_name, pict_name);
-                    border->loaded = 1;
                     border->resource_id = local_28;
+                    border->loaded = 1;
                     border->is_animated = (unsigned char)tile_flag;
                     border->animation_frames = underlay_terrain;
                     if (frame_rate == DAT_005706ac)

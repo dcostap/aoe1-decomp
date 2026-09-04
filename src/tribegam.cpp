@@ -2490,10 +2490,11 @@ extern int ENABLE_COMPRESSION;
 
 int TRIBE_Game::load_game(char* file_name)
 {
-    TPanel* old_panel;
+    TPanel* cur_panel;
     int loaded;
     RGE_Object_Node* list;
     RGE_Action_Node* act_node;
+    RGE_Player* p;
     long action_checksum;
     long num2;
     long num3;
@@ -2508,7 +2509,7 @@ int TRIBE_Game::load_game(char* file_name)
     char fileNameNoExt[260];
 
     this->inHandleIdle = 0;
-    old_panel = panel_system.currentPanel();
+    cur_panel = panel_system.currentPanel();
     this->disable_input();
 
     if (this->prog_mode == 4 || this->prog_mode == 6 ||
@@ -2521,9 +2522,9 @@ int TRIBE_Game::load_game(char* file_name)
 
     this->show_status_message(0x44D, 0, -1);
     if (this->load_game_data() == 0) {
-        if (old_panel == 0 || old_panel->panelName() == 0)
+        if (cur_panel == 0 || cur_panel->panelName() == 0)
             goto load_game_failed;
-        if (*old_panel->panelName() == 0)
+        if (*cur_panel->panelName() == 0)
             goto load_game_failed;
         goto load_game_panel;
     }
@@ -2545,9 +2546,9 @@ int TRIBE_Game::load_game(char* file_name)
         this->sound_system->mute = 0;
 
     if (loaded == 0) {
-        if (old_panel == 0 || old_panel->panelName() == 0)
+        if (cur_panel == 0 || cur_panel->panelName() == 0)
             goto load_game_failed;
-        if (*old_panel->panelName() == 0)
+        if (*cur_panel->panelName() == 0)
             goto load_game_failed;
         goto load_game_panel;
     }
@@ -2611,32 +2612,32 @@ int TRIBE_Game::load_game(char* file_name)
                 fprintf(debug_file, "game_speed %6.2f\n",
                         this->world->game_speed);
 
-                for (int i = 0; i < this->world->player_num; ++i) {
-                    RGE_Player* player = this->world->players[i];
+                for (i = 0; i < this->world->player_num; ++i) {
+                    p = this->world->players[i];
                     fprintf(debug_file,
                             "player %d, civ=%d, score=%d, %s\n",
-                            i, player->master_player_id,
-                            player->victory_conditions->get_victory_points(),
-                            player->name);
+                            i, p->master_player_id,
+                            p->victory_conditions->get_victory_points(),
+                            p->name);
                     fprintf(debug_file, "  Writing=%f\n",
-                            player->attributes[50]);
+                            p->attributes[50]);
                     action_checksum = 0;
                     num2 = 0;
                     fprintf(debug_file, "  num_sleep_obj=%d\n",
-                            player->sleeping_objects->number_of_objects);
+                            p->sleeping_objects->number_of_objects);
                     fprintf(debug_file, "  num_dopple_obj=%d\n",
-                            player->doppleganger_objects->number_of_objects);
+                            p->doppleganger_objects->number_of_objects);
 
                     num1 = 0;
                     temp_position_checksum = 0.0f;
-                    num3 = player->sleeping_objects->number_of_objects +
-                        player->doppleganger_objects->number_of_objects + player->id;
-                    for (int i = 0; i < player->attribute_num; ++i) {
-                        num1 += static_cast<int>(player->attributes[i]);
+                    num3 = p->sleeping_objects->number_of_objects +
+                        p->doppleganger_objects->number_of_objects + p->id;
+                    for (num4 = 0; num4 < p->attribute_num; ++num4) {
+                        num1 += static_cast<int>(p->attributes[num4]);
                         fprintf(debug_file, "  p#%d attr[%d]=%12.8f\n",
-                                player->id, i, player->attributes[i]);
+                                p->id, num4, p->attributes[num4]);
                     }
-                    list = player->objects->list;
+                    list = p->objects->list;
                     while (list != 0) {
                         RGE_Static_Object* object = list->node;
                         int attribute_value =
@@ -2661,7 +2662,7 @@ int TRIBE_Game::load_game(char* file_name)
                         }
                         fprintf(debug_file,
                                 "  p#%d ob=%d (%s), st=%d, at=%8.4f, pos=%6.2f,%6.2f,%6.2f, tar=%d (%s)\n",
-                                player->id, object->id,
+                                p->id, object->id,
                                 object->master_obj->name,
                                 object->object_state,
                                 object->attribute_amount_held,
@@ -2725,7 +2726,7 @@ int TRIBE_Game::load_game(char* file_name)
                         list = list->next;
                     }
 
-                    list = player->sleeping_objects->list;
+                    list = p->sleeping_objects->list;
                     while (list != 0) {
                         RGE_Static_Object* object = list->node;
                         int attribute_value =
@@ -2752,7 +2753,7 @@ int TRIBE_Game::load_game(char* file_name)
                         }
                         fprintf(debug_file,
                                 "  p#%d ob=%d (%s), st=%d, at=%8.4f, pos=%6.2f,%6.2f,%6.2f, tar=%d (%s)\n",
-                                player->id, object->id,
+                                p->id, object->id,
                                 object->master_obj->name, object->object_state,
                                 object->attribute_amount_held, object->world_x,
                                 object->world_y, object->world_z, num4,
@@ -2824,7 +2825,7 @@ int TRIBE_Game::load_game(char* file_name)
                         list = list->next;
                     }
 
-                    list = player->doppleganger_objects->list;
+                    list = p->doppleganger_objects->list;
                     while (list != 0) {
                         char target_name[50];
                         RGE_Static_Object* target =
@@ -2839,7 +2840,7 @@ int TRIBE_Game::load_game(char* file_name)
                         }
                         fprintf(debug_file,
                                 "  p#%d ob=%d (%s), st=%d, at=%8.4f, pos=%6.2f,%6.2f,%6.2f, tar=%d (%s)\n",
-                                player->id, list->node->id,
+                                p->id, list->node->id,
                                 list->node->master_obj->name,
                                 list->node->object_state,
                                 list->node->attribute_amount_held,
@@ -2856,7 +2857,7 @@ int TRIBE_Game::load_game(char* file_name)
                     total_checksum += action_checksum;
                     fprintf(debug_file,
                             "  p#%d checksum=%d, 1=%d, 2=%d, 3=%d, 4=%d, act=%d\n",
-                            player->id, checksum, num1, action_checksum, num2,
+                            p->id, checksum, num1, action_checksum, num2,
                             num3, action_checksum);
                 }
 
@@ -2871,7 +2872,7 @@ int TRIBE_Game::load_game(char* file_name)
     }
 
 load_game_panel:
-    panel_system.setCurrentPanel(old_panel->panelName(), 0);
+    panel_system.setCurrentPanel(cur_panel->panelName(), 0);
     panel_system.destroyPanel("Status Screen");
     this->enable_input();
     return 0;
