@@ -1340,8 +1340,8 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         dX = (float)floor((double)this->world_x) - DAT_00570b80;
         newY = (float)floor((double)this->world_y) - DAT_00570b80;
         if (pathSystem.passable(this, dX, newY, 1)) {
-            if (this->world_x - (float)floor((double)this->world_x) == DAT_00570b90 &&
-                this->world_y - (float)floor((double)this->world_y) == DAT_00570b90) {
+            if (this->world_x - floor((double)this->world_x) == DAT_00570b90 &&
+                this->world_y - floor((double)this->world_y) == DAT_00570b90) {
                 return 4;
             }
             this->teleport((float)floor((double)this->world_x) - DAT_00570b80,
