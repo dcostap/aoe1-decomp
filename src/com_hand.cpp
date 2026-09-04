@@ -1857,21 +1857,21 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long size,
         L->Log("KILL Message recieved from %d to kill P#%d ",
                player, kill_message->PlayerNo);
         unsigned long dco_id = kill_message->dcoID;
-        int found;
+        int candidate;
         int high;
-        found = 0;
+        int found;
         if (dco_id != 0) {
-            found = this->PlayerOptions.LowPlayerNumber;
+            candidate = this->PlayerOptions.LowPlayerNumber;
             high = this->PlayerOptions.HighPlayerNumber;
-            while (found <= high) {
-                if (this->PlayerOptions.dcoID[found] == dco_id)
+            while (candidate <= high) {
+                if (this->PlayerOptions.dcoID[candidate] == dco_id) {
+                    found = candidate;
                     goto found_player;
-                ++found;
+                }
+                ++candidate;
             }
-            found = 0;
-        } else {
-            found = 0;
         }
+        found = 0;
 found_player:
         if (found != 0) {
             if (this->PlayerStopTurn[found] == 0)
