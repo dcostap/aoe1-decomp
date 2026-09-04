@@ -137,9 +137,9 @@ void RGE_Action_Enter::set_state(unsigned char value)
 
 unsigned char RGE_Action_Enter::update()
 {
-    XYPoint start;
     XYPoint dest;
-    XYPoint result;
+    XYPoint start;
+    XYPoint rVal;
 
     if (this->targetID != -1 &&
         this->obj->owner->world->object(this->targetID) == 0) {
@@ -227,13 +227,13 @@ entered_target:
             dest.y = (int)this->obj->world_y;
             start.x = (int)this->target_obj->world_x;
             start.y = (int)this->target_obj->world_y;
-            if (this->obj->firstTileAlongLine(dest, start, result, 2, 2,
+            if (this->obj->firstTileAlongLine(dest, start, rVal, 2, 2,
                                               1) == 1) {
                 float tile_x;
                 float tile_y;
 
-                tile_x = (float)result.x - DAT_0056e1a0;
-                tile_y = (float)result.y - DAT_0056e1a0;
+                tile_x = (float)rVal.x - DAT_0056e1a0;
+                tile_y = (float)rVal.y - DAT_0056e1a0;
                 if (this->target_x == tile_x &&
                     tile_y == this->target_y) {
                     this->target_x = this->target_obj->world_x;
@@ -245,7 +245,7 @@ entered_target:
                 this->target_x = tile_x;
                 this->target_y = tile_y;
                 this->target_obj->moveTo(
-                    (float)result.x, (float)result.y,
+                    (float)rVal.x, (float)rVal.y,
                     this->target_obj->world_z, 0, 1);
             } else {
                 this->target_x = this->target_obj->world_x;

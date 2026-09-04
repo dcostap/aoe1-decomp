@@ -985,9 +985,9 @@ case20_next:
         lastAttackRoundupTime = md->player->world->world_time;
         int madeMemory = 1;
         int stored = 0;
-        int* unitp;
-        unitp = unitsValue;
-        for (int i = 0; i < 40; ++i, ++unitp) {
+        int i = 0;
+        int* unitp = unitsValue;
+        for (; i < 40; ++i, ++unitp) {
             if (*unitp == -1) continue;
             tactical->logGroupDebug(idValue, s_log_08, *unitp);
             RGE_Static_Object* obj = md->object(*unitp);
@@ -1018,14 +1018,14 @@ case20_next:
                         tactical->logGroupDebug(idValue, s_log_15);
                         XYPoint min;
                         XYPoint max;
-                        min.x = (int)targ->world_x - 7;
-                        min.y = (int)targ->world_y - 7;
+                        min.x = (int)targetLocationValue.x - 7;
+                        min.y = (int)targetLocationValue.y - 7;
                         TribeInformationAIModule* info = &md->informationAI;
                         info->mapBound(&min);
-                        max.x = (int)targ->world_x + 7;
-                        max.y = (int)targ->world_y + 7;
+                        max.x = (int)targetLocationValue.x + 7;
+                        max.y = (int)targetLocationValue.y + 7;
                         info->mapBound(&max);
-                        if (numberAttackWaypointsValue > 1) {
+                        if (numberAttackWaypointsValue >= 2) {
                             Waypoint* prev = &attackWaypoints[numberAttackWaypointsValue - 2];
                             if ((float)min.x <= prev->x)
                                 max.x = (int)prev->x;
