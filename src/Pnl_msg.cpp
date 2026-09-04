@@ -283,16 +283,16 @@ void TMessagePanel::draw() {
                 len = strlen(msg);
                 GetTextExtentPoint32A(this->render_area->DrawDc, msg, len, &ts);
                 flags = (this->word_wrap == 0 ||
-                         ts.cx <= this->pnl_wid - 2) ? 0x20 : 0x10;
+                         ts.cx <= wid) ? 0x20 : 0x10;
                 if (this->horz_just == CenterJust) flags |= 1;
                 else if (this->horz_just == RightJust) flags |= 2;
                 if (this->vert_just == CenterJust) flags |= 4;
                 else if (this->vert_just == BottomJust) flags |= 8;
             }
 
+            SetTextColor(this->render_area->DrawDc, back_rgb);
             wid = wid + x + 1;
             hgt = hgt + y + 1;
-            SetTextColor(this->render_area->DrawDc, back_rgb);
             SetRect(&rect, x, y, wid - 2, hgt - 2);
             DrawTextA(this->render_area->DrawDc, msg, -1, &rect, flags);
             SetRect(&rect, x, y + 2, wid - 2, hgt);
