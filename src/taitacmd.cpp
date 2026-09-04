@@ -5619,12 +5619,11 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
     RGE_Static_Object* callerObject;
     XYPoint attackPoint;
     XYZPoint point;
-    XYZPoint point_fffffff0;
-    ObjectMemory* memory;
-    int relicIndex;
-    int relicCount;
-    RGE_Static_Object* victoryObject;
-    int responseDistance;
+    ObjectMemory* itemToCapture;
+    int i;
+    int repCount;
+    RGE_Static_Object* townCenter;
+    float distance;
     int coopX;
     int coopY;
     RGE_Static_Object* initialObject = this->md->aiPlayer->world->object(callerID);
@@ -5794,16 +5793,17 @@ notify_after_owner:
         }
     }
 
-    victoryObject = this->md->object(
+    townCenter = this->md->object(
         -1, 0x6D, -1, -1, -1, -1, -1, -1, -1, -1);
-    responseDistance = 1000;
-    if (victoryObject != 0) {
-        float dx = victoryObject->world_x - targetObj->world_x;
-        float dy = victoryObject->world_y - targetObj->world_y;
-        responseDistance = (int)sqrt(dx * dx + dy * dy);
+    distance = 1000.0f;
+    if (townCenter != 0) {
+        distance = sqrt((townCenter->world_x - targetObj->world_x) *
+                        (townCenter->world_x - targetObj->world_x) +
+                        (townCenter->world_y - targetObj->world_y) *
+                        (townCenter->world_y - targetObj->world_y));
     }
 
-    if (responseDistance < 0x14) {
+    if ((int)distance < 0x14) {
         int warships = this->numberWarshipsWithPriority(100, -1);
         int soldiers = this->numberSoldiersWithPriority(100, -1, 0);
         numberToRespond = warships + soldiers;
@@ -5835,8 +5835,8 @@ notify_after_owner:
             }
             numberToRespond = this->civilians.numberValue;
         }
-        coopY = (int)victoryObject->world_y;
-        coopX = (int)victoryObject->world_x;
+        coopY = (int)townCenter->world_y;
+        coopX = (int)townCenter->world_x;
     }
     else {
         int available;
@@ -5848,9 +5848,9 @@ notify_after_owner:
             available += this->numberSoldiersWithPriority(this->sn[0x14], -1, 0);
         }
         numberToRespond = (this->sn[0x13] * available) / 100;
-        if (victoryObject != 0) {
-            coopY = (int)victoryObject->world_y;
-            coopX = (int)victoryObject->world_x;
+        if (townCenter != 0) {
+            coopY = (int)townCenter->world_y;
+            coopX = (int)townCenter->world_x;
         }
         else {
             coopY = (int)targetObj->world_y;
@@ -5865,16 +5865,16 @@ notify_after_owner:
         while (param_2 < numberToRespond &&
                (param_3 < 2 ||
                 debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x1A54) - entryTime < 0xB)) {
-            RGE_Static_Object* unitObject =
+            RGE_Static_Object* attackedUnit =
                 this->md->aiPlayer->world->object(this->workingArea[param_3]);
-            if (unitObject != 0 && unitObject->unitAI() != 0) {
-                int action = unitObject->unitAI()->currentAction();
+            if (attackedUnit != 0 && attackedUnit->unitAI() != 0) {
+                int action = attackedUnit->unitAI()->currentAction();
                 if (action == 600) {
-                    int currentTarget = unitObject->unitAI()->currentTarget();
+                    int currentTarget = attackedUnit->unitAI()->currentTarget();
                     if (currentTarget != -1) {
-                        currentTarget = unitObject->unitAI()->currentTarget();
+                        currentTarget = attackedUnit->unitAI()->currentTarget();
                         if (currentTarget != targetObj->id) {
-                            currentTarget = unitObject->unitAI()->currentTarget();
+                            currentTarget = attackedUnit->unitAI()->currentTarget();
                             RGE_Static_Object* oldTarget =
                                 this->md->aiPlayer->world->object(currentTarget);
                             if (oldTarget != 0) {
@@ -5892,12 +5892,13 @@ notify_after_owner:
                 }
 notify_try_attack:
                 if (this->workingArea[param_3] == callerID) {
-                    if (unitObject->unitAI()->currentOrderPriority() != 100) {
-                        point_fffffff0.x = (int)targetObj->world_x;
-                        point_fffffff0.y = (int)targetObj->world_y;
-                        point_fffffff0.z = (int)targetObj->world_z;
-                        if (unitObject->canPath(
-                                point_fffffff0, unitObject->weaponRange(), targetObj->id,
+                    if (attackedUnit->unitAI()->currentOrderPriority() != 100) {
+                        XYZPoint point;
+                        point.x = (int)targetObj->world_x;
+                        point.y = (int)targetObj->world_y;
+                        point.z = (int)targetObj->world_z;
+                        if (attackedUnit->canPath(
+                                point, attackedUnit->weaponRange(), targetObj->id,
                                 0, 1, -1, -1) != 0) {
                             if (this->taskAttacker(this->workingArea[param_3],
                                                    targetObj->world_x, targetObj->world_y,
@@ -5913,16 +5914,17 @@ notify_try_attack:
                     }
                 }
                 else {
-                    float distance = targetObj->distance_to_object(unitObject);
+                    float distance = targetObj->distance_to_object(attackedUnit);
                     int priority = this->calculatePriority(distance);
                     if (distance < (float)this->sn[0x14]) {
-                        int currentPriority = unitObject->unitAI()->currentOrderPriority();
+                        int currentPriority = attackedUnit->unitAI()->currentOrderPriority();
                         if (currentPriority < priority && 0 < priority) {
-                            point_fffffff0.x = (int)targetObj->world_x;
-                            point_fffffff0.y = (int)targetObj->world_y;
-                            point_fffffff0.z = (int)targetObj->world_z;
-                            if (unitObject->canPath(
-                                    point_fffffff0, unitObject->weaponRange(), targetObj->id,
+                            XYZPoint point;
+                            point.x = (int)targetObj->world_x;
+                            point.y = (int)targetObj->world_y;
+                            point.z = (int)targetObj->world_z;
+                            if (attackedUnit->canPath(
+                                    point, attackedUnit->weaponRange(), targetObj->id,
                                     0, 1, -1, -1) != 0) {
                                 if (this->taskAttacker(this->workingArea[param_3],
                                                        targetObj->world_x, targetObj->world_y,
@@ -5944,32 +5946,32 @@ notify_next_unit:
 
 notify_relic:
     if (param_3 == 0x72) {
-        memory = this->md->informationAI.artifactToCapture(-1);
+        itemToCapture = this->md->informationAI.artifactToCapture(-1);
     }
     else {
-        memory = this->md->informationAI.ruinToCapture(-1);
+        itemToCapture = this->md->informationAI.ruinToCapture(-1);
     }
-    if (memory == 0) return;
+    if (itemToCapture == 0) return;
 
     numberToRespond = this->numberSoldiersWithPriority(100, -1, 1);
     if (numberToRespond > 3) numberToRespond = 3;
-    relicCount = 0;
-    relicIndex = 0;
+    repCount = 0;
+    i = 0;
     if (this->workingArea.numberValue < 1) return;
     do {
-        if (numberToRespond <= relicCount) return;
+        if (numberToRespond <= repCount) return;
         RGE_Static_Object* object =
-            this->md->aiPlayer->world->object(this->workingArea[relicIndex]);
+            this->md->aiPlayer->world->object(this->workingArea[i]);
         if (object != 0 && object->unitAI() != 0 &&
-            object->canPath(memory->id, 2.0f, 0, 1, -1, -1) != 0) {
-            if (this->taskDefender(this->workingArea[relicIndex], memory->id,
+            object->canPath(itemToCapture->id, 2.0f, 0, 1, -1, -1) != 0) {
+            if (this->taskDefender(this->workingArea[i], itemToCapture->id,
                                    2.0f, 100) == 1) {
-                this->removeFromGroup(this->workingArea[relicIndex]);
-                relicCount = relicCount + 1;
+                this->removeFromGroup(this->workingArea[i]);
+                repCount = repCount + 1;
             }
         }
-        relicIndex = relicIndex + 1;
-        if (this->workingArea.numberValue <= relicIndex) return;
+        i = i + 1;
+        if (this->workingArea.numberValue <= i) return;
     } while (1);
 }
 
@@ -8060,12 +8062,13 @@ dispatch:
 
 int TribeTacticalAIModule::taskResearch(BuildItem* item)
 {
+    int objectID;
+    RGE_Static_Object* object;
     if (item == 0) {
         this->logCommonHistory("Invalid taskResearch item, returning FALSE.");
         return 0;
     }
 
-    RGE_Static_Object* object;
     object = this->md->object(-1, item->buildFrom(), -1, 0x26B, 0x26C, 2);
     if (object == 0 || object->unitAI() == 0) {
         this->logCommonHistory(
@@ -8080,7 +8083,6 @@ int TribeTacticalAIModule::taskResearch(BuildItem* item)
     item->setInProgress(1);
     item->setBuilt(0);
 
-    int objectID;
     objectID = object->id;
 
     ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
