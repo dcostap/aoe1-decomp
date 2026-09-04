@@ -948,7 +948,7 @@ extern unsigned int DAT_0062cf68;
 extern unsigned int DAT_0062d208;
 extern unsigned int DAT_0062d20c;
 extern unsigned int DAT_0062d230;
-extern unsigned int DAT_0062e64c;
+extern long DAT_0062e64c;
 extern unsigned int DAT_0062e658;
 extern unsigned int DAT_0086b240;
 extern unsigned int DAT_0086b244;
