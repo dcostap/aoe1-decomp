@@ -2280,31 +2280,28 @@ byte TShape::shape_dither(TDrawArea* area, long x, long y, long shape_num,
 byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
                                        long param_5, long param_6)
 {
-    long pitch;
+    long width;
     long orientation;
     Shape_Header* sh;
     long height;
-    byte* src;
-    byte* dst;
+    Shape_Payload* src;
     byte* save_buffer;
     long parity;
     long next_parity;
     long output_count;
     byte count;
     byte* end;
-    byte command;
-    byte done;
 
     orientation = area->Orien;
-    pitch = area->AlignedWidth() * orientation;
+    width = area->AlignedWidth() * orientation;
     sh = this->shape_header;
-    src = (byte*)(sh + 1);
+    src = (Shape_Payload*)(sh + 1);
     height = sh->ymax - sh->ymin + 1;
 
     if (orientation < 1) {
-        save_buffer = area->Bits + x + (y - area->Height + 1) * pitch;
+        save_buffer = area->Bits + x + (y - area->Height + 1) * width;
     } else {
-        save_buffer = area->Bits + x + y * pitch;
+        save_buffer = area->Bits + x + y * width;
     }
 
     parity = (param_5 + x) & 1;
@@ -2314,18 +2311,20 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
     if (height > 0) {
         do {
             next_parity = (parity != 1);
-            done = 0;
-            dst = save_buffer;
+            byte done = 0;
+            byte* dst = save_buffer;
+            Shape_Payload* row_src = src;
             do {
-                command = *src++;
+                byte command;
+                command = row_src++->value;
                 if ((command & 1) == 1) {
                     command >>= 1;
                     if (command == 0) {
-                        count = *src;
+                        count = row_src->value;
                         dst += (unsigned int)count;
                         if ((count & 1) != 0)
                             parity = (parity != 1);
-                        src++;
+                        row_src++;
                     } else {
                         count = command;
                         if (parity != 0) {
@@ -2341,7 +2340,7 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
                         }
                         if (parity != 0)
                             dst--;
-                        src += (unsigned int)command;
+                        row_src += (unsigned int)command;
                     }
                 } else {
                     command >>= 1;
@@ -2362,11 +2361,12 @@ byte TShape::shape_dithered_unclipped(TDrawArea* area, long x, long y,
                         }
                         if (parity != 0)
                             dst--;
-                        src++;
+                        row_src++;
                     }
                 }
             } while (!done);
-            save_buffer += pitch;
+            src = row_src;
+            save_buffer += width;
             parity = next_parity;
         } while (--height);
     }
