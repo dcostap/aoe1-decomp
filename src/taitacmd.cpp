@@ -8316,14 +8316,13 @@ int TribeTacticalAIModule::calculatePriority(float value) {
 void TribeTacticalAIModule::setupSoldierGroups()
 {
     ManagedArray<int> groupsToRemove;
-    int numPotentialAGroups;
-    int newArtifact;
     int i;
+    int numPotentialAGroups;
+    int numPotentialDGroups;
     int numAGroups;
     int numDGroups;
     int numEGroups;
-    int local_24;
-    int removalIndex;
+    int remainder;
     TacticalAIGroup* sentinel;
     TacticalAIGroup* group;
 
@@ -8351,10 +8350,10 @@ void TribeTacticalAIModule::setupSoldierGroups()
         }
     }
 
-    removalIndex = 0;
-    while (removalIndex < groupsToRemove.numberValue) {
-        this->removeGroup(groupsToRemove[removalIndex]);
-        ++removalIndex;
+    numAGroups = 0;
+    while (numAGroups < groupsToRemove.numberValue) {
+        this->removeGroup(groupsToRemove[numAGroups]);
+        ++numAGroups;
     }
 
     if (this->md->informationAI.fullyExploredZone(this->soldiers[0]) == 0) {
@@ -8362,14 +8361,14 @@ void TribeTacticalAIModule::setupSoldierGroups()
         this->setStrategicNumber(0x2A, 0);
     }
 
-    numDGroups = this->numberGroups(100, -1);
-    numEGroups = this->numberGroups(101, -1);
-    local_24 = this->numberGroups(102, -1);
+    i = this->numberGroups(100, -1);
+    numDGroups = this->numberGroups(101, -1);
+    numEGroups = this->numberGroups(102, -1);
     this->numberGroups(109, -1);
     this->numberUngroupedArtifacts();
 
     while (this->workingArea.numberValue > 0) {
-        int object_id = this->workingArea[removalIndex];
+        int object_id = this->workingArea[numAGroups];
         RGE_Static_Object* object = this->md->object(object_id);
         if (object == 0) {
             this->workingArea.remove(object_id);
@@ -8397,75 +8396,76 @@ void TribeTacticalAIModule::setupSoldierGroups()
         }
     }
 
-    i = 0;
+    numPotentialDGroups = 0;
     numAGroups = 0;
     if (this->sn[0x28] == 0) {
-        newArtifact = (int)ceil((double)this->soldiers.numberValue /
-                                (double)this->sn[0x10]);
-        if (newArtifact > this->sn[0x24]) {
-            newArtifact = this->sn[0x24];
+        numPotentialAGroups = (int)ceil((double)this->soldiers.numberValue /
+                                        (double)this->sn[0x10]);
+        if (numPotentialAGroups > this->sn[0x24]) {
+            numPotentialAGroups = this->sn[0x24];
         }
-        int artifactUnits = newArtifact * this->sn[0x10];
-        numPotentialAGroups = this->soldiers.numberValue - artifactUnits;
-        if (numPotentialAGroups <= 0) {
+        int artifactUnits = numPotentialAGroups * this->sn[0x10];
+        remainder = this->soldiers.numberValue - artifactUnits;
+        if (remainder <= 0) {
             goto balance_groups;
         }
-        i = (int)ceil((double)numPotentialAGroups / (double)this->sn[0x19]);
-        if (i > this->sn[0x26]) {
-            i = this->sn[0x26];
+        numPotentialDGroups = (int)ceil((double)remainder /
+                                        (double)this->sn[0x19]);
+        if (numPotentialDGroups > this->sn[0x26]) {
+            numPotentialDGroups = this->sn[0x26];
         }
-        numPotentialAGroups = this->soldiers.numberValue - i * this->sn[0x19] -
-                              artifactUnits;
-        if (numPotentialAGroups <= 0) {
+        remainder = this->soldiers.numberValue -
+                    numPotentialDGroups * this->sn[0x19] - artifactUnits;
+        if (remainder <= 0) {
             goto balance_groups;
         }
-        numAGroups = (int)ceil((double)numPotentialAGroups / (double)this->sn[0x2B]);
+        numAGroups = (int)ceil((double)remainder /
+                               (double)this->sn[0x2B]);
         if (numAGroups <= this->sn[0x2A]) {
             goto balance_groups;
         }
     }
     else {
         int maxArtifact = this->sn[0x24];
-        numPotentialAGroups = this->soldiers.numberValue;
-        newArtifact = numPotentialAGroups;
-        if (numPotentialAGroups >= maxArtifact) {
-            newArtifact = maxArtifact;
+        remainder = this->soldiers.numberValue;
+        numPotentialAGroups = remainder;
+        if (remainder >= maxArtifact) {
+            numPotentialAGroups = maxArtifact;
         }
-        numPotentialAGroups -= newArtifact;
-        if (numPotentialAGroups <= 0) {
+        remainder -= numPotentialAGroups;
+        if (remainder <= 0) {
             goto balance_groups;
         }
-        if (numPotentialAGroups < this->sn[0x26]) {
-            i = numPotentialAGroups;
+        if (remainder < this->sn[0x26]) {
+            numPotentialDGroups = remainder;
         }
         else {
-            i = this->sn[0x26];
+            numPotentialDGroups = this->sn[0x26];
         }
-        numPotentialAGroups -= i;
-        if (numPotentialAGroups <= 0 ||
-            (numAGroups = numPotentialAGroups,
-             numPotentialAGroups < this->sn[0x2A])) {
+        remainder -= numPotentialDGroups;
+        if (remainder <= 0 || remainder < this->sn[0x2A]) {
             goto balance_groups;
         }
+        numAGroups = remainder;
     }
     numAGroups = this->sn[0x2A];
 
 balance_groups:
     if (this->sn[0xA2] == 1) {
-        newArtifact = 0;
+        numPotentialAGroups = 0;
     }
 
-    for (; numDGroups < newArtifact; ++numDGroups) {
+    for (; i < numPotentialAGroups; ++i) {
         TacticalAIGroup* new_group = 0;
-        if (numEGroups > 0) {
+        if (numDGroups > 0) {
             new_group = this->group(-1, 0x65, -1, -1);
             if (new_group != 0) {
-                --numEGroups;
+                --numDGroups;
             }
             else {
                 new_group = this->group(-1, 0x66, -1, -1);
                 if (new_group != 0) {
-                    --local_24;
+                    --numEGroups;
                 }
             }
         }
@@ -8488,7 +8488,7 @@ balance_groups:
         new_group->setDesiredNumberUnits(desired);
     }
 
-    while (numDGroups > newArtifact) {
+    while (i > numPotentialAGroups) {
         TacticalAIGroup* old_group = this->group(-1, 100, 0, -1);
         if (old_group == 0) {
             old_group = this->group(-1, 100, 1, -1);
@@ -8497,15 +8497,15 @@ balance_groups:
             break;
         }
         this->removeGroup(old_group->id());
-        --numDGroups;
+        --i;
     }
 
-    for (; numEGroups < i; ++numEGroups) {
+    for (; numDGroups < numPotentialDGroups; ++numDGroups) {
         TacticalAIGroup* new_group = 0;
-        if (local_24 > 0) {
+        if (numEGroups > 0) {
             new_group = this->group(-1, 0x66, -1, -1);
             if (new_group != 0) {
-                --local_24;
+                --numEGroups;
             }
         }
         if (new_group == 0) {
@@ -8522,16 +8522,16 @@ balance_groups:
         new_group->setDesiredNumberUnits(this->sn[0x19]);
     }
 
-    while (numEGroups > i) {
+    while (numDGroups > numPotentialDGroups) {
         TacticalAIGroup* old_group = this->group(-1, 0x65, -1, -1);
         if (old_group == 0) {
             break;
         }
         this->removeGroup(old_group->id());
-        --numEGroups;
+        --numDGroups;
     }
 
-    for (; local_24 < numAGroups; ++local_24) {
+    for (; numEGroups < numAGroups; ++numEGroups) {
         TacticalAIGroup* new_group = this->createGroup(1);
         if (new_group == 0) {
             break;
@@ -8540,13 +8540,13 @@ balance_groups:
         new_group->setDesiredNumberUnits(this->sn[0x2B]);
     }
 
-    while (local_24 > numAGroups) {
+    while (numEGroups > numAGroups) {
         TacticalAIGroup* old_group = this->group(-1, 0x66, -1, -1);
         if (old_group == 0) {
             break;
         }
         this->removeGroup(old_group->id());
-        --local_24;
+        --numEGroups;
     }
 
 }
