@@ -1852,7 +1852,9 @@ byte TShape::shape_mirror_color_trans_clipped(
     do {
         xpos = shape_x1;
 
-        if (clip_x1 < xpos) {
+        if (xpos <= clip_x1) {
+            state = 1;
+        } else {
             state = 0;
             do {
                 command = *src++;
@@ -1921,8 +1923,6 @@ byte TShape::shape_mirror_color_trans_clipped(
                     }
                 }
             } while (!state);
-        } else {
-            state = 1;
         }
 
         state--;

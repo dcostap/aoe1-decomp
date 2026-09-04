@@ -54,7 +54,7 @@
     "00538F00": {"status": "scratch", "symbol": "?Pick_Tile@RGE_View@@IAEHJJPAH0@Z"},
     "00539030": {"status": "matching", "symbol": "?get_tile_bounding_coords@RGE_View@@IAEXHHAAH000@Z"},
     "005390D0": {"status": "scratch", "symbol": "?pick_objects@RGE_View@@IAEHHHHHHHH@Z"},
-    "00539510": {"status": "scratch", "symbol": "?sprite_check@RGE_View@@IAEHPAEPAUShape_Info@@HH@Z"},
+    "00539510": {"status": "accepted_drift", "symbol": "?sprite_check@RGE_View@@IAEHPAEPAUShape_Info@@HH@Z"},
     "005396F0": {"status": "scratch", "symbol": "?pick_multi_objects@RGE_View@@IAEHHHHHHHHEH@Z"},
     "00539930": {"status": "matching", "symbol": "?pick_touched_object@RGE_View@@IAEHPAVDClipInfo_List@@HHHHAAH@Z"},
     "00539AA0": {"status": "matching", "symbol": "?get_tile_picture@RGE_View@@IAEFEEFF@Z"},
