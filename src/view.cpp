@@ -2504,16 +2504,21 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                 if (future_node->Draw_Level > 5) {
                     bool different = true;
                     prior_node = prior->Draw_Clip_Nodes[y];
-                    while (prior_node != 0) {
-                        long bytes = (future_node->Node_Type != 0) ? 0x14 : 0x24;
-                        if (memcmp(&future_node->Shape, &prior_node->Shape, bytes) == 0) {
-                            different = false;
-                            ++Clip_remove;
-                            prior_node->Node_Type = -1;
-                            break;
-                        }
-                        prior_node = prior_node->Next;
+                    if (prior_node != 0) {
+                        do {
+                            different = true;
+                            long bytes = (future_node->Node_Type != 0) ? 0x34 : 0x24;
+                            if (memcmp(&future_node->Shape, &prior_node->Shape, bytes) == 0) {
+                                different = false;
+                                ++Clip_remove;
+                                prior_node->Node_Type = -1;
+                                goto future_match;
+                            }
+                            prior_node = prior_node->Next;
+                        } while (prior_node != 0);
+                        different = true;
                     }
+future_match:
                     if (different) {
                         if (future_node->Node_Type == 0) {
                             this->Master_Clip_Mask->AddShape_Align(
@@ -2533,7 +2538,7 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                     bool different = true;
                     future_node = future->Draw_Clip_Nodes[y];
                     while (future_node != 0) {
-                        long bytes = (prior_node->Node_Type != 0) ? 0x14 : 0x24;
+                        long bytes = (prior_node->Node_Type != 0) ? 0x34 : 0x24;
                         if (memcmp(&future_node->Shape, &prior_node->Shape, bytes) == 0) {
                             different = false;
                             break;
