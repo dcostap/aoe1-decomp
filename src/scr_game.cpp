@@ -2526,6 +2526,7 @@ void TRIBE_Screen_Game::setup_buttons()
 {
     char name[512];
     char msg_str[512];
+    TRIBE_Player* player;
     int culture;
 
     this->item_cnt = 0;
@@ -2543,8 +2544,7 @@ void TRIBE_Screen_Game::setup_buttons()
         short final_frame;
         long final_type;
         bool set_final_button = false;
-        TRIBE_Player* player =
-            static_cast<TRIBE_Player*>(rge_base_game->get_player());
+        player = static_cast<TRIBE_Player*>(rge_base_game->get_player());
     culture = player->culture;
     if (culture > 5) {
         culture = 0;
@@ -2660,14 +2660,14 @@ void TRIBE_Screen_Game::setup_buttons()
                 int movable = 1;
                 short i = 0;
 
-                while ((selected < player->sel_count) && (i < 25)) {
+                while ((selected < this->sel_count) && (i < 25)) {
                     RGE_Static_Object* object = player->sel_list[i];
                     if (object != 0) {
                         RGE_Master_Combat_Object* master =
                             static_cast<RGE_Master_Combat_Object*>(
                                 object->master_obj);
                         if ((master->missile_id == -1) ||
-                            (master->area_effect_range == 0.0f)) {
+                            (master->area_effect_range == DAT_00572ce4)) {
                             movable = 0;
                             break;
                         }
@@ -2832,15 +2832,17 @@ void TRIBE_Screen_Game::setup_buttons()
                         int queued = 0;
 
                         if (show_queue) {
-                            for (short queue_index = 0;
-                                 queue_index < building->production_queue_count;
-                                 ++queue_index) {
-                                Production_Queue_Record& queue =
-                                    building->production_queue[queue_index];
-                                if (queue.master_id == master->id) {
-                                    queued += queue.unit_count;
+                            Production_Queue_Record* queue =
+                                building->production_queue;
+                            short queue_count =
+                                building->production_queue_count;
+                            do {
+                                if (queue->master_id == master->id) {
+                                    queued += queue->unit_count;
                                 }
-                            }
+                                ++queue;
+                                --queue_count;
+                            } while (queue_count != 0);
                         }
 
                         if ((!show_queue) || (queued > 0)) {

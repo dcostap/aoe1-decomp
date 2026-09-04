@@ -8284,7 +8284,7 @@ end:
     return;
 }
 
-static inline int appendSoldierGroupID(ManagedArray<int>& array, int item)
+static inline int appendUniqueGroupID(ManagedArray<int>& array, int item)
 {
     int i;
     for (i = 0; i < array.numberValue; ++i) {
@@ -8331,7 +8331,7 @@ void TribeTacticalAIModule::setupSoldierGroups()
     sentinel = &this->groups;
     while (group != sentinel && group != 0) {
         if (group->numberUnits() == 0) {
-            appendSoldierGroupID(groupsToRemove, group->id());
+            appendUniqueGroupID(groupsToRemove, group->id());
         }
         group = group->next;
     }
@@ -8345,7 +8345,7 @@ void TribeTacticalAIModule::setupSoldierGroups()
         group = this->groups.next;
         while (group != sentinel && group != 0) {
             if (group->type() == 100) {
-                appendSoldierGroupID(groupsToRemove, group->id());
+                appendUniqueGroupID(groupsToRemove, group->id());
             }
             group = group->next;
         }
@@ -9060,7 +9060,7 @@ void TribeTacticalAIModule::setupBoatGroups()
             continue;
         }
         if (group->numberUnits() == 0) {
-            groupsToRemove.add(group->id());
+            appendUniqueGroupID(groupsToRemove, group->id());
         }
         group = group->next;
     }
@@ -9267,7 +9267,7 @@ balance_boat_groups:
             break;
         }
         new_group->setType(0x69);
-        new_group->setDesiredNumberUnits(this->sn[0x3d]);
+        new_group->setDesiredNumberUnits(this->sn[0x3e]);
     }
 
     while (numPotentialAGroups > numDGroups) {
