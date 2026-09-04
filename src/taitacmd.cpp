@@ -8053,6 +8053,7 @@ int TribeTacticalAIModule::taskTrain(BuildItem* item)
 {
     int objectID = 0;
     RGE_Static_Object* trainBuilding;
+    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
 
     if (item == 0) {
         this->logCommonHistory("Invalid taskTrain item, returning FALSE.");
@@ -8073,7 +8074,6 @@ int TribeTacticalAIModule::taskTrain(BuildItem* item)
     item->setBuilt(0);
 
     objectID = trainBuilding->id;
-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
     int i;
     for (i = 0; i < arr.numberValue; i++) {
         if (i >= arr.maximumSizeValue)

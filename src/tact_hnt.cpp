@@ -343,10 +343,11 @@ state_default:
         float modifier;
         float max_hold;
         if (this->target_obj == 0) {
-            if (this->obj->attribute_amount_held <= DAT_00575150)
-                goto state_default;
-            this->set_state(8);
-            return 0;
+            if (this->obj->attribute_amount_held > DAT_00575150) {
+                this->set_state(8);
+                return 0;
+            }
+            goto state_default;
         }
         if (rge_base_game->quick_build != 0)
             give_amount = this->target_obj->attribute_amount_held;
@@ -360,8 +361,8 @@ state_default:
         short attr = this->task->attribute_type2;
         if (attr == -1) modifier = 1.0f;
         else modifier = this->obj->owner->attributes[attr];
-        max_hold = (float)static_cast<RGE_Master_Static_Object*>(this->obj->master_obj)->attribute_max_amount * modifier;
-        if (max_hold - this->obj->attribute_amount_held < modifier * give_amount)
+        max_hold = (float)this->obj->master_obj->attribute_max_amount * modifier;
+        if (modifier * give_amount > max_hold - this->obj->attribute_amount_held)
             give_amount = give_amount -
                 (modifier * give_amount -
                  (max_hold - this->obj->attribute_amount_held)) / modifier;
