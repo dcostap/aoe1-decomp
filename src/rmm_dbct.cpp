@@ -539,12 +539,15 @@ void RGE_RMM_Database_Controller::add_land_module(uchar group_players)
     long team;
     long candidate;
     long other_team;
-    long team_size[9];
+    long start_land;
+    long team_size[8];
     long player_teams[9];
     long land_teams[9];
     long distances[8][8];
     long map_width = this->map_width;
     long map_height = this->map_height;
+    long* distance_row;
+    RGE_Land_Info_Line* distance_land;
 
     RGE_Land_Data* land_data =
         &this->map_info.maps[this->map_type].land_info;
@@ -636,6 +639,8 @@ void RGE_RMM_Database_Controller::add_land_module(uchar group_players)
     if (group_players == 0)
         return;
 
+    distance_row = distances[0] + 1;
+    distance_land = this->land_info.land;
     group_count = this->land_info.land_num;
     for (land_index = 0; land_index < group_count; ++land_index) {
         RGE_Land_Info_Line* scan_land = this->land_info.land;
@@ -643,35 +648,35 @@ void RGE_RMM_Database_Controller::add_land_module(uchar group_players)
         long remaining = group_count;
         if (remaining > 0) {
             do {
-                long delta_x = this->land_info.land[land_index].x -
-                    scan_land->x;
-                long delta_y = this->land_info.land[land_index].y -
-                    scan_land->y;
                 ++size;
+                long delta_x = distance_land->x - scan_land->x;
+                long delta_y = distance_land->y - scan_land->y;
                 *size = delta_x * delta_x + delta_y * delta_y;
                 --remaining;
                 ++scan_land;
             } while (remaining != 0);
         }
         for (candidate = 0; candidate < group_count; ++candidate)
-            distances[land_index][candidate + 1] = candidate;
+            distance_row[candidate] = candidate;
         do {
             uchar ordered = 1;
             for (candidate = 1; candidate < group_count; ++candidate) {
                 if (team_size[candidate] > team_size[candidate + 1]) {
                     long distance = team_size[candidate];
-                    long member = distances[land_index][candidate];
+                    long member = distance_row[candidate - 1];
                     team_size[candidate] = team_size[candidate + 1];
                     team_size[candidate + 1] = distance;
-                    distances[land_index][candidate] =
-                        distances[land_index][candidate + 1];
-                    distances[land_index][candidate + 1] = member;
+                    distance_row[candidate - 1] =
+                        distance_row[candidate];
+                    distance_row[candidate] = member;
                     ordered = 0;
                 }
             }
             if (ordered)
                 break;
         } while (1);
+        ++distance_land;
+        distance_row += 8;
     }
 
     for (land_index = 0; land_index < group_count; ++land_index)
@@ -715,23 +720,24 @@ void RGE_RMM_Database_Controller::add_land_module(uchar group_players)
             if (candidate == members) {
                 if (members < group_count)
                     ++members;
-                long first = distances[group_land][group_count];
+                start_land = distances[group_land][group_count];
                 for (candidate = group_count - 1; candidate >= 0; --candidate) {
                     long next_land = distances[group_land][candidate + 1];
                     if (land_teams[next_land + 1] == -1) {
-                        first = next_land;
+                        start_land = next_land;
                         break;
                     }
                 }
                 other_team = -1;
-                land_index = first;
+                land_index = start_land;
                 for (candidate = 0; candidate < group_count; ++candidate) {
-                    long next_land = distances[first][candidate + 1];
+                    long next_land = distances[start_land][candidate + 1];
                     if (land_teams[next_land + 1] != group_index &&
                         land_teams[next_land + 1] >= 0) {
                         other_team = land_teams[next_land + 1];
                         land_index = next_land;
-                        for (long nearest = 0; nearest < members; ++nearest) {
+                        for (long nearest = 0;
+                             nearest < members; ++nearest) {
                             long member = distances[group_land][nearest + 1];
                             if (land_teams[member + 1] == other_team) {
                                 land_index = member;
@@ -741,13 +747,13 @@ void RGE_RMM_Database_Controller::add_land_module(uchar group_players)
                         break;
                     }
                 }
-                land_teams[first + 1] = other_team;
+                land_teams[start_land + 1] = other_team;
                 land_teams[land_index + 1] = -1;
                 for (candidate = group_count - 1; candidate >= 0; --candidate) {
                     long next_land = distances[other_team][candidate + 1];
                     if (land_teams[next_land + 1] == other_team) {
                         for (long nearest = 0; nearest < group_count; ++nearest) {
-                            long member = distances[first][nearest + 1];
+                            long member = distances[start_land][nearest + 1];
                             if (land_teams[member + 1] == -1 &&
                                 member != land_index) {
                                 land_teams[next_land + 1] = -1;

@@ -1,0 +1,61 @@
+Exact joint candidate for 0050FA90 change_terrain and 00510110 make_new_cliff.
+
+Target result: MATCH, 0.0000%, 427 bytes.
+Joint target result: MATCH, 0.0000%, 399 bytes.
+Closure result: The full tmap closure keeps all 25 exact validation owners exact.
+Three unrelated scratch owners remain grouped mismatches. See the final report
+at build/worker_wrap_alpha_279/tu-audit-final/report.txt.
+
+Tested source: src/tmap.cpp at the current main commit.
+Target checks:
+- build/worker_wrap_alpha_279/float_after_0050FA90.txt
+- build/worker_wrap_alpha_279/float_after_00510110.txt
+
+The x argument home is read as a four-byte value, then narrowed for typed tile
+indexing. The original reads the full dword at this short parameter home.
+The source form is an exact-codegen candidate, but it uses a pointer alias over
+a short object and needs a source-plausibility review.
+
+The added float.h include is a compiler-context candidate. It changes no
+runtime code and is enough to restore the original make_new_cliff stack-home
+and receiver-load basin when the x-home candidate is present. The include is
+period-plausible for a float-heavy module, but this repository has no direct
+period-source proof that tmap.cpp included it. Treat it as context evidence,
+not as proof of original source.
+
+The earlier candidate without this context regressed make_new_cliff by three
+bytes. The paired mismatch is recorded in
+build/worker_wrap_alpha_279/paired_00510110.txt. Ambient declaration and
+standard-header sweeps show that VC5 front-end context controls this hunk.
+The smallest tested header context is float.h. Include order after stdlib was
+also tested and remains exact.
+
+Root review rejected integration. The unused float header is compiler-context
+steering without period-source evidence. The four-byte alias also reads beyond
+the declared short object. Keep this patch only as closure and ABI evidence.
+
+Apply with:
+  git apply decomp_notes/candidates/0050/0050FA90_exact_candidate_wrap-alpha-279.patch
+
+diff --git a/src/tmap.cpp b/src/tmap.cpp
+index 5d713116a..f6a23f5fa 100644
+--- a/src/tmap.cpp
++++ b/src/tmap.cpp
+@@ -7,6 +7,7 @@
+ #include "../include/tworld.h"
+ #include "../include/world_info.h"
+ #include <stdlib.h>
++#include <float.h>
+ 
+ typedef unsigned char uchar;
+ 
+@@ -188,7 +189,8 @@ void TRIBE_Map::change_terrain(short x, short y, unsigned char terrain,
+     short row_end;
+     short col;
+ 
+-    tile = this->map_row_offset[y] + x;
++    int x_word = *(int*)(void*)&x;
++    tile = this->map_row_offset[y] + (short)x_word;
+     old_border = tile->terrain_type;
+     tile->terrain_type = terrain;
+ 
