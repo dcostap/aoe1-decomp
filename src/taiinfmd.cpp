@@ -2887,18 +2887,19 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
 ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
     int owner, TacticalAIGroup* group, AttackState& stateRef, unsigned long currentTime)
 {
-    AttackState* state = &stateRef;
-    ObjectMemory* wonder = 0;
     unsigned char commanderZone;
+    unsigned char tempZone;
     RGE_Static_Object* commanderObject = this->md->object(group->commander());
+    RGE_Static_Object* oTDObject;
+    ObjectMemory* wonder;
     int commanderIsBoat = 0;
     float targetDistance;
     int commanderIsPriest = 0;
-    int destroyIndex = 0;
+    int destroyIndex;
 
     if (commanderObject == 0 || commanderObject->unitAI() == 0) {
-        state->active = 0;
-        goto done;
+        stateRef.active = 0;
+        return 0;
     }
 
     commanderZone = commanderObject->currentZone();
@@ -2909,24 +2910,23 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         commanderIsBoat = 1;
     }
 
-    if (state->active == 0 &&
+    if (stateRef.active == 0 &&
         group->objectsToDestroyOwnerValue == owner &&
         group->numberObjectsToDestroyValue > 0 &&
         group->objectsToDestroyCommanderZoneValue == (int)commanderZone) {
         int objectID = group->objectToDestroy(group->numberObjectsToDestroyValue - 1);
-        RGE_Static_Object* object = this->md->object(objectID);
+        oTDObject = this->md->object(objectID);
 
-        if (object != 0 &&
-            this->md->player->isEnemy(object->owner->id) == 1 &&
-            object->object_state <= 2 &&
+        if (oTDObject != 0 &&
+            this->md->player->isEnemy(oTDObject->owner->id) == 1 &&
+            oTDObject->object_state <= 2 &&
             commanderObject->canPath(
                 group->objectToDestroy(group->numberObjectsToDestroyValue - 1),
                 commanderObject->weaponRange()) == 1) {
             objectID = group->objectToDestroy(group->numberObjectsToDestroyValue - 1);
             group->numberObjectsToDestroyValue = 0;
             group->addObjectToDestroy(objectID);
-            wonder = this->objectMemory(objectID);
-            goto done;
+            return this->objectMemory(objectID);
         }
     }
 
@@ -2934,10 +2934,10 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         for (destroyIndex = 0;
              destroyIndex < group->numberObjectsToDestroyValue - 1;
              ++destroyIndex) {
-            RGE_Static_Object* object = this->md->object(group->objectToDestroy(destroyIndex));
-            if (object != 0 &&
-                this->md->player->isEnemy(object->owner->id) == 1 &&
-                object->object_state <= 2 &&
+            oTDObject = this->md->object(group->objectToDestroy(destroyIndex));
+            if (oTDObject != 0 &&
+                this->md->player->isEnemy(oTDObject->owner->id) == 1 &&
+                oTDObject->object_state <= 2 &&
                 commanderObject->canPath(
                     group->objectToDestroy(destroyIndex),
                     commanderObject->weaponRange()) == 1) {
@@ -2947,12 +2947,12 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         }
     }
 
-    if (state->active == 0) {
+    if (stateRef.active == 0) {
         wonder = this->wonderToAttack(-1);
         if (wonder != 0) {
             unsigned char wonderZone = commanderObject->lookupZone((int)wonder->x, (int)wonder->y);
             if (wonderZone != commanderZone && commanderIsBoat == 0) {
-                goto done;
+                return 0;
             }
             if (commanderObject->canPath(wonder->id,
                                          commanderObject->weaponRange()) == 1) {
@@ -2960,7 +2960,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                 group->addObjectToDestroy(wonder->id);
                 group->objectsToDestroyOwnerValue = wonder->owner;
                 group->objectsToDestroyCommanderZoneValue = (int)commanderZone;
-                goto done;
+                return wonder;
             }
 
             ManagedArray<int> wallObjects;
@@ -2977,32 +2977,32 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
                 group->addObjectToDestroy(wonder->id);
                 group->objectsToDestroyCommanderZoneValue = (int)commanderZone;
                 group->objectsToDestroyOwnerValue = wonder->owner;
-                goto done;
+                return wonder;
             }
         }
 
-        state->bestTargetID = -1;
-        state->bestTargetValue = -1.0f;
-        state->bestTargetMemoryIndex = -1;
-        state->iterationIndex = 0;
-        state->attackGroupID = -1;
-        state->playID = -1;
-        state->phase = 0;
-        state->bestNonWallTargetID = -1;
-        state->bestNonWallTargetValue = -1.0f;
-        state->bestNonWallTargetMemoryIndex = -1;
-        state->active = 1;
+        stateRef.bestTargetID = -1;
+        stateRef.bestTargetValue = -1.0f;
+        stateRef.bestTargetMemoryIndex = -1;
+        stateRef.iterationIndex = 0;
+        stateRef.attackGroupID = -1;
+        stateRef.playID = -1;
+        stateRef.phase = 0;
+        stateRef.bestNonWallTargetID = -1;
+        stateRef.bestNonWallTargetValue = -1.0f;
+        stateRef.bestNonWallTargetMemoryIndex = -1;
+        stateRef.active = 1;
     }
 
-    destroyIndex = state->iterationIndex;
+    destroyIndex = stateRef.iterationIndex;
     for (; destroyIndex < this->maxImportantObjectMemory; ++destroyIndex) {
         ObjectMemory* memory = this->importantObjectMemory + destroyIndex;
 
-        if (destroyIndex > state->iterationIndex) {
+        if (destroyIndex > stateRef.iterationIndex) {
             if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taiinfmd.cpp", 0xF5A) - currentTime >=
                 this->md->player->world->availableComputerPlayerUpdateTime) {
-                state->iterationIndex = destroyIndex;
-                goto done;
+                stateRef.iterationIndex = destroyIndex;
+                return 0;
             }
         }
 
@@ -3010,34 +3010,34 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
             continue;
         }
 
-        RGE_Static_Object* target = this->md->object(memory->id);
-        if (target == 0 || target->object_state > 2 || target->hp == DAT_00575580) {
+        oTDObject = this->md->object(memory->id);
+        if (oTDObject == 0 || oTDObject->object_state > 2 || oTDObject->hp == DAT_00575580) {
             continue;
         }
 
-        if (commanderIsBoat == 0 && this->isBoat(target) == 1) {
+        if (commanderIsBoat == 0 && this->isBoat(oTDObject) == 1) {
             continue;
         }
 
-        int targetX = (int)target->world_x;
-        int targetY = (int)target->world_y;
-        unsigned char targetZone = commanderObject->lookupZone(targetX, targetY);
+        int targetX = (int)oTDObject->world_x;
+        int targetY = (int)oTDObject->world_y;
+        tempZone = commanderObject->lookupZone(targetX, targetY);
 
-        if (commanderIsBoat == 0 && memory->type == 0x2D && targetZone != commanderZone) {
+        if (commanderIsBoat == 0 && memory->type == 0x2D && tempZone != commanderZone) {
             continue;
         }
-        if (state->phase == 0 && memory->group == 0x1B) {
+        if (stateRef.phase == 0 && memory->group == 0x1B) {
             continue;
         }
-        if (state->phase == 1 && memory->group != 0x1B) {
+        if (stateRef.phase == 1 && memory->group != 0x1B) {
             continue;
         }
 
-        int visibleDX = (int)memory->x - (int)target->world_x;
+        int visibleDX = (int)memory->x - (int)oTDObject->world_x;
         if (visibleDX < 0) {
             visibleDX = -visibleDX;
         }
-        int visibleDY = (int)memory->y - (int)target->world_y;
+        int visibleDY = (int)memory->y - (int)oTDObject->world_y;
         if (visibleDY < 0) {
             visibleDY = -visibleDY;
         }
@@ -3051,9 +3051,9 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
             continue;
         }
 
-        float damage = this->damageInflictedPerSecond(group, target);
-        float killTimeRatio = target->hp / damage;
-        float killTime = this->timeToBeKilled(group, target);
+        float damage = this->damageInflictedPerSecond(group, oTDObject);
+        float killTimeRatio = oTDObject->hp / damage;
+        float killTime = this->timeToBeKilled(group, oTDObject);
         if (damage == DAT_00575580) {
             continue;
         }
@@ -3062,11 +3062,11 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         }
         killTimeRatio = killTime / killTimeRatio;
 
-        int dx = (int)memory->x - (int)target->world_x;
+        int dx = (int)memory->x - (int)oTDObject->world_x;
         if (dx < 0) {
             dx = -dx;
         }
-        int dy = (int)memory->y - (int)target->world_y;
+        int dy = (int)memory->y - (int)oTDObject->world_y;
         if (dy < 0) {
             dy = -dy;
         }
@@ -3084,7 +3084,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         float attackAttemptFactor =
             (float)this->md->tacticalAI.strategicNumber(0x59) * memory->attackAttempts;
         float sameZoneFactor = 0.0f;
-        if (targetZone == commanderZone) {
+        if (tempZone == commanderZone) {
             sameZoneFactor = (float)this->md->tacticalAI.strategicNumber(0x7A);
         }
 
@@ -3108,22 +3108,22 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         }
 
         float nonWallFactor = 0.0f;
-        if (state->phase == 1 && state->bestNonWallTargetID != -1) {
+        if (stateRef.phase == 1 && stateRef.bestNonWallTargetID != -1) {
             ObjectMemory* previous =
-                this->importantObjectMemory + state->bestNonWallTargetMemoryIndex;
+                this->importantObjectMemory + stateRef.bestNonWallTargetMemoryIndex;
             int previousDX = (int)memory->x - (int)previous->x;
             int previousDY = (int)memory->y - (int)previous->y;
             float previousDistance =
                 (float)sqrt((double)(previousDX * previousDX + previousDY * previousDY));
-            if (previousDistance < 1.0f) {
+            if (previousDistance < DAT_00575564) {
                 nonWallFactor = 1000.0f;
             } else {
                 nonWallFactor = DAT_0057558c / previousDistance;
             }
         }
 
-        if (this->isUnitBuilding(target) == 1) {
-            if (target->master_obj->id == 0x6D || target->master_obj->id == 0x2D) {
+        if (this->isUnitBuilding(oTDObject) == 1) {
+            if (oTDObject->master_obj->id == 0x6D || oTDObject->master_obj->id == 0x2D) {
                 nonWallFactor -= DAT_00575594;
             } else {
                 nonWallFactor -= DAT_00575590;
@@ -3139,19 +3139,19 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         score += nonWallFactor + currentTargetFactor + attackAttemptFactor +
             sameZoneFactor + randomFactor;
 
-        if (state->bestTargetID != -1 && score <= state->bestTargetValue) {
+        if (stateRef.bestTargetID != -1 && score <= stateRef.bestTargetValue) {
             continue;
         }
 
-        if (state->phase == 0 && target->maximumSpeed() == DAT_00575580) {
-            state->bestNonWallTargetID = memory->id;
-            state->bestNonWallTargetMemoryIndex = destroyIndex;
-            state->bestNonWallTargetValue = score;
+        if (stateRef.phase == 0 && oTDObject->maximumSpeed() == DAT_00575580) {
+            stateRef.bestNonWallTargetID = memory->id;
+            stateRef.bestNonWallTargetMemoryIndex = destroyIndex;
+            stateRef.bestNonWallTargetValue = score;
         }
 
-        int obstructionGroup = state->phase == 0 ? 0x1B : -1;
+        int obstructionGroup = stateRef.phase == 0 ? 0x1B : -1;
         ManagedArray<int> wallObjects;
-        if (targetZone == commanderZone &&
+        if (tempZone == commanderZone &&
             commanderObject->canPath(memory->id,
                                      commanderObject->weaponRange()) != 1 &&
             commanderObject->canPathWithObstructions(
@@ -3170,31 +3170,28 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         group->addObjectToDestroy(memory->id);
         group->objectsToDestroyCommanderZoneValue = (int)commanderZone;
         group->objectsToDestroyOwnerValue = memory->owner;
-        state->bestTargetID = memory->id;
-        state->bestTargetMemoryIndex = destroyIndex;
-        state->bestTargetValue = score;
+        stateRef.bestTargetID = memory->id;
+        stateRef.bestTargetMemoryIndex = destroyIndex;
+        stateRef.bestTargetValue = score;
     }
 
-    if (state->bestTargetID != -1) {
-        ++(this->importantObjectMemory[state->bestTargetMemoryIndex].attackAttempts);
-        state->active = 0;
+    if (stateRef.bestTargetID != -1) {
+        ++(this->importantObjectMemory[stateRef.bestTargetMemoryIndex].attackAttempts);
+        stateRef.active = 0;
         destroyIndex = 0;
         goto selected_destroy_object;
     }
 
-    if (state->phase == 0) {
-        state->phase = 1;
-        state->iterationIndex = 0;
+    if (stateRef.phase == 0) {
+        stateRef.phase = 1;
+        stateRef.iterationIndex = 0;
     } else {
-        state->active = 0;
+        stateRef.active = 0;
     }
-    goto done;
+    return 0;
 
 selected_destroy_object:
-    wonder = this->objectMemory(group->objectToDestroy(destroyIndex));
-
-done:
-    return wonder;
+    return this->objectMemory(group->objectToDestroy(destroyIndex));
 }
 
 #include <math.h>
