@@ -2096,10 +2096,9 @@ void RGE_Map::tile_map_coords(short x, short y, RGE_Tile* tile,
                      (fy - DAT_005706c0);
             goto z_result;
         }
-        result = DAT_005706d8 - fx;
-        fy = fy + fy;
-        result = (result + result) - DAT_005706d8;
-        goto add_fy;
+        result = (((DAT_005706d8 - fx) + (DAT_005706d8 - fx)) -
+                  DAT_005706d8) + (fy + fy);
+        goto z_result;
     case 4:
         if ((DAT_005706d8 - fx) * DAT_005706c0 < raw_y) {
             result = fx * DAT_005706c0 - (fy - DAT_005706c0);
