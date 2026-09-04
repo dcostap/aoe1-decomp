@@ -385,10 +385,10 @@ byte TShape::shape_check(long x, long y, long frame)
             if ((command & 1) == 1) {
                 command >>= 1;
                 if (command == 0) {
-                    int n = *p;
-                    r += n;
+                    r += *p;
                     if (r > x)
                         return 0;
+                    ++p;
                 } else {
                     r += command;
                     if (r > x)

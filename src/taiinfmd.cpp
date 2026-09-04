@@ -3700,6 +3700,9 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
 
     XYPoint min;
     XYPoint max;
+    int resourceTypeToPlaceBy;
+    int a;
+    int b;
     min.x = 0;
     min.y = 0;
     max.x = this->mapXSizeValue;
@@ -3720,93 +3723,93 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
     }
 
     if (mode == 1 || mode == 2 || mode == 9) {
-        int dropsiteType = this->resourceTypeToPlaceDropsiteBy(mode);
+        resourceTypeToPlaceBy = this->resourceTypeToPlaceDropsiteBy(mode);
 
-        for (int resourceType = 0; resourceType < 4; resourceType++) {
-            for (int i = 0; i < this->numResources[resourceType]; i++) {
-                ResourceMemory* resource = &this->resources[resourceType][i];
+        for (a = 0; a < 4; a++) {
+            for (b = 0; b < this->numResources[a]; b++) {
+                ResourceMemory* resource = &this->resources[a][b];
                 if (resource->gone != 1) {
                     RGE_Static_Object* object = this->md->object(resource->id);
                     if (object != 0) {
-                        XYPoint bMin;
-                        XYPoint bMax;
-                        XYPoint bMinLOS;
-                        float radiusY = object->master_obj->radius_y;
+                        float resYRadius = object->master_obj->radius_y;
+                        XYPoint rMax;
+                        XYPoint rMin;
+                        XYPoint position;
 
-                        bMin.x = (int)(object->world_x - object->master_obj->radius_x - DAT_00575564);
-                        bMin.y = (int)(object->world_y - radiusY - DAT_00575564);
-                        this->mapBound(&bMin);
-                        bMax.x = (int)(object->world_x + radiusY - DAT_0057556c);
-                        bMax.y = (int)(object->world_y + radiusY - DAT_0057556c);
-                        this->mapBound(&bMax);
-                        bMinLOS.x = (int)object->master_obj->radius_x;
-                        bMinLOS.y = (int)object->master_obj->radius_y;
-                        this->mapBound(&bMinLOS);
+                        rMin.x = (int)(object->world_x - object->master_obj->radius_x - DAT_00575564);
+                        rMin.y = (int)(object->world_y - resYRadius - DAT_00575564);
+                        this->mapBound(&rMin);
+                        rMax.x = (int)(object->world_x + resYRadius - DAT_0057556c);
+                        rMax.y = (int)(object->world_y + resYRadius - DAT_0057556c);
+                        this->mapBound(&rMax);
+                        position.x = (int)object->master_obj->radius_x;
+                        position.y = (int)object->master_obj->radius_y;
+                        this->mapBound(&position);
 
                         if (mode == 1 || mode == 2) {
-                            iMap.setValue(bMinLOS.x, bMinLOS.y, 0xff);
+                            iMap.setValue(position.x, position.y, 0xff);
                         } else {
-                            iMap.setValue(bMin.x, bMin.y, bMax.x, bMax.y, 0xff);
+                            iMap.setValue(rMin.x, rMin.y, rMax.x, rMax.y, 0xff);
                         }
 
                         if (mode == 1) {
                             short group = object->master_obj->object_group;
                             if (group != 7) {
-                                if (dropsiteType == -1 ||
-                                    (dropsiteType == 3 && group == 0x20) ||
-                                    (dropsiteType == 2 && group == 8) ||
-                                    (dropsiteType == 1 && group == 0x0f) ||
-                                    (dropsiteType == 0 && group != 0x20 &&
+                                if (resourceTypeToPlaceBy == -1 ||
+                                    (resourceTypeToPlaceBy == 3 && group == 0x20) ||
+                                    (resourceTypeToPlaceBy == 2 && group == 8) ||
+                                    (resourceTypeToPlaceBy == 1 && group == 0x0f) ||
+                                    (resourceTypeToPlaceBy == 0 && group != 0x20 &&
                                      group != 8 && group != 0x0f)) {
-                                    bMin.x -= 1;
-                                    bMin.y -= 1;
-                                    this->mapBound(&bMin);
-                                    bMax.x += 1;
-                                    bMax.y += 1;
-                                    this->mapBound(&bMax);
-                                    iMap.incrementValue(bMin.x, bMin.y,
-                                                          bMax.x, bMax.y, 8);
+                                    rMin.x -= 1;
+                                    rMin.y -= 1;
+                                    this->mapBound(&rMin);
+                                    rMax.x += 1;
+                                    rMax.y += 1;
+                                    this->mapBound(&rMax);
+                                    iMap.incrementValue(rMin.x, rMin.y,
+                                                          rMax.x, rMax.y, 8);
 
-                                    bMin.x -= 3;
-                                    bMin.y -= 3;
-                                    this->mapBound(&bMin);
-                                    bMax.x += 3;
-                                    bMax.y += 3;
-                                    this->mapBound(&bMax);
-                                    iMap.incrementValue(bMin.x, bMin.y,
-                                                          bMax.x, bMax.y, 4);
+                                    rMin.x -= 3;
+                                    rMin.y -= 3;
+                                    this->mapBound(&rMin);
+                                    rMax.x += 3;
+                                    rMax.y += 3;
+                                    this->mapBound(&rMax);
+                                    iMap.incrementValue(rMin.x, rMin.y,
+                                                          rMax.x, rMax.y, 4);
 
-                                    bMin.x -= 5;
-                                    bMin.y -= 5;
-                                    this->mapBound(&bMin);
-                                    bMax.x += 5;
-                                    bMax.y += 5;
-                                    this->mapBound(&bMax);
-                                    iMap.incrementValue(bMin.x, bMin.y,
-                                                          bMax.x, bMax.y, 2);
+                                    rMin.x -= 5;
+                                    rMin.y -= 5;
+                                    this->mapBound(&rMin);
+                                    rMax.x += 5;
+                                    rMax.y += 5;
+                                    this->mapBound(&rMax);
+                                    iMap.incrementValue(rMin.x, rMin.y,
+                                                          rMax.x, rMax.y, 2);
                                 }
                             } else {
                                 if (object->master_obj->object_group == 7) {
-                                    bMin.x -= 5;
-                                    bMin.y -= 5;
-                                    this->mapBound(&bMin);
-                                    bMax.x += 5;
-                                    bMax.y += 5;
-                                    this->mapBound(&bMax);
-                                    iMap.decrementValue(bMin.x, bMin.y,
-                                                          bMax.x, bMax.y, 0x80);
+                                    rMin.x -= 5;
+                                    rMin.y -= 5;
+                                    this->mapBound(&rMin);
+                                    rMax.x += 5;
+                                    rMax.y += 5;
+                                    this->mapBound(&rMax);
+                                    iMap.decrementValue(rMin.x, rMin.y,
+                                                          rMax.x, rMax.y, 0x80);
                                 }
                             }
                         } else if (mode == 2 &&
                                    object->master_obj->object_group == 7) {
-                            bMin.x -= 3;
-                            bMin.y -= 3;
-                            this->mapBound(&bMin);
-                            bMax.x += 3;
-                            bMax.y += 3;
-                            this->mapBound(&bMax);
-                            iMap.incrementValue(bMin.x, bMin.y,
-                                                  bMax.x, bMax.y, 0x80);
+                            rMin.x -= 3;
+                            rMin.y -= 3;
+                            this->mapBound(&rMin);
+                            rMax.x += 3;
+                            rMax.y += 3;
+                            this->mapBound(&rMax);
+                            iMap.incrementValue(rMin.x, rMin.y,
+                                                  rMax.x, rMax.y, 0x80);
                         }
                     }
                 }
@@ -3816,18 +3819,18 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
 
     if (mode == 1 || mode == 2 || mode == 3 || mode == 4 || mode == 0 ||
         mode == 5 || mode == 6 || mode == 8) {
-        int i = 0;
+        a = 0;
         if (this->playerBuildings.numberValue > 0) {
         do {
-            RGE_Static_Object* object = this->md->object(this->playerBuildings[i]);
+            RGE_Static_Object* object = this->md->object(this->playerBuildings[a]);
             if (object != 0) {
                 int placement = this->placementCode(object->master_obj->id);
-                float radiusX = object->master_obj->radius_x;
-                float radiusY = object->master_obj->radius_y;
+                float bXRadius = object->master_obj->radius_x;
+                float bYRadius = object->master_obj->radius_y;
                 XYPoint bMin;
                 XYPoint bMax;
 
-                if (radiusX == DAT_00575598) {
+                if (bXRadius == DAT_00575598) {
                     bMin.x = (int)object->world_x;
                     bMin.x -= 3;
                     bMin.y = (int)object->world_y;
@@ -3836,7 +3839,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     bMax.x += 3;
                     bMax.y = (int)object->world_y;
                     bMax.y += 3;
-                } else if (radiusX == DAT_005755a0) {
+                } else if (bXRadius == DAT_005755a0) {
                     if (placement == 6) {
                         bMin.x = (int)object->world_x;
                         bMin.x -= 1;
@@ -3863,7 +3866,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                         bMax.y = (int)object->world_y;
                         bMax.y += 2;
                     }
-                } else if (radiusX == DAT_00575564) {
+                } else if (bXRadius == DAT_00575564) {
                     if (placement == 6 || placement == 3) {
                         bMin.x = (int)object->world_x;
                         bMin.x -= 1;
@@ -3881,7 +3884,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                         bMax.y = (int)object->world_y;
                         bMax.y += 1;
                     }
-                } else if (radiusX == DAT_005755a8) {
+                } else if (bXRadius == DAT_005755a8) {
                     if (placement == 6 || placement == 4) {
                         bMin.x = (int)object->world_x;
                         bMin.y = (int)object->world_y;
@@ -3899,8 +3902,8 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     }
                 } else {
                     this->logCommonHistory("    Unsupported building size (%d x %d).",
-                                     (double)(radiusX + radiusX),
-                                     (double)((float)radiusY + (float)radiusY));
+                                     (double)(bXRadius + bXRadius),
+                                     (double)((float)bYRadius + (float)bYRadius));
                     goto building_next;
                 }
 
@@ -3916,6 +3919,9 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
 
                 if (mode == 3 || mode == 0) {
                     float radiusValue = object->master_obj->los;
+                    if (mode == 3) {
+                        radiusValue *= DAT_005755b4;
+                    }
                     if (placement == 0x6d) {
                         radiusValue *= DAT_005755b4;
                     }
@@ -3983,30 +3989,30 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     iMap.incrementValue(minLOS.x, minLOS.y,
                                           maxLOS.x, maxLOS.y, 20);
 
-                    radius /= 2;
-                    minLOS.x = bMin.x - radius;
-                    minLOS.y = bMin.y - radius;
+                    int halfRadius = radius / 2;
+                    minLOS.x = bMin.x - halfRadius;
+                    minLOS.y = bMin.y - halfRadius;
                     this->mapBound(&minLOS);
-                    maxLOS.x = bMax.x + radius;
-                    maxLOS.y = bMax.y + radius;
+                    maxLOS.x = bMax.x + halfRadius;
+                    maxLOS.y = bMax.y + halfRadius;
                     this->mapBound(&maxLOS);
                     iMap.incrementValue(minLOS.x, minLOS.y,
                                           maxLOS.x, maxLOS.y, 20);
 
-                    radius /= 3;
-                    minLOS.x = bMin.x - radius;
-                    minLOS.y = bMin.y - radius;
+                    int thirdRadius = radius / 3;
+                    minLOS.x = bMin.x - thirdRadius;
+                    minLOS.y = bMin.y - thirdRadius;
                     this->mapBound(&minLOS);
-                    maxLOS.x = bMax.x + radius;
-                    maxLOS.y = bMax.y + radius;
+                    maxLOS.x = bMax.x + thirdRadius;
+                    maxLOS.y = bMax.y + thirdRadius;
                     this->mapBound(&maxLOS);
                     iMap.incrementValue(minLOS.x, minLOS.y,
                                           maxLOS.x, maxLOS.y, 20);
                 }
             }
         building_next:
-            i++;
-        } while (i < this->playerBuildings.numberValue);
+            a++;
+        } while (a < this->playerBuildings.numberValue);
         }
     }
 
