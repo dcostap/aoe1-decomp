@@ -2382,10 +2382,10 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
     else
         row_offset = width * clip_top;
     save_buffer = area->Bits + clip_left + row_offset;
-    byte dither;
+    bool dither;
     byte b;
     byte* end;
-    dither = (byte)(((char)p8 + (char)clip_left) & 1);
+    dither = (((char)p8 + (char)clip_left) & 1) != 0;
     if (((p9 + clip_top) & 1U) != 0)
         dither = (byte)(dither != 1);
 
