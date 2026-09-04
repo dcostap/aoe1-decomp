@@ -1859,7 +1859,7 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long size,
         unsigned long dco_id = kill_message->dcoID;
         int candidate;
         int high;
-        int found;
+        unsigned int found;
         if (dco_id != 0) {
             candidate = this->PlayerOptions.LowPlayerNumber;
             high = this->PlayerOptions.HighPlayerNumber;
@@ -1873,7 +1873,7 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long size,
         }
         found = 0;
 found_player:
-        if (found != 0) {
+        if (found > 0) {
             if (this->PlayerStopTurn[found] == 0)
                 this->DropDeadPlayer(found, dco_id);
             if (found == this->Me) {
