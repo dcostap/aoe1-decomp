@@ -1169,4 +1169,5 @@ void TSpan_List_Manager::take_snapshot(char* name, int& number,
         close(infile);
     }
     free(line);
+    return;
 }
