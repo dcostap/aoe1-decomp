@@ -6931,13 +6931,13 @@ int TribeTacticalAIModule::highLevelTaskExplorer(int id, int mode)
 }
 
 
-int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
+int TribeTacticalAIModule::highLevelTaskGatherer(int unitID, ulong startTime)
 {
     unsigned long now;
     RGE_Static_Object* gathererObj;
     int triedTasking[4];
     UnitAIModule* ai;
-    int remaining;
+    int numNonFarmers;
     int task;
     int* tried;
     int* desired;
@@ -6951,7 +6951,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
     triedTasking[1] = 0;
     triedTasking[2] = 0;
     triedTasking[3] = 0;
-    while (i < this->numberGatherersValue && this->gatherers[i].id != id)
+    while (i < this->numberGatherersValue && this->gatherers[i].id != unitID)
         ++i;
     if (i >= this->numberGatherersValue)
         goto fail;
@@ -6962,7 +6962,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
         return 1;
     this->gatherers[foundIndex].lastTaskTime = now;
 
-    gathererObj = this->md->player->world->object(id);
+    gathererObj = this->md->player->world->object(unitID);
     if (gathererObj != 0 && gathererObj->unitAI() != 0) {
         ai = gathererObj->unitAI();
     if (ai->currentAction() == 0x258)
@@ -6978,9 +6978,9 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
         return 1;
 
     if (this->isFarmer(gathererObj) == 1) {
-        remaining = this->civilians.numberValue;
-        remaining -= this->numberFarmers();
-        if (this->md->resourceAI.resource(0) < 1000 && remaining > 3)
+        numNonFarmers = this->civilians.numberValue;
+        numNonFarmers -= this->numberFarmers();
+        if (this->md->resourceAI.resource(0) < 1000 && numNonFarmers > 3)
             return 1;
     }
 
@@ -7000,7 +7000,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
             return 1;
         task = this->gatherers[foundIndex].data1;
         triedTasking[task + 1] = 1;
-        if (this->taskGatherer(this->gatherers[foundIndex].id, task, 0, param, 0) == 1)
+        if (this->taskGatherer(this->gatherers[foundIndex].id, task, 0, startTime, 0) == 1)
             return 1;
         this->gatherers[foundIndex].data1 = -1;
         this->gatherers[foundIndex].data2 = -1;
@@ -7022,7 +7022,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
                     goto success;
             }
             *tried = 1;
-            if (this->taskGatherer(this->gatherers[foundIndex].id, task, 0, param, 0) == 1)
+            if (this->taskGatherer(this->gatherers[foundIndex].id, task, 0, startTime, 0) == 1)
                 goto success;
         }
         ++task;
@@ -7038,7 +7038,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
             goto fallback;
 
         if (triedTasking[1] == 0) {
-            taskResult = this->taskGatherer(this->gatherers[foundIndex].id, 0, 1, param, 0);
+            taskResult = this->taskGatherer(this->gatherers[foundIndex].id, 0, 1, startTime, 0);
             triedTasking[1] = 1;
         }
         if (taskResult != 0)
@@ -7049,13 +7049,13 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
         triedTasking[1] = 1;
     }
 
-    if (this->taskGatherer(this->gatherers[foundIndex].id, task, 1, param, 0) == 0)
+    if (this->taskGatherer(this->gatherers[foundIndex].id, task, 1, startTime, 0) == 0)
         goto fallback;
 
     goto normal_success;
 
 fallback:
-    this->taskGatherer(this->gatherers[foundIndex].id, -1, 1, param, triedTasking + 1);
+    this->taskGatherer(this->gatherers[foundIndex].id, -1, 1, startTime, triedTasking + 1);
 
 success:
         return 1;
