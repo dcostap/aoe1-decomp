@@ -1153,12 +1153,12 @@ void TRIBE_Screen_Game::handle_game_update(void)
     unsigned long now;
     unsigned char update_flag;
     int mode;
-    int calc_game_time;
-    unsigned long update_counter;
-    int loop_i;
+    unsigned long calc_game_time;
+    int num_updates;
+    int update_counter;
     int i;
 
-    update_counter = 0;
+    calc_game_time = 0;
     color_log(0x24, 0x24, 5);
 
     t = debug_timeGetTime(s_scr_game_cpp, 0x63F);
@@ -1184,20 +1184,20 @@ void TRIBE_Screen_Game::handle_game_update(void)
         {
             int who = comm->WhoAmI();
             unsigned long avg = comm->Speed->PlayerAvgFramesMsec[who];
-            calc_game_time = 2;
+            num_updates = 2;
             if (multi_updates == 0 || avg < 0x43 || avg > 0x7D ||
                 static_cast<float>(per) / static_cast<float>(static_cast<int>(sum)) > 2.0f) {
-                calc_game_time = 1;
+                num_updates = 1;
             }
         }
         rge_base_game->set_last_single_time(2, 0);
         rge_base_game->set_last_single_time(3, 0);
     } else {
-        calc_game_time = 1;
+        num_updates = 1;
     }
 
-    loop_i = 0;
-    if (calc_game_time > 0) {
+    update_counter = 0;
+    if (num_updates > 0) {
         do {
             unsigned char update_flag;
             color_log(0x24, 0x4C, 5);
@@ -1347,9 +1347,9 @@ void TRIBE_Screen_Game::handle_game_update(void)
                     static_cast<unsigned long>(static_cast<TRIBE_Game*>(rge_base_game)->auto_exit_time)) {
                 goto close_game;
             }
-            update_counter += this->world->world_time_delta;
-            loop_i++;
-        } while (loop_i < calc_game_time);
+            calc_game_time += this->world->world_time_delta;
+            update_counter++;
+        } while (update_counter < num_updates);
     }
         }
     }
@@ -1360,7 +1360,7 @@ void TRIBE_Screen_Game::handle_game_update(void)
     {
         color_log(0x16, 0x4C, 5);
         now = debug_timeGetTime(s_scr_game_cpp, 0x79C);
-        if (update_counter > 0) {
+        if (calc_game_time > 0) {
             RGE_Player* p = rge_base_game->get_player();
             if (static_cast<int>(p->attributes[6]) != this->save_age) {
                 this->age_changed();
