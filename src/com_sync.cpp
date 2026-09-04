@@ -407,16 +407,16 @@ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
     int humanPlayerCount = 0;
 
     for (; searchIndex <= 0x36; ++searchIndex) {
-        CHECKSUMARRAY& entry = this->Check[searchIndex];
-        if (entry.PlayerNo == playerNo && entry.WTurn == commTurn) {
+        if (this->Check[searchIndex].PlayerNo == playerNo &&
+            this->Check[searchIndex].WTurn == commTurn) {
             foundMyValues = true;
-            myChecksumNew = entry.cs2;
-            myPositionChecksum = entry.cs3;
-            myWorldTime = entry.WTime;
-            myActionChecksum = entry.cs4;
-            myObstructionChecksum = entry.cs5;
-            myUnifiedVisible = entry.cs1;
-            myRandom = entry.Random;
+            myChecksumNew = this->Check[searchIndex].cs2;
+            myPositionChecksum = this->Check[searchIndex].cs3;
+            myWorldTime = this->Check[searchIndex].WTime;
+            myActionChecksum = this->Check[searchIndex].cs4;
+            myObstructionChecksum = this->Check[searchIndex].cs5;
+            myUnifiedVisible = this->Check[searchIndex].cs1;
+            myRandom = this->Check[searchIndex].Random;
             break;
         }
     }
