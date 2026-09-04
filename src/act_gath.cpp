@@ -256,7 +256,6 @@ gather_depleted:
 
 unsigned char RGE_Action_Gather::update() {
     float give_amount;
-    RGE_Player* check_player;
 
     if (this->targetID != -1 &&
         this->obj->owner->world->object(this->targetID) == 0) {
@@ -309,8 +308,12 @@ unsigned char RGE_Action_Gather::update() {
             this->set_state(15);
             return 0;
         case 3:
-            check_player = this->obj->owner;
-            goto computer_check;
+            if (this->obj->owner->computerPlayer() == 1) {
+                this->set_state(13);
+                return 0;
+            }
+            this->set_state(3);
+            return 0;
         case 1:
         case 2:
         case 5:
@@ -318,28 +321,35 @@ unsigned char RGE_Action_Gather::update() {
                 this->set_state(3);
                 return 0;
             }
-            goto computer_fallback;
+            if (this->obj->owner->computerPlayer() == 1) {
+                this->set_state(1);
+            } else {
+                this->set_state(2);
+            }
+            return 0;
         }
         break;
 
-    case 4: {
-        unsigned char result = this->sub_actions->update();
-        switch (result) {
+    case 4:
+        switch (this->sub_actions->update()) {
         case 4:
         case 5:
             this->set_target_obj(0);
             this->set_state(11);
             return 0;
         case 3:
-            check_player = this->obj->owner;
-            goto computer_check;
+            if (this->obj->owner->computerPlayer() == 1) {
+                this->set_state(13);
+                return 0;
+            }
+            this->set_state(3);
+            return 0;
         case 1:
         case 2:
             this->set_state(6);
             return 0;
         }
         break;
-    }
 
     case 6:
         if (this->target_obj == 0) {
@@ -462,26 +472,15 @@ unsigned char RGE_Action_Gather::update() {
                     this->set_state(11);
                     return 0;
                 }
-                goto computer_fallback;
+                if (this->obj->owner->computerPlayer() == 1) {
+                    this->set_state(1);
+                } else {
+                    this->set_state(2);
+                }
+                return 0;
             }
         }
         break;
-
-computer_fallback:
-        if (this->obj->owner->computerPlayer() == 1) {
-            this->set_state(1);
-        } else {
-            this->set_state(2);
-        }
-        return 0;
-
-computer_check:
-        if (check_player->computerPlayer() == 1) {
-            this->set_state(13);
-            return 0;
-        }
-        this->set_state(3);
-        return 0;
 
     case 1:
         return 1;

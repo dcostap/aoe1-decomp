@@ -1806,9 +1806,12 @@ void TribeMPSetupScreen::updateSummary()
     int changed = 0;
     char str1[256];
     char str2[256];
-    char file_name[0x118];
+    union {
+        char file_name[0x118];
+        struct _finddata_t file_info;
+    } file_scratch;
     char str3[256];
-    struct _finddata_t file_info;
+    struct _finddata_t file_info2;
     char* scenario_dir;
     char* scenario_name;
 
@@ -1835,7 +1838,7 @@ void TribeMPSetupScreen::updateSummary()
             scenario_dir = rge_base_game->prog_info->scenario_dir;
             scenario_name = rge_base_game->scenarioName();
             sprintf(str1, "%s%s.scn", scenario_dir, scenario_name);
-            long handle = _findfirst(str1, &file_info);
+            long handle = _findfirst(str1, &file_scratch.file_info);
             if (handle == -1) {
                 sprintf(str1, "%s.scx",
                         rge_base_game->scenarioName());
@@ -1938,16 +1941,17 @@ void TribeMPSetupScreen::updateSummary()
         if (rge_base_game->scenarioGame()) {
             scenario_dir = rge_base_game->prog_info->scenario_dir;
             scenario_name = rge_base_game->scenarioName();
-            sprintf(file_name, "%s%s.scn", scenario_dir, scenario_name);
-            long handle = _findfirst(file_name, &file_info);
+            sprintf(file_scratch.file_name, "%s%s.scn", scenario_dir, scenario_name);
+            long handle = _findfirst(file_scratch.file_name, &file_info2);
             if (handle == -1) {
-                sprintf(file_name, "%s.scx",
+                sprintf(file_scratch.file_name, "%s.scx",
                         rge_base_game->scenarioName());
             } else {
-                sprintf(file_name, "%s.scn",
+                sprintf(file_scratch.file_name, "%s.scn",
                         rge_base_game->scenarioName());
             }
-            this->myScenarioChecksum = rge_base_game->get_scenario_checksum(file_name);
+            this->myScenarioChecksum = rge_base_game->get_scenario_checksum(
+                file_scratch.file_name);
         } else {
             this->myScenarioChecksum = 0;
         }

@@ -20,7 +20,7 @@
     "004A37C0": {"status": "matching", "symbol": "?handle_timer_command@TribeMPSetupScreen@@UAEJIJ@Z"},
     "004A37D0": {"status": "matching", "symbol": "?fillPlayers@TribeMPSetupScreen@@QAEXXZ"},
     "004A4100": {"status": "matching", "symbol": "?fillChat@TribeMPSetupScreen@@IAEXH@Z"},
-    "004A4190": {"status": "scratch", "symbol": "?updateSummary@TribeMPSetupScreen@@QAEXXZ"},
+    "004A4190": {"status": "matching", "symbol": "?updateSummary@TribeMPSetupScreen@@QAEXXZ"},
     "004A4FC0": {"status": "matching", "symbol": "?kickPlayer@TribeMPSetupScreen@@IAEXH@Z"},
     "004A5020": {"status": "matching", "symbol": "?handleKickedPlayer@TribeMPSetupScreen@@IAEXH@Z"},
     "004A5060": {"status": "matching", "symbol": "?activateVictoryPanels@TribeMPSetupScreen@@IAEXXZ"},

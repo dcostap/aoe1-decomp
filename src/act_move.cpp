@@ -160,12 +160,12 @@ unsigned char RGE_Action_Move_To::update() {
         }
 
         this->obj->setGoal(this->target_x, this->target_y, 1.0f);
-        XYZBYTEPoint waypoint;
-        waypoint.x = (unsigned char)this->target_x;
-        waypoint.y = (unsigned char)this->target_y;
-        waypoint.z = (unsigned char)this->target_z;
+        XYZBYTEPoint goalPoint;
+        goalPoint.x = (unsigned char)this->target_x;
+        goalPoint.y = (unsigned char)this->target_y;
+        goalPoint.z = (unsigned char)this->target_z;
         if (this->obj->finalUserDefinedWaypoint == 0) {
-            this->obj->addUserDefinedWaypoint(&waypoint, 0);
+            this->obj->addUserDefinedWaypoint(&goalPoint, 0);
             this->obj->setFinalUserDefinedWaypoint();
         }
         this->obj->setActionRange(this->range);
