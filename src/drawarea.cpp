@@ -613,14 +613,16 @@ void TDrawSystem::Paint(tagRECT* param_1)
         ClientToScreen(this->Wnd, (POINT*)&dest.left);
         ClientToScreen(this->Wnd, (POINT*)&dest.right);
         } else {
+            bottom = this->ScreenHeight;
+            right = this->ScreenWidth;
             src.left = 0;
             src.top = 0;
-            src.right = this->ScreenWidth;
-            src.bottom = this->ScreenHeight;
+            src.right = right;
+            src.bottom = bottom;
             dest.left = 0;
             dest.top = 0;
-            dest.right = this->ScreenWidth;
-            dest.bottom = this->ScreenHeight;
+            dest.right = right;
+            dest.bottom = bottom;
         }
 
         if (param_1) {
