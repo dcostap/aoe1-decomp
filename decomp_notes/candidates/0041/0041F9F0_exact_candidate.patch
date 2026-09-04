@@ -1,0 +1,84 @@
+Rejected exact candidate for 0041F9F0 restart_music_system.
+
+Target result: MATCH, 0.0000%.
+Reason rejected: The private derived inline helper is artificial and unsupported.
+The helper also changes entry save timing and fault order.
+Tested main line: worker wrap-alpha-055, 202-owner basegame closure.
+This file is evidence only.
+
+diff --git a/src/basegame.cpp b/src/basegame.cpp
+index ad99c15d1..f3302ffa8 100644
+--- a/src/basegame.cpp
++++ b/src/basegame.cpp
+@@ -2264,37 +2264,49 @@ void RGE_Base_Game::stop_music_system(void) {
+ 
+ 
+ 
+-int RGE_Base_Game::restart_music_system()
+-{
+-    if (this->music_system == 0)
+-        return 1;
++class RestartMusicSystemBody : public RGE_Base_Game {
++public:
++    static inline int run(RestartMusicSystemBody* self)
++    {
++        if (self->save_music_track_from) {
++            if (self->save_music_track_from == self->save_music_track_to) {
++                self->music_system->play_track(self->save_music_track_from,
++                                               self->save_music_loop,
++                                               self->save_music_pos);
++                return 1;
++            }
++        }
+ 
+-    if (this->save_music_track_from != 0 &&
+-        this->save_music_track_from == this->save_music_track_to) {
+-        this->music_system->play_track(this->save_music_track_from,
+-                                       this->save_music_loop,
+-                                       this->save_music_pos);
+-        return 1;
+-    }
++        if (self->save_music_track_from != 0 && self->save_music_track_to) {
++            self->music_system->play_tracks(self->save_music_track_from,
++                                             self->save_music_track_to,
++                                             self->save_music_loop,
++                                             self->save_music_cur_track,
++                                             self->save_music_pos);
++            return 1;
++        }
++
++        if (self->save_music_file[0]) {
++            self->music_system->play_file(self->save_music_file,
++                                          self->save_music_loop,
++                                          self->save_music_pos);
++        }
+ 
+-    if (this->save_music_track_from != 0 && this->save_music_track_to != 0) {
+-        this->music_system->play_tracks(this->save_music_track_from,
+-                                        this->save_music_track_to,
+-                                        this->save_music_loop,
+-                                        this->save_music_cur_track,
+-                                        this->save_music_pos);
+         return 1;
+     }
++};
+ 
+-    if (this->save_music_file[0] != 0)
+-        this->music_system->play_file(this->save_music_file,
+-                                      this->save_music_loop,
+-                                      this->save_music_pos);
+-    return 1;
++int RGE_Base_Game::restart_music_system()
++{
++    if (!this->music_system)
++        return 1;
++    return RestartMusicSystemBody::run(
++        static_cast<RestartMusicSystemBody*>(this));
++}
+ 
+ 
+ 
++
+ void RGE_Base_Game::shutdown_music_system() {
+     if (music_system == 0) return;
+     this->stop_music_system();
