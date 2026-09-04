@@ -108,3 +108,23 @@ valid migration check.
   boundary, and direct-target differences. Existing exact owners stayed exact.
 - The standalone exact candidate remains evidence only at
   `decomp_notes/candidates/0043/00439E50_exact_candidate.patch`.
+
+## Current closure result: wrap-alpha-354
+
+The PDB/CRT ownership conflict for `0043AB50 memmove` has a natural grouped
+repair. The PDB records a local `S_LPROC32` procedure with a `void` return,
+unsigned-char pointer parameters `d` and `s`, and a `long len` parameter. The
+Win32 header chain already declares global C-linkage CRT `memmove`, so the
+PDB-shaped global definition raises VC5 C2733.
+
+The source keeps the reviewed CRT declaration in `include/dib.h` and places
+the PDB-shaped static C-linkage definition in an unnamed namespace in
+`src/Dib.cpp`. This models the PDB local owner without a wrapper, duplicate
+definition, pragma, assembly, or header masking. The unqualified call in
+`DibMapToPalette` resolves to the one local `_memmove` owner.
+
+The target result is `MATCH`, `0.0000%`: 42/42 bytes, 19/19 instructions, no
+calls, no relocations, matching owner, matching CFG, and no boundary escape.
+The single-job grouped audit is in
+`build/worker_wrap_alpha_354/audit_final_static/report.txt`. All 19 prior exact
+validation targets remain matching, and no exact neighbor changed.

@@ -1319,27 +1319,28 @@ void __cdecl xlatRle8(unsigned char* data, int unused, unsigned char* xlat)
 
 static void __cdecl xlatRle4(unsigned char*, unsigned long, unsigned char*) {}
 
-extern "C" void* __cdecl memmove(void* dst_arg, const void* src_arg,
-    unsigned int n)
+namespace {
+
+extern "C" static void __cdecl memmove(unsigned char* d, unsigned char* s,
+    long len)
 {
-    unsigned char* dst = (unsigned char*)dst_arg;
-    unsigned char* src = (unsigned char*)src_arg;
     int count;
 
-    dst = dst + n - 1;
-    count = n;
-    src = src + n - 1;
-    n = n - 1;
+    d = d + len - 1;
+    count = len;
+    s = s + len - 1;
+    len = len - 1;
     if (count != 0) {
-        count = n + 1;
+        count = len + 1;
         do {
-            *dst = *src;
-            dst = dst - 1;
-            src = src - 1;
+            *d = *s;
+            d = d - 1;
+            s = s - 1;
             count = count - 1;
         } while (count != 0);
     }
-    return dst_arg;
+}
+
 }
 
 void __cdecl DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm,

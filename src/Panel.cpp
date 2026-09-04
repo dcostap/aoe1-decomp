@@ -1133,18 +1133,17 @@ long TPanel::handle_idle(void) {
 
 long TPanel::handle_size(long wid, long hgt)
 {
-    TPanel* p = this->parent_panel;
     long left;
     long top;
     long right;
     long bottom;
     long calc_hgt;
 
-    if (p != 0) {
-        right = p->render_rect.right;
-        left = p->render_rect.left;
-        top = p->render_rect.top;
-        bottom = p->render_rect.bottom;
+    if (this->parent_panel != 0) {
+        right = this->parent_panel->render_rect.right;
+        left = this->parent_panel->render_rect.left;
+        top = this->parent_panel->render_rect.top;
+        bottom = this->parent_panel->render_rect.bottom;
         wid = right - left + 1;
         hgt = bottom - top + 1;
     } else {
@@ -1160,55 +1159,47 @@ long TPanel::handle_size(long wid, long hgt)
         bottom = this->min_hgt + top - 1;
         right = this->min_wid + left - 1;
     } else {
-        p = this->left_panel;
-        if (p != 0 && p->active != 0) {
-            left = this->left_border + p->render_rect.right + 1;
+        if (this->left_panel != 0 && this->left_panel->active != 0) {
+            left = this->left_border + this->left_panel->render_rect.right + 1;
         } else {
             left = this->left_border + left;
         }
-        p = this->top_panel;
-        if (p != 0 && p->active != 0) {
-            top = this->top_border + p->render_rect.bottom + 1;
+        if (this->top_panel != 0 && this->top_panel->active != 0) {
+            top = this->top_border + this->top_panel->render_rect.bottom + 1;
         } else {
             top = this->top_border + top;
         }
-        p = this->right_panel;
-        if (p != 0 && p->active != 0) {
-            right = p->render_rect.left - this->right_border - 1;
+        if (this->right_panel != 0 && this->right_panel->active != 0) {
+            right = this->right_panel->render_rect.left - this->right_border - 1;
         } else {
             right -= this->right_border;
         }
-        p = this->bottom_panel;
-        if (p != 0 && p->active != 0) {
-            bottom = p->render_rect.top - this->bottom_border - 1;
+        if (this->bottom_panel != 0 && this->bottom_panel->active != 0) {
+            bottom = this->bottom_panel->render_rect.top - this->bottom_border - 1;
         } else {
             bottom -= this->bottom_border;
         }
 
         calc_hgt = bottom - top + 1;
-        long limit = this->min_wid;
-        if (limit != 0 && right - left + 1 < limit) {
-            right = left + limit - 1;
+        if (this->min_wid != 0 && right - left + 1 < this->min_wid) {
+            right = left + this->min_wid - 1;
         } else {
-            limit = this->max_wid;
-            if (limit != 0 && right - left + 1 > limit) {
+            if (this->max_wid != 0 && right - left + 1 > this->max_wid) {
                 if (this->position_mode == PositionLeft || this->position_mode == PositionLeftTop || this->position_mode == PositionLeftBottom) {
-                    right = left + limit - 1;
+                    right = left + this->max_wid - 1;
                 } else {
-                    left = right - limit + 1;
+                    left = right - this->max_wid + 1;
                 }
             }
         }
-        limit = this->min_hgt;
-        if (limit != 0 && calc_hgt < limit) {
-            bottom = top + limit - 1;
+        if (this->min_hgt != 0 && calc_hgt < this->min_hgt) {
+            bottom = top + this->min_hgt - 1;
         } else {
-            limit = this->max_hgt;
-            if (limit != 0 && calc_hgt > limit) {
+            if (this->max_hgt != 0 && calc_hgt > this->max_hgt) {
                 if (this->position_mode == PositionTop || this->position_mode == PositionLeftTop || this->position_mode == PositionRightTop) {
-                    bottom = top + limit - 1;
+                    bottom = top + this->max_hgt - 1;
                 } else {
-                    top = bottom - limit + 1;
+                    top = bottom - this->max_hgt + 1;
                 }
             }
         }
@@ -1235,7 +1226,7 @@ long TPanel::handle_size(long wid, long hgt)
 
     tagRECT rect = { left, top, right, bottom };
     this->set_rect(rect);
-    int pass = 0;
+    int i = 0;
     do {
         for (PanelNode* node = this->first_child_node; node != 0; node = node->next_node) {
             TPanel* child = node->panel;
@@ -1244,8 +1235,8 @@ long TPanel::handle_size(long wid, long hgt)
                 return r;
             }
         }
-        ++pass;
-    } while (pass < 2);
+        ++i;
+    } while (i < 2);
     return 0;
 }
 
