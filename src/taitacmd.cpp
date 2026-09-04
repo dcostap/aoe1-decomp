@@ -5267,7 +5267,7 @@ first_pass_next:
                         group->setGatherLocation(object->world_x,
                                                  object->world_y,
                                                  object->world_z);
-                        group->task(this, this->md, group->action(), 1, 0);
+                        group->task(this, this->md, group->action(), 0, found);
                     }
                 }
 
