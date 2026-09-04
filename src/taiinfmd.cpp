@@ -15,6 +15,7 @@
 #include "../include/player.h"
 #include "../include/stat_obj.h"
 #include "../include/tplayer.h"
+#include "../include/tworld.h"
 #include "../include/unit_ai_module.h"
 #include "../include/xyz_point.h"
 #include "../include/visible.h"
@@ -1598,7 +1599,9 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(int id, short type, shor
     }
 
     if (obj) {
-        unsigned int playerNum = this->md->player->world->player_turn;
+        unsigned int playerNum =
+            static_cast<TRIBE_World*>(this->md->player->world)
+                ->controllingComputerPlayer;
         if (this->md->tacticalAI.strategicNumber(0xc9) == 1) {
             int myNum = this->md->player->id;
             if (playerNum == (unsigned int)myNum || playerNum == 0xff) {
@@ -1618,7 +1621,19 @@ ObjectMemory* TribeInformationAIModule::addObjectMemory(int id, short type, shor
         if (this->maxImportantObjectMemory > 0) {
             i = 0;
             do {
-                mem[i] = this->importantObjectMemory[i];
+                mem[i].id = this->importantObjectMemory[i].id;
+                mem[i].type = this->importantObjectMemory[i].type;
+                mem[i].group = this->importantObjectMemory[i].group;
+                mem[i].x = this->importantObjectMemory[i].x;
+                mem[i].y = this->importantObjectMemory[i].y;
+                mem[i].z = this->importantObjectMemory[i].z;
+                mem[i].owner = this->importantObjectMemory[i].owner;
+                mem[i].hitPoints = this->importantObjectMemory[i].hitPoints;
+                mem[i].attackAttempts = this->importantObjectMemory[i].attackAttempts;
+                mem[i].kills = this->importantObjectMemory[i].kills;
+                mem[i].damageCapability = this->importantObjectMemory[i].damageCapability;
+                mem[i].rateOfFire = this->importantObjectMemory[i].rateOfFire;
+                mem[i].range = this->importantObjectMemory[i].range;
                 ++empty;
                 ++i;
             } while (empty < this->maxImportantObjectMemory);
