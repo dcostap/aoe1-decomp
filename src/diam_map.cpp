@@ -217,7 +217,7 @@ void RGE_Diamond_Map::set_world(RGE_Game_World *world) {
         this->map_tile_rows[row].draw_step = draw_step;
         this->map_tile_rows[row].num_tiles =
             (short)((float)line_len / draw_step);
-        this->map_tile_rows[row].ratio = draw_step;
+        this->map_tile_rows[row].ratio = draw_step / (float)line_len;
         this->map_tile_rows[row].col_extra =
             this->map_tile_rows[row].ratio < 1.0f ? col_step * 0.5f : 0.0f;
 
