@@ -3362,8 +3362,24 @@ next_resource:
                 }
                 if (tasked == -1) goto skip_append;
 append_explorer:
-                if (this->civilianExplorers.add(tasked) == 0)
-                    goto skip_append;
+                {
+                    int explorerCount = this->civilianExplorers.numberValue;
+                    int scan = 0;
+                    if (explorerCount > 0) {
+                        do {
+                            if (this->civilianExplorers.maximumSizeValue <= scan)
+                                break;
+                            if (this->civilianExplorers.value[scan] == tasked)
+                                goto skip_append;
+                            scan = scan + 1;
+                        } while (scan < explorerCount);
+                    }
+                    if (this->civilianExplorers.maximumSizeValue - 1 <
+                        explorerCount)
+                        this->civilianExplorers.resize(explorerCount + 1);
+                    this->civilianExplorers.value[explorerCount] = tasked;
+                    this->civilianExplorers.numberValue = explorerCount + 1;
+                }
             } while (this->civilianExplorers.numberValue <
                      this->civilianExplorers.desiredNumberValue);
         }
@@ -3398,7 +3414,9 @@ excess_explorers_done:
                      this->numberGatherersValue < this->desiredNumberGatherersValue);
         }
         ManagedArray<int>* civilianList = &this->civilians;
-        this->nextCivilianToTaskValue = (*civilianList)[0];
+        if (civilianList->maximumSizeValue - 1 < 0)
+            civilianList->resize(1);
+        this->nextCivilianToTaskValue = civilianList->value[0];
         if (debug_timeGetTime("C:\\msdev\\work\\age1_x1\\taitacmd.cpp", 0x0D8A) - param_1 >= param_2) {
             return 0;
         }
