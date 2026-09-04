@@ -2953,8 +2953,8 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
             } else {
                 object_id = -1;
             }
-            fprintf(actionFile, "#%d call stopObject %s %d\n", object_id,
-                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x105D);
+            fprintf(actionFile, str_fmt_stopObject, object_id,
+                    str_aiuaimod_path, 0x105D);
         }
         this->stopObject(1);
         result = 1;
@@ -3026,8 +3026,8 @@ int UnitAIModule::processOrder(OrderEvent* param_1, int param_2) {
             } else {
                 object_id = -1;
             }
-            fprintf(actionFile, "#%d call stopObject %s %d\n", object_id,
-                    "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp", 0x10E9);
+            fprintf(actionFile, str_fmt_stopObject, object_id,
+                    str_aiuaimod_path, 0x10E9);
         }
         this->stopObject(1);
         result = 1;
