@@ -2566,6 +2566,7 @@ void RGE_Map::get_border_type(short x, short y)
     int xi;
     unsigned char ter_top;
     unsigned char ter_final;
+    unsigned char ter_top_rgt;
 
     if (x < 0 || x >= this->map_width || y < 0 || y >= this->map_height)
         return;
@@ -2606,15 +2607,24 @@ void RGE_Map::get_border_type(short x, short y)
     check_for_border(ter_top_lft, ter_bot_rgt);
     check_for_border(ter_top_lft, ter_final);
 
-    unsigned char border_neighbor =
-        ter_lft != ter_top_lft ? ter_lft :
-        tile != ter_top_lft ? tile :
-        ter_rgt != ter_top_lft ? ter_rgt :
-        ter_bot != ter_top_lft ? ter_bot :
-        ter_bot_lft != ter_top_lft ? ter_bot_lft :
-        ter_top != ter_top_lft ? ter_top :
-        ter_bot_rgt != ter_top_lft ? ter_bot_rgt : ter_final;
-    if (border_neighbor == ter_top_lft) {
+    unsigned char border_neighbor;
+    if (ter_lft != ter_top_lft)
+        border_neighbor = ter_lft;
+    else if (tile != ter_top_lft)
+        border_neighbor = tile;
+    else if (ter_rgt != ter_top_lft)
+        border_neighbor = ter_rgt;
+    else if (ter_bot != ter_top_lft)
+        border_neighbor = ter_bot;
+    else if (ter_bot_lft != ter_top_lft)
+        border_neighbor = ter_bot_lft;
+    else if (ter_top != ter_top_lft)
+        border_neighbor = ter_top;
+    else if (ter_bot_rgt != ter_top_lft)
+        border_neighbor = ter_bot_rgt;
+    else if (ter_final != ter_top_lft)
+        border_neighbor = ter_final;
+    else {
         cur->border_type = 0;
         cur->border_shape = 0;
         return;
@@ -2633,9 +2643,9 @@ void RGE_Map::get_border_type(short x, short y)
     if (this->border_types[border].border_style == 1) {
         edge = 0;
         if (border_table[(unsigned char)ter_lft] == border) edge |= 1;
-        if (border_table[(unsigned char)tile] == border) edge |= 2;
-        if (border_table[(unsigned char)ter_rgt] == border) edge |= 4;
-        if (border_table[(unsigned char)ter_bot] == border) edge |= 8;
+        if (border_table[(unsigned char)tile] == border) edge += 2;
+        if (border_table[(unsigned char)ter_rgt] == border) edge += 4;
+        if (border_table[(unsigned char)ter_bot] == border) edge += 8;
         cur->border_type = (unsigned char)border;
         cur->border_shape = edge;
         return;
