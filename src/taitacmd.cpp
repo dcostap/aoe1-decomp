@@ -1014,7 +1014,7 @@ case20_next:
             } else {
                 RGE_Static_Object* targ = md->object(targetValue);
                 if (targ != 0) {
-                    if (madeMemory) {
+                    if (madeMemory == 1) {
                         tactical->logGroupDebug(idValue, s_log_15);
                         XYPoint min;
                         XYPoint max;
