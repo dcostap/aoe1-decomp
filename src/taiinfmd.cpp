@@ -960,7 +960,7 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
     int gx;
     int gy;
     int boat;
-    int bestObject;
+    ResourceMemory* bestObject;
     int bestValue;
     int score;
     int fishingBoat;
@@ -988,31 +988,31 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
     gy = (int)gatherer->world_y;
     boat = this->isBoat(gatherer);
 
-    fishingBoat = -1;
-    bestValue = 0;
+    fishingBoat = boat;
+    bestValue = -1;
+    bestObject = 0;
     needUpdateDropsite = 0;
 
     i = 0;
     if (this->numResources[resType] > 0) {
-        bestObject = 0;
         do {
-            if (((ResourceMemory*)((char*)this->resources[resType] + bestObject))->gone == 1) goto next;
-            if (((ResourceMemory*)((char*)this->resources[resType] + bestObject))->valid != 0) {
-                if (((ResourceMemory*)((char*)this->resources[resType] + bestObject))->gone != 0) goto next;
-                --((ResourceMemory*)((char*)this->resources[resType] + bestObject))->valid;
+            if (this->resources[resType][i].gone == 1) goto next;
+            if (this->resources[resType][i].valid != 0) {
+                if (this->resources[resType][i].gone != 0) goto next;
+                --this->resources[resType][i].valid;
                 goto next;
             }
             excluded = 0;
             excludePtr = exclude;
             for (j = 0; j < excludeCount; ++j, ++excludePtr) {
-                if (*excludePtr == ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->id) { excluded = 1; break; }
+                if (*excludePtr == this->resources[resType][i].id) { excluded = 1; break; }
             }
             if (excluded == 1) goto next;
-            obj = this->md->object(((ResourceMemory*)((char*)this->resources[resType] + bestObject))->id);
+            obj = this->md->object(this->resources[resType][i].id);
             if (!obj) {
-                ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->gone = 1;
+                this->resources[resType][i].gone = 1;
                 if (this->closestDropsiteResourceID[resType] ==
-                    ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->id)
+                    this->resources[resType][i].id)
                     needUpdateDropsite = 1;
                 goto next;
             }
@@ -1024,17 +1024,17 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
                 cls2 = obj->master_obj->object_group;
                 if (cls2 == 5 || cls2 == 0x1f || cls2 == 0x21) goto next;
             }
-            dx = gx - ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->x;
-            dy = gy - ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->y;
-            score = dx * dx + dy * dy + ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->gatherValue * 10;
+            dx = gx - this->resources[resType][i].x;
+            dy = gy - this->resources[resType][i].y;
+            score = dx * dx + dy * dy + this->resources[resType][i].gatherValue * 10;
             if (obj->master_obj->id == 0x3b) {
-                if (((ResourceMemory*)((char*)this->resources[resType] + bestObject))->dropDistance > 0x14) goto next;
-                score += ((int)((ResourceMemory*)((char*)this->resources[resType] + bestObject))->gatherAttempts) / 150;
+                if (this->resources[resType][i].dropDistance > 0x14) goto next;
+                score += ((int)this->resources[resType][i].gatherAttempts) / 150;
                 if (this->md->tacticalAI.numberGatherersWithTarget(obj->id) > 2) score += 200;
             } else {
-                score += ((int)((ResourceMemory*)((char*)this->resources[resType] + bestObject))->gatherAttempts) / 50;
+                score += ((int)this->resources[resType][i].gatherAttempts) / 50;
             }
-            if (bestValue && score >= fishingBoat) goto next;
+            if (bestObject && score >= bestValue) goto next;
             cls3 = obj->master_obj->object_group;
             if ((cls3 == 9 || cls3 == 10) && obj->object_state > 2 && obj->attribute_amount_held > DAT_00575568) score += 25;
             if (this->withinXTilesOfEnemyTowncenter(obj, 25) == 1) goto next;
@@ -1057,24 +1057,23 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
                 int want = this->md->tacticalAI.strategicNumber(0xcc);
                 if (this->md->tacticalAI.actualGathererCountByRealResourceID(0) < want) goto next;
             }
-            if (gatherer->lookupZone(((ResourceMemory*)((char*)this->resources[resType] + bestObject))->x,
-                                     ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->y) != zone) goto next;
-            if (bestValue && score >= fishingBoat) goto next;
-            bestValue = (int)((ResourceMemory*)((char*)this->resources[resType] + bestObject));
-            fishingBoat = score;
+            if (gatherer->lookupZone(this->resources[resType][i].x,
+                                     this->resources[resType][i].y) != zone) goto next;
+            if (bestObject && score >= bestValue) goto next;
+            bestObject = &this->resources[resType][i];
+            bestValue = score;
             outX = obj->world_x;
             outY = obj->world_y;
 next:
             ++i;
-            bestObject += 20;
         } while (i < this->numResources[resType]);
     }
 
         if (needUpdateDropsite == 1) this->updateResourceDropsites(resType);
-        if (bestValue) {
-            ((ResourceMemory*)bestValue)->gatherAttempts++;
-            outResourceId = ((ResourceMemory*)bestValue)->dropsiteID;
-            return ((ResourceMemory*)bestValue)->id;
+        if (bestObject) {
+            bestObject->gatherAttempts++;
+            outResourceId = bestObject->dropsiteID;
+            return bestObject->id;
         }
     }
     return -1;

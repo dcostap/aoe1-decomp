@@ -1791,8 +1791,8 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long size,
                    this->current_turn, done->ExecuteOnTurn);
             return 0;
         }
-        unsigned int next = done->ExecuteOnTurn;
-        next -= this->PlayerOptions.CommandTurnIncrement;
+        unsigned int next = done->ExecuteOnTurn -
+                            this->PlayerOptions.CommandTurnIncrement;
         if (next < this->LastTurnAck[player])
             next = this->LastTurnAck[player];
         this->LastTurnAck[player] = next;
@@ -1857,21 +1857,21 @@ int TCommunications_Handler::EvaluatePlayerMessage(unsigned long size,
         break;
     case 0x4B: {
         MSGFORMAT_KILL_PLAYER* kill_message = (MSGFORMAT_KILL_PLAYER*)data;
-        L->Log("KILL Message recieved from %d to kill P#%d ",
-               player, kill_message->PlayerNo);
+        TDebuggingLog* kill_log = L;
+        kill_log->Log("KILL Message recieved from %d to kill P#%d ",
+                      player, kill_message->PlayerNo);
         unsigned long dco_id = kill_message->dcoID;
-        int candidate;
-        int high;
         unsigned int found;
         if (dco_id != 0) {
-            candidate = this->PlayerOptions.LowPlayerNumber;
-            high = this->PlayerOptions.HighPlayerNumber;
-            while (candidate <= high) {
-                if (this->PlayerOptions.dcoID[candidate] == dco_id) {
-                    found = candidate;
-                    goto found_player;
+            int candidate = this->PlayerOptions.LowPlayerNumber;
+            int high = this->PlayerOptions.HighPlayerNumber;
+            if (candidate <= high) {
+                for (; candidate <= high; ++candidate) {
+                    if (this->PlayerOptions.dcoID[candidate] == dco_id) {
+                        found = candidate;
+                        goto found_player;
+                    }
                 }
-                ++candidate;
             }
         }
         found = 0;

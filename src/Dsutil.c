@@ -1086,7 +1086,7 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
         return;
     }
 
-    IDirectSoundBuffer_GetCurrentPosition((LPDIRECTSOUNDBUFFER)ds_stream_buffer,
+    IDirectSoundBuffer_GetCurrentPosition(ds_stream_buffer,
         &dwPlay, &dwWrite);
     if (ds_write_cursor < dwPlay) {
         DWORD t = ds_write_cursor + ds_chunk_size;
@@ -1115,7 +1115,7 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
         --ds_silence_chunks;
         if ((int)ds_silence_chunks <= 1) goto done;
         if (ds_stream_buffer == (void*)0) goto done;
-        if (IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)ds_stream_buffer,
+        if (IDirectSoundBuffer_Lock(ds_stream_buffer,
             ds_write_cursor, ds_chunk_size, (void**)&lpWrite1, &dwLen1,
             (void**)&lpWrite2, &dwLen2, 0)) goto done;
         {
@@ -1127,7 +1127,7 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
                     memset(lpWrite1, 0, dwLen1);
             }
         }
-        IDirectSoundBuffer_Unlock((LPDIRECTSOUNDBUFFER)ds_stream_buffer,
+        IDirectSoundBuffer_Unlock(ds_stream_buffer,
             lpWrite1, dwLen1, lpWrite2, dwLen2);
         ds_write_cursor += ds_chunk_size;
         if (ds_write_cursor < ds_buffer_size) goto done;
@@ -1135,7 +1135,7 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
     }
 
     if (ds_stream_buffer == (void*)0) goto done;
-    if (IDirectSoundBuffer_Lock((LPDIRECTSOUNDBUFFER)ds_stream_buffer,
+    if (IDirectSoundBuffer_Lock(ds_stream_buffer,
         ds_write_cursor, ds_chunk_size, (void**)&lpWrite1, &dwLen1,
         (void**)&lpWrite2, &dwLen2, 0)) goto done;
 
@@ -1221,7 +1221,7 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
     }
 
     if (ds_stream_buffer) IDirectSoundBuffer_Unlock(
-        (LPDIRECTSOUNDBUFFER)ds_stream_buffer, lpWrite1, dwLen1,
+        ds_stream_buffer, lpWrite1, dwLen1,
         lpWrite2, dwLen2);
     ds_write_cursor += ds_chunk_size;
     if (ds_write_cursor < ds_buffer_size) goto done;
