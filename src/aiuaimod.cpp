@@ -702,17 +702,18 @@ update_tail:
 void UnitAIModule::updateGroup(unsigned long param_1)
 {
     RGE_Static_Object* target;
-    int newTarget;
     AIPlay* play;
     AIPlayPhase* phase;
+    int i;
+    int newTarget;
     int totalHitPoints[5];
     int groupList[50];
+    int groupCount;
+    int a;
     int triggerSatisfied;
     AIPlayPhaseTrigger* trigger;
     float gatherDistance;
     int deadCount;
-    int a;
-    int groupCount;
 
     if (this->playStatus &&
         (play = this->objectValue->owner->world->playbook->play(
@@ -730,8 +731,11 @@ void UnitAIModule::updateGroup(unsigned long param_1)
 
                     object = this->objectValue;
                     if (object->groupMembers[memberIndex] != object->id) {
+                        if (memberIndex > object->groupMembers.maximumSizeValue - 1) {
+                            object->groupMembers.resize(memberIndex + 1);
+                        }
                         object = this->lookupObject(
-                            object->groupMembers[memberIndex]);
+                            object->groupMembers.value[memberIndex]);
                         if (object != 0 && object->unitAI() != 0) {
                             UnitAIModule* memberAI = object->unitAI();
                             newTarget = memberAI->bestUnitToAttack(1, 0, (float*)0);
@@ -809,7 +813,7 @@ foundTrigger:
                 } while (remaining != 0);
             }
 
-            int i = 0;
+            i = 0;
             do {
                 this->playStatus->setOriginalHitPoints(
                     i, totalHitPoints[i]);
@@ -821,10 +825,11 @@ foundTrigger:
 
         phase = play->phase((unsigned int)this->playStatus->currentPhaseValue);
         if (phase) {
-            int i = 0;
+            i = 0;
             do {
                 trigger = phase->trigger(i);
                 if (trigger != 0 && trigger->type() != 0) {
+                    triggerSatisfied = 0;
                     switch (trigger->type()) {
                     case 1: {
                         triggerSatisfied = 1;
