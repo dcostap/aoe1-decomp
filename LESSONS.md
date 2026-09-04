@@ -35,6 +35,9 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 - An early `= 0` can let VC5 rematerialize zero and reduce pressure.
 - Named locals preload fields, enable CSE, and extend liveness.
 - Direct member expressions delay loads and preserve repeated member reads.
+- VC5 can color a repeated short-member CSE differently from a named short
+  alias. If the executable loads the member at first use, test direct access
+  before adding a local. The alias can add a home and reverse pointer spills.
 - Keep a local when assembly carries one value through a phase.
 - Use direct access when assembly reloads a member after calls or branches.
 - Use fresh member access to preserve a binary-observed redundant null test.
