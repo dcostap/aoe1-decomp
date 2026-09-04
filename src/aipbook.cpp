@@ -435,12 +435,11 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
     int unitsByTypeCount[6];
     int unitsByType[6][50];
     int j;
-    AIPlayGroup* group;
     int minUnits;
     int numAssigned;
     int a;
     int smallestGroupSize;
-    int k;
+    int* end;
 
     play = world->playbook->play(playStatus->playNumberValue);
 
@@ -454,66 +453,71 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
     }
 
     if (numberGroupMembers > 0) {
-        for (i = 0; i < numberGroupMembers; i++) {
-            RGE_Static_Object* object = world->object(groupMembers[i]);
+        j = numberGroupMembers;
+        do {
+            RGE_Static_Object* object = world->object(*groupMembers);
             if (object == 0) {
                 minUnits = 0;
             } else {
-                a = world->playbook->convertUnitToIntType(object);
-                if (a < 0 || a >= 6) {
+                i = world->playbook->convertUnitToIntType(object);
+                if (i < 0 || i >= 6) {
                     minUnits = 0;
                 } else {
-                    j = unitsByTypeCount[a];
-                    unitsByType[a][j] = groupMembers[i];
-                    unitsByTypeCount[a] = j + 1;
+                    unitsByType[i][unitsByTypeCount[i]] = *groupMembers;
+                    unitsByTypeCount[i]++;
                 }
             }
-        }
+            groupMembers++;
+            j--;
+        } while (j != 0);
     }
 
     i = 0;
     while (i < play->numberGroupsValue) {
-        group = play->group(i);
+        AIPlayGroup* group = play->group(i);
         if (group == 0) {
             return 0;
         }
 
         j = 0;
-        rVal = 0;
-        do {
+        while (j < 6) {
             a = group->minimum(j);
             if (a != 0) {
                 numAssigned = 0;
                 smallestGroupSize = unitsByTypeCount[j];
-                for (k = 0; k < smallestGroupSize && numAssigned < a; k++) {
-                    if (unitsByType[j][k] != -1) {
+                rVal = 0;
+                while (rVal < smallestGroupSize && numAssigned < a) {
+                    if (unitsByType[j][rVal] != -1) {
                         if (playStatus->addGrouping(
-                                unitsByType[j][k], (unsigned char)i,
+                                unitsByType[j][rVal], (unsigned char)i,
                                 (unsigned char)j) == 1) {
                             numAssigned++;
-                            unitsByType[j][k] = -1;
+                            unsigned char maximumUnits =
+                                play->maximumNumberUnitsValue;
+                            unitsByType[j][rVal] = -1;
                             if (playStatus->numberInPlay() ==
-                                play->maximumNumberUnitsValue) {
+                                maximumUnits) {
                                 goto CountDeviation;
                             }
                         } else {
                             minUnits = 0;
                         }
                     }
+                    rVal++;
                 }
             }
-            rVal += 50;
             j++;
-        } while (rVal < 300);
+        }
         i++;
     }
 
     i = 0;
     rVal = 0;
     do {
-        numAssigned = unitsByTypeCount[i];
-        for (k = 0; k < numAssigned; k++) {
-            if (unitsByType[i][k] == -1) {
+        int* unit = unitsByType[i];
+        end = unit + unitsByTypeCount[i];
+        for (; unit < end; unit++) {
+            if (*unit == -1) {
                 continue;
             }
 
@@ -522,7 +526,7 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                 smallestGroupSize = 0;
 
                 for (j = 0; j < play->numberGroupsValue; j++) {
-                    group = play->group(j);
+                    AIPlayGroup* group = play->group(j);
                     if (group != 0) {
                         if (group->maximum(i) >
                                 playStatus->numberOfTypeInGroup(j, i) &&
@@ -537,9 +541,9 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
 
                 if (a != -1) {
                     if (playStatus->addGrouping(
-                            unitsByType[i][k], a,
+                            *unit, a,
                             (unsigned char)i) == 1) {
-                        unitsByType[i][k] = -1;
+                        *unit = -1;
                         if (playStatus->numberInPlay() ==
                             play->maximumNumberUnitsValue) {
                             goto CountDeviation;
@@ -550,14 +554,14 @@ int AIPlay::fillGroups(AIPlayStatus* playStatus, int* groupMembers,
                 }
             } else if (this->overflowValue == 2) {
                 for (j = 0; j < play->numberGroupsValue; j++) {
-                    group = play->group(j);
+                    AIPlayGroup* group = play->group(j);
                     if (group != 0) {
                         if (group->maximum(i) >
                                 playStatus->numberOfTypeInGroup(j, i)) {
                             if (playStatus->addGrouping(
-                                    unitsByType[i][k], (unsigned char)j,
+                                    *unit, (unsigned char)j,
                                     (unsigned char)i) == 1) {
-                                unitsByType[i][k] = -1;
+                                *unit = -1;
                                 if (playStatus->numberInPlay() ==
                                     play->maximumNumberUnitsValue) {
                                     goto CountDeviation;
@@ -579,7 +583,7 @@ CountDeviation:
     deviation = 0;
     i = 0;
     while (i < play->numberGroupsValue) {
-        group = play->group(i);
+        AIPlayGroup* group = play->group(i);
         if (group != 0) {
             for (j = 0; j < 6; j++) {
                 a = group->minimum(j);
