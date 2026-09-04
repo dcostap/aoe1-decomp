@@ -960,9 +960,9 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
     int gx;
     int gy;
     int boat;
-    int score;
     int bestObject;
-    ResourceMemory* bestValue;
+    int bestValue;
+    int score;
     int fishingBoat;
     int needUpdateDropsite;
     int i;
@@ -1038,16 +1038,16 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
             cls3 = obj->master_obj->object_group;
             if ((cls3 == 9 || cls3 == 10) && obj->object_state > 2 && obj->attribute_amount_held > DAT_00575568) score += 25;
             if (this->withinXTilesOfEnemyTowncenter(obj, 25) == 1) goto next;
-            if (this->withinXTilesOfAttackOnPlayer(obj, 15, this->md->player->culture) == 1) score += 500;
+            if (this->withinXTilesOfAttackOnPlayer(obj, 15, this->md->player->id) == 1) score += 500;
             if (obj->master_obj->id == 0x32) {
-                if (obj->owner->culture != this->md->player->culture) goto next;
+                if (obj->owner->id != this->md->player->id) goto next;
                 if (obj->object_state != 2) goto next;
                 if (this->md->tacticalAI.numberGatherersWithTarget(obj->id) > 0) goto next;
                 objectId = obj->id;
                 k = 0;
                 while (k < this->farmsTaskedThisUpdate.numberValue) {
                     if (k >= this->farmsTaskedThisUpdate.maximumSizeValue) break;
-                    if (this->farmsTaskedThisUpdate[k] == objectId) goto next;
+                    if (this->farmsTaskedThisUpdate.value[k] == objectId) goto next;
                     ++k;
                 }
             }
@@ -1060,7 +1060,7 @@ int TribeInformationAIModule::gameIDOfResourceObject(int resType, int gathererId
             if (gatherer->lookupZone(((ResourceMemory*)((char*)this->resources[resType] + bestObject))->x,
                                      ((ResourceMemory*)((char*)this->resources[resType] + bestObject))->y) != zone) goto next;
             if (bestValue && score >= fishingBoat) goto next;
-            bestValue = (ResourceMemory*)((char*)this->resources[resType] + bestObject);
+            bestValue = (int)((ResourceMemory*)((char*)this->resources[resType] + bestObject));
             fishingBoat = score;
             outX = obj->world_x;
             outY = obj->world_y;
@@ -1072,9 +1072,9 @@ next:
 
         if (needUpdateDropsite == 1) this->updateResourceDropsites(resType);
         if (bestValue) {
-            bestValue->gatherAttempts++;
-            outResourceId = bestValue->dropsiteID;
-            return bestValue->id;
+            ((ResourceMemory*)bestValue)->gatherAttempts++;
+            outResourceId = ((ResourceMemory*)bestValue)->dropsiteID;
+            return ((ResourceMemory*)bestValue)->id;
         }
     }
     return -1;
