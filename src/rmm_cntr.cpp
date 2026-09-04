@@ -33,6 +33,8 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
     long index;
     uchar not_done;
     long index2;
+    // The land loop uses area as its anchor and advances 13 long values.
+    long* land = &info.land[0].area;
     info.land_num = land_num;
     switch (type) {
     default:
@@ -82,20 +84,20 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
     if (max_y >= this->map_height - 9) max_y = this->map_height - 10;
     index = 0;
     if (0 < land_num) {
-        RGE_Land_Info_Line* land = info.land;
         do {
             switch (type) {
             case 2:
             case 3:
             case 4:
-                land->terrain_type = 0; land->area = 3; land->base_size = 5; land->zone = 0; break;
+                land[-4] = 0; *land = 3; land[-1] = 5;
+                *(uchar*)(land + 1) = 0; break;
             case 1:
-                land->terrain_type = 0; land->area = 4;
+                land[-4] = 0; *land = 4;
                 goto set_land_defaults;
             case 0:
-                land->terrain_type = 0; land->area = 7;
+                land[-4] = 0; *land = 7;
 set_land_defaults:
-                land->base_size = 5; land->zone = (uchar)index; break;
+                land[-1] = 5; *(uchar*)(land + 1) = (uchar)index; break;
             }
             long x;
             long y;
@@ -119,10 +121,10 @@ set_land_defaults:
                     }
                 }
             } while (not_done);
-            land->x = x; land->y = y;
-            land->land_size = land_tile_num / info.land_num;
+            land[-3] = x; land[-2] = y;
+            ((RGE_Land_Info_Line*)(land - 5))->land_size = land_tile_num / info.land_num;
             ++index;
-            ++land;
+            land += 13;
         } while (index < info.land_num);
     }
     new RGE_RMM_Land_Generator(this->map, this, &info);
