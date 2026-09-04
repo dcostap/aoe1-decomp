@@ -202,7 +202,7 @@ void RGE_RMM_Controller::add_object_module(RGE_Game_World* world,
     RGE_Object_Info_Line& stone = info.objects[3];
     stone.obj_id = 0x66; stone.terrain = -1; stone.group_flag = 2; stone.scale_flag = 0;
     stone.object_number_varience = 2; stone.number_of_groups = 1;
-    stone.player_id = 0; stone.land_id = 0; stone.land_inner_radius = 9; stone.land_outer_radius = 15;
+    stone.player_id = 0; stone.land_id = 0; stone.land_outer_radius = 15; stone.land_inner_radius = 9;
     RGE_Object_Info_Line& tree = info.objects[4];
     tree.obj_id = 0x42; tree.terrain = -1; tree.group_flag = 2; tree.scale_flag = 0;
     tree.object_number_varience = 2; tree.number_of_groups = 1; tree.group_area = 4;
@@ -211,7 +211,7 @@ void RGE_RMM_Controller::add_object_module(RGE_Game_World* world,
     predator.obj_id = 0x3b; predator.terrain = -1; predator.group_flag = 1; predator.scale_flag = 0;
     predator.object_number_per_group = 5; predator.object_number_varience = 2;
     predator.number_of_groups = 1; predator.group_area = 3; predator.player_id = 0;
-    predator.land_id = 0; predator.land_inner_radius = 9; predator.land_outer_radius = 15;
+    predator.land_id = 0; predator.land_outer_radius = 15; predator.land_inner_radius = 9;
     count = lands.land_num;
     info.land_num = count;
     for (i = 0; i < count; ++i) {
