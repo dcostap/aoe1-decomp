@@ -45,6 +45,10 @@ pointer. Its implementation includes the complete owner header.
 The source now names canonical nested enums for text alignment, panel
 positioning, and redraw modes. These changes do not change their values or
 the source behavior.
+The `TDropDownPanel` header also uses the type-dump-proven nested `DropdownMode`
+and `DrawStyle` field types. The one-job `pnl_drop` audit kept every exact owner
+exact after this type repair. The wider header-affected audit covered 15
+translation units and 455 exact owners. It found no new closure regression.
 The unnamed `s_` declaration moved to `src/Pnl_drop.cpp` because it is not a
 Pnl_drop class or record.
 

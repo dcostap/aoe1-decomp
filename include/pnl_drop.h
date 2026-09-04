@@ -19,7 +19,7 @@ public:
     TButtonPanel* btn_panel;
     TListPanel* list_panel;
     TScrollBarPanel* scbar_panel;
-    int mode;
+    DropdownMode mode;
     short val_num;
     unsigned char val_num_padding[2];
     long val_wid;
@@ -35,7 +35,7 @@ public:
     unsigned char list_is_above_padding[3];
     long font_hgt;
     int outline_color;
-    int draw_style;
+    DrawStyle draw_style;
     int draw_val_rect;
 
     TDropDownPanel();

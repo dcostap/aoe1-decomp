@@ -8,10 +8,10 @@ TDropDownPanel::TDropDownPanel() : TPanel() {
     this->btn_panel = 0;
     this->list_panel = 0;
     this->scbar_panel = 0;
-    this->mode = 0;
+    this->mode = ModeNone;
     this->val_num = 0;
     this->list_is_above = 0;
-    this->draw_style = 0;
+    this->draw_style = DrawStyleDefault;
     this->panel_type = 6;
     this->draw_val_rect = 1;
 }
@@ -191,9 +191,9 @@ void TDropDownPanel::set_val_text_color(unsigned long fg, unsigned long bg) {
 void TDropDownPanel::set_draw_style(TDropDownPanel::DrawStyle param_1) {
     this->draw_style = param_1;
     if (this->val_panel) {
-        int old_mode = this->mode;
-        this->mode = 0;
-        this->set_mode((DropdownMode)old_mode);
+        DropdownMode old_mode = this->mode;
+        this->mode = ModeNone;
+        this->set_mode(old_mode);
     }
 }
 
@@ -290,8 +290,8 @@ void TDropDownPanel::set_mode(TDropDownPanel::DropdownMode mode) {
         parent_h = this->render_area->Height;
     }
 
-    old_mode = (DropdownMode)this->mode;
-    this->mode = (DropdownMode)ModeNone;
+    old_mode = this->mode;
+    this->mode = ModeNone;
 
     if (mode == ModeValue) {
         if (old_mode == ModeList && this->parent_panel != 0 && this->parent_panel->parent_panel != 0) {
