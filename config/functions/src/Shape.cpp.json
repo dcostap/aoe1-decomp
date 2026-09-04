@@ -25,7 +25,7 @@
     "004BA550": {"status": "scratch", "symbol": "?shape_mirror@TShape@@QAEEPAVTDrawArea@@JJJEPAE@Z"},
     "004BA900": {"status": "matching", "symbol": "?shape_mirror_unclipped@TShape@@AAEEPAVTDrawArea@@JJ@Z"},
     "004BA9E0": {"status": "matching", "symbol": "?shape_mirror_color_trans_unclipped@TShape@@AAEEPAVTDrawArea@@JJJPAE@Z"},
-    "004BAAF0": {"status": "accepted_drift", "symbol": "?shape_mirror_shadow_unclipped@TShape@@AAEEPAVTDrawArea@@JJPAE@Z"},
+    "004BAAF0": {"status": "matching", "symbol": "?shape_mirror_shadow_unclipped@TShape@@AAEEPAVTDrawArea@@JJPAE@Z"},
     "004BAC00": {"status": "scratch", "symbol": "?shape_mirror_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJ@Z"},
     "004BAF20": {"status": "scratch", "symbol": "?shape_mirror_color_trans_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJJPAE@Z"},
     "004BB280": {"status": "scratch", "symbol": "?shape_mirror_shadow_clipped@TShape@@AAEEPAVTDrawArea@@JJJJJJPAE@Z"},
