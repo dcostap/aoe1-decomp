@@ -2186,7 +2186,11 @@ int TribeTacticalAIModule::save(int file)
     if (this->civilians.numberValue > 0) {
         ManagedArray<int>& arr = this->civilians;
         do {
-            tempInt = arr[i];
+            if (i > arr.maximumSizeValue - 1) {
+                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+                (arr.*resize)(i + 1);
+            }
+            tempInt = arr.value[i];
             rge_write(file, &tempInt, 4);
             i++;
         } while (i < this->civilians.numberValue);
@@ -2201,7 +2205,11 @@ int TribeTacticalAIModule::save(int file)
     if (this->civilianExplorers.numberValue > 0) {
         ManagedArray<int>& arr = this->civilianExplorers;
         do {
-            tempInt = arr[i];
+            if (i > arr.maximumSizeValue - 1) {
+                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+                (arr.*resize)(i + 1);
+            }
+            tempInt = arr.value[i];
             rge_write(file, &tempInt, 4);
             i++;
         } while (i < this->civilianExplorers.numberValue);
@@ -2220,7 +2228,11 @@ int TribeTacticalAIModule::save(int file)
     if (this->soldiers.numberValue > 0) {
         ManagedArray<int>& arr = this->soldiers;
         do {
-            tempInt = arr[i];
+            if (i > arr.maximumSizeValue - 1) {
+                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+                (arr.*resize)(i + 1);
+            }
+            tempInt = arr.value[i];
             rge_write(file, &tempInt, 4);
             i++;
         } while (i < this->soldiers.numberValue);
@@ -2235,7 +2247,11 @@ int TribeTacticalAIModule::save(int file)
     if (this->ungroupedSoldiers.numberValue > 0) {
         ManagedArray<int>& arr = this->ungroupedSoldiers;
         do {
-            tempInt = arr[i];
+            if (i > arr.maximumSizeValue - 1) {
+                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+                (arr.*resize)(i + 1);
+            }
+            tempInt = arr.value[i];
             rge_write(file, &tempInt, 4);
             i++;
         } while (i < this->ungroupedSoldiers.numberValue);
@@ -8062,6 +8078,7 @@ dispatch:
 
 int TribeTacticalAIModule::taskResearch(BuildItem* item)
 {
+    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
     int objectID;
     RGE_Static_Object* object;
     if (item == 0) {
@@ -8085,7 +8102,6 @@ int TribeTacticalAIModule::taskResearch(BuildItem* item)
 
     objectID = object->id;
 
-    ManagedArray<int>& arr = this->unitsTaskedThisUpdate;
     int i;
     for (i = 0; i < arr.numberValue; i++) {
         if (i >= arr.maximumSizeValue)
