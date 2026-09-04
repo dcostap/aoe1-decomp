@@ -1193,12 +1193,12 @@ void RGE_View::draw_object_outline() {
             rge_base_game->sub_game_mode == 1 &&
             this->movable_object != 0) {
             RGE_Static_Object* movable = this->movable_object;
-            RGE_Color_Table* colors = movable->owner->color_table;
-            master->draw(this->render_area, scr_x, scr_y, colors,
+            master->draw(this->render_area, scr_x, scr_y,
+                         movable->owner->color_table,
                          movable->facet, 0, draw_flag, frame_color);
         } else {
-            RGE_Color_Table* colors = rge_base_game->get_player()->color_table;
-            master->draw(this->render_area, scr_x, scr_y, colors,
+            master->draw(this->render_area, scr_x, scr_y,
+                         rge_base_game->get_player()->color_table,
                          0, 0, draw_flag, frame_color);
         }
     }

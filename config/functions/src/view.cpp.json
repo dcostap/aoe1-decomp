@@ -27,7 +27,7 @@
     "00534AE0": {"status": "scratch", "symbol": "?draw@RGE_View@@UAEXXZ"},
     "00535210": {"status": "scratch", "symbol": "?update@RGE_View@@IAEXXZ"},
     "00535480": {"status": "matching", "symbol": "?draw_view@RGE_View@@IAEXEPAVTDrawArea@@@Z"},
-    "00535610": {"status": "scratch", "symbol": "?draw_object_outline@RGE_View@@IAEXXZ"},
+    "00535610": {"status": "matching", "symbol": "?draw_object_outline@RGE_View@@IAEXXZ"},
     "005358B0": {"status": "matching", "symbol": "?draw_paint_brush@RGE_View@@IAEXXZ"},
     "005359E0": {"status": "matching", "symbol": "?pick@RGE_View@@QAEEEEJJPAURGE_Pick_Info@@PAVRGE_Static_Object@@@Z"},
     "00535A80": {"status": "accepted_drift", "symbol": "?pick_multi@RGE_View@@QAEEEJJJJ@Z"},
