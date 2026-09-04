@@ -3744,13 +3744,13 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
 
                         rMin.x = (int)(object->world_x - object->master_obj->radius_x - DAT_00575564);
                         rMin.y = (int)(object->world_y - resYRadius - DAT_00575564);
-                        this->mapBound(&rMin);
+                        this->mapBound(rMin);
                         rMax.x = (int)(object->world_x + resYRadius - DAT_0057556c);
                         rMax.y = (int)(object->world_y + resYRadius - DAT_0057556c);
-                        this->mapBound(&rMax);
+                        this->mapBound(rMax);
                         position.x = (int)object->master_obj->radius_x;
                         position.y = (int)object->master_obj->radius_y;
-                        this->mapBound(&position);
+                        this->mapBound(position);
 
                         if (mode == 1 || mode == 2) {
                             iMap.setValue(position.x, position.y, 0xff);
@@ -3769,28 +3769,28 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                      group != 8 && group != 0x0f)) {
                                     rMin.x -= 1;
                                     rMin.y -= 1;
-                                    this->mapBound(&rMin);
+                                    this->mapBound(rMin);
                                     rMax.x += 1;
                                     rMax.y += 1;
-                                    this->mapBound(&rMax);
+                                    this->mapBound(rMax);
                                     iMap.incrementValue(rMin.x, rMin.y,
                                                           rMax.x, rMax.y, 8);
 
                                     rMin.x -= 3;
                                     rMin.y -= 3;
-                                    this->mapBound(&rMin);
+                                    this->mapBound(rMin);
                                     rMax.x += 3;
                                     rMax.y += 3;
-                                    this->mapBound(&rMax);
+                                    this->mapBound(rMax);
                                     iMap.incrementValue(rMin.x, rMin.y,
                                                           rMax.x, rMax.y, 4);
 
                                     rMin.x -= 5;
                                     rMin.y -= 5;
-                                    this->mapBound(&rMin);
+                                    this->mapBound(rMin);
                                     rMax.x += 5;
                                     rMax.y += 5;
-                                    this->mapBound(&rMax);
+                                    this->mapBound(rMax);
                                     iMap.incrementValue(rMin.x, rMin.y,
                                                           rMax.x, rMax.y, 2);
                                 }
@@ -3798,10 +3798,10 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                 if (object->master_obj->object_group == 7) {
                                     rMin.x -= 5;
                                     rMin.y -= 5;
-                                    this->mapBound(&rMin);
+                                    this->mapBound(rMin);
                                     rMax.x += 5;
                                     rMax.y += 5;
-                                    this->mapBound(&rMax);
+                                    this->mapBound(rMax);
                                     iMap.decrementValue(rMin.x, rMin.y,
                                                           rMax.x, rMax.y, 0x80);
                                 }
@@ -3810,10 +3810,10 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                    object->master_obj->object_group == 7) {
                             rMin.x -= 3;
                             rMin.y -= 3;
-                            this->mapBound(&rMin);
+                            this->mapBound(rMin);
                             rMax.x += 3;
                             rMax.y += 3;
-                            this->mapBound(&rMax);
+                            this->mapBound(rMax);
                             iMap.incrementValue(rMin.x, rMin.y,
                                                   rMax.x, rMax.y, 0x80);
                         }
@@ -3830,9 +3830,10 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
         do {
             RGE_Static_Object* object = this->md->object(this->playerBuildings[a]);
             if (object != 0) {
-                int placement = this->placementCode(object->master_obj->id);
-                float bXRadius = object->master_obj->radius_x;
-                float bYRadius = object->master_obj->radius_y;
+                RGE_Master_Static_Object* master = object->master_obj;
+                int placement = this->placementCode(master->id);
+                float bXRadius = master->radius_x;
+                float bYRadius = master->radius_y;
                 XYPoint bMin;
                 XYPoint bMax;
 
@@ -3919,12 +3920,12 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     bMax.x++;
                     bMax.y++;
                 }
-                this->mapBound(&bMin);
-                this->mapBound(&bMax);
+                this->mapBound(bMin);
+                this->mapBound(bMax);
                 iMap.setValue(bMin.x, bMin.y, bMax.x, bMax.y, 0xff);
 
                 if (mode == 3 || mode == 0) {
-                    float radiusValue = object->master_obj->los;
+                    float radiusValue = master->los;
                     if (mode == 3) {
                         radiusValue *= DAT_005755b4;
                     }
@@ -3936,10 +3937,10 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     XYPoint maxLOS;
                     minLOS.x = bMin.x - radius;
                     minLOS.y = bMin.y - radius;
-                    this->mapBound(&minLOS);
+                    this->mapBound(minLOS);
                     maxLOS.x = bMax.x + radius;
                     maxLOS.y = bMax.y + radius;
-                    this->mapBound(&maxLOS);
+                    this->mapBound(maxLOS);
                     if (mode == 0 && placement == 3) {
                 iMap.incrementValue(minLOS.x, minLOS.y,
                                               maxLOS.x, maxLOS.y, 10);
@@ -3948,7 +3949,7 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                                               maxLOS.x, maxLOS.y, 10);
                     }
                 } else if (mode == 1 || mode == 2) {
-                    float radiusValue = object->master_obj->los;
+                    float radiusValue = master->los;
                     if (placement == 0x6d) {
                         radiusValue *= DAT_005755b4;
                     }
@@ -3960,14 +3961,14 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     XYPoint aMin;
                     aMax.x = bMax.x - radius;
                     aMax.y = bMin.y - radius;
-                    this->mapBound(&aMax);
+                    this->mapBound(aMax);
                     aMin.x = bMin.x + radius;
                     aMin.y = bMax.y + radius;
-                    this->mapBound(&aMin);
+                    this->mapBound(aMin);
                     iMap.decrementValue(aMax.x, aMax.y,
                                           aMin.x, aMin.y, 10);
                 } else if (mode == 5) {
-                    float radiusValue = object->master_obj->los;
+                    float radiusValue = master->los;
                     if (placement == 0x6d) {
                         radiusValue *= DAT_005755b0;
                     }
@@ -3976,42 +3977,42 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     XYPoint maxDC;
                     minDC.x = bMin.x - radius * 2;
                     minDC.y = bMin.y - radius * 2;
-                    this->mapBound(&minDC);
+                    this->mapBound(minDC);
                     maxDC.x = bMax.x + radius * 2;
                     maxDC.y = bMax.y + radius * 2;
-                    this->mapBound(&maxDC);
+                    this->mapBound(maxDC);
                     iMap.decrementValue(minDC.x, minDC.y,
                                           maxDC.x, maxDC.y, 20);
                 } else if (mode == 8) {
-                    int radius = (int)object->master_obj->los;
+                    int radius = (int)master->los;
                     XYPoint minLOS;
                     XYPoint maxLOS;
                     minLOS.x = bMin.x - radius;
                     minLOS.y = bMin.y - radius;
-                    this->mapBound(&minLOS);
+                    this->mapBound(minLOS);
                     maxLOS.x = bMax.x + radius;
                     maxLOS.y = bMax.y + radius;
-                    this->mapBound(&maxLOS);
+                    this->mapBound(maxLOS);
                     iMap.incrementValue(minLOS.x, minLOS.y,
                                           maxLOS.x, maxLOS.y, 20);
 
                     int halfRadius = radius / 2;
                     minLOS.x = bMin.x - halfRadius;
                     minLOS.y = bMin.y - halfRadius;
-                    this->mapBound(&minLOS);
+                    this->mapBound(minLOS);
                     maxLOS.x = bMax.x + halfRadius;
                     maxLOS.y = bMax.y + halfRadius;
-                    this->mapBound(&maxLOS);
+                    this->mapBound(maxLOS);
                     iMap.incrementValue(minLOS.x, minLOS.y,
                                           maxLOS.x, maxLOS.y, 20);
 
                     int thirdRadius = radius / 3;
                     minLOS.x = bMin.x - thirdRadius;
                     minLOS.y = bMin.y - thirdRadius;
-                    this->mapBound(&minLOS);
+                    this->mapBound(minLOS);
                     maxLOS.x = bMax.x + thirdRadius;
                     maxLOS.y = bMax.y + thirdRadius;
-                    this->mapBound(&maxLOS);
+                    this->mapBound(maxLOS);
                     iMap.incrementValue(minLOS.x, minLOS.y,
                                           maxLOS.x, maxLOS.y, 20);
                 }
@@ -4034,8 +4035,8 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     minTerrain.y = y - 2;
                     maxTerrain.x = x - 2;
                     maxTerrain.y = y - 2;
-                    this->mapBound(&minTerrain);
-                    this->mapBound(&maxTerrain);
+                    this->mapBound(minTerrain);
+                    this->mapBound(maxTerrain);
                     iMap.setValue(x, y, 0xff);
                     iMap.decrementValue(minTerrain.x, minTerrain.y,
                                           maxTerrain.x, maxTerrain.y, 10);
@@ -4057,10 +4058,10 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                 XYPoint max;
                 min.x = (unsigned char)memory->minX - 4;
                 min.y = (unsigned char)memory->minY - 4;
-                this->mapBound(&min);
+                this->mapBound(min);
                 max.x = (unsigned char)memory->maxX + 4;
                 max.y = (unsigned char)memory->maxY + 4;
-                this->mapBound(&max);
+                this->mapBound(max);
                 iMap.incrementValue(min.x, min.y, max.x, max.y, 0x10);
             }
         }
