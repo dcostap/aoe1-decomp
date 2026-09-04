@@ -2504,8 +2504,8 @@ int TRIBE_Game::load_game(char* file_name)
     long checksum;
     long num1;
     long num4;
-    char debug_file_name[260];
     char fn[260];
+    char fileNameNoExt[260];
 
     this->inHandleIdle = 0;
     old_panel = panel_system.currentPanel();
@@ -2521,16 +2521,11 @@ int TRIBE_Game::load_game(char* file_name)
 
     this->show_status_message(0x44D, 0, -1);
     if (this->load_game_data() == 0) {
-        char* panel_name = old_panel == 0 ? 0 : old_panel->panelName();
-        if (panel_name != 0 && *panel_name != 0) {
-            panel_system.setCurrentPanel(panel_name, 0);
-            panel_system.destroyPanel("Status Screen");
-            this->enable_input();
-            return 0;
-        }
-        this->close_status_message();
-        this->enable_input();
-        return 0;
+        if (old_panel == 0 || old_panel->panelName() == 0)
+            goto load_game_failed;
+        if (*old_panel->panelName() == 0)
+            goto load_game_failed;
+        goto load_game_panel;
     }
 
     this->show_status_message(0x452, 0, -1);
@@ -2550,16 +2545,11 @@ int TRIBE_Game::load_game(char* file_name)
         this->sound_system->mute = 0;
 
     if (loaded == 0) {
-        char* panel_name = old_panel == 0 ? 0 : old_panel->panelName();
-        if (panel_name != 0 && *panel_name != 0) {
-            panel_system.setCurrentPanel(panel_name, 0);
-            panel_system.destroyPanel("Status Screen");
-            this->enable_input();
-            return 0;
-        }
-        this->close_status_message();
-        this->enable_input();
-        return 0;
+        if (old_panel == 0 || old_panel->panelName() == 0)
+            goto load_game_failed;
+        if (*old_panel->panelName() == 0)
+            goto load_game_failed;
+        goto load_game_panel;
     }
 
     {
@@ -2601,19 +2591,20 @@ int TRIBE_Game::load_game(char* file_name)
             }
         }
 
-        strcpy(fn, file_name);
-        char* dot = __mbschr(fn, '.');
+        strcpy(fileNameNoExt, file_name);
+        char* dot = __mbschr(fileNameNoExt, '.');
         if (dot != 0)
             *dot = 0;
-        this->set_save_game_name(fn);
-        this->set_load_game_name(fn);
+        this->set_save_game_name(fileNameNoExt);
+        this->set_load_game_name(fileNameNoExt);
 
         if (this->check_prog_argument("DEBUGLOAD") != 0) {
-            sprintf(debug_file_name, "c:\\%s.txt", fn);
-            FILE* debug_file = fopen(debug_file_name, "w");
+            sprintf(fn, "c:\\%s.txt", fileNameNoExt);
+            FILE* debug_file = fopen(fn, "w");
             if (debug_file != 0) {
                 total_action_checksum = 0;
                 total_checksum = 0;
+                i = 0;
                 fprintf(debug_file, "world_time=%u\n", this->world->world_time);
                 fprintf(debug_file, "old_world_time=%u\n",
                         this->world->old_world_time);
@@ -2624,11 +2615,11 @@ int TRIBE_Game::load_game(char* file_name)
                     RGE_Player* player = this->world->players[i];
                     fprintf(debug_file,
                             "player %d, civ=%d, score=%d, %s\n",
-                            i, player->culture,
+                            i, player->master_player_id,
                             player->victory_conditions->get_victory_points(),
                             player->name);
                     fprintf(debug_file, "  Writing=%f\n",
-                            player->attributes[200]);
+                            player->attributes[50]);
                     action_checksum = 0;
                     num2 = 0;
                     fprintf(debug_file, "  num_sleep_obj=%d\n",
@@ -2878,6 +2869,17 @@ int TRIBE_Game::load_game(char* file_name)
         this->close_game_screens(0);
         return this->create_game_screen();
     }
+
+load_game_panel:
+    panel_system.setCurrentPanel(old_panel->panelName(), 0);
+    panel_system.destroyPanel("Status Screen");
+    this->enable_input();
+    return 0;
+
+load_game_failed:
+    this->close_status_message();
+    this->enable_input();
+    return 0;
 }
 
 

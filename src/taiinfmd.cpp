@@ -2672,7 +2672,6 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
 
 ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeapons, int boats, int objnum, int& output)
 {
-    int* out = &output;
     RGE_Static_Object* unit;
     RGE_Static_Object* candidate;
     ObjectMemory* best;
@@ -2681,7 +2680,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
     int rangeRating;
     ObjectMemory* mem = this->wonderToAttack(-1);
     if (mem != 0) {
-        *out = 1;
+        output = 1;
         return mem;
     }
 
@@ -2875,7 +2874,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
                     if (best == 0 || rating > specialRating3) {
                         best = (ObjectMemory*)((char*)this->importantObjectMemory + i);
                         specialRating3 = rating;
-                        *out = 1;
+                        output = 1;
                     }
                 }
             }
