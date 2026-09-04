@@ -2673,8 +2673,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
 ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeapons, int boats, int objnum, int& output)
 {
     int* out = &output;
-    RGE_Static_Object* candidate;
     RGE_Static_Object* unit;
+    RGE_Static_Object* candidate;
     ObjectMemory* best;
     int specialRating3;
     uchar unitZone;
@@ -2748,9 +2748,9 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
                         continue;
                     }
                     if (numberNonSiegeTargets != 0) {
-                        float dangerousThreat;
-                        if (unit->unitAI()->mostDangerousEnemy(&dangerousThreat) !=
-                            this->importantObjectMemory[dCRating].id) continue;
+                        if (unit->unitAI()->canConvert(
+                                this->importantObjectMemory[dCRating].id) == 0)
+                            continue;
                     }
                     int ix = (int)candidate->world_x;
                     int iy = (int)candidate->world_y;
