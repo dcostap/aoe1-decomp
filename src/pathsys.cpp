@@ -232,13 +232,8 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     int iterations;
     int i;
     int SkipBit;
-    int heapCount;
-    int hole;
-    int child;
     int copiedX;
     int copiedY;
-    XYPoint bestPathPoint;
-    XYPoint temp;
     int badCollision;
     unsigned char terrainStatus;
     int found;
@@ -472,6 +467,7 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     yDeltaUp4 = -400 - (int)(fy * DAT_00570e74);
     yDeltaDown4 = -400 - (int)((master->radius_y + this->currentYOffset - DAT_00570e68) * DAT_00570e74);
 
+    iterations = 0;
     tmp = goalX - startX;
     tmp2 = goalY - startY;
     dist = (int)(sqrt((double)(tmp * tmp) + (double)(tmp2 * tmp2)) * DAT_00570e78);
@@ -481,8 +477,9 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
     if (this->currentObject->owner->id == 0 && numberIterationCap > 100) numberIterationCap = 100;
     if (this->currentObject->owner->computerPlayer() == 1) numberIterationCap = (dist * 0x9c4) / 100;
 
-    iterations = 0;
     while (this->numberOpenPathsValue > 0) {
+        XYPoint bestPathPoint;
+        XYPoint temp;
         if (numberPathingIterations != -1 && useIterationCap == 1 && iterations > numberIterationCap) break;
         if (iterations > 0x4e20) break;
 
@@ -536,6 +533,9 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         }
 
         ++this->numberTraversedPathsValue;
+        int hole = 1;
+        int child;
+        int heapCount;
         heapCount = this->numberOpenPathsValue;
         // The original heap node copies only the fields used by path search.
         // The two-byte next field is not copied here.
@@ -547,7 +547,6 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         copiedX = this->MGP_openPaths[1].x;
         copiedY = this->MGP_openPaths[1].y;
         oldTotal = this->MGP_openPaths[1].total;
-        hole = 1;
         while (hole < heapCount / 2) {
             child = hole * 2;
             if (child < heapCount && this->MGP_openPaths[child + 1].total < this->MGP_openPaths[child].total) ++child;
