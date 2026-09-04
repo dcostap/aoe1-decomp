@@ -3167,17 +3167,18 @@ int RGE_View::Pick_Tile(long px, long py, int* col_out, int* row_out) {
 
 
 
-void RGE_View::get_tile_bounding_coords(int param_1, int param_2, int& param_3, int& param_4, int& param_5, int& param_6) {
-    RGE_Tile* pRVar3 = this->map->map_row_offset[param_2];
-    short sVar2 = pRVar3[param_1].screen_xpos;
-    byte bVar1 = pRVar3[param_1].tile_type;
-    param_3 = sVar2;
-    param_5 = this->map->tilesizes[bVar1].width + sVar2 - 1;
-    param_4 = pRVar3[param_1].screen_ypos - this->tile_half_hgt;
+void RGE_View::get_tile_bounding_coords(int Tile_X, int Tile_Y, int& bx1, int& by1, int& bx2, int& by2) {
+    RGE_Tile* tile = &this->map->map_row_offset[Tile_Y][Tile_X];
+    int screen_x = tile->screen_xpos;
+    int tile_type = tile->tile_type;
+    bx1 = screen_x;
+    bx2 = this->map->tilesizes[tile_type].width +
+              screen_x - 1;
+    by1 = tile->screen_ypos - this->tile_half_hgt;
     this->tile_half_hgt = 0;
     this->tile_half_wid = 0;
     this->elev_hgt = 0;
-    param_6 = this->map->tilesizes[bVar1].height + param_4 - 1;
+    by2 = this->map->tilesizes[tile_type].height + by1 - 1;
 }
 
 
