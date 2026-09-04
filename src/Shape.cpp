@@ -2387,11 +2387,12 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
     else
         row_offset = width * clip_top;
     save_buffer = area->Bits + clip_left + row_offset;
-    bool dither;
+    byte dither;
     byte state;
+    byte done;
     byte b;
     byte* end;
-    dither = (((char)p8 + (char)clip_left) & 1) != 0;
+    dither = (byte)(((char)p8 + (char)clip_left) & 1);
     if (((p9 + clip_top) & 1U) != 0)
         dither = (byte)(dither != 1);
 
@@ -2400,7 +2401,7 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
         skip_rows = clip_top - y;
         row = y + skip_rows;
         do {
-            byte end_line = 0;
+            done = 0;
             do {
                 y = (long)*src++;
                 if ((y & 1) == 1) {
@@ -2412,11 +2413,11 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
                 } else {
                     y >>= 1;
                     if (y == 0)
-                        end_line = 1;
+                        done = 1;
                     else
                         ++src;
                 }
-            } while (end_line == 0);
+            } while (done == 0);
             --skip_rows;
         } while (skip_rows != 0);
     }
@@ -2648,7 +2649,7 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
             }
         }
 
-        save_buffer += width;
+        save_buffer = dst + width;
         ++row;
         dither = row_dither;
     } while (true);
