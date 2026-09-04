@@ -499,7 +499,9 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                                        unsigned char amount, int mode1,
                                        int mode2, int allDirections)
 {
-    int result = this->connectionCountValue;
+    int rVal = this->connectionCountValue;
+    int i;
+    int j;
 
     if (from.x < 0 || from.y < 0 || from.x >= this->xSizeValue ||
         from.y >= this->ySizeValue || to.x < 0 || to.y < 0 ||
@@ -507,19 +509,18 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
         return 0;
     }
 
-    for (int x = from.x; x <= to.x; ++x) {
-        int y = from.y;
-        if (y <= to.y) {
+    for (i = from.x; i <= to.x; ++i) {
+        j = from.y;
+        if (j <= to.y) {
             unsigned char** rowsMap = this->rowValue;
-            int xOffset = x - this->xReferencePointValue;
+            int xOffset = i - this->xReferencePointValue;
 
             do {
-                if ((int)rowsMap[y - this->yReferencePointValue][xOffset] +
-                        (int)amount >= (int)minimum) {
-                    if (rowsMap[y - this->yReferencePointValue][xOffset] >= minimum) {
-                        int edgeResult = result;
-                        int neighborX = x;
-                        int neighborY = y;
+                if (rowsMap[j - this->yReferencePointValue][xOffset] + amount >=
+                        minimum) {
+                    if (rowsMap[j - this->yReferencePointValue][xOffset] >= minimum) {
+                        int neighborX = i;
+                        int neighborY = j;
 
                         for (int direction = 0; direction < 8; ++direction) {
                             switch (direction) {
@@ -549,18 +550,17 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                                     neighborY < 0 || neighborY >= this->ySizeValue) {
                                     if ((mode1 == 1 && direction % 2 == 1) ||
                                         (mode2 == 1 && direction % 2 == 0)) {
-                                        --edgeResult;
+                                        --rVal;
                                     }
-                                    if (edgeResult <= 0)
+                                    if (rVal <= 0)
                                         break;
                                 }
                             }
                         }
-                        result = edgeResult;
                     }
 
-                    int neighborX = x;
-                    int neighborY = y;
+                    int neighborX = i;
+                    int neighborY = j;
                     for (int direction = 0; direction < 8; ++direction) {
                         switch (direction) {
                         case 0:
@@ -588,21 +588,21 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                                 neighborY < 0 || neighborY >= this->ySizeValue) {
                                 if ((mode1 == 1 && direction % 2 == 1) ||
                                     (mode2 == 1 && direction % 2 == 0)) {
-                                    --result;
+                                    --rVal;
                                 }
                             } else if (rowsMap[neighborY - this->yReferencePointValue]
                                              [neighborX - this->xReferencePointValue] >= minimum) {
-                                result += 2;
+                                rVal += 2;
                             }
                         }
                     }
                 }
-                ++y;
-            } while (y <= to.y);
+                ++j;
+            } while (j <= to.y);
         }
     }
 
-    return result;
+    return rVal;
 }
 
 void InfluenceMap::setUnchangeableLimit(unsigned char value) {
