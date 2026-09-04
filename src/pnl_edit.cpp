@@ -495,6 +495,7 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
 default_processing:
     sel_start_before = 0;
     sel_end_before = 0;
+    sel_start_after = 0;
     sel_end_after = 0;
     if (this->edit_wnd == 0 || msg == 0xB0) {
         track_selection = 0;
