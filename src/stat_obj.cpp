@@ -718,13 +718,15 @@ void RGE_Static_Object::capture_square_frame(TDrawArea* render_area,
 
                 int max_health = (int)this->master_obj->hp;
                 if (max_health > 0) {
+                    y1 -= 6;
+                    int x2 = x1 + 26;
                     int health_right = (health * 25) / max_health + x1;
-                    if (health_right >= x1 + 26) {
-                        health_right = x1 + 25;
+                    if (health_right >= x2) {
+                        health_right = x2 - 1;
                     }
 
-                    SDI_List->AddGDINode(2, y0, x1, y1 - 6, x1 + 26,
-                                         y1 - 1, health_right, 0,
+                    SDI_List->AddGDINode(2, y0, x1, y1, x2,
+                                         y1 + 5, health_right, 0,
                                          health_right + 1, 0, 20, 0xff,
                                          SDI_Object_ID);
                 }
