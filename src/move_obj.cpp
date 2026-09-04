@@ -733,32 +733,36 @@ int RGE_Moving_Object::doMove() {
     Path* path;
     Waypoint* waypoint;
     int path_result;
-    float distance;
+    float radiusDistance;
+    float goalDX;
     float dY;
     float newDY;
 
     this->setWaitingToMove(0);
 
-    distance = this->goalValue.x - this->world_x;
+    goalDX = this->goalValue.x - this->world_x;
     dY = this->goalValue.y - this->world_y;
-    if (distance < DAT_00570b48) {
-        distance = -distance;
+    if (goalDX < DAT_00570b48) {
+        goalDX = -goalDX;
     }
     if (dY < DAT_00570b48) {
         dY = -dY;
     }
 
-    distance = distance - (this->targetRadiusX + this->master_obj->radius_x);
+    radiusDistance =
+        goalDX - (this->targetRadiusX + this->master_obj->radius_x);
     dY = dY - (this->master_obj->radius_y + this->targetRadiusY);
-    if (distance < DAT_00570b48) {
-        distance = 0.0f;
+    if (radiusDistance < DAT_00570b48) {
+        radiusDistance = 0.0f;
     }
     if (dY < DAT_00570b48) {
         dY = 0.0f;
     }
 
-    distance = (float)sqrt(distance * distance + dY * dY);
-    if (this->actionRange > DAT_00570b98 && distance <= this->actionRange) {
+    radiusDistance =
+        (float)sqrt(radiusDistance * radiusDistance + dY * dY);
+    if (this->actionRange > DAT_00570b98 &&
+        radiusDistance <= this->actionRange) {
         this->speed = 0.0f;
         this->rangeStatusValue = 1;
         this->removeAllUserDefinedWaypoints(0);
@@ -766,9 +770,9 @@ int RGE_Moving_Object::doMove() {
         return 2;
     }
 
-    if (distance < DAT_00570b90) {
+    if (radiusDistance < DAT_00570b90) {
         path = &this->pathValue;
-        newDY = distance;
+        newDY = radiusDistance;
         if (path->currentWaypoint() != 0) {
             waypoint = path->currentWaypoint();
             newDY = waypoint->x - this->world_x;
@@ -834,7 +838,8 @@ int RGE_Moving_Object::doMove() {
     }
 
     float distanceToGoal = 0.0f;
-    if (this->numberUserDefinedWaypointsValue > 1 && distance > DAT_00570ba0) {
+    if (this->numberUserDefinedWaypointsValue > 1 &&
+        radiusDistance > DAT_00570ba0) {
         unsigned char zone1 = this->lookupZone(this->userDefinedWaypoints[0].x,
                                                this->userDefinedWaypoints[0].y);
         unsigned char zone2 = this->lookupZone(this->userDefinedWaypoints[1].x,
@@ -845,7 +850,7 @@ int RGE_Moving_Object::doMove() {
     }
 
     if (path_result == 0) {
-        if (distance <= distanceToGoal + newDY + this->actionRange) {
+        if (radiusDistance <= distanceToGoal + newDY + this->actionRange) {
             this->speed = 0.0f;
             this->rangeStatusValue = 1;
             this->removeAllUserDefinedWaypoints(0);
