@@ -143,8 +143,8 @@ public:
     RGE_Map_Data map_info;
 
     RGE_RMM_Database_Controller(int file);
-    RGE_RMM_Database_Controller(char* terrain_file, char* object_file,
-        char* terrain_type_file, char* map_file);
+    RGE_RMM_Database_Controller(char* land_file, char* terrain_file,
+        char* object_file, char* map_file);
     ~RGE_RMM_Database_Controller();
     virtual uchar generate();
 
