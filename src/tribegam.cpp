@@ -3359,96 +3359,184 @@ int TRIBE_Game::processCheatCode(int player_id, char* cheat) {
         return 0;
     }
 
-    int cheat_code = -1;
     if (strcmp(encstr, "@)%^%cAm %%_jdW") == 0 &&
-        this->singlePlayerGame() != 0) cheat_code = 0x66;
-    else if (strstr(str, "STORMBILLY") != 0) cheat_code = 0x0e;
-    else if (strstr(str, "CONVERT THIS!") != 0) cheat_code = 0x0f;
-    else if (strstr(str, "BIG MOMMA") != 0) cheat_code = 0x10;
-    else if (strstr(str, "MINIWINSETT") != 0) cheat_code = 0x11;
-    else if (strstr(str, "GRANTLINKSPENCE") != 0) cheat_code = 0x12;
-    else if (strstr(str, "KING ARTHUR") != 0) cheat_code = 0x13;
-    else if (strcmp(encstr, "w>@)%^ ^%^dW %chxdW") == 0) cheat_code = 0;
-    else if (strcmp(encstr, "Am=%c3C2  ^%%%^%^w>Am%%") == 0) cheat_code = 1;
-    else if (strcmp(encstr, "}{hx3CcW *_Am dW#L%c*_+!Am") == 0) cheat_code = 2;
-    else if (strcmp(encstr, "*_#L1Z *_Am%% ^@)hx") == 0) cheat_code = 3;
-    else if (strcmp(encstr, "Jm+!::#LdW1Z ?>_j ^3C@)%chxdW") == 0) cheat_code = 4;
-    else if (strcmp(encstr, "_jw>1$#L?>Jm+!#LdW ^%c%^*_#L+!Am") == 0) cheat_code = 7;
-    else if (strcmp(encstr, "@)%^::%^@)%^::%^") == 0) cheat_code = 8;
-    else if (strcmp(encstr, "?>hx%%cW %%hx#LdW") == 0) cheat_code = 10;
-    else if (strcmp(encstr, "*_+!hx3CcW %%#L?>Am%%") == 0) cheat_code = 11;
-    else if (strcmp(encstr, "%cAm?>_j1$hx") == 0) cheat_code = 12;
-    else if (strcmp(encstr, "#L3C*_%c") == 0) cheat_code = 13;
+        this->singlePlayerGame() != 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(0x66);
+        return 1;
+    }
+    else if (strstr(str, "STORMBILLY") != 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(0x0e);
+        return 1;
+    }
+    else if (strstr(str, "CONVERT THIS!") != 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(0x0f);
+        return 1;
+    }
+    else if (strstr(str, "BIG MOMMA") != 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(0x10);
+        return 1;
+    }
+    else if (strstr(str, "MINIWINSETT") != 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(0x11);
+        return 1;
+    }
+    else if (strstr(str, "GRANTLINKSPENCE") != 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(0x12);
+        return 1;
+    }
+    else if (strstr(str, "KING ARTHUR") != 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(0x13);
+        return 1;
+    }
+    else if (strcmp(encstr, "w>@)%^ ^%^dW %chxdW") == 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(0);
+        return 1;
+    }
+    else if (strcmp(encstr, "Am=%c3C2  ^%%%^%^w>Am%%") == 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(1);
+        return 1;
+    }
+    else if (strcmp(encstr, "}{hx3CcW *_Am dW#L%c*_+!Am") == 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(2);
+        return 1;
+    }
+    else if (strcmp(encstr, "*_#L1Z *_Am%% ^@)hx") == 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(3);
+        return 1;
+    }
+    else if (strcmp(encstr, "Jm+!::#LdW1Z ?>_j ^3C@)%chxdW") == 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(4);
+        return 1;
+    }
+    else if (strcmp(encstr, "_jw>1$#L?>Jm+!#LdW ^%c%^*_#L+!Am") == 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(7);
+        return 1;
+    }
+    else if (strcmp(encstr, "@)%^::%^@)%^::%^") == 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(8);
+        return 1;
+    }
+    else if (strcmp(encstr, "?>hx%%cW %%hx#LdW") == 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(10);
+        return 1;
+    }
+    else if (strcmp(encstr, "*_+!hx3CcW %%#L?>Am%%") == 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(11);
+        return 1;
+    }
+    else if (strcmp(encstr, "%cAm?>_j1$hx") == 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(12);
+        return 1;
+    }
+    else if (strcmp(encstr, "#L3C*_%c") == 0) {
+        static_cast<TRIBE_World*>(this->world)->send_cheat(13);
+        return 1;
+    }
     else {
         if (this->singlePlayerGame() != 0) {
-            if (strcmp(encstr, "?>#LAm?>#LAm?>#LAm") == 0) cheat_code = 100;
-            else if (strcmp(encstr, "cW#L+!+!1") == 0) cheat_code = 0xc9;
-            else if (strcmp(encstr, "cW#L+!+!2") == 0) cheat_code = 0xca;
-            else if (strcmp(encstr, "cW#L+!+!3") == 0) cheat_code = 0xcb;
-            else if (strcmp(encstr, "cW#L+!+!4") == 0) cheat_code = 0xcc;
-            else if (strcmp(encstr, "cW#L+!+!5") == 0) cheat_code = 0xcd;
-            else if (strcmp(encstr, "cW#L+!+!6") == 0) cheat_code = 0xce;
-            else if (strcmp(encstr, "cW#L+!+!7") == 0) cheat_code = 0xcf;
-            else if (strcmp(encstr, "cW#L+!+!9") == 0) cheat_code = 0xd0;
-        }
-        if (cheat_code == -1 && strcmp(encstr, "@)hx%%#L cWhx%%#L") == 0)
-            cheat_code = 0x65;
-    else if (cheat_code == -1 && strcmp(encstr, "%%Am1$#L1ZdW") == 0)
-        cheat_code = 0x67;
-    else if (cheat_code == -1 && strcmp(encstr, "1Zhx#Lhx") == 0) {
-        this->get_player()->unselect_object();
-        if (this->world->game_state == 6 && this->sub_game_mode == 1)
-            this->set_game_mode(0, 0);
-        this->set_player(0);
-        return 1;
-    }
-    else if (cheat_code == -1 && strcmp(encstr, "w>Amw>w>Am%%%^dW#L w>#LS?S?hx") == 0) { this->get_player()->command_add_attribute(0, 1000.0f); return 1; }
-    else if (cheat_code == -1 && strcmp(encstr, "3C%^#LdWhx1ZAm") == 0) { this->get_player()->command_add_attribute(3, 1000.0f); return 1; }
-    else if (cheat_code == -1 && strcmp(encstr, "43%^%^?>1$ ^%^3CcW") == 0) { this->get_player()->command_add_attribute(1, 1000.0f); return 1; }
-    else if (cheat_code == -1 && strcmp(encstr, "hx_jhx%%%%::") == 0) { this->get_player()->command_add_attribute(2, 1000.0f); return 1; }
-    else if (cheat_code == -1 && strcmp(encstr, "1$ ^Am%%%^#L?>1$") == 0) {
-        static_cast<TRIBE_Command*>(this->world->commands)->command_quick_build(
-            static_cast<short>(this->quick_build == 0));
-        return 1;
-    }
-    else if (cheat_code == -1 && strcmp(encstr, "*_#L1Z?>hx?>?>::") == 0) cheat_code = 0xdc;
-    else if (cheat_code == -1 && strcmp(encstr, "%%Am&TAmhx+! %chxw>") == 0) cheat_code = 0xe6;
-    else if (cheat_code == -1 && strcmp(encstr, "dW%^ Jm%^1Z") == 0) cheat_code = 0xe7;
-    else if (cheat_code == -1) {
-        sscanf(str, "%s ", tempStr1);
-        if (strcmp(tempStr1, "SELECTOBJ") == 0) {
-            sscanf(cheat, "%*s %d ", &commander);
-            RGE_Static_Object* obj = this->world->object(commander);
-            if (obj != 0) {
-                obj->selected = 1;
-                this->world->players[player_id]->selected_obj = obj;
+            if (strcmp(encstr, "?>#LAm?>#LAm?>#LAm") == 0) {
+                static_cast<TRIBE_World*>(this->world)->send_cheat(100);
+                return 1;
             }
-        }
-        if (strcmp(tempStr1, "RUNPLAY") == 0) {
-            sscanf(cheat, "%*s %d %s %d ", &target, playName, &commander);
-            int play = this->world->playbook->playNumber(playName);
-            if (play != -1) {
-                this->world->players[player_id]->sendPlayCommand(
-                    target, commander, play);
+            else if (strcmp(encstr, "cW#L+!+!1") == 0) {
+                static_cast<TRIBE_World*>(this->world)->send_cheat(0xc9);
+                return 1;
+            }
+            else if (strcmp(encstr, "cW#L+!+!2") == 0) {
+                static_cast<TRIBE_World*>(this->world)->send_cheat(0xca);
+                return 1;
+            }
+            else if (strcmp(encstr, "cW#L+!+!3") == 0) {
+                static_cast<TRIBE_World*>(this->world)->send_cheat(0xcb);
+                return 1;
+            }
+            else if (strcmp(encstr, "cW#L+!+!4") == 0) {
+                static_cast<TRIBE_World*>(this->world)->send_cheat(0xcc);
+                return 1;
+            }
+            else if (strcmp(encstr, "cW#L+!+!5") == 0) {
+                static_cast<TRIBE_World*>(this->world)->send_cheat(0xcd);
+                return 1;
+            }
+            else if (strcmp(encstr, "cW#L+!+!6") == 0) {
+                static_cast<TRIBE_World*>(this->world)->send_cheat(0xce);
+                return 1;
+            }
+            else if (strcmp(encstr, "cW#L+!+!7") == 0) {
+                static_cast<TRIBE_World*>(this->world)->send_cheat(0xcf);
+                return 1;
+            }
+            else if (strcmp(encstr, "cW#L+!+!9") == 0) {
+                static_cast<TRIBE_World*>(this->world)->send_cheat(0xd0);
                 return 1;
             }
         }
-        else {
-            if (strcmp(encstr, "S?Am_j1$") != 0) {
-                return 0;
-            }
-            this->world->players[player_id]->sendAICommand(
-                player_id, 0, 0, 0, 0);
+        if (strcmp(encstr, "@)hx%%#L cWhx%%#L") == 0) {
+            static_cast<TRIBE_World*>(this->world)->send_cheat(0x65);
+            return 1;
         }
-        return 1;
+        else if (strcmp(encstr, "%%Am1$#L1ZdW") == 0) {
+            static_cast<TRIBE_World*>(this->world)->send_cheat(0x67);
+            return 1;
+        }
+        else if (strcmp(encstr, "1Zhx#Lhx") == 0) {
+            this->get_player()->unselect_object();
+            if (this->game_mode == 6 && this->sub_game_mode == 1)
+                this->set_game_mode(0, 0);
+            this->set_player(0);
+            return 1;
+        }
+        else if (strcmp(encstr, "w>Amw>w>Am%%%^dW#L w>#LS?S?hx") == 0) { this->get_player()->command_add_attribute(0, 1000.0f); return 1; }
+        else if (strcmp(encstr, "3C%^#LdWhx1ZAm") == 0) { this->get_player()->command_add_attribute(3, 1000.0f); return 1; }
+        else if (strcmp(encstr, "43%^%^?>1$ ^%^3CcW") == 0) { this->get_player()->command_add_attribute(1, 1000.0f); return 1; }
+        else if (strcmp(encstr, "hx_jhx%%%%::") == 0) { this->get_player()->command_add_attribute(2, 1000.0f); return 1; }
+        else if (strcmp(encstr, "1$ ^Am%%%^#L?>1$") == 0) {
+            static_cast<TRIBE_Command*>(this->world->commands)->command_quick_build(
+                static_cast<short>(this->quick_build == 0));
+            return 1;
+        }
+        else if (strcmp(encstr, "*_#L1Z?>hx?>?>::") == 0) {
+            static_cast<TRIBE_World*>(this->world)->send_cheat(0xdc);
+            return 1;
+        }
+        else if (strcmp(encstr, "%%Am&TAmhx+! %chxw>") == 0) {
+            static_cast<TRIBE_World*>(this->world)->send_cheat(0xe6);
+            return 1;
+        }
+        else if (strcmp(encstr, "dW%^ Jm%^1Z") == 0) {
+            static_cast<TRIBE_World*>(this->world)->send_cheat(0xe7);
+            return 1;
+        }
+        else {
+            sscanf(str, "%s ", tempStr1);
+            if (strcmp(tempStr1, "SELECTOBJ") == 0) {
+                sscanf(cheat, "%*s %d ", &commander);
+                RGE_Static_Object* obj = this->world->object(commander);
+                if (obj != 0) {
+                    obj->selected = 1;
+                    this->world->players[player_id]->selected_obj = obj;
+                }
+            }
+            if (strcmp(tempStr1, "RUNPLAY") == 0) {
+                sscanf(cheat, "%*s %d %s %d ", &target, playName, &commander);
+                int play = this->world->playbook->playNumber(playName);
+                if (play != -1) {
+                    this->world->players[player_id]->sendPlayCommand(
+                        target, commander, play);
+                    return 1;
+                }
+            }
+            else {
+                if (strcmp(encstr, "S?Am_j1$") != 0) {
+                    return 0;
+                }
+                this->world->players[player_id]->sendAICommand(
+                    player_id, 0, 0, 0, 0);
+            }
+            return 1;
+        }
     }
 
-    if (cheat_code >= 0) {
-        static_cast<TRIBE_World*>(this->world)->send_cheat(
-            static_cast<short>(cheat_code));
-        return 1;
-    }
-    }
     return 0;
 }
 
