@@ -3070,12 +3070,7 @@ close_message:
     color_log(0x32, 0xBA, 3);
     if (self->handle_close(hwnd, msg, wparam, lparam) != 0)
         goto default_window_proc;
-    if (mouse_down != 0) {
-        color_log(0x4C, 0x5F, 4);
-        color_log(0x24, 0x5F, 3);
-        return static_cast<LRESULT>(wparam);
-    }
-    goto wparam_return;
+    goto panel_return_alt;
 
 music_done_message:
     {
