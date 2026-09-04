@@ -86,9 +86,10 @@ long TDropDownPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, v
                     (result = this->scbar_panel->setup(this->render_area, this, 0, 0, this->scbar_wid, this->list_hgt,
                                                        s_, s_, s_, s_,
                                                        this->scbar_arrow_hgt, this->scbar_tab_hgt,
-                                                       this->list_panel, (int)list_num_lines_in,
+                                                       this->list_panel, list_num_lines_in,
                                                        TScrollBarPanel::Vertical)) != 0) {
-                    this->list_panel->set_scrollbar(this->scbar_panel, 0);
+                    TScrollBarPanel* scrollbar = this->scbar_panel;
+                    this->list_panel->set_scrollbar(scrollbar, 0);
                     this->scbar_panel->set_active(0);
                     this->set_mode(ModeValue);
                     result = 1;

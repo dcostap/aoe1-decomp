@@ -72,12 +72,15 @@ long TMessageDialog::setup(TPanel* parent, char* panel_file, long panel_id,
     }
 
     y = pnl_hgt - button_height - 7;
-    for (index = 0; index < button_num; ++index) {
-        if (create_button(this, &button[index], s_592A40, s_592A40,
-                          space + index * (space + button_width), y,
-                          button_width, button_height,
-                          0x0B, 0, 0) == 0) {
-            return 0;
+    {
+        TButtonPanel** next_button = button;
+        for (index = 0; index < button_num; ++index) {
+            if (create_button(this, next_button + index, s_592A40, s_592A40,
+                              space + index * (space + button_width), y,
+                              button_width, button_height,
+                              0x0B, 0, 0) == 0) {
+                return 0;
+            }
         }
     }
 
