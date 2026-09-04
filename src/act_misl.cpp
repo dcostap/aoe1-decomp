@@ -233,7 +233,8 @@ unsigned char RGE_Action_Missile::update()
 
         if (((RGE_Master_Missile_Object*)this->obj->master_obj)->ballistics_ratio > DAT_0056e388) {
             float acceleration = this->ballistic_acceleration * delta;
-            z = (this->ballistic_velocity + acceleration * DAT_0056e380) * delta + z;
+            z = ((this->ballistic_velocity +
+                  (acceleration * DAT_0056e380)) * delta) + z;
             this->ballistic_velocity = acceleration + this->ballistic_velocity;
         }
 
