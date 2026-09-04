@@ -107,7 +107,7 @@
     "004E34C0": {"status": "matching", "symbol": "?costToLoseUnit@TribeInformationAIModule@@QAEHH@Z"},
     "004E3500": {"status": "matching", "symbol": "?benefitToKillUnit@TribeInformationAIModule@@QAEHH@Z"},
     "004E3530": {"status": "matching", "symbol": "?inRangeOfUnits@TribeInformationAIModule@@QAEHHHHH@Z"},
-    "004E3640": {"status": "scratch", "symbol": "?wonderToAttack@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
+    "004E3640": {"status": "matching", "symbol": "?wonderToAttack@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
     "004E3840": {"status": "matching", "symbol": "?ruinToCapture@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
     "004E39D0": {"status": "matching", "symbol": "?artifactToCapture@TribeInformationAIModule@@QAEPAUObjectMemory@@H@Z"},
     "004E3B80": {"status": "matching", "symbol": "?resourceTypeToPlaceDropsiteBy@TribeInformationAIModule@@QAEHH@Z"},

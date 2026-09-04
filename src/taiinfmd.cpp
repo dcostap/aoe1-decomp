@@ -6007,9 +6007,13 @@ ObjectMemory* TribeInformationAIModule::wonderToAttack(int player_id)
                                 RGE_Action_Object* actionObject =
                                     static_cast<RGE_Action_Object*>(obj);
                                 if (actionObject->actions->have_action()) {
-                                    if (actionObject->actions->get_action()->action_type == 0x78) {
-                                        int state = actionObject->actions->get_action()->state;
-                                        float timer = actionObject->actions->get_action()->timer;
+                                    RGE_Action* action =
+                                        actionObject->actions->get_action();
+                                    if (action->type() == 0x78) {
+                                        action = actionObject->actions->get_action();
+                                        int state = action->state;
+                                        action = actionObject->actions->get_action();
+                                        float timer = action->timer;
                                         float hp = obj->hp;
                                         if (bestObject == 0) {
                                             bestObject = &this->importantObjectMemory[i];

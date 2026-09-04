@@ -1813,8 +1813,15 @@ byte TShape::shape_mirror_color_trans_clipped(
     long clip_x0, long clip_y0, long clip_x1, long clip_y1, byte* table)
 {
     long pitch = draw_area->AlignedWidth() * draw_area->Orien;
-    byte* src = (byte*)(this->shape_header + 1);
+    Shape_Header* header = this->shape_header;
+    byte* src = (byte*)(header + 1);
+    long xpos;
     byte* dst;
+    byte* save_buffer;
+    byte state;
+    byte command;
+    byte done;
+    long rows;
 
     if (draw_area->Orien < 1)
         dst = draw_area->Bits +
@@ -1822,21 +1829,23 @@ byte TShape::shape_mirror_color_trans_clipped(
     else
         dst = draw_area->Bits + clip_y0 * pitch + clip_x1 + 1;
 
+    save_buffer = dst;
+
     if (shape_y1 < clip_y0) {
         long skip = clip_y0 - shape_y1;
         shape_y1 += skip;
         do {
-            byte done = 0;
+            done = 0;
             do {
-                byte code = *src++;
-                if (code & 1) {
-                    code >>= 1;
-                    if (code != 0)
-                        src += code;
+                command = *src++;
+                if (command & 1) {
+                    command >>= 1;
+                    if (command != 0)
+                        src += command;
                     else
                         ++src;
                 } else {
-                    if ((code & 0xfe) == 0)
+                    if ((command & 0xfe) == 0)
                         done = 1;
                     else
                         ++src;
@@ -1847,18 +1856,17 @@ byte TShape::shape_mirror_color_trans_clipped(
 
     if (shape_y1 > clip_y1)
         return 1;
-    clip_y1 = clip_y1 - shape_y1 + 1;
+    rows = clip_y1 - shape_y1 + 1;
 
     do {
-        long xpos = shape_x1;
-        byte state;
+        xpos = shape_x1;
 
         if (clip_x1 < xpos) {
             state = 0;
             do {
-                byte code = *src++;
-                if (code & 1) {
-                    clip_y0 = code >> 1;
+                command = *src++;
+                if (command & 1) {
+                    clip_y0 = command >> 1;
                     if (clip_y0 == 0) {
                         clip_y0 = *src++;
                         xpos -= clip_y0;
@@ -1898,7 +1906,7 @@ byte TShape::shape_mirror_color_trans_clipped(
                         }
                     }
                 } else {
-                    clip_y0 = code >> 1;
+                    clip_y0 = command >> 1;
                     if (clip_y0 == 0)
                         state = 3;
                     else {
@@ -1929,9 +1937,9 @@ byte TShape::shape_mirror_color_trans_clipped(
         state--;
         if (state == 0) {
             do {
-                byte code = *src++;
-                if (code & 1) {
-                    clip_y0 = code >> 1;
+                command = *src++;
+                if (command & 1) {
+                    clip_y0 = command >> 1;
                     if (clip_y0 == 0) {
                         clip_y0 = *src++;
                         xpos -= clip_y0;
@@ -1941,15 +1949,16 @@ byte TShape::shape_mirror_color_trans_clipped(
                     } else {
                         xpos -= clip_y0;
                         if (xpos < clip_x0) {
-                            unsigned int cnt =
+                            shape_y1 =
                                 (unsigned char)(xpos - clip_x0 + clip_y0);
-                            shape_idx = cnt;
                             state = 1;
-                            while (shape_idx-- != 0) {
+                            while ((unsigned char)shape_y1 > 0) {
                                 --dst;
                                 *dst = table[*src++];
+                                --shape_y1;
                             }
-                            src += clip_y0 - cnt;
+                            src += clip_y0 -
+                                   (xpos - clip_x0 + clip_y0);
                         } else {
                             while (clip_y0-- != 0) {
                                 --dst;
@@ -1958,7 +1967,7 @@ byte TShape::shape_mirror_color_trans_clipped(
                         }
                     }
                 } else {
-                    clip_y0 = code >> 1;
+                    clip_y0 = command >> 1;
                     if (clip_y0 == 0)
                         state = 3;
                     else {
@@ -1982,15 +1991,15 @@ byte TShape::shape_mirror_color_trans_clipped(
         state--;
         if (state == 0) {
             do {
-                byte code = *src++;
-                if (code & 1) {
-                    clip_y0 = code >> 1;
+                command = *src++;
+                if (command & 1) {
+                    clip_y0 = command >> 1;
                     if (clip_y0 != 0)
                         src += clip_y0;
                     else
                         ++src;
                 } else {
-                    if ((code & 0xfe) == 0)
+                    if ((command & 0xfe) == 0)
                         state = 2;
                     else
                         ++src;
@@ -1998,9 +2007,10 @@ byte TShape::shape_mirror_color_trans_clipped(
             } while (!state);
         }
 
-        dst += pitch;
-        --clip_y1;
-    } while (clip_y1 != 0);
+        save_buffer += pitch;
+        dst = save_buffer;
+        --rows;
+    } while (rows != 0);
 
     return 1;
 }

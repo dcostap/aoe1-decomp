@@ -215,6 +215,7 @@ extern double DAT_00575350;
 
 unsigned char TRIBE_Action_Trade::update()
 {
+    float give_amount;
     float max_hold;
     float take_amount;
 
@@ -337,20 +338,20 @@ unsigned char TRIBE_Action_Trade::update()
         }
         {
             RGE_Player* owner = this->obj->owner;
-            float capacity = (float)this->obj->master_obj->attribute_max_amount;
-            max_hold = capacity - this->obj->attribute_amount_held;
+            max_hold = (float)this->obj->master_obj->attribute_max_amount;
+            give_amount = max_hold - this->obj->attribute_amount_held;
             short attr = this->obj->attribute_type_held;
-            if (owner->attributes[attr] < max_hold) {
-                max_hold = owner->attributes[attr];
+            if (owner->attributes[attr] < give_amount) {
+                give_amount = owner->attributes[attr];
             }
-            if (this->target_obj->owner->attributes[9] < max_hold) {
-                max_hold = this->target_obj->owner->attributes[9];
+            if (this->target_obj->owner->attributes[9] < give_amount) {
+                give_amount = this->target_obj->owner->attributes[9];
             }
             this->target_obj->owner->add_attribute_num(
-                attr, -max_hold, 1);
-            this->target_obj->owner->attributes[9] -= max_hold;
-            this->obj->attribute_amount_held += max_hold;
-            if (this->obj->attribute_amount_held >= capacity) {
+                attr, -give_amount, 1);
+            this->target_obj->owner->attributes[9] -= give_amount;
+            this->obj->attribute_amount_held += give_amount;
+            if (this->obj->attribute_amount_held >= max_hold) {
                 goto update_state_8;
             }
             if (this->target_obj->owner->attributes[9] <= DAT_00575348 &&
