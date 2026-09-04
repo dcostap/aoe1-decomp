@@ -7328,30 +7328,40 @@ dispatch:
 
 int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p5)
 {
-    RGE_Static_Object* gathererObj = this->md->object(p1);
-    if (gathererObj == 0) return 0;
-
-    UnitData* g = this->gatherer(p1);
-    int resourceType = p2;
-    if (g != 0 && g->data2 > g->data3) {
-        resourceType = g->data1;
-    }
-
-    int i = -1;
-    int index = 0;
-    float drop1 = 0;
-    float drop2 = 0;
+    RGE_Static_Object* rObjObj;
+    UnitData* gathererUnitData;
+    int resourceType;
+    int i;
+    int index;
+    float rYPos;
+    float rXPos;
     int numStorage;
     int maximumResourceDistance;
     int exclusions[6];
+    RGE_Static_Object* gathererObj;
+
+    gathererObj = this->md->object(p1);
+    if (gathererObj == 0) return 0;
+
+    gathererUnitData = this->gatherer(p1);
+    resourceType = p2;
+    if (gathererUnitData != 0 && gathererUnitData->data2 > gathererUnitData->data3) {
+        resourceType = gathererUnitData->data1;
+    }
+
+    i = -1;
+    index = 0;
+    rYPos = 0;
+    rXPos = 0;
 
     if (resourceType == -1) {
-        for (index = 0; index < 4; index++) {
-            resourceType = this->neededResourceValue[index];
+        int* neededResourceCursor = this->neededResourceValue;
+        for (index = 0; index < 4; index++, ++neededResourceCursor) {
+            resourceType = *neededResourceCursor;
             if (p5 == 0 || p5[resourceType] != 1) {
                 numStorage = -1;
                 i = this->md->informationAI.gameIDOfResourceObject(
-                        resourceType, p1, drop1, drop2, numStorage, exclusions + 1, 0);
+                        resourceType, p1, rYPos, rXPos, numStorage, exclusions + 1, 0);
                 if (i != -1) {
                     if (numStorage == -1)
                         gathererObj->canPath(i, 1.0f, 0, 1, -1, -1);
@@ -7369,7 +7379,7 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
         for (; maximumResourceDistance < 3; ++maximumResourceDistance) {
             numStorage = -1;
             i = this->md->informationAI.gameIDOfResourceObject(
-                    resourceType, p1, drop1, drop2, numStorage, exclusions + 1, index);
+                    resourceType, p1, rYPos, rXPos, numStorage, exclusions + 1, index);
             if (i == -1) return 0;
             int result = (numStorage == -1)
                 ? gathererObj->canPath(i, 1.0f, 0, 1, -1, -1)
@@ -7387,36 +7397,36 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
         if (i < 0) return 0;
     }
 
-    RGE_Static_Object* obj = this->md->object(i);
-    if (obj == 0) return 0;
+    rObjObj = this->md->object(i);
+    if (rObjObj == 0) return 0;
 
     if (this->sn[0xCD] != 1) goto tail;
 
     if (resourceType == 0) {
         if (this->builtFirstGranary == 1) {
             if (this->builtFirstStoragePit != 1) goto tail;
-            if (obj->master_obj->id == 0x3B) {
+            if (rObjObj->master_obj->id == 0x3B) {
                 maximumResourceDistance = 0;
                 RGE_Static_Object* g2 = 0;
                 int ng = this->numberAvailableGranaries(&g2, &maximumResourceDistance);
                 if (maximumResourceDistance != 0 || ng < 1) goto tail;
                 exclusions[0] = this->sn[0xA3];
-                int d = (int)gathererObj->distance_to_object(obj);
+                int d = (int)gathererObj->distance_to_object(rObjObj);
                 if (d <= exclusions[0] ||
                     this->md->informationAI.closestDropsiteValue[0] == -1) goto tail;
-                int y = (int)obj->world_y;
-                int x = (int)obj->world_x;
+                int y = (int)rObjObj->world_y;
+                int x = (int)rObjObj->world_x;
                 if (this->md->informationAI.acceptablePotentialDropsiteArea(x, y) != 1) goto tail;
                 this->md->buildAI.insert(0x44, 1, -1);
                 goto tail;
             } else {
-                short grp = obj->master_obj->object_group;
+                short grp = rObjObj->master_obj->object_group;
                 if (grp == 0x1F || grp == 5 || grp == 0x21) goto tail;
                 maximumResourceDistance = 0;
                 RGE_Static_Object* g2 = 0;
                 int np = this->numberAvailableStoragePits(&g2, &maximumResourceDistance, 0);
                 if (maximumResourceDistance != 0 || np < 1) goto tail;
-                int d = (int)gathererObj->distance_to_object(obj);
+                int d = (int)gathererObj->distance_to_object(rObjObj);
                 if (d < 0x10) {
                     if (g2 != 0) goto tail;
                 }
@@ -7434,8 +7444,8 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
         g2 = 0;
         np = this->numberAvailableStoragePits(&g2, &maximumResourceDistance, resourceType);
         if (maximumResourceDistance != 0 || np < 1) goto tail;
-        exclusions[0] = this->sn[obj->attribute_type_held + 0xA3];
-        d = (int)gathererObj->distance_to_object(obj);
+        exclusions[0] = this->sn[rObjObj->attribute_type_held + 0xA3];
+        d = (int)gathererObj->distance_to_object(rObjObj);
         if (d <= exclusions[0]) {
             if (g2 != 0) goto tail;
         }
@@ -7483,8 +7493,8 @@ units_tasked:
     if (p3 == 1) {
         amount = 10;
     } else if (this->sn[0xCB] == 1) {
-        if (obj->master_obj->id == 0x3B) {
-            amount = (int)obj->attribute_amount_held;
+        if (rObjObj->master_obj->id == 0x3B) {
+            amount = (int)rObjObj->attribute_amount_held;
         } else if (resourceType == 1) {
             amount = 0x4B;
         } else if (resourceType == 3) {
@@ -7501,14 +7511,14 @@ units_tasked:
     ag->data2 = amount;
     ag->data3 = 0;
 
-    this->md->aiPlayer->taskResourceGatherer(p1, i, obj->owner->id, drop1, drop2);
+    this->md->aiPlayer->taskResourceGatherer(p1, i, rObjObj->owner->id, rYPos, rXPos);
 
-    if (obj->master_obj->id == 0x30) {
+    if (rObjObj->master_obj->id == 0x30) {
         this->taskElephantGatherers(p1, this->sn[0xCC] - 1, i);
     }
-    if (obj->master_obj->id == 0x32) {
+    if (rObjObj->master_obj->id == 0x32) {
         ManagedArray<int>& farms = this->md->informationAI.farmsTaskedThisUpdate;
-        int fid = obj->id;
+        int fid = rObjObj->id;
         int fj;
         for (fj = 0; fj < farms.numberValue; fj++) {
             if (fj >= farms.maximumSizeValue)
