@@ -350,6 +350,7 @@ int TRIBE_Game::setup()
 {
     HANDLE h;
     int cmd;
+    SYSTEMTIME file_time;
 
     if (this->error_code)
         return 0;
@@ -450,24 +451,24 @@ setup_done:
 
     h = FindFirstFileA(__pgmptr, &file_data);
     if (h != INVALID_HANDLE_VALUE) {
-        SYSTEMTIME st;
-        memset(&st, 0, sizeof(st));
-        FileTimeToSystemTime(&file_data.ftLastWriteTime, &st);
+        memset(&file_time, 0, sizeof(file_time));
+        FileTimeToSystemTime(&file_data.ftLastWriteTime, &file_time);
         sprintf(str, "program=%s, size=%d, date=%d/%d/%d, time=%d:%d:%d",
                 __pgmptr, file_data.nFileSizeLow,
-                st.wMonth, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond);
+                file_time.wMonth, file_time.wMonth, file_time.wYear,
+                file_time.wHour, file_time.wMinute, file_time.wSecond);
         run_log(str, 0);
         FindClose(h);
     }
 
     h = FindFirstFileA(this->prog_info->game_data_file, &file_data);
     if (h != INVALID_HANDLE_VALUE) {
-        SYSTEMTIME st;
-        memset(&st, 0, sizeof(st));
-        FileTimeToSystemTime(&file_data.ftLastWriteTime, &st);
+        memset(&file_time, 0, sizeof(file_time));
+        FileTimeToSystemTime(&file_data.ftLastWriteTime, &file_time);
         sprintf(str, "data=%s, size=%d, date=%d/%d/%d, time=%d:%d:%d",
                 this->prog_info->game_data_file, file_data.nFileSizeLow,
-                st.wMonth, st.wMonth, st.wYear, st.wHour, st.wMinute, st.wSecond);
+                file_time.wMonth, file_time.wMonth, file_time.wYear,
+                file_time.wHour, file_time.wMinute, file_time.wSecond);
         run_log(str, 0);
         FindClose(h);
     }
