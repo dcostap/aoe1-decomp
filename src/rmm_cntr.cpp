@@ -29,12 +29,14 @@ uchar RGE_RMM_Controller::generate()
 void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
     long land_num)
 {
+    // The land loop uses area as its anchor and advances 13 long values.
+    long* land = &info.land[0].area;
+    // Collision scans use x as their anchor and the same 13-long stride.
+    long* prior;
     long radius;
     long index;
     uchar not_done;
     long index2;
-    // The land loop uses area as its anchor and advances 13 long values.
-    long* land = &info.land[0].area;
     info.land_num = land_num;
     switch (type) {
     default:
@@ -108,16 +110,20 @@ set_land_defaults:
                 if (x > min_x && x < max_x && y > min_y && y < max_y) not_done = 1;
                 else {
                     index2 = 0;
-                    for (; index2 < index; ++index2) {
-                        RGE_Land_Info_Line& prior = info.land[index2];
-                        long dx = x - prior.x;
-                        long dy = y - prior.y;
+                    prior = &info.land[0].x;
+                    if (0 < index) {
+                    do {
+                        long dx = x - prior[0];
+                        long dy = y - prior[1];
                         if (dx < 0) dx = -dx;
                         if (dy < 0) dy = -dy;
                         if ((float)(dx * dx + dy * dy) <= bound_square) {
-                            if (!not_done && index2 == index - 1) { prior.y = y; prior.x = x; }
+                            if (!not_done && index2 == index - 1) { prior[1] = y; prior[0] = x; }
                             not_done = 1;
                         }
+                        prior += 13;
+                        ++index2;
+                    } while (index2 < index);
                     }
                 }
             } while (not_done);
