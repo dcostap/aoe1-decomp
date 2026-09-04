@@ -396,7 +396,7 @@ void TRIBE_Panel_Object::draw()
                 goto invalid_item;
             }
 
-            if ((int)(this->game_obj->attribute_amount_held - DAT_00576D84) > 0) {
+            if (this->game_obj->attribute_amount_held > DAT_00576db0) {
                 this->draw_item(row, 3, ValueTypeNumber,
                                 (int)(this->game_obj->attribute_amount_held -
                                       DAT_00576D84), 0);
@@ -532,6 +532,7 @@ void TRIBE_Panel_Object::draw()
                                       this->game_obj->attribute_amount_held -
                                       DAT_00576D84),
                                 0);
+                        ++row;
                     }
                 }
             }
