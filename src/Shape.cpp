@@ -743,10 +743,10 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
     byte command;
     byte done;
 
-    if (area->Orien < 1)
-        save_buffer = area->Bits + (clip_top - area->Height + 1) * pitch;
-    else
-        save_buffer = area->Bits + clip_top * pitch;
+    save_buffer = area->Bits +
+                  (area->Orien < 1
+                       ? (clip_top - area->Height + 1) * pitch
+                       : clip_top * pitch);
     save_buffer += clip_left;
 
     if (shape_y < clip_top) {
@@ -756,7 +756,7 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
             done = 0;
             do {
                 command = *src++;
-                if (command & 1) {
+                if ((command & 1) == 1) {
                     command >>= 1;
                     if (command == 0)
                         ++src;
@@ -769,8 +769,7 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                         ++src;
                 }
             } while (!done);
-            --clip_top;
-        } while (clip_top != 0);
+        } while (--clip_top != 0);
     }
 
     if (shape_y <= clip_bottom) {
@@ -778,20 +777,21 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
         do {
             long xpos = shape_x;
             byte* dst = save_buffer;
+            byte state;
 
             if (shape_x < clip_left) {
-                clip_top = 0;
+                state = 0;
                 do {
                     command = *src++;
-                    if (command & 1) {
+                    if ((command & 1) == 1) {
                         command >>= 1;
                         if (command == 0) {
                             xpos += *src++;
                             if (xpos >= clip_left) {
                                 if (xpos > clip_right)
-                                    clip_top = 2;
+                                    state = 2;
                                 else {
-                                    clip_top = 1;
+                                    state = 1;
                                     dst += xpos - clip_left;
                                 }
                             }
@@ -801,11 +801,11 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                                 long copy_count;
                                 byte* copy_source;
                                 if (xpos > clip_right) {
-                                    clip_top = 2;
+                                    state = 2;
                                     copy_count = clip_right - clip_left + 1;
                                     copy_source = src + command + clip_left - xpos;
                                 } else {
-                                    clip_top = 1;
+                                    state = 1;
                                     copy_count = xpos - clip_left;
                                     copy_source = src + command - copy_count;
                                 }
@@ -817,16 +817,16 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                     } else {
                         command >>= 1;
                         if (command == 0) {
-                            clip_top = 3;
+                            state = 3;
                         } else {
                             xpos += command;
                             if (xpos >= clip_left) {
                                 long fill_count;
                                 if (xpos > clip_right) {
-                                    clip_top = 2;
+                                    state = 2;
                                     fill_count = clip_right - clip_left + 1;
                                 } else {
-                                    clip_top = 1;
+                                    state = 1;
                                     fill_count = xpos - clip_left;
                                 }
                                 memset(dst, *src, fill_count);
@@ -835,26 +835,26 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                             ++src;
                         }
                     }
-                } while ((byte)clip_top == 0);
+                } while (state == 0);
             } else {
-                clip_top = 1;
+                state = 1;
             }
 
-            clip_top = (byte)clip_top - 1;
-            while ((byte)clip_top == 0) {
+            --state;
+            while (state == 0) {
                 command = *src++;
-                if (command & 1) {
+                if ((command & 1) == 1) {
                     command >>= 1;
                     if (command == 0) {
                         command = *src++;
                         xpos += command;
                         dst += command;
                         if (xpos > clip_right)
-                            clip_top = 1;
+                            state = 1;
                     } else {
                         xpos += command;
                         if (xpos > clip_right) {
-                            clip_top = 1;
+                            state = 1;
                             memcpy(dst, src,
                                    clip_right - xpos + 1 + command);
                             dst += command;
@@ -868,13 +868,13 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                 } else {
                     command >>= 1;
                     if (command == 0) {
-                        clip_top = 3;
+                        state = 3;
                     } else {
                         long fill_count = command;
                         xpos += command;
                         if (xpos > clip_right) {
                             fill_count = command + clip_right - xpos + 1;
-                            clip_top = 1;
+                            state = 1;
                         }
                         memset(dst, *src, fill_count);
                         dst += command;
@@ -883,10 +883,10 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                 }
             }
 
-            clip_top = (byte)clip_top - 1;
-            while ((byte)clip_top == 0) {
+            --state;
+            while (state == 0) {
                 command = *src++;
-                if (command & 1) {
+                if ((command & 1) == 1) {
                     command >>= 1;
                     if (command)
                         src += command;
@@ -894,15 +894,14 @@ byte TShape::shape_draw_clipped(TDrawArea* area, long shape_x, long shape_y,
                         ++src;
                 } else {
                     if ((command & 0xfe) == 0)
-                        clip_top = 2;
+                        state = 2;
                     else
                         ++src;
                 }
             }
 
             save_buffer += pitch;
-            --clip_bottom;
-        } while (clip_bottom != 0);
+        } while (--clip_bottom != 0);
     }
 
     return 1;
