@@ -219,8 +219,16 @@ unsigned char RGE_Action_Move_To::update() {
         }
         break;
 
+    case 1:
+        return 1;
+
     case 13:
-        goto state_done;
+    state_done:
+        if (this->subActionValue == 0) {
+            this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x262,
+                              0, 0);
+        }
+        return 3;
 
     reached_target:
         this->obj->notify(this->obj->id, this->obj->id, 0x1FC, 0, 0, 0);
@@ -229,15 +237,6 @@ unsigned char RGE_Action_Move_To::update() {
         this->update();
         return 0;
 
-    state_done:
-        if (this->subActionValue == 0) {
-            this->obj->notify(this->obj->id, this->obj->id, 0x1F9, 0x262,
-                              0, 0);
-        }
-        return 3;
-
-    case 1:
-        return 1;
     }
 
     return 0;

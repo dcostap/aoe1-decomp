@@ -13,7 +13,7 @@
     "00405750": {"status": "matching", "symbol": "?save@RGE_Action_Move_To@@UAEXH@Z"},
     "00405780": {"status": "matching", "symbol": "?first_in_stack@RGE_Action_Move_To@@UAEXE@Z"},
     "004057E0": {"status": "matching", "symbol": "?set_state@RGE_Action_Move_To@@MAEXE@Z"},
-    "00405850": {"status": "scratch", "symbol": "?update@RGE_Action_Move_To@@UAEEXZ"},
+    "00405850": {"status": "accepted_drift", "symbol": "?update@RGE_Action_Move_To@@UAEEXZ"},
     "00405BF0": {"status": "matching", "symbol": "?is_in_range@RGE_Action_Move_To@@IAEEXZ"}
   }
 }
