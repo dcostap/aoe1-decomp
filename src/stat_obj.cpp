@@ -703,12 +703,11 @@ void RGE_Static_Object::capture_square_frame(TDrawArea* render_area,
         if (this->get_frame(min_x, min_y, max_x, max_y) != 0) {
             int x1;
             int y1;
-            int x2;
             x1 = x + min_x - 1 + this->screen_x_offset;
             y1 = y + min_y - 1 + this->screen_y_offset;
             y0 = y + max_y + 1 + this->screen_y_offset;
-            x2 = x + max_x + this->screen_x_offset + 1;
-            SDI_List->AddGDINode(4, y0, x1, y1, x2, y0,
+            SDI_List->AddGDINode(4, y0, x1, y1,
+                                 x + max_x + this->screen_x_offset + 1, y0,
                                  0, 0, 0, 0, 10, 0xff, SDI_Object_ID);
 
             if (this->object_state <= 2) {
