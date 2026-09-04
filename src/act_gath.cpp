@@ -98,7 +98,7 @@ void RGE_Action_Gather::first_in_stack(unsigned char param1) {
 }
 
 void RGE_Action_Gather::set_state(unsigned char param_1) {
-    RGE_Action* move_to;
+    RGE_Action_Move_To* move_to;
 
     this->sub_actions->delete_list();
     this->state = param_1;
