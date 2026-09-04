@@ -309,10 +309,10 @@ int TTextPanel::word_wrap_append(char* text)
     for (;;) {
     next_line:
         text_len = (short)__mbslen(text);
-        found_break = 0;
         found_return = 0;
-        found_space = 0;
         found_linefeed = 0;
+        found_space = 0;
+        found_break = 0;
         found_bad_return = 0;
         next_char = (unsigned char*)text;
 
@@ -323,7 +323,6 @@ int TTextPanel::word_wrap_append(char* text)
         }
 
         chars = 1;
-        next_char = (unsigned char*)text;
         GetTextExtentPoint32A((HDC)dc, text,
                               (int)(short)(__mbsinc(
                                   (const unsigned char*)text) -
@@ -409,7 +408,7 @@ int TTextPanel::word_wrap_append(char* text)
                     break;
                 }
             }
-            if (!found_break && !found_space) {
+            if (!found_space && !found_break) {
                 chars = last_fit_len;
                 found_break = 1;
             }
