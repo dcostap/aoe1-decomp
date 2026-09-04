@@ -1978,17 +1978,16 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     if (state.active == 1) {
         x = state.buildingTypeID;
         buildingSize = state.buildingSize;
-        objectName = state.buildingName;
+        strncpy(buildingName + 4, state.buildingName, 0xff);
     } else if (item != 0) {
         x = item->typeID();
         buildingSize = item->xSize();
-        objectName = item->name();
+        strncpy(buildingName + 4, item->name(), 0xff);
     } else {
         x = objectType;
         buildingSize = objectSize;
+        strncpy(buildingName + 4, objectName, 0xff);
     }
-
-    strncpy(buildingName + 4, objectName, 0xff);
     buildingType = (int)buildingSize;
     y = buildingType * buildingType * 0x14;
 
@@ -2008,10 +2007,11 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         placementCenter.x = centerY;
         placementCenter.y = maxClearX;
     } else {
-        coordinateObject = townCenter;
-        if (coordinateObject == 0)
+        if (townCenter != 0)
+            coordinateObject = townCenter;
+        else if (builderObject != 0)
             coordinateObject = builderObject;
-        if (coordinateObject == 0)
+        else
             coordinateObject = placementObject;
 
         placementCenter.x = (int)coordinateObject->world_x;
