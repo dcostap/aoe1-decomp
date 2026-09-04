@@ -1772,7 +1772,7 @@ void RGE_Map::delete_all_objects_on_tile(int x, int y)
 }
 
 void RGE_Map::create_terrain_object(RGE_Player* obj_owner,
-                                    RGE_Game_World* /*gworld*/, short row,
+                                    RGE_Game_World* gworld, short row,
                                     short col, short old_terrain,
                                     int delete_obj, int no_delete_start,
                                     int no_delete_end)
