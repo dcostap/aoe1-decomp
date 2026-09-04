@@ -2892,7 +2892,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
     RGE_Static_Object* commanderObject = this->md->object(group->commander());
     RGE_Static_Object* oTDObject;
     ObjectMemory* wonder;
-    int commanderIsBoat = 0;
+    bool commanderIsBoat = false;
     float targetDistance;
     int commanderIsPriest = 0;
     int destroyIndex;
@@ -2951,7 +2951,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         wonder = this->wonderToAttack(-1);
         if (wonder != 0) {
             unsigned char wonderZone = commanderObject->lookupZone((int)wonder->x, (int)wonder->y);
-            if (wonderZone != commanderZone && commanderIsBoat == 0) {
+            if (wonderZone != commanderZone && !commanderIsBoat) {
                 return 0;
             }
             if (commanderObject->canPath(wonder->id,
@@ -3015,7 +3015,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
             continue;
         }
 
-        if (commanderIsBoat == 0 && this->isBoat(oTDObject) == 1) {
+        if (!commanderIsBoat && this->isBoat(oTDObject) == 1) {
             continue;
         }
 
@@ -3023,7 +3023,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackByGroup(
         int targetY = (int)oTDObject->world_y;
         tempZone = commanderObject->lookupZone(targetX, targetY);
 
-        if (commanderIsBoat == 0 && memory->type == 0x2D && tempZone != commanderZone) {
+        if (!commanderIsBoat && memory->type == 0x2D && tempZone != commanderZone) {
             continue;
         }
         if (stateRef.phase == 0 && memory->group == 0x1B) {
