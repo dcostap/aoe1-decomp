@@ -1102,10 +1102,9 @@ keyboard_input:
         target = panel_system.modalPanel();
     }
 
-    if (msg == 0x102) {
+    if (msg != 0x100 && msg != 0x104) {
         return target->handle_char(wParam, (short)lParam);
     }
-
     alt = GetKeyState(0x12) < 0;
     ctrl_key = GetKeyState(0x11) < 0;
     shift_key = GetKeyState(0x10) < 0;
