@@ -3193,13 +3193,13 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
     RGE_SPick_Info* p;
     RGE_SPick_Info** head_ptr;
     DClipInfo_Node* node;
-    int level;
+    int l;
     int confidence;
-    int object_id;
-    int selected_level;
-    int draw_level;
+    int obj_id;
+    int z;
+    int hotY;
     int i;
-    int keep;
+    int add_it;
     int num_picked = 0;
     int* pick_sizes;
 
@@ -3227,8 +3227,7 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
     Ypos -= this->render_rect.top;
     Xpos -= this->render_rect.left;
 
-    level = max_level;
-
+    l = max_level;
     freep[1] = 0;
     freep[2] = 0;
     freep[3] = 0;
@@ -3249,7 +3248,7 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
     pick_sizes[3] = 0;
 
     do {
-        if (level < min_level) {
+        if (l < min_level) {
             int output_level = 1;
             head_ptr = head + 1;
             for (; output_level <= 4; ++output_level, ++head_ptr) {
@@ -3274,7 +3273,7 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
             return num_picked;
         }
 
-        node = this->prior_objs->Draw_Level_Head[level];
+        node = this->prior_objs->Draw_Level_Head[l];
         for (; node != 0; node = node->NextOnLevel) {
             confidence = 0;
             if (node->Node_Type == 0 &&
@@ -3309,9 +3308,9 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
             }
 
             if (confidence != 0 && confidence <= max_confidence) {
-                draw_level = node->y3;
-                object_id = node->Object_ID;
-                keep = 1;
+                hotY = node->y3;
+                obj_id = node->Object_ID;
+                add_it = 1;
                 found = 0;
                 int picked_level = 1;
                 head_ptr = head + 1;
@@ -3320,9 +3319,9 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
                         p = *head_ptr;
                         if (p != 0) {
                             do {
-                                if (p->object_id == object_id) {
+                                if (p->object_id == obj_id) {
                                     found = p;
-                                    selected_level = picked_level;
+                                    z = picked_level;
                                     break;
                                 }
                                 p = p->next;
@@ -3334,18 +3333,18 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
                 } while (picked_level < 5);
 
                 if (found != 0) {
-                    if (selected_level < confidence ||
-                        (selected_level == confidence &&
-                         draw_level < found->draw_level)) {
-                        keep = 0;
+                    if (z < confidence ||
+                        (z == confidence &&
+                         hotY < found->draw_level)) {
+                        add_it = 0;
                     }
 
-                    if (keep) {
-                        if (head[selected_level] == found) {
-                            head[selected_level] = found->next;
+                    if (add_it) {
+                        if (head[z] == found) {
+                            head[z] = found->next;
                         }
-                        if (tail[selected_level] == found) {
-                            tail[selected_level] = found->prev;
+                        if (tail[z] == found) {
+                            tail[z] = found->prev;
                         }
                         if (found->next != 0) {
                             found->next->prev = found->prev;
@@ -3353,18 +3352,18 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
                         if (found->prev != 0) {
                             found->prev->next = found->next;
                         }
-                        found->next = freep[selected_level];
+                        found->next = freep[z];
                         found->prev = 0;
-                        freep[selected_level] = found;
+                        freep[z] = found;
                     }
                 }
 
-                if (keep) {
+                if (add_it) {
                     p = freep[confidence];
                     if (p == 0) {
                         i = this->pick_list_size[confidence];
                         if (i == 0x40) {
-                            keep = 0;
+                            add_it = 0;
                         } else {
                             p = this->pick_lists[confidence] + i;
                             this->pick_list_size[confidence] = i + 1;
@@ -3373,10 +3372,10 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
                         freep[confidence] = p->next;
                     }
 
-                    if (keep) {
-                        p->object_id = object_id;
+                    if (add_it) {
+                        p->object_id = obj_id;
                         p->confidence = (short)confidence;
-                        p->draw_level = draw_level;
+                        p->draw_level = hotY;
                         p->draw_x = (short)node->Draw_X;
                         p->draw_y = (short)node->Draw_Y;
                         head_ptr = head + confidence;
@@ -3388,7 +3387,7 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
                             tail[confidence] = p;
                         } else {
                             do {
-                                if (draw_level >= found->draw_level) {
+                                if (hotY >= found->draw_level) {
                                     p->next = found;
                                     previous = found->prev;
                                     p->prev = previous;
@@ -3416,7 +3415,7 @@ int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
             }
 
         }
-        --level;
+        --l;
     } while (true);
 }
 
