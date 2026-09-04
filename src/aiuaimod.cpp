@@ -769,6 +769,7 @@ foundTrigger:
             totalHitPoints[4] = 0;
             groupCount = 0;
             deadCount = 0;
+            groupList[0] = 0;
             if (this->objectValue->groupMembers.numberValue > 0) {
                 int* groupListCursor = groupList + 1;
                 do {
