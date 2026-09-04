@@ -2504,9 +2504,6 @@ int TRIBE_Game::load_game(char* file_name)
     long checksum;
     long num1;
     long num4;
-    char target_name_1[50];
-    char target_name_2[50];
-    char target_name[50];
     char debug_file_name[260];
     char fn[260];
 
@@ -2623,7 +2620,7 @@ int TRIBE_Game::load_game(char* file_name)
                 fprintf(debug_file, "game_speed %6.2f\n",
                         this->world->game_speed);
 
-                for (i = 0; i < this->world->player_num; ++i) {
+                for (int i = 0; i < this->world->player_num; ++i) {
                     RGE_Player* player = this->world->players[i];
                     fprintf(debug_file,
                             "player %d, civ=%d, score=%d, %s\n",
@@ -2632,25 +2629,22 @@ int TRIBE_Game::load_game(char* file_name)
                             player->name);
                     fprintf(debug_file, "  Writing=%f\n",
                             player->attributes[200]);
+                    action_checksum = 0;
+                    num2 = 0;
                     fprintf(debug_file, "  num_sleep_obj=%d\n",
                             player->sleeping_objects->number_of_objects);
                     fprintf(debug_file, "  num_dopple_obj=%d\n",
                             player->doppleganger_objects->number_of_objects);
 
-                    action_checksum = 0;
                     num1 = 0;
                     temp_position_checksum = 0.0f;
                     num3 = player->sleeping_objects->number_of_objects +
                         player->doppleganger_objects->number_of_objects + player->id;
-                    num4 = 0;
-                    while (num4 < player->attribute_num) {
-                        num1 += static_cast<int>(player->attributes[num4]);
+                    for (int i = 0; i < player->attribute_num; ++i) {
+                        num1 += static_cast<int>(player->attributes[i]);
                         fprintf(debug_file, "  p#%d attr[%d]=%12.8f\n",
-                                player->id, num4,
-                                player->attributes[num4]);
-                        ++num4;
+                                player->id, i, player->attributes[i]);
                     }
-                    num2 = 0;
                     list = player->objects->list;
                     while (list != 0) {
                         RGE_Static_Object* object = list->node;
@@ -2665,12 +2659,13 @@ int TRIBE_Game::load_game(char* file_name)
                         temp_position_checksum += object->world_z;
                         action_checksum += object->get_action_checksum();
                         RGE_Static_Object* target = object->get_target_obj();
+                        char target_name[50];
                         if (target != 0) {
-                            target_name_1[0] = 0;
-                            strcpy(target_name_1, target->master_obj->name);
+                            target_name[0] = 0;
+                            strcpy(target_name, target->master_obj->name);
                             num4 = target->id;
                         } else {
-                            target_name_1[0] = 0;
+                            target_name[0] = 0;
                             num4 = -1;
                         }
                         fprintf(debug_file,
@@ -2680,7 +2675,7 @@ int TRIBE_Game::load_game(char* file_name)
                                 object->object_state,
                                 object->attribute_amount_held,
                                 object->world_x, object->world_y,
-                                object->world_z, num4, target_name_1);
+                                object->world_z, num4, target_name);
 
                         RGE_Action_Object* moving_object =
                             static_cast<RGE_Action_Object*>(object);
@@ -2755,12 +2750,13 @@ int TRIBE_Game::load_game(char* file_name)
                         RGE_Doppleganger_Object* dopple =
                             static_cast<RGE_Doppleganger_Object*>(object);
                         RGE_Static_Object* target = object->get_target_obj();
+                        char target_name[50];
                         if (target != 0) {
-                            target_name_2[0] = 0;
-                            strcpy(target_name_2, target->master_obj->name);
+                            target_name[0] = 0;
+                            strcpy(target_name, target->master_obj->name);
                             num4 = target->id;
                         } else {
-                            target_name_2[0] = 0;
+                            target_name[0] = 0;
                             num4 = -1;
                         }
                         fprintf(debug_file,
@@ -2769,7 +2765,7 @@ int TRIBE_Game::load_game(char* file_name)
                                 object->master_obj->name, object->object_state,
                                 object->attribute_amount_held, object->world_x,
                                 object->world_y, object->world_z, num4,
-                                target_name_2);
+                                target_name);
                         if (dopple->doppled_master_obj != 0) {
                             fprintf(debug_file,
                                     "    Doppled master obj:  %s, %d.\n",
@@ -2839,26 +2835,27 @@ int TRIBE_Game::load_game(char* file_name)
 
                     list = player->doppleganger_objects->list;
                     while (list != 0) {
-                            RGE_Static_Object* target =
-                                list->node->get_target_obj();
-                            if (target != 0) {
-                                target_name[0] = 0;
-                                strcpy(target_name, target->master_obj->name);
-                                num4 = target->id;
-                            } else {
-                                target_name[0] = 0;
-                                num4 = -1;
-                            }
-                            fprintf(debug_file,
-                                    "  p#%d ob=%d (%s), st=%d, at=%8.4f, pos=%6.2f,%6.2f,%6.2f, tar=%d (%s)\n",
-                                    player->id, list->node->id,
-                                    list->node->master_obj->name,
-                                    list->node->object_state,
-                                    list->node->attribute_amount_held,
-                                    list->node->world_x,
-                                    list->node->world_y,
-                                    list->node->world_z,
-                                    num4, target_name);
+                        char target_name[50];
+                        RGE_Static_Object* target =
+                            list->node->get_target_obj();
+                        if (target != 0) {
+                            target_name[0] = 0;
+                            strcpy(target_name, target->master_obj->name);
+                            num4 = target->id;
+                        } else {
+                            target_name[0] = 0;
+                            num4 = -1;
+                        }
+                        fprintf(debug_file,
+                                "  p#%d ob=%d (%s), st=%d, at=%8.4f, pos=%6.2f,%6.2f,%6.2f, tar=%d (%s)\n",
+                                player->id, list->node->id,
+                                list->node->master_obj->name,
+                                list->node->object_state,
+                                list->node->attribute_amount_held,
+                                list->node->world_x,
+                                list->node->world_y,
+                                list->node->world_z,
+                                num4, target_name);
                         list = list->next;
                     }
 
