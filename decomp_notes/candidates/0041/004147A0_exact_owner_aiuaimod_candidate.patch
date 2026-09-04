@@ -16,6 +16,17 @@
 # direct reconstructed callers in taistrmd.cpp, taitacmd.cpp, and taiuaimd.cpp
 # to fail compilation. Those callers must first be recovered through public
 # ManagedArray operations. Do not expose resize or use member-pointer steering.
+#
+# Extended natural-caller trial:
+# - Replaced every direct caller with operator[]-owned growth.
+# - Audited all 90 header-dependent groups with --jobs 1.
+# - 2,466 of 2,470 exact targets remained MATCH.
+# - Exact regressions: 004EA280, 004EF4E0, 004FB550, and 004FB710.
+# - The exact resize owner and all 104 aiuaimod exact targets remained valid.
+#
+# The four regressions show that the remaining blocker is selective nested
+# inlining and source context. Keep the partial patch below as the smallest
+# complete exact-owner and aiuaimod closure. Do not integrate it alone.
 
 diff --git a/include/utmarray.h b/include/utmarray.h
 index 99ff66a92..74a77b494 100644
