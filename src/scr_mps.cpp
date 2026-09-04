@@ -847,10 +847,11 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
 
         if (param_2 == 0 && rge_base_game->numberPlayers() > 0) {
             int i = 0;
-            do {
-                if (param_1 == this->playerNameDrop[i]) {
+            TDropDownPanel** player_civ = this->playerCivDrop;
+            while (1) {
+                if (param_1 == player_civ[-8]) {
                     if (rge_base_game->multiplayerGame() &&
-                        this->playerNameDrop[i]->get_line() > 0 &&
+                        player_civ[-8]->get_line() > 0 &&
                         comm->IsPlayerHuman(i + 1)) {
                         this->kickPlayer(i + 1);
                         return 1;
@@ -858,27 +859,27 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                     comm->SetPlayerHumanity(
                         i + 1,
                         static_cast<PLAYERHUMANITY>(
-                            this->playerNameDrop[i]->get_id()));
+                            player_civ[-8]->get_id()));
                     return 1;
                 }
-                if (param_1 == this->playerCivDrop[i]) {
-                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, this->playerCivDrop[i]->get_id());
+                if (param_1 == player_civ[0]) {
+                    static_cast<TRIBE_Game*>(rge_base_game)->setCivilization(i, player_civ[0]->get_id());
                     if (rge_base_game->multiplayerGame() && !comm->IsHost()) {
-                        this->myCivilization = this->playerCivDrop[i]->get_id();
+                        this->myCivilization = player_civ[0]->get_id();
                         return 1;
                     }
                     return 1;
                 }
-                if (param_1 == this->scenarioPlayerDrop[i]) {
+                if (param_1 == player_civ[8]) {
                     if (rge_base_game->multiplayerGame()) {
-                        static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(i, this->scenarioPlayerDrop[i]->get_id());
+                        static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(i, player_civ[8]->get_id());
                         if (!comm->IsHost()) {
-                            this->myScenarioPlayer = this->scenarioPlayerDrop[i]->get_id();
+                            this->myScenarioPlayer = player_civ[8]->get_id();
                             return 1;
                         }
                         return 1;
                     }
-                    static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(0, this->scenarioPlayerDrop[0]->get_id());
+                    static_cast<TRIBE_Game*>(rge_base_game)->setScenarioPlayer(0, player_civ[8]->get_id());
                     int sp = 1;
                     int player = 0;
                     do {
@@ -894,7 +895,11 @@ long TribeMPSetupScreen::action(TPanel* param_1, long param_2, unsigned long par
                     return 1;
                 }
                 i++;
-            } while (i < rge_base_game->numberPlayers());
+                player_civ++;
+                if (i >= rge_base_game->numberPlayers()) {
+                    break;
+                }
+            }
         }
         return this->TEasy_Panel::action(param_1, param_2, param_3, param_4);
     }
