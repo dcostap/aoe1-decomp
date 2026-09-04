@@ -7341,9 +7341,11 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
     if (gathererObj == 0) return 0;
 
     gathererUnitData = this->gatherer(p1);
-    resourceType = p2;
-    if (gathererUnitData != 0 && gathererUnitData->data2 > gathererUnitData->data3) {
+    if (gathererUnitData != 0 &&
+        gathererUnitData->data2 > gathererUnitData->data3) {
         resourceType = gathererUnitData->data1;
+    } else {
+        resourceType = p2;
     }
 
     i = -1;
