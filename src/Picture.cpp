@@ -305,14 +305,19 @@ unsigned char TPicture::GetPixel(long x, long y, int param_3, int param_4) {
 
     if (param_3 != 0) {
         if (orientation == 1) {
-            return this->Bits[this->AlignedWidth() * y + this->Width - x - 1];
+            unsigned char* row = this->Bits + this->AlignedWidth() * y;
+            return *(row - x + this->Width - 1);
         }
-        return this->Bits[this->AlignedWidth() * (this->Height - y - 1) +
-                          this->Width - x - 1];
+        unsigned char* row = this->Bits +
+                             this->AlignedWidth() * (this->Height - y - 1);
+        return *(row - x + this->Width - 1);
     }
 
     if (orientation == 1) {
-        return this->Bits[this->AlignedWidth() * y + x];
+        unsigned char* row = this->Bits + this->AlignedWidth() * y;
+        return row[x];
     }
-    return this->Bits[this->AlignedWidth() * (this->Height - y - 1) + x];
+    unsigned char* row = this->Bits +
+                         this->AlignedWidth() * (this->Height - y - 1);
+    return row[x];
 }
