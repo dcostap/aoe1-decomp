@@ -494,31 +494,33 @@ int InfluenceMap::coverageIncluding(const XYPoint& from, const XYPoint& to,
     return rVal;
 }
 
-int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
-                                       unsigned char minimum,
-                                       unsigned char amount, int mode1,
-                                       int mode2, int allDirections)
+int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
+                                       unsigned char valueLevel,
+                                       unsigned char newValueLevel,
+                                       int countOrthogonalEdgesAsConnections,
+                                       int countDiagonalEdgesAsConnections,
+                                       int countDiagonalConnections)
 {
     int rVal = this->connectionCountValue;
     int i;
     int j;
 
-    if (from.x < 0 || from.y < 0 || from.x >= this->xSizeValue ||
-        from.y >= this->ySizeValue || to.x < 0 || to.y < 0 ||
-        to.x >= this->xSizeValue || to.y >= this->ySizeValue) {
+    if (min.x < 0 || min.y < 0 || min.x >= this->xSizeValue ||
+        min.y >= this->ySizeValue || max.x < 0 || max.y < 0 ||
+        max.x >= this->xSizeValue || max.y >= this->ySizeValue) {
         return 0;
     }
 
-    for (i = from.x; i <= to.x; ++i) {
-        j = from.y;
-        if (j <= to.y) {
+    for (i = min.x; i <= max.x; ++i) {
+        j = min.y;
+        if (j <= max.y) {
             unsigned char** rowsMap = this->rowValue;
             int xOffset = i - this->xReferencePointValue;
 
             do {
-                if (rowsMap[j - this->yReferencePointValue][xOffset] + amount >=
-                        minimum) {
-                    if (rowsMap[j - this->yReferencePointValue][xOffset] >= minimum) {
+                if (rowsMap[j - this->yReferencePointValue][xOffset] + newValueLevel >=
+                        valueLevel) {
+                    if (rowsMap[j - this->yReferencePointValue][xOffset] >= valueLevel) {
                         int neighborX = i;
                         int neighborY = j;
 
@@ -545,11 +547,11 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                                 break;
                             }
 
-                            if (allDirections || direction % 2 != 0) {
+                            if (countDiagonalConnections || direction % 2 != 0) {
                                 if (neighborX < 0 || neighborX >= this->xSizeValue ||
                                     neighborY < 0 || neighborY >= this->ySizeValue) {
-                                    if ((mode1 == 1 && direction % 2 == 1) ||
-                                        (mode2 == 1 && direction % 2 == 0)) {
+                                    if ((countOrthogonalEdgesAsConnections == 1 && direction % 2 == 1) ||
+                                        (countDiagonalEdgesAsConnections == 1 && direction % 2 == 0)) {
                                         --rVal;
                                     }
                                     if (rVal <= 0)
@@ -565,9 +567,6 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                         switch (direction) {
                         case 0:
                             --neighborX;
-                            // fall through
-                        case 7:
-                            --neighborY;
                             break;
                         case 1:
                         case 2:
@@ -581,24 +580,27 @@ int InfluenceMap::connectionsIncluding(const XYPoint& from, const XYPoint& to,
                         case 6:
                             --neighborX;
                             break;
+                        case 7:
+                            --neighborY;
+                            break;
                         }
 
-                        if (allDirections || direction % 2 != 0) {
+                        if (countDiagonalConnections || direction % 2 != 0) {
                             if (neighborX < 0 || neighborX >= this->xSizeValue ||
                                 neighborY < 0 || neighborY >= this->ySizeValue) {
-                                if ((mode1 == 1 && direction % 2 == 1) ||
-                                    (mode2 == 1 && direction % 2 == 0)) {
+                                if ((countOrthogonalEdgesAsConnections == 1 && direction % 2 == 1) ||
+                                    (countDiagonalEdgesAsConnections == 1 && direction % 2 == 0)) {
                                     --rVal;
                                 }
                             } else if (rowsMap[neighborY - this->yReferencePointValue]
-                                             [neighborX - this->xReferencePointValue] >= minimum) {
+                                             [neighborX - this->xReferencePointValue] >= valueLevel) {
                                 rVal += 2;
                             }
                         }
                     }
                 }
                 ++j;
-            } while (j <= to.y);
+            } while (j <= max.y);
         }
     }
 
