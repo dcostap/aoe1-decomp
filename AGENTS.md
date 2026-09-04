@@ -47,6 +47,12 @@ Preserve each exact candidate that closure review rejects. Store a patch under
 exact target result, the regressed owners, and the tested main commit. Do not
 rely on a worker worktree, temporary file, or ignored build artifact.
 
+Do not assume that an exact candidate caused a closure defect. The candidate
+can reveal wrong source or compiler context in another function. Investigate
+all affected owners. Repair other natural functions, declarations, or headers
+when evidence supports the repair. Validate every changed owner and the full
+closure before integration.
+
 Inline assembly is forbidden for real functions unless explicitly allowed.
 This includes `__asm`, `_asm`, naked functions, and handwritten wrappers.
 
