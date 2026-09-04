@@ -1,6 +1,7 @@
 import type { Theme } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 import type { FunctionStats } from "./core.ts";
+import { formatScratchActivity, type ScratchEventSummary } from "./events.ts";
 
 const numberFormat = new Intl.NumberFormat("en-US");
 
@@ -66,19 +67,38 @@ function compactLine(stats: FunctionStats, theme: Theme): string {
 	return parts.join(separator(theme));
 }
 
-export function functionStatusLine(stats: FunctionStats, theme: Theme, width: number): string {
+function scratchActivityLine(summary: ScratchEventSummary, theme: Theme): string {
+	return theme.fg("dim", formatScratchActivity(summary));
+}
+
+export function functionStatusLine(
+	stats: FunctionStats,
+	scratchSummary: ScratchEventSummary,
+	theme: Theme,
+	width: number,
+): string {
 	if (width <= 0) return "";
 	const detailed = detailedLine(stats, theme);
-	if (visibleWidth(detailed) <= width) return detailed;
 	const normal = normalLine(stats, theme);
-	const line = visibleWidth(normal) <= width ? normal : compactLine(stats, theme);
+	const compact = compactLine(stats, theme);
+	const activity = scratchActivityLine(scratchSummary, theme);
+	for (const base of [detailed, normal, compact]) {
+		const line = `${base}${separator(theme)}${activity}`;
+		if (visibleWidth(line) <= width) return line;
+	}
+	if (visibleWidth(detailed) <= width) return detailed;
+	const line = visibleWidth(normal) <= width ? normal : compact;
 	return truncateToWidth(line, width, "…");
 }
 
-export function functionStatusWidgetComponent(stats: FunctionStats, theme: Theme) {
+export function functionStatusWidgetComponent(
+	stats: FunctionStats,
+	scratchSummary: ScratchEventSummary,
+	theme: Theme,
+) {
 	return {
 		render(width: number): string[] {
-			return [functionStatusLine(stats, theme, width)];
+			return [functionStatusLine(stats, scratchSummary, theme, width)];
 		},
 		invalidate(): void {},
 	};

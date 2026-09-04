@@ -63,3 +63,8 @@ export function summarizeScratchEvents(events: readonly ScratchDecreaseEvent[], 
 		lastHourMatches,
 	};
 }
+
+export function formatScratchActivity(summary: ScratchEventSummary): string {
+	return `scratch exits ${summary.totalMatches.toLocaleString("en-US")}`
+		+ ` · ${summary.lastHourMatches.toLocaleString("en-US")}/hr`;
+}

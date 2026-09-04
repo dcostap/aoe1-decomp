@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { countManifestEntries, parseRegistryStatuses } from "./core.ts";
-import { ONE_HOUR_MS, restoreScratchEvents, summarizeScratchEvents } from "./events.ts";
+import { formatScratchActivity, ONE_HOUR_MS, restoreScratchEvents, summarizeScratchEvents } from "./events.ts";
 
 describe("function status parsing", () => {
 	test("counts the supported statuses and reports unknown entries", () => {
@@ -56,5 +56,14 @@ describe("function status parsing", () => {
 			lastHourEvents: 2,
 			lastHourMatches: 3,
 		});
+	});
+
+	test("formats total and hourly scratch exits", () => {
+		expect(formatScratchActivity({
+			totalEvents: 4,
+			totalMatches: 1_234,
+			lastHourEvents: 2,
+			lastHourMatches: 7,
+		})).toBe("scratch exits 1,234 · 7/hr");
 	});
 });
