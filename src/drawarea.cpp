@@ -1811,42 +1811,46 @@ void TDrawArea::SetPixel(long x, long y, unsigned char color) {
 }
 
 void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
+    int yd;
+    int yl;
+
     if (x1 == x2) {
-        int y_start = y1;
-        int y_end = y2;
-        if (y_start > y_end) {
-            int t = y_start;
-            y_start = y_end;
-            y_end = t;
+        yd = y1;
+        yl = y2;
+        if (yd > yl) {
+            int t = yd;
+            yd = yl;
+            yl = t;
         }
-        unsigned int c = (unsigned int)color;
-        do {
-            _ASMDraw_HLine(x1, x2, y_start, c);
-            y_start++;
-        } while (y_start <= y_end);
+        if (yd <= yl) {
+            unsigned int c = (unsigned int)color;
+            do {
+                _ASMDraw_HLine(x1, x2, yd, c);
+                yd++;
+            } while (yd <= yl);
+        }
     } else if (y1 == y2) {
         _ASMDraw_HLine(x1, x2, y1, (unsigned int)color);
     } else {
-        int step;
         int dy;
 
         if (x2 < x1) {
-            int t = x2;
-            x2 = x1;
-            x1 = t;
-            t = y2;
-            y2 = y1;
-            y1 = t;
+            int y1_save = y1;
+            y1 = y2;
+            int x1_save = x1;
+            x1 = x2;
+            x2 = x1_save;
+            y2 = y1_save;
         }
 
         int dx;
         dx = x2 - x1 + 1;
         if (y1 < y2) {
             dy = y2 - y1;
-            step = 1;
+            yd = 1;
         } else {
             dy = y1 - y2;
-            step = -1;
+            yd = -1;
         }
         ++dy;
 
@@ -1857,7 +1861,7 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
                 error += dy;
                 if (error >= dx) {
                     _ASMDraw_HLine(line_start, x1, y1, (unsigned int)color);
-                    y1 += step;
+                    y1 += yd;
                     error -= dx;
                     line_start = x1 + 1;
                 }
@@ -1865,18 +1869,14 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
             _ASMDraw_HLine(line_start, x1, y1, (unsigned int)color);
         } else {
             int error = 0;
-            for (;;) {
-                _ASMDraw_HLine(x1, x1, y1, (unsigned int)color);
-                if (y1 == y2) {
-                    break;
-                }
-                error += dx;
-                if (error >= dy) {
-                    ++x1;
-                    error -= dy;
-                }
-                y1 += step;
-            }
+            unsigned int c = (unsigned int)color;
+            do {
+                _ASMDraw_HLine(x1, x1, y1, c);
+            } while (y1 != y2 &&
+                     (error += dx,
+                      error >= dy && (++x1, error -= dy),
+                      y1 += yd,
+                      1));
         }
     }
 }
