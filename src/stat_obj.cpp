@@ -1673,13 +1673,13 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
     }
     // The upper-bound loads come directly from map width and height.
     if (param_1 >= (float)map->map_width) {
-        param_1 = (float)map->map_width - 0.001f;
+        param_1 = (float)map->map_width - DAT_00574744;
     }
     if (param_2 < 0.0f) {
         param_2 = 0.0f;
     }
     if (param_2 >= (float)map->map_height) {
-        param_2 = (float)map->map_height - 0.001f;
+        param_2 = (float)map->map_height - DAT_00574744;
     }
 
     tx = (int)param_1;
@@ -1723,26 +1723,32 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         this->addToObstructionMap(2);
     }
 
+    float slope_flag = 0.0f;
     switch (new_tile->tile_type) {
+    case 0:
+        result = 0.0f;
+        break;
     case 1:
-        if (rx + rz < 1.0f) {
+        if (rx + rz < DAT_0057472c) {
             result = rz;
         } else {
-            result = 1.0f - rx;
+            result = DAT_0057472c - rx;
         }
         break;
     case 2:
-        if (rx + rz < 1.0f) {
+        if (rx + rz < DAT_0057472c) {
             result = rx;
+            slope_flag = 1.0f;
         } else {
-            result = 1.0f - rz;
+            result = DAT_0057472c - rz;
+            slope_flag = 1.0f;
         }
         break;
     case 3:
         if (rx <= rz) {
-            result = 1.0f - rz;
+            result = DAT_0057472c - rz;
         } else {
-            result = 1.0f - rx;
+            result = DAT_0057472c - rx;
         }
         break;
     case 4:
@@ -1753,16 +1759,18 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         }
         break;
     case 5:
-        result = 1.0f - rx;
+        result = DAT_0057472c - rx;
         break;
     case 6:
-        result = 1.0f - rz;
+        result = DAT_0057472c - rz;
+        slope_flag = 1.0f;
         break;
     case 7:
         result = rz;
         break;
     case 8:
         result = rx;
+        slope_flag = 1.0f;
         break;
     case 9:
         if (rx - rz < 0.0f) {
@@ -1776,36 +1784,36 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         if (result <= 0.0f) {
             result = 0.0f;
         }
+        slope_flag = 1.0f;
         break;
     case 11:
-        if (rx + rz < 1.0f) {
-            result = 1.0f - (rx + rz);
+        if (rx + rz < DAT_0057472c) {
+            result = DAT_0057472c - (rx + rz);
         } else {
             result = 0.0f;
         }
         break;
     case 12:
-        if (1.0f < rx + rz) {
-            result = (rx + rz) - 1.0f;
+        if (DAT_0057472c < rx + rz) {
+            result = (rx + rz) - DAT_0057472c;
         } else {
             result = 0.0f;
         }
         break;
-    case 0:
-        result = 0.0f;
-        break;
     case 13:
-        if (1.0f <= rx + rz) {
+        if (DAT_0057472c <= rx + rz) {
             result = rz;
         } else {
-            result = 1.0f - rx;
+            result = DAT_0057472c - rx;
         }
         break;
     case 14:
-        if (1.0f <= rx + rz) {
+        if (DAT_0057472c <= rx + rz) {
             result = rx;
+            slope_flag = 1.0f;
         } else {
-            result = 1.0f - rz;
+            result = DAT_0057472c - rz;
+            slope_flag = 1.0f;
         }
         break;
     case 15:
@@ -1814,13 +1822,15 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
         } else {
             result = rx;
         }
+        slope_flag = 1.0f;
         break;
     case 16:
         if (rx <= rz) {
-            result = 1.0f - rx;
+            result = DAT_0057472c - rx;
         } else {
-            result = 1.0f - rz;
+            result = DAT_0057472c - rz;
         }
+        slope_flag = 1.0f;
         break;
     default:
         break;
@@ -1829,23 +1839,27 @@ float RGE_Static_Object::teleport(float param_1, float param_2, float param_3) {
     result += (float)this->tile->height;
     RGE_Master_Static_Object* master = this->master_obj;
     unsigned char movement = master->movement_type;
-    if (movement == 0 || (movement == 1 && this->world_z < result)) {
+    if (movement == 0) {
+        this->world_z = result;
+    } else if (movement == 1 && this->world_z < result) {
         this->world_z = result;
     }
 
     this->screen_x_offset =
         (short)((rx + rz) * map->tile_half_width);
     this->screen_y_offset =
-        (short)((result + rx - rz - this->world_z) * map->tile_half_height);
+        (short)((slope_flag + rz - DAT_00574730 - rx - this->world_z) *
+                map->tile_half_height);
 
-    if (master->movement_type == 0) {
+    if (movement == 0) {
         this->shadow_x_offset = this->screen_x_offset;
         this->shadow_y_offset = this->screen_y_offset;
-    } else if (master->movement_type == 1) {
+    } else if (movement == 1) {
         this->shadow_x_offset =
             (short)((rx + rz) * map->tile_half_width);
         this->shadow_y_offset =
-            (short)((result - rz) * map->tile_half_height);
+            (short)((slope_flag + rz - DAT_00574730 - rx - result) *
+                    map->tile_half_height);
     }
     return result;
 }
