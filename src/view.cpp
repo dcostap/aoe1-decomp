@@ -3180,15 +3180,15 @@ void RGE_View::get_tile_bounding_coords(int param_1, int param_2, int& param_3, 
 
 
 
-int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
-                           int radius, int priority, int skip_negative)
+int RGE_View::pick_objects(int Xpos, int Ypos, int min_level, int max_level,
+                           int range, int max_confidence, int ignoreNeg)
 {
     RGE_SPick_Info* head[5];
     RGE_SPick_Info* tail[5];
     RGE_SPick_Info* freep[5];
     RGE_SPick_Info* found;
     RGE_SPick_Info* previous;
-    RGE_SPick_Info* current;
+    RGE_SPick_Info* p;
     RGE_SPick_Info** head_ptr;
     DClipInfo_Node* node;
     int level;
@@ -3198,17 +3198,17 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
     int draw_level;
     int i;
     int keep;
-    int total_picked = 0;
+    int num_picked = 0;
     int* pick_sizes;
 
-    if (radius < 0) {
+    if (range < 0) {
         return 0;
     }
     if (max_level < min_level) {
         return 0;
     }
-    if (x < this->render_rect.left || x > this->render_rect.right ||
-        y < this->render_rect.top || y > this->render_rect.bottom) {
+    if (Xpos < this->render_rect.left || Xpos > this->render_rect.right ||
+        Ypos < this->render_rect.top || Ypos > this->render_rect.bottom) {
         return 0;
     }
     if (0x28 < min_level || max_level < 0) {
@@ -3222,8 +3222,8 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
         max_level = 0x28;
     }
 
-    y -= this->render_rect.top;
-    x -= this->render_rect.left;
+    Ypos -= this->render_rect.top;
+    Xpos -= this->render_rect.left;
 
     level = max_level;
 
@@ -3251,52 +3251,52 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
             int output_level = 1;
             head_ptr = head + 1;
             for (; output_level <= 4; ++output_level, ++head_ptr) {
-                current = *head_ptr;
-                if (current != 0) {
-                    RGE_Pick_Obj_Info* output = &Picked_Objects[total_picked];
+                p = *head_ptr;
+                if (p != 0) {
+                    RGE_Pick_Obj_Info* output = &Picked_Objects[num_picked];
                     do {
-                        output->object_id = current->object_id;
-                        output->confidence = current->confidence;
-                        output->draw_level = current->draw_level;
-                        output->draw_x = current->draw_x;
-                        output->draw_y = current->draw_y;
-                        ++total_picked;
+                        output->object_id = p->object_id;
+                        output->confidence = p->confidence;
+                        output->draw_level = p->draw_level;
+                        output->draw_x = p->draw_x;
+                        output->draw_y = p->draw_y;
+                        ++num_picked;
                         ++output;
-                        if (total_picked >= 0x40) {
+                        if (output >= &Picked_Objects[64]) {
                             return 0x40;
                         }
-                        current = current->next;
-                    } while (current != 0);
+                        p = p->next;
+                    } while (p != 0);
                 }
             }
-            return total_picked;
+            return num_picked;
         }
 
         node = this->prior_objs->Draw_Level_Head[level];
         for (; node != 0; node = node->NextOnLevel) {
             confidence = 0;
             if (node->Node_Type == 0 &&
-                (skip_negative == 0 || node->Object_ID >= 0)) {
+                (ignoreNeg == 0 || node->Object_ID >= 0)) {
                 int node_y1 = node->y1;
                 int node_x2 = node->x2;
-                if (x < node->x1 - radius ||
-                    y < node_y1 - radius ||
-                    radius + node_x2 < x ||
-                    node->y2 + radius < y) {
+                if (Xpos < node->x1 - range ||
+                    Ypos < node_y1 - range ||
+                    range + node_x2 < Xpos ||
+                    node->y2 + range < Ypos) {
                     confidence = 0;
                 } else {
                     confidence = 4;
-                    if (node->x1 <= x && node_y1 <= y &&
-                        x <= node_x2 && y <= node->y2) {
+                    if (node->x1 <= Xpos && node_y1 <= Ypos &&
+                        Xpos <= node_x2 && Ypos <= node->y2) {
                         confidence = 3;
                         if ((node->Draw_Flag & 2) == 2) {
-                            node_x2 -= x;
+                            node_x2 -= Xpos;
                         } else {
-                            node_x2 = x - node->x1;
+                            node_x2 = Xpos - node->x1;
                         }
                         int mask = this->sprite_check(
                             node->Shape_Base, node->Shape,
-                            node_x2, y - node_y1);
+                            node_x2, Ypos - node_y1);
                         if (mask == 1) {
                             confidence = 2;
                         } else if (mask == 2) {
@@ -3306,7 +3306,7 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
                 }
             }
 
-            if (confidence != 0 && confidence <= priority) {
+            if (confidence != 0 && confidence <= max_confidence) {
                 draw_level = node->y3;
                 object_id = node->Object_ID;
                 keep = 1;
@@ -3315,16 +3315,16 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
                 head_ptr = head + 1;
                 do {
                     if (found == 0) {
-                        current = *head_ptr;
-                        if (current != 0) {
+                        p = *head_ptr;
+                        if (p != 0) {
                             do {
-                                if (current->object_id == object_id) {
-                                    found = current;
+                                if (p->object_id == object_id) {
+                                    found = p;
                                     selected_level = picked_level;
                                     break;
                                 }
-                                current = current->next;
-                            } while (current != 0);
+                                p = p->next;
+                            } while (p != 0);
                         }
                     }
                     ++picked_level;
@@ -3358,52 +3358,52 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
                 }
 
                 if (keep) {
-                    current = freep[confidence];
-                    if (current == 0) {
+                    p = freep[confidence];
+                    if (p == 0) {
                         i = this->pick_list_size[confidence];
                         if (i == 0x40) {
                             keep = 0;
                         } else {
-                            current = this->pick_lists[confidence] + i;
+                            p = this->pick_lists[confidence] + i;
                             this->pick_list_size[confidence] = i + 1;
                         }
                     } else {
-                        freep[confidence] = current->next;
+                        freep[confidence] = p->next;
                     }
 
                     if (keep) {
-                        current->object_id = object_id;
-                        current->confidence = (short)confidence;
-                        current->draw_level = draw_level;
-                        current->draw_x = (short)node->Draw_X;
-                        current->draw_y = (short)node->Draw_Y;
+                        p->object_id = object_id;
+                        p->confidence = (short)confidence;
+                        p->draw_level = draw_level;
+                        p->draw_x = (short)node->Draw_X;
+                        p->draw_y = (short)node->Draw_Y;
                         head_ptr = head + confidence;
-                        current->next = 0;
-                        current->prev = 0;
+                        p->next = 0;
+                        p->prev = 0;
                         found = *head_ptr;
                         if (found == 0) {
-                            *head_ptr = current;
-                            tail[confidence] = current;
+                            *head_ptr = p;
+                            tail[confidence] = p;
                         } else {
                             do {
                                 if (draw_level >= found->draw_level) {
-                                    current->next = found;
+                                    p->next = found;
                                     previous = found->prev;
-                                    current->prev = previous;
+                                    p->prev = previous;
                                     if (previous == 0) {
-                                        *head_ptr = current;
-                                        found->prev = current;
+                                        *head_ptr = p;
+                                        found->prev = p;
                                     } else {
-                                        current->prev->next = current;
-                                        found->prev = current;
+                                        p->prev->next = p;
+                                        found->prev = p;
                                     }
                                     break;
                                 }
                                 previous = found->next;
                                 if (previous == 0) {
-                                    found->next = current;
-                                    current->prev = found;
-                                    tail[confidence] = current;
+                                    found->next = p;
+                                    p->prev = found;
+                                    tail[confidence] = p;
                                     break;
                                 }
                                 found = previous;
