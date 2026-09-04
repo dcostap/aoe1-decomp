@@ -1,0 +1,84 @@
+# Exact candidate for 004EF4E0 TribeTacticalAIModule::save.
+# Tested from main commit 1d5ffd9d5.
+#
+# Target result:
+# - MATCH, 0.0000%
+# - 3230/3230 bytes
+# - 1015/1015 instructions
+# - 94/94 aligned calls
+# - correct owner, boundary, CFG, and relocations
+#
+# The four operator[] expressions are natural and remove synthetic member
+# pointers. The inline-depth pragma is not supported source. A full serial
+# taitacmd audit kept 171 of 185 exact targets and regressed 14 exact owners.
+# It also made the preserved 004F13F0 candidate exact. Do not integrate this
+# patch without a natural module-context repair.
+
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 99ff66a92..ff5f03158 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -1,6 +1,7 @@
+ #ifndef UTMARRAY_H
+ #define UTMARRAY_H
+ 
++#pragma inline_depth(1)
+ 
+ extern "C" void* __cdecl operator_new(unsigned int size);
+ extern "C" void __cdecl operator_delete(void* ptr);
+diff --git a/src/taitacmd.cpp b/src/taitacmd.cpp
+index 1747cc424..8a19346d2 100644
+--- a/src/taitacmd.cpp
++++ b/src/taitacmd.cpp
+@@ -2182,11 +2182,7 @@ int TribeTacticalAIModule::save(int file)
+     if (this->civilians.numberValue > 0) {
+         ManagedArray<int>& arr = this->civilians;
+         do {
+-            if (i > arr.maximumSizeValue - 1) {
+-                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+-                (arr.*resize)(i + 1);
+-            }
+-            tempInt = arr.value[i];
++            tempInt = arr[i];
+             rge_write(file, &tempInt, 4);
+             i++;
+         } while (i < this->civilians.numberValue);
+@@ -2201,11 +2197,7 @@ int TribeTacticalAIModule::save(int file)
+     if (this->civilianExplorers.numberValue > 0) {
+         ManagedArray<int>& arr = this->civilianExplorers;
+         do {
+-            if (i > arr.maximumSizeValue - 1) {
+-                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+-                (arr.*resize)(i + 1);
+-            }
+-            tempInt = arr.value[i];
++            tempInt = arr[i];
+             rge_write(file, &tempInt, 4);
+             i++;
+         } while (i < this->civilianExplorers.numberValue);
+@@ -2224,11 +2216,7 @@ int TribeTacticalAIModule::save(int file)
+     if (this->soldiers.numberValue > 0) {
+         ManagedArray<int>& arr = this->soldiers;
+         do {
+-            if (i > arr.maximumSizeValue - 1) {
+-                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+-                (arr.*resize)(i + 1);
+-            }
+-            tempInt = arr.value[i];
++            tempInt = arr[i];
+             rge_write(file, &tempInt, 4);
+             i++;
+         } while (i < this->soldiers.numberValue);
+@@ -2243,11 +2231,7 @@ int TribeTacticalAIModule::save(int file)
+     if (this->ungroupedSoldiers.numberValue > 0) {
+         ManagedArray<int>& arr = this->ungroupedSoldiers;
+         do {
+-            if (i > arr.maximumSizeValue - 1) {
+-                int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
+-                (arr.*resize)(i + 1);
+-            }
+-            tempInt = arr.value[i];
++            tempInt = arr[i];
+             rge_write(file, &tempInt, 4);
+             i++;
+         } while (i < this->ungroupedSoldiers.numberValue);
