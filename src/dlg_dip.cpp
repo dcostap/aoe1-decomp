@@ -18,7 +18,6 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
     int humanity;
     int player_id;
     int i;
-    TButtonPanel** ally;
     TButtonPanel** tab_buttons;
     int tab_count = 0;
     int disable_buttons;
@@ -126,10 +125,10 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
         tab_buttons = this->allyButton;
         y = 0x50;
         do {
+            RGE_Player* player =
+                *(world->players + (button - this->woodTributeButton) + 1);
             const int row = player_id - 1;
-            RGE_Player* player = world->players[player_id];
 
-            ally = tab_buttons;
             GetPaletteEntries(this->palette, player->color_table->map_color,
                               1, &palette_color);
             disable_buttons = 0;
@@ -150,8 +149,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
             } else if (rge_base_game->multiplayerGame()) {
                 int humanity_result = 0;
                 int j = 1;
-                int humanity_count = rge_base_game->numberPlayers();
-                if (j <= humanity_count) {
+                if (j <= rge_base_game->numberPlayers()) {
                     do {
                         if (rge_base_game->playerID(j) == player_id) {
                             int h = comm->GetPlayerHumanity(j);
@@ -160,8 +158,7 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
                             }
                         }
                         ++j;
-                        humanity_count = rge_base_game->numberPlayers();
-                    } while (j <= humanity_count);
+                    } while (j <= rge_base_game->numberPlayers());
                 }
                 if (humanity_result != 2 && humanity_result != 4) {
                     disable_buttons = 1;
@@ -181,37 +178,37 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
             }
 
             if (player_id != world->curr_player) {
-                if (this->create_radio_button(this, &ally[0],
+                if (this->create_radio_button(this, &tab_buttons[0],
                                               0xF0, y, 0x1E, 0x1E, 0, 0) == 0) {
                     return;
                 }
-                ally[0]->set_help_info(0x7684, -1);
-                if (this->create_radio_button(this, &ally[1],
+                tab_buttons[0]->set_help_info(0x7684, -1);
+                if (this->create_radio_button(this, &tab_buttons[1],
                                               0x136, y, 0x1E, 0x1E, 0, 0) == 0) {
                     return;
                 }
-                ally[1]->set_help_info(0x7685, -1);
-                if (this->create_radio_button(this, &ally[2],
+                tab_buttons[1]->set_help_info(0x7685, -1);
+                if (this->create_radio_button(this, &tab_buttons[2],
                                               0x17C, y, 0x1E, 0x1E, 0, 0) == 0) {
                     return;
                 }
-                ally[2]->set_help_info(0x7686, -1);
+                tab_buttons[2]->set_help_info(0x7686, -1);
 
                 for (i = 0; i < 3; ++i) {
-                    ally[i]->set_radio_info(ally, 3);
+                    tab_buttons[i]->set_radio_info(tab_buttons, 3);
                     if (rge_base_game->prog_mode == 5) {
-                        ally[i]->set_disabled(1);
+                        tab_buttons[i]->set_disabled(1);
                     }
                 }
 
                 unsigned char relation =
                     rge_base_game->get_player()->relation(player_id);
                 if (player_id == world->curr_player || relation == 0) {
-                    ally[0]->set_radio_button();
+                    tab_buttons[0]->set_radio_button();
                 } else if (relation == 1) {
-                    ally[1]->set_radio_button();
+                    tab_buttons[1]->set_radio_button();
                 } else {
-                    ally[2]->set_radio_button();
+                    tab_buttons[2]->set_radio_button();
                 }
             }
 
@@ -255,10 +252,10 @@ TribeDiplomacyDialog::TribeDiplomacyDialog(TScreenPanel* parent)
                 button[16]->set_help_info(0x768A, -1);
             }
 
-            ++player_id;
-            ++button;
             tab_buttons += 3;
             y += 0x1E;
+            ++button;
+            ++player_id;
         } while (player_id < world->player_num);
     }
 
