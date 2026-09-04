@@ -514,7 +514,7 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square,
 #pragma optimize("y", on)
 
 int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
-                                        int update_tiles, int p6) {
+                                        int UpdateMap, int id) {
     int isCurPlayer;
     RGE_Player* curVisPlayer;
     int Revealed;
@@ -525,7 +525,7 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
     int y;
 
     Revealed = 0;
-    log_map_call(this->world->world_time, (int)this->player->id, 2, p6,
+    log_map_call(this->world->world_time, (int)this->player->id, 2, id,
                  x1, y1, x2, y2, Map_Update_Suppresion);
 
     if (Map_Update_Suppresion != 0) {
@@ -535,7 +535,6 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
     isCurPlayer =
         (this->world->players[this->world->curr_player]->
              mutualAlly[this->player->id] == 1);
-    p6 = 0;
     curVisPlayer = 0;
     tile = 0;
 
@@ -583,7 +582,7 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
         unified = unified_map_offsets[y] + x1;
         p = this->map_offsets[y] + x1;
         int x = x1;
-        if (update_tiles != 0) {
+        if (UpdateMap != 0) {
             tile = this->map->map_row_offset[y] + x1;
         }
 
@@ -601,7 +600,7 @@ int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
                 value = 1;
             }
             if (value == 1) {
-                if (update_tiles != 0) {
+                if (UpdateMap != 0) {
                     tile->draw_as = 0x0F;
                 }
                 *unified |= this->PlayerVisibleMaskValue;
