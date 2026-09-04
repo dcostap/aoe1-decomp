@@ -5628,8 +5628,8 @@ void TribeTacticalAIModule::notify(int param_1, int param_2, int param_3,
     int responseDistance;
     int coopX;
     int coopY;
-    attackPoint.x = (int)this->md->aiPlayer->world->object(callerID);
-    if (param_3 != 0x72 && param_3 != 0x74 && attackPoint.x == 0) {
+    RGE_Static_Object* initialObject = this->md->aiPlayer->world->object(callerID);
+    if (param_3 != 0x72 && param_3 != 0x74 && initialObject == 0) {
         return;
     }
 
