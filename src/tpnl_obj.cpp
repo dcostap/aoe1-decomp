@@ -839,20 +839,17 @@ long TRIBE_Panel_Object::handle_idle()
     }
 
     RGE_Action_Object* object;
-    int changed;
-    int do_buttons;
+    int changed = 0;
+    int do_buttons = 0;
     short cur_val;
     short work_target;
     short orig_val;
     float cur_fval;
     short work_type;
+    TRIBE_Building_Object* bldg;
     short progress_value;
     float orig_fval;
     char name[100];
-    TRIBE_Building_Object* bldg;
-
-    changed = 0;
-    do_buttons = 0;
 
     object = static_cast<RGE_Action_Object*>(this->game_obj);
     if (object == 0) return 0;
