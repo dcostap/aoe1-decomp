@@ -161,43 +161,42 @@ unsigned char RGE_RMM_Land_Generator::chance(long x, long y, long land_id)
 // map rows use [row][column]. The stack outputs are column then
 // row, and the helper calls use that same coordinate order.
 unsigned char RGE_RMM_Land_Generator::base_land_generate() {
+    float pop_cost;
+    long row;
+    long column;
+    Map_Stack* stack_cursor;
+    long* cursor;
+    long* size_cursor;
+    long land_id;
+    RGE_Tile* tile;
+    long spread_cost;
+    unsigned char done;
+    unsigned char zone;
+    long index2;
+    long edge;
+    unsigned char terrain;
+    long max_y;
+    long max_x;
     long land_size[99];
     Map_Stack stack[99];
 
-    Map_Stack* stack_cursor;
-    RGE_Land_Info_Line* land_cursor;
-    long* size_cursor;
-    unsigned char terrain;
-    unsigned char zone;
-    RGE_Tile* tile;
-    long spread_cost;
-    long land_id;
-    long row;
-    long column;
-    float pop_cost;
-    unsigned char done;
-    long edge;
-    long left;
-    long max_column;
-    long max_row;
-    long index2;
-
     land_id = 0;
-    max_column = this->map_width - 1;
-    max_row = this->map_height - 1;
+    max_x = this->map_width - 1;
+    max_y = this->map_height - 1;
 
     // Phase A: expand each base tile and seed its edge stack.
     if (this->info.land_num > 0) {
-        stack_cursor = &stack[0];
+        Map_Stack* phase_a_stack = &stack[0];
+        long left;
         size_cursor = &land_size[1];
-        land_cursor = &this->info.land[0];
+        cursor = &this->info.land[0].base_size;
         do {
-            this->init_stack(*stack_cursor);
+            this->init_stack(*phase_a_stack);
 
-            long right = land_cursor->x;
-            long bottom = land_cursor->y;
+            long right = cursor[-2];
+            long bottom = cursor[-1];
             *size_cursor = 0;
-            long radius = land_cursor->base_size;
+            long radius = *cursor;
             left = right - radius;
             long top = bottom - radius;
             right += radius;
@@ -208,9 +207,9 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
             if (bottom >= this->map_height) bottom = this->map_height - 1;
 
             this->map->set_terrain(0, 0, left, top, right, bottom,
-                                   land_cursor->terrain_type, 1, 0);
+                                   (unsigned char)cursor[-3], 1, 0);
 
-            zone = land_cursor->zone;
+            zone = *((unsigned char*)(cursor + 6));
             land_size[zone + 1] = (right - left + 1) * (bottom - top + 1);
 
             for (long fill_row = top; fill_row <= bottom; fill_row++) {
@@ -224,7 +223,7 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
                 edge = top;
                 if (edge <= bottom) {
                     do {
-                        this->push_stack(*stack_cursor, left - 1, edge,
+                        this->push_stack(*phase_a_stack, left - 1, edge,
                                          land_id, 0.0f);
                         edge++;
                     } while (edge <= bottom);
@@ -234,7 +233,7 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
                 edge = left;
                 if (edge <= right) {
                     do {
-                        this->push_stack(*stack_cursor, edge, top - 1,
+                        this->push_stack(*phase_a_stack, edge, top - 1,
                                          land_id, 0.0f);
                         edge++;
                     } while (edge <= right);
@@ -243,7 +242,7 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
             if (right < this->map_width - 1 && top <= bottom) {
                 edge = top;
                 do {
-                    this->push_stack(*stack_cursor, right + 1, edge,
+                    this->push_stack(*phase_a_stack, right + 1, edge,
                                      land_id, 0.0f);
                     edge++;
                 } while (edge <= bottom);
@@ -251,16 +250,16 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
             if (bottom < this->map_height - 1 && left <= right) {
                 edge = left;
                 do {
-                    this->push_stack(*stack_cursor, edge, bottom + 1,
+                    this->push_stack(*phase_a_stack, edge, bottom + 1,
                                      land_id, 0.0f);
                     edge++;
                 } while (edge <= right);
             }
 
             land_id++;
-            stack_cursor++;
-            land_cursor++;
+            phase_a_stack++;
             size_cursor++;
+            cursor += 13;
         } while (land_id < this->info.land_num);
     }
 
@@ -269,11 +268,11 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
         done = 1;
         land_id = 0;
         if (0 < this->info.land_num) {
-            size_cursor = &land_size[1];
+            cursor = &land_size[1];
             stack_cursor = &stack[0];
             do {
                 RGE_Land_Info_Line& land = this->info.land[land_id];
-                index2 = *size_cursor;
+                index2 = *cursor;
                 if (index2 < land.land_size &&
                     this->pop_stack(*stack_cursor, column, row, pop_cost) != 0) {
                     done = 0;
@@ -305,7 +304,7 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
                                 this->push_stack(*stack_cursor, column - 1,
                                                  row, 0.0f, spread_cost);
                             }
-                            if (column < max_column &&
+                            if (column < max_x &&
                                 this->search_map_rows[row][column + 1] ==
                                     this->info.land_num) {
                                 spread_cost =
@@ -331,7 +330,7 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
                                 this->push_stack(*stack_cursor, column,
                                                  row - 1, 0.0f, spread_cost);
                             }
-                            if (row < max_row &&
+                            if (row < max_y &&
                                 this->search_map_rows[row + 1][column] ==
                                     this->info.land_num) {
                                 spread_cost =
@@ -344,14 +343,14 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
                                 this->push_stack(*stack_cursor, column,
                                                  row + 1, 0.0f, spread_cost);
                             }
-                            *size_cursor = index2 + 1;
+                            *cursor = index2 + 1;
                         }
                     } else {
                         this->search_map_rows[row][column] = 0xff;
                     }
                 }
                 land_id++;
-                size_cursor++;
+                cursor++;
                 stack_cursor++;
             } while (land_id < this->info.land_num);
         }
@@ -369,11 +368,11 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
                 tile = &this->map_row_offset[row][column];
                 if (((column >= 1 &&
                       this->search_map_rows[row][column - 1] == zone &&
-                      column < max_column &&
+                      column < max_x &&
                       this->search_map_rows[row][column + 1] == zone)) ||
                     ((row >= 1 &&
                       this->search_map_rows[row - 1][column] == zone &&
-                      row < max_row &&
+                      row < max_y &&
                       this->search_map_rows[row + 1][column] == zone))) {
                     tile->terrain_type = terrain;
                 }
