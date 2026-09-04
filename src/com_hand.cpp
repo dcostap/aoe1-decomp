@@ -3050,22 +3050,21 @@ int TCommunications_Handler::StoreForResend(unsigned int SerialNumber,
     {
             int slot = 0;
             RESENDER* table = this->Resend;
-            RESENDER* e = table;
     do {
+        RESENDER* e = this->Resend + slot;
         if (e->Serial == 0) {
             RESENDER* entry = &table[slot];
             entry->Length = Length;
             if (Length != 0) {
-                unsigned int length = entry->Length;
-                entry->ResendMsg = new char[length];
+                entry->ResendMsg = new char[Length];
                 if (entry->ResendMsg != 0) {
-                    memcpy(entry->ResendMsg, OutCommBuff, length);
+                    memcpy(entry->ResendMsg, OutCommBuff, Length);
                     entry->Length = Length;
                 }
             }
             entry->Serial = SerialNumber;
-            unsigned int bytes = static_cast<unsigned int>(this->MaxGamePlayers) * 4 + 4;
-            memcpy(entry->DestMap, ResendDestMap, bytes);
+            memcpy(entry->DestMap, ResendDestMap,
+                   static_cast<unsigned int>(this->MaxGamePlayers) * 4 + 4);
 
             L->Log("Stored %db for resend (Slot= %d ) SERIAL=%d  (MaxPlayers=%d)",
                    Length, slot, SerialNumber, this->MaxGamePlayers);
@@ -3086,14 +3085,12 @@ int TCommunications_Handler::StoreForResend(unsigned int SerialNumber,
             return 1;
         }
 
-        int flag = e->Serial;
         char first = e->ResendMsg[0];
         L->Log("QUEUE Has Ser #%d (Slot=%d) Cmd=%d '%c' Len=%d not ackd yet by %d,%d,%d,%d,%d,%d,%d,%d",
-               flag, slot, static_cast<int>(first), static_cast<int>(first),
+               e->Serial, slot, static_cast<int>(first), static_cast<int>(first),
                e->Length,
                e->DestMap[1], e->DestMap[2], e->DestMap[3], e->DestMap[4],
                e->DestMap[5], e->DestMap[6], e->DestMap[7], e->DestMap[8]);
-        e++;
         slot++;
     } while (slot < 0x1F5);
             L->Log("RESEND buffer filled up, slots (i=%d).", slot);
