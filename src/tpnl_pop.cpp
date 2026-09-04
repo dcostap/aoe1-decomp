@@ -249,8 +249,7 @@ int TRIBE_Panel_Pop::render_to_image_buffer() {
 
     if (this->ImageBuffer == 0) return 0;
     this->ImageBuffer->PtrClear(&this->ImageRect, 1);
-    old_font = this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer");
-    if (old_font == 0)
+    if (this->ImageBuffer->GetDc("tpnl_tim::render_to_image_buffer") == 0)
         return 0;
     this->ImageBuffer->SetClipRect(&this->ImageRect);
     SelectClipRgn(this->ImageBuffer->DrawDc, this->image_clip_region);
