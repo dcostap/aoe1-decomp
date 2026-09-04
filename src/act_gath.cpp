@@ -134,7 +134,7 @@ void RGE_Action_Gather::set_state(unsigned char param_1) {
             this->set_state(13);
             return;
         }
-        this->setSubAction(1);
+        move_to->setSubAction(1);
         this->sub_actions->add_action(move_to);
         return;
 
