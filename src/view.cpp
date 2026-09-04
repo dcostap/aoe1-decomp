@@ -2251,7 +2251,7 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
     }
 
     gm = rge_base_game->game_mode;
-    if (gm == 1 || (gm > 6 && gm < 9)) {
+    if (gm == 1 || (gm > 6 && gm <= 8)) {
         this->draw_object_outline();
     }
     if (gm == 0x15) {
@@ -2355,8 +2355,9 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
 
     {
         list = this->futur_objs;
-        for (level = 0; level < 6; ++level) {
-            for (node = list->Draw_Level_Head[level]; node != 0; node = node->NextOnLevel) {
+        for (level = 0; level <= 5; ++level) {
+            for (node = list->Draw_Level_Head[level]; node != 0;
+                 node = node->NextOnLevel) {
                 if (node->Node_Type == 0) {
                     clip = this->Terrain_Clip_Mask;
                     _ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
@@ -2571,8 +2572,9 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
 
     {
         list = this->futur_objs;
-        for (level = 6; level < 41; ++level) {
-            for (node = list->Draw_Level_Head[level]; node != 0; node = node->NextOnLevel) {
+        for (level = 6; level <= 40; ++level) {
+            for (node = list->Draw_Level_Head[level]; node != 0;
+                 node = node->NextOnLevel) {
                 if (node->Node_Type == 0) {
                     shadowing = 0;
                     shadow_flags = node->Draw_Flag & 0xFFC;
