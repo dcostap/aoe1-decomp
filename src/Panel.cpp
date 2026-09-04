@@ -1000,25 +1000,85 @@ long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lP
 {
     POINT point;
     TPanel* target;
-    PanelNode* node;
-    long result;
     int ctrl_key;
     int shift_key;
+    PanelNode* node;
+    long result;
 
     if (this->active == 0) {
-        goto done;
+        return 0;
     }
 
     if (msg <= 0x206) {
-        if (msg >= 0x200) {
-            goto mouse_input;
-        } else if (msg != 0x100 && msg != 0x102 && msg != 0x104) {
-            ;
+        if (msg < 0x200) {
+            switch (msg) {
+            case 0x100:
+            case 0x102:
+            case 0x104:
+                break;
+            default:
+                goto child_input;
+            }
         } else {
-            goto keyboard_input;
+            if (hwnd != this->render_area->Wnd) {
+                return 0;
+            }
+            if (panel_system.GetInputEnabled() == 0) {
+                return 0;
+            }
+
+            this->get_mouse_info(wParam, lParam, point, ctrl_key, shift_key);
+            target = this;
+            if (panel_system.mouseOwner() != 0) {
+                target = panel_system.mouseOwner();
+            } else if (panel_system.keyboardOwner() != 0) {
+                target = panel_system.keyboardOwner();
+            } else if (panel_system.modalPanel() != 0) {
+                target = panel_system.modalPanel();
+            }
+
+            switch (msg) {
+            case 0x200:
+                return target->handle_mouse_move(point.x, point.y, ctrl_key, shift_key);
+            case 0x201:
+                return target->handle_mouse_down(1, point.x, point.y, ctrl_key, shift_key);
+            case 0x202:
+                return target->handle_mouse_up(1, point.x, point.y, ctrl_key, shift_key);
+            case 0x203:
+                return target->handle_mouse_dbl_click(1, point.x, point.y, ctrl_key, shift_key);
+            case 0x204:
+                return target->handle_mouse_down(2, point.x, point.y, ctrl_key, shift_key);
+            case 0x205:
+                return target->handle_mouse_up(2, point.x, point.y, ctrl_key, shift_key);
+            case 0x206:
+                return target->handle_mouse_dbl_click(2, point.x, point.y, ctrl_key, shift_key);
+            }
         }
+
+        if (hwnd != this->render_area->Wnd) {
+            return 0;
+        }
+        if (panel_system.GetInputEnabled() == 0) {
+            return 0;
+        }
+
+        target = this;
+        if (panel_system.keyboardOwner() != 0) {
+            target = panel_system.keyboardOwner();
+        } else if (panel_system.modalPanel() != 0) {
+            target = panel_system.modalPanel();
+        }
+
+        if (msg != 0x100 && msg != 0x104) {
+            return target->handle_char(wParam, (short)lParam);
+        }
+        int alt = GetKeyState(0x12) < 0;
+        ctrl_key = GetKeyState(0x11) < 0;
+        shift_key = GetKeyState(0x10) < 0;
+        return target->handle_key_down(wParam, (short)lParam, alt, ctrl_key, shift_key);
     }
 
+child_input:
     node = this->last_child_node;
     while (node != 0) {
         result = node->panel->wnd_proc(hwnd, msg, wParam, lParam);
@@ -1032,84 +1092,17 @@ long TPanel::wnd_proc(void* hwnd, unsigned int msg, unsigned int wParam, long lP
         switch (msg) {
         case 0x111:
             return this->handle_command(wParam, lParam);
+        case 0x400:
+            return this->handle_user_command(wParam, lParam);
         case 0x113:
             return this->handle_timer_command(wParam, lParam);
         case 0x114:
         case 0x115:
-            return this->handle_scroll(wParam, lParam);
-        case 0x400:
-            return this->handle_user_command(wParam, lParam);
+            return this->handle_scroll((long)(wParam & 0xFFFF), (long)(wParam >> 16));
         }
     }
 
-done:
     return 0;
-
-mouse_input:
-{
-    int focus_flag;
-    int capture_flag;
-    if (this->render_area->Wnd != hwnd) {
-        goto done;
-    }
-    if (panel_system.GetInputEnabled() == 0) {
-        goto done;
-    }
-
-    this->get_mouse_info(wParam, lParam, point, focus_flag, capture_flag);
-    target = this;
-    if (panel_system.mouseOwner() != 0) {
-        target = panel_system.mouseOwner();
-    } else if (panel_system.keyboardOwner() != 0) {
-        target = panel_system.keyboardOwner();
-    } else if (panel_system.modalPanel() != 0) {
-        target = panel_system.modalPanel();
-    }
-
-    switch (msg) {
-    case 0x200:
-        return target->handle_mouse_move(point.x, point.y, focus_flag, capture_flag);
-    case 0x201:
-        return target->handle_mouse_down(1, point.x, point.y, focus_flag, capture_flag);
-    case 0x202:
-        return target->handle_mouse_up(1, point.x, point.y, focus_flag, capture_flag);
-    case 0x203:
-        return target->handle_mouse_dbl_click(1, point.x, point.y, focus_flag, capture_flag);
-    case 0x204:
-        return target->handle_mouse_down(2, point.x, point.y, focus_flag, capture_flag);
-    case 0x205:
-        return target->handle_mouse_up(2, point.x, point.y, focus_flag, capture_flag);
-    case 0x206:
-        return target->handle_mouse_dbl_click(2, point.x, point.y, focus_flag, capture_flag);
-    }
-    goto done;
-}
-
-keyboard_input:
-{
-    int alt;
-    if (this->render_area->Wnd != hwnd) {
-        goto done;
-    }
-    if (panel_system.GetInputEnabled() == 0) {
-        goto done;
-    }
-
-    target = this;
-    if (panel_system.keyboardOwner() != 0) {
-        target = panel_system.keyboardOwner();
-    } else if (panel_system.modalPanel() != 0) {
-        target = panel_system.modalPanel();
-    }
-
-    if (msg != 0x100 && msg != 0x104) {
-        return target->handle_char(wParam, (short)lParam);
-    }
-    alt = GetKeyState(0x12) < 0;
-    ctrl_key = GetKeyState(0x11) < 0;
-    shift_key = GetKeyState(0x10) < 0;
-    return target->handle_key_down(wParam, (short)lParam, alt, ctrl_key, shift_key);
-}
 }
 
 long TPanel::handle_idle(void) {
