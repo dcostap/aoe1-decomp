@@ -774,13 +774,11 @@ void RGE_Static_Object::capture_frame_3d_square(
     short corner4_x;
     short corner4_y;
     int idv[6];
-    unsigned char outline_type;
     int digit_x;
 
-    outline_type = rge_base_game->outline_type;
-    this_00 = this->owner->world->map;
     pRVar1 = this->master_obj;
-    if (outline_type == 3) {
+    this_00 = this->owner->world->map;
+    if (rge_base_game->outline_type == 3) {
         x3_radius = pRVar1->radius_x;
         radius_y = pRVar1->radius_y;
         radius_z = pRVar1->radius_z;
@@ -793,7 +791,7 @@ void RGE_Static_Object::capture_frame_3d_square(
         this->id >= 0) {
         draw_color = 0;
     } else if ((this->selected & 1) == 0) {
-        if (outline_type == 3) {
+        if (rge_base_game->outline_type == 3) {
             draw_color = 0x74;
         } else if ((pRVar1->draw_flag & 1) == 1 &&
                    rge_base_game->prog_mode == 7) {
@@ -811,10 +809,10 @@ void RGE_Static_Object::capture_frame_3d_square(
         draw_color = 0x97;
     }
 
+    ry1 = -radius_y;
     sVar9 = param_4 + this->screen_y_offset;
     sVar8 = param_3 + this->screen_x_offset;
     digit_x = param_3;
-    ry1 = -radius_y;
     this_00->get_point(corner1_x, corner1_y,
                        x3_radius, ry1, 0.0f, sVar8, sVar9);
     this_00->get_point(corner2_x, y2, x3_radius, radius_y,
@@ -861,7 +859,7 @@ void RGE_Static_Object::capture_frame_3d_square(
                 int health_draw;
 
                 digit_x = health_right;
-                if (health == max_hp) {
+                if (max_hp == health) {
                     health_fill_end = health_right;
                     health_fill_style = 1;
                     health_fill_start = -1;
