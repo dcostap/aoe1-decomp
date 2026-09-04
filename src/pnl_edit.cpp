@@ -415,10 +415,8 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
     int track_selection;
     RECT rect;
 
-    if (this->edit_wnd == 0) goto default_processing;
-    if (this->active == 0) goto default_processing;
-    if (this->visible == 0) goto default_processing;
-    if (this->hidden != 0) goto default_processing;
+    if (this->edit_wnd == 0 || this->active == 0 ||
+        this->visible == 0 || this->hidden != 0) goto default_processing;
 
     if (msg <= 0x14) {
         if (msg != 0x14) {

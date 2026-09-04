@@ -48,6 +48,7 @@ TMousePointer::TMousePointer(int mode)
     active = 0;
     drawn = 0;
     restore_rect = *save_rect_ptr;
+    restore_rect.left = 0;
     Shutdown = 0;
     Setup = 0;
     save_x = -32767;
