@@ -7072,10 +7072,10 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
 fallback:
     this->taskGatherer(gatherer->id, -1, 1, param, triedTasking + 1);
 
-normal_success:
+success:
         return 1;
 
-success:
+normal_success:
         return 1;
     }
 
