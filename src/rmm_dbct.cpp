@@ -620,15 +620,23 @@ void RGE_RMM_Database_Controller::add_land_module(uchar group_players)
 
     group_count = this->land_info.land_num;
     for (land_index = 0; land_index < group_count; ++land_index) {
-        for (candidate = 0; candidate < group_count; ++candidate) {
-            long delta_x = this->land_info.land[land_index].x -
-                this->land_info.land[candidate].x;
-            long delta_y = this->land_info.land[land_index].y -
-                this->land_info.land[candidate].y;
-            team_size[candidate + 1] =
-                delta_x * delta_x + delta_y * delta_y;
-            distances[land_index][candidate + 1] = candidate;
+        RGE_Land_Info_Line* scan_land = this->land_info.land;
+        long* size = team_size;
+        long remaining = group_count;
+        if (remaining > 0) {
+            do {
+                long delta_x = this->land_info.land[land_index].x -
+                    scan_land->x;
+                long delta_y = this->land_info.land[land_index].y -
+                    scan_land->y;
+                ++size;
+                *size = delta_x * delta_x + delta_y * delta_y;
+                --remaining;
+                ++scan_land;
+            } while (remaining != 0);
         }
+        for (candidate = 0; candidate < group_count; ++candidate)
+            distances[land_index][candidate + 1] = candidate;
         do {
             uchar ordered = 1;
             for (candidate = 1; candidate < group_count; ++candidate) {
