@@ -1771,78 +1771,77 @@ void RGE_Map::delete_all_objects_on_tile(int x, int y)
     }
 }
 
-void RGE_Map::create_terrain_object(RGE_Player* player,
-                                    RGE_Game_World* /*world*/, short row,
-                                    short col, short new_terrain,
-                                    int remove_now, int min_id, int max_id)
+void RGE_Map::create_terrain_object(RGE_Player* obj_owner,
+                                    RGE_Game_World* /*gworld*/, short row,
+                                    short col, short old_terrain,
+                                    int delete_obj, int no_delete_start,
+                                    int no_delete_end)
 {
-    float local_c = 0.0f;
+    float y = 0.0f;
     float x = 0.0f;
     short terrain = (short)this->get_terrain(col, row);
-    short num_obj_type = this->terrain_types[terrain].num_obj_type;
+    short object_id;
     RGE_Object_Node* node;
     RGE_Static_Object* object;
-    short object_id;
+    short end_i = this->terrain_types[terrain].num_obj_type;
 
-    if (num_obj_type > 0) {
+    if (end_i > 0) {
         node = this->map_row_offset[row][col].objects.list;
-        if (node != 0) {
-            do {
-                object = node->node;
-                node = node->next;
-                object_id = object->master_obj->id;
-                if (object->owner == player &&
-                    (object_id < min_id || object_id > max_id)) {
-                    if (new_terrain < 0) {
-                        if (remove_now != 0) {
-                            if (object != 0)
-                                delete object;
-                        } else {
-                            object->destroy_obj();
-                        }
+        while (node != 0) {
+            object = node->node;
+            node = node->next;
+            object_id = object->master_obj->id;
+            if (object->owner == obj_owner &&
+                (object_id < no_delete_start || object_id > no_delete_end)) {
+                if (old_terrain < 0) {
+                    if (delete_obj != 0) {
+                        if (object != 0)
+                            delete object;
                     } else {
-                        short replacement_count =
-                            this->terrain_types[new_terrain].num_obj_type;
+                        object->destroy_obj();
+                    }
+                } else {
+                    short replacement_count =
+                        this->terrain_types[old_terrain].num_obj_type;
+                    if (replacement_count >= 0) {
+                        short* replacement_types =
+                            this->terrain_types[old_terrain].obj_types;
+                        do {
+                            if (replacement_types[replacement_count] == object_id)
+                                break;
+                            --replacement_count;
+                        } while (replacement_count >= 0);
                         if (replacement_count >= 0) {
-                            short* replacement_types =
-                                this->terrain_types[new_terrain].obj_types;
-                            do {
-                                if (replacement_types[replacement_count] == object_id)
-                                    break;
-                                --replacement_count;
-                            } while (replacement_count >= 0);
-                            if (replacement_count >= 0) {
-                                if (remove_now != 0) {
-                                    if (object != 0)
-                                        delete object;
-                                } else {
-                                    object->destroy_obj();
-                                }
+                            if (delete_obj != 0) {
+                                if (object != 0)
+                                    delete object;
+                            } else {
+                                object->destroy_obj();
                             }
                         }
                     }
                 }
-            } while (node != 0);
+            }
         }
 
-        if (num_obj_type > 0) {
+        if (end_i > 0) {
             unsigned char* placement =
                 this->terrain_types[terrain].obj_placement_flag;
             short* density = this->terrain_types[terrain].obj_density;
-            int remaining = (int)num_obj_type;
+            int remaining = (int)end_i;
             do {
                 short object_type = density[-30];
                 if (object_type != -1) {
                     short chance = *density;
                     RGE_Master_Static_Object* master =
-                        player->master_objects[object_type];
-                    unsigned char mode = *placement;
+                        obj_owner->master_objects[object_type];
+                    unsigned char obj_flag = *placement;
                     if (master != 0 && chance > 0) {
                         int chance_left = (int)chance;
                         do {
-                            switch (mode) {
+                            switch (obj_flag) {
                             case 0:
-                                local_c = (float)(int)col -
+                                y = (float)(int)col -
                                     (float)debug_rand(
                                         (char*)"C:\\msdev\\work\\age1_x1\\map.cpp",
                                         0x813) * -3.051851e-05f;
@@ -1852,25 +1851,25 @@ void RGE_Map::create_terrain_object(RGE_Player* player,
                                         0x814) * -3.051851e-05f;
                                 break;
                             case 1:
-                                local_c = (float)(int)col - -0.5f;
+                                y = (float)(int)col - -0.5f;
                                 x = (float)(int)row - -0.5f;
                                 break;
                             }
 
                             int place_it;
-                            if (chance < 1000) {
+                            if (chance >= 1000) {
+                                place_it = 1;
+                            } else {
                                 int random_value = debug_rand(
                                     (char*)"C:\\msdev\\work\\age1_x1\\map.cpp",
                                     0x820);
                                 place_it = (random_value * 1000) /
                                     0x7fff < chance_left;
-                            } else {
-                                place_it = 1;
                             }
                             if (place_it) {
-                                if (!master->check_placement(player, local_c, x,
+                                if (!master->check_placement(obj_owner, y, x,
                                                        0, 0, 1, 0, 1, 0, 1))
-                                    master->make_new_obj(player, local_c, x, 0);
+                                    master->make_new_obj(obj_owner, y, x, 0);
                             }
                             chance -= 1000;
                             chance_left -= 1000;
