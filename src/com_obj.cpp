@@ -229,7 +229,7 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Ob
     return 1;
 }
 
-unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Object* target)
+unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Object* attacker)
 {
     RGE_Master_Combat_Object* combat_master =
         static_cast<RGE_Master_Combat_Object*>(this->master_obj);
@@ -237,7 +237,7 @@ unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Ob
     if (missile_id >= 0) {
         float radius_y = this->master_obj->radius_y;
         float radius_x = this->master_obj->radius_x;
-        float range = (float)sqrt(radius_y * radius_y + radius_x * radius_x) +
+        float rangeDistance = (float)sqrt(radius_y * radius_y + radius_x * radius_x) +
             combat_master->weapon_range + 6.0f;
         float angle1 = this->angle;
         float angle2 = this->angle;
@@ -253,8 +253,8 @@ unsigned char RGE_Combat_Object::attack(float x, float y, float z, RGE_Combat_Ob
                 c * combat_master->weapon_offset_x,
             this->world_z + combat_master->weapon_offset_z);
 
-        missile->init_missile(target, x, y, z,
-            range);
+        missile->init_missile(attacker, x, y, z,
+            rangeDistance);
         this->notify(this->id, this->id, 0x200, 0x258, -1, 0);
         return 1;
     }
