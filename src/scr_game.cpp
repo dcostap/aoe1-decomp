@@ -886,8 +886,8 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
         this->button_panel[16]->tribe_button_type = 3;
 
         this->more_cancel_pic = this->button_cmd_pic;
-        this->more_frame = 0;
-        final_frame = 2;
+        this->more_frame = 0xB;
+        final_frame = 0xA;
         } else {
         this->pop_panel->set_positioning(TPanel::PositionLeftTop, 0xF0, 4, 4, 4,
                                          0xA0, 0xA0, 0x14, 0x14,
@@ -931,7 +931,7 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
         this->button_panel[16]->set_fixed_position(0x25D, 0x16A, 0x1E, 0x1E);
         this->button_panel[16]->tribe_button_type = 3;
 
-        this->more_cancel_pic = this->button_cmd_pic;
+        this->more_cancel_pic = this->button_other_pic;
         this->more_frame = 0;
             final_frame = 2;
         }
@@ -948,10 +948,12 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
                                       0, 0, 0, 0);
 
     int clock_y = 4;
+    TRIBE_Panel_Time** clock_panel = this->countdown_clock;
     for (int clock_index = 0; clock_index < 10; ++clock_index) {
-        this->countdown_clock[clock_index]->set_positioning(
+        (*clock_panel)->set_positioning(
             TPanel::PositionRightTop, 4, clock_y, 4, 4, 0xAA, 0xAA, 0x14, 0x14,
             0, 0, 0, 0);
+        ++clock_panel;
         clock_y += 0x14;
     }
 
@@ -991,23 +993,22 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
                                             0, 0, 0, this->message_panel5);
 
     int chat_y = 0x22;
+    TMessagePanel** chat_panel = this->chat_panel;
     for (int chat_index = 0; chat_index < 8; ++chat_index) {
-        this->chat_panel[chat_index]->set_fixed_position(4, chat_y, 0x26C, 0x14);
+        (*chat_panel)->set_fixed_position(4, chat_y, 0x26C, 0x14);
+        ++chat_panel;
         chat_y += 0x14;
     }
 
     short score_index = 7;
     do {
-        TPanel* score = this->score_panel[score_index];
-        if (score != 0) {
-            TPanel* next_score = 0;
-            if (score_index != 7) {
-                next_score = this->score_panel[score_index + 1];
-            }
-            score->set_positioning(TPanel::PositionRightBottom, 4, 0, 4,
+        if (this->score_panel[score_index] != 0) {
+            this->score_panel[score_index]->set_positioning(
+                                   TPanel::PositionRightBottom, 4, 0, 4,
                                    score_index == 7 ? 4 : 0,
                                    200, 200, 0x14, 0x14,
-                                   0, 0, 0, next_score);
+                                   0, 0, 0,
+                                   score_index == 7 ? 0 : this->score_panel[score_index + 1]);
         }
         --score_index;
     } while (score_index >= 0);

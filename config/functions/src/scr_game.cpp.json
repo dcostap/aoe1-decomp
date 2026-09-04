@@ -11,7 +11,7 @@
     "004959A0": {"status": "matching", "symbol": "?set_redraw@TRIBE_Screen_Game@@UAEXW4RedrawMode@TPanel@@@Z"},
     "004959B0": {"status": "matching", "symbol": "?set_overlapped_redraw@TRIBE_Screen_Game@@UAEXPAVTPanel@@0W4RedrawMode@2@@Z"},
     "00495A90": {"status": "matching", "symbol": "?set_map_buttons_redraw@TRIBE_Screen_Game@@QAEXW4RedrawMode@TPanel@@@Z"},
-    "00495AE0": {"status": "scratch", "symbol": "?handle_size@TRIBE_Screen_Game@@UAEJJJ@Z"},
+    "00495AE0": {"status": "matching", "symbol": "?handle_size@TRIBE_Screen_Game@@UAEJJJ@Z"},
     "00496550": {"status": "accepted_drift", "symbol": "?handle_paint@TRIBE_Screen_Game@@UAEJXZ"},
     "00496700": {"status": "matching", "symbol": "?handle_idle@TRIBE_Screen_Game@@UAEJXZ"},
     "00496800": {"status": "scratch", "symbol": "?handle_game_update@TRIBE_Screen_Game@@QAEXXZ"},
