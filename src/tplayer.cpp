@@ -454,20 +454,19 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1,
                              short& t2, short& a2, short& t3, short& a3,
                              float factor)
 {
+    short avail;
     short* amount_output;
-    short available;
     short total = 0;
     t1 = -1;
-    a1 = 0;
+    a1 = total;
     t2 = -1;
-    a2 = 0;
+    a2 = total;
     t3 = -1;
-    a3 = 0;
+    a3 = total;
 
-    unsigned char canUseAvailableResources =
+    unsigned char can =
         this->check_obj_cost(obj, 0, 1.0f, 0);
-    RGE_Master_Static_Object* master =
-        this->master_objects[obj];
+    RGE_Master_Static_Object* master = this->master_objects[obj];
     if (master == 0 || master->master_type < 0x46) return;
     if (nameOut != 0) *nameOut = master->name;
 
@@ -477,11 +476,10 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1,
         t1 = combat->build_inventory[0].type;
         if (t1 >= 0) {
             a1 = static_cast<short>(combat->build_inventory[0].amount * factor);
-            if (static_cast<float>(a1) > this->attributes[t1] &&
-                canUseAvailableResources != 0) {
-                available = static_cast<short>(this->attributes[t1]);
-                total = static_cast<short>(total + a1 - available);
-                a1 = available;
+            if (static_cast<float>(a1) > this->attributes[t1] && can != 0) {
+                avail = static_cast<short>(this->attributes[t1]);
+                total = static_cast<short>(a1 - avail);
+                a1 = avail;
             }
         }
     }
@@ -489,11 +487,10 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1,
         t2 = combat->build_inventory[1].type;
         if (t2 >= 0) {
             a2 = static_cast<short>(combat->build_inventory[1].amount * factor);
-            if (static_cast<float>(a2) > this->attributes[t2] &&
-                canUseAvailableResources != 0) {
-                available = static_cast<short>(this->attributes[t2]);
-                total = static_cast<short>(total + a2 - available);
-                a2 = available;
+            if (static_cast<float>(a2) > this->attributes[t2] && can != 0) {
+                avail = static_cast<short>(this->attributes[t2]);
+                total += static_cast<short>(a2 - avail);
+                a2 = avail;
             }
         }
     }
@@ -501,11 +498,10 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1,
         t3 = combat->build_inventory[2].type;
         if (t3 >= 0) {
             a3 = static_cast<short>(combat->build_inventory[2].amount * factor);
-            if (static_cast<float>(a3) > this->attributes[t3] &&
-                canUseAvailableResources != 0) {
-                available = static_cast<short>(this->attributes[t3]);
-                total = static_cast<short>(total + a3 - available);
-                a3 = available;
+            if (static_cast<float>(a3) > this->attributes[t3] && can != 0) {
+                avail = static_cast<short>(this->attributes[t3]);
+                total += static_cast<short>(a3 - avail);
+                a3 = avail;
             }
         }
     }
@@ -514,19 +510,21 @@ void TRIBE_Player::obj_cost(short obj, char** nameOut, short& t1, short& a1,
         if (t1 == 3 || t1 == -1) {
             t1 = 3;
             amount_output = &a1;
-        } else if (t2 == 3 || t2 == -1) {
+        } else {
+            if (t2 != 3 && t2 != -1) {
+                if (t3 == 3 || t3 == -1) {
+                    t3 = 3;
+                    a3 = total;
+                }
+                goto done_total;
+            }
             t2 = 3;
             amount_output = &a2;
-        } else if (t3 != 3 && t3 != -1) {
-            amount_output = 0;
-        } else {
-            t3 = 3;
-            a3 = total;
-            amount_output = 0;
         }
-        if (amount_output != 0) *amount_output = static_cast<short>(*amount_output + total);
+        *amount_output += total;
     }
 
+done_total:
     if (a1 <= 0) t1 = -1;
     if (a2 <= 0) t2 = -1;
     if (a3 <= 0) t3 = -1;
