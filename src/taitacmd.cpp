@@ -8579,31 +8579,23 @@ void TribeTacticalAIModule::fillSoldierGroups() {
 
     if (this->sn[0x28] == 0) {
         bestUnit = 100;
-        TacticalAIGroup* group;
-        TacticalAIGroup* sentinel;
         do {
-            group = this->groups.next;
-            sentinel = &this->groups;
-            bestGroup = group;
-            if (group != sentinel) {
-            while (1) {
-                if (group == 0) {
-                    break;
-                }
-                if (group->type() == bestUnit) {
-                    int desired = group->desiredNumberUnits();
-                    int number = group->numberUnits();
+            bestGroup = this->groups.next;
+            while (bestGroup != &this->groups && bestGroup != 0) {
+                if (bestGroup->type() == bestUnit) {
+                    int desired = bestGroup->desiredNumberUnits();
+                    int number = bestGroup->numberUnits();
                     if (number < desired) {
-                        if (group->inUse() != 1) {
+                        if (bestGroup->inUse() != 1) {
                             int groupZone = -1;
-                            int groupCommander = group->commander();
+                            int groupCommander = bestGroup->commander();
                             RGE_Static_Object* groupObject = this->md->object(groupCommander);
                             if (groupObject != 0) {
                                 groupZone = groupObject->currentZone();
                             }
                             int ungrouped = this->numberUngroupedSoldiers();
-                            desired = group->desiredNumberUnits();
-                            number = group->numberUnits();
+                            desired = bestGroup->desiredNumberUnits();
+                            number = bestGroup->numberUnits();
                             int missing = desired - number;
                             if (ungrouped <= missing) {
                                 int i = 0;
@@ -8613,15 +8605,15 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                             this->md->object(this->workingArea[i]);
                                         if (object != 0 &&
                                             object->currentZone() == groupZone) {
-                                            group->addUnit(this->workingArea[i], this->md);
+                                            bestGroup->addUnit(this->workingArea[i], this->md);
                                         }
                                         ++i;
                                     } while (i < this->workingArea.numberValue);
                                 }
                             }
 
-                            int desiredAgain = group->desiredNumberUnits();
-                            int numberAgain = group->numberUnits();
+                            int desiredAgain = bestGroup->desiredNumberUnits();
+                            int numberAgain = bestGroup->numberUnits();
                             if (numberAgain < desiredAgain) {
                                 do {
                                     int i = 0;
@@ -8634,9 +8626,9 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                             if (object != 0 &&
                                                 object->currentZone() == groupZone) {
                                                 float distance = object->distance_to_position(
-                                                    group->gatherLocation().x,
-                                                    group->gatherLocation().y,
-                                                    group->gatherLocation().z);
+                                                    bestGroup->gatherLocation().x,
+                                                    bestGroup->gatherLocation().y,
+                                                    bestGroup->gatherLocation().z);
                                                 if (bestDistance == -1.0f || distance < bestDistance) {
                                                     bestUnitID = this->workingArea[i];
                                                     bestDistance = distance;
@@ -8648,7 +8640,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                     if (bestUnitID == -1) {
                                         break;
                                     }
-                                    group->addUnit(bestUnitID, this->md);
+                                    bestGroup->addUnit(bestUnitID, this->md);
 
                                     int max = this->workingArea.maximumSizeValue;
                                     int removeIndex = 0;
@@ -8677,21 +8669,21 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                         }
                                     }
 
-                                    desiredAgain = group->desiredNumberUnits();
-                                    numberAgain = group->numberUnits();
+                                    desiredAgain = bestGroup->desiredNumberUnits();
+                                    numberAgain = bestGroup->numberUnits();
                             } while (numberAgain < desiredAgain);
                             }
 
-                            int desiredAfter = group->desiredNumberUnits();
-                            int numberAfter = group->numberUnits();
+                            int desiredAfter = bestGroup->desiredNumberUnits();
+                            int numberAfter = bestGroup->numberUnits();
                             if (numberAfter < desiredAfter) {
                                 int extra = this->numberExtraGroupedSoldiers();
-                                int desiredExtra = group->desiredNumberUnits();
-                                int numberExtra = group->numberUnits();
+                                int desiredExtra = bestGroup->desiredNumberUnits();
+                                int numberExtra = bestGroup->numberUnits();
                                 int missingExtra = desiredExtra - numberExtra;
                                 if (missingExtra < extra) {
-                                    int desiredNearest = group->desiredNumberUnits();
-                                    int numberNearest = group->numberUnits();
+                                    int desiredNearest = bestGroup->desiredNumberUnits();
+                                    int numberNearest = bestGroup->numberUnits();
                                     if (numberNearest < desiredNearest) {
                                     do {
                                         int i = 0;
@@ -8704,9 +8696,9 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                                 if (object != 0 &&
                                                     object->currentZone() == groupZone) {
                                                     float distance = object->distance_to_position(
-                                                        group->gatherLocation().x,
-                                                        group->gatherLocation().y,
-                                                        group->gatherLocation().z);
+                                                        bestGroup->gatherLocation().x,
+                                                        bestGroup->gatherLocation().y,
+                                                        bestGroup->gatherLocation().z);
                                                     if (bestDistance == -1.0f || distance < bestDistance) {
                                                         bestUnitID = this->workingArea[i];
                                                         bestDistance = distance;
@@ -8719,7 +8711,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                             break;
                                         }
                                         this->removeFromGroup(bestUnitID);
-                                        group->addUnit(bestUnitID, this->md);
+                                        bestGroup->addUnit(bestUnitID, this->md);
 
                                         int max = this->workingArea.maximumSizeValue;
                                         int removeIndex = 0;
@@ -8747,7 +8739,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                                 this->workingArea.numberValue = 0;
                                             }
                                         }
-                                    } while (group->numberUnits() < group->desiredNumberUnits());
+                                    } while (bestGroup->numberUnits() < bestGroup->desiredNumberUnits());
                                     }
                                 }
                                 else {
@@ -8759,7 +8751,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                                             if (object != 0 &&
                                                 object->currentZone() == groupZone) {
                                                 this->removeFromGroup(this->workingArea[i]);
-                                                group->addUnit(this->workingArea[i], this->md);
+                                                bestGroup->addUnit(this->workingArea[i], this->md);
                                             }
                                             ++i;
                                         } while (i < this->workingArea.numberValue);
@@ -8769,11 +8761,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                         }
                     }
                 }
-                group = group->next;
-                if (group == sentinel) {
-                    break;
-                }
-            }
+                bestGroup = bestGroup->next;
             }
             ++bestUnit;
         } while (bestUnit <= 0x66);
