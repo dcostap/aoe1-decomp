@@ -1,0 +1,68 @@
+# Exact owner candidate for 004147A0 ManagedArray<int>::resize.
+# Tested main: 295bb6a27.
+#
+# PDB scoped-symbol evidence assigns the emitted function to
+# .\Release\aiuaimod.obj. PDB line records assign its body to utmarray.h.
+# The explicit instantiation below emits the exact protected symbol:
+#   ?resize@?$ManagedArray@H@@IAEHH@Z
+# Direct COFF comparison: MATCH, 0.0000%, 95/95 bytes, correct boundary,
+# correct owner, and two compatible relocations.
+#
+# The aiuaimod audit compiled 114 owners with --jobs 1. All 104 exact targets
+# remained MATCH after the two direct reconstructed resize calls were replaced
+# with their natural operator[] ownership.
+#
+# This candidate is not ready for integration. Making resize protected causes
+# direct reconstructed callers in taistrmd.cpp, taitacmd.cpp, and taiuaimd.cpp
+# to fail compilation. Those callers must first be recovered through public
+# ManagedArray operations. Do not expose resize or use member-pointer steering.
+
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 99ff66a92..74a77b494 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -135,7 +135,7 @@ public:
+         }
+     }
+ 
+-public:
++protected:
+     // PDB marks resize protected. Reconstructed callers still require public
+     // access, so keep the body here while the source-access boundary is open.
+     int resize(int new_size)
+diff --git a/src/aiuaimod.cpp b/src/aiuaimod.cpp
+index 1d225eedc..79014f7b4 100644
+--- a/src/aiuaimod.cpp
++++ b/src/aiuaimod.cpp
+@@ -7,6 +7,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
++template int ManagedArray<int>::resize(int);
++
+ // aiuaimod.cpp
+ 
+ // The shipped constructor uses a real polymorphic UnitAIModule surface.
+@@ -732,9 +734,6 @@ void UnitAIModule::updateGroup(unsigned long param_1)
+ 
+                     object = this->objectValue;
+                     if (object->groupMembers[memberIndex] != object->id) {
+-                        if (memberIndex > object->groupMembers.maximumSizeValue - 1) {
+-                            object->groupMembers.resize(memberIndex + 1);
+-                        }
+                         object = this->lookupObject(
+                             object->groupMembers.value[memberIndex]);
+                         if (object != 0 && object->unitAI() != 0) {
+@@ -1058,11 +1057,8 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
+                 a = 0;
+                 if (this->objectValue->groupMembers.numberValue > 0) {
+                     do {
+-                        if (a > this->objectValue->groupMembers.maximumSizeValue - 1) {
+-                            this->objectValue->groupMembers.resize(a + 1);
+-                        }
+                         member = this->lookupObject(
+-                            this->objectValue->groupMembers.value[a]);
++                            this->objectValue->groupMembers[a]);
+                         if (member != 0 && member->unitAI() != 0) {
+                             param_1 = command->group();
+                             if (this->playStatus->group(member->id) !=
