@@ -1186,7 +1186,7 @@ void TRIBE_Screen_Game::handle_game_update(void)
             int who = comm->WhoAmI();
             unsigned long avg = comm->Speed->PlayerAvgFramesMsec[who];
             num_updates = 2;
-            if (multi_updates == 0 || avg < 0x43 || avg > 0x7D ||
+            if (!multi_updates || avg < 0x43 || avg > 0x7D ||
                 static_cast<float>(per) / static_cast<float>(static_cast<int>(sum)) > 2.0f) {
                 num_updates = 1;
             }
@@ -1200,14 +1200,13 @@ void TRIBE_Screen_Game::handle_game_update(void)
     update_counter = 0;
     if (num_updates > 0) {
         do {
-            unsigned char update_flag;
             color_log(0x24, 0x4C, 5);
             color_log(0x24, 0x24, 1);
             now = debug_timeGetTime(s_scr_game_cpp, 0x692);
             if (start_paused) {
                 update_flag = 0;
                 rge_base_game->set_prog_mode(6);
-            } else if (this->game_ended == 0) {
+            } else if (!this->game_ended) {
                 update_flag = this->world->update();
                 if (out_of_sync2) {
                     return;
@@ -1230,17 +1229,17 @@ void TRIBE_Screen_Game::handle_game_update(void)
             }
 
             this->last_update_time = debug_timeGetTime(s_scr_game_cpp, 0x6BB);
-            if (this->world->world_time_delta != 0) {
+            if (this->world->world_time_delta > 0) {
                 rge_base_game->add_to_timing(1, this->last_update_time - now);
                 rge_base_game->increment_world_update_count();
             }
             color_log(0x24, 0xBA, 1);
 
-            if (this->reset_after_update != 0) {
+            if (this->reset_after_update) {
                 this->reset_clocks();
                 this->reset_after_update = 0;
             }
-            if (this->watch_mode != 0) {
+            if (this->watch_mode) {
                 this->command_view_selected();
             }
             {
@@ -1253,7 +1252,7 @@ void TRIBE_Screen_Game::handle_game_update(void)
                 }
             }
             color_log(0x24, 0x54, 5);
-            if (start_paused == 0 &&
+            if (!start_paused &&
                 (update_flag == 1 ||
                  this->world->players[this->world->curr_player]->game_status == 2 ||
                  this->player_quit == 1)) {
@@ -1342,7 +1341,7 @@ void TRIBE_Screen_Game::handle_game_update(void)
                     }
                 }
             }
-            if (this->world->world_time_delta != 0 &&
+            if (this->world->world_time_delta > 0 &&
                 static_cast<TRIBE_Game*>(rge_base_game)->auto_exit_time != 0 &&
                 static_cast<unsigned long>(this->world->world_time) >=
                     static_cast<unsigned long>(static_cast<TRIBE_Game*>(rge_base_game)->auto_exit_time)) {
@@ -1355,10 +1354,7 @@ void TRIBE_Screen_Game::handle_game_update(void)
         }
     }
 
-    if (panel_system.currentPanel() != this) {
-        goto exit_common;
-    }
-    {
+    if (panel_system.currentPanel() == this) {
         color_log(0x16, 0x4C, 5);
         now = debug_timeGetTime(s_scr_game_cpp, 0x79C);
         if (calc_game_time > 0) {
