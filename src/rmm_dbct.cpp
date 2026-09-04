@@ -476,22 +476,30 @@ void RGE_RMM_Database_Controller::calc_land_start(
                     if (x > minimum_x && x < maximum_x &&
                         y > minimum_y && y < maximum_y)
                         goto retry_position;
-                    for (previous = start; previous < index; ++previous) {
-                        int delta_x = x - this->land_info.land[previous].x;
-                        int delta_y = y - this->land_info.land[previous].y;
-                        if (delta_x < 0)
-                            delta_x = -delta_x;
-                        if (delta_y < 0)
-                            delta_y = -delta_y;
-                        if ((float)(delta_x * delta_x + delta_y * delta_y) <=
-                            bound_square) {
-                            if (previous == index - 1) {
-                                this->land_info.land[index].x = x;
-                                this->land_info.land[index].y = y;
-                                L->Log(s_calc_land_xy, index, x, y);
+                    previous = start;
+                    if (previous < index) {
+                        do {
+                            long delta_x;
+                            long delta_y;
+                            delta_x =
+                                x - this->land_info.land[previous].x;
+                            if (delta_x < 0)
+                                delta_x = -delta_x;
+                            delta_y =
+                                y - this->land_info.land[previous].y;
+                            if (delta_y < 0)
+                                delta_y = -delta_y;
+                            if ((float)(delta_x * delta_x +
+                                        delta_y * delta_y) <= bound_square) {
+                                if (previous == index - 1) {
+                                    this->land_info.land[index].y = y;
+                                    this->land_info.land[index].x = x;
+                                    L->Log(s_calc_land_xy, index, x, y);
+                                }
+                                goto retry_position;
                             }
-                            goto retry_position;
-                        }
+                            ++previous;
+                        } while (previous < index);
                     }
                     goto retry_done;
 retry_position:
