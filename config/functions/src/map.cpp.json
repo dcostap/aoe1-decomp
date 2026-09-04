@@ -52,7 +52,7 @@
     "004587D0": {"status": "matching", "symbol": "?delete_all_objects_on_tile@RGE_Map@@QAEXHH@Z"},
     "00458820": {"status": "scratch", "symbol": "?create_terrain_object@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@FFFHHH@Z"},
     "00458B40": {"status": "scratch", "symbol": "?clear_terrain_object@RGE_Map@@QAEHPAVRGE_Game_World@@FFFHHH@Z"},
-    "00458C90": {"status": "scratch", "symbol": "?place_terrain_object@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@FFHH@Z"},
+    "00458C90": {"status": "accepted_drift", "symbol": "?place_terrain_object@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@FFHH@Z"},
     "00458FD0": {"status": "matching", "symbol": "?create_terrain_objects@RGE_Map@@QAEXPAVRGE_Player@@PAVRGE_Game_World@@@Z"},
     "00459020": {"status": "matching", "symbol": "?set_tile_size@RGE_Map@@QAEXEFFF@Z"},
     "00459060": {"status": "scratch", "symbol": "?tile_map_coords@RGE_Map@@QAEXFFPAURGE_Tile@@PAM1@Z"},
