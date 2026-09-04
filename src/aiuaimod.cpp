@@ -1457,9 +1457,9 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
     }
 
     numberNonCurrentTargets = -1;
-    world = this->objectValue->owner->world;
     numberMovingTargets = 0;
     currentTargetIsBuilding = 0;
+    world = this->objectValue->owner->world;
     numberObjectsInRange = 0;
 
     if (this->currentTargetValue != -1) {
@@ -1514,8 +1514,8 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                                 ++closestEnemyDistance;
                             }
                             if (distance < enemyDistance) {
-                                currentTarget = target->id;
                                 enemyDistance = distance;
+                                currentTarget = target->id;
                             }
                         }
                     }
@@ -1558,8 +1558,9 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                         (RGE_Master_Combat_Object*)this->objectValue->master_obj);
                 numberMovingTargets =
                     (float)baseDamage * DAT_0056ebc0 + numberMovingTargets;
-                if (target->hp > DAT_0056ebc8) {
-                    numberMovingTargets /= target->hp;
+                float hitPoints = target->hp;
+                if (hitPoints > DAT_0056ebc8) {
+                    numberMovingTargets /= hitPoints;
                 }
                 distance = target->distance_to_object(this->objectValue);
                 if (distance > DAT_0056ebc8) {
