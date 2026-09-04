@@ -915,7 +915,7 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                                        byte* table)
 {
     long pitch = draw_area->AlignedWidth() * draw_area->Orien;
-    byte* src = (byte*)(this->shape_header + 1);
+    Shape_Payload* src = (Shape_Payload*)(this->shape_header + 1);
     byte* dst;
     if (draw_area->Orien < 1)
         dst = draw_area->Bits +
@@ -929,7 +929,7 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
         do {
             byte done = 0;
             do {
-                byte command = *src++;
+                byte command = src++->value;
                 if (command & 1) {
                     command >>= 1;
                     if (command)
@@ -956,11 +956,11 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
         if (xpos < clip_x0) {
             state = 0;
             do {
-                byte command = *src++;
+                byte command = src++->value;
                 if (command & 1) {
                     command >>= 1;
                     if (command == 0) {
-                        command = *src++;
+                        command = src++->value;
                         xpos += command;
                         if (xpos >= clip_x0) {
                             if (xpos > clip_x1)
@@ -979,7 +979,7 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                                 src += clip_x0 - xpos + command;
                                 byte* end = dst + cnt;
                                 while (dst < end)
-                                    *dst++ = table[*src++];
+                                    *dst++ = table[src++->value];
                                 src += command -
                                        (clip_x0 - xpos + command) - cnt;
                             } else {
@@ -988,7 +988,7 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                                 src += command - cnt;
                                 byte* end = dst + cnt;
                                 while (dst < end)
-                                    *dst++ = table[*src++];
+                                    *dst++ = table[src++->value];
                             }
                         } else {
                             src += command;
@@ -1004,12 +1004,12 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                             if (xpos > clip_x1) {
                                 long cnt = clip_x1 - clip_x0 + 1;
                                 state = 2;
-                                memset(dst, table[*src], cnt);
+                                memset(dst, table[src->value], cnt);
                                 dst += cnt;
                             } else {
                                 long cnt = xpos - clip_x0;
                                 state = 1;
-                                memset(dst, table[*src], cnt);
+                                memset(dst, table[src->value], cnt);
                                 dst += cnt;
                             }
                         }
@@ -1024,11 +1024,11 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
         state--;
         if (state == 0) {
             do {
-                byte command = *src++;
+                byte command = src++->value;
                 if (command & 1) {
                     command >>= 1;
                     if (command == 0) {
-                        command = *src++;
+                        command = src++->value;
                         xpos += command;
                         dst += command;
                         if (xpos > clip_x1)
@@ -1040,13 +1040,13 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                             state = 1;
                             byte* end = dst + cnt;
                             while (dst < end)
-                                *dst++ = table[*src++];
+                                *dst++ = table[src++->value];
                             dst += command - cnt;
                             src += command - cnt;
                         } else {
                             byte* end = dst + command;
                             while (dst < end)
-                                *dst++ = table[*src++];
+                                *dst++ = table[src++->value];
                         }
                     }
                 } else {
@@ -1058,10 +1058,10 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                         if (xpos > clip_x1) {
                             long cnt = command + clip_x1 - xpos + 1;
                             state = 1;
-                            memset(dst, table[*src], cnt);
+                            memset(dst, table[src->value], cnt);
                             dst += command;
                         } else {
-                            memset(dst, table[*src], command);
+                            memset(dst, table[src->value], command);
                             dst += command;
                         }
                         ++src;
@@ -1073,7 +1073,7 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
         state--;
         if (state == 0) {
             do {
-                byte command = *src++;
+                byte command = src++->value;
                 if ((command & 1) == 1) {
                     command >>= 1;
                     if (command)
