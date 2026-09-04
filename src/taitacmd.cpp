@@ -5159,19 +5159,18 @@ first_pass_next:
                                 point.y = (int)trade->y;
                                 point.z = (int)trade->z;
                                 if (commander->canPath(point, 1.0f, trade->id,
-                                                       &pathDistance, 1, -1, -1) != 0) {
-                                    group->setTarget(trade->id);
-                                    group->setTargetType((int)trade->type);
-                                    group->setTargetLocation((float)trade->x,
-                                                             (float)trade->y,
-                                                             (float)trade->z);
-                                    group->setInUse(1);
-                                    busyOK = 0;
-                                    goto task_tail;
-                                }
-                                else {
+                                                       &pathDistance, 1, -1, -1) == 0) {
                                     group->setAction(1);
+                                    goto next_group;
                                 }
+                                group->setTarget(trade->id);
+                                group->setTargetType((int)trade->type);
+                                group->setTargetLocation((float)trade->x,
+                                                         (float)trade->y,
+                                                         (float)trade->z);
+                                group->setInUse(1);
+                                busyOK = 0;
+                                goto task_tail;
                             }
                         }
                     }
