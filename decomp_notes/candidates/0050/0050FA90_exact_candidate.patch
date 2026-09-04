@@ -1,5 +1,13 @@
 Exact candidate for 0050FA90 change_terrain.
 
+Follow-up validation by wrap-alpha-257 at main commit
+fe8aea3317bc563e88a23d5d691465de94543f56:
+the target still returns MATCH, 0.0000%, 427 bytes. A fresh one-job tmap
+audit at build/worker_wrap_alpha_257_terrain_candidate/report.txt keeps the
+candidate closure rejected because 00510110 make_new_cliff differs by three
+bytes. The clean source audit at build/worker_wrap_alpha_257/report.txt keeps
+00510110 exact and restores 0050FA90 to its one-byte boundary mismatch.
+
 Target result: MATCH, 0.0000%, 427 bytes.
 Closure result: Rejected. The full tmap closure regressed exact owner
 00510110 make_new_cliff from MATCH to a 3-byte mismatch. The candidate shrinks
