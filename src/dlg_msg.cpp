@@ -26,19 +26,18 @@ TMessageDialog::~TMessageDialog()
 }
 
 long TMessageDialog::setup(TPanel* parent, char* panel_file, long panel_id,
-                           long x, long y, unsigned char type, char* message,
+                           long x, long hgt_in, unsigned char type, char* message,
                            long button_width, long button_height)
 {
-    TDrawArea* draw_area;
     long button_num;
-    long space;
-    long button_y;
     long index;
+    long y;
+    long space;
     TButtonPanel* hotkey_button;
 
     button[0] = button[1] = button[2] = 0;
-    draw_area = parent->renderArea();
-    if (TDialogPanel::setup(draw_area, parent, x, y, panel_file, panel_id, 1) == 0) {
+    TDrawArea* draw_area = parent->renderArea();
+    if (TDialogPanel::setup(draw_area, parent, x, hgt_in, panel_file, panel_id, 1) == 0) {
         return 0;
     }
 
@@ -72,10 +71,10 @@ long TMessageDialog::setup(TPanel* parent, char* panel_file, long panel_id,
         space /= button_num + 1;
     }
 
-    button_y = pnl_hgt - button_height - 7;
+    y = pnl_hgt - button_height - 7;
     for (index = 0; index < button_num; ++index) {
         if (create_button(this, &button[index], s_592A40, s_592A40,
-                          space + index * (space + button_width), button_y,
+                          space + index * (space + button_width), y,
                           button_width, button_height,
                           0x0B, 0, 0) == 0) {
             return 0;
