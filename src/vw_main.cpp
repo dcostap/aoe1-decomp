@@ -463,7 +463,8 @@ long RGE_Main_View::mouse_left_move_action(long x, long y, int key, int flags) {
     return 0;
 }
 
-long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
+long RGE_Main_View::mouse_left_up_action(long x, long y, int ctrl_key,
+                                         int shift_key) {
     int mode = rge_base_game->prog_mode;
     int game_mode;
     RGE_Pick_Info pick_info;
@@ -480,7 +481,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
         if (rge_base_game->game_mode == 0x15) {
             this->command_place_multi_object(
                 this->sel_col1, this->sel_row1, this->sel_col2, this->sel_row2,
-                key == 0 && flags == 0);
+                ctrl_key == 0 && shift_key == 0);
         }
 
         if (rge_base_game->game_mode == 8) {
@@ -506,7 +507,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
     }
 
     game_mode = rge_base_game->game_mode;
-    if ((flags || key) && game_mode != 7 && game_mode != 0x15) {
+    if ((shift_key || ctrl_key) && game_mode != 7 && game_mode != 0x15) {
         if (this->pick1(0x29, 2, x, y, &pick_info, 0, 0) == 0x34) {
             if (pick_info.object->selected & 1) {
                 this->player->unselect_one_object(pick_info.object);
@@ -517,7 +518,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
                          pick_info.object->master_obj->select_level)) {
                     this->player->unselect_object();
                 }
-                if (key)
+                if (ctrl_key)
                     this->player->select_one_object(pick_info.object, 1);
                 else
                     this->player->select_object(pick_info.object);
@@ -525,7 +526,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
             this->set_redraw(TPanel::RedrawNormal);
         }
 
-        if (key || rge_base_game->prog_info->interface_style == 2)
+        if (ctrl_key || rge_base_game->prog_info->interface_style == 2)
             goto done;
     }
 
@@ -539,7 +540,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
         break;
 
     case 7:
-        if (key == 0 && flags == 0)
+        if (ctrl_key == 0 && shift_key == 0)
             this->command_place_object(x, y, 1);
         else
             this->command_place_object(x, y, 0);
@@ -713,7 +714,7 @@ long RGE_Main_View::mouse_left_up_action(long x, long y, int key, int flags) {
     no_pick:
         if (status == 0x33 && rge_base_game->prog_mode != 5 &&
             rge_base_game->prog_mode != 7) {
-            if (flags == 0) {
+            if (shift_key == 0) {
                 if (this->command_make_do(x, y, 1, -1) == 0)
                     goto done;
             } else {

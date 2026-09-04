@@ -434,48 +434,7 @@ unsigned char TRIBE_World::load_world(int handle)
     return 1;
 }
 
-static __inline int count_objects(TRIBE_World* world, short id) {
-    int count = 0;
-    int player_count = world->player_num;
-    if (player_count > 0) {
-        RGE_Player** player = world->players;
-        do {
-        RGE_Object_Node* node = (*player)->objects->list;
-        while (node != 0) {
-            if (node->node->master_obj->id == id) {
-                ++count;
-            }
-            node = node->next;
-        }
-        ++player;
-        --player_count;
-        } while (player_count != 0);
-    }
-    return count;
-}
-
-static __inline int count_ruins(TRIBE_World* world) {
-    int count = 0;
-    int player_count = world->player_num;
-    if (player_count > 0) {
-        RGE_Player** player = world->players;
-        do {
-        RGE_Object_Node* node = (*player)->objects->list;
-        while (node != 0) {
-            short id = node->node->master_obj->id;
-            if (id == 0x9e || id == 0xa3) {
-                ++count;
-            }
-            node = node->next;
-        }
-        ++player;
-        --player_count;
-        } while (player_count != 0);
-    }
-    return count;
-}
-
-unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
+unsigned char TRIBE_World::new_game(RGE_Player_Info& info, int myPlayerNum) {
     int victoryAmount;
     RGE_RMM_Object_Generator* generator;
     unsigned char ret_num;
@@ -491,7 +450,7 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
 
     this->score_displayed = 0;
     this->controllingComputerPlayer = 0xff;
-    ret_num = RGE_Game_World::new_game(param_1, param_2);
+    ret_num = RGE_Game_World::new_game(info, myPlayerNum);
 
     for (i = 0; i < this->player_num; ++i) {
         static_cast<TRIBE_Game*>(rge_base_game)->reset_countdown_timer(i);
@@ -706,17 +665,66 @@ unsigned char TRIBE_World::new_game(RGE_Player_Info& param_1, int param_2) {
 
         want = static_cast<T_Scenario*>(this->scenario)->Get_Multi_Artifacts();
         if (want > 0) {
-            missing = want - count_objects(this, 0x9f);
+            int count = 0;
+            int player_count = this->player_num;
+            if (player_count > 0) {
+                RGE_Player** player = this->players;
+                do {
+                    RGE_Object_Node* node = (*player)->objects->list;
+                    while (node != 0) {
+                        if (node->node->master_obj->id == 0x9f) {
+                            ++count;
+                        }
+                        node = node->next;
+                    }
+                    ++player;
+                    --player_count;
+                } while (player_count != 0);
+            }
+            missing = want - count;
             if (missing > 0) generator->add_quick_obj(0x9f, missing, 0);
         }
         want = static_cast<T_Scenario*>(this->scenario)->Get_Multi_Discoveries();
         if (want > 0) {
-            missing = want - count_objects(this, 10);
+            int count = 0;
+            int player_count = this->player_num;
+            if (player_count > 0) {
+                RGE_Player** player = this->players;
+                do {
+                    RGE_Object_Node* node = (*player)->objects->list;
+                    while (node != 0) {
+                        if (node->node->master_obj->id == 10) {
+                            ++count;
+                        }
+                        node = node->next;
+                    }
+                    ++player;
+                    --player_count;
+                } while (player_count != 0);
+            }
+            missing = want - count;
             if (missing > 0) generator->add_quick_obj(10, missing, 0);
         }
         want = static_cast<T_Scenario*>(this->scenario)->Get_Multi_Ruins();
         if (want > 0) {
-            missing = want - count_ruins(this);
+            int count = 0;
+            int player_count = this->player_num;
+            if (player_count > 0) {
+                RGE_Player** player = this->players;
+                do {
+                    RGE_Object_Node* node = (*player)->objects->list;
+                    while (node != 0) {
+                        short id = node->node->master_obj->id;
+                        if (id == 0x9e || id == 0xa3) {
+                            ++count;
+                        }
+                        node = node->next;
+                    }
+                    ++player;
+                    --player_count;
+                } while (player_count != 0);
+            }
+            missing = want - count;
             if (missing > 0) generator->add_quick_obj(0x9e, missing, 0);
         }
 
