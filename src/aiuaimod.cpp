@@ -1049,14 +1049,13 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                 }
             } else {
                 a = 0;
-                member = this->objectValue;
-                if (member->groupMembers.numberValue > 0) {
+                if (this->objectValue->groupMembers.numberValue > 0) {
                     do {
-                        if (member->groupMembers.maximumSizeValue - 1 < a) {
-                            member->groupMembers.resize(a + 1);
+                        if (a > this->objectValue->groupMembers.maximumSizeValue - 1) {
+                            this->objectValue->groupMembers.resize(a + 1);
                         }
                         member = this->lookupObject(
-                            member->groupMembers.value[a]);
+                            this->objectValue->groupMembers.value[a]);
                         if (member != 0 && member->unitAI() != 0) {
                             param_1 = command->group();
                             if (this->playStatus->group(member->id) !=
@@ -1139,14 +1138,16 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                                 while (groupingIndex < 50) {
                                     AIPlayStatus::GroupingStruct* grouping =
                                         &this->playStatus->groupings[groupingIndex];
-                                    if (grouping->groupID == command->value1()) {
+                                    if (command->value1() == grouping->groupID) {
                                         RGE_Static_Object* found =
                                             this->lookupObject(grouping->id);
-                                        if (found != 0 &&
-                                            (int)found->hp + 1 <
-                                                found->master_obj->hp) {
-                                            param_1 = found->id;
-                                            break;
+                                        if (found != 0) {
+                                            RGE_Master_Static_Object* master =
+                                                found->master_obj;
+                                            if ((int)found->hp + 1 < master->hp) {
+                                                param_1 = found->id;
+                                                break;
+                                            }
                                         }
                                     }
                                     groupingIndex++;
@@ -1164,15 +1165,15 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
                             }
                             case 8: {
                                 int commandX = command->value1();
-                                int commandY = command->value2();
                                 int commandZ = command->value3();
+                                int commandY = command->value2();
                                 memberAI = member->unitAI();
                                 orderAction = 0x2D8;
                                 param_1 = -1;
                                 orderTargetOwner = -1;
-                                orderX = (float)commandX + target->world_x;
-                                orderY = (float)commandY + target->world_y;
                                 orderZ = (float)commandZ + target->world_z;
+                                orderY = (float)commandY + target->world_y;
+                                orderX = (float)commandX + target->world_x;
                                 break;
                             }
                             default:
@@ -1187,7 +1188,6 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
 
                     next_member:
                         ++a;
-                        member = this->objectValue;
                     } while (a < this->objectValue->groupMembers.numberValue);
                 }
             }
