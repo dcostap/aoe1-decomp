@@ -1180,7 +1180,7 @@ void TRIBE_Screen_Game::handle_game_update(void)
         }
         {
             int who = comm->WhoAmI();
-            unsigned long avg = comm->Speed->GetPlayerAvgFramesMsec(who);
+            unsigned long avg = comm->Speed->PlayerAvgFramesMsec[who];
             calc_game_time = 2;
             if (multi_updates == 0 || avg < 0x43 || avg > 0x7D ||
                 static_cast<float>(per) / static_cast<float>(static_cast<int>(sum)) > 2.0f) {
@@ -1324,13 +1324,7 @@ void TRIBE_Screen_Game::handle_game_update(void)
                             this->quit_message_panel->set_active(1);
                             this->pop_panel->set_active(0);
                         } else {
-                            this->main_view->end_scroll_view();
-                            this->main_view->set_selection_area(-1, -1, -1, -1);
-                            rge_base_game->set_game_mode(0, 0);
-                            this->command_unselect();
-                            static_cast<TRIBE_Game*>(rge_base_game)->do_game_over();
-                            color_log(0x24, 0x5F, 5);
-                            return;
+                            goto game_over;
                         }
                         }
                     } else {
@@ -1348,9 +1342,7 @@ void TRIBE_Screen_Game::handle_game_update(void)
                 static_cast<TRIBE_Game*>(rge_base_game)->auto_exit_time != 0 &&
                 static_cast<unsigned long>(this->world->world_time) >=
                     static_cast<unsigned long>(static_cast<TRIBE_Game*>(rge_base_game)->auto_exit_time)) {
-                rge_base_game->close();
-                color_log(0x24, 0x5F, 5);
-                return;
+                goto close_game;
             }
             update_counter += this->world->world_time_delta;
             loop_i++;
@@ -1359,7 +1351,10 @@ void TRIBE_Screen_Game::handle_game_update(void)
         }
     }
 
-    if (panel_system.currentPanel() == this) {
+    if (panel_system.currentPanel() != this) {
+        goto exit_common;
+    }
+    {
         color_log(0x16, 0x4C, 5);
         now = debug_timeGetTime(s_scr_game_cpp, 0x79C);
         if (update_counter > 0) {
@@ -1395,8 +1390,21 @@ void TRIBE_Screen_Game::handle_game_update(void)
         }
     }
 
+exit_common:
     color_log(0x24, 0x5F, 5);
     return;
+
+game_over:
+    this->main_view->end_scroll_view();
+    this->main_view->set_selection_area(-1, -1, -1, -1);
+    rge_base_game->set_game_mode(0, 0);
+    this->command_unselect();
+    static_cast<TRIBE_Game*>(rge_base_game)->do_game_over();
+    goto exit_common;
+
+close_game:
+    rge_base_game->close();
+    goto exit_common;
 }
 
 long TRIBE_Screen_Game::wnd_proc(void* window, unsigned int message,

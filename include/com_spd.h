@@ -6,6 +6,8 @@
 #include "rge_tslc.h"
 
 class RGE_Communications_Speed {
+    friend class TRIBE_Screen_Game;
+
 private:
     char TBuff[255];                            // +0x00
     RGE_TimeSinceLastCall* TurnTSLC;            // +0x100
