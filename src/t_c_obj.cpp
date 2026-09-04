@@ -844,20 +844,23 @@ int TRIBE_Combat_Object::higher_check_for_cliff(
         if (cliff->master_obj->object_group == 0x22 && cliff != old_object) {
             old_object = cliff;
             if (angle == -1.0f) {
-                const double result = atan2(target->world_y - this->world_y,
-                                            target->world_x - this->world_x);
-                angle = static_cast<float>(result);
-                if (result < DAT_00574c98) angle = result - DAT_00574ca4;
+                angle = atan2(target->world_y - this->world_y,
+                              target->world_x - this->world_x);
+                if (DAT_00574c98 > angle) angle -= DAT_00574ca4;
             }
 
-            TRIBE_Cliff_Higher_Check_Record* check =
-                &TRIBE_Cliff_Higher_Check_Table[cliff->facet];
-            if (lines_intersect(x1, y1, x2, y2, check->line_x1 + x1,
-                                check->line_y1 + y1, check->line_x2 + x2,
-                                check->line_y2 + y2)) {
-                if ((cliff->facet >= 0x19 ||
-                     angle < check->from_angle1 || check->to_angle1 > angle) &&
-                    (angle < check->from_angle2 || check->to_angle2 > angle)) {
+            const int facet = cliff->facet;
+            if (lines_intersect(
+                    x1, y1, x2, y2,
+                    TRIBE_Cliff_Higher_Check_Table[facet].line_x1 + x1,
+                    TRIBE_Cliff_Higher_Check_Table[facet].line_y1 + y1,
+                    TRIBE_Cliff_Higher_Check_Table[facet].line_x2 + x2,
+                    TRIBE_Cliff_Higher_Check_Table[facet].line_y2 + y2)) {
+                if ((facet >= 0x19 ||
+                     angle < TRIBE_Cliff_Higher_Check_Table[facet].from_angle1 ||
+                     TRIBE_Cliff_Higher_Check_Table[facet].to_angle1 > angle) &&
+                    (angle < TRIBE_Cliff_Higher_Check_Table[facet].from_angle2 ||
+                     TRIBE_Cliff_Higher_Check_Table[facet].to_angle2 > angle)) {
                     --direction;
                 } else {
                     ++direction;
