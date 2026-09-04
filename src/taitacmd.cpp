@@ -5914,7 +5914,7 @@ notify_try_attack:
                     }
                 }
                 else {
-                    float distance = targetObj->distance_to_object(attackedUnit);
+                    float distance = initialObject->distance_to_object(attackedUnit);
                     int priority = this->calculatePriority(distance);
                     if (distance < (float)this->sn[0x14]) {
                         int currentPriority = attackedUnit->unitAI()->currentOrderPriority();
