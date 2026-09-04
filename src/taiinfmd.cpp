@@ -3600,76 +3600,79 @@ ObjectMemory* TribeInformationAIModule::objectToTradeWith(int param_1)
     return bestDock;
 }
 
-int TribeInformationAIModule::findGatherPosition(XYPoint& p, int group, int clearDistance, int minDistance, int maxDistance, RGE_Static_Object* obj, XYPoint& out)
+int TribeInformationAIModule::findGatherPosition(
+    XYPoint& centerPoint, int num, int landTroops, int desiredDistance,
+    int maximumDistanceVariation, RGE_Static_Object* testUnit,
+    XYPoint& rPoint)
 {
-    XYPoint max;
+    int bestPointValue;
+    int j;
+    int i;
+    int clearDistance;
+    int blocked;
+    int y;
+    int x;
     XYPoint maxClear;
-    XYPoint min;
+    XYPoint max;
     XYPoint minClear;
+    XYPoint min;
     XYPoint minExclude;
     XYPoint maxExclude;
     XYPoint cPosition;
     XYPoint lineCollisionPoint;
-    int bestPointValue;
-    int j;
-    int i;
-    int halfDistance;
-    int blocked;
-    int yy;
-    int xx;
-    int yy2;
-    int xx2;
 
-    if (maxDistance >= minDistance) return 0;
-    min.y = p.x - minDistance - maxDistance;
-    minExclude.x = p.y - minDistance - maxDistance;
+    if (maximumDistanceVariation >= desiredDistance) return 0;
+    min.y = centerPoint.x - desiredDistance - maximumDistanceVariation;
+    minExclude.x = centerPoint.y - desiredDistance - maximumDistanceVariation;
     mapBound(min);
-    max.y = p.x + maxDistance + minDistance;
-    minClear.x = p.y + maxDistance + minDistance;
+    clearDistance = desiredDistance + maximumDistanceVariation;
+    minClear.x = centerPoint.y + clearDistance;
+    max.y = centerPoint.x + clearDistance;
     mapBound(max);
-    minExclude.y = p.x - minDistance + maxDistance;
-    maxExclude.x = p.y + maxDistance - minDistance;
+    minExclude.y = centerPoint.x - desiredDistance + maximumDistanceVariation;
+    maxExclude.x = centerPoint.y + maximumDistanceVariation - desiredDistance;
     mapBound(minExclude);
-    maxExclude.y = p.x - maxDistance + minDistance;
-    cPosition.x = p.y + minDistance - maxDistance;
+    maxExclude.y = centerPoint.x - maximumDistanceVariation + desiredDistance;
+    cPosition.x = centerPoint.y + desiredDistance - maximumDistanceVariation;
     mapBound(maxExclude);
-    setupInfluenceMap(0, -1, p, min, max);
+    setupInfluenceMap(0, -1, centerPoint, min, max);
     bestPointValue = -1;
-    maxClear.x = groupInfluenceDimension(group);
+    maxClear.x = groupInfluenceDimension(num);
     j = min.y;
     if (j <= max.y) do {
         i = minExclude.x;
         if (i <= minClear.x) do {
             if (minExclude.y > j || j > maxExclude.y || maxExclude.x > i || i > cPosition.x) {
-                halfDistance = maxClear.x / 2;
-                minClear.y = j - halfDistance;
-                min.x = i - halfDistance;
+                clearDistance = maxClear.x / 2;
+                minClear.y = j - clearDistance;
+                min.x = i - clearDistance;
                 if (mapBound(minClear) != 1) {
-                    maxClear.y = j + halfDistance;
-                    max.x = i + halfDistance;
+                    maxClear.y = j + clearDistance;
+                    max.x = i + clearDistance;
                     if (mapBound(maxClear) != 1) {
                         blocked = 0;
-                        for (yy = minClear.y; yy < maxClear.y && !blocked; yy++) {
-                            for (xx = min.x; xx < max.x && !blocked; xx++) {
-                                if (obj->passableTile((float)yy, (float)xx, 1) == 0) blocked = 1;
+                        for (y = minClear.y; y < maxClear.y && !blocked; y++) {
+                            for (x = min.x; x < max.x && !blocked; x++) {
+                                if (testUnit->passableTile((float)y, (float)x, 1) == 0) blocked = 1;
                             }
                         }
                         if (blocked != 1) {
                             int val = 0x80;
                             cPosition.y = j;
                             lineCollisionPoint.x = i;
-                            if (obj->canLinePath(cPosition, p, (float)minDistance,
-                                                 lineCollisionPoint, 1) == 0) val = 0x40;
-                            for (yy2 = minClear.y; yy2 <= maxClear.y && !blocked; yy2++) {
-                                for (xx2 = min.x; xx2 <= max.x && !blocked; xx2++) {
-                                    int v = iMap.lookupValue(yy2, xx2);
+                            if (testUnit->canLinePath(cPosition, centerPoint,
+                                                      (float)desiredDistance,
+                                                      lineCollisionPoint, 1) == 0) val = 0x40;
+                            for (y = minClear.y; y <= maxClear.y && !blocked; y++) {
+                                for (x = min.x; x <= max.x && !blocked; x++) {
+                                    int v = iMap.lookupValue(y, x);
                                     if (v == 0xff) blocked = 1; else val += v;
                                 }
                             }
                             if (blocked != 1 && (bestPointValue == -1 || bestPointValue < val)) {
                                 bestPointValue = val;
-                                out.x = j;
-                                out.y = i;
+                                rPoint.x = j;
+                                rPoint.y = i;
                             }
                         }
                     }

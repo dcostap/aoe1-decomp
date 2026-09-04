@@ -850,6 +850,7 @@ void RGE_Static_Object::capture_frame_3d_square(
                                sVar8, sVar9);
             int max_hp = pRVar1->hp;
             if (max_hp > 0) {
+                y2 = y0 - 1;
                 int health_left = x0 - 12;
                 int health_top = y0 - 2;
                 int health_right = x0 + 11;
@@ -918,8 +919,8 @@ void RGE_Static_Object::capture_frame_3d_square(
         if (iVar7 < 0) {
             digit_x += 7;
             SDI_List->AddGDINode(
-                4, iVar4, digit_x + 1, y0 + 2,
-                digit_x + 5, y0 + 2,
+                4, iVar4, digit_x + 1, y2 + 3,
+                digit_x + 5, y2 + 3,
                 0, 0, 0, 0, 0x1E, 0x97, SDI_Object_ID);
         }
         if (uVar6 < 5) {
@@ -932,12 +933,12 @@ void RGE_Static_Object::capture_frame_3d_square(
                     SDI_List->AddDrawNode(
                         pTVar2->FShape,
                         pTVar2->shape_info + *piVar5,
-                        iVar4, (int)sVar8, y0 - 1,
+                        iVar4, (int)sVar8, y2,
                         0, 0, 0, 0x1E, SDI_Object_ID);
                 } else {
                     SDI_List->AddGDINode(
-                        4, iVar4, sVar8 + 1, y0 - 1,
-                        sVar8 + 5, y0 + 4,
+                        4, iVar4, sVar8 + 1, y2,
+                        sVar8 + 5, y2 + 5,
                         0, 0, 0, 0, 0x1E, 0xFF, SDI_Object_ID);
                 }
                 ++piVar5;
