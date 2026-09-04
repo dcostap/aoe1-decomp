@@ -3810,7 +3810,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
     uint header_length;
     MSGFORMAT_HEADER_GUARANTEED* out;
     char* packet;
-    int outgoing_count;
+    uint outgoing_count;
     ulong sync_turn;
     char GTDString[10];
     uint i;
@@ -3856,9 +3856,9 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
 
     out->Sequence = 0;
     out->Command = 0;
-    sync_turn = this->current_turn +
-                static_cast<uint>(this->PlayerOptions.CommandTurnIncrement);
-    out->ExecuteOnTurn = sync_turn;
+    out->ExecuteOnTurn = this->current_turn +
+                         static_cast<uint>(this->PlayerOptions.CommandTurnIncrement);
+    sync_turn = out->ExecuteOnTurn;
 
     uint* dest_map = this->DestMap;
     i = 0;
@@ -3925,7 +3925,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
 
             if (to == 0) {
                 recipient_count = 0;
-                if (this->MaxGamePlayers != 0) {
+                if (this->MaxGamePlayers >= 1) {
                     i = 1;
                     do {
                         if (this->IsPlayerHuman(i) != 0 &&
@@ -3952,6 +3952,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
                 --this->GTDSerialNo;
                 this->Err->ShowReturn(hr, "TX RGTGTD");
             }
+            goto sent;
         }
         hr = 0;
     } else if (outgoing_count != 0) {
@@ -3971,7 +3972,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
 
         if (to == 0) {
             recipient_count = 0;
-            if (this->MaxGamePlayers != 0) {
+            if (this->MaxGamePlayers >= 1) {
                 i = 1;
                 do {
                     if (this->IsPlayerHuman(i) != 0 &&
@@ -3992,6 +3993,7 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
         hr = 0;
     }
 
+sent:
     if (outgoing_count != 0) {
         if (this->RGE_Guaranteed_Delivery != 0) {
             strcpy(GTDString, "GTD");
@@ -4000,8 +4002,8 @@ long TCommunications_Handler::CommOut(ulong to, uchar type, void* data,
         }
         L->Log("COMM: Ser#%d %s TX To=%d Len=%d+%d HDR> Seq=%d",
                out->Serialno,
-               GTDString + 4, to, length, header_length,
-               out->Sequence, sync_turn,
+               GTDString, to, length, header_length,
+               out->Sequence, out->ExecuteOnTurn,
                out->Command,
                out->Command,
                static_cast<int>(static_cast<char>(packet[header_length])),
