@@ -797,7 +797,7 @@ int TribeInformationAIModule::closestUnexploredTile(
         j = 0;
         do {
             i = 0;
-            direction = (direction + 1) & 3;
+            direction = (direction + 1) % 4;
             if (stepSize > 0) {
                 do {
                 switch (direction) {
@@ -863,7 +863,7 @@ int TribeInformationAIModule::closestUnexploredTile(
                                             debug_rand(
                                                 (char*)"C:\\msdev\\work\\age1_x1\\taiinfmd.cpp",
                                                 0x420) % 100 +
-                                            quadrant->numberAttacksOnUs * 25;
+                                            quadrant->numberAttacksOnUs * 5 * 5;
                                         if (bestScore == -1 || score < bestScore) {
                                             bestScore = score;
                                     bestX = this->mapXSizeValue * quadrantX / 4;
