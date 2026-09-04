@@ -109,7 +109,7 @@
     "00529610": {"status": "matching", "symbol": "?handle_idle@TRIBE_Game@@UAEHXZ"},
     "00529980": {"status": "matching", "symbol": "?handle_query_new_palette@TRIBE_Game@@UAEHPAXIIJ@Z"},
     "005299E0": {"status": "matching", "symbol": "?handle_activate@TRIBE_Game@@UAEHPAXIIJ@Z"},
-    "00529A70": {"status": "scratch", "symbol": "?action_user_command@TRIBE_Game@@UAEHKK@Z"},
+    "00529A70": {"status": "matching", "symbol": "?action_user_command@TRIBE_Game@@UAEHKK@Z"},
     "00529F60": {"status": "matching", "symbol": "?action_key_down@TRIBE_Game@@UAEHKHHHH@Z"},
     "0052A000": {"status": "matching", "symbol": "?action_close@TRIBE_Game@@UAEHXZ"},
     "0052A030": {"status": "matching", "symbol": "?game_over_msg@TRIBE_Game@@QAEPADXZ"},

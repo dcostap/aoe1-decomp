@@ -4169,7 +4169,7 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
 {
     char msg[256];
     char temp_str[260];
-    TPanel* panel;
+    TEasy_Panel* panel;
     int player;
 
     if (this->prog_mode == 3) {
@@ -4183,12 +4183,11 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
             this->quit_game();
             panel_system.destroyPanel("Multiplayer Wait Screen");
             panel_system.destroyPanel("Status Screen");
-            panel = panel_system.currentPanel();
-            if (panel != 0) {
-                static_cast<TEasy_Panel*>(panel)->popupOKDialog(0x25c9, 0,
-                                                                0x1c2, 100);
+            panel = static_cast<TEasy_Panel*>(panel_system.currentPanel());
+            if (panel == 0) {
+                break;
             }
-            break;
+            goto dropped_from_game;
 
         case 0x17ac:
         case 0x17b7:
@@ -4197,12 +4196,12 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
             this->quit_game();
             panel_system.destroyPanel("Multiplayer Wait Screen");
             panel_system.destroyPanel("Status Screen");
-            panel = panel_system.currentPanel();
+            panel = static_cast<TEasy_Panel*>(panel_system.currentPanel());
             if (panel == 0) {
                 break;
             }
-            static_cast<TEasy_Panel*>(panel)->popupOKDialog(0x25c9, 0,
-                                                            0x1c2, 100);
+        dropped_from_game:
+            panel->popupOKDialog(0x25c9, 0, 0x1c2, 100);
             break;
         }
     } else if (this->prog_mode == 4 || this->prog_mode == 6 ||
@@ -4215,10 +4214,9 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
             this->world->players[this->world->curr_player]
                 ->loss_if_game_on();
             this->do_game_over();
-            panel = panel_system.currentPanel();
+            panel = static_cast<TEasy_Panel*>(panel_system.currentPanel());
             if (panel != 0) {
-                static_cast<TEasy_Panel*>(panel)->popupOKDialog(0x25c9, 0,
-                                                                0x1c2, 100);
+                panel->popupOKDialog(0x25c9, 0, 0x1c2, 100);
             }
             break;
 
@@ -4237,9 +4235,8 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
                     }
                 }
             } else if (out_of_sync == 0) {
-                player = this->comm_handler->WhoAmI();
                 if (this->comm_handler->IsPlayerOutOfSync(
-                        player, param_2) != 0) {
+                        this->comm_handler->WhoAmI(), param_2) != 0) {
                     out_of_sync = 1;
                     out_of_sync2 = 1;
                     new TRIBE_Screen_Status_Message(
@@ -4256,10 +4253,9 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
                     this->world->players[this->world->curr_player]
                         ->loss_if_game_on();
                     this->do_game_over();
-                    panel = panel_system.currentPanel();
+                    panel = static_cast<TEasy_Panel*>(panel_system.currentPanel());
                     if (panel != 0) {
-                        static_cast<TEasy_Panel*>(panel)->popupOKDialog(
-                            0x966, 0, 0x1c2, 100);
+                        panel->popupOKDialog(0x966, 0, 0x1c2, 100);
                     }
                     panel_system.destroyPanel("Temp Screen");
                 }
@@ -4288,7 +4284,7 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
         case 0x17bd:
         {
             player = this->playerID(param_2);
-            if (player != this->world->player_num &&
+            if (player != this->world->curr_player &&
                 this->game_screen != 0 &&
                 this->playerID(param_2) > 0 && player_dropped[param_2] == 0) {
                 this->play_sound(2);
