@@ -2558,8 +2558,8 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
     int group, int* unitIds, int count, int& playNumber,
     int* outputUnits, int& outputCount, int& outputUnit)
 {
+    AIPlay* play;
     int targetNumber;
-    ObjectMemory* target;
     int worldNumber;
     RGE_Game_World* world;
     AIPlayBook* playbook;
@@ -2568,7 +2568,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
         return (ObjectMemory*)count;
     }
 
-    target = this->objectToAttackByGroup2(group, unitIds, count);
+    ObjectMemory* target = this->objectToAttackByGroup2(group, unitIds, count);
     if (target == 0) {
         return 0;
     }
@@ -2579,7 +2579,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
     playNumber = -1;
 
     for (; targetNumber < playbook->numberPlaysValue; ++targetNumber) {
-            AIPlay* play = playbook->play(targetNumber);
+            play = playbook->play(targetNumber);
             if (play == 0) {
                 continue;
             }
@@ -2597,12 +2597,12 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
             bool invalid = false;
             worldNumber = 0;
             do {
-                if (invalid != 0) {
+                if (invalid) {
                     break;
                 }
                 int phase = 0;
                 do {
-                    if (invalid != 0) {
+                    if (invalid) {
                         break;
                     }
                     AIPlayPhaseCommand* command =
@@ -2613,10 +2613,10 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                         if (x < 0 || y < 0 ||
                             x >= this->mapXSizeValue ||
                             y >= this->mapYSizeValue) {
-                            invalid = 1;
+                            invalid = true;
                         }
                         if (this->inRangeOfUnits(group, x, y, 0) == 1) {
-                            invalid = 1;
+                            invalid = true;
                         }
                     }
                     ++phase;
@@ -2624,7 +2624,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttackWithPlay(
                 ++worldNumber;
             } while (worldNumber < 10);
 
-            if (invalid == 0) {
+            if (!invalid) {
                 int variation;
                 int randomValue;
                 int strategicValue;
