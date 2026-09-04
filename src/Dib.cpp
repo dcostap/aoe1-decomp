@@ -6,7 +6,6 @@
 #include "../include/Res_file.h"
 #include <windowsx.h>
 #include <stdio.h>
-#include <memory.h>
 #include <stdlib.h>
 #include <string.h>
 #include <io.h>

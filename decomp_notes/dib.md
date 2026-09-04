@@ -97,3 +97,14 @@ valid migration check.
 - No shared header currently owns `shape_file_first` or `RESFILE_load`. Their
   module-local declarations use the target's reviewed C++ symbols. A orchestrator
   may move them to shared headers when their global owners are reunified.
+
+## Current closure result: wrap-alpha-078
+
+- The natural source omits only the unused `memory.h` include. The explicit
+  `memcpy` declaration and pragma remain in the module.
+- The full audit in `build/worker_wrap_alpha_078/audit_final/report.txt`
+  compiled all 28 owners with one job. All 18 validation targets match.
+- `DibReadBitmapInfo` now matches at 544 bytes with zero positional, relocation,
+  boundary, and direct-target differences. Existing exact owners stayed exact.
+- The standalone exact candidate remains evidence only at
+  `decomp_notes/candidates/0043/00439E50_exact_candidate.patch`.
