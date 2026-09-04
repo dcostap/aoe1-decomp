@@ -26,6 +26,6 @@
     "0044EC00": {"status": "verified_logic", "symbol": "?coverageIncluding@InfluenceMap@@QAEHABUXYPoint@@0EE@Z"},
     "0044ED20": {"status": "scratch", "symbol": "?connectionsIncluding@InfluenceMap@@QAEHABUXYPoint@@0EEHHH@Z"},
     "0044F030": {"status": "matching", "symbol": "?setUnchangeableLimit@InfluenceMap@@QAEXE@Z"},
-    "0044F040": {"status": "accepted_drift", "symbol": "?maxValue@InfluenceMap@@QAEHXZ"}
+    "0044F040": {"status": "matching", "symbol": "?maxValue@InfluenceMap@@QAEHXZ"}
   }
 }
