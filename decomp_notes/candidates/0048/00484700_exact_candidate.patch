@@ -1,0 +1,43 @@
+Rejected exact candidate for 00484700 `generate`.
+
+Target result: MATCH, 0.0000%, 191 bytes.
+Policy result: rejected. The source uses a local one-byte bitfield overlay and
+adds five elements to a tile pointer. This synthetic layout replaces the
+reviewed `RGE_Tile` field owner. Keep the canonical `tile->height` source.
+Closure result: the candidate did not change shared headers or neighbors. The
+existing `link_stack_randomly` accepted-drift result stayed unchanged.
+Tested main commit: 77dd5019bfb54306b4f146ec4bb8ffac9533a860.
+
+Apply with:
+  git apply decomp_notes/candidates/0048/00484700_exact_candidate.patch
+
+diff --git a/src/rmm_elev.cpp b/src/rmm_elev.cpp
+index ced34599e..9f17990ed 100644
+--- a/src/rmm_elev.cpp
++++ b/src/rmm_elev.cpp
+@@ -18,6 +18,11 @@ RGE_RMM_Elevation_Generator::RGE_RMM_Elevation_Generator(
+ 
+ uchar RGE_RMM_Elevation_Generator::generate()
+ {
++    struct Tile_Height_Byte {
++        uchar terrain_type : 5;
++        uchar height : 3;
++    };
++
+     this->clear_stack();
+ 
+     if (this->info.elevation_num > 0) {
+@@ -27,9 +32,10 @@ uchar RGE_RMM_Elevation_Generator::generate()
+                 long col;
+                 if ((col = 0) < this->map_width) {
+                     do {
+-                        RGE_Tile* tile = this->map_row_offset[row] + col;
+-                        tile->height =
+-                            (uchar)this->info.elevation[0].base_elevation;
++                        Tile_Height_Byte* height_byte =
++                            (Tile_Height_Byte*)(this->map_row_offset[row] + col) + 5;
++                        height_byte->height =
++                            this->info.elevation[0].base_elevation;
+                         ++col;
+                     } while (col < this->map_width);
+                 }
