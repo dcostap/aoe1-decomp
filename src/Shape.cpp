@@ -2385,6 +2385,7 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
     byte* src = (byte*)(header + 1);
     long skip_rows;
     long row;
+    long xpos;
     long row_offset;
     byte* save_buffer;
     if (orientation < 1)
@@ -2393,6 +2394,7 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
         row_offset = width * clip_top;
     save_buffer = area->Bits + clip_left + row_offset;
     bool dither;
+    byte state;
     byte b;
     byte* end;
     dither = (((char)p8 + (char)clip_left) & 1) != 0;
@@ -2431,34 +2433,33 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
 
         bool row_dither = (dither != 1);
         byte* dst = save_buffer;
-        p9 = x;
+        xpos = x;
 
         if (x < clip_left) {
-            clip_top = 0;
+            state = 0;
             do {
                 y = (long)*src++;
                 if ((y & 1) == 1) {
                     y >>= 1;
                     if (y == 0) {
-                        p9 += (unsigned int)*src;
+                        xpos += (unsigned int)*src;
                         ++src;
-                        if (clip_left <= p9) {
-                            if (clip_right < p9) {
-                                clip_top = 2;
+                        if (clip_left <= xpos) {
+                            if (clip_right < xpos) {
+                                state = 2;
                             } else {
-                                clip_top = 1;
-                                b = (byte)((char)p9 - (char)clip_left);
-                                p8 = (long)b;
+                                state = 1;
+                                b = (byte)((char)xpos - (char)clip_left);
                                 dst += b;
                                 if ((b & 1) != 0)
                                     dither = (byte)(dither != 1);
                             }
                         }
                     } else {
-                        p9 += y;
-                        if (clip_left < p9) {
-                            if (clip_right < p9) {
-                                clip_top = 2;
+                        xpos += y;
+                        if (clip_left < xpos) {
+                            if (clip_right < xpos) {
+                                state = 2;
                                 b = (byte)((char)clip_right -
                                            (char)clip_left + 1);
                                 if (dither != 0) {
@@ -2466,7 +2467,6 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
                                     b = (byte)((char)clip_right -
                                                (char)clip_left);
                                 }
-                                p8 = (long)b;
                                 dither = (byte)(b & 1);
                                 end = dst + b;
                                 while (dst < end) {
@@ -2478,13 +2478,12 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
                                 src += (unsigned int)y;
                                 goto left_done;
                             } else {
-                                clip_top = 1;
-                                b = (byte)((char)p9 - (char)clip_left);
+                                state = 1;
+                                b = (byte)((char)xpos - (char)clip_left);
                                 if (dither != 0) {
                                     --b;
                                     ++dst;
                                 }
-                                p8 = (long)b;
                                 dither = (byte)(b & 1);
                                 end = dst + b;
                                 while (dst < end) {
@@ -2500,12 +2499,12 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
                 } else {
                     y >>= 1;
                     if (y == 0) {
-                        clip_top = 3;
+                        state = 3;
                     } else {
-                        p9 += y;
-                        if (clip_left < p9) {
-                            if (clip_right < p9) {
-                                clip_top = 2;
+                        xpos += y;
+                        if (clip_left < xpos) {
+                            if (clip_right < xpos) {
+                                state = 2;
                                 b = (byte)((char)clip_right -
                                            (char)clip_left + 1);
                                 if (dither != 0) {
@@ -2513,7 +2512,6 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
                                     b = (byte)((char)clip_right -
                                                (char)clip_left);
                                 }
-                                p8 = (long)b;
                                 dither = (byte)(b & 1);
                                 end = dst + b;
                                 while (dst < end) {
@@ -2523,13 +2521,12 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
                                 if (dither != 0)
                                     --dst;
                             } else {
-                                clip_top = 1;
-                                b = (byte)((char)p9 - (char)clip_left);
+                                state = 1;
+                                b = (byte)((char)xpos - (char)clip_left);
                                 if (dither != 0) {
                                     --b;
                                     ++dst;
                                 }
-                                p8 = (long)b;
                                 dither = (byte)(b & 1);
                                 end = dst + b;
                                 while (dst < end) {
@@ -2544,36 +2541,35 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
                     }
                 }
             left_done:
-                if (clip_top != 0)
+                if (state != 0)
                     break;
             } while (true);
         } else {
-            clip_top = 1;
+            state = 1;
         }
-        clip_top = (byte)clip_top - 1;
-        while (clip_top == 0) {
+        --state;
+        while (state == 0) {
             y = (long)*src++;
             if ((y & 1) == 1) {
                 y >>= 1;
                 if (y == 0) {
                     b = *src;
-                    p9 += (unsigned int)b;
+                    xpos += (unsigned int)b;
                     if ((b & 1) != 0)
                         dither = (byte)(dither != 1);
                     dst += b;
                     ++src;
-                    if (clip_right < p9)
-                        clip_top = 1;
+                    if (clip_right < xpos)
+                        state = 1;
                 } else {
-                    p9 += y;
-                    if (clip_right < p9) {
-                        clip_top = 1;
-                        b = (byte)((char)clip_right - (char)p9 + 1 + y);
+                    xpos += y;
+                    if (clip_right < xpos) {
+                        state = 1;
+                        b = (byte)((char)clip_right - (char)xpos + 1 + y);
                         if (dither != 0) {
                             --b;
                             ++dst;
                         }
-                        p8 = (long)b;
                         dither = (byte)(b & 1);
                         end = dst + b;
                         while (dst < end) {
@@ -2588,7 +2584,6 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
                             --b;
                             ++dst;
                         }
-                        p8 = (long)b;
                         dither = (byte)(b & 1);
                         end = dst + b;
                         while (dst < end) {
@@ -2603,17 +2598,16 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
             } else {
                 y >>= 1;
                 if (y == 0) {
-                    clip_top = 3;
+                    state = 3;
                 } else {
-                    p9 += y;
-                    if (clip_right < p9) {
-                        clip_top = 1;
-                        b = (byte)((char)clip_right - (char)p9 + 1 + y);
+                    xpos += y;
+                    if (clip_right < xpos) {
+                        state = 1;
+                        b = (byte)((char)clip_right - (char)xpos + 1 + y);
                         if (dither != 0) {
                             --b;
                             ++dst;
                         }
-                        p8 = (long)b;
                         dither = (byte)(b & 1);
                         end = dst + b;
                         while (dst < end) {
@@ -2628,7 +2622,6 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
                             --b;
                             ++dst;
                         }
-                        p8 = (long)b;
                         dither = (byte)(b & 1);
                         end = dst + b;
                         while (dst < end) {
@@ -2643,8 +2636,8 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
             }
         }
 
-        clip_top = (byte)(clip_top - 1);
-        while (clip_top == 0) {
+        --state;
+        while (state == 0) {
             y = (long)*src++;
             if ((y & 1) == 1) {
                 y >>= 1;
@@ -2655,7 +2648,7 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
             } else {
                 y >>= 1;
                 if (y == 0)
-                    clip_top = 2;
+                    state = 2;
                 else
                     ++src;
             }
