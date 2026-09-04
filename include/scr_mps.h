@@ -110,13 +110,6 @@ public:
     virtual long handle_timer_command(unsigned int, long);
     void fillPlayers();
     void updateSummary();
-    char* get_string(int);
-    char* get_string(int, char*, int);
-    void setup_popup_help();
-    void OKDialog(char*, int, int, int);
-    void ErrorDialog(int, int, int, int);
-    void popupOKDialog(int, int, int, int);
-    void popupOKDialog(char*, int, int, int);
 };
 
 typedef char scr_mps_setup_screen_size_check[

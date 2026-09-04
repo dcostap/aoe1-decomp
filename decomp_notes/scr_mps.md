@@ -66,3 +66,14 @@ that `004A2060 startGame` has 67 differing bytes and that `004A27A0
 calcRandomPositions` has one differing byte. Both keep their owning symbols,
 boundaries, calls, and relocations. Pending TPlayer `taiinfmd` and `taibldmd`
 rows were not included in this audit.
+
+## 2026-09-04 header surface review
+
+`include/scr_mps.h` no longer declares seven duplicate panel methods. The
+duplicate declarations hid inherited `TPanel` and `TEasy_Panel` methods without
+source definitions. The affected closure covers `scr_cj`, `scr_mps`, `scr_sels`,
+`scr_set`, `scr_sing`, and `tribegam`.
+
+The six-group audit with `--jobs 1` reports 171 matching results. It reports no
+new exact-function regression. The target `004A2D50` bytes stay at 338
+differences. Its rebuilt calls now use the original base symbols.
