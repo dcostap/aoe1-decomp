@@ -1,0 +1,95 @@
+# Exact candidate from worker wrap-alpha-318 pass 3.
+# Target: 004F13F0 evaluateCivilianDistribution.
+# Exact result: MATCH, 0.0000%, 514/514 bytes, 13/13 calls, valid owner,
+# valid boundaries and relocations with declaration-only ManagedArray::resize.
+# Closure result: one-job taitacmd closure reported 185 matching results and
+# no matching-owner regression. Rejected because resizeInline is an artificial
+# compiler-context helper with no binary or period-source owner.
+
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 99ff66a92..82c2fb69c 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -34,10 +34,29 @@ public:
+     T& operator[](int index)
+     {
+         if (index > this->maximumSizeValue - 1)
+-            this->resize(index + 1);
++            this->resizeInline(index + 1);
+         return this->value[index];
+     }
+ 
++    int resizeInline(int new_size)
++    {
++        T* new_value = new T[new_size];
++        if (new_value == 0)
++            return 0;
++
++        int i;
++        for (i = 0;
++             i < this->maximumSizeValue && i < new_size;
++             i++) {
++            new_value[i] = this->value[i];
++        }
++
++        delete[] this->value;
++        this->value = new_value;
++        this->maximumSizeValue = new_size;
++        return 1;
++    }
++
+     int enlarge(int amount)
+     {
+         this->desiredNumberValue += amount;
+@@ -136,26 +155,7 @@ public:
+     }
+ 
+ public:
+-    // PDB marks resize protected. Reconstructed callers still require public
+-    // access, so keep the body here while the source-access boundary is open.
+-    int resize(int new_size)
+-    {
+-        T* new_value = new T[new_size];
+-        if (new_value == 0)
+-            return 0;
+-
+-        int i;
+-        for (i = 0;
+-             i < this->maximumSizeValue && i < new_size;
+-             i++) {
+-            new_value[i] = this->value[i];
+-        }
+-
+-        delete[] this->value;
+-        this->value = new_value;
+-        this->maximumSizeValue = new_size;
+-        return 1;
+-    }
++    int resize(int new_size);
+ 
+ public:
+     T* value;
+ diff --git a/src/taitacmd.cpp b/src/taitacmd.cpp
+index d73c43dc3..356e939dd 100644
+--- a/src/taitacmd.cpp
++++ b/src/taitacmd.cpp
+@@ -3226,11 +3226,17 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
+     percentExplored = (int)(this->md->player->visible->percentExplored() * 100.0f);
+ 
+     list = &this->playersToAttack;
+-    numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1, (*list)[0]);
++    if (list->maximumSizeValue - 1 < 0) {
++        list->resize(1);
++    }
++    numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1, list->value[0]);
+ 
+     if (this->civilians.numberValue >= 3) {
+     list = &this->civilians;
+-    if (this->md->informationAI.fullyExploredZone((*list)[0]) == 1) {
++    if (list->maximumSizeValue - 1 < 0) {
++        list->resize(1);
++    }
++    if (this->md->informationAI.fullyExploredZone(list->value[0]) == 1) {
+         zero = 0;
+         this->civilianExplorers.desiredNumberValue = (int)ceil((float)((double)this->sn[0] * this->civilians.numberValue) * 0.01f);
+         desired = this->numberSoldierExplorers();
