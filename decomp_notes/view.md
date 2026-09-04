@@ -140,3 +140,9 @@ at `+0xE0/+0xE4`. Scroll methods follow at `+0xE8` through `+0xF4`, and
 
 The full affected audit kept all 1,789 matching owners exact. It also made
 `0053A0D0 start_scroll_view` and `0053A9C0 end_scroll_view` exact.
+
+## Packed border context
+
+Use `tile->border_type | (tile->border_shape << 4)` without an intermediate
+byte cast. This keeps the packed semantics and preserves exact tile-picture
+code generation.

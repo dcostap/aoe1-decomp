@@ -2871,7 +2871,7 @@ int RGE_View::draw_tile(RGE_Tile* tile, unsigned char terrain_type,
     terrain_draw = 1;
     result = 0;
     overlay_available = 0;
-    border_info = tile->border_type;
+    border_info = tile->border_type | (tile->border_shape << 4);
     border_type = border_info & 0x0F;
 
     if (border_type != 0) {

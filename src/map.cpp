@@ -1478,7 +1478,7 @@ void RGE_Map::load_terrain_types(char* filename, RGE_Sound** sounds)
         fscanf(local_38, (char*)"%hd", &this->num_terrain);
         short terrain_count = this->num_terrain - 1;
         if (terrain_count >= 0) {
-            int resource_id = (int)terrain_count + 1;
+            long resource_id = (int)terrain_count + 1;
             do {
                 short border_num;
                 short sound_id;
