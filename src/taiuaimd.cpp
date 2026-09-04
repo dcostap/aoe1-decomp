@@ -860,10 +860,10 @@ already_attacking:
 
             int objectType = this->convertToLOSResourceType(type);
             int result;
-            if (objectType == -1) {
-                result = this->closestObject(type, -1, -1, -1, 0);
-            } else {
+            if (objectType != -1) {
                 result = this->closestResourceObject(objectType, 0);
+            } else {
+                result = this->closestObject(type, -1, -1, -1, 0);
             }
             if (result != -1) {
                 if (this->huntObject(result, 1) == 1) {
