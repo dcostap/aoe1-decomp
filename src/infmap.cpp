@@ -528,8 +528,7 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
                             switch (direction) {
                             case 0:
                                 --neighborX;
-                                --neighborY;
-                                break;
+                                goto first_direction_case_7;
                             case 1:
                             case 2:
                                 ++neighborX;
@@ -543,6 +542,7 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
                                 --neighborX;
                                 break;
                             case 7:
+                            first_direction_case_7:
                                 --neighborY;
                                 break;
                             }
@@ -567,7 +567,7 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
                         switch (direction) {
                         case 0:
                             --neighborX;
-                            break;
+                            goto direction_case_7;
                         case 1:
                         case 2:
                             ++neighborX;
@@ -581,6 +581,7 @@ int InfluenceMap::connectionsIncluding(const XYPoint& min, const XYPoint& max,
                             --neighborX;
                             break;
                         case 7:
+                        direction_case_7:
                             --neighborY;
                             break;
                         }
