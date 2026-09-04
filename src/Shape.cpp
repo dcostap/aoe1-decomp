@@ -1606,31 +1606,33 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                                   long clip_top, long clip_left, long y,
                                   long x, long clip_bottom)
 {
-    long pitch = area->AlignedWidth() * area->Orien;
+    long width = area->AlignedWidth() * area->Orien;
     byte* src = (byte*)(this->shape_header + 1);
-    byte* save_buffer;
+    byte* dst;
+    byte count;
     if (area->Orien < 1)
-        save_buffer = area->Bits +
-                      (y - area->Height + 1) * pitch + x + 1;
+        dst = area->Bits +
+                      (y - area->Height + 1) * width + x + 1;
     else
-        save_buffer = area->Bits + y * pitch + x + 1;
+        dst = area->Bits + y * width + x + 1;
+    byte* save_buffer = dst;
 
     long row = clip_top;
-    if (row < y) {
-        long skip = y - row;
+    if (clip_top < y) {
+        long skip = y - clip_top;
         row += skip;
         do {
             byte done = 0;
             do {
                 byte code = *src++;
                 if ((code & 1) == 1) {
-                    byte count = code >> 1;
+                    count = code >> 1;
                     if (count)
                         src += count;
                     else
                         ++src;
                 } else {
-                    byte count = code >> 1;
+                    count = code >> 1;
                     if (count == 0)
                         done = 1;
                     else
@@ -1646,21 +1648,20 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
             long xpos = clip_right;
             char state;
 
-            state = 0;
             if (xpos > x) {
+                state = 0;
                 while (state == 0) {
                     byte code = *src++;
                     if ((code & 1) == 1) {
-                        byte count = code >> 1;
+                        count = code >> 1;
                         if (count == 0) {
-                            count = *src++;
-                            xpos -= count;
+                            xpos -= *src++;
                             if (xpos <= x) {
                                 if (xpos < clip_left)
                                     state = 2;
                                 else {
                                     state = 1;
-                                    save_buffer += xpos - x;
+                                    dst += xpos - x;
                                 }
                             }
                         } else {
@@ -1673,7 +1674,7 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                                     if ((unsigned char)copy_count > 0) {
                                         copy_count &= 0xff;
                                         do {
-                                            *--save_buffer = *src++;
+                                            *--dst = *src++;
                                         } while (--copy_count != 0);
                                     }
                                     src += clip_left - xpos;
@@ -1685,7 +1686,7 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                                     if ((unsigned char)copy_count > 0) {
                                         copy_count &= 0xff;
                                         do {
-                                            *--save_buffer = *src++;
+                                            *--dst = *src++;
                                         } while (--copy_count != 0);
                                     }
                                 }
@@ -1694,7 +1695,7 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                             }
                         }
                     } else {
-                        byte count = code >> 1;
+                        count = code >> 1;
                         if (count == 0) {
                             state = 3;
                         } else {
@@ -1703,13 +1704,13 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                                 if (xpos < clip_left) {
                                     long visible = x - clip_left + 1;
                                     state = 2;
-                                    save_buffer -= visible;
-                                    memset(save_buffer, *src, visible);
+                                    dst -= visible;
+                                    memset(dst, *src, visible);
                                 } else {
                                     long visible = x - xpos;
                                     state = 1;
-                                    save_buffer -= visible;
-                                    memset(save_buffer, *src, visible);
+                                    dst -= visible;
+                                    memset(dst, *src, visible);
                                 }
                             }
                             ++src;
@@ -1724,13 +1725,13 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
             while (state == 0) {
                 byte command = *src++;
                 if ((command & 1) == 1) {
-                    byte count = command >> 1;
+                    count = command >> 1;
                     if (count == 0) {
-                        count = *src++;
-                        xpos -= count;
-                        save_buffer -= count;
+                        byte skip_count = *src++;
+                        xpos -= skip_count;
+                        dst -= skip_count;
                         if (xpos < clip_left)
-                            state = 1;
+                            state = command & 1;
                     } else {
                         xpos -= count;
                         if (xpos < clip_left) {
@@ -1741,7 +1742,7 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                             if ((unsigned char)visible > 0) {
                                 visible &= 0xff;
                                 do {
-                                    *--save_buffer = *src++;
+                                    *--dst = *src++;
                                 } while (--visible != 0);
                             }
                             src += count - (xpos - clip_left + count);
@@ -1749,13 +1750,13 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                             unsigned int copy_count = count;
                             if (command != 0) {
                                 do {
-                                    *--save_buffer = *src++;
+                                    *--dst = *src++;
                                 } while (--copy_count != 0);
                             }
                         }
                     }
                 } else {
-                    byte count = command >> 1;
+                    count = command >> 1;
                     if (count == 0) {
                         state = 3;
                     } else {
@@ -1763,11 +1764,11 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                         if (xpos < clip_left) {
                             long visible = xpos - clip_left + count;
                             state = 1;
-                            save_buffer -= visible;
-                            memset(save_buffer, *src, visible);
+                            dst -= visible;
+                            memset(dst, *src, visible);
                         } else {
-                            save_buffer -= count;
-                            memset(save_buffer, *src, count);
+                            dst -= count;
+                            memset(dst, *src, count);
                         }
                         ++src;
                     }
@@ -1778,13 +1779,13 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
             while (state == 0) {
                 byte code = *src++;
                 if ((code & 1) == 1) {
-                    byte count = code >> 1;
+                    count = code >> 1;
                     if (count)
                         src += count;
                     else
                         ++src;
                 } else {
-                    byte count = code >> 1;
+                    count = code >> 1;
                     if (count == 0)
                         state = 2;
                     else
@@ -1792,7 +1793,8 @@ byte TShape::shape_mirror_clipped(TDrawArea* area, long clip_right,
                 }
             }
 
-            save_buffer += pitch;
+            save_buffer += width;
+            dst = save_buffer;
         } while (--rows);
     }
     return 1;
