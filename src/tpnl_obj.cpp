@@ -844,7 +844,6 @@ long TRIBE_Panel_Object::handle_idle()
     short work_target;
     short orig_val;
     float cur_fval;
-    short temp;
     short work_type;
     TRIBE_Building_Object* bldg;
     short progress_value;
@@ -928,17 +927,23 @@ identity_done:
         changed = 1; do_buttons = 1;
     }
     if (!changed || !do_buttons) {
-        short progress = bldg->get_construction_progress();
-        if ((float)progress != this->save_build_pts) {
-            changed = 1;
-            if ((float)progress > 99.0f) do_buttons = 1;
+        {
+            short temp = bldg->get_construction_progress();
+            if ((float)temp != this->save_build_pts) {
+                changed = 1;
+                if ((float)temp > 99.0f) do_buttons = 1;
+            }
         }
     }
     if (!changed || !do_buttons) {
         bldg->work_status(work_type, work_target, progress_value, name, 100);
-        if (work_type != 0x67 && work_type != 0x66 && bldg->production_queue_status(work_target, temp) != 0) {
-            work_type = 0x66;
-            progress_value = temp;
+        {
+            short temp;
+            if (work_type != 0x67 && work_type != 0x66 &&
+                bldg->production_queue_status(work_target, temp) != 0) {
+                work_type = 0x66;
+                progress_value = temp;
+            }
         }
         if (work_type == this->save_work_type &&
             work_target == this->save_work_target &&
