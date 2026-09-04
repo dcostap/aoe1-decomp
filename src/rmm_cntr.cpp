@@ -30,7 +30,7 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
     long land_num)
 {
     long radius;
-    long i;
+    long index;
     uchar not_done;
     long index2;
     info.land_num = land_num;
@@ -69,9 +69,9 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
         info.wall_4_avoidance_line = this->map_height - 9;
         info.wall_fade = 20; break;
     }
-    long tiles = radius * this->map_width * this->map_height / 100;
+    long land_tile_num = radius * this->map_width * this->map_height / 100;
     float radius2 = (float)(this->map_width - 16) / sqrt((float)land_num) * 0.8;
-    float distance2 = radius2 * radius2;
+    float bound_square = radius2 * radius2;
     long min_x = (long)(this->map_width / 2 - radius2 * 0.9);
     long min_y = (long)(this->map_height / 2 - radius2 * 0.9);
     long max_x = (long)(this->map_width / 2 + radius2 * 0.9);
@@ -80,7 +80,7 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
     if (min_y <= 8) min_y = 9;
     if (max_x >= this->map_width - 9) max_x = this->map_width - 10;
     if (max_y >= this->map_height - 9) max_y = this->map_height - 10;
-    i = 0;
+    index = 0;
     if (0 < land_num) {
         RGE_Land_Info_Line* land = info.land;
         do {
@@ -95,7 +95,7 @@ void RGE_RMM_Controller::add_land_module(RGE_Land_Info& info, long type,
             case 0:
                 land->terrain_type = 0; land->area = 7;
 set_land_defaults:
-                land->base_size = 5; land->zone = (uchar)i; break;
+                land->base_size = 5; land->zone = (uchar)index; break;
             }
             long x;
             long y;
@@ -106,24 +106,24 @@ set_land_defaults:
                 if (x > min_x && x < max_x && y > min_y && y < max_y) not_done = 1;
                 else {
                     index2 = 0;
-                    for (; index2 < i; ++index2) {
+                    for (; index2 < index; ++index2) {
                         RGE_Land_Info_Line& prior = info.land[index2];
                         long dx = x - prior.x;
                         long dy = y - prior.y;
                         if (dx < 0) dx = -dx;
                         if (dy < 0) dy = -dy;
-                        if ((float)(dx * dx + dy * dy) <= distance2) {
-                            if (!not_done && index2 == i - 1) { prior.y = y; prior.x = x; }
+                        if ((float)(dx * dx + dy * dy) <= bound_square) {
+                            if (!not_done && index2 == index - 1) { prior.y = y; prior.x = x; }
                             not_done = 1;
                         }
                     }
                 }
             } while (not_done);
             land->x = x; land->y = y;
-            land->land_size = tiles / info.land_num;
-            ++i;
+            land->land_size = land_tile_num / info.land_num;
+            ++index;
             ++land;
-        } while (i < info.land_num);
+        } while (index < info.land_num);
     }
     new RGE_RMM_Land_Generator(this->map, this, &info);
 }
