@@ -175,8 +175,8 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
         }
 
         // Check current tile terrain.
-        RGE_Tile** rows3 = this->map_row_offset;
-        unsigned char terrain_type = rows3[ty2][y].terrain_type & 0x1F;
+        unsigned char terrain_type =
+            this->map_row_offset[ty2][y].terrain_type & 0x1F;
 
         if (terrain_type == 1 || terrain_type == 0x16) {
             // Water tile - generate random area around it.
@@ -224,29 +224,29 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
         } else {
             // Land tile - push adjacent water tiles to stack.
             if (y > 0) {
-                RGE_Tile** rows5 = this->map_row_offset;
-                unsigned char adj = rows5[ty2][y - 1].terrain_type & 0x1F;
+                unsigned char adj =
+                    this->map_row_offset[ty2][y - 1].terrain_type & 0x1F;
                 if (adj == 1 || adj == 0x16) {
                     this->push_stack(stack, y - 1, ty2, 0.0f, 0.0f);
                 }
             }
             if (y < this->map_width - 1) {
-                RGE_Tile** rows5 = this->map_row_offset;
-                unsigned char adj = rows5[ty2][y + 1].terrain_type & 0x1F;
+                unsigned char adj =
+                    this->map_row_offset[ty2][y + 1].terrain_type & 0x1F;
                 if (adj == 1 || adj == 0x16) {
                     this->push_stack(stack, y + 1, ty2, 0.0f, 0.0f);
                 }
             }
             if (ty2 > 0) {
-                RGE_Tile** rows5 = this->map_row_offset;
-                unsigned char adj = rows5[ty2 - 1][y].terrain_type & 0x1F;
+                unsigned char adj =
+                    this->map_row_offset[ty2 - 1][y].terrain_type & 0x1F;
                 if (adj == 1 || adj == 0x16) {
                     this->push_stack(stack, y, ty2 - 1, 0.0f, 0.0f);
                 }
             }
             if (ty2 < this->map_height - 1) {
-                RGE_Tile** rows5 = this->map_row_offset;
-                unsigned char adj = rows5[ty2 + 1][y].terrain_type & 0x1F;
+                unsigned char adj =
+                    this->map_row_offset[ty2 + 1][y].terrain_type & 0x1F;
                 if (adj == 1 || adj == 0x16) {
                     this->push_stack(stack, y, ty2 + 1, 0.0f, 0.0f);
                 }
@@ -254,8 +254,7 @@ void RGE_RMM_Shallows_Generator::make_tribe_connections(long param_1, long param
         }
 
         // Mark current tile on block map.
-        unsigned char** block_rows = (unsigned char**)this->search_map_rows;
-        block_rows[ty][tx1] = 0xFF;
+        this->search_map_rows[ty][tx1] = 0xFF;
 
         tx1 = y;
         ty = ty2;
