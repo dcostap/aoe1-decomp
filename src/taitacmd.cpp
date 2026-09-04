@@ -9900,15 +9900,13 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
     TacticalAIGroup* group;
     TacticalAIGroup* best;
     int bestDistance;
-    TacticalAIGroup* sentinel;
 
     group = this->groups.next;
     best = 0;
     bestDistance = -1;
 
     if (group != &this->groups) {
-        sentinel = &this->groups;
-        do {
+        while (1) {
             if (group == 0)
                 return best;
 
@@ -9918,18 +9916,15 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
                     int valid = 1;
                     TacticalAIGroup* assist = this->groups.next;
 
-                    if (assist != sentinel) {
-                        do {
-                            if (assist == 0)
-                                break;
-                            if (!valid)
-                                goto next_group;
-                            if (group->id() == assist->assistGroupID())
-                                valid = 0;
-                            assist = assist->next;
-                            sentinel = &this->groups;
-                        } while (assist != sentinel);
-                    }
+                    do {
+                        if (assist == &this->groups || assist == 0)
+                            break;
+                        if (!valid)
+                            goto next_group;
+                        if (assist->assistGroupID() == group->id())
+                            valid = 0;
+                        assist = assist->next;
+                    } while (assist != &this->groups);
 
                     if (!valid)
                         goto next_group;
@@ -9958,8 +9953,9 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
 
         next_group:
             group = group->next;
-            sentinel = &this->groups;
-        } while (group != sentinel);
+            if (group == &this->groups)
+                break;
+        }
     }
 
     return best;

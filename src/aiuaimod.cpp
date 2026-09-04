@@ -1488,7 +1488,7 @@ int UnitAIModule::bestUnitToAttack(int param_1, int param_2, float* param_3)
                     ((param_1 != 0 && numberObjectsInRange != 0) ||
                      target->master_obj->object_group != 0x1B) &&
                     ((target->master_obj->object_group != 3 ||
-                      target->hp > 1.0f ||
+                      target->hp > DAT_0056ebd0 ||
                       (this->objectValue->master_obj->id != 0x23 &&
                        this->objectValue->master_obj->id != 0x24))) &&
                     this->canAttackUnit(target) != 0 &&
@@ -1609,7 +1609,7 @@ skipCurrentTarget:
                     ((param_1 != 0 && numberObjectsInRange != 0) ||
                      target->master_obj->object_group != 0x1B) &&
                     ((target->master_obj->object_group != 3 ||
-                      target->hp > 1.0f ||
+                      target->hp > DAT_0056ebd0 ||
                       (this->objectValue->master_obj->id != 0x23 &&
                        this->objectValue->master_obj->id != 0x24))) &&
                     this->canAttackUnit(target) != 0 &&
