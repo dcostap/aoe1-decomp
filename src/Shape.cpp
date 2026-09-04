@@ -473,69 +473,76 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
                 long original_x1 = shape_x1;
                 long original_y1 = shape_y1;
 
-                if (x0 < rect.left)
-                    x0 = rect.left;
-                if (y0 < rect.top)
-                    y0 = rect.top;
+                x = x0;
+                y = y0;
+                if (x < rect.left)
+                    x = rect.left;
+                if (y < rect.top)
+                    y = rect.top;
                 if (shape_x1 > rect.right)
                     shape_x1 = rect.right;
                 if (shape_y1 > rect.bottom)
                     shape_y1 = rect.bottom;
-                if (x0 < 0)
-                    x0 = 0;
-                if (y0 < 0)
-                    y0 = 0;
+                if (x < 0)
+                    x = 0;
+                if (y < 0)
+                    y = 0;
                 if (shape_x1 >= td->Width)
                     shape_x1 = td->Width - 1;
                 if (shape_y1 >= td->Height)
                     shape_y1 = td->Height - 1;
 
-                if (x0 <= shape_x1 && y0 <= shape_y1) {
-                    if (x0 == original_x0 && y0 == original_y0 &&
+                if (x <= shape_x1 && y <= shape_y1) {
+                    if (x == x0 && y == y0 &&
                         shape_x1 == original_x1 && shape_y1 == original_y1) {
                         switch ((unsigned char)mode) {
                         case 2:
                             if (table == 0) {
-                                long draw_x = shape_x1;
-                                long draw_y = shape_y1;
-                                return this->shape_draw_unclipped(
+                                long draw_x = original_x0;
+                                long draw_y = original_y0;
+                                ret_num = this->shape_draw_unclipped(
                                     td, draw_x, draw_y, shape_num);
+                            } else {
+                                ret_num = this->shape_shadow_unclipped(
+                                    td, original_x0, original_y0, table);
                             }
-                            return this->shape_shadow_unclipped(
-                                td, original_x0, original_y0, table);
+                            break;
                         case 1:
                             if (table == 0) {
-                                long draw_x = x0;
-                                long draw_y = y0;
-                                return this->shape_draw_unclipped(
+                                long draw_x = original_x0;
+                                long draw_y = original_y0;
+                                ret_num = this->shape_draw_unclipped(
                                     td, draw_x, draw_y, shape_num);
+                            } else {
+                                ret_num = this->shape_color_trans_unclipped(
+                                    td, original_x0, original_y0,
+                                    shape_num, table);
                             }
-                            return this->shape_color_trans_unclipped(
-                                td, original_x0, original_y0, shape_num,
-                                table);
+                            break;
                         case 0: {
-                            long draw_x = original_x0;
-                            long draw_y = original_y0;
-                            return this->shape_draw_unclipped(
-                                td, draw_x, draw_y, shape_num);
+                            ret_num = this->shape_draw_unclipped(
+                                td, original_x0, original_y0,
+                                shape_num);
+                            break;
                         }
                         default:
-                            return ret_num;
+                            break;
                         }
+                        return ret_num;
                     }
 
                     switch ((unsigned char)mode) {
                     case 2:
                         if (table != 0)
                             return this->shape_shadow_clipped(
-                                td, original_x0, original_y0, x0, y0,
+                                td, original_x0, original_y0, x, y,
                                 shape_x1, shape_y1, table);
                         break;
                     case 1:
                         if (table != 0)
                             return this->shape_color_trans_clipped(
                                 td, original_x0, original_y0, shape_num,
-                                x0, y0, shape_x1, shape_y1, table);
+                                x, y, shape_x1, shape_y1, table);
                         break;
                     case 0:
                         break;
@@ -543,8 +550,8 @@ byte TShape::shape_draw(TDrawArea* td, long x, long y, long shape_num,
                         return ret_num;
                     }
                     return this->shape_draw_clipped(
-                        td, original_x0, original_y0, x0, y0,
-                        shape_x1, shape_y1);
+                        td, original_x0, original_y0, x, y, shape_x1,
+                        shape_y1);
                 }
             }
         }
@@ -2243,7 +2250,7 @@ byte TShape::shape_dither(TDrawArea* area, long x, long y, long shape_num,
     if (sy2 >= area->Height)
         sy2 = area->Height - 1;
 
-    if (x <= y && shape_num <= sy2) {
+    if (y >= x && sy2 >= shape_num) {
         if (x == sx1 && shape_num == sy1 && y == sx2 && sy2 == sy2_orig)
             return shape_dithered_unclipped(area, sx1, sy1, param_5, param_6);
 
