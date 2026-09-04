@@ -1371,9 +1371,11 @@ void __cdecl DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm,
         else
             nPalColors = bih->biClrUsed;
         sizeImage = bih->biSizeImage;
-        if (!sizeImage)
-            sizeImage = ((((DWORD)bih->biWidth * (DWORD)bih->biBitCount + 31) >> 3) &
+        if (!sizeImage) {
+            DWORD bitCountValue = bih->biBitCount;
+            sizeImage = ((((DWORD)bih->biWidth * bitCountValue + 31) >> 3) &
                 0x1ffffffc) * bih->biHeight;
+        }
         if (bih->biCompression == 3)
             bits = (BYTE*)bih + bih->biSize + 12;
         else
@@ -1408,45 +1410,43 @@ void __cdecl DibMapToPalette(BITMAPINFOHEADER* bih, void* hbm,
                     DIB_RGB(r, g, zeroBlue));
             } while (zeroIndex == 0);
         }
+        i = 0;
         if (0 < nPalColors) {
             BYTE* p = (BYTE*)rgb + 2;
-            for (i = 0; i < nPalColors; i++, p += 4) {
+            for (; i < nPalColors; i++, p += 4) {
                 if (!transparent) {
                     table[i] = (BYTE)GetNearestPaletteIndex(hbm,
-                        DIB_RGB(p[-2], p[-1], p[0]));
+                        RGB(p[0], p[-1], p[-2]));
                 } else if (i == (BYTE)hitEnd) {
                     table[i] = 0;
                 } else {
                     BYTE v = (BYTE)GetNearestPaletteIndex(hbm,
-                        DIB_RGB(p[-2], p[-1], p[0]));
+                        RGB(p[0], p[-1], p[-2]));
                     table[i] = v;
                     if (v == 0) table[i] = zeroIndex;
                 }
             }
         }
         bih->biClrUsed = nDibColors;
-        BYTE* oldBits = bits;
         if (nPalColors < nDibColors) {
             void* (__stdcall *getHandle)(const void*) = GlobalHandle;
             GlobalUnlock(getHandle(bih));
             GlobalLock(GlobalReAlloc(getHandle(bih),
                 bih->biSize + nDibColors * 4 + sizeImage, 0));
 
-            if (bih->biCompression == 3) {
-                bits = (BYTE*)bih + bih->biSize + 12;
-            } else
-                bits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
-            memmove(bits, oldBits, sizeImage);
+            memmove((bih->biCompression == 3) ?
+                (BYTE*)bih + bih->biSize + 12 :
+                (BYTE*)bih + bih->biSize + bih->biClrUsed * 4,
+                bits, sizeImage);
             if (bih->biCompression == 3)
                 bits = (BYTE*)bih + bih->biSize + 12;
             else
                 bits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
         } else if (nPalColors > nDibColors) {
-            if (bih->biCompression == 3) {
-                bits = (BYTE*)bih + bih->biSize + 12;
-            } else
-                bits = (BYTE*)bih + bih->biSize + bih->biClrUsed * 4;
-            memcpy(bits, oldBits, sizeImage);
+            memcpy((bih->biCompression == 3) ?
+                (BYTE*)bih + bih->biSize + 12 :
+                (BYTE*)bih + bih->biSize + bih->biClrUsed * 4,
+                bits, sizeImage);
             void* (__stdcall *getHandle)(const void*) = GlobalHandle;
             GlobalUnlock(getHandle(bih));
             GlobalLock(GlobalReAlloc(getHandle(bih),
