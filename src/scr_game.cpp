@@ -824,10 +824,11 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
         panel_y = 0x28A;
         for (int panel_row = 0; panel_row < 2; ++panel_row) {
             panel_x = 0x88;
+            int button_index = panel_row * 6;
             for (int panel_column = 0; panel_column < 6; ++panel_column) {
-                int button_index = panel_row * 6 + panel_column;
                 this->button_panel[button_index]->set_fixed_position(panel_x, panel_y, 0x36, 0x36);
                 this->button_panel[button_index]->tribe_button_type = 0;
+                ++button_index;
                 panel_x += 0x36;
             }
             panel_y += 0x3A;
@@ -866,10 +867,11 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
         panel_y = 0x1E2;
         for (int panel_row = 0; panel_row < 2; ++panel_row) {
             panel_x = 0x88;
+            int button_index = panel_row * 6;
             for (int panel_column = 0; panel_column < 6; ++panel_column) {
-                int button_index = panel_row * 6 + panel_column;
                 this->button_panel[button_index]->set_fixed_position(panel_x, panel_y, 0x36, 0x36);
                 this->button_panel[button_index]->tribe_button_type = 0;
+                ++button_index;
                 panel_x += 0x36;
             }
             panel_y += 0x3A;
@@ -907,10 +909,11 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
         panel_y = 0x16A;
         for (int panel_row = 0; panel_row < 2; ++panel_row) {
             panel_x = 0x88;
+            int button_index = panel_row * 6;
             for (int panel_column = 0; panel_column < 6; ++panel_column) {
-                int button_index = panel_row * 6 + panel_column;
                 this->button_panel[button_index]->set_fixed_position(panel_x, panel_y, 0x36, 0x36);
                 this->button_panel[button_index]->tribe_button_type = 0;
+                ++button_index;
                 panel_x += 0x36;
             }
             panel_y += 0x3A;
