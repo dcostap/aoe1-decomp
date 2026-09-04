@@ -3221,11 +3221,7 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
     y -= this->render_rect.top;
     x -= this->render_rect.left;
 
-    pick_sizes = this->pick_list_size + 1;
-    pick_sizes[0] = 0;
-    pick_sizes[1] = 0;
-    pick_sizes[2] = 0;
-    pick_sizes[3] = 0;
+    level = max_level;
 
     freep[1] = 0;
     freep[2] = 0;
@@ -3240,12 +3236,17 @@ int RGE_View::pick_objects(int x, int y, int min_level, int max_level,
     head[3] = 0;
     head[4] = 0;
 
-    level = max_level;
+    pick_sizes = &this->pick_list_size[1];
+    pick_sizes[0] = 0;
+    pick_sizes[1] = 0;
+    pick_sizes[2] = 0;
+    pick_sizes[3] = 0;
+
     do {
         if (level < min_level) {
             int output_level = 1;
             head_ptr = head + 1;
-            for (; output_level < 5; ++output_level, ++head_ptr) {
+            for (; output_level <= 4; ++output_level, ++head_ptr) {
                 current = *head_ptr;
                 if (current != 0) {
                     RGE_Pick_Obj_Info* output = &Picked_Objects[total_picked];
