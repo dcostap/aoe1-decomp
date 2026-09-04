@@ -650,7 +650,7 @@ void PointMaker::AddingRect(int x, int y, int w, int h)
 
             iVar5 += Width;
             if (iVar3 >= 0) {
-                for (; iVar3 != 0; iVar3--) {
+                while (iVar3-- != 0) {
                     int prob_add = ProbabilityAdd;
                     if (iVar5 >= 1 && iVar5 < SizeArrays - 1) {
                         char* cell = ProbArray + iVar5;
