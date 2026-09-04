@@ -33,7 +33,10 @@ TMousePointer::TMousePointer(int mode)
     game_facet = 0;
     next_facet = 0;
     last_facet = 0;
-    new_save_rect = *save_rect_ptr;
+    new_save_rect.left = save_rect_ptr->left;
+    new_save_rect.top = save_rect_ptr->top;
+    new_save_rect.right = save_rect_ptr->right;
+    new_save_rect.bottom = save_rect_ptr->bottom;
     d_top = 0;
     d_left = 0;
     d_bottom = 0;
