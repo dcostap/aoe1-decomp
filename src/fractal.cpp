@@ -83,111 +83,105 @@ void PointMaker::DeleteMasks()
     operator delete(Mask_5x5);
 }
 
-void PointMaker::DrawMask(int param_1, int param_2, int param_3)
+void PointMaker::DrawMask(int x, int y, int size)
 {
-    int iVar1;
-    int cVar3;
-    char cVar4;
-    char* pcVar2;
+    int rows;
     int len;
-    int iVar6;
-    int iVar7;
-    int iVar8;
-    int iVar9;
+    char* maskptr;
+    int w;
+    int mapptr;
+    char* destination;
+    char value;
 
-    iVar9 = Width;
-    if (param_1 > iVar9) return;
-    if (param_2 > Height) return;
-    if (param_3 + 2 + param_1 < 0) return;
-    if (param_3 + 2 + param_2 < 0) return;
+    if (x > Width) return;
+    if (y > Height) return;
+    if (size + 2 + x < 0) return;
+    if (size + 2 + y < 0) return;
 
-    iVar7 = param_1;
-    iVar1 = param_3 + 2;
-    iVar6 = param_2;
-    if (param_3 == 2) {
-        if (iVar7 + 4 <= iVar9 && iVar7 < 0) {
-            iVar7 = 0;
+    len = size + 2;
+    if (size == 2) {
+        if (x + 4 <= Width && x < 0) {
+            x = 0;
         }
-        if (param_2 + 4 <= Height && param_2 < 0) {
-            iVar6 = 0;
+        if (y + 4 <= Height && y < 0) {
+            y = 0;
         }
     }
-    if (param_3 == 3) {
-        if (iVar7 + 5 <= iVar9 && iVar7 < 0) {
-            iVar7 = 0;
+    else if (size == 3) {
+        if (x + 5 <= Width && x < 0) {
+            x = 0;
         }
-        iVar6 = param_2;
-        iVar6 += (unsigned)(Height < 5);
+        y += (unsigned)(Height < 5);
     }
 
-    if (param_3 == 4) {
-        param_1 = (int)Mask_4x4;
-        param_2 = iVar7 + 6;
-        if (iVar9 < param_2) {
-            param_2 = iVar9 - iVar7;
-        } else if (iVar7 < 0) {
-            param_1 = param_1 - iVar7;
-            iVar7 = 0;
+    if (size == 4) {
+        maskptr = Mask_4x4;
+        if (x + 6 > Width) {
+            w = Width - x;
+        } else if (x < 0) {
+            maskptr -= x;
+            w = x + 6;
+            x = 0;
         } else {
-            param_2 = 6;
+            w = 6;
         }
-        iVar8 = iVar6 + 6;
-        if (Height < iVar8) {
-            iVar8 = Height - iVar6;
-        } else if (iVar6 < 0) {
-            param_1 = param_1 - iVar6 * iVar9;
-            iVar6 = 0;
+        if (y + 6 > Height) {
+            rows = Height - y;
+        } else if (y < 0) {
+            maskptr -= y * Width;
+            rows = y + 6;
+            y = 0;
         } else {
-            iVar8 = 6;
+            rows = 6;
         }
     } else {
-        param_1 = (int)Mask_5x5;
-        param_2 = iVar7 + 7;
-        if (iVar9 < param_2) {
-            param_2 = iVar9 - iVar7;
-        } else if (iVar7 < 0) {
-            param_1 = param_1 - iVar7;
-            iVar7 = 0;
+        maskptr = Mask_5x5;
+        if (x + 7 > Width) {
+            w = Width - x;
+        } else if (x < 0) {
+            maskptr -= x;
+            w = x + 7;
+            x = 0;
         } else {
-            param_2 = 7;
+            w = 7;
         }
-        iVar8 = iVar6 + 7;
-        if (Height < iVar8) {
-            iVar8 = Height - iVar6;
-        } else if (iVar6 < 0) {
-            param_1 = param_1 - iVar6 * iVar9;
-            iVar6 = 0;
+        if (y + 7 > Height) {
+            rows = Height - y;
+        } else if (y < 0) {
+            maskptr -= y * Width;
+            rows = y + 7;
+            y = 0;
         } else {
-            iVar8 = 7;
+            rows = 7;
         }
     }
 
-    iVar7 = iVar6 * iVar9 + iVar7;
-    for (; iVar8 != 0; iVar8--) {
-        if (param_2 > 0) {
-            iVar9 = iVar7;
-            param_3 = param_2;
-            len = param_1 - iVar7;
+    mapptr = y * Width + x;
+    while (rows-- != 0) {
+        if (w > 0) {
+            int map = mapptr;
+            int count = w;
+            int mask_offset = (int)maskptr - map;
             do {
-                cVar3 = *(char*)(len + iVar9);
-                if (iVar9 > 0 && iVar9 < SizeArrays - 1) {
-                    cVar4 = ProbArray[iVar9];
-                    pcVar2 = ProbArray + iVar9;
-                    if (cVar4 == 0) {
-                        *pcVar2 = (char)cVar3;
+                int mask = *(char*)(mask_offset + map);
+                if (map >= 1 && map < SizeArrays - 1) {
+                    value = ProbArray[map];
+                    destination = ProbArray + map;
+                    if (value == 0) {
+                        *destination = mask;
                         ProbabilityTiles++;
-                    } else if (cVar3 + (int)cVar4 < 0xFF) {
-                        *pcVar2 = (char)(cVar3 + cVar4);
+                    } else if (mask + (int)value < 0xFF) {
+                        *destination = (char)(mask + value);
                     } else {
-                        *pcVar2 = (char)-1;
+                        *destination = (char)-1;
                     }
                 }
-                iVar9++;
-                param_3--;
-            } while (param_3 != 0);
+                map++;
+                count--;
+            } while (count != 0);
         }
-        param_1 += iVar1;
-        iVar7 += Width;
+        maskptr += len;
+        mapptr += Width;
     }
 }
 

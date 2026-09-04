@@ -1,0 +1,37 @@
+# Exact candidate from worker wrap-alpha-099.
+# Target: 004F13F0 evaluateCivilianDistribution.
+# Exact result: MATCH, 0.0000%, 514/514 bytes, 13/13 calls, valid owner,
+# valid boundaries and relocations with the inline ManagedArray header.
+# Closure result: rejected as compiler-steering source. The const member-pointer
+# calls preserve the proven direct resize target, but the pointer aliases exist
+# only to prevent VC5 from inlining the shared body. Prefer the natural source
+# in the companion declaration-only candidate after shared closure repair.
+# A complete one-job taitacmd audit also regressed exact owner 004FB710 by four
+# bytes.
+
+diff --git a/src/taitacmd.cpp b/src/taitacmd.cpp
+index 6104b794d..3ce2f6a1a 100644
+--- a/src/taitacmd.cpp
++++ b/src/taitacmd.cpp
+@@ -3210,11 +3210,19 @@ void TribeTacticalAIModule::evaluateCivilianDistribution()
+     percentExplored = (int)(this->md->player->visible->percentExplored() * 100.0f);
+ 
+     list = &this->playersToAttack;
+-    numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1, (*list)[0]);
++    if (list->maximumSizeValue - 1 < 0) {
++        int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
++        (list->*resize)(1);
++    }
++    numberItems = this->md->informationAI.numberGameIDsOwnedBy(-1, list->value[0]);
+ 
+     if (this->civilians.numberValue >= 3) {
+     list = &this->civilians;
+-    if (this->md->informationAI.fullyExploredZone((*list)[0]) == 1) {
++    if (list->maximumSizeValue - 1 < 0) {
++        int (ManagedArray<int>::*resize)(int) = &ManagedArray<int>::resize;
++        (list->*resize)(1);
++    }
++    if (this->md->informationAI.fullyExploredZone(list->value[0]) == 1) {
+         zero = 0;
+         this->civilianExplorers.desiredNumberValue = (int)ceil((float)((double)this->sn[0] * this->civilians.numberValue) * 0.01f);
+         desired = this->numberSoldierExplorers();

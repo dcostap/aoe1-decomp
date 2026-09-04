@@ -11,7 +11,7 @@
     "0044AC80": {"status": "matching", "symbol": "??1PointMaker@@QAE@XZ"},
     "0044ACB0": {"status": "matching", "symbol": "?CreateMasks@PointMaker@@IAEXXZ"},
     "0044AF90": {"status": "matching", "symbol": "?DeleteMasks@PointMaker@@IAEXXZ"},
-    "0044AFE0": {"status": "scratch", "symbol": "?DrawMask@PointMaker@@IAEXHHH@Z"},
+    "0044AFE0": {"status": "matching", "symbol": "?DrawMask@PointMaker@@IAEXHHH@Z"},
     "0044B210": {"status": "matching", "symbol": "?ClearArrays@PointMaker@@QAEXXZ"},
     "0044B270": {"status": "matching", "symbol": "?DeleteArrays@PointMaker@@QAEXXZ"},
     "0044B2B0": {"status": "matching", "symbol": "?MakeArrays@PointMaker@@QAEXXZ"},
