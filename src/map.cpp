@@ -1952,28 +1952,28 @@ int RGE_Map::clear_terrain_object(RGE_Game_World* world, short row,
 }
 
 void RGE_Map::place_terrain_object(RGE_Player* player,
-                                   RGE_Game_World* world, short row, short col,
-                                   int object_id, int single_placement)
+                                   RGE_Game_World* gworld, short row, short col,
+                                   int obj_type_id, int FillFlag)
 {
     RGE_Master_Static_Object* master_obj;
-    int num_obj_type;
+    int end_i;
     int terrain;
     terrain = this->get_terrain(col, row);
-    num_obj_type = this->terrain_types[terrain].num_obj_type;
-    int terrain_i = 0;
+    end_i = this->terrain_types[terrain].num_obj_type;
+    int i = 0;
     float x;
     float y;
 
-    for (terrain_i = 0; terrain_i < num_obj_type; ++terrain_i) {
-        int object_type = (short)this->terrain_types[terrain].obj_types[terrain_i];
+    for (i = 0; i < end_i; ++i) {
+        int object_type = (short)this->terrain_types[terrain].obj_types[i];
         if (object_type != -1) {
             master_obj = player->master_objects[object_type];
-            short obj_density = this->terrain_types[terrain].obj_density[terrain_i];
+            short obj_density = this->terrain_types[terrain].obj_density[i];
             unsigned char obj_flag =
-                this->terrain_types[terrain].obj_placement_flag[terrain_i];
+                this->terrain_types[terrain].obj_placement_flag[i];
 
             if (master_obj != 0) {
-                if (single_placement == 0) {
+                if (FillFlag == 0) {
                     if (obj_density > 0) {
                         int density_left = obj_density;
                         do {
@@ -2011,7 +2011,7 @@ void RGE_Map::place_terrain_object(RGE_Player* player,
                             density_left -= 1000;
                         } while (obj_density > 0);
                     }
-                } else if (single_placement == 1) {
+                } else if (FillFlag == 1) {
                     if (obj_flag != 0) {
                         x = (float)(int)col - -0.5f;
                         y = (float)(int)row - -0.5f;
