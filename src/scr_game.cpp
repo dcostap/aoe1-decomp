@@ -791,12 +791,14 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
     this->message_panel5->set_active(1);
     this->message_panel6->set_active(1);
 
+    int* saved_score = save_score_active;
     for (int score_active_index = 0; score_active_index < 8; ++score_active_index) {
         TPanel* panel = this->score_panel[score_active_index];
         if (panel != 0) {
-            save_score_active[score_active_index] = panel->active;
+            *saved_score = panel->active;
             panel->set_active(1);
         }
+        ++saved_score;
     }
 
     short final_frame;
@@ -950,7 +952,7 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
         clock_y += 0x14;
     }
 
-    if (this->world->countdown_victory != 0) {
+    if (this->world->score_displayed != 0) {
         this->text_line_panel->set_positioning(TPanel::PositionLeftBottom, 4, 0, 0xB8, 4,
                                                0, 0, 0x22, 0x22,
                                                0, 0, 0, 0);
@@ -993,14 +995,14 @@ long TRIBE_Screen_Game::handle_size(long width, long height) {
 
     short score_index = 7;
     do {
-        TPanel* score = this->score_panel[static_cast<int>(score_index)];
+        TPanel* score = this->score_panel[score_index];
         if (score != 0) {
             TPanel* next_score = 0;
             if (score_index != 7) {
-                next_score = this->score_panel[static_cast<int>(score_index) + 1];
+                next_score = this->score_panel[score_index + 1];
             }
             score->set_positioning(TPanel::PositionRightBottom, 4, 0, 4,
-                                   score_index != 7 ? 4 : 0,
+                                   score_index == 7 ? 4 : 0,
                                    200, 200, 0x14, 0x14,
                                    0, 0, 0, next_score);
         }
