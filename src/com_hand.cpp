@@ -5730,36 +5730,34 @@ void TCommunications_Handler::UpdatePlayers() {
 void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
 {
     unsigned int dcoID = this->PlayerOptions.dcoID[player];
-    unsigned long size;
-    char* lpData = 0;
+    void* lpData = 0;
     MSGFORMAT_MISSING_PLAYER m;
+    unsigned long size;
 
     switch (this->PlayerOptions.Humanity[player]) {
     case ME_ABSENT:
         L->Log("P#%d ABSENT", player);
         this->PlayerOptions.dcoID[player] = 0;
         this->PlayerOptions.PlayerReady[player] = 0;
-        break;
+        goto update;
 
     case ME_ELIMINATED:
         L->Log("P#%d ELIMINATED", player);
         this->PlayerOptions.dcoID[player] = 0;
         this->PlayerOptions.PlayerReady[player] = 0;
-        break;
+        goto update;
 
     case ME_HUMAN:
         L->Log("P#%d HUMAN", player);
-        break;
+        goto get_name_log;
 
     case ME_COMPUTER:
         L->Log("P#%d COMPUTER", player);
-        this->PlayerOptions.dcoID[player] = 0;
-        this->PlayerOptions.PlayerReady[player] = 1;
-        break;
+        goto closed_cleanup;
 
     case ME_CYBORG:
         L->Log("P#%d CYBORG", player);
-        break;
+        goto get_name_log;
 
     case ME_VIEWONLY:
         this->PlayerOptions.PlayerReady[player] = 1;
@@ -5768,9 +5766,7 @@ void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
 
     case ME_CLOSED:
         L->Log("P#%d CLOSED", player);
-        this->PlayerOptions.dcoID[player] = 0;
-        this->PlayerOptions.PlayerReady[player] = 1;
-        break;
+        goto closed_cleanup;
 
     default:
         strcpy(this->FriendlyName[player].Text, "Error");
@@ -5779,13 +5775,12 @@ void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
         return;
     }
 
+get_name_log:
     if (dcoID != 0) {
-        IDirectPlay3* dp;
-
-        dp = direct_play_interface;
+        IDirectPlay3* dp = direct_play_interface;
         size = 0;
         dp->GetPlayerName(dcoID, 0, &size);
-        lpData = new char[size];
+        lpData = calloc(size, 1);
 
         dp = direct_play_interface;
         long result = dp->GetPlayerName(dcoID, lpData, &size);
@@ -5794,19 +5789,11 @@ void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
         if (result <= static_cast<long>(0x8877001E)) {
             if (result != static_cast<long>(0x8877001E) &&
                 result != static_cast<long>(0x80070057)) {
-                L->Log("Unknown fail on updateplayers");
-                this->PlayerOptions.Humanity[player] = ME_ABSENT;
-                this->PlayerOptions.dcoID[player] = 0;
+                goto unknown_result;
             }
-            else {
-                L->Log("Fatal error player info %ld", result);
-                strcpy(this->FriendlyName[player].Text, "Error!");
-                this->PlayerOptions.Humanity[player] = ME_ABSENT;
-            }
+            goto fatal_result;
         } else if (result == static_cast<long>(0x88770082)) {
-            L->Log("Fatal error player info %ld", result);
-            strcpy(this->FriendlyName[player].Text, "Error!");
-            this->PlayerOptions.Humanity[player] = ME_ABSENT;
+            goto fatal_result;
         } else if (result == static_cast<long>(0x88770096)) {
             L->Log("INVALID PLAYER %d.  Removing.", dcoID);
             if (this->PlayerOptions.ProgramState == 3) {
@@ -5820,21 +5807,47 @@ void TCommunications_Handler::UpdatePlayer(unsigned int player, int do_update)
                     this->FastSend(0, &m, 8, 0, 0);
                 }
             }
+            free(lpData);
+            goto update;
         } else if (result == 0) {
-            DPNAME name;
-            memcpy(&name, lpData, sizeof(name));
-            strcpy(this->FriendlyName[player].Text, name.lpszShortNameA);
-            strcpy(this->FormalName[player].Text, name.lpszLongNameA);
+            strcpy(this->FriendlyName[player].Text,
+                   static_cast<DPNAME*>(lpData)->lpszShortNameA);
+            strcpy(this->FormalName[player].Text,
+                   static_cast<DPNAME*>(lpData)->lpszLongNameA);
             this->PlayerOptions.Humanity[player] = ME_HUMAN;
+            free(lpData);
+            goto update;
         } else {
-            L->Log("Unknown fail on updateplayers");
-            this->PlayerOptions.Humanity[player] = ME_ABSENT;
-            this->PlayerOptions.dcoID[player] = 0;
+            goto unknown_result;
         }
-        delete[] lpData;
-    } else {
-        L->Log("P#%d Not Defined (updateplayers).", player);
+
+unknown_result:
+        L->Log("Unknown fail on updateplayers");
+        this->PlayerOptions.Humanity[player] = ME_ABSENT;
+        this->PlayerOptions.dcoID[player] = 0;
+        goto release_data;
+
+fatal_result:
+        L->Log("Fatal error player info %ld", result);
+        strcpy(this->FriendlyName[player].Text, "Error!");
+        this->PlayerOptions.Humanity[player] = ME_ABSENT;
+        free(lpData);
+        goto update;
     }
+
+no_dcoid:
+    L->Log("P#%d Not Defined (updateplayers).", player);
+    return;
+
+release_data:
+    free(lpData);
+    goto update;
+
+closed_cleanup:
+    this->PlayerOptions.dcoID[player] = 0;
+    this->PlayerOptions.PlayerReady[player] = 1;
+
+update:
     if (do_update != 0) {
         this->NotifyWindow(COMM_UPDATE_PLAYERS);
     }
