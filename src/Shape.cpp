@@ -1099,12 +1099,11 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
     byte command;
     char state;
     long width;
-    int orien = draw_area->Orien;
-    width = draw_area->AlignedWidth() * orien;
-    byte* p = (byte*)(this->shape_header + 1);
+    width = draw_area->AlignedWidth() * draw_area->Orien;
+    byte* buffer = (byte*)(this->shape_header + 1);
 
     byte* save_buffer;
-    if (orien < 1) {
+    if (draw_area->Orien < 1) {
         save_buffer = draw_area->Bits +
                       (clip_y0 - draw_area->Height + 1) * width + clip_x0;
     } else {
@@ -1117,16 +1116,16 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
         do {
             byte done = 0;
             do {
-                command = *p++;
+                command = *buffer++;
                 if (command & 1) {
                     command >>= 1;
                     if (command)
-                        p += command;
+                        buffer += command;
                     else
-                        ++p;
+                        ++buffer;
                 } else {
                     if ((command & 0xfe) != 0)
-                        ++p;
+                        ++buffer;
                     else
                         done = 1;
                 }
@@ -1142,11 +1141,11 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
             if (shape_x1 < clip_x0) {
                 state = 0;
                 do {
-                    command = *p++;
+                    command = *buffer++;
                     if (command & 1) {
                         command >>= 1;
                         if (command == 0) {
-                            command = *p++;
+                            command = *buffer++;
                             sx += command;
                             if (sx >= clip_x0) {
                                 if (sx > clip_x1)
@@ -1173,7 +1172,7 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
                                     }
                                 }
                             }
-                            p += command;
+                            buffer += command;
                         }
                     } else {
                         command >>= 1;
@@ -1196,7 +1195,7 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
                                     }
                                 }
                             }
-                            ++p;
+                            ++buffer;
                         }
                     }
                 } while (state == 0);
@@ -1206,11 +1205,11 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
 
             --state;
             while (state == 0) {
-                command = *p++;
+                command = *buffer++;
                 if (command & 1) {
                     command >>= 1;
                     if (command == 0) {
-                        command = *p++;
+                        command = *buffer++;
                         sx += command;
                         cur += command;
                         if (sx > clip_x1)
@@ -1230,7 +1229,7 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
                                 *cur = table[*cur];
                             }
                         }
-                        p += command;
+                        buffer += command;
                     }
                 } else {
                     command >>= 1;
@@ -1251,25 +1250,25 @@ byte TShape::shape_shadow_clipped(TDrawArea* draw_area, long shape_x1,
                                 *cur = table[*cur];
                             }
                         }
-                        ++p;
+                        ++buffer;
                     }
                 }
             }
 
             --state;
             while (state == 0) {
-                command = *p++;
+                command = *buffer++;
                 if (command & 1) {
                     command >>= 1;
                     if (command != 0)
-                        p += command;
+                        buffer += command;
                     else
-                        ++p;
+                        ++buffer;
                 } else {
                     if ((command & 0xfe) == 0)
                         state = 2;
                     else
-                        ++p;
+                        ++buffer;
                 }
             }
 
