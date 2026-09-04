@@ -108,6 +108,9 @@ void RGE_RMM_Object_Generator::make_placement_stack(
     Map_Stack& stack, long x, long y, long unused, long range)
 {
     long y1;
+    long y0;
+    long x1;
+    long x0;
     Map_Stack* last;
     int local_4;
 
@@ -115,58 +118,50 @@ void RGE_RMM_Object_Generator::make_placement_stack(
     stack.prev = 0;
 
     if (x < 0 || y < 0 || range < 0) {
-        x = 0;
-        y = 0;
-        range = this->map_width - 1;
+        x0 = 0;
+        y0 = 0;
+        x1 = this->map_width - 1;
         y1 = this->map_height - 1;
     } else {
-        long min_x = x;
-        long min_y = y;
-        long max_x = x;
-        long max_y = y;
-        min_x -= range;
-        min_y -= range;
-        max_x += range;
-        max_y += range;
-        x = min_x;
-        y = min_y;
-        y1 = max_y;
-        range = max_x;
-        if (x < 0) x = 0;
-        if (y < 0) y = 0;
-        if (range >= this->map_width) range = this->map_width - 1;
+        x0 = x - range;
+        y0 = y - range;
+        x1 = x + range;
+        y1 = y + range;
+        if (x0 < 0) x0 = 0;
+        if (y0 < 0) y0 = 0;
+        if (x1 >= this->map_width) x1 = this->map_width - 1;
         if (y1 >= this->map_height) y1 = this->map_height - 1;
     }
 
     last = &stack;
-    if (y <= y1) {
-        local_4 = y1 + (1 - y);
-        long row = y;
+    if (y0 <= y1) {
+        local_4 = y1 + (1 - y0);
+        long row = y0;
         do {
-            long x1 = x;
-            if (x <= range) {
+            long xcur = x0;
+            if (x0 <= x1) {
                 do {
-                    if (this->search_map_rows[row][x1] != 0) {
-                        Map_Stack* node = &this->stack_offsets[row][x1];
+                    if (this->search_map_rows[row][xcur] != 0) {
+                        Map_Stack* node = &this->stack_offsets[row][xcur];
                         this->add_stack_node(last, node);
                         last = node;
                     }
-                    x1 = x1 + 1;
-                } while (x1 <= range);
+                    xcur = xcur + 1;
+                } while (xcur <= x1);
             }
             row = row + 1;
             local_4 = local_4 - 1;
         } while (local_4 != 0);
     }
 
-    int w = range - x - 1;
-    int h = y1 - y - 1;
+    int w = x1 - x0 - 1;
+    int h = y1 - y0 - 1;
     if (w > 1 && h > 1) {
         int count = (h * w) / 4;
         if (count > 0) {
             do {
-                int rx = (debug_rand(s_rmm_obj_cpp, 0xaf) * w) / 0x7fff + x;
-                int ry = (debug_rand(s_rmm_obj_cpp, 0xb0) * h) / 0x7fff + y;
+                int rx = (debug_rand(s_rmm_obj_cpp, 0xaf) * w) / 0x7fff + x0;
+                int ry = (debug_rand(s_rmm_obj_cpp, 0xb0) * h) / 0x7fff + y0;
                 if (this->search_map_rows[ry][rx] != 0) {
                     this->add_stack_node(&stack, &this->stack_offsets[ry][rx]);
                 }

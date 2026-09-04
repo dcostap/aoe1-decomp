@@ -5912,10 +5912,7 @@ notify_after_owner:
                             RGE_Static_Object* oldTarget =
                                 this->md->aiPlayer->world->object(currentTarget);
                             if (oldTarget != 0) {
-                                if (this->playersToAttack.maximumSizeValue < 1) {
-                                    this->playersToAttack[0];
-                                }
-                                if (oldTarget->owner->id == this->playersToAttack.value[0]) {
+                                if (oldTarget->owner->id == this->playersToAttack[0]) {
                                     param_2++;
                                     goto notify_next_unit;
                                 }
