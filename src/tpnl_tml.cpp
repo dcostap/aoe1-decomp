@@ -489,7 +489,7 @@ int Time_Line_Panel::calculate_icon_location(
     short width;
     short height;
     int bounds_result;
-    int ok = 1;
+    long ok = 1;
     long start_y = 0;
     long local_4 = 0;
     long start_x = 0;
