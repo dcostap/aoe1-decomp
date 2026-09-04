@@ -1010,51 +1010,57 @@ unsigned char RGE_Master_Static_Object::alignment(
         row = row + (-dy1);
         dy1 = 0.0f;
     }
-    if (!(dx2 < map_w))
+    if (!(dx2 < map_w)) {
+        dx1 = dx1 + (map_w - dx2);
         col = col + (map_w - dx2);
-    if (!(dy2 < map_h))
+        dx2 = map_w;
+    }
+    if (!(dy2 < map_h)) {
+        dy1 = dy1 + (map_h - dy2);
         row = row + (map_h - dy2);
-
-    if (center_flag == 0)
-        return 1;
-
-    if (dx1 < 0.0f) dx1 = -dx1;
-    if (dy1 < 0.0f) dy1 = -dy1;
-    if (dx2 < 0.0f) dx2 = -dx2;
-    if (dy2 < 0.0f) dy2 = -dy2;
-
-    i = (short)(long)dx1;
-    dx1 = dx1 - (float)(int)i;
-    i = (short)(long)dy1;
-    dy1 = dy1 - (float)(int)i;
-    i = (short)(long)dx2;
-    dx2 = 1.0f - (dx2 - (float)(int)i);
-    i = (short)(long)dy2;
-    dy2 = 1.0f - (dy2 - (float)(int)i);
-
-    if (dx2 + dx1 < 1.0f) {
-        dx1 = col;
-    } else if (dx1 <= dx2) {
-        dx1 = col - (1.0f - dx2);
-    } else {
-        dx1 = (1.0f - dx1) + col;
+        dy2 = map_h;
     }
 
-    if (1.0f <= dy2 + dy1) {
-        if (dy2 < dy1) {
-            dx2 = row;
+    if (center_flag != 0) {
+        if (dx1 < 0.0f) dx1 = -dx1;
+        if (dy1 < 0.0f) dy1 = -dy1;
+        if (dx2 < 0.0f) dx2 = -dx2;
+        if (dy2 < 0.0f) dy2 = -dy2;
+
+        i = (short)(long)dx1;
+        dx1 = dx1 - (float)(int)i;
+        i = (short)(long)dy1;
+        dy1 = dy1 - (float)(int)i;
+        i = (short)(long)dx2;
+        dx2 = 1.0f - (dx2 - (float)(int)i);
+        i = (short)(long)dy2;
+        dy2 = 1.0f - (dy2 - (float)(int)i);
+
+        if (!(dx2 + dx1 < 1.0f)) {
+            if (dx1 > dx2) {
+                dx1 = (1.0f - dx1) + col;
+            } else {
+                dx1 = col - (1.0f - dx2);
+            }
+        } else {
+            dx1 = col;
+        }
+
+        if (1.0f <= dy2 + dy1) {
+            if (dy1 > dy2) {
+                col = dx1;
+                row = (1.0f - dy1) + row;
+                return 1;
+            }
             col = dx1;
-            row = (1.0f - dy1) + dx2;
+            row = row - (1.0f - dy2);
             return 1;
         }
-        dy1 = row;
+        float final_row = row;
         col = dx1;
-        row = dy1 - (1.0f - dy2);
+        row = final_row;
         return 1;
     }
-    dy1 = row;
-    col = dx1;
-    row = dy1;
     return 1;
 }
 
