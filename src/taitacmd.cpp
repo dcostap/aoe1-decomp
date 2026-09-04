@@ -6639,8 +6639,6 @@ void TribeTacticalAIModule::updateNeededResources()
     int tempResourceDifference[4];
     int i;
     int* diffPtr;
-    int* tempNeededPtr;
-    int* tempDifferencePtr;
     int bestResource;
     int bestDifference;
     int offset;
@@ -6648,31 +6646,20 @@ void TribeTacticalAIModule::updateNeededResources()
     this->md->buildAI.mostNeededResource(this->neededResources, this->sn[0x93]);
 
     i = 0;
-    tempResourceDifference[0] = -1;
-    tempNeededResource[0] = -1;
-    assignedResource[0] = 0;
-    tempResourceDifference[1] = -1;
-    tempNeededResource[1] = -1;
-    assignedResource[1] = 0;
-    tempResourceDifference[2] = -1;
-    tempNeededResource[2] = -1;
-    assignedResource[2] = 0;
     diffPtr = this->resourceDifferenceValue;
-    tempResourceDifference[3] = -1;
-    tempNeededResource[3] = -1;
-    assignedResource[3] = 0;
+    for (int init = 0; init < 4; init++) {
+        assignedResource[init] = 0;
+        tempNeededResource[init] = -1;
+        tempResourceDifference[init] = -1;
+    }
 
     do {
-        int resource = this->md->resourceAI.resource(i);
-        int needed = this->neededResources.value(i);
+        *diffPtr = this->md->resourceAI.resource(i) - this->neededResources.value(i);
         i++;
-        *diffPtr = resource - needed;
         diffPtr++;
     } while (i < 4);
 
     offset = 0;
-    tempNeededPtr = tempNeededResource;
-    tempDifferencePtr = tempResourceDifference;
     do {
         bestResource = -1;
         bestDifference = 0x7fffffff;
@@ -6720,10 +6707,8 @@ next_resource:
         }
 
         assignedResource[bestResource] = 1;
-        *tempNeededPtr = bestResource;
-        *tempDifferencePtr = bestDifference;
-        tempNeededPtr++;
-        tempDifferencePtr++;
+        *(int*)((char*)tempNeededResource + offset) = bestResource;
+        *(int*)((char*)tempResourceDifference + offset) = bestDifference;
         offset += 4;
     } while (offset < 0x10);
 
@@ -8078,8 +8063,6 @@ dispatch:
 
 int TribeTacticalAIModule::taskResearch(BuildItem* item)
 {
-    int objectID = 0;
-
     if (item == 0) {
         this->logCommonHistory("Invalid taskResearch item, returning FALSE.");
         return 0;
@@ -8100,6 +8083,7 @@ int TribeTacticalAIModule::taskResearch(BuildItem* item)
     item->setInProgress(1);
     item->setBuilt(0);
 
+    int objectID;
     objectID = object->id;
 
     ManagedArray<int>& arr = this->unitsTaskedThisUpdate;

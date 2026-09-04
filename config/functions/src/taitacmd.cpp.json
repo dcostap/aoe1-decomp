@@ -120,7 +120,7 @@
     "004F87B0": {"status": "scratch", "symbol": "?unit@TribeTacticalAIModule@@QAEHHHH@Z"},
     "004F8BE0": {"status": "matching", "symbol": "?busyWithAction@TribeTacticalAIModule@@QAEHHH@Z"},
     "004F8C30": {"status": "matching", "symbol": "?displayCivilianDistribution@TribeTacticalAIModule@@QAEXXZ"},
-    "004F8C40": {"status": "scratch", "symbol": "?updateNeededResources@TribeTacticalAIModule@@QAEXXZ"},
+    "004F8C40": {"status": "matching", "symbol": "?updateNeededResources@TribeTacticalAIModule@@QAEXXZ"},
     "004F8E20": {"status": "scratch", "symbol": "?updateGathererDistribution@TribeTacticalAIModule@@QAEXXZ"},
     "004F9380": {"status": "matching", "symbol": "?stopUnit@TribeTacticalAIModule@@QAEHHH@Z"},
     "004F93D0": {"status": "matching", "symbol": "?moveUnit@TribeTacticalAIModule@@QAEHHMMH@Z"},
