@@ -6931,7 +6931,6 @@ int TribeTacticalAIModule::highLevelTaskExplorer(int id, int mode)
 
 int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
 {
-    UnitData* gatherer;
     unsigned long now;
     RGE_Static_Object* gathererObj;
     int triedTasking[4];
@@ -6941,6 +6940,8 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
     int* tried;
     int* desired;
     int i;
+    int j;
+    int foundIndex;
     int taskResult;
 
     i = 0;
@@ -6948,18 +6949,16 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
     triedTasking[1] = 0;
     triedTasking[2] = 0;
     triedTasking[3] = 0;
-    gatherer = this->gatherers;
-    for (i = 0; i < this->numberGatherersValue; ++i, ++gatherer) {
-        if (gatherer->id == id)
-            break;
-    }
+    while (i < this->numberGatherersValue && this->gatherers[i].id != id)
+        ++i;
     if (i >= this->numberGatherersValue)
         goto fail;
+    foundIndex = i;
 
     now = debug_timeGetTime(s_file, 0x1F5C);
-    if (now - this->gatherers[i].lastTaskTime < 5000)
+    if (now - this->gatherers[foundIndex].lastTaskTime < 5000)
         return 1;
-    this->gatherers[i].lastTaskTime = now;
+    this->gatherers[foundIndex].lastTaskTime = now;
 
     gathererObj = this->md->player->world->object(id);
     if (gathererObj != 0 && gathererObj->unitAI() != 0) {
@@ -6993,28 +6992,26 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
     if (ai->currentOrder() == 0x2BE)
         return 1;
 
-    if (this->gatherers[i].data2 > this->gatherers[i].data3) {
+    if (this->gatherers[foundIndex].data2 > this->gatherers[foundIndex].data3) {
         ai = gathererObj->unitAI();
         if (ai->currentAction() != -1)
             return 1;
-        task = this->gatherers[i].data1;
+        task = this->gatherers[foundIndex].data1;
         triedTasking[task + 1] = 1;
-        if (this->taskGatherer(this->gatherers[i].id, task, 0, param, 0) == 1)
+        if (this->taskGatherer(this->gatherers[foundIndex].id, task, 0, param, 0) == 1)
             return 1;
-        this->gatherers[i].data1 = -1;
-        this->gatherers[i].data2 = -1;
-        this->gatherers[i].data3 = -1;
+        this->gatherers[foundIndex].data1 = -1;
+        this->gatherers[foundIndex].data2 = -1;
+        this->gatherers[foundIndex].data3 = -1;
     }
 
-    // The found record remains live through all later task calls.
-    gatherer = &this->gatherers[i];
     tried = triedTasking + 1;
     desired = this->desiredGathererDistribution;
-    i = 0;
+    j = 0;
     task = 0;
     do {
         if (*tried != 1 && desired[-4] < *desired) {
-            if (gatherer->data1 == task) {
+            if (this->gatherers[foundIndex].data1 == task) {
                 ai = gathererObj->unitAI();
                 if (ai->currentAction() == 0x265)
                     goto success;
@@ -7023,14 +7020,14 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
                     goto success;
             }
             *tried = 1;
-            if (this->taskGatherer(gatherer->id, task, 0, param, 0) == 1)
+            if (this->taskGatherer(this->gatherers[foundIndex].id, task, 0, param, 0) == 1)
                 goto success;
         }
         ++task;
         ++tried;
         ++desired;
-        ++i;
-    } while (i < 4);
+        ++j;
+    } while (j < 4);
 
     // With no enabled age branch, the original skips the ordinary task.
     if ((this->inAge(1) == 0 || this->sn[0xB5] != 1) &&
@@ -7039,7 +7036,7 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
             goto fallback;
 
         if (triedTasking[1] == 0) {
-            taskResult = this->taskGatherer(gatherer->id, 0, 1, param, 0);
+            taskResult = this->taskGatherer(this->gatherers[foundIndex].id, 0, 1, param, 0);
             triedTasking[1] = 1;
         }
         if (taskResult != 0)
@@ -7050,13 +7047,13 @@ int TribeTacticalAIModule::highLevelTaskGatherer(int id, ulong param)
         triedTasking[1] = 1;
     }
 
-    if (this->taskGatherer(gatherer->id, task, 1, param, 0) == 0)
+    if (this->taskGatherer(this->gatherers[foundIndex].id, task, 1, param, 0) == 0)
         goto fallback;
 
     goto normal_success;
 
 fallback:
-    this->taskGatherer(gatherer->id, -1, 1, param, triedTasking + 1);
+    this->taskGatherer(this->gatherers[foundIndex].id, -1, 1, param, triedTasking + 1);
 
 success:
         return 1;
