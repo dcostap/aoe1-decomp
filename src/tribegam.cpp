@@ -3340,12 +3340,8 @@ extern "C" unsigned char* __cdecl __mbsupr(unsigned char*);
 extern void __cdecl encrypt_codes(char* src, char* dst, int max_len);
 
 int TRIBE_Game::processCheatCode(int player_id, char* cheat) {
-    int target;
-    int commander;
     char encstr[512];
     char str[256];
-    char tempStr1[256];
-    char playName[256];
 
     if (cheat == 0 || player_id < 0 || player_id >= this->world->player_num) {
         return 0;
@@ -3508,16 +3504,21 @@ int TRIBE_Game::processCheatCode(int player_id, char* cheat) {
             return 1;
         }
         else {
+            char tempStr1[256];
             sscanf(str, "%s ", tempStr1);
             if (strcmp(tempStr1, "SELECTOBJ") == 0) {
-                sscanf(cheat, "%*s %d ", &commander);
-                RGE_Static_Object* obj = this->world->object(commander);
+                int objectID;
+                sscanf(cheat, "%*s %d ", &objectID);
+                RGE_Static_Object* obj = this->world->object(objectID);
                 if (obj != 0) {
                     obj->selected = 1;
                     this->world->players[player_id]->selected_obj = obj;
                 }
             }
             if (strcmp(tempStr1, "RUNPLAY") == 0) {
+                int target;
+                int commander;
+                char playName[256];
                 sscanf(cheat, "%*s %d %s %d ", &target, playName, &commander);
                 int play = this->world->playbook->playNumber(playName);
                 if (play != -1) {
