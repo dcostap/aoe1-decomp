@@ -9,7 +9,8 @@ The assignment gives you:
 - one natural translation unit and source path;
 - all current scratch-function VAs in that translation unit;
 - one orchestrator-assigned stable worker ID;
-- allowed source and function-note paths;
+- primary source, function-note, and registry paths;
+- one isolated worktree with full experimental authority under repository policy;
 - active-worker capacity and a separate per-tool job setting; and
 - one unique private experiment and audit directory.
 

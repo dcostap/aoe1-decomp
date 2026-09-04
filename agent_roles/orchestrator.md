@@ -50,8 +50,8 @@ It also supplies the worker thinking level and maximum concurrent worker count.
 Do not infer or default these values.
 The managed launcher does not accept a short model name.
 
-One orchestrator controls assignments in one shared worktree. Independent
-orchestrators use separate worktrees.
+Give each matching worker an isolated worktree. Base it on the current reviewed
+integration commit. Independent orchestrators also use separate worktrees.
 
 Assign one worker to one natural translation unit. Never assign two active
 workers to the same translation unit.
@@ -61,7 +61,8 @@ An assignment contains:
 - the translation-unit name and source path;
 - all current scratch-function VAs in that translation unit;
 - one unique worker ID;
-- allowed source and function-note paths;
+- primary source, function-note, and registry paths;
+- full-worktree experimental authority under repository policy;
 - the active worker capacity and separate per-tool job setting;
 - one unique private experiment and audit directory; and
 - the required final-response format.
@@ -115,8 +116,8 @@ rejected, or converted into a specific follow-up task.
 For a normal worker return:
 
 1. Read the worker's final response.
-2. Inspect the complete diff for its allowed paths.
-3. Confirm that no unauthorized path changed.
+2. Inspect the complete worktree diff.
+3. Confirm that every changed path supports the assigned recovery work.
 4. Read all changed function bodies and notes.
 5. Confirm that each changed file keeps its existing line-ending style.
 6. Check source plausibility and executable behavior.
@@ -196,16 +197,16 @@ Good continuation tasks include:
 Keep the TODO item open while the continuation runs. The worker resumes its
 target notebooks with the same owner ID.
 
-Start a new worker when the task needs different TU ownership, scope, or model.
-Handle shared repairs as orchestrator work. Do not delegate them to a matching
-worker.
+Start a new worker when the task needs different TU ownership or a different
+model. A worker can investigate and propose shared repairs in its isolated
+worktree.
 
 ## Shared repairs
 
-A matching worker reports a shared finding but never edits the shared path.
-The orchestrator owns shared repairs in its isolated worktree. It does not need
-root approval before it changes a shared header, global, registry, tool, test,
-or compiler setting.
+A matching worker can edit shared source in its isolated worktree. This includes
+headers, globals, declarations, related natural source, and currently exact
+functions. The worker must report the complete changed closure and validation.
+The orchestrator reviews every shared repair before integration.
 
 Create or update a TODO item keyed by the shared path and symbol. Merge duplicate
 findings into that item. Record:
@@ -251,9 +252,9 @@ Repeat `--affected-by` for more paths. The tool audits the union of dependent
 translation units and records the selected groups in its report.
 
 Audit the complete dependency closure. The closure can include translation
-units outside the original assignment. Do not edit an active worker's natural
-source file. Schedule collateral exact results for review after that worker
-stops.
+units outside the original assignment. Resolve overlapping worker proposals
+during review. Do not limit a worker's isolated experiment to avoid a possible
+future merge conflict.
 
 Commit each shared repair separately. Include its notes, registry updates, and
 tests when they form one reviewed result. This lets the root select or reject
@@ -274,17 +275,18 @@ when dependency tracking cannot prove the affected set.
 
 Return deferred targets to the eligible pool after the blocker is resolved.
 
-## Allowed matching worker changes
+## Matching worker authority
 
-A matching worker can change only:
+A matching worker has full experimental authority in its isolated worktree.
+It can change any repository source needed for a binary-supported hypothesis.
+This includes headers, globals, declarations, related functions, and currently
+exact functions.
 
-- scratch function bodies in its assigned natural source file; and
-- function notes for those scratch functions.
-
-The worker cannot change headers, globals, config, tools, tests, shared notes,
-status metadata, the Git index, or commits.
-
-Authorize a different scope only through a separate assignment.
+Repository policy still applies. A worker must not edit the behavior oracle or
+generated inventory. It must not change registry status, stage files, or commit
+unless the assignment explicitly permits it. It must report every changed path
+and every affected exact function. Shared changes require a complete affected-
+closure audit.
 
 ## Review standards
 
