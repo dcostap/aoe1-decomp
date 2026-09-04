@@ -68,9 +68,10 @@ Before work on each function:
 3. Read its function note and inventory packet.
    Read the packet's `PdbScopedSymbols` section before you form local-variable
    or global-ownership hypotheses.
-4. Read the configured module note when present.
-5. Inspect focused executable evidence and relevant exact donors.
-6. Record a fresh baseline check.
+4. Inspect `decomp_notes/candidates/` for the target and its dependencies.
+5. Read the configured module note when present.
+6. Inspect focused executable evidence and relevant exact donors.
+7. Record a fresh baseline check.
 
 Example:
 
@@ -199,6 +200,12 @@ Stop when a major issue prevents safe progress. Examples include:
 Do not hide a shared regression. Preserve the strongest supported source, record
 the complete affected audit, and ask the orchestrator to review each changed
 exact function.
+
+If source makes the assigned target exact but changes another owner, preserve
+the complete source patch in the target candidate path. Record all affected
+owners and closure results. Do not stop at the first regression. Treat each
+changed owner as a possible repair target. Continue natural, evidence-backed
+probes while useful approaches remain.
 
 ## Final validation
 

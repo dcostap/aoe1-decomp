@@ -42,9 +42,11 @@ memory effects, exceptions, faults, and fault order, record it as accepted
 drift. Explain the cause and evidence. Do not add unsupported compensating
 source to recover a metric.
 
-Preserve each exact candidate that closure review rejects. Store a patch under
+Preserve every exact candidate that changes or regresses another owner. Store
+the complete matching source patch under
 `decomp_notes/candidates/<VA-prefix>/<VA>_exact_candidate.patch`. Record the
-exact target result, the regressed owners, and the tested main commit. Do not
+exact target result, all affected owners, the closure results, and the tested
+main commit. Do this even when closure review rejects the candidate. Do not
 rely on a worker worktree, temporary file, or ignored build artifact.
 
 Do not assume that an exact candidate caused a closure defect. The candidate
@@ -52,6 +54,11 @@ can reveal wrong source or compiler context in another function. Investigate
 all affected owners. Repair other natural functions, declarations, or headers
 when evidence supports the repair. Validate every changed owner and the full
 closure before integration.
+
+Before work, inspect preserved candidates for the target and its dependencies.
+Treat their regressions as repair leads. Continue with new evidence-backed
+probes in the affected owners instead of repeating or immediately rejecting
+the candidate.
 
 Inline assembly is forbidden for real functions unless explicitly allowed.
 This includes `__asm`, `_asm`, naked functions, and handwritten wrappers.
