@@ -2916,7 +2916,7 @@ void TRIBE_Game::do_game_over(void) {
 int TRIBE_Game::create_game(int param_1)
 {
     int i;
-    RGE_Scenario* scenario_info;
+    T_Scenario* scenario_info;
     int player_index;
     int scenario_player;
     unsigned char pathfinding;
@@ -3071,12 +3071,12 @@ int TRIBE_Game::create_game(int param_1)
     }
 
     if (this->campaignGame()) {
-        scenario_info = this->get_scenario_info(0, 1);
+        scenario_info = static_cast<T_Scenario*>(this->get_scenario_info(0, 1));
         if (scenario_info == 0) {
             return 0;
         }
     } else if (this->scenarioGame()) {
-        scenario_info = this->get_scenario_info(player_info.scenario, 0);
+        scenario_info = static_cast<T_Scenario*>(this->get_scenario_info(player_info.scenario, 0));
         if (scenario_info == 0) {
             return 0;
         }
