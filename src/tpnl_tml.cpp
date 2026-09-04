@@ -1056,10 +1056,10 @@ void Time_Line_Panel::draw_timeline()
     long cntr2;
     long intermediate_x_pos;
     long error_correction_time_slice_thickness;
+    long num_intermediate_slices;
     int local_10;
     long y_line_segment_length;
     long temp_color;
-    long segment;
     int special_event_flag;
 
     if (this->timeline_flag == 0) return;
@@ -1067,7 +1067,6 @@ void Time_Line_Panel::draw_timeline()
     if (this->render_area->Lock("tpnl_tml::draw_timeline", 1) == 0) return;
 
     this->X_line_pos = this->X_start_line_pos;
-    player_index = 0;
     local_38 = 0;
     local_10 = 0;
     time_slice_cntr = 0;
@@ -1145,27 +1144,30 @@ void Time_Line_Panel::draw_timeline()
                 long y_line_length =
                     static_cast<long>(static_cast<float>(y_line_segment_length) *
                                       this->bar_thickness);
-                long bar_length = static_cast<long>(this->bar_thickness);
-                if (bar_length * y_line_segment_length < y_line_length - local_10) {
-                    bar_length = (y_line_length - local_10) - bar_length * y_line_segment_length + bar_length;
+                num_intermediate_slices = static_cast<long>(this->bar_thickness);
+                if (num_intermediate_slices * y_line_segment_length < y_line_length - local_10) {
+                    num_intermediate_slices = (y_line_length - local_10) - num_intermediate_slices * y_line_segment_length + num_intermediate_slices;
                     local_10++;
+                } else {
+                    num_intermediate_slices = static_cast<long>(this->bar_thickness);
                 }
                 intermediate_x_pos = 0;
                 special_event_flag = 0;
-                if (bar_length > 0) {
+                if (num_intermediate_slices > 0) {
                     do {
                         this->Y_line_pos = this->Y_start_line_pos;
                         cntr2 = 0;
                         cntr_droped_slice_rate = 0;
                         local_34 = 0;
                         if (static_cast<int>(rge_base_game->world->player_num) - 1 > 0) {
-                            player_index = 0;
+                            RGE_Player** player_cursor =
+                                rge_base_game->world->players + 1;
                             do {
                                 unsigned long palette_color;
                                 unsigned char color;
-                                TRIBE_Player* player = static_cast<TRIBE_Player*>(
-                                    rge_base_game->world->players[player_index + 1]);
-                                switch (player->color_table->id) {
+                                switch (static_cast<TRIBE_Player*>(
+                                            *player_cursor)
+                                            ->color_table->id) {
                                 case 0: palette_color = 0x00C40000; break;
                                 case 1: palette_color = 0x000000C8; break;
                                 case 2: palette_color = 0x0000EAEA; break;
@@ -1180,68 +1182,73 @@ void Time_Line_Panel::draw_timeline()
                                     this->render_area->DrawSystem->Pal,
                                     palette_color);
                                 temp_color = static_cast<long>(
-                                    player->history->get_history_entry(
+                                    static_cast<TRIBE_Player*>(
+                                        *player_cursor)
+                                        ->history->get_history_entry(
                                         0, next_pop_total));
                                 Y_line_total = this->Y_line_max_length;
                                 time_slice = static_cast<float>(temp_color);
                                 temp_pop_num = (time_slice / temp_pop_num) *
                                                 static_cast<float>(Y_line_total);
-                                segment = static_cast<long>(temp_pop_num);
-                                if ((time_slice >= 1.0f) && (segment < 1)) segment = 1;
+                                temp_color = static_cast<long>(temp_pop_num);
+                                if ((time_slice >= 1.0f) && (temp_color < 1)) temp_color = 1;
 
                                 if (this->bar_thickness != 1.0f) {
                                     if (next_pop_total != this->num_entries_page - 1) {
                                         time_slice = static_cast<float>(
-                                            player->history->get_history_entry(
+                                            static_cast<TRIBE_Player*>(
+                                                *player_cursor)
+                                                ->history->get_history_entry(
                                                 0, y_line_segment_length));
                                     }
                                     Y_line_total = this->Y_line_max_length;
                                     long next_segment = static_cast<long>(
                                         time_slice / float_remainder *
                                         static_cast<float>(Y_line_total));
-                                    long difference = next_segment - segment;
-                                    temp_pop_num = static_cast<float>(segment) +
+                                    long difference = next_segment - temp_color;
+                                    temp_pop_num = static_cast<float>(temp_color) +
                                                    static_cast<float>(difference) *
                                                    (static_cast<float>(intermediate_x_pos) /
                                                     this->bar_thickness);
-                                    segment = static_cast<long>(temp_pop_num);
-                                    if ((time_slice >= 1.0f) && (segment < 1)) segment = 1;
+                                    temp_color = static_cast<long>(temp_pop_num);
+                                    if ((time_slice >= 1.0f) && (temp_color < 1)) temp_color = 1;
                                     cntr_droped_slice_rate += temp_pop_num -
-                                                               static_cast<float>(segment);
+                                                               static_cast<float>(temp_color);
                                     if (cntr_droped_slice_rate > 1.0f) {
                                         cntr_droped_slice_rate -= 1.0f;
-                                        segment++;
+                                        temp_color++;
                                     }
                                 }
 
                                 if (local_34 ==
                                     static_cast<int>(rge_base_game->world->player_num) - 2) {
-                                    if (Y_line_total < segment + cntr2) segment = Y_line_total - cntr2;
-                                    if (segment + cntr2 < Y_line_total) segment = Y_line_total - cntr2;
+                                    if (Y_line_total < temp_color + cntr2) temp_color = Y_line_total - cntr2;
+                                    if (temp_color + cntr2 < Y_line_total) temp_color = Y_line_total - cntr2;
                                 }
 
                                 this->render_area->DrawVertLine(
-                                    this->X_line_pos, this->Y_line_pos, segment,
+                                    this->X_line_pos, this->Y_line_pos, temp_color,
                                     static_cast<unsigned char>(color));
                                 if (special_event_flag == 0) {
                                     this->record_special_event(
                                         static_cast<unsigned char>(local_34 + 1),
-                                        player->history,
+                                        static_cast<TRIBE_Player*>(
+                                            *player_cursor)->history,
                                         static_cast<unsigned char>(color),
                                         next_pop_total, this->X_line_pos,
-                                        this->Y_line_pos, segment);
+                                        this->Y_line_pos, temp_color);
                                 }
-                                this->Y_line_pos += segment;
-                                cntr2 += segment;
+                                this->Y_line_pos += temp_color;
+                                cntr2 += temp_color;
                                 local_34++;
-                                player_index++;
+                                player_cursor++;
                             } while (local_34 <
                                      static_cast<int>(rge_base_game->world->player_num) - 1);
                         }
                         intermediate_x_pos++;
                         special_event_flag++;
                         this->X_line_pos++;
-                    } while (intermediate_x_pos < bar_length);
+                    } while (intermediate_x_pos < num_intermediate_slices);
                 }
             } else {
                 error_correction_drop_time_slice_rate++;
