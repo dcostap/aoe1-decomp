@@ -1378,6 +1378,9 @@ typedef unsigned char uchar;
 int TCommunications_Handler::PreprocessMessages(ulong param_1, char* message,
                                                  ulong from, ulong to, int cached)
 {
+    static char* InContent;
+    static ulong InContentSize;
+    static uint dropcount;
     char msg[256];
     char msg_str[100];
     MSGFORMAT_HEADER_GUARANTEED* header =
@@ -1650,14 +1653,14 @@ second_player_found:
     } else {
     if (this->RGE_Guaranteed_Delivery != 0) {
         if (this->IntentionallyDropPackets != 0 && this->current_turn > 6) {
-            ++comm_drop_count;
-            if (comm_drop_count > 8) {
+            ++dropcount;
+            if (dropcount > 8) {
                 rge_base_game->get_string(0x4BC, msg_str, 100);
                 sprintf(this->TBuff, msg_str, header->Serialno,
                         static_cast<int>(header->Command),
                         static_cast<int>(header->Command));
                 L->Log(this->TBuff);
-                comm_drop_count = 0;
+                dropcount = 0;
                 return 1;
             }
         }
@@ -1695,14 +1698,14 @@ second_player_found:
             L->Log("  >TX N ACK #%d %d (%d)", player, header->Serialno, 8);
             this->TXAcknowledgeMessage(header->Serialno, player);
         }
-        comm_receive_base = param_1 - sizeof(*header);
+        InContentSize = param_1 - sizeof(*header);
         this->PlayerHighSerialNumber[player] = header->Serialno;
-        comm_receive_message = message + sizeof(*header);
+        InContent = message + sizeof(*header);
     } else {
         this->LogRXMsg(header->Serialno, player, header->ExecuteOnTurn,
                        header->Command, header->Sequence);
-        comm_receive_base = param_1 - 8;
-        comm_receive_message = message + 8;
+        InContentSize = param_1 - 8;
+        InContent = message + 8;
     }
     L->Log(" PROCESS: Ser#%d  CMD=%d '%c' Seq=%d Turn=%d [ Size=%d dFrom=%d dRxID=%d ] ",
            header->Serialno, static_cast<int>(header->Command),
@@ -1711,7 +1714,7 @@ second_player_found:
     if (this->ShuttingDown == 0)
         this->EvaluatePlayerMessage(param_1, player, header->ExecuteOnTurn,
                                     header->Command, header->Sequence,
-                                    comm_receive_message, comm_receive_base,
+                                    InContent, InContentSize,
                                     from, to);
     }
     }
