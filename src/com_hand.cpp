@@ -1529,6 +1529,7 @@ second_player_found:
         MSGFORMAT_ALL_DONE done;
         MSGFORMAT_LATENCY pong;
         ulong turn = this->current_turn;
+        ulong initiated = header->ExecuteOnTurn;
         done.ExecuteOnTurn = this->PlayerOptions.CommandTurnIncrement + turn;
         if (this->Multiplayer != 0 && this->PlayerOptions.ProgramState != COMM_STATE_JOINNOW &&
             this->LastTurnAck[this->Me] != turn) {
@@ -1545,7 +1546,7 @@ second_player_found:
             this->CommOut(0, 0x44, &done, 0x0C, 0);
         }
         pong.Command = '2';
-        pong.Initiated = header->ExecuteOnTurn;
+        pong.Initiated = initiated;
         pong.CurrentTurn = turn;
         L->Log("  >TX PONG #%d (%d)", player, 0x0C);
         long result = this->FastSend(this->PlayerOptions.dcoID[player],
