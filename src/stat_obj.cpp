@@ -1408,7 +1408,8 @@ void RGE_Static_Object::check_damage_sprites()
     if (master->hp <= 0) return;
     if (master->damage_sprite_num == 0) return;
 
-    new_percent = (unsigned char)(100 - (int)(this->hp * 100.0f / master->hp));
+    new_percent = (unsigned char)(100 -
+                                  (int)(this->hp * DAT_0057473c / master->hp));
     if (new_percent == this->curr_damage_percent) return;
 
     if (new_percent < 100 && master->damage_sprite_num > 0) {
@@ -1435,10 +1436,10 @@ void RGE_Static_Object::check_damage_sprites()
                     RGE_Master_Static_Object* m = this->master_obj;
                     float rand_x = (float)debug_rand(s_stat_obj_cpp, 0x774);
                     float fx = (this->world_x - (short)this->world_x) +
-                               (rand_x * m->radius_x * 0.000030517578f - m->radius_x);
+                               ((rand_x * m->radius_x) * DAT_00574740 - m->radius_x);
                     rand_x = (float)debug_rand(s_stat_obj_cpp, 0x775);
                     float fy = (this->world_y - (short)this->world_y) +
-                               (rand_x * m->radius_y * 0.000030517578f - m->radius_y);
+                               ((rand_x * m->radius_y) * DAT_00574740 - m->radius_y);
                     short sx, sy;
                     this->owner->world->map->get_point(sx, sy, fx, fy, this->world_z, 0, 0);
                     sprite = info->sprite;
