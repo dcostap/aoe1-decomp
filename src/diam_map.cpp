@@ -503,13 +503,13 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2, int param_3,
     return;
   }
 
-  bool draw = false;
-  short x_offset;
-  short max_coord = param_2;
-  if (param_1 < param_2) {
-    max_coord = param_1;
+  short max_coord = param_1;
+  if (param_2 < param_1) {
+    max_coord = param_2;
   }
 
+  bool draw = false;
+  short x_offset;
   if (!(row->ratio >= 1.0f)) {
     float scaled = (float)max_coord * row->ratio;
     x_offset = (short)scaled;
@@ -573,13 +573,12 @@ void RGE_Diamond_Map::draw_tile(short param_1, short param_2, int param_3,
             if (node == 0) {
               ++scan_col;
             } else {
-              do {
-                if (node->node->master_obj->map_draw_level == 4) {
-                  color = node->node->master_obj->map_color;
-                  break;
-                }
-                node = node->next;
-              } while (node != 0);
+              for (; node != 0 &&
+                     node->node->master_obj->map_draw_level != 4;
+                   node = node->next) {
+              }
+              if (node != 0)
+                color = node->node->master_obj->map_color;
               ++scan_col;
             }
           }
