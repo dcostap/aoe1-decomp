@@ -483,8 +483,8 @@ void TButtonPanel::draw()
                     this->pic_y = (short)((this->pnl_hgt / 2) -
                                           (((y_max - y_min) + 1) / 2) - y_min);
                 }
-                x = this->pic_x + this->pnl_x;
                 y = this->pic_y + this->pnl_y;
+                x = this->pic_x + this->pnl_x;
                 if (((this->draw_reverse == 0) && (this->is_down != 0)) ||
                     ((this->draw_reverse != 0) && (this->is_down == 0))) {
                     x = x + 1;
