@@ -2919,13 +2919,12 @@ void TRIBE_Game::do_game_over(void) {
 int TRIBE_Game::create_game(int param_1)
 {
     int i;
-    int scenario_player;
     RGE_Scenario* scenario_info;
+    int player_index;
+    int scenario_player;
     unsigned char pathfinding;
     int humanity;
     int position_used[8];
-    long* player_hash;
-    short* player_color;
     RGE_Player_Info player_info;
     char scenario_file[260];
     _finddata_t file_info;
@@ -2952,10 +2951,10 @@ int TRIBE_Game::create_game(int param_1)
     this->set_map_visible(0);
     this->set_map_fog(0);
 
-    for (i = 1; i < 9; ++i) {
-        this->resigned[i] = 0;
-        DAT_0086bcac[i - 1] = 0;
-        this->queue_is_waiting_on_pop_counter[i] = 0;
+    for (i = 0; i < 8; ++i) {
+        this->resigned[i + 1] = 0;
+        DAT_0086bcac[i] = 0;
+        this->queue_is_waiting_on_pop_counter[i + 1] = 0;
     }
     out_of_sync = 0;
     out_of_sync2 = 0;
@@ -3016,8 +3015,9 @@ int TRIBE_Game::create_game(int param_1)
         if (this->scenarioName() == 0) {
             return 0;
         }
+        char* scenario_dir = this->prog_info->scenario_dir;
         sprintf(scenario_file, "%s%s.scn",
-                this->prog_info->scenario_dir, this->scenarioName());
+                scenario_dir, this->scenarioName());
         if (_findfirst(scenario_file, &file_info) == -1) {
             sprintf(scenario_file, "%s.scx", this->scenarioName());
         }
@@ -3035,7 +3035,7 @@ int TRIBE_Game::create_game(int param_1)
 
     if (this->multiplayerGame()) {
         debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD24,
-                    this->comm_handler->GetRandomSeed());
+                    comm->GetRandomSeed());
     }
     else if (this->random_game_seed != -1) {
         debug_srand("C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0xD28,
@@ -3048,14 +3048,12 @@ int TRIBE_Game::create_game(int param_1)
     }
 
     player_info.player_num = 0;
-    long* player_hashes = player_info.player_id_hash;
-    short* player_colors = player_info.color;
     for (i = 0; i < 9; ++i) {
         player_info.type[i] = -1;
         player_info.name[i][0] = 0;
-        player_hashes[i] = i;
+        player_info.player_id_hash[i] = i;
         player_info.tribe[i] = 1;
-        player_colors[i] = -1;
+        player_info.color[i] = -1;
         this->random_civ[i] = 0;
 
         int civ = this->civilization(i);
@@ -3132,15 +3130,13 @@ int TRIBE_Game::create_game(int param_1)
     }
 
     this->resetRandomComputerName();
-    player_color = player_info.color;
-    player_hash = player_info.player_id_hash + 1;
     i = 0;
     do {
-        int player = i + 1;
+        player_index = i + 1;
         scenario_player = 0;
         int slot = 1;
         while (slot < 9) {
-            if (this->playerID(slot) == player) {
+            if (this->playerID(slot) == player_index) {
                 scenario_player = slot;
                 break;
             }
@@ -3167,23 +3163,20 @@ int TRIBE_Game::create_game(int param_1)
             player_info.tribe[i] = this->civilization(scenario_player - 1);
         }
 
-        char* source_name = 0;
         if (this->multiplayerGame() && humanity == 2) {
             strncpy(player_info.name[i],
                     this->comm_handler->GetPlayerName(scenario_player), 0x40);
         }
         else {
             if (this->campaignGame() == 0 && player_info.type[i] == 0) {
-                source_name = this->player_game_info->get_current_player_name();
+                strcpy(player_info.name[i],
+                       this->player_game_info->get_current_player_name());
             }
             else if (this->campaignGame() == 0 && this->randomGame() != 0 && player_info.type[i] == 0) {
                 this->get_string(0x286D, player_info.name[i], 0x41);
             }
             else if (this->campaignGame() != 0 || this->scenarioGame() != 0) {
-                source_name = scenario_info->GetPlayerName(color);
-            }
-            if (source_name != 0) {
-                strcpy(player_info.name[i], source_name);
+                strcpy(player_info.name[i], scenario_info->GetPlayerName(color));
             }
         }
 
@@ -3196,16 +3189,14 @@ int TRIBE_Game::create_game(int param_1)
                                  player_info.name[i], 0x41);
             }
             else {
-            this->get_string(this->randomComputerName(player_info.tribe[i]) + 0x1130,
+                this->get_string(this->randomComputerName(player_info.tribe[i]) + 0x1130,
                                  player_info.name[i], 0x41);
             }
         }
         this->comm_handler->SetPlayerName(scenario_player, player_info.name[i]);
 
-        *player_hash = color + 1;
-        *player_color = color;
-        ++player_hash;
-        ++player_color;
+        player_info.player_id_hash[i + 1] = color + 1;
+        player_info.color[i] = color;
         ++player_info.player_num;
         ++i;
     } while (i < 8);
@@ -3221,7 +3212,7 @@ int TRIBE_Game::create_game(int param_1)
         this->sound_system->mute = 1;
     }
 
-    unsigned char result;
+    int result;
     int local_player;
     if (this->multiplayerGame()) {
         local_player = this->comm_handler->WhoAmI();
