@@ -186,12 +186,12 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
 
     // Phase A: expand each base tile and seed its edge stack.
     if (this->info.land_num > 0) {
-        Map_Stack* phase_a_stack = &stack[0];
+        stack_cursor = &stack[0];
         long left;
         size_cursor = &land_size[1];
         cursor = &this->info.land[0].base_size;
         do {
-            this->init_stack(*phase_a_stack);
+            this->init_stack(*stack_cursor);
 
             long right = cursor[-2];
             long bottom = cursor[-1];
@@ -223,7 +223,7 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
                 edge = top;
                 if (edge <= bottom) {
                     do {
-                        this->push_stack(*phase_a_stack, left - 1, edge,
+                        this->push_stack(*stack_cursor, left - 1, edge,
                                          land_id, 0.0f);
                         edge++;
                     } while (edge <= bottom);
@@ -233,7 +233,7 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
                 edge = left;
                 if (edge <= right) {
                     do {
-                        this->push_stack(*phase_a_stack, edge, top - 1,
+                        this->push_stack(*stack_cursor, edge, top - 1,
                                          land_id, 0.0f);
                         edge++;
                     } while (edge <= right);
@@ -242,7 +242,7 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
             if (right < this->map_width - 1 && top <= bottom) {
                 edge = top;
                 do {
-                    this->push_stack(*phase_a_stack, right + 1, edge,
+                    this->push_stack(*stack_cursor, right + 1, edge,
                                      land_id, 0.0f);
                     edge++;
                 } while (edge <= bottom);
@@ -250,14 +250,14 @@ unsigned char RGE_RMM_Land_Generator::base_land_generate() {
             if (bottom < this->map_height - 1 && left <= right) {
                 edge = left;
                 do {
-                    this->push_stack(*phase_a_stack, edge, bottom + 1,
+                    this->push_stack(*stack_cursor, edge, bottom + 1,
                                      land_id, 0.0f);
                     edge++;
                 } while (edge <= right);
             }
 
             land_id++;
-            phase_a_stack++;
+            stack_cursor++;
             size_cursor++;
             cursor += 13;
         } while (land_id < this->info.land_num);

@@ -491,7 +491,7 @@ int Time_Line_Panel::calculate_icon_location(
     int ret_val;
     long temp_start_txt_x1 = 1;
     long temp_start_y = 0;
-    long local_4 = 0;
+    int local_4 = 0;
     long temp_start_x = 0;
 
     event_ptr->icon_flag = 0;
@@ -533,10 +533,10 @@ int Time_Line_Panel::calculate_icon_location(
         }
 
         if (temp_start_txt_x1 != 0) {
+            local_4 = half_width;
             temp_start_x = (event_ptr->intermediate_y_line_segment / 2 +
                        event_ptr->Y_line_pos * 2) -
                       this->special_events_pic_hgt / 2;
-            local_4 = half_width;
         }
     }
 
