@@ -1838,12 +1838,12 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
         int dy;
 
         if (x2 < x1) {
-            int y1_save = y1;
-            y1 = y2;
-            int x1_save = x1;
+            int t = x1;
             x1 = x2;
-            x2 = x1_save;
-            y2 = y1_save;
+            x2 = t;
+            t = y1;
+            y1 = y2;
+            y2 = t;
         }
 
         int dx;
