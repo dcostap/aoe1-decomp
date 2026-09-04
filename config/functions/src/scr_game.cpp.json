@@ -24,7 +24,7 @@
     "004973F0": {"status": "matching", "symbol": "?display_system_message@TRIBE_Screen_Game@@QAEXPAD@Z"},
     "00497440": {"status": "matching", "symbol": "?key_down_action@TRIBE_Screen_Game@@UAEJJFHHH@Z"},
     "00498290": {"status": "matching", "symbol": "?char_action@TRIBE_Screen_Game@@UAEJJF@Z"},
-    "004982E0": {"status": "scratch", "symbol": "?action@TRIBE_Screen_Game@@UAEJPAVTPanel@@JKK@Z"},
+    "004982E0": {"status": "matching", "symbol": "?action@TRIBE_Screen_Game@@UAEJPAVTPanel@@JKK@Z"},
     "004987A0": {"status": "matching", "symbol": "?do_button_action@TRIBE_Screen_Game@@IAEXHHH@Z"},
     "00498A10": {"status": "matching", "symbol": "?game_mode_changed@TRIBE_Screen_Game@@QAEXHH@Z"},
     "00498A50": {"status": "matching", "symbol": "?player_changed@TRIBE_Screen_Game@@QAEXHH@Z"},
