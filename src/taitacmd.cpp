@@ -9522,8 +9522,8 @@ void TribeTacticalAIModule::fillBoatGroups() {
                         if (group->action() == 1 || group->action() == 0) {
                             int numberAgain = group->numberUnits();
                             int desiredAgain = group->desiredNumberUnits();
-                            int difference = numberAgain - desiredAgain;
-                            if (bestGroup == 0 || difference < bestDifference) {
+                            int difference = desiredAgain - numberAgain;
+                            if (bestGroup == 0 || difference > bestDifference) {
                                 bestGroup = group;
                                 bestDifference = difference;
                             }

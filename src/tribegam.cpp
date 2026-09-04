@@ -3167,7 +3167,7 @@ int TRIBE_Game::create_game(int param_1)
                     this->comm_handler->GetPlayerName(scenario_player), 0x40);
         }
         else {
-            if (this->campaignGame() == 0 && player_info.type[i] == 0) {
+            if (this->campaignGame() != 0 && player_info.type[i] == 0) {
                 strcpy(player_info.name[i],
                        this->player_game_info->get_current_player_name());
             }
@@ -3194,7 +3194,7 @@ int TRIBE_Game::create_game(int param_1)
         }
         this->comm_handler->SetPlayerName(scenario_player, player_info.name[i]);
 
-        player_info.player_id_hash[i + 1] = color + 1;
+        player_info.player_id_hash[i] = color + 1;
         player_info.color[i] = color;
         ++player_info.player_num;
         ++i;
