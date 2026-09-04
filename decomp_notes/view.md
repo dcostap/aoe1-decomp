@@ -100,7 +100,7 @@ The audit demoted three broad or unsupported rows to `scratch`:
 | VA | Evidence | Decision |
 | --- | --- | --- |
 | `00533AF0` | 799 original bytes, 781 rebuilt bytes, 645 strict differences, and a broad table and edge-map loop drift. The 14 calls align, but the whole pointer-rebase and edge-table body differs. | `scratch` |
-| `00539510` | 413 original bytes, 408 rebuilt bytes, 274 strict differences, and 142 versus 164 instructions. The decoder cases match in effect, but the drift spans the complete packet loop and switch lowering. | `scratch` |
+| `00539510` | 413 original and rebuilt bytes, 52 strict differences, and 142 instructions on both sides. The decoder CFG and cases now align; the remaining bytes are an EAX/ECX register recolor and one relocated table. | `scratch` |
 | `00535A80` | The rebuilt body has 495 bytes and 39 strict differences. The original calls virtual slots `+0xE0` and `+0xE4` at offsets `+0x157` and `+0x18F`. The rebuilt body calls `+0xF0` and `+0xF4`. This changes virtual targets for derived views. | `scratch` |
 
 The following four rows retain `accepted_drift` because the evidence is local
@@ -115,6 +115,15 @@ and proves the same calls, bounds, writes, returns, and state effects:
 
 These four claims remain non-exact. New evidence must reopen them if it shows
 a changed call, bound, write, return, target, or fault order.
+
+## 2026-09-04 joint sprite context repair
+
+On current main `48efa69ec`, the compact compound guard in `sprite_check`
+improved that target to 413 bytes and 52 differences but changed exact
+`get_tile_picture` to 241 bytes and 209 differences. The original nested guard
+shape keeps the selector repair and restores `get_tile_picture` to 238 bytes,
+`MATCH`, and `0.0000%` under `/GX`. The affected owners are `00539510` and
+`00539AA0`; no shared header or flag change is needed.
 
 ## Wave20 reconciliation
 

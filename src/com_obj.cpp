@@ -184,7 +184,7 @@ unsigned char RGE_Combat_Object::area_attack(float x, float y, float z, RGE_Comb
     return 1;
 }
 
-unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Object* other)
+unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Object* attacker)
 {
     if (target == 0) {
         return 0;
@@ -196,7 +196,7 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Ob
     if (missile_id >= 0) {
         float radius_y = combat_master->radius_y;
         float radius_x = combat_master->radius_x;
-        float rangeDistance = (float)sqrt(radius_y * radius_y + radius_x * radius_x) +
+        float rangeDistance = (float)sqrt(radius_x * radius_x + radius_y * radius_y) +
             combat_master->weapon_range -
             DAT_0056f4ac;
         float angle1 = this->angle;
@@ -224,7 +224,7 @@ unsigned char RGE_Combat_Object::attack(RGE_Static_Object* target, RGE_Combat_Ob
             }
         }
     } else {
-        this->do_attack(target, other, this->world_x, this->world_y, this->world_z);
+        this->do_attack(target, attacker, this->world_x, this->world_y, this->world_z);
     }
     return 1;
 }

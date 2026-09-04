@@ -3434,32 +3434,29 @@ int RGE_View::sprite_check(uchar* Shape_Base, Shape_Info* Shape,
                            int check_x, int check_y)
 {
     int width;
-    int r;
-    int right_pad;
-    uchar* p;
-    uchar command;
-    unsigned int n;
     if (Shape != 0) {
         if (check_x >= 0) {
-                    width = Shape->Width;
+            width = Shape->Width;
             if (check_x < width) {
                 if (check_y >= 0) {
                     if (check_y < Shape->Height) {
                         uchar* outline = Shape_Base + Shape->Shape_Outline_Offset;
-                        r = *(short*)(outline + check_y * 4);
-                        right_pad = *(short*)(outline + check_y * 4 + 2);
-                        if (r >= 0) {
-                            if (check_x >= r) {
-                                if (check_x <= width - right_pad) {
+                        int r = *(short*)(outline + check_y * 4);
+                        int right_pad = *(short*)(outline + check_y * 4 + 2);
+                        if (r >= 0 && check_x >= r &&
+                            check_x <= width - right_pad) {
                                     int* data_offsets = (int*)(Shape_Base + Shape->Shape_Data_Offsets);
-                                    p = Shape_Base + data_offsets[check_y];
+                                    uchar* p = Shape_Base + data_offsets[check_y];
                                     if (r < width) {
                                         while (r < width) {
                                             if (check_x < r) {
                                                 return 1;
                                             }
-                                        command = *p++;
-                                        switch (command & 0x0F) {
+                                        unsigned int n;
+                                        uchar command = *p;
+                                        p++;
+                                        unsigned char selector = command & 0x0F;
+                                        switch (selector) {
                                             case 0:
                                             case 4:
                                             case 8:
@@ -3516,8 +3513,6 @@ int RGE_View::sprite_check(uchar* Shape_Base, Shape_Info* Shape,
                                         }
                                     }
                                     return 1;
-                                }
-                            }
                         }
                     }
                 }
