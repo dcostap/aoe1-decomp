@@ -9446,31 +9446,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
                                         this->removeFromGroup(bestUnitID);
                                         boatGroup->addUnit(bestUnitID, this->md);
 
-                                        int max = this->workingArea.maximumSizeValue;
-                                        int removeIndex = 0;
-                                        if (max > 0) {
-                                            int* value = this->workingArea.value;
-                                            do {
-                                                if (*value == bestUnitID) {
-                                                    break;
-                                                }
-                                                ++removeIndex;
-                                                ++value;
-                                            } while (removeIndex < max);
-                                        }
-                                        if (removeIndex < max) {
-                                            if (removeIndex < max - 1) {
-                                                do {
-                                                    ++removeIndex;
-                                                    this->workingArea.value[removeIndex - 1] = this->workingArea.value[removeIndex];
-                                                } while (removeIndex < max - 1);
-                                            }
-                                            int count = this->workingArea.numberValue - 1;
-                                            this->workingArea.numberValue = count;
-                                            if (count < 0) {
-                                                this->workingArea.numberValue = 0;
-                                            }
-                                        }
+                                        this->workingArea.remove(bestUnitID);
                                     } while (boatGroup->numberUnits() < boatGroup->desiredNumberUnits());
                                 }
                             }
