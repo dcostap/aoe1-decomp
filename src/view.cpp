@@ -816,13 +816,12 @@ void RGE_View::draw()
         if ((short)dx == 0 && (short)dy == 0) goto label_done;
 
         int screen_width = this->pnl_wid;
-        int screen_height = this->pnl_hgt;
-
-        new_rect.left = (int)dx;
-        new_rect.top = (int)dy;
         old_rect.left = 0;
         old_rect.top = 0;
+        int screen_height = this->pnl_hgt;
         old_rect.right = screen_width - 1;
+        new_rect.left = (int)dx;
+        new_rect.top = (int)dy;
         old_rect.bottom = screen_height - 1;
         new_rect.right = old_rect.right + new_rect.left;
         new_rect.bottom = old_rect.bottom + new_rect.top;
@@ -833,16 +832,16 @@ void RGE_View::draw()
         }
 
         if (((short)dx & 7) != 0) {
-            long t = dx;
-            if ((short)dx <= 0) t = dx + 7;
-            long a = (t & ~7) - dx;
+            long t = new_rect.left;
+            if ((short)dx <= 0) t = new_rect.left + 7;
+            long a = (t & ~7) - new_rect.left;
             dx += a;
             this->map_scr_x_offset += a;
         }
         if (((short)dy & 7) != 0) {
-            long t = dy;
-            if ((short)dy <= 0) t = dy + 7;
-            long a = (t & ~7) - dy;
+            long t = new_rect.top;
+            if ((short)dy <= 0) t = new_rect.top + 7;
+            long a = (t & ~7) - new_rect.top;
             dy += a;
             this->map_scr_y_offset += a;
         }
