@@ -1141,20 +1141,19 @@ int RGE_Moving_Object::doMove() {
 
 int RGE_Moving_Object::doTrivialMove(float x, float y)
 {
-    int numberFacets;
+    float newY;
     float targetDY;
     float dX;
-    float newAngle;
-    float distanceToCover;
     float newX;
-    float newY;
+    float newAngle;
     float curDistance;
     int alreadyMoving;
-    float dY;
     float angleDelta;
+    float distanceToCover;
+    float dY;
     int i;
     int found;
-    int passable;
+    int numberFacets;
 
     alreadyMoving = 1;
 
@@ -1187,11 +1186,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         }
     }
 
-    if (this->sprite != 0) {
-        numberFacets = (int)this->sprite->facet_num;
-    } else {
-        numberFacets = 8;
-    }
+    numberFacets = this->sprite != 0 ? this->sprite->facet_num : 8;
 
     if (alreadyMoving == 1) {
         dX = x - this->world_x;
@@ -1236,12 +1231,8 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     newX = this->world_x + this->velocity_x;
     newY = this->world_y + distanceToCover;
 
-    passable = 1;
-    if (((RGE_Master_Static_Object*)this->master_obj)->radius_z > DAT_00570b48) {
-        passable = pathSystem.passable(this, newX, newY, 1);
-    }
-
-    if (passable == 0) {
+    if (((RGE_Master_Static_Object*)this->master_obj)->radius_z > DAT_00570b48 &&
+        pathSystem.passable(this, newX, newY, 1) == 0) {
         if (this->collisionAvoidanceDistance == DAT_00570b48) {
             if (this->speed <= DAT_00570b48) {
                 this->speed = 0.0f;
@@ -1255,12 +1246,10 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
             return 0;
         }
 
-        passable = 1;
         this->collisionAvoidanceDistance = 0.0f;
         newX = (float)floor((double)this->world_x) - DAT_00570b80;
         newY = (float)floor((double)this->world_y) - DAT_00570b80;
-        passable = pathSystem.passable(this, newX, newY, passable);
-        if (passable != 0) {
+        if (pathSystem.passable(this, newX, newY, 1) != 0) {
             this->teleport((float)floor((double)this->world_x) - DAT_00570b80,
                            (float)floor((double)this->world_y) - DAT_00570b80,
                            this->world_z);
@@ -1286,8 +1275,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         }
     }
 
-    passable = pathSystem.passable(this, x, y, 1);
-    if (passable == 0) {
+    if (pathSystem.passable(this, x, y, 1) == 0) {
         return 2;
     }
 
@@ -1427,11 +1415,8 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     newX = this->world_x + this->velocity_x;
     newY = this->world_y + distanceToCover;
 
-    passable = 1;
-    if (((RGE_Master_Static_Object*)this->master_obj)->radius_z > DAT_00570b48) {
-        passable = pathSystem.passable(this, newX, newY, 1);
-    }
-    if (passable == 0) {
+    if (((RGE_Master_Static_Object*)this->master_obj)->radius_z > DAT_00570b48 &&
+        pathSystem.passable(this, newX, newY, 1) == 0) {
         if (this->owner->computerPlayer() == 1) {
             return 4;
         }
