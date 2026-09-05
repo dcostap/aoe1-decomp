@@ -108,3 +108,17 @@ This unusual form remains only for that direct variant evidence.
 
 The fresh full audit reports a two-byte mismatch for `00485E50
 generate_objects`. That row is scratch and is no longer registered as exact.
+
+## Production recovery: recovery-003-rmm-obj
+
+The parent completed the semantic review for `00485F10`; see `logic_reviews/00485F10.md`.
+Its 27 differing bytes change private scheduling, not externally visible game behavior within the entry ABI.
+This recovery needs no source change and no further byte tuning without new evidence.
+
+The parent repeated the target check and all 13 owners. All nine exact owners remain exact.
+The prior accepted-drift owner is unchanged. The other two targets remain open.
+
+All four new experiment states are preserved, including the supported pair-store candidate for `00486C40`.
+That candidate needs a complete changed-owner semantic review before integration.
+`004864F0` retains a concrete external fault-order objection.
+Historical permutation counts in the first worker handoff were not new experiments; the correcting findings remain archived.
