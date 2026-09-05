@@ -9,13 +9,11 @@ global headers. It has no copied panel layout or manual vtable store.
 The deleting destructor at `0043FCB0` is compiler generated. It has no
 handwritten source body.
 
-The constructor and main setup remain nonexact. The constructor is scratch
-because its current check has a structural instruction difference. The main
-setup is scratch because its 526-byte drift is broad and its current grouped
-comparison has no valid exact proof. The other five PDB owners retain matching
-status pending direct module validation.
+The main setup remains nonexact and stays scratch. Its authoritative grouped
+comparison has a 311-byte mismatch. The constructor and the other five
+handwritten PDB owners retain matching status. The deleting destructor is
+compiler generated and also matches in the grouped audit.
 
-The direct grouped check matches the five matching owners and the generated
-deleting destructor. The constructor differs by 44 bytes. Main setup differs
-by 526 bytes. The constructor has a high-severity structural difference. Main
-setup remains a broad unresolved body. Neither source body was changed.
+The direct grouped check matches six normal owners and the generated deleting
+destructor. Main setup is a broad unresolved body with correct ownership,
+boundary, relocations, and 14 aligned calls. Neither source body was changed.
