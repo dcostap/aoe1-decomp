@@ -28,6 +28,7 @@ Capture the baseline before compilation. Read each saved input diff before accep
 Use prior states and notes to select new work. Do not repeat declaration permutations without new evidence.
 Review complete affected closures for shared repairs. Preserve experiments separately from source approval.
 Accepted drift requires complete independent semantic review; a close score is not a substitute.
+Matching and accepted drift are equally desired completed outcomes. Do not rank exactness above a proved natural recovery.
 
 This document records assignment decisions and the root review backlog, not function status.
 Update it when reviewed findings change the next useful assignment.
@@ -158,4 +159,8 @@ Function notes follow `decomp_notes/functions/<VA-prefix>/<VA>.md`.
 
 ## Root review backlog
 
-No completed production result awaits review at launch.
+- Open: `recovery-003-rmm-obj` / `sa-f7ad64cd`, base `a927f6dc4`, returned for correction and semantic review.
+  The first handoff reports four preserved states and no retained source change.
+  Review `00485F10` for accepted drift rather than stopping at a scheduling difference.
+  Require a source-based decision for the `00486C40` stores and distinguish historical labs from new experiments.
+  No source or evidence integration is approved yet. The worker is continuing; its TU remains reserved.
