@@ -143,6 +143,7 @@ Keep context-file discovery enabled.
 The orchestrator's TODO backlog controls its worker-result review.
 The root TODO backlog controls completed orchestrator integration.
 Do not combine these two review levels.
+Require every orchestrator to enforce `docs/experiments.md` for all matching assignments and handoffs.
 
 ## Reusable worktree slots
 
@@ -164,6 +165,9 @@ A reusable worktree is clean only when:
 - no tracked or untracked change remains;
 - no open orchestrator TODO item remains; and
 - durable evidence does not exist only under `build/`.
+
+Source rejection does not authorize experiment deletion.
+Before slot reuse, verify that new experiment records and all referenced evidence survived in reviewed Git history.
 
 Content-addressed repository caches can remain.
 Recycle obsolete private artifacts before reuse.
@@ -245,6 +249,9 @@ Continue it only through an explicit root instruction.
 
 The root verifies the complete orchestrator result after its work stops.
 Do not duplicate live worker intake or supervise individual worker experiments.
+Require the Behavior, Source, Bytes, and Integration report from `docs/experiments.md`, including results with no source integration.
+Review behavior and source evidence before scores. Record separate source-integration and experiment-preservation decisions.
+Verify preserved records, referenced objects, candidate patches, fallback evidence, and reachable base commits before rejecting a branch.
 
 For each completed result:
 

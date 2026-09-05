@@ -79,6 +79,7 @@ worker's ad hoc experiments and translation-unit audit into its private
 directory.
 
 Require the worker to read `agent_roles/matching_worker.md`.
+Every matching assignment must require `docs/experiments.md`, durable input capture, and its four-part handoff report.
 
 The managed subagent list is the active-assignment record. Open TODO review
 items identify completed translation units that are not yet eligible again.
@@ -131,6 +132,15 @@ For a normal worker return:
 14. Mark the TODO item complete.
 
 The scheduler can assign that translation unit again after TODO completion.
+
+Require Behavior, Source, Bytes, and Integration sections for every worker finding or proposal.
+This applies even when no source change remains. Return incomplete reports for correction.
+Follow `docs/experiments.md` for review order and evidence preservation.
+Review behavior and source evidence before byte scores. A score alone cannot approve or reject a change.
+Record separate decisions for source integration and experiment preservation.
+Preserve new experiment records, referenced objects, candidate patches, and fallback evidence before worktree cleanup or reuse.
+Verify hashes, parent references, and reachable base commits in the integration repository.
+Commit useful evidence even when the tested source is rejected. Do not retain only the best-scoring state.
 
 ## Risk-based verification
 
@@ -343,6 +353,8 @@ The final handoff contains:
 - shared findings and major blockers;
 - remaining work; and
 - merge guidance.
+
+Carry Behavior, Source, Bytes, and Integration findings into the root handoff, including preserved experiments with rejected source.
 
 Use `NEEDS_ROOT` when a major issue requires root guidance.
 State the question, evidence, changed paths, and safe continuation point.

@@ -60,7 +60,8 @@ progress.
 ## Start
 
 Run each repository tool with `--help` before its first use.
-For branch-based assignments, read `docs/experiments.md` and inspect the saved experiment states before choosing a starting point.
+Every matching assignment must follow `docs/experiments.md`.
+Inspect the saved experiment states before choosing a starting point.
 
 Before work on each function:
 
@@ -72,17 +73,18 @@ Before work on each function:
 4. Inspect `decomp_notes/candidates/` for the target and its dependencies.
 5. Read the configured module note when present.
 6. Inspect focused executable evidence and relevant exact donors.
-7. Record a fresh baseline check.
+7. Freeze the baseline inputs with `experiment_history.py record`, then record a fresh baseline check.
 
 Example:
 
 ```text
 python tools/target_session.py start --va <VA> --owner <WORKER_ID>
-python tools/target_session.py check --va <VA> --owner <WORKER_ID> \
-  --kind baseline --note "fresh natural translation-unit baseline"
+python tools/experiment_history.py record --workspace . --va <VA> \
+  --name <WORKER_ID>-<VA>-baseline --hypothesis "baseline" --provenance "assignment baseline"
+python tools/experiment_history.py run <WORKER_ID>-<VA>-baseline --workspace .
 ```
 
-The baseline check pins the clean reconstruction.
+The saved baseline pins the compiler inputs. Keep the target session for assignment notes.
 
 ## Work
 
@@ -91,7 +93,11 @@ Recover the simplest period-plausible source that explains executable behavior.
 Establish ownership, types, fields, widths, calls, and control flow before
 instruction-scheduling work.
 
-Use `target_session.py check` for meaningful hypotheses. A useful hypothesis
+Record each distinct tested input state before compilation with `experiment_history.py record`.
+Use assignment-prefixed state names to avoid name conflicts between workers.
+Save results with `experiment_history.py run`; attach other test results with `note --artifact`.
+Target-session checks can supplement these records, but cannot replace durable input capture.
+A useful hypothesis
 changes one supported source, ABI, layout, control-flow, lifetime, or compiler
 context idea.
 
@@ -114,8 +120,8 @@ Missing PDB records do not prove that a source variable did not exist.
 Use resource values from the assignment. Do not copy active-worker capacity
 into `--jobs`. Do not invent local limits.
 
-Keep only better natural source. Remove aliases, fake helpers, dummy declarations,
-fake volatility, raw offsets, and metric-only source tricks.
+Retain supported natural source for integration. Archive other tested states before removing them from compiler-facing source.
+Remove unsupported aliases, fake helpers, dummy declarations, fake volatility, raw offsets, and metric-only source tricks.
 
 Put ad hoc experiments and translation-unit audit output in your private
 directory. Leave repository-managed caches, target notebooks, and standard
@@ -145,8 +151,9 @@ Record durable evidence only:
 - proved facts and open questions; and
 - useful next approaches.
 
-Separate facts from hypotheses. Keep raw objects, diffs, and experiments under
-`build/`.
+Separate facts from hypotheses. Keep generated working artifacts under `build/`.
+Preserve tested inputs and required evidence in `decomp_notes/experiments/` before replacing them or handing off.
+If the tool cannot capture an input state, follow the unsupported-input procedure in `docs/experiments.md`.
 
 ## Exact and improved results
 
@@ -242,6 +249,11 @@ Your final response must contain:
 - major blockers and shared findings;
 - untouched scratch functions; and
 - useful next steps.
+
+Every handoff must include the four-part report in `docs/experiments.md`: Behavior, Source, Bytes, and Integration.
+Use these headings for each finding or proposal, including results with no retained source change.
+State unknowns and untested claims explicitly. Include state IDs and durable evidence paths.
+Do not report only the best score or only the final source state.
 
 For a shared finding, include the path, symbol, facts, hypotheses, evidence,
 affected translation units, smallest proposed repair, and required validation.

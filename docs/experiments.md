@@ -2,6 +2,7 @@
 
 This is a working pilot, not a replacement for the function registry.
 It extends the existing compiler-input manifest and checker workflow.
+Every matching assignment must follow this workflow. Tool limitations do not make evidence preservation optional.
 
 ## Separate the questions
 
@@ -40,6 +41,14 @@ Keep the recorded base commits reachable in Git. The pilot does not package the 
 A clone without the base commit or matching external prerequisites cannot reproduce the state.
 The pilot uses the existing dependency scanner, not an arbitrary build-system capture.
 It refuses deleted source, header, tool, or config files instead of recording an incomplete restoration.
+
+### Unsupported inputs
+
+Do not bypass a capture refusal or claim reproduction without proof.
+Preserve a complete patch, new input files, base commit, compiler recipe, and required evidence in a durable experiment directory.
+Record the hypothesis, parent IDs, input and prerequisite hashes, and exact commands.
+Record missing prerequisites and the capture failure. Report this as a tooling blocker in the handoff.
+Do not replace the only recoverable inputs until the orchestrator confirms preservation.
 
 ## Commands
 
@@ -120,6 +129,30 @@ A proved behavior repair remains useful even when its byte result gets worse.
 Legacy `check_function.py` history remains available.
 Metric-only history deletion is now disabled, including `--apply-prune`.
 The pilot does not automatically import every old checkpoint or Pi transcript.
+
+## Required handoff and review
+
+Every worker handoff must use these four headings for each finding or proposal:
+
+1. **Behavior:** Executable evidence, tests, counterexamples, and coverage limits. State what remains unknown.
+2. **Source:** Evidence for ownership, types, layout, and natural source. Identify unsupported constructs and unresolved objections.
+3. **Bytes:** Baseline, parent, and tested results, with state IDs and compiler context. Include failed builds and changed owners.
+4. **Integration:** Proposed action, affected closure, validation, blockers, and useful next steps. The worker proposes; the orchestrator decides.
+
+Use this report even when no source change remains. Write `not tested` or `unknown` instead of omitting a heading.
+Link preserved states and evidence. Do not substitute a list of scores for the report.
+
+Review Behavior and Source before Bytes. Reject an unsafe change, not a score increase alone.
+A better score cannot override contrary behavior evidence or a source-policy objection.
+Equal scores or target bytes do not prove equal source, context, or neighbor behavior.
+Record separate decisions for source integration and experiment preservation.
+Explain each decision with evidence, not score alone. A rejected source change can leave useful experiments and findings.
+
+Before worktree reuse, transfer new records, referenced objects, candidate patches, and fallback evidence into reviewed Git history.
+Verify their hashes, parent references, and reachable base commits. Do not preserve only a summary or build-directory path.
+Resolve conflicting state names without overwriting immutable records; use state IDs when names are ambiguous.
+The integrator commits evidence even when it does not integrate the tested source.
+Carry the four-part report and evidence-preservation decision through orchestrator and root handoffs.
 
 ## Pilot results
 
