@@ -50,10 +50,12 @@ destruction order without manual vptr code.
 ## Blockers
 
 `setup_help` remains nonexact. The direct candidate reports a 432-byte strict
-  difference after the natural geometry and call reconstruction. The oracle
-  stores `dialog_x` at the dead text-parameter home and `y` at the dead
-  `more_text`-parameter home. Natural local variants did not reproduce that
-  spill without unsupported compiler steering.
+  difference after the natural geometry and call reconstruction. In the
+  original, `[esp+24h]` is a reused home that holds final `dialog_x` values.
+  `[esp+28h]` is a reused home for `top_candidate` and `parent_bottom`
+  intermediates. Final `y` remains in `ECX`; it is not a separate spill home.
+  Natural local variants did not reproduce this stack-home and register
+  topology without unsupported compiler steering.
 
 The scalar deleting destructor is generated and is not a normal source owner.
 
