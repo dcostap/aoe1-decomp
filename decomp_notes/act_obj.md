@@ -42,6 +42,9 @@ The source uses reviewed Action, action-list, task-list, master, object,
 player, World, Unit AI, and file I/O providers. Master action fields use a
 local `static_cast<RGE_Master_Action_Object*>` only where needed. Task lookup
 uses `RGE_Task_List::get_target_task`. It does not use `RGE_Master_Command`.
+An earlier diagnostic probe tested a reconstructed `RGE_Master_Command`/
+`getTask` declaration surface. That probe was rolled back. It does not describe
+the current source or support its ABI.
 
 The full candidate is `build/candidate_tus/act_obj_direct/report.txt`. It
 compiled with `config/flags/gx.rsp` and compared all 35 normal bodies.
@@ -83,3 +86,19 @@ The repository now retains this canonical surface. `00406940` is exact.
 The final closure audit found three former exact owners with behavior-equal
 code generation. Root classified `0045AA70`, `004CD210`, and `0050A1D0` as
 completed `accepted_drift` results. Their ledgers record the semantic proof.
+
+## Evidence boundaries for `00406860`
+
+- PDB scoped-symbol evidence proves the owner, `__thiscall` signature, line span
+  `act_obj.cpp:484-519`, locals `obj`, `x`, `y`, `z`, and `int i`, and no
+  function static. PDB data does not prove the task-list class or virtual slot.
+- Original assembly evidence proves two ordered indirect calls through virtual
+  slot `+4`, at the target's first call and fallback call. It also proves the
+  `+0xD8` receiver load in each call setup.
+- Reviewed `include/m_ac_obj.h` places `tasks` at `+0xD8`, and
+  `include/task_lst.h` declares `get_target_task` after the first virtual slot.
+  Exact same-TU donor `00406C30` uses that `RGE_Task_List::get_target_task`
+  surface and virtual slot `+4`. These header and donor facts support the ABI
+  identity with the assembly; they are not PDB facts.
+- The current natural body uses `RGE_Task_List::get_target_task`. The historical
+  `RGE_Master_Command` probe was diagnostic only and was rolled back.
