@@ -125,17 +125,17 @@ No compiler or validator command ran for this repair, as required.
 
 ## Current exactness state
 
-The source manifest has 17 matching owners and five scratch owners. All 17
-matching owners are registered. The final grouped audit proves them exact.
-`00476D80 setup` is one of these matching owners.
+The source manifest has 20 matching owners, one accepted-drift owner, and one
+scratch owner. All 20 matching owners are registered. The final grouped audit
+proves the matching owners exact. `00476D80 setup` is one of these owners.
 
-The five scratch owners are:
+The accepted-drift owner is:
 
-- `00476C10`
-- `00476FA0`
-- `00477220`
 - `00477AF0`
-- `00477E90`
+
+The one scratch owner is:
+
+- `00477220`
 
 ## Historical exactness state
 
