@@ -1,0 +1,15 @@
+# Experiment 2bce0524d6c0f413c6a720139a2f7c5e045bc2787e5d6371d4154791dc12e795
+# Base bbae84f5a2207539242214451f66cc6221fce690
+diff --git a/src/scr_info.cpp b/src/scr_info.cpp
+index 7ba8a933d..278f084b8 100644
+--- a/src/scr_info.cpp
++++ b/src/scr_info.cpp
+@@ -12,7 +12,7 @@ TRIBE_Screen_Info::TRIBE_Screen_Info(char* panel_name, char* screen_file,
+     : TScreenPanel(panel_name)
+ {
+     timer = timer_value;
+-    auto_close = timer > 0;
++    auto_close = timer_value > 0;
+     last_time = 0;
+ 
+     if (setup(rge_base_game->draw_area, screen_file, screen_id, 0) == 0) {
