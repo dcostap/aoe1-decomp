@@ -49,3 +49,13 @@ The typed `004BE1F0 AddMiniList` body now matches all 71 bytes. The sequential
 audit also disproves the stale `004BE4B0 DeleteShape` exact claim by three
 bytes. The module retains 23 matching, four scratch, and two accepted-drift
 owners. All 23 registered owners match.
+
+## Reviewed durable test: branch-test-03-spanlist
+
+The test preserved baselines for `AddSpan`, `AddLine_Align`, and `take_snapshot`.
+It also preserved two separate receiver-alias variants for `AddLine_Align`.
+Both aliases emit the same target bytes as baseline and do not change other compiled owners.
+The aliases add redundant source without a demonstrated correctness or simplicity benefit; neither is integrated.
+All five states and their referenced evidence survive in `decomp_notes/experiments/`.
+No game source, header, registry, or compiler flag changed.
+The worker confirmed the linked-worktree guard fix through direct runs in its assigned worktree.
