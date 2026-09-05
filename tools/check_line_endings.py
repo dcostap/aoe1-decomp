@@ -32,6 +32,23 @@ def is_binary(data: bytes) -> bool:
     return b"\0" in data[:BINARY_SAMPLE_SIZE]
 
 
+def path_attributes(repo_root: Path, paths: list[Path]) -> dict[str, dict[str, str]]:
+    names = [path.relative_to(repo_root).as_posix() for path in paths]
+    if not names:
+        return {}
+    result = subprocess.run(
+        ["git", "-C", str(repo_root), "check-attr", "-z", "--stdin", "text", "eol"],
+        input=("\0".join(names) + "\0").encode("utf-8", errors="surrogateescape"),
+        check=True, capture_output=True,
+    )
+    fields = result.stdout.decode("utf-8", errors="surrogateescape").split("\0")
+    attributes: dict[str, dict[str, str]] = {}
+    for index in range(0, len(fields) - 1, 3):
+        name, key, value = fields[index:index + 3]
+        attributes.setdefault(name, {})[key] = value
+    return attributes
+
+
 def line_ending_issue(data: bytes, expected: str) -> str | None:
     if is_binary(data):
         return None
@@ -55,10 +72,17 @@ def line_ending_issue(data: bytes, expected: str) -> str | None:
 
 def check_repository(repo_root: Path = REPO_ROOT) -> list[str]:
     failures: list[str] = []
-    for path in repository_paths(repo_root):
+    paths = repository_paths(repo_root)
+    attributes = path_attributes(repo_root, paths)
+    for path in paths:
         if not path.is_file():
             continue
-        expected = "crlf" if path.suffix.casefold() in CRLF_SUFFIXES else "lf"
+        settings = attributes.get(path.relative_to(repo_root).as_posix(), {})
+        if settings.get("text") == "unset":
+            continue
+        expected = settings.get("eol")
+        if expected not in ("lf", "crlf"):
+            expected = "crlf" if path.suffix.casefold() in CRLF_SUFFIXES else "lf"
         issue = line_ending_issue(path.read_bytes(), expected)
         if issue:
             failures.append(f"{path.relative_to(repo_root).as_posix()}: {issue}")

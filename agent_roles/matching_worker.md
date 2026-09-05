@@ -60,6 +60,7 @@ progress.
 ## Start
 
 Run each repository tool with `--help` before its first use.
+For branch-based assignments, read `docs/experiments.md` and inspect the saved experiment states before choosing a starting point.
 
 Before work on each function:
 
@@ -160,10 +161,13 @@ For an exact result:
 6. Confirm ownership, boundaries, relocations, and direct targets.
 
 A nonexact change can remain when it is natural, behavior-supported, and clearly
-better than its baseline.
+better than its baseline. A proved behavior repair is progress even when byte distance increases.
 
-Run a final recorded check for every retained change. Restore the pinned clean
-source when an experiment does not improve it.
+Run a final recorded check for every retained change. Preserve the tested source,
+compiler context, parent state, and finding before switching away from an experiment.
+Do not close a branch only because its metrics worsen.
+An integration objection applies to the identified source problem, not every possible reduction of that state.
+After a context change, retry useful natural reductions that failed in a different context.
 
 ## Accepted-drift proposals
 

@@ -243,7 +243,7 @@ class FunctionHistoryTests(unittest.TestCase):
         self.assertEqual(delta["new_exact_original_blocks"], [10])
         self.assertEqual(delta["lost_exact_original_blocks"], [0])
 
-    def test_prune_history_apply_deletes_only_planned_artifact(self) -> None:
+    def test_prune_history_apply_preserves_dominated_source_states(self) -> None:
         record = {"va": "00001000", "name": "demo"}
         slug = "00001000_demo"
         with tempfile.TemporaryDirectory() as temporary:
@@ -281,9 +281,10 @@ class FunctionHistoryTests(unittest.TestCase):
             (history_root / "history.json").write_text(json.dumps(index), encoding="utf-8")
             with patch("function_history.REPO_ROOT", root):
                 lines = prune_history(record, keep_recent=0, apply=True)
-            self.assertFalse(old_dir.exists())
+            self.assertTrue(old_dir.exists())
             self.assertTrue(kept_dir.exists())
-            self.assertTrue(any("Deleted 1 checkpoint" in line for line in lines))
+            self.assertTrue(any("deletion is disabled" in line for line in lines))
+            self.assertEqual(json.loads((history_root / "history.json").read_text()), index)
 
     def test_history_source_comparison_returns_bounded_unified_diff(self) -> None:
         record = {"va": "00001000", "name": "demo"}

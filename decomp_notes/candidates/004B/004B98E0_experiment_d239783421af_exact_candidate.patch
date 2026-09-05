@@ -1,0 +1,76 @@
+# Experiment d239783421af064b030ab6b233dd45d12e7aecfbd463aee0cc98a716091d2326
+# Base d62db1620e94eb669505c55d227f826f853fd2d7
+diff --git a/src/Shape.cpp b/src/Shape.cpp
+index 5fd9be04d..dc8ae617f 100644
+--- a/src/Shape.cpp
++++ b/src/Shape.cpp
+@@ -621,35 +621,36 @@ byte TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3,
+ {
+     Shape_Header* hdr = this->shape_header;
+     long width = (hdr->ymax - hdr->ymin) + 1;
++    byte* src = (byte*)(hdr + 1);
+ 
+-    int Orien = td->Orien;
++    long Orien = td->Orien;
+     long stride = td->AlignedWidth() * Orien;
+-    Shape_Payload* src = (Shape_Payload*)(hdr + 1);
++    long rows;
++    byte* dst;
+     byte count;
+-    byte* row;
+-    long dest_off;
++
+     if (Orien < 1) {
+-        dest_off = (p3 - td->Height + 1) * stride;
++        dst = td->Bits + p2 + (p3 - td->Height + 1) * stride;
+     } else {
+-        dest_off = p3 * stride;
++        dst = td->Bits + p2 + p3 * stride;
+     }
+-    row = td->Bits + p2 + dest_off;
++    td = (TDrawArea*)dst;
+ 
+     if (width > 0) {
++        rows = width;
+         do {
+             byte done = 0;
+-            byte* dst = row;
+             do {
+-                byte b = src++->value;
++                byte b = *src++;
+                 if ((b & 1) == 1) {
+                     count = b >> 1;
+                     if (count == 0) {
+-                        dst += src->value;
++                        dst += *src;
+                         src++;
+                     } else {
+-                        byte* end = dst + count;
++                        byte* end = dst + (long)count;
+                         while (dst < end) {
+-                            *dst = pal[src->value];
++                            *dst = pal[*src];
+                             src++;
+                             dst++;
+                         }
+@@ -659,15 +660,16 @@ byte TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3,
+                     if (count == 0) {
+                         done = 1;
+                     } else {
+-                        memset(dst, pal[src->value], count);
+-                        src++;
++                        memset(dst, pal[*src], count);
+                         dst += count;
++                        src++;
+                     }
+                 }
+             } while (!done);
+ 
+-            row += stride;
+-        } while (--width);
++            td = (TDrawArea*)((byte*)td + stride);
++            dst = (byte*)td;
++        } while (--rows);
+     }
+ 
+     return 1;

@@ -668,26 +668,10 @@ def prune_history(record: dict[str, str], keep_recent: int, apply: bool = False)
                 f"shape={float(summary.get('shape_percent') or 0):.1f}"
             )
         if not apply:
-            lines.append("Nothing deleted. Re-run with --apply-prune to remove these dominated, unlabeled runs.")
+            lines.append("Nothing deleted. Metric-only deletion is disabled; these states can contain useful source or context.")
             return lines
 
-        candidate_ids = {str(run["id"]) for run in candidates}
-        history_root = _history_root(slug).resolve()
-        for run in candidates:
-            artifact_path = (REPO_ROOT / str(run["artifact_path"])).resolve()
-            if not artifact_path.is_relative_to(history_root):
-                raise ValueError(f"Refusing to prune artifact outside function history: {artifact_path}")
-            if artifact_path.exists():
-                shutil.rmtree(artifact_path)
-        index["runs"] = [run for run in index.get("runs", []) if str(run.get("id")) not in candidate_ids]
-        index["labels"] = {
-            label: run_id
-            for label, run_id in (index.get("labels") or {}).items()
-            if str(run_id) not in candidate_ids
-        }
-        _refresh_frontier(index)
-        _write_index(slug, index)
-        lines.append(f"Deleted {len(candidates)} checkpoint(s); reclaimed approximately {total_bytes / (1024 * 1024):.2f} MiB.")
+        lines.append("Metric-only checkpoint deletion is disabled. All source, context, and history records are retained.")
         return lines
 
 

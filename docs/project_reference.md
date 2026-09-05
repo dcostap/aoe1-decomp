@@ -88,6 +88,9 @@ The response files contain compiler arguments only.
 
 - `query_project_status.py` queries status, paths, notes, and history.
 - `target_session.py` manages function notebooks and translation-unit reservations.
+- `experiment_history.py` preserves durable experiment branches and reproduces their compiler inputs.
+  Read `docs/experiments.md` for the pilot workflow.
+  `target_session.py branches --va VA` shows the saved states and findings.
 - `compiler_gate.py` protects live shared-source integration from compiler jobs.
 - `check_function.py` performs the authoritative one-function comparison.
 - `audit_translation_unit_functions.py` compiles and checks configured source files.

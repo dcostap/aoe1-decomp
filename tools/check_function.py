@@ -146,9 +146,9 @@ def parse_args() -> argparse.Namespace:
         help="Maximum unified-diff lines shown by --compare-history-source (0 means unlimited).",
     )
     parser.add_argument("--history-limit", type=int, default=0, help="Maximum checkpoints shown by --history (0 means all).")
-    parser.add_argument("--prune-history", action="store_true", help="Plan removal of old dominated, unlabeled checkpoints.")
+    parser.add_argument("--prune-history", action="store_true", help="Report old dominated checkpoints without deleting source history.")
     parser.add_argument("--prune-keep", type=int, help="Recent checkpoints retained by --prune-history. Supply this with --prune-history.")
-    parser.add_argument("--apply-prune", action="store_true", help="Actually perform --prune-history deletions.")
+    parser.add_argument("--apply-prune", action="store_true", help="Compatibility option; metric-only checkpoint deletion is disabled.")
     parser.add_argument(
         "--restore-checkpoint",
         metavar="LABEL_OR_ID",

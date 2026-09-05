@@ -1358,6 +1358,14 @@ def format_brief(
     """Return a worker handoff without raw checkpoint/session payloads."""
     status_lines = format_session(record, session, metrics).split("\n\nUseful commands:", 1)[0]
     lines = [status_lines]
+    from experiment_history import Store
+    branches = [state["name"] for _, state in Store(REPO_ROOT / "decomp_notes/experiments").records("states")
+                if state["va"] == str(record["va"]).upper()]
+    if branches:
+        lines.extend([
+            "Durable experiment states: " + ", ".join(sorted(branches)),
+            f"Inspect these before choosing a starting point: python tools/target_session.py branches --va {record['va']}",
+        ])
     translation_unit = build_module_for_va(int(record["va"], 16))
     if translation_unit is not None:
         functions = translation_unit.get("functions") or {}
@@ -1477,6 +1485,9 @@ def parse_args() -> argparse.Namespace:
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
+    branches = subparsers.add_parser("branches", help="Show durable experiment states and findings.")
+    branches.add_argument("--va", required=True)
+
     start = subparsers.add_parser(
         "start",
         help="Start or continue one target notebook.",
@@ -1575,6 +1586,10 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    if args.command == "branches":
+        from experiment_history import DEFAULT_STORE, Store
+        print(Store(DEFAULT_STORE).show(args.va))
+        return
     if args.command == "list":
         rows = load_target_sessions()
         print(json.dumps(rows, indent=2) if args.json else format_session_list(rows))
