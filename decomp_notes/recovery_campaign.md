@@ -19,6 +19,7 @@ Historical module counts can be stale. Use the live registry for assignments and
 ## Execution
 
 The root directly manages three matching workers. No orchestrator subagents are used.
+The user has stopped expansion: finish these three translation units, then report results. Do not launch replacement translation units.
 Worker model: `openai-codex-secondary/gpt-5.6-luna`; thinking: `xhigh`; one compiler job per worker.
 Each worker owns one natural translation unit in an isolated worktree.
 ManagedArray remains paused. User-owned worktrees and their unfinished work remain untouched.
@@ -159,8 +160,11 @@ Function notes follow `decomp_notes/functions/<VA-prefix>/<VA>.md`.
 
 ## Root review backlog
 
-- Open: `recovery-003-rmm-obj` / `sa-f7ad64cd`, base `a927f6dc4`, returned for correction and semantic review.
-  The first handoff reports four preserved states and no retained source change.
-  Review `00485F10` for accepted drift rather than stopping at a scheduling difference.
-  Require a source-based decision for the `00486C40` stores and distinguish historical labs from new experiments.
-  No source or evidence integration is approved yet. The worker is continuing; its TU remains reserved.
+- Complete: `recovery-003-rmm-obj` / `sa-f7ad64cd`, base `a927f6dc4`.
+  `00485F10` completes recovery with accepted drift after independent semantic review and repeated full-module validation.
+  All four states and correcting findings are preserved in `ab76125df`.
+  `004864F0` has an external fault-order objection. The supported `00486C40` pair-store source awaits full changed-owner semantic proof.
+  The initial large variant counts described historical work; this assignment ran no permutation lab.
+- Open: `recovery-002-visible` / `sa-a939b591`, returned for a complete four-part handoff and concrete semantic objections.
+  Require evidence for the retained pragma instead of a score-based restoration decision.
+- Active: `recovery-001-shape` / `sa-982916db`.

@@ -10,7 +10,7 @@
     "00485CB0": {"status": "matching", "symbol": "?add_quick_obj@RGE_RMM_Object_Generator@@QAEXJJJ@Z"},
     "00485DC0": {"status": "matching", "symbol": "?generate@RGE_RMM_Object_Generator@@UAEEXZ"},
     "00485E50": {"status": "matching", "symbol": "?generate_objects@RGE_RMM_Object_Generator@@IAEXAAURGE_Object_Info_Line@@@Z"},
-    "00485F10": {"status": "scratch", "symbol": "?make_placement_stack@RGE_RMM_Object_Generator@@IAEXAAUMap_Stack@@JJJJ@Z"},
+    "00485F10": {"status": "accepted_drift", "symbol": "?make_placement_stack@RGE_RMM_Object_Generator@@IAEXAAUMap_Stack@@JJJJ@Z"},
     "00486110": {"status": "matching", "symbol": "?to_close@RGE_RMM_Object_Generator@@IAEEAAURGE_Object_Info_Line@@JJ@Z"},
     "00486180": {"status": "matching", "symbol": "?set_search_area@RGE_RMM_Object_Generator@@IAEXJJJE@Z"},
     "00486210": {"status": "matching", "symbol": "?remove_area_from_lists@RGE_RMM_Object_Generator@@IAEXJJJ@Z"},
