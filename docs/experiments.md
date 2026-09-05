@@ -102,6 +102,8 @@ It refuses every existing destination, including the shared workspace.
 It copies no build cache. Run validation after reproduction.
 
 `switch` operates only in an isolated workspace.
+The tool identifies linked worktrees through Git metadata, not through the location of its own script.
+Workers can run the tool from their assigned linked worktree without creating another worktree.
 It verifies the expected current state and refuses staged or unrelated changes.
 The pilot requires the same Git base and repository input path set for switching.
 Use a new reproduction workspace when either differs.

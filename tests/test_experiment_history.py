@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-from experiment_history import Store, digest, relative_path
+from experiment_history import Store, digest, relative_path, is_primary_workspace
 
 
 class ExperimentHistoryTests(unittest.TestCase):
@@ -136,7 +136,7 @@ class ExperimentHistoryTests(unittest.TestCase):
     def test_switch_refuses_unrelated_changes(self):
         a = self.state("before")
         b = self.state("after", b"new", [a])
-        with patch.object(self.store, "verify"), patch("experiment_history.git", side_effect=["", "other.cpp", ""]):
+        with patch.object(self.store, "verify"), patch("experiment_history.is_primary_workspace", return_value=False), patch("experiment_history.git", side_effect=["", "other.cpp", ""]):
             with self.assertRaisesRegex(ValueError, "unrelated changes"):
                 self.store.switch(a, b, self.root)
 
@@ -145,7 +145,7 @@ class ExperimentHistoryTests(unittest.TestCase):
         b = self.state("after", b"new\r\n", [a])
         (self.root / "src").mkdir()
         (self.root / "src/Shape.cpp").write_bytes(b"source")
-        with patch.object(self.store, "verify"), patch("experiment_history.git", side_effect=["", "", "src/Shape.cpp"]):
+        with patch.object(self.store, "verify"), patch("experiment_history.is_primary_workspace", return_value=False), patch("experiment_history.git", side_effect=["", "", "src/Shape.cpp"]):
             self.store.switch(a, b, self.root)
         self.assertEqual((self.root / "src/Shape.cpp").read_bytes(), b"new\r\n")
 
@@ -183,6 +183,20 @@ class ExperimentHistoryTests(unittest.TestCase):
         with patch("experiment_history.git", return_value="include/Shape.h"):
             with self.assertRaisesRegex(ValueError, "deleted build files"):
                 self.store.capture(self.root, "004BB910", "deleted", "hypothesis", [], "test")
+
+    def test_primary_checkout_detection_uses_git_metadata(self):
+        common = self.root / ".git"
+        with patch("experiment_history.git", side_effect=[str(common), ".git"]):
+            self.assertTrue(is_primary_workspace(self.root))
+        linked = common / "worktrees" / "worker"
+        with patch("experiment_history.git", side_effect=[str(linked), str(common)]):
+            self.assertFalse(is_primary_workspace(self.root / "worker"))
+
+    def test_run_refuses_primary_checkout_before_validation(self):
+        key = self.state()
+        with patch("experiment_history.is_primary_workspace", return_value=True):
+            with self.assertRaisesRegex(ValueError, "isolated workspace"):
+                self.store.run(key, self.root, False, None)
 
 
 if __name__ == "__main__":

@@ -66,6 +66,13 @@ def workspace_context(workspace: Path, va: str) -> dict:
     return json.loads(subprocess.check_output([sys.executable, "-c", script, va], cwd=workspace, text=True))
 
 
+def is_primary_workspace(workspace: Path) -> bool:
+    """Identify the primary checkout, not the checkout containing this script."""
+    git_dir = Path(git(workspace, "rev-parse", "--absolute-git-dir")).resolve()
+    common_dir = (workspace / git(workspace, "rev-parse", "--git-common-dir")).resolve()
+    return git_dir == common_dir
+
+
 def owner_output_index(obj_path: Path, context: dict) -> dict:
     from coff import load_coff_object, function_symbol_section
     obj = load_coff_object(obj_path)
@@ -222,7 +229,7 @@ class Store:
     def switch(self, expected: str, target: str, workspace: Path) -> None:
         _, before = self.state(expected)
         _, after = self.state(target)
-        if workspace.resolve() == ROOT.resolve():
+        if is_primary_workspace(workspace):
             raise ValueError("Switch only operates in an isolated workspace")
         self.verify(before, workspace)
         if before["base_commit"] != after["base_commit"] or set(before["files"]) != set(after["files"]):
@@ -267,14 +274,14 @@ class Store:
 
     def run(self, selector: str, workspace: Path, closure: bool, jobs: int | None) -> str:
         state_id, state = self.state(selector)
-        self.verify(state, workspace)
         if closure and jobs is None:
             raise ValueError("Closure checks require --jobs")
         if jobs is not None and jobs < 1:
             raise ValueError("--jobs must be positive")
         # The base commit pins checker code. No check runs in the shared workspace.
-        if workspace.resolve() == ROOT.resolve():
+        if is_primary_workspace(workspace):
             raise ValueError("Run experiments in an isolated workspace")
+        self.verify(state, workspace)
         output = workspace / "build" / "experiment_runs" / uuid.uuid4().hex
         output.mkdir(parents=True)
         command = [sys.executable, "tools/check_function.py", "--va", state["va"], "--rebuild", "--detail", "concise"]
