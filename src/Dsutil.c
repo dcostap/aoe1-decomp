@@ -1141,11 +1141,9 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
 
     if (dwLen1 == 0 || ds_stream_stop_requested != 0) {
         if (dwLen1 != 0 && ds_stream_stop_requested != 0) {
-            LPWAVEFORMATEX wave = _wiWave;
-            unsigned char* write = lpWrite1;
-            if (wave && write) {
-                memset(write,
-                       ((wave->wBitsPerSample != 8) - 1) & 0x80,
+            if (_wiWave && lpWrite1) {
+                memset(lpWrite1,
+                       ((_wiWave->wBitsPerSample != 8) - 1) & 0x80,
                        dwLen1);
             }
         }
@@ -1212,11 +1210,10 @@ void __stdcall ds_stream_time_func(unsigned int timer_id, unsigned int message,
             }
         }
     } else if (dwLen2 != 0 && ds_stream_stop_requested != 0) {
-        LPWAVEFORMATEX wave = _wiWave;
-        unsigned char* write = lpWrite2;
-        if (wave && write) {
-            unsigned int fill = ((wave->wBitsPerSample != 8) - 1) & 0x80;
-            memset(write, fill, dwLen2);
+        if (_wiWave && lpWrite2) {
+            unsigned int fill =
+                ((_wiWave->wBitsPerSample != 8) - 1) & 0x80;
+            memset(lpWrite2, fill, dwLen2);
         }
     }
 
