@@ -2,6 +2,17 @@
 
 Use this workflow for one assigned natural translation unit.
 
+## Workflow selection
+
+The existing matching workflow remains the default.
+For `Workflow: matching with reviewers`, also read `docs/matching_with_reviewers.md`.
+Select technical questions from local source, assembly, and saved history; the orchestrator need not investigate them before assignment.
+Prepare the variation's complete review package and stop editing before handoff.
+A separate reviewer checks your actual inputs and evidence in this worktree while you remain stopped.
+The orchestrator routes its findings back to you, then resumes the reviewer after your corrections.
+In this mode, the reviewer supplies independent technical approval; the orchestrator retains integration and registry authority.
+Do not change statuses, stage, or commit without explicit permission. All normal capture and validation requirements still apply.
+
 ## Assignment
 
 The assignment gives you:

@@ -10,6 +10,12 @@ Role definitions live under `agent_roles/`:
 - `root_orchestrator.md` defines direct user interaction and optional hierarchical orchestration.
 - `orchestrator.md` defines one-worktree matching worker management and review.
 - `matching_worker.md` defines matching work for one natural translation unit.
+- `matching_reviewer.md` defines independent technical review in the optional reviewer variation.
+
+The existing matching workflow remains the default.
+Select `Workflow: matching with reviewers` to use `docs/matching_with_reviewers.md`.
+That document changes review routing, not correctness standards, registry schema, or command syntax.
+It requires explicit reviewer model, thinking level, and capacity settings in addition to the matching worker contract.
 
 The root orchestrator can run a normal orchestration directly.
 For large work, it can manage user-selected reusable orchestrator worktree slots.

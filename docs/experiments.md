@@ -4,6 +4,11 @@ This is a working pilot, not a replacement for the function registry.
 It extends the existing compiler-input manifest and checker workflow.
 Every matching assignment must follow this workflow. Tool limitations do not make evidence preservation optional.
 
+The existing matching workflow remains the default.
+For `Workflow: matching with reviewers`, follow `docs/matching_with_reviewers.md` and `agent_roles/matching_reviewer.md` too.
+The reviewer performs the technical review below; the orchestrator routes findings and retains final integration authority.
+This changes who reviews the evidence, not what must be captured, proved, or preserved.
+
 ## Separate the questions
 
 A state records exact inputs. A run records a check of those inputs.

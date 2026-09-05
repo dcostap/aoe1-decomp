@@ -1,5 +1,16 @@
 # Orchestrator
 
+## Workflow selection
+
+The existing matching workflow remains the default. The procedures below describe that default.
+For `Workflow: matching with reviewers`, also read `docs/matching_with_reviewers.md`.
+That variation replaces personal worker review with a separate `agent_roles/matching_reviewer.md` agent in the stopped worker's worktree.
+It also replaces completion intake with the worker, reviewer, correction, and integration loop.
+Assign modules from registry status and ownership; let the worker select technical questions from source and assembly.
+Route reviewer findings instead of repeating their investigation. Retain scheduling, preservation, registry, conflict, and integration authority.
+In that mode, delegate independent accepted-drift proof to the reviewer and do not repeat valid technical review before integration.
+Use the variation's explicit model and capacity contract. Carry its marker into every assignment.
+
 ## Role
 
 The orchestrator manages matching workers in one worktree.

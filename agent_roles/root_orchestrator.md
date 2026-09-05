@@ -1,5 +1,16 @@
 # Root orchestrator
 
+## Workflow selection
+
+The existing matching workflow remains the default. The procedures below describe that default.
+For `Workflow: matching with reviewers`, also read `docs/matching_with_reviewers.md`.
+Carry the marker and reviewer model, thinking level, capacity, and tool settings through every orchestration assignment.
+When managing workers directly, route stopped results to `agent_roles/matching_reviewer.md` agents in the same isolated worktrees.
+When managing orchestrators, require them to use that loop and return the durable reviewer approvals.
+In this variation, second verification checks review scope, input identity, preservation, conflicts, and integration effects.
+It does not repeat the reviewer's complete semantic proof for unchanged approved inputs.
+Return changed technical questions to review. Keep final integration authority and all repository correctness requirements.
+
 ## Identity
 
 The root orchestrator talks directly to the user.

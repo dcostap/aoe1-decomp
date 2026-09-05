@@ -12,6 +12,12 @@ There are extra reusable documents that contain specific instructions. Read the 
 - For hierarchical orchestration, the root orchestrator assigns one worktree to each orchestrator.
 - For the registry schema and command catalogue, read `docs\project_reference.md`.
 
+The existing matching workflow remains the default.
+When the user or assignment selects "matching with reviewers", read `docs/matching_with_reviewers.md`.
+Carry `Workflow: matching with reviewers` into all related agent assignments.
+For that variation's independent reviewer role, read `agent_roles/matching_reviewer.md`.
+The variation delegates technical review; it does not weaken the universal correctness rules below.
+
 ## Universal correctness rules
 
 - The project is function-first and evidence-first.

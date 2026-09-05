@@ -11,7 +11,7 @@ This project recovers the 1998-07-17 Rise of Rome beta source.
 - `inventory/` contains generated reference data. Do not edit it.
 - `decomp_notes/` contains durable function and module notes.
 - `logic_reviews/` contains semantic-review ledgers at `logic_reviews/<VA>.md`.
-- `agent_roles/` contains the root orchestrator, orchestrator, and matching worker role definitions.
+- `agent_roles/` contains the root orchestrator, orchestrator, matching worker, and matching reviewer role definitions.
 
 A function note stores durable facts, failed approaches, and the next useful approach.
 It does not store status or source ownership.
@@ -40,6 +40,15 @@ simplification evidence can improve the source model.
 The registry path identifies the natural source file.
 Each function entry stores its status and its symbol when a build exists.
 For example, `config/functions/src/point.cpp.json` owns `src/point.cpp`.
+
+## Matching workflows
+
+The existing matching workflow remains the default: the orchestrator reviews worker proposals.
+Select the optional variation with `Workflow: matching with reviewers`.
+In that mode, the worker investigates, an independent reviewer checks the stopped worktree, and the orchestrator routes and integrates results.
+The orchestrator does not prepare every technical question or repeat valid reviewer analysis.
+See `docs/matching_with_reviewers.md` and `agent_roles/matching_reviewer.md` for the launch contract and procedures.
+Both workflows require `docs/experiments.md` and the same correctness standards.
 
 ## Common commands
 
