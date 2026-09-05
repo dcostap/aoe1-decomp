@@ -25,11 +25,11 @@
 ## Status and validation
 
 - `00487010` and `00487050` remain matching owners.
-- `00487200` remains scratch. Its natural-source candidate result is a
-  1,024-byte mismatch in its 1,172-byte body. The owner symbol matches, with
-  one boundary escape. No scratch recovery tuning was performed during the
-  source move.
+- `00487200` remains scratch. Its current natural-source result is a
+  596-byte mismatch in its 1,172-byte body. The frame is `0xE0`, with 14/14
+  ordered calls and a matching owner symbol. The body stays within
+  `00487200-00487693`, with zero relocation and boundary issues.
 - The grouped candidate was checked after natural source closure.
 - Candidate result: `00487010` and `00487050` report `MATCH` and `0.0000%`.
-- Candidate result: `00487200` reports `MISMATCH`, 1,024 differing bytes,
-  matching owner, and one boundary escape.
+- Current grouped result: `00487200` reports `MISMATCH`, 596 differing bytes,
+  matching owner, zero relocation issues, and zero boundary escapes.
