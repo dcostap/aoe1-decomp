@@ -139,3 +139,14 @@ the full-module result false.
 ## Integration note
 
 The function registry names `src/color.cpp` and all its normal functions.
+
+## Reviewed durable test: branch-test-01-color
+
+The test preserves one baseline and five source variants for `00423EE0`.
+Two variants emit baseline bytes but remain distinct source states.
+No compiler-facing source or registry change is integrated; the six exact neighbors remain exact.
+
+Parent review found that state `60285c023df8` removed `index1` initialization, rather than merely changing setup order.
+Its initial behavior-preservation claim is invalid. The archived state is not evidence against the intended setup-only hypothesis.
+The function note and correcting findings record this distinction.
+All states, reports, and superseded worker claims remain preserved in the durable store.
