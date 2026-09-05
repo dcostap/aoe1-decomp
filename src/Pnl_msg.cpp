@@ -259,12 +259,14 @@ void TMessagePanel::draw() {
                 back_rgb = this->font_color2;
             }
 
+            int bk_mode;
             if (this->message_type == DebugMessage) {
                 SetBkColor(this->render_area->DrawDc, 0);
-                SetBkMode(this->render_area->DrawDc, 2);
+                bk_mode = 2;
             } else {
-                SetBkMode(this->render_area->DrawDc, 1);
+                bk_mode = 1;
             }
+            SetBkMode(this->render_area->DrawDc, bk_mode);
 
             x = this->render_rect.left;
             y = this->render_rect.top;
@@ -291,8 +293,8 @@ void TMessagePanel::draw() {
             }
 
             SetTextColor(this->render_area->DrawDc, back_rgb);
-            wid = wid + x + 1;
             hgt = hgt + y + 1;
+            wid = wid + x + 1;
             SetRect(&rect, x, y, wid - 2, hgt - 2);
             DrawTextA(this->render_area->DrawDc, msg, -1, &rect, flags);
             SetRect(&rect, x, y + 2, wid - 2, hgt);
