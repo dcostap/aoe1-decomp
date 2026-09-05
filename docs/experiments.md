@@ -146,6 +146,9 @@ Use this report even when no source change remains. Write `not tested` or `unkno
 Link preserved states and evidence. Do not substitute a list of scores for the report.
 Reviewers must compare the handoff with every new state and event in the worker store.
 Request missing findings and correct invalid references before integration. Equal-output probes still need preservation decisions.
+Read each state's input diff before accepting its behavior or source findings.
+Check initialization, bounds, widths, aliases, and memory-access order. A hypothesis label does not prove what the edit does.
+An accidental behavior change does not test the intended source-only hypothesis. Preserve it and correct the conclusion explicitly.
 
 Review Behavior and Source before Bytes. Reject an unsafe change, not a score increase alone.
 A better score cannot override contrary behavior evidence or a source-policy objection.

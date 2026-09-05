@@ -31,6 +31,7 @@ class ExperimentWorkflowTests(unittest.TestCase):
             "Use this report even when no source change remains",
             "Verify their hashes, parent references, and reachable base commits",
             "Do not bypass a capture refusal",
+            "Read each state's input diff before accepting its behavior or source findings",
         ):
             self.assertIn(required, workflow)
 

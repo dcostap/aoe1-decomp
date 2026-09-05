@@ -94,6 +94,8 @@ Establish ownership, types, fields, widths, calls, and control flow before
 instruction-scheduling work.
 
 Record each distinct tested input state before compilation with `experiment_history.py record`.
+Compare the frozen child with its parent before compiling. Check that the edit implements the stated hypothesis.
+Report accidental changes explicitly; do not treat their results as evidence against a different intended edit.
 Use assignment-prefixed state names to avoid name conflicts between workers.
 Save results with `experiment_history.py run`; attach other test results with `note --artifact`.
 Target-session checks can supplement these records, but cannot replace durable input capture.
