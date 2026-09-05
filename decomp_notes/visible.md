@@ -118,3 +118,40 @@ Report SHA-256: `21ab51c8bfb35720de12d693ce96104fc9a92360f5ebd525bb4043bc2ed9cce
 The fresh full audit reports 171 differing bytes and one boundary escape for
 `0053C290 RGE_Visible_Map`. That constructor is scratch and is no longer
 registered as exact.
+
+## Production review: recovery-002-visible
+
+The worker reviewed the four terrain methods and preserved seven input states.
+The parent selects removal of the unsupported target-only frame pragma as source-policy cleanup.
+This changes no source algorithm and does not approve any new completed semantic recovery.
+The four scratch owners still need complete source and exception review.
+
+| State | Actual input |
+| --- | --- |
+| `a07b73160c2b8e735801a934af075606a1f8e4a3238b4411d7008322481677b1` | C6F0 baseline |
+| `4223ca97b83e9edaee907724fa624a5a840d78de161efd1f40937f09171f5324` | C920 baseline with target-only pragma |
+| `4a5bad39df7dc4fcede4ea6d58e15b0f9d8fcc2d616237d5719a7f03bbbae4dd` | CAC0 baseline |
+| `be466eb0459219762221c81d68083f80607330e2fc96751a1895d987717f6fc7` | CCF0 baseline |
+| `76120e95dc52cfa6bd00aaa7ded33dbec6848256dfd1c9b152857c3e2cfa6d26` | No target-only pragma |
+| `bb94adc6da71d441c2595febbd4944a5e280c0f78cd04e1a682c981b5afcc75f` | Baseline source despite the family-pragma name |
+| `1dee779fbd533cafad94a9e51a6bbcffb676a2fbed1c217657d50c3b4a3ccfeb` | Actual family-scoped pragma replay |
+
+The runner rejected an edited workspace that did not match the misnamed `bb94adc6` state before compilation.
+Its later restored-baseline run is not evidence about family pragma scope.
+Only the separately captured replay tests that scope. Preserve this distinction when reusing the history.
+
+The no-pragma result has 377 bytes and 388 differences for C920, versus 395 bytes and 317 differences previously.
+The worse score does not justify target-local compiler steering.
+All 19 exact owners remain exact. The only other changed owner is `0053D200`.
+Its complete section and resolved relocation targets remain equal; only a generated local label and section number change.
+The parent independently verified that equality. See the D200 function note.
+
+Original C920 checksum instructions map one instruction per source line from lines 691 through 703.
+The home reload at line 706 follows that block. This is a useful source-context clue, not proof of a pragma.
+Do not turn it into an assembly, lifetime, or intrinsic claim without further evidence.
+
+Frame differences alone do not prove different logical fault order.
+Likewise, exceeding an original function boundary fails exactness but does not itself preclude accepted drift after relinking.
+The worker has not completed exception/unwind proof for these methods.
+The uninitialized or null tile-pointer arithmetic also needs source review; no new tile-memory counterexample was demonstrated.
+No semantic promotion is claimed from the static summaries alone.
