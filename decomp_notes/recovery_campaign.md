@@ -165,6 +165,9 @@ Function notes follow `decomp_notes/functions/<VA-prefix>/<VA>.md`.
   All four states and correcting findings are preserved in `ab76125df`.
   `004864F0` has an external fault-order objection. The supported `00486C40` pair-store source awaits full changed-owner semantic proof.
   The initial large variant counts described historical work; this assignment ran no permutation lab.
-- Open: `recovery-002-visible` / `sa-a939b591`, returned for a complete four-part handoff and concrete semantic objections.
-  Require evidence for the retained pragma instead of a score-based restoration decision.
+- Complete: `recovery-002-visible` / `sa-a939b591`.
+  Seven states and corrected findings are preserved in `085c35163`.
+  `7aec0ef14` removes the unsupported C920 frame pragma as source-policy cleanup, without a semantic promotion.
+  Parent validation preserves all 19 exact owners and proves the D200 change is only a renamed local target.
+  The four terrain methods still need complete source and exception review. No replacement TU will be launched.
 - Active: `recovery-001-shape` / `sa-982916db`.
