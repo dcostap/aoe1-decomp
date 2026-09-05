@@ -616,58 +616,63 @@ byte TShape::shape_draw_unclipped(TDrawArea* da, long y, long x,
     return 1;
 }
 
-byte TShape::shape_color_trans_unclipped(TDrawArea* td, long p2, long p3,
-                                         long p4, byte* pal)
+byte TShape::shape_color_trans_unclipped(TDrawArea* drawarea, long shape_x0,
+                                         long shape_y0, long shape_num,
+                                         byte* color_table)
 {
     Shape_Header* hdr = this->shape_header;
-    long width = (hdr->ymax - hdr->ymin) + 1;
+    long height = (hdr->ymax - hdr->ymin) + 1;
+    byte* src = (byte*)(hdr + 1);
 
-    int Orien = td->Orien;
-    long stride = td->AlignedWidth() * Orien;
-    Shape_Payload* src = (Shape_Payload*)(hdr + 1);
+    long orien = drawarea->Orien;
+    long width = drawarea->AlignedWidth() * orien;
+    long rows;
     byte count;
-    byte* row;
-    long dest_off;
-    if (Orien < 1) {
-        dest_off = (p3 - td->Height + 1) * stride;
-    } else {
-        dest_off = p3 * stride;
-    }
-    row = td->Bits + p2 + dest_off;
+    byte* dst;
+    byte* save_buffer;
 
-    if (width > 0) {
+    if (orien < 1) {
+        dst = drawarea->Bits + shape_x0 +
+              (shape_y0 - drawarea->Height + 1) * width;
+    } else {
+        dst = drawarea->Bits + shape_x0 + shape_y0 * width;
+    }
+    save_buffer = dst;
+
+    if (height > 0) {
+        rows = height;
         do {
             byte done = 0;
-            byte* dst = row;
             do {
-                byte b = src++->value;
-                if ((b & 1) == 1) {
-                    count = b >> 1;
+                byte command = *src++;
+                if ((command & 1) == 1) {
+                    count = command >> 1;
                     if (count == 0) {
-                        dst += src->value;
+                        dst += *src;
                         src++;
                     } else {
                         byte* end = dst + count;
                         while (dst < end) {
-                            *dst = pal[src->value];
+                            *dst = color_table[*src];
                             src++;
                             dst++;
                         }
                     }
                 } else {
-                    count = b >> 1;
+                    count = command >> 1;
                     if (count == 0) {
                         done = 1;
                     } else {
-                        memset(dst, pal[src->value], count);
-                        src++;
+                        memset(dst, color_table[*src], count);
                         dst += count;
+                        src++;
                     }
                 }
             } while (!done);
 
-            row += stride;
-        } while (--width);
+            save_buffer += width;
+            dst = save_buffer;
+        } while (--rows);
     }
 
     return 1;
