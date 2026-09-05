@@ -27,11 +27,16 @@ source order. This keeps the four-argument call at virtual offset `+0x1C`.
 
 ## Validation
 
-`validate_candidate_tu.py` compiled eleven rows.
-It matched all eight exact normal owners and the generated destructor.
+The approved closure baseline
+(`98fe3aa9cabf146f9cf01933eed95f5067ca2fcef9572af26b67ef242465bf7e`, run
+`48068d7fd0f355098155933180f7c4befe117a2dc20a65477bc8b621bf5d22a4`)
+reports ten configured normal owners: nine `MATCH` results and one
+accepted-drift observation. It reports no compile errors, relocation target
+mismatches, or boundary escapes.
 
-`0047E6B0` is scratch. The natural typed setup differs by 228 bytes and crosses
-the old boundary. It still initializes, copies, sorts, and starts the list.
+`0047E6B0` is matching. The natural typed setup reports `MATCH` with zero
+different bytes, the expected owner, no relocation target mismatches, and no
+boundary escapes.
 
 `0047E910` remains accepted drift. It differs by five bytes with no relocation
 mismatch or boundary escape. The difference is local register scheduling. No
