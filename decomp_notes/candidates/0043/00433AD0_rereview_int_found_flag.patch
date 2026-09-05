@@ -1,0 +1,159 @@
+# Experiment e74afb80854d0367626a038b0bb1571a1f5e33253d8f0d0e35ee68ec5d610688
+# Base 420bec2d2954ba5772d1c790bd5bad68f6678f21
+diff --git a/src/com_sync.cpp b/src/com_sync.cpp
+index 89ad3c247..8238529ec 100644
+--- a/src/com_sync.cpp
++++ b/src/com_sync.cpp
+@@ -393,87 +393,97 @@ void RGE_Communications_Synchronize::SendChatMsgsAtChecksum(int value) {
+ 
+ int RGE_Communications_Synchronize::IsPlayerOutOfSync(
+     unsigned int playerNo, unsigned long commTurn) {
+-    unsigned int searchIndex = 1;
+-    unsigned long myWorldTime = 0;
+-    int differentCount = 0;
+-    int sameCount = 0;
+-    long myUnifiedVisible = 0;
+-    long myChecksumNew = 0;
+-    long myPositionChecksum = 0;
+-    long myActionChecksum = 0;
+-    long myObstructionChecksum = 0;
+-    bool foundMyValues = false;
+-    unsigned long myRandom = 0;
+-    int humanPlayerCount = 0;
+-
+-    for (; searchIndex <= 0x36; ++searchIndex) {
+-        if (this->Check[searchIndex].PlayerNo == playerNo &&
+-            this->Check[searchIndex].WTurn == commTurn) {
+-            foundMyValues = true;
+-            myChecksumNew = this->Check[searchIndex].cs2;
+-            myPositionChecksum = this->Check[searchIndex].cs3;
+-            myWorldTime = this->Check[searchIndex].WTime;
+-            myActionChecksum = this->Check[searchIndex].cs4;
+-            myObstructionChecksum = this->Check[searchIndex].cs5;
+-            myUnifiedVisible = this->Check[searchIndex].cs1;
+-            myRandom = this->Check[searchIndex].Random;
++    unsigned long uVar5;
++    unsigned long* puVar8 = &this->Check[1].WTurn;
++    int NumPlayers;
++    int NumDiff;
++    long lVar6;
++    long mycs4;
++    long mycs5;
++    long mycs2;
++    long mycs3;
++    int NumSame;
++    int foundMine;
++    unsigned int myRandom;
++
++    uVar5 = 0;
++    NumPlayers = 0;
++    NumDiff = 0;
++    lVar6 = 0;
++    mycs4 = 0;
++    mycs5 = 0;
++    mycs2 = 0;
++    mycs3 = 0;
++    NumSame = 0;
++    foundMine = 0;
++    myRandom = 0;
++
++    unsigned int firstIndex = 1;
++    for (; firstIndex <= 0x36; ++firstIndex) {
++        if (this->Check[firstIndex].PlayerNo == playerNo &&
++            this->Check[firstIndex].WTurn == commTurn) {
++            mycs2 = this->Check[firstIndex].cs2;
++            mycs3 = this->Check[firstIndex].cs3;
++            uVar5 = this->Check[firstIndex].WTime;
++            mycs4 = this->Check[firstIndex].cs4;
++            mycs5 = this->Check[firstIndex].cs5;
++            lVar6 = this->Check[firstIndex].cs1;
++            myRandom = this->Check[firstIndex].Random;
++            foundMine = 1;
+             break;
+         }
+     }
+ 
+-    if (!foundMyValues) {
++    if (!foundMine) {
+         L->Log("OUTOFSYNC: DIDN'T FIND MY VALUES");
+         return 0;
+     }
+ 
+     L->Log("OUTOFSYNC: my values: %d %d %d %d %d %d",
+-           myWorldTime, myUnifiedVisible, myChecksumNew,
+-           myPositionChecksum, myActionChecksum, myObstructionChecksum);
++           uVar5, lVar6, mycs2, mycs3, mycs4, mycs5);
+ 
+-    unsigned int recordIndex = 1;
++    unsigned int i = 1;
+     do {
+-        CHECKSUMARRAY& entry = this->Check[recordIndex];
+-        if (entry.PlayerNo != playerNo && entry.WTurn == commTurn) {
+-            if (myWorldTime == entry.WTime &&
+-                myUnifiedVisible == entry.cs1 &&
+-                myChecksumNew == entry.cs2 &&
+-                myPositionChecksum == entry.cs3 &&
+-                myActionChecksum == entry.cs4 &&
+-                myObstructionChecksum == entry.cs5 &&
+-                myRandom == entry.Random) {
+-                ++sameCount;
++        if (puVar8[-2] != playerNo && commTurn == puVar8[0]) {
++            if (uVar5 == puVar8[-1] &&
++                lVar6 == puVar8[1] &&
++                mycs2 == puVar8[2] &&
++                mycs3 == puVar8[3] &&
++                mycs4 == puVar8[4] &&
++                mycs5 == puVar8[5] &&
++                myRandom == puVar8[6]) {
++                ++NumSame;
+                 L->Log("OUTOFSYNC: %d same: %d %d %d %d %d %d",
+-                       recordIndex, myWorldTime, myUnifiedVisible,
+-                       entry.WTurn, myPositionChecksum,
+-                       myActionChecksum, myObstructionChecksum);
++                       i, uVar5, lVar6, mycs2,
++                       mycs3, mycs4, mycs5);
+             } else {
+-                ++differentCount;
++                ++NumDiff;
+                 L->Log("OUTOFSYNC: %d diff: %d %d %d %d %d %d",
+-                       recordIndex, myWorldTime, myUnifiedVisible,
+-                       entry.WTurn, myPositionChecksum,
+-                       myActionChecksum, myObstructionChecksum);
++                       i, uVar5, lVar6, mycs2,
++                       mycs3, mycs4, mycs5);
+             }
+         }
+-        ++recordIndex;
+-    } while (recordIndex <= 0x36);
++        ++i;
++        puVar8 += 9;
++    } while (i <= 0x36);
+ 
+-    int playerIndex = 1;
++    int player = 1;
+     do {
+-        if (this->Comm->GetPlayerHumanity(playerIndex) == 2) {
+-            ++humanPlayerCount;
++        if (this->Comm->GetPlayerHumanity(player) == 2) {
++            ++NumPlayers;
+         }
+-        ++playerIndex;
+-    } while (playerIndex <= 9);
++        ++player;
++    } while (player <= 9);
+ 
+     L->Log("OUTOFSYNC: numplayers=%d, diff=%d, same=%d",
+-           humanPlayerCount, differentCount, sameCount);
++           NumPlayers, NumDiff, NumSame);
+ 
+-    if (sameCount + differentCount < humanPlayerCount - 1) {
++    if (NumDiff + NumSame < NumPlayers - 1) {
+         L->Log("OUTOFSYNC: return not out");
+         return 0;
+     }
+ 
+-    if (differentCount > sameCount) {
++    if (NumDiff > NumSame) {
+         L->Log("OUTOFSYNC: return out");
+         return 1;
+     }
