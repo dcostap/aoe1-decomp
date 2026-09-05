@@ -260,6 +260,16 @@ class Store:
             "artifacts": {str(p): self.blob(p.read_bytes()) for p in artifacts}, **extra,
         })
 
+    def inspect(self, selector: str) -> dict:
+        key, state = self.state(selector)
+        events = []
+        for event_id, event in self.records("events"):
+            if event["state"] == key:
+                view = {name: value for name, value in event.items() if name != "id"}
+                view.update(event_id=event_id, record_uuid=event.get("id"))
+                events.append(view)
+        return {"state_id": key, "state": state, "events": events}
+
     def event_summary(self, event: dict) -> dict:
         summary = dict(event.get("summary", {}))
         if event["kind"] == "run":
@@ -450,9 +460,7 @@ def main() -> None:
     elif args.command == "show":
         print(store.show(args.va))
     elif args.command == "inspect":
-        key, state = store.state(args.state)
-        print(json.dumps({"id": key, "state": state,
-                          "events": [e for _, e in store.records("events") if e["state"] == key]}, indent=2))
+        print(json.dumps(store.inspect(args.state), indent=2))
     elif args.command == "compare":
         print(store.compare(args.left, args.right))
     elif args.command == "export-patch":

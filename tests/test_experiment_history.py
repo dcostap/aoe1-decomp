@@ -198,6 +198,16 @@ class ExperimentHistoryTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "isolated workspace"):
                 self.store.run(key, self.root, False, None)
 
+    def test_inspect_distinguishes_event_hash_from_internal_uuid(self):
+        state_id = self.state()
+        event_id = self.store.event(state_id, "finding", "evidence", [])
+        view = self.store.inspect(state_id)
+        self.assertEqual(view["state_id"], state_id)
+        event = view["events"][0]
+        self.assertEqual(event["event_id"], event_id)
+        self.assertNotEqual(event["record_uuid"], event_id)
+        self.assertNotIn("id", event)
+
 
 if __name__ == "__main__":
     unittest.main()

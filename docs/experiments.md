@@ -87,6 +87,7 @@ python tools/experiment_history.py note NAME --kind finding --text TEXT --artifa
 Other finding kinds are `reported`, `integration-objection`, and `open-question`.
 Repeat `--artifact` to preserve logs, tests, or source evidence.
 Use `inspect` to obtain artifact hashes. The corresponding objects contain the complete saved bytes.
+Use its `state_id` and `event_id` fields in handoffs. The internal `record_uuid` is not an event selector.
 Do not edit a manifest to revise a conclusion. Append a correcting finding.
 
 ## Reproduction and branch switching
@@ -143,6 +144,8 @@ Every worker handoff must use these four headings for each finding or proposal:
 
 Use this report even when no source change remains. Write `not tested` or `unknown` instead of omitting a heading.
 Link preserved states and evidence. Do not substitute a list of scores for the report.
+Reviewers must compare the handoff with every new state and event in the worker store.
+Request missing findings and correct invalid references before integration. Equal-output probes still need preservation decisions.
 
 Review Behavior and Source before Bytes. Reject an unsafe change, not a score increase alone.
 A better score cannot override contrary behavior evidence or a source-policy objection.
