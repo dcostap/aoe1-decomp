@@ -80,3 +80,12 @@ Earlier matching work also recorded these exact source lessons:
   the outer loop.
 
 No new exact claim is made by this source-shape migration.
+
+## Durable worker test: branch-test-02-flics
+
+The reviewed worker test preserves a baseline and two unsigned repeat-count variants for `0044A100`.
+Their scores are equal, but their target output hashes differ. All closures retain the exact neighbors.
+No correctness or simplicity improvement was established, so no compiler-facing source changes.
+Complete states and findings are preserved under `decomp_notes/experiments/`.
+The function note records the separate behavior, source, byte, and integration conclusions.
+The worker also exposed a linked-worktree guard defect, fixed in `e6602096a`.
