@@ -56,32 +56,38 @@ The module preserves the prior reviewed state:
 
 - `matching`: `004D3A80`, `004D3AD0`, `004D3B00`, `004D3B10`, `004D3B20`,
   `004D4460`, `004D4DB0`, `004D4F80`, `004D5090`, `004D5170`, `004D5270`,
-  `004D5310`, `004D5590`, `004D5690`, `004D56F0`, `004D5780`, `004D57A0`,
+  `004D4E10`, `004D5310`, `004D5590`, `004D5690`, `004D56F0`, `004D5780`,
   `004D5AD0`, `004D5B80`, `004D5BB0`, `004D5C20`, `004D5DE0`.
-- `accepted_drift`: `004D4E10`, `004D5600`, `004D5CA0`, `004D5D40`.
-- `scratch`: `004D3D60`, `004D4540`.
+- `accepted_drift`: `004D4540`, `004D5600`, `004D5CA0`, `004D5D40`.
+- `scratch`: `004D3D60`.
 
 The four accepted-drift owners retain their previous bounded equivalence
-reviews. `004D5600` differs only in a virtual-call register. `004D5CA0` differs
-only in equivalent register allocation. `004D4E10` and `004D5D40` retain their
-localized loop/register drift reviews. None changes calls, predicates, cleanup,
-memory effects, or return behavior.
+reviews. `004D4540` differs only in complementary branch encoding and a
+switch-table relocation. `004D5600` differs only in a virtual-call register.
+`004D5CA0` differs only in equivalent register allocation. `004D5D40` retains
+its localized loop/register drift review. None changes
+calls, predicates, cleanup, memory effects, or return behavior.
 
-## Scratch regressions
+## Current scratch and accepted-drift notes
 
-`004D3D60 initialize` remains a natural semantic reconstruction. Its prior best
-standalone result used `/GX`, a 0xB0 BuildItem layout, 61 ordered calls, and a
-953-byte positional difference. The remaining difference was broad register
-and frame-slot allocation plus loop topology. The source keeps the proved
-resource lifetime, field offsets, call order, and fault order. It does not use
-codegen-only steering.
+`004D3D60 initialize` remains a natural semantic reconstruction in
+`src/taibldmd.cpp`. The current fresh check is `MISMATCH`: 592 differing bytes
+(33.2584%), rebuilt effective size 1778 versus the original 1780, frame `0x9C`
+on both sides, 532 instructions on both sides, 92.29% shape similarity, 65.04%
+exact-block coverage, and 61/61 ordered calls with owner parity. The current
+source uses the `/GX` EH path, the proven `0xB0` BuildItem layout, and the
+natural H47/H48 loop-scope reconstruction. Its remaining difference is broad
+scalar register and frame-home allocation, a tool-loop basin difference, and a
+two-byte effective-size gap. The source keeps the proved resource lifetime,
+field offsets, call order, and fault order. It does not use codegen-only
+steering. The current TU closure has no exact-neighbor regressions.
 
-`004D4540 nextBuildableItem` remains a natural semantic reconstruction. Its
-prior best standalone result used `/GX`, a 0xF4 EH frame, 115 ordered calls,
-98.37% exact blocks, the original 2136-byte boundary, and a nine-byte
-positional difference. The remaining difference was a branch-polarity hunk and
-one switch-table relocation. The source keeps the proven shared-tail control
-flow, typed object/resource calls, and 0x73 limit behavior.
+`004D4540 nextBuildableItem` is now `accepted_drift`, not scratch. Its natural
+source uses `/GX`, a 0xF4 EH frame, 115 ordered calls, 98.37% exact blocks,
+the original 2136-byte boundary, and a nine-byte positional difference. The
+accepted review covers complementary branch encoding and one switch-table
+relocation. The source keeps the proven shared-tail control flow, typed
+object/resource calls, and 0x73 limit behavior.
 
 ## Migration effects
 
