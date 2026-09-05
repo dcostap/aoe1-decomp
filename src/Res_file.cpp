@@ -86,12 +86,10 @@ void __cdecl RESFILE_open_new_resource_file(
             node->mapped_file = mappedData;
             node->header = (resfile_header*)mappedData;
         } else {
-            int n;
             node->handle = fHandle;
             node->mapped_file = 0;
             lseek(fHandle, 0, 1);
-            n = read(fHandle, &rHdr, sizeof(rHdr));
-            if (n != sizeof(rHdr)) {
+            if (read(fHandle, &rHdr, sizeof(rHdr)) != sizeof(rHdr)) {
                 // The original reaches a parent-owned INT3 fragment here.
                 MessageBoxA(0, "Error: Reading resfile header.",
                     "RESOURCE ERROR", 0x30);
@@ -99,8 +97,8 @@ void __cdecl RESFILE_open_new_resource_file(
             }
             node->header = (resfile_header*)malloc(rHdr.directory_size);
             lseek(fHandle, 0, 0);
-            n = read(fHandle, node->header, rHdr.directory_size);
-            if (n != rHdr.directory_size) {
+            if (read(fHandle, node->header, rHdr.directory_size) !=
+                rHdr.directory_size) {
                 MessageBoxA(0, "Error: Reading resfile header data.",
                     "RESOURCE ERROR", 0x30);
                 return;
