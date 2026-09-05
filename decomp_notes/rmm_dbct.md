@@ -24,11 +24,12 @@ These direct owners report `MATCH` and `0.0000%`:
 `00482B70`, `00483600`, and `00483A20` remain scratch. Their direct source
 uses typed records and explicit field access.
 
-`00484160` remains scratch. Its direct record-load order changes fault order.
+`00484160` remains matching. Current grouped validation reports `MATCH` and
+`0.0000%`.
 
-`00484320` remains scratch. A typed `RGE_Land_Point_Info_Line` cursor has a
-10-byte register and address difference. The old exact form used a forbidden
-pointer to the `y` field.
+`00484320` remains accepted_drift. A typed
+`RGE_Land_Point_Info_Line` cursor has a 10-byte register and address
+difference. The old exact form used a forbidden pointer to the `y` field.
 
 `00484470` remains accepted drift. It uses typed elevation and land records.
 
