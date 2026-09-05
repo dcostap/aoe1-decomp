@@ -33,7 +33,10 @@ not take part in this path.
 The executable proves both behaviors. Keep them until contrary binary evidence
 appears.
 
-## Validation state
+## Historical validation state
+
+The values in this section are a preserved snapshot from before the current
+`higher_check_for_cliff` repair and later closure audit.
 
 `build/candidate_tus/t_c_obj_cliff_abi/report.txt` compiles all 39 owners.
 It verifies 13 direct exact owners. Each says `MATCH` and `0.0000%`.
@@ -70,11 +73,27 @@ Its type has 25 records of 32 bytes. `game_globals` owns the table.
 `game_globals.cpp` preserves all 800 original bytes. The probe object has
 the same 800 bytes. `higher_check_for_cliff` now uses this table directly.
 
-The fresh direct-module audit is `build/candidate_tus/audit_t_c_obj_final`.
-It demotes `004CBEF0 higher_than_target`. Its 641
-rebuilt bytes differ from the 701-byte original by 656 bytes. The checker
-reports a missing virtual slot `+0x248`, an extra slot `+0x270`, a smaller
-frame, and broad block drift. `004CAC10 get_armor` remains accepted drift with
-88 differing bytes and no relocation or boundary mismatch. The disambiguated
-`004CC4C0 heal(float)` remains accepted drift with 9 differing bytes and no
-relocation or boundary mismatch.
+### Historical audit snapshot
+
+The following values are preserved from the earlier audit
+`build/candidate_tus/audit_t_c_obj_final`. It demoted `004CBEF0
+higher_than_target`. It reported 641 rebuilt bytes, 656 differences from the
+701-byte original, a missing virtual slot `+0x248`, an extra slot `+0x270`, a
+smaller frame, and broad block drift. `004CAC10 get_armor` remained accepted
+drift with 88 differing bytes and no relocation or boundary mismatch. The
+disambiguated `004CC4C0 heal(float)` remained accepted drift with 9 differing
+bytes and no relocation or boundary mismatch.
+
+## Current validation state
+
+The current registry has 36 matching bodies, one scratch body, and two
+accepted-drift bodies. The target `004CBEF0` remains scratch.
+
+The current direct-module audit is
+`build/audit_scratch004CBEF0_final/report.txt`. It compiles all 39 normal
+owners. It reports 36 matching results, two accepted-drift observations, and
+one boundary problem for `004CBEF0`. It reports no compile errors and no exact
+owner regression. `004CBD40 higher_check_for_cliff` is `MATCH`.
+
+The current target check reports 705 rebuilt bytes, 143 differences, first
+mismatch `+0x17F`, and two boundary escapes. The target remains unresolved.
