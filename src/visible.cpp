@@ -415,7 +415,6 @@ int RGE_Visible_Map::explore_terrain(int tx, int ty, int radius, int Square,
     return Revealed;
 }
 
-#pragma optimize("y", off)
 void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square,
                                         int UpdateMap, int id) {
     int csum;
@@ -509,8 +508,6 @@ void RGE_Visible_Map::unexplore_terrain(int tx, int ty, int radius, int Square,
         }
     }
 }
-
-#pragma optimize("y", on)
 
 int RGE_Visible_Map::explore_terrain_sq(int x1, int y1, int x2, int y2,
                                         int UpdateMap, int id) {
