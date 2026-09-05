@@ -46,7 +46,7 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text,
                     parent->get_popup_info_file(), parent->get_popup_info_id(), 1)) {
         this->create_text(this, &this->list, more_text, 10, 10, 0x14a, 0x186,
                           11, 0, 0, 1);
-        long line_count = *(short*)((char*)this->list + 0xfe) + 2;
+        long line_count = this->list->bot_line + 2;
         long dialog_x;
         long panel_height;
         panel_height = line_count * rge_text_font->font_hgt + 0x37;
