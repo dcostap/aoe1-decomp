@@ -114,8 +114,9 @@ Command:
 python tools/audit_translation_unit_functions.py --group shape --jobs 1 --output-dir build/audits/shape_readonly_20dea9ff
 ```
 
-The audit compiled all 26 owners. All 11 exact owners returned `MATCH` with
-zero differences, matching ownership, and no relocation or boundary problems.
+The historical audit report listed 11 exact owners. Those owners returned
+`MATCH` with zero differences, matching ownership, and no relocation or
+boundary problems in that report.
 `004B99F0` retained its accepted drift with two differing bytes.
 The other 14 owners remain scratch. Three have boundary reports.
 
@@ -274,3 +275,21 @@ The failures concern unchanged inputs outside this repair:
 The affected note, role document, registry, and test assertions were not changed.
 No unrelated test or policy edit is included to hide these failures.
 The authoritative project counts remain unchanged.
+
+## Current closure count correction (2026-09-05)
+
+The historical migration and read-only sections above contain stale exact-owner
+counts. The independent `sa-7b3e8dd5-r1` closure audit is current for the
+reviewed source at `cd725d119`. It compiled all 26 owners and found 12 exact
+owners, 11 grouped mismatches, two boundary problems, and one accepted-drift
+observation.
+
+The current 12 exact owners are `004B8B30`, `004B8DD0`, `004B8E40`, `004B8F90`,
+`004B8FB0`, `004B9040`, `004B9070`, `004B97F0`, `004B98E0`, `004BA900`,
+`004BA9E0`, and `004BAAF0`. `004B98E0` is a current registry `matching` owner.
+The restored baseline keeps `004B99F0` as the reviewed two-byte accepted drift.
+
+Report: `build/audits/reviewer_sa_7b3e8dd5_r1/report.json`.
+Compiler input fingerprint:
+`45e75c531d973965f8492123280fda17ec80c658297146761faa2cfe71222b75`.
+Correction finding: `7504384a058d76781b49453041ede31d0c1756a8f93627af993127d8c719459e`.
