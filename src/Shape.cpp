@@ -924,6 +924,8 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
     else
         dst = draw_area->Bits + clip_y0 * pitch + clip_x0;
 
+    byte* save_buffer = dst;
+
     if (shape_y1 < clip_y0) {
         long skip = clip_y0 - shape_y1;
         shape_y1 += skip;
@@ -1089,7 +1091,8 @@ byte TShape::shape_color_trans_clipped(TDrawArea* draw_area, long shape_x1,
                 }
             } while (!state);
         }
-        dst += pitch;
+        save_buffer += pitch;
+        dst = save_buffer;
     } while (--rows != 0);
     return 1;
 }
@@ -2653,7 +2656,7 @@ byte TShape::shape_dithered_clipped(TDrawArea* area, long x, long y,
             }
         }
 
-        save_buffer = dst + width;
+        save_buffer += width;
         ++row;
         dither = row_dither;
     } while (true);
