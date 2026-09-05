@@ -3653,14 +3653,14 @@ int TCommunications_Handler::TXResendReply(uint serial, uint player)
                 ++i;
             }
 
-            nosuch.Serialno = (uint)(signed char)*(
+            int command = (signed char)*(
                 *(char**)((char*)this->Resend + offset + 8));
             unsigned long log_time =
                 debug_timeGetTime(com_hand_source_path, 0xF42);
             L->Log("COMM: >>>>> RETRANSMIT P#%d Ser#%d (Slot#%d) Cmd %d '%c' MsgLength=%d Retx left=%d timeGetTime=%d",
                    playerNumber,
                    *(unsigned int*)((char*)this->Resend + offset + 4),
-                   GoodTransmitCount, nosuch.Serialno, nosuch.Serialno,
+                   GoodTransmitCount, command, command,
                    *(unsigned int*)((char*)this->Resend + offset + 0xC),
                    *(unsigned int*)((char*)this->Resend + player),
                    log_time);
