@@ -1,0 +1,60 @@
+diff --git a/src/aipbook.cpp b/src/aipbook.cpp
+index 4aa155d39..fdb5041a1 100644
+--- a/src/aipbook.cpp
++++ b/src/aipbook.cpp
+@@ -923,6 +923,7 @@ AIPlayBook::~AIPlayBook() {
+ }
+ 
+ int AIPlayBook::loadPlays(char* filename) {
++    AIPlayBook* book = this;
+     int temp4;
+     int phaseValue1;
+     char commentTemp2;
+@@ -942,25 +943,25 @@ int AIPlayBook::loadPlays(char* filename) {
+ 
+     if (filename == 0 || strcmp(filename, s_NONE) == 0) {
+         if (filename == 0) {
+-            strcpy(this->nameValue, s_NULL);
++            strcpy(book->nameValue, s_NULL);
+         } else {
+-            strcpy(this->nameValue, s_NONE);
++            strcpy(book->nameValue, s_NONE);
+         }
+         return 0;
+     }
+ 
+-    strncpy(this->nameValue, filename, 0x40);
+-    sprintf(temp + 4, s_format_percent_s, this->nameValue);
++    strncpy(book->nameValue, filename, 0x40);
++    sprintf(temp + 4, s_format_percent_s, book->nameValue);
+     file = fopen(temp + 4, s_mode_r);
+     if (file == 0) {
+         return 0;
+     }
+ 
+-    if (this->plays != 0) {
+-        delete[] this->plays;
+-        this->plays = 0;
+-    }
+-    this->numberPlaysValue = 0;
++    if (book->plays != 0) {
++        delete[] book->plays;
++        book->plays = 0;
++    }
++    book->numberPlaysValue = 0;
+@@ -969,12 +970,12 @@ int AIPlayBook::loadPlays(char* filename) {
+ 
+         sscanf(temp + 4, s_format_percent_s_space, temp2 + 4);
+         if (strcmp(temp2 + 4, s_Play) == 0) {
+-            this->numberPlaysValue += 8;
++            book->numberPlaysValue += 8;
+         }
+     }
+ 
+-    if (this->numberPlaysValue > 0x3E80) {
+-        this->numberPlaysValue = 0x3E80;
++    if (book->numberPlaysValue > 0x3E80) {
++        book->numberPlaysValue = 0x3E80;
+     }
+ 
+     this->plays = new AIPlay[this->numberPlaysValue];
