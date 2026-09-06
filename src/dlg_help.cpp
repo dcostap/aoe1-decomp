@@ -82,9 +82,9 @@ void THelpDialog::setup_help(TEasy_Panel* parent, char* text, char* more_text,
         if (((RGE_Base_Game*)rge_base_game)->singlePlayerGame() && page_id >= 0) {
             char* s = this->get_string((int)page_id);
             if (s != 0 && *s != 0) {
-                this->create_button(this, &this->encyclopedia_button, 0x243d, 0, 0, 25,
+                this->create_button(this, &this->encyclopedia_button, 0x243d, 0, 25,
                                     line_count * rge_text_font->font_hgt + 20,
-                                    0x78, 25, 11, 0);
+                                    0x78, 25, 11, 0, 0);
             }
         }
 
