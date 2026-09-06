@@ -1,5 +1,73 @@
 # Executable integration evidence
 
+## Commit validation checkpoint
+
+Fresh build `20260906T204658496476Z` compiles all 226 C/C++ sources and the active assembly source.
+It links with zero unresolved symbols and zero link errors.
+Its code, data, and import sections equal the first startup-tested build's sections.
+Resource directory timestamps differ between links; this is not whole-file equality.
+The complete report is `executable_build_evidence/drawing_binary/commit_build_report.json.gz`.
+
+After line-ending cleanup, the full test suite reports 351 passes, five failures, and 31 passing subtests.
+The five previously recorded failures concern:
+
+- a status line in `decomp_notes/functions/0041/00410220.md`;
+- an orchestration documentation text expectation;
+- 33 historical review filenames; and
+- two stale registry-count expectations.
+
+These remain disclosed. This commit series does not reopen deferred function reviews to repair unrelated test expectations.
+The focused build, dependency, data, runtime-preparation, and line-ending tests report 41 passes.
+Translation-unit validation and the line-ending check pass.
+
+Fresh native drawing and compression probes pass at both separately linked image bases:
+
+- `build/probes/drawing_binary/20260906T205149375093Z/report.json`;
+- `build/probes/compression/20260906T205150224523Z/compression_test_report.json`.
+
+The preserved dependency object hashes remain unchanged after manifest line-ending cleanup.
+All 57 newly preserved experiment records and objects pass hash checks.
+Their stored file and artifact references resolve. Their base commits remain available.
+No experiment object, candidate patch, runtime folder, or unrelated worktree was deleted.
+Text evidence uses repository line endings. Original reports remain under `build/`.
+
+## Current linked checkpoint
+
+`build/executable/20260906T200305373459Z/report.json` records the first successful production link.
+All 226 C/C++ sources compile. One drawing memory-method assembly source assembles.
+The approved compression and drawing binary dependencies supply their original implementations.
+No unresolved symbols or link errors remain.
+
+The VC5 debug packer failed with `LNK1000`; embedded CodeView also failed with `LNK4027`.
+The runnable configuration omits `/DEBUG` and retains the linker map. It does not produce a linked PDB.
+Compiler objects and earlier failed link reports remain available.
+
+The corrected runtime copies the user's complete installed beta and applies `DWM8And16BitMitigation` locally.
+Both original and rebuilt EXEs pass the constructor startup check with game error code zero.
+Menu behavior, gameplay, save/load, and multiplayer remain unverified.
+See `executable_build_evidence/drawing_binary/startup_comparison.md` and `docs/executable_build.md`.
+
+The sections below describe earlier checkpoints. Their unresolved counts and rejected probes are historical results.
+
+## 2026-09-06 drawing assembly checkpoint
+
+The latest build is `build/executable/20260906T185329374486Z/report.json`.
+All 226 C/C++ sources compile. Both drawing assembly sources assemble.
+The unresolved count falls from ten to one: `_ASMDraw_Sprite`.
+The link still fails, so no reconstructed game EXE is ready to run.
+
+Nine restored entrypoint bodies pass positional instruction comparisons after address resolution.
+The HLine group also validates 38 private fill blocks and its dispatch data.
+Native checks cover setup, memory methods, and line drawing at two image bases.
+Thirty-three focused tests pass. Translation-unit validation and `git diff --check` pass.
+This is not a full test-suite or gameplay success claim.
+
+The symbol audit reports no possible declaration conflicts.
+The vtable audit reports 207 definitions, 206 located originals, no conflicts, and no unresolved slots.
+Normal function bodies and their deferred review statuses remain unchanged in this step.
+
+See `asm_draw.md` and `executable_build_evidence/drawing_assembly/README.md` for evidence and the remaining sprite closure.
+
 ## Build result
 
 Tested base: `f31347147`.
@@ -197,3 +265,20 @@ Registry validation and `git diff --check` also pass.
 Remaining work includes unresolved definitions, virtual-table consistency, static data, and the deferred assembly regions.
 A successful link must precede startup, gameplay, save/load, audio, and multiplayer tests.
 No runtime or near-original EXE-layout claim is made.
+
+## 2026-09-06 binary dependency checkpoint
+
+The user approved preserving the original external compression implementation without recovering its source.
+The build now creates a relocatable COFF dependency from the two PDB-proven library members.
+The manifest checks all selected payloads and 565 address relocations.
+This exception does not permit copying ordinary game-function bodies.
+
+`build/executable/20260906T172707905942Z/report.json` compiles all 226 sources and leaves ten unresolved drawing assembly symbols.
+All six compression entrypoints now resolve. No executable was linked.
+
+Modern MASM `14.36.32537.0` passes the VC5 link, instruction-encoding, C++ member-call, MMX, and x87 probes.
+The compression probe passes at two link bases, including original game data and independent zlib streams.
+These are isolated executable tests, not game startup or gameplay tests.
+
+Full evidence, limits, and online leads are recorded in
+`decomp_notes/executable_build_evidence/compression_binary/README.md`.
