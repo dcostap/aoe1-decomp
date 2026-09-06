@@ -21,7 +21,10 @@ RETIRED_TEXT = (
 PATH_REFERENCE_RE = re.compile(r"(?:config/flags|tools)/[A-Za-z0-9_./-]+\.(?:rsp|py)")
 ROLE_REFERENCE_RE = re.compile(r"agent_roles/[A-Za-z0-9_./-]+\.md")
 RSP_REFERENCE_RE = re.compile(r"[A-Za-z0-9_./-]+\.rsp")
-FUNCTION_STATUS_RE = re.compile(r"^.{0,20}(?:current )?status\s*:", re.IGNORECASE | re.MULTILINE)
+FUNCTION_STATUS_RE = re.compile(
+    r"^\s*(?:[-*]\s*)?(?:current\s+)?status\s*:",
+    re.IGNORECASE | re.MULTILINE,
+)
 
 
 def present_markdown_files() -> list[Path]:
@@ -143,8 +146,8 @@ class DocumentationTests(unittest.TestCase):
         root = " ".join(root.split())
 
         for required in (
-            "The orchestrator owns shared repairs in its isolated worktree",
-            "does not need root approval",
+            "Shared repairs can affect translation units outside the assigned set",
+            "Use one repair owner for each shared change in this worktree",
             "Audit the complete dependency closure",
             "Commit each shared repair separately",
             "must not weaken the behavior oracle",

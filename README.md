@@ -11,6 +11,7 @@ This project recovers the 1998-07-17 Rise of Rome beta source.
 - `inventory/` contains generated reference data. Do not edit it.
 - `decomp_notes/` contains durable function and module notes.
 - `logic_reviews/` contains semantic-review ledgers at `logic_reviews/<VA>.md`.
+- `runtime/` contains the local complete game runtime. It is ignored except for its README.
 - `agent_roles/` contains the root orchestrator, orchestrator, matching worker, and matching reviewer role definitions.
 
 A function note stores durable facts, failed approaches, and the next useful approach.
@@ -96,6 +97,14 @@ python tools/build_executable.py
 ```
 
 The executable build is not yet complete. See `docs/executable_build.md` for inputs, reports, and remaining requirements.
+
+Prepare a runtime copy for a rebuilt executable:
+
+```text
+python tools/prepare_runtime.py --exe build/executable/<run>/empiresx.exe --output build/runtime/installed_beta/rebuilt
+```
+
+The tool uses the root-local `runtime/` folder by default.
 
 Generated files belong under `build/`. You can remove that directory when no worker is active.
 

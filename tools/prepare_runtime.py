@@ -8,6 +8,7 @@ import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_SOURCE = ROOT / "runtime"
 ORIGINAL_SHA256 = "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90"
 COMPAT_LAYER = "DWM8And16BitMitigation"
 
@@ -69,7 +70,10 @@ def prepare(source: Path, exe: Path, output: Path) -> dict:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source", required=True, type=Path, help="Complete working beta installation")
+    parser.add_argument(
+        "--source", type=Path, default=DEFAULT_SOURCE,
+        help=f"Complete local beta runtime (default: {DEFAULT_SOURCE})",
+    )
     parser.add_argument("--exe", required=True, type=Path, help="Original or rebuilt expansion EXE to test")
     parser.add_argument("--output", required=True, type=Path, help="New directory under build/runtime")
     args = parser.parse_args()

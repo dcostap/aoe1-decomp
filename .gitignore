@@ -1,5 +1,7 @@
 build/
 orig/
+runtime/*
+!runtime/README.md
 __pycache__/
 .pytest_cache/
 .pi/

@@ -61,3 +61,7 @@ def test_reject_wrong_installed_exe(inputs):
     with pytest.raises(ValueError, match="does not match"):
         prepare_runtime.prepare(source, exe, output)
     assert not output.exists()
+
+
+def test_default_source_is_root_runtime():
+    assert prepare_runtime.DEFAULT_SOURCE == prepare_runtime.ROOT / "runtime"

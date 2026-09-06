@@ -8,7 +8,9 @@ These dependencies are preserved code, not recovered source.
 
 ## Runtime setup
 
-Use the complete working beta installation at `E:/GamesInstalled/Age of Empires_gold_og_nt4`.
+Use the complete local runtime under `runtime/`.
+It contains the full release files with the beta `empiresx.exe` in place.
+The folder is local and ignored by Git, except for `runtime/README.md`.
 Do not assemble a runtime from selected base-game and expansion files.
 Keep the repository original executable unchanged.
 
@@ -16,10 +18,11 @@ Prepare a new runtime directory after building:
 
 ```sh
 python tools/prepare_runtime.py --help
-python tools/prepare_runtime.py --source "E:/GamesInstalled/Age of Empires_gold_og_nt4" --exe build/executable/20260906T200305373459Z/empiresx.exe --output build/runtime/installed_beta/rebuilt
+python tools/prepare_runtime.py --exe build/executable/<run>/empiresx.exe --output build/runtime/installed_beta/rebuilt
 ```
 
-Replace the build path for later builds. Select a new output directory if one already exists.
+The tool uses `runtime/` by default. Replace the build path for later builds.
+Select a new output directory if one already exists.
 The tool copies all installation files and verifies each copy with SHA256.
 It then replaces only the runtime expansion EXE with the selected build.
 `runtime_manifest.json` records the inputs, copied-file hashes, and selected EXE hash.
