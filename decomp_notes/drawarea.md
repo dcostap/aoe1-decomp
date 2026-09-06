@@ -7,6 +7,20 @@ the proven DirectDraw, GDI, bitmap, span-list, and draw-area layouts. The
 forward-declares it. `src/drawarea.cpp` includes `color.h` for the table fields
 used by `TDrawArea::SetShadowTable`.
 
+## Runtime display-depth check
+
+The original and rebuilt EXEs both reject the current 32-bit windowed display mode.
+`TDrawSystem::Init` requires 8 bits per pixel and sets error 2 for this mismatch.
+The game then reports graphics error 7. This observed failure does not identify a reconstruction defect.
+The original also rejects the legacy WING draw type before calling DirectDraw.
+
+See [startup comparison](executable_build_evidence/drawing_binary/startup_comparison.md) for hashes, addresses, and debugger logs.
+No source change accompanies this test. Complete startup and gameplay remain untested.
+
+The corrected runtime copies the user's complete installed beta and applies `DWM8And16BitMitigation` through `Launch.cmd`.
+Both original and rebuilt EXEs then pass the constructor startup check with game error code zero.
+The debugger stops at that check. Menu behavior and gameplay remain unverified.
+
 ## Alignment proof
 
 `TDrawArea::TransColor` ends at `+0xFC`. VC5 aligns the object to `0x100`.
@@ -97,3 +111,27 @@ a reusable provider:
 
 The source keeps these declarations or the absolute format address. It does
 not invent a carrier or guess a global owner.
+
+## Assembly memory methods restored on 2026-09-06
+
+`src/Drawarea_asm.asm` now supplies `PtrClear`, `PtrSpanCopy`, and `OverlayMemCopy`.
+Their 308, 334, and 385 instruction bytes agree with the original after address resolution.
+The native fixture also checks the reviewed field offsets and member calling convention.
+See `asm_draw.md` and `executable_build_evidence/drawing_assembly/` for reports.
+
+`PtrClear` uses inclusive bounds and clips the optional rectangle before locking.
+It reads the row table after Lock returns.
+It reads DrawSystem again before its conditional Unlock call.
+
+`PtrSpanCopy` treats the receiver as the source and the first argument as the destination.
+It checks the source DrawSystem but locks the destination.
+It clips row count against destination height.
+It does not add horizontal span clipping or call Unlock here.
+
+`OverlayMemCopy` copies complete DWORDs, including the rounded-up width.
+Negative vertical movement selects rows from bottom to top.
+Negative horizontal movement selects reverse DWORD copying only when vertical movement is zero.
+The reverse path clears the direction flag before returning.
+
+The assembly preserves the original nested register saves and argument-slot reuse.
+No normal C++ body or matching status changed in this assembly step.
