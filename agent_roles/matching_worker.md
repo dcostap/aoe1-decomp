@@ -104,6 +104,45 @@ Recover the simplest period-plausible source that explains executable behavior.
 Establish ownership, types, fields, widths, calls, and control flow before
 instruction-scheduling work.
 
+### Required behavior check
+
+Check the complete function you work on, not only the current byte difference or your edited lines.
+Do this before code-generation tuning. Recheck affected behavior after each retained change.
+Do not treat existing source, previous reviews, or repeated matching passes as proof of correctness.
+
+Use the original executable instructions as evidence. Use declarations and callee bodies to explain argument meanings and effects.
+Retrieve missing evidence with the function packet, ABI tools, focused disassembly, and relevant callee packets.
+Do not skip a check because the source compiles or looks plausible.
+
+- Trace every call's receiver, target, argument count, argument order, values, widths, and signedness.
+  Track stack changes through pushes, nested calls, and cleanup before assigning argument positions.
+  Compare each argument with the original, including constants, zeros, flags, sizes, and output pointers.
+  Integer parameters can compile correctly while occupying the wrong positions.
+  For example, shifted button arguments can exchange coordinates, dimensions, and font settings without a compiler error.
+- Check every output pointer's complete write range against the actual destination object.
+  Include arrays, structures, local variables, saved registers, and the return address.
+  A valid starting address does not prove that the complete write fits.
+  Distinguish an address adjusted for a push from an offset into the source object.
+- Trace loop initialization, conditions, pointer changes, counters, copy lengths, and termination.
+  Distinguish measurement look-ahead from actual cursor advancement.
+  Check byte counts versus character counts, narrow conversions, and multibyte text paths.
+- Check every branch for initialized values, correct field ownership, bounds, cleanup, and return values.
+  Preserve original overlap, aliasing, call effects, exceptions, faults, and fault order.
+  Do not fix an apparent original bug unless executable evidence proves that the recovered source is wrong.
+- Trace relevant boundary cases through the original and rebuilt logic.
+  Include null or empty inputs, minimum sizes, exact limits, and failure paths where applicable.
+  Use focused runtime tests when practical. State which cases you did not test.
+
+A matching call count does not prove matching arguments. Similar instruction shapes do not prove equal behavior.
+A lower byte difference does not justify retaining a known behavior defect.
+Do not label unexplained differences as register allocation or compiler context before completing these checks.
+
+Record the checked behavior and important instruction addresses in the function note or assigned review ledger.
+Record unresolved checks explicitly. A general statement such as "calls and behavior preserved" is not sufficient evidence.
+Repair proved defects in the natural source and validate the affected closure, even when the byte score becomes worse.
+If you cannot safely repair a defect, report it as an open correctness issue before stopping.
+Never describe known-wrong source as a clean or behavior-verified baseline.
+
 Record each distinct tested input state before compilation with `experiment_history.py record`.
 Compare the frozen child with its parent before compiling. Check that the edit implements the stated hypothesis.
 Report accidental changes explicitly; do not treat their results as evidence against a different intended edit.
