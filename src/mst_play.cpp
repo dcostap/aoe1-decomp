@@ -4,10 +4,7 @@
 
 #include <stdlib.h>
 
-extern "C" {
-    void rge_read(int fd, void* buffer, int size);
-    void rge_write(int fd, void* buffer, int size);
-}
+#include "../include/rge_fio.h"
 
 RGE_Master_Player::RGE_Master_Player(FILE* file)
 {

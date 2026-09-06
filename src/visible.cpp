@@ -49,8 +49,8 @@ LOSTBL* SquareLOS[17] = {Edge_Offsets_T0, Edge_Offsets_T1, Edge_Offsets_T2, Edge
 
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
-extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
-extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
+void __cdecl rge_write(int handle, void* buffer, int count);
+void __cdecl rge_read(int handle, void* buffer, int count);
 
 extern void __cdecl log_map_call(int world_time, int player_id, int type,
                                  int p6, int x1, int y1, int x2, int y2,

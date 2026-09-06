@@ -3,8 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-extern "C" void rge_read(int fd, void* dst, int size);
-extern "C" void rge_write(int fd, void* src, int size);
+#include "../include/rge_fio.h"
 extern "C" int __cdecl _unlink(const char*);
 
 union IntFloat {

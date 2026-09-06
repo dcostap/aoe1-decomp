@@ -5,8 +5,7 @@
 #include "../include/stat_obj.h"
 #include "../include/world.h"
 
-extern "C" void rge_read(int file, void* data, int size);
-extern "C" void rge_write(int file, void* data, int size);
+#include "../include/rge_fio.h"
 
 RGE_Master_Moving_Object::RGE_Master_Moving_Object(
     RGE_Master_Moving_Object* source, int do_setup)

@@ -88,7 +88,7 @@ UnitAIModule::~UnitAIModule() {
 
 
 
-void __cdecl rge_write(int fd, const void* data, int size);
+void __cdecl rge_write(int fd, void* data, int size);
 
 void UnitAIModule::save(int fd) {
     int i;

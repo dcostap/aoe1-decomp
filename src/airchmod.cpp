@@ -4,8 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-extern "C" int __cdecl rge_read(int file, void* dst, int size);
-extern "C" void __cdecl rge_write(int file, void* data, int size);
+#include "../include/rge_fio.h"
 
 ResearchAIModule::ResearchAIModule(void* ptr, int arg)
     : AIModule((char*)"Research AI", 0x3ee, arg, ptr),

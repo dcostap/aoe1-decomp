@@ -15,8 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern "C" void __cdecl rge_read(int handle, void* buffer, int size);
-extern "C" void __cdecl rge_write(int fd, void* src, int size);
+#include "../include/rge_fio.h"
 extern float save_game_version;
 extern float DAT_00570610;
 extern float DAT_00570614;

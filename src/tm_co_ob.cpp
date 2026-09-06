@@ -4,10 +4,7 @@
 #include "../include/ttsk_lst.h"
 #include <new.h>
 
-extern "C" {
-    void __cdecl rge_read(int fd, void* data, int size);
-    void __cdecl rge_write(int fd, void* data, int size);
-}
+#include "../include/rge_fio.h"
 
 extern float save_game_version;
 extern float DAT_0057677c;

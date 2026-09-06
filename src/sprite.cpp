@@ -9,8 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
-extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
+#include "../include/rge_fio.h"
 extern "C" void __cdecl convert_us(char* string);
 extern void __cdecl operator_delete(void* block);
 extern void __cdecl addstring(char** dst, char* base, char* ext);

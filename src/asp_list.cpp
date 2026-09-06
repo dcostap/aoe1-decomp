@@ -3,8 +3,7 @@
 #include "../include/sprite.h"
 #include "../include/stat_obj.h"
 
-extern "C" void __cdecl rge_read(int handle, void* buffer, int size);
-extern "C" void __cdecl rge_write(int handle, void* buffer, int size);
+#include "../include/rge_fio.h"
 extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
 extern "C" void __cdecl free(void* block);
 

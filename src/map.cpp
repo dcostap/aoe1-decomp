@@ -20,8 +20,8 @@
 #include "../include/debuglog.h"
 #include "../include/rge_base_game_global.h"
 
-extern "C" void __cdecl rge_read(int file, void* data, int size);
-extern "C" void __cdecl rge_write(int file, void* data, int size);
+void __cdecl rge_read(int file, void* data, int size);
+void __cdecl rge_write(int file, void* data, int size);
 extern "C" void __cdecl addstring(char** dst, char* base, char* ext);
 extern "C" void __cdecl convert_us(char* text);
 int __cdecl debug_rand(char* file, int line);

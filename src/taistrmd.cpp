@@ -1146,7 +1146,7 @@ void TribeStrategyAIModule::setMainDecisionAI(TribeMainDecisionAIModule* v) {
 
 #include <string.h>
 
-void __cdecl rge_write(int fd, const void* data, int size);
+void __cdecl rge_write(int fd, void* data, int size);
 void* __cdecl operator new(unsigned int size);
 void __cdecl operator delete(void* p);
 
