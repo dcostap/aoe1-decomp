@@ -56,7 +56,7 @@
     "0041F110": {"status": "matching", "symbol": "?setup_music_system@RGE_Base_Game@@UAEHXZ"},
     "0041F2D0": {"status": "matching", "symbol": "?setup_shapes@RGE_Base_Game@@MAEHXZ"},
     "0041F400": {"status": "matching", "symbol": "?setup_sounds@RGE_Base_Game@@MAEHXZ"},
-    "0041F560": {"status": "verified_logic", "symbol": "?setup_fonts@RGE_Base_Game@@MAEHXZ"},
+    "0041F560": {"status": "accepted_drift", "symbol": "?setup_fonts@RGE_Base_Game@@MAEHXZ"},
     "0041F730": {"status": "matching", "symbol": "?setup_blank_screen@RGE_Base_Game@@MAEHXZ"},
     "0041F800": {"status": "matching", "symbol": "?setup_timings@RGE_Base_Game@@MAEXXZ"},
     "0041F830": {"status": "matching", "symbol": "?stop_sound_system@RGE_Base_Game@@MAEXXZ"},
