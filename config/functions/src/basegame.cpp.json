@@ -99,7 +99,7 @@
     "00420650": {"status": "matching", "symbol": "?close_child_windows@@YGHPAXJ@Z"},
     "004206D0": {"status": "scratch", "symbol": "?wnd_proc@RGE_Base_Game@@UAGJPAXIIJ@Z"},
     "00420F60": {"status": "matching", "symbol": "?handle_idle@RGE_Base_Game@@MAEHXZ"},
-    "00421110": {"status": "accepted_drift", "symbol": "?handle_mouse_move@RGE_Base_Game@@MAEHPAXIIJ@Z"},
+    "00421110": {"status": "matching", "symbol": "?handle_mouse_move@RGE_Base_Game@@MAEHPAXIIJ@Z"},
     "004211D0": {"status": "matching", "symbol": "?handle_key_down@RGE_Base_Game@@MAEHPAXIIJ@Z"},
     "004212E0": {"status": "matching", "symbol": "?handle_user_command@RGE_Base_Game@@MAEHPAXIIJ@Z"},
     "004213A0": {"status": "matching", "symbol": "?handle_command@RGE_Base_Game@@MAEHPAXIIJ@Z"},

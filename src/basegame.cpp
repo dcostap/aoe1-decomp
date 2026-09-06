@@ -3180,7 +3180,6 @@ int RGE_Base_Game::handle_mouse_move(HWND p1, UINT p2, WPARAM p3, LPARAM p4)
     int right_btn;
     int left_btn;
     tagPOINT point;
-    // action_mouse_move receives its stack value. Do not initialize it.
     int shift_key;
     if (this->prog_ready == 0) {
         return 1;
@@ -3194,11 +3193,8 @@ int RGE_Base_Game::handle_mouse_move(HWND p1, UINT p2, WPARAM p3, LPARAM p4)
         }
     }
 
-    this->get_mouse_info(
-        p3, p4, *reinterpret_cast<tagPOINT*>(&point.y),
-        *reinterpret_cast<int*>(&point.x), left_btn, right_btn, ctrl_key);
-    this->action_mouse_move(
-        point.y, shift_key, point.x, left_btn, right_btn, ctrl_key);
+    this->get_mouse_info(p3, p4, point, left_btn, right_btn, ctrl_key, shift_key);
+    this->action_mouse_move(point.x, point.y, left_btn, right_btn, ctrl_key, shift_key);
     this->handle_idle();
     return 1;
 }

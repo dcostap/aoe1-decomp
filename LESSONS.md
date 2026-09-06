@@ -13,6 +13,8 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 - Recompute ESP-relative homes after every push, cleanup, and callee-cleanup call.
 - Decompiler stack names can merge, split, or transpose source variables.
 - Track fixed entry addresses when pushes change `[esp+N]` labels.
+- Check each output object's complete write range against saved registers and the return address.
+- An ignored argument does not make a smaller frame safe. API output writes can cross the frame boundary.
 - Repeated identical output identifies one compiler basin. Change hypothesis class.
 - A worse metric can still reveal the controlling source feature.
 

@@ -12,6 +12,10 @@ See `functions/0041/0041F560.md` and `../logic_reviews/0041F560.md`.
 
 ## Direct owners
 
+The 2026-09-06 mouse-handler repair restores the complete `POINT` and four flag outputs.
+The handler now matches exactly. The old accepted-drift approval missed return-address corruption.
+See `functions/0042/00421110.md` and `../logic_reviews/00421110.md`.
+
 `src/basegame.cpp` owns all 202 normal BaseGame bodies in PDB order.
 The group uses `config/flags/gx.rsp`.
 No candidate source or context owns a BaseGame body.
