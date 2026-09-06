@@ -1,6 +1,7 @@
 // This file owns every normal function in the compiland.
 
 #include "../include/dlg_dip.h"
+#include "../include/asm_draw.h"
 #include "../include/tcommand.h"
 #include "../include/com_hand.h"
 #include "../include/game_globals.h"
@@ -939,7 +940,7 @@ void TribeDiplomacyDialog::draw()
             RGE_Player* player = world->players[i];
             RGE_Color_Table* colors = player->color_table;
             if (colors != 0) {
-                _ASMSet_Color_Xform((colors->id + 1) * 16);
+                ASMSet_Color_Xform((colors->id + 1) * 16);
                 this->backgroundPics->shape_draw(
                     this->render_area,
                     this->pnl_x + 0x0A,

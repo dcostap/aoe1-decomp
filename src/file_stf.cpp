@@ -2,16 +2,10 @@
 #include "../include/file_stf.h"
 
 #include <io.h>
+#include <direct.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-
-extern "C" int __cdecl _getdrive(void);
-extern "C" int __cdecl __chdrive(int drive);
-extern "C" int __cdecl __chdir(const char* path);
-extern "C" char* __cdecl strcpy(char* dst, const char* src);
-extern char* getcwd(char* buffer, int size);
-extern void splitpath(const char* path, char* drive, char* directory,
-                      char* filename, char* extension);
 
 int __cdecl compareFilenameStrings(const void* a, const void* b)
 {
@@ -85,7 +79,7 @@ void DriveInformation::checkDrives()
 
     this->driveValues[0] = 0;
     for (drive = 1; drive <= 0x1A; ++drive) {
-        if (__chdrive(drive) == 0) {
+        if (_chdrive(drive) == 0) {
             this->driveValues[0]++;
             this->driveValues[drive] = 1;
         } else {
@@ -93,7 +87,7 @@ void DriveInformation::checkDrives()
         }
     }
 
-    __chdrive(this->currentDriveValue);
+    _chdrive(this->currentDriveValue);
 }
 
 int DriveInformation::numberOfFilesWithFilename(char* filename)
@@ -173,7 +167,7 @@ int DriveInformation::resetCurrentDirectory()
 
 int DriveInformation::changeDrive(int drive)
 {
-    if (__chdrive(drive) == 0) {
+    if (_chdrive(drive) == 0) {
         this->currentDriveValue = drive;
         return 1;
     }
@@ -182,7 +176,7 @@ int DriveInformation::changeDrive(int drive)
 
 int DriveInformation::changeDirectory(char* path)
 {
-    if (__chdir(path) == 0) {
+    if (_chdir(path) == 0) {
         this->updateDirectory();
         return 1;
     }
@@ -196,8 +190,8 @@ void DriveInformation::updateDirectory()
     char filename[256];
     char fullPath[260];
 
-    getcwd(fullPath, 0x104);
-    splitpath(fullPath, cDrive, this->currentDirectoryValue, filename,
+    _getcwd(fullPath, 0x104);
+    _splitpath(fullPath, cDrive, this->currentDirectoryValue, filename,
               extension);
     sprintf(this->currentDirectoryValue, "%s%s%s",
             this->currentDirectoryValue, filename, extension);

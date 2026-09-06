@@ -16,7 +16,7 @@
 #include <new.h>
 #include <stdlib.h>
 
-extern "C" int __cdecl debug_rand(char* file, int line);
+extern int __cdecl debug_rand(char* file, int line);
 
 static char s_rmm_dbct_path[] =
     "C:\\msdev\\work\\age1_x1\\rmm_dbct.cpp";

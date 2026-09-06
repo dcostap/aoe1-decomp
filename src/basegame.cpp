@@ -235,7 +235,7 @@ RGE_Base_Game::RGE_Base_Game(RGE_Prog_Info* info, int do_setup)
 
 void __cdecl debug_srand(char* file, int line,
                                      unsigned int seed);
-extern "C" void __cdecl GetDXVersion(unsigned long* version, unsigned long* platform);
+extern void __cdecl GetDXVersion(unsigned long* version, unsigned long* platform);
 extern int debugActions;
 extern int do_draw_log;
 extern char draw_log_name[260];
@@ -1029,6 +1029,8 @@ int RGE_Base_Game::run()
 
 
 
+extern int startLoggingAI;
+
 extern "C" {
 char* __cdecl _mbsstr(const char* str, const char* substr);
 char* __cdecl _mbsninc(const char* str, unsigned int count);
@@ -1036,11 +1038,9 @@ int __cdecl _ismbcspace(unsigned int c);
 char* __cdecl _mbsncat(char* dst, const char* src, unsigned int count);
 }
 
-extern "C" {
 extern int do_run_log;
 extern int do_debug_timeGetTime;
 extern int debug_timeGetTime_interval;
-extern int startLoggingAI;
 extern int chatCheatCodes;
 extern int logUpdateChanges;
 extern int useInfluencePlacement;
@@ -1065,7 +1065,6 @@ extern char draw_log_name[260];
 extern int log_output;
 extern int DDSys_CanColorFill;
 extern unsigned char do_color_log;
-}
 
 int RGE_Base_Game::setup_cmd_options()
 {
@@ -4625,7 +4624,7 @@ extern char debug_random_log[5000][100];
 extern int debug_random_index;
 
 void __cdecl debug_random_reset() {
-    for (int index = 0; index < 25; ++index)
+    for (int index = 0; index < 5000; ++index)
         debug_random_log[index][0] = 0;
     debug_random_index = -1;
 }

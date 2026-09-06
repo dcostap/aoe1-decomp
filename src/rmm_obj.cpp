@@ -101,7 +101,7 @@ void RGE_RMM_Object_Generator::generate_objects(RGE_Object_Info_Line& line) {
 }
 
 // tables, and the source's clipped rectangular scan.
-extern "C" int __cdecl debug_rand(char* file, int line);
+extern int __cdecl debug_rand(char* file, int line);
 extern char s_rmm_obj_cpp[];
 
 void RGE_RMM_Object_Generator::make_placement_stack(

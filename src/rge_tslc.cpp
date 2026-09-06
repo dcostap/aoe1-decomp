@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 RGE_TimeSinceLastCall::RGE_TimeSinceLastCall()
 {

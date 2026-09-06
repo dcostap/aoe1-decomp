@@ -128,7 +128,7 @@ long THelpDialog::action(TPanel* panel, long command, unsigned long param_3,
 
             HWND prog_window = rge_base_game->prog_window;
             char* help_topic = this->get_string(help_page_id);
-            _WinHelpA(prog_window, "empires.hlp", 0x101, help_topic);
+            WinHelpA(prog_window, "empires.hlp", 0x101, (DWORD)help_topic);
             return 1;
         }
     }

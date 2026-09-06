@@ -1,5 +1,6 @@
 
 #include "../include/spnl_obj.h"
+#include "../include/asm_draw.h"
 
 #include "../include/Shape.h"
 #include "../include/basegame.h"
@@ -14,7 +15,6 @@
 #include <stdio.h>
 #include <string.h>
 
-extern "C" void __cdecl _ASMSet_Color_Xform(int);
 
 // spnl_obj.cpp lines 48-52.
 TRIBE_Scenario_Editor_Panel_Object::TRIBE_Scenario_Editor_Panel_Object(
@@ -96,7 +96,7 @@ void TRIBE_Scenario_Editor_Panel_Object::draw()
             }
 
             if (player != 0 && player->color_table->table != 0) {
-                _ASMSet_Color_Xform((player->color_table->id + 1) * 0x10);
+                ASMSet_Color_Xform((player->color_table->id + 1) * 0x10);
                 shape->shape_draw(render_area, pnl_x + 2, pnl_y + 0x21,
                                   button_pict, 1,
                                   player->color_table->table);

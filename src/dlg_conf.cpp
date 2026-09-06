@@ -23,7 +23,7 @@ extern TCommunications_Handler* comm;
 extern TRegistry* Regs;
 extern int allow_user_commands;
 extern unsigned char do_color_log;
-extern "C" int numberPathingIterations;
+extern int numberPathingIterations;
 
 TribeConfigDialog::TribeConfigDialog(Mode mode, TScreenPanel* parent)
     : TDialogPanel("Config Dialog"), modeValue(mode)

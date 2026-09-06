@@ -1,6 +1,7 @@
 
 #include "../include/scr_game.h"
 #include "../include/tpnl_btn.h"
+#include "../include/asm_draw.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -9,8 +10,6 @@ static char s_tpnl_btn_draw[] = "tpnl_btn::draw";
 static char s_tpnl_btn_draw2[] = "tpnl_btn::draw2";
 static char s_tpnl_btn_draw3[] = "tpnl_btn::draw3";
 
-extern "C" void __cdecl _ASMSet_Shadowing(int, int, int, int);
-extern "C" void __cdecl _ASMSet_Color_Xform(int);
 
 TRIBE_Panel_Button::TRIBE_Panel_Button(
     TDrawArea* draw_area, TPanel* parent, TDigital* sound, void* font,
@@ -201,11 +200,11 @@ void TRIBE_Panel_Button::draw()
 
             if (disabled) {
                 fog_next_shape = 1;
-                _ASMSet_Shadowing(0xFF00FF, 0, 0xFF00FF00, 0);
+                ASMSet_Shadowing(0xFF00FF, 0, 0xFF00FF00, 0);
             }
 
             if (color_table != 0) {
-                _ASMSet_Color_Xform(
+                ASMSet_Color_Xform(
                     (rge_base_game->get_player()->color_table->id + 1) * 0x10);
                 pic[0]->shape_draw(render_area, x, y, frame, 1, color_table);
             } else {

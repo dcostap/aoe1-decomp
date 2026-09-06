@@ -2,9 +2,9 @@
 #include <string.h>
 #include "../include/map.h"
 #include "../include/rmm_land.h"
+#include "../include/game_globals.h"
 
-extern double dbl_571ED0;
-extern "C" int __cdecl debug_rand(char* file, int line);
+extern int __cdecl debug_rand(char* file, int line);
 
 RGE_RMM_Land_Generator::RGE_RMM_Land_Generator(
     RGE_Map* map, RGE_Random_Map_Module* module, RGE_Land_Info* info)
@@ -36,7 +36,7 @@ unsigned char RGE_RMM_Land_Generator::check_terrain_and_zone(
     long x1 = x + area;
     long y1 = y + area;
     long y0 = y - area;
-    long octogon = area * dbl_571ED0;
+    long octogon = area * DAT_00571ed0;
     long cx0 = x - 2;
     long cy0 = y - 2;
     long cx1 = x + 2;

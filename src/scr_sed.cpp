@@ -220,7 +220,7 @@ TRIBE_Screen_Sed::TRIBE_Screen_Sed(char* file, int mode) : TScreenPanel("Scenari
     this->set_player(1, 0, 0);
     this->set_unit_player(1);
     this->set_message_type(MessageTypeNormal, 0);
-    this->set_scenario_mode(1);
+    this->set_scenario_mode(ScenarioModeMap);
     this->set_unit(-1);
     this->world->map->set_map_visible(1);
     this->world->map->set_map_fog(0);

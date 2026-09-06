@@ -23,8 +23,8 @@
 
 extern "C" {
     float g_attack_modifier;
-    int __cdecl debug_rand(const char*, int);
 }
+int __cdecl debug_rand(char*, int);
 
 
 RGE_Combat_Object::RGE_Combat_Object(RGE_Master_Combat_Object* master_obj, RGE_Player* player, float x, float y, float z, int do_setup)

@@ -42,6 +42,6 @@ public:
 
 typedef char campaign_size_check[(sizeof(RGE_Campaign) == 0x20C) ? 1 : -1];
 
-extern long campaign_version;
+extern int version_marker;
 
 #endif

@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void* __cdecl operator_new(unsigned int size);
-void __cdecl operator_delete(void* ptr);
+#include <new.h>
 
 static const char print_mode[] = "wt";
 static const char print_filename[] = "FILENAME: %s\n";
@@ -28,9 +27,9 @@ InfluenceMap::InfluenceMap(int xSize, int ySize, unsigned char fillValue)
       yReferencePointValue(0) {
     this->ySizeValue = ySize;
     int total = ySize * xSize;
-    this->valueValue = (unsigned char*)operator_new(total);
+    this->valueValue = (unsigned char*)::operator new(total);
     memset(this->valueValue, fillValue, total);
-    this->rowValue = (unsigned char**)operator_new(this->ySizeValue * 4);
+    this->rowValue = (unsigned char**)::operator new(this->ySizeValue * 4);
     if (this->rowValue) {
         int i = 0;
         int offset = 0;
@@ -54,10 +53,10 @@ InfluenceMap::InfluenceMap(int fd) {
 
 InfluenceMap::~InfluenceMap() {
     if (this->valueValue) {
-        operator_delete(this->valueValue);
+        ::operator delete(this->valueValue);
     }
     if (this->rowValue) {
-        operator_delete(this->rowValue);
+        ::operator delete(this->rowValue);
     }
 }
 

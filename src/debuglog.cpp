@@ -4,11 +4,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <windows.h>
 
-extern "C" unsigned long (__stdcall* const GetTickCount)(void);
-extern "C" void (__stdcall* const OutputDebugStringA)(const char*);
-
-unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 FILE* logstream;
 

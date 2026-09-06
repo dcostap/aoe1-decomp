@@ -315,8 +315,8 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key,
                     this->player->select_one_object(pick_info.object, 1);
                     this->set_redraw(TPanel::RedrawNormal);
                     if (pick_info.object->sprite != 0) {
-                        pick_info.object->get_frame(&min_x, &min_y, &max_x,
-                                                   &max_y);
+                        pick_info.object->get_frame(min_x, min_y, max_x,
+                                                   max_y);
                         point.x = pick_info.scr_x - min_x;
                         point.y = pick_info.scr_y - min_y;
                         if (this->TPanel::render_area->DrawSystem->ScreenMode == 1)
@@ -404,7 +404,7 @@ long RGE_Main_View::mouse_left_down_action(long x, long y, int ctrl_key,
                         rge_base_game->set_game_mode(8, 1);
                         if (this->movable_object->sprite != 0) {
                             this->movable_object->get_frame(
-                                &min_x, &min_y, &max_x, &max_y);
+                                min_x, min_y, max_x, max_y);
                             point.x = pick_info.scr_x - min_x;
                             point.y = pick_info.scr_y - min_y;
                             if (this->TPanel::render_area->DrawSystem

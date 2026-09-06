@@ -8,7 +8,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern "C" int __cdecl __open(const char* path, int flags, ...);
+static ResFileHdr* Res_Files;
+static int resource_missing_flag;
+
+extern "C" int __cdecl _open(const char* path, int flags, ...);
 extern "C" int __cdecl sprintf(char* buf, const char* fmt, ...);
 #ifndef _INC_IO
 extern "C" int __cdecl lseek(int fd, int offset, int whence);
@@ -59,7 +62,7 @@ void __cdecl RESFILE_open_new_resource_file(
 
         CloseHandle(hMapping);
     } else {
-        fHandle = __open(resFile, 0x8000);
+        fHandle = _open(resFile, 0x8000);
         if (fHandle == -1) {
             sprintf(error_msg,
                 "Error: Open_new_ResFile, file %s not Found.", name);
@@ -107,9 +110,9 @@ void __cdecl RESFILE_open_new_resource_file(
 
         {
             ResFileHdr* head;
-            head = DAT_0086b254;
+            head = Res_Files;
             if (head == 0) {
-                DAT_0086b254 = node;
+                Res_Files = node;
             } else {
                 ResFileHdr* cur;
                 cur = head;
@@ -137,7 +140,7 @@ void __cdecl RESFILE_open_new_resource_file(
 
 void __cdecl RESFILE_close_new_resource_file(char* name)
 {
-    ResFileHdr* cur = DAT_0086b254;
+    ResFileHdr* cur = Res_Files;
     ResFileHdr* prev = 0;
 
     while (cur) {
@@ -157,7 +160,7 @@ found:
     if (prev) {
         prev->next = cur->next;
     } else {
-        DAT_0086b254 = cur->next;
+        Res_Files = cur->next;
     }
 
     if (cur->handle != -1) {
@@ -179,7 +182,7 @@ int __cdecl RESFILE_locate_resource(
     unsigned char*& out_data,
     int& out_field2)
 {
-    ResFileHdr* cur = DAT_0086b254;
+    ResFileHdr* cur = Res_Files;
     out_fd = -1;
     out_field1 = 0;
     out_data = 0;
@@ -235,7 +238,7 @@ unsigned char* __cdecl RESFILE_load(
 
     if (RESFILE_locate_resource(type, id, file_handle, data_offset,
             mapped_data, resource_size) == 0) {
-        if (DAT_0086b258 != 0) {
+        if (resource_missing_flag != 0) {
             sprintf(error_string,
                 "ERROR: res_read_bin, resource type %4.4c , id %d, not found",
                 type, id);
@@ -309,7 +312,7 @@ int __cdecl RESFILE_Extract_to_File(
 
 void __cdecl RESFILE_Set_Missing_Flag(int flag)
 {
-    DAT_0086b258 = flag;
+    resource_missing_flag = flag;
 }
 
 int __cdecl RESFILE_Decommit_Mapped_Memory(unsigned char* address, int size)
@@ -431,7 +434,7 @@ int __cdecl RESFILE_build_res_file(
                 pNode->next = 0;
                 strcpy(pNode->fName, data_filename);
 
-                fd = __open(data_filename, 0x8000);
+                fd = _open(data_filename, 0x8000);
                 if (fd == -1) {
                     L->Log("Error: unable to open file: %s", data_filename);
                     delete pNode;
@@ -472,7 +475,7 @@ int __cdecl RESFILE_build_res_file(
     {
         int resHandle;
 
-        resHandle = __open(resource_filename, 0x8301, 0x180);
+        resHandle = _open(resource_filename, 0x8301, 0x180);
         if (resHandle == -1) {
             L->Log("Error: unable to create resource file file: %s",
                 resource_filename);

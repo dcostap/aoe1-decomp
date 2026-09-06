@@ -10,12 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern "C" {
-int rge_open(char* filename, int mode, ...);
-void rge_read_uncompressed(int fd, void* buffer, int count);
-void rge_write_uncompressed(int fd, void* buffer, int count);
-int rge_close(int fd);
-}
+#include "../include/rge_fio.h"
 
 RGE_Scenario_File_Info::RGE_Scenario_File_Info(char* path)
 {

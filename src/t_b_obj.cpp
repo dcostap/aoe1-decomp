@@ -19,9 +19,7 @@
 
 #include <stdlib.h>
 
-extern "C" {
-    int debug_rand(const char*, int);
-}
+int debug_rand(char*, int);
 
 
 static TRIBE_Player* tribe_player(RGE_Player* player)

@@ -254,7 +254,6 @@ public:
                unsigned char, int, char*);
     void set_rect(long, long, long, long);
     virtual void set_redraw(TPanel::RedrawMode);
-    int bound_point(long&, long&);
     void set_world(RGE_Game_World*);
     void set_player(RGE_Player*);
     void set_selection_area(long, long, long, long);
@@ -268,9 +267,6 @@ public:
     void draw();
     void game_mode_15_hook();
     void reset_cyclic_overlay_sprites();
-    long Get_Cursor_Position(POINT*, long, long);
-    long pick_touched_object(void*, long, long, long, long, long*);
-    void get_string(long, char*, long);
     int Get_Cursor_Position(tagPOINT&, int, int);
     // Original slots: pick +0xE0/+0xE4, scroll +0xE8 through +0xF4.
     virtual int pick_through_fog(RGE_Static_Object*);
@@ -279,7 +275,6 @@ public:
     virtual int handle_scroll_view(long, long);
     virtual void end_scroll_view();
     virtual int do_paint(long, long, long, long, int);
-    int capture_mouse();
     void add_overlay_sprite(TShape*, int, int, int, int, int,
                             unsigned char*, int, unsigned long);
     bool Object_Was_Displayed(int, bool);

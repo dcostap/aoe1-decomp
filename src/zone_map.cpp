@@ -233,7 +233,6 @@ void RGE_Zone_Map::do_zone_map_area(long x, long y, unsigned char passable,
     } while (zone_pop(&zone_end, &zone_queue, x, y));
 }
 
-extern const double g_zero_double;
 
 RGE_Zone_Map* RGE_Zone_Map::check_info(float* input, long count)
 {
@@ -242,11 +241,11 @@ RGE_Zone_Map* RGE_Zone_Map::check_info(float* input, long count)
         int i = 0;
         if (n > 0) {
             do {
-                if (input[i] <= g_zero_double) {
-                    if (this->terrain_passability_rules[i] > g_zero_double)
+                if (input[i] <= DAT_00577a20) {
+                    if (this->terrain_passability_rules[i] > DAT_00577a20)
                         return 0;
                 } else {
-                    if (this->terrain_passability_rules[i] <= g_zero_double)
+                    if (this->terrain_passability_rules[i] <= DAT_00577a20)
                         return 0;
                 }
                 ++i;

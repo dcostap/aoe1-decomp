@@ -14,11 +14,8 @@ extern "C" int __cdecl ds_stream_resume(void);
 extern "C" int __cdecl ds_stream_stop(void);
 extern "C" unsigned int __cdecl ds_stream_messages(
     void* a, unsigned int b, unsigned int c, long d);
-extern "C" long (__stdcall *__imp__mixerSetControlDetails)(
-    void* mixer_handle, void* mixer_volume_details, unsigned long flags);
-
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
-extern "C" int __cdecl __open(const char* path, int flags, int mode);
+extern "C" int __cdecl _open(const char* path, int flags, ...);
 extern "C" int __cdecl close(int fd);
 extern "C" unsigned int __cdecl read(int fd, void* buffer, unsigned int count);
 extern "C" int __cdecl strncmp(const char* left, const char* right,
@@ -191,8 +188,8 @@ void TSound_Driver::set_volume(long volume, int update_driver) {
                            this->mixer_volume_control.Bounds.lMinimum);
     scaled = (unsigned long)((delta * (volume + 10000)) / 10000);
     this->mixer_volume_value.dwValue = scaled;
-    this->dsrval = __imp__mixerSetControlDetails(
-        this->mixer_handle, &this->mixer_volume_details, 0);
+    this->dsrval = mixerSetControlDetails(
+        (HMIXEROBJ)this->mixer_handle, &this->mixer_volume_details, 0);
 }
 
 int TSound_Driver::stream_file(char* file, int mode, long resource_id) {
@@ -458,7 +455,7 @@ int TDigital::load(char* name, long param) {
     if (sound_file_first != 0 || param < 0) {
         sprintf(file_with_path, "%s%s", this->sound_system->path,
                 this->sound_file);
-        fd = __open(file_with_path, 0, 0);
+        fd = _open(file_with_path, 0, 0);
         if (fd != -1) {
             result = read(fd, &wave_hdr.szRIFF, 0x2C);
             if (result <= 0) {

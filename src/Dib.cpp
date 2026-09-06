@@ -15,16 +15,6 @@
 // The target reserves 0x1400 bytes from SrcXTbl to the next global.
 static long SrcXTbl[0x500];
 
-struct PAL_TABLE {
-    int index;
-    unsigned char red;
-    unsigned char green;
-    unsigned char blue;
-    unsigned char reserved;
-};
-
-extern PAL_TABLE System_color_Table[];
-extern unsigned char DAT_005841e5;
 
 extern "C" char* __cdecl strtok(char*, const char*);
 extern "C" long __cdecl atol(const char*);
@@ -1519,7 +1509,7 @@ void __cdecl CreateIdentityPalette(void* palette)
     if ((system_palette_failed != 0 || source_palette_failed != 0) &&
         *(int*)System_color_Table >= 0) {
         int index = *(int*)System_color_Table;
-        unsigned char* colors = &DAT_005841e5;
+        unsigned char* colors = &System_color_Table[0].green;
         do {
             palette_locals.new_pal[index + 1].peRed = colors[-1];
             palette_locals.new_pal[index + 1].peGreen = colors[0];

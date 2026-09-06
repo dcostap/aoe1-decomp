@@ -66,11 +66,6 @@ public:
     char fName[260];              // +0x14
 };
 
-// Resource-file global state. The image uses DAT_0086b254 at 0047F076,
-extern ResFileHdr* DAT_0086b254;
-
-extern int DAT_0086b258;
-
 // The image table begins at 00585520. game_globals.cpp owns the shipped data.
 extern res_file_type_info res_extension_table[];
 

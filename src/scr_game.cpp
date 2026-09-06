@@ -1,6 +1,7 @@
 
 #include "../include/scr_game.h"
 #include "../include/game_globals.h"
+#include "../include/dsutil.h"
 #include <new.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,9 +77,9 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
 
     this->world = static_cast<TRIBE_World*>(rge_base_game->world);
     this->update_interval = rge_base_game->prog_info->update_interval;
-    this->last_update_time = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_game_c, 0x116);
+    this->last_update_time = debug_timeGetTime(s_scr_game_cpp, 0x116);
     this->map_redraw_interval = 0x14d;
-    this->last_map_redraw_time = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_game_c, 0x119);
+    this->last_map_redraw_time = debug_timeGetTime(s_scr_game_cpp, 0x119);
     this->game_obj = 0;
     this->tech_list = 0;
     this->make_list = 0;
@@ -107,7 +108,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     this->showing_game_over = 0;
     this->chat_line = 0;
     this->view_interval = 100;
-    this->last_view_time = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_game_c, 0x142);
+    this->last_view_time = debug_timeGetTime(s_scr_game_cpp, 0x142);
     this->player_quit = 0;
 
     this->view_town_center_hotkey = *this->get_string(0x103f);
@@ -121,7 +122,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     }
     this->reset_after_update = 1;
     this->score_interval = 3000;
-    this->last_score_time = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_game_c, 0x154);
+    this->last_score_time = debug_timeGetTime(s_scr_game_cpp, 0x154);
     this->watch_mode = 0;
     this->game_ended = 0;
     this->game_over_sound = 0;
@@ -436,7 +437,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
     }
 
     {
-    if (!this->create_text(this, &this->log_text, s_, 10, 300, 400, 0x60, 7, 0, 0,
+    if (!this->create_text(this, &this->log_text, s_592A40, 10, 300, 400, 0x60, 7, 0, 0,
                            0)) {
         this->error_code = 1;
         return;
@@ -474,9 +475,9 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
                          rge_base_game->get_player()->id);
 
     this->terrain_sound_interval = 20000;
-    this->last_terrain_sound_time = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_game_c, 0x339);
+    this->last_terrain_sound_time = debug_timeGetTime(s_scr_game_cpp, 0x339);
     this->anim_pal_interval = 200;
-    this->last_anim_pal_time = debug_timeGetTime(s_C__msdev_work_age1_x1_scr_game_c, 0x33f);
+    this->last_anim_pal_time = debug_timeGetTime(s_scr_game_cpp, 0x33f);
     this->last_anim_pal_index = 0;
     this->last_anim_pal_index2 = 0;
     this->last_anim_pal_index3 = 0;
@@ -522,7 +523,7 @@ TRIBE_Screen_Game::TRIBE_Screen_Game()
 
 
 TRIBE_Screen_Game::~TRIBE_Screen_Game() {
-    panel_system.destroyPanel(s_Game_Screen);
+    panel_system.destroyPanel(s_Config_Dialog);
 
     if (this->game_over_sound != 0) {
         if (this->game_over_sound->is_playing() != 0) {
@@ -1754,7 +1755,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             break;
         case 0x45:
             new TribeSaveGameScreen(TribeSaveGameScreen::SaveGame, 0, 0);
-            panel_system.setCurrentPanel(Save_Game_Screen, 0);
+            panel_system.setCurrentPanel(s_Save_Game_Screen, 0);
             break;
         case 0x46:
             if (allow_user_commands != 0) {
@@ -1828,7 +1829,7 @@ long TRIBE_Screen_Game::key_down_action(long param_1, short param_2,
             break;
         case 0x56:
             new TribeSaveGameScreen(TribeSaveGameScreen::SaveScenario, 0, 0);
-            panel_system.setCurrentPanel(Save_Game_Screen, 0);
+            panel_system.setCurrentPanel(s_Save_Game_Screen, 0);
             break;
         case 0x57:
             if (allow_user_commands != 0) {
@@ -3499,7 +3500,7 @@ void TRIBE_Screen_Game::reset_score_display()
 
 void TRIBE_Screen_Game::draw()
 {
-    if (byte_62C584) {
+    if (do_color_log) {
         tagRECT* r = &this->clip_rect;
         tagRECT old = *r;
         this->draw_setup(0);
@@ -4201,7 +4202,7 @@ void TRIBE_Screen_Game::command_save_game() {
         static_cast<TRIBE_Command*>(this->world->commands)->do_commands();
     }
     new TribeSaveGameScreen(TribeSaveGameScreen::SaveGame, 0, 0);
-    panel_system.setCurrentPanel(Save_Game_Screen, 0);
+    panel_system.setCurrentPanel(s_Save_Game_Screen, 0);
 }
 
 void TRIBE_Screen_Game::command_save_scenario() {

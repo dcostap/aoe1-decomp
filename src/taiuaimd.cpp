@@ -103,7 +103,6 @@ done:
 
 
 
-extern const float SPEED_3; // 3.0f at [5758B0h]
 
 int TribeHuntedAnimalUnitAIModule::processIdle(int param_1)
 {
@@ -117,7 +116,7 @@ int TribeHuntedAnimalUnitAIModule::processIdle(int param_1)
     if (targetID != -1) {
         target = objectValue->owner->world->object(targetID);
         if (target != 0) {
-            speed = objectValue->maximumSpeed() * SPEED_3;
+            speed = objectValue->maximumSpeed() * DAT_005758b0;
             dx = target->world_x - objectValue->world_x;
             dy = target->world_y - objectValue->world_y;
             distance = (float)sqrt(dx * dx + dy * dy);
@@ -239,7 +238,7 @@ after_loop:;
 
             if (count >= this->attackingUnitsValue.maximumSizeValue) {
                 int newCapacity = count + 1;
-                int* newArray = (int*)operator_new(newCapacity * 4);
+                int* newArray = (int*)::operator new(newCapacity * 4);
                 if (newArray != 0) {
                     int j = 0;
                     if (count > 0) {
@@ -248,7 +247,7 @@ after_loop:;
                             j++;
                         }
                     }
-                    operator_delete(this->attackingUnitsValue.value);
+                    ::operator delete(this->attackingUnitsValue.value);
                     this->attackingUnitsValue.value = newArray;
                     this->attackingUnitsValue.maximumSizeValue = newCapacity;
                 }
@@ -1346,7 +1345,7 @@ int TribePriestUnitAIModule::processNotify(NotifyEvent* event, unsigned long par
 
 #pragma intrinsic(sqrt)
 
-extern int __cdecl debug_rand(const char* file, int line);
+extern int __cdecl debug_rand(char* file, int line);
 
 
 int TribePriestUnitAIModule::processIdle(int param_1)
@@ -2160,7 +2159,6 @@ return_two:
 
 
 
-extern const float SPEED_3; // 3.0f at [5758B0h]
 
 
 int TribeSoldierUnitAIModule::processIdle(int param_1)
@@ -2201,7 +2199,7 @@ int TribeSoldierUnitAIModule::processIdle(int param_1)
                             this->objectValue->owner->world->object(targetID2);
                         if (target != 0) {
                             float speed =
-                                this->objectValue->maximumSpeed() * SPEED_3;
+                                this->objectValue->maximumSpeed() * DAT_005758b0;
                             float xDiff = target->world_x - this->objectValue->world_x;
                             float yDiff = target->world_y - this->objectValue->world_y;
                             float distance =

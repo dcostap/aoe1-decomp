@@ -119,7 +119,6 @@ public:
     int taskResearch(BuildItem*);
     int taskTrain(BuildItem*);
     int initialExplorationSatisfied();
-    int civilian(XYPoint*, int, int, int, int, int);
     int civilian(XYPoint&, int, int, int, int, int);
     int taskBuilder(int, BuildItem*, ConstructionItem*, unsigned long);
     int taskBuilder(int, RGE_Static_Object*);
@@ -176,7 +175,6 @@ public:
     int itemToBringToArea();
     unsigned long attackLimiterTime(int);
     void checkForCoopAttack(int, int, int);
-    TacticalAIGroup* bestGroup(int, int, int, XYPoint*, int);
     TacticalAIGroup* bestGroup(int, int, int, XYPoint&, int);
     TacticalAIGroup* group(int, int, int, int);
     int taskToEnter(int, int);
@@ -209,13 +207,11 @@ public:
     void displayBoatGroups();
     int removeGroup(int);
     TacticalAIGroup* readyAndIdleGroup(int, int, XYPoint&);
-    TacticalAIGroup* readyAndIdleGroup(int, int, XYPoint*);
     int addToGroup(int, int);
     int setAllGroupLocations(TacticalAIGroup*);
     void setGroupInfluences(InfluenceMap&);
     int selectBestCommander(TacticalAIGroup*);
     int selectBestCommander(ManagedArray<int>&);
-    int selectBestCommander(ManagedArray<int>*);
     int inAge(int);
     int resourceDifference(int);
     int actualGathererCount(int);
@@ -228,9 +224,7 @@ public:
     int requiredGatherAmount(int);
     int deleteUnit(int);
     int numberAvailableStoragePits(int&, int&, int);
-    int numberAvailableStoragePits(RGE_Static_Object**, int*, int);
     int numberAvailableGranaries(int&, int&);
-    int numberAvailableGranaries(RGE_Static_Object**, int*);
     void checkForBuildInsertion(int, int, int);
     int isFarmer(RGE_Static_Object*);
     int numberFarmers();

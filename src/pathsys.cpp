@@ -12,14 +12,10 @@
 #include "../include/panel.h"
 
 extern void operator delete(void* ptr);
-extern "C" void* __cdecl operator_new(unsigned int size);
-extern "C" void __cdecl operator_delete(void* ptr);
 extern void* operator new(unsigned int size, void* ptr);
 extern int DiagionalDistance[256];
-extern int FacetSkipMask[8];
 extern const unsigned char ObstructionValueShift[4];
 extern const unsigned char ObstructionValueMask[4];
-extern const unsigned int ObstructionMasks[];
 extern RGE_Base_Game* rge_base_game;
 
 // This two-byte cursor is local to pathsys.cpp. No shared owner declares it.
@@ -390,14 +386,14 @@ int PathingSystem::findTilePath(int startX, int startY, int goalX, int goalY, RG
         i = 0;
         while (i < curObj->pathingGroupMembers.numberValue) {
             if (curObj->pathingGroupMembers.maximumSizeValue - 1 < i) {
-                int* newValue = (int*)operator_new(i * 4 + 4);
+                int* newValue = (int*)::operator new(i * 4 + 4);
                 if (newValue != 0) {
                     int j = 0;
                     while (j < curObj->pathingGroupMembers.maximumSizeValue && j < i + 1) {
                         newValue[j] = curObj->pathingGroupMembers.value[j];
                         ++j;
                     }
-                    operator_delete(curObj->pathingGroupMembers.value);
+                    ::operator delete(curObj->pathingGroupMembers.value);
                     curObj->pathingGroupMembers.value = newValue;
                     curObj->pathingGroupMembers.maximumSizeValue = i + 1;
                 }

@@ -27,10 +27,8 @@ typedef unsigned long ulong;
 
 extern "C" double __cdecl ceil(double);
 extern "C" int __cdecl sprintf(char*, const char*, ...);
-extern "C" void* __cdecl operator_new(unsigned int);
-extern "C" void __cdecl operator_delete(void*);
-extern "C" unsigned long __cdecl debug_timeGetTime(const char*, int);
-extern "C" int debug_rand(char*, int);
+extern unsigned long __cdecl debug_timeGetTime(char*, int);
+extern int debug_rand(char*, int);
 extern int __ftol();
 
 
@@ -1021,10 +1019,10 @@ case20_next:
                         min.x = (int)targetLocationValue.x - 7;
                         min.y = (int)targetLocationValue.y - 7;
                         TribeInformationAIModule* info = &md->informationAI;
-                        info->mapBound(&min);
+                        info->mapBound(min);
                         max.x = (int)targetLocationValue.x + 7;
                         max.y = (int)targetLocationValue.y + 7;
-                        info->mapBound(&max);
+                        info->mapBound(max);
                         if (numberAttackWaypointsValue >= 2) {
                             Waypoint* prev = &attackWaypoints[numberAttackWaypointsValue - 2];
                             if ((float)min.x <= prev->x)
@@ -2014,8 +2012,8 @@ char* TribeTacticalAIModule::updateAreaName()
 
 
 
-// These three target insertions inline growth and emit direct
-// operator_new/operator_delete calls. The shared add method emits resize.
+// These three insertions call the allocation functions directly.
+// The shared add method emits resize.
 static inline int addTacticalPlayer(ManagedArray<int>& array, int valueToAdd)
 {
     int i;
@@ -2028,13 +2026,13 @@ static inline int addTacticalPlayer(ManagedArray<int>& array, int valueToAdd)
     }
     if (array.numberValue > array.maximumSizeValue - 1) {
         newSize = array.numberValue + 1;
-        newValue = (int*)operator_new(newSize * sizeof(int));
+        newValue = (int*)::operator new(newSize * sizeof(int));
         if (newValue != 0) {
             for (i = 0; i < array.maximumSizeValue; i++) {
                 if (i >= newSize) break;
                 newValue[i] = array.value[i];
             }
-            operator_delete(array.value);
+            ::operator delete(array.value);
             array.value = newValue;
             array.maximumSizeValue = newSize;
         }
@@ -2844,7 +2842,7 @@ int TribeTacticalAIModule::doSomething()
                                 XYPoint position;
                                 position.x = (int)object->world_x;
                                 position.y = (int)object->world_y;
-                                int id = this->civilian(&position, 1, 0x2BE, 0x2CE, 0x2BC, 0);
+                                int id = this->civilian(position, 1, 0x2BE, 0x2CE, 0x2BC, 0);
                                 if (id != -1) {
                                     if (this->taskBuilder(id, object) == 1) {
                                         this->lastBuildTime =
@@ -2876,7 +2874,7 @@ int TribeTacticalAIModule::doSomething()
                                 XYPoint position;
                                 position.x = (int)object->world_x;
                                 position.y = (int)object->world_y;
-                                int id = this->civilian(&position, 1, 0x2BE, 0x2CE, 0x2BC, 0);
+                                int id = this->civilian(position, 1, 0x2BE, 0x2CE, 0x2BC, 0);
                                 if (id != -1) {
                                     this->taskRepairer(id, object);
                                 }
@@ -2900,7 +2898,7 @@ int TribeTacticalAIModule::doSomething()
                                 XYPoint position;
                                 position.x = (int)object->world_x;
                                 position.y = (int)object->world_y;
-                                int id = this->civilian(&position, 1, 0x2BE, 0x2CE, 0x2BC, 0);
+                                int id = this->civilian(position, 1, 0x2BE, 0x2CE, 0x2BC, 0);
                                 if (id != -1) {
                                     this->taskRepairer(id, object);
                                 }
@@ -3815,7 +3813,7 @@ active_target_selection:
                                 mem = this->md->informationAI.objectMemory(capture);
                                 if (mem == 0) {
                                     if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                        newPlayers = (int*)operator_new(4);
+                                        newPlayers = (int*)::operator new(4);
                                         if (newPlayers != 0) {
                                             int i;
                                             i = 0;
@@ -3834,7 +3832,7 @@ active_target_selection:
                                 mem = this->md->informationAI.objectMemory(bring);
                                 if (mem == 0) {
                                     if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                        newPlayers = (int*)operator_new(4);
+                                        newPlayers = (int*)::operator new(4);
                                         if (newPlayers != 0) {
                                             int i;
                                             i = 0;
@@ -3850,7 +3848,7 @@ active_target_selection:
                             } else {
                                 if (this->playersToAttack.maximumSizeValue - 1 < 0) {
                                     int* newPlayers;
-                                    newPlayers = (int*)operator_new(4);
+                                    newPlayers = (int*)::operator new(4);
                                     if (newPlayers != 0) {
                                         int i;
                                         i = 0;
@@ -3858,13 +3856,13 @@ active_target_selection:
                                             newPlayers[i] = this->playersToAttack.value[i];
                                             i++;
                                         }
-                                        operator_delete(this->playersToAttack.value);
+                                        ::operator delete(this->playersToAttack.value);
                                         this->playersToAttack.value = newPlayers;
                                         this->playersToAttack.maximumSizeValue = 1;
                                     }
                                 }
                                 players = this->playersToAttack.value;
-                                mem = this->md->informationAI.objectToAttackByGroup(*players, cur, &this->attackStateValue, param_1);
+                                mem = this->md->informationAI.objectToAttackByGroup(*players, cur, this->attackStateValue, param_1);
                                 if (this->attackStateValue.active == 1) {
                                     this->nextActiveSoldierGroupToTaskValue = cur->id();
                                     return;
@@ -3873,7 +3871,7 @@ active_target_selection:
                             }
                             goto active_target_selected_common;
 inactive_resize_commit:
-                            operator_delete(this->playersToAttack.value);
+                            ::operator delete(this->playersToAttack.value);
                             this->playersToAttack.value = newPlayers;
                             this->playersToAttack.maximumSizeValue = 1;
 inactive_object_to_attack:
@@ -3915,7 +3913,7 @@ inactive_object_to_attack:
                                 mem = this->md->informationAI.objectMemory(capture);
                                 if (mem == 0) {
                                     if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                        newPlayers = (int*)operator_new(4);
+                                        newPlayers = (int*)::operator new(4);
                                         if (newPlayers != 0) {
                                             int i;
                                             i = 0;
@@ -3934,7 +3932,7 @@ inactive_object_to_attack:
                                 mem = this->md->informationAI.objectMemory(bring);
                                 if (mem == 0) {
                                     if (this->playersToAttack.maximumSizeValue - 1 < 0) {
-                                        newPlayers = (int*)operator_new(4);
+                                        newPlayers = (int*)::operator new(4);
                                         if (newPlayers != 0) {
                                             int i;
                                             i = 0;
@@ -3950,7 +3948,7 @@ inactive_object_to_attack:
                             } else {
                                 if (this->playersToAttack.maximumSizeValue - 1 < 0) {
                                     int* generalPlayers;
-                                    generalPlayers = (int*)operator_new(4);
+                                    generalPlayers = (int*)::operator new(4);
                                     if (generalPlayers != 0) {
                                         int i;
                                         i = 0;
@@ -3958,14 +3956,14 @@ inactive_object_to_attack:
                                             generalPlayers[i] = this->playersToAttack.value[i];
                                             i++;
                                         }
-                                        operator_delete(this->playersToAttack.value);
+                                        ::operator delete(this->playersToAttack.value);
                                         this->playersToAttack.value = generalPlayers;
                                         this->playersToAttack.maximumSizeValue = 1;
                                     }
                                 }
                                 players = this->playersToAttack.value;
                                 mem = this->md->informationAI.objectToAttackByGroup(
-                                    *players, cur, &this->attackStateValue, param_1);
+                                    *players, cur, this->attackStateValue, param_1);
                                 if (this->attackStateValue.active == 1) {
                                     this->nextActiveSoldierGroupToTaskValue = cur->id();
                                     return;
@@ -3974,7 +3972,7 @@ inactive_object_to_attack:
                             }
                             goto active_target_selected_common;
 active_resize_commit:
-                            operator_delete(this->playersToAttack.value);
+                            ::operator delete(this->playersToAttack.value);
                             this->playersToAttack.value = newPlayers;
                             this->playersToAttack.maximumSizeValue = 1;
 active_object_to_attack:
@@ -4102,9 +4100,9 @@ inactive_post_setup:
                             } else {
                                 commanderPoint2.x = (int)commanderObj2->world_x;
                                 commanderPoint2.y = (int)commanderObj2->world_y;
-                                assist = this->bestGroup(0x6a, 1, -1, &commanderPoint2, -1);
+                                assist = this->bestGroup(0x6a, 1, -1, commanderPoint2, -1);
                                 if (assist == 0) {
-                                    assist = this->bestGroup(0x6a, 0, -1, &commanderPoint2, -1);
+                                    assist = this->bestGroup(0x6a, 0, -1, commanderPoint2, -1);
                                 }
                                 if (assist != 0) {
                                     cur->setAssistGroupID(assist->id());
@@ -4422,7 +4420,7 @@ reset_action10:
                     commanderObj3 = this->md->object(cur->commander());
                     if (this->playersToAttack.maximumSizeValue - 1 < 0) {
                         int* newPlayers;
-                        newPlayers = (int*)operator_new(4);
+                        newPlayers = (int*)::operator new(4);
                         if (newPlayers != 0) {
                             int k;
                             k = 0;
@@ -4430,13 +4428,13 @@ reset_action10:
                                 newPlayers[k] = this->playersToAttack.value[k];
                                 k++;
                             }
-                            operator_delete(this->playersToAttack.value);
+                            ::operator delete(this->playersToAttack.value);
                             this->playersToAttack.value = newPlayers;
                             this->playersToAttack.maximumSizeValue = 1;
                         }
                     }
                     players = this->playersToAttack.value;
-                    mem = this->md->informationAI.objectToAttackByGroup(*players, cur, &this->attackStateValue, param_1);
+                    mem = this->md->informationAI.objectToAttackByGroup(*players, cur, this->attackStateValue, param_1);
                     if (this->attackStateValue.active == 1) {
                         this->nextActiveSoldierGroupToTaskValue = cur->id();
                         return;
@@ -4567,7 +4565,7 @@ action7_done:
                             }
                             if (this->playersToAttack.maximumSizeValue - 1 < 0) {
                                 int* newPlayers;
-                                newPlayers = (int*)operator_new(4);
+                                newPlayers = (int*)::operator new(4);
                                 if (newPlayers != 0) {
                                     int k;
                                     k = 0;
@@ -4575,14 +4573,14 @@ action7_done:
                                         newPlayers[k] = this->playersToAttack.value[k];
                                         k++;
                                     }
-                                    operator_delete(this->playersToAttack.value);
+                                    ::operator delete(this->playersToAttack.value);
                                     this->playersToAttack.value = newPlayers;
                                     this->playersToAttack.maximumSizeValue = 1;
                                 }
                             }
                             players2 = this->playersToAttack.value;
                             replacement = this->md->informationAI.objectToAttackByGroup(
-                                *players2, cur, &this->attackStateValue, param_1);
+                                *players2, cur, this->attackStateValue, param_1);
                             if (this->attackStateValue.active == 1) {
                                 this->nextActiveSoldierGroupToTaskValue = cur->id();
                                 return;
@@ -5792,12 +5790,12 @@ notify_after_owner:
 
     TacticalAIGroup* group;
     if (this->md->informationAI.isBoat(targetObj) == 1) {
-        group = this->readyAndIdleGroup(0x67, this->sn[0x14], &attackPoint);
+        group = this->readyAndIdleGroup(0x67, this->sn[0x14], attackPoint);
     }
     else {
-        group = this->readyAndIdleGroup(100, this->sn[0x14], &attackPoint);
+        group = this->readyAndIdleGroup(100, this->sn[0x14], attackPoint);
         if (group == 0) {
-            group = this->readyAndIdleGroup(0x67, this->sn[0x14], &attackPoint);
+            group = this->readyAndIdleGroup(0x67, this->sn[0x14], attackPoint);
         }
     }
 
@@ -6113,7 +6111,7 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                     if (object->unitAI()->currentAction() != -1) {
                         if (object->unitAI()->currentOrderPriority() == threshold) {
                             if (reset > soldiers.maximumSizeValue - 1) {
-                                int* newValue = (int*)operator_new(reset * 4 + 4);
+                                int* newValue = (int*)::operator new(reset * 4 + 4);
                                 if (newValue != 0) {
                                     int copyIndex = 0;
                                     if (0 < soldiers.maximumSizeValue) {
@@ -6124,7 +6122,7 @@ int TribeTacticalAIModule::numberSoldiersWithPriority(int threshold, int priorit
                                             copyIndex = copyIndex + 1;
                                         } while (copyIndex < soldiers.maximumSizeValue);
                                     }
-                                    operator_delete(soldiers.value);
+                                    ::operator delete(soldiers.value);
                                     soldiers.value = newValue;
                                     soldiers.maximumSizeValue = reset + 1;
                                 }
@@ -7155,7 +7153,7 @@ int TribeTacticalAIModule::taskBuilder(int id, BuildItem* item, ConstructionItem
         XYPoint position;
         position.x = (int)con->x();
         position.y = (int)con->y();
-        id = this->civilian(&position, 1, 0x2be, 0x2ce, 0x2bc, 0);
+        id = this->civilian(position, 1, 0x2be, 0x2ce, 0x2bc, 0);
     }
     RGE_Static_Object* obj = this->md->player->world->object(id);
     if (obj == 0 || obj->unitAI() == 0) {
@@ -7192,11 +7190,11 @@ int TribeTacticalAIModule::taskBuilder(int id, BuildItem* item, ConstructionItem
     }
     if (count > this->unitsTaskedThisUpdate.maximumSizeValue - 1) {
         int newMax = count + 1;
-        int* p = (int*)operator_new(newMax * 4);
+        int* p = (int*)::operator new(newMax * 4);
         if (p != 0) {
             for (i = 0; i < this->unitsTaskedThisUpdate.maximumSizeValue && i < newMax; i++)
                 p[i] = this->unitsTaskedThisUpdate.value[i];
-            operator_delete(this->unitsTaskedThisUpdate.value);
+            ::operator delete(this->unitsTaskedThisUpdate.value);
             this->unitsTaskedThisUpdate.value = p; this->unitsTaskedThisUpdate.maximumSizeValue = newMax;
         }
     }
@@ -7402,8 +7400,8 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
             if (this->builtFirstStoragePit != 1) goto tail;
             if (rObjObj->master_obj->id == 0x3B) {
                 maximumResourceDistance = 0;
-                RGE_Static_Object* g2 = 0;
-                int ng = this->numberAvailableGranaries(&g2, &maximumResourceDistance);
+                int granaries = 0;
+                int ng = this->numberAvailableGranaries(granaries, maximumResourceDistance);
                 if (maximumResourceDistance != 0 || ng < 1) goto tail;
                 exclusions[0] = this->sn[0xA3];
                 int d = (int)gathererObj->distance_to_object(rObjObj);
@@ -7418,12 +7416,12 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
                 short grp = rObjObj->master_obj->object_group;
                 if (grp == 0x1F || grp == 5 || grp == 0x21) goto tail;
                 maximumResourceDistance = 0;
-                RGE_Static_Object* g2 = 0;
-                int np = this->numberAvailableStoragePits(&g2, &maximumResourceDistance, 0);
+                int storagePits = 0;
+                int np = this->numberAvailableStoragePits(storagePits, maximumResourceDistance, 0);
                 if (maximumResourceDistance != 0 || np < 1) goto tail;
                 int d = (int)gathererObj->distance_to_object(rObjObj);
                 if (d < 0x10) {
-                    if (g2 != 0) goto tail;
+                    if (storagePits != 0) goto tail;
                 }
                 this->md->buildAI.insert(0x67, 1, -1);
                 goto tail;
@@ -7433,16 +7431,16 @@ int TribeTacticalAIModule::taskGatherer(int p1, int p2, int p3, ulong p4, int* p
     if (this->builtFirstStoragePit != 1 || this->builtFirstGranary != 1) goto tail;
     {
         int np;
-        RGE_Static_Object* g2;
+        int storagePits;
         int d;
         maximumResourceDistance = 0;
-        g2 = 0;
-        np = this->numberAvailableStoragePits(&g2, &maximumResourceDistance, resourceType);
+        storagePits = 0;
+        np = this->numberAvailableStoragePits(storagePits, maximumResourceDistance, resourceType);
         if (maximumResourceDistance != 0 || np < 1) goto tail;
         exclusions[0] = this->sn[rObjObj->attribute_type_held + 0xA3];
         d = (int)gathererObj->distance_to_object(rObjObj);
         if (d <= exclusions[0]) {
-            if (g2 != 0) goto tail;
+            if (storagePits != 0) goto tail;
         }
         this->md->buildAI.insert(0x67, 1, -1);
     }
@@ -7637,7 +7635,7 @@ int TribeTacticalAIModule::taskExplorer(int unit, float x, float y, int flag)
     }
     if (count > this->unitsTaskedThisUpdate.maximumSizeValue - 1) {
         int newMax = count + 1;
-        int* nv = (int*)operator_new(newMax * 4);
+        int* nv = (int*)::operator new(newMax * 4);
         if (nv != 0) {
             i = 0;
             if (this->unitsTaskedThisUpdate.maximumSizeValue > 0) {
@@ -7648,7 +7646,7 @@ int TribeTacticalAIModule::taskExplorer(int unit, float x, float y, int flag)
                     if (i >= this->unitsTaskedThisUpdate.maximumSizeValue) break;
                 }
             }
-            operator_delete(this->unitsTaskedThisUpdate.value);
+            ::operator delete(this->unitsTaskedThisUpdate.value);
             this->unitsTaskedThisUpdate.value = nv;
             this->unitsTaskedThisUpdate.maximumSizeValue = newMax;
         }
@@ -7673,7 +7671,7 @@ tasked_done:
             }
             if (count > civiliansArray.maximumSizeValue - 1) {
                 int newMax = count + 1;
-                int* nv = (int*)operator_new(newMax * 4);
+                int* nv = (int*)::operator new(newMax * 4);
                 if (nv != 0) {
                     i = 0;
                     if (civiliansArray.maximumSizeValue > 0) {
@@ -7684,7 +7682,7 @@ tasked_done:
                             if (i >= civiliansArray.maximumSizeValue) break;
                         }
                     }
-                    operator_delete(civiliansArray.value);
+                    ::operator delete(civiliansArray.value);
                     civiliansArray.value = nv;
                     civiliansArray.maximumSizeValue = newMax;
                 }
@@ -7791,8 +7789,6 @@ dispatch:
 }
 
 
-void* __cdecl operator_new(unsigned int size);
-void __cdecl operator_delete(void* ptr);
 
 // ManagedArray<int> layout
 int TribeTacticalAIModule::taskWaterExplorer(int param_1) {
@@ -7809,13 +7805,13 @@ int TribeTacticalAIModule::taskWaterExplorer(int param_1) {
 
     if (arr.numberValue > arr.maximumSizeValue - 1) {
         int newSize = arr.numberValue + 1;
-        int* newArray = (int*)operator_new(newSize * 4);
+        int* newArray = (int*)::operator new(newSize * 4);
         if (newArray != 0) {
             int j;
             for (j = 0; j < arr.maximumSizeValue && j < newSize; j++) {
                 newArray[j] = arr.value[j];
             }
-            operator_delete(arr.value);
+            ::operator delete(arr.value);
             arr.value = newArray;
             arr.maximumSizeValue = newSize;
         }
@@ -8608,7 +8604,7 @@ void TribeTacticalAIModule::fillSoldierGroups() {
                     if (this->workingArea.numberValue == 0) {
                         return;
                     }
-                    int commander = this->selectBestCommander(&this->workingArea);
+                    int commander = this->selectBestCommander(this->workingArea);
                     group->addUnit(commander, this->md);
                     group->setSpecificCommander(commander, this->md);
                     if (group->action() == 0 || group->action() == 1) {
@@ -9337,7 +9333,7 @@ void TribeTacticalAIModule::fillBoatGroups() {
                     if (this->workingArea.numberValue == 0) {
                         return;
                     }
-                    int commander = this->selectBestCommander(&this->workingArea);
+                    int commander = this->selectBestCommander(this->workingArea);
                     group->addUnit(commander, this->md);
                     group->setSpecificCommander(commander, this->md);
                     if (group->action() == 0 || group->action() == 1) {
@@ -10327,19 +10323,19 @@ void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
 
                 minpt.x = (int)(group->gatherLocation().x - (float)half);
                 minpt.y = (int)(group->gatherLocation().y - (float)half);
-                this->md->informationAI.mapBound(&minpt);
+                this->md->informationAI.mapBound(minpt);
                 maxpt.x = (int)(group->gatherLocation().x + (float)half);
                 maxpt.y = (int)(group->gatherLocation().y + (float)half);
-                this->md->informationAI.mapBound(&maxpt);
+                this->md->informationAI.mapBound(maxpt);
                 map.setValue(minpt.x, minpt.y, maxpt.x, maxpt.y, 255);
 
                 half = clearDistance;
                 minpt.x = (int)(group->gatherLocation().x - (float)half);
                 minpt.y = (int)(group->gatherLocation().y - (float)half);
-                this->md->informationAI.mapBound(&minpt);
+                this->md->informationAI.mapBound(minpt);
                 maxpt.x = (int)(group->gatherLocation().x + (float)half);
                 maxpt.y = (int)(group->gatherLocation().y + (float)half);
-                this->md->informationAI.mapBound(&maxpt);
+                this->md->informationAI.mapBound(maxpt);
                 map.decrementValue(minpt.x, minpt.y, maxpt.x, maxpt.y, 10);
             }
             group = group->next;
@@ -10355,20 +10351,20 @@ void TribeTacticalAIModule::setGroupInfluences(InfluenceMap& map)
             if (object != 0) {
                 minpt.x = (int)object->world_x;
                 minpt.y = (int)object->world_y;
-                this->md->informationAI.mapBound(&minpt);
+                this->md->informationAI.mapBound(minpt);
                 maxpt.x = (int)object->world_x;
                 maxpt.y = (int)object->world_y;
-                this->md->informationAI.mapBound(&maxpt);
+                this->md->informationAI.mapBound(maxpt);
                 map.setValue(minpt.x, minpt.y, maxpt.x, maxpt.y, 255);
 
                 int clearDistance;
                 clearDistance = this->md->informationAI.groupInfluenceDimension(1);
                 minpt.x = (int)(object->world_x - (float)clearDistance);
                 minpt.y = (int)(object->world_y - (float)clearDistance);
-                this->md->informationAI.mapBound(&minpt);
+                this->md->informationAI.mapBound(minpt);
                 maxpt.x = (int)((float)clearDistance + object->world_x);
                 maxpt.y = (int)((float)clearDistance + object->world_y);
-                this->md->informationAI.mapBound(&maxpt);
+                this->md->informationAI.mapBound(maxpt);
                 map.decrementValue(minpt.x, minpt.y, maxpt.x, maxpt.y, 10);
             }
             i++;

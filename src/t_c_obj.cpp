@@ -36,7 +36,7 @@ extern float DAT_00574ca0;
 extern float DAT_00574c98;
 extern float DAT_00574ca4;
 extern double DAT_00574ca8;
-extern "C" int __cdecl debug_rand(const char*, int);
+extern int __cdecl debug_rand(char*, int);
 int __cdecl lines_intersect(float, float, float, float, float, float, float,
                             float);
 

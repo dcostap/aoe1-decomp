@@ -1,7 +1,7 @@
 #include "../include/pnl_drop.h"
 #include "../include/Pnl_scbr.h"
 
-extern char s_[];
+extern char s_592A40[];
 
 TDropDownPanel::TDropDownPanel() : TPanel() {
     this->val_panel = 0;
@@ -84,7 +84,7 @@ long TDropDownPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, v
                 result = (long)this->scbar_panel;
                 if (result != 0 &&
                     (result = this->scbar_panel->setup(this->render_area, this, 0, 0, this->scbar_wid, this->list_hgt,
-                                                       s_, s_, s_, s_,
+                                                       s_592A40, s_592A40, s_592A40, s_592A40,
                                                        this->scbar_arrow_hgt, this->scbar_tab_hgt,
                                                        this->list_panel, list_num_lines_in,
                                                        TScrollBarPanel::Vertical)) != 0) {

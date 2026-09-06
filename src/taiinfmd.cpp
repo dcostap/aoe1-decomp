@@ -1147,7 +1147,7 @@ int TribeInformationAIModule::gameIDsOwnedBy(int owner_filter, int** out, int ow
                     if (ownerId == owner_id) {
                         if (owner_filter == -1 || owner_filter == this->importantObjectMemory[i].owner) {
                             if (count == capacity || *out == 0) {
-                                int* new_arr = (int*)operator_new(capacity * 8);
+                                int* new_arr = (int*)::operator new(capacity * 8);
                                 if (*out != 0) {
                                     for (int j = 0; j < capacity; j++) {
                                         new_arr[j] = (*out)[j];
@@ -1155,7 +1155,7 @@ int TribeInformationAIModule::gameIDsOwnedBy(int owner_filter, int** out, int ow
                                 }
                                 capacity *= 2;
                                 if (*out != 0) {
-                                    operator_delete(*out);
+                                    ::operator delete(*out);
                                 }
                                 *out = new_arr;
                             }
@@ -1446,10 +1446,10 @@ void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
                 if (obj != 0) {
                     minLOS.x = (int)(obj->world_x - obj->master_obj->los);
                     minLOS.y = (int)(obj->world_y - obj->master_obj->los);
-                    this->mapBound(&minLOS);
+                    this->mapBound(minLOS);
                     maxLOS.x = (int)(obj->master_obj->los + obj->world_x);
                     maxLOS.y = (int)(obj->master_obj->los + obj->world_y);
-                    this->mapBound(&maxLOS);
+                    this->mapBound(maxLOS);
                     int x = minLOS.x;
                     if (x <= maxLOS.x) {
                         do {
@@ -1469,10 +1469,10 @@ void TribeInformationAIModule::addEnemyInfluences(int player, int excludeId)
                     if (this->importantObjectMemory[index].range > DAT_00575564) {
                         minRange.x = (int)(obj->world_x - this->importantObjectMemory[index].range);
                         minRange.y = (int)(obj->world_y - this->importantObjectMemory[index].range);
-                        this->mapBound(&minRange);
+                        this->mapBound(minRange);
                         maxRange.x = (int)(obj->world_x + this->importantObjectMemory[index].range);
                         maxRange.y = (int)(obj->world_y + this->importantObjectMemory[index].range);
-                        this->mapBound(&maxRange);
+                        this->mapBound(maxRange);
                         int x2 = minRange.x;
                         if (x2 <= maxRange.x) {
                             do {
@@ -1511,11 +1511,11 @@ void TribeInformationAIModule::addPriorAttackInfluences(int targetOwner, int unu
                     this->md->player->id) {
                 min.x = this->attackMemories[count].minX;
                 min.y = this->attackMemories[count].minY;
-                this->mapBound(&min);
+                this->mapBound(min);
 
                 max.x = this->attackMemories[count].maxX;
                 max.y = this->attackMemories[count].maxY;
-                this->mapBound(&max);
+                this->mapBound(max);
 
                 for (int x = min.x; x <= max.x; ++x) {
                     for (int y = min.y; y <= max.y; ++y) {
@@ -1525,10 +1525,10 @@ void TribeInformationAIModule::addPriorAttackInfluences(int targetOwner, int unu
 
                 min.x = min.x - 5;
                 min.y = min.y - 5;
-                this->mapBound(&min);
+                this->mapBound(min);
                 max.x += 5;
                 max.y += 5;
-                this->mapBound(&max);
+                this->mapBound(max);
 
                 for (int x2 = min.x; x2 <= max.x; ++x2) {
                     for (int y2 = min.y; y2 <= max.y; ++y2) {
@@ -2062,19 +2062,19 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
     if (minimumPlacementDistance < maximumPlacementDistance) {
         min.x = placementCenter.x - maximumPlacementDistance;
         min.y = placementCenter.y - maximumPlacementDistance;
-        this->mapBound(&min);
+        this->mapBound(min);
 
         max.x = placementCenter.x + maximumPlacementDistance;
         max.y = placementCenter.y + maximumPlacementDistance;
-        this->mapBound(&max);
+        this->mapBound(max);
 
         minExclude.x = placementCenter.x - minimumPlacementDistance;
         minExclude.y = placementCenter.y - minimumPlacementDistance;
-        this->mapBound(&minExclude);
+        this->mapBound(minExclude);
 
         maxExclude.x = placementCenter.x + minimumPlacementDistance;
         maxExclude.y = placementCenter.y + minimumPlacementDistance;
-        this->mapBound(&maxExclude);
+        this->mapBound(maxExclude);
 
         if (item != 0 && state.active == 0) {
             BuildingLot* lot = this->availableLot(x);
@@ -2106,7 +2106,7 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
         }
 
         if (item == 0 && state.active == 0)
-            this->setupInfluenceMap(placement, x, &placementCenter, &min, &max);
+            this->setupInfluenceMap(placement, x, placementCenter, min, max);
 
         if (state.active == 0) {
             int maxInfluence = this->md->tacticalAI.strategicNumber(0xa8);
@@ -2224,8 +2224,8 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                 }
                             }
 
-                            if (this->mapBound(&minClear) != 1 &&
-                                this->mapBound(&maxClear) != 1) {
+                            if (this->mapBound(minClear) != 1 &&
+                                this->mapBound(maxClear) != 1) {
                                 placementResult = -1;
                                 if (masterObj->check_placement(
                                         this->md->player,
@@ -2274,8 +2274,8 @@ ConstructionItem* TribeInformationAIModule::influencePlaceStructure(
                                             newPosition.y = candidate;
                                             if (this->lastWallPosition.x != -1 &&
                                                 this->isNextTo(
-                                                    &this->lastWallPosition,
-                                                    &newPosition, 0) == 0)
+                                                    this->lastWallPosition,
+                                                    newPosition, 0) == 0)
                                                 score /= 2;
 
                                             int direction = this->facetTo(
@@ -2702,7 +2702,7 @@ ObjectMemory* TribeInformationAIModule::objectToAttack(int player, int siegeWeap
 
     int randomRating;
     int id;
-    ObjectMemory oLimits = findObjectMemoryLimits(player, objnum, &randomRating, &id);
+    ObjectMemory oLimits = findObjectMemoryLimits(player, objnum, randomRating, id);
 
     best = 0;
     specialRating3 = -1;
@@ -3371,7 +3371,7 @@ ObjectMemory* TribeInformationAIModule::objectToDefend(int target_obj_id)
                             this->md->tacticalAI.bestGroup(
                                 -1, 4,
                                 this->md->tacticalAI.strategicNumber(0x5C),
-                                &pt, -1);
+                                pt, -1);
 
                         if (bestG == 0) {
                             int priority = this->defendPriority(
@@ -5275,9 +5275,9 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
     int maxLOSValue = this->setupLOSMap(target->owner, target->x, target->y);
     int maxAttackValue = this->setupAttackMap(target->owner, target->x, target->y);
     XYPoint min, max, targetPoint;
-    min.x = (int)target->x - stageDistance; min.y = (int)target->y - stageDistance; this->mapBound(&min);
-    max.x = (int)target->x + stageDistance; max.y = (int)target->y + stageDistance; this->mapBound(&max);
-    targetPoint.x = target->x; targetPoint.y = target->y; this->mapBound(&targetPoint);
+    min.x = (int)target->x - stageDistance; min.y = (int)target->y - stageDistance; this->mapBound(min);
+    max.x = (int)target->x + stageDistance; max.y = (int)target->y + stageDistance; this->mapBound(max);
+    targetPoint.x = target->x; targetPoint.y = target->y; this->mapBound(targetPoint);
 
     RGE_Visible_Map* vMap = this->md->player->visible;
     RGE_Map* gMap = this->md->aiPlayer->world->map;
@@ -5298,8 +5298,8 @@ int TribeInformationAIModule::findStagingPoint(XYPoint startPoint, XYPoint& rPoi
             if (useTransport == 1) {
                 XYPoint passableMin;
                 XYPoint passableMax;
-                passableMin.x = x - 2; passableMin.y = y - 2; this->mapBound(&passableMin);
-                passableMax.x = x + 2; passableMax.y = y + 2; this->mapBound(&passableMax);
+                passableMin.x = x - 2; passableMin.y = y - 2; this->mapBound(passableMin);
+                passableMax.x = x + 2; passableMax.y = y + 2; this->mapBound(passableMax);
                 int good = 1;
                 for (int a = passableMin.x; a <= passableMax.x && good; ++a) {
                     for (int b = passableMin.y; b <= passableMax.y && good; ++b) {
@@ -5509,7 +5509,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
     while (i < this->maxResources[resourceType]) {
         if (this->resources[resourceType][i].id == obj->id) {
                 int dropsiteID = -1;
-                float distance = this->findClosestDropsite(obj, 1, &dropsiteID);
+                float distance = this->findClosestDropsite(obj, 1, dropsiteID);
                 this->resources[resourceType][i].gatherValue =
                     (int)(DAT_005755bc - distance * DAT_005755b8);
                 this->resources[resourceType][i].dropsiteID = dropsiteID;
@@ -5572,7 +5572,7 @@ int TribeInformationAIModule::addResourceObject(RGE_Static_Object* obj)
         (unsigned char)resourceType;
 
     int dropsiteID = -1;
-    float distance = this->findClosestDropsite(obj, 1, &dropsiteID);
+    float distance = this->findClosestDropsite(obj, 1, dropsiteID);
     this->resources[resourceType][this->numResources[resourceType]].dropDistance =
         (unsigned char)distance;
     this->resources[resourceType][this->numResources[resourceType]].dropsiteID = dropsiteID;
@@ -5705,7 +5705,7 @@ void TribeInformationAIModule::updateAllResourceDropsites()
                     this->md->object(this->resources[resourceType][i].id);
                 if (obj) {
                     int dropsiteID = -1;
-                    float dist = this->findClosestDropsite(obj, 1, &dropsiteID);
+                    float dist = this->findClosestDropsite(obj, 1, dropsiteID);
                     this->resources[resourceType][i].gatherValue =
                         (int)(DAT_005755bc - dist * DAT_005755b8);
                     this->resources[resourceType][i].dropDistance =
@@ -5756,7 +5756,7 @@ void TribeInformationAIModule::updateResourceDropsites(int idx) {
 
                 if (obj != 0) {
                     int out_id = -1;
-                    float dist = this->findClosestDropsite(obj, 1, &out_id);
+                    float dist = this->findClosestDropsite(obj, 1, out_id);
 
                     int val = (int)(DAT_005755bc - DAT_005755b8 * dist);
                     *(int*)((char*)this->resources[idx] + byte_off + 8) = val;

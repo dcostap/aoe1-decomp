@@ -1,5 +1,6 @@
 
 #include "../include/tpnl_obj.h"
+#include "../include/asm_draw.h"
 #include "../include/Shape.h"
 #include "../include/com_hand.h"
 #include "../include/m_s_obj.h"
@@ -22,7 +23,6 @@
 #include <string.h>
 
 extern TCommunications_Handler* comm;
-extern "C" void __cdecl _ASMSet_Color_Xform(int);
 
 extern "C" {
 __declspec(dllimport) int __stdcall SetBkMode(HDC, int);
@@ -197,7 +197,7 @@ void TRIBE_Panel_Object::draw()
             }
 
             if (this->game_obj->owner->color_table != 0) {
-                _ASMSet_Color_Xform(
+                ASMSet_Color_Xform(
                     (this->game_obj->owner->color_table->id + 1) * 0x10);
 
                 picture->shape_draw(

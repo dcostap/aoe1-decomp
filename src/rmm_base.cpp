@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern "C" int __cdecl debug_rand(char* file, int line);
-void operator_delete(void* block);
+extern int __cdecl debug_rand(char* file, int line);
+#include <new.h>
 
 extern "C" double sqrt(double value);
 #pragma intrinsic(sqrt)
@@ -53,7 +53,7 @@ RGE_Random_Map_Module::~RGE_Random_Map_Module()
         RGE_Random_Map_Module* module = this->list->module;
         if (module != 0) {
             module->~RGE_Random_Map_Module();
-            operator_delete(module);
+            ::operator delete(module);
         }
     }
 

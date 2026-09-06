@@ -3,8 +3,7 @@
 
 #include "waypoint.h"
 
-void* __cdecl operator_new(unsigned int size);
-void __cdecl operator_delete(void* value);
+#include <new.h>
 
 class ostream;
 
@@ -35,7 +34,7 @@ public:
             } else {
                 maxSizeValue += new_maximum;
             }
-            Waypoint* new_path = (Waypoint*)operator_new(maxSizeValue * 16);
+            Waypoint* new_path = (Waypoint*)::operator new(maxSizeValue * 16);
             for (int i = 0; i < currentSizeValue; i++) {
                 new_path[i].x = pathValue[i].x;
                 new_path[i].y = pathValue[i].y;
@@ -43,7 +42,7 @@ public:
                 new_path[i].facetToNextWaypoint = pathValue[i].facetToNextWaypoint;
             }
             if (pathValue != 0) {
-                operator_delete(pathValue);
+                ::operator delete(pathValue);
             }
             pathValue = new_path;
         }

@@ -9,7 +9,7 @@
 
 extern "C" void* calloc(unsigned int count, unsigned int size);
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
-extern "C" void __cdecl getstring(char** destination, char* source);
+extern void __cdecl getstring(char** destination, char* source);
 extern "C" void __cdecl free(void* block);
 
 

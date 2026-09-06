@@ -6,7 +6,7 @@
 #include <math.h>
 #include <string.h>
 
-extern "C" int __cdecl debug_rand(char* file, int line);
+extern int __cdecl debug_rand(char* file, int line);
 
 RGE_RMM_Elevation_Generator::RGE_RMM_Elevation_Generator(
     RGE_Map* map, RGE_Random_Map_Module* parent, RGE_Elevation_Info* info)

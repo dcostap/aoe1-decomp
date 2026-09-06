@@ -61,7 +61,7 @@ BuildAIModule::BuildAIModule(int p1, int fd)
     rge_read(fd, &buildCap, 4);
     rge_read(fd, this->currentBuildItemRequestedValue, buildCap);
     this->currentBuildItemRequestedValue[buildCap] = 0;
-    if (save_game_version >= version_3_1) {
+    if (save_game_version >= 3.1f) {
         rge_read(fd, &buildCap, 4);
         rge_read(fd, this->nextBuildItemRequestedValue, buildCap);
         this->nextBuildItemRequestedValue[buildCap] = 0;
@@ -97,7 +97,7 @@ BuildAIModule::BuildAIModule(int p1, int fd)
             rge_read(fd, &placeOnElevation, 4);
             rge_read(fd, &numberBuilds, 4);
             buildCapValue = -1;
-            if (save_game_version >= version_2_2) {
+            if (save_game_version >= 2.2f) {
                 rge_read(fd, &buildCapValue, 4);
             }
             rge_read(fd, &skipCycles, 4);

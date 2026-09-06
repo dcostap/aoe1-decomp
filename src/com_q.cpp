@@ -2,10 +2,6 @@
 #include "../include/debuglog.h"
 #include <string.h>
 
-extern void* DAT_0062cf34;
-extern void* DAT_0062cf38;
-extern void* DAT_0062cf3c;
-extern unsigned int DAT_0062cf40;
 extern TDebuggingLog* L;
 
 RGE_Communications_Queue::RGE_Communications_Queue(int param_1) {
@@ -83,18 +79,19 @@ int RGE_Communications_Queue::AllocateQueue(unsigned int param_1) {
 
 unsigned char RGE_Communications_Queue::ExpectedNextSequence(
     unsigned long turn, unsigned int from) {
+    static unsigned char Count;
     unsigned char seq;
     unsigned int i;
 
     seq = 1;
     i = 0;
-    *(unsigned char*)&DAT_0062cf40 = seq;
+    Count = seq;
     do {
         if (this->Queue[i].ExecTurn == turn &&
             this->Queue[i].From == from &&
             this->Queue[i].Size != 0) {
             seq++;
-            *(unsigned char*)&DAT_0062cf40 = seq;
+            Count = seq;
         }
         i++;
     } while (i <= this->HighQueueDepth);
@@ -103,7 +100,7 @@ unsigned char RGE_Communications_Queue::ExpectedNextSequence(
         unsigned int c = (unsigned int)this;
         c |= 0xff;
         if ((unsigned char)c >= seq) {
-            return (unsigned char)DAT_0062cf40;
+            return Count;
         }
         return 0;
     }
@@ -252,6 +249,7 @@ unsigned int RGE_Communications_Queue::GetHighQueueDepth() {
 void* RGE_Communications_Queue::GetSpecificItem(
     unsigned int player, unsigned long turn, unsigned char sequence,
     unsigned int* size) {
+    static void* retptr;
     unsigned int targetCode = player * 1000 + sequence;
     unsigned int idx = 0;
     MsgQueue* entry = this->Queue;
@@ -269,7 +267,7 @@ void* RGE_Communications_Queue::GetSpecificItem(
 
 found:
     *size = this->Queue[idx].Size;
-    DAT_0062cf3c = this->Queue[idx].msgptr;
+    retptr = this->Queue[idx].msgptr;
     this->Queue[idx].msgptr = 0;
 
     {
@@ -282,14 +280,15 @@ found:
         p->ControlCommand = 0;
     }
 
-    return DAT_0062cf3c;
+    return retptr;
 }
 
 void* RGE_Communications_Queue::GetNextItemSingle() {
+    static void* retptr;
     MsgQueue* q = this->Queue;
     for (unsigned int i = 0; i <= this->HighQueueDepth; i++) {
         if (q[i].Size > 0) {
-            DAT_0062cf34 = q[i].msgptr;
+            retptr = q[i].msgptr;
             MsgQueue* entry = this->Queue + i;
             entry->Code = 0;
             entry->ExecTurn = 0;
@@ -298,13 +297,14 @@ void* RGE_Communications_Queue::GetNextItemSingle() {
             entry->Size = 0;
             entry->ControlCommand = 0;
             this->Queue[i].msgptr = 0;
-            return DAT_0062cf34;
+            return retptr;
         }
     }
     return 0;
 }
 
 void* RGE_Communications_Queue::GetNextItemOrdered(unsigned long turn) {
+    static void* retptr;
     unsigned int bestControlCommand = 0xFFFFFFFF;
     unsigned int i = 0;
     int bestIndex = -1;
@@ -329,7 +329,7 @@ void* RGE_Communications_Queue::GetNextItemOrdered(unsigned long turn) {
         return 0;
     }
 
-    DAT_0062cf38 = Queue[bestIndex].msgptr;
+    retptr = Queue[bestIndex].msgptr;
     Queue[bestIndex].msgptr = 0;
 
     MsgQueue* mq = Queue + bestIndex;
@@ -340,7 +340,7 @@ void* RGE_Communications_Queue::GetNextItemOrdered(unsigned long turn) {
     mq->Size = 0;
     mq->ControlCommand = 0;
 
-    return DAT_0062cf38;
+    return retptr;
 }
 
 unsigned char RGE_Communications_Queue::GetNextSequence(unsigned long turn) {

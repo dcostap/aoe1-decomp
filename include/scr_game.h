@@ -301,7 +301,6 @@ typedef char scr_game_size_check[
     (sizeof(TRIBE_Screen_Game) == 0x7C4) ? 1 : -1];
 
 extern int disable_terrain_sounds;
-extern int _bPlaying;
 extern int start_paused;
 extern int displayPathingFlags;
 extern int MapPathsDisplay;
@@ -318,12 +317,11 @@ extern int out_of_sync2;
 extern unsigned char do_color_log;
 extern unsigned char production_queues_is_use;
 extern int memory_dump_sequence;
-extern char Save_Game_Screen[];
 extern char s_Save_Game_Screen[];
 extern char s_Game_Screen[];
+extern char s_Config_Dialog[];
 extern char s_scr6[];
 extern char s_scr_game_cpp[];
-extern char s_C__msdev_work_age1_x1_scr_game_c[];
 extern char s_Send_Quick_Message_Dialog[];
 extern char s_Help_Dialog[];
 extern char s_won_wav[];
@@ -334,14 +332,13 @@ extern char s_btncmd_shp[];
 extern char s_btnbldg_d_shp[];
 extern char s_bordline[];
 extern char s_map_bmp[];
-extern char s_[];
+extern char s_592A40[];
 extern char s_PAUSE[];
 extern const char s_Writing_out_memory_info[];
 extern const char s_memory_filename[];
 extern char s_ALLOWCTRLU[];
 extern char s_force_ctrl_u[];
 
-extern unsigned char byte_62C584;
 extern char close_confirmation_text[];
 
 #endif

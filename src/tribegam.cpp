@@ -51,7 +51,6 @@
 
 
 
-extern const int encrypt_table[];
 
 void encrypt_codes(char* src, char* dst, int max_len) {
     char c = *src;
@@ -65,7 +64,7 @@ void encrypt_codes(char* src, char* dst, int max_len) {
             out++;
             count++;
         } else {
-            int val = encrypt_table[static_cast<int>(c)];
+            int val = encrypt_table[static_cast<int>(c) - 0x40];
             *out = static_cast<char>(val >> 8);
             out++;
             *out = static_cast<char>(val);
@@ -139,14 +138,6 @@ extern int out_of_sync2;
 extern int player_dropped[9];
 extern int video_codec_available;
 extern void __cdecl debug_srand(char* file, int line, unsigned int seed);
-extern MouseClickInfo Tribe1btnMouseRightClickTable[40];
-extern MouseClickInfo Tribe1btnMouseLeftClickTable[40];
-extern int Tribe1btnMouseRightClickTableSize;
-extern int Tribe1btnMouseLeftClickTableSize;
-extern MouseClickInfo Tribe2btnMouseRightClickTable[40];
-extern MouseClickInfo Tribe2btnMouseLeftClickTable[40];
-extern int Tribe2btnMouseRightClickTableSize;
-extern int Tribe2btnMouseLeftClickTableSize;
 
 struct ICINFO {
     unsigned long dwSize;
@@ -344,7 +335,6 @@ void TRIBE_Game::close_game_screens(int destroyGameScreen)
 
 #include <string.h>
 #include <windows.h>
-extern char* __pgmptr;
 
 int TRIBE_Game::setup()
 {
@@ -449,12 +439,12 @@ setup_done:
     run_log("------------------------------", 0);
     run_log("", 1);
 
-    h = FindFirstFileA(__pgmptr, &file_data);
+    h = FindFirstFileA(_pgmptr, &file_data);
     if (h != INVALID_HANDLE_VALUE) {
         memset(&file_time, 0, sizeof(file_time));
         FileTimeToSystemTime(&file_data.ftLastWriteTime, &file_time);
         sprintf(str, "program=%s, size=%d, date=%d/%d/%d, time=%d:%d:%d",
-                __pgmptr, file_data.nFileSizeLow,
+                _pgmptr, file_data.nFileSizeLow,
                 file_time.wMonth, file_time.wMonth, file_time.wYear,
                 file_time.wHour, file_time.wMinute, file_time.wSecond);
         run_log(str, 0);
@@ -1144,7 +1134,7 @@ void TRIBE_Game::close_status_message() {
 #include <string.h>
 #include <windows.h>
 
-extern "C" int __cdecl __open(const char* path, int flags, ...);
+extern "C" int __cdecl _open(const char* path, int flags, ...);
 extern "C" void* __cdecl MCIWndCreateA(void* parent, void* instance,
                                          unsigned long style,
                                          const char* file);
@@ -1169,13 +1159,13 @@ int TRIBE_Game::start_video(int video, char* file)
         file != 0 && *file != 0) {
         char temp_name[260];
         sprintf(temp_name, "%s%s.avi", this->prog_info->avi_dir, file);
-        int file_handle = __open(temp_name, 0, 0x100);
+        int file_handle = _open(temp_name, 0, 0x100);
         if (file_handle == -1) {
             char* cd_path = this->registry->RegGetAscii(0, "CDPath");
             if (cd_path != 0) {
                 sprintf(temp_name, "%sgame\\avi\\%s.avi", cd_path,
                         file);
-                file_handle = __open(temp_name, 0, 0x100);
+                file_handle = _open(temp_name, 0, 0x100);
             }
             if (file_handle == -1) {
                 this->stop_video(1);
@@ -1724,13 +1714,10 @@ extern int show_timing_max;
 
 void TRIBE_Game::calc_timing_text()
 {
-    if ((DAT_0086bcd0 & 1) == 0) {
-        DAT_0086bcd0 |= 1;
-        DAT_0086bcd8 = debug_timeGetTime(
-            "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x7D4);
-    }
+    static unsigned long last_time = debug_timeGetTime(
+        "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x7D4);
 
-    DAT_0086bcd8 = debug_timeGetTime(
+    last_time = debug_timeGetTime(
         "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x7D6);
 
     if (this->world_update_count == 0) {
@@ -2485,8 +2472,7 @@ int TRIBE_Game::start_scenario(char* scenario)
 #include <stdio.h>
 #include <string.h>
 
-extern "C" char* __cdecl __mbschr(const char* text, int character);
-extern "C" int numberPathingIterations;
+extern int numberPathingIterations;
 extern int ENABLE_COMPRESSION;
 
 int TRIBE_Game::load_game(char* file_name)
@@ -2594,7 +2580,7 @@ int TRIBE_Game::load_game(char* file_name)
         }
 
         strcpy(fileNameNoExt, file_name);
-        char* dot = __mbschr(fileNameNoExt, '.');
+        char* dot = (char*)_mbschr((const unsigned char*)fileNameNoExt, '.');
         if (dot != 0)
             *dot = 0;
         this->set_save_game_name(fileNameNoExt);
@@ -2954,7 +2940,7 @@ int TRIBE_Game::create_game(int param_1)
 
     for (i = 0; i < 8; ++i) {
         this->resigned[i + 1] = 0;
-        DAT_0086bcac[i] = 0;
+        player_dropped[i + 1] = 0;
         this->queue_is_waiting_on_pop_counter[i + 1] = 0;
     }
     out_of_sync = 0;
@@ -3339,7 +3325,6 @@ extern "C" char* __cdecl strcpy(char*, const char*);
 extern "C" char* __cdecl strstr(const char*, const char*);
 extern "C" int __cdecl strcmp(const char*, const char*);
 extern "C" int __cdecl sscanf(const char*, const char*, ...);
-extern "C" unsigned char* __cdecl __mbsupr(unsigned char*);
 
 extern void __cdecl encrypt_codes(char* src, char* dst, int max_len);
 
@@ -3352,7 +3337,7 @@ int TRIBE_Game::processCheatCode(int player_id, char* cheat) {
     }
 
     strcpy(str, cheat);
-    __mbsupr(reinterpret_cast<unsigned char*>(str));
+    _mbsupr(reinterpret_cast<unsigned char*>(str));
     encrypt_codes(str, encstr, 0x200);
 
     if (this->allowCheatCodes() == 0) {
@@ -4071,8 +4056,9 @@ void TRIBE_Game::setRandomStartValue(int val) { this->random_start_value = val; 
 
 
 char* TRIBE_Game::gameSummary() {
-    DAT_0086bca0 = 0;
-    return reinterpret_cast<char*>(&DAT_0086bca0);
+    static char temp[1];
+    temp[0] = 0;
+    return temp;
 }
 
 
@@ -4116,6 +4102,7 @@ extern void color_log(unsigned char first, unsigned char second, int level);
 
 int TRIBE_Game::handle_idle()
 {
+    static int last_wait_time;
     int retval;
     char str[100];
     char msg[2304];
@@ -4158,7 +4145,7 @@ int TRIBE_Game::handle_idle()
             color_log(0x4C, 0x54, 5);
             unsigned long now = debug_timeGetTime(
                 "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x139C);
-            if (now - DAT_0086be04 >= 500) {
+            if (now - last_wait_time >= 500) {
                 this->get_string(0x454, msg, 0x900);
                 strcat(msg, "\n");
 
@@ -4177,7 +4164,7 @@ int TRIBE_Game::handle_idle()
                 if (wait != 0) {
                     wait->set_text(msg);
                 }
-                DAT_0086be04 = debug_timeGetTime(
+                last_wait_time = debug_timeGetTime(
                     "C:\\msdev\\work\\age1_x1\\tribegam.cpp", 0x13AC);
             }
         }
@@ -4387,8 +4374,6 @@ int TRIBE_Game::action_user_command(unsigned long param_1,
 }
 
 
-extern void (__stdcall *WinHelpA_tribe)(int, const char*, int, int);
-
 int TRIBE_Game::action_key_down(unsigned long key, int param_2, int param_3,
                                 int param_4, int param_5)
 {
@@ -4409,8 +4394,7 @@ int TRIBE_Game::action_key_down(unsigned long key, int param_2, int param_3,
         return 1;
     }
     if (!this->multiplayerGame() || (this->prog_mode != 4 && this->prog_mode != 6 && this->prog_mode != 7 && this->prog_mode != 5)) {
-        WinHelpA_tribe(reinterpret_cast<int>(this->prog_window),
-                       "empires.hlp", 3, 0);
+        WinHelpA(this->prog_window, "empires.hlp", 3, 0);
     }
     return 0;
 }
@@ -4428,14 +4412,15 @@ int TRIBE_Game::action_close() {
 #pragma warning(disable:4234)
 
 char* TRIBE_Game::game_over_msg() {
+    static char msg[256];
     RGE_Game_World* world = this->world;
     RGE_Player* player = world->players[world->curr_player];
     if (player->game_status == 1) {
-        this->get_string(0x47E, DAT_0086BCE0, 0x100);
-        return DAT_0086BCE0;
+        this->get_string(0x47E, msg, 0x100);
+        return msg;
     }
-    this->get_string(0x47F, DAT_0086BCE0, 0x100);
-    return DAT_0086BCE0;
+    this->get_string(0x47F, msg, 0x100);
+    return msg;
 }
 
 
@@ -4448,7 +4433,7 @@ long TRIBE_Game::get_achievement_info(unsigned char param_1, char** param_2) {
 
 
 extern "C" int atoi(const char*);
-extern "C" int debug_rand(const char* file, int line);
+extern int debug_rand(char* file, int line);
 
 int TRIBE_Game::randomComputerName(int param1) {
     char s[10];

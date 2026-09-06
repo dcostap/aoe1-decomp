@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern "C" void __cdecl getstring(char** destination, char* source);
+extern void __cdecl getstring(char** destination, char* source);
 extern int version_marker;
 
 RGE_Campaign_Info::RGE_Campaign_Info(int fd, RGE_Campaign** camps, long cnum) {

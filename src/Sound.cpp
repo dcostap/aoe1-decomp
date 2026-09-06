@@ -1,16 +1,15 @@
 #include "../include/sound.h"
 #include "../include/rge_fio.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include "../include/sounddrv.h"
 
 // Sound.cpp-only runtime, helper, and global declarations.
-extern "C" int __cdecl debug_rand(char* file, int line);
+extern int __cdecl debug_rand(char* file, int line);
 extern "C" int __cdecl sprintf(char* buffer, const char* format, ...);
-extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern void __cdecl write_draw_log(char* message);
 extern void __cdecl write_draw_log2(char* message);
-extern void* __cdecl calloc(int count, int size);
-extern "C" void __cdecl free(void* block);
 
 extern int do_draw_log;
 extern int safe_draw_log;

@@ -1,15 +1,6 @@
 #include "../include/Pnl_inp.h"
 
-extern "C" unsigned int __cdecl __mbslen(const char*);
-extern "C" int __cdecl _mbslen(const char*);
-extern "C" int __cdecl __mbscmp(const char*, const char*);
-extern "C" char* __cdecl __mbschr(const char*, unsigned int);
-extern "C" char* __cdecl __mbscpy(char*, const char*);
-extern "C" void* __cdecl _mbsncpy(void*, void*, int);
-extern "C" void* __cdecl _mbsninc(void*, int);
-extern "C" void* __cdecl _mbsinc(void*);
-extern "C" void* __cdecl _mbsdec(void*, void*);
-extern "C" int __cdecl __ismbcspace(unsigned int);
+#include <mbstring.h>
 extern void operator delete(void*);
 extern char pnl_inp_draw[];
 
@@ -120,9 +111,9 @@ long TInputPanel::char_action(long ch, short count)
     while (i < count) {
         switch (this->format_type) {
         case FormatPercent:
-            if (__mbslen(this->get_text()) < 2 && ch >= '0' && ch <= '9') break;
-            if (__mbslen(this->get_text()) != 2 || ch != '0' ||
-                __mbscmp("10", this->get_text()) != 0) {
+            if (_mbslen((const unsigned char*)this->get_text()) < 2 && ch >= '0' && ch <= '9') break;
+            if (_mbslen((const unsigned char*)this->get_text()) != 2 || ch != '0' ||
+                _mbscmp((const unsigned char*)"10", (const unsigned char*)this->get_text()) != 0) {
                 if (this->overLengthSound != 0) this->overLengthSound->play();
                 else MessageBeep(0xFFFFFFFF);
                 return 1;
@@ -133,14 +124,14 @@ long TInputPanel::char_action(long ch, short count)
         case FormatUnsignedInt:
             if (ch >= '0' && ch <= '9') break;
             if (ch == '-' && this->input_buffer[0] == 0 && this->format_type != FormatUnsignedInt) break;
-            if (ch == '.' && __mbschr(this->input_buffer, ch) != 0 && this->format_type == FormatNumber) break;
+            if (ch == '.' && _mbschr((const unsigned char*)this->input_buffer, ch) != 0 && this->format_type == FormatNumber) break;
             if (this->overLengthSound != 0) this->overLengthSound->play();
             else MessageBeep(0xFFFFFFFF);
             return 1;
         case FormatFile:
         case FormatFileNoExt:
             if (ch == '.') {
-                if (this->format_type == FormatFile && __mbschr(this->input_buffer, ch) == 0) break;
+                if (this->format_type == FormatFile && _mbschr((const unsigned char*)this->input_buffer, ch) == 0) break;
             }
             if (ch == '.' || ch == '\\' || ch == ':' || ch == '/' || ch == '"' || ch == '*' || ch == '?' || ch == '>' || ch == '<' || ch == '|') {
                 if (this->overLengthSound != 0) this->overLengthSound->play();
@@ -186,7 +177,7 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
             if (col <= 0) return 1;
             col--;
             this->cur_line = col;
-            col = (short)__mbslen(this->get_text(this->cur_line));
+            col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         }
         this->cur_col = col;
         this->calc_input_pos();
@@ -196,7 +187,7 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
     case 0x27:
         if (this->num_lines < 1) return 1;
         col = this->cur_col;
-        len = (short)__mbslen(this->get_text(this->cur_line));
+        len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         if (col < len) {
             this->cur_col = col + 1;
             this->calc_input_pos();
@@ -214,8 +205,8 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
         if (this->num_lines < 1) return 1;
         if (this->cur_line > 0) {
             this->cur_line--;
-            if (this->cur_col > (short)__mbslen(this->get_text(this->cur_line)))
-                this->cur_col = (short)__mbslen(this->get_text(this->cur_line));
+            if (this->cur_col > (short)_mbslen((const unsigned char*)this->get_text(this->cur_line)))
+                this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
             this->calc_input_pos();
             this->set_redraw(TPanel::RedrawNormal);
             return 1;
@@ -249,15 +240,15 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
         if (this->num_lines < 1) return 1;
         if (param4 != 0) {
             if (this->cur_line == this->num_lines - 1) {
-                len = (short)__mbslen(this->get_text(this->cur_line));
+                len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
                 if (this->cur_col == len) break;
             }
             this->cur_line = this->num_lines - 1;
-            this->cur_col = (short)__mbslen(this->get_text(this->cur_line));
+            this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         } else {
-            len = (short)__mbslen(this->get_text(this->cur_line));
+            len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
             if (this->cur_col == len) break;
-            this->cur_col = (short)__mbslen(this->get_text(this->cur_line));
+            this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         }
         this->set_redraw(TPanel::RedrawNormal);
         this->calc_input_pos();
@@ -285,9 +276,9 @@ long TInputPanel::key_down_action(long key, short, int, int param4, int param5)
         }
 page_update:
         this->cur_line = line;
-        len = (short)__mbslen(this->get_text(this->cur_line));
+        len = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         if (this->cur_col > len)
-            this->cur_col = (short)__mbslen(this->get_text(this->cur_line));
+            this->cur_col = (short)_mbslen((const unsigned char*)this->get_text(this->cur_line));
         this->calc_input_pos();
         this->set_redraw(TPanel::RedrawNormal);
         return 1;
@@ -375,8 +366,8 @@ void TInputPanel::set_text(char* param_1)
     char* buf = this->input_buffer;
     if (buf != 0) {
         if (param_1 == 0) *buf = 0;
-        else __mbscpy(buf, param_1);
-        short len = __mbslen(this->input_buffer);
+        else _mbscpy((unsigned char*)buf, (const unsigned char*)param_1);
+        short len = _mbslen((const unsigned char*)this->input_buffer);
         this->input_len = len;
         this->input_pos = 0;
         this->cur_line = 0;
@@ -424,13 +415,13 @@ int TInputPanel::insert_character(long ch)
     this->input_buffer = dst_buffer;
     *dst_buffer = 0;
     if (this->input_pos > 0) {
-        _mbsncpy(dst_buffer, src_buffer, this->input_pos);
-        src_buffer = (char*)_mbsninc(src_buffer, this->input_pos);
-        dst_buffer = (char*)_mbsninc(dst_buffer, this->input_pos);
+        _mbsncpy((unsigned char*)dst_buffer, (const unsigned char*)src_buffer, this->input_pos);
+        src_buffer = (char*)_mbsninc((const unsigned char*)src_buffer, this->input_pos);
+        dst_buffer = (char*)_mbsninc((const unsigned char*)dst_buffer, this->input_pos);
     }
-    _mbsncpy(dst_buffer, &ch, 1);
-    dst_buffer = (char*)_mbsinc(dst_buffer);
-    _mbsncpy(dst_buffer, src_buffer, this->input_len - this->input_pos + 1);
+    _mbsncpy((unsigned char*)dst_buffer, (const unsigned char*)&ch, 1);
+    dst_buffer = (char*)_mbsinc((const unsigned char*)dst_buffer);
+    _mbsncpy((unsigned char*)dst_buffer, (const unsigned char*)src_buffer, this->input_len - this->input_pos + 1);
     this->input_len++;
     this->input_pos++;
     this->reformat();
@@ -528,10 +519,10 @@ int TInputPanel::paste()
     if (data_handle != 0) {
         locked = (char*)GlobalLock(data_handle);
         if (locked != 0) {
-            len = _mbslen(locked);
+            len = _mbslen((const unsigned char*)locked);
             if (len > 0xfff) len = 0xfff;
             for (int i = 0; i < 0x1000; ++i) new_str[i] = 0;
-            _mbsncpy(new_str, locked, len);
+            _mbsncpy((unsigned char*)new_str, (const unsigned char*)locked, len);
             GlobalUnlock(data_handle);
         }
     }
@@ -560,13 +551,13 @@ int TInputPanel::paste()
     }
     this->input_buffer = new_cur;
     *new_cur = 0;
-    _mbsncpy(new_cur, old_str, (int)this->input_pos);
-    old_tail = (char*)_mbsninc(old_str, (int)this->input_pos);
+    _mbsncpy((unsigned char*)new_cur, (const unsigned char*)old_str, (int)this->input_pos);
+    old_tail = (char*)_mbsninc((const unsigned char*)old_str, (int)this->input_pos);
     dst_tail = new_cur;
-    dst_tail = (char*)_mbsninc(dst_tail, (int)this->input_pos);
-    _mbsncpy(dst_tail, new_str, len);
-    dst_tail = (char*)_mbsninc(dst_tail, len);
-    _mbsncpy(dst_tail, old_tail, ((int)this->input_len - (int)this->input_pos) + 1);
+    dst_tail = (char*)_mbsninc((const unsigned char*)dst_tail, (int)this->input_pos);
+    _mbsncpy((unsigned char*)dst_tail, (const unsigned char*)new_str, len);
+    dst_tail = (char*)_mbsninc((const unsigned char*)dst_tail, len);
+    _mbsncpy((unsigned char*)dst_tail, (const unsigned char*)old_tail, ((int)this->input_len - (int)this->input_pos) + 1);
     this->input_len += (short)len;
     this->input_pos += (short)len;
     this->reformat();
@@ -597,7 +588,7 @@ void TInputPanel::calc_input_pos()
     node = this->list;
     this->input_pos = 0;
     for (i = 0; node != 0 && i < this->cur_line; i++) {
-        len = __mbslen(node->text);
+        len = _mbslen((const unsigned char*)node->text);
         this->input_pos = this->input_pos + len;
         node = node->next_node;
     }
@@ -636,7 +627,7 @@ void TInputPanel::calc_cur_line_col()
     this->cur_col = 0;
     offset = 0;
     while (node != 0 && this->cur_line != this->num_lines - 1) {
-        len = __mbslen(node->text);
+        len = _mbslen((const unsigned char*)node->text);
         if (offset + len > this->input_pos) break;
         offset += len;
         this->cur_line++;
@@ -666,8 +657,8 @@ int TInputPanel::is_blank()
     if (*p == 0) goto blank;
     while (1) {
         if (*p == '\0') goto blank;
-        if (__ismbcspace((unsigned char)*p) == 0) return 0;
-        p = (char*)_mbsinc(p);
+        if (_ismbcspace((unsigned char)*p) == 0) return 0;
+        p = (char*)_mbsinc((const unsigned char*)p);
     }
 blank:
     return 1;
@@ -685,17 +676,17 @@ char* TInputPanel::get_trimmed_str(char* dst, int maxlen)
     base = (unsigned char*)dst;
     p = base;
     cur = (unsigned char*)temp_str;
-    while (__ismbcspace(*cur & 0xFF)) cur = (unsigned char*)_mbsinc(cur);
+    while (_ismbcspace(*cur & 0xFF)) cur = (unsigned char*)_mbsinc(cur);
     while (*cur) {
         _mbsncpy(p, cur, 1);
-        p = (unsigned char*)_mbsinc(p);
+        p = (unsigned char*)_mbsinc((const unsigned char*)p);
         cur = (unsigned char*)_mbsinc(cur);
     }
     while (1) {
         *p = 0;
         if (p == base) break;
         p = (unsigned char*)_mbsdec(base, p);
-        if (__ismbcspace(*p)) continue;
+        if (_ismbcspace(*p)) continue;
         break;
     }
     return (char*)base;

@@ -20,7 +20,6 @@ public:
     virtual int command_make_move(long, long);
     virtual int command_make_work(long, long);
 
-    int capture_mouse();
     int right_click2(long, long);
 };
 

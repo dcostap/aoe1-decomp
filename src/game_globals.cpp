@@ -1,11 +1,142 @@
-#include "..\include\game_globals.h"
+#include "../include/game_globals.h"
 #include "../include/dsutil.h"
 #include "../include/Res_file.h"
 #include "../include/visible.h"
+#include "../include/Panel.h"
+#include "../include/view.h"
+#include "../include/Dib.h"
+#include "../include/tribegam.h"
 
 struct PLAYER_SCORE;
+class TMousePointer;
+class DClipInfo_List;
 
-int DAT_0086b258 = 0;
+// Original static initialization: 00463BA0; object storage: 0062E870.
+TPanelSystem panel_system;
+
+// Original runtime data; addresses and initial bytes are recorded in executable_runtime_abi.md.
+FILE* draw_log = 0;
+char draw_log_name[260] = {0};
+int do_draw_log = 0;
+int safe_draw_log = 0;
+int do_fps_log = 0;
+FILE* fps_log = 0;
+int debugActions = 0;
+long fog_next_shape = 0;
+float g_time = 7.23f;
+int shape_version_110 = 0x30312E31;
+int version_marker = 0x30302E31;
+int startLoggingAI = 0;
+float DAT_00575078 = 1.0f;
+unsigned int DAT_0086b240 = 0;
+unsigned int DAT_0086b244 = 0;
+int player_dropped[9] = {0};
+long DAT_0062D208[9] = {0};
+unsigned long DAT_0062D230 = 0;
+float DAT_0086b290 = 0.0f;
+unsigned int DAT_0086b294 = 0;
+int DAT_0086b298 = 0;
+int DAT_0086b29c = 0;
+int DAT_0086b2a0 = 0;
+unsigned char DAT_0086b2a4 = 0;
+tagPALETTEENTRY DAT_0086b2a8 = {0};
+float DAT_0086b2ac = 0.0f;
+tagPALETTEENTRY DAT_0086b2b0[256] = {0};
+tagPALETTEENTRY DAT_0086b6b0[256] = {0};
+TDrawArea* DAT_0086bab0 = 0;
+int do_run_log = 0;
+int do_debug_timeGetTime = 0;
+int debug_timeGetTime_interval = 5;
+int chatCheatCodes = 1;
+int logUpdateChanges = 0;
+int useInfluencePlacement = 0;
+int all_grassland_on = 0;
+int numberPathingIterations = 2500;
+int useNewPathing = 0;
+int pathingCapValue = 2;
+int force_cd = 0;
+int Sys_DDLOG_Enable = 0;
+int Sys_DDLOG_ErrorOn = 0;
+int DDlogAutoFlush = 1;
+int debug_log_lock = 0;
+int do_debug_random = 0;
+int logDebugID = -1;
+int speed_val1 = 0;
+int speed_val2 = 0;
+int log_output = 0;
+int DDSys_CanColorFill = 1;
+unsigned char do_color_log = 0;
+int wrote_debug_random_log = 0;
+int debug_random_index = 0;
+int snapshot_number = 1;
+int out_of_sync = 0;
+int out_of_sync2 = 0;
+unsigned char sound_file_first = 0;
+unsigned char shape_file_first = 0;
+GUID gAppGUID = {0};
+GUID gServGUID = {0};
+IDirectPlay3* glpSERV = 0;
+unsigned long start_mem_total = 0;
+unsigned long start_mem_high = 0;
+unsigned long cur_mem_total = 0;
+unsigned long cur_mem_high = 0;
+char debug_random_log[5000][100] = {0};
+int AniPalSets = 0;
+FILE* DDlogf = 0;
+int FullPalSets = 0;
+int MapPathsDisplay = 0;
+TMousePointer* MouseSystem = 0;
+int PalSetRes = 0;
+DClipInfo_List* SDI_List = 0;
+long SDI_Object_ID = 0;
+int confirmed_close = 0;
+int displayPathObjectID = 83;
+int displayPathingFlags = 0;
+int imc_retval = 0;
+RGE_Pick_Obj_Info Picked_Objects[64] = {0};
+extern const unsigned char ObstructionValueShift[4] = {0, 2, 4, 6};
+extern const unsigned char ObstructionValueMask[4] = {0xFC, 0xF3, 0xCF, 0x3F};
+int DiagionalDistance[256] = {0};
+int SDI_Capture_Info = 0;
+int SDI_Draw_Level = 0;
+int SDI_Draw_Line = 0;
+void* StringTableX = 0;
+int View_Grid_Mode = 0;
+FILE* debugOut = 0;
+int disable_terrain_sounds = 0;
+int memory_dump_sequence = 0;
+unsigned char production_queues_is_use = 1;
+int quick_start_game_mode = 0;
+int run_log_created = 0;
+FILE* run_log_file = 0;
+int show_timing_max = 0;
+int video_codec_available = 0;
+int view_debug_Objects = 0;
+int view_debug_ObstructionMap = 0;
+int view_debug_palette = 0;
+int view_debug_redraw_all = 0;
+int view_debug_spans = 0;
+char DAT_0062E670[0x200] = {0};
+class TCommunications_Sessions;
+TCommunications_Sessions* Sess = 0;
+int rge_write_error = 0;
+int ENABLE_COMPRESSION = 1;
+float DAT_0086bc08 = 0.0f;
+unsigned int DAT_0086bc8c = 0;
+unsigned int DAT_0086be00 = 0;
+int start_paused = 0;
+int multi_updates = 1;
+int Shape_Loads = 0;
+int ASM_Fast_Count = 0;
+long tiles_drawn = 0;
+long frame_count = 0;
+int Clip_draw = 0;
+int Clip_remove = 0;
+int Tribe1btnMouseRightClickTableSize = 40;
+int Tribe1btnMouseLeftClickTableSize = 40;
+int Tribe2btnMouseRightClickTableSize = 40;
+int Tribe2btnMouseLeftClickTableSize = 40;
+
 res_file_type_info res_extension_table[] = {
     {"voc", 0x766F6320},
     {"wav", 0x77617620},
@@ -486,7 +617,7 @@ float DAT_00576858 = 7.09000015f;
 double DAT_00576860 = 1.0;
 float DAT_00576868 = -0.5f;
 float DAT_0057686c = -3.05185094e-05f;
-const float DAT_00576D84 = -0.5f;
+extern const float DAT_00576D84 = -0.5f;
 float DAT_00576d88 = 0.000251256279f;
 float DAT_00576d8c = 0.699999988f;
 double DAT_00576d98 = 0.34999999999999998;
@@ -656,7 +787,6 @@ unsigned short DAT_005832c8 = 0x454D;
 unsigned char DAT_005832ca = 0x00;
 unsigned char DAT_005837c6 = 0x00;
 unsigned char DAT_005841e4 = 0x00;
-unsigned char DAT_005841e5 = 0x00;
 unsigned char DAT_005841e6 = 0x00;
 unsigned int DAT_005841e8 = 0x00000001u;
 unsigned char DAT_00584351 = 0x65;
@@ -1102,3 +1232,304 @@ char s_tpnl_inv_draw[] = "tpnl_inv::draw";
 char s_tpnl_tml_draw_axis[] = "tpnl_tml::draw_axis";
 char s_tpnl_txl_draw[] = "tpnl_txl::draw";
 extern const char str_taiuaimd_path[] = "C:\\msdev\\work\\age1_x1\\taiuaimd.cpp";
+extern const char str_aiuaimod_path[] = "C:\\msdev\\work\\age1_x1\\aiuaimod.cpp";
+extern const char str_fmt_stopObject[] = "#%d call stopObject %s %d\n";
+
+// Original AI play-file tokens and formats used by 00410220.
+char s_NULL[] = "NULL";
+char s_NONE[] = "NONE";
+char s_592A40[] = "";
+char s_format_percent_s[] = "%s";
+char s_mode_r[] = "r";
+char s_format_percent_s_space[] = "%s ";
+char s_format_comment[] = " %c%c";
+char s_Play[] = "Play";
+char s_PlayType[] = "PlayType";
+char s_MinUnits[] = "MinUnits";
+char s_MaxUnits[] = "MaxUnits";
+char s_Power[] = "Power";
+char s_Overflow[] = "Overflow";
+char s_Balance[] = "Balance";
+char s_FirstGroup[] = "FirstGroup";
+char s_DeathPercentage[] = "DeathPercentage";
+char s_Intelligence[] = "Intelligence";
+char s_TargetChar[] = "TargetChar";
+char s_TargetType[] = "TargetType";
+char s_NumberGroups[] = "NumberGroups";
+char s_Group[] = "Group";
+char s_Phase[] = "Phase";
+char s_Trigger[] = "Trigger";
+char s_RTrigger[] = "RTrigger";
+char s_EndPlay[] = "EndPlay";
+char s_format_skip_string_int[] = "%*s %d ";
+char s_format_skip_string_string[] = "%*s %s ";
+char s_format_group_range[] = "%*s %d %s %d - %d ";
+char s_format_command[] = "%*s %d %s %d %d %d ";
+char s_format_trigger[] = "%*s %d %s %d %d ";
+char s_format_play_variant[] = "%sF%d";
+char s_Save_Game_Screen[] = "Save Game Screen";
+char s_C__msdev_work_age1_x1_color_cpp[] = "C:\\msdev\\work\\age1_x1\\color.cpp";
+char s_pnl_btn_draw2[] = "pnl_btn::draw2";
+char s_pnl_btn_draw[] = "pnl_btn::draw";
+char s_pnl_txt__word_wrap_append[] = "pnl_txt::word_wrap_append";
+char s_pnl_txt__draw[] = "pnl_txt::draw";
+char s_rmm_obj_cpp[] = "C:\\msdev\\work\\age1_x1\\rmm_obj.cpp";
+char s_PAUSE[] = "PAUSE";
+char s_map_bmp[] = "map.bmp";
+char s_bordline[] = "bordline";
+char s_btnbldg_d_shp[] = "btnbldg%d.shp";
+char s_btncmd_shp[] = "btncmd.shp";
+char s_btntech_shp[] = "btntech.shp";
+char s_btnunit_shp[] = "btnunit.shp";
+char s_scr6[] = "scr6";
+char s_Game_Screen[] = "Game Screen";
+char s_Config_Dialog[] = "Config Dialog";
+char s_Help_Dialog[] = "Help Dialog";
+char s_Send_Quick_Message_Dialog[] = "Send Quick Message Dialog";
+char s_scr_game_cpp[] = "C:\\msdev\\work\\age1_x1\\scr_game.cpp";
+char s_lost_wav[] = "lost.wav";
+char s_won_wav[] = "won.wav";
+char s_NewSaveDialog[] = "NewSaveDialog";
+char s_OpenSaveDialog[] = "OpenSaveDialog";
+char s_QuitSaveDialog[] = "QuitSaveDialog";
+char s_C__msdev_work_age1_x1_scr_sed_cp[] = "C:\\msdev\\work\\age1_x1\\scr_sed.cpp";
+char s_Scenario_Editor_Open[] = "Scenario Editor Open";
+char s_Scenario_Editor_Screen[] = "Scenario Editor Screen";
+char s_OKDialog[] = "OKDialog";
+char s_view__view_function_terrain[] = "view::view_function_terrain";
+extern const char s_C__msdev_work_age1_x1_view_cpp[] = "C:\\msdev\\work\\age1_x1\\view.cpp";
+
+PAL_TABLE System_color_Table[21] = {
+    {0, 0, 0, 0, 0},
+    {1, 128, 0, 0, 0},
+    {2, 0, 128, 0, 0},
+    {3, 128, 128, 0, 0},
+    {4, 0, 0, 128, 0},
+    {5, 128, 0, 128, 0},
+    {6, 0, 128, 128, 0},
+    {7, 192, 192, 192, 0},
+    {8, 192, 220, 192, 0},
+    {9, 166, 202, 240, 0},
+    {246, 255, 251, 240, 0},
+    {247, 160, 160, 164, 0},
+    {248, 128, 128, 128, 0},
+    {249, 255, 0, 0, 0},
+    {250, 0, 255, 0, 0},
+    {251, 255, 255, 0, 0},
+    {252, 0, 0, 255, 0},
+    {253, 255, 0, 255, 0},
+    {254, 0, 255, 255, 0},
+    {255, 255, 255, 255, 0},
+    {-1, 0, 0, 0, 0},
+};
+
+int FacetSkipMask[9] = {
+    56, 112, 224, 193, 131, 7, 14, 28,
+    0,
+};
+
+unsigned long ObstructionMasks[192] = {
+    0x00000003u, 0x00000000u, 0x0000000Cu, 0x00000000u, 0x00000030u, 0x00000000u, 0x000000C0u, 0x00000000u,
+    0x0000000Fu, 0x00000000u, 0x0000003Cu, 0x00000000u, 0x000000F0u, 0x00000000u, 0x000003C0u, 0x00000000u,
+    0x0000003Fu, 0x00000000u, 0x000000FCu, 0x00000000u, 0x000003F0u, 0x00000000u, 0x00000FC0u, 0x00000000u,
+    0x000000FFu, 0x00000000u, 0x000003FCu, 0x00000000u, 0x00000FF0u, 0x00000000u, 0x00003FC0u, 0x00000000u,
+    0x000003FFu, 0x00000000u, 0x00000FFCu, 0x00000000u, 0x00003FF0u, 0x00000000u, 0x0000FFC0u, 0x00000000u,
+    0x00000FFFu, 0x00000000u, 0x00003FFCu, 0x00000000u, 0x0000FFF0u, 0x00000000u, 0x0003FFC0u, 0x00000000u,
+    0x00003FFFu, 0x00000000u, 0x0000FFFCu, 0x00000000u, 0x0003FFF0u, 0x00000000u, 0x000FFFC0u, 0x00000000u,
+    0x0000FFFFu, 0x00000000u, 0x0003FFFCu, 0x00000000u, 0x000FFFF0u, 0x00000000u, 0x003FFFC0u, 0x00000000u,
+    0x0003FFFFu, 0x00000000u, 0x000FFFFCu, 0x00000000u, 0x003FFFF0u, 0x00000000u, 0x00FFFFC0u, 0x00000000u,
+    0x000FFFFFu, 0x00000000u, 0x003FFFFCu, 0x00000000u, 0x00FFFFF0u, 0x00000000u, 0x03FFFFC0u, 0x00000000u,
+    0x003FFFFFu, 0x00000000u, 0x00FFFFFCu, 0x00000000u, 0x03FFFFF0u, 0x00000000u, 0x0FFFFFC0u, 0x00000000u,
+    0x00FFFFFFu, 0x00000000u, 0x03FFFFFCu, 0x00000000u, 0x0FFFFFF0u, 0x00000000u, 0x3FFFFFC0u, 0x00000000u,
+    0x03FFFFFFu, 0x00000000u, 0x0FFFFFFCu, 0x00000000u, 0x3FFFFFF0u, 0x00000000u, 0xFFFFFFC0u, 0x00000000u,
+    0x0FFFFFFFu, 0x00000000u, 0x3FFFFFFCu, 0x00000000u, 0xFFFFFFF0u, 0x00000000u, 0xFFFFFFC0u, 0x00000003u,
+    0x3FFFFFFFu, 0x00000000u, 0xFFFFFFFCu, 0x00000000u, 0xFFFFFFF0u, 0x00000003u, 0xFFFFFFC0u, 0x0000000Fu,
+    0xFFFFFFFFu, 0x00000000u, 0xFFFFFFFCu, 0x00000003u, 0xFFFFFFF0u, 0x0000000Fu, 0xFFFFFFC0u, 0x0000003Fu,
+    0xFFFFFFFFu, 0x00000003u, 0xFFFFFFFCu, 0x0000000Fu, 0xFFFFFFF0u, 0x0000003Fu, 0xFFFFFFC0u, 0x000000FFu,
+    0xFFFFFFFFu, 0x0000000Fu, 0xFFFFFFFCu, 0x0000003Fu, 0xFFFFFFF0u, 0x000000FFu, 0xFFFFFFC0u, 0x000003FFu,
+    0xFFFFFFFFu, 0x0000003Fu, 0xFFFFFFFCu, 0x000000FFu, 0xFFFFFFF0u, 0x000003FFu, 0xFFFFFFC0u, 0x00000FFFu,
+    0xFFFFFFFFu, 0x000000FFu, 0xFFFFFFFCu, 0x000003FFu, 0xFFFFFFF0u, 0x00000FFFu, 0xFFFFFFC0u, 0x00003FFFu,
+    0xFFFFFFFFu, 0x000003FFu, 0xFFFFFFFCu, 0x00000FFFu, 0xFFFFFFF0u, 0x00003FFFu, 0xFFFFFFC0u, 0x0000FFFFu,
+    0xFFFFFFFFu, 0x00000FFFu, 0xFFFFFFFCu, 0x00003FFFu, 0xFFFFFFF0u, 0x0000FFFFu, 0xFFFFFFC0u, 0x0003FFFFu,
+    0xFFFFFFFFu, 0x00003FFFu, 0xFFFFFFFCu, 0x0000FFFFu, 0xFFFFFFF0u, 0x0003FFFFu, 0xFFFFFFC0u, 0x000FFFFFu,
+    0xFFFFFFFFu, 0x0000FFFFu, 0xFFFFFFFCu, 0x0003FFFFu, 0xFFFFFFF0u, 0x000FFFFFu, 0xFFFFFFC0u, 0x003FFFFFu,
+};
+
+MouseClickInfo Tribe2btnMouseRightClickTable[40] = {
+    {0, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {1, 0, 0, 3, 0, 3, 0, 3, 0, 3, 0},
+    {2, 0, 0, 3, 0, 0, 0, 8, 3904, 8, 3904},
+    {3, 5, 3905, 3, 0, 5, 3905, 8, 3902, 8, 3902},
+    {4, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {5, 0, 0, 6, 3907, 0, 0, 0, 0, 0, 0},
+    {6, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {7, 0, 0, 6, 3909, 0, 0, 0, 0, 0, 0},
+    {8, 0, 0, 6, 3911, 0, 0, 0, 0, 0, 0},
+    {9, 0, 0, 9, 3910, 0, 0, 0, 0, 0, 0},
+    {10, 0, 0, 9, 3910, 0, 0, 0, 0, 0, 0},
+    {11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {12, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {13, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {15, 0, 0, 6, 3908, 0, 0, 0, 0, 0, 0},
+    {16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {17, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {18, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {20, 2, 3906, 3, 0, 2, 3906, 8, 3904, 8, 3904},
+    {21, 0, 0, 3, 0, 0, 0, 8, 3904, 8, 3904},
+    {22, 0, 0, 3, 0, 0, 0, 8, 3904, 8, 3904},
+    {23, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {24, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {25, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {26, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {27, 5, 3913, 3, 0, 5, 3913, 1, 3903, 1, 3903},
+    {28, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {29, 0, 0, 9, 3910, 0, 0, 0, 0, 0, 0},
+    {30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {31, 0, 0, 6, 3907, 0, 0, 0, 0, 0, 0},
+    {32, 0, 0, 6, 3912, 0, 0, 0, 0, 0, 0},
+    {33, 0, 0, 6, 3907, 0, 0, 0, 0, 0, 0},
+    {34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {35, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {36, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+    {37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {39, 4, 3900, 3, 0, 4, 3900, 8, 3901, 8, 3901},
+};
+
+MouseClickInfo Tribe2btnMouseLeftClickTable[40] = {
+    {0, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {1, 0, 3807, 0, 3820, 0, 3820, 0, 3820, 0, 3820},
+    {2, 0, 3804, 0, 0, 0, 0, 0, 0, 0, 0},
+    {3, 0, 3801, 0, 0, 0, 0, 0, 0, 0, 0},
+    {4, 0, 3800, 0, 0, 0, 0, 0, 0, 0, 0},
+    {5, 0, 0, 0, 3821, 0, 0, 0, 0, 0, 0},
+    {6, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {7, 0, 0, 0, 3823, 0, 0, 0, 0, 0, 0},
+    {8, 0, 0, 0, 3824, 0, 0, 0, 0, 0, 0},
+    {9, 0, 0, 0, 3826, 0, 0, 0, 0, 0, 0},
+    {10, 0, 0, 0, 3826, 0, 0, 0, 0, 0, 0},
+    {11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {12, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {13, 0, 3805, 0, 0, 0, 0, 0, 0, 0, 0},
+    {14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {15, 0, 0, 0, 3822, 0, 0, 0, 0, 0, 0},
+    {16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {18, 0, 3806, 0, 0, 0, 0, 0, 0, 0, 0},
+    {19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {20, 0, 3804, 0, 0, 0, 0, 0, 0, 0, 0},
+    {21, 0, 3804, 0, 0, 0, 0, 0, 0, 0, 0},
+    {22, 0, 3804, 0, 0, 0, 0, 0, 0, 0, 0},
+    {23, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {24, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {25, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {26, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {28, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {32, 0, 0, 0, 3825, 0, 0, 0, 0, 0, 0},
+    {33, 0, 0, 0, 3821, 0, 0, 0, 0, 0, 0},
+    {34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {35, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {36, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {39, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+};
+
+MouseClickInfo Tribe1btnMouseRightClickTable[40] = {
+    {0, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {1, 0, 0, 3, 0, 3, 0, 3, 0, 3, 0},
+    {2, 0, 0, 3, 0, 0, 0, 8, 3704, 8, 3704},
+    {3, 5, 3705, 3, 0, 5, 3705, 8, 3702, 8, 3702},
+    {4, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {5, 0, 0, 6, 3707, 0, 0, 0, 0, 0, 0},
+    {6, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {7, 0, 0, 6, 3709, 0, 0, 0, 0, 0, 0},
+    {8, 0, 0, 6, 3711, 0, 0, 0, 0, 0, 0},
+    {9, 0, 0, 9, 3710, 0, 0, 0, 0, 0, 0},
+    {10, 0, 0, 9, 3710, 0, 0, 0, 0, 0, 0},
+    {11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {12, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {13, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {15, 0, 0, 6, 3708, 0, 0, 0, 0, 0, 0},
+    {16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {17, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {18, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {20, 2, 3706, 3, 0, 2, 3706, 8, 3704, 8, 3704},
+    {21, 0, 0, 3, 0, 0, 0, 8, 3704, 8, 3704},
+    {22, 0, 0, 3, 0, 0, 0, 8, 3704, 8, 3704},
+    {23, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {24, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {25, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {26, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {27, 5, 3713, 3, 0, 5, 3713, 1, 3703, 1, 3703},
+    {28, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {29, 0, 0, 9, 3710, 0, 0, 0, 0, 0, 0},
+    {30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {31, 0, 0, 6, 3707, 0, 0, 0, 0, 0, 0},
+    {32, 0, 0, 6, 3712, 0, 0, 0, 0, 0, 0},
+    {33, 0, 0, 6, 3707, 0, 0, 0, 0, 0, 0},
+    {34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {35, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {36, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+    {37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {39, 4, 3700, 3, 0, 4, 3700, 8, 3701, 8, 3701},
+};
+
+MouseClickInfo Tribe1btnMouseLeftClickTable[40] = {
+    {0, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {1, 0, 3807, 0, 3820, 0, 3820, 0, 3820, 0, 3820},
+    {2, 0, 3804, 0, 0, 0, 0, 0, 0, 0, 0},
+    {3, 0, 3801, 0, 0, 0, 0, 0, 0, 0, 0},
+    {4, 0, 3800, 0, 0, 0, 0, 0, 0, 0, 0},
+    {5, 0, 0, 0, 3821, 0, 0, 0, 0, 0, 0},
+    {6, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {7, 0, 0, 0, 3823, 0, 0, 0, 0, 0, 0},
+    {8, 0, 0, 0, 3824, 0, 0, 0, 0, 0, 0},
+    {9, 0, 0, 0, 3826, 0, 0, 0, 0, 0, 0},
+    {10, 0, 0, 0, 3826, 0, 0, 0, 0, 0, 0},
+    {11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {12, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {13, 0, 3805, 0, 0, 0, 0, 0, 0, 0, 0},
+    {14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {15, 0, 0, 0, 3822, 0, 0, 0, 0, 0, 0},
+    {16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {18, 0, 3806, 0, 0, 0, 0, 0, 0, 0, 0},
+    {19, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {20, 0, 3804, 0, 0, 0, 0, 0, 0, 0, 0},
+    {21, 0, 3804, 0, 0, 0, 0, 0, 0, 0, 0},
+    {22, 0, 3804, 0, 0, 0, 0, 0, 0, 0, 0},
+    {23, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {24, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {25, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {26, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {27, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {28, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {32, 0, 0, 0, 3825, 0, 0, 0, 0, 0, 0},
+    {33, 0, 0, 0, 3821, 0, 0, 0, 0, 0, 0},
+    {34, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {35, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {36, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+    {37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {39, 0, 3803, 0, 0, 0, 0, 0, 0, 0, 0},
+};
+
+extern const int encrypt_table[32] = {
+    11569, 26744, 10847, 13123, 16190, 16749, 19053, 12634,
+    16425, 9036, 32123, 25431, 11041, 9571, 25687, 9566,
+    30526, 26744, 9509, 12580, 8286, 24426, 9812, 13363,
+    10536, 14906, 21311, 9803, 21113, 14168, 15209, 10790,
+};

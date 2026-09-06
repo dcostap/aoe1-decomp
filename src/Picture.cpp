@@ -2,33 +2,15 @@
 #include "../include/Picture.h"
 #include "../include/Shape.h"
 #include "../include/Res_file.h"
+#include "../include/Dib.h"
 
 #include <io.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 extern void __cdecl rge_read(int file_handle, void* buffer, int size);
-extern unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern void __cdecl rge_write(int fd, void* buffer, int size);
-tagBITMAPINFOHEADER* __cdecl DibOpenFile(char* name);
-void __cdecl DibMapToPalette(tagBITMAPINFOHEADER* dib, void* palette,
-    int palette_id, int palette_flags);
-void __cdecl DibFree(tagBITMAPINFOHEADER* dib);
-int __cdecl DibCheckTrans(BITMAPINFO256* dib, TRANSINFO* info,
-    unsigned char* bits);
-extern void __cdecl TransDibBlt(void* dst_info, void* dst_bits, void* clip,
-    long x, long y, int width, int height, void* src_info, void* src_bits,
-    void* trans_info, int sx, int sy, int sw, int sh, int flag, int dst_x,
-    int dst_y, int zero);
-extern void __cdecl DibBlt(void* dst_info, void* dst_bits, void* clip,
-    long x, long y, int width, int height, void* src_info, void* src_bits,
-    int sx, int sy, int sw, int sh, int flag, int dst_x, int dst_y);
-extern long __cdecl TileDibBlt(BITMAPINFO256* bitmap_info,
-    unsigned char* bits, void* clip_rect, long param_2, long param_3,
-    long param_4, long param_5, long param_6, long param_7,
-    BITMAPINFO256* picture_info, unsigned char* picture_bits,
-    void* trans_info, long param_8, long param_9, long param_10,
-    long param_11, int has_trans, int zero_1, int zero_2);
 
 TPicture::TPicture(char* file_name, long resource_id, int palette_id,
     void* palette, int palette_flags) {

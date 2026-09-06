@@ -113,7 +113,6 @@ public:
                                   RGE_Static_Object* object);
     int addImportantObject(RGE_Static_Object* object, int recurse);
     int addImportantObject(int objectID);
-    int mapBound(XYPoint* point);
     int mapBound(XYPoint& point);
     void blotExploredMap(int p1, int p2, int p3, int p4);
     int fullyExploredZone(int gameID);
@@ -159,9 +158,6 @@ public:
     ObjectMemory* objectToAttackByGroup(int owner, TacticalAIGroup* group,
                                         AttackState& state,
                                         unsigned long currentTime);
-    ObjectMemory* objectToAttackByGroup(int owner, TacticalAIGroup* group,
-                                        AttackState* state,
-                                        unsigned long currentTime);
     ObjectMemory* objectToAttackByGroup2(int group, int* ids, int count);
     int isBoatAccessible(RGE_Static_Object* object, int id);
     int isLandAccessible(RGE_Static_Object* object, int id);
@@ -175,14 +171,9 @@ public:
                            RGE_Static_Object* object, XYPoint& out);
     void setupInfluenceMap(int mode, int objectType, XYPoint& unused,
                            XYPoint& from, XYPoint& to);
-    void setupInfluenceMap(int mode, int objectType, XYPoint* unused,
-                           XYPoint* from, XYPoint* to);
     int groupInfluenceDimension(int dimension);
     ObjectMemory findObjectMemoryLimits(int owner, int objectID, int& c1,
                                         int& c2);
-    ObjectMemory findObjectMemoryLimits(int owner, int objectID, int* c1,
-                                        int* c2);
-    int isNextTo(XYPoint* p1, XYPoint* p2, int mode);
     int isNextTo(XYPoint& p1, XYPoint& p2, int mode);
     int facetTo(XYPoint& from, XYPoint& to);
     int placementCode(int value);
@@ -235,8 +226,6 @@ public:
     int addResourceObject(RGE_Static_Object* object);
     float findClosestDropsite(RGE_Static_Object* object, int mode,
                               int& dropsiteID);
-    float findClosestDropsite(RGE_Static_Object* object, int mode,
-                              int* dropsiteID);
     RGE_Static_Object* findClosestReturnDropsite(RGE_Static_Object* unit);
     void updateAllResourceDropsites();
     void updateResourceDropsites(int resourceType);

@@ -9,7 +9,7 @@
 extern char s_tpnl_inv_draw[];
 extern const char s_fmt_ld[];
 // No current canonical owner header declares this C helper.
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 TRIBE_Panel_Inven::TRIBE_Panel_Inven(
     TDrawArea* area, TPanel* parent, void* font_, TRIBE_Player* player_)

@@ -1,4 +1,5 @@
 #include "../include/sprite.h"
+#include "../include/asm_draw.h"
 #include "../include/sprite_records.h"
 #include "../include/sound.h"
 #include "../include/view.h"
@@ -10,11 +11,10 @@
 #include <stdlib.h>
 
 #include "../include/rge_fio.h"
-extern "C" void __cdecl convert_us(char* string);
-extern void __cdecl operator_delete(void* block);
+extern void __cdecl convert_us(char* string);
+#include <new.h>
 extern void __cdecl addstring(char** dst, char* base, char* ext);
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
-extern "C" void __cdecl _ASMSet_Color_Xform(int value);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 extern void __cdecl write_draw_log(char* text);
 extern void __cdecl write_draw_log2(char* text);
 extern int do_draw_log;
@@ -305,7 +305,7 @@ RGE_Sprite::~RGE_Sprite()
     if (shape != 0 && this->loaded != 0) {
         if (this->shape != 0) {
             shape->~TShape();
-            operator_delete(shape);
+            ::operator delete(shape);
         }
         this->loaded = 0;
     }
@@ -537,7 +537,7 @@ void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
 
         if (this->color_table < 0) {
             if (color_table != 0) {
-                _ASMSet_Color_Xform((color_table->id + 1) * 0x10);
+                ASMSet_Color_Xform((color_table->id + 1) * 0x10);
                 this->shape->shape_mirror(draw_area, x, y, facetindex,
                                           this->color_flag, color_table->table);
             } else {
@@ -547,7 +547,7 @@ void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
             goto draw_done;
         } else {
             if (this->color_tables[this->color_table] != 0) {
-                _ASMSet_Color_Xform((this->color_table + 1) * 0x10);
+                ASMSet_Color_Xform((this->color_table + 1) * 0x10);
                 this->shape->shape_mirror(
                     draw_area, x, y, facetindex, this->color_flag,
                     this->color_tables[this->color_table]->table);
@@ -569,7 +569,7 @@ void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
 
         if (this->color_table < 0) {
             if (color_table != 0) {
-                _ASMSet_Color_Xform((color_table->id + 1) * 0x10);
+                ASMSet_Color_Xform((color_table->id + 1) * 0x10);
                 this->shape->shape_draw(draw_area, x, y, facetindex,
                                         this->color_flag, color_table->table);
             } else {
@@ -578,7 +578,7 @@ void RGE_Sprite::do_draw(long facet, long frame, long x, long y,
             }
         } else {
             if (this->color_tables[this->color_table] != 0) {
-                _ASMSet_Color_Xform((this->color_table + 1) * 0x10);
+                ASMSet_Color_Xform((this->color_table + 1) * 0x10);
                 this->shape->shape_draw(
                     draw_area, x, y, facetindex, this->color_flag,
                     this->color_tables[this->color_table]->table);
@@ -1075,7 +1075,7 @@ void RGE_Sprite::update(unsigned long param_1)
                 TShape* pS2 = this->shape;
                 if (pS2) {
                     pS2->~TShape();
-                    operator_delete(pS2);
+                    ::operator delete(pS2);
                 }
                 this->shape = 0;
             }

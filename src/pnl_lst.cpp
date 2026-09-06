@@ -1,7 +1,7 @@
 #include "../include/pnl_lst.h"
 
 extern "C" int __cdecl toupper(int c);
-extern "C" unsigned long __cdecl debug_timeGetTime(const char*, int);
+extern unsigned long __cdecl debug_timeGetTime(char*, int);
 
 TListPanel::TListPanel() : drawHighlightBar(1) {
     mouse_move_tolerance = 0;

@@ -247,14 +247,12 @@ public:
 protected:
     virtual void set_focus(int);
 public:
-    void get_string(long, char*, int);
     void position_panels();
 protected:
     int create_button(TPanel*, TButtonPanel**, long, int);
     int create_button(TPanel*, TButtonPanel**, char*, char*, char*, char*);
     int create_text(TPanel*, TTextPanel**, long);
     int create_text(TPanel*, TTextPanel**, char*);
-    int create_text(TPanel*, TTextPanel**, int, int, int, int, int, int, int, int, int);
     int create_drop_down(TPanel*, TDropDownPanel**);
     int create_input(TPanel*, TInputPanel**, char*, short,
                      TInputPanel::FormatType);
@@ -289,7 +287,6 @@ protected:
     void set_unit_player(short);
 public:
     void set_scenario_mode(ScenarioMode);
-    void set_scenario_mode(int);
 protected:
     void set_panel_info();
     void set_string(char*, long, int);
@@ -315,8 +312,6 @@ public:
     unsigned char need_to_save();
     char* scenario_get_default_name();
     char* scenario_save_defaulted();
-    void setup_popup_help();
-    char* get_string(int);
 };
 
 typedef char scr_sed_screen_size_check[

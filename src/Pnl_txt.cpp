@@ -5,28 +5,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <mbstring.h>
 
 extern char s_pnl_txt__draw[];
 extern char s_pnl_txt__word_wrap_append[];
 extern char s_pnl_txt__get_text_rect[];
-extern "C" int __cdecl __mbslen(const char* text);
-extern "C" unsigned char* __cdecl __mbsinc(const unsigned char* text);
-extern "C" unsigned char* __cdecl __mbsdec(const unsigned char* start,
-                                               const unsigned char* current);
-extern "C" unsigned char* __cdecl __mbsninc(const unsigned char* text,
-                                               int count);
-extern "C" unsigned char* __cdecl __mbscat(unsigned char* dst,
-                                               const unsigned char* src);
-extern "C" int __cdecl __ismbcspace(int ch);
-extern "C" char* __cdecl __mbschr(const char* text, unsigned int ch);
-extern "C" char* __cdecl _mbschr(const char* text, unsigned int ch);
-extern "C" unsigned char* __cdecl __mbsncpy(unsigned char* dst,
-                                               const unsigned char* src,
-                                               int count);
 extern "C" __declspec(dllimport) int __stdcall CompareStringA(
     unsigned long locale, unsigned long flags, const char* string1,
     int length1, const char* string2, int length2);
-extern char DAT_0086B250;
 
 TTextPanel::TTextPanel()
     : list(0),
@@ -246,7 +232,7 @@ void TTextPanel::set_text(char* text) {
         }
         if (word_wrap == 0 && horz_align != 6) {   // 6 == AlignWordwrap
             while (true) {
-                char* nl = _mbschr(text, '\n');
+                char* nl = (char*)_mbschr((const unsigned char*)text, '\n');
                 if (nl == 0) {
                     break;
                 }
@@ -308,7 +294,7 @@ int TTextPanel::word_wrap_append(char* text)
 
     for (;;) {
     next_line:
-        text_len = (short)__mbslen(text);
+        text_len = (short)_mbslen((const unsigned char*)text);
         found_return = 0;
         found_linefeed = 0;
         found_space = 0;
@@ -324,7 +310,7 @@ int TTextPanel::word_wrap_append(char* text)
 
         chars = 1;
         GetTextExtentPoint32A((HDC)dc, text,
-                              (int)(short)(__mbsinc(
+                              (int)(short)(_mbsinc(
                                   (const unsigned char*)text) -
                                            (unsigned char*)text),
                               &text_size);
@@ -348,11 +334,11 @@ int TTextPanel::word_wrap_append(char* text)
             }
 
             last_char = next_char;
-            next_char = __mbsinc(next_char);
+            next_char = _mbsinc(next_char);
             ++chars;
             GetTextExtentPoint32A(
                 (HDC)dc, text,
-                (int)(short)(__mbsinc(next_char) - (unsigned char*)text),
+                (int)(short)(_mbsinc(next_char) - (unsigned char*)text),
                 &text_size);
         }
 
@@ -368,7 +354,7 @@ int TTextPanel::word_wrap_append(char* text)
             next_char = (unsigned char*)text;
             last_fit_len = chars;
             while (chars < (short)text_len) {
-                next_char = __mbsinc(next_char);
+                next_char = _mbsinc(next_char);
                 GetTextExtentPoint32A(
                     (HDC)dc, text,
                     (int)(short)(next_char - (unsigned char*)text),
@@ -377,20 +363,20 @@ int TTextPanel::word_wrap_append(char* text)
                     break;
                 }
                 last_fit_len = chars - 1;
-                next_char = __mbsinc(next_char);
+                next_char = _mbsinc(next_char);
                 ++chars;
             }
 
             while (chars > 1) {
                 unsigned char* old_next = next_char;
-                next_char = __mbsdec((const unsigned char*)text, next_char);
+                next_char = _mbsdec((const unsigned char*)text, next_char);
                 --chars;
 
                 if (japanese) {
                     CharType first = this->char_type(next_char);
                     CharType second = this->char_type(old_next);
                     if (first == SingleByteChar && second == SingleByteChar &&
-                        __ismbcspace(*next_char) != 0) {
+                        _ismbcspace(*next_char) != 0) {
                         found_space = 1;
                         break;
                     }
@@ -403,7 +389,7 @@ int TTextPanel::word_wrap_append(char* text)
                         found_break = 1;
                         break;
                     }
-                } else if (__ismbcspace(*next_char) != 0) {
+                } else if (_ismbcspace(*next_char) != 0) {
                     found_space = 1;
                     break;
                 }
@@ -418,14 +404,14 @@ int TTextPanel::word_wrap_append(char* text)
         }
 
         memset(temp_text, 0, 0x100);
-        __mbsncpy((unsigned char*)temp_text + 4,
+        _mbsncpy((unsigned char*)temp_text + 4,
                   (const unsigned char*)text, chars);
         if (found_linefeed) {
-            __mbscat((unsigned char*)temp_text + 4,
+            _mbscat((unsigned char*)temp_text + 4,
                      (const unsigned char*)" ");
         }
         if (found_return) {
-            __mbscat((unsigned char*)temp_text + 4,
+            _mbscat((unsigned char*)temp_text + 4,
                      (const unsigned char*)" ");
         }
         if (found_bad_return) {
@@ -434,16 +420,16 @@ int TTextPanel::word_wrap_append(char* text)
                 if (*p == '\r') {
                     *p = ' ';
                 }
-                p = __mbsinc(p);
+                p = _mbsinc(p);
             }
         }
         this->append_line((char*)temp_text + 4, 0);
-        text = (char*)__mbsninc((const unsigned char*)text, chars);
+        text = (char*)_mbsninc((const unsigned char*)text, chars);
         if (found_linefeed) {
-            text = (char*)__mbsinc((const unsigned char*)text);
+            text = (char*)_mbsinc((const unsigned char*)text);
         }
         if (found_return) {
-            text = (char*)__mbsinc((const unsigned char*)text);
+            text = (char*)_mbsinc((const unsigned char*)text);
         }
         goto next_line;
 
@@ -1113,13 +1099,13 @@ void TTextPanel::calc_line_pos(void* dc, short line, short current,
         if (this->cur_col == 0) {
             col_offset = 0;
         } else {
-            short text_len = __mbslen(text);
+            short text_len = _mbslen((const unsigned char*)text);
             if (this->cur_col > text_len) {
                 byte_len = (short)strlen(text);
                 GetTextExtentPoint32A(dc, text, byte_len, &text_size);
             } else {
                 memset(temp_text2, 0, 0x100);
-                __mbsncpy((unsigned char*)temp_text2,
+                _mbsncpy((unsigned char*)temp_text2,
                           (const unsigned char*)text,
                           (unsigned int)this->cur_col);
                 byte_len = (short)strlen(temp_text2);
@@ -1130,7 +1116,7 @@ void TTextPanel::calc_line_pos(void* dc, short line, short current,
 
         // This call is present in the original line-measurement path even
         // though the following byte-length expression supplies the count.
-        __mbslen(text);
+        _mbslen((const unsigned char*)text);
         byte_len = (short)strlen(text);
         GetTextExtentPoint32A(dc, text, byte_len, &text_size);
     } else {
@@ -1492,11 +1478,12 @@ char* TTextPanel::get_text() {
 }
 
 char* TTextPanel::get_text(long index) {
+    static char empty_text;
     TTextPanel::TextNode* node = this->list;
     long i = 0;
     if (node == 0) {
-        DAT_0086B250 = 0;
-        return &DAT_0086B250;
+        empty_text = 0;
+        return &empty_text;
     }
     while (node != 0) {
         if (index == i) {
@@ -1505,8 +1492,8 @@ char* TTextPanel::get_text(long index) {
         node = node->next_node;
         i++;
     }
-    DAT_0086B250 = 0;
-    return &DAT_0086B250;
+    empty_text = 0;
+    return &empty_text;
 }
 
 char* TTextPanel::get_text2() {
@@ -1514,22 +1501,23 @@ char* TTextPanel::get_text2() {
 }
 
 char* TTextPanel::get_text2(long index) {
+    static char empty_text;
     long i;
     TTextPanel::TextNode* node;
 
     i = 0;
     node = this->list;
     if (node == 0) {
-        DAT_0086b24c = 0;
-        return (char*)&DAT_0086b24c;
+        empty_text = 0;
+        return &empty_text;
     }
     while (node != 0) {
         if (i == index) return node->text2;
         node = node->next_node;
         i++;
     }
-    DAT_0086b24c = 0;
-    return (char*)&DAT_0086b24c;
+    empty_text = 0;
+    return &empty_text;
 }
 
 long TTextPanel::get_id() {

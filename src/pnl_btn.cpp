@@ -682,7 +682,7 @@ long TButtonPanel::handle_mouse_down(unsigned char button, long x, long y, int c
 long TButtonPanel::mouse_left_dbl_click_action(long p0, long p1, int p2, int p3) { return 0; }
 
 // 00473190_mouse_left_down_action.cpp
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::mouse_left_down_action(long x, long y, int ctrl, int shift) {
     if (disabled != 0) {
@@ -707,7 +707,7 @@ long TButtonPanel::mouse_left_down_action(long x, long y, int ctrl, int shift) {
 // 00473240_mouse_left_move_action.cpp
 // Pnl_btn.cpp lines 893-920
 
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::mouse_left_move_action(long x, long y, int ctrl, int shift) {
     int new_state = (this->is_inside(x, y) != 0);
@@ -756,7 +756,7 @@ long TButtonPanel::mouse_left_up_action(long x, long y, int ctrl, int shift) {
 long TButtonPanel::mouse_right_dbl_click_action(long p0, long p1, int p2, int p3) { return 0; }
 
 // 004733A0_mouse_right_down_action.cpp
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::mouse_right_down_action(long x, long y, int ctrl, int shift) {
     if (disabled != 0) {
@@ -781,7 +781,7 @@ long TButtonPanel::mouse_right_down_action(long x, long y, int ctrl, int shift) 
 // 00473450_mouse_right_move_action.cpp
 // Pnl_btn.cpp
 
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::mouse_right_move_action(long x, long y, int ctrl, int shift) {
     int new_is_down = (this->is_inside(x, y) != 0);
@@ -832,7 +832,7 @@ long TButtonPanel::mouse_right_up_action(long x, long y, int ctrl, int shift) {
 
 // 004735B0_handle_key_down.cpp
 
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::handle_key_down(long key, short ch, int a3, int a4, int a5) {
     if (active != 0 && disabled == 0 && a3 == 0 && a4 == 0 &&
@@ -861,7 +861,7 @@ long TButtonPanel::handle_key_down(long key, short ch, int a3, int a4, int a5) {
 
 // 004736F0_key_down_action.cpp
 
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 long TButtonPanel::key_down_action(long key, short ch, int a3, int a4, int a5) {
     TPanel* child;

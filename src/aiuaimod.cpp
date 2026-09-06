@@ -452,7 +452,7 @@ int UnitAIModule::attackingUnitID(int index) {
     }
     if (index > this->attackingUnitsValue.maximumSizeValue - 1) {
         int newMax = index + 1;
-        int* newValues = (int*)operator_new(newMax * 4);
+        int* newValues = (int*)::operator new(newMax * 4);
         if (newValues != 0) {
             int oldMax = this->attackingUnitsValue.maximumSizeValue;
             int i = 0;
@@ -468,7 +468,7 @@ int UnitAIModule::attackingUnitID(int index) {
                     }
                 } while (i < oldMax);
             }
-            operator_delete(this->attackingUnitsValue.value);
+            ::operator delete(this->attackingUnitsValue.value);
             this->attackingUnitsValue.value = newValues;
             this->attackingUnitsValue.maximumSizeValue = newMax;
         }

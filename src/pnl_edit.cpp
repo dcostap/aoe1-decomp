@@ -3,13 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern "C" int __cdecl _mbscmp(const unsigned char*, const unsigned char*);
-extern "C" unsigned char* __cdecl _mbschr(const unsigned char*, unsigned int);
-extern "C" int __cdecl __ismbcspace(int);
-extern "C" unsigned char* __cdecl __mbsinc(const unsigned char*);
-extern "C" unsigned char* __cdecl __mbsdec(const unsigned char*, const unsigned char*);
-extern "C" unsigned char* __cdecl _mbsncpy(
-    unsigned char*, const unsigned char*, int);
+#include <mbstring.h>
 extern int MouseCursorInChildContol;
 extern int imc_retval;
 
@@ -751,8 +745,8 @@ int TEditPanel::is_blank()
     if (*p == 0) goto blank;
     while (1) {
         if (*p == '\0') goto blank;
-        if (__ismbcspace((unsigned char)*p) == 0) return 0;
-        p = (char*)__mbsinc((const unsigned char*)p);
+        if (_ismbcspace((unsigned char)*p) == 0) return 0;
+        p = (char*)_mbsinc((const unsigned char*)p);
     }
 blank:
     return 1;
@@ -772,18 +766,18 @@ char* TEditPanel::get_trimmed_str(char* dst, int maxlen)
     base = (unsigned char*)dst;
     p = base;
     cur = (unsigned char*)temp_str;
-    while (__ismbcspace(*cur & 0xFF))
-        cur = __mbsinc(cur);
+    while (_ismbcspace(*cur & 0xFF))
+        cur = _mbsinc(cur);
     while (*cur) {
         _mbsncpy(p, cur, 1);
-        p = __mbsinc(p);
-        cur = __mbsinc(cur);
+        p = _mbsinc(p);
+        cur = _mbsinc(cur);
     }
     while (1) {
         *p = 0;
         if (p == base) break;
-        p = __mbsdec(base, p);
-        if (__ismbcspace(*p))
+        p = _mbsdec(base, p);
+        if (_ismbcspace(*p))
             continue;
         break;
     }

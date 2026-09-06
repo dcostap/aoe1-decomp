@@ -20,6 +20,9 @@ struct MouseClickInfo {
     int enemy_text_id;
 };
 
+typedef char tribe_mouse_click_info_size_check[
+    (sizeof(MouseClickInfo) == 44) ? 1 : -1];
+
 class TRIBE_Screen_Game;
 
 class TRIBE_Game : public RGE_Base_Game {

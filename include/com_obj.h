@@ -79,7 +79,6 @@ public:
     void calc_attack_modifier();
     void set_something(int);
     void play_move_sound(RGE_Sound*);
-    float distance_to_object(RGE_Static_Object*);
     virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float,
                                   RGE_Player*, RGE_Static_Object*);
 

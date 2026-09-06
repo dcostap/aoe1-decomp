@@ -11,7 +11,7 @@
 
 extern char s_Scenario_Editor_Menu[];
 extern char s_scr4[];
-extern char s_empty[];
+extern char s_592A40[];
 extern char s_Scenario_Editor_Open[];
 extern char s_Campaign_Editor_Screen[];
 extern char s_Main_Menu[];
@@ -37,7 +37,7 @@ TRIBE_Screen_Sed_Menu::TRIBE_Screen_Sed_Menu()
         return;
 
     for (int i = 0; i < 4; i++) {
-        if (!create_button(this, &button[i], s_empty, 0,
+        if (!create_button(this, &button[i], s_592A40, 0,
                            0xAA, 0xAA + i * 0x32, 0x12C, 0x28,
                            0, 0, 0))
             return;

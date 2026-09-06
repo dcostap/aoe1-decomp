@@ -1,29 +1,24 @@
 #include "../include/drawarea.h"
+#include "../include/asm_draw.h"
 #include "../include/color.h"
 #include "../include/game_globals.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
-extern "C" void __cdecl _ASMSet_Shadowing(int, int, int, int);
-extern "C" void __cdecl _ASMDraw_HLine(int, int, int, unsigned int);
 extern int DDSys_CanColorFill;
 extern int PalSetRes;
 extern int FullPalSets;
 extern int AniPalSets;
-// DAT_0062e650 is the unnamed dword adjacent to the proved
-// DAT_0062e64c storage at 0x0062E64C. No canonical symbol owns this dword.
-// PDB names this function-static status value `err` and types it as int.
-extern int DAT_0062e650;
 struct TRANSINFO;
-extern "C" void __cdecl TransDibBlt(
+extern void __cdecl TransDibBlt(
     BITMAPINFO256*, unsigned char*, RECT*, long, long, long, long,
     BITMAPINFO256*, unsigned char*, TRANSINFO*, long, long, long, long,
     int, int, int, int);
-extern "C" void __cdecl DibBlt(
+extern void __cdecl DibBlt(
     BITMAPINFO256*, unsigned char*, RECT*, long, long, long, long,
     BITMAPINFO256*, unsigned char*, long, long, long, long, int, int, int);
-extern "C" int __cdecl __open(const char*, int, ...);
+extern "C" int __cdecl _open(const char*, int, ...);
 extern "C" int __cdecl write(int, void*, int);
 extern "C" int __cdecl close(int);
 extern "C" void* __cdecl malloc(unsigned int);
@@ -67,7 +62,7 @@ TDrawSystem::TDrawSystem()
     this->ModeAvail1024_16 = 0;
     this->ErrorCode = 0;
     system_ignore_size_messages = 0;
-    _ASMSet_Shadowing(0x00ff00ff, 0, 0xff00ff00, 0);
+    ASMSet_Shadowing(0x00ff00ff, 0, 0xff00ff00, 0);
 }
 
 TDrawSystem::~TDrawSystem()
@@ -1603,6 +1598,8 @@ void TDrawArea::SetClipRect(long left, long top, long right, long bottom)
 void TDrawArea::Copy(TDrawArea* area, long x, long y, RECT* rect,
                      int transparent)
 {
+    static long ddrval;
+    static int err;
     if (this->DrawSystem != 0 && this->DrawSystem->DrawType == 1) {
         if (this->Bits != 0 && area != 0 && area->Bits != 0) {
             int width;
@@ -1636,7 +1633,7 @@ void TDrawArea::Copy(TDrawArea* area, long x, long y, RECT* rect,
                             this->BitmapInfo, this->Bits, 0,
                             source_x, source_y, width, height,
                             1, 0, 0, this->TransColor);
-                DAT_0062e650 = 0;
+                err = 0;
                 return;
             }
 
@@ -1644,7 +1641,7 @@ void TDrawArea::Copy(TDrawArea* area, long x, long y, RECT* rect,
                    x, y, width, height,
                    this->BitmapInfo, this->Bits,
                    source_x, source_y, width, height, 1, 0, 0);
-            DAT_0062e650 = 0;
+            err = 0;
             return;
         }
     }
@@ -1718,25 +1715,25 @@ void TDrawArea::Copy(TDrawArea* area, long x, long y, RECT* rect,
             dest_rect2.top < dest_rect2.bottom &&
             src_rect2.left < src_rect2.right &&
             src_rect2.top < src_rect2.bottom) {
-            DAT_0062e64c = 1;
+            ddrval = 1;
             if (this->UseTrans != 0 && transparent != 0) {
-                DAT_0062e64c = area->DrawSurface->Blt(
+                ddrval = area->DrawSurface->Blt(
                     &dest_rect2, this->DrawSurface, &src_rect2,
                     0x1008000, 0);
             }
             else {
-                DAT_0062e64c = area->DrawSurface->Blt(
+                ddrval = area->DrawSurface->Blt(
                     &dest_rect2, this->DrawSurface, &src_rect2,
                     0x1000000, 0);
             }
 
-            DAT_0062e650 = 0;
-            if (DAT_0062e64c != 0) {
-                DAT_0062e650 = this->DrawSystem->GetBlitErrorNum(
-                    DAT_0062e64c);
+            err = 0;
+            if (ddrval != 0) {
+                err = this->DrawSystem->GetBlitErrorNum(
+                    ddrval);
             }
-            if (DAT_0062e650 == 0) {
-                DAT_0062e650 = 0;
+            if (err == 0) {
+                err = 0;
             }
         }
     }
@@ -1828,12 +1825,12 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
         if (yd <= yl) {
             unsigned int c = (unsigned int)color;
             do {
-                _ASMDraw_HLine(x1, x2, yd, c);
+                ASMDraw_HLine(x1, x2, yd, c);
                 yd++;
             } while (yd <= yl);
         }
     } else if (y1 == y2) {
-        _ASMDraw_HLine(x1, x2, y1, (unsigned int)color);
+        ASMDraw_HLine(x1, x2, y1, (unsigned int)color);
     } else {
         int dy;
 
@@ -1863,18 +1860,18 @@ void TDrawArea::DrawLine(int x1, int y1, int x2, int y2, unsigned char color) {
             for (; x1 < x2; ++x1) {
                 error += dy;
                 if (error >= dx) {
-                    _ASMDraw_HLine(line_start, x1, y1, (unsigned int)color);
+                    ASMDraw_HLine(line_start, x1, y1, (unsigned int)color);
                     y1 += yd;
                     error -= dx;
                     line_start = x1 + 1;
                 }
             }
-            _ASMDraw_HLine(line_start, x1, y1, (unsigned int)color);
+            ASMDraw_HLine(line_start, x1, y1, (unsigned int)color);
         } else {
             int error = 0;
             unsigned int c = (unsigned int)color;
             do {
-                _ASMDraw_HLine(x1, x1, y1, c);
+                ASMDraw_HLine(x1, x1, y1, c);
             } while (y1 != y2 &&
                      (error += dx,
                       error >= dy && (++x1, error -= dy),
@@ -2316,7 +2313,7 @@ void TDrawArea::take_snapshot(char* name, int& number)
         }
 
         ++tries;
-        file = __open(BMPFile, 0);
+        file = _open(BMPFile, 0);
         if (file == -1)
             break;
 
@@ -2328,7 +2325,7 @@ void TDrawArea::take_snapshot(char* name, int& number)
     }
 
     unsigned char* buffer = (unsigned char*)malloc(bmWide);
-    file = __open(BMPFile, 0x8301, 0x180);
+    file = _open(BMPFile, 0x8301, 0x180);
     if (file != -1) {
         write(file, &bmFH, 0x0e);
         write(file, &bmIH, 0x28);

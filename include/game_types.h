@@ -249,7 +249,7 @@ class RGE_Terrain_Data_Entry;
 class RGE_Terrain_Hot_Spots;
 class RGE_Terrain_Info;
 class RGE_Terrain_Info_Line;
-class RGE_Tile;
+struct RGE_Tile;
 class RGE_Tile_List;
 class RGE_Tile_List_Node;
 class RGE_Tile_Set;

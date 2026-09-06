@@ -21,7 +21,7 @@ Path::Path(int max_size)
 
     if (max_size == 0 || max_size >= 0) {
         maxSizeValue = max_size;
-        Waypoint* new_path = (Waypoint*)operator_new(max_size << 4);
+        Waypoint* new_path = (Waypoint*)::operator new(max_size << 4);
         int i = 0;
         if (currentSizeValue > 0) {
             Waypoint* dst = new_path;
@@ -34,7 +34,7 @@ Path::Path(int max_size)
             }
         }
         if (pathValue) {
-            operator_delete(pathValue);
+            ::operator delete(pathValue);
         }
         pathValue = new_path;
     }
@@ -43,7 +43,7 @@ Path::Path(int max_size)
 Path::~Path()
 {
     if (pathValue != 0) {
-        operator_delete(pathValue);
+        ::operator delete(pathValue);
     }
 }
 
@@ -128,7 +128,7 @@ int Path::insertAtCurrent(const Waypoint& wp)
         return 0;
     }
     Waypoint* new_path =
-        (Waypoint*)operator_new((currentSizeValue + 1) * 16);
+        (Waypoint*)::operator new((currentSizeValue + 1) * 16);
     new_path[0].x = wp.x;
     new_path[0].y = wp.y;
     new_path[0].z = wp.z;
@@ -141,7 +141,7 @@ int Path::insertAtCurrent(const Waypoint& wp)
             pathValue[i].facetToNextWaypoint;
     }
     if (pathValue != 0) {
-        operator_delete(pathValue);
+        ::operator delete(pathValue);
     }
     pathValue = new_path;
     currentSizeValue++;
@@ -153,7 +153,7 @@ int Path::insertAtEnd(Waypoint wp)
     if (currentSizeValue == maxSizeValue) {
         maxSizeValue += maxSizeValue;
         Waypoint* new_path =
-            (Waypoint*)operator_new(maxSizeValue * 16);
+            (Waypoint*)::operator new(maxSizeValue * 16);
         for (int i = 0; i < currentSizeValue; i++) {
             new_path[i].x = pathValue[i].x;
             new_path[i].y = pathValue[i].y;
@@ -162,7 +162,7 @@ int Path::insertAtEnd(Waypoint wp)
                 pathValue[i].facetToNextWaypoint;
         }
         if (pathValue != 0) {
-            operator_delete(pathValue);
+            ::operator delete(pathValue);
         }
         pathValue = new_path;
     }

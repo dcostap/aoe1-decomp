@@ -34,7 +34,7 @@ TRIBE_Command::TRIBE_Command(
 {
 }
 
-extern "C" int __cdecl debug_rand(const char* file, int line);
+extern int __cdecl debug_rand(char* file, int line);
 
 void TRIBE_Command::do_command(void* cmd)
 {
@@ -724,7 +724,6 @@ void TRIBE_Command::command_build(
     }
 }
 
-extern void Log(void* log, const char* format, ...);
 extern "C" void* __cdecl calloc(size_t num, size_t size);
 
 void TRIBE_Command::command_build(int player_id, int* ids, int count,
@@ -914,7 +913,6 @@ void TRIBE_Command::command_inventory(short player_id, short inventory_id, float
     }
 }
 
-extern void Log(void* log, const char* text, ...);
 
 void TRIBE_Command::command_upgrade_town(short town_id) {
     TRIBE_Command_Game* packet = static_cast<TRIBE_Command_Game*>(
@@ -923,7 +921,7 @@ void TRIBE_Command::command_upgrade_town(short town_id) {
         packet->command = 0x67;
         packet->var1 = town_id;
         packet->game_command = 3;
-        Log(L, "      >SEND CMD UPG TOWN");
+        L->Log("      >SEND CMD UPG TOWN");
         this->submit(packet, sizeof(TRIBE_Command_Game));
     }
 }

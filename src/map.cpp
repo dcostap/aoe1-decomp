@@ -22,8 +22,8 @@
 
 void __cdecl rge_read(int file, void* data, int size);
 void __cdecl rge_write(int file, void* data, int size);
-extern "C" void __cdecl addstring(char** dst, char* base, char* ext);
-extern "C" void __cdecl convert_us(char* text);
+extern void __cdecl addstring(char** dst, char* base, char* ext);
+extern void __cdecl convert_us(char* text);
 int __cdecl debug_rand(char* file, int line);
 void __cdecl debug_srand(char* file, int line, unsigned int seed);
 extern float save_game_version;

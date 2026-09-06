@@ -1,5 +1,6 @@
 
 #include "../include/Shape.h"
+#include "../include/asm_draw.h"
 #include "../include/view.h"
 #include "../include/colorlog.h"
 #include <string.h>
@@ -15,16 +16,10 @@ extern "C" void* __cdecl malloc(unsigned int);
 extern "C" int __cdecl read(int, void*, unsigned int);
 extern "C" int __cdecl close(int);
 extern "C" void __cdecl free(void*);
-extern "C" void __cdecl addstring(char**, const char*, const char*);
+extern void __cdecl addstring(char**, char*, char*);
 extern int shape_version_110;
 
 
-extern "C" int __cdecl ASMGet_Color_Xform();
-extern "C" void __cdecl ASMSet_Surface_Info(void*, void*, void*, int, int,
-                                             int, int);
-extern "C" void __cdecl ASMSet_Xlate_Table(void*);
-extern "C" void __cdecl ASMDraw_Sprite(void*, long, long, long, long, long,
-                                        long, int);
 
 TShape::TShape()
 {

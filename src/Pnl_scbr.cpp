@@ -1,6 +1,6 @@
 #include "../include/Pnl_scbr.h"
 
-extern "C" unsigned long __cdecl debug_timeGetTime(const char*, int);
+extern unsigned long __cdecl debug_timeGetTime(char*, int);
 
 TScrollBarPanel::TScrollBarPanel()
     : TPanel(),

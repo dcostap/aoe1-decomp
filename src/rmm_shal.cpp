@@ -4,7 +4,7 @@
 #include "../include/rmm_shal.h"
 #include "../include/map.h"
 
-extern "C" int __cdecl debug_rand(char*, int);
+extern int __cdecl debug_rand(char*, int);
 
 RGE_RMM_Shallows_Generator::RGE_RMM_Shallows_Generator(
     RGE_Map* in_map, RGE_Random_Map_Module* parent_module,

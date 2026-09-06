@@ -2,8 +2,7 @@
 #define UTMARRAY_H
 
 
-extern "C" void* __cdecl operator_new(unsigned int size);
-extern "C" void __cdecl operator_delete(void* ptr);
+#include <new.h>
 
 template <class T>
 class ManagedArray {
@@ -195,7 +194,7 @@ int ManagedArray<T>::add(T val)
     }
     if (this->numberValue > this->maximumSizeValue - 1) {
         int newSize = this->numberValue + 1;
-        T* newValue = (T*)operator_new(newSize * sizeof(T));
+        T* newValue = (T*)::operator new(newSize * sizeof(T));
         if (newValue != 0) {
             int j;
             for (j = 0; j < this->maximumSizeValue; j++) {
@@ -203,7 +202,7 @@ int ManagedArray<T>::add(T val)
                     break;
                 newValue[j] = this->value[j];
             }
-            operator_delete(this->value);
+            ::operator delete(this->value);
             this->value = newValue;
             this->maximumSizeValue = newSize;
         }

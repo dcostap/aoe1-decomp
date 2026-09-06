@@ -24,6 +24,7 @@
 #include "../include/sprite.h"
 #include "../include/visible.h"
 #include "../include/view.h"
+#include "../include/asm_draw.h"
 #include "../include/world.h"
 
 class Tile_FogEdge_Table {
@@ -347,7 +348,7 @@ void RGE_View::Init_Tile_Edge_Tables()
 }
 
 
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 
 void RGE_View::update_display_selected_objects(void) {
@@ -387,7 +388,7 @@ next_entry:
 }
 
 
-extern "C" unsigned long __cdecl debug_timeGetTime(const char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 
 void RGE_View::display_object_selection(int param_1, int param_2, int param_3, int param_4)
@@ -1835,14 +1836,6 @@ long RGE_View::view_function(unsigned char a1, unsigned char a2, tagPOINT* p1, t
 
 extern const char s_C__msdev_work_age1_x1_view_cpp[];
 extern char s_view__view_function_terrain[];
-extern "C" void __cdecl _ASMSet_Surface_Info(void* offsets, void* heads, void* tails,
-                                              long min_span, long min_line,
-                                              long max_span, long max_line);
-extern "C" void __cdecl _ASMSet_Color_Xform(void* mask);
-extern "C" void __cdecl _ASMSet_Xlate_Table(void* table);
-extern "C" void __cdecl _ASMDraw_Sprite(long base, long x, long y, long width, long height,
-                                         long data_offsets, long outline_offset, long flags);
-extern "C" void __cdecl _ASMSet_Shadowing(long a, long b, long c, long d);
 
 long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
     RGE_Tile* tile;
@@ -2268,7 +2261,7 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
         reset_all_cyclic = 0;
         if (this->extra_sprites != 0) {
             unsigned long now = debug_timeGetTime(
-                s_C__msdev_work_age1_x1_view_cpp, 0xE3E);
+                const_cast<char*>(s_C__msdev_work_age1_x1_view_cpp), 0xE3E);
             sprite = this->extra_sprites;
             while (sprite != 0) {
                 remove_sprite = 0;
@@ -2366,20 +2359,20 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
                  node = node->NextOnLevel) {
                 if (node->Node_Type == 0) {
                     clip = this->Terrain_Clip_Mask;
-                    _ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
+                    ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
                         clip->Line_Tail_Ptrs, clip->Min_Span_Px, clip->Min_Line,
                         clip->Max_Span_Px, clip->Max_Line);
-                    _ASMSet_Color_Xform((void*)node->Xform_Mask);
-                    _ASMSet_Xlate_Table(node->Color_Table);
+                    ASMSet_Color_Xform(node->Xform_Mask);
+                    ASMSet_Xlate_Table(node->Color_Table);
                     shape = node->Shape;
-                    _ASMDraw_Sprite((long)node->Shape_Base, node->Draw_X, node->Draw_Y,
+                    ASMDraw_Sprite(node->Shape_Base, node->Draw_X, node->Draw_Y,
                         shape->Width, shape->Height, shape->Shape_Data_Offsets,
                         shape->Shape_Outline_Offset, node->Draw_Flag & 0xFE);
                     clip = this->Terrain_Fog_Clip_Mask;
-                    _ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
+                    ASMSet_Surface_Info(this->save_area1->DisplayOffsets, clip->Line_Head_Ptrs,
                         clip->Line_Tail_Ptrs, clip->Min_Span_Px, clip->Min_Line,
                         clip->Max_Span_Px, clip->Max_Line);
-                    _ASMDraw_Sprite((long)node->Shape_Base, node->Draw_X, node->Draw_Y,
+                    ASMDraw_Sprite(node->Shape_Base, node->Draw_X, node->Draw_Y,
                         shape->Width, shape->Height, shape->Shape_Data_Offsets,
                         shape->Shape_Outline_Offset, node->Draw_Flag | 1);
                 }
@@ -2393,10 +2386,10 @@ long RGE_View::view_function_terrain(unsigned char mode, tagRECT rect) {
     if (rge_base_game->prog_mode == 4 && this->have_focus != 0 &&
         MouseSystem->get_game_enable() != 0) {
         unsigned long now = debug_timeGetTime(
-            s_C__msdev_work_age1_x1_view_cpp, 0xF11);
-        if (this->Get_Cursor_Position(&pt, -rect.left, -rect.top) != 0) {
-            long touched = 0;
-            if (this->pick_touched_object(this->futur_objs, pt.x, pt.y, 10, 0x28, &touched) == 1) {
+            const_cast<char*>(s_C__msdev_work_age1_x1_view_cpp), 0xF11);
+        if (this->Get_Cursor_Position(pt, -rect.left, -rect.top) != 0) {
+            int touched = 0;
+            if (this->pick_touched_object(this->futur_objs, pt.x, pt.y, 10, 0x28, touched) == 1) {
                 if (this->UC_ObjectTouched == 0 || this->UC_TouchedObj != touched) {
                     this->UC_ObjectTouched = 1;
                     if (this->UC_TouchedObj != touched) {
@@ -2575,7 +2568,7 @@ future_match:
     this->render_rect.top -= rect.top;
     this->render_rect.right -= rect.left;
     this->render_rect.bottom -= rect.top;
-    _ASMSet_Surface_Info(this->RenderOffsets, this->Master_Clip_Mask->Line_Head_Ptrs,
+    ASMSet_Surface_Info(this->RenderOffsets, this->Master_Clip_Mask->Line_Head_Ptrs,
         this->Master_Clip_Mask->Line_Tail_Ptrs, this->Master_Clip_Mask->Min_Span_Px,
         this->Master_Clip_Mask->Min_Line, this->Master_Clip_Mask->Max_Span_Px,
         this->Master_Clip_Mask->Max_Line);
@@ -2591,26 +2584,26 @@ future_match:
                     shadow_flags = node->Draw_Flag & 0xFFC;
                     if (shadow_flags != 0) {
                         if ((shadow_flags & 4) == 4) {
-                            _ASMSet_Shadowing(0xFFFFFF, 0, 0xFFFF00FF, 0);
+                            ASMSet_Shadowing(0xFFFFFF, 0, 0xFFFF00FF, 0);
                         }
                         if ((shadow_flags & 8) == 8) {
                             shadow_value = shadow_flags >> 4;
-                            _ASMSet_Shadowing(0xFF00FF00,
+                            ASMSet_Shadowing(0xFF00FF00,
                                 (shadow_value << 16) | shadow_value,
                                 0x00FF00FF, shadow_value << 8);
                         }
                         shadowing = 1;
                     }
-                    _ASMSet_Color_Xform((void*)node->Xform_Mask);
-                    _ASMSet_Xlate_Table(node->Color_Table);
+                    ASMSet_Color_Xform(node->Xform_Mask);
+                    ASMSet_Xlate_Table(node->Color_Table);
                     shape = node->Shape;
-                    _ASMDraw_Sprite((long)node->Shape_Base, node->Draw_X, node->Draw_Y,
+                    ASMDraw_Sprite(node->Shape_Base, node->Draw_X, node->Draw_Y,
                                     shape->Width, shape->Height,
                                     shape->Shape_Data_Offsets,
                                     shape->Shape_Outline_Offset,
                                     node->Draw_Flag & 3);
                     if (shadowing) {
-                        _ASMSet_Shadowing(0xFF00FF, 0, 0xFF00FF00, 0);
+                        ASMSet_Shadowing(0xFF00FF, 0, 0xFF00FF00, 0);
                     }
                 } else {
                     this->Draw_GDI_Object(node, this->render_area);
@@ -3009,21 +3002,21 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, unsign
 
     if ((fog_flag & 0x10) == 0x10) {
         fog_next_shape = 1;
-        _ASMSet_Shadowing(0x00ff00ff, 0x28002800, 0xff00ff00, 0x00280028);
+        ASMSet_Shadowing(0x00ff00ff, 0x28002800, 0xff00ff00, 0x00280028);
         shape->shape_draw(this->cur_render_area, draw_x, draw_y, frame, 0, 0);
-        _ASMSet_Shadowing(0x00ff00ff, 0, 0xff00ff00, 0);
+        ASMSet_Shadowing(0x00ff00ff, 0, 0xff00ff00, 0);
         fog_next_shape = 0;
         return;
     }
 
     if ((fog_flag & 0x20) == 0x20) {
-        _ASMSet_Shadowing(0x00ff00ff, 0x56005600, 0xff00ff00, 0x00560056);
+        ASMSet_Shadowing(0x00ff00ff, 0x56005600, 0xff00ff00, 0x00560056);
     }
 
     if ((fog_flag & 0x80) == 0x80) {
         int c = fog_flag & 0x0f;
         int value = (((c << 16) + c) << 12) + 0x04000400;
-        _ASMSet_Shadowing(0x00ff00ff, value, 0xff00ff00, value);
+        ASMSet_Shadowing(0x00ff00ff, value, 0xff00ff00, value);
     }
 
     int one = 1;
@@ -3049,7 +3042,7 @@ void RGE_View::draw_terrain_shape(int x, int y, TShape* shape, int frame, unsign
     }
 
     this->cur_render_area->CurSpanList = this->cur_render_area->SpanList;
-    _ASMSet_Shadowing(0x00ff00ff, 0, 0xff00ff00, 0);
+    ASMSet_Shadowing(0x00ff00ff, 0, 0xff00ff00, 0);
     fog_next_shape = zero;
 }
 

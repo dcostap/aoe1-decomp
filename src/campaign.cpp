@@ -10,17 +10,16 @@
 // These declarations name the period CRT and executable helpers used by this
 extern "C" int __cdecl sprintf(char*, const char*, ...);
 extern "C" int __cdecl open(const char*, int);
-extern "C" int __cdecl __open(const char*, int, ...);
-extern "C" int __cdecl _open(const char*, int);
+extern "C" int __cdecl _open(const char*, int, ...);
 extern "C" int __cdecl read(int, void*, int);
 extern "C" int __cdecl write(int, void*, int);
 extern "C" int __cdecl close(int);
 extern "C" int __cdecl lseek(int, int, int);
 extern "C" int __cdecl _lseek(int, int, int);
-extern "C" int __cdecl __tell(int);
+extern "C" long __cdecl _tell(int);
 extern "C" void* __cdecl calloc(unsigned int, unsigned int);
 extern "C" void __cdecl free(void*);
-extern "C" int __cdecl rge_fake_open(int, int);
+extern int __cdecl rge_fake_open(int, int);
 
 RGE_Campaign::RGE_Campaign(char* param1)
 {
@@ -52,7 +51,7 @@ RGE_Campaign::RGE_Campaign(char* param1, char* param2, long count,
 {
     sprintf(this->filename, "%s%s", rge_base_game->prog_info->campaign_dir, param1);
 
-    this->campaign_header.version = campaign_version;
+    this->campaign_header.version = version_marker;
     strcpy(this->campaign_header.name, param2);
     this->campaign_header.scenario_num = count;
 
@@ -84,7 +83,7 @@ void RGE_Campaign::create_file()
     int current_offset;
     char tempname[300];
 
-    fd = __open(this->filename, 0x8301, 0x180);
+    fd = _open(this->filename, 0x8301, 0x180);
     if (fd >= 0) {
         write(fd, this, 0x108);
         if (this->campaign_header.scenario_num > 0) {
@@ -97,10 +96,10 @@ void RGE_Campaign::create_file()
                     sprintf(tempname, "%s%s",
                         rge_base_game->prog_info->scenario_dir,
                         this->scenario_offsets[current_offset].file_name);
-                    int scenario_file = __open(tempname, 0x8000);
+                    int scenario_file = _open(tempname, 0x8000);
                     if (scenario_file > -1) {
                         lseek(scenario_file, 0, 2);
-                        int size = __tell(scenario_file);
+                        int size = _tell(scenario_file);
                         void* buffer = calloc(size, 1);
                         lseek(scenario_file, 0, 0);
                         read(scenario_file, buffer, size);

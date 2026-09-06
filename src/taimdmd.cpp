@@ -19,10 +19,9 @@
 typedef unsigned char uchar;
 
 extern int startLoggingAI;
-extern int rgeLog;
 extern float g_time;
-extern float g_cut1;
-extern float g_cut2;
+extern float DAT_00575618;
+extern float DAT_0057561c;
 
 TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     void* p1, int p2, char* p3, TRIBE_Player* player, char* p5, char* p6,
@@ -122,7 +121,7 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
 {
     this->aiPlayer = p3;
     this->setPlayer(p1, p2);
-    if (rgeLog != 0) {
+    if (startLoggingAI != 0) {
         this->setLogCommonHistory(1);
     } else {
         this->setLogCommonHistory(0);
@@ -152,7 +151,7 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
     rge_read(file, &this->lastDiplomacyUpdateTime, 4);
     rge_read(file, &this->lastTacticalUpdateTime, 4);
 
-    if (g_time >= g_cut1) {
+    if (g_time >= DAT_00575618) {
         rge_read(file, &this->lastTributeChatTime, 4);
         rge_read(file, &this->tributeChatTimeout, 4);
         rge_read(file, &this->waitingOnTribute, 4);
@@ -160,7 +159,7 @@ TribeMainDecisionAIModule::TribeMainDecisionAIModule(
         rge_read(file, &this->tributeAddressed, 4);
         rge_read(file, &this->tributeAmount, 4);
     }
-    if (g_time >= g_cut2) {
+    if (g_time >= DAT_0057561c) {
         rge_read(file, &this->decidedInitialDiplomacy, 4);
         rge_read(file, &this->requiredDiplomacyTributeAmount, 4);
         rge_read(file, this->tributeGiven, 0x24);

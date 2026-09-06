@@ -17,7 +17,7 @@ class RGE_Object_List;
 class RGE_Player;
 class RGE_Sprite;
 class RGE_Static_Object;
-class RGE_Tile;
+struct RGE_Tile;
 class TDrawArea;
 class UnitAIModule;
 struct RGE_Object_Node;
@@ -62,7 +62,6 @@ public:
     void capture_frame_3d_square(TDrawArea*, short, short);
     void capture_square_frame(TDrawArea*, short, short);
     int get_frame(short&, short&, short&, short&);
-    int get_frame(short*, short*, short*, short*);
     virtual unsigned char update();
     virtual void check_damage_sprites();
     virtual void rehook();

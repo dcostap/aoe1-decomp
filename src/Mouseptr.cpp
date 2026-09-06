@@ -1,7 +1,7 @@
 
 #include "../include/Mouseptr.h"
 
-extern "C" unsigned long __cdecl debug_timeGetTime(char* file, int line);
+extern unsigned long __cdecl debug_timeGetTime(char* file, int line);
 
 #include <stdio.h>
 

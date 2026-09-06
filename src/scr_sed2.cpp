@@ -50,7 +50,7 @@ extern char s_2400[];
 extern char s_2700[];
 extern char s_3000[];
 extern char s_800[];
-extern char s_empty[];
+extern char s_592A40[];
 
 const TEditPanel::FormatType FormatText = TEditPanel::FormatText;
 const TEditPanel::FormatType FormatUnsignedInt = TEditPanel::FormatUnsignedInt;
@@ -464,7 +464,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario()
         this->victory_condition_explore->set_text(str);
     } else {
         this->victory_cond_on[1]->set_state(0);
-        this->victory_condition_explore->set_text(s_empty);
+        this->victory_condition_explore->set_text(s_592A40);
     }
 
     value = static_cast<T_Scenario*>(this->world->scenario)->Get_Multi_Ruins();
@@ -474,7 +474,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario()
         this->victory_condition_ruins->set_text(str);
     } else {
         this->victory_cond_on[2]->set_state(0);
-        this->victory_condition_ruins->set_text(s_empty);
+        this->victory_condition_ruins->set_text(s_592A40);
     }
 
     value = static_cast<T_Scenario*>(this->world->scenario)->Get_Multi_Artifacts();
@@ -484,7 +484,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario()
         this->victory_condition_artifacts->set_text(str);
     } else {
         this->victory_cond_on[3]->set_state(0);
-        this->victory_condition_artifacts->set_text(s_empty);
+        this->victory_condition_artifacts->set_text(s_592A40);
     }
 
     value = static_cast<T_Scenario*>(this->world->scenario)->Get_Multi_Discoveries();
@@ -494,7 +494,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario()
         this->victory_condition_discoveries->set_text(str);
     } else {
         this->victory_cond_on[4]->set_state(0);
-        this->victory_condition_discoveries->set_text(s_empty);
+        this->victory_condition_discoveries->set_text(s_592A40);
     }
 
     value = static_cast<T_Scenario*>(this->world->scenario)->Get_Multi_Gold();
@@ -504,7 +504,7 @@ void TRIBE_Screen_Sed::load_multi_victory_cond_from_scenario()
         this->victory_condition_gold->set_text(str);
     } else {
         this->victory_cond_on[5]->set_state(0);
-        this->victory_condition_gold->set_text(s_empty);
+        this->victory_condition_gold->set_text(s_592A40);
     }
 
     static_cast<T_Scenario*>(this->world->scenario)->Save_victory_conditions_into_players(1);
@@ -924,7 +924,7 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
     if (!(this->create_text(this->bottom_panel, &this->map_type_text[2], 0x299E))) goto fail;
     if (!(this->create_text(this->bottom_panel, &this->default_terrain_label, 0x299F))) goto fail;
     if (!(this->create_drop_down(this->bottom_panel, &this->default_terrain_drop))) goto fail; (this->default_terrain_drop)->set_help_info(0x76D6, -1);
-    if (!(this->create_text(this->main_view, &this->map_generating_text, 0x29A5, 0, 0,
+    if (!(this->TEasy_Panel::create_text(this->main_view, &this->map_generating_text, 0x29A5, 0, 0,
                          (int)(this)->width(), (int)(this)->height() - 200, 1, 1, 1, 0))) goto fail;
     this->map_generating_text->set_active(0);
 
@@ -1017,7 +1017,7 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
     (this->player_inven_input[1])->set_help_info(0x76E9, 1);
     (this->player_inven_input[2])->set_help_info(0x76EB, 1);
     (this->player_inven_input[3])->set_help_info(0x76EA, 1);
-    if (!(this->create_edit(this->bottom_panel, &this->player_inven_input[4], s_empty, 0x1C, FormatText, 1, 1))) goto fail; (this->player_inven_input[4])->set_help_info(0x76EC, 1);
+    if (!(this->create_edit(this->bottom_panel, &this->player_inven_input[4], s_592A40, 0x1C, FormatText, 1, 1))) goto fail; (this->player_inven_input[4])->set_help_info(0x76EC, 1);
     if (!(this->create_text(this->bottom_panel, &this->player_setting_label[0], 0x2810))) goto fail;
     if (!(this->create_text(this->bottom_panel, &this->player_setting_label[1], 0x2811))) goto fail;
     for (i = 0; i < 2; ++i) if (!(this->create_drop_down(this->bottom_panel, &this->player_setting_drop[i]))) goto fail;
@@ -1160,7 +1160,7 @@ void TRIBE_Screen_Sed::create_all_buttons_etc()
     if (!(this->create_text(this->bottom_panel, &this->message_button_label[3], 0x2A39))) goto fail;
     if (!(this->create_text(this->bottom_panel, &this->message_button_label[4], 0x2A31))) goto fail;
     for (i = 0; i < 5; ++i) this->message_button[i]->set_radio_info(this->message_button, 5);
-    if (!(this->create_edit(this->bottom_panel, &this->message_input, s_empty, 0x0FFF, FormatMultiLine, 1, 1))) goto fail;
+    if (!(this->create_edit(this->bottom_panel, &this->message_input, s_592A40, 0x0FFF, FormatMultiLine, 1, 1))) goto fail;
     (this->message_input)->set_help_info(-1, -1);
 
     if (!(this->create_text(this->bottom_panel, &this->cinematic_label[0], 0x2AF9))) goto fail;

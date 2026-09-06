@@ -7,6 +7,17 @@
 
 typedef unsigned char uchar;
 
+struct PAL_TABLE {
+    int index;
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+    unsigned char reserved;
+};
+
+typedef char dib_palette_table_size_check[
+    (sizeof(PAL_TABLE) == 8) ? 1 : -1];
+
 typedef char dib_bitmap_info_256_size_check[
     (sizeof(BITMAPINFO256) == 0x428) ? 1 : -1];
 typedef char dib_line_info_size_check[

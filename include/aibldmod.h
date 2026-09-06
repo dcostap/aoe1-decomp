@@ -10,9 +10,7 @@
 #include "utmarray.h"
 #include "stat_obj.h"
 
-extern "C" float save_game_version;
-extern "C" float version_3_1;
-extern "C" float version_2_2;
+extern float save_game_version;
 
 class BuildAIModule : public AIModule {
 public:

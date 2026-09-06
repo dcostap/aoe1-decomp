@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-extern void __cdecl operator_delete(void*);
+#include <new.h>
 
 TPicturePanel::TPicturePanel() : TPanel(), keep_loaded(1) {
     this->size_from_pic = 0;
@@ -111,7 +111,7 @@ void TPicturePanel::free_pic() {
     if (p != 0) {
         if (this->own_pic != 0 && this->pic != 0) {
             p->~TPicture();
-            operator_delete(p);
+            ::operator delete(p);
         }
         this->pic = 0;
     }
@@ -119,7 +119,7 @@ void TPicturePanel::free_pic() {
     if (s != 0) {
         if (this->own_pic != 0 && this->shape != 0) {
             s->~TShape();
-            operator_delete(s);
+            ::operator delete(s);
         }
         this->shape = 0;
     }

@@ -1,4 +1,5 @@
 #include "../include/dlg_smsg.h"
+#include "../include/asm_draw.h"
 #include "../include/Pnl_scr.h"
 #include "../include/panel.h"
 #include "../include/Pnl_txt.h"
@@ -349,7 +350,7 @@ void TribeSendMessageDialog::draw() {
             int id = rge_base_game->playerID(i);
             if (id != 0) {
                 if (world->players[id]->color_table != 0) {
-                    _ASMSet_Color_Xform((world->players[id]->color_table->id + 1) * 0x10);
+                    ASMSet_Color_Xform((world->players[id]->color_table->id + 1) * 0x10);
                     this->backgroundPics->shape_draw(this->render_area, this->pnl_x + 0x32,
                                                      this->pnl_y + y + 0x28, 0, 1,
                                                      world->players[id]->color_table->table);

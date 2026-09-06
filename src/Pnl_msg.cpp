@@ -6,7 +6,7 @@
 
 extern "C" int strncmp(const char*, const char*, unsigned int);
 extern "C" char* strncpy(char*, const char*, unsigned int);
-long __cdecl debug_timeGetTime(const char*, int);
+unsigned long __cdecl debug_timeGetTime(char*, int);
 
 TMessagePanel::TMessagePanel(void* font, long font_wid, long font_hgt)
     : TPanel(),
