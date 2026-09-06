@@ -102,6 +102,8 @@ The response files contain compiler arguments only.
 - `audit_translation_unit_functions.py` compiles and checks configured source files.
 - `validate_translation_units.py` validates configured natural-source builds.
 - `build_executable.py` compiles all current game sources and attempts an executable link.
+- `probe_masm.py` tests pinned modern MASM objects with VC5 LINK, including C++ member calls and MMX.
+- `probe_compression_binary.py` tests the preserved compression dependency against native round trips, zlib, and original game data.
 - `audit_link_symbols.py` finds possible declaration conflicts in a failed executable build.
 
 See `docs/executable_build.md` for executable inputs, reports, and completion requirements.

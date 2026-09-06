@@ -1,0 +1,20 @@
+{
+  "source": "src/Drawarea_asm.asm",
+  "original_module": "Drawarea.obj",
+  "test_source": "tests/fixtures/masm/drawing_methods.cpp",
+  "functions": {
+    "?PtrClear@TDrawArea@@QAEXPAUtagRECT@@H@Z": {"va": 4474960, "size": 308},
+    "?PtrSpanCopy@TDrawArea@@QAEXPAV1@JJPAUtagRECT@@PAPAE@Z": {"va": 4477520, "size": 334},
+    "?OverlayMemCopy@TDrawArea@@QAEXAAUtagRECT@@0HHHH@Z": {"va": 4478336, "size": 385}
+  },
+  "external_functions": {
+    "?Lock@TDrawArea@@QAEPAEPADH@Z": 4473456,
+    "?Unlock@TDrawArea@@QAEXPAD@Z": 4473600
+  },
+  "data": {
+    "ptr_clear_name": {"va": 5784948, "size": 9},
+    "span_copy_name": {"va": 5784984, "size": 12},
+    "overlay_copy_name": {"va": 5785028, "size": 15}
+  },
+  "input_sets_per_image": 2048
+}

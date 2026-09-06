@@ -13,6 +13,9 @@ from common import REPO_ROOT, load_build_modules, load_toolchain, repo_path, too
 from build_cache import build_input_manifest
 from function_compare import compile_source
 from pe_resources import extract_resources
+from compression_binary import build_compression_object
+from preserved_binary import build_preserved_object
+from build_assembly import assemble_source
 
 
 def run_command(command: list[str], output: Path, toolchain: dict) -> subprocess.CompletedProcess:
@@ -93,10 +96,35 @@ def main() -> int:
         report["sources"].append(row)
         print(f"[{index}/{len(plan)}] {entry['source']}: {'OK' if row['compiled'] else 'FAILED'}", flush=True)
 
+    report["assembly_sources"] = []
+    for source_name in config.get("assembly_sources", []):
+        source = repo_path(source_name)
+        obj = output / (source.stem + "_asm.obj")
+        try:
+            row = assemble_source(source, obj)
+        except (OSError, ValueError) as error:
+            row = dict(source=source_name, compiled=False, error=str(error))
+        report["assembly_sources"].append(row)
+        if row["compiled"]:
+            objects.append(obj)
+
+    if config.get("compression_binary"):
+        obj = output / "preserved_compression.obj"
+        report["compression_binary"] = build_compression_object(
+            repo_path(config["original"]), repo_path(config["compression_binary"]), obj)
+        objects.append(obj)
+
+    if config.get("drawing_binary"):
+        obj = output / "preserved_drawing.obj"
+        report["drawing_binary"] = build_preserved_object(
+            repo_path(config["original"]), repo_path(config["drawing_binary"]), obj)
+        objects.append(obj)
+
     exe = output / (config["name"] + ".exe")
     response = output / "link.rsp"
-    arguments = config["link_flags"] + [f'/OUT:"{exe}"', f'/MAP:"{output / "empiresx.map"}"',
-                                         f'/PDB:"{output / "empiresx.pdb"}"']
+    arguments = config["link_flags"] + [f'/OUT:"{exe}"', f'/MAP:"{output / "empiresx.map"}"']
+    if any(flag.upper().split(":")[0] == "/DEBUG" for flag in config["link_flags"]):
+        arguments.append(f'/PDB:"{output / "empiresx.pdb"}"')
     arguments += [f'/LIBPATH:"{repo_path(path)}"' for path in config.get("library_dirs", [])]
     arguments += [f'"{path}"' for path in objects] + config["libraries"]
     report["import_libraries"] = []
@@ -123,10 +151,13 @@ def main() -> int:
                           **link_diagnostics(text))
     report["linked"] = (result.returncode == 0 and exe.is_file()
                         and all(row["compiled"] for row in report["sources"])
+                        and all(row["compiled"] for row in report["assembly_sources"])
                         and all(row["returncode"] == 0 for row in report["import_libraries"]))
     report["summary"] = {
         "source_count": len(plan),
         "compiled_count": sum(row["compiled"] for row in report["sources"]),
+        "assembly_source_count": len(report["assembly_sources"]),
+        "assembled_count": sum(row["compiled"] for row in report["assembly_sources"]),
         "unresolved_symbol_count": len(report["link"]["unresolved"]),
         "link_error_count": len(report["link"]["errors"]),
         "linked": report["linked"],

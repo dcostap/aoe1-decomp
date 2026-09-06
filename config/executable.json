@@ -3,6 +3,9 @@
   "name": "empiresx",
   "original": "orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe",
   "original_sha256": "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90",
+  "compression_binary": "config/compression_binary.json",
+  "drawing_binary": "config/drawing_binary.json",
+  "assembly_sources": ["src/Drawarea_asm.asm"],
   "additional_sources": {
     "src/game_globals.cpp": "default",
     "src/tech.cpp": "default"
@@ -10,7 +13,7 @@
   "link_flags": [
     "/NOLOGO", "/MACHINE:IX86", "/SUBSYSTEM:WINDOWS,4.0",
     "/BASE:0x400000", "/STACK:1048576", "/INCREMENTAL:NO",
-    "/DEBUG", "/DEBUGTYPE:CV", "/OPT:REF"
+    "/OPT:REF"
   ],
   "libraries": [
     "kernel32.lib", "user32.lib", "gdi32.lib", "advapi32.lib",

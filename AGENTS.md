@@ -75,6 +75,19 @@ reviewed and listed in `config\padding_only_functions.txt`.
 
 ## Source-recovery standard
 
+### Approved binary dependencies
+
+The user permits two original binary dependencies for executable integration:
+
+- the external compression library, scoped by `config/compression_binary.json`; and
+- the connected drawing assembly engine, scoped by `config/drawing_binary.json`.
+
+Build these dependencies as hash-checked, relocatable COFF objects.
+This permission does not extend to ordinary game functions or other assembly regions.
+Retain recovered drawing assembly and its probes for future source recovery.
+Do not link duplicate drawing exports or split the engine's shared mutable state.
+Binary preservation is not complete source recovery or proof of gameplay correctness.
+
 Recover the simplest binary-supported, period-plausible source first. Reconstruct
 what the original developers probably wrote.
 

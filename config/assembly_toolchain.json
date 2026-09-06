@@ -1,0 +1,10 @@
+{
+  "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x86\\ml.exe",
+  "sha256": "570dffa5910612d1d2ce937978d710901a05635282a0ce47185f8ae853d777a3",
+  "version": "14.36.32537.0",
+  "flags": [
+    "/nologo",
+    "/c",
+    "/coff"
+  ]
+}
