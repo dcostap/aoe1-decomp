@@ -11,7 +11,7 @@ class Visible_Unit_Manager;
 struct LOSTBL;
 class VC_LOG;
 struct VISIBLE_UNIT_REC;
-class IDirectPlay3;
+struct IDirectPlay3;
 class ResFileHdr;
 class TDebuggingLog;
 class DriveInformation;

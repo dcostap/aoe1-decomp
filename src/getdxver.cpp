@@ -10,9 +10,9 @@
 // The pinned headers do not declare these legacy API GUIDs. The module uses
 // the imported constants but does not define them.
 typedef HRESULT (__stdcall* DIRECTDRAWCREATE)(void*, LPDIRECTDRAW*, void*);
-extern const GUID CLSID_DirectPlay;
-extern const GUID IID_IDirectPlay3;
-extern const GUID IID_IDirectDrawSurface3;
+extern "C" const GUID CLSID_DirectPlay;
+extern "C" const GUID IID_IDirectPlay3;
+extern "C" const GUID IID_IDirectDrawSurface3;
 
 void GetDXVersion( unsigned long* param_1, unsigned long* param_2 ) {
     int hr;
