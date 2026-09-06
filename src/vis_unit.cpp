@@ -12,8 +12,8 @@
 #include <string.h>
 
 extern float DAT_005776c8;
-extern double DAT_005776D0;
-extern double DAT_005776D8;
+extern double DAT_005776d0;
+extern double DAT_005776d8;
 extern void rge_read(int handle, void* buffer, int size);
 extern void rge_write(int handle, void* buffer, int size);
 
@@ -534,12 +534,12 @@ VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(
                 int distance;
                 if (dx > dy) {
                     distance =
-                        (dx - (int)(DAT_005776D8 -
-                                    dy * DAT_005776D0)) - dy;
+                        (dx - (int)(DAT_005776d8 -
+                                    dy * DAT_005776d0)) - dy;
                 } else {
                     distance =
-                        (dy - (int)(DAT_005776D8 -
-                                    dx * DAT_005776D0)) - dx;
+                        (dy - (int)(DAT_005776d8 -
+                                    dx * DAT_005776d0)) - dx;
                 }
 
                 if (distance < bestdist) {
