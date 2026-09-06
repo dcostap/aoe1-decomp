@@ -6,8 +6,8 @@
     "flags": "default"
   },
   "functions": {
-    "0053C1B0": {"status": "matching", "symbol": "??0RGE_Visible_Map@@QAE@PAVRGE_Map@@PAVRGE_Player@@@Z"},
-    "0053C290": {"status": "matching", "symbol": "??0RGE_Visible_Map@@QAE@HPAVRGE_Game_World@@@Z"},
+    "0053C1B0": {"status": "scratch", "symbol": "??0RGE_Visible_Map@@QAE@PAVRGE_Map@@PAVRGE_Player@@@Z"},
+    "0053C290": {"status": "scratch", "symbol": "??0RGE_Visible_Map@@QAE@HPAVRGE_Game_World@@@Z"},
     "0053C3C0": {"status": "matching", "symbol": "??1RGE_Visible_Map@@QAE@XZ"},
     "0053C400": {"status": "matching", "symbol": "?save@RGE_Visible_Map@@QAEXH@Z"},
     "0053C490": {"status": "matching", "symbol": "?get_visible@RGE_Visible_Map@@QBEEHH@Z"},

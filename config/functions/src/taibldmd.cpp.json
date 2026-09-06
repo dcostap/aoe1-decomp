@@ -16,7 +16,7 @@
     "004D4540": {"status": "accepted_drift", "symbol": "?nextBuildableItem@TribeBuildAIModule@@QAEPAVBuildItem@@H@Z"},
     "004D4DB0": {"status": "matching", "symbol": "?nextBuildListItemCategory@TribeBuildAIModule@@QAEHXZ"},
     "004D4E10": {"status": "matching", "symbol": "?blockingResource@TribeBuildAIModule@@QAEHXZ"},
-    "004D4F80": {"status": "matching", "symbol": "?mostNeededResource@TribeBuildAIModule@@QAEHAAVResourceItem@@H@Z"},
+    "004D4F80": {"status": "accepted_drift", "symbol": "?mostNeededResource@TribeBuildAIModule@@QAEHAAVResourceItem@@H@Z"},
     "004D5090": {"status": "matching", "symbol": "?addItem@TribeBuildAIModule@@QAEHPAVRGE_Static_Object@@H@Z"},
     "004D5170": {"status": "matching", "symbol": "?addBuiltItem@TribeBuildAIModule@@QAEHPAVRGE_Static_Object@@H@Z"},
     "004D5270": {"status": "matching", "symbol": "?removeBuiltItem@TribeBuildAIModule@@QAEHH@Z"},

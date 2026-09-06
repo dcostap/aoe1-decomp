@@ -7,7 +7,7 @@
   },
   "functions": {
     "00473C10": {"status": "matching", "symbol": "??0TDialogPanel@@QAE@PAD@Z"},
-    "00473C80": {"status": "matching", "symbol": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z"},
+    "00473C80": {"status": "scratch", "symbol": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJPADJH@Z"},
     "00473D60": {"status": "scratch", "symbol": "?setup@TDialogPanel@@UAEHPAVTDrawArea@@PAVTPanel@@JJEH@Z"},
     "00473E40": {"status": "matching", "symbol": "??1TDialogPanel@@UAE@XZ"},
     "00473EC0": {"status": "matching", "symbol": "?set_focus@TDialogPanel@@UAEXH@Z"}

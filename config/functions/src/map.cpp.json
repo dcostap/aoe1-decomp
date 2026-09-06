@@ -68,7 +68,7 @@
     "00459D20": {"status": "matching", "symbol": "?get_tile_type@RGE_Map@@QAEEFF@Z"},
     "0045A030": {"status": "matching", "symbol": "?get_border_type@RGE_Map@@QAEXFF@Z"},
     "0045A490": {"status": "matching", "symbol": "?check_for_border@RGE_Map@@QAEXEAAE@Z"},
-    "0045A500": {"status": "matching", "symbol": "?update@RGE_Map@@QAEXK@Z"},
+    "0045A500": {"status": "scratch", "symbol": "?update@RGE_Map@@QAEXK@Z"},
     "0045A6D0": {"status": "matching", "symbol": "?get_point@RGE_Map@@QAEXAAF0MMMFF@Z"}
   }
 }
