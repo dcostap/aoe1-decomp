@@ -1,0 +1,8 @@
+; The original EXE imports DPLAYX ordinals 1, 2, and 4.
+; The preserved VC98 library proves these names and argument sizes.
+; VC5 LINK cannot read its short import objects. VC5 LIB rebuilds them here.
+LIBRARY DPLAYX.dll
+EXPORTS
+    DirectPlayCreate@12 @1 NONAME
+    DirectPlayEnumerateA@8 @2 NONAME
+    DirectPlayLobbyCreateA@20 @4 NONAME

@@ -1,0 +1,414 @@
+diff --git a/include/act_make.h b/include/act_make.h
+index 7f7e45762..39c9526c3 100644
+--- a/include/act_make.h
++++ b/include/act_make.h
+@@ -11,7 +11,6 @@ public:
+     RGE_Action_Make(int, RGE_Action_Object*);
+     RGE_Action_Make(RGE_Action_Object*, RGE_Task*);
+ 
+-    virtual ~RGE_Action_Make();
+     virtual void first_in_stack(unsigned char);
+ 
+ protected:
+diff --git a/include/dpl_obj.h b/include/dpl_obj.h
+index 9f68ed895..a01e1e91e 100644
+--- a/include/dpl_obj.h
++++ b/include/dpl_obj.h
+@@ -8,7 +8,6 @@ class RGE_Color_Table;
+ 
+ class RGE_Doppleganger_Object : public RGE_Animated_Object {
+ public:
+-    virtual ~RGE_Doppleganger_Object();
+     virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
+                                     float, float, float, RGE_Static_Object*);
+     virtual unsigned char update();
+diff --git a/include/t_tre_ob.h b/include/t_tre_ob.h
+index 70fcee54a..6df33a4d5 100644
+--- a/include/t_tre_ob.h
++++ b/include/t_tre_ob.h
+@@ -6,7 +6,6 @@
+ 
+ class TRIBE_Tree_Object : public RGE_Static_Object {
+ public:
+-    virtual ~TRIBE_Tree_Object();
+ 
+     TRIBE_Tree_Object(TRIBE_Master_Tree_Object*, RGE_Player*,
+                       float, float, float, int);
+diff --git a/include/tact_art.h b/include/tact_art.h
+index 432b2ceb9..f11dfb3e1 100644
+--- a/include/tact_art.h
++++ b/include/tact_art.h
+@@ -12,7 +12,6 @@ class RGE_Task;
+ 
+ class TRIBE_Action_Artifact : public RGE_Action {
+ public:
+-    virtual ~TRIBE_Action_Artifact();
+ 
+     TRIBE_Action_Artifact(int, RGE_Action_Object*);
+     TRIBE_Action_Artifact(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*);
+diff --git a/include/tact_trd.h b/include/tact_trd.h
+index d05a2512e..af9a3c768 100644
+--- a/include/tact_trd.h
++++ b/include/tact_trd.h
+@@ -9,7 +9,6 @@ class RGE_Task;
+ 
+ class TRIBE_Action_Trade : public RGE_Action {
+ public:
+-    virtual ~TRIBE_Action_Trade();
+     virtual void save(int);
+     virtual void first_in_stack(unsigned char);
+     virtual unsigned char update();
+diff --git a/include/tcommand.h b/include/tcommand.h
+index f4c618889..ce1f0d56a 100644
+--- a/include/tcommand.h
++++ b/include/tcommand.h
+@@ -160,7 +160,6 @@ typedef char tribe_command_queue_size_check[
+ class TRIBE_Command : public RGE_Command {
+ public:
+     TRIBE_Command(TRIBE_World*, TCommunications_Handler*);
+-    virtual ~TRIBE_Command();
+ 
+ private:
+     virtual void do_command(void*);
+diff --git a/include/tdlg_lst.h b/include/tdlg_lst.h
+index c38afd130..a44c624f5 100644
+--- a/include/tdlg_lst.h
++++ b/include/tdlg_lst.h
+@@ -7,7 +7,6 @@
+ class TRIBE_Dialog_List : public RGE_Dialog_List {
+ public:
+     TRIBE_Dialog_List(char*);
+-    virtual ~TRIBE_Dialog_List();
+ 
+ protected:
+     virtual int create_list();
+diff --git a/include/teffects.h b/include/teffects.h
+index e71b3a7c1..29004de81 100644
+--- a/include/teffects.h
++++ b/include/teffects.h
+@@ -5,8 +5,6 @@
+ 
+ class TRIBE_Effects : public RGE_Effects {
+ public:
+-    virtual ~TRIBE_Effects();
+-    virtual void save(int file);
+     virtual void do_effect(short effect_id, RGE_Player* player);
+ 
+     TRIBE_Effects(int file);
+diff --git a/include/tm_tre_o.h b/include/tm_tre_o.h
+index ba597fe21..5cf130b1f 100644
+--- a/include/tm_tre_o.h
++++ b/include/tm_tre_o.h
+@@ -12,7 +12,6 @@ typedef struct _iobuf FILE;
+ 
+ class TRIBE_Master_Tree_Object : public RGE_Master_Static_Object {
+ public:
+-    virtual ~TRIBE_Master_Tree_Object();
+ 
+     TRIBE_Master_Tree_Object(TRIBE_Master_Tree_Object* source, int do_setup);
+     TRIBE_Master_Tree_Object(int id, RGE_Sprite** sprites,
+diff --git a/include/tplayer.h b/include/tplayer.h
+index 583cac8f1..7663a6e26 100644
+--- a/include/tplayer.h
++++ b/include/tplayer.h
+@@ -185,7 +185,6 @@ public:
+     TRIBE_Gaia(TRIBE_World*, RGE_Master_Player*, unsigned char, char*,
+                unsigned char);
+ 
+-    virtual ~TRIBE_Gaia();
+     virtual void update();
+     virtual void save(int);
+     virtual void random_start();
+diff --git a/include/tpnl_btn.h b/include/tpnl_btn.h
+index 480d286bb..e60512683 100644
+--- a/include/tpnl_btn.h
++++ b/include/tpnl_btn.h
+@@ -24,7 +24,6 @@ protected:
+ public:
+     TRIBE_Panel_Button(TDrawArea*, TPanel*, TDigital*, void*, long, long,
+                        TShape*);
+-    virtual ~TRIBE_Panel_Button();
+     virtual void draw();
+     void set_text_msg(char*);
+     virtual int is_inside(long, long);
+diff --git a/include/tpnl_txl.h b/include/tpnl_txl.h
+index 3933afaeb..cc54fe33c 100644
+--- a/include/tpnl_txl.h
++++ b/include/tpnl_txl.h
+@@ -14,7 +14,6 @@ public:
+     char pad[3];
+     long id;
+ 
+-    virtual ~TRIBE_Panel_Text_Line();
+     virtual void draw();
+     void set_info(unsigned char type, char* str, long new_id);
+ 
+diff --git a/include/tscenaro.h b/include/tscenaro.h
+index 6ce526e8c..f101d6e41 100644
+--- a/include/tscenaro.h
++++ b/include/tscenaro.h
+@@ -53,7 +53,6 @@ private:
+     virtual RGE_Static_Object* get_object_pointer(int);
+ 
+ public:
+-    virtual ~T_Scenario();
+     virtual void rehook();
+     virtual void save(int);
+ 
+diff --git a/include/unit_ai_module.h b/include/unit_ai_module.h
+index b4208e88f..3155880bb 100644
+--- a/include/unit_ai_module.h
++++ b/include/unit_ai_module.h
+@@ -83,14 +83,14 @@ public:
+     int closestUndiscoveredTile(int* param_1, int* param_2, int param_3);
+     int convertObject(int targetId, int flag);
+     int convertToLOSResourceType(int);
+-    int currentAction();
+-    int currentOrder();
+-    int currentOrderPriority();
+-    int currentTarget();
+-    int currentTargetType();
+-    float currentTargetX();
+-    float currentTargetY();
+-    float currentTargetZ();
++    int currentAction() const;
++    int currentOrder() const;
++    int currentOrderPriority() const;
++    int currentTarget() const;
++    int currentTargetType() const;
++    float currentTargetX() const;
++    float currentTargetY() const;
++    float currentTargetZ() const;
+     int defendObject(int id, float distance, int allow_when_busy);
+     int defendPosition(float x, float y, float distance, int flag);
+     float defenseBuffer();
+diff --git a/include/vw_dimap.h b/include/vw_dimap.h
+index 377b1159d..e28977c9e 100644
+--- a/include/vw_dimap.h
++++ b/include/vw_dimap.h
+@@ -5,7 +5,6 @@
+ 
+ class RGE_Diamond_Map_View : public RGE_Diamond_Map {
+ public:
+-    virtual ~RGE_Diamond_Map_View();
+     RGE_Diamond_Map_View();
+ 
+     virtual long handle_mouse_down(unsigned char, long, long, int, int);
+diff --git a/src/aiconmod.cpp b/src/aiconmod.cpp
+index 9b1e168d7..3c4b3c91a 100644
+--- a/src/aiconmod.cpp
++++ b/src/aiconmod.cpp
+@@ -3,8 +3,7 @@
+ #include <stdio.h>
+ #include <string.h>
+ 
+-extern "C" void rge_read(int fd, void* dst, int size);
+-extern "C" void rge_write(int fd, void* src, int size);
++#include "../include/rge_fio.h"
+ extern "C" int __cdecl _unlink(const char*);
+ 
+ union IntFloat {
+diff --git a/src/airchmod.cpp b/src/airchmod.cpp
+index 9e3c3cb8b..fa1910d32 100644
+--- a/src/airchmod.cpp
++++ b/src/airchmod.cpp
+@@ -4,8 +4,7 @@
+ #include <stdio.h>
+ #include <string.h>
+ 
+-extern "C" int __cdecl rge_read(int file, void* dst, int size);
+-extern "C" void __cdecl rge_write(int file, void* data, int size);
++#include "../include/rge_fio.h"
+ 
+ ResearchAIModule::ResearchAIModule(void* ptr, int arg)
+     : AIModule((char*)"Research AI", 0x3ee, arg, ptr),
+diff --git a/src/aiuaimod.cpp b/src/aiuaimod.cpp
+index 1d225eedc..0f3c83f82 100644
+--- a/src/aiuaimod.cpp
++++ b/src/aiuaimod.cpp
+@@ -88,7 +88,7 @@ UnitAIModule::~UnitAIModule() {
+ 
+ 
+ 
+-void __cdecl rge_write(int fd, const void* data, int size);
++void __cdecl rge_write(int fd, void* data, int size);
+ 
+ void UnitAIModule::save(int fd) {
+     int i;
+diff --git a/src/asp_list.cpp b/src/asp_list.cpp
+index 8eb32a63c..466ae6fef 100644
+--- a/src/asp_list.cpp
++++ b/src/asp_list.cpp
+@@ -3,8 +3,7 @@
+ #include "../include/sprite.h"
+ #include "../include/stat_obj.h"
+ 
+-extern "C" void __cdecl rge_read(int handle, void* buffer, int size);
+-extern "C" void __cdecl rge_write(int handle, void* buffer, int size);
++#include "../include/rge_fio.h"
+ extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
+ extern "C" void __cdecl free(void* block);
+ 
+diff --git a/src/m_mo_obj.cpp b/src/m_mo_obj.cpp
+index ec1f8392c..f641ac22d 100644
+--- a/src/m_mo_obj.cpp
++++ b/src/m_mo_obj.cpp
+@@ -5,8 +5,7 @@
+ #include "../include/stat_obj.h"
+ #include "../include/world.h"
+ 
+-extern "C" void rge_read(int file, void* data, int size);
+-extern "C" void rge_write(int file, void* data, int size);
++#include "../include/rge_fio.h"
+ 
+ RGE_Master_Moving_Object::RGE_Master_Moving_Object(
+     RGE_Master_Moving_Object* source, int do_setup)
+diff --git a/src/m_s_obj.cpp b/src/m_s_obj.cpp
+index a34ceb0bc..d2e501c31 100644
+--- a/src/m_s_obj.cpp
++++ b/src/m_s_obj.cpp
+@@ -15,8 +15,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-extern "C" void __cdecl rge_read(int handle, void* buffer, int size);
+-extern "C" void __cdecl rge_write(int fd, void* src, int size);
++#include "../include/rge_fio.h"
+ extern float save_game_version;
+ extern float DAT_00570610;
+ extern float DAT_00570614;
+diff --git a/src/map.cpp b/src/map.cpp
+index 4657a2e17..22cb33155 100644
+--- a/src/map.cpp
++++ b/src/map.cpp
+@@ -20,8 +20,8 @@
+ #include "../include/debuglog.h"
+ #include "../include/rge_base_game_global.h"
+ 
+-extern "C" void __cdecl rge_read(int file, void* data, int size);
+-extern "C" void __cdecl rge_write(int file, void* data, int size);
++void __cdecl rge_read(int file, void* data, int size);
++void __cdecl rge_write(int file, void* data, int size);
+ extern "C" void __cdecl addstring(char** dst, char* base, char* ext);
+ extern "C" void __cdecl convert_us(char* text);
+ int __cdecl debug_rand(char* file, int line);
+diff --git a/src/mst_play.cpp b/src/mst_play.cpp
+index cf247d590..016f7341c 100644
+--- a/src/mst_play.cpp
++++ b/src/mst_play.cpp
+@@ -4,10 +4,7 @@
+ 
+ #include <stdlib.h>
+ 
+-extern "C" {
+-    void rge_read(int fd, void* buffer, int size);
+-    void rge_write(int fd, void* buffer, int size);
+-}
++#include "../include/rge_fio.h"
+ 
+ RGE_Master_Player::RGE_Master_Player(FILE* file)
+ {
+diff --git a/src/sprite.cpp b/src/sprite.cpp
+index 36114c717..2103821f6 100644
+--- a/src/sprite.cpp
++++ b/src/sprite.cpp
+@@ -9,8 +9,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ 
+-extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
+-extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
++#include "../include/rge_fio.h"
+ extern "C" void __cdecl convert_us(char* string);
+ extern void __cdecl operator_delete(void* block);
+ extern void __cdecl addstring(char** dst, char* base, char* ext);
+diff --git a/src/taistrmd.cpp b/src/taistrmd.cpp
+index cc8312ea5..1537356df 100644
+--- a/src/taistrmd.cpp
++++ b/src/taistrmd.cpp
+@@ -1146,7 +1146,7 @@ void TribeStrategyAIModule::setMainDecisionAI(TribeMainDecisionAIModule* v) {
+ 
+ #include <string.h>
+ 
+-void __cdecl rge_write(int fd, const void* data, int size);
++void __cdecl rge_write(int fd, void* data, int size);
+ void* __cdecl operator new(unsigned int size);
+ void __cdecl operator delete(void* p);
+ 
+diff --git a/src/tm_co_ob.cpp b/src/tm_co_ob.cpp
+index 2305864dd..38fa3a2cb 100644
+--- a/src/tm_co_ob.cpp
++++ b/src/tm_co_ob.cpp
+@@ -4,10 +4,7 @@
+ #include "../include/ttsk_lst.h"
+ #include <new.h>
+ 
+-extern "C" {
+-    void __cdecl rge_read(int fd, void* data, int size);
+-    void __cdecl rge_write(int fd, void* data, int size);
+-}
++#include "../include/rge_fio.h"
+ 
+ extern float save_game_version;
+ extern float DAT_0057677c;
+diff --git a/src/tscenaro.cpp b/src/tscenaro.cpp
+index 28c1c3be6..f66027787 100644
+--- a/src/tscenaro.cpp
++++ b/src/tscenaro.cpp
+@@ -13,8 +13,7 @@
+ 
+ extern void rge_read_uncompressed(int file, void* data, int size);
+ extern void rge_write_uncompressed(int file, void* data, int size);
+-extern void rge_read(int file, void* data, int size);
+-extern "C" void __cdecl rge_write(int file, void* data, int size);
++#include "../include/rge_fio.h"
+ 
+ TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario* scenario)
+     : RGE_Scenario_Header(scenario) {
+diff --git a/src/vis_unit.cpp b/src/vis_unit.cpp
+index 39b432c2a..0965ecc71 100644
+--- a/src/vis_unit.cpp
++++ b/src/vis_unit.cpp
+@@ -12,8 +12,8 @@
+ #include <string.h>
+ 
+ extern float DAT_005776c8;
+-extern double DAT_005776D0;
+-extern double DAT_005776D8;
++extern double DAT_005776d0;
++extern double DAT_005776d8;
+ extern void rge_read(int handle, void* buffer, int size);
+ extern void rge_write(int handle, void* buffer, int size);
+ 
+@@ -534,12 +534,12 @@ VISIBLE_RESOURCE_REC* Visible_Resource_Manager::Get_Closest_Resource(
+                 int distance;
+                 if (dx > dy) {
+                     distance =
+-                        (dx - (int)(DAT_005776D8 -
+-                                    dy * DAT_005776D0)) - dy;
++                        (dx - (int)(DAT_005776d8 -
++                                    dy * DAT_005776d0)) - dy;
+                 } else {
+                     distance =
+-                        (dy - (int)(DAT_005776D8 -
+-                                    dx * DAT_005776D0)) - dx;
++                        (dy - (int)(DAT_005776d8 -
++                                    dx * DAT_005776d0)) - dx;
+                 }
+ 
+                 if (distance < bestdist) {
+diff --git a/src/visible.cpp b/src/visible.cpp
+index 957bbf717..07e0096f6 100644
+--- a/src/visible.cpp
++++ b/src/visible.cpp
+@@ -49,8 +49,8 @@ LOSTBL* SquareLOS[17] = {Edge_Offsets_T0, Edge_Offsets_T1, Edge_Offsets_T2, Edge
+ 
+ extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
+ extern "C" void __cdecl free(void* block);
+-extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
+-extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
++void __cdecl rge_write(int handle, void* buffer, int count);
++void __cdecl rge_read(int handle, void* buffer, int count);
+ 
+ extern void __cdecl log_map_call(int world_time, int player_id, int type,
+                                  int p6, int x1, int y1, int x2, int y2,

@@ -101,6 +101,10 @@ The response files contain compiler arguments only.
 - `check_function.py` performs the authoritative one-function comparison.
 - `audit_translation_unit_functions.py` compiles and checks configured source files.
 - `validate_translation_units.py` validates configured natural-source builds.
+- `build_executable.py` compiles all current game sources and attempts an executable link.
+- `audit_link_symbols.py` finds possible declaration conflicts in a failed executable build.
+
+See `docs/executable_build.md` for executable inputs, reports, and completion requirements.
 
 Use `--group` for explicit translation units. Use repeatable `--affected-by`
 paths for the transitive dependency union of shared-source changes:

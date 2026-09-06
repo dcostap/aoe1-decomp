@@ -88,6 +88,15 @@ Run the tests:
 python -m pytest -q
 ```
 
+Compile all current game sources and attempt an executable link:
+
+```text
+python tools/build_executable.py --help
+python tools/build_executable.py
+```
+
+The executable build is not yet complete. See `docs/executable_build.md` for inputs, reports, and remaining requirements.
+
 Generated files belong under `build/`. You can remove that directory when no worker is active.
 
 See `docs/project_reference.md` for the registry schema and command catalogue.

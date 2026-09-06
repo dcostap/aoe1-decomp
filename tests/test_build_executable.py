@@ -1,0 +1,123 @@
+from __future__ import annotations
+
+import struct
+import sys
+from pathlib import Path
+from unittest.mock import patch
+
+import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
+import build_executable
+from pe_resources import resource_name, resource_record
+from audit_link_symbols import decorated_name, symbol_key
+
+
+def test_link_diagnostics_groups_missing_symbols():
+    text = ('one.obj : error LNK2001: unresolved external symbol _missing\n'
+            'two.obj : error LNK2001: unresolved external symbol _missing\n'
+            'out.exe : fatal error LNK1120: 1 unresolved externals\n'
+            'LINK : warning LNK4098: library conflict\n')
+    result = build_executable.link_diagnostics(text)
+    assert result["unresolved"] == {"_missing": ["one.obj", "two.obj"]}
+    assert len(result["errors"]) == 3
+    assert len(result["warnings"]) == 1
+
+
+def test_resource_record_alignment():
+    result = resource_record(3, "AppIcon", 1033, b"abc")
+    size, header = struct.unpack_from("<II", result)
+    assert size == 3
+    assert header % 4 == 0
+    assert result[header:] == b"abc\0"
+    assert len(result) % 4 == 0
+    assert struct.unpack_from("<H", result, header - 10)[0] == 1033
+
+
+def test_resource_numeric_name():
+    assert resource_name(3) == b"\xff\xff\x03\x00"
+    with pytest.raises(ValueError):
+        resource_name(65536)
+
+
+def test_plan_uses_registry_profiles_and_accepts_windows_case(tmp_path):
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src/pnl_msg.cpp").touch()
+    modules = [{"source": "src/Pnl_msg.cpp", "build": {"flags_path": "config/flags/gx.rsp"}}]
+    with patch.object(build_executable, "REPO_ROOT", tmp_path):
+        plan = build_executable.source_plan({"additional_sources": {}}, modules)
+    assert plan[0]["flags"] == "config/flags/gx.rsp"
+
+
+def test_plan_rejects_missing_source_route(tmp_path):
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src/missing.cpp").touch()
+    with patch.object(build_executable, "REPO_ROOT", tmp_path):
+        with pytest.raises(ValueError, match="without build routes"):
+            build_executable.source_plan({"additional_sources": {}}, [])
+
+
+def test_plan_rejects_duplicate_routes(tmp_path):
+    modules = [{"source": "src/One.cpp", "build": {"flags_path": "config/flags/gx.rsp"}}]
+    with patch.object(build_executable, "REPO_ROOT", tmp_path):
+        with pytest.raises(ValueError, match="Duplicate"):
+            build_executable.source_plan({"additional_sources": {"src/one.cpp": "default"}}, modules)
+
+
+def test_link_search_does_not_confuse_class_members():
+    assert decorated_name('"int __cdecl read(int)" (?read@@YAHH@Z)') == '?read@@YAHH@Z'
+    assert symbol_key('_rge_read') == symbol_key('?rge_read@@YAXHPAXH@Z')
+    assert symbol_key('?read@One@@QAEHXZ') != symbol_key('?read@Two@@QAEHXZ')
+
+
+def test_resource_roundtrip_with_pinned_linker():
+    import subprocess
+    import uuid
+    from common import load_toolchain, repo_path, tool_env
+    from pe_resources import extract_resources
+
+    toolchain = load_toolchain()
+    linker = repo_path(toolchain["compiler"]["link"])
+    if not linker.is_file():
+        pytest.skip("Pinned VC5 linker is not installed")
+    tmp_path = repo_path("build/tests/resource_roundtrip") / uuid.uuid4().hex
+    tmp_path.mkdir(parents=True)
+    original = repo_path("orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe")
+    source_res = tmp_path / "original.res"
+    linked_res = tmp_path / "roundtrip.res"
+    dll = tmp_path / "resources.dll"
+    original_rows = extract_resources(original, source_res)
+    result = subprocess.run([str(linker), "/NOLOGO", "/DLL", "/NOENTRY", "/MACHINE:IX86",
+                             f"/OUT:{dll}", str(source_res)], capture_output=True, text=True,
+                            cwd=tmp_path, env=tool_env(toolchain))
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert extract_resources(dll, linked_res) == original_rows
+    assert linked_res.read_bytes() == source_res.read_bytes()
+
+
+def test_recovered_string_data_matches_original():
+    import json
+    import uuid
+    import pefile
+    from coff import load_coff_object
+    from common import load_toolchain, repo_path
+    from function_compare import compile_source
+
+    toolchain = load_toolchain()
+    if not repo_path(toolchain["compiler"]["cl"]).is_file():
+        pytest.skip("Pinned VC5 compiler is not installed")
+    output = repo_path("build/tests/string_data") / uuid.uuid4().hex / "game_globals.obj"
+    output.parent.mkdir(parents=True)
+    source = repo_path("src/game_globals.cpp")
+    compile_source(source, output, repo_path("config/flags/default.rsp"), source.parent)
+    obj = load_coff_object(output)
+    pe = pefile.PE(str(repo_path("orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe")))
+    rows = json.loads(repo_path("decomp_notes/executable_build_evidence/string_definitions.json").read_text())
+    for row in rows:
+        symbols = [s for s in obj.symbols if s.name == row["symbol"] and s.section_number > 0]
+        assert len(symbols) == 1, row["symbol"]
+        symbol = symbols[0]
+        section = obj.section_by_index(symbol.section_number)
+        expected = row["ascii_prefix"].encode("ascii") + b"\0"
+        assert section.data[symbol.value:symbol.value + len(expected)] == expected, row["symbol"]
+        assert pe.get_data(int(row["original_va"], 16) - pe.OPTIONAL_HEADER.ImageBase, len(expected)) == expected

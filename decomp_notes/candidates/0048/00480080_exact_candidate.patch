@@ -1,0 +1,158 @@
+diff --git a/src/aiconmod.cpp b/src/aiconmod.cpp
+index 9b1e168d7..3c4b3c91a 100644
+--- a/src/aiconmod.cpp
++++ b/src/aiconmod.cpp
+@@ -3,8 +3,7 @@
+ #include <stdio.h>
+ #include <string.h>
+ 
+-extern "C" void rge_read(int fd, void* dst, int size);
+-extern "C" void rge_write(int fd, void* src, int size);
++#include "../include/rge_fio.h"
+ extern "C" int __cdecl _unlink(const char*);
+ 
+ union IntFloat {
+diff --git a/src/airchmod.cpp b/src/airchmod.cpp
+index 9e3c3cb8b..fa1910d32 100644
+--- a/src/airchmod.cpp
++++ b/src/airchmod.cpp
+@@ -4,8 +4,7 @@
+ #include <stdio.h>
+ #include <string.h>
+ 
+-extern "C" int __cdecl rge_read(int file, void* dst, int size);
+-extern "C" void __cdecl rge_write(int file, void* data, int size);
++#include "../include/rge_fio.h"
+ 
+ ResearchAIModule::ResearchAIModule(void* ptr, int arg)
+     : AIModule((char*)"Research AI", 0x3ee, arg, ptr),
+diff --git a/src/asp_list.cpp b/src/asp_list.cpp
+index 8eb32a63c..466ae6fef 100644
+--- a/src/asp_list.cpp
++++ b/src/asp_list.cpp
+@@ -3,8 +3,7 @@
+ #include "../include/sprite.h"
+ #include "../include/stat_obj.h"
+ 
+-extern "C" void __cdecl rge_read(int handle, void* buffer, int size);
+-extern "C" void __cdecl rge_write(int handle, void* buffer, int size);
++#include "../include/rge_fio.h"
+ extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
+ extern "C" void __cdecl free(void* block);
+ 
+diff --git a/src/m_mo_obj.cpp b/src/m_mo_obj.cpp
+index ec1f8392c..f641ac22d 100644
+--- a/src/m_mo_obj.cpp
++++ b/src/m_mo_obj.cpp
+@@ -5,8 +5,7 @@
+ #include "../include/stat_obj.h"
+ #include "../include/world.h"
+ 
+-extern "C" void rge_read(int file, void* data, int size);
+-extern "C" void rge_write(int file, void* data, int size);
++#include "../include/rge_fio.h"
+ 
+ RGE_Master_Moving_Object::RGE_Master_Moving_Object(
+     RGE_Master_Moving_Object* source, int do_setup)
+diff --git a/src/m_s_obj.cpp b/src/m_s_obj.cpp
+index a34ceb0bc..d2e501c31 100644
+--- a/src/m_s_obj.cpp
++++ b/src/m_s_obj.cpp
+@@ -15,8 +15,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
+-extern "C" void __cdecl rge_read(int handle, void* buffer, int size);
+-extern "C" void __cdecl rge_write(int fd, void* src, int size);
++#include "../include/rge_fio.h"
+ extern float save_game_version;
+ extern float DAT_00570610;
+ extern float DAT_00570614;
+diff --git a/src/map.cpp b/src/map.cpp
+index 4657a2e17..13cbb2e6e 100644
+--- a/src/map.cpp
++++ b/src/map.cpp
+@@ -20,8 +20,7 @@
+ #include "../include/debuglog.h"
+ #include "../include/rge_base_game_global.h"
+ 
+-extern "C" void __cdecl rge_read(int file, void* data, int size);
+-extern "C" void __cdecl rge_write(int file, void* data, int size);
++#include "../include/rge_fio.h"
+ extern "C" void __cdecl addstring(char** dst, char* base, char* ext);
+ extern "C" void __cdecl convert_us(char* text);
+ int __cdecl debug_rand(char* file, int line);
+diff --git a/src/mst_play.cpp b/src/mst_play.cpp
+index cf247d590..016f7341c 100644
+--- a/src/mst_play.cpp
++++ b/src/mst_play.cpp
+@@ -4,10 +4,7 @@
+ 
+ #include <stdlib.h>
+ 
+-extern "C" {
+-    void rge_read(int fd, void* buffer, int size);
+-    void rge_write(int fd, void* buffer, int size);
+-}
++#include "../include/rge_fio.h"
+ 
+ RGE_Master_Player::RGE_Master_Player(FILE* file)
+ {
+diff --git a/src/sprite.cpp b/src/sprite.cpp
+index 36114c717..2103821f6 100644
+--- a/src/sprite.cpp
++++ b/src/sprite.cpp
+@@ -9,8 +9,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ 
+-extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
+-extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
++#include "../include/rge_fio.h"
+ extern "C" void __cdecl convert_us(char* string);
+ extern void __cdecl operator_delete(void* block);
+ extern void __cdecl addstring(char** dst, char* base, char* ext);
+diff --git a/src/tm_co_ob.cpp b/src/tm_co_ob.cpp
+index 2305864dd..38fa3a2cb 100644
+--- a/src/tm_co_ob.cpp
++++ b/src/tm_co_ob.cpp
+@@ -4,10 +4,7 @@
+ #include "../include/ttsk_lst.h"
+ #include <new.h>
+ 
+-extern "C" {
+-    void __cdecl rge_read(int fd, void* data, int size);
+-    void __cdecl rge_write(int fd, void* data, int size);
+-}
++#include "../include/rge_fio.h"
+ 
+ extern float save_game_version;
+ extern float DAT_0057677c;
+diff --git a/src/tscenaro.cpp b/src/tscenaro.cpp
+index 28c1c3be6..f66027787 100644
+--- a/src/tscenaro.cpp
++++ b/src/tscenaro.cpp
+@@ -13,8 +13,7 @@
+ 
+ extern void rge_read_uncompressed(int file, void* data, int size);
+ extern void rge_write_uncompressed(int file, void* data, int size);
+-extern void rge_read(int file, void* data, int size);
+-extern "C" void __cdecl rge_write(int file, void* data, int size);
++#include "../include/rge_fio.h"
+ 
+ TRIBE_Scenario_Header::TRIBE_Scenario_Header(T_Scenario* scenario)
+     : RGE_Scenario_Header(scenario) {
+diff --git a/src/visible.cpp b/src/visible.cpp
+index 957bbf717..2938e6b4d 100644
+--- a/src/visible.cpp
++++ b/src/visible.cpp
+@@ -49,8 +49,7 @@ LOSTBL* SquareLOS[17] = {Edge_Offsets_T0, Edge_Offsets_T1, Edge_Offsets_T2, Edge
+ 
+ extern "C" void* __cdecl calloc(unsigned int count, unsigned int size);
+ extern "C" void __cdecl free(void* block);
+-extern "C" void __cdecl rge_write(int handle, void* buffer, int count);
+-extern "C" void __cdecl rge_read(int handle, void* buffer, int count);
++#include "../include/rge_fio.h"
+ 
+ extern void __cdecl log_map_call(int world_time, int player_id, int type,
+                                  int p6, int x1, int y1, int x2, int y2,

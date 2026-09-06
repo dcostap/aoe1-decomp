@@ -17,6 +17,7 @@ modify them.
 | `include/dplay.h` | `a08ddd487773c5a078989e713bb59f7f4fd55c8f1822265f15bfa1f0f4a955de` |
 | `include/dplobby.h` | `6e8029d35c4d514cad22871c447b4a221b0dbdf3f7b24607b162156388a70bb9` |
 | `lib/x86/dplayx.lib` | `99ff5ab78c5189fb7090f8c2da08d0da1095833606ca422a051c83f988406739` |
+| `lib/x86/dxguid.lib` | `1f41db9101614d4ac19a681d399c074e6166b566315ac62c4d913556582aef85` |
 
 ## Selection evidence
 
@@ -59,3 +60,12 @@ It provides the required `_DirectPlayCreate@12` and
 
 Use these headers through an explicit module include path. Keep the VC5
 compiler and standard include directories unchanged.
+
+## Executable link inputs
+
+`dxguid.lib` is an unchanged copy of `C:\msv6\VC98\Lib\DXGUID.LIB`.
+It supplies period DirectX GUID data that the VC5 `uuid.lib` does not contain.
+
+VC5 LINK cannot read the short import objects in the preserved `dplayx.lib`.
+The executable build uses VC5 LIB and `config/dplayx.def` to recreate its three required ordinal imports.
+The preserved library remains unchanged.

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "name": "empiresx",
+  "original": "orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe",
+  "original_sha256": "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90",
+  "additional_sources": {
+    "src/game_globals.cpp": "default",
+    "src/tech.cpp": "default"
+  },
+  "link_flags": [
+    "/NOLOGO", "/MACHINE:IX86", "/SUBSYSTEM:WINDOWS,4.0",
+    "/BASE:0x400000", "/STACK:1048576", "/INCREMENTAL:NO",
+    "/DEBUG", "/DEBUGTYPE:CV", "/OPT:REF"
+  ],
+  "libraries": [
+    "kernel32.lib", "user32.lib", "gdi32.lib", "advapi32.lib",
+    "version.lib", "dsound.lib", "ddraw.lib",
+    "winmm.lib", "imm32.lib", "vfw32.lib", "ole32.lib", "wsock32.lib", "uuid.lib", "dxguid.lib"
+  ],
+  "library_dirs": ["third_party/directplay/lib/x86"],
+  "import_definitions": ["config/dplayx.def"],
+  "notes": [
+    "This is the source-integration build, not a claim of original link order.",
+    "Additional source profiles do not establish function matching recipes.",
+    "The original PE proves the subsystem, image base, stack reserve, and imported DLLs.",
+    "uuid.lib supplies GUID data, not an imported DLL."
+  ]
+}
