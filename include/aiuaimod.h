@@ -108,8 +108,6 @@ protected:
     virtual int processIdle(int);
     virtual int processMisc();
     virtual int processRetryableOrder();
-    virtual int bestUnitToHeal(int, float*);
-    virtual int bestUnitToConvert(float*);
     int get_type();
     int find_unit(int, int, int);
     int do_stuff(int, int);

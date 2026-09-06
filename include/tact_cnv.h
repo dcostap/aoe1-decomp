@@ -18,8 +18,6 @@ public:
     virtual void save(int);
     virtual void first_in_stack(unsigned char);
     virtual unsigned char update();
-    virtual int stop();
-    virtual int move_to(RGE_Static_Object*, float, float, float);
     virtual int work(RGE_Static_Object*, float, float, float);
 
 protected:

@@ -77,9 +77,7 @@ public:
     void reset_attack_timer();
     void get_weapon_range(short&, short&);
     void calc_attack_modifier();
-    virtual void change_ownership(RGE_Player*);
     void set_something(int);
-    virtual void new_sprite(RGE_Sprite*);
     void play_move_sound(RGE_Sound*);
     float distance_to_object(RGE_Static_Object*);
     virtual float calculateDamage(int, RGE_Armor_Weapon_Info*, float,

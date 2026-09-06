@@ -279,7 +279,6 @@ public:
     virtual int handle_scroll_view(long, long);
     virtual void end_scroll_view();
     virtual int do_paint(long, long, long, long, int);
-    int is_inside(long, long);
     int capture_mouse();
     void add_overlay_sprite(TShape*, int, int, int, int, int,
                             unsigned char*, int, unsigned long);
