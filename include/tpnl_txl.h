@@ -14,7 +14,6 @@ public:
     char pad[3];
     long id;
 
-    virtual ~TRIBE_Panel_Text_Line();
     virtual void draw();
     void set_info(unsigned char type, char* str, long new_id);
 

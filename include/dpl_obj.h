@@ -8,7 +8,6 @@ class RGE_Color_Table;
 
 class RGE_Doppleganger_Object : public RGE_Animated_Object {
 public:
-    virtual ~RGE_Doppleganger_Object();
     virtual void recycle_in_to_game(RGE_Master_Static_Object*, RGE_Player*,
                                     float, float, float, RGE_Static_Object*);
     virtual unsigned char update();

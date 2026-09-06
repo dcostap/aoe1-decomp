@@ -160,7 +160,6 @@ typedef char tribe_command_queue_size_check[
 class TRIBE_Command : public RGE_Command {
 public:
     TRIBE_Command(TRIBE_World*, TCommunications_Handler*);
-    virtual ~TRIBE_Command();
 
 private:
     virtual void do_command(void*);

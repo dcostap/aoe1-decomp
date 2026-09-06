@@ -12,7 +12,6 @@ typedef struct _iobuf FILE;
 
 class TRIBE_Master_Tree_Object : public RGE_Master_Static_Object {
 public:
-    virtual ~TRIBE_Master_Tree_Object();
 
     TRIBE_Master_Tree_Object(TRIBE_Master_Tree_Object* source, int do_setup);
     TRIBE_Master_Tree_Object(int id, RGE_Sprite** sprites,

@@ -53,7 +53,6 @@ private:
     virtual RGE_Static_Object* get_object_pointer(int);
 
 public:
-    virtual ~T_Scenario();
     virtual void rehook();
     virtual void save(int);
 

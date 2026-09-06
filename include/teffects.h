@@ -5,8 +5,6 @@
 
 class TRIBE_Effects : public RGE_Effects {
 public:
-    virtual ~TRIBE_Effects();
-    virtual void save(int file);
     virtual void do_effect(short effect_id, RGE_Player* player);
 
     TRIBE_Effects(int file);

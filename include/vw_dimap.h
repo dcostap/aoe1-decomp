@@ -5,7 +5,6 @@
 
 class RGE_Diamond_Map_View : public RGE_Diamond_Map {
 public:
-    virtual ~RGE_Diamond_Map_View();
     RGE_Diamond_Map_View();
 
     virtual long handle_mouse_down(unsigned char, long, long, int, int);

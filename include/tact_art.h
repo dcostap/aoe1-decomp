@@ -12,7 +12,6 @@ class RGE_Task;
 
 class TRIBE_Action_Artifact : public RGE_Action {
 public:
-    virtual ~TRIBE_Action_Artifact();
 
     TRIBE_Action_Artifact(int, RGE_Action_Object*);
     TRIBE_Action_Artifact(RGE_Action_Object*, RGE_Task*, RGE_Static_Object*);

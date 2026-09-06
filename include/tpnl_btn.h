@@ -24,7 +24,6 @@ protected:
 public:
     TRIBE_Panel_Button(TDrawArea*, TPanel*, TDigital*, void*, long, long,
                        TShape*);
-    virtual ~TRIBE_Panel_Button();
     virtual void draw();
     void set_text_msg(char*);
     virtual int is_inside(long, long);

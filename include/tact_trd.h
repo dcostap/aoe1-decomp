@@ -9,7 +9,6 @@ class RGE_Task;
 
 class TRIBE_Action_Trade : public RGE_Action {
 public:
-    virtual ~TRIBE_Action_Trade();
     virtual void save(int);
     virtual void first_in_stack(unsigned char);
     virtual unsigned char update();

@@ -185,7 +185,6 @@ public:
     TRIBE_Gaia(TRIBE_World*, RGE_Master_Player*, unsigned char, char*,
                unsigned char);
 
-    virtual ~TRIBE_Gaia();
     virtual void update();
     virtual void save(int);
     virtual void random_start();

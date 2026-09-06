@@ -11,7 +11,6 @@ public:
     RGE_Action_Make(int, RGE_Action_Object*);
     RGE_Action_Make(RGE_Action_Object*, RGE_Task*);
 
-    virtual ~RGE_Action_Make();
     virtual void first_in_stack(unsigned char);
 
 protected:
