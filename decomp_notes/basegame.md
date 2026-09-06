@@ -2,6 +2,14 @@
 
 The PDB module is `C:\msdev\work\age1_x1\basegame.cpp`.
 
+## Font setup repair, 2026-09-06
+
+The original keeps the font index separate from the complete metrics object.
+The repair restores that index, average character width, and height plus external leading.
+The final 410-byte body has 46 register-encoding differences. The completed review accepts this drift.
+All 193 current exact targets remain exact in the 202-owner module audit.
+See `functions/0041/0041F560.md` and `../logic_reviews/0041F560.md`.
+
 ## Direct owners
 
 `src/basegame.cpp` owns all 202 normal BaseGame bodies in PDB order.
@@ -90,7 +98,7 @@ The remaining sixteen owners are nonexact.
 They remain in the module source without a false exact claim.
 `0041BAA0`, `0041E7D0`, `0041E920`, and `00421BF0` remain accepted drift.
 
-`0041F560` remains verified logic.
+The later font setup review supersedes this checkpoint's `0041F560` verification.
 The scratch owners are `0041C270`, `0041CCA0`, `0041CFD0`, `0041E700`,
 `0041F9F0`, `0041FDE0`, `004206D0`, `00421110`, `00421FA0`, `00422960`,
 and `00422B10`.

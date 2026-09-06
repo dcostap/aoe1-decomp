@@ -2077,74 +2077,62 @@ int RGE_Base_Game::setup_sounds()
 
 int RGE_Base_Game::setup_fonts()
 {
-    RGE_Font* font_array;
-    HDC dc;
-    HGDIOBJ old_font;
     short i;
-    HFONT font;
-    int font_index;
     TEXTMETRICA tm;
 
     this->font_num = 12;
-    font_array = static_cast<RGE_Font*>(calloc(12, sizeof(*font_array)));
-    this->fonts = font_array;
-    if (font_array == 0)
+    this->fonts = static_cast<RGE_Font*>(calloc(this->font_num, sizeof(RGE_Font)));
+    if (this->fonts == 0)
         return 0;
 
-    dc = static_cast<HDC>(this->draw_area->GetDc("basegame::setup_fonts"));
+    HDC dc = static_cast<HDC>(this->draw_area->GetDc("basegame::setup_fonts"));
     if (dc == 0)
         return 0;
 
-    i = 0;
-    if (this->font_num > 0) {
-        do {
-            tm.tmHeight = static_cast<LONG>(i);
-            switch (tm.tmHeight) {
-            case 0:
-                font = this->make_font(dc, 0x6E, 0);
-                break;
-            case 1:
-                font = this->make_font(dc, 0x71, 0);
-                break;
-            case 4:
-                font = this->make_font(dc, 0x74, 0);
-                break;
-            case 6:
-                font = this->make_font(dc, 0x83, 0);
-                break;
-            case 7:
-                font = this->make_font(dc, 0x77, 0);
-                break;
-            case 8:
-                font = this->make_font(dc, 0x80, 1);
-                break;
-            case 9:
-                font = this->make_font(dc, 0x7A, 0);
-                break;
-            case 10:
-                font = this->make_font(dc, 0x7D, 0);
-                break;
-            case 11:
-                font = this->make_font(dc, 0x80, 0);
-                break;
-            default:
-                font = 0;
-                break;
-            }
+    for (i = 0; i < this->font_num; i++) {
+        HFONT font;
+        switch (i) {
+        case 0:
+            font = this->make_font(dc, 0x6E, 0);
+            break;
+        case 1:
+            font = this->make_font(dc, 0x71, 0);
+            break;
+        case 4:
+            font = this->make_font(dc, 0x74, 0);
+            break;
+        case 6:
+            font = this->make_font(dc, 0x83, 0);
+            break;
+        case 7:
+            font = this->make_font(dc, 0x77, 0);
+            break;
+        case 8:
+            font = this->make_font(dc, 0x80, 1);
+            break;
+        case 9:
+            font = this->make_font(dc, 0x7A, 0);
+            break;
+        case 10:
+            font = this->make_font(dc, 0x7D, 0);
+            break;
+        case 11:
+            font = this->make_font(dc, 0x80, 0);
+            break;
+        default:
+            font = 0;
+            break;
+        }
 
-            if (font != 0) {
-                old_font = SelectObject(dc, font);
-                GetTextMetricsA(dc, &tm);
-                font_index = tm.tmHeight;
-                this->fonts[font_index].font = font;
-                this->fonts[font_index].font_wid = tm.tmMaxCharWidth;
-                this->fonts[font_index].font_hgt =
-                    tm.tmAscent + tm.tmAveCharWidth;
-                SelectObject(dc, old_font);
-            }
-
-            i = i + 1;
-        } while (i < this->font_num);
+        if (font != 0) {
+            HGDIOBJ old_font = SelectObject(dc, font);
+            // The original keeps the array index outside the complete metrics object.
+            GetTextMetricsA(dc, &tm);
+            this->fonts[i].font = font;
+            this->fonts[i].font_wid = tm.tmAveCharWidth;
+            this->fonts[i].font_hgt = tm.tmHeight + tm.tmExternalLeading;
+            SelectObject(dc, old_font);
+        }
     }
 
     this->draw_area->ReleaseDc("basegame::setup_fonts");
