@@ -415,8 +415,8 @@ void TSpan_List_Manager::AddSpan(int start, int end, int line)
                         return;
                     }
                 }
-                other->StartPx = start;
-                other->EndPx = end;
+                node->StartPx = start;
+                node->EndPx = end;
             }
         } else {
             while (node->EndPx < start - 1) {
