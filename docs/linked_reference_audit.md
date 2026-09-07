@@ -109,3 +109,11 @@ No game source or status was changed by this audit task.
 
 Reports: `build/linked_references/current.json` and `build/linked_references/broken_stream.json`.
 Seven unit tests cover field offsets, split storage, unknown ranges, overlapping owners, and conservative code alignment.
+
+### Building-copy repair
+
+The later source repair restores the combat-object call in `004C9710`.
+Build `20260907T014211022735Z` reports 4729 pass rows, 6178 unknown rows, and zero failures.
+The formerly failing reference now passes. Unknown coverage is unchanged.
+Report: `build/linked_references/building_copy_fixed.json`.
+See `decomp_notes/functions/004C/004C9710.md` for source evidence and validation.

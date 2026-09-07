@@ -815,7 +815,7 @@ void TRIBE_Building_Object::copy_obj(RGE_Master_Static_Object* source)
     if (sprite == static_cast<TRIBE_Master_Building_Object*>(master_obj)->construction_sprite) {
         new_sprite(source_master->construction_sprite);
     }
-    RGE_Action_Object::copy_obj(source);
+    RGE_Combat_Object::copy_obj(source);
     if (static_cast<TRIBE_Master_Building_Object*>(master_obj)->building_connect_flag != 0) {
         connect();
     }
