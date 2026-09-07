@@ -1,0 +1,36 @@
+# Experiment 975180ca17f0c653a2dd5f1b644b57d7996339a914d902c4b063f598f3073846
+# Base 086ef438307decaf1e5b13864a4e0fa6ac62e22a
+diff --git a/src/tplayer.cpp b/src/tplayer.cpp
+index 263ee7db9..b2f47c3ca 100644
+--- a/src/tplayer.cpp
++++ b/src/tplayer.cpp
+@@ -565,17 +565,18 @@ RGE_Static_Object* TRIBE_Player::find_obj(short id, RGE_Static_Object* after)
+ RGE_Static_Object* TRIBE_Player::make_new_object(long id, float x, float y, float z, int unused)
+ {
+     RGE_Static_Object* object = RGE_Player::make_new_object(id, x, y, z, unused);
+-    if (object == 0) return 0;
+-    if (unused != 0) {
+-        static_cast<TRIBE_World*>(this->world)->check_destructables(
+-            static_cast<short>(id), static_cast<short>(id), x, y, 0);
+-        if (object->master_obj->master_type == 'P')
+-            static_cast<TRIBE_Building_Object*>(object)->build(10000.0f);
+-    }
+-    if (rge_base_game->prog_mode == 7 &&
+-        (object->master_obj->object_group == 5 ||
+-         object->master_obj->object_group == 0x21))
+-        object->sprite_list->set_frame(object->sprite, 5);
++    if (object != 0) {
++        if (unused != 0) {
++            static_cast<TRIBE_World*>(this->world)->check_destructables(
++                this->id, static_cast<short>(id), x, y, 0);
++            if (object->master_obj->master_type == 'P')
++                static_cast<TRIBE_Building_Object*>(object)->build(10000.0f);
++        }
++        if (rge_base_game->prog_mode == 7 &&
++            (object->master_obj->object_group == 5 ||
++             object->master_obj->object_group == 0x21))
++            object->sprite_list->set_frame(object->sprite, 5);
++    }
+     return object;
+ }
+ 
