@@ -1149,8 +1149,9 @@ int debug_timeGetTime_time = 0;
 int all_cp = 0;
 int logStatusOn = 0;
 int do_fixed_update = 0;
-long fixed_update_time = 0;
-float save_game_version = 0.0f;
+// Original initial data: 0057F9E4 and 0058EBCC.
+long fixed_update_time = 100;
+float save_game_version = 7.23f;
 int allow_user_commands = 1;
 unsigned char die_die_die = 0;
 int useComputerPlayers = 1;
