@@ -1219,10 +1219,10 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
            (facetDelta > DAT_00570bb0 || facetDelta < DAT_00570bb8)) {
         this->turnTimer = ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed + this->turnTimer;
         if (angleDelta >= DAT_00570b48) {
-            facetDelta = facetDelta - DAT_00570b64;
+            facetDelta = facetDelta - DAT_00570b60;
             this->angle = DAT_00570b40 / (float)numberFacets + this->angle;
         } else {
-            facetDelta = facetDelta - DAT_00570b60;
+            facetDelta = facetDelta - DAT_00570b64;
             this->angle = this->angle - DAT_00570b40 / (float)numberFacets;
         }
     }
@@ -1403,10 +1403,10 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
         }
         this->turnTimer = ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed + this->turnTimer;
         if (angleDelta >= DAT_00570b48) {
-            facetDelta = facetDelta - DAT_00570b64;
+            facetDelta = facetDelta - DAT_00570b60;
             this->angle = DAT_00570b40 / (float)numberFacets + this->angle;
         } else {
-            facetDelta = facetDelta - DAT_00570b60;
+            facetDelta = facetDelta - DAT_00570b64;
             this->angle = this->angle - DAT_00570b40 / (float)numberFacets;
         }
     } while (this->turnTimer <= DAT_00570b48);
