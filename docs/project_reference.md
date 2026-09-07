@@ -3,6 +3,9 @@
 This document describes the function registry and repository command tools.
 Run a command with `--help` before you use it.
 
+For the separate linked-reference audit, see [Linked-reference audit](linked_reference_audit.md).
+It checks linked call and reviewed storage targets. Unknown coverage does not count as proof.
+
 ## Agent roles
 
 Role definitions live under `agent_roles/`:

@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "owners": [
+    {
+      "original_va": "0088847C",
+      "symbol": "_ds_wave_riff_chunk",
+      "size": 20,
+      "evidence": "Original 0044871B passes this address as the fourth WaveOpenFile argument. MMCKINFO is 20 bytes; cksize is at offset four. See decomp_notes/functions/0044/00448B30.md."
+    }
+  ]
+}
