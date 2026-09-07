@@ -1,0 +1,37 @@
+diff --git a/include/dsutil.h b/include/dsutil.h
+index 8d6800a23..83fbaf9bc 100644
+--- a/include/dsutil.h
++++ b/include/dsutil.h
+@@ -37,7 +37,6 @@ extern int ds_stream_stop_requested;
+ extern unsigned int ds_stream_loop;
+ extern int ds_stream_at_end;
+ extern unsigned int ds_silence_chunks;
+-extern unsigned long ds_buffer_bytes;
+ extern long ds_last_percent;
+ 
+ #ifdef __cplusplus
+diff --git a/src/Dsutil.c b/src/Dsutil.c
+index 399fd6ea5..353991b58 100644
+--- a/src/Dsutil.c
++++ b/src/Dsutil.c
+@@ -1038,7 +1038,7 @@ int __cdecl ds_stream_messages(int a1, int a2)
+         break;
+     case 0x502: {
+         unsigned long a = ds_stream_position;
+-        unsigned long b = ds_buffer_bytes;
++        unsigned long b = ds_wave_riff_chunk.cksize;
+         if (a > b) {
+             ds_stream_position = a - b;
+             a = a - b;
+diff --git a/src/game_globals.cpp b/src/game_globals.cpp
+index 1c3889c27..b87762fcf 100644
+--- a/src/game_globals.cpp
++++ b/src/game_globals.cpp
+@@ -1036,7 +1036,6 @@ int ds_stream_stop_requested = 0;
+ unsigned int ds_stream_loop = 0;
+ int ds_stream_at_end = 0;
+ unsigned int ds_silence_chunks = 0;
+-unsigned long ds_buffer_bytes = 0;
+ long ds_last_percent = 0;
+ 
+ void* AppInst = 0;

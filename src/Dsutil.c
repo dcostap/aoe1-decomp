@@ -1038,7 +1038,7 @@ int __cdecl ds_stream_messages(int a1, int a2)
         break;
     case 0x502: {
         unsigned long a = ds_stream_position;
-        unsigned long b = ds_buffer_bytes;
+        unsigned long b = ds_wave_riff_chunk.cksize;
         if (a > b) {
             ds_stream_position = a - b;
             a = a - b;
