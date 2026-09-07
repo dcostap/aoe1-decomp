@@ -1259,188 +1259,180 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
                            (float)floor((double)this->world_y) - DAT_00570b80,
                            this->world_z);
         }
-    }
 
-    if (this->targetIDValue != -1) {
-        RGE_Game_World* world = this->owner->world;
-        RGE_Static_Object* target = world->object(this->targetIDValue);
-        if (target != 0) {
-            RGE_Master_Static_Object* master =
-                (RGE_Master_Static_Object*)this->master_obj;
-            float targetDX = target->world_x - this->world_x;
-            float targetDY2 = target->world_y - this->world_y;
-            float targetDistance =
-                (float)sqrt(targetDY2 * targetDY2 + targetDX * targetDX);
-            if (targetDistance <
-                (float)sqrt(master->radius_y * master->radius_y +
-                            master->radius_x * master->radius_x) +
-                this->actionRange - DAT_00570ba8) {
-                return 5;
+        if (this->targetIDValue != -1) {
+            RGE_Game_World* world = this->owner->world;
+            RGE_Static_Object* target = world->object(this->targetIDValue);
+            if (target != 0) {
+                RGE_Master_Static_Object* master = (RGE_Master_Static_Object*)this->master_obj;
+                float targetDX = target->world_x - this->world_x;
+                float targetDY2 = target->world_y - this->world_y;
+                float targetDistance = (float)sqrt(targetDY2 * targetDY2 + targetDX * targetDX);
+                if (targetDistance < (float)sqrt(master->radius_y * master->radius_y +
+                                                 master->radius_x * master->radius_x) +
+                                         this->actionRange - DAT_00570ba8) {
+                    return 5;
+                }
             }
         }
-    }
 
-    if (pathSystem.passable(this, x, y, 1) == 0) {
-        return 2;
-    }
-
-    --this->continueCounter;
-    if (this->continueCounter < 1) {
-        return 4;
-    }
-
-    if (this->owner->availablePathingAttempts(this->numberWaitDelays) == 0) {
-        ++this->numberWaitDelays;
-        return 1;
-    }
-
-    this->owner->incrementPathingAttempts();
-    this->startValue.x = this->world_x;
-    this->startValue.y = this->world_y;
-    this->startValue.z = this->world_z;
-    this->numberWaitDelays = 0;
-    pathSystem.incrementContinuePaths();
-
-    if (this->numberUserDefinedWaypointsValue > 0) {
-        found = pathSystem.findTilePath((int)this->startValue.x,
-                                         (int)this->startValue.y,
-                                         this->userDefinedWaypoints->x,
-                                         this->userDefinedWaypoints->y,
-                                         this, this->actionRange, this->targetIDValue,
-                                         1, (float*)0, 1, 1, 1, 1, -1, -1);
-    } else {
-        found = pathSystem.findTilePath((int)this->startValue.x,
-                                         (int)this->startValue.y,
-                                         (int)this->goalValue.x,
-                                         (int)this->goalValue.y,
-                                         this, this->actionRange, this->targetIDValue,
-                                         1, (float*)0, 1, 1, 1, 1, -1, -1);
-    }
-
-    if (actionFile != 0) {
-        fprintf(actionFile,
-                "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n",
-                this->owner->world->world_time, this->id,
-                this->startValue.x, this->startValue.y,
-                this->goalValue.x, this->goalValue.y);
-
-        Path* path = &this->pathValue;
-        path->initToStart();
-        i = 0;
-        while (i < path->numberOfWaypoints()) {
-            float waypointY = path->currentWaypoint()->y;
-            float waypointX = path->currentWaypoint()->x;
-            fprintf(actionFile, ", WP#%d(%6.2f, %6.2f)", i,
-                    waypointX, waypointY);
-            ++i;
-            path->moveToNextWaypoint();
+        if (pathSystem.passable(this, x, y, 1) == 0) {
+            return 2;
         }
-        fprintf(actionFile, ".\n");
-        path->initToStart();
-        path->moveToNextWaypoint();
-    }
 
-    Path* path = &this->pathValue;
-    if (found == 0 && path->numberOfWaypoints() == 1) {
-        newY = (float)floor((double)this->world_y) - DAT_00570b80;
-        dX = (float)floor((double)this->world_x) - DAT_00570b80;
-        if (pathSystem.passable(this, dX, newY, 1)) {
-            if (this->world_x - floor((double)this->world_x) == DAT_00570b90 &&
-                this->world_y - floor((double)this->world_y) == DAT_00570b90) {
-                return 4;
-            }
-            this->teleport((float)floor((double)this->world_x) - DAT_00570b80,
-                           (float)floor((double)this->world_y) - DAT_00570b80,
-                           this->world_z);
-        }
-    }
-
-    int displayObjectID = displayPathObjectID;
-    if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
-        path->initToStart();
-        i = 0;
-        while (i < path->numberOfWaypoints()) {
-            RGE_Master_Static_Object* master =
-                this->owner->master_objects[displayObjectID];
-            float waypointY = path->currentWaypoint()->y;
-            float waypointX = path->currentWaypoint()->x;
-            master->make_new_obj(this->owner, waypointX, waypointY, 1.0f);
-            ++i;
-            path->moveToNextWaypoint();
-        }
-        path->initToStart();
-        path->moveToNextWaypoint();
-    }
-
-    path->initToStart();
-    if (path->moveToNextWaypoint() == 0) {
-        return 4;
-    }
-
-    this->closestDistanceToWaypoint = 100000.0f;
-
-    if (alreadyMoving == 1) {
-        dX = path->currentWaypoint()->x - this->world_x;
-        dY = path->currentWaypoint()->y - this->world_y;
-    } else {
-        dX = path->currentWaypoint()->x - ((float)floor((double)this->world_x) - DAT_00570b80);
-        dY = path->currentWaypoint()->y - ((float)floor((double)this->world_y) - DAT_00570b80);
-    }
-
-    targetDY = (float)atan2((double)dY, (double)dX);
-    this->boundAngle(&targetDY, -1);
-    angleDelta = targetDY - this->angle;
-    facetDelta = (float)(angleDelta * numberFacets) * DAT_00570b78;
-
-    if (this->turnTimer > DAT_00570b48) {
-        this->speed = 0.0f;
-        return 0;
-    }
-
-    do {
-        if (facetDelta <= DAT_00570bc8 && facetDelta >= DAT_00570bd0) {
-            break;
-        }
-        this->turnTimer = ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed + this->turnTimer;
-        if (angleDelta >= DAT_00570b48) {
-            facetDelta = facetDelta - DAT_00570b60;
-            this->angle = DAT_00570b40 / (float)numberFacets + this->angle;
-        } else {
-            facetDelta = facetDelta - DAT_00570b64;
-            this->angle = this->angle - DAT_00570b40 / (float)numberFacets;
-        }
-    } while (this->turnTimer <= DAT_00570b48);
-
-    this->boundAngle(&this->angle, numberFacets);
-    this->set_angle();
-
-    this->velocity_y = (float)sin((double)this->angle) * newAngle;
-    this->velocity_x = (float)cos((double)this->angle) * newAngle;
-    distanceToCover = this->velocity_y;
-    newX = this->world_x + this->velocity_x;
-    newY = this->world_y + distanceToCover;
-
-    if (((RGE_Master_Static_Object*)this->master_obj)->radius_z > DAT_00570b48 &&
-        pathSystem.passable(this, newX, newY, 1) == 0) {
-        if (this->owner->computerPlayer() == 1) {
+        --this->continueCounter;
+        if (this->continueCounter < 1) {
             return 4;
         }
-        if (this->speed <= DAT_00570b48) {
-            this->collisionAvoidanceDistance =
-                (float)(debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x7D5) % 6) * DAT_00570bc0 - DAT_00570b80;
-            this->speed = 0.0f;
-        } else {
-            this->collisionAvoidanceDistance =
-                (float)(debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x7D3) % 6) * DAT_00570bc0 - DAT_00570b80 / this->speed;
-            this->speed = 0.0f;
+
+        if (this->owner->availablePathingAttempts(this->numberWaitDelays) == 0) {
+            ++this->numberWaitDelays;
+            return 1;
         }
-        return 0;
+
+        this->owner->incrementPathingAttempts();
+        this->startValue.x = this->world_x;
+        this->startValue.y = this->world_y;
+        this->startValue.z = this->world_z;
+        this->numberWaitDelays = 0;
+        pathSystem.incrementContinuePaths();
+
+        if (this->numberUserDefinedWaypointsValue > 0) {
+            found = pathSystem.findTilePath((int)this->startValue.x, (int)this->startValue.y,
+                                            this->userDefinedWaypoints->x,
+                                            this->userDefinedWaypoints->y, this, this->actionRange,
+                                            this->targetIDValue, 1, (float*)0, 1, 1, 1, 1, -1, -1);
+        } else {
+            found = pathSystem.findTilePath((int)this->startValue.x, (int)this->startValue.y,
+                                            (int)this->goalValue.x, (int)this->goalValue.y, this,
+                                            this->actionRange, this->targetIDValue, 1, (float*)0, 1,
+                                            1, 1, 1, -1, -1);
+        }
+
+        if (actionFile != 0) {
+            fprintf(actionFile, "t%ld uID=%d, fP1 s=(%6.2f,%6.2f), g=(%6.2f,%6.2f)\n",
+                    this->owner->world->world_time, this->id, this->startValue.x,
+                    this->startValue.y, this->goalValue.x, this->goalValue.y);
+
+            Path* path = &this->pathValue;
+            path->initToStart();
+            i = 0;
+            while (i < path->numberOfWaypoints()) {
+                float waypointY = path->currentWaypoint()->y;
+                float waypointX = path->currentWaypoint()->x;
+                fprintf(actionFile, ", WP#%d(%6.2f, %6.2f)", i, waypointX, waypointY);
+                ++i;
+                path->moveToNextWaypoint();
+            }
+            fprintf(actionFile, ".\n");
+            path->initToStart();
+            path->moveToNextWaypoint();
+        }
+
+        Path* path = &this->pathValue;
+        if (found == 0 && path->numberOfWaypoints() == 1) {
+            newY = (float)floor((double)this->world_y) - DAT_00570b80;
+            dX = (float)floor((double)this->world_x) - DAT_00570b80;
+            if (pathSystem.passable(this, dX, newY, 1)) {
+                if (this->world_x - floor((double)this->world_x) == DAT_00570b90 &&
+                    this->world_y - floor((double)this->world_y) == DAT_00570b90) {
+                    return 4;
+                }
+                this->teleport((float)floor((double)this->world_x) - DAT_00570b80,
+                               (float)floor((double)this->world_y) - DAT_00570b80, this->world_z);
+            }
+        }
+
+        int displayObjectID = displayPathObjectID;
+        if (displayPathingFlags != 0 && (this->selected & 1) != 0) {
+            path->initToStart();
+            i = 0;
+            while (i < path->numberOfWaypoints()) {
+                RGE_Master_Static_Object* master = this->owner->master_objects[displayObjectID];
+                float waypointY = path->currentWaypoint()->y;
+                float waypointX = path->currentWaypoint()->x;
+                master->make_new_obj(this->owner, waypointX, waypointY, 1.0f);
+                ++i;
+                path->moveToNextWaypoint();
+            }
+            path->initToStart();
+            path->moveToNextWaypoint();
+        }
+
+        path->initToStart();
+        if (path->moveToNextWaypoint() == 0) {
+            return 4;
+        }
+
+        this->closestDistanceToWaypoint = 100000.0f;
+
+        if (alreadyMoving == 1) {
+            dX = path->currentWaypoint()->x - this->world_x;
+            dY = path->currentWaypoint()->y - this->world_y;
+        } else {
+            dX = path->currentWaypoint()->x - ((float)floor((double)this->world_x) - DAT_00570b80);
+            dY = path->currentWaypoint()->y - ((float)floor((double)this->world_y) - DAT_00570b80);
+        }
+
+        targetDY = (float)atan2((double)dY, (double)dX);
+        this->boundAngle(&targetDY, -1);
+        angleDelta = targetDY - this->angle;
+        facetDelta = (float)(angleDelta * numberFacets) * DAT_00570b78;
+
+        if (this->turnTimer > DAT_00570b48) {
+            this->speed = 0.0f;
+            return 0;
+        }
+
+        do {
+            if (facetDelta <= DAT_00570bc8 && facetDelta >= DAT_00570bd0) {
+                break;
+            }
+            this->turnTimer =
+                ((RGE_Master_Moving_Object*)this->master_obj)->turn_speed + this->turnTimer;
+            if (angleDelta >= DAT_00570b48) {
+                facetDelta = facetDelta - DAT_00570b60;
+                this->angle = DAT_00570b40 / (float)numberFacets + this->angle;
+            } else {
+                facetDelta = facetDelta - DAT_00570b64;
+                this->angle = this->angle - DAT_00570b40 / (float)numberFacets;
+            }
+        } while (this->turnTimer <= DAT_00570b48);
+
+        this->boundAngle(&this->angle, numberFacets);
+        this->set_angle();
+
+        this->velocity_y = (float)sin((double)this->angle) * newAngle;
+        this->velocity_x = (float)cos((double)this->angle) * newAngle;
+        distanceToCover = this->velocity_y;
+        newX = this->world_x + this->velocity_x;
+        newY = this->world_y + distanceToCover;
+
+        if (((RGE_Master_Static_Object*)this->master_obj)->radius_z > DAT_00570b48 &&
+            pathSystem.passable(this, newX, newY, 1) == 0) {
+            if (this->owner->computerPlayer() == 1) {
+                return 4;
+            }
+            if (this->speed <= DAT_00570b48) {
+                this->collisionAvoidanceDistance =
+                    (float)(debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x7D5) % 6) *
+                        DAT_00570bc0 -
+                    DAT_00570b80;
+                this->speed = 0.0f;
+            } else {
+                this->collisionAvoidanceDistance =
+                    (float)(debug_rand("C:\\msdev\\work\\age1_x1\\move_obj.cpp", 0x7D3) % 6) *
+                        DAT_00570bc0 -
+                    DAT_00570b80 / this->speed;
+                this->speed = 0.0f;
+            }
+            return 0;
+        }
     }
 
-    // The waypoint-snap branch above jumps to moved without
-    // initializing destinationZ. The original tail at 0045F704 reads this
-    // stale stack value for deltaZ and speedMultiplier. Preserve that read.
+    float oldZ = this->world_z;
     float destinationZ;
+    Path* path = &this->pathValue;
     Waypoint* waypoint = path->currentWaypoint();
     if (waypoint == 0) {
         float dx = x - newX;
@@ -1480,7 +1472,7 @@ int RGE_Moving_Object::doTrivialMove(float x, float y)
     this->teleport(newX, newY, destinationZ);
 
 moved:
-    float deltaZ = destinationZ - this->world_z;
+    float deltaZ = oldZ - this->world_z;
     float speedMultiplier = 1.0f;
     this->lastFacet2 = this->lastFacet;
     this->lastFacet = this->facet;
