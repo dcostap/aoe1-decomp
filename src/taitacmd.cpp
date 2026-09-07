@@ -6458,18 +6458,19 @@ int TribeTacticalAIModule::idleCivilian(int mode, XYPoint& position, int chooseM
         ManagedArray<int>* civilians = &this->civilians;
         do {
             if (this->unitsTaskedThisUpdate.contains((*civilians)[i]) != 0)
-                continue;
+                goto first_next;
 
             firstObj = this->md->player->world->object((*civilians)[i]);
             if ((firstObj != 0) && (firstObj->unitAI() != 0)) {
                 if (this->isGatherer((*civilians)[i]) == 0) {
                     if (this->civilianExplorers.contains((*civilians)[i]) != 0)
-                        continue;
+                        goto first_next;
                     if (firstObj->unitAI()->currentAction() == -1 &&
                         firstObj->unitAI()->currentOrder() == -1)
                         return firstObj->id;
                 }
             }
+first_next:
             ++i;
         } while (i < this->civilians.numberValue);
     }

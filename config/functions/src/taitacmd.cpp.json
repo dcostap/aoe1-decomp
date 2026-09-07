@@ -115,7 +115,7 @@
     "004F7870": {"status": "scratch", "symbol": "?numberWarshipsWithPriority@TribeTacticalAIModule@@QAEHHH@Z"},
     "004F7D90": {"status": "matching", "symbol": "?idleSoldier@TribeTacticalAIModule@@QAEHXZ"},
     "004F7E80": {"status": "accepted_drift", "symbol": "?idleCivilian@TribeTacticalAIModule@@QAEHH@Z"},
-    "004F81A0": {"status": "accepted_drift", "symbol": "?idleCivilian@TribeTacticalAIModule@@QAEHHAAUXYPoint@@H@Z"},
+    "004F81A0": {"status": "scratch", "symbol": "?idleCivilian@TribeTacticalAIModule@@QAEHHAAUXYPoint@@H@Z"},
     "004F8570": {"status": "matching", "symbol": "?civilian@TribeTacticalAIModule@@QAEHAAUXYPoint@@HHHHH@Z"},
     "004F87B0": {"status": "scratch", "symbol": "?unit@TribeTacticalAIModule@@QAEHHHH@Z"},
     "004F8BE0": {"status": "matching", "symbol": "?busyWithAction@TribeTacticalAIModule@@QAEHHH@Z"},
