@@ -34,7 +34,7 @@ Do not reuse old reports after validation rules or original identity evidence ch
 
 ## Linked input identity
 
-Fresh executable builds record hashes for the EXE, map, and input objects.
+Fresh executable builds record hashes for the EXE, map, input objects, and verbose linker log.
 They also record the function-registry fingerprint.
 Linked audits reject changed artifacts and mismatched registry snapshots.
 Object-emission audits also check recorded source input hashes against current files.
@@ -52,17 +52,22 @@ python tools/audit_header_emissions.py --build build/executable/RUN --output bui
 This audits all header-owned functions and other unresolved entries through real compiled objects.
 It does not compile headers alone or create source wrappers.
 For each independently known original symbol, it finds and checks every emitted copy.
-The map must identify one emitting object before the report calls the linked selection proved.
+The map must identify one emitting object, or explicit linker records must prove the folded selection.
 
 Results are:
 
-- `all_emissions_match`: every found copy passes, and the map selects an emitting object;
-- `emission_differences`: the map selects an object, but at least one copy differs; or
+- `all_emissions_match`: every found copy passes, and the linked selection is proved;
+- `emission_differences`: the linked selection is proved, but at least one copy differs; or
 - `unknown`: original identity, emission, or linked selection remains unproved.
 
 Identical-code folding can make the map name an object that did not emit that symbol.
-The tool leaves this case unknown. It does not select an owner by byte similarity.
-Missing Tech symbols remain identity gaps, not linker failures.
+The tool reads explicit replacement chains from the hash-checked VC5 verbose log.
+It checks both named object emissions, the final map selection, and the linked function bytes.
+Folded byte proof currently requires relocation-free bodies. Unsupported cases remain unknown.
+The report separates the original emitter from the physical symbol that the linker selected.
+It never treats different source symbols as interchangeable aliases.
+Missing or changed logs cannot supply folding proof. Address sharing or byte similarity alone is insufficient.
+See `decomp_notes/header_linker_folding.md` for the controlled `/OPT:NOICF` probe.
 
 The report preserves object hashes, source recipes, input fingerprints, and each comparison.
 It does not change registry status or prove linked storage and initial data.

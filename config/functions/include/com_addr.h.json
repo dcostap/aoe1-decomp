@@ -8,7 +8,9 @@
       "emission_source": "src/com_addr.cpp"
     },
     "00424E30": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "??1IPAD@@QAE@XZ",
+      "emission_source": "src/com_addr.cpp"
     }
   }
 }

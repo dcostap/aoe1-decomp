@@ -63,10 +63,14 @@
       "emission_source": "src/Pnl_msg.cpp"
     },
     "004374B0": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?char_action@TPanel@@UAEJJF@Z",
+      "emission_source": "src/diam_map.cpp"
     },
     "00437610": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?take_snapshot@TPanel@@UAEXXZ",
+      "emission_source": "src/diam_map.cpp"
     }
   }
 }

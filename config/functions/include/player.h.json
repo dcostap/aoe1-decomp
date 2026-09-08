@@ -3,10 +3,14 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\player.h",
   "functions": {
     "0046EC80": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?changeToHumanPlayer@RGE_Player@@UAEXXZ",
+      "emission_source": "src/player.cpp"
     },
     "0046EC90": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?changeToComputerPlayer@RGE_Player@@UAEXXZ",
+      "emission_source": "src/player.cpp"
     },
     "0046ECA0": {
       "status": "scratch",
@@ -19,7 +23,9 @@
       "emission_source": "src/player.cpp"
     },
     "0046ECC0": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?sendAICommand@RGE_Player@@UAEHHHHHH@Z",
+      "emission_source": "src/player.cpp"
     },
     "0046ECD0": {
       "status": "scratch",
@@ -32,7 +38,9 @@
       "emission_source": "src/player.cpp"
     },
     "0046ED40": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?logStatus@RGE_Player@@UAEXPAU_iobuf@@H@Z",
+      "emission_source": "src/player.cpp"
     }
   }
 }

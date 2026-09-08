@@ -145,7 +145,7 @@ def main() -> int:
     response.write_text("\n".join(arguments) + "\n", encoding="ascii")
     # Even with compiler failures, collect a diagnostic link report. Never call
     # such an image a complete build.
-    command = [str(repo_path(toolchain["compiler"]["link"])), f"@{response}"]
+    command = [str(repo_path(toolchain["compiler"]["link"])), f"@{response}", "/VERBOSE"]
     result = run_command(command, output, toolchain)
     text = result.stdout + result.stderr
     (output / "link.log").write_text(text, encoding="utf-8")
@@ -165,7 +165,7 @@ def main() -> int:
         "linked": report["linked"],
     }
     report['artifact_sha256'] = {path.name: digest(path) for path in
-                                 [*objects, exe, output / 'empiresx.map'] if path.is_file()}
+                                 [*objects, exe, output / 'empiresx.map', output / 'link.log'] if path.is_file()}
     (output / "report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report["summary"], indent=2))
     print(f"Report: {output / 'report.json'}")

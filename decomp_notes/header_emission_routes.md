@@ -1,5 +1,8 @@
 # Header emission routes
 
+This note records the initial 97 routes. The follow-up in `decomp_notes/header_linker_folding.md` resolves the remaining 36.
+All 133 header functions now have registered natural build routes. None remains unresolved.
+
 ## Behavior
 
 No header body changed. No game was run.

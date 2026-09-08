@@ -8,10 +8,14 @@
       "emission_source": "src/basegame.cpp"
     },
     "0041C250": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?get_view_panel@RGE_Base_Game@@UAEPAVTPanel@@XZ",
+      "emission_source": "src/basegame.cpp"
     },
     "0041C260": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?get_map_panel@RGE_Base_Game@@UAEPAVTPanel@@XZ",
+      "emission_source": "src/basegame.cpp"
     },
     "0041C6E0": {
       "status": "scratch",
@@ -19,7 +23,9 @@
       "emission_source": "src/basegame.cpp"
     },
     "0041C6F0": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?processCheatCode@RGE_Base_Game@@UAEHHPAD@Z",
+      "emission_source": "src/basegame.cpp"
     },
     "0041C700": {
       "status": "scratch",

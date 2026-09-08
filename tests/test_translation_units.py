@@ -56,8 +56,8 @@ class TranslationUnitTests(unittest.TestCase):
             for entry in module["functions"].values()
         ]
         self.assertEqual(225, len(modules))
-        self.assertEqual(5390, len(entries))
-        self.assertEqual(5390, len({va for module in modules for va in module['functions']}))
+        self.assertEqual(5426, len(entries))
+        self.assertEqual(5426, len({va for module in modules for va in module['functions']}))
         self.assertTrue(all(entry.get("symbol") for entry in entries))
         self.assertEqual([], validate_translation_units(modules, require_complete=True))
 
@@ -74,8 +74,8 @@ class TranslationUnitTests(unittest.TestCase):
         ]
         self.assertEqual(16, len(header_modules))
         self.assertEqual(133, len(entries))
-        self.assertEqual(97, sum(bool(entry.get('emission_source')) for entry in entries))
-        self.assertEqual(36, sum(entry['status'] == 'unresolved' for entry in entries))
+        self.assertEqual(133, sum(bool(entry.get('emission_source')) for entry in entries))
+        self.assertEqual(0, sum(entry['status'] == 'unresolved' for entry in entries))
         self.assertTrue(all(entry['status'] == 'scratch' for entry in entries if entry.get('emission_source')))
         self.assertTrue(all(module["build"] is None for module in header_modules))
 

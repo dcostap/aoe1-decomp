@@ -56,13 +56,13 @@ class StatusCoreVaFastPathTests(unittest.TestCase):
             root / "logic_reviews" / "0040CDF0.md",
         )
 
-    def test_header_owned_function_is_unresolved(self) -> None:
+    def test_routed_header_function_remains_scratch_and_header_owned(self) -> None:
         rows = status_core.build_status_rows(
             include_source_preview=False,
             include_diff_metrics=False,
             va="0041A480",
         )
-        self.assertEqual(rows[0]["source_bucket"], "unresolved")
+        self.assertEqual(rows[0]["source_bucket"], "scratch")
         self.assertEqual(rows[0]["source_path"], "include/stat_obj.h")
         self.assertEqual(rows[0]["is_remaining"], "yes")
 

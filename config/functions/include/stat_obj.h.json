@@ -13,7 +13,9 @@
       "emission_source": "src/act_obj.cpp"
     },
     "00405D20": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?inAttackRange@RGE_Static_Object@@UAEHPAV1@@Z",
+      "emission_source": "src/act_obj.cpp"
     },
     "00405D30": {
       "status": "scratch",
@@ -91,7 +93,9 @@
       "emission_source": "src/act_obj.cpp"
     },
     "00405E20": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?attack@RGE_Static_Object@@UAEHMMMH@Z",
+      "emission_source": "src/act_obj.cpp"
     },
     "00405E30": {
       "status": "scratch",
@@ -104,7 +108,9 @@
       "emission_source": "src/act_obj.cpp"
     },
     "00405E50": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?moveTo@RGE_Static_Object@@UAEHMMMMH@Z",
+      "emission_source": "src/act_obj.cpp"
     },
     "00405E60": {
       "status": "scratch",
@@ -157,10 +163,14 @@
       "emission_source": "src/act_obj.cpp"
     },
     "00405F00": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?unload@RGE_Static_Object@@UAEHHMMM@Z",
+      "emission_source": "src/act_obj.cpp"
     },
     "00405F10": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?transport@RGE_Static_Object@@UAEHMMMH@Z",
+      "emission_source": "src/act_obj.cpp"
     },
     "00405F20": {
       "status": "scratch",
@@ -188,16 +198,24 @@
       "emission_source": "src/ani_obj.cpp"
     },
     "0041A480": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?stop@RGE_Static_Object@@UAEXXZ",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A490": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?set_attack@RGE_Static_Object@@UAEXPAV1@@Z",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A4A0": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?play_command_sound@RGE_Static_Object@@UAEXXZ",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A4B0": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?play_move_sound@RGE_Static_Object@@UAEXXZ",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A4C0": {
       "status": "scratch",
@@ -205,7 +223,9 @@
       "emission_source": "src/ani_obj.cpp"
     },
     "0041A4D0": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?get_target_obj@RGE_Static_Object@@UAEPAV1@XZ",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A4E0": {
       "status": "scratch",
@@ -218,7 +238,9 @@
       "emission_source": "src/ani_obj.cpp"
     },
     "0041A500": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?passableTile@RGE_Static_Object@@UAEHMMH@Z",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A510": {
       "status": "scratch",
@@ -226,13 +248,19 @@
       "emission_source": "src/ani_obj.cpp"
     },
     "0041A520": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?setWaitingToMove@RGE_Static_Object@@UAEXE@Z",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A530": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?waitingToMove@RGE_Static_Object@@UBEEXZ",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A540": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?actionState@RGE_Static_Object@@UBEEXZ",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A550": {
       "status": "scratch",
@@ -260,10 +288,14 @@
       "emission_source": "src/ani_obj.cpp"
     },
     "0041A5A0": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?findFirstTerrainAlongExceptionPath@RGE_Static_Object@@UAEHHPAM0@Z",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A5B0": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?canLinePath@RGE_Static_Object@@UAEHABUXYPoint@@0MAAU2@H@Z",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A5C0": {
       "status": "scratch",
@@ -276,22 +308,34 @@
       "emission_source": "src/ani_obj.cpp"
     },
     "0041A5E0": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?userDefinedWaypoint@RGE_Static_Object@@UAEPAUXYZBYTEPoint@@H@Z",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A5F0": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?addUserDefinedWaypoint@RGE_Static_Object@@UAEHPAUXYZBYTEPoint@@H@Z",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A600": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?removeAllUserDefinedWaypoints@RGE_Static_Object@@UAEXH@Z",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A610": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?removeUserDefinedWaypoint@RGE_Static_Object@@UAEXH@Z",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A620": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?numberUserDefinedWaypoints@RGE_Static_Object@@UBEHXZ",
+      "emission_source": "src/ani_obj.cpp"
     },
     "0041A630": {
-      "status": "unresolved"
+      "status": "scratch",
+      "symbol": "?findAvoidancePath@RGE_Static_Object@@UAEPAVPath@@AAUXYZPoint@@MH@Z",
+      "emission_source": "src/ani_obj.cpp"
     },
     "004C1CE0": {
       "status": "scratch",
