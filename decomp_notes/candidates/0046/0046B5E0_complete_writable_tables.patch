@@ -1,0 +1,33 @@
+# Complete worktree candidate
+# Base 767991a0b6ca728d3f009431454ad822926d4945
+# Integration remains blocked.
+diff --git a/src/game_globals.cpp b/src/game_globals.cpp
+index b87762fcf..fe3edaf42 100644
+--- a/src/game_globals.cpp
++++ b/src/game_globals.cpp
+@@ -94,8 +94,8 @@ int displayPathObjectID = 83;
+ int displayPathingFlags = 0;
+ int imc_retval = 0;
+ RGE_Pick_Obj_Info Picked_Objects[64] = {0};
+-extern const unsigned char ObstructionValueShift[4] = {0, 2, 4, 6};
+-extern const unsigned char ObstructionValueMask[4] = {0xFC, 0xF3, 0xCF, 0x3F};
++unsigned char ObstructionValueShift[4] = {0, 2, 4, 6};
++unsigned char ObstructionValueMask[4] = {0xFC, 0xF3, 0xCF, 0x3F};
+ int DiagionalDistance[256] = {0};
+ int SDI_Capture_Info = 0;
+ int SDI_Draw_Level = 0;
+diff --git a/src/pathsys.cpp b/src/pathsys.cpp
+index 008075d61..e8621d13e 100644
+--- a/src/pathsys.cpp
++++ b/src/pathsys.cpp
+@@ -14,8 +14,8 @@
+ extern void operator delete(void* ptr);
+ extern void* operator new(unsigned int size, void* ptr);
+ extern int DiagionalDistance[256];
+-extern const unsigned char ObstructionValueShift[4];
+-extern const unsigned char ObstructionValueMask[4];
++extern unsigned char ObstructionValueShift[4];
++extern unsigned char ObstructionValueMask[4];
+ extern RGE_Base_Game* rge_base_game;
+ 
+ // This two-byte cursor is local to pathsys.cpp. No shared owner declares it.

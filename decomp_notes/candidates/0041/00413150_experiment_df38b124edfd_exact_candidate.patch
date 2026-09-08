@@ -1,0 +1,254 @@
+# Experiment df38b124edfdec552cc2913037d03c2d65eae1cae63620b0f91a63072b54d88f
+# Base 767991a0b6ca728d3f009431454ad822926d4945
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 2db30cbf6..70f46bb49 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -51,7 +51,17 @@ public:
+         return this->desiredNumberValue;
+     }
+ 
+-    int contains(const T& item);
++    int contains(const T& item)
++    {
++        int i;
++        for (i = 0; i < this->numberValue; i++) {
++            if (i >= this->maximumSizeValue)
++                return 0;
++            if (this->value[i] == item)
++                return 1;
++        }
++        return 0;
++    }
+ 
+     int position(T& item)
+     {
+@@ -63,29 +73,28 @@ public:
+         return -1;
+     }
+ 
+-    int add(T item);
++    int add(T item)
++    {
++        if (this->contains(item) == 1)
++            return 0;
++        if (this->numberValue > this->maximumSizeValue - 1)
++            this->resize(this->numberValue + 1);
++        this->value[this->numberValue] = item;
++        this->numberValue++;
++        return 1;
++    }
+ 
+     int remove(T item)
+     {
+-        int i = 0;
+-        int maximum = this->maximumSizeValue;
+-
+-        for (; i < maximum; i++) {
+-            if (this->value[i] == item)
+-                break;
+-        }
+-
+-        if (i >= maximum)
++        int i;
++        for (i = 0;
++             i < this->maximumSizeValue && this->value[i] != item;
++             i++)
++            ;
++        if (i >= this->maximumSizeValue)
+             return 0;
+-
+-        maximum--;
+-        if (i < maximum) {
+-            do {
+-                this->value[i] = this->value[i + 1];
+-                i++;
+-            } while (i < this->maximumSizeValue - 1);
+-        }
+-
++        for (; i < this->maximumSizeValue - 1; i++)
++            this->value[i] = this->value[i + 1];
+         this->numberValue--;
+         if (this->numberValue < 0)
+             this->numberValue = 0;
+@@ -134,9 +143,7 @@ public:
+         }
+     }
+ 
+-public:
+-    // PDB marks resize protected. Reconstructed callers still require public
+-    // access, so keep the body here while the source-access boundary is open.
++protected:
+     int resize(int new_size)
+     {
+         T* new_value = new T[new_size];
+@@ -163,53 +170,4 @@ public:
+     int maximumSizeValue;
+ };
+ 
+-template <class T>
+-int ManagedArray<T>::contains(const T& item)
+-{
+-    int i;
+-    T wanted;
+-    T current;
+-
+-    for (i = 0; i < this->numberValue; i++) {
+-        if (i >= this->maximumSizeValue)
+-            return 0;
+-        current = this->value[i];
+-        wanted = item;
+-        if (current == wanted)
+-            return 1;
+-    }
+-    return 0;
+-}
+-
+-template <class T>
+-int ManagedArray<T>::add(T val)
+-{
+-    int i;
+-
+-    for (i = 0; i < this->numberValue; i++) {
+-        if (i >= this->maximumSizeValue)
+-            break;
+-        if (this->value[i] == val)
+-            return 0;
+-    }
+-    if (this->numberValue > this->maximumSizeValue - 1) {
+-        int newSize = this->numberValue + 1;
+-        T* newValue = (T*)::operator new(newSize * sizeof(T));
+-        if (newValue != 0) {
+-            int j;
+-            for (j = 0; j < this->maximumSizeValue; j++) {
+-                if (j >= newSize)
+-                    break;
+-                newValue[j] = this->value[j];
+-            }
+-            ::operator delete(this->value);
+-            this->value = newValue;
+-            this->maximumSizeValue = newSize;
+-        }
+-    }
+-    this->value[this->numberValue] = val;
+-    this->numberValue++;
+-    return 1;
+-}
+-
+ #endif
+diff --git a/src/aiuaimod.cpp b/src/aiuaimod.cpp
+index dc9e8f071..f8b8922e5 100644
+--- a/src/aiuaimod.cpp
++++ b/src/aiuaimod.cpp
+@@ -93,11 +93,6 @@ void __cdecl rge_write(int fd, void* data, int size);
+ void UnitAIModule::save(int fd) {
+     int i;
+     int temp;
+-    int num;
+-    int* ptr;
+-    int cnt;
+-    int* newArr;
+-    int j;
+ 
+     rge_write(fd, &moodValue, 4);
+     rge_write(fd, &currentOrderValue, 4);
+@@ -134,27 +129,11 @@ void UnitAIModule::save(int fd) {
+         rge_write(fd, &notifyQueueValue[i], sizeof(NotifyEvent));
+     }
+ 
+-    temp = attackingUnitsValue.numberValue;
++    temp = attackingUnitsValue.number();
+     rge_write(fd, &temp, 4);
+-    {
+-        int i_attack;
+-        for (i_attack = 0; i_attack < attackingUnitsValue.numberValue; i_attack++) {
+-            if (attackingUnitsValue.maximumSizeValue - 1 < i_attack) {
+-                int* newArr = (int*)::operator new(i_attack * 4 + 4);
+-                if (newArr) {
+-                    int j;
+-                    for (j = 0; j < attackingUnitsValue.maximumSizeValue; j++) {
+-                        if (i_attack + 1 <= j) break;
+-                        newArr[j] = attackingUnitsValue.value[j];
+-                    }
+-                    ::operator delete(attackingUnitsValue.value);
+-                    attackingUnitsValue.value = newArr;
+-                    attackingUnitsValue.maximumSizeValue = i_attack + 1;
+-                }
+-            }
+-            temp = attackingUnitsValue.value[i_attack];
+-            rge_write(fd, &temp, 4);
+-        }
++    for (i = 0; i < attackingUnitsValue.number(); i++) {
++        temp = attackingUnitsValue[i];
++        rge_write(fd, &temp, 4);
+     }
+ 
+     if (playStatus == 0) {
+@@ -447,38 +426,15 @@ float UnitAIModule::desiredTargetDistance() const {
+ 
+ 
+ int UnitAIModule::attackingUnitID(int index) {
+-    if (index < 0 || index >= this->attackingUnitsValue.numberValue) {
++    if (index < 0 || index >= this->attackingUnitsValue.number()) {
+         return -1;
+     }
+-    if (index > this->attackingUnitsValue.maximumSizeValue - 1) {
+-        int newMax = index + 1;
+-        int* newValues = (int*)::operator new(newMax * 4);
+-        if (newValues != 0) {
+-            int oldMax = this->attackingUnitsValue.maximumSizeValue;
+-            int i = 0;
+-            if (oldMax > 0) {
+-                do {
+-                    if (i < newMax) {
+-                        i++;
+-                        int value = this->attackingUnitsValue.value[i - 1];
+-                        newValues[i - 1] = value;
+-                        oldMax = this->attackingUnitsValue.maximumSizeValue;
+-                    } else {
+-                        break;
+-                    }
+-                } while (i < oldMax);
+-            }
+-            ::operator delete(this->attackingUnitsValue.value);
+-            this->attackingUnitsValue.value = newValues;
+-            this->attackingUnitsValue.maximumSizeValue = newMax;
+-        }
+-    }
+-    return this->attackingUnitsValue.value[index];
++    return this->attackingUnitsValue[index];
+ }
+ 
+ 
+ int UnitAIModule::numberAttackingUnits() const {
+-    return this->attackingUnitsValue.numberValue;
++    return this->attackingUnitsValue.number();
+ }
+ 
+ 
+@@ -732,11 +688,8 @@ void UnitAIModule::updateGroup(unsigned long param_1)
+ 
+                     object = this->objectValue;
+                     if (object->groupMembers[memberIndex] != object->id) {
+-                        if (memberIndex > object->groupMembers.maximumSizeValue - 1) {
+-                            object->groupMembers.resize(memberIndex + 1);
+-                        }
+                         object = this->lookupObject(
+-                            object->groupMembers.value[memberIndex]);
++                            object->groupMembers[memberIndex]);
+                         if (object != 0 && object->unitAI() != 0) {
+                             UnitAIModule* memberAI = object->unitAI();
+                             newTarget = memberAI->bestUnitToAttack(1, 0, (float*)0);
+@@ -1058,11 +1011,8 @@ int UnitAIModule::selectNewPlayPhase(int param_1, int param_2)
+                 a = 0;
+                 if (this->objectValue->groupMembers.numberValue > 0) {
+                     do {
+-                        if (a > this->objectValue->groupMembers.maximumSizeValue - 1) {
+-                            this->objectValue->groupMembers.resize(a + 1);
+-                        }
+                         member = this->lookupObject(
+-                            this->objectValue->groupMembers.value[a]);
++                            this->objectValue->groupMembers[a]);
+                         if (member != 0 && member->unitAI() != 0) {
+                             param_1 = command->group();
+                             if (this->playStatus->group(member->id) !=

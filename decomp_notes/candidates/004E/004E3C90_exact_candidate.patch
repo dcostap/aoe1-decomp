@@ -1,0 +1,168 @@
+# Experiment 070324f2333e946aedd86c7dfc535d8c372c4992b9968447a7e6d631c45cdd14
+# Base 767991a0b6ca728d3f009431454ad822926d4945
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 2db30cbf6..65883de62 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -51,7 +51,17 @@ public:
+         return this->desiredNumberValue;
+     }
+ 
+-    int contains(const T& item);
++    int contains(const T& item)
++    {
++        int i;
++        for (i = 0; i < this->numberValue; i++) {
++            if (i >= this->maximumSizeValue)
++                return 0;
++            if (this->value[i] == item)
++                return 1;
++        }
++        return 0;
++    }
+ 
+     int position(T& item)
+     {
+@@ -63,7 +73,16 @@ public:
+         return -1;
+     }
+ 
+-    int add(T item);
++    int add(T item)
++    {
++        if (this->contains(item) == 1)
++            return 0;
++        if (this->numberValue > this->maximumSizeValue - 1)
++            this->resize(this->numberValue + 1);
++        this->value[this->numberValue] = item;
++        this->numberValue++;
++        return 1;
++    }
+ 
+     int remove(T item)
+     {
+@@ -134,9 +153,7 @@ public:
+         }
+     }
+ 
+-public:
+-    // PDB marks resize protected. Reconstructed callers still require public
+-    // access, so keep the body here while the source-access boundary is open.
++protected:
+     int resize(int new_size)
+     {
+         T* new_value = new T[new_size];
+@@ -163,53 +180,4 @@ public:
+     int maximumSizeValue;
+ };
+ 
+-template <class T>
+-int ManagedArray<T>::contains(const T& item)
+-{
+-    int i;
+-    T wanted;
+-    T current;
+-
+-    for (i = 0; i < this->numberValue; i++) {
+-        if (i >= this->maximumSizeValue)
+-            return 0;
+-        current = this->value[i];
+-        wanted = item;
+-        if (current == wanted)
+-            return 1;
+-    }
+-    return 0;
+-}
+-
+-template <class T>
+-int ManagedArray<T>::add(T val)
+-{
+-    int i;
+-
+-    for (i = 0; i < this->numberValue; i++) {
+-        if (i >= this->maximumSizeValue)
+-            break;
+-        if (this->value[i] == val)
+-            return 0;
+-    }
+-    if (this->numberValue > this->maximumSizeValue - 1) {
+-        int newSize = this->numberValue + 1;
+-        T* newValue = (T*)::operator new(newSize * sizeof(T));
+-        if (newValue != 0) {
+-            int j;
+-            for (j = 0; j < this->maximumSizeValue; j++) {
+-                if (j >= newSize)
+-                    break;
+-                newValue[j] = this->value[j];
+-            }
+-            ::operator delete(this->value);
+-            this->value = newValue;
+-            this->maximumSizeValue = newSize;
+-        }
+-    }
+-    this->value[this->numberValue] = val;
+-    this->numberValue++;
+-    return 1;
+-}
+-
+ #endif
+diff --git a/src/taiinfmd.cpp b/src/taiinfmd.cpp
+index cd749f29e..499db400a 100644
+--- a/src/taiinfmd.cpp
++++ b/src/taiinfmd.cpp
+@@ -6209,40 +6209,28 @@ int TribeInformationAIModule::resourceTypeToPlaceDropsiteBy(int param_1) {
+ }
+ 
+ int TribeInformationAIModule::dropsitesWithinRequiredDistance(
+-    int& numApplicableResources, int resourceType, int requiredDistance)
++    int& numDS, int rType, int maxDistance)
+ {
+-    int totalApplicable;
+-    int index;
+-
++    int numApplicableResources;
++    numDS = 0;
+     numApplicableResources = 0;
+-    totalApplicable = 0;
+-    ManagedArray_int dropsites;
+-    index = 0;
+-
+-    if (this->numResources[resourceType] > 0) {
+-        do {
+-            if (this->resources[resourceType][index].gone != 1) {
+-                if (this->md->object(this->resources[resourceType][index].id) != 0) {
+-                    ++totalApplicable;
+-                    if ((int)this->resources[resourceType][index].dropDistance <= requiredDistance) {
+-                        if (dropsites.contains(this->resources[resourceType][index].dropsiteID) == 0) {
+-                            ++numApplicableResources;
+-                            int dropsiteID = this->resources[resourceType][index].dropsiteID;
+-                            dropsites.add(dropsiteID);
+-                        }
++    ManagedArray<int> dropsites;
++    for (int a = 0; a < this->numResources[rType]; a++) {
++        if (this->resources[rType][a].gone != 1) {
++            if (this->md->object(this->resources[rType][a].id) != 0) {
++                numApplicableResources++;
++                if ((int)this->resources[rType][a].dropDistance <= maxDistance) {
++                    if (dropsites.contains(this->resources[rType][a].dropsiteID) == 0) {
++                        numDS++;
++                        dropsites.add(this->resources[rType][a].dropsiteID);
+                     }
+                 }
+             }
+-
+-            ++index;
+-        } while (index < this->numResources[resourceType]);
++        }
+     }
+-
+-    if (totalApplicable > 0) {
++    if (numApplicableResources > 0)
+         return 1;
+-    } else {
+-        return 0;
+-    }
++    return 0;
+ }
+ 
+ int TribeInformationAIModule::numberAvailableStoragePits(int param_1)

@@ -1,0 +1,655 @@
+# Experiment 31c6fb56d48f94a42ee1834a299a10a0c586f8f0b48edfa60428d7b4c1868f07
+# Base 767991a0b6ca728d3f009431454ad822926d4945
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 2db30cbf6..ae336f21e 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -30,11 +30,11 @@ public:
+         this->maximumSizeValue = 0;
+     }
+ 
+-    T& operator[](int index)
++    T& operator[](int v)
+     {
+-        if (index > this->maximumSizeValue - 1)
+-            this->resize(index + 1);
+-        return this->value[index];
++        if (v > this->maximumSizeValue - 1)
++            this->resize(v + 1);
++        return this->value[v];
+     }
+ 
+     int enlarge(int amount)
+@@ -51,7 +51,17 @@ public:
+         return this->desiredNumberValue;
+     }
+ 
+-    int contains(const T& item);
++    int contains(const T& r)
++    {
++        int i;
++        for (i = 0; i < this->numberValue; i++) {
++            if (i >= this->maximumSizeValue)
++                return 0;
++            if (this->value[i] == r)
++                return 1;
++        }
++        return 0;
++    }
+ 
+     int position(T& item)
+     {
+@@ -63,29 +73,28 @@ public:
+         return -1;
+     }
+ 
+-    int add(T item);
+-
+-    int remove(T item)
++    int add(T r)
+     {
+-        int i = 0;
+-        int maximum = this->maximumSizeValue;
+-
+-        for (; i < maximum; i++) {
+-            if (this->value[i] == item)
+-                break;
+-        }
+-
+-        if (i >= maximum)
++        if (this->contains(r) == 1)
+             return 0;
++        if (this->numberValue > this->maximumSizeValue - 1)
++            this->resize(this->numberValue + 1);
++        this->value[this->numberValue] = r;
++        this->numberValue++;
++        return 1;
++    }
+ 
+-        maximum--;
+-        if (i < maximum) {
+-            do {
+-                this->value[i] = this->value[i + 1];
+-                i++;
+-            } while (i < this->maximumSizeValue - 1);
+-        }
+-
++    int remove(T r)
++    {
++        int i;
++        for (i = 0;
++             i < this->maximumSizeValue && this->value[i] != r;
++             i++)
++            ;
++        if (i >= this->maximumSizeValue)
++            return 0;
++        for (; i < this->maximumSizeValue - 1; i++)
++            this->value[i] = this->value[i + 1];
+         this->numberValue--;
+         if (this->numberValue < 0)
+             this->numberValue = 0;
+@@ -134,82 +143,30 @@ public:
+         }
+     }
+ 
+-public:
+-    // PDB marks resize protected. Reconstructed callers still require public
+-    // access, so keep the body here while the source-access boundary is open.
+-    int resize(int new_size)
++protected:
++    int resize(int s)
+     {
+-        T* new_value = new T[new_size];
++        T* new_value = new T[s];
+         if (new_value == 0)
+             return 0;
+ 
+         int i;
+         for (i = 0;
+-             i < this->maximumSizeValue && i < new_size;
++             i < this->maximumSizeValue && i < s;
+              i++) {
+             new_value[i] = this->value[i];
+         }
+ 
+         delete[] this->value;
+         this->value = new_value;
+-        this->maximumSizeValue = new_size;
++        this->maximumSizeValue = s;
+         return 1;
+     }
+ 
+-public:
+     T* value;
+     int numberValue;
+     int desiredNumberValue;
+     int maximumSizeValue;
+ };
+ 
+-template <class T>
+-int ManagedArray<T>::contains(const T& item)
+-{
+-    int i;
+-    T wanted;
+-    T current;
+-
+-    for (i = 0; i < this->numberValue; i++) {
+-        if (i >= this->maximumSizeValue)
+-            return 0;
+-        current = this->value[i];
+-        wanted = item;
+-        if (current == wanted)
+-            return 1;
+-    }
+-    return 0;
+-}
+-
+-template <class T>
+-int ManagedArray<T>::add(T val)
+-{
+-    int i;
+-
+-    for (i = 0; i < this->numberValue; i++) {
+-        if (i >= this->maximumSizeValue)
+-            break;
+-        if (this->value[i] == val)
+-            return 0;
+-    }
+-    if (this->numberValue > this->maximumSizeValue - 1) {
+-        int newSize = this->numberValue + 1;
+-        T* newValue = (T*)::operator new(newSize * sizeof(T));
+-        if (newValue != 0) {
+-            int j;
+-            for (j = 0; j < this->maximumSizeValue; j++) {
+-                if (j >= newSize)
+-                    break;
+-                newValue[j] = this->value[j];
+-            }
+-            ::operator delete(this->value);
+-            this->value = newValue;
+-            this->maximumSizeValue = newSize;
+-        }
+-    }
+-    this->value[this->numberValue] = val;
+-    this->numberValue++;
+-    return 1;
+-}
+-
+ #endif
+diff --git a/src/taistrmd.cpp b/src/taistrmd.cpp
+index 1537356df..800b111b5 100644
+--- a/src/taistrmd.cpp
++++ b/src/taistrmd.cpp
+@@ -988,21 +988,13 @@ int TribeStrategyAIModule::update(int parameter)
+     result = -1;
+     bestResult = 0;
+     worstRuleResult = -1;
+-    if (i < this->idleRules.numberValue) {
+-        ManagedArray<int>* idleRules = &this->idleRules;
+-        do {
+-            if (i > idleRules->maximumSizeValue - 1) {
+-                idleRules->resize(i + 1);
+-            }
+-            ruleResult = this->vcRules.evaluateAsNonInProgress(
+-                this->md->aiPlayer,
+-                idleRules->value[i]);
+-            if (ruleResult > bestResult) {
+-                result = (*idleRules)[i];
+-                bestResult = ruleResult;
+-            }
+-            ++i;
+-        } while (i < this->idleRules.numberValue);
++    for (i = 0; i < this->idleRules.number(); i++) {
++        ruleResult = this->vcRules.evaluateAsNonInProgress(
++            this->md->aiPlayer, this->idleRules[i]);
++        if (ruleResult > bestResult) {
++            result = this->idleRules[i];
++            bestResult = ruleResult;
++        }
+     }
+ 
+     if (result != -1 &&
+@@ -1010,127 +1002,36 @@ int TribeStrategyAIModule::update(int parameter)
+             this->md->aiPlayer,
+             this->currentVictoryConditionValue,
+             result) == 1) {
+-        ManagedArray<int>* executingRules = &this->executingRules;
+-        int executingCount = executingRules->numberValue;
+-        i = 0;
+-        if (executingCount > 0) {
+-            while (i < executingCount && i < executingRules->maximumSizeValue) {
+-                if (executingRules->value[i] == result) {
+-                    goto remove_idle_rule;
+-                }
+-                ++i;
+-            }
+-        }
+-        if (executingCount > executingRules->maximumSizeValue - 1) {
+-            executingRules->resize(executingCount + 1);
+-        }
+-        executingRules->value[executingRules->numberValue] = result;
+-        executingRules->numberValue++;
+-
+-remove_idle_rule:
+-        int idleCount = this->idleRules.maximumSizeValue;
+-        i = 0;
+-        int* idleValue = this->idleRules.value;
+-        while (i < idleCount) {
+-            if (*idleValue == result) {
+-                break;
+-            }
+-            ++i;
+-            ++idleValue;
+-        }
+-        if (i < idleCount) {
+-            if (i < idleCount - 1) {
+-                do {
+-                    this->idleRules.value[i] = this->idleRules.value[i + 1];
+-                    ++i;
+-                } while (i < this->idleRules.maximumSizeValue - 1);
+-            }
+-            this->idleRules.numberValue--;
+-            if (this->idleRules.numberValue < 0) {
+-                this->idleRules.numberValue = 0;
+-            }
+-        }
++        this->executingRules.add(result);
++        this->idleRules.remove(result);
+     }
+ 
+-    i = 0;
+-    result = 0x65;
+     worstRuleResult = -1;
+-    if (this->executingRules.numberValue > 0) {
+-        ManagedArray<int>* executingRules = &this->executingRules;
+-        do {
+-            ruleResult = this->vcRules.evaluateAsInProgress(
+-                this->md->aiPlayer,
+-                (*executingRules)[i]);
+-            if (ruleResult < result) {
+-                if (i > this->executingRules.maximumSizeValue - 1) {
+-                    executingRules->resize(i + 1);
+-                }
+-                worstRuleResult = executingRules->value[i];
+-                result = ruleResult;
+-            }
+-            ++i;
+-        } while (i < this->executingRules.numberValue);
++    result = 0x65;
++    for (i = 0; i < this->executingRules.number(); i++) {
++        ruleResult = this->vcRules.evaluateAsInProgress(
++            this->md->aiPlayer, this->executingRules[i]);
++        if (ruleResult < result) {
++            worstRuleResult = this->executingRules[i];
++            result = ruleResult;
++        }
+     }
+ 
+     if (worstRuleResult != -1 &&
+         this->vcRules.stopExecution(this->md->aiPlayer, worstRuleResult) == 1) {
+-        int executingSize = this->executingRules.maximumSizeValue;
+-        i = 0;
+-        int* executingValue = this->executingRules.value;
+-        while (i < executingSize) {
+-            if (*executingValue == worstRuleResult) {
+-                break;
+-            }
+-            ++i;
+-            ++executingValue;
+-        }
+-        if (i < executingSize) {
+-            if (i < executingSize - 1) {
+-                do {
+-                    this->executingRules.value[i] = this->executingRules.value[i + 1];
+-                    ++i;
+-                } while (i < this->executingRules.maximumSizeValue - 1);
+-            }
+-            this->executingRules.numberValue--;
+-            if (this->executingRules.numberValue < 0) {
+-                this->executingRules.numberValue = 0;
+-            }
+-        }
+-
+-        ManagedArray<int>* idleRules = &this->idleRules;
+-        int idleCount = idleRules->numberValue;
+-        i = 0;
+-        if (idleCount > 0) {
+-            while (i < idleCount && i < idleRules->maximumSizeValue) {
+-                if (idleRules->value[i] == worstRuleResult) {
+-                    goto add_idle_rule;
+-                }
+-                ++i;
+-            }
+-        }
+-        if (idleCount > idleRules->maximumSizeValue - 1) {
+-            idleRules->resize(idleCount + 1);
+-        }
+-        idleRules->value[idleRules->numberValue] = worstRuleResult;
+-        idleRules->numberValue++;
+-
+-add_idle_rule:
+-        ;
++        this->executingRules.remove(worstRuleResult);
++        this->idleRules.add(worstRuleResult);
+     }
+ 
+-    i = 0;
+-    if (this->vcRuleSet.numberValue > 0) {
+-        do {
+-            ruleResult = this->vcRules.evaluateAsNonInProgress(
+-                this->md->aiPlayer, this->vcRuleSet[i]);
+-            if (ruleResult == -1) {
+-                this->vcRules.execute(
+-                    this->md->aiPlayer,
+-                    this->currentVictoryConditionValue,
+-                    this->vcRuleSet[i]);
+-            }
+-            ++i;
+-        } while (i < this->vcRuleSet.numberValue);
++    for (i = 0; i < this->vcRuleSet.number(); i++) {
++        ruleResult = this->vcRules.evaluateAsNonInProgress(
++            this->md->aiPlayer, this->vcRuleSet[i]);
++        if (ruleResult == -1) {
++            this->vcRules.execute(
++                this->md->aiPlayer,
++                this->currentVictoryConditionValue,
++                this->vcRuleSet[i]);
++        }
+     }
+     return 1;
+ }
+@@ -1151,86 +1052,47 @@ void* __cdecl operator new(unsigned int size);
+ void __cdecl operator delete(void* p);
+ 
+ 
+-int TribeStrategyAIModule::save(int fd)
++int TribeStrategyAIModule::save(int outfile)
+ {
+-    int temp;
+-    char tempString[260];
++    int tempInt;
++    char tempString[257];
+     int i;
+ 
+-    rge_write(fd, &this->currentVictoryConditionValue, 4);
+-    rge_write(fd, &this->targetIDValue, 4);
+-    rge_write(fd, &this->secondTargetIDValue, 4);
+-    rge_write(fd, &this->secondTargetTypeValue, 4);
+-    rge_write(fd, &this->targetPoint1Value, 16);
+-    rge_write(fd, &this->targetPoint2Value, 16);
+-    rge_write(fd, &this->targetAttributeValue, 4);
+-    rge_write(fd, &this->targetNumberValue, 4);
+-    rge_write(fd, &this->victoryConditionChangeTimeout, 4);
+-    rge_write(fd, &this->difficultyLevel, 4);
++    rge_write(outfile, &this->currentVictoryConditionValue, 4);
++    rge_write(outfile, &this->targetIDValue, 4);
++    rge_write(outfile, &this->secondTargetIDValue, 4);
++    rge_write(outfile, &this->secondTargetTypeValue, 4);
++    rge_write(outfile, &this->targetPoint1Value, 16);
++    rge_write(outfile, &this->targetPoint2Value, 16);
++    rge_write(outfile, &this->targetAttributeValue, 4);
++    rge_write(outfile, &this->targetNumberValue, 4);
++    rge_write(outfile, &this->victoryConditionChangeTimeout, 4);
++    rge_write(outfile, &this->difficultyLevel, 4);
+ 
+     strcpy(tempString, this->ruleSetNameValue);
+-    temp = strlen(tempString);
+-    rge_write(fd, &temp, 4);
+-    rge_write(fd, tempString, strlen(tempString));
+-
+-    temp = this->vcRuleSet.numberValue;
+-    rge_write(fd, &temp, 4);
+-    for (i = 0; i < this->vcRuleSet.numberValue; i++) {
+-        if (i > this->vcRuleSet.maximumSizeValue - 1) {
+-            int newMax = i + 1;
+-            int* newArr = (int*)operator new(i * 4 + 4);
+-            if (newArr) {
+-                int j;
+-                for (j = 0; j < this->vcRuleSet.maximumSizeValue && j < newMax; j++) {
+-                    newArr[j] = this->vcRuleSet.value[j];
+-                }
+-                operator delete(this->vcRuleSet.value);
+-                this->vcRuleSet.value = newArr;
+-                this->vcRuleSet.maximumSizeValue = newMax;
+-            }
+-        }
+-        temp = this->vcRuleSet.value[i];
+-        rge_write(fd, &temp, 4);
++    tempInt = strlen(tempString);
++    rge_write(outfile, &tempInt, 4);
++    rge_write(outfile, tempString, strlen(tempString));
++
++    tempInt = this->vcRuleSet.number();
++    rge_write(outfile, &tempInt, 4);
++    for (i = 0; i < this->vcRuleSet.number(); i++) {
++        tempInt = this->vcRuleSet[i];
++        rge_write(outfile, &tempInt, 4);
+     }
+ 
+-    temp = this->executingRules.numberValue;
+-    rge_write(fd, &temp, 4);
+-    for (i = 0; i < this->executingRules.numberValue; i++) {
+-        if (i > this->executingRules.maximumSizeValue - 1) {
+-            int newMax = i + 1;
+-            int* newArr = (int*)operator new(i * 4 + 4);
+-            if (newArr) {
+-                int j;
+-                for (j = 0; j < this->executingRules.maximumSizeValue && j < newMax; j++) {
+-                    newArr[j] = this->executingRules.value[j];
+-                }
+-                operator delete(this->executingRules.value);
+-                this->executingRules.value = newArr;
+-                this->executingRules.maximumSizeValue = newMax;
+-            }
+-        }
+-        temp = this->executingRules.value[i];
+-        rge_write(fd, &temp, 4);
++    tempInt = this->executingRules.number();
++    rge_write(outfile, &tempInt, 4);
++    for (i = 0; i < this->executingRules.number(); i++) {
++        tempInt = this->executingRules[i];
++        rge_write(outfile, &tempInt, 4);
+     }
+ 
+-    temp = this->idleRules.numberValue;
+-    rge_write(fd, &temp, 4);
+-    for (i = 0; i < this->idleRules.numberValue; i++) {
+-        if (i > this->idleRules.maximumSizeValue - 1) {
+-            int newMax = i + 1;
+-            int* newArr = (int*)operator new(i * 4 + 4);
+-            if (newArr) {
+-                int j;
+-                for (j = 0; j < this->idleRules.maximumSizeValue && j < newMax; j++) {
+-                    newArr[j] = this->idleRules.value[j];
+-                }
+-                operator delete(this->idleRules.value);
+-                this->idleRules.value = newArr;
+-                this->idleRules.maximumSizeValue = newMax;
+-            }
+-        }
+-        temp = this->idleRules.value[i];
+-        rge_write(fd, &temp, 4);
++    tempInt = this->idleRules.number();
++    rge_write(outfile, &tempInt, 4);
++    for (i = 0; i < this->idleRules.number(); i++) {
++        tempInt = this->idleRules[i];
++        rge_write(outfile, &tempInt, 4);
+     }
+ 
+     return 1;
+@@ -1304,121 +1166,71 @@ int TribeStrategyAIModule::targetNumber() const {
+ class TRIBE_Player;
+ 
+ 
+-#define ADD_REQUIRED(valueToAdd) do { \
+-    v = (valueToAdd); \
+-    if (rules->contains(v) != 1) { \
+-        if (rules->numberValue > rules->maximumSizeValue - 1) \
+-            rules->resize(rules->numberValue + 1); \
+-        rules->value[rules->numberValue] = v; \
+-        rules->numberValue++; \
+-    } \
+-} while (0)
+-
+-// this add-heavy body uses the out-of-line ManagedArray::operator[]
+-// calls shown at 004EA6EF, 004EA71A, and 004EA72A.
+-#pragma inline_depth(0)
+-
+-void TribeStrategyAIModule::setVictoryCondition(int v)
++void TribeStrategyAIModule::setVictoryCondition(int vcNumber)
+ {
+-    int& currentReference = this->currentVictoryConditionValue;
+-    currentReference = v;
+-    this->vcRuleSet.numberValue = 0;
+-
+-    v = 1;
+-    if (this->vcRuleSet.contains(v) != 1) {
+-        ManagedArray<int>* firstRules = &this->vcRuleSet;
+-        if (firstRules->numberValue > firstRules->maximumSizeValue - 1)
+-            firstRules->resize(firstRules->numberValue + 1);
+-        firstRules->value[firstRules->numberValue] = v;
+-        firstRules->numberValue++;
+-    }
+-
+-    ManagedArray<int>* rules = &this->vcRuleSet;
+-    ADD_REQUIRED(2);
+-    ADD_REQUIRED(0x0C);
+-    ADD_REQUIRED(0x0D);
+-    ADD_REQUIRED(0x0E);
+-    ADD_REQUIRED(0x10);
+-    ADD_REQUIRED(0x11);
+-    ADD_REQUIRED(0x12);
+-    ADD_REQUIRED(0x15);
+-    ADD_REQUIRED(0x16);
+-    ADD_REQUIRED(0x17);
+-    ADD_REQUIRED(0x18);
+-    ADD_REQUIRED(0x19);
+-
+-    rules->add(0x1A);
+-    rules->add(0x1B);
+-    rules->add(0x1C);
+-    rules->add(0x1D);
+-    rules->add(0x1E);
+-    rules->add(0x1F);
+-    rules->add(0x20);
+-    rules->add(0x21);
+-    rules->add(0x22);
+-    rules->add(0x23);
+-    rules->add(0x24);
+-    rules->add(0x25);
+-    rules->add(0x26);
+-    rules->add(0x27);
+-    rules->add(0x28);
+-    rules->add(0x29);
+-    rules->add(0x2A);
+-    rules->add(0x2B);
+-    rules->add(0x2C);
+-    rules->add(0x2D);
+-    rules->add(0x2E);
+-    rules->add(0x2F);
+-    rules->add(0x30);
+-    rules->add(0x31);
+-
+-    int i = 0;
+-    if (this->vcRuleSet.numberValue > 0) {
+-        do {
+-            if (this->vcRules.evaluateAsNonInProgress(
+-                    this->md->aiPlayer, (*rules)[i]) == -2) {
+-                if (this->vcRules.execute(
+-                        this->md->aiPlayer,
+-                        this->currentVictoryConditionValue,
+-                        (*rules)[i]) == 1) {
+-                    this->executingRules.add((*rules)[i]);
+-                } else {
+-                    this->idleRules.add((*rules)[i]);
+-                }
++    this->currentVictoryConditionValue = vcNumber;
++    this->vcRuleSet.zeroNumber();
++    this->vcRuleSet.add(1);
++    this->vcRuleSet.add(2);
++    this->vcRuleSet.add(0x0C);
++    this->vcRuleSet.add(0x0D);
++    this->vcRuleSet.add(0x0E);
++    this->vcRuleSet.add(0x10);
++    this->vcRuleSet.add(0x11);
++    this->vcRuleSet.add(0x12);
++    this->vcRuleSet.add(0x15);
++    this->vcRuleSet.add(0x16);
++    this->vcRuleSet.add(0x17);
++    this->vcRuleSet.add(0x18);
++    this->vcRuleSet.add(0x19);
++    this->vcRuleSet.add(0x1A);
++    this->vcRuleSet.add(0x1B);
++    this->vcRuleSet.add(0x1C);
++    this->vcRuleSet.add(0x1D);
++    this->vcRuleSet.add(0x1E);
++    this->vcRuleSet.add(0x1F);
++    this->vcRuleSet.add(0x20);
++    this->vcRuleSet.add(0x21);
++    this->vcRuleSet.add(0x22);
++    this->vcRuleSet.add(0x23);
++    this->vcRuleSet.add(0x24);
++    this->vcRuleSet.add(0x25);
++    this->vcRuleSet.add(0x26);
++    this->vcRuleSet.add(0x27);
++    this->vcRuleSet.add(0x28);
++    this->vcRuleSet.add(0x29);
++    this->vcRuleSet.add(0x2A);
++    this->vcRuleSet.add(0x2B);
++    this->vcRuleSet.add(0x2C);
++    this->vcRuleSet.add(0x2D);
++    this->vcRuleSet.add(0x2E);
++    this->vcRuleSet.add(0x2F);
++    this->vcRuleSet.add(0x30);
++    this->vcRuleSet.add(0x31);
++
++    for (int i = 0; i < this->vcRuleSet.number(); i++) {
++        if (this->vcRules.evaluateAsNonInProgress(
++                this->md->aiPlayer, this->vcRuleSet[i]) == -2) {
++            if (this->vcRules.execute(
++                    this->md->aiPlayer,
++                    this->currentVictoryConditionValue,
++                    this->vcRuleSet[i]) == 1) {
++                this->executingRules.add(this->vcRuleSet[i]);
++            } else {
++                this->idleRules.add(this->vcRuleSet[i]);
+             }
+-            ++i;
+-        } while (i < this->vcRuleSet.numberValue);
++        }
+     }
+ }
+ 
+ 
+ 
+ int TribeStrategyAIModule::isRuleExecuting(int ruleId) {
+-    int i;
+-
+-    for (i = 0; i < this->executingRules.numberValue; i = i + 1) {
+-        if (i >= this->executingRules.maximumSizeValue) {
+-            return 0;
+-        }
+-        if (this->executingRules.value[i] == ruleId) {
+-            return 1;
+-        }
+-    }
+-    return 0;
++    return this->executingRules.contains(ruleId);
+ }
+ 
+ 
+ 
+ int TribeStrategyAIModule::isRuleIdle(int rule_id) {
+-    int i;
+-
+-    for (i = 0; i < this->idleRules.numberValue; i = i + 1) {
+-        if (i >= this->idleRules.maximumSizeValue) {
+-            return 0;
+-        }
+-        if (this->idleRules.value[i] == rule_id) {
+-            return 1;
+-        }
+-    }
+-    return 0;
++    return this->idleRules.contains(rule_id);
+ }

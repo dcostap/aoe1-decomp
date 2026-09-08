@@ -1,0 +1,10 @@
+{
+  "base": "767991a0b6ca728d3f009431454ad822926d4945",
+  "patch": "decomp_notes\\candidates\\0046\\0046B5E0_complete_writable_tables.patch",
+  "patch_sha256": "a6fa66f1cba2b97bc1094d3d184a2a91af3fea0aeceafc8a94add3f3e2a2b0ff",
+  "files": {
+    "src/game_globals.cpp": "d3e8d7f9d0e0f721e0a640ff5f793eddf704ac61a21a72cceb7a67002e6b805a",
+    "src/pathsys.cpp": "e92d8664193ea9df72b1c5ef5922abcc7d2ac671b7037323ba78298381ec9bf9"
+  },
+  "scope": "Complete tracked source delta. Target-specific states and audits supply results; this snapshot does not approve integration."
+}

@@ -1,0 +1,107 @@
+# Complete worktree candidate
+# Base 767991a0b6ca728d3f009431454ad822926d4945
+# Integration remains blocked.
+diff --git a/src/game_globals.cpp b/src/game_globals.cpp
+index b87762fcf..fe3edaf42 100644
+--- a/src/game_globals.cpp
++++ b/src/game_globals.cpp
+@@ -94,8 +94,8 @@ int displayPathObjectID = 83;
+ int displayPathingFlags = 0;
+ int imc_retval = 0;
+ RGE_Pick_Obj_Info Picked_Objects[64] = {0};
+-extern const unsigned char ObstructionValueShift[4] = {0, 2, 4, 6};
+-extern const unsigned char ObstructionValueMask[4] = {0xFC, 0xF3, 0xCF, 0x3F};
++unsigned char ObstructionValueShift[4] = {0, 2, 4, 6};
++unsigned char ObstructionValueMask[4] = {0xFC, 0xF3, 0xCF, 0x3F};
+ int DiagionalDistance[256] = {0};
+ int SDI_Capture_Info = 0;
+ int SDI_Draw_Level = 0;
+diff --git a/src/pathsys.cpp b/src/pathsys.cpp
+index 008075d61..e8621d13e 100644
+--- a/src/pathsys.cpp
++++ b/src/pathsys.cpp
+@@ -14,8 +14,8 @@
+ extern void operator delete(void* ptr);
+ extern void* operator new(unsigned int size, void* ptr);
+ extern int DiagionalDistance[256];
+-extern const unsigned char ObstructionValueShift[4];
+-extern const unsigned char ObstructionValueMask[4];
++extern unsigned char ObstructionValueShift[4];
++extern unsigned char ObstructionValueMask[4];
+ extern RGE_Base_Game* rge_base_game;
+ 
+ // This two-byte cursor is local to pathsys.cpp. No shared owner declares it.
+diff --git a/tests/test_build_executable.py b/tests/test_build_executable.py
+index 0d3031f4b..30310a533 100644
+--- a/tests/test_build_executable.py
++++ b/tests/test_build_executable.py
+@@ -121,3 +121,44 @@ def test_recovered_string_data_matches_original():
+         expected = row["ascii_prefix"].encode("ascii") + b"\0"
+         assert section.data[symbol.value:symbol.value + len(expected)] == expected, row["symbol"]
+         assert pe.get_data(int(row["original_va"], 16) - pe.OPTIONAL_HEADER.ImageBase, len(expected)) == expected
++
++
++def test_obstruction_tables_compile_as_writable_data():
++    import hashlib
++    import json
++    import uuid
++    import pefile
++    from coff import load_coff_object
++    from common import load_toolchain, repo_path
++    from function_compare import compile_source
++
++    toolchain = load_toolchain()
++    if not repo_path(toolchain["compiler"]["cl"]).is_file():
++        pytest.skip("Pinned VC5 compiler is not installed")
++    output = repo_path("build/tests/obstruction_storage") / uuid.uuid4().hex / "game_globals.obj"
++    output.parent.mkdir(parents=True)
++    source = repo_path("src/game_globals.cpp")
++    compile_source(source, output, repo_path("config/flags/default.rsp"), source.parent)
++    obj = load_coff_object(output)
++    config = json.loads(repo_path("config/executable.json").read_text())
++    original = repo_path(config["original"]).read_bytes()
++    assert hashlib.sha256(original).hexdigest() == config["original_sha256"]
++    pe = pefile.PE(data=original)
++
++    for name, address, expected in (
++        ("ObstructionValueShift", 0x584EF4, bytes([0, 2, 4, 6])),
++        ("ObstructionValueMask", 0x584EF0, bytes.fromhex("fcf3cf3f")),
++    ):
++        symbols = [s for s in obj.symbols
++                   if s.name == "?" + name + "@@3PAEA" and s.section_number > 0]
++        assert len(symbols) == 1, name
++        symbol = symbols[0]
++        section = obj.section_by_index(symbol.section_number)
++        assert section.data[symbol.value:symbol.value + 4] == expected, name
++        assert section.characteristics & 0x80000000, name
++        assert section.characteristics & 0x40000000, name
++        rva = address - pe.OPTIONAL_HEADER.ImageBase
++        assert pe.get_data(rva, 4) == expected, name
++        original_section = pe.get_section_by_rva(rva)
++        assert original_section is not None
++        assert original_section.Characteristics & 0x80000000, name
+diff --git a/tests/test_executable_data.py b/tests/test_executable_data.py
+index cadb76c79..f1a0b29e9 100644
+--- a/tests/test_executable_data.py
++++ b/tests/test_executable_data.py
+@@ -92,8 +92,8 @@ def test_game_destructor_uses_configuration_dialog():
+     ("int DiagionalDistance[256] = {0};", 0x74D040, bytes(256 * 4)),
+     ("int player_dropped[9] = {0};", 0x86BCA8, bytes(9 * 4)),
+     ("char DAT_0062E670[0x200] = {0};", 0x62E670, bytes(512)),
+-    ("extern const unsigned char ObstructionValueShift[4] = {0, 2, 4, 6};", 0x584EF4, bytes([0, 2, 4, 6])),
+-    ("extern const unsigned char ObstructionValueMask[4] = {0xFC, 0xF3, 0xCF, 0x3F};", 0x584EF0, bytes.fromhex("fcf3cf3f")),
++    ("unsigned char ObstructionValueShift[4] = {0, 2, 4, 6};", 0x584EF4, bytes([0, 2, 4, 6])),
++    ("unsigned char ObstructionValueMask[4] = {0xFC, 0xF3, 0xCF, 0x3F};", 0x584EF0, bytes.fromhex("fcf3cf3f")),
+ ])
+ def test_shared_arrays_match_original(declaration, address, expected):
+     config = json.loads((ROOT / "config/executable.json").read_text())
+@@ -102,6 +102,9 @@ def test_shared_arrays_match_original(declaration, address, expected):
+     image = pefile.PE(data=original)
+     offset = address - image.OPTIONAL_HEADER.ImageBase
+     assert image.get_memory_mapped_image()[offset:offset + len(expected)] == expected
++    section = image.get_section_by_rva(offset)
++    assert section is not None
++    assert section.Characteristics & 0x80000000  # Original writable storage.
+     assert (ROOT / "src/game_globals.cpp").read_text().count(declaration) == 1
+ 
+ 

@@ -1,0 +1,161 @@
+# Experiment 204a496fe2f598c6d1311dd58a7f168d19e86d9e7a52eb33561feceeb9b98193
+# Base 767991a0b6ca728d3f009431454ad822926d4945
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 2db30cbf6..70f46bb49 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -51,7 +51,17 @@ public:
+         return this->desiredNumberValue;
+     }
+ 
+-    int contains(const T& item);
++    int contains(const T& item)
++    {
++        int i;
++        for (i = 0; i < this->numberValue; i++) {
++            if (i >= this->maximumSizeValue)
++                return 0;
++            if (this->value[i] == item)
++                return 1;
++        }
++        return 0;
++    }
+ 
+     int position(T& item)
+     {
+@@ -63,29 +73,28 @@ public:
+         return -1;
+     }
+ 
+-    int add(T item);
++    int add(T item)
++    {
++        if (this->contains(item) == 1)
++            return 0;
++        if (this->numberValue > this->maximumSizeValue - 1)
++            this->resize(this->numberValue + 1);
++        this->value[this->numberValue] = item;
++        this->numberValue++;
++        return 1;
++    }
+ 
+     int remove(T item)
+     {
+-        int i = 0;
+-        int maximum = this->maximumSizeValue;
+-
+-        for (; i < maximum; i++) {
+-            if (this->value[i] == item)
+-                break;
+-        }
+-
+-        if (i >= maximum)
++        int i;
++        for (i = 0;
++             i < this->maximumSizeValue && this->value[i] != item;
++             i++)
++            ;
++        if (i >= this->maximumSizeValue)
+             return 0;
+-
+-        maximum--;
+-        if (i < maximum) {
+-            do {
+-                this->value[i] = this->value[i + 1];
+-                i++;
+-            } while (i < this->maximumSizeValue - 1);
+-        }
+-
++        for (; i < this->maximumSizeValue - 1; i++)
++            this->value[i] = this->value[i + 1];
+         this->numberValue--;
+         if (this->numberValue < 0)
+             this->numberValue = 0;
+@@ -134,9 +143,7 @@ public:
+         }
+     }
+ 
+-public:
+-    // PDB marks resize protected. Reconstructed callers still require public
+-    // access, so keep the body here while the source-access boundary is open.
++protected:
+     int resize(int new_size)
+     {
+         T* new_value = new T[new_size];
+@@ -163,53 +170,4 @@ public:
+     int maximumSizeValue;
+ };
+ 
+-template <class T>
+-int ManagedArray<T>::contains(const T& item)
+-{
+-    int i;
+-    T wanted;
+-    T current;
+-
+-    for (i = 0; i < this->numberValue; i++) {
+-        if (i >= this->maximumSizeValue)
+-            return 0;
+-        current = this->value[i];
+-        wanted = item;
+-        if (current == wanted)
+-            return 1;
+-    }
+-    return 0;
+-}
+-
+-template <class T>
+-int ManagedArray<T>::add(T val)
+-{
+-    int i;
+-
+-    for (i = 0; i < this->numberValue; i++) {
+-        if (i >= this->maximumSizeValue)
+-            break;
+-        if (this->value[i] == val)
+-            return 0;
+-    }
+-    if (this->numberValue > this->maximumSizeValue - 1) {
+-        int newSize = this->numberValue + 1;
+-        T* newValue = (T*)::operator new(newSize * sizeof(T));
+-        if (newValue != 0) {
+-            int j;
+-            for (j = 0; j < this->maximumSizeValue; j++) {
+-                if (j >= newSize)
+-                    break;
+-                newValue[j] = this->value[j];
+-            }
+-            ::operator delete(this->value);
+-            this->value = newValue;
+-            this->maximumSizeValue = newSize;
+-        }
+-    }
+-    this->value[this->numberValue] = val;
+-    this->numberValue++;
+-    return 1;
+-}
+-
+ #endif
+diff --git a/src/Command.cpp b/src/Command.cpp
+index b01422474..ef117cdf0 100644
+--- a/src/Command.cpp
++++ b/src/Command.cpp
+@@ -750,14 +750,14 @@ fail:
+     return 0;
+ }
+ 
+-unsigned char RGE_Command::duplicate_check_command_stop(RGE_Command_Stop* param1) {
+-    int n = param1->unit_num;
++unsigned char RGE_Command::duplicate_check_command_stop(RGE_Command_Stop* order) {
++    int n = order->unit_num;
+     RGE_Obj_Info* p = reinterpret_cast<RGE_Obj_Info*>(
+-        reinterpret_cast<unsigned char*>(param1) + sizeof(*param1));
++        order + 1);
+     RGE_Command_Stop* last =
+         reinterpret_cast<RGE_Command_Stop*>(this->last_order);
+     RGE_Obj_Info* l = reinterpret_cast<RGE_Obj_Info*>(
+-        reinterpret_cast<unsigned char*>(last) + sizeof(*last));
++        last + 1);
+ 
+     if (n != last->unit_num) {
+         return 0;

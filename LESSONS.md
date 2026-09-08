@@ -2,6 +2,21 @@
 
 Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 
+## Recovery priorities
+
+**Recover the original source model before tuning individual instructions.**
+
+- Establish supported types, ownership, access, and public operations first.
+- Recover complete natural helpers and caller loops before keeping handwritten expansions of inlined code.
+- Partial rewrites can change inlining. A failed partial rewrite does not disprove the complete natural form.
+- Preserve binary-proved widths, reloads, initializer order, allocation failures, and fault order.
+- Test evidence-backed alternatives together in the variant lab. Separate combined changes when their effects remain unclear.
+- Validate the selected source in its real owner, then check every affected owner and referenced data.
+- A local exact match does not approve a shared change. Changed stack saves can alter overlapping input.
+- Simpler source is a hypothesis, not proof. Reject unsafe changes without adding unsupported compiler controls.
+
+Supporting results and limits: [array recovery evidence](decomp_notes/array_recovery_lessons.md).
+
 ## Diagnostic signals
 
 - Verify direct-call target identity before copying a same-named donor ABI.
@@ -243,8 +258,8 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 - Early helper sites can inline while later sites call the same out-of-line body.
 - One method can stay out of line at an early site and inline at later sites.
 - Preserve the proved site split. Do not assume that inline choices are monotonic.
-- When that split is proved, test helper visibility, `/Ob`, or function-scoped
-  `#pragma inline_depth(0)`; the pragma can help one function and harm another.
+- Recover supported helper definitions and complete caller source before testing compiler controls for an inlining difference.
+- Diagnostic flag results do not justify retaining compiler controls to hide a source or closure defect.
 - `<windows.h>`, real `RECT`, and API declarations can select another basin.
 - `<stdlib.h>`, `<string.h>`, `<memory.h>`, and their combinations can do the same.
 - A header combination can work when either header alone does not.
@@ -430,7 +445,8 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 
 ## Dynamic arrays and fixed-stride collections
 
-- Mirror exact ManagedArray scan, grow, copy, delete, and index forms.
+- Recover the real array scan, grow, copy, delete, and index operations through their supported interface.
+- Inspect original access records. A generated layout's `public` presentation does not prove public field access.
 - `contains(v)` followed by `add(v)` can emit two scans because `add` checks again.
 - An inlined method gives its parameters and scan index method-local lifetimes.
 - Caller-side expansion with shared locals can change whole-function registers.
@@ -439,7 +455,7 @@ Reusable empirical findings about Microsoft Visual C++ 5 code generation.
 - Use a reference plus bounded indexed `for` scan before cached count/capacity locals.
 - A later RMW can need an element reference and explicit load/value/store.
 - A side-effectful index ensure followed by direct raw element access can preserve growth.
-- Preserve direct outer `this->array.count` reads when assembly splits owner and array registers.
+- Preserve binary-proved count reloads through supported access. Do not expose protected fields to copy instruction forms.
 - Reuse an incoming scalar as a reference argument when assembly takes its home address.
 - A direct short-circuit predicate can remove result-local pressure in growth loops.
 - Use `number > maximum - 1` when compare operand order proves that donor spelling.
