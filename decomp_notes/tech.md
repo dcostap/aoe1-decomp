@@ -2,6 +2,10 @@
 
 ## Current review
 
+The latest review repairs two comparison-literal types and checks all instructions in the four remaining functions.
+See `decomp_notes/tech_stack_review.md` for the conditional stack proof and the unresolved stack-overlap requirement.
+The four nonexact functions remain open; the private-stack mapping alone does not approve accepted drift.
+
 Original public symbols and section contributions now establish all 33 entry identities.
 See `decomp_notes/tech_public_identity_review.md` for the evidence, compiler results, and remaining limits.
 The older missing-symbol conclusions below describe the previous evidence set, not the current build route.

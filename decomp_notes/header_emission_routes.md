@@ -3,6 +3,11 @@
 This note records the initial 97 routes. The follow-up in `decomp_notes/header_linker_folding.md` resolves the remaining 36.
 All 133 header functions now have registered natural build routes. None remains unresolved.
 
+The final RESENDER repair clears the remaining constructor difference.
+All 133 entries report `all_emissions_match` in `build/claims-final/headers.json`.
+See `decomp_notes/resender_repair.md` for the source and complete closure review.
+The sections below preserve the earlier route-registration results.
+
 ## Behavior
 
 No header body changed. No game was run.
