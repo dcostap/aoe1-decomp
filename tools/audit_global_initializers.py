@@ -10,6 +10,7 @@ import re
 import subprocess
 
 import pefile
+from linked_inputs import verify_build
 
 ROOT = Path(__file__).resolve().parents[1]
 ORIGINAL = ROOT / 'orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe'
@@ -41,6 +42,7 @@ def main():
     args = p.parse_args()
     if not args.output.resolve().is_relative_to(ROOT / 'build'):
         p.error('Output must be under build/')
+    verify_build(args.build)
     original = pefile.PE(str(ORIGINAL))
     exe = args.build / 'empiresx.exe'
     rebuilt = pefile.PE(str(exe))

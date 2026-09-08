@@ -5,6 +5,8 @@ Run a command with `--help` before you use it.
 
 For the separate linked-reference audit, see [Linked-reference audit](linked_reference_audit.md).
 It checks linked call and reviewed storage targets. Unknown coverage does not count as proof.
+See [Reference validation](reference_validation.md) for strict target checks and unresolved emission audits.
+See [Older-build tools](reference_builds.md) for hash-pinned counterpart searches and disassembly.
 
 ## Agent roles
 
@@ -70,6 +72,9 @@ A buildable source file has this form:
 
 - `status` is `matching`, `accepted_drift`, `verified_logic`, `scratch`, or `unresolved`.
 - `symbol` is the decorated object symbol for a configured build.
+- `emission_source` selects a configured natural C/C++ module for a header-owned function.
+  The header keeps source ownership. The selected module supplies its existing compiler profile and emitted object.
+  Do not give the header a separate build or copy its body into the selected module.
 
 `matching` and `accepted_drift` are both completed recovery results.
 `matching` has positional byte equality. `accepted_drift` has canonical source
@@ -81,7 +86,7 @@ Source, symbol, and compiler profile do not depend on matching status.
 
 ### Compiler profiles
 
-The six profiles are:
+The profiles are:
 
 - `default`
 - `gx`
@@ -89,6 +94,7 @@ The six profiles are:
 - `gx_directplay`
 - `c_no_intrinsics`
 - `ole32_directplay`
+- `unoptimized`: the reviewed Tech `/Od` route
 
 `config/toolchain.json` selects the pinned compiler and its environment.
 The response files contain compiler arguments only.

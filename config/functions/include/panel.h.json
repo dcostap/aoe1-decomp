@@ -2,19 +2,71 @@
   "schema": 1,
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\panel.h",
   "functions": {
-    "00437110": {"status": "unresolved"},
-    "00437230": {"status": "unresolved"},
-    "00437240": {"status": "unresolved"},
-    "00437250": {"status": "unresolved"},
-    "00437260": {"status": "unresolved"},
-    "00437270": {"status": "unresolved"},
-    "00437280": {"status": "unresolved"},
-    "00437290": {"status": "unresolved"},
-    "004372A0": {"status": "unresolved"},
-    "004372B0": {"status": "unresolved"},
-    "00437490": {"status": "unresolved"},
-    "004374A0": {"status": "unresolved"},
-    "004374B0": {"status": "unresolved"},
-    "00437610": {"status": "unresolved"}
+    "00437110": {
+      "status": "scratch",
+      "symbol": "?mouse_move_action@TPanel@@UAEJJJHH@Z",
+      "emission_source": "src/Pnl_msg.cpp"
+    },
+    "00437230": {
+      "status": "scratch",
+      "symbol": "?mouse_left_down_action@TPanel@@UAEJJJHH@Z",
+      "emission_source": "src/Pnl_msg.cpp"
+    },
+    "00437240": {
+      "status": "scratch",
+      "symbol": "?mouse_left_hold_action@TPanel@@UAEJJJHH@Z",
+      "emission_source": "src/Pnl_msg.cpp"
+    },
+    "00437250": {
+      "status": "scratch",
+      "symbol": "?mouse_left_move_action@TPanel@@UAEJJJHH@Z",
+      "emission_source": "src/Pnl_msg.cpp"
+    },
+    "00437260": {
+      "status": "scratch",
+      "symbol": "?mouse_left_up_action@TPanel@@UAEJJJHH@Z",
+      "emission_source": "src/Pnl_msg.cpp"
+    },
+    "00437270": {
+      "status": "scratch",
+      "symbol": "?mouse_left_dbl_click_action@TPanel@@UAEJJJHH@Z",
+      "emission_source": "src/Pnl_msg.cpp"
+    },
+    "00437280": {
+      "status": "scratch",
+      "symbol": "?mouse_right_down_action@TPanel@@UAEJJJHH@Z",
+      "emission_source": "src/Pnl_msg.cpp"
+    },
+    "00437290": {
+      "status": "scratch",
+      "symbol": "?mouse_right_hold_action@TPanel@@UAEJJJHH@Z",
+      "emission_source": "src/Pnl_msg.cpp"
+    },
+    "004372A0": {
+      "status": "scratch",
+      "symbol": "?mouse_right_move_action@TPanel@@UAEJJJHH@Z",
+      "emission_source": "src/Pnl_msg.cpp"
+    },
+    "004372B0": {
+      "status": "scratch",
+      "symbol": "?mouse_right_up_action@TPanel@@UAEJJJHH@Z",
+      "emission_source": "src/Pnl_msg.cpp"
+    },
+    "00437490": {
+      "status": "scratch",
+      "symbol": "?mouse_right_dbl_click_action@TPanel@@UAEJJJHH@Z",
+      "emission_source": "src/Pnl_msg.cpp"
+    },
+    "004374A0": {
+      "status": "scratch",
+      "symbol": "?key_down_action@TPanel@@UAEJJFHHH@Z",
+      "emission_source": "src/Pnl_msg.cpp"
+    },
+    "004374B0": {
+      "status": "unresolved"
+    },
+    "00437610": {
+      "status": "unresolved"
+    }
   }
 }

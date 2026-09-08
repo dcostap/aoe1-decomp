@@ -200,7 +200,7 @@ class PdbNoLineInfoTests(unittest.TestCase):
         group = copy.deepcopy(source_module)
         with patch.object(
             tu_module,
-            "preferred_source_path",
+            "compiler_source_path",
             return_value=REPO_ROOT / "src" / "tech.cpp",
         ), patch.object(tu_module, "load_pdb_function_source_map", return_value={VA: {}}):
             issues = tu_module.validate_translation_units([group])
@@ -212,7 +212,7 @@ class PdbNoLineInfoTests(unittest.TestCase):
         pdb_symbol = common.function_record_by_va(int(VA, 16))["name"]
         with patch.object(
             tu_module,
-            "preferred_source_path",
+            "compiler_source_path",
             return_value=REPO_ROOT / "src" / "tech.cpp",
         ), patch.object(
             tu_module,

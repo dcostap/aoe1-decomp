@@ -2,7 +2,15 @@
   "schema": 1,
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_q.h",
   "functions": {
-    "00431F60": {"status": "unresolved"},
-    "00431F80": {"status": "unresolved"}
+    "00431F60": {
+      "status": "scratch",
+      "symbol": "??0MsgQueue@@QAE@XZ",
+      "emission_source": "src/com_q.cpp"
+    },
+    "00431F80": {
+      "status": "scratch",
+      "symbol": "??1MsgQueue@@QAE@XZ",
+      "emission_source": "src/com_q.cpp"
+    }
   }
 }

@@ -240,7 +240,7 @@ long TribeSelectScenarioScreen::action(TPanel* panel, long event,
             }
         }
     }
-    return TPanel::action(panel, event, p3, p4);
+    return TEasy_Panel::action(panel, event, p3, p4);
 }
 
 void TribeSelectScenarioScreen::fillScenarios()

@@ -582,7 +582,19 @@ def audit_translation_units(
     for group in configured_groups:
         name = str(group.get("name") or "")
         owners = current_rows.get(name, [])
-        modules = sorted({owner["pdb_module"] for owner in owners if owner["pdb_module"]})
+        routed_headers = {
+            str(va).upper()
+            for va, entry in (group.get("functions") or {}).items()
+            if entry.get("emission_source")
+            and _resolve(entry["emission_source"], root) == _resolve(group["source"], root)
+        }
+        modules = sorted({
+            owner["pdb_module"] for owner in owners
+            if owner["pdb_module"] and not (
+                owner["va"] in routed_headers
+                and Path(owner["pdb_module"]).suffix.lower() in {".h", ".hpp"}
+            )
+        })
         languages = sorted(
             {owner["expected_language"] for owner in owners if owner["expected_language"] != "unknown"}
         )

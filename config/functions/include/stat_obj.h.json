@@ -2,73 +2,301 @@
   "schema": 1,
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\stat_obj.h",
   "functions": {
-    "00405D00": {"status": "unresolved"},
-    "00405D10": {"status": "unresolved"},
-    "00405D20": {"status": "unresolved"},
-    "00405D30": {"status": "unresolved"},
-    "00405D40": {"status": "unresolved"},
-    "00405D50": {"status": "unresolved"},
-    "00405D60": {"status": "unresolved"},
-    "00405D70": {"status": "unresolved"},
-    "00405D80": {"status": "unresolved"},
-    "00405D90": {"status": "unresolved"},
-    "00405DA0": {"status": "unresolved"},
-    "00405DB0": {"status": "unresolved"},
-    "00405DC0": {"status": "unresolved"},
-    "00405DD0": {"status": "unresolved"},
-    "00405DE0": {"status": "unresolved"},
-    "00405DF0": {"status": "unresolved"},
-    "00405E00": {"status": "unresolved"},
-    "00405E10": {"status": "unresolved"},
-    "00405E20": {"status": "unresolved"},
-    "00405E30": {"status": "unresolved"},
-    "00405E40": {"status": "unresolved"},
-    "00405E50": {"status": "unresolved"},
-    "00405E60": {"status": "unresolved"},
-    "00405E70": {"status": "unresolved"},
-    "00405E80": {"status": "unresolved"},
-    "00405E90": {"status": "unresolved"},
-    "00405EA0": {"status": "unresolved"},
-    "00405EB0": {"status": "unresolved"},
-    "00405EC0": {"status": "unresolved"},
-    "00405ED0": {"status": "unresolved"},
-    "00405EE0": {"status": "unresolved"},
-    "00405EF0": {"status": "unresolved"},
-    "00405F00": {"status": "unresolved"},
-    "00405F10": {"status": "unresolved"},
-    "00405F20": {"status": "unresolved"},
-    "00405F30": {"status": "unresolved"},
-    "0041A450": {"status": "unresolved"},
-    "0041A460": {"status": "unresolved"},
-    "0041A470": {"status": "unresolved"},
-    "0041A480": {"status": "unresolved"},
-    "0041A490": {"status": "unresolved"},
-    "0041A4A0": {"status": "unresolved"},
-    "0041A4B0": {"status": "unresolved"},
-    "0041A4C0": {"status": "unresolved"},
-    "0041A4D0": {"status": "unresolved"},
-    "0041A4E0": {"status": "unresolved"},
-    "0041A4F0": {"status": "unresolved"},
-    "0041A500": {"status": "unresolved"},
-    "0041A510": {"status": "unresolved"},
-    "0041A520": {"status": "unresolved"},
-    "0041A530": {"status": "unresolved"},
-    "0041A540": {"status": "unresolved"},
-    "0041A550": {"status": "unresolved"},
-    "0041A560": {"status": "unresolved"},
-    "0041A570": {"status": "unresolved"},
-    "0041A580": {"status": "unresolved"},
-    "0041A590": {"status": "unresolved"},
-    "0041A5A0": {"status": "unresolved"},
-    "0041A5B0": {"status": "unresolved"},
-    "0041A5C0": {"status": "unresolved"},
-    "0041A5D0": {"status": "unresolved"},
-    "0041A5E0": {"status": "unresolved"},
-    "0041A5F0": {"status": "unresolved"},
-    "0041A600": {"status": "unresolved"},
-    "0041A610": {"status": "unresolved"},
-    "0041A620": {"status": "unresolved"},
-    "0041A630": {"status": "unresolved"},
-    "004C1CE0": {"status": "unresolved"}
+    "00405D00": {
+      "status": "scratch",
+      "symbol": "?can_attack@RGE_Static_Object@@UAEEXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405D10": {
+      "status": "scratch",
+      "symbol": "?canRepair@RGE_Static_Object@@UAEHXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405D20": {
+      "status": "unresolved"
+    },
+    "00405D30": {
+      "status": "scratch",
+      "symbol": "?calc_attack_modifier@RGE_Static_Object@@UAEMPAV1@@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405D40": {
+      "status": "scratch",
+      "symbol": "?rateOfFire@RGE_Static_Object@@UAEMXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405D50": {
+      "status": "scratch",
+      "symbol": "?damageCapability@RGE_Static_Object@@UAEMXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405D60": {
+      "status": "scratch",
+      "symbol": "?damageCapability@RGE_Static_Object@@UAEMPAV1@@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405D70": {
+      "status": "scratch",
+      "symbol": "?weaponRange@RGE_Static_Object@@UAEMXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405D80": {
+      "status": "scratch",
+      "symbol": "?minimumWeaponRange@RGE_Static_Object@@UAEMXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405D90": {
+      "status": "scratch",
+      "symbol": "?currentTargetID@RGE_Static_Object@@UBEHXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405DA0": {
+      "status": "scratch",
+      "symbol": "?currentTargetX@RGE_Static_Object@@UBEMXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405DB0": {
+      "status": "scratch",
+      "symbol": "?currentTargetY@RGE_Static_Object@@UBEMXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405DC0": {
+      "status": "scratch",
+      "symbol": "?currentTargetZ@RGE_Static_Object@@UBEMXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405DD0": {
+      "status": "scratch",
+      "symbol": "?keepGatheringWhenObjectIsOut@RGE_Static_Object@@UBEEH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405DE0": {
+      "status": "scratch",
+      "symbol": "?produceWhenKilledBy@RGE_Static_Object@@UBEEH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405DF0": {
+      "status": "scratch",
+      "symbol": "?useSameZoneDropsite@RGE_Static_Object@@UBEEXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405E00": {
+      "status": "scratch",
+      "symbol": "?notify@RGE_Static_Object@@UAEXHHHJJJ@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405E10": {
+      "status": "scratch",
+      "symbol": "?attack@RGE_Static_Object@@UAEHHH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405E20": {
+      "status": "unresolved"
+    },
+    "00405E30": {
+      "status": "scratch",
+      "symbol": "?moveTo@RGE_Static_Object@@UAEHHH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405E40": {
+      "status": "scratch",
+      "symbol": "?moveTo@RGE_Static_Object@@UAEHHMH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405E50": {
+      "status": "unresolved"
+    },
+    "00405E60": {
+      "status": "scratch",
+      "symbol": "?moveAwayFrom@RGE_Static_Object@@UAEHHH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405E70": {
+      "status": "scratch",
+      "symbol": "?hunt@RGE_Static_Object@@UAEHHH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405E80": {
+      "status": "scratch",
+      "symbol": "?gather@RGE_Static_Object@@UAEHHH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405E90": {
+      "status": "scratch",
+      "symbol": "?convert@RGE_Static_Object@@UAEHHH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405EA0": {
+      "status": "scratch",
+      "symbol": "?heal@RGE_Static_Object@@UAEHHH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405EB0": {
+      "status": "scratch",
+      "symbol": "?repair@RGE_Static_Object@@UAEHHH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405EC0": {
+      "status": "scratch",
+      "symbol": "?build@RGE_Static_Object@@UAEHHH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405ED0": {
+      "status": "scratch",
+      "symbol": "?trade@RGE_Static_Object@@UAEHHH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405EE0": {
+      "status": "scratch",
+      "symbol": "?explore@RGE_Static_Object@@UAEHHHH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405EF0": {
+      "status": "scratch",
+      "symbol": "?enter@RGE_Static_Object@@UAEHHH@Z",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405F00": {
+      "status": "unresolved"
+    },
+    "00405F10": {
+      "status": "unresolved"
+    },
+    "00405F20": {
+      "status": "scratch",
+      "symbol": "?stopAction@RGE_Static_Object@@UAEHXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "00405F30": {
+      "status": "scratch",
+      "symbol": "?pause@RGE_Static_Object@@UAEHXZ",
+      "emission_source": "src/act_obj.cpp"
+    },
+    "0041A450": {
+      "status": "scratch",
+      "symbol": "?do_command@RGE_Static_Object@@UAEXPAV1@MMM@Z",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A460": {
+      "status": "scratch",
+      "symbol": "?move_to@RGE_Static_Object@@UAEXPAV1@MMM@Z",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A470": {
+      "status": "scratch",
+      "symbol": "?work@RGE_Static_Object@@UAEXPAV1@MMM@Z",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A480": {
+      "status": "unresolved"
+    },
+    "0041A490": {
+      "status": "unresolved"
+    },
+    "0041A4A0": {
+      "status": "unresolved"
+    },
+    "0041A4B0": {
+      "status": "unresolved"
+    },
+    "0041A4C0": {
+      "status": "scratch",
+      "symbol": "?get_command_master@RGE_Static_Object@@UAEPAVRGE_Master_Static_Object@@PAV1@MMM@Z",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A4D0": {
+      "status": "unresolved"
+    },
+    "0041A4E0": {
+      "status": "scratch",
+      "symbol": "?getAngle@RGE_Static_Object@@UBEMXZ",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A4F0": {
+      "status": "scratch",
+      "symbol": "?maximumSpeed@RGE_Static_Object@@UAEMXZ",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A500": {
+      "status": "unresolved"
+    },
+    "0041A510": {
+      "status": "scratch",
+      "symbol": "?facetToNextWaypoint@RGE_Static_Object@@UBEEXZ",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A520": {
+      "status": "unresolved"
+    },
+    "0041A530": {
+      "status": "unresolved"
+    },
+    "0041A540": {
+      "status": "unresolved"
+    },
+    "0041A550": {
+      "status": "scratch",
+      "symbol": "?canPath@RGE_Static_Object@@UAEHUXYZPoint@@MHPAMHHH@Z",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A560": {
+      "status": "scratch",
+      "symbol": "?canPath@RGE_Static_Object@@UAEHHMPAMHHH@Z",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A570": {
+      "status": "scratch",
+      "symbol": "?canBidirectionPath@RGE_Static_Object@@UAEHHHMPAMHHH@Z",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A580": {
+      "status": "scratch",
+      "symbol": "?canPathWithObstructions@RGE_Static_Object@@UAEHHMPAMHHHAAV?$ManagedArray@H@@@Z",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A590": {
+      "status": "scratch",
+      "symbol": "?canPathWithAdditionalPassability@RGE_Static_Object@@UAEHUXYZPoint@@MHPAMHHHHH@Z",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A5A0": {
+      "status": "unresolved"
+    },
+    "0041A5B0": {
+      "status": "unresolved"
+    },
+    "0041A5C0": {
+      "status": "scratch",
+      "symbol": "?canLinePath@RGE_Static_Object@@UAEHHHHHMH@Z",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A5D0": {
+      "status": "scratch",
+      "symbol": "?firstTileAlongLine@RGE_Static_Object@@UAEHABUXYPoint@@0AAU2@HHH@Z",
+      "emission_source": "src/ani_obj.cpp"
+    },
+    "0041A5E0": {
+      "status": "unresolved"
+    },
+    "0041A5F0": {
+      "status": "unresolved"
+    },
+    "0041A600": {
+      "status": "unresolved"
+    },
+    "0041A610": {
+      "status": "unresolved"
+    },
+    "0041A620": {
+      "status": "unresolved"
+    },
+    "0041A630": {
+      "status": "unresolved"
+    },
+    "004C1CE0": {
+      "status": "scratch",
+      "symbol": "?getSpeed@RGE_Static_Object@@UBEMXZ",
+      "emission_source": "src/stat_obj.cpp"
+    }
   }
 }

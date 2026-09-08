@@ -444,8 +444,8 @@ void TRIBE_Player::tech_cost(short tech_id, short& value_1, short& value_2,
                              short& value_6) {
     TRIBE_Player_Tech* tech =
         this->tech_tree;
-    tech->tech_cost(tech_id, &value_1, &value_2, &value_3,
-                    &value_4, &value_5, &value_6);
+    tech->tech_cost(tech_id, value_1, value_2, value_3,
+                    value_4, value_5, value_6);
 }
 
 
@@ -624,7 +624,7 @@ void TRIBE_Player::interface_tech_avail(Item_Avail** out_items, short* out_count
                 (*out_items)[avail_index].pict = entry->icon;
                 (*out_items)[avail_index].name = entry->name;
 
-                this->tech_tree->tech_cost(n, &inv1, &amt1, &inv2, &amt2, &inv3, &amt3);
+                this->tech_tree->tech_cost(n, inv1, amt1, inv2, amt2, inv3, amt3);
 
                 (*out_items)[avail_index].inventory_item_1 = inv1;
                 (*out_items)[avail_index].inventory_cost_1 = amt1;
@@ -1279,7 +1279,7 @@ void TRIBE_Player::researchCost(int tech_id, int unused, ResourceItem* resources
     short inv_1;
     short inv_amt_1;
 
-    this->tech_tree->tech_cost(technology, &inv_2, &amount_2, &inv_3, &inv_amt_3, &inv_1, &inv_amt_1);
+    this->tech_tree->tech_cost(technology, inv_2, amount_2, inv_3, inv_amt_3, inv_1, inv_amt_1);
     resources->incrementValue(inv_2, amount_2);
     resources->incrementValue(inv_3, inv_amt_3);
     resources->incrementValue(inv_1, inv_amt_1);

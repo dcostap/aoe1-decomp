@@ -125,6 +125,7 @@ def compare_object_function(
     exact = bool(
         metrics["result"] == "MATCH"
         and not relocation_validation["target_mismatches"]
+        and not relocation_validation.get("target_unknowns")
         and not extent["has_code_overflow"]
         and (owner_match or not require_owner)
     )

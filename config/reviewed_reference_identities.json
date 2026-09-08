@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "evidence": "decomp_notes/crt_reference_identity_review.md",
+  "inputs": {
+    "orig/age1_x1.pdb": "3acf0034af3aae3636c37746d3336d76f737855963fabf64e66b22e3c3e46e40",
+    "orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe": "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90",
+    "C:/Program Files (x86)/DevStudio/VC/lib/OLDNAMES.LIB": "56190b253c7c5f127569cd1dc037e27600f42e4952f558e7ab1966cbb98cb1d6"
+  },
+  "targets": {
+    "0054B700": {"symbol": "__ftol", "aliases": []},
+    "0054B9A0": {"symbol": "_strstr", "aliases": []},
+    "0054B990": {"symbol": "__unlink", "aliases": ["_unlink"]},
+    "0054CCA0": {"symbol": "__close", "aliases": ["_close"]},
+    "0054CD80": {"symbol": "__read", "aliases": ["_read"]},
+    "0054CFE0": {"symbol": "__open", "aliases": ["_open"]},
+    "0054D3C0": {"symbol": "__tell", "aliases": ["_tell"]},
+    "0054D3E0": {"symbol": "__lseek", "aliases": ["_lseek"]},
+    "0054D4A0": {"symbol": "__write", "aliases": ["_write"]},
+    "0054DAC0": {"symbol": "_memcpy", "aliases": []},
+    "0054DEE0": {"symbol": "__alloca_probe", "aliases": ["__chkstk"]},
+    "0054E9D0": {"symbol": "_strchr", "aliases": []},
+    "0054E9D6": {"symbol": "___from_strstr_to_strchr", "aliases": []},
+    "0054EB70": {"symbol": "__stricmp", "aliases": ["_stricmp"]},
+    "0055BD00": {"symbol": "__itoa", "aliases": ["_itoa"]}
+  }
+}

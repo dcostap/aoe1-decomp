@@ -17,7 +17,6 @@ struct DisplaySelectedObjRec {
 class RGE_Main_View : public RGE_View {
 public:
     RGE_Main_View();
-    virtual ~RGE_Main_View();
     virtual void draw();
     virtual long handle_idle();
     virtual long handle_mouse_up(unsigned char, long, long, int, int);

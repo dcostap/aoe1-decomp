@@ -2,7 +2,13 @@
   "schema": 1,
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_addr.h",
   "functions": {
-    "00424DD0": {"status": "unresolved"},
-    "00424E30": {"status": "unresolved"}
+    "00424DD0": {
+      "status": "scratch",
+      "symbol": "??0IPAD@@QAE@XZ",
+      "emission_source": "src/com_addr.cpp"
+    },
+    "00424E30": {
+      "status": "unresolved"
+    }
   }
 }

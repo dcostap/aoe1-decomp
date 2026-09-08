@@ -32,6 +32,7 @@ from common import (
     function_slug,
     load_toolchain,
     positional_byte_diff_metrics,
+    preferred_flags_rsp_path,
     preferred_source_path,
     repo_path,
     tool_env,
@@ -61,7 +62,7 @@ VARIANT_TEMPLATE_EXTENSIONS = (".vtpl", ".tpl", ".txt")
 
 FLAG_PRESETS: dict[str, dict[str, str]] = {
     # Small, commonly useful VC5 classification sweep. These are appended after
-    # config/flags/default.rsp, just like template @flagchoice content.
+    # the configured target profile, just like template @flagchoice content.
     "vc5-small": {
         "default": "",
         "gx": "/GX\n",
@@ -267,7 +268,7 @@ Compiler flag choices
   @endflagchoice
 
 or equivalently @flags ... @endflags. Flag case text is removed from generated
-C/C++ and written to per-variant variant_flags.rsp after config/flags/default.rsp.
+C/C++ and written to per-variant variant_flags.rsp after the configured target profile.
 Debug-info variants get a unique /Fd path when needed.
 
 Flag case placeholders:
@@ -2482,7 +2483,7 @@ def write_reports(
     preset_axes = [axis.name[len("preset_") :].replace("_", "-") for axis in axes if axis.kind == "flags" and axis.name.startswith("preset_")]
     if preset_axes:
         summary.append(f"Flag presets: {', '.join(preset_axes)}")
-        summary.append("Note: preset flags are appended after default.rsp and are for classification; non-default-flag matches need normal review.")
+        summary.append("Note: preset flags follow the configured target profile; alternative-profile matches need normal review.")
     if template_expansions:
         summary.append("Template presets: " + ", ".join(record["name"] for record in template_expansions))
     ambient_blocks = [
@@ -2777,6 +2778,17 @@ def splice_template(base_text: str, fragment_text: str, start_marker: str, end_m
     return "".join(base_lines[: start + 1]) + fragment + "".join(base_lines[end:])
 
 
+def freeze_base_recipe(record: dict, toolchain: dict, run_dir: Path) -> Path:
+    """Keep the configured target profile as an immutable lab input."""
+    source = preferred_flags_rsp_path(record, toolchain)
+    data = source.read_bytes()
+    destination = run_dir / 'base_flags.rsp'
+    destination.write_bytes(data)
+    (run_dir / 'base_recipe.json').write_text(json.dumps(dict(
+        source=str(source), sha256=hashlib.sha256(data).hexdigest()), indent=2) + '\n')
+    return destination
+
+
 def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv[1:]
@@ -2905,9 +2917,6 @@ def main(argv: list[str] | None = None) -> int:
 
     toolchain = load_toolchain()
     cl_path = repo_path(toolchain["compiler"]["cl"])
-    default_rsp = CONFIG_DIR / "flags" / "default.rsp"
-    if not default_rsp.exists():
-        default_rsp = repo_path(toolchain["compiler"]["default_rsp"])
 
     orig_bin = ensure_original(va_text, slug)
     original_bytes = orig_bin.read_bytes()
@@ -2957,6 +2966,8 @@ def main(argv: list[str] | None = None) -> int:
 
     timestamp = time.strftime("%Y%m%d_%H%M%S")
     run_dir = REPO_ROOT / "build" / "variant_lab" / slug / timestamp
+    run_dir.mkdir(parents=True, exist_ok=True)
+    default_rsp = freeze_base_recipe(record, toolchain, run_dir)
     work_root = run_dir / "work"
     ensure_dir(work_root)
     (run_dir / "template_input.cpp").write_text(template_text, encoding="utf-8")
@@ -2988,6 +2999,7 @@ def main(argv: list[str] | None = None) -> int:
     workers = min(args.jobs, len(specs_to_build))
     print(f"Variant lab for {slug} ({va_text})")
     print(f"Template: {template_name}")
+    print(f"Base flags: {default_rsp.read_text().strip()}")
     if args.flag_preset:
         print(f"Flag presets: {', '.join(args.flag_preset)}")
     if template_expansions:

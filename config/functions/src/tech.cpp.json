@@ -5,38 +5,140 @@
   "pdb_no_line_info": true,
   "pdb_module_stream_evidence": "inventory/pdb/module_streams/0027_tech.json",
   "functions": {
-    "0050B840": {"status": "unresolved"},
-    "0050BB84": {"status": "unresolved"},
-    "0050BF28": {"status": "unresolved"},
-    "0050BF9C": {"status": "unresolved"},
-    "0050BFED": {"status": "unresolved"},
-    "0050C2FA": {"status": "unresolved"},
-    "0050C333": {"status": "unresolved"},
-    "0050C36C": {"status": "unresolved"},
-    "0050C3A5": {"status": "unresolved"},
-    "0050C4FC": {"status": "unresolved"},
-    "0050C562": {"status": "unresolved"},
-    "0050C58C": {"status": "unresolved"},
-    "0050C5A7": {"status": "unresolved"},
-    "0050C5E5": {"status": "unresolved"},
-    "0050C6AD": {"status": "unresolved"},
-    "0050C730": {"status": "unresolved"},
-    "0050CA9E": {"status": "unresolved"},
-    "0050CC25": {"status": "unresolved"},
-    "0050CD73": {"status": "unresolved"},
-    "0050CE68": {"status": "unresolved"},
-    "0050D07A": {"status": "unresolved"},
-    "0050D0FA": {"status": "unresolved"},
-    "0050D178": {"status": "unresolved"},
-    "0050D197": {"status": "unresolved"},
-    "0050D1B8": {"status": "unresolved"},
-    "0050D1D9": {"status": "unresolved"},
-    "0050D1F9": {"status": "unresolved"},
-    "0050D281": {"status": "unresolved"},
-    "0050D306": {"status": "unresolved"},
-    "0050D383": {"status": "unresolved"},
-    "0050D400": {"status": "unresolved"},
-    "0050D41D": {"status": "unresolved"},
-    "0050D43A": {"status": "unresolved"}
+    "0050B840": {
+      "status": "scratch",
+      "symbol": "??0TRIBE_Tech@@QAE@HPAVTRIBE_World@@@Z"
+    },
+    "0050BB84": {
+      "status": "scratch",
+      "symbol": "??0TRIBE_Tech@@QAE@PAD@Z"
+    },
+    "0050BF28": {
+      "status": "scratch",
+      "symbol": "??1TRIBE_Tech@@QAE@XZ"
+    },
+    "0050BF9C": {
+      "status": "scratch",
+      "symbol": "?do_tech@TRIBE_Tech@@QAEEFPAVRGE_Player@@@Z"
+    },
+    "0050BFED": {
+      "status": "scratch",
+      "symbol": "?save@TRIBE_Tech@@QAEXH@Z"
+    },
+    "0050C2FA": {
+      "status": "scratch",
+      "symbol": "?get_help_message@TRIBE_Tech@@QAEJF@Z"
+    },
+    "0050C333": {
+      "status": "scratch",
+      "symbol": "?get_help_page@TRIBE_Tech@@QAEJF@Z"
+    },
+    "0050C36C": {
+      "status": "scratch",
+      "symbol": "?get_hotkey@TRIBE_Tech@@QAEJF@Z"
+    },
+    "0050C3A5": {
+      "status": "scratch",
+      "symbol": "??0TRIBE_Player_Tech@@QAE@HPAVTRIBE_Tech@@PAVRGE_Player@@E@Z"
+    },
+    "0050C4FC": {
+      "status": "scratch",
+      "symbol": "??0TRIBE_Player_Tech@@QAE@PAVTRIBE_Tech@@PAVRGE_Player@@E@Z"
+    },
+    "0050C562": {
+      "status": "scratch",
+      "symbol": "??1TRIBE_Player_Tech@@QAE@XZ"
+    },
+    "0050C58C": {
+      "status": "scratch",
+      "symbol": "?get_tech_state@TRIBE_Player_Tech@@QAEFF@Z"
+    },
+    "0050C5A7": {
+      "status": "scratch",
+      "symbol": "?undo_tech@TRIBE_Player_Tech@@QAEEF@Z"
+    },
+    "0050C5E5": {
+      "status": "scratch",
+      "symbol": "?do_tech@TRIBE_Player_Tech@@QAEEF@Z"
+    },
+    "0050C6AD": {
+      "status": "scratch",
+      "symbol": "?research@TRIBE_Player_Tech@@QAEEFM@Z"
+    },
+    "0050C730": {
+      "status": "scratch",
+      "symbol": "?tech_cost@TRIBE_Player_Tech@@QAEXFAAF00000@Z"
+    },
+    "0050CA9E": {
+      "status": "scratch",
+      "symbol": "?check_tech_cost@TRIBE_Player_Tech@@QAEEFPAF@Z"
+    },
+    "0050CC25": {
+      "status": "scratch",
+      "symbol": "?start_research@TRIBE_Player_Tech@@QAEEFEPAF@Z"
+    },
+    "0050CD73": {
+      "status": "scratch",
+      "symbol": "?cancel_research@TRIBE_Player_Tech@@QAEEFE@Z"
+    },
+    "0050CE68": {
+      "status": "scratch",
+      "symbol": "?check_for_new_tech@TRIBE_Player_Tech@@QAEEXZ"
+    },
+    "0050D07A": {
+      "status": "scratch",
+      "symbol": "?save@TRIBE_Player_Tech@@QAEXH@Z"
+    },
+    "0050D0FA": {
+      "status": "scratch",
+      "symbol": "?get_progress@TRIBE_Player_Tech@@QAEFF@Z"
+    },
+    "0050D178": {
+      "status": "scratch",
+      "symbol": "?get_name@TRIBE_Player_Tech@@QAEPADF@Z"
+    },
+    "0050D197": {
+      "status": "scratch",
+      "symbol": "?get_string_id@TRIBE_Player_Tech@@QAEFF@Z"
+    },
+    "0050D1B8": {
+      "status": "scratch",
+      "symbol": "?get_string_id2@TRIBE_Player_Tech@@QAEFF@Z"
+    },
+    "0050D1D9": {
+      "status": "scratch",
+      "symbol": "?get_button_location@TRIBE_Player_Tech@@QAEEF@Z"
+    },
+    "0050D1F9": {
+      "status": "scratch",
+      "symbol": "?do_rev_tech@TRIBE_Player_Tech@@QAEXF@Z"
+    },
+    "0050D281": {
+      "status": "scratch",
+      "symbol": "?rev_tech@TRIBE_Player_Tech@@QAEEF@Z"
+    },
+    "0050D306": {
+      "status": "scratch",
+      "symbol": "?disable@TRIBE_Player_Tech@@QAEXF@Z"
+    },
+    "0050D383": {
+      "status": "scratch",
+      "symbol": "?enable@TRIBE_Player_Tech@@QAEXF@Z"
+    },
+    "0050D400": {
+      "status": "scratch",
+      "symbol": "?get_help_message@TRIBE_Player_Tech@@QAEJF@Z"
+    },
+    "0050D41D": {
+      "status": "scratch",
+      "symbol": "?get_help_page@TRIBE_Player_Tech@@QAEJF@Z"
+    },
+    "0050D43A": {
+      "status": "scratch",
+      "symbol": "?get_hotkey@TRIBE_Player_Tech@@QAEJF@Z"
+    }
+  },
+  "build": {
+    "flags": "unoptimized"
   }
 }

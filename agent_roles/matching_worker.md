@@ -64,6 +64,13 @@ decisions.
 There is no fixed function or hypothesis quota. Do not give up after one failed
 idea or one code-generation basin.
 
+For scratch blockers, question the starting source model again.
+Previous attempts describe tested inputs. They do not prove that the parameters, types, source structure, or compiler context were correct.
+New outside evidence is not required before testing a different basic assumption against the executable.
+Use the variant lab to compare natural alternatives and identify duplicate compiler output.
+Do not treat a historical defer note as a permanent ban on investigation.
+Accepted drift remains complete under the repository rules.
+
 Continue useful work while reasonable evidence-backed approaches remain. Stop
 when the assignment has received enough useful work or a major issue blocks safe
 progress.
@@ -163,6 +170,10 @@ Use focused tools only when they answer a current question:
 - `search_asm_donors.py` for a distinctive assembly block;
 - `variant_lab.py` for controlled source variants; and
 - `check_function.py --no-build` for extra read-only diagnostics.
+
+When the orchestrator supplies older-build files, use `reference_build.py` for named counterparts.
+Read `docs/reference_builds.md` before use. Keep older-build hypotheses separate from target behavior proof.
+Read `docs/reference_validation.md` when direct identities, linked storage, or header emissions block validation.
 
 Treat positive procedure-scoped PDB records as strong source evidence. Preserve
 proved names, types, storage classes, and procedure ownership when the binary

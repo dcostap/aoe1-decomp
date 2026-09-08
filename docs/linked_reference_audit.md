@@ -15,23 +15,27 @@ python tools/audit_linked_references.py --build build/executable/20260907T011421
 python tests/test_linked_references.py
 ```
 
-The build directory must contain `empiresx.exe` and `empiresx.map` from the same build.
+The build directory must contain a fresh hash-recorded build report, EXE, and linker map.
+The audit verifies artifact hashes and the registry snapshot before comparison.
 Reports must stay under `build/`.
 Exit zero means no supported check failed. It does not mean complete coverage.
 Exit one means at least one reference failed. Input errors also stop the command.
 
 ## Small model
 
-The function registry supplies original entry addresses and reconstructed symbols.
+Original linkage evidence supplies original entry addresses and symbols.
+The registry identifies normal functions but cannot substitute an unsupported target identity.
 The linker map supplies actual reconstructed addresses.
 Reviewed data ranges live in `config/linked_reference_owners.json`.
 Each range has an original start, size, reconstructed symbol, and evidence.
 The rebuilt field address must equal the rebuilt owner address plus the original field offset.
 Overlapping reviewed ranges produce unknown results rather than an arbitrary choice.
 
-The first data range is the streaming RIFF structure. It directly tests the demonstrated storage defect.
+Reviewed ranges include the streaming RIFF structure, selected globals, and the bounded UnitAIModule virtual table.
 This is deliberately not a complete data inventory.
 Add ranges only after reviewing ownership and size. Do not derive them from the references being tested.
+Use `check_initial_bytes` and explicit `pointer_offsets` only after reviewing the initial layout.
+The audit compares plain bytes and resolved pointer targets separately.
 Do not use proximity, names alone, or previously accepted relocation substitutions as ownership proof.
 A reviewed range is an audit assumption. Incorrect range evidence can still produce incorrect conclusions.
 
@@ -80,11 +84,13 @@ Run `audit_global_initializers.py` separately for its supported initial-data che
 
 ## Limits
 
-This version does not check computed addresses, virtual dispatch, complete pointer tables, or all initial data.
+This version does not check computed addresses, runtime virtual dispatch, unreviewed pointer tables, or all initial data.
 It cannot prove that file loading ran, that an object is valid, or that gameplay is correct.
 Unknown functions and unknown data owners are explicit coverage gaps.
-Function addresses come from current registry evidence; historical builds need compatible symbols and ownership.
+Function addresses use original symbol evidence and the verified linked map.
 Function-local statics and overlapping storage require reviewed owner evidence before adding ranges.
+Unknown-target summaries rank uncovered addresses and list affected callers.
+See `docs/reference_validation.md` for input checks, emission reports, and remaining limits.
 
 ## Dogfood results
 

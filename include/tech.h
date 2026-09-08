@@ -72,7 +72,7 @@ public:
     unsigned char undo_tech(short);
     unsigned char do_tech(short);
     unsigned char research(short, float);
-    void tech_cost(short, short*, short*, short*, short*, short*, short*);
+    void tech_cost(short, short&, short&, short&, short&, short&, short&);
     unsigned char check_tech_cost(short, short*);
     unsigned char start_research(short, unsigned char, short*);
     unsigned char cancel_research(short, unsigned char);

@@ -444,13 +444,16 @@ def load_function_modules() -> list[dict[str, object]]:
                     f"{label}: {va} has invalid status {status!r}"
                 )
             symbol = str(raw_entry.get("symbol") or "").strip()
+            emission_source = str(raw_entry.get("emission_source") or "").replace("\\", "/")
+            if emission_source and (suffix not in {".h", ".hpp"} or build is not None):
+                raise ValueError(f"{label}: emission_source requires a header-owned function without a header build")
             if symbol and any(character.isspace() for character in symbol):
                 raise ValueError(f"{label}: {va} has invalid symbol")
             if build is not None and not symbol:
                 raise ValueError(f"{label}: buildable function {va} needs a symbol")
-            if build is None and symbol:
+            if build is None and symbol and not emission_source:
                 raise ValueError(f"{label}: function {va} has a symbol without a build")
-            if build is None and status != "unresolved":
+            if build is None and not emission_source and status != "unresolved":
                 raise ValueError(
                     f"{label}: function {va} without a build must be unresolved"
                 )
@@ -458,6 +461,10 @@ def load_function_modules() -> list[dict[str, object]]:
             functions[va] = {"status": status}
             if symbol:
                 functions[va]["symbol"] = symbol
+            if emission_source:
+                if not symbol:
+                    raise ValueError(f"{label}: emitted function {va} needs a symbol")
+                functions[va]["emission_source"] = emission_source
         modules.append(
             {
                 "name": name,
@@ -470,6 +477,13 @@ def load_function_modules() -> list[dict[str, object]]:
                 "functions": functions,
             }
         )
+    source_modules = {str(module['source']): module for module in modules}
+    for module in modules:
+        for va, entry in module['functions'].items():
+            if entry.get('emission_source'):
+                emitter = source_modules.get(entry['emission_source'])
+                if not emitter or not emitter.get('build') or Path(str(emitter['source'])).suffix not in {'.c', '.cpp', '.cc', '.cxx'}:
+                    raise ValueError(f"{va}: emission source must name a configured natural C/C++ build")
     return modules
 
 
@@ -649,7 +663,13 @@ def validate_function_registry() -> list[str]:
 
 def load_build_modules() -> list[dict[str, object]]:
     """Return natural source modules that have a proven compiler recipe."""
-    return [module for module in load_function_modules() if module.get("build")]
+    modules = {str(module['source']): dict(module, functions=dict(module['functions']))
+               for module in load_function_modules() if module.get('build')}
+    for owner in load_function_modules():
+        for va, entry in owner['functions'].items():
+            if entry.get('emission_source'):
+                modules[entry['emission_source']]['functions'][va] = entry
+    return list(modules.values())
 
 
 def matching_build_for_va(va: int) -> dict[str, object] | None:
@@ -657,12 +677,7 @@ def matching_build_for_va(va: int) -> dict[str, object] | None:
     entry = function_entry_for_va(va)
     if entry is None or entry.get("status") != "matching":
         return None
-    module = entry["module"]
-    assert isinstance(module, dict)
-    if module.get("build") is None:
-        return None
-    validate_build_module(module)
-    return module
+    return build_module_for_va(va)
 
 
 def build_module_for_va(va: int) -> dict[str, object] | None:
@@ -672,6 +687,10 @@ def build_module_for_va(va: int) -> dict[str, object] | None:
         return None
     module = entry["module"]
     assert isinstance(module, dict)
+    source = entry.get('emission_source', module['source'])
+    module = next((candidate for candidate in load_build_modules() if candidate['source'] == source), None)
+    if module is None:
+        return None
     validate_build_module(module)
     return module
 

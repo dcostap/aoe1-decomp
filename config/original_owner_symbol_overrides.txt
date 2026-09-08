@@ -1,6 +1,6 @@
-# Reviewed original PDB procedure symbols absent from the executable FPO table.
+# Reviewed original PDB symbols absent from the executable FPO table.
 # Each row is: VA decorated_symbol linkage.
-# `local` means S_LPROC32. `global` means S_GPROC32 with S_PUB32 evidence.
+# `local` means S_LPROC32. `global` means reviewed global linkage, including S_PUB32 evidence.
 # Do not add an owner that already has an FPO row.
 
 # Release/dib.obj, type 0x2292: static void(unsigned char*, unsigned long,
@@ -23,3 +23,40 @@
 
 # Release/visible.obj: RGE_Visible_Map::explore_terrain has no FPO row.
 0053C6F0 ?explore_terrain@RGE_Visible_Map@@QAEHHHHHHH@Z global
+
+# Release/tech.obj contribution 0050B840-0050D456. Original S_PUB32 records
+# independently name every entry despite missing procedure streams.
+# See decomp_notes/tech_public_identity_review.md for mapping and evidence limits.
+0050B840 ??0TRIBE_Tech@@QAE@HPAVTRIBE_World@@@Z global
+0050BB84 ??0TRIBE_Tech@@QAE@PAD@Z global
+0050BF28 ??1TRIBE_Tech@@QAE@XZ global
+0050BF9C ?do_tech@TRIBE_Tech@@QAEEFPAVRGE_Player@@@Z global
+0050BFED ?save@TRIBE_Tech@@QAEXH@Z global
+0050C2FA ?get_help_message@TRIBE_Tech@@QAEJF@Z global
+0050C333 ?get_help_page@TRIBE_Tech@@QAEJF@Z global
+0050C36C ?get_hotkey@TRIBE_Tech@@QAEJF@Z global
+0050C3A5 ??0TRIBE_Player_Tech@@QAE@HPAVTRIBE_Tech@@PAVRGE_Player@@E@Z global
+0050C4FC ??0TRIBE_Player_Tech@@QAE@PAVTRIBE_Tech@@PAVRGE_Player@@E@Z global
+0050C562 ??1TRIBE_Player_Tech@@QAE@XZ global
+0050C58C ?get_tech_state@TRIBE_Player_Tech@@QAEFF@Z global
+0050C5A7 ?undo_tech@TRIBE_Player_Tech@@QAEEF@Z global
+0050C5E5 ?do_tech@TRIBE_Player_Tech@@QAEEF@Z global
+0050C6AD ?research@TRIBE_Player_Tech@@QAEEFM@Z global
+0050C730 ?tech_cost@TRIBE_Player_Tech@@QAEXFAAF00000@Z global
+0050CA9E ?check_tech_cost@TRIBE_Player_Tech@@QAEEFPAF@Z global
+0050CC25 ?start_research@TRIBE_Player_Tech@@QAEEFEPAF@Z global
+0050CD73 ?cancel_research@TRIBE_Player_Tech@@QAEEFE@Z global
+0050CE68 ?check_for_new_tech@TRIBE_Player_Tech@@QAEEXZ global
+0050D07A ?save@TRIBE_Player_Tech@@QAEXH@Z global
+0050D0FA ?get_progress@TRIBE_Player_Tech@@QAEFF@Z global
+0050D178 ?get_name@TRIBE_Player_Tech@@QAEPADF@Z global
+0050D197 ?get_string_id@TRIBE_Player_Tech@@QAEFF@Z global
+0050D1B8 ?get_string_id2@TRIBE_Player_Tech@@QAEFF@Z global
+0050D1D9 ?get_button_location@TRIBE_Player_Tech@@QAEEF@Z global
+0050D1F9 ?do_rev_tech@TRIBE_Player_Tech@@QAEXF@Z global
+0050D281 ?rev_tech@TRIBE_Player_Tech@@QAEEF@Z global
+0050D306 ?disable@TRIBE_Player_Tech@@QAEXF@Z global
+0050D383 ?enable@TRIBE_Player_Tech@@QAEXF@Z global
+0050D400 ?get_help_message@TRIBE_Player_Tech@@QAEJF@Z global
+0050D41D ?get_help_page@TRIBE_Player_Tech@@QAEJF@Z global
+0050D43A ?get_hotkey@TRIBE_Player_Tech@@QAEJF@Z global

@@ -2,6 +2,12 @@
 
 Generated from `0d38c9ad3362fbc441ba3303bdbe3ce1e7becb9f` and the current full translation-unit audit.
 
+This is a historical shortlist, not a scheduling restriction. Query the live registry before selecting work.
+Recheck basic source assumptions in scratch blockers. Prior failed probes do not require waiting for new external evidence.
+Use the variant lab and `docs/reference_builds.md` to test different source models.
+The lab uses the target's configured compiler profile, including a routed header's emitter profile.
+Each run preserves that response file and its hash. Variant flags follow the preserved base flags.
+
 Scratch functions: **373**.
 
 Mechanical tiers rank evidence only. Manual review overrides the score.

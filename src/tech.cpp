@@ -322,9 +322,9 @@ unsigned char TRIBE_Player_Tech::research(short tech_id, float amount)
     return 0;
 }
 
-void TRIBE_Player_Tech::tech_cost(short tech_id, short* attr1, short* cost1,
-                                  short* attr2, short* cost2, short* attr3,
-                                  short* cost3)
+void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1,
+                                  short& attr2, short& cost2, short& attr3,
+                                  short& cost3)
 {
     Tech_Tree* tech;
     short total;
@@ -332,12 +332,12 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short* attr1, short* cost1,
 
     tech = this->base_tech->tech_tree + tech_id;
     total = 0;
-    *attr1 = -1;
-    *cost1 = 0;
-    *attr2 = -1;
-    *cost2 = 0;
-    *attr3 = -1;
-    *cost3 = 0;
+    attr1 = -1;
+    cost1 = 0;
+    attr2 = -1;
+    cost2 = 0;
+    attr3 = -1;
+    cost3 = 0;
 
     can_use_carry = this->check_tech_cost(tech_id, 0);
     if (this->owner->attributes[0x1d] < 1.0f) {
@@ -345,65 +345,65 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short* attr1, short* cost1,
     }
 
     if (tech->attribute_used[0] != 0) {
-        *attr1 = tech->attribute[0];
-        if (*attr1 >= 0) {
-            *cost1 = tech->attribute_cost[0];
-            if (this->owner->attributes[*attr1] < (float)(int)*cost1 &&
+        attr1 = tech->attribute[0];
+        if (attr1 >= 0) {
+            cost1 = tech->attribute_cost[0];
+            if (this->owner->attributes[attr1] < (float)(int)cost1 &&
                 can_use_carry) {
-                total += (short)(*cost1 -
-                    (short)this->owner->attributes[*attr1]);
-                *cost1 = (short)this->owner->attributes[*attr1];
+                total += (short)(cost1 -
+                    (short)this->owner->attributes[attr1]);
+                cost1 = (short)this->owner->attributes[attr1];
             }
         }
     }
 
     if (tech->attribute_used[1] != 0) {
-        *attr2 = tech->attribute[1];
-        if (*attr2 >= 0) {
-            *cost2 = tech->attribute_cost[1];
-            if (this->owner->attributes[*attr2] < (float)(int)*cost2 &&
+        attr2 = tech->attribute[1];
+        if (attr2 >= 0) {
+            cost2 = tech->attribute_cost[1];
+            if (this->owner->attributes[attr2] < (float)(int)cost2 &&
                 can_use_carry) {
-                total += (short)(*cost2 -
-                    (short)this->owner->attributes[*attr2]);
-                *cost2 = (short)this->owner->attributes[*attr2];
+                total += (short)(cost2 -
+                    (short)this->owner->attributes[attr2]);
+                cost2 = (short)this->owner->attributes[attr2];
             }
         }
     }
 
     if (tech->attribute_used[2] != 0) {
-        *attr3 = tech->attribute[2];
-        if (*attr3 >= 0) {
-            *cost3 = tech->attribute_cost[2];
-            if (this->owner->attributes[*attr3] < (float)(int)*cost3 &&
+        attr3 = tech->attribute[2];
+        if (attr3 >= 0) {
+            cost3 = tech->attribute_cost[2];
+            if (this->owner->attributes[attr3] < (float)(int)cost3 &&
                 can_use_carry) {
-                total += (short)(*cost3 -
-                    (short)this->owner->attributes[*attr3]);
-                *cost3 = (short)this->owner->attributes[*attr3];
+                total += (short)(cost3 -
+                    (short)this->owner->attributes[attr3]);
+                cost3 = (short)this->owner->attributes[attr3];
             }
         }
     }
 
     if (total > 0) {
-        if (*attr1 == 3 || *attr1 == -1) {
-            *attr1 = 3;
-            *cost1 += total;
-        } else if (*attr2 == 3 || *attr2 == -1) {
-            *attr2 = 3;
-            *cost2 += total;
-        } else if (*attr3 == 3 || *attr3 == -1) {
-            *attr3 = 3;
-            *cost3 = total;
+        if (attr1 == 3 || attr1 == -1) {
+            attr1 = 3;
+            cost1 += total;
+        } else if (attr2 == 3 || attr2 == -1) {
+            attr2 = 3;
+            cost2 += total;
+        } else if (attr3 == 3 || attr3 == -1) {
+            attr3 = 3;
+            cost3 = total;
         }
     }
 
-    if (*cost1 <= 0) {
-        *attr1 = -1;
+    if (cost1 <= 0) {
+        attr1 = -1;
     }
-    if (*cost2 <= 0) {
-        *attr2 = -1;
+    if (cost2 <= 0) {
+        attr2 = -1;
     }
-    if (*cost3 <= 0) {
-        *attr3 = -1;
+    if (cost3 <= 0) {
+        attr3 = -1;
     }
 }
 

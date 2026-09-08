@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 
 from build_cache import build_artifact_lock
+from reference_identity import validation_fingerprint
 from common import (
     byte_diff_metrics,
     compiler_artifact_slug,
@@ -658,6 +659,10 @@ def _workflow_guidance(
     size_delta = 0 if expected_size is None or effective_size is None else int(effective_size) - int(expected_size)
     frame_differs = original_prologue.get("frame_size") != rebuilt_prologue.get("frame_size")
     known_wrong_transfers = len(relocation_validation.get("target_mismatches") or [])
+    if relocation_validation.get("target_unknowns"):
+        return ["Workflow stage: CONTROL TARGET EVIDENCE",
+                "Why: at least one direct target lacks unique original symbol evidence.",
+                "Next: establish target identity before claiming exact output."]
     wrong_owner = owner_symbol_validation.get("status") == "mismatch"
 
     lines: list[str] = []
@@ -1024,6 +1029,7 @@ def main() -> None:
     exact = (
         mismatch is None
         and not relocation_validation["target_mismatches"]
+        and not relocation_validation.get("target_unknowns")
         and owner_symbol_mismatch is None
     )
     mismatch_classification = classify_mismatch(
@@ -1072,6 +1078,10 @@ def main() -> None:
         "relocations_incompatible_unmasked": relocation_validation["incompatible"],
         "relocation_target_mismatch_candidates": relocation_validation["target_mismatches"],
         "relocation_target_mismatches": actionable_target_mismatches,
+        "relocation_target_unknowns": relocation_validation.get("target_unknowns", []),
+        "storage_reference_checks": relocation_validation.get("data_references", []),
+        "validation_scope": "Function bytes, owner, boundary, and direct symbols. Linked storage and initial data require separate checks.",
+        "validation_fingerprint": validation_fingerprint(),
         "owning_symbol_validation": owner_symbol_validation,
         "rebuilt_extraction": rebuilt_meta,
         "rebuilt_source_map": {
@@ -1145,6 +1155,11 @@ def main() -> None:
             f"{mismatch_classification['primary']} [{str(mismatch_classification['confidence']).upper()}]; "
             "does not establish equivalence"
         )
+    summary.append('Scope: local function code. Linked storage and initial data require separate audits.')
+    if relocation_validation.get('target_unknowns'):
+        summary.append(f"Unproved direct targets: {len(relocation_validation['target_unknowns'])}")
+    if relocation_validation.get('data_references'):
+        summary.append(f"Storage references awaiting linked checks: {len(relocation_validation['data_references'])}")
     if delta is not None:
         summary.append(
             "Emitted-code movement this iteration: "

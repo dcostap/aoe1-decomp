@@ -2,7 +2,15 @@
   "schema": 1,
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\dlg_list.h",
   "functions": {
-    "0043F320": {"status": "unresolved"},
-    "0043F330": {"status": "unresolved"}
+    "0043F320": {
+      "status": "scratch",
+      "symbol": "?get_list_id@TListDialog@@UAEFXZ",
+      "emission_source": "src/dlg_list.cpp"
+    },
+    "0043F330": {
+      "status": "scratch",
+      "symbol": "?get_list_name@TListDialog@@UAEPADXZ",
+      "emission_source": "src/dlg_list.cpp"
+    }
   }
 }

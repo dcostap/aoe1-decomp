@@ -21,8 +21,6 @@ extern void __cdecl color_log(unsigned char, unsigned char, int);
 extern unsigned long __cdecl debug_timeGetTime(char*, int);
 extern void __cdecl write_draw_log2(char*);
 
-RGE_Main_View::~RGE_Main_View() {}
-
 RGE_Main_View::RGE_Main_View() : RGE_View() {
     this->map_view = 0;
     this->last_mouse_scroll_time = 0;

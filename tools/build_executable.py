@@ -16,6 +16,7 @@ from pe_resources import extract_resources
 from compression_binary import build_compression_object
 from preserved_binary import build_preserved_object
 from build_assembly import assemble_source
+from linked_inputs import digest, registry_digest
 
 
 def run_command(command: list[str], output: Path, toolchain: dict) -> subprocess.CompletedProcess:
@@ -76,6 +77,7 @@ def main() -> int:
     config = json.loads((REPO_ROOT / "config/executable.json").read_text(encoding="utf-8"))
     plan = source_plan(config, load_build_modules())
     report: dict = {"schema": 1, "config": config, "sources": [], "linked": False}
+    report['registry_sha256'] = registry_digest()
     toolchain = load_toolchain()
     report["toolchain"] = toolchain
     report["original_sha256"] = hashlib.sha256(repo_path(config["original"]).read_bytes()).hexdigest()
@@ -162,6 +164,8 @@ def main() -> int:
         "link_error_count": len(report["link"]["errors"]),
         "linked": report["linked"],
     }
+    report['artifact_sha256'] = {path.name: digest(path) for path in
+                                 [*objects, exe, output / 'empiresx.map'] if path.is_file()}
     (output / "report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report["summary"], indent=2))
     print(f"Report: {output / 'report.json'}")

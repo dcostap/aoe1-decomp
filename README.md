@@ -96,7 +96,10 @@ python tools/build_executable.py --help
 python tools/build_executable.py
 ```
 
-The executable build is not yet complete. See `docs/executable_build.md` for inputs, reports, and remaining requirements.
+The executable links. This does not prove complete source recovery or game behavior.
+See `docs/executable_build.md` for inputs, reports, and remaining requirements.
+See `docs/reference_validation.md` for linked checks and unresolved emission audits.
+See `docs/reference_builds.md` for older-build searches and named disassembly.
 
 Prepare a runtime copy for a rebuilt executable:
 

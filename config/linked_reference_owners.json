@@ -5,7 +5,49 @@
       "original_va": "0088847C",
       "symbol": "_ds_wave_riff_chunk",
       "size": 20,
+      "check_initial_bytes": true,
+      "pointer_offsets": [],
       "evidence": "Original 0044871B passes this address as the fourth WaveOpenFile argument. MMCKINFO is 20 bytes; cksize is at offset four. See decomp_notes/functions/0044/00448B30.md."
+    },
+    {
+      "original_va": "0058EBCC",
+      "symbol": "?save_game_version@@3MA",
+      "size": 4,
+      "check_initial_bytes": true,
+      "pointer_offsets": [],
+      "evidence": "PDB float and original initial bytes. See decomp_notes/global_initializer_audit.md and decomp_notes/map_startup_crash.md."
+    },
+    {
+      "original_va": "0057F9E4",
+      "symbol": "?fixed_update_time@@3JA",
+      "size": 4,
+      "check_initial_bytes": true,
+      "pointer_offsets": [],
+      "evidence": "PDB long and original initial bytes. See decomp_notes/global_initializer_audit.md."
+    },
+    {
+      "original_va": "0058ABA0",
+      "symbol": "?tribe_group_properties@@3PAKA",
+      "size": 160,
+      "check_initial_bytes": true,
+      "pointer_offsets": [],
+      "evidence": "PDB and source establish forty unsigned long entries. See decomp_notes/global_initializer_audit.md."
+    },
+    {
+      "original_va": "0056EAD8",
+      "symbol": "??_7UnitAIModule@@6B@",
+      "size": 224,
+      "check_initial_bytes": true,
+      "pointer_offsets": [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200, 204, 208, 212, 216, 220],
+      "evidence": "Reviewed original UnitAIModule table has 56 slots and ends at processRetryableOrder, offset 220. Following words are floating-point data. See decomp_notes/executable_build.md, Original virtual slots."
+    },
+    {
+      "original_va": "0062C574",
+      "symbol": "?rge_base_game@@3PAVRGE_Base_Game@@A",
+      "size": 4,
+      "check_initial_bytes": true,
+      "pointer_offsets": [0],
+      "evidence": "Original PDB S_GDATA32 [0004:000AD574], type 0x109D: NEAR32 pointer to RGE_Base_Game (0x109C). Original initial bytes are zero. Canonical declaration and definition are in include/game_globals.h and src/game_globals.cpp. See decomp_notes/reference_tooling_validation.md."
     }
   ]
 }

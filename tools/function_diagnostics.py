@@ -133,12 +133,13 @@ def clean_symbol_name(name: str) -> str:
 
 
 def direct_call_symbols_match(original: str, rebuilt: str) -> bool:
-    """Compare direct-control symbols without collapsing known overload identity.
+    """Compare display names for diagnostic alignment, not exactness proof.
 
     Most original inventory names are undecorated, so they still require the
     historical normalized comparison.  When both sides have decorated C++
     names, however, compare the complete symbols: reducing at the first ``@``
-    would make distinct overloads indistinguishable.
+    would make distinct overloads indistinguishable. The exactness gate uses
+    reference_identity.check_direct_identity instead of this fallback.
     """
     original_value = original.strip()
     rebuilt_value = rebuilt.strip()
@@ -1157,6 +1158,8 @@ def compatible_relocation_masks(
     compatible = 0
     incompatible = 0
     target_mismatches: list[dict[str, object]] = []
+    target_unknowns: list[dict[str, object]] = []
+    data_references: list[dict[str, object]] = []
 
     for relocation in rebuilt_relocations:
         offset = int(relocation["offset"])
@@ -1177,16 +1180,17 @@ def compatible_relocation_masks(
             continue
 
         if rebuilt_instruction.flow_control in {FlowControl.CALL, FlowControl.UNCONDITIONAL_BRANCH}:
+            from reference_identity import check_direct_identity
             original_target = original_direct_target(original_instruction, names)
             rebuilt_target = str(relocation.get("symbol_name") or "")
-            rebuilt_clean = clean_symbol_name(rebuilt_target)
-            if (
-                original_target
-                and not original_target.startswith(tuple("0123456789"))
-                and rebuilt_clean
-                and not direct_call_symbols_match(original_target, rebuilt_target)
-            ):
-                target_mismatches.append(
+            identity = check_direct_identity(original_instruction.target, rebuilt_target)
+            addend = int.from_bytes(rebuilt_bytes[offset:offset + width], 'little', signed=True)
+            if addend:
+                identity = {'result': 'unknown', 'reason': 'nonzero COFF target addend',
+                            'addend': addend, 'symbol_identity': identity}
+            if identity['result'] != 'pass':
+                destination = target_mismatches if identity['result'] == 'fail' else target_unknowns
+                destination.append(
                     {
                         "offset": rebuilt_instruction.offset,
                         "kind": (
@@ -1196,20 +1200,38 @@ def compatible_relocation_masks(
                         ),
                         "original": original_target,
                         "rebuilt": rebuilt_target,
+                        "identity": identity,
                     }
                 )
                 incompatible += 1
                 continue
+        else:
+            data_references.append({'offset': offset,
+                                    'symbol': relocation.get('symbol_name'),
+                                    'result': 'unknown',
+                                    'reason': 'requires linked storage and initial-data checks'})
 
         for index in range(offset, min(offset + width, len(masked_original), len(masked_rebuilt))):
             masked_original[index] = 0
             masked_rebuilt[index] = 0
         compatible += 1
 
+    for instruction in rebuilt_instructions:
+        if instruction.flow_control not in {FlowControl.CALL, FlowControl.UNCONDITIONAL_BRANCH}:
+            continue
+        if start_va <= instruction.target < start_va + len(rebuilt_bytes):
+            continue
+        if not any(instruction.offset <= int(r['offset']) < instruction.end for r in rebuilt_relocations):
+            target_unknowns.append(dict(offset=instruction.offset, kind='unrelocated-control',
+                                        original='', rebuilt=f'{instruction.target:08X}',
+                                        reason='external transfer has no COFF symbol relocation'))
+
     return bytes(masked_original), bytes(masked_rebuilt), {
         "compatible": compatible,
         "incompatible": incompatible,
         "target_mismatches": target_mismatches,
+        "target_unknowns": target_unknowns,
+        "data_references": data_references,
     }
 
 

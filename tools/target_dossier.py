@@ -1024,6 +1024,7 @@ def format_dossier(dossier: dict[str, object]) -> str:
             "Next checks:",
             f"  python tools/query_abi.py --va {target['va']}",
             f"  python tools/find_function_donors.py --va {target['va']}",
+            f"  python tools/reference_build.py query --index build/references/january.json --va {target['va']} --output build/references/{target['va']}.json",
             f"  python tools/check_function.py --va {target['va']} --call-map-unmatched",
             f"  python tools/check_function.py --va {target['va']} --stack-map --no-build",
             f"  python tools/check_function.py --va {target['va']} --block-map-differences",

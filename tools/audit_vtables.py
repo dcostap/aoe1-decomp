@@ -18,6 +18,8 @@ from audit_link_symbols import decorated_name
 from coff import function_symbol_section, load_coff_object
 from common import REPO_ROOT, load_build_modules, load_pdb_function_source_map, repo_path
 from extract_obj_function import select_exact_function_symbol
+from linked_inputs import verify_build, digest
+from reference_identity import validation_fingerprint
 
 
 def table_definitions(obj):
@@ -46,8 +48,10 @@ def main() -> int:
     if not output.is_relative_to((REPO_ROOT / 'build').resolve()):
         parser.error('Output must be under build/.')
     build_path, audit_path = repo_path(args.build_report), repo_path(args.function_audit)
-    build = json.loads(build_path.read_text())
+    build = verify_build(build_path.parent, objects=True)
     audit = json.loads(audit_path.read_text())
+    if audit.get('validation_fingerprint') != validation_fingerprint():
+        raise ValueError('Function audit uses stale or unrecorded validation rules')
     original = repo_path(build['config']['original'])
     if hashlib.sha256(original.read_bytes()).hexdigest() != build['original_sha256']:
         raise ValueError('Original EXE differs from the recorded build input.')
@@ -67,7 +71,10 @@ def main() -> int:
                 or source['inputs']['fingerprint'] != group['input_fingerprint']):
             skipped.append(group['group'])
             continue
-        obj = load_coff_object(audit_path.parent / 'objects' / (group['group'] + '.obj'))
+        object_path = audit_path.parent / 'objects' / (group['group'] + '.obj')
+        if group.get('object_sha256') != digest(object_path):
+            raise ValueError(f"Audit object changed or lacks a hash: {group['group']}")
+        obj = load_coff_object(object_path)
         for row in group['rows']:
             if (row['grouped_result'] != 'MATCH' or row['owner_status'] != 'match'
                     or row['relocation_target_mismatches'] or row['boundary_escape_count']):

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import hashlib
 import sys
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -21,6 +22,7 @@ from common import (
 )
 from extract_obj_function import select_record_function_symbol
 from original_fpo import load_original_owner_symbols
+from reference_identity import validation_fingerprint
 from status_core import build_status_rows
 from function_compare import compile_source, compare_object_function
 from validate_candidate_tu import _source_closure, _source_policy_issues
@@ -137,6 +139,7 @@ def classify(
     new_diff = integer(comparison.get("diff_bytes"))
     owner_status = str(comparison.get("owner_status") or "")
     relocation_errors = integer(comparison.get("relocation_target_mismatches")) or 0
+    relocation_unknowns = integer(comparison.get("relocation_target_unknowns")) or 0
     boundary_errors = integer(comparison.get("boundary_escape_count")) or 0
 
     if result == "MATCH":
@@ -157,7 +160,11 @@ def classify(
             action = "review_for_promotion"
             reason = "A non-matching function now produces an exact result."
     elif result == "MISMATCH":
-        if matching_here:
+        if relocation_unknowns:
+            category = "reference_evidence_gap"
+            action = "establish_original_target_identity"
+            reason = "Direct target evidence is incomplete; exactness is not proved. Other byte differences can also remain."
+        elif matching_here:
             category = "matching_regression"
             action = "repair_before_integration"
             reason = "A matching function no longer produces an exact result."
@@ -295,6 +302,8 @@ def compile_and_compare_group(
                 "relocation_target_mismatches": len(
                     relocations.get("target_mismatches") or []
                 ),
+                "relocation_target_unknowns": len(relocations.get("target_unknowns") or []),
+                "reference_validation": relocations,
                 "boundary_escape_count": len(result["boundary_escape_offsets"]),
                 "symbol": result["symbol"],
                 "expected_symbol": expected_symbol,
@@ -352,6 +361,8 @@ def compile_and_compare_group(
                     "relocation_target_mismatches"
                 ],
                 "boundary_escape_count": comparison["boundary_escape_count"],
+                "relocation_target_unknowns": comparison.get("relocation_target_unknowns", 0),
+                "reference_validation": comparison.get("reference_validation", {}),
                 "symbol": comparison["symbol"],
                 "expected_symbol": comparison["expected_symbol"],
                 "expected_owner_name": comparison["expected_owner_name"],
@@ -369,6 +380,7 @@ def compile_and_compare_group(
         "flags": str(build["flags_path"]),
         "input_fingerprint": input_fingerprint,
         "compile_error": "",
+        "object_sha256": hashlib.sha256(object_path.read_bytes()).hexdigest(),
         "rows": rows,
     }
 
@@ -759,6 +771,8 @@ def main() -> int:
         targets: list[dict[str, object]] = []
         for source in _source_closure(wrapper):
             for status in by_source.get(source.resolve(), []):
+                if str(status['va']).upper() not in group['functions']:
+                    continue
                 source_path = repo_path(str(status["source_path"])).resolve()
                 if source_path not in policy_cache:
                     policy_cache[source_path] = _source_policy_issues(source_path)
@@ -769,6 +783,9 @@ def main() -> int:
                     }
                 )
         targets.sort(key=lambda target: str(target["status"]["va"]))
+        missing = set(group['functions']) - {str(target['status']['va']).upper() for target in targets}
+        if missing:
+            raise ValueError(f"{group['name']}: configured owners absent from source closure: {sorted(missing)}")
         targets_by_group[str(group["name"])] = targets
 
     original_symbols, _ = load_original_owner_symbols()
@@ -820,11 +837,14 @@ def main() -> int:
     ]
     report: dict[str, object] = {
         "schema": 1,
+        "validation_fingerprint": validation_fingerprint(),
         "selection": selection,
         "summary": {
             "group_count": len(groups),
             "compiled_group_count": len(groups) - len(compile_errors),
             "compile_error_count": len(compile_errors),
+            "failed_exact_claim_count": sum(bool(row.get('matching_in_group')) and
+                                            row.get('grouped_result') != 'MATCH' for row in rows),
             "function_count": len(rows),
             "matching_count": sum(bool(row["matching_anywhere"]) for row in rows),
             "nonmatching_count": sum(not bool(row["matching_anywhere"]) for row in rows),
@@ -857,6 +877,7 @@ def main() -> int:
         "grouped_diff_percent",
         "owner_status",
         "relocation_target_mismatches",
+        "relocation_target_unknowns",
         "boundary_escape_count",
         "symbol",
         "expected_symbol",
@@ -880,7 +901,11 @@ def main() -> int:
     print(f"Wrote {text_path}")
     print(f"Wrote {queue_json_path}")
     print(f"Wrote {queue_text_path}")
-    return 1 if compile_errors else 0
+    # Expected scratch differences are reports, not failed exact claims.
+    # A claimed matching owner must not pass through a compile-only exit gate.
+    failed_claims = [row for row in rows
+                     if row.get('matching_in_group') and row.get('grouped_result') != 'MATCH']
+    return 1 if compile_errors or failed_claims else 0
 
 
 if __name__ == "__main__":

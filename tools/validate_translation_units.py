@@ -18,7 +18,7 @@ from common import (
     load_functions,
     load_pdb_function_source_map,
     pdb_module_stream_procedure_for_va,
-    preferred_source_path,
+    compiler_source_path,
     slugify_name,
 )
 from extract_obj_function import select_exact_function_symbol
@@ -226,7 +226,7 @@ def validate_translation_units(
             symbol = str(entry.get("symbol") or "").strip()
             if not symbol or any(character.isspace() for character in symbol):
                 issues.append(_issue("invalid-symbol", f"{label} function {va} has no valid symbol"))
-            if preferred_source_path(records[va]).resolve() != source.resolve():
+            if compiler_source_path(records[va]).resolve() != source.resolve():
                 issues.append(_issue("source-mismatch", f"{label} function {va} has another source owner"))
 
         for va, entry in matching.items():
@@ -264,8 +264,7 @@ def validate_translation_units(
     if require_complete:
         expected = {
             str(module["source"]): set(module["functions"])
-            for module in load_function_modules()
-            if module.get("build")
+            for module in load_build_modules()
         }
         actual = {
             str(module.get("source") or ""): set(module.get("functions") or {})

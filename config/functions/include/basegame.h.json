@@ -2,23 +2,89 @@
   "schema": 1,
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\basegame.h",
   "functions": {
-    "0041C240": {"status": "unresolved"},
-    "0041C250": {"status": "unresolved"},
-    "0041C260": {"status": "unresolved"},
-    "0041C6E0": {"status": "unresolved"},
-    "0041C6F0": {"status": "unresolved"},
-    "0041C700": {"status": "unresolved"},
-    "0041C710": {"status": "unresolved"},
-    "0041C720": {"status": "unresolved"},
-    "0041C730": {"status": "unresolved"},
-    "0041C740": {"status": "unresolved"},
-    "0041C750": {"status": "unresolved"},
-    "0041C760": {"status": "unresolved"},
-    "0041C770": {"status": "unresolved"},
-    "0041C780": {"status": "unresolved"},
-    "0041C790": {"status": "unresolved"},
-    "0041C7A0": {"status": "unresolved"},
-    "0041C7B0": {"status": "unresolved"},
-    "0041C7C0": {"status": "unresolved"}
+    "0041C240": {
+      "status": "scratch",
+      "symbol": "?set_prog_mode@RGE_Base_Game@@UAEXH@Z",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C250": {
+      "status": "unresolved"
+    },
+    "0041C260": {
+      "status": "unresolved"
+    },
+    "0041C6E0": {
+      "status": "scratch",
+      "symbol": "?notification@RGE_Base_Game@@UAEXHJJJJ@Z",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C6F0": {
+      "status": "unresolved"
+    },
+    "0041C700": {
+      "status": "scratch",
+      "symbol": "?handle_message@RGE_Base_Game@@MAEHPAUtagMSG@@@Z",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C710": {
+      "status": "scratch",
+      "symbol": "?action_update@RGE_Base_Game@@MAEHXZ",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C720": {
+      "status": "scratch",
+      "symbol": "?action_mouse_move@RGE_Base_Game@@MAEHJJHHHH@Z",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C730": {
+      "status": "scratch",
+      "symbol": "?action_key_down@RGE_Base_Game@@MAEHKHHHH@Z",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C740": {
+      "status": "scratch",
+      "symbol": "?action_user_command@RGE_Base_Game@@MAEHKK@Z",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C750": {
+      "status": "scratch",
+      "symbol": "?action_command@RGE_Base_Game@@MAEHKK@Z",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C760": {
+      "status": "scratch",
+      "symbol": "?action_music_done@RGE_Base_Game@@MAEHXZ",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C770": {
+      "status": "scratch",
+      "symbol": "?action_activate@RGE_Base_Game@@MAEHXZ",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C780": {
+      "status": "scratch",
+      "symbol": "?action_deactivate@RGE_Base_Game@@MAEHXZ",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C790": {
+      "status": "scratch",
+      "symbol": "?action_init_menu@RGE_Base_Game@@MAEHXZ",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C7A0": {
+      "status": "scratch",
+      "symbol": "?action_exit_menu@RGE_Base_Game@@MAEHXZ",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C7B0": {
+      "status": "scratch",
+      "symbol": "?action_size@RGE_Base_Game@@MAEHXZ",
+      "emission_source": "src/basegame.cpp"
+    },
+    "0041C7C0": {
+      "status": "scratch",
+      "symbol": "?action_close@RGE_Base_Game@@MAEHXZ",
+      "emission_source": "src/basegame.cpp"
+    }
   }
 }

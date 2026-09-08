@@ -2891,8 +2891,8 @@ void TRIBE_Screen_Game::setup_buttons()
                                     short inv_3;
                                     short amt_3;
                                     player->tech_tree->tech_cost(
-                                        tech_id, &inv_1, &amt_1, &inv_2,
-                                        &amt_2, &inv_3, &amt_3);
+                                        tech_id, inv_1, amt_1, inv_2,
+                                        amt_2, inv_3, amt_3);
                                     Tech_Tree* tech =
                                         &this->world->tech->tech_tree[tech_id];
                                     this->tech_list->id = tech_id;

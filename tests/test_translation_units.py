@@ -42,9 +42,10 @@ class TranslationUnitTests(unittest.TestCase):
             for module in modules
             for va, entry in module["functions"].items()
         ]
-        self.assertEqual(242, len(modules))
-        self.assertEqual(5427, len(entries))
-        self.assertEqual(5427, len({va for va, _, _ in entries}))
+        # ManagedArray::resize is now compiler-generated, not a normal header owner.
+        self.assertEqual(241, len(modules))
+        self.assertEqual(5426, len(entries))
+        self.assertEqual(5426, len({va for va, _, _ in entries}))
         self.assertEqual([], validate_function_registry())
 
     def test_build_modules_keep_every_known_symbol(self) -> None:
@@ -54,12 +55,13 @@ class TranslationUnitTests(unittest.TestCase):
             for module in modules
             for entry in module["functions"].values()
         ]
-        self.assertEqual(224, len(modules))
-        self.assertEqual(5260, len(entries))
+        self.assertEqual(225, len(modules))
+        self.assertEqual(5390, len(entries))
+        self.assertEqual(5390, len({va for module in modules for va in module['functions']}))
         self.assertTrue(all(entry.get("symbol") for entry in entries))
         self.assertEqual([], validate_translation_units(modules, require_complete=True))
 
-    def test_header_owned_functions_are_explicit_unresolved_entries(self) -> None:
+    def test_header_routes_keep_header_ownership_and_explicit_unknowns(self) -> None:
         header_modules = [
             module
             for module in load_function_modules()
@@ -70,10 +72,21 @@ class TranslationUnitTests(unittest.TestCase):
             for module in header_modules
             for entry in module["functions"].values()
         ]
-        self.assertEqual(17, len(header_modules))
-        self.assertEqual(134, len(entries))
-        self.assertTrue(all(entry["status"] == "unresolved" for entry in entries))
+        self.assertEqual(16, len(header_modules))
+        self.assertEqual(133, len(entries))
+        self.assertEqual(97, sum(bool(entry.get('emission_source')) for entry in entries))
+        self.assertEqual(36, sum(entry['status'] == 'unresolved' for entry in entries))
+        self.assertTrue(all(entry['status'] == 'scratch' for entry in entries if entry.get('emission_source')))
         self.assertTrue(all(module["build"] is None for module in header_modules))
+
+    def test_header_definition_builds_through_its_designated_emitter(self) -> None:
+        record = function_record_by_va(0x00405D40)
+        entry = function_entry_for_va(0x00405D40)
+        self.assertEqual(entry['module']['source'], 'include/stat_obj.h')
+        self.assertEqual(preferred_source_path(record), REPO_ROOT / 'include/stat_obj.h')
+        self.assertEqual(compiler_source_path(record), REPO_ROOT / 'src/act_obj.cpp')
+        self.assertEqual(compiler_artifact_slug(record), 'tu_act_obj')
+        self.assertEqual(build_module_for_va(0x00405D40)['build']['flags'], 'gx')
 
     def test_point_uses_one_source_recipe_for_all_statuses(self) -> None:
         point = next(module for module in load_build_modules() if module["name"] == "point")

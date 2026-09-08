@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "builds": {
+    "january-1997": {
+      "exe": "AoE 1 Alpha 0.5/AoE 1 Alpha 0.5/GAME/PTRIBE.EXE",
+      "map": "AoE 1 Alpha 0.5/AoE 1 Alpha 0.5/GAME/PTRIBE.MAP",
+      "exe_sha256": "7421b6d8beef75d886a33ac4290b98c94aa66358f1aeb826d6608e66d33ecc75",
+      "map_sha256": "e8c13f099be87e496138caff0ba2760c3eaf751568990ac74829eb0666ba51eb",
+      "evidence": "decomp_notes/older_leaked_builds_survey.md"
+    }
+  }
+}

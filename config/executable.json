@@ -7,8 +7,7 @@
   "drawing_binary": "config/drawing_binary.json",
   "assembly_sources": ["src/Drawarea_asm.asm"],
   "additional_sources": {
-    "src/game_globals.cpp": "default",
-    "src/tech.cpp": "default"
+    "src/game_globals.cpp": "default"
   },
   "link_flags": [
     "/NOLOGO", "/MACHINE:IX86", "/SUBSYSTEM:WINDOWS,4.0",

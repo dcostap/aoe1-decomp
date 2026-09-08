@@ -22,6 +22,7 @@ The variation delegates technical review; it does not weaken the universal corre
 
 - The project is function-first and evidence-first.
 - The original executable is the behavior oracle.
+- Do not run original or rebuilt game executables. Use static executable evidence and compiler checks.
 - PDB, Ghidra, generated inventories, and comments are reference evidence.
 - Use the repo-local original files under
   `orig\original_full_game_files_rise_of_romes_beta_17_7_1998`.

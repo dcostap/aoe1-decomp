@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 from types import SimpleNamespace
+import pytest
 
 TOOLS_DIR = Path(__file__).resolve().parents[1] / "tools"
 if str(TOOLS_DIR) not in sys.path:
@@ -9,7 +10,8 @@ if str(TOOLS_DIR) not in sys.path:
 import function_compare  # noqa: E402
 
 
-def test_grouped_compare_uses_resolved_parent_extent(monkeypatch) -> None:
+@pytest.mark.parametrize('unknown_targets', [[], [{'reason': 'missing original identity'}]])
+def test_grouped_compare_uses_resolved_parent_extent(monkeypatch, unknown_targets) -> None:
     symbol = SimpleNamespace(name="?target@@YAXXZ", index=1, section_number=1)
     section = SimpleNamespace(data=b"\x90" * 10, relocations=[])
     obj = SimpleNamespace(symbols=[])
@@ -47,7 +49,7 @@ def test_grouped_compare_uses_resolved_parent_extent(monkeypatch) -> None:
         lambda original, rebuilt, _relocations, _va, _ranges: (
             original,
             rebuilt,
-            {"target_mismatches": []},
+            {"target_mismatches": [], "target_unknowns": unknown_targets},
         ),
     )
     monkeypatch.setattr(
@@ -73,4 +75,4 @@ def test_grouped_compare_uses_resolved_parent_extent(monkeypatch) -> None:
     assert result["original_size"] == 10
     assert result["rebuilt_size"] == 10
     assert result["boundary_escape_offsets"] == []
-    assert result["result"] == "MATCH"
+    assert result["result"] == ('MISMATCH' if unknown_targets else 'MATCH')

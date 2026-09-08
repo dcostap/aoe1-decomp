@@ -51,7 +51,7 @@ public:
         return this->desiredNumberValue;
     }
 
-    int contains(const T& item) const;
+    int contains(const T& item);
 
     int position(T& item)
     {
@@ -164,7 +164,7 @@ public:
 };
 
 template <class T>
-int ManagedArray<T>::contains(const T& item) const
+int ManagedArray<T>::contains(const T& item)
 {
     int i;
     T wanted;

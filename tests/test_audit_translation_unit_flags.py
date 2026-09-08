@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import copy
 import tempfile
 import unittest
 from pathlib import Path
@@ -41,8 +42,16 @@ class TranslationUnitFlagAuditTests(unittest.TestCase):
 
     def test_current_registry_has_no_blocking_flag_issue(self) -> None:
         report = audit_translation_units(original_needs={})
-        self.assertEqual(report["summary"]["module_count"], 224)
+        self.assertEqual(report["summary"]["module_count"], 225)
         self.assertEqual(report["summary"]["blocking_issue_count"], 0)
+
+    def test_header_route_to_another_module_does_not_hide_mixed_ownership(self) -> None:
+        group = copy.deepcopy(next(
+            group for group in flag_audit.load_build_modules() if group["name"] == "act_obj"
+        ))
+        group["functions"]["00405D40"]["emission_source"] = "src/world.cpp"
+        report = audit_translation_units(groups=[group], original_needs={})
+        self.assertIn("mixed_pdb_module", {issue["code"] for issue in report["issues"]})
 
     def test_audit_checks_language_eh_and_frame_against_original(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
