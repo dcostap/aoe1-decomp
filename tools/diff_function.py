@@ -680,8 +680,8 @@ def _workflow_guidance(
     if known_wrong_transfers:
         return [
             "Workflow stage: CONTROL TARGET INTEGRITY",
-            f"Why: instruction structure is aligned, but {known_wrong_transfers} direct control transfer(s) name the wrong external symbol.",
-            "Next: fix the member/helper declaration or symbol binding; do not reshape the surrounding control flow.",
+            f"Why: {known_wrong_transfers} direct transfer(s) disagree at the same instruction offset. Shifted code can cause this diagnostic.",
+            "Next: compare call context and control flow. Repair a declaration or target only when that evidence proves it wrong.",
         ]
     if size_delta or call_difference is not None:
         lines.append("Workflow stage: STRUCTURAL RECONSTRUCTION")

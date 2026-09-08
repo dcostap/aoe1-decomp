@@ -32,6 +32,12 @@ Expected scratch differences do not fail that exact-claim gate.
 Reports include validation fingerprints and hashes of checked objects.
 Do not reuse old reports after validation rules or original identity evidence change.
 
+Direct-target diagnostics compare instructions at the same byte offset.
+A shifted function can put unrelated calls at that offset.
+Such a disagreement blocks positional exactness. It does not alone prove that source calls the wrong helper.
+Inspect call context and control flow before changing a call.
+Equal call counts or target sets do not prove equal behavior.
+
 ## Linked input identity
 
 Fresh executable builds record hashes for the EXE, map, input objects, and verbose linker log.

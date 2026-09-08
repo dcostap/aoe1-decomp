@@ -43,6 +43,20 @@ def test_unknown_identity_cannot_mask_call(monkeypatch):
     assert not result['target_mismatches']
 
 
+def test_reordered_calls_keep_positional_failures(monkeypatch):
+    monkeypatch.setattr(identity, 'original_identities', lambda: {
+        0x2000: dict(symbol='_f'), 0x3000: dict(symbol='_g')})
+    original = (b'\xe8' + (0x2000-0x1005).to_bytes(4, 'little', signed=True)
+                + b'\xe8' + (0x3000-0x100A).to_bytes(4, 'little', signed=True))
+    rebuilt = b'\xe8\0\0\0\0' * 2
+    _, _, result = compatible_relocation_masks(original, rebuilt, [
+        dict(offset=1, width=4, symbol_name='_g'),
+        dict(offset=6, width=4, symbol_name='_f')], 0x1000)
+    assert len(result['target_mismatches']) == 2
+    assert all(row['comparison_basis'] == 'same_instruction_offset'
+               for row in result['target_mismatches'])
+
+
 def test_conflicting_original_symbols_remain_unknown(monkeypatch):
     monkeypatch.setattr(identity, 'original_identities', lambda: {
         0x1000: dict(symbol=None, symbols={'_f': ['FPO'], '_g': ['supplement']})})
@@ -70,6 +84,21 @@ def test_crt_aliases_are_target_scoped():
     assert not identity.compare_identity('_open', '__open')
     assert identity.check_direct_identity(0x54B700, '__ftol')['result'] == 'pass'
     assert identity.check_direct_identity(0x54B9A0, '_strstr')['result'] == 'pass'
+
+
+def test_reviewed_game_and_drawing_targets_keep_exact_names():
+    for va, name in [
+        (0x444850, '?PtrClear@TDrawArea@@QAEXPAUtagRECT@@H@Z'),
+        (0x56C9A0, '_ASMDraw_Sprite'),
+        (0x56C780, '_ASMGet_Color_Xform'),
+        (0x43AA90, '?xlatClut4@@YAXPAEK0@Z'),
+        (0x43AAD0, '?xlatRle8@@YAXPAEK0@Z'),
+    ]:
+        assert identity.check_direct_identity(va, name)['result'] == 'pass'
+        assert identity.check_direct_identity(va, name + '_wrong')['result'] == 'fail'
+    assert identity.check_direct_identity(0x43AA90, '?xlatClut4@@YAXPAEI0@Z')['result'] == 'fail'
+    assert identity.check_direct_identity(0x43AAD0, '?xlatRle8@@YAXPAEH0@Z')['result'] == 'fail'
+    assert identity.check_direct_identity(0x4147A0, '?resize@?$ManagedArray@H@@QAEHH@Z')['result'] == 'fail'
 
 
 def test_reviewed_alias_cannot_erase_new_conflict(tmp_path, monkeypatch):

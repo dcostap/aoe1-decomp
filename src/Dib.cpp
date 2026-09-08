@@ -1257,7 +1257,7 @@ static void __cdecl xlatClut8(unsigned char* pb, unsigned long dwSize,
     } while (dwSize != 0);
 }
 
-void __cdecl xlatClut4(unsigned char *buf, unsigned int count,
+static void __cdecl xlatClut4(unsigned char *buf, unsigned long count,
     unsigned char *clut)
 {
     while (count) {
@@ -1269,7 +1269,7 @@ void __cdecl xlatClut4(unsigned char *buf, unsigned int count,
     }
 }
 
-void __cdecl xlatRle8(unsigned char* data, int unused, unsigned char* xlat)
+static void __cdecl xlatRle8(unsigned char* data, unsigned long unused, unsigned char* xlat)
 {
     unsigned char* p = data;
     while (1) {

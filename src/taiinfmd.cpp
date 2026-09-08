@@ -4041,7 +4041,8 @@ void TribeInformationAIModule::setupInfluenceMap(int mode, int objectType,
                     iMap.decrementValue(minTerrain.x, minTerrain.y,
                                           maxTerrain.x, maxTerrain.y, 10);
                 }
-                iMap.incrementValue(x, y, x, y,
+                // Original 004DFB0C calls the point overload, not the clamped rectangle overload.
+                iMap.incrementValue(x, y,
                                       map->map_row_offset[y][x].height * 5);
             }
         }

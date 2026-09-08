@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "evidence": "decomp_notes/crt_reference_identity_review.md",
+  "evidence": "decomp_notes/target_evidence_pass.md",
   "inputs": {
     "orig/age1_x1.pdb": "3acf0034af3aae3636c37746d3336d76f737855963fabf64e66b22e3c3e46e40",
     "orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe": "88a0392120280c1b91ee90fe6f7cf50c72e55149a16c9b1ca79505572b8b9c90",
@@ -21,6 +21,25 @@
     "0054E9D0": {"symbol": "_strchr", "aliases": []},
     "0054E9D6": {"symbol": "___from_strstr_to_strchr", "aliases": []},
     "0054EB70": {"symbol": "__stricmp", "aliases": ["_stricmp"]},
-    "0055BD00": {"symbol": "__itoa", "aliases": ["_itoa"]}
+    "0055BD00": {"symbol": "__itoa", "aliases": ["_itoa"]},
+    "00444850": {"symbol": "?PtrClear@TDrawArea@@QAEXPAUtagRECT@@H@Z", "aliases": []},
+    "0047EE90": {"symbol": "?RESFILE_open_new_resource_file@@YAXPAD00H@Z", "aliases": []},
+    "0056C680": {"symbol": "_ASMSet_Shadowing", "aliases": []},
+    "0056C6C0": {"symbol": "_ASMSet_ShadowingEx", "aliases": []},
+    "0056C720": {"symbol": "_ASMSet_Surface_Info", "aliases": []},
+    "0056C760": {"symbol": "_ASMSet_Color_Xform", "aliases": []},
+    "0056C780": {"symbol": "_ASMGet_Color_Xform", "aliases": []},
+    "0056C7A0": {"symbol": "_ASMSet_Xlate_Table", "aliases": []},
+    "0056C7C0": {"symbol": "_ASMGet_Xlate_Table", "aliases": []},
+    "0056C7E0": {"symbol": "_ASMDraw_HLine", "aliases": []},
+    "0056C9A0": {"symbol": "_ASMDraw_Sprite", "aliases": []},
+    "0045E970": {"symbol": "?doTrivialMove@RGE_Moving_Object@@QAEHMM@Z", "aliases": []},
+    "0046B6E0": {"symbol": "?findTilePath@PathingSystem@@QAEHHHHHPAVRGE_Moving_Object@@MHHPAMHHHHHH@Z", "aliases": []},
+    "00445580": {"symbol": "?OverlayMemCopy@TDrawArea@@QAEXAAUtagRECT@@0HHHH@Z", "aliases": []},
+    "00445250": {"symbol": "?PtrSpanCopy@TDrawArea@@QAEXPAV1@JJPAUtagRECT@@PAPAE@Z", "aliases": []},
+    "00526170": {"symbol": "?load_game@TRIBE_Game@@QAEHPAD@Z", "aliases": []},
+    "005573B0": {"symbol": "_memmove", "aliases": []},
+    "0043AA90": {"symbol": "?xlatClut4@@YAXPAEK0@Z", "aliases": []},
+    "0043AAD0": {"symbol": "?xlatRle8@@YAXPAEK0@Z", "aliases": []}
   }
 }

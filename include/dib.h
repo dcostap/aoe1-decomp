@@ -56,8 +56,6 @@ void __cdecl CreateIdentityPalette(void*);
 void* __cdecl CopyPalette(void*);
 void __cdecl DibFree(BITMAPINFOHEADER*);
 
-void __cdecl xlatClut4(unsigned char*, unsigned int, unsigned char*);
-void __cdecl xlatRle8(unsigned char*, int, unsigned char*);
 void __cdecl DibMapToPalette(BITMAPINFOHEADER*, void*, int, int);
 
 extern "C" void* __cdecl memmove(void*, const void*, unsigned int);

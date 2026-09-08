@@ -1193,6 +1193,7 @@ def compatible_relocation_masks(
                 destination.append(
                     {
                         "offset": rebuilt_instruction.offset,
+                        "comparison_basis": "same_instruction_offset",
                         "kind": (
                             "call"
                             if rebuilt_instruction.flow_control == FlowControl.CALL
