@@ -45,7 +45,13 @@ public:
     char* ResendMsg;
     unsigned int Length;
     unsigned int DestMap[10];
-    RESENDER();
+    RESENDER() {
+        this->TimeSent = 0;
+        this->ResendMsg = 0;
+        this->Serial = 0;
+        this->Length = 0;
+        ZeroMemory(this->DestMap, sizeof(this->DestMap));
+    }
     ~RESENDER();
 };
 

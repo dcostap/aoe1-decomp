@@ -76,8 +76,8 @@ class TranslationUnitTests(unittest.TestCase):
         self.assertEqual(133, len(entries))
         self.assertEqual(133, sum(bool(entry.get('emission_source')) for entry in entries))
         self.assertEqual(0, sum(entry['status'] == 'unresolved' for entry in entries))
-        self.assertEqual(132, sum(entry['status'] == 'matching' for entry in entries))
-        self.assertEqual(1, sum(entry['status'] == 'scratch' for entry in entries))
+        self.assertEqual(133, sum(entry['status'] == 'matching' for entry in entries))
+        self.assertEqual(0, sum(entry['status'] == 'scratch' for entry in entries))
         self.assertTrue(all(module["build"] is None for module in header_modules))
 
     def test_header_definition_builds_through_its_designated_emitter(self) -> None:

@@ -340,7 +340,7 @@ void TRIBE_Player_Tech::tech_cost(short tech_id, short& attr1, short& cost1,
     cost3 = 0;
 
     can_use_carry = this->check_tech_cost(tech_id, 0);
-    if (this->owner->attributes[0x1d] < 1.0f) {
+    if (this->owner->attributes[0x1d] < 1.0) {
         can_use_carry = 0;
     }
 
@@ -420,7 +420,7 @@ unsigned char TRIBE_Player_Tech::check_tech_cost(short tech_id,
     tech = this->base_tech->tech_tree + tech_id;
     carry = this->owner->attributes[3];
 
-    if (this->owner->attributes[0x1d] < 1.0f) {
+    if (this->owner->attributes[0x1d] < 1.0) {
         carry = 0.0f;
         has_carry = 0;
     } else {

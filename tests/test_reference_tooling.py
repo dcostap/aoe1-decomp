@@ -114,6 +114,20 @@ def test_reviewed_alias_cannot_erase_new_conflict(tmp_path, monkeypatch):
         identity.original_identities.cache_clear()
 
 
+def test_remaining_public_targets_keep_import_and_callback_signatures():
+    for va, good, bad in [
+        (0x5478FC, '_DirectDrawCreate@12', '_DirectDrawCreate@8'),
+        (0x54B1AA, '_MCIWndCreateA', '_MCIWndCreateA@16'),
+        (0x54B0CB, '_Inf32Decode', '_Inf32Encode'),
+        (0x54D6E0, '??_L@YGXPAXIHP6EX0@Z1@Z', '??_L@YGXPAXIIP6EX0@Z1@Z'),
+        (0x53C920, '?unexplore_terrain@RGE_Visible_Map@@QAEXHHHHHH@Z',
+         '?unexplore_terrain_sq@RGE_Visible_Map@@QAEXHHHHHH@Z'),
+        (0x54F550, '__strnicmp', '_strnicmp'),
+    ]:
+        assert identity.check_direct_identity(va, good)['result'] == 'pass'
+        assert identity.check_direct_identity(va, bad)['result'] == 'fail'
+
+
 def test_reviewed_identity_rejects_stale_input(tmp_path, monkeypatch):
     monkeypatch.setattr(identity, 'CONFIG_DIR', tmp_path)
     monkeypatch.setattr(identity, 'REPO_ROOT', tmp_path)

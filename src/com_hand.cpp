@@ -538,16 +538,6 @@ int TCommunications_Handler::AddCommand(unsigned long turn, void* data,
                                sequence, control);
 }
 
-RESENDER::RESENDER() {
-    this->TimeSent = 0;
-    this->Serial = 0;
-    this->ResendMsg = 0;
-    this->Length = 0;
-    for (int i = 0; i < 10; ++i) {
-        this->DestMap[i] = 0;
-    }
-}
-
 void* TCommunications_Handler::get_command(void) {
     if (this->Multiplayer == 0) {
         return this->InQ->GetNextItemSingle();

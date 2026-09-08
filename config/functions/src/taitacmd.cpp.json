@@ -81,7 +81,7 @@
     "004EEE40": {"status": "matching", "symbol": "?updateAreaName@TribeTacticalAIModule@@QAEPADXZ"},
     "004EEF40": {"status": "matching", "symbol": "?update@TribeTacticalAIModule@@UAEHH@Z"},
     "004EF4D0": {"status": "matching", "symbol": "?setMainDecisionAI@TribeTacticalAIModule@@QAEXPAVTribeMainDecisionAIModule@@@Z"},
-    "004EF4E0": {"status": "matching", "symbol": "?save@TribeTacticalAIModule@@UAEHH@Z"},
+    "004EF4E0": {"status": "scratch", "symbol": "?save@TribeTacticalAIModule@@UAEHH@Z"},
     "004F0180": {"status": "matching", "symbol": "?logGroupDebug@TribeTacticalAIModule@@QAAXHPADZZ"},
     "004F0190": {"status": "scratch", "symbol": "?doSomething@TribeTacticalAIModule@@QAEHXZ"},
     "004F0BC0": {"status": "matching", "symbol": "?clearArea@TribeTacticalAIModule@@QAEHHMMMM@Z"},
