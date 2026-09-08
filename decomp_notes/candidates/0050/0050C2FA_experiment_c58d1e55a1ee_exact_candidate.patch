@@ -1,0 +1,1771 @@
+# Experiment c58d1e55a1ee59e7c2148466a83827640c08224b488233d9dad5ed86d56826d7
+# Base 729d94ca0d34796093795f3f9ee03bbeedcebab6
+diff --git a/config/functions/include/aimodule.h.json b/config/functions/include/aimodule.h.json
+index 6427dd966..ecf3a700b 100644
+--- a/config/functions/include/aimodule.h.json
++++ b/config/functions/include/aimodule.h.json
+@@ -2,8 +2,20 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aimodule.h",
+   "functions": {
+-    "004087F0": {"status": "unresolved"},
+-    "00408800": {"status": "unresolved"},
+-    "00408810": {"status": "unresolved"}
++    "004087F0": {
++      "status": "scratch",
++      "symbol": "?loadState@AIModule@@UAEHPAD@Z",
++      "emission_source": "src/aibldmod.cpp"
++    },
++    "00408800": {
++      "status": "scratch",
++      "symbol": "?saveState@AIModule@@UAEHPAD@Z",
++      "emission_source": "src/aibldmod.cpp"
++    },
++    "00408810": {
++      "status": "scratch",
++      "symbol": "?gleanState@AIModule@@UAEHH@Z",
++      "emission_source": "src/aibldmod.cpp"
++    }
+   }
+ }
+diff --git a/config/functions/include/ani_obj.h.json b/config/functions/include/ani_obj.h.json
+index 787c85dbc..841e34d8f 100644
+--- a/config/functions/include/ani_obj.h.json
++++ b/config/functions/include/ani_obj.h.json
+@@ -2,6 +2,10 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\ani_obj.h",
+   "functions": {
+-    "00405F40": {"status": "unresolved"}
++    "00405F40": {
++      "status": "scratch",
++      "symbol": "?getSpeed@RGE_Animated_Object@@UBEMXZ",
++      "emission_source": "src/act_obj.cpp"
++    }
+   }
+ }
+diff --git a/config/functions/include/basegame.h.json b/config/functions/include/basegame.h.json
+index 7e0c18301..adbe79b41 100644
+--- a/config/functions/include/basegame.h.json
++++ b/config/functions/include/basegame.h.json
+@@ -2,23 +2,89 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\basegame.h",
+   "functions": {
+-    "0041C240": {"status": "unresolved"},
+-    "0041C250": {"status": "unresolved"},
+-    "0041C260": {"status": "unresolved"},
+-    "0041C6E0": {"status": "unresolved"},
+-    "0041C6F0": {"status": "unresolved"},
+-    "0041C700": {"status": "unresolved"},
+-    "0041C710": {"status": "unresolved"},
+-    "0041C720": {"status": "unresolved"},
+-    "0041C730": {"status": "unresolved"},
+-    "0041C740": {"status": "unresolved"},
+-    "0041C750": {"status": "unresolved"},
+-    "0041C760": {"status": "unresolved"},
+-    "0041C770": {"status": "unresolved"},
+-    "0041C780": {"status": "unresolved"},
+-    "0041C790": {"status": "unresolved"},
+-    "0041C7A0": {"status": "unresolved"},
+-    "0041C7B0": {"status": "unresolved"},
+-    "0041C7C0": {"status": "unresolved"}
++    "0041C240": {
++      "status": "scratch",
++      "symbol": "?set_prog_mode@RGE_Base_Game@@UAEXH@Z",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C250": {
++      "status": "unresolved"
++    },
++    "0041C260": {
++      "status": "unresolved"
++    },
++    "0041C6E0": {
++      "status": "scratch",
++      "symbol": "?notification@RGE_Base_Game@@UAEXHJJJJ@Z",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C6F0": {
++      "status": "unresolved"
++    },
++    "0041C700": {
++      "status": "scratch",
++      "symbol": "?handle_message@RGE_Base_Game@@MAEHPAUtagMSG@@@Z",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C710": {
++      "status": "scratch",
++      "symbol": "?action_update@RGE_Base_Game@@MAEHXZ",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C720": {
++      "status": "scratch",
++      "symbol": "?action_mouse_move@RGE_Base_Game@@MAEHJJHHHH@Z",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C730": {
++      "status": "scratch",
++      "symbol": "?action_key_down@RGE_Base_Game@@MAEHKHHHH@Z",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C740": {
++      "status": "scratch",
++      "symbol": "?action_user_command@RGE_Base_Game@@MAEHKK@Z",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C750": {
++      "status": "scratch",
++      "symbol": "?action_command@RGE_Base_Game@@MAEHKK@Z",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C760": {
++      "status": "scratch",
++      "symbol": "?action_music_done@RGE_Base_Game@@MAEHXZ",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C770": {
++      "status": "scratch",
++      "symbol": "?action_activate@RGE_Base_Game@@MAEHXZ",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C780": {
++      "status": "scratch",
++      "symbol": "?action_deactivate@RGE_Base_Game@@MAEHXZ",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C790": {
++      "status": "scratch",
++      "symbol": "?action_init_menu@RGE_Base_Game@@MAEHXZ",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C7A0": {
++      "status": "scratch",
++      "symbol": "?action_exit_menu@RGE_Base_Game@@MAEHXZ",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C7B0": {
++      "status": "scratch",
++      "symbol": "?action_size@RGE_Base_Game@@MAEHXZ",
++      "emission_source": "src/basegame.cpp"
++    },
++    "0041C7C0": {
++      "status": "scratch",
++      "symbol": "?action_close@RGE_Base_Game@@MAEHXZ",
++      "emission_source": "src/basegame.cpp"
++    }
+   }
+ }
+diff --git a/config/functions/include/com_addr.h.json b/config/functions/include/com_addr.h.json
+index a80630f16..b2e483329 100644
+--- a/config/functions/include/com_addr.h.json
++++ b/config/functions/include/com_addr.h.json
+@@ -2,7 +2,13 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_addr.h",
+   "functions": {
+-    "00424DD0": {"status": "unresolved"},
+-    "00424E30": {"status": "unresolved"}
++    "00424DD0": {
++      "status": "scratch",
++      "symbol": "??0IPAD@@QAE@XZ",
++      "emission_source": "src/com_addr.cpp"
++    },
++    "00424E30": {
++      "status": "unresolved"
++    }
+   }
+ }
+diff --git a/config/functions/include/com_hand.h.json b/config/functions/include/com_hand.h.json
+index bfd12bce2..cdbd6b478 100644
+--- a/config/functions/include/com_hand.h.json
++++ b/config/functions/include/com_hand.h.json
+@@ -2,9 +2,25 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_hand.h",
+   "functions": {
+-    "00426450": {"status": "unresolved"},
+-    "004264A0": {"status": "unresolved"},
+-    "004265E0": {"status": "unresolved"},
+-    "00426600": {"status": "unresolved"}
++    "00426450": {
++      "status": "scratch",
++      "symbol": "??0RESENDER@@QAE@XZ",
++      "emission_source": "src/com_hand.cpp"
++    },
++    "004264A0": {
++      "status": "scratch",
++      "symbol": "??1RESENDER@@QAE@XZ",
++      "emission_source": "src/com_hand.cpp"
++    },
++    "004265E0": {
++      "status": "scratch",
++      "symbol": "??0HOLDER@@QAE@XZ",
++      "emission_source": "src/com_hand.cpp"
++    },
++    "00426600": {
++      "status": "scratch",
++      "symbol": "??1HOLDER@@QAE@XZ",
++      "emission_source": "src/com_hand.cpp"
++    }
+   }
+ }
+diff --git a/config/functions/include/com_q.h.json b/config/functions/include/com_q.h.json
+index 10aea0a67..e7b7361f1 100644
+--- a/config/functions/include/com_q.h.json
++++ b/config/functions/include/com_q.h.json
+@@ -2,7 +2,15 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\com_q.h",
+   "functions": {
+-    "00431F60": {"status": "unresolved"},
+-    "00431F80": {"status": "unresolved"}
++    "00431F60": {
++      "status": "scratch",
++      "symbol": "??0MsgQueue@@QAE@XZ",
++      "emission_source": "src/com_q.cpp"
++    },
++    "00431F80": {
++      "status": "scratch",
++      "symbol": "??1MsgQueue@@QAE@XZ",
++      "emission_source": "src/com_q.cpp"
++    }
+   }
+ }
+diff --git a/config/functions/include/dlg_list.h.json b/config/functions/include/dlg_list.h.json
+index f576736cc..30bfb3821 100644
+--- a/config/functions/include/dlg_list.h.json
++++ b/config/functions/include/dlg_list.h.json
+@@ -2,7 +2,15 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\dlg_list.h",
+   "functions": {
+-    "0043F320": {"status": "unresolved"},
+-    "0043F330": {"status": "unresolved"}
++    "0043F320": {
++      "status": "scratch",
++      "symbol": "?get_list_id@TListDialog@@UAEFXZ",
++      "emission_source": "src/dlg_list.cpp"
++    },
++    "0043F330": {
++      "status": "scratch",
++      "symbol": "?get_list_name@TListDialog@@UAEPADXZ",
++      "emission_source": "src/dlg_list.cpp"
++    }
+   }
+ }
+diff --git a/config/functions/include/move_obj.h.json b/config/functions/include/move_obj.h.json
+index df8db38b6..ff08b7922 100644
+--- a/config/functions/include/move_obj.h.json
++++ b/config/functions/include/move_obj.h.json
+@@ -2,7 +2,15 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\move_obj.h",
+   "functions": {
+-    "00405F50": {"status": "unresolved"},
+-    "00405F60": {"status": "unresolved"}
++    "00405F50": {
++      "status": "scratch",
++      "symbol": "?getAngle@RGE_Moving_Object@@UBEMXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405F60": {
++      "status": "scratch",
++      "symbol": "?numberUserDefinedWaypoints@RGE_Moving_Object@@UBEHXZ",
++      "emission_source": "src/act_obj.cpp"
++    }
+   }
+ }
+diff --git a/config/functions/include/panel.h.json b/config/functions/include/panel.h.json
+index 8bc723eae..89f2e7437 100644
+--- a/config/functions/include/panel.h.json
++++ b/config/functions/include/panel.h.json
+@@ -2,19 +2,71 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\panel.h",
+   "functions": {
+-    "00437110": {"status": "unresolved"},
+-    "00437230": {"status": "unresolved"},
+-    "00437240": {"status": "unresolved"},
+-    "00437250": {"status": "unresolved"},
+-    "00437260": {"status": "unresolved"},
+-    "00437270": {"status": "unresolved"},
+-    "00437280": {"status": "unresolved"},
+-    "00437290": {"status": "unresolved"},
+-    "004372A0": {"status": "unresolved"},
+-    "004372B0": {"status": "unresolved"},
+-    "00437490": {"status": "unresolved"},
+-    "004374A0": {"status": "unresolved"},
+-    "004374B0": {"status": "unresolved"},
+-    "00437610": {"status": "unresolved"}
++    "00437110": {
++      "status": "scratch",
++      "symbol": "?mouse_move_action@TPanel@@UAEJJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "00437230": {
++      "status": "scratch",
++      "symbol": "?mouse_left_down_action@TPanel@@UAEJJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "00437240": {
++      "status": "scratch",
++      "symbol": "?mouse_left_hold_action@TPanel@@UAEJJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "00437250": {
++      "status": "scratch",
++      "symbol": "?mouse_left_move_action@TPanel@@UAEJJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "00437260": {
++      "status": "scratch",
++      "symbol": "?mouse_left_up_action@TPanel@@UAEJJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "00437270": {
++      "status": "scratch",
++      "symbol": "?mouse_left_dbl_click_action@TPanel@@UAEJJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "00437280": {
++      "status": "scratch",
++      "symbol": "?mouse_right_down_action@TPanel@@UAEJJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "00437290": {
++      "status": "scratch",
++      "symbol": "?mouse_right_hold_action@TPanel@@UAEJJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "004372A0": {
++      "status": "scratch",
++      "symbol": "?mouse_right_move_action@TPanel@@UAEJJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "004372B0": {
++      "status": "scratch",
++      "symbol": "?mouse_right_up_action@TPanel@@UAEJJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "00437490": {
++      "status": "scratch",
++      "symbol": "?mouse_right_dbl_click_action@TPanel@@UAEJJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "004374A0": {
++      "status": "scratch",
++      "symbol": "?key_down_action@TPanel@@UAEJJFHHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "004374B0": {
++      "status": "unresolved"
++    },
++    "00437610": {
++      "status": "unresolved"
++    }
+   }
+ }
+diff --git a/config/functions/include/player.h.json b/config/functions/include/player.h.json
+index 8d7673ed5..408eb3770 100644
+--- a/config/functions/include/player.h.json
++++ b/config/functions/include/player.h.json
+@@ -2,13 +2,37 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\player.h",
+   "functions": {
+-    "0046EC80": {"status": "unresolved"},
+-    "0046EC90": {"status": "unresolved"},
+-    "0046ECA0": {"status": "unresolved"},
+-    "0046ECB0": {"status": "unresolved"},
+-    "0046ECC0": {"status": "unresolved"},
+-    "0046ECD0": {"status": "unresolved"},
+-    "0046ED30": {"status": "unresolved"},
+-    "0046ED40": {"status": "unresolved"}
++    "0046EC80": {
++      "status": "unresolved"
++    },
++    "0046EC90": {
++      "status": "unresolved"
++    },
++    "0046ECA0": {
++      "status": "scratch",
++      "symbol": "?kickAI@RGE_Player@@UAEXH@Z",
++      "emission_source": "src/player.cpp"
++    },
++    "0046ECB0": {
++      "status": "scratch",
++      "symbol": "?strategicNumber@RGE_Player@@UAEHH@Z",
++      "emission_source": "src/player.cpp"
++    },
++    "0046ECC0": {
++      "status": "unresolved"
++    },
++    "0046ECD0": {
++      "status": "scratch",
++      "symbol": "?objectCostByType@RGE_Player@@UAEHH@Z",
++      "emission_source": "src/player.cpp"
++    },
++    "0046ED30": {
++      "status": "scratch",
++      "symbol": "?trackUnitGather@RGE_Player@@UAEXHHH@Z",
++      "emission_source": "src/player.cpp"
++    },
++    "0046ED40": {
++      "status": "unresolved"
++    }
+   }
+ }
+diff --git a/config/functions/include/pnl_msg.h.json b/config/functions/include/pnl_msg.h.json
+index da8b76f88..b0ed31baf 100644
+--- a/config/functions/include/pnl_msg.h.json
++++ b/config/functions/include/pnl_msg.h.json
+@@ -2,8 +2,20 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\pnl_msg.h",
+   "functions": {
+-    "0047A160": {"status": "unresolved"},
+-    "0047A170": {"status": "unresolved"},
+-    "0047A180": {"status": "unresolved"}
++    "0047A160": {
++      "status": "scratch",
++      "symbol": "?handle_mouse_down@TMessagePanel@@UAEJEJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "0047A170": {
++      "status": "scratch",
++      "symbol": "?handle_mouse_move@TMessagePanel@@UAEJJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    },
++    "0047A180": {
++      "status": "scratch",
++      "symbol": "?handle_mouse_up@TMessagePanel@@UAEJEJJHH@Z",
++      "emission_source": "src/Pnl_msg.cpp"
++    }
+   }
+ }
+diff --git a/config/functions/include/scenario.h.json b/config/functions/include/scenario.h.json
+index dec5e06cd..637cd3d08 100644
+--- a/config/functions/include/scenario.h.json
++++ b/config/functions/include/scenario.h.json
+@@ -2,7 +2,13 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\scenario.h",
+   "functions": {
+-    "0048B580": {"status": "unresolved"},
+-    "0048B590": {"status": "unresolved"}
++    "0048B580": {
++      "status": "unresolved"
++    },
++    "0048B590": {
++      "status": "scratch",
++      "symbol": "?rehook@RGE_Scenario@@UAEXXZ",
++      "emission_source": "src/scenario.cpp"
++    }
+   }
+ }
+diff --git a/config/functions/include/stat_obj.h.json b/config/functions/include/stat_obj.h.json
+index b6d0c7017..76ae0f68d 100644
+--- a/config/functions/include/stat_obj.h.json
++++ b/config/functions/include/stat_obj.h.json
+@@ -2,73 +2,301 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\stat_obj.h",
+   "functions": {
+-    "00405D00": {"status": "unresolved"},
+-    "00405D10": {"status": "unresolved"},
+-    "00405D20": {"status": "unresolved"},
+-    "00405D30": {"status": "unresolved"},
+-    "00405D40": {"status": "unresolved"},
+-    "00405D50": {"status": "unresolved"},
+-    "00405D60": {"status": "unresolved"},
+-    "00405D70": {"status": "unresolved"},
+-    "00405D80": {"status": "unresolved"},
+-    "00405D90": {"status": "unresolved"},
+-    "00405DA0": {"status": "unresolved"},
+-    "00405DB0": {"status": "unresolved"},
+-    "00405DC0": {"status": "unresolved"},
+-    "00405DD0": {"status": "unresolved"},
+-    "00405DE0": {"status": "unresolved"},
+-    "00405DF0": {"status": "unresolved"},
+-    "00405E00": {"status": "unresolved"},
+-    "00405E10": {"status": "unresolved"},
+-    "00405E20": {"status": "unresolved"},
+-    "00405E30": {"status": "unresolved"},
+-    "00405E40": {"status": "unresolved"},
+-    "00405E50": {"status": "unresolved"},
+-    "00405E60": {"status": "unresolved"},
+-    "00405E70": {"status": "unresolved"},
+-    "00405E80": {"status": "unresolved"},
+-    "00405E90": {"status": "unresolved"},
+-    "00405EA0": {"status": "unresolved"},
+-    "00405EB0": {"status": "unresolved"},
+-    "00405EC0": {"status": "unresolved"},
+-    "00405ED0": {"status": "unresolved"},
+-    "00405EE0": {"status": "unresolved"},
+-    "00405EF0": {"status": "unresolved"},
+-    "00405F00": {"status": "unresolved"},
+-    "00405F10": {"status": "unresolved"},
+-    "00405F20": {"status": "unresolved"},
+-    "00405F30": {"status": "unresolved"},
+-    "0041A450": {"status": "unresolved"},
+-    "0041A460": {"status": "unresolved"},
+-    "0041A470": {"status": "unresolved"},
+-    "0041A480": {"status": "unresolved"},
+-    "0041A490": {"status": "unresolved"},
+-    "0041A4A0": {"status": "unresolved"},
+-    "0041A4B0": {"status": "unresolved"},
+-    "0041A4C0": {"status": "unresolved"},
+-    "0041A4D0": {"status": "unresolved"},
+-    "0041A4E0": {"status": "unresolved"},
+-    "0041A4F0": {"status": "unresolved"},
+-    "0041A500": {"status": "unresolved"},
+-    "0041A510": {"status": "unresolved"},
+-    "0041A520": {"status": "unresolved"},
+-    "0041A530": {"status": "unresolved"},
+-    "0041A540": {"status": "unresolved"},
+-    "0041A550": {"status": "unresolved"},
+-    "0041A560": {"status": "unresolved"},
+-    "0041A570": {"status": "unresolved"},
+-    "0041A580": {"status": "unresolved"},
+-    "0041A590": {"status": "unresolved"},
+-    "0041A5A0": {"status": "unresolved"},
+-    "0041A5B0": {"status": "unresolved"},
+-    "0041A5C0": {"status": "unresolved"},
+-    "0041A5D0": {"status": "unresolved"},
+-    "0041A5E0": {"status": "unresolved"},
+-    "0041A5F0": {"status": "unresolved"},
+-    "0041A600": {"status": "unresolved"},
+-    "0041A610": {"status": "unresolved"},
+-    "0041A620": {"status": "unresolved"},
+-    "0041A630": {"status": "unresolved"},
+-    "004C1CE0": {"status": "unresolved"}
++    "00405D00": {
++      "status": "scratch",
++      "symbol": "?can_attack@RGE_Static_Object@@UAEEXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405D10": {
++      "status": "scratch",
++      "symbol": "?canRepair@RGE_Static_Object@@UAEHXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405D20": {
++      "status": "unresolved"
++    },
++    "00405D30": {
++      "status": "scratch",
++      "symbol": "?calc_attack_modifier@RGE_Static_Object@@UAEMPAV1@@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405D40": {
++      "status": "scratch",
++      "symbol": "?rateOfFire@RGE_Static_Object@@UAEMXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405D50": {
++      "status": "scratch",
++      "symbol": "?damageCapability@RGE_Static_Object@@UAEMXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405D60": {
++      "status": "scratch",
++      "symbol": "?damageCapability@RGE_Static_Object@@UAEMPAV1@@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405D70": {
++      "status": "scratch",
++      "symbol": "?weaponRange@RGE_Static_Object@@UAEMXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405D80": {
++      "status": "scratch",
++      "symbol": "?minimumWeaponRange@RGE_Static_Object@@UAEMXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405D90": {
++      "status": "scratch",
++      "symbol": "?currentTargetID@RGE_Static_Object@@UBEHXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405DA0": {
++      "status": "scratch",
++      "symbol": "?currentTargetX@RGE_Static_Object@@UBEMXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405DB0": {
++      "status": "scratch",
++      "symbol": "?currentTargetY@RGE_Static_Object@@UBEMXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405DC0": {
++      "status": "scratch",
++      "symbol": "?currentTargetZ@RGE_Static_Object@@UBEMXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405DD0": {
++      "status": "scratch",
++      "symbol": "?keepGatheringWhenObjectIsOut@RGE_Static_Object@@UBEEH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405DE0": {
++      "status": "scratch",
++      "symbol": "?produceWhenKilledBy@RGE_Static_Object@@UBEEH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405DF0": {
++      "status": "scratch",
++      "symbol": "?useSameZoneDropsite@RGE_Static_Object@@UBEEXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405E00": {
++      "status": "scratch",
++      "symbol": "?notify@RGE_Static_Object@@UAEXHHHJJJ@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405E10": {
++      "status": "scratch",
++      "symbol": "?attack@RGE_Static_Object@@UAEHHH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405E20": {
++      "status": "unresolved"
++    },
++    "00405E30": {
++      "status": "scratch",
++      "symbol": "?moveTo@RGE_Static_Object@@UAEHHH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405E40": {
++      "status": "scratch",
++      "symbol": "?moveTo@RGE_Static_Object@@UAEHHMH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405E50": {
++      "status": "unresolved"
++    },
++    "00405E60": {
++      "status": "scratch",
++      "symbol": "?moveAwayFrom@RGE_Static_Object@@UAEHHH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405E70": {
++      "status": "scratch",
++      "symbol": "?hunt@RGE_Static_Object@@UAEHHH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405E80": {
++      "status": "scratch",
++      "symbol": "?gather@RGE_Static_Object@@UAEHHH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405E90": {
++      "status": "scratch",
++      "symbol": "?convert@RGE_Static_Object@@UAEHHH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405EA0": {
++      "status": "scratch",
++      "symbol": "?heal@RGE_Static_Object@@UAEHHH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405EB0": {
++      "status": "scratch",
++      "symbol": "?repair@RGE_Static_Object@@UAEHHH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405EC0": {
++      "status": "scratch",
++      "symbol": "?build@RGE_Static_Object@@UAEHHH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405ED0": {
++      "status": "scratch",
++      "symbol": "?trade@RGE_Static_Object@@UAEHHH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405EE0": {
++      "status": "scratch",
++      "symbol": "?explore@RGE_Static_Object@@UAEHHHH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405EF0": {
++      "status": "scratch",
++      "symbol": "?enter@RGE_Static_Object@@UAEHHH@Z",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405F00": {
++      "status": "unresolved"
++    },
++    "00405F10": {
++      "status": "unresolved"
++    },
++    "00405F20": {
++      "status": "scratch",
++      "symbol": "?stopAction@RGE_Static_Object@@UAEHXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "00405F30": {
++      "status": "scratch",
++      "symbol": "?pause@RGE_Static_Object@@UAEHXZ",
++      "emission_source": "src/act_obj.cpp"
++    },
++    "0041A450": {
++      "status": "scratch",
++      "symbol": "?do_command@RGE_Static_Object@@UAEXPAV1@MMM@Z",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A460": {
++      "status": "scratch",
++      "symbol": "?move_to@RGE_Static_Object@@UAEXPAV1@MMM@Z",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A470": {
++      "status": "scratch",
++      "symbol": "?work@RGE_Static_Object@@UAEXPAV1@MMM@Z",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A480": {
++      "status": "unresolved"
++    },
++    "0041A490": {
++      "status": "unresolved"
++    },
++    "0041A4A0": {
++      "status": "unresolved"
++    },
++    "0041A4B0": {
++      "status": "unresolved"
++    },
++    "0041A4C0": {
++      "status": "scratch",
++      "symbol": "?get_command_master@RGE_Static_Object@@UAEPAVRGE_Master_Static_Object@@PAV1@MMM@Z",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A4D0": {
++      "status": "unresolved"
++    },
++    "0041A4E0": {
++      "status": "scratch",
++      "symbol": "?getAngle@RGE_Static_Object@@UBEMXZ",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A4F0": {
++      "status": "scratch",
++      "symbol": "?maximumSpeed@RGE_Static_Object@@UAEMXZ",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A500": {
++      "status": "unresolved"
++    },
++    "0041A510": {
++      "status": "scratch",
++      "symbol": "?facetToNextWaypoint@RGE_Static_Object@@UBEEXZ",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A520": {
++      "status": "unresolved"
++    },
++    "0041A530": {
++      "status": "unresolved"
++    },
++    "0041A540": {
++      "status": "unresolved"
++    },
++    "0041A550": {
++      "status": "scratch",
++      "symbol": "?canPath@RGE_Static_Object@@UAEHUXYZPoint@@MHPAMHHH@Z",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A560": {
++      "status": "scratch",
++      "symbol": "?canPath@RGE_Static_Object@@UAEHHMPAMHHH@Z",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A570": {
++      "status": "scratch",
++      "symbol": "?canBidirectionPath@RGE_Static_Object@@UAEHHHMPAMHHH@Z",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A580": {
++      "status": "scratch",
++      "symbol": "?canPathWithObstructions@RGE_Static_Object@@UAEHHMPAMHHHAAV?$ManagedArray@H@@@Z",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A590": {
++      "status": "scratch",
++      "symbol": "?canPathWithAdditionalPassability@RGE_Static_Object@@UAEHUXYZPoint@@MHPAMHHHHH@Z",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A5A0": {
++      "status": "unresolved"
++    },
++    "0041A5B0": {
++      "status": "unresolved"
++    },
++    "0041A5C0": {
++      "status": "scratch",
++      "symbol": "?canLinePath@RGE_Static_Object@@UAEHHHHHMH@Z",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A5D0": {
++      "status": "scratch",
++      "symbol": "?firstTileAlongLine@RGE_Static_Object@@UAEHABUXYPoint@@0AAU2@HHH@Z",
++      "emission_source": "src/ani_obj.cpp"
++    },
++    "0041A5E0": {
++      "status": "unresolved"
++    },
++    "0041A5F0": {
++      "status": "unresolved"
++    },
++    "0041A600": {
++      "status": "unresolved"
++    },
++    "0041A610": {
++      "status": "unresolved"
++    },
++    "0041A620": {
++      "status": "unresolved"
++    },
++    "0041A630": {
++      "status": "unresolved"
++    },
++    "004C1CE0": {
++      "status": "scratch",
++      "symbol": "?getSpeed@RGE_Static_Object@@UBEMXZ",
++      "emission_source": "src/stat_obj.cpp"
++    }
+   }
+ }
+diff --git a/config/functions/include/world.h.json b/config/functions/include/world.h.json
+index d56d180e3..6a8ac87d7 100644
+--- a/config/functions/include/world.h.json
++++ b/config/functions/include/world.h.json
+@@ -2,6 +2,10 @@
+   "schema": 1,
+   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\world.h",
+   "functions": {
+-    "00540A10": {"status": "unresolved"}
++    "00540A10": {
++      "status": "scratch",
++      "symbol": "?logStatus@RGE_Game_World@@MAEXPAU_iobuf@@H@Z",
++      "emission_source": "src/world.cpp"
++    }
+   }
+ }
+diff --git a/config/functions/src/tech.cpp.json b/config/functions/src/tech.cpp.json
+index a21286573..7da8c5372 100644
+--- a/config/functions/src/tech.cpp.json
++++ b/config/functions/src/tech.cpp.json
+@@ -5,38 +5,140 @@
+   "pdb_no_line_info": true,
+   "pdb_module_stream_evidence": "inventory/pdb/module_streams/0027_tech.json",
+   "functions": {
+-    "0050B840": {"status": "unresolved"},
+-    "0050BB84": {"status": "unresolved"},
+-    "0050BF28": {"status": "unresolved"},
+-    "0050BF9C": {"status": "unresolved"},
+-    "0050BFED": {"status": "unresolved"},
+-    "0050C2FA": {"status": "unresolved"},
+-    "0050C333": {"status": "unresolved"},
+-    "0050C36C": {"status": "unresolved"},
+-    "0050C3A5": {"status": "unresolved"},
+-    "0050C4FC": {"status": "unresolved"},
+-    "0050C562": {"status": "unresolved"},
+-    "0050C58C": {"status": "unresolved"},
+-    "0050C5A7": {"status": "unresolved"},
+-    "0050C5E5": {"status": "unresolved"},
+-    "0050C6AD": {"status": "unresolved"},
+-    "0050C730": {"status": "unresolved"},
+-    "0050CA9E": {"status": "unresolved"},
+-    "0050CC25": {"status": "unresolved"},
+-    "0050CD73": {"status": "unresolved"},
+-    "0050CE68": {"status": "unresolved"},
+-    "0050D07A": {"status": "unresolved"},
+-    "0050D0FA": {"status": "unresolved"},
+-    "0050D178": {"status": "unresolved"},
+-    "0050D197": {"status": "unresolved"},
+-    "0050D1B8": {"status": "unresolved"},
+-    "0050D1D9": {"status": "unresolved"},
+-    "0050D1F9": {"status": "unresolved"},
+-    "0050D281": {"status": "unresolved"},
+-    "0050D306": {"status": "unresolved"},
+-    "0050D383": {"status": "unresolved"},
+-    "0050D400": {"status": "unresolved"},
+-    "0050D41D": {"status": "unresolved"},
+-    "0050D43A": {"status": "unresolved"}
++    "0050B840": {
++      "status": "scratch",
++      "symbol": "??0TRIBE_Tech@@QAE@HPAVTRIBE_World@@@Z"
++    },
++    "0050BB84": {
++      "status": "scratch",
++      "symbol": "??0TRIBE_Tech@@QAE@PAD@Z"
++    },
++    "0050BF28": {
++      "status": "scratch",
++      "symbol": "??1TRIBE_Tech@@QAE@XZ"
++    },
++    "0050BF9C": {
++      "status": "scratch",
++      "symbol": "?do_tech@TRIBE_Tech@@QAEEFPAVRGE_Player@@@Z"
++    },
++    "0050BFED": {
++      "status": "scratch",
++      "symbol": "?save@TRIBE_Tech@@QAEXH@Z"
++    },
++    "0050C2FA": {
++      "status": "scratch",
++      "symbol": "?get_help_message@TRIBE_Tech@@QAEJF@Z"
++    },
++    "0050C333": {
++      "status": "scratch",
++      "symbol": "?get_help_page@TRIBE_Tech@@QAEJF@Z"
++    },
++    "0050C36C": {
++      "status": "scratch",
++      "symbol": "?get_hotkey@TRIBE_Tech@@QAEJF@Z"
++    },
++    "0050C3A5": {
++      "status": "scratch",
++      "symbol": "??0TRIBE_Player_Tech@@QAE@HPAVTRIBE_Tech@@PAVRGE_Player@@E@Z"
++    },
++    "0050C4FC": {
++      "status": "scratch",
++      "symbol": "??0TRIBE_Player_Tech@@QAE@PAVTRIBE_Tech@@PAVRGE_Player@@E@Z"
++    },
++    "0050C562": {
++      "status": "scratch",
++      "symbol": "??1TRIBE_Player_Tech@@QAE@XZ"
++    },
++    "0050C58C": {
++      "status": "scratch",
++      "symbol": "?get_tech_state@TRIBE_Player_Tech@@QAEFF@Z"
++    },
++    "0050C5A7": {
++      "status": "scratch",
++      "symbol": "?undo_tech@TRIBE_Player_Tech@@QAEEF@Z"
++    },
++    "0050C5E5": {
++      "status": "scratch",
++      "symbol": "?do_tech@TRIBE_Player_Tech@@QAEEF@Z"
++    },
++    "0050C6AD": {
++      "status": "scratch",
++      "symbol": "?research@TRIBE_Player_Tech@@QAEEFM@Z"
++    },
++    "0050C730": {
++      "status": "scratch",
++      "symbol": "?tech_cost@TRIBE_Player_Tech@@QAEXFAAF00000@Z"
++    },
++    "0050CA9E": {
++      "status": "scratch",
++      "symbol": "?check_tech_cost@TRIBE_Player_Tech@@QAEEFPAF@Z"
++    },
++    "0050CC25": {
++      "status": "scratch",
++      "symbol": "?start_research@TRIBE_Player_Tech@@QAEEFEPAF@Z"
++    },
++    "0050CD73": {
++      "status": "scratch",
++      "symbol": "?cancel_research@TRIBE_Player_Tech@@QAEEFE@Z"
++    },
++    "0050CE68": {
++      "status": "scratch",
++      "symbol": "?check_for_new_tech@TRIBE_Player_Tech@@QAEEXZ"
++    },
++    "0050D07A": {
++      "status": "scratch",
++      "symbol": "?save@TRIBE_Player_Tech@@QAEXH@Z"
++    },
++    "0050D0FA": {
++      "status": "scratch",
++      "symbol": "?get_progress@TRIBE_Player_Tech@@QAEFF@Z"
++    },
++    "0050D178": {
++      "status": "scratch",
++      "symbol": "?get_name@TRIBE_Player_Tech@@QAEPADF@Z"
++    },
++    "0050D197": {
++      "status": "scratch",
++      "symbol": "?get_string_id@TRIBE_Player_Tech@@QAEFF@Z"
++    },
++    "0050D1B8": {
++      "status": "scratch",
++      "symbol": "?get_string_id2@TRIBE_Player_Tech@@QAEFF@Z"
++    },
++    "0050D1D9": {
++      "status": "scratch",
++      "symbol": "?get_button_location@TRIBE_Player_Tech@@QAEEF@Z"
++    },
++    "0050D1F9": {
++      "status": "scratch",
++      "symbol": "?do_rev_tech@TRIBE_Player_Tech@@QAEXF@Z"
++    },
++    "0050D281": {
++      "status": "scratch",
++      "symbol": "?rev_tech@TRIBE_Player_Tech@@QAEEF@Z"
++    },
++    "0050D306": {
++      "status": "scratch",
++      "symbol": "?disable@TRIBE_Player_Tech@@QAEXF@Z"
++    },
++    "0050D383": {
++      "status": "scratch",
++      "symbol": "?enable@TRIBE_Player_Tech@@QAEXF@Z"
++    },
++    "0050D400": {
++      "status": "scratch",
++      "symbol": "?get_help_message@TRIBE_Player_Tech@@QAEJF@Z"
++    },
++    "0050D41D": {
++      "status": "scratch",
++      "symbol": "?get_help_page@TRIBE_Player_Tech@@QAEJF@Z"
++    },
++    "0050D43A": {
++      "status": "scratch",
++      "symbol": "?get_hotkey@TRIBE_Player_Tech@@QAEJF@Z"
++    }
++  },
++  "build": {
++    "flags": "unoptimized"
+   }
+ }
+diff --git a/config/linked_reference_owners.json b/config/linked_reference_owners.json
+index 71b17b8c6..ba846527c 100644
+--- a/config/linked_reference_owners.json
++++ b/config/linked_reference_owners.json
+@@ -5,7 +5,49 @@
+       "original_va": "0088847C",
+       "symbol": "_ds_wave_riff_chunk",
+       "size": 20,
++      "check_initial_bytes": true,
++      "pointer_offsets": [],
+       "evidence": "Original 0044871B passes this address as the fourth WaveOpenFile argument. MMCKINFO is 20 bytes; cksize is at offset four. See decomp_notes/functions/0044/00448B30.md."
++    },
++    {
++      "original_va": "0058EBCC",
++      "symbol": "?save_game_version@@3MA",
++      "size": 4,
++      "check_initial_bytes": true,
++      "pointer_offsets": [],
++      "evidence": "PDB float and original initial bytes. See decomp_notes/global_initializer_audit.md and decomp_notes/map_startup_crash.md."
++    },
++    {
++      "original_va": "0057F9E4",
++      "symbol": "?fixed_update_time@@3JA",
++      "size": 4,
++      "check_initial_bytes": true,
++      "pointer_offsets": [],
++      "evidence": "PDB long and original initial bytes. See decomp_notes/global_initializer_audit.md."
++    },
++    {
++      "original_va": "0058ABA0",
++      "symbol": "?tribe_group_properties@@3PAKA",
++      "size": 160,
++      "check_initial_bytes": true,
++      "pointer_offsets": [],
++      "evidence": "PDB and source establish forty unsigned long entries. See decomp_notes/global_initializer_audit.md."
++    },
++    {
++      "original_va": "0056EAD8",
++      "symbol": "??_7UnitAIModule@@6B@",
++      "size": 224,
++      "check_initial_bytes": true,
++      "pointer_offsets": [0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200, 204, 208, 212, 216, 220],
++      "evidence": "Reviewed original UnitAIModule table has 56 slots and ends at processRetryableOrder, offset 220. Following words are floating-point data. See decomp_notes/executable_build.md, Original virtual slots."
++    },
++    {
++      "original_va": "0062C574",
++      "symbol": "?rge_base_game@@3PAVRGE_Base_Game@@A",
++      "size": 4,
++      "check_initial_bytes": true,
++      "pointer_offsets": [0],
++      "evidence": "Original PDB S_GDATA32 [0004:000AD574], type 0x109D: NEAR32 pointer to RGE_Base_Game (0x109C). Original initial bytes are zero. Canonical declaration and definition are in include/game_globals.h and src/game_globals.cpp. See decomp_notes/reference_tooling_validation.md."
+     }
+   ]
+ }
+diff --git a/config/original_owner_symbol_overrides.txt b/config/original_owner_symbol_overrides.txt
+index ad9703a89..bf6cb1314 100644
+--- a/config/original_owner_symbol_overrides.txt
++++ b/config/original_owner_symbol_overrides.txt
+@@ -1,6 +1,6 @@
+-# Reviewed original PDB procedure symbols absent from the executable FPO table.
++# Reviewed original PDB symbols absent from the executable FPO table.
+ # Each row is: VA decorated_symbol linkage.
+-# `local` means S_LPROC32. `global` means S_GPROC32 with S_PUB32 evidence.
++# `local` means S_LPROC32. `global` means reviewed global linkage, including S_PUB32 evidence.
+ # Do not add an owner that already has an FPO row.
+ 
+ # Release/dib.obj, type 0x2292: static void(unsigned char*, unsigned long,
+@@ -23,3 +23,40 @@
+ 
+ # Release/visible.obj: RGE_Visible_Map::explore_terrain has no FPO row.
+ 0053C6F0 ?explore_terrain@RGE_Visible_Map@@QAEHHHHHHH@Z global
++
++# Release/tech.obj contribution 0050B840-0050D456. Original S_PUB32 records
++# independently name every entry despite missing procedure streams.
++# See decomp_notes/tech_public_identity_review.md for mapping and evidence limits.
++0050B840 ??0TRIBE_Tech@@QAE@HPAVTRIBE_World@@@Z global
++0050BB84 ??0TRIBE_Tech@@QAE@PAD@Z global
++0050BF28 ??1TRIBE_Tech@@QAE@XZ global
++0050BF9C ?do_tech@TRIBE_Tech@@QAEEFPAVRGE_Player@@@Z global
++0050BFED ?save@TRIBE_Tech@@QAEXH@Z global
++0050C2FA ?get_help_message@TRIBE_Tech@@QAEJF@Z global
++0050C333 ?get_help_page@TRIBE_Tech@@QAEJF@Z global
++0050C36C ?get_hotkey@TRIBE_Tech@@QAEJF@Z global
++0050C3A5 ??0TRIBE_Player_Tech@@QAE@HPAVTRIBE_Tech@@PAVRGE_Player@@E@Z global
++0050C4FC ??0TRIBE_Player_Tech@@QAE@PAVTRIBE_Tech@@PAVRGE_Player@@E@Z global
++0050C562 ??1TRIBE_Player_Tech@@QAE@XZ global
++0050C58C ?get_tech_state@TRIBE_Player_Tech@@QAEFF@Z global
++0050C5A7 ?undo_tech@TRIBE_Player_Tech@@QAEEF@Z global
++0050C5E5 ?do_tech@TRIBE_Player_Tech@@QAEEF@Z global
++0050C6AD ?research@TRIBE_Player_Tech@@QAEEFM@Z global
++0050C730 ?tech_cost@TRIBE_Player_Tech@@QAEXFAAF00000@Z global
++0050CA9E ?check_tech_cost@TRIBE_Player_Tech@@QAEEFPAF@Z global
++0050CC25 ?start_research@TRIBE_Player_Tech@@QAEEFEPAF@Z global
++0050CD73 ?cancel_research@TRIBE_Player_Tech@@QAEEFE@Z global
++0050CE68 ?check_for_new_tech@TRIBE_Player_Tech@@QAEEXZ global
++0050D07A ?save@TRIBE_Player_Tech@@QAEXH@Z global
++0050D0FA ?get_progress@TRIBE_Player_Tech@@QAEFF@Z global
++0050D178 ?get_name@TRIBE_Player_Tech@@QAEPADF@Z global
++0050D197 ?get_string_id@TRIBE_Player_Tech@@QAEFF@Z global
++0050D1B8 ?get_string_id2@TRIBE_Player_Tech@@QAEFF@Z global
++0050D1D9 ?get_button_location@TRIBE_Player_Tech@@QAEEF@Z global
++0050D1F9 ?do_rev_tech@TRIBE_Player_Tech@@QAEXF@Z global
++0050D281 ?rev_tech@TRIBE_Player_Tech@@QAEEF@Z global
++0050D306 ?disable@TRIBE_Player_Tech@@QAEXF@Z global
++0050D383 ?enable@TRIBE_Player_Tech@@QAEXF@Z global
++0050D400 ?get_help_message@TRIBE_Player_Tech@@QAEJF@Z global
++0050D41D ?get_help_page@TRIBE_Player_Tech@@QAEJF@Z global
++0050D43A ?get_hotkey@TRIBE_Player_Tech@@QAEJF@Z global
+diff --git a/tools/audit_global_initializers.py b/tools/audit_global_initializers.py
+index 2ae750ce9..5d0003544 100644
+--- a/tools/audit_global_initializers.py
++++ b/tools/audit_global_initializers.py
+@@ -10,6 +10,7 @@ import re
+ import subprocess
+ 
+ import pefile
++from linked_inputs import verify_build
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+ ORIGINAL = ROOT / 'orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe'
+@@ -41,6 +42,7 @@ def main():
+     args = p.parse_args()
+     if not args.output.resolve().is_relative_to(ROOT / 'build'):
+         p.error('Output must be under build/')
++    verify_build(args.build)
+     original = pefile.PE(str(ORIGINAL))
+     exe = args.build / 'empiresx.exe'
+     rebuilt = pefile.PE(str(exe))
+diff --git a/tools/audit_linked_references.py b/tools/audit_linked_references.py
+index 2071f41d5..ee13c623b 100644
+--- a/tools/audit_linked_references.py
++++ b/tools/audit_linked_references.py
+@@ -13,18 +13,18 @@ import re
+ import pefile
+ from capstone import Cs, CS_ARCH_X86, CS_MODE_32, CS_GRP_CALL, CS_GRP_JUMP
+ from capstone.x86 import X86_OP_IMM, X86_OP_MEM
++from linked_inputs import verify_build
++from linker_map import parse_symbols, unique_addresses
++from reference_identity import original_identities
++from audit_global_initializers import read_storage
++from common import load_functions
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+ ORIGINAL = ROOT / 'orig/original_full_game_files_rise_of_romes_beta_17_7_1998/XPack/empiresx.exe'
+ 
+ 
+ def read_map(path):
+-    symbols = {}
+-    for line in path.read_text(errors='replace').splitlines():
+-        m = re.match(r'\s+\w{4}:\w{8}\s+(\S+)\s+([0-9a-fA-F]{8})\s+', line)
+-        if m:
+-            symbols.setdefault(m[1], set()).add(int(m[2], 16))
+-    return {name: next(iter(values)) for name, values in symbols.items() if len(values) == 1}
++    return unique_addresses(parse_symbols(path.read_text(errors='replace')))
+ 
+ 
+ def decode(pe, va, size):
+@@ -70,6 +70,48 @@ def classify(target, actual, owners):
+         owner=owner['name'], expected=f'{expected:08X}')
+ 
+ 
++def check_initial_storage(original, rebuilt, entry, address, functions, owners):
++    """Compare reviewed plain bytes and explicit pointer fields separately."""
++    row = dict(kind='initial_storage', owner=entry['symbol'])
++    if not entry.get('check_initial_bytes'):
++        return [dict(row, result='unknown', reason='initial layout not reviewed')]
++    size = entry['size']
++    offsets = entry.get('pointer_offsets', [])
++    if len(set(offsets)) != len(offsets) or any(not isinstance(o, int) or o < 0 or o + 4 > size for o in offsets):
++        raise ValueError('Invalid reviewed pointer offsets')
++    if any(abs(a-b) < 4 for i, a in enumerate(offsets) for b in offsets[i+1:]):
++        raise ValueError('Overlapping pointer fields')
++    try:
++        a = read_storage(original, int(entry['original_va'], 16), size)
++        b = read_storage(rebuilt, address, size)
++    except ValueError as error:
++        return [dict(row, result='unknown', reason=str(error))]
++    excluded = {i for offset in offsets for i in range(offset, offset+4)}
++    differences = [i for i in range(size) if i not in excluded and a[i] != b[i]]
++    rows = [dict(row, result='fail' if differences else 'pass',
++                 plain_bytes_checked=size-len(excluded), differing_offsets=differences)] if size > len(excluded) else []
++    for offset in offsets:
++        target = int.from_bytes(a[offset:offset+4], 'little')
++        actual = int.from_bytes(b[offset:offset+4], 'little')
++        detail = {}
++        if target == 0:
++            result = 'pass' if actual == 0 else 'fail'
++            detail['expected'] = '00000000'
++        elif target in functions:
++            name, expected = functions[target]
++            result = 'pass' if actual == expected else 'fail'
++            detail.update(expected=f'{expected:08X}', target_owner=name)
++        else:
++            result, resolved = classify(target, actual, owners)
++            if resolved:
++                detail.update(expected=resolved['expected'], target_owner=resolved['owner'])
++            else:
++                detail['reason'] = 'pointer target has no unique reviewed owner'
++        rows.append(dict(row, kind='initial_pointer', offset=offset, result=result,
++                         original_target=f'{target:08X}', rebuilt_target=f'{actual:08X}', **detail))
++    return rows
++
++
+ def main():
+     parser = argparse.ArgumentParser(description=__doc__)
+     parser.add_argument('--build', type=Path, required=True)
+@@ -78,25 +120,41 @@ def main():
+     args = parser.parse_args()
+     if not args.output.resolve().is_relative_to(ROOT / 'build'):
+         parser.error('Output must be under build/')
++    build = verify_build(args.build)
+     original = pefile.PE(str(ORIGINAL))
+     exe = args.build / 'empiresx.exe'
+     rebuilt = pefile.PE(str(exe))
+     symbols = read_map(args.build / 'empiresx.map')
+     functions, rows = {}, []
++    # Target identity must not depend on the caller or its relocated bytes.
++    # Original symbols also cover header functions absent from build recipes.
++    for va, evidence in original_identities().items():
++        name = evidence['symbol']
++        if name in symbols:
++            functions[va] = (name, symbols[name])
+     for path in (ROOT / 'config/functions').rglob('*.json'):
+         for va, entry in json.loads(path.read_text()).get('functions', {}).items():
+-            if entry.get('symbol') in symbols:
+-                functions[int(va, 16)] = (entry['symbol'], symbols[entry['symbol']])
++            if int(va, 16) in functions:
++                continue
++            elif entry.get('symbol') in symbols:
++                rows.append(dict(function=va, symbol=entry['symbol'], result='unknown',
++                                 reason='registry symbol lacks unique original linkage evidence'))
+             else:
+                 rows.append(dict(function=va, symbol=entry.get('symbol'), result='unknown',
+                                  reason='function symbol absent or ambiguous'))
+     owners = []
+-    for entry in json.loads(args.owners.read_text())['owners']:
++    owner_entries = json.loads(args.owners.read_text())['owners']
++    for entry in owner_entries:
++        if not entry.get('evidence') or not isinstance(entry.get('size'), int) or entry['size'] <= 0:
++            raise ValueError('Storage owners require evidence and a positive byte size')
+         if entry['symbol'] not in symbols:
+             rows.append(dict(result='unknown', reason='storage symbol absent or ambiguous', owner=entry['symbol']))
+             continue
+         owners.append(dict(original=int(entry['original_va'], 16), rebuilt=symbols[entry['symbol']],
+                            size=entry['size'], name=entry['symbol']))
++    for entry in owner_entries:
++        if entry['symbol'] in symbols:
++            rows.extend(check_initial_storage(original, rebuilt, entry, symbols[entry['symbol']], functions, owners))
+     sizes = {}
+     for path in (ROOT / 'inventory/functions').rglob('*.txt'):
+         with path.open(errors='replace') as stream:
+@@ -125,14 +183,22 @@ def main():
+                 result, detail = classify(target, actual, owners)
+             rows.append(dict(row, offset=offset, kind=kind, original_target=f'{target:08X}',
+                              rebuilt_target=f'{actual:08X}', result=result, **(detail or {'reason': 'no unique reviewed owner'})))
+-    report = dict(schema=1, scope='Aligned original-size code windows; direct control references, absolute memory operands and PE HIGHLOW address fields. Not whole-function equivalence, full coverage, or boundary proof.',
++    unknown_targets = Counter(r['original_target'] for r in rows if r['result'] == 'unknown' and 'original_target' in r)
++    inventory_names = {r['va'].upper(): r['name'] for r in load_functions()}
++    report = dict(schema=2, scope='Aligned original-size code windows and explicitly reviewed initial storage. Direct control references, absolute memory operands and PE HIGHLOW fields. Not whole-function equivalence, full coverage, or boundary proof.',
+                   functions_examined=len(functions),
++                  build_report_sha256=hashlib.sha256((args.build / 'report.json').read_bytes()).hexdigest(),
+                   linked_map_sha256=hashlib.sha256((args.build / 'empiresx.map').read_bytes()).hexdigest(),
+                   function_map_sha256=hashlib.sha256(json.dumps(functions, sort_keys=True).encode()).hexdigest(),
+                   original_sha256=hashlib.sha256(ORIGINAL.read_bytes()).hexdigest(),
+                   rebuilt_sha256=hashlib.sha256(exe.read_bytes()).hexdigest(),
+                   owners_sha256=hashlib.sha256(args.owners.read_bytes()).hexdigest(),
+-                  counts=dict(Counter(r['result'] for r in rows)), rows=rows)
++                  counts=dict(Counter(r['result'] for r in rows)),
++                  unknown_reasons=dict(Counter(r.get('reason', 'unspecified') for r in rows if r['result'] == 'unknown')),
++                  unknown_targets=[dict(original_target=va, references=count,
++                                        inventory_name_hint=inventory_names.get(va),
++                                        functions=sorted({r.get('function', '') for r in rows if r.get('original_target') == va}))
++                                   for va, count in unknown_targets.most_common()], rows=rows)
+     args.output.parent.mkdir(parents=True, exist_ok=True)
+     args.output.write_text(json.dumps(report, indent=2) + '\n')
+     print(json.dumps(report['counts']))
+diff --git a/tools/audit_translation_unit_functions.py b/tools/audit_translation_unit_functions.py
+index cdb5ef88f..5b3c6d523 100644
+--- a/tools/audit_translation_unit_functions.py
++++ b/tools/audit_translation_unit_functions.py
+@@ -3,6 +3,7 @@ from __future__ import annotations
+ import argparse
+ import csv
+ import json
++import hashlib
+ import sys
+ from collections import Counter
+ from concurrent.futures import ThreadPoolExecutor, as_completed
+@@ -21,6 +22,7 @@ from common import (
+ )
+ from extract_obj_function import select_record_function_symbol
+ from original_fpo import load_original_owner_symbols
++from reference_identity import validation_fingerprint
+ from status_core import build_status_rows
+ from function_compare import compile_source, compare_object_function
+ from validate_candidate_tu import _source_closure, _source_policy_issues
+@@ -137,6 +139,7 @@ def classify(
+     new_diff = integer(comparison.get("diff_bytes"))
+     owner_status = str(comparison.get("owner_status") or "")
+     relocation_errors = integer(comparison.get("relocation_target_mismatches")) or 0
++    relocation_unknowns = integer(comparison.get("relocation_target_unknowns")) or 0
+     boundary_errors = integer(comparison.get("boundary_escape_count")) or 0
+ 
+     if result == "MATCH":
+@@ -157,7 +160,11 @@ def classify(
+             action = "review_for_promotion"
+             reason = "A non-matching function now produces an exact result."
+     elif result == "MISMATCH":
+-        if matching_here:
++        if relocation_unknowns:
++            category = "reference_evidence_gap"
++            action = "establish_original_target_identity"
++            reason = "Direct target evidence is incomplete; exactness is not proved. Other byte differences can also remain."
++        elif matching_here:
+             category = "matching_regression"
+             action = "repair_before_integration"
+             reason = "A matching function no longer produces an exact result."
+@@ -295,6 +302,8 @@ def compile_and_compare_group(
+                 "relocation_target_mismatches": len(
+                     relocations.get("target_mismatches") or []
+                 ),
++                "relocation_target_unknowns": len(relocations.get("target_unknowns") or []),
++                "reference_validation": relocations,
+                 "boundary_escape_count": len(result["boundary_escape_offsets"]),
+                 "symbol": result["symbol"],
+                 "expected_symbol": expected_symbol,
+@@ -352,6 +361,8 @@ def compile_and_compare_group(
+                     "relocation_target_mismatches"
+                 ],
+                 "boundary_escape_count": comparison["boundary_escape_count"],
++                "relocation_target_unknowns": comparison.get("relocation_target_unknowns", 0),
++                "reference_validation": comparison.get("reference_validation", {}),
+                 "symbol": comparison["symbol"],
+                 "expected_symbol": comparison["expected_symbol"],
+                 "expected_owner_name": comparison["expected_owner_name"],
+@@ -369,6 +380,7 @@ def compile_and_compare_group(
+         "flags": str(build["flags_path"]),
+         "input_fingerprint": input_fingerprint,
+         "compile_error": "",
++        "object_sha256": hashlib.sha256(object_path.read_bytes()).hexdigest(),
+         "rows": rows,
+     }
+ 
+@@ -820,11 +832,14 @@ def main() -> int:
+     ]
+     report: dict[str, object] = {
+         "schema": 1,
++        "validation_fingerprint": validation_fingerprint(),
+         "selection": selection,
+         "summary": {
+             "group_count": len(groups),
+             "compiled_group_count": len(groups) - len(compile_errors),
+             "compile_error_count": len(compile_errors),
++            "failed_exact_claim_count": sum(bool(row.get('matching_in_group')) and
++                                            row.get('grouped_result') != 'MATCH' for row in rows),
+             "function_count": len(rows),
+             "matching_count": sum(bool(row["matching_anywhere"]) for row in rows),
+             "nonmatching_count": sum(not bool(row["matching_anywhere"]) for row in rows),
+@@ -857,6 +872,7 @@ def main() -> int:
+         "grouped_diff_percent",
+         "owner_status",
+         "relocation_target_mismatches",
++        "relocation_target_unknowns",
+         "boundary_escape_count",
+         "symbol",
+         "expected_symbol",
+@@ -880,7 +896,11 @@ def main() -> int:
+     print(f"Wrote {text_path}")
+     print(f"Wrote {queue_json_path}")
+     print(f"Wrote {queue_text_path}")
+-    return 1 if compile_errors else 0
++    # Expected scratch differences are reports, not failed exact claims.
++    # A claimed matching owner must not pass through a compile-only exit gate.
++    failed_claims = [row for row in rows
++                     if row.get('matching_in_group') and row.get('grouped_result') != 'MATCH']
++    return 1 if compile_errors or failed_claims else 0
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/tools/audit_vtables.py b/tools/audit_vtables.py
+index b2f4699f1..506b42fe5 100644
+--- a/tools/audit_vtables.py
++++ b/tools/audit_vtables.py
+@@ -18,6 +18,8 @@ from audit_link_symbols import decorated_name
+ from coff import function_symbol_section, load_coff_object
+ from common import REPO_ROOT, load_build_modules, load_pdb_function_source_map, repo_path
+ from extract_obj_function import select_exact_function_symbol
++from linked_inputs import verify_build, digest
++from reference_identity import validation_fingerprint
+ 
+ 
+ def table_definitions(obj):
+@@ -46,8 +48,10 @@ def main() -> int:
+     if not output.is_relative_to((REPO_ROOT / 'build').resolve()):
+         parser.error('Output must be under build/.')
+     build_path, audit_path = repo_path(args.build_report), repo_path(args.function_audit)
+-    build = json.loads(build_path.read_text())
++    build = verify_build(build_path.parent, objects=True)
+     audit = json.loads(audit_path.read_text())
++    if audit.get('validation_fingerprint') != validation_fingerprint():
++        raise ValueError('Function audit uses stale or unrecorded validation rules')
+     original = repo_path(build['config']['original'])
+     if hashlib.sha256(original.read_bytes()).hexdigest() != build['original_sha256']:
+         raise ValueError('Original EXE differs from the recorded build input.')
+@@ -67,7 +71,10 @@ def main() -> int:
+                 or source['inputs']['fingerprint'] != group['input_fingerprint']):
+             skipped.append(group['group'])
+             continue
+-        obj = load_coff_object(audit_path.parent / 'objects' / (group['group'] + '.obj'))
++        object_path = audit_path.parent / 'objects' / (group['group'] + '.obj')
++        if group.get('object_sha256') != digest(object_path):
++            raise ValueError(f"Audit object changed or lacks a hash: {group['group']}")
++        obj = load_coff_object(object_path)
+         for row in group['rows']:
+             if (row['grouped_result'] != 'MATCH' or row['owner_status'] != 'match'
+                     or row['relocation_target_mismatches'] or row['boundary_escape_count']):
+diff --git a/tools/build_executable.py b/tools/build_executable.py
+index f65518ca6..c84a988bd 100644
+--- a/tools/build_executable.py
++++ b/tools/build_executable.py
+@@ -16,6 +16,7 @@ from pe_resources import extract_resources
+ from compression_binary import build_compression_object
+ from preserved_binary import build_preserved_object
+ from build_assembly import assemble_source
++from linked_inputs import digest, registry_digest
+ 
+ 
+ def run_command(command: list[str], output: Path, toolchain: dict) -> subprocess.CompletedProcess:
+@@ -76,6 +77,7 @@ def main() -> int:
+     config = json.loads((REPO_ROOT / "config/executable.json").read_text(encoding="utf-8"))
+     plan = source_plan(config, load_build_modules())
+     report: dict = {"schema": 1, "config": config, "sources": [], "linked": False}
++    report['registry_sha256'] = registry_digest()
+     toolchain = load_toolchain()
+     report["toolchain"] = toolchain
+     report["original_sha256"] = hashlib.sha256(repo_path(config["original"]).read_bytes()).hexdigest()
+@@ -162,6 +164,8 @@ def main() -> int:
+         "link_error_count": len(report["link"]["errors"]),
+         "linked": report["linked"],
+     }
++    report['artifact_sha256'] = {path.name: digest(path) for path in
++                                 [*objects, exe, output / 'empiresx.map'] if path.is_file()}
+     (output / "report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+     print(json.dumps(report["summary"], indent=2))
+     print(f"Report: {output / 'report.json'}")
+diff --git a/tools/common.py b/tools/common.py
+index 66565da55..8197b9318 100644
+--- a/tools/common.py
++++ b/tools/common.py
+@@ -444,13 +444,16 @@ def load_function_modules() -> list[dict[str, object]]:
+                     f"{label}: {va} has invalid status {status!r}"
+                 )
+             symbol = str(raw_entry.get("symbol") or "").strip()
++            emission_source = str(raw_entry.get("emission_source") or "").replace("\\", "/")
++            if emission_source and (suffix not in {".h", ".hpp"} or build is not None):
++                raise ValueError(f"{label}: emission_source requires a header-owned function without a header build")
+             if symbol and any(character.isspace() for character in symbol):
+                 raise ValueError(f"{label}: {va} has invalid symbol")
+             if build is not None and not symbol:
+                 raise ValueError(f"{label}: buildable function {va} needs a symbol")
+-            if build is None and symbol:
++            if build is None and symbol and not emission_source:
+                 raise ValueError(f"{label}: function {va} has a symbol without a build")
+-            if build is None and status != "unresolved":
++            if build is None and not emission_source and status != "unresolved":
+                 raise ValueError(
+                     f"{label}: function {va} without a build must be unresolved"
+                 )
+@@ -458,6 +461,10 @@ def load_function_modules() -> list[dict[str, object]]:
+             functions[va] = {"status": status}
+             if symbol:
+                 functions[va]["symbol"] = symbol
++            if emission_source:
++                if not symbol:
++                    raise ValueError(f"{label}: emitted function {va} needs a symbol")
++                functions[va]["emission_source"] = emission_source
+         modules.append(
+             {
+                 "name": name,
+@@ -470,6 +477,13 @@ def load_function_modules() -> list[dict[str, object]]:
+                 "functions": functions,
+             }
+         )
++    source_modules = {str(module['source']): module for module in modules}
++    for module in modules:
++        for va, entry in module['functions'].items():
++            if entry.get('emission_source'):
++                emitter = source_modules.get(entry['emission_source'])
++                if not emitter or not emitter.get('build') or Path(str(emitter['source'])).suffix not in {'.c', '.cpp', '.cc', '.cxx'}:
++                    raise ValueError(f"{va}: emission source must name a configured natural C/C++ build")
+     return modules
+ 
+ 
+@@ -649,7 +663,13 @@ def validate_function_registry() -> list[str]:
+ 
+ def load_build_modules() -> list[dict[str, object]]:
+     """Return natural source modules that have a proven compiler recipe."""
+-    return [module for module in load_function_modules() if module.get("build")]
++    modules = {str(module['source']): dict(module, functions=dict(module['functions']))
++               for module in load_function_modules() if module.get('build')}
++    for owner in load_function_modules():
++        for va, entry in owner['functions'].items():
++            if entry.get('emission_source'):
++                modules[entry['emission_source']]['functions'][va] = entry
++    return list(modules.values())
+ 
+ 
+ def matching_build_for_va(va: int) -> dict[str, object] | None:
+@@ -657,12 +677,7 @@ def matching_build_for_va(va: int) -> dict[str, object] | None:
+     entry = function_entry_for_va(va)
+     if entry is None or entry.get("status") != "matching":
+         return None
+-    module = entry["module"]
+-    assert isinstance(module, dict)
+-    if module.get("build") is None:
+-        return None
+-    validate_build_module(module)
+-    return module
++    return build_module_for_va(va)
+ 
+ 
+ def build_module_for_va(va: int) -> dict[str, object] | None:
+@@ -672,6 +687,10 @@ def build_module_for_va(va: int) -> dict[str, object] | None:
+         return None
+     module = entry["module"]
+     assert isinstance(module, dict)
++    source = entry.get('emission_source', module['source'])
++    module = next((candidate for candidate in load_build_modules() if candidate['source'] == source), None)
++    if module is None:
++        return None
+     validate_build_module(module)
+     return module
+ 
+diff --git a/tools/diff_function.py b/tools/diff_function.py
+index 10ddd83df..761371d8a 100644
+--- a/tools/diff_function.py
++++ b/tools/diff_function.py
+@@ -6,6 +6,7 @@ import re
+ from pathlib import Path
+ 
+ from build_cache import build_artifact_lock
++from reference_identity import validation_fingerprint
+ from common import (
+     byte_diff_metrics,
+     compiler_artifact_slug,
+@@ -658,6 +659,10 @@ def _workflow_guidance(
+     size_delta = 0 if expected_size is None or effective_size is None else int(effective_size) - int(expected_size)
+     frame_differs = original_prologue.get("frame_size") != rebuilt_prologue.get("frame_size")
+     known_wrong_transfers = len(relocation_validation.get("target_mismatches") or [])
++    if relocation_validation.get("target_unknowns"):
++        return ["Workflow stage: CONTROL TARGET EVIDENCE",
++                "Why: at least one direct target lacks unique original symbol evidence.",
++                "Next: establish target identity before claiming exact output."]
+     wrong_owner = owner_symbol_validation.get("status") == "mismatch"
+ 
+     lines: list[str] = []
+@@ -1024,6 +1029,7 @@ def main() -> None:
+     exact = (
+         mismatch is None
+         and not relocation_validation["target_mismatches"]
++        and not relocation_validation.get("target_unknowns")
+         and owner_symbol_mismatch is None
+     )
+     mismatch_classification = classify_mismatch(
+@@ -1072,6 +1078,10 @@ def main() -> None:
+         "relocations_incompatible_unmasked": relocation_validation["incompatible"],
+         "relocation_target_mismatch_candidates": relocation_validation["target_mismatches"],
+         "relocation_target_mismatches": actionable_target_mismatches,
++        "relocation_target_unknowns": relocation_validation.get("target_unknowns", []),
++        "storage_reference_checks": relocation_validation.get("data_references", []),
++        "validation_scope": "Function bytes, owner, boundary, and direct symbols. Linked storage and initial data require separate checks.",
++        "validation_fingerprint": validation_fingerprint(),
+         "owning_symbol_validation": owner_symbol_validation,
+         "rebuilt_extraction": rebuilt_meta,
+         "rebuilt_source_map": {
+@@ -1145,6 +1155,11 @@ def main() -> None:
+             f"{mismatch_classification['primary']} [{str(mismatch_classification['confidence']).upper()}]; "
+             "does not establish equivalence"
+         )
++    summary.append('Scope: local function code. Linked storage and initial data require separate audits.')
++    if relocation_validation.get('target_unknowns'):
++        summary.append(f"Unproved direct targets: {len(relocation_validation['target_unknowns'])}")
++    if relocation_validation.get('data_references'):
++        summary.append(f"Storage references awaiting linked checks: {len(relocation_validation['data_references'])}")
+     if delta is not None:
+         summary.append(
+             "Emitted-code movement this iteration: "
+diff --git a/tools/function_compare.py b/tools/function_compare.py
+index 53731d199..4b4602a0a 100644
+--- a/tools/function_compare.py
++++ b/tools/function_compare.py
+@@ -125,6 +125,7 @@ def compare_object_function(
+     exact = bool(
+         metrics["result"] == "MATCH"
+         and not relocation_validation["target_mismatches"]
++        and not relocation_validation.get("target_unknowns")
+         and not extent["has_code_overflow"]
+         and (owner_match or not require_owner)
+     )
+diff --git a/tools/function_diagnostics.py b/tools/function_diagnostics.py
+index 438eba26e..3a3959be1 100644
+--- a/tools/function_diagnostics.py
++++ b/tools/function_diagnostics.py
+@@ -133,12 +133,13 @@ def clean_symbol_name(name: str) -> str:
+ 
+ 
+ def direct_call_symbols_match(original: str, rebuilt: str) -> bool:
+-    """Compare direct-control symbols without collapsing known overload identity.
++    """Compare display names for diagnostic alignment, not exactness proof.
+ 
+     Most original inventory names are undecorated, so they still require the
+     historical normalized comparison.  When both sides have decorated C++
+     names, however, compare the complete symbols: reducing at the first ``@``
+-    would make distinct overloads indistinguishable.
++    would make distinct overloads indistinguishable. The exactness gate uses
++    reference_identity.check_direct_identity instead of this fallback.
+     """
+     original_value = original.strip()
+     rebuilt_value = rebuilt.strip()
+@@ -1157,6 +1158,8 @@ def compatible_relocation_masks(
+     compatible = 0
+     incompatible = 0
+     target_mismatches: list[dict[str, object]] = []
++    target_unknowns: list[dict[str, object]] = []
++    data_references: list[dict[str, object]] = []
+ 
+     for relocation in rebuilt_relocations:
+         offset = int(relocation["offset"])
+@@ -1177,16 +1180,17 @@ def compatible_relocation_masks(
+             continue
+ 
+         if rebuilt_instruction.flow_control in {FlowControl.CALL, FlowControl.UNCONDITIONAL_BRANCH}:
++            from reference_identity import check_direct_identity
+             original_target = original_direct_target(original_instruction, names)
+             rebuilt_target = str(relocation.get("symbol_name") or "")
+-            rebuilt_clean = clean_symbol_name(rebuilt_target)
+-            if (
+-                original_target
+-                and not original_target.startswith(tuple("0123456789"))
+-                and rebuilt_clean
+-                and not direct_call_symbols_match(original_target, rebuilt_target)
+-            ):
+-                target_mismatches.append(
++            identity = check_direct_identity(original_instruction.target, rebuilt_target)
++            addend = int.from_bytes(rebuilt_bytes[offset:offset + width], 'little', signed=True)
++            if addend:
++                identity = {'result': 'unknown', 'reason': 'nonzero COFF target addend',
++                            'addend': addend, 'symbol_identity': identity}
++            if identity['result'] != 'pass':
++                destination = target_mismatches if identity['result'] == 'fail' else target_unknowns
++                destination.append(
+                     {
+                         "offset": rebuilt_instruction.offset,
+                         "kind": (
+@@ -1196,20 +1200,38 @@ def compatible_relocation_masks(
+                         ),
+                         "original": original_target,
+                         "rebuilt": rebuilt_target,
++                        "identity": identity,
+                     }
+                 )
+                 incompatible += 1
+                 continue
++        else:
++            data_references.append({'offset': offset,
++                                    'symbol': relocation.get('symbol_name'),
++                                    'result': 'unknown',
++                                    'reason': 'requires linked storage and initial-data checks'})
+ 
+         for index in range(offset, min(offset + width, len(masked_original), len(masked_rebuilt))):
+             masked_original[index] = 0
+             masked_rebuilt[index] = 0
+         compatible += 1
+ 
++    for instruction in rebuilt_instructions:
++        if instruction.flow_control not in {FlowControl.CALL, FlowControl.UNCONDITIONAL_BRANCH}:
++            continue
++        if start_va <= instruction.target < start_va + len(rebuilt_bytes):
++            continue
++        if not any(instruction.offset <= int(r['offset']) < instruction.end for r in rebuilt_relocations):
++            target_unknowns.append(dict(offset=instruction.offset, kind='unrelocated-control',
++                                        original='', rebuilt=f'{instruction.target:08X}',
++                                        reason='external transfer has no COFF symbol relocation'))
++
+     return bytes(masked_original), bytes(masked_rebuilt), {
+         "compatible": compatible,
+         "incompatible": incompatible,
+         "target_mismatches": target_mismatches,
++        "target_unknowns": target_unknowns,
++        "data_references": data_references,
+     }
+ 
+ 
+diff --git a/tools/target_dossier.py b/tools/target_dossier.py
+index 4fd6fa250..ee350f10a 100644
+--- a/tools/target_dossier.py
++++ b/tools/target_dossier.py
+@@ -1024,6 +1024,7 @@ def format_dossier(dossier: dict[str, object]) -> str:
+             "Next checks:",
+             f"  python tools/query_abi.py --va {target['va']}",
+             f"  python tools/find_function_donors.py --va {target['va']}",
++            f"  python tools/reference_build.py query --index build/references/january.json --va {target['va']} --output build/references/{target['va']}.json",
+             f"  python tools/check_function.py --va {target['va']} --call-map-unmatched",
+             f"  python tools/check_function.py --va {target['va']} --stack-map --no-build",
+             f"  python tools/check_function.py --va {target['va']} --block-map-differences",
+diff --git a/tools/validate_translation_units.py b/tools/validate_translation_units.py
+index d8ed9e322..f77b93fed 100644
+--- a/tools/validate_translation_units.py
++++ b/tools/validate_translation_units.py
+@@ -18,7 +18,7 @@ from common import (
+     load_functions,
+     load_pdb_function_source_map,
+     pdb_module_stream_procedure_for_va,
+-    preferred_source_path,
++    compiler_source_path,
+     slugify_name,
+ )
+ from extract_obj_function import select_exact_function_symbol
+@@ -226,7 +226,7 @@ def validate_translation_units(
+             symbol = str(entry.get("symbol") or "").strip()
+             if not symbol or any(character.isspace() for character in symbol):
+                 issues.append(_issue("invalid-symbol", f"{label} function {va} has no valid symbol"))
+-            if preferred_source_path(records[va]).resolve() != source.resolve():
++            if compiler_source_path(records[va]).resolve() != source.resolve():
+                 issues.append(_issue("source-mismatch", f"{label} function {va} has another source owner"))
+ 
+         for va, entry in matching.items():
+@@ -264,8 +264,7 @@ def validate_translation_units(
+     if require_complete:
+         expected = {
+             str(module["source"]): set(module["functions"])
+-            for module in load_function_modules()
+-            if module.get("build")
++            for module in load_build_modules()
+         }
+         actual = {
+             str(module.get("source") or ""): set(module.get("functions") or {})

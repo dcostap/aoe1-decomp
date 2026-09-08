@@ -1,5 +1,11 @@
 # Tech module recovery
 
+## Current review
+
+Original public symbols and section contributions now establish all 33 entry identities.
+See `decomp_notes/tech_public_identity_review.md` for the evidence, compiler results, and remaining limits.
+The older missing-symbol conclusions below describe the previous evidence set, not the current build route.
+
 ## Context
 
 The PDB contribution is `0050B840-0050D456` from

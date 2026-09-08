@@ -1,0 +1,22 @@
+diff --git a/include/utmarray.h b/include/utmarray.h
+index 6acebbc0f..2db30cbf6 100644
+--- a/include/utmarray.h
++++ b/include/utmarray.h
+@@ -51,7 +51,7 @@ public:
+         return this->desiredNumberValue;
+     }
+ 
+-    int contains(const T& item) const;
++    int contains(const T& item);
+ 
+     int position(T& item)
+     {
+@@ -164,7 +164,7 @@ public:
+ };
+ 
+ template <class T>
+-int ManagedArray<T>::contains(const T& item) const
++int ManagedArray<T>::contains(const T& item)
+ {
+     int i;
+     T wanted;
