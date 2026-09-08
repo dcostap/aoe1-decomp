@@ -14,8 +14,8 @@
 extern void operator delete(void* ptr);
 extern void* operator new(unsigned int size, void* ptr);
 extern int DiagionalDistance[256];
-extern const unsigned char ObstructionValueShift[4];
-extern const unsigned char ObstructionValueMask[4];
+extern unsigned char ObstructionValueShift[4];
+extern unsigned char ObstructionValueMask[4];
 extern RGE_Base_Game* rge_base_game;
 
 // This two-byte cursor is local to pathsys.cpp. No shared owner declares it.

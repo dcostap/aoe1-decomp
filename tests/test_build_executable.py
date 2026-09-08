@@ -121,3 +121,44 @@ def test_recovered_string_data_matches_original():
         expected = row["ascii_prefix"].encode("ascii") + b"\0"
         assert section.data[symbol.value:symbol.value + len(expected)] == expected, row["symbol"]
         assert pe.get_data(int(row["original_va"], 16) - pe.OPTIONAL_HEADER.ImageBase, len(expected)) == expected
+
+
+def test_obstruction_tables_compile_as_writable_data():
+    import hashlib
+    import json
+    import uuid
+    import pefile
+    from coff import load_coff_object
+    from common import load_toolchain, repo_path
+    from function_compare import compile_source
+
+    toolchain = load_toolchain()
+    if not repo_path(toolchain["compiler"]["cl"]).is_file():
+        pytest.skip("Pinned VC5 compiler is not installed")
+    output = repo_path("build/tests/obstruction_storage") / uuid.uuid4().hex / "game_globals.obj"
+    output.parent.mkdir(parents=True)
+    source = repo_path("src/game_globals.cpp")
+    compile_source(source, output, repo_path("config/flags/default.rsp"), source.parent)
+    obj = load_coff_object(output)
+    config = json.loads(repo_path("config/executable.json").read_text())
+    original = repo_path(config["original"]).read_bytes()
+    assert hashlib.sha256(original).hexdigest() == config["original_sha256"]
+    pe = pefile.PE(data=original)
+
+    for name, address, expected in (
+        ("ObstructionValueShift", 0x584EF4, bytes([0, 2, 4, 6])),
+        ("ObstructionValueMask", 0x584EF0, bytes.fromhex("fcf3cf3f")),
+    ):
+        symbols = [s for s in obj.symbols
+                   if s.name == "?" + name + "@@3PAEA" and s.section_number > 0]
+        assert len(symbols) == 1, name
+        symbol = symbols[0]
+        section = obj.section_by_index(symbol.section_number)
+        assert section.data[symbol.value:symbol.value + 4] == expected, name
+        assert section.characteristics & 0x80000000, name
+        assert section.characteristics & 0x40000000, name
+        rva = address - pe.OPTIONAL_HEADER.ImageBase
+        assert pe.get_data(rva, 4) == expected, name
+        original_section = pe.get_section_by_rva(rva)
+        assert original_section is not None
+        assert original_section.Characteristics & 0x80000000, name

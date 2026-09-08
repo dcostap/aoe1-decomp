@@ -92,8 +92,8 @@ def test_game_destructor_uses_configuration_dialog():
     ("int DiagionalDistance[256] = {0};", 0x74D040, bytes(256 * 4)),
     ("int player_dropped[9] = {0};", 0x86BCA8, bytes(9 * 4)),
     ("char DAT_0062E670[0x200] = {0};", 0x62E670, bytes(512)),
-    ("extern const unsigned char ObstructionValueShift[4] = {0, 2, 4, 6};", 0x584EF4, bytes([0, 2, 4, 6])),
-    ("extern const unsigned char ObstructionValueMask[4] = {0xFC, 0xF3, 0xCF, 0x3F};", 0x584EF0, bytes.fromhex("fcf3cf3f")),
+    ("unsigned char ObstructionValueShift[4] = {0, 2, 4, 6};", 0x584EF4, bytes([0, 2, 4, 6])),
+    ("unsigned char ObstructionValueMask[4] = {0xFC, 0xF3, 0xCF, 0x3F};", 0x584EF0, bytes.fromhex("fcf3cf3f")),
 ])
 def test_shared_arrays_match_original(declaration, address, expected):
     config = json.loads((ROOT / "config/executable.json").read_text())
@@ -102,6 +102,9 @@ def test_shared_arrays_match_original(declaration, address, expected):
     image = pefile.PE(data=original)
     offset = address - image.OPTIONAL_HEADER.ImageBase
     assert image.get_memory_mapped_image()[offset:offset + len(expected)] == expected
+    section = image.get_section_by_rva(offset)
+    assert section is not None
+    assert section.Characteristics & 0x80000000  # Original writable storage.
     assert (ROOT / "src/game_globals.cpp").read_text().count(declaration) == 1
 
 
