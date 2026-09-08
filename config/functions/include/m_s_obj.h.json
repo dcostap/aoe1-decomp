@@ -3,12 +3,12 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\m_s_obj.h",
   "functions": {
     "0044FE20": {
-      "status": "scratch",
+      "status": "matching",
       "symbol": "?play_command_sound@RGE_Master_Static_Object@@UAEXXZ",
       "emission_source": "src/m_an_obj.cpp"
     },
     "0044FE30": {
-      "status": "scratch",
+      "status": "matching",
       "symbol": "?play_move_sound@RGE_Master_Static_Object@@UAEXXZ",
       "emission_source": "src/m_an_obj.cpp"
     }

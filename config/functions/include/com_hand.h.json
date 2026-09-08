@@ -8,17 +8,17 @@
       "emission_source": "src/com_hand.cpp"
     },
     "004264A0": {
-      "status": "scratch",
+      "status": "matching",
       "symbol": "??1RESENDER@@QAE@XZ",
       "emission_source": "src/com_hand.cpp"
     },
     "004265E0": {
-      "status": "scratch",
+      "status": "matching",
       "symbol": "??0HOLDER@@QAE@XZ",
       "emission_source": "src/com_hand.cpp"
     },
     "00426600": {
-      "status": "scratch",
+      "status": "matching",
       "symbol": "??1HOLDER@@QAE@XZ",
       "emission_source": "src/com_hand.cpp"
     }

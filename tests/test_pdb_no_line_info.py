@@ -202,7 +202,28 @@ class PdbNoLineInfoTests(unittest.TestCase):
             tu_module,
             "compiler_source_path",
             return_value=REPO_ROOT / "src" / "tech.cpp",
-        ), patch.object(tu_module, "load_pdb_function_source_map", return_value={VA: {}}):
+        ), patch.object(tu_module, "load_pdb_function_source_map", return_value={VA: {}}), patch.object(
+            tu_module, "original_identities", return_value={}
+        ):
+            issues = tu_module.validate_translation_units([group])
+        self.assertIn("missing-pdb-symbol", {issue.code for issue in issues})
+
+    def test_group_accepts_independent_linkage_without_procedure_records(self) -> None:
+        group = _normalized_module("matching")
+        with patch.object(tu_module, "compiler_source_path", return_value=REPO_ROOT / "src/tech.cpp"), patch.object(
+            tu_module, "load_pdb_function_source_map", return_value={VA: {}}
+        ), patch.object(tu_module, "pdb_module_stream_procedure_for_va", return_value=None), patch.object(
+            tu_module, "original_identities", return_value={int(VA, 16): {"symbol": SYMBOL}}
+        ):
+            self.assertEqual([], tu_module.validate_translation_units([group]))
+
+    def test_group_rejects_a_different_independent_linkage(self) -> None:
+        group = _normalized_module("matching")
+        with patch.object(tu_module, "compiler_source_path", return_value=REPO_ROOT / "src/tech.cpp"), patch.object(
+            tu_module, "load_pdb_function_source_map", return_value={VA: {}}
+        ), patch.object(tu_module, "pdb_module_stream_procedure_for_va", return_value=None), patch.object(
+            tu_module, "original_identities", return_value={int(VA, 16): {"symbol": "?unrelated@@YAXXZ"}}
+        ):
             issues = tu_module.validate_translation_units([group])
         self.assertIn("missing-pdb-symbol", {issue.code for issue in issues})
 

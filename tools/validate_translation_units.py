@@ -23,6 +23,7 @@ from common import (
 )
 from extract_obj_function import select_exact_function_symbol
 from function_diagnostics import owning_function_symbol_validation
+from reference_identity import original_identities
 
 
 _HEX_VA = re.compile(r"^[0-9A-Fa-f]{8}$")
@@ -231,13 +232,16 @@ def validate_translation_units(
 
         for va, entry in matching.items():
             pdb_symbol = str((pdb_sources.get(va) or {}).get("symbol_name") or "").strip()
+            linkage = (original_identities().get(int(va, 16)) or {}).get("symbol")
+            # Reviewed public linkage can survive when procedure records do not.
+            proved_linkage = bool(linkage and linkage == entry.get("symbol"))
             if module.get("pdb_no_line_info"):
                 stream = pdb_module_stream_procedure_for_va(module, va)
-                if stream is None:
+                if stream is None and not proved_linkage:
                     issues.append(_issue("missing-pdb-module-symbol", f"{label} matching function {va} lacks stream evidence"))
-                elif str(stream.get("name") or "") != pdb_symbol:
+                elif stream is not None and str(stream.get("name") or "") != pdb_symbol:
                     issues.append(_issue("pdb-symbol-mismatch", f"{label} matching function {va} stream symbol differs"))
-            if not pdb_symbol:
+            if not pdb_symbol and not proved_linkage:
                 issues.append(_issue("missing-pdb-symbol", f"{label} matching function {va} lacks a PDB symbol"))
 
         if object_dir is not None:
@@ -252,6 +256,9 @@ def validate_translation_units(
                         issues.append(_issue("symbol-not-defined", f"{label} matching function {va} is absent from the object"))
                         continue
                     pdb_symbol = str((pdb_sources.get(va) or {}).get("symbol_name") or "").strip()
+                    linkage = (original_identities().get(int(va, 16)) or {}).get("symbol")
+                    if not pdb_symbol and linkage and actual == linkage == entry.get("symbol"):
+                        continue
                     validation = owning_function_symbol_validation(
                         records[va]["name"], actual, pdb_symbol
                     )

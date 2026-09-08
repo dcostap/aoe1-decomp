@@ -3,17 +3,17 @@
   "pdb_source_path": "C:\\msdev\\work\\age1_x1\\aimodule.h",
   "functions": {
     "004087F0": {
-      "status": "scratch",
+      "status": "matching",
       "symbol": "?loadState@AIModule@@UAEHPAD@Z",
       "emission_source": "src/aibldmod.cpp"
     },
     "00408800": {
-      "status": "scratch",
+      "status": "matching",
       "symbol": "?saveState@AIModule@@UAEHPAD@Z",
       "emission_source": "src/aibldmod.cpp"
     },
     "00408810": {
-      "status": "scratch",
+      "status": "matching",
       "symbol": "?gleanState@AIModule@@UAEHH@Z",
       "emission_source": "src/aibldmod.cpp"
     }
