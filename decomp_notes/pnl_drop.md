@@ -21,12 +21,17 @@ The source owns `TDropDownPanel` and `TDropDownButtonPanel`. The scalar
 and vector deleting destructors at `00473F30` and `00475490` are compiler
 generated. They are not normal source owners.
 
-The manifest keeps 37 matching owners, two scratch owners, and one
-accepted-drift owner:
+The manifest keeps 37 matching owners, one scratch owner, and two
+accepted-drift owners:
 
-- Scratch: `00473FD0` (`setup`) and `00474880` (`set_mode`).
-- Accepted drift: `004754C0` (`TDropDownButtonPanel::handle_mouse_move`).
+- Scratch: `00474880` (`set_mode`).
+- Accepted drift: `00473FD0` (`setup`) and `004754C0` (`TDropDownButtonPanel::handle_mouse_move`).
 - Matching: the other 37 normal owners.
+
+Setup's completed review is `logic_reviews/00473FD0.md`.
+The January-supported store order reduces its difference from 158 bytes to two.
+Only a caller-saved register selection differs at scrollbar deactivation.
+All 37 matching neighbors remain exact. No further matching work is required without new evidence.
 
 ## Header composition
 

@@ -37,15 +37,15 @@ long TDropDownPanel::setup(TDrawArea* render_area_in, TPanel* parent_panel_in, v
     long result;
 
     this->val_num = val_num_in;
-    this->btn_wid = btn_wid_in;
     this->val_wid = wid_in - btn_wid_in - 1;
+    this->val_hgt = hgt_in;
+    this->btn_wid = btn_wid_in;
     this->btn_hgt = btn_hgt_in;
     this->list_wid = list_wid_in;
     this->list_hgt = list_hgt_in;
     this->scbar_wid = scbar_wid_in;
     this->scbar_arrow_hgt = scbar_arrow_hgt_in;
     this->scbar_tab_hgt = scbar_tab_hgt_in;
-    this->val_hgt = hgt_in;
     this->font_hgt = font_hgt_in;
     this->outline_color = outline_color_in;
 
