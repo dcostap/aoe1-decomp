@@ -9,9 +9,9 @@ It does not prove that every changed function has equal behavior.
 The first complete audit covers 3,586 emitted owners. It records 46 changed owner descriptions.
 The comparison includes helper emissions and reference-only changes, not just changed game instructions.
 
-Three review problems remain important:
+The following findings describe the preserved proposal:
 
-- `bestGroup` changes getter order unless the source explicitly stores the first result.
+- `bestGroup` needs an explicit first result. Its completed review now approves that repair as accepted drift.
 - `findTilePath` changes memory-read order and three x87 operand-load sequences.
 - The isolated play-buffer repair changes two other tactical owners with main headers.
 
@@ -37,9 +37,10 @@ Names alone do not repair its remaining byte differences.
 
 The preferred `bestGroup` probe uses a normal loop and an immutable per-iteration ID.
 It states the original getter order without compiler controls.
-Its changed stack use causes a demonstrated return-value difference for a stack-overlapping point.
-Read `../logic_reviews/005004C0.md` for the completed rejection and input scope.
-This is a behavior rejection, not a requirement for exact bytes.
+Its private stack layout differs. The user excludes invented pointers into future callee-owned storage.
+The completed review approves the explicit-ID repair as accepted drift under that scope.
+Read `../logic_reviews/005004C0.md` for the proof and preserved historical counterexample.
+Main integrates the minimal explicit-ID repair independently of the shared array proposal.
 
 ## Bytes
 

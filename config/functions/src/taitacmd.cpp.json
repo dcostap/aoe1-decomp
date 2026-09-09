@@ -167,7 +167,7 @@
     "00500320": {"status": "matching", "symbol": "?removeGroup@TribeTacticalAIModule@@QAEHH@Z"},
     "005003A0": {"status": "matching", "symbol": "?removeAllGroups@TribeTacticalAIModule@@QAEHH@Z"},
     "00500420": {"status": "matching", "symbol": "?group@TribeTacticalAIModule@@QAEPAVTacticalAIGroup@@HHHH@Z"},
-    "005004C0": {"status": "matching", "symbol": "?bestGroup@TribeTacticalAIModule@@QAEPAVTacticalAIGroup@@HHHAAUXYPoint@@H@Z"},
+    "005004C0": {"status": "accepted_drift", "symbol": "?bestGroup@TribeTacticalAIModule@@QAEPAVTacticalAIGroup@@HHHAAUXYPoint@@H@Z"},
     "00500670": {"status": "accepted_drift", "symbol": "?readyAndIdleGroup@TribeTacticalAIModule@@QAEPAVTacticalAIGroup@@HHAAUXYPoint@@@Z"},
     "005007B0": {"status": "matching", "symbol": "?addToGroup@TribeTacticalAIModule@@QAEHHH@Z"},
     "005007F0": {"status": "matching", "symbol": "?removeFromGroup@TribeTacticalAIModule@@QAEHHH@Z"},

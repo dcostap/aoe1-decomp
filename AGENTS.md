@@ -156,6 +156,12 @@ modules or headers. Edit only that natural owner.
 Exact matching and accepted drift have equal value. Choose by source and behavior
 evidence, not by a preference for zero byte differences.
 
+Review caller-visible behavior, valid aliases, and relevant faults. Do not require
+equivalence for invented pointers into future callee-owned stack storage unless
+executable evidence shows actual use. Ordinary caller-owned stack objects and
+supported overlapping inputs remain in scope. Different private stack layouts
+alone do not block accepted drift.
+
 Treat accepted drift as a completed recovery result. It is the preferred result
 when canonical source has a reviewed, behavior-equal code-generation difference.
 Do not spend time chasing its remaining bytes only to improve a metric. Revisit

@@ -9935,7 +9935,8 @@ TacticalAIGroup* TribeTacticalAIModule::bestGroup(
                             break;
                         if (!valid)
                             goto next_group;
-                        if (assist->assistGroupID() == group->id())
+                        const int id = group->id();
+                        if (assist->assistGroupID() == id)
                             valid = 0;
                         assist = assist->next;
                     } while (assist != &this->groups);
