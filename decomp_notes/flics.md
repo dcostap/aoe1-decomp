@@ -42,6 +42,9 @@ banks are not claims about the merged source.
   and store/fault order.
 - `delta_flc` keeps the ushort stream cursor, signed packet size, and separate
   scan and packet loops. Its current source is behavior-correct but nonexact.
+  The latest natural cursor publication probe produces 412 rebuilt bytes with
+  342 differing bytes. The remaining structural gap is the original early EBP
+  save and EBP stream allocation.
 - `delta_fli` keeps separate outer and line counters. The source uses the
   packed signed byte counts from the original stream.
 - `byte_run` advances past one row header before its opcode loop. Its negative

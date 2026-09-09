@@ -337,15 +337,15 @@ void RGE_Flic_Player::delta_flc()
         ushort* scan = p;
         do {
             ushort code = *scan;
-            p = scan + 1;
+            ++scan;
             unsigned int top = ((unsigned int)code) >> 14;
-            if (top == 0) {
+            if (top == packets) {
                 packets = code;
                 found = 1;
             } else if (top == 2) {
                 this->window_buffer[this->flic_width - 1] = (uchar)code;
-                packets = *p;
-                p = scan + 2;
+                packets = *scan;
+                ++scan;
                 found = 1;
             } else if (top == 3) {
                 int skip = -(int)(short)code;
@@ -353,7 +353,7 @@ void RGE_Flic_Player::delta_flc()
                 this->save_buffer += this->drawarea_width * skip;
                 this->window_buffer = this->save_buffer;
             }
-            scan = p;
+            p = scan;
         } while (found == 0);
 
         if ((short)packets > 0) {
