@@ -1,0 +1,18 @@
+# Experiment 0760ce21f5085c66590f3973ad8f1a229a4e736bfa3de47de52d8a882fc34a41
+# Base d181c62b2dba2dfef5d969a5b2e01a0e9a73176f
+diff --git a/src/victory.cpp b/src/victory.cpp
+index 378c23c44..ce19628d5 100644
+--- a/src/victory.cpp
++++ b/src/victory.cpp
+@@ -702,8 +702,9 @@ void RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Entry* entry) {
+     if (dx < 0.0f) dx = -dx;
+     if (dy < 0.0f) dy = -dy;
+ 
+-    float range_x = entry->target_obj->master_obj->radius_x + entry->this_obj->master_obj->radius_x + 1.0f;
+-    float range_y = entry->target_obj->master_obj->radius_y + entry->this_obj->master_obj->radius_y + 1.0f;
++    RGE_Static_Object* this_object = entry->this_obj;
++    float range_x = entry->target_obj->master_obj->radius_x + this_object->master_obj->radius_x + 1.0f;
++    float range_y = entry->target_obj->master_obj->radius_y + this_object->master_obj->radius_y + 1.0f;
+ 
+     if (dx <= range_x && dy <= range_y) {
+         entry->state = 2;

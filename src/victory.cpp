@@ -702,8 +702,9 @@ void RGE_Victory_Conditions::handle_bring_object(RGE_Victory_Entry* entry) {
     if (dx < 0.0f) dx = -dx;
     if (dy < 0.0f) dy = -dy;
 
-    float range_x = entry->target_obj->master_obj->radius_x + entry->this_obj->master_obj->radius_x + 1.0f;
-    float range_y = entry->target_obj->master_obj->radius_y + entry->this_obj->master_obj->radius_y + 1.0f;
+    RGE_Static_Object* this_object = entry->this_obj;
+    float range_x = entry->target_obj->master_obj->radius_x + this_object->master_obj->radius_x + 1.0f;
+    float range_y = entry->target_obj->master_obj->radius_y + this_object->master_obj->radius_y + 1.0f;
 
     if (dx <= range_x && dy <= range_y) {
         entry->state = 2;
