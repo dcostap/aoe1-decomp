@@ -3007,7 +3007,7 @@ panel_return_after_exit_menu:
         if (mouse_down != 0)
             color_log(0x4C, 0x5F, 4);
         color_log(0x24, 0x5F, 3);
-        return static_cast<LRESULT>(panel_result);
+        return static_cast<LRESULT>(wparam);
 
     case 0x218:
         if (wparam == 0)
