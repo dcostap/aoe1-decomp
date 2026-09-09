@@ -55,3 +55,23 @@ The semantic review commit `15b53a5f9` was read as evidence only. No wrapper
 or standalone status was transferred. `count_map_tiles` has five boundary escapes.
 `base_elevation_generate` has one boundary escape and a large local frame
 mismatch. These rows stay out of exact registration.
+
+## Worker update: corpus-21-rmm-elev
+
+The historical table above is not the current scratch baseline. The final
+canonical checks for this work period report:
+
+| VA | Result | Original | Rebuilt | Diff | Boundary | Calls |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| `00484700` | MISMATCH | 191 | 190 | 139 | 0 | 4/4 aligned |
+| `00484D00` | MISMATCH | 1273 | 1270 | 790 | 0 | 23/23 aligned |
+
+`00484D00` keeps frame `0x988` and 93.14% shape. Its `done` local now uses
+the PDB-proven `uchar`; the emitted bytes are unchanged. The reviewed typed
+`RGE_Tile::height` owner remains in both functions. No exact or accepted-drift
+proposal is made.
+
+The final translation-unit audit at
+`build/agents/corpus-21-rmm-elev/audit-final/report.txt` keeps five exact
+neighbors and three accepted-drift rows unchanged. It reports no relocation
+or boundary regressions.

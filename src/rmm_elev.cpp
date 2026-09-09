@@ -338,7 +338,7 @@ uchar RGE_RMM_Elevation_Generator::base_elevation_generate(
     long x;
     long y;
     long raw_ok;
-    char done;
+    uchar done;
     long clump_size;
     long chance;
     float local_chance;
