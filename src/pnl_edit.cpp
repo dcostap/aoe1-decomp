@@ -488,9 +488,9 @@ long TEditPanel::sub_wnd_proc(void* hwnd, unsigned int msg,
 
 default_processing:
     sel_start_before = 0;
-    sel_end_before = 0;
-    sel_start_after = 0;
     sel_end_after = 0;
+    sel_start_after = 0;
+    sel_end_before = 0;
     if (this->edit_wnd == 0 || msg == 0xB0) {
         track_selection = 0;
     } else {
@@ -516,14 +516,16 @@ default_processing:
         this->update_text();
     }
     if (msg == 0x201 || msg == 0x202 || msg == 0x204 || msg == 0x205) {
-        long adjusted_x = this->pnl_x +
-                          (long)((unsigned int)lparam & 0xFFFF);
-        lparam = (long)((unsigned long)lparam >> 16) + this->pnl_y;
+        unsigned long adjusted_lparam = (unsigned long)lparam;
+        unsigned long adjusted_x = (unsigned long)this->pnl_x +
+                                   (adjusted_lparam & 0xFFFF);
+        adjusted_lparam = (adjusted_lparam >> 16) +
+                          (unsigned long)this->pnl_y;
         TPanel* cp = panel_system.currentPanel();
-        lparam = (long)((((unsigned long)lparam & 0xFFFF) << 16) |
-                        ((unsigned long)adjusted_x & 0xFFFF));
+        adjusted_lparam = ((adjusted_lparam & 0xFFFF) << 16) |
+                          (adjusted_x & 0xFFFF);
         ret = cp->wnd_proc((void*)this->render_area->Wnd, msg, wparam,
-                           lparam);
+                           (long)adjusted_lparam);
     }
     return ret;
 }
