@@ -58,3 +58,23 @@ The natural-delete and owner-local-literal candidate was also checked with
 `python tools/validate_candidate_tu.py --proposal build/candidate_tus/tpnl_tim_canonical/proposal.json --output-dir build/candidate_tus/tpnl_tim_natural_owner_literals`.
 It has the same ten exact normal owners, generated destructor match, and
 439-byte scratch mismatch. No owner was demoted.
+
+## Worker `corpus-52-tpnl-tim` closure
+
+The worker rechecked `0051E2B0 render_to_image_buffer` from a fresh recorded
+baseline. The target remains `MISMATCH`: 437 positional bytes, 923 rebuilt
+bytes, a `0x11c` frame versus the original `0x114`, 26/26 ordered calls, and
+seven bytes beyond the original boundary.
+
+Natural width and height expression forms, explicit update forms, mixed
+dimension types, function-scope dimensions, and a shared format local did not
+improve the target. A 192-variant VC5 lab also swept 32 ambient declaration
+counts. It produced only two code groups, all with the same 923-byte result.
+
+The final audit used `python tools/audit_translation_unit_functions.py --group
+tpnl_tim --jobs 1`. Its validation fingerprint is
+`ac089509b0e56be8c8c44147e622ec06af3cdb979b37bafd13ca3d272ccd309b`. All ten
+matching neighbors stayed exact. No compiler-facing source change or
+exact-candidate patch is proposed. Durable state and event records are under
+`decomp_notes/experiments/`; the function note has the four-part evidence
+report and state IDs.
